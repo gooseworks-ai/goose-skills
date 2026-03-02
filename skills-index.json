@@ -7,7 +7,7 @@
       "name": "aeo-visibility",
       "category": "capabilities",
       "description": "",
-      "tags": "",
+      "tags": "seo",
       "path": "skills/capabilities/aeo-visibility",
       "files": [
         "skills/capabilities/aeo-visibility/QUICKSTART.md",
@@ -25,7 +25,9 @@
       "metadata": {
         "slug": "aeo-visibility",
         "category": "capabilities",
-        "tags": [],
+        "tags": [
+          "seo"
+        ],
         "installation": {
           "base_command": "npx goose-skills install aeo-visibility",
           "supports": [
@@ -41,7 +43,7 @@
       "name": "blog-scraper",
       "category": "capabilities",
       "description": ">",
-      "tags": "",
+      "tags": "content",
       "path": "skills/capabilities/blog-scraper",
       "files": [
         "skills/capabilities/blog-scraper/SKILL.md",
@@ -51,7 +53,9 @@
       "metadata": {
         "slug": "blog-scraper",
         "category": "capabilities",
-        "tags": [],
+        "tags": [
+          "content"
+        ],
         "installation": {
           "base_command": "npx goose-skills install blog-scraper",
           "supports": [
@@ -67,7 +71,7 @@
       "name": "brainstorming-partner",
       "category": "capabilities",
       "description": ">",
-      "tags": "",
+      "tags": "research",
       "path": "skills/capabilities/brainstorming-partner",
       "files": [
         "skills/capabilities/brainstorming-partner/SKILL.md",
@@ -76,7 +80,9 @@
       "metadata": {
         "slug": "brainstorming-partner",
         "category": "capabilities",
-        "tags": [],
+        "tags": [
+          "research"
+        ],
         "installation": {
           "base_command": "npx goose-skills install brainstorming-partner",
           "supports": [
@@ -92,7 +98,7 @@
       "name": "brand-voice-extractor",
       "category": "capabilities",
       "description": ">",
-      "tags": "[brand-voice, writing-style, content-analysis, tone, copywriting]",
+      "tags": "brand",
       "path": "skills/capabilities/brand-voice-extractor",
       "files": [
         "skills/capabilities/brand-voice-extractor/SKILL.md",
@@ -102,11 +108,7 @@
         "slug": "brand-voice-extractor",
         "category": "capabilities",
         "tags": [
-          "[brand-voice",
-          "writing-style",
-          "content-analysis",
-          "tone",
-          "copywriting]"
+          "brand"
         ],
         "installation": {
           "base_command": "npx goose-skills install brand-voice-extractor",
@@ -123,7 +125,7 @@
       "name": "company-contact-finder",
       "category": "capabilities",
       "description": ">",
-      "tags": "[prospecting, people-search, contacts, decision-makers, crustdata, gooseworks]",
+      "tags": "leads",
       "path": "skills/capabilities/company-contact-finder",
       "files": [
         "skills/capabilities/company-contact-finder/SKILL.md",
@@ -133,12 +135,7 @@
         "slug": "company-contact-finder",
         "category": "capabilities",
         "tags": [
-          "[prospecting",
-          "people-search",
-          "contacts",
-          "decision-makers",
-          "crustdata",
-          "gooseworks]"
+          "leads"
         ],
         "installation": {
           "base_command": "npx goose-skills install company-contact-finder",
@@ -155,7 +152,7 @@
       "name": "company-current-gtm-analysis",
       "category": "composites",
       "description": ">",
-      "tags": "",
+      "tags": "competitive-intel",
       "path": "skills/composites/company-current-gtm-analysis",
       "files": [
         "skills/composites/company-current-gtm-analysis/SKILL.md",
@@ -164,7 +161,9 @@
       "metadata": {
         "slug": "company-current-gtm-analysis",
         "category": "composites",
-        "tags": [],
+        "tags": [
+          "competitive-intel"
+        ],
         "installation": {
           "base_command": "npx goose-skills install company-current-gtm-analysis",
           "supports": [
@@ -180,7 +179,7 @@
       "name": "competitor-intel",
       "category": "composites",
       "description": ">",
-      "tags": "",
+      "tags": "competitive-intel",
       "path": "skills/composites/competitor-intel",
       "files": [
         "skills/composites/competitor-intel/SKILL.md",
@@ -189,7 +188,9 @@
       "metadata": {
         "slug": "competitor-intel",
         "category": "composites",
-        "tags": [],
+        "tags": [
+          "competitive-intel"
+        ],
         "installation": {
           "base_command": "npx goose-skills install competitor-intel",
           "supports": [
@@ -205,7 +206,7 @@
       "name": "conference-speaker-scraper",
       "category": "capabilities",
       "description": ">",
-      "tags": "",
+      "tags": "leads",
       "path": "skills/capabilities/conference-speaker-scraper",
       "files": [
         "skills/capabilities/conference-speaker-scraper/SKILL.md",
@@ -215,7 +216,9 @@
       "metadata": {
         "slug": "conference-speaker-scraper",
         "category": "capabilities",
-        "tags": [],
+        "tags": [
+          "leads"
+        ],
         "installation": {
           "base_command": "npx goose-skills install conference-speaker-scraper",
           "supports": [
@@ -231,7 +234,7 @@
       "name": "content-asset-creator",
       "category": "capabilities",
       "description": ">",
-      "tags": "",
+      "tags": "content",
       "path": "skills/capabilities/content-asset-creator",
       "files": [
         "skills/capabilities/content-asset-creator/SKILL.md",
@@ -240,7 +243,9 @@
       "metadata": {
         "slug": "content-asset-creator",
         "category": "capabilities",
-        "tags": [],
+        "tags": [
+          "content"
+        ],
         "installation": {
           "base_command": "npx goose-skills install content-asset-creator",
           "supports": [
@@ -256,7 +261,7 @@
       "name": "frontend-slides",
       "category": "capabilities",
       "description": "Create stunning, animation-rich HTML presentations from scratch or by converting PowerPoint files. Use when the user wants to build a presentation, convert a PPT/PPTX to web, or create slides for a talk/pitch. Helps non-designers discover their aesthetic through visual exploration rather than abstract choices.",
-      "tags": "",
+      "tags": "content",
       "path": "skills/capabilities/create-html-slides",
       "files": [
         "skills/capabilities/create-html-slides/README.md",
@@ -267,7 +272,9 @@
       "metadata": {
         "slug": "create-html-slides",
         "category": "capabilities",
-        "tags": [],
+        "tags": [
+          "content"
+        ],
         "installation": {
           "base_command": "npx goose-skills install create-html-slides",
           "supports": [
@@ -283,7 +290,7 @@
       "name": "google-ad-scraper",
       "category": "capabilities",
       "description": "Scrape competitor ads from Google's Ads Transparency Center (Search, YouTube, Display, Gmail). Search by company name, domain, or advertiser ID. Returns ad creatives, formats, targeting regions, and campaign details. Use for competitive ad research and messaging analysis.",
-      "tags": "",
+      "tags": "ads",
       "path": "skills/capabilities/google-ad-scraper",
       "files": [
         "skills/capabilities/google-ad-scraper/SKILL.md",
@@ -293,7 +300,9 @@
       "metadata": {
         "slug": "google-ad-scraper",
         "category": "capabilities",
-        "tags": [],
+        "tags": [
+          "ads"
+        ],
         "installation": {
           "base_command": "npx goose-skills install google-ad-scraper",
           "supports": [
@@ -309,7 +318,7 @@
       "name": "hacker-news-scraper",
       "category": "capabilities",
       "description": ">",
-      "tags": "",
+      "tags": "monitoring",
       "path": "skills/capabilities/hacker-news-scraper",
       "files": [
         "skills/capabilities/hacker-news-scraper/SKILL.md",
@@ -319,7 +328,9 @@
       "metadata": {
         "slug": "hacker-news-scraper",
         "category": "capabilities",
-        "tags": [],
+        "tags": [
+          "monitoring"
+        ],
         "installation": {
           "base_command": "npx goose-skills install hacker-news-scraper",
           "supports": [
@@ -335,7 +346,7 @@
       "name": "icp-persona-builder",
       "category": "capabilities",
       "description": ">",
-      "tags": "[icp, persona, buyer-research, segmentation]",
+      "tags": "icp",
       "path": "skills/capabilities/icp-persona-builder",
       "files": [
         "skills/capabilities/icp-persona-builder/SKILL.md",
@@ -345,10 +356,7 @@
         "slug": "icp-persona-builder",
         "category": "capabilities",
         "tags": [
-          "[icp",
-          "persona",
-          "buyer-research",
-          "segmentation]"
+          "icp"
         ],
         "installation": {
           "base_command": "npx goose-skills install icp-persona-builder",
@@ -365,7 +373,7 @@
       "name": "icp-website-audit",
       "category": "composites",
       "description": ">",
-      "tags": "[website-audit, icp, persona, competitive-analysis, messaging, conversion, compound-skill]",
+      "tags": "icp",
       "path": "skills/composites/icp-website-audit",
       "files": [
         "skills/composites/icp-website-audit/SKILL.md",
@@ -375,13 +383,7 @@
         "slug": "icp-website-audit",
         "category": "composites",
         "tags": [
-          "[website-audit",
-          "icp",
-          "persona",
-          "competitive-analysis",
-          "messaging",
-          "conversion",
-          "compound-skill]"
+          "icp"
         ],
         "installation": {
           "base_command": "npx goose-skills install icp-website-audit",
@@ -398,7 +400,7 @@
       "name": "icp-website-review",
       "category": "capabilities",
       "description": ">",
-      "tags": "[website-review, icp, persona, messaging, conversion, ux-feedback, competitive-analysis]",
+      "tags": "icp",
       "path": "skills/capabilities/icp-website-review",
       "files": [
         "skills/capabilities/icp-website-review/SKILL.md",
@@ -408,13 +410,7 @@
         "slug": "icp-website-review",
         "category": "capabilities",
         "tags": [
-          "[website-review",
-          "icp",
-          "persona",
-          "messaging",
-          "conversion",
-          "ux-feedback",
-          "competitive-analysis]"
+          "icp"
         ],
         "installation": {
           "base_command": "npx goose-skills install icp-website-review",
@@ -431,7 +427,7 @@
       "name": "industry-scanner",
       "category": "composites",
       "description": ">",
-      "tags": "",
+      "tags": "competitive-intel",
       "path": "skills/composites/industry-scanner",
       "files": [
         "skills/composites/industry-scanner/SKILL.md",
@@ -442,7 +438,9 @@
       "metadata": {
         "slug": "industry-scanner",
         "category": "composites",
-        "tags": [],
+        "tags": [
+          "competitive-intel"
+        ],
         "installation": {
           "base_command": "npx goose-skills install industry-scanner",
           "supports": [
@@ -458,7 +456,7 @@
       "name": "job-posting-intent",
       "category": "capabilities",
       "description": ">",
-      "tags": "[signal-detection, jobs, linkedin, intent, leads, apify, prospecting, google-sheets]",
+      "tags": "leads, linkedin",
       "path": "skills/capabilities/job-posting-intent",
       "files": [
         "skills/capabilities/job-posting-intent/SKILL.md",
@@ -471,14 +469,8 @@
         "slug": "job-posting-intent",
         "category": "capabilities",
         "tags": [
-          "[signal-detection",
-          "jobs",
-          "linkedin",
-          "intent",
           "leads",
-          "apify",
-          "prospecting",
-          "google-sheets]"
+          "linkedin"
         ],
         "installation": {
           "base_command": "npx goose-skills install job-posting-intent",
@@ -495,7 +487,7 @@
       "name": "linkedin-commenter-extractor",
       "category": "capabilities",
       "description": ">",
-      "tags": "",
+      "tags": "linkedin",
       "path": "skills/capabilities/linkedin-commenter-extractor",
       "files": [
         "skills/capabilities/linkedin-commenter-extractor/SKILL.md",
@@ -505,7 +497,9 @@
       "metadata": {
         "slug": "linkedin-commenter-extractor",
         "category": "capabilities",
-        "tags": [],
+        "tags": [
+          "linkedin"
+        ],
         "installation": {
           "base_command": "npx goose-skills install linkedin-commenter-extractor",
           "supports": [
@@ -521,7 +515,7 @@
       "name": "linkedin-influencer-discovery",
       "category": "capabilities",
       "description": ">",
-      "tags": "",
+      "tags": "linkedin",
       "path": "skills/capabilities/linkedin-influencer-discovery",
       "files": [
         "skills/capabilities/linkedin-influencer-discovery/SKILL.md",
@@ -531,7 +525,9 @@
       "metadata": {
         "slug": "linkedin-influencer-discovery",
         "category": "capabilities",
-        "tags": [],
+        "tags": [
+          "linkedin"
+        ],
         "installation": {
           "base_command": "npx goose-skills install linkedin-influencer-discovery",
           "supports": [
@@ -547,7 +543,7 @@
       "name": "linkedin-post-research",
       "category": "capabilities",
       "description": "Search LinkedIn posts by keywords using Crustdata API directly, deduplicate and sort by engagement. Outputs to CSV or JSON. Use when researching LinkedIn content around specific topics.",
-      "tags": "",
+      "tags": "linkedin",
       "path": "skills/capabilities/linkedin-post-research",
       "files": [
         "skills/capabilities/linkedin-post-research/SKILL.md",
@@ -557,7 +553,9 @@
       "metadata": {
         "slug": "linkedin-post-research",
         "category": "capabilities",
-        "tags": [],
+        "tags": [
+          "linkedin"
+        ],
         "installation": {
           "base_command": "npx goose-skills install linkedin-post-research",
           "supports": [
@@ -573,7 +571,7 @@
       "name": "linkedin-profile-post-scraper",
       "category": "capabilities",
       "description": ">",
-      "tags": "",
+      "tags": "linkedin",
       "path": "skills/capabilities/linkedin-profile-post-scraper",
       "files": [
         "skills/capabilities/linkedin-profile-post-scraper/SKILL.md",
@@ -583,7 +581,9 @@
       "metadata": {
         "slug": "linkedin-profile-post-scraper",
         "category": "capabilities",
-        "tags": [],
+        "tags": [
+          "linkedin"
+        ],
         "installation": {
           "base_command": "npx goose-skills install linkedin-profile-post-scraper",
           "supports": [
@@ -599,7 +599,7 @@
       "name": "luma-event-attendees",
       "category": "capabilities",
       "description": "Find speakers, hosts, and guest profiles at conferences and events on Luma. Two modes - free direct scrape for hosts, or Apify-powered search for full guest profiles with LinkedIn/Twitter/bio.",
-      "tags": "events, conferences, speakers, prospecting, luma, apify, outreach, signal-detection, attendees",
+      "tags": "leads",
       "path": "skills/capabilities/luma-event-attendees",
       "files": [
         "skills/capabilities/luma-event-attendees/README.md",
@@ -612,15 +612,7 @@
         "slug": "luma-event-attendees",
         "category": "capabilities",
         "tags": [
-          "events",
-          "conferences",
-          "speakers",
-          "prospecting",
-          "luma",
-          "apify",
-          "outreach",
-          "signal-detection",
-          "attendees"
+          "leads"
         ],
         "installation": {
           "base_command": "npx goose-skills install luma-event-attendees",
@@ -637,7 +629,7 @@
       "name": "meta-ad-scraper",
       "category": "capabilities",
       "description": "Scrape competitor ads from Meta's Ad Library (Facebook, Instagram, Messenger, Threads, WhatsApp). Search by company name, Facebook Page URL, or keyword. Returns ad creatives, spend estimates, reach, impressions, and campaign details. Use for competitive ad research, messaging analysis, and creative inspiration.",
-      "tags": "",
+      "tags": "ads",
       "path": "skills/capabilities/meta-ad-scraper",
       "files": [
         "skills/capabilities/meta-ad-scraper/SKILL.md",
@@ -647,7 +639,9 @@
       "metadata": {
         "slug": "meta-ad-scraper",
         "category": "capabilities",
-        "tags": [],
+        "tags": [
+          "ads"
+        ],
         "installation": {
           "base_command": "npx goose-skills install meta-ad-scraper",
           "supports": [
@@ -663,7 +657,7 @@
       "name": "newsletter-sponsorship-finder",
       "category": "capabilities",
       "description": ">",
-      "tags": "",
+      "tags": "monitoring",
       "path": "skills/capabilities/newsletter-sponsorship-finder",
       "files": [
         "skills/capabilities/newsletter-sponsorship-finder/SKILL.md",
@@ -673,7 +667,9 @@
       "metadata": {
         "slug": "newsletter-sponsorship-finder",
         "category": "capabilities",
-        "tags": [],
+        "tags": [
+          "monitoring"
+        ],
         "installation": {
           "base_command": "npx goose-skills install newsletter-sponsorship-finder",
           "supports": [
@@ -689,7 +685,7 @@
       "name": "product-hunt-scraper",
       "category": "capabilities",
       "description": ">",
-      "tags": "",
+      "tags": "monitoring",
       "path": "skills/capabilities/product-hunt-scraper",
       "files": [
         "skills/capabilities/product-hunt-scraper/SKILL.md",
@@ -699,7 +695,9 @@
       "metadata": {
         "slug": "product-hunt-scraper",
         "category": "capabilities",
-        "tags": [],
+        "tags": [
+          "monitoring"
+        ],
         "installation": {
           "base_command": "npx goose-skills install product-hunt-scraper",
           "supports": [
@@ -715,7 +713,7 @@
       "name": "reddit-scraper",
       "category": "capabilities",
       "description": "Scrape and search Reddit posts using Apify. Use when you need to find Reddit discussions, track competitor mentions, monitor product feedback, discover pain points, or analyze subreddit content. Supports keyword filtering, time-based searches, and subreddit-specific queries.",
-      "tags": "",
+      "tags": "monitoring",
       "path": "skills/capabilities/reddit-scraper",
       "files": [
         "skills/capabilities/reddit-scraper/SKILL.md",
@@ -726,7 +724,9 @@
       "metadata": {
         "slug": "reddit-scraper",
         "category": "capabilities",
-        "tags": [],
+        "tags": [
+          "monitoring"
+        ],
         "installation": {
           "base_command": "npx goose-skills install reddit-scraper",
           "supports": [
@@ -742,7 +742,7 @@
       "name": "review-scraper",
       "category": "capabilities",
       "description": ">",
-      "tags": "",
+      "tags": "monitoring",
       "path": "skills/capabilities/review-scraper",
       "files": [
         "skills/capabilities/review-scraper/SKILL.md",
@@ -752,7 +752,9 @@
       "metadata": {
         "slug": "review-scraper",
         "category": "capabilities",
-        "tags": [],
+        "tags": [
+          "monitoring"
+        ],
         "installation": {
           "base_command": "npx goose-skills install review-scraper",
           "supports": [
@@ -768,7 +770,7 @@
       "name": "seo-content-audit",
       "category": "composites",
       "description": ">",
-      "tags": "[seo, content-audit, competitive-analysis, gap-analysis, brand-voice, compound-skill]",
+      "tags": "seo",
       "path": "skills/composites/seo-content-audit",
       "files": [
         "skills/composites/seo-content-audit/SKILL.md",
@@ -778,12 +780,7 @@
         "slug": "seo-content-audit",
         "category": "composites",
         "tags": [
-          "[seo",
-          "content-audit",
-          "competitive-analysis",
-          "gap-analysis",
-          "brand-voice",
-          "compound-skill]"
+          "seo"
         ],
         "installation": {
           "base_command": "npx goose-skills install seo-content-audit",
@@ -800,7 +797,7 @@
       "name": "seo-domain-analyzer",
       "category": "capabilities",
       "description": ">",
-      "tags": "[seo, semrush, ahrefs, traffic, keywords, backlinks, competitive-intel]",
+      "tags": "competitive-intel, seo",
       "path": "skills/capabilities/seo-domain-analyzer",
       "files": [
         "skills/capabilities/seo-domain-analyzer/SKILL.md",
@@ -811,13 +808,8 @@
         "slug": "seo-domain-analyzer",
         "category": "capabilities",
         "tags": [
-          "[seo",
-          "semrush",
-          "ahrefs",
-          "traffic",
-          "keywords",
-          "backlinks",
-          "competitive-intel]"
+          "competitive-intel",
+          "seo"
         ],
         "installation": {
           "base_command": "npx goose-skills install seo-domain-analyzer",
@@ -834,7 +826,7 @@
       "name": "seo-traffic-analyzer",
       "category": "capabilities",
       "description": ">",
-      "tags": "[seo, traffic, competitive-intel, organic-growth, web-search]",
+      "tags": "competitive-intel, seo",
       "path": "skills/capabilities/seo-traffic-analyzer",
       "files": [
         "skills/capabilities/seo-traffic-analyzer/SKILL.md",
@@ -844,11 +836,8 @@
         "slug": "seo-traffic-analyzer",
         "category": "capabilities",
         "tags": [
-          "[seo",
-          "traffic",
           "competitive-intel",
-          "organic-growth",
-          "web-search]"
+          "seo"
         ],
         "installation": {
           "base_command": "npx goose-skills install seo-traffic-analyzer",
@@ -865,7 +854,7 @@
       "name": "site-content-catalog",
       "category": "capabilities",
       "description": ">",
-      "tags": "[seo, content, inventory, sitemap, blog, content-strategy]",
+      "tags": "content, seo",
       "path": "skills/capabilities/site-content-catalog",
       "files": [
         "skills/capabilities/site-content-catalog/SKILL.md",
@@ -876,12 +865,8 @@
         "slug": "site-content-catalog",
         "category": "capabilities",
         "tags": [
-          "[seo",
           "content",
-          "inventory",
-          "sitemap",
-          "blog",
-          "content-strategy]"
+          "seo"
         ],
         "installation": {
           "base_command": "npx goose-skills install site-content-catalog",
@@ -898,7 +883,7 @@
       "name": "twitter-scraper",
       "category": "capabilities",
       "description": ">",
-      "tags": "",
+      "tags": "monitoring",
       "path": "skills/capabilities/twitter-scraper",
       "files": [
         "skills/capabilities/twitter-scraper/SKILL.md",
@@ -908,7 +893,9 @@
       "metadata": {
         "slug": "twitter-scraper",
         "category": "capabilities",
-        "tags": [],
+        "tags": [
+          "monitoring"
+        ],
         "installation": {
           "base_command": "npx goose-skills install twitter-scraper",
           "supports": [
@@ -924,7 +911,7 @@
       "name": "visual-brand-extractor",
       "category": "capabilities",
       "description": ">",
-      "tags": "[brand-identity, visual-design, css-analysis, style-extraction]",
+      "tags": "brand",
       "path": "skills/capabilities/visual-brand-extractor",
       "files": [
         "skills/capabilities/visual-brand-extractor/SKILL.md",
@@ -934,10 +921,7 @@
         "slug": "visual-brand-extractor",
         "category": "capabilities",
         "tags": [
-          "[brand-identity",
-          "visual-design",
-          "css-analysis",
-          "style-extraction]"
+          "brand"
         ],
         "installation": {
           "base_command": "npx goose-skills install visual-brand-extractor",
@@ -954,7 +938,7 @@
       "name": "web-archive-scraper",
       "category": "capabilities",
       "description": ">",
-      "tags": "",
+      "tags": "monitoring",
       "path": "skills/capabilities/web-archive-scraper",
       "files": [
         "skills/capabilities/web-archive-scraper/SKILL.md",
@@ -964,7 +948,9 @@
       "metadata": {
         "slug": "web-archive-scraper",
         "category": "capabilities",
-        "tags": [],
+        "tags": [
+          "monitoring"
+        ],
         "installation": {
           "base_command": "npx goose-skills install web-archive-scraper",
           "supports": [
@@ -980,7 +966,7 @@
       "name": "youtube-watcher",
       "category": "capabilities",
       "description": "Fetch and read transcripts from YouTube videos. Use when you need to summarize a video, answer questions about its content, or extract information from it.",
-      "tags": "",
+      "tags": "content",
       "path": "skills/capabilities/youtube-watcher",
       "files": [
         "skills/capabilities/youtube-watcher/SKILL.md",
@@ -990,7 +976,9 @@
       "metadata": {
         "slug": "youtube-watcher",
         "category": "capabilities",
-        "tags": [],
+        "tags": [
+          "content"
+        ],
         "installation": {
           "base_command": "npx goose-skills install youtube-watcher",
           "supports": [
