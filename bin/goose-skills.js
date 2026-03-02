@@ -6,7 +6,7 @@
  * Install Claude Code skills from the goose-skills registry.
  *
  * Usage:
- *   npx goose-skills install <slug>   # Install a skill
+ *   npx goose-skills install <slug> [--claude|--codex|--cursor] [--project-dir <path>]
  *   npx goose-skills list             # List available skills
  *   npx goose-skills info <slug>      # Show skill details
  */
@@ -14,6 +14,11 @@
 const https = require('https');
 const fs = require('fs');
 const path = require('path');
+const {
+  parseInstallOptions,
+  placeForCodex,
+  placeForCursor,
+} = require('./lib/targets');
 
 const REPO = 'athina-ai/goose-skills';
 const BRANCH = 'main';
@@ -57,7 +62,13 @@ function getInstallDir(slug) {
   return path.join(home, '.claude', 'skills', slug);
 }
 
-async function installSkill(slug) {
+function getCodexSkillsRoot() {
+  const home = process.env.HOME || process.env.USERPROFILE;
+  return path.join(home, '.codex', 'skills');
+}
+
+async function installSkill(options) {
+  const { slug, target, projectDir } = options;
   const index = await fetchIndex();
   const skill = index.skills.find((s) => s.slug === slug);
 
@@ -93,7 +104,25 @@ async function installSkill(slug) {
   }
 
   console.log(`\nInstalled ${downloaded}/${skill.files.length} files.`);
-  console.log(`\nTo use this skill, add to your Claude Code project:`);
+  console.log(`Primary location: ${installDir}`);
+
+  if (target === 'codex') {
+    const codexDir = placeForCodex(installDir, getCodexSkillsRoot());
+    console.log(`Codex location: ${codexDir}`);
+    console.log('\nNext step (Codex):');
+    console.log('  Restart Codex to pick up the new skill.');
+    return;
+  }
+
+  if (target === 'cursor') {
+    const cursorRule = placeForCursor(installDir, projectDir);
+    console.log(`Cursor rule: ${cursorRule}`);
+    console.log('\nNext step (Cursor):');
+    console.log('  Open Cursor in that project so it can load the new rule.');
+    return;
+  }
+
+  console.log(`\nNext step (Claude Code):`);
   console.log(`  cp -r ${installDir}/SKILL.md .claude/skills/${slug}.md`);
   console.log(`  # Or reference directly: ${installDir}/SKILL.md`);
 }
@@ -148,11 +177,17 @@ const [,, command, ...args] = process.argv;
 
 switch (command) {
   case 'install':
-    if (!args[0]) {
-      console.error('Usage: npx goose-skills install <slug>');
+    try {
+      const options = parseInstallOptions(args);
+      installSkill(options).catch((err) => {
+        console.error(err.message);
+        process.exit(1);
+      });
+    } catch (err) {
+      console.error(err.message);
+      console.error('Usage: npx goose-skills install <slug> [--claude|--codex|--cursor] [--project-dir <path>]');
       process.exit(1);
     }
-    installSkill(args[0]);
     break;
   case 'list':
     listSkills();
@@ -173,5 +208,7 @@ switch (command) {
     console.log('\nExamples:');
     console.log('  npx goose-skills list');
     console.log('  npx goose-skills install reddit-scraper');
+    console.log('  npx goose-skills install reddit-scraper --codex');
+    console.log('  npx goose-skills install reddit-scraper --cursor --project-dir /path/to/project');
     break;
 }

@@ -8,7 +8,25 @@ GTM skills for [Claude Code](https://claude.ai/claude-code). Ready-to-use skills
 npx goose-skills install <slug>
 ```
 
-This downloads the skill to `~/.claude/skills/<slug>/`. Then copy or reference the `SKILL.md` in your project.
+This installs to `~/.claude/skills/<slug>/` by default (Claude Code target).
+
+## Platform Targets
+
+Use one target flag per install:
+
+```bash
+npx goose-skills install google-ad-scraper --claude
+npx goose-skills install google-ad-scraper --codex
+npx goose-skills install google-ad-scraper --cursor --project-dir /path/to/repo
+```
+
+- `--claude` (default): installs under `~/.claude/skills/<slug>/`
+- `--codex`: installs under `~/.claude/skills/<slug>/`, then copies to `~/.codex/skills/<slug>/`
+- `--cursor`: installs under `~/.claude/skills/<slug>/`, then writes a project-local Cursor rule file at `.cursor/rules/goose-<slug>.mdc`
+
+Notes:
+- Only one target flag is allowed per command.
+- `--cursor` requires `--project-dir`.
 
 ## Available Skills
 
@@ -83,7 +101,9 @@ Multi-skill chains that combine capabilities into pipelines.
 
 ```bash
 npx goose-skills list             # List all available skills
-npx goose-skills install <slug>   # Install a skill
+npx goose-skills install <slug>   # Install for Claude Code (default)
+npx goose-skills install <slug> --codex
+npx goose-skills install <slug> --cursor --project-dir /path/to/repo
 npx goose-skills info <slug>      # Show skill details
 ```
 
