@@ -257,6 +257,37 @@
       }
     },
     {
+      "slug": "create-html-carousel",
+      "name": "create-html-carousel",
+      "category": "capabilities",
+      "description": "Create LinkedIn carousel posts as high-quality PNG images. Design informational multi-slide posts like \"5 AI GTM workflows\" with consistent styling, then automatically screenshot each slide at LinkedIn's optimal 1080x1080px format.",
+      "tags": "content",
+      "path": "skills/capabilities/create-html-carousel",
+      "files": [
+        "skills/capabilities/create-html-carousel/README.md",
+        "skills/capabilities/create-html-carousel/SKILL.md",
+        "skills/capabilities/create-html-carousel/STYLE_PRESETS.md",
+        "skills/capabilities/create-html-carousel/package.json",
+        "skills/capabilities/create-html-carousel/screenshot-slides.js",
+        "skills/capabilities/create-html-carousel/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "create-html-carousel",
+        "category": "capabilities",
+        "tags": [
+          "content"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install create-html-carousel",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
       "slug": "create-html-slides",
       "name": "frontend-slides",
       "category": "capabilities",
@@ -277,6 +308,37 @@
         ],
         "installation": {
           "base_command": "npx goose-skills install create-html-slides",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "create-workflow-diagram",
+      "name": "create-workflow-diagram",
+      "category": "capabilities",
+      "description": "Create FigJam/Miro-style workflow diagrams as high-quality PNG images from plain-text workflow descriptions. Renders beautiful HTML diagrams with connected nodes, arrows, and labels, then screenshots them for sharing.",
+      "tags": "content",
+      "path": "skills/capabilities/create-workflow-diagram",
+      "files": [
+        "skills/capabilities/create-workflow-diagram/README.md",
+        "skills/capabilities/create-workflow-diagram/SKILL.md",
+        "skills/capabilities/create-workflow-diagram/STYLE_PRESETS.md",
+        "skills/capabilities/create-workflow-diagram/package.json",
+        "skills/capabilities/create-workflow-diagram/screenshot-diagram.js",
+        "skills/capabilities/create-workflow-diagram/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "create-workflow-diagram",
+        "category": "capabilities",
+        "tags": [
+          "content"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install create-workflow-diagram",
           "supports": [
             "claude",
             "cursor",

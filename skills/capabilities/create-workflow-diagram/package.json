@@ -1,0 +1,16 @@
+{
+  "name": "workflow-diagram-screenshots",
+  "version": "1.0.0",
+  "description": "Screenshot tool for HTML workflow diagrams",
+  "private": true,
+  "scripts": {
+    "screenshot": "node screenshot-diagram.js",
+    "setup": "npx playwright install chromium"
+  },
+  "dependencies": {
+    "playwright": "^1.40.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

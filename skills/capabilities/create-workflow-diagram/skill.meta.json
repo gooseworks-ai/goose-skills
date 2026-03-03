@@ -1,0 +1,15 @@
+{
+  "slug": "create-workflow-diagram",
+  "category": "capabilities",
+  "tags": [
+    "content"
+  ],
+  "installation": {
+    "base_command": "npx goose-skills install create-workflow-diagram",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "linkedin-carousel-screenshots",
+  "version": "1.0.0",
+  "description": "Screenshot tool for LinkedIn carousel HTML slides",
+  "private": true,
+  "scripts": {
+    "screenshot": "node screenshot-slides.js",
+    "setup": "npx playwright install chromium"
+  },
+  "dependencies": {
+    "playwright": "^1.40.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
