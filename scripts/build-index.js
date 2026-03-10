@@ -86,6 +86,7 @@ function scanCategory(category) {
 const skills = [
   ...scanCategory('capabilities'),
   ...scanCategory('composites'),
+  ...scanCategory('playbooks'),
 ].sort((a, b) => a.slug.localeCompare(b.slug));
 
 const index = {
