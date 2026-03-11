@@ -16,14 +16,32 @@ function parseFrontmatter(content) {
 
   const yaml = match[1];
   const result = {};
-  for (const line of yaml.split('\n')) {
+  const lines = yaml.split('\n');
+  let i = 0;
+  while (i < lines.length) {
+    const line = lines[i];
     const kvMatch = line.match(/^(\w[\w-]*):\s*(.*)/);
-    if (!kvMatch) continue;
-    let value = kvMatch[2].trim().replace(/^['"]|['"]$/g, '');
-    if (value.startsWith('[') && value.endsWith(']')) {
-      value = value.slice(1, -1).split(',').map((s) => s.trim());
+    if (kvMatch) {
+      const key = kvMatch[1];
+      let value = kvMatch[2].trim().replace(/^['"]|['"]$/g, '');
+      if (value === '>' || value === '|') {
+        // Block scalar — collect indented continuation lines
+        const blockLines = [];
+        i++;
+        while (i < lines.length && (lines[i].startsWith(' ') || lines[i].startsWith('\t'))) {
+          blockLines.push(lines[i].trim());
+          i++;
+        }
+        value = value === '>' ? blockLines.join(' ') : blockLines.join('\n');
+        result[key] = value;
+        continue;
+      }
+      if (value.startsWith('[') && value.endsWith(']')) {
+        value = value.slice(1, -1).split(',').map((s) => s.trim());
+      }
+      result[key] = value;
     }
-    result[kvMatch[1]] = value;
+    i++;
   }
   return result;
 }
