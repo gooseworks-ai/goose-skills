@@ -1,6 +1,9 @@
 ---
 name: event-signals
-description: Extract leads from conferences, meetups, hackathons, and podcasts by analyzing speaker lists, sponsor lists, hackathon entries, podcast guests, and event attendees. Discovers relevant events based on the user's product and ICP, then extracts signals from structured sources (Sessionize, Meetup, Luma, ListenNotes, Devpost) and agent-scraped sources (conference websites, sponsor pages). Looks back 90 days and forward 180 days.
+description: Extract leads from conferences, meetups, hackathons, and podcasts by analyzing speaker lists, sponsor lists, hackathon entries, and podcast guests. Discovers events via Sessionize, Confs.tech, Meetup, Luma, ListenNotes, and Devpost. Looks back 90 days and forward 180 days.
+user-invocable: true
+allowed-tools: Bash, Read, Write, Edit, Grep, Glob, WebFetch, WebSearch
+argument-hint: [config-json-path]
 ---
 
 # Event Signals
@@ -19,10 +22,10 @@ Extract leads from the conference and events ecosystem. Events represent public 
 
 ## Prerequisites
 
-- Python 3.9+ with `requests`, `openpyxl`, and optionally `python-dotenv`
+- Python 3.9+ with `requests` and optionally `python-dotenv`
 - Apify API token in `.env` (for Meetup and Luma — optional)
 - ListenNotes API key in `.env` as `LISTENNOTES_API_KEY` (for podcast search — optional, free tier gives 300 req/mo)
-- Working directory: the `goose-leadgen-toolkit` project root
+- Working directory: the project root containing this skill
 
 ## Phase 1: Collect Context
 
@@ -92,8 +95,6 @@ Search Luma for events in the user's space. Luma is popular for:
 **3c. Ask the user about their registrations:**
 > "Are you registered for any events on Luma or Meetup? If you're registered for a Luma event, the attendee list is often publicly visible — I can extract it. For some Meetup events, RSVP lists are public too."
 
-If the user provides event URLs they're registered for, use the Luma Apify scraper (with authentication if needed) or scrape the attendee list.
-
 ### Step 4: Discover Podcasts
 
 **4a. Identify relevant podcasts:**
@@ -157,7 +158,7 @@ For conferences NOT on Sessionize, the agent should manually extract:
 - Extract: company name, sponsorship tier (platinum/gold/silver/bronze)
 - Higher tiers = more invested in the space
 
-**Save scraped data** to `.tmp/manual_event_signals.json` in this format:
+**Save scraped data** to `${CLAUDE_SKILL_DIR}/../.tmp/manual_event_signals.json` in this format:
 ```json
 [
     {
@@ -175,22 +176,6 @@ For conferences NOT on Sessionize, the agent should manually extract:
         "website": "",
         "date": "2026-10-14",
         "source": "Manual"
-    },
-    {
-        "person_name": "",
-        "company": "BigCo",
-        "signal_type": "conference_sponsor",
-        "signal_label": "Conference Sponsor",
-        "event_name": "KubeCon NA 2026",
-        "event_type": "Conference",
-        "talk_or_role": "Gold Sponsor",
-        "bio": "",
-        "url": "https://kubecon.io/sponsors",
-        "linkedin": "",
-        "twitter": "",
-        "website": "https://bigco.com",
-        "date": "2026-10-13",
-        "source": "Manual"
     }
 ]
 ```
@@ -200,7 +185,7 @@ For conferences NOT on Sessionize, the agent should manually extract:
 ### Step 8: Save Config File
 
 ```bash
-cat > .tmp/event_signals_config.json << 'CONFIGEOF'
+cat > ${CLAUDE_SKILL_DIR}/../.tmp/event_signals_config.json << 'CONFIGEOF'
 {
     "keywords": ["kubernetes", "cloud native", "infrastructure"],
     "sessionize_event_ids": ["abc123", "def456"],
@@ -210,7 +195,7 @@ cat > .tmp/event_signals_config.json << 'CONFIGEOF'
     "luma_queries": ["devops event", "infrastructure meetup"],
     "podcast_queries": ["kubernetes scaling", "infrastructure challenges"],
     "devpost_slugs": ["cloud-native-hack-2026"],
-    "manual_signals_file": ".tmp/manual_event_signals.json",
+    "manual_signals_file": "${CLAUDE_SKILL_DIR}/../.tmp/manual_event_signals.json",
     "skip": []
 }
 CONFIGEOF
@@ -219,23 +204,15 @@ CONFIGEOF
 ### Step 9: Run the Tool
 
 ```bash
-cd /Users/0xhbam/Desktop/Cursor/goose-leadgen-toolkit
-
-python3 tools/event_signals.py \
-    --config .tmp/event_signals_config.json \
-    --output .tmp/event_signals.xlsx
+python3 ${CLAUDE_SKILL_DIR}/scripts/event_signals.py \
+    --config ${CLAUDE_SKILL_DIR}/../.tmp/event_signals_config.json \
+    --output ${CLAUDE_SKILL_DIR}/../.tmp/event_signals.csv
 ```
 
 The tool handles structured sources. The agent handles conference website scraping in Step 7 (before running the tool), saving results to the manual signals file.
 
 **To skip specific sources:**
 Add to the config's `skip` array: `"sessionize"`, `"confstech"`, `"meetup"`, `"luma"`, `"podcast"`, `"devpost"`
-
-### Step 10: Copy Output
-
-```bash
-cp .tmp/event_signals.xlsx /Users/0xhbam/Desktop/Cursor/event_signals.xlsx
-```
 
 ## Phase 4: Analyze & Recommend
 
@@ -362,12 +339,9 @@ Meetup.com, Luma, Eventbrite, Bevy (community-led events)
 Devpost, MLH events, Devfolio, company-hosted hackathons
 
 **Podcast Networks:**
-Changelog, Software Engineering Daily, The New Stack, InfoQ podcasts, a]16z podcast, industry-specific pods
+Changelog, Software Engineering Daily, The New Stack, InfoQ podcasts, a16z podcast, industry-specific pods
 
-**Webinar Platforms:**
-YouTube Live, Zoom webinars (if public), company-hosted webinars on their websites
-
-The agent should adapt this list based on the user's specific vertical. A devtools company needs different events than an AI company or a fintech company.
+The agent should adapt this list based on the user's specific vertical.
 
 ## Cost Estimates
 

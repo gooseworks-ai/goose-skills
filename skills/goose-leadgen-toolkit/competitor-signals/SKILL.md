@@ -1,6 +1,9 @@
 ---
 name: competitor-signals
-description: Extract leads from competitor product activity — Product Hunt launch commenters/upvoters, HN front page posts about competitors, competitor case studies and testimonials, tech press coverage, and people publicly switching to or from competitors. Detects switching signals as highest-priority leads.
+description: Extract leads from competitor product activity — Product Hunt commenters/upvoters, HN posts about competitors, case studies, testimonials, tech press, and switching signals. Detects people actively switching from competitors as highest-priority leads.
+user-invocable: true
+allowed-tools: Bash, Read, Write, Edit, Grep, Glob, WebFetch, WebSearch
+argument-hint: [config-json-path]
 ---
 
 # Competitor Signals
@@ -18,10 +21,10 @@ Find leads by monitoring competitor product activity. Instead of looking for you
 
 ## Prerequisites
 
-- Python 3.9+ with `requests`, `openpyxl`, and optionally `python-dotenv`
+- Python 3.9+ with `requests` and optionally `python-dotenv`
 - Product Hunt developer token (free, optional — get at `api.producthunt.com/v2/oauth/applications`)
 - Apify API token in `.env` (fallback for PH if API names are redacted, optional)
-- Working directory: the `goose-leadgen-toolkit` project root
+- Working directory: the project root containing this skill
 
 ## Phase 1: Collect Context
 
@@ -74,11 +77,6 @@ For each competitor, identify pages the agent should scrape:
 - Extract: person name, title, company, quote
 - These are current users who publicly endorsed the competitor
 
-**Changelog/release page:** `[competitor].com/changelog` or `[competitor].com/blog/changelog`
-- Note: changelogs themselves aren't leads, but the agent can check if there are comments or social shares
-
-**About/team page:** Sometimes useful to understand the competitor, not for leads
-
 **Blog:** `[competitor].com/blog`
 - Guest posts by customers are case studies in disguise
 - "How [Company X] uses [Competitor]" = case study
@@ -100,7 +98,7 @@ Before running the tool, the agent should manually scrape competitor case studie
 1. Extract: person name, title, company, quote text
 2. These are high-value signals — these people actively chose to endorse the competitor
 
-**Save all scraped data** to `.tmp/competitor_manual_signals.json`:
+**Save all scraped data** to `${CLAUDE_SKILL_DIR}/../.tmp/competitor_manual_signals.json`:
 ```json
 [
     {
@@ -111,19 +109,6 @@ Before running the tool, the agent should manually scrape competitor case studie
         "competitor": "Twilio",
         "context": "How TechCorp scaled video calls to 100K users with Twilio",
         "url": "https://twilio.com/case-studies/techcorp",
-        "profile_url": "",
-        "date": "",
-        "source": "Manual",
-        "engagement": 0
-    },
-    {
-        "person_name": "Mike Johnson",
-        "company": "StartupXYZ",
-        "signal_type": "testimonial_author",
-        "signal_label": "Competitor Testimonial",
-        "competitor": "Agora",
-        "context": "Agora helped us ship video in 2 weeks — Mike Johnson, CTO at StartupXYZ",
-        "url": "https://agora.io",
         "profile_url": "",
         "date": "",
         "source": "Manual",
@@ -152,12 +137,12 @@ For articles found:
 ### Step 7: Save Config
 
 ```bash
-cat > .tmp/competitor_signals_config.json << 'CONFIGEOF'
+cat > ${CLAUDE_SKILL_DIR}/../.tmp/competitor_signals_config.json << 'CONFIGEOF'
 {
     "competitors": ["Twilio", "Agora", "Vonage", "Daily.co"],
     "product_hunt_slugs": ["twilio-video", "agora-2", "daily-co"],
     "days": 90,
-    "manual_signals_file": ".tmp/competitor_manual_signals.json",
+    "manual_signals_file": "${CLAUDE_SKILL_DIR}/../.tmp/competitor_manual_signals.json",
     "skip": []
 }
 CONFIGEOF
@@ -166,11 +151,9 @@ CONFIGEOF
 ### Step 8: Run the Tool
 
 ```bash
-cd /Users/0xhbam/Desktop/Cursor/goose-leadgen-toolkit
-
-python3 tools/competitor_signals.py \
-    --config .tmp/competitor_signals_config.json \
-    --output .tmp/competitor_signals.xlsx
+python3 ${CLAUDE_SKILL_DIR}/scripts/competitor_signals.py \
+    --config ${CLAUDE_SKILL_DIR}/../.tmp/competitor_signals_config.json \
+    --output ${CLAUDE_SKILL_DIR}/../.tmp/competitor_signals.csv
 ```
 
 The tool will:
@@ -180,23 +163,7 @@ The tool will:
 4. Load manual signals (case studies, testimonials, press)
 5. Detect "switching signals" (highest priority — people saying they're moving to/from a competitor)
 6. Deduplicate and score
-7. Export xlsx with switching signals highlighted
-
-**To skip Product Hunt (if no token):**
-```bash
-# Add "producthunt" to skip in config
-```
-
-**To skip HN:**
-```bash
-# Add "hn" to skip in config
-```
-
-### Step 9: Copy Output
-
-```bash
-cp .tmp/competitor_signals.xlsx /Users/0xhbam/Desktop/Cursor/competitor_signals.xlsx
-```
+7. Export CSV with switching signals highlighted
 
 ## Phase 4: Analyze & Recommend
 
@@ -253,8 +220,8 @@ cp .tmp/competitor_signals.xlsx /Users/0xhbam/Desktop/Cursor/competitor_signals.
    - Or enrich and reach out privately
 
 4. **Cross-reference with other signals:**
-   - If a company appears in competitor case studies AND in job signals (hiring for the role) → they're invested but possibly scaling beyond the competitor
-   - If a person appears in competitor PH comments AND in community signals → they're deeply researching the space
+   - If a company appears in competitor case studies AND in job signals (hiring for the role) -> they're invested but possibly scaling beyond the competitor
+   - If a person appears in competitor PH comments AND in community signals -> they're deeply researching the space
 
 ### Step 12: Ask for Go-Ahead
 
@@ -310,9 +277,3 @@ cp .tmp/competitor_signals.xlsx /Users/0xhbam/Desktop/Cursor/competitor_signals.
 ## Lookback Period
 
 Default: **90 days.** Competitor launches and case studies have a longer shelf life than Reddit posts. Someone who commented on a competitor's PH launch 60 days ago is still a viable lead.
-
-## Future Additions (Not in v1)
-
-- **G2/Capterra reviews:** Company-level signals (reviewer company + role + pain points). Anonymized at individual level but useful for account-based targeting.
-- **Competitor social media:** Twitter/X replies and LinkedIn engagement. Expensive API access.
-- **Competitor public roadmaps:** Canny, ProductBoard, GitHub Discussions feature requests.

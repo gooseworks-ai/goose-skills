@@ -1,0 +1,7 @@
+.tmp/
+__pycache__/
+*.pyc
+.env
+credentials.json
+token.json
+profile_cache.json

@@ -1,6 +1,9 @@
 ---
 name: lead-discovery
-description: Orchestrator skill that runs first when a user asks to find leads, generate leads, or do outbound prospecting. Gathers business context (via website analysis or questions), identifies competitors, builds an ICP, and then routes to the appropriate signal skills with pre-filled inputs. This skill should always run before any individual signal skill.
+description: Orchestrator that runs first for lead generation requests. Gathers business context via website analysis or questions, identifies competitors, builds ICP, and routes to signal skills with pre-filled inputs.
+user-invocable: true
+allowed-tools: Bash, Read, Write, Edit, Grep, Glob, WebFetch, WebSearch
+argument-hint: [website-url]
 ---
 
 # Lead Discovery — Orchestrator
@@ -141,7 +144,7 @@ Based on the context, recommend which signal skills to run. Use this priority or
 ### Recommend with cost note:
 6. **community-signals** (add Reddit — ~$5-10) — broader community coverage
 7. **job-signals** (add LinkedIn/Google — ~$1-3) — broader job board coverage
-8. **lead-enrichment** — after any signal skill produces output (~$0.05-0.20/lead)
+8. **SixtyFour enrichment** — after any signal skill produces output (~$0.05-0.20/lead)
 
 Present the recommendation as a numbered plan with costs. Ask the user which sources they want to run — all of them, a subset, or just start with the free ones.
 
@@ -149,7 +152,7 @@ Present the recommendation as a numbered plan with costs. Ask the user which sou
 
 Once the user picks their sources, begin executing them in the recommended order. For each skill:
 
-- Load the appropriate skill from `skills/signals/`
+- Invoke the appropriate skill (e.g., `/github-repo-signals`, `/job-signals`)
 - Pre-fill all inputs from the shared context (do NOT re-ask the user for information you already have)
 - Only ask skill-specific questions that weren't covered in the shared context (e.g., user limit for github-repo-signals)
 - After each skill completes, briefly summarize results and move to the next

@@ -1,62 +1,58 @@
 ---
 name: demo-builder
-description: After lead generation, builds personalized demo assets for top prospects using the founder's own product API/MCP. Researches the prospect's business, proposes demo concepts that show the founder's product solving the prospect's specific problem, builds a working prototype, tests it, and generates a polished comparison report with a live demo link. Works with any product that has API or MCP access.
+description: Builds personalized demo assets for top prospects using the founder's product API/MCP/SDK. Researches prospect, proposes demo concepts, builds working prototype, tests it, and generates comparison report with live demo link.
+disable-model-invocation: true
+user-invocable: true
+allowed-tools: Bash, Read, Write, Edit, Grep, Glob, WebFetch, WebSearch
+argument-hint: [prospect-company-name]
 ---
 
 # Demo Builder
 
-Turn scored leads into personalized demo assets that sell. Instead of sending cold emails, send a working prototype built on your product that solves the prospect's actual problem — with a comparison report and live demo link.
+Build personalized demo assets for prospects using the founder's product API/MCP/SDK. Send a working prototype that solves the prospect's actual problem — with a comparison report and live demo link.
 
 ## When to Use
 
-- User has completed a lead generation run (any signal skill) and has a prospect list
-- User asks "what do I do with these leads", "how do I reach out", or "help me with outreach"
-- User wants to create sales collateral, demo assets, or proof-of-concepts for prospects
-- User asks to "build a demo", "create an asset", or "personalize outreach"
+- User provides a prospect company name or URL and wants a demo built for them
+- User asks to "build a demo", "create an asset", or "personalize outreach" for a specific company
 - User has a product with API access, SDK, MCP server, or CLI and wants to demonstrate it to a prospect
-- User wants to move from "list of names" to "active sales pipeline"
+- User has completed a lead generation run and wants to act on the results
+- User asks "what do I do with these leads", "how do I reach out", or "help me with outreach"
 
 ## Prerequisites
 
-- A completed lead generation run with at least one xlsx output from any signal skill
-- The shared context object from lead-discovery (product description, ICP, competitors)
 - API access, MCP access, SDK, or CLI for the user's product — the agent needs to be able to actually build something
 - Access to the product's documentation (API docs URL, SDK readme, or MCP tool list)
 
-## Phase 1: Select a Prospect
+## Phase 1: Identify the Prospect
 
-### Step 1: Review the Lead Data
+This skill supports two input paths:
 
-Read the xlsx outputs from prior signal runs. Identify the top prospects by looking for:
+### Path A: User provides a prospect directly (primary path)
 
-**Highest-priority prospects for a demo (in order):**
-
-1. **Multi-signal leads** — prospects that appeared in 2+ signal sources (e.g., showed up in both GitHub signals AND job signals). These have the strongest buying intent.
-2. **Switching signals** — from competitor-signals, anyone flagged as "switching from" a competitor. They are actively evaluating alternatives RIGHT NOW.
-3. **Build-vs-buy signals** — from job-signals, companies with "build our own" or "greenfield" language. They're about to invest engineering time you could save them.
-4. **High interaction score** — from github-repo-signals, users with scores of 15+ who interacted deeply with competitor repos.
-5. **Community pain signals** — from community-signals, users who posted about problems your product solves.
-6. **Company clusters** — from github-repo-signals, companies with 3+ engaged users (organizational adoption signal).
-
-### Step 2: Shortlist 3-5 Candidates
-
-Present the user with 3-5 prospect candidates, each with:
-
-```
-PROSPECT: [Company Name]
-  Signal sources: [which signal skills flagged them]
-  Key signal: [the strongest signal — e.g., "opened GitHub issue about latency in competitor X"]
-  Contact: [name, role if known, email if enriched]
-  Why this prospect: [1-2 sentences on why they'd be receptive to a demo]
-  Demo feasibility: [HIGH/MEDIUM/LOW — based on whether their use case is clear enough to build something]
-```
+If the user provides a company name, website URL, or prospect details:
+1. Accept the prospect as-is — no lead data required
+2. Proceed directly to Phase 2 (Research the Prospect)
 
 Ask the user:
-> "These are the prospects I'd recommend building a demo for. Which one should we start with? I'll build a working prototype on your platform tailored to their specific use case."
+> "I'll build a working demo for [Company]. Before I start, I need to know:
+> 1. **What does your product do?** (one-liner)
+> 2. **What problem does it solve for companies like [Company]?**
+> 3. **Where are your API docs / SDK / MCP tools?**"
 
-### Step 3: User Picks One
+If the user has already provided product context (from lead-discovery or prior conversation), skip questions they've already answered.
 
-Once the user selects a prospect, proceed to Phase 2. Only build for ONE prospect initially — this is a trial run to validate the approach before scaling.
+### Path B: User has signal data from prior lead generation runs
+
+If the user has csv outputs from signal skills, help them pick the best prospect:
+
+1. Read the csv outputs and identify top candidates by looking for multi-signal leads, switching signals, build-vs-buy signals, high interaction scores, community pain signals, or company clusters
+2. Shortlist 3-5 candidates with signal sources, key signal, and demo feasibility
+3. Ask the user to pick one
+
+### Either path leads to Phase 2
+
+Only build for ONE prospect initially — this is a trial run to validate the approach before scaling.
 
 ---
 
@@ -189,10 +185,6 @@ Build the working demo. The implementation depends entirely on the product type 
 
 **Save all demo artifacts to `.tmp/demos/[prospect-company-name]/`**
 
-```bash
-mkdir -p .tmp/demos/[prospect-company-name]
-```
-
 ### Step 9: Test the Demo
 
 After building, test the demo yourself to verify it works.
@@ -307,14 +299,6 @@ Generate a polished HTML report. The report is the deliverable the user sends to
 - Mobile-responsive — the prospect might open this on their phone
 - Self-contained — no external dependencies except fonts (inline all CSS)
 - No JavaScript required — pure HTML/CSS so it loads instantly and works everywhere
-
-**Save the report:**
-```bash
-# Save to demos folder
-cp .tmp/demos/[prospect-company-name]/report.html /path/to/output/
-
-# Also keep in .tmp for reference
-```
 
 ### Step 13: Assemble the Demo Link
 

@@ -1,6 +1,9 @@
 ---
 name: github-repo-signals
-description: Extract and score leads from GitHub repositories by analyzing all user interactions (stars, forks, issues, PRs, comments, contributions, watchers). Produces a unified multi-repo .xlsx with deduplicated user profiles and cross-repo interaction mapping. No paid API credits required.
+description: Extract and score leads from GitHub repositories by analyzing stars, forks, issues, PRs, comments, and contributions. Produces unified multi-repo CSV with deduplicated user profiles. No paid API credits required.
+user-invocable: true
+allowed-tools: Bash, Read, Write, Edit, Grep, Glob
+argument-hint: [owner/repo1,owner/repo2] [limit]
 ---
 
 # GitHub Repository Signals
@@ -22,8 +25,8 @@ Extract high-intent leads from one or more GitHub repositories by analyzing ever
 ## Prerequisites
 
 - `gh` CLI authenticated (`gh auth status` to verify)
-- Python 3.9+ with `openpyxl` and `PyYAML` installed
-- Working directory: the `goose-leadgen-toolkit` project root
+- Python 3.9+ with `PyYAML` installed
+- Working directory: the project root containing this skill
 
 ## Inputs to Collect from User
 
@@ -38,23 +41,15 @@ Before running, ask the user for:
 
 ```bash
 gh auth status
-python3 -c "import openpyxl; print('openpyxl OK')"
-```
-
-If `openpyxl` is missing, install it:
-```bash
-pip install openpyxl
 ```
 
 ### Step 2: Run the Tool
 
 ```bash
-cd /Users/0xhbam/Desktop/Cursor/goose-leadgen-toolkit
-
-python3 tools/gh_repo_signals.py \
+python3 ${CLAUDE_SKILL_DIR}/scripts/gh_repo_signals.py \
     --repos "owner1/repo1,owner2/repo2" \
     --limit <USER_LIMIT> \
-    --output .tmp/repo_signals.xlsx
+    --output ${CLAUDE_SKILL_DIR}/../.tmp/repo_signals.csv
 ```
 
 Replace the repos and limit with user-provided values.
@@ -72,13 +67,13 @@ The tool will:
    - Stargazer: 1 point
 4. **Rank** users by (repos_interacted desc, total_score desc) — multi-repo users surface first
 5. **Fetch** GitHub profiles for the top N users (name, email, company, location, blog, twitter, bio, followers)
-6. **Export** a 2-sheet .xlsx file
+6. **Export** two CSV files: `_users.csv` and `_interactions.csv`
 
 ### Step 3: Review Output
 
-The output `.xlsx` has two sheets:
+The tool produces two CSV files:
 
-**Sheet 1: Users** — One row per person, deduplicated across all repos
+**`repo_signals_users.csv`** — One row per person, deduplicated across all repos
 | Column | Description |
 |--------|-------------|
 | username | GitHub login |
@@ -95,7 +90,7 @@ The output `.xlsx` has two sheets:
 | total_repos_interacted | Number of input repos this user interacted with |
 | interaction_score | Weighted score across all repos |
 
-**Sheet 2: Interactions** — One row per user × repo combination
+**`repo_signals_interactions.csv`** — One row per user x repo combination
 | Column | Description |
 |--------|-------------|
 | username | GitHub login |
@@ -112,19 +107,9 @@ The output `.xlsx` has two sheets:
 | forked_at | Date forked (if applicable) |
 | repo_score | Interaction score for this specific repo |
 
-### Step 4: Copy to Review Location
-
-Copy the output to a location the user can easily access:
-
-```bash
-cp .tmp/repo_signals.xlsx /Users/0xhbam/Desktop/Cursor/repo_signals.xlsx
-```
-
-Or wherever the user requests.
-
 ## Phase 3: Analyze & Recommend
 
-Once the .xlsx is generated, **do not stop**. Immediately proceed to analyze the data and brief the user.
+Once the CSV files are generated, **do not stop**. Immediately proceed to analyze the data and brief the user.
 
 ### Step 5: Collect Company Context
 
@@ -139,7 +124,7 @@ Do NOT proceed to analysis until you have this context. It directly shapes the r
 
 ### Step 6: Analyze the Data
 
-Read the generated .xlsx file and compute the following analysis. Present it to the user as a structured briefing.
+Read the generated .csv file and compute the following analysis. Present it to the user as a structured briefing.
 
 **6a. Overall Stats**
 - Total users in the sheet
@@ -178,7 +163,7 @@ Based on the analysis AND the user's company context/intent, recommend specific 
 
 1. **If multi-repo users exist (2+ repos):**
    - These are the #1 priority segment. Recommend enriching them first.
-   - Estimate credit cost: N users × cost per enrichment call.
+   - Estimate credit cost: N users x cost per enrichment call.
 
 2. **If company clusters exist (3+ users from same company):**
    - Recommend company-level enrichment via SixtyFour `/enrich-company`
@@ -192,16 +177,16 @@ Based on the analysis AND the user's company context/intent, recommend specific 
 
 4. **If low email coverage (<40%):**
    - Recommend SixtyFour `/find-email` for the top-scored users first
-   - Estimate cost: N users × $0.05 (professional) or $0.20 (personal)
+   - Estimate cost: N users x $0.05 (professional) or $0.20 (personal)
    - Suggest starting with a small batch (50-100) to validate quality before scaling
 
 5. **If the user's goal is outbound sales:**
-   - Prioritize: company clusters → multi-repo users → issue openers → PR authors → forkers → stargazers
+   - Prioritize: company clusters -> multi-repo users -> issue openers -> PR authors -> forkers -> stargazers
    - Recommend enriching companies first, then finding decision-makers
    - Suggest personalization angles based on interaction type (e.g., "I noticed your team has been active in the [repo] community...")
 
 6. **If the user's goal is community/partnerships:**
-   - Prioritize: PR authors → contributors → issue commenters who help others
+   - Prioritize: PR authors -> contributors -> issue commenters who help others
    - These are potential advocates, not just buyers
 
 7. **Always include a cost estimate:**

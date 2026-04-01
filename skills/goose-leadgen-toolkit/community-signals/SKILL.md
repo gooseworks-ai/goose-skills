@@ -1,6 +1,9 @@
 ---
 name: community-signals
-description: Extract leads from developer community forums (Hacker News, Reddit) by detecting intent signals — people asking for alternatives, expressing pain with competitors, discussing scaling challenges, or building DIY solutions. Generates search queries based on the user's product and ICP, scans platforms, scores users by intent strength, and produces a unified xlsx.
+description: Extract leads from developer forums (Hacker News, Reddit) by detecting intent signals — alternative seeking, competitor pain, scaling challenges, DIY solutions, and migration intent. Scores users by intent strength and cross-platform presence.
+user-invocable: true
+allowed-tools: Bash, Read, Write, Edit, Grep, Glob, WebSearch
+argument-hint: [queries-json-path]
 ---
 
 # Community Signals
@@ -18,10 +21,10 @@ Extract high-intent leads from developer community forums by detecting buying si
 
 ## Prerequisites
 
-- Python 3.9+ with `requests`, `openpyxl`, and optionally `python-dotenv`
+- Python 3.9+ with `requests` and optionally `python-dotenv`
 - Apify API token in `.env` (for Reddit scraping)
 - No auth needed for Hacker News (free Algolia API)
-- Working directory: the `goose-leadgen-toolkit` project root
+- Working directory: the project root containing this skill
 
 ## Phase 1: Collect Context
 
@@ -126,7 +129,7 @@ Ask:
 > 2. Add or remove specific queries
 > 3. Add or remove subreddits
 >
-> Estimated cost: HN is free. Reddit via Apify will cost approximately $[estimate based on query count × ~$0.05 per query]."
+> Estimated cost: HN is free. Reddit via Apify will cost approximately $[estimate based on query count x ~$0.05 per query]."
 
 Wait for user approval before proceeding.
 
@@ -135,14 +138,13 @@ Wait for user approval before proceeding.
 Once approved, save the queries as a JSON file:
 
 ```bash
-cat > .tmp/community_queries.json << 'QUERIESEOF'
+cat > ${CLAUDE_SKILL_DIR}/../.tmp/community_queries.json << 'QUERIESEOF'
 {
     "product": "Product Name",
     "queries": [
         {"category": "alternative_seeking", "query": "twilio alternative"},
         {"category": "alternative_seeking", "query": "agora alternative"},
-        {"category": "competitor_pain", "query": "twilio video quality issues"},
-        ...
+        {"category": "competitor_pain", "query": "twilio video quality issues"}
     ],
     "subreddits": ["r/webdev", "r/VOIP", "r/programming"]
 }
@@ -154,19 +156,18 @@ QUERIESEOF
 ### Step 6: Verify Environment
 
 ```bash
-cd /Users/0xhbam/Desktop/Cursor/goose-leadgen-toolkit
-python3 -c "import requests, openpyxl; print('OK')"
+python3 -c "import requests; print('OK')"
 ```
 
 ### Step 7: Run the Tool
 
 ```bash
-python3 tools/community_signals.py \
-    --queries .tmp/community_queries.json \
+python3 ${CLAUDE_SKILL_DIR}/scripts/community_signals.py \
+    --queries ${CLAUDE_SKILL_DIR}/../.tmp/community_queries.json \
     --days 30 \
     --max-reddit-posts 50 \
     --max-reddit-comments 20 \
-    --output .tmp/community_signals.xlsx
+    --output ${CLAUDE_SKILL_DIR}/../.tmp/community_signals.csv
 ```
 
 The tool will:
@@ -176,24 +177,18 @@ The tool will:
 4. Deduplicate users across platforms
 5. Score by intent strength, signal count, category diversity, and cross-platform presence
 6. Fetch HN user profiles (karma, bio) — free
-7. Export 2-sheet xlsx
+7. Export two CSV files: `_users.csv` and `_signals.csv`
 
 **Optional flags:**
 - `--skip-reddit` — only search HN (free, for testing)
 - `--skip-hn` — only search Reddit
 - `--days 7` — narrower time window for very fresh signals
 
-### Step 8: Copy to Review Location
-
-```bash
-cp .tmp/community_signals.xlsx /Users/0xhbam/Desktop/Cursor/community_signals.xlsx
-```
-
 ## Phase 4: Analyze & Recommend
 
 ### Step 9: Analyze the Results
 
-Read the output xlsx and present a structured briefing:
+Read the output CSV files and present a structured briefing:
 
 **9a. Overall Stats**
 - Total signals found (HN + Reddit)
@@ -225,7 +220,7 @@ Read the output xlsx and present a structured briefing:
 Based on findings + user's product context:
 
 1. **If strong signals found (>50 high-intent users):**
-   - Recommend enriching top users via SixtyFour (invoke the lead-enrichment skill)
+   - Recommend enriching top users via SixtyFour
    - For HN users: use their HN bio/karma + username for enrichment context
    - For Reddit users: username is the only identifier — enrichment hit rates may be lower
    - Suggest starting with HN users (more likely to have real names in bio)
@@ -263,7 +258,7 @@ Wait for user confirmation.
 
 ## Output Schema
 
-**Sheet 1: Users** — One row per unique user across all platforms
+**`community_signals_users.csv`** — One row per unique user across all platforms
 
 | Column | Description |
 |--------|-------------|
@@ -282,7 +277,7 @@ Wait for user confirmation.
 | latest_seen | Most recent matching post/comment |
 | sample_url | Link to one of their matching posts |
 
-**Sheet 2: Signals** — One row per matching post/comment
+**`community_signals_signals.csv`** — One row per matching post/comment
 
 | Column | Description |
 |--------|-------------|
