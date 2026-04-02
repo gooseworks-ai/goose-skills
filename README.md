@@ -29,7 +29,7 @@ npx goose-skills install lead-gen-devtools --cursor --project-dir /path/to/repo
 
 | Pack | Skills | Description |
 |------|--------|-------------|
-| `lead-gen-devtools` | 6 | Lead generation toolkit: discovery orchestrator, GitHub repo signals, community signals, competitor signals, event signals, and demo builder |
+| `lead-gen-devtools` | 7 | Lead generation toolkit: discovery orchestrator, GitHub repo signals, community signals, competitor signals, event signals, demo builder, and hiring signal outreach |
 
 ## Platform Targets
 

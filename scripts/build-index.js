@@ -28,6 +28,9 @@ function parseFrontmatter(content) {
   return result;
 }
 
+const SKIP_DIRS = new Set(['.tmp', '__pycache__', 'node_modules', '.git']);
+const SKIP_EXTS = new Set(['.pyc', '.pyo']);
+
 function collectFiles(dir) {
   const files = [];
   if (!fs.existsSync(dir)) return files;
@@ -35,8 +38,10 @@ function collectFiles(dir) {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     const full = path.join(dir, entry.name);
     if (entry.isDirectory()) {
+      if (SKIP_DIRS.has(entry.name)) continue;
       files.push(...collectFiles(full));
     } else {
+      if (SKIP_EXTS.has(path.extname(entry.name))) continue;
       files.push(full);
     }
   }

@@ -3584,11 +3584,8 @@
           "description": "Extract and score leads from GitHub repositories by analyzing stars, forks, issues, PRs, comments, and contributions. Produces unified multi-repo CSV with deduplicated user profiles. No paid API credits required.",
           "path": "skills/packs/lead-gen-devtools/github-repo-signals",
           "files": [
-            "skills/packs/lead-gen-devtools/github-repo-signals/.tmp/profile_cache.json",
             "skills/packs/lead-gen-devtools/github-repo-signals/SKILL.md",
             "skills/packs/lead-gen-devtools/github-repo-signals/scripts/__init__.py",
-            "skills/packs/lead-gen-devtools/github-repo-signals/scripts/__pycache__/__init__.cpython-312.pyc",
-            "skills/packs/lead-gen-devtools/github-repo-signals/scripts/__pycache__/gh_common.cpython-312.pyc",
             "skills/packs/lead-gen-devtools/github-repo-signals/scripts/gh_common.py",
             "skills/packs/lead-gen-devtools/github-repo-signals/scripts/gh_contributors.py",
             "skills/packs/lead-gen-devtools/github-repo-signals/scripts/gh_issues_scanner.py",
