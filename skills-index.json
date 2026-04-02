@@ -1,6 +1,6 @@
 {
-  "version": "1.1.0",
-  "generated": "2026-03-26",
+  "version": "1.2.0",
+  "generated": "2026-04-02",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -3552,6 +3552,136 @@
           ]
         },
         "author": "michael gathara"
+      }
+    }
+  ],
+  "packs": [
+    {
+      "slug": "lead-gen-devtools",
+      "name": "Lead Gen DevTools",
+      "type": "pack",
+      "description": "7-skill lead generation toolkit: discovery orchestrator, GitHub repo signals, community signals, competitor signals, event signals, hiring signal outreach, and personalized demo builder.",
+      "tags": "lead-generation, research, competitive-intel",
+      "path": "skills/packs/lead-gen-devtools",
+      "shared_files": [
+        "skills/packs/lead-gen-devtools/.env.example",
+        "skills/packs/lead-gen-devtools/requirements.txt"
+      ],
+      "skills": [
+        {
+          "slug": "lead-discovery",
+          "name": "lead-discovery",
+          "description": "Orchestrator that runs first for lead generation requests. Gathers business context via website analysis or questions, identifies competitors, builds ICP, and routes to signal skills with pre-filled inputs.",
+          "path": "skills/packs/lead-gen-devtools/lead-discovery",
+          "files": [
+            "skills/packs/lead-gen-devtools/lead-discovery/SKILL.md"
+          ],
+          "source": "pack"
+        },
+        {
+          "slug": "github-repo-signals",
+          "name": "github-repo-signals",
+          "description": "Extract and score leads from GitHub repositories by analyzing stars, forks, issues, PRs, comments, and contributions. Produces unified multi-repo CSV with deduplicated user profiles. No paid API credits required.",
+          "path": "skills/packs/lead-gen-devtools/github-repo-signals",
+          "files": [
+            "skills/packs/lead-gen-devtools/github-repo-signals/SKILL.md",
+            "skills/packs/lead-gen-devtools/github-repo-signals/scripts/__init__.py",
+            "skills/packs/lead-gen-devtools/github-repo-signals/scripts/gh_common.py",
+            "skills/packs/lead-gen-devtools/github-repo-signals/scripts/gh_contributors.py",
+            "skills/packs/lead-gen-devtools/github-repo-signals/scripts/gh_issues_scanner.py",
+            "skills/packs/lead-gen-devtools/github-repo-signals/scripts/gh_repo_signals.py",
+            "skills/packs/lead-gen-devtools/github-repo-signals/scripts/gh_stars_forks.py",
+            "skills/packs/lead-gen-devtools/github-repo-signals/scripts/gh_techstack.py"
+          ],
+          "source": "pack"
+        },
+        {
+          "slug": "community-signals",
+          "name": "community-signals",
+          "description": "Extract leads from developer forums (Hacker News, Reddit) by detecting intent signals — alternative seeking, competitor pain, scaling challenges, DIY solutions, and migration intent. Scores users by intent strength and cross-platform presence.",
+          "path": "skills/packs/lead-gen-devtools/community-signals",
+          "files": [
+            "skills/packs/lead-gen-devtools/community-signals/SKILL.md",
+            "skills/packs/lead-gen-devtools/community-signals/scripts/community_signals.py"
+          ],
+          "source": "pack"
+        },
+        {
+          "slug": "competitor-signals",
+          "name": "competitor-signals",
+          "description": "Extract leads from competitor product activity — Product Hunt commenters/upvoters, HN posts about competitors, case studies, testimonials, tech press, and switching signals. Detects people actively switching from competitors as highest-priority leads.",
+          "path": "skills/packs/lead-gen-devtools/competitor-signals",
+          "files": [
+            "skills/packs/lead-gen-devtools/competitor-signals/SKILL.md",
+            "skills/packs/lead-gen-devtools/competitor-signals/scripts/competitor_signals.py"
+          ],
+          "source": "pack"
+        },
+        {
+          "slug": "event-signals",
+          "name": "event-signals",
+          "description": "Extract leads from conferences, meetups, hackathons, and podcasts by analyzing speaker lists, sponsor lists, hackathon entries, and podcast guests. Discovers events via Sessionize, Confs.tech, Meetup, Luma, ListenNotes, and Devpost. Looks back 90 days and forward 180 days.",
+          "path": "skills/packs/lead-gen-devtools/event-signals",
+          "files": [
+            "skills/packs/lead-gen-devtools/event-signals/SKILL.md",
+            "skills/packs/lead-gen-devtools/event-signals/scripts/event_signals.py"
+          ],
+          "source": "pack"
+        },
+        {
+          "slug": "demo-builder",
+          "name": "demo-builder",
+          "description": "Builds personalized demo assets for top prospects using the founder's product API/MCP/SDK. Researches prospect, proposes demo concepts, builds working prototype, tests it, and generates comparison report with live demo link.",
+          "path": "skills/packs/lead-gen-devtools/demo-builder",
+          "files": [
+            "skills/packs/lead-gen-devtools/demo-builder/SKILL.md"
+          ],
+          "source": "pack"
+        },
+        {
+          "slug": "hiring-signal-outreach",
+          "name": "hiring-signal-outreach",
+          "description": ">",
+          "path": "skills/composites/hiring-signal-outreach",
+          "files": [
+            "skills/composites/hiring-signal-outreach/SKILL.md",
+            "skills/composites/hiring-signal-outreach/skill.meta.json"
+          ],
+          "source": "registry"
+        }
+      ],
+      "metadata": {
+        "slug": "lead-gen-devtools",
+        "name": "Lead Gen DevTools",
+        "description": "7-skill lead generation toolkit: discovery orchestrator, GitHub repo signals, community signals, competitor signals, event signals, hiring signal outreach, and personalized demo builder.",
+        "tags": [
+          "lead-generation",
+          "research",
+          "competitive-intel"
+        ],
+        "skills": [
+          "lead-discovery",
+          "github-repo-signals",
+          "community-signals",
+          "competitor-signals",
+          "event-signals",
+          "demo-builder"
+        ],
+        "registry_skills": [
+          "hiring-signal-outreach"
+        ],
+        "shared_files": [
+          ".env.example",
+          "requirements.txt"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install lead-gen-devtools",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
       }
     }
   ]

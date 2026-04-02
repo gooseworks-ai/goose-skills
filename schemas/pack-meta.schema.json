@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://athina.ai/schemas/pack-meta.schema.json",
+  "type": "object",
+  "required": ["slug", "name", "description", "tags", "skills", "shared_files", "installation"],
+  "properties": {
+    "slug": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "name": { "type": "string", "minLength": 1 },
+    "description": { "type": "string", "minLength": 1 },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    },
+    "skills": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+      "uniqueItems": true
+    },
+    "registry_skills": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+      "uniqueItems": true
+    },
+    "shared_files": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "installation": {
+      "type": "object",
+      "required": ["base_command", "supports"],
+      "properties": {
+        "base_command": { "type": "string", "minLength": 1 },
+        "supports": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["claude", "cursor", "codex"] },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
