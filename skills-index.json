@@ -1,6 +1,6 @@
 {
   "version": "1.2.0",
-  "generated": "2026-04-02",
+  "generated": "2026-04-08",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -43,6 +43,7 @@
       "metadata": {
         "slug": "ad-campaign-analyzer",
         "category": "composites",
+        "description": "Analyze ad campaign performance data, identify winners and waste, check statistical significance, and recommend multi-channel budget reallocation with specific dollar-amount shift recommendations and scenario modeling.",
         "tags": [
           "ads"
         ],
@@ -119,31 +120,6 @@
       "path": "skills/capabilities/apollo-lead-finder",
       "files": [
         "skills/capabilities/apollo-lead-finder/SKILL.md",
-        "skills/capabilities/apollo-lead-finder/configs/athina-ai.json",
-        "skills/capabilities/apollo-lead-finder/configs/example.json",
-        "skills/capabilities/apollo-lead-finder/configs/hb-ai-agency.json",
-        "skills/capabilities/apollo-lead-finder/configs/hb-gtm-agency.json",
-        "skills/capabilities/apollo-lead-finder/configs/mindbase.json",
-        "skills/capabilities/apollo-lead-finder/configs/toma-bdc-signal.json",
-        "skills/capabilities/apollo-lead-finder/output/athina-ai-enriched-20260301_1336.csv",
-        "skills/capabilities/apollo-lead-finder/output/athina-ai-head-ai-ml-series-b-us-manifest.json",
-        "skills/capabilities/apollo-lead-finder/output/athina-ai-search-20260301_1335.csv",
-        "skills/capabilities/apollo-lead-finder/output/example-client-enriched-20260301_1313.csv",
-        "skills/capabilities/apollo-lead-finder/output/example-client-search-20260301_1313.csv",
-        "skills/capabilities/apollo-lead-finder/output/example-client-vp-sales-us-midmarket-manifest.json",
-        "skills/capabilities/apollo-lead-finder/output/hb-ai-agency-saas-founders-us-manifest.json",
-        "skills/capabilities/apollo-lead-finder/output/hb-ai-agency-search-20260301_1929.csv",
-        "skills/capabilities/apollo-lead-finder/output/hb-gtm-agency-search-20260303_2305.csv",
-        "skills/capabilities/apollo-lead-finder/output/hb-gtm-agency-sf-tech-gtm-leaders-manifest.json",
-        "skills/capabilities/apollo-lead-finder/output/mindbase-enriched-20260301_1348.csv",
-        "skills/capabilities/apollo-lead-finder/output/mindbase-marketing-leaders-sf-d2c-consumer-manifest.json",
-        "skills/capabilities/apollo-lead-finder/output/mindbase-search-20260301_1347.csv",
-        "skills/capabilities/apollo-lead-finder/output/mindbase-search-20260301_1348.csv",
-        "skills/capabilities/apollo-lead-finder/output/toma-bdc-signal-decision-makers-manifest.json",
-        "skills/capabilities/apollo-lead-finder/output/toma-search-20260304_1953.csv",
-        "skills/capabilities/apollo-lead-finder/output/toma-search-20260304_2335.csv",
-        "skills/capabilities/apollo-lead-finder/scripts/apollo_client.py",
-        "skills/capabilities/apollo-lead-finder/scripts/apollo_lead_finder.py",
         "skills/capabilities/apollo-lead-finder/skill.meta.json"
       ],
       "metadata": {
@@ -637,7 +613,6 @@
       "path": "skills/capabilities/contact-cache",
       "files": [
         "skills/capabilities/contact-cache/SKILL.md",
-        "skills/capabilities/contact-cache/data/contacts.csv",
         "skills/capabilities/contact-cache/scripts/cache.py",
         "skills/capabilities/contact-cache/skill.meta.json"
       ],
@@ -1414,16 +1389,18 @@
       "name": "job-scraper",
       "category": "capabilities",
       "description": ">",
-      "tags": "lead-generation",
+      "tags": "lead-generation, research",
       "path": "skills/capabilities/job-scraper",
       "files": [
-        "skills/capabilities/job-scraper/SKILL.md"
+        "skills/capabilities/job-scraper/SKILL.md",
+        "skills/capabilities/job-scraper/skill.meta.json"
       ],
       "metadata": {
         "slug": "job-scraper",
         "category": "capabilities",
         "tags": [
-          "lead-generation"
+          "lead-generation",
+          "research"
         ],
         "installation": {
           "base_command": "npx goose-skills install job-scraper",
@@ -1719,16 +1696,18 @@
       "name": "linkedin-message-writer",
       "category": "capabilities",
       "description": ">",
-      "tags": "outreach",
+      "tags": "outreach, linkedin",
       "path": "skills/capabilities/linkedin-message-writer",
       "files": [
-        "skills/capabilities/linkedin-message-writer/SKILL.md"
+        "skills/capabilities/linkedin-message-writer/SKILL.md",
+        "skills/capabilities/linkedin-message-writer/skill.meta.json"
       ],
       "metadata": {
         "slug": "linkedin-message-writer",
         "category": "capabilities",
         "tags": [
-          "outreach"
+          "outreach",
+          "linkedin"
         ],
         "installation": {
           "base_command": "npx goose-skills install linkedin-message-writer",
@@ -1778,7 +1757,7 @@
       "slug": "linkedin-post-research",
       "name": "linkedin-post-research",
       "category": "capabilities",
-      "description": "Search LinkedIn posts by keywords using Crustdata API directly, deduplicate and sort by engagement. Outputs to CSV or JSON. Use when researching LinkedIn content around specific topics.",
+      "description": ">",
       "tags": "outreach",
       "path": "skills/capabilities/linkedin-post-research",
       "files": [
@@ -2628,7 +2607,7 @@
       "name": "sponsored-newsletter-finder",
       "category": "composites",
       "description": ">",
-      "tags": "monitoring",
+      "tags": "ads",
       "path": "skills/composites/sponsored-newsletter-finder",
       "files": [
         "skills/composites/sponsored-newsletter-finder/SKILL.md",
@@ -2638,7 +2617,7 @@
         "slug": "sponsored-newsletter-finder",
         "category": "composites",
         "tags": [
-          "monitoring"
+          "ads"
         ],
         "installation": {
           "base_command": "npx goose-skills install sponsored-newsletter-finder",
@@ -2659,12 +2638,6 @@
       "path": "skills/capabilities/tam-builder",
       "files": [
         "skills/capabilities/tam-builder/SKILL.md",
-        "skills/capabilities/tam-builder/configs/example.json",
-        "skills/capabilities/tam-builder/configs/goose.json",
-        "skills/capabilities/tam-builder/configs/hb-gtm-agency.json",
-        "skills/capabilities/tam-builder/scripts/backfill_company_type.py",
-        "skills/capabilities/tam-builder/scripts/recover_sixtyfour_people.py",
-        "skills/capabilities/tam-builder/scripts/tam_builder.py",
         "skills/capabilities/tam-builder/skill.meta.json"
       ],
       "metadata": {
@@ -2715,7 +2688,7 @@
       "slug": "tiktok-influencer-finder",
       "name": "tiktok-influencer-finder",
       "category": "capabilities",
-      "description": "Find influencers on TikTok using Apify's Influencer Discovery Agent. Use when the user wants to discover, search for, or find influencers, creators, or content creators in any niche.",
+      "description": "Find TikTok influencers using Apify's Influencer Discovery Agent. Use when the user wants to discover TikTok creators or influencers in any niche.",
       "tags": "outreach",
       "path": "skills/capabilities/tiktok-influencer-finder",
       "files": [
@@ -2984,7 +2957,7 @@
         {
           "slug": "community-signals",
           "name": "community-signals",
-          "description": "Extract leads from developer forums (Hacker News, Reddit) by detecting intent signals \u2014 alternative seeking, competitor pain, scaling challenges, DIY solutions, and migration intent. Scores users by intent strength and cross-platform presence.",
+          "description": "Extract leads from developer forums (Hacker News, Reddit) by detecting intent signals — alternative seeking, competitor pain, scaling challenges, DIY solutions, and migration intent. Scores users by intent strength and cross-platform presence.",
           "path": "skills/packs/lead-gen-devtools/community-signals",
           "files": [
             "skills/packs/lead-gen-devtools/community-signals/SKILL.md",
@@ -2995,7 +2968,7 @@
         {
           "slug": "competitor-signals",
           "name": "competitor-signals",
-          "description": "Extract leads from competitor product activity \u2014 Product Hunt commenters/upvoters, HN posts about competitors, case studies, testimonials, tech press, and switching signals. Detects people actively switching from competitors as highest-priority leads.",
+          "description": "Extract leads from competitor product activity — Product Hunt commenters/upvoters, HN posts about competitors, case studies, testimonials, tech press, and switching signals. Detects people actively switching from competitors as highest-priority leads.",
           "path": "skills/packs/lead-gen-devtools/competitor-signals",
           "files": [
             "skills/packs/lead-gen-devtools/competitor-signals/SKILL.md",
