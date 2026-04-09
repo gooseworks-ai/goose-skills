@@ -2,21 +2,6 @@
 type: playbook
 name: signal-detection-pipeline
 description: Detect buying signals from multiple sources, qualify leads, and generate outreach context
-graph:
-  provides: [qualified-signal-leads, signal-intelligence]
-  requires: [target-keywords, icp-criteria]
-  connects_to:
-    - skills/capabilities/company-contact-finder/SKILL.md
-    - skills/capabilities/setup-outreach-campaign/SKILL.md
-skills_used:
-  - skills/capabilities/job-posting-intent
-  - skills/capabilities/luma-event-attendees
-  - skills/capabilities/reddit-scraper
-  - skills/capabilities/linkedin-post-research
-  - skills/capabilities/linkedin-commenter-extractor
-  - skills/composites/funding-signal-monitor
-  - skills/capabilities/lead-qualification
-  - skills/capabilities/contact-cache
 ---
 
 # Signal Detection Pipeline
@@ -55,7 +40,7 @@ People attending events in the problem space = actively engaged.
 - Output: Person/company list
 
 ### Reddit Pain Signals
-**Skill:** reddit-scraper
+**Skill:** reddit-post-finder
 
 People complaining about or discussing the problem = experiencing the pain.
 - Input: Keywords, relevant subreddits

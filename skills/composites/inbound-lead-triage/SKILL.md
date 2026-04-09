@@ -8,26 +8,6 @@ description: >
   with recommended response for each lead. Tool-agnostic — works with any CRM, form tool,
   or lead source.
 tags: [lead-generation]
-
-graph:
-  provides:
-    - prioritized-lead-queue     # Leads ranked by urgency with recommended action
-    - lead-enrichment-data       # Company/person context for each lead
-    - response-drafts            # Templated or personalized responses per lead
-  requires:
-    - inbound-lead-data          # Raw leads from any source (CRM, CSV, form tool export)
-    - your-company-context       # What you sell, who you sell to, ICP definition
-  connects_to:
-    - skill: lead-qualification
-      when: "Leads need deeper ICP scoring beyond triage classification"
-      passes: inbound-lead-data
-    - skill: sales-call-prep
-      when: "High-priority lead has a demo booked — need call prep"
-      passes: lead-enrichment-data
-    - skill: cold-email-outreach
-      when: "Lower-priority leads need nurture sequences"
-      passes: lead-enrichment-data, response-drafts
-  capabilities: [web-search, contact-enrichment, email-drafting]
 ---
 
 # Inbound Lead Triage
@@ -56,7 +36,7 @@ Each step has a clear input/output contract. Tools are configured once per clien
 
 ## Step 0: Configuration (Once Per Client)
 
-On first run, ask the user to configure their lead sources and preferences. Save to `clients/<client-name>/config/inbound-triage.json`.
+On first run, ask the user to configure their lead sources and preferences. Save to the current working directory or wherever the user prefers (e.g., `config/inbound-triage.json`).
 
 ```json
 {
@@ -223,7 +203,7 @@ For leads in Tier 1 and Tier 2 (and strong/likely fit Tier 3), gather context th
 - What does the company do? (one sentence)
 - Company size, stage, industry
 - Any recent news or signals? (check if any signal composites have flagged this company)
-- Are they in our pipeline already? (check CRM/Supabase)
+- Are they in our pipeline already? (check your CRM — HubSpot, Salesforce, CSV)
 - Previous engagement history (other people from this company who engaged)
 
 **Person enrichment:**
@@ -239,7 +219,7 @@ For leads in Tier 1 and Tier 2 (and strong/likely fit Tier 3), gather context th
 - Which webinar did they attend? (topic relevance to product)
 
 ### Tool Flexibility
-- Use whatever enrichment tools are configured (Apollo, LinkedIn scraper, web search, Supabase)
+- Use whatever enrichment tools are configured (SixtyFour or Orthogonal, LinkedIn scraper, web search)
 - If no enrichment tools are configured, do a basic web search for company + person
 - Skip enrichment for Tier 4 leads (not worth the cost — batch-nurture them)
 
@@ -348,7 +328,7 @@ Also produce a flat CSV with all leads and their triage data:
 - `recommended_action`, `response_draft`
 - `company_context`, `person_context`, `engagement_context`
 
-Save to: `clients/<client-name>/leads/inbound-triage-[date].csv`
+Save to the current working directory or wherever the user prefers (e.g., `leads/inbound-triage-[date].csv`).
 
 ---
 
@@ -390,7 +370,6 @@ For Tier 3-4 leads, skip individual enrichment. Batch-qualify company names agai
 The agent should have access to:
 - **CRM / form tool access** — to pull inbound leads (HubSpot, Salesforce, Typeform, etc.)
 - **Web search** — for company/person enrichment when other tools aren't available
-- **Lead enrichment tools** — Apollo, LinkedIn scraper, or similar (optional, enhances quality)
-- **Supabase client** — to check existing pipeline, outreach history, signal flags
+- **Lead enrichment tools** — SixtyFour or Orthogonal, LinkedIn scraper, or similar (optional, enhances quality)
 - **Email drafting** — references `email-drafting` capability for response frameworks
 - **Calendar tool** — to include available time slots in Tier 1 responses (gcalcli or similar)

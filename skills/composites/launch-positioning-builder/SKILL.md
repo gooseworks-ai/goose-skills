@@ -236,14 +236,14 @@ we [unique value that matters to ICP].
 - We avoid the word "[buzzword]" — overused, means nothing
 ```
 
-Save to `clients/<client-name>/product-marketing/positioning-[YYYY-MM-DD].md`.
+Save to the current working directory as `positioning-[YYYY-MM-DD].md` (or user-specified path).
 
 ## Cost
 
 | Component | Cost |
 |-----------|------|
 | Web research (competitor sites) | Free |
-| Review mining (if using review-scraper) | ~$0.50-1.00 |
+| Review mining (if using review-site-scraper) | ~$0.50-1.00 |
 | All analysis and positioning | Free (LLM reasoning) |
 | **Total** | **Free — $1** |
 
@@ -251,7 +251,7 @@ Save to `clients/<client-name>/product-marketing/positioning-[YYYY-MM-DD].md`.
 
 - **web_search** — for competitor research
 - **fetch_webpage** — for analyzing competitor sites
-- **Optional:** `review-scraper` for review-based insights
+- **Optional:** `review-site-scraper` for review-based insights
 
 ## Trigger Phrases
 

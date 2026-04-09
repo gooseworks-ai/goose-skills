@@ -37,7 +37,7 @@ Turn your newsletter subscriptions into a structured intelligence feed. Monitors
 7. Digest delivery: Slack channel, email, or markdown file? (default: markdown file)
 8. Frequency: daily or weekly? (default: weekly)
 
-Save campaign config to `clients/<client-name>/configs/newsletter-signals.json`.
+Save campaign config to the current working directory as `newsletter-signals.json` (or user-specified path).
 
 ```json
 {
@@ -54,14 +54,14 @@ Save campaign config to `clients/<client-name>/configs/newsletter-signals.json`.
   ],
   "output": {
     "format": "markdown",
-    "path": "clients/<client-name>/intelligence/newsletter-signals-[DATE].md"
+    "path": "newsletter-signals-[DATE].md"
   }
 }
 ```
 
 ## Phase 1: Scan Inbox
 
-Use the `agentmail` capability to fetch new emails from the monitored inbox:
+Use the AgentMail API (agentmail.dev) to fetch new emails from the monitored inbox:
 
 ```
 Fetch emails from inbox <inbox_id> since <last_scan_date>
@@ -162,13 +162,13 @@ Emerging topics gaining newsletter coverage:
 2. [Competitive response if needed]
 ```
 
-Save to `clients/<client-name>/intelligence/newsletter-signals-[YYYY-MM-DD].md`.
+Save to the current working directory as `newsletter-signals-[YYYY-MM-DD].md` (or user-specified path).
 
 ## Phase 5: Setup — Subscribe to Newsletters
 
 For first-time setup, subscribe the AgentMail address to target newsletters:
 
-1. Get the AgentMail inbox address (via `agentmail` capability)
+1. Get the AgentMail inbox address (via AgentMail API at agentmail.dev)
 2. For each newsletter, visit subscription page and submit the AgentMail address
 3. Confirm subscriptions (check inbox for confirmation emails)
 4. Allow 1-2 weeks of accumulation before first full digest
@@ -192,8 +192,7 @@ Run weekly (Monday morning recommended):
 
 ## Tools Required
 
-- **AgentMail API** — for inbox access
-- **Upstream skill:** `agentmail` capability
+- **AgentMail API** (agentmail.dev) — for inbox access. Requires `AGENTMAIL_API_KEY` environment variable and the `agentmail` pip package (`pip3 install agentmail`).
 
 ## Trigger Phrases
 

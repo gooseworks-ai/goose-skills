@@ -237,14 +237,14 @@ This week, focus on:
 3. **[Account]** — [Why]
 ```
 
-Save to `clients/<client-name>/customer-success/expansion/expansion-signals-[YYYY-MM-DD].md`.
+Save to the current working directory or wherever the user prefers (e.g., `expansion/expansion-signals-[YYYY-MM-DD].md`).
 
 ## Scheduling
 
 Run weekly:
 
 ```bash
-0 8 * * 2 python3 run_skill.py expansion-signal-spotter --client <client-name>
+0 8 * * 2 python3 run_skill.py expansion-signal-spotter
 ```
 
 ## Cost

@@ -53,7 +53,7 @@ Run a GTM analysis for <client>. Use the context at clients/<client>/context.md.
    - Industry/category
    - Known competitors (if any)
 
-3. Create the output directory: `clients/<client>/research/`
+3. Create the output directory in the current working directory (or user-specified path).
 
 ### Phase 2: Data Collection (Run in Parallel)
 
@@ -209,7 +209,7 @@ Run as many of these research threads as possible in parallel. Each thread is in
    - WebSearch: `<company> OR <product> review G2 Capterra <current year>`
    - WebFetch G2/Capterra pages if URLs are findable
    - Note: rating, review count, common praise, common complaints
-   - Optional: use `review-scraper` skill for detailed extraction
+   - Optional: use `review-site-scraper` skill for detailed extraction
 
 2. **Customer logos and case studies:**
    - WebFetch: `<website>/customers` or `<website>/case-studies`
@@ -294,7 +294,7 @@ Document:
 
 ### Phase 4: Generate Output
 
-Save the report to `clients/<client>/research/current-gtm-analysis.md` using this structure:
+Save the report to the current working directory as `current-gtm-analysis.md` (or user-specified path) using this structure:
 
 ---
 
@@ -475,5 +475,5 @@ doing well? What are the biggest gaps? What is the single most important finding
 - `APIFY_API_TOKEN` env var — for LinkedIn profile post scraping
 - `requests` (Python) — for LinkedIn scraper script
 - Web search and web fetch capabilities — for all other research
-- Optional: `review-scraper` skill for detailed G2/Capterra extraction
-- Optional: `blog-scraper` skill for RSS-based blog analysis
+- Optional: `review-site-scraper` skill for detailed G2/Capterra extraction
+- Optional: `blog-feed-monitor` skill for RSS-based blog analysis

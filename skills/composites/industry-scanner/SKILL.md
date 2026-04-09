@@ -63,19 +63,19 @@ Also search for each competitor name directly to catch any recent news.
 #### 2B. Industry Blogs & Publications
 
 ```bash
-python3 skills/blog-scraper/scripts/scrape_blogs.py \
+python3 skills/blog-feed-monitor/scripts/scrape_blogs.py \
   --urls "<comma-separated blog_urls from config>" \
   --days <lookback> --output json
 ```
 
-Read `skills/blog-scraper/SKILL.md` for full CLI reference.
+Read `skills/blog-feed-monitor/SKILL.md` for full CLI reference.
 
 #### 2C. Reddit
 
 For each configured subreddit, run:
 
 ```bash
-python3 skills/reddit-scraper/scripts/search_reddit.py \
+python3 skills/reddit-post-finder/scripts/search_reddit.py \
   --subreddit "<comma-separated subreddits from config>" \
   --keywords "<comma-separated reddit_keywords from config>" \
   --days <lookback> --sort hot --output json
@@ -83,20 +83,20 @@ python3 skills/reddit-scraper/scripts/search_reddit.py \
 
 Also run a separate search with `--sort top --time week` to catch high-engagement posts.
 
-Read `skills/reddit-scraper/SKILL.md` for full CLI reference.
+Read `skills/reddit-post-finder/SKILL.md` for full CLI reference.
 
 #### 2D. Twitter/X
 
 For each configured Twitter query:
 
 ```bash
-python3 skills/twitter-scraper/scripts/search_twitter.py \
+python3 skills/twitter-mention-tracker/scripts/search_twitter.py \
   --query "<twitter_query>" \
   --since <yesterday-YYYY-MM-DD> --until <today-YYYY-MM-DD> \
   --max-tweets 30 --output json
 ```
 
-Read `skills/twitter-scraper/SKILL.md` for full CLI reference.
+Read `skills/twitter-mention-tracker/SKILL.md` for full CLI reference.
 
 #### 2E. LinkedIn
 
@@ -142,12 +142,12 @@ Read `skills/newsletter-monitor/SKILL.md` for full CLI reference.
 For each configured review URL:
 
 ```bash
-python3 skills/review-scraper/scripts/scrape_reviews.py \
+python3 skills/review-site-scraper/scripts/scrape_reviews.py \
   --platform <platform> --url "<review_url>" \
   --days <lookback> --max-reviews 20 --output json
 ```
 
-Read `skills/review-scraper/SKILL.md` for full CLI reference.
+Read `skills/review-site-scraper/SKILL.md` for full CLI reference.
 
 ### Phase 3: Consolidate & Categorize
 
@@ -199,7 +199,7 @@ Use these as inspiration, not as a checklist. Match the pattern to the trigger:
 - Find their customers via review sites, LinkedIn posts mentioning them → outreach
 - Engage on social posts where people discuss the shutdown/issues
 - Create "alternative to X" content for SEO capture
-- Skills: `web-archive-scraper` (recover their customer list), `review-scraper` (find reviewers), `linkedin-post-research` (find posts about them), `setup-outreach-campaign`
+- Skills: `web-archive-scraper` (recover their customer list), `review-site-scraper` (find reviewers), `linkedin-post-research` (find posts about them), `cold-email-outreach`
 
 **Industry event coming up:**
 - Apply to speak (if speaker slots are open)
@@ -236,11 +236,11 @@ Use these as inspiration, not as a checklist. Match the pattern to the trigger:
 
 **Funding round announced at target company:**
 - Outreach to the company (post-raise = budget for new tools)
-- Skills: `company-contact-finder`, `setup-outreach-campaign`
+- Skills: `company-contact-finder`, `cold-email-outreach`
 
 ### Phase 5: Generate Output
 
-Save the report to `clients/<client>/intelligence/<YYYY-MM-DD>.md` using this structure:
+Save the report to the current working directory as `industry-scan-<YYYY-MM-DD>.md` (or user-specified path) using this structure:
 
 ---
 
@@ -362,7 +362,7 @@ Key fields:
 ## Dependencies
 
 No additional dependencies beyond what the sub-skills require:
-- `requests` (Python) — for blog-scraper, reddit-scraper, twitter-scraper, hn-scraper, review-scraper, news-monitor
+- `requests` (Python) — for blog-feed-monitor, reddit-post-finder, twitter-mention-tracker, hn-scraper, review-site-scraper, news-monitor
 - `APIFY_API_TOKEN` env var — for Reddit, Twitter, and review scraping
 - `agentmail` + `python-dotenv` — for newsletter-monitor (if configured)
 - Rube/Crustdata connection — for LinkedIn post search (if configured)

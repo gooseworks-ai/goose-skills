@@ -11,18 +11,15 @@ tags: [outreach]
 
 Pure reasoning skill for writing cold emails. No scripts, no tools — just frameworks, patterns, and examples from real campaigns that consistently generate replies.
 
-Auto-loaded by `cold-email-outreach` during Phase 3, or standalone when the user asks for email copy directly.
+## When to Use
 
-## When to Auto-Load
-
-Load this skill when:
+Use this skill when:
 - User says "write a cold email", "draft outreach", "help me with email copy", "write a sequence"
-- An upstream skill reaches its email generation phase
-- `cold-email-outreach` invokes Phase 3
+- Any task requires cold email copy — subject lines, full sequences, or individual emails
 
 ## Phase 0: Intake
 
-Collect campaign context before writing anything. Ask all questions at once, organized by category. When called from `cold-email-outreach`, skip questions already answered upstream.
+Collect campaign context before writing anything. Ask all questions at once, organized by category. Skip any the user has already answered.
 
 ### Campaign Context
 1. What product/service are you selling?

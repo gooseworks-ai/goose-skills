@@ -85,12 +85,11 @@ Generate search queries based on the user's space:
 - Industry-specific: "DevOps meetup", "cloud native meetup"
 - Location-specific (if user has a target geography)
 
-**3b. Luma (automated):**
-Search Luma for events in the user's space. Luma is popular for:
-- AI/ML community events
-- Startup demo days
-- Developer community gatherings
-- Tech talks and fireside chats
+**3b. Luma (automated via `matyascimbulka/luma-event-scraper`):**
+Search Luma for events by category and city. The Luma actor accepts `slugs` (categories) and `cities` instead of free-text search.
+- Available categories: `tech`, `food`, `ai`, `arts`, `climate`, `fitness`, `wellness`, `crypto`
+- City slugs: `san-francisco`, `new-york`, `london`, etc.
+- Luma is popular for: AI/ML community events, startup demo days, developer community gatherings, tech talks and fireside chats
 
 **3c. Ask the user about their registrations:**
 > "Are you registered for any events on Luma or Meetup? If you're registered for a Luma event, the attendee list is often publicly visible — I can extract it. For some Meetup events, RSVP lists are public too."
@@ -137,7 +136,7 @@ CONFERENCES (need website scraping):
   AWS re:Invent            | Nov 30-Dec 4 | reinvent.awsevents.com
 
 MEETUP QUERIES: "kubernetes meetup", "cloud native meetup"
-LUMA QUERIES: "devops event", "infrastructure meetup"
+LUMA CATEGORIES: "tech", "ai"  |  CITIES: "san-francisco", "new-york"
 PODCAST QUERIES: "kubernetes scaling", "infrastructure challenges"
 DEVPOST HACKATHONS: "cloud-native-hack-2026", "kubernetes-challenge"
 ```
@@ -192,7 +191,8 @@ cat > ${CLAUDE_SKILL_DIR}/../.tmp/event_signals_config.json << 'CONFIGEOF'
     "confstech_topics": ["devops", "cloud"],
     "meetup_queries": ["kubernetes meetup", "cloud native meetup"],
     "meetup_location": "",
-    "luma_queries": ["devops event", "infrastructure meetup"],
+    "luma_categories": ["tech", "ai"],
+    "luma_cities": ["san-francisco", "new-york"],
     "podcast_queries": ["kubernetes scaling", "infrastructure challenges"],
     "devpost_slugs": ["cloud-native-hack-2026"],
     "manual_signals_file": "${CLAUDE_SKILL_DIR}/../.tmp/manual_event_signals.json",

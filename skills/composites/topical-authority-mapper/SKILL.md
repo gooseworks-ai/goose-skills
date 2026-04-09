@@ -44,7 +44,7 @@ Topic cluster mapping is significantly better with keyword data that shows searc
 ### Mode Selection
 
 - **Enhanced mode** — Bulk keyword data via DataForSEO / Keywords Everywhere / SEMrush / Ahrefs. Gets search volume, difficulty, and semantic grouping for every subtopic. Enables data-driven prioritization and precise gap identification. Also supports keyword clustering APIs that automatically group related terms.
-- **Baseline mode** — Uses `seo-domain-analyzer` for domain metrics, `web_search` for topic research, `reddit-scraper` for question mining, competitor analysis via `site-content-catalog`. Topic mapping and cluster architecture are equally strong. Volume estimates are directional rather than exact.
+- **Baseline mode** — Uses `seo-domain-analyzer` for domain metrics, `web_search` for topic research, `reddit-post-finder` for question mining, competitor analysis via `site-content-catalog`. Topic mapping and cluster architecture are equally strong. Volume estimates are directional rather than exact.
 
 ## Phase 0: Intake
 
@@ -64,7 +64,7 @@ Topic cluster mapping is significantly better with keyword data that shows searc
 Run `site-content-catalog` on your site:
 
 ```bash
-python3 skills/site-content-catalog/scripts/catalog_site.py \
+python3 skills/site-content-catalog/scripts/catalog_content.py \
   --url "<your_site_url>" \
   --output json
 ```
@@ -81,7 +81,7 @@ Map all existing content:
 For each competitor, run `site-content-catalog`:
 
 ```bash
-python3 skills/site-content-catalog/scripts/catalog_site.py \
+python3 skills/site-content-catalog/scripts/catalog_content.py \
   --url "<competitor_url>" \
   --output json
 ```
@@ -135,20 +135,20 @@ Extract:
 
 Use multiple sources to build the subtopic list:
 - `web_search` for "topic + [what/how/why/best/vs/guide/examples]"
-- `reddit-scraper` for questions people ask about the topic
+- `reddit-post-finder` for questions people ask about the topic
 - Google autocomplete patterns (via web search)
 - Competitor content titles (from Phase 1B)
 - PAA questions from search results
 
 ### 2B: Question Mining
 
-Run `reddit-scraper` for each topic area:
+Run `reddit-post-finder` for each topic area:
 
 ```bash
-python3 skills/reddit-scraper/scripts/scrape_reddit.py \
-  --query "<topic>" \
-  --subreddits "<relevant_subs>" \
-  --sort relevance --time year --limit 50
+python3 skills/reddit-post-finder/scripts/search_reddit.py \
+  --subreddit "<relevant_subs>" \
+  --keywords "<topic>" \
+  --days 365 --sort top --time year
 ```
 
 Extract:
@@ -374,10 +374,10 @@ Based on content capacity and priority scores:
 - **Organic traffic by cluster** — Traffic attributed to each topic cluster
 ```
 
-Save to `clients/<client-name>/seo/topical-authority-map-[YYYY-MM-DD].md`.
+Save to the current working directory or wherever the user prefers.
 
 For large topic maps (3+ topic areas), also export a summary CSV:
-`clients/<client-name>/seo/content-calendar-[YYYY-MM-DD].csv`
+`content-calendar-[YYYY-MM-DD].csv`
 
 ## Cost
 
@@ -399,7 +399,7 @@ For large topic maps (3+ topic areas), also export a summary CSV:
 ## Tools Required
 
 - **Apify API token** — `APIFY_API_TOKEN` env var
-- **Upstream skills:** `site-content-catalog`, `seo-domain-analyzer`, `reddit-scraper`, `fetch_webpage`
+- **Upstream skills:** `site-content-catalog`, `seo-domain-analyzer`, `reddit-post-finder`, `fetch_webpage`
 - **Optional (enhanced):** DataForSEO (`DATAFORSEO_LOGIN` + `DATAFORSEO_PASSWORD`), Keywords Everywhere (`KEYWORDS_EVERYWHERE_API_KEY`), SEMrush (`SEMRUSH_API_KEY`), or Ahrefs (`AHREFS_API_TOKEN`)
 
 ## Scheduling

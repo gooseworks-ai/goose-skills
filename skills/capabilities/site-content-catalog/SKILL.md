@@ -17,16 +17,13 @@ Crawl a website's sitemap and blog to build a complete content inventory — eve
 
 ```bash
 # Basic content inventory
-python3 skills/site-content-catalog/scripts/catalog_content.py \
-  --domain "example.com"
+python3 scripts/catalog_content.py --domain "example.com"
 
 # With deep analysis of top 20 pages
-python3 skills/site-content-catalog/scripts/catalog_content.py \
-  --domain "example.com" --deep-analyze 20
+python3 scripts/catalog_content.py --domain "example.com" --deep-analyze 20
 
 # Output to specific file
-python3 skills/site-content-catalog/scripts/catalog_content.py \
-  --domain "example.com" --output clients/acme/research/content-inventory.json
+python3 scripts/catalog_content.py --domain "example.com" --output content-inventory.json
 ```
 
 ## Inputs

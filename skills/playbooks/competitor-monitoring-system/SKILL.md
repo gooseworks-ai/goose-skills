@@ -4,22 +4,6 @@ name: competitor-monitoring-system
 description: >
   Set up and run ongoing competitive intelligence monitoring for a client.
   Tracks competitor content, ads, reviews, social, and product moves.
-graph:
-  provides: [competitive-intelligence-report, competitor-alerts]
-  requires: [competitor-list, client-context]
-  connects_to:
-    - skills/composites/competitor-intel/SKILL.md
-    - skills/playbooks/seo-content-engine/SKILL.md
-skills_used:
-  - skills/composites/competitor-intel
-  - skills/capabilities/meta-ad-scraper
-  - skills/capabilities/google-ad-scraper
-  - skills/capabilities/review-scraper
-  - skills/capabilities/blog-scraper
-  - skills/capabilities/linkedin-profile-post-scraper
-  - skills/capabilities/twitter-scraper
-  - skills/capabilities/reddit-scraper
-  - skills/capabilities/hacker-news-scraper
 ---
 
 # Competitor Monitoring System
@@ -59,9 +43,9 @@ Run the full competitor-intel composite for each competitor to establish a basel
 **Skill**: competitor-intel (chains reddit + twitter + linkedin + blog + review scrapers)
 
 Plus:
-- **Skill**: meta-ad-scraper — Scrape their current Meta ads
 - **Skill**: google-ad-scraper — Scrape their current Google ads
-- **Skill**: review-scraper — Pull latest G2/Capterra/Trustpilot reviews
+- **Method**: Use `web_search` against Meta Ad Library (facebook.com/ads/library) for Meta ad research
+- **Skill**: review-site-scraper — Pull latest G2/Capterra/Trustpilot reviews
 
 **Output**: `clients/<client-name>/intelligence/competitor-baseline.md`
 
@@ -69,11 +53,11 @@ Plus:
 
 | What to Monitor | Frequency | Skill | What to Look For |
 |----------------|-----------|-------|-----------------|
-| Blog/content output | Weekly | blog-scraper | New posts, topic shifts, SEO attacks |
-| Social media posts | Weekly | linkedin-profile-post-scraper + twitter-scraper | Messaging changes, product announcements, engagement patterns |
-| Reddit/HN mentions | Weekly | reddit-scraper + hacker-news-scraper | User sentiment, complaints, praise, feature requests |
-| Ad creative changes | Bi-weekly | meta-ad-scraper + google-ad-scraper | New campaigns, messaging shifts, spend changes |
-| Review sentiment | Monthly | review-scraper | New reviews, rating trends, common complaints |
+| Blog/content output | Weekly | blog-feed-monitor | New posts, topic shifts, SEO attacks |
+| Social media posts | Weekly | linkedin-profile-post-scraper + twitter-mention-tracker | Messaging changes, product announcements, engagement patterns |
+| Reddit/HN mentions | Weekly | reddit-post-finder + hacker-news-scraper | User sentiment, complaints, praise, feature requests |
+| Ad creative changes | Bi-weekly | google-ad-scraper + web_search (Meta Ad Library) | New campaigns, messaging shifts, spend changes |
+| Review sentiment | Monthly | review-site-scraper | New reviews, rating trends, common complaints |
 
 ### 4. Run Monitoring
 

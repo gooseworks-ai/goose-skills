@@ -1,21 +1,6 @@
 ---
 name: meeting-brief
 description: Daily meeting preparation system that checks your calendar each morning, deeply researches external attendees (LinkedIn, company info, GitHub, past notes), and sends you personalized briefs via email (1 per person). Use when you want automated preparation for upcoming meetings with context about each person you're meeting.
-
-graph:
-  provides:
-    - meeting-briefs       # Per-person research briefs sent to inbox
-  requires:
-    - calendar-access      # Google Calendar via gcalcli
-    - email-access         # Gmail for sending briefs
-  connects_to:
-    - skill: gcalcli-calendar
-      when: "Always — reads today's agenda as the first step"
-      passes: nothing, reads calendar directly
-    - skill: gmail
-      when: "Always — sends the generated briefs via Gmail"
-      passes: meeting-briefs
-  capabilities: [read-calendar, web-search, send-email-via-gmail]
 ---
 
 # Meeting Brief
@@ -78,29 +63,9 @@ Edit `config.json` to list your team members (these will be skipped):
 - `include_calendar_details`: Include meeting time/location in brief
 - `research_depth`: `quick` (web only), `standard` (web + GitHub), `deep` (web + GitHub + past notes)
 
-### 2. Set Up Daily Cron Job
+### 2. Run Daily (Manual or Scheduled)
 
-Use OpenClaw's cron tool to schedule the daily run:
-
-```javascript
-// Create cron job for daily meeting briefs
-{
-  name: "Meeting Brief - Daily",
-  schedule: {
-    kind: "cron",
-    expr: "0 7 * * *",  // 7 AM daily (UTC)
-    tz: "America/Los_Angeles"
-  },
-  payload: {
-    kind: "agentTurn",
-    message: "Run the meeting-brief skill for today's meetings",
-    timeoutSeconds: 600
-  },
-  sessionTarget: "isolated"
-}
-```
-
-Alternatively, run manually:
+Run manually each morning:
 ```bash
 cd skills/meeting-brief
 ./scripts/run_daily.sh
@@ -128,7 +93,7 @@ cd skills/meeting-brief
    - Outputs structured research JSON
 
 4. **Generate brief** (`scripts/generate_brief.js`)
-   - Uses OpenClaw session to generate AI brief
+   - Uses AI agent to generate the brief
    - Inputs: research data + meeting context
    - Outputs: Two formats:
      - **Email**: Concise bullet-point brief
@@ -331,16 +296,12 @@ meeting-brief/
 - Check `data/sent/` for already-sent tracking
 - Verify cron job isn't running multiple times
 
-## Integration with OpenClaw
+## Tools Used
 
-This skill uses:
-- **gcalcli-calendar**: For fetching today's meetings
+- **gcalcli**: For fetching today's meetings from Google Calendar
 - **web_search**: For LinkedIn and company research
-- **GitHub CLI (`gh`)**: For GitHub profile lookup
-- **memory_search**: For past interactions (deep mode)
-- **gmail skill**: For sending brief emails
-- **sessions_spawn**: For AI brief generation
-- **cron**: For daily scheduling
+- **GitHub CLI (`gh`)**: For GitHub profile lookup (optional)
+- **Gmail**: For sending brief emails (optional — can also output to file)
 
 ## Privacy & Security
 

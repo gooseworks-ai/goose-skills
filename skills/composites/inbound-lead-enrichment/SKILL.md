@@ -7,26 +7,6 @@ description: >
   relationships, and updates the lead record. Produces enriched lead data ready for
   qualification or outreach. Tool-agnostic.
 tags: [lead-generation]
-
-graph:
-  provides:
-    - enriched-lead-data         # Leads with filled-in company, person, and stakeholder data
-    - stakeholder-map            # Other relevant people at each lead's company
-    - relationship-flags         # Existing CRM/pipeline/outreach relationships found
-  requires:
-    - raw-lead-data              # Leads with at least an email or company name
-    - your-company-context       # ICP definition, buyer personas (to know what to look for)
-  connects_to:
-    - skill: inbound-lead-qualification
-      when: "Enriched leads are ready for ICP qualification"
-      passes: enriched-lead-data
-    - skill: inbound-lead-triage
-      when: "Enrichment feeds back into triage for re-ranking"
-      passes: enriched-lead-data
-    - skill: sales-call-prep
-      when: "Enriched data feeds into pre-call intelligence"
-      passes: enriched-lead-data, stakeholder-map
-  capabilities: [web-search, contact-enrichment, crm-lookup, linkedin-scraping]
 ---
 
 # Inbound Lead Enrichment
@@ -53,26 +33,26 @@ Load this composite when:
 
 ## Step 0: Configuration (Once Per Client)
 
-On first run, establish enrichment tool preferences. Save to `clients/<client-name>/config/lead-enrichment.json`.
+On first run, establish enrichment tool preferences.
 
 ```json
 {
   "enrichment_tools": {
     "company_research": {
-      "primary": "web-search | Apollo | Crunchbase | none",
+      "primary": "SixtyFour | Orthogonal | web-search",
       "secondary": "web-search"
     },
     "person_research": {
-      "primary": "Apollo | LinkedIn scraper (Apify) | web-search | none",
+      "primary": "SixtyFour | Orthogonal | web-search",
       "secondary": "web-search"
     },
     "stakeholder_finding": {
-      "primary": "Apollo | LinkedIn Sales Nav export | company-contact-finder | none",
+      "primary": "SixtyFour | Orthogonal | web-search",
       "secondary": "web-search"
     }
   },
   "crm_source": {
-    "tool": "Supabase | HubSpot | Salesforce | CSV | none",
+    "tool": "HubSpot | Salesforce | CSV | none",
     "access_method": ""
   },
   "buyer_personas": [],
@@ -82,11 +62,6 @@ On first run, establish enrichment tool preferences. Save to `clients/<client-na
     "tier_3_leads": "standard",
     "tier_4_leads": "minimal",
     "untiered_leads": "standard"
-  },
-  "cost_controls": {
-    "max_apify_credits_per_run": null,
-    "max_apollo_credits_per_run": null,
-    "skip_paid_enrichment_for_tier_4": true
   }
 }
 ```
@@ -160,11 +135,11 @@ For each unique company in the lead list (deduplicate — don't research the sam
 | Field | Primary Source | Fallback Source |
 |-------|---------------|-----------------|
 | Company name | Domain lookup | Web search |
-| Description | Company website (homepage, about page) | Crunchbase, LinkedIn company page |
-| Employee count | Apollo, LinkedIn company page | Crunchbase, web search |
-| Industry | LinkedIn company page, Crunchbase | Infer from website content |
-| Stage/Funding | Crunchbase, news articles | Apollo, web search |
-| HQ Location | LinkedIn company page, website | Crunchbase |
+| Description | Company website (homepage, about page) | LinkedIn company page, web search |
+| Employee count | SixtyFour or Orthogonal, LinkedIn company page | Web search |
+| Industry | LinkedIn company page, SixtyFour or Orthogonal | Infer from website content |
+| Stage/Funding | SixtyFour or Orthogonal, news articles | Web search |
+| HQ Location | LinkedIn company page, website | Web search |
 | Tech stack | Job postings, BuiltWith | Web search |
 | Recent news | Web search (last 90 days) | Twitter/social mentions |
 
@@ -209,7 +184,7 @@ For each lead, build a person profile:
 
 **From name + company (if title is missing):**
 1. Search LinkedIn for person at company (via configured tool or web search)
-2. Cross-reference with Apollo or other contact databases
+2. Cross-reference with SixtyFour or Orthogonal
 3. If multiple matches, use email domain to disambiguate
 
 **Person profile research:**
@@ -217,13 +192,13 @@ For each lead, build a person profile:
 | Field | Primary Source | Fallback Source |
 |-------|---------------|-----------------|
 | Full name | Input data | LinkedIn profile |
-| Current title | LinkedIn profile, Apollo | Web search |
+| Current title | LinkedIn profile, SixtyFour or Orthogonal | Web search |
 | Seniority level | Infer from title | LinkedIn profile |
 | Department | Infer from title | LinkedIn profile |
-| Tenure at company | LinkedIn profile | Apollo |
+| Tenure at company | LinkedIn profile | Web search |
 | Previous companies | LinkedIn profile | Web search |
 | Education | LinkedIn profile | Skip |
-| LinkedIn URL | Apollo, web search | Skip |
+| LinkedIn URL | SixtyFour or Orthogonal, web search | Skip |
 | LinkedIn headline | LinkedIn profile | Skip |
 | Recent activity | LinkedIn posts (if scraper configured) | Skip |
 
@@ -281,7 +256,7 @@ For each company in the lead list, identify other relevant people — the buying
 
 **Process per company:**
 1. Using the buyer personas, determine which roles to search for
-2. Search via configured tool (Apollo, LinkedIn, company-contact-finder)
+2. Search via configured tool (SixtyFour or Orthogonal, LinkedIn, company-contact-finder)
 3. For each stakeholder found, capture: name, title, seniority, LinkedIn URL, email (if available)
 4. Note the relationship to the inbound lead: same team? Same department? Different function?
 
@@ -329,7 +304,7 @@ If the inbound lead is unknown → identifying their role determines the multi-t
 ### Process
 For each lead AND each discovered stakeholder, check existing systems for prior relationships:
 
-**Check 1 — CRM / Supabase `people` table:**
+**Check 1 — CRM (HubSpot, Salesforce, CSV):**
 - Does this person already exist in our system?
 - If yes: what's their current status? (active lead, contacted, nurture, customer, churned)
 - If yes: who owns the relationship?
@@ -412,7 +387,7 @@ Produce a CSV that extends the original lead data with all enriched fields:
 |----------------|------------------|-----------------|---------------------|----------------------|-----------|
 | All input columns | company_description, employee_count, industry, stage, hq, tech_stack, recent_news | current_title, seniority, department, tenure, linkedin_url, headline | stakeholder_1_name, stakeholder_1_title, stakeholder_1_role, ... (up to 4) | in_crm, crm_status, in_pipeline, deal_stage, outreach_history_summary | enrichment_depth, confidence, fields_missing, sources_used |
 
-Save to: `clients/<client-name>/leads/inbound-enriched-[date].csv`
+Save to the current working directory or wherever the user prefers (e.g., `leads/inbound-enriched-[date].csv`).
 
 **Secondary: Enrichment Report**
 
@@ -509,18 +484,16 @@ Save to: `clients/<client-name>/leads/inbound-enriched-[date].csv`
 After enrichment is complete, update the source systems:
 
 1. **If CRM is configured:** Create/update lead records with enriched data. Don't overwrite existing data — append or fill gaps only.
-2. **If Supabase is the data store:** Upsert into `people` and `companies` tables.
-3. **Flag duplicates:** If enrichment reveals a lead already exists in CRM under a different email, flag the duplicate rather than creating a second record.
+2. **Flag duplicates:** If enrichment reveals a lead already exists in CRM under a different email, flag the duplicate rather than creating a second record.
 
 ---
 
 ## Tools Required
 
 - **Web search** — primary fallback for all research
-- **Apollo** — company + person lookup (optional, enhances depth)
+- **SixtyFour or Orthogonal** — company + person lookup (optional, enhances depth)
 - **LinkedIn scraper (Apify)** — person profile enrichment (optional)
 - **Company-contact-finder** — stakeholder discovery
-- **CRM access** — relationship checks (HubSpot, Salesforce, Supabase)
-- **Supabase client** — pipeline, outreach history, signal lookups
+- **CRM access** — relationship checks (HubSpot, Salesforce, CSV)
 - **Read/Write** — CSV I/O and config management
 - **Task tool** — for parallelizing enrichment across large lead batches

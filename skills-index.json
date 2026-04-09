@@ -1,6 +1,6 @@
 {
   "version": "1.2.0",
-  "generated": "2026-04-02",
+  "generated": "2026-04-09",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -43,65 +43,12 @@
       "metadata": {
         "slug": "ad-campaign-analyzer",
         "category": "composites",
+        "description": "Analyze ad campaign performance data, identify winners and waste, check statistical significance, and recommend multi-channel budget reallocation with specific dollar-amount shift recommendations and scenario modeling.",
         "tags": [
           "ads"
         ],
         "installation": {
           "base_command": "npx goose-skills install ad-campaign-analyzer",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "ad-creative-intelligence",
-      "name": "ad-creative-intelligence",
-      "category": "composites",
-      "description": ">",
-      "tags": "ads",
-      "path": "skills/composites/ad-creative-intelligence",
-      "files": [
-        "skills/composites/ad-creative-intelligence/SKILL.md",
-        "skills/composites/ad-creative-intelligence/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "ad-creative-intelligence",
-        "category": "composites",
-        "tags": [
-          "ads"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install ad-creative-intelligence",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "ad-spend-allocator",
-      "name": "ad-spend-allocator",
-      "category": "composites",
-      "description": ">",
-      "tags": "ads",
-      "path": "skills/composites/ad-spend-allocator",
-      "files": [
-        "skills/composites/ad-spend-allocator/SKILL.md",
-        "skills/composites/ad-spend-allocator/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "ad-spend-allocator",
-        "category": "composites",
-        "tags": [
-          "ads"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install ad-spend-allocator",
           "supports": [
             "claude",
             "cursor",
@@ -165,39 +112,6 @@
       }
     },
     {
-      "slug": "agentmail",
-      "name": "agentmail",
-      "category": "capabilities",
-      "description": "API-first email platform designed for AI agents. Create and manage dedicated email inboxes, send and receive emails programmatically, and handle email-based workflows with webhooks and real-time events. Use when you need to set up agent email identity, send emails from agents, handle incoming email workflows, or replace traditional email providers like Gmail with agent-friendly infrastructure.",
-      "tags": "outreach",
-      "path": "skills/capabilities/agentmail",
-      "files": [
-        "skills/capabilities/agentmail/SKILL.md",
-        "skills/capabilities/agentmail/references/API.md",
-        "skills/capabilities/agentmail/references/EXAMPLES.md",
-        "skills/capabilities/agentmail/references/WEBHOOKS.md",
-        "skills/capabilities/agentmail/scripts/check_inbox.py",
-        "skills/capabilities/agentmail/scripts/send_email.py",
-        "skills/capabilities/agentmail/scripts/setup_webhook.py",
-        "skills/capabilities/agentmail/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "agentmail",
-        "category": "capabilities",
-        "tags": [
-          "outreach"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install agentmail",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
       "slug": "apollo-lead-finder",
       "name": "apollo-lead-finder",
       "category": "capabilities",
@@ -206,31 +120,6 @@
       "path": "skills/capabilities/apollo-lead-finder",
       "files": [
         "skills/capabilities/apollo-lead-finder/SKILL.md",
-        "skills/capabilities/apollo-lead-finder/configs/athina-ai.json",
-        "skills/capabilities/apollo-lead-finder/configs/example.json",
-        "skills/capabilities/apollo-lead-finder/configs/hb-ai-agency.json",
-        "skills/capabilities/apollo-lead-finder/configs/hb-gtm-agency.json",
-        "skills/capabilities/apollo-lead-finder/configs/mindbase.json",
-        "skills/capabilities/apollo-lead-finder/configs/toma-bdc-signal.json",
-        "skills/capabilities/apollo-lead-finder/output/athina-ai-enriched-20260301_1336.csv",
-        "skills/capabilities/apollo-lead-finder/output/athina-ai-head-ai-ml-series-b-us-manifest.json",
-        "skills/capabilities/apollo-lead-finder/output/athina-ai-search-20260301_1335.csv",
-        "skills/capabilities/apollo-lead-finder/output/example-client-enriched-20260301_1313.csv",
-        "skills/capabilities/apollo-lead-finder/output/example-client-search-20260301_1313.csv",
-        "skills/capabilities/apollo-lead-finder/output/example-client-vp-sales-us-midmarket-manifest.json",
-        "skills/capabilities/apollo-lead-finder/output/hb-ai-agency-saas-founders-us-manifest.json",
-        "skills/capabilities/apollo-lead-finder/output/hb-ai-agency-search-20260301_1929.csv",
-        "skills/capabilities/apollo-lead-finder/output/hb-gtm-agency-search-20260303_2305.csv",
-        "skills/capabilities/apollo-lead-finder/output/hb-gtm-agency-sf-tech-gtm-leaders-manifest.json",
-        "skills/capabilities/apollo-lead-finder/output/mindbase-enriched-20260301_1348.csv",
-        "skills/capabilities/apollo-lead-finder/output/mindbase-marketing-leaders-sf-d2c-consumer-manifest.json",
-        "skills/capabilities/apollo-lead-finder/output/mindbase-search-20260301_1347.csv",
-        "skills/capabilities/apollo-lead-finder/output/mindbase-search-20260301_1348.csv",
-        "skills/capabilities/apollo-lead-finder/output/toma-bdc-signal-decision-makers-manifest.json",
-        "skills/capabilities/apollo-lead-finder/output/toma-search-20260304_1953.csv",
-        "skills/capabilities/apollo-lead-finder/output/toma-search-20260304_2335.csv",
-        "skills/capabilities/apollo-lead-finder/scripts/apollo_client.py",
-        "skills/capabilities/apollo-lead-finder/scripts/apollo_lead_finder.py",
         "skills/capabilities/apollo-lead-finder/skill.meta.json"
       ],
       "metadata": {
@@ -277,52 +166,25 @@
       }
     },
     {
-      "slug": "blog-scraper",
-      "name": "blog-scraper",
+      "slug": "blog-feed-monitor",
+      "name": "blog-feed-monitor",
       "category": "capabilities",
       "description": ">",
       "tags": "content",
-      "path": "skills/capabilities/blog-scraper",
+      "path": "skills/capabilities/blog-feed-monitor",
       "files": [
-        "skills/capabilities/blog-scraper/SKILL.md",
-        "skills/capabilities/blog-scraper/scripts/scrape_blogs.py",
-        "skills/capabilities/blog-scraper/skill.meta.json"
+        "skills/capabilities/blog-feed-monitor/SKILL.md",
+        "skills/capabilities/blog-feed-monitor/scripts/scrape_blogs.py",
+        "skills/capabilities/blog-feed-monitor/skill.meta.json"
       ],
       "metadata": {
-        "slug": "blog-scraper",
+        "slug": "blog-feed-monitor",
         "category": "capabilities",
         "tags": [
           "content"
         ],
         "installation": {
-          "base_command": "npx goose-skills install blog-scraper",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "brainstorming-partner",
-      "name": "brainstorming-partner",
-      "category": "capabilities",
-      "description": ">",
-      "tags": "research",
-      "path": "skills/capabilities/brainstorming-partner",
-      "files": [
-        "skills/capabilities/brainstorming-partner/SKILL.md",
-        "skills/capabilities/brainstorming-partner/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "brainstorming-partner",
-        "category": "capabilities",
-        "tags": [
-          "research"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install brainstorming-partner",
+          "base_command": "npx goose-skills install blog-feed-monitor",
           "supports": [
             "claude",
             "cursor",
@@ -350,6 +212,33 @@
         ],
         "installation": {
           "base_command": "npx goose-skills install brand-voice-extractor",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "buyer-persona-generator",
+      "name": "buyer-persona-generator",
+      "category": "capabilities",
+      "description": ">",
+      "tags": "research",
+      "path": "skills/capabilities/buyer-persona-generator",
+      "files": [
+        "skills/capabilities/buyer-persona-generator/SKILL.md",
+        "skills/capabilities/buyer-persona-generator/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "buyer-persona-generator",
+        "category": "capabilities",
+        "tags": [
+          "research"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install buyer-persona-generator",
           "supports": [
             "claude",
             "cursor",
@@ -471,114 +360,6 @@
       }
     },
     {
-      "slug": "client-onboarding",
-      "name": "client-onboarding",
-      "category": "playbooks",
-      "description": ">",
-      "tags": "research",
-      "path": "skills/playbooks/client-onboarding",
-      "files": [
-        "skills/playbooks/client-onboarding/SKILL.md",
-        "skills/playbooks/client-onboarding/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "client-onboarding",
-        "category": "playbooks",
-        "tags": [
-          "research"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install client-onboarding",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "client-package-local",
-      "name": "client-package-local",
-      "category": "playbooks",
-      "description": ">",
-      "tags": "content",
-      "path": "skills/playbooks/client-package-local",
-      "files": [
-        "skills/playbooks/client-package-local/SKILL.md",
-        "skills/playbooks/client-package-local/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "client-package-local",
-        "category": "playbooks",
-        "tags": [
-          "content"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install client-package-local",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "client-package-notion",
-      "name": "client-package-notion",
-      "category": "playbooks",
-      "description": ">",
-      "tags": "content",
-      "path": "skills/playbooks/client-package-notion",
-      "files": [
-        "skills/playbooks/client-package-notion/SKILL.md",
-        "skills/playbooks/client-package-notion/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "client-package-notion",
-        "category": "playbooks",
-        "tags": [
-          "content"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install client-package-notion",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "client-packet-engine",
-      "name": "client-packet-engine",
-      "category": "playbooks",
-      "description": ">",
-      "tags": "content",
-      "path": "skills/playbooks/client-packet-engine",
-      "files": [
-        "skills/playbooks/client-packet-engine/SKILL.md",
-        "skills/playbooks/client-packet-engine/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "client-packet-engine",
-        "category": "playbooks",
-        "tags": [
-          "content"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install client-packet-engine",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
       "slug": "cold-email-outreach",
       "name": "cold-email-outreach",
       "category": "capabilities",
@@ -687,78 +468,24 @@
       }
     },
     {
-      "slug": "competitive-strategy-tracker",
-      "name": "competitive-strategy-tracker",
-      "category": "composites",
-      "description": ">",
-      "tags": "competitive-intel",
-      "path": "skills/composites/competitive-strategy-tracker",
-      "files": [
-        "skills/composites/competitive-strategy-tracker/SKILL.md",
-        "skills/composites/competitive-strategy-tracker/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "competitive-strategy-tracker",
-        "category": "composites",
-        "tags": [
-          "competitive-intel"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install competitive-strategy-tracker",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "competitor-ad-teardown",
-      "name": "competitor-ad-teardown",
+      "slug": "competitor-ad-intelligence",
+      "name": "competitor-ad-intelligence",
       "category": "composites",
       "description": ">",
       "tags": "ads",
-      "path": "skills/composites/competitor-ad-teardown",
+      "path": "skills/composites/competitor-ad-intelligence",
       "files": [
-        "skills/composites/competitor-ad-teardown/SKILL.md",
-        "skills/composites/competitor-ad-teardown/skill.meta.json"
+        "skills/composites/competitor-ad-intelligence/SKILL.md",
+        "skills/composites/competitor-ad-intelligence/skill.meta.json"
       ],
       "metadata": {
-        "slug": "competitor-ad-teardown",
+        "slug": "competitor-ad-intelligence",
         "category": "composites",
         "tags": [
           "ads"
         ],
         "installation": {
-          "base_command": "npx goose-skills install competitor-ad-teardown",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "competitor-content-tracker",
-      "name": "competitor-content-tracker",
-      "category": "composites",
-      "description": ">",
-      "tags": "competitive-intel",
-      "path": "skills/composites/competitor-content-tracker",
-      "files": [
-        "skills/composites/competitor-content-tracker/SKILL.md",
-        "skills/composites/competitor-content-tracker/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "competitor-content-tracker",
-        "category": "composites",
-        "tags": [
-          "competitive-intel"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install competitor-content-tracker",
+          "base_command": "npx goose-skills install competitor-ad-intelligence",
           "supports": [
             "claude",
             "cursor",
@@ -886,7 +613,6 @@
       "path": "skills/capabilities/contact-cache",
       "files": [
         "skills/capabilities/contact-cache/SKILL.md",
-        "skills/capabilities/contact-cache/data/contacts.csv",
         "skills/capabilities/contact-cache/scripts/cache.py",
         "skills/capabilities/contact-cache/skill.meta.json"
       ],
@@ -952,33 +678,6 @@
         ],
         "installation": {
           "base_command": "npx goose-skills install content-brief-factory",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "content-repurposer",
-      "name": "content-repurposer",
-      "category": "composites",
-      "description": ">",
-      "tags": "content",
-      "path": "skills/composites/content-repurposer",
-      "files": [
-        "skills/composites/content-repurposer/SKILL.md",
-        "skills/composites/content-repurposer/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "content-repurposer",
-        "category": "composites",
-        "tags": [
-          "content"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install content-repurposer",
           "supports": [
             "claude",
             "cursor",
@@ -1079,39 +778,6 @@
       }
     },
     {
-      "slug": "crustdata-supabase",
-      "name": "crustdata-supabase",
-      "category": "capabilities",
-      "description": ">",
-      "tags": "lead-generation",
-      "path": "skills/capabilities/crustdata-supabase",
-      "files": [
-        "skills/capabilities/crustdata-supabase/SKILL.md",
-        "skills/capabilities/crustdata-supabase/configs/growth-leaders-sf.json",
-        "skills/capabilities/crustdata-supabase/output/hb-ai-20260301_0124.csv",
-        "skills/capabilities/crustdata-supabase/output/hb-ai-20260301_0144.csv",
-        "skills/capabilities/crustdata-supabase/scripts/prospect_search.py",
-        "skills/capabilities/crustdata-supabase/scripts/setup_database.py",
-        "skills/capabilities/crustdata-supabase/scripts/supabase_client.py",
-        "skills/capabilities/crustdata-supabase/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "crustdata-supabase",
-        "category": "capabilities",
-        "tags": [
-          "lead-generation"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install crustdata-supabase",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
       "slug": "customer-discovery",
       "name": "customer-discovery",
       "category": "capabilities",
@@ -1134,33 +800,6 @@
         ],
         "installation": {
           "base_command": "npx goose-skills install customer-discovery",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "customer-story-builder",
-      "name": "customer-story-builder",
-      "category": "composites",
-      "description": ">",
-      "tags": "content",
-      "path": "skills/composites/customer-story-builder",
-      "files": [
-        "skills/composites/customer-story-builder/SKILL.md",
-        "skills/composites/customer-story-builder/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "customer-story-builder",
-        "category": "composites",
-        "tags": [
-          "content"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install customer-story-builder",
           "supports": [
             "claude",
             "cursor",
@@ -1215,34 +854,6 @@
         ],
         "installation": {
           "base_command": "npx goose-skills install disqualification-handling",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "early-access-email-sequence",
-      "name": "early-access-email-sequence",
-      "category": "capabilities",
-      "description": ">",
-      "tags": "outreach",
-      "path": "skills/capabilities/early-access-email-sequence",
-      "files": [
-        "skills/capabilities/early-access-email-sequence/SKILL.md",
-        "skills/capabilities/early-access-email-sequence/references/email-templates.md",
-        "skills/capabilities/early-access-email-sequence/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "early-access-email-sequence",
-        "category": "capabilities",
-        "tags": [
-          "outreach"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install early-access-email-sequence",
           "supports": [
             "claude",
             "cursor",
@@ -1360,33 +971,6 @@
       }
     },
     {
-      "slug": "find-influencers",
-      "name": "find-influencers",
-      "category": "capabilities",
-      "description": "Find influencers on TikTok using Apify's Influencer Discovery Agent. Use when the user wants to discover, search for, or find influencers, creators, or content creators in any niche.",
-      "tags": "outreach",
-      "path": "skills/capabilities/find-influencers",
-      "files": [
-        "skills/capabilities/find-influencers/SKILL.md",
-        "skills/capabilities/find-influencers/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "find-influencers",
-        "category": "capabilities",
-        "tags": [
-          "outreach"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install find-influencers",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
       "slug": "funding-signal-monitor",
       "name": "funding-signal-monitor",
       "category": "composites",
@@ -1442,34 +1026,6 @@
       }
     },
     {
-      "slug": "gcalcli-calendar",
-      "name": "gcalcli-calendar",
-      "category": "capabilities",
-      "description": "Google Calendar via gcalcli: today-only agenda by default, bounded meaning-first lookup via agenda scans, and fast create/delete with verification--optimized for low tool calls and minimal output.",
-      "tags": "research",
-      "path": "skills/capabilities/gcalcli-calendar",
-      "files": [
-        "skills/capabilities/gcalcli-calendar/README.md",
-        "skills/capabilities/gcalcli-calendar/SKILL.md",
-        "skills/capabilities/gcalcli-calendar/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "gcalcli-calendar",
-        "category": "capabilities",
-        "tags": [
-          "research"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install gcalcli-calendar",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
       "slug": "get-qualified-leads-from-luma",
       "name": "get-qualified-leads-from-luma",
       "category": "composites",
@@ -1500,7 +1056,7 @@
       "slug": "google-ad-scraper",
       "name": "google-ad-scraper",
       "category": "capabilities",
-      "description": "Scrape competitor ads from Google's Ads Transparency Center (Search, YouTube, Display, Gmail). Search by company name, domain, or advertiser ID. Returns ad creatives, formats, targeting regions, and campaign details. Use for competitive ad research and messaging analysis.",
+      "description": "Scrape competitor ads from Google Ads by domain. Returns ad creatives, formats, and campaign details. Use for competitive ad research and messaging analysis.",
       "tags": "ads",
       "path": "skills/capabilities/google-ad-scraper",
       "files": [
@@ -1661,33 +1217,6 @@
       }
     },
     {
-      "slug": "icp-persona-builder",
-      "name": "icp-persona-builder",
-      "category": "capabilities",
-      "description": ">",
-      "tags": "research",
-      "path": "skills/capabilities/icp-persona-builder",
-      "files": [
-        "skills/capabilities/icp-persona-builder/SKILL.md",
-        "skills/capabilities/icp-persona-builder/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "icp-persona-builder",
-        "category": "capabilities",
-        "tags": [
-          "research"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install icp-persona-builder",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
       "slug": "icp-website-audit",
       "name": "icp-website-audit",
       "category": "composites",
@@ -1706,33 +1235,6 @@
         ],
         "installation": {
           "base_command": "npx goose-skills install icp-website-audit",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "icp-website-review",
-      "name": "icp-website-review",
-      "category": "capabilities",
-      "description": ">",
-      "tags": "research",
-      "path": "skills/capabilities/icp-website-review",
-      "files": [
-        "skills/capabilities/icp-website-review/SKILL.md",
-        "skills/capabilities/icp-website-review/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "icp-website-review",
-        "category": "capabilities",
-        "tags": [
-          "research"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install icp-website-review",
           "supports": [
             "claude",
             "cursor",
@@ -1874,6 +1376,34 @@
         ],
         "installation": {
           "base_command": "npx goose-skills install job-posting-intent",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "job-scraper",
+      "name": "job-scraper",
+      "category": "capabilities",
+      "description": ">",
+      "tags": "lead-generation, research",
+      "path": "skills/capabilities/job-scraper",
+      "files": [
+        "skills/capabilities/job-scraper/SKILL.md",
+        "skills/capabilities/job-scraper/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "job-scraper",
+        "category": "capabilities",
+        "tags": [
+          "lead-generation",
+          "research"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install job-scraper",
           "supports": [
             "claude",
             "cursor",
@@ -2162,6 +1692,34 @@
       }
     },
     {
+      "slug": "linkedin-message-writer",
+      "name": "linkedin-message-writer",
+      "category": "capabilities",
+      "description": ">",
+      "tags": "outreach, linkedin",
+      "path": "skills/capabilities/linkedin-message-writer",
+      "files": [
+        "skills/capabilities/linkedin-message-writer/SKILL.md",
+        "skills/capabilities/linkedin-message-writer/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "linkedin-message-writer",
+        "category": "capabilities",
+        "tags": [
+          "outreach",
+          "linkedin"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install linkedin-message-writer",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
       "slug": "linkedin-outreach",
       "name": "linkedin-outreach",
       "category": "capabilities",
@@ -2199,7 +1757,7 @@
       "slug": "linkedin-post-research",
       "name": "linkedin-post-research",
       "category": "capabilities",
-      "description": "Search LinkedIn posts by keywords using Crustdata API directly, deduplicate and sort by engagement. Outputs to CSV or JSON. Use when researching LinkedIn content around specific topics.",
+      "description": ">",
       "tags": "outreach",
       "path": "skills/capabilities/linkedin-post-research",
       "files": [
@@ -2346,34 +1904,6 @@
       }
     },
     {
-      "slug": "meta-ad-scraper",
-      "name": "meta-ad-scraper",
-      "category": "capabilities",
-      "description": "Scrape competitor ads from Meta's Ad Library (Facebook, Instagram, Messenger, Threads, WhatsApp). Search by company name, Facebook Page URL, or keyword. Returns ad creatives, spend estimates, reach, impressions, and campaign details. Use for competitive ad research, messaging analysis, and creative inspiration.",
-      "tags": "ads",
-      "path": "skills/capabilities/meta-ad-scraper",
-      "files": [
-        "skills/capabilities/meta-ad-scraper/SKILL.md",
-        "skills/capabilities/meta-ad-scraper/scripts/search_meta_ads.py",
-        "skills/capabilities/meta-ad-scraper/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "meta-ad-scraper",
-        "category": "capabilities",
-        "tags": [
-          "ads"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install meta-ad-scraper",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
       "slug": "meta-ads-campaign-builder",
       "name": "meta-ads-campaign-builder",
       "category": "composites",
@@ -2475,34 +2005,6 @@
         ],
         "installation": {
           "base_command": "npx goose-skills install newsletter-signal-scanner",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "newsletter-sponsorship-finder",
-      "name": "newsletter-sponsorship-finder",
-      "category": "capabilities",
-      "description": ">",
-      "tags": "monitoring",
-      "path": "skills/capabilities/newsletter-sponsorship-finder",
-      "files": [
-        "skills/capabilities/newsletter-sponsorship-finder/SKILL.md",
-        "skills/capabilities/newsletter-sponsorship-finder/scripts/search_newsletters.py",
-        "skills/capabilities/newsletter-sponsorship-finder/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "newsletter-sponsorship-finder",
-        "category": "capabilities",
-        "tags": [
-          "monitoring"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install newsletter-sponsorship-finder",
           "supports": [
             "claude",
             "cursor",
@@ -2712,53 +2214,26 @@
       }
     },
     {
-      "slug": "qbr-deck-builder",
-      "name": "qbr-deck-builder",
-      "category": "composites",
-      "description": ">",
-      "tags": "content",
-      "path": "skills/composites/qbr-deck-builder",
-      "files": [
-        "skills/composites/qbr-deck-builder/SKILL.md",
-        "skills/composites/qbr-deck-builder/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "qbr-deck-builder",
-        "category": "composites",
-        "tags": [
-          "content"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install qbr-deck-builder",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "reddit-scraper",
-      "name": "reddit-scraper",
+      "slug": "reddit-post-finder",
+      "name": "reddit-post-finder",
       "category": "capabilities",
       "description": "Scrape and search Reddit posts using Apify. Use when you need to find Reddit discussions, track competitor mentions, monitor product feedback, discover pain points, or analyze subreddit content. Supports keyword filtering, time-based searches, and subreddit-specific queries.",
       "tags": "monitoring",
-      "path": "skills/capabilities/reddit-scraper",
+      "path": "skills/capabilities/reddit-post-finder",
       "files": [
-        "skills/capabilities/reddit-scraper/SKILL.md",
-        "skills/capabilities/reddit-scraper/references/apify-config.md",
-        "skills/capabilities/reddit-scraper/scripts/search_reddit.py",
-        "skills/capabilities/reddit-scraper/skill.meta.json"
+        "skills/capabilities/reddit-post-finder/SKILL.md",
+        "skills/capabilities/reddit-post-finder/references/apify-config.md",
+        "skills/capabilities/reddit-post-finder/scripts/search_reddit.py",
+        "skills/capabilities/reddit-post-finder/skill.meta.json"
       ],
       "metadata": {
-        "slug": "reddit-scraper",
+        "slug": "reddit-post-finder",
         "category": "capabilities",
         "tags": [
           "monitoring"
         ],
         "installation": {
-          "base_command": "npx goose-skills install reddit-scraper",
+          "base_command": "npx goose-skills install reddit-post-finder",
           "supports": [
             "claude",
             "cursor",
@@ -2795,25 +2270,25 @@
       }
     },
     {
-      "slug": "review-scraper",
-      "name": "review-scraper",
+      "slug": "review-site-scraper",
+      "name": "review-site-scraper",
       "category": "capabilities",
       "description": ">",
       "tags": "monitoring",
-      "path": "skills/capabilities/review-scraper",
+      "path": "skills/capabilities/review-site-scraper",
       "files": [
-        "skills/capabilities/review-scraper/SKILL.md",
-        "skills/capabilities/review-scraper/scripts/scrape_reviews.py",
-        "skills/capabilities/review-scraper/skill.meta.json"
+        "skills/capabilities/review-site-scraper/SKILL.md",
+        "skills/capabilities/review-site-scraper/scripts/scrape_reviews.py",
+        "skills/capabilities/review-site-scraper/skill.meta.json"
       ],
       "metadata": {
-        "slug": "review-scraper",
+        "slug": "review-site-scraper",
         "category": "capabilities",
         "tags": [
           "monitoring"
         ],
         "installation": {
-          "base_command": "npx goose-skills install review-scraper",
+          "base_command": "npx goose-skills install review-site-scraper",
           "supports": [
             "claude",
             "cursor",
@@ -2868,60 +2343,6 @@
         ],
         "installation": {
           "base_command": "npx goose-skills install sales-coaching",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "sales-performance-review",
-      "name": "sales-performance-review",
-      "category": "composites",
-      "description": ">",
-      "tags": "research",
-      "path": "skills/composites/sales-performance-review",
-      "files": [
-        "skills/composites/sales-performance-review/SKILL.md",
-        "skills/composites/sales-performance-review/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "sales-performance-review",
-        "category": "composites",
-        "tags": [
-          "research"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install sales-performance-review",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "search-ad-keyword-architect",
-      "name": "search-ad-keyword-architect",
-      "category": "composites",
-      "description": ">",
-      "tags": "seo",
-      "path": "skills/composites/search-ad-keyword-architect",
-      "files": [
-        "skills/composites/search-ad-keyword-architect/SKILL.md",
-        "skills/composites/search-ad-keyword-architect/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "search-ad-keyword-architect",
-        "category": "composites",
-        "tags": [
-          "seo"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install search-ad-keyword-architect",
           "supports": [
             "claude",
             "cursor",
@@ -3096,60 +2517,6 @@
       }
     },
     {
-      "slug": "serp-feature-sniper",
-      "name": "serp-feature-sniper",
-      "category": "composites",
-      "description": ">",
-      "tags": "seo",
-      "path": "skills/composites/serp-feature-sniper",
-      "files": [
-        "skills/composites/serp-feature-sniper/SKILL.md",
-        "skills/composites/serp-feature-sniper/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "serp-feature-sniper",
-        "category": "composites",
-        "tags": [
-          "seo"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install serp-feature-sniper",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "setup-outreach-campaign",
-      "name": "setup-outreach-campaign",
-      "category": "capabilities",
-      "description": ">",
-      "tags": "outreach",
-      "path": "skills/capabilities/setup-outreach-campaign",
-      "files": [
-        "skills/capabilities/setup-outreach-campaign/SKILL.md",
-        "skills/capabilities/setup-outreach-campaign/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "setup-outreach-campaign",
-        "category": "capabilities",
-        "tags": [
-          "outreach"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install setup-outreach-campaign",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
       "slug": "signal-detection-pipeline",
       "name": "signal-detection-pipeline",
       "category": "playbooks",
@@ -3240,7 +2607,7 @@
       "name": "sponsored-newsletter-finder",
       "category": "composites",
       "description": ">",
-      "tags": "monitoring",
+      "tags": "ads",
       "path": "skills/composites/sponsored-newsletter-finder",
       "files": [
         "skills/composites/sponsored-newsletter-finder/SKILL.md",
@@ -3250,7 +2617,7 @@
         "slug": "sponsored-newsletter-finder",
         "category": "composites",
         "tags": [
-          "monitoring"
+          "ads"
         ],
         "installation": {
           "base_command": "npx goose-skills install sponsored-newsletter-finder",
@@ -3271,12 +2638,6 @@
       "path": "skills/capabilities/tam-builder",
       "files": [
         "skills/capabilities/tam-builder/SKILL.md",
-        "skills/capabilities/tam-builder/configs/example.json",
-        "skills/capabilities/tam-builder/configs/goose.json",
-        "skills/capabilities/tam-builder/configs/hb-gtm-agency.json",
-        "skills/capabilities/tam-builder/scripts/backfill_company_type.py",
-        "skills/capabilities/tam-builder/scripts/recover_sixtyfour_people.py",
-        "skills/capabilities/tam-builder/scripts/tam_builder.py",
         "skills/capabilities/tam-builder/skill.meta.json"
       ],
       "metadata": {
@@ -3315,6 +2676,33 @@
         ],
         "installation": {
           "base_command": "npx goose-skills install tech-stack-teardown",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "tiktok-influencer-finder",
+      "name": "tiktok-influencer-finder",
+      "category": "capabilities",
+      "description": "Find TikTok influencers using Apify's Influencer Discovery Agent. Use when the user wants to discover TikTok creators or influencers in any niche.",
+      "tags": "outreach",
+      "path": "skills/capabilities/tiktok-influencer-finder",
+      "files": [
+        "skills/capabilities/tiktok-influencer-finder/SKILL.md",
+        "skills/capabilities/tiktok-influencer-finder/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "tiktok-influencer-finder",
+        "category": "capabilities",
+        "tags": [
+          "outreach"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install tiktok-influencer-finder",
           "supports": [
             "claude",
             "cursor",
@@ -3378,25 +2766,25 @@
       }
     },
     {
-      "slug": "twitter-scraper",
-      "name": "twitter-scraper",
+      "slug": "twitter-mention-tracker",
+      "name": "twitter-mention-tracker",
       "category": "capabilities",
       "description": ">",
       "tags": "monitoring",
-      "path": "skills/capabilities/twitter-scraper",
+      "path": "skills/capabilities/twitter-mention-tracker",
       "files": [
-        "skills/capabilities/twitter-scraper/SKILL.md",
-        "skills/capabilities/twitter-scraper/scripts/search_twitter.py",
-        "skills/capabilities/twitter-scraper/skill.meta.json"
+        "skills/capabilities/twitter-mention-tracker/SKILL.md",
+        "skills/capabilities/twitter-mention-tracker/scripts/search_twitter.py",
+        "skills/capabilities/twitter-mention-tracker/skill.meta.json"
       ],
       "metadata": {
-        "slug": "twitter-scraper",
+        "slug": "twitter-mention-tracker",
         "category": "capabilities",
         "tags": [
           "monitoring"
         ],
         "installation": {
-          "base_command": "npx goose-skills install twitter-scraper",
+          "base_command": "npx goose-skills install twitter-mention-tracker",
           "supports": [
             "claude",
             "cursor",
@@ -3523,35 +2911,6 @@
             "codex"
           ]
         }
-      }
-    },
-    {
-      "slug": "youtube-watcher",
-      "name": "youtube-watcher",
-      "category": "capabilities",
-      "description": "Fetch and read transcripts from YouTube videos. Use when you need to summarize a video, answer questions about its content, or extract information from it.",
-      "tags": "content",
-      "path": "skills/capabilities/youtube-watcher",
-      "files": [
-        "skills/capabilities/youtube-watcher/SKILL.md",
-        "skills/capabilities/youtube-watcher/scripts/get_transcript.py",
-        "skills/capabilities/youtube-watcher/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "youtube-watcher",
-        "category": "capabilities",
-        "tags": [
-          "content"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install youtube-watcher",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
-        "author": "michael gathara"
       }
     }
   ],

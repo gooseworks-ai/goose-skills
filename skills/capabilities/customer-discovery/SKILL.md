@@ -73,9 +73,9 @@ Use WebFetch on the company's case studies page (try `/case-studies`, `/customer
 
 **3. G2/Capterra reviews**
 
-If the `review-scraper` skill is available, use it to find reviewer companies:
+If the `review-site-scraper` skill is available, use it to find reviewer companies:
 ```bash
-python3 skills/capabilities/review-scraper/scripts/scrape_reviews.py \
+python3 skills/capabilities/review-site-scraper/scripts/scrape_reviews.py \
   --platform g2 --url "[g2-product-url]" --max-reviews 50 --output json
 ```
 
@@ -254,11 +254,11 @@ Write the CSV using a code block or Python script.
 All scripts require `requests`: `pip3 install requests`
 
 External skill scripts (use if available):
-- `skills/capabilities/review-scraper/scripts/scrape_reviews.py` — G2/Capterra/Trustpilot reviews (requires Apify token)
+- `skills/capabilities/review-site-scraper/scripts/scrape_reviews.py` — G2/Capterra/Trustpilot reviews (requires Apify token)
 - `skills/capabilities/linkedin-post-research/scripts/search_posts.py` — LinkedIn post search (requires Crustdata API key)
 
 ## Cost
 
 - **Quick / Standard:** Free (uses WebSearch + free APIs like Wayback Machine CDX)
 - **Deep:** Mostly free. BuiltWith paid API is optional (`--api-key` flag); free scraping is used by default.
-- External skills (review-scraper, linkedin-post-research) may require paid API tokens.
+- External skills (review-site-scraper, linkedin-post-research) may require paid API tokens.

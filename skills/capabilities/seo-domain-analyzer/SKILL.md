@@ -16,22 +16,21 @@ Pull real SEO performance data for any domain — no Semrush or Ahrefs subscript
 
 ```bash
 # Basic domain analysis
-python3 skills/seo-domain-analyzer/scripts/analyze_domain.py \
-  --domain "example.com"
+python3 scripts/analyze_domain.py --domain "example.com"
 
 # With competitor comparison
-python3 skills/seo-domain-analyzer/scripts/analyze_domain.py \
+python3 scripts/analyze_domain.py \
   --domain "example.com" \
   --competitors "competitor1.com,competitor2.com,competitor3.com"
 
 # Check specific keywords
-python3 skills/seo-domain-analyzer/scripts/analyze_domain.py \
+python3 scripts/analyze_domain.py \
   --domain "example.com" \
   --keywords "cloud cost optimization,reduce aws bill,finops tools"
 
 # Save output
-python3 skills/seo-domain-analyzer/scripts/analyze_domain.py \
-  --domain "example.com" --output clients/acme/research/seo-profile.json
+python3 scripts/analyze_domain.py \
+  --domain "example.com" --output seo-profile.json
 ```
 
 ## Inputs

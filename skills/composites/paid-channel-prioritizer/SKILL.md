@@ -52,19 +52,16 @@ Where does your buyer look when they have a problem?
 
 ### 1B: Competitor Ad Presence Research
 
+Use web search to check publicly accessible ad libraries and gather competitor ad intelligence:
+
 ```
-Search: site:facebook.com/ads/library "<competitor_domain>"
-Search: "<competitor>" Google Ads OR PPC OR paid search
-Search: "<competitor>" LinkedIn Ads OR sponsored
-Search: "<competitor>" advertising strategy
+web_search: site:facebook.com/ads/library "[competitor name]"
+web_search: "[competitor name]" Google Ads OR PPC OR paid search
+web_search: "[competitor name]" LinkedIn Ads OR sponsored
+web_search: "[competitor name]" advertising strategy
 ```
 
-Also check:
-```bash
-# If ad scrapers available:
-python3 skills/meta-ad-scraper/scripts/scrape_meta_ads.py --domain <competitor_domain>
-python3 skills/google-ad-scraper/scripts/scrape_google_ads.py --domain <competitor_domain>
-```
+The Meta Ad Library (facebook.com/ads/library) and Google Ads Transparency Center (adstransparency.google.com) are publicly accessible — search them directly to see what competitors are running.
 
 Build a competitor channel map:
 
@@ -158,7 +155,7 @@ Pick channel #2 only if:
 - If working: Increase budget 30-50% on winning audiences/keywords
 - If not working: Diagnose (bad targeting? bad LP? bad offer?)
 - Evaluate secondary channel test results
-- Run this skill again with real data → `ad-campaign-analyzer`
+- Re-run this analysis with real performance data to validate or adjust channel selection
 
 ## Phase 4: Output Format
 
@@ -237,22 +234,19 @@ Pick channel #2 only if:
 - [ ] Weekly review scheduled
 ```
 
-Save to `clients/<client-name>/ads/channel-strategy-[YYYY-MM-DD].md`.
+Save to `channel-strategy-[YYYY-MM-DD].md` in the current working directory (or user-specified path).
 
 ## Cost
 
 | Component | Cost |
 |-----------|------|
-| Competitor ad research | ~$0.40-1.00 (Apify, if using ad scrapers) |
-| Web research | Free |
-| Analysis and planning | Free (LLM reasoning) |
-| **Total** | **Free-$1.00** |
+| Competitor ad research (web search) | Free |
+| Channel analysis and planning | Free (LLM reasoning) |
+| **Total** | **Free** |
 
 ## Tools Required
 
-- **web_search** — for competitor research and channel validation
-- **Optional:** `meta-ad-scraper`, `google-ad-scraper` for competitor presence check
-- **Optional:** `ad-creative-intelligence` for deeper competitor ad analysis
+- **web_search** — for competitor research, ad library lookups, and channel validation
 
 ## Trigger Phrases
 

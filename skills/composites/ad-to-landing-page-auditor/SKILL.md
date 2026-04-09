@@ -23,34 +23,33 @@ The #1 reason ads get clicks but not conversions: the landing page doesn't deliv
 
 ## Phase 0: Intake
 
-1. **Ad data** — One of:
-   - Ad copy + landing page URLs (manual list)
-   - CSV export from ad platform
-   - "Scrape my active ads" (uses ad scrapers on your domain)
-2. **Platform(s)** — Google Search / Meta / LinkedIn / All
+1. **Ad copy** — For each ad, provide:
+   - Headline(s)
+   - Body / description text
+   - CTA text
+   - Platform (Google Search / Meta / LinkedIn)
+2. **Landing page URLs** — The URL each ad points to
 3. **Conversion goal** — What should happen after someone clicks? (Demo / Trial / Purchase / Download)
-4. **Known conversion rates?** — Current click → conversion rate per ad/LP
+4. **Known conversion rates?** — Current click → conversion rate per ad/LP (if available)
+
+If the user has a CSV export from their ad platform, parse that instead.
 
 ## Phase 1: Ad Inventory
-
-### If User Provides Ad Data
 
 Parse the provided ads into:
 
 | Ad ID | Platform | Headline | Body/Description | CTA | Landing Page URL | Conv Rate (if known) |
 |-------|----------|----------|-----------------|-----|-----------------|---------------------|
 
-### If Scraping Own Ads
-
-Run `meta-ad-scraper` and/or `google-ad-scraper` on the user's domain to capture active ads.
-
 ## Phase 2: Landing Page Audit
 
-For each unique landing page URL:
+For each unique landing page URL, fetch the page content:
 
 ```
-Fetch: [landing_page_url]
+fetch_webpage: [landing_page_url]
 ```
+
+If `fetch_webpage` is not available, use `curl` to retrieve the page HTML.
 
 Extract and score:
 
@@ -192,22 +191,20 @@ OR
 **Suggested LP headline:** "[rewrite that matches ad]"
 ```
 
-Save to `clients/<client-name>/ads/ad-lp-audit-[YYYY-MM-DD].md`.
+Save to `ad-lp-audit-[YYYY-MM-DD].md` in the current working directory (or user-specified path).
 
 ## Cost
 
 | Component | Cost |
 |-----------|------|
 | Landing page fetching | Free |
-| Ad scraping (if scraping own ads) | ~$0.40-1.00 (Apify) |
 | Analysis | Free (LLM reasoning) |
-| **Total** | **Free-$1.00** |
+| **Total** | **Free** |
 
 ## Tools Required
 
-- **fetch_webpage** — for landing page analysis
-- **Optional:** `meta-ad-scraper`, `google-ad-scraper` (if scraping own ads)
-- **Apify API token** — only if scraping ads
+- **fetch_webpage** or **curl** — for landing page analysis
+- No API keys required
 
 ## Trigger Phrases
 

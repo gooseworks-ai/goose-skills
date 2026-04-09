@@ -16,7 +16,7 @@ import requests
 import time as time_mod
 
 
-ACTOR_ID = "danpoletaev~product-hunt-scraper"
+ACTOR_ID = "maximedupre~product-hunt-scraper"
 BASE_URL = "https://api.apify.com/v2"
 
 

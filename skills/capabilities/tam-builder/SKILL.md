@@ -2,15 +2,15 @@
 name: tam-builder
 description: >
   Build and maintain a scored Total Addressable Market (TAM) using Apollo Company Search.
-  Upserts companies to Supabase, scores ICP fit, assigns tiers, and auto-builds a persona
-  watchlist for Tier 1-2 companies using Apollo People Search (free). Supports build, refresh,
-  and status modes. Designed for CLI now, automation-ready for trigger.dev later.
+  Discovers companies matching ICP, scores fit (0-100), assigns tiers (1/2/3), and
+  auto-builds a persona watchlist for Tier 1-2 companies using Apollo People Search (free).
+  Outputs to CSV.
 tags: [lead-generation]
 ---
 
 # TAM Builder
 
-Build and maintain a scored Total Addressable Market. Uses Apollo Company Search to discover companies, upserts them to Supabase, scores ICP fit (0-100), assigns tiers (1/2/3), and auto-builds a persona watchlist for Tier 1-2 companies using Apollo People Search (free).
+Build and maintain a scored Total Addressable Market. Uses Apollo Company Search to discover companies, scores ICP fit (0-100), assigns tiers (1/2/3), and auto-builds a persona watchlist for Tier 1-2 companies using Apollo People Search (free).
 
 **Three modes:**
 - **build** — First-time TAM construction from Apollo search
@@ -19,22 +19,13 @@ Build and maintain a scored Total Addressable Market. Uses Apollo Company Search
 
 ## Prerequisites
 
-### 1. Apollo API Key
+### Apollo API Key
 Add to `.env`:
 ```
 APOLLO_API_KEY=your-api-key-here
 ```
 
-### 2. Supabase Project
-Same project used by other skills. Schema in `tools/supabase/schema.sql`. This skill writes to `companies` and `people` tables.
-
-### 3. Verify Environment
-Ensure `.env` has:
-```
-APOLLO_API_KEY=...
-SUPABASE_URL=https://xxx.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=eyJ...
-```
+That's it — one env var.
 
 ## Config Format
 
@@ -81,59 +72,15 @@ Create a JSON config per client/segment:
 }
 ```
 
-Save to: `skills/capabilities/tam-builder/configs/{client-name}.json`
+## Approval Gate
 
-## Database Write Policy
+**CRITICAL: Never export results without explicit user approval.**
 
-**CRITICAL: Never write to Supabase without explicit user approval.**
-
-The TAM builder touches the `companies` and `people` tables. Unwanted writes are hard to clean up — they pollute the database, create duplicates on re-runs, and contaminate existing good data.
-
-**Required flow before any database write:**
-1. Run `--preview` to show the total TAM universe count and cost implications
-2. Run `--sample` (with `--test` for 1 page) to show scored results in-memory — NO database writes
-3. Present sample results to user: tier distribution, example Tier 1/2 companies, scoring sanity check
-4. **Get explicit user approval** before proceeding to a build that writes to Supabase
-5. Only then run without `--sample` to execute the actual build
-
-**Why this matters:**
-- If sample results look wrong, the user adjusts filters and re-runs — no cleanup needed
-- Multiple test iterations don't create orphaned rows in the database
-- Existing good data from prior builds is never accidentally overwritten
-- The user stays in control of what enters the database
-
-**The agent must NEVER pass `--yes` on a first run.** The `--yes` flag is only for automated/scheduled refreshes where the user has pre-approved the operation.
-
-## Usage
-
-### Sample (review before committing — ALWAYS DO THIS FIRST)
-```bash
-python3 skills/capabilities/tam-builder/scripts/tam_builder.py \
-  --config skills/capabilities/tam-builder/configs/{client}.json \
-  --mode build --sample --test
-```
-This searches Apollo (1 page, ~100 companies), scores them in-memory, and prints tier distribution + top companies. **No database writes.** Review output with user before proceeding.
-
-### Build (first-time — only after user approves sample)
-```bash
-python3 skills/capabilities/tam-builder/scripts/tam_builder.py \
-  --config skills/capabilities/tam-builder/configs/{client}.json \
-  --mode build [--test] [--yes] [--dry-run] [--skip-watchlist]
-```
-
-### Refresh (update existing)
-```bash
-python3 skills/capabilities/tam-builder/scripts/tam_builder.py \
-  --config skills/capabilities/tam-builder/configs/{client}.json \
-  --mode refresh [--test] [--yes]
-```
-
-### Status (read-only report)
-```bash
-python3 skills/capabilities/tam-builder/scripts/tam_builder.py \
-  --config skills/capabilities/tam-builder/configs/{client}.json \
-  --mode status
-```
+**Required flow:**
+1. Search Apollo for a small sample first (~100 companies)
+2. Score them and present: tier distribution, example Tier 1/2 companies, scoring sanity check
+3. **Get explicit user approval** before running the full build
+4. Only then run the full search + score + export
 
 ## Pipeline: Build Mode
 
@@ -141,7 +88,7 @@ python3 skills/capabilities/tam-builder/scripts/tam_builder.py \
 Step 0: --preview → total count + cost estimate (no DB writes)
 Step 1: --sample --test → search 1 page, score in-memory, show results (no DB writes)
 Step 2: User reviews sample → approves, adjusts filters, or caps scope
-Step 3: Full build → Apollo Company Search → Upsert to Supabase → Score → Tier → Watchlist
+Step 3: Full build → Apollo Company Search → Export to CSV → Score → Tier → Watchlist
 ```
 
 Phase details (Step 3 only — after user approval):
@@ -194,13 +141,16 @@ Score thresholds (configurable): >=75 = Tier 1, >=50 = Tier 2, else Tier 3.
 | Max pages | 1 | 50 | 200 |
 | Max companies | 100 | 5,000 | 20,000 |
 
-## Flags
+## Apollo API Reference
 
-| Flag | Effect |
-|------|--------|
-| `--test` | Limit to 1 page / 100 companies |
-| `--sample` | Search + score in-memory, NO database writes. Shows tier distribution and top companies for user review. Combine with `--test` for a quick 1-page sample. |
-| `--yes` | Skip confirmation prompts. **Only use for pre-approved automated refreshes, never on first runs.** |
-| `--dry-run` | No API calls, show what would happen |
-| `--preview` | Show total count only (build mode) |
-| `--skip-watchlist` | Skip persona watchlist phase |
+- **Company Search:** `POST https://api.apollo.io/api/v1/mixed_companies/search` — Returns matching companies in the `accounts` array (not `organizations`). Fields: `name`, `primary_domain`, `estimated_num_employees`, `industry`, `keywords`, `city`, `state`, `country`.
+- **People Search:** `POST https://api.apollo.io/api/v1/mixed_people/search` — FREE. Returns matching people in the `people` array. Fields: `first_name`, `title`, `organization.name`. Email/LinkedIn obfuscated on free tier.
+- **People Match (enrich):** `POST https://api.apollo.io/api/v1/people/match` — 1 credit per match. Reveals email, phone, LinkedIn URL, full name.
+- **Auth:** `x-api-key: {APOLLO_API_KEY}` header on all requests
+- **Pagination:** `per_page` (max 100), `page` (1-indexed). `pagination.total_entries` gives total count.
+
+## Output
+
+Save results as CSV to the current working directory:
+- `tam-companies-{date}.csv` — All discovered companies with ICP score and tier
+- `tam-personas-{date}.csv` — Persona watchlist for Tier 1-2 companies (from People Search)

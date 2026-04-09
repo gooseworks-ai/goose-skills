@@ -3,7 +3,7 @@ name: kol-content-monitor
 description: >
   Track what key opinion leaders (KOLs) in your space are posting on LinkedIn and Twitter/X.
   Surfaces trending narratives, high-engagement topics, and early signals of emerging
-  conversations before they peak. Chains linkedin-profile-post-scraper and twitter-scraper.
+  conversations before they peak. Chains linkedin-profile-post-scraper and twitter-mention-tracker.
   Use when a marketing team wants to ride trends rather than create them from scratch,
   or when a founder wants to know which topics are resonating with their audience.
 tags: [monitoring]
@@ -35,7 +35,7 @@ Track what Key Opinion Leaders in your space are writing about. Surface trending
 4. How far back? (default: 7 days for weekly monitor, 30 days for first run)
 5. Minimum engagement threshold to include a post? (default: 20 reactions/likes)
 
-Save config to `clients/<client-name>/configs/kol-monitor.json`.
+Save config to the current working directory as `kol-monitor.json` (or user-specified path).
 
 ```json
 {
@@ -54,7 +54,7 @@ Save config to `clients/<client-name>/configs/kol-monitor.json`.
   "days_back": 7,
   "min_reactions": 20,
   "keywords": ["GTM", "growth", "AI", "outbound", "founder"],
-  "output_path": "clients/<client-name>/intelligence/kol-monitor-[DATE].md"
+  "output_path": "kol-monitor-[DATE].md"
 }
 ```
 
@@ -74,10 +74,10 @@ Filter results: only include posts with reactions ≥ `min_reactions`.
 
 ## Phase 2: Scrape Twitter/X Posts
 
-Run `twitter-scraper` for each handle:
+Run `twitter-mention-tracker` for each handle:
 
 ```bash
-python3 skills/twitter-scraper/scripts/search_twitter.py \
+python3 skills/twitter-mention-tracker/scripts/search_twitter.py \
   --query "from:<handle>" \
   --since <YYYY-MM-DD> \
   --until <YYYY-MM-DD> \
@@ -171,7 +171,7 @@ Topics picked up by 1 KOL this week — too early to call a trend but worth trac
 1. **[Emerging topic]** is early-stage — write something now before it gets crowded.
 ```
 
-Save to `clients/<client-name>/intelligence/kol-monitor-[YYYY-MM-DD].md`.
+Save to the current working directory as `kol-monitor-[YYYY-MM-DD].md` (or user-specified path).
 
 ## Phase 5: Build Trigger-Based Content Calendar
 
@@ -204,7 +204,7 @@ Run weekly (Friday afternoon — catches the week's peaks and gives weekend to d
 ## Tools Required
 
 - **Apify API token** — `APIFY_API_TOKEN` env var
-- **Upstream skills:** `linkedin-profile-post-scraper`, `twitter-scraper`
+- **Upstream skills:** `linkedin-profile-post-scraper`, `twitter-mention-tracker`
 - **Optional upstream:** `kol-discovery` (to build initial KOL list)
 
 ## Trigger Phrases

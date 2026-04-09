@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 """
-LinkedIn Post Research — Search LinkedIn posts by keyword via Crustdata API.
+LinkedIn Post Research — Search LinkedIn posts by keyword via Apify.
 
 Usage:
-    python3 search_posts.py --keyword "AI sourcing" --keyword "talent sourcing tools"
-    python3 search_posts.py --keyword "recruiting automation" --time-frame past-week
-    python3 search_posts.py --keyword "AI sourcing" --pages 3 --output csv --output-file results.csv
-    python3 search_posts.py --keywords-file keywords.txt --time-frame past-week
+    python3 search_posts.py --keyword "AI agents"
+    python3 search_posts.py --keyword "AI sourcing" --keyword "recruiting automation"
+    python3 search_posts.py --keyword "AI agents" --sort-by date_posted --output csv
+    python3 search_posts.py --keyword "AI agents" --max-items 100 --output-file results.json
 
 Environment:
-    CRUSTDATA_API_TOKEN  — Required. Your Crustdata API token.
+    APIFY_API_TOKEN  — Required. Your Apify API token.
 """
 
 import argparse
@@ -18,8 +18,6 @@ import json
 import os
 import sys
 import time
-from concurrent.futures import ThreadPoolExecutor, as_completed
-from urllib.parse import urlencode
 
 try:
     import requests
@@ -27,133 +25,196 @@ except ImportError:
     print("ERROR: 'requests' package required. Install with: pip3 install requests", file=sys.stderr)
     sys.exit(1)
 
-API_BASE = "https://api.crustdata.com"
-KEYWORD_SEARCH_ENDPOINT = "/screener/linkedin_posts/keyword_search"
-
-VALID_TIME_FRAMES = ["past-day", "past-week", "past-month", "past-quarter", "past-year", "all-time"]
-VALID_SORT_BY = ["relevance", "date"]
+APIFY_BASE = "https://api.apify.com/v2"
+ACTOR_ID = "apimaestro~linkedin-posts-search-scraper-no-cookies"
 
 
-def get_token():
-    token = os.environ.get("CRUSTDATA_API_TOKEN", "") or os.environ.get("CRUSTDATA_API_KEY", "")
+# ---------------------------------------------------------------------------
+# Apify Integration
+# ---------------------------------------------------------------------------
+
+def get_apify_token(token_arg=None):
+    """Get Apify API token from arg or environment."""
+    token = token_arg or os.environ.get("APIFY_API_TOKEN")
     if not token:
-        print("ERROR: CRUSTDATA_API_TOKEN or CRUSTDATA_API_KEY environment variable not set.", file=sys.stderr)
+        print("ERROR: APIFY_API_TOKEN required. Set env var or use --token.", file=sys.stderr)
         sys.exit(1)
     return token
 
 
-def search_keyword(token, keyword, time_frame, sort_by, page, limit):
-    """Search LinkedIn posts for a single keyword on a single page via POST."""
-    url = f"{API_BASE}{KEYWORD_SEARCH_ENDPOINT}"
-    headers = {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-        "Authorization": f"Token {token}",
-    }
-    payload = {
+def search_posts(token, keyword, max_items=50, sort_by="relevance", timeout=120):
+    """Run Apify actor to search LinkedIn posts by keyword."""
+    actor_input = {
         "keyword": keyword,
-        "page": page,
-        "sort_by": sort_by,
-        "date_posted": time_frame,
+        "maxItems": max_items,
     }
-    if limit:
-        payload["limit"] = limit
+    if sort_by and sort_by != "relevance":
+        actor_input["sortBy"] = sort_by
+
+    # Start actor run
+    try:
+        start_resp = requests.post(
+            f"{APIFY_BASE}/acts/{ACTOR_ID}/runs",
+            params={"token": token},
+            json=actor_input,
+            timeout=30,
+        )
+        start_resp.raise_for_status()
+    except Exception as e:
+        print(f"  ERROR: Failed to start Apify actor: {e}", file=sys.stderr)
+        return []
+
+    run_data = start_resp.json().get("data", {})
+    run_id = run_data.get("id")
+    if not run_id:
+        print("  ERROR: No run ID returned from Apify", file=sys.stderr)
+        return []
+
+    print(f"  Apify run started: {run_id}", file=sys.stderr)
+
+    # Poll for completion
+    start_time = time.time()
+    status = "RUNNING"
+    status_data = {}
+    while time.time() - start_time < timeout:
+        try:
+            status_resp = requests.get(
+                f"{APIFY_BASE}/actor-runs/{run_id}",
+                params={"token": token},
+                timeout=15,
+            )
+            status_data = status_resp.json().get("data", {})
+            status = status_data.get("status", "UNKNOWN")
+            if status in ("SUCCEEDED", "FAILED", "ABORTED", "TIMED-OUT"):
+                break
+        except Exception:
+            pass
+        time.sleep(5)
+
+    if status != "SUCCEEDED":
+        print(f"  Warning: Apify run ended with status: {status}", file=sys.stderr)
+        return []
+
+    # Fetch results
+    dataset_id = status_data.get("defaultDatasetId")
+    if not dataset_id:
+        print("  ERROR: No dataset ID in Apify response", file=sys.stderr)
+        return []
 
     try:
-        resp = requests.post(url, headers=headers, json=payload, timeout=90)
-        if resp.status_code == 401:
-            print(f"ERROR: Authentication failed. Check your CRUSTDATA_API_TOKEN/CRUSTDATA_API_KEY.", file=sys.stderr)
-            return keyword, page, []
-        if resp.status_code == 429:
-            print(f"WARN: Rate limited on keyword '{keyword}' page {page}. Waiting 5s...", file=sys.stderr)
-            time.sleep(5)
-            resp = requests.post(url, headers=headers, json=payload, timeout=90)
-        resp.raise_for_status()
-        data = resp.json()
+        dataset_resp = requests.get(
+            f"{APIFY_BASE}/datasets/{dataset_id}/items",
+            params={"token": token, "format": "json"},
+            timeout=30,
+        )
+        dataset_resp.raise_for_status()
+        items = dataset_resp.json()
+    except Exception as e:
+        print(f"  ERROR: Failed to fetch dataset: {e}", file=sys.stderr)
+        return []
 
-        # Response is a list of post objects
-        if isinstance(data, list):
-            return keyword, page, data
-        elif "posts" in data:
-            return keyword, page, data["posts"]
-        elif "data" in data and "details" in data["data"]:
-            return keyword, page, data["data"]["details"]
-        else:
-            for key in data:
-                if isinstance(data[key], list) and len(data[key]) > 0:
-                    return keyword, page, data[key]
-            print(f"WARN: Unexpected response shape for '{keyword}' page {page}: {list(data.keys())}", file=sys.stderr)
-            return keyword, page, []
-
-    except requests.exceptions.HTTPError as e:
-        print(f"ERROR: HTTP {e.response.status_code} for keyword '{keyword}' page {page}: {e}", file=sys.stderr)
-        return keyword, page, []
-    except requests.exceptions.RequestException as e:
-        print(f"ERROR: Request failed for keyword '{keyword}' page {page}: {e}", file=sys.stderr)
-        return keyword, page, []
+    return items
 
 
-def extract_post_row(post, keyword):
-    """Extract a flat row from a post object."""
+# ---------------------------------------------------------------------------
+# Parse Post Data
+# ---------------------------------------------------------------------------
+
+def normalize_post(raw_post, keyword):
+    """Normalize an Apify post result into a clean record."""
+    author = raw_post.get("author", {})
+    if isinstance(author, dict):
+        author_name = author.get("name", "")
+        author_headline = author.get("headline", "")
+        author_profile_url = author.get("profile_url", "")
+    else:
+        author_name = str(author)
+        author_headline = ""
+        author_profile_url = ""
+
+    stats = raw_post.get("stats", {})
+    if isinstance(stats, dict):
+        reactions = stats.get("total_reactions", 0) or 0
+        comments = stats.get("comments", 0) or 0
+        shares = stats.get("shares", 0) or 0
+        reactions_by_type = {}
+        for r in stats.get("reactions", []):
+            if isinstance(r, dict):
+                reactions_by_type[r.get("type", "")] = r.get("count", 0)
+    else:
+        reactions = 0
+        comments = 0
+        shares = 0
+        reactions_by_type = {}
+
+    posted_at = raw_post.get("posted_at", {})
+    if isinstance(posted_at, dict):
+        date = (posted_at.get("date", "") or "")[:10]
+    else:
+        date = ""
+
+    full_text = raw_post.get("text", "") or ""
+    post_preview = full_text[:200].replace("\n", " ").strip()
+
+    content = raw_post.get("content", {})
+    if isinstance(content, dict):
+        content_type = content.get("type", "text")
+    else:
+        content_type = "text"
+
+    hashtags = raw_post.get("hashtags", [])
+    if isinstance(hashtags, list):
+        hashtags_str = ", ".join(str(h) for h in hashtags)
+    else:
+        hashtags_str = ""
+
     return {
-        "author": post.get("actor_name", "") or "",
+        "author": author_name,
+        "author_headline": author_headline,
+        "author_profile_url": author_profile_url,
         "keyword": keyword,
-        "reactions": post.get("total_reactions", 0) or 0,
-        "comments": post.get("total_comments", 0) or 0,
-        "date": post.get("date_posted", "") or "",
-        "post_preview": (post.get("text") or "")[:200].replace("\n", " ").strip(),
-        "url": post.get("share_url", "") or "",
-        "backend_urn": post.get("backend_urn", "") or "",
-        "num_shares": post.get("num_shares", 0) or 0,
-        "reactions_by_type": json.dumps(post.get("reactions_by_type", {})),
-        "is_repost": post.get("is_repost_without_thoughts", False),
+        "reactions": reactions,
+        "comments": comments,
+        "shares": shares,
+        "reactions_by_type": json.dumps(reactions_by_type),
+        "date": date,
+        "post_preview": post_preview,
+        "full_text": full_text,
+        "url": raw_post.get("post_url", "") or "",
+        "activity_id": str(raw_post.get("activity_id", "") or ""),
+        "hashtags": hashtags_str,
+        "is_repost": raw_post.get("is_reshare", False),
+        "content_type": content_type,
     }
 
 
-def run_search(keywords, time_frame, sort_by, pages, limit, max_workers):
-    """Run parallel keyword searches across all keywords and pages."""
-    token = get_token()
+def dedup_posts(posts):
+    """Deduplicate posts by activity_id."""
+    seen = set()
+    unique = []
+    for p in posts:
+        aid = p.get("activity_id", "")
+        if not aid:
+            unique.append(p)
+            continue
+        if aid not in seen:
+            seen.add(aid)
+            unique.append(p)
+    return unique
 
-    # Build all (keyword, page) combinations
-    tasks = []
-    for kw in keywords:
-        for page in range(1, pages + 1):
-            tasks.append((kw, page))
 
-    all_posts = []
-    seen_urns = set()
-    total_api_calls = len(tasks)
-    completed = 0
+# ---------------------------------------------------------------------------
+# Output
+# ---------------------------------------------------------------------------
 
-    print(f"Searching {len(keywords)} keywords × {pages} pages = {total_api_calls} API calls...", file=sys.stderr)
-
-    with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        futures = {
-            executor.submit(search_keyword, token, kw, time_frame, sort_by, page, limit): (kw, page)
-            for kw, page in tasks
-        }
-
-        for future in as_completed(futures):
-            kw, page = futures[future]
-            keyword, pg, posts = future.result()
-            completed += 1
-
-            for post in posts:
-                urn = post.get("backend_urn", "")
-                if not urn or urn in seen_urns:
-                    continue
-                seen_urns.add(urn)
-                all_posts.append(extract_post_row(post, keyword))
-
-            print(f"  [{completed}/{total_api_calls}] '{keyword}' page {pg}: {len(posts)} posts ({len(seen_urns)} unique total)", file=sys.stderr)
-
-    # Sort by reactions descending
-    all_posts.sort(key=lambda x: x["reactions"], reverse=True)
-    return all_posts
+CSV_FIELDS = [
+    "author", "author_headline", "author_profile_url", "keyword",
+    "reactions", "comments", "shares", "date", "post_preview",
+    "url", "activity_id", "hashtags",
+]
 
 
 def output_json(posts, output_file):
-    """Output posts as JSON."""
     data = json.dumps(posts, indent=2, ensure_ascii=False)
     if output_file:
         with open(output_file, "w") as f:
@@ -164,10 +225,8 @@ def output_json(posts, output_file):
 
 
 def output_csv(posts, output_file):
-    """Output posts as CSV."""
-    fieldnames = ["author", "keyword", "reactions", "comments", "date", "post_preview", "url", "backend_urn", "num_shares"]
     f = open(output_file, "w", newline="") if output_file else sys.stdout
-    writer = csv.DictWriter(f, fieldnames=fieldnames, extrasaction="ignore")
+    writer = csv.DictWriter(f, fieldnames=CSV_FIELDS, extrasaction="ignore")
     writer.writeheader()
     writer.writerows(posts)
     if output_file:
@@ -176,7 +235,6 @@ def output_csv(posts, output_file):
 
 
 def output_summary(posts):
-    """Print a summary table to stderr."""
     print(f"\n{'='*80}", file=sys.stderr)
     print(f"  RESULTS: {len(posts)} unique posts found", file=sys.stderr)
     print(f"{'='*80}\n", file=sys.stderr)
@@ -185,15 +243,14 @@ def output_summary(posts):
         print("  No posts found.", file=sys.stderr)
         return
 
-    # Top posts table
     top = posts[:20]
-    print(f"  {'Author':<25} {'Keyword':<25} {'React':>6} {'Cmts':>6} {'Date':<12} Preview", file=sys.stderr)
-    print(f"  {'-'*25} {'-'*25} {'-'*6} {'-'*6} {'-'*12} {'-'*40}", file=sys.stderr)
+    print(f"  {'Author':<25} {'Keyword':<20} {'React':>6} {'Cmts':>6} {'Date':<12} Preview", file=sys.stderr)
+    print(f"  {'-'*25} {'-'*20} {'-'*6} {'-'*6} {'-'*12} {'-'*40}", file=sys.stderr)
     for p in top:
         author = (p["author"] or "Unknown")[:24]
-        keyword = (p["keyword"] or "")[:24]
+        keyword = (p["keyword"] or "")[:19]
         preview = (p["post_preview"] or "")[:40]
-        print(f"  {author:<25} {keyword:<25} {p['reactions']:>6} {p['comments']:>6} {p['date']:<12} {preview}", file=sys.stderr)
+        print(f"  {author:<25} {keyword:<20} {p['reactions']:>6} {p['comments']:>6} {p['date']:<12} {preview}", file=sys.stderr)
 
     # Keyword breakdown
     keyword_counts = {}
@@ -205,44 +262,66 @@ def output_summary(posts):
         print(f"    {kw}: {count}", file=sys.stderr)
 
 
+# ---------------------------------------------------------------------------
+# Main
+# ---------------------------------------------------------------------------
+
 def main():
-    parser = argparse.ArgumentParser(description="Search LinkedIn posts by keyword via Crustdata API")
-    parser.add_argument("--keyword", "-k", action="append", default=[], help="Keyword to search (repeatable)")
-    parser.add_argument("--keywords-file", "-f", help="File with one keyword per line")
-    parser.add_argument("--time-frame", "-t", default="past-month", choices=VALID_TIME_FRAMES, help="Time filter (default: past-month)")
-    parser.add_argument("--sort-by", "-s", default="relevance", choices=VALID_SORT_BY, help="Sort order (default: relevance)")
-    parser.add_argument("--pages", "-p", type=int, default=1, help="Number of pages per keyword (default: 1, ~5 posts/page)")
-    parser.add_argument("--limit", "-l", type=int, default=None, help="Exact number of posts to return per call (1-100)")
-    parser.add_argument("--output", "-o", default="json", choices=["json", "csv", "summary"], help="Output format (default: json)")
+    parser = argparse.ArgumentParser(
+        description="Search LinkedIn posts by keyword via Apify."
+    )
+    parser.add_argument("--keyword", "-k", action="append", default=[],
+                        help="Keyword to search (can repeat for multiple keywords)")
+    parser.add_argument("--max-items", type=int, default=50,
+                        help="Max posts per keyword (default: 50)")
+    parser.add_argument("--sort-by", default="relevance",
+                        choices=["relevance", "date_posted"],
+                        help="Sort order (default: relevance)")
+    parser.add_argument("--output", "-o", default="json",
+                        choices=["json", "csv", "summary"],
+                        help="Output format (default: json)")
     parser.add_argument("--output-file", help="Write output to file instead of stdout")
-    parser.add_argument("--max-workers", type=int, default=6, help="Max parallel API calls (default: 6)")
+    parser.add_argument("--token", help="Apify API token (overrides env var)")
+    parser.add_argument("--timeout", type=int, default=120,
+                        help="Max seconds for Apify run (default: 120)")
 
     args = parser.parse_args()
 
-    # Collect keywords
-    keywords = list(args.keyword)
-    if args.keywords_file:
-        with open(args.keywords_file) as f:
-            for line in f:
-                line = line.strip()
-                if line and not line.startswith("#"):
-                    keywords.append(line)
-
-    if not keywords:
-        print("ERROR: Provide at least one keyword via --keyword or --keywords-file", file=sys.stderr)
+    if not args.keyword:
+        print("ERROR: Provide at least one keyword via --keyword", file=sys.stderr)
         sys.exit(1)
 
-    # Run search
-    posts = run_search(keywords, args.time_frame, args.sort_by, args.pages, args.limit, args.max_workers)
+    token = get_apify_token(args.token)
+    all_posts = []
+
+    for keyword in args.keyword:
+        print(f"Searching for: '{keyword}'", file=sys.stderr)
+        raw_posts = search_posts(token, keyword, args.max_items, args.sort_by, args.timeout)
+        print(f"  Got {len(raw_posts)} posts", file=sys.stderr)
+
+        for raw_post in raw_posts:
+            all_posts.append(normalize_post(raw_post, keyword))
+
+    # Dedup across keywords
+    if len(args.keyword) > 1:
+        before = len(all_posts)
+        all_posts = dedup_posts(all_posts)
+        print(f"Dedup: {before} -> {len(all_posts)} unique posts", file=sys.stderr)
+
+    # Sort by reactions descending (unless user asked for date sort)
+    if args.sort_by == "relevance":
+        all_posts.sort(key=lambda x: x["reactions"], reverse=True)
+
+    print(f"\nTotal: {len(all_posts)} posts", file=sys.stderr)
 
     # Output
     if args.output == "json":
-        output_json(posts, args.output_file)
+        output_json(all_posts, args.output_file)
     elif args.output == "csv":
-        output_csv(posts, args.output_file)
+        output_csv(all_posts, args.output_file)
 
     # Always print summary to stderr
-    output_summary(posts)
+    output_summary(all_posts)
 
 
 if __name__ == "__main__":

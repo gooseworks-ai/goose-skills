@@ -6,23 +6,6 @@ description: >
   referral requests (right company wrong person), and nurture routing (future fit). Ensures no
   inbound lead gets ignored and every disqualification preserves the relationship. Tool-agnostic.
 tags: [outreach]
-
-graph:
-  provides:
-    - rejection-email-drafts      # Polite decline emails for disqualified leads
-    - referral-request-drafts     # Emails asking wrong-persona leads for a warm intro
-    - nurture-routing-list        # Leads tagged for drip/nurture sequences
-  requires:
-    - disqualified-leads          # Leads with qualification verdict + reasoning from inbound-lead-qualification
-    - your-company-context        # Product description, ICP, value props
-  connects_to:
-    - skill: inbound-lead-qualification
-      when: "Upstream — receives disqualified and near-miss leads"
-      receives: disqualified-leads-with-reasoning
-    - skill: cold-email-outreach
-      when: "Nurture leads need to be added to a drip sequence"
-      passes: nurture-routing-list
-  capabilities: [email-drafting]
 ---
 
 # Disqualification Handling
@@ -48,7 +31,7 @@ Load this composite when:
 
 ## Step 0: Configuration (Once Per Client)
 
-On first run, establish response preferences. Save to `clients/<client-name>/config/disqualification-handling.json`.
+On first run, establish response preferences.
 
 ```json
 {
@@ -340,7 +323,7 @@ If signal composites are active (`funding-signal-outreach`, `hiring-signal-outre
 Append to the qualification CSV or produce a separate handling CSV:
 - All lead fields + `handling_category`, `handling_action`, `email_draft`, `referral_target`, `nurture_trigger`, `re_evaluate_date`
 
-Save to: `clients/<client-name>/leads/disqualification-handling-[date].csv`
+Save to the current working directory or wherever the user prefers.
 
 ---
 

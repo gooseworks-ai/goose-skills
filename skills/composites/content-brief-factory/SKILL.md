@@ -54,7 +54,7 @@ Briefs are significantly better with real SERP data (what's actually ranking, wh
 1. **Keywords** — List of target keywords (1-50). Can be:
    - Pasted list
    - CSV file
-   - Output from `seo-opportunity-finder` or `search-ad-keyword-architect`
+   - Output from `seo-opportunity-finder`
    - Output from `programmatic-seo-planner` (template keywords)
 2. **Your site URL** — So we check for existing coverage
 3. **ICP** — Who's reading this content? (role, pain, goal)
@@ -68,7 +68,7 @@ Briefs are significantly better with real SERP data (what's actually ranking, wh
 Run `site-content-catalog` on your site:
 
 ```bash
-python3 skills/site-content-catalog/scripts/catalog_site.py \
+python3 skills/site-content-catalog/scripts/catalog_content.py \
   --url "<your_site_url>" \
   --output json
 ```
@@ -121,20 +121,20 @@ Analyze each:
 
 ### 2C: Customer Language Mining
 
-Run `review-scraper` + `reddit-scraper` for the topic:
+Run `review-site-scraper` + `reddit-post-finder` for the topic:
 
 ```bash
 # Reviews — find how ICP talks about this problem
-python3 skills/review-scraper/scripts/scrape_reviews.py \
-  --product "<relevant_product>" \
-  --platforms g2,capterra \
+python3 skills/capabilities/review-site-scraper/scripts/scrape_reviews.py \
+  --platform g2 \
+  --url "<relevant_product_review_url>" \
   --output json
 
 # Reddit — find real questions and pain language
-python3 skills/reddit-scraper/scripts/scrape_reddit.py \
-  --query "<keyword/topic>" \
-  --subreddits "<relevant_subs>" \
-  --sort relevance --time year --limit 30
+python3 skills/reddit-post-finder/scripts/search_reddit.py \
+  --subreddit "<relevant_subs>" \
+  --keywords "<keyword>,<topic>" \
+  --days 365 --sort top --time year
 ```
 
 Extract:
@@ -291,10 +291,7 @@ For batch runs (10+ briefs):
 ...
 ```
 
-Save to `clients/<client-name>/content/briefs/content-briefs-[YYYY-MM-DD].md`.
-
-For batch mode, also export a summary CSV:
-`clients/<client-name>/content/briefs/brief-summary-[YYYY-MM-DD].csv`
+Save to the current working directory or wherever the user prefers. For batch mode, also export a summary CSV.
 
 ## Cost
 
@@ -315,7 +312,7 @@ For batch mode, also export a summary CSV:
 ## Tools Required
 
 - **Apify API token** — `APIFY_API_TOKEN` env var
-- **Upstream skills:** `site-content-catalog`, `seo-domain-analyzer`, `review-scraper`, `reddit-scraper`, `fetch_webpage`
+- **Upstream skills:** `site-content-catalog`, `seo-domain-analyzer`, `review-site-scraper`, `reddit-post-finder`, `fetch_webpage`
 - **Optional (enhanced):** SerpAPI (`SERPAPI_KEY`), Serper.dev (`SERPER_API_KEY`), DataForSEO (`DATAFORSEO_LOGIN` + `DATAFORSEO_PASSWORD`), or ValueSERP (`VALUESERP_API_KEY`)
 
 ## Scheduling

@@ -9,24 +9,6 @@ description: >
   lead gen workflow. Also triggers for "find people at events and qualify them" or
   "who's attending X events that matches our ICP."
 tags: [lead-generation]
-
-graph:
-  provides:
-    - qualified-lead-list      # Qualified leads with confidence scores and reasoning
-    - google-sheet             # Full results exported to Google Sheet
-    - slack-alert              # Top leads sent to Slack
-  requires:
-    - search-topic             # What kind of events to search (e.g., "AI", "Growth", "GTM")
-    - search-location          # Where to search (e.g., "San Francisco", "New York")
-    - qualification-prompt     # A qualification prompt file, or criteria to build one
-  connects_to:
-    - skill: send-email-via-agentmail
-      when: "User wants to send outreach to the qualified leads"
-      passes: qualified-lead-list
-    - skill: web-search
-      when: "User wants deeper research on specific qualified leads"
-      passes: qualified-lead-list
-  capabilities: [apify-search, google-sheets-write, csv-export]
 ---
 
 # Get Qualified Leads from Luma Events

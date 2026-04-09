@@ -46,7 +46,7 @@ from tools.apify_guard import (
 
 # ── Apify Actor IDs ──────────────────────────────────────────────────────────
 
-POST_SEARCH_ACTOR_ID = "buIWk2uOUzTmcLsuB"     # harvestapi/linkedin-post-search
+POST_SEARCH_ACTOR_ID = "apimaestro~linkedin-posts-search-scraper-no-cookies"  # no cookies needed
 COMPANY_POSTS_ACTOR_ID = "WI0tj4Ieb5Kq458gB"   # harvestapi/linkedin-company-posts
 PROFILE_ACTOR_ID = "supreme_coder~linkedin-profile-scraper"
 
@@ -247,10 +247,8 @@ def discover_posts_and_companies(token, config, test_mode=False):
             run_id = guarded_apify_run(
                 POST_SEARCH_ACTOR_ID,
                 {
-                    "searchQueries": [kw],
-                    "maxPosts": max_posts,
-                    "postedLimit": POSTED_LIMIT,
-                    "sortBy": "relevance",
+                    "keyword": kw,
+                    "maxItems": max_posts,
                 },
                 token,
             )

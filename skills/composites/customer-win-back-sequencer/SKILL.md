@@ -341,8 +341,8 @@ Save to `clients/<client-name>/customer-success/win-back/win-back-report-[YYYY-M
 - **web_search** — for company and competitor research
 - **fetch_webpage** — for career pages, news, competitor reviews
 - **Optional:** `linkedin-profile-post-scraper` for contact monitoring
-- **Optional:** `review-scraper` for competitor dissatisfaction signals
-- **Optional:** `setup-outreach-campaign` for Smartlead campaign creation
+- **Optional:** `review-site-scraper` for competitor dissatisfaction signals
+- **Optional:** `cold-email-outreach` for campaign creation
 
 ## Trigger Phrases
 

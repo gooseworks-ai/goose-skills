@@ -8,22 +8,6 @@ description: >
   for outreach.
 tags: [lead-generation]
 
-graph:
-  provides:
-    - funded-company-list     # Ranked list of recently-funded companies with details
-    - outreach-angles         # Suggested outreach angles per company
-  requires:
-    - target-stages           # e.g. "Series A, Series B"
-    - target-industries       # (optional) Filter to specific industries
-    - min-amount              # (optional) Minimum funding amount
-  connects_to:
-    - skill: company-contact-finder
-      when: "User wants to find decision-makers (CTO, VP Eng) at funded companies"
-      passes: funded-company-list
-    - skill: setup-outreach-campaign
-      when: "User wants to launch outreach to recently-funded companies"
-      passes: funded-company-list, outreach-angles
-  capabilities: [web-search, apify-search]
 ---
 
 # Funding Signal Monitor
@@ -103,10 +87,10 @@ For each result, extract:
 - Date of announcement
 - Lead investors
 
-#### B) Twitter Search (twitter-scraper)
+#### B) Twitter Search (twitter-mention-tracker)
 
 ```bash
-python3 skills/twitter-scraper/scripts/search_twitter.py \
+python3 skills/twitter-mention-tracker/scripts/search_twitter.py \
   --query "\"excited to announce\" AND (\"raised\" OR \"Series A\" OR \"Series B\" OR \"funding\")" \
   --since <7-days-ago> --until <today> --max-tweets 50 --output json
 ```
@@ -127,10 +111,10 @@ python3 skills/hacker-news-scraper/scripts/search_hn.py \
   --query "raised funding Series" --days 7 --output json
 ```
 
-#### D) Reddit Search (reddit-scraper)
+#### D) Reddit Search (reddit-post-finder)
 
 ```bash
-python3 skills/reddit-scraper/scripts/search_reddit.py \
+python3 skills/reddit-post-finder/scripts/search_reddit.py \
   --subreddit "startups,SaaS,technology" \
   --keywords "raised,Series A,Series B,funding round" \
   --days 7 --sort hot --output json
@@ -219,7 +203,7 @@ When using this skill as an agent, the typical flow is:
 4. Agent presents ranked list with outreach angles
 5. User selects companies to pursue
 6. Agent chains to `company-contact-finder` to find decision-makers
-7. Agent chains to `setup-outreach-campaign` to launch outreach
+7. Agent chains to `cold-email-outreach` to launch outreach
 
 **Example prompt:**
 > "Find companies that raised Series A or B in the last week. Focus on SaaS and AI companies. We sell developer tools."
@@ -239,7 +223,7 @@ The agent should NOT:
 
 - **Run weekly** for best coverage. Funding announcements have a ~1 week news cycle.
 - **Combine with `company-contact-finder`** to get CTO/VP Eng contacts at funded companies.
-- **Chain into `setup-outreach-campaign`** for automated outreach with funding-specific angles.
+- **Chain into `cold-email-outreach`** for automated outreach with funding-specific angles.
 - **Track hits in `contact-cache`** to avoid duplicate outreach across weeks.
 - **Web Search is your best source** — it aggregates TechCrunch, Crunchbase, VentureBeat, etc. Twitter and HN provide supplementary signals and early detection.
 - **Multi-source appearances are the strongest signal.** A company that shows up on TechCrunch AND Hacker News AND Twitter is a higher-quality lead.

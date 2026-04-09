@@ -1,89 +1,130 @@
 ---
 name: linkedin-post-research
-description: Search LinkedIn posts by keywords using Crustdata API directly, deduplicate and sort by engagement. Outputs to CSV or JSON. Use when researching LinkedIn content around specific topics.
+description: >
+  Search LinkedIn posts by keywords, sorted by engagement or date. Use when researching
+  what people are saying about a topic on LinkedIn, finding high-engagement content,
+  identifying thought leaders, or discovering warm leads through post engagement.
+  Returns author, post text, reactions, comments, shares, post URL, and date.
+  No LinkedIn cookies or login required.
+tags: [research, lead-generation]
 ---
 
 # LinkedIn Post Research
 
-Search LinkedIn for posts matching keywords via the Crustdata API, deduplicate results, and output sorted by engagement.
+Search LinkedIn for posts matching keywords via Apify. Returns posts sorted by engagement or date, with author info, full text, reaction counts, and direct URLs.
+
+No LinkedIn cookies. No login. Just keywords in, posts out.
+
+## When to Auto-Load
+
+Load this skill when:
+- User says "search LinkedIn posts", "what are people saying about X on LinkedIn", "find LinkedIn content about"
+- User wants to find high-engagement posts on a topic
+- User wants to identify who's posting about a specific topic (thought leader discovery)
+- User wants to find posts to extract commenters from (warm lead pipeline)
+
+## Prerequisites
+
+### Apify API Token
+
+Required for searching LinkedIn posts. Set in `.env`:
+
+```
+APIFY_API_TOKEN=your_token_here
+```
+
+No LinkedIn cookies, login, or session tokens needed. That's the only setup.
+
+---
+
+## How It Works
+
+1. Takes one or more keywords
+2. Calls the `apimaestro/linkedin-posts-search-scraper-no-cookies` Apify actor
+3. Returns posts with author, text, engagement metrics, date, and URL
+4. Deduplicates across keywords by `activity_id`
+5. Sorts by engagement (total reactions) descending, or by date
 
 ## Quick Start
 
-Requires `requests` and `CRUSTDATA_API_TOKEN` environment variable.
-
 ```bash
 # Single keyword search
-python3 skills/linkedin-post-research/scripts/search_posts.py \
-  --keyword "AI sourcing" \
-  --time-frame past-week
+python3 skills/capabilities/linkedin-post-research/scripts/search_posts.py \
+  --keyword "AI sourcing" --max-items 20
 
-# Multiple keywords, output CSV
-python3 skills/linkedin-post-research/scripts/search_posts.py \
-  --keyword "talent sourcing tools" \
-  --keyword "recruiting automation" \
-  --keyword "AI sourcing" \
-  --time-frame past-week \
-  --output csv \
-  --output-file results.csv
+# Multiple keywords
+python3 skills/capabilities/linkedin-post-research/scripts/search_posts.py \
+  --keyword "AI sourcing" --keyword "recruiting automation" --max-items 30
 
-# Keywords from file, multiple pages
-python3 skills/linkedin-post-research/scripts/search_posts.py \
-  --keywords-file keywords.txt \
-  --time-frame past-week \
-  --pages 3 \
-  --output json \
-  --output-file results.json
+# Sort by date (most recent first)
+python3 skills/capabilities/linkedin-post-research/scripts/search_posts.py \
+  --keyword "AI agents" --sort-by date_posted --max-items 20
 
-# Summary only (prints to stderr)
-python3 skills/linkedin-post-research/scripts/search_posts.py \
-  --keyword "recruiting stack" \
-  --output summary
+# Output as CSV
+python3 skills/capabilities/linkedin-post-research/scripts/search_posts.py \
+  --keyword "AI agents" --output csv --output-file results.csv
+
+# Summary table
+python3 skills/capabilities/linkedin-post-research/scripts/search_posts.py \
+  --keyword "AI agents" --output summary
 ```
-
-## Inputs
-
-- **Keywords**: Search terms — pass via `--keyword` flags or `--keywords-file` (one per line)
-- **Time frame**: `past-day`, `past-week`, `past-month`, `past-quarter`, `past-year`, `all-time` (default: `past-month`)
-- **Pages**: Number of pages per keyword (default: 1, ~5 posts/page). Max 20.
-- **Sort by**: `relevance` or `date` (default: `relevance`)
 
 ## CLI Reference
 
 | Flag | Default | Description |
 |------|---------|-------------|
-| `--keyword`, `-k` | *required* | Keyword to search (repeatable) |
-| `--keywords-file`, `-f` | — | File with one keyword per line (lines starting with # are ignored) |
-| `--time-frame`, `-t` | `past-month` | Time filter |
-| `--sort-by`, `-s` | `relevance` | Sort order |
-| `--pages`, `-p` | `1` | Pages per keyword (~5 posts per page) |
-| `--limit`, `-l` | — | Exact number of posts per API call (1-100) |
+| `--keyword`, `-k` | *required* | Keyword to search (can be repeated for multiple keywords) |
+| `--max-items` | 50 | Max posts to return per keyword |
+| `--sort-by` | `relevance` | Sort order: `relevance` or `date_posted` |
 | `--output`, `-o` | `json` | Output format: `json`, `csv`, `summary` |
 | `--output-file` | stdout | Write output to file |
-| `--max-workers` | `6` | Max parallel API calls |
+| `--token` | env var | Apify API token (overrides APIFY_API_TOKEN env var) |
+| `--timeout` | 120 | Max seconds to wait for Apify run |
 
-## How It Works
+## Apify Actor Details
 
-1. Takes keywords via CLI args or file
-2. Calls Crustdata's `/screener/linkedin_posts/keyword_search` API in parallel for all (keyword × page) combinations
-3. Deduplicates posts across keywords by `backend_urn`
-4. Sorts by `total_reactions` descending
-5. Outputs JSON, CSV, or summary
+**Actor:** `apimaestro/linkedin-posts-search-scraper-no-cookies`
 
-## Output Schema (JSON)
+**API call:**
+```bash
+curl -X POST "https://api.apify.com/v2/acts/apimaestro~linkedin-posts-search-scraper-no-cookies/runs?token=$APIFY_API_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "keyword": "AI agents",
+    "maxItems": 50,
+    "sortBy": "date_posted"
+  }'
+```
+
+**Polling for results:**
+```bash
+# Check run status
+curl "https://api.apify.com/v2/acts/apimaestro~linkedin-posts-search-scraper-no-cookies/runs/{RUN_ID}?token=$APIFY_API_TOKEN"
+
+# When status is SUCCEEDED, fetch results
+curl "https://api.apify.com/v2/datasets/{DATASET_ID}/items?token=$APIFY_API_TOKEN"
+```
+
+## Output Schema
 
 ```json
 {
   "author": "Jane Smith",
+  "author_headline": "VP of Sales at Acme Corp",
+  "author_profile_url": "https://www.linkedin.com/in/janesmith",
   "keyword": "AI sourcing",
   "reactions": 142,
   "comments": 28,
-  "date": "2026-02-20",
+  "shares": 12,
+  "reactions_by_type": {"LIKE": 100, "EMPATHY": 30, "PRAISE": 12},
+  "date": "2026-04-01",
   "post_preview": "First 200 chars of the post text...",
+  "full_text": "Complete post text...",
   "url": "https://www.linkedin.com/posts/...",
-  "backend_urn": "urn:li:activity:123456789",
-  "num_shares": 12,
-  "reactions_by_type": "{\"LIKE\": 100, \"EMPATHY\": 30, \"PRAISE\": 12}",
-  "is_repost": false
+  "activity_id": "7447040447966826496",
+  "hashtags": ["#AI", "#sales"],
+  "is_repost": false,
+  "content_type": "text"
 }
 ```
 
@@ -91,70 +132,27 @@ python3 skills/linkedin-post-research/scripts/search_posts.py \
 
 | Column | Description |
 |--------|-------------|
-| author | LinkedIn post author name |
-| keyword | Which search keyword matched this post |
+| author | Post author name |
+| author_headline | Author's LinkedIn headline |
+| author_profile_url | Author's LinkedIn profile URL |
+| keyword | Which search keyword matched |
 | reactions | Total reaction count |
-| comments | Total comment count |
+| comments | Comment count |
+| shares | Share count |
 | date | Post date (YYYY-MM-DD) |
-| post_preview | First ~200 characters of the post |
+| post_preview | First ~200 characters |
 | url | Direct link to the LinkedIn post |
-| backend_urn | Unique post identifier |
-| num_shares | Number of shares |
-
-## Crustdata API Details
-
-**Endpoint:** `GET https://api.crustdata.com/screener/linkedin_posts/keyword_search`
-
-**Parameters:**
-- `keyword` — Search term
-- `page` — Page number (1-based, ~5 posts per page)
-- `sort_by` — `relevance` or `date`
-- `date_posted` — Time filter (past-day, past-week, etc.)
-- `limit` — Exact number of posts to return (1-100)
-
-**Auth:** `Authorization: Token <CRUSTDATA_API_TOKEN>`
-
-**Credit usage:** 1 credit per post returned.
-
-**Rate limits:** Searches run in parallel (default 6 workers). The script handles 429 responses with automatic retry.
-
-## Environment Variables
-
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `CRUSTDATA_API_TOKEN` | Yes | Crustdata API token |
+| activity_id | Unique post identifier |
+| hashtags | Comma-separated hashtags |
 
 ## Cost
 
-~1 credit per post returned. Searching 10 keywords × 1 page = ~50 posts = ~50 credits.
+Apify charges per compute usage. ~50 posts costs approximately $0.01-0.05 depending on the actor's pricing tier. The script prints cost info after each run.
 
-## Chaining with Other Skills
+## Error Handling
 
-After getting the post list, common next steps:
-
-1. **Extract commenters** → `linkedin-commenter-extractor` — pass post URLs to find warm leads
-2. **Research authors** → web search on high-engagement post authors
-3. **Qualify leads** → `lead-qualification` — score extracted people against ICP
-
-Example pipeline:
-```bash
-# Step 1: Search posts
-python3 skills/linkedin-post-research/scripts/search_posts.py \
-  --keyword "AI sourcing" --keyword "recruiting automation" \
-  --time-frame past-week --output json --output-file posts.json
-
-# Step 2: Extract post URLs for commenter extraction
-cat posts.json | python3 -c "
-import json, sys
-posts = json.load(sys.stdin)
-# Filter: keep posts with 5+ comments
-for p in posts:
-    if p['comments'] >= 5:
-        print(p['url'])
-" > post_urls.txt
-
-# Step 3: Extract commenters from those posts
-while read url; do
-  python3 skills/linkedin-commenter-extractor/scripts/extract_commenters.py --post-url "\$url" --output json
-done < post_urls.txt
-```
+| Error | Fix |
+|-------|-----|
+| `APIFY_API_TOKEN` not set | Ask user to add it to `.env` |
+| Apify run fails or times out | Retry once. If still fails, try a broader keyword. |
+| 0 results | Keyword may be too specific. Try broader terms. |

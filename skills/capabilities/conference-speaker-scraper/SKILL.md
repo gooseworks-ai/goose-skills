@@ -12,7 +12,7 @@ Extract speaker names, titles, companies, and bios from conference website /spea
 
 ## Quick Start
 
-Only dependency is `pip install requests`. No API key needed for direct scraping mode.
+No API key needed for direct scraping mode.
 
 ```bash
 # Scrape speakers from a conference page

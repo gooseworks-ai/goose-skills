@@ -8,11 +8,13 @@ description: >
 
 # Product Hunt Scraper
 
-Scrape trending products from Product Hunt using the Apify `danpoletaev/product-hunt-scraper` actor.
+Scrape trending products from Product Hunt using the Apify `maximedupre/product-hunt-scraper` actor.
+
+**Output fields:** Each product has `name`, `tagline`, `description`, `url` (Product Hunt URL), and additional fields depending on the actor's output.
 
 ## Quick Start
 
-Requires `APIFY_API_TOKEN` env var (or `--token` flag). Install dependency: `pip install requests`.
+Requires `APIFY_API_TOKEN` env var (or `--token` flag).
 
 ```bash
 # Today's top products

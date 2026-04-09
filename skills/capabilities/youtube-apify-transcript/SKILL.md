@@ -1,6 +1,5 @@
 ---
 name: youtube-apify-transcript
-version: 1.1.2
 description: Fetch YouTube transcripts via APIFY API. Works from cloud IPs (Hetzner, AWS, etc.) by bypassing YouTube's bot detection. Free tier includes $5/month credits (~714 videos). No credit card required.
 tags: [research]
 ---
@@ -26,9 +25,9 @@ YouTube blocks transcript requests from cloud IPs (AWS, GCP, etc.). APIFY runs t
 
 ## Links
 
-- 🔗 [APIFY Pricing](https://apify.com/pricing)
-- 🔑 [Get API Key](https://console.apify.com/account/integrations)
-- 🎬 [YouTube Transcripts Actor](https://apify.com/karamelo/youtube-transcripts)
+- [APIFY Pricing](https://apify.com/pricing)
+- [Get API Key](https://console.apify.com/account/integrations)
+- [YouTube Transcript Scraper Actor](https://apify.com/pintostudio/youtube-transcript-scraper)
 
 ## Setup
 
@@ -111,16 +110,29 @@ EOF
 # Process all URLs
 python3 scripts/fetch_transcript.py --batch urls.txt
 
-# Output: 
-# [1/3] Fetching VIDEO1...
-# [2/3] [cached] VIDEO2
-# [3/3] Fetching VIDEO3...
-# Batch complete: 2 fetched, 1 cached, 0 failed
-# [Cost: ~$0.014 for 2 API call(s)]
-
 # Batch with JSON output to file
 python3 scripts/fetch_transcript.py --batch urls.txt --json --output all_transcripts.json
 ```
+
+## APIFY Actor Input
+
+The script sends the following input to `pintostudio/youtube-transcript-scraper`:
+
+```json
+{
+  "videoUrl": "https://www.youtube.com/watch?v=VIDEO_ID"
+}
+```
+
+**Output fields:**
+
+Each result contains a `data` array of transcript segments:
+
+| Field   | Type   | Description                        |
+|---------|--------|------------------------------------|
+| `start` | number | Segment start time (seconds)       |
+| `dur`   | number | Segment duration (seconds)         |
+| `text`  | string | Transcript text for this segment   |
 
 ### Output Formats
 
@@ -136,8 +148,8 @@ Today we're going to talk about...
   "video_id": "dQw4w9WgXcQ",
   "title": "Video Title",
   "transcript": [
-    {"start": 0.0, "duration": 2.5, "text": "Hello and welcome"},
-    {"start": 2.5, "duration": 3.0, "text": "to this video"}
+    {"start": 0.0, "dur": 2.5, "text": "Hello and welcome"},
+    {"start": 2.5, "dur": 3.0, "text": "to this video"}
   ],
   "full_text": "Hello and welcome to this video..."
 }
@@ -150,14 +162,3 @@ The script handles common errors:
 - Video has no transcript
 - API quota exceeded
 - Network errors
-
-## Metadata
-
-```yaml
-metadata:
-  clawdbot:
-    emoji: "📹"
-    requires:
-      env: ["APIFY_API_TOKEN"]
-      bins: ["python3"]
-```

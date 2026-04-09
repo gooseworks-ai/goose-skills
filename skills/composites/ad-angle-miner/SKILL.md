@@ -22,6 +22,11 @@ Dig through customer voice data — reviews, Reddit, support tickets, competitor
 - "Mine reviews for ad messaging"
 - "I need fresh ad angles — not the same tired stuff"
 
+## Prerequisites
+
+- **Environment variable:** `APIFY_API_TOKEN` — required for review scraping and Reddit scraping
+- **Web search access** — your AI agent must support `web_search` or equivalent for Twitter/X and competitor ad lookups
+
 ## Phase 0: Intake
 
 1. **Your product** — Name + what it does in one sentence
@@ -37,15 +42,49 @@ Dig through customer voice data — reviews, Reddit, support tickets, competitor
 
 ## Phase 1: Source Collection
 
-### 1A: Review Mining
+### 1A: Review Mining (Apify)
 
-Run `review-scraper` for your product and each competitor:
+Use the Apify Amazon Reviews Scraper (or web_search for G2/Capterra/TrustRadius reviews).
 
-```bash
-python3 skills/review-scraper/scripts/scrape_reviews.py \
-  --product "<product_name>" \
-  --platforms g2,capterra \
-  --output json
+**Option 1: Amazon product reviews via Apify**
+
+Start a run of the `web_wanderer/amazon-reviews-extractor` actor:
+
+```
+POST https://api.apify.com/v2/acts/web_wanderer~amazon-reviews-extractor/runs?token=$APIFY_API_TOKEN
+Content-Type: application/json
+
+{
+  "products": [
+    "https://www.amazon.com/dp/PRODUCT_ASIN"
+  ],
+  "maxReviews": 100
+}
+```
+
+Poll until the run finishes:
+
+```
+GET https://api.apify.com/v2/acts/web_wanderer~amazon-reviews-extractor/runs/{RUN_ID}?token=$APIFY_API_TOKEN
+```
+
+When `status` is `SUCCEEDED`, fetch results:
+
+```
+GET https://api.apify.com/v2/datasets/{DATASET_ID}/items?token=$APIFY_API_TOKEN
+```
+
+**Output fields:** Each review has `rating` (1-5), `reviewTitle`, `reviewText`, `reviewDate`, `verifiedPurchase` (bool), `productAsin`, `productTitle`, `helpfulVoteCount`.
+
+**Option 2: G2/Capterra/TrustRadius reviews via web_search**
+
+For B2B products, run web searches to find review content:
+
+```
+web_search: "<product_name> reviews site:g2.com"
+web_search: "<product_name> reviews site:capterra.com"
+web_search: "<product_name> reviews site:trustradius.com"
+web_search: "<competitor_name> reviews site:g2.com"
 ```
 
 Focus on:
@@ -54,18 +93,49 @@ Focus on:
 - **4-5 star reviews of competitors** — Strengths you need to counter or match
 - **Review language patterns** — Exact phrases buyers use
 
-### 1B: Reddit/Community Mining
+### 1B: Reddit/Community Mining (Apify)
 
-Run `reddit-scraper` for relevant subreddits:
+Use the `trudax/reddit-scraper-lite` actor to search Reddit for relevant threads:
 
-```bash
-python3 skills/reddit-scraper/scripts/scrape_reddit.py \
-  --query "<product category> OR <competitor> OR <pain keyword>" \
-  --subreddits "<relevant_subreddits>" \
-  --sort relevance \
-  --time month \
-  --limit 50
+**Search by keyword:**
 ```
+POST https://api.apify.com/v2/acts/trudax~reddit-scraper-lite/runs?token=$APIFY_API_TOKEN
+Content-Type: application/json
+
+{
+  "searches": [
+    "<product category> OR <competitor> OR <pain keyword>"
+  ],
+  "maxItems": 50
+}
+```
+
+**Browse a specific subreddit:**
+```
+POST https://api.apify.com/v2/acts/trudax~reddit-scraper-lite/runs?token=$APIFY_API_TOKEN
+Content-Type: application/json
+
+{
+  "startUrls": [
+    {"url": "https://www.reddit.com/r/SUBREDDIT_NAME/hot/"}
+  ],
+  "maxItems": 50
+}
+```
+
+Poll until complete:
+
+```
+GET https://api.apify.com/v2/acts/trudax~reddit-scraper-lite/runs/{RUN_ID}?token=$APIFY_API_TOKEN
+```
+
+Fetch results when `status` is `SUCCEEDED`:
+
+```
+GET https://api.apify.com/v2/datasets/{DATASET_ID}/items?token=$APIFY_API_TOKEN
+```
+
+**Output fields:** Each item has `dataType` ("post" or "comment"), `title` (posts only), `body`, `communityName`, `upVotes`, `numberOfComments` (posts), `url`, `createdAt`.
 
 Extract:
 - Questions people ask before buying
@@ -73,19 +143,33 @@ Extract:
 - "I wish [product] would..." statements
 - Comparison threads (vs discussions)
 
-### 1C: Twitter/X Mining
+### 1C: Twitter/X Mining (web_search)
 
-Run `twitter-scraper`:
+Use web_search to find relevant Twitter/X posts — no scraper or credentials needed:
 
-```bash
-python3 skills/twitter-scraper/scripts/scrape_twitter.py \
-  --query "<competitor> (frustrating OR broken OR hate OR love OR switched)" \
-  --max-results 50
+```
+web_search: "<competitor> (frustrating OR broken OR hate) site:x.com"
+web_search: "<competitor> (love OR switched to OR replaced) site:x.com"
+web_search: "<product category> (recommendation OR alternative OR looking for) site:twitter.com"
+web_search: "<competitor> site:x.com" (for general sentiment)
 ```
 
-### 1D: Competitor Ad Mining (Optional)
+Run 3-5 queries covering:
+- Competitor complaints and frustrations
+- Product category praise / switching stories
+- "What do you use for X?" buying-intent threads
 
-Run `ad-creative-intelligence` to see what angles competitors are currently using. This reveals:
+### 1D: Competitor Ad Mining (web_search)
+
+Use web_search to check the Meta Ad Library for competitor ad creatives — no separate tool needed:
+
+```
+web_search: "<competitor_name> site:facebook.com/ads/library"
+web_search: "<competitor_name> facebook ads library"
+web_search: "<competitor_name> ad creative examples"
+```
+
+This reveals:
 - Angles they've validated (long-running ads = working)
 - Angles they're testing (new ads)
 - Angles nobody is running (white space)
@@ -196,24 +280,25 @@ Top-tier angles (score 70+): [N]
 - [Angle] → [Format] → [Platform]
 ```
 
-Save to `clients/<client-name>/ads/angle-bank-[YYYY-MM-DD].md`.
+Save to `angle-bank-[YYYY-MM-DD].md` in the current working directory (or user-specified path).
 
 ## Cost
 
 | Component | Cost |
 |-----------|------|
-| Review scraper (per product) | ~$0.10-0.30 (Apify) |
+| Amazon review scraper (per product) | ~$0.10-0.30 (Apify) |
 | Reddit scraper | ~$0.05-0.10 (Apify) |
-| Twitter scraper | ~$0.10-0.20 (Apify) |
-| Ad scraper (optional) | ~$0.40-1.00 (Apify) |
+| Twitter/X (web_search) | Free |
+| Competitor ads (web_search) | Free |
+| G2/Capterra reviews (web_search) | Free |
 | Analysis | Free (LLM reasoning) |
-| **Total** | **~$0.25-1.60** |
+| **Total** | **~$0.15-0.40** |
 
 ## Tools Required
 
-- **Apify API token** — `APIFY_API_TOKEN` env var
-- **Upstream skills:** `review-scraper`, `reddit-scraper`, `twitter-scraper`
-- **Optional:** `ad-creative-intelligence` (for competitor ad angles)
+- **Environment variable:** `APIFY_API_TOKEN` — for Apify actors (review scraper, Reddit scraper)
+- **Web search** — built into your AI agent (for Twitter/X, competitor ads, G2/Capterra reviews)
+- No third-party libraries needed. All data collection uses HTTP APIs (`requests` or equivalent) and web_search.
 
 ## Trigger Phrases
 

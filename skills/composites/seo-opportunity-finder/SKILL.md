@@ -31,43 +31,26 @@ Identify the highest-leverage content gaps between your site and competitors. Co
 
 ## Phase 1: Catalog Your Existing Content
 
-Run `site-content-catalog` to build an inventory of your current pages and posts:
+Build an inventory of the target site's current pages and posts:
 
-```bash
-python3 skills/site-content-catalog/scripts/catalog_site.py \
-  --url <your_site_url> \
-  --output json
-```
-
-Extract from results:
-- All blog post titles and URLs
-- Inferred topics/themes per post
-- Estimated content age (from URL slugs or metadata if available)
+1. Fetch sitemap.xml (check `/sitemap.xml`, `/sitemap_index.xml`, `robots.txt` for `Sitemap:` directives)
+2. Fall back to RSS feeds (`/feed`, `/blog/feed`) or blog index crawl if no sitemap
+3. Extract: all blog post titles and URLs, inferred topics/themes per post, estimated content age
 
 This prevents recommending content you've already written.
 
 ## Phase 2: Analyze Competitor SEO Footprint
 
-Run `seo-domain-analyzer` for each competitor:
+For each competitor domain, pull SEO metrics:
 
-```bash
-# Uses Apify Semrush/Ahrefs scrapers
-node skills/seo-domain-analyzer/src/cli.js analyze --domain <competitor_domain>
-```
+1. **Domain overview** — authority score, organic traffic estimate, top ranking keywords (via Apify Semrush scraper if `APIFY_API_TOKEN` is set)
+2. **Top pages** — highest-traffic pages and their primary keywords
+3. **Keyword categories** — which topic clusters they're winning in
 
-Collect for each competitor:
-- Top ranking keywords (by estimated traffic volume)
-- Top pages by organic traffic
-- Domain authority / DR score
-- Keyword categories they're winning in
-
-If `seo-domain-analyzer` returns limited data (low-traffic competitor), supplement with `seo-traffic-analyzer`:
-
-```bash
-python3 skills/seo-traffic-analyzer/scripts/analyze_seo.py \
-  --url <competitor_url> \
-  --output summary
-```
+If Apify data is limited, supplement with web search probes:
+- `site:[competitor]` for indexed page count
+- Search target keywords and note which competitors rank where
+- SimilarWeb free tier for traffic estimates
 
 ## Phase 3: Identify Gaps
 
@@ -142,7 +125,7 @@ Generated: [DATE]
 ...
 ```
 
-Save to `clients/<client-name>/intelligence/seo-opportunities-[YYYY-MM-DD].md`.
+Save to the current working directory or wherever the user prefers.
 
 ## Cost
 
@@ -155,8 +138,8 @@ Save to `clients/<client-name>/intelligence/seo-opportunities-[YYYY-MM-DD].md`.
 
 ## Tools Required
 
-- **Apify API token** — `APIFY_API_TOKEN` env var
-- **Upstream skills:** `site-content-catalog`, `seo-domain-analyzer`, `seo-traffic-analyzer`
+- **Apify API token** — `APIFY_API_TOKEN` env var (for Semrush/Ahrefs data; free web search probes work without it)
+- Web search and web fetch capabilities
 
 ## Trigger Phrases
 

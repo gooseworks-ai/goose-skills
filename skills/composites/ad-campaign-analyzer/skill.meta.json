@@ -1,6 +1,7 @@
 {
   "slug": "ad-campaign-analyzer",
   "category": "composites",
+  "description": "Analyze ad campaign performance data, identify winners and waste, check statistical significance, and recommend multi-channel budget reallocation with specific dollar-amount shift recommendations and scenario modeling.",
   "tags": [
     "ads"
   ],

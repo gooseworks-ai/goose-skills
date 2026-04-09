@@ -4,22 +4,6 @@ name: outbound-prospecting-engine
 description: >
   End-to-end outbound prospecting: detect intent signals, research companies,
   find decision-maker contacts, personalize messaging, launch campaign.
-graph:
-  provides: [outbound-campaign, qualified-leads, meeting-pipeline]
-  requires: [icp-criteria, signal-keywords, client-context]
-  connects_to:
-    - skills/playbooks/signal-detection-pipeline/SKILL.md
-    - skills/capabilities/contact-cache/SKILL.md
-skills_used:
-  - skills/capabilities/job-posting-intent
-  - skills/capabilities/linkedin-post-research
-  - skills/capabilities/linkedin-commenter-extractor
-  - skills/composites/funding-signal-monitor
-  - skills/capabilities/company-contact-finder
-  - skills/capabilities/lead-qualification
-  - skills/capabilities/contact-cache
-  - skills/capabilities/setup-outreach-campaign
-  - skills/capabilities/agentmail
 ---
 
 # Outbound Prospecting Engine
@@ -50,7 +34,7 @@ Based on the client's ICP and motion, select which signals to monitor:
 | Funding announcements | Companies with fresh capital | funding-signal-monitor |
 | LinkedIn posts/comments | Practitioners discussing the problem | linkedin-post-research + linkedin-commenter-extractor |
 | Conference attendees | People actively engaged with the space | luma-event-attendees |
-| Competitor customers | Companies already buying similar solutions | eightfold-customer-finder |
+| Competitor customers | Companies already buying similar solutions | competitor-post-engagers |
 
 ### 2. Run Signal Detection
 
@@ -90,9 +74,9 @@ For each lead, generate personalized email sequence using:
 
 ### 7. Launch Campaign
 
-**Skill**: setup-outreach-campaign
+**Skill**: cold-email-outreach
 
-Set up a Smartlead campaign:
+Set up the outreach campaign in your chosen tool:
 - Create campaign with name and schedule
 - Upload lead list
 - Configure 2-3 email sequence (personalized per lead or per segment)

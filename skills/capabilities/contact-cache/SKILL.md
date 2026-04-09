@@ -4,19 +4,7 @@ description: >
   Track all identified/contacted people across strategies. CSV-backed contact
   database with dedup by LinkedIn URL or email. Prevents duplicate outreach
   when running strategies on a recurring cadence.
-graph:
-  provides:
-    - dedup-check
-    - contact-database
-  requires: []
-  connects_to:
-    - skill: company-contact-finder
-      when: "After finding contacts, cache them to prevent future duplicates"
-      passes: person-list
-    - skill: lead-qualification
-      when: "Before qualifying, check which contacts are already in the cache"
-      passes: dedup-check
-  capabilities: [csv-export]
+tags: [lead-generation]
 ---
 
 # Contact Cache

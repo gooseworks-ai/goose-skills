@@ -66,6 +66,17 @@ Campaign: [Product Name] — [Objective]
     └── Ad 1-3: [Engagement retargeting creative]
 ```
 
+### 1C: Competitor Ad Research (Optional)
+
+If competitors were provided, check what they're running on Meta:
+
+```
+web_search: site:facebook.com/ads/library "[competitor name]"
+web_search: "[competitor name]" Meta Ads examples
+```
+
+The Meta Ad Library (facebook.com/ads/library) is publicly accessible — search for competitor pages to see their active ads, formats, and messaging angles. Use findings to inform copy angles and audience strategy.
+
 ## Phase 2: Audience Strategy
 
 ### 2A: Prospecting Audiences
@@ -75,8 +86,8 @@ Campaign: [Product Name] — [Objective]
 Research relevant interests, behaviors, and demographics:
 
 ```
-Search: [product category] Meta Ads targeting options
-Search: [ICP role] Facebook ad audience interests
+web_search: [product category] Meta Ads targeting options
+web_search: [ICP role] Facebook ad audience interests
 ```
 
 Build audience layers:
@@ -260,22 +271,20 @@ B2B targeting on Meta is harder. Recommended approach:
 - Day 14: First optimization pass — pause losers, scale winners
 ```
 
-Save to `clients/<client-name>/ads/meta-campaign-plan-[YYYY-MM-DD].md`.
+Save to `meta-campaign-plan-[YYYY-MM-DD].md` in the current working directory (or user-specified path).
 
 ## Cost
 
 | Component | Cost |
 |-----------|------|
 | Audience research (web search) | Free |
-| Competitor ad research (optional) | ~$0.20-0.50 (Apify) |
+| Competitor ad research (web search) | Free |
 | Copy generation + structure | Free (LLM reasoning) |
-| **Total** | **Free-$0.50** |
+| **Total** | **Free** |
 
 ## Tools Required
 
-- **web_search** — for audience research and targeting ideas
-- **Optional:** `meta-ad-scraper` for competitor reference
-- **Optional:** `ad-angle-miner` for copy angles
+- **web_search** — for audience research, targeting ideas, and competitor ad research via Meta Ad Library
 
 ## Trigger Phrases
 

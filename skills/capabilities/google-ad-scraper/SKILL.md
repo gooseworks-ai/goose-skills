@@ -1,32 +1,24 @@
 ---
 name: google-ad-scraper
-description: Scrape competitor ads from Google's Ads Transparency Center (Search, YouTube, Display, Gmail). Search by company name, domain, or advertiser ID. Returns ad creatives, formats, targeting regions, and campaign details. Use for competitive ad research and messaging analysis.
+description: Scrape competitor ads from Google Ads by domain. Returns ad creatives, formats, and campaign details. Use for competitive ad research and messaging analysis.
 ---
 
-# Google Ads Transparency Scraper
+# Google Ads Scraper
 
-Scrape ads from Google's Ads Transparency Center using the Apify `xtech/google-ad-transparency-scraper` actor. Covers Search, YouTube, Display, and Gmail ads.
+Scrape ads from Google Ads using the Apify `burbn/google-ads-search` actor. Search by domain to get ad creatives, formats, and campaign details.
 
 ## Quick Start
 
-Requires `APIFY_API_TOKEN` env var (or `--token` flag). Install dependency: `pip install requests`.
+Requires `APIFY_API_TOKEN` env var (or `--token` flag).
 
 ```bash
-# Search by company name (auto-resolves advertiser ID)
+# Search by domain (recommended)
+python3 skills/google-ad-scraper/scripts/search_google_ads.py \
+  --domain "hubspot.com"
+
+# Search by company name (resolves to domain via transparency center)
 python3 skills/google-ad-scraper/scripts/search_google_ads.py \
   --company "Nike"
-
-# Search by domain (more precise)
-python3 skills/google-ad-scraper/scripts/search_google_ads.py \
-  --domain "nike.com"
-
-# Direct advertiser ID (skip lookup step)
-python3 skills/google-ad-scraper/scripts/search_google_ads.py \
-  --advertiser-id "AR13129532367502835713"
-
-# With region filter
-python3 skills/google-ad-scraper/scripts/search_google_ads.py \
-  --company "Shopify" --region US
 
 # Limit results
 python3 skills/google-ad-scraper/scripts/search_google_ads.py \
@@ -34,78 +26,67 @@ python3 skills/google-ad-scraper/scripts/search_google_ads.py \
 
 # Human-readable summary
 python3 skills/google-ad-scraper/scripts/search_google_ads.py \
-  --company "Stripe" --output summary
+  --domain "stripe.com" --output summary
 ```
 
 ## How It Works
 
-1. **Advertiser Resolution** (if no `--advertiser-id` provided):
-   - Takes company name or domain
-   - Searches Google Ads Transparency Center using Apify's web-scraper (Puppeteer)
-   - Extracts advertiser ID(s) from search results (format: `AR` + 20 digits)
-2. **Ad Scraping**:
-   - Constructs transparency center URL for the advertiser
-   - Calls the Apify `xtech/google-ad-transparency-scraper` actor
-   - Polls until complete, fetches dataset
-3. **Output**: Returns ads as JSON or human-readable summary
-
-## Advertiser ID Resolution
-
-The script handles the name → ID lookup automatically:
-
-- **By domain** (`--domain nike.com`): Searches `adstransparency.google.com/?domain=nike.com`. Most reliable method.
-- **By name** (`--company "Nike"`): Searches `adstransparency.google.com/?text=Nike`. May return multiple matches.
-- **Direct ID** (`--advertiser-id AR...`): Skips lookup entirely. Use when you already have the ID.
-
-### Finding the Advertiser ID Manually
-
-If auto-resolution fails:
-1. Go to https://adstransparency.google.com
-2. Search for the company
-3. Click on the advertiser
-4. Copy the ID from the URL: `https://adstransparency.google.com/advertiser/AR17828074650563772417`
-5. Pass it via `--advertiser-id AR17828074650563772417`
+1. **Domain Input**: Pass the target company's domain directly via `--domain`
+2. **Company Name Resolution** (optional): If only `--company` is provided, the script searches Google Ads Transparency Center using Apify's web-scraper (Puppeteer) to resolve the company name to advertiser info
+3. **Ad Scraping**: Calls the Apify `burbn/google-ads-search` actor with `{"domain": "...", "maxItems": N}`
+4. **Output**: Returns ads as JSON or human-readable summary
 
 ## CLI Reference
 
 | Flag | Default | Description |
 |------|---------|-------------|
-| `--company` | none | Company name to search |
-| `--domain` | none | Company domain (e.g. nike.com) — more precise |
-| `--advertiser-id` | none | Google Ads advertiser ID(s), comma-separated (skips lookup) |
-| `--region` | anywhere | Region filter (US, GB, DE, etc. or "anywhere") |
+| `--domain` | none | Company domain (e.g. hubspot.com) — recommended |
+| `--company` | none | Company name (resolved to domain via transparency center) |
 | `--max-ads` | 50 | Maximum number of ads to return |
 | `--output` | json | Output format: `json` or `summary` |
 | `--token` | env var | Apify token (prefer `APIFY_API_TOKEN` env var) |
 | `--timeout` | 300 | Max seconds to wait for Apify run |
 
-At least one of `--company`, `--domain`, or `--advertiser-id` is required.
+At least one of `--company` or `--domain` is required.
 
 ## Output Fields
 
-Each ad in the output may contain (varies by ad format):
+Each ad in the output contains:
 
 ```json
 {
-  "advertiser_name": "Nike, Inc.",
-  "advertiser_id": "AR13129532367502835713",
-  "ad_format": "TEXT",
-  "headline": "Nike.com - Official Site",
-  "description": "Shop the latest Nike shoes, clothing...",
-  "display_url": "nike.com",
-  "destination_url": "https://www.nike.com/",
-  "region": "United States",
-  "last_shown": "2026-02-20",
-  "first_shown": "2026-01-15",
-  "image_url": "https://...",
-  "video_url": "https://..."
+  "advertiserId": "AR13129532367502835713",
+  "advertiserName": "Nike, Inc.",
+  "creativeId": "CR12345678901234567890",
+  "originalUrl": "https://www.nike.com/",
+  "imageUrl": "https://...",
+  "variantFormat": "TEXT",
+  "variantContent": "Shop the latest Nike shoes...",
+  "variants": [...],
+  "variantCount": 3,
+  "startDate": "2026-01-15"
 }
 ```
 
+**Output fields:**
+
+| Field | Description |
+|-------|-------------|
+| `advertiserId` | Google Ads advertiser ID |
+| `advertiserName` | Company/advertiser display name |
+| `creativeId` | Unique ID for the ad creative |
+| `originalUrl` | Destination URL the ad links to |
+| `imageUrl` | URL of the ad image (if applicable) |
+| `variantFormat` | Ad format (TEXT, IMAGE, VIDEO, etc.) |
+| `variantContent` | Ad copy/text content |
+| `variants` | Array of ad variants |
+| `variantCount` | Number of variants for this creative |
+| `startDate` | Date the ad first appeared |
+
 ## Cost
 
-- Advertiser lookup: ~$0.05 (one web-scraper page)
-- Ad scraping: Varies by actor pricing, typically a few cents per advertiser
+- Ad scraping: Varies by actor pricing, typically a few cents per domain
+- Company name resolution (optional): ~$0.05 (one web-scraper page)
 
 ## Common Workflows
 
@@ -119,28 +100,15 @@ python3 skills/google-ad-scraper/scripts/search_google_ads.py \
 ### 2. Compare Multiple Competitors
 
 ```bash
-# Get IDs first, then scrape in one run
-python3 skills/google-ad-scraper/scripts/search_google_ads.py \
-  --advertiser-id "AR111,AR222,AR333" --max-ads 50
-```
-
-### 3. Regional Ad Targeting Analysis
-
-```bash
-# See what ads run in specific regions
-python3 skills/google-ad-scraper/scripts/search_google_ads.py \
-  --domain "shopify.com" --region US --output summary
-
-python3 skills/google-ad-scraper/scripts/search_google_ads.py \
-  --domain "shopify.com" --region GB --output summary
+# Run for each competitor domain
+for domain in "competitor1.com" "competitor2.com" "competitor3.com"; do
+  python3 skills/google-ad-scraper/scripts/search_google_ads.py \
+    --domain "$domain" --max-ads 50
+done
 ```
 
 ## Limitations
 
-- **Advertiser ID lookup** uses Puppeteer-based web scraping of Google's SPA. It may occasionally fail — use `--domain` for best results or provide `--advertiser-id` directly.
+- **Company name resolution** uses Puppeteer-based web scraping of Google's SPA. It may occasionally fail — use `--domain` for best results.
 - **Ad coverage**: Google only shows ads from verified advertisers. Some smaller advertisers may not appear.
-- **Historical data**: The Transparency Center primarily shows recently active ads.
-
-## Configuration
-
-See `references/apify-config.md` for detailed API configuration, token setup, and rate limits.
+- **Historical data**: Primarily shows recently active ads.

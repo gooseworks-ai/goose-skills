@@ -63,7 +63,7 @@ This skill works with existing capabilities but produces significantly better re
 Run `site-content-catalog` for each competitor:
 
 ```bash
-python3 skills/site-content-catalog/scripts/catalog_site.py \
+python3 skills/site-content-catalog/scripts/catalog_content.py \
   --url "<competitor_url>" \
   --output json
 ```
@@ -99,13 +99,13 @@ Based on your product category, evaluate these standard pSEO pattern types:
 
 ### 1C: Customer Language Mining
 
-Run `reddit-scraper` to find how ICP talks about the problem:
+Run `reddit-post-finder` to find how ICP talks about the problem:
 
 ```bash
-python3 skills/reddit-scraper/scripts/scrape_reddit.py \
-  --query "<category> OR <problem keyword>" \
-  --subreddits "<relevant_subs>" \
-  --sort relevance --time year --limit 50
+python3 skills/reddit-post-finder/scripts/search_reddit.py \
+  --subreddit "<relevant_subs>" \
+  --keywords "<category>,<problem keyword>" \
+  --days 365 --sort top --time year
 ```
 
 Extract:
@@ -302,7 +302,7 @@ For each pattern, specify exactly where the variable data comes from:
 4. ...
 ```
 
-Save to `clients/<client-name>/seo/pseo-blueprint-[YYYY-MM-DD].md`.
+Save to the current working directory or wherever the user prefers.
 
 ## Cost
 
@@ -320,7 +320,7 @@ Save to `clients/<client-name>/seo/pseo-blueprint-[YYYY-MM-DD].md`.
 ## Tools Required
 
 - **Apify API token** — `APIFY_API_TOKEN` env var
-- **Upstream skills:** `site-content-catalog`, `seo-domain-analyzer`, `reddit-scraper`
+- **Upstream skills:** `site-content-catalog`, `seo-domain-analyzer`, `reddit-post-finder`
 - **Optional (enhanced):** DataForSEO (`DATAFORSEO_LOGIN` + `DATAFORSEO_PASSWORD`), Keywords Everywhere (`KEYWORDS_EVERYWHERE_API_KEY`), SEMrush (`SEMRUSH_API_KEY`), or Ahrefs (`AHREFS_API_TOKEN`)
 
 ## Trigger Phrases

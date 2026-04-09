@@ -273,7 +273,7 @@ Save to `clients/<client-name>/product-marketing/battlecards/vs-[competitor-slug
 | Component | Cost |
 |-----------|------|
 | Web research | Free |
-| Review mining (optional, via review-scraper) | ~$0.50-1.00 |
+| Review mining (optional, via review-site-scraper) | ~$0.50-1.00 |
 | Ad analysis (optional, via ad scrapers) | ~$0.50-1.00 |
 | All analysis and battlecard generation | Free (LLM reasoning) |
 | **Total** | **Free — $2** |
@@ -282,8 +282,8 @@ Save to `clients/<client-name>/product-marketing/battlecards/vs-[competitor-slug
 
 - **web_search** — for competitor research
 - **fetch_webpage** — for site analysis
-- **Optional:** `review-scraper` for G2/Capterra mining
-- **Optional:** `meta-ad-scraper`, `google-ad-scraper` for ad intelligence
+- **Optional:** `review-site-scraper` for G2/Capterra mining
+- **Optional:** `google-ad-scraper` for ad intelligence, `web_search` against Meta Ad Library for Meta ads
 
 ## Trigger Phrases
 

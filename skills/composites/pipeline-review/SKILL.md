@@ -9,23 +9,6 @@ description: >
   stage velocity, stuck deals, and actionable recommendations. Tool-agnostic —
   works with any CRM (Salesforce, HubSpot, Pipedrive, Close, Supabase, CSV).
 tags: [research]
-
-graph:
-  provides:
-    - pipeline-executive-summary     # Quick snapshot for leadership
-    - pipeline-detailed-report       # Full diagnostic with data tables
-    - actionable-recommendations     # Specific next steps based on findings
-  requires:
-    - deal-data                      # Pipeline/deal/meeting data from CRM or database
-    - your-company-context           # What you sell, sales cycle expectations
-  connects_to:
-    - skill: cold-email-outreach
-      when: "Analysis reveals leads need re-engagement or follow-up campaigns"
-      passes: stuck-leads, re-engagement-candidates
-    - skill: meeting-brief
-      when: "Analysis surfaces upcoming meetings that need prep"
-      passes: upcoming-meetings
-  capabilities: [data-analysis, reporting]
 ---
 
 # Pipeline Review
@@ -118,7 +101,7 @@ Different CRMs use different field names. Map the user's fields to standard anal
 | What's your target win rate? | Flag if below target | `target_win_rate` |
 | What's your target pipeline value? | Revenue gap analysis | `target_pipeline_value` |
 
-**Store config in:** `clients/<client-name>/config/pipeline-review.json` or equivalent.
+**Store config** in the current working directory or wherever the user prefers.
 
 ---
 
@@ -717,11 +700,11 @@ Based on user preference:
 
 | Destination | How |
 |-------------|-----|
-| **Markdown file** | Save to `clients/<client>/reports/pipeline-review-{date}.md` |
+| **Markdown file** | Save to the current working directory |
 | **Google Sheets** | Export data tables to a sheet (metrics, deal list, source breakdown) |
 | **Notion** | Push to a Notion database page via Notion MCP |
 | **Slack** | Send executive summary to a channel |
-| **Email** | Send via agentmail |
+| **Email** | Send via AgentMail API (agentmail.dev) or other email API |
 | **stdout** | Just display it (default) |
 
 ---

@@ -54,7 +54,7 @@ CONFSTECH_BASE = "https://raw.githubusercontent.com/tech-conferences/conference-
 LISTENNOTES_BASE = "https://listen-api.listennotes.com/api/v2"
 APIFY_BASE = "https://api.apify.com/v2"
 APIFY_MEETUP_ACTOR = "qaDijpjO2HlVfLvoE"  # automation-lab/meetup-scraper
-APIFY_LUMA_ACTOR = "r5gMxLV2rOF3J1fxu"  # lexis-solutions/lu-ma-scraper
+APIFY_LUMA_ACTOR = "matyascimbulka~luma-event-scraper"
 
 APIFY_POLL_INTERVAL = 10
 APIFY_MAX_WAIT = 300
@@ -368,87 +368,94 @@ def fetch_meetup_events(search_queries, apify_key, location=None):
 # Source: Luma (Apify)
 # ---------------------------------------------------------------------------
 
-def fetch_luma_events(search_queries, apify_key):
-    """Search Luma events via Apify actor."""
+def fetch_luma_events(luma_categories, luma_cities, apify_key):
+    """Search Luma events via Apify actor.
+
+    Args:
+        luma_categories: list of category slugs from: "tech", "food", "ai",
+            "arts", "climate", "fitness", "wellness", "crypto"
+        luma_cities: list of city slugs like "san-francisco", "new-york", "london"
+        apify_key: Apify API token
+    """
     if not apify_key:
         print("[luma] Skipping — no Apify API token", file=sys.stderr)
         return []
 
     signals = []
 
-    for query in search_queries:
-        actor_input = {
-            "query": query,
-            "maxItems": 20,
-        }
+    actor_input = {
+        "slugs": luma_categories,
+        "cities": luma_cities,
+    }
 
-        print(f"[luma] Searching: '{query}'...", file=sys.stderr)
+    print(f"[luma] Searching categories={luma_categories}, cities={luma_cities}...", file=sys.stderr)
 
+    try:
+        resp = req.post(
+            f"{APIFY_BASE}/acts/{APIFY_LUMA_ACTOR}/runs",
+            params={"token": apify_key},
+            json=actor_input,
+            timeout=30,
+        )
+        resp.raise_for_status()
+        run_id = resp.json().get("data", {}).get("id")
+    except Exception as e:
+        print(f"[luma-error] Failed to start: {e}", file=sys.stderr)
+        return []
+
+    # Poll
+    elapsed = 0
+    status_data = {}
+    while elapsed < APIFY_MAX_WAIT:
+        time.sleep(APIFY_POLL_INTERVAL)
+        elapsed += APIFY_POLL_INTERVAL
         try:
-            resp = req.post(
-                f"{APIFY_BASE}/acts/{APIFY_LUMA_ACTOR}/runs",
-                params={"token": apify_key},
-                json=actor_input,
-                timeout=30,
-            )
-            resp.raise_for_status()
-            run_id = resp.json().get("data", {}).get("id")
-        except Exception as e:
-            print(f"[luma-error] Failed to start: {e}", file=sys.stderr)
-            continue
-
-        # Poll
-        elapsed = 0
-        status_data = {}
-        while elapsed < APIFY_MAX_WAIT:
-            time.sleep(APIFY_POLL_INTERVAL)
-            elapsed += APIFY_POLL_INTERVAL
-            try:
-                sr = req.get(f"{APIFY_BASE}/actor-runs/{run_id}", params={"token": apify_key}, timeout=15)
-                status_data = sr.json().get("data", {})
-                if status_data.get("status") == "SUCCEEDED":
-                    break
-                elif status_data.get("status") in ("FAILED", "ABORTED", "TIMED-OUT"):
-                    status_data = {}
-                    break
-            except Exception:
-                pass
-
-        if not status_data.get("defaultDatasetId"):
-            continue
-
-        try:
-            dataset_id = status_data["defaultDatasetId"]
-            dr = req.get(f"{APIFY_BASE}/datasets/{dataset_id}/items", params={"token": apify_key, "format": "json"}, timeout=30)
-            events = dr.json()
+            sr = req.get(f"{APIFY_BASE}/actor-runs/{run_id}", params={"token": apify_key}, timeout=15)
+            status_data = sr.json().get("data", {})
+            if status_data.get("status") == "SUCCEEDED":
+                break
+            elif status_data.get("status") in ("FAILED", "ABORTED", "TIMED-OUT"):
+                status_data = {}
+                break
         except Exception:
-            continue
+            pass
 
-        for event in events:
-            event_name = event.get("name", event.get("title", ""))
-            organizer = event.get("organizer", event.get("host", ""))
-            event_url = event.get("url", event.get("eventUrl", ""))
-            event_date = event.get("date", event.get("startDate", ""))
+    if not status_data.get("defaultDatasetId"):
+        print("[luma] No dataset returned", file=sys.stderr)
+        return signals
 
-            signals.append({
-                "person_name": str(organizer)[:100] if organizer else "",
-                "company": "",
-                "signal_type": "event_attendee",
-                "signal_label": "Event (Luma)",
-                "event_name": str(event_name)[:200],
-                "event_type": "Luma Event",
-                "talk_or_role": "Organizer/Host",
-                "bio": clean_html(event.get("description", ""))[:300],
-                "url": str(event_url),
-                "linkedin": "",
-                "twitter": "",
-                "website": "",
-                "date": str(event_date)[:10],
-                "source": "Luma",
-            })
+    try:
+        dataset_id = status_data["defaultDatasetId"]
+        dr = req.get(f"{APIFY_BASE}/datasets/{dataset_id}/items", params={"token": apify_key, "format": "json"}, timeout=30)
+        events = dr.json()
+    except Exception as e:
+        print(f"[luma-error] Fetch failed: {e}", file=sys.stderr)
+        return signals
 
-        print(f"[luma] '{query}': {len(events)} events", file=sys.stderr)
+    for event in events:
+        event_name = event.get("name", event.get("title", ""))
+        organizer = event.get("organizer", event.get("host", ""))
+        event_url = event.get("url", event.get("eventUrl", ""))
+        event_date = event.get("date", event.get("startDate", ""))
 
+        signals.append({
+            "person_name": str(organizer)[:100] if organizer else "",
+            "company": "",
+            "signal_type": "event_attendee",
+            "signal_label": "Event (Luma)",
+            "event_name": str(event_name)[:200],
+            "event_type": "Luma Event",
+            "talk_or_role": "Organizer/Host",
+            "bio": clean_html(event.get("description", ""))[:300],
+            "url": str(event_url),
+            "linkedin": "",
+            "twitter": "",
+            "website": "",
+            "date": str(event_date)[:10],
+            "source": "Luma",
+        })
+
+    print(f"[luma] {len(events)} events found", file=sys.stderr)
     print(f"[luma] Total: {len(signals)} luma signals", file=sys.stderr)
     return signals
 
@@ -709,7 +716,8 @@ def run(config_path, output=None):
     confstech_topics = config.get("confstech_topics", [])
     meetup_queries = config.get("meetup_queries", [])
     meetup_location = config.get("meetup_location", "")
-    luma_queries = config.get("luma_queries", [])
+    luma_categories = config.get("luma_categories", [])
+    luma_cities = config.get("luma_cities", [])
     podcast_queries = config.get("podcast_queries", [])
     devpost_slugs = config.get("devpost_slugs", [])
     manual_file = config.get("manual_signals_file", "")
@@ -742,9 +750,9 @@ def run(config_path, output=None):
         all_signals.extend(fetch_meetup_events(meetup_queries, apify_key, meetup_location))
 
     # Luma
-    if "luma" not in skip and luma_queries and apify_key:
+    if "luma" not in skip and (luma_categories or luma_cities) and apify_key:
         print(f"\n{'='*60}", file=sys.stderr)
-        all_signals.extend(fetch_luma_events(luma_queries, apify_key))
+        all_signals.extend(fetch_luma_events(luma_categories, luma_cities, apify_key))
 
     # Podcasts
     if "podcast" not in skip and podcast_queries and listennotes_key:

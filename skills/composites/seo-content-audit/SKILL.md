@@ -1,17 +1,16 @@
 ---
 name: seo-content-audit
 description: >
-  Comprehensive SEO footprint analysis that orchestrates site-content-catalog,
-  seo-domain-analyzer, and brand-voice-extractor into a single deep-dive report.
-  Catalogs all content, pulls real SEO metrics, runs competitor analysis, builds
-  topic/keyword and content-type gap matrices, extracts brand voice, and produces
-  a prioritized recommendations report. The complete SEO audit for any company.
+  Comprehensive SEO footprint analysis. Catalogs all content, pulls real SEO metrics
+  (via Apify Semrush/Ahrefs scrapers or free web search probes), runs competitor analysis,
+  builds topic/keyword and content-type gap matrices, and produces a prioritized
+  recommendations report. The complete SEO audit for any company.
 tags: [seo]
 ---
 
 # SEO Content Audit
 
-The complete SEO footprint analysis. Orchestrates three granular skills — content cataloging, SEO metrics, and brand voice extraction — into a comprehensive audit with competitive gap matrices and prioritized recommendations.
+The complete SEO footprint analysis — content inventory, real SEO metrics, competitor comparison, gap matrices, and prioritized recommendations in one report.
 
 ## Quick Start
 
@@ -19,20 +18,14 @@ The complete SEO footprint analysis. Orchestrates three granular skills — cont
 Run an SEO content audit for [company]. Website: [url]. Competitors: [list].
 ```
 
-Or with a client context file:
-```
-Run an SEO content audit for [client]. Use context at clients/[client]/context.md.
-```
-
 ## Inputs
 
-| Input | Required | Source |
-|-------|----------|--------|
-| **Company name** | Yes | User provides or `clients/<client>/context.md` |
-| **Company domain** | Yes | User provides or context file |
-| **Seed competitors** | Recommended | User provides 2-5; system discovers more |
+| Input | Required | Description |
+|-------|----------|-------------|
+| **Company name** | Yes | User provides |
+| **Company domain** | Yes | e.g., "example.com" |
+| **Seed competitors** | Recommended | 2-5 competitor domains; system discovers more |
 | **Target keywords** | Optional | User provides; system also auto-discovers |
-| **Client context file** | Optional | `clients/<client>/context.md` for ICP, positioning |
 
 ## Cost
 
@@ -51,64 +44,36 @@ Run an SEO content audit for [client]. Use context at clients/[client]/context.m
 
 ### Phase 1: Context & Setup
 
-1. **Load context:** If `clients/<client>/context.md` exists, read it for company info, known competitors, positioning
-2. **Gather basics:** Company name, domain, seed competitors, target keywords
-3. **Create output directory:** `clients/<client>/research/`
+Gather basics from the user: company name, domain, seed competitors, target keywords.
 
 ### Phase 2: Content Inventory
 
-Run `site-content-catalog` for the target domain:
+Crawl the target domain to build a complete content inventory:
 
-```bash
-python3 skills/site-content-catalog/scripts/catalog_content.py \
-  --domain "[domain]" \
-  --deep-analyze 20 \
-  --output "clients/[client]/research/content-inventory.json" \
-  --markdown "clients/[client]/research/content-inventory.md"
-```
-
-This produces:
-- Full page catalog (every URL, title, date, type, topic cluster)
-- Content grouped by type and topic
-- Publishing cadence analysis
+1. Fetch sitemap.xml (or RSS, blog index as fallback)
+2. Catalog every page: URL, title, date, content type, topic cluster
+3. Group content by type (blog posts, landing pages, case studies, comparisons, etc.)
+4. Analyze publishing cadence (posts/month, trend, recency)
+5. Optionally deep-analyze top 20 pages for word count, funnel stage, CTA presence
 
 ### Phase 3: SEO Performance Data
 
-Run `seo-domain-analyzer` for the target domain:
+Pull SEO metrics for the target domain:
 
-```bash
-python3 skills/seo-domain-analyzer/scripts/analyze_domain.py \
-  --domain "[domain]" \
-  --competitors "[comma-separated competitors]" \
-  --keywords "[comma-separated keywords]" \
-  --output "clients/[client]/research/seo-profile.json" \
-  --markdown "clients/[client]/research/seo-profile.md"
-```
-
-This produces:
-- Domain authority, traffic estimates, keyword count
-- Backlink profile (DR, referring domains)
-- Keyword ranking positions for target keywords
-- Auto-discovered competitors from keyword overlap
-- Competitor domain metrics for comparison
+1. **Domain overview** — authority score, organic traffic estimate, keyword count, traffic trend (via Apify Semrush scraper if `APIFY_API_TOKEN` is set, or web search probes as fallback)
+2. **Backlink profile** — domain rating, referring domains, top linking sites (via Apify Ahrefs scraper)
+3. **Keyword rankings** — check actual Google rankings for target keywords (via web search or Apify Google Search scraper)
+4. **Competitor discovery** — identify competing domains from keyword overlap
+5. **Competitor metrics** — run a lighter version of steps 1-2 for each competitor
 
 ### Phase 4: Competitor Content Analysis
 
-For each competitor (3-5 max), run a lighter content catalog:
-
-```bash
-# For each competitor domain:
-python3 skills/site-content-catalog/scripts/catalog_content.py \
-  --domain "[competitor]" \
-  --output "clients/[client]/research/competitor-[name]-content.json"
-```
-
-We only need:
-- Content type breakdown (how many blog posts, case studies, comparisons, etc.)
+For each competitor (3-5 max), crawl their site to get:
+- Content type breakdown (blog posts, case studies, comparisons, etc.)
 - Topic clusters (what topics they cover)
 - Publishing cadence (how often they publish)
 
-No deep analysis needed for competitors.
+No deep analysis needed for competitors — just structure and volume.
 
 ### Phase 5: Build Gap Matrices
 
@@ -159,18 +124,17 @@ Compare what types of content each company produces:
 2. Count per type per company
 3. Flag types where target is at zero or significantly behind competitors
 
-### Phase 6: Brand Voice Extraction
+### Phase 6: Brand Voice Extraction (Optional)
 
-Run `brand-voice-extractor` on the target's top content:
+If the audit will feed into content creation:
 
-1. From the content inventory (Phase 2), select 10-15 of the best blog posts
-   - Prioritize: most recent, longest, most diverse topics
-2. WebFetch each page and analyze the writing
-3. Produce brand voice guidelines (see brand-voice-extractor SKILL.md for full process)
+1. From the content inventory (Phase 2), select 10-15 of the best blog posts (most recent, longest, most diverse topics)
+2. Fetch each page and analyze the writing style
+3. Produce brand voice guidelines: tone, vocabulary patterns, sentence structure, do's and don'ts
 
 ### Phase 7: Synthesis & Report
 
-Combine all findings into the final report. Save to `clients/<client>/research/seo-content-audit.md`.
+Combine all findings into the final report. Save to the current working directory or wherever the user prefers.
 
 ---
 
@@ -324,7 +288,7 @@ how many have CTAs, internal linking patterns]
 - [Anti-pattern 1]
 - [Anti-pattern 2]
 
-[Link to full brand voice profile at clients/<client>/research/brand-voice.md]
+[Link to full brand voice profile if generated]
 
 ---
 
@@ -359,9 +323,9 @@ how many have CTAs, internal linking patterns]
 [Link to brand-voice.md]
 
 ### D. Raw Data
-- Content inventory JSON: `clients/[client]/research/content-inventory.json`
-- SEO profile JSON: `clients/[client]/research/seo-profile.json`
-- Competitor content JSONs: `clients/[client]/research/competitor-*.json`
+- Content inventory JSON
+- SEO profile JSON
+- Competitor content JSONs
 ```
 
 ---
@@ -378,7 +342,5 @@ how many have CTAs, internal linking patterns]
 
 ## Dependencies
 
-- Python 3.8+ with `requests`
-- `APIFY_API_TOKEN` env var (for full analysis; partial free fallback without)
-- Skills: `site-content-catalog`, `seo-domain-analyzer`, `brand-voice-extractor`
-- Web fetch capability (for brand voice extraction and content deep analysis)
+- `APIFY_API_TOKEN` env var (for Semrush/Ahrefs data via Apify; free web search probes work without it)
+- Web search and web fetch capabilities

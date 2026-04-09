@@ -267,12 +267,10 @@ For each generated article, verify:
 ## Phase 4: Output
 
 ### Single Article Mode
-Save to `clients/<client-name>/customer-success/help-center/[article-slug].md`
+Save to the current working directory as `[article-slug].md`.
 
 ### Batch Mode
-Save to:
-- `clients/<client-name>/customer-success/help-center/` — One file per article
-- `clients/<client-name>/customer-success/help-center/_index.md` — Table of contents with categories
+Save all articles to a `help-center/` subdirectory in the current working directory, with an `_index.md` table of contents.
 
 ### Index Template
 

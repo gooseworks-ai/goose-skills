@@ -32,9 +32,9 @@ Ask the user these questions:
 5. Exclude keywords — roles to filter out (e.g., "software engineer", "designer")
 6. Geographic focus (optional, e.g., "United States")
 
-Save config in the client's campaign folder:
+Save config in the current working directory (or user-specified path):
 ```bash
-clients/<client-name>/campaigns/competitor-post-engagers/config.json
+competitor-post-engagers-config.json
 ```
 
 Config JSON structure:
@@ -60,13 +60,13 @@ Config JSON structure:
 - `competitor_company_names` — Company names to exclude from enrichment (the competitor itself).
 - `industry_keywords` — Industry terms that indicate ICP fit. Matched against Apollo's industry field.
 
-The `output_dir` is relative to the script directory by default. Override it with an absolute path to write output to the client's folder instead (e.g., `"output_dir": "clients/<client-name>/leads"`).
+The `output_dir` is relative to the script directory by default. Override it with an absolute path to write output to a specific location.
 
 ## Phase 1: Run the Pipeline
 
 ```bash
 python3 skills/competitor-post-engagers/scripts/competitor_post_engagers.py \
-  --config clients/<client-name>/campaigns/competitor-post-engagers/config.json \
+  --config competitor-post-engagers-config.json \
   [--test] [--yes] [--skip-company-enrich] [--top-n 3] [--max-runs 30]
 ```
 
@@ -158,11 +158,11 @@ CSV exported to `{output_dir}/{name}-engagers-{date}.csv`:
 **Test mode:**
 ```bash
 python3 skills/competitor-post-engagers/scripts/competitor_post_engagers.py \
-  --config clients/<client>/campaigns/competitor-post-engagers/config.json --test --yes
+  --config competitor-post-engagers-config.json --test --yes
 ```
 
 **Full run:**
 ```bash
 python3 skills/competitor-post-engagers/scripts/competitor_post_engagers.py \
-  --config clients/<client>/campaigns/competitor-post-engagers/config.json --yes
+  --config competitor-post-engagers-config.json --yes
 ```

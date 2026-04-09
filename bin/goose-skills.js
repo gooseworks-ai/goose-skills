@@ -20,7 +20,7 @@ const {
   placeForCursor,
 } = require('./lib/targets');
 
-const REPO = 'athina-ai/goose-skills';
+const REPO = 'gooseworks-ai/goose-skills';
 const BRANCH = 'main';
 const RAW_BASE = `https://raw.githubusercontent.com/${REPO}/${BRANCH}`;
 const INDEX_URL = `${RAW_BASE}/skills-index.json`;
@@ -307,9 +307,9 @@ switch (command) {
     console.log('  info <slug>      Show skill or pack details');
     console.log('\nExamples:');
     console.log('  npx goose-skills list');
-    console.log('  npx goose-skills install reddit-scraper');
-    console.log('  npx goose-skills install reddit-scraper --codex');
-    console.log('  npx goose-skills install reddit-scraper --cursor --project-dir /path/to/project');
+    console.log('  npx goose-skills install reddit-post-finder');
+    console.log('  npx goose-skills install reddit-post-finder --codex');
+    console.log('  npx goose-skills install reddit-post-finder --cursor --project-dir /path/to/project');
     console.log('  npx goose-skills install lead-gen-devtools          # Install a skill pack');
     break;
 }

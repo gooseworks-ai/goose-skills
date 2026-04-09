@@ -47,7 +47,7 @@ clients/<client>/personas/personas.json
 
 **If personas exist:** Load them, confirm they look current, and list them for the user. Skip to Phase 2.
 
-**If no personas exist:** Run `icp-persona-builder`:
+**If no personas exist:** Run `buyer-persona-generator`:
 
 1. Research the company — what they sell, who they serve, pricing model, stage
 2. Identify 4-6 ICP segments from website, case studies, reviews, job postings
@@ -61,7 +61,7 @@ clients/<client>/personas/personas.json
 
 ### Phase 2: Website Scorecard Review
 
-Run `icp-website-review` in **scorecard mode** against the client's own site.
+Run `icp-website-audit` in **scorecard mode** against the client's own site.
 
 1. **Crawl the client's site** — homepage, pricing, product, solutions, about, case studies, blog, docs
 2. **Check external presence** — search results, review sites, social proof
@@ -81,7 +81,7 @@ Run `icp-website-review` in **scorecard mode** against the client's own site.
 
 ### Phase 3: Competitive Head-to-Head
 
-Run `icp-website-review` in **head-to-head mode** against each competitor.
+Run `icp-website-audit` in **head-to-head mode** against each competitor.
 
 For each competitor (1-3):
 
@@ -123,12 +123,12 @@ Merge all findings into a single audit report. This is the deliverable.
 
 ## Output
 
-Save to `clients/<client-name>/icp-website-audit.md`
+Save to the current working directory as `icp-website-audit.md` (or user-specified path).
 
-Also save the sub-reports:
-- `clients/<client>/personas/` (persona assets, reusable)
-- `clients/<client>/icp-reviews/<date>-scorecard.md` (site review)
-- `clients/<client>/icp-reviews/<date>-head-to-head-<competitor>.md` (per competitor)
+Also save the sub-reports to the current working directory:
+- `personas/` (persona assets, reusable)
+- `icp-reviews/<date>-scorecard.md` (site review)
+- `icp-reviews/<date>-head-to-head-<competitor>.md` (per competitor)
 
 ### Consolidated Report Template
 
@@ -354,7 +354,7 @@ Crawl all sites → Scorecard → Head-to-heads → Consolidate
 
 ## Dependencies
 
-- Skills: `icp-persona-builder`, `icp-website-review`
+- Skills: `buyer-persona-generator`, `icp-website-audit`
 - Web search capability (for research, external presence checks)
 - Web fetch capability (for reading website pages)
 - No API keys or paid tools required

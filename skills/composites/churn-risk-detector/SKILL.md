@@ -228,7 +228,7 @@ Data sources: [list what was available]
 3. **[Account]** — [Why + what to do]
 ```
 
-Save to `clients/<client-name>/customer-success/churn-risk/risk-report-[YYYY-MM-DD].md`.
+Save to `risk-report-[YYYY-MM-DD].md` in the current working directory.
 
 ## Scheduling
 

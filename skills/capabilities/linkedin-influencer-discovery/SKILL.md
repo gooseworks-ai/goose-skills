@@ -75,5 +75,5 @@ Each influencer result includes (when available):
 - The actor queries a pre-indexed database, not live LinkedIn search
 - Follower counts are across all platforms, not LinkedIn-specific
 - The `--min-followers` and `--max-followers` flags filter client-side after results return
-- For detailed LinkedIn profile enrichment after discovery, chain with `get-linkedin-profile`
-- For post analysis, chain with `linkedin-profile-post-scraper`
+- For detailed profile enrichment, use the Apify `supreme_coder/linkedin-profile-scraper` actor on the discovered LinkedIn URLs
+- For post analysis, use the Apify `harvestapi/linkedin-profile-posts` actor on the discovered LinkedIn URLs

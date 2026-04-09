@@ -2,24 +2,25 @@
 name: cold-email-outreach
 description: >
   End-to-end cold email outreach orchestration. Handles goal alignment, lead
-  selection from Supabase, sequence design, email generation (via email-drafting),
-  campaign setup in the user's chosen outreach tool, and logging. Tool-agnostic —
-  supports Smartlead (default), Instantly, Lemlist, Apollo, or manual CSV export.
+  ingestion from any source (CSV, paste, CRM export, database), sequence design,
+  email generation, campaign setup in the user's chosen outreach tool, and launch.
+  Tool-agnostic — supports Smartlead (full MCP automation), Instantly, Lemlist,
+  Apollo, or manual CSV export.
 tags: [outreach]
 ---
 
 # Cold Email Outreach
 
-The final mile of the outbound pipeline. Takes qualified leads from Supabase, builds email sequences using the `email-drafting` skill, loads campaigns into the user's chosen outreach tool, and logs everything back to Supabase.
+The final mile of the outbound pipeline. Takes leads from wherever the user has them, builds email sequences, loads campaigns into the user's chosen outreach tool, and launches.
 
 **Tool-agnostic:** Asks the user which outreach platform they use. Defaults to Smartlead if they have MCP tools configured. Falls back to CSV export for any other tool or manual workflow.
 
-## When to Auto-Load
+## When to Use
 
-Load this skill when:
+Use this skill when:
 - User says "launch a campaign", "send outreach", "email these leads", "set up cold email"
-- An upstream skill connects with "create email campaign" or "passes: supabase-eligible-leads"
-- User completes `lead-qualification` and wants to act on the results
+- User has a list of leads and wants to run an outbound email campaign
+- User wants to create and configure a campaign in Smartlead or another outreach tool
 
 ## Supported Outreach Tools
 
@@ -27,7 +28,7 @@ This skill does NOT assume a specific tool. It asks first, then adapts.
 
 | Tool | Integration | How It Works |
 |------|------------|--------------|
-| **Smartlead** (default) | MCP tools (`mcp__smartlead__*`) | Full automation: create campaign, add sequences, import leads, configure schedule, launch |
+| **Smartlead** (default) | MCP tools (`mcp__smartlead__*`) | Full automation: create campaign, add sequences, import leads, allocate mailboxes, configure schedule, launch |
 | **Instantly** | CSV import | Generate CSV matching Instantly's import format, user uploads manually |
 | **Lemlist** | CSV import | Generate CSV with Lemlist-compatible columns |
 | **Apollo** | CSV import | Generate CSV matching Apollo sequence import format |
@@ -41,24 +42,19 @@ This skill does NOT assume a specific tool. It asks first, then adapts.
 
 ## Prerequisites
 
-### Supabase
+### Environment Variables
 
-People must be stored in Supabase with the schema from `tools/supabase/schema.sql`. The `people` and `outreach_log` tables must exist. Run `python3 tools/supabase/setup_database.py` if setting up fresh.
-
-Environment variables in `.env`:
+**For Smartlead (full automation):**
 ```
-SUPABASE_URL=https://xxx.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=eyJ...
+SMARTLEAD_API_KEY=your_api_key_here
 ```
+All Smartlead API calls go to `https://server.smartlead.ai/api/v1` with `?api_key=$SMARTLEAD_API_KEY` appended. Rate limit: 10 requests per 2 seconds.
 
-### Outreach Tool
-
-- **Smartlead:** MCP tools available via `mcp__smartlead__*`. No additional setup.
-- **All others:** Just need CSV export — no API keys required.
+**For CSV-based tools:** No env vars needed.
 
 ## Phase 0: Intake
 
-Ask all questions at once. Organize by category. Skip any already answered by an upstream skill.
+Ask all questions at once. Organize by category. Skip any already answered.
 
 ### Campaign Goal
 1. What's the objective? (book meetings, drive demo requests, get replies, nurture)
@@ -68,17 +64,17 @@ Ask all questions at once. Organize by category. Skip any already answered by an
 ### Outreach Tool
 4. Which outreach tool do you use? (Smartlead / Instantly / Lemlist / Apollo / Other / Just give me a CSV)
 
-### Lead Selection
-5. Which leads should we target? Options:
-   - All leads for a specific `client_name`
-   - Specific `icp_segment`
-   - Title patterns (e.g., "VP Operations", "Director of Sales")
-   - Industry or location filters
-   - `qualification_score` above a threshold
-   - Specific `source` (crustdata, apollo, linkedin, etc.)
-   - Custom filter (describe what you want)
+### Lead Source
+5. Where are your leads? Accept any of these:
+   - **CSV file** — read the file, map columns to required fields
+   - **Pasted list** — names, emails, companies pasted directly
+   - **CRM export** — Salesforce, HubSpot, or other CRM data
+   - **Database query** — if the user has a database, help them query it
+   - **Upstream output** — data from a prior task in this conversation
 6. Any exclusions? (specific companies, recently contacted leads, certain titles)
 7. Max campaign size? (default: 200)
+
+**Minimum required per lead:** email address. Nice to have: first_name, last_name, company, title.
 
 ### Sequence Design
 8. How many touches? (default: 3)
@@ -91,61 +87,35 @@ Ask all questions at once. Organize by category. Skip any already answered by an
 13. Daily send limit per account? (default: 30/day)
 14. Track opens and clicks? (default: opens yes, clicks no)
 
-## Phase 1: Lead Selection from Supabase
+## Phase 1: Lead Ingestion
 
-### Connect
+### Parse Leads
 
-Use the shared Supabase client:
+Accept leads from whatever source the user provides:
 
-```python
-import sys, os
-sys.path.insert(0, os.path.join("tools", "supabase"))
-from supabase_client import SupabaseClient
+- **CSV file:** Read the file. Flexibly match columns:
+  - `email` (required) — also matches `Email`, `email_address`
+  - `first_name` — also matches `firstname`, `first`, `First Name`
+  - `last_name` — also matches `lastname`, `last`, `Last Name`
+  - `company_name` — also matches `company`, `organization`, `Company`
+  - Any extra columns become custom fields
+- **Pasted data:** Parse whatever format the user provides. Extract emails, names, companies.
+- **CRM/Database:** Help the user query or export, then parse the result.
 
-client = SupabaseClient(os.environ["SUPABASE_URL"], os.environ["SUPABASE_SERVICE_ROLE_KEY"])
-```
+### Validate & Deduplicate
 
-### Build Filters
-
-Map user criteria to PostgREST query parameters on the `people` table:
-
-| User Says | PostgREST Filter |
-|-----------|-----------------|
-| "VP Operations" | `title=ilike.*VP Operations*` |
-| Client "happy-robot" | `client_name=eq.happy-robot` |
-| Score > 7 | `qualification_score=gte.7` |
-| Has verified email | `email_verified=eq.true` |
-| Industry "logistics" | `industry=ilike.*logistics*` |
-| Location "San Francisco" | `location=ilike.*San Francisco*` |
-| Source "crustdata" | `source=eq.crustdata` |
-| Not contacted in 84 days | `or=(last_contacted.is.null,last_contacted.lt.{84_days_ago})` |
-
-### Cooldown Filter (Mandatory)
-
-**Always** exclude people contacted within 84 days (12 weeks). This is not optional.
-
-Use the shared client's `check_cooldown()` method:
-```python
-in_cooldown = client.check_cooldown(client_name="happy-robot", cooldown_days=84)
-# Returns set of person_id strings still in cooldown
-```
-
-Or query directly:
-1. Query `outreach_log` for `person_id`s with `sent_date` in the last 84 days:
-   ```
-   GET /rest/v1/outreach_log?select=person_id&sent_date=gte.{84_days_ago}&status=neq.bounced&client_name=eq.{client}
-   ```
-2. Collect those `person_id`s into an exclusion set
-3. Add `id=not.in.({excluded_ids})` to the people query
+- Remove rows without a valid email
+- Deduplicate by email (keep first occurrence)
+- Report: total rows, valid, invalid, duplicates removed
 
 ### Present & Confirm
 
 Show a sample table (10-15 leads) with:
-- Name, Title, Company, Industry, Score, Email, Last Contacted
+- Name, Title, Company, Email
 
-Tell user: total eligible leads, how many excluded by cooldown, how many have verified emails.
+Tell user: total eligible leads, how many were invalid/removed.
 
-Ask user to confirm or adjust filters before proceeding.
+Ask user to confirm or adjust before proceeding.
 
 ## Phase 2: Sequence Design
 
@@ -161,12 +131,20 @@ Get user approval on the structure before generating copy in Phase 3.
 
 ## Phase 3: Email Generation
 
-Load the `email-drafting` skill and pass it:
-- Campaign context (goal, angle, product, proof points)
-- Sequence structure from Phase 2
-- 3-5 sample leads from the selected list
-- Personalization tier
-- Tone preference
+Write the email copy directly using these guidelines.
+
+### Email Structure Formula
+
+Every cold email follows this skeleton:
+
+```
+Hook (1 sentence) → Evidence (1-2 sentences) → Offer (1 sentence)
+```
+
+**Word count targets:**
+- Cold intro (Touch 1): 50-90 words
+- Follow-up (Touch 2-3): 30-50 words
+- Breakup (final touch): 20-40 words
 
 ### By Personalization Tier
 
@@ -175,6 +153,16 @@ Load the `email-drafting` skill and pass it:
 **Tier 2 (Segment):** Generate one template per segment per touch. Segments are defined by role, industry, or signal type. Swap pain points and proof points between segments.
 
 **Tier 3 (Deep):** Generate unique email per lead per touch. Cap at 50 leads — recommend Tier 2 above that volume.
+
+### Hard Rules
+
+1. **No filler openers.** Never "I hope this finds you well"
+2. **No "just checking in" follow-ups.** Every touch adds a new reason to reply
+3. **Under 150 words per email.** Most should be 80-120.
+4. **One CTA per email.** Always low-friction.
+5. **No selling in the first sentence.** Lead with them, not you.
+6. **Subject lines under 50 chars.** No caps, no exclamation marks, no emoji.
+7. **Sign off with name only.** No "Best regards."
 
 ### Review Loop
 
@@ -189,20 +177,38 @@ Load the `email-drafting` skill and pass it:
 
 Full automation via MCP tools. Execute in this order:
 
-**Step 1: List email accounts**
+**Step 1: Find and allocate mailboxes**
+
 ```
 mcp__smartlead__get_email_accounts
 ```
-Present available accounts. User selects which to use.
+
+Returns all email accounts with `id`, `from_email`, `from_name`, `daily_sent_count`, `is_smtp_success`, `is_imap_success`.
+
+To find **free mailboxes** (not already assigned to active campaigns):
+
+1. Fetch all campaigns: `mcp__smartlead__get_campaigns`
+2. For each campaign with status `ACTIVE` or `STARTED`, fetch its email accounts: `mcp__smartlead__get_campaign_email_accounts`
+3. Build a set of all `email_account_id` values currently assigned to active campaigns
+4. A mailbox is "free" if its `id` is NOT in the active set AND `is_smtp_success` = true AND `is_imap_success` = true
+5. Sort free mailboxes by `daily_sent_count` ascending (prefer least-used)
+6. Select the requested number of free mailboxes
+
+If fewer free mailboxes than requested, tell the user and ask how to proceed.
+
+Present available/selected accounts to user for confirmation.
 
 **Step 2: Create campaign**
+
 ```
 mcp__smartlead__create_campaign
   name: {campaign_name}
 ```
+
 Save the returned `campaign_id`.
 
 **Step 3: Add sequence steps**
+
 ```
 mcp__smartlead__save_campaign_sequences
   campaign_id: {campaign_id}
@@ -215,15 +221,20 @@ mcp__smartlead__save_campaign_sequences
 
 **Merge variable mapping:** Convert `{first_name}` → `{{first_name}}`, `{company}` → `{{company}}` (Smartlead uses double-brace syntax).
 
+**Note:** Blank `subject` on emails 2+ makes them send as replies in the same thread.
+
 **Step 4: Import leads (batch 100)**
+
 ```
 mcp__smartlead__add_leads_to_campaign
   campaign_id: {campaign_id}
   lead_list: [{ email: "...", first_name: "...", last_name: "...", company_name: "...", ... }]
 ```
-Batch in groups of 100 if more than 100 leads.
+
+Smartlead accepts max 100 leads per call. Chunk the list and call for each batch. Extra columns become `custom_fields`.
 
 **Step 5: Assign sending accounts**
+
 ```
 mcp__smartlead__add_email_accounts_to_campaign
   campaign_id: {campaign_id}
@@ -231,18 +242,37 @@ mcp__smartlead__add_email_accounts_to_campaign
 ```
 
 **Step 6: Set schedule**
+
 ```
 mcp__smartlead__update_campaign_schedule
   campaign_id: {campaign_id}
-  schedule: { ... }
+  schedule: {
+    timezone: "America/New_York",
+    days_of_the_week: [1, 2, 3, 4, 5],
+    start_hour: "08:00",
+    end_hour: "18:00",
+    min_time_btw_emails: 10,
+    max_new_leads_per_day: 20
+  }
 ```
 
+`days_of_the_week`: 0=Sunday, 1=Monday, ..., 6=Saturday.
+
 **Step 7: Configure settings**
+
 ```
 mcp__smartlead__update_campaign_settings
   campaign_id: {campaign_id}
-  settings: { track_opens: true, track_clicks: false, stop_on_reply: true }
+  settings: {
+    track_settings: [],
+    stop_lead_settings: "REPLY_TO_AN_EMAIL",
+    send_as_plain_text: false,
+    follow_up_percentage: 100
+  }
 ```
+
+Allowed `track_settings`: `DONT_TRACK_EMAIL_OPEN`, `DONT_TRACK_LINK_CLICK`, `DONT_TRACK_REPLY_TO_AN_EMAIL`
+Allowed `stop_lead_settings`: `REPLY_TO_AN_EMAIL`, `CLICK_ON_A_LINK`, `OPEN_AN_EMAIL`
 
 ### If CSV-Based Tool (Instantly, Lemlist, Apollo, Other)
 
@@ -258,8 +288,10 @@ Columns depend on personalization tier:
 - CSV columns: `email`, `first_name`, `last_name`, `company`, `title`, `touch_1_subject`, `touch_1_body`, `touch_2_subject`, `touch_2_body`, `touch_3_subject`, `touch_3_body`
 
 **Step 2: Save file**
+
+Save to the current working directory:
 ```
-skills/cold-email-outreach/output/{campaign-name}-{YYYY-MM-DD}.csv
+{campaign-name}-{YYYY-MM-DD}.csv
 ```
 
 **Step 3: Provide tool-specific import instructions**
@@ -301,81 +333,42 @@ Tool: {smartlead/instantly/etc.}
 
 **Do NOT activate the campaign without explicit user confirmation.** Present the summary, then ask: "Ready to launch? Type 'yes' to activate."
 
-- **Smartlead:** `mcp__smartlead__update_campaign_status` → set to active
+- **Smartlead:** `mcp__smartlead__update_campaign_status` → set status to `START`
 - **CSV tools:** Tell user the file is ready for import, provide the file path
 
-## Phase 6: Tracking & Logging
+## Smartlead API Reference
 
-### Database Write Policy
+All endpoints use base URL `https://server.smartlead.ai/api/v1` with `?api_key=` query param.
 
-**All database writes in this phase require the user's prior approval from the launch gate in Phase 5.** The Phase 5 approval ("Ready to launch?") covers both the campaign activation AND the subsequent logging. However, if the campaign was exported as CSV (not launched via Smartlead), confirm with the user before logging — they may not have actually imported/sent yet.
+| Endpoint | Method | Purpose |
+|----------|--------|---------|
+| `/campaigns/create` | POST | Create a new campaign |
+| `/campaigns` | GET | List all campaigns |
+| `/campaigns/{id}` | GET | Get campaign by ID |
+| `/campaigns/{id}/schedule` | POST | Set campaign schedule |
+| `/campaigns/{id}/settings` | POST | Update tracking/stop settings |
+| `/campaigns/{id}/sequences` | POST | Save email sequences |
+| `/campaigns/{id}/leads` | POST | Add leads (max 100 per call) |
+| `/campaigns/{id}/email-accounts` | GET | List mailboxes on a campaign |
+| `/campaigns/{id}/email-accounts` | POST | Assign mailboxes to campaign |
+| `/campaigns/{id}/status` | POST | Change campaign status (START/PAUSED/STOPPED) |
+| `/campaigns/{id}/analytics` | GET | Top-level campaign analytics |
+| `/email-accounts/` | GET | List all email accounts (offset/limit) |
 
-### Log to Supabase
+## Cost
 
-After launch (or export), insert records into `outreach_log`:
+| Component | Cost |
+|-----------|------|
+| Smartlead campaign setup | Free (API included with Smartlead plan) |
+| CSV export | Free |
+| Email copy generation | Free (LLM reasoning) |
 
-```
-POST /rest/v1/outreach_log
-Prefer: return=minimal
+## Error Handling
 
-[
-  {
-    "person_id": "{person_uuid}",
-    "campaign_name": "{campaign_name}",
-    "external_campaign_id": "{smartlead_campaign_id or null}",
-    "channel": "email",
-    "tool": "{smartlead/instantly/lemlist/apollo/manual}",
-    "sent_date": "{ISO timestamp}",
-    "status": "sent",
-    "client_name": "{client_name}"
-  },
-  ...
-]
-```
-
-Or use the shared client:
-```python
-client.log_outreach(entries)
-```
-
-**For CSV-based tools:** Log with `status` = `"exported"`. It changes to `"sent"` when user confirms they launched the campaign in their tool.
-
-### Update People Records
-
-Update `last_contacted` on the people table for all people in this campaign:
-
-```
-PATCH /rest/v1/people?id=in.({person_ids})
-{ "last_contacted": "{ISO timestamp}" }
-```
-
-### Present Summary
-
-```
-{count} people logged to outreach_log
-last_contacted updated for {count} people
-Campaign ID: {id}
-Cooldown active until: {date + 84 days}
-Next eligible re-contact: {date}
-```
-
-## Cooldown Enforcement Rules
-
-Reference section for cooldown logic used throughout this skill.
-
-| Rule | Detail |
-|------|--------|
-| **Default cooldown** | 84 days (12 weeks) from `sent_date` |
-| **Bounced leads** | Exempt from cooldown — email never reached them. Filter: `status=neq.bounced` when checking cooldown |
-| **Active campaign leads** | Always ineligible — if a lead is in an active campaign (status = "sent", no reply/bounce), they cannot be added to another campaign |
-| **User override** | User can explicitly override cooldown for specific leads — ask for confirmation before allowing |
-| **Null last_contacted** | Leads never contacted are always eligible |
-
-## Output Directory
-
-Campaign exports are saved to:
-```
-skills/cold-email-outreach/output/
-```
-
-Create this directory if it doesn't exist. Files are named `{campaign-name}-{YYYY-MM-DD}.csv`.
+| Error | Fix |
+|-------|-----|
+| `SMARTLEAD_API_KEY` not set | Ask user to add it to `.env` or export it |
+| Smartlead rate limit (429) | Wait 2 seconds and retry |
+| Lead upload fails | Check email format, retry batch |
+| No free mailboxes | Show all accounts, ask user which to use |
+| Campaign creation fails | Check API key validity |

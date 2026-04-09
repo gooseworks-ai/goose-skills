@@ -204,7 +204,7 @@ Evidence: [proof]
 - [ ] [Asset 2] — ...
 ```
 
-Save to `clients/<client-name>/campaigns/[campaign-slug]/brief.md`.
+Save to the current working directory or wherever the user prefers.
 
 ## Tools Required
 

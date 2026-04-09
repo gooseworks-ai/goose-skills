@@ -4,19 +4,6 @@ name: seo-content-engine
 description: >
   Build and run an SEO content engine: audit current state, identify gaps,
   build keyword architecture, generate content calendar, draft content.
-graph:
-  provides: [seo-content-strategy, content-calendar, content-drafts]
-  requires: [company-url, target-keywords, client-context]
-  connects_to:
-    - skills/composites/seo-content-audit/SKILL.md
-    - skills/capabilities/content-asset-creator/SKILL.md
-skills_used:
-  - skills/composites/seo-content-audit
-  - skills/capabilities/aeo-visibility
-  - skills/capabilities/brand-voice-extractor
-  - skills/capabilities/visual-brand-extractor
-  - skills/capabilities/content-asset-creator
-  - skills/composites/competitor-intel
 ---
 
 # SEO Content Engine

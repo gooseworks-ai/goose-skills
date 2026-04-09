@@ -1,6 +1,6 @@
 # Database Search Sequence (Lean Signal)
 
-For leads sourced from `crustdata-supabase` or other database searches. These leads match the ICP by firmographic and demographic criteria but have no engagement signal. You know their title, company, and industry — that's it.
+For leads sourced from database searches (e.g., Apollo, CSV imports, CRM exports). These leads match the ICP by firmographic and demographic criteria but have no engagement signal. You know their title, company, and industry — that's it.
 
 **Strategy:** Since there's no behavioral signal, lead with relevance to their role and industry. Do the research to make it feel personal even with lean data.
 

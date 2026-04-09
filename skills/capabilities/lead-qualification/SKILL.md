@@ -4,8 +4,8 @@ description: >
   Lead qualification engine with conversational intake. Asks structured questions to understand
   your qualification criteria, generates a reusable qualification prompt, then batch-enriches leads
   via Apify LinkedIn scraping and scores them with parallel processing. Outputs qualified/disqualified
-  verdicts with confidence scores and reasoning to Google Sheets (via Rube) or CSV. Supports
-  calibration mode for prompt refinement.
+  verdicts with confidence scores and reasoning to CSV or whatever output format the user prefers.
+  Supports calibration mode for prompt refinement.
 ---
 
 # Lead Qualification Engine
@@ -168,12 +168,13 @@ When evaluating a lead, structure your reasoning as:
 ### Step 1 — Parse Input
 
 Accept any of these input formats:
-- **Google Sheet URL** — Read via Rube MCP (`GOOGLESHEETS_GET_ALL_DATA_FROM_GOOGLE_SHEET` or similar)
-- **CSV file path** — Read directly from filesystem
+- **CSV file path** — Read directly from filesystem (default)
 - **LinkedIn profile URLs** — One or more URLs provided inline
 - **Inline list** — Names/companies listed in the message
+- **Google Sheet URL** — If the user provides a Google Sheet, use whatever Google Sheets tool is available to read it
+- **Any other source** — Ask the user to export as CSV or paste the data
 
-Detect the format automatically. If it's a Google Sheet, use `RUBE_SEARCH_TOOLS` to find the right Google Sheets reading tool, then read the data.
+Detect the format automatically based on what the user provides.
 
 ### Step 1.5 — Batch Enrichment via Apify
 
@@ -281,31 +282,21 @@ Once calibration is approved, process ALL remaining leads using parallel subagen
    - Write 2-3 sentence reasoning
 5. Return the result
 
-### Step 4 — Output to Google Sheet
+### Step 4 — Output Results
 
-**Primary: Google Sheets via Rube MCP**
+**Default: CSV**
 
-Use `RUBE_SEARCH_TOOLS` to find Google Sheets tools, then:
-
-1. Create a new Google Sheet named: `[Campaign Name] - Qualified Leads - [Date]`
-2. Write all original columns PLUS three new columns:
+1. Write a CSV with all original columns PLUS three new columns:
    - `Qualified` — Yes / No
    - `Confidence` — High / Medium / Low
    - `Reasoning` — 2-3 sentence explanation
-3. Format the sheet:
-   - Bold header row with dark background
-   - Color-code the Qualified column: green for Yes, red for No
-   - Color-code Confidence: green for High, yellow for Medium, red for Low
-   - Auto-size columns for readability
-   - Add a filter row so the user can filter by Qualified/Confidence
-4. Present the Google Sheet link to the user
-
-**Fallback: CSV**
-
-If Rube MCP is unavailable or Google Sheets connection fails:
-1. Write a CSV to: `skills/lead-qualification/output/[campaign-name]-[date].csv`
-2. Include all original columns + Qualified, Confidence, Reasoning
+2. Save to the current working directory or wherever the user prefers
 3. Tell the user the file path
+
+**If the user prefers Google Sheets or another destination:**
+- Write to Google Sheets if tools are available
+- Write to Notion if requested
+- Export in any format the user asks for
 
 ### Step 5 — Summary
 
@@ -344,28 +335,24 @@ The qualification agent should have access to:
   - Run with `--dry-run` first to preview cost
 - **Web Search** — to research leads when enrichment data is sparse or missing
 - **Fetch (web page)** — to pull LinkedIn profiles, company pages, etc.
-- **Rube MCP** — for Google Sheets input/output
-  - `RUBE_SEARCH_TOOLS` — discover available tools
-  - `RUBE_MANAGE_CONNECTIONS` — ensure Google Sheets connection is active
-  - `RUBE_REMOTE_WORKBENCH` — execute sheet operations
-- **Task tool** — to parallelize lead processing across subagents (mandatory for Step 3)
 - **Read/Write** — for CSV I/O and saving qualification prompts
 - **Glob/Grep** — to find existing qualification prompt files
+- **Optional: Google Sheets tools** — if the user wants to read from or write to Google Sheets
 
 ---
 
 ## Example Usage
 
-### Full intake + qualify from Google Sheet:
+### Full intake + qualify from CSV:
 ```
-Qualify leads for our outbound campaign. Here's the lead list: [Google Sheet URL]
+Qualify leads for our outbound campaign. Here's the lead list: leads.csv
 ```
 → Agent detects no saved prompt, starts intake, builds prompt, then qualifies.
 
 ### Reuse existing prompt:
 ```
 Qualify these leads using @skills/lead-qualification/qualification-prompts/series-a-founders.md
-— lead list: [Google Sheet URL]
+— lead list: leads.csv
 ```
 → Agent skips intake, goes straight to calibration + qualification.
 

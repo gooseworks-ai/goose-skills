@@ -222,7 +222,7 @@ Based on competitive analysis:
 - **Risk:** [What to watch out for — e.g., "Competitor B is already cheaper at scale"]
 ```
 
-Save to `clients/<client-name>/product-marketing/pricing-intel/pricing-comparison-[YYYY-MM-DD].md`.
+Save to `pricing-comparison-[YYYY-MM-DD].md` in the current working directory.
 
 ## Scheduling
 

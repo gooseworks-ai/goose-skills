@@ -4,7 +4,7 @@ description: >
   Aggregate customer feedback from multiple sources — support tickets, NPS comments,
   Slack messages, G2 reviews, call transcripts, survey responses — into a unified VoC
   report with theme clustering, sentiment analysis, trend detection, and actionable
-  recommendations for product, marketing, and CS teams. Chains review-scraper for public
+  recommendations for product, marketing, and CS teams. Chains review-site-scraper for public
   review data.
 tags: [research]
 ---
@@ -64,7 +64,7 @@ Sentiment classification per item:
 If product is on review platforms:
 
 ```
-Chain: review-scraper for G2, Capterra, Trustpilot
+Chain: review-site-scraper for G2, Capterra, Trustpilot
 Filter: reviews from the target time period
 ```
 
@@ -277,7 +277,7 @@ vs Prior Period: [+/- X points]
 [Full theme cards with all quotes and analysis]
 ```
 
-Save to `clients/<client-name>/customer-success/voc/voc-report-[YYYY-MM-DD].md`.
+Save to `voc-report-[YYYY-MM-DD].md` in the current working directory.
 
 ## Scheduling
 
@@ -291,16 +291,16 @@ Run monthly or quarterly:
 
 | Component | Cost |
 |-----------|------|
-| Review scraping (via review-scraper) | ~$0.50-1.00 |
+| Review scraping (via review-site-scraper) | ~$0.50-1.00 |
 | Web search (social mentions) | Free |
 | All analysis and synthesis | Free (LLM reasoning) |
 | **Total** | **Free — $1** |
 
 ## Tools Required
 
-- **Optional:** `review-scraper` for G2/Capterra/Trustpilot reviews
-- **Optional:** `twitter-scraper` for social mentions
-- **Optional:** `reddit-scraper` for community feedback
+- **Optional:** `review-site-scraper` for G2/Capterra/Trustpilot reviews
+- **Optional:** `twitter-mention-tracker` for social mentions
+- **Optional:** `reddit-post-finder` for community feedback
 - All analysis is pure LLM reasoning on provided data
 
 ## Trigger Phrases

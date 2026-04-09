@@ -7,29 +7,6 @@ description: >
   existing relationships. Outputs a scored CSV with qualification status, reasoning, and
   pipeline overlap flags. Tool-agnostic — works with any CRM, enrichment tool, or data source.
 tags: [lead-generation]
-
-graph:
-  provides:
-    - qualified-lead-list        # Leads scored with ICP fit, reasoning, and pipeline flags
-    - qualification-csv          # Flat CSV with all qualification data
-    - pipeline-overlap-report    # Which leads already exist in CRM/pipeline
-  requires:
-    - inbound-lead-data          # Leads from inbound-lead-triage or raw CSV/paste
-    - your-company-context       # ICP definition, product description, buyer personas
-  connects_to:
-    - skill: inbound-lead-triage
-      when: "Upstream — receives triaged leads from inbound triage"
-      receives: prioritized-lead-queue
-    - skill: disqualification-handling
-      when: "Leads that fail qualification need rejection or referral handling"
-      passes: disqualified-leads-with-reasoning
-    - skill: inbound-lead-enrichment
-      when: "Leads with missing data need enrichment before qualification"
-      receives: enriched-lead-data
-    - skill: sales-call-prep
-      when: "Qualified Tier 1 leads need call prep"
-      passes: qualified-lead-list
-  capabilities: [web-search, contact-enrichment, crm-lookup]
 ---
 
 # Inbound Lead Qualification
@@ -53,7 +30,7 @@ Load this composite when:
 
 ## Step 0: Configuration (Once Per Client)
 
-On first run, establish the ICP definition and CRM access. Save to `clients/<client-name>/config/lead-qualification.json`.
+On first run, establish the ICP definition and CRM access. Save to the current working directory or wherever the user prefers (e.g., `config/lead-qualification.json`).
 
 ```json
 {
@@ -100,12 +77,12 @@ On first run, establish the ICP definition and CRM access. Save to `clients/<cli
   "hard_disqualifiers": [],
   "hard_qualifiers": [],
   "crm_access": {
-    "tool": "Supabase | HubSpot | Salesforce | CSV export | none",
+    "tool": "HubSpot | Salesforce | CSV export | none",
     "access_method": "",
     "tables_or_objects": []
   },
   "existing_customer_source": {
-    "tool": "Supabase | CRM | CSV | none",
+    "tool": "HubSpot | Salesforce | CSV | none",
     "access_method": ""
   },
   "qualification_prompt_path": "path/to/lead-qualification/prompt.md or null"
@@ -152,7 +129,7 @@ For each lead, check against existing data sources to identify overlaps:
 - This is NOT a disqualification — it's a routing flag (upsell vs. new business)
 
 **Check 2 — Already in pipeline?**
-- Search CRM/Supabase for the company in active deals
+- Search your CRM (HubSpot, Salesforce, CSV) for the company in active deals
 - If match found: Flag as `in_pipeline` with deal details (stage, owner, last activity)
 - Critical: Sales rep should know before reaching out that a colleague already has this account
 
@@ -161,7 +138,7 @@ For each lead, check against existing data sources to identify overlaps:
 - If match found: Flag as `previously_contacted` with history summary (when, what channel, outcome)
 
 **Check 4 — Known from signal composites?**
-- Search Supabase signals table for the company
+- Search your CRM or signal tracking system for the company
 - If match found: Flag as `signal_flagged` with signal type and date
 
 ### Output
@@ -196,7 +173,7 @@ For each lead's company, evaluate against every ICP company dimension:
 
 **Dimension 3 — Company Stage**
 - Seed, Series A, Series B+, Growth, Public, Bootstrapped
-- Sources: Crunchbase, news, enrichment data
+- Sources: SixtyFour or Orthogonal, news, enrichment data
 - Score: `match` | `borderline` | `mismatch` | `unknown`
 
 **Dimension 4 — Geography**
@@ -400,7 +377,7 @@ Produce a CSV with ALL input fields preserved plus qualification columns appende
 - `implementation_feasibility` — easy | moderate | complex | unlikely
 
 ### Save Location
-`clients/<client-name>/leads/inbound-qualified-[date].csv`
+The current working directory or wherever the user prefers (e.g., `leads/inbound-qualified-[date].csv`).
 
 ### Summary Report
 
@@ -468,7 +445,6 @@ After producing the CSV, present a summary:
 ## Tools Required
 
 - **CRM access** — to check pipeline, existing customers, outreach history
-- **Supabase client** — for pipeline/signal lookups
 - **Web search** — for company research when enrichment data is sparse
-- **Enrichment tools** — Apollo, LinkedIn scraper, or similar (optional, enhances accuracy)
+- **Enrichment tools** — SixtyFour or Orthogonal, LinkedIn scraper, or similar (optional, enhances accuracy)
 - **Read/Write** — for CSV I/O and config management

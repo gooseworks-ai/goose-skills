@@ -85,7 +85,7 @@ Present exclusions alongside the inclusion table. Ask user to confirm both.
 
 **Important:** The ICP definition becomes the input context for all downstream skills. Be specific — vague ICPs produce vague leads.
 
-**Search precision warning:** Downstream tools (Crustdata, Apollo) match on the exact title strings, industry tags, and keywords you pass them. Overly broad or stuffed filters (e.g., 15 keyword tags) return noisy results. Each filter value should be specific and intentional. When in doubt, use fewer, more precise values and let exclusions do the narrowing.
+**Search precision warning:** Downstream tools (Apollo and similar databases) match on the exact title strings, industry tags, and keywords you pass them. Overly broad or stuffed filters (e.g., 15 keyword tags) return noisy results. Each filter value should be specific and intentional. When in doubt, use fewer, more precise values and let exclusions do the narrowing.
 
 ## Phase 3: Choose Path — TAM or Leads?
 
@@ -97,70 +97,12 @@ Once ICP is locked, ask the user:
 >
 > *TAM mapping is best when you want a full picture of your market, ongoing signal monitoring, and a systematic account-based approach. Lead finding is best when you need contacts to reach out to immediately."*
 
-### Path A: Map the TAM → `tam-builder`
+### Path A: Map the TAM
 
-If the user chooses TAM mapping, **don't jump straight into the full build**. Walk through a sizing + confirmation gate first:
-
-**CRITICAL: No database writes without explicit user approval.** The `tam-builder` must never upsert to Supabase until the user has reviewed sample results and said "go." This prevents polluting the database with unwanted entries that are hard to clean up.
-
-#### Step 1: Preview the TAM universe
-
-Run `tam-builder` with the `--preview` flag to get a total company count without touching the database:
-
-```bash
-python3 skills/capabilities/tam-builder/scripts/tam_builder.py \
-  --config <config>.json --mode build --preview
-```
-
-Present the count to the user along with cost/resource context:
-
-> *"Based on your ICP filters, Apollo found **~X companies** in your TAM universe. Here's what a full build would look like:*
->
-> - **Apollo API credits:** ~Y pages of company search (100 companies/page) + persona lookups for Tier 1-2 companies
-> - **Supabase rows:** up to X company records + estimated persona records
-> - **Time:** roughly Z minutes for the full build
->
-> *Before committing, let me run a sample so you can see how the scoring and results look."*
-
-#### Step 2: Run a sample (NO database writes)
-
-Always run a sample before any database writes:
-
-```bash
-python3 skills/capabilities/tam-builder/scripts/tam_builder.py \
-  --config <config>.json --mode build --sample --test
-```
-
-This searches Apollo (1 page, ~100 companies), scores them **in-memory only**, and prints:
-- Tier distribution (how many Tier 1 / 2 / 3)
-- Top Tier 1 companies with scores
-- Sample Tier 2 companies
-
-**No data is written to Supabase.** Present the output to the user and ask:
-
-> *"Here's what the sample looks like — [tier distribution + example companies]. Does this look right? Would you like to:*
-> 1. **Proceed with the full build** — upsert all ~X companies to Supabase
-> 2. **Limit the build** — cap at a specific number of companies
-> 3. **Adjust filters** — tweak the ICP filters and re-sample
-> *"*
-
-If the user wants to adjust filters and re-sample, run `--sample --test` again. Multiple re-samples are free — nothing touches the database until the user approves.
-
-#### Step 3: Execute the build (only after explicit approval)
-
-Once the user confirms, run `tam-builder` in the agreed scope (full or limited) **without** `--sample`:
-
-```bash
-python3 skills/capabilities/tam-builder/scripts/tam_builder.py \
-  --config <config>.json --mode build
-```
-
-**Never pass `--yes` on a first build.** The script's built-in confirmation prompts are an additional safety net.
-
-After the build completes, summarize results and explain what comes next:
-- `signal-scanner` — Monitor TAM companies for buying signals (headcount changes, funding, job postings, LinkedIn activity)
-- `cold-email-outreach` or `linkedin-outreach` — Reach out to Tier 1-2 personas when signals fire
-- The full chain: `tam-builder → signal-scanner → cold-email-outreach`
+If the user chooses TAM mapping, hand off to the TAM builder skill with the ICP definition. The TAM builder will:
+1. Search for companies matching the ICP filters
+2. Score and tier them by fit
+3. Build a persona watchlist for best-fit accounts
 
 **When to recommend TAM path:**
 - User wants a systematic, account-based approach
@@ -175,7 +117,7 @@ If the user chooses lead finding, present ranked strategies based on what's avai
 
 | # | Strategy | Skill Used | Best For | Effort |
 |---|----------|-----------|----------|--------|
-| 1 | **Database search** — Search people DB by title, industry, region, company size | `crustdata-supabase` | High volume, broad ICP | Low |
+| 1 | **Database search** — Search people DB by title, industry, region, company size | `apollo-lead-finder` | High volume, broad ICP | Low |
 | 2 | **Pain language** — Find people posting about problems your product solves | `pain-language-engagers` | Warm leads with expressed need | Medium |
 | 3 | **Competitor audiences** — Find people engaging with competitor content | `competitor-post-engagers` | Leads already in-market | Medium |
 | 4 | **KOL audiences** — Find leads from industry influencer audiences | `kol-discovery` → `kol-engager-icp` | Niche, high-quality leads | Medium |

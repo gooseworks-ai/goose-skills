@@ -6,7 +6,7 @@ description: >
   Uses web search to find newsletters, then scores each against ICP alignment criteria.
   Use when a marketing team wants to reach an existing engaged audience for less than
   the cost of building their own, or when testing a new channel before committing.
-tags: [monitoring]
+tags: [ads]
 ---
 
 # Sponsored Newsletter Finder
@@ -179,7 +179,7 @@ Subject: Sponsoring [Newsletter Name] — [Your Company]
 > Hi [Name] — big fan of [Newsletter Name]. Could you share your media kit and current sponsorship rates? [Your Company] is evaluating newsletter partnerships for Q[X].
 ```
 
-Save to `clients/<client-name>/intelligence/newsletter-sponsors-[YYYY-MM-DD].md`.
+Save to `newsletter-sponsors-[YYYY-MM-DD].md` in the current working directory (or user-specified path).
 
 ## Cost
 

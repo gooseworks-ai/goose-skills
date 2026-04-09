@@ -59,7 +59,7 @@ This skill works with existing capabilities but is dramatically better with doma
 For each competitor, run `site-content-catalog`:
 
 ```bash
-python3 skills/site-content-catalog/scripts/catalog_site.py \
+python3 skills/site-content-catalog/scripts/catalog_content.py \
   --url "<competitor_url>" \
   --output json
 ```
@@ -254,7 +254,7 @@ Patterns where competitors have pages but they're low quality:
 [Link to crawl data, pattern clusters, sample pages analyzed]
 ```
 
-Save to `clients/<client-name>/seo/pseo-competitive-landscape-[YYYY-MM-DD].md`.
+Save to the current working directory or wherever the user prefers.
 
 ## Cost
 

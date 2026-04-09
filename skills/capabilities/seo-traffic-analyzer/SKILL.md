@@ -238,7 +238,7 @@ When using this skill as an agent:
 3. Agent runs all phases, collecting data into a structured report
 4. Agent highlights the most actionable findings
 5. User decides which gaps to address
-6. Agent can chain to content creation or `newsletter-sponsorship-finder` for distribution
+6. Agent can chain to content creation or `sponsored-newsletter-finder` for distribution
 
 **Example prompt:**
 > "Analyze pump.co's SEO. Compare against vantage.sh, antimetal.com, prosperops.com. Check if they rank for cloud cost optimization keywords."

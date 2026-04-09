@@ -8,22 +8,6 @@ description: >
   is sales-specific intelligence that helps SDRs, AEs, and founders walk into calls
   with a plan. Tool-agnostic — works with any CRM, research source, and calendar.
 tags: [research]
-
-graph:
-  provides:
-    - sales-call-brief              # Full pre-call intelligence report
-    - company-deep-dive             # Account-level research with sales lens
-    - person-deep-dive              # Contact-level research with buying signals
-    - talk-track                    # Talking points, questions, objection prep
-  requires:
-    - meeting-context               # Who, when, what the meeting is about
-    - your-company-context          # What you sell, proof points, pricing tier
-  connects_to:
-    - skill: meeting-brief
-      when: "User wants the lighter-weight general meeting brief instead"
-    - skill: pipeline-review
-      when: "User wants to review the broader pipeline context around this deal"
-  capabilities: [web-search, contact-finding, data-analysis]
 ---
 
 # Sales Call Prep
@@ -76,7 +60,7 @@ On first run, collect and store these preferences. Skip on subsequent runs.
 | Where do you track deals? | Salesforce / HubSpot / Pipedrive / Close / Supabase / None | `crm_tool` |
 | Where do you track outreach? | Smartlead / Instantly / Outreach / None | `outreach_tool` |
 
-**Store config in:** `clients/<client-name>/config/sales-call-prep.json` or equivalent.
+**Store config** in the current working directory or wherever the user prefers.
 
 ---
 
@@ -155,8 +139,8 @@ meeting_input: {
 
    | Source | What to Check |
    |--------|---------------|
-   | **Client notes file** | `clients/<client>/notes.md` — may reference past conversations, call summaries, or decisions |
-   | **Previous content/outputs** | `clients/<client>/content/` — past call preps, outreach drafts, or research that included this person or company |
+   | **Client notes file** | Any existing notes — may reference past conversations, call summaries, or decisions |
+   | **Previous content/outputs** | Past call preps, outreach drafts, or research that included this person or company |
    | **Calendar** | Previous meetings with this person or company |
    | **LinkedIn messages** | Direct messages or InMail exchanges (ask user if they recall any) |
    | **Referral context** | How did this meeting come about? Warm intro from whom? Ask user. |

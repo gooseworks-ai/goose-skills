@@ -43,10 +43,7 @@ Also generate:
 
 **Present keywords to user for approval before running.**
 
-Save config in the client workspace:
-```bash
-clients/{client-name}/configs/kol-discovery.json
-```
+Save config in the current working directory or wherever the user prefers:
 
 Config JSON structure:
 ```json
@@ -69,9 +66,9 @@ Config JSON structure:
 
 ```bash
 python3 skills/kol-discovery/scripts/kol_discovery.py \
-  --config clients/{client-name}/configs/kol-discovery.json \
-  --output-dir clients/{client-name}/leads \
-  [--test] [--web-kols clients/{client-name}/configs/kol-web-kols.json] [--yes]
+  --config kol-discovery.json \
+  --output-dir . \
+  [--test] [--web-kols kol-web-kols.json] [--yes]
 ```
 
 **Flags:**
@@ -84,7 +81,7 @@ python3 skills/kol-discovery/scripts/kol_discovery.py \
 
 **What the script does:**
 
-1. **Keyword search** — `harvestapi/linkedin-post-search` for each domain keyword
+1. **Keyword search** — `apimaestro/linkedin-posts-search-scraper-no-cookies` for each domain keyword
 2. **Author aggregation** — Group posts by author, compute engagement metrics
 3. **Scoring** — Composite KOL score: engagement volume (log-scaled) + consistency (post count) + quality (avg engagement) + relevance (keyword breadth) + web research bonus
 4. **Merge** — Combine post-data KOLs with web-researched KOLs, flag overlaps
@@ -101,10 +98,7 @@ Before or alongside the script, do web research to find known KOLs:
 - Find conference speakers, newsletter authors, podcast hosts
 - Check industry publications for frequent contributors
 
-Save as JSON in the client workspace:
-```bash
-clients/{client-name}/configs/kol-web-kols.json
-```
+Save as JSON in the current working directory:
 
 ```json
 [
@@ -133,7 +127,7 @@ Common adjustments:
 
 ## Phase 4: Output
 
-CSV exported to `clients/{client-name}/leads/{client-name}-kols-{date}.csv`:
+CSV exported to the current working directory:
 
 | Column | Description |
 |--------|-------------|
@@ -154,7 +148,7 @@ CSV exported to `clients/{client-name}/leads/{client-name}-kols-{date}.csv`:
 
 - **Apify API token** — set as `APIFY_API_TOKEN` in `.env`
 - **Apify actors used:**
-  - `harvestapi/linkedin-post-search` (keyword search)
+  - `apimaestro/linkedin-posts-search-scraper-no-cookies` (keyword search)
 
 ## Example Usage
 

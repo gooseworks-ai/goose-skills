@@ -5,20 +5,6 @@ description: >
   campaigns. Extracts matched keywords, context snippets, and company mentions
   from incoming emails. Use for monitoring accounting industry newsletters
   for buying signals like acquisitions, migrations, and staffing news.
-graph:
-  provides:
-    - newsletter-signals
-    - company-mentions
-  requires:
-    - agentmail-api-key
-  connects_to:
-    - skill: company-contact-finder
-      when: "A newsletter mentions a company to prospect"
-      passes: company name
-    - skill: accounting-news-monitor
-      when: "Combine newsletter signals with direct news monitoring"
-      passes: newsletter-signals
-  capabilities: [send-email-via-agentmail]
 ---
 
 # Newsletter Monitor

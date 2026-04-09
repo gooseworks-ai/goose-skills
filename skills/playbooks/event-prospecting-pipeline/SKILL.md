@@ -2,20 +2,6 @@
 type: playbook
 name: event-prospecting-pipeline
 description: Find attendees at conferences/events, research their companies, qualify against ICP, and launch outreach
-graph:
-  provides: [qualified-lead-list, outreach-campaign]
-  requires: [event-url-or-topic, icp-criteria]
-  connects_to:
-    - skills/capabilities/setup-outreach-campaign/SKILL.md
-    - skills/capabilities/contact-cache/SKILL.md
-skills_used:
-  - skills/capabilities/luma-event-attendees
-  - skills/capabilities/conference-speaker-scraper
-  - skills/capabilities/lead-qualification
-  - skills/capabilities/company-contact-finder
-  - skills/capabilities/contact-cache
-  - skills/capabilities/setup-outreach-campaign
-  - skills/capabilities/agentmail
 ---
 
 # Event Prospecting Pipeline
@@ -73,9 +59,9 @@ Check all leads against the contact cache to prevent duplicate outreach across s
 Export qualified, deduplicated leads with columns: Name, Title, Company, LinkedIn URL, Email, Signal, Score.
 
 ### 7. Launch Outreach (optional)
-**Skill:** setup-outreach-campaign OR agentmail
+**Skill:** cold-email-outreach
 
-If approved, set up personalized outreach via Smartlead campaign or direct AgentMail.
+If approved, set up personalized outreach via your chosen outreach tool or direct email via AgentMail API (agentmail.dev).
 
 ## Human Checkpoints
 

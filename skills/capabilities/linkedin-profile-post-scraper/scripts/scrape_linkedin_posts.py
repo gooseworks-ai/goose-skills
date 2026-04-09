@@ -121,10 +121,18 @@ def filter_posts(posts, keywords=None, days_back=None):
         cutoff = datetime.now(timezone.utc) - timedelta(days=days_back)
         date_filtered = []
         for p in filtered:
-            date_str = p.get("postedAt") or p.get("postedDate") or p.get("postedDateTimestamp")
-            if date_str is None:
+            raw_date = p.get("postedAt") or p.get("postedDate") or p.get("postedDateTimestamp")
+            if raw_date is None:
                 date_filtered.append(p)
                 continue
+            # Handle dict format from harvestapi actor: {"timestamp": ..., "date": "..."}
+            if isinstance(raw_date, dict):
+                date_str = raw_date.get("timestamp") or raw_date.get("date")
+                if date_str is None:
+                    date_filtered.append(p)
+                    continue
+            else:
+                date_str = raw_date
             if isinstance(date_str, (int, float)):
                 dt = datetime.fromtimestamp(date_str / 1000 if date_str > 1e12 else date_str, tz=timezone.utc)
             elif isinstance(date_str, str):
@@ -146,6 +154,7 @@ def filter_posts(posts, keywords=None, days_back=None):
         kw_filtered = []
         for p in filtered:
             text = " ".join([
+                str(p.get("content", "")),
                 str(p.get("text", "")),
                 str(p.get("postText", "")),
                 str(p.get("title", "")),
@@ -163,13 +172,21 @@ def format_summary(posts):
     lines.append(f"{'#':<4} {'Reactions':<10} {'Comments':<10} {'Date':<12} {'Author':<18} {'Text'}")
     lines.append("-" * 110)
     for i, p in enumerate(posts, 1):
-        text = (p.get("text") or p.get("postText") or "")[:50].replace("\n", " ")
-        reactions = p.get("totalReactionCount") or p.get("numLikes") or 0
-        comments = p.get("commentsCount") or p.get("numComments") or 0
-        date = (p.get("postedAt") or p.get("postedDate") or "")[:10]
-        author = p.get("authorName") or p.get("author", {}).get("name", "") if isinstance(p.get("author"), dict) else str(p.get("author", ""))
+        text = (p.get("content") or p.get("text") or p.get("postText") or "")[:50].replace("\n", " ")
+        eng = p.get("engagement", {})
+        reactions = eng.get("likes", 0) if isinstance(eng, dict) else (p.get("totalReactionCount") or p.get("numLikes") or 0)
+        comments_count = eng.get("comments", 0) if isinstance(eng, dict) else (p.get("commentsCount") or p.get("numComments") or 0)
+        raw_date = p.get("postedAt") or p.get("postedDate") or ""
+        if isinstance(raw_date, dict):
+            date = (raw_date.get("date", "") or "")[:10]
+        elif isinstance(raw_date, str):
+            date = raw_date[:10]
+        else:
+            date = ""
+        author_field = p.get("author", {})
+        author = author_field.get("name", "") if isinstance(author_field, dict) else str(author_field)
         author = author[:16]
-        lines.append(f"{i:<4} {reactions:<10} {comments:<10} {date:<12} {author:<18} {text}")
+        lines.append(f"{i:<4} {reactions:<10} {comments_count:<10} {date:<12} {author:<18} {text}")
     return "\n".join(lines)
 
 
@@ -222,7 +239,7 @@ Examples:
     posts = filter_posts(posts, keywords=keywords, days_back=args.days)
 
     # Sort by reactions descending
-    posts.sort(key=lambda p: p.get("totalReactionCount") or p.get("numLikes") or 0, reverse=True)
+    posts.sort(key=lambda p: (p.get("engagement", {}) or {}).get("likes", 0) if isinstance(p.get("engagement"), dict) else (p.get("totalReactionCount") or p.get("numLikes") or 0), reverse=True)
 
     print(f"Results: {len(posts)} posts after filtering.", file=sys.stderr)
 

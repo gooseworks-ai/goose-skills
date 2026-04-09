@@ -22,6 +22,12 @@ Scan social platforms for what's trending in your space right now — viral post
 - "I want to ride a trend with a paid campaign"
 - "What should we be running ads about this week?"
 
+## Prerequisites
+
+- **Environment variable:** `APIFY_API_TOKEN` — required for Reddit scraping (optional if using only web_search + HN API)
+- **Web search access** — your AI agent must support `web_search` or equivalent for Twitter/X and LinkedIn lookups
+- **No API key needed** for Hacker News (Algolia HN API is free and public)
+
 ## Phase 0: Intake
 
 1. **Your product** — Name + one-line description
@@ -37,41 +43,71 @@ Scan social platforms for what's trending in your space right now — viral post
 
 ## Phase 1: Social Scanning
 
-### 1A: Twitter/X Trend Scan
+### 1A: Twitter/X Trend Scan (web_search)
 
-Run `twitter-scraper` with multiple queries:
+Use web_search with `site:x.com` or `site:twitter.com` to find trending posts — no scraper or credentials needed:
 
-```bash
+```
 # Industry trending topics
-python3 skills/twitter-scraper/scripts/scrape_twitter.py \
-  --query "<industry keyword> (viral OR trending OR hot take OR unpopular opinion OR thread)" \
-  --max-results 50 \
-  --sort top
+web_search: "<industry keyword> (viral OR trending OR hot take OR thread) site:x.com"
 
 # Competitor mentions (momentum signals)
-python3 skills/twitter-scraper/scripts/scrape_twitter.py \
-  --query "<competitor1> OR <competitor2> (raised OR launched OR shut down OR acquired OR outage)" \
-  --max-results 30
+web_search: "<competitor1> OR <competitor2> (raised OR launched OR shut down OR acquired OR outage) site:x.com"
 
 # Pain/frustration spikes
-python3 skills/twitter-scraper/scripts/scrape_twitter.py \
-  --query "<category> (broken OR frustrating OR tired of OR switched from)" \
-  --max-results 30
+web_search: "<category> (broken OR frustrating OR tired of OR switched from) site:x.com"
 ```
+
+Run 3-5 queries to cover:
+- Industry trending topics and hot takes
+- Competitor momentum signals (launches, outages, funding)
+- Pain/frustration spikes in the category
+- Viral threads with high engagement
 
 Score each tweet/thread by engagement velocity (likes + retweets relative to account size and age).
 
-### 1B: Reddit Trend Scan
+### 1B: Reddit Trend Scan (Apify)
 
-Run `reddit-scraper`:
+Use the `trudax/reddit-scraper-lite` actor to scan relevant subreddits for hot posts:
 
-```bash
-python3 skills/reddit-scraper/scripts/scrape_reddit.py \
-  --subreddits "<relevant_subreddits>" \
-  --sort hot \
-  --time week \
-  --limit 30
+**Browse specific subreddits (for trending/hot posts):**
 ```
+POST https://api.apify.com/v2/acts/trudax~reddit-scraper-lite/runs?token=$APIFY_API_TOKEN
+Content-Type: application/json
+
+{
+  "startUrls": [
+    {"url": "https://www.reddit.com/r/SUBREDDIT1/hot/"},
+    {"url": "https://www.reddit.com/r/SUBREDDIT2/hot/"}
+  ],
+  "maxItems": 30
+}
+```
+
+**Search by keyword (for specific topics):**
+```
+POST https://api.apify.com/v2/acts/trudax~reddit-scraper-lite/runs?token=$APIFY_API_TOKEN
+Content-Type: application/json
+
+{
+  "searches": ["<industry keyword> OR <competitor>"],
+  "maxItems": 30
+}
+```
+
+Poll until the run finishes:
+
+```
+GET https://api.apify.com/v2/acts/trudax~reddit-scraper-lite/runs/{RUN_ID}?token=$APIFY_API_TOKEN
+```
+
+When `status` is `SUCCEEDED`, fetch results:
+
+```
+GET https://api.apify.com/v2/datasets/{DATASET_ID}/items?token=$APIFY_API_TOKEN
+```
+
+**Output fields:** Each item has `dataType` ("post" or "comment"), `title` (posts only), `body`, `communityName`, `upVotes`, `numberOfComments` (posts), `url`, `createdAt`.
 
 Look for:
 - Posts with unusually high upvote/comment ratios
@@ -79,29 +115,53 @@ Look for:
 - Complaint threads about incumbents
 - "I just switched from X to Y" posts
 
-### 1C: LinkedIn Trend Scan
+### 1C: LinkedIn Trend Scan (web_search)
 
-Run `linkedin-profile-post-scraper` for 5-10 KOLs in the space:
+Use web_search with `site:linkedin.com/posts` to find high-engagement KOL posts — no scraper or credentials needed:
 
-```bash
-python3 skills/linkedin-profile-post-scraper/scripts/scrape_linkedin_posts.py \
-  --urls "<kol_profile_urls>" \
-  --max-posts 10
 ```
+web_search: "<industry keyword> site:linkedin.com/posts"
+web_search: "<competitor_name> site:linkedin.com/posts"
+web_search: "<KOL_name> <industry keyword> site:linkedin.com/posts"
+web_search: "<trending topic> site:linkedin.com/pulse"
+```
+
+Run queries for:
+- 5-10 key opinion leaders (KOLs) in the space — search their names + topic keywords
+- Industry-level keyword searches to find viral posts
+- Competitor mentions from thought leaders
 
 Identify high-engagement posts on topics relevant to your product category.
 
-### 1D: Hacker News Scan
+### 1D: Hacker News Scan (Algolia HN API)
 
-Run `hacker-news-scraper`:
+Use the free Algolia HN Search API — no API key needed:
 
-```bash
-python3 skills/hacker-news-scraper/scripts/scrape_hn.py \
-  --query "<industry keyword>" \
-  --type story \
-  --sort points \
-  --limit 20
+**Search for relevant stories:**
+
 ```
+GET https://hn.algolia.com/api/v1/search?query=KEYWORD&tags=story&hitsPerPage=20
+```
+
+**Search for recent stories (past 7 days):**
+
+```
+GET https://hn.algolia.com/api/v1/search?query=KEYWORD&tags=story&numericFilters=created_at_i>UNIX_TIMESTAMP_7_DAYS_AGO&hitsPerPage=20
+```
+
+**Get front page stories (current trending):**
+
+```
+GET https://hn.algolia.com/api/v1/search?tags=front_page&hitsPerPage=30
+```
+
+The response includes `points`, `num_comments`, `title`, `url`, and `created_at` for each story. Sort by `points` to find the highest-engagement discussions.
+
+Run queries for:
+- Each ICP keyword
+- Each competitor name
+- The product category
+- Check front page for anything tangentially related
 
 ## Phase 2: Trend Identification & Scoring
 
@@ -162,7 +222,7 @@ Actionable hooks (score 50+): [N]
 
 ---
 
-## 🔴 Run Today (Score 90+)
+## Run Today (Score 90+)
 
 ### Trend: [Trend Title]
 **What's happening:** [2-sentence summary]
@@ -182,13 +242,13 @@ Actionable hooks (score 50+): [N]
 
 ---
 
-## 🟡 Run This Week (Score 70-89)
+## Run This Week (Score 70-89)
 
 [Same format]
 
 ---
 
-## 🟢 Worth Testing (Score 50-69)
+## Worth Testing (Score 50-69)
 
 [Same format, briefer]
 
@@ -198,9 +258,9 @@ Actionable hooks (score 50+): [N]
 
 | Trend | Twitter | Reddit | LinkedIn | HN | Score | Window |
 |-------|---------|--------|----------|----|----|--------|
-| [Trend 1] | ▲▲▲ | ▲▲ | ▲ | — | 92 | 24h |
-| [Trend 2] | ▲▲ | — | ▲▲▲ | ▲ | 78 | 5d |
-| [Trend 3] | ▲ | ▲▲ | — | ▲▲ | 61 | 2w |
+| [Trend 1] | High | Medium | Low | — | 92 | 24h |
+| [Trend 2] | Medium | — | High | Low | 78 | 5d |
+| [Trend 3] | Low | Medium | — | Medium | 61 | 2w |
 
 ---
 
@@ -211,31 +271,25 @@ Actionable hooks (score 50+): [N]
 | [Trend] | [Y/N — who] | [Their take] | [Your differentiated take] |
 ```
 
-Save to `clients/<client-name>/ads/trending-hooks-[YYYY-MM-DD].md`.
-
-## Scheduling
-
-Run weekly or on-demand when you need fresh hooks:
-
-```bash
-0 8 * * 1 python3 run_skill.py trending-ad-hook-spotter --client <client-name>
-```
+Save to `trending-hooks-[YYYY-MM-DD].md` in the current working directory (or user-specified path).
 
 ## Cost
 
 | Component | Cost |
 |-----------|------|
-| Twitter scraper (3 queries) | ~$0.15-0.30 (Apify) |
-| Reddit scraper | ~$0.05-0.10 (Apify) |
-| LinkedIn scraper (5-10 KOLs) | ~$0.25-0.50 (Apify) |
-| HN scraper | Free |
+| Twitter/X (web_search) | Free |
+| Reddit scraper (Apify) | ~$0.05-0.10 |
+| LinkedIn (web_search) | Free |
+| Hacker News (Algolia API) | Free |
 | Analysis & hook generation | Free (LLM reasoning) |
-| **Total** | **~$0.45-0.90** |
+| **Total** | **~$0.05-0.10** (or free if skipping Reddit Apify scraper) |
 
 ## Tools Required
 
-- **Apify API token** — `APIFY_API_TOKEN` env var
-- **Upstream skills:** `twitter-scraper`, `reddit-scraper`, `linkedin-profile-post-scraper`, `hacker-news-scraper`
+- **Environment variable:** `APIFY_API_TOKEN` — for Reddit scraping via Apify (optional — skill works without it using web_search fallback for Reddit)
+- **Web search** — built into your AI agent (for Twitter/X, LinkedIn)
+- **Hacker News Algolia API** — free, no key needed (`https://hn.algolia.com/api/v1/`)
+- No third-party libraries needed. All data collection uses HTTP APIs (`requests` or equivalent) and web_search.
 
 ## Trigger Phrases
 

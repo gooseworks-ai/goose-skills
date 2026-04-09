@@ -262,7 +262,7 @@ Generate a launch checklist based on the tier:
 
 ## Phase 4: Output
 
-Save all assets to `clients/<client-name>/launches/[feature-slug]/`:
+Save all assets to the current working directory (or user-specified path) under a `[feature-slug]/` folder:
 - `launch-kit.md` — All assets in one document
 - `checklist.md` — Launch checklist with owner assignments
 

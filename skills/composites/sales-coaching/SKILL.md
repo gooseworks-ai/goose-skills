@@ -9,27 +9,6 @@ description: >
   handles, and deal progression. Produces personalized coaching recommendations
   based on their specific product, market, and selling style. Tool-agnostic.
 tags: [research]
-
-graph:
-  provides:
-    - sales-skill-assessment         # Strengths and weaknesses across sales dimensions
-    - winning-patterns               # What works in their emails, calls, and deals
-    - coaching-recommendations       # Specific, actionable improvement advice
-    - personalized-playbook          # Best practices distilled from their own data
-  requires:
-    - sales-data                     # Emails, calls, pipeline data
-    - your-company-context           # Product, market, ICP
-  connects_to:
-    - skill: sequence-performance
-      when: "Need deeper analysis of a specific campaign"
-      passes: campaign_id
-    - skill: email-drafting
-      when: "Coaching identifies email copy as a weakness — generate improved templates"
-      passes: winning-patterns, coaching-recommendations
-    - skill: sales-call-prep
-      when: "Coaching identifies call prep as a weakness — improve prep process"
-      passes: coaching-recommendations
-  capabilities: [data-analysis, call-analysis, email-analysis, reporting]
 ---
 
 # Sales Coaching
@@ -38,15 +17,14 @@ An AI coach that studies everything you do in sales — your emails, your calls,
 
 This isn't generic sales advice ("always be closing"). It's coaching derived from YOUR data: your top-performing emails, your winning calls, your successful deal patterns, your most common objection fumbles, and your specific product's market.
 
-**What makes this different from `sequence-performance` and `sales-performance-review`:**
+**What makes this different from `sequence-performance`:**
 
 | Composite | Focus | Output |
 |-----------|-------|--------|
 | `sequence-performance` | How is this campaign doing? | Campaign metrics + copy diagnosis |
-| `sales-performance-review` | What did the team do this period? | Initiative scorecards + resource allocation |
 | `sales-coaching` | How can THIS person sell better? | Personal skill assessment + coaching plan |
 
-The other composites analyze the work. This one coaches the worker.
+The other composite analyzes the work. This one coaches the worker.
 
 ## When to Auto-Load
 
@@ -88,7 +66,7 @@ Load this composite when:
 | Do you have call transcripts available? | Yes (path or tool) / No | `transcripts_available` |
 | How far back should we analyze? | 30 / 60 / 90 / 180 days | `analysis_window` |
 
-**Store config in:** `clients/<client-name>/config/sales-coaching.json` or equivalent.
+**Store config** in the current working directory or wherever the user prefers.
 
 ---
 

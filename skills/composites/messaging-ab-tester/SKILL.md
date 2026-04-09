@@ -1,11 +1,11 @@
 ---
 name: messaging-ab-tester
 description: >
-  Generate 3-5 messaging variants for a value proposition, then deploy them as LinkedIn
-  posts or cold email subject lines to measure which framing resonates most with ICP.
-  Combines copy generation with structured test design and result analysis. Chains with
-  Smartlead for email tests or uses LinkedIn native analytics for organic tests. Use when
-  a product marketing team can't decide between messaging angles and needs data, not opinions.
+  Generate 3-5 messaging variants for a value proposition, design structured A/B tests,
+  and analyze results to determine which framing resonates most with ICP. Tests can run
+  via LinkedIn organic posts, cold email subject line splits, or both. Pure reasoning for
+  variant generation and analysis — the user deploys the tests through their own tools.
+  Use when a team can't decide between messaging angles and needs data, not opinions.
 tags: [brand]
 ---
 
@@ -100,7 +100,7 @@ Headline version:
 
 ### Option B: Cold Email A/B Test
 
-**Setup via Smartlead:**
+**Setup via your outreach tool (Smartlead, Instantly, Lemlist, or any tool with A/B testing):**
 1. Create campaign with all variants as A/B test sequences
 2. Split list evenly across variants (minimum 50 per variant for signal)
 3. Same send time, same sender, same CTA — only the messaging changes
@@ -114,6 +114,22 @@ Headline version:
 ### Option C: Both (Recommended)
 
 Run LinkedIn and email in parallel. Different channels may show different winners — that's valuable signal about where each message works best.
+
+## Phase 2B: Collect Results
+
+After the test has run for the planned duration, gather your results:
+
+**How to provide data:**
+- **Paste metrics** — Copy open rates, reply rates, engagement numbers directly into the chat
+- **CSV export** — Export campaign analytics from your outreach tool and share the file
+- **Screenshot** — Take a screenshot of your dashboard/analytics and share it
+- **Manual input** — Just tell the agent the numbers: "Variant A got 45% open rate and 3% reply rate, Variant B got 52% open rate and 5% reply rate"
+
+**For LinkedIn tests:** Go to your post analytics (click "View analytics" on each post) and share impressions, reactions, comments, and profile visits per post.
+
+**For email tests:** Export or screenshot your campaign's variant/A-B test results showing sends, opens, and replies per variant.
+
+The agent will normalize whatever format you provide into the scoring framework below.
 
 ## Phase 3: Analyze Results
 
@@ -221,7 +237,7 @@ Based on these results, the next messaging test should explore:
 2. [Segment test — e.g., "test winning message against different ICP segment"]
 ```
 
-Save to `clients/<client-name>/product-marketing/messaging-tests/[test-slug]-[YYYY-MM-DD].md`.
+Save to the current working directory or wherever the user prefers.
 
 ## Cost
 
@@ -229,15 +245,16 @@ Save to `clients/<client-name>/product-marketing/messaging-tests/[test-slug]-[YY
 |-----------|------|
 | Variant generation | Free (LLM reasoning) |
 | LinkedIn posting | Free (organic) |
-| Email testing (via Smartlead) | Included in Smartlead plan |
+| Email testing | Included with your outreach tool's plan |
 | Results analysis | Free (LLM reasoning) |
-| **Total** | **Free** (assuming existing Smartlead subscription) |
+| **Total** | **Free** |
 
 ## Tools Required
 
-- **Smartlead** — for email A/B testing (optional — only if testing via email)
-- No other tools required for LinkedIn organic testing
-- Pure reasoning for variant generation and analysis
+None. Pure reasoning for variant generation, test design, and result analysis. The user deploys tests through their own tools:
+- **LinkedIn organic** — post variants manually or via scheduling tool
+- **Cold email** — set up A/B tests in whatever outreach tool they use (Smartlead, Instantly, Lemlist, etc.)
+- **Results** — user provides metrics (screenshots, CSV exports, or manual input) for analysis
 
 ## Trigger Phrases
 

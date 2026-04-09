@@ -3,7 +3,7 @@ name: review-intelligence-digest
 description: >
   Scrape G2, Capterra, and Trustpilot reviews for your product and competitors, then
   extract recurring themes, objections, proof points, and exact customer language for
-  use in messaging. Chains review-scraper with LLM analysis. Produces a weekly or monthly
+  use in messaging. Chains review-site-scraper with LLM analysis. Produces a weekly or monthly
   digest that feeds directly into copywriting, positioning, and sales enablement.
   Use when a marketing team needs to ground messaging in real customer language.
 tags: [research]
@@ -36,18 +36,18 @@ Scrape reviews for your product and top competitors, then extract what actually 
 
 ## Phase 1: Scrape Reviews
 
-Run `review-scraper` for your product and each competitor:
+Run `review-site-scraper` for your product and each competitor:
 
 ```bash
 # Your product
-python3 skills/review-scraper/scripts/scrape_reviews.py \
+python3 skills/capabilities/review-site-scraper/scripts/scrape_reviews.py \
   --platform g2 \
   --url "<your_g2_url>" \
   --days 90 \
   --output json
 
 # Competitor
-python3 skills/review-scraper/scripts/scrape_reviews.py \
+python3 skills/capabilities/review-site-scraper/scripts/scrape_reviews.py \
   --platform g2 \
   --url "<competitor_g2_url>" \
   --days 90 \
@@ -193,7 +193,7 @@ Words and phrases to incorporate in website copy, ads, and content:
 2. [Competitive weakness to build a campaign around]
 ```
 
-Save to `clients/<client-name>/intelligence/review-digest-[YYYY-MM-DD].md`.
+Save to `review-digest-[YYYY-MM-DD].md` in the current working directory.
 
 ## Scheduling
 
@@ -215,7 +215,7 @@ Run monthly (reviews don't change fast enough to warrant weekly):
 ## Tools Required
 
 - **Apify API token** — `APIFY_API_TOKEN` env var
-- **Upstream skill:** `review-scraper`
+- **Upstream skill:** `review-site-scraper`
 
 ## Trigger Phrases
 

@@ -3,37 +3,26 @@ name: apollo-lead-finder
 description: >
   Two-phase Apollo.io prospecting: free People Search to discover ICP-matching
   leads, then selective enrichment to reveal emails/phones (credits per contact).
-  Creates Apollo lists. Deduplicates against Supabase.
+  Creates Apollo lists. Deduplicates against existing contacts by LinkedIn URL.
 tags: [lead-generation]
 ---
 
 # Apollo Lead Finder
 
-Two-phase Apollo.io prospecting: **free** People Search for lead discovery, then selective **paid** enrichment to reveal emails and phone numbers. Creates Apollo lists and contacts. Deduplicates against Supabase.
+Two-phase Apollo.io prospecting: **free** People Search for lead discovery, then selective **paid** enrichment to reveal emails and phone numbers. Creates Apollo lists and contacts.
 
-**Key advantage over CrustData:** Apollo People Search is free (no credits consumed). Credits are only spent when enriching contacts to reveal email/phone. This lets you search tens of thousands of leads at zero cost, review results, then selectively enrich only the best matches.
+**Key advantage:** Apollo People Search is free (no credits consumed). Credits are only spent when enriching contacts to reveal email/phone. This lets you search tens of thousands of leads at zero cost, review results, then selectively enrich only the best matches.
 
-## Prerequisites (One-Time Setup)
+## Prerequisites
 
-### 1. Apollo API Key
+### Apollo API Key
 
 Get your API key from Apollo.io Settings > Integrations > API. Add to `.env`:
 ```
 APOLLO_API_KEY=your-api-key-here
 ```
 
-### 2. Supabase Project
-
-Same Supabase project used by `crustdata-supabase`. The full schema lives in `tools/supabase/schema.sql`. This skill writes to the `people` table (dedup by `linkedin_url` UNIQUE constraint). Run `python3 tools/supabase/setup_database.py` if setting up fresh.
-
-### 3. Verify Environment
-
-Ensure `.env` has all three keys:
-```
-APOLLO_API_KEY=...
-SUPABASE_URL=https://xxx.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=eyJ...
-```
+That's it — one env var.
 
 ## Phase 0: Intake
 
@@ -86,19 +75,7 @@ Available Apollo search filters:
 - `q_organization_name` — organization name search
 - `organization_locations` — company HQ locations
 
-Save config:
-```bash
-skills/apollo-lead-finder/configs/{client-name}.json
-```
-
 ## Phase 1: Search (FREE)
-
-```bash
-python3 skills/apollo-lead-finder/scripts/apollo_lead_finder.py \
-  --config skills/apollo-lead-finder/configs/{client}.json \
-  --phase search \
-  [--test] [--yes] [--dry-run]
-```
 
 ### What the free search returns
 
@@ -112,9 +89,9 @@ Apollo's `api_search` endpoint returns **limited preview data**: Apollo person I
 
 **Step 3: Paginate** — Fetch remaining pages (100 per page, up to mode cap). Apply title filters.
 
-**Step 4: Save manifest** — Write Apollo person IDs + preview data to a JSON manifest file for the enrich phase.
+**Step 4: Collect Apollo person IDs** — Store the Apollo person IDs from search results for the enrich phase.
 
-**Step 5: Export preview CSV** — Write search results to `output/{client-name}-search-{timestamp}.csv` (limited data — full data after enrichment).
+**Step 5: Present preview** — Show the user a sample of search results (first name, title, company) and total count. Ask for approval before enriching.
 
 ### Mode Caps
 
@@ -128,47 +105,36 @@ Apollo's `api_search` endpoint returns **limited preview data**: Apollo person I
 
 ## Database Write Policy
 
-**CRITICAL: Never upsert leads to Supabase without explicit user approval.**
+**CRITICAL: Never export leads without explicit user approval.**
 
-This skill writes to the `people` table during the enrich phase. The search phase is free and produces no database writes — but enrichment both costs credits AND writes to the database.
+The search phase is free. The enrich phase costs credits.
 
 **Required flow:**
-1. Run `--phase search` first (free) — review the search results and preview CSV
+1. Run search first (free) — review the results
 2. Present search results to the user: total matches, sample leads, title distribution
 3. **Get explicit user approval** before running enrich phase
-4. After enrichment, present the enriched results to the user **before upserting to Supabase**
-5. Only upsert after the user confirms the results look good
-
-**The agent must NEVER pass `--yes` on a first run.** The `--yes` flag is only for pre-approved automated runs.
-
-**If the user hasn't approved the upsert:** Export the CSV and show sample results. Let the user review. Only proceed to upsert after they confirm.
+4. After enrichment, present the enriched results to the user **before exporting**
+5. Only export after the user confirms the results look good
 
 ## Phase 2: Enrich (COSTS CREDITS)
 
-```bash
-python3 skills/apollo-lead-finder/scripts/apollo_lead_finder.py \
-  --config skills/apollo-lead-finder/configs/{client}.json \
-  --phase enrich \
-  [--test] [--yes] [--limit N]
-```
+Use the Apollo Bulk People Match API to enrich selected leads from Phase 1.
 
 ### Pipeline Steps
 
 **Step 1: Load search manifest** — Read the manifest JSON saved by the search phase. Contains Apollo person IDs.
 
-**Step 2: Connect to Supabase** — Fetch existing LinkedIn URLs for dedup.
+**Step 2: Load existing contacts for dedup** — If the user has a CSV of existing contacts or a previous export, load LinkedIn URLs for dedup. If no existing data, skip dedup.
 
 **Step 3: Confirm credits** — Display lead count and credit cost estimate. Wait for confirmation.
 
 **Step 4: Bulk enrich** — Call `/people/bulk_match` with Apollo person IDs in batches of 10. Each match costs 1 credit. Returns full data: email, phone, LinkedIn URL, full name, location, company details.
 
-**Step 5: Dedup against Supabase** — Filter out leads whose LinkedIn URLs already exist in Supabase.
+**Step 5: Dedup against existing contacts** — Filter out leads whose LinkedIn URLs already exist in the user's contact list.
 
 **Step 6: Present results to user** — Show enriched sample leads (names, titles, companies, email coverage) and ask for explicit approval before writing to the database.
 
-**Step 7: Upsert to Supabase** — **Only after user approval.** Insert net-new people with `source='apollo'`, `enrichment_status='complete'`.
-
-**Step 8: Export CSV** — Write enriched leads to `output/{client-name}-enriched-{timestamp}.csv`. Update manifest to remove enriched people.
+**Step 7: Export results** — **Only after user approval.** Save enriched leads as CSV to the current working directory, or wherever the user prefers.
 
 ### Mode Caps
 
@@ -183,7 +149,7 @@ python3 skills/apollo-lead-finder/scripts/apollo_lead_finder.py \
 
 Present results:
 - **Total matching** — how many profiles match the filters in Apollo
-- **New leads found** — net-new profiles (after Supabase dedup)
+- **New leads found** — net-new profiles (after dedup)
 - **Apollo list** — name and link to the list in Apollo
 - **Enriched** — how many have emails revealed
 - **Email coverage** — percentage of enriched leads with valid emails
@@ -200,32 +166,8 @@ Common adjustments:
 **Trigger phrases:**
 - "Search Apollo for [titles] at [industries]"
 - "Find leads in Apollo matching my ICP"
-- "Run Apollo search for [client]"
+- "Find VP of Sales at SaaS companies in the US"
 - "Enrich the Apollo leads from last search"
-
-**Test search (free, no DB writes):**
-```bash
-python3 skills/apollo-lead-finder/scripts/apollo_lead_finder.py \
-  --config skills/apollo-lead-finder/configs/example.json --phase search --test
-```
-
-**Dry run (no API calls):**
-```bash
-python3 skills/apollo-lead-finder/scripts/apollo_lead_finder.py \
-  --config skills/apollo-lead-finder/configs/example.json --phase search --dry-run
-```
-
-**Enrich only (after reviewing search results and getting user approval):**
-```bash
-python3 skills/apollo-lead-finder/scripts/apollo_lead_finder.py \
-  --config skills/apollo-lead-finder/configs/example.json --phase enrich --limit 100
-```
-
-**Full search + enrich (only for pre-approved repeat runs):**
-```bash
-python3 skills/apollo-lead-finder/scripts/apollo_lead_finder.py \
-  --config skills/apollo-lead-finder/configs/example.json --phase both
-```
 
 ## Apollo API Reference
 
