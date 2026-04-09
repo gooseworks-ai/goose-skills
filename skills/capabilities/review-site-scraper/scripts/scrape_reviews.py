@@ -66,14 +66,8 @@ def build_input(platform, url, company_name, max_reviews):
                 "company_name": company_name,
                 "maxReviews": max_reviews,
             }
-        elif url:
-            # Fall back to URL if provided instead of company name
-            return {
-                "company_name": url,
-                "maxReviews": max_reviews,
-            }
         else:
-            print("Error: --company-name (or --url) is required for Capterra.", file=sys.stderr)
+            print("Error: --company-name is required for Capterra (e.g. --company-name 'HubSpot CRM').", file=sys.stderr)
             sys.exit(1)
     elif platform == "trustpilot":
         if not url:

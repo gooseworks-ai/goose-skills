@@ -20,7 +20,7 @@ const {
   placeForCursor,
 } = require('./lib/targets');
 
-const REPO = 'athina-ai/goose-skills';
+const REPO = 'gooseworks-ai/goose-skills';
 const BRANCH = 'main';
 const RAW_BASE = `https://raw.githubusercontent.com/${REPO}/${BRANCH}`;
 const INDEX_URL = `${RAW_BASE}/skills-index.json`;

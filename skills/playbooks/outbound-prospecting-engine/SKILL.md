@@ -34,7 +34,7 @@ Based on the client's ICP and motion, select which signals to monitor:
 | Funding announcements | Companies with fresh capital | funding-signal-monitor |
 | LinkedIn posts/comments | Practitioners discussing the problem | linkedin-post-research + linkedin-commenter-extractor |
 | Conference attendees | People actively engaged with the space | luma-event-attendees |
-| Competitor customers | Companies already buying similar solutions | eightfold-customer-finder |
+| Competitor customers | Companies already buying similar solutions | competitor-post-engagers |
 
 ### 2. Run Signal Detection
 

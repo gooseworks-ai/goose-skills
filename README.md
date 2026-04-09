@@ -49,9 +49,9 @@ Notes:
 - Only one target flag is allowed per command.
 - `--cursor` requires `--project-dir`.
 
-## Available Skills (103)
+## Available Skills (104)
 
-**47 Capabilities** (atomic, single-purpose tools) | **51 Composites** (multi-skill chains) | **5 Playbooks** (end-to-end workflows)
+**48 Capabilities** (atomic, single-purpose tools) | **51 Composites** (multi-skill chains) | **5 Playbooks** (end-to-end workflows)
 
 ### Ads (9)
 | Skill | Type | Description |
@@ -217,7 +217,7 @@ The skill's SKILL.md file contains instructions that Claude Code will follow whe
 ## Building from Source
 
 ```bash
-git clone https://github.com/athina-ai/goose-skills.git
+git clone https://github.com/gooseworks-ai/goose-skills.git
 cd goose-skills
 node scripts/validate-skills.js # Validate SKILL.md + skill.meta.json contract
 node scripts/build-index.js   # Generate skills-index.json

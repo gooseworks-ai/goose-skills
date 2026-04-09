@@ -160,7 +160,7 @@ def search_posts(token, config, test_mode=False):
     print(f"\n{'='*60}")
     print(f"Step 1: Domain Keyword Search ({len(keywords)} keywords)")
     print(f"{'='*60}")
-    print(f"  Actor: harvestapi/linkedin-post-search")
+    print(f"  Actor: {POST_SEARCH_ACTOR_ID}")
     print(f"  Est. cost: ~${len(keywords) * 0.10:.2f}")
 
     max_posts = config["max_posts_per_keyword"]
@@ -172,10 +172,8 @@ def search_posts(token, config, test_mode=False):
             run_id = guarded_apify_run(
                 POST_SEARCH_ACTOR_ID,
                 {
-                    "searchQueries": [kw],
-                    "maxPosts": max_posts,
-                    "postedLimit": "month",
-                    "sortBy": "relevance",
+                    "keyword": kw,
+                    "maxItems": max_posts,
                 },
                 token,
             )
