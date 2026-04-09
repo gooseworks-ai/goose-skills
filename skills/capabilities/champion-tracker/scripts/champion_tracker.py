@@ -97,7 +97,7 @@ else:
         sys.exit(1)
 
     _ACTOR_ID = "supreme_coder~linkedin-profile-scraper"
-    _GOOSEWORKS_API_BASE = os.environ.get("GOOSEWORKS_API_BASE", "https://app.gooseworks.ai")
+    _GOOSEWORKS_API_BASE = os.environ.get("GOOSEWORKS_API_BASE", "https://api.gooseworks.ai")
     _GOOSEWORKS_API_KEY = os.environ.get("GOOSEWORKS_API_KEY")
     if _GOOSEWORKS_API_KEY:
         _BASE_URL = f"{_GOOSEWORKS_API_BASE}/v1/proxy/apify"

@@ -39,7 +39,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."
 from apollo_client import ApolloClient
 
 # ── GooseWorks Proxy ─────────────────────────────────────────────────────────
-GOOSEWORKS_API_BASE = os.environ.get("GOOSEWORKS_API_BASE", "https://app.gooseworks.ai")
+GOOSEWORKS_API_BASE = os.environ.get("GOOSEWORKS_API_BASE", "https://api.gooseworks.ai")
 GOOSEWORKS_API_KEY = os.environ.get("GOOSEWORKS_API_KEY")
 
 # ── Apify Actor IDs ──────────────────────────────────────────────────────────

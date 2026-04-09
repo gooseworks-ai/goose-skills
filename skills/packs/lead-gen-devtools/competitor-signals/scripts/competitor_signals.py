@@ -48,7 +48,7 @@ TMP_DIR = PROJECT_ROOT / ".tmp"
 
 HN_ALGOLIA_BASE = "https://hn.algolia.com/api/v1"
 PH_API_BASE = "https://api.producthunt.com/v2/api/graphql"
-GOOSEWORKS_API_BASE = os.environ.get("GOOSEWORKS_API_BASE", "https://app.gooseworks.ai")
+GOOSEWORKS_API_BASE = os.environ.get("GOOSEWORKS_API_BASE", "https://api.gooseworks.ai")
 GOOSEWORKS_API_KEY = os.environ.get("GOOSEWORKS_API_KEY")
 
 if GOOSEWORKS_API_KEY:

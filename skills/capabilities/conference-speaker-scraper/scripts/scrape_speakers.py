@@ -30,7 +30,7 @@ HEADERS = {
     "User-Agent": "ConferenceSpeakerScraper/1.0"
 }
 
-GOOSEWORKS_API_BASE = os.environ.get("GOOSEWORKS_API_BASE", "https://app.gooseworks.ai")
+GOOSEWORKS_API_BASE = os.environ.get("GOOSEWORKS_API_BASE", "https://api.gooseworks.ai")
 GOOSEWORKS_API_KEY = os.environ.get("GOOSEWORKS_API_KEY")
 
 if GOOSEWORKS_API_KEY:

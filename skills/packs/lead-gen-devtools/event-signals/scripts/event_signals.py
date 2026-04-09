@@ -52,7 +52,7 @@ TMP_DIR = PROJECT_ROOT / ".tmp"
 SESSIONIZE_BASE = "https://sessionize.com/api/v2"
 CONFSTECH_BASE = "https://raw.githubusercontent.com/tech-conferences/conference-data/main/conferences"
 LISTENNOTES_BASE = "https://listen-api.listennotes.com/api/v2"
-GOOSEWORKS_API_BASE = os.environ.get("GOOSEWORKS_API_BASE", "https://app.gooseworks.ai")
+GOOSEWORKS_API_BASE = os.environ.get("GOOSEWORKS_API_BASE", "https://api.gooseworks.ai")
 GOOSEWORKS_API_KEY = os.environ.get("GOOSEWORKS_API_KEY")
 
 if GOOSEWORKS_API_KEY:

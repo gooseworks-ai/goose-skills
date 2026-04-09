@@ -59,7 +59,7 @@ TMP_DIR = PROJECT_ROOT / ".tmp"
 HN_ALGOLIA_BASE = "https://hn.algolia.com/api/v1"
 HN_RATE_DELAY = 0.1  # 10,000 req/hr = ~2.7/sec, 0.1s is safe
 
-GOOSEWORKS_API_BASE = os.environ.get("GOOSEWORKS_API_BASE", "https://app.gooseworks.ai")
+GOOSEWORKS_API_BASE = os.environ.get("GOOSEWORKS_API_BASE", "https://api.gooseworks.ai")
 GOOSEWORKS_API_KEY = os.environ.get("GOOSEWORKS_API_KEY")
 
 if GOOSEWORKS_API_KEY:

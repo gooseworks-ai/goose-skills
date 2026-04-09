@@ -145,7 +145,7 @@ class LumaApifyClient:
     """
 
     ACTOR_ID = "lexis-solutions~lu-ma-scraper"
-    _GOOSEWORKS_API_BASE = os.environ.get("GOOSEWORKS_API_BASE", "https://app.gooseworks.ai")
+    _GOOSEWORKS_API_BASE = os.environ.get("GOOSEWORKS_API_BASE", "https://api.gooseworks.ai")
     _GOOSEWORKS_API_KEY = os.environ.get("GOOSEWORKS_API_KEY")
 
     if _GOOSEWORKS_API_KEY:
