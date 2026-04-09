@@ -3,4 +3,6 @@ node_modules/
 .DS_Store
 *.pyc
 .tmp/
+.cache/
 test/results/
+snapshots/
