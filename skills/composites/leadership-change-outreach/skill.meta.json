@@ -11,5 +11,11 @@
       "cursor",
       "codex"
     ]
-  }
+  },
+  "requires_skills": [
+    "cold-email-outreach",
+    "email-drafting",
+    "linkedin-outreach",
+    "linkedin-profile-post-scraper"
+  ]
 }

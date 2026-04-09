@@ -11,5 +11,9 @@
       "cursor",
       "codex"
     ]
-  }
+  },
+  "requires_skills": [
+    "lead-qualification",
+    "luma-event-attendees"
+  ]
 }

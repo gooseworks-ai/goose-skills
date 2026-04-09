@@ -11,5 +11,9 @@
       "cursor",
       "codex"
     ]
-  }
+  },
+  "requires_skills": [
+    "linkedin-profile-post-scraper",
+    "review-site-scraper"
+  ]
 }

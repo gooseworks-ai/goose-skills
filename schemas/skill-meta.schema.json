@@ -30,7 +30,17 @@
       "items": { "type": "string", "minLength": 1 }
     },
     "github_url": { "type": "string" },
-    "author": { "type": "string" }
+    "author": { "type": "string" },
+    "requires_skills": {
+      "type": "array",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    },
+    "requires_tools": {
+      "type": "array",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    }
   },
-  "additionalProperties": false
+  "additionalProperties": true
 }

@@ -11,5 +11,10 @@
       "cursor",
       "codex"
     ]
-  }
+  },
+  "requires_skills": [
+    "kol-discovery",
+    "linkedin-profile-post-scraper",
+    "twitter-mention-tracker"
+  ]
 }

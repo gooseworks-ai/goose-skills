@@ -11,5 +11,9 @@
       "cursor",
       "codex"
     ]
-  }
+  },
+  "requires_skills": [
+    "job-posting-intent",
+    "linkedin-profile-post-scraper"
+  ]
 }

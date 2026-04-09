@@ -11,5 +11,11 @@
       "cursor",
       "codex"
     ]
-  }
+  },
+  "requires_skills": [
+    "reddit-post-finder",
+    "review-site-scraper",
+    "seo-domain-analyzer",
+    "site-content-catalog"
+  ]
 }

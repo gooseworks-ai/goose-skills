@@ -11,5 +11,10 @@
       "cursor",
       "codex"
     ]
-  }
+  },
+  "requires_skills": [
+    "seo-domain-analyzer",
+    "seo-traffic-analyzer",
+    "site-content-catalog"
+  ]
 }

@@ -26,7 +26,12 @@
             "cursor",
             "codex"
           ]
-        }
+        },
+        "requires_skills": [
+          "reddit-post-finder",
+          "review-site-scraper",
+          "twitter-mention-tracker"
+        ]
       }
     },
     {
@@ -81,7 +86,10 @@
             "cursor",
             "codex"
           ]
-        }
+        },
+        "requires_skills": [
+          "google-ad-scraper"
+        ]
       }
     },
     {
@@ -163,7 +171,11 @@
             "cursor",
             "codex"
           ]
-        }
+        },
+        "requires_skills": [
+          "google-ad-scraper",
+          "review-site-scraper"
+        ]
       }
     },
     {
@@ -299,7 +311,12 @@
             "cursor",
             "codex"
           ]
-        }
+        },
+        "requires_skills": [
+          "cold-email-outreach",
+          "email-drafting",
+          "linkedin-outreach"
+        ]
       }
     },
     {
@@ -322,6 +339,9 @@
         "category": "capabilities",
         "tags": [
           "lead-generation"
+        ],
+        "requires_tools": [
+          "apify_guard"
         ],
         "installation": {
           "base_command": "npx goose-skills install champion-tracker",
@@ -438,7 +458,12 @@
             "cursor",
             "codex"
           ]
-        }
+        },
+        "requires_skills": [
+          "blog-feed-monitor",
+          "linkedin-profile-post-scraper",
+          "review-site-scraper"
+        ]
       }
     },
     {
@@ -567,6 +592,9 @@
         "tags": [
           "lead-generation"
         ],
+        "requires_tools": [
+          "apify_guard"
+        ],
         "installation": {
           "base_command": "npx goose-skills install competitor-post-engagers",
           "supports": [
@@ -684,7 +712,13 @@
             "cursor",
             "codex"
           ]
-        }
+        },
+        "requires_skills": [
+          "reddit-post-finder",
+          "review-site-scraper",
+          "seo-domain-analyzer",
+          "site-content-catalog"
+        ]
       }
     },
     {
@@ -833,7 +867,11 @@
             "cursor",
             "codex"
           ]
-        }
+        },
+        "requires_skills": [
+          "linkedin-profile-post-scraper",
+          "review-site-scraper"
+        ]
       }
     },
     {
@@ -860,7 +898,11 @@
             "cursor",
             "codex"
           ]
-        }
+        },
+        "requires_skills": [
+          "cold-email-outreach",
+          "email-drafting"
+        ]
       }
     },
     {
@@ -941,7 +983,11 @@
             "cursor",
             "codex"
           ]
-        }
+        },
+        "requires_skills": [
+          "job-posting-intent",
+          "linkedin-profile-post-scraper"
+        ]
       }
     },
     {
@@ -996,7 +1042,14 @@
             "cursor",
             "codex"
           ]
-        }
+        },
+        "requires_skills": [
+          "company-contact-finder",
+          "contact-cache",
+          "hacker-news-scraper",
+          "reddit-post-finder",
+          "twitter-mention-tracker"
+        ]
       }
     },
     {
@@ -1023,7 +1076,12 @@
             "cursor",
             "codex"
           ]
-        }
+        },
+        "requires_skills": [
+          "cold-email-outreach",
+          "email-drafting",
+          "linkedin-outreach"
+        ]
       }
     },
     {
@@ -1050,7 +1108,11 @@
             "cursor",
             "codex"
           ]
-        }
+        },
+        "requires_skills": [
+          "lead-qualification",
+          "luma-event-attendees"
+        ]
       }
     },
     {
@@ -1105,7 +1167,10 @@
             "cursor",
             "codex"
           ]
-        }
+        },
+        "requires_skills": [
+          "seo-domain-analyzer"
+        ]
       }
     },
     {
@@ -1187,7 +1252,12 @@
             "cursor",
             "codex"
           ]
-        }
+        },
+        "requires_skills": [
+          "cold-email-outreach",
+          "email-drafting",
+          "linkedin-outreach"
+        ]
       }
     },
     {
@@ -1241,7 +1311,10 @@
             "cursor",
             "codex"
           ]
-        }
+        },
+        "requires_skills": [
+          "content-asset-creator"
+        ]
       }
     },
     {
@@ -1268,7 +1341,10 @@
             "cursor",
             "codex"
           ]
-        }
+        },
+        "requires_skills": [
+          "company-contact-finder"
+        ]
       }
     },
     {
@@ -1295,7 +1371,10 @@
             "cursor",
             "codex"
           ]
-        }
+        },
+        "requires_skills": [
+          "lead-qualification"
+        ]
       }
     },
     {
@@ -1322,7 +1401,12 @@
             "cursor",
             "codex"
           ]
-        }
+        },
+        "requires_skills": [
+          "cold-email-outreach",
+          "email-drafting",
+          "lead-qualification"
+        ]
       }
     },
     {
@@ -1351,7 +1435,19 @@
             "cursor",
             "codex"
           ]
-        }
+        },
+        "requires_skills": [
+          "blog-feed-monitor",
+          "company-contact-finder",
+          "conference-speaker-scraper",
+          "hacker-news-scraper",
+          "linkedin-post-research",
+          "luma-event-attendees",
+          "reddit-post-finder",
+          "review-site-scraper",
+          "twitter-mention-tracker",
+          "web-archive-scraper"
+        ]
       }
     },
     {
@@ -1437,7 +1533,12 @@
             "cursor",
             "codex"
           ]
-        }
+        },
+        "requires_skills": [
+          "kol-discovery",
+          "linkedin-profile-post-scraper",
+          "twitter-mention-tracker"
+        ]
       }
     },
     {
@@ -1457,6 +1558,9 @@
         "category": "capabilities",
         "tags": [
           "outreach"
+        ],
+        "requires_tools": [
+          "apify_guard"
         ],
         "installation": {
           "base_command": "npx goose-skills install kol-discovery",
@@ -1485,6 +1589,9 @@
         "category": "capabilities",
         "tags": [
           "lead-generation"
+        ],
+        "requires_tools": [
+          "apify_guard"
         ],
         "installation": {
           "base_command": "npx goose-skills install kol-engager-icp",
@@ -1548,7 +1655,10 @@
             "cursor",
             "codex"
           ]
-        }
+        },
+        "requires_skills": [
+          "review-site-scraper"
+        ]
       }
     },
     {
@@ -1605,7 +1715,13 @@
             "cursor",
             "codex"
           ]
-        }
+        },
+        "requires_skills": [
+          "cold-email-outreach",
+          "email-drafting",
+          "linkedin-outreach",
+          "linkedin-profile-post-scraper"
+        ]
       }
     },
     {
@@ -1955,7 +2071,12 @@
             "cursor",
             "codex"
           ]
-        }
+        },
+        "requires_skills": [
+          "cold-email-outreach",
+          "email-drafting",
+          "linkedin-outreach"
+        ]
       }
     },
     {
@@ -1984,7 +2105,10 @@
             "cursor",
             "codex"
           ]
-        }
+        },
+        "requires_skills": [
+          "company-contact-finder"
+        ]
       }
     },
     {
@@ -2065,7 +2189,10 @@
             "cursor",
             "codex"
           ]
-        }
+        },
+        "requires_skills": [
+          "google-ad-scraper"
+        ]
       }
     },
     {
@@ -2094,6 +2221,9 @@
         "category": "capabilities",
         "tags": [
           "lead-generation"
+        ],
+        "requires_tools": [
+          "apify_guard"
         ],
         "installation": {
           "base_command": "npx goose-skills install pain-language-engagers",
@@ -2129,7 +2259,10 @@
             "cursor",
             "codex"
           ]
-        }
+        },
+        "requires_skills": [
+          "cold-email-outreach"
+        ]
       }
     },
     {
@@ -2184,7 +2317,12 @@
             "cursor",
             "codex"
           ]
-        }
+        },
+        "requires_skills": [
+          "reddit-post-finder",
+          "seo-domain-analyzer",
+          "site-content-catalog"
+        ]
       }
     },
     {
@@ -2211,7 +2349,11 @@
             "cursor",
             "codex"
           ]
-        }
+        },
+        "requires_skills": [
+          "seo-domain-analyzer",
+          "site-content-catalog"
+        ]
       }
     },
     {
@@ -2267,7 +2409,10 @@
             "cursor",
             "codex"
           ]
-        }
+        },
+        "requires_skills": [
+          "review-site-scraper"
+        ]
       }
     },
     {
@@ -2349,7 +2494,10 @@
             "cursor",
             "codex"
           ]
-        }
+        },
+        "requires_skills": [
+          "email-drafting"
+        ]
       }
     },
     {
@@ -2376,7 +2524,12 @@
             "cursor",
             "codex"
           ]
-        }
+        },
+        "requires_skills": [
+          "brand-voice-extractor",
+          "seo-domain-analyzer",
+          "site-content-catalog"
+        ]
       }
     },
     {
@@ -2459,7 +2612,12 @@
             "cursor",
             "codex"
           ]
-        }
+        },
+        "requires_skills": [
+          "seo-domain-analyzer",
+          "seo-traffic-analyzer",
+          "site-content-catalog"
+        ]
       }
     },
     {
@@ -2514,7 +2672,11 @@
             "cursor",
             "codex"
           ]
-        }
+        },
+        "requires_skills": [
+          "cold-email-outreach",
+          "email-drafting"
+        ]
       }
     },
     {
@@ -2563,6 +2725,10 @@
         "category": "capabilities",
         "tags": [
           "lead-generation"
+        ],
+        "requires_tools": [
+          "apify_guard",
+          "supabase"
         ],
         "installation": {
           "base_command": "npx goose-skills install signal-scanner",
@@ -2736,7 +2902,12 @@
             "cursor",
             "codex"
           ]
-        }
+        },
+        "requires_skills": [
+          "reddit-post-finder",
+          "seo-domain-analyzer",
+          "site-content-catalog"
+        ]
       }
     },
     {
@@ -2763,7 +2934,13 @@
             "cursor",
             "codex"
           ]
-        }
+        },
+        "requires_skills": [
+          "hacker-news-scraper",
+          "linkedin-profile-post-scraper",
+          "reddit-post-finder",
+          "twitter-mention-tracker"
+        ]
       }
     },
     {
@@ -2845,7 +3022,12 @@
             "cursor",
             "codex"
           ]
-        }
+        },
+        "requires_skills": [
+          "reddit-post-finder",
+          "review-site-scraper",
+          "twitter-mention-tracker"
+        ]
       }
     },
     {
@@ -2887,6 +3069,7 @@
         "skills/capabilities/youtube-apify-transcript/.cache/6BQ3whjWG3M.json",
         "skills/capabilities/youtube-apify-transcript/.cache/RJMwcV1owtg.json",
         "skills/capabilities/youtube-apify-transcript/.cache/cW1lTLJLmtQ.json",
+        "skills/capabilities/youtube-apify-transcript/.cache/dQw4w9WgXcQ.json",
         "skills/capabilities/youtube-apify-transcript/.cache/jOR4wuiPeEQ.json",
         "skills/capabilities/youtube-apify-transcript/.cache/qwmmWzPnhog.json",
         "skills/capabilities/youtube-apify-transcript/.cache/rSohMpT24SI.json",

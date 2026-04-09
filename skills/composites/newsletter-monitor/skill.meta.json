@@ -11,5 +11,8 @@
       "cursor",
       "codex"
     ]
-  }
+  },
+  "requires_skills": [
+    "company-contact-finder"
+  ]
 }

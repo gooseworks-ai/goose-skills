@@ -11,5 +11,12 @@
       "cursor",
       "codex"
     ]
-  }
+  },
+  "requires_skills": [
+    "company-contact-finder",
+    "contact-cache",
+    "hacker-news-scraper",
+    "reddit-post-finder",
+    "twitter-mention-tracker"
+  ]
 }

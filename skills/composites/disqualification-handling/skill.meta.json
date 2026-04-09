@@ -11,5 +11,9 @@
       "cursor",
       "codex"
     ]
-  }
+  },
+  "requires_skills": [
+    "cold-email-outreach",
+    "email-drafting"
+  ]
 }
