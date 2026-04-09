@@ -91,7 +91,7 @@ python3 skills/kol-engager-icp/scripts/kol_engager_icp.py \
 - `+1` Engaged on multiple posts
 - Keep only score > 0, cap at `max_enrichment_profiles`
 
-**Step 5: Enrich** — `supreme_coder/linkedin-profile-scraper` in batches of 25. Apply country filter after.
+**Step 5: Enrich** — `harvestapi/linkedin-profile-scraper` in batches of 25. Apply country filter after.
 
 **Step 6: ICP classify & export** — Classify as Likely ICP / Possible ICP / Unknown / Tech Vendor. Export CSV.
 
@@ -154,7 +154,7 @@ CSV exported to `skills/kol-engager-icp/output/{client-name}-kol-engagers-{date}
 - **Apify actors used:**
   - `harvestapi/linkedin-profile-posts` (KOL post scraping)
   - `harvestapi/linkedin-company-posts` (engager scraping from posts)
-  - `supreme_coder/linkedin-profile-scraper` (profile enrichment)
+  - `harvestapi/linkedin-profile-scraper` (profile enrichment)
 
 ## Example Usage
 

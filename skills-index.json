@@ -331,8 +331,7 @@
         "skills/capabilities/champion-tracker/input/champions.csv",
         "skills/capabilities/champion-tracker/input/champions_template.csv",
         "skills/capabilities/champion-tracker/scripts/champion_tracker.py",
-        "skills/capabilities/champion-tracker/skill.meta.json",
-        "skills/capabilities/champion-tracker/snapshots/baseline.json"
+        "skills/capabilities/champion-tracker/skill.meta.json"
       ],
       "metadata": {
         "slug": "champion-tracker",
@@ -3066,14 +3065,6 @@
       "tags": "research",
       "path": "skills/capabilities/youtube-apify-transcript",
       "files": [
-        "skills/capabilities/youtube-apify-transcript/.cache/6BQ3whjWG3M.json",
-        "skills/capabilities/youtube-apify-transcript/.cache/RJMwcV1owtg.json",
-        "skills/capabilities/youtube-apify-transcript/.cache/cW1lTLJLmtQ.json",
-        "skills/capabilities/youtube-apify-transcript/.cache/dQw4w9WgXcQ.json",
-        "skills/capabilities/youtube-apify-transcript/.cache/jOR4wuiPeEQ.json",
-        "skills/capabilities/youtube-apify-transcript/.cache/qwmmWzPnhog.json",
-        "skills/capabilities/youtube-apify-transcript/.cache/rSohMpT24SI.json",
-        "skills/capabilities/youtube-apify-transcript/.cache/t44PFI_V4LE.json",
         "skills/capabilities/youtube-apify-transcript/CHANGELOG.md",
         "skills/capabilities/youtube-apify-transcript/README.md",
         "skills/capabilities/youtube-apify-transcript/SKILL.md",

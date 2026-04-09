@@ -272,7 +272,7 @@ def get_apify_token(token_arg=None):
 
 def scrape_apify(url, conference_name, token, timeout=300):
     """Scrape speakers using Apify cheerio-scraper."""
-    actor_id = "apify/cheerio-scraper"
+    actor_id = "apify~cheerio-scraper"
     actor_input = {
         "startUrls": [{"url": url}],
         "pageFunction": """

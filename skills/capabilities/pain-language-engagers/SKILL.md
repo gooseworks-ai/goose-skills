@@ -108,7 +108,7 @@ python3 skills/pain-language-engagers/scripts/pain_language_engagers.py \
 2. **Post author extraction** — People who wrote pain posts = direct leads (free, no API call)
 3. **Company page discovery** — Extract company pages from keyword results
 4. **Company page engager scraping** — `harvestapi/linkedin-company-posts` for each company page, pain-filtered
-5. **Profile enrichment** — `supreme_coder/linkedin-profile-scraper` for all profiles (gets headline + location)
+5. **Profile enrichment** — `harvestapi/linkedin-profile-scraper` for all profiles (gets headline + location)
 6. **ICP classification** — Using the client-specific ICP/vendor keyword lists from config
 7. **Dedup + CSV export**
 
@@ -164,7 +164,7 @@ CSV exported to the current working directory as `{client-name}-{date}.csv` with
 - **Apify actors used:**
   - `apimaestro/linkedin-posts-search-scraper-no-cookies` (keyword search)
   - `harvestapi/linkedin-company-posts` (company page scraping)
-  - `supreme_coder/linkedin-profile-scraper` (profile enrichment)
+  - `harvestapi/linkedin-profile-scraper` (profile enrichment)
 
 ## Example Usage
 

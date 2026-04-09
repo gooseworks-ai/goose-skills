@@ -38,7 +38,9 @@ import urllib.request
 from datetime import datetime, timedelta, timezone
 
 # ── Apify Guard (shared cost protection) ────────────────────────────────────
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
+_script_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.join(_script_dir, "..", "..", "..", ".."))  # repo root
+sys.path.insert(0, os.path.join(_script_dir, ".."))              # skill dir (standalone install)
 from tools.apify_guard import (
     guarded_apify_run, confirm_cost, set_limit, set_auto_confirm,
     ApifyLimitReached, get_run_count, get_run_limit,
@@ -56,7 +58,7 @@ else:
 
 POST_SEARCH_ACTOR_ID = "apimaestro~linkedin-posts-search-scraper-no-cookies"  # no cookies needed
 COMPANY_POSTS_ACTOR_ID = "WI0tj4Ieb5Kq458gB"   # harvestapi/linkedin-company-posts
-PROFILE_ACTOR_ID = "supreme_coder~linkedin-profile-scraper"
+PROFILE_ACTOR_ID = "harvestapi~linkedin-profile-scraper"
 
 POSTED_LIMIT = "3months"
 
@@ -215,8 +217,13 @@ def extract_location(profile):
         or profile.get("geoLocation", {}).get("city", "")
     )
     if isinstance(location, dict):
-        parts = [location.get("city", ""), location.get("state", ""),
-                 location.get("country", "")]
+        # harvestapi actor returns {linkedinText, parsed: {city, state, country}}
+        if location.get("linkedinText"):
+            return location["linkedinText"]
+        parsed = location.get("parsed", {})
+        parts = [parsed.get("city", location.get("city", "")),
+                 parsed.get("state", location.get("state", "")),
+                 parsed.get("country", location.get("country", ""))]
         return ", ".join(p for p in parts if p)
     return str(location) if location else ""
 
@@ -366,7 +373,7 @@ def scrape_company_engagers(company_urls, token, config, test_mode=False):
                 "maxComments": 0,
             }
 
-            run_id = guarded_apify_run(COMPANY_POSTS_ACTOR_ID, payload, token, wait_secs=600)
+            run_id = guarded_apify_run(COMPANY_POSTS_ACTOR_ID, payload, token, timeout=600)
             items = apify_dataset(run_id, token)
             print(f"    Retrieved {len(items)} total items")
 
@@ -587,7 +594,7 @@ def enrich_profiles(engagers, token, config, test_mode=False):
         try:
             cleaned_batch = [clean_profile_url(u) for u in batch]
             payload = {"urls": cleaned_batch}
-            run_id = guarded_apify_run(PROFILE_ACTOR_ID, payload, token, wait_secs=180)
+            run_id = guarded_apify_run(PROFILE_ACTOR_ID, payload, token, timeout=180)
             profiles = apify_dataset(run_id, token)
 
             for profile in profiles:

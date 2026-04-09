@@ -115,3 +115,23 @@ def guarded_apify_run(actor_id, run_input, token, timeout=300):
 
     _run_count += 1
     return run_id
+
+
+# ── Dataset fetch ──────────────────────────────────────────────────────────
+
+def fetch_dataset(dataset_id, token, limit=1000):
+    """
+    Fetch items from an Apify dataset.
+
+    Args:
+        dataset_id: Apify dataset ID
+        token: API token (GOOSEWORKS_API_KEY or APIFY_API_TOKEN)
+        limit: Max items to fetch
+
+    Returns:
+        List of dataset item dicts.
+    """
+    url = f"{_APIFY_BASE}/datasets/{dataset_id}/items?token={token}&format=json&limit={limit}"
+    req = urllib.request.Request(url, method="GET")
+    resp = urllib.request.urlopen(req, timeout=60)
+    return json.loads(resp.read().decode("utf-8"))

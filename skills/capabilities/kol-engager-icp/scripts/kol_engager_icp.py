@@ -31,7 +31,9 @@ import urllib.request
 from datetime import datetime, timedelta, timezone
 
 # ── Apify Guard (shared cost protection) ────────────────────────────────────
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
+_script_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.join(_script_dir, "..", "..", "..", ".."))  # repo root
+sys.path.insert(0, os.path.join(_script_dir, ".."))              # skill dir (standalone install)
 from tools.apify_guard import (
     guarded_apify_run, confirm_cost, set_limit, set_auto_confirm,
     ApifyLimitReached, get_run_count, get_run_limit,
@@ -45,7 +47,7 @@ GOOSEWORKS_API_KEY = os.environ.get("GOOSEWORKS_API_KEY")
 
 PROFILE_POSTS_ACTOR_ID = "harvestapi~linkedin-profile-posts"
 COMPANY_POSTS_ACTOR_ID = "WI0tj4Ieb5Kq458gB"   # harvestapi/linkedin-company-posts
-PROFILE_ACTOR_ID = "supreme_coder~linkedin-profile-scraper"
+PROFILE_ACTOR_ID = "harvestapi~linkedin-profile-scraper"
 
 # ── Mode Caps ────────────────────────────────────────────────────────────────
 
@@ -159,8 +161,12 @@ def extract_location(profile):
         or profile.get("geoLocation", {}).get("city", "")
     )
     if isinstance(location, dict):
-        parts = [location.get("city", ""), location.get("state", ""),
-                 location.get("country", "")]
+        if location.get("linkedinText"):
+            return location["linkedinText"]
+        parsed = location.get("parsed", {})
+        parts = [parsed.get("city", location.get("city", "")),
+                 parsed.get("state", location.get("state", "")),
+                 parsed.get("country", location.get("country", ""))]
         return ", ".join(p for p in parts if p)
     return str(location) if location else ""
 
@@ -237,7 +243,7 @@ def scrape_kol_posts(kol_urls, token, config):
                     "maxPosts": max_posts,
                 },
                 token,
-                wait_secs=300,
+                timeout=300,
             )
             items = apify_dataset(run_id, token, limit=500)
 
@@ -387,7 +393,7 @@ def scrape_engagers(selected_posts, token, config):
                 "maxComments": 0,
             }
 
-            run_id = guarded_apify_run(COMPANY_POSTS_ACTOR_ID, payload, token, wait_secs=600)
+            run_id = guarded_apify_run(COMPANY_POSTS_ACTOR_ID, payload, token, timeout=600)
             items = apify_dataset(run_id, token)
             print(f"    Retrieved {len(items)} total items")
 
@@ -564,7 +570,7 @@ def enrich_profiles(engagers, token, config):
         try:
             cleaned_batch = [clean_profile_url(u) for u in batch]
             payload = {"profileUrls": cleaned_batch}
-            run_id = guarded_apify_run(PROFILE_ACTOR_ID, payload, token, wait_secs=180)
+            run_id = guarded_apify_run(PROFILE_ACTOR_ID, payload, token, timeout=180)
             profiles = apify_dataset(run_id, token)
 
             for profile in profiles:

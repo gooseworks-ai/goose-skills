@@ -330,7 +330,7 @@ After output is complete, present a summary:
 The qualification agent should have access to:
 
 - **Apify LinkedIn Enrichment** — `scripts/enrich_leads.py` for batch profile enrichment before qualification
-  - Uses `supreme_coder~linkedin-profile-scraper` Apify actor ($3/1k profiles, no cookies)
+  - Uses `harvestapi~linkedin-profile-scraper` Apify actor ($3/1k profiles, no cookies)
   - Requires `APIFY_API_TOKEN` environment variable
   - Run with `--dry-run` first to preview cost
 - **Web Search** — to research leads when enrichment data is sparse or missing

@@ -141,11 +141,11 @@ Research each lead using two Apify actors. Both require only `APIFY_API_TOKEN` â
 
 #### Step 1: Profile Data
 
-Use `supreme_coder/linkedin-profile-scraper` to get profile data for all leads.
+Use `harvestapi/linkedin-profile-scraper` to get profile data for all leads.
 
 **API call:**
 ```bash
-curl -X POST "https://api.apify.com/v2/acts/supreme_coder~linkedin-profile-scraper/runs?token=$APIFY_API_TOKEN" \
+curl -X POST "https://api.apify.com/v2/acts/harvestapi~linkedin-profile-scraper/runs?token=$APIFY_API_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
     "urls": [
@@ -169,7 +169,7 @@ curl -X POST "https://api.apify.com/v2/acts/supreme_coder~linkedin-profile-scrap
 **Polling for results:**
 ```bash
 # Check run status
-curl "https://api.apify.com/v2/acts/supreme_coder~linkedin-profile-scraper/runs/{RUN_ID}?token=$APIFY_API_TOKEN"
+curl "https://api.apify.com/v2/acts/harvestapi~linkedin-profile-scraper/runs/{RUN_ID}?token=$APIFY_API_TOKEN"
 
 # When status is SUCCEEDED, fetch results
 curl "https://api.apify.com/v2/datasets/{DATASET_ID}/items?token=$APIFY_API_TOKEN"

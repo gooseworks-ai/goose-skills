@@ -96,7 +96,7 @@ else:
         print("Error: requests library required. Install with: pip3 install requests", file=sys.stderr)
         sys.exit(1)
 
-    _ACTOR_ID = "supreme_coder~linkedin-profile-scraper"
+    _ACTOR_ID = "harvestapi~linkedin-profile-scraper"
     _GOOSEWORKS_API_BASE = os.environ.get("GOOSEWORKS_API_BASE", "https://api.gooseworks.ai")
     _GOOSEWORKS_API_KEY = os.environ.get("GOOSEWORKS_API_KEY")
     if _GOOSEWORKS_API_KEY:
@@ -131,13 +131,20 @@ else:
         headline = raw.get("headline", raw.get("title", raw.get("tagline", "")))
         if not current_title and headline:
             current_title = headline
+        # Location can be a string or an object with linkedinText/parsed
+        location_raw = raw.get("location", raw.get("geo", ""))
+        if isinstance(location_raw, dict):
+            location = location_raw.get("linkedinText", "") or location_raw.get("parsed", {}).get("text", "")
+        else:
+            location = str(location_raw or "")
+
         return {
             "enriched_headline": str(headline or ""),
             "enriched_title": str(current_title or ""),
             "enriched_company": str(current_company or ""),
-            "enriched_location": str(raw.get("location", raw.get("geo", "")) or ""),
+            "enriched_location": location,
             "enriched_industry": str(raw.get("industry", "") or ""),
-            "enriched_connections": str(raw.get("connections", raw.get("connectionsCount", "")) or ""),
+            "enriched_connections": str(raw.get("connectionsCount", raw.get("connections", "")) or ""),
             "enriched_about": str(raw.get("about", raw.get("summary", "")) or ""),
             "enrichment_status": "success",
         }
@@ -183,7 +190,7 @@ else:
                     items = self.enrich_batch(batch, timeout=timeout)
                     print(f"done ({len(items)} results)")
                     for item in items:
-                        profile_url = item.get("url", item.get("profileUrl", item.get("linkedin_url", "")))
+                        profile_url = item.get("linkedinUrl", item.get("url", item.get("profileUrl", item.get("linkedin_url", ""))))
                         if profile_url:
                             results[normalize_linkedin_url(profile_url)] = item
                 except Exception as e:

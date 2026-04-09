@@ -27,8 +27,9 @@ from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
 # Add project root to path for imports
-_project_root = Path(__file__).resolve().parents[4]
-sys.path.insert(0, str(_project_root))
+_script_dir = Path(__file__).resolve().parent
+sys.path.insert(0, str(_script_dir.parents[3]))  # repo root
+sys.path.insert(0, str(_script_dir.parent))       # skill dir (standalone install)
 
 from tools.supabase.supabase_client import SupabaseClient
 from tools.apify_guard import (
@@ -54,7 +55,7 @@ else:
 
 APIFY_ACTOR_JOB_SEARCH = "harvestapi~linkedin-job-search"
 APIFY_ACTOR_PROFILE_POSTS = "harvestapi/linkedin-profile-posts"
-APIFY_ACTOR_PROFILE_SCRAPER = "supreme_coder/linkedin-profile-scraper"
+APIFY_ACTOR_PROFILE_SCRAPER = "harvestapi~linkedin-profile-scraper"
 
 SIGNAL_STRENGTHS = {
     "headcount_growth": 6,

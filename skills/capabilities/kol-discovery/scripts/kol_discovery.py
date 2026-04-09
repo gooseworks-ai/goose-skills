@@ -26,7 +26,9 @@ import urllib.request
 from datetime import datetime
 
 # ── Apify Guard (shared cost protection) ────────────────────────────────────
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
+_script_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.join(_script_dir, "..", "..", "..", ".."))  # repo root
+sys.path.insert(0, os.path.join(_script_dir, ".."))              # skill dir (standalone install)
 from tools.apify_guard import (
     guarded_apify_run, confirm_cost, set_limit, set_auto_confirm,
     ApifyLimitReached, get_run_count, get_run_limit,
