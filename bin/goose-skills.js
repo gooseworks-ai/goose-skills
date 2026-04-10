@@ -67,6 +67,12 @@ function getCodexSkillsRoot() {
   return path.join(home, '.codex', 'skills');
 }
 
+// Map of tool names to their file paths relative to repo root
+const TOOL_FILE_MAP = {
+  apify_guard: ['tools/apify_guard.py'],
+  supabase: ['tools/supabase/__init__.py', 'tools/supabase/supabase_client.py'],
+};
+
 async function downloadSkillFiles(skill, installDir) {
   let downloaded = 0;
   for (const filePath of skill.files) {
@@ -85,6 +91,28 @@ async function downloadSkillFiles(skill, installDir) {
       console.error(`    [FAILED] ${filePath}: ${err.message}`);
     }
   }
+
+  // Download shared tools if requires_tools is declared
+  const requiresTools = skill.metadata?.requires_tools || [];
+  for (const toolName of requiresTools) {
+    const toolFiles = TOOL_FILE_MAP[toolName];
+    if (!toolFiles) continue;
+    for (const toolPath of toolFiles) {
+      const url = `${RAW_BASE}/${toolPath}`;
+      const localPath = path.join(installDir, toolPath);
+      const localDir = path.dirname(localPath);
+      fs.mkdirSync(localDir, { recursive: true });
+      try {
+        const content = await fetch(url);
+        fs.writeFileSync(localPath, content);
+        downloaded++;
+        console.log(`    ${toolPath} (shared tool)`);
+      } catch (err) {
+        console.error(`    [FAILED] ${toolPath}: ${err.message}`);
+      }
+    }
+  }
+
   return downloaded;
 }
 
@@ -162,6 +190,37 @@ async function installSkill(options) {
     process.exit(1);
   }
 
+  // Auto-install dependency skills (requires_skills)
+  const requiresSkills = skill.metadata?.requires_skills || [];
+  const installedDeps = [];
+  if (requiresSkills.length > 0) {
+    console.log(`\nInstalling ${requiresSkills.length} dependency skill(s) first...\n`);
+    for (const depSlug of requiresSkills) {
+      const depSkill = index.skills.find((s) => s.slug === depSlug);
+      if (!depSkill) {
+        console.error(`  [WARN] Dependency "${depSlug}" not found in index, skipping.`);
+        continue;
+      }
+      const depDir = getInstallDir(depSlug);
+      if (fs.existsSync(path.join(depDir, 'SKILL.md'))) {
+        console.log(`  ${depSlug} — already installed`);
+        installedDeps.push(depSlug);
+        continue;
+      }
+      console.log(`  ${depSlug} → ${depDir}`);
+      fs.mkdirSync(depDir, { recursive: true });
+      await downloadSkillFiles(depSkill, depDir);
+      installedDeps.push(depSlug);
+
+      if (target === 'codex') {
+        placeForCodex(depDir, getCodexSkillsRoot());
+      } else if (target === 'cursor') {
+        placeForCursor(depDir, projectDir);
+      }
+    }
+    console.log('');
+  }
+
   const installDir = getInstallDir(slug);
   console.log(`Installing ${skill.name} to ${installDir}...`);
 
@@ -171,6 +230,9 @@ async function installSkill(options) {
   const downloaded = await downloadSkillFiles(skill, installDir);
 
   console.log(`\nInstalled ${downloaded}/${skill.files.length} files.`);
+  if (installedDeps.length > 0) {
+    console.log(`Dependencies installed: ${installedDeps.join(', ')}`);
+  }
   console.log(`Primary location: ${installDir}`);
 
   if (target === 'codex') {
