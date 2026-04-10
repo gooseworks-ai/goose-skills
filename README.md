@@ -1,53 +1,35 @@
 # Goose Skills
 
-GTM skills for [Claude Code](https://claude.ai/claude-code). Ready-to-use skills for sales, marketing, competitive intelligence, SEO, and lead generation.
+> **This package is deprecated.** Use the [GooseWorks CLI](https://www.npmjs.com/package/gooseworks) instead:
+>
+> ```bash
+> npx gooseworks install --claude
+> ```
+>
+> One install gives you access to all 100+ skills. [Learn more](https://docs.gooseworks.ai/concepts/cli).
+
+---
+
+GTM skills for [Claude Code](https://claude.ai/claude-code), [Cursor](https://cursor.sh), and [Codex](https://openai.com/codex). Ready-to-use skills for sales, marketing, competitive intelligence, SEO, and lead generation.
 
 ## Quick Install
 
 ```bash
-npx goose-skills install <slug>
+npx gooseworks install --claude    # Claude Code
+npx gooseworks install --cursor    # Cursor
+npx gooseworks install --codex     # Codex
+npx gooseworks install --all       # All detected agents
 ```
 
-This installs to `~/.claude/skills/<slug>/` by default (Claude Code target).
+This installs the GooseWorks master skill, which gives your coding agent access to the full catalog of 100+ skills. After installing, ask your agent to use any skill by name (e.g., "Use the reddit-post-finder skill").
 
-## Skill Packs
-
-Install a curated group of related skills with one command:
+## Other Commands
 
 ```bash
-npx goose-skills install lead-gen-devtools
+npx gooseworks search "reddit scraping"   # Search the skill catalog
+npx gooseworks credits                     # Check your credit balance
+npx gooseworks update                      # Update to latest skill version
 ```
-
-Packs install each sub-skill independently to `~/.claude/skills/<skill>/`. Packs can include their own skills and/or reference existing skills from the registry. Works with all platform targets:
-
-```bash
-npx goose-skills install lead-gen-devtools --codex
-npx goose-skills install lead-gen-devtools --cursor --project-dir /path/to/repo
-```
-
-### Available Packs
-
-| Pack | Skills | Description |
-|------|--------|-------------|
-| `lead-gen-devtools` | 7 | Lead generation toolkit: discovery orchestrator, GitHub repo signals, community signals, competitor signals, event signals, demo builder, and hiring signal outreach |
-
-## Platform Targets
-
-Use one target flag per install:
-
-```bash
-npx goose-skills install google-ad-scraper --claude
-npx goose-skills install google-ad-scraper --codex
-npx goose-skills install google-ad-scraper --cursor --project-dir /path/to/repo
-```
-
-- `--claude` (default): installs under `~/.claude/skills/<slug>/`
-- `--codex`: installs under `~/.claude/skills/<slug>/`, then copies to `~/.codex/skills/<slug>/`
-- `--cursor`: installs under `~/.claude/skills/<slug>/`, then writes a project-local Cursor rule file at `.cursor/rules/goose-<slug>.mdc`
-
-Notes:
-- Only one target flag is allowed per command.
-- `--cursor` requires `--project-dir`.
 
 ## Available Skills (104)
 
@@ -192,27 +174,15 @@ Notes:
 | `seo-opportunity-finder` | Comp | Find quick-win SEO content opportunities |
 | `topical-authority-mapper` | Comp | Map complete topic clusters with hub/spoke architecture |
 
-## CLI Commands
+## Using Skills
 
-```bash
-npx goose-skills list             # List all available skills
-npx goose-skills install <slug>   # Install for Claude Code (default)
-npx goose-skills install <slug> --codex
-npx goose-skills install <slug> --cursor --project-dir /path/to/repo
-npx goose-skills info <slug>      # Show skill details
-```
+After installing GooseWorks, ask your coding agent to use any skill by name:
 
-## Using Skills with Claude Code
+- "Use the reddit-post-finder skill to search r/startups"
+- "Use the apollo-lead-finder skill to find CTOs at AI companies"
+- "Use the competitor-intel skill to research Acme Corp"
 
-After installing a skill, add it to your Claude Code project:
-
-```bash
-# Copy the SKILL.md to your project's skills directory
-mkdir -p .claude/skills
-cp ~/.claude/skills/<slug>/SKILL.md .claude/skills/<slug>.md
-```
-
-The skill's SKILL.md file contains instructions that Claude Code will follow when you reference the skill.
+Your agent will search the GooseWorks catalog, download the skill, and run it automatically.
 
 ## Building from Source
 
