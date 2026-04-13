@@ -187,9 +187,23 @@ for (const pack of packs) {
   }
 }
 
+// Preserve the existing generated date if only the date would change.
+// This avoids spurious diffs in CI when no skills were actually modified.
+let generatedDate = new Date().toISOString().split('T')[0];
+if (fs.existsSync(OUTPUT)) {
+  try {
+    const existing = JSON.parse(fs.readFileSync(OUTPUT, 'utf8'));
+    const newContent = JSON.stringify({ skills, packs });
+    const oldContent = JSON.stringify({ skills: existing.skills, packs: existing.packs });
+    if (newContent === oldContent && existing.generated) {
+      generatedDate = existing.generated;
+    }
+  } catch {}
+}
+
 const index = {
   version: '1.2.0',
-  generated: new Date().toISOString().split('T')[0],
+  generated: generatedDate,
   skills,
   packs,
 };
