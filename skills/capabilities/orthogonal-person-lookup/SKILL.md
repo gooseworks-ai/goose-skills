@@ -7,6 +7,16 @@ source: orthogonal
 
 # Person Lookup
 
+## Cost Warning
+
+Nyne `/person/search` uses PeopleDataLabs under the hood — **$0.30 per record returned**. For a single person lookup this is fine ($0.30), but avoid large result sets.
+
+**Cheaper alternatives for multi-result searches:**
+- Apollo `mixed_people/search`: **$0.01 flat** per call → `$GOOSEWORKS_API_BASE/v1/proxy/apollo/mixed_people/search`
+- Fiber `/v1/natural-language-search/profiles`: **$0.02/record** → `$GOOSEWORKS_API_BASE/v1/proxy/fiber/v1/natural-language-search/profiles`
+
+Use Nyne only when you need to look up a **specific individual** by name + company.
+
 ## Setup
 
 Read your credentials from ~/.gooseworks/credentials.json:

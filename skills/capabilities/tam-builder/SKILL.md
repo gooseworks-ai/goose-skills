@@ -144,8 +144,8 @@ Score thresholds (configurable): >=75 = Tier 1, >=50 = Tier 2, else Tier 3.
 ## Apollo API Reference
 
 - **Company Search:** `POST https://api.apollo.io/api/v1/mixed_companies/search` — Returns matching companies in the `accounts` array (not `organizations`). Fields: `name`, `primary_domain`, `estimated_num_employees`, `industry`, `keywords`, `city`, `state`, `country`.
-- **People Search:** `POST https://api.apollo.io/api/v1/mixed_people/search` — FREE. Returns matching people in the `people` array. Fields: `first_name`, `title`, `organization.name`. Email/LinkedIn obfuscated on free tier.
-- **People Match (enrich):** `POST https://api.apollo.io/api/v1/people/match` — 1 credit per match. Reveals email, phone, LinkedIn URL, full name.
+- **People Search:** `POST https://api.apollo.io/api/v1/mixed_people/search` — **$0.01 flat per call** (cheapest people search). Returns matching people in the `people` array. Fields: `first_name`, `title`, `organization.name`. Email/LinkedIn obfuscated on free tier.
+- **People Match (enrich):** `POST https://api.apollo.io/api/v1/people/match` — ~$0.03 per match. Reveals email, phone, LinkedIn URL, full name.
 - **Auth:** `x-api-key: {APOLLO_API_KEY}` header on all requests
 - **Pagination:** `per_page` (max 100), `page` (1-indexed). `pagination.total_entries` gives total count.
 

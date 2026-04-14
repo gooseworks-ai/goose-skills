@@ -7,6 +7,20 @@ source: orthogonal
 
 # Fiber AI - People & Company Intelligence
 
+## Cost Reference
+
+| Endpoint | Cost | Notes |
+|----------|------|-------|
+| `/v1/natural-language-search/profiles` | **$0.02/record** (pageSize × $0.02) | Default $0.50 if no pageSize |
+| `/v1/people-search` | **$0.02/record** (pageSize × $0.02) | Default $0.50 if no pageSize |
+| `/v1/natural-language-search/companies` | Varies | |
+| `/v1/kitchen-sink/person` | Varies | Single lookup |
+| `/v1/validate-email/single` | ~$0.02 | |
+
+**Cheaper alternative for people search:** Apollo `mixed_people/search` costs **$0.01 flat** per call regardless of result count. Use `$GOOSEWORKS_API_BASE/v1/proxy/apollo/mixed_people/search` when possible.
+
+**Tip:** Use the dedicated proxy route `$GOOSEWORKS_API_BASE/v1/proxy/fiber/...` instead of the generic orthogonal proxy for cleaner billing tracking.
+
 ## Setup
 
 Read your credentials from ~/.gooseworks/credentials.json:
