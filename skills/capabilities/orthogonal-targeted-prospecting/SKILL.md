@@ -130,17 +130,30 @@ curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/orthogonal/run \
 
 ### 4. Find Decision Makers
 
-**Best approach: one broad industry-wide search, then per-company fallbacks.**
+**Cost ranking (25 results):** Apollo $0.01 | Fiber $0.50 | Nyne/PDL $7.50. Always try Apollo first.
 
-In testing, a single broad query like "COO at staffing companies in the US" returned 15 relevant profiles, while per-company queries (e.g., "COO at Robert Half") often returned 0 results. Start broad, then fill gaps.
+**Best approach: Apollo search first, then Fiber for NL queries, then per-company fallbacks.**
 
-**Primary — Fiber NL profile search (broad industry query):**
+**Primary — Apollo people search (cheapest at $0.01 flat):**
 
 ```bash
-curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/orthogonal/run \
+curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/apollo/mixed_people/search \
   -H "Authorization: Bearer $GOOSEWORKS_API_KEY" \
   -H "Content-Type: application/json" \
-  -d '{"api":"fiber","path":"/v1/natural-language-search/profiles"}'
+  -d '{
+  "person_titles": ["{title_1}", "{title_2}"],
+  "person_locations": ["{location}"],
+  "per_page": 25
+}'
+```
+
+**Fallback — Fiber NL profile search ($0.02/record, good for broad industry queries):**
+
+```bash
+curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/fiber/v1/natural-language-search/profiles \
+  -H "Authorization: Bearer $GOOSEWORKS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
   "query": "{title_1} or {title_2} at a {industry} company in {location}",
   "pageSize": 15
 }'
@@ -148,13 +161,13 @@ curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/orthogonal/run \
 
 This is the highest-yield approach. Returns decision makers across the industry with LinkedIn URLs, current titles, and company names.
 
-**Per-company fallback — Fiber NL profile search** (for companies not covered by the broad search):
+**Per-company fallback — Fiber NL profile search ($0.02/record)** (for companies not covered above):
 
 ```bash
-curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/orthogonal/run \
+curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/fiber/v1/natural-language-search/profiles \
   -H "Authorization: Bearer $GOOSEWORKS_API_KEY" \
   -H "Content-Type: application/json" \
-  -d '{"api":"fiber","path":"/v1/natural-language-search/profiles"}'
+  -d '{
   "query": "{title_1} or {title_2} at {company_name}",
   "pageSize": 5
 }'
@@ -162,17 +175,15 @@ curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/orthogonal/run \
 
 Per-company queries often return empty results, especially for large enterprises where C-suite profiles may not be indexed. Use this only for high-priority companies missing from the broad search.
 
-**Supplemental — Nyne person search** (async, may return errors):
+**Last resort — Nyne person search (EXPENSIVE: $0.30/record, async):**
+
+Only use if Apollo and Fiber returned insufficient results.
 
 ```bash
-curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/orthogonal/run \
+curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/pdl/person/search \
   -H "Authorization: Bearer $GOOSEWORKS_API_KEY" \
   -H "Content-Type: application/json" \
-  -d '{"api":"nyne","path":"/person/search","body":{"query":"{title} at {company_name} {location}"}}'
-# Poll: curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/orthogonal/run \
-  -H "Authorization: Bearer $GOOSEWORKS_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"api":"nyne","path":"/person/search","query":{"request_id":"REQUEST_ID"}}'
+  -d '{"query":"{title} at {company_name} {location}"}'
 ```
 
 **Fallback — Scrapegraph website scrape** (scrape the company's leadership page):

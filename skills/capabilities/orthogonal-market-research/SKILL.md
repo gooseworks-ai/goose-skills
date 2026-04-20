@@ -52,13 +52,28 @@ curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/orthogonal/run \
 ```
 
 ### Step 3: Find Decision Makers
-Identify leadership at key companies:
+Identify leadership at key companies.
+
+**Use Apollo first ($0.01 flat per call — cheapest option):**
 
 ```bash
-curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/orthogonal/run \
+curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/apollo/mixed_people/search \
   -H "Authorization: Bearer $GOOSEWORKS_API_KEY" \
   -H "Content-Type: application/json" \
-  -d '{"api":"fiber","path":"/v1/people-search"}'
+  -d '{
+  "person_titles": ["CEO", "CTO", "VP Product", "Head of Sales"],
+  "organization_domains": ["openai.com", "anthropic.com"],
+  "per_page": 25
+}'
+```
+
+**Fallback — Fiber people search ($0.02/record):**
+
+```bash
+curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/fiber/v1/people-search \
+  -H "Authorization: Bearer $GOOSEWORKS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
   "searchParams": {
     "company_names": ["OpenAI", "Anthropic"],
     "job_titles": ["CEO", "CTO", "VP Product", "Head of Sales"]

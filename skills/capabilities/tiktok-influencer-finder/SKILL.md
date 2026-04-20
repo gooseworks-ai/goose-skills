@@ -2,16 +2,38 @@
 name: tiktok-influencer-finder
 description: Find TikTok influencers using Apify's Influencer Discovery Agent. Use when the user wants to discover TikTok creators or influencers in any niche.
 argument-hint: [niche/description]
-disable-model-invocation: true
 ---
 
 # TikTok Influencer Finder
 
 Search for TikTok influencers matching a specific niche using Apify's Influencer Discovery Agent.
 
+## Quick Start
+
+Requires `requests` and either `GOOSEWORKS_API_KEY` or `APIFY_API_TOKEN` env var.
+
+```bash
+# Basic search
+python3 skills/tiktok-influencer-finder/scripts/find_influencers.py \
+  --description "fitness coaches for women over 40"
+
+# With follower filters
+python3 skills/tiktok-influencer-finder/scripts/find_influencers.py \
+  --description "AI and tech reviewers" \
+  --min-followers 10000 --max-followers 500000
+
+# Summary table output
+python3 skills/tiktok-influencer-finder/scripts/find_influencers.py \
+  --description "vegan cooking creators" --output summary
+
+# CSV export
+python3 skills/tiktok-influencer-finder/scripts/find_influencers.py \
+  --description "sustainable fashion" --output csv
+```
+
 ## Step 1: Gather Criteria
 
-Before running the search, ask the user for their filtering criteria using AskUserQuestion. Collect ALL of the following:
+Before running the search, ask the user for their filtering criteria. Collect ALL of the following:
 
 1. **Niche/Description**: What type of influencer? (use $ARGUMENTS if provided, otherwise ask)
 2. **Minimum follower count**: e.g. 5K, 10K, 50K
@@ -19,21 +41,25 @@ Before running the search, ask the user for their filtering criteria using AskUs
 4. **Location filter**: e.g. US only, US + Canada, any English-speaking country
 5. **Sub-niche preferences**: Any specific content focus within the broader niche
 
-Ask all 5 criteria in a single AskUserQuestion call to minimize back-and-forth. Provide sensible default options but always allow custom input.
+Ask all 5 criteria in a single question to minimize back-and-forth. Provide sensible default options but always allow custom input.
 
-## Step 2: Run the Apify Influencer Discovery Agent
+## Step 2: Run the Search
 
-Use the `mcp__apify__apify-slash-influencer-discovery-agent` tool with:
+Compose a detailed `--description` combining the user's niche, content style preferences, and target audience. Be specific and descriptive.
 
-- **influencerDescription**: Compose a detailed description combining the user's niche, content style preferences, and target audience. Be specific and descriptive.
-- **generatedKeywords**: 5 (maximum for best coverage)
-- **profilesPerKeyword**: 10 (maximum for best coverage)
+```bash
+python3 skills/tiktok-influencer-finder/scripts/find_influencers.py \
+  --description "fitness coaches targeting women over 40, focus on home workouts and healthy aging" \
+  --min-followers 5000 --max-followers 500000 \
+  --min-fit 0.6 \
+  --output json
+```
 
-If the MCP connection fails, instruct the user to run `/mcp` to reconnect, then retry.
+The script uses `apify~influencer-discovery-agent` actor. It routes through the GooseWorks proxy when `GOOSEWORKS_API_KEY` is set, or directly to Apify when `APIFY_API_TOKEN` is set.
 
 ## Step 3: Filter Results
 
-After receiving results, apply ALL the user's criteria strictly:
+After receiving results, apply the user's criteria:
 
 - **Remove** profiles below minimum follower count
 - **Remove** profiles above maximum follower count
@@ -43,7 +69,7 @@ After receiving results, apply ALL the user's criteria strictly:
 
 ## Step 4: Present Results
 
-Present filtered results in a clean markdown table with these columns:
+Present filtered results in a clean markdown table:
 
 | Creator | Handle | Followers | Engagement | Location | Focus | Fit Score |
 
@@ -59,8 +85,22 @@ After the table, include:
 - A note if very few results matched (suggest adjusting criteria)
 - Offer to run another search with different keywords or adjusted criteria
 
+## CLI Reference
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--description` | *required* | Describe the type of influencer to find |
+| `--keywords` | 5 | Number of search keywords to generate (max 5) |
+| `--profiles-per-keyword` | 10 | Profiles per keyword (max 10) |
+| `--min-followers` | none | Minimum follower count filter |
+| `--max-followers` | none | Maximum follower count filter |
+| `--min-fit` | 0.0 | Minimum fit score (0.0-1.0) |
+| `--output` | json | Output format: `json`, `csv`, `summary` |
+| `--token` | env var | Apify token (overrides env vars) |
+| `--timeout` | 300 | Max seconds for Apify run |
+
 ## Notes
 
-- This skill requires the Apify MCP server to be connected. If not connected, tell the user to run `/mcp` first.
-- The tool searches TikTok specifically. If the user wants other platforms, let them know this is TikTok-only and suggest alternatives.
+- This skill searches TikTok specifically. If the user wants other platforms, let them know this is TikTok-only and suggest alternatives.
 - Engagement rates above 100% can occur when viral posts drive disproportionate interaction relative to follower count.
+- The influencer discovery agent may take 1-3 minutes to complete depending on search breadth.

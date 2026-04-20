@@ -240,10 +240,10 @@ If the scrape fails (404, timeout, empty), put "Website not available or pre-lau
 Use the LinkedIn URL from the YC page to get full employment history. Run one call per founder.
 
 ```bash
-curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/orthogonal/run \
+curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/apollo/people/match \
   -H "Authorization: Bearer $GOOSEWORKS_API_KEY" \
   -H "Content-Type: application/json" \
-  -d '{"api":"apollo","path":"/api/v1/people/match"}'
+  -d '{
   "linkedin_url": "{founder_linkedin_url}",
   "reveal_personal_emails": true
 }'
@@ -285,10 +285,10 @@ curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/orthogonal/run \
 **No LinkedIn URL on YC page?** Fallback — match by name + company:
 
 ```bash
-curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/orthogonal/run \
+curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/apollo/people/match \
   -H "Authorization: Bearer $GOOSEWORKS_API_KEY" \
   -H "Content-Type: application/json" \
-  -d '{"api":"apollo","path":"/api/v1/people/match"}'
+  -d '{
   "first_name": "{first_name}",
   "last_name": "{last_name}",
   "organization_name": "{company_name}",
@@ -296,7 +296,7 @@ curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/orthogonal/run \
 }'
 ```
 
-Note: The `mixed_people/search` endpoint is NOT available. Use `people/match` with `first_name`, `last_name`, and `organization_name` as the fallback. This usually returns their employment history even without a LinkedIn URL.
+Note: Use `people/match` with `first_name`, `last_name`, and `organization_name` as the fallback. This usually returns their employment history even without a LinkedIn URL.
 
 ### 3d. Perplexity — market context (~$0.005 each)
 
