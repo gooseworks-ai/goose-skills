@@ -3,6 +3,8 @@ name: frontend-slides
 description: Create stunning, animation-rich HTML presentations from scratch or by converting PowerPoint files. Use when the user wants to build a presentation, convert a PPT/PPTX to web, or create slides for a talk/pitch. Helps non-designers discover their aesthetic through visual exploration rather than abstract choices.
 ---
 
+> **Deprecated:** This skill is superseded by `goose-graphics`. See `skills/composites/goose-graphics/` (install with `npx goose-skills install goose-graphics`). The slides format is one of seven formats in the newer skill and supports 36 style presets plus image sourcing and PNG export. This skill is retained for one release cycle before removal.
+
 # Frontend Slides Skill
 
 Create zero-dependency, animation-rich HTML presentations that run entirely in the browser. This skill helps non-designers discover their preferred aesthetic through visual exploration ("show, don't tell"), then generates production-quality slide decks.

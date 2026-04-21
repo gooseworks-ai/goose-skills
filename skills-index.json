@@ -1,6 +1,6 @@
 {
   "version": "1.2.0",
-  "generated": "2026-04-20",
+  "generated": "2026-04-21",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -770,6 +770,8 @@
         "tags": [
           "content"
         ],
+        "deprecated": true,
+        "deprecation_note": "Superseded by `goose-graphics` (skills/composites/goose-graphics/). Scheduled for removal after one release cycle.",
         "installation": {
           "base_command": "npx goose-skills install create-html-carousel",
           "supports": [
@@ -799,6 +801,8 @@
         "tags": [
           "content"
         ],
+        "deprecated": true,
+        "deprecation_note": "Superseded by `goose-graphics` (skills/composites/goose-graphics/). Scheduled for removal after one release cycle.",
         "installation": {
           "base_command": "npx goose-skills install create-html-slides",
           "supports": [
@@ -1198,6 +1202,135 @@
         },
         "requires_skills": [
           "seo-domain-analyzer"
+        ]
+      }
+    },
+    {
+      "slug": "goose-graphics",
+      "name": "goose-graphics",
+      "category": "composites",
+      "description": "Portable visual skill pack for the Agent Skills ecosystem (Claude Code, Claude Desktop, Claude Cowork, Claude Design, Goose, Cursor, Codex). Ships 36 aesthetic presets in DESIGN.md format, 7 social-first format specs, extract-style from reference images, and automatic PNG export via Playwright.",
+      "tags": "content, design, graphics, social",
+      "path": "skills/composites/goose-graphics",
+      "files": [
+        "skills/composites/goose-graphics/README.md",
+        "skills/composites/goose-graphics/SKILL.md",
+        "skills/composites/goose-graphics/formats/carousel.md",
+        "skills/composites/goose-graphics/formats/chart.md",
+        "skills/composites/goose-graphics/formats/infographic.md",
+        "skills/composites/goose-graphics/formats/poster.md",
+        "skills/composites/goose-graphics/formats/slides.md",
+        "skills/composites/goose-graphics/formats/story.md",
+        "skills/composites/goose-graphics/formats/tweet.md",
+        "skills/composites/goose-graphics/screenshot/.gitignore",
+        "skills/composites/goose-graphics/screenshot/fetch-full-tweet.js",
+        "skills/composites/goose-graphics/screenshot/fetch-tweet.js",
+        "skills/composites/goose-graphics/screenshot/package-lock.json",
+        "skills/composites/goose-graphics/screenshot/package.json",
+        "skills/composites/goose-graphics/screenshot/screenshot.js",
+        "skills/composites/goose-graphics/skill.meta.json",
+        "skills/composites/goose-graphics/sources/ascii-art.md",
+        "skills/composites/goose-graphics/sources/unsplash.md",
+        "skills/composites/goose-graphics/styles/_full/DESIGN_MD_COVERAGE.md",
+        "skills/composites/goose-graphics/styles/_full/archive-fashion.md",
+        "skills/composites/goose-graphics/styles/_full/aurora-app-launch.md",
+        "skills/composites/goose-graphics/styles/_full/blueprint-sticky.md",
+        "skills/composites/goose-graphics/styles/_full/brutalist.md",
+        "skills/composites/goose-graphics/styles/_full/bw-editorial-drop.md",
+        "skills/composites/goose-graphics/styles/_full/card-toss.md",
+        "skills/composites/goose-graphics/styles/_full/cinematic-romance.md",
+        "skills/composites/goose-graphics/styles/_full/clean-slate.md",
+        "skills/composites/goose-graphics/styles/_full/deep-ocean.md",
+        "skills/composites/goose-graphics/styles/_full/electric-burst.md",
+        "skills/composites/goose-graphics/styles/_full/frosted-lens.md",
+        "skills/composites/goose-graphics/styles/_full/garden-blur.md",
+        "skills/composites/goose-graphics/styles/_full/golden-dusk.md",
+        "skills/composites/goose-graphics/styles/_full/grid-quote-editorial.md",
+        "skills/composites/goose-graphics/styles/_full/heatwave-orange.md",
+        "skills/composites/goose-graphics/styles/_full/highlighter-yellow.md",
+        "skills/composites/goose-graphics/styles/_full/ink-doodle-event.md",
+        "skills/composites/goose-graphics/styles/_full/iridescent-y2k.md",
+        "skills/composites/goose-graphics/styles/_full/magazine-red.md",
+        "skills/composites/goose-graphics/styles/_full/masked-object-editorial.md",
+        "skills/composites/goose-graphics/styles/_full/matt-gray.md",
+        "skills/composites/goose-graphics/styles/_full/midnight-editorial.md",
+        "skills/composites/goose-graphics/styles/_full/mint-pixel-corporate.md",
+        "skills/composites/goose-graphics/styles/_full/paper-and-ink.md",
+        "skills/composites/goose-graphics/styles/_full/pastel-organic-shapes.md",
+        "skills/composites/goose-graphics/styles/_full/peach-pop.md",
+        "skills/composites/goose-graphics/styles/_full/product-minimal.md",
+        "skills/composites/goose-graphics/styles/_full/retro-line-art.md",
+        "skills/composites/goose-graphics/styles/_full/social-post-card.md",
+        "skills/composites/goose-graphics/styles/_full/soft-cloud.md",
+        "skills/composites/goose-graphics/styles/_full/split-yellow-product.md",
+        "skills/composites/goose-graphics/styles/_full/sunburst-editorial.md",
+        "skills/composites/goose-graphics/styles/_full/terminal.md",
+        "skills/composites/goose-graphics/styles/_full/venn-infographic.md",
+        "skills/composites/goose-graphics/styles/_full/vintage-duotone-poster.md",
+        "skills/composites/goose-graphics/styles/_full/warm-earth.md",
+        "skills/composites/goose-graphics/styles/archive-fashion.md",
+        "skills/composites/goose-graphics/styles/aurora-app-launch.md",
+        "skills/composites/goose-graphics/styles/blueprint-sticky.md",
+        "skills/composites/goose-graphics/styles/brutalist.md",
+        "skills/composites/goose-graphics/styles/bw-editorial-drop.md",
+        "skills/composites/goose-graphics/styles/card-toss.md",
+        "skills/composites/goose-graphics/styles/cinematic-romance.md",
+        "skills/composites/goose-graphics/styles/clean-slate.md",
+        "skills/composites/goose-graphics/styles/deep-ocean.md",
+        "skills/composites/goose-graphics/styles/electric-burst.md",
+        "skills/composites/goose-graphics/styles/extract-style.md",
+        "skills/composites/goose-graphics/styles/frosted-lens.md",
+        "skills/composites/goose-graphics/styles/garden-blur.md",
+        "skills/composites/goose-graphics/styles/golden-dusk.md",
+        "skills/composites/goose-graphics/styles/grid-quote-editorial.md",
+        "skills/composites/goose-graphics/styles/heatwave-orange.md",
+        "skills/composites/goose-graphics/styles/highlighter-yellow.md",
+        "skills/composites/goose-graphics/styles/index.json",
+        "skills/composites/goose-graphics/styles/ink-doodle-event.md",
+        "skills/composites/goose-graphics/styles/iridescent-y2k.md",
+        "skills/composites/goose-graphics/styles/magazine-red.md",
+        "skills/composites/goose-graphics/styles/masked-object-editorial.md",
+        "skills/composites/goose-graphics/styles/matt-gray.md",
+        "skills/composites/goose-graphics/styles/midnight-editorial.md",
+        "skills/composites/goose-graphics/styles/mint-pixel-corporate.md",
+        "skills/composites/goose-graphics/styles/paper-and-ink.md",
+        "skills/composites/goose-graphics/styles/pastel-organic-shapes.md",
+        "skills/composites/goose-graphics/styles/peach-pop.md",
+        "skills/composites/goose-graphics/styles/product-minimal.md",
+        "skills/composites/goose-graphics/styles/retro-line-art.md",
+        "skills/composites/goose-graphics/styles/social-post-card.md",
+        "skills/composites/goose-graphics/styles/soft-cloud.md",
+        "skills/composites/goose-graphics/styles/split-yellow-product.md",
+        "skills/composites/goose-graphics/styles/sunburst-editorial.md",
+        "skills/composites/goose-graphics/styles/terminal.md",
+        "skills/composites/goose-graphics/styles/venn-infographic.md",
+        "skills/composites/goose-graphics/styles/vintage-duotone-poster.md",
+        "skills/composites/goose-graphics/styles/warm-earth.md"
+      ],
+      "metadata": {
+        "slug": "goose-graphics",
+        "category": "composites",
+        "tags": [
+          "content",
+          "design",
+          "graphics",
+          "social"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install goose-graphics",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "features": [
+          "36 aesthetic style presets",
+          "7 output formats (carousel, story, infographic, slides, poster, chart, tweet)",
+          "Unsplash + ASCII image sourcing",
+          "Playwright PNG export",
+          "Image-to-style extraction",
+          "Args-based slash command invocation"
         ]
       }
     },

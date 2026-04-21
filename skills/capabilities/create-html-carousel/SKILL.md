@@ -3,6 +3,8 @@ name: create-html-carousel
 description: Create LinkedIn carousel posts as high-quality PNG images. Design informational multi-slide posts like "5 AI GTM workflows" with consistent styling, then automatically screenshot each slide at LinkedIn's optimal 1080x1080px format.
 ---
 
+> **Deprecated:** This skill is superseded by `goose-graphics`. See `skills/composites/goose-graphics/` (install with `npx goose-skills install goose-graphics`). The carousel format is one of seven formats in the newer skill and supports 36 style presets plus image sourcing and PNG export. This skill is retained for one release cycle before removal.
+
 # LinkedIn Carousel Creator
 
 Create stunning LinkedIn carousel posts as PNG images. This skill generates styled HTML slides optimized for square format (1080×1080px), then automatically screenshots each slide for direct upload to LinkedIn.

@@ -59,15 +59,16 @@ npx gooseworks update                      # Update to latest skill version
 | `seo-traffic-analyzer` | Cap | Website traffic and keyword analysis |
 | `tech-stack-teardown` | Cap | Reverse-engineer a company's sales/marketing tech stack |
 
-### Content (10)
+### Content (11)
 | Skill | Type | Description |
 |-------|------|-------------|
 | `blog-feed-monitor` | Cap | Scrape blogs via RSS feeds with Apify fallback |
 | `campaign-brief-generator` | Comp | Generate complete marketing campaign brief |
 | `content-asset-creator` | Cap | Generate branded HTML reports and pages |
 | `content-brief-factory` | Comp | Detailed content briefs at scale with SERP analysis |
-| `create-html-carousel` | Cap | Create LinkedIn carousel posts as PNG images |
-| `create-html-slides` | Cap | Create animation-rich HTML presentations |
+| `create-html-carousel` | Cap | *(deprecated — use `goose-graphics`)* Create LinkedIn carousel posts as PNG images |
+| `create-html-slides` | Cap | *(deprecated — use `goose-graphics`)* Create animation-rich HTML presentations |
+| `goose-graphics` | Comp | 36 aesthetic presets across 7 formats (carousel, story, infographic, slides, poster, chart, tweet) with Unsplash/ASCII sourcing and Playwright PNG export |
 | `create-workflow-diagram` | Cap | Create FigJam/Miro-style workflow diagrams as PNGs |
 | `feature-launch-playbook` | Comp | Generate full launch kit from a feature/update |
 | `help-center-article-generator` | Comp | Generate structured help center articles |

@@ -1,0 +1,10 @@
+{
+  "name": "goose-graphics-screenshot",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Unified screenshot tool for graphic design skill pack",
+  "main": "screenshot.js",
+  "dependencies": {
+    "playwright": "^1.40.0"
+  }
+}

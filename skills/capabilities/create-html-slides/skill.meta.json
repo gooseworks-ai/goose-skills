@@ -4,6 +4,8 @@
   "tags": [
     "content"
   ],
+  "deprecated": true,
+  "deprecation_note": "Superseded by `goose-graphics` (skills/composites/goose-graphics/). Scheduled for removal after one release cycle.",
   "installation": {
     "base_command": "npx goose-skills install create-html-slides",
     "supports": [

@@ -1,0 +1,77 @@
+{
+  "version": 1,
+  "count": 36,
+  "groups": [
+    {
+      "name": "Dark & Moody",
+      "styles": [
+        { "slug": "midnight-editorial", "name": "Midnight Editorial", "tagline": "Dark, elegant magazine aesthetic with copper accents." },
+        { "slug": "deep-ocean", "name": "Deep Ocean", "tagline": "Calm cyan glow on deep blue-black." },
+        { "slug": "golden-dusk", "name": "Golden Dusk", "tagline": "Warm gold highlights on dark navy." },
+        { "slug": "terminal", "name": "Terminal", "tagline": "Green-on-dark monospace hacker aesthetic." },
+        { "slug": "bw-editorial-drop", "name": "BW Editorial Drop", "tagline": "Grayscale photo top + yellow Anton display on black drop panel." },
+        { "slug": "masked-object-editorial", "name": "Masked Object Editorial", "tagline": "Navy + photo clipped into an object silhouette + italic Playfair." },
+        { "slug": "grid-quote-editorial", "name": "Grid Quote Editorial", "tagline": "Royal purple widescreen quote card + pink grid overlay + mint Figtree." }
+      ]
+    },
+    {
+      "name": "Light & Editorial",
+      "styles": [
+        { "slug": "clean-slate", "name": "Clean Slate", "tagline": "Ultra-minimal white canvas with a single blue accent." },
+        { "slug": "paper-and-ink", "name": "Paper & Ink", "tagline": "Classic serif editorial with red accent on cream." },
+        { "slug": "matt-gray", "name": "Matt Gray", "tagline": "Playfair italic green + yellow pill tags on light gray." },
+        { "slug": "magazine-red", "name": "Magazine Red", "tagline": "Massive tomato-red condensed headlines on cream paper." },
+        { "slug": "sunburst-editorial", "name": "Sunburst Editorial", "tagline": "Mid-century book cover feel with serif + collage accents." },
+        { "slug": "product-minimal", "name": "Product Minimal", "tagline": "Apple-style white canvas, hero product photo, underlined URL." },
+        { "slug": "archive-fashion", "name": "Archive Fashion", "tagline": "Stone beige catalog frame + brown photo inset + pink sticker." }
+      ]
+    },
+    {
+      "name": "Organic & Warm",
+      "styles": [
+        { "slug": "warm-earth", "name": "Warm Earth", "tagline": "Organic terracotta and sage on cream." },
+        { "slug": "garden-blur", "name": "Garden Blur", "tagline": "Soft botanical backgrounds with translucent card overlays." },
+        { "slug": "soft-cloud", "name": "Soft Cloud", "tagline": "Airy pastel gradients with white cards." },
+        { "slug": "peach-pop", "name": "Peach Pop", "tagline": "DTC beauty: monospace testimonials on peach + blue blocks." },
+        { "slug": "pastel-organic-shapes", "name": "Pastel Organic Shapes", "tagline": "Cream canvas with one pistachio circle half off-frame." },
+        { "slug": "aurora-app-launch", "name": "Aurora App Launch", "tagline": "Rainbow mesh gradient + phone mockup + frosted-glass footer." }
+      ]
+    },
+    {
+      "name": "Bold & Energetic",
+      "styles": [
+        { "slug": "electric-burst", "name": "Electric Burst", "tagline": "Bold neon yellow and hot pink on black." },
+        { "slug": "highlighter-yellow", "name": "Highlighter Yellow", "tagline": "Saturated yellow + heavy black sans + white-rect italic emphasis." },
+        { "slug": "heatwave-orange", "name": "Heatwave Orange", "tagline": "Three-variant white/orange/black system + line-wave accents." },
+        { "slug": "split-yellow-product", "name": "Split Yellow Product", "tagline": "Vivid mustard 2/3 headline slab + gray body panel + yellow photo." },
+        { "slug": "blueprint-sticky", "name": "Blueprint Sticky", "tagline": "Cobalt blueprint grid + tilted pink/yellow sticky notes." }
+      ]
+    },
+    {
+      "name": "Retro & Cinematic",
+      "styles": [
+        { "slug": "cinematic-romance", "name": "Cinematic Romance", "tagline": "Portrait photo canvas + hot pink chancery script headlines." },
+        { "slug": "vintage-duotone-poster", "name": "Vintage Duotone Poster", "tagline": "Forest green + dusty pink halftone, 1950s letterpress." },
+        { "slug": "retro-line-art", "name": "Retro Line Art", "tagline": "Powder blue + cream hand-drawn cocktail-poster line art." },
+        { "slug": "iridescent-y2k", "name": "Iridescent Y2K", "tagline": "Brutalist grid + chrome iridescent blob hero, Y2K club poster." },
+        { "slug": "ink-doodle-event", "name": "Ink Doodle Event", "tagline": "Kraft paper + loose hand-drawn ink character + Yellowtail script." }
+      ]
+    },
+    {
+      "name": "Structural & Technical",
+      "styles": [
+        { "slug": "brutalist", "name": "Brutalist", "tagline": "Raw heavy borders, system fonts, no decoration." },
+        { "slug": "frosted-lens", "name": "Frosted Lens", "tagline": "Glassmorphism + blurred photography backgrounds." },
+        { "slug": "card-toss", "name": "Card Toss", "tagline": "Scattered tilted cards with sticky-note energy." },
+        { "slug": "venn-infographic", "name": "Venn Infographic", "tagline": "Translucent three-circle Venn diagrams + floating info cards." },
+        { "slug": "social-post-card", "name": "Social Post Card", "tagline": "Blurred real scene + simulated Instagram post card as hero." }
+      ]
+    },
+    {
+      "name": "Friendly Corporate",
+      "styles": [
+        { "slug": "mint-pixel-corporate", "name": "Mint Pixel Corporate", "tagline": "Pale mint + lime pixel-staircase corner decorations." }
+      ]
+    }
+  ]
+}
