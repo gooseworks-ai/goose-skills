@@ -1,6 +1,7 @@
 <div align="center">
 
-![goose4](https://github.com/user-attachments/assets/2bca27a7-7dc7-41da-b579-6a46f1152277)
+<img width="1270" height="760" alt="1" src="https://github.com/user-attachments/assets/60212c5c-e372-455c-a937-2ff16e235ee6" />
+
 
 # Goose Skills
 
@@ -15,8 +16,6 @@ Works with [Claude Code](https://claude.ai/claude-code) &middot; [Cursor](https:
 <br />
 
 [<img src="https://img.shields.io/badge/Get%20Started%20on%20GooseWorks-%E2%86%92-black?style=for-the-badge&labelColor=000000" alt="Get Started on GooseWorks" />](https://app.gooseworks.ai)
-
-Sign up at **[app.gooseworks.ai](https://app.gooseworks.ai)** to get your API key and start using skills instantly.
 
 </div>
 
