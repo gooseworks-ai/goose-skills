@@ -5,7 +5,7 @@ description: >
   the agent's Turso database. The dashboard is served on port 3847 and the user sees it
   live in the "App" tab in Gooseworks. Use when the user asks for a dashboard,
   visualization, chart, metric view, or any custom UI powered by their agent's data.
-tags: [dashboard, visualization, frontend]
+tags: [content, design]
 ---
 
 You are helping the user build a custom dashboard from a starter template. The dashboard lives in the sandbox, is served on port 3847 by a single Express process (which also serves the React SPA — no CORS), and is viewable in the Gooseworks "App" tab.

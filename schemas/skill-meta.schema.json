@@ -8,7 +8,7 @@
     "category": { "type": "string", "enum": ["capabilities", "composites", "playbooks"] },
     "tags": {
       "type": "array",
-      "items": { "type": "string", "enum": ["All", "ads", "brand", "competitive-intel", "content", "design", "lead-generation", "monitoring", "outreach", "research", "seo"] },
+      "items": { "type": "string", "enum": ["All", "ads", "brand", "competitive-intel", "content", "design", "lead-generation", "monitoring", "outreach", "research", "seo", "social"] },
       "uniqueItems": true
     },
     "installation": {

@@ -7,7 +7,7 @@ description: >
   create-linkedin-content) consume to draft in-voice posts. Different from
   brand-voice-extractor, which analyses company blogs/landing pages — this skill is
   for personal social voice.
-tags: [content, voice, social]
+tags: [content, social]
 ---
 
 # Generate Voice Guide

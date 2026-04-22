@@ -725,7 +725,7 @@
       "name": "create-dashboard",
       "category": "capabilities",
       "description": ">",
-      "tags": "dashboard, visualization, frontend",
+      "tags": "content, design",
       "path": "skills/capabilities/create-dashboard",
       "files": [
         "skills/capabilities/create-dashboard/SKILL.md",
@@ -735,9 +735,8 @@
         "slug": "create-dashboard",
         "category": "capabilities",
         "tags": [
-          "dashboard",
-          "visualization",
-          "frontend"
+          "content",
+          "design"
         ],
         "installation": {
           "base_command": "npx goose-skills install create-dashboard",
@@ -818,7 +817,7 @@
       "name": "create-linkedin-content",
       "category": "capabilities",
       "description": ">",
-      "tags": "content, social, linkedin",
+      "tags": "content, social",
       "path": "skills/capabilities/create-linkedin-content",
       "files": [
         "skills/capabilities/create-linkedin-content/SKILL.md",
@@ -829,8 +828,7 @@
         "category": "capabilities",
         "tags": [
           "content",
-          "social",
-          "linkedin"
+          "social"
         ],
         "installation": {
           "base_command": "npx goose-skills install create-linkedin-content",
@@ -878,7 +876,7 @@
       "name": "create-x-content",
       "category": "capabilities",
       "description": ">",
-      "tags": "content, social, x, twitter",
+      "tags": "content, social",
       "path": "skills/capabilities/create-x-content",
       "files": [
         "skills/capabilities/create-x-content/SKILL.md",
@@ -889,9 +887,7 @@
         "category": "capabilities",
         "tags": [
           "content",
-          "social",
-          "x",
-          "twitter"
+          "social"
         ],
         "installation": {
           "base_command": "npx goose-skills install create-x-content",
@@ -1180,7 +1176,7 @@
       "name": "generate-voice-guide",
       "category": "capabilities",
       "description": ">",
-      "tags": "content, voice, social",
+      "tags": "content, social",
       "path": "skills/capabilities/generate-voice-guide",
       "files": [
         "skills/capabilities/generate-voice-guide/SKILL.md",
@@ -1191,7 +1187,6 @@
         "category": "capabilities",
         "tags": [
           "content",
-          "voice",
           "social"
         ],
         "installation": {
@@ -1298,7 +1293,7 @@
       "name": "goose-graphics",
       "category": "composites",
       "description": "Portable visual skill pack for the Agent Skills ecosystem (Claude Code, Claude Desktop, Claude Cowork, Claude Design, Goose, Cursor, Codex). Ships 36 aesthetic presets in DESIGN.md format, 7 social-first format specs, extract-style from reference images, and automatic PNG export via Playwright.",
-      "tags": "content, design, graphics, social",
+      "tags": "content, design, social",
       "path": "skills/composites/goose-graphics",
       "files": [
         "skills/composites/goose-graphics/README.md",
@@ -1401,7 +1396,6 @@
         "tags": [
           "content",
           "design",
-          "graphics",
           "social"
         ],
         "installation": {
@@ -2062,7 +2056,7 @@
       "name": "linkedin-message-writer",
       "category": "capabilities",
       "description": ">",
-      "tags": "outreach, linkedin",
+      "tags": "outreach, social",
       "path": "skills/capabilities/linkedin-message-writer",
       "files": [
         "skills/capabilities/linkedin-message-writer/SKILL.md",
@@ -2073,7 +2067,7 @@
         "category": "capabilities",
         "tags": [
           "outreach",
-          "linkedin"
+          "social"
         ],
         "installation": {
           "base_command": "npx goose-skills install linkedin-message-writer",
@@ -5025,7 +5019,7 @@
       "name": "social-kit",
       "category": "composites",
       "description": ">",
-      "tags": "content, social, composite",
+      "tags": "content, social",
       "path": "skills/composites/social-kit",
       "files": [
         "skills/composites/social-kit/SKILL.md",
@@ -5036,8 +5030,7 @@
         "category": "composites",
         "tags": [
           "content",
-          "social",
-          "composite"
+          "social"
         ],
         "installation": {
           "base_command": "npx goose-skills install social-kit",

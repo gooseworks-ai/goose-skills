@@ -7,7 +7,7 @@ description: >
   and generates messages tailored to each lead's background, interests, and recent activity.
   Exports tool-ready CSVs for Dripify, Expandi, Botdog, PhantomBuster, or generic format.
   No LinkedIn cookies or login required.
-tags: [outreach, linkedin]
+tags: [outreach, social]
 ---
 
 # LinkedIn Message Writer

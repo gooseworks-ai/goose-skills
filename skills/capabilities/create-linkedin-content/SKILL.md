@@ -6,7 +6,7 @@ description: >
   distinct framings, applies LinkedIn-specific defaults (arrow bullets, "why this
   matters" beat, 150–500 words), and self-checks against the voice guide's banned
   phrases before returning.
-tags: [content, social, linkedin]
+tags: [content, social]
 ---
 
 # Create LinkedIn Content
@@ -100,7 +100,7 @@ Plus LinkedIn-specific:
 
 ### Phase 5 — Save outputs
 
-File naming (★ prefix distinguishes from X variants when they live in the same folder):
+File naming (the `linkedin-` prefix distinguishes from X variants when they live in the same folder):
 ```
 linkedin-<letter>-<framing-slug>.md
 ```

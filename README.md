@@ -21,9 +21,9 @@ npx gooseworks credits                     # Check your credit balance
 npx gooseworks update                      # Update to latest skill version
 ```
 
-## Available Skills (104)
+## Available Skills (108)
 
-**48 Capabilities** (atomic, single-purpose tools) | **51 Composites** (multi-skill chains) | **5 Playbooks** (end-to-end workflows)
+**51 Capabilities** (atomic, single-purpose tools) | **52 Composites** (multi-skill chains) | **5 Playbooks** (end-to-end workflows)
 
 ### Ads (9)
 | Skill | Type | Description |
@@ -59,7 +59,7 @@ npx gooseworks update                      # Update to latest skill version
 | `seo-traffic-analyzer` | Cap | Website traffic and keyword analysis |
 | `tech-stack-teardown` | Cap | Reverse-engineer a company's sales/marketing tech stack |
 
-### Content (11)
+### Content (15)
 | Skill | Type | Description |
 |-------|------|-------------|
 | `blog-feed-monitor` | Cap | Scrape blogs via RSS feeds with Apify fallback |
@@ -68,11 +68,15 @@ npx gooseworks update                      # Update to latest skill version
 | `content-brief-factory` | Comp | Detailed content briefs at scale with SERP analysis |
 | `create-html-carousel` | Cap | *(deprecated — use `goose-graphics`)* Create LinkedIn carousel posts as PNG images |
 | `create-html-slides` | Cap | *(deprecated — use `goose-graphics`)* Create animation-rich HTML presentations |
-| `goose-graphics` | Comp | 36 aesthetic presets across 7 formats (carousel, story, infographic, slides, poster, chart, tweet) with Unsplash/ASCII sourcing and Playwright PNG export |
+| `create-linkedin-content` | Cap | Draft voice-tuned LinkedIn post variants from a brief, with LinkedIn defaults and banned-phrase self-check |
 | `create-workflow-diagram` | Cap | Create FigJam/Miro-style workflow diagrams as PNGs |
+| `create-x-content` | Cap | Draft voice-tuned X/Twitter post variants with distinct framings and banned-phrase self-check |
 | `feature-launch-playbook` | Comp | Generate full launch kit from a feature/update |
+| `generate-voice-guide` | Cap | Generate a personal voice guide for X and/or LinkedIn from past posts via iterative sample-and-feedback loops |
+| `goose-graphics` | Comp | 36 aesthetic presets across 7 formats (carousel, story, infographic, slides, poster, chart, tweet) with Unsplash/ASCII sourcing and Playwright PNG export |
 | `help-center-article-generator` | Comp | Generate structured help center articles |
 | `site-content-catalog` | Cap | Full website content inventory |
+| `social-kit` | Comp | One command → voice-tuned X + LinkedIn drafts + matching graphic, orchestrating create-x-content, create-linkedin-content, and goose-graphics |
 
 ### Lead Generation (23)
 | Skill | Type | Description |

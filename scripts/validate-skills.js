@@ -5,6 +5,7 @@ const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
 const CATEGORIES = ['capabilities', 'composites'];
+const SCHEMA_PATH = path.join(ROOT, 'schemas', 'skill-meta.schema.json');
 
 function fail(messages) {
   console.error('Skill validation failed:');
@@ -15,6 +16,9 @@ function fail(messages) {
 function isValidSlug(slug) {
   return /^[a-z0-9-]+$/.test(slug);
 }
+
+const schema = JSON.parse(fs.readFileSync(SCHEMA_PATH, 'utf8'));
+const allowedTags = new Set(schema.properties.tags.items.enum);
 
 const errors = [];
 const slugs = new Set();
@@ -58,6 +62,14 @@ for (const category of CATEGORIES) {
     }
     if (!Array.isArray(meta.tags)) {
       errors.push(`tags must be an array in ${category}/${slug}`);
+    } else {
+      const invalidTags = meta.tags.filter((t) => !allowedTags.has(t));
+      if (invalidTags.length) {
+        errors.push(
+          `invalid tag(s) in ${category}/${slug}: ${invalidTags.join(', ')}. ` +
+            `Allowed: ${[...allowedTags].sort().join(', ')}`
+        );
+      }
     }
     if (!meta.installation || typeof meta.installation.base_command !== 'string' || !meta.installation.base_command.trim()) {
       errors.push(`installation.base_command required in ${category}/${slug}`);

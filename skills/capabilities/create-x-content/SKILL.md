@@ -5,7 +5,7 @@ description: >
   voice guide (generated via generate-voice-guide), produces 2–5 variants with
   distinct framings (simple-howto, problem-first, hype, mechanism-breakdown, etc.),
   and self-checks against the voice guide's banned phrases before returning.
-tags: [content, social, x, twitter]
+tags: [content, social]
 ---
 
 # Create X Content
@@ -106,7 +106,7 @@ variant-<letter>-<framing-slug>.md
 ```
 Examples: `variant-a-simple-howto.md`, `variant-b-problem-first.md`.
 
-Frontmatter schema (matches `content/2026-04-21-email-deliverability/variant-*.md` convention):
+Frontmatter schema:
 ```yaml
 ---
 id: <topic-slug>-<letter>

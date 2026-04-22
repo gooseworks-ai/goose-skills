@@ -6,7 +6,7 @@ description: >
   create-x-content + create-linkedin-content + goose-graphics in one invocation.
   Asks about graphic format when not specified, with heuristic-driven
   recommendations.
-tags: [content, social, composite]
+tags: [content, social]
 ---
 
 # Social Kit
