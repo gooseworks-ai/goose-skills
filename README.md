@@ -1,8 +1,42 @@
+<div align="center">
+
+![goose4](https://github.com/user-attachments/assets/2bca27a7-7dc7-41da-b579-6a46f1152277)
+
 # Goose Skills
 
-GTM skills for [Claude Code](https://claude.ai/claude-code), [Cursor](https://cursor.sh), and [Codex](https://openai.com/codex). Ready-to-use skills for sales, marketing, competitive intelligence, SEO, and lead generation.
+**GTM skills for AI coding agents. Ready-to-use skills for sales, marketing, competitive intelligence, SEO, and lead generation.**
 
-## Quick Install
+Works with [Claude Code](https://claude.ai/claude-code) &middot; [Cursor](https://cursor.sh) &middot; [Codex](https://openai.com/codex)
+
+[![npm version](https://img.shields.io/npm/v/goose-skills?color=blue)](https://www.npmjs.com/package/goose-skills)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Skills](https://img.shields.io/badge/skills-104-orange)]()
+
+<br />
+
+[<img src="https://img.shields.io/badge/Get%20Started%20on%20GooseWorks-%E2%86%92-black?style=for-the-badge&labelColor=000000" alt="Get Started on GooseWorks" />](https://app.gooseworks.ai)
+
+Sign up at **[app.gooseworks.ai](https://app.gooseworks.ai)** to get your API key and start using skills instantly.
+
+</div>
+
+---
+
+## Contents
+
+- [Quick Start](#-quick-start)
+- [Commands](#-commands)
+- [Skills Catalog (104)](#-skills-catalog-104)
+- [Usage Examples](#-usage-examples)
+- [Building from Source](#-building-from-source)
+- [Skill Metadata Contract](#-skill-metadata-contract)
+- [License](#-license)
+
+---
+
+## Quick Start
+
+Install the GooseWorks master skill with a single command:
 
 ```bash
 npx gooseworks install --claude    # Claude Code
@@ -11,9 +45,11 @@ npx gooseworks install --codex     # Codex
 npx gooseworks install --all       # All detected agents
 ```
 
-This installs the GooseWorks master skill, which gives your coding agent access to the full catalog of 100+ skills. After installing, ask your agent to use any skill by name (e.g., "Use the reddit-post-finder skill").
+This gives your coding agent access to the **full catalog of 100+ skills**. After installing, just ask your agent to use any skill by name.
 
-## Other Commands
+---
+
+## Commands
 
 ```bash
 npx gooseworks search "reddit scraping"   # Search the skill catalog
@@ -21,11 +57,14 @@ npx gooseworks credits                     # Check your credit balance
 npx gooseworks update                      # Update to latest skill version
 ```
 
-## Available Skills (104)
+---
 
-**48 Capabilities** (atomic, single-purpose tools) | **51 Composites** (multi-skill chains) | **5 Playbooks** (end-to-end workflows)
+## Skills Catalog (104)
+
+**48 Capabilities** (atomic, single-purpose tools) &middot; **51 Composites** (multi-skill chains) &middot; **5 Playbooks** (end-to-end workflows)
 
 ### Ads (9)
+
 | Skill | Type | Description |
 |-------|------|-------------|
 | `ad-angle-miner` | Comp | Mine converting ad angles from reviews, Reddit, competitor ads |
@@ -39,6 +78,7 @@ npx gooseworks update                      # Update to latest skill version
 | `trending-ad-hook-spotter` | Comp | Monitor social for trending narratives to map to ad hooks |
 
 ### Brand (4)
+
 | Skill | Type | Description |
 |-------|------|-------------|
 | `brand-voice-extractor` | Cap | Extract tone/style from published content |
@@ -47,6 +87,7 @@ npx gooseworks update                      # Update to latest skill version
 | `visual-brand-extractor` | Cap | Extract visual branding (colors, fonts, layout) |
 
 ### Competitive Intel (9)
+
 | Skill | Type | Description |
 |-------|------|-------------|
 | `battlecard-generator` | Comp | Research competitor, produce structured sales battlecard |
@@ -60,6 +101,7 @@ npx gooseworks update                      # Update to latest skill version
 | `tech-stack-teardown` | Cap | Reverse-engineer a company's sales/marketing tech stack |
 
 ### Content (11)
+
 | Skill | Type | Description |
 |-------|------|-------------|
 | `blog-feed-monitor` | Cap | Scrape blogs via RSS feeds with Apify fallback |
@@ -75,6 +117,7 @@ npx gooseworks update                      # Update to latest skill version
 | `site-content-catalog` | Cap | Full website content inventory |
 
 ### Lead Generation (23)
+
 | Skill | Type | Description |
 |-------|------|-------------|
 | `apollo-lead-finder` | Cap | Two-phase Apollo.io prospecting with enrichment |
@@ -102,6 +145,7 @@ npx gooseworks update                      # Update to latest skill version
 | `tam-builder` | Cap | Build scored TAM using Apollo + Supabase |
 
 ### Monitoring (10)
+
 | Skill | Type | Description |
 |-------|------|-------------|
 | `hacker-news-scraper` | Cap | Search HN stories/comments via Algolia API |
@@ -116,6 +160,7 @@ npx gooseworks update                      # Update to latest skill version
 | `web-archive-scraper` | Cap | Wayback Machine scraper for archived sites |
 
 ### Outreach (18)
+
 | Skill | Type | Description |
 |-------|------|-------------|
 | `champion-move-outreach` | Comp | Champion job change signal outreach |
@@ -138,6 +183,7 @@ npx gooseworks update                      # Update to latest skill version
 | `tiktok-influencer-finder` | Cap | Find TikTok influencers using Apify |
 
 ### Research (12)
+
 | Skill | Type | Description |
 |-------|------|-------------|
 | `buyer-persona-generator` | Cap | Research ideal customer profiles and build detailed synthetic buyer personas |
@@ -154,6 +200,7 @@ npx gooseworks update                      # Update to latest skill version
 | `youtube-apify-transcript` | Cap | YouTube transcript extraction via Apify API |
 
 ### SEO (8)
+
 | Skill | Type | Description |
 |-------|------|-------------|
 | `aeo-visibility` | Cap | AI answer engine visibility testing |
@@ -165,48 +212,65 @@ npx gooseworks update                      # Update to latest skill version
 | `seo-opportunity-finder` | Comp | Find quick-win SEO content opportunities |
 | `topical-authority-mapper` | Comp | Map complete topic clusters with hub/spoke architecture |
 
-## Using Skills
+---
 
-After installing GooseWorks, ask your coding agent to use any skill by name:
+## Usage Examples
 
-- "Use the reddit-post-finder skill to search r/startups"
-- "Use the apollo-lead-finder skill to find CTOs at AI companies"
-- "Use the competitor-intel skill to research Acme Corp"
+After installing, just ask your coding agent naturally:
+
+```
+"Use the reddit-post-finder skill to search r/startups"
+"Use the apollo-lead-finder skill to find CTOs at AI companies"
+"Use the competitor-intel skill to research Acme Corp"
+"Use the goose-graphics skill to create a LinkedIn carousel about our launch"
+```
 
 Your agent will search the GooseWorks catalog, download the skill, and run it automatically.
+
+---
 
 ## Building from Source
 
 ```bash
 git clone https://github.com/gooseworks-ai/goose-skills.git
 cd goose-skills
-node scripts/validate-skills.js # Validate SKILL.md + skill.meta.json contract
-node scripts/build-index.js   # Generate skills-index.json
-node bin/goose-skills.js list  # Test locally
+node scripts/validate-skills.js  # Validate SKILL.md + skill.meta.json contract
+node scripts/build-index.js      # Generate skills-index.json
+node bin/goose-skills.js list    # Test locally
 ```
+
+---
 
 ## Skill Metadata Contract
 
 Each skill directory must include:
 
-- `SKILL.md`
-- `skill.meta.json`
+- **`SKILL.md`** — Skill documentation and usage guide
+- **`skill.meta.json`** — Machine-readable metadata
 
 `skill.meta.json` fields:
 
-- `slug`
-- `category` (`capabilities`, `composites`, or `playbooks`)
-- `tags` (string array)
-- `installation.base_command`
-- `installation.supports` (`claude`, `codex`, `cursor`)
-- optional `features`, `github_url`, `author`
+| Field | Required | Description |
+|-------|----------|-------------|
+| `slug` | Yes | Unique kebab-case identifier |
+| `category` | Yes | `capabilities`, `composites`, or `playbooks` |
+| `tags` | Yes | String array of category tags |
+| `installation.base_command` | Yes | Install command |
+| `installation.supports` | Yes | Array: `claude`, `codex`, `cursor` |
+| `features` | No | Feature flags |
+| `github_url` | No | Source repository URL |
+| `author` | No | Skill author |
+
+---
 
 ## License
 
-MIT
+MIT &mdash; see [LICENSE](LICENSE) for details.
 
-## Author
+<div align="center">
 
-[Gooseworks](https://gooseworks.sh)
+**Built by [GooseWorks](https://gooseworks.sh)**
 
-![goose4](https://github.com/user-attachments/assets/2bca27a7-7dc7-41da-b579-6a46f1152277)
+[Get Started](https://app.gooseworks.ai) &middot; [Report an Issue](https://github.com/gooseworks-ai/goose-skills/issues)
+
+</div>
