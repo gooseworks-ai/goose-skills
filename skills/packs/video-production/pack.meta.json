@@ -1,7 +1,7 @@
 {
   "slug": "video-production",
   "name": "Video Production",
-  "description": "5-skill video production toolkit: beat-synced reels from product images, AI-animated product reels via Higgsfield, talking head videos via HeyGen, long-form to short-form clip repurposing, and screen recording polish with zoom/pan effects.",
+  "description": "6-skill video production toolkit: beat-synced reels from product images, AI-animated product reels via Higgsfield, talking head videos via HeyGen, UGC-style social videos via Creatify, long-form to short-form clip repurposing, and screen recording polish with zoom/pan effects.",
   "tags": [
     "content"
   ],
@@ -9,6 +9,7 @@
     "beat-sync-reel",
     "product-reel-generator",
     "talking-head-video",
+    "ugc-video-generator",
     "video-clipper",
     "video-polish"
   ],

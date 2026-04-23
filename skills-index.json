@@ -1,6 +1,6 @@
 {
   "version": "1.2.0",
-  "generated": "2026-04-22",
+  "generated": "2026-04-23",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -5581,7 +5581,7 @@
       "slug": "video-production",
       "name": "Video Production",
       "type": "pack",
-      "description": "5-skill video production toolkit: beat-synced reels from product images, AI-animated product reels via Higgsfield, talking head videos via HeyGen, long-form to short-form clip repurposing, and screen recording polish with zoom/pan effects.",
+      "description": "6-skill video production toolkit: beat-synced reels from product images, AI-animated product reels via Higgsfield, talking head videos via HeyGen, UGC-style social videos via Creatify, long-form to short-form clip repurposing, and screen recording polish with zoom/pan effects.",
       "tags": "content",
       "path": "skills/packs/video-production",
       "shared_files": [
@@ -5627,6 +5627,18 @@
           "source": "pack"
         },
         {
+          "slug": "ugc-video-generator",
+          "name": "ugc-video-generator",
+          "description": "Generates UGC-style talking head videos for social media and ads using Creatify API. Researches the product, writes scripts, picks avatars, and produces ready-to-post vertical videos. Designed for Instagram Reels, TikTok, and YouTube Shorts.",
+          "path": "skills/packs/video-production/ugc-video-generator",
+          "files": [
+            "skills/packs/video-production/ugc-video-generator/SKILL.md",
+            "skills/packs/video-production/ugc-video-generator/scripts/creatify_api.py",
+            "skills/packs/video-production/ugc-video-generator/skill.meta.json"
+          ],
+          "source": "pack"
+        },
+        {
           "slug": "video-clipper",
           "name": "video-clipper",
           "description": "Repurposes long-form video (podcasts, interviews, talks) into short-form vertical clips for Instagram Reels, TikTok, and YouTube Shorts. Handles transcription, moment selection, clip extraction, speaker-tracked reframing (16:9 to 9:16), and animated captions.",
@@ -5652,7 +5664,7 @@
       "metadata": {
         "slug": "video-production",
         "name": "Video Production",
-        "description": "5-skill video production toolkit: beat-synced reels from product images, AI-animated product reels via Higgsfield, talking head videos via HeyGen, long-form to short-form clip repurposing, and screen recording polish with zoom/pan effects.",
+        "description": "6-skill video production toolkit: beat-synced reels from product images, AI-animated product reels via Higgsfield, talking head videos via HeyGen, UGC-style social videos via Creatify, long-form to short-form clip repurposing, and screen recording polish with zoom/pan effects.",
         "tags": [
           "content"
         ],
@@ -5660,6 +5672,7 @@
           "beat-sync-reel",
           "product-reel-generator",
           "talking-head-video",
+          "ugc-video-generator",
           "video-clipper",
           "video-polish"
         ],

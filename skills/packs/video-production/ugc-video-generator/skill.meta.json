@@ -1,0 +1,17 @@
+{
+  "slug": "ugc-video-generator",
+  "category": "packs/video-production",
+  "tags": [
+    "content",
+    "video",
+    "ads"
+  ],
+  "installation": {
+    "base_command": "npx goose-skills install video-production/ugc-video-generator",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  }
+}
