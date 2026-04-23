@@ -26,8 +26,8 @@ Detect when product champions change jobs and qualify their new companies agains
 Build the initial champion list from public sources. This is done by the agent, not the script.
 
 1. **Scrape reviews** — Use `review-site-scraper` skill to pull G2/Trustpilot reviews. Extract reviewer names + companies.
-2. **Search LinkedIn posts** — Use Crustdata MCP to find people who posted about the product.
-3. **Resolve LinkedIn URLs** — Use Crustdata MCP to search by name + company → get profile URLs.
+2. **Search LinkedIn posts** — Use the `linkedin-post-research` skill (Apify-based) to find people who posted about the product.
+3. **Resolve LinkedIn URLs** — Use Fiber `/v1/kitchen-sink/person` (name + company → profile URL) or ContactOut via Orthogonal.
 4. **Compile CSV** — Merge all sources into `champions.csv` with required columns.
 
 ### Phase B: Track Job Changes (script-driven, repeatable)

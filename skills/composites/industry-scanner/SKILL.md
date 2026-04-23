@@ -102,9 +102,9 @@ Read `skills/twitter-mention-tracker/SKILL.md` for full CLI reference.
 
 Search each configured LinkedIn keyword via the linkedin-post-research skill.
 
-Use `RUBE_SEARCH_TOOLS` to find `CRUSTDATA_SEARCH_LINKED_IN_POSTS_BY_KEYWORD`, then search each keyword with `date_posted: "past-day"` (or `"past-week"` for weekly scans).
+Delegate to the `linkedin-post-research` skill (uses the `apimaestro~linkedin-posts-search-scraper-no-cookies` Apify actor). Search each keyword with `date_posted: "past-day"` (or `"past-week"` for weekly scans).
 
-Read `skills/linkedin-post-research/SKILL.md` for the full Rube/Crustdata workflow.
+Read `skills/linkedin-post-research/SKILL.md` for the full Apify workflow.
 
 #### 2F. Hacker News
 
@@ -365,4 +365,4 @@ No additional dependencies beyond what the sub-skills require:
 - `requests` (Python) — for blog-feed-monitor, reddit-post-finder, twitter-mention-tracker, hn-scraper, review-site-scraper, news-monitor
 - `APIFY_API_TOKEN` env var — for Reddit, Twitter, and review scraping
 - `agentmail` + `python-dotenv` — for newsletter-monitor (if configured)
-- Rube/Crustdata connection — for LinkedIn post search (if configured)
+- `APIFY_API_TOKEN` — LinkedIn post search goes through the `linkedin-post-research` skill (Apify-based)

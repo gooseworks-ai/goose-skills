@@ -255,7 +255,7 @@ All scripts require `requests`: `pip3 install requests`
 
 External skill scripts (use if available):
 - `skills/capabilities/review-site-scraper/scripts/scrape_reviews.py` — G2/Capterra/Trustpilot reviews (requires Apify token)
-- `skills/capabilities/linkedin-post-research/scripts/search_posts.py` — LinkedIn post search (requires Crustdata API key)
+- `skills/capabilities/linkedin-post-research/scripts/search_posts.py` — LinkedIn post search (requires Apify token)
 
 ## Cost
 
