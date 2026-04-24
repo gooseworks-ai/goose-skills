@@ -1,0 +1,398 @@
+{
+  "version": 1,
+  "brief": "5 Tips for Building a Startup in 2026",
+  "entries": {
+    "dot-grid-stat/carousel": {
+      "generated_at": "2026-04-22T12:35:03.302Z",
+      "html": "dot-grid-stat/carousel",
+      "png": "dot-grid-stat/carousel/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "dot-grid-stat/infographic": {
+      "generated_at": "2026-04-22T12:36:55.805Z",
+      "html": "dot-grid-stat/infographic",
+      "png": "dot-grid-stat/infographic/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "dot-grid-stat/chart": {
+      "generated_at": "2026-04-22T14:58:47.841Z",
+      "html": "dot-grid-stat/chart",
+      "png": "dot-grid-stat/chart/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "dot-grid-stat/poster": {
+      "generated_at": "2026-04-22T12:37:33.951Z",
+      "html": "dot-grid-stat/poster",
+      "png": "dot-grid-stat/poster/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "dot-grid-stat/story": {
+      "generated_at": "2026-04-22T12:38:02.484Z",
+      "html": "dot-grid-stat/story",
+      "png": "dot-grid-stat/story/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "dot-grid-stat/slides": {
+      "generated_at": "2026-04-22T12:38:06.460Z",
+      "html": "dot-grid-stat/slides",
+      "png": "dot-grid-stat/slides/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "minimal-film-poster/carousel": {
+      "generated_at": "2026-04-22T12:38:45.872Z",
+      "html": "minimal-film-poster/carousel",
+      "png": "minimal-film-poster/carousel/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "dot-grid-stat/tweet": {
+      "generated_at": "2026-04-22T12:39:41.410Z",
+      "html": "dot-grid-stat/tweet",
+      "png": "dot-grid-stat/tweet/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "minimal-film-poster/chart": {
+      "generated_at": "2026-04-22T12:39:49.122Z",
+      "html": "minimal-film-poster/chart",
+      "png": "minimal-film-poster/chart/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "minimal-film-poster/infographic": {
+      "generated_at": "2026-04-22T12:40:15.695Z",
+      "html": "minimal-film-poster/infographic",
+      "png": "minimal-film-poster/infographic/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "minimal-film-poster/poster": {
+      "generated_at": "2026-04-22T12:40:44.938Z",
+      "html": "minimal-film-poster/poster",
+      "png": "minimal-film-poster/poster/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "minimal-film-poster/story": {
+      "generated_at": "2026-04-22T12:41:08.449Z",
+      "html": "minimal-film-poster/story",
+      "png": "minimal-film-poster/story/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "minimal-film-poster/slides": {
+      "generated_at": "2026-04-22T12:41:13.268Z",
+      "html": "minimal-film-poster/slides",
+      "png": "minimal-film-poster/slides/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "minimal-film-poster/tweet": {
+      "generated_at": "2026-04-22T12:42:44.302Z",
+      "html": "minimal-film-poster/tweet",
+      "png": "minimal-film-poster/tweet/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "dot-matrix-colors/carousel": {
+      "generated_at": "2026-04-22T14:10:26.644Z",
+      "html": "dot-matrix-colors/carousel",
+      "png": "dot-matrix-colors/carousel/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "dot-matrix-colors/poster": {
+      "generated_at": "2026-04-22T15:10:37.914Z",
+      "html": "dot-matrix-colors/poster",
+      "png": "dot-matrix-colors/poster/example.png",
+      "model": "opus",
+      "status": "success"
+    },
+    "dot-matrix-colors/slides": {
+      "generated_at": "2026-04-22T14:41:02.157Z",
+      "html": "dot-matrix-colors/slides",
+      "png": "dot-matrix-colors/slides/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "dot-matrix-colors/story": {
+      "generated_at": "2026-04-22T14:13:53.293Z",
+      "html": "dot-matrix-colors/story",
+      "png": "dot-matrix-colors/story/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "dot-matrix-colors/tweet": {
+      "generated_at": "2026-04-22T14:59:18.868Z",
+      "html": "dot-matrix-colors/tweet",
+      "png": "dot-matrix-colors/tweet/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "sage-split-editorial/carousel": {
+      "generated_at": "2026-04-22T14:14:59.616Z",
+      "html": "sage-split-editorial/carousel",
+      "png": "sage-split-editorial/carousel/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "sage-split-editorial/chart": {
+      "generated_at": "2026-04-22T14:15:01.904Z",
+      "html": "sage-split-editorial/chart",
+      "png": "sage-split-editorial/chart/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "sage-split-editorial/infographic": {
+      "generated_at": "2026-04-22T15:13:54.714Z",
+      "html": "sage-split-editorial/infographic",
+      "png": "sage-split-editorial/infographic/example.png",
+      "model": "opus",
+      "status": "success"
+    },
+    "sage-split-editorial/poster": {
+      "generated_at": "2026-04-22T14:16:28.782Z",
+      "html": "sage-split-editorial/poster",
+      "png": "sage-split-editorial/poster/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "sage-split-editorial/slides": {
+      "generated_at": "2026-04-22T14:16:02.637Z",
+      "html": "sage-split-editorial/slides",
+      "png": "sage-split-editorial/slides/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "sage-split-editorial/story": {
+      "generated_at": "2026-04-22T14:17:30.547Z",
+      "html": "sage-split-editorial/story",
+      "png": "sage-split-editorial/story/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "dot-matrix-colors/chart": {
+      "generated_at": "2026-04-22T15:11:00.713Z",
+      "html": "dot-matrix-colors/chart",
+      "png": "dot-matrix-colors/chart/example.png",
+      "model": "opus",
+      "status": "success"
+    },
+    "sage-split-editorial/tweet": {
+      "generated_at": "2026-04-22T14:20:46.250Z",
+      "html": "sage-split-editorial/tweet",
+      "png": "sage-split-editorial/tweet/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "fluid-diagram/carousel": {
+      "generated_at": "2026-04-22T14:17:40.551Z",
+      "html": "fluid-diagram/carousel",
+      "png": "fluid-diagram/carousel/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "fluid-diagram/chart": {
+      "generated_at": "2026-04-22T15:12:48.398Z",
+      "html": "fluid-diagram/chart",
+      "png": "fluid-diagram/chart/example.png",
+      "model": "opus",
+      "status": "success"
+    },
+    "fluid-diagram/infographic": {
+      "generated_at": "2026-04-22T14:20:12.374Z",
+      "html": "fluid-diagram/infographic",
+      "png": "fluid-diagram/infographic/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "fluid-diagram/poster": {
+      "generated_at": "2026-04-22T15:12:25.109Z",
+      "html": "fluid-diagram/poster",
+      "png": "fluid-diagram/poster/example.png",
+      "model": "opus",
+      "status": "success"
+    },
+    "fluid-diagram/slides": {
+      "generated_at": "2026-04-22T14:19:11.518Z",
+      "html": "fluid-diagram/slides",
+      "png": "fluid-diagram/slides/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "fluid-diagram/story": {
+      "generated_at": "2026-04-22T14:20:47.569Z",
+      "html": "fluid-diagram/story",
+      "png": "fluid-diagram/story/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "fluid-diagram/tweet": {
+      "generated_at": "2026-04-22T14:23:23.529Z",
+      "html": "fluid-diagram/tweet",
+      "png": "fluid-diagram/tweet/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "botanical-illustration/carousel": {
+      "generated_at": "2026-04-22T14:23:03.469Z",
+      "html": "botanical-illustration/carousel",
+      "png": "botanical-illustration/carousel/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "botanical-illustration/chart": {
+      "generated_at": "2026-04-22T14:22:54.246Z",
+      "html": "botanical-illustration/chart",
+      "png": "botanical-illustration/chart/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "botanical-illustration/infographic": {
+      "generated_at": "2026-04-22T14:46:47.154Z",
+      "html": "botanical-illustration/infographic",
+      "png": "botanical-illustration/infographic/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "botanical-illustration/poster": {
+      "generated_at": "2026-04-22T14:24:41.103Z",
+      "html": "botanical-illustration/poster",
+      "png": "botanical-illustration/poster/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "botanical-illustration/slides": {
+      "generated_at": "2026-04-22T14:25:23.723Z",
+      "html": "botanical-illustration/slides",
+      "png": "botanical-illustration/slides/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "botanical-illustration/story": {
+      "generated_at": "2026-04-22T14:48:29.464Z",
+      "html": "botanical-illustration/story",
+      "png": "botanical-illustration/story/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "botanical-illustration/tweet": {
+      "generated_at": "2026-04-22T14:51:27.630Z",
+      "html": "botanical-illustration/tweet",
+      "png": "botanical-illustration/tweet/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "isometric-sage/carousel": {
+      "generated_at": "2026-04-22T15:13:50.450Z",
+      "html": "isometric-sage/carousel",
+      "png": "isometric-sage/carousel/example.png",
+      "model": "opus",
+      "status": "success"
+    },
+    "isometric-sage/chart": {
+      "generated_at": "2026-04-22T14:28:52.198Z",
+      "html": "isometric-sage/chart",
+      "png": "isometric-sage/chart/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "isometric-sage/infographic": {
+      "generated_at": "2026-04-22T15:14:43.281Z",
+      "html": "isometric-sage/infographic",
+      "png": "isometric-sage/infographic/example.png",
+      "model": "opus",
+      "status": "success"
+    },
+    "dot-matrix-colors/infographic": {
+      "generated_at": "2026-04-22T14:42:32.484Z",
+      "html": "dot-matrix-colors/infographic",
+      "png": "dot-matrix-colors/infographic/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "isometric-sage/poster": {
+      "generated_at": "2026-04-22T15:15:25.460Z",
+      "html": "isometric-sage/poster",
+      "png": "isometric-sage/poster/example.png",
+      "model": "opus",
+      "status": "success"
+    },
+    "isometric-sage/slides": {
+      "generated_at": "2026-04-22T15:15:28.718Z",
+      "html": "isometric-sage/slides",
+      "png": "isometric-sage/slides/example.png",
+      "model": "opus",
+      "status": "success"
+    },
+    "isometric-sage/story": {
+      "generated_at": "2026-04-22T14:30:28.873Z",
+      "html": "isometric-sage/story",
+      "png": "isometric-sage/story/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "orbit-purple/carousel": {
+      "generated_at": "2026-04-22T14:31:46.788Z",
+      "html": "orbit-purple/carousel",
+      "png": "orbit-purple/carousel/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "orbit-purple/chart": {
+      "generated_at": "2026-04-22T14:54:00.193Z",
+      "html": "orbit-purple/chart",
+      "png": "orbit-purple/chart/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "isometric-sage/tweet": {
+      "generated_at": "2026-04-22T14:32:18.809Z",
+      "html": "isometric-sage/tweet",
+      "png": "isometric-sage/tweet/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "orbit-purple/infographic": {
+      "generated_at": "2026-04-22T14:35:36.752Z",
+      "html": "orbit-purple/infographic",
+      "png": "orbit-purple/infographic/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "orbit-purple/poster": {
+      "generated_at": "2026-04-22T14:37:12.320Z",
+      "html": "orbit-purple/poster",
+      "png": "orbit-purple/poster/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "orbit-purple/slides": {
+      "generated_at": "2026-04-22T14:34:24.896Z",
+      "html": "orbit-purple/slides",
+      "png": "orbit-purple/slides/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "orbit-purple/story": {
+      "generated_at": "2026-04-22T14:34:59.288Z",
+      "html": "orbit-purple/story",
+      "png": "orbit-purple/story/example.png",
+      "model": "sonnet",
+      "status": "success"
+    },
+    "orbit-purple/tweet": {
+      "generated_at": "2026-04-22T14:36:45.030Z",
+      "html": "orbit-purple/tweet",
+      "png": "orbit-purple/tweet/example.png",
+      "model": "sonnet",
+      "status": "success"
+    }
+  }
+}

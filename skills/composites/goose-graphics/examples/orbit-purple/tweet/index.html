@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1080, initial-scale=1.0">
+    <title>Tweet Graphic — Orbit Purple</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-violet: #7C5CFC;
+            --color-white: #FFFFFF;
+            --color-navy: #1A1A2E;
+            --color-purple-card: #6B4BD4;
+            --color-orbit-light: #A18AFF;
+            --color-orbit-dark: #5A3EB8;
+            --color-pale: #E0D8FF;
+            --color-text-dark: #1A1A1A;
+            --font: 'DM Sans', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+            --radius-card: 16px;
+
+            --tweet-width: 1080px;
+            --tweet-height: 1080px;
+            --card-width: 800px;
+            --card-padding: 48px;
+            --card-radius: 18px;
+            --card-bg: #ffffff;
+            --card-text: #0f1419;
+            --card-text-secondary: #536471;
+            --card-border: rgba(0, 0, 0, 0.04);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 1080px;
+            height: 1080px;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: #7C5CFC;
+        }
+
+        .background {
+            position: absolute;
+            inset: 0;
+            background: #7C5CFC;
+            z-index: 0;
+        }
+
+        .card {
+            position: relative;
+            z-index: 1;
+            width: 800px;
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 48px;
+            box-shadow:
+                0 4px 6px rgba(0, 0, 0, 0.05),
+                0 20px 60px rgba(26, 26, 46, 0.25),
+                0 0 0 1px rgba(0, 0, 0, 0.04);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 22px;
+        }
+
+        .avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            background: #6B4BD4;
+        }
+
+        .avatar-initials {
+            font-family: var(--font);
+            font-size: 20px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+        }
+
+        .author-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            flex: 1;
+        }
+
+        .author-name {
+            font-family: var(--font);
+            font-size: 17px;
+            font-weight: 700;
+            color: #0f1419;
+            line-height: 1.2;
+        }
+
+        .author-handle {
+            font-family: var(--font);
+            font-size: 15px;
+            font-weight: 400;
+            color: #536471;
+            line-height: 1.2;
+        }
+
+        .card-body {
+            font-family: var(--font);
+            font-size: 19px;
+            font-weight: 400;
+            line-height: 1.65;
+            color: #0f1419;
+            margin-bottom: 28px;
+        }
+
+        .tip-number {
+            font-weight: 700;
+            color: #7C5CFC;
+        }
+
+        .card-footer {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .timestamp {
+            font-family: var(--font);
+            font-size: 14px;
+            color: #536471;
+        }
+
+        .divider {
+            width: 100%;
+            height: 1px;
+            background: #eff3f4;
+        }
+
+        .metrics {
+            display: flex;
+            gap: 28px;
+        }
+
+        .metric {
+            font-family: var(--font);
+            font-size: 14px;
+            color: #536471;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .metric-icon {
+            font-size: 16px;
+        }
+
+        .metric-count {
+            font-weight: 700;
+            color: #0f1419;
+        }
+
+        .brand-watermark {
+            position: absolute;
+            bottom: 28px;
+            right: 36px;
+            z-index: 2;
+            font-family: var(--font);
+            font-size: 13px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.55);
+            letter-spacing: 0.3px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- DECORATIVE BACKGROUND -->
+    <div class="background">
+        <svg width="1080" height="1080" viewBox="0 0 1080 1080" fill="none" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;width:100%;height:100%;">
+
+            <!-- Top-left orbital cluster -->
+            <ellipse cx="130" cy="160" rx="190" ry="120" stroke="#A18AFF" stroke-width="1.5" fill="none" opacity="0.55" transform="rotate(-25 130 160)"/>
+            <ellipse cx="130" cy="160" rx="100" ry="60" stroke="rgba(161,138,255,0.35)" stroke-width="1" fill="none" transform="rotate(-25 130 160)"/>
+            <circle cx="60" cy="95" r="5" fill="#A18AFF" opacity="0.75"/>
+            <circle cx="190" cy="80" r="3.5" fill="#A18AFF" opacity="0.6"/>
+            <circle cx="240" cy="185" r="4" fill="#A18AFF" opacity="0.65"/>
+            <path d="M60 95 Q130 30 190 80" stroke="#A18AFF" stroke-width="1" fill="none" opacity="0.45"/>
+            <path d="M190 80 Q230 130 240 185" stroke="#A18AFF" stroke-width="1" fill="none" opacity="0.4"/>
+
+            <!-- Top-right orbital cluster -->
+            <ellipse cx="960" cy="130" rx="170" ry="100" stroke="#A18AFF" stroke-width="1.5" fill="none" opacity="0.5" transform="rotate(20 960 130)"/>
+            <ellipse cx="960" cy="130" rx="85" ry="50" stroke="rgba(161,138,255,0.3)" stroke-width="1" fill="none" transform="rotate(20 960 130)"/>
+            <circle cx="875" cy="75" r="5" fill="#A18AFF" opacity="0.7"/>
+            <circle cx="1040" cy="95" r="3.5" fill="#A18AFF" opacity="0.6"/>
+            <circle cx="1010" cy="200" r="4" fill="#A18AFF" opacity="0.6"/>
+            <path d="M875 75 Q955 30 1040 95" stroke="#A18AFF" stroke-width="1" fill="none" opacity="0.4"/>
+            <path d="M1040 95 Q1050 145 1010 200" stroke="#A18AFF" stroke-width="1" fill="none" opacity="0.4"/>
+
+            <!-- Bottom-left orbital cluster -->
+            <ellipse cx="140" cy="940" rx="175" ry="110" stroke="#A18AFF" stroke-width="1.5" fill="none" opacity="0.5" transform="rotate(15 140 940)"/>
+            <ellipse cx="140" cy="940" rx="90" ry="55" stroke="rgba(161,138,255,0.3)" stroke-width="1" fill="none" transform="rotate(15 140 940)"/>
+            <circle cx="55" cy="880" r="5" fill="#A18AFF" opacity="0.7"/>
+            <circle cx="200" cy="870" r="3.5" fill="#A18AFF" opacity="0.55"/>
+            <circle cx="250" cy="990" r="4" fill="#A18AFF" opacity="0.6"/>
+            <path d="M55 880 Q130 835 200 870" stroke="#A18AFF" stroke-width="1" fill="none" opacity="0.4"/>
+            <path d="M200 870 Q240 930 250 990" stroke="#A18AFF" stroke-width="1" fill="none" opacity="0.38"/>
+
+            <!-- Bottom-right orbital cluster -->
+            <ellipse cx="950" cy="950" rx="180" ry="115" stroke="#A18AFF" stroke-width="1.5" fill="none" opacity="0.52" transform="rotate(-18 950 950)"/>
+            <ellipse cx="950" cy="950" rx="90" ry="55" stroke="rgba(161,138,255,0.3)" stroke-width="1" fill="none" transform="rotate(-18 950 950)"/>
+            <circle cx="870" cy="895" r="5" fill="#A18AFF" opacity="0.7"/>
+            <circle cx="1035" cy="910" r="3.5" fill="#A18AFF" opacity="0.6"/>
+            <circle cx="990" cy="1020" r="4" fill="#A18AFF" opacity="0.6"/>
+            <path d="M870 895 Q955 850 1035 910" stroke="#A18AFF" stroke-width="1" fill="none" opacity="0.4"/>
+            <path d="M1035 910 Q1025 965 990 1020" stroke="#A18AFF" stroke-width="1" fill="none" opacity="0.38"/>
+
+            <!-- Sweeping background curves across the full canvas -->
+            <path d="M0 280 Q180 120 360 220 Q540 320 720 180 Q900 40 1080 140" stroke="rgba(161,138,255,0.28)" stroke-width="1.5" fill="none"/>
+            <path d="M0 860 Q240 720 480 820 Q720 920 1080 760" stroke="rgba(161,138,255,0.25)" stroke-width="1.5" fill="none"/>
+            <path d="M0 540 Q270 420 540 540 Q810 660 1080 540" stroke="rgba(161,138,255,0.15)" stroke-width="1" fill="none"/>
+
+            <!-- Scattered accent dots -->
+            <circle cx="380" cy="60" r="3" fill="#A18AFF" opacity="0.4"/>
+            <circle cx="700" cy="45" r="2.5" fill="#A18AFF" opacity="0.35"/>
+            <circle cx="540" cy="1030" r="3" fill="#A18AFF" opacity="0.4"/>
+            <circle cx="420" cy="1050" r="2" fill="#A18AFF" opacity="0.3"/>
+            <circle cx="650" cy="1040" r="2.5" fill="#A18AFF" opacity="0.35"/>
+            <circle cx="50" cy="540" r="3.5" fill="#A18AFF" opacity="0.4"/>
+            <circle cx="1040" cy="540" r="3.5" fill="#A18AFF" opacity="0.4"/>
+
+        </svg>
+    </div>
+
+    <!-- TWEET CARD -->
+    <div class="card">
+
+        <!-- Header: Avatar + Author + X Logo -->
+        <div class="card-header">
+            <div class="avatar">
+                <span class="avatar-initials">AS</span>
+            </div>
+            <div class="author-info">
+                <span class="author-name">Alex Sterling</span>
+                <span class="author-handle">@alexsterling</span>
+            </div>
+            <!-- X / Twitter logo -->
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="#000000" style="flex-shrink:0;">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.736l7.748-8.858L1.5 2.25H8.08l4.258 5.63L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/>
+            </svg>
+        </div>
+
+        <!-- Body: Tweet text -->
+        <div class="card-body">
+            5 tips for building a startup in 2026:<br><br>
+            <span class="tip-number">1.</span> Ship with AI agents from day 1 — not as an afterthought<br>
+            <span class="tip-number">2.</span> Distribution always beats product. Always.<br>
+            <span class="tip-number">3.</span> Hire for taste, not just credentials<br>
+            <span class="tip-number">4.</span> Your pricing model IS your strategy<br>
+            <span class="tip-number">5.</span> Build in public — the compounding effect is real<br><br>
+            The founders winning right now understood this 2 years ago. Don't wait.
+        </div>
+
+        <!-- Footer: Timestamp + Metrics -->
+        <div class="card-footer">
+            <span class="timestamp">9:14 AM · Apr 22, 2026</span>
+            <div class="divider"></div>
+            <div class="metrics">
+                <span class="metric">
+                    <span class="metric-icon">&#9825;</span>
+                    <span class="metric-count">14.2K</span>
+                </span>
+                <span class="metric">
+                    <span class="metric-icon">&#8635;</span>
+                    <span class="metric-count">3,841</span>
+                </span>
+                <span class="metric">
+                    <span class="metric-icon">&#128172;</span>
+                    <span class="metric-count">892</span>
+                </span>
+                <span class="metric">
+                    <span class="metric-icon">&#128200;</span>
+                    <span class="metric-count">2.1M</span>
+                </span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- BRAND WATERMARK -->
+    <div class="brand-watermark">@gooseworks</div>
+
+</body>
+</html>

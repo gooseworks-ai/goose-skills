@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1080, initial-scale=1.0">
+    <title>Tweet Graphic — Dot Grid Stat</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --color-bg: #2A2D32;
+            --color-white: #FFFFFF;
+            --color-teal: #00B894;
+            --color-teal-deep: #00A381;
+            --color-teal-dark: #007D63;
+            --color-dot-empty: #3A3D42;
+            --color-inset: #1E2024;
+
+            --font-display: 'Space Grotesk', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+            --font-body: 'Inter', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+
+            --card-bg: #ffffff;
+            --card-text: #0f1419;
+            --card-text-secondary: #536471;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 1080px;
+            height: 1080px;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: var(--color-bg);
+        }
+
+        /* ── DECORATIVE BACKGROUND ── */
+
+        .background {
+            position: absolute;
+            inset: 0;
+            background: var(--color-bg);
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .bg-accent-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #00B894 0%, #007D63 100%);
+        }
+
+        .bg-stat-number {
+            position: absolute;
+            top: -60px;
+            left: -20px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 480px;
+            font-weight: 700;
+            line-height: 1;
+            letter-spacing: -20px;
+            color: rgba(255, 255, 255, 0.03);
+            user-select: none;
+            pointer-events: none;
+        }
+
+        .bg-dot-grid {
+            position: absolute;
+            bottom: 52px;
+            right: 52px;
+            display: grid;
+            grid-template-columns: repeat(6, 28px);
+            gap: 10px;
+        }
+
+        .bg-label {
+            position: absolute;
+            bottom: 212px;
+            right: 52px;
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.25);
+            text-align: right;
+        }
+
+        .bg-teal-glow {
+            position: absolute;
+            bottom: -120px;
+            right: -120px;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 184, 148, 0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        /* ── TWEET CARD ── */
+
+        .card {
+            position: relative;
+            z-index: 1;
+            width: 800px;
+            background: var(--card-bg);
+            border-radius: 18px;
+            padding: 48px;
+            box-shadow:
+                0 4px 8px rgba(0, 0, 0, 0.20),
+                0 20px 60px rgba(0, 0, 0, 0.40),
+                0 0 0 1px rgba(0, 0, 0, 0.06);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 22px;
+        }
+
+        .avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: var(--color-teal);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .avatar-initials {
+            font-family: 'Inter', sans-serif;
+            font-size: 19px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+        }
+
+        .author-info {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            flex: 1;
+        }
+
+        .author-name {
+            font-family: 'Inter', sans-serif;
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--card-text);
+            line-height: 1.2;
+        }
+
+        .author-handle {
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            color: var(--card-text-secondary);
+            line-height: 1.2;
+        }
+
+        .x-logo {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: #0f1419;
+            letter-spacing: -1px;
+            flex-shrink: 0;
+        }
+
+        .card-body {
+            font-family: 'Inter', sans-serif;
+            font-size: 19px;
+            font-weight: 400;
+            line-height: 1.58;
+            color: var(--card-text);
+            margin-bottom: 26px;
+        }
+
+        .body-headline {
+            font-family: 'Inter', sans-serif;
+            font-size: 19px;
+            font-weight: 600;
+            color: var(--card-text);
+            margin-bottom: 16px;
+        }
+
+        .tip-row {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .tip-num {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--color-teal);
+            flex-shrink: 0;
+            min-width: 22px;
+            padding-top: 2px;
+        }
+
+        .tip-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 18px;
+            font-weight: 400;
+            line-height: 1.55;
+            color: var(--card-text);
+        }
+
+        .body-coda {
+            margin-top: 14px;
+            font-family: 'Inter', sans-serif;
+            font-size: 17px;
+            color: var(--card-text-secondary);
+            font-style: italic;
+        }
+
+        .card-footer {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .timestamp {
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            color: var(--card-text-secondary);
+        }
+
+        .divider {
+            width: 100%;
+            height: 1px;
+            background: #eff3f4;
+        }
+
+        .metrics {
+            display: flex;
+            gap: 28px;
+        }
+
+        .metric {
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            color: var(--card-text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .metric-count {
+            font-weight: 700;
+            color: var(--card-text);
+        }
+
+        /* ── BRAND WATERMARK ── */
+
+        .brand-watermark {
+            position: absolute;
+            bottom: 26px;
+            right: 36px;
+            z-index: 2;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            color: rgba(255, 255, 255, 0.28);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- DECORATIVE BACKGROUND -->
+    <div class="background">
+        <div class="bg-accent-bar"></div>
+        <div class="bg-stat-number">5</div>
+        <div class="bg-teal-glow"></div>
+
+        <div class="bg-label">5 TIPS · 2026</div>
+
+        <!-- Dot grid: 6 cols × 5 rows — top rows filled teal, fading to empty -->
+        <div class="bg-dot-grid">
+            <!-- Row 1: fully filled teal -->
+            <div style="width:28px;height:28px;border-radius:50%;background:#00B894;"></div>
+            <div style="width:28px;height:28px;border-radius:50%;background:#00B894;opacity:0.92;"></div>
+            <div style="width:28px;height:28px;border-radius:50%;background:#00A381;opacity:0.88;"></div>
+            <div style="width:28px;height:28px;border-radius:50%;background:#00A381;opacity:0.82;"></div>
+            <div style="width:28px;height:28px;border-radius:50%;background:#007D63;opacity:0.75;"></div>
+            <div style="width:28px;height:28px;border-radius:50%;background:#007D63;opacity:0.68;"></div>
+            <!-- Row 2: mostly teal -->
+            <div style="width:28px;height:28px;border-radius:50%;background:#00A381;opacity:0.80;"></div>
+            <div style="width:28px;height:28px;border-radius:50%;background:#00A381;opacity:0.72;"></div>
+            <div style="width:28px;height:28px;border-radius:50%;background:#007D63;opacity:0.65;"></div>
+            <div style="width:28px;height:28px;border-radius:50%;background:#007D63;opacity:0.55;"></div>
+            <div style="width:28px;height:28px;border-radius:50%;background:#3A3D42;"></div>
+            <div style="width:28px;height:28px;border-radius:50%;background:#3A3D42;"></div>
+            <!-- Row 3: half teal, half empty -->
+            <div style="width:28px;height:28px;border-radius:50%;background:#007D63;opacity:0.60;"></div>
+            <div style="width:28px;height:28px;border-radius:50%;background:#007D63;opacity:0.50;"></div>
+            <div style="width:28px;height:28px;border-radius:50%;background:#007D63;opacity:0.40;"></div>
+            <div style="width:28px;height:28px;border-radius:50%;background:#3A3D42;"></div>
+            <div style="width:28px;height:28px;border-radius:50%;background:#3A3D42;"></div>
+            <div style="width:28px;height:28px;border-radius:50%;background:#3A3D42;"></div>
+            <!-- Row 4: mostly empty -->
+            <div style="width:28px;height:28px;border-radius:50%;background:#007D63;opacity:0.30;"></div>
+            <div style="width:28px;height:28px;border-radius:50%;background:#3A3D42;"></div>
+            <div style="width:28px;height:28px;border-radius:50%;background:#3A3D42;"></div>
+            <div style="width:28px;height:28px;border-radius:50%;background:#3A3D42;"></div>
+            <div style="width:28px;height:28px;border-radius:50%;background:#3A3D42;"></div>
+            <div style="width:28px;height:28px;border-radius:50%;background:#3A3D42;"></div>
+            <!-- Row 5: all empty -->
+            <div style="width:28px;height:28px;border-radius:50%;background:#3A3D42;"></div>
+            <div style="width:28px;height:28px;border-radius:50%;background:#3A3D42;"></div>
+            <div style="width:28px;height:28px;border-radius:50%;background:#3A3D42;"></div>
+            <div style="width:28px;height:28px;border-radius:50%;background:#3A3D42;"></div>
+            <div style="width:28px;height:28px;border-radius:50%;background:#3A3D42;"></div>
+            <div style="width:28px;height:28px;border-radius:50%;background:#3A3D42;"></div>
+        </div>
+    </div>
+
+    <!-- TWEET CARD -->
+    <div class="card">
+
+        <!-- Header: Avatar + Author -->
+        <div class="card-header">
+            <div class="avatar">
+                <span class="avatar-initials">AR</span>
+            </div>
+            <div class="author-info">
+                <span class="author-name">Alex Rivera</span>
+                <span class="author-handle">@alexrivera · Founder &amp; Operator</span>
+            </div>
+            <div class="x-logo">𝕏</div>
+        </div>
+
+        <!-- Body: Tweet tips -->
+        <div class="card-body">
+            <div class="body-headline">5 tips for building a startup in 2026:</div>
+
+            <div class="tip-row">
+                <span class="tip-num">1.</span>
+                <span class="tip-text">Ship before you're ready. Your users will tell you what's broken faster than any spec doc.</span>
+            </div>
+            <div class="tip-row">
+                <span class="tip-num">2.</span>
+                <span class="tip-text">Distribution beats product. A mediocre product with great reach wins every time.</span>
+            </div>
+            <div class="tip-row">
+                <span class="tip-num">3.</span>
+                <span class="tip-text">Hire for execution, not credentials. The best early hires ship things, not decks.</span>
+            </div>
+            <div class="tip-row">
+                <span class="tip-num">4.</span>
+                <span class="tip-text">Default to async. Every sync hour is expensive when time compounds.</span>
+            </div>
+            <div class="tip-row">
+                <span class="tip-num">5.</span>
+                <span class="tip-text">Revenue is the only metric that matters in year one. Everything else is a leading indicator at best.</span>
+            </div>
+
+            <div class="body-coda">Save this for when you're second-guessing yourself.</div>
+        </div>
+
+        <!-- Footer: Timestamp + Metrics -->
+        <div class="card-footer">
+            <span class="timestamp">9:14 AM &middot; Apr 22, 2026</span>
+            <div class="divider"></div>
+            <div class="metrics">
+                <span class="metric">
+                    <span style="font-size:15px;">&#9825;</span>
+                    <span class="metric-count">3,841</span>
+                </span>
+                <span class="metric">
+                    <span style="font-size:15px;">&#8635;</span>
+                    <span class="metric-count">912</span>
+                </span>
+                <span class="metric">
+                    <span style="font-size:15px;">&#128172;</span>
+                    <span class="metric-count">247</span>
+                </span>
+                <span class="metric">
+                    <span style="font-size:15px;">&#128065;</span>
+                    <span class="metric-count">52.4K</span>
+                </span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- BRAND WATERMARK -->
+    <div class="brand-watermark">goose.ai</div>
+
+</body>
+</html>

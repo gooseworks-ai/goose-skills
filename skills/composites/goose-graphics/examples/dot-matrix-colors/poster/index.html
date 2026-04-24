@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1080, initial-scale=1.0">
+    <title>5 Tips for Building a Startup in 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-bg: #FFFFFF;
+            --color-text: #2D2D2D;
+            --color-body: #555555;
+            --color-meta: #888888;
+            --color-dot-empty: #D1D1D1;
+
+            --purple: #9B59B6;
+            --purple-mid: #C39BD3;
+            --purple-pale: #E8D5F0;
+            --blue: #4A6CF7;
+            --blue-mid: #8FA8FA;
+            --blue-pale: #D4DFFE;
+            --orange: #E8541E;
+            --orange-mid: #F0956A;
+            --orange-pale: #FADDD0;
+
+            --font: 'DM Sans', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+
+            --poster-width: 1080px;
+            --poster-height: 1350px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: var(--poster-width);
+            height: var(--poster-height);
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            font-family: var(--font);
+            display: flex;
+            flex-direction: column;
+            padding: 72px 72px 72px 72px;
+        }
+
+        .label {
+            font-family: var(--font);
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--color-meta);
+        }
+
+        .headline {
+            font-family: var(--font);
+            font-size: 54px;
+            font-weight: 700;
+            line-height: 1.04;
+            letter-spacing: -1.4px;
+            color: var(--color-text);
+        }
+
+        .subhead {
+            font-family: var(--font);
+            font-size: 15px;
+            font-weight: 400;
+            line-height: 1.55;
+            color: var(--color-body);
+        }
+
+        .stat-number {
+            font-family: var(--font);
+            font-size: 64px;
+            font-weight: 700;
+            line-height: 1.0;
+            letter-spacing: -1.5px;
+            color: var(--color-text);
+        }
+
+        .stat-number-small {
+            font-size: 48px;
+            letter-spacing: -1px;
+        }
+
+        .tip-label {
+            font-family: var(--font);
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--color-meta);
+            margin-bottom: 10px;
+        }
+
+        .tip-title {
+            font-family: var(--font);
+            font-size: 20px;
+            font-weight: 600;
+            line-height: 1.2;
+            letter-spacing: -0.3px;
+            color: var(--color-text);
+            margin-bottom: 8px;
+        }
+
+        .tip-body {
+            font-family: var(--font);
+            font-size: 13px;
+            font-weight: 400;
+            line-height: 1.55;
+            letter-spacing: 0.1px;
+            color: var(--color-body);
+        }
+
+        .dot-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 12px);
+            grid-auto-rows: 12px;
+            gap: 5px;
+            margin-bottom: 20px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        /* Purple shades */
+        .p1 { background: var(--purple); }
+        .p2 { background: var(--purple-mid); }
+        .p3 { background: var(--purple-pale); }
+        /* Blue shades */
+        .b1 { background: var(--blue); }
+        .b2 { background: var(--blue-mid); }
+        .b3 { background: var(--blue-pale); }
+        /* Orange shades */
+        .o1 { background: var(--orange); }
+        .o2 { background: var(--orange-mid); }
+        .o3 { background: var(--orange-pale); }
+        /* Empty */
+        .e { background: var(--color-dot-empty); }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 28px;
+        }
+
+        .header-meta {
+            text-align: right;
+        }
+
+        .header-meta .meta-line {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--color-meta);
+        }
+
+        .intro-divider {
+            width: 100%;
+            height: 1px;
+            background: #EEEEEE;
+            margin: 24px 0 32px;
+        }
+
+        .grid-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 36px;
+        }
+
+        .grid-row-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 36px;
+            margin-top: 44px;
+        }
+
+        .grid-row-2 .column {
+            flex: 1;
+        }
+
+        .footer {
+            margin-top: auto;
+            padding-top: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #EEEEEE;
+        }
+
+        .footer-brand {
+            font-family: var(--font);
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            color: var(--color-text);
+        }
+
+        .footer-cta {
+            font-family: var(--font);
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--color-meta);
+        }
+
+        .stat-prefix {
+            font-family: var(--font);
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--color-meta);
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP: Title block -->
+    <div class="header">
+        <div>
+            <p class="label" style="margin-bottom: 16px;">FIELD NOTES &middot; 2026</p>
+            <h1 class="headline">5 Tips for<br>Building a Startup<br>in 2026.</h1>
+        </div>
+        <div class="header-meta">
+            <p class="meta-line">VOL. 01</p>
+            <p class="meta-line" style="margin-top: 6px;">ISSUE 05</p>
+        </div>
+    </div>
+
+    <p class="subhead" style="max-width: 720px;">Benchmarks, patterns, and proportions from the cohort of founders who shipped this year. Each dot represents a percentage point.</p>
+
+    <div class="intro-divider"></div>
+
+    <!-- FIRST ROW: 3 columns -->
+    <div class="grid-row">
+        <!-- Tip 1: Purple -->
+        <div>
+            <p class="tip-label">Tip 01</p>
+            <div class="dot-grid">
+                <div class="dot p1"></div><div class="dot p1"></div><div class="dot p1"></div><div class="dot p1"></div><div class="dot p1"></div><div class="dot p1"></div><div class="dot p1"></div><div class="dot p2"></div>
+                <div class="dot p1"></div><div class="dot p1"></div><div class="dot p1"></div><div class="dot p1"></div><div class="dot p1"></div><div class="dot p1"></div><div class="dot p2"></div><div class="dot p2"></div>
+                <div class="dot p1"></div><div class="dot p1"></div><div class="dot p1"></div><div class="dot p1"></div><div class="dot p1"></div><div class="dot p2"></div><div class="dot p2"></div><div class="dot p3"></div>
+                <div class="dot p1"></div><div class="dot p1"></div><div class="dot p1"></div><div class="dot p2"></div><div class="dot p2"></div><div class="dot p2"></div><div class="dot p3"></div><div class="dot p3"></div>
+                <div class="dot p1"></div><div class="dot p2"></div><div class="dot p2"></div><div class="dot p2"></div><div class="dot p3"></div><div class="dot p3"></div><div class="dot p3"></div><div class="dot e"></div>
+            </div>
+            <p class="stat-number stat-number-small">87%</p>
+            <p class="tip-title" style="margin-top: 14px;">Ship before you pitch.</p>
+            <p class="tip-body">of winning 2026 seed rounds had a live product with paying users in the deck, not a concept slide.</p>
+        </div>
+
+        <!-- Tip 2: Blue -->
+        <div>
+            <p class="tip-label">Tip 02</p>
+            <div class="dot-grid">
+                <div class="dot b1"></div><div class="dot b1"></div><div class="dot b1"></div><div class="dot b1"></div><div class="dot b1"></div><div class="dot b2"></div><div class="dot b2"></div><div class="dot b3"></div>
+                <div class="dot b1"></div><div class="dot b1"></div><div class="dot b1"></div><div class="dot b1"></div><div class="dot b2"></div><div class="dot b2"></div><div class="dot b3"></div><div class="dot b3"></div>
+                <div class="dot b1"></div><div class="dot b1"></div><div class="dot b1"></div><div class="dot b2"></div><div class="dot b2"></div><div class="dot b3"></div><div class="dot b3"></div><div class="dot e"></div>
+                <div class="dot b1"></div><div class="dot b1"></div><div class="dot b2"></div><div class="dot b2"></div><div class="dot b3"></div><div class="dot b3"></div><div class="dot e"></div><div class="dot e"></div>
+                <div class="dot b2"></div><div class="dot b2"></div><div class="dot b3"></div><div class="dot b3"></div><div class="dot e"></div><div class="dot e"></div><div class="dot e"></div><div class="dot e"></div>
+            </div>
+            <p class="stat-number stat-number-small">64%</p>
+            <p class="tip-title" style="margin-top: 14px;">Hire builders, not managers.</p>
+            <p class="tip-body">of top-quartile teams kept headcount under 12 through Series A by wiring agents into every workflow.</p>
+        </div>
+
+        <!-- Tip 3: Orange -->
+        <div>
+            <p class="tip-label">Tip 03</p>
+            <div class="dot-grid">
+                <div class="dot o1"></div><div class="dot o1"></div><div class="dot o1"></div><div class="dot o1"></div><div class="dot o2"></div><div class="dot o2"></div><div class="dot o3"></div><div class="dot o3"></div>
+                <div class="dot o1"></div><div class="dot o1"></div><div class="dot o1"></div><div class="dot o2"></div><div class="dot o2"></div><div class="dot o3"></div><div class="dot o3"></div><div class="dot e"></div>
+                <div class="dot o1"></div><div class="dot o1"></div><div class="dot o2"></div><div class="dot o2"></div><div class="dot o3"></div><div class="dot o3"></div><div class="dot e"></div><div class="dot e"></div>
+                <div class="dot o1"></div><div class="dot o2"></div><div class="dot o2"></div><div class="dot o3"></div><div class="dot o3"></div><div class="dot e"></div><div class="dot e"></div><div class="dot e"></div>
+                <div class="dot o2"></div><div class="dot o3"></div><div class="dot o3"></div><div class="dot e"></div><div class="dot e"></div><div class="dot e"></div><div class="dot e"></div><div class="dot e"></div>
+            </div>
+            <p class="stat-number stat-number-small">52%</p>
+            <p class="tip-title" style="margin-top: 14px;">Charge on day one.</p>
+            <p class="tip-body">of founders who priced from launch reached default-alive faster than those who ran free beta cycles.</p>
+        </div>
+    </div>
+
+    <!-- SECOND ROW: 2 columns -->
+    <div class="grid-row-2">
+        <!-- Tip 4: Purple -->
+        <div class="column">
+            <p class="tip-label">Tip 04</p>
+            <div class="dot-grid">
+                <div class="dot p1"></div><div class="dot p1"></div><div class="dot p1"></div><div class="dot p1"></div><div class="dot p1"></div><div class="dot p1"></div><div class="dot p2"></div><div class="dot p2"></div>
+                <div class="dot p1"></div><div class="dot p1"></div><div class="dot p1"></div><div class="dot p1"></div><div class="dot p1"></div><div class="dot p2"></div><div class="dot p2"></div><div class="dot p3"></div>
+                <div class="dot p1"></div><div class="dot p1"></div><div class="dot p1"></div><div class="dot p1"></div><div class="dot p2"></div><div class="dot p2"></div><div class="dot p3"></div><div class="dot p3"></div>
+                <div class="dot p1"></div><div class="dot p1"></div><div class="dot p2"></div><div class="dot p2"></div><div class="dot p3"></div><div class="dot p3"></div><div class="dot p3"></div><div class="dot e"></div>
+            </div>
+            <p class="stat-number stat-number-small">76%</p>
+            <p class="tip-title" style="margin-top: 14px;">Pick a wedge, not a platform.</p>
+            <p class="tip-body">of breakout startups this year started narrow &mdash; one sharp workflow, one obvious buyer &mdash; before expanding the surface area.</p>
+        </div>
+
+        <!-- Tip 5: Orange -->
+        <div class="column">
+            <p class="tip-label">Tip 05</p>
+            <div class="dot-grid">
+                <div class="dot o1"></div><div class="dot o1"></div><div class="dot o1"></div><div class="dot o1"></div><div class="dot o1"></div><div class="dot o2"></div><div class="dot o2"></div><div class="dot o3"></div>
+                <div class="dot o1"></div><div class="dot o1"></div><div class="dot o1"></div><div class="dot o1"></div><div class="dot o2"></div><div class="dot o2"></div><div class="dot o3"></div><div class="dot o3"></div>
+                <div class="dot o1"></div><div class="dot o1"></div><div class="dot o1"></div><div class="dot o2"></div><div class="dot o2"></div><div class="dot o3"></div><div class="dot o3"></div><div class="dot e"></div>
+                <div class="dot o1"></div><div class="dot o1"></div><div class="dot o2"></div><div class="dot o2"></div><div class="dot o3"></div><div class="dot o3"></div><div class="dot e"></div><div class="dot e"></div>
+            </div>
+            <p class="stat-number stat-number-small">69%</p>
+            <p class="tip-title" style="margin-top: 14px;">Distribute in public.</p>
+            <p class="tip-body">of first ten customers came through founder-led posts, demos, and weekly build logs &mdash; not paid ads or outbound.</p>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <p class="footer-brand">@yourbrand &nbsp;&middot;&nbsp; 2026 Founder Report</p>
+        <p class="footer-cta">Full data at yourbrand.com/report</p>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1080, initial-scale=1.0">
+  <title>Slide 01 — 5 Tips for Building a Startup in 2026</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-violet: #7C5CFC;
+      --color-white: #FFFFFF;
+      --color-navy: #1A1A2E;
+      --color-purple-card: #6B4BD4;
+      --color-orbit-light: #A18AFF;
+      --color-orbit-dark: #5A3EB8;
+      --color-pale: #E0D8FF;
+      --color-text-dark: #1A1A1A;
+      --font: 'DM Sans', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+      --radius-card: 16px;
+      --slide-width: 1080px;
+      --slide-height: 1080px;
+      --slide-padding: 72px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: var(--slide-width);
+      height: var(--slide-height);
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      background-color: var(--color-violet);
+      font-family: var(--font);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: var(--slide-padding);
+      position: relative;
+    }
+
+    /* Full-canvas orbital background */
+    .orbit-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1080px;
+      height: 1080px;
+      pointer-events: none;
+    }
+
+    /* Three card row */
+    .cards-row {
+      display: flex;
+      gap: 20px;
+      align-items: stretch;
+      width: 100%;
+      position: relative;
+      z-index: 2;
+    }
+
+    .card {
+      border-radius: var(--radius-card);
+      padding: 36px 32px;
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-purple {
+      background: var(--color-purple-card);
+    }
+
+    .card-white {
+      background: var(--color-white);
+    }
+
+    .card-dark {
+      background: var(--color-navy);
+    }
+
+    /* Header section */
+    .header-section {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .label-tag {
+      display: inline-block;
+      font-family: var(--font);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--color-pale);
+      background: rgba(255,255,255,0.12);
+      border-radius: 40px;
+      padding: 8px 20px;
+      margin-bottom: 28px;
+    }
+
+    .main-title {
+      font-family: var(--font);
+      font-size: 72px;
+      font-weight: 700;
+      line-height: 1.04;
+      letter-spacing: -2px;
+      color: var(--color-white);
+      margin-bottom: 20px;
+    }
+
+    .main-title em {
+      font-style: normal;
+      color: var(--color-pale);
+    }
+
+    .subtitle {
+      font-family: var(--font);
+      font-size: 22px;
+      font-weight: 400;
+      line-height: 1.5;
+      letter-spacing: 0.1px;
+      color: rgba(224, 216, 255, 0.75);
+      max-width: 580px;
+      margin: 0 auto;
+    }
+
+    /* Card label */
+    .card-label {
+      font-family: var(--font);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .card-title {
+      font-family: var(--font);
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.3px;
+      flex: 1;
+    }
+
+    .card-number {
+      font-family: var(--font);
+      font-size: 48px;
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -1px;
+      margin-bottom: 12px;
+    }
+
+    /* Brand footer */
+    .brand {
+      position: absolute;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      color: rgba(255, 255, 255, 0.45);
+      white-space: nowrap;
+      z-index: 10;
+    }
+
+    /* Divider line */
+    .divider {
+      width: 48px;
+      height: 2px;
+      background: var(--color-pale);
+      opacity: 0.5;
+      margin: 0 auto 28px;
+    }
+
+    /* Slide dots */
+    .slide-dots {
+      position: absolute;
+      bottom: 36px;
+      right: 72px;
+      display: flex;
+      gap: 8px;
+      z-index: 10;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--color-white);
+    }
+    .dot.active { opacity: 1; }
+    .dot:not(.active) { opacity: 0.25; }
+  </style>
+</head>
+<body>
+
+  <!-- Orbital background SVG -->
+  <svg class="orbit-bg" viewBox="0 0 1080 1080" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Large outer ellipse, tilted -->
+    <ellipse cx="540" cy="540" rx="480" ry="220" stroke="rgba(161,138,255,0.18)" stroke-width="1.5" transform="rotate(-18 540 540)"/>
+    <!-- Medium ellipse -->
+    <ellipse cx="540" cy="540" rx="340" ry="155" stroke="rgba(161,138,255,0.22)" stroke-width="1" transform="rotate(-18 540 540)"/>
+    <!-- Small inner ellipse -->
+    <ellipse cx="540" cy="540" rx="200" ry="90" stroke="rgba(161,138,255,0.28)" stroke-width="1" transform="rotate(-18 540 540)"/>
+
+    <!-- Top-right arc -->
+    <path d="M 780 160 Q 920 320 860 520" stroke="rgba(161,138,255,0.20)" stroke-width="1.5" fill="none"/>
+    <!-- Bottom-left arc -->
+    <path d="M 300 920 Q 160 760 220 560" stroke="rgba(161,138,255,0.20)" stroke-width="1.5" fill="none"/>
+
+    <!-- Orbital dots -->
+    <circle cx="168" cy="430" r="5" fill="rgba(161,138,255,0.55)"/>
+    <circle cx="912" cy="650" r="5" fill="rgba(161,138,255,0.55)"/>
+    <circle cx="390" cy="118" r="4" fill="rgba(161,138,255,0.40)"/>
+    <circle cx="695" cy="955" r="4" fill="rgba(161,138,255,0.40)"/>
+    <circle cx="54"  cy="660" r="3" fill="rgba(161,138,255,0.30)"/>
+    <circle cx="1026" cy="415" r="3" fill="rgba(161,138,255,0.30)"/>
+
+    <!-- Subtle cross/target at center -->
+    <circle cx="540" cy="540" r="8" stroke="rgba(161,138,255,0.35)" stroke-width="1.5" fill="none"/>
+    <circle cx="540" cy="540" r="3" fill="rgba(161,138,255,0.55)"/>
+
+    <!-- Connection paths between orbital dots -->
+    <path d="M 168 430 Q 340 380 540 540" stroke="rgba(161,138,255,0.12)" stroke-width="1" fill="none" stroke-dasharray="4 6"/>
+    <path d="M 912 650 Q 740 600 540 540" stroke="rgba(161,138,255,0.12)" stroke-width="1" fill="none" stroke-dasharray="4 6"/>
+
+    <!-- Top-left decorative curve -->
+    <path d="M 0 280 Q 200 180 350 260" stroke="rgba(161,138,255,0.15)" stroke-width="1" fill="none"/>
+    <!-- Bottom-right decorative curve -->
+    <path d="M 1080 800 Q 880 900 730 820" stroke="rgba(161,138,255,0.15)" stroke-width="1" fill="none"/>
+  </svg>
+
+  <!-- Header section -->
+  <div class="header-section" style="position: relative; z-index: 2; width: 100%;">
+    <div class="label-tag">Startup Playbook 2026</div>
+    <div class="divider"></div>
+    <h1 class="main-title">5 Tips for<br>Building a <em>Startup</em><br>in 2026</h1>
+    <p class="subtitle">What every founder needs to know before they build, raise, or launch</p>
+  </div>
+
+  <!-- Cards row -->
+  <div class="cards-row" style="margin-top: 40px; position: relative; z-index: 2;">
+
+    <!-- Card 1: Purple -->
+    <div class="card card-purple">
+      <p class="card-label" style="color: rgba(224,216,255,0.65);">Tip</p>
+      <p class="card-number" style="color: var(--color-pale);">01</p>
+      <p class="card-title" style="color: var(--color-white);">Validate Before<br>You Build</p>
+      <!-- Card orbital -->
+      <svg width="100%" height="70" viewBox="0 0 200 70" fill="none" style="margin-top: 16px;" xmlns="http://www.w3.org/2000/svg">
+        <path d="M 0 50 Q 50 10 100 35 Q 150 60 200 20" stroke="rgba(161,138,255,0.55)" stroke-width="1.5" fill="none"/>
+        <circle cx="100" cy="35" r="4" fill="#A18AFF"/>
+        <circle cx="40"  cy="28" r="3" fill="rgba(161,138,255,0.5)"/>
+        <circle cx="165" cy="28" r="3" fill="rgba(161,138,255,0.5)"/>
+      </svg>
+    </div>
+
+    <!-- Card 2: White -->
+    <div class="card card-white">
+      <p class="card-label" style="color: var(--color-orbit-dark); opacity: 0.6;">Tip</p>
+      <p class="card-number" style="color: var(--color-orbit-dark);">02</p>
+      <p class="card-title" style="color: var(--color-text-dark);">Build in Public<br>From Day One</p>
+      <!-- Card orbital -->
+      <svg width="100%" height="70" viewBox="0 0 200 70" fill="none" style="margin-top: 16px;" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="80" cy="45" rx="70" ry="28" stroke="#5A3EB8" stroke-width="1.5" fill="none"/>
+        <ellipse cx="130" cy="35" rx="55" ry="22" stroke="rgba(90,62,184,0.45)" stroke-width="1" fill="none"/>
+        <circle cx="100" cy="26" r="4" fill="#5A3EB8"/>
+        <circle cx="62"  cy="52" r="3" fill="rgba(90,62,184,0.5)"/>
+      </svg>
+    </div>
+
+    <!-- Card 3: Dark -->
+    <div class="card card-dark">
+      <p class="card-label" style="color: rgba(161,138,255,0.65);">Tip</p>
+      <p class="card-number" style="color: var(--color-orbit-light);">03</p>
+      <p class="card-title" style="color: var(--color-white);">Ship Fast,<br>Learn Faster</p>
+      <!-- Card orbital -->
+      <svg width="100%" height="70" viewBox="0 0 200 70" fill="none" style="margin-top: 16px;" xmlns="http://www.w3.org/2000/svg">
+        <path d="M 10 55 Q 100 -10 190 55" stroke="rgba(161,138,255,0.55)" stroke-width="1.5" fill="none"/>
+        <path d="M 10 55 Q 100 120 190 55" stroke="rgba(161,138,255,0.30)" stroke-width="1" fill="none"/>
+        <circle cx="100" cy="55" r="6" stroke="#A18AFF" stroke-width="1.5" fill="none"/>
+        <circle cx="100" cy="55" r="2.5" fill="#fff"/>
+      </svg>
+    </div>
+
+  </div>
+
+  <!-- Slide dots -->
+  <div class="slide-dots">
+    <span class="dot active"></span>
+    <span class="dot"></span>
+    <span class="dot"></span>
+    <span class="dot"></span>
+    <span class="dot"></span>
+  </div>
+
+  <div class="brand">Swipe to explore &#8594;</div>
+
+</body>
+</html>

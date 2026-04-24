@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1080, initial-scale=1.0">
+    <title>Story 01 — Botanical Illustration</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --color-olive: #4A5A2B;
+            --color-sage: #6B7D3E;
+            --color-deep: #3A4A1F;
+            --color-cream: #F5F0E0;
+            --color-light-sage: #8B9E5A;
+            --color-dark: #2E3A18;
+
+            --font-masthead: 'Playfair Display', Georgia, 'Times New Roman', serif;
+            --font-body: 'EB Garamond', Garamond, Georgia, serif;
+            --font-meta: 'DM Sans', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+
+            --story-width: 1080px;
+            --story-height: 1920px;
+            --story-padding-x: 72px;
+            --story-padding-y: 200px;
+            --safe-top: 160px;
+            --safe-bottom: 160px;
+            --content-max-width: 936px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 1080px;
+            height: 1920px;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            background-color: var(--color-olive);
+            color: var(--color-cream);
+            font-family: var(--font-body);
+            position: relative;
+        }
+
+        /* =============================================
+           PROGRESS SEGMENTS
+        ============================================= */
+        .progress {
+            position: absolute;
+            top: 60px;
+            left: 72px;
+            right: 72px;
+            display: flex;
+            gap: 8px;
+            z-index: 100;
+        }
+        .progress .segment {
+            flex: 1;
+            height: 3px;
+            background: rgba(245,240,224,0.30);
+            border-radius: 2px;
+        }
+        .progress .segment.active {
+            background: rgba(245,240,224,0.85);
+        }
+
+        /* =============================================
+           BOTANICAL ILLUSTRATIONS — pure CSS/SVG
+        ============================================= */
+
+        .botanical-layer {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* =============================================
+           MAIN CONTENT LAYOUT
+        ============================================= */
+        .content-wrap {
+            position: absolute;
+            inset: 0;
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            padding: 200px 72px 220px;
+        }
+
+        /* Metadata row */
+        .meta-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 48px;
+        }
+        .meta-label {
+            font-family: var(--font-meta);
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: rgba(245,240,224,0.60);
+        }
+
+        /* Thin rule */
+        .rule {
+            width: 100%;
+            height: 1px;
+            background: rgba(245,240,224,0.35);
+            margin-bottom: 44px;
+        }
+
+        /* Masthead */
+        .masthead-eyebrow {
+            font-family: var(--font-meta);
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: rgba(245,240,224,0.60);
+            margin-bottom: 12px;
+        }
+
+        .masthead-title {
+            font-family: var(--font-masthead);
+            font-size: 96px;
+            font-weight: 900;
+            line-height: 0.90;
+            letter-spacing: -2px;
+            text-transform: uppercase;
+            color: var(--color-cream);
+            text-shadow: 0 2px 12px rgba(0,0,0,0.35);
+            margin-bottom: 36px;
+        }
+
+        /* Thin rule below masthead */
+        .rule-2 {
+            width: 100%;
+            height: 1px;
+            background: rgba(245,240,224,0.35);
+            margin-bottom: 36px;
+        }
+
+        /* Spacer — botanical illustration occupies the center */
+        .illustration-spacer {
+            flex: 1;
+        }
+
+        /* Bottom content block */
+        .bottom-block {
+            margin-top: auto;
+        }
+
+        .cover-number {
+            font-family: var(--font-masthead);
+            font-size: 160px;
+            font-weight: 900;
+            line-height: 1.00;
+            letter-spacing: -4px;
+            color: rgba(245,240,224,0.12);
+            position: absolute;
+            right: 52px;
+            bottom: 420px;
+            z-index: 0;
+        }
+
+        .issue-eyebrow {
+            font-family: var(--font-meta);
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: rgba(245,240,224,0.60);
+            margin-bottom: 20px;
+        }
+
+        .cover-headline {
+            font-family: var(--font-masthead);
+            font-size: 72px;
+            font-weight: 700;
+            line-height: 1.05;
+            letter-spacing: -1px;
+            color: var(--color-cream);
+            text-shadow: 0 2px 10px rgba(0,0,0,0.30);
+            margin-bottom: 28px;
+        }
+
+        .cover-subhead {
+            font-family: var(--font-body);
+            font-size: 30px;
+            font-weight: 400;
+            font-style: italic;
+            line-height: 1.40;
+            color: rgba(245,240,224,0.85);
+            text-shadow: 0 1px 6px rgba(0,0,0,0.25);
+            max-width: 780px;
+            margin-bottom: 44px;
+        }
+
+        /* Bottom rule + brand row */
+        .bottom-rule {
+            width: 100%;
+            height: 1px;
+            background: rgba(245,240,224,0.35);
+            margin-bottom: 20px;
+        }
+
+        .brand-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-handle {
+            font-family: var(--font-meta);
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: rgba(245,240,224,0.60);
+        }
+
+        .brand-slide-num {
+            font-family: var(--font-meta);
+            font-size: 13px;
+            font-weight: 500;
+            color: rgba(245,240,224,0.40);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================
+         BOTANICAL ILLUSTRATION LAYER — SVG
+    ============================================================ -->
+    <div class="botanical-layer">
+        <svg width="1080" height="1920" viewBox="0 0 1080 1920" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;">
+            <defs>
+                <!-- Leaf gradient -->
+                <linearGradient id="leafGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#8B9E5A;stop-opacity:1" />
+                    <stop offset="50%" style="stop-color:#6B7D3E;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#3A4A1F;stop-opacity:1" />
+                </linearGradient>
+                <linearGradient id="leafGrad2" x1="100%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" style="stop-color:#6B7D3E;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#2E3A18;stop-opacity:1" />
+                </linearGradient>
+                <linearGradient id="leafGrad3" x1="0%" y1="100%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#3A4A1F;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#8B9E5A;stop-opacity:0.8" />
+                </linearGradient>
+                <linearGradient id="stemGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#3A4A1F;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#6B7D3E;stop-opacity:1" />
+                </linearGradient>
+                <linearGradient id="bgOverlay" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" style="stop-color:#4A5A2B;stop-opacity:0" />
+                    <stop offset="55%" style="stop-color:#3A4A1F;stop-opacity:0.45" />
+                    <stop offset="100%" style="stop-color:#2E3A18;stop-opacity:0.85" />
+                </linearGradient>
+                <radialGradient id="vignetteGrad" cx="50%" cy="50%" r="70%">
+                    <stop offset="0%" style="stop-color:#4A5A2B;stop-opacity:0" />
+                    <stop offset="100%" style="stop-color:#2E3A18;stop-opacity:0.55" />
+                </radialGradient>
+            </defs>
+
+            <!-- =============================================
+                 BACKGROUND VIGNETTE
+            ============================================= -->
+            <rect width="1080" height="1920" fill="url(#vignetteGrad)" />
+
+            <!-- =============================================
+                 LARGE BOTTOM-LEFT FERN / FROND CLUSTER
+            ============================================= -->
+            <!-- Main central stem -->
+            <path d="M 80 1920 Q 120 1700 180 1550 Q 240 1400 260 1250 Q 280 1100 320 980 Q 360 860 400 780" stroke="url(#stemGrad)" stroke-width="5" fill="none" stroke-linecap="round"/>
+
+            <!-- Frond branches left -->
+            <path d="M 260 1250 Q 180 1200 100 1170 Q 60 1155 30 1140" stroke="#3A4A1F" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+            <path d="M 230 1320 Q 150 1290 80 1270 Q 40 1260 10 1255" stroke="#3A4A1F" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <path d="M 290 1190 Q 210 1130 140 1100 Q 90 1080 50 1070" stroke="#4A5A2B" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+            <!-- Frond branches right -->
+            <path d="M 320 980 Q 420 940 490 900 Q 540 870 570 850" stroke="#3A4A1F" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+            <path d="M 340 1050 Q 440 1010 510 970 Q 555 945 580 925" stroke="#3A4A1F" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+            <!-- Fern leaflets bottom-left -->
+            <ellipse cx="90" cy="1170" rx="48" ry="20" fill="url(#leafGrad2)" transform="rotate(-10 90 1170)"/>
+            <ellipse cx="55" cy="1250" rx="42" ry="18" fill="#3A4A1F" transform="rotate(-5 55 1250)"/>
+            <ellipse cx="110" cy="1100" rx="38" ry="16" fill="url(#leafGrad2)" transform="rotate(-15 110 1100)"/>
+            <ellipse cx="40" cy="1330" rx="36" ry="14" fill="#2E3A18" transform="rotate(5 40 1330)"/>
+            <ellipse cx="75" cy="1070" rx="44" ry="17" fill="url(#leafGrad3)" transform="rotate(-20 75 1070)"/>
+
+            <!-- =============================================
+                 TOP-RIGHT LARGE LEAF / MONSTERA CLUSTER
+            ============================================= -->
+            <!-- Large palm/monstera leaf top right -->
+            <path d="M 900 0 Q 980 80 1040 180 Q 1080 260 1060 350 Q 1040 440 980 490 Q 920 540 860 510 Q 800 480 780 420 Q 760 360 800 290 Q 840 220 900 0" fill="url(#leafGrad1)" opacity="0.9"/>
+            <!-- Midrib -->
+            <path d="M 900 0 Q 920 150 940 280 Q 950 360 940 430 Q 930 490 900 510" stroke="#2E3A18" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <!-- Leaf veins -->
+            <path d="M 920 120 Q 980 140 1020 170" stroke="#3A4A1F" stroke-width="2" fill="none" opacity="0.7"/>
+            <path d="M 930 200 Q 995 220 1040 255" stroke="#3A4A1F" stroke-width="2" fill="none" opacity="0.7"/>
+            <path d="M 935 280 Q 990 305 1025 340" stroke="#3A4A1F" stroke-width="2" fill="none" opacity="0.7"/>
+            <path d="M 925 360 Q 960 390 975 430" stroke="#3A4A1F" stroke-width="2" fill="none" opacity="0.7"/>
+            <path d="M 915 140 Q 865 150 830 175" stroke="#3A4A1F" stroke-width="2" fill="none" opacity="0.7"/>
+            <path d="M 920 220 Q 870 240 845 270" stroke="#3A4A1F" stroke-width="2" fill="none" opacity="0.7"/>
+
+            <!-- Second large leaf behind -->
+            <path d="M 1000 -20 Q 1080 60 1080 160 Q 1080 280 1020 360 Q 970 420 920 400 Q 870 380 870 310 Q 870 220 940 120 Q 975 60 1000 -20" fill="url(#leafGrad2)" opacity="0.75"/>
+            <path d="M 1000 -20 Q 1010 120 1000 230 Q 990 320 960 390" stroke="#2E3A18" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+
+            <!-- Third leaf, overlapping right edge -->
+            <path d="M 1080 100 Q 1080 200 1060 290 Q 1040 380 1000 430 Q 980 450 970 420 Q 960 380 980 310 Q 1000 230 1060 140 Q 1072 120 1080 100" fill="#3A4A1F" opacity="0.85"/>
+
+            <!-- =============================================
+                 TOP-LEFT BOTANICAL — delicate branches
+            ============================================= -->
+            <!-- Thin branch system top left -->
+            <path d="M 0 140 Q 60 180 120 230 Q 180 280 210 340 Q 240 400 220 450" stroke="#3A4A1F" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <path d="M 80 200 Q 40 260 10 310" stroke="#3A4A1F" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <path d="M 140 260 Q 100 310 70 360" stroke="#3A4A1F" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <path d="M 170 310 Q 230 290 280 270" stroke="#3A4A1F" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+
+            <!-- Small leaves along branch -->
+            <ellipse cx="75" cy="240" rx="28" ry="12" fill="url(#leafGrad3)" transform="rotate(40 75 240)"/>
+            <ellipse cx="120" cy="290" rx="24" ry="10" fill="#3A4A1F" transform="rotate(30 120 290)"/>
+            <ellipse cx="45" cy="295" rx="22" ry="9" fill="url(#leafGrad2)" transform="rotate(-30 45 295)"/>
+            <ellipse cx="90" cy="350" rx="26" ry="10" fill="url(#leafGrad3)" transform="rotate(50 90 350)"/>
+            <ellipse cx="240" cy="275" rx="30" ry="12" fill="#3A4A1F" transform="rotate(-25 240 275)"/>
+            <ellipse cx="270" cy="255" rx="24" ry="10" fill="url(#leafGrad2)" transform="rotate(-35 270 255)"/>
+
+            <!-- =============================================
+                 RIGHT-SIDE TALL BOTANICAL STEMS
+            ============================================= -->
+            <!-- Tall slender stem right -->
+            <path d="M 1050 1920 Q 1030 1700 1000 1520 Q 970 1340 940 1200 Q 910 1060 870 950 Q 840 860 820 780 Q 800 700 810 640 Q 820 580 850 560" stroke="url(#stemGrad)" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+
+            <!-- Branches right -->
+            <path d="M 940 1200 Q 1020 1170 1060 1150 Q 1075 1143 1080 1138" stroke="#3A4A1F" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <path d="M 910 1060 Q 980 1030 1030 1010 Q 1060 998 1080 990" stroke="#3A4A1F" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <path d="M 870 950 Q 800 920 760 900 Q 730 888 710 878" stroke="#4A5A2B" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <path d="M 940 1340 Q 1020 1310 1065 1290 Q 1075 1285 1080 1282" stroke="#3A4A1F" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+
+            <!-- Leaves on right stem -->
+            <ellipse cx="1055" cy="1155" rx="36" ry="14" fill="url(#leafGrad2)" transform="rotate(10 1055 1155)"/>
+            <ellipse cx="1048" cy="1015" rx="32" ry="13" fill="#3A4A1F" transform="rotate(8 1048 1015)"/>
+            <ellipse cx="1060" cy="1295" rx="30" ry="12" fill="url(#leafGrad3)" transform="rotate(12 1060 1295)"/>
+            <ellipse cx="730" cy="888" rx="40" ry="16" fill="url(#leafGrad2)" transform="rotate(-15 730 888)"/>
+            <ellipse cx="710" cy="870" rx="32" ry="13" fill="#3A4A1F" transform="rotate(-20 710 870)"/>
+
+            <!-- =============================================
+                 CENTRAL MID-FIELD FLORALS — wild grasses & seed pods
+            ============================================= -->
+            <!-- Grass stems center-left -->
+            <path d="M 200 1920 Q 220 1750 230 1640 Q 240 1530 260 1450 Q 275 1380 310 1320" stroke="#3A4A1F" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <path d="M 160 1920 Q 175 1780 190 1680 Q 200 1580 215 1510 Q 230 1440 260 1390" stroke="#4A5A2B" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <path d="M 130 1920 Q 140 1800 148 1720 Q 156 1630 170 1570 Q 185 1500 215 1460" stroke="#3A4A1F" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+            <!-- Seed pod top of center-left stem -->
+            <ellipse cx="312" cy="1318" rx="14" ry="28" fill="url(#leafGrad1)" transform="rotate(-10 312 1318)"/>
+            <ellipse cx="262" cy="1388" rx="12" ry="24" fill="url(#leafGrad2)" transform="rotate(-5 262 1388)"/>
+
+            <!-- Grass stems center -->
+            <path d="M 540 1920 Q 530 1780 520 1670 Q 510 1560 490 1470 Q 470 1380 445 1310" stroke="#3A4A1F" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <path d="M 580 1920 Q 575 1790 565 1690 Q 555 1580 540 1500 Q 525 1420 510 1360" stroke="#4A5A2B" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+
+            <!-- Grass blade leaves center -->
+            <path d="M 490 1470 Q 440 1450 400 1430" stroke="#3A4A1F" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <path d="M 510 1400 Q 570 1380 610 1365" stroke="#3A4A1F" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+
+            <!-- =============================================
+                 LARGE STATEMENT LEAF — lower left center
+            ============================================= -->
+            <path d="M 50 1500 Q 100 1430 180 1390 Q 260 1350 340 1370 Q 400 1385 430 1420 Q 455 1450 440 1480 Q 420 1510 370 1520 Q 300 1530 220 1510 Q 140 1490 80 1470 Q 60 1463 50 1500" fill="url(#leafGrad1)" opacity="0.9"/>
+            <!-- Midrib -->
+            <path d="M 50 1500 Q 200 1455 380 1445 Q 420 1443 440 1460" stroke="#2E3A18" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+            <!-- Veins -->
+            <path d="M 140 1480 Q 160 1420 190 1400" stroke="#3A4A1F" stroke-width="2" fill="none" opacity="0.7"/>
+            <path d="M 220 1465 Q 245 1400 270 1375" stroke="#3A4A1F" stroke-width="2" fill="none" opacity="0.7"/>
+            <path d="M 300 1455 Q 320 1400 340 1380" stroke="#3A4A1F" stroke-width="2" fill="none" opacity="0.7"/>
+            <path d="M 160 1500 Q 178 1550 185 1575" stroke="#3A4A1F" stroke-width="2" fill="none" opacity="0.6"/>
+            <path d="M 250 1492 Q 265 1540 268 1562" stroke="#3A4A1F" stroke-width="2" fill="none" opacity="0.6"/>
+
+            <!-- =============================================
+                 RIGHT LOWER BOTANICAL CLUSTER
+            ============================================= -->
+            <path d="M 1080 1500 Q 1040 1460 990 1430 Q 940 1400 900 1380 Q 850 1360 820 1360 Q 790 1360 780 1385 Q 770 1410 800 1430 Q 840 1455 900 1465 Q 960 1475 1010 1485 Q 1050 1492 1080 1500" fill="url(#leafGrad2)" opacity="0.88"/>
+            <path d="M 1080 1500 Q 980 1465 870 1440 Q 820 1428 790 1410" stroke="#2E3A18" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <path d="M 880 1450 Q 900 1390 910 1368" stroke="#3A4A1F" stroke-width="2" fill="none" opacity="0.7"/>
+            <path d="M 960 1468 Q 975 1410 980 1385" stroke="#3A4A1F" stroke-width="2" fill="none" opacity="0.7"/>
+
+            <!-- Second lower-right leaf -->
+            <path d="M 1080 1600 Q 1020 1580 960 1580 Q 900 1580 860 1600 Q 820 1620 815 1650 Q 810 1680 850 1695 Q 900 1710 970 1695 Q 1020 1683 1055 1660 Q 1072 1648 1080 1600" fill="url(#leafGrad3)" opacity="0.82"/>
+            <path d="M 1080 1600 Q 990 1620 880 1650 Q 845 1662 818 1668" stroke="#2E3A18" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+            <!-- =============================================
+                 SCATTER ELEMENTS — tiny leaves, dots, delicate details
+            ============================================= -->
+            <!-- Scattered small leaf shapes -->
+            <ellipse cx="460" cy="1280" rx="18" ry="7" fill="#3A4A1F" transform="rotate(25 460 1280)" opacity="0.85"/>
+            <ellipse cx="620" cy="1320" rx="16" ry="6" fill="url(#leafGrad2)" transform="rotate(-20 620 1320)" opacity="0.8"/>
+            <ellipse cx="380" cy="1180" rx="20" ry="8" fill="#4A5A2B" transform="rotate(15 380 1180)" opacity="0.75"/>
+            <ellipse cx="680" cy="1260" rx="15" ry="6" fill="#3A4A1F" transform="rotate(-30 680 1260)" opacity="0.8"/>
+            <ellipse cx="720" cy="1340" rx="18" ry="7" fill="url(#leafGrad3)" transform="rotate(10 720 1340)" opacity="0.7"/>
+            <ellipse cx="580" cy="1420" rx="22" ry="9" fill="#3A4A1F" transform="rotate(-15 580 1420)" opacity="0.8"/>
+            <ellipse cx="650" cy="1500" rx="16" ry="7" fill="url(#leafGrad2)" transform="rotate(35 650 1500)" opacity="0.75"/>
+            <ellipse cx="440" cy="1560" rx="20" ry="8" fill="#4A5A2B" transform="rotate(-10 440 1560)" opacity="0.7"/>
+            <ellipse cx="520" cy="1600" rx="14" ry="6" fill="#3A4A1F" transform="rotate(20 520 1600)" opacity="0.75"/>
+
+            <!-- Delicate dot accents -->
+            <circle cx="350" cy="1160" r="4" fill="#8B9E5A" opacity="0.5"/>
+            <circle cx="480" cy="1200" r="3" fill="#8B9E5A" opacity="0.45"/>
+            <circle cx="600" cy="1240" r="4" fill="#8B9E5A" opacity="0.5"/>
+            <circle cx="700" cy="1290" r="3" fill="#8B9E5A" opacity="0.45"/>
+            <circle cx="420" cy="1620" r="4" fill="#8B9E5A" opacity="0.4"/>
+            <circle cx="560" cy="1650" r="3" fill="#8B9E5A" opacity="0.4"/>
+            <circle cx="640" cy="1720" r="4" fill="#6B7D3E" opacity="0.45"/>
+
+            <!-- Thin decorative stems scattered -->
+            <path d="M 420 1150 Q 440 1110 450 1080 Q 455 1060 460 1040" stroke="#3A4A1F" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.6"/>
+            <path d="M 600 1180 Q 618 1140 624 1110 Q 628 1088 630 1070" stroke="#3A4A1F" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.6"/>
+            <path d="M 720 1220 Q 736 1180 740 1155 Q 742 1135 744 1120" stroke="#3A4A1F" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.55"/>
+
+            <!-- Small round berries/buds -->
+            <circle cx="450" cy="1038" r="7" fill="url(#leafGrad1)" opacity="0.75"/>
+            <circle cx="462" cy="1028" r="5" fill="#3A4A1F" opacity="0.7"/>
+            <circle cx="630" cy="1068" r="7" fill="url(#leafGrad2)" opacity="0.75"/>
+            <circle cx="641" cy="1058" r="5" fill="#3A4A1F" opacity="0.7"/>
+            <circle cx="744" cy="1118" r="6" fill="url(#leafGrad1)" opacity="0.7"/>
+
+            <!-- =============================================
+                 GROUND OVERLAY — darkens bottom for text readability
+            ============================================= -->
+            <rect width="1080" height="1920" fill="url(#bgOverlay)" />
+
+            <!-- Additional dense foliage darkness at very bottom -->
+            <rect y="1780" width="1080" height="140" fill="#2E3A18" opacity="0.6"/>
+            <rect y="1680" width="1080" height="100" fill="#2E3A18" opacity="0.3"/>
+
+            <!-- Top overlay for masthead readability -->
+            <rect y="0" width="1080" height="520" fill="#3A4A1F" opacity="0.45"/>
+            <rect y="0" width="1080" height="200" fill="#2E3A18" opacity="0.35"/>
+        </svg>
+    </div>
+
+    <!-- ============================================================
+         PROGRESS SEGMENTS
+    ============================================================ -->
+    <div class="progress">
+        <div class="segment active"></div>
+        <div class="segment"></div>
+        <div class="segment"></div>
+        <div class="segment"></div>
+        <div class="segment"></div>
+        <div class="segment"></div>
+        <div class="segment"></div>
+    </div>
+
+    <!-- ============================================================
+         CONTENT
+    ============================================================ -->
+    <div class="content-wrap">
+
+        <!-- Metadata row -->
+        <div class="meta-row">
+            <span class="meta-label">The Founder's Review</span>
+            <span class="meta-label">Spring 2026 &nbsp;&middot;&nbsp; No. 12</span>
+        </div>
+
+        <!-- Top rule -->
+        <div class="rule"></div>
+
+        <!-- Masthead -->
+        <p class="masthead-eyebrow">The</p>
+        <h1 class="masthead-title">Founder<br>Review</h1>
+
+        <!-- Rule below masthead -->
+        <div class="rule-2"></div>
+
+        <!-- Spacer for botanical illustration -->
+        <div class="illustration-spacer"></div>
+
+        <!-- Bottom editorial block -->
+        <div class="bottom-block">
+            <p class="issue-eyebrow">Featured Guide</p>
+            <h2 class="cover-headline">5 Tips for<br>Building a<br>Startup in 2026</h2>
+            <p class="cover-subhead">From finding product-market fit in the age of AI to building lean, resilient teams — the essentials every founder needs now.</p>
+
+            <div class="bottom-rule"></div>
+
+            <div class="brand-row">
+                <span class="brand-handle">@thefounderreview</span>
+                <span class="brand-slide-num">Slide 1 of 7</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Ghost large number behind bottom block for depth -->
+    <div class="cover-number" style="position:absolute; right:52px; bottom:380px; z-index:2; font-family:'Playfair Display',serif; font-size:220px; font-weight:900; line-height:1; letter-spacing:-6px; color:rgba(245,240,224,0.07); pointer-events:none;">5</div>
+
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1080, initial-scale=1.0">
+    <title>Slide 01 — 5 Tips for Building a Startup in 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-bg: #F5F2ED;
+            --color-title: #1A1A1A;
+            --color-body: #333333;
+            --color-meta: #666666;
+            --color-faint: #999999;
+            --color-border: #E8E4DF;
+
+            --accent-gold: #D4A853;
+            --accent-green: #4A7C59;
+            --accent-orange: #C25B3F;
+            --accent-blue: #3B6B8C;
+
+            --font-display: 'DM Serif Display', Georgia, 'Times New Roman', serif;
+            --font-body: 'Inter', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+
+            --slide-width: 1080px;
+            --slide-height: 1080px;
+            --slide-padding: 80px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: var(--slide-width);
+            height: var(--slide-height);
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            background-color: var(--color-bg);
+            font-family: var(--font-body);
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Accent bar — vertical strip, top-left -->
+    <div style="position: absolute; top: 80px; left: 80px; width: 16px;">
+        <div style="height: 4px; background: var(--accent-gold);"></div>
+        <div style="height: 4px; background: var(--accent-green);"></div>
+        <div style="height: 4px; background: var(--accent-orange);"></div>
+        <div style="height: 4px; background: var(--accent-blue);"></div>
+    </div>
+
+    <!-- Main content -->
+    <div style="position: absolute; top: 0; left: 0; width: 1080px; height: 1080px; padding: 80px; display: flex; flex-direction: column; justify-content: flex-end; padding-bottom: 140px;">
+
+        <!-- Metadata line -->
+        <p style="
+            font-family: var(--font-body);
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--color-meta);
+            margin-bottom: 56px;
+            padding-left: 32px;
+        ">Founder Playbook &mdash; 2026</p>
+
+        <!-- Title -->
+        <h1 style="
+            font-family: var(--font-display);
+            font-size: 108px;
+            font-weight: 400;
+            line-height: 0.95;
+            letter-spacing: -3px;
+            color: var(--color-title);
+            margin-bottom: 52px;
+        ">5 Tips<br><span style="font-style: italic;">for</span><br>Building<br>a Startup</h1>
+
+        <!-- Subline -->
+        <p style="
+            font-family: var(--font-body);
+            font-size: 15px;
+            font-weight: 300;
+            line-height: 1.70;
+            letter-spacing: 0.2px;
+            color: var(--color-meta);
+            max-width: 380px;
+        ">What actually moves the needle when you're building from zero in 2026.</p>
+
+    </div>
+
+    <!-- Year mark — bottom right -->
+    <div style="
+        position: absolute;
+        bottom: 80px;
+        right: 80px;
+        font-family: var(--font-body);
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: var(--color-faint);
+    ">2026</div>
+
+    <!-- Slide indicator -->
+    <div style="
+        position: absolute;
+        bottom: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    ">
+        <div style="width: 20px; height: 2px; background: var(--color-title); opacity: 1;"></div>
+        <div style="width: 6px; height: 2px; background: var(--color-title); opacity: 0.2;"></div>
+        <div style="width: 6px; height: 2px; background: var(--color-title); opacity: 0.2;"></div>
+        <div style="width: 6px; height: 2px; background: var(--color-title); opacity: 0.2;"></div>
+        <div style="width: 6px; height: 2px; background: var(--color-title); opacity: 0.2;"></div>
+    </div>
+
+</body>
+</html>

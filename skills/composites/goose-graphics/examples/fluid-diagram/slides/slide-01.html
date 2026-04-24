@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1920, initial-scale=1.0">
+  <title>5 Tips for Building a Startup in 2026 — Slide 01</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-coral: #E8453C;
+      --color-maroon: #2D1B2E;
+      --color-pink: #F2A0A0;
+      --color-coral-line: #E8665C;
+      --color-light-coral: #F5C4B8;
+      --color-white: #FFFFFF;
+      --color-deep: #3D2540;
+      --color-dark-coral: #C44035;
+      --font-display: 'Space Grotesk', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+      --font-body: 'Inter', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+      --slide-width: 1920px;
+      --slide-height: 1080px;
+      --frame: 36px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      background: var(--color-coral);
+      padding: var(--frame);
+    }
+
+    .inner-panel {
+      width: 100%;
+      height: 100%;
+      background: var(--color-maroon);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ── Corner text anchors ── */
+    .anchor-top-left {
+      position: absolute;
+      top: 72px;
+      left: 72px;
+      z-index: 10;
+      max-width: 820px;
+    }
+
+    .anchor-bottom-right {
+      position: absolute;
+      bottom: 64px;
+      right: 72px;
+      text-align: right;
+      z-index: 10;
+      max-width: 600px;
+    }
+
+    .anchor-bottom-left {
+      position: absolute;
+      bottom: 64px;
+      left: 72px;
+      z-index: 10;
+    }
+
+    /* ── Typography ── */
+    .eyebrow {
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.50);
+      margin-bottom: 28px;
+    }
+
+    .display-hero {
+      font-family: var(--font-display);
+      font-size: 88px;
+      font-weight: 400;
+      line-height: 1.08;
+      letter-spacing: -2px;
+      color: #FFFFFF;
+    }
+
+    .display-hero span.accent {
+      color: var(--color-pink);
+    }
+
+    .subtitle {
+      font-family: var(--font-body);
+      font-size: 22px;
+      font-weight: 300;
+      line-height: 1.65;
+      letter-spacing: 0.2px;
+      color: rgba(255,255,255,0.65);
+      margin-top: 28px;
+      max-width: 620px;
+    }
+
+    .caption {
+      font-family: var(--font-body);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.8px;
+      color: rgba(255,255,255,0.35);
+    }
+
+    .bottom-right-text {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 500;
+      letter-spacing: -0.3px;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.4;
+    }
+
+    .year-badge {
+      display: inline-block;
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--color-coral-line);
+      border: 1px solid rgba(232,102,92,0.4);
+      border-radius: 999px;
+      padding: 5px 16px;
+      margin-bottom: 36px;
+    }
+
+    /* ── Diagram SVG ── */
+    .diagram-svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* ── Pill nodes (positioned absolutely) ── */
+    .pill {
+      position: absolute;
+      background: var(--color-pink);
+      border-radius: 999px;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .pill-eye {
+      width: 26%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: var(--color-maroon);
+    }
+
+    /* ── Junction circles ── */
+    .junction {
+      position: absolute;
+      border-radius: 50%;
+      border: 1.5px dashed var(--color-deep);
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .junction-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--color-coral-line);
+    }
+
+    .junction-label {
+      position: absolute;
+      font-family: var(--font-body);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.8px;
+      color: rgba(255,255,255,0.40);
+      white-space: nowrap;
+      z-index: 6;
+    }
+
+    /* slide number */
+    .slide-number {
+      position: absolute;
+      bottom: 64px;
+      right: 72px;
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.25);
+      letter-spacing: 0.5px;
+      z-index: 10;
+    }
+  </style>
+</head>
+<body>
+  <div class="inner-panel">
+
+    <!-- ══ TOP-LEFT ANCHOR ══ -->
+    <div class="anchor-top-left">
+      <div class="year-badge">2026 Edition</div>
+      <h1 class="display-hero">
+        5 tips for<br>
+        building a<br>
+        <span class="accent">startup</span>
+      </h1>
+      <p class="subtitle">
+        What founders actually need to know — from validation to launch, told without the noise.
+      </p>
+    </div>
+
+    <!-- ══ FLUID DIAGRAM SVG ══ -->
+    <svg class="diagram-svg" viewBox="0 0 1848 1008" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+
+      <!-- Primary flow curve — wide S-bend across the panel -->
+      <path d="M 900 560 Q 1020 360 1180 480 Q 1340 600 1500 420 Q 1640 280 1780 380" stroke="#E8665C" stroke-width="2.5" fill="none" opacity="0.9"/>
+
+      <!-- Secondary flow from bottom cluster -->
+      <path d="M 950 780 Q 1100 700 1180 640 Q 1260 580 1380 600 Q 1500 620 1580 540" stroke="#F5C4B8" stroke-width="1.5" fill="none" opacity="0.7"/>
+
+      <!-- Branch off into upper-right -->
+      <path d="M 1380 600 Q 1440 500 1500 420" stroke="#E8665C" stroke-width="1.5" fill="none" opacity="0.5"/>
+
+      <!-- Trailing fade line — top right -->
+      <path d="M 1500 420 Q 1620 340 1730 310 Q 1800 295 1848 300" stroke="#F5C4B8" stroke-width="1" fill="none" opacity="0.4"/>
+
+      <!-- Faint background arc — lower area -->
+      <path d="M 860 820 Q 1000 760 1100 800 Q 1200 840 1280 780" stroke="#E8665C" stroke-width="1" fill="none" opacity="0.25"/>
+
+      <!-- Subtle radial lines from left junction -->
+      <line x1="960" y1="600" x2="900" y2="560" stroke="#E8665C" stroke-width="1" opacity="0.3"/>
+      <line x1="960" y1="600" x2="950" y2="660" stroke="#E8665C" stroke-width="1" opacity="0.3"/>
+
+      <!-- Subtle radial lines from right junction -->
+      <line x1="1380" y1="600" x2="1300" y2="560" stroke="#F5C4B8" stroke-width="1" opacity="0.25"/>
+      <line x1="1380" y1="600" x2="1400" y2="680" stroke="#F5C4B8" stroke-width="1" opacity="0.25"/>
+
+      <!-- Tiny annotation ticks -->
+      <line x1="1180" y1="472" x2="1180" y2="492" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+      <line x1="1500" y1="412" x2="1500" y2="432" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+    </svg>
+
+    <!-- ══ PILL NODES ══ -->
+
+    <!-- Pill A: large, near primary flow start -->
+    <div class="pill" style="width:220px; height:72px; top:494px; left:880px;">
+      <div class="pill-eye"></div>
+    </div>
+
+    <!-- Pill B: mid-right, smaller -->
+    <div class="pill" style="width:164px; height:56px; top:392px; left:1130px; background:#F5C4B8;">
+      <div class="pill-eye" style="width:22%;"></div>
+    </div>
+
+    <!-- Pill C: far-right area -->
+    <div class="pill" style="width:190px; height:64px; top:348px; left:1468px;">
+      <div class="pill-eye"></div>
+    </div>
+
+    <!-- Pill D: lower secondary flow -->
+    <div class="pill" style="width:148px; height:50px; top:748px; left:914px; background:#F5C4B8; opacity:0.75;">
+      <div class="pill-eye" style="width:20%;"></div>
+    </div>
+
+    <!-- ══ JUNCTION CIRCLES ══ -->
+
+    <!-- Junction 1 — primary mid-left -->
+    <div class="junction" style="width:56px; height:56px; top:547px; left:934px;">
+      <div class="junction-dot"></div>
+    </div>
+    <span class="junction-label" style="top:610px; left:930px;">node / 01</span>
+
+    <!-- Junction 2 — mid curve peak -->
+    <div class="junction" style="width:44px; height:44px; top:458px; left:1158px; border-style:dotted;">
+      <div class="junction-dot" style="width:8px; height:8px;"></div>
+    </div>
+    <span class="junction-label" style="top:508px; left:1152px;">connect</span>
+
+    <!-- Junction 3 — right branch split -->
+    <div class="junction" style="width:52px; height:52px; top:574px; left:1354px; border-color:#E8665C; border-width:1px;">
+      <div class="junction-dot"></div>
+    </div>
+    <span class="junction-label" style="top:632px; left:1348px;">node / 02</span>
+
+    <!-- Junction 4 — upper-right terminus -->
+    <div class="junction" style="width:36px; height:36px; top:402px; left:1482px; border-style:dotted; opacity:0.6;">
+      <div class="junction-dot" style="width:6px; height:6px; background:#F5C4B8;"></div>
+    </div>
+
+    <!-- ══ BOTTOM-RIGHT ANCHOR ══ -->
+    <div class="anchor-bottom-right" style="bottom:64px; right:72px;">
+      <p class="bottom-right-text">from idea<br>to launch</p>
+    </div>
+
+    <!-- ══ BOTTOM-LEFT CAPTION ══ -->
+    <div class="anchor-bottom-left">
+      <p class="caption">Startup Guide &nbsp;·&nbsp; Fluid Diagrams</p>
+    </div>
+
+    <!-- ══ SLIDE NUMBER ══ -->
+    <!-- Omit number badge — bottom-right occupied by text; use subtle corner -->
+    <span style="position:absolute; bottom:24px; right:72px; font-family:'Inter',sans-serif; font-size:11px; color:rgba(255,255,255,0.20); letter-spacing:0.5px; z-index:10;">01</span>
+
+  </div>
+</body>
+</html>

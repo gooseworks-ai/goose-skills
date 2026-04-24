@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1080, initial-scale=1.0">
+    <title>5 Tips for Building a Startup in 2026 — Cover</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-coral: #E8453C;
+            --color-maroon: #2D1B2E;
+            --color-pink: #F2A0A0;
+            --color-coral-line: #E8665C;
+            --color-light-coral: #F5C4B8;
+            --color-white: #FFFFFF;
+            --color-deep: #3D2540;
+            --color-dark-coral: #C44035;
+
+            --font-display: 'Space Grotesk', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+            --font-body: 'Inter', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+
+            --story-width: 1080px;
+            --story-height: 1920px;
+            --frame-size: 36px;
+            --safe-top: 160px;
+            --safe-bottom: 160px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 1080px;
+            height: 1920px;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            background: var(--color-coral);
+            padding: var(--frame-size);
+            position: relative;
+        }
+
+        .inner-panel {
+            background: var(--color-maroon);
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Progress segments — inside top safe zone */
+        .progress {
+            position: absolute;
+            top: 60px;
+            left: 60px;
+            right: 60px;
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .progress .seg {
+            flex: 1;
+            height: 3px;
+            background: rgba(255,255,255,0.25);
+            border-radius: 2px;
+        }
+
+        .progress .seg.active {
+            background: rgba(255,255,255,0.90);
+        }
+
+        /* Top-left label anchor */
+        .top-label {
+            position: absolute;
+            top: 160px;
+            left: 64px;
+            font-family: var(--font-body);
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.45);
+            z-index: 10;
+        }
+
+        /* Top-right tag */
+        .top-tag {
+            position: absolute;
+            top: 160px;
+            right: 64px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .top-tag .pill {
+            background: rgba(242, 160, 160, 0.18);
+            border: 1px solid rgba(242, 160, 160, 0.35);
+            color: var(--color-pink);
+            font-family: var(--font-body);
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: 8px 20px;
+            border-radius: 999px;
+        }
+
+        /* Central diagram area */
+        .diagram-area {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            transform: translateY(-54%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Number nodes in the flow */
+        .node-pill {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--color-pink);
+            border-radius: 999px;
+        }
+
+        /* Main title block — bottom portion */
+        .title-block {
+            position: absolute;
+            bottom: 220px;
+            left: 64px;
+            right: 64px;
+            z-index: 10;
+        }
+
+        .main-title {
+            font-family: var(--font-display);
+            font-size: 96px;
+            font-weight: 400;
+            line-height: 1.08;
+            letter-spacing: -2px;
+            color: var(--color-white);
+        }
+
+        .main-title .accent {
+            color: var(--color-pink);
+        }
+
+        .subtitle-line {
+            margin-top: 32px;
+            font-family: var(--font-body);
+            font-size: 28px;
+            font-weight: 300;
+            line-height: 1.50;
+            letter-spacing: 0.2px;
+            color: rgba(255,255,255,0.60);
+        }
+
+        /* Brand footer */
+        .brand {
+            position: absolute;
+            bottom: 68px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: var(--font-body);
+            font-size: 18px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            color: rgba(255,255,255,0.35);
+            white-space: nowrap;
+            z-index: 10;
+        }
+
+        /* Decorative corner dot cluster */
+        .dot-cluster {
+            position: absolute;
+            top: 148px;
+            right: 60px;
+        }
+    </style>
+</head>
+<body>
+    <div class="inner-panel">
+
+        <!-- Progress segments (1 of 6 slides) -->
+        <div class="progress">
+            <div class="seg active"></div>
+            <div class="seg"></div>
+            <div class="seg"></div>
+            <div class="seg"></div>
+            <div class="seg"></div>
+            <div class="seg"></div>
+        </div>
+
+        <!-- Top-left label -->
+        <div class="top-label">The Founder's Guide</div>
+
+        <!-- Top-right pill tag -->
+        <div class="top-tag">
+            <span class="pill">2026</span>
+        </div>
+
+        <!-- =============================================
+             FLUID DIAGRAM — center of the slide
+             A flowing arc connecting 5 numbered pill nodes
+             representing the 5 startup tips
+             ============================================= -->
+        <div class="diagram-area">
+            <svg width="960" height="780" viewBox="0 0 960 780" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+                <!-- === BACKGROUND AMBIENT ARCS === -->
+                <!-- Large sweeping arc, far background -->
+                <path d="M-40 680 Q240 120 500 380 Q720 600 1000 220"
+                      stroke="#E8665C" stroke-width="1" stroke-opacity="0.12" fill="none"/>
+
+                <!-- Secondary ambient arc -->
+                <path d="M-40 200 Q180 520 480 300 Q700 120 1000 440"
+                      stroke="#F5C4B8" stroke-width="1" stroke-opacity="0.10" fill="none"/>
+
+                <!-- === MAIN FLOW SPINE — coral bezier === -->
+                <!-- Flows: node1 (left) → junction A → node2 → junction B → node3 (center top) → junction C → node4 → junction D → node5 (right) -->
+                <path d="M80 560 C160 420, 240 340, 340 390 C430 440, 460 520, 520 480 C580 440, 620 320, 700 350 C780 380, 830 460, 900 400"
+                      stroke="#E8665C" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+                <!-- Secondary parallel flow line (lighter) -->
+                <path d="M80 560 C160 460, 260 390, 340 430 C420 470, 460 550, 520 520 C580 490, 625 375, 700 400 C775 425, 825 490, 900 440"
+                      stroke="#F5C4B8" stroke-width="1.5" fill="none" stroke-opacity="0.45" stroke-linecap="round"/>
+
+                <!-- Branch line from spine to upper decorative area -->
+                <path d="M520 480 C520 380, 560 260, 620 200"
+                      stroke="#E8665C" stroke-width="1.5" fill="none" stroke-opacity="0.35" stroke-linecap="round"/>
+
+                <!-- Branch line downward from junction D -->
+                <path d="M700 350 C700 440, 730 540, 760 600"
+                      stroke="#F5C4B8" stroke-width="1.5" fill="none" stroke-opacity="0.30" stroke-linecap="round"/>
+
+                <!-- === JUNCTION CIRCLES (on spine) === -->
+                <!-- Junction A — between node 1 and 2 -->
+                <circle cx="340" cy="390" r="28" stroke="#3D2540" stroke-width="1.5" stroke-dasharray="5 4" fill="none"/>
+                <circle cx="340" cy="390" r="7" fill="#E8665C"/>
+
+                <!-- Junction B — between node 2 and 3 -->
+                <circle cx="520" cy="480" r="22" stroke="#3D2540" stroke-width="1.5" stroke-dasharray="4 3" fill="none"/>
+                <circle cx="520" cy="480" r="5.5" fill="#F5C4B8"/>
+
+                <!-- Junction C — between node 3 and 4 -->
+                <circle cx="700" cy="350" r="28" stroke="#3D2540" stroke-width="1.5" stroke-dasharray="5 4" fill="none"/>
+                <circle cx="700" cy="350" r="7" fill="#E8665C"/>
+
+                <!-- Small decorative junction at branch tip -->
+                <circle cx="620" cy="200" r="14" stroke="#3D2540" stroke-width="1" stroke-dasharray="3 3" fill="none"/>
+                <circle cx="620" cy="200" r="4" fill="#F2A0A0" fill-opacity="0.7"/>
+
+                <!-- Small annotation labels at junctions -->
+                <text x="360" y="376" font-family="'Inter', sans-serif" font-size="13" fill="rgba(255,255,255,0.35)" letter-spacing="0.5">step</text>
+                <text x="538" y="468" font-family="'Inter', sans-serif" font-size="13" fill="rgba(255,255,255,0.35)" letter-spacing="0.5">flow</text>
+                <text x="718" y="338" font-family="'Inter', sans-serif" font-size="13" fill="rgba(255,255,255,0.35)" letter-spacing="0.5">build</text>
+
+                <!-- === NODE 1 === -->
+                <!-- Pill shape -->
+                <rect x="20" y="524" width="150" height="72" rx="36" fill="#F2A0A0"/>
+                <!-- Eye cutout (dark maroon circle inside pill) -->
+                <circle cx="95" cy="560" r="20" fill="#2D1B2E"/>
+                <!-- Number text -->
+                <text x="95" y="567" font-family="'Space Grotesk', sans-serif" font-size="22" font-weight="700" fill="#F2A0A0" text-anchor="middle">01</text>
+
+                <!-- === NODE 2 === -->
+                <rect x="400" y="514" width="150" height="72" rx="36" fill="#F2A0A0"/>
+                <circle cx="475" cy="550" r="20" fill="#2D1B2E"/>
+                <text x="475" y="557" font-family="'Space Grotesk', sans-serif" font-size="22" font-weight="700" fill="#F2A0A0" text-anchor="middle">02</text>
+
+                <!-- === NODE 3 — center, slightly elevated === -->
+                <rect x="190" y="260" width="160" height="72" rx="36" fill="#E8665C"/>
+                <circle cx="270" cy="296" r="20" fill="#2D1B2E"/>
+                <text x="270" y="303" font-family="'Space Grotesk', sans-serif" font-size="22" font-weight="700" fill="#E8665C" text-anchor="middle">03</text>
+
+                <!-- Connector line: Node3 to main spine -->
+                <path d="M270 332 C270 360, 300 378, 340 390"
+                      stroke="#E8665C" stroke-width="2" fill="none" stroke-opacity="0.55" stroke-linecap="round"/>
+
+                <!-- === NODE 4 === -->
+                <rect x="570" y="194" width="150" height="72" rx="36" fill="#F2A0A0"/>
+                <circle cx="645" cy="230" r="20" fill="#2D1B2E"/>
+                <text x="645" y="237" font-family="'Space Grotesk', sans-serif" font-size="22" font-weight="700" fill="#F2A0A0" text-anchor="middle">04</text>
+
+                <!-- Connector line: Node4 to main spine -->
+                <path d="M645 266 C645 300, 670 328, 700 350"
+                      stroke="#E8665C" stroke-width="2" fill="none" stroke-opacity="0.55" stroke-linecap="round"/>
+
+                <!-- === NODE 5 — right end === -->
+                <rect x="790" y="364" width="150" height="72" rx="36" fill="#F2A0A0"/>
+                <circle cx="865" cy="400" r="20" fill="#2D1B2E"/>
+                <text x="865" y="407" font-family="'Space Grotesk', sans-serif" font-size="22" font-weight="700" fill="#F2A0A0" text-anchor="middle">05</text>
+
+                <!-- Connector line: Node5 to main spine -->
+                <path d="M790 400 C760 400, 740 385, 700 350"
+                      stroke="#E8665C" stroke-width="2" fill="none" stroke-opacity="0.55" stroke-linecap="round" stroke-dasharray="6 4"/>
+
+                <!-- === DECORATIVE FLOATING DOTS === -->
+                <circle cx="160" cy="340" r="5" fill="#F5C4B8" fill-opacity="0.5"/>
+                <circle cx="145" cy="360" r="3" fill="#F5C4B8" fill-opacity="0.3"/>
+                <circle cx="175" cy="370" r="4" fill="#E8665C" fill-opacity="0.4"/>
+
+                <circle cx="800" cy="290" r="5" fill="#F2A0A0" fill-opacity="0.5"/>
+                <circle cx="820" cy="310" r="3" fill="#F5C4B8" fill-opacity="0.35"/>
+
+                <circle cx="450" cy="220" r="6" fill="#E8665C" fill-opacity="0.3"/>
+                <circle cx="435" cy="240" r="3.5" fill="#F5C4B8" fill-opacity="0.25"/>
+
+                <!-- === BIG "5" watermark behind everything === -->
+                <!-- Placed subtly in upper-right of diagram -->
+                <text x="740" y="180" font-family="'Space Grotesk', sans-serif" font-size="200" font-weight="700"
+                      fill="rgba(242,160,160,0.05)" text-anchor="middle">5</text>
+
+                <!-- Annotation caption — bottom right of diagram -->
+                <text x="940" y="740" font-family="'Inter', sans-serif" font-size="13" fill="rgba(255,255,255,0.25)"
+                      letter-spacing="0.8" text-anchor="end">Fluid Diagrams  ©2026</text>
+            </svg>
+        </div>
+
+        <!-- Main title — bottom anchor -->
+        <div class="title-block">
+            <h1 class="main-title">
+                <span class="accent">5</span> tips for<br>building<br>a startup
+            </h1>
+            <p class="subtitle-line">The founder's playbook for the new era. Tap through.</p>
+        </div>
+
+        <!-- Brand -->
+        <div class="brand">@gooseworks · 1 of 6</div>
+
+    </div>
+</body>
+</html>

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "count": 36,
+  "count": 44,
   "groups": [
     {
       "name": "Dark & Moody",
@@ -11,7 +11,8 @@
         { "slug": "terminal", "name": "Terminal", "tagline": "Green-on-dark monospace hacker aesthetic." },
         { "slug": "bw-editorial-drop", "name": "BW Editorial Drop", "tagline": "Grayscale photo top + yellow Anton display on black drop panel." },
         { "slug": "masked-object-editorial", "name": "Masked Object Editorial", "tagline": "Navy + photo clipped into an object silhouette + italic Playfair." },
-        { "slug": "grid-quote-editorial", "name": "Grid Quote Editorial", "tagline": "Royal purple widescreen quote card + pink grid overlay + mint Figtree." }
+        { "slug": "grid-quote-editorial", "name": "Grid Quote Editorial", "tagline": "Royal purple widescreen quote card + pink grid overlay + mint Figtree." },
+        { "slug": "dot-grid-stat", "name": "Dot Grid Stat", "tagline": "Dark charcoal + oversized white stats + teal dot grids as visual meters." }
       ]
     },
     {
@@ -23,7 +24,10 @@
         { "slug": "magazine-red", "name": "Magazine Red", "tagline": "Massive tomato-red condensed headlines on cream paper." },
         { "slug": "sunburst-editorial", "name": "Sunburst Editorial", "tagline": "Mid-century book cover feel with serif + collage accents." },
         { "slug": "product-minimal", "name": "Product Minimal", "tagline": "Apple-style white canvas, hero product photo, underlined URL." },
-        { "slug": "archive-fashion", "name": "Archive Fashion", "tagline": "Stone beige catalog frame + brown photo inset + pink sticker." }
+        { "slug": "archive-fashion", "name": "Archive Fashion", "tagline": "Stone beige catalog frame + brown photo inset + pink sticker." },
+        { "slug": "minimal-film-poster", "name": "Minimal Film Poster", "tagline": "Ultra-minimal off-white + massive serif title + tiny color accent bar." },
+        { "slug": "dot-matrix-colors", "name": "Dot Matrix Colors", "tagline": "White canvas + multi-color dot grids (purple, blue, orange) + stat numbers." },
+        { "slug": "sage-split-editorial", "name": "Sage Split Editorial", "tagline": "Sage green + serif text left + abstract generative art on black right." }
       ]
     },
     {
@@ -44,7 +48,8 @@
         { "slug": "highlighter-yellow", "name": "Highlighter Yellow", "tagline": "Saturated yellow + heavy black sans + white-rect italic emphasis." },
         { "slug": "heatwave-orange", "name": "Heatwave Orange", "tagline": "Three-variant white/orange/black system + line-wave accents." },
         { "slug": "split-yellow-product", "name": "Split Yellow Product", "tagline": "Vivid mustard 2/3 headline slab + gray body panel + yellow photo." },
-        { "slug": "blueprint-sticky", "name": "Blueprint Sticky", "tagline": "Cobalt blueprint grid + tilted pink/yellow sticky notes." }
+        { "slug": "blueprint-sticky", "name": "Blueprint Sticky", "tagline": "Cobalt blueprint grid + tilted pink/yellow sticky notes." },
+        { "slug": "fluid-diagram", "name": "Fluid Diagram", "tagline": "Coral red frame + dark maroon panel + flowing connection diagrams." }
       ]
     },
     {
@@ -54,7 +59,8 @@
         { "slug": "vintage-duotone-poster", "name": "Vintage Duotone Poster", "tagline": "Forest green + dusty pink halftone, 1950s letterpress." },
         { "slug": "retro-line-art", "name": "Retro Line Art", "tagline": "Powder blue + cream hand-drawn cocktail-poster line art." },
         { "slug": "iridescent-y2k", "name": "Iridescent Y2K", "tagline": "Brutalist grid + chrome iridescent blob hero, Y2K club poster." },
-        { "slug": "ink-doodle-event", "name": "Ink Doodle Event", "tagline": "Kraft paper + loose hand-drawn ink character + Yellowtail script." }
+        { "slug": "ink-doodle-event", "name": "Ink Doodle Event", "tagline": "Kraft paper + loose hand-drawn ink character + Yellowtail script." },
+        { "slug": "botanical-illustration", "name": "Botanical Illustration", "tagline": "Olive-green duotone magazine cover with dense botanical illustrations." }
       ]
     },
     {
@@ -64,7 +70,9 @@
         { "slug": "frosted-lens", "name": "Frosted Lens", "tagline": "Glassmorphism + blurred photography backgrounds." },
         { "slug": "card-toss", "name": "Card Toss", "tagline": "Scattered tilted cards with sticky-note energy." },
         { "slug": "venn-infographic", "name": "Venn Infographic", "tagline": "Translucent three-circle Venn diagrams + floating info cards." },
-        { "slug": "social-post-card", "name": "Social Post Card", "tagline": "Blurred real scene + simulated Instagram post card as hero." }
+        { "slug": "social-post-card", "name": "Social Post Card", "tagline": "Blurred real scene + simulated Instagram post card as hero." },
+        { "slug": "isometric-sage", "name": "Isometric Sage", "tagline": "Sage green + isometric 3D illustrations + split-word typography." },
+        { "slug": "orbit-purple", "name": "Orbit Purple", "tagline": "Violet background + tri-variant cards with orbital line illustrations." }
       ]
     },
     {

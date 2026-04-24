@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1080, initial-scale=1.0">
+    <title>Story 01 — 5 Tips for Building a Startup in 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-bg: #F5F2ED;
+            --color-title: #1A1A1A;
+            --color-body: #333333;
+            --color-meta: #666666;
+            --color-faint: #999999;
+            --color-border: #E8E4DF;
+
+            --accent-gold: #D4A853;
+            --accent-green: #4A7C59;
+            --accent-orange: #C25B3F;
+            --accent-blue: #3B6B8C;
+
+            --font-display: 'DM Serif Display', Georgia, 'Times New Roman', serif;
+            --font-body: 'Inter', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+
+            --story-width: 1080px;
+            --story-height: 1920px;
+            --story-padding-x: 80px;
+            --story-padding-y: 200px;
+            --safe-top: 160px;
+            --safe-bottom: 160px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 1080px;
+            height: 1920px;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            background-color: var(--color-bg);
+            color: var(--color-title);
+            font-family: var(--font-body);
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Accent bar — vertical, top-left inside safe zone -->
+    <div style="
+        position: absolute;
+        top: 200px;
+        left: 80px;
+        width: 20px;
+        display: flex;
+        flex-direction: column;
+    ">
+        <div style="height: 5px; background: var(--accent-gold);"></div>
+        <div style="height: 5px; background: var(--accent-green);"></div>
+        <div style="height: 5px; background: var(--accent-orange);"></div>
+        <div style="height: 5px; background: var(--accent-blue);"></div>
+    </div>
+
+    <!-- Main content block — left aligned, sits in upper-middle of safe zone -->
+    <div style="
+        position: absolute;
+        top: 200px;
+        left: 80px;
+        right: 80px;
+        padding-left: 44px;
+    ">
+
+        <!-- Series label -->
+        <p style="
+            font-family: var(--font-body);
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: var(--color-meta);
+            margin-bottom: 88px;
+        ">The Founder Series &mdash; 2026</p>
+
+        <!-- Massive title -->
+        <h1 style="
+            font-family: var(--font-display);
+            font-size: 148px;
+            font-weight: 400;
+            line-height: 0.92;
+            letter-spacing: -4px;
+            color: var(--color-title);
+            margin-bottom: 72px;
+        ">Five<br>Tips for<br>Building<br>a Start-<br>up.</h1>
+
+        <!-- Thin rule -->
+        <div style="
+            width: 64px;
+            height: 1px;
+            background: var(--color-border);
+            margin-bottom: 48px;
+        "></div>
+
+        <!-- Subtitle -->
+        <p style="
+            font-family: var(--font-body);
+            font-size: 22px;
+            font-weight: 300;
+            line-height: 1.65;
+            letter-spacing: 0.2px;
+            color: var(--color-meta);
+            max-width: 560px;
+        ">What nobody tells you about going<br>from zero to traction in 2026.</p>
+
+    </div>
+
+    <!-- Volume / episode marker — lower right, above bottom safe zone -->
+    <div style="
+        position: absolute;
+        bottom: 260px;
+        right: 80px;
+        text-align: right;
+    ">
+        <p style="
+            font-family: var(--font-display);
+            font-size: 96px;
+            font-weight: 400;
+            line-height: 1;
+            letter-spacing: -3px;
+            color: var(--color-border);
+        ">01</p>
+        <p style="
+            font-family: var(--font-body);
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--color-faint);
+            margin-top: 8px;
+        ">of five</p>
+    </div>
+
+    <!-- Branding — bottom center, above safe zone -->
+    <div style="
+        position: absolute;
+        bottom: 200px;
+        left: 80px;
+        right: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    ">
+        <p style="
+            font-family: var(--font-body);
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--color-faint);
+        ">Tap to begin</p>
+        <p style="
+            font-family: var(--font-body);
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--color-faint);
+        ">@gooseworks</p>
+    </div>
+
+</body>
+</html>

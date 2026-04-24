@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1080, initial-scale=1.0">
+  <title>5 Tips for Building a Startup in 2026 — Cover</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-bg: #FFFFFF;
+      --color-text: #2D2D2D;
+      --color-body: #555555;
+      --color-meta: #888888;
+      --color-dot-empty: #D1D1D1;
+      --purple: #9B59B6;
+      --purple-mid: #C39BD3;
+      --purple-pale: #E8D5F0;
+      --blue: #4A6CF7;
+      --blue-mid: #8FA8FA;
+      --blue-pale: #D4DFFE;
+      --orange: #E8541E;
+      --orange-mid: #F0956A;
+      --orange-pale: #FADDD0;
+      --font: 'DM Sans', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+      --story-width: 1080px;
+      --story-height: 1920px;
+      --safe-top: 160px;
+      --safe-bottom: 160px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 1080px;
+      height: 1920px;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      background: #FFFFFF;
+      font-family: var(--font);
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Progress bar: slide 1 of 6 -->
+  <div style="position:absolute; top:60px; left:60px; right:60px; display:flex; gap:6px; z-index:10;">
+    <div style="flex:1; height:3px; background:#2D2D2D; border-radius:2px;"></div>
+    <div style="flex:1; height:3px; background:rgba(0,0,0,0.12); border-radius:2px;"></div>
+    <div style="flex:1; height:3px; background:rgba(0,0,0,0.12); border-radius:2px;"></div>
+    <div style="flex:1; height:3px; background:rgba(0,0,0,0.12); border-radius:2px;"></div>
+    <div style="flex:1; height:3px; background:rgba(0,0,0,0.12); border-radius:2px;"></div>
+    <div style="flex:1; height:3px; background:rgba(0,0,0,0.12); border-radius:2px;"></div>
+  </div>
+
+  <!-- Main content: inside safe zones, flex column, vertically centered -->
+  <div style="position:absolute; left:60px; right:60px; top:160px; bottom:160px; display:flex; flex-direction:column; justify-content:center; gap:52px;">
+
+    <!-- Eyebrow label -->
+    <p style="font-family:var(--font); font-size:20px; font-weight:600; letter-spacing:2.5px; text-transform:uppercase; color:#888888; line-height:1.3;">
+      STARTUP GUIDE &middot; 2026
+    </p>
+
+    <!-- Three-column dot matrix grid -->
+    <div style="display:flex; gap:24px; align-items:flex-start;">
+      <!-- Purple column -->
+      <div>
+        <div id="grid-purple" style="display:grid; gap:6px;"></div>
+      </div>
+      <!-- Blue column -->
+      <div>
+        <div id="grid-blue" style="display:grid; gap:6px;"></div>
+      </div>
+      <!-- Orange column -->
+      <div>
+        <div id="grid-orange" style="display:grid; gap:6px;"></div>
+      </div>
+    </div>
+
+    <!-- Title block -->
+    <div>
+      <h1 style="font-family:var(--font); font-size:96px; font-weight:700; line-height:1.05; letter-spacing:-2px; color:#2D2D2D;">
+        5 Tips for<br>Building a<br>Startup
+      </h1>
+      <p style="font-family:var(--font); font-size:52px; font-weight:400; line-height:1.15; letter-spacing:-1px; color:#888888; margin-top:16px;">
+        in 2026
+      </p>
+    </div>
+
+    <!-- Subtitle -->
+    <p style="font-family:var(--font); font-size:30px; font-weight:400; line-height:1.5; color:#555555; max-width:860px;">
+      What every founder needs to know right now.
+    </p>
+
+  </div>
+
+  <!-- Brand handle: sits above bottom safe zone -->
+  <div style="position:absolute; bottom:200px; left:60px; font-family:var(--font); font-size:20px; font-weight:500; color:#888888; letter-spacing:0.3px;">
+    @startupguide
+  </div>
+
+  <script>
+    // Dot grid configuration
+    const COLS = 13;
+    const ROWS = 9;
+    const DOT = 16;
+    const GAP = 6;
+
+    const palettes = {
+      purple: ['#9B59B6', '#C39BD3', '#E8D5F0', '#D1D1D1'],
+      blue:   ['#4A6CF7', '#8FA8FA', '#D4DFFE', '#D1D1D1'],
+      orange: ['#E8541E', '#F0956A', '#FADDD0', '#D1D1D1'],
+    };
+
+    function getLevel(ratio) {
+      if (ratio < 0.28) return 0;
+      if (ratio < 0.55) return 1;
+      if (ratio < 0.80) return 2;
+      return 3;
+    }
+
+    function buildGrid(containerId, colors) {
+      const container = document.getElementById(containerId);
+      container.style.gridTemplateColumns = `repeat(${COLS}, ${DOT}px)`;
+      container.style.gap = `${GAP}px`;
+
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          // Fade left-to-right (col) AND top-to-bottom (row)
+          const colLevel = getLevel(c / (COLS - 1));
+          const rowLevel = getLevel(r / (ROWS - 1));
+          const level = Math.max(colLevel, rowLevel);
+
+          const dot = document.createElement('div');
+          dot.style.cssText = `width:${DOT}px; height:${DOT}px; border-radius:50%; background:${colors[level]};`;
+          container.appendChild(dot);
+        }
+      }
+    }
+
+    buildGrid('grid-purple', palettes.purple);
+    buildGrid('grid-blue',   palettes.blue);
+    buildGrid('grid-orange', palettes.orange);
+  </script>
+
+</body>
+</html>
