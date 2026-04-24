@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1080, initial-scale=1.0">
+    <title>Tweet Graphic — Isometric Sage</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-sage: #7BA88E;
+            --color-white: #FFFFFF;
+            --color-dark: #1A1A1A;
+            --color-desk: #2C3E35;
+            --color-mid: #5A8A6E;
+            --color-light: #A3C4B0;
+            --color-pale: #E8F0EC;
+            --color-shadow: #3D5C4A;
+
+            --font-display: 'Space Grotesk', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+            --font-body: 'Inter', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+
+            --card-bg: #ffffff;
+            --card-text: #0f1419;
+            --card-text-secondary: #536471;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            width: 1080px;
+            height: 1080px;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: var(--color-sage);
+        }
+
+        /* =============================================
+           BACKGROUND
+           ============================================= */
+
+        .background {
+            position: absolute;
+            inset: 0;
+            background: var(--color-sage);
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        /* Subtle vignette overlay */
+        .background::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(
+                ellipse at 50% 50%,
+                transparent 30%,
+                rgba(44, 62, 53, 0.30) 100%
+            );
+        }
+
+        /* Grid dots — top right quadrant */
+        .grid-dots {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 280px;
+            height: 280px;
+            background-image: radial-gradient(circle, rgba(255,255,255,0.22) 1.5px, transparent 1.5px);
+            background-size: 22px 22px;
+        }
+
+        /* Split-word display — top left */
+        .bg-word-top {
+            position: absolute;
+            top: 36px;
+            left: 48px;
+            font-family: var(--font-display);
+            font-size: 120px;
+            font-weight: 700;
+            line-height: 0.90;
+            letter-spacing: -4px;
+            color: rgba(255, 255, 255, 0.16);
+            user-select: none;
+        }
+
+        /* Split-word display — bottom right */
+        .bg-word-bottom {
+            position: absolute;
+            bottom: 36px;
+            right: 48px;
+            font-family: var(--font-display);
+            font-size: 120px;
+            font-weight: 700;
+            line-height: 0.90;
+            letter-spacing: -4px;
+            color: rgba(255, 255, 255, 0.16);
+            text-align: right;
+            user-select: none;
+        }
+
+        /* =============================================
+           ISOMETRIC SCENE — top right corner
+           ============================================= */
+
+        .iso-scene-tr {
+            position: absolute;
+            top: 48px;
+            right: 48px;
+            width: 200px;
+            height: 200px;
+        }
+
+        /* Desk surface (top face) */
+        .iso-desk-top {
+            position: absolute;
+            width: 120px;
+            height: 60px;
+            background: var(--color-desk);
+            top: 90px;
+            left: 10px;
+            transform: skewX(-30deg) skewY(8deg);
+        }
+
+        /* Desk front face */
+        .iso-desk-front {
+            position: absolute;
+            width: 120px;
+            height: 22px;
+            background: var(--color-shadow);
+            top: 143px;
+            left: 10px;
+            transform: skewX(-30deg);
+        }
+
+        /* Desk right side */
+        .iso-desk-side {
+            position: absolute;
+            width: 38px;
+            height: 60px;
+            background: var(--color-mid);
+            top: 90px;
+            right: 42px;
+            transform: skewY(8deg);
+        }
+
+        /* Monitor screen face */
+        .iso-monitor-top {
+            position: absolute;
+            width: 64px;
+            height: 44px;
+            background: var(--color-light);
+            top: 48px;
+            left: 36px;
+            transform: skewX(-30deg) skewY(8deg);
+        }
+
+        /* Monitor side */
+        .iso-monitor-side {
+            position: absolute;
+            width: 20px;
+            height: 44px;
+            background: var(--color-mid);
+            top: 48px;
+            right: 76px;
+            transform: skewY(8deg);
+        }
+
+        /* Monitor glow lines on screen */
+        .iso-screen-line-1 {
+            position: absolute;
+            width: 38px;
+            height: 4px;
+            background: rgba(255,255,255,0.45);
+            top: 62px;
+            left: 44px;
+            transform: skewX(-30deg) skewY(8deg);
+        }
+
+        .iso-screen-line-2 {
+            position: absolute;
+            width: 28px;
+            height: 4px;
+            background: rgba(255,255,255,0.28);
+            top: 72px;
+            left: 44px;
+            transform: skewX(-30deg) skewY(8deg);
+        }
+
+        /* Monitor base / stand */
+        .iso-monitor-stand {
+            position: absolute;
+            width: 16px;
+            height: 12px;
+            background: var(--color-desk);
+            top: 90px;
+            left: 66px;
+            transform: skewX(-30deg) skewY(8deg);
+        }
+
+        /* Small object on desk (mug/plant) */
+        .iso-obj-top {
+            position: absolute;
+            width: 20px;
+            height: 14px;
+            background: var(--color-light);
+            top: 78px;
+            left: 94px;
+            transform: skewX(-30deg) skewY(8deg);
+        }
+
+        .iso-obj-side {
+            position: absolute;
+            width: 8px;
+            height: 14px;
+            background: var(--color-mid);
+            top: 78px;
+            right: 56px;
+            transform: skewY(8deg);
+        }
+
+        /* =============================================
+           ISOMETRIC SCENE — bottom left corner
+           ============================================= */
+
+        .iso-scene-bl {
+            position: absolute;
+            bottom: 48px;
+            left: 48px;
+            width: 180px;
+            height: 160px;
+        }
+
+        .iso-shelf-top {
+            position: absolute;
+            width: 110px;
+            height: 50px;
+            background: var(--color-desk);
+            top: 50px;
+            left: 10px;
+            transform: skewX(-30deg) skewY(8deg);
+        }
+
+        .iso-shelf-front {
+            position: absolute;
+            width: 110px;
+            height: 16px;
+            background: var(--color-shadow);
+            top: 93px;
+            left: 10px;
+            transform: skewX(-30deg);
+        }
+
+        .iso-shelf-side {
+            position: absolute;
+            width: 30px;
+            height: 50px;
+            background: var(--color-mid);
+            top: 50px;
+            right: 40px;
+            transform: skewY(8deg);
+        }
+
+        .iso-book-a {
+            position: absolute;
+            width: 16px;
+            height: 34px;
+            background: rgba(255,255,255,0.30);
+            top: 22px;
+            left: 28px;
+            transform: skewX(-30deg) skewY(8deg);
+        }
+
+        .iso-book-b {
+            position: absolute;
+            width: 16px;
+            height: 28px;
+            background: rgba(255,255,255,0.18);
+            top: 26px;
+            left: 44px;
+            transform: skewX(-30deg) skewY(8deg);
+        }
+
+        .iso-book-c {
+            position: absolute;
+            width: 16px;
+            height: 32px;
+            background: rgba(255,255,255,0.24);
+            top: 23px;
+            left: 60px;
+            transform: skewX(-30deg) skewY(8deg);
+        }
+
+        /* =============================================
+           ACCENT SHAPES
+           ============================================= */
+
+        .accent-ring {
+            position: absolute;
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            border: 1.5px solid rgba(255, 255, 255, 0.22);
+            top: 240px;
+            right: 36px;
+        }
+
+        .accent-dot-1 {
+            position: absolute;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.38);
+            top: 272px;
+            right: 68px;
+        }
+
+        .accent-dot-2 {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.25);
+            bottom: 210px;
+            left: 36px;
+        }
+
+        .meta-tag {
+            position: absolute;
+            bottom: 255px;
+            left: 48px;
+            z-index: 5;
+        }
+
+        .meta-pill {
+            display: inline-block;
+            background: rgba(255,255,255,0.90);
+            color: var(--color-dark);
+            font-family: var(--font-body);
+            font-size: 11px;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 4px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        /* =============================================
+           TWEET CARD
+           ============================================= */
+
+        .card {
+            position: relative;
+            z-index: 10;
+            width: 800px;
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 44px 48px 40px;
+            box-shadow:
+                0 2px 4px rgba(0,0,0,0.04),
+                0 12px 48px rgba(0,0,0,0.18),
+                0 0 0 1px rgba(0,0,0,0.04);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: #5A8A6E;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .avatar-initials {
+            font-family: var(--font-body);
+            font-size: 19px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .author-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            flex: 1;
+        }
+
+        .author-name {
+            font-family: var(--font-body);
+            font-size: 17px;
+            font-weight: 700;
+            color: #0f1419;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .verified-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            background: #1da1f2;
+            border-radius: 50%;
+            font-size: 10px;
+            color: white;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .author-handle {
+            font-family: var(--font-body);
+            font-size: 15px;
+            color: #536471;
+        }
+
+        .x-logo {
+            color: #1A1A1A;
+            font-size: 22px;
+            font-weight: 900;
+            font-family: var(--font-display);
+            letter-spacing: -1px;
+            line-height: 1;
+        }
+
+        .card-intro {
+            font-family: var(--font-body);
+            font-size: 18px;
+            font-weight: 500;
+            color: #0f1419;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        .tips-list {
+            display: flex;
+            flex-direction: column;
+            gap: 11px;
+            margin-bottom: 24px;
+        }
+
+        .tip-row {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+        }
+
+        .tip-num {
+            font-family: var(--font-display);
+            font-size: 12px;
+            font-weight: 700;
+            color: #5A8A6E;
+            letter-spacing: 0.5px;
+            min-width: 28px;
+            flex-shrink: 0;
+        }
+
+        .tip-text {
+            font-family: var(--font-body);
+            font-size: 17px;
+            font-weight: 400;
+            line-height: 1.55;
+            color: #0f1419;
+        }
+
+        .tip-text strong {
+            font-weight: 600;
+        }
+
+        .card-footer {
+            display: flex;
+            flex-direction: column;
+            gap: 13px;
+        }
+
+        .timestamp {
+            font-family: var(--font-body);
+            font-size: 14px;
+            color: #536471;
+        }
+
+        .divider {
+            width: 100%;
+            height: 1px;
+            background: #eff3f4;
+        }
+
+        .metrics {
+            display: flex;
+            gap: 24px;
+        }
+
+        .metric {
+            font-family: var(--font-body);
+            font-size: 14px;
+            color: #536471;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .metric-icon {
+            font-size: 15px;
+        }
+
+        .metric-count {
+            font-weight: 700;
+            color: #0f1419;
+        }
+
+        /* =============================================
+           BRAND WATERMARK
+           ============================================= */
+
+        .brand-watermark {
+            position: absolute;
+            bottom: 26px;
+            right: 36px;
+            z-index: 20;
+            font-family: var(--font-display);
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.8px;
+            color: rgba(255,255,255,0.48);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- DECORATIVE BACKGROUND -->
+    <div class="background">
+        <div class="grid-dots"></div>
+
+        <!-- Split-word: START / UP -->
+        <div class="bg-word-top">START</div>
+        <div class="bg-word-bottom">UP</div>
+
+        <!-- Isometric workspace — top right -->
+        <div class="iso-scene-tr">
+            <div class="iso-desk-top"></div>
+            <div class="iso-desk-front"></div>
+            <div class="iso-desk-side"></div>
+            <div class="iso-monitor-top"></div>
+            <div class="iso-monitor-side"></div>
+            <div class="iso-screen-line-1"></div>
+            <div class="iso-screen-line-2"></div>
+            <div class="iso-monitor-stand"></div>
+            <div class="iso-obj-top"></div>
+            <div class="iso-obj-side"></div>
+        </div>
+
+        <!-- Isometric bookshelf — bottom left -->
+        <div class="iso-scene-bl">
+            <div class="iso-shelf-top"></div>
+            <div class="iso-shelf-front"></div>
+            <div class="iso-shelf-side"></div>
+            <div class="iso-book-a"></div>
+            <div class="iso-book-b"></div>
+            <div class="iso-book-c"></div>
+        </div>
+
+        <!-- Geometric accents -->
+        <div class="accent-ring"></div>
+        <div class="accent-dot-1"></div>
+        <div class="accent-dot-2"></div>
+
+        <!-- Metadata pill -->
+        <div class="meta-tag">
+            <span class="meta-pill">Founder Advice · 2026</span>
+        </div>
+    </div>
+
+    <!-- TWEET CARD -->
+    <div class="card">
+
+        <!-- Header -->
+        <div class="card-header">
+            <div class="avatar">
+                <span class="avatar-initials">AR</span>
+            </div>
+            <div class="author-info">
+                <span class="author-name">
+                    Alex Rivera
+                    <span class="verified-badge">&#10003;</span>
+                </span>
+                <span class="author-handle">@alexrivera_vc</span>
+            </div>
+            <span class="x-logo">&#120143;</span>
+        </div>
+
+        <!-- Intro line -->
+        <div class="card-intro">
+            5 things I wish I knew before building my startup in 2026:
+        </div>
+
+        <!-- 5 Tips -->
+        <div class="tips-list">
+            <div class="tip-row">
+                <span class="tip-num">1 /</span>
+                <span class="tip-text"><strong>AI agents are your first hire,</strong> not a tool. Onboard them like a team member. Give context, not just commands.</span>
+            </div>
+            <div class="tip-row">
+                <span class="tip-num">2 /</span>
+                <span class="tip-text"><strong>Distribution beats product</strong> at seed stage. Nobody cares how good it is if nobody knows it exists.</span>
+            </div>
+            <div class="tip-row">
+                <span class="tip-num">3 /</span>
+                <span class="tip-text"><strong>Build in public from day one.</strong> Your audience is your moat. Reputation compounds faster than revenue.</span>
+            </div>
+            <div class="tip-row">
+                <span class="tip-num">4 /</span>
+                <span class="tip-text"><strong>Extend runway obsessively.</strong> Cash in the bank beats growth metrics until you hit $1M ARR.</span>
+            </div>
+            <div class="tip-row">
+                <span class="tip-num">5 /</span>
+                <span class="tip-text"><strong>Be curious about users, not competitors.</strong> Copy their language. Ignore competitor noise.</span>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="card-footer">
+            <span class="timestamp">9:14 AM &middot; Apr 21, 2026</span>
+            <div class="divider"></div>
+            <div class="metrics">
+                <span class="metric">
+                    <span class="metric-icon">&#9825;</span>
+                    <span class="metric-count">4,891</span>
+                    <span>Likes</span>
+                </span>
+                <span class="metric">
+                    <span class="metric-icon">&#8635;</span>
+                    <span class="metric-count">1,247</span>
+                    <span>Reposts</span>
+                </span>
+                <span class="metric">
+                    <span class="metric-icon">&#128172;</span>
+                    <span class="metric-count">318</span>
+                    <span>Replies</span>
+                </span>
+                <span class="metric">
+                    <span class="metric-icon">&#128200;</span>
+                    <span class="metric-count">94.2K</span>
+                    <span>Views</span>
+                </span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- BRAND WATERMARK -->
+    <div class="brand-watermark">@goose</div>
+
+</body>
+</html>

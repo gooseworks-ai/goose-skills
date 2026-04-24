@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1080, initial-scale=1.0">
+    <title>5 Tips for Building a Startup in 2026 — Cover</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-sage: #7BA88E;
+            --color-white: #FFFFFF;
+            --color-dark: #1A1A1A;
+            --color-desk: #2C3E35;
+            --color-mid: #5A8A6E;
+            --color-light: #A3C4B0;
+            --color-pale: #E8F0EC;
+            --color-shadow: #3D5C4A;
+
+            --font-display: 'Space Grotesk', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+            --font-body: 'Inter', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+
+            --story-width: 1080px;
+            --story-height: 1920px;
+            --story-padding-x: 60px;
+            --story-padding-y: 120px;
+            --safe-top: 160px;
+            --safe-bottom: 160px;
+            --content-max-width: 960px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 1080px;
+            height: 1920px;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            background-color: var(--color-sage);
+            color: var(--color-white);
+            font-family: var(--font-body);
+            position: relative;
+        }
+
+        /* Progress segments */
+        .progress {
+            position: absolute;
+            top: 60px;
+            left: 60px;
+            right: 60px;
+            display: flex;
+            gap: 6px;
+            z-index: 10;
+        }
+
+        .progress .segment {
+            flex: 1;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+        }
+
+        .progress .segment.active {
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Split-word display — top-left fragment */
+        .word-top {
+            position: absolute;
+            top: 200px;
+            left: 60px;
+            font-family: var(--font-display);
+            font-size: 148px;
+            font-weight: 700;
+            line-height: 0.90;
+            letter-spacing: -4px;
+            color: var(--color-white);
+            z-index: 2;
+        }
+
+        /* Split-word display — bottom-right fragment */
+        .word-bottom {
+            position: absolute;
+            bottom: 260px;
+            right: 60px;
+            font-family: var(--font-display);
+            font-size: 148px;
+            font-weight: 700;
+            line-height: 0.90;
+            letter-spacing: -4px;
+            color: var(--color-white);
+            text-align: right;
+            z-index: 2;
+        }
+
+        /* Metadata pill — top-left, below word fragment */
+        .meta-pill {
+            position: absolute;
+            top: 390px;
+            left: 60px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--color-white);
+            color: var(--color-dark);
+            font-family: var(--font-body);
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            padding: 10px 20px;
+            border-radius: 4px;
+            z-index: 3;
+        }
+
+        /* Sub-label above bottom word */
+        .sub-label {
+            position: absolute;
+            bottom: 460px;
+            right: 60px;
+            font-family: var(--font-body);
+            font-size: 20px;
+            font-weight: 500;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.65);
+            text-align: right;
+            z-index: 3;
+        }
+
+        /* Isometric illustration container */
+        .iso-stage {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 680px;
+            height: 560px;
+            z-index: 1;
+        }
+
+        /* ---- Isometric grid system ----
+           All shapes use CSS transforms to simulate isometric projection.
+           Faces: top (light), left (mid), right (dark shadow)
+        */
+
+        /* Isometric desk unit — left */
+        .desk-left {
+            position: absolute;
+            top: 160px;
+            left: 60px;
+        }
+
+        /* Isometric desk unit — center */
+        .desk-center {
+            position: absolute;
+            top: 80px;
+            left: 220px;
+        }
+
+        /* Isometric desk unit — right */
+        .desk-right {
+            position: absolute;
+            top: 160px;
+            left: 400px;
+        }
+
+        /* Shared face styles */
+        .iso-top {
+            background: var(--color-light);
+            position: absolute;
+        }
+
+        .iso-left-face {
+            background: var(--color-mid);
+            position: absolute;
+        }
+
+        .iso-right-face {
+            background: var(--color-shadow);
+            position: absolute;
+        }
+
+        /* Isometric box helper — desk */
+        .iso-box {
+            position: relative;
+        }
+
+        /* Floor plane */
+        .floor {
+            position: absolute;
+            bottom: 20px;
+            left: -40px;
+            width: 760px;
+            height: 160px;
+            background: var(--color-desk);
+            transform: skewX(-30deg) skewY(0deg);
+            transform-origin: bottom left;
+            opacity: 0.45;
+        }
+
+        /* Monitor screens */
+        .screen-glow {
+            background: var(--color-pale);
+            opacity: 0.85;
+        }
+
+        /* Branding footer */
+        .brand {
+            position: absolute;
+            bottom: calc(160px + 32px);
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: var(--font-body);
+            font-size: 22px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.55);
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Progress bar (slide 1 of 6) -->
+    <div class="progress">
+        <div class="segment active"></div>
+        <div class="segment"></div>
+        <div class="segment"></div>
+        <div class="segment"></div>
+        <div class="segment"></div>
+        <div class="segment"></div>
+    </div>
+
+    <!-- Split display word — top fragment: "START" -->
+    <div class="word-top">START</div>
+
+    <!-- Metadata pill -->
+    <div class="meta-pill">2026 FOUNDER GUIDE</div>
+
+    <!-- Isometric workspace illustration -->
+    <div class="iso-stage">
+
+        <!-- Floor shadow -->
+        <div style="
+            position: absolute;
+            bottom: 0;
+            left: 20px;
+            width: 640px;
+            height: 120px;
+            background: var(--color-desk);
+            transform: skewX(-20deg);
+            opacity: 0.30;
+            border-radius: 2px;
+        "></div>
+
+        <!-- ============================
+             DESK A — left workstation
+             ============================ -->
+
+        <!-- Desk top face -->
+        <div style="
+            position: absolute;
+            top: 240px;
+            left: 40px;
+            width: 180px;
+            height: 90px;
+            background: var(--color-light);
+            transform: skewX(-30deg) skewY(15deg);
+        "></div>
+        <!-- Desk front face -->
+        <div style="
+            position: absolute;
+            top: 318px;
+            left: 23px;
+            width: 156px;
+            height: 52px;
+            background: var(--color-mid);
+            transform: skewX(-30deg);
+        "></div>
+        <!-- Desk right face -->
+        <div style="
+            position: absolute;
+            top: 248px;
+            left: 198px;
+            width: 38px;
+            height: 120px;
+            background: var(--color-shadow);
+            transform: skewY(15deg);
+        "></div>
+
+        <!-- Monitor A — top face -->
+        <div style="
+            position: absolute;
+            top: 168px;
+            left: 80px;
+            width: 100px;
+            height: 54px;
+            background: var(--color-pale);
+            transform: skewX(-30deg) skewY(15deg);
+            opacity: 0.92;
+        "></div>
+        <!-- Monitor A — front face (screen) -->
+        <div style="
+            position: absolute;
+            top: 208px;
+            left: 65px;
+            width: 88px;
+            height: 58px;
+            background: var(--color-desk);
+            transform: skewX(-30deg);
+        ">
+            <!-- Screen lines -->
+            <div style="position:absolute;top:12px;left:10px;width:60px;height:4px;background:var(--color-mid);border-radius:2px;opacity:0.8;"></div>
+            <div style="position:absolute;top:22px;left:10px;width:46px;height:4px;background:var(--color-mid);border-radius:2px;opacity:0.5;"></div>
+            <div style="position:absolute;top:32px;left:10px;width:52px;height:4px;background:var(--color-mid);border-radius:2px;opacity:0.5;"></div>
+        </div>
+        <!-- Monitor A — right side -->
+        <div style="
+            position: absolute;
+            top: 176px;
+            left: 161px;
+            width: 22px;
+            height: 88px;
+            background: var(--color-shadow);
+            transform: skewY(15deg);
+            opacity: 0.9;
+        "></div>
+
+        <!-- ============================
+             DESK B — center, taller (focal)
+             ============================ -->
+
+        <!-- Desk top face -->
+        <div style="
+            position: absolute;
+            top: 180px;
+            left: 230px;
+            width: 200px;
+            height: 100px;
+            background: var(--color-light);
+            transform: skewX(-30deg) skewY(15deg);
+        "></div>
+        <!-- Desk front face -->
+        <div style="
+            position: absolute;
+            top: 264px;
+            left: 211px;
+            width: 174px;
+            height: 64px;
+            background: var(--color-mid);
+            transform: skewX(-30deg);
+        "></div>
+        <!-- Desk right face -->
+        <div style="
+            position: absolute;
+            top: 190px;
+            left: 406px;
+            width: 42px;
+            height: 138px;
+            background: var(--color-shadow);
+            transform: skewY(15deg);
+        "></div>
+
+        <!-- Monitor B — large center screen (top face) -->
+        <div style="
+            position: absolute;
+            top: 88px;
+            left: 266px;
+            width: 124px;
+            height: 68px;
+            background: var(--color-pale);
+            transform: skewX(-30deg) skewY(15deg);
+            opacity: 0.95;
+        "></div>
+        <!-- Monitor B — front face -->
+        <div style="
+            position: absolute;
+            top: 138px;
+            left: 248px;
+            width: 108px;
+            height: 72px;
+            background: var(--color-desk);
+            transform: skewX(-30deg);
+        ">
+            <!-- Screen content lines -->
+            <div style="position:absolute;top:10px;left:10px;width:76px;height:5px;background:var(--color-light);border-radius:2px;opacity:0.9;"></div>
+            <div style="position:absolute;top:22px;left:10px;width:56px;height:4px;background:var(--color-mid);border-radius:2px;opacity:0.6;"></div>
+            <div style="position:absolute;top:32px;left:10px;width:64px;height:4px;background:var(--color-mid);border-radius:2px;opacity:0.6;"></div>
+            <div style="position:absolute;top:42px;left:10px;width:48px;height:4px;background:var(--color-mid);border-radius:2px;opacity:0.4;"></div>
+            <!-- Chart bar mini -->
+            <div style="position:absolute;bottom:6px;right:10px;width:8px;height:22px;background:var(--color-light);border-radius:1px;opacity:0.7;"></div>
+            <div style="position:absolute;bottom:6px;right:22px;width:8px;height:14px;background:var(--color-light);border-radius:1px;opacity:0.5;"></div>
+            <div style="position:absolute;bottom:6px;right:34px;width:8px;height:18px;background:var(--color-light);border-radius:1px;opacity:0.6;"></div>
+        </div>
+        <!-- Monitor B — right side -->
+        <div style="
+            position: absolute;
+            top: 98px;
+            left: 350px;
+            width: 26px;
+            height: 112px;
+            background: var(--color-shadow);
+            transform: skewY(15deg);
+            opacity: 0.9;
+        "></div>
+
+        <!-- ============================
+             DESK C — right workstation
+             ============================ -->
+
+        <!-- Desk top face -->
+        <div style="
+            position: absolute;
+            top: 240px;
+            left: 440px;
+            width: 160px;
+            height: 84px;
+            background: var(--color-light);
+            transform: skewX(-30deg) skewY(15deg);
+        "></div>
+        <!-- Desk front face -->
+        <div style="
+            position: absolute;
+            top: 312px;
+            left: 423px;
+            width: 140px;
+            height: 52px;
+            background: var(--color-mid);
+            transform: skewX(-30deg);
+        "></div>
+        <!-- Desk right face -->
+        <div style="
+            position: absolute;
+            top: 248px;
+            left: 578px;
+            width: 35px;
+            height: 116px;
+            background: var(--color-shadow);
+            transform: skewY(15deg);
+        "></div>
+
+        <!-- Monitor C -->
+        <div style="
+            position: absolute;
+            top: 172px;
+            left: 476px;
+            width: 92px;
+            height: 52px;
+            background: var(--color-pale);
+            transform: skewX(-30deg) skewY(15deg);
+            opacity: 0.90;
+        "></div>
+        <div style="
+            position: absolute;
+            top: 210px;
+            left: 460px;
+            width: 80px;
+            height: 56px;
+            background: var(--color-desk);
+            transform: skewX(-30deg);
+        ">
+            <div style="position:absolute;top:10px;left:8px;width:56px;height:4px;background:var(--color-light);border-radius:2px;opacity:0.8;"></div>
+            <div style="position:absolute;top:20px;left:8px;width:44px;height:4px;background:var(--color-mid);border-radius:2px;opacity:0.5;"></div>
+            <div style="position:absolute;top:30px;left:8px;width:50px;height:4px;background:var(--color-mid);border-radius:2px;opacity:0.5;"></div>
+        </div>
+        <div style="
+            position: absolute;
+            top: 180px;
+            left: 549px;
+            width: 20px;
+            height: 86px;
+            background: var(--color-shadow);
+            transform: skewY(15deg);
+            opacity: 0.85;
+        "></div>
+
+        <!-- ============================
+             Small accent objects
+             ============================ -->
+
+        <!-- Plant pot — left -->
+        <div style="
+            position: absolute;
+            top: 214px;
+            left: 148px;
+            width: 28px;
+            height: 22px;
+            background: var(--color-desk);
+            transform: skewX(-30deg) skewY(15deg);
+            border-radius: 2px;
+        "></div>
+        <div style="
+            position: absolute;
+            top: 196px;
+            left: 152px;
+            width: 18px;
+            height: 20px;
+            background: var(--color-mid);
+            border-radius: 50% 50% 0 0;
+            transform: skewX(-8deg);
+        "></div>
+
+        <!-- Laptop lid — right desk -->
+        <div style="
+            position: absolute;
+            top: 216px;
+            left: 500px;
+            width: 56px;
+            height: 30px;
+            background: var(--color-pale);
+            transform: skewX(-30deg) skewY(15deg);
+            opacity: 0.75;
+        "></div>
+
+        <!-- Floating number tag "5" -->
+        <div style="
+            position: absolute;
+            top: 36px;
+            left: 300px;
+            width: 80px;
+            height: 80px;
+            background: var(--color-white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 4;
+        ">
+            <span style="
+                font-family: var(--font-display);
+                font-size: 48px;
+                font-weight: 700;
+                color: var(--color-sage);
+                line-height: 1;
+            ">5</span>
+        </div>
+
+        <!-- Connecting line from badge to desk -->
+        <div style="
+            position: absolute;
+            top: 116px;
+            left: 337px;
+            width: 2px;
+            height: 72px;
+            background: rgba(255,255,255,0.35);
+        "></div>
+
+        <!-- Grid dots — decorative background -->
+        <div style="position:absolute;top:40px;right:10px;display:grid;grid-template-columns:repeat(5,18px);grid-gap:14px;">
+            <div style="width:4px;height:4px;background:rgba(255,255,255,0.25);border-radius:50%;"></div>
+            <div style="width:4px;height:4px;background:rgba(255,255,255,0.25);border-radius:50%;"></div>
+            <div style="width:4px;height:4px;background:rgba(255,255,255,0.25);border-radius:50%;"></div>
+            <div style="width:4px;height:4px;background:rgba(255,255,255,0.25);border-radius:50%;"></div>
+            <div style="width:4px;height:4px;background:rgba(255,255,255,0.25);border-radius:50%;"></div>
+            <div style="width:4px;height:4px;background:rgba(255,255,255,0.20);border-radius:50%;"></div>
+            <div style="width:4px;height:4px;background:rgba(255,255,255,0.20);border-radius:50%;"></div>
+            <div style="width:4px;height:4px;background:rgba(255,255,255,0.20);border-radius:50%;"></div>
+            <div style="width:4px;height:4px;background:rgba(255,255,255,0.20);border-radius:50%;"></div>
+            <div style="width:4px;height:4px;background:rgba(255,255,255,0.20);border-radius:50%;"></div>
+        </div>
+
+    </div>
+    <!-- /iso-stage -->
+
+    <!-- Sub-label above bottom word -->
+    <div class="sub-label">in 2026</div>
+
+    <!-- Split display word — bottom fragment: "UP" -->
+    <div class="word-bottom">UP</div>
+
+    <!-- Branding -->
+    <div class="brand">@gooseworks</div>
+
+</body>
+</html>

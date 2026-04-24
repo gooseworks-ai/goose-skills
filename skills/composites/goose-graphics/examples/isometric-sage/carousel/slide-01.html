@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1080, initial-scale=1.0">
+    <title>Slide 01 — Cover</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-sage: #7BA88E;
+            --color-white: #FFFFFF;
+            --color-dark: #1A1A1A;
+            --color-desk: #2C3E35;
+            --color-mid: #5A8A6E;
+            --color-light: #A3C4B0;
+            --color-pale: #E8F0EC;
+            --color-shadow: #3D5C4A;
+
+            --font-display: 'Space Grotesk', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+            --font-body: 'Inter', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+
+            --slide-width: 1080px;
+            --slide-height: 1080px;
+            --slide-padding: 60px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: var(--slide-width);
+            height: var(--slide-height);
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            background-color: var(--color-sage);
+            color: var(--color-white);
+            font-family: var(--font-body);
+            position: relative;
+            padding: var(--slide-padding);
+        }
+
+        /* =========================
+           METADATA ROW — TOP
+           ========================= */
+        .meta-row {
+            position: absolute;
+            top: 60px;
+            left: 60px;
+            right: 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 5;
+        }
+
+        .meta-pill {
+            display: inline-block;
+            background: var(--color-white);
+            color: var(--color-dark);
+            font-family: var(--font-body);
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            padding: 8px 16px;
+            border-radius: 4px;
+        }
+
+        .meta-caption {
+            font-family: var(--font-body);
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.70);
+        }
+
+        /* =========================
+           SPLIT-WORD TYPOGRAPHY
+           ========================= */
+        .word-top {
+            position: absolute;
+            top: 130px;
+            left: 60px;
+            font-family: var(--font-display);
+            font-size: 200px;
+            font-weight: 700;
+            line-height: 0.90;
+            letter-spacing: -8px;
+            color: var(--color-white);
+            z-index: 3;
+        }
+
+        .word-bottom {
+            position: absolute;
+            bottom: 220px;
+            right: 60px;
+            font-family: var(--font-display);
+            font-size: 200px;
+            font-weight: 700;
+            line-height: 0.90;
+            letter-spacing: -8px;
+            color: var(--color-white);
+            text-align: right;
+            z-index: 3;
+        }
+
+        /* =========================
+           ISOMETRIC ILLUSTRATION
+           Center of canvas
+           ========================= */
+        .iso-stage {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 420px;
+            z-index: 2;
+        }
+
+        /* Ground shadow */
+        .iso-ground {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) skewX(-30deg) skewY(15deg);
+            width: 440px;
+            height: 220px;
+            background: var(--color-shadow);
+            opacity: 0.35;
+        }
+
+        /* ---- DESK (left front) ---- */
+        .desk-top {
+            position: absolute;
+            top: 200px;
+            left: 110px;
+            width: 180px;
+            height: 110px;
+            background: var(--color-desk);
+            transform: skewX(-30deg) skewY(15deg);
+            box-shadow: inset 0 0 0 1px rgba(0,0,0,0.15);
+        }
+        .desk-side {
+            position: absolute;
+            top: 306px;
+            left: 110px;
+            width: 180px;
+            height: 40px;
+            background: var(--color-shadow);
+            transform: skewX(-30deg) skewY(15deg);
+        }
+        .desk-front {
+            position: absolute;
+            top: 306px;
+            left: 25px;
+            width: 90px;
+            height: 40px;
+            background: #1f2d25;
+            transform: skewY(30deg);
+        }
+
+        /* Monitor on desk */
+        .monitor-screen {
+            position: absolute;
+            top: 118px;
+            left: 160px;
+            width: 92px;
+            height: 70px;
+            background: var(--color-light);
+            transform: skewY(30deg);
+            border: 1px solid var(--color-dark);
+        }
+        .monitor-side {
+            position: absolute;
+            top: 118px;
+            left: 252px;
+            width: 30px;
+            height: 70px;
+            background: var(--color-mid);
+            transform: skewY(-30deg);
+            border: 1px solid var(--color-dark);
+        }
+        .monitor-stand {
+            position: absolute;
+            top: 188px;
+            left: 195px;
+            width: 20px;
+            height: 14px;
+            background: var(--color-dark);
+            transform: skewX(-30deg) skewY(15deg);
+        }
+        .monitor-line-1 {
+            position: absolute;
+            top: 134px;
+            left: 172px;
+            width: 60px;
+            height: 3px;
+            background: var(--color-sage);
+            transform: skewY(30deg);
+            z-index: 4;
+        }
+        .monitor-line-2 {
+            position: absolute;
+            top: 146px;
+            left: 172px;
+            width: 42px;
+            height: 3px;
+            background: var(--color-sage);
+            transform: skewY(30deg);
+            z-index: 4;
+        }
+        .monitor-line-3 {
+            position: absolute;
+            top: 158px;
+            left: 172px;
+            width: 52px;
+            height: 3px;
+            background: var(--color-shadow);
+            transform: skewY(30deg);
+            z-index: 4;
+        }
+
+        /* Keyboard */
+        .keyboard {
+            position: absolute;
+            top: 238px;
+            left: 138px;
+            width: 110px;
+            height: 28px;
+            background: var(--color-light);
+            transform: skewX(-30deg) skewY(15deg);
+            border: 1px solid var(--color-dark);
+        }
+
+        /* Coffee cup */
+        .cup-top {
+            position: absolute;
+            top: 224px;
+            left: 266px;
+            width: 24px;
+            height: 14px;
+            background: var(--color-pale);
+            transform: skewX(-30deg) skewY(15deg);
+            border: 1px solid var(--color-dark);
+        }
+        .cup-side {
+            position: absolute;
+            top: 236px;
+            left: 266px;
+            width: 24px;
+            height: 22px;
+            background: var(--color-white);
+            transform: skewY(30deg);
+            border: 1px solid var(--color-dark);
+            border-top: none;
+        }
+
+        /* ---- SERVER STACK (back right) ---- */
+        .server-base-top {
+            position: absolute;
+            top: 168px;
+            left: 320px;
+            width: 130px;
+            height: 80px;
+            background: var(--color-mid);
+            transform: skewX(-30deg) skewY(15deg);
+            border: 1px solid var(--color-dark);
+        }
+        .server-front {
+            position: absolute;
+            top: 244px;
+            left: 320px;
+            width: 130px;
+            height: 90px;
+            background: var(--color-desk);
+            transform: skewY(30deg);
+            border: 1px solid var(--color-dark);
+        }
+        .server-side {
+            position: absolute;
+            top: 244px;
+            left: 450px;
+            width: 62px;
+            height: 90px;
+            background: var(--color-shadow);
+            transform: skewY(-30deg);
+            border: 1px solid var(--color-dark);
+        }
+
+        /* Server panel lights */
+        .server-light-1 {
+            position: absolute;
+            top: 256px;
+            left: 336px;
+            width: 40px;
+            height: 4px;
+            background: var(--color-light);
+            transform: skewY(30deg);
+            z-index: 4;
+        }
+        .server-light-2 {
+            position: absolute;
+            top: 268px;
+            left: 336px;
+            width: 60px;
+            height: 4px;
+            background: var(--color-sage);
+            transform: skewY(30deg);
+            z-index: 4;
+        }
+        .server-light-3 {
+            position: absolute;
+            top: 280px;
+            left: 336px;
+            width: 48px;
+            height: 4px;
+            background: var(--color-pale);
+            transform: skewY(30deg);
+            z-index: 4;
+        }
+        .server-light-4 {
+            position: absolute;
+            top: 296px;
+            left: 336px;
+            width: 72px;
+            height: 4px;
+            background: var(--color-sage);
+            transform: skewY(30deg);
+            z-index: 4;
+        }
+        .server-light-5 {
+            position: absolute;
+            top: 308px;
+            left: 336px;
+            width: 32px;
+            height: 4px;
+            background: var(--color-light);
+            transform: skewY(30deg);
+            z-index: 4;
+        }
+
+        /* ---- PLANT (back left, behind server) ---- */
+        .pot-top {
+            position: absolute;
+            top: 162px;
+            left: 60px;
+            width: 48px;
+            height: 28px;
+            background: var(--color-shadow);
+            transform: skewX(-30deg) skewY(15deg);
+            border: 1px solid var(--color-dark);
+        }
+        .pot-front {
+            position: absolute;
+            top: 188px;
+            left: 60px;
+            width: 48px;
+            height: 40px;
+            background: var(--color-desk);
+            transform: skewY(30deg);
+            border: 1px solid var(--color-dark);
+        }
+        .pot-side {
+            position: absolute;
+            top: 188px;
+            left: 108px;
+            width: 24px;
+            height: 40px;
+            background: #1f2d25;
+            transform: skewY(-30deg);
+            border: 1px solid var(--color-dark);
+        }
+        .leaf-1 {
+            position: absolute;
+            top: 108px;
+            left: 64px;
+            width: 18px;
+            height: 56px;
+            background: var(--color-light);
+            transform: rotate(-20deg);
+            border-radius: 50% 50% 50% 0;
+            border: 1px solid var(--color-dark);
+        }
+        .leaf-2 {
+            position: absolute;
+            top: 98px;
+            left: 82px;
+            width: 20px;
+            height: 64px;
+            background: var(--color-mid);
+            transform: rotate(5deg);
+            border-radius: 50% 50% 50% 0;
+            border: 1px solid var(--color-dark);
+        }
+        .leaf-3 {
+            position: absolute;
+            top: 110px;
+            left: 100px;
+            width: 18px;
+            height: 54px;
+            background: var(--color-light);
+            transform: rotate(25deg);
+            border-radius: 50% 50% 50% 0;
+            border: 1px solid var(--color-dark);
+        }
+
+        /* ---- LIGHTBULB / IDEA (floating top-right of illustration) ---- */
+        .idea {
+            position: absolute;
+            top: 60px;
+            right: 40px;
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            background: var(--color-pale);
+            border: 2px solid var(--color-dark);
+            box-shadow: 0 0 0 8px rgba(232, 240, 236, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 5;
+        }
+        .idea-inner {
+            width: 24px;
+            height: 24px;
+            background: var(--color-sage);
+            border-radius: 3px;
+            position: relative;
+        }
+        .idea-inner::before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            left: 6px;
+            width: 12px;
+            height: 12px;
+            background: var(--color-pale);
+            border-radius: 50%;
+            border: 2px solid var(--color-dark);
+        }
+
+        /* Spark lines from idea */
+        .spark {
+            position: absolute;
+            background: var(--color-white);
+            border-radius: 2px;
+            z-index: 4;
+        }
+        .spark-1 { top: 48px; right: 112px; width: 26px; height: 2px; transform: rotate(-15deg); }
+        .spark-2 { top: 40px; right: 90px; width: 16px; height: 2px; transform: rotate(-60deg); }
+        .spark-3 { top: 120px; right: 112px; width: 22px; height: 2px; transform: rotate(25deg); }
+
+        /* =========================
+           BOTTOM META STRIP
+           ========================= */
+        .bottom-strip {
+            position: absolute;
+            bottom: 60px;
+            left: 60px;
+            right: 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            z-index: 5;
+        }
+
+        .bottom-card {
+            background: var(--color-pale);
+            color: var(--color-dark);
+            padding: 14px 20px;
+            border-radius: 4px;
+            max-width: 360px;
+        }
+
+        .bottom-card .card-label {
+            font-family: var(--font-body);
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            color: var(--color-shadow);
+            margin-bottom: 4px;
+        }
+
+        .bottom-card .card-text {
+            font-family: var(--font-body);
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 1.35;
+            color: var(--color-dark);
+        }
+
+        .brand {
+            font-family: var(--font-display);
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--color-white);
+        }
+
+        /* Small accent rule */
+        .accent-rule {
+            position: absolute;
+            top: 348px;
+            left: 60px;
+            width: 80px;
+            height: 2px;
+            background: var(--color-white);
+            z-index: 4;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP META ROW -->
+    <div class="meta-row">
+        <span class="meta-pill">Founder&#39;s Playbook</span>
+        <span class="meta-caption">ISSUE 01 &middot; 2026</span>
+    </div>
+
+    <!-- SPLIT WORD TOP -->
+    <h1 class="word-top">Star</h1>
+
+    <div class="accent-rule"></div>
+
+    <!-- ISOMETRIC ILLUSTRATION -->
+    <div class="iso-stage">
+        <div class="iso-ground"></div>
+
+        <!-- Plant -->
+        <div class="leaf-1"></div>
+        <div class="leaf-2"></div>
+        <div class="leaf-3"></div>
+        <div class="pot-top"></div>
+        <div class="pot-front"></div>
+        <div class="pot-side"></div>
+
+        <!-- Server stack -->
+        <div class="server-base-top"></div>
+        <div class="server-front"></div>
+        <div class="server-side"></div>
+        <div class="server-light-1"></div>
+        <div class="server-light-2"></div>
+        <div class="server-light-3"></div>
+        <div class="server-light-4"></div>
+        <div class="server-light-5"></div>
+
+        <!-- Desk + monitor + keyboard + cup -->
+        <div class="monitor-screen"></div>
+        <div class="monitor-side"></div>
+        <div class="monitor-line-1"></div>
+        <div class="monitor-line-2"></div>
+        <div class="monitor-line-3"></div>
+        <div class="desk-top"></div>
+        <div class="desk-side"></div>
+        <div class="desk-front"></div>
+        <div class="monitor-stand"></div>
+        <div class="keyboard"></div>
+        <div class="cup-top"></div>
+        <div class="cup-side"></div>
+
+        <!-- Idea bulb + sparks -->
+        <div class="idea"><div class="idea-inner"></div></div>
+        <div class="spark spark-1"></div>
+        <div class="spark spark-2"></div>
+        <div class="spark spark-3"></div>
+    </div>
+
+    <!-- SPLIT WORD BOTTOM -->
+    <p class="word-bottom">tup.</p>
+
+    <!-- BOTTOM STRIP -->
+    <div class="bottom-strip">
+        <div class="bottom-card">
+            <p class="card-label">5 Tips &middot; Carousel</p>
+            <p class="card-text">Building a company in 2026 &mdash; what actually works when AI is everywhere.</p>
+        </div>
+        <span class="brand">@goose &middot; 01 / 07</span>
+    </div>
+
+</body>
+</html>

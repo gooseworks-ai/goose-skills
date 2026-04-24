@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1080, initial-scale=1.0">
+    <title>Slide 01 — 5 Tips for Building a Startup in 2026</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --color-olive: #4A5A2B;
+            --color-sage: #6B7D3E;
+            --color-deep: #3A4A1F;
+            --color-cream: #F5F0E0;
+            --color-light-sage: #8B9E5A;
+            --color-dark: #2E3A18;
+            --cream-85: rgba(245,240,224,0.85);
+            --cream-60: rgba(245,240,224,0.60);
+            --cream-35: rgba(245,240,224,0.35);
+
+            --font-masthead: 'Playfair Display', Georgia, 'Times New Roman', serif;
+            --font-body: 'EB Garamond', Garamond, Georgia, serif;
+            --font-meta: 'DM Sans', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+
+            --slide-width: 1080px;
+            --slide-height: 1080px;
+            --slide-padding: 56px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 1080px;
+            height: 1080px;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            background-color: var(--color-olive);
+            color: var(--color-cream);
+            font-family: var(--font-body);
+            position: relative;
+        }
+
+        /* =============================================
+           BOTANICAL ILLUSTRATION ELEMENTS — SVG-based
+           ============================================= */
+
+        .botanical-bg {
+            position: absolute;
+            inset: 0;
+            width: 1080px;
+            height: 1080px;
+            overflow: hidden;
+        }
+
+        /* =============================================
+           LAYOUT LAYERS
+           ============================================= */
+
+        .meta-row {
+            position: absolute;
+            top: 52px;
+            left: 56px;
+            right: 56px;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            z-index: 10;
+        }
+
+        .meta-text {
+            font-family: var(--font-meta);
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--cream-60);
+        }
+
+        .masthead-block {
+            position: absolute;
+            top: 88px;
+            left: 56px;
+            right: 56px;
+            text-align: center;
+            z-index: 10;
+        }
+
+        .masthead-pre {
+            font-family: var(--font-meta);
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--cream-60);
+            margin-bottom: 6px;
+        }
+
+        .masthead-title {
+            font-family: var(--font-masthead);
+            font-size: 80px;
+            font-weight: 900;
+            line-height: 0.92;
+            letter-spacing: -2px;
+            text-transform: uppercase;
+            color: var(--color-cream);
+            text-shadow: 0 2px 12px rgba(0,0,0,0.35);
+        }
+
+        .masthead-rule {
+            width: 100%;
+            height: 1px;
+            background: var(--cream-35);
+            margin: 18px 0;
+        }
+
+        .headline-block {
+            position: absolute;
+            bottom: 188px;
+            left: 56px;
+            right: 56px;
+            z-index: 10;
+        }
+
+        .headline-label {
+            font-family: var(--font-meta);
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: var(--cream-60);
+            margin-bottom: 14px;
+        }
+
+        .headline-title {
+            font-family: var(--font-masthead);
+            font-size: 62px;
+            font-weight: 700;
+            line-height: 1.02;
+            letter-spacing: -1px;
+            color: var(--color-cream);
+            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            margin-bottom: 18px;
+        }
+
+        .headline-subtitle {
+            font-family: var(--font-body);
+            font-size: 24px;
+            font-weight: 500;
+            line-height: 1.35;
+            letter-spacing: 0.3px;
+            color: var(--cream-85);
+            text-shadow: 0 1px 4px rgba(0,0,0,0.25);
+            max-width: 720px;
+        }
+
+        .bottom-meta {
+            position: absolute;
+            bottom: 52px;
+            left: 56px;
+            right: 56px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .bottom-rule {
+            position: absolute;
+            bottom: 98px;
+            left: 56px;
+            right: 56px;
+            height: 1px;
+            background: var(--cream-35);
+            z-index: 10;
+        }
+
+        .slide-dots {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--color-cream);
+        }
+
+        .dot.active { opacity: 1.0; }
+        .dot:not(.active) { opacity: 0.25; }
+    </style>
+</head>
+<body>
+
+    <!-- =============================================
+         BOTANICAL ILLUSTRATION — SVG BACKGROUND
+         Dense olive-toned botanical fills the frame
+         ============================================= -->
+    <div class="botanical-bg">
+        <svg width="1080" height="1080" viewBox="0 0 1080 1080" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <radialGradient id="centerGlow" cx="50%" cy="55%" r="45%">
+                    <stop offset="0%" stop-color="#4A5A2B" stop-opacity="0"/>
+                    <stop offset="100%" stop-color="#2E3A18" stop-opacity="0.6"/>
+                </radialGradient>
+                <radialGradient id="leafGrad1" cx="30%" cy="30%" r="70%">
+                    <stop offset="0%" stop-color="#8B9E5A"/>
+                    <stop offset="60%" stop-color="#6B7D3E"/>
+                    <stop offset="100%" stop-color="#3A4A1F"/>
+                </radialGradient>
+                <radialGradient id="leafGrad2" cx="70%" cy="30%" r="70%">
+                    <stop offset="0%" stop-color="#6B7D3E"/>
+                    <stop offset="50%" stop-color="#4A5A2B"/>
+                    <stop offset="100%" stop-color="#2E3A18"/>
+                </radialGradient>
+                <radialGradient id="leafGrad3" cx="50%" cy="20%" r="80%">
+                    <stop offset="0%" stop-color="#8B9E5A"/>
+                    <stop offset="100%" stop-color="#3A4A1F"/>
+                </radialGradient>
+                <linearGradient id="stemGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#3A4A1F"/>
+                    <stop offset="100%" stop-color="#2E3A18"/>
+                </linearGradient>
+            </defs>
+
+            <!-- Base darker fill overlay for depth -->
+            <rect width="1080" height="1080" fill="#4A5A2B"/>
+
+            <!-- ======= LEFT SIDE BOTANICAL CLUSTER ======= -->
+
+            <!-- Large fern frond — left bottom -->
+            <g transform="translate(-20, 420) rotate(-15, 0, 0)">
+                <!-- Main stem -->
+                <path d="M 60 660 Q 80 500 160 320 Q 200 250 240 200" stroke="#3A4A1F" stroke-width="4" fill="none" stroke-linecap="round"/>
+                <!-- Frond leaflets left -->
+                <ellipse cx="90" cy="590" rx="52" ry="18" fill="url(#leafGrad2)" transform="rotate(-50, 90, 590)"/>
+                <ellipse cx="100" cy="545" rx="56" ry="17" fill="url(#leafGrad1)" transform="rotate(-45, 100, 545)"/>
+                <ellipse cx="112" cy="498" rx="60" ry="18" fill="url(#leafGrad2)" transform="rotate(-42, 112, 498)"/>
+                <ellipse cx="128" cy="450" rx="62" ry="17" fill="url(#leafGrad1)" transform="rotate(-38, 128, 450)"/>
+                <ellipse cx="148" cy="405" rx="58" ry="16" fill="url(#leafGrad2)" transform="rotate(-35, 148, 405)"/>
+                <ellipse cx="170" cy="365" rx="52" ry="15" fill="url(#leafGrad1)" transform="rotate(-32, 170, 365)"/>
+                <ellipse cx="195" cy="330" rx="44" ry="14" fill="url(#leafGrad2)" transform="rotate(-30, 195, 330)"/>
+                <ellipse cx="218" cy="298" rx="36" ry="12" fill="url(#leafGrad1)" transform="rotate(-28, 218, 298)"/>
+                <!-- Frond leaflets right -->
+                <ellipse cx="95" cy="580" rx="48" ry="16" fill="#3A4A1F" transform="rotate(20, 95, 580)"/>
+                <ellipse cx="108" cy="535" rx="52" ry="16" fill="#3A4A1F" transform="rotate(22, 108, 535)"/>
+                <ellipse cx="124" cy="488" rx="54" ry="15" fill="#3A4A1F" transform="rotate(24, 124, 488)"/>
+                <ellipse cx="142" cy="442" rx="52" ry="14" fill="#3A4A1F" transform="rotate(22, 142, 442)"/>
+                <ellipse cx="164" cy="400" rx="46" ry="14" fill="#3A4A1F" transform="rotate(20, 164, 400)"/>
+                <ellipse cx="188" cy="362" rx="40" ry="13" fill="#3A4A1F" transform="rotate(18, 188, 362)"/>
+            </g>
+
+            <!-- Large monstera leaf — left side -->
+            <g transform="translate(-40, 280)">
+                <path d="M 140 800 Q 80 650 60 500 Q 50 420 90 360 Q 130 300 180 290 Q 230 280 270 310 Q 310 340 320 400 Q 330 460 300 530 Q 280 580 260 620 Q 240 660 220 700 Z"
+                      fill="url(#leafGrad1)" opacity="0.85"/>
+                <!-- Monstera holes/cuts -->
+                <path d="M 120 480 Q 100 460 95 440 Q 90 420 100 410 Q 110 400 125 405 Q 135 412 138 430 Q 140 450 135 470 Z" fill="#4A5A2B"/>
+                <path d="M 160 540 Q 140 520 135 500 Q 132 480 142 470 Q 152 462 167 468 Q 178 476 180 494 Q 182 514 175 530 Z" fill="#4A5A2B"/>
+                <path d="M 200 590 Q 182 572 180 552 Q 178 534 190 525 Q 202 517 215 524 Q 226 532 227 550 Q 228 570 220 585 Z" fill="#4A5A2B"/>
+                <!-- Stem -->
+                <path d="M 180 290 Q 160 380 140 800" stroke="#2E3A18" stroke-width="5" fill="none" stroke-linecap="round"/>
+                <!-- Veins -->
+                <path d="M 180 320 Q 140 400 110 460" stroke="#3A4A1F" stroke-width="2" fill="none" opacity="0.6"/>
+                <path d="M 200 340 Q 220 420 240 490" stroke="#3A4A1F" stroke-width="2" fill="none" opacity="0.6"/>
+                <path d="M 190 310 Q 170 380 150 440" stroke="#2E3A18" stroke-width="1.5" fill="none" opacity="0.5"/>
+            </g>
+
+            <!-- Climbing vine — left edge -->
+            <g>
+                <path d="M 0 1080 Q 30 900 20 760 Q 10 650 50 530 Q 70 470 60 380 Q 50 300 80 220 Q 100 160 80 80 Q 70 40 60 0"
+                      stroke="#3A4A1F" stroke-width="3" fill="none" stroke-linecap="round"/>
+                <!-- Vine leaves -->
+                <ellipse cx="32" cy="980" rx="38" ry="22" fill="url(#leafGrad2)" transform="rotate(30, 32, 980)"/>
+                <ellipse cx="18" cy="900" rx="35" ry="20" fill="url(#leafGrad1)" transform="rotate(-25, 18, 900)"/>
+                <ellipse cx="42" cy="820" rx="32" ry="19" fill="url(#leafGrad2)" transform="rotate(40, 42, 820)"/>
+                <ellipse cx="22" cy="740" rx="34" ry="18" fill="url(#leafGrad1)" transform="rotate(-35, 22, 740)"/>
+                <ellipse cx="55" cy="660" rx="36" ry="17" fill="url(#leafGrad2)" transform="rotate(25, 55, 660)"/>
+                <ellipse cx="35" cy="580" rx="30" ry="16" fill="url(#leafGrad1)" transform="rotate(-30, 35, 580)"/>
+                <ellipse cx="60" cy="490" rx="28" ry="15" fill="url(#leafGrad2)" transform="rotate(35, 60, 490)"/>
+                <ellipse cx="42" cy="400" rx="30" ry="16" fill="url(#leafGrad1)" transform="rotate(-20, 42, 400)"/>
+                <ellipse cx="72" cy="300" rx="26" ry="14" fill="url(#leafGrad2)" transform="rotate(30, 72, 300)"/>
+                <ellipse cx="55" cy="210" rx="28" ry="13" fill="url(#leafGrad1)" transform="rotate(-25, 55, 210)"/>
+                <ellipse cx="70" cy="120" rx="24" ry="12" fill="url(#leafGrad2)" transform="rotate(20, 70, 120)"/>
+            </g>
+
+            <!-- Small botanical sprigs — left mid -->
+            <g transform="translate(50, 600)">
+                <path d="M 80 200 Q 60 150 40 80 Q 30 40 20 0" stroke="#3A4A1F" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                <ellipse cx="55" cy="160" rx="28" ry="12" fill="url(#leafGrad1)" transform="rotate(-40, 55, 160)"/>
+                <ellipse cx="65" cy="120" rx="30" ry="11" fill="url(#leafGrad2)" transform="rotate(-35, 65, 120)"/>
+                <ellipse cx="45" cy="80" rx="26" ry="10" fill="url(#leafGrad1)" transform="rotate(-45, 45, 80)"/>
+                <ellipse cx="55" cy="40" rx="22" ry="9" fill="url(#leafGrad2)" transform="rotate(-38, 55, 40)"/>
+                <!-- Right side sprigs -->
+                <ellipse cx="62" cy="150" rx="24" ry="11" fill="#3A4A1F" transform="rotate(30, 62, 150)"/>
+                <ellipse cx="70" cy="112" rx="26" ry="10" fill="#3A4A1F" transform="rotate(25, 70, 112)"/>
+                <ellipse cx="50" cy="72" rx="22" ry="9" fill="#3A4A1F" transform="rotate(32, 50, 72)"/>
+            </g>
+
+            <!-- ======= RIGHT SIDE BOTANICAL CLUSTER ======= -->
+
+            <!-- Large tropical leaf — right -->
+            <g transform="translate(760, 180)">
+                <path d="M 60 0 Q 120 80 160 180 Q 200 280 190 380 Q 180 460 140 510 Q 100 555 60 560 Q 20 560 -10 520 Q -35 475 -30 400 Q -25 330 10 250 Q 40 170 60 0 Z"
+                      fill="url(#leafGrad3)" opacity="0.9"/>
+                <!-- Veins -->
+                <path d="M 60 0 Q 60 200 60 560" stroke="#3A4A1F" stroke-width="3" fill="none"/>
+                <path d="M 60 100 Q 100 130 130 150" stroke="#3A4A1F" stroke-width="1.5" fill="none" opacity="0.6"/>
+                <path d="M 60 160 Q 110 190 145 210" stroke="#3A4A1F" stroke-width="1.5" fill="none" opacity="0.6"/>
+                <path d="M 60 220 Q 115 255 148 278" stroke="#3A4A1F" stroke-width="1.5" fill="none" opacity="0.6"/>
+                <path d="M 60 280 Q 115 316 145 340" stroke="#3A4A1F" stroke-width="1.5" fill="none" opacity="0.6"/>
+                <path d="M 60 340 Q 105 372 130 390" stroke="#3A4A1F" stroke-width="1.5" fill="none" opacity="0.6"/>
+                <path d="M 60 100 Q 20 128 -5 148" stroke="#3A4A1F" stroke-width="1.5" fill="none" opacity="0.5"/>
+                <path d="M 60 160 Q 15 188 -12 208" stroke="#3A4A1F" stroke-width="1.5" fill="none" opacity="0.5"/>
+                <path d="M 60 220 Q 12 250 -15 270" stroke="#3A4A1F" stroke-width="1.5" fill="none" opacity="0.5"/>
+                <path d="M 60 280 Q 15 310 -10 328" stroke="#3A4A1F" stroke-width="1.5" fill="none" opacity="0.5"/>
+                <path d="M 60 340 Q 18 368 -5 384" stroke="#3A4A1F" stroke-width="1.5" fill="none" opacity="0.5"/>
+            </g>
+
+            <!-- Fern frond — right bottom -->
+            <g transform="translate(900, 380) rotate(15, 0, 0)">
+                <path d="M 40 700 Q 20 540 10 380 Q 0 280 30 200 Q 60 130 90 100" stroke="#3A4A1F" stroke-width="4" fill="none" stroke-linecap="round"/>
+                <!-- Left leaflets -->
+                <ellipse cx="28" cy="630" rx="55" ry="18" fill="url(#leafGrad1)" transform="rotate(50, 28, 630)"/>
+                <ellipse cx="20" cy="580" rx="58" ry="17" fill="url(#leafGrad2)" transform="rotate(46, 20, 580)"/>
+                <ellipse cx="14" cy="528" rx="60" ry="16" fill="url(#leafGrad1)" transform="rotate(43, 14, 528)"/>
+                <ellipse cx="10" cy="476" rx="58" ry="16" fill="url(#leafGrad2)" transform="rotate(40, 10, 476)"/>
+                <ellipse cx="10" cy="426" rx="54" ry="15" fill="url(#leafGrad1)" transform="rotate(37, 10, 426)"/>
+                <ellipse cx="16" cy="378" rx="48" ry="14" fill="url(#leafGrad2)" transform="rotate(34, 16, 378)"/>
+                <ellipse cx="28" cy="334" rx="42" ry="13" fill="url(#leafGrad1)" transform="rotate(32, 28, 334)"/>
+                <ellipse cx="44" cy="295" rx="36" ry="12" fill="url(#leafGrad2)" transform="rotate(30, 44, 295)"/>
+                <!-- Right leaflets -->
+                <ellipse cx="32" cy="620" rx="48" ry="16" fill="#3A4A1F" transform="rotate(-22, 32, 620)"/>
+                <ellipse cx="25" cy="570" rx="52" ry="15" fill="#3A4A1F" transform="rotate(-25, 25, 570)"/>
+                <ellipse cx="18" cy="518" rx="54" ry="14" fill="#3A4A1F" transform="rotate(-27, 18, 518)"/>
+                <ellipse cx="14" cy="466" rx="52" ry="14" fill="#3A4A1F" transform="rotate(-24, 14, 466)"/>
+                <ellipse cx="14" cy="418" rx="46" ry="13" fill="#3A4A1F" transform="rotate(-22, 14, 418)"/>
+                <ellipse cx="20" cy="374" rx="40" ry="12" fill="#3A4A1F" transform="rotate(-20, 20, 374)"/>
+            </g>
+
+            <!-- Climbing ivy — right edge -->
+            <g>
+                <path d="M 1080 0 Q 1050 120 1060 260 Q 1070 380 1040 490 Q 1020 570 1050 670 Q 1070 740 1050 840 Q 1030 920 1060 1020 Q 1070 1055 1080 1080"
+                      stroke="#3A4A1F" stroke-width="3" fill="none" stroke-linecap="round"/>
+                <!-- Ivy leaves -->
+                <path d="M 1060 80 Q 1030 60 1020 40 Q 1015 20 1030 15 Q 1048 12 1058 30 Q 1068 50 1060 80 Z" fill="url(#leafGrad2)"/>
+                <path d="M 1050 180 Q 1020 158 1008 136 Q 1002 115 1018 110 Q 1036 106 1048 125 Q 1058 146 1050 180 Z" fill="url(#leafGrad1)"/>
+                <path d="M 1062 300 Q 1088 280 1100 258 Q 1106 238 1090 233 Q 1072 229 1060 248 Q 1048 268 1062 300 Z" fill="url(#leafGrad2)"/>
+                <path d="M 1042 420 Q 1012 398 1000 374 Q 994 352 1010 347 Q 1028 342 1040 362 Q 1050 384 1042 420 Z" fill="url(#leafGrad1)"/>
+                <path d="M 1055 530 Q 1082 510 1095 486 Q 1100 465 1085 460 Q 1068 456 1056 476 Q 1044 498 1055 530 Z" fill="url(#leafGrad2)"/>
+                <path d="M 1042 640 Q 1012 618 1000 594 Q 994 572 1010 567 Q 1028 563 1040 582 Q 1052 604 1042 640 Z" fill="url(#leafGrad1)"/>
+                <path d="M 1058 750 Q 1085 730 1098 706 Q 1104 685 1088 680 Q 1070 675 1058 695 Q 1046 718 1058 750 Z" fill="url(#leafGrad2)"/>
+                <path d="M 1042 870 Q 1012 848 1000 824 Q 994 802 1010 797 Q 1028 793 1040 812 Q 1052 834 1042 870 Z" fill="url(#leafGrad1)"/>
+                <path d="M 1060 970 Q 1088 950 1100 926 Q 1106 905 1090 900 Q 1072 895 1060 915 Q 1048 938 1060 970 Z" fill="url(#leafGrad2)"/>
+            </g>
+
+            <!-- Small sprig cluster — right upper -->
+            <g transform="translate(850, 50)">
+                <path d="M 100 0 Q 110 60 100 120 Q 90 180 100 240" stroke="#3A4A1F" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                <ellipse cx="86" cy="40" rx="30" ry="11" fill="url(#leafGrad2)" transform="rotate(35, 86, 40)"/>
+                <ellipse cx="82" cy="85" rx="32" ry="11" fill="url(#leafGrad1)" transform="rotate(-30, 82, 85)"/>
+                <ellipse cx="88" cy="130" rx="28" ry="10" fill="url(#leafGrad2)" transform="rotate(28, 88, 130)"/>
+                <ellipse cx="84" cy="172" rx="26" ry="10" fill="url(#leafGrad1)" transform="rotate(-25, 84, 172)"/>
+                <ellipse cx="114" cy="40" rx="28" ry="11" fill="#3A4A1F" transform="rotate(-32, 114, 40)"/>
+                <ellipse cx="118" cy="85" rx="30" ry="10" fill="#3A4A1F" transform="rotate(28, 118, 85)"/>
+                <ellipse cx="114" cy="130" rx="26" ry="10" fill="#3A4A1F" transform="rotate(-26, 114, 130)"/>
+                <ellipse cx="116" cy="172" rx="24" ry="9" fill="#3A4A1F" transform="rotate(23, 116, 172)"/>
+            </g>
+
+            <!-- ======= BOTTOM BOTANICAL MASS ======= -->
+
+            <!-- Dense foliage ground — bottom left -->
+            <g transform="translate(0, 820)">
+                <ellipse cx="80" cy="180" rx="90" ry="50" fill="#3A4A1F" transform="rotate(-20, 80, 180)"/>
+                <ellipse cx="50" cy="160" rx="80" ry="42" fill="url(#leafGrad2)" transform="rotate(-15, 50, 160)"/>
+                <ellipse cx="140" cy="200" rx="100" ry="48" fill="url(#leafGrad1)" transform="rotate(-25, 140, 200)"/>
+                <ellipse cx="100" cy="220" rx="110" ry="45" fill="#2E3A18" transform="rotate(-10, 100, 220)"/>
+                <ellipse cx="200" cy="230" rx="120" ry="50" fill="url(#leafGrad2)" transform="rotate(-18, 200, 230)"/>
+                <ellipse cx="160" cy="250" rx="130" ry="52" fill="#3A4A1F" transform="rotate(-8, 160, 250)"/>
+            </g>
+
+            <!-- Dense foliage ground — bottom right -->
+            <g transform="translate(700, 840)">
+                <ellipse cx="200" cy="180" rx="90" ry="48" fill="#3A4A1F" transform="rotate(20, 200, 180)"/>
+                <ellipse cx="260" cy="165" rx="80" ry="44" fill="url(#leafGrad2)" transform="rotate(15, 260, 165)"/>
+                <ellipse cx="150" cy="195" rx="100" ry="46" fill="url(#leafGrad1)" transform="rotate(22, 150, 195)"/>
+                <ellipse cx="220" cy="210" rx="115" ry="48" fill="#2E3A18" transform="rotate(12, 220, 210)"/>
+                <ellipse cx="130" cy="225" rx="105" ry="50" fill="url(#leafGrad2)" transform="rotate(18, 130, 225)"/>
+                <ellipse cx="190" cy="240" rx="140" ry="55" fill="#3A4A1F" transform="rotate(8, 190, 240)"/>
+            </g>
+
+            <!-- Bottom center stems -->
+            <g transform="translate(400, 720)">
+                <path d="M 100 360 Q 90 280 80 200 Q 70 140 60 80 Q 50 40 40 0" stroke="#3A4A1F" stroke-width="3" fill="none" stroke-linecap="round"/>
+                <path d="M 120 360 Q 130 270 140 190 Q 150 130 155 70 Q 158 30 160 0" stroke="#2E3A18" stroke-width="3" fill="none" stroke-linecap="round"/>
+                <ellipse cx="68" cy="170" rx="36" ry="14" fill="url(#leafGrad1)" transform="rotate(-40, 68, 170)"/>
+                <ellipse cx="58" cy="120" rx="34" ry="13" fill="url(#leafGrad2)" transform="rotate(-35, 58, 120)"/>
+                <ellipse cx="50" cy="74" rx="30" ry="12" fill="url(#leafGrad1)" transform="rotate(-42, 50, 74)"/>
+                <ellipse cx="44" cy="34" rx="26" ry="11" fill="url(#leafGrad2)" transform="rotate(-38, 44, 34)"/>
+                <ellipse cx="148" cy="158" rx="32" ry="13" fill="url(#leafGrad2)" transform="rotate(38, 148, 158)"/>
+                <ellipse cx="152" cy="110" rx="30" ry="12" fill="url(#leafGrad1)" transform="rotate(34, 152, 110)"/>
+                <ellipse cx="157" cy="65" rx="28" ry="11" fill="url(#leafGrad2)" transform="rotate(30, 157, 65)"/>
+            </g>
+
+            <!-- ======= TOP BOTANICAL TOUCHES ======= -->
+
+            <!-- Hanging fronds — top center -->
+            <g transform="translate(360, 0)">
+                <path d="M 100 0 Q 90 40 80 90 Q 72 130 60 160" stroke="#3A4A1F" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                <path d="M 180 0 Q 190 50 200 100 Q 208 145 220 175" stroke="#3A4A1F" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                <ellipse cx="82" cy="60" rx="30" ry="12" fill="url(#leafGrad2)" transform="rotate(-20, 82, 60)"/>
+                <ellipse cx="72" cy="108" rx="28" ry="11" fill="url(#leafGrad1)" transform="rotate(-15, 72, 108)"/>
+                <ellipse cx="65" cy="150" rx="24" ry="10" fill="url(#leafGrad2)" transform="rotate(-18, 65, 150)"/>
+                <ellipse cx="198" cy="65" rx="30" ry="12" fill="url(#leafGrad1)" transform="rotate(22, 198, 65)"/>
+                <ellipse cx="208" cy="112" rx="28" ry="11" fill="url(#leafGrad2)" transform="rotate(18, 208, 112)"/>
+                <ellipse cx="218" cy="158" rx="24" ry="10" fill="url(#leafGrad1)" transform="rotate(20, 218, 158)"/>
+            </g>
+
+            <!-- ======= CENTER DEPTH GRADIENT ======= -->
+            <rect width="1080" height="1080" fill="url(#centerGlow)"/>
+
+            <!-- Extra depth overlay — mid-frame where text lives -->
+            <rect x="100" y="340" width="880" height="440" rx="0"
+                  fill="rgba(46,58,24,0.3)"/>
+
+            <!-- Fine botanical details — scattered small leaves -->
+            <ellipse cx="320" cy="120" rx="22" ry="9" fill="url(#leafGrad2)" transform="rotate(-30, 320, 120)" opacity="0.7"/>
+            <ellipse cx="340" cy="145" rx="18" ry="7" fill="#3A4A1F" transform="rotate(20, 340, 145)" opacity="0.7"/>
+            <ellipse cx="700" cy="100" rx="20" ry="8" fill="url(#leafGrad1)" transform="rotate(25, 700, 100)" opacity="0.7"/>
+            <ellipse cx="720" cy="125" rx="16" ry="7" fill="#3A4A1F" transform="rotate(-22, 720, 125)" opacity="0.7"/>
+            <ellipse cx="480" cy="930" rx="24" ry="10" fill="url(#leafGrad2)" transform="rotate(15, 480, 930)" opacity="0.8"/>
+            <ellipse cx="560" cy="950" rx="20" ry="9" fill="#3A4A1F" transform="rotate(-18, 560, 950)" opacity="0.8"/>
+            <ellipse cx="600" cy="920" rx="22" ry="9" fill="url(#leafGrad1)" transform="rotate(22, 600, 920)" opacity="0.8"/>
+        </svg>
+    </div>
+
+    <!-- =============================================
+         TOP METADATA ROW
+         ============================================= -->
+    <div class="meta-row">
+        <span class="meta-text">ISSUE NO. 1 &bull; 2026</span>
+        <span class="meta-text">THE FOUNDER'S ALMANAC</span>
+        <span class="meta-text">PRICE: HARD WORK</span>
+    </div>
+
+    <!-- =============================================
+         MASTHEAD
+         ============================================= -->
+    <div class="masthead-block">
+        <p class="masthead-pre">A FIELD GUIDE FOR</p>
+        <h1 class="masthead-title">FOUNDERS<br>&amp; BUILDERS</h1>
+        <div class="masthead-rule"></div>
+    </div>
+
+    <!-- =============================================
+         HEADLINE & SUBTITLE — bottom third
+         ============================================= -->
+    <div class="headline-block">
+        <p class="headline-label">COVER FEATURE &bull; SPRING 2026</p>
+        <h2 class="headline-title">5 Tips for Building<br>a Startup in 2026</h2>
+        <p class="headline-subtitle">What actually works now — from product to people, capital to code.</p>
+    </div>
+
+    <!-- =============================================
+         BOTTOM RULE + META
+         ============================================= -->
+    <div class="bottom-rule"></div>
+    <div class="bottom-meta">
+        <span class="meta-text">@yourbrand</span>
+        <div class="slide-dots">
+            <div class="dot active"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+        <span class="meta-text">1 / 5</span>
+    </div>
+
+</body>
+</html>

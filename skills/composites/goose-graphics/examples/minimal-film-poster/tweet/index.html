@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1080, initial-scale=1.0">
+    <title>Tweet Graphic — Minimal Film Poster</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-bg: #F5F2ED;
+            --color-title: #1A1A1A;
+            --color-body: #333333;
+            --color-meta: #666666;
+            --color-faint: #999999;
+            --color-border: #E8E4DF;
+
+            --accent-gold: #D4A853;
+            --accent-green: #4A7C59;
+            --accent-orange: #C25B3F;
+            --accent-blue: #3B6B8C;
+
+            --font-display: 'DM Serif Display', Georgia, 'Times New Roman', serif;
+            --font-body: 'Inter', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+
+            --tweet-width: 1080px;
+            --tweet-height: 1080px;
+            --card-width: 800px;
+            --card-padding: 52px;
+            --card-radius: 4px;
+            --card-bg: #FDFBF8;
+            --card-text: #1A1A1A;
+            --card-text-secondary: #666666;
+            --card-border: rgba(0, 0, 0, 0.06);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: var(--tweet-width);
+            height: var(--tweet-height);
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: var(--color-bg);
+        }
+
+        /* =============================================
+           DECORATIVE BACKGROUND — Minimal Film Poster
+           ============================================= */
+
+        .background {
+            position: absolute;
+            inset: 0;
+            background: var(--color-bg);
+            z-index: 0;
+        }
+
+        /* Subtle off-white grain texture */
+        .background::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.025'/%3E%3C/svg%3E");
+            z-index: 0;
+        }
+
+        /* Large cinematic title in background — ghosted */
+        .bg-title {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: var(--font-display);
+            font-size: 220px;
+            font-weight: 400;
+            line-height: 0.9;
+            letter-spacing: -6px;
+            color: var(--color-title);
+            opacity: 0.03;
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 0;
+            text-align: center;
+        }
+
+        /* Vertical accent bar — left edge */
+        .bg-accent-bar {
+            position: absolute;
+            top: 80px;
+            left: 72px;
+            width: 4px;
+            height: 120px;
+            z-index: 1;
+        }
+
+        .bg-accent-bar div {
+            height: 30px;
+        }
+
+        /* Metadata line — bottom left */
+        .bg-meta {
+            position: absolute;
+            bottom: 72px;
+            left: 72px;
+            font-family: var(--font-body);
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--color-faint);
+            z-index: 1;
+        }
+
+        /* Thin horizontal rule — top */
+        .bg-rule-top {
+            position: absolute;
+            top: 60px;
+            left: 72px;
+            right: 72px;
+            height: 1px;
+            background: var(--color-border);
+            z-index: 1;
+        }
+
+        /* Thin horizontal rule — bottom */
+        .bg-rule-bottom {
+            position: absolute;
+            bottom: 60px;
+            left: 72px;
+            right: 72px;
+            height: 1px;
+            background: var(--color-border);
+            z-index: 1;
+        }
+
+        /* =============================================
+           TWEET CARD
+           ============================================= */
+
+        .card {
+            position: relative;
+            z-index: 2;
+            width: var(--card-width);
+            background: var(--card-bg);
+            border-radius: var(--card-radius);
+            padding: var(--card-padding);
+            box-shadow:
+                0 1px 2px rgba(0, 0, 0, 0.04),
+                0 8px 32px rgba(0, 0, 0, 0.07),
+                0 0 0 1px var(--card-border);
+        }
+
+        /* Thin accent bar at top of card */
+        .card-accent {
+            display: flex;
+            height: 3px;
+            margin-bottom: 40px;
+            margin-left: -52px;
+            margin-right: -52px;
+            margin-top: -52px;
+            border-radius: 4px 4px 0 0;
+            overflow: hidden;
+        }
+
+        .card-accent span {
+            flex: 1;
+        }
+
+        /* =============================================
+           CARD HEADER
+           ============================================= */
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 28px;
+        }
+
+        .avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            background: var(--color-title);
+        }
+
+        .avatar-initials {
+            font-family: var(--font-body);
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--color-bg);
+            letter-spacing: 0.5px;
+        }
+
+        .author-info {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            flex: 1;
+        }
+
+        .author-name {
+            font-family: var(--font-body);
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--card-text);
+            line-height: 1.2;
+            letter-spacing: 0.1px;
+        }
+
+        .author-handle {
+            font-family: var(--font-body);
+            font-size: 14px;
+            font-weight: 400;
+            color: var(--card-text-secondary);
+            line-height: 1.2;
+        }
+
+        .platform-mark {
+            font-family: var(--font-body);
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--color-faint);
+        }
+
+        /* =============================================
+           CARD BODY
+           ============================================= */
+
+        .card-body {
+            margin-bottom: 32px;
+        }
+
+        .tweet-text {
+            font-family: var(--font-body);
+            font-size: 19px;
+            font-weight: 300;
+            line-height: 1.65;
+            color: var(--card-text);
+        }
+
+        .tweet-text strong {
+            font-weight: 500;
+            color: var(--color-title);
+        }
+
+        .tweet-text .tip-number {
+            font-family: var(--font-display);
+            font-size: 22px;
+            font-weight: 400;
+            color: var(--color-title);
+            letter-spacing: -0.5px;
+        }
+
+        /* =============================================
+           CARD FOOTER
+           ============================================= */
+
+        .card-footer {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .divider {
+            width: 100%;
+            height: 1px;
+            background: var(--color-border);
+        }
+
+        .footer-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .timestamp {
+            font-family: var(--font-body);
+            font-size: 13px;
+            font-weight: 400;
+            color: var(--card-text-secondary);
+            letter-spacing: 0.2px;
+        }
+
+        .metrics {
+            display: flex;
+            gap: 24px;
+        }
+
+        .metric {
+            font-family: var(--font-body);
+            font-size: 13px;
+            color: var(--card-text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .metric-count {
+            font-weight: 500;
+            color: var(--card-text);
+        }
+
+        /* =============================================
+           BRAND WATERMARK
+           ============================================= */
+
+        .brand-watermark {
+            position: absolute;
+            bottom: 28px;
+            right: 72px;
+            z-index: 3;
+            font-family: var(--font-body);
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--color-faint);
+            opacity: 0.6;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- DECORATIVE BACKGROUND -->
+    <div class="background">
+        <div class="bg-title">2026</div>
+    </div>
+
+    <!-- Background accent bar -->
+    <div class="bg-accent-bar" style="position:absolute; top:80px; left:72px; width:4px; height:120px; z-index:1;">
+        <div style="height:30px; background:#D4A853;"></div>
+        <div style="height:30px; background:#4A7C59;"></div>
+        <div style="height:30px; background:#C25B3F;"></div>
+        <div style="height:30px; background:#3B6B8C;"></div>
+    </div>
+
+    <!-- Horizontal rules -->
+    <div style="position:absolute; top:60px; left:72px; right:72px; height:1px; background:#E8E4DF; z-index:1;"></div>
+    <div style="position:absolute; bottom:60px; left:72px; right:72px; height:1px; background:#E8E4DF; z-index:1;"></div>
+
+    <!-- Corner metadata -->
+    <div style="position:absolute; bottom:72px; left:72px; font-family:'Inter',sans-serif; font-size:11px; font-weight:500; letter-spacing:2px; text-transform:uppercase; color:#999999; z-index:1;">Startup — 2026</div>
+
+    <!-- TWEET CARD -->
+    <div class="card">
+
+        <!-- Accent bar at top of card -->
+        <div class="card-accent">
+            <span style="background:#D4A853;"></span>
+            <span style="background:#4A7C59;"></span>
+            <span style="background:#C25B3F;"></span>
+            <span style="background:#3B6B8C;"></span>
+        </div>
+
+        <!-- Header: Avatar + Author -->
+        <div class="card-header">
+            <div class="avatar">
+                <span class="avatar-initials">RK</span>
+            </div>
+            <div class="author-info">
+                <span class="author-name">Rohan Kapoor</span>
+                <span class="author-handle">@rohanbuilds</span>
+            </div>
+            <span class="platform-mark">X</span>
+        </div>
+
+        <!-- Body: Tweet text -->
+        <div class="card-body">
+            <div class="tweet-text">
+                5 tips for building a startup in 2026 that nobody is talking about:<br><br>
+
+                <span class="tip-number">1.</span> <strong>Ship before you're ready.</strong> Your first version will embarrass you. That's the point.<br><br>
+
+                <span class="tip-number">2.</span> <strong>Hire for judgment, not skills.</strong> Skills compound. Bad judgment compounds faster.<br><br>
+
+                <span class="tip-number">3.</span> <strong>Let AI do the boring 80%.</strong> Your job is the creative 20% only humans can do.<br><br>
+
+                <span class="tip-number">4.</span> <strong>Say no to 95% of opportunities.</strong> Focus is the only real moat in 2026.<br><br>
+
+                <span class="tip-number">5.</span> <strong>Build in public from day one.</strong> Distribution is harder than product. Always.
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="card-footer">
+            <div class="divider"></div>
+            <div class="footer-row">
+                <span class="timestamp">9:14 AM &middot; April 22, 2026</span>
+                <div class="metrics">
+                    <span class="metric">
+                        <span style="font-size:15px;">♡</span>
+                        <span class="metric-count">4,312</span>
+                    </span>
+                    <span class="metric">
+                        <span style="font-size:15px;">↻</span>
+                        <span class="metric-count">892</span>
+                    </span>
+                    <span class="metric">
+                        <span style="font-size:15px;">💬</span>
+                        <span class="metric-count">147</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- BRAND WATERMARK -->
+    <div class="brand-watermark">goose.ai</div>
+
+</body>
+</html>
