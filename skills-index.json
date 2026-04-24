@@ -1594,6 +1594,76 @@
       }
     },
     {
+      "slug": "goose-video",
+      "name": "goose-video",
+      "category": "composites",
+      "description": "Portable video skill pack for the Agent Skills ecosystem. Wraps five video-production skills (product reels, talking-head, clip repurposing, screen-recording polish, beat-sync reels) under one invocation, with aspect-ratio formats and visual style presets.",
+      "tags": "content, social, brand",
+      "path": "skills/composites/goose-video",
+      "files": [
+        "skills/composites/goose-video/README.md",
+        "skills/composites/goose-video/SKILL.md",
+        "skills/composites/goose-video/examples/.gitkeep",
+        "skills/composites/goose-video/formats/index.json",
+        "skills/composites/goose-video/formats/landscape-long.md",
+        "skills/composites/goose-video/formats/landscape-short.md",
+        "skills/composites/goose-video/formats/square-social.md",
+        "skills/composites/goose-video/formats/vertical-short.md",
+        "skills/composites/goose-video/formats/vertical-story.md",
+        "skills/composites/goose-video/modes/beat-sync-reel.md",
+        "skills/composites/goose-video/modes/clip-repurpose.md",
+        "skills/composites/goose-video/modes/index.json",
+        "skills/composites/goose-video/modes/polish.md",
+        "skills/composites/goose-video/modes/product-reel.md",
+        "skills/composites/goose-video/modes/talking-head.md",
+        "skills/composites/goose-video/skill.meta.json",
+        "skills/composites/goose-video/sources/captions.md",
+        "skills/composites/goose-video/sources/music.md",
+        "skills/composites/goose-video/sources/stock-footage.md",
+        "skills/composites/goose-video/styles/cinematic.md",
+        "skills/composites/goose-video/styles/documentary.md",
+        "skills/composites/goose-video/styles/energetic.md",
+        "skills/composites/goose-video/styles/index.json",
+        "skills/composites/goose-video/styles/kinetic-type.md",
+        "skills/composites/goose-video/styles/minimal.md",
+        "skills/composites/goose-video/styles/motion-graphic.md",
+        "skills/composites/goose-video/styles/tutorial.md",
+        "skills/composites/goose-video/styles/ugc-handheld.md"
+      ],
+      "metadata": {
+        "slug": "goose-video",
+        "category": "composites",
+        "tags": [
+          "content",
+          "social",
+          "brand"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install goose-video",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ],
+          "dependencies": [
+            "packs/video-production/beat-sync-reel",
+            "packs/video-production/product-reel-generator",
+            "packs/video-production/talking-head-video",
+            "packs/video-production/video-clipper",
+            "packs/video-production/video-polish"
+          ]
+        },
+        "features": [
+          "5 modes (product-reel, talking-head, clip-repurpose, polish, beat-sync-reel)",
+          "5 aspect-ratio formats (vertical-short, vertical-story, square-social, landscape-short, landscape-long)",
+          "8 visual style presets (cinematic, energetic, minimal, documentary, tutorial, ugc-handheld, motion-graphic, kinetic-type)",
+          "Dispatches to underlying packs/video-production/ skills",
+          "Args-based slash command invocation",
+          "Interactive fallback when args are missing"
+        ]
+      }
+    },
+    {
       "slug": "hacker-news-scraper",
       "name": "hacker-news-scraper",
       "category": "capabilities",

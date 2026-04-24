@@ -1,0 +1,44 @@
+{
+  "formats": [
+    {
+      "slug": "vertical-short",
+      "name": "Vertical Short",
+      "aspect_ratio": "9:16",
+      "dimensions": "1080x1920",
+      "duration_range": "15-60s",
+      "platforms": ["TikTok", "Instagram Reels", "YouTube Shorts"]
+    },
+    {
+      "slug": "vertical-story",
+      "name": "Vertical Story",
+      "aspect_ratio": "9:16",
+      "dimensions": "1080x1920",
+      "duration_range": "15-30s",
+      "platforms": ["Instagram Stories", "LinkedIn Stories", "Snapchat"]
+    },
+    {
+      "slug": "square-social",
+      "name": "Square Social",
+      "aspect_ratio": "1:1",
+      "dimensions": "1080x1080",
+      "duration_range": "15-30s",
+      "platforms": ["Instagram feed", "LinkedIn feed", "Twitter/X"]
+    },
+    {
+      "slug": "landscape-short",
+      "name": "Landscape Short",
+      "aspect_ratio": "16:9",
+      "dimensions": "1920x1080",
+      "duration_range": "30-90s",
+      "platforms": ["YouTube", "LinkedIn", "Twitter/X", "website embed"]
+    },
+    {
+      "slug": "landscape-long",
+      "name": "Landscape Long",
+      "aspect_ratio": "16:9",
+      "dimensions": "1920x1080",
+      "duration_range": "3-10min",
+      "platforms": ["YouTube long-form", "tutorials", "webinars", "course content"]
+    }
+  ]
+}

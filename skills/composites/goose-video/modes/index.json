@@ -1,0 +1,54 @@
+{
+  "modes": [
+    {
+      "slug": "product-reel",
+      "name": "Product Reel",
+      "tagline": "Instagram-ready reel from an e-commerce product page",
+      "delegates_to": "packs/video-production/product-reel-generator",
+      "default_format": "vertical-short",
+      "default_style": "energetic",
+      "supports_formats": ["vertical-short", "vertical-story", "square-social"],
+      "required_input": "product-page-url"
+    },
+    {
+      "slug": "talking-head",
+      "name": "Talking Head",
+      "tagline": "AI avatar narrates over slides / screenshots (HeyGen)",
+      "delegates_to": "packs/video-production/talking-head-video",
+      "default_format": "landscape-short",
+      "default_style": "minimal",
+      "supports_formats": ["landscape-short", "landscape-long", "square-social", "vertical-short"],
+      "required_input": "source-content-path"
+    },
+    {
+      "slug": "clip-repurpose",
+      "name": "Clip Repurpose",
+      "tagline": "Long-form video → short vertical clips with captions",
+      "delegates_to": "packs/video-production/video-clipper",
+      "default_format": "vertical-short",
+      "default_style": "documentary",
+      "supports_formats": ["vertical-short", "vertical-story", "square-social"],
+      "required_input": "long-form-video-path-or-url"
+    },
+    {
+      "slug": "polish",
+      "name": "Polish",
+      "tagline": "Zoom/pan + audio polish on an existing screen recording",
+      "delegates_to": "packs/video-production/video-polish",
+      "default_format": "landscape-short",
+      "default_style": "tutorial",
+      "supports_formats": ["landscape-short", "landscape-long"],
+      "required_input": "existing-video-file-path"
+    },
+    {
+      "slug": "beat-sync-reel",
+      "name": "Beat-Sync Reel",
+      "tagline": "Product image cuts synced to audio beats — free, no AI video gen",
+      "delegates_to": "packs/video-production/beat-sync-reel",
+      "default_format": "vertical-short",
+      "default_style": "energetic",
+      "supports_formats": ["vertical-short", "vertical-story"],
+      "required_input": "product-images-plus-audio"
+    }
+  ]
+}

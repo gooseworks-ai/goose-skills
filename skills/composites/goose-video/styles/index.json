@@ -1,0 +1,52 @@
+{
+  "styles": [
+    {
+      "slug": "cinematic",
+      "name": "Cinematic",
+      "tagline": "Film-grain, letterbox, slow pans, muted palette",
+      "mood_group": "Dramatic"
+    },
+    {
+      "slug": "energetic",
+      "name": "Energetic",
+      "tagline": "Fast cuts, bass-heavy beats, bold text, saturated color",
+      "mood_group": "High-energy"
+    },
+    {
+      "slug": "minimal",
+      "name": "Minimal",
+      "tagline": "Clean backgrounds, simple type, generous whitespace, quiet audio",
+      "mood_group": "Clean"
+    },
+    {
+      "slug": "documentary",
+      "name": "Documentary",
+      "tagline": "B-roll heavy, interview-style, soft music, natural palette",
+      "mood_group": "Narrative"
+    },
+    {
+      "slug": "tutorial",
+      "name": "Tutorial",
+      "tagline": "Screencast-driven, zoom/pan emphasis, explanation-forward captions",
+      "mood_group": "Instructional"
+    },
+    {
+      "slug": "ugc-handheld",
+      "name": "UGC Handheld",
+      "tagline": "Phone-camera feel, raw edits, authentic and unpolished",
+      "mood_group": "Authentic"
+    },
+    {
+      "slug": "motion-graphic",
+      "name": "Motion Graphic",
+      "tagline": "Animated type, shape play, no live footage",
+      "mood_group": "Abstract"
+    },
+    {
+      "slug": "kinetic-type",
+      "name": "Kinetic Type",
+      "tagline": "Word-heavy, text-as-subject, rhythmic cuts to beats",
+      "mood_group": "Typographic"
+    }
+  ]
+}
