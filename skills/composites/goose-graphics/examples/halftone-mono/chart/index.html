@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080, initial-scale=1.0">
+<title>5 Tips for Building a Startup in 2026 — Halftone Mono Chart</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-ink: #0A0A0A;
+    --color-white: #FFFFFF;
+    --font-display: 'Space Grotesk', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+    --font-body: 'Inter', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 1080px; height: 1080px;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+    background: var(--color-ink);
+    color: #fff;
+    font-family: var(--font-body);
+  }
+  body {
+    padding: 56px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .eyebrow {
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    color: rgba(255,255,255,0.40);
+  }
+  h1 {
+    font-family: var(--font-display);
+    font-size: 44px; font-weight: 700;
+    line-height: 1.05; letter-spacing: -1.2px;
+    margin-top: 12px;
+  }
+  .sub {
+    font-size: 15px; font-weight: 400;
+    line-height: 1.55; color: rgba(255,255,255,0.70);
+    max-width: 580px;
+    margin-top: 14px;
+  }
+  .chart-area {
+    flex: 1;
+    display: flex; align-items: flex-end; gap: 20px;
+    padding: 32px 0 16px 0;
+  }
+  .bar {
+    flex: 1;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 12px;
+  }
+  .bar-label-top {
+    font-family: var(--font-display);
+    font-size: 32px; font-weight: 700;
+    letter-spacing: -0.6px;
+  }
+  .bar-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 12px);
+    gap: 6px;
+    margin-top: 6px;
+  }
+  .bar-grid div { width: 12px; height: 12px; border-radius: 50%; }
+  .bar-label-bot {
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 1px; text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+    margin-top: 8px;
+    text-align: center;
+  }
+  .footer {
+    display: flex; align-items: center; justify-content: space-between;
+    border-top: 1px solid rgba(255,255,255,0.18);
+    padding-top: 18px;
+  }
+  .brand {
+    font-family: var(--font-display);
+    font-size: 18px; font-weight: 700;
+    letter-spacing: -0.4px;
+  }
+  .source {
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 1.2px; text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+  }
+</style>
+</head>
+<body>
+
+  <div>
+    <p class="eyebrow">— STARTUP PLAYBOOK / 2026</p>
+    <h1>What founders actually<br>spend time on in year one.</h1>
+    <p class="sub">Self-reported share of weekly hours from 320 founders shipping in 2026. Halftone density represents proportion.</p>
+  </div>
+
+  <div class="chart-area" id="chart"></div>
+
+  <div class="footer">
+    <span class="brand">goose.</span>
+    <span class="source">SOURCE — STARTUP PLAYBOOK / 2026</span>
+  </div>
+
+  <script>
+    (function(){
+      const el = document.getElementById('chart');
+      const bars = [
+        { label: 'Building',          pct: 38, num: '38%' },
+        { label: 'Talking to users',  pct: 24, num: '24%' },
+        { label: 'Hiring',            pct: 14, num: '14%' },
+        { label: 'Distribution',      pct: 12, num: '12%' },
+        { label: 'Fundraising',       pct: 7,  num: '7%' },
+        { label: 'Everything else',   pct: 5,  num: '5%' }
+      ];
+      const cols = 6;
+      let html = '';
+      for (const bar of bars) {
+        const filled = Math.round(bar.pct * 0.6);
+        const totalRows = 12;
+        const total = cols * totalRows;
+        const slots = [];
+        for (let i = 0; i < total; i++) {
+          const fromBottom = total - 1 - i;
+          if (fromBottom < filled) {
+            const t = fromBottom / Math.max(1, filled);
+            const op = t < 0.4 ? 1.0 : t < 0.75 ? 0.55 : 0.18;
+            slots.push(`<div style="background:rgba(255,255,255,${op});"></div>`);
+          } else {
+            slots.push(`<div style="background:rgba(255,255,255,0.06);"></div>`);
+          }
+        }
+        html += `
+          <div class="bar">
+            <div class="bar-label-top">${bar.num}</div>
+            <div class="bar-grid" style="grid-template-rows:repeat(${totalRows}, 12px);">${slots.join('')}</div>
+            <div class="bar-label-bot">${bar.label}</div>
+          </div>`;
+      }
+      el.innerHTML = html;
+    })();
+  </script>
+
+</body>
+</html>

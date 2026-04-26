@@ -435,6 +435,62 @@
       "png": "halftone-mono/tweet/example.png",
       "model": "opus",
       "status": "success"
+    },
+    "halftone-electric/slides": {
+      "generated_at": "2026-04-25T19:20:00.000Z",
+      "html": "halftone-electric/slides",
+      "png": "halftone-electric/slides/example.png",
+      "model": "opus",
+      "status": "success"
+    },
+    "halftone-electric/story": {
+      "generated_at": "2026-04-25T19:20:00.000Z",
+      "html": "halftone-electric/story",
+      "png": "halftone-electric/story/example.png",
+      "model": "opus",
+      "status": "success"
+    },
+    "halftone-electric/chart": {
+      "generated_at": "2026-04-25T19:20:00.000Z",
+      "html": "halftone-electric/chart",
+      "png": "halftone-electric/chart/example.png",
+      "model": "opus",
+      "status": "success"
+    },
+    "halftone-electric/infographic": {
+      "generated_at": "2026-04-25T19:20:00.000Z",
+      "html": "halftone-electric/infographic",
+      "png": "halftone-electric/infographic/example.png",
+      "model": "opus",
+      "status": "success"
+    },
+    "halftone-mono/slides": {
+      "generated_at": "2026-04-25T19:20:00.000Z",
+      "html": "halftone-mono/slides",
+      "png": "halftone-mono/slides/example.png",
+      "model": "opus",
+      "status": "success"
+    },
+    "halftone-mono/story": {
+      "generated_at": "2026-04-25T19:20:00.000Z",
+      "html": "halftone-mono/story",
+      "png": "halftone-mono/story/example.png",
+      "model": "opus",
+      "status": "success"
+    },
+    "halftone-mono/chart": {
+      "generated_at": "2026-04-25T19:20:00.000Z",
+      "html": "halftone-mono/chart",
+      "png": "halftone-mono/chart/example.png",
+      "model": "opus",
+      "status": "success"
+    },
+    "halftone-mono/infographic": {
+      "generated_at": "2026-04-25T19:20:00.000Z",
+      "html": "halftone-mono/infographic",
+      "png": "halftone-mono/infographic/example.png",
+      "model": "opus",
+      "status": "success"
     }
   }
 }
