@@ -6,7 +6,7 @@ description: >
   image, writes the slim style spec, registers it in styles/index.json, generates
   all 7 format examples using the standard brief, renders PNGs via Playwright,
   and updates examples/manifest.json. Invoke with /create-goose-graphics-style.
-tags: [graphics, design, automation]
+tags: [design, content]
 ---
 
 # Create Goose Graphics Style
