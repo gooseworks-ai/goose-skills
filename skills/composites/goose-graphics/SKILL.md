@@ -13,28 +13,24 @@ Everything is self-contained: format templates, style systems, image sourcing in
 
 ## 2. Invocation
 
-This skill supports **four invocation modes** — all-args, partial-args, interactive, and create-style. Pick the fastest path for the ask.
+This skill supports **three invocation modes** — all-args, partial-args, and interactive. Pick the fastest path for the ask.
 
 ### 2.1 Full-args invocation (fastest path)
 
 ```
 /goose-graphics --style <slug> --format <format> [--brief "..."] [--ref <image-path>]
-/goose-graphics --create-style --ref <image-path> [--style-name <slug>]
 ```
 
-- `--style <slug>` — one of the 36 preset slugs (see `styles/index.json` or §6). Required for style-selected generation. Omit to let the user pick interactively.
+- `--style <slug>` — one of the preset slugs (see `styles/index.json` or §6). Required for style-selected generation. Omit to let the user pick interactively.
 - `--format <format>` — one of `carousel`, `story`, `infographic`, `slides`, `poster`, `chart`, `tweet`. Required for format-selected generation.
 - `--brief "..."` — the topic / content description. Replaces the Content Discovery phase.
-- `--ref <image-path>` — if present, extract a custom style from the reference image instead of using a preset. When `--ref` is provided, `--style` is ignored.
-- `--create-style` — create a custom style from a reference image **only** (no format selection, no HTML generation). Requires `--ref`. Optionally accepts `--style-name <slug>` to skip the naming prompt. The extracted style is saved to `styles/<name>.md` alongside the presets.
-- `--style-name <slug>` — used with `--create-style` to pre-set the custom style name (lowercase-kebab-case). Skips the naming prompt in the extract-style workflow.
+- `--ref <image-path>` — if present, extract an ad-hoc style from the reference image for this single render instead of using a preset. When `--ref` is provided, `--style` is ignored. **For creating a persistent named style preset that includes example renders, use the dedicated `/create-goose-graphics-style` skill instead.**
 
-**Four branches:**
+**Three branches:**
 
 1. **All required args present** (`--style` + `--format` + `--brief` OR `--ref` + `--format` + `--brief`) → skip discovery, skip style selection, proceed directly to §7 (Set Output Path) and §8 (Generate HTML).
 2. **Partial args** → ask only for the missing pieces. If `--style` is set but `--format` is not, ask only for format. If `--brief` is missing, ask only for the topic/content.
 3. **No args** → run the interactive flow from §3 onward.
-4. **`--create-style` present** → read `styles/extract-style.md` and follow its workflow. Skip §6 (Discover Intent), §7 (Select Style preset list), §8-§12. The extract-style workflow handles everything including save. Stop after the style is saved — do not proceed to format selection or HTML generation.
 
 ### 2.2 Examples
 
@@ -42,7 +38,7 @@ This skill supports **four invocation modes** — all-args, partial-args, intera
 # Full args — one-shot generate
 /goose-graphics --style matt-gray --format carousel --brief "How founders find their first 100 customers in 2026"
 
-# Reference-driven — extract style from image, then build
+# Reference-driven — extract a one-off style from an image and build with it
 /goose-graphics --ref ~/Desktop/mood.png --format poster --brief "Summer studio open house, August 14"
 
 # Partial — Claude asks for the missing brief
@@ -50,13 +46,9 @@ This skill supports **four invocation modes** — all-args, partial-args, intera
 
 # No args — full interactive flow
 /goose-graphics
-
-# Create a custom style from a reference image (no HTML generation)
-/goose-graphics --create-style --ref ~/Desktop/mood.png
-
-# Create with a pre-chosen name
-/goose-graphics --create-style --ref ~/Desktop/mood.png --style-name sunset-editorial
 ```
+
+To **create a persistent named style preset** (slim spec + all 7 format example renders + index/manifest registration), use the dedicated `/create-goose-graphics-style` skill instead.
 
 ### 2.3 Defaults when args are partial but unambiguous
 
@@ -248,7 +240,6 @@ Present the results to the user:
 - **"Surprise me"** — Pick the carousel format and a random style preset from `styles/index.json`. Ask the user only for content/topic, then generate everything else automatically.
 - **Multi-format** — If the user says "make this as both a carousel and an infographic," run the full workflow twice using the same content and style but different format skills. Save outputs in separate subdirectories.
 - **Style preview** — Before committing to full generation, produce a single sample slide or section so the user can approve the visual direction. If they want changes, adjust the style or switch presets before generating the rest.
-- **Create custom style** — `/goose-graphics --create-style --ref <image>` runs only the style extraction workflow from `styles/extract-style.md`. Analyzes the reference image, maps fonts to Google Fonts equivalents, generates a slim-format style file, and saves it to `styles/<name>.md`. No format selection or HTML generation. The saved style is immediately available for future `/goose-graphics --style <name>` calls.
 
 ## 14. File Reference
 
@@ -267,7 +258,7 @@ Present the results to the user:
 
 The canonical list of all 36 style presets lives in `styles/index.json` (slug, display name, mood group, one-line tagline). Individual slim style files at `styles/<slug>.md` give you the full spec (palette, typography, layout, do/don't, CSS snippets). Archived full-prose versions live in `styles/_full/<slug>.md` if you need the deeper atmospheric reference.
 
-Custom styles created via `--create-style` or the "I have a reference image" interactive option are saved to `styles/<name>.md` in the same slim format as presets. They are not added to `index.json` (which tracks only the 36 shipped presets) but are fully usable via `--style <name>`.
+Ad-hoc styles extracted via `--ref` or the "I have a reference image" interactive option may be saved to `styles/<name>.md` in the same slim format as presets, but they are not added to `index.json` and ship without example renders. To create a properly registered preset with full example coverage, use the `/create-goose-graphics-style` skill.
 
 ### Image Sources
 | File | Description |
