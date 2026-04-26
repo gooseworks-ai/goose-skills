@@ -491,6 +491,62 @@
       "png": "halftone-mono/infographic/example.png",
       "model": "opus",
       "status": "success"
+    },
+    "particle-bloom/poster": {
+      "generated_at": "2026-04-25T00:00:00.000Z",
+      "html": "particle-bloom/poster",
+      "png": "particle-bloom/poster/example.png",
+      "model": "opus",
+      "status": "success"
+    },
+    "coral-halftone/poster": {
+      "generated_at": "2026-04-25T00:00:00.000Z",
+      "html": "coral-halftone/poster",
+      "png": "coral-halftone/poster/example.png",
+      "model": "opus",
+      "status": "success"
+    },
+    "lime-gallery/poster": {
+      "generated_at": "2026-04-25T00:00:00.000Z",
+      "html": "lime-gallery/poster",
+      "png": "lime-gallery/poster/example.png",
+      "model": "opus",
+      "status": "success"
+    },
+    "green-grid-editorial/poster": {
+      "generated_at": "2026-04-25T00:00:00.000Z",
+      "html": "green-grid-editorial/poster",
+      "png": "green-grid-editorial/poster/example.png",
+      "model": "opus",
+      "status": "success"
+    },
+    "woodblock-folk/poster": {
+      "generated_at": "2026-04-25T00:00:00.000Z",
+      "html": "woodblock-folk/poster",
+      "png": "woodblock-folk/poster/example.png",
+      "model": "opus",
+      "status": "success"
+    },
+    "museum-coral/poster": {
+      "generated_at": "2026-04-25T00:00:00.000Z",
+      "html": "museum-coral/poster",
+      "png": "museum-coral/poster/example.png",
+      "model": "opus",
+      "status": "success"
+    },
+    "midcentury-ad-grid/poster": {
+      "generated_at": "2026-04-25T00:00:00.000Z",
+      "html": "midcentury-ad-grid/poster",
+      "png": "midcentury-ad-grid/poster/example.png",
+      "model": "opus",
+      "status": "success"
+    },
+    "forest-data-report/poster": {
+      "generated_at": "2026-04-25T00:00:00.000Z",
+      "html": "forest-data-report/poster",
+      "png": "forest-data-report/poster/example.png",
+      "model": "opus",
+      "status": "success"
     }
   }
 }

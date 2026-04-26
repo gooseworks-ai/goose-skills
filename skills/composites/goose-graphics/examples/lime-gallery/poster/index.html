@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1080, initial-scale=1.0">
+    <title>5 Tips for Building a Startup in 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400;1,500;1,600&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --c-lime: #D9E83A;
+            --c-ink: #0E1014;
+            --c-charcoal: #1F1F22;
+            --c-gray: #3F4042;
+            --font-display: 'Cormorant Garamond', 'Times New Roman', serif;
+            --font-body: 'Inter', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { width: 1080px; height: 1350px; overflow: hidden; -webkit-font-smoothing: antialiased; }
+        body { background: var(--c-ink); padding: 32px; }
+        .panel { background: var(--c-lime); width: 1016px; height: 1286px; padding: 56px 64px 64px; position: relative; }
+    </style>
+</head>
+<body>
+
+    <div class="panel">
+
+        <!-- Halftone landscape band -->
+        <svg viewBox="0 0 888 240" width="888" height="240" style="display: block;" id="band"></svg>
+        <script>
+            (function() {
+                const svg = document.getElementById('band');
+                const ns = 'http://www.w3.org/2000/svg';
+                const cols = 22;
+                const rows = 8;
+                const cellW = 540 / cols;
+                const cellH = 240 / rows;
+                for (let y = 0; y < rows; y++) {
+                    for (let x = 0; x < cols; x++) {
+                        const horizon = 4 + Math.sin(x / cols * Math.PI * 2.4) * 1.5;
+                        const distFromHorizon = Math.abs(y - horizon);
+                        const intensity = Math.max(0, 1 - distFromHorizon * 0.5);
+                        if (intensity <= 0) continue;
+                        const r = 1.5 + intensity * 5;
+                        const c = document.createElementNS(ns, 'circle');
+                        c.setAttribute('cx', (x + 0.5) * cellW);
+                        c.setAttribute('cy', (y + 0.5) * cellH);
+                        c.setAttribute('r', r.toFixed(2));
+                        c.setAttribute('fill', '#0E1014');
+                        svg.appendChild(c);
+                    }
+                }
+                for (let i = 0; i < 6; i++) {
+                    const line = document.createElementNS(ns, 'line');
+                    line.setAttribute('x1', 540);
+                    line.setAttribute('x2', 888);
+                    line.setAttribute('y1', 70 + i * 22);
+                    line.setAttribute('y2', 70 + i * 22);
+                    line.setAttribute('stroke', '#0E1014');
+                    line.setAttribute('stroke-width', '2.5');
+                    svg.appendChild(line);
+                }
+            })();
+        </script>
+
+        <!-- Title block -->
+        <div style="margin-top: 56px;">
+            <h1 style="font-family: var(--font-display); font-style: italic; font-size: 88px; font-weight: 500; line-height: 1.04; letter-spacing: -2px; color: #0E1014; margin: 0;">5 Tips for Building<br>a Startup in 2026</h1>
+        </div>
+
+        <!-- Five tips -->
+        <div style="position: absolute; bottom: 64px; left: 64px; right: 64px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px 56px; margin-bottom: 24px;">
+                <div style="border-top: 1px solid #0E1014; padding-top: 12px;">
+                    <p style="font-family: var(--font-body); font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #1F1F22; margin: 0 0 6px;">01</p>
+                    <p style="font-family: var(--font-display); font-style: italic; font-size: 22px; font-weight: 500; color: #0E1014; margin: 0 0 4px;">Start before you're ready</p>
+                    <p style="font-family: var(--font-body); font-size: 12px; font-weight: 400; line-height: 1.55; color: #1F1F22; margin: 0;">Waiting for perfect conditions is the slowest path to zero.</p>
+                </div>
+                <div style="border-top: 1px solid #0E1014; padding-top: 12px;">
+                    <p style="font-family: var(--font-body); font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #1F1F22; margin: 0 0 6px;">02</p>
+                    <p style="font-family: var(--font-display); font-style: italic; font-size: 22px; font-weight: 500; color: #0E1014; margin: 0 0 4px;">Talk to ten customers a week</p>
+                    <p style="font-family: var(--font-body); font-size: 12px; font-weight: 400; line-height: 1.55; color: #1F1F22; margin: 0;">The market will tell you what to build. You just have to listen.</p>
+                </div>
+                <div style="border-top: 1px solid #0E1014; padding-top: 12px;">
+                    <p style="font-family: var(--font-body); font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #1F1F22; margin: 0 0 6px;">03</p>
+                    <p style="font-family: var(--font-display); font-style: italic; font-size: 22px; font-weight: 500; color: #0E1014; margin: 0 0 4px;">Narrow the problem relentlessly</p>
+                    <p style="font-family: var(--font-body); font-size: 12px; font-weight: 400; line-height: 1.55; color: #1F1F22; margin: 0;">The best products do one thing extraordinarily well.</p>
+                </div>
+                <div style="border-top: 1px solid #0E1014; padding-top: 12px;">
+                    <p style="font-family: var(--font-body); font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #1F1F22; margin: 0 0 6px;">04</p>
+                    <p style="font-family: var(--font-display); font-style: italic; font-size: 22px; font-weight: 500; color: #0E1014; margin: 0 0 4px;">Burn rate is the enemy of time</p>
+                    <p style="font-family: var(--font-body); font-size: 12px; font-weight: 400; line-height: 1.55; color: #1F1F22; margin: 0;">Runway is your most precious resource. Protect it fiercely.</p>
+                </div>
+            </div>
+            <div style="border-top: 1px solid #0E1014; padding-top: 12px; display: flex; justify-content: space-between; align-items: flex-end; gap: 32px;">
+                <div style="flex: 1;">
+                    <p style="font-family: var(--font-body); font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #1F1F22; margin: 0 0 6px;">05</p>
+                    <p style="font-family: var(--font-display); font-style: italic; font-size: 22px; font-weight: 500; color: #0E1014; margin: 0 0 4px;">Hire character, teach skill</p>
+                    <p style="font-family: var(--font-body); font-size: 12px; font-weight: 400; line-height: 1.55; color: #1F1F22; max-width: 480px; margin: 0;">The first ten hires define the culture you'll spend a decade living inside.</p>
+                </div>
+                <p style="font-family: var(--font-display); font-style: italic; font-size: 28px; font-weight: 600; color: #0E1014; margin: 0;">goca</p>
+            </div>
+        </div>
+
+        <!-- Catalog tag -->
+        <p style="position: absolute; top: 64px; right: 64px; font-family: var(--font-body); font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #1F1F22; margin: 0;">P11&middot;025</p>
+
+    </div>
+
+</body>
+</html>
