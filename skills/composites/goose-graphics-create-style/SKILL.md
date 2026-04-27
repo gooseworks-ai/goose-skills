@@ -1,11 +1,11 @@
 ---
-name: create-goose-graphics-style
+name: goose-graphics-create-style
 description: >
   End-to-end skill that turns a single reference image into a fully-installed,
   example-rendered style preset for the goose-graphics composite. Analyzes the
   image, writes the slim style spec, registers it in styles/index.json, generates
   all 7 format examples using the standard brief, renders PNGs via Playwright,
-  and updates examples/manifest.json. Invoke with /create-goose-graphics-style.
+  and updates examples/manifest.json. Invoke with /goose-graphics-create-style.
 tags: [design, content]
 ---
 
@@ -36,7 +36,7 @@ finish, the user should be able to immediately call
 ## Invocation
 
 ```
-/create-goose-graphics-style --ref <image-path> [--name <slug>] [--group <group-name>]
+/goose-graphics-create-style --ref <image-path> [--name <slug>] [--group <group-name>]
 ```
 
 - `--ref <image-path>` (required) — path to the reference image (PNG/JPG/WebP).

@@ -749,43 +749,6 @@
       }
     },
     {
-      "slug": "create-goose-graphics-style",
-      "name": "create-goose-graphics-style",
-      "category": "composites",
-      "description": ">",
-      "tags": "design, content",
-      "path": "skills/composites/create-goose-graphics-style",
-      "files": [
-        "skills/composites/create-goose-graphics-style/SKILL.md",
-        "skills/composites/create-goose-graphics-style/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "create-goose-graphics-style",
-        "category": "composites",
-        "tags": [
-          "design",
-          "content"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install create-goose-graphics-style",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
-        "requires_skills": [
-          "goose-graphics"
-        ],
-        "features": [
-          "Reference image → fully installed style preset in one command",
-          "Generates all 7 format examples (poster, infographic, carousel, slides, story, chart, tweet) using a standard brief",
-          "Auto-renders PNGs via the goose-graphics Playwright pipeline",
-          "Registers the new style in styles/index.json and examples/manifest.json"
-        ]
-      }
-    },
-    {
       "slug": "create-html-carousel",
       "name": "create-html-carousel",
       "category": "capabilities",
@@ -1909,6 +1872,43 @@
           "Playwright PNG export",
           "Image-to-style extraction",
           "Args-based slash command invocation"
+        ]
+      }
+    },
+    {
+      "slug": "goose-graphics-create-style",
+      "name": "goose-graphics-create-style",
+      "category": "composites",
+      "description": ">",
+      "tags": "design, content",
+      "path": "skills/composites/goose-graphics-create-style",
+      "files": [
+        "skills/composites/goose-graphics-create-style/SKILL.md",
+        "skills/composites/goose-graphics-create-style/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "goose-graphics-create-style",
+        "category": "composites",
+        "tags": [
+          "design",
+          "content"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install goose-graphics-create-style",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "goose-graphics"
+        ],
+        "features": [
+          "Reference image → fully installed style preset in one command",
+          "Generates all 7 format examples (poster, infographic, carousel, slides, story, chart, tweet) using a standard brief",
+          "Auto-renders PNGs via the goose-graphics Playwright pipeline",
+          "Registers the new style in styles/index.json and examples/manifest.json"
         ]
       }
     },

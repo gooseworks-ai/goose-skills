@@ -24,7 +24,7 @@ This skill supports **three invocation modes** — all-args, partial-args, and i
 - `--style <slug>` — one of the preset slugs (see `styles/index.json` or §6). Required for style-selected generation. Omit to let the user pick interactively.
 - `--format <format>` — one of `carousel`, `story`, `infographic`, `slides`, `poster`, `chart`, `tweet`. Required for format-selected generation.
 - `--brief "..."` — the topic / content description. Replaces the Content Discovery phase.
-- `--ref <image-path>` — if present, extract an ad-hoc style from the reference image for this single render instead of using a preset. When `--ref` is provided, `--style` is ignored. **For creating a persistent named style preset that includes example renders, use the dedicated `/create-goose-graphics-style` skill instead.**
+- `--ref <image-path>` — if present, extract an ad-hoc style from the reference image for this single render instead of using a preset. When `--ref` is provided, `--style` is ignored. **For creating a persistent named style preset that includes example renders, use the dedicated `/goose-graphics-create-style` skill instead.**
 
 **Three branches:**
 
@@ -48,7 +48,7 @@ This skill supports **three invocation modes** — all-args, partial-args, and i
 /goose-graphics
 ```
 
-To **create a persistent named style preset** (slim spec + all 7 format example renders + index/manifest registration), use the dedicated `/create-goose-graphics-style` skill instead.
+To **create a persistent named style preset** (slim spec + all 7 format example renders + index/manifest registration), use the dedicated `/goose-graphics-create-style` skill instead.
 
 ### 2.3 Defaults when args are partial but unambiguous
 
@@ -258,7 +258,7 @@ Present the results to the user:
 
 The canonical list of all 36 style presets lives in `styles/index.json` (slug, display name, mood group, one-line tagline). Individual slim style files at `styles/<slug>.md` give you the full spec (palette, typography, layout, do/don't, CSS snippets). Archived full-prose versions live in `styles/_full/<slug>.md` if you need the deeper atmospheric reference.
 
-Ad-hoc styles extracted via `--ref` or the "I have a reference image" interactive option may be saved to `styles/<name>.md` in the same slim format as presets, but they are not added to `index.json` and ship without example renders. To create a properly registered preset with full example coverage, use the `/create-goose-graphics-style` skill.
+Ad-hoc styles extracted via `--ref` or the "I have a reference image" interactive option may be saved to `styles/<name>.md` in the same slim format as presets, but they are not added to `index.json` and ship without example renders. To create a properly registered preset with full example coverage, use the `/goose-graphics-create-style` skill.
 
 ### Image Sources
 | File | Description |
