@@ -3,7 +3,7 @@ name: github-repo-signals
 description: Extract and score leads from GitHub repositories by analyzing stars, forks, issues, PRs, comments, and contributions. Produces unified multi-repo CSV with deduplicated user profiles. No paid API credits required.
 user-invocable: true
 allowed-tools: Bash, Read, Write, Edit, Grep, Glob
-argument-hint: [owner/repo1,owner/repo2] [limit]
+argument-hint: "[owner/repo1,owner/repo2] [limit]"
 ---
 
 # GitHub Repository Signals

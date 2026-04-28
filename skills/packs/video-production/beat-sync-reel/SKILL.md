@@ -3,7 +3,7 @@ name: beat-sync-reel
 description: Generates Instagram Reels where product image cuts are synced to audio beats. Accepts audio as a local file, URL, or search query. Uses librosa for beat detection, FFmpeg Ken Burns for scene animation, and Pillow for text overlays. No AI video generation — fully free, fast, and scalable.
 user-invocable: true
 allowed-tools: Bash, Read, Write, Edit, Grep, Glob, WebSearch
-argument-hint: [product-url-or-image-paths] [audio-source]
+argument-hint: "[product-url-or-image-paths] [audio-source]"
 ---
 
 # Beat-Sync Reel Generator
