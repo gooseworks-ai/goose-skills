@@ -225,17 +225,11 @@ orth api show hunter /v2/email-finder
       expect(result).toContain('source: orthogonal');
     });
 
-    it('prefixes name with orthogonal-', () => {
+    it('preserves the source name without prefixing', () => {
       const content = '---\nname: hunter\ndescription: Email finder\n---\n\n# Hunter';
       const result = rewriteSkill(content);
-      expect(result).toContain('name: orthogonal-hunter');
-    });
-
-    it('does not double-prefix name already starting with orthogonal-', () => {
-      const content = '---\nname: orthogonal-hunter\ndescription: Email finder\n---\n\n# Hunter';
-      const result = rewriteSkill(content);
-      expect(result).toContain('name: orthogonal-hunter');
-      expect(result).not.toContain('name: orthogonal-orthogonal-');
+      expect(result).toContain('name: hunter');
+      expect(result).not.toContain('name: orthogonal-');
     });
 
     it('rewrites orth commands and replaces auth', () => {
@@ -254,7 +248,8 @@ orth run hunter /v2/email-finder -b '{"domain":"stripe.com"}'
 
       const result = rewriteSkill(content);
       expect(result).toContain('source: orthogonal');
-      expect(result).toContain('name: orthogonal-email-finder');
+      expect(result).toContain('name: email-finder');
+      expect(result).not.toContain('name: orthogonal-');
       expect(result).toContain('/v1/proxy/orthogonal/run');
       expect(result).not.toContain('orth run');
       expect(result).not.toContain('orth login');
@@ -264,14 +259,14 @@ orth run hunter /v2/email-finder -b '{"domain":"stripe.com"}'
 
   describe('generateMeta', () => {
     it('generates correct skill.meta.json structure', () => {
-      const meta = generateMeta('orthogonal-email-finder', { tags: ['email', 'enrichment'] });
+      const meta = generateMeta('email-finder-hunter', { tags: ['email', 'enrichment'] });
       expect(meta).toEqual({
-        slug: 'orthogonal-email-finder',
+        slug: 'email-finder-hunter',
         category: 'capabilities',
         tags: ['email', 'enrichment'],
         source: 'orthogonal',
         installation: {
-          base_command: 'npx goose-skills install orthogonal-email-finder',
+          base_command: 'npx goose-skills install email-finder-hunter',
           supports: ['claude', 'cursor', 'codex'],
         },
       });

@@ -1,0 +1,14 @@
+{
+  "slug": "people-company-search-fiber",
+  "category": "capabilities",
+  "tags": [],
+  "source": "orthogonal",
+  "installation": {
+    "base_command": "npx goose-skills install people-company-search-fiber",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  }
+}

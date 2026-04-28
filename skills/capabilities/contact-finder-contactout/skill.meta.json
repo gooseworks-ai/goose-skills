@@ -1,0 +1,14 @@
+{
+  "slug": "contact-finder-contactout",
+  "category": "capabilities",
+  "tags": [],
+  "source": "orthogonal",
+  "installation": {
+    "base_command": "npx goose-skills install contact-finder-contactout",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  }
+}

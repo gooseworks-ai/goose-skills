@@ -1,0 +1,14 @@
+{
+  "slug": "website-screenshot-notte",
+  "category": "capabilities",
+  "tags": [],
+  "source": "orthogonal",
+  "installation": {
+    "base_command": "npx goose-skills install website-screenshot-notte",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  }
+}

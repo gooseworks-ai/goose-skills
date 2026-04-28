@@ -1,0 +1,14 @@
+{
+  "slug": "company-funding-search",
+  "category": "capabilities",
+  "tags": [],
+  "source": "orthogonal",
+  "installation": {
+    "base_command": "npx goose-skills install company-funding-search",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  }
+}

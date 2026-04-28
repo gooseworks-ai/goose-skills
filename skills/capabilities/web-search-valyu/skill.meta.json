@@ -1,0 +1,14 @@
+{
+  "slug": "web-search-valyu",
+  "category": "capabilities",
+  "tags": [],
+  "source": "orthogonal",
+  "installation": {
+    "base_command": "npx goose-skills install web-search-valyu",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  }
+}

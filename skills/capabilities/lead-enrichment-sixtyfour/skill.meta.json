@@ -1,0 +1,14 @@
+{
+  "slug": "lead-enrichment-sixtyfour",
+  "category": "capabilities",
+  "tags": [],
+  "source": "orthogonal",
+  "installation": {
+    "base_command": "npx goose-skills install lead-enrichment-sixtyfour",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  }
+}

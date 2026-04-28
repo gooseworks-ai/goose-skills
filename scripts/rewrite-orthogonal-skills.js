@@ -313,11 +313,6 @@ function rewriteSkill(content) {
   // Add source marker
   frontmatter.source = 'orthogonal';
 
-  // Prefix name with orthogonal- to avoid collisions
-  if (frontmatter.name && !frontmatter.name.startsWith('orthogonal-')) {
-    frontmatter.name = `orthogonal-${frontmatter.name}`;
-  }
-
   // Rewrite commands in the body
   let newBody = rewriteCommands(body);
 
@@ -375,9 +370,7 @@ function main() {
 
     const content = fs.readFileSync(skillMdPath, 'utf8');
     const { frontmatter } = parseFrontmatter(content);
-    const rawSlug = frontmatter.slug || frontmatter.name || path.basename(entry, '.md');
-    // Ensure orthogonal- prefix to avoid collisions with native GooseWorks skills
-    const slug = rawSlug.startsWith('orthogonal-') ? rawSlug : `orthogonal-${rawSlug}`;
+    const slug = frontmatter.slug || frontmatter.name || path.basename(entry, '.md');
 
     const outDir = path.join(args.output, slug);
 

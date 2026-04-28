@@ -1,6 +1,6 @@
 {
   "version": "1.2.0",
-  "generated": "2026-04-26",
+  "generated": "2026-04-27",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -120,6 +120,110 @@
       }
     },
     {
+      "slug": "ai-video-calls-tavus",
+      "name": "ai-video-calls-tavus",
+      "category": "capabilities",
+      "description": "AI video conversations - create real-time video calls with AI personas",
+      "tags": "",
+      "path": "skills/capabilities/ai-video-calls-tavus",
+      "files": [
+        "skills/capabilities/ai-video-calls-tavus/SKILL.md",
+        "skills/capabilities/ai-video-calls-tavus/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "ai-video-calls-tavus",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install ai-video-calls-tavus",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "ai-web-scraping-scrapegraph",
+      "name": "ai-web-scraping-scrapegraph",
+      "category": "capabilities",
+      "description": "AI-powered web scraping - extract data using natural language prompts",
+      "tags": "",
+      "path": "skills/capabilities/ai-web-scraping-scrapegraph",
+      "files": [
+        "skills/capabilities/ai-web-scraping-scrapegraph/SKILL.md",
+        "skills/capabilities/ai-web-scraping-scrapegraph/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "ai-web-scraping-scrapegraph",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install ai-web-scraping-scrapegraph",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "amazon-search",
+      "name": "amazon-search",
+      "category": "capabilities",
+      "description": "Search Amazon products - find items, compare prices, read reviews",
+      "tags": "",
+      "path": "skills/capabilities/amazon-search",
+      "files": [
+        "skills/capabilities/amazon-search/SKILL.md",
+        "skills/capabilities/amazon-search/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "amazon-search",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install amazon-search",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "api-tester",
+      "name": "api-tester",
+      "category": "capabilities",
+      "description": "Test and document API endpoints - validate responses, check status, generate examples",
+      "tags": "",
+      "path": "skills/capabilities/api-tester",
+      "files": [
+        "skills/capabilities/api-tester/SKILL.md",
+        "skills/capabilities/api-tester/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "api-tester",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install api-tester",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
       "slug": "apollo-lead-finder",
       "name": "apollo-lead-finder",
       "category": "capabilities",
@@ -207,6 +311,32 @@
       }
     },
     {
+      "slug": "brand-intel-branddev",
+      "name": "brand-intel-branddev",
+      "category": "capabilities",
+      "description": "Brand intelligence - logos, colors, fonts, styleguides, and company data from any domain",
+      "tags": "",
+      "path": "skills/capabilities/brand-intel-branddev",
+      "files": [
+        "skills/capabilities/brand-intel-branddev/SKILL.md",
+        "skills/capabilities/brand-intel-branddev/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "brand-intel-branddev",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install brand-intel-branddev",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
       "slug": "brand-voice-extractor",
       "name": "brand-voice-extractor",
       "category": "capabilities",
@@ -225,6 +355,32 @@
         ],
         "installation": {
           "base_command": "npx goose-skills install brand-voice-extractor",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "browser-automation-notte",
+      "name": "browser-automation-notte",
+      "category": "capabilities",
+      "description": "Browser automation - control browser sessions, scrape pages, and run AI agents",
+      "tags": "",
+      "path": "skills/capabilities/browser-automation-notte",
+      "files": [
+        "skills/capabilities/browser-automation-notte/SKILL.md",
+        "skills/capabilities/browser-automation-notte/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "browser-automation-notte",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install browser-automation-notte",
           "supports": [
             "claude",
             "cursor",
@@ -466,6 +622,84 @@
       }
     },
     {
+      "slug": "company-domain-lookup-logodev",
+      "name": "company-domain-lookup-logodev",
+      "category": "capabilities",
+      "description": "Logo.dev - search for company domains by brand name",
+      "tags": "",
+      "path": "skills/capabilities/company-domain-lookup-logodev",
+      "files": [
+        "skills/capabilities/company-domain-lookup-logodev/SKILL.md",
+        "skills/capabilities/company-domain-lookup-logodev/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "company-domain-lookup-logodev",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install company-domain-lookup-logodev",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "company-funding-search",
+      "name": "company-funding-search",
+      "category": "capabilities",
+      "description": "Find company funding history, investors, and investment details",
+      "tags": "",
+      "path": "skills/capabilities/company-funding-search",
+      "files": [
+        "skills/capabilities/company-funding-search/SKILL.md",
+        "skills/capabilities/company-funding-search/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "company-funding-search",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install company-funding-search",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "company-intel",
+      "name": "company-intel",
+      "category": "capabilities",
+      "description": "Full company intelligence report - overview, team, funding, products, news",
+      "tags": "",
+      "path": "skills/capabilities/company-intel",
+      "files": [
+        "skills/capabilities/company-intel/SKILL.md",
+        "skills/capabilities/company-intel/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "company-intel",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install company-intel",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
       "slug": "competitive-pricing-intel",
       "name": "competitive-pricing-intel",
       "category": "composites",
@@ -605,6 +839,58 @@
       }
     },
     {
+      "slug": "competitor-research",
+      "name": "competitor-research",
+      "category": "capabilities",
+      "description": "Research competitors - products, pricing, team, funding, and strategy",
+      "tags": "",
+      "path": "skills/capabilities/competitor-research",
+      "files": [
+        "skills/capabilities/competitor-research/SKILL.md",
+        "skills/capabilities/competitor-research/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "competitor-research",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install competitor-research",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "comprehensive-enrichment",
+      "name": "comprehensive-enrichment",
+      "category": "capabilities",
+      "description": "Enrich any person or company from any identifier — email, name, LinkedIn URL, domain, company name, Twitter/X handle. Use when asked to enrich, look up, or research a lead, contact, person, or company.",
+      "tags": "",
+      "path": "skills/capabilities/comprehensive-enrichment",
+      "files": [
+        "skills/capabilities/comprehensive-enrichment/SKILL.md",
+        "skills/capabilities/comprehensive-enrichment/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "comprehensive-enrichment",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install comprehensive-enrichment",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
       "slug": "conference-speaker-scraper",
       "name": "conference-speaker-scraper",
       "category": "capabilities",
@@ -652,6 +938,32 @@
         ],
         "installation": {
           "base_command": "npx goose-skills install contact-cache",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "contact-finder-contactout",
+      "name": "contact-finder-contactout",
+      "category": "capabilities",
+      "description": "Find emails, phone numbers, and enrich profiles using ContactOut. LinkedIn enrichment, people search, company enrichment, and batch operations.",
+      "tags": "",
+      "path": "skills/capabilities/contact-finder-contactout",
+      "files": [
+        "skills/capabilities/contact-finder-contactout/SKILL.md",
+        "skills/capabilities/contact-finder-contactout/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "contact-finder-contactout",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install contact-finder-contactout",
           "supports": [
             "claude",
             "cursor",
@@ -962,6 +1274,32 @@
       }
     },
     {
+      "slug": "data-charts-tako",
+      "name": "data-charts-tako",
+      "category": "capabilities",
+      "description": "Search and visualize the world's data - get charts, insights, and embeddable knowledge cards for finance, economics, demographics, sports, and more",
+      "tags": "",
+      "path": "skills/capabilities/data-charts-tako",
+      "files": [
+        "skills/capabilities/data-charts-tako/SKILL.md",
+        "skills/capabilities/data-charts-tako/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "data-charts-tako",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install data-charts-tako",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
       "slug": "disqualification-handling",
       "name": "disqualification-handling",
       "category": "composites",
@@ -993,6 +1331,58 @@
       }
     },
     {
+      "slug": "ebay-search",
+      "name": "ebay-search",
+      "category": "capabilities",
+      "description": "Search eBay listings - find items, auctions, deals, and compare prices",
+      "tags": "",
+      "path": "skills/capabilities/ebay-search",
+      "files": [
+        "skills/capabilities/ebay-search/SKILL.md",
+        "skills/capabilities/ebay-search/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "ebay-search",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install ebay-search",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "email-campaign",
+      "name": "email-campaign",
+      "category": "capabilities",
+      "description": "Build email campaigns - find emails, verify them, and prepare outreach",
+      "tags": "",
+      "path": "skills/capabilities/email-campaign",
+      "files": [
+        "skills/capabilities/email-campaign/SKILL.md",
+        "skills/capabilities/email-campaign/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "email-campaign",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install email-campaign",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
       "slug": "email-drafting",
       "name": "email-drafting",
       "category": "capabilities",
@@ -1011,6 +1401,84 @@
         ],
         "installation": {
           "base_command": "npx goose-skills install email-drafting",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "email-finder-hunter",
+      "name": "email-finder-hunter",
+      "category": "capabilities",
+      "description": "Email finder and verifier - find emails, verify deliverability, discover companies",
+      "tags": "",
+      "path": "skills/capabilities/email-finder-hunter",
+      "files": [
+        "skills/capabilities/email-finder-hunter/SKILL.md",
+        "skills/capabilities/email-finder-hunter/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "email-finder-hunter",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install email-finder-hunter",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "email-finder-tomba",
+      "name": "email-finder-tomba",
+      "category": "capabilities",
+      "description": "Email finder and verifier - find emails from domains, LinkedIn, or company search",
+      "tags": "",
+      "path": "skills/capabilities/email-finder-tomba",
+      "files": [
+        "skills/capabilities/email-finder-tomba/SKILL.md",
+        "skills/capabilities/email-finder-tomba/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "email-finder-tomba",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install email-finder-tomba",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "enrichment-nyne",
+      "name": "enrichment-nyne",
+      "category": "capabilities",
+      "description": "Intelligence and enrichment - person and company data, social profiles, events, and funding",
+      "tags": "",
+      "path": "skills/capabilities/enrichment-nyne",
+      "files": [
+        "skills/capabilities/enrichment-nyne/SKILL.md",
+        "skills/capabilities/enrichment-nyne/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "enrichment-nyne",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install enrichment-nyne",
           "supports": [
             "claude",
             "cursor",
@@ -1078,6 +1546,32 @@
       }
     },
     {
+      "slug": "extract-webpage-data",
+      "name": "extract-webpage-data",
+      "category": "capabilities",
+      "description": "Extract structured data from web pages using AI",
+      "tags": "",
+      "path": "skills/capabilities/extract-webpage-data",
+      "files": [
+        "skills/capabilities/extract-webpage-data/SKILL.md",
+        "skills/capabilities/extract-webpage-data/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "extract-webpage-data",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install extract-webpage-data",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
       "slug": "feature-launch-playbook",
       "name": "feature-launch-playbook",
       "category": "composites",
@@ -1096,6 +1590,84 @@
         ],
         "installation": {
           "base_command": "npx goose-skills install feature-launch-playbook",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "find-email-by-name",
+      "name": "find-email-by-name",
+      "category": "capabilities",
+      "description": "Find someone's email address given their name and company",
+      "tags": "",
+      "path": "skills/capabilities/find-email-by-name",
+      "files": [
+        "skills/capabilities/find-email-by-name/SKILL.md",
+        "skills/capabilities/find-email-by-name/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "find-email-by-name",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install find-email-by-name",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "find-skill",
+      "name": "find-skill",
+      "category": "capabilities",
+      "description": "Find and install skills from the Orthogonal skill library. Use when you need capabilities you don't have, want to discover available skills, or need to add new tools to your agent.",
+      "tags": "",
+      "path": "skills/capabilities/find-skill",
+      "files": [
+        "skills/capabilities/find-skill/SKILL.md",
+        "skills/capabilities/find-skill/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "find-skill",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install find-skill",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "find-twitter-influencers",
+      "name": "find-twitter-influencers",
+      "category": "capabilities",
+      "description": "Find Twitter/X influencers to promote a product or brand. Use when asked to find influencers, discover Twitter accounts for partnerships, identify creators in a niche, or build an influencer outreach list.",
+      "tags": "",
+      "path": "skills/capabilities/find-twitter-influencers",
+      "files": [
+        "skills/capabilities/find-twitter-influencers/SKILL.md",
+        "skills/capabilities/find-twitter-influencers/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "find-twitter-influencers",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install find-twitter-influencers",
           "supports": [
             "claude",
             "cursor",
@@ -1191,6 +1763,32 @@
         ],
         "installation": {
           "base_command": "npx goose-skills install generate-voice-guide",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "get-brand-assets",
+      "name": "get-brand-assets",
+      "category": "capabilities",
+      "description": "Get company logos, brand colors, fonts, and style guides",
+      "tags": "",
+      "path": "skills/capabilities/get-brand-assets",
+      "files": [
+        "skills/capabilities/get-brand-assets/SKILL.md",
+        "skills/capabilities/get-brand-assets/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "get-brand-assets",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install get-brand-assets",
           "supports": [
             "claude",
             "cursor",
@@ -1913,6 +2511,58 @@
       }
     },
     {
+      "slug": "gtm-enrichment-deep",
+      "name": "gtm-enrichment-deep",
+      "category": "capabilities",
+      "description": "AI-agent-powered lead enrichment using Sixtyfour as primary source. Takes an email (+ optional name) and returns comprehensive person + company data with funding, AI/B2B classification, and full error visibility. Higher cost (~$0.20/lead) but simpler architecture.",
+      "tags": "",
+      "path": "skills/capabilities/gtm-enrichment-deep",
+      "files": [
+        "skills/capabilities/gtm-enrichment-deep/SKILL.md",
+        "skills/capabilities/gtm-enrichment-deep/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "gtm-enrichment-deep",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install gtm-enrichment-deep",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "gtm-enrichment-smart",
+      "name": "gtm-enrichment-smart",
+      "category": "capabilities",
+      "description": "Multi-provider waterfall lead enrichment. Takes an email (+ optional name) and returns person + company data by cross-referencing cheap APIs first, using expensive AI agents only as fallback. Cost-efficient (~$0.04-$0.10/lead) with confidence scoring and full error visibility.",
+      "tags": "",
+      "path": "skills/capabilities/gtm-enrichment-smart",
+      "files": [
+        "skills/capabilities/gtm-enrichment-smart/SKILL.md",
+        "skills/capabilities/gtm-enrichment-smart/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "gtm-enrichment-smart",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install gtm-enrichment-smart",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
       "slug": "hacker-news-scraper",
       "name": "hacker-news-scraper",
       "category": "capabilities",
@@ -2000,6 +2650,32 @@
       }
     },
     {
+      "slug": "hyperlocal-weather-precip",
+      "name": "hyperlocal-weather-precip",
+      "category": "capabilities",
+      "description": "Hyperlocal weather data - precipitation, temperature, wind, soil moisture and more",
+      "tags": "",
+      "path": "skills/capabilities/hyperlocal-weather-precip",
+      "files": [
+        "skills/capabilities/hyperlocal-weather-precip/SKILL.md",
+        "skills/capabilities/hyperlocal-weather-precip/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "hyperlocal-weather-precip",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install hyperlocal-weather-precip",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
       "slug": "icp-identification",
       "name": "icp-identification",
       "category": "capabilities",
@@ -2054,6 +2730,58 @@
         "requires_skills": [
           "content-asset-creator"
         ]
+      }
+    },
+    {
+      "slug": "identity-verification-didit",
+      "name": "identity-verification-didit",
+      "category": "capabilities",
+      "description": "Identity verification via phone/email OTP and AML screening using Didit API",
+      "tags": "",
+      "path": "skills/capabilities/identity-verification-didit",
+      "files": [
+        "skills/capabilities/identity-verification-didit/SKILL.md",
+        "skills/capabilities/identity-verification-didit/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "identity-verification-didit",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install identity-verification-didit",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "image-analyzer",
+      "name": "image-analyzer",
+      "category": "capabilities",
+      "description": "Analyze images with AI - extract text, describe content, detect objects",
+      "tags": "",
+      "path": "skills/capabilities/image-analyzer",
+      "files": [
+        "skills/capabilities/image-analyzer/SKILL.md",
+        "skills/capabilities/image-analyzer/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "image-analyzer",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install image-analyzer",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
       }
     },
     {
@@ -2190,6 +2918,84 @@
       }
     },
     {
+      "slug": "instagram-scraper",
+      "name": "instagram-scraper",
+      "category": "capabilities",
+      "description": "Get Instagram profiles, posts, and reels",
+      "tags": "",
+      "path": "skills/capabilities/instagram-scraper",
+      "files": [
+        "skills/capabilities/instagram-scraper/SKILL.md",
+        "skills/capabilities/instagram-scraper/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "instagram-scraper",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install instagram-scraper",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "investor-call-prep",
+      "name": "investor-call-prep",
+      "category": "capabilities",
+      "description": "Prepare for investor calls by pulling upcoming meetings from Google Calendar, deeply researching each investor and their firm (website scraping, portfolio analysis, thesis extraction), checking for competitor conflicts, and outputting an honest prep sheet with compatibility assessments. Use when asked to prep for investor meetings, fundraising calls, VC meetings, or demo day.",
+      "tags": "",
+      "path": "skills/capabilities/investor-call-prep",
+      "files": [
+        "skills/capabilities/investor-call-prep/SKILL.md",
+        "skills/capabilities/investor-call-prep/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "investor-call-prep",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install investor-call-prep",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "investor-research",
+      "name": "investor-research",
+      "category": "capabilities",
+      "description": "Research VCs, angels, and investors - portfolio, thesis, contact info",
+      "tags": "",
+      "path": "skills/capabilities/investor-research",
+      "files": [
+        "skills/capabilities/investor-research/SKILL.md",
+        "skills/capabilities/investor-research/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "investor-research",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install investor-research",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
       "slug": "job-posting-intent",
       "name": "job-posting-intent",
       "category": "capabilities",
@@ -2240,6 +3046,32 @@
         ],
         "installation": {
           "base_command": "npx goose-skills install job-scraper",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "job-search",
+      "name": "job-search",
+      "category": "capabilities",
+      "description": "Search for jobs matching your skills, experience, and preferences",
+      "tags": "",
+      "path": "skills/capabilities/job-search",
+      "files": [
+        "skills/capabilities/job-search/SKILL.md",
+        "skills/capabilities/job-search/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "job-search",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install job-search",
           "supports": [
             "claude",
             "cursor",
@@ -2398,6 +3230,58 @@
         "requires_skills": [
           "review-site-scraper"
         ]
+      }
+    },
+    {
+      "slug": "lead-enrichment",
+      "name": "lead-enrichment",
+      "category": "capabilities",
+      "description": "Enrich leads with email, phone, company data using multiple data sources",
+      "tags": "",
+      "path": "skills/capabilities/lead-enrichment",
+      "files": [
+        "skills/capabilities/lead-enrichment/SKILL.md",
+        "skills/capabilities/lead-enrichment/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "lead-enrichment",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install lead-enrichment",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "lead-enrichment-sixtyfour",
+      "name": "lead-enrichment-sixtyfour",
+      "category": "capabilities",
+      "description": "AI-powered lead enrichment - find emails, phones, and enrich company/lead data",
+      "tags": "",
+      "path": "skills/capabilities/lead-enrichment-sixtyfour",
+      "files": [
+        "skills/capabilities/lead-enrichment-sixtyfour/SKILL.md",
+        "skills/capabilities/lead-enrichment-sixtyfour/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "lead-enrichment-sixtyfour",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install lead-enrichment-sixtyfour",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
       }
     },
     {
@@ -2666,6 +3550,32 @@
       }
     },
     {
+      "slug": "linkedin-scraper",
+      "name": "linkedin-scraper",
+      "category": "capabilities",
+      "description": "Get LinkedIn profiles, company pages, and posts",
+      "tags": "",
+      "path": "skills/capabilities/linkedin-scraper",
+      "files": [
+        "skills/capabilities/linkedin-scraper/SKILL.md",
+        "skills/capabilities/linkedin-scraper/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "linkedin-scraper",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install linkedin-scraper",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
       "slug": "luma-event-attendees",
       "name": "luma-event-attendees",
       "category": "capabilities",
@@ -2687,6 +3597,32 @@
         ],
         "installation": {
           "base_command": "npx goose-skills install luma-event-attendees",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "market-research",
+      "name": "market-research",
+      "category": "capabilities",
+      "description": "Research market trends, size, competitors, and growth opportunities",
+      "tags": "",
+      "path": "skills/capabilities/market-research",
+      "files": [
+        "skills/capabilities/market-research/SKILL.md",
+        "skills/capabilities/market-research/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "market-research",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install market-research",
           "supports": [
             "claude",
             "cursor",
@@ -2787,6 +3723,32 @@
       }
     },
     {
+      "slug": "multi-platform-search-searchapi",
+      "name": "multi-platform-search-searchapi",
+      "category": "capabilities",
+      "description": "Multi-platform search - YouTube, Amazon, eBay, Walmart, TikTok, Instagram, and more",
+      "tags": "",
+      "path": "skills/capabilities/multi-platform-search-searchapi",
+      "files": [
+        "skills/capabilities/multi-platform-search-searchapi/SKILL.md",
+        "skills/capabilities/multi-platform-search-searchapi/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "multi-platform-search-searchapi",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install multi-platform-search-searchapi",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
       "slug": "news-signal-outreach",
       "name": "news-signal-outreach",
       "category": "composites",
@@ -2869,2008 +3831,6 @@
         ],
         "installation": {
           "base_command": "npx goose-skills install newsletter-signal-scanner",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-amazon-search",
-      "name": "orthogonal-amazon-search",
-      "category": "capabilities",
-      "description": "Search Amazon products - find items, compare prices, read reviews",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-amazon-search",
-      "files": [
-        "skills/capabilities/orthogonal-amazon-search/SKILL.md",
-        "skills/capabilities/orthogonal-amazon-search/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-amazon-search",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-amazon-search",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-andi",
-      "name": "orthogonal-andi",
-      "category": "capabilities",
-      "description": "Fast, high-quality web search with intelligent ranking and instant answers",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-andi",
-      "files": [
-        "skills/capabilities/orthogonal-andi/SKILL.md",
-        "skills/capabilities/orthogonal-andi/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-andi",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-andi",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-api-tester",
-      "name": "orthogonal-api-tester",
-      "category": "capabilities",
-      "description": "Test and document API endpoints - validate responses, check status, generate examples",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-api-tester",
-      "files": [
-        "skills/capabilities/orthogonal-api-tester/SKILL.md",
-        "skills/capabilities/orthogonal-api-tester/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-api-tester",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-api-tester",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-brand-dev",
-      "name": "orthogonal-brand-dev",
-      "category": "capabilities",
-      "description": "Brand intelligence - logos, colors, fonts, styleguides, and company data from any domain",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-brand-dev",
-      "files": [
-        "skills/capabilities/orthogonal-brand-dev/SKILL.md",
-        "skills/capabilities/orthogonal-brand-dev/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-brand-dev",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-brand-dev",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-company-funding-search",
-      "name": "orthogonal-company-funding-search",
-      "category": "capabilities",
-      "description": "Find company funding history, investors, and investment details",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-company-funding-search",
-      "files": [
-        "skills/capabilities/orthogonal-company-funding-search/SKILL.md",
-        "skills/capabilities/orthogonal-company-funding-search/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-company-funding-search",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-company-funding-search",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-company-intel",
-      "name": "orthogonal-company-intel",
-      "category": "capabilities",
-      "description": "Full company intelligence report - overview, team, funding, products, news",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-company-intel",
-      "files": [
-        "skills/capabilities/orthogonal-company-intel/SKILL.md",
-        "skills/capabilities/orthogonal-company-intel/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-company-intel",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-company-intel",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-competitor-research",
-      "name": "orthogonal-competitor-research",
-      "category": "capabilities",
-      "description": "Research competitors - products, pricing, team, funding, and strategy",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-competitor-research",
-      "files": [
-        "skills/capabilities/orthogonal-competitor-research/SKILL.md",
-        "skills/capabilities/orthogonal-competitor-research/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-competitor-research",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-competitor-research",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-comprehensive-enrichment",
-      "name": "orthogonal-comprehensive-enrichment",
-      "category": "capabilities",
-      "description": "Enrich any person or company from any identifier — email, name, LinkedIn URL, domain, company name, Twitter/X handle. Use when asked to enrich, look up, or research a lead, contact, person, or company.",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-comprehensive-enrichment",
-      "files": [
-        "skills/capabilities/orthogonal-comprehensive-enrichment/SKILL.md",
-        "skills/capabilities/orthogonal-comprehensive-enrichment/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-comprehensive-enrichment",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-comprehensive-enrichment",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-contactout",
-      "name": "orthogonal-contactout",
-      "category": "capabilities",
-      "description": "Find emails, phone numbers, and enrich profiles using ContactOut. LinkedIn enrichment, people search, company enrichment, and batch operations.",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-contactout",
-      "files": [
-        "skills/capabilities/orthogonal-contactout/SKILL.md",
-        "skills/capabilities/orthogonal-contactout/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-contactout",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-contactout",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-didit",
-      "name": "orthogonal-didit",
-      "category": "capabilities",
-      "description": "Identity verification via phone/email OTP and AML screening using Didit API",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-didit",
-      "files": [
-        "skills/capabilities/orthogonal-didit/SKILL.md",
-        "skills/capabilities/orthogonal-didit/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-didit",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-didit",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-dome",
-      "name": "orthogonal-dome",
-      "category": "capabilities",
-      "description": "Prediction markets data - Polymarket, Kalshi markets, prices, positions, and trades",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-dome",
-      "files": [
-        "skills/capabilities/orthogonal-dome/SKILL.md",
-        "skills/capabilities/orthogonal-dome/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-dome",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-dome",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-ebay-search",
-      "name": "orthogonal-ebay-search",
-      "category": "capabilities",
-      "description": "Search eBay listings - find items, auctions, deals, and compare prices",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-ebay-search",
-      "files": [
-        "skills/capabilities/orthogonal-ebay-search/SKILL.md",
-        "skills/capabilities/orthogonal-ebay-search/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-ebay-search",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-ebay-search",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-email-campaign",
-      "name": "orthogonal-email-campaign",
-      "category": "capabilities",
-      "description": "Build email campaigns - find emails, verify them, and prepare outreach",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-email-campaign",
-      "files": [
-        "skills/capabilities/orthogonal-email-campaign/SKILL.md",
-        "skills/capabilities/orthogonal-email-campaign/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-email-campaign",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-email-campaign",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-exa",
-      "name": "orthogonal-exa",
-      "category": "capabilities",
-      "description": "Neural web search - find similar content, extract pages, and run deep research",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-exa",
-      "files": [
-        "skills/capabilities/orthogonal-exa/SKILL.md",
-        "skills/capabilities/orthogonal-exa/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-exa",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-exa",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-extract-webpage-data",
-      "name": "orthogonal-extract-webpage-data",
-      "category": "capabilities",
-      "description": "Extract structured data from web pages using AI",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-extract-webpage-data",
-      "files": [
-        "skills/capabilities/orthogonal-extract-webpage-data/SKILL.md",
-        "skills/capabilities/orthogonal-extract-webpage-data/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-extract-webpage-data",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-extract-webpage-data",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-fiber",
-      "name": "orthogonal-fiber",
-      "category": "capabilities",
-      "description": "People, company, investor, and job search with LinkedIn data enrichment",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-fiber",
-      "files": [
-        "skills/capabilities/orthogonal-fiber/SKILL.md",
-        "skills/capabilities/orthogonal-fiber/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-fiber",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-fiber",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-find-dentists",
-      "name": "orthogonal-find-dentists",
-      "category": "capabilities",
-      "description": "Build a sales prospect list of dental practices in a city — finds practices, decision makers, contact info, and buying signals. Use when asked to find dentists for outreach, prospect dental practices, build a lead list of dentists, or generate dental practice leads in a specific area.",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-find-dentists",
-      "files": [
-        "skills/capabilities/orthogonal-find-dentists/SKILL.md",
-        "skills/capabilities/orthogonal-find-dentists/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-find-dentists",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-find-dentists",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-find-email-by-name",
-      "name": "orthogonal-find-email-by-name",
-      "category": "capabilities",
-      "description": "Find someone's email address given their name and company",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-find-email-by-name",
-      "files": [
-        "skills/capabilities/orthogonal-find-email-by-name/SKILL.md",
-        "skills/capabilities/orthogonal-find-email-by-name/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-find-email-by-name",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-find-email-by-name",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-find-skill",
-      "name": "orthogonal-find-skill",
-      "category": "capabilities",
-      "description": "Find and install skills from the Orthogonal skill library. Use when you need capabilities you don't have, want to discover available skills, or need to add new tools to your agent.",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-find-skill",
-      "files": [
-        "skills/capabilities/orthogonal-find-skill/SKILL.md",
-        "skills/capabilities/orthogonal-find-skill/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-find-skill",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-find-skill",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-find-twitter-influencers",
-      "name": "orthogonal-find-twitter-influencers",
-      "category": "capabilities",
-      "description": "Find Twitter/X influencers to promote a product or brand. Use when asked to find influencers, discover Twitter accounts for partnerships, identify creators in a niche, or build an influencer outreach list.",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-find-twitter-influencers",
-      "files": [
-        "skills/capabilities/orthogonal-find-twitter-influencers/SKILL.md",
-        "skills/capabilities/orthogonal-find-twitter-influencers/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-find-twitter-influencers",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-find-twitter-influencers",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-get-brand-assets",
-      "name": "orthogonal-get-brand-assets",
-      "category": "capabilities",
-      "description": "Get company logos, brand colors, fonts, and style guides",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-get-brand-assets",
-      "files": [
-        "skills/capabilities/orthogonal-get-brand-assets/SKILL.md",
-        "skills/capabilities/orthogonal-get-brand-assets/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-get-brand-assets",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-get-brand-assets",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-gtm-enrichment-deep",
-      "name": "orthogonal-gtm-enrichment-deep",
-      "category": "capabilities",
-      "description": "AI-agent-powered lead enrichment using Sixtyfour as primary source. Takes an email (+ optional name) and returns comprehensive person + company data with funding, AI/B2B classification, and full error visibility. Higher cost (~$0.20/lead) but simpler architecture.",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-gtm-enrichment-deep",
-      "files": [
-        "skills/capabilities/orthogonal-gtm-enrichment-deep/SKILL.md",
-        "skills/capabilities/orthogonal-gtm-enrichment-deep/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-gtm-enrichment-deep",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-gtm-enrichment-deep",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-gtm-enrichment-smart",
-      "name": "orthogonal-gtm-enrichment-smart",
-      "category": "capabilities",
-      "description": "Multi-provider waterfall lead enrichment. Takes an email (+ optional name) and returns person + company data by cross-referencing cheap APIs first, using expensive AI agents only as fallback. Cost-efficient (~$0.04-$0.10/lead) with confidence scoring and full error visibility.",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-gtm-enrichment-smart",
-      "files": [
-        "skills/capabilities/orthogonal-gtm-enrichment-smart/SKILL.md",
-        "skills/capabilities/orthogonal-gtm-enrichment-smart/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-gtm-enrichment-smart",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-gtm-enrichment-smart",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-hunter",
-      "name": "orthogonal-hunter",
-      "category": "capabilities",
-      "description": "Email finder and verifier - find emails, verify deliverability, discover companies",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-hunter",
-      "files": [
-        "skills/capabilities/orthogonal-hunter/SKILL.md",
-        "skills/capabilities/orthogonal-hunter/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-hunter",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-hunter",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-image-analyzer",
-      "name": "orthogonal-image-analyzer",
-      "category": "capabilities",
-      "description": "Analyze images with AI - extract text, describe content, detect objects",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-image-analyzer",
-      "files": [
-        "skills/capabilities/orthogonal-image-analyzer/SKILL.md",
-        "skills/capabilities/orthogonal-image-analyzer/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-image-analyzer",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-image-analyzer",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-instagram-scraper",
-      "name": "orthogonal-instagram-scraper",
-      "category": "capabilities",
-      "description": "Get Instagram profiles, posts, and reels",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-instagram-scraper",
-      "files": [
-        "skills/capabilities/orthogonal-instagram-scraper/SKILL.md",
-        "skills/capabilities/orthogonal-instagram-scraper/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-instagram-scraper",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-instagram-scraper",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-investor-call-prep",
-      "name": "orthogonal-investor-call-prep",
-      "category": "capabilities",
-      "description": "Prepare for investor calls by pulling upcoming meetings from Google Calendar, deeply researching each investor and their firm (website scraping, portfolio analysis, thesis extraction), checking for competitor conflicts, and outputting an honest prep sheet with compatibility assessments. Use when asked to prep for investor meetings, fundraising calls, VC meetings, or demo day.",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-investor-call-prep",
-      "files": [
-        "skills/capabilities/orthogonal-investor-call-prep/SKILL.md",
-        "skills/capabilities/orthogonal-investor-call-prep/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-investor-call-prep",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-investor-call-prep",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-investor-research",
-      "name": "orthogonal-investor-research",
-      "category": "capabilities",
-      "description": "Research VCs, angels, and investors - portfolio, thesis, contact info",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-investor-research",
-      "files": [
-        "skills/capabilities/orthogonal-investor-research/SKILL.md",
-        "skills/capabilities/orthogonal-investor-research/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-investor-research",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-investor-research",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-jina-s",
-      "name": "orthogonal-jina-s",
-      "category": "capabilities",
-      "description": "Jina Search - fast web search returning SERP results",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-jina-s",
-      "files": [
-        "skills/capabilities/orthogonal-jina-s/SKILL.md",
-        "skills/capabilities/orthogonal-jina-s/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-jina-s",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-jina-s",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-job-search",
-      "name": "orthogonal-job-search",
-      "category": "capabilities",
-      "description": "Search for jobs matching your skills, experience, and preferences",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-job-search",
-      "files": [
-        "skills/capabilities/orthogonal-job-search/SKILL.md",
-        "skills/capabilities/orthogonal-job-search/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-job-search",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-job-search",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-lead-enrichment",
-      "name": "orthogonal-lead-enrichment",
-      "category": "capabilities",
-      "description": "Enrich leads with email, phone, company data using multiple data sources",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-lead-enrichment",
-      "files": [
-        "skills/capabilities/orthogonal-lead-enrichment/SKILL.md",
-        "skills/capabilities/orthogonal-lead-enrichment/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-lead-enrichment",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-lead-enrichment",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-linkedin-scraper",
-      "name": "orthogonal-linkedin-scraper",
-      "category": "capabilities",
-      "description": "Get LinkedIn profiles, company pages, and posts",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-linkedin-scraper",
-      "files": [
-        "skills/capabilities/orthogonal-linkedin-scraper/SKILL.md",
-        "skills/capabilities/orthogonal-linkedin-scraper/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-linkedin-scraper",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-linkedin-scraper",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-linkup",
-      "name": "orthogonal-linkup",
-      "category": "capabilities",
-      "description": "Web search and content fetching - search the web or extract content from URLs",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-linkup",
-      "files": [
-        "skills/capabilities/orthogonal-linkup/SKILL.md",
-        "skills/capabilities/orthogonal-linkup/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-linkup",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-linkup",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-logo",
-      "name": "orthogonal-logo",
-      "category": "capabilities",
-      "description": "Logo.dev - search for company domains by brand name",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-logo",
-      "files": [
-        "skills/capabilities/orthogonal-logo/SKILL.md",
-        "skills/capabilities/orthogonal-logo/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-logo",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-logo",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-market-research",
-      "name": "orthogonal-market-research",
-      "category": "capabilities",
-      "description": "Research market trends, size, competitors, and growth opportunities",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-market-research",
-      "files": [
-        "skills/capabilities/orthogonal-market-research/SKILL.md",
-        "skills/capabilities/orthogonal-market-research/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-market-research",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-market-research",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-notte",
-      "name": "orthogonal-notte",
-      "category": "capabilities",
-      "description": "Browser automation - control browser sessions, scrape pages, and run AI agents",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-notte",
-      "files": [
-        "skills/capabilities/orthogonal-notte/SKILL.md",
-        "skills/capabilities/orthogonal-notte/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-notte",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-notte",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-nyne",
-      "name": "orthogonal-nyne",
-      "category": "capabilities",
-      "description": "Intelligence and enrichment - person and company data, social profiles, events, and funding",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-nyne",
-      "files": [
-        "skills/capabilities/orthogonal-nyne/SKILL.md",
-        "skills/capabilities/orthogonal-nyne/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-nyne",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-nyne",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-olostep",
-      "name": "orthogonal-olostep",
-      "category": "capabilities",
-      "description": "Web scraping, crawling, and AI-powered answer extraction at scale",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-olostep",
-      "files": [
-        "skills/capabilities/orthogonal-olostep/SKILL.md",
-        "skills/capabilities/orthogonal-olostep/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-olostep",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-olostep",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-parallel",
-      "name": "orthogonal-parallel",
-      "category": "capabilities",
-      "description": "Web research API with OpenAI-compatible chat completions and async tasks",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-parallel",
-      "files": [
-        "skills/capabilities/orthogonal-parallel/SKILL.md",
-        "skills/capabilities/orthogonal-parallel/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-parallel",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-parallel",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-pdf-processor",
-      "name": "orthogonal-pdf-processor",
-      "category": "capabilities",
-      "description": "Process PDFs - extract text, tables, and structured data from documents",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-pdf-processor",
-      "files": [
-        "skills/capabilities/orthogonal-pdf-processor/SKILL.md",
-        "skills/capabilities/orthogonal-pdf-processor/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-pdf-processor",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-pdf-processor",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-perplexity",
-      "name": "orthogonal-perplexity",
-      "category": "capabilities",
-      "description": "Perplexity AI search and chat completions with real-time web data",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-perplexity",
-      "files": [
-        "skills/capabilities/orthogonal-perplexity/SKILL.md",
-        "skills/capabilities/orthogonal-perplexity/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-perplexity",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-perplexity",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-person-lookup",
-      "name": "orthogonal-person-lookup",
-      "category": "capabilities",
-      "description": "Look up information about a person - work history, social profiles, contact info",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-person-lookup",
-      "files": [
-        "skills/capabilities/orthogonal-person-lookup/SKILL.md",
-        "skills/capabilities/orthogonal-person-lookup/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-person-lookup",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-person-lookup",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-phone-verification",
-      "name": "orthogonal-phone-verification",
-      "category": "capabilities",
-      "description": "Verify phone numbers using SMS one-time codes via the Didit API. Use when you need to confirm a user owns a phone number, implement SMS-based 2FA, or validate phone during signup/onboarding flows.",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-phone-verification",
-      "files": [
-        "skills/capabilities/orthogonal-phone-verification/SKILL.md",
-        "skills/capabilities/orthogonal-phone-verification/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-phone-verification",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-phone-verification",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-precip",
-      "name": "orthogonal-precip",
-      "category": "capabilities",
-      "description": "Hyperlocal weather data - precipitation, temperature, wind, soil moisture and more",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-precip",
-      "files": [
-        "skills/capabilities/orthogonal-precip/SKILL.md",
-        "skills/capabilities/orthogonal-precip/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-precip",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-precip",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-prediction-market-odds",
-      "name": "orthogonal-prediction-market-odds",
-      "category": "capabilities",
-      "description": "Get prediction market odds and prices from Polymarket and Kalshi",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-prediction-market-odds",
-      "files": [
-        "skills/capabilities/orthogonal-prediction-market-odds/SKILL.md",
-        "skills/capabilities/orthogonal-prediction-market-odds/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-prediction-market-odds",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-prediction-market-odds",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-remotion-best-practices",
-      "name": "orthogonal-remotion-best-practices",
-      "category": "capabilities",
-      "description": "Best practices for Remotion - Video creation in React",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-remotion-best-practices",
-      "files": [
-        "skills/capabilities/orthogonal-remotion-best-practices/SKILL.md",
-        "skills/capabilities/orthogonal-remotion-best-practices/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-remotion-best-practices",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-remotion-best-practices",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-restaurant-booking",
-      "name": "orthogonal-restaurant-booking",
-      "category": "capabilities",
-      "description": "Book restaurant reservations via browser automation. Use when asked to make dinner reservations, book a table, or find availability at restaurants. Supports OpenTable, Resy, and direct restaurant booking sites.",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-restaurant-booking",
-      "files": [
-        "skills/capabilities/orthogonal-restaurant-booking/SKILL.md",
-        "skills/capabilities/orthogonal-restaurant-booking/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-restaurant-booking",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-restaurant-booking",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-riveter",
-      "name": "orthogonal-riveter",
-      "category": "capabilities",
-      "description": "Web scraping with structured data extraction - define your output schema",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-riveter",
-      "files": [
-        "skills/capabilities/orthogonal-riveter/SKILL.md",
-        "skills/capabilities/orthogonal-riveter/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-riveter",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-riveter",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-sales-prospecting",
-      "name": "orthogonal-sales-prospecting",
-      "category": "capabilities",
-      "description": "Build targeted prospect lists with verified contact information",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-sales-prospecting",
-      "files": [
-        "skills/capabilities/orthogonal-sales-prospecting/SKILL.md",
-        "skills/capabilities/orthogonal-sales-prospecting/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-sales-prospecting",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-sales-prospecting",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-scrape",
-      "name": "orthogonal-scrape",
-      "category": "capabilities",
-      "description": "Scrape websites, extract structured data, and automate browsers. Use when asked to scrape, extract, crawl, parse, or pull data from web pages or any URL.",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-scrape",
-      "files": [
-        "skills/capabilities/orthogonal-scrape/SKILL.md",
-        "skills/capabilities/orthogonal-scrape/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-scrape",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-scrape",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-scrapecreators",
-      "name": "orthogonal-scrapecreators",
-      "category": "capabilities",
-      "description": "Social media scraping - Instagram, TikTok, LinkedIn, and X/Twitter profiles, posts, and content",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-scrapecreators",
-      "files": [
-        "skills/capabilities/orthogonal-scrapecreators/SKILL.md",
-        "skills/capabilities/orthogonal-scrapecreators/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-scrapecreators",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-scrapecreators",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-scrapegraph",
-      "name": "orthogonal-scrapegraph",
-      "category": "capabilities",
-      "description": "AI-powered web scraping - extract data using natural language prompts",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-scrapegraph",
-      "files": [
-        "skills/capabilities/orthogonal-scrapegraph/SKILL.md",
-        "skills/capabilities/orthogonal-scrapegraph/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-scrapegraph",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-scrapegraph",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-screenshot-website",
-      "name": "orthogonal-screenshot-website",
-      "category": "capabilities",
-      "description": "Take screenshots of any website using Notte browser automation. Use when asked to screenshot, capture, or snap a webpage.",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-screenshot-website",
-      "files": [
-        "skills/capabilities/orthogonal-screenshot-website/SKILL.md",
-        "skills/capabilities/orthogonal-screenshot-website/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-screenshot-website",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-screenshot-website",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-search",
-      "name": "orthogonal-search",
-      "category": "capabilities",
-      "description": "Search the web, platforms, and datasets. Use when asked to search, find, look up, research, or discover information from the web, YouTube, Amazon, eBay, news, academic sources, or any online platform.",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-search",
-      "files": [
-        "skills/capabilities/orthogonal-search/SKILL.md",
-        "skills/capabilities/orthogonal-search/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-search",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-search",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-searchapi",
-      "name": "orthogonal-searchapi",
-      "category": "capabilities",
-      "description": "Multi-platform search - YouTube, Amazon, eBay, Walmart, TikTok, Instagram, and more",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-searchapi",
-      "files": [
-        "skills/capabilities/orthogonal-searchapi/SKILL.md",
-        "skills/capabilities/orthogonal-searchapi/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-searchapi",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-searchapi",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-send-text-message",
-      "name": "orthogonal-send-text-message",
-      "category": "capabilities",
-      "description": "Send SMS text messages to phone numbers. Use when the user asks to send a text, send an SMS, text someone, message a phone number, or send a notification via text message.",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-send-text-message",
-      "files": [
-        "skills/capabilities/orthogonal-send-text-message/SKILL.md",
-        "skills/capabilities/orthogonal-send-text-message/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-send-text-message",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-send-text-message",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-seo-analyzer",
-      "name": "orthogonal-seo-analyzer",
-      "category": "capabilities",
-      "description": "Analyze website SEO - keywords, content, competitors, and improvement opportunities",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-seo-analyzer",
-      "files": [
-        "skills/capabilities/orthogonal-seo-analyzer/SKILL.md",
-        "skills/capabilities/orthogonal-seo-analyzer/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-seo-analyzer",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-seo-analyzer",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-sixtyfour",
-      "name": "orthogonal-sixtyfour",
-      "category": "capabilities",
-      "description": "AI-powered lead enrichment - find emails, phones, and enrich company/lead data",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-sixtyfour",
-      "files": [
-        "skills/capabilities/orthogonal-sixtyfour/SKILL.md",
-        "skills/capabilities/orthogonal-sixtyfour/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-sixtyfour",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-sixtyfour",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-skill-creator",
-      "name": "orthogonal-skill-creator",
-      "category": "capabilities",
-      "description": "Create, structure, and package agent skills. Use when designing new skills, updating existing skills, or helping users build skills with scripts, references, and assets. Triggers on requests to create skills, write SKILL.md files, or structure skill directories.",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-skill-creator",
-      "files": [
-        "skills/capabilities/orthogonal-skill-creator/SKILL.md",
-        "skills/capabilities/orthogonal-skill-creator/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-skill-creator",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-skill-creator",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-social-listening",
-      "name": "orthogonal-social-listening",
-      "category": "capabilities",
-      "description": "Monitor brand mentions, competitor activity, and industry conversations across social media and the web",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-social-listening",
-      "files": [
-        "skills/capabilities/orthogonal-social-listening/SKILL.md",
-        "skills/capabilities/orthogonal-social-listening/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-social-listening",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-social-listening",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-tako",
-      "name": "orthogonal-tako",
-      "category": "capabilities",
-      "description": "Search and visualize the world's data - get charts, insights, and embeddable knowledge cards for finance, economics, demographics, sports, and more",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-tako",
-      "files": [
-        "skills/capabilities/orthogonal-tako/SKILL.md",
-        "skills/capabilities/orthogonal-tako/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-tako",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-tako",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-targeted-prospecting",
-      "name": "orthogonal-targeted-prospecting",
-      "category": "capabilities",
-      "description": "Build a prospect list of companies with decision makers, verified contact info, and hiring/intent signals. Use when asked to find leads by industry, build an account list with specific titles, prospect companies that are actively hiring, or create a targeted outreach list filtered by company size, location, and hiring activity.",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-targeted-prospecting",
-      "files": [
-        "skills/capabilities/orthogonal-targeted-prospecting/SKILL.md",
-        "skills/capabilities/orthogonal-targeted-prospecting/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-targeted-prospecting",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-targeted-prospecting",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-tavily",
-      "name": "orthogonal-tavily",
-      "category": "capabilities",
-      "description": "AI-powered web search, crawling, extraction, and deep research",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-tavily",
-      "files": [
-        "skills/capabilities/orthogonal-tavily/SKILL.md",
-        "skills/capabilities/orthogonal-tavily/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-tavily",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-tavily",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-tavus",
-      "name": "orthogonal-tavus",
-      "category": "capabilities",
-      "description": "AI video conversations - create real-time video calls with AI personas",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-tavus",
-      "files": [
-        "skills/capabilities/orthogonal-tavus/SKILL.md",
-        "skills/capabilities/orthogonal-tavus/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-tavus",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-tavus",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-team-linkedin-profiles",
-      "name": "orthogonal-team-linkedin-profiles",
-      "category": "capabilities",
-      "description": "Find LinkedIn profiles of a specific team or department at a company. Use when asked to get LinkedIn profiles, find team members, or look up people in a particular team/department/group at a company.",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-team-linkedin-profiles",
-      "files": [
-        "skills/capabilities/orthogonal-team-linkedin-profiles/SKILL.md",
-        "skills/capabilities/orthogonal-team-linkedin-profiles/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-team-linkedin-profiles",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-team-linkedin-profiles",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-textbelt",
-      "name": "orthogonal-textbelt",
-      "category": "capabilities",
-      "description": "Send SMS messages programmatically - simple HTTP API for text messaging",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-textbelt",
-      "files": [
-        "skills/capabilities/orthogonal-textbelt/SKILL.md",
-        "skills/capabilities/orthogonal-textbelt/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-textbelt",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-textbelt",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-tiktok-search",
-      "name": "orthogonal-tiktok-search",
-      "category": "capabilities",
-      "description": "Search TikTok - find profiles, videos, hashtags, and trending content",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-tiktok-search",
-      "files": [
-        "skills/capabilities/orthogonal-tiktok-search/SKILL.md",
-        "skills/capabilities/orthogonal-tiktok-search/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-tiktok-search",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-tiktok-search",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-tomba",
-      "name": "orthogonal-tomba",
-      "category": "capabilities",
-      "description": "Email finder and verifier - find emails from domains, LinkedIn, or company search",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-tomba",
-      "files": [
-        "skills/capabilities/orthogonal-tomba/SKILL.md",
-        "skills/capabilities/orthogonal-tomba/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-tomba",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-tomba",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-twitter-profile-lookup",
-      "name": "orthogonal-twitter-profile-lookup",
-      "category": "capabilities",
-      "description": "Look up Twitter/X profiles - get bio, followers, tweets, and engagement",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-twitter-profile-lookup",
-      "files": [
-        "skills/capabilities/orthogonal-twitter-profile-lookup/SKILL.md",
-        "skills/capabilities/orthogonal-twitter-profile-lookup/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-twitter-profile-lookup",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-twitter-profile-lookup",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-uptime-monitor",
-      "name": "orthogonal-uptime-monitor",
-      "category": "capabilities",
-      "description": "Monitor website uptime - check availability, response times, and status",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-uptime-monitor",
-      "files": [
-        "skills/capabilities/orthogonal-uptime-monitor/SKILL.md",
-        "skills/capabilities/orthogonal-uptime-monitor/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-uptime-monitor",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-uptime-monitor",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-valyu",
-      "name": "orthogonal-valyu",
-      "category": "capabilities",
-      "description": "Web search, AI answers, content extraction, and async deep research",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-valyu",
-      "files": [
-        "skills/capabilities/orthogonal-valyu/SKILL.md",
-        "skills/capabilities/orthogonal-valyu/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-valyu",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-valyu",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-verify-email",
-      "name": "orthogonal-verify-email",
-      "category": "capabilities",
-      "description": "Verify if an email address is valid and deliverable",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-verify-email",
-      "files": [
-        "skills/capabilities/orthogonal-verify-email/SKILL.md",
-        "skills/capabilities/orthogonal-verify-email/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-verify-email",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-verify-email",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-vhs-terminal-recordings",
-      "name": "orthogonal-vhs-terminal-recordings",
-      "category": "capabilities",
-      "description": "Create polished terminal GIF recordings using VHS (Video Hardware Software) by Charmbracelet. Use when asked to create terminal demos, CLI gifs, command-line recordings, or animated terminal screenshots for documentation, READMEs, or marketing.",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-vhs-terminal-recordings",
-      "files": [
-        "skills/capabilities/orthogonal-vhs-terminal-recordings/SKILL.md",
-        "skills/capabilities/orthogonal-vhs-terminal-recordings/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-vhs-terminal-recordings",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-vhs-terminal-recordings",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-weather",
-      "name": "orthogonal-weather",
-      "category": "capabilities",
-      "description": "Get current weather and forecasts using free APIs (no API key required). Use when asked about weather, temperature, forecasts, or climate conditions for any location.",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-weather",
-      "files": [
-        "skills/capabilities/orthogonal-weather/SKILL.md",
-        "skills/capabilities/orthogonal-weather/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-weather",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-weather",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-weather-forecast",
-      "name": "orthogonal-weather-forecast",
-      "category": "capabilities",
-      "description": "Get weather forecasts - temperature, precipitation, wind, and conditions",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-weather-forecast",
-      "files": [
-        "skills/capabilities/orthogonal-weather-forecast/SKILL.md",
-        "skills/capabilities/orthogonal-weather-forecast/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-weather-forecast",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-weather-forecast",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-website-screenshot",
-      "name": "orthogonal-website-screenshot",
-      "category": "capabilities",
-      "description": "Take screenshots of websites and web pages",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-website-screenshot",
-      "files": [
-        "skills/capabilities/orthogonal-website-screenshot/SKILL.md",
-        "skills/capabilities/orthogonal-website-screenshot/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-website-screenshot",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-website-screenshot",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "orthogonal-yc-batch-evaluator",
-      "name": "orthogonal-yc-batch-evaluator",
-      "category": "capabilities",
-      "description": "Evaluate YC batch companies for investment — scrapes the YC directory, researches each company and its founders (work history, LinkedIn, website), assesses founder-company fit, and exports to Google Sheets with priority rankings. Use when asked to evaluate YC companies, research a YC batch, screen startups, or do due diligence on YC companies.",
-      "tags": "",
-      "path": "skills/capabilities/orthogonal-yc-batch-evaluator",
-      "files": [
-        "skills/capabilities/orthogonal-yc-batch-evaluator/SKILL.md",
-        "skills/capabilities/orthogonal-yc-batch-evaluator/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "orthogonal-yc-batch-evaluator",
-        "category": "capabilities",
-        "tags": [],
-        "source": "orthogonal",
-        "installation": {
-          "base_command": "npx goose-skills install orthogonal-yc-batch-evaluator",
           "supports": [
             "claude",
             "cursor",
@@ -4977,6 +3937,110 @@
       }
     },
     {
+      "slug": "pdf-processor",
+      "name": "pdf-processor",
+      "category": "capabilities",
+      "description": "Process PDFs - extract text, tables, and structured data from documents",
+      "tags": "",
+      "path": "skills/capabilities/pdf-processor",
+      "files": [
+        "skills/capabilities/pdf-processor/SKILL.md",
+        "skills/capabilities/pdf-processor/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "pdf-processor",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install pdf-processor",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "people-company-search-fiber",
+      "name": "people-company-search-fiber",
+      "category": "capabilities",
+      "description": "People, company, investor, and job search with LinkedIn data enrichment",
+      "tags": "",
+      "path": "skills/capabilities/people-company-search-fiber",
+      "files": [
+        "skills/capabilities/people-company-search-fiber/SKILL.md",
+        "skills/capabilities/people-company-search-fiber/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "people-company-search-fiber",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install people-company-search-fiber",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "person-lookup",
+      "name": "person-lookup",
+      "category": "capabilities",
+      "description": "Look up information about a person - work history, social profiles, contact info",
+      "tags": "",
+      "path": "skills/capabilities/person-lookup",
+      "files": [
+        "skills/capabilities/person-lookup/SKILL.md",
+        "skills/capabilities/person-lookup/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "person-lookup",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install person-lookup",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "phone-verification",
+      "name": "phone-verification",
+      "category": "capabilities",
+      "description": "Verify phone numbers using SMS one-time codes via the Didit API. Use when you need to confirm a user owns a phone number, implement SMS-based 2FA, or validate phone during signup/onboarding flows.",
+      "tags": "",
+      "path": "skills/capabilities/phone-verification",
+      "files": [
+        "skills/capabilities/phone-verification/SKILL.md",
+        "skills/capabilities/phone-verification/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "phone-verification",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install phone-verification",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
       "slug": "pipeline-review",
       "name": "pipeline-review",
       "category": "composites",
@@ -5004,6 +4068,58 @@
         "requires_skills": [
           "cold-email-outreach"
         ]
+      }
+    },
+    {
+      "slug": "prediction-market-odds",
+      "name": "prediction-market-odds",
+      "category": "capabilities",
+      "description": "Get prediction market odds and prices from Polymarket and Kalshi",
+      "tags": "",
+      "path": "skills/capabilities/prediction-market-odds",
+      "files": [
+        "skills/capabilities/prediction-market-odds/SKILL.md",
+        "skills/capabilities/prediction-market-odds/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "prediction-market-odds",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install prediction-market-odds",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "prediction-markets-dome",
+      "name": "prediction-markets-dome",
+      "category": "capabilities",
+      "description": "Prediction markets data - Polymarket, Kalshi markets, prices, positions, and trades",
+      "tags": "",
+      "path": "skills/capabilities/prediction-markets-dome",
+      "files": [
+        "skills/capabilities/prediction-markets-dome/SKILL.md",
+        "skills/capabilities/prediction-markets-dome/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "prediction-markets-dome",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install prediction-markets-dome",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
       }
     },
     {
@@ -5127,6 +4243,58 @@
       }
     },
     {
+      "slug": "remotion-best-practices",
+      "name": "remotion-best-practices",
+      "category": "capabilities",
+      "description": "Best practices for Remotion - Video creation in React",
+      "tags": "",
+      "path": "skills/capabilities/remotion-best-practices",
+      "files": [
+        "skills/capabilities/remotion-best-practices/SKILL.md",
+        "skills/capabilities/remotion-best-practices/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "remotion-best-practices",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install remotion-best-practices",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "restaurant-booking",
+      "name": "restaurant-booking",
+      "category": "capabilities",
+      "description": "Book restaurant reservations via browser automation. Use when asked to make dinner reservations, book a table, or find availability at restaurants. Supports OpenTable, Resy, and direct restaurant booking sites.",
+      "tags": "",
+      "path": "skills/capabilities/restaurant-booking",
+      "files": [
+        "skills/capabilities/restaurant-booking/SKILL.md",
+        "skills/capabilities/restaurant-booking/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "restaurant-booking",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install restaurant-booking",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
       "slug": "review-intelligence-digest",
       "name": "review-intelligence-digest",
       "category": "composites",
@@ -5239,6 +4407,84 @@
         "requires_skills": [
           "email-drafting"
         ]
+      }
+    },
+    {
+      "slug": "sales-prospecting",
+      "name": "sales-prospecting",
+      "category": "capabilities",
+      "description": "Build targeted prospect lists with verified contact information",
+      "tags": "",
+      "path": "skills/capabilities/sales-prospecting",
+      "files": [
+        "skills/capabilities/sales-prospecting/SKILL.md",
+        "skills/capabilities/sales-prospecting/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "sales-prospecting",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install sales-prospecting",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "send-sms-textbelt",
+      "name": "send-sms-textbelt",
+      "category": "capabilities",
+      "description": "Send SMS text messages to phone numbers. Use when the user asks to send a text, send an SMS, text someone, message a phone number, or send a notification via text message.",
+      "tags": "",
+      "path": "skills/capabilities/send-sms-textbelt",
+      "files": [
+        "skills/capabilities/send-sms-textbelt/SKILL.md",
+        "skills/capabilities/send-sms-textbelt/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "send-sms-textbelt",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install send-sms-textbelt",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "seo-analyzer",
+      "name": "seo-analyzer",
+      "category": "capabilities",
+      "description": "Analyze website SEO - keywords, content, competitors, and improvement opportunities",
+      "tags": "",
+      "path": "skills/capabilities/seo-analyzer",
+      "files": [
+        "skills/capabilities/seo-analyzer/SKILL.md",
+        "skills/capabilities/seo-analyzer/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "seo-analyzer",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install seo-analyzer",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
       }
     },
     {
@@ -5511,6 +4757,32 @@
       }
     },
     {
+      "slug": "skill-creator",
+      "name": "skill-creator",
+      "category": "capabilities",
+      "description": "Create, structure, and package agent skills. Use when designing new skills, updating existing skills, or helping users build skills with scripts, references, and assets. Triggers on requests to create skills, write SKILL.md files, or structure skill directories.",
+      "tags": "",
+      "path": "skills/capabilities/skill-creator",
+      "files": [
+        "skills/capabilities/skill-creator/SKILL.md",
+        "skills/capabilities/skill-creator/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "skill-creator",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install skill-creator",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
       "slug": "social-kit",
       "name": "social-kit",
       "category": "composites",
@@ -5553,6 +4825,58 @@
       }
     },
     {
+      "slug": "social-listening",
+      "name": "social-listening",
+      "category": "capabilities",
+      "description": "Monitor brand mentions, competitor activity, and industry conversations across social media and the web",
+      "tags": "",
+      "path": "skills/capabilities/social-listening",
+      "files": [
+        "skills/capabilities/social-listening/SKILL.md",
+        "skills/capabilities/social-listening/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "social-listening",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install social-listening",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "social-media-scraping-scrapecreators",
+      "name": "social-media-scraping-scrapecreators",
+      "category": "capabilities",
+      "description": "Social media scraping - Instagram, TikTok, LinkedIn, and X/Twitter profiles, posts, and content",
+      "tags": "",
+      "path": "skills/capabilities/social-media-scraping-scrapecreators",
+      "files": [
+        "skills/capabilities/social-media-scraping-scrapecreators/SKILL.md",
+        "skills/capabilities/social-media-scraping-scrapecreators/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "social-media-scraping-scrapecreators",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install social-media-scraping-scrapecreators",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
       "slug": "sponsored-newsletter-finder",
       "name": "sponsored-newsletter-finder",
       "category": "composites",
@@ -5580,6 +4904,32 @@
       }
     },
     {
+      "slug": "structured-scraping-riveter",
+      "name": "structured-scraping-riveter",
+      "category": "capabilities",
+      "description": "Web scraping with structured data extraction - define your output schema",
+      "tags": "",
+      "path": "skills/capabilities/structured-scraping-riveter",
+      "files": [
+        "skills/capabilities/structured-scraping-riveter/SKILL.md",
+        "skills/capabilities/structured-scraping-riveter/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "structured-scraping-riveter",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install structured-scraping-riveter",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
       "slug": "tam-builder",
       "name": "tam-builder",
       "category": "capabilities",
@@ -5598,6 +4948,58 @@
         ],
         "installation": {
           "base_command": "npx goose-skills install tam-builder",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "targeted-prospecting",
+      "name": "targeted-prospecting",
+      "category": "capabilities",
+      "description": "Build a prospect list of companies with decision makers, verified contact info, and hiring/intent signals. Use when asked to find leads by industry, build an account list with specific titles, prospect companies that are actively hiring, or create a targeted outreach list filtered by company size, location, and hiring activity.",
+      "tags": "",
+      "path": "skills/capabilities/targeted-prospecting",
+      "files": [
+        "skills/capabilities/targeted-prospecting/SKILL.md",
+        "skills/capabilities/targeted-prospecting/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "targeted-prospecting",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install targeted-prospecting",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "team-linkedin-profiles",
+      "name": "team-linkedin-profiles",
+      "category": "capabilities",
+      "description": "Find LinkedIn profiles of a specific team or department at a company. Use when asked to get LinkedIn profiles, find team members, or look up people in a particular team/department/group at a company.",
+      "tags": "",
+      "path": "skills/capabilities/team-linkedin-profiles",
+      "files": [
+        "skills/capabilities/team-linkedin-profiles/SKILL.md",
+        "skills/capabilities/team-linkedin-profiles/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "team-linkedin-profiles",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install team-linkedin-profiles",
           "supports": [
             "claude",
             "cursor",
@@ -5635,6 +5037,32 @@
       }
     },
     {
+      "slug": "terminal-gif-recordings",
+      "name": "terminal-gif-recordings",
+      "category": "capabilities",
+      "description": "Create polished terminal GIF recordings using VHS (Video Hardware Software) by Charmbracelet. Use when asked to create terminal demos, CLI gifs, command-line recordings, or animated terminal screenshots for documentation, READMEs, or marketing.",
+      "tags": "",
+      "path": "skills/capabilities/terminal-gif-recordings",
+      "files": [
+        "skills/capabilities/terminal-gif-recordings/SKILL.md",
+        "skills/capabilities/terminal-gif-recordings/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "terminal-gif-recordings",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install terminal-gif-recordings",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
       "slug": "tiktok-influencer-finder",
       "name": "tiktok-influencer-finder",
       "category": "capabilities",
@@ -5654,6 +5082,32 @@
         ],
         "installation": {
           "base_command": "npx goose-skills install tiktok-influencer-finder",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "tiktok-search",
+      "name": "tiktok-search",
+      "category": "capabilities",
+      "description": "Search TikTok - find profiles, videos, hashtags, and trending content",
+      "tags": "",
+      "path": "skills/capabilities/tiktok-search",
+      "files": [
+        "skills/capabilities/tiktok-search/SKILL.md",
+        "skills/capabilities/tiktok-search/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "tiktok-search",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install tiktok-search",
           "supports": [
             "claude",
             "cursor",
@@ -5756,6 +5210,84 @@
       }
     },
     {
+      "slug": "twitter-profile-lookup",
+      "name": "twitter-profile-lookup",
+      "category": "capabilities",
+      "description": "Look up Twitter/X profiles - get bio, followers, tweets, and engagement",
+      "tags": "",
+      "path": "skills/capabilities/twitter-profile-lookup",
+      "files": [
+        "skills/capabilities/twitter-profile-lookup/SKILL.md",
+        "skills/capabilities/twitter-profile-lookup/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "twitter-profile-lookup",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install twitter-profile-lookup",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "uptime-monitor",
+      "name": "uptime-monitor",
+      "category": "capabilities",
+      "description": "Monitor website uptime - check availability, response times, and status",
+      "tags": "",
+      "path": "skills/capabilities/uptime-monitor",
+      "files": [
+        "skills/capabilities/uptime-monitor/SKILL.md",
+        "skills/capabilities/uptime-monitor/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "uptime-monitor",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install uptime-monitor",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "verify-email",
+      "name": "verify-email",
+      "category": "capabilities",
+      "description": "Verify if an email address is valid and deliverable",
+      "tags": "",
+      "path": "skills/capabilities/verify-email",
+      "files": [
+        "skills/capabilities/verify-email/SKILL.md",
+        "skills/capabilities/verify-email/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "verify-email",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install verify-email",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
       "slug": "visual-brand-extractor",
       "name": "visual-brand-extractor",
       "category": "capabilities",
@@ -5815,6 +5347,32 @@
       }
     },
     {
+      "slug": "weather",
+      "name": "weather",
+      "category": "capabilities",
+      "description": "Get current weather and forecasts using free APIs (no API key required). Use when asked about weather, temperature, forecasts, or climate conditions for any location.",
+      "tags": "",
+      "path": "skills/capabilities/weather",
+      "files": [
+        "skills/capabilities/weather/SKILL.md",
+        "skills/capabilities/weather/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "weather",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install weather",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
       "slug": "web-archive-scraper",
       "name": "web-archive-scraper",
       "category": "capabilities",
@@ -5834,6 +5392,344 @@
         ],
         "installation": {
           "base_command": "npx goose-skills install web-archive-scraper",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "web-research-parallel",
+      "name": "web-research-parallel",
+      "category": "capabilities",
+      "description": "Web research API with OpenAI-compatible chat completions and async tasks",
+      "tags": "",
+      "path": "skills/capabilities/web-research-parallel",
+      "files": [
+        "skills/capabilities/web-research-parallel/SKILL.md",
+        "skills/capabilities/web-research-parallel/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "web-research-parallel",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install web-research-parallel",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "web-scraping",
+      "name": "web-scraping",
+      "category": "capabilities",
+      "description": "Scrape websites, extract structured data, and automate browsers. Use when asked to scrape, extract, crawl, parse, or pull data from web pages or any URL.",
+      "tags": "",
+      "path": "skills/capabilities/web-scraping",
+      "files": [
+        "skills/capabilities/web-scraping/SKILL.md",
+        "skills/capabilities/web-scraping/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "web-scraping",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install web-scraping",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "web-scraping-olostep",
+      "name": "web-scraping-olostep",
+      "category": "capabilities",
+      "description": "Web scraping, crawling, and AI-powered answer extraction at scale",
+      "tags": "",
+      "path": "skills/capabilities/web-scraping-olostep",
+      "files": [
+        "skills/capabilities/web-scraping-olostep/SKILL.md",
+        "skills/capabilities/web-scraping-olostep/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "web-scraping-olostep",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install web-scraping-olostep",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "web-search",
+      "name": "web-search",
+      "category": "capabilities",
+      "description": "Search the web, platforms, and datasets. Use when asked to search, find, look up, research, or discover information from the web, YouTube, Amazon, eBay, news, academic sources, or any online platform.",
+      "tags": "",
+      "path": "skills/capabilities/web-search",
+      "files": [
+        "skills/capabilities/web-search/SKILL.md",
+        "skills/capabilities/web-search/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "web-search",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install web-search",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "web-search-andi",
+      "name": "web-search-andi",
+      "category": "capabilities",
+      "description": "Fast, high-quality web search with intelligent ranking and instant answers",
+      "tags": "",
+      "path": "skills/capabilities/web-search-andi",
+      "files": [
+        "skills/capabilities/web-search-andi/SKILL.md",
+        "skills/capabilities/web-search-andi/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "web-search-andi",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install web-search-andi",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "web-search-exa",
+      "name": "web-search-exa",
+      "category": "capabilities",
+      "description": "Neural web search - find similar content, extract pages, and run deep research",
+      "tags": "",
+      "path": "skills/capabilities/web-search-exa",
+      "files": [
+        "skills/capabilities/web-search-exa/SKILL.md",
+        "skills/capabilities/web-search-exa/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "web-search-exa",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install web-search-exa",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "web-search-jina",
+      "name": "web-search-jina",
+      "category": "capabilities",
+      "description": "Jina Search - fast web search returning SERP results",
+      "tags": "",
+      "path": "skills/capabilities/web-search-jina",
+      "files": [
+        "skills/capabilities/web-search-jina/SKILL.md",
+        "skills/capabilities/web-search-jina/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "web-search-jina",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install web-search-jina",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "web-search-linkup",
+      "name": "web-search-linkup",
+      "category": "capabilities",
+      "description": "Web search and content fetching - search the web or extract content from URLs",
+      "tags": "",
+      "path": "skills/capabilities/web-search-linkup",
+      "files": [
+        "skills/capabilities/web-search-linkup/SKILL.md",
+        "skills/capabilities/web-search-linkup/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "web-search-linkup",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install web-search-linkup",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "web-search-perplexity",
+      "name": "web-search-perplexity",
+      "category": "capabilities",
+      "description": "Perplexity AI search and chat completions with real-time web data",
+      "tags": "",
+      "path": "skills/capabilities/web-search-perplexity",
+      "files": [
+        "skills/capabilities/web-search-perplexity/SKILL.md",
+        "skills/capabilities/web-search-perplexity/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "web-search-perplexity",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install web-search-perplexity",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "web-search-tavily",
+      "name": "web-search-tavily",
+      "category": "capabilities",
+      "description": "AI-powered web search, crawling, extraction, and deep research",
+      "tags": "",
+      "path": "skills/capabilities/web-search-tavily",
+      "files": [
+        "skills/capabilities/web-search-tavily/SKILL.md",
+        "skills/capabilities/web-search-tavily/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "web-search-tavily",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install web-search-tavily",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "web-search-valyu",
+      "name": "web-search-valyu",
+      "category": "capabilities",
+      "description": "Web search, AI answers, content extraction, and async deep research",
+      "tags": "",
+      "path": "skills/capabilities/web-search-valyu",
+      "files": [
+        "skills/capabilities/web-search-valyu/SKILL.md",
+        "skills/capabilities/web-search-valyu/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "web-search-valyu",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install web-search-valyu",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "website-screenshot-notte",
+      "name": "website-screenshot-notte",
+      "category": "capabilities",
+      "description": "Take screenshots of any website using Notte browser automation. Use when asked to screenshot, capture, or snap a webpage.",
+      "tags": "",
+      "path": "skills/capabilities/website-screenshot-notte",
+      "files": [
+        "skills/capabilities/website-screenshot-notte/SKILL.md",
+        "skills/capabilities/website-screenshot-notte/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "website-screenshot-notte",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install website-screenshot-notte",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "yc-batch-evaluator",
+      "name": "yc-batch-evaluator",
+      "category": "capabilities",
+      "description": "Evaluate YC batch companies for investment — scrapes the YC directory, researches each company and its founders (work history, LinkedIn, website), assesses founder-company fit, and exports to Google Sheets with priority rankings. Use when asked to evaluate YC companies, research a YC batch, screen startups, or do due diligence on YC companies.",
+      "tags": "",
+      "path": "skills/capabilities/yc-batch-evaluator",
+      "files": [
+        "skills/capabilities/yc-batch-evaluator/SKILL.md",
+        "skills/capabilities/yc-batch-evaluator/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "yc-batch-evaluator",
+        "category": "capabilities",
+        "tags": [],
+        "source": "orthogonal",
+        "installation": {
+          "base_command": "npx goose-skills install yc-batch-evaluator",
           "supports": [
             "claude",
             "cursor",
