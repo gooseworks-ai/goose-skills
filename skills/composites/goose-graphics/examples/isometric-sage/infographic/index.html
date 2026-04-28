@@ -10,12 +10,8 @@
             --color-sage: #7BA88E;
             --color-white: #FFFFFF;
             --color-dark: #1A1A1A;
-            --color-desk: #2C3E35;
-            --color-mid: #5A8A6E;
-            --color-light: #A3C4B0;
             --color-pale: #E8F0EC;
-            --color-shadow: #3D5C4A;
-            --color-forest: #3D5C4A;
+            --color-accent: #2C3E35;
 
             --font-display: 'Space Grotesk', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
             --font-body: 'Inter', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
@@ -62,13 +58,11 @@
 
         /* ===== HEADER ===== */
         .header {
-            min-height: 1080px;
-            padding: 60px;
+            padding: 120px 60px 100px;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            gap: 40px;
             position: relative;
-            overflow: hidden;
         }
 
         .metadata-pill {
@@ -76,187 +70,38 @@
             background: var(--color-white);
             color: var(--color-dark);
             font-family: var(--font-body);
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
-            letter-spacing: 0.5px;
+            letter-spacing: 1.5px;
             padding: 7px 16px;
             border-radius: 4px;
             text-transform: uppercase;
+            align-self: flex-start;
         }
 
-        .split-top {
+        .hero-title {
             font-family: var(--font-display);
-            font-size: 200px;
+            font-size: 180px;
             font-weight: 700;
-            line-height: 0.90;
+            line-height: 0.92;
             letter-spacing: -6px;
             color: var(--color-white);
-            margin-top: 32px;
         }
 
-        .split-bottom {
-            font-family: var(--font-display);
-            font-size: 200px;
-            font-weight: 700;
-            line-height: 0.90;
-            letter-spacing: -6px;
-            color: var(--color-white);
-            text-align: right;
-            align-self: flex-end;
+        .header-rule {
+            width: 80px;
+            height: 2px;
+            background: rgba(255,255,255,0.40);
         }
 
         .header-caption {
             font-family: var(--font-body);
-            font-size: 15px;
+            font-size: 18px;
             font-weight: 400;
             line-height: 1.55;
-            color: rgba(255,255,255,0.70);
-            max-width: 340px;
+            color: rgba(255,255,255,0.85);
+            max-width: 620px;
             letter-spacing: 0.2px;
-        }
-
-        /* ===== ISOMETRIC ILLUSTRATION — OFFICE ===== */
-        .iso-stage {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 700px;
-            height: 500px;
-        }
-
-        .iso-obj {
-            position: absolute;
-        }
-
-        /* floor */
-        .floor-top {
-            width: 520px;
-            height: 260px;
-            background: var(--color-mid);
-            transform: rotate(-45deg) skew(15deg, 15deg);
-            top: 180px;
-            left: 90px;
-        }
-        .floor-grid {
-            position: absolute;
-            top: 180px;
-            left: 90px;
-            width: 520px;
-            height: 260px;
-            transform: rotate(-45deg) skew(15deg, 15deg);
-            background:
-                linear-gradient(to right, rgba(26,26,26,0.08) 1px, transparent 1px) 0 0 / 52px 100%,
-                linear-gradient(to bottom, rgba(26,26,26,0.08) 1px, transparent 1px) 0 0 / 100% 52px;
-        }
-
-        /* desk block (parallelogram + depth) */
-        .desk-top {
-            width: 180px;
-            height: 90px;
-            background: var(--color-desk);
-            transform: rotate(-45deg) skew(15deg, 15deg);
-        }
-        .desk-side-right {
-            width: 10px;
-            height: 90px;
-            background: var(--color-shadow);
-            transform: skewY(-30deg);
-        }
-        .desk-side-front {
-            width: 180px;
-            height: 10px;
-            background: var(--color-forest);
-            transform: skewX(-60deg);
-        }
-
-        /* monitor */
-        .monitor-screen {
-            width: 70px;
-            height: 48px;
-            background: var(--color-pale);
-            transform: rotate(-45deg) skew(15deg, 15deg);
-        }
-        .monitor-side {
-            width: 6px;
-            height: 48px;
-            background: var(--color-shadow);
-            transform: skewY(-30deg);
-        }
-        .monitor-back {
-            width: 70px;
-            height: 6px;
-            background: var(--color-forest);
-            transform: skewX(-60deg);
-        }
-
-        /* chair cube */
-        .chair-top {
-            width: 60px;
-            height: 60px;
-            background: var(--color-light);
-            transform: rotate(-45deg) skew(15deg, 15deg);
-        }
-        .chair-side {
-            width: 8px;
-            height: 60px;
-            background: var(--color-mid);
-            transform: skewY(-30deg);
-        }
-        .chair-front {
-            width: 60px;
-            height: 8px;
-            background: var(--color-desk);
-            transform: skewX(-60deg);
-        }
-
-        /* plant */
-        .plant-pot {
-            width: 30px;
-            height: 30px;
-            background: var(--color-shadow);
-            transform: rotate(-45deg) skew(15deg, 15deg);
-        }
-        .plant-leaf {
-            width: 40px;
-            height: 40px;
-            background: var(--color-light);
-            border-radius: 50% 0 50% 50%;
-            transform: rotate(-45deg);
-        }
-
-        /* wall panels (back) */
-        .wall-left {
-            width: 260px;
-            height: 180px;
-            background: var(--color-light);
-            transform: skewY(30deg);
-            position: absolute;
-            top: 70px;
-            left: 180px;
-        }
-        .wall-right {
-            width: 260px;
-            height: 180px;
-            background: var(--color-mid);
-            transform: skewY(-30deg);
-            position: absolute;
-            top: 70px;
-            right: 90px;
-        }
-
-        /* chart on wall */
-        .wall-chart {
-            position: absolute;
-            width: 80px;
-            height: 60px;
-            background: var(--color-pale);
-        }
-        .chart-bar {
-            position: absolute;
-            bottom: 8px;
-            width: 10px;
-            background: var(--color-desk);
         }
 
         /* ===== NUMBERED LIST ===== */
@@ -334,7 +179,7 @@
             font-weight: 700;
             line-height: 1.00;
             letter-spacing: -2px;
-            color: var(--color-desk);
+            color: var(--color-accent);
             margin-bottom: 8px;
         }
         .stat-label {
@@ -343,7 +188,7 @@
             font-weight: 600;
             letter-spacing: 1.5px;
             text-transform: uppercase;
-            color: var(--color-shadow);
+            color: var(--color-accent);
             margin-bottom: 10px;
         }
         .stat-desc {
@@ -378,7 +223,7 @@
         .quote-bar {
             width: 36px;
             height: 2px;
-            background: var(--color-desk);
+            background: var(--color-accent);
         }
         .quote-name {
             font-family: var(--font-body);
@@ -386,7 +231,7 @@
             font-weight: 600;
             letter-spacing: 1.5px;
             text-transform: uppercase;
-            color: var(--color-shadow);
+            color: var(--color-accent);
         }
 
         /* ===== FOOTER ===== */
@@ -471,98 +316,12 @@
 <body>
 <div class="infographic">
 
-    <!-- ===== HEADER (split hero) ===== -->
+    <!-- ===== HEADER ===== -->
     <section class="header">
-        <div style="position:relative; z-index:3;">
-            <span class="metadata-pill">Founder&rsquo;s Field Guide &middot; 2026</span>
-            <h1 class="split-top">START</h1>
-        </div>
-
-        <!-- Isometric workspace -->
-        <div class="iso-stage">
-            <!-- back walls -->
-            <div class="wall-left">
-                <div class="wall-chart" style="top:30px; left:40px;">
-                    <div class="chart-bar" style="left:10px; height:20px;"></div>
-                    <div class="chart-bar" style="left:26px; height:36px;"></div>
-                    <div class="chart-bar" style="left:42px; height:28px;"></div>
-                    <div class="chart-bar" style="left:58px; height:44px;"></div>
-                </div>
-            </div>
-            <div class="wall-right"></div>
-
-            <!-- floor -->
-            <div class="floor-top"></div>
-            <div class="floor-grid"></div>
-
-            <!-- Desk 1 (back-left) -->
-            <div class="iso-obj" style="top:160px; left:190px;">
-                <div class="desk-top"></div>
-                <div class="desk-side-right" style="position:absolute; top:45px; right:-93px;"></div>
-                <div class="desk-side-front" style="position:absolute; top:95px; left:0;"></div>
-            </div>
-
-            <!-- Monitor on desk 1 -->
-            <div class="iso-obj" style="top:130px; left:220px;">
-                <div class="monitor-screen"></div>
-            </div>
-
-            <!-- Chair at desk 1 -->
-            <div class="iso-obj" style="top:265px; left:155px;">
-                <div class="chair-top"></div>
-            </div>
-
-            <!-- Desk 2 (back-right) -->
-            <div class="iso-obj" style="top:160px; left:400px;">
-                <div class="desk-top" style="background:var(--color-shadow);"></div>
-            </div>
-
-            <!-- Monitor on desk 2 -->
-            <div class="iso-obj" style="top:130px; left:430px;">
-                <div class="monitor-screen" style="background:var(--color-light);"></div>
-            </div>
-
-            <!-- Chair at desk 2 -->
-            <div class="iso-obj" style="top:265px; left:450px;">
-                <div class="chair-top" style="background:var(--color-pale);"></div>
-            </div>
-
-            <!-- Front desk (longer) -->
-            <div class="iso-obj" style="top:280px; left:295px;">
-                <div style="width:230px; height:70px; background:var(--color-desk); transform: rotate(-45deg) skew(15deg, 15deg);"></div>
-            </div>
-
-            <!-- Two monitors on front desk -->
-            <div class="iso-obj" style="top:255px; left:330px;">
-                <div class="monitor-screen" style="width:55px; height:38px; background:var(--color-pale);"></div>
-            </div>
-            <div class="iso-obj" style="top:255px; left:420px;">
-                <div class="monitor-screen" style="width:55px; height:38px; background:var(--color-light);"></div>
-            </div>
-
-            <!-- Plant front-left -->
-            <div class="iso-obj" style="top:355px; left:220px;">
-                <div class="plant-leaf" style="background:var(--color-light); width:34px; height:34px;"></div>
-                <div class="plant-pot" style="margin-top:-6px; margin-left:4px;"></div>
-            </div>
-
-            <!-- Chair front -->
-            <div class="iso-obj" style="top:370px; left:370px;">
-                <div class="chair-top" style="background:var(--color-mid); width:50px; height:50px;"></div>
-            </div>
-
-            <!-- Little stack of books front-right -->
-            <div class="iso-obj" style="top:360px; left:500px;">
-                <div style="width:40px; height:10px; background:var(--color-pale); transform: rotate(-45deg) skew(15deg, 15deg);"></div>
-                <div style="width:40px; height:10px; background:var(--color-light); transform: rotate(-45deg) skew(15deg, 15deg); margin-top:-4px;"></div>
-                <div style="width:40px; height:10px; background:var(--color-desk); transform: rotate(-45deg) skew(15deg, 15deg); margin-top:-4px;"></div>
-            </div>
-        </div>
-
-        <div style="position:relative; z-index:3; display:flex; justify-content:space-between; align-items:flex-end;">
-            <p class="header-caption">Five moves every founder will need to survive &mdash; and scale &mdash; in the AI-native economy.</p>
-            <h2 class="split-bottom">UP&rsquo;26</h2>
-        </div>
+        <span class="metadata-pill">Founder&rsquo;s Field Guide &middot; 2026</span>
+        <h1 class="hero-title">Five Moves<br>For Founders</h1>
+        <div class="header-rule"></div>
+        <p class="header-caption">Five moves every founder will need to survive &mdash; and scale &mdash; in the AI-native economy.</p>
     </section>
 
     <!-- ===== INTRO ===== -->

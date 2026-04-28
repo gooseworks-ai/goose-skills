@@ -12,11 +12,8 @@
             --color-sage: #7BA88E;
             --color-white: #FFFFFF;
             --color-dark: #1A1A1A;
-            --color-desk: #2C3E35;
-            --color-mid: #5A8A6E;
-            --color-light: #A3C4B0;
             --color-pale: #E8F0EC;
-            --color-shadow: #3D5C4A;
+            --color-accent: #2C3E35;
 
             --font-display: 'Space Grotesk', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
             --font-body: 'Inter', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
@@ -41,7 +38,7 @@
             color: var(--color-white);
             font-family: var(--font-body);
             position: relative;
-            padding: 56px;
+            padding: 80px;
         }
 
         /* ==============================
@@ -61,353 +58,34 @@
         }
 
         /* ==============================
-           SPLIT-WORD DISPLAY HERO
+           HERO TITLE
            ============================== */
-        .hero-top {
+        .hero-title {
             font-family: var(--font-display);
-            font-size: 220px;
+            font-size: 140px;
             font-weight: 700;
-            line-height: 0.85;
-            letter-spacing: -8px;
+            line-height: 0.90;
+            letter-spacing: -5px;
             color: var(--color-white);
-            margin-top: 20px;
+            margin-top: 32px;
         }
 
         .hero-sub {
             font-family: var(--font-display);
-            font-size: 56px;
-            font-weight: 600;
-            line-height: 0.95;
-            letter-spacing: -1.5px;
-            color: var(--color-white);
-            margin-top: 8px;
-            max-width: 560px;
+            font-size: 40px;
+            font-weight: 500;
+            line-height: 1.10;
+            letter-spacing: -1px;
+            color: rgba(255,255,255,0.85);
+            margin-top: 28px;
+            max-width: 720px;
         }
 
-        .hero-bottom {
-            font-family: var(--font-display);
-            font-size: 180px;
-            font-weight: 700;
-            line-height: 0.85;
-            letter-spacing: -6px;
-            color: var(--color-white);
-            text-align: right;
-            position: absolute;
-            right: 56px;
-            bottom: 380px;
-        }
-
-        /* ==============================
-           ISOMETRIC ILLUSTRATION
-           ============================== */
-        .iso-scene {
-            position: absolute;
-            top: 320px;
-            right: 60px;
-            width: 540px;
-            height: 420px;
-            transform: scale(1.05);
-        }
-
-        /* Floor / ground plane */
-        .iso-floor {
-            position: absolute;
-            top: 220px;
-            left: 80px;
-            width: 360px;
-            height: 200px;
-            background: var(--color-mid);
-            transform: matrix(1, 0.5, -1, 0.5, 0, 0);
-            transform-origin: center;
-            border: 1px solid var(--color-dark);
-        }
-
-        .iso-floor-inner {
-            position: absolute;
-            top: 240px;
-            left: 120px;
-            width: 280px;
-            height: 160px;
-            background: var(--color-shadow);
-            transform: matrix(1, 0.5, -1, 0.5, 0, 0);
-            border: 1px solid var(--color-dark);
-        }
-
-        /* Monitor / screen stack */
-        .monitor {
-            position: absolute;
-            top: 60px;
-            left: 190px;
-            width: 140px;
-            height: 90px;
-        }
-
-        .monitor-face-front {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 140px;
-            height: 90px;
-            background: var(--color-pale);
-            transform: matrix(1, -0.5, 0, 1, 0, 0);
-            transform-origin: left bottom;
-            border: 1px solid var(--color-dark);
-        }
-
-        .monitor-face-side {
-            position: absolute;
-            top: 0;
-            left: 140px;
-            width: 18px;
-            height: 90px;
-            background: var(--color-shadow);
-            transform: matrix(1, 0.5, 0, 1, 0, 0);
-            transform-origin: left bottom;
-            border: 1px solid var(--color-dark);
-        }
-
-        .monitor-face-top {
-            position: absolute;
-            top: -18px;
-            left: 0;
-            width: 140px;
-            height: 18px;
-            background: var(--color-desk);
-            transform: matrix(1, 0.5, -1, 0.5, 0, 0);
-            transform-origin: left bottom;
-            border: 1px solid var(--color-dark);
-        }
-
-        .monitor-screen-chart {
-            position: absolute;
-            top: 16px;
-            left: 14px;
-            width: 112px;
-            height: 60px;
-            transform: matrix(1, -0.5, 0, 1, 0, 0);
-            transform-origin: left bottom;
-            z-index: 2;
-        }
-
-        .chart-bar {
-            position: absolute;
-            bottom: 0;
-            width: 12px;
-            background: var(--color-sage);
-            border: 1px solid var(--color-dark);
-        }
-
-        /* Desk */
-        .desk-top {
-            position: absolute;
-            top: 170px;
-            left: 150px;
-            width: 220px;
-            height: 110px;
-            background: var(--color-desk);
-            transform: matrix(1, 0.5, -1, 0.5, 0, 0);
-            transform-origin: left top;
-            border: 1px solid var(--color-dark);
-        }
-
-        .desk-front {
-            position: absolute;
-            top: 255px;
-            left: 150px;
-            width: 220px;
-            height: 24px;
-            background: var(--color-shadow);
-            transform: matrix(1, -0.5, 0, 1, 0, 0);
-            transform-origin: left top;
-            border: 1px solid var(--color-dark);
-        }
-
-        .desk-side {
-            position: absolute;
-            top: 280px;
-            left: 370px;
-            width: 20px;
-            height: 60px;
-            background: var(--color-dark);
-            transform: matrix(1, 0.5, 0, 1, 0, 0);
-            transform-origin: left top;
-            border: 1px solid var(--color-dark);
-        }
-
-        /* Chair */
-        .chair-seat {
-            position: absolute;
-            top: 300px;
-            left: 200px;
-            width: 70px;
-            height: 50px;
-            background: var(--color-light);
-            transform: matrix(1, 0.5, -1, 0.5, 0, 0);
-            transform-origin: left top;
-            border: 1px solid var(--color-dark);
-        }
-
-        .chair-back {
-            position: absolute;
-            top: 240px;
-            left: 145px;
-            width: 14px;
-            height: 70px;
-            background: var(--color-pale);
-            transform: matrix(1, -0.5, 0, 1, 0, 0);
-            transform-origin: left top;
-            border: 1px solid var(--color-dark);
-        }
-
-        /* Plant in corner */
-        .plant-pot {
-            position: absolute;
-            top: 195px;
-            left: 395px;
-            width: 36px;
-            height: 24px;
-            background: var(--color-pale);
-            transform: matrix(1, 0.5, -1, 0.5, 0, 0);
-            transform-origin: left top;
-            border: 1px solid var(--color-dark);
-            z-index: 3;
-        }
-
-        .plant-pot-side {
-            position: absolute;
-            top: 215px;
-            left: 395px;
-            width: 36px;
-            height: 16px;
-            background: var(--color-light);
-            transform: matrix(1, -0.5, 0, 1, 0, 0);
-            transform-origin: left top;
-            border: 1px solid var(--color-dark);
-            z-index: 3;
-        }
-
-        .plant-leaf {
-            position: absolute;
-            top: 165px;
-            left: 400px;
-            width: 28px;
-            height: 36px;
-            background: var(--color-desk);
-            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-            border: 1px solid var(--color-dark);
-            z-index: 2;
-        }
-
-        .plant-leaf-2 {
-            position: absolute;
-            top: 172px;
-            left: 420px;
-            width: 22px;
-            height: 30px;
-            background: var(--color-shadow);
-            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-            border: 1px solid var(--color-dark);
-            z-index: 2;
-        }
-
-        /* Laptop */
-        .laptop-base {
-            position: absolute;
-            top: 220px;
-            left: 195px;
-            width: 80px;
-            height: 50px;
-            background: var(--color-dark);
-            transform: matrix(1, 0.5, -1, 0.5, 0, 0);
-            transform-origin: left top;
-            border: 1px solid var(--color-dark);
-            z-index: 4;
-        }
-
-        .laptop-screen {
-            position: absolute;
-            top: 170px;
-            left: 200px;
-            width: 70px;
-            height: 44px;
-            background: var(--color-pale);
-            transform: matrix(1, -0.5, 0, 1, 0, 0);
-            transform-origin: left top;
-            border: 1px solid var(--color-dark);
-            z-index: 3;
-        }
-
-        .laptop-screen-bars {
-            position: absolute;
-            top: 178px;
-            left: 208px;
-            width: 54px;
-            height: 30px;
-            transform: matrix(1, -0.5, 0, 1, 0, 0);
-            transform-origin: left top;
-            z-index: 4;
-        }
-
-        /* Small stat card floating */
-        .card-float {
-            position: absolute;
-            top: 90px;
-            left: 60px;
-            width: 110px;
-            height: 72px;
-            background: var(--color-pale);
-            transform: matrix(1, 0.5, -1, 0.5, 0, 0);
-            transform-origin: left top;
-            border: 1px solid var(--color-dark);
-        }
-
-        .card-float-front {
-            position: absolute;
-            top: 162px;
-            left: 60px;
-            width: 110px;
-            height: 18px;
-            background: var(--color-mid);
-            transform: matrix(1, -0.5, 0, 1, 0, 0);
-            transform-origin: left top;
-            border: 1px solid var(--color-dark);
-        }
-
-        .card-float-side {
-            position: absolute;
-            top: 90px;
-            left: 170px;
-            width: 18px;
-            height: 72px;
-            background: var(--color-shadow);
-            transform: matrix(1, 0.5, 0, 1, 0, 0);
-            transform-origin: left top;
-            border: 1px solid var(--color-dark);
-        }
-
-        .card-float-dots {
-            position: absolute;
-            top: 108px;
-            left: 72px;
-            width: 88px;
-            height: 48px;
-            transform: matrix(1, -0.5, 0, 1, 0, 0);
-            transform-origin: left top;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 6px;
-            padding: 6px;
-        }
-
-        .card-dot {
-            width: 10px;
-            height: 10px;
-            background: var(--color-dark);
-            border-radius: 50%;
-        }
-
-        .card-dot.accent {
-            background: var(--color-sage);
+        .accent-rule {
+            margin-top: 36px;
+            width: 100%;
+            height: 1px;
+            background: rgba(255,255,255,0.30);
         }
 
         /* ==============================
@@ -415,9 +93,9 @@
            ============================== */
         .tips-row {
             position: absolute;
-            bottom: 150px;
-            left: 56px;
-            right: 56px;
+            bottom: 200px;
+            left: 80px;
+            right: 80px;
             display: grid;
             grid-template-columns: repeat(5, 1fr);
             gap: 14px;
@@ -426,7 +104,7 @@
         .tip-card {
             background: var(--color-pale);
             color: var(--color-dark);
-            padding: 18px 14px 16px;
+            padding: 22px 16px 20px;
             border-radius: 4px;
         }
 
@@ -436,25 +114,25 @@
             font-weight: 700;
             line-height: 1;
             letter-spacing: -1px;
-            color: var(--color-shadow);
-            margin-bottom: 8px;
+            color: var(--color-accent);
+            margin-bottom: 10px;
         }
 
         .tip-title {
             font-family: var(--font-display);
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 600;
-            line-height: 1.1;
+            line-height: 1.15;
             letter-spacing: -0.3px;
             color: var(--color-dark);
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
 
         .tip-body {
             font-family: var(--font-body);
-            font-size: 10px;
+            font-size: 11px;
             font-weight: 400;
-            line-height: 1.4;
+            line-height: 1.45;
             color: var(--color-dark);
             opacity: 0.75;
         }
@@ -464,9 +142,9 @@
            ============================== */
         .footer {
             position: absolute;
-            bottom: 56px;
-            left: 56px;
-            right: 56px;
+            bottom: 80px;
+            left: 80px;
+            right: 80px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -511,19 +189,6 @@
             color: rgba(255, 255, 255, 0.70);
         }
 
-        .hero-caption {
-            font-family: var(--font-body);
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            color: rgba(255, 255, 255, 0.70);
-            margin-top: 12px;
-            position: absolute;
-            right: 56px;
-            bottom: 340px;
-        }
-
     </style>
 </head>
 <body>
@@ -534,63 +199,12 @@
         <span class="top-bar-right">Issue No. 05 &nbsp;/&nbsp; Vol. 1</span>
     </div>
 
-    <!-- SPLIT-WORD HERO — TOP FRAGMENT -->
-    <h1 class="hero-top">Build</h1>
-    <p class="hero-sub">5 tips for shipping a<br>startup this year.</p>
+    <!-- HERO TITLE -->
+    <h1 class="hero-title">Build<br>Smart.</h1>
+    <p class="hero-sub">5 tips for shipping a startup this year.</p>
 
-    <!-- ISOMETRIC ILLUSTRATION -->
-    <div class="iso-scene">
-        <!-- Floating analytics card -->
-        <div class="card-float"></div>
-        <div class="card-float-front"></div>
-        <div class="card-float-side"></div>
-        <div class="card-float-dots">
-            <div class="card-dot accent"></div>
-            <div class="card-dot"></div>
-            <div class="card-dot"></div>
-            <div class="card-dot"></div>
-            <div class="card-dot"></div>
-            <div class="card-dot accent"></div>
-            <div class="card-dot"></div>
-            <div class="card-dot"></div>
-            <div class="card-dot"></div>
-            <div class="card-dot"></div>
-            <div class="card-dot accent"></div>
-            <div class="card-dot"></div>
-        </div>
-
-        <!-- Floor layers -->
-        <div class="iso-floor"></div>
-        <div class="iso-floor-inner"></div>
-
-        <!-- Desk -->
-        <div class="desk-front"></div>
-        <div class="desk-side"></div>
-        <div class="desk-top"></div>
-
-        <!-- Chair -->
-        <div class="chair-back"></div>
-        <div class="chair-seat"></div>
-
-        <!-- Laptop on desk -->
-        <div class="laptop-base"></div>
-        <div class="laptop-screen"></div>
-        <div class="laptop-screen-bars">
-            <div class="chart-bar" style="left: 6px; height: 14px; background: var(--color-sage);"></div>
-            <div class="chart-bar" style="left: 22px; height: 20px; background: var(--color-mid);"></div>
-            <div class="chart-bar" style="left: 38px; height: 26px; background: var(--color-desk);"></div>
-        </div>
-
-        <!-- Plant -->
-        <div class="plant-leaf"></div>
-        <div class="plant-leaf-2"></div>
-        <div class="plant-pot-side"></div>
-        <div class="plant-pot"></div>
-    </div>
-
-    <!-- SPLIT-WORD HERO — BOTTOM FRAGMENT -->
-    <p class="hero-bottom">Smart.</p>
-    <p class="hero-caption">A Field Guide &middot; 2026</p>
+    <!-- Accent rule -->
+    <div class="accent-rule"></div>
 
     <!-- TIPS ROW -->
     <div class="tips-row">
@@ -623,7 +237,7 @@
 
     <!-- FOOTER -->
     <div class="footer">
-        <span class="footer-left">@goose &nbsp;&middot;&nbsp; goose.works/playbook</span>
+        <span class="footer-left">@goose &nbsp;&middot;&nbsp; goose.works/playbook &nbsp;&middot;&nbsp; A Field Guide &middot; 2026</span>
         <span class="footer-right">Read the Playbook</span>
     </div>
 

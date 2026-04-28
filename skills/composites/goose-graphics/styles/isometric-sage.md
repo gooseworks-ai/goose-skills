@@ -1,8 +1,6 @@
 # Isometric Sage
 
-Sage green background with isometric 3D office/workspace illustrations built from CSS. Bold split-word typography that wraps around the illustration — one part top-left, one part bottom-right. Clean corporate-meets-editorial aesthetic with a cool muted palette.
-
-> Full prose reference: `styles/_full/isometric-sage.md`
+Sage green canvas carrying clean, typography-first layouts. One large display headline in geometric sans, generous negative space, and quiet metadata pills. No figurative illustrations — the calm sage field and confident type do the work. Reads as cool, corporate-editorial, modern-but-restrained.
 
 ## Palette
 
@@ -10,12 +8,9 @@ Sage green background with isometric 3D office/workspace illustrations built fro
 |-----|------|
 | `#7BA88E` | Sage green — primary background |
 | `#FFFFFF` | White — primary display text |
-| `#1A1A1A` | Near-black — body text, illustration outlines |
-| `#2C3E35` | Dark green — illustration surfaces (desk tops, floors) |
-| `#5A8A6E` | Mid sage — illustration depth surfaces |
-| `#A3C4B0` | Light sage — illustration highlight faces |
+| `#1A1A1A` | Near-black — body text on light surfaces |
 | `#E8F0EC` | Pale sage — card surfaces, metadata panels |
-| `#3D5C4A` | Forest — illustration shadows |
+| `#2C3E35` | Forest accent — thin rules, dots, small geometric blocks |
 | `rgba(255,255,255,0.70)` | White 70 — secondary text |
 | `rgba(255,255,255,0.40)` | White 40 — tertiary text, captions |
 
@@ -32,9 +27,9 @@ Sage green background with isometric 3D office/workspace illustrations built fro
 
 | Role | Font | Size | Weight | Line-height | Tracking |
 |------|------|------|--------|-------------|----------|
-| Display Hero | Space Grotesk | 140px | 700 | 0.90 | -4px |
-| Section Heading | Space Grotesk | 72px | 700 | 0.95 | -2px |
-| Sub-heading | Space Grotesk | 36px | 600 | 1.10 | -0.5px |
+| Display Hero | Space Grotesk | 120-160px | 700 | 0.95 | -3px |
+| Section Heading | Space Grotesk | 48-72px | 700 | 1.00 | -1.5px |
+| Sub-heading | Space Grotesk | 28-36px | 600 | 1.10 | -0.5px |
 | Body Large | Inter | 18px | 400 | 1.65 | 0.2px |
 | Body | Inter | 15px | 400 | 1.65 | 0.2px |
 | Metadata | Inter | 11px | 600 | 1.30 | 1.5px UPPER |
@@ -45,34 +40,36 @@ Sage green background with isometric 3D office/workspace illustrations built fro
 
 **Principles**
 
-- Split-word display: break one word across two positions (top-left + bottom-right) with the illustration between.
-- Space Grotesk 700 for headlines — geometric, modern, technical.
-- Inter for supporting text — clean and unobtrusive.
+- One single hero headline anchors each layout — no split-word fragments, no decorative scenes.
+- Space Grotesk 700 for display — geometric, modern, technical.
+- Inter for supporting copy — clean and unobtrusive.
+- Body content (numbered lists, stats, quotes) carries the visual weight after the headline.
 
 ## Layout
 
 - Full-bleed sage green `#7BA88E` background.
-- Isometric illustration centered in the frame — office cubicles, desks, screens built with CSS transforms (`transform: rotateX(60deg) rotateZ(-45deg)` or manual skew).
-- Display word split: first syllable/part top-left, second part bottom-right.
-- Small metadata panel: white pill or card with dark text for tags/labels.
-- Padding: 48-60px all sides.
+- One large display headline anchored top-left or top-center.
+- Body content (numbered list, stat grid, paragraph) sits below with generous spacing.
+- Optional accents: thin horizontal rules, small dot clusters, or a single forest-green color block — all geometric, all small.
+- Metadata pills: small white or pale-sage rectangles with dark text for tags/labels.
+- Padding: 56-72px all sides on square formats; 80px+ on poster.
 
 ## Do / Don't
 
 **Do**
 
-- Split the display word into two parts positioned diagonally around the illustration.
-- Build isometric illustrations using CSS `transform: skew()` and colored parallelogram divs.
-- Use white text on sage — high contrast, clean.
-- Add small white metadata pills/tags for context labels.
-- Keep the illustration geometric and clean — no hand-drawn elements.
+- Use one large display title — top-aligned, full-width, confident.
+- Pair the title with a structured body: numbered tips, stat grid, or quote block.
+- Use white text on sage for headlines, dark text on pale-sage cards for body.
+- Add small white or pale-sage metadata pills/tags for context labels.
+- Let negative space breathe — sage is the design, not just the background.
 
 **Don't**
 
-- Don't use the full display word in one place — splitting is the signature.
-- Don't use warm colors — sage/green/white palette only.
-- Don't use rounded illustrations — isometric means sharp geometric faces.
-- Don't crowd the canvas — illustration should breathe.
+- Don't add figurative illustrations (no isometric desks, monitors, plants, characters). Geometric accents only — and used sparingly.
+- Don't split the headline into two fragments — one hero title, one position.
+- Don't use warm colors — sage / white / near-black only.
+- Don't crowd the canvas — if it feels full, remove something.
 - Don't use borders heavier than 1px on metadata elements.
 
 ## CSS snippets
@@ -84,37 +81,29 @@ Sage green background with isometric 3D office/workspace illustrations built fro
   --color-sage: #7BA88E;
   --color-white: #FFFFFF;
   --color-dark: #1A1A1A;
-  --color-desk: #2C3E35;
-  --color-mid: #5A8A6E;
-  --color-light: #A3C4B0;
   --color-pale: #E8F0EC;
-  --color-shadow: #3D5C4A;
+  --color-accent: #2C3E35;
 
   --font-display: 'Space Grotesk', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
   --font-body: 'Inter', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
 }
 ```
 
-### Split-word hero
+### Hero title block
 
 ```html
-<div style="background:#7BA88E; padding:48px; min-height:100vh; position:relative; overflow:hidden;">
-  <!-- Top-left word fragment -->
-  <h1 style="font-family:'Space Grotesk',sans-serif; font-size:140px; font-weight:700; line-height:0.90; letter-spacing:-4px; color:#fff; margin:0; position:relative; z-index:2;">Seve</h1>
+<div style="background:#7BA88E; padding:64px; min-height:100vh; position:relative;">
+  <!-- Metadata pill -->
+  <span style="display:inline-block; background:#fff; color:#1A1A1A; font-family:'Inter',sans-serif; font-size:11px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; padding:6px 14px; border-radius:4px;">Founder Advice · 2026</span>
 
-  <!-- Isometric illustration placeholder -->
-  <div style="margin:40px auto; width:300px; height:200px; position:relative;">
-    <div style="width:120px; height:80px; background:#2C3E35; transform:skewX(-30deg) skewY(15deg); position:absolute; top:40px; left:40px;"></div>
-    <div style="width:120px; height:80px; background:#5A8A6E; transform:skewX(-30deg) skewY(15deg); position:absolute; top:40px; left:160px;"></div>
-  </div>
+  <!-- Single hero title -->
+  <h1 style="font-family:'Space Grotesk',sans-serif; font-size:140px; font-weight:700; line-height:0.95; letter-spacing:-3px; color:#fff; margin:32px 0 0; max-width:920px;">Build less.<br>Ship sooner.</h1>
 
-  <!-- Bottom-right word fragment -->
-  <p style="font-family:'Space Grotesk',sans-serif; font-size:140px; font-weight:700; line-height:0.90; letter-spacing:-4px; color:#fff; margin:0; text-align:right; position:relative; z-index:2;">rance</p>
+  <!-- Thin accent rule -->
+  <div style="width:80px; height:2px; background:#2C3E35; margin:48px 0 24px;"></div>
 
-  <!-- Metadata tag -->
-  <div style="position:absolute; top:220px; left:48px;">
-    <span style="display:inline-block; background:#fff; color:#1A1A1A; font-family:'Inter',sans-serif; font-size:12px; font-weight:600; padding:6px 14px; border-radius:4px;">Drama Series</span>
-  </div>
+  <!-- Body -->
+  <p style="font-family:'Inter',sans-serif; font-size:18px; line-height:1.65; color:rgba(255,255,255,0.85); max-width:560px; margin:0;">Five moves every founder should make in 2026 to stay default-alive in an AI-native economy.</p>
 </div>
 ```
 

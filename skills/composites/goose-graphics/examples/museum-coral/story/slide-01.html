@@ -6,35 +6,151 @@
   <title>5 Tips for Building a Startup in 2026 — museum-coral</title>
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --c-coral: #F0978B;
+      --c-coral-mid: #E37869;
+      --c-cream: #F8DDD6;
+      --c-plum: #3F0E18;
+      --c-plum-mid: #5C1626;
+      --font-display: 'Oswald', 'Helvetica Condensed', Helvetica, Arial, sans-serif;
+      --font-body: 'Inter', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+    }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { width: 1080px; height: 1920px; overflow: hidden; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
-    body { background: #F0978B; color: #3F0E18; font-family: 'Oswald', 'Helvetica Condensed', Helvetica, Arial, sans-serif; position: relative; }
-    .eyebrow { font-family: 'Inter', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 1.3px; text-transform: uppercase; }
-    .body { font-family: 'Inter', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif; }
+    html, body {
+      width: 1080px; height: 1920px;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    body {
+      background: var(--c-coral);
+      color: var(--c-plum);
+      font-family: var(--font-body);
+      position: relative;
+      padding: 80px;
+    }
+    .frame {
+      position: absolute;
+      top: 32px; left: 32px; right: 32px; bottom: 32px;
+      border: 2px solid var(--c-coral-mid);
+      pointer-events: none;
+    }
+    .top-row {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 32px;
+    }
+    .title {
+      font-family: var(--font-display);
+      font-size: 100px;
+      font-weight: 700;
+      line-height: 0.94;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--c-plum);
+      margin: 0;
+    }
+    .date-plate {
+      background: var(--c-plum);
+      color: var(--c-cream);
+      padding: 14px 18px;
+      display: inline-block;
+    }
+    .date-plate-label {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      line-height: 0.95;
+      margin: 0;
+    }
+    .date-plate-year {
+      font-family: var(--font-display);
+      font-size: 48px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      line-height: 0.95;
+      margin: 6px 0 0;
+    }
+    .tips {
+      position: absolute;
+      left: 80px;
+      right: 80px;
+      bottom: 200px;
+      z-index: 2;
+    }
+    .tip-row {
+      border-top: 1px solid var(--c-plum-mid);
+      padding: 18px 0;
+      display: flex;
+      gap: 28px;
+      align-items: baseline;
+    }
+    .tip-row:last-child { border-bottom: 1px solid var(--c-plum-mid); }
+    .tip-num {
+      font-family: var(--font-display);
+      font-size: 36px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: var(--c-plum);
+      margin: 0;
+      min-width: 70px;
+    }
+    .tip-text {
+      font-family: var(--font-display);
+      font-size: 30px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--c-plum);
+      margin: 0;
+      line-height: 1.05;
+    }
   </style>
-</head><body style="padding:60px;">
-<div style="position:absolute;top:24px;left:24px;right:24px;bottom:24px;border:2px solid #E37869;pointer-events:none;"></div>
-<div style="position:relative;z-index:2;display:flex;align-items:flex-start;justify-content:space-between;gap:32px;">
-  <h1 style="font-family:'Oswald', 'Helvetica Condensed', Helvetica, Arial, sans-serif;font-size:84px;font-weight:700;line-height:0.94;letter-spacing:0.5px;text-transform:uppercase;color:#3F0E18;margin:0;">5 TIPS<br>FOR BUILDING<br>A STARTUP</h1>
-  <div style="background:#3F0E18;color:#F8DDD6;padding:14px 18px;display:inline-block;"><p style="font-family:'Oswald', 'Helvetica Condensed', Helvetica, Arial, sans-serif;font-size:24px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;line-height:0.95;margin:0;">EDITION</p><p style="font-family:'Oswald', 'Helvetica Condensed', Helvetica, Arial, sans-serif;font-size:48px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;line-height:0.95;margin:6px 0 0;">2026</p></div>
-</div>
-<div style="position:relative;z-index:1;margin-top:60px;display:flex;justify-content:center;"><svg viewBox="0 0 700 600" width="720" height="640" style="display:block;"><g fill="none" stroke="#F8DDD6" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="220" cy="240" rx="100" ry="72" fill="#F8DDD6"/><ellipse cx="200" cy="230" rx="14" ry="18" fill="#F0978B"/><ellipse cx="240" cy="230" rx="14" ry="18" fill="#F0978B"/><path d="M150 280 Q120 340 80 400 L100 420 Q150 370 180 310 Z" fill="#F8DDD6"/><path d="M280 280 Q310 340 360 400 L340 420 Q290 370 260 310 Z" fill="#F8DDD6"/><line x1="320" y1="240" x2="600" y2="280" stroke-width="6"/><path d="M380 250 Q400 320 440 400" stroke-width="4"/><path d="M420 250 Q440 320 480 400" stroke-width="4"/><path d="M460 250 Q480 320 520 400" stroke-width="4"/><path d="M500 255 Q520 320 560 400" stroke-width="4"/><path d="M540 260 Q560 320 600 400" stroke-width="4"/><ellipse cx="610" cy="280" rx="40" ry="28" fill="#F8DDD6"/><line x1="220" y1="310" x2="200" y2="500" stroke-width="6"/><line x1="600" y1="300" x2="620" y2="500" stroke-width="6"/></g></svg></div>
-<div style="position:relative;z-index:2;margin-top:48px;">
-  <div style="border-top:1px solid #5C1626;padding:14px 0;display:flex;gap:24px;align-items:baseline;">
-    <p style="font-family:'Oswald', 'Helvetica Condensed', Helvetica, Arial, sans-serif;font-size:30px;font-weight:700;letter-spacing:0.5px;color:#3F0E18;margin:0;min-width:60px;">01</p>
-    <p style="font-family:'Oswald', 'Helvetica Condensed', Helvetica, Arial, sans-serif;font-size:26px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;color:#3F0E18;margin:0;line-height:1.05;">Start before you're ready</p>
-  </div><div style="border-top:1px solid #5C1626;padding:14px 0;display:flex;gap:24px;align-items:baseline;">
-    <p style="font-family:'Oswald', 'Helvetica Condensed', Helvetica, Arial, sans-serif;font-size:30px;font-weight:700;letter-spacing:0.5px;color:#3F0E18;margin:0;min-width:60px;">02</p>
-    <p style="font-family:'Oswald', 'Helvetica Condensed', Helvetica, Arial, sans-serif;font-size:26px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;color:#3F0E18;margin:0;line-height:1.05;">Talk to ten customers a week</p>
-  </div><div style="border-top:1px solid #5C1626;padding:14px 0;display:flex;gap:24px;align-items:baseline;">
-    <p style="font-family:'Oswald', 'Helvetica Condensed', Helvetica, Arial, sans-serif;font-size:30px;font-weight:700;letter-spacing:0.5px;color:#3F0E18;margin:0;min-width:60px;">03</p>
-    <p style="font-family:'Oswald', 'Helvetica Condensed', Helvetica, Arial, sans-serif;font-size:26px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;color:#3F0E18;margin:0;line-height:1.05;">Narrow the problem relentlessly</p>
-  </div><div style="border-top:1px solid #5C1626;padding:14px 0;display:flex;gap:24px;align-items:baseline;">
-    <p style="font-family:'Oswald', 'Helvetica Condensed', Helvetica, Arial, sans-serif;font-size:30px;font-weight:700;letter-spacing:0.5px;color:#3F0E18;margin:0;min-width:60px;">04</p>
-    <p style="font-family:'Oswald', 'Helvetica Condensed', Helvetica, Arial, sans-serif;font-size:26px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;color:#3F0E18;margin:0;line-height:1.05;">Burn rate is the enemy of time</p>
-  </div><div style="border-top:1px solid #5C1626;padding:14px 0;display:flex;gap:24px;align-items:baseline;">
-    <p style="font-family:'Oswald', 'Helvetica Condensed', Helvetica, Arial, sans-serif;font-size:30px;font-weight:700;letter-spacing:0.5px;color:#3F0E18;margin:0;min-width:60px;">05</p>
-    <p style="font-family:'Oswald', 'Helvetica Condensed', Helvetica, Arial, sans-serif;font-size:26px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;color:#3F0E18;margin:0;line-height:1.05;">Hire character, teach skill</p>
+</head>
+<body>
+
+  <div class="frame"></div>
+
+  <!-- Top: hero title + edition plate -->
+  <div class="top-row">
+    <h1 class="title">5 TIPS<br>FOR BUILDING<br>A STARTUP</h1>
+    <div class="date-plate">
+      <p class="date-plate-label">EDITION</p>
+      <p class="date-plate-year">2026</p>
+    </div>
   </div>
-</div>
-</body></html>
+
+  <!-- Middle: intentional negative space (the coral field) -->
+
+  <!-- Bottom: tips list -->
+  <div class="tips">
+    <div class="tip-row">
+      <p class="tip-num">01</p>
+      <p class="tip-text">Start before you're ready</p>
+    </div>
+    <div class="tip-row">
+      <p class="tip-num">02</p>
+      <p class="tip-text">Talk to ten customers a week</p>
+    </div>
+    <div class="tip-row">
+      <p class="tip-num">03</p>
+      <p class="tip-text">Narrow the problem relentlessly</p>
+    </div>
+    <div class="tip-row">
+      <p class="tip-num">04</p>
+      <p class="tip-text">Burn rate is the enemy of time</p>
+    </div>
+    <div class="tip-row">
+      <p class="tip-num">05</p>
+      <p class="tip-text">Hire character, teach skill</p>
+    </div>
+  </div>
+
+</body>
+</html>

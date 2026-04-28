@@ -14,18 +14,15 @@
             --color-sage: #7BA88E;
             --color-white: #FFFFFF;
             --color-dark: #1A1A1A;
-            --color-desk: #2C3E35;
-            --color-mid: #5A8A6E;
-            --color-light: #A3C4B0;
             --color-pale: #E8F0EC;
-            --color-shadow: #3D5C4A;
+            --color-accent: #2C3E35;
 
             --font-display: 'Space Grotesk', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
             --font-body: 'Inter', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
 
             --slide-width: 1920px;
             --slide-height: 1080px;
-            --slide-padding: 80px;
+            --slide-padding: 100px;
         }
 
         * {
@@ -51,44 +48,13 @@
         }
 
         /* ==============================
-           SPLIT-WORD HERO TYPOGRAPHY
-           ============================== */
-
-        .word-top {
-            position: absolute;
-            top: 140px;
-            left: 80px;
-            font-family: var(--font-display);
-            font-size: 280px;
-            font-weight: 700;
-            line-height: 0.85;
-            letter-spacing: -10px;
-            color: var(--color-white);
-            z-index: 3;
-        }
-
-        .word-bottom {
-            position: absolute;
-            bottom: 140px;
-            right: 80px;
-            font-family: var(--font-display);
-            font-size: 280px;
-            font-weight: 700;
-            line-height: 0.85;
-            letter-spacing: -10px;
-            color: var(--color-white);
-            text-align: right;
-            z-index: 3;
-        }
-
-        /* ==============================
            METADATA PANELS
            ============================== */
 
         .top-meta {
             position: absolute;
-            top: 80px;
-            right: 80px;
+            top: 100px;
+            right: 100px;
             display: flex;
             gap: 12px;
             align-items: center;
@@ -100,11 +66,12 @@
             background: var(--color-white);
             color: var(--color-dark);
             font-family: var(--font-body);
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
             padding: 8px 16px;
             border-radius: 4px;
-            letter-spacing: 0.5px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
         }
 
         .meta-pill-ghost {
@@ -121,22 +88,65 @@
             border: 1px solid rgba(255,255,255,0.4);
         }
 
+        /* ==============================
+           HERO LEFT COLUMN
+           ============================== */
+
+        .hero-left {
+            position: absolute;
+            top: 220px;
+            left: 100px;
+            max-width: 880px;
+            z-index: 3;
+        }
+
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: 200px;
+            font-weight: 700;
+            line-height: 0.88;
+            letter-spacing: -7px;
+            color: var(--color-white);
+        }
+
+        .hero-rule {
+            margin-top: 48px;
+            width: 80px;
+            height: 2px;
+            background: rgba(255,255,255,0.40);
+        }
+
+        .hero-caption {
+            margin-top: 32px;
+            font-family: var(--font-body);
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.70);
+        }
+
+        /* ==============================
+           RIGHT COLUMN — number + supporting text
+           ============================== */
+
         .number-badge {
             position: absolute;
-            top: 520px;
-            left: 80px;
+            top: 240px;
+            right: 100px;
+            max-width: 480px;
             z-index: 4;
             display: flex;
-            align-items: baseline;
-            gap: 18px;
+            flex-direction: column;
+            gap: 24px;
         }
 
         .number-badge .num {
             font-family: var(--font-display);
-            font-size: 96px;
+            font-size: 200px;
             font-weight: 700;
-            line-height: 1;
-            letter-spacing: -2px;
+            line-height: 0.88;
+            letter-spacing: -6px;
             color: var(--color-white);
         }
 
@@ -147,15 +157,28 @@
             letter-spacing: 2px;
             text-transform: uppercase;
             color: rgba(255,255,255,0.70);
-            max-width: 200px;
-            line-height: 1.3;
+            line-height: 1.4;
         }
+
+        .number-badge .tagline {
+            font-family: var(--font-body);
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 1.55;
+            color: rgba(255,255,255,0.85);
+            letter-spacing: 0.2px;
+            margin-top: 12px;
+        }
+
+        /* ==============================
+           SUBTITLE BLOCK (left, lower)
+           ============================== */
 
         .subtitle {
             position: absolute;
-            bottom: 160px;
-            left: 80px;
-            max-width: 560px;
+            bottom: 200px;
+            left: 100px;
+            max-width: 720px;
             z-index: 4;
         }
 
@@ -171,7 +194,7 @@
 
         .subtitle .sub-text {
             font-family: var(--font-display);
-            font-size: 28px;
+            font-size: 32px;
             font-weight: 500;
             line-height: 1.25;
             letter-spacing: -0.5px;
@@ -184,8 +207,8 @@
 
         .footer {
             position: absolute;
-            bottom: 80px;
-            right: 80px;
+            bottom: 100px;
+            right: 100px;
             display: flex;
             align-items: center;
             gap: 24px;
@@ -209,336 +232,14 @@
 
         .slide-number {
             position: absolute;
-            bottom: 80px;
-            left: 80px;
+            bottom: 100px;
+            left: 100px;
             font-family: var(--font-body);
             font-size: 11px;
             font-weight: 600;
             letter-spacing: 1.5px;
             text-transform: uppercase;
             color: rgba(255,255,255,0.40);
-        }
-
-        /* ==============================
-           ISOMETRIC ILLUSTRATION
-           Centered isometric office scene
-           ============================== */
-
-        .iso-stage {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 900px;
-            height: 700px;
-            z-index: 1;
-        }
-
-        .iso-scene {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 600px;
-            height: 600px;
-            transform: translate(-50%, -50%) rotateX(58deg) rotateZ(-45deg);
-            transform-style: preserve-3d;
-        }
-
-        /* Floor plate */
-        .floor {
-            position: absolute;
-            top: 100px;
-            left: 100px;
-            width: 400px;
-            height: 400px;
-            background: var(--color-mid);
-            border: 1px solid var(--color-shadow);
-        }
-
-        .floor-grid {
-            position: absolute;
-            top: 100px;
-            left: 100px;
-            width: 400px;
-            height: 400px;
-            background-image:
-                linear-gradient(to right, rgba(26,26,26,0.12) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(26,26,26,0.12) 1px, transparent 1px);
-            background-size: 40px 40px;
-        }
-
-        /* Rug accent on floor */
-        .rug {
-            position: absolute;
-            top: 260px;
-            left: 160px;
-            width: 200px;
-            height: 160px;
-            background: var(--color-light);
-            border: 1px solid var(--color-shadow);
-        }
-
-        /* Desk 1 — main desk */
-        .desk-1 {
-            position: absolute;
-            top: 140px;
-            left: 140px;
-            width: 180px;
-            height: 90px;
-            background: var(--color-desk);
-            border: 1px solid var(--color-dark);
-            box-shadow: 0 -6px 0 var(--color-shadow);
-            transform: translateZ(60px);
-        }
-
-        /* Monitor on desk 1 */
-        .monitor-1 {
-            position: absolute;
-            top: 150px;
-            left: 170px;
-            width: 80px;
-            height: 60px;
-            background: var(--color-dark);
-            border: 1px solid var(--color-dark);
-            transform: translateZ(100px) rotateZ(0deg);
-            box-shadow: 0 -4px 0 var(--color-shadow);
-        }
-
-        .monitor-1::before {
-            content: '';
-            position: absolute;
-            top: 4px;
-            left: 4px;
-            right: 4px;
-            bottom: 4px;
-            background: var(--color-light);
-        }
-
-        .monitor-1::after {
-            content: '';
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            width: 30px;
-            height: 4px;
-            background: var(--color-sage);
-            box-shadow:
-                0 10px 0 var(--color-sage),
-                0 20px 0 var(--color-white),
-                14px 10px 0 var(--color-sage);
-        }
-
-        /* Chair 1 */
-        .chair-1 {
-            position: absolute;
-            top: 240px;
-            left: 190px;
-            width: 60px;
-            height: 60px;
-            background: var(--color-dark);
-            border: 1px solid var(--color-dark);
-            transform: translateZ(30px);
-            box-shadow: 0 -3px 0 #0d0d0d;
-        }
-
-        .chair-1::before {
-            content: '';
-            position: absolute;
-            top: -40px;
-            left: 0;
-            width: 60px;
-            height: 40px;
-            background: var(--color-dark);
-            border: 1px solid var(--color-dark);
-        }
-
-        /* Desk 2 — secondary desk */
-        .desk-2 {
-            position: absolute;
-            top: 140px;
-            left: 330px;
-            width: 140px;
-            height: 80px;
-            background: var(--color-desk);
-            border: 1px solid var(--color-dark);
-            transform: translateZ(60px);
-            box-shadow: 0 -6px 0 var(--color-shadow);
-        }
-
-        /* Laptop on desk 2 */
-        .laptop {
-            position: absolute;
-            top: 150px;
-            left: 360px;
-            width: 70px;
-            height: 50px;
-            background: var(--color-dark);
-            transform: translateZ(100px);
-            border: 1px solid var(--color-dark);
-        }
-
-        .laptop::before {
-            content: '';
-            position: absolute;
-            top: 3px;
-            left: 3px;
-            right: 3px;
-            bottom: 3px;
-            background: var(--color-pale);
-        }
-
-        /* Plant */
-        .plant-pot {
-            position: absolute;
-            top: 150px;
-            left: 440px;
-            width: 30px;
-            height: 35px;
-            background: var(--color-desk);
-            border: 1px solid var(--color-dark);
-            transform: translateZ(100px);
-        }
-
-        .plant-leaves {
-            position: absolute;
-            top: 110px;
-            left: 430px;
-            width: 50px;
-            height: 50px;
-            background: var(--color-light);
-            border: 1px solid var(--color-shadow);
-            transform: translateZ(130px) rotateZ(15deg);
-        }
-
-        .plant-leaves::after {
-            content: '';
-            position: absolute;
-            top: 8px;
-            left: 8px;
-            width: 34px;
-            height: 34px;
-            background: var(--color-mid);
-            border: 1px solid var(--color-shadow);
-        }
-
-        /* Floor lamp / column */
-        .column {
-            position: absolute;
-            top: 150px;
-            left: 110px;
-            width: 24px;
-            height: 24px;
-            background: var(--color-pale);
-            border: 1px solid var(--color-shadow);
-            transform: translateZ(180px);
-            box-shadow: 0 -160px 0 var(--color-pale);
-        }
-
-        /* Side storage cabinet */
-        .cabinet {
-            position: absolute;
-            top: 340px;
-            left: 140px;
-            width: 180px;
-            height: 60px;
-            background: var(--color-shadow);
-            border: 1px solid var(--color-dark);
-            transform: translateZ(40px);
-            box-shadow: 0 -4px 0 #1f3028;
-        }
-
-        .cabinet::after {
-            content: '';
-            position: absolute;
-            top: 8px;
-            left: 20px;
-            width: 40px;
-            height: 10px;
-            background: var(--color-light);
-            box-shadow:
-                60px 0 0 var(--color-light),
-                120px 0 0 var(--color-light);
-        }
-
-        /* Chart on wall — as floating element above desk 2 */
-        .chart {
-            position: absolute;
-            top: 60px;
-            left: 340px;
-            width: 110px;
-            height: 80px;
-            background: var(--color-pale);
-            border: 1px solid var(--color-shadow);
-            transform: translateZ(220px);
-        }
-
-        .chart::before {
-            content: '';
-            position: absolute;
-            bottom: 12px;
-            left: 10px;
-            width: 12px;
-            height: 20px;
-            background: var(--color-sage);
-            box-shadow:
-                18px 0 0 0 var(--color-sage),
-                18px -14px 0 0 var(--color-sage),
-                36px 0 0 0 var(--color-sage),
-                36px -8px 0 0 var(--color-sage),
-                54px 0 0 0 var(--color-sage),
-                54px -28px 0 0 var(--color-sage),
-                72px 0 0 0 var(--color-sage),
-                72px -18px 0 0 var(--color-sage);
-        }
-
-        .chart::after {
-            content: '';
-            position: absolute;
-            top: 8px;
-            left: 10px;
-            width: 50px;
-            height: 3px;
-            background: var(--color-shadow);
-        }
-
-        /* Small cube decoration (notebook) */
-        .notebook {
-            position: absolute;
-            top: 180px;
-            left: 220px;
-            width: 30px;
-            height: 22px;
-            background: var(--color-light);
-            border: 1px solid var(--color-shadow);
-            transform: translateZ(80px);
-        }
-
-        /* ==============================
-           CORNER ACCENT LINES
-           ============================== */
-
-        .corner-accent {
-            position: absolute;
-            top: 220px;
-            right: 80px;
-            width: 260px;
-            z-index: 4;
-        }
-
-        .corner-accent .line {
-            width: 60px;
-            height: 2px;
-            background: var(--color-white);
-            margin-bottom: 16px;
-        }
-
-        .corner-accent .tagline {
-            font-family: var(--font-body);
-            font-size: 13px;
-            font-weight: 500;
-            line-height: 1.5;
-            color: rgba(255,255,255,0.70);
-            letter-spacing: 0.2px;
         }
     </style>
 </head>
@@ -550,39 +251,18 @@
         <span class="meta-pill">Founders &middot; 2026</span>
     </div>
 
-    <!-- Corner accent block -->
-    <div class="corner-accent">
-        <div class="line"></div>
-        <p class="tagline">Five lessons from operators who shipped through the AI-native shift &mdash; what's still the same, and what's changed for good.</p>
+    <!-- HERO LEFT — title -->
+    <div class="hero-left">
+        <h1 class="hero-title">Startup<br>2026.</h1>
+        <div class="hero-rule"></div>
+        <p class="hero-caption">A field guide</p>
     </div>
 
-    <!-- Split word: top-left -->
-    <h1 class="word-top">START</h1>
-
-    <!-- Isometric illustration -->
-    <div class="iso-stage">
-        <div class="iso-scene">
-            <div class="floor"></div>
-            <div class="floor-grid"></div>
-            <div class="rug"></div>
-            <div class="cabinet"></div>
-            <div class="column"></div>
-            <div class="desk-1"></div>
-            <div class="desk-2"></div>
-            <div class="monitor-1"></div>
-            <div class="notebook"></div>
-            <div class="laptop"></div>
-            <div class="plant-pot"></div>
-            <div class="plant-leaves"></div>
-            <div class="chair-1"></div>
-            <div class="chart"></div>
-        </div>
-    </div>
-
-    <!-- Number badge (left, mid-height) -->
+    <!-- RIGHT COLUMN — number + supporting text -->
     <div class="number-badge">
         <span class="num">05</span>
         <span class="label">Tips for<br/>building in 2026</span>
+        <p class="tagline">Five lessons from operators who shipped through the AI-native shift &mdash; what's still the same, and what's changed for good.</p>
     </div>
 
     <!-- Subtitle block -->
@@ -590,9 +270,6 @@
         <p class="caption">A field guide</p>
         <p class="sub-text">Everything you need to ship a startup that compounds in the year of autonomous work.</p>
     </div>
-
-    <!-- Split word: bottom-right -->
-    <p class="word-bottom">UP/26</p>
 
     <!-- Footer -->
     <div class="footer">

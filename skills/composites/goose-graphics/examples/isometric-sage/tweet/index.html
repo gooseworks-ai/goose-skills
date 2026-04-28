@@ -10,11 +10,8 @@
             --color-sage: #7BA88E;
             --color-white: #FFFFFF;
             --color-dark: #1A1A1A;
-            --color-desk: #2C3E35;
-            --color-mid: #5A8A6E;
-            --color-light: #A3C4B0;
             --color-pale: #E8F0EC;
-            --color-shadow: #3D5C4A;
+            --color-accent: #2C3E35;
 
             --font-display: 'Space Grotesk', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
             --font-body: 'Inter', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
@@ -54,18 +51,6 @@
             overflow: hidden;
         }
 
-        /* Subtle vignette overlay */
-        .background::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(
-                ellipse at 50% 50%,
-                transparent 30%,
-                rgba(44, 62, 53, 0.30) 100%
-            );
-        }
-
         /* Grid dots — top right quadrant */
         .grid-dots {
             position: absolute;
@@ -75,227 +60,6 @@
             height: 280px;
             background-image: radial-gradient(circle, rgba(255,255,255,0.22) 1.5px, transparent 1.5px);
             background-size: 22px 22px;
-        }
-
-        /* Split-word display — top left */
-        .bg-word-top {
-            position: absolute;
-            top: 36px;
-            left: 48px;
-            font-family: var(--font-display);
-            font-size: 120px;
-            font-weight: 700;
-            line-height: 0.90;
-            letter-spacing: -4px;
-            color: rgba(255, 255, 255, 0.16);
-            user-select: none;
-        }
-
-        /* Split-word display — bottom right */
-        .bg-word-bottom {
-            position: absolute;
-            bottom: 36px;
-            right: 48px;
-            font-family: var(--font-display);
-            font-size: 120px;
-            font-weight: 700;
-            line-height: 0.90;
-            letter-spacing: -4px;
-            color: rgba(255, 255, 255, 0.16);
-            text-align: right;
-            user-select: none;
-        }
-
-        /* =============================================
-           ISOMETRIC SCENE — top right corner
-           ============================================= */
-
-        .iso-scene-tr {
-            position: absolute;
-            top: 48px;
-            right: 48px;
-            width: 200px;
-            height: 200px;
-        }
-
-        /* Desk surface (top face) */
-        .iso-desk-top {
-            position: absolute;
-            width: 120px;
-            height: 60px;
-            background: var(--color-desk);
-            top: 90px;
-            left: 10px;
-            transform: skewX(-30deg) skewY(8deg);
-        }
-
-        /* Desk front face */
-        .iso-desk-front {
-            position: absolute;
-            width: 120px;
-            height: 22px;
-            background: var(--color-shadow);
-            top: 143px;
-            left: 10px;
-            transform: skewX(-30deg);
-        }
-
-        /* Desk right side */
-        .iso-desk-side {
-            position: absolute;
-            width: 38px;
-            height: 60px;
-            background: var(--color-mid);
-            top: 90px;
-            right: 42px;
-            transform: skewY(8deg);
-        }
-
-        /* Monitor screen face */
-        .iso-monitor-top {
-            position: absolute;
-            width: 64px;
-            height: 44px;
-            background: var(--color-light);
-            top: 48px;
-            left: 36px;
-            transform: skewX(-30deg) skewY(8deg);
-        }
-
-        /* Monitor side */
-        .iso-monitor-side {
-            position: absolute;
-            width: 20px;
-            height: 44px;
-            background: var(--color-mid);
-            top: 48px;
-            right: 76px;
-            transform: skewY(8deg);
-        }
-
-        /* Monitor glow lines on screen */
-        .iso-screen-line-1 {
-            position: absolute;
-            width: 38px;
-            height: 4px;
-            background: rgba(255,255,255,0.45);
-            top: 62px;
-            left: 44px;
-            transform: skewX(-30deg) skewY(8deg);
-        }
-
-        .iso-screen-line-2 {
-            position: absolute;
-            width: 28px;
-            height: 4px;
-            background: rgba(255,255,255,0.28);
-            top: 72px;
-            left: 44px;
-            transform: skewX(-30deg) skewY(8deg);
-        }
-
-        /* Monitor base / stand */
-        .iso-monitor-stand {
-            position: absolute;
-            width: 16px;
-            height: 12px;
-            background: var(--color-desk);
-            top: 90px;
-            left: 66px;
-            transform: skewX(-30deg) skewY(8deg);
-        }
-
-        /* Small object on desk (mug/plant) */
-        .iso-obj-top {
-            position: absolute;
-            width: 20px;
-            height: 14px;
-            background: var(--color-light);
-            top: 78px;
-            left: 94px;
-            transform: skewX(-30deg) skewY(8deg);
-        }
-
-        .iso-obj-side {
-            position: absolute;
-            width: 8px;
-            height: 14px;
-            background: var(--color-mid);
-            top: 78px;
-            right: 56px;
-            transform: skewY(8deg);
-        }
-
-        /* =============================================
-           ISOMETRIC SCENE — bottom left corner
-           ============================================= */
-
-        .iso-scene-bl {
-            position: absolute;
-            bottom: 48px;
-            left: 48px;
-            width: 180px;
-            height: 160px;
-        }
-
-        .iso-shelf-top {
-            position: absolute;
-            width: 110px;
-            height: 50px;
-            background: var(--color-desk);
-            top: 50px;
-            left: 10px;
-            transform: skewX(-30deg) skewY(8deg);
-        }
-
-        .iso-shelf-front {
-            position: absolute;
-            width: 110px;
-            height: 16px;
-            background: var(--color-shadow);
-            top: 93px;
-            left: 10px;
-            transform: skewX(-30deg);
-        }
-
-        .iso-shelf-side {
-            position: absolute;
-            width: 30px;
-            height: 50px;
-            background: var(--color-mid);
-            top: 50px;
-            right: 40px;
-            transform: skewY(8deg);
-        }
-
-        .iso-book-a {
-            position: absolute;
-            width: 16px;
-            height: 34px;
-            background: rgba(255,255,255,0.30);
-            top: 22px;
-            left: 28px;
-            transform: skewX(-30deg) skewY(8deg);
-        }
-
-        .iso-book-b {
-            position: absolute;
-            width: 16px;
-            height: 28px;
-            background: rgba(255,255,255,0.18);
-            top: 26px;
-            left: 44px;
-            transform: skewX(-30deg) skewY(8deg);
-        }
-
-        .iso-book-c {
-            position: absolute;
-            width: 16px;
-            height: 32px;
-            background: rgba(255,255,255,0.24);
-            top: 23px;
-            left: 60px;
-            transform: skewX(-30deg) skewY(8deg);
         }
 
         /* =============================================
@@ -334,14 +98,14 @@
 
         .meta-tag {
             position: absolute;
-            bottom: 255px;
-            left: 48px;
+            top: 56px;
+            left: 56px;
             z-index: 5;
         }
 
         .meta-pill {
             display: inline-block;
-            background: rgba(255,255,255,0.90);
+            background: rgba(255,255,255,0.95);
             color: var(--color-dark);
             font-family: var(--font-body);
             font-size: 11px;
@@ -547,34 +311,6 @@
     <!-- DECORATIVE BACKGROUND -->
     <div class="background">
         <div class="grid-dots"></div>
-
-        <!-- Split-word: START / UP -->
-        <div class="bg-word-top">START</div>
-        <div class="bg-word-bottom">UP</div>
-
-        <!-- Isometric workspace — top right -->
-        <div class="iso-scene-tr">
-            <div class="iso-desk-top"></div>
-            <div class="iso-desk-front"></div>
-            <div class="iso-desk-side"></div>
-            <div class="iso-monitor-top"></div>
-            <div class="iso-monitor-side"></div>
-            <div class="iso-screen-line-1"></div>
-            <div class="iso-screen-line-2"></div>
-            <div class="iso-monitor-stand"></div>
-            <div class="iso-obj-top"></div>
-            <div class="iso-obj-side"></div>
-        </div>
-
-        <!-- Isometric bookshelf — bottom left -->
-        <div class="iso-scene-bl">
-            <div class="iso-shelf-top"></div>
-            <div class="iso-shelf-front"></div>
-            <div class="iso-shelf-side"></div>
-            <div class="iso-book-a"></div>
-            <div class="iso-book-b"></div>
-            <div class="iso-book-c"></div>
-        </div>
 
         <!-- Geometric accents -->
         <div class="accent-ring"></div>

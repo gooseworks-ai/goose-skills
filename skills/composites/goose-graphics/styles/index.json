@@ -67,7 +67,7 @@
         { "slug": "ink-doodle-event", "name": "Ink Doodle Event", "tagline": "Kraft paper + loose hand-drawn ink character + Yellowtail script." },
         { "slug": "botanical-illustration", "name": "Botanical Illustration", "tagline": "Olive-green duotone magazine cover with dense botanical illustrations." },
         { "slug": "woodblock-folk", "name": "Woodblock Folk", "tagline": "Royal blue + chartreuse grid panels with hand-cut woodblock botanical illustrations." },
-        { "slug": "museum-coral", "name": "Museum Coral", "tagline": "Coral pink exhibit poster + vintage scientific engraving + condensed sans block stack." },
+        { "slug": "museum-coral", "name": "Museum Coral", "tagline": "Coral pink exhibit poster + plum date plate + condensed sans block stack on generous negative space." },
         { "slug": "midcentury-ad-grid", "name": "Mid-Century Ad Grid", "tagline": "Mustard / sky-blue / cream grid panels + B&W product photography + slab serif logotype." }
       ]
     },
@@ -79,7 +79,7 @@
         { "slug": "card-toss", "name": "Card Toss", "tagline": "Scattered tilted cards with sticky-note energy." },
         { "slug": "venn-infographic", "name": "Venn Infographic", "tagline": "Translucent three-circle Venn diagrams + floating info cards." },
         { "slug": "social-post-card", "name": "Social Post Card", "tagline": "Blurred real scene + simulated Instagram post card as hero." },
-        { "slug": "isometric-sage", "name": "Isometric Sage", "tagline": "Sage green + isometric 3D illustrations + split-word typography." },
+        { "slug": "isometric-sage", "name": "Isometric Sage", "tagline": "Sage green canvas + single hero title + clean typography-first layouts." },
         { "slug": "orbit-purple", "name": "Orbit Purple", "tagline": "Violet background + tri-variant cards with orbital line illustrations." }
       ]
     },
