@@ -812,6 +812,38 @@
       }
     },
     {
+      "slug": "competitor-content-tracker",
+      "name": "competitor-content-tracker",
+      "category": "composites",
+      "description": ">",
+      "tags": "competitive-intel",
+      "path": "skills/composites/competitor-content-tracker",
+      "files": [
+        "skills/composites/competitor-content-tracker/SKILL.md",
+        "skills/composites/competitor-content-tracker/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "competitor-content-tracker",
+        "category": "composites",
+        "tags": [
+          "competitive-intel"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install competitor-content-tracker",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "blog-feed-monitor",
+          "linkedin-profile-post-scraper",
+          "twitter-mention-tracker"
+        ]
+      }
+    },
+    {
       "slug": "competitor-intel",
       "name": "competitor-intel",
       "category": "composites",
@@ -1322,6 +1354,33 @@
         ],
         "installation": {
           "base_command": "npx goose-skills install customer-discovery",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "customer-story-builder",
+      "name": "customer-story-builder",
+      "category": "composites",
+      "description": ">",
+      "tags": "content",
+      "path": "skills/composites/customer-story-builder",
+      "files": [
+        "skills/composites/customer-story-builder/SKILL.md",
+        "skills/composites/customer-story-builder/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "customer-story-builder",
+        "category": "composites",
+        "tags": [
+          "content"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install customer-story-builder",
           "supports": [
             "claude",
             "cursor",
@@ -2410,6 +2469,33 @@
         "requires_skills": [
           "content-asset-creator"
         ]
+      }
+    },
+    {
+      "slug": "icp-website-review",
+      "name": "icp-website-review",
+      "category": "capabilities",
+      "description": ">",
+      "tags": "research",
+      "path": "skills/capabilities/icp-website-review",
+      "files": [
+        "skills/capabilities/icp-website-review/SKILL.md",
+        "skills/capabilities/icp-website-review/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "icp-website-review",
+        "category": "capabilities",
+        "tags": [
+          "research"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install icp-website-review",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
       }
     },
     {
@@ -3577,6 +3663,34 @@
       }
     },
     {
+      "slug": "newsletter-sponsorship-finder",
+      "name": "newsletter-sponsorship-finder",
+      "category": "capabilities",
+      "description": ">",
+      "tags": "monitoring",
+      "path": "skills/capabilities/newsletter-sponsorship-finder",
+      "files": [
+        "skills/capabilities/newsletter-sponsorship-finder/SKILL.md",
+        "skills/capabilities/newsletter-sponsorship-finder/scripts/search_newsletters.py",
+        "skills/capabilities/newsletter-sponsorship-finder/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "newsletter-sponsorship-finder",
+        "category": "capabilities",
+        "tags": [
+          "monitoring"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install newsletter-sponsorship-finder",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
       "slug": "outbound-prospecting-engine",
       "name": "outbound-prospecting-engine",
       "category": "playbooks",
@@ -4458,6 +4572,33 @@
           "cold-email-outreach",
           "email-drafting"
         ]
+      }
+    },
+    {
+      "slug": "setup-outreach-campaign-smartlead",
+      "name": "setup-outreach-campaign-smartlead",
+      "category": "capabilities",
+      "description": ">",
+      "tags": "outreach",
+      "path": "skills/capabilities/setup-outreach-campaign-smartlead",
+      "files": [
+        "skills/capabilities/setup-outreach-campaign-smartlead/SKILL.md",
+        "skills/capabilities/setup-outreach-campaign-smartlead/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "setup-outreach-campaign-smartlead",
+        "category": "capabilities",
+        "tags": [
+          "outreach"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install setup-outreach-campaign-smartlead",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
       }
     },
     {
