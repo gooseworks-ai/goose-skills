@@ -273,6 +273,27 @@ Structure every response exactly as:
 
 ---
 
+## Composes With
+
+| Skill | Why compress it |
+|-------|----------------|
+| `industry-scanner` | Orchestrates 6+ sub-skills per run. System prompt is long by design — high compression ROI at daily scan frequency. |
+| `battlecard-generator` | Multi-phase research prompt with verbose role definition and repeated safety instructions. T1 + T2 typically save 25–35% alone. |
+| `tam-builder` | Config-heavy prompt with conditional branches. T7 (conditional compression) yields above-average savings here. |
+| `cold-email-outreach` | Runs at highest volume in the library. Even 20% compression compounds fast at outbound scale. |
+| `signal-detection-pipeline` | Long pipeline prompt with multiple phase descriptions. Section consolidation (T6) is the primary lever. |
+
+---
+
+## Cost
+
+- **Skill cost:** Free — pure reasoning, no external API calls.
+- **Token cost per compression run:** ~2,000–4,000 input tokens (the skill prompt + the prompt being compressed + verification output).
+- **Break-even:** ~10 production runs of the compressed prompt. After that, every run is net savings.
+- **Example:** Compress a 600-token prompt to 360 tokens (40% reduction). Break-even at 10 runs = 2,400 tokens recovered. Run 11 onward: 240 tokens saved per call.
+
+---
+
 ## Example
 
 **Original (42 tokens estimated):**
