@@ -1,17 +1,17 @@
 {
   "version": "1.2.0",
-  "generated": "2026-04-29",
+  "generated": "2026-04-30",
   "skills": [
     {
       "slug": "ad-angle-miner",
       "name": "ad-angle-miner",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "ads",
       "path": "skills/composites/ad-angle-miner",
       "files": [
-        "skills/composites/ad-angle-miner/SKILL.md",
-        "skills/composites/ad-angle-miner/skill.meta.json"
+        "skills\\composites\\ad-angle-miner\\SKILL.md",
+        "skills\\composites\\ad-angle-miner\\skill.meta.json"
       ],
       "metadata": {
         "slug": "ad-angle-miner",
@@ -38,12 +38,12 @@
       "slug": "ad-campaign-analyzer",
       "name": "ad-campaign-analyzer",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "ads",
       "path": "skills/composites/ad-campaign-analyzer",
       "files": [
-        "skills/composites/ad-campaign-analyzer/SKILL.md",
-        "skills/composites/ad-campaign-analyzer/skill.meta.json"
+        "skills\\composites\\ad-campaign-analyzer\\SKILL.md",
+        "skills\\composites\\ad-campaign-analyzer\\skill.meta.json"
       ],
       "metadata": {
         "slug": "ad-campaign-analyzer",
@@ -66,12 +66,12 @@
       "slug": "ad-to-landing-page-auditor",
       "name": "ad-to-landing-page-auditor",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "ads",
       "path": "skills/composites/ad-to-landing-page-auditor",
       "files": [
-        "skills/composites/ad-to-landing-page-auditor/SKILL.md",
-        "skills/composites/ad-to-landing-page-auditor/skill.meta.json"
+        "skills\\composites\\ad-to-landing-page-auditor\\SKILL.md",
+        "skills\\composites\\ad-to-landing-page-auditor\\skill.meta.json"
       ],
       "metadata": {
         "slug": "ad-to-landing-page-auditor",
@@ -96,12 +96,12 @@
       "slug": "aeo",
       "name": "aeo",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "seo",
       "path": "skills/capabilities/aeo",
       "files": [
-        "skills/capabilities/aeo/SKILL.md",
-        "skills/capabilities/aeo/skill.meta.json"
+        "skills\\capabilities\\aeo\\SKILL.md",
+        "skills\\capabilities\\aeo\\skill.meta.json"
       ],
       "metadata": {
         "slug": "aeo",
@@ -123,12 +123,12 @@
       "slug": "ai-video-calls-tavus",
       "name": "ai-video-calls-tavus",
       "category": "capabilities",
-      "description": "AI video conversations - create real-time video calls with AI personas",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/ai-video-calls-tavus",
       "files": [
-        "skills/capabilities/ai-video-calls-tavus/SKILL.md",
-        "skills/capabilities/ai-video-calls-tavus/skill.meta.json"
+        "skills\\capabilities\\ai-video-calls-tavus\\SKILL.md",
+        "skills\\capabilities\\ai-video-calls-tavus\\skill.meta.json"
       ],
       "metadata": {
         "slug": "ai-video-calls-tavus",
@@ -149,12 +149,12 @@
       "slug": "ai-web-scraping-scrapegraph",
       "name": "ai-web-scraping-scrapegraph",
       "category": "capabilities",
-      "description": "AI-powered web scraping - extract data using natural language prompts",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/ai-web-scraping-scrapegraph",
       "files": [
-        "skills/capabilities/ai-web-scraping-scrapegraph/SKILL.md",
-        "skills/capabilities/ai-web-scraping-scrapegraph/skill.meta.json"
+        "skills\\capabilities\\ai-web-scraping-scrapegraph\\SKILL.md",
+        "skills\\capabilities\\ai-web-scraping-scrapegraph\\skill.meta.json"
       ],
       "metadata": {
         "slug": "ai-web-scraping-scrapegraph",
@@ -175,12 +175,12 @@
       "slug": "amazon-search",
       "name": "amazon-search",
       "category": "capabilities",
-      "description": "Search Amazon products - find items, compare prices, read reviews",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/amazon-search",
       "files": [
-        "skills/capabilities/amazon-search/SKILL.md",
-        "skills/capabilities/amazon-search/skill.meta.json"
+        "skills\\capabilities\\amazon-search\\SKILL.md",
+        "skills\\capabilities\\amazon-search\\skill.meta.json"
       ],
       "metadata": {
         "slug": "amazon-search",
@@ -201,12 +201,12 @@
       "slug": "api-tester",
       "name": "api-tester",
       "category": "capabilities",
-      "description": "Test and document API endpoints - validate responses, check status, generate examples",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/api-tester",
       "files": [
-        "skills/capabilities/api-tester/SKILL.md",
-        "skills/capabilities/api-tester/skill.meta.json"
+        "skills\\capabilities\\api-tester\\SKILL.md",
+        "skills\\capabilities\\api-tester\\skill.meta.json"
       ],
       "metadata": {
         "slug": "api-tester",
@@ -227,13 +227,13 @@
       "slug": "apollo-lead-finder",
       "name": "apollo-lead-finder",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "lead-generation",
       "path": "skills/capabilities/apollo-lead-finder",
       "files": [
-        "skills/capabilities/apollo-lead-finder/SKILL.md",
-        "skills/capabilities/apollo-lead-finder/scripts/apollo_client.py",
-        "skills/capabilities/apollo-lead-finder/skill.meta.json"
+        "skills\\capabilities\\apollo-lead-finder\\scripts\\apollo_client.py",
+        "skills\\capabilities\\apollo-lead-finder\\SKILL.md",
+        "skills\\capabilities\\apollo-lead-finder\\skill.meta.json"
       ],
       "metadata": {
         "slug": "apollo-lead-finder",
@@ -255,12 +255,12 @@
       "slug": "battlecard-generator",
       "name": "battlecard-generator",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "competitive-intel",
       "path": "skills/composites/battlecard-generator",
       "files": [
-        "skills/composites/battlecard-generator/SKILL.md",
-        "skills/composites/battlecard-generator/skill.meta.json"
+        "skills\\composites\\battlecard-generator\\SKILL.md",
+        "skills\\composites\\battlecard-generator\\skill.meta.json"
       ],
       "metadata": {
         "slug": "battlecard-generator",
@@ -286,12 +286,12 @@
       "slug": "beat-sync-reel",
       "name": "beat-sync-reel",
       "category": "capabilities",
-      "description": "Generates Instagram Reels where product image cuts are synced to audio beats. Accepts audio as a local file, URL, or search query. Uses librosa for beat detection, FFmpeg Ken Burns for scene animation, and Pillow for text overlays. No AI video generation — fully free, fast, and scalable.",
+      "description": "",
       "tags": "content",
       "path": "skills/packs/video-production/beat-sync-reel",
       "files": [
-        "skills/packs/video-production/beat-sync-reel/SKILL.md",
-        "skills/packs/video-production/beat-sync-reel/skill.meta.json"
+        "skills\\packs\\video-production\\beat-sync-reel\\SKILL.md",
+        "skills\\packs\\video-production\\beat-sync-reel\\skill.meta.json"
       ],
       "metadata": {
         "slug": "beat-sync-reel",
@@ -314,13 +314,13 @@
       "slug": "blog-feed-monitor",
       "name": "blog-feed-monitor",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "content",
       "path": "skills/capabilities/blog-feed-monitor",
       "files": [
-        "skills/capabilities/blog-feed-monitor/SKILL.md",
-        "skills/capabilities/blog-feed-monitor/scripts/scrape_blogs.py",
-        "skills/capabilities/blog-feed-monitor/skill.meta.json"
+        "skills\\capabilities\\blog-feed-monitor\\scripts\\scrape_blogs.py",
+        "skills\\capabilities\\blog-feed-monitor\\SKILL.md",
+        "skills\\capabilities\\blog-feed-monitor\\skill.meta.json"
       ],
       "metadata": {
         "slug": "blog-feed-monitor",
@@ -342,12 +342,12 @@
       "slug": "brand-intel-branddev",
       "name": "brand-intel-branddev",
       "category": "capabilities",
-      "description": "Brand intelligence - logos, colors, fonts, styleguides, and company data from any domain",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/brand-intel-branddev",
       "files": [
-        "skills/capabilities/brand-intel-branddev/SKILL.md",
-        "skills/capabilities/brand-intel-branddev/skill.meta.json"
+        "skills\\capabilities\\brand-intel-branddev\\SKILL.md",
+        "skills\\capabilities\\brand-intel-branddev\\skill.meta.json"
       ],
       "metadata": {
         "slug": "brand-intel-branddev",
@@ -368,12 +368,12 @@
       "slug": "brand-voice-extractor",
       "name": "brand-voice-extractor",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "brand",
       "path": "skills/capabilities/brand-voice-extractor",
       "files": [
-        "skills/capabilities/brand-voice-extractor/SKILL.md",
-        "skills/capabilities/brand-voice-extractor/skill.meta.json"
+        "skills\\capabilities\\brand-voice-extractor\\SKILL.md",
+        "skills\\capabilities\\brand-voice-extractor\\skill.meta.json"
       ],
       "metadata": {
         "slug": "brand-voice-extractor",
@@ -395,12 +395,12 @@
       "slug": "browser-automation-notte",
       "name": "browser-automation-notte",
       "category": "capabilities",
-      "description": "Browser automation - control browser sessions, scrape pages, and run AI agents",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/browser-automation-notte",
       "files": [
-        "skills/capabilities/browser-automation-notte/SKILL.md",
-        "skills/capabilities/browser-automation-notte/skill.meta.json"
+        "skills\\capabilities\\browser-automation-notte\\SKILL.md",
+        "skills\\capabilities\\browser-automation-notte\\skill.meta.json"
       ],
       "metadata": {
         "slug": "browser-automation-notte",
@@ -421,12 +421,12 @@
       "slug": "buyer-persona-generator",
       "name": "buyer-persona-generator",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "research",
       "path": "skills/capabilities/buyer-persona-generator",
       "files": [
-        "skills/capabilities/buyer-persona-generator/SKILL.md",
-        "skills/capabilities/buyer-persona-generator/skill.meta.json"
+        "skills\\capabilities\\buyer-persona-generator\\SKILL.md",
+        "skills\\capabilities\\buyer-persona-generator\\skill.meta.json"
       ],
       "metadata": {
         "slug": "buyer-persona-generator",
@@ -448,12 +448,12 @@
       "slug": "campaign-brief-generator",
       "name": "campaign-brief-generator",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "content",
       "path": "skills/composites/campaign-brief-generator",
       "files": [
-        "skills/composites/campaign-brief-generator/SKILL.md",
-        "skills/composites/campaign-brief-generator/skill.meta.json"
+        "skills\\composites\\campaign-brief-generator\\SKILL.md",
+        "skills\\composites\\campaign-brief-generator\\skill.meta.json"
       ],
       "metadata": {
         "slug": "campaign-brief-generator",
@@ -475,12 +475,12 @@
       "slug": "champion-move-outreach",
       "name": "champion-move-outreach",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "outreach",
       "path": "skills/composites/champion-move-outreach",
       "files": [
-        "skills/composites/champion-move-outreach/SKILL.md",
-        "skills/composites/champion-move-outreach/skill.meta.json"
+        "skills\\composites\\champion-move-outreach\\SKILL.md",
+        "skills\\composites\\champion-move-outreach\\skill.meta.json"
       ],
       "metadata": {
         "slug": "champion-move-outreach",
@@ -507,15 +507,15 @@
       "slug": "champion-tracker",
       "name": "champion-tracker",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "lead-generation",
       "path": "skills/capabilities/champion-tracker",
       "files": [
-        "skills/capabilities/champion-tracker/SKILL.md",
-        "skills/capabilities/champion-tracker/input/champions.csv",
-        "skills/capabilities/champion-tracker/input/champions_template.csv",
-        "skills/capabilities/champion-tracker/scripts/champion_tracker.py",
-        "skills/capabilities/champion-tracker/skill.meta.json"
+        "skills\\capabilities\\champion-tracker\\input\\champions.csv",
+        "skills\\capabilities\\champion-tracker\\input\\champions_template.csv",
+        "skills\\capabilities\\champion-tracker\\scripts\\champion_tracker.py",
+        "skills\\capabilities\\champion-tracker\\SKILL.md",
+        "skills\\capabilities\\champion-tracker\\skill.meta.json"
       ],
       "metadata": {
         "slug": "champion-tracker",
@@ -540,12 +540,12 @@
       "slug": "churn-risk-detector",
       "name": "churn-risk-detector",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "research",
       "path": "skills/composites/churn-risk-detector",
       "files": [
-        "skills/composites/churn-risk-detector/SKILL.md",
-        "skills/composites/churn-risk-detector/skill.meta.json"
+        "skills\\composites\\churn-risk-detector\\SKILL.md",
+        "skills\\composites\\churn-risk-detector\\skill.meta.json"
       ],
       "metadata": {
         "slug": "churn-risk-detector",
@@ -567,12 +567,12 @@
       "slug": "cold-email-outreach",
       "name": "cold-email-outreach",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "outreach",
       "path": "skills/capabilities/cold-email-outreach",
       "files": [
-        "skills/capabilities/cold-email-outreach/SKILL.md",
-        "skills/capabilities/cold-email-outreach/skill.meta.json"
+        "skills\\capabilities\\cold-email-outreach\\SKILL.md",
+        "skills\\capabilities\\cold-email-outreach\\skill.meta.json"
       ],
       "metadata": {
         "slug": "cold-email-outreach",
@@ -594,12 +594,12 @@
       "slug": "community-signals",
       "name": "community-signals",
       "category": "capabilities",
-      "description": "Extract leads from developer forums (Hacker News, Reddit) by detecting intent signals — alternative seeking, competitor pain, scaling challenges, DIY solutions, and migration intent. Scores users by intent strength and cross-platform presence.",
+      "description": "",
       "tags": "lead-generation, research, competitive-intel",
       "path": "skills/packs/lead-gen-devtools/community-signals",
       "files": [
-        "skills/packs/lead-gen-devtools/community-signals/SKILL.md",
-        "skills/packs/lead-gen-devtools/community-signals/scripts/community_signals.py"
+        "skills\\packs\\lead-gen-devtools\\community-signals\\scripts\\community_signals.py",
+        "skills\\packs\\lead-gen-devtools\\community-signals\\SKILL.md"
       ],
       "metadata": {
         "slug": "community-signals",
@@ -624,12 +624,12 @@
       "slug": "company-contact-finder",
       "name": "company-contact-finder",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "lead-generation",
       "path": "skills/capabilities/company-contact-finder",
       "files": [
-        "skills/capabilities/company-contact-finder/SKILL.md",
-        "skills/capabilities/company-contact-finder/skill.meta.json"
+        "skills\\capabilities\\company-contact-finder\\SKILL.md",
+        "skills\\capabilities\\company-contact-finder\\skill.meta.json"
       ],
       "metadata": {
         "slug": "company-contact-finder",
@@ -651,12 +651,12 @@
       "slug": "company-current-gtm-analysis",
       "name": "company-current-gtm-analysis",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "competitive-intel",
       "path": "skills/composites/company-current-gtm-analysis",
       "files": [
-        "skills/composites/company-current-gtm-analysis/SKILL.md",
-        "skills/composites/company-current-gtm-analysis/skill.meta.json"
+        "skills\\composites\\company-current-gtm-analysis\\SKILL.md",
+        "skills\\composites\\company-current-gtm-analysis\\skill.meta.json"
       ],
       "metadata": {
         "slug": "company-current-gtm-analysis",
@@ -683,12 +683,12 @@
       "slug": "company-domain-lookup-logodev",
       "name": "company-domain-lookup-logodev",
       "category": "capabilities",
-      "description": "Logo.dev - search for company domains by brand name",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/company-domain-lookup-logodev",
       "files": [
-        "skills/capabilities/company-domain-lookup-logodev/SKILL.md",
-        "skills/capabilities/company-domain-lookup-logodev/skill.meta.json"
+        "skills\\capabilities\\company-domain-lookup-logodev\\SKILL.md",
+        "skills\\capabilities\\company-domain-lookup-logodev\\skill.meta.json"
       ],
       "metadata": {
         "slug": "company-domain-lookup-logodev",
@@ -709,12 +709,12 @@
       "slug": "company-funding-search",
       "name": "company-funding-search",
       "category": "capabilities",
-      "description": "Find company funding history, investors, and investment details",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/company-funding-search",
       "files": [
-        "skills/capabilities/company-funding-search/SKILL.md",
-        "skills/capabilities/company-funding-search/skill.meta.json"
+        "skills\\capabilities\\company-funding-search\\SKILL.md",
+        "skills\\capabilities\\company-funding-search\\skill.meta.json"
       ],
       "metadata": {
         "slug": "company-funding-search",
@@ -735,12 +735,12 @@
       "slug": "company-intel",
       "name": "company-intel",
       "category": "capabilities",
-      "description": "Full company intelligence report - overview, team, funding, products, news",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/company-intel",
       "files": [
-        "skills/capabilities/company-intel/SKILL.md",
-        "skills/capabilities/company-intel/skill.meta.json"
+        "skills\\capabilities\\company-intel\\SKILL.md",
+        "skills\\capabilities\\company-intel\\skill.meta.json"
       ],
       "metadata": {
         "slug": "company-intel",
@@ -761,12 +761,12 @@
       "slug": "competitive-pricing-intel",
       "name": "competitive-pricing-intel",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "competitive-intel",
       "path": "skills/composites/competitive-pricing-intel",
       "files": [
-        "skills/composites/competitive-pricing-intel/SKILL.md",
-        "skills/composites/competitive-pricing-intel/skill.meta.json"
+        "skills\\composites\\competitive-pricing-intel\\SKILL.md",
+        "skills\\composites\\competitive-pricing-intel\\skill.meta.json"
       ],
       "metadata": {
         "slug": "competitive-pricing-intel",
@@ -788,12 +788,12 @@
       "slug": "competitor-ad-intelligence",
       "name": "competitor-ad-intelligence",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "ads",
       "path": "skills/composites/competitor-ad-intelligence",
       "files": [
-        "skills/composites/competitor-ad-intelligence/SKILL.md",
-        "skills/composites/competitor-ad-intelligence/skill.meta.json"
+        "skills\\composites\\competitor-ad-intelligence\\SKILL.md",
+        "skills\\composites\\competitor-ad-intelligence\\skill.meta.json"
       ],
       "metadata": {
         "slug": "competitor-ad-intelligence",
@@ -815,12 +815,12 @@
       "slug": "competitor-content-tracker",
       "name": "competitor-content-tracker",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "competitive-intel",
       "path": "skills/composites/competitor-content-tracker",
       "files": [
-        "skills/composites/competitor-content-tracker/SKILL.md",
-        "skills/composites/competitor-content-tracker/skill.meta.json"
+        "skills\\composites\\competitor-content-tracker\\SKILL.md",
+        "skills\\composites\\competitor-content-tracker\\skill.meta.json"
       ],
       "metadata": {
         "slug": "competitor-content-tracker",
@@ -847,12 +847,12 @@
       "slug": "competitor-intel",
       "name": "competitor-intel",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "competitive-intel",
       "path": "skills/composites/competitor-intel",
       "files": [
-        "skills/composites/competitor-intel/SKILL.md",
-        "skills/composites/competitor-intel/skill.meta.json"
+        "skills\\composites\\competitor-intel\\SKILL.md",
+        "skills\\composites\\competitor-intel\\skill.meta.json"
       ],
       "metadata": {
         "slug": "competitor-intel",
@@ -874,12 +874,12 @@
       "slug": "competitor-monitoring-system",
       "name": "competitor-monitoring-system",
       "category": "playbooks",
-      "description": ">",
+      "description": "",
       "tags": "competitive-intel",
       "path": "skills/playbooks/competitor-monitoring-system",
       "files": [
-        "skills/playbooks/competitor-monitoring-system/SKILL.md",
-        "skills/playbooks/competitor-monitoring-system/skill.meta.json"
+        "skills\\playbooks\\competitor-monitoring-system\\SKILL.md",
+        "skills\\playbooks\\competitor-monitoring-system\\skill.meta.json"
       ],
       "metadata": {
         "slug": "competitor-monitoring-system",
@@ -901,13 +901,13 @@
       "slug": "competitor-post-engagers",
       "name": "competitor-post-engagers",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "lead-generation",
       "path": "skills/capabilities/competitor-post-engagers",
       "files": [
-        "skills/capabilities/competitor-post-engagers/SKILL.md",
-        "skills/capabilities/competitor-post-engagers/scripts/competitor_post_engagers.py",
-        "skills/capabilities/competitor-post-engagers/skill.meta.json"
+        "skills\\capabilities\\competitor-post-engagers\\scripts\\competitor_post_engagers.py",
+        "skills\\capabilities\\competitor-post-engagers\\SKILL.md",
+        "skills\\capabilities\\competitor-post-engagers\\skill.meta.json"
       ],
       "metadata": {
         "slug": "competitor-post-engagers",
@@ -932,12 +932,12 @@
       "slug": "competitor-research",
       "name": "competitor-research",
       "category": "capabilities",
-      "description": "Research competitors - products, pricing, team, funding, and strategy",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/competitor-research",
       "files": [
-        "skills/capabilities/competitor-research/SKILL.md",
-        "skills/capabilities/competitor-research/skill.meta.json"
+        "skills\\capabilities\\competitor-research\\SKILL.md",
+        "skills\\capabilities\\competitor-research\\skill.meta.json"
       ],
       "metadata": {
         "slug": "competitor-research",
@@ -958,12 +958,12 @@
       "slug": "competitor-signals",
       "name": "competitor-signals",
       "category": "capabilities",
-      "description": "Extract leads from competitor product activity — Product Hunt commenters/upvoters, HN posts about competitors, case studies, testimonials, tech press, and switching signals. Detects people actively switching from competitors as highest-priority leads.",
+      "description": "",
       "tags": "lead-generation, research, competitive-intel",
       "path": "skills/packs/lead-gen-devtools/competitor-signals",
       "files": [
-        "skills/packs/lead-gen-devtools/competitor-signals/SKILL.md",
-        "skills/packs/lead-gen-devtools/competitor-signals/scripts/competitor_signals.py"
+        "skills\\packs\\lead-gen-devtools\\competitor-signals\\scripts\\competitor_signals.py",
+        "skills\\packs\\lead-gen-devtools\\competitor-signals\\SKILL.md"
       ],
       "metadata": {
         "slug": "competitor-signals",
@@ -988,12 +988,12 @@
       "slug": "comprehensive-enrichment",
       "name": "comprehensive-enrichment",
       "category": "capabilities",
-      "description": "Enrich any person or company from any identifier — email, name, LinkedIn URL, domain, company name, Twitter/X handle. Use when asked to enrich, look up, or research a lead, contact, person, or company.",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/comprehensive-enrichment",
       "files": [
-        "skills/capabilities/comprehensive-enrichment/SKILL.md",
-        "skills/capabilities/comprehensive-enrichment/skill.meta.json"
+        "skills\\capabilities\\comprehensive-enrichment\\SKILL.md",
+        "skills\\capabilities\\comprehensive-enrichment\\skill.meta.json"
       ],
       "metadata": {
         "slug": "comprehensive-enrichment",
@@ -1014,13 +1014,13 @@
       "slug": "conference-speaker-scraper",
       "name": "conference-speaker-scraper",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "lead-generation",
       "path": "skills/capabilities/conference-speaker-scraper",
       "files": [
-        "skills/capabilities/conference-speaker-scraper/SKILL.md",
-        "skills/capabilities/conference-speaker-scraper/scripts/scrape_speakers.py",
-        "skills/capabilities/conference-speaker-scraper/skill.meta.json"
+        "skills\\capabilities\\conference-speaker-scraper\\scripts\\scrape_speakers.py",
+        "skills\\capabilities\\conference-speaker-scraper\\SKILL.md",
+        "skills\\capabilities\\conference-speaker-scraper\\skill.meta.json"
       ],
       "metadata": {
         "slug": "conference-speaker-scraper",
@@ -1042,13 +1042,13 @@
       "slug": "contact-cache",
       "name": "contact-cache",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "lead-generation",
       "path": "skills/capabilities/contact-cache",
       "files": [
-        "skills/capabilities/contact-cache/SKILL.md",
-        "skills/capabilities/contact-cache/scripts/cache.py",
-        "skills/capabilities/contact-cache/skill.meta.json"
+        "skills\\capabilities\\contact-cache\\scripts\\cache.py",
+        "skills\\capabilities\\contact-cache\\SKILL.md",
+        "skills\\capabilities\\contact-cache\\skill.meta.json"
       ],
       "metadata": {
         "slug": "contact-cache",
@@ -1070,12 +1070,12 @@
       "slug": "contact-finder-contactout",
       "name": "contact-finder-contactout",
       "category": "capabilities",
-      "description": "Find emails, phone numbers, and enrich profiles using ContactOut. LinkedIn enrichment, people search, company enrichment, and batch operations.",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/contact-finder-contactout",
       "files": [
-        "skills/capabilities/contact-finder-contactout/SKILL.md",
-        "skills/capabilities/contact-finder-contactout/skill.meta.json"
+        "skills\\capabilities\\contact-finder-contactout\\SKILL.md",
+        "skills\\capabilities\\contact-finder-contactout\\skill.meta.json"
       ],
       "metadata": {
         "slug": "contact-finder-contactout",
@@ -1096,12 +1096,12 @@
       "slug": "content-asset-creator",
       "name": "content-asset-creator",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "content",
       "path": "skills/capabilities/content-asset-creator",
       "files": [
-        "skills/capabilities/content-asset-creator/SKILL.md",
-        "skills/capabilities/content-asset-creator/skill.meta.json"
+        "skills\\capabilities\\content-asset-creator\\SKILL.md",
+        "skills\\capabilities\\content-asset-creator\\skill.meta.json"
       ],
       "metadata": {
         "slug": "content-asset-creator",
@@ -1123,12 +1123,12 @@
       "slug": "content-brief-factory",
       "name": "content-brief-factory",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "content",
       "path": "skills/composites/content-brief-factory",
       "files": [
-        "skills/composites/content-brief-factory/SKILL.md",
-        "skills/composites/content-brief-factory/skill.meta.json"
+        "skills\\composites\\content-brief-factory\\SKILL.md",
+        "skills\\composites\\content-brief-factory\\skill.meta.json"
       ],
       "metadata": {
         "slug": "content-brief-factory",
@@ -1156,12 +1156,12 @@
       "slug": "create-dashboard",
       "name": "create-dashboard",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "content, design",
       "path": "skills/capabilities/create-dashboard",
       "files": [
-        "skills/capabilities/create-dashboard/SKILL.md",
-        "skills/capabilities/create-dashboard/skill.meta.json"
+        "skills\\capabilities\\create-dashboard\\SKILL.md",
+        "skills\\capabilities\\create-dashboard\\skill.meta.json"
       ],
       "metadata": {
         "slug": "create-dashboard",
@@ -1184,16 +1184,16 @@
       "slug": "create-html-carousel",
       "name": "create-html-carousel",
       "category": "capabilities",
-      "description": "Create LinkedIn carousel posts as high-quality PNG images. Design informational multi-slide posts like \"5 AI GTM workflows\" with consistent styling, then automatically screenshot each slide at LinkedIn's optimal 1080x1080px format.",
+      "description": "",
       "tags": "content",
       "path": "skills/capabilities/create-html-carousel",
       "files": [
-        "skills/capabilities/create-html-carousel/README.md",
-        "skills/capabilities/create-html-carousel/SKILL.md",
-        "skills/capabilities/create-html-carousel/STYLE_PRESETS.md",
-        "skills/capabilities/create-html-carousel/package.json",
-        "skills/capabilities/create-html-carousel/screenshot-slides.js",
-        "skills/capabilities/create-html-carousel/skill.meta.json"
+        "skills\\capabilities\\create-html-carousel\\package.json",
+        "skills\\capabilities\\create-html-carousel\\README.md",
+        "skills\\capabilities\\create-html-carousel\\screenshot-slides.js",
+        "skills\\capabilities\\create-html-carousel\\SKILL.md",
+        "skills\\capabilities\\create-html-carousel\\skill.meta.json",
+        "skills\\capabilities\\create-html-carousel\\STYLE_PRESETS.md"
       ],
       "metadata": {
         "slug": "create-html-carousel",
@@ -1215,16 +1215,16 @@
     },
     {
       "slug": "create-html-slides",
-      "name": "frontend-slides",
+      "name": "create-html-slides",
       "category": "capabilities",
-      "description": "Create stunning, animation-rich HTML presentations from scratch or by converting PowerPoint files. Use when the user wants to build a presentation, convert a PPT/PPTX to web, or create slides for a talk/pitch. Helps non-designers discover their aesthetic through visual exploration rather than abstract choices.",
+      "description": "",
       "tags": "content",
       "path": "skills/capabilities/create-html-slides",
       "files": [
-        "skills/capabilities/create-html-slides/README.md",
-        "skills/capabilities/create-html-slides/SKILL.md",
-        "skills/capabilities/create-html-slides/STYLE_PRESETS.md",
-        "skills/capabilities/create-html-slides/skill.meta.json"
+        "skills\\capabilities\\create-html-slides\\README.md",
+        "skills\\capabilities\\create-html-slides\\SKILL.md",
+        "skills\\capabilities\\create-html-slides\\skill.meta.json",
+        "skills\\capabilities\\create-html-slides\\STYLE_PRESETS.md"
       ],
       "metadata": {
         "slug": "create-html-slides",
@@ -1248,12 +1248,12 @@
       "slug": "create-linkedin-content",
       "name": "create-linkedin-content",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "content, social",
       "path": "skills/capabilities/create-linkedin-content",
       "files": [
-        "skills/capabilities/create-linkedin-content/SKILL.md",
-        "skills/capabilities/create-linkedin-content/skill.meta.json"
+        "skills\\capabilities\\create-linkedin-content\\SKILL.md",
+        "skills\\capabilities\\create-linkedin-content\\skill.meta.json"
       ],
       "metadata": {
         "slug": "create-linkedin-content",
@@ -1276,16 +1276,16 @@
       "slug": "create-workflow-diagram",
       "name": "create-workflow-diagram",
       "category": "capabilities",
-      "description": "Create FigJam/Miro-style workflow diagrams as high-quality PNG images from plain-text workflow descriptions. Renders beautiful HTML diagrams with connected nodes, arrows, and labels, then screenshots them for sharing.",
+      "description": "",
       "tags": "content",
       "path": "skills/capabilities/create-workflow-diagram",
       "files": [
-        "skills/capabilities/create-workflow-diagram/README.md",
-        "skills/capabilities/create-workflow-diagram/SKILL.md",
-        "skills/capabilities/create-workflow-diagram/STYLE_PRESETS.md",
-        "skills/capabilities/create-workflow-diagram/package.json",
-        "skills/capabilities/create-workflow-diagram/screenshot-diagram.js",
-        "skills/capabilities/create-workflow-diagram/skill.meta.json"
+        "skills\\capabilities\\create-workflow-diagram\\package.json",
+        "skills\\capabilities\\create-workflow-diagram\\README.md",
+        "skills\\capabilities\\create-workflow-diagram\\screenshot-diagram.js",
+        "skills\\capabilities\\create-workflow-diagram\\SKILL.md",
+        "skills\\capabilities\\create-workflow-diagram\\skill.meta.json",
+        "skills\\capabilities\\create-workflow-diagram\\STYLE_PRESETS.md"
       ],
       "metadata": {
         "slug": "create-workflow-diagram",
@@ -1307,12 +1307,12 @@
       "slug": "create-x-content",
       "name": "create-x-content",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "content, social",
       "path": "skills/capabilities/create-x-content",
       "files": [
-        "skills/capabilities/create-x-content/SKILL.md",
-        "skills/capabilities/create-x-content/skill.meta.json"
+        "skills\\capabilities\\create-x-content\\SKILL.md",
+        "skills\\capabilities\\create-x-content\\skill.meta.json"
       ],
       "metadata": {
         "slug": "create-x-content",
@@ -1335,15 +1335,15 @@
       "slug": "customer-discovery",
       "name": "customer-discovery",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "competitive-intel, research",
       "path": "skills/capabilities/customer-discovery",
       "files": [
-        "skills/capabilities/customer-discovery/SKILL.md",
-        "skills/capabilities/customer-discovery/scripts/scrape_wayback_logos.py",
-        "skills/capabilities/customer-discovery/scripts/scrape_website_logos.py",
-        "skills/capabilities/customer-discovery/scripts/search_builtwith.py",
-        "skills/capabilities/customer-discovery/skill.meta.json"
+        "skills\\capabilities\\customer-discovery\\scripts\\scrape_wayback_logos.py",
+        "skills\\capabilities\\customer-discovery\\scripts\\scrape_website_logos.py",
+        "skills\\capabilities\\customer-discovery\\scripts\\search_builtwith.py",
+        "skills\\capabilities\\customer-discovery\\SKILL.md",
+        "skills\\capabilities\\customer-discovery\\skill.meta.json"
       ],
       "metadata": {
         "slug": "customer-discovery",
@@ -1366,12 +1366,12 @@
       "slug": "customer-story-builder",
       "name": "customer-story-builder",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "content",
       "path": "skills/composites/customer-story-builder",
       "files": [
-        "skills/composites/customer-story-builder/SKILL.md",
-        "skills/composites/customer-story-builder/skill.meta.json"
+        "skills\\composites\\customer-story-builder\\SKILL.md",
+        "skills\\composites\\customer-story-builder\\skill.meta.json"
       ],
       "metadata": {
         "slug": "customer-story-builder",
@@ -1393,12 +1393,12 @@
       "slug": "customer-win-back-sequencer",
       "name": "customer-win-back-sequencer",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "outreach",
       "path": "skills/composites/customer-win-back-sequencer",
       "files": [
-        "skills/composites/customer-win-back-sequencer/SKILL.md",
-        "skills/composites/customer-win-back-sequencer/skill.meta.json"
+        "skills\\composites\\customer-win-back-sequencer\\SKILL.md",
+        "skills\\composites\\customer-win-back-sequencer\\skill.meta.json"
       ],
       "metadata": {
         "slug": "customer-win-back-sequencer",
@@ -1424,12 +1424,12 @@
       "slug": "data-charts-tako",
       "name": "data-charts-tako",
       "category": "capabilities",
-      "description": "Search and visualize the world's data - get charts, insights, and embeddable knowledge cards for finance, economics, demographics, sports, and more",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/data-charts-tako",
       "files": [
-        "skills/capabilities/data-charts-tako/SKILL.md",
-        "skills/capabilities/data-charts-tako/skill.meta.json"
+        "skills\\capabilities\\data-charts-tako\\SKILL.md",
+        "skills\\capabilities\\data-charts-tako\\skill.meta.json"
       ],
       "metadata": {
         "slug": "data-charts-tako",
@@ -1450,11 +1450,11 @@
       "slug": "demo-builder",
       "name": "demo-builder",
       "category": "capabilities",
-      "description": "Builds personalized demo assets for top prospects using the founder's product API/MCP/SDK. Researches prospect, proposes demo concepts, builds working prototype, tests it, and generates comparison report with live demo link.",
+      "description": "",
       "tags": "lead-generation, research, competitive-intel",
       "path": "skills/packs/lead-gen-devtools/demo-builder",
       "files": [
-        "skills/packs/lead-gen-devtools/demo-builder/SKILL.md"
+        "skills\\packs\\lead-gen-devtools\\demo-builder\\SKILL.md"
       ],
       "metadata": {
         "slug": "demo-builder",
@@ -1479,12 +1479,12 @@
       "slug": "disqualification-handling",
       "name": "disqualification-handling",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "outreach",
       "path": "skills/composites/disqualification-handling",
       "files": [
-        "skills/composites/disqualification-handling/SKILL.md",
-        "skills/composites/disqualification-handling/skill.meta.json"
+        "skills\\composites\\disqualification-handling\\SKILL.md",
+        "skills\\composites\\disqualification-handling\\skill.meta.json"
       ],
       "metadata": {
         "slug": "disqualification-handling",
@@ -1510,12 +1510,12 @@
       "slug": "ebay-search",
       "name": "ebay-search",
       "category": "capabilities",
-      "description": "Search eBay listings - find items, auctions, deals, and compare prices",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/ebay-search",
       "files": [
-        "skills/capabilities/ebay-search/SKILL.md",
-        "skills/capabilities/ebay-search/skill.meta.json"
+        "skills\\capabilities\\ebay-search\\SKILL.md",
+        "skills\\capabilities\\ebay-search\\skill.meta.json"
       ],
       "metadata": {
         "slug": "ebay-search",
@@ -1536,12 +1536,12 @@
       "slug": "email-campaign",
       "name": "email-campaign",
       "category": "capabilities",
-      "description": "Build email campaigns - find emails, verify them, and prepare outreach",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/email-campaign",
       "files": [
-        "skills/capabilities/email-campaign/SKILL.md",
-        "skills/capabilities/email-campaign/skill.meta.json"
+        "skills\\capabilities\\email-campaign\\SKILL.md",
+        "skills\\capabilities\\email-campaign\\skill.meta.json"
       ],
       "metadata": {
         "slug": "email-campaign",
@@ -1562,12 +1562,12 @@
       "slug": "email-drafting",
       "name": "email-drafting",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "outreach",
       "path": "skills/capabilities/email-drafting",
       "files": [
-        "skills/capabilities/email-drafting/SKILL.md",
-        "skills/capabilities/email-drafting/skill.meta.json"
+        "skills\\capabilities\\email-drafting\\SKILL.md",
+        "skills\\capabilities\\email-drafting\\skill.meta.json"
       ],
       "metadata": {
         "slug": "email-drafting",
@@ -1589,12 +1589,12 @@
       "slug": "email-finder-hunter",
       "name": "email-finder-hunter",
       "category": "capabilities",
-      "description": "Email finder and verifier - find emails, verify deliverability, discover companies",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/email-finder-hunter",
       "files": [
-        "skills/capabilities/email-finder-hunter/SKILL.md",
-        "skills/capabilities/email-finder-hunter/skill.meta.json"
+        "skills\\capabilities\\email-finder-hunter\\SKILL.md",
+        "skills\\capabilities\\email-finder-hunter\\skill.meta.json"
       ],
       "metadata": {
         "slug": "email-finder-hunter",
@@ -1615,12 +1615,12 @@
       "slug": "email-finder-tomba",
       "name": "email-finder-tomba",
       "category": "capabilities",
-      "description": "Email finder and verifier - find emails from domains, LinkedIn, or company search",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/email-finder-tomba",
       "files": [
-        "skills/capabilities/email-finder-tomba/SKILL.md",
-        "skills/capabilities/email-finder-tomba/skill.meta.json"
+        "skills\\capabilities\\email-finder-tomba\\SKILL.md",
+        "skills\\capabilities\\email-finder-tomba\\skill.meta.json"
       ],
       "metadata": {
         "slug": "email-finder-tomba",
@@ -1641,12 +1641,12 @@
       "slug": "enrichment-nyne",
       "name": "enrichment-nyne",
       "category": "capabilities",
-      "description": "Intelligence and enrichment - person and company data, social profiles, events, and funding",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/enrichment-nyne",
       "files": [
-        "skills/capabilities/enrichment-nyne/SKILL.md",
-        "skills/capabilities/enrichment-nyne/skill.meta.json"
+        "skills\\capabilities\\enrichment-nyne\\SKILL.md",
+        "skills\\capabilities\\enrichment-nyne\\skill.meta.json"
       ],
       "metadata": {
         "slug": "enrichment-nyne",
@@ -1667,12 +1667,12 @@
       "slug": "event-prospecting-pipeline",
       "name": "event-prospecting-pipeline",
       "category": "playbooks",
-      "description": "Find attendees at conferences/events, research their companies, qualify against ICP, and launch outreach",
+      "description": "",
       "tags": "lead-generation",
       "path": "skills/playbooks/event-prospecting-pipeline",
       "files": [
-        "skills/playbooks/event-prospecting-pipeline/SKILL.md",
-        "skills/playbooks/event-prospecting-pipeline/skill.meta.json"
+        "skills\\playbooks\\event-prospecting-pipeline\\SKILL.md",
+        "skills\\playbooks\\event-prospecting-pipeline\\skill.meta.json"
       ],
       "metadata": {
         "slug": "event-prospecting-pipeline",
@@ -1694,12 +1694,12 @@
       "slug": "event-signals",
       "name": "event-signals",
       "category": "capabilities",
-      "description": "Extract leads from conferences, meetups, hackathons, and podcasts by analyzing speaker lists, sponsor lists, hackathon entries, and podcast guests. Discovers events via Sessionize, Confs.tech, Meetup, Luma, ListenNotes, and Devpost. Looks back 90 days and forward 180 days.",
+      "description": "",
       "tags": "lead-generation, research, competitive-intel",
       "path": "skills/packs/lead-gen-devtools/event-signals",
       "files": [
-        "skills/packs/lead-gen-devtools/event-signals/SKILL.md",
-        "skills/packs/lead-gen-devtools/event-signals/scripts/event_signals.py"
+        "skills\\packs\\lead-gen-devtools\\event-signals\\scripts\\event_signals.py",
+        "skills\\packs\\lead-gen-devtools\\event-signals\\SKILL.md"
       ],
       "metadata": {
         "slug": "event-signals",
@@ -1724,12 +1724,12 @@
       "slug": "expansion-signal-spotter",
       "name": "expansion-signal-spotter",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "lead-generation",
       "path": "skills/composites/expansion-signal-spotter",
       "files": [
-        "skills/composites/expansion-signal-spotter/SKILL.md",
-        "skills/composites/expansion-signal-spotter/skill.meta.json"
+        "skills\\composites\\expansion-signal-spotter\\SKILL.md",
+        "skills\\composites\\expansion-signal-spotter\\skill.meta.json"
       ],
       "metadata": {
         "slug": "expansion-signal-spotter",
@@ -1755,12 +1755,12 @@
       "slug": "extract-webpage-data",
       "name": "extract-webpage-data",
       "category": "capabilities",
-      "description": "Extract structured data from web pages using AI",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/extract-webpage-data",
       "files": [
-        "skills/capabilities/extract-webpage-data/SKILL.md",
-        "skills/capabilities/extract-webpage-data/skill.meta.json"
+        "skills\\capabilities\\extract-webpage-data\\SKILL.md",
+        "skills\\capabilities\\extract-webpage-data\\skill.meta.json"
       ],
       "metadata": {
         "slug": "extract-webpage-data",
@@ -1781,12 +1781,12 @@
       "slug": "feature-launch-playbook",
       "name": "feature-launch-playbook",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "content",
       "path": "skills/composites/feature-launch-playbook",
       "files": [
-        "skills/composites/feature-launch-playbook/SKILL.md",
-        "skills/composites/feature-launch-playbook/skill.meta.json"
+        "skills\\composites\\feature-launch-playbook\\SKILL.md",
+        "skills\\composites\\feature-launch-playbook\\skill.meta.json"
       ],
       "metadata": {
         "slug": "feature-launch-playbook",
@@ -1808,12 +1808,12 @@
       "slug": "find-email-by-name",
       "name": "find-email-by-name",
       "category": "capabilities",
-      "description": "Find someone's email address given their name and company",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/find-email-by-name",
       "files": [
-        "skills/capabilities/find-email-by-name/SKILL.md",
-        "skills/capabilities/find-email-by-name/skill.meta.json"
+        "skills\\capabilities\\find-email-by-name\\SKILL.md",
+        "skills\\capabilities\\find-email-by-name\\skill.meta.json"
       ],
       "metadata": {
         "slug": "find-email-by-name",
@@ -1834,12 +1834,12 @@
       "slug": "find-skill",
       "name": "find-skill",
       "category": "capabilities",
-      "description": "Find and install skills from the Orthogonal skill library. Use when you need capabilities you don't have, want to discover available skills, or need to add new tools to your agent.",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/find-skill",
       "files": [
-        "skills/capabilities/find-skill/SKILL.md",
-        "skills/capabilities/find-skill/skill.meta.json"
+        "skills\\capabilities\\find-skill\\SKILL.md",
+        "skills\\capabilities\\find-skill\\skill.meta.json"
       ],
       "metadata": {
         "slug": "find-skill",
@@ -1860,12 +1860,12 @@
       "slug": "find-twitter-influencers",
       "name": "find-twitter-influencers",
       "category": "capabilities",
-      "description": "Find Twitter/X influencers to promote a product or brand. Use when asked to find influencers, discover Twitter accounts for partnerships, identify creators in a niche, or build an influencer outreach list.",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/find-twitter-influencers",
       "files": [
-        "skills/capabilities/find-twitter-influencers/SKILL.md",
-        "skills/capabilities/find-twitter-influencers/skill.meta.json"
+        "skills\\capabilities\\find-twitter-influencers\\SKILL.md",
+        "skills\\capabilities\\find-twitter-influencers\\skill.meta.json"
       ],
       "metadata": {
         "slug": "find-twitter-influencers",
@@ -1886,13 +1886,13 @@
       "slug": "funding-signal-monitor",
       "name": "funding-signal-monitor",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "lead-generation",
       "path": "skills/composites/funding-signal-monitor",
       "files": [
-        "skills/composites/funding-signal-monitor/SKILL.md",
-        "skills/composites/funding-signal-monitor/scripts/search_funding.py",
-        "skills/composites/funding-signal-monitor/skill.meta.json"
+        "skills\\composites\\funding-signal-monitor\\scripts\\search_funding.py",
+        "skills\\composites\\funding-signal-monitor\\SKILL.md",
+        "skills\\composites\\funding-signal-monitor\\skill.meta.json"
       ],
       "metadata": {
         "slug": "funding-signal-monitor",
@@ -1921,12 +1921,12 @@
       "slug": "funding-signal-outreach",
       "name": "funding-signal-outreach",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "outreach",
       "path": "skills/composites/funding-signal-outreach",
       "files": [
-        "skills/composites/funding-signal-outreach/SKILL.md",
-        "skills/composites/funding-signal-outreach/skill.meta.json"
+        "skills\\composites\\funding-signal-outreach\\SKILL.md",
+        "skills\\composites\\funding-signal-outreach\\skill.meta.json"
       ],
       "metadata": {
         "slug": "funding-signal-outreach",
@@ -1953,12 +1953,12 @@
       "slug": "generate-voice-guide",
       "name": "generate-voice-guide",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "content, social",
       "path": "skills/capabilities/generate-voice-guide",
       "files": [
-        "skills/capabilities/generate-voice-guide/SKILL.md",
-        "skills/capabilities/generate-voice-guide/skill.meta.json"
+        "skills\\capabilities\\generate-voice-guide\\SKILL.md",
+        "skills\\capabilities\\generate-voice-guide\\skill.meta.json"
       ],
       "metadata": {
         "slug": "generate-voice-guide",
@@ -1981,12 +1981,12 @@
       "slug": "get-brand-assets",
       "name": "get-brand-assets",
       "category": "capabilities",
-      "description": "Get company logos, brand colors, fonts, and style guides",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/get-brand-assets",
       "files": [
-        "skills/capabilities/get-brand-assets/SKILL.md",
-        "skills/capabilities/get-brand-assets/skill.meta.json"
+        "skills\\capabilities\\get-brand-assets\\SKILL.md",
+        "skills\\capabilities\\get-brand-assets\\skill.meta.json"
       ],
       "metadata": {
         "slug": "get-brand-assets",
@@ -2007,12 +2007,12 @@
       "slug": "get-qualified-leads-from-luma",
       "name": "get-qualified-leads-from-luma",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "lead-generation",
       "path": "skills/composites/get-qualified-leads-from-luma",
       "files": [
-        "skills/composites/get-qualified-leads-from-luma/SKILL.md",
-        "skills/composites/get-qualified-leads-from-luma/skill.meta.json"
+        "skills\\composites\\get-qualified-leads-from-luma\\SKILL.md",
+        "skills\\composites\\get-qualified-leads-from-luma\\skill.meta.json"
       ],
       "metadata": {
         "slug": "get-qualified-leads-from-luma",
@@ -2038,18 +2038,18 @@
       "slug": "github-repo-signals",
       "name": "github-repo-signals",
       "category": "capabilities",
-      "description": "Extract and score leads from GitHub repositories by analyzing stars, forks, issues, PRs, comments, and contributions. Produces unified multi-repo CSV with deduplicated user profiles. No paid API credits required.",
+      "description": "",
       "tags": "lead-generation, research, competitive-intel",
       "path": "skills/packs/lead-gen-devtools/github-repo-signals",
       "files": [
-        "skills/packs/lead-gen-devtools/github-repo-signals/SKILL.md",
-        "skills/packs/lead-gen-devtools/github-repo-signals/scripts/__init__.py",
-        "skills/packs/lead-gen-devtools/github-repo-signals/scripts/gh_common.py",
-        "skills/packs/lead-gen-devtools/github-repo-signals/scripts/gh_contributors.py",
-        "skills/packs/lead-gen-devtools/github-repo-signals/scripts/gh_issues_scanner.py",
-        "skills/packs/lead-gen-devtools/github-repo-signals/scripts/gh_repo_signals.py",
-        "skills/packs/lead-gen-devtools/github-repo-signals/scripts/gh_stars_forks.py",
-        "skills/packs/lead-gen-devtools/github-repo-signals/scripts/gh_techstack.py"
+        "skills\\packs\\lead-gen-devtools\\github-repo-signals\\scripts\\gh_common.py",
+        "skills\\packs\\lead-gen-devtools\\github-repo-signals\\scripts\\gh_contributors.py",
+        "skills\\packs\\lead-gen-devtools\\github-repo-signals\\scripts\\gh_issues_scanner.py",
+        "skills\\packs\\lead-gen-devtools\\github-repo-signals\\scripts\\gh_repo_signals.py",
+        "skills\\packs\\lead-gen-devtools\\github-repo-signals\\scripts\\gh_stars_forks.py",
+        "skills\\packs\\lead-gen-devtools\\github-repo-signals\\scripts\\gh_techstack.py",
+        "skills\\packs\\lead-gen-devtools\\github-repo-signals\\scripts\\__init__.py",
+        "skills\\packs\\lead-gen-devtools\\github-repo-signals\\SKILL.md"
       ],
       "metadata": {
         "slug": "github-repo-signals",
@@ -2074,13 +2074,13 @@
       "slug": "google-ad-scraper",
       "name": "google-ad-scraper",
       "category": "capabilities",
-      "description": "Scrape competitor ads from Google Ads by domain. Returns ad creatives, formats, and campaign details. Use for competitive ad research and messaging analysis.",
+      "description": "",
       "tags": "ads",
       "path": "skills/capabilities/google-ad-scraper",
       "files": [
-        "skills/capabilities/google-ad-scraper/SKILL.md",
-        "skills/capabilities/google-ad-scraper/scripts/search_google_ads.py",
-        "skills/capabilities/google-ad-scraper/skill.meta.json"
+        "skills\\capabilities\\google-ad-scraper\\scripts\\search_google_ads.py",
+        "skills\\capabilities\\google-ad-scraper\\SKILL.md",
+        "skills\\capabilities\\google-ad-scraper\\skill.meta.json"
       ],
       "metadata": {
         "slug": "google-ad-scraper",
@@ -2102,12 +2102,12 @@
       "slug": "google-search-ads-builder",
       "name": "google-search-ads-builder",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "ads",
       "path": "skills/composites/google-search-ads-builder",
       "files": [
-        "skills/composites/google-search-ads-builder/SKILL.md",
-        "skills/composites/google-search-ads-builder/skill.meta.json"
+        "skills\\composites\\google-search-ads-builder\\SKILL.md",
+        "skills\\composites\\google-search-ads-builder\\skill.meta.json"
       ],
       "metadata": {
         "slug": "google-search-ads-builder",
@@ -2132,22 +2132,22 @@
       "slug": "goose-graphics",
       "name": "goose-graphics",
       "category": "composites",
-      "description": "Portable visual skill pack for the Agent Skills ecosystem (Claude Code, Claude Desktop, Claude Cowork, Claude Design, Goose, Cursor, Codex). Discovers community-published styles + formats via the gooseworks CLI, runs an extract-style workflow on reference images, and exports rendered PNGs via Playwright.",
+      "description": "",
       "tags": "content, design, social",
       "path": "skills/composites/goose-graphics",
       "files": [
-        "skills/composites/goose-graphics/README.md",
-        "skills/composites/goose-graphics/SKILL.md",
-        "skills/composites/goose-graphics/extract-style.md",
-        "skills/composites/goose-graphics/screenshot/.gitignore",
-        "skills/composites/goose-graphics/screenshot/fetch-full-tweet.js",
-        "skills/composites/goose-graphics/screenshot/fetch-tweet.js",
-        "skills/composites/goose-graphics/screenshot/package-lock.json",
-        "skills/composites/goose-graphics/screenshot/package.json",
-        "skills/composites/goose-graphics/screenshot/screenshot.js",
-        "skills/composites/goose-graphics/skill.meta.json",
-        "skills/composites/goose-graphics/sources/ascii-art.md",
-        "skills/composites/goose-graphics/sources/unsplash.md"
+        "skills\\composites\\goose-graphics\\extract-style.md",
+        "skills\\composites\\goose-graphics\\README.md",
+        "skills\\composites\\goose-graphics\\screenshot\\.gitignore",
+        "skills\\composites\\goose-graphics\\screenshot\\fetch-full-tweet.js",
+        "skills\\composites\\goose-graphics\\screenshot\\fetch-tweet.js",
+        "skills\\composites\\goose-graphics\\screenshot\\package-lock.json",
+        "skills\\composites\\goose-graphics\\screenshot\\package.json",
+        "skills\\composites\\goose-graphics\\screenshot\\screenshot.js",
+        "skills\\composites\\goose-graphics\\SKILL.md",
+        "skills\\composites\\goose-graphics\\skill.meta.json",
+        "skills\\composites\\goose-graphics\\sources\\ascii-art.md",
+        "skills\\composites\\goose-graphics\\sources\\unsplash.md"
       ],
       "metadata": {
         "slug": "goose-graphics",
@@ -2179,12 +2179,12 @@
       "slug": "goose-graphics-create-format",
       "name": "goose-graphics-create-format",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "design, content",
       "path": "skills/composites/goose-graphics-create-format",
       "files": [
-        "skills/composites/goose-graphics-create-format/SKILL.md",
-        "skills/composites/goose-graphics-create-format/skill.meta.json"
+        "skills\\composites\\goose-graphics-create-format\\SKILL.md",
+        "skills\\composites\\goose-graphics-create-format\\skill.meta.json"
       ],
       "metadata": {
         "slug": "goose-graphics-create-format",
@@ -2216,12 +2216,12 @@
       "slug": "goose-graphics-create-style",
       "name": "goose-graphics-create-style",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "design, content",
       "path": "skills/composites/goose-graphics-create-style",
       "files": [
-        "skills/composites/goose-graphics-create-style/SKILL.md",
-        "skills/composites/goose-graphics-create-style/skill.meta.json"
+        "skills\\composites\\goose-graphics-create-style\\SKILL.md",
+        "skills\\composites\\goose-graphics-create-style\\skill.meta.json"
       ],
       "metadata": {
         "slug": "goose-graphics-create-style",
@@ -2253,12 +2253,12 @@
       "slug": "gtm-enrichment-deep",
       "name": "gtm-enrichment-deep",
       "category": "capabilities",
-      "description": "AI-agent-powered lead enrichment using Sixtyfour as primary source. Takes an email (+ optional name) and returns comprehensive person + company data with funding, AI/B2B classification, and full error visibility. Higher cost (~$0.20/lead) but simpler architecture.",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/gtm-enrichment-deep",
       "files": [
-        "skills/capabilities/gtm-enrichment-deep/SKILL.md",
-        "skills/capabilities/gtm-enrichment-deep/skill.meta.json"
+        "skills\\capabilities\\gtm-enrichment-deep\\SKILL.md",
+        "skills\\capabilities\\gtm-enrichment-deep\\skill.meta.json"
       ],
       "metadata": {
         "slug": "gtm-enrichment-deep",
@@ -2279,12 +2279,12 @@
       "slug": "gtm-enrichment-smart",
       "name": "gtm-enrichment-smart",
       "category": "capabilities",
-      "description": "Multi-provider waterfall lead enrichment. Takes an email (+ optional name) and returns person + company data by cross-referencing cheap APIs first, using expensive AI agents only as fallback. Cost-efficient (~$0.04-$0.10/lead) with confidence scoring and full error visibility.",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/gtm-enrichment-smart",
       "files": [
-        "skills/capabilities/gtm-enrichment-smart/SKILL.md",
-        "skills/capabilities/gtm-enrichment-smart/skill.meta.json"
+        "skills\\capabilities\\gtm-enrichment-smart\\SKILL.md",
+        "skills\\capabilities\\gtm-enrichment-smart\\skill.meta.json"
       ],
       "metadata": {
         "slug": "gtm-enrichment-smart",
@@ -2305,13 +2305,13 @@
       "slug": "hacker-news-scraper",
       "name": "hacker-news-scraper",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "monitoring",
       "path": "skills/capabilities/hacker-news-scraper",
       "files": [
-        "skills/capabilities/hacker-news-scraper/SKILL.md",
-        "skills/capabilities/hacker-news-scraper/scripts/search_hn.py",
-        "skills/capabilities/hacker-news-scraper/skill.meta.json"
+        "skills\\capabilities\\hacker-news-scraper\\scripts\\search_hn.py",
+        "skills\\capabilities\\hacker-news-scraper\\SKILL.md",
+        "skills\\capabilities\\hacker-news-scraper\\skill.meta.json"
       ],
       "metadata": {
         "slug": "hacker-news-scraper",
@@ -2333,12 +2333,12 @@
       "slug": "help-center-article-generator",
       "name": "help-center-article-generator",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "content",
       "path": "skills/composites/help-center-article-generator",
       "files": [
-        "skills/composites/help-center-article-generator/SKILL.md",
-        "skills/composites/help-center-article-generator/skill.meta.json"
+        "skills\\composites\\help-center-article-generator\\SKILL.md",
+        "skills\\composites\\help-center-article-generator\\skill.meta.json"
       ],
       "metadata": {
         "slug": "help-center-article-generator",
@@ -2360,12 +2360,12 @@
       "slug": "hiring-signal-outreach",
       "name": "hiring-signal-outreach",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "outreach",
       "path": "skills/composites/hiring-signal-outreach",
       "files": [
-        "skills/composites/hiring-signal-outreach/SKILL.md",
-        "skills/composites/hiring-signal-outreach/skill.meta.json"
+        "skills\\composites\\hiring-signal-outreach\\SKILL.md",
+        "skills\\composites\\hiring-signal-outreach\\skill.meta.json"
       ],
       "metadata": {
         "slug": "hiring-signal-outreach",
@@ -2392,12 +2392,12 @@
       "slug": "hyperlocal-weather-precip",
       "name": "hyperlocal-weather-precip",
       "category": "capabilities",
-      "description": "Hyperlocal weather data - precipitation, temperature, wind, soil moisture and more",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/hyperlocal-weather-precip",
       "files": [
-        "skills/capabilities/hyperlocal-weather-precip/SKILL.md",
-        "skills/capabilities/hyperlocal-weather-precip/skill.meta.json"
+        "skills\\capabilities\\hyperlocal-weather-precip\\SKILL.md",
+        "skills\\capabilities\\hyperlocal-weather-precip\\skill.meta.json"
       ],
       "metadata": {
         "slug": "hyperlocal-weather-precip",
@@ -2418,12 +2418,12 @@
       "slug": "icp-identification",
       "name": "icp-identification",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "research",
       "path": "skills/capabilities/icp-identification",
       "files": [
-        "skills/capabilities/icp-identification/SKILL.md",
-        "skills/capabilities/icp-identification/skill.meta.json"
+        "skills\\capabilities\\icp-identification\\SKILL.md",
+        "skills\\capabilities\\icp-identification\\skill.meta.json"
       ],
       "metadata": {
         "slug": "icp-identification",
@@ -2445,12 +2445,12 @@
       "slug": "icp-website-audit",
       "name": "icp-website-audit",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "research",
       "path": "skills/composites/icp-website-audit",
       "files": [
-        "skills/composites/icp-website-audit/SKILL.md",
-        "skills/composites/icp-website-audit/skill.meta.json"
+        "skills\\composites\\icp-website-audit\\SKILL.md",
+        "skills\\composites\\icp-website-audit\\skill.meta.json"
       ],
       "metadata": {
         "slug": "icp-website-audit",
@@ -2475,12 +2475,12 @@
       "slug": "icp-website-review",
       "name": "icp-website-review",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "research",
       "path": "skills/capabilities/icp-website-review",
       "files": [
-        "skills/capabilities/icp-website-review/SKILL.md",
-        "skills/capabilities/icp-website-review/skill.meta.json"
+        "skills\\capabilities\\icp-website-review\\SKILL.md",
+        "skills\\capabilities\\icp-website-review\\skill.meta.json"
       ],
       "metadata": {
         "slug": "icp-website-review",
@@ -2502,12 +2502,12 @@
       "slug": "identity-verification-didit",
       "name": "identity-verification-didit",
       "category": "capabilities",
-      "description": "Identity verification via phone/email OTP and AML screening using Didit API",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/identity-verification-didit",
       "files": [
-        "skills/capabilities/identity-verification-didit/SKILL.md",
-        "skills/capabilities/identity-verification-didit/skill.meta.json"
+        "skills\\capabilities\\identity-verification-didit\\SKILL.md",
+        "skills\\capabilities\\identity-verification-didit\\skill.meta.json"
       ],
       "metadata": {
         "slug": "identity-verification-didit",
@@ -2528,12 +2528,12 @@
       "slug": "image-analyzer",
       "name": "image-analyzer",
       "category": "capabilities",
-      "description": "Analyze images with AI - extract text, describe content, detect objects",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/image-analyzer",
       "files": [
-        "skills/capabilities/image-analyzer/SKILL.md",
-        "skills/capabilities/image-analyzer/skill.meta.json"
+        "skills\\capabilities\\image-analyzer\\SKILL.md",
+        "skills\\capabilities\\image-analyzer\\skill.meta.json"
       ],
       "metadata": {
         "slug": "image-analyzer",
@@ -2554,12 +2554,12 @@
       "slug": "inbound-lead-enrichment",
       "name": "inbound-lead-enrichment",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "lead-generation",
       "path": "skills/composites/inbound-lead-enrichment",
       "files": [
-        "skills/composites/inbound-lead-enrichment/SKILL.md",
-        "skills/composites/inbound-lead-enrichment/skill.meta.json"
+        "skills\\composites\\inbound-lead-enrichment\\SKILL.md",
+        "skills\\composites\\inbound-lead-enrichment\\skill.meta.json"
       ],
       "metadata": {
         "slug": "inbound-lead-enrichment",
@@ -2584,12 +2584,12 @@
       "slug": "inbound-lead-qualification",
       "name": "inbound-lead-qualification",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "lead-generation",
       "path": "skills/composites/inbound-lead-qualification",
       "files": [
-        "skills/composites/inbound-lead-qualification/SKILL.md",
-        "skills/composites/inbound-lead-qualification/skill.meta.json"
+        "skills\\composites\\inbound-lead-qualification\\SKILL.md",
+        "skills\\composites\\inbound-lead-qualification\\skill.meta.json"
       ],
       "metadata": {
         "slug": "inbound-lead-qualification",
@@ -2614,12 +2614,12 @@
       "slug": "inbound-lead-triage",
       "name": "inbound-lead-triage",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "lead-generation",
       "path": "skills/composites/inbound-lead-triage",
       "files": [
-        "skills/composites/inbound-lead-triage/SKILL.md",
-        "skills/composites/inbound-lead-triage/skill.meta.json"
+        "skills\\composites\\inbound-lead-triage\\SKILL.md",
+        "skills\\composites\\inbound-lead-triage\\skill.meta.json"
       ],
       "metadata": {
         "slug": "inbound-lead-triage",
@@ -2646,14 +2646,14 @@
       "slug": "industry-scanner",
       "name": "industry-scanner",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "competitive-intel",
       "path": "skills/composites/industry-scanner",
       "files": [
-        "skills/composites/industry-scanner/SKILL.md",
-        "skills/composites/industry-scanner/config/example-config.json",
-        "skills/composites/industry-scanner/skill.meta.json",
-        "skills/composites/industry-scanner/templates/output-template.md"
+        "skills\\composites\\industry-scanner\\config\\example-config.json",
+        "skills\\composites\\industry-scanner\\SKILL.md",
+        "skills\\composites\\industry-scanner\\skill.meta.json",
+        "skills\\composites\\industry-scanner\\templates\\output-template.md"
       ],
       "metadata": {
         "slug": "industry-scanner",
@@ -2687,12 +2687,12 @@
       "slug": "instagram-scraper",
       "name": "instagram-scraper",
       "category": "capabilities",
-      "description": "Get Instagram profiles, posts, and reels",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/instagram-scraper",
       "files": [
-        "skills/capabilities/instagram-scraper/SKILL.md",
-        "skills/capabilities/instagram-scraper/skill.meta.json"
+        "skills\\capabilities\\instagram-scraper\\SKILL.md",
+        "skills\\capabilities\\instagram-scraper\\skill.meta.json"
       ],
       "metadata": {
         "slug": "instagram-scraper",
@@ -2713,12 +2713,12 @@
       "slug": "investor-call-prep",
       "name": "investor-call-prep",
       "category": "capabilities",
-      "description": "Prepare for investor calls by pulling upcoming meetings from Google Calendar, deeply researching each investor and their firm (website scraping, portfolio analysis, thesis extraction), checking for competitor conflicts, and outputting an honest prep sheet with compatibility assessments. Use when asked to prep for investor meetings, fundraising calls, VC meetings, or demo day.",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/investor-call-prep",
       "files": [
-        "skills/capabilities/investor-call-prep/SKILL.md",
-        "skills/capabilities/investor-call-prep/skill.meta.json"
+        "skills\\capabilities\\investor-call-prep\\SKILL.md",
+        "skills\\capabilities\\investor-call-prep\\skill.meta.json"
       ],
       "metadata": {
         "slug": "investor-call-prep",
@@ -2739,12 +2739,12 @@
       "slug": "investor-research",
       "name": "investor-research",
       "category": "capabilities",
-      "description": "Research VCs, angels, and investors - portfolio, thesis, contact info",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/investor-research",
       "files": [
-        "skills/capabilities/investor-research/SKILL.md",
-        "skills/capabilities/investor-research/skill.meta.json"
+        "skills\\capabilities\\investor-research\\SKILL.md",
+        "skills\\capabilities\\investor-research\\skill.meta.json"
       ],
       "metadata": {
         "slug": "investor-research",
@@ -2765,15 +2765,15 @@
       "slug": "job-posting-intent",
       "name": "job-posting-intent",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "lead-generation, outreach",
       "path": "skills/capabilities/job-posting-intent",
       "files": [
-        "skills/capabilities/job-posting-intent/SKILL.md",
-        "skills/capabilities/job-posting-intent/scripts/create_sheet.py",
-        "skills/capabilities/job-posting-intent/scripts/create_sheet_mcp.py",
-        "skills/capabilities/job-posting-intent/scripts/search_jobs.py",
-        "skills/capabilities/job-posting-intent/skill.meta.json"
+        "skills\\capabilities\\job-posting-intent\\scripts\\create_sheet.py",
+        "skills\\capabilities\\job-posting-intent\\scripts\\create_sheet_mcp.py",
+        "skills\\capabilities\\job-posting-intent\\scripts\\search_jobs.py",
+        "skills\\capabilities\\job-posting-intent\\SKILL.md",
+        "skills\\capabilities\\job-posting-intent\\skill.meta.json"
       ],
       "metadata": {
         "slug": "job-posting-intent",
@@ -2796,12 +2796,12 @@
       "slug": "job-scraper",
       "name": "job-scraper",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "lead-generation, research",
       "path": "skills/capabilities/job-scraper",
       "files": [
-        "skills/capabilities/job-scraper/SKILL.md",
-        "skills/capabilities/job-scraper/skill.meta.json"
+        "skills\\capabilities\\job-scraper\\SKILL.md",
+        "skills\\capabilities\\job-scraper\\skill.meta.json"
       ],
       "metadata": {
         "slug": "job-scraper",
@@ -2824,12 +2824,12 @@
       "slug": "job-search",
       "name": "job-search",
       "category": "capabilities",
-      "description": "Search for jobs matching your skills, experience, and preferences",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/job-search",
       "files": [
-        "skills/capabilities/job-search/SKILL.md",
-        "skills/capabilities/job-search/skill.meta.json"
+        "skills\\capabilities\\job-search\\SKILL.md",
+        "skills\\capabilities\\job-search\\skill.meta.json"
       ],
       "metadata": {
         "slug": "job-search",
@@ -2850,12 +2850,12 @@
       "slug": "kol-content-monitor",
       "name": "kol-content-monitor",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "monitoring",
       "path": "skills/composites/kol-content-monitor",
       "files": [
-        "skills/composites/kol-content-monitor/SKILL.md",
-        "skills/composites/kol-content-monitor/skill.meta.json"
+        "skills\\composites\\kol-content-monitor\\SKILL.md",
+        "skills\\composites\\kol-content-monitor\\skill.meta.json"
       ],
       "metadata": {
         "slug": "kol-content-monitor",
@@ -2882,13 +2882,13 @@
       "slug": "kol-discovery",
       "name": "kol-discovery",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "outreach",
       "path": "skills/capabilities/kol-discovery",
       "files": [
-        "skills/capabilities/kol-discovery/SKILL.md",
-        "skills/capabilities/kol-discovery/scripts/kol_discovery.py",
-        "skills/capabilities/kol-discovery/skill.meta.json"
+        "skills\\capabilities\\kol-discovery\\scripts\\kol_discovery.py",
+        "skills\\capabilities\\kol-discovery\\SKILL.md",
+        "skills\\capabilities\\kol-discovery\\skill.meta.json"
       ],
       "metadata": {
         "slug": "kol-discovery",
@@ -2913,13 +2913,13 @@
       "slug": "kol-engager-icp",
       "name": "kol-engager-icp",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "lead-generation",
       "path": "skills/capabilities/kol-engager-icp",
       "files": [
-        "skills/capabilities/kol-engager-icp/SKILL.md",
-        "skills/capabilities/kol-engager-icp/scripts/kol_engager_icp.py",
-        "skills/capabilities/kol-engager-icp/skill.meta.json"
+        "skills\\capabilities\\kol-engager-icp\\scripts\\kol_engager_icp.py",
+        "skills\\capabilities\\kol-engager-icp\\SKILL.md",
+        "skills\\capabilities\\kol-engager-icp\\skill.meta.json"
       ],
       "metadata": {
         "slug": "kol-engager-icp",
@@ -2944,13 +2944,13 @@
       "slug": "landing-page-intel",
       "name": "landing-page-intel",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "competitive-intel",
       "path": "skills/capabilities/landing-page-intel",
       "files": [
-        "skills/capabilities/landing-page-intel/SKILL.md",
-        "skills/capabilities/landing-page-intel/scripts/scrape_landing_page.py",
-        "skills/capabilities/landing-page-intel/skill.meta.json"
+        "skills\\capabilities\\landing-page-intel\\scripts\\scrape_landing_page.py",
+        "skills\\capabilities\\landing-page-intel\\SKILL.md",
+        "skills\\capabilities\\landing-page-intel\\skill.meta.json"
       ],
       "metadata": {
         "slug": "landing-page-intel",
@@ -2972,12 +2972,12 @@
       "slug": "launch-positioning-builder",
       "name": "launch-positioning-builder",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "brand",
       "path": "skills/composites/launch-positioning-builder",
       "files": [
-        "skills/composites/launch-positioning-builder/SKILL.md",
-        "skills/composites/launch-positioning-builder/skill.meta.json"
+        "skills\\composites\\launch-positioning-builder\\SKILL.md",
+        "skills\\composites\\launch-positioning-builder\\skill.meta.json"
       ],
       "metadata": {
         "slug": "launch-positioning-builder",
@@ -3002,11 +3002,11 @@
       "slug": "lead-discovery",
       "name": "lead-discovery",
       "category": "capabilities",
-      "description": "Orchestrator that runs first for lead generation requests. Gathers business context via website analysis or questions, identifies competitors, builds ICP, and routes to signal skills with pre-filled inputs.",
+      "description": "",
       "tags": "lead-generation, research, competitive-intel",
       "path": "skills/packs/lead-gen-devtools/lead-discovery",
       "files": [
-        "skills/packs/lead-gen-devtools/lead-discovery/SKILL.md"
+        "skills\\packs\\lead-gen-devtools\\lead-discovery\\SKILL.md"
       ],
       "metadata": {
         "slug": "lead-discovery",
@@ -3031,12 +3031,12 @@
       "slug": "lead-enrichment",
       "name": "lead-enrichment",
       "category": "capabilities",
-      "description": "Enrich leads with email, phone, company data using multiple data sources",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/lead-enrichment",
       "files": [
-        "skills/capabilities/lead-enrichment/SKILL.md",
-        "skills/capabilities/lead-enrichment/skill.meta.json"
+        "skills\\capabilities\\lead-enrichment\\SKILL.md",
+        "skills\\capabilities\\lead-enrichment\\skill.meta.json"
       ],
       "metadata": {
         "slug": "lead-enrichment",
@@ -3057,12 +3057,12 @@
       "slug": "lead-enrichment-sixtyfour",
       "name": "lead-enrichment-sixtyfour",
       "category": "capabilities",
-      "description": "AI-powered lead enrichment - find emails, phones, and enrich company/lead data",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/lead-enrichment-sixtyfour",
       "files": [
-        "skills/capabilities/lead-enrichment-sixtyfour/SKILL.md",
-        "skills/capabilities/lead-enrichment-sixtyfour/skill.meta.json"
+        "skills\\capabilities\\lead-enrichment-sixtyfour\\SKILL.md",
+        "skills\\capabilities\\lead-enrichment-sixtyfour\\skill.meta.json"
       ],
       "metadata": {
         "slug": "lead-enrichment-sixtyfour",
@@ -3083,15 +3083,15 @@
       "slug": "lead-qualification",
       "name": "lead-qualification",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "lead-generation",
       "path": "skills/capabilities/lead-qualification",
       "files": [
-        "skills/capabilities/lead-qualification/SKILL.md",
-        "skills/capabilities/lead-qualification/qualification-prompts/ai-event-attendees-gtm.md",
-        "skills/capabilities/lead-qualification/qualification-prompts/juicebox-linkedin-commenters.md",
-        "skills/capabilities/lead-qualification/scripts/enrich_leads.py",
-        "skills/capabilities/lead-qualification/skill.meta.json"
+        "skills\\capabilities\\lead-qualification\\qualification-prompts\\ai-event-attendees-gtm.md",
+        "skills\\capabilities\\lead-qualification\\qualification-prompts\\juicebox-linkedin-commenters.md",
+        "skills\\capabilities\\lead-qualification\\scripts\\enrich_leads.py",
+        "skills\\capabilities\\lead-qualification\\SKILL.md",
+        "skills\\capabilities\\lead-qualification\\skill.meta.json"
       ],
       "metadata": {
         "slug": "lead-qualification",
@@ -3113,12 +3113,12 @@
       "slug": "leadership-change-outreach",
       "name": "leadership-change-outreach",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "outreach",
       "path": "skills/composites/leadership-change-outreach",
       "files": [
-        "skills/composites/leadership-change-outreach/SKILL.md",
-        "skills/composites/leadership-change-outreach/skill.meta.json"
+        "skills\\composites\\leadership-change-outreach\\SKILL.md",
+        "skills\\composites\\leadership-change-outreach\\skill.meta.json"
       ],
       "metadata": {
         "slug": "leadership-change-outreach",
@@ -3146,13 +3146,13 @@
       "slug": "linkedin-commenter-extractor",
       "name": "linkedin-commenter-extractor",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "outreach",
       "path": "skills/capabilities/linkedin-commenter-extractor",
       "files": [
-        "skills/capabilities/linkedin-commenter-extractor/SKILL.md",
-        "skills/capabilities/linkedin-commenter-extractor/scripts/extract_commenters.py",
-        "skills/capabilities/linkedin-commenter-extractor/skill.meta.json"
+        "skills\\capabilities\\linkedin-commenter-extractor\\scripts\\extract_commenters.py",
+        "skills\\capabilities\\linkedin-commenter-extractor\\SKILL.md",
+        "skills\\capabilities\\linkedin-commenter-extractor\\skill.meta.json"
       ],
       "metadata": {
         "slug": "linkedin-commenter-extractor",
@@ -3174,13 +3174,13 @@
       "slug": "linkedin-influencer-discovery",
       "name": "linkedin-influencer-discovery",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "outreach",
       "path": "skills/capabilities/linkedin-influencer-discovery",
       "files": [
-        "skills/capabilities/linkedin-influencer-discovery/SKILL.md",
-        "skills/capabilities/linkedin-influencer-discovery/scripts/discover_influencers.py",
-        "skills/capabilities/linkedin-influencer-discovery/skill.meta.json"
+        "skills\\capabilities\\linkedin-influencer-discovery\\scripts\\discover_influencers.py",
+        "skills\\capabilities\\linkedin-influencer-discovery\\SKILL.md",
+        "skills\\capabilities\\linkedin-influencer-discovery\\skill.meta.json"
       ],
       "metadata": {
         "slug": "linkedin-influencer-discovery",
@@ -3202,13 +3202,13 @@
       "slug": "linkedin-job-scraper",
       "name": "linkedin-job-scraper",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "lead-generation",
       "path": "skills/capabilities/linkedin-job-scraper",
       "files": [
-        "skills/capabilities/linkedin-job-scraper/SKILL.md",
-        "skills/capabilities/linkedin-job-scraper/scripts/jobspy_scraper.py",
-        "skills/capabilities/linkedin-job-scraper/skill.meta.json"
+        "skills\\capabilities\\linkedin-job-scraper\\scripts\\jobspy_scraper.py",
+        "skills\\capabilities\\linkedin-job-scraper\\SKILL.md",
+        "skills\\capabilities\\linkedin-job-scraper\\skill.meta.json"
       ],
       "metadata": {
         "slug": "linkedin-job-scraper",
@@ -3230,12 +3230,12 @@
       "slug": "linkedin-message-writer",
       "name": "linkedin-message-writer",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "outreach, social",
       "path": "skills/capabilities/linkedin-message-writer",
       "files": [
-        "skills/capabilities/linkedin-message-writer/SKILL.md",
-        "skills/capabilities/linkedin-message-writer/skill.meta.json"
+        "skills\\capabilities\\linkedin-message-writer\\SKILL.md",
+        "skills\\capabilities\\linkedin-message-writer\\skill.meta.json"
       ],
       "metadata": {
         "slug": "linkedin-message-writer",
@@ -3258,19 +3258,19 @@
       "slug": "linkedin-outreach",
       "name": "linkedin-outreach",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "outreach",
       "path": "skills/capabilities/linkedin-outreach",
       "files": [
-        "skills/capabilities/linkedin-outreach/SKILL.md",
-        "skills/capabilities/linkedin-outreach/skill.meta.json",
-        "skills/capabilities/linkedin-outreach/templates/sequence-templates/competitor-engagement.md",
-        "skills/capabilities/linkedin-outreach/templates/sequence-templates/database-search.md",
-        "skills/capabilities/linkedin-outreach/templates/sequence-templates/event-attendee.md",
-        "skills/capabilities/linkedin-outreach/templates/sequence-templates/hiring-signal.md",
-        "skills/capabilities/linkedin-outreach/templates/sequence-templates/kol-engagement.md",
-        "skills/capabilities/linkedin-outreach/templates/sequence-templates/pain-language.md",
-        "skills/capabilities/linkedin-outreach/templates/tone-presets.json"
+        "skills\\capabilities\\linkedin-outreach\\SKILL.md",
+        "skills\\capabilities\\linkedin-outreach\\skill.meta.json",
+        "skills\\capabilities\\linkedin-outreach\\templates\\sequence-templates\\competitor-engagement.md",
+        "skills\\capabilities\\linkedin-outreach\\templates\\sequence-templates\\database-search.md",
+        "skills\\capabilities\\linkedin-outreach\\templates\\sequence-templates\\event-attendee.md",
+        "skills\\capabilities\\linkedin-outreach\\templates\\sequence-templates\\hiring-signal.md",
+        "skills\\capabilities\\linkedin-outreach\\templates\\sequence-templates\\kol-engagement.md",
+        "skills\\capabilities\\linkedin-outreach\\templates\\sequence-templates\\pain-language.md",
+        "skills\\capabilities\\linkedin-outreach\\templates\\tone-presets.json"
       ],
       "metadata": {
         "slug": "linkedin-outreach",
@@ -3292,13 +3292,13 @@
       "slug": "linkedin-post-research",
       "name": "linkedin-post-research",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "outreach",
       "path": "skills/capabilities/linkedin-post-research",
       "files": [
-        "skills/capabilities/linkedin-post-research/SKILL.md",
-        "skills/capabilities/linkedin-post-research/scripts/search_posts.py",
-        "skills/capabilities/linkedin-post-research/skill.meta.json"
+        "skills\\capabilities\\linkedin-post-research\\scripts\\search_posts.py",
+        "skills\\capabilities\\linkedin-post-research\\SKILL.md",
+        "skills\\capabilities\\linkedin-post-research\\skill.meta.json"
       ],
       "metadata": {
         "slug": "linkedin-post-research",
@@ -3320,13 +3320,13 @@
       "slug": "linkedin-profile-post-scraper",
       "name": "linkedin-profile-post-scraper",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "outreach",
       "path": "skills/capabilities/linkedin-profile-post-scraper",
       "files": [
-        "skills/capabilities/linkedin-profile-post-scraper/SKILL.md",
-        "skills/capabilities/linkedin-profile-post-scraper/scripts/scrape_linkedin_posts.py",
-        "skills/capabilities/linkedin-profile-post-scraper/skill.meta.json"
+        "skills\\capabilities\\linkedin-profile-post-scraper\\scripts\\scrape_linkedin_posts.py",
+        "skills\\capabilities\\linkedin-profile-post-scraper\\SKILL.md",
+        "skills\\capabilities\\linkedin-profile-post-scraper\\skill.meta.json"
       ],
       "metadata": {
         "slug": "linkedin-profile-post-scraper",
@@ -3348,12 +3348,12 @@
       "slug": "linkedin-scraper",
       "name": "linkedin-scraper",
       "category": "capabilities",
-      "description": "Get LinkedIn profiles, company pages, and posts",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/linkedin-scraper",
       "files": [
-        "skills/capabilities/linkedin-scraper/SKILL.md",
-        "skills/capabilities/linkedin-scraper/skill.meta.json"
+        "skills\\capabilities\\linkedin-scraper\\SKILL.md",
+        "skills\\capabilities\\linkedin-scraper\\skill.meta.json"
       ],
       "metadata": {
         "slug": "linkedin-scraper",
@@ -3374,15 +3374,15 @@
       "slug": "luma-event-attendees",
       "name": "luma-event-attendees",
       "category": "capabilities",
-      "description": "Find speakers, hosts, and guest profiles at conferences and events on Luma. Two modes - free direct scrape for hosts, or Apify-powered search for full guest profiles with LinkedIn/Twitter/bio.",
+      "description": "",
       "tags": "lead-generation",
       "path": "skills/capabilities/luma-event-attendees",
       "files": [
-        "skills/capabilities/luma-event-attendees/README.md",
-        "skills/capabilities/luma-event-attendees/SKILL.md",
-        "skills/capabilities/luma-event-attendees/scripts/apify_client.py",
-        "skills/capabilities/luma-event-attendees/scripts/scrape_event.py",
-        "skills/capabilities/luma-event-attendees/skill.meta.json"
+        "skills\\capabilities\\luma-event-attendees\\README.md",
+        "skills\\capabilities\\luma-event-attendees\\scripts\\apify_client.py",
+        "skills\\capabilities\\luma-event-attendees\\scripts\\scrape_event.py",
+        "skills\\capabilities\\luma-event-attendees\\SKILL.md",
+        "skills\\capabilities\\luma-event-attendees\\skill.meta.json"
       ],
       "metadata": {
         "slug": "luma-event-attendees",
@@ -3404,12 +3404,12 @@
       "slug": "market-research",
       "name": "market-research",
       "category": "capabilities",
-      "description": "Research market trends, size, competitors, and growth opportunities",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/market-research",
       "files": [
-        "skills/capabilities/market-research/SKILL.md",
-        "skills/capabilities/market-research/skill.meta.json"
+        "skills\\capabilities\\market-research\\SKILL.md",
+        "skills\\capabilities\\market-research\\skill.meta.json"
       ],
       "metadata": {
         "slug": "market-research",
@@ -3430,22 +3430,22 @@
       "slug": "meeting-brief",
       "name": "meeting-brief",
       "category": "composites",
-      "description": "Daily meeting preparation system that checks your calendar each morning, deeply researches external attendees (LinkedIn, company info, GitHub, past notes), and sends you personalized briefs via email (1 per person). Use when you want automated preparation for upcoming meetings with context about each person you're meeting.",
+      "description": "",
       "tags": "research",
       "path": "skills/composites/meeting-brief",
       "files": [
-        "skills/composites/meeting-brief/.gitignore",
-        "skills/composites/meeting-brief/EXAMPLE.md",
-        "skills/composites/meeting-brief/SETUP.md",
-        "skills/composites/meeting-brief/SKILL.md",
-        "skills/composites/meeting-brief/config.json.example",
-        "skills/composites/meeting-brief/scripts/check_calendar.sh",
-        "skills/composites/meeting-brief/scripts/format_for_slack.sh",
-        "skills/composites/meeting-brief/scripts/generate_brief.js",
-        "skills/composites/meeting-brief/scripts/research_person.js",
-        "skills/composites/meeting-brief/scripts/run_daily.sh",
-        "skills/composites/meeting-brief/scripts/send_slack.sh",
-        "skills/composites/meeting-brief/skill.meta.json"
+        "skills\\composites\\meeting-brief\\.gitignore",
+        "skills\\composites\\meeting-brief\\config.json.example",
+        "skills\\composites\\meeting-brief\\EXAMPLE.md",
+        "skills\\composites\\meeting-brief\\scripts\\check_calendar.sh",
+        "skills\\composites\\meeting-brief\\scripts\\format_for_slack.sh",
+        "skills\\composites\\meeting-brief\\scripts\\generate_brief.js",
+        "skills\\composites\\meeting-brief\\scripts\\research_person.js",
+        "skills\\composites\\meeting-brief\\scripts\\run_daily.sh",
+        "skills\\composites\\meeting-brief\\scripts\\send_slack.sh",
+        "skills\\composites\\meeting-brief\\SETUP.md",
+        "skills\\composites\\meeting-brief\\SKILL.md",
+        "skills\\composites\\meeting-brief\\skill.meta.json"
       ],
       "metadata": {
         "slug": "meeting-brief",
@@ -3467,12 +3467,12 @@
       "slug": "messaging-ab-tester",
       "name": "messaging-ab-tester",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "brand",
       "path": "skills/composites/messaging-ab-tester",
       "files": [
-        "skills/composites/messaging-ab-tester/SKILL.md",
-        "skills/composites/messaging-ab-tester/skill.meta.json"
+        "skills\\composites\\messaging-ab-tester\\SKILL.md",
+        "skills\\composites\\messaging-ab-tester\\skill.meta.json"
       ],
       "metadata": {
         "slug": "messaging-ab-tester",
@@ -3494,13 +3494,13 @@
       "slug": "meta-ad-scraper",
       "name": "meta-ad-scraper",
       "category": "capabilities",
-      "description": "Scrape competitor ads from Meta's Ad Library (Facebook, Instagram, Messenger, Threads, WhatsApp). Search by company name, Facebook Page URL, or keyword. Returns ad creatives, spend estimates, reach, impressions, and campaign details. Use for competitive ad research, messaging analysis, and creative inspiration.",
+      "description": "",
       "tags": "ads",
       "path": "skills/capabilities/meta-ad-scraper",
       "files": [
-        "skills/capabilities/meta-ad-scraper/SKILL.md",
-        "skills/capabilities/meta-ad-scraper/scripts/search_meta_ads.py",
-        "skills/capabilities/meta-ad-scraper/skill.meta.json"
+        "skills\\capabilities\\meta-ad-scraper\\scripts\\search_meta_ads.py",
+        "skills\\capabilities\\meta-ad-scraper\\SKILL.md",
+        "skills\\capabilities\\meta-ad-scraper\\skill.meta.json"
       ],
       "metadata": {
         "slug": "meta-ad-scraper",
@@ -3522,12 +3522,12 @@
       "slug": "meta-ads-campaign-builder",
       "name": "meta-ads-campaign-builder",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "ads",
       "path": "skills/composites/meta-ads-campaign-builder",
       "files": [
-        "skills/composites/meta-ads-campaign-builder/SKILL.md",
-        "skills/composites/meta-ads-campaign-builder/skill.meta.json"
+        "skills\\composites\\meta-ads-campaign-builder\\SKILL.md",
+        "skills\\composites\\meta-ads-campaign-builder\\skill.meta.json"
       ],
       "metadata": {
         "slug": "meta-ads-campaign-builder",
@@ -3549,12 +3549,12 @@
       "slug": "multi-platform-search-searchapi",
       "name": "multi-platform-search-searchapi",
       "category": "capabilities",
-      "description": "Multi-platform search - YouTube, Amazon, eBay, Walmart, TikTok, Instagram, and more",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/multi-platform-search-searchapi",
       "files": [
-        "skills/capabilities/multi-platform-search-searchapi/SKILL.md",
-        "skills/capabilities/multi-platform-search-searchapi/skill.meta.json"
+        "skills\\capabilities\\multi-platform-search-searchapi\\SKILL.md",
+        "skills\\capabilities\\multi-platform-search-searchapi\\skill.meta.json"
       ],
       "metadata": {
         "slug": "multi-platform-search-searchapi",
@@ -3575,12 +3575,12 @@
       "slug": "news-signal-outreach",
       "name": "news-signal-outreach",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "outreach",
       "path": "skills/composites/news-signal-outreach",
       "files": [
-        "skills/composites/news-signal-outreach/SKILL.md",
-        "skills/composites/news-signal-outreach/skill.meta.json"
+        "skills\\composites\\news-signal-outreach\\SKILL.md",
+        "skills\\composites\\news-signal-outreach\\skill.meta.json"
       ],
       "metadata": {
         "slug": "news-signal-outreach",
@@ -3607,14 +3607,14 @@
       "slug": "newsletter-monitor",
       "name": "newsletter-monitor",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "monitoring",
       "path": "skills/composites/newsletter-monitor",
       "files": [
-        "skills/composites/newsletter-monitor/SKILL.md",
-        "skills/composites/newsletter-monitor/config/campaigns.json",
-        "skills/composites/newsletter-monitor/scripts/scan_newsletters.py",
-        "skills/composites/newsletter-monitor/skill.meta.json"
+        "skills\\composites\\newsletter-monitor\\config\\campaigns.json",
+        "skills\\composites\\newsletter-monitor\\scripts\\scan_newsletters.py",
+        "skills\\composites\\newsletter-monitor\\SKILL.md",
+        "skills\\composites\\newsletter-monitor\\skill.meta.json"
       ],
       "metadata": {
         "slug": "newsletter-monitor",
@@ -3639,12 +3639,12 @@
       "slug": "newsletter-signal-scanner",
       "name": "newsletter-signal-scanner",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "monitoring",
       "path": "skills/composites/newsletter-signal-scanner",
       "files": [
-        "skills/composites/newsletter-signal-scanner/SKILL.md",
-        "skills/composites/newsletter-signal-scanner/skill.meta.json"
+        "skills\\composites\\newsletter-signal-scanner\\SKILL.md",
+        "skills\\composites\\newsletter-signal-scanner\\skill.meta.json"
       ],
       "metadata": {
         "slug": "newsletter-signal-scanner",
@@ -3666,13 +3666,13 @@
       "slug": "newsletter-sponsorship-finder",
       "name": "newsletter-sponsorship-finder",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "monitoring",
       "path": "skills/capabilities/newsletter-sponsorship-finder",
       "files": [
-        "skills/capabilities/newsletter-sponsorship-finder/SKILL.md",
-        "skills/capabilities/newsletter-sponsorship-finder/scripts/search_newsletters.py",
-        "skills/capabilities/newsletter-sponsorship-finder/skill.meta.json"
+        "skills\\capabilities\\newsletter-sponsorship-finder\\scripts\\search_newsletters.py",
+        "skills\\capabilities\\newsletter-sponsorship-finder\\SKILL.md",
+        "skills\\capabilities\\newsletter-sponsorship-finder\\skill.meta.json"
       ],
       "metadata": {
         "slug": "newsletter-sponsorship-finder",
@@ -3694,12 +3694,12 @@
       "slug": "outbound-prospecting-engine",
       "name": "outbound-prospecting-engine",
       "category": "playbooks",
-      "description": ">",
+      "description": "",
       "tags": "outreach",
       "path": "skills/playbooks/outbound-prospecting-engine",
       "files": [
-        "skills/playbooks/outbound-prospecting-engine/SKILL.md",
-        "skills/playbooks/outbound-prospecting-engine/skill.meta.json"
+        "skills\\playbooks\\outbound-prospecting-engine\\SKILL.md",
+        "skills\\playbooks\\outbound-prospecting-engine\\skill.meta.json"
       ],
       "metadata": {
         "slug": "outbound-prospecting-engine",
@@ -3721,12 +3721,12 @@
       "slug": "paid-channel-prioritizer",
       "name": "paid-channel-prioritizer",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "ads",
       "path": "skills/composites/paid-channel-prioritizer",
       "files": [
-        "skills/composites/paid-channel-prioritizer/SKILL.md",
-        "skills/composites/paid-channel-prioritizer/skill.meta.json"
+        "skills\\composites\\paid-channel-prioritizer\\SKILL.md",
+        "skills\\composites\\paid-channel-prioritizer\\skill.meta.json"
       ],
       "metadata": {
         "slug": "paid-channel-prioritizer",
@@ -3751,22 +3751,22 @@
       "slug": "pain-language-engagers",
       "name": "pain-language-engagers",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "lead-generation",
       "path": "skills/capabilities/pain-language-engagers",
       "files": [
-        "skills/capabilities/pain-language-engagers/SKILL.md",
-        "skills/capabilities/pain-language-engagers/configs/artisan-ai.json",
-        "skills/capabilities/pain-language-engagers/configs/happy-robot.json",
-        "skills/capabilities/pain-language-engagers/configs/outset-ai.json",
-        "skills/capabilities/pain-language-engagers/output/artisan-ai-20260225_1237.csv",
-        "skills/capabilities/pain-language-engagers/output/artisan-ai-20260225_1344.csv",
-        "skills/capabilities/pain-language-engagers/output/outset-ai-20260225_1232.csv",
-        "skills/capabilities/pain-language-engagers/output/outset-ai-20260225_1237.csv",
-        "skills/capabilities/pain-language-engagers/output/outset-ai-20260225_1250-cleaned.csv",
-        "skills/capabilities/pain-language-engagers/output/outset-ai-20260225_1250.csv",
-        "skills/capabilities/pain-language-engagers/scripts/pain_language_engagers.py",
-        "skills/capabilities/pain-language-engagers/skill.meta.json"
+        "skills\\capabilities\\pain-language-engagers\\configs\\artisan-ai.json",
+        "skills\\capabilities\\pain-language-engagers\\configs\\happy-robot.json",
+        "skills\\capabilities\\pain-language-engagers\\configs\\outset-ai.json",
+        "skills\\capabilities\\pain-language-engagers\\output\\artisan-ai-20260225_1237.csv",
+        "skills\\capabilities\\pain-language-engagers\\output\\artisan-ai-20260225_1344.csv",
+        "skills\\capabilities\\pain-language-engagers\\output\\outset-ai-20260225_1232.csv",
+        "skills\\capabilities\\pain-language-engagers\\output\\outset-ai-20260225_1237.csv",
+        "skills\\capabilities\\pain-language-engagers\\output\\outset-ai-20260225_1250-cleaned.csv",
+        "skills\\capabilities\\pain-language-engagers\\output\\outset-ai-20260225_1250.csv",
+        "skills\\capabilities\\pain-language-engagers\\scripts\\pain_language_engagers.py",
+        "skills\\capabilities\\pain-language-engagers\\SKILL.md",
+        "skills\\capabilities\\pain-language-engagers\\skill.meta.json"
       ],
       "metadata": {
         "slug": "pain-language-engagers",
@@ -3791,12 +3791,12 @@
       "slug": "pdf-processor",
       "name": "pdf-processor",
       "category": "capabilities",
-      "description": "Process PDFs - extract text, tables, and structured data from documents",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/pdf-processor",
       "files": [
-        "skills/capabilities/pdf-processor/SKILL.md",
-        "skills/capabilities/pdf-processor/skill.meta.json"
+        "skills\\capabilities\\pdf-processor\\SKILL.md",
+        "skills\\capabilities\\pdf-processor\\skill.meta.json"
       ],
       "metadata": {
         "slug": "pdf-processor",
@@ -3817,12 +3817,12 @@
       "slug": "people-company-search-fiber",
       "name": "people-company-search-fiber",
       "category": "capabilities",
-      "description": "People, company, investor, and job search with LinkedIn data enrichment",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/people-company-search-fiber",
       "files": [
-        "skills/capabilities/people-company-search-fiber/SKILL.md",
-        "skills/capabilities/people-company-search-fiber/skill.meta.json"
+        "skills\\capabilities\\people-company-search-fiber\\SKILL.md",
+        "skills\\capabilities\\people-company-search-fiber\\skill.meta.json"
       ],
       "metadata": {
         "slug": "people-company-search-fiber",
@@ -3843,12 +3843,12 @@
       "slug": "person-lookup",
       "name": "person-lookup",
       "category": "capabilities",
-      "description": "Look up information about a person - work history, social profiles, contact info",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/person-lookup",
       "files": [
-        "skills/capabilities/person-lookup/SKILL.md",
-        "skills/capabilities/person-lookup/skill.meta.json"
+        "skills\\capabilities\\person-lookup\\SKILL.md",
+        "skills\\capabilities\\person-lookup\\skill.meta.json"
       ],
       "metadata": {
         "slug": "person-lookup",
@@ -3869,12 +3869,12 @@
       "slug": "phone-verification",
       "name": "phone-verification",
       "category": "capabilities",
-      "description": "Verify phone numbers using SMS one-time codes via the Didit API. Use when you need to confirm a user owns a phone number, implement SMS-based 2FA, or validate phone during signup/onboarding flows.",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/phone-verification",
       "files": [
-        "skills/capabilities/phone-verification/SKILL.md",
-        "skills/capabilities/phone-verification/skill.meta.json"
+        "skills\\capabilities\\phone-verification\\SKILL.md",
+        "skills\\capabilities\\phone-verification\\skill.meta.json"
       ],
       "metadata": {
         "slug": "phone-verification",
@@ -3895,12 +3895,12 @@
       "slug": "pipeline-review",
       "name": "pipeline-review",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "research",
       "path": "skills/composites/pipeline-review",
       "files": [
-        "skills/composites/pipeline-review/SKILL.md",
-        "skills/composites/pipeline-review/skill.meta.json"
+        "skills\\composites\\pipeline-review\\SKILL.md",
+        "skills\\composites\\pipeline-review\\skill.meta.json"
       ],
       "metadata": {
         "slug": "pipeline-review",
@@ -3925,12 +3925,12 @@
       "slug": "prediction-market-odds",
       "name": "prediction-market-odds",
       "category": "capabilities",
-      "description": "Get prediction market odds and prices from Polymarket and Kalshi",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/prediction-market-odds",
       "files": [
-        "skills/capabilities/prediction-market-odds/SKILL.md",
-        "skills/capabilities/prediction-market-odds/skill.meta.json"
+        "skills\\capabilities\\prediction-market-odds\\SKILL.md",
+        "skills\\capabilities\\prediction-market-odds\\skill.meta.json"
       ],
       "metadata": {
         "slug": "prediction-market-odds",
@@ -3951,12 +3951,12 @@
       "slug": "prediction-markets-dome",
       "name": "prediction-markets-dome",
       "category": "capabilities",
-      "description": "Prediction markets data - Polymarket, Kalshi markets, prices, positions, and trades",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/prediction-markets-dome",
       "files": [
-        "skills/capabilities/prediction-markets-dome/SKILL.md",
-        "skills/capabilities/prediction-markets-dome/skill.meta.json"
+        "skills\\capabilities\\prediction-markets-dome\\SKILL.md",
+        "skills\\capabilities\\prediction-markets-dome\\skill.meta.json"
       ],
       "metadata": {
         "slug": "prediction-markets-dome",
@@ -3977,13 +3977,13 @@
       "slug": "product-hunt-scraper",
       "name": "product-hunt-scraper",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "monitoring",
       "path": "skills/capabilities/product-hunt-scraper",
       "files": [
-        "skills/capabilities/product-hunt-scraper/SKILL.md",
-        "skills/capabilities/product-hunt-scraper/scripts/scrape_producthunt.py",
-        "skills/capabilities/product-hunt-scraper/skill.meta.json"
+        "skills\\capabilities\\product-hunt-scraper\\scripts\\scrape_producthunt.py",
+        "skills\\capabilities\\product-hunt-scraper\\SKILL.md",
+        "skills\\capabilities\\product-hunt-scraper\\skill.meta.json"
       ],
       "metadata": {
         "slug": "product-hunt-scraper",
@@ -4005,13 +4005,13 @@
       "slug": "product-reel-generator",
       "name": "product-reel-generator",
       "category": "capabilities",
-      "description": "Generates Instagram-ready product reels from any e-commerce product page URL. Scrapes product images, classifies by type, generates AI-animated clips via Higgsfield API, creates text overlays with style presets, and composes a 15-20 second reel with music. Supports model-based and product-only reels.",
+      "description": "",
       "tags": "content",
       "path": "skills/packs/video-production/product-reel-generator",
       "files": [
-        "skills/packs/video-production/product-reel-generator/SKILL.md",
-        "skills/packs/video-production/product-reel-generator/scripts/higgsfield_video.py",
-        "skills/packs/video-production/product-reel-generator/skill.meta.json"
+        "skills\\packs\\video-production\\product-reel-generator\\scripts\\higgsfield_video.py",
+        "skills\\packs\\video-production\\product-reel-generator\\SKILL.md",
+        "skills\\packs\\video-production\\product-reel-generator\\skill.meta.json"
       ],
       "metadata": {
         "slug": "product-reel-generator",
@@ -4034,12 +4034,12 @@
       "slug": "programmatic-seo-planner",
       "name": "programmatic-seo-planner",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "seo",
       "path": "skills/composites/programmatic-seo-planner",
       "files": [
-        "skills/composites/programmatic-seo-planner/SKILL.md",
-        "skills/composites/programmatic-seo-planner/skill.meta.json"
+        "skills\\composites\\programmatic-seo-planner\\SKILL.md",
+        "skills\\composites\\programmatic-seo-planner\\skill.meta.json"
       ],
       "metadata": {
         "slug": "programmatic-seo-planner",
@@ -4066,12 +4066,12 @@
       "slug": "programmatic-seo-spy",
       "name": "programmatic-seo-spy",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "seo",
       "path": "skills/composites/programmatic-seo-spy",
       "files": [
-        "skills/composites/programmatic-seo-spy/SKILL.md",
-        "skills/composites/programmatic-seo-spy/skill.meta.json"
+        "skills\\composites\\programmatic-seo-spy\\SKILL.md",
+        "skills\\composites\\programmatic-seo-spy\\skill.meta.json"
       ],
       "metadata": {
         "slug": "programmatic-seo-spy",
@@ -4094,17 +4094,46 @@
       }
     },
     {
+      "slug": "prompt-compression-engineer",
+      "name": "prompt-compression-engineer",
+      "category": "composites",
+      "description": ">",
+      "tags": "research, content",
+      "path": "skills/composites/prompt-compression-engineer",
+      "files": [
+        "skills\\composites\\prompt-compression-engineer\\SKILL.md",
+        "skills\\composites\\prompt-compression-engineer\\skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "prompt-compression-engineer",
+        "category": "composites",
+        "tags": [
+          "research",
+          "content"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install prompt-compression-engineer",
+          "supports": [
+            "claude",
+            "codex",
+            "cursor"
+          ]
+        },
+        "author": "Iman Elshazli (Monna)"
+      }
+    },
+    {
       "slug": "reddit-post-finder",
       "name": "reddit-post-finder",
       "category": "capabilities",
-      "description": "Scrape and search Reddit posts using Apify. Use when you need to find Reddit discussions, track competitor mentions, monitor product feedback, discover pain points, or analyze subreddit content. Supports keyword filtering, time-based searches, and subreddit-specific queries.",
+      "description": "",
       "tags": "monitoring",
       "path": "skills/capabilities/reddit-post-finder",
       "files": [
-        "skills/capabilities/reddit-post-finder/SKILL.md",
-        "skills/capabilities/reddit-post-finder/references/apify-config.md",
-        "skills/capabilities/reddit-post-finder/scripts/search_reddit.py",
-        "skills/capabilities/reddit-post-finder/skill.meta.json"
+        "skills\\capabilities\\reddit-post-finder\\references\\apify-config.md",
+        "skills\\capabilities\\reddit-post-finder\\scripts\\search_reddit.py",
+        "skills\\capabilities\\reddit-post-finder\\SKILL.md",
+        "skills\\capabilities\\reddit-post-finder\\skill.meta.json"
       ],
       "metadata": {
         "slug": "reddit-post-finder",
@@ -4126,12 +4155,12 @@
       "slug": "remotion-best-practices",
       "name": "remotion-best-practices",
       "category": "capabilities",
-      "description": "Best practices for Remotion - Video creation in React",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/remotion-best-practices",
       "files": [
-        "skills/capabilities/remotion-best-practices/SKILL.md",
-        "skills/capabilities/remotion-best-practices/skill.meta.json"
+        "skills\\capabilities\\remotion-best-practices\\SKILL.md",
+        "skills\\capabilities\\remotion-best-practices\\skill.meta.json"
       ],
       "metadata": {
         "slug": "remotion-best-practices",
@@ -4152,12 +4181,12 @@
       "slug": "restaurant-booking",
       "name": "restaurant-booking",
       "category": "capabilities",
-      "description": "Book restaurant reservations via browser automation. Use when asked to make dinner reservations, book a table, or find availability at restaurants. Supports OpenTable, Resy, and direct restaurant booking sites.",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/restaurant-booking",
       "files": [
-        "skills/capabilities/restaurant-booking/SKILL.md",
-        "skills/capabilities/restaurant-booking/skill.meta.json"
+        "skills\\capabilities\\restaurant-booking\\SKILL.md",
+        "skills\\capabilities\\restaurant-booking\\skill.meta.json"
       ],
       "metadata": {
         "slug": "restaurant-booking",
@@ -4178,12 +4207,12 @@
       "slug": "review-intelligence-digest",
       "name": "review-intelligence-digest",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "research",
       "path": "skills/composites/review-intelligence-digest",
       "files": [
-        "skills/composites/review-intelligence-digest/SKILL.md",
-        "skills/composites/review-intelligence-digest/skill.meta.json"
+        "skills\\composites\\review-intelligence-digest\\SKILL.md",
+        "skills\\composites\\review-intelligence-digest\\skill.meta.json"
       ],
       "metadata": {
         "slug": "review-intelligence-digest",
@@ -4208,13 +4237,13 @@
       "slug": "review-scraper",
       "name": "review-scraper",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "monitoring",
       "path": "skills/capabilities/review-scraper",
       "files": [
-        "skills/capabilities/review-scraper/SKILL.md",
-        "skills/capabilities/review-scraper/scripts/scrape_reviews.py",
-        "skills/capabilities/review-scraper/skill.meta.json"
+        "skills\\capabilities\\review-scraper\\scripts\\scrape_reviews.py",
+        "skills\\capabilities\\review-scraper\\SKILL.md",
+        "skills\\capabilities\\review-scraper\\skill.meta.json"
       ],
       "metadata": {
         "slug": "review-scraper",
@@ -4236,13 +4265,13 @@
       "slug": "review-site-scraper",
       "name": "review-site-scraper",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "monitoring",
       "path": "skills/capabilities/review-site-scraper",
       "files": [
-        "skills/capabilities/review-site-scraper/SKILL.md",
-        "skills/capabilities/review-site-scraper/scripts/scrape_reviews.py",
-        "skills/capabilities/review-site-scraper/skill.meta.json"
+        "skills\\capabilities\\review-site-scraper\\scripts\\scrape_reviews.py",
+        "skills\\capabilities\\review-site-scraper\\SKILL.md",
+        "skills\\capabilities\\review-site-scraper\\skill.meta.json"
       ],
       "metadata": {
         "slug": "review-site-scraper",
@@ -4264,12 +4293,12 @@
       "slug": "sales-call-prep",
       "name": "sales-call-prep",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "research",
       "path": "skills/composites/sales-call-prep",
       "files": [
-        "skills/composites/sales-call-prep/SKILL.md",
-        "skills/composites/sales-call-prep/skill.meta.json"
+        "skills\\composites\\sales-call-prep\\SKILL.md",
+        "skills\\composites\\sales-call-prep\\skill.meta.json"
       ],
       "metadata": {
         "slug": "sales-call-prep",
@@ -4291,12 +4320,12 @@
       "slug": "sales-coaching",
       "name": "sales-coaching",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "research",
       "path": "skills/composites/sales-coaching",
       "files": [
-        "skills/composites/sales-coaching/SKILL.md",
-        "skills/composites/sales-coaching/skill.meta.json"
+        "skills\\composites\\sales-coaching\\SKILL.md",
+        "skills\\composites\\sales-coaching\\skill.meta.json"
       ],
       "metadata": {
         "slug": "sales-coaching",
@@ -4321,12 +4350,12 @@
       "slug": "sales-prospecting",
       "name": "sales-prospecting",
       "category": "capabilities",
-      "description": "Build targeted prospect lists with verified contact information",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/sales-prospecting",
       "files": [
-        "skills/capabilities/sales-prospecting/SKILL.md",
-        "skills/capabilities/sales-prospecting/skill.meta.json"
+        "skills\\capabilities\\sales-prospecting\\SKILL.md",
+        "skills\\capabilities\\sales-prospecting\\skill.meta.json"
       ],
       "metadata": {
         "slug": "sales-prospecting",
@@ -4347,12 +4376,12 @@
       "slug": "send-sms-textbelt",
       "name": "send-sms-textbelt",
       "category": "capabilities",
-      "description": "Send SMS text messages to phone numbers. Use when the user asks to send a text, send an SMS, text someone, message a phone number, or send a notification via text message.",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/send-sms-textbelt",
       "files": [
-        "skills/capabilities/send-sms-textbelt/SKILL.md",
-        "skills/capabilities/send-sms-textbelt/skill.meta.json"
+        "skills\\capabilities\\send-sms-textbelt\\SKILL.md",
+        "skills\\capabilities\\send-sms-textbelt\\skill.meta.json"
       ],
       "metadata": {
         "slug": "send-sms-textbelt",
@@ -4373,12 +4402,12 @@
       "slug": "seo-analyzer",
       "name": "seo-analyzer",
       "category": "capabilities",
-      "description": "Analyze website SEO - keywords, content, competitors, and improvement opportunities",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/seo-analyzer",
       "files": [
-        "skills/capabilities/seo-analyzer/SKILL.md",
-        "skills/capabilities/seo-analyzer/skill.meta.json"
+        "skills\\capabilities\\seo-analyzer\\SKILL.md",
+        "skills\\capabilities\\seo-analyzer\\skill.meta.json"
       ],
       "metadata": {
         "slug": "seo-analyzer",
@@ -4399,12 +4428,12 @@
       "slug": "seo-content-audit",
       "name": "seo-content-audit",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "seo",
       "path": "skills/composites/seo-content-audit",
       "files": [
-        "skills/composites/seo-content-audit/SKILL.md",
-        "skills/composites/seo-content-audit/skill.meta.json"
+        "skills\\composites\\seo-content-audit\\SKILL.md",
+        "skills\\composites\\seo-content-audit\\skill.meta.json"
       ],
       "metadata": {
         "slug": "seo-content-audit",
@@ -4431,12 +4460,12 @@
       "slug": "seo-content-engine",
       "name": "seo-content-engine",
       "category": "playbooks",
-      "description": ">",
+      "description": "",
       "tags": "seo",
       "path": "skills/playbooks/seo-content-engine",
       "files": [
-        "skills/playbooks/seo-content-engine/SKILL.md",
-        "skills/playbooks/seo-content-engine/skill.meta.json"
+        "skills\\playbooks\\seo-content-engine\\SKILL.md",
+        "skills\\playbooks\\seo-content-engine\\skill.meta.json"
       ],
       "metadata": {
         "slug": "seo-content-engine",
@@ -4458,13 +4487,13 @@
       "slug": "seo-domain-analyzer",
       "name": "seo-domain-analyzer",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "competitive-intel, seo",
       "path": "skills/capabilities/seo-domain-analyzer",
       "files": [
-        "skills/capabilities/seo-domain-analyzer/SKILL.md",
-        "skills/capabilities/seo-domain-analyzer/scripts/analyze_domain.py",
-        "skills/capabilities/seo-domain-analyzer/skill.meta.json"
+        "skills\\capabilities\\seo-domain-analyzer\\scripts\\analyze_domain.py",
+        "skills\\capabilities\\seo-domain-analyzer\\SKILL.md",
+        "skills\\capabilities\\seo-domain-analyzer\\skill.meta.json"
       ],
       "metadata": {
         "slug": "seo-domain-analyzer",
@@ -4487,12 +4516,12 @@
       "slug": "seo-opportunity-finder",
       "name": "seo-opportunity-finder",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "seo",
       "path": "skills/composites/seo-opportunity-finder",
       "files": [
-        "skills/composites/seo-opportunity-finder/SKILL.md",
-        "skills/composites/seo-opportunity-finder/skill.meta.json"
+        "skills\\composites\\seo-opportunity-finder\\SKILL.md",
+        "skills\\composites\\seo-opportunity-finder\\skill.meta.json"
       ],
       "metadata": {
         "slug": "seo-opportunity-finder",
@@ -4519,12 +4548,12 @@
       "slug": "seo-traffic-analyzer",
       "name": "seo-traffic-analyzer",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "competitive-intel, seo",
       "path": "skills/capabilities/seo-traffic-analyzer",
       "files": [
-        "skills/capabilities/seo-traffic-analyzer/SKILL.md",
-        "skills/capabilities/seo-traffic-analyzer/skill.meta.json"
+        "skills\\capabilities\\seo-traffic-analyzer\\SKILL.md",
+        "skills\\capabilities\\seo-traffic-analyzer\\skill.meta.json"
       ],
       "metadata": {
         "slug": "seo-traffic-analyzer",
@@ -4547,12 +4576,12 @@
       "slug": "sequence-performance",
       "name": "sequence-performance",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "research",
       "path": "skills/composites/sequence-performance",
       "files": [
-        "skills/composites/sequence-performance/SKILL.md",
-        "skills/composites/sequence-performance/skill.meta.json"
+        "skills\\composites\\sequence-performance\\SKILL.md",
+        "skills\\composites\\sequence-performance\\skill.meta.json"
       ],
       "metadata": {
         "slug": "sequence-performance",
@@ -4578,12 +4607,12 @@
       "slug": "setup-outreach-campaign-smartlead",
       "name": "setup-outreach-campaign-smartlead",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "outreach",
       "path": "skills/capabilities/setup-outreach-campaign-smartlead",
       "files": [
-        "skills/capabilities/setup-outreach-campaign-smartlead/SKILL.md",
-        "skills/capabilities/setup-outreach-campaign-smartlead/skill.meta.json"
+        "skills\\capabilities\\setup-outreach-campaign-smartlead\\SKILL.md",
+        "skills\\capabilities\\setup-outreach-campaign-smartlead\\skill.meta.json"
       ],
       "metadata": {
         "slug": "setup-outreach-campaign-smartlead",
@@ -4605,12 +4634,12 @@
       "slug": "signal-detection-pipeline",
       "name": "signal-detection-pipeline",
       "category": "playbooks",
-      "description": "Detect buying signals from multiple sources, qualify leads, and generate outreach context",
+      "description": "",
       "tags": "lead-generation",
       "path": "skills/playbooks/signal-detection-pipeline",
       "files": [
-        "skills/playbooks/signal-detection-pipeline/SKILL.md",
-        "skills/playbooks/signal-detection-pipeline/skill.meta.json"
+        "skills\\playbooks\\signal-detection-pipeline\\SKILL.md",
+        "skills\\playbooks\\signal-detection-pipeline\\skill.meta.json"
       ],
       "metadata": {
         "slug": "signal-detection-pipeline",
@@ -4632,15 +4661,15 @@
       "slug": "signal-scanner",
       "name": "signal-scanner",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "lead-generation",
       "path": "skills/capabilities/signal-scanner",
       "files": [
-        "skills/capabilities/signal-scanner/SKILL.md",
-        "skills/capabilities/signal-scanner/configs/example.json",
-        "skills/capabilities/signal-scanner/configs/toma-bdc-signal.json",
-        "skills/capabilities/signal-scanner/scripts/signal_scanner.py",
-        "skills/capabilities/signal-scanner/skill.meta.json"
+        "skills\\capabilities\\signal-scanner\\configs\\example.json",
+        "skills\\capabilities\\signal-scanner\\configs\\toma-bdc-signal.json",
+        "skills\\capabilities\\signal-scanner\\scripts\\signal_scanner.py",
+        "skills\\capabilities\\signal-scanner\\SKILL.md",
+        "skills\\capabilities\\signal-scanner\\skill.meta.json"
       ],
       "metadata": {
         "slug": "signal-scanner",
@@ -4666,13 +4695,13 @@
       "slug": "site-content-catalog",
       "name": "site-content-catalog",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "content, seo",
       "path": "skills/capabilities/site-content-catalog",
       "files": [
-        "skills/capabilities/site-content-catalog/SKILL.md",
-        "skills/capabilities/site-content-catalog/scripts/catalog_content.py",
-        "skills/capabilities/site-content-catalog/skill.meta.json"
+        "skills\\capabilities\\site-content-catalog\\scripts\\catalog_content.py",
+        "skills\\capabilities\\site-content-catalog\\SKILL.md",
+        "skills\\capabilities\\site-content-catalog\\skill.meta.json"
       ],
       "metadata": {
         "slug": "site-content-catalog",
@@ -4695,12 +4724,12 @@
       "slug": "skill-creator",
       "name": "skill-creator",
       "category": "capabilities",
-      "description": "Create, structure, and package agent skills. Use when designing new skills, updating existing skills, or helping users build skills with scripts, references, and assets. Triggers on requests to create skills, write SKILL.md files, or structure skill directories.",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/skill-creator",
       "files": [
-        "skills/capabilities/skill-creator/SKILL.md",
-        "skills/capabilities/skill-creator/skill.meta.json"
+        "skills\\capabilities\\skill-creator\\SKILL.md",
+        "skills\\capabilities\\skill-creator\\skill.meta.json"
       ],
       "metadata": {
         "slug": "skill-creator",
@@ -4721,12 +4750,12 @@
       "slug": "social-kit",
       "name": "social-kit",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "content, social",
       "path": "skills/composites/social-kit",
       "files": [
-        "skills/composites/social-kit/SKILL.md",
-        "skills/composites/social-kit/skill.meta.json"
+        "skills\\composites\\social-kit\\SKILL.md",
+        "skills\\composites\\social-kit\\skill.meta.json"
       ],
       "metadata": {
         "slug": "social-kit",
@@ -4763,12 +4792,12 @@
       "slug": "social-listening",
       "name": "social-listening",
       "category": "capabilities",
-      "description": "Monitor brand mentions, competitor activity, and industry conversations across social media and the web",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/social-listening",
       "files": [
-        "skills/capabilities/social-listening/SKILL.md",
-        "skills/capabilities/social-listening/skill.meta.json"
+        "skills\\capabilities\\social-listening\\SKILL.md",
+        "skills\\capabilities\\social-listening\\skill.meta.json"
       ],
       "metadata": {
         "slug": "social-listening",
@@ -4789,12 +4818,12 @@
       "slug": "social-media-scraping-scrapecreators",
       "name": "social-media-scraping-scrapecreators",
       "category": "capabilities",
-      "description": "Social media scraping - Instagram, TikTok, LinkedIn, and X/Twitter profiles, posts, and content",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/social-media-scraping-scrapecreators",
       "files": [
-        "skills/capabilities/social-media-scraping-scrapecreators/SKILL.md",
-        "skills/capabilities/social-media-scraping-scrapecreators/skill.meta.json"
+        "skills\\capabilities\\social-media-scraping-scrapecreators\\SKILL.md",
+        "skills\\capabilities\\social-media-scraping-scrapecreators\\skill.meta.json"
       ],
       "metadata": {
         "slug": "social-media-scraping-scrapecreators",
@@ -4815,12 +4844,12 @@
       "slug": "sponsored-newsletter-finder",
       "name": "sponsored-newsletter-finder",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "ads",
       "path": "skills/composites/sponsored-newsletter-finder",
       "files": [
-        "skills/composites/sponsored-newsletter-finder/SKILL.md",
-        "skills/composites/sponsored-newsletter-finder/skill.meta.json"
+        "skills\\composites\\sponsored-newsletter-finder\\SKILL.md",
+        "skills\\composites\\sponsored-newsletter-finder\\skill.meta.json"
       ],
       "metadata": {
         "slug": "sponsored-newsletter-finder",
@@ -4842,12 +4871,12 @@
       "slug": "structured-scraping-riveter",
       "name": "structured-scraping-riveter",
       "category": "capabilities",
-      "description": "Web scraping with structured data extraction - define your output schema",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/structured-scraping-riveter",
       "files": [
-        "skills/capabilities/structured-scraping-riveter/SKILL.md",
-        "skills/capabilities/structured-scraping-riveter/skill.meta.json"
+        "skills\\capabilities\\structured-scraping-riveter\\SKILL.md",
+        "skills\\capabilities\\structured-scraping-riveter\\skill.meta.json"
       ],
       "metadata": {
         "slug": "structured-scraping-riveter",
@@ -4868,13 +4897,13 @@
       "slug": "talking-head-video",
       "name": "talking-head-video",
       "category": "capabilities",
-      "description": "Creates talking head videos from any source material (docs, changelogs, blog posts, notes, transcripts). Produces multi-scene videos with avatar narration over screenshots/images using HeyGen v2 API. Supports Quick Shot and Full Producer modes.",
+      "description": "",
       "tags": "content",
       "path": "skills/packs/video-production/talking-head-video",
       "files": [
-        "skills/packs/video-production/talking-head-video/AVATAR-CONFIG.example.md",
-        "skills/packs/video-production/talking-head-video/SKILL.md",
-        "skills/packs/video-production/talking-head-video/skill.meta.json"
+        "skills\\packs\\video-production\\talking-head-video\\AVATAR-CONFIG.example.md",
+        "skills\\packs\\video-production\\talking-head-video\\SKILL.md",
+        "skills\\packs\\video-production\\talking-head-video\\skill.meta.json"
       ],
       "metadata": {
         "slug": "talking-head-video",
@@ -4897,12 +4926,12 @@
       "slug": "tam-builder",
       "name": "tam-builder",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "lead-generation",
       "path": "skills/capabilities/tam-builder",
       "files": [
-        "skills/capabilities/tam-builder/SKILL.md",
-        "skills/capabilities/tam-builder/skill.meta.json"
+        "skills\\capabilities\\tam-builder\\SKILL.md",
+        "skills\\capabilities\\tam-builder\\skill.meta.json"
       ],
       "metadata": {
         "slug": "tam-builder",
@@ -4924,12 +4953,12 @@
       "slug": "targeted-prospecting",
       "name": "targeted-prospecting",
       "category": "capabilities",
-      "description": "Build a prospect list of companies with decision makers, verified contact info, and hiring/intent signals. Use when asked to find leads by industry, build an account list with specific titles, prospect companies that are actively hiring, or create a targeted outreach list filtered by company size, location, and hiring activity.",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/targeted-prospecting",
       "files": [
-        "skills/capabilities/targeted-prospecting/SKILL.md",
-        "skills/capabilities/targeted-prospecting/skill.meta.json"
+        "skills\\capabilities\\targeted-prospecting\\SKILL.md",
+        "skills\\capabilities\\targeted-prospecting\\skill.meta.json"
       ],
       "metadata": {
         "slug": "targeted-prospecting",
@@ -4950,12 +4979,12 @@
       "slug": "team-linkedin-profiles",
       "name": "team-linkedin-profiles",
       "category": "capabilities",
-      "description": "Find LinkedIn profiles of a specific team or department at a company. Use when asked to get LinkedIn profiles, find team members, or look up people in a particular team/department/group at a company.",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/team-linkedin-profiles",
       "files": [
-        "skills/capabilities/team-linkedin-profiles/SKILL.md",
-        "skills/capabilities/team-linkedin-profiles/skill.meta.json"
+        "skills\\capabilities\\team-linkedin-profiles\\SKILL.md",
+        "skills\\capabilities\\team-linkedin-profiles\\skill.meta.json"
       ],
       "metadata": {
         "slug": "team-linkedin-profiles",
@@ -4976,13 +5005,13 @@
       "slug": "tech-stack-teardown",
       "name": "tech-stack-teardown",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "competitive-intel",
       "path": "skills/capabilities/tech-stack-teardown",
       "files": [
-        "skills/capabilities/tech-stack-teardown/SKILL.md",
-        "skills/capabilities/tech-stack-teardown/scripts/recon.py",
-        "skills/capabilities/tech-stack-teardown/skill.meta.json"
+        "skills\\capabilities\\tech-stack-teardown\\scripts\\recon.py",
+        "skills\\capabilities\\tech-stack-teardown\\SKILL.md",
+        "skills\\capabilities\\tech-stack-teardown\\skill.meta.json"
       ],
       "metadata": {
         "slug": "tech-stack-teardown",
@@ -5004,12 +5033,12 @@
       "slug": "terminal-gif-recordings",
       "name": "terminal-gif-recordings",
       "category": "capabilities",
-      "description": "Create polished terminal GIF recordings using VHS (Video Hardware Software) by Charmbracelet. Use when asked to create terminal demos, CLI gifs, command-line recordings, or animated terminal screenshots for documentation, READMEs, or marketing.",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/terminal-gif-recordings",
       "files": [
-        "skills/capabilities/terminal-gif-recordings/SKILL.md",
-        "skills/capabilities/terminal-gif-recordings/skill.meta.json"
+        "skills\\capabilities\\terminal-gif-recordings\\SKILL.md",
+        "skills\\capabilities\\terminal-gif-recordings\\skill.meta.json"
       ],
       "metadata": {
         "slug": "terminal-gif-recordings",
@@ -5030,13 +5059,13 @@
       "slug": "tiktok-influencer-finder",
       "name": "tiktok-influencer-finder",
       "category": "capabilities",
-      "description": "Find TikTok influencers using Apify's Influencer Discovery Agent. Use when the user wants to discover TikTok creators or influencers in any niche.",
+      "description": "",
       "tags": "outreach",
       "path": "skills/capabilities/tiktok-influencer-finder",
       "files": [
-        "skills/capabilities/tiktok-influencer-finder/SKILL.md",
-        "skills/capabilities/tiktok-influencer-finder/scripts/find_influencers.py",
-        "skills/capabilities/tiktok-influencer-finder/skill.meta.json"
+        "skills\\capabilities\\tiktok-influencer-finder\\scripts\\find_influencers.py",
+        "skills\\capabilities\\tiktok-influencer-finder\\SKILL.md",
+        "skills\\capabilities\\tiktok-influencer-finder\\skill.meta.json"
       ],
       "metadata": {
         "slug": "tiktok-influencer-finder",
@@ -5058,12 +5087,12 @@
       "slug": "tiktok-search",
       "name": "tiktok-search",
       "category": "capabilities",
-      "description": "Search TikTok - find profiles, videos, hashtags, and trending content",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/tiktok-search",
       "files": [
-        "skills/capabilities/tiktok-search/SKILL.md",
-        "skills/capabilities/tiktok-search/skill.meta.json"
+        "skills\\capabilities\\tiktok-search\\SKILL.md",
+        "skills\\capabilities\\tiktok-search\\skill.meta.json"
       ],
       "metadata": {
         "slug": "tiktok-search",
@@ -5084,12 +5113,12 @@
       "slug": "topical-authority-mapper",
       "name": "topical-authority-mapper",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "seo",
       "path": "skills/composites/topical-authority-mapper",
       "files": [
-        "skills/composites/topical-authority-mapper/SKILL.md",
-        "skills/composites/topical-authority-mapper/skill.meta.json"
+        "skills\\composites\\topical-authority-mapper\\SKILL.md",
+        "skills\\composites\\topical-authority-mapper\\skill.meta.json"
       ],
       "metadata": {
         "slug": "topical-authority-mapper",
@@ -5116,12 +5145,12 @@
       "slug": "trending-ad-hook-spotter",
       "name": "trending-ad-hook-spotter",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "ads",
       "path": "skills/composites/trending-ad-hook-spotter",
       "files": [
-        "skills/composites/trending-ad-hook-spotter/SKILL.md",
-        "skills/composites/trending-ad-hook-spotter/skill.meta.json"
+        "skills\\composites\\trending-ad-hook-spotter\\SKILL.md",
+        "skills\\composites\\trending-ad-hook-spotter\\skill.meta.json"
       ],
       "metadata": {
         "slug": "trending-ad-hook-spotter",
@@ -5149,13 +5178,13 @@
       "slug": "twitter-mention-tracker",
       "name": "twitter-mention-tracker",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "monitoring",
       "path": "skills/capabilities/twitter-mention-tracker",
       "files": [
-        "skills/capabilities/twitter-mention-tracker/SKILL.md",
-        "skills/capabilities/twitter-mention-tracker/scripts/search_twitter.py",
-        "skills/capabilities/twitter-mention-tracker/skill.meta.json"
+        "skills\\capabilities\\twitter-mention-tracker\\scripts\\search_twitter.py",
+        "skills\\capabilities\\twitter-mention-tracker\\SKILL.md",
+        "skills\\capabilities\\twitter-mention-tracker\\skill.meta.json"
       ],
       "metadata": {
         "slug": "twitter-mention-tracker",
@@ -5177,12 +5206,12 @@
       "slug": "twitter-profile-lookup",
       "name": "twitter-profile-lookup",
       "category": "capabilities",
-      "description": "Look up Twitter/X profiles - get bio, followers, tweets, and engagement",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/twitter-profile-lookup",
       "files": [
-        "skills/capabilities/twitter-profile-lookup/SKILL.md",
-        "skills/capabilities/twitter-profile-lookup/skill.meta.json"
+        "skills\\capabilities\\twitter-profile-lookup\\SKILL.md",
+        "skills\\capabilities\\twitter-profile-lookup\\skill.meta.json"
       ],
       "metadata": {
         "slug": "twitter-profile-lookup",
@@ -5203,12 +5232,12 @@
       "slug": "uptime-monitor",
       "name": "uptime-monitor",
       "category": "capabilities",
-      "description": "Monitor website uptime - check availability, response times, and status",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/uptime-monitor",
       "files": [
-        "skills/capabilities/uptime-monitor/SKILL.md",
-        "skills/capabilities/uptime-monitor/skill.meta.json"
+        "skills\\capabilities\\uptime-monitor\\SKILL.md",
+        "skills\\capabilities\\uptime-monitor\\skill.meta.json"
       ],
       "metadata": {
         "slug": "uptime-monitor",
@@ -5229,12 +5258,12 @@
       "slug": "verify-email",
       "name": "verify-email",
       "category": "capabilities",
-      "description": "Verify if an email address is valid and deliverable",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/verify-email",
       "files": [
-        "skills/capabilities/verify-email/SKILL.md",
-        "skills/capabilities/verify-email/skill.meta.json"
+        "skills\\capabilities\\verify-email\\SKILL.md",
+        "skills\\capabilities\\verify-email\\skill.meta.json"
       ],
       "metadata": {
         "slug": "verify-email",
@@ -5255,12 +5284,12 @@
       "slug": "video-clipper",
       "name": "video-clipper",
       "category": "capabilities",
-      "description": "Repurposes long-form video (podcasts, interviews, talks) into short-form vertical clips for Instagram Reels, TikTok, and YouTube Shorts. Handles transcription, moment selection, clip extraction, speaker-tracked reframing (16:9 to 9:16), and animated captions.",
+      "description": "",
       "tags": "content",
       "path": "skills/packs/video-production/video-clipper",
       "files": [
-        "skills/packs/video-production/video-clipper/SKILL.md",
-        "skills/packs/video-production/video-clipper/skill.meta.json"
+        "skills\\packs\\video-production\\video-clipper\\SKILL.md",
+        "skills\\packs\\video-production\\video-clipper\\skill.meta.json"
       ],
       "metadata": {
         "slug": "video-clipper",
@@ -5283,12 +5312,12 @@
       "slug": "video-polish",
       "name": "video-polish",
       "category": "capabilities",
-      "description": "Takes an existing screen recording or demo video and adds professional zoom/pan effects synchronized to the narration. Uses transcript-driven zoom targeting and Remotion for rendering. Optionally replaces audio with a soundtrack.",
+      "description": "",
       "tags": "content",
       "path": "skills/packs/video-production/video-polish",
       "files": [
-        "skills/packs/video-production/video-polish/SKILL.md",
-        "skills/packs/video-production/video-polish/skill.meta.json"
+        "skills\\packs\\video-production\\video-polish\\SKILL.md",
+        "skills\\packs\\video-production\\video-polish\\skill.meta.json"
       ],
       "metadata": {
         "slug": "video-polish",
@@ -5311,12 +5340,12 @@
       "slug": "visual-brand-extractor",
       "name": "visual-brand-extractor",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "brand",
       "path": "skills/capabilities/visual-brand-extractor",
       "files": [
-        "skills/capabilities/visual-brand-extractor/SKILL.md",
-        "skills/capabilities/visual-brand-extractor/skill.meta.json"
+        "skills\\capabilities\\visual-brand-extractor\\SKILL.md",
+        "skills\\capabilities\\visual-brand-extractor\\skill.meta.json"
       ],
       "metadata": {
         "slug": "visual-brand-extractor",
@@ -5338,12 +5367,12 @@
       "slug": "voice-of-customer-synthesizer",
       "name": "voice-of-customer-synthesizer",
       "category": "composites",
-      "description": ">",
+      "description": "",
       "tags": "research",
       "path": "skills/composites/voice-of-customer-synthesizer",
       "files": [
-        "skills/composites/voice-of-customer-synthesizer/SKILL.md",
-        "skills/composites/voice-of-customer-synthesizer/skill.meta.json"
+        "skills\\composites\\voice-of-customer-synthesizer\\SKILL.md",
+        "skills\\composites\\voice-of-customer-synthesizer\\skill.meta.json"
       ],
       "metadata": {
         "slug": "voice-of-customer-synthesizer",
@@ -5370,12 +5399,12 @@
       "slug": "weather",
       "name": "weather",
       "category": "capabilities",
-      "description": "Get current weather and forecasts using free APIs (no API key required). Use when asked about weather, temperature, forecasts, or climate conditions for any location.",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/weather",
       "files": [
-        "skills/capabilities/weather/SKILL.md",
-        "skills/capabilities/weather/skill.meta.json"
+        "skills\\capabilities\\weather\\SKILL.md",
+        "skills\\capabilities\\weather\\skill.meta.json"
       ],
       "metadata": {
         "slug": "weather",
@@ -5396,13 +5425,13 @@
       "slug": "web-archive-scraper",
       "name": "web-archive-scraper",
       "category": "capabilities",
-      "description": ">",
+      "description": "",
       "tags": "monitoring",
       "path": "skills/capabilities/web-archive-scraper",
       "files": [
-        "skills/capabilities/web-archive-scraper/SKILL.md",
-        "skills/capabilities/web-archive-scraper/scripts/search_archive.py",
-        "skills/capabilities/web-archive-scraper/skill.meta.json"
+        "skills\\capabilities\\web-archive-scraper\\scripts\\search_archive.py",
+        "skills\\capabilities\\web-archive-scraper\\SKILL.md",
+        "skills\\capabilities\\web-archive-scraper\\skill.meta.json"
       ],
       "metadata": {
         "slug": "web-archive-scraper",
@@ -5424,12 +5453,12 @@
       "slug": "web-research-parallel",
       "name": "web-research-parallel",
       "category": "capabilities",
-      "description": "Web research API with OpenAI-compatible chat completions and async tasks",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/web-research-parallel",
       "files": [
-        "skills/capabilities/web-research-parallel/SKILL.md",
-        "skills/capabilities/web-research-parallel/skill.meta.json"
+        "skills\\capabilities\\web-research-parallel\\SKILL.md",
+        "skills\\capabilities\\web-research-parallel\\skill.meta.json"
       ],
       "metadata": {
         "slug": "web-research-parallel",
@@ -5450,12 +5479,12 @@
       "slug": "web-scraping",
       "name": "web-scraping",
       "category": "capabilities",
-      "description": "Scrape websites, extract structured data, and automate browsers. Use when asked to scrape, extract, crawl, parse, or pull data from web pages or any URL.",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/web-scraping",
       "files": [
-        "skills/capabilities/web-scraping/SKILL.md",
-        "skills/capabilities/web-scraping/skill.meta.json"
+        "skills\\capabilities\\web-scraping\\SKILL.md",
+        "skills\\capabilities\\web-scraping\\skill.meta.json"
       ],
       "metadata": {
         "slug": "web-scraping",
@@ -5476,12 +5505,12 @@
       "slug": "web-scraping-olostep",
       "name": "web-scraping-olostep",
       "category": "capabilities",
-      "description": "Web scraping, crawling, and AI-powered answer extraction at scale",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/web-scraping-olostep",
       "files": [
-        "skills/capabilities/web-scraping-olostep/SKILL.md",
-        "skills/capabilities/web-scraping-olostep/skill.meta.json"
+        "skills\\capabilities\\web-scraping-olostep\\SKILL.md",
+        "skills\\capabilities\\web-scraping-olostep\\skill.meta.json"
       ],
       "metadata": {
         "slug": "web-scraping-olostep",
@@ -5502,12 +5531,12 @@
       "slug": "web-search",
       "name": "web-search",
       "category": "capabilities",
-      "description": "Search the web, platforms, and datasets. Use when asked to search, find, look up, research, or discover information from the web, YouTube, Amazon, eBay, news, academic sources, or any online platform.",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/web-search",
       "files": [
-        "skills/capabilities/web-search/SKILL.md",
-        "skills/capabilities/web-search/skill.meta.json"
+        "skills\\capabilities\\web-search\\SKILL.md",
+        "skills\\capabilities\\web-search\\skill.meta.json"
       ],
       "metadata": {
         "slug": "web-search",
@@ -5528,12 +5557,12 @@
       "slug": "web-search-andi",
       "name": "web-search-andi",
       "category": "capabilities",
-      "description": "Fast, high-quality web search with intelligent ranking and instant answers",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/web-search-andi",
       "files": [
-        "skills/capabilities/web-search-andi/SKILL.md",
-        "skills/capabilities/web-search-andi/skill.meta.json"
+        "skills\\capabilities\\web-search-andi\\SKILL.md",
+        "skills\\capabilities\\web-search-andi\\skill.meta.json"
       ],
       "metadata": {
         "slug": "web-search-andi",
@@ -5554,12 +5583,12 @@
       "slug": "web-search-exa",
       "name": "web-search-exa",
       "category": "capabilities",
-      "description": "Neural web search - find similar content, extract pages, and run deep research",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/web-search-exa",
       "files": [
-        "skills/capabilities/web-search-exa/SKILL.md",
-        "skills/capabilities/web-search-exa/skill.meta.json"
+        "skills\\capabilities\\web-search-exa\\SKILL.md",
+        "skills\\capabilities\\web-search-exa\\skill.meta.json"
       ],
       "metadata": {
         "slug": "web-search-exa",
@@ -5580,12 +5609,12 @@
       "slug": "web-search-jina",
       "name": "web-search-jina",
       "category": "capabilities",
-      "description": "Jina Search - fast web search returning SERP results",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/web-search-jina",
       "files": [
-        "skills/capabilities/web-search-jina/SKILL.md",
-        "skills/capabilities/web-search-jina/skill.meta.json"
+        "skills\\capabilities\\web-search-jina\\SKILL.md",
+        "skills\\capabilities\\web-search-jina\\skill.meta.json"
       ],
       "metadata": {
         "slug": "web-search-jina",
@@ -5606,12 +5635,12 @@
       "slug": "web-search-linkup",
       "name": "web-search-linkup",
       "category": "capabilities",
-      "description": "Web search and content fetching - search the web or extract content from URLs",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/web-search-linkup",
       "files": [
-        "skills/capabilities/web-search-linkup/SKILL.md",
-        "skills/capabilities/web-search-linkup/skill.meta.json"
+        "skills\\capabilities\\web-search-linkup\\SKILL.md",
+        "skills\\capabilities\\web-search-linkup\\skill.meta.json"
       ],
       "metadata": {
         "slug": "web-search-linkup",
@@ -5632,12 +5661,12 @@
       "slug": "web-search-perplexity",
       "name": "web-search-perplexity",
       "category": "capabilities",
-      "description": "Perplexity AI search and chat completions with real-time web data",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/web-search-perplexity",
       "files": [
-        "skills/capabilities/web-search-perplexity/SKILL.md",
-        "skills/capabilities/web-search-perplexity/skill.meta.json"
+        "skills\\capabilities\\web-search-perplexity\\SKILL.md",
+        "skills\\capabilities\\web-search-perplexity\\skill.meta.json"
       ],
       "metadata": {
         "slug": "web-search-perplexity",
@@ -5658,12 +5687,12 @@
       "slug": "web-search-tavily",
       "name": "web-search-tavily",
       "category": "capabilities",
-      "description": "AI-powered web search, crawling, extraction, and deep research",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/web-search-tavily",
       "files": [
-        "skills/capabilities/web-search-tavily/SKILL.md",
-        "skills/capabilities/web-search-tavily/skill.meta.json"
+        "skills\\capabilities\\web-search-tavily\\SKILL.md",
+        "skills\\capabilities\\web-search-tavily\\skill.meta.json"
       ],
       "metadata": {
         "slug": "web-search-tavily",
@@ -5684,12 +5713,12 @@
       "slug": "web-search-valyu",
       "name": "web-search-valyu",
       "category": "capabilities",
-      "description": "Web search, AI answers, content extraction, and async deep research",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/web-search-valyu",
       "files": [
-        "skills/capabilities/web-search-valyu/SKILL.md",
-        "skills/capabilities/web-search-valyu/skill.meta.json"
+        "skills\\capabilities\\web-search-valyu\\SKILL.md",
+        "skills\\capabilities\\web-search-valyu\\skill.meta.json"
       ],
       "metadata": {
         "slug": "web-search-valyu",
@@ -5710,12 +5739,12 @@
       "slug": "website-screenshot-notte",
       "name": "website-screenshot-notte",
       "category": "capabilities",
-      "description": "Take screenshots of any website using Notte browser automation. Use when asked to screenshot, capture, or snap a webpage.",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/website-screenshot-notte",
       "files": [
-        "skills/capabilities/website-screenshot-notte/SKILL.md",
-        "skills/capabilities/website-screenshot-notte/skill.meta.json"
+        "skills\\capabilities\\website-screenshot-notte\\SKILL.md",
+        "skills\\capabilities\\website-screenshot-notte\\skill.meta.json"
       ],
       "metadata": {
         "slug": "website-screenshot-notte",
@@ -5736,12 +5765,12 @@
       "slug": "yc-batch-evaluator",
       "name": "yc-batch-evaluator",
       "category": "capabilities",
-      "description": "Evaluate YC batch companies for investment — scrapes the YC directory, researches each company and its founders (work history, LinkedIn, website), assesses founder-company fit, and exports to Google Sheets with priority rankings. Use when asked to evaluate YC companies, research a YC batch, screen startups, or do due diligence on YC companies.",
+      "description": "",
       "tags": "",
       "path": "skills/capabilities/yc-batch-evaluator",
       "files": [
-        "skills/capabilities/yc-batch-evaluator/SKILL.md",
-        "skills/capabilities/yc-batch-evaluator/skill.meta.json"
+        "skills\\capabilities\\yc-batch-evaluator\\SKILL.md",
+        "skills\\capabilities\\yc-batch-evaluator\\skill.meta.json"
       ],
       "metadata": {
         "slug": "yc-batch-evaluator",
@@ -5762,16 +5791,16 @@
       "slug": "youtube-apify-transcript",
       "name": "youtube-apify-transcript",
       "category": "capabilities",
-      "description": "Fetch YouTube transcripts via APIFY API. Works from cloud IPs (Hetzner, AWS, etc.) by bypassing YouTube's bot detection. Free tier includes $5/month credits (~714 videos). No credit card required.",
+      "description": "",
       "tags": "research",
       "path": "skills/capabilities/youtube-apify-transcript",
       "files": [
-        "skills/capabilities/youtube-apify-transcript/CHANGELOG.md",
-        "skills/capabilities/youtube-apify-transcript/README.md",
-        "skills/capabilities/youtube-apify-transcript/SKILL.md",
-        "skills/capabilities/youtube-apify-transcript/package.json",
-        "skills/capabilities/youtube-apify-transcript/scripts/fetch_transcript.py",
-        "skills/capabilities/youtube-apify-transcript/skill.meta.json"
+        "skills\\capabilities\\youtube-apify-transcript\\CHANGELOG.md",
+        "skills\\capabilities\\youtube-apify-transcript\\package.json",
+        "skills\\capabilities\\youtube-apify-transcript\\README.md",
+        "skills\\capabilities\\youtube-apify-transcript\\scripts\\fetch_transcript.py",
+        "skills\\capabilities\\youtube-apify-transcript\\SKILL.md",
+        "skills\\capabilities\\youtube-apify-transcript\\skill.meta.json"
       ],
       "metadata": {
         "slug": "youtube-apify-transcript",
@@ -5793,13 +5822,13 @@
       "slug": "youtube-watcher",
       "name": "youtube-watcher",
       "category": "capabilities",
-      "description": "Fetch and read transcripts from YouTube videos. Use when you need to summarize a video, answer questions about its content, or extract information from it.",
+      "description": "",
       "tags": "content",
       "path": "skills/capabilities/youtube-watcher",
       "files": [
-        "skills/capabilities/youtube-watcher/SKILL.md",
-        "skills/capabilities/youtube-watcher/scripts/get_transcript.py",
-        "skills/capabilities/youtube-watcher/skill.meta.json"
+        "skills\\capabilities\\youtube-watcher\\scripts\\get_transcript.py",
+        "skills\\capabilities\\youtube-watcher\\SKILL.md",
+        "skills\\capabilities\\youtube-watcher\\skill.meta.json"
       ],
       "metadata": {
         "slug": "youtube-watcher",
@@ -5835,81 +5864,81 @@
         {
           "slug": "lead-discovery",
           "name": "lead-discovery",
-          "description": "Orchestrator that runs first for lead generation requests. Gathers business context via website analysis or questions, identifies competitors, builds ICP, and routes to signal skills with pre-filled inputs.",
+          "description": "",
           "path": "skills/packs/lead-gen-devtools/lead-discovery",
           "files": [
-            "skills/packs/lead-gen-devtools/lead-discovery/SKILL.md"
+            "skills\\packs\\lead-gen-devtools\\lead-discovery\\SKILL.md"
           ],
           "source": "pack"
         },
         {
           "slug": "github-repo-signals",
           "name": "github-repo-signals",
-          "description": "Extract and score leads from GitHub repositories by analyzing stars, forks, issues, PRs, comments, and contributions. Produces unified multi-repo CSV with deduplicated user profiles. No paid API credits required.",
+          "description": "",
           "path": "skills/packs/lead-gen-devtools/github-repo-signals",
           "files": [
-            "skills/packs/lead-gen-devtools/github-repo-signals/SKILL.md",
-            "skills/packs/lead-gen-devtools/github-repo-signals/scripts/__init__.py",
-            "skills/packs/lead-gen-devtools/github-repo-signals/scripts/gh_common.py",
-            "skills/packs/lead-gen-devtools/github-repo-signals/scripts/gh_contributors.py",
-            "skills/packs/lead-gen-devtools/github-repo-signals/scripts/gh_issues_scanner.py",
-            "skills/packs/lead-gen-devtools/github-repo-signals/scripts/gh_repo_signals.py",
-            "skills/packs/lead-gen-devtools/github-repo-signals/scripts/gh_stars_forks.py",
-            "skills/packs/lead-gen-devtools/github-repo-signals/scripts/gh_techstack.py"
+            "skills\\packs\\lead-gen-devtools\\github-repo-signals\\scripts\\gh_common.py",
+            "skills\\packs\\lead-gen-devtools\\github-repo-signals\\scripts\\gh_contributors.py",
+            "skills\\packs\\lead-gen-devtools\\github-repo-signals\\scripts\\gh_issues_scanner.py",
+            "skills\\packs\\lead-gen-devtools\\github-repo-signals\\scripts\\gh_repo_signals.py",
+            "skills\\packs\\lead-gen-devtools\\github-repo-signals\\scripts\\gh_stars_forks.py",
+            "skills\\packs\\lead-gen-devtools\\github-repo-signals\\scripts\\gh_techstack.py",
+            "skills\\packs\\lead-gen-devtools\\github-repo-signals\\scripts\\__init__.py",
+            "skills\\packs\\lead-gen-devtools\\github-repo-signals\\SKILL.md"
           ],
           "source": "pack"
         },
         {
           "slug": "community-signals",
           "name": "community-signals",
-          "description": "Extract leads from developer forums (Hacker News, Reddit) by detecting intent signals — alternative seeking, competitor pain, scaling challenges, DIY solutions, and migration intent. Scores users by intent strength and cross-platform presence.",
+          "description": "",
           "path": "skills/packs/lead-gen-devtools/community-signals",
           "files": [
-            "skills/packs/lead-gen-devtools/community-signals/SKILL.md",
-            "skills/packs/lead-gen-devtools/community-signals/scripts/community_signals.py"
+            "skills\\packs\\lead-gen-devtools\\community-signals\\scripts\\community_signals.py",
+            "skills\\packs\\lead-gen-devtools\\community-signals\\SKILL.md"
           ],
           "source": "pack"
         },
         {
           "slug": "competitor-signals",
           "name": "competitor-signals",
-          "description": "Extract leads from competitor product activity — Product Hunt commenters/upvoters, HN posts about competitors, case studies, testimonials, tech press, and switching signals. Detects people actively switching from competitors as highest-priority leads.",
+          "description": "",
           "path": "skills/packs/lead-gen-devtools/competitor-signals",
           "files": [
-            "skills/packs/lead-gen-devtools/competitor-signals/SKILL.md",
-            "skills/packs/lead-gen-devtools/competitor-signals/scripts/competitor_signals.py"
+            "skills\\packs\\lead-gen-devtools\\competitor-signals\\scripts\\competitor_signals.py",
+            "skills\\packs\\lead-gen-devtools\\competitor-signals\\SKILL.md"
           ],
           "source": "pack"
         },
         {
           "slug": "event-signals",
           "name": "event-signals",
-          "description": "Extract leads from conferences, meetups, hackathons, and podcasts by analyzing speaker lists, sponsor lists, hackathon entries, and podcast guests. Discovers events via Sessionize, Confs.tech, Meetup, Luma, ListenNotes, and Devpost. Looks back 90 days and forward 180 days.",
+          "description": "",
           "path": "skills/packs/lead-gen-devtools/event-signals",
           "files": [
-            "skills/packs/lead-gen-devtools/event-signals/SKILL.md",
-            "skills/packs/lead-gen-devtools/event-signals/scripts/event_signals.py"
+            "skills\\packs\\lead-gen-devtools\\event-signals\\scripts\\event_signals.py",
+            "skills\\packs\\lead-gen-devtools\\event-signals\\SKILL.md"
           ],
           "source": "pack"
         },
         {
           "slug": "demo-builder",
           "name": "demo-builder",
-          "description": "Builds personalized demo assets for top prospects using the founder's product API/MCP/SDK. Researches prospect, proposes demo concepts, builds working prototype, tests it, and generates comparison report with live demo link.",
+          "description": "",
           "path": "skills/packs/lead-gen-devtools/demo-builder",
           "files": [
-            "skills/packs/lead-gen-devtools/demo-builder/SKILL.md"
+            "skills\\packs\\lead-gen-devtools\\demo-builder\\SKILL.md"
           ],
           "source": "pack"
         },
         {
           "slug": "hiring-signal-outreach",
           "name": "hiring-signal-outreach",
-          "description": ">",
+          "description": "",
           "path": "skills/composites/hiring-signal-outreach",
           "files": [
-            "skills/composites/hiring-signal-outreach/SKILL.md",
-            "skills/composites/hiring-signal-outreach/skill.meta.json"
+            "skills\\composites\\hiring-signal-outreach\\SKILL.md",
+            "skills\\composites\\hiring-signal-outreach\\skill.meta.json"
           ],
           "source": "registry"
         }
@@ -5965,57 +5994,57 @@
         {
           "slug": "beat-sync-reel",
           "name": "beat-sync-reel",
-          "description": "Generates Instagram Reels where product image cuts are synced to audio beats. Accepts audio as a local file, URL, or search query. Uses librosa for beat detection, FFmpeg Ken Burns for scene animation, and Pillow for text overlays. No AI video generation — fully free, fast, and scalable.",
+          "description": "",
           "path": "skills/packs/video-production/beat-sync-reel",
           "files": [
-            "skills/packs/video-production/beat-sync-reel/SKILL.md",
-            "skills/packs/video-production/beat-sync-reel/skill.meta.json"
+            "skills\\packs\\video-production\\beat-sync-reel\\SKILL.md",
+            "skills\\packs\\video-production\\beat-sync-reel\\skill.meta.json"
           ],
           "source": "pack"
         },
         {
           "slug": "product-reel-generator",
           "name": "product-reel-generator",
-          "description": "Generates Instagram-ready product reels from any e-commerce product page URL. Scrapes product images, classifies by type, generates AI-animated clips via Higgsfield API, creates text overlays with style presets, and composes a 15-20 second reel with music. Supports model-based and product-only reels.",
+          "description": "",
           "path": "skills/packs/video-production/product-reel-generator",
           "files": [
-            "skills/packs/video-production/product-reel-generator/SKILL.md",
-            "skills/packs/video-production/product-reel-generator/scripts/higgsfield_video.py",
-            "skills/packs/video-production/product-reel-generator/skill.meta.json"
+            "skills\\packs\\video-production\\product-reel-generator\\scripts\\higgsfield_video.py",
+            "skills\\packs\\video-production\\product-reel-generator\\SKILL.md",
+            "skills\\packs\\video-production\\product-reel-generator\\skill.meta.json"
           ],
           "source": "pack"
         },
         {
           "slug": "talking-head-video",
           "name": "talking-head-video",
-          "description": "Creates talking head videos from any source material (docs, changelogs, blog posts, notes, transcripts). Produces multi-scene videos with avatar narration over screenshots/images using HeyGen v2 API. Supports Quick Shot and Full Producer modes.",
+          "description": "",
           "path": "skills/packs/video-production/talking-head-video",
           "files": [
-            "skills/packs/video-production/talking-head-video/AVATAR-CONFIG.example.md",
-            "skills/packs/video-production/talking-head-video/SKILL.md",
-            "skills/packs/video-production/talking-head-video/skill.meta.json"
+            "skills\\packs\\video-production\\talking-head-video\\AVATAR-CONFIG.example.md",
+            "skills\\packs\\video-production\\talking-head-video\\SKILL.md",
+            "skills\\packs\\video-production\\talking-head-video\\skill.meta.json"
           ],
           "source": "pack"
         },
         {
           "slug": "video-clipper",
           "name": "video-clipper",
-          "description": "Repurposes long-form video (podcasts, interviews, talks) into short-form vertical clips for Instagram Reels, TikTok, and YouTube Shorts. Handles transcription, moment selection, clip extraction, speaker-tracked reframing (16:9 to 9:16), and animated captions.",
+          "description": "",
           "path": "skills/packs/video-production/video-clipper",
           "files": [
-            "skills/packs/video-production/video-clipper/SKILL.md",
-            "skills/packs/video-production/video-clipper/skill.meta.json"
+            "skills\\packs\\video-production\\video-clipper\\SKILL.md",
+            "skills\\packs\\video-production\\video-clipper\\skill.meta.json"
           ],
           "source": "pack"
         },
         {
           "slug": "video-polish",
           "name": "video-polish",
-          "description": "Takes an existing screen recording or demo video and adds professional zoom/pan effects synchronized to the narration. Uses transcript-driven zoom targeting and Remotion for rendering. Optionally replaces audio with a soundtrack.",
+          "description": "",
           "path": "skills/packs/video-production/video-polish",
           "files": [
-            "skills/packs/video-production/video-polish/SKILL.md",
-            "skills/packs/video-production/video-polish/skill.meta.json"
+            "skills\\packs\\video-production\\video-polish\\SKILL.md",
+            "skills\\packs\\video-production\\video-polish\\skill.meta.json"
           ],
           "source": "pack"
         }
