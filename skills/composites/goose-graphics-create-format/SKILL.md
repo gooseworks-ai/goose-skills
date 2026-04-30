@@ -19,9 +19,18 @@ with an existing style.
 
 ## When to use this skill
 
-Use when the existing community-published formats don't fit the user's canvas
-needs — e.g., LinkedIn banner (1584×396), story cover (1080×1920), event flyer
-(8.5×11in / 2550×3300px @ 300dpi), TikTok cover, podcast cover, blog hero, etc.
+Use when the user wants a new named format with its own content rules —
+a story cover, a podcast cover, a square testimonial — that maps to one
+of the seven built-in canvas sizes (carousel, infographic, slides,
+poster, story, chart, tweet). The new format defines new rules and a
+new slug; it inherits dimensions from one of those canvases.
+
+**Custom canvas dimensions are not supported.** If the user wants a
+canvas size that isn't in the seven built-ins (e.g. LinkedIn banner
+1584×396, US Letter 2550×3300), tell them honestly — that requires a
+code change to the `goose-graphics` skill pack's `FORMAT_CONFIGS` and is
+out of scope for this skill. Suggest the closest existing canvas
+instead.
 
 **Always check first:** run `npx gooseworks formats list` (or `formats search
 "banner"` etc.) to see whether a community-published format already covers the
@@ -29,9 +38,16 @@ use case. If one fits, just use it via the regular `goose-graphics` flow.
 
 ## Prerequisites
 
-- The `goose-graphics` skill must be installed in the same workspace. This skill
-  uses `goose-graphics/screenshot/screenshot.js` to render examples and pulls
-  style specs via `npx gooseworks styles get <slug>`.
+- The `goose-graphics` skill must be installed in the same workspace —
+  this skill uses `goose-graphics/screenshot/screenshot.js` to render
+  examples and pulls style specs via `npx gooseworks styles get <slug>`.
+  Install via:
+  ```bash
+  npx gooseworks install --claude --with goose-graphics
+  ```
+  (Swap `--claude` for `--cursor` or `--codex` as needed.) See the install
+  page on the hub for the canonical command:
+  https://skills.gooseworks.ai/skills/goose-graphics
 - The screenshot tool's dependencies must be installed
   (`goose-graphics/screenshot/node_modules/` must exist). If not:
   ```bash
@@ -61,20 +77,43 @@ rendered example is mandatory.
 
 ## Workflow
 
-### Step 1 — Confirm dimensions and intent
+### Step 1 — Pick a canvas (from the fixed allow-list) and confirm intent
 
-Ask the user:
+A new format is **a new slug + new content rules over one of the seven
+built-in canvas sizes** — *not* a new canvas. Custom dimensions are not
+supported: every renderer in the system (CLI screenshot tool, hub, other
+agents) is locked to this allow-list, and creating a format with custom
+`width`/`height` would produce something nobody can render.
 
-- What are the exact pixel dimensions? (Width × height. Be precise — formats
-  are immutable once published.)
+Pick the canvas the new format should use:
+
+| Canvas slug   | Dimensions | Best for                                   |
+|---------------|------------|--------------------------------------------|
+| `poster`      | 1080×1350  | Vertical hero composition, single panel    |
+| `infographic` | 1080×var.  | Tall vertical scroll, multi-section        |
+| `carousel`    | 1080×1080  | Square single panel / multi-slide          |
+| `slides`      | 1920×1080  | Widescreen / presentation                  |
+| `story`       | 1080×1920  | Vertical full-screen (IG/TikTok stories)   |
+| `chart`       | 1080×1080  | Square data viz                            |
+| `tweet`       | 1080×1080  | Square testimonial / social card           |
+
+Then ask the user:
+
+- Which canvas best fits the use case? (Pick from the table above.)
 - What is this format for? (Surface, platform, audience.)
-- What is the maximum content density? (Title length, body length, item counts,
-  whether it's single-panel or multi-panel.)
+- What is the maximum content density? (Title length, body length, item
+  counts, whether it's single-panel or multi-panel.)
 
-Sanity-check the dimensions against the spec constraint: width and height are
-integers in `[64, 8192]`. If the user says "8.5×11 inches," translate to pixels
-(typically 2550×3300 at 300dpi or 850×1100 at 100dpi — clarify the resolution
-before committing).
+The new format inherits the canvas's `width`/`height` exactly. Set the
+manifest's `width`/`height` fields to the canvas's dimensions verbatim
+(e.g. 1080/1350 for a poster-canvas format). Do not invent new
+dimensions — the publish step will reject anything that doesn't match
+one of the seven canvases.
+
+If the user wants a canvas that isn't in the list (e.g. LinkedIn banner
+1584×396), tell them honestly: that's a code change to the
+`goose-graphics` skill pack's `FORMAT_CONFIGS` and is out of scope for
+this skill. Suggest the closest existing canvas instead.
 
 ### Step 2 — Pick a name and slug
 
@@ -127,18 +166,18 @@ For each example:
    - Fixed pixel sizes only — no `vw`/`vh`/`%`/`rem`/`em`/`clamp()`.
    - Outer dimensions match exactly:
      `html, body { width: <W>px; height: <H>px; overflow: hidden; }`.
-4. Render via the screenshot tool from the `goose-graphics` skill pack:
+4. Render via the screenshot tool from the `goose-graphics` skill pack,
+   passing the **canvas slug** (carousel/infographic/slides/poster/story/
+   chart/tweet — the one chosen in Step 1), not the new format's slug:
    ```bash
    node <path-to>/goose-graphics/screenshot/screenshot.js \
-     --format <new-format-slug> \
+     --format <canvas-slug> \
      --input <path-to-html> \
      --output <working-dir>/example-N.png \
      --font-delay 1500
    ```
-   The `--format` flag tells the screenshot tool how to size the viewport. If
-   the screenshot tool doesn't yet recognize the new slug, fall back to
-   `--width <W> --height <H>` (or whatever the current screenshot tool's
-   override flags are — check `screenshot.js --help`).
+   This works out of the box — the new format inherits the canvas's
+   dimensions, so no code changes are needed anywhere.
 
 ### Step 5 — Write `gooseworks-format.json`
 
@@ -146,13 +185,13 @@ Match the shape documented in `goose-graphics/SKILL.md` §17.2. Required:
 
 ```json
 {
-  "name": "LinkedIn Banner",
-  "slug": "linkedin-banner",
-  "description": "1584×396 LinkedIn profile background. Single horizontal banner; minimal text (4 words max), abstract backdrop, optional small logo lower-right. Use for professional brand presence on LinkedIn company and personal pages.",
-  "width": 1584,
-  "height": 396,
-  "contentRulesMd": "## Rules\n\n- Title: 4 words max, large display, top-left or center\n- No body copy\n- One brand mark optional, lower-right, ≤8% of canvas\n…",
-  "tags": ["linkedin", "banner", "horizontal", "professional"],
+  "name": "Story Cover",
+  "slug": "story-cover",
+  "description": "1080×1920 vertical cover slide for Instagram and TikTok stories. Single hero panel, 5-word title max, optional brand mark in the lower 10%. Use for product launches and event reminders where the viewer scrolls past in 2 seconds.",
+  "width": 1080,
+  "height": 1920,
+  "contentRulesMd": "## Rules\n\n- Title: 5 words max, large display, centered or top-left\n- One hero element (image, stat, or large icon) in the upper 70% of the canvas\n- Optional brand mark in the lower 10%, ≤8% of canvas height\n…",
+  "tags": ["story", "vertical", "social", "instagram", "tiktok"],
   "examples": [
     { "file": "./example-1.png", "styleSlug": "matt-gray", "caption": "Paired with matt-gray" },
     { "file": "./example-2.png", "styleSlug": "neon-dashboard" }
@@ -164,7 +203,12 @@ Match the shape documented in `goose-graphics/SKILL.md` §17.2. Required:
 
 - `name`: 1–120 chars
 - `description`: 20–1000 chars (**required**). See guidelines below.
-- `width` / `height`: integers, 64–8192
+- `width` / `height`: **must match one of the seven built-in canvases
+  exactly** (1080×1080, 1080×1350, 1920×1080, 1080×1920, or
+  1080×variable for infographic). Custom dimensions will render fine
+  locally if you stretch the rules but will fail for any other agent that
+  pulls the format later, since their `screenshot.js` only accepts the
+  built-in canvas slugs.
 - `contentRulesMd`: minimum 50 chars (**required**)
 - `tags`: 3–10 lowercase strings. See guidelines below.
 - `examples`: minimum 1 (**required**); `styleSlug` is optional but recommended.
@@ -191,7 +235,7 @@ npx gooseworks formats publish --yes
 
 ```
 Published format: <slug>
-https://app.gooseworks.ai/formats/<slug>
+https://skills.gooseworks.ai/formats/<slug>
 ```
 
 **Exit codes:** `0` success, `1` transient/auth (network, 401, 5xx), `2` user
@@ -218,10 +262,11 @@ Tell the user:
 
 ## Description-writing guidelines
 
-Same shape as styles — 50–200 words, keyword-dense — but lead with **dimensions
+Same shape as styles — 50–200 words, keyword-dense — but lead with **canvas
 and content density** instead of mood.
 
-- Lead with dimensions + surface: `"1584×396 LinkedIn profile background."`
+- Lead with canvas + surface: `"1080×1080 square testimonial card for X
+  feed posts."`
 - Mention single-panel vs multi-panel and approximate text limits.
 - Mention intended platform / surface (`Instagram Stories`, `LinkedIn`,
   `print event flyer`, etc.).

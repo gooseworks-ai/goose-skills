@@ -179,7 +179,7 @@ Ask the user what they want to create. Run `npx gooseworks formats list` to see 
 | **Chart** | 1080x1080px | Single data chart graphic |
 | **Tweet** | 1080x1080px | Tweet-sized square screenshot |
 
-The community library may publish additional formats (LinkedIn banners, story covers, etc.) — always run `list` first rather than assuming the seven above are exhaustive. If none of the available formats fit the user's needs, suggest the `/goose-graphics-create-format` skill.
+The community library may publish additional formats (story covers, podcast covers, square testimonials, etc.) — always run `list` first rather than assuming only the seven baseline slugs exist. Note that every community format must use one of the seven canvas sizes above (the renderer is locked to that allow-list); they differ from the baselines only in name, intent, and content rules. If no published format fits the user's needs, suggest the `/goose-graphics-create-format` skill.
 
 Once the user chooses a format, fetch its full spec:
 
@@ -246,14 +246,31 @@ Follow the chosen format spec's **HTML Generation** phase. When generating:
 Run the screenshot script to export HTML files to high-resolution PNGs:
 
 ```bash
-node [skill-pack-dir]/screenshot/screenshot.js --format FORMAT --input INPUT_PATH --output OUTPUT_PATH
+node [skill-pack-dir]/screenshot/screenshot.js --format CANVAS --input INPUT_PATH --output OUTPUT_PATH
 ```
 
 Where:
 - `[skill-pack-dir]` is the absolute path to this skill pack's directory.
-- `FORMAT` is the format slug (e.g., `carousel`, `story`, `poster`, or any community slug whose spec defines a renderer profile).
+- `CANVAS` is **always one of the seven built-in canvas slugs**, never the format's catalog slug. The renderer's allow-list is strict — passing a community format slug like `story-cover` or `linkedin-banner` will fail.
 - `INPUT_PATH` is the directory or file containing the generated HTML.
 - `OUTPUT_PATH` is the directory where PNG files should be saved.
+
+**Map the format's `width`/`height` (from `npx gooseworks formats get <slug>`) to a canvas slug using this table:**
+
+| width × height       | Canvas slug   |
+|----------------------|---------------|
+| 1080 × 1080          | `carousel`    |
+| 1080 × 1350          | `poster`      |
+| 1920 × 1080          | `slides`      |
+| 1080 × 1920          | `story`       |
+| 1080 × ≥1080 (variable) | `infographic` |
+
+Examples:
+- Built-in `poster` (1080×1350) → `--format poster`.
+- Community `story-cover` (1080×1920) → `--format story` (because the format inherits the `story` canvas).
+- Community `linkedin-quote-card` (1080×1080) → `--format carousel` (any 1080×1080 catalog format renders against the `carousel` canvas).
+
+If the format's `width`/`height` doesn't match any row above, the format was published incorrectly — report it to the user and stop. Don't try to render with custom dimensions; the tool can't.
 
 ## 15. Step 7: Deliver
 
@@ -313,13 +330,13 @@ Field constraints:
 
 ```json
 {
-  "name": "LinkedIn Banner",
-  "slug": "linkedin-banner",
-  "description": "1584×396 LinkedIn profile background. Single horizontal banner; minimal text (4 words max), abstract backdrop, optional small logo lower-right. Use for professional brand presence.",
-  "width": 1584,
-  "height": 396,
-  "contentRulesMd": "## Rules\n\n- Title: 4 words max, large display, top-left or center\n- No body copy\n- One brand mark optional, lower-right, ≤8% of canvas\n…",
-  "tags": ["linkedin", "banner", "horizontal", "professional"],
+  "name": "Story Cover",
+  "slug": "story-cover",
+  "description": "1080×1920 vertical cover slide for Instagram and TikTok stories. Single hero panel, 5-word title max, optional brand mark in the lower 10%. Use for product launches and event reminders where the viewer scrolls past in 2 seconds.",
+  "width": 1080,
+  "height": 1920,
+  "contentRulesMd": "## Rules\n\n- Title: 5 words max, large display, centered or top-left\n- One hero element (image, stat, or large icon) in the upper 70% of the canvas\n- Optional brand mark in the lower 10%, ≤8% of canvas height\n…",
+  "tags": ["story", "vertical", "social", "instagram", "tiktok"],
   "examples": [
     { "file": "./example-1.png", "styleSlug": "matt-gray", "caption": "Paired with matt-gray" },
     { "file": "./example-2.png", "styleSlug": "neon-dashboard" }
@@ -331,7 +348,7 @@ Field constraints:
 - `name`: 1–120 chars
 - `slug`: optional kebab-case
 - `description`: 20–1000 chars (**required**)
-- `width` / `height`: integers, 64–8192
+- `width` / `height`: **must match one of the seven built-in canvases**: 1080×1080 (carousel/chart/tweet), 1080×1350 (poster), 1920×1080 (slides), 1080×1920 (story), or 1080×≥1080 (infographic). Custom dimensions are rejected at publish time because the renderer's allow-list is strict.
 - `contentRulesMd`: minimum 50 chars (**required**)
 - `tags`: array of strings
 - `examples`: array, **minimum 1 entry** (**required** — the backend rejects empty)

@@ -31,8 +31,15 @@ it via the regular `goose-graphics` flow.
 
 ## Prerequisites
 
-- The `goose-graphics` skill must be installed in the same workspace. This
-  skill uses its `screenshot/screenshot.js` to render examples.
+- The `goose-graphics` skill must be installed in the same workspace —
+  this skill uses its `screenshot/screenshot.js` to render examples.
+  Install via:
+  ```bash
+  npx gooseworks install --claude --with goose-graphics
+  ```
+  (Swap `--claude` for `--cursor` or `--codex` as needed.) See the install
+  page on the hub for the canonical command:
+  https://skills.gooseworks.ai/skills/goose-graphics
 - The screenshot tool's dependencies must be installed
   (`goose-graphics/screenshot/node_modules/` must exist). If not:
   ```bash
@@ -242,6 +249,14 @@ node <path-to>/goose-graphics/screenshot/screenshot.js \
   --font-delay 1500
 ```
 
+**Single-file vs directory input:** carousel, slides, and story are
+"multi-file" formats by default — if `--input` is a directory, the tool
+renders every `.html` file inside it to numbered `slide-NN.png` files in
+the `--output` directory. For the single representative slide we want
+here, pass a single `.html` file as `--input` and a single PNG path as
+`--output` — the tool detects the file input and writes one PNG. The
+other formats (poster, infographic, chart, tweet) are always single-file.
+
 Common failure modes:
 
 - Content overflows the fixed canvas → reduce font sizes or simplify
@@ -329,7 +344,7 @@ npx gooseworks styles publish --yes
 
 ```
 Published style: <slug>
-https://app.gooseworks.ai/styles/<slug>
+https://skills.gooseworks.ai/styles/<slug>
 ```
 
 **Exit codes:** `0` success, `1` transient/auth (network, 401, 5xx), `2`

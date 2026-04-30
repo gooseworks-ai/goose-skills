@@ -6,16 +6,29 @@
  * Captures HTML files as PNG images at format-specific dimensions.
  *
  * Usage:
- *   node screenshot.js --format <carousel|infographic|slides|poster|story|chart|tweet> --input <path> --output <path> [--font-delay <ms>]
+ *   node screenshot.js --format <slug> --input <path> --output <path> [--font-delay <ms>]
  *
- * Formats:
- *   carousel     1080x1080px per slide, directory of HTML files -> numbered PNGs
- *   infographic  1080px wide, variable height, single HTML file -> single PNG
- *   slides       1920x1080px per slide, directory of HTML files -> numbered PNGs
- *   poster       1080x1350px, single HTML file -> single PNG
- *   story        1080x1920px per slide, directory of HTML files -> numbered PNGs
- *   chart        1080x1080px, single HTML file -> single PNG
- *   tweet        1080x1080px, single HTML file -> single PNG
+ * Built-in formats (must be one of these — slug is a strict allow-list):
+ *   carousel     1080x1080px per slide
+ *   infographic  1080px wide, variable height (full-page)
+ *   slides       1920x1080px per slide
+ *   poster       1080x1350px
+ *   story        1080x1920px per slide
+ *   chart        1080x1080px
+ *   tweet        1080x1080px
+ *
+ * Input modes:
+ *   - If --input is a directory, every .html file is rendered to numbered
+ *     PNGs (slide-01.png, slide-02.png, …) in the --output directory. This
+ *     is the "multi-file" mode used for carousel/slides/story.
+ *   - If --input is a single .html file, one PNG is written to the --output
+ *     path (any format). For carousel/slides/story this captures a single
+ *     representative slide.
+ *
+ * To render a brand-new custom format (e.g. linkedin-banner 1584×396),
+ * extend FORMAT_CONFIGS below with the new slug + dimensions before running.
+ * The same allow-list is used by hub-side rendering, so unknown slugs are
+ * rejected on purpose.
  */
 
 const path = require('path');
@@ -101,11 +114,12 @@ function parseArgs(argv) {
 function validateArgs(args) {
     if (!args.format) {
         console.error('Error: Missing required --format flag.');
-        console.error('Usage: node screenshot.js --format <carousel|infographic|slides|poster|story|chart|tweet> --input <path> --output <path> [--font-delay <ms>]');
+        console.error('Usage: node screenshot.js --format <slug> --input <path> --output <path> [--font-delay <ms>]');
         process.exit(1);
     }
     if (!FORMAT_CONFIGS[args.format]) {
         console.error(`Error: Invalid format "${args.format}". Must be one of: ${Object.keys(FORMAT_CONFIGS).join(', ')}`);
+        console.error('To render a brand-new custom format, add the slug + dimensions to FORMAT_CONFIGS in this file first.');
         process.exit(1);
     }
     if (!args.input) {
@@ -123,11 +137,29 @@ function validateArgs(args) {
         process.exit(1);
     }
 
+    const config = { ...FORMAT_CONFIGS[args.format] };
+    const inputIsDirectory = fs.statSync(inputPath).isDirectory();
+
+    // A single-file input always runs in single-file mode regardless of the
+    // format's default multiFile setting. This lets carousel/slides/story
+    // render one representative slide when --input points at a single .html.
+    if (!inputIsDirectory) {
+        config.multiFile = false;
+    }
+    // The inverse — passing a directory to a single-file format — is a
+    // misuse and would otherwise fail deep inside the renderer with an
+    // unhelpful page.goto() error. Reject it up front.
+    if (inputIsDirectory && !config.multiFile) {
+        console.error(`Error: Format "${args.format}" expects a single HTML file as --input, not a directory.`);
+        process.exit(1);
+    }
+
     return {
         format: args.format,
         input: inputPath,
         output: path.resolve(args.output),
         fontDelay: args.fontDelay || 500,
+        config,
     };
 }
 
@@ -285,7 +317,7 @@ async function screenshotSingleFile(config, inputFile, outputPath, fontDelay) {
 async function main() {
     const rawArgs = parseArgs(process.argv);
     const args = validateArgs(rawArgs);
-    const config = FORMAT_CONFIGS[args.format];
+    const config = args.config;
 
     await ensureChromium();
 
