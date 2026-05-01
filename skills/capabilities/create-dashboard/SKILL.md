@@ -14,50 +14,45 @@ routes and the built React UI so it appears in the Gooseworks App tab.
 
 ## Where the source lives (read this first)
 
-The runnable project at **`/home/user/dashboard/`** is a forest of **symlinks**
-that point back into the canonical source at **`$WORKSPACE_DIR/dashboard-src/`**
-(the s3fs-backed workspace mount). Two real local directories sit alongside
-the symlinks: `node_modules/` and `dist/`.
-
-```
-/home/user/dashboard/
-  ├── package.json      → $WORKSPACE_DIR/dashboard-src/package.json   (symlink)
-  ├── package-lock.json → ...                                         (symlink)
-  ├── server.js         → ...                                         (symlink)
-  ├── src/              → $WORKSPACE_DIR/dashboard-src/src/           (symlink)
-  ├── (other configs)   → ...                                         (symlink)
-  ├── node_modules/                                                   (REAL local dir)
-  └── dist/                                                            (REAL local dir)
-```
+There is one **runnable project folder** in the sandbox home directory
+called `dashboard`. Most of its files are symlinks that point back into
+a **canonical source folder** named `dashboard-src` inside the agent's
+workspace folder. Two real local directories sit alongside the symlinks
+in the runnable project folder: `node_modules` (dependencies) and
+`dist` (built bundle).
 
 What this means for you:
 
-- **Edit any file at `/home/user/dashboard/...` and it auto-persists to S3
-  through the symlink.** No manual sync step. No "mirror" command. Your
-  edits survive sandbox restarts the moment they hit disk.
-- **Always cd to `/home/user/dashboard/` for npm/build/server commands.**
-  Tools resolve modules from the local `node_modules/` next to where they
-  run; running them from `$WORKSPACE_DIR/dashboard-src/` would fail because
-  no node_modules sits alongside the canonical source.
-- **Never write inside `$WORKSPACE_DIR/dashboard-src/` directly.** The
-  symlinks make that path read-through-able, but bypassing them risks
-  putting binary or generated content (node_modules, dist, .vite caches)
-  into S3 — which would tank the file viewer and break future restores.
+- **Edit files inside the runnable project folder** (the one called
+  `dashboard` in the sandbox home directory). Writes follow the symlinks
+  and land in the canonical source folder automatically — your edits
+  persist across sandbox restarts the moment they hit disk. There is
+  no manual sync step.
+- **Run npm and build commands from inside the runnable project folder.**
+  Tools resolve modules from the local `node_modules` folder that sits
+  next to where they are invoked; running them from inside the workspace
+  folder would fail because the canonical source has no `node_modules`
+  next to it.
+- **Do not write inside the canonical source folder under the workspace
+  folder.** The symlinks make that location readable through the project
+  folder, but bypassing them risks dropping built artefacts or hidden
+  caches into the workspace, which tanks the file viewer and breaks
+  future restores.
 
 ## Non-negotiable constraints
 
 1. Always use the template workflow (React + Vite + Tailwind + Express). Do not rebuild this in another framework.
-2. Use sandbox-agnostic locations only — refer to the home folder and the workspace folder via the environment-provided home variable rather than typing absolute paths into prose.
-3. Always work from `/home/user/dashboard/`. Edits there propagate to S3 via symlinks; you never need (or should run) a separate sync step.
-4. `node_modules/` and `dist/` are LOCAL only. Never copy them into the workspace folder.
+2. Refer to filesystem locations through their conventional names ("the runnable project folder", "the canonical source folder under the workspace") rather than as raw shell variable strings — the platform fills those in for you and the agent's chat output stays clean.
+3. Always operate from inside the runnable project folder in the sandbox home directory. Edits there propagate to persistent storage through symlinks; no separate sync step is needed.
+4. `node_modules` and `dist` are LOCAL only. Never copy them into the workspace folder.
 5. Use one runtime port (3847) and one server process. No separate frontend dev server.
 
 ## State handling
 
 Before editing, inspect:
-- whether `/home/user/dashboard/package.json` is a symlink (it should be — this confirms the symlink layout is in place)
-- whether `/home/user/dashboard/node_modules/` is populated
-- whether port 3847 has a healthy server (`curl /api/health`)
+- whether the runnable project folder's `package.json` is a symlink (it should be — this confirms the symlink layout is in place)
+- whether the local `node_modules` folder inside the runnable project folder is populated
+- whether port 3847 has a healthy server
 
 Then follow this decision flow:
 - All three OK: move to customization.
@@ -175,10 +170,10 @@ If the user reports a problem with the dashboard, walk through this list in orde
 1. **App tab is blank or shows a connection error.** Check whether the server is actually running on port 3847 (`curl /api/health`). If not, ask the platform to re-run the start flow.
 2. **Health endpoint returns ok=false or db=false.** The agent's database credentials are missing or invalid. Tell the user this directly; do not try to silently swap in mock data.
 3. **Page renders but charts/tables are empty.** Run the underlying query through the database tool to confirm whether the table actually has rows. If the table is missing entirely, follow the Empty-database handling section — offer to create the schema; do not silently swap to mock data. If the table exists but is empty, render an empty state. If rows exist, check the runQuery call and column names.
-4. **"Module not found" or import errors after editing.** A new package was used without being added to `package.json`. Add it, then run `npm install` from `/home/user/dashboard/` and rebuild.
+4. **"Module not found" or import errors after editing.** A new package was used without being added to `package.json`. Add it, then run `npm install` from inside the runnable project folder and rebuild.
 5. **Changes do not appear in the App tab.** The server was not rebuilt and restarted after the edit. Run the build, restart the server on 3847, then ask the user to refresh.
-6. **Stale UI after a long session.** The build output diverged from source. Remove `dist/` inside `/home/user/dashboard/` and rebuild.
-7. **`/home/user/dashboard/package.json` is a real file (not a symlink).** The sandbox is in a legacy / pre-symlink state. Ask the platform to re-run the start flow — it will rewire the symlinks and rebuild.
+6. **Stale UI after a long session.** The build output diverged from source. Remove the `dist` folder inside the runnable project folder and rebuild.
+7. **The runnable project folder's `package.json` is a real file (not a symlink).** The sandbox is in a legacy / pre-symlink state. Ask the platform to re-run the start flow — it will rewire the symlinks and rebuild.
 8. **Sandbox restarted and the dashboard isn't running.** Just ask the platform to start it. The source persists in S3 via symlinks, so there's nothing for you to restore.
 
 If none of the above resolves it, read the server logs, summarize the actual error to the user in plain language, and propose the smallest fix.
@@ -191,7 +186,7 @@ for further edits.
 ## Iteration loop
 
 For every follow-up tweak (this loop is the agent's job, not the user's):
-1. Edit relevant files at `/home/user/dashboard/...`. The symlinks persist your edit to S3 automatically — there's no separate sync step.
-2. Rebuild and restart the single server on port 3847 from `/home/user/dashboard/`. Edits alone don't take effect; the rebuild + restart is mandatory every time.
+1. Edit the relevant files inside the runnable project folder. The symlinks persist your edit to the workspace automatically — there's no separate sync step.
+2. Rebuild and restart the single server on port 3847 from inside the runnable project folder. Edits alone don't take effect; the rebuild + restart is mandatory every time.
 3. Verify the health endpoint before reporting back.
 4. Tell the user the update is done and ask them to refresh the App tab.
