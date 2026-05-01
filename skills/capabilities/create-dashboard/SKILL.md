@@ -47,9 +47,40 @@ Then follow this decision flow:
 If template initialization fails because the template source is unavailable, tell the
 user to retry once it is available. Do not hand-roll a replacement template.
 
+## Layout choice (do this first — non-negotiable)
+
+The dashboard template ships six layout shells in `src/components/layouts/`
+(SidebarLayout, TopNavLayout, TopNavTabsLayout, SplitPaneLayout,
+CanvasLayout, CenteredLayout). `App.tsx` defaults to `SidebarLayout`.
+
+**Before writing or editing any code, ask the user one short question to
+pick the right shell.** Phrase it naturally based on what they asked for —
+the goal is to confirm the layout fits the intent, not to read the table
+out loud. Examples:
+
+- User asks for "a CRM" → "I'll build this as a split-pane (list left,
+  detail right) — sound right?"
+- User asks for "an analytics dashboard" → "I'll use the sidebar layout
+  with multiple sections — OK?"
+- User asks for "a one-page report" → "I'll use a single full-width
+  canvas with no nav — OK?"
+- Truly ambiguous → "Should this have a sidebar with multiple pages, or
+  is it a single-view dashboard?"
+
+If the user says "you pick" or "default", use `SidebarLayout`. Otherwise
+swap the `App.tsx` import and wrapper to the chosen shell **before** moving
+on to data discovery / page implementation. See the full decision table
+under "Choosing a layout" below.
+
+**Never silently default to `SidebarLayout` without surfacing the choice.**
+A user asking for an inbox in a sidebar feels wrong; a one-sentence check
+upfront is cheap and catches it.
+
 ## Discovery and planning
 
-Before coding:
+After the layout shell is locked in, do the following before writing data
+code:
+
 1. Clarify what the user wants to visualize if unclear.
 2. **Always check the agent's database first.** If the agent has a Turso database with relevant tables, the dashboard must read from it. Never invent placeholder rows, mock arrays, or hard-coded sample data when real data is available. Use mock data only when the user explicitly asks for a demo with no DB, and clearly label it as mock in the UI.
 3. Inspect the database schema using the database query tool:
