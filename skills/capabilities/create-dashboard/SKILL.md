@@ -14,36 +14,45 @@ routes and the built React UI so it appears in the Gooseworks App tab.
 
 ## Where the source lives (read this first)
 
-There is one **runnable project folder** in the sandbox home directory
-called `dashboard`. Most of its files are symlinks that point back into
-a **canonical source folder** named `dashboard-src` inside the agent's
-workspace folder. Two real local directories sit alongside the symlinks
-in the runnable project folder: `node_modules` (dependencies) and
-`dist` (built bundle).
+The **runnable project folder is `/home/user/dashboard`**. That is the
+ONLY directory you should `cd` into for any npm / build / server
+command. Most files inside it are symlinks pointing back into the
+canonical source under the agent's workspace folder (the file you'd
+see at the canonical path is the same file you'd see through the
+symlink — it's one file, two paths). The runnable project folder also
+holds two real local directories that must NOT be on the workspace
+mount: `node_modules` (dependencies) and `dist` (built bundle).
+
+```
+/home/user/dashboard/                    ← cd here for everything
+  package.json, package-lock.json,
+  server.js, src/, vite.config.ts, …    (symlinks → workspace canonical source)
+  node_modules/, dist/, .vite/, .cache/  (real local dirs — never on workspace)
+```
 
 What this means for you:
 
-- **Edit files inside the runnable project folder** (the one called
-  `dashboard` in the sandbox home directory). Writes follow the symlinks
-  and land in the canonical source folder automatically — your edits
-  persist across sandbox restarts the moment they hit disk. There is
-  no manual sync step.
-- **Run npm and build commands from inside the runnable project folder.**
-  Tools resolve modules from the local `node_modules` folder that sits
-  next to where they are invoked; running them from inside the workspace
-  folder would fail because the canonical source has no `node_modules`
-  next to it.
-- **Do not write inside the canonical source folder under the workspace
-  folder.** The symlinks make that location readable through the project
-  folder, but bypassing them risks dropping built artefacts or hidden
-  caches into the workspace, which tanks the file viewer and breaks
-  future restores.
+- **Always `cd /home/user/dashboard` before running npm / vite / node /
+  any shell command.** Tools resolve modules from the `node_modules`
+  next to the cwd. Running them from the canonical source path under
+  the workspace folder will install `node_modules` directly into the
+  workspace mount — that puts tens of thousands of files on s3fs,
+  hits its filesystem-semantics limits (npm gets `ENOTEMPTY` on
+  package renames), and the install will spin forever.
+- **Edits to source files at `/home/user/dashboard/src/...` (or any
+  other symlinked path) auto-persist** to the workspace mount through
+  the symlink. There is no separate sync step. You may also edit the
+  canonical path directly; both paths land in the same file.
+- **Never run `npm install`, `npm ci`, `vite build`, or `node server.js`
+  from inside the workspace canonical source folder.** Those commands
+  will pollute the workspace with `node_modules` / `dist` / build
+  caches and break future restores.
 
 ## Non-negotiable constraints
 
 1. Always use the template workflow (React + Vite + Tailwind + Express). Do not rebuild this in another framework.
-2. Refer to filesystem locations through their conventional names ("the runnable project folder", "the canonical source folder under the workspace") rather than as raw shell variable strings — the platform fills those in for you and the agent's chat output stays clean.
-3. Always operate from inside the runnable project folder in the sandbox home directory. Edits there propagate to persistent storage through symlinks; no separate sync step is needed.
+2. The runnable project folder is `/home/user/dashboard`. Use that literal path when telling the user where you cd or which file you edited; do not invent shell-variable strings.
+3. Always `cd /home/user/dashboard` before running npm / vite / node. Edits to symlinked source files inside it propagate to persistent storage automatically; no separate sync step is needed.
 4. `node_modules` and `dist` are LOCAL only. Never copy them into the workspace folder.
 5. Use one runtime port (3847) and one server process. No separate frontend dev server.
 
@@ -170,7 +179,7 @@ If the user reports a problem with the dashboard, walk through this list in orde
 1. **App tab is blank or shows a connection error.** Check whether the server is actually running on port 3847 (`curl /api/health`). If not, ask the platform to re-run the start flow.
 2. **Health endpoint returns ok=false or db=false.** The agent's database credentials are missing or invalid. Tell the user this directly; do not try to silently swap in mock data.
 3. **Page renders but charts/tables are empty.** Run the underlying query through the database tool to confirm whether the table actually has rows. If the table is missing entirely, follow the Empty-database handling section — offer to create the schema; do not silently swap to mock data. If the table exists but is empty, render an empty state. If rows exist, check the runQuery call and column names.
-4. **"Module not found" or import errors after editing.** A new package was used without being added to `package.json`. Add it, then run `npm install` from inside the runnable project folder and rebuild.
+4. **"Module not found" or import errors after editing.** A new package was used without being added to `package.json`. Add it, then `cd /home/user/dashboard && npm install` and rebuild. **Never run `npm install` from anywhere under the workspace folder** — that installs `node_modules` into the workspace mount, which hits s3fs filesystem-semantics limits and spins forever.
 5. **Changes do not appear in the App tab.** The server was not rebuilt and restarted after the edit. Run the build, restart the server on 3847, then ask the user to refresh.
 6. **Stale UI after a long session.** The build output diverged from source. Remove the `dist` folder inside the runnable project folder and rebuild.
 7. **The runnable project folder's `package.json` is a real file (not a symlink).** The sandbox is in a legacy / pre-symlink state. Ask the platform to re-run the start flow — it will rewire the symlinks and rebuild.
@@ -186,7 +195,7 @@ for further edits.
 ## Iteration loop
 
 For every follow-up tweak (this loop is the agent's job, not the user's):
-1. Edit the relevant files inside the runnable project folder. The symlinks persist your edit to the workspace automatically — there's no separate sync step.
-2. Rebuild and restart the single server on port 3847 from inside the runnable project folder. Edits alone don't take effect; the rebuild + restart is mandatory every time.
+1. Edit relevant files at `/home/user/dashboard/...`. Symlinks persist edits to the workspace automatically; no sync step.
+2. Rebuild and restart the server on port 3847 from `/home/user/dashboard` (always cd there first). Edits alone don't take effect; rebuild + restart is mandatory every time.
 3. Verify the health endpoint before reporting back.
 4. Tell the user the update is done and ask them to refresh the App tab.
