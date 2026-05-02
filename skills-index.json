@@ -5335,6 +5335,363 @@
       }
     },
     {
+      "slug": "vid-animated-explainer-2d",
+      "name": "vid-animated-explainer-2d",
+      "category": "composites",
+      "description": "Create 2D animated explainer videos from a scene-based script, character notes, and narration plan. Use when the user needs onboarding, product-page, investor, educational, or process-explainer video that should feel more polished than whiteboard animation but lighter and cheaper than live action.",
+      "tags": "content, design",
+      "path": "skills/composites/vid-animated-explainer-2d",
+      "files": [
+        "skills/composites/vid-animated-explainer-2d/SKILL.md",
+        "skills/composites/vid-animated-explainer-2d/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "vid-animated-explainer-2d",
+        "category": "composites",
+        "tags": [
+          "content",
+          "design"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install vid-animated-explainer-2d",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "features": [
+          "Creates 2D animated explainer videos from scene-based scripts and character notes",
+          "Supports flat, cartoon, corporate, and sketch animation directions",
+          "Uses a structured problem, solution, how-it-works, proof, and CTA flow",
+          "Optimized for onboarding, product-page, investor, and educational explainer use cases",
+          "Outputs a polished MP4 with narration, scene transitions, and optional captions"
+        ]
+      }
+    },
+    {
+      "slug": "vid-customer-testimonial",
+      "name": "vid-customer-testimonial",
+      "category": "composites",
+      "description": "Create customer testimonial videos from verbatim quotes, customer identity details, and format choice. Use when the user needs social proof video for landing pages, sales decks, email follow-up, paid social, or website trust sections, and can provide the real customer words instead of a paraphrased marketing summary.",
+      "tags": "content, design, social",
+      "path": "skills/composites/vid-customer-testimonial",
+      "files": [
+        "skills/composites/vid-customer-testimonial/SKILL.md",
+        "skills/composites/vid-customer-testimonial/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "vid-customer-testimonial",
+        "category": "composites",
+        "tags": [
+          "content",
+          "design",
+          "social"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install vid-customer-testimonial",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "features": [
+          "Creates customer testimonial videos from verbatim quotes, customer identity details, and result highlights",
+          "Supports talking-head, text-on-video, and split-screen testimonial formats",
+          "Preserves customer voice while tightening for short-form trust-building delivery",
+          "Works for landing pages, paid social, sales decks, email follow-up, and website proof sections",
+          "Outputs a testimonial MP4 with optional photo-based animation, identity overlays, and result-stat callouts"
+        ]
+      }
+    },
+    {
+      "slug": "vid-faq",
+      "name": "vid-faq",
+      "category": "composites",
+      "description": "Create FAQ videos from real question-and-answer pairs as talking-head, text-on-video, or animated MP4s. Use when the user needs support-deflection, pre-purchase objection handling, onboarding help, help-center explainers, or sales follow-up video content, and can provide the actual FAQs rather than a vague topic.",
+      "tags": "content, design, social",
+      "path": "skills/composites/vid-faq",
+      "files": [
+        "skills/composites/vid-faq/SKILL.md",
+        "skills/composites/vid-faq/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "vid-faq",
+        "category": "composites",
+        "tags": [
+          "content",
+          "design",
+          "social"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install vid-faq",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "features": [
+          "Creates FAQ videos from real question-and-answer pairs in talking-head, text-on-video, or animated formats",
+          "Supports long-form chapterized FAQ videos and short-form social FAQ clips",
+          "Includes sequencing guidance so the most important customer questions lead the video",
+          "Optimizes answers for concise, trust-building video delivery without inventing new claims",
+          "Outputs a clean MP4 with optional captions, chapters, and branded visual treatment"
+        ]
+      }
+    },
+    {
+      "slug": "vid-product-demo-screencast",
+      "name": "vid-product-demo-screencast",
+      "category": "composites",
+      "description": "Create product demo and screencast walkthrough videos from a product URL or recording plus an ordered feature flow. Use when the user needs onboarding, sales-enablement, product-page, feature-release, or walkthrough video that shows the real interface in action instead of describing it abstractly.",
+      "tags": "content, design",
+      "path": "skills/composites/vid-product-demo-screencast",
+      "files": [
+        "skills/composites/vid-product-demo-screencast/SKILL.md",
+        "skills/composites/vid-product-demo-screencast/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "vid-product-demo-screencast",
+        "category": "composites",
+        "tags": [
+          "content",
+          "design"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install vid-product-demo-screencast",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "features": [
+          "Creates product demo and screencast walkthrough videos from a product URL or recording plus an ordered feature list",
+          "Supports narration generation, click annotations, cursor emphasis, and zoom-on-action behavior",
+          "Keeps feature order aligned to the real on-screen flow rather than marketing order",
+          "Optimized for sales enablement, onboarding, product pages, and feature-release walkthroughs",
+          "Outputs a clean MP4 showing the product in action and ending on the outcome"
+        ]
+      }
+    },
+    {
+      "slug": "vid-product-launch",
+      "name": "vid-product-launch",
+      "category": "composites",
+      "description": "Create cinematic or structured product launch videos from a launch brief, reveal timing, and CTA. Use when the user needs a launch-day announcement, teaser, landing-page hero, email-campaign reveal, or social launch asset with a clear build-to-reveal narrative rather than a generic hype reel.",
+      "tags": "content, design, social",
+      "path": "skills/composites/vid-product-launch",
+      "files": [
+        "skills/composites/vid-product-launch/SKILL.md",
+        "skills/composites/vid-product-launch/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "vid-product-launch",
+        "category": "composites",
+        "tags": [
+          "content",
+          "design",
+          "social"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install vid-product-launch",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "features": [
+          "Creates product launch videos with a clear tease, build, reveal, proof, and CTA structure",
+          "Supports cinematic, energetic, minimal, and emotional launch tones",
+          "Helps protect the reveal moment and compress feature overload into one strong proof beat",
+          "Works for landing-page heroes, social launch clips, email campaigns, and announcement videos",
+          "Outputs a launch-ready MP4 with product name, tagline, and end-card CTA"
+        ]
+      }
+    },
+    {
+      "slug": "vid-short-form-vertical",
+      "name": "vid-short-form-vertical",
+      "category": "composites",
+      "description": "Create short-form vertical videos from a hook, prompt, format, and platform choice. Use when the user needs Instagram Reels, TikToks, or YouTube Shorts that are mobile-native, hook-first, caption-friendly, and optimized for reach, watch-through, shares, or saves.",
+      "tags": "content, design, social",
+      "path": "skills/composites/vid-short-form-vertical",
+      "files": [
+        "skills/composites/vid-short-form-vertical/SKILL.md",
+        "skills/composites/vid-short-form-vertical/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "vid-short-form-vertical",
+        "category": "composites",
+        "tags": [
+          "content",
+          "design",
+          "social"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install vid-short-form-vertical",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "features": [
+          "Creates short-form vertical videos from a hook, prompt, and platform choice",
+          "Supports talking-points, list, storytime, POV, and tutorial short-form structures",
+          "Optimizes for Reels, TikTok, and YouTube Shorts with caption-first mobile-native pacing",
+          "Uses a strict hook, payoff, and CTA flow to protect watch-through performance",
+          "Outputs a vertical 9:16 MP4 ready for social distribution"
+        ]
+      }
+    },
+    {
+      "slug": "vid-sizzle-reel",
+      "name": "vid-sizzle-reel",
+      "category": "composites",
+      "description": "Create high-energy sizzle reels from key messages, brand assets, music direction, and end-card content. Use when the user needs a hype-first montage for launches, conference openers, investor decks, event promos, or campaign kickoffs where excitement and momentum matter more than explanation.",
+      "tags": "content, design, social",
+      "path": "skills/composites/vid-sizzle-reel",
+      "files": [
+        "skills/composites/vid-sizzle-reel/SKILL.md",
+        "skills/composites/vid-sizzle-reel/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "vid-sizzle-reel",
+        "category": "composites",
+        "tags": [
+          "content",
+          "design",
+          "social"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install vid-sizzle-reel",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "features": [
+          "Creates high-energy sizzle reels from key messages, music direction, brand assets, and end-card content",
+          "Supports energetic, cinematic, emotional, and professional montage directions",
+          "Uses a cold-open, build, peak, and brand-land structure for hype-first video",
+          "Works for launches, investor decks, conference openers, event promos, and campaign kickoffs",
+          "Outputs a montage-style MP4 optimized for momentum rather than explanation"
+        ]
+      }
+    },
+    {
+      "slug": "vid-talking-head",
+      "name": "vid-talking-head",
+      "category": "composites",
+      "description": "Create talking-head videos from a word-for-word script, avatar or source face, voice, and background settings. Use when the user needs founder-style messaging, product explanation, educational content, thought leadership, or presenter-led video without filming a real person on camera.",
+      "tags": "content, design, social",
+      "path": "skills/composites/vid-talking-head",
+      "files": [
+        "skills/composites/vid-talking-head/SKILL.md",
+        "skills/composites/vid-talking-head/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "vid-talking-head",
+        "category": "composites",
+        "tags": [
+          "content",
+          "design",
+          "social"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install vid-talking-head",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "features": [
+          "Creates talking-head videos from exact scripts, avatars or source faces, voices, and background settings",
+          "Supports lip-synced avatar, animated-photo, and real-footage-based talking-head production paths",
+          "Optimizes scripts for spoken rhythm, pause control, captions, and presenter credibility overlays",
+          "Works for founder messaging, thought leadership, product explanation, and educational presenter video",
+          "Outputs a polished talking-head MP4 in horizontal or vertical aspect ratios"
+        ]
+      }
+    },
+    {
+      "slug": "vid-ugc-style",
+      "name": "vid-ugc-style",
+      "category": "composites",
+      "description": "Create UGC-style vertical videos from a product brief, hook, tone, and CTA. Use when the user needs creator-style paid social or organic short-form video that feels authentic, direct-to-camera, and high-retention, especially for Instagram, TikTok, Meta ads, and other scroll-first channels.",
+      "tags": "content, design, social",
+      "path": "skills/composites/vid-ugc-style",
+      "files": [
+        "skills/composites/vid-ugc-style/SKILL.md",
+        "skills/composites/vid-ugc-style/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "vid-ugc-style",
+        "category": "composites",
+        "tags": [
+          "content",
+          "design",
+          "social"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install vid-ugc-style",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "features": [
+          "Creates UGC-style vertical videos from a product brief, hook, tone, and CTA",
+          "Supports authentic, excited, and skeptical-convert creative directions",
+          "Uses a proven hook, pain, product, proof, and CTA structure for feed-native short-form video",
+          "Optimized for Instagram, TikTok, Facebook, and other scroll-first channels",
+          "Outputs a caption-friendly 9:16 MP4 ready for paid or organic distribution"
+        ]
+      }
+    },
+    {
+      "slug": "vid-whiteboard-animation",
+      "name": "vid-whiteboard-animation",
+      "category": "composites",
+      "description": "Create whiteboard-style explainer videos from narration and draw cues, then export them to MP4. Use when the user needs educational, training, onboarding, or conceptual B2B video that explains ideas step by step with synchronized hand-drawn visuals rather than a presenter or glossy promo treatment.",
+      "tags": "content, design",
+      "path": "skills/composites/vid-whiteboard-animation",
+      "files": [
+        "skills/composites/vid-whiteboard-animation/SKILL.md",
+        "skills/composites/vid-whiteboard-animation/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "vid-whiteboard-animation",
+        "category": "composites",
+        "tags": [
+          "content",
+          "design"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install vid-whiteboard-animation",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "features": [
+          "Creates whiteboard-style explainer videos from narration and draw cues",
+          "Supports whiteboard, blackboard, and glassboard visual treatments",
+          "Helps convert scripts into synchronized draw-and-narrate segments",
+          "Optimized for educational, onboarding, training, and conceptual B2B video",
+          "Outputs a paced MP4 with optional draw-hand, voiceover, music, and selective color highlights"
+        ]
+      }
+    },
+    {
       "slug": "voice-of-customer-synthesizer",
       "name": "voice-of-customer-synthesizer",
       "category": "composites",
