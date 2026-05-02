@@ -2250,6 +2250,217 @@
       }
     },
     {
+      "slug": "graphic-case-study",
+      "name": "graphic-case-study",
+      "category": "composites",
+      "description": "Create professionally designed B2B SaaS case study PDFs as HTML + CSS, then export them to PDF. Use when the user needs a polished customer story for sales, marketing, website, email, or enablement use, wants a challenge-to-solution-to-results narrative, and needs structured 1 to 4 page layouts with Gooseworks-compatible styling and print-ready output.",
+      "tags": "content, design",
+      "path": "skills/composites/graphic-case-study",
+      "files": [
+        "skills/composites/graphic-case-study/SKILL.md",
+        "skills/composites/graphic-case-study/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "graphic-case-study",
+        "category": "composites",
+        "tags": [
+          "content",
+          "design"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install graphic-case-study",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "goose-graphics"
+        ],
+        "recommends_skills": [
+          "visual-brand-extractor",
+          "goose-graphics-create-style",
+          "graphic-chart"
+        ],
+        "features": [
+          "Creates professionally designed B2B SaaS case study PDFs from customer-story inputs",
+          "Supports 1-page, 2-page, and 4-page structures built around challenge, solution, results, testimonial, and CTA flows",
+          "Uses Gooseworks style themes with validated recommendations for enterprise-safe and premium proof assets",
+          "Outputs one HTML file per page with optional preview and print files",
+          "Includes guidance for anonymized customers, stat-led proof, testimonial handling, and print-ready PDF export"
+        ]
+      }
+    },
+    {
+      "slug": "graphic-chart",
+      "name": "graphic-chart",
+      "category": "composites",
+      "description": "Generate polished chart graphics from structured data as HTML first, then screenshot to PNG. Use when the user needs a bar, line, pie, doughnut, scatter, area, radar, or treemap chart for social posts, reports, blog posts, or decks, wants Gooseworks-compatible styling, and can provide JSON or CSV data plus an explicit chart type.",
+      "tags": "content, design",
+      "path": "skills/composites/graphic-chart",
+      "files": [
+        "skills/composites/graphic-chart/SKILL.md",
+        "skills/composites/graphic-chart/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "graphic-chart",
+        "category": "composites",
+        "tags": [
+          "content",
+          "design"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install graphic-chart",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "goose-graphics"
+        ],
+        "recommends_skills": [
+          "goose-graphics-create-style"
+        ],
+        "features": [
+          "Generates HTML-based charts, then screenshots them to PNG",
+          "Uses Chart.js for standard charts and D3.js for treemaps or custom layouts",
+          "Supports titles, subtitles, source attribution, and highlighted data points",
+          "Uses Gooseworks-compatible style themes for presentation-ready chart graphics",
+          "Optimized for social posts, reports, blog charts, and slide-deck visuals"
+        ]
+      }
+    },
+    {
+      "slug": "graphic-ebook",
+      "name": "graphic-ebook",
+      "category": "composites",
+      "description": "Create professionally designed B2B SaaS e-books as HTML + CSS, then export them to PDF. Use when the user needs a lead magnet, gated content asset, nurture guide, or thought-leadership e-book from a brief or existing content, wants Gooseworks-compatible style themes, and needs structured portrait page layouts with print-ready output.",
+      "tags": "content, design",
+      "path": "skills/composites/graphic-ebook",
+      "files": [
+        "skills/composites/graphic-ebook/SKILL.md",
+        "skills/composites/graphic-ebook/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "graphic-ebook",
+        "category": "composites",
+        "tags": [
+          "content",
+          "design"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install graphic-ebook",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "goose-graphics"
+        ],
+        "recommends_skills": [
+          "visual-brand-extractor",
+          "goose-graphics-create-style",
+          "graphic-chart",
+          "technical-blog-graphics"
+        ],
+        "features": [
+          "Creates professionally designed B2B SaaS e-books as HTML + CSS with PDF export",
+          "Supports a 9-layout page library including cover, TOC, chapter, sidebar, stat, visual, and CTA pages",
+          "Uses Gooseworks style themes with validated recommendations for lead magnets and thought-leadership assets",
+          "Outputs one HTML file per page with optional preview and print files",
+          "Optimized for portrait, print-ready gated content and nurture assets"
+        ]
+      }
+    },
+    {
+      "slug": "graphic-gif",
+      "name": "graphic-gif",
+      "category": "composites",
+      "description": "Generate looping animated GIFs from a prompt by rendering HTML + CSS animations to frames and compiling them into a `.gif`, or by using an optional image-to-video workflow when external APIs are available. Use when the user needs animated text, icons, counters, tickers, or motion graphics for social posts, blog embeds, lightweight ads, or product marketing, and the final deliverable should be a GIF rather than a static PNG.",
+      "tags": "content, design",
+      "path": "skills/composites/graphic-gif",
+      "files": [
+        "skills/composites/graphic-gif/SKILL.md",
+        "skills/composites/graphic-gif/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "graphic-gif",
+        "category": "composites",
+        "tags": [
+          "content",
+          "design"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install graphic-gif",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "goose-graphics"
+        ],
+        "recommends_skills": [
+          "goose-graphics-create-style"
+        ],
+        "features": [
+          "Generates looping GIFs from HTML and CSS animations, then compiles captured frames into a .gif",
+          "Supports fade, slide, typewriter, counter, pulse, and loop-scroll animation patterns",
+          "Includes an optional AI-generated motion path when external image-to-video tooling is available",
+          "Uses Gooseworks-compatible style themes with guidance for GIF-safe color and background choices",
+          "Optimized for social loops, blog embeds, lightweight ads, and other compact animated graphics"
+        ]
+      }
+    },
+    {
+      "slug": "graphic-slide-deck",
+      "name": "graphic-slide-deck",
+      "category": "composites",
+      "description": "Create professionally designed HTML + CSS slide decks for sales, pitch, work, conference, and onboarding presentations, with optional PDF export. Use when the user needs a polished slide deck from a brief, outline, or existing content, wants goose-graphics-compatible style themes, and needs structured slide layouts, browser-previewable HTML, or print-ready PDF output.",
+      "tags": "content, design",
+      "path": "skills/composites/graphic-slide-deck",
+      "files": [
+        "skills/composites/graphic-slide-deck/SKILL.md",
+        "skills/composites/graphic-slide-deck/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "graphic-slide-deck",
+        "category": "composites",
+        "tags": [
+          "content",
+          "design"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install graphic-slide-deck",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "goose-graphics"
+        ],
+        "recommends_skills": [
+          "visual-brand-extractor",
+          "goose-graphics-create-style"
+        ],
+        "features": [
+          "Creates structured HTML + CSS slide decks for pitch, sales, work, conference, and onboarding use cases",
+          "Supports a 13-layout slide library including title, section, stats, comparison, timeline, and CTA slides",
+          "Uses Gooseworks style themes with validated presentation-friendly style recommendations",
+          "Outputs one HTML file per slide with optional preview and print files",
+          "Supports print-safe PDF export after HTML generation"
+        ]
+      }
+    },
+    {
       "slug": "gtm-enrichment-deep",
       "name": "gtm-enrichment-deep",
       "category": "capabilities",
