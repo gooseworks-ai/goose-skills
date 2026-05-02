@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 1080px; height: 1080px; overflow: hidden; }
+
+    :root {
+      --color-canvas: #f5f0e8;
+      --color-surface: #1a1a1a;
+      --color-accent: #c17f59;
+      --color-border: rgba(245,240,232,0.08);
+      --text-primary: #f5f0e8;
+      --text-secondary: rgba(245,240,232,0.80);
+      --text-muted: rgba(245,240,232,0.45);
+      --font-display: 'EB Garamond', Georgia, serif;
+      --font-body: 'Inter', sans-serif;
+      --card-radius: 20px;
+    }
+
+    body {
+      display: flex; flex-direction: column;
+      padding: 48px;
+      background: var(--color-canvas);
+      font-family: var(--font-body);
+    }
+
+    .chart-card {
+      background: var(--color-surface);
+      border-radius: var(--card-radius);
+      padding: 48px;
+      flex: 1;
+      display: flex; flex-direction: column;
+      align-items: center;
+    }
+
+    .pill { display: inline-block; padding: 6px 16px; border-radius: 999px; background: rgba(193,127,89,0.15); color: var(--color-accent); font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 16px; }
+    .chart-title { font-family: var(--font-display); font-size: 44px; font-weight: 700; color: var(--text-primary); line-height: 1.1; margin-bottom: 8px; text-align: center; }
+    .chart-context { font-size: 16px; color: var(--text-secondary); margin-bottom: 40px; text-align: center; }
+
+    .donut-container { position: relative; width: 380px; height: 380px; margin: auto; }
+    .donut {
+      width: 100%; height: 100%; border-radius: 50%;
+      background: conic-gradient(
+        var(--color-accent) 0deg 122deg,
+        #8B6914 122deg 223deg,
+        rgba(245,240,232,0.15) 223deg 360deg
+      );
+    }
+    .donut-hole {
+      position: absolute; inset: 22%; border-radius: 50%;
+      background: var(--color-surface);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+    }
+    .donut-value { font-size: 56px; font-weight: 700; color: var(--color-accent); line-height: 1; }
+    .donut-label { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
+
+    .legend { display: flex; gap: 32px; margin-top: 40px; }
+    .legend-item { display: flex; align-items: center; gap: 10px; }
+    .legend-dot { width: 12px; height: 12px; border-radius: 50%; }
+    .legend-text { font-size: 14px; color: var(--text-secondary); }
+    .legend-val { font-size: 14px; font-weight: 700; color: var(--text-primary); }
+
+    .chart-footer { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 16px; width: 100%; border-top: 1px solid var(--color-border); }
+    .source { font-size: 11px; color: var(--text-muted); }
+    .branding { font-size: 11px; font-weight: 600; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; }
+  </style>
+</head>
+<body>
+  <div class="chart-card">
+    <span class="pill">Market Share</span>
+    <h1 class="chart-title">Agent Platform Share</h1>
+    <p class="chart-context">Distribution of active AI agents by platform, Q1 2026</p>
+
+    <div class="donut-container">
+      <div class="donut"></div>
+      <div class="donut-hole">
+        <span class="donut-value">34%</span>
+        <span class="donut-label">Our share</span>
+      </div>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item">
+        <div class="legend-dot" style="background: var(--color-accent);"></div>
+        <span class="legend-text">Us</span>
+        <span class="legend-val">34%</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background: #8B6914;"></div>
+        <span class="legend-text">Competitor A</span>
+        <span class="legend-val">28%</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background: rgba(245,240,232,0.15);"></div>
+        <span class="legend-text">Others</span>
+        <span class="legend-val">38%</span>
+      </div>
+    </div>
+
+    <div class="chart-footer">
+      <span class="source">Source: Agent Economy Report Q1 2026</span>
+      <span class="branding">graphic-chart</span>
+    </div>
+  </div>
+</body>
+</html>

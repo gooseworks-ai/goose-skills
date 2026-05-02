@@ -1,0 +1,28 @@
+{
+  "slug": "graphic-chart",
+  "category": "composites",
+  "tags": [
+    "data-visualization",
+    "charts",
+    "design",
+    "analytics",
+    "reporting"
+  ],
+  "installation": {
+    "base_command": "npx goose-skills install graphic-chart",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  },
+  "features": [
+    "Six chart types: bar, line, donut, metric card, comparison, and area",
+    "Style-aware rendering via gooseworks style catalog",
+    "Pure HTML/CSS charts — no JavaScript dependencies, no Matplotlib",
+    "Playwright PNG export at 1080x1080, 1200x630, or 1920x1080",
+    "Inline data or CSV/JSON input",
+    "Automatic style adaptation using goose-graphics style specs"
+  ],
+  "author": "eltociear"
+}
