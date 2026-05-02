@@ -1,0 +1,22 @@
+{
+  "slug": "dice-easy-apply-automation",
+  "category": "capabilities",
+  "tags": [
+    "lead-generation"
+  ],
+  "installation": {
+    "base_command": "npx gooseworks install dice-easy-apply-automation",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  },
+  "features": [
+    "Finds suitable remote technology roles on Dice",
+    "Uses conservative Easy Apply decision rules",
+    "Tracks prior submissions to avoid duplicates"
+  ],
+  "github_url": "https://github.com/ralyodio/dice-easy-apply-automation-skill",
+  "author": "Anthony Ettinger"
+}

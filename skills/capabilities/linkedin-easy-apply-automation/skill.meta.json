@@ -1,0 +1,22 @@
+{
+  "slug": "linkedin-easy-apply-automation",
+  "category": "capabilities",
+  "tags": [
+    "lead-generation"
+  ],
+  "installation": {
+    "base_command": "npx gooseworks install linkedin-easy-apply-automation",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  },
+  "features": [
+    "Finds relevant LinkedIn Easy Apply roles",
+    "Uploads the current resume when needed",
+    "Skips custom forms that require unverifiable answers"
+  ],
+  "github_url": "https://github.com/ralyodio/linkedin-easy-apply-automation-skill",
+  "author": "Anthony Ettinger"
+}

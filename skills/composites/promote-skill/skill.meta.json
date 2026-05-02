@@ -1,0 +1,22 @@
+{
+  "slug": "promote-skill",
+  "category": "composites",
+  "tags": [
+    "content"
+  ],
+  "installation": {
+    "base_command": "npx gooseworks install promote-skill",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  },
+  "features": [
+    "Prepares public safe agent skills",
+    "Publishes source repositories and listings",
+    "Generates marketplace specific submission checklists"
+  ],
+  "github_url": "https://github.com/ralyodio/promote-skill",
+  "author": "Anthony Ettinger"
+}
