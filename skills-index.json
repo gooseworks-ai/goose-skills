@@ -1,6 +1,6 @@
 {
   "version": "1.2.0",
-  "generated": "2026-05-04",
+  "generated": "2026-05-07",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -66,7 +66,7 @@
       "slug": "ad-lead-quality-analyzer",
       "name": "ad-lead-quality-analyzer",
       "category": "composites",
-      "description": ">",
+      "description": "For paid lead-gen and participant-recruitment ads, replaces vanity CPA with true CAC per qualified lead by joining ad-platform data with downstream funnel events, surfaces tracking gaps, and classifies every creative into Scale / Keep / Investigate / Cut.",
       "tags": "ads",
       "path": "skills/composites/ad-lead-quality-analyzer",
       "files": [
@@ -3522,7 +3522,7 @@
       "slug": "meta-ad-policy-checker",
       "name": "meta-ad-policy-checker",
       "category": "composites",
-      "description": ">",
+      "description": "Pre-flight policy check for Meta ads. Takes ad copy plus advertiser context, resolves and fetches the relevant Meta transparency-center policy pages at runtime, and returns a Pass / Fix Required / Block verdict with cited findings and rewrites.",
       "tags": "ads",
       "path": "skills/composites/meta-ad-policy-checker",
       "files": [
@@ -3532,7 +3532,7 @@
       "metadata": {
         "slug": "meta-ad-policy-checker",
         "category": "composites",
-        "description": "Pre-flight policy check for Meta ads. Takes ad copy plus a short advertiser context, fetches the relevant policy pages from Meta's transparency center at runtime, and returns a verdict (Pass / Fix Required / Block) with cited findings and rewrites. Uses Meta's own published policies as source of truth, no hardcoded rule list. Designed to gate ad-write workflows or audit existing live ads.",
+        "description": "Pre-flight policy check for Meta ads. Takes ad copy plus a short advertiser context, resolves and fetches the relevant policy pages from Meta's transparency center at runtime, and returns a verdict (Pass / Fix Required / Block) with cited findings and rewrites. Uses Meta's own published policies as source of truth, no hardcoded rule list. Designed to gate ad-write workflows or audit existing live ads.",
         "tags": [
           "ads"
         ],
@@ -3578,7 +3578,7 @@
       "slug": "meta-ads-analyzer",
       "name": "meta-ads-analyzer",
       "category": "composites",
-      "description": ">",
+      "description": "Diagnose Meta Ads campaign performance using Meta's actual system mechanics — Breakdown Effect, Learning Phase, Auction Overlap, Pacing, and Creative Fatigue — and produce structured, testable recommendations that avoid judging segments by average CPA instead of marginal efficiency.",
       "tags": "ads",
       "path": "skills/composites/meta-ads-analyzer",
       "files": [

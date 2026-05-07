@@ -1,12 +1,6 @@
 ---
 name: ad-lead-quality-analyzer
-description: >
-  For paid lead-gen and participant-recruitment ads, replaces vanity CPA with true
-  CAC per qualified lead by joining ad-platform data (signups) with downstream
-  funnel events (qualification, completion, payout) stored in the advertiser's
-  own database. Detects "winning" ads that are actually bringing in junk leads,
-  surfaces tracking gaps, and classifies every creative into Scale / Keep /
-  Investigate / Cut. Built for Meta first, channel-agnostic in design.
+description: For paid lead-gen and participant-recruitment ads, replaces vanity CPA with true CAC per qualified lead by joining ad-platform data with downstream funnel events, surfaces tracking gaps, and classifies every creative into Scale / Keep / Investigate / Cut.
 tags: [ads]
 ---
 

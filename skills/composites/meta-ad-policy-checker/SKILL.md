@@ -1,12 +1,6 @@
 ---
 name: meta-ad-policy-checker
-description: >
-  Pre-flight policy check for Meta ads. Takes ad copy plus a short advertiser
-  context, fetches the relevant policy pages from Meta's transparency center
-  at runtime, and returns a verdict (Pass / Fix Required / Block) with cited
-  findings and rewrites. No hardcoded rule list — Meta's own published policies
-  are the source of truth. Designed to gate ad-write workflows or audit ads
-  already live.
+description: Pre-flight policy check for Meta ads. Takes ad copy plus advertiser context, resolves and fetches the relevant Meta transparency-center policy pages at runtime, and returns a Pass / Fix Required / Block verdict with cited findings and rewrites.
 tags: [ads]
 ---
 
@@ -47,6 +41,8 @@ This skill is a pre-flight check. It reads ad copy, figures out which Meta polic
 
 Reason about the ad before fetching. Most ads need 3–6 policy pages, not all 25. Always include the **baseline set**, then add **content-driven** pages based on what the ad mentions, then add **category-driven** pages based on declared Special Ad Category.
 
+Treat the entries below as policy lookup keys, not URL slugs. Meta's Transparency Center URLs are nested under category paths and change over time, so never construct a flat policy URL directly from these labels.
+
 ### Baseline (every ad)
 - Community Standards
 - Personal Attributes
@@ -58,38 +54,44 @@ Reason about the ad before fetching. Most ads need 3–6 policy pages, not all 2
 
 ### Content-driven (add when present)
 
-| Triggers | Policies to fetch |
+| Triggers | Policy lookup keys |
 |---|---|
-| Income, earnings, payouts, "make money", specific dollar amounts | `personal-financial-requirements`, `unrealistic-outcomes` |
-| Health, weight loss, supplements, wellness claims | `health-wellness`, `before-after-photos` |
-| Targeting by age, gender, race, religion, nationality | `discriminatory-practices` |
-| Crypto, weapons, adult, drugs, alcohol, gambling, tobacco | `restricted-content` |
-| Political, social-issue, election content | `social-issues-elections-politics` |
-| Profanity, slurs, sensitive language | `profanity`, `inflammatory-content` |
-| Anything that implies tracking / scraping / circumvention | `circumventing-systems` |
+| Income, earnings, payouts, "make money", specific dollar amounts | Personal financial requirements; unrealistic outcomes |
+| Health, weight loss, supplements, wellness claims | Health and wellness; before-and-after photos |
+| Targeting by age, gender, race, religion, nationality | Discriminatory practices |
+| Crypto, weapons, adult, drugs, alcohol, gambling, tobacco | Restricted content |
+| Political, social-issue, election content | Social issues, elections or politics |
+| Profanity, slurs, sensitive language | Profanity; inflammatory content |
+| Anything that implies tracking / scraping / circumvention | Circumventing systems |
 
 ### Category-driven (add based on declared Special Ad Category)
 
 | Special Ad Category | Add |
 |---|---|
-| Employment | `employment` |
-| Credit | `credit` |
-| Housing | `housing` |
-| Social Issues, Elections or Politics | `social-issues-elections-politics` |
+| Employment | Employment |
+| Credit | Credit |
+| Housing | Housing |
+| Social Issues, Elections or Politics | Social issues, elections or politics |
 
-Output of Phase 1: an ordered list of policy slugs to fetch in Phase 2.
+Output of Phase 1: an ordered list of policy lookup keys to resolve and fetch in Phase 2.
 
 ## Phase 2: Fetch + Cache Live Policy Text
 
-For each slug from Phase 1, fetch from Meta's transparency center:
+Fetch Meta's ad-standards index first:
 
 ```
-https://transparency.meta.com/policies/ad-standards/{slug}/
+https://transparency.meta.com/policies/ad-standards/
 ```
 
-**Caching rule:** in-memory for the current session only. A batch check of 10 ad variants should produce 3–6 fetches total (one per relevant page), not 30–60. Skip persistent caching to avoid stale-cache bugs across sessions.
+For each lookup key from Phase 1:
 
-**Fallback:** if a specific slug 404s (Meta occasionally renames policy pages), fetch the policy index at `https://transparency.meta.com/policies/ad-standards/` and let the agent navigate to the closest-matching policy. Log this as a "policy URL drift" note in the output so the slug list can be updated.
+1. Resolve it from the index to Meta's canonical policy page URL. Prefer exact title matches, then closest title / category matches.
+2. Fetch the resolved canonical URL. Do not build a URL by appending the lookup key directly to the ad-standards base path; those flat URLs 404 for many current policies because Meta nests policy pages under category paths.
+3. Cache the lookup key → canonical URL → page text mapping.
+
+**Caching rule:** in-memory for the current session only. A batch check of 10 ad variants should produce 3–6 policy-page fetches total, not 30–60. Skip persistent caching to avoid stale-cache bugs across sessions.
+
+**Fallback:** if the index cannot be parsed or a resolved page 404s, use a site-restricted web search for the policy title on Meta's transparency domain and navigate to the closest-matching current policy. Log this as a "policy URL drift" note in the output so the lookup list can be updated.
 
 ## Phase 3: Reason — Ad vs. Policy
 

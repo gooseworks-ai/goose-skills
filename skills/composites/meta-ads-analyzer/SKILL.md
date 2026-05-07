@@ -1,12 +1,6 @@
 ---
 name: meta-ads-analyzer
-description: >
-  Diagnose Meta Ads campaign performance using Meta's actual system mechanics —
-  Breakdown Effect, Learning Phase, Auction Overlap, Pacing, and Creative Fatigue.
-  Takes CSV exports, pasted tables, or live API data and produces a structured
-  diagnosis with root causes and testable recommendations. Built to avoid the
-  most common analysis mistake: judging segments by average CPA instead of
-  marginal efficiency.
+description: Diagnose Meta Ads campaign performance using Meta's actual system mechanics — Breakdown Effect, Learning Phase, Auction Overlap, Pacing, and Creative Fatigue — and produce structured, testable recommendations that avoid judging segments by average CPA instead of marginal efficiency.
 tags: [ads]
 ---
 
@@ -258,4 +252,4 @@ Day-to-day CPA variation within 20–30% is normal. Weekend/weekday differences 
 
 ## Credit
 
-Meta system-mechanics framing (Breakdown Effect, Learning Phase, Auction Overlap reference content) adapted from [mathiaschu/meta-ads-analyzer](https://github.com/mathiaschu/meta-ads-analyzer) (MIT).
+Meta system-mechanics framing (Breakdown Effect, Learning Phase, Auction Overlap reference content) adapted from an MIT-licensed Meta ads analyzer project by Mathias Chu.

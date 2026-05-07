@@ -1,7 +1,7 @@
 {
   "slug": "meta-ad-policy-checker",
   "category": "composites",
-  "description": "Pre-flight policy check for Meta ads. Takes ad copy plus a short advertiser context, fetches the relevant policy pages from Meta's transparency center at runtime, and returns a verdict (Pass / Fix Required / Block) with cited findings and rewrites. Uses Meta's own published policies as source of truth, no hardcoded rule list. Designed to gate ad-write workflows or audit existing live ads.",
+  "description": "Pre-flight policy check for Meta ads. Takes ad copy plus a short advertiser context, resolves and fetches the relevant policy pages from Meta's transparency center at runtime, and returns a verdict (Pass / Fix Required / Block) with cited findings and rewrites. Uses Meta's own published policies as source of truth, no hardcoded rule list. Designed to gate ad-write workflows or audit existing live ads.",
   "tags": [
     "ads"
   ],
