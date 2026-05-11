@@ -1,6 +1,6 @@
 {
   "version": "1.2.0",
-  "generated": "2026-05-07",
+  "generated": "2026-05-11",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -4336,6 +4336,34 @@
         ],
         "installation": {
           "base_command": "npx goose-skills install review-site-scraper",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "roi-calculator-builder",
+      "name": "roi-calculator-builder",
+      "category": "composites",
+      "description": "Build a buyer-facing ROI calculator for B2B SaaS or services from product value props, pricing, customer proof, and buyer assumptions.",
+      "tags": "content, research",
+      "path": "skills/composites/roi-calculator-builder",
+      "files": [
+        "skills/composites/roi-calculator-builder/SKILL.md",
+        "skills/composites/roi-calculator-builder/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "roi-calculator-builder",
+        "category": "composites",
+        "tags": [
+          "content",
+          "research"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install roi-calculator-builder",
           "supports": [
             "claude",
             "cursor",
