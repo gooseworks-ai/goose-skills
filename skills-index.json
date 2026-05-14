@@ -1,6 +1,6 @@
 {
   "version": "1.2.0",
-  "generated": "2026-05-07",
+  "generated": "2026-05-14",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -562,6 +562,47 @@
             "codex"
           ]
         }
+      }
+    },
+    {
+      "slug": "changelog-launch-kit",
+      "name": "changelog-launch-kit",
+      "category": "composites",
+      "description": "Turn a product changelog, release note draft, pull request summary, or shipped feature list into a complete launch kit for customers, sales, support, social, and internal stakeholders. Use when a team needs to announce shipped work clearly without overpromising or losing technical nuance.",
+      "tags": "content, outreach, social",
+      "path": "skills/composites/changelog-launch-kit",
+      "files": [
+        "skills/composites/changelog-launch-kit/SKILL.md",
+        "skills/composites/changelog-launch-kit/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "changelog-launch-kit",
+        "category": "composites",
+        "tags": [
+          "content",
+          "outreach",
+          "social"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install changelog-launch-kit",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "features": [
+          "Turns product changes into a segmented launch kit",
+          "Creates customer announcements, sales enablement, and social copy",
+          "Adds rollout risk checks, metrics, and follow-up actions"
+        ],
+        "requires_skills": [
+          "feature-launch-playbook",
+          "help-center-article-generator",
+          "create-x-content",
+          "create-linkedin-content",
+          "email-drafting"
+        ]
       }
     },
     {
