@@ -1,0 +1,22 @@
+{
+  "slug": "sdk-quickstart-hardening-guide",
+  "category": "composites",
+  "tags": [
+    "content"
+  ],
+  "installation": {
+    "base_command": "npx goose-skills install sdk-quickstart-hardening-guide",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  },
+  "features": [
+    "Audits a working snippet against 7 hardening criteria before writing any docs",
+    "Writes prerequisites, installation, and environment variable sections that survive cold-start by new developers",
+    "Generates the minimal runnable code path with inline intent comments and explicit expected output",
+    "Produces common-failure-mode diagnostics with Cause and Fix steps for every known error",
+    "Outputs a first-success checklist with next-step links for production readiness"
+  ]
+}

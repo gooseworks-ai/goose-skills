@@ -1,0 +1,22 @@
+{
+  "slug": "postman-collection-storyteller",
+  "category": "composites",
+  "tags": [
+    "content"
+  ],
+  "installation": {
+    "base_command": "npx goose-skills install postman-collection-storyteller",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  },
+  "features": [
+    "Audits a collection against 7 narrative quality criteria before writing",
+    "Writes collection, folder, and request-level descriptions with workflow sequencing rationale",
+    "Documents every collection variable with type, required/auto-set status, and example value",
+    "Annotates pre/post-request scripts with intent-focused comments",
+    "Produces a public Postman workspace overview page for developer portal publishing"
+  ]
+}
