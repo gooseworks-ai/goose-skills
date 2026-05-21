@@ -1,6 +1,6 @@
 {
   "version": "1.2.0",
-  "generated": "2026-05-07",
+  "generated": "2026-05-21",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -5814,6 +5814,38 @@
             "codex"
           ]
         }
+      }
+    },
+    {
+      "slug": "win-loss-analysis",
+      "name": "win-loss-analysis",
+      "category": "composites",
+      "description": "Analyze won and lost deals using CRM data, sales notes, buyer feedback, competitor context, and pricing signals to explain why deals close or slip and produce a revenue improvement plan.",
+      "tags": "research",
+      "path": "skills/composites/win-loss-analysis",
+      "files": [
+        "skills/composites/win-loss-analysis/SKILL.md",
+        "skills/composites/win-loss-analysis/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "win-loss-analysis",
+        "category": "composites",
+        "tags": [
+          "research"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install win-loss-analysis",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "pipeline-review",
+          "voice-of-customer-synthesizer",
+          "competitor-intel"
+        ]
       }
     },
     {
