@@ -1,6 +1,6 @@
 {
   "version": "1.2.0",
-  "generated": "2026-05-07",
+  "generated": "2026-05-21",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -5226,6 +5226,38 @@
           "linkedin-profile-post-scraper",
           "reddit-post-finder",
           "twitter-mention-tracker"
+        ]
+      }
+    },
+    {
+      "slug": "trial-conversion-diagnostic",
+      "name": "trial-conversion-diagnostic",
+      "category": "composites",
+      "description": "Diagnose why free trials, freemium signups, or product-led onboarding are not converting into paid customers, then produce a prioritized activation and conversion experiment plan.",
+      "tags": "research",
+      "path": "skills/composites/trial-conversion-diagnostic",
+      "files": [
+        "skills/composites/trial-conversion-diagnostic/SKILL.md",
+        "skills/composites/trial-conversion-diagnostic/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "trial-conversion-diagnostic",
+        "category": "composites",
+        "tags": [
+          "research"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install trial-conversion-diagnostic",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "voice-of-customer-synthesizer",
+          "landing-page-intel",
+          "email-drafting"
         ]
       }
     },
