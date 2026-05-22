@@ -4628,6 +4628,34 @@
       }
     },
     {
+      "slug": "security-questionnaire-responder",
+      "name": "security-questionnaire-responder",
+      "category": "composites",
+      "description": "Turn vendor security questionnaires, procurement forms, policy notes, and evidence files into accurate buyer-ready responses while flagging unknowns, unsupported claims, risk items, and follow-up owners.",
+      "tags": "research, outreach",
+      "path": "skills/composites/security-questionnaire-responder",
+      "files": [
+        "skills/composites/security-questionnaire-responder/SKILL.md",
+        "skills/composites/security-questionnaire-responder/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "security-questionnaire-responder",
+        "category": "composites",
+        "tags": [
+          "research",
+          "outreach"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install security-questionnaire-responder",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
       "slug": "sequence-performance",
       "name": "sequence-performance",
       "category": "composites",
