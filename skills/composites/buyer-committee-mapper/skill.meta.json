@@ -1,0 +1,16 @@
+{
+  "slug": "buyer-committee-mapper",
+  "category": "composites",
+  "tags": [
+    "outreach",
+    "research"
+  ],
+  "installation": {
+    "base_command": "npx goose-skills install buyer-committee-mapper",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  }
+}
