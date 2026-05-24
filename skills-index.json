@@ -1,6 +1,6 @@
 {
   "version": "1.2.0",
-  "generated": "2026-05-07",
+  "generated": "2026-05-24",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -1495,6 +1495,34 @@
         ],
         "installation": {
           "base_command": "npx goose-skills install lead-gen-devtools",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "demo-script-builder",
+      "name": "demo-script-builder",
+      "category": "composites",
+      "description": "Build buyer-specific product demo scripts from discovery notes, pain points, personas, product capabilities, proof points, and success criteria.",
+      "tags": "content, outreach",
+      "path": "skills/composites/demo-script-builder",
+      "files": [
+        "skills/composites/demo-script-builder/SKILL.md",
+        "skills/composites/demo-script-builder/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "demo-script-builder",
+        "category": "composites",
+        "tags": [
+          "content",
+          "outreach"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install demo-script-builder",
           "supports": [
             "claude",
             "cursor",
