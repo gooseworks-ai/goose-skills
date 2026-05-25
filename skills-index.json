@@ -1,6 +1,6 @@
 {
   "version": "1.2.0",
-  "generated": "2026-05-07",
+  "generated": "2026-05-25",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -2570,6 +2570,33 @@
         "source": "orthogonal",
         "installation": {
           "base_command": "npx goose-skills install image-analyzer",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "implementation-kickoff-planner",
+      "name": "implementation-kickoff-planner",
+      "category": "composites",
+      "description": "Plan post-sale implementation kickoff for B2B customers by converting closed-won context into agendas, owner maps, milestone plans, risks, data requests, and customer-ready kickoff materials.",
+      "tags": "outreach",
+      "path": "skills/composites/implementation-kickoff-planner",
+      "files": [
+        "skills/composites/implementation-kickoff-planner/SKILL.md",
+        "skills/composites/implementation-kickoff-planner/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "implementation-kickoff-planner",
+        "category": "composites",
+        "tags": [
+          "outreach"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install implementation-kickoff-planner",
           "supports": [
             "claude",
             "cursor",
