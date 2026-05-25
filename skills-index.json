@@ -1,6 +1,6 @@
 {
   "version": "1.2.0",
-  "generated": "2026-05-07",
+  "generated": "2026-05-25",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -4175,6 +4175,33 @@
           "seo-domain-analyzer",
           "site-content-catalog"
         ]
+      }
+    },
+    {
+      "slug": "proposal-follow-up-sequencer",
+      "name": "proposal-follow-up-sequencer",
+      "category": "composites",
+      "description": "Build prioritized follow-up plans for sent proposals, quotes, and open deals by diagnosing stall reasons, choosing the right next action, and drafting buyer-specific follow-up sequences.",
+      "tags": "outreach",
+      "path": "skills/composites/proposal-follow-up-sequencer",
+      "files": [
+        "skills/composites/proposal-follow-up-sequencer/SKILL.md",
+        "skills/composites/proposal-follow-up-sequencer/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "proposal-follow-up-sequencer",
+        "category": "composites",
+        "tags": [
+          "outreach"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install proposal-follow-up-sequencer",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
       }
     },
     {
