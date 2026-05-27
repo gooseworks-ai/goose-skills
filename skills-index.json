@@ -1,6 +1,6 @@
 {
   "version": "1.2.0",
-  "generated": "2026-05-07",
+  "generated": "2026-05-27",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -5301,6 +5301,34 @@
         "source": "orthogonal",
         "installation": {
           "base_command": "npx goose-skills install uptime-monitor",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "utm-tracking-plan-builder",
+      "name": "utm-tracking-plan-builder",
+      "category": "composites",
+      "description": "Create campaign tracking taxonomies, UTM naming rules, QA checklists, and analytics handoff docs for paid, lifecycle, partner, and content campaigns.",
+      "tags": "ads, monitoring",
+      "path": "skills/composites/utm-tracking-plan-builder",
+      "files": [
+        "skills/composites/utm-tracking-plan-builder/SKILL.md",
+        "skills/composites/utm-tracking-plan-builder/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "utm-tracking-plan-builder",
+        "category": "composites",
+        "tags": [
+          "ads",
+          "monitoring"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install utm-tracking-plan-builder",
           "supports": [
             "claude",
             "cursor",
