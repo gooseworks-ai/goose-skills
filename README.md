@@ -13,7 +13,7 @@ Works with [Claude Code](https://claude.ai/claude-code) &middot; [Cursor](https:
 
 [![npm version](https://img.shields.io/npm/v/goose-skills?color=blue)](https://www.npmjs.com/package/goose-skills)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Skills](https://img.shields.io/badge/skills-108-orange)]()
+[![Skills](https://img.shields.io/badge/skills-109-orange)]()
 
 <br />
 
@@ -27,7 +27,7 @@ Works with [Claude Code](https://claude.ai/claude-code) &middot; [Cursor](https:
 
 - [Quick Start](#-quick-start)
 - [Commands](#-commands)
-- [Skills Catalog (108)](#-skills-catalog-108)
+- [Skills Catalog (109)](#-skills-catalog-109)
 - [Usage Examples](#-usage-examples)
 - [Building from Source](#-building-from-source)
 - [Skill Metadata Contract](#-skill-metadata-contract)
@@ -62,11 +62,11 @@ npx gooseworks update                      # Update to latest skill version
 
 ---
 
-## Skills Catalog (108)
+## Skills Catalog (109)
 
-**51 Capabilities** (atomic, single-purpose tools) &middot; **52 Composites** (multi-skill chains) &middot; **5 Playbooks** (end-to-end workflows)
+**51 Capabilities** (atomic, single-purpose tools) &middot; **53 Composites** (multi-skill chains) &middot; **5 Playbooks** (end-to-end workflows)
 
-### Ads (9)
+### Ads (10)
 
 | Skill | Type | Description |
 |-------|------|-------------|
@@ -79,6 +79,7 @@ npx gooseworks update                      # Update to latest skill version
 | `meta-ads-campaign-builder` | Comp | End-to-end Meta Ads campaign builder |
 | `paid-channel-prioritizer` | Comp | Recommend which paid channels to start with |
 | `trending-ad-hook-spotter` | Comp | Monitor social for trending narratives to map to ad hooks |
+| `utm-tracking-plan-builder` | Comp | Create campaign tracking taxonomies, UTM naming rules, QA checklists, and analytics handoff docs |
 
 ### Brand (4)
 
