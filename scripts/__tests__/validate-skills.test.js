@@ -13,7 +13,14 @@ function makeFixtureRoot() {
   fs.mkdirSync(path.join(root, 'skills', 'capabilities'), { recursive: true });
   // Schemas are looked up under ROOT — symlink the real schemas dir so we
   // don't have to copy/maintain a fixture schema.
-  fs.symlinkSync(path.join(REPO_ROOT, 'schemas'), path.join(root, 'schemas'));
+  const schemaSource = path.join(REPO_ROOT, 'schemas');
+  const schemaTarget = path.join(root, 'schemas');
+  try {
+    fs.symlinkSync(schemaSource, schemaTarget, process.platform === 'win32' ? 'junction' : 'dir');
+  } catch (err) {
+    if (err.code !== 'EPERM') throw err;
+    fs.cpSync(schemaSource, schemaTarget, { recursive: true });
+  }
   return root;
 }
 

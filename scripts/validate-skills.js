@@ -27,6 +27,14 @@ const allowedTags = new Set(schema.properties.tags.items.enum);
 const errors = [];
 const slugs = new Set();
 
+function toIndexPath(filePath) {
+  return path.relative(ROOT, filePath).replace(/\\/g, '/');
+}
+
+function normalizeIndexPath(indexPath) {
+  return indexPath.replace(/\\/g, '/');
+}
+
 // Walk the entire skills/ tree to find every SKILL.md location.
 // Used at the end to assert every skill is represented in the index that
 // build-index.js produces (catches RC1-style drift where skills exist on
@@ -38,7 +46,7 @@ function collectSkillMdDirs(dir, results = []) {
     if (entry.isDirectory()) {
       collectSkillMdDirs(full, results);
     } else if (entry.name === 'SKILL.md') {
-      results.push(path.relative(ROOT, path.dirname(full)));
+      results.push(toIndexPath(path.dirname(full)));
     }
   }
   return results;
@@ -127,7 +135,7 @@ if (fs.existsSync(indexPath)) {
     // backend sync and the Payload CMS push) iterate idx.skills[] only.
     const topLevelPaths = new Set();
     for (const s of index.skills || []) {
-      if (s.path) topLevelPaths.add(s.path);
+      if (s.path) topLevelPaths.add(normalizeIndexPath(s.path));
     }
 
     const missing = allSkillMdDirs.filter((d) => !topLevelPaths.has(d));
