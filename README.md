@@ -27,7 +27,7 @@ Works with [Claude Code](https://claude.ai/claude-code) &middot; [Cursor](https:
 
 - [Quick Start](#-quick-start)
 - [Commands](#-commands)
-- [Skills Catalog (108)](#-skills-catalog-108)
+- [Skills Catalog (109)](#-skills-catalog-109)
 - [Usage Examples](#-usage-examples)
 - [Building from Source](#-building-from-source)
 - [Skill Metadata Contract](#-skill-metadata-contract)
@@ -62,9 +62,9 @@ npx gooseworks update                      # Update to latest skill version
 
 ---
 
-## Skills Catalog (108)
+## Skills Catalog (109)
 
-**51 Capabilities** (atomic, single-purpose tools) &middot; **52 Composites** (multi-skill chains) &middot; **5 Playbooks** (end-to-end workflows)
+**51 Capabilities** (atomic, single-purpose tools) &middot; **53 Composites** (multi-skill chains) &middot; **5 Playbooks** (end-to-end workflows)
 
 ### Ads (9)
 
@@ -189,7 +189,7 @@ npx gooseworks update                      # Update to latest skill version
 | `outbound-prospecting-engine` | Play | End-to-end outbound prospecting engine |
 | `tiktok-influencer-finder` | Cap | Find TikTok influencers using Apify |
 
-### Research (12)
+### Research (13)
 
 | Skill | Type | Description |
 |-------|------|-------------|
@@ -200,6 +200,7 @@ npx gooseworks update                      # Update to latest skill version
 | `meeting-brief` | Comp | Daily meeting prep with deep attendee research |
 | `pipeline-review` | Comp | Pipeline analysis from CRM/tracking data |
 | `review-intelligence-digest` | Comp | Scrape reviews, extract themes and proof points |
+| `roi-calculator-builder` | Comp | Build defensible ROI calculators and buyer-ready business cases |
 | `sales-call-prep` | Comp | Pre-sales-call intelligence composite |
 | `sales-coaching` | Comp | AI sales coach analyzing all sales data |
 | `sequence-performance` | Comp | Email campaign/sequence performance review |
