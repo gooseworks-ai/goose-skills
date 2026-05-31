@@ -1,6 +1,6 @@
 {
   "version": "1.2.0",
-  "generated": "2026-05-07",
+  "generated": "2026-05-31",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -1663,6 +1663,36 @@
             "codex"
           ]
         }
+      }
+    },
+    {
+      "slug": "email-newsletter",
+      "name": "email-newsletter",
+      "category": "capabilities",
+      "description": "Draft and design paste-ready HTML email newsletters for tools such as Loops, Mailchimp, Beehiiv, and Resend, including subject lines, preheader, body copy, plain-text fallback, and email-client-safe layout guidance.",
+      "tags": "content, outreach, design",
+      "path": "skills/capabilities/email-newsletter",
+      "files": [
+        "skills/capabilities/email-newsletter/SKILL.md",
+        "skills/capabilities/email-newsletter/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "email-newsletter",
+        "category": "capabilities",
+        "tags": [
+          "content",
+          "outreach",
+          "design"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install email-newsletter",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "author": "Satyajeet Sawant"
       }
     },
     {
