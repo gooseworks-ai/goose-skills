@@ -1,6 +1,6 @@
 {
   "version": "1.2.0",
-  "generated": "2026-05-07",
+  "generated": "2026-05-21",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -4230,6 +4230,39 @@
             "codex"
           ]
         }
+      }
+    },
+    {
+      "slug": "renewal-command-center",
+      "name": "renewal-command-center",
+      "category": "playbooks",
+      "description": "Run a renewal command center for B2B accounts by combining renewal dates, churn risk, expansion signals, stakeholder health, and next-best actions into a weekly account-by-account operating plan.",
+      "tags": "monitoring",
+      "path": "skills/playbooks/renewal-command-center",
+      "files": [
+        "skills/playbooks/renewal-command-center/SKILL.md",
+        "skills/playbooks/renewal-command-center/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "renewal-command-center",
+        "category": "playbooks",
+        "tags": [
+          "monitoring"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install renewal-command-center",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "churn-risk-detector",
+          "expansion-signal-spotter",
+          "voice-of-customer-synthesizer",
+          "pipeline-review"
+        ]
       }
     },
     {
