@@ -1,0 +1,22 @@
+{
+  "slug": "offer-intake-gate",
+  "category": "composites",
+  "tags": [
+    "research",
+    "brand"
+  ],
+  "installation": {
+    "base_command": "npx goose-skills install offer-intake-gate",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  },
+  "features": [
+    "Front-loads buyer, pain, price, proof, delivery, and distribution questions before GTM execution",
+    "Scores offer readiness with a simple gate",
+    "Routes ready offers to launch, positioning, outreach, or paid-channel skills",
+    "Blocks premature landing pages and campaigns when the offer is still unclear"
+  ]
+}
