@@ -1,0 +1,26 @@
+{
+  "slug": "api-deprecation-sunset-planner",
+  "category": "composites",
+  "tags": [
+    "content",
+    "research"
+  ],
+  "installation": {
+    "base_command": "npx goose-skills install api-deprecation-sunset-planner",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  },
+  "requires_skills": [
+    "api-release-notes-composer"
+  ],
+  "features": [
+    "Assesses migration effort, consumer breadth, and detectable usage before building the plan",
+    "Validates the planned removal date against minimum runway guidelines by migration effort level",
+    "Produces HTTP Deprecation/Sunset header configuration with IETF RFC 9745 format and SDK deprecation markers",
+    "Builds a phased backward-planning timeline with action items from D-90 announcement through D+3 post-removal",
+    "Delivers all channel copy variants (email x3, docs banner x2, Discord, status page) and a day-of removal checklist"
+  ]
+}

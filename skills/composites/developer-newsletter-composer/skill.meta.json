@@ -1,0 +1,23 @@
+{
+  "slug": "developer-newsletter-composer",
+  "category": "composites",
+  "tags": [
+    "content",
+    "social"
+  ],
+  "installation": {
+    "base_command": "npx goose-skills install developer-newsletter-composer",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  },
+  "features": [
+    "Triages raw ship data into highlights, action-required, deprecations, fixes, and ecosystem buckets",
+    "Writes developer-voice prose with endpoint paths and field names, zero marketing language",
+    "Always surfaces action-required items first with deadline, one-sentence action, and migration link",
+    "Outputs email and Discord/GitHub Markdown variants with appropriate length constraints",
+    "Delivers subject line variants and flags any item that warrants its own standalone breaking-change email"
+  ]
+}

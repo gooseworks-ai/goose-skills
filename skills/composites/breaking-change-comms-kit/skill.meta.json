@@ -1,0 +1,26 @@
+{
+  "slug": "breaking-change-comms-kit",
+  "category": "composites",
+  "tags": [
+    "content",
+    "outreach"
+  ],
+  "installation": {
+    "base_command": "npx goose-skills install breaking-change-comms-kit",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  },
+  "requires_skills": [
+    "api-release-notes-composer"
+  ],
+  "features": [
+    "Tiers the impact of a breaking change (Critical/High/Medium/Low) and selects channels accordingly",
+    "Generates a backward-planning rollout timeline from the hard cutoff date",
+    "Writes a step-by-step migration guide with before/after code examples",
+    "Produces per-channel copy for docs banner, email, in-product warning, status page, and Slack",
+    "Delivers a support-ready FAQ so the team can handle tickets verbatim"
+  ]
+}
