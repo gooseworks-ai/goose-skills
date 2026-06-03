@@ -1,6 +1,6 @@
 {
   "version": "1.2.0",
-  "generated": "2026-05-07",
+  "generated": "2026-05-15",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -3396,6 +3396,40 @@
             "codex"
           ]
         }
+      }
+    },
+    {
+      "slug": "llms-txt-auditor",
+      "name": "llms-txt-auditor",
+      "category": "capabilities",
+      "description": "Audit a website for AI crawler readiness and llms.txt quality without paid APIs.",
+      "tags": "seo",
+      "path": "skills/capabilities/llms-txt-auditor",
+      "files": [
+        "skills/capabilities/llms-txt-auditor/SKILL.md",
+        "skills/capabilities/llms-txt-auditor/scripts/audit_llms_txt.py",
+        "skills/capabilities/llms-txt-auditor/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "llms-txt-auditor",
+        "category": "capabilities",
+        "tags": [
+          "seo"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install llms-txt-auditor",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "features": [
+          "Checks llms.txt availability and content quality",
+          "Discovers sitemap and robots.txt crawlability signals",
+          "Scores homepage metadata and structured data readiness",
+          "Outputs JSON or Markdown reports without paid APIs"
+        ]
       }
     },
     {
