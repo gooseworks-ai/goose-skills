@@ -1,6 +1,6 @@
 {
   "version": "1.2.0",
-  "generated": "2026-05-07",
+  "generated": "2026-05-20",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -4174,6 +4174,42 @@
         "requires_skills": [
           "seo-domain-analyzer",
           "site-content-catalog"
+        ]
+      }
+    },
+    {
+      "slug": "proof-led-case-study",
+      "name": "proof-led-case-study",
+      "category": "composites",
+      "description": "Turn real customer proof, payment receipts, demos, maintainer feedback, or usage metrics into a credible case study, founder post, launch thread, and reusable proof packet without inventing claims or exposing private details.",
+      "tags": "content, social, brand",
+      "path": "skills/composites/proof-led-case-study",
+      "files": [
+        "skills/composites/proof-led-case-study/SKILL.md",
+        "skills/composites/proof-led-case-study/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "proof-led-case-study",
+        "category": "composites",
+        "tags": [
+          "content",
+          "social",
+          "brand"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install proof-led-case-study",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "features": [
+          "Evidence ledger for public claims",
+          "Privacy and redaction guardrails",
+          "Case study, X thread, LinkedIn post, and reuse packet outputs",
+          "Metric extrapolation labeling",
+          "Pre-publication credibility red team"
         ]
       }
     },
