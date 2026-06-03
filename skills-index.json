@@ -1,6 +1,6 @@
 {
   "version": "1.2.0",
-  "generated": "2026-05-07",
+  "generated": "2026-06-03",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -358,6 +358,41 @@
         ],
         "installation": {
           "base_command": "npx goose-skills install blog-feed-monitor",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "bounty-board-auditor",
+      "name": "bounty-board-auditor",
+      "category": "capabilities",
+      "description": "Audit public bounty, reward, and paid-issue boards against GitHub source-of-truth state. Detect stale open listings, closed GitHub issues, archived or missing repositories, withdrawn payouts, reserved bounties, crowded duplicate PRs, and unclear assignment state.",
+      "tags": "research, competitive-intel, lead-generation, monitoring",
+      "path": "skills/capabilities/bounty-board-auditor",
+      "files": [
+        "skills/capabilities/bounty-board-auditor/SKILL.md",
+        "skills/capabilities/bounty-board-auditor/examples/sample-listings.md",
+        "skills/capabilities/bounty-board-auditor/examples/sample-report.md",
+        "skills/capabilities/bounty-board-auditor/README.md",
+        "skills/capabilities/bounty-board-auditor/scripts/audit_bounty_board.mjs",
+        "skills/capabilities/bounty-board-auditor/scripts/test_audit_bounty_board.mjs",
+        "skills/capabilities/bounty-board-auditor/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "bounty-board-auditor",
+        "category": "capabilities",
+        "tags": [
+          "research",
+          "competitive-intel",
+          "lead-generation",
+          "monitoring"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install bounty-board-auditor",
           "supports": [
             "claude",
             "cursor",

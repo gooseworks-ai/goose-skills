@@ -27,6 +27,10 @@ const allowedTags = new Set(schema.properties.tags.items.enum);
 const errors = [];
 const slugs = new Set();
 
+function repoPath(filePath) {
+  return path.relative(ROOT, filePath).replace(/\\/g, '/');
+}
+
 // Walk the entire skills/ tree to find every SKILL.md location.
 // Used at the end to assert every skill is represented in the index that
 // build-index.js produces (catches RC1-style drift where skills exist on
@@ -38,7 +42,7 @@ function collectSkillMdDirs(dir, results = []) {
     if (entry.isDirectory()) {
       collectSkillMdDirs(full, results);
     } else if (entry.name === 'SKILL.md') {
-      results.push(path.relative(ROOT, path.dirname(full)));
+      results.push(repoPath(path.dirname(full)));
     }
   }
   return results;

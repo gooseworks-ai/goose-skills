@@ -12,14 +12,39 @@ const ROOT = process.env.GOOSE_SKILLS_ROOT
   ? path.resolve(process.env.GOOSE_SKILLS_ROOT)
   : path.resolve(__dirname, '..');
 const OUTPUT = path.join(ROOT, 'skills-index.json');
+let existingIndex = null;
+
+if (fs.existsSync(OUTPUT)) {
+  try {
+    existingIndex = JSON.parse(fs.readFileSync(OUTPUT, 'utf8').replace(/^\uFEFF/, ''));
+  } catch {}
+}
+
+function repoPath(filePath) {
+  return path.relative(ROOT, filePath).replace(/\\/g, '/');
+}
+
+function preserveExistingFileOrder(skillPath, files) {
+  if (!existingIndex) return files;
+  const existing = (existingIndex.skills || []).find((skill) => skill.path === skillPath);
+  if (!existing || !Array.isArray(existing.files)) return files;
+
+  const current = new Set(files);
+  const previous = new Set(existing.files);
+  if (current.size !== previous.size) return files;
+  for (const file of current) {
+    if (!previous.has(file)) return files;
+  }
+  return existing.files;
+}
 
 function parseFrontmatter(content) {
-  const match = content.match(/^---\n([\s\S]*?)\n---/);
+  const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
   if (!match) return {};
 
   const yaml = match[1];
   const result = {};
-  for (const line of yaml.split('\n')) {
+  for (const line of yaml.split(/\r?\n/)) {
     const kvMatch = line.match(/^(\w[\w-]*):\s*(.*)/);
     if (!kvMatch) continue;
     let value = kvMatch[2].trim().replace(/^['"]|['"]$/g, '');
@@ -50,7 +75,15 @@ function collectFiles(dir) {
       files.push(full);
     }
   }
-  return files;
+  return files.sort((a, b) => {
+    const aName = path.basename(a);
+    const bName = path.basename(b);
+    if (aName === 'SKILL.md') return -1;
+    if (bName === 'SKILL.md') return 1;
+    if (aName.endsWith('.meta.json')) return 1;
+    if (bName.endsWith('.meta.json')) return -1;
+    return repoPath(a).localeCompare(repoPath(b));
+  });
 }
 
 function scanCategory(category) {
@@ -76,7 +109,7 @@ function scanCategory(category) {
     const metaFromFrontmatter = parseFrontmatter(content);
     const meta = JSON.parse(fs.readFileSync(metaPath, 'utf8'));
 
-    const allFiles = collectFiles(skillDir).map((f) => path.relative(ROOT, f));
+    const allFiles = collectFiles(skillDir).map(repoPath);
 
     skills.push({
       slug,
@@ -85,7 +118,7 @@ function scanCategory(category) {
       description: metaFromFrontmatter.description || '',
       tags: Array.isArray(meta.tags) ? meta.tags.join(', ') : '',
       path: `skills/${category}/${slug}`,
-      files: allFiles,
+      files: preserveExistingFileOrder(`skills/${category}/${slug}`, allFiles),
       metadata: meta,
     });
   }
@@ -127,14 +160,14 @@ function scanPacks(registrySkills) {
 
       const content = fs.readFileSync(skillMd, 'utf8');
       const frontmatter = parseFrontmatter(content);
-      const allFiles = collectFiles(skillDir).map((f) => path.relative(ROOT, f));
+      const allFiles = collectFiles(skillDir).map(repoPath);
 
       subSkills.push({
         slug: skillSlug,
         name: frontmatter.name || skillSlug,
         description: frontmatter.description || '',
         path: `skills/packs/${slug}/${skillSlug}`,
-        files: allFiles,
+        files: preserveExistingFileOrder(`skills/packs/${slug}/${skillSlug}`, allFiles),
         source: 'pack',
       });
     }
@@ -255,11 +288,10 @@ for (const pack of packs) {
 let generatedDate = new Date().toISOString().split('T')[0];
 if (fs.existsSync(OUTPUT)) {
   try {
-    const existing = JSON.parse(fs.readFileSync(OUTPUT, 'utf8'));
     const newContent = JSON.stringify({ skills, packs });
-    const oldContent = JSON.stringify({ skills: existing.skills, packs: existing.packs });
-    if (newContent === oldContent && existing.generated) {
-      generatedDate = existing.generated;
+    const oldContent = JSON.stringify({ skills: existingIndex.skills, packs: existingIndex.packs });
+    if (newContent === oldContent && existingIndex.generated) {
+      generatedDate = existingIndex.generated;
     }
   } catch {}
 }
