@@ -15,7 +15,7 @@ Works with [Claude Code](https://claude.ai/claude-code) &middot; [Cursor](https:
 
 [![npm version](https://img.shields.io/npm/v/goose-skills?color=blue)](https://www.npmjs.com/package/goose-skills)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Skills](https://img.shields.io/badge/skills-108-orange)]()
+[![Skills](https://img.shields.io/badge/skills-109-orange)]()
 
 <br />
 
@@ -29,7 +29,7 @@ Works with [Claude Code](https://claude.ai/claude-code) &middot; [Cursor](https:
 
 - [Quick Start](#-quick-start)
 - [Commands](#-commands)
-- [Skills Catalog (108)](#-skills-catalog-108)
+- [Skills Catalog (109)](#-skills-catalog-109)
 - [Usage Examples](#-usage-examples)
 - [Building from Source](#-building-from-source)
 - [Skill Metadata Contract](#-skill-metadata-contract)
@@ -64,9 +64,9 @@ npx gooseworks update                      # Update to latest skill version
 
 ---
 
-## Skills Catalog (108)
+## Skills Catalog (109)
 
-**51 Capabilities** (atomic, single-purpose tools) &middot; **52 Composites** (multi-skill chains) &middot; **5 Playbooks** (end-to-end workflows)
+**51 Capabilities** (atomic, single-purpose tools) &middot; **53 Composites** (multi-skill chains) &middot; **5 Playbooks** (end-to-end workflows)
 
 ### Ads (9)
 
@@ -168,7 +168,7 @@ npx gooseworks update                      # Update to latest skill version
 | `twitter-mention-tracker` | Cap | Search Twitter/X posts with date filtering |
 | `web-archive-scraper` | Cap | Wayback Machine scraper for archived sites |
 
-### Outreach (18)
+### Outreach (19)
 
 | Skill | Type | Description |
 |-------|------|-------------|
@@ -188,6 +188,7 @@ npx gooseworks update                      # Update to latest skill version
 | `linkedin-post-research` | Cap | Search LinkedIn posts by keyword |
 | `linkedin-profile-post-scraper` | Cap | Scrape recent posts from LinkedIn profiles |
 | `news-signal-outreach` | Comp | News-triggered signal outreach |
+| `objection-response-bank` | Comp | Build evidence-backed responses for recurring sales objections |
 | `outbound-prospecting-engine` | Play | End-to-end outbound prospecting engine |
 | `tiktok-influencer-finder` | Cap | Find TikTok influencers using Apify |
 
