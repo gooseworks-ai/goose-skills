@@ -1,6 +1,6 @@
 {
   "version": "1.2.0",
-  "generated": "2026-05-07",
+  "generated": "2026-05-31",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -1472,6 +1472,40 @@
             "codex"
           ]
         }
+      }
+    },
+    {
+      "slug": "deal-desk-packet",
+      "name": "deal-desk-packet",
+      "category": "composites",
+      "description": ">",
+      "tags": "outreach, research",
+      "path": "skills/composites/deal-desk-packet",
+      "files": [
+        "skills/composites/deal-desk-packet/SKILL.md",
+        "skills/composites/deal-desk-packet/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "deal-desk-packet",
+        "category": "composites",
+        "tags": [
+          "outreach",
+          "research"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install deal-desk-packet",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "features": [
+          "Builds internal approval memos for late-stage sales deals",
+          "Maps stakeholders, procurement steps, legal review, security review, and close risks",
+          "Creates buyer-facing recap emails and next-meeting agendas without exposing internal risk language",
+          "Separates confirmed facts, assumptions, and unknowns before recommending concessions"
+        ]
       }
     },
     {
