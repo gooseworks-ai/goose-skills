@@ -1417,10 +1417,7 @@
             "cursor",
             "codex"
           ]
-        },
-        "requires_tools": [
-          "fal"
-        ]
+        }
       }
     },
     {
