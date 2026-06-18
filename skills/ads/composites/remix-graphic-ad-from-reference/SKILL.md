@@ -29,12 +29,40 @@ the reference, then recreates it with GPT Image 2:
 | `reference_image` | yes | The ad to recreate (local path or URL). One image. |
 | `product` | yes | Target product: a clean product render/photo (PNG/webp). Pull the **real** brand asset; grounding/swapping on it is what keeps the label correct. **If the brand asset is a multi-product lineup, crop to the ONE relevant product first** — the remix grounds on a single clean product per `product_slot` (use `product_images_needed` from the slot map for how many distinct products the layout needs). |
 | `copy_changes` | optional | If omitted, **the agent auto-writes it** from the brand pack mapped to the template's `slot_map` (see Phase 0.5). New headline, benefit callouts, social-proof line, discount/badge text. Keep the reference's *structure* (same zones), swap the words. |
-| `brand` | recommended | Palette (hex), font, logo/wordmark, voice — usually from a `brand-research` pack. |
+| `brand` | recommended | Palette (hex), font, logo/wordmark, voice — from `get_brand_kit` / a `brand-research` pack. |
+| `style_source` | optional | **`template` (DEFAULT)** keeps the reference ad's palette/theme; **`brand`** recolours to the brand kit's documented palette. See "Brand grounding" below. The caller sets it (e.g. the user asks to "match my brand colours" → `brand`); absent → `template`. |
 | `route_hint` | optional | Engine override. Default is **always `gpt_image_2`**; `html` is only a text-overlay finishing step, never the generator. |
 | `aspect` | optional | Inherit from the reference; map to the renderer canvas. Default 4:5 / 1080×1350. |
 | `remix_spec` | optional | The precomputed spec from the template library (`slot_map` + `gen_prompt` + `remix_engine`). **If present, SKIP Phase 0 re-analysis** — the slots and prompt are already authored. This is the normal path when remixing a library template. |
 | `remix_mode` | from template | `product` (swap a physical product) or `ui` (SaaS/app ad — swap the app screenshot/UI, NEVER insert a product). Tagged on the template. |
 | `app_screenshot` | for `ui` mode | The brand's app/UI screenshot to drop into the device frame (used instead of `product` when `remix_mode:ui`). |
+
+## Brand grounding — read the kit, never improvise (do this before generating)
+
+The brand context comes from `get_brand_kit` (structured): `colors` (palette hex), `typography`,
+`products[]` (with `imageUrls` + `name`/`description`), `screenshotUrls`, and `referenceImages[]`
+(each tagged with `productName` + `kind: "product" | "website_screenshot"`). **Read the full kit, not
+a preview.**
+
+### Palette — by `style_source` (default `template`)
+- **`template` (default):** keep the **reference ad's** colours/theme; the brand contributes only its
+  product image, logo, and copy/voice — NOT its colours.
+- **`brand`:** recolour the layout to the brand kit's `colors` (primary/accent/bg/text).
+- **NEVER invent a colour.** Every colour in the output must come from EITHER the reference
+  (`template`) OR the kit's documented `colors` (`brand`). Do **not** pull an accent off the logo, a
+  mascot, a product, or "what looks nice." If `style_source: brand` but the kit has no palette, fall
+  back to `template` (don't guess). This is the #1 off-brand failure.
+
+### Which image to feature — select from the kit, send ONLY the relevant one(s)
+- **Physical-product brand:** the hero is the brand's product. Pick from `referenceImages` where
+  `productName` matches the slot's product and `kind` is `"product"` (hero = that product's
+  `imageUrls[0]`). Send only that product's image(s) for the slot — **not** all reference images.
+- **SaaS / software / app brand** (`brandType` ∈ saas/software/service/app/platform, or
+  `remix_mode: ui`): the hero is the brand's **app UI** — use `referenceImages` with
+  `kind: "website_screenshot"` (i.e. `screenshotUrls`). **NEVER insert a physical product or a
+  mascot** for a SaaS ad. If there is no screenshot, rebrand the existing UI (recolor/logo/copy).
+- Don't substitute a mascot/logo for the product unless the brand genuinely has no product/app image
+  and the layout's product slot can't be filled — and if so, say so to the user, don't silently swap.
 
 ## Composed Atoms
 
@@ -145,7 +173,12 @@ directly** — most AI-path failures are product drift you can't catch without t
 - **Logo:** if any logo / wordmark appears in the frame, it must be the brand's CORRECT logo — right
   mark, right spelling, undistorted, correct colours. A wrong or mangled logo = fail.
 - Layout matches the reference anatomy: same zones, reading order, energy. No colliding text; legible
-  at thumbnail size. Brand palette + font applied (HTML) or visually consistent (GPT).
+  at thumbnail size.
+- **Brand alignment (per `style_source`):** colours come from the right source — the **reference's**
+  palette for `template`, the kit's documented **`colors`** for `brand`. **No invented / off-brand
+  colour** (e.g. an accent pulled off a mascot or logo — the #1 failure). Typography = the kit's
+  fonts. The featured asset is the brand's **real product** (or **app UI** for SaaS), selected from
+  the kit — never a mascot/placeholder standing in for the product.
 - View the **full-res** output, not a thumbnail — text errors hide at small sizes.
 
 If any product / text / logo check fails, re-roll the same engine on the **original reference** with an
