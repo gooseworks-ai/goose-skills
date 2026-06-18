@@ -45,9 +45,13 @@ The brand context comes from `get_brand_kit` (structured): `colors` (palette hex
 a preview.**
 
 ### Palette — by `style_source` (default `template`)
+**Default to `template`. Use `brand` ONLY when the user explicitly asks** (e.g. "use/match my brand
+colours", "make it on-brand"). Do NOT switch to `brand` on your own judgment — keeping the reference's
+look is the expected default.
 - **`template` (default):** keep the **reference ad's** colours/theme; the brand contributes only its
   product image, logo, and copy/voice — NOT its colours.
-- **`brand`:** recolour the layout to the brand kit's `colors` (primary/accent/bg/text).
+- **`brand` (only on explicit user request):** recolour the layout to the brand kit's `colors`
+  (primary/accent/bg/text).
 - **NEVER invent a colour.** Every colour in the output must come from EITHER the reference
   (`template`) OR the kit's documented `colors` (`brand`). Do **not** pull an accent off the logo, a
   mascot, a product, or "what looks nice." If `style_source: brand` but the kit has no palette, fall
