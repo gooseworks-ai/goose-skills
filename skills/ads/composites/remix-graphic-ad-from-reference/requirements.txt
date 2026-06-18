@@ -1,0 +1,3 @@
+# Python deps for scripts/cutout_product.py (HTML-overlay path: cut product to transparent PNG)
+Pillow>=10
+numpy>=1.24

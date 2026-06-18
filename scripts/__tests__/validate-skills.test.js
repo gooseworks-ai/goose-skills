@@ -8,9 +8,13 @@ const { execFileSync } = require('node:child_process');
 const VALIDATE = path.resolve(__dirname, '..', 'validate-skills.js');
 const REPO_ROOT = path.resolve(__dirname, '..', '..');
 
+// Post-reorg layout is skills/<domain>/<level>/<slug>. Fixtures live under one
+// real domain folder so the validator's domain-enum check passes.
+const DOMAIN = 'monitoring';
+
 function makeFixtureRoot() {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'gs-validate-'));
-  fs.mkdirSync(path.join(root, 'skills', 'capabilities'), { recursive: true });
+  fs.mkdirSync(path.join(root, 'skills', DOMAIN, 'capabilities'), { recursive: true });
   // Schemas are looked up under ROOT — symlink the real schemas dir so we
   // don't have to copy/maintain a fixture schema.
   fs.symlinkSync(path.join(REPO_ROOT, 'schemas'), path.join(root, 'schemas'));
@@ -18,7 +22,7 @@ function makeFixtureRoot() {
 }
 
 function writeSkill(root, slug, frontmatter, meta) {
-  const dir = path.join(root, 'skills', 'capabilities', slug);
+  const dir = path.join(root, 'skills', DOMAIN, 'capabilities', slug);
   fs.mkdirSync(dir, { recursive: true });
   const fm = Object.entries(frontmatter)
     .map(([k, v]) => `${k}: ${typeof v === 'string' ? v : JSON.stringify(v)}`)
@@ -53,9 +57,9 @@ test('FAILS when a SKILL.md exists nested-only in packs[].skills[] (regression g
   writeSkill(root, 'twitter-scraper', { name: 'twitter-scraper', description: 'x' }, baseMeta('twitter-scraper'));
 
   // Add a pack sub-skill on disk.
-  fs.mkdirSync(path.join(root, 'skills', 'packs', 'lead-pack', 'lead-discovery'), { recursive: true });
+  fs.mkdirSync(path.join(root, 'skills', DOMAIN, 'packs', 'lead-pack', 'lead-discovery'), { recursive: true });
   fs.writeFileSync(
-    path.join(root, 'skills', 'packs', 'lead-pack', 'lead-discovery', 'SKILL.md'),
+    path.join(root, 'skills', DOMAIN, 'packs', 'lead-pack', 'lead-discovery', 'SKILL.md'),
     '---\nname: lead-discovery\ndescription: Pack-only.\n---\n\n# lead-discovery\n',
   );
 
@@ -69,8 +73,8 @@ test('FAILS when a SKILL.md exists nested-only in packs[].skills[] (regression g
         slug: 'twitter-scraper',
         name: 'twitter-scraper',
         category: 'capabilities',
-        path: 'skills/capabilities/twitter-scraper',
-        files: ['skills/capabilities/twitter-scraper/SKILL.md'],
+        path: 'skills/monitoring/capabilities/twitter-scraper',
+        files: ['skills/monitoring/capabilities/twitter-scraper/SKILL.md'],
       },
     ],
     packs: [
@@ -79,7 +83,7 @@ test('FAILS when a SKILL.md exists nested-only in packs[].skills[] (regression g
         skills: [
           {
             slug: 'lead-discovery',
-            path: 'skills/packs/lead-pack/lead-discovery',
+            path: 'skills/monitoring/packs/lead-pack/lead-discovery',
             source: 'pack',
           },
         ],
@@ -104,9 +108,9 @@ test('PASSES when every SKILL.md is in top-level skills[]', () => {
   writeSkill(root, 'twitter-scraper', { name: 'twitter-scraper', description: 'x' }, baseMeta('twitter-scraper'));
 
   // Add a pack sub-skill BOTH on disk AND in top-level (mimics the fix shape).
-  fs.mkdirSync(path.join(root, 'skills', 'packs', 'lead-pack', 'lead-discovery'), { recursive: true });
+  fs.mkdirSync(path.join(root, 'skills', DOMAIN, 'packs', 'lead-pack', 'lead-discovery'), { recursive: true });
   fs.writeFileSync(
-    path.join(root, 'skills', 'packs', 'lead-pack', 'lead-discovery', 'SKILL.md'),
+    path.join(root, 'skills', DOMAIN, 'packs', 'lead-pack', 'lead-discovery', 'SKILL.md'),
     '---\nname: lead-discovery\ndescription: Pack-only.\n---\n\n# lead-discovery\n',
   );
 
@@ -117,14 +121,14 @@ test('PASSES when every SKILL.md is in top-level skills[]', () => {
       {
         slug: 'twitter-scraper',
         category: 'capabilities',
-        path: 'skills/capabilities/twitter-scraper',
-        files: ['skills/capabilities/twitter-scraper/SKILL.md'],
+        path: 'skills/monitoring/capabilities/twitter-scraper',
+        files: ['skills/monitoring/capabilities/twitter-scraper/SKILL.md'],
       },
       {
         slug: 'lead-discovery',
         category: 'capabilities',
-        path: 'skills/packs/lead-pack/lead-discovery',
-        files: ['skills/packs/lead-pack/lead-discovery/SKILL.md'],
+        path: 'skills/monitoring/packs/lead-pack/lead-discovery',
+        files: ['skills/monitoring/packs/lead-pack/lead-discovery/SKILL.md'],
         metadata: { pack: 'lead-pack' },
       },
     ],
@@ -134,7 +138,7 @@ test('PASSES when every SKILL.md is in top-level skills[]', () => {
         skills: [
           {
             slug: 'lead-discovery',
-            path: 'skills/packs/lead-pack/lead-discovery',
+            path: 'skills/monitoring/packs/lead-pack/lead-discovery',
             source: 'pack',
           },
         ],

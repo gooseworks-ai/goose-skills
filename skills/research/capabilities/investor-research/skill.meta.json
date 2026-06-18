@@ -1,0 +1,16 @@
+{
+  "slug": "investor-research",
+  "category": "capabilities",
+  "tags": [
+    "research"
+  ],
+  "source": "orthogonal",
+  "installation": {
+    "base_command": "npx goose-skills install investor-research",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  }
+}

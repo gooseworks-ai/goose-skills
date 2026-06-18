@@ -1,0 +1,16 @@
+{
+  "slug": "comprehensive-enrichment",
+  "category": "capabilities",
+  "tags": [
+    "lead-generation"
+  ],
+  "source": "orthogonal",
+  "installation": {
+    "base_command": "npx goose-skills install comprehensive-enrichment",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  }
+}

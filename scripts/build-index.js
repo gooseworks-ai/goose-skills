@@ -2,6 +2,16 @@
 
 /**
  * Build skills-index.json from SKILL.md + skill.meta.json files.
+ *
+ * Layout (2026-06-17 reorg): skills are organized by DOMAIN first, then by
+ * abstraction level:
+ *   skills/<domain>/<level>/<slug>/{SKILL.md, skill.meta.json, …}
+ *   skills/<domain>/packs/<pack>/<sub-skill>/…
+ * where level ∈ { capabilities, composites, playbooks } and <domain> is one of
+ * the folders directly under skills/ (ads, lead-generation, research-tools, …).
+ *
+ * `category` in the index = the LEVEL (backend gates is_active on it).
+ * `domain` in the index = the top folder (the human-browsable grouping).
  */
 
 const fs = require('fs');
@@ -53,124 +63,144 @@ function collectFiles(dir) {
   return files;
 }
 
+/** Domains = the directories directly under skills/. */
+function listDomains() {
+  const skillsRoot = path.join(ROOT, 'skills');
+  if (!fs.existsSync(skillsRoot)) return [];
+  return fs
+    .readdirSync(skillsRoot)
+    .filter((d) => fs.statSync(path.join(skillsRoot, d)).isDirectory())
+    .sort();
+}
+
+/** Scan one level (capabilities|composites|playbooks) across every domain. */
 function scanCategory(category) {
-  const categoryDir = path.join(ROOT, 'skills', category);
-  if (!fs.existsSync(categoryDir)) return [];
-
   const skills = [];
-  const slugs = fs.readdirSync(categoryDir).filter((d) =>
-    fs.statSync(path.join(categoryDir, d)).isDirectory()
-  );
 
-  for (const slug of slugs) {
-    const skillDir = path.join(categoryDir, slug);
-    const skillMd = path.join(skillDir, 'SKILL.md');
-    const metaPath = path.join(skillDir, 'skill.meta.json');
+  for (const domain of listDomains()) {
+    const categoryDir = path.join(ROOT, 'skills', domain, category);
+    if (!fs.existsSync(categoryDir)) continue;
 
-    if (!fs.existsSync(skillMd)) continue;
-    if (!fs.existsSync(metaPath)) {
-      throw new Error(`Missing skill.meta.json for skills/${category}/${slug}`);
+    const slugs = fs.readdirSync(categoryDir).filter((d) =>
+      fs.statSync(path.join(categoryDir, d)).isDirectory(),
+    );
+
+    for (const slug of slugs) {
+      const skillDir = path.join(categoryDir, slug);
+      const skillMd = path.join(skillDir, 'SKILL.md');
+      const metaPath = path.join(skillDir, 'skill.meta.json');
+
+      if (!fs.existsSync(skillMd)) continue;
+      if (!fs.existsSync(metaPath)) {
+        throw new Error(`Missing skill.meta.json for skills/${domain}/${category}/${slug}`);
+      }
+
+      const content = fs.readFileSync(skillMd, 'utf8');
+      const metaFromFrontmatter = parseFrontmatter(content);
+      const meta = JSON.parse(fs.readFileSync(metaPath, 'utf8'));
+
+      const allFiles = collectFiles(skillDir).map((f) => path.relative(ROOT, f));
+
+      skills.push({
+        slug,
+        name: metaFromFrontmatter.name || slug,
+        category,
+        domain,
+        description: metaFromFrontmatter.description || '',
+        tags: Array.isArray(meta.tags) ? meta.tags.join(', ') : '',
+        path: `skills/${domain}/${category}/${slug}`,
+        files: allFiles,
+        metadata: meta,
+      });
     }
-
-    const content = fs.readFileSync(skillMd, 'utf8');
-    const metaFromFrontmatter = parseFrontmatter(content);
-    const meta = JSON.parse(fs.readFileSync(metaPath, 'utf8'));
-
-    const allFiles = collectFiles(skillDir).map((f) => path.relative(ROOT, f));
-
-    skills.push({
-      slug,
-      name: metaFromFrontmatter.name || slug,
-      category,
-      description: metaFromFrontmatter.description || '',
-      tags: Array.isArray(meta.tags) ? meta.tags.join(', ') : '',
-      path: `skills/${category}/${slug}`,
-      files: allFiles,
-      metadata: meta,
-    });
   }
 
   return skills;
 }
 
+/** Scan packs across every domain (skills/<domain>/packs/<pack>). */
 function scanPacks(registrySkills) {
-  const packsDir = path.join(ROOT, 'skills', 'packs');
-  if (!fs.existsSync(packsDir)) return [];
-
   const registryBySlug = {};
   for (const s of registrySkills) {
     registryBySlug[s.slug] = s;
   }
 
   const packs = [];
-  const slugs = fs.readdirSync(packsDir).filter((d) =>
-    fs.statSync(path.join(packsDir, d)).isDirectory()
-  );
 
-  for (const slug of slugs) {
-    const packDir = path.join(packsDir, slug);
-    const metaPath = path.join(packDir, 'pack.meta.json');
+  for (const domain of listDomains()) {
+    const packsDir = path.join(ROOT, 'skills', domain, 'packs');
+    if (!fs.existsSync(packsDir)) continue;
 
-    if (!fs.existsSync(metaPath)) continue;
+    const slugs = fs.readdirSync(packsDir).filter((d) =>
+      fs.statSync(path.join(packsDir, d)).isDirectory(),
+    );
 
-    const meta = JSON.parse(fs.readFileSync(metaPath, 'utf8'));
+    for (const slug of slugs) {
+      const packDir = path.join(packsDir, slug);
+      const metaPath = path.join(packDir, 'pack.meta.json');
 
-    // Build pack-local sub-skill entries
-    const subSkills = [];
-    for (const skillSlug of (meta.skills || [])) {
-      const skillDir = path.join(packDir, skillSlug);
-      const skillMd = path.join(skillDir, 'SKILL.md');
+      if (!fs.existsSync(metaPath)) continue;
 
-      if (!fs.existsSync(skillMd)) {
-        throw new Error(`Pack "${slug}": missing SKILL.md in ${skillSlug}/`);
+      const meta = JSON.parse(fs.readFileSync(metaPath, 'utf8'));
+
+      // Build pack-local sub-skill entries
+      const subSkills = [];
+      for (const skillSlug of (meta.skills || [])) {
+        const skillDir = path.join(packDir, skillSlug);
+        const skillMd = path.join(skillDir, 'SKILL.md');
+
+        if (!fs.existsSync(skillMd)) {
+          throw new Error(`Pack "${slug}": missing SKILL.md in ${skillSlug}/`);
+        }
+
+        const content = fs.readFileSync(skillMd, 'utf8');
+        const frontmatter = parseFrontmatter(content);
+        const allFiles = collectFiles(skillDir).map((f) => path.relative(ROOT, f));
+
+        subSkills.push({
+          slug: skillSlug,
+          name: frontmatter.name || skillSlug,
+          description: frontmatter.description || '',
+          path: `skills/${domain}/packs/${slug}/${skillSlug}`,
+          files: allFiles,
+          source: 'pack',
+        });
       }
 
-      const content = fs.readFileSync(skillMd, 'utf8');
-      const frontmatter = parseFrontmatter(content);
-      const allFiles = collectFiles(skillDir).map((f) => path.relative(ROOT, f));
-
-      subSkills.push({
-        slug: skillSlug,
-        name: frontmatter.name || skillSlug,
-        description: frontmatter.description || '',
-        path: `skills/packs/${slug}/${skillSlug}`,
-        files: allFiles,
-        source: 'pack',
-      });
-    }
-
-    // Resolve registry skill references
-    for (const regSlug of (meta.registry_skills || [])) {
-      const regSkill = registryBySlug[regSlug];
-      if (!regSkill) {
-        throw new Error(`Pack "${slug}": registry_skills references unknown skill "${regSlug}"`);
+      // Resolve registry skill references
+      for (const regSlug of (meta.registry_skills || [])) {
+        const regSkill = registryBySlug[regSlug];
+        if (!regSkill) {
+          throw new Error(`Pack "${slug}": registry_skills references unknown skill "${regSlug}"`);
+        }
+        subSkills.push({
+          slug: regSkill.slug,
+          name: regSkill.name,
+          description: regSkill.description,
+          path: regSkill.path,
+          files: regSkill.files,
+          source: 'registry',
+        });
       }
-      subSkills.push({
-        slug: regSkill.slug,
-        name: regSkill.name,
-        description: regSkill.description,
-        path: regSkill.path,
-        files: regSkill.files,
-        source: 'registry',
+
+      // Collect shared files
+      const sharedFiles = (meta.shared_files || [])
+        .map((f) => `skills/${domain}/packs/${slug}/${f}`)
+        .filter((f) => fs.existsSync(path.join(ROOT, f)));
+
+      packs.push({
+        slug,
+        name: meta.name || slug,
+        type: 'pack',
+        domain,
+        description: meta.description || '',
+        tags: Array.isArray(meta.tags) ? meta.tags.join(', ') : '',
+        path: `skills/${domain}/packs/${slug}`,
+        shared_files: sharedFiles,
+        skills: subSkills,
+        metadata: meta,
       });
     }
-
-    // Collect shared files
-    const sharedFiles = (meta.shared_files || [])
-      .map((f) => `skills/packs/${slug}/${f}`)
-      .filter((f) => fs.existsSync(path.join(ROOT, f)));
-
-    packs.push({
-      slug,
-      name: meta.name || slug,
-      type: 'pack',
-      description: meta.description || '',
-      tags: Array.isArray(meta.tags) ? meta.tags.join(', ') : '',
-      path: `skills/packs/${slug}`,
-      shared_files: sharedFiles,
-      skills: subSkills,
-      metadata: meta,
-    });
   }
 
   return packs;
@@ -218,6 +248,7 @@ for (const pack of packs) {
       // The backend's PredefinedSkillsSyncService gates is_active by category;
       // anything outside ACTIVE_REPO_CATEGORIES gets retired immediately.
       category: 'capabilities',
+      domain: pack.domain,
       description: sub.description,
       tags: Array.isArray(pack.metadata && pack.metadata.tags) ? pack.metadata.tags.join(', ') : '',
       path: sub.path,

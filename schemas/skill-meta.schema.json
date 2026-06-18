@@ -6,9 +6,13 @@
   "properties": {
     "slug": { "type": "string", "pattern": "^[a-z0-9-]+$" },
     "category": { "type": "string", "enum": ["capabilities", "composites", "playbooks"] },
+    "domain": {
+      "type": "string",
+      "enum": ["ads", "brand", "competitive-intel", "content", "design", "lead-generation", "monitoring", "outreach", "research", "research-tools", "sales", "seo", "social"]
+    },
     "tags": {
       "type": "array",
-      "items": { "type": "string", "enum": ["All", "ads", "brand", "competitive-intel", "content", "design", "lead-generation", "monitoring", "outreach", "research", "seo", "social"] },
+      "items": { "type": "string", "enum": ["All", "ads", "brand", "competitive-intel", "content", "design", "lead-generation", "monitoring", "outreach", "research", "research-tools", "sales", "seo", "social"] },
       "uniqueItems": true
     },
     "installation": {

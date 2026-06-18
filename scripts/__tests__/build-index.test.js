@@ -7,16 +7,20 @@ const { execFileSync } = require('node:child_process');
 
 const BUILD_INDEX = path.resolve(__dirname, '..', 'build-index.js');
 
+// Post-reorg layout is skills/<domain>/<level>/<slug>. The build script is
+// domain-agnostic, so the fixtures just live under one domain folder.
+const DOMAIN = 'lead-generation';
+
 function makeFixtureRoot() {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'gs-build-index-'));
-  fs.mkdirSync(path.join(root, 'skills', 'capabilities'), { recursive: true });
-  fs.mkdirSync(path.join(root, 'skills', 'composites'), { recursive: true });
-  fs.mkdirSync(path.join(root, 'skills', 'packs'), { recursive: true });
+  fs.mkdirSync(path.join(root, 'skills', DOMAIN, 'capabilities'), { recursive: true });
+  fs.mkdirSync(path.join(root, 'skills', DOMAIN, 'composites'), { recursive: true });
+  fs.mkdirSync(path.join(root, 'skills', DOMAIN, 'packs'), { recursive: true });
   return root;
 }
 
 function writeSkill(root, category, slug, frontmatter, meta) {
-  const dir = path.join(root, 'skills', category, slug);
+  const dir = path.join(root, 'skills', DOMAIN, category, slug);
   fs.mkdirSync(dir, { recursive: true });
   const fm = Object.entries(frontmatter)
     .map(([k, v]) => `${k}: ${typeof v === 'string' ? v : JSON.stringify(v)}`)
@@ -29,7 +33,7 @@ function writeSkill(root, category, slug, frontmatter, meta) {
 }
 
 function writePackSubSkill(root, packSlug, slug, frontmatter) {
-  const dir = path.join(root, 'skills', 'packs', packSlug, slug);
+  const dir = path.join(root, 'skills', DOMAIN, 'packs', packSlug, slug);
   fs.mkdirSync(dir, { recursive: true });
   const fm = Object.entries(frontmatter)
     .map(([k, v]) => `${k}: ${typeof v === 'string' ? v : JSON.stringify(v)}`)
@@ -41,7 +45,7 @@ function writePackSubSkill(root, packSlug, slug, frontmatter) {
 }
 
 function writePack(root, packSlug, packMeta) {
-  const dir = path.join(root, 'skills', 'packs', packSlug);
+  const dir = path.join(root, 'skills', DOMAIN, 'packs', packSlug);
   fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(path.join(dir, 'pack.meta.json'), JSON.stringify(packMeta, null, 2));
 }

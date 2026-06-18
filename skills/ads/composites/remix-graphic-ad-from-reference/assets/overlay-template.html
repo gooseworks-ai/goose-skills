@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<!--
+  Overlay-remix template for remix-graphic-ad-from-reference (HTML path).
+  Reproduce the REFERENCE ad's layout: clone this, set the brand font + palette vars,
+  swap the background, drop the product cutout, and lay copy in the same zones as the reference.
+  Render with goose-graphics screenshot.js (--format poster for 1080x1350).
+  Helpers included: inline-SVG benefit arrows + JS-generated scalloped discount seal.
+  Replace every {{TOKEN}} below. Delete zones the reference doesn't have.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- swap Lexend for the brand font -->
+<link href="https://fonts.googleapis.com/css2?family={{FONT}}:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:{{INK}};            /* primary text on light */
+    --paper:{{PAPER}};        /* light text on dark/photo bg, usually #fff */
+    --accent:{{ACCENT}};      /* discount/CTA accent (brand) */
+    --accent2:{{ACCENT2}};    /* secondary accent */
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{width:1080px;height:1350px;}            /* match chosen canvas */
+  body{font-family:'{{FONT}}',-apple-system,sans-serif;position:relative;overflow:hidden;
+    /* BACKGROUND: clone the reference. Example = fresh sky. Replace as needed. */
+    background:
+      radial-gradient(120% 80% at 78% 92%, rgba(255,255,255,.85) 0%, rgba(255,255,255,0) 42%),
+      linear-gradient(176deg, #5ea0dd 0%, #79b6e8 38%, #a7d2f2 72%, #cfe7f8 100%);}
+  .stage{position:absolute;inset:0;}
+  .head{position:absolute;top:64px;left:0;right:0;text-align:center;color:var(--paper);}
+  .head .pre{font-weight:400;font-size:54px;text-shadow:0 2px 14px rgba(40,70,110,.28);}
+  .head .big{font-weight:800;font-size:140px;line-height:.92;letter-spacing:-2px;
+    text-shadow:0 6px 26px rgba(40,70,110,.30);}
+  .product{position:absolute;left:50%;top:486px;transform:translateX(-50%);width:332px;height:auto;
+    z-index:3;filter:drop-shadow(0 26px 34px rgba(35,60,95,.34));}
+  .cal{position:absolute;color:var(--paper);font-weight:600;font-size:46px;line-height:1.04;
+    text-shadow:0 2px 12px rgba(40,70,110,.30);z-index:4;}
+  .c1{top:470px;left:74px;text-align:left;} .c2{top:470px;right:70px;text-align:right;} .c3{top:806px;left:74px;}
+  .proof{position:absolute;left:74px;bottom:96px;color:var(--paper);z-index:5;text-shadow:0 2px 12px rgba(40,70,110,.30);}
+  .proof .stars{font-size:50px;letter-spacing:6px;} .proof .cust{font-size:31px;font-weight:500;margin-top:12px;}
+  .proof .url{font-size:25px;opacity:.9;margin-top:7px;}
+  .seal{position:absolute;right:54px;bottom:62px;width:340px;height:340px;z-index:6;}
+  .seal svg{position:absolute;inset:0;width:100%;height:100%;filter:drop-shadow(0 10px 20px rgba(35,60,95,.28));}
+  .seal .txt{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;transform:rotate(-9deg);}
+  .seal .up{font-size:30px;font-weight:500;color:var(--accent2);}
+  .seal .pct{font-size:96px;font-weight:900;color:var(--accent);line-height:.82;} .seal .pct b{font-size:48px;vertical-align:top;}
+  .seal .sub{font-size:27px;font-weight:600;color:var(--accent2);}
+</style></head>
+<body><div class="stage">
+  <svg id="arrows" width="1080" height="1350" viewBox="0 0 1080 1350" style="position:absolute;inset:0;z-index:2;"
+       fill="none" stroke="var(--paper)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M250,556 C322,560 350,580 386,612"/><path d="M386,612 l-26,-3 M386,612 l-6,-25"/>
+    <path d="M828,560 C760,566 728,588 694,620"/><path d="M694,620 l27,-2 M694,620 l5,-25"/>
+    <path d="M250,872 C312,876 350,866 388,852"/><path d="M388,852 l-25,9 M388,852 l-14,-22"/>
+  </svg>
+  <h1 class="head"><div class="pre">{{PRE}}</div><div class="big">{{BIG}}</div></h1>
+  <div class="cal c1">{{CALLOUT_1}}</div>
+  <div class="cal c2">{{CALLOUT_2}}</div>
+  <div class="cal c3">{{CALLOUT_3}}</div>
+  <img class="product" src="{{PRODUCT_CUTOUT}}" alt="product">
+  <div class="proof"><div class="stars">★★★★★</div><div class="cust">{{SOCIAL_PROOF}}</div><div class="url">{{URL}}</div></div>
+  <div class="seal"><svg viewBox="0 0 340 340"><path id="sealpath" fill="var(--paper)"/></svg>
+    <div class="txt"><div class="up">{{SEAL_TOP}}</div><div class="pct">{{SEAL_PCT}}<b>%</b><br>OFF</div><div class="sub">{{SEAL_SUB}}</div></div></div>
+</div>
+<script>(function(){const cx=170,cy=170,mid=158,amp=10,lobes=18,steps=720;let d="";
+for(let i=0;i<=steps;i++){const t=i/steps*Math.PI*2,r=mid+amp*Math.cos(lobes*t);
+d+=(i?"L":"M")+(cx+r*Math.cos(t)).toFixed(2)+","+(cy+r*Math.sin(t)).toFixed(2)+" ";}
+d+="Z";document.getElementById('sealpath').setAttribute('d',d);})();</script>
+</body></html>

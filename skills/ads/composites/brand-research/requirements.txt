@@ -1,0 +1,5 @@
+# Core scripts (scaffold, fetch, register, verify) use only the stdlib.
+# python-dotenv is a convenience for loading .env; fal-client is needed ONLY if
+# you run the optional render_product_shot.py image step.
+python-dotenv>=1.0.0
+fal-client>=0.5.0
