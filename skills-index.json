@@ -1,6 +1,6 @@
 {
   "version": "1.2.0",
-  "generated": "2026-06-23",
+  "generated": "2026-06-24",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -421,7 +421,7 @@
       "name": "brand-research",
       "category": "composites",
       "domain": "ads",
-      "description": "Research a brand and produce a clean, reusable brand-context pack that any downstream video/ad skill can consume with zero re-work — four structured markdown docs (brand-summary, visual-identity, competitors, audience), a dated source list, an optional UI-reference doc, sourced logo + reference photos, an optional set of brand-anchored generated stills, and a concept brief. Every binary asset is cataloged in brand-assets/manifest.json with a name + usage description so an agent picks assets by purpose, not filename. Use when starting work on a brand a project hasn't touched before, or when a brand folder has empty/stub research that needs filling. Core path needs no API keys (runs on the agent's web tools); only the optional image step needs a FAL key. Walks an 8-phase pipeline (disambiguate → scaffold → web research → existing-ad analysis → source assets → optional imagery → concept brief → verify) with human gates, and ends on a deterministic verify_pack.py check.",
+      "description": "Kickoff research for a brand you haven't worked on before — web research, existing-ad analysis from the Meta Ad Library, editorial-grammar profiling, sourced + AI-generated brand assets, hook/CTA libraries, and an ad concept brief. Produces one reusable brand-context pack (brand-summary, visual-identity, competitors, audience, existing-ads, brand-grammar, an asset manifest, and a concept brief) in a single pass. Use when starting on a brand the workspace hasn't touched.",
       "tags": "ads, brand, research",
       "path": "skills/ads/composites/brand-research",
       "files": [
