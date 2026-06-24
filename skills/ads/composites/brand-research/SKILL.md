@@ -1,286 +1,228 @@
 ---
 name: brand-research
-description: Research a brand and produce a clean, reusable brand-context pack that any downstream video/ad skill can consume with zero re-work — four structured markdown docs (brand-summary, visual-identity, competitors, audience), a dated source list, an optional UI-reference doc, sourced logo + reference photos, an optional set of brand-anchored generated stills, and a concept brief. Every binary asset is cataloged in brand-assets/manifest.json with a name + usage description so an agent picks assets by purpose, not filename. Use when starting work on a brand a project hasn't touched before, or when a brand folder has empty/stub research that needs filling. Core path needs no API keys (runs on the agent's web tools); only the optional image step needs a FAL key. Walks an 8-phase pipeline (disambiguate → scaffold → web research → existing-ad analysis → source assets → optional imagery → concept brief → verify) with human gates, and ends on a deterministic verify_pack.py check.
+description: Kickoff research for a brand you haven't worked on before — web research, existing-ad analysis from the Meta Ad Library, editorial-grammar profiling, sourced + AI-generated brand assets, hook/CTA libraries, and an ad concept brief. Produces one reusable brand-context pack (brand-summary, visual-identity, competitors, audience, existing-ads, brand-grammar, an asset manifest, and a concept brief) in a single pass. Use when starting on a brand the workspace hasn't touched.
+tags: [ads, brand, research]
 ---
 
 # brand-research
 
-A guided workflow for turning "go research [brand]" into a structured, reusable
-**brand-context pack** — the ground-truth folder every downstream ad/video skill
-reads before it generates anything. The skill is conversation-driven: the user
-names a brand + product, you disambiguate, research the web, source and catalog
-assets, and write a fixed set of files in a fixed shape. The shape is the whole
-point — see `references/output-contract.md`.
+## Purpose
 
-## When to use this skill
+Given a brand (name and/or URL) and a product, produce the full creative-prep package for
+it: research the product, analyze the brand's running ads, measure their editorial DNA,
+source logos and reference photos, generate brand-anchored product + lifestyle imagery, and
+write the brand-context documents a downstream ad/video pipeline consumes.
 
-Use when the user asks for any of:
+The output is a **brand-context pack** — a self-contained set of artifacts:
 
-- "Research [brand] for ads" / "set up [brand]" / "create a brand folder for [brand]."
-- "Fill in the brand context" / "the brand-research docs are empty/stubs."
-- Hands you a company URL (and maybe a Meta Ad Library link or some ad files) and wants context docs before any creative work.
-- Any kickoff where a downstream skill needs `brand-research/*.md` + `brand-assets/manifest.json` populated.
+- `brand-summary`, `visual-identity`, `competitors`, `audience` — the core brand context.
+- `existing-ads` — what the brand's running ads reveal that web research misses.
+- `brand-grammar` — the brand's editorial DNA (archetype, pacing, caption style).
+- an **asset manifest** cataloging every sourced + generated asset with its kind, name, and
+  usage note, plus the binary assets themselves (logos, reference photos, generated stills).
+- a **concept brief** of brand-level ad concept seeds.
 
-Do NOT use when: the user wants to *make a video/ad now* (this skill only prepares
-context — hand off to a production skill after), or the brand already has a
-populated, current pack (run `verify_pack.py`; if it PASSes, you're done).
+Everything is written into a single brand-pack directory under `output_dir`.
 
-## What it produces
+## Inputs
 
-The brand-context pack at a brand root (full contract in `references/output-contract.md`):
+- `brand` (required) — the brand, used as the pack's folder name, e.g. `amex`, `liquid-death`.
+- `product` (required) — the specific product / SKU / offer to research, e.g. "Platinum
+  Card", "Sparkling Water". Disambiguates brands with many SKUs.
+- `brand_url` (optional) — canonical homepage. Strongly recommended to avoid wrong-entity
+  confusion (e.g. Apple band vs. Apple Inc.).
+- `output_dir` (optional) — directory to write the brand pack into. Defaults to `./<brand>/`.
+  Resolve the location from this input; never hardcode a path.
+- `max_existing_ads` (optional, default 10) — cap on how many of the brand's running Meta
+  ads to pull for analysis.
+- `brand_video_urls` (optional) — the brand's own video URLs (launch films, demos). If
+  provided, run `build-brand-clip-library` afterward to cut them into a reusable clip library.
+- `concept_count` (optional, default 6–10) — number of social-ad concepts to draft.
+- `skip_generation` (optional, default false) — skip image generation and ship research +
+  brief only (useful when no image budget is available).
 
-```
-<brand>/
-├── brand-research/
-│   ├── brand-summary.md        # what they sell / who / jobs-to-be-done / voice / never-say
-│   ├── visual-identity.md      # colors / type / logo rules / photography / off-limits
-│   ├── competitors.md          # ## Direct (win/lose) + ## Reference creative
-│   ├── audience.md             # persona / where online / objections / proof points
-│   ├── asset-urls.md           # every sourced URL + access date
-│   └── ui-references.md        # ONLY if the product has notable UI
-├── brand-assets/
-│   ├── manifest.json           # catalog: name + usage description + kind per asset
-│   ├── logos/  reference-photos/  [generated-product-shots/ generated-lifestyle/]
-├── concept-brief.md            # supplementary concept seeds
-└── ad-runs/                    # empty, for downstream per-ad work
-```
+## Composed Atoms
 
-## Pipeline overview
+- `source-company-existing-ads` — download the brand's running ads from the **Meta Ad
+  Library** (via the Apify FB Ad Library scraper) into a `raw/` folder with provenance.
+- `rename-and-index-ads` — watch each downloaded ad, semantically rename it, and write an
+  `INDEX.md` (per-ad strategy + cross-ad patterns).
+- `analyze-reference-grammar` — measure each ad's editorial DNA (cut points, pacing curve,
+  archetype, audio mode) into a per-ad `grammar-profile.json`.
+- `source-brand-assets` — scrape logos + reference hero photos from the brand's site / press kit.
+- `understand-brand-assets` — distill web research + reference photos into the visual-identity
+  content (colors, typography, photography style).
+- `analyze-ad-hooks` — extract recurring hooks/motifs from the downloaded ads.
+- `generate-ad-concepts` — produce the concept list for the concept brief.
+- `create-product-images-higgsfield-product-photoshoot` — 4–6 hero/end-card product stills
+  (Higgsfield product-photoshoot on `gpt_image_2`).
+- `create-product-images-nanobanana` — 8–12 vertical 9:16 lifestyle stills (Nano Banana Pro).
+- External tools: a video-watching capability (frame extraction + transcription — e.g.
+  `yt-dlp` + `ffmpeg` + Whisper), and web search + fetch.
 
-| Phase | What | Output | Needs key? | Gate? |
-|---|---|---|---|---|
-| 1 | Disambiguate the brand + product | (confirmed entity) | — | ✅ if ambiguous |
-| 2 | Scaffold the brand root | folders + stub files + empty manifest | — | — |
-| 3 | Web research → write the 4 docs + asset-urls.md | `brand-research/*.md` | — | ✅ user reviews |
-| 4 | Existing-ad analysis (optional) | notes folded into `concept-brief.md` | — | — |
-| 5 | Source logo + reference photos → register | `brand-assets/logos/`, `reference-photos/` | — | — |
-| 6 | Generate brand-anchored stills (optional) | `brand-assets/generated-*/` | FAL | ✅ user approves |
-| 7 | Concept brief | `concept-brief.md` | — | — |
-| 8 | Verify | PASS from `verify_pack.py` | — | ✅ ship |
+## Workflow
 
-## Idempotency (re-runs skip what's already done)
+1. **Disambiguate.** Confirm `brand` + `product` resolves to one entity. If `brand_url` is
+   missing and the name is ambiguous, stop and ask.
+2. **Scaffold the brand pack** under `<output_dir>` — a `brand-research/` folder for the
+   markdown docs, a `brand-assets/` folder for the asset manifest + binaries (`logos/`,
+   `reference-photos/`, `generated-product-shots/`, `generated-lifestyle/`, `songs/`), and an
+   `existing-ads/` folder (`raw/` + renamed copies + a `grammar/` subfolder). Only create
+   subfolders that will be populated.
+3. **Web research** via web search + fetch. Priority order: brand site → trade press
+   (Adweek/AdAge/Campaign) → reputable category reviewers. Capture: product overview,
+   mechanics/pricing, benefits, target audience, current named campaigns with dates, core
+   positioning, voice/tone. Record every URL with its access date.
+4. **Pull and study the brand's running ads.** Mandatory — research without watching real
+   ads misses how the product is actually shown and talked about.
+   - Run `source-company-existing-ads` (`max_ads=max_existing_ads`) to pull the brand's Meta
+     Ad Library ads into the `existing-ads/raw/` folder. Manual fallback per that atom's docs.
+   - Run `rename-and-index-ads` to produce semantically named copies + an `INDEX.md` (per-ad
+     strategy + cross-ad patterns synthesis).
+   - **Product deep-dive pass.** Re-watch (or reuse the frame grids) specifically to extract
+     product mechanics the website doesn't show: how the product is held, used, applied,
+     opened, paired; in-app UI flows that appear on-screen; physical form factors and
+     packaging; claims/proof the brand leans on; demographics and contexts of the people
+     shown; objections the ads pre-empt. These feed `existing-ads.md` in step 7.
+   - **Editorial grammar pass.** Run `analyze-reference-grammar` on each renamed ad. Each run
+     emits a `grammar-profile.json` carrying the ad's archetype match + confidence,
+     `cuts_per_10s[]`, mean shot length, payoff-hold ratio, audio mode, and aspect. These
+     per-ad profiles are the input to `brand-grammar.md` in step 7 — the brand's editorial
+     DNA, so a from-scratch ad can inherit the brand's cut rhythm and archetype defaults.
+   - If no live ads are found, write the "No live Meta ads found" stub in BOTH
+     `existing-ads.md` AND `brand-grammar.md` ("No live Meta ads found as of <date> — grammar
+     defaults will be picked at design-brief time") and continue.
+5. **Source brand assets** via `source-brand-assets`:
+   - Logos: brand press kit or Wikipedia SVG → `brand-assets/logos/`.
+   - Reference photos: 2–4 high-quality third-party shots of the product/hero →
+     `brand-assets/reference-photos/`. Mark "not licensed for redistribution" in each
+     manifest entry's `description`.
+   - Songs: if existing ads exist, extract the audio bed of one ad as a tone reference →
+     `brand-assets/songs/`.
+6. **Generate brand-anchored imagery** (skip entirely if `skip_generation=true`):
+   - 4–6 product-photoshoot stills via `create-product-images-higgsfield-product-photoshoot`,
+     grounded on the strongest reference photo so the SKU stays consistent →
+     `brand-assets/generated-product-shots/`.
+   - 8–12 lifestyle stills via `create-product-images-nanobanana` (Nano Banana Pro), 2k
+     vertical 9:16, same reference grounding → `brand-assets/generated-lifestyle/`.
+   - **Write the asset manifest** — a catalog with one entry per binary asset (every logo,
+     reference photo, generated still, song). Each entry records, at minimum, a stable id, the
+     asset's path (relative to the brand pack), a `kind`
+     (`logo | wordmark | product_photo | lifestyle | video_ref | style_ref | ui_ref | song |
+     asset`), a short `name` to search by, and a `description` of how/when to use it plus any
+     usage constraint (e.g. "not licensed for redistribution" on scraped photos). A vague
+     description defeats the file's purpose. Write it as `brand-assets/manifest.json`.
+7. **Write the brand-research docs.** Use these **exact section headers**, filled from
+   research — never leave a placeholder marker behind:
+   - **`brand-summary.md`** — `What the company sells`, `Who they sell to`, `Why people buy
+     (jobs-to-be-done)`, `Brand voice in three words`, `What to never say`.
+   - **`visual-identity.md`** — `Primary colors (hex)`, `Typography`, `Logo usage rules`,
+     `Photography style`, `Off-limits styles`.
+   - **`competitors.md`** — `## Direct` (each competitor: one-line positioning, pricing tier,
+     and **how `<brand>` wins / loses vs them**) and `## Reference creative` (links / vibes to
+     emulate or avoid).
+   - **`audience.md`** — `Primary persona`, `Where they spend time online`, `Objections they
+     raise`, `Proof points that land`. Include 3–4 distinct ICP segments and verbatim audience
+     phrasing (Reddit/forums) — these become VO seeds downstream.
+   - **`existing-ads.md`** — narrative synthesis of what the brand's running ads (step 4)
+     reveal that web research misses. Headers: `Ads watched` (count + date range + link to
+     `existing-ads/INDEX.md`), `How the product actually shows up on screen`, `Recurring hooks
+     and angles`, `Claims and proof the brand consistently leans on`, `Who's shown using it`,
+     `Objections the ads pre-empt`, `Voice & caption treatment`, `Implications for new ads`.
+     `INDEX.md` stays the per-ad catalog; this file is the synthesized read.
+   - **`brand-grammar.md`** — the editorial DNA synthesized from the per-ad
+     `grammar-profile.json` files. Headers: `Dominant archetype` (which creator-grammar
+     archetype the brand favors — e.g. `creator-talking-head`, `vo-product-demo`,
+     `founder-monologue` — with the per-ad split), `Pacing curve` (mean `cuts_per_10s` across
+     ads, range, payoff-hold use), `Audio mode` (music-only / vo+music / speech-only mix),
+     `Caption family` (burned karaoke / static lower-thirds / on-screen text bursts / none),
+     `Hook construction` (first 1.5s pattern), `Defaults for new ads` (recommended archetype +
+     `cuts_per_10s` target + caption preset a from-scratch ad should inherit). Human-readable
+     seeding, not a machine contract — pick the archetype from a small fixed vocabulary you
+     define up front and reuse across brands.
+   - **`asset-urls.md`** — every sourced URL with its access date (the provenance trail).
+   - **`ui-references.md`** — ONLY if the product has notable in-app/product UI worth
+     recreating; catalog the key screens. Omit the file entirely otherwise.
+8. **Write `concept-brief.md`** with sections: Observed patterns from existing ads (only if
+   step 4 ran), Strategic foundation, Concept ideas (`concept_count`, each with hook + format
+   + 15s/30s beat-by-beat + why-it-works + the KPI it serves), Production notes, Open
+   questions. This is supplementary brand-level seeding.
+9. **Write `brand-research/video-research.json`** — a machine-readable companion that mirrors
+   the deep-research findings from `existing-ads.md` + `brand-grammar.md` so a host can ingest
+   them without parsing prose. Shape: `{ competitors:[{name,relationship,notes}],
+   existingAds:{count,source,recurringHooks[],recurringClaims[],talentProfile,
+   objectionsPreempted[]}, grammar:{dominantArchetype,cutsPer10s,audioMode,captionFamily,
+   hookConstruction}, hooks:[{line,archetype,sourceAds[]}], ctas:[{line,intent,sourceAds[]}] }`.
+   Omit fields you don't have; write the file only when ≥1 ad was analyzed (skip on the "no
+   live ads" path). The markdown docs stay the human-readable source; this is their structured
+   echo.
 
-This skill is **step-idempotent** so downstream skills (e.g. `remix-script`)
-can invoke it on any brand at any time without caring whether research has
-already run. Re-invocation is safe — only the missing pieces execute.
+## Decision Rules
 
-The contract:
-
-1. **Always run `verify_pack.py` first.** If it prints `PASS`, exit
-   immediately — there is nothing to do. If it `FAIL`s, parse its itemized
-   error list to know exactly which phases need work.
-2. **Per-phase skip rules** (each phase is gated on its own output, not on
-   a global "did research run?" flag):
-   - **Phase 2 — Scaffold:** `scaffold_brand.py` is already idempotent and
-     won't clobber real content. Always safe to re-run.
-   - **Phase 3 — Web research:** for each of the four `brand-research/*.md`
-     docs, skip if the file exists, has all required headers, and contains
-     no `TBD`/`TODO`/`FIXME` (the exact check `verify_pack.py` runs).
-     Re-run only the docs that fail that bar. Same for
-     `asset-urls.md` — skip if it already has ≥3 dated source URLs.
-   - **Phase 4 — Existing-ad analysis:** skip if `concept-brief.md` exists
-     and contains an `## Observed patterns from existing ads` section.
-     Only run when the user provides new ad files this invocation.
-   - **Phase 5 — Source assets:** skip if `brand-assets/manifest.json`
-     already lists ≥1 logo asset and ≥2 reference-photos (each with a real
-     `name` + usage `description`). Otherwise fetch only the missing slots.
-   - **Phase 6 — Generate stills:** always opt-in and human-gated; never
-     auto-run on a re-invocation triggered by a downstream skill. Skip
-     unless the user explicitly asks for new imagery.
-   - **Phase 7 — Concept brief:** skip if `concept-brief.md` exists,
-     contains all required sections, and lists ≥6 concept ideas.
-   - **Phase 8 — Verify:** always run at the end to confirm the gaps
-     closed.
-3. **Never overwrite real content on a skip-check pass.** If a doc exists
-   but is incomplete, *amend* the missing sections rather than rewriting the
-   whole file from scratch — the user's prior edits stay.
-4. **Don't ask the user to confirm a skip.** A complete output is its own
-   permission to move on. Only stop for the gates explicitly marked ✅ in
-   the pipeline table below (and even those gates apply only to phases that
-   actually ran this invocation — a skipped phase has nothing to gate).
-5. **Hosts that can't run `verify_pack.py` (the goose-video local worker) get
-   NO exemption from this contract.** Do the equivalent inventory by hand
-   FIRST: list the brand folder (MCP `list_directory` / `read_file`), check
-   every artifact against the skip rules above, and print a one-line verdict
-   per artifact (`brand-summary.md: complete — skip`, `manifest.json: stub —
-   patch`, `logo: missing — fetch`) BEFORE doing any research. Rewriting an
-   artifact that passed its skip check is a contract violation, not diligence.
-6. **`research_status: failed` describes the last RUN, not the pack.** A
-   crashed run routinely leaves a complete pack missing only the finalize step
-   or one asset. Real case (2026-06-11, Alitu): four good docs on disk, null
-   logo, stub manifest — the correct fix was logo + manifest +
-   `finalize_brand_research` (~30 seconds); the agent instead rewrote all four
-   docs serially (~10 minutes). Audit, patch the gap, finalize.
-
-A practical consequence: when `remix-script` (or any other downstream skill)
-fires this skill because its `verify_pack.py` check failed, expect this skill
-to do *only* the missing work and exit fast. A re-invocation on a fully
-populated brand is a no-op that prints `PASS` and returns.
-
-## Setup (run once per machine)
-
-The core path needs **no keys**. Only opt-in image generation (phase 6) needs FAL.
-
-```bash
-pip install -r requirements.txt          # python-dotenv (+ fal-client only for phase 6)
-cp .env.example .env                     # optional — only fill FAL_KEY if you'll run phase 6
-```
-
-All scripts are run from the skill folder and take `--brand-dir <path>` pointing
-at the brand root you're building.
-
----
-
-## Phase 1 — Disambiguate
-
-**Goal:** confirm the brand + product resolves to exactly one entity before spending any effort.
-
-1. Extract from the user's prompt: `brand` (slug for the folder), `product` (specific SKU/offer), and `brand_url` if given.
-2. If the name is ambiguous (e.g. "Apple" the band vs Apple Inc., "Ramp" the fintech vs a ramp product) and no `brand_url` was provided, **stop and ask.** Never guess between two entities sharing a name.
-3. Decide the brand root path (`brand_dir`): use what the user gave, else default to a sibling folder named after the slug. Do not hardcode a location.
-
-## Phase 2 — Scaffold
-
-```bash
-python scripts/scaffold_brand.py --brand-dir <brand_dir> --brand "<Brand Name>"
-```
-
-Creates `brand-research/` (with the four stub files using the canonical headers),
-`brand-assets/{logos,reference-photos}/`, `ad-runs/`, and an empty
-`brand-assets/manifest.json`. Idempotent — won't clobber existing real content.
-
-## Phase 3 — Web research → write the four docs
-
-> **Phases 3 + 5 are PARALLEL. This is the contract, not a suggestion** — the four docs are
-> independent once the entity is disambiguated, and serializing them is the #1 cause of 10-minute
-> brand runs (a real 2026-06-11 run took ~10 min serial; the fan-out shape is ~3–4 min).
-> 1. **Shared seed (do once, first):** fetch the brand homepage + one trade-press/about hit and capture
->    the *shared facts* — canonical entity, one-line what-they-sell, primary palette hints, voice in
->    three words, never-say list. Every writer MUST start from this so the docs don't contradict.
-> 2. **Fan out — spawn ALL FIVE subagents in ONE batch** (in Claude Code: five Task/agent calls in a
->    SINGLE message, so they run concurrently): one writer per doc — `brand-summary`,
->    `visual-identity`, `competitors`, `audience` — plus the **Phase-5 asset-sourcer** (it doesn't
->    depend on the docs). Each writer does its OWN WebSearch/WebFetch in its lane and returns (or
->    writes) its finished file. Pass each one the shared seed + the disambiguated entity.
->    **One general-purpose agent doing everything, or agents spawned one-after-another, is doing it
->    wrong** — that's the serial run with extra steps.
-> 3. **Reconcile:** one short pass to check the four docs agree (same positioning/voice, no contradictory
->    claims, every URL logged), then the Phase-3 gate.
->
-> **Timing tripwire:** the whole fan-out should take roughly the slowest single lane (~3–4 min). If
-> you catch yourself researching or writing more than ONE doc, or the phase passes ~6 minutes, STOP —
-> you've serialized; restructure into the fan-out before continuing.
->
-> **Announce your mode before any Phase-3 work begins** — print exactly one line:
-> `Fan-out: spawning <N> writer subagents in one batch for: <docs the inventory marked missing>`
-> or `Serial: host has no subagent capability` (the ONLY valid serial reason). If your inventory
-> (contract rule 5) marked zero docs missing, Phase 3 is SKIPPED — no fan-out, no research at all.
->
-> The serial flow below is ONLY for hosts with no subagent capability at all (Claude Code always has
-> it). If you must use it, tell the user you're running serial and why, before starting.
-
-Use your web tools (WebSearch / WebFetch). Priority order: **brand site → trade
-press (Adweek/AdAge/Campaign) → reputable category reviewers → audience venues
-(Reddit, app-store reviews, forums).** Capture product overview, pricing,
-benefits, positioning, voice/tone, audience segments, named campaigns with dates,
-and direct competitors. **Record every URL with its access date** as you go.
-
-Then write each `brand-research/*.md` file using the **exact section headers** in
-`references/output-contract.md`, filled from research — never leave a `TBD`/`TODO`:
-
-- **brand-summary.md** — what they sell, who, jobs-to-be-done, voice in three words, what to never say.
-- **visual-identity.md** — primary colors (hex), typography, logo usage rules, photography style, off-limits styles. Pull real hex values from the site/press kit where possible.
-- **competitors.md** — `## Direct` (per competitor: positioning, pricing tier, how `<brand>` wins/loses) and `## Reference creative`.
-- **audience.md** — primary persona, where they're online, objections, proof points. Include 3–4 distinct ICP segments and **verbatim audience phrasing** (these become VO seeds downstream).
-- **asset-urls.md** — every source URL + access date.
-- **ui-references.md** — write this **only** if the product has notable in-app/product UI worth recreating; catalog the key screens. Otherwise omit the file.
-
-**Gate:** show the user the four files and get a "looks good" before sourcing assets. Capture line-level edits.
-
-## Phase 4 — Existing-ad analysis (optional)
-
-If the user provided ad files or a Meta Ad Library link, watch/analyze each ad:
-capture the VO transcript, visual style, recurring motifs, and the implicit
-promise. You'll fold these into the concept brief's "Observed patterns" section
-in phase 7. Skip cleanly if there are no existing ads — and do not fabricate
-patterns.
-
-## Phase 5 — Source logo + reference photos
-
-For each asset, download and register it in one step:
-
-```bash
-python scripts/fetch_asset.py --brand-dir <brand_dir> \
-  --url <logo-url> --kind wordmark --subdir logos \
-  --name "Wordmark (black)" \
-  --description "Composite in end cards via PIL/ffmpeg; never AI-render. Min height 36px."
-```
-
-- Logos/wordmarks from the brand press kit or Wikipedia (SVG preferred) → `logos/`.
-- 2–4 high-quality product/hero reference photos → `reference-photos/`. For any scraped third-party photo, put **"not licensed for redistribution"** in its `--description`.
-- For a file you already have on disk (not a URL), use `scripts/register_asset.py` instead.
-
-Every registration writes a `name` + usage `description` into `brand-assets/manifest.json` — that's what makes downstream asset picks accurate. A description that just restates the filename is a fail.
-
-## Phase 6 — Generate brand-anchored stills (optional, needs FAL)
-
-Skip entirely for a research-only run. When the user wants generated imagery,
-ground every still on the strongest reference photo so the SKU stays consistent:
-
-```bash
-python scripts/render_product_shot.py --brand-dir <brand_dir> \
-  --ref brand-assets/reference-photos/hero.jpg \
-  --prompt "studio product shot on seamless white, soft key, 9:16" \
-  --kind product_photo --subdir generated-product-shots \
-  --name "Hero on white" --description "Clean studio hero for end card."
-```
-
-Typical: 4–6 product stills + 8–12 lifestyle stills. Each is auto-registered.
-**Gate:** show the user a contact sheet before generating the full set.
-
-## Phase 7 — Concept brief
-
-Write `concept-brief.md`: strategic foundation, "Observed patterns from existing
-ads" (only if phase 4 ran — cite specific moments per ad), 6–10 concept ideas
-(each: hook + format + 15s/30s beat-by-beat + why-it-works + the KPI it serves),
-production notes, open questions. This seeds downstream production skills; it does
-not replace their own brainstorm step.
-
-## Phase 8 — Verify (ship gate)
-
-```bash
-python scripts/verify_pack.py --brand-dir <brand_dir>
-```
-
-Must print `PASS`. It checks: all four docs present with exact headers and no
-leftover `TBD`/`TODO`; `asset-urls.md` has ≥3 dated sources; `manifest.json`
-parses, follows the schema, every asset has a non-empty `name`/`description`/valid
-`kind`/resolvable relative `path`; every file under `brand-assets/` is in the
-manifest (and vice versa); and no deprecated artifacts (`background_research.md`,
-`brand-assets/README.md`, top-level `manifest.json`) remain. Fix every reported
-problem and re-run until it PASSes.
-
-## Decision rules
-
-- **Refuse to proceed without a disambiguated brand + product.** Don't guess between same-named entities.
-- **Never leave a `TBD`/`TODO`** in the four research docs — `verify_pack.py` fails on it. Research the answer or state the honest unknown in prose.
-- **Every asset gets a real usage description**, not a filename echo. The description is how a downstream agent decides whether to use it.
-- **Brand text is provenance-tracked, not invented.** Hex colors, taglines, claims must trace to a source in `asset-urls.md`.
-- **Never claim licensed rights** to scraped reference photos — note "not licensed for redistribution" in the asset's description.
-- **Don't fabricate "Observed patterns"** when no existing ads were provided — omit the section.
-- **Keep the contract.** Don't add alternate filenames or a README catalog; downstream skills read the exact shape in `references/output-contract.md`.
+- Refuse to proceed without a disambiguated brand+product. Don't guess between two entities
+  sharing a name.
+- If a generated product image trips a provider safety flag, fall back to the alternate model
+  (`gpt_image_2` → `nano_banana_2`).
+- All generated imagery must use the same reference photo so the SKU is consistent across the
+  asset library.
+- Never claim licensed rights to scraped reference photos. Always note "not licensed for
+  redistribution" in that asset's `description` in the manifest.
+- If the image-generation budget is too low, emit a warning, skip generation, and still ship
+  the research docs + concept brief.
+- If the existing-ads pull returns zero live ads (or all downloads fail), do not fabricate ad
+  observations — stub `existing-ads.md` per step 4 and omit the "Observed patterns" section of
+  the concept brief.
+- This skill produces research, sourced assets, generated imagery, and a concept brief. It
+  does NOT clip the brand's own videos. When the brand has its own footage worth reusing (or
+  `brand_video_urls` is provided), run the sibling molecule `build-brand-clip-library`.
 
 ## Output
 
-See `references/output-contract.md`. In short: `brand-research/` (4 docs +
-`asset-urls.md` [+ `ui-references.md`]), `brand-assets/manifest.json` + populated
-asset folders, `concept-brief.md`, and an empty `ad-runs/`. A passing
-`verify_pack.py`.
+The brand-context pack:
+- `brand-research/brand-summary.md`
+- `brand-research/visual-identity.md`
+- `brand-research/competitors.md`
+- `brand-research/audience.md`
+- `brand-research/existing-ads.md`
+- `brand-research/brand-grammar.md`
+- `brand-research/asset-urls.md`
+- `brand-research/video-research.json` (structured echo of existing-ads + brand-grammar; only when ≥1 ad was analyzed)
+- `brand-research/ui-references.md` (only when the product has notable UI)
+- `brand-assets/` — the asset manifest + populated `logos/`, `reference-photos/`, and
+  (unless skipped) `generated-product-shots/`, `generated-lifestyle/`, `songs/`
+- `existing-ads/` — `raw/` originals, semantically renamed copies, `INDEX.md`, and
+  `grammar/<slug>/grammar-profile.json` per ad
+- `concept-brief.md`
 
-## Failure modes
+## Quality Checks
 
-- **Ambiguous brand, no URL** → stop and ask; don't research the wrong entity.
-- **No press-kit logo and no acceptable third-party reference photo** → flag it; write the research docs anyway and leave the assets thin rather than inventing a logo.
-- **`verify_pack.py` fails on orphan files** → you placed a file in `brand-assets/` without registering it; run `register_asset.py` for it (or delete it).
-- **FAL safety flag on a generated still (phase 6)** → reword the prompt or fall back to a different reference; never block the research pack on imagery.
-- **Provider/credit issues in phase 6** → skip generation, keep the research + sourced assets; the pack is still valid without generated stills.
+- All six required `brand-research/*.md` files (`brand-summary`, `visual-identity`,
+  `competitors`, `audience`, `existing-ads`, `brand-grammar`) exist with **no remaining
+  placeholder markers** and use the exact section headers above.
+- `existing-ads.md` and `brand-grammar.md` either reference a populated `INDEX.md` + per-ad
+  `grammar-profile.json` files (≥1 ad watched) or carry the explicit "No live Meta ads found"
+  stub — never silently empty.
+- `brand-grammar.md` names a `Dominant archetype` that maps to one of the fixed creator-grammar
+  archetypes and gives concrete numeric `cuts_per_10s` defaults (not "fast" / "snappy" prose).
+- `existing-ads/` contains `raw/` originals, renamed copies, an `INDEX.md` whose per-ad blocks
+  were filled by watching the files (not guessed from filenames), and per-ad
+  `grammar-profile.json`.
+- `asset-urls.md` cites real, dated sources for every research claim and sourced asset.
+- The asset manifest parses, has one entry per binary asset on disk — every `path` is relative
+  to the brand pack and resolves to a real file; every `kind` is in the allowed enum; no entry
+  is missing `name`/`description`.
+- The concept brief references specific moments from each analyzed existing ad (when step 4 ran).
+- Generated imagery is visibly the same SKU end-to-end (same colorway, finish, branding).
+
+## Failure Modes
+
+- Brand name collides with another entity and `brand_url` was not provided → refuse.
+- Brand press kit is unavailable and no acceptable third-party reference photos exist → flag
+  and stop before image generation.
+- Image-generation budget too low → warn, skip step 6 cleanly, still ship the research +
+  concept brief.
+- The existing-ads pull is blocked by the Meta Ad Library (rate limit / scraper auth) → fall
+  back to the manual browser/curl path documented in that atom; if still empty, write the "no
+  live ads" stub in `existing-ads.md` and continue rather than halting.
+- Individual downloaded ad files are unreadable → log each failure in `INDEX.md`, skip that
+  file, continue.
