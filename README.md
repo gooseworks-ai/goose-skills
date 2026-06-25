@@ -33,6 +33,7 @@ Works with [Claude Code](https://claude.ai/claude-code) &middot; [Cursor](https:
 - [Usage Examples](#-usage-examples)
 - [Building from Source](#-building-from-source)
 - [Skill Metadata Contract](#-skill-metadata-contract)
+- [Security & Trust](#-security--trust)
 - [License](#-license)
 
 ---
@@ -269,6 +270,20 @@ Each skill directory must include:
 | `features` | No | Feature flags |
 | `github_url` | No | Source repository URL |
 | `author` | No | Skill author |
+
+---
+
+## Security & Trust
+
+These skills run inside your coding agent, so it's worth knowing exactly what they do:
+
+- **Open source & inspectable.** Every skill — its `SKILL.md` instructions and all scripts — lives in this repo under the MIT license. The `gooseworks` CLI fetches skills at runtime so recipes stay current, but the source you'd run is right here to read, diff, or pin before you run it.
+- **Scripts run locally.** Skill scripts execute on your machine and write to `/tmp/gooseworks-scripts/`, never into your project directory. Only API requests go through GooseWorks servers; review any script before letting your agent run it.
+- **Your agent stays in control.** The skills are a tool your agent reaches for when it fits the task (data at scale, sources behind auth, a specific provider) — not a replacement for its built-in web search or fetch on quick lookups. You can read or edit any installed `SKILL.md` to tune that behavior.
+- **Credentials stay local.** Auth is a Bearer token stored at `~/.gooseworks/credentials.json` (file mode `0600`). Third-party provider keys (Apify, Apollo, etc.) are held server-side — your token never touches them. All network calls are HTTPS.
+- **The MCP server is opt-in.** Registering the GooseWorks MCP server is off by default; it only happens if you explicitly run `gooseworks install --mcp`.
+
+Found something that looks off? [Open an issue](https://github.com/gooseworks-ai/goose-skills/issues) — we'd rather fix it in public.
 
 ---
 
