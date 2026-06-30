@@ -1,0 +1,128 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://goose-skills/schemas/eval.schema.json",
+  "title": "Skill Eval Spec",
+  "description": "Author-time evaluation spec colocated with a skill at <skill>/eval/eval.json. Drives the local eval harness (test/eval-harness.js).",
+  "type": "object",
+  "required": ["skill", "cases"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "skill": { "type": "string", "description": "Skill slug — must match the SKILL.md frontmatter name." },
+    "version": { "type": "string" },
+    "safety": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "readOnly": { "type": "boolean", "description": "True if the skill never mutates external state. Read-only skills are safe to run live." },
+        "mutatesExternalState": { "type": "boolean", "description": "True if the skill can create/update/delete real records (ad accounts, CRMs, Linear, etc.). The harness fails the run if such a skill is run outside an explicitly-allowed sandbox." },
+        "notes": { "type": "string" }
+      }
+    },
+    "ioContract": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "inputs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "type"],
+            "additionalProperties": false,
+            "properties": {
+              "name": { "type": "string" },
+              "required": { "type": "boolean" },
+              "type": { "type": "string", "description": "Free-form type hint (file, table, screenshot, live, enum, string, ...)." },
+              "description": { "type": "string" }
+            }
+          }
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["type"],
+            "additionalProperties": false,
+            "properties": {
+              "type": { "enum": ["text", "table", "file", "image", "html", "side_effect"] },
+              "format": { "type": "string" },
+              "min": { "type": "integer", "description": "Minimum number of artifacts of this type expected." },
+              "max": { "type": "integer" },
+              "description": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "dependencies": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "cli": { "type": "array", "items": { "type": "string" }, "description": "Required CLI binaries (checked with `which`)." },
+        "env": { "type": "array", "items": { "type": "string" }, "description": "Required environment variable names." },
+        "mcp": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name"],
+            "additionalProperties": false,
+            "properties": {
+              "name": { "type": "string", "description": "MCP server name as it appears in `claude mcp list`." },
+              "required": { "type": "boolean" },
+              "mode": {
+                "enum": ["manual", "subagent-auto"],
+                "description": "manual: skip the case if the MCP is missing. subagent-auto: spawn a setup subagent to provision/authenticate it, then re-check."
+              },
+              "neededForCases": { "type": "array", "items": { "type": "string" } },
+              "setupPrompt": { "type": "string", "description": "Prompt given to the auto-resolve subagent." },
+              "verify": { "type": "string", "description": "An MCP tool name the resolver can probe to confirm availability." }
+            }
+          }
+        }
+      }
+    },
+    "cases": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["name", "prompt"],
+        "additionalProperties": false,
+        "properties": {
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "prompt": { "type": "string", "description": "The user task message handed to the skill." },
+          "skip": { "type": "boolean" },
+          "skipReason": { "type": "string" },
+          "weight": { "type": "number" },
+          "fixtures": { "type": "array", "items": { "type": "string" }, "description": "Paths (relative to eval.json) of files copied into the run workspace before the skill runs." },
+          "dependsOn": { "type": "array", "items": { "type": "string" }, "description": "MCP names (from dependencies.mcp) this case requires." },
+          "assertions": {
+            "type": "array",
+            "description": "Deterministic, cheap gate checks run against the manifest.",
+            "items": {
+              "type": "object",
+              "required": ["type"],
+              "additionalProperties": true,
+              "properties": {
+                "type": {
+                  "enum": [
+                    "artifact_produced",
+                    "no_tool_errors",
+                    "no_external_mutations",
+                    "output_contains_all",
+                    "output_contains_any",
+                    "output_mentions",
+                    "tool_called_any",
+                    "max_cost_usd"
+                  ]
+                }
+              }
+            }
+          },
+          "rubric": { "type": "string", "description": "Natural-language grading rubric handed to the LLM judge." }
+        }
+      }
+    }
+  }
+}

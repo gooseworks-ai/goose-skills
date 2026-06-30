@@ -1,0 +1,93 @@
+{
+  "$schema": "../../../../../schemas/eval.schema.json",
+  "skill": "meta-ads-analyzer",
+  "version": "1.0.0",
+  "safety": {
+    "readOnly": true,
+    "mutatesExternalState": false,
+    "notes": "Pure analysis skill — never writes to an ad account. Safe to run live."
+  },
+  "ioContract": {
+    "inputs": [
+      {
+        "name": "campaign_data",
+        "required": true,
+        "type": "file|table|screenshot|live",
+        "description": "Meta Ads Manager CSV export, a pasted performance table, screenshots, or a live Meta Marketing API connection."
+      },
+      {
+        "name": "objective",
+        "required": false,
+        "type": "enum",
+        "description": "Campaign objective (Conversions, Sales, Lead Gen, ...). Inferable from the data."
+      },
+      {
+        "name": "budget_type",
+        "required": false,
+        "type": "enum",
+        "description": "CBO (Advantage+ Campaign Budget) or ABO (Ad Set Budget). Determines the correct evaluation level."
+      },
+      {
+        "name": "target",
+        "required": false,
+        "type": "string",
+        "description": "CPA / ROAS target, or 'benchmark me'."
+      }
+    ],
+    "outputs": [
+      {
+        "type": "text",
+        "format": "markdown",
+        "min": 1,
+        "description": "A 7-section diagnostic report: Executive Summary, Evaluation Level, Learning Status, Performance Overview, Diagnosis, Recommendations, Breakdown Effect Notes."
+      }
+    ]
+  },
+  "dependencies": {
+    "cli": [],
+    "env": [],
+    "mcp": [
+      {
+        "name": "meta-ads",
+        "required": false,
+        "mode": "subagent-auto",
+        "neededForCases": ["live-api"],
+        "setupPrompt": "Ensure a Meta Marketing API MCP server named 'meta-ads' is connected and authenticated for this Claude session. If it is not configured, report exactly: UNAVAILABLE. Do not invent credentials.",
+        "verify": "get_recommendations"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "real-account-snapshot",
+      "description": "Diagnose a REAL account snapshot captured from the Meta API via test/capture-fixture.js (campaign-export.csv: ad-set level, last 90d). Real data has no planted ground truth, so this case grades METHODOLOGY, not specific findings. The current Gooseworks snapshot happens to be a mix of OUTCOME_LEADS and OUTCOME_TRAFFIC campaigns, mostly paused, with UNKNOWN rankings (low volume) and no purchases.",
+      "prompt": "Analyze my Meta Ads account performance. The export is in campaign-export.csv (ad-set level, last 90 days). Columns include Objective, Delivery status, Result type, Results, and Cost per result. It's a mix of lead-gen and traffic campaigns and several are paused. My goal is to lower cost per registration on the lead-gen campaigns. Tell me what to scale, what to fix, and what NOT to touch. If data is missing, ambiguous, or too low-volume to judge, say so explicitly rather than guessing.",
+      "fixtures": ["fixtures/campaign-export.csv"],
+      "assertions": [
+        { "type": "artifact_produced", "artifactType": "text", "min": 1 },
+        { "type": "no_tool_errors" },
+        { "type": "no_external_mutations" },
+        { "type": "output_contains_all", "patterns": ["evaluation level", "learning", "recommendation"] },
+        { "type": "output_contains_any", "patterns": ["registration", "lead", "cost per result", "sample"] }
+      ],
+      "rubric": "This is REAL data with no planted answer — grade the METHODOLOGY a senior Meta media buyer would apply, not specific verdicts:\n1. OBJECTIVE-AWARE KPIs: Does it judge the OUTCOME_LEADS campaigns on cost per registration/lead (NOT purchases or ROAS, which are absent here), and treat OUTCOME_TRAFFIC campaigns on their own terms (clicks/landing-page views, not conversions)? Conflating objectives or demanding purchase metrics that don't exist is a fail.\n2. DATA HONESTY: Does it correctly handle the UNKNOWN quality/engagement/conversion rankings — i.e. NOT fabricate or assume rankings, and attribute UNKNOWN to insufficient volume? Inventing ranking verdicts is an automatic fail.\n3. SAMPLE SIZE / PAUSED STATE: Does it flag that most ad sets are paused and that active conversion volume is tiny (single-digit registrations), so conclusions are low-confidence? Does it avoid analyzing paused ad sets as if they were live?\n4. EVALUATION LEVEL: Does it state the evaluation level and reason about it, and note that budget type (CBO vs ABO) isn't in the data so it's caveated/inferred rather than asserted?\n5. NO NAIVE CUTS + FORMAT: Recommendations framed as testable hypotheses with expected impact + rollback; follows the report structure; no average-metric knee-jerk pauses.\nReturn pass only if items 1 and 2 are both satisfied (objective-aware KPIs AND no fabricated rankings).",
+      "weight": 1
+    },
+    {
+      "name": "live-api",
+      "skip": true,
+      "skipReason": "Requires a connected & authenticated Meta Marketing API MCP. Enable by configuring the 'meta-ads' MCP and removing skip.",
+      "description": "Same diagnosis but pulling live data through the Meta Marketing API MCP instead of a CSV. Exercises the MCP dependency auto-resolver.",
+      "prompt": "Analyze the live performance of my Meta campaign for ad account act_000000000000 over the last 30 days. CPA target is $30.",
+      "dependsOn": ["meta-ads"],
+      "fixtures": [],
+      "assertions": [
+        { "type": "artifact_produced", "artifactType": "text", "min": 1 },
+        { "type": "no_tool_errors" },
+        { "type": "no_external_mutations" },
+        { "type": "tool_called_any", "names": ["get_recommendations", "get_insights"] }
+      ],
+      "rubric": "Same as csv-fixture-happy-path, plus: did it call get_recommendations first and reconcile its advice with Meta's recommendations where they diverge?"
+    }
+  ]
+}

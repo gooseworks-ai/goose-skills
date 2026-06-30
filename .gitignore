@@ -6,3 +6,19 @@ node_modules/
 .cache/
 test/results/
 snapshots/
+
+# Skill eval harness — per-run output (traces, workspaces, manifests, judgments,
+# human labels). Local-only: large, run-specific, and may contain live data/PII.
+.eval-runs/
+
+# Eval fixtures — may contain REAL ad-account data captured from the Meta API.
+# Kept local for now (do not commit real account data to this public repo).
+**/eval/fixtures/
+
+# SkillOpt — optimization run outputs, generated/captured datasets, and the local
+# venv. data/ holds generated questions + calibrated rubrics that can reference real
+# client paths/content (e.g. extract-source-sample), so the WHOLE dir stays local —
+# never commit it to this public repo.
+skillopt/outputs/
+skillopt/data/
+skillopt-venv/

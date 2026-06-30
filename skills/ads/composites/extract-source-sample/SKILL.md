@@ -1,6 +1,6 @@
 ---
 name: extract-source-sample
-description: Given the path to a finished content-goose ad-run folder, extract everything that defines that ad — recipe shot list, VO script, characters, voices, world, atom-skills, master mp4 — and emit a `source-sample.json` in the exact shape the `upload-ad-sample` skill writes to the Goose Ads library. Also links every character and voice to the central character library at `/Users/akhil/projects/content-goose/assets/character-library/`, and if a character isn't in the library yet, adds it first then links. Use when the user wants to remix one of their existing ads — this skill produces the source JSON that the script-rewriting step and `remix-ad` consume.
+description: Given the path to a finished content-goose ad-run folder, extract everything that defines that ad — recipe shot list, VO script, characters, voices, world, atom-skills, master mp4 — and emit a `source-sample.json` in the exact shape the `upload-ad-sample` skill writes to the Goose Ads library. Also links every character and voice to the central character library at `<repo-root>/assets/character-library/` (repo-root derived from the run-dir, not a hardcoded path), and if a character isn't in the library yet, adds it first then links. Use when the user wants to remix one of their existing ads — this skill produces the source JSON that the script-rewriting step and `remix-ad` consume.
 ---
 
 # extract-source-sample
@@ -331,7 +331,10 @@ Per-section derivation:
 
 ### 3. Link characters + voices to the character library — and add any that are missing
 
-Library location: **`/Users/akhil/projects/content-goose/assets/character-library/`**.
+Library location: **`<repo-root>/assets/character-library/`**, where `<repo-root>`
+is the content-goose checkout that contains the `run-dir` (derive it by walking up
+from `run-dir` to the directory that holds `assets/` — do **not** hardcode an
+absolute machine path, and never write outside this repo).
 Layout:
 ```
 character-library/
