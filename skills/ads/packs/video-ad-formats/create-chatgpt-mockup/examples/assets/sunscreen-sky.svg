@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7EB8E8"/>
+      <stop offset="0.55" stop-color="#A9D1F0"/>
+      <stop offset="1" stop-color="#E2EEF8"/>
+    </linearGradient>
+    <radialGradient id="cloud1" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.95"/>
+      <stop offset="0.6" stop-color="#FFFFFF" stop-opacity="0.6"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="tube" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F8F8F4"/>
+      <stop offset="1" stop-color="#E0DCD2"/>
+    </linearGradient>
+    <linearGradient id="hand" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F4D7BE"/>
+      <stop offset="1" stop-color="#D9B492"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="800" fill="url(#sky)"/>
+  <!-- Soft clouds -->
+  <ellipse cx="120" cy="200" rx="160" ry="50" fill="url(#cloud1)"/>
+  <ellipse cx="640" cy="220" rx="190" ry="65" fill="url(#cloud1)"/>
+  <ellipse cx="700" cy="600" rx="240" ry="80" fill="url(#cloud1)"/>
+  <ellipse cx="200" cy="700" rx="180" ry="60" fill="url(#cloud1)"/>
+
+  <!-- Forearm -->
+  <path d="M460 800 L460 520 Q460 460 510 440 L600 410 Q650 395 670 440 L680 800 Z"
+        fill="url(#hand)" opacity="0.95"/>
+
+  <!-- Hand (palm + thumb wrapping tube) -->
+  <path d="M420 520 Q400 460 440 420 L520 370 Q570 350 590 390 L600 430 L470 540 Z"
+        fill="url(#hand)"/>
+  <!-- Thumb -->
+  <path d="M390 510 Q360 500 360 540 Q360 580 410 580 Q420 555 410 530 Z"
+        fill="url(#hand)"/>
+  <!-- Fingers gripping tube edges -->
+  <ellipse cx="350" cy="430" rx="22" ry="36" fill="url(#hand)" transform="rotate(-12 350 430)"/>
+  <ellipse cx="350" cy="385" rx="20" ry="32" fill="url(#hand)" transform="rotate(-15 350 385)"/>
+  <ellipse cx="350" cy="345" rx="18" ry="28" fill="url(#hand)" transform="rotate(-18 350 345)"/>
+
+  <!-- Sunscreen tube body -->
+  <rect x="335" y="200" width="160" height="320" rx="40" fill="url(#tube)" stroke="#C9C2B0" stroke-width="2"/>
+  <!-- Tube cap -->
+  <rect x="375" y="170" width="80" height="36" rx="6" fill="#EEEAE0" stroke="#C9C2B0" stroke-width="2"/>
+  <!-- Hanging loop hole at the bottom -->
+  <ellipse cx="415" cy="510" rx="22" ry="14" fill="#FFFFFF" stroke="#C9C2B0" stroke-width="2"/>
+
+  <!-- Vertical brand text -->
+  <text x="425" y="345" font-family="Georgia, 'Times New Roman', serif" font-size="32"
+        font-style="italic" letter-spacing="6" fill="#1F1F1F"
+        transform="rotate(-90 425 345)">BEYOND BASIC</text>
+  <!-- Sub-label box -->
+  <rect x="365" y="430" width="100" height="46" fill="#FFFFFF" stroke="#C9C2B0" stroke-width="1"/>
+  <text x="415" y="450" font-family="Georgia, serif" font-size="9" fill="#1F1F1F"
+        text-anchor="middle">ALOE BERRY</text>
+  <text x="415" y="462" font-family="Georgia, serif" font-size="6.5" fill="#5A5A5A"
+        text-anchor="middle">Tinted Face Sunscreen</text>
+  <text x="415" y="472" font-family="Georgia, serif" font-size="6" fill="#5A5A5A"
+        text-anchor="middle">SPF · TINT</text>
+</svg>

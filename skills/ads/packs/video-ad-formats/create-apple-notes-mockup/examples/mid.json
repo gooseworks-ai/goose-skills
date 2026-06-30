@@ -1,0 +1,34 @@
+{
+  "title": "Hello",
+  "body": [
+    {
+      "type": "paragraph",
+      "text": "This is a screen recording of me typing on apple notes app."
+    },
+    {
+      "type": "paragraph",
+      "text": ""
+    }
+  ],
+  "cursor": "end",
+  "autocorrect_underline": [],
+  "status_bar": {
+    "time": "9:41",
+    "battery_pct": 13,
+    "battery_low": true,
+    "show_focus_glyph": false
+  },
+  "show_keyboard": true,
+  "keyboard_state": {
+    "suggestions": [
+      "And",
+      "For",
+      "On"
+    ],
+    "shift": "upper",
+    "letters_row1": "qwertyuiop",
+    "letters_row2": "asdfghjkl",
+    "letters_row3": "zxcvbnm"
+  },
+  "with_iphone_frame": false
+}

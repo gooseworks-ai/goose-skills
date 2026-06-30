@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>create-chatgpt-mockup — build review</title>
+<style>
+  :root {
+    --bg: #FAFAF8;
+    --card: #FFFFFF;
+    --text: #1A1A1A;
+    --meta: #6E6E73;
+    --border: #E5E5E5;
+    --accent: #0B84FE;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  header {
+    padding: 60px 48px 32px;
+    border-bottom: 1px solid var(--border);
+    background: var(--card);
+  }
+  header h1 {
+    margin: 0 0 12px;
+    font-size: 32px;
+    letter-spacing: -0.5px;
+    font-weight: 700;
+  }
+  header p {
+    margin: 4px 0;
+    color: var(--meta);
+    max-width: 780px;
+    line-height: 1.5;
+    font-size: 16px;
+  }
+  header .tag {
+    display: inline-block;
+    background: #F1F1EF;
+    color: #1A1A1A;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-right: 8px;
+  }
+  main { padding: 32px 48px 96px; }
+  .row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    padding: 32px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    margin-bottom: 32px;
+  }
+  .row.solo {
+    grid-template-columns: 1fr;
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .row.triple {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+  .col h2 {
+    margin: 0 0 6px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--meta);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+  }
+  .col h3 {
+    margin: 0 0 14px;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+  }
+  .col p {
+    margin: 0 0 12px;
+    color: var(--meta);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .frame {
+    background: #F1F1EF;
+    border-radius: 24px;
+    padding: 18px;
+    display: flex;
+    justify-content: center;
+  }
+  .frame img {
+    max-width: 100%;
+    max-height: 80vh;
+    width: auto;
+    height: auto;
+    border-radius: 14px;
+    display: block;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.10);
+    object-fit: contain;
+  }
+  .section-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 32px 0 16px;
+    letter-spacing: -0.2px;
+  }
+  .pair-label {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .pair-label.ref { background: #EEF6FF; color: #0B6BCB; }
+  .pair-label.mine { background: #E9F7E9; color: #0F7A2A; }
+  .meta-list {
+    margin: 12px 0 0;
+    padding-left: 18px;
+    color: var(--meta);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .meta-list li { margin: 3px 0; }
+  footer {
+    margin-top: 48px;
+    padding: 24px 48px;
+    border-top: 1px solid var(--border);
+    color: var(--meta);
+    font-size: 13px;
+    text-align: center;
+  }
+  code {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    background: #F1F1EF;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="tag">Atom skill</span>
+  <span class="tag">Light mode</span>
+  <span class="tag">9:16 mobile</span>
+  <h1>create-chatgpt-mockup — build review</h1>
+  <p>Pixel-accurate ChatGPT mobile (iOS) screen mockups in light mode. Six example threads
+  rendered through the new atom under <code>skills/atoms/messaging/create-chatgpt-mockup/</code>,
+  compared side-by-side with the reference screenshots you shared.</p>
+  <p>Output dimensions: <strong>2250 × 4002 PNG</strong> (750 × 1334 stage @ DPR 3, locked 9:16).</p>
+</header>
+
+<main>
+
+<div class="section-title">1. Sunscreen image + short reply (reference: Beyond Basic)</div>
+<div class="row">
+  <div class="col">
+    <span class="pair-label ref">Reference</span>
+    <h3>BEYOND BASIC sunscreen</h3>
+    <p>Header: <code>ChatGPT 5.1 ▾</code> + personPlus + dottedCircle right icons. Image attachment, short user bubble, plain assistant reply, thumbs feedback, "Ask anything" composer.</p>
+    <div class="frame"><img src="skills/atoms/messaging/create-chatgpt-mockup/references/1.png" alt="reference"></div>
+  </div>
+  <div class="col">
+    <span class="pair-label mine">My render</span>
+    <h3>01-sunscreen-image</h3>
+    <p>Inline SVG sunscreen placeholder (so the example is self-contained — real ads would swap in a generated product photo). All header, bubble, image-attachment, and composer chrome rendered from data.</p>
+    <div class="frame"><img src="skills/atoms/messaging/create-chatgpt-mockup/tests/output/2026-06-03-01-sunscreen-image/screenshot.png" alt="render"></div>
+  </div>
+</div>
+
+<div class="section-title">2. Long markdown response (reference: sleep apnea)</div>
+<div class="row">
+  <div class="col">
+    <span class="pair-label ref">Reference (dark mode capture)</span>
+    <h3>Sleep apnea $300 budget</h3>
+    <p>Original screenshot is dark mode — I rendered the same structure in light mode (per your spec). Tests: <strong>bold</strong>, <em>italic</em>, divider, lightbulb emoji prefix in H2, "What it is:" / "Cost:" section headers, bold inline term + <code>[[cite:Johns Hopkins Medicine +1]]</code> pill, bullet list, streaming-state stop button on composer.</p>
+    <div class="frame"><img src="skills/atoms/messaging/create-chatgpt-mockup/references/4.png" alt="reference"></div>
+  </div>
+  <div class="col">
+    <span class="pair-label mine">My render (light)</span>
+    <h3>02-sleep-apnea-long</h3>
+    <p><code>08:18 ☾</code> status bar (Focus mode), <code>ChatGPT 5.2 ›</code> header with edit + personPlus + more icons, full markdown, citation chip rendering inline.</p>
+    <div class="frame"><img src="skills/atoms/messaging/create-chatgpt-mockup/tests/output/2026-06-03-02-sleep-apnea-long/screenshot.png" alt="render"></div>
+  </div>
+</div>
+
+<div class="section-title">3. Poem with spiral logo title (reference: iPhone+Mac poem)</div>
+<div class="row">
+  <div class="col">
+    <span class="pair-label ref">Reference</span>
+    <h3>Ode to iPhone and Mac</h3>
+    <p>Right-side panel of the iPhone Pro reference. Tests: <strong>OpenAI spiral logo + bold title row</strong>, multi-stanza body with line-by-line preservation, "Message" composer placeholder with streaming-state stop button.</p>
+    <div class="frame"><img src="skills/atoms/messaging/create-chatgpt-mockup/references/5.png" alt="reference"></div>
+  </div>
+  <div class="col">
+    <span class="pair-label mine">My render</span>
+    <h3>03-poem-iphone-mac</h3>
+    <p>Each stanza wrapped in its own <code>&lt;p&gt;</code>, lines within a stanza joined with <code>&lt;br&gt;</code> so the verse layout matches the original. Spiral logo + bold "Ode to iPhone and Mac" title above the body.</p>
+    <div class="frame"><img src="skills/atoms/messaging/create-chatgpt-mockup/tests/output/2026-06-03-03-poem-iphone-mac/screenshot.png" alt="render"></div>
+  </div>
+</div>
+
+<div class="section-title">4. Empty state with typed composer (reference: "Get Plus" intro)</div>
+<div class="row">
+  <div class="col">
+    <span class="pair-label ref">Reference</span>
+    <h3>"Get Plus ✦" header, OpenAI spiral center</h3>
+    <p>Left-side panel of the iPhone Pro reference. Tests: empty conversation, large centered spiral, "Get Plus ✦" pill-style header (no model tag), composer with typed-in text + caret + black send button (active state).</p>
+    <div class="frame"><img src="skills/atoms/messaging/create-chatgpt-mockup/references/5.png" alt="reference"></div>
+  </div>
+  <div class="col">
+    <span class="pair-label mine">My render</span>
+    <h3>04-empty-typing</h3>
+    <p>Caret sits right after the last character ("Mac") thanks to inline content flow in the composer input. Send arrow button switches to solid black + white arrow when <code>composer.text</code> is present.</p>
+    <div class="frame"><img src="skills/atoms/messaging/create-chatgpt-mockup/tests/output/2026-06-03-04-empty-typing/screenshot.png" alt="render"></div>
+  </div>
+</div>
+
+<div class="section-title">5. Apps-SDK GPT chip in composer (reference: SeatGeek)</div>
+<div class="row">
+  <div class="col">
+    <span class="pair-label ref">Reference</span>
+    <h3>SeatGeek inside ChatGPT</h3>
+    <p>Four-up reference showing the same Apps-SDK chrome. Tests: <code>SeatGeek ×</code> chip stacked above the composer input row, "Ask ChatGPT" placeholder (auto-set when a chip is present), ChatGPT response with a spiral-logo title and bold inline pricing.</p>
+    <div class="frame"><img src="skills/atoms/messaging/create-chatgpt-mockup/references/7.png" alt="reference"></div>
+  </div>
+  <div class="col">
+    <span class="pair-label mine">My render</span>
+    <h3>05-seatgeek-gpt-chip</h3>
+    <p>The carousel of result cards from the reference isn't implemented (out of scope for v1 — noted under "Known limitations" in SKILL.md). The chip, headline, body, and composer pill all render to spec.</p>
+    <div class="frame"><img src="skills/atoms/messaging/create-chatgpt-mockup/tests/output/2026-06-03-05-seatgeek-gpt-chip/screenshot.png" alt="render"></div>
+  </div>
+</div>
+
+<div class="section-title">6. Ordered list with bold terms (synthetic test — no direct reference)</div>
+<div class="row solo">
+  <div class="col">
+    <span class="pair-label mine">My render</span>
+    <h3>06-short-howto: "How do I make a flat white at home?"</h3>
+    <p>Tests <code>1. 2. 3.</code> ordered-list rendering with <strong>bold</strong> spans inside list items, a trailing closer paragraph, thumbs-up/down feedback chips, the default <code>ChatGPT 5.1 ▾</code> header.</p>
+    <div class="frame" style="max-width: 540px; margin: 0 auto;"><img src="skills/atoms/messaging/create-chatgpt-mockup/tests/output/2026-06-03-06-short-howto/screenshot.png" alt="render"></div>
+  </div>
+</div>
+
+<div class="section-title">What the atom supports today</div>
+<div class="row solo">
+  <div class="col">
+    <ul class="meta-list">
+      <li>Status bar with optional Focus-mode moon glyph (<code>statusBar.dnd: true</code>) and arbitrary <code>statusBar.time</code></li>
+      <li>Three header styles: <code>model-tag</code> (e.g. <code>ChatGPT 5.1 ▾</code>), <code>title-only</code> (e.g. <code>ChatGPT ›</code>), <code>plain-title</code> (e.g. <code>Get Plus ✦</code>)</li>
+      <li>Configurable header right-icons: <code>personPlus</code>, <code>dottedCircle</code>, <code>edit</code>, <code>more</code></li>
+      <li>User text bubbles (right-aligned, <code>#F4F4F4</code>, 28px radius) and user image attachments (same radius, square aspect option)</li>
+      <li>Assistant prose with markdown-ish formatting: <strong>bold</strong>, <em>italic</em>, H1/H2/H3, ordered + bullet lists, horizontal rule, citation chip <code>[[cite:Source]]</code>, inline emoji prefix <code>[[icon:💡]]</code></li>
+      <li>Optional OpenAI spiral logo + bold response title row</li>
+      <li>Thumbs-up / thumbs-down feedback chips under each assistant message (suppress with <code>feedback: false</code>)</li>
+      <li>Empty state (no messages) with centered spiral mark</li>
+      <li>Composer pill with placeholder, typed text + blinking caret, black <strong>active</strong> state, and black <strong>streaming</strong> stop-square state</li>
+      <li>Optional Apps-SDK GPT chip in the composer (<code>composer.chip.name</code>)</li>
+      <li>Fixed 9:16 viewport at 750×1334 (DPR 3 → 2250×4002 PNG)</li>
+    </ul>
+  </div>
+</div>
+
+<div class="section-title">Animation v1 — typing + send + stream</div>
+<div class="row solo">
+  <div class="col">
+    <span class="pair-label mine">Molecule: create-chatgpt-video-ad</span>
+    <h3>Canonical example: "Hey what's happening in this app?"</h3>
+    <p>End-to-end demo of the molecule, driving the chatgpt-mockup atom + the new render-ios-keyboard atom from a 15-event timeline. One continuous Playwright recording (no scene cuts), ~12.5s. Subtle SFX overlay: <code>key-tap</code> per word during typing, one <code>send-tap</code> on send, <code>stream-tick</code> every 12 streamed words, <code>response-done</code> at the end. No music bed by default.</p>
+    <div class="frame" style="background: #1a1a1a;">
+      <video controls preload="metadata" style="max-width: 100%; max-height: 80vh; border-radius: 14px; display: block;">
+        <source src="skills/molecules/create-chatgpt-video-ad/examples/smoke-app-question/edits/master-final.mp4" type="video/mp4">
+      </video>
+    </div>
+    <p style="margin-top: 16px;"><strong>Verified beats (via /watch QC):</strong></p>
+    <ul class="meta-list">
+      <li>t=0 — keyboard up, empty composer, "ChatGPT" header with personPlus + dotted-circle</li>
+      <li>t=0.6–3.0 — typing animation, caret visible, send button activates as soon as first char appears</li>
+      <li>t=3.2 — one beat: bubble pops + keyboard slides down + header swaps to edit+more + send becomes black stop-square</li>
+      <li>t=3.55–4.10 — single gray loading dot at the left gutter (NOT three pulsing dots; that's iMessage)</li>
+      <li>t=4.10+ — assistant response streams word-by-word with a 220ms opacity+blur ramp per word</li>
+      <li>t=10.8 — send button returns to gray-disabled, response complete</li>
+    </ul>
+  </div>
+</div>
+
+<div class="section-title">Out of scope for v1 (called out in SKILL.md)</div>
+<div class="row solo">
+  <div class="col">
+    <ul class="meta-list">
+      <li>Dark mode (light mode only per your spec)</li>
+      <li>Horizontal-scroll carousel cards inside an Apps-SDK response (the SeatGeek 4-up shows tickets/seat-maps in a horizontal scroller)</li>
+      <li>On-screen iOS keyboard chrome (composer only)</li>
+      <li>Markdown tables, fenced code blocks with syntax highlighting, nested lists</li>
+      <li>Memory Off / chip-row UI element below the header (could be added as a separate <code>thread.chips</code> field if needed)</li>
+    </ul>
+  </div>
+</div>
+
+</main>
+
+<footer>
+  Atom: <code>skills/atoms/messaging/create-chatgpt-mockup/</code> &nbsp;·&nbsp;
+  6 example threads under <code>examples/</code> &nbsp;·&nbsp;
+  Renders into <code>tests/output/&lt;date&gt;-&lt;slug&gt;/screenshot.png</code>
+</footer>
+
+</body>
+</html>

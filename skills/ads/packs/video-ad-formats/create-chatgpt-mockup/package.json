@@ -1,0 +1,17 @@
+{
+  "name": "create-chatgpt-mockup",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Render pixel-accurate ChatGPT mobile screen mockups from a thread JSON.",
+  "main": "render.js",
+  "bin": {
+    "chatgpt-mockup": "render.js"
+  },
+  "scripts": {
+    "render": "node render.js",
+    "test": "bash tests/run-all.sh"
+  },
+  "dependencies": {
+    "playwright": "^1.40.0"
+  }
+}

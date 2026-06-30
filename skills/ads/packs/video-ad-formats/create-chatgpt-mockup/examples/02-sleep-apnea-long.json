@@ -1,0 +1,17 @@
+{
+  "statusBar": { "time": "08:18", "dnd": true },
+  "header": {
+    "style": "title-only",
+    "title": "ChatGPT 5.2",
+    "rightIcons": ["edit", "personPlus", "more"]
+  },
+  "messages": [
+    { "type": "user-text", "text": "What's the best way to get tested for sleep apnea if I only have $300?" },
+    {
+      "type": "assistant",
+      "feedback": false,
+      "text": "Yes — **you can get tested for sleep apnea with around $300**, but you'll want to do it in the *most cost-effective way possible*. The key is choosing a **home sleep apnea test (HSAT)** instead of an expensive in-lab sleep study. Here's how to approach it:\n\n---\n\n## [[icon:💡]] Most Affordable and Practical Option: Home Sleep Apnea Test (HSAT)\n\n**What it is:**\nA home sleep test is a simplified diagnostic test you do in your own bed — it tracks breathing patterns, oxygen levels, snoring and breathing effort to diagnose **obstructive sleep apnea (OSA)**. [[cite:Johns Hopkins Medicine +1]]\n\n**Cost:**\n\n* Many standalone home sleep tests range about $150–$400, which fits within your"
+    }
+  ],
+  "composer": { "placeholder": "Ask anything", "streaming": true }
+}

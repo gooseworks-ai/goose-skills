@@ -1,0 +1,116 @@
+/* iOS QWERTY keyboard — sized for a 750px-wide stage, ~518px tall.
+   Class names are scoped to .ios-keyboard so the molecule can drop this
+   into a chatgpt-mockup page without colliding with .composer .* etc. */
+
+.ios-keyboard {
+  width: 100%;
+  background: #D1D3D9;
+  padding: 12px 8px 6px;
+  font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+  /* Mounted from the bottom of the stage; transform is driven externally. */
+  will-change: transform;
+}
+
+.ios-keyboard .kb-suggestions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 12px 10px;
+  height: 44px;
+  font-size: 22px;
+  color: #1A1A1A;
+  font-weight: 400;
+}
+.ios-keyboard .kb-suggestion {
+  flex: 1 1 0;
+  text-align: center;
+  position: relative;
+  padding: 6px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ios-keyboard .kb-suggestion + .kb-suggestion::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 25%;
+  bottom: 25%;
+  width: 1px;
+  background: #A8AAB1;
+}
+
+.ios-keyboard .kb-row {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 6px;
+  padding: 4px 4px;
+  margin-top: 8px;
+}
+.ios-keyboard .kb-row:first-of-type { margin-top: 4px; }
+
+.ios-keyboard .kb-key {
+  flex: 1 1 0;
+  background: #FFFFFF;
+  border-radius: 8px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  font-weight: 400;
+  color: #0D0D0D;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.30);
+  letter-spacing: 0;
+}
+
+/* The shift / backspace flank the 3rd row and take 1.4x width. */
+.ios-keyboard .kb-row.row-3 .kb-key.modifier {
+  flex: 0 0 84px;
+  background: #ADB2BC;
+}
+.ios-keyboard .kb-row.row-3 .kb-key.modifier svg {
+  display: block;
+}
+
+/* Bottom row: 123 / emoji / space / return */
+.ios-keyboard .kb-row.row-bottom {
+  gap: 6px;
+}
+.ios-keyboard .kb-row.row-bottom .kb-key.special-123,
+.ios-keyboard .kb-row.row-bottom .kb-key.special-emoji,
+.ios-keyboard .kb-row.row-bottom .kb-key.special-return {
+  flex: 0 0 92px;
+  background: #ADB2BC;
+  font-size: 20px;
+}
+.ios-keyboard .kb-row.row-bottom .kb-key.special-space {
+  flex: 1 1 auto;
+  background: #FFFFFF;
+  font-size: 20px;
+  color: #0D0D0D;
+  position: relative;
+}
+.ios-keyboard .kb-row.row-bottom .kb-key.special-space::after {
+  content: "A";
+  position: absolute;
+  right: 14px;
+  bottom: 8px;
+  color: #B5B7BD;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+/* Bottom system row: globe (left) + mic (right) */
+.ios-keyboard .kb-system-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 26px 18px;
+  height: 70px;
+}
+.ios-keyboard .kb-system-row svg { display: block; }

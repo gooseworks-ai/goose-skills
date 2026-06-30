@@ -1,0 +1,27 @@
+{
+  "title": "Trip planning",
+  "body": [
+    {
+      "type": "paragraph",
+      "text": "Looking at the Faroe Islands for September."
+    },
+    {
+      "type": "image",
+      "src": "../assets/samples/sample-landscape.jpg",
+      "caption": "On-set reference from the last shoot"
+    },
+    {
+      "type": "paragraph",
+      "text": "Need to figure out the flight situation from JFK."
+    }
+  ],
+  "cursor": null,
+  "status_bar": {
+    "time": "9:41",
+    "battery_pct": 64,
+    "battery_low": false,
+    "show_focus_glyph": false
+  },
+  "show_keyboard": false,
+  "with_iphone_frame": false
+}

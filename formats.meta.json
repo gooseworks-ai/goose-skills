@@ -1,5 +1,5 @@
 {
-  "$comment": "Per-format config for the keys in formats.json (which stays a bare key->path string map for old CLIs). Read by the Gooseworks backend sync (sync-ad-formats -> ad_formats table -> /create format tabs + info panel) and by the gooseworks CLI master skill. Scoped to migrated formats; add the rest (apple-notes, chatgpt, photo-grid, music-video) as their skills land in goose-skills.",
+  "$comment": "Per-format config for the keys in formats.json (which stays a bare key->path string map for old CLIs). Read by the Gooseworks backend sync (sync-ad-formats -> ad_formats table -> /create format tabs + info panel) and by the gooseworks CLI master skill. Scoped to migrated formats; add the rest (photo-grid, music-video) as their skills land in goose-skills.",
   "brand-research": {
     "output": "none",
     "title": "Brand research"
@@ -27,6 +27,34 @@
       "machine": ["ffmpeg", "playwright-chromium"]
     },
     "est_credits": 10,
+    "batch_cap": 3
+  },
+  "chatgpt": {
+    "output": "video",
+    "title": "ChatGPT",
+    "description": "A 9:16 'I asked ChatGPT' ad — the user types a question, the answer streams in word-by-word with the brand as the natural recommendation. Silent, no end card. ~12s, exports 9:16 and 1:1.",
+    "requires": {
+      "characters": { "kind": "none" },
+      "voices": { "count": 0 },
+      "audio": { "driver": "silent" },
+      "brand": ["cta_code_or_tagline"],
+      "machine": ["ffmpeg", "playwright-chromium"]
+    },
+    "est_credits": 5,
+    "batch_cap": 3
+  },
+  "apple-notes": {
+    "output": "video",
+    "title": "Apple Notes",
+    "description": "A 9:16 typing-reveal ad — a note types itself out in the Apple Notes app, the brand and promo code land in the text, real iPhone keyboard clicks underneath. ~12–20s, exports 9:16.",
+    "requires": {
+      "characters": { "kind": "none" },
+      "voices": { "count": 0 },
+      "audio": { "driver": "sfx+optional-bed" },
+      "brand": ["wordmark_or_logo", "cta_code_or_tagline"],
+      "machine": ["ffmpeg", "playwright-chromium"]
+    },
+    "est_credits": 8,
     "batch_cap": 3
   }
 }

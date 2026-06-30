@@ -1,0 +1,18 @@
+{
+  "statusBar": { "time": "9:41" },
+  "header": {
+    "style": "model-tag",
+    "title": "ChatGPT",
+    "model": "5.1",
+    "rightIcons": ["personPlus", "dottedCircle"]
+  },
+  "messages": [
+    { "type": "user-text", "text": "How do I make a flat white at home?" },
+    {
+      "type": "assistant",
+      "feedback": true,
+      "text": "Here's the short version:\n\n1. Pull a **double shot of espresso** (about 18g in, 36g out, 25–30s).\n2. Steam **5oz of whole milk** to ~60°C with a fine, glossy microfoam — barely any visible bubbles.\n3. Pour straight into the espresso from low, finishing with a small dot on top.\n\nThat's it — no latte art required for it to taste right."
+    }
+  ],
+  "composer": { "placeholder": "Ask anything" }
+}

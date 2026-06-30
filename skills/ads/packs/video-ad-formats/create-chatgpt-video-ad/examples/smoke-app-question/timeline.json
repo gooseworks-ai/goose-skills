@@ -1,0 +1,16 @@
+[
+  { "t": 0.0,  "kind": "keyboard-show" },
+  { "t": 0.6,  "kind": "composer-type", "text": "Hey what's happening in this app?", "dur_sec": 2.4 },
+  { "t": 3.2,  "kind": "send-tap" },
+  { "t": 3.20, "kind": "pop", "target": "msg-user-1" },
+  { "t": 3.20, "kind": "composer-clear" },
+  { "t": 3.20, "kind": "header-swap", "value": "alt" },
+  { "t": 3.20, "kind": "keyboard-hide" },
+  { "t": 3.20, "kind": "send-state", "value": "streaming" },
+  { "t": 3.55, "kind": "loading-dot-show", "target": "dot-1" },
+  { "t": 4.10, "kind": "loading-dot-hide", "target": "dot-1" },
+  { "t": 4.10, "kind": "pop", "target": "msg-assistant-1" },
+  { "t": 4.20, "kind": "stream-words", "target": "msg-assistant-1", "dur_sec": 6.5, "wps": 7 },
+  { "t": 4.50, "kind": "scroll-to", "target": "msg-assistant-1", "dur_ms": 250 },
+  { "t": 10.8, "kind": "send-state", "value": "active" }
+]
