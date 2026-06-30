@@ -1,0 +1,17 @@
+{
+  "name": "create-imessage-mockup",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Render pixel-accurate iMessage mockup screenshots from a thread JSON or natural-language brief.",
+  "main": "render.js",
+  "bin": {
+    "imessage-mockup": "render.js"
+  },
+  "scripts": {
+    "render": "node render.js",
+    "test": "bash tests/run-all.sh"
+  },
+  "dependencies": {
+    "playwright": "^1.40.0"
+  }
+}

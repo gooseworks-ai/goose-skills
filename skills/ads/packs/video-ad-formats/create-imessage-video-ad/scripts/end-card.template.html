@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>End card</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 720px; height: 1280px; background: #000; overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+    color: #fff;
+  }
+  .stage {
+    position: relative; width: 100%; height: 100%;
+    background:
+      radial-gradient(60% 50% at 50% 45%, rgba(245, 188, 70, 0.55) 0%, rgba(245, 188, 70, 0.18) 40%, rgba(0,0,0,0) 75%),
+      radial-gradient(80% 60% at 50% 60%, rgba(220, 150, 30, 0.18) 0%, rgba(0,0,0,0) 80%),
+      #000;
+    overflow: hidden;
+  }
+  .glow-burst::before, .glow-burst::after {
+    content: '';
+    position: absolute; left: 50%; top: 45%;
+    width: 900px; height: 900px;
+    transform: translate(-50%, -50%);
+    background: conic-gradient(from 0deg,
+      rgba(255, 215, 80, 0.0) 0%,
+      rgba(255, 215, 80, 0.35) 8%,
+      rgba(255, 215, 80, 0.0) 16%,
+      rgba(255, 215, 80, 0.0) 24%,
+      rgba(255, 215, 80, 0.35) 32%,
+      rgba(255, 215, 80, 0.0) 40%,
+      rgba(255, 215, 80, 0.0) 48%,
+      rgba(255, 215, 80, 0.35) 56%,
+      rgba(255, 215, 80, 0.0) 64%,
+      rgba(255, 215, 80, 0.0) 72%,
+      rgba(255, 215, 80, 0.35) 80%,
+      rgba(255, 215, 80, 0.0) 88%,
+      rgba(255, 215, 80, 0.0) 100%);
+    mix-blend-mode: screen;
+    filter: blur(8px);
+    pointer-events: none;
+  }
+  .glow-burst::after {
+    width: 600px; height: 600px;
+    filter: blur(20px);
+    opacity: 0.8;
+    transform: translate(-50%, -50%) rotate(15deg);
+  }
+
+  /* Brand wordmark — the real SVG gets injected at render time, NOT styled
+     text. See SKILL.md > "Use the real brand wordmark, not styled text". */
+  .brand {
+    position: absolute; top: 64px; left: 50%; transform: translateX(-50%);
+    width: 320px;
+  }
+  .brand svg { width: 100%; height: auto; display: block; }
+  .brand svg path { fill: #fff; }
+
+  .card-wrap {
+    position: absolute; left: 50%; top: 32%;
+    transform: translate(-50%, 0);
+    width: 320px;
+  }
+  .card-wrap img {
+    width: 100%; height: auto; display: block;
+    border-radius: 8px;
+    filter: drop-shadow(0 0 30px rgba(255, 200, 80, 0.55))
+            drop-shadow(0 0 80px rgba(255, 200, 80, 0.35));
+  }
+
+  /* Coin and cash particles, statically positioned */
+  .particle {
+    position: absolute; pointer-events: none;
+  }
+  .coin {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #fff5b8 0%, #f0c449 50%, #b07d12 100%);
+    box-shadow: 0 0 20px rgba(255, 200, 80, 0.6);
+  }
+  .coin.sm { width: 24px; height: 24px; }
+  .coin.lg { width: 52px; height: 52px; }
+  .cash {
+    width: 80px; height: 38px;
+    background: linear-gradient(135deg, #5fb86a 0%, #2e7a3a 100%);
+    border: 1.5px solid rgba(0,0,0,0.4);
+    border-radius: 4px;
+    transform: rotate(-12deg);
+    box-shadow: 0 0 18px rgba(80, 200, 100, 0.4);
+    position: relative;
+  }
+  .cash::after {
+    content: '$';
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%);
+    font-weight: 900; color: rgba(255,255,255,0.65); font-size: 18px;
+  }
+
+  .cta {
+    position: absolute;
+    left: 50%; bottom: 80px; transform: translateX(-50%);
+    width: 580px;
+    background: rgba(10, 10, 12, 0.85);
+    border: 1px solid rgba(255, 220, 130, 0.18);
+    border-radius: 28px;
+    padding: 38px 32px 36px;
+    text-align: center;
+    box-shadow: 0 12px 60px rgba(0,0,0,0.4);
+    backdrop-filter: blur(8px);
+  }
+  .cta .line1 {
+    font-size: 56px; font-weight: 700; line-height: 1.05;
+    color: #fff; letter-spacing: -1px;
+  }
+  .cta .line2 {
+    font-size: 88px; font-weight: 800; line-height: 1.0;
+    color: #f5c842; letter-spacing: 1px; margin-top: 4px;
+    text-shadow: 0 0 18px rgba(245, 200, 66, 0.5);
+  }
+  .cta .line3 {
+    font-size: 28px; font-weight: 400; color: #cfcfd2; margin-top: 18px;
+  }
+  .cta .line3 em {
+    font-style: italic; text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+  }
+</style>
+</head>
+<body>
+<div class="stage glow-burst">
+  <!-- Real brand wordmark SVG is injected here at render time by
+       render-end-card.template.js via the {{BRAND_LOGO_SVG}} placeholder.
+       Drop the real SVG in assets/<brand>-logo.svg and the renderer handles
+       the rest. -->
+  <div class="brand"><!--{{BRAND_LOGO_SVG}}--></div>
+
+  <div class="card-wrap">
+    <img src="../assets/eevee-munch.png" alt="">
+  </div>
+
+  <!-- Cash + coins scattered around the card -->
+  <div class="particle coin"     style="left: 14%; top: 36%;"></div>
+  <div class="particle coin sm"  style="left: 8%;  top: 44%;"></div>
+  <div class="particle coin lg"  style="left: 78%; top: 32%;"></div>
+  <div class="particle coin"     style="left: 84%; top: 50%;"></div>
+  <div class="particle coin sm"  style="left: 22%; top: 56%;"></div>
+  <div class="particle coin"     style="left: 70%; top: 60%;"></div>
+  <div class="particle cash"     style="left: 6%;  top: 50%; transform: rotate(-22deg);"></div>
+  <div class="particle cash"     style="left: 76%; top: 45%; transform: rotate(14deg);"></div>
+  <div class="particle cash"     style="left: 18%; top: 28%; transform: rotate(8deg);"></div>
+
+  <div class="cta">
+    <div class="line1">Use code</div>
+    <div class="line2">"FREEPACK"</div>
+    <div class="line3">for a <em>free</em> starter pack</div>
+  </div>
+</div>
+</body></html>

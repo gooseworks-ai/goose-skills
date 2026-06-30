@@ -1,0 +1,21 @@
+{
+  "mode": "group",
+  "title": "Karaoke Crew",
+  "participants": [
+    { "id": "me",    "name": "Me",    "self": true },
+    { "id": "rey",   "name": "Reyna", "color": "#FF9500", "initials": "R" },
+    { "id": "deni",  "name": "Deni",  "color": "#34C759", "initials": "D" },
+    { "id": "tom",   "name": "Tom",   "color": "#5AC8FA", "initials": "T" }
+  ],
+  "messages": [
+    { "type": "text", "from": "rey", "text": "Omg the karaoke isn't working" },
+    { "type": "text", "from": "deni", "text": "Did we crash it?" },
+    { "type": "text", "from": "tom",  "text": "It couldn't withstand the power of your friendship" },
+    { "type": "text", "from": "me",   "text": "We have guesses." },
+    { "type": "text", "from": "me",   "text": "Here we guesss.", "delivered": true },
+    { "type": "text", "from": "rey",  "text": "Wow, PERFECT song to start with" },
+    { "type": "text", "from": "deni", "text": "My dream is bigging" },
+    { "type": "text", "from": "tom",  "text": "😭😭😭" },
+    { "type": "text", "from": "rey",  "text": "Any guesses on what song they're gonna play next?" }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "$comment": "Per-format config for the keys in formats.json (which stays a bare key->path string map for old CLIs). Read by the Gooseworks backend sync (sync-ad-formats -> ad_formats table -> /create format tabs + info panel) and by the gooseworks CLI master skill. Scoped to migrated formats; add the rest (apple-notes, chatgpt, photo-grid, music-video) as their skills land in goose-skills.",
+  "brand-research": {
+    "output": "none",
+    "title": "Brand research"
+  },
+  "static": {
+    "output": "image",
+    "title": "Static image",
+    "description": "Recreate a static graphic ad (Pinterest pin, feed image, poster) for your brand — same layout and energy, your product and copy.",
+    "requires": {
+      "characters": { "kind": "none" },
+      "voices": { "count": 0 },
+      "brand": ["product_image", "palette_or_logo"]
+    },
+    "batch_cap": 15
+  },
+  "imessage": {
+    "output": "video",
+    "title": "iMessage conversation",
+    "description": "A 9:16 chat-reveal ad — bubbles pop in over time, the brand + promo code surface in the conversation, real iMessage sounds. ~20s, exports 9:16 and 1:1.",
+    "requires": {
+      "characters": { "kind": "none" },
+      "voices": { "count": 0 },
+      "audio": { "driver": "sfx+optional-bed" },
+      "brand": ["wordmark_or_logo", "cta_code_or_tagline"],
+      "machine": ["ffmpeg", "playwright-chromium"]
+    },
+    "est_credits": 10,
+    "batch_cap": 3
+  }
+}

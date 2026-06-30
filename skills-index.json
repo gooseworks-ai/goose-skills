@@ -1,6 +1,6 @@
 {
   "version": "1.2.0",
-  "generated": "2026-06-24",
+  "generated": "2026-06-30",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -1422,6 +1422,103 @@
       }
     },
     {
+      "slug": "create-imessage-mockup",
+      "name": "create-imessage-mockup",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Render pixel-accurate iMessage screenshot mockups (DM or group) from a thread JSON. Supports minimal, with-keyboard, and full iPhone 15 Pro frame variants. Outputs HTML + PNG.",
+      "tags": "ads",
+      "path": "skills/ads/packs/video-ad-formats/create-imessage-mockup",
+      "files": [
+        "skills/ads/packs/video-ad-formats/create-imessage-mockup/.gitignore",
+        "skills/ads/packs/video-ad-formats/create-imessage-mockup/SKILL.md",
+        "skills/ads/packs/video-ad-formats/create-imessage-mockup/examples/dm-minimal.json",
+        "skills/ads/packs/video-ad-formats/create-imessage-mockup/examples/dm-with-frame.json",
+        "skills/ads/packs/video-ad-formats/create-imessage-mockup/examples/dm-with-keyboard.json",
+        "skills/ads/packs/video-ad-formats/create-imessage-mockup/examples/dm-with-typing.json",
+        "skills/ads/packs/video-ad-formats/create-imessage-mockup/examples/group-minimal.json",
+        "skills/ads/packs/video-ad-formats/create-imessage-mockup/examples/group-with-frame.json",
+        "skills/ads/packs/video-ad-formats/create-imessage-mockup/generate.js",
+        "skills/ads/packs/video-ad-formats/create-imessage-mockup/package-lock.json",
+        "skills/ads/packs/video-ad-formats/create-imessage-mockup/package.json",
+        "skills/ads/packs/video-ad-formats/create-imessage-mockup/render.js",
+        "skills/ads/packs/video-ad-formats/create-imessage-mockup/screenshot.js",
+        "skills/ads/packs/video-ad-formats/create-imessage-mockup/skill.meta.json",
+        "skills/ads/packs/video-ad-formats/create-imessage-mockup/templates/chat.css",
+        "skills/ads/packs/video-ad-formats/create-imessage-mockup/templates/icons.js",
+        "skills/ads/packs/video-ad-formats/create-imessage-mockup/tests/expected-output.md",
+        "skills/ads/packs/video-ad-formats/create-imessage-mockup/tests/human-test.md",
+        "skills/ads/packs/video-ad-formats/create-imessage-mockup/tests/run-all.sh",
+        "skills/ads/packs/video-ad-formats/create-imessage-mockup/tests/sample-input.md",
+        "skills/ads/packs/video-ad-formats/create-imessage-mockup/tests/smoke-test.md",
+        "skills/ads/packs/video-ad-formats/create-imessage-mockup/tests/verifier.md"
+      ],
+      "metadata": {
+        "slug": "create-imessage-mockup",
+        "category": "capabilities",
+        "pack": "video-ad-formats",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install video-ad-formats",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "create-imessage-video-ad",
+      "name": "create-imessage-video-ad",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Produce a 9:16 social-native ad that recreates an iMessage conversation reveal — bubbles pop in over time, composer types char-by-char, real Apple iMessage SFX hit on every send/receive, music bed underneath, brand end card with FREEPACK-style CTA. One continuous Playwright recording (no scene-cuts/glitches) in plain-chat or iPhone-framed (Dynamic Island over a background) variants, assembled to a master MP4 plus 9:16 / 1×1 export variants.",
+      "tags": "ads",
+      "path": "skills/ads/packs/video-ad-formats/create-imessage-video-ad",
+      "files": [
+        "skills/ads/packs/video-ad-formats/create-imessage-video-ad/SKILL.md",
+        "skills/ads/packs/video-ad-formats/create-imessage-video-ad/assets/sfx/imessage-receive.mp3",
+        "skills/ads/packs/video-ad-formats/create-imessage-video-ad/assets/sfx/imessage-send.mp3",
+        "skills/ads/packs/video-ad-formats/create-imessage-video-ad/examples/full-thread.example.json",
+        "skills/ads/packs/video-ad-formats/create-imessage-video-ad/examples/strava-card.example.html",
+        "skills/ads/packs/video-ad-formats/create-imessage-video-ad/references/audio-recipe.md",
+        "skills/ads/packs/video-ad-formats/create-imessage-video-ad/references/end-card-recipe.md",
+        "skills/ads/packs/video-ad-formats/create-imessage-video-ad/references/timeline-schema.md",
+        "skills/ads/packs/video-ad-formats/create-imessage-video-ad/scripts/README.md",
+        "skills/ads/packs/video-ad-formats/create-imessage-video-ad/scripts/end-card-photo-bg.template.html",
+        "skills/ads/packs/video-ad-formats/create-imessage-video-ad/scripts/end-card.template.html",
+        "skills/ads/packs/video-ad-formats/create-imessage-video-ad/scripts/fal_helpers.py",
+        "skills/ads/packs/video-ad-formats/create-imessage-video-ad/scripts/record-master.template.js",
+        "skills/ads/packs/video-ad-formats/create-imessage-video-ad/scripts/render-end-card.template.js",
+        "skills/ads/packs/video-ad-formats/create-imessage-video-ad/scripts/stitch.template.sh",
+        "skills/ads/packs/video-ad-formats/create-imessage-video-ad/skill.meta.json",
+        "skills/ads/packs/video-ad-formats/create-imessage-video-ad/tests/expected-output.md",
+        "skills/ads/packs/video-ad-formats/create-imessage-video-ad/tests/human-test.md",
+        "skills/ads/packs/video-ad-formats/create-imessage-video-ad/tests/sample-input.md",
+        "skills/ads/packs/video-ad-formats/create-imessage-video-ad/tests/smoke-test.md",
+        "skills/ads/packs/video-ad-formats/create-imessage-video-ad/tests/verifier.md"
+      ],
+      "metadata": {
+        "slug": "create-imessage-video-ad",
+        "category": "capabilities",
+        "pack": "video-ad-formats",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install video-ad-formats",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
       "slug": "create-linkedin-content",
       "name": "create-linkedin-content",
       "category": "capabilities",
@@ -1963,7 +2060,7 @@
       "name": "extract-source-sample",
       "category": "composites",
       "domain": "ads",
-      "description": "Given the path to a finished content-goose ad-run folder, extract everything that defines that ad — recipe shot list, VO script, characters, voices, world, atom-skills, master mp4 — and emit a `source-sample.json` in the exact shape the `upload-ad-sample` skill writes to the Goose Ads library. Also links every character and voice to the central character library at `/Users/akhil/projects/content-goose/assets/character-library/`, and if a character isn't in the library yet, adds it first then links. Use when the user wants to remix one of their existing ads — this skill produces the source JSON that the script-rewriting step and `remix-ad` consume.",
+      "description": "Given the path to a finished content-goose ad-run folder, extract everything that defines that ad — recipe shot list, VO script, characters, voices, world, atom-skills, master mp4 — and emit a `source-sample.json` in the exact shape the `upload-ad-sample` skill writes to the Goose Ads library. Also links every character and voice to the central character library at `<repo-root>/assets/character-library/` (repo-root derived from the run-dir, not a hardcoded path), and if a character isn't in the library yet, adds it first then links. Use when the user wants to remix one of their existing ads — this skill produces the source JSON that the script-rewriting step and `remix-ad` consume.",
       "tags": "ads",
       "path": "skills/ads/composites/extract-source-sample",
       "files": [
@@ -3892,6 +3989,34 @@
       "path": "skills/ads/composites/meta-ads-analyzer",
       "files": [
         "skills/ads/composites/meta-ads-analyzer/SKILL.md",
+        "skills/ads/composites/meta-ads-analyzer/eval/eval.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/campaign-export.csv",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-35-03-212Z/campaign-export.csv",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-35-03-212Z/provenance.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-35-03-212Z/raw/adsets.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-35-03-212Z/raw/campaigns.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-35-03-212Z/raw/insights-52520040908148.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-35-03-212Z/raw/insights-52520044871748.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-35-03-212Z/raw/insights-52529298131348.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-35-03-212Z/raw/insights-52532859121348.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-35-03-212Z/raw/insights-52532860843748.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-35-03-212Z/raw/insights-6963333422544.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-35-03-212Z/raw/insights-6988921740744.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-35-03-212Z/raw/insights-6989038245344.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-35-03-212Z/raw/insights-6991165221344.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-37-13-072Z/campaign-export.csv",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-37-13-072Z/provenance.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-37-13-072Z/raw/adsets.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-37-13-072Z/raw/campaigns.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-37-13-072Z/raw/insights-52520040908148.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-37-13-072Z/raw/insights-52520044871748.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-37-13-072Z/raw/insights-52529298131348.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-37-13-072Z/raw/insights-52532859121348.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-37-13-072Z/raw/insights-52532860843748.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-37-13-072Z/raw/insights-6963333422544.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-37-13-072Z/raw/insights-6988921740744.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-37-13-072Z/raw/insights-6989038245344.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-37-13-072Z/raw/insights-6991165221344.json",
         "skills/ads/composites/meta-ads-analyzer/skill.meta.json"
       ],
       "metadata": {
@@ -3931,6 +4056,36 @@
         ],
         "installation": {
           "base_command": "npx goose-skills install meta-ads-campaign-builder",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "mix-master",
+      "name": "mix-master",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Canonical short-form-ad audio mix in one FFmpeg pass. VO loudnorm + 3.0× per-clip + 2.0× mix, music 0.13 base + apad+afade, sidechain compress 20:1 @ 0.01, climax line +20%, optional video-to-music duration sync. Replaces the reactive multi-round tuning that cost v03 6+ passes.",
+      "tags": "ads",
+      "path": "skills/ads/packs/video-ad-formats/mix-master",
+      "files": [
+        "skills/ads/packs/video-ad-formats/mix-master/SKILL.md",
+        "skills/ads/packs/video-ad-formats/mix-master/scripts/mix.sh",
+        "skills/ads/packs/video-ad-formats/mix-master/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "mix-master",
+        "category": "capabilities",
+        "pack": "video-ad-formats",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install video-ad-formats",
           "supports": [
             "claude",
             "cursor",
@@ -4592,6 +4747,40 @@
           "verify-product-image",
           "brand-research"
         ]
+      }
+    },
+    {
+      "slug": "remix-imessage-ad-from-sample",
+      "name": "remix-imessage-ad-from-sample",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Remix a published iMessage video ad from the Goose Ads library for a new brand — keep the source's conversation structure and pacing, swap in the brand's product, voice, and promo code, get the thread approved in-session, then render with create-imessage-video-ad and publish the MP4 back to Gooseworks with live stage reporting. The video counterpart to remix-graphic-ad-from-reference; this is what the app's iMessage format tab calls.",
+      "tags": "ads",
+      "path": "skills/ads/packs/video-ad-formats/remix-imessage-ad-from-sample",
+      "files": [
+        "skills/ads/packs/video-ad-formats/remix-imessage-ad-from-sample/SKILL.md",
+        "skills/ads/packs/video-ad-formats/remix-imessage-ad-from-sample/skill.meta.json",
+        "skills/ads/packs/video-ad-formats/remix-imessage-ad-from-sample/tests/expected-output.md",
+        "skills/ads/packs/video-ad-formats/remix-imessage-ad-from-sample/tests/human-test.md",
+        "skills/ads/packs/video-ad-formats/remix-imessage-ad-from-sample/tests/sample-input.md",
+        "skills/ads/packs/video-ad-formats/remix-imessage-ad-from-sample/tests/smoke-test.md",
+        "skills/ads/packs/video-ad-formats/remix-imessage-ad-from-sample/tests/verifier.md"
+      ],
+      "metadata": {
+        "slug": "remix-imessage-ad-from-sample",
+        "category": "capabilities",
+        "pack": "video-ad-formats",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install video-ad-formats",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
       }
     },
     {
@@ -5352,6 +5541,45 @@
       }
     },
     {
+      "slug": "stitch-videos-ffmpeg",
+      "name": "stitch-videos-ffmpeg",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "stitch video segments with ffmpeg concat, xfade, overlay, audio mux, and export settings.",
+      "tags": "ads",
+      "path": "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg",
+      "files": [
+        "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/SKILL.md",
+        "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/composite.py",
+        "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/composite_final.py",
+        "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/composite_final.sh",
+        "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/normalize_clip.sh",
+        "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/voiceless/composite.py",
+        "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/skill.meta.json",
+        "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/expected-output.md",
+        "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/human-test.md",
+        "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/sample-input.md",
+        "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/smoke-test.md",
+        "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/verifier.md"
+      ],
+      "metadata": {
+        "slug": "stitch-videos-ffmpeg",
+        "category": "capabilities",
+        "pack": "video-ad-formats",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install video-ad-formats",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
       "slug": "structured-scraping-riveter",
       "name": "structured-scraping-riveter",
       "category": "capabilities",
@@ -5768,6 +5996,34 @@
       }
     },
     {
+      "slug": "upload-ad-sample",
+      "name": "upload-ad-sample",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Upload a finished Meta or video ad creative (image or video) to the Goose Ads sample library and fill its remix payload — recipe, script, render variant, and (for video formats like iMessage) the source conversation thread — so the sample is remixable in the app. Use after a creative is finalized and approved for showcasing on the public ads pages.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/upload-ad-sample",
+      "files": [
+        "skills/ads/capabilities/upload-ad-sample/SKILL.md",
+        "skills/ads/capabilities/upload-ad-sample/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "upload-ad-sample",
+        "category": "capabilities",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install upload-ad-sample",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
       "slug": "uptime-monitor",
       "name": "uptime-monitor",
       "category": "capabilities",
@@ -5972,6 +6228,41 @@
           "review-site-scraper",
           "twitter-mention-tracker"
         ]
+      }
+    },
+    {
+      "slug": "watch",
+      "name": "watch",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Watch a rendered video (whole file or specific ranges) at a chosen fidelity and emit a timestamp-keyed observation report. Observation only — no edits, no verdicts.",
+      "tags": "ads",
+      "path": "skills/ads/packs/video-ad-formats/watch",
+      "files": [
+        "skills/ads/packs/video-ad-formats/watch/SKILL.md",
+        "skills/ads/packs/video-ad-formats/watch/references/parameters.md",
+        "skills/ads/packs/video-ad-formats/watch/skill.meta.json",
+        "skills/ads/packs/video-ad-formats/watch/tests/expected-output.md",
+        "skills/ads/packs/video-ad-formats/watch/tests/human-test.md",
+        "skills/ads/packs/video-ad-formats/watch/tests/sample-input.md",
+        "skills/ads/packs/video-ad-formats/watch/tests/smoke-test.md",
+        "skills/ads/packs/video-ad-formats/watch/tests/verifier.md"
+      ],
+      "metadata": {
+        "slug": "watch",
+        "category": "capabilities",
+        "pack": "video-ad-formats",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install video-ad-formats",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
       }
     },
     {
@@ -6594,6 +6885,169 @@
         ],
         "installation": {
           "base_command": "npx goose-skills install lead-gen-devtools",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "video-ad-formats",
+      "name": "Video Ad Formats",
+      "type": "pack",
+      "domain": "ads",
+      "description": "Remix branded short-form video ads from library templates — one local-render recipe per format (iMessage chat-reveal live; Apple Notes / ChatGPT / photo-grid coming), plus the shared renderer / stitch / mix / QC atoms they reuse. The recipe runs in the user's own Claude Code; the app is the review + viewer.",
+      "tags": "ads",
+      "path": "skills/ads/packs/video-ad-formats",
+      "shared_files": [],
+      "skills": [
+        {
+          "slug": "remix-imessage-ad-from-sample",
+          "name": "remix-imessage-ad-from-sample",
+          "description": "Remix a published iMessage video ad from the Goose Ads library for a new brand — keep the source's conversation structure and pacing, swap in the brand's product, voice, and promo code, get the thread approved in-session, then render with create-imessage-video-ad and publish the MP4 back to Gooseworks with live stage reporting. The video counterpart to remix-graphic-ad-from-reference; this is what the app's iMessage format tab calls.",
+          "path": "skills/ads/packs/video-ad-formats/remix-imessage-ad-from-sample",
+          "files": [
+            "skills/ads/packs/video-ad-formats/remix-imessage-ad-from-sample/SKILL.md",
+            "skills/ads/packs/video-ad-formats/remix-imessage-ad-from-sample/skill.meta.json",
+            "skills/ads/packs/video-ad-formats/remix-imessage-ad-from-sample/tests/expected-output.md",
+            "skills/ads/packs/video-ad-formats/remix-imessage-ad-from-sample/tests/human-test.md",
+            "skills/ads/packs/video-ad-formats/remix-imessage-ad-from-sample/tests/sample-input.md",
+            "skills/ads/packs/video-ad-formats/remix-imessage-ad-from-sample/tests/smoke-test.md",
+            "skills/ads/packs/video-ad-formats/remix-imessage-ad-from-sample/tests/verifier.md"
+          ],
+          "source": "pack"
+        },
+        {
+          "slug": "create-imessage-video-ad",
+          "name": "create-imessage-video-ad",
+          "description": "Produce a 9:16 social-native ad that recreates an iMessage conversation reveal — bubbles pop in over time, composer types char-by-char, real Apple iMessage SFX hit on every send/receive, music bed underneath, brand end card with FREEPACK-style CTA. One continuous Playwright recording (no scene-cuts/glitches) in plain-chat or iPhone-framed (Dynamic Island over a background) variants, assembled to a master MP4 plus 9:16 / 1×1 export variants.",
+          "path": "skills/ads/packs/video-ad-formats/create-imessage-video-ad",
+          "files": [
+            "skills/ads/packs/video-ad-formats/create-imessage-video-ad/SKILL.md",
+            "skills/ads/packs/video-ad-formats/create-imessage-video-ad/assets/sfx/imessage-receive.mp3",
+            "skills/ads/packs/video-ad-formats/create-imessage-video-ad/assets/sfx/imessage-send.mp3",
+            "skills/ads/packs/video-ad-formats/create-imessage-video-ad/examples/full-thread.example.json",
+            "skills/ads/packs/video-ad-formats/create-imessage-video-ad/examples/strava-card.example.html",
+            "skills/ads/packs/video-ad-formats/create-imessage-video-ad/references/audio-recipe.md",
+            "skills/ads/packs/video-ad-formats/create-imessage-video-ad/references/end-card-recipe.md",
+            "skills/ads/packs/video-ad-formats/create-imessage-video-ad/references/timeline-schema.md",
+            "skills/ads/packs/video-ad-formats/create-imessage-video-ad/scripts/README.md",
+            "skills/ads/packs/video-ad-formats/create-imessage-video-ad/scripts/end-card-photo-bg.template.html",
+            "skills/ads/packs/video-ad-formats/create-imessage-video-ad/scripts/end-card.template.html",
+            "skills/ads/packs/video-ad-formats/create-imessage-video-ad/scripts/fal_helpers.py",
+            "skills/ads/packs/video-ad-formats/create-imessage-video-ad/scripts/record-master.template.js",
+            "skills/ads/packs/video-ad-formats/create-imessage-video-ad/scripts/render-end-card.template.js",
+            "skills/ads/packs/video-ad-formats/create-imessage-video-ad/scripts/stitch.template.sh",
+            "skills/ads/packs/video-ad-formats/create-imessage-video-ad/skill.meta.json",
+            "skills/ads/packs/video-ad-formats/create-imessage-video-ad/tests/expected-output.md",
+            "skills/ads/packs/video-ad-formats/create-imessage-video-ad/tests/human-test.md",
+            "skills/ads/packs/video-ad-formats/create-imessage-video-ad/tests/sample-input.md",
+            "skills/ads/packs/video-ad-formats/create-imessage-video-ad/tests/smoke-test.md",
+            "skills/ads/packs/video-ad-formats/create-imessage-video-ad/tests/verifier.md"
+          ],
+          "source": "pack"
+        },
+        {
+          "slug": "create-imessage-mockup",
+          "name": "create-imessage-mockup",
+          "description": "Render pixel-accurate iMessage screenshot mockups (DM or group) from a thread JSON. Supports minimal, with-keyboard, and full iPhone 15 Pro frame variants. Outputs HTML + PNG.",
+          "path": "skills/ads/packs/video-ad-formats/create-imessage-mockup",
+          "files": [
+            "skills/ads/packs/video-ad-formats/create-imessage-mockup/.gitignore",
+            "skills/ads/packs/video-ad-formats/create-imessage-mockup/SKILL.md",
+            "skills/ads/packs/video-ad-formats/create-imessage-mockup/examples/dm-minimal.json",
+            "skills/ads/packs/video-ad-formats/create-imessage-mockup/examples/dm-with-frame.json",
+            "skills/ads/packs/video-ad-formats/create-imessage-mockup/examples/dm-with-keyboard.json",
+            "skills/ads/packs/video-ad-formats/create-imessage-mockup/examples/dm-with-typing.json",
+            "skills/ads/packs/video-ad-formats/create-imessage-mockup/examples/group-minimal.json",
+            "skills/ads/packs/video-ad-formats/create-imessage-mockup/examples/group-with-frame.json",
+            "skills/ads/packs/video-ad-formats/create-imessage-mockup/generate.js",
+            "skills/ads/packs/video-ad-formats/create-imessage-mockup/package-lock.json",
+            "skills/ads/packs/video-ad-formats/create-imessage-mockup/package.json",
+            "skills/ads/packs/video-ad-formats/create-imessage-mockup/render.js",
+            "skills/ads/packs/video-ad-formats/create-imessage-mockup/screenshot.js",
+            "skills/ads/packs/video-ad-formats/create-imessage-mockup/skill.meta.json",
+            "skills/ads/packs/video-ad-formats/create-imessage-mockup/templates/chat.css",
+            "skills/ads/packs/video-ad-formats/create-imessage-mockup/templates/icons.js",
+            "skills/ads/packs/video-ad-formats/create-imessage-mockup/tests/expected-output.md",
+            "skills/ads/packs/video-ad-formats/create-imessage-mockup/tests/human-test.md",
+            "skills/ads/packs/video-ad-formats/create-imessage-mockup/tests/run-all.sh",
+            "skills/ads/packs/video-ad-formats/create-imessage-mockup/tests/sample-input.md",
+            "skills/ads/packs/video-ad-formats/create-imessage-mockup/tests/smoke-test.md",
+            "skills/ads/packs/video-ad-formats/create-imessage-mockup/tests/verifier.md"
+          ],
+          "source": "pack"
+        },
+        {
+          "slug": "stitch-videos-ffmpeg",
+          "name": "stitch-videos-ffmpeg",
+          "description": "stitch video segments with ffmpeg concat, xfade, overlay, audio mux, and export settings.",
+          "path": "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg",
+          "files": [
+            "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/SKILL.md",
+            "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/composite.py",
+            "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/composite_final.py",
+            "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/composite_final.sh",
+            "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/normalize_clip.sh",
+            "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/voiceless/composite.py",
+            "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/skill.meta.json",
+            "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/expected-output.md",
+            "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/human-test.md",
+            "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/sample-input.md",
+            "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/smoke-test.md",
+            "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/verifier.md"
+          ],
+          "source": "pack"
+        },
+        {
+          "slug": "mix-master",
+          "name": "mix-master",
+          "description": "Canonical short-form-ad audio mix in one FFmpeg pass. VO loudnorm + 3.0× per-clip + 2.0× mix, music 0.13 base + apad+afade, sidechain compress 20:1 @ 0.01, climax line +20%, optional video-to-music duration sync. Replaces the reactive multi-round tuning that cost v03 6+ passes.",
+          "path": "skills/ads/packs/video-ad-formats/mix-master",
+          "files": [
+            "skills/ads/packs/video-ad-formats/mix-master/SKILL.md",
+            "skills/ads/packs/video-ad-formats/mix-master/scripts/mix.sh",
+            "skills/ads/packs/video-ad-formats/mix-master/skill.meta.json"
+          ],
+          "source": "pack"
+        },
+        {
+          "slug": "watch",
+          "name": "watch",
+          "description": "Watch a rendered video (whole file or specific ranges) at a chosen fidelity and emit a timestamp-keyed observation report. Observation only — no edits, no verdicts.",
+          "path": "skills/ads/packs/video-ad-formats/watch",
+          "files": [
+            "skills/ads/packs/video-ad-formats/watch/SKILL.md",
+            "skills/ads/packs/video-ad-formats/watch/references/parameters.md",
+            "skills/ads/packs/video-ad-formats/watch/skill.meta.json",
+            "skills/ads/packs/video-ad-formats/watch/tests/expected-output.md",
+            "skills/ads/packs/video-ad-formats/watch/tests/human-test.md",
+            "skills/ads/packs/video-ad-formats/watch/tests/sample-input.md",
+            "skills/ads/packs/video-ad-formats/watch/tests/smoke-test.md",
+            "skills/ads/packs/video-ad-formats/watch/tests/verifier.md"
+          ],
+          "source": "pack"
+        }
+      ],
+      "metadata": {
+        "slug": "video-ad-formats",
+        "name": "Video Ad Formats",
+        "description": "Remix branded short-form video ads from library templates — one local-render recipe per format (iMessage chat-reveal live; Apple Notes / ChatGPT / photo-grid coming), plus the shared renderer / stitch / mix / QC atoms they reuse. The recipe runs in the user's own Claude Code; the app is the review + viewer.",
+        "tags": [
+          "ads"
+        ],
+        "skills": [
+          "remix-imessage-ad-from-sample",
+          "create-imessage-video-ad",
+          "create-imessage-mockup",
+          "stitch-videos-ffmpeg",
+          "mix-master",
+          "watch"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install video-ad-formats",
           "supports": [
             "claude",
             "cursor",

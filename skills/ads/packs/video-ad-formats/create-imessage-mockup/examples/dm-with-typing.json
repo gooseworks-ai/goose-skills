@@ -1,0 +1,15 @@
+{
+  "mode": "dm",
+  "participants": [
+    { "id": "me",   "name": "Me",  "self": true },
+    { "id": "them", "name": "Jordan", "color": "#5AC8FA", "initials": "J" }
+  ],
+  "keyboard": { "leftIcon": "camera" },
+  "messages": [
+    { "type": "text", "from": "them", "text": "Oh good cause your computer is locked haha" },
+    { "type": "timestamp", "bold": "Sat, Jan 2", "light": "11:07" },
+    { "type": "text", "from": "me",   "text": "Congrats man! Enjoy!!!!!", "delivered": true },
+    { "type": "text", "from": "them", "text": "Thanks dude!! 😎" },
+    { "type": "typing", "from": "them" }
+  ]
+}

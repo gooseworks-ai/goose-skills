@@ -1,0 +1,11 @@
+{
+  "mode": "dm",
+  "participants": [
+    { "id": "me",   "name": "Me",   "self": true },
+    { "id": "them", "name": "Sam",  "color": "#34C759", "initials": "S" }
+  ],
+  "messages": [
+    { "type": "timestamp", "label": "iMessage\nToday 9:41 AM" },
+    { "type": "text", "from": "me", "text": "Can I call you back later? I'm at an appointment.", "delivered": true }
+  ]
+}
