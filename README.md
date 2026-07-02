@@ -39,7 +39,13 @@ Works with [Claude Code](https://claude.ai/claude-code) &middot; [Cursor](https:
 **Paste this into your coding agent** (Claude Code, Cursor, or Codex) and it'll set everything up:
 
 ```
-Install the Gooseworks skills for yourself: in the terminal, run `npx gooseworks install` with the flag for your agent — `--claude`, `--cursor`, or `--codex`. It'll open a browser to sign in and set up the tools, then confirm it worked.
+Install the Gooseworks skills:
+
+In the terminal, run `npx gooseworks install` with the flag for your agent — `--claude`, `--cursor`, or `--codex`.
+
+Then run `npx gooseworks login` and it'll open a browser to sign in and set up the tools, then confirm it worked.
+
+The skills can be used with /gooseworks <prompt>
 ```
 
 ### Claude Cowork
