@@ -1,0 +1,31 @@
+{
+  "slug": "ugc-video-formats",
+  "name": "UGC Video Ad Formats",
+  "description": "Remix branded short-form UGC video ads from library templates \u2014 one local-render recipe per UGC format (selfie product review, GRWM, skincare demo, car-confessional / walk-and-talk / street-testimonial monologues), plus the Seedance 2.0 render engine they drive. GPT-image-2 + Seedance 2.0 reference-to-video only; native lip-synced dialogue, no captions. The recipe runs in the user's own Claude Code; the app is the review + viewer.",
+  "tags": [
+    "ads"
+  ],
+  "skills": [
+    "remix-ugc-product-from-sample",
+    "create-ugc-product-video-from-refs",
+    "remix-ugc-grwm-from-sample",
+    "create-ugc-grwm-video-from-refs",
+    "remix-ugc-skincare-from-sample",
+    "create-ugc-skincare-demo-video-from-refs",
+    "remix-ugc-car-confessional-from-sample",
+    "create-ugc-car-confessional-video-from-refs",
+    "remix-ugc-walk-and-talk-from-sample",
+    "create-ugc-walk-and-talk-video-from-refs",
+    "remix-ugc-street-testimonial-from-sample",
+    "create-ugc-street-testimonial-video-from-refs",
+    "create-video-seedance-2-fal"
+  ],
+  "installation": {
+    "base_command": "npx goose-skills install ugc-video-formats",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  }
+}
