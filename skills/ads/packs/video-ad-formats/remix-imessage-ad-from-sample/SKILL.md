@@ -101,17 +101,25 @@ end-card line) and ask them to approve or edit. Persist the draft so the app can
 row so the APP's Review panel shows it**: `update_ad_project_script { project_id, script_drafts:
 { format: "imessage", render_variant, thread, audio: { treatment: "sfx" | "silent" | "bed",
 bed_label? }, materials: [...] }, script: <the readable "sender: text" lines + end card> }`.
-**Materials for the in-app review** (the user can't see images/clips/audio in the CLI — this is
-how they review them): upload a copy of every CHOSEN visual/audio input to
-`working/review/<name>` via `get_upload_url` and list it as `{ kind: "image" | "video" |
-"audio", label, path: "working/review/<name>" }` — the hook/attachment image, the background
-photo (iphone-frame variant), the end-card wordmark, any music bed. **Also render the COMPOSED
-end card now** — the create molecule's end-card step is a free local Playwright HTML→PNG render
-with no dependency on the chat recording — and include it as `{ kind: "image", label: "End card
-preview", path: "working/review/end-card.png" }` so the user reviews the actual slate (wordmark
-placement, CTA pill, backdrop), not just its ingredients. Assets that will only exist
-after paid generation get `{ kind, label, pending: true, note: "<what will be generated, from
-which prompt>" }` instead. **Do not render until the user says go** — a render is minutes of their machine time.
+**Ingredients for the in-app review** — the user reviews on the project page, not in the CLI. An
+ingredient with a `path` shows a **real thumbnail / player**; one with `pending: true` shows only a
+grey "composed at render time" line. So the images the user asked about are visible ONLY if you
+upload them. **Generate the review stills NOW and upload them** — the hook image and end card are
+free, local, deterministic renders (no credits, no dependency on the chat recording), so they are
+ALWAYS `path` ingredients and **NEVER `pending`**:
+- **Hook / attachment image** → the product/result image shown in the attachment bubble.
+- **End card** → render the COMPOSED slate now (the create molecule's end-card step is a free local
+  Playwright HTML→PNG) so the user reviews the real card — wordmark placement, CTA pill, backdrop.
+- The chosen background photo (iphone-frame variant) and music bed, if any.
+
+For each: `get_upload_url` → PUT to `working/review/<name>`, then list it. **Prefer the
+container-tagged shape** so the app renders each piece the right way:
+`ingredients: [{ container: "image" | "endcard" | "background" | "music", label, subtitle?, path:
+"working/review/<name>" }]` (the legacy `materials: [{ kind, label, path }]` still works). Reserve
+`pending: true` ONLY for what genuinely cannot exist before the long paid render — the recorded chat
+clip and the final mixed audio — as `{ container/kind, label, pending: true, note: "<what gets
+generated>" }`. The hook image and end card are NOT in that set. **Do not render until the user says
+go** — a render is minutes of their machine time.
 If they edit, update thread.json + re-mirror and re-confirm once.
 
 **Draft-only mode (free review):** if the user's instruction says "draft only" / "script only" /

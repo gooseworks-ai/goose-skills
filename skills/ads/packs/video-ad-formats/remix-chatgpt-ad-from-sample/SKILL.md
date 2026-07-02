@@ -102,11 +102,13 @@ see it: `write_file` →
 row so the APP's Review panel shows it**: `update_ad_project_script { project_id, script_drafts:
 { format: "chatgpt", conversation, audio: { treatment: "silent" | "sfx" }, materials: [...] },
 script: <the readable question + answer text> }`.
-**Materials for the in-app review** (the user can't see images/clips/audio in the CLI): this
-format is usually pure UI — list whatever visual inputs ARE chosen (e.g. an avatar or attachment
-image) as `{ kind: "image" | "video" | "audio", label, path: "working/review/<name>" }` after
-uploading a copy to `working/review/` via `get_upload_url`; omit `materials` entirely when there
-are none. **Do not
+**Ingredients for the in-app review** — the user reviews on the project page, not in the CLI. A
+`path` ingredient shows a **real thumbnail / player**; a `pending: true` one shows only a grey
+placeholder line. This format is usually pure UI, so list whatever visual inputs ARE chosen (an
+avatar, an attachment image, an end card if the template has one) as `{ container: "image" |
+"endcard", label, path: "working/review/<name>" }` (legacy `{ kind, label, path }` still works)
+after `get_upload_url` → PUT to `working/review/`; render any composed end card now so it previews
+as a real image, **never `pending`**. Omit ingredients entirely when there truly are none. **Do not
 render until the user says go** — a render is minutes of their machine time. If they edit, update
 conversation.json + re-mirror and re-confirm once.
 

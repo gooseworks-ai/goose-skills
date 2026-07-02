@@ -105,15 +105,21 @@ so the app can see it: `write_file` →
 row so the APP's Review panel shows it**: `update_ad_project_script { project_id, script_drafts:
 { format: "apple-notes", note, audio: { treatment: "silent" | "ticks" | "bed", bed_label? },
 materials: [...] }, script: <the readable title + paragraph lines + end card> }`.
-**Materials for the in-app review** (the user can't see images/clips/audio in the CLI): upload a
-copy of every CHOSEN visual/audio input to `working/review/<name>` via `get_upload_url` and list
-it as `{ kind: "image" | "video" | "audio", label, path: "working/review/<name>" }` — the brand
-wordmark/logo for the end card, any product image, the music bed if one is planned. **Also render
-the COMPOSED end card now** (the create molecule's end-card step — a free local HTML→PNG render,
-independent of the typing recording) and include it as `{ kind: "image", label: "End card
-preview", path: "working/review/end-card.png" }` so the user reviews the actual slate, not just
-its ingredients. Assets that will only exist after generation get
-`{ kind, label, pending: true, note }` instead. **Do not render until the user says go** — a render is minutes
+**Ingredients for the in-app review** — the user reviews on the project page, not in the CLI. A
+`path` ingredient shows a **real thumbnail / player**; a `pending: true` one shows only a grey
+"composed at render time" line — so images are visible ONLY if you upload them. **Generate the
+review stills NOW and upload them** — the end card and any product/wordmark image are free, local,
+deterministic renders (no credits, independent of the typing recording), so they are ALWAYS `path`
+ingredients and **NEVER `pending`**:
+- **End card** → render the COMPOSED slate now (the create molecule's end-card step, a free local
+  HTML→PNG) so the user reviews the real card, not just its ingredients.
+- The brand wordmark/logo, any product image, and the music bed if one is planned.
+
+For each: `get_upload_url` → PUT to `working/review/<name>`, then list it. **Prefer the
+container-tagged shape** — `ingredients: [{ container: "endcard" | "image" | "music", label,
+subtitle?, path: "working/review/<name>" }]` (legacy `materials: [{ kind, label, path }]` still
+works). Reserve `pending: true` ONLY for what genuinely cannot exist before the long paid render
+(the recorded typing clip, the final mixed audio) — never the end card or a chosen image. **Do not render until the user says go** — a render is minutes
 of their machine time. If they edit, update note.json + re-mirror and re-confirm once.
 
 **Draft-only mode (free review):** if the user's instruction says "draft only" / "script only" /
