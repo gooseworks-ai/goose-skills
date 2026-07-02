@@ -1,0 +1,18 @@
+{
+  "statusBar": { "time": "7:52" },
+  "header": {
+    "style": "title-only",
+    "title": "ChatGPT",
+    "rightIcons": ["edit"]
+  },
+  "messages": [
+    { "type": "user-text", "text": "Write me a poem about loving iPhone and Mac" },
+    {
+      "type": "assistant",
+      "title": "Ode to iPhone and Mac",
+      "feedback": false,
+      "text": "Beneath my touch, the glass does gleam,\nA portal to a modern dream.\nThe iPhone hums, so sleek, refined,\nA loyal friend, a clever mind.\n\nIts polished frame, a work of art,\nA piece of tech that warms the heart.\nFrom morning calls to twilight scrolls,\nIt keeps me whole, it makes me whole.\n\nAnd then the Mac, a silver stage,\nWhere thoughts take flight and words engage.\nIts keys, a symphony of sound,\nIdeas born with every pound.\n\nThe screen, a canvas crystal-clear,\nWhere visions bloom and tasks appear.\nFrom coding lines to edits fine,\nIts elegance is purely divine."
+    }
+  ],
+  "composer": { "placeholder": "Message", "streaming": true }
+}

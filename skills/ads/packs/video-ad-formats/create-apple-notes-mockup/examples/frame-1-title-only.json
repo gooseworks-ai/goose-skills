@@ -1,0 +1,24 @@
+{
+  "title": "Hello",
+  "body": [],
+  "cursor": "title",
+  "status_bar": {
+    "time": "9:41",
+    "battery_pct": 13,
+    "battery_low": true,
+    "show_focus_glyph": false
+  },
+  "show_keyboard": true,
+  "keyboard_state": {
+    "suggestions": [
+      "Helloo",
+      "Hello's",
+      "Hellooo"
+    ],
+    "shift": "lower",
+    "letters_row1": "qwertyuiop",
+    "letters_row2": "asdfghjkl",
+    "letters_row3": "zxcvbnm"
+  },
+  "with_iphone_frame": false
+}

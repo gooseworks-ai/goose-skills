@@ -1,0 +1,25 @@
+{
+  "slug": "video-ad-formats",
+  "name": "Video Ad Formats",
+  "description": "Remix branded short-form video ads from library templates — one local-render recipe per format (iMessage, ChatGPT, Apple Notes live; photo-grid + music-video coming), plus the shared renderer / stitch / mix / QC atoms they reuse. The recipe runs in the user's own Claude Code; the app is the review + viewer.",
+  "tags": ["ads"],
+  "skills": [
+    "remix-imessage-ad-from-sample",
+    "create-imessage-video-ad",
+    "create-imessage-mockup",
+    "remix-chatgpt-ad-from-sample",
+    "create-chatgpt-video-ad",
+    "create-chatgpt-mockup",
+    "remix-apple-notes-ad-from-sample",
+    "create-apple-notes-video-ad",
+    "create-apple-notes-mockup",
+    "render-ios-keyboard",
+    "stitch-videos-ffmpeg",
+    "mix-master",
+    "watch"
+  ],
+  "installation": {
+    "base_command": "npx goose-skills install video-ad-formats",
+    "supports": ["claude", "cursor", "codex"]
+  }
+}

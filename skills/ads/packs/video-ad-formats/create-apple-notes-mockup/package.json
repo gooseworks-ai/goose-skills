@@ -1,0 +1,17 @@
+{
+  "name": "create-apple-notes-mockup",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Render pixel-accurate Apple Notes (iPhone, light mode) screenshot mockups from a note JSON.",
+  "main": "render.js",
+  "bin": {
+    "apple-notes-mockup": "render.js"
+  },
+  "scripts": {
+    "render": "node render.js",
+    "test": "bash tests/run-all.sh"
+  },
+  "dependencies": {
+    "playwright": "^1.40.0"
+  }
+}

@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><style>/* ChatGPT mobile (iOS) — pixel-targeted to ChatGPT 5.1 / 5.2 reference screenshots.
+   Light mode only. 9:16 viewport: 750 x 1334 (DSF 3 → 2250 x 4002 export).        */
+
+:root {
+  --gpt-bg: #FFFFFF;
+  --gpt-text: #0D0D0D;          /* primary copy + icons */
+  --gpt-text-soft: #5D5D5D;
+  --gpt-meta: #9B9B9B;
+  --gpt-user-bubble: #F4F4F4;   /* user message background — slightly cool gray */
+  --gpt-divider: #ECECEC;
+  --gpt-composer-border: #E5E5E5;
+  --gpt-send-bg-disabled: #E5E5E5;
+  --gpt-send-bg-active: #0D0D0D;
+  --gpt-send-icon-disabled: #BFBFBF;
+  --gpt-chip-border: #E5E5E5;
+  --gpt-link: #0D0D0D;
+  --gpt-citation-bg: #F4F4F4;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--gpt-bg);
+  color: var(--gpt-text);
+  font-family: "SF Pro Text", "SF Pro Display", -apple-system, BlinkMacSystemFont,
+               "Helvetica Neue", "Inter", "Segoe UI", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ----- Stage (modern iPhone viewport, ~9:19.5) ----- */
+/* 750 x 1624 matches modern iPhone Pro screen recordings (iPhone 14/16
+   Pro physical screen is 1179×2556, ratio 0.461). The older 9:16 ratio
+   (750×1334) reads as proportionally squat next to real iPhone screen
+   recordings. Don't change without re-shooting every static example
+   and the smoke-test mp4. */
+.stage {
+  width: 750px;
+  height: 1624px;
+  margin: 0 auto;
+  background: var(--gpt-bg);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ----- iPhone status bar ----- */
+.status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 36px 4px;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--gpt-text);
+  height: 56px;
+  letter-spacing: -0.2px;
+}
+.status-bar .time {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-variant-numeric: tabular-nums;
+}
+.status-bar .right-cluster {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.status-bar .right-cluster svg {
+  display: block;
+}
+/* Up-rank a couple of glyphs so the proportions match iOS status bar.    */
+.status-bar .right-cluster svg[width="17"] { width: 22px; height: auto; }
+.status-bar .right-cluster svg[width="27"] { width: 32px; height: auto; }
+
+/* ----- ChatGPT header row ----- */
+.gpt-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 32px 14px;
+  background: var(--gpt-bg);
+}
+.gpt-header .left,
+.gpt-header .right {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.gpt-header .center {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--gpt-text);
+  letter-spacing: -0.2px;
+}
+.gpt-header .center .model-tag {
+  color: var(--gpt-text);
+  margin-left: 4px;
+  font-weight: 500;
+}
+.gpt-header .center .chev-down {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 4px;
+  transform: translateY(2px);
+}
+.gpt-header .center .chev-right {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 6px;
+  transform: translateY(1px);
+}
+.gpt-header .hamburger svg { display: block; }
+
+/* When the title is hard-left (e.g. just "ChatGPT" with no model tag), the
+   header collapses to: hamburger ... title ... edit-pencil. Use the
+   `header-style="title-center"` modifier on .gpt-header. */
+.gpt-header.title-center {
+  justify-content: space-between;
+}
+.gpt-header.title-center .center {
+  font-weight: 600;
+}
+
+/* ----- Conversation scroller ----- */
+.conversation {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding: 10px 32px 32px;
+  overflow: hidden;
+}
+
+/* ----- User message (right-aligned soft-gray bubble) ----- */
+.row.user {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 6px;
+}
+.row.user .bubble {
+  background: var(--gpt-user-bubble);
+  color: var(--gpt-text);
+  padding: 18px 22px;
+  border-radius: 28px;
+  max-width: 78%;
+  font-size: 27px;
+  line-height: 1.35;
+  font-weight: 400;
+  letter-spacing: -0.2px;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+/* Image attachment that the user attached to their message. ChatGPT renders
+   this *above* the bubble, right-aligned, with the same rounded radius. */
+.row.user-image {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 8px;
+}
+.row.user-image .attachment {
+  max-width: 84%;
+  border-radius: 28px;
+  overflow: hidden;
+  background: var(--gpt-user-bubble);
+}
+.row.user-image .attachment img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 28px;
+}
+/* Square aspect helper for product-style attachments (matches references). */
+.row.user-image .attachment.square img {
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
+/* ----- Assistant message (plain prose, left-aligned, full-width) ----- */
+.row.assistant {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: flex-start;
+  margin-top: 4px;
+}
+.row.assistant .assistant-body {
+  font-size: 27px;
+  line-height: 1.42;
+  color: var(--gpt-text);
+  letter-spacing: -0.15px;
+  font-weight: 400;
+  width: 100%;
+}
+.row.assistant .assistant-body p {
+  margin: 0 0 16px 0;
+}
+.row.assistant .assistant-body p:last-child { margin-bottom: 0; }
+.row.assistant .assistant-body strong,
+.row.assistant .assistant-body b {
+  font-weight: 700;
+  color: var(--gpt-text);
+}
+.row.assistant .assistant-body em,
+.row.assistant .assistant-body i {
+  font-style: italic;
+}
+.row.assistant .assistant-body h1,
+.row.assistant .assistant-body h2,
+.row.assistant .assistant-body h3 {
+  font-weight: 700;
+  letter-spacing: -0.4px;
+  color: var(--gpt-text);
+  line-height: 1.25;
+}
+.row.assistant .assistant-body h1 { font-size: 32px; margin: 4px 0 12px; }
+.row.assistant .assistant-body h2 { font-size: 30px; margin: 20px 0 10px; }
+.row.assistant .assistant-body h3 { font-size: 27px; margin: 16px 0 6px; }
+.row.assistant .assistant-body ul,
+.row.assistant .assistant-body ol {
+  margin: 0 0 16px 0;
+  padding-left: 28px;
+}
+.row.assistant .assistant-body li { margin: 6px 0; }
+
+/* Streaming-mode list replacement — see inlineListBulletsForStreaming.
+   The "• " is real text inside the .md-li, so it can be wrapped as a
+   streamable word and won't appear before the line's first content word. */
+.row.assistant .assistant-body .md-list {
+  margin: 0 0 16px 0;
+}
+.row.assistant .assistant-body .md-li {
+  margin: 6px 0;
+  padding-left: 28px;
+  text-indent: -18px;
+}
+.row.assistant .assistant-body hr {
+  border: 0;
+  border-top: 1px solid var(--gpt-divider);
+  margin: 18px 0;
+}
+
+/* Bold-title-as-section convention (matches the sleep-apnea reference). */
+.row.assistant .assistant-body .section-title {
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+/* Citation chip after a sentence (e.g. "Johns Hopkins Medicine +1"). */
+.row.assistant .assistant-body .cite {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  margin-left: 6px;
+  border-radius: 999px;
+  background: var(--gpt-citation-bg);
+  font-size: 18px;
+  color: var(--gpt-text-soft);
+  vertical-align: 2px;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+/* Lightbulb (or similar emoji) inline with a header — keeps it tight. */
+.row.assistant .assistant-body .icon-prefix {
+  margin-right: 4px;
+}
+
+/* Feedback chips (thumbs up / down) under an assistant message. */
+.row.assistant .feedback {
+  display: flex;
+  gap: 18px;
+  padding: 4px 2px 0;
+}
+.row.assistant .feedback svg { display: block; }
+
+/* Optional ChatGPT spiral logo next to a response title. */
+.row.assistant .title-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.row.assistant .title-row .logo {
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.row.assistant .title-row .title-text {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+/* ----- Empty state (just OpenAI logo centered, used for "Memory Off" intro). ----- */
+.empty-state {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  color: var(--gpt-meta);
+  font-size: 22px;
+}
+.empty-state .big-logo {
+  width: 80px;
+  height: 80px;
+  opacity: 0.45;
+}
+
+/* ----- Composer (bottom pill) ----- */
+.composer-wrap {
+  padding: 14px 32px 30px;
+  background: var(--gpt-bg);
+}
+.composer {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 20px;
+  border-radius: 999px;
+  background: var(--gpt-bg);
+  border: 1px solid var(--gpt-composer-border);
+  box-shadow: 0 1px 0 rgba(0,0,0,0.02);
+  min-height: 72px;
+}
+.composer .plus-btn {
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gpt-text);
+}
+.composer .input {
+  flex: 1 1 auto;
+  font-size: 28px;
+  color: var(--gpt-text);
+  font-weight: 400;
+  letter-spacing: -0.1px;
+  padding: 0 2px;
+  /* Inline content flow so the blinking caret sits right after the last
+     character of typed text — flex would treat it as a separate flex child
+     and pin it to the right edge of the input. */
+  min-height: 34px;
+  line-height: 1.3;
+}
+.composer .input .placeholder { color: var(--gpt-meta); }
+.composer .input .composer-text { color: var(--gpt-text); }
+.composer .input .caret {
+  display: inline-block;
+  width: 2px;
+  height: 26px;
+  background: var(--gpt-text);
+  margin-left: 1px;
+  vertical-align: middle;
+  animation: blink 1s steps(1) infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+.composer .mic-btn {
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gpt-text);
+}
+.composer .send-btn {
+  flex: 0 0 auto;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gpt-send-bg-disabled);
+  color: var(--gpt-send-icon-disabled);
+}
+.composer .send-btn.active {
+  background: var(--gpt-send-bg-active);
+  color: #FFFFFF;
+}
+.composer .send-btn.streaming {
+  background: var(--gpt-send-bg-active);
+  color: #FFFFFF;
+}
+
+/* When a custom GPT (Apps SDK style) is attached, the composer shows a chip
+   above the input row with the GPT name + an "x" to remove. */
+.composer.with-chip {
+  border-radius: 32px;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 12px 14px;
+  gap: 8px;
+}
+.composer.with-chip .gpt-chip {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border: 1px solid var(--gpt-chip-border);
+  border-radius: 999px;
+  font-size: 22px;
+  font-weight: 600;
+  color: #2A66E0;
+}
+.composer.with-chip .gpt-chip .x { color: var(--gpt-meta); font-weight: 500; }
+.composer.with-chip .input-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.composer.with-chip .input-row .input { flex: 1 1 auto; }
+
+/* ============================================================
+   Animation primitives (used by create-chatgpt-video-ad molecule)
+   Static-mode renders ignore these classes — they only kick in
+   when the message has popState/stream set.
+   ============================================================ */
+
+/* Rows that haven't entered the conversation yet are removed from layout,
+   so the conversation grows naturally as bubbles arrive (the same fix used
+   in create-imessage-mockup — opacity:0 would pre-allocate space). */
+.row[data-pending="1"],
+.row.loading-dot[data-pending="1"] {
+  display: none !important;
+}
+
+/* Pop-in for the user bubble after a send-tap. */
+.row.pop-now {
+  animation: gpt-pop 220ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  transform-origin: 100% 100%;
+}
+.row.assistant.pop-now {
+  transform-origin: 0% 0%;
+}
+@keyframes gpt-pop {
+  0%   { opacity: 0; transform: scale(0.92) translateY(6px); }
+  60%  { opacity: 1; }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Word-by-word streaming reveal. Each .word starts at data-stream="0"
+   (invisible + blurred); the driver flips it to "1". The CSS transition
+   gives the fade-in ramp.
+   `display: inline` (not inline-block) — inline-block collapses adjacent
+   text-node whitespace inside parent block divs, which ate the spaces
+   between words inside .md-li bullet items. Inline preserves natural word
+   breaks; modern browsers honor `filter: blur()` on inline content too. */
+.assistant-body.streaming-body .word {
+  display: inline;
+  transition: opacity 220ms ease-out, filter 220ms ease-out;
+}
+.assistant-body.streaming-body .word[data-stream="0"] {
+  opacity: 0;
+  filter: blur(2px);
+}
+.assistant-body.streaming-body .word[data-stream="1"] {
+  opacity: 1;
+  filter: none;
+}
+/* If the assistant body has streamed at all, also fade in the title row
+   words (driven by the same word-stream walker). */
+.row.assistant .title-row .word { display: inline; transition: opacity 220ms ease-out, filter 220ms ease-out; }
+.row.assistant .title-row .word[data-stream="0"] { opacity: 0; filter: blur(2px); }
+
+/* Loading dot row — single dark gray solid circle that pulses softly. */
+.row.loading-dot {
+  align-items: flex-start;
+  margin: 10px 0 0;
+}
+.row.loading-dot .dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #5D5D5D;
+  animation: gpt-dot-pulse 1.1s ease-in-out infinite;
+}
+@keyframes gpt-dot-pulse {
+  0%, 100% { opacity: 0.45; transform: scale(0.92); }
+  50%      { opacity: 1.0;  transform: scale(1.04); }
+}
+
+/* Header right-cluster cross-fade between "personPlus+dotted" and "edit+more".
+   Driver toggles data-active on `.right` to swap. */
+.gpt-header .right[data-active] {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.gpt-header .right[data-active] .cluster {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  transition: opacity 220ms ease-out;
+}
+.gpt-header .right[data-active] .cluster.primary { position: relative; }
+.gpt-header .right[data-active] .cluster.alt {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+}
+.gpt-header .right[data-active="primary"] .cluster.primary { opacity: 1; }
+.gpt-header .right[data-active="primary"] .cluster.alt     { opacity: 0; }
+.gpt-header .right[data-active="alt"]     .cluster.primary { opacity: 0; }
+.gpt-header .right[data-active="alt"]     .cluster.alt     { opacity: 1; }
+
+/* Composer caret only blinks when present. */
+.composer .input .caret {
+  /* override the static-mode blink with a softer fade so it doesn't
+     strobe during a 30fps recording */
+  animation: gpt-caret-blink 1.05s steps(2) infinite;
+}
+@keyframes gpt-caret-blink {
+  0%, 49.9% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+/* ============================================================
+   Inline iOS QWERTY keyboard — ported from create-apple-notes-mockup's
+   .kbd block. Scaled to the 750-wide ChatGPT stage. Absolute-positioned
+   at the bottom of .stage, transform-slides in/out via data-state.
+   ============================================================ */
+
+.kbd {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #d1d4da;
+  padding: 16px 8px 0;
+  z-index: 5;
+  transition: transform 280ms cubic-bezier(0.3, 0, 0.2, 1);
+}
+.kbd[data-state="hidden"] { transform: translateY(100%); }
+.kbd[data-state="shown"]  { transform: translateY(0); }
+
+.kbd-suggestions {
+  height: 58px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
+  font-size: 24px;
+  color: #1c1c1e;
+  margin-bottom: 8px;
+}
+.kbd-suggestion {
+  text-align: center;
+  border-right: 1px solid rgba(60, 60, 67, 0.18);
+  padding: 6px 0;
+}
+.kbd-suggestion:last-child { border-right: none; }
+
+.kbd-row {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 12px;
+  gap: 10px;
+  padding: 0 4px;
+}
+.kbd-row--abc { padding: 0 40px; }
+.kbd-row--zxc { padding: 0 4px; }
+
+.kbd-key {
+  flex: 1 1 0;
+  height: 76px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.28);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+               "Helvetica Neue", sans-serif;
+  font-size: 38px;
+  font-weight: 400;
+  color: #1c1c1e;
+}
+.kbd-key--wide { flex: 1.6 1 0; background: #abafb8; }
+
+.kbd-bottom {
+  display: flex;
+  gap: 10px;
+  padding: 0 4px;
+  align-items: center;
+}
+.kbd-bottom .kbd-key { font-size: 30px; height: 76px; }
+.kbd-bottom .kbd-key--space { flex: 4.5 1 0; }
+.kbd-bottom .kbd-key--num { flex: 1.1 1 0; background: #abafb8; }
+.kbd-bottom .kbd-key--emoji { flex: 1.0 1 0; }
+.kbd-bottom .kbd-key--return { flex: 1.4 1 0; background: #abafb8; }
+
+.kbd-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 38px 6px 38px;
+  height: 60px;
+}
+.kbd-footer svg { display: block; }
+
+/* When the keyboard is shown, the composer pill rides above it. The
+   keyboard's effective height (~498px) is the offset we apply to the
+   composer's bottom edge. */
+.stage[data-keyboard-shown="1"] .composer-wrap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 498px;
+}
+</style><style>
+  /* Soft fade on assistant pop so it doesn't snap when streaming begins. */
+  .row.assistant.pop-now { animation-duration: 280ms; }
+</style>
+<script>window.__TIMELINE__ = [{"t":0,"kind":"keyboard-show"},{"t":0.6,"kind":"composer-type","text":"Hey what's happening in this app?","dur_sec":2.4},{"t":3.2,"kind":"send-tap"},{"t":3.2,"kind":"pop","target":"msg-user-1"},{"t":3.2,"kind":"composer-clear"},{"t":3.2,"kind":"header-swap","value":"alt"},{"t":3.2,"kind":"keyboard-hide"},{"t":3.2,"kind":"send-state","value":"streaming"},{"t":3.55,"kind":"loading-dot-show","target":"dot-1"},{"t":4.1,"kind":"loading-dot-hide","target":"dot-1"},{"t":4.1,"kind":"pop","target":"msg-assistant-1"},{"t":4.2,"kind":"stream-words","target":"msg-assistant-1","dur_sec":6.5,"wps":7},{"t":4.5,"kind":"scroll-to","target":"msg-assistant-1","dur_ms":250},{"t":10.8,"kind":"send-state","value":"active"}];
+window.__DONE__ = false;
+window.__START_DRIVER__ = function () { (function runDriver() {
+    const TL = window.__TIMELINE__ || [];
+    const t0 = performance.now();
+    const stage = document.querySelector('.stage');
+    const composerInput = document.querySelector('.composer .input');
+    const sendBtn = document.querySelector('.composer .send-btn');
+    const header = document.querySelector('.gpt-header .right');
+    const kb = document.querySelector('.kbd');
+
+    function setComposerText(text) {
+      if (!composerInput) return;
+      const ct = composerInput.querySelector('.composer-text');
+      const ph = composerInput.querySelector('.placeholder');
+      if (ph) ph.style.display = text ? 'none' : '';
+      if (ct) {
+        ct.textContent = text;
+        ct.style.display = text ? '' : 'none';
+      } else if (text) {
+        const span = document.createElement('span');
+        span.className = 'composer-text';
+        span.textContent = text;
+        composerInput.insertBefore(span, composerInput.firstChild);
+      }
+      // Ensure caret exists when there's text
+      let caret = composerInput.querySelector('.caret');
+      if (text && !caret) {
+        caret = document.createElement('span');
+        caret.className = 'caret';
+        composerInput.appendChild(caret);
+      } else if (!text && caret) {
+        caret.remove();
+      }
+      // Send button activates when there's text
+      if (sendBtn) {
+        sendBtn.classList.toggle('active', !!text);
+      }
+    }
+
+    function setSendState(state) {
+      if (!sendBtn) return;
+      sendBtn.classList.remove('active', 'streaming');
+      if (state === 'active' || state === 'streaming') {
+        sendBtn.classList.add(state);
+      }
+      // Swap icon when streaming/active
+      const arrow = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19 V5 M5 12 L12 5 L19 12"/></svg>`;
+      const stop = `<svg width="18" height="18" viewBox="0 0 14 14" fill="#FFFFFF"><rect x="2" y="2" width="10" height="10" rx="1.5"/></svg>`;
+      sendBtn.innerHTML = state === 'streaming' ? stop : arrow;
+    }
+
+    function popRow(id) {
+      const row = document.querySelector(`[data-anim-id="${id}"]`);
+      if (!row) return;
+      row.removeAttribute('data-pending');
+      row.classList.add('pop-now');
+    }
+    function hideRow(id) {
+      const row = document.querySelector(`[data-anim-id="${id}"]`);
+      if (!row) return;
+      row.setAttribute('data-pending', '1');
+      row.classList.remove('pop-now');
+    }
+
+    function streamWords(id, dur_sec, wps, startedAt) {
+      const row = document.querySelector(`[data-anim-id="${id}"]`);
+      if (!row) return null;
+      const words = Array.from(row.querySelectorAll('.word[data-stream="0"]'));
+      const total = words.length;
+      const totalDurMs = dur_sec * 1000;
+      // Pre-compute reveal times: linear with a slight ease so the start
+      // doesn't feel mechanical. (Real ChatGPT varies a touch.)
+      const revealAt = words.map((_, i) => (i / total) * totalDurMs);
+      return { row, words, revealAt, startedAt, total, done: 0 };
+    }
+
+    function smoothScrollTo(targetY, dur_ms) {
+      const start = window.scrollY;
+      const delta = targetY - start;
+      const t0scroll = performance.now();
+      function step(now) {
+        const p = Math.min(1, (now - t0scroll) / dur_ms);
+        const ease = 0.5 - 0.5 * Math.cos(Math.PI * p);
+        window.scrollTo(0, start + delta * ease);
+        if (p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
+    // Composer typing — schedules per-char appearance
+    const typingJobs = [];
+    function startTyping(text, dur_sec, startedAt) {
+      typingJobs.push({ text, dur_sec, startedAt, lastIdx: 0 });
+    }
+
+    const streamJobs = [];
+    let cursor = 0;
+
+    function tick(now) {
+      const t = (now - t0) / 1000;
+
+      // Run scheduled events
+      while (cursor < TL.length && TL[cursor].t <= t) {
+        const ev = TL[cursor++];
+        switch (ev.kind) {
+          case 'composer-type':
+            startTyping(ev.text, ev.dur_sec || 2, now);
+            break;
+          case 'composer-clear':
+            setComposerText('');
+            break;
+          case 'send-tap': {
+            if (sendBtn) {
+              sendBtn.style.transformOrigin = 'center';
+              sendBtn.animate(
+                [{ transform: 'scale(0.86)' }, { transform: 'scale(1.0)' }],
+                { duration: 140, easing: 'cubic-bezier(0.2,0.7,0.2,1)' }
+              );
+            }
+            break;
+          }
+          case 'pop':
+            popRow(ev.target);
+            break;
+          case 'header-swap':
+            if (header) header.setAttribute('data-active', ev.value || 'alt');
+            break;
+          case 'keyboard-show':
+            if (kb) kb.setAttribute('data-state', 'shown');
+            if (stage) stage.setAttribute('data-keyboard-shown', '1');
+            break;
+          case 'keyboard-hide':
+            if (kb) kb.setAttribute('data-state', 'hidden');
+            if (stage) stage.removeAttribute('data-keyboard-shown');
+            break;
+          case 'loading-dot-show':
+            popRow(ev.target);
+            break;
+          case 'loading-dot-hide':
+            hideRow(ev.target);
+            break;
+          case 'send-state':
+            setSendState(ev.value);
+            break;
+          case 'stream-words': {
+            const j = streamWords(ev.target, ev.dur_sec || 6, ev.wps || 7, now);
+            if (j) streamJobs.push(j);
+            break;
+          }
+          case 'scroll-to': {
+            const row = document.querySelector(`[data-anim-id="${ev.target}"]`);
+            if (row) {
+              const rect = row.getBoundingClientRect();
+              const bottomMargin = 200; // leave room above the composer
+              const targetY = window.scrollY + rect.bottom - (window.innerHeight - bottomMargin);
+              smoothScrollTo(Math.max(0, targetY), ev.dur_ms || 250);
+            }
+            break;
+          }
+        }
+      }
+
+      // Drive any active typing jobs
+      for (const job of typingJobs) {
+        const elapsed = (now - job.startedAt) / 1000;
+        const targetIdx = Math.min(job.text.length, Math.floor((elapsed / job.dur_sec) * job.text.length));
+        if (targetIdx !== job.lastIdx) {
+          setComposerText(job.text.slice(0, targetIdx));
+          job.lastIdx = targetIdx;
+        }
+      }
+
+      // Drive any active streaming jobs
+      for (const job of streamJobs) {
+        const elapsed = now - job.startedAt;
+        while (job.done < job.total && job.revealAt[job.done] <= elapsed) {
+          job.words[job.done].setAttribute('data-stream', '1');
+          job.done++;
+        }
+        // Once 80% revealed, kick a scroll-to so the rest stays in view
+        if (job.done === Math.floor(job.total * 0.5) && !job.midScroll) {
+          job.midScroll = true;
+          const rect = job.row.getBoundingClientRect();
+          const targetY = window.scrollY + rect.bottom - (window.innerHeight - 200);
+          smoothScrollTo(Math.max(0, targetY), 350);
+        }
+      }
+
+      // Tell the host page we're past the last event + a 1.2s tail
+      const lastT = TL.length ? TL[TL.length - 1].t : 0;
+      if (t > lastT + 1.5) {
+        window.__DONE__ = true;
+        return;
+      }
+
+      requestAnimationFrame(tick);
+    }
+
+    requestAnimationFrame(tick);
+  })(); };
+</script></head>
+<body>
+  <div class="stage">
+    
+    <div class="status-bar">
+      <div class="time">9:41 </div>
+      <div class="right-cluster">
+        <svg width="17" height="11" viewBox="0 0 17 11" fill="#0D0D0D"><rect x="0" y="7" width="3" height="4" rx="0.7"/><rect x="4.5" y="5" width="3" height="6" rx="0.7"/><rect x="9" y="3" width="3" height="8" rx="0.7"/><rect x="13.5" y="0" width="3" height="11" rx="0.7"/></svg>
+        <svg width="17" height="12" viewBox="0 0 17 12" fill="#0D0D0D"><path d="M8.5 0C5.4 0 2.55 1.13 .35 3 a.75.75 0 0 0-.05 1.05l1 1.07a.74.74 0 0 0 1.05.05A10 10 0 0 1 8.5 2.5a10 10 0 0 1 6.15 2.67.74.74 0 0 0 1.05-.05l1-1.07A.75.75 0 0 0 16.65 3 C 14.45 1.13 11.6 0 8.5 0z"/><path d="M8.5 4a8 8 0 0 0-5.4 2.07.74.74 0 0 0-.04 1.05l1.04 1.13a.74.74 0 0 0 1.05.04A6 6 0 0 1 8.5 6.5a6 6 0 0 1 3.35 1.79.74.74 0 0 0 1.05-.04l1.04-1.13a.74.74 0 0 0-.04-1.05A8 8 0 0 0 8.5 4z"/><path d="M8.5 8a3.5 3.5 0 0 0-2.4.95.74.74 0 0 0-.05 1.05l1.85 2 a.75.75 0 0 0 1.1 0l1.85-2a.74.74 0 0 0-.05-1.05A3.5 3.5 0 0 0 8.5 8z"/></svg>
+        <svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="#0D0D0D" stroke-opacity="0.35"/><rect x="2" y="2" width="19" height="9" rx="2" fill="#0D0D0D"/><rect x="23.5" y="4" width="2" height="5" rx="1" fill="#0D0D0D" fill-opacity="0.35"/></svg>
+      </div>
+    </div>
+  
+    
+    <div class="gpt-header ">
+      <div class="left">
+        <div class="hamburger"><svg width="30" height="22" viewBox="0 0 22 16" fill="none"><path d="M2 4 H20" stroke="#0D0D0D" stroke-width="2.2" stroke-linecap="round"/><path d="M2 12 H14" stroke="#0D0D0D" stroke-width="2.2" stroke-linecap="round"/></svg></div>
+      </div>
+      <div class="center"><span>ChatGPT</span></div>
+      <div class="right" data-active="primary"><div class="cluster primary" data-cluster="primary"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#0D0D0D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9.5" cy="8" r="3.5"/><path d="M3.5 19c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M18 6v6 M15 9h6"/></svg><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#0D0D0D" stroke-width="1.8" stroke-linecap="round" stroke-dasharray="2 3"><circle cx="12" cy="12" r="9.5"/></svg></div>
+       <div class="cluster alt" data-cluster="alt"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#0D0D0D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4l10.5-10.5a2.5 2.5 0 0 0-3.5-3.5L4.5 16.5z"/><path d="M14 7l3 3"/></svg><svg width="30" height="30" viewBox="0 0 24 24" fill="#0D0D0D"><circle cx="5.5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="18.5" cy="12" r="1.7"/></svg></div></div>
+    </div>
+  
+    <div class="conversation"><div class="row user pop-pending" data-anim-id="msg-user-1" data-pending="1"><div class="bubble">Hey what&#39;s happening in this app?</div></div>
+<div class="row loading-dot pop-pending" data-anim-id="dot-1" data-pending="1"><div class="dot"></div></div>
+
+    <div class="row assistant pop-pending" data-anim-id="msg-assistant-1" data-pending="1">
+      
+      <div class="assistant-body streaming-body"><p><span class="word" data-stream="0">Could</span> <span class="word" data-stream="0">you</span> <span class="word" data-stream="0">tell</span> <span class="word" data-stream="0">me</span> <span class="word" data-stream="0">what</span> <span class="word" data-stream="0">you</span> <span class="word" data-stream="0">mean</span> <span class="word" data-stream="0">by</span> <span class="word" data-stream="0">&quot;this</span> <span class="word" data-stream="0">app&quot;?</span></p>
+<p><span class="word" data-stream="0">If</span> <span class="word" data-stream="0">you&#39;re</span> <span class="word" data-stream="0">referring</span> <span class="word" data-stream="0">to</span> <span class="word" data-stream="0">the</span> <span class="word" data-stream="0">ChatGPT</span> <span class="word" data-stream="0">app</span> <span class="word" data-stream="0">itself,</span> <span class="word" data-stream="0">I</span> <span class="word" data-stream="0">can</span> <span class="word" data-stream="0">explain:</span></p>
+<div class="md-list">
+<div class="md-li"><span class="word" data-stream="0">•</span> <span class="word" data-stream="0">How</span> <span class="word" data-stream="0">conversations</span> <span class="word" data-stream="0">work</span></div>
+<div class="md-li"><span class="word" data-stream="0">•</span> <span class="word" data-stream="0">Memory</span> <span class="word" data-stream="0">and</span> <span class="word" data-stream="0">personalization</span></div>
+<div class="md-li"><span class="word" data-stream="0">•</span> <span class="word" data-stream="0">Tools</span> <span class="word" data-stream="0">(web</span> <span class="word" data-stream="0">search,</span> <span class="word" data-stream="0">calendars,</span> <span class="word" data-stream="0">email,</span> <span class="word" data-stream="0">file</span> <span class="word" data-stream="0">analysis,</span> <span class="word" data-stream="0">image</span> <span class="word" data-stream="0">generation,</span> <span class="word" data-stream="0">etc.)</span></div>
+<div class="md-li"><span class="word" data-stream="0">•</span> <span class="word" data-stream="0">Why</span> <span class="word" data-stream="0">certain</span> <span class="word" data-stream="0">UI</span> <span class="word" data-stream="0">elements</span> <span class="word" data-stream="0">appear</span></div>
+<div class="md-li"><span class="word" data-stream="0">•</span> <span class="word" data-stream="0">What</span> <span class="word" data-stream="0">data</span> <span class="word" data-stream="0">is</span> <span class="word" data-stream="0">saved</span> <span class="word" data-stream="0">vs.</span> <span class="word" data-stream="0">not</span> <span class="word" data-stream="0">saved</span></div>
+<div class="md-li"><span class="word" data-stream="0">•</span> <span class="word" data-stream="0">How</span> <span class="word" data-stream="0">tasks/reminders</span> <span class="word" data-stream="0">work</span></div>
+</div></div>
+      
+    </div>
+  </div>
+    
+    <div class="composer-wrap">
+      <div class="composer">
+        <div class="plus-btn"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#0D0D0D" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div>
+        <div class="input"><span class="placeholder">Ask ChatGPT</span></div>
+        <div class="mic-btn"><svg width="24" height="30" viewBox="0 0 24 28" fill="#0D0D0D"><path d="M12 16a3.5 3.5 0 0 0 3.5-3.5V6a3.5 3.5 0 0 0-7 0v6.5A3.5 3.5 0 0 0 12 16z"/><path d="M19 12.5a1 1 0 0 0-2 0 5 5 0 0 1-10 0 1 1 0 0 0-2 0 7 7 0 0 0 6 6.93V22h-2.25a1 1 0 0 0 0 2h6.5a1 1 0 0 0 0-2H13v-2.57A7 7 0 0 0 19 12.5z"/></svg></div>
+        <div class="send-btn "><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19 V5 M5 12 L12 5 L19 12"/></svg></div>
+      </div>
+    </div>
+  
+    
+    <div class="kbd" data-anim-id="kb" data-state="hidden">
+      <div class="kbd-suggestions">
+        <div class="kbd-suggestion">I</div><div class="kbd-suggestion">The</div><div class="kbd-suggestion">I&#39;m</div>
+      </div>
+      <div class="kbd-row">
+        <div class="kbd-key">q</div><div class="kbd-key">w</div><div class="kbd-key">e</div><div class="kbd-key">r</div><div class="kbd-key">t</div><div class="kbd-key">y</div><div class="kbd-key">u</div><div class="kbd-key">i</div><div class="kbd-key">o</div><div class="kbd-key">p</div>
+      </div>
+      <div class="kbd-row kbd-row--abc">
+        <div class="kbd-key">a</div><div class="kbd-key">s</div><div class="kbd-key">d</div><div class="kbd-key">f</div><div class="kbd-key">g</div><div class="kbd-key">h</div><div class="kbd-key">j</div><div class="kbd-key">k</div><div class="kbd-key">l</div>
+      </div>
+      <div class="kbd-row kbd-row--zxc">
+        <div class="kbd-key kbd-key--wide"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="#1c1c1e" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M16 5 L5 16 H11 V26 H21 V16 H27 Z"/></svg></div>
+        <div class="kbd-key">z</div><div class="kbd-key">x</div><div class="kbd-key">c</div><div class="kbd-key">v</div><div class="kbd-key">b</div><div class="kbd-key">n</div><div class="kbd-key">m</div>
+        <div class="kbd-key kbd-key--wide"><svg width="40" height="28" viewBox="0 0 40 28" fill="none" stroke="#1c1c1e" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3 L3 14 L13 25 H35 V3 Z"/><path d="M19 9 L29 19 M29 9 L19 19"/></svg></div>
+      </div>
+      <div class="kbd-bottom">
+        <div class="kbd-key kbd-key--num">123</div>
+        <div class="kbd-key kbd-key--emoji"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#1c1c1e" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><circle cx="9" cy="10" r="1" fill="#1c1c1e" stroke="none"/><circle cx="15" cy="10" r="1" fill="#1c1c1e" stroke="none"/><path d="M8 15 Q12 18 16 15"/></svg></div>
+        <div class="kbd-key kbd-key--space">space</div>
+        <div class="kbd-key kbd-key--return"><svg width="34" height="28" viewBox="0 0 34 28" fill="none" stroke="#1c1c1e" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M28 5 V14 H8 M14 10 L8 14 L14 18"/></svg></div>
+      </div>
+      <div class="kbd-footer">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#1c1c1e" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M2.5 12 H21.5 M12 2.5 V21.5 M5 5.5 Q12 10 19 5.5 M5 18.5 Q12 14 19 18.5 M12 2.5 C7 7 7 17 12 21.5 M12 2.5 C17 7 17 17 12 21.5"/></svg>
+        <svg width="28" height="36" viewBox="0 0 24 28" fill="#1c1c1e"><path d="M12 16a3.5 3.5 0 0 0 3.5-3.5V6a3.5 3.5 0 0 0-7 0v6.5A3.5 3.5 0 0 0 12 16z"/><path d="M19 12.5a1 1 0 0 0-2 0 5 5 0 0 1-10 0 1 1 0 0 0-2 0 7 7 0 0 0 6 6.93V22h-2.25a1 1 0 0 0 0 2h6.5a1 1 0 0 0 0-2H13v-2.57A7 7 0 0 0 19 12.5z"/></svg>
+      </div>
+    </div>
+  
+  </div>
+</body></html>

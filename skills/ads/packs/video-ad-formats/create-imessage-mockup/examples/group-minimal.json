@@ -1,0 +1,16 @@
+{
+  "mode": "group",
+  "title": "Studio Crew",
+  "participants": [
+    { "id": "me",   "name": "Me",   "self": true },
+    { "id": "ana",  "name": "Ana",  "color": "#AF52DE", "initials": "A" },
+    { "id": "ben",  "name": "Ben",  "color": "#34C759", "initials": "B" }
+  ],
+  "messages": [
+    { "type": "timestamp", "bold": "Yesterday", "light": "8:42 PM" },
+    { "type": "text", "from": "ana", "text": "Mix sounds great 🔥" },
+    { "type": "text", "from": "ben", "text": "Yeah the low end finally sits right" },
+    { "type": "text", "from": "me",  "text": "Cutting the master tonight, expect a link in 2 hrs", "delivered": true },
+    { "type": "text", "from": "ana", "text": "Legend" }
+  ]
+}

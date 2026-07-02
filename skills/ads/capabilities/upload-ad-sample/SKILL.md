@@ -48,6 +48,7 @@ admin allowlist (or an admin session). A regular user/API token is rejected with
 | `tags` | no | `[]` | Free-form tags array, e.g. `["imessage", "ugc"]`. |
 | `is_published` | no | `false` | When `true` the sample is publicly visible immediately. Otherwise it's a draft, only visible in the admin panel. |
 | `is_featured` | no | `false` | When `true` the sample also appears on the homepage ads grid (subject to ordering). |
+| `is_remixable` | no | auto | When `true` the sample appears in the app's **create / remix picker** — INDEPENDENT of `is_published` (which gates the landing-page showcase). Defaults to `true` when a `recipe` is provided, else `false`. Set it explicitly to keep the remixable set separate from the showcase set (`is_published:true, is_remixable:false` = showcase-only; `is_published:false, is_remixable:true` = remixable but not on the landing page). |
 | `sort_order` | no | `0` | Higher numbers appear earlier inside the featured grid. |
 | `slug` | no | auto | Readable handle (e.g. `clinikally-imessage-spf`). The server auto-generates one from brand + title if omitted. Lowercase, hyphenated. |
 | **`format_key`** | no | — | **Ad-format key for video formats**, e.g. `imessage`. Set this when the sample should be remixable through a format tab. Lowercase, hyphenated. |

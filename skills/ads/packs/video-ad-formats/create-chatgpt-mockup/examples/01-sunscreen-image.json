@@ -1,0 +1,15 @@
+{
+  "statusBar": { "time": "9:41" },
+  "header": {
+    "style": "model-tag",
+    "title": "ChatGPT",
+    "model": "5.1",
+    "rightIcons": ["personPlus", "dottedCircle"]
+  },
+  "messages": [
+    { "type": "user-image", "src": "assets/sunscreen-sky.svg", "aspect": "square" },
+    { "type": "user-text", "text": "Make this face sunscreen better" },
+    { "type": "assistant", "text": "It can't get any better." }
+  ],
+  "composer": { "placeholder": "Ask anything" }
+}

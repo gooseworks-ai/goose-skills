@@ -1,0 +1,13 @@
+{
+  "statusBar": { "time": "7:52" },
+  "header": {
+    "style": "plain-title",
+    "title": "Get Plus ✦",
+    "rightIcons": ["edit"]
+  },
+  "messages": [],
+  "composer": {
+    "text": "Write me a poem about loving iPhone and Mac",
+    "cursor": true
+  }
+}

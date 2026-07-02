@@ -1,0 +1,13 @@
+{
+  "mode": "dm",
+  "participants": [
+    { "id": "me",   "name": "Me",   "self": true },
+    { "id": "them", "name": "Mom",  "color": "#FF2D55", "initials": "M" }
+  ],
+  "messages": [
+    { "type": "timestamp", "label": "iMessage\nToday 9:41 AM" },
+    { "type": "text", "from": "them", "text": "Are you still coming for dinner Sunday?" },
+    { "type": "text", "from": "me",   "text": "Yes! Bringing the dog this time 🐶", "delivered": true },
+    { "type": "text", "from": "them", "text": "Yay 💕" }
+  ]
+}

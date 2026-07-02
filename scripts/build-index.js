@@ -23,6 +23,28 @@ const ROOT = process.env.GOOSE_SKILLS_ROOT
   : path.resolve(__dirname, '..');
 const OUTPUT = path.join(ROOT, 'skills-index.json');
 
+// Only index git-TRACKED files, so build-index never bakes uncommitted or
+// gitignored content into skills-index.json (e.g. a contributor's local
+// `**/eval/fixtures/` captures, `.eval-runs/`, or SkillOpt outputs). Those files
+// 404 when the backend DB sync fetches each listed path from raw.githubusercontent
+// — the exact noise that motivated this. `null` = git unavailable (e.g. a no-.git
+// CI tarball), in which case we don't filter (legacy behaviour).
+let TRACKED = null;
+try {
+  const { execSync } = require('child_process');
+  TRACKED = new Set(
+    execSync('git ls-files', {
+      cwd: ROOT,
+      encoding: 'utf8',
+      maxBuffer: 256 * 1024 * 1024,
+    })
+      .split('\n')
+      .filter(Boolean),
+  );
+} catch {
+  TRACKED = null;
+}
+
 function parseFrontmatter(content) {
   const match = content.match(/^---\n([\s\S]*?)\n---/);
   if (!match) return {};
@@ -57,6 +79,8 @@ function collectFiles(dir) {
     } else {
       if (SKIP_FILES.has(entry.name)) continue;
       if (SKIP_EXTS.has(path.extname(entry.name))) continue;
+      // Skip uncommitted / gitignored files so the sync never 404s on them.
+      if (TRACKED && !TRACKED.has(path.relative(ROOT, full))) continue;
       files.push(full);
     }
   }

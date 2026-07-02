@@ -1,0 +1,21 @@
+{
+  "statusBar": { "time": "9:41", "dnd": true },
+  "header": {
+    "style": "title-only",
+    "title": "ChatGPT",
+    "rightIcons": ["edit", "more"]
+  },
+  "messages": [
+    { "type": "user-text", "text": "@SeatGeek cheapest tickets for an upcoming Mets game" },
+    {
+      "type": "assistant",
+      "title": "Cheapest Upcoming Mets Games",
+      "feedback": true,
+      "text": "Here are some of the **cheapest upcoming Mets games** right now — starting as low as about **$11–$12**."
+    }
+  ],
+  "composer": {
+    "chip": { "name": "SeatGeek" },
+    "placeholder": "Ask ChatGPT"
+  }
+}

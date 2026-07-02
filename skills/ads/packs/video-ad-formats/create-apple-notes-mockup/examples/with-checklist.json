@@ -1,0 +1,47 @@
+{
+  "title": "Grocery list",
+  "body": [
+    {
+      "type": "paragraph",
+      "text": "Trader Joe's run before dinner."
+    },
+    {
+      "type": "checklist",
+      "items": [
+        {
+          "text": "Eggs (2 dozen)",
+          "checked": true
+        },
+        {
+          "text": "Sourdough",
+          "checked": true
+        },
+        {
+          "text": "Avocados",
+          "checked": false
+        },
+        {
+          "text": "Greek yogurt",
+          "checked": false
+        },
+        {
+          "text": "Cold brew concentrate",
+          "checked": false
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "text": "Pick up flowers if there's time."
+    }
+  ],
+  "cursor": null,
+  "status_bar": {
+    "time": "9:41",
+    "battery_pct": 87,
+    "battery_low": false,
+    "show_focus_glyph": false
+  },
+  "show_keyboard": false,
+  "with_iphone_frame": false
+}
