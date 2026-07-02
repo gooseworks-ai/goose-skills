@@ -1,7 +1,6 @@
 <div align="center">
 
-<img width="1270" height="760" alt="1" src="https://github.com/user-attachments/assets/60212c5c-e372-455c-a937-2ff16e235ee6" />
-
+<img width="1934" height="1910" alt="CleanShot 2026-07-02 at 13 46 24@2x" src="https://github.com/user-attachments/assets/9ab12011-ba78-457d-a64a-d50bb8e2a90a" />
 
 # Goose Skills
 
