@@ -35,6 +35,7 @@
     },
     "github_url": { "type": "string" },
     "author": { "type": "string" },
+    "example_prompt": { "type": "string" },
     "requires_skills": {
       "type": "array",
       "items": { "type": "string" },

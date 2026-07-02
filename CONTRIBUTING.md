@@ -16,6 +16,7 @@ Concrete paths and shell commands belong in the install template, tool wrappers,
 ## Other authoring rules
 
 - Lead with what the skill does and when to use it (the `description` field is the agent's matching signal).
+- (Optional) Set `example_prompt` in `skill.meta.json` to a short, copyable prompt that shows the skill in action. It's surfaced in the catalog and docs; if omitted, one is generated from the description.
 - Use plain prose over code blocks where possible — the agent reads this, not a build tool.
 - Keep the body focused on agent behaviour: decision flow, non-negotiables, troubleshooting. Tool plumbing belongs elsewhere.
 - After editing a skill, run the local sync to update your dev DB:

@@ -15,7 +15,7 @@ Works with [Claude Code](https://claude.ai/claude-code) &middot; [Cursor](https:
 
 [![npm version](https://img.shields.io/npm/v/goose-skills?color=blue)](https://www.npmjs.com/package/goose-skills)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Skills](https://img.shields.io/badge/skills-108-orange)]()
+[![Skills](https://img.shields.io/badge/skills-200%2B-orange)]()
 
 <br />
 
@@ -29,7 +29,7 @@ Works with [Claude Code](https://claude.ai/claude-code) &middot; [Cursor](https:
 
 - [Quick Start](#-quick-start)
 - [Commands](#-commands)
-- [Skills Catalog (108)](#-skills-catalog-108)
+- [Skills Catalog](#-skills-catalog)
 - [Usage Examples](#-usage-examples)
 - [Building from Source](#-building-from-source)
 - [Skill Metadata Contract](#-skill-metadata-contract)
@@ -40,7 +40,11 @@ Works with [Claude Code](https://claude.ai/claude-code) &middot; [Cursor](https:
 
 ## Quick Start
 
-Install the GooseWorks master skill with a single command:
+**Paste this into your coding agent** (Claude Code, Cursor, or Codex) and it'll set everything up:
+
+> Install the Gooseworks skills for yourself: in the terminal, run `npx gooseworks install` with the flag for your agent — `--claude`, `--cursor`, or `--codex`. It'll open a browser to sign in and set up the tools, then confirm it worked.
+
+Prefer to run it yourself? Use the command directly:
 
 ```bash
 npx gooseworks install --claude    # Claude Code
@@ -49,7 +53,7 @@ npx gooseworks install --codex     # Codex
 npx gooseworks install --all       # All detected agents
 ```
 
-This gives your coding agent access to the **full catalog of 100+ skills**. After installing, just ask your agent to use any skill by name.
+This gives your coding agent access to the **full catalog of 200+ skills**. After installing, just ask your agent to use any skill by name.
 
 > If you want a cloud-based AI coworker that already knows all these skills and more, sign up to [Gooseworks](https://app.gooseworks.ai)
 
@@ -65,162 +69,24 @@ npx gooseworks update                      # Update to latest skill version
 
 ---
 
-## Skills Catalog (108)
+## Skills Catalog
 
-**51 Capabilities** (atomic, single-purpose tools) &middot; **52 Composites** (multi-skill chains) &middot; **5 Playbooks** (end-to-end workflows)
+200+ skills across the growth stack, grouped by focus area:
 
-### Ads (9)
+| Category | What's inside |
+|----------|---------------|
+| **Ads** | Research, build, and analyze paid campaigns across Meta and Google |
+| **SEO** | Keyword research, content gaps, SERP analysis, technical audits |
+| **Lead generation** | Find, enrich, and qualify prospects for your pipeline |
+| **Outreach** | Draft, personalize, and run outbound across email and social |
+| **Content** | Blog posts, social content, carousels, video scripts, newsletters |
+| **Research** | Company, market, and prospect deep-dives |
+| **Competitive intel** | Track competitor pricing, launches, positioning, and ads |
+| **Monitoring** | Watch for mentions, signals, and changes across the web |
+| **Social** | Scrape and analyze social platforms and audiences |
+| **Brand** | Voice, positioning, and visual brand assets |
 
-| Skill | Type | Description |
-|-------|------|-------------|
-| `ad-angle-miner` | Comp | Mine converting ad angles from reviews, Reddit, competitor ads |
-| `ad-campaign-analyzer` | Comp | Analyze ad campaign performance (Google, Meta, LinkedIn) |
-| `ad-to-landing-page-auditor` | Comp | Audit message match between ads and landing pages |
-| `competitor-ad-intelligence` | Comp | Scrape competitor ads from Meta Ad Library and Google Ads Transparency Center, analyze creative patterns |
-| `google-ad-scraper` | Cap | Scrape Google Ads Transparency Center |
-| `google-search-ads-builder` | Comp | End-to-end Google Search Ads campaign builder |
-| `meta-ads-campaign-builder` | Comp | End-to-end Meta Ads campaign builder |
-| `paid-channel-prioritizer` | Comp | Recommend which paid channels to start with |
-| `trending-ad-hook-spotter` | Comp | Monitor social for trending narratives to map to ad hooks |
-
-### Brand (4)
-
-| Skill | Type | Description |
-|-------|------|-------------|
-| `brand-voice-extractor` | Cap | Extract tone/style from published content |
-| `launch-positioning-builder` | Comp | Research competitors, generate positioning document |
-| `messaging-ab-tester` | Comp | Generate messaging variants, deploy as LinkedIn/email tests |
-| `visual-brand-extractor` | Cap | Extract visual branding (colors, fonts, layout) |
-
-### Competitive Intel (9)
-
-| Skill | Type | Description |
-|-------|------|-------------|
-| `battlecard-generator` | Comp | Research competitor, produce structured sales battlecard |
-| `company-current-gtm-analysis` | Comp | Comprehensive GTM scoring with white space map |
-| `competitive-pricing-intel` | Comp | Monitor competitor pricing pages and changes |
-| `competitor-intel` | Comp | Multi-source competitor tracking |
-| `competitor-monitoring-system` | Play | Set up ongoing competitive intelligence monitoring |
-| `industry-scanner` | Comp | Daily industry intelligence briefing |
-| `seo-domain-analyzer` | Cap | Domain SEO metrics via Semrush/Ahrefs |
-| `seo-traffic-analyzer` | Cap | Website traffic and keyword analysis |
-| `tech-stack-teardown` | Cap | Reverse-engineer a company's sales/marketing tech stack |
-
-### Content (15)
-
-| Skill | Type | Description |
-|-------|------|-------------|
-| `blog-feed-monitor` | Cap | Scrape blogs via RSS feeds with Apify fallback |
-| `campaign-brief-generator` | Comp | Generate complete marketing campaign brief |
-| `content-asset-creator` | Cap | Generate branded HTML reports and pages |
-| `content-brief-factory` | Comp | Detailed content briefs at scale with SERP analysis |
-| `create-html-carousel` | Cap | *(deprecated — use `goose-graphics`)* Create LinkedIn carousel posts as PNG images |
-| `create-html-slides` | Cap | *(deprecated — use `goose-graphics`)* Create animation-rich HTML presentations |
-| `create-linkedin-content` | Cap | Draft voice-tuned LinkedIn post variants from a brief, with LinkedIn defaults and banned-phrase self-check |
-| `create-workflow-diagram` | Cap | Create FigJam/Miro-style workflow diagrams as PNGs |
-| `create-x-content` | Cap | Draft voice-tuned X/Twitter post variants with distinct framings and banned-phrase self-check |
-| `feature-launch-playbook` | Comp | Generate full launch kit from a feature/update |
-| `generate-voice-guide` | Cap | Generate a personal voice guide for X and/or LinkedIn from past posts via iterative sample-and-feedback loops |
-| `goose-graphics` | Comp | 36 aesthetic presets across 7 formats (carousel, story, infographic, slides, poster, chart, tweet) with Unsplash/ASCII sourcing and Playwright PNG export |
-| `help-center-article-generator` | Comp | Generate structured help center articles |
-| `site-content-catalog` | Cap | Full website content inventory |
-| `social-kit` | Comp | One command → voice-tuned X + LinkedIn drafts + matching graphic, orchestrating create-x-content, create-linkedin-content, and goose-graphics |
-
-### Lead Generation (23)
-
-| Skill | Type | Description |
-|-------|------|-------------|
-| `apollo-lead-finder` | Cap | Two-phase Apollo.io prospecting with enrichment |
-| `champion-tracker` | Cap | Track product champions for job changes |
-| `company-contact-finder` | Cap | Find decision-makers at companies |
-| `competitor-post-engagers` | Cap | Find leads from competitor LinkedIn post engagers |
-| `conference-speaker-scraper` | Cap | Extract speakers from conference websites |
-| `contact-cache` | Cap | CSV-backed contact database with dedup |
-| `event-prospecting-pipeline` | Play | End-to-end event prospecting pipeline |
-| `expansion-signal-spotter` | Comp | Monitor accounts for upsell/cross-sell signals |
-| `funding-signal-monitor` | Comp | Monitor for Series A-C funding announcements |
-| `get-qualified-leads-from-luma` | Comp | End-to-end lead prospecting from Luma events |
-| `inbound-lead-enrichment` | Comp | Fill missing data for inbound leads |
-| `inbound-lead-qualification` | Comp | Qualify inbound leads against ICP criteria |
-| `inbound-lead-triage` | Comp | Triage all inbound leads from a given period |
-| `job-posting-intent` | Cap | Detect buying intent from job postings |
-| `job-scraper` | Cap | Search for job postings across LinkedIn and Indeed |
-| `kol-engager-icp` | Cap | Find ICP-fit leads from KOL audiences on LinkedIn |
-| `lead-qualification` | Cap | Lead qualification engine with conversational intake |
-| `linkedin-job-scraper` | Cap | Scrape LinkedIn job postings via python-jobspy |
-| `luma-event-attendees` | Cap | Scrape event attendee lists from Luma |
-| `pain-language-engagers` | Cap | Find leads from LinkedIn pain-language posts |
-| `signal-detection-pipeline` | Play | Detect buying signals, qualify leads, generate outreach |
-| `signal-scanner` | Cap | Detect buying signals across TAM companies |
-| `tam-builder` | Cap | Build scored TAM using Apollo + Supabase |
-
-### Monitoring (10)
-
-| Skill | Type | Description |
-|-------|------|-------------|
-| `hacker-news-scraper` | Cap | Search HN stories/comments via Algolia API |
-| `kol-content-monitor` | Comp | Track KOL posts on LinkedIn and Twitter/X |
-| `newsletter-monitor` | Comp | Scan AgentMail inbox for newsletter signals |
-| `newsletter-signal-scanner` | Comp | Subscribe to and scan industry newsletters |
-| `product-hunt-scraper` | Cap | Scrape trending Product Hunt launches |
-| `reddit-post-finder` | Cap | Scrape and search Reddit posts using Apify |
-| `review-site-scraper` | Cap | Scrape product reviews from G2, Capterra, and Trustpilot using Apify |
-| `sponsored-newsletter-finder` | Comp | Discover newsletters for sponsorship opportunities |
-| `twitter-mention-tracker` | Cap | Search Twitter/X posts with date filtering |
-| `web-archive-scraper` | Cap | Wayback Machine scraper for archived sites |
-
-### Outreach (18)
-
-| Skill | Type | Description |
-|-------|------|-------------|
-| `champion-move-outreach` | Comp | Champion job change signal outreach |
-| `cold-email-outreach` | Cap | End-to-end cold email outreach orchestration |
-| `customer-win-back-sequencer` | Comp | Research churned accounts, generate win-back sequences |
-| `disqualification-handling` | Comp | Handle disqualified/near-miss leads gracefully |
-| `email-drafting` | Cap | Cold email writing with frameworks and personalization |
-| `funding-signal-outreach` | Comp | Funding signal detection + outreach |
-| `hiring-signal-outreach` | Comp | Hiring signal detection + outreach |
-| `kol-discovery` | Cap | Find KOLs via web research + LinkedIn |
-| `leadership-change-outreach` | Comp | Leadership change signal + outreach |
-| `linkedin-commenter-extractor` | Cap | Extract commenters from LinkedIn posts |
-| `linkedin-influencer-discovery` | Cap | Find LinkedIn thought leaders in any space |
-| `linkedin-message-writer` | Cap | Research LinkedIn profiles and write personalized messages |
-| `linkedin-outreach` | Cap | End-to-end LinkedIn outreach campaign builder |
-| `linkedin-post-research` | Cap | Search LinkedIn posts by keyword |
-| `linkedin-profile-post-scraper` | Cap | Scrape recent posts from LinkedIn profiles |
-| `news-signal-outreach` | Comp | News-triggered signal outreach |
-| `outbound-prospecting-engine` | Play | End-to-end outbound prospecting engine |
-| `tiktok-influencer-finder` | Cap | Find TikTok influencers using Apify |
-
-### Research (12)
-
-| Skill | Type | Description |
-|-------|------|-------------|
-| `buyer-persona-generator` | Cap | Research ideal customer profiles and build detailed synthetic buyer personas |
-| `churn-risk-detector` | Comp | Scan for early churn indicators, produce risk scorecard |
-| `icp-identification` | Cap | Research company, define ICP, route to next step |
-| `icp-website-audit` | Comp | End-to-end website audit through ICP eyes |
-| `meeting-brief` | Comp | Daily meeting prep with deep attendee research |
-| `pipeline-review` | Comp | Pipeline analysis from CRM/tracking data |
-| `review-intelligence-digest` | Comp | Scrape reviews, extract themes and proof points |
-| `sales-call-prep` | Comp | Pre-sales-call intelligence composite |
-| `sales-coaching` | Comp | AI sales coach analyzing all sales data |
-| `sequence-performance` | Comp | Email campaign/sequence performance review |
-| `voice-of-customer-synthesizer` | Comp | Aggregate customer feedback into unified VoC report |
-| `youtube-apify-transcript` | Cap | YouTube transcript extraction via Apify API |
-
-### SEO (8)
-
-| Skill | Type | Description |
-|-------|------|-------------|
-| `aeo-visibility` | Cap | AI answer engine visibility testing |
-| `aeo-visibility-monitor` | Comp | Recurring AEO checks across ChatGPT, Perplexity, Gemini |
-| `programmatic-seo-planner` | Comp | Identify programmatic SEO page patterns worth building |
-| `programmatic-seo-spy` | Comp | Reverse-engineer competitor programmatic SEO |
-| `seo-content-audit` | Comp | Full SEO audit: content inventory + metrics + gaps |
-| `seo-content-engine` | Play | Build and run an SEO content engine |
-| `seo-opportunity-finder` | Comp | Find quick-win SEO content opportunities |
-| `topical-authority-mapper` | Comp | Map complete topic clusters with hub/spoke architecture |
+Browse and search every skill at **[skills.gooseworks.ai](https://skills.gooseworks.ai)**.
 
 ---
 
@@ -270,6 +136,7 @@ Each skill directory must include:
 | `features` | No | Feature flags |
 | `github_url` | No | Source repository URL |
 | `author` | No | Skill author |
+| `example_prompt` | No | Copyable prompt shown in the catalog and docs for trying the skill |
 
 ---
 
