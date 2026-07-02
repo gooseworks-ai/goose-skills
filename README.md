@@ -1,13 +1,11 @@
 <div align="center">
 
-> 🎬 **New:** Check out [**goose-video**](https://github.com/gooseworks-ai/goose-video) — our library of AI video generation skills.
-
 <img width="1270" height="760" alt="1" src="https://github.com/user-attachments/assets/60212c5c-e372-455c-a937-2ff16e235ee6" />
 
 
 # Goose Skills
 
-**Growth & GTM skills for AI coding agents. Ready-to-use skills for sales, marketing, competitive intelligence, SEO, and lead generation.**
+**Growth skills for AI agents. Ready-to-use skills for ads, social media, content, marketing, competitive intelligence, SEO, lead generation and GTM.**
 
 Browse all skills at https://skills.gooseworks.ai
 
@@ -16,10 +14,6 @@ Works with [Claude Code](https://claude.ai/claude-code) &middot; [Cursor](https:
 [![npm version](https://img.shields.io/npm/v/goose-skills?color=blue)](https://www.npmjs.com/package/goose-skills)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Skills](https://img.shields.io/badge/skills-200%2B-orange)]()
-
-<br />
-
-[<img src="https://img.shields.io/badge/Get%20Started%20on%20GooseWorks-%E2%86%92-black?style=for-the-badge&labelColor=000000" alt="Get Started on GooseWorks" />](https://app.gooseworks.ai)
 
 </div>
 
@@ -40,17 +34,40 @@ Works with [Claude Code](https://claude.ai/claude-code) &middot; [Cursor](https:
 
 ## Quick Start
 
+
+### AI Coding Agents (Claude Code, Cursor, Codex, etc)
 **Paste this into your coding agent** (Claude Code, Cursor, or Codex) and it'll set everything up:
 
-> Install the Gooseworks skills for yourself: in the terminal, run `npx gooseworks install` with the flag for your agent — `--claude`, `--cursor`, or `--codex`. It'll open a browser to sign in and set up the tools, then confirm it worked.
+```
+Install the Gooseworks skills for yourself: in the terminal, run `npx gooseworks install` with the flag for your agent — `--claude`, `--cursor`, or `--codex`. It'll open a browser to sign in and set up the tools, then confirm it worked.
+```
 
+### Claude Cowork
+
+Run this command in a terminal first:
+```
+npx gooseworks install --all
+```
+
+Then authenticate:
+```
+npx gooseworks login
+```
+
+Then make sure you're working inside a local folder on your machine, and then you can use the skills in Cowork like this:
+```
+Use /gooseworks skill to generate some ad creatives
+```
+
+
+### Install manually
 Prefer to run it yourself? Use the command directly:
 
 ```bash
+npx gooseworks install --all       # All detected agents
 npx gooseworks install --claude    # Claude Code
 npx gooseworks install --cursor    # Cursor
 npx gooseworks install --codex     # Codex
-npx gooseworks install --all       # All detected agents
 ```
 
 This gives your coding agent access to the **full catalog of 200+ skills**. After installing, just ask your agent to use any skill by name.
