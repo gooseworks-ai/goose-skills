@@ -6,11 +6,14 @@ description: >-
   busy sidewalk and turned to camera to say something, earnest "can I just say"
   vox-pop energy. A SINGLE subject: no second person, no interviewer, no cuts.
   ONE continuous Seedance 2.0 reference-to-video take, native lip-synced audio,
-  no captions, no music. This is a monologue sibling that SPECIALIZES the
+  no cuts. The raw take is native voice only; an OPTIONAL post-production pass
+  (inherited Phase 7) finishes it with a ducked music bed, burned captions, and a
+  brand end card. This is a monologue sibling that SPECIALIZES the
   reference skill create-ugc-car-confessional-video-from-refs (read that first):
-  it inherits the Phase 0 intake (avatar / location / optional product), the
-  testimonial-vs-product decision, the prose prompt recipe, the approval gates,
-  the GPT-5.5 vet, the review-loop + fix-loop, and scripts/stitch_replacement.py.
+  it inherits the Phase 0 intake (avatar / location / optional held-or-worn
+  product ref @Image2), the testimonial-vs-product decision, the prose prompt
+  recipe, the approval gates, the GPT-5.5 vet, the review-loop + fix-loop, the
+  optional post-production layer, and scripts/stitch_replacement.py.
   This file documents ONLY the street deltas — stopped-to-talk staging,
   near-stationary handheld, single-person hard rule, punchy hot-take word budget
   — and points back to the car reference + the parent create-ugc-product-video-from-refs.
@@ -32,9 +35,11 @@ One Seedance 2.0 reference-to-video render of an AI creator who has **stopped
 mid-walk on a busy sidewalk and turned to camera** to say something he means —
 the "street testimonial" that reads as a real stranger who caught you for ten
 seconds to share a hot-take, not an ad. Vertical 9:16, 15s, native lip-synced
-dialogue, **one single continuous take (no internal cuts)**, no captions, no
-music. The busy storefront sidewalk + earnest "can I just say" vox-pop energy is
-the whole attention mechanism.
+dialogue, **one single continuous take (no internal cuts)**. The busy storefront
+sidewalk + earnest "can I just say" vox-pop energy is the whole attention
+mechanism. The **raw take has native voice only**; the inherited **optional
+post-production pass (Phase 7)** adds a ducked music bed, burned captions, and a
+brand end card for a finished ad.
 
 This is a **monologue sibling that specializes the reference skill**
 `create-ugc-car-confessional-video-from-refs` — **read that skill first.** It in
@@ -46,9 +51,10 @@ the **review-loop + fix-loop**, and `scripts/stitch_replacement.py`. This file
 documents **only the street deltas**; for everything else, follow the car
 reference.
 
-Default output is **15 seconds** (`{4..15}` allowed). Hard stack constraint:
-**GPT-image-2 + Seedance 2.0 reference-to-video only.** No ElevenLabs (Seedance
-generates the voice natively), no captions, no music.
+Default output is **15 seconds** (`{4..15}` allowed). Stack constraint for the
+**talking take: GPT-image-2 + Seedance 2.0 reference-to-video only** — no
+ElevenLabs (Seedance voices it natively). Captions and music are never baked into
+the take; they're added in the inherited post-production pass (Phase 7).
 
 ## Street deltas (what differs from the car reference)
 
@@ -75,9 +81,14 @@ listed here, the car reference governs.
 - **Micro-motion.** Animated **hand gestures**, a single **weight shift**,
   **brows/expression** punctuating the point, and **one quick glance to the side**
   as a pedestrian passes — then back to the lens. Lips closed between lines.
-- **Product build.** If a physical product is chosen, he **holds it up and shows
-  it while planted** (no contact physics). Follow the car reference's product
-  rules (name hero features, pin small text to the show-it moment).
+- **Product build (held OR worn).** If **held**, he brings it up and shows it
+  while planted (no contact physics). If a **wearable** (e.g. Dash smart glasses
+  worn on the face), the product is on-body the whole take with one beat toward the
+  lens (a temple tap). Feed a **standalone product shot on a plain/white
+  background** as `@Image2` (never an on-body/lifestyle shot — that makes Seedance
+  hallucinate a generic look-alike; GPT-image-2 a standalone-on-white if only
+  on-body shots exist) and follow the car reference's **product-reference hard
+  rule** + product rules (name hero features, pin small text to the show-it beat).
 
 ## Inputs
 
@@ -101,13 +112,16 @@ the review-loop.
 
 ## Workflow
 
-Follow the **car reference's Phase 0 → Phase 7** exactly. The intake, gates,
-GPT-5.5 vet, render, review-loop, and fix-loop are unchanged. Apply only these
+Follow the **car reference's Phase 0 → Phase 8** exactly. The intake, gates,
+GPT-5.5 vet, render, review-loop, fix-loop, and the **optional Phase 7
+post-production** (music → captions → end card) are unchanged. Apply only these
 street substitutions:
 
-- **Phase 0 — Intake.** Same three proactive questions (avatar / location /
-  product). The location default here is the **scripted busy-storefront sidewalk**
-  (this skill's `demo/` is the validated default).
+- **Phase 0 — Self-directing intake.** Inherit the car reference's full Phase 0
+  (research the knowable unknowns first → ask only the gaps → assemble the brief →
+  **HARD approval gate before any paid call**). Same three proactive questions
+  (avatar / location / product); the location default here is the **scripted
+  busy-storefront sidewalk** (this skill's `demo/` is the validated default).
 - **Phase 1 — Lock character + location.** The composed still is the creator
   **standing planted on the sidewalk** (already stopped to talk), passed as
   `@Image1`. Product build: also normalize the product cutout as `@Image2`.
@@ -155,8 +169,19 @@ street substitutions:
   ref, `--no-generate-audio`, review it alone, then
   `scripts/stitch_replacement.py --window-start/--window-end --fit stretch`
   (preserves master audio). Re-roll with the seed only if identity drifts.
-- **Phase 7 — Final review.** Hand the finished mp4 (absolute path + folder). No
-  captions.
+- **Phase 7 — Post-production (optional).** Inherited from the car reference:
+  music bed → sidechain mix under the VO → **outdoor mic realism (step 2b, REQUIRED
+  for this format)** → **VEED captions LAST** with a verbatim brand-corrected SRT →
+  append a 9:16 brand end card (gooseworks CLI remix). Street note: the caption SRT
+  must fix the product name (e.g. "chat GPT"→"ChatGPT", "dash glasses"→"Dash Glasses").
+  - **Outdoor mic realism (car Phase 7 step 2b, SUBTLE preset).** A clean Seedance
+    VO reads as "booth-recorded" on a sidewalk. Rebuild the audio from the **raw**
+    take with the handheld-mic chain and a **street** ambient bed: `anoisesrc=color=
+    brown` low-passed to **1500 Hz** at **−27 dB** (busy-traffic hush). See the car
+    reference for the full VO EQ/compressor + mix bus. Operator-approved default
+    2026-07-03; leaves the voice fully intelligible.
+- **Phase 8 — Final review.** Hand the finished mp4 (absolute path + folder);
+  state which post-production layers were applied.
 
 ## Decision Rules
 
@@ -181,8 +206,11 @@ Inherit all of the car reference's Decision Rules. Street adds/overrides:
 6. **Everything else defers to the car reference** — prose prompts / dialogue
    inline, no bracketed labels; kill the static-body trap with explicit prose
    micro-motion; testimonial default serves software too; product build = show
-   within the take, no contact physics; ship clean (no captions, no music); every
-   paid call gated; **default 720p, 1080p only on explicit operator request.**
+   within the take (held or worn), `@Image2` accuracy lock, no contact physics;
+   raw take is native voice only with captions/music/end-card as optional Phase 7
+   post-production (VEED captions LAST, verbatim brand-corrected SRT); brand-audio
+   safety net = the caption SRT; every paid call gated; **default 720p, 1080p only
+   on explicit operator request.**
 
 ## Output
 
@@ -191,12 +219,13 @@ Inherit all of the car reference's Decision Rules. Street adds/overrides:
   assets/refs/        ← @Image1 composed sidewalk still (+ @Image2 product for a product build)
   working/            ← seedance_prompt.txt, gpt55 review, review frames/transcript, any fix clips
   finals/
-    <name>.mp4              ← master render
-    <name>-v2.mp4           ← after any surgical window fix (delivered)
+    <name>.mp4              ← raw master render (native voice only)
+    <name>-v2.mp4           ← after any surgical window fix
+    <name>-final.mp4        ← finished ad: music bed + burned captions (+ end card)
 ```
 
-Delivered: one vertical 9:16 mp4 at the requested duration/resolution, native
-dialogue + live sidewalk ambience, no captions.
+Delivered: one vertical 9:16 mp4 — the raw take (native dialogue + live sidewalk
+ambience) or, with post-production, the finished ad (`<name>-final.mp4`).
 
 ## Quality Checks
 
@@ -211,7 +240,9 @@ dialogue + live sidewalk ambience, no captions.
 - (Product build) product geometry + label hold; label legible only when shown;
   no extra/warped hands; no contact physics.
 - Single continuous take — no cuts, no morph/warp.
-- Stack was GPT-image-2 + Seedance 2.0 only; no captions, no music.
+- Raw take was GPT-image-2 + Seedance 2.0 only (no captions/music baked in).
+- (If finished) music ducks under the VO; captions burned **last** with every
+  brand name spelled correctly (verbatim SRT); end card carries the official logo.
 
 ## Failure Modes
 

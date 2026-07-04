@@ -52,6 +52,11 @@ models.
 Required:
 - **Reference images** — usually just **2**: the skincare product (clean studio
   cutout, label legible) + the avatar (person, neutral background, empty hands).
+  **Follow the parent's product-reference hard rule:** the product ref must be a
+  **standalone shot of the product alone on a plain/white background — never held
+  in a hand or in a lifestyle scene** (an in-hand/lifestyle ref makes Seedance
+  hallucinate a generic look-alike). Source order: official site → web research →
+  GPT-image-2 a standalone-on-white from the closest shot.
   Up to 9 total allowed (Seedance's `image_urls` cap). The bathroom setting is
   rendered from the prompt text — an environment plate is rarely needed.
 - **Brief** — natural language: the product, the vibe, must-say dialogue.
@@ -91,10 +96,15 @@ Environment: `FAL_KEY` (alias from `FAL_API_KEY` if needed). `OPENAI_API_KEY`
 > `docs/rules/PRODUCTION_RULES.md` and project memory
 > `feedback_prompt_review_before_send`.
 
-### Phase 0 — Scaffold + parse brief
-Create the demo/project folder (canonical 5-folder layout). Identify the product,
-the avatar, the dialogue, and lock the `@ImageN` order (avatar = `@Image1`,
-product = `@Image2`).
+### Phase 0 — Self-directing intake (research first, ask the gaps, confirm the brief)
+Run the **product parent's Phase 0 self-directing intake** verbatim (derive the
+checklist → research the knowable unknowns first → ask only the gaps → assemble the
+brief → **HARD approval gate before any paid call**). Skincare-specific checklist
+items: the **product** and its standalone-on-white ref, the **bathroom setting**,
+and the **no-phone / no-mirror / invisible-camera** constraint (bake it into the
+brief so it can't be forgotten downstream). **Research the brand first** — claims,
+hero ingredient, palette, existing ads — before asking. Lock the `@ImageN` order
+(avatar = `@Image1`, product = `@Image2`).
 
 ### Phase 1 — Normalize references (GPT-image-2) [APPROVAL GATE]
 - **Product** → frosted/studio cutout on white, front-on, label legible, hero
@@ -131,6 +141,18 @@ Four blocks, specialized for skincare:
 
 Budget: **≤ ~28 spoken words / 15s** (the worked example lands ~15). **No
 dialogue on the silent application beat.** **No contact physics.**
+
+**Pace + performance (or it renders slow, static, and emotionless).** "Intimate"
+must not collapse into slo-mo or a single held look. Two hard rules: (1) state
+**"real-time, natural conversational speed, NOT slow-motion"** — omitting this is
+what made the v1 read like a dreamy slo-mo ad. (2) **Vary the framing** — the
+beats above already ladder ECU → product-to-cheek → medium application → glow
+reveal; keep that range, don't shoot every beat as an extreme close-up (a fixed
+ECU on all beats is static and low-energy). Give each mouth-visible beat a small
+**changing expression** cue (soft confiding smile → a beat of genuine "it worked"
+delight on the reveal) and add **"lips stay closed when not speaking; no single
+expression held >2s."** The reference skin (a real GRWM/skincare demo) has visible
+energy and shifting expression — match it.
 
 Vet the prompt with GPT-5.5 (`demo/working/vet_seedance_prompt_gpt55.py`) and
 fold in its edits before the gate.
@@ -249,6 +271,7 @@ beat (and any stray device/mirror) repaired.
 | Product label garbled / illegible | Seedance can't hold small text under motion across cuts | Pin the label to ONE hero close-up; forbid invented text elsewhere; don't demand readable text in every product beat. |
 | Music or SFX bleeds into the audio | Audio block too loose; "water drip" read as an SFX cue | Forbid music/jingle/whoosh/UI/narrator explicitly; replace "water drip" with "quiet bathroom room tone + soft tile reverb". |
 | Lip-sync mushes on a spoken beat | Dialogue placed on the silent application beat (mouth half-out-of-frame) | Keep the application beat silent; put lines only on mouth-visible beats; ≤28 words/15s. |
+| Reads **slow / dreamy slo-mo**, creator **weirdly static and emotionless**, every beat the same extreme close-up | "Intimate/calm" over-applied → no speed floor, no expression direction, all-ECU framing (the v1 failure) | Add **"real-time, natural conversational speed, NOT slow-motion"**; keep the ECU→product→medium→reveal **framing ladder** (not all ECU); give each spoken beat a **changing expression** cue + "no expression held >2s". Verified on the Mother Science re-roll. |
 | Stitched output drifts from 15s / audio out of sync | Replacement length ≠ hole, no fit applied | `stitch_replacement.py --fit stretch`; it warns if output drifts >0.15s. |
 | Brief needs >15s or 5+ talking beats | Out of scope for one Seedance call | Tell the user; split into takes or route to `recreate-ugc-ad-from-source`. |
 

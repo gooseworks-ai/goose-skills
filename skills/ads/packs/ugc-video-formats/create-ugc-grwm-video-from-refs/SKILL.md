@@ -54,7 +54,12 @@ Required:
   AND render the full-body outfit reveal.
 - **Garment/product ref(s)** — 1 to N stills of the outfit pieces (clean
   product/flatlay shots on white). Each is bound as an `@ImageN` slot and the
-  avatar is composed already WEARING them.
+  avatar is composed already WEARING them. **Follow the parent's product-reference
+  hard rule:** each ref must be a **standalone shot of the garment/product alone on
+  a plain/white background — never worn on a model or in a lifestyle scene** (an
+  on-body ref makes Seedance hallucinate a generic look-alike). Source order:
+  official site → web research → GPT-image-2 a standalone-on-white from the closest
+  shot. Then compose it onto the avatar.
 - **Brief** — natural language: the outfit, the vibe, the room, any must-say
   dialogue.
 
@@ -97,10 +102,15 @@ Environment: `FAL_KEY` (alias from `FAL_API_KEY`). `OPENAI_API_KEY` (from
 > `docs/rules/PRODUCTION_RULES.md` and project memory
 > `feedback_prompt_review_before_send`.
 
-### Phase 0 — Scaffold + parse brief
-Create the project folder (canonical 5-folder layout). Identify the avatar, the
-garment piece(s), the room, the vibe, and the dialogue lines. Lock the `@ImageN`
-order (avatar = `@Image1`, garments next, environment last).
+### Phase 0 — Self-directing intake (research first, ask the gaps, confirm the brief)
+Run the **product parent's Phase 0 self-directing intake** verbatim (derive the
+checklist → research the knowable unknowns first → ask only the gaps → assemble the
+brief → **HARD approval gate before any paid call**). GRWM-specific checklist items:
+the **garment piece(s)** and their standalone-on-white refs, the **room/setting**,
+the **occasion** (game day, night out, errands), and the **mirror-reveal** plan.
+**Research the brand's actual products first** — palette, signature silhouettes,
+on-model shots — before asking the user anything you could have found. Lock the
+`@ImageN` order (avatar = `@Image1`, garments next, environment last).
 
 ### Phase 1 — Normalize references (GPT-image-2) [APPROVAL GATE]
 - **Avatar** → full-length, plain light-grey BG, neutral basics, empty hands,
@@ -131,6 +141,15 @@ Use the parent's **four-block structure**, with GRWM specializations:
    Rule 5), and one **full-length mirror reveal** ("phone aimed at the mirror, her
    entire body visible head-to-toe in one reflection only, full outfit"). Close on
    a "same woman, same outfit, same room, single person, no morph" anchor.
+
+**Dialogue-split safety — end lines on a clean front-cam beat; keep the reveal
+SILENT.** The mirror reveal (and any turn/reveal beat) is the **hardest lip-sync
+spot** — the mouth is far from camera or turning. **Never split a sentence so a
+fragment lands on the reveal beat.** In the H&V v1 the monologue was cut
+mid-sentence and "…from my older brother" fell on the mirror turn → the audio
+garbled after ~9s. Fix that shipped: **dialogue completes on the front-facing beat;
+the mirror reveal carries no words** (music/room-tone only). Structure the script so
+every spoken clause sits on a mouth-visible beat.
 
 Budget **≤ ~28 spoken words / 15s**. Dialogue only on front-cam beats. **No
 contact physics, no second person.** GPT-5.5-vet the prompt

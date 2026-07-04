@@ -87,20 +87,60 @@ Environment: `FAL_KEY` (alias from `FAL_API_KEY` if needed). `OPENAI_API_KEY`
 > `docs/rules/PRODUCTION_RULES.md` and project memory
 > `feedback_prompt_review_before_send`.
 
-### Phase 0 — Scaffold + parse brief
-Create the project folder (canonical 5-folder layout). From the brief, identify:
-the avatar(s), the product(s), the setting, the vibe, and any required dialogue
-lines. Decide the reference plan (which refs are supplied vs need generating) and
-lock the `@ImageN` order you'll use.
+### Phase 0 — Self-directing intake (research first, ask the gaps, confirm the brief)
+Don't start generating from a thin brief. Run this every time, in order — this is
+the shared intake every one-shot format inherits:
+
+1. **Derive the input checklist for this format:** avatar(s), product(s), setting/
+   vibe, energy + word budget (≤ ~28 words/15s), any must-say lines, and the
+   reference plan (which refs are supplied vs. need generating).
+2. **Research the knowable unknowns FIRST — don't ask what you can find.** If the
+   brief names a brand / product / URL: pull product images + a clean
+   **standalone-on-white** shot, the brand palette + voice, the target customer,
+   and **1–2 of the brand's existing ads** (tone, caption style, pacing) before
+   authoring. If it names a creator archetype, draft it. Fill the checklist from
+   research + the prompt; ask only what you genuinely can't find.
+3. **Ask only the remaining unknowns / taste calls** — batched up front, each with a
+   default offered (use the `AskUserQuestion` flow). Non-paid defaults are **soft**
+   (proceed with the default if unanswered); anything that spends is not.
+4. **Assemble the brief and present it for review** — avatar, product + reference
+   plan, setting, energy/word-budget, must-says, and the locked `@ImageN` order.
+   **HARD gate: wait for explicit approval before any paid call** (Phase 1 onward).
+   Never spend on stills/renders off an unconfirmed brief.
+5. After approval, scaffold the project (canonical 5-folder layout) and go to Phase 1.
 
 ### Phase 1 — Normalize references (GPT-image-2) [APPROVAL GATE]
 For each reference, generate/clean to a single clear job:
-- **Product** → studio cutout on white, front-on, hero features enumerated.
+- **Product** → **standalone studio cutout on a plain/white background**, front-on,
+  hero features enumerated. See the **product-reference hard rule** below — the
+  input the cutout is made from must be a standalone product shot, never an on-body
+  or lifestyle photo.
 - **Avatar** → neutral light-grey background, empty hands, natural UGC look. Use
   **filter-safe phrasing** (see Failure Modes — gpt-image-2 rejects "fitted",
   "sleeveless", "real skin texture" etc.).
 - **Environment** (optional) → empty location plate, no people/props.
 Lock ref order = the `@ImageN` numbering. Review the stills before proceeding.
+
+> **Product-reference HARD RULE (standalone product, official-sourced).** The
+> product reference fed to Seedance (and the image the Phase 1 cutout is composed
+> from) MUST be a **standalone shot of the product alone on a plain, preferably
+> white, background — no wrist, hand, face, model, or lifestyle scene.** An
+> on-body/lifestyle reference (band-on-a-wrist, glasses-on-a-face, bottle-in-a-hand)
+> gives Seedance a second body/limb to reconcile and it **hallucinates a generic
+> look-alike** (canonical failure: a Hume Band rendered as a plain featureless
+> band). **Sourcing chain, in order:**
+> 1. **Official source first** — pull a true standalone product/PDP/press shot from
+>    the brand's own website, press kit, or brand kit.
+> 2. **Research elsewhere** — if the official source has none, search the web
+>    (retailers, reviews, marketplace listings) for a clean standalone shot.
+> 3. **Synthesize as last resort** — if no standalone shot exists anywhere, take
+>    the best/closest image and use **GPT-image-2 to render a clean standalone
+>    version on white** (strip the body/background, keep the product identical — do
+>    NOT let the model redraw or invent product details), then use that.
+>
+> Always compose the worn/held product onto the creator **from this standalone
+> cutout**, so `@Image1` already shows the correct product — never rely on the
+> product `@ImageN` alone to fix a wrong product baked into the avatar still.
 
 ### Phase 2 — Author the Seedance prompt (the recipe) [APPROVAL GATE for the prompt]
 Translate the brief into the **Higgsfield-style structure** — four blocks:
@@ -118,14 +158,45 @@ Translate the brief into the **Higgsfield-style structure** — four blocks:
    ("selfie/front-facing phone POV" vs "rear-camera POV, face off-screen"), an
    approximate time window, the action, and (front-cam beats only) the dialogue
    line. Close on a "no morph, no redesign, same single @ImageN" anchor line.
+5. **Performance direction (per-beat expression) — REQUIRED.** Seedance renders
+   ONE flat, held expression for the whole take unless emotion is authored beat
+   by beat. This is the #1 cause of "the model looks emotionless / same face
+   throughout." Two hard rules:
+   - **Never write "one continuous breath / no pauses / all in one flow."** That
+     phrasing flattens the read into a monotone. Direct delivery as *"warm,
+     conversational, relaxed real-time pace with small natural pauses — NOT flat,
+     NOT monotone."*
+   - **Give every beat an explicit, changing expression cue** (e.g. "surprised
+     eyebrows lift → impressed nod → laughing grin"), plus one global line:
+     **"EXPRESSION RESET: at each cut the expression visibly changes; no single
+     expression held >2s; lips stay closed when not speaking."**
+   Also **vary framing across beats** (ECU → medium face-and-shoulders → chest-up)
+   — a fixed extreme close-up on every beat reads static and kills energy — and
+   state **"real-time, NOT slow-motion"** so the creator moves at conversational
+   speed.
 
 Budget: **≤ ~28 spoken words for 15s** (scale linearly for other durations).
 Front-cam beats carry dialogue + lip-sync; rear/close-up beats carry VO only.
-**No contact physics** in any beat (no ball strikes, pours, cuts, rallies).
+**No contact physics** in any beat (no ball strikes, pours, cuts, rallies). And
+**gravity is real**: any held/shown product is empty and physically supported —
+nothing floats inside or rests on it against gravity (canonical failure: a loose
+spatula in the ref floated in the pan when it was tilted to camera; the fix was a
+utensil-free product ref + "the pan is EMPTY when held up" language). **Do not
+visualize copy metaphors literally** — a "replaces ten tools" line must not spawn
+ten utensils on screen.
 
-Optionally vet the prompt with GPT-5.5 (see
-`demo/working/vet_seedance_prompt_gpt55.py` for the
-pattern) and fold in its edits before the gate.
+**Script naturalness (author, then check).** Write the spoken lines as **one
+continuous, natural monologue**, not stacked ad-copy sentences. Read it aloud; cut
+filler ("honestly", "literally", "just"); **de-jargon** clinical/technical copy
+into how a real person actually talks. Robotic / list-style reads are a first-pass
+failure mode (the whole H&V / MS / OP batch needed rewrites for this).
+
+**GPT-5.5 vet — two standard gates, not optional.** (1) After drafting the spoken
+lines, **vet the script** for naturalness before locking words; (2) after authoring
+the prompt, **vet the Seedance prompt** (adapt `demo/working/vet_seedance_prompt_gpt55.py`)
+and fold in its edits **before the render gate**. A ~$0.01 vet in front of a ~$4.50
+render is cheap insurance — the v1 batch was three wasted renders a vet would have
+flagged. (Model `gpt-5.5-2026-04-23`; `OPENAI_API_KEY` from `gtm-goose/.env`.)
 
 ### Phase 3 — Render the master (Seedance 2.0) [APPROVAL GATE]
 One `create-video-seedance-2-fal` call: refs in locked order, the authored
@@ -172,10 +243,17 @@ No captions — this format ships clean.
 1. **One Seedance call = one short take.** Default 15s; honor a user duration in
    `{4..15}`. A brief that implies >15s or >4 talking beats is too big for this
    molecule — flag it, don't truncate silently.
-2. **Orthogonal reference slots.** Avatar / product / environment each get a
-   clean ref with one job, and each is declared once in the prompt. A
-   pre-composited "avatar already on location holding the product" over-
-   constrains the model and causes the product to fight the product ref.
+2. **Orthogonal reference slots — with one composite exception.** Default: avatar /
+   product / environment each get a clean ref with one job, declared once. A
+   pre-composited "avatar already on location holding the product" over-constrains
+   the model and makes the product fight its own ref. **Two separate refs (avatar +
+   standalone product) is the default for held/shown products (serum, pan, racket)
+   and large garments (a crewneck).** **Exception — body-contact WORN micro-items**
+   (a band on the wrist, glasses on the face, a watch): the model can't reliably
+   place a small worn item from a floating product ref, so **composite it onto the
+   creator in Phase 1 from a standalone-on-white cutout**, then pass that **same
+   cutout as `@Image2`**. Rule of thumb: *worn + small → composite; held or large →
+   two separate refs.* (This is how the Hume band / Dash glasses runs worked.)
 3. **Environment ref is optional.** Generic settings (a court, a kitchen, a
    sidewalk) render fine from text — describe them and save a ref slot. Add an
    environment plate only when the location must be specific/branded.
@@ -241,8 +319,11 @@ burned captions, native dialogue audio, with each drifted beat repaired.
 | Two same-family colors blend into one neon | "green outfit and green racket" read as one color | Name them distinctly ("bright lime" vs "mint-to-white gradient"). |
 | An action beat flails — racket morphs/duplicates, body contorts, a ball appears | Contact/sport physics in a single render | Re-render that beat as a 4s **shadow** swing (no ball), `--no-generate-audio`, and stitch. This is the canonical fix (AURA 300 beat 2). |
 | Small product text (model name) is illegible/garbled | Seedance can't hold small text under motion | Don't rely on it — pin it to one close-up, forbid invented text, carry the brand name elsewhere (end-card outside this molecule). |
+| Product renders as a generic look-alike / wrong shape (canonical: Hume Band came out a plain woven band) | The product reference was an **on-body/lifestyle** shot (band-on-wrist), giving Seedance a second limb to reconcile | Use a **standalone product shot on a plain/white background** (no wrist/hand/face). Source order: official site → web research → GPT-image-2 a standalone-on-white from the closest shot. Compose that cutout onto the creator so `@Image1` is already correct. (See the Phase 1 product-reference hard rule.) |
 | Stitched output drifts from 15s / audio out of sync | Replacement length ≠ hole and no fit applied | Use `stitch_replacement.py --fit stretch`; it warns if output drifts >0.15s from master. |
 | Front-cam beat has no/weird lip-sync | Beat labeled rear-cam, or dialogue exceeds the word budget | Label dialogue beats "selfie/front-facing phone POV"; trim to ≤28 words/15s. |
+| Creator looks **emotionless — same held expression the whole take**, delivery flat/slo-mo | Prompt said "one continuous breath / no pauses" AND gave zero per-beat performance direction; every beat was the same extreme close-up | Author the **Performance block (Phase 2 #5)**: "relaxed real-time pace with small natural pauses" (never "one breath"), an explicit changing expression cue per beat, the **"EXPRESSION RESET … no expression held >2s, lips closed when not speaking"** line, framing variety, and "real-time, NOT slow-motion". Verified fix on the Mother Science / Our Place / Hype & Vice re-rolls. |
+| Held product has a **floating utensil / object defying gravity** (canonical: spatula floated in the Always Pan when tilted up) | The product ref had a loose object resting on it; Seedance kept it "attached" when the pan moved | Feed a **utensil-free product ref** (GPT-image-2 the object out) and add "the product is EMPTY when held up; nothing floats inside it; gravity is real" to the consistency anchors. Never let copy metaphors ("ten tools") spawn literal objects. |
 | Brief needs >15s or 5+ talking beats | Out of scope for one Seedance call | Tell the user; split into multiple takes or route to `recreate-ugc-ad-from-source`. |
 
 ## Skill location & related

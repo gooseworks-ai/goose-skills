@@ -5,13 +5,16 @@ description: >-
   configurable {4..15}) — an AI creator WALKING through an outdoor location, arm
   extended in a selfie hold, talking straight to camera like a day-in-the-life /
   quick-tips vlog. ONE continuous Seedance 2.0 reference-to-video take, native
-  lip-synced dialogue, no cuts, no captions, no music. The whole attention
+  lip-synced dialogue, no cuts. The raw take is native voice only; an OPTIONAL
+  post-production pass (inherited Phase 7) finishes it with a ducked music bed,
+  burned captions, and a brand end card. The whole attention
   mechanism is genuine LOCOMOTION — the background (sidewalk, trees, storefronts,
   blurred pedestrians) drifts past with real parallax, proving she's really
   walking. This is a monologue sibling of the REFERENCE skill
   create-ugc-car-confessional-video-from-refs — read the car reference first: it
   owns the Phase 0 intake, the single-continuous-take prose-prompt recipe, the
-  testimonial-vs-product decision, the review-loop + fix-loop, and
+  testimonial-vs-product decision (held-or-worn product ref @Image2), the
+  optional post-production layer, the review-loop + fix-loop, and
   scripts/stitch_replacement.py. This skill documents ONLY the walk-and-talk
   deltas (arm-extended framing, continuous locomotion + parallax, brisker word
   budget, outdoor golden-daylight setting, the 720p busy-background warp
@@ -32,9 +35,11 @@ One Seedance 2.0 reference-to-video render of an AI creator **walking through an
 outdoor location, arm extended in a selfie hold, talking straight to camera** —
 the "walk-and-talk" that reads as a real person filming a quick tips clip on a
 morning walk, not an ad. Vertical 9:16, 15s, native lip-synced dialogue, **one
-single continuous take (no internal cuts)**, no captions, no music. The whole
-attention mechanism is genuine **locomotion** — she's actually walking and the
-street drifts past with real parallax.
+single continuous take (no internal cuts)**. The whole attention mechanism is
+genuine **locomotion** — she's actually walking and the street drifts past with
+real parallax. The **raw take has native voice only**; the inherited **optional
+post-production pass (Phase 7)** adds a ducked music bed, burned captions, and a
+brand end card for a finished ad.
 
 This is a **monologue sibling** in the one-shot yapping sub-family. It
 **specializes the reference skill** `create-ugc-car-confessional-video-from-refs`
@@ -49,18 +54,23 @@ This skill documents **only the walk-and-talk deltas** — the staging, motion,
 energy, and setting changes that turn the parked-car confessional into a
 walking vlog. Everything not listed here is inherited from the car reference.
 
-Default output is **15 seconds** (`{4..15}` allowed). Hard stack constraint:
-**GPT-image-2 + Seedance 2.0 reference-to-video only.** No ElevenLabs (Seedance
-generates the voice natively), no captions, no music.
+Default output is **15 seconds** (`{4..15}` allowed). Stack constraint for the
+**talking take: GPT-image-2 + Seedance 2.0 reference-to-video only** — no
+ElevenLabs (Seedance voices it natively). Captions and music are never baked into
+the take; they're added in the inherited post-production pass (Phase 7).
 
 ## Testimonial vs. product (read the car reference)
 
 Same two intents as the car reference: **testimonial (default, no product)** —
 works for both physical-product and software/SaaS companies — or an optional
-**physical-product hold**. SaaS/app is served by the testimonial path, never by
-faking on-screen UI. See the car reference's "Testimonial vs. product" section
-for the full rule. The only walk-and-talk delta is the product **staging** (she
-holds it at chest height as she walks; see Decision Rules).
+**product visible (held OR worn)**, fed as `@Image2` for accuracy. SaaS/app is
+served by the testimonial path, never by faking on-screen UI. See the car
+reference's "Testimonial vs. product" section for the full rule, **including the
+product-reference hard rule: `@Image2` must be a standalone product shot on a
+plain/white background — never an on-body/lifestyle shot (GPT-image-2 a
+standalone-on-white if only on-body shots exist).** The walk-and-talk delta is the
+product **staging** (held: she raises it to chest height once as she walks; worn:
+a wearable stays on-body with one glance toward the lens; see Decision Rules).
 
 ## Inputs
 
@@ -102,9 +112,19 @@ Same set as the car reference:
 > without first pasting the exact prompt(s)/refs and waiting for the user's go.
 > See `docs/rules/PRODUCTION_RULES.md` and `feedback_prompt_review_before_send`.
 
-**This skill inherits the car reference's phases (0 → 7) unchanged.** Run them
-exactly as written there. Only the walk-and-talk **deltas** are below — fold them
-into the matching phase.
+**This skill inherits the car reference's phases (0 → 8) unchanged** — including
+the **optional Phase 7 post-production** (music → captions → end card, VEED
+captions LAST with a verbatim brand-corrected SRT). Run them exactly as written
+there. Only the walk-and-talk **deltas** are below — fold them into the matching
+phase.
+
+> **Phase 7 delta — outdoor mic realism is REQUIRED (car Phase 7 step 2b).** A
+> clean Seedance VO reads as "booth-recorded" outdoors. Rebuild the audio from the
+> **raw** take with the handheld-mic chain (SUBTLE preset) and a **walk/park**
+> ambient bed: `anoisesrc=color=pink` low-passed to **2200 Hz** at **−29 dB**
+> (airier, quieter morning — softer than the street sibling's brown-noise bed). Full
+> VO EQ/compressor + mix bus live in the car reference. Operator-approved default
+> 2026-07-03; keeps the voice fully intelligible.
 
 ### Phase 1 delta — Lock character + location (GPT-image-2) [APPROVAL GATE]
 The composed selfie still stages the creator **arm-extended on the walkable
@@ -190,8 +210,10 @@ adds**:
    the lens once** — no pours, opens, or complex handling (car reference's
    product rules apply).
 8. **Everything else — one continuous take, prose prompts with dialogue inline,
-   testimonial-default, ship clean, every paid call gated — is inherited from the
-   car reference and the parent.**
+   testimonial-default, product held-or-worn with `@Image2` accuracy lock,
+   optional Phase 7 post-production (music → captions → end card, VEED LAST,
+   verbatim brand-corrected SRT as the brand-audio safety net), every paid call
+   gated — is inherited from the car reference and the parent.**
 
 ## Output
 
@@ -200,12 +222,13 @@ adds**:
   assets/refs/        ← @Image1 composed arm-out selfie still (+ @Image2 product for a product build)
   working/            ← seedance_prompt.txt, gpt55 review, review frames/transcript, any fix clips
   finals/
-    <name>.mp4              ← master render
-    <name>-v2.mp4           ← after any surgical window fix (delivered)
+    <name>.mp4              ← raw master render (native voice only)
+    <name>-v2.mp4           ← after any surgical window fix
+    <name>-final.mp4        ← finished ad: music bed + burned captions (+ end card)
 ```
 
-Delivered: one vertical 9:16 mp4 at the requested duration/resolution, native
-dialogue + live outdoor street ambience, no captions.
+Delivered: one vertical 9:16 mp4 — the raw take (native dialogue + live outdoor
+street ambience) or, with post-production, the finished ad (`<name>-final.mp4`).
 
 ## Quality Checks
 
@@ -220,8 +243,10 @@ Inherit the car reference's checks. Walk-and-talk adds:
 - Micro-motion is walk-native (step-and-breeze hair, glance over the shoulder).
 - Plus all inherited checks: duration ±0.2s, 9:16, transcript matches script,
   lip-sync reads, identity + wardrobe hold, single continuous take (no cuts, no
-  second person, no morph), stack GPT-image-2 + Seedance 2.0 only, no captions,
-  no music.
+  second person, no morph), raw take GPT-image-2 + Seedance 2.0 only (no
+  captions/music baked in). If finished: music ducks under the VO, captions burned
+  **last** with brand names spelled correctly (verbatim SRT), end card with the
+  official logo.
 
 ## Failure Modes
 
