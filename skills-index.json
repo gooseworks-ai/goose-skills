@@ -1,6 +1,6 @@
 {
   "version": "1.2.0",
-  "generated": "2026-06-23",
+  "generated": "2026-07-05",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -1442,6 +1442,292 @@
         ],
         "installation": {
           "base_command": "npx goose-skills install create-linkedin-content",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "create-overlay-proof-points-video-from-refs",
+      "name": "create-overlay-proof-points-video-from-refs",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": ">-",
+      "tags": "ads",
+      "path": "skills/ads/packs/ugc-video-formats/create-overlay-proof-points-video-from-refs",
+      "files": [
+        "skills/ads/packs/ugc-video-formats/create-overlay-proof-points-video-from-refs/SKILL.md",
+        "skills/ads/packs/ugc-video-formats/create-overlay-proof-points-video-from-refs/scripts/build_overlays.py",
+        "skills/ads/packs/ugc-video-formats/create-overlay-proof-points-video-from-refs/scripts/compose_master.py",
+        "skills/ads/packs/ugc-video-formats/create-overlay-proof-points-video-from-refs/scripts/config.example.json",
+        "skills/ads/packs/ugc-video-formats/create-overlay-proof-points-video-from-refs/scripts/fetch_icons.py",
+        "skills/ads/packs/ugc-video-formats/create-overlay-proof-points-video-from-refs/scripts/gen_base_clip.py",
+        "skills/ads/packs/ugc-video-formats/create-overlay-proof-points-video-from-refs/scripts/gen_music.py",
+        "skills/ads/packs/ugc-video-formats/create-overlay-proof-points-video-from-refs/scripts/one_shot.py",
+        "skills/ads/packs/ugc-video-formats/create-overlay-proof-points-video-from-refs/skill.meta.json",
+        "skills/ads/packs/ugc-video-formats/create-overlay-proof-points-video-from-refs/tests/expected-output.md",
+        "skills/ads/packs/ugc-video-formats/create-overlay-proof-points-video-from-refs/tests/human-test.md",
+        "skills/ads/packs/ugc-video-formats/create-overlay-proof-points-video-from-refs/tests/sample-input.md",
+        "skills/ads/packs/ugc-video-formats/create-overlay-proof-points-video-from-refs/tests/smoke-test.md",
+        "skills/ads/packs/ugc-video-formats/create-overlay-proof-points-video-from-refs/tests/verifier.md"
+      ],
+      "metadata": {
+        "slug": "create-overlay-proof-points-video-from-refs",
+        "category": "capabilities",
+        "pack": "ugc-video-formats",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install ugc-video-formats",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "create-ugc-car-confessional-video-from-refs",
+      "name": "create-ugc-car-confessional-video-from-refs",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": ">-",
+      "tags": "ads",
+      "path": "skills/ads/packs/ugc-video-formats/create-ugc-car-confessional-video-from-refs",
+      "files": [
+        "skills/ads/packs/ugc-video-formats/create-ugc-car-confessional-video-from-refs/SKILL.md",
+        "skills/ads/packs/ugc-video-formats/create-ugc-car-confessional-video-from-refs/scripts/stitch_replacement.py",
+        "skills/ads/packs/ugc-video-formats/create-ugc-car-confessional-video-from-refs/skill.meta.json",
+        "skills/ads/packs/ugc-video-formats/create-ugc-car-confessional-video-from-refs/tests/expected-output.md",
+        "skills/ads/packs/ugc-video-formats/create-ugc-car-confessional-video-from-refs/tests/human-test.md",
+        "skills/ads/packs/ugc-video-formats/create-ugc-car-confessional-video-from-refs/tests/sample-input.md",
+        "skills/ads/packs/ugc-video-formats/create-ugc-car-confessional-video-from-refs/tests/smoke-test.md",
+        "skills/ads/packs/ugc-video-formats/create-ugc-car-confessional-video-from-refs/tests/verifier.md"
+      ],
+      "metadata": {
+        "slug": "create-ugc-car-confessional-video-from-refs",
+        "category": "capabilities",
+        "pack": "ugc-video-formats",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install ugc-video-formats",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "create-ugc-grwm-video-from-refs",
+      "name": "create-ugc-grwm-video-from-refs",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": ">-",
+      "tags": "ads",
+      "path": "skills/ads/packs/ugc-video-formats/create-ugc-grwm-video-from-refs",
+      "files": [
+        "skills/ads/packs/ugc-video-formats/create-ugc-grwm-video-from-refs/SKILL.md",
+        "skills/ads/packs/ugc-video-formats/create-ugc-grwm-video-from-refs/scripts/stitch_replacement.py",
+        "skills/ads/packs/ugc-video-formats/create-ugc-grwm-video-from-refs/skill.meta.json",
+        "skills/ads/packs/ugc-video-formats/create-ugc-grwm-video-from-refs/tests/expected-output.md",
+        "skills/ads/packs/ugc-video-formats/create-ugc-grwm-video-from-refs/tests/human-test.md",
+        "skills/ads/packs/ugc-video-formats/create-ugc-grwm-video-from-refs/tests/sample-input.md",
+        "skills/ads/packs/ugc-video-formats/create-ugc-grwm-video-from-refs/tests/smoke-test.md",
+        "skills/ads/packs/ugc-video-formats/create-ugc-grwm-video-from-refs/tests/verifier.md"
+      ],
+      "metadata": {
+        "slug": "create-ugc-grwm-video-from-refs",
+        "category": "capabilities",
+        "pack": "ugc-video-formats",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install ugc-video-formats",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "create-ugc-product-video-from-refs",
+      "name": "create-ugc-product-video-from-refs",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": ">-",
+      "tags": "ads",
+      "path": "skills/ads/packs/ugc-video-formats/create-ugc-product-video-from-refs",
+      "files": [
+        "skills/ads/packs/ugc-video-formats/create-ugc-product-video-from-refs/SKILL.md",
+        "skills/ads/packs/ugc-video-formats/create-ugc-product-video-from-refs/scripts/stitch_replacement.py",
+        "skills/ads/packs/ugc-video-formats/create-ugc-product-video-from-refs/skill.meta.json",
+        "skills/ads/packs/ugc-video-formats/create-ugc-product-video-from-refs/tests/expected-output.md",
+        "skills/ads/packs/ugc-video-formats/create-ugc-product-video-from-refs/tests/human-test.md",
+        "skills/ads/packs/ugc-video-formats/create-ugc-product-video-from-refs/tests/sample-input.md",
+        "skills/ads/packs/ugc-video-formats/create-ugc-product-video-from-refs/tests/smoke-test.md",
+        "skills/ads/packs/ugc-video-formats/create-ugc-product-video-from-refs/tests/verifier.md"
+      ],
+      "metadata": {
+        "slug": "create-ugc-product-video-from-refs",
+        "category": "capabilities",
+        "pack": "ugc-video-formats",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install ugc-video-formats",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "create-ugc-skincare-demo-video-from-refs",
+      "name": "create-ugc-skincare-demo-video-from-refs",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": ">-",
+      "tags": "ads",
+      "path": "skills/ads/packs/ugc-video-formats/create-ugc-skincare-demo-video-from-refs",
+      "files": [
+        "skills/ads/packs/ugc-video-formats/create-ugc-skincare-demo-video-from-refs/SKILL.md",
+        "skills/ads/packs/ugc-video-formats/create-ugc-skincare-demo-video-from-refs/scripts/stitch_replacement.py",
+        "skills/ads/packs/ugc-video-formats/create-ugc-skincare-demo-video-from-refs/skill.meta.json",
+        "skills/ads/packs/ugc-video-formats/create-ugc-skincare-demo-video-from-refs/tests/expected-output.md",
+        "skills/ads/packs/ugc-video-formats/create-ugc-skincare-demo-video-from-refs/tests/human-test.md",
+        "skills/ads/packs/ugc-video-formats/create-ugc-skincare-demo-video-from-refs/tests/sample-input.md",
+        "skills/ads/packs/ugc-video-formats/create-ugc-skincare-demo-video-from-refs/tests/smoke-test.md",
+        "skills/ads/packs/ugc-video-formats/create-ugc-skincare-demo-video-from-refs/tests/verifier.md"
+      ],
+      "metadata": {
+        "slug": "create-ugc-skincare-demo-video-from-refs",
+        "category": "capabilities",
+        "pack": "ugc-video-formats",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install ugc-video-formats",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "create-ugc-street-testimonial-video-from-refs",
+      "name": "create-ugc-street-testimonial-video-from-refs",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": ">-",
+      "tags": "ads",
+      "path": "skills/ads/packs/ugc-video-formats/create-ugc-street-testimonial-video-from-refs",
+      "files": [
+        "skills/ads/packs/ugc-video-formats/create-ugc-street-testimonial-video-from-refs/SKILL.md",
+        "skills/ads/packs/ugc-video-formats/create-ugc-street-testimonial-video-from-refs/scripts/stitch_replacement.py",
+        "skills/ads/packs/ugc-video-formats/create-ugc-street-testimonial-video-from-refs/skill.meta.json",
+        "skills/ads/packs/ugc-video-formats/create-ugc-street-testimonial-video-from-refs/tests/expected-output.md",
+        "skills/ads/packs/ugc-video-formats/create-ugc-street-testimonial-video-from-refs/tests/human-test.md",
+        "skills/ads/packs/ugc-video-formats/create-ugc-street-testimonial-video-from-refs/tests/sample-input.md",
+        "skills/ads/packs/ugc-video-formats/create-ugc-street-testimonial-video-from-refs/tests/smoke-test.md",
+        "skills/ads/packs/ugc-video-formats/create-ugc-street-testimonial-video-from-refs/tests/verifier.md"
+      ],
+      "metadata": {
+        "slug": "create-ugc-street-testimonial-video-from-refs",
+        "category": "capabilities",
+        "pack": "ugc-video-formats",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install ugc-video-formats",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "create-ugc-walk-and-talk-video-from-refs",
+      "name": "create-ugc-walk-and-talk-video-from-refs",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": ">-",
+      "tags": "ads",
+      "path": "skills/ads/packs/ugc-video-formats/create-ugc-walk-and-talk-video-from-refs",
+      "files": [
+        "skills/ads/packs/ugc-video-formats/create-ugc-walk-and-talk-video-from-refs/SKILL.md",
+        "skills/ads/packs/ugc-video-formats/create-ugc-walk-and-talk-video-from-refs/scripts/stitch_replacement.py",
+        "skills/ads/packs/ugc-video-formats/create-ugc-walk-and-talk-video-from-refs/skill.meta.json",
+        "skills/ads/packs/ugc-video-formats/create-ugc-walk-and-talk-video-from-refs/tests/expected-output.md",
+        "skills/ads/packs/ugc-video-formats/create-ugc-walk-and-talk-video-from-refs/tests/human-test.md",
+        "skills/ads/packs/ugc-video-formats/create-ugc-walk-and-talk-video-from-refs/tests/sample-input.md",
+        "skills/ads/packs/ugc-video-formats/create-ugc-walk-and-talk-video-from-refs/tests/smoke-test.md",
+        "skills/ads/packs/ugc-video-formats/create-ugc-walk-and-talk-video-from-refs/tests/verifier.md"
+      ],
+      "metadata": {
+        "slug": "create-ugc-walk-and-talk-video-from-refs",
+        "category": "capabilities",
+        "pack": "ugc-video-formats",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install ugc-video-formats",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "create-video-seedance-2-fal",
+      "name": "create-video-seedance-2-fal",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Generate a single 4-15s vertical video clip with ByteDance Seedance 2.0 reference-to-video via fal.ai. Multi-image reference (avatar + product + setting), native lip-synced VO + ambient audio via `generate_audio: true`, internal multi-cut handling within one render. The default clip atom for AI-creator UGC ads built on the NB2 + Seedance architecture. Validated on `beauty-by-earth/video-01`.",
+      "tags": "ads",
+      "path": "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal",
+      "files": [
+        "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/SKILL.md",
+        "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/scripts/generate.py",
+        "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/skill.meta.json",
+        "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests/expected-output.md",
+        "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests/human-test.md",
+        "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests/sample-input.md",
+        "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests/smoke-test.md",
+        "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests/verifier.md"
+      ],
+      "metadata": {
+        "slug": "create-video-seedance-2-fal",
+        "category": "capabilities",
+        "pack": "ugc-video-formats",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install ugc-video-formats",
           "supports": [
             "claude",
             "cursor",
@@ -3892,6 +4178,33 @@
       "path": "skills/ads/composites/meta-ads-analyzer",
       "files": [
         "skills/ads/composites/meta-ads-analyzer/SKILL.md",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/campaign-export.csv",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-35-03-212Z/campaign-export.csv",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-35-03-212Z/provenance.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-35-03-212Z/raw/adsets.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-35-03-212Z/raw/campaigns.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-35-03-212Z/raw/insights-52520040908148.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-35-03-212Z/raw/insights-52520044871748.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-35-03-212Z/raw/insights-52529298131348.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-35-03-212Z/raw/insights-52532859121348.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-35-03-212Z/raw/insights-52532860843748.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-35-03-212Z/raw/insights-6963333422544.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-35-03-212Z/raw/insights-6988921740744.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-35-03-212Z/raw/insights-6989038245344.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-35-03-212Z/raw/insights-6991165221344.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-37-13-072Z/campaign-export.csv",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-37-13-072Z/provenance.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-37-13-072Z/raw/adsets.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-37-13-072Z/raw/campaigns.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-37-13-072Z/raw/insights-52520040908148.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-37-13-072Z/raw/insights-52520044871748.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-37-13-072Z/raw/insights-52529298131348.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-37-13-072Z/raw/insights-52532859121348.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-37-13-072Z/raw/insights-52532860843748.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-37-13-072Z/raw/insights-6963333422544.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-37-13-072Z/raw/insights-6988921740744.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-37-13-072Z/raw/insights-6989038245344.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-37-13-072Z/raw/insights-6991165221344.json",
         "skills/ads/composites/meta-ads-analyzer/skill.meta.json"
       ],
       "metadata": {
@@ -4595,6 +4908,215 @@
       }
     },
     {
+      "slug": "remix-overlay-proof-points-from-sample",
+      "name": "remix-overlay-proof-points-from-sample",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Remix a published \"perfect-score + proof-points\" UGC product ad from the Goose Ads library for a new brand — keep the source's format (one handheld product shot + a white score header + an orange sub + a diagonal cascade of 3–4 green-check proof pills), swap in the brand's product, score claim, and proof copy, get the keyframe still + pill copy approved in-session, then render locally via create-overlay-proof-points-video-from-refs (nano-banana keyframe → Kling i2v → PIL/FFmpeg overlays → music) and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's \"Perfect-score + proof-points\" format tab calls.",
+      "tags": "ads",
+      "path": "skills/ads/packs/ugc-video-formats/remix-overlay-proof-points-from-sample",
+      "files": [
+        "skills/ads/packs/ugc-video-formats/remix-overlay-proof-points-from-sample/SKILL.md",
+        "skills/ads/packs/ugc-video-formats/remix-overlay-proof-points-from-sample/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "remix-overlay-proof-points-from-sample",
+        "category": "capabilities",
+        "pack": "ugc-video-formats",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install ugc-video-formats",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "remix-ugc-car-confessional-from-sample",
+      "name": "remix-ugc-car-confessional-from-sample",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Remix a published Car-confessional monologue (yap) UGC video ad from the Goose Ads library for a new brand — keep the source's format, energy, and beat/monologue shape, swap in the brand's product, avatar archetype, and dialogue, get the reference stills + Seedance prompt approved in-session, then render ONE Seedance 2.0 reference-to-video call via create-ugc-car-confessional-video-from-refs and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's \"Car-confessional monologue (yap)\" UGC format tab calls.",
+      "tags": "ads",
+      "path": "skills/ads/packs/ugc-video-formats/remix-ugc-car-confessional-from-sample",
+      "files": [
+        "skills/ads/packs/ugc-video-formats/remix-ugc-car-confessional-from-sample/SKILL.md",
+        "skills/ads/packs/ugc-video-formats/remix-ugc-car-confessional-from-sample/skill.meta.json",
+        "skills/ads/packs/ugc-video-formats/remix-ugc-car-confessional-from-sample/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "remix-ugc-car-confessional-from-sample",
+        "category": "capabilities",
+        "pack": "ugc-video-formats",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install ugc-video-formats",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "remix-ugc-grwm-from-sample",
+      "name": "remix-ugc-grwm-from-sample",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Remix a published Get Ready With Me / outfit try-on UGC video ad from the Goose Ads library for a new brand — keep the source's format, energy, and beat/monologue shape, swap in the brand's product, avatar archetype, and dialogue, get the reference stills + Seedance prompt approved in-session, then render ONE Seedance 2.0 reference-to-video call via create-ugc-grwm-video-from-refs and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's \"Get Ready With Me / outfit try-on\" UGC format tab calls.",
+      "tags": "ads",
+      "path": "skills/ads/packs/ugc-video-formats/remix-ugc-grwm-from-sample",
+      "files": [
+        "skills/ads/packs/ugc-video-formats/remix-ugc-grwm-from-sample/SKILL.md",
+        "skills/ads/packs/ugc-video-formats/remix-ugc-grwm-from-sample/skill.meta.json",
+        "skills/ads/packs/ugc-video-formats/remix-ugc-grwm-from-sample/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "remix-ugc-grwm-from-sample",
+        "category": "capabilities",
+        "pack": "ugc-video-formats",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install ugc-video-formats",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "remix-ugc-product-from-sample",
+      "name": "remix-ugc-product-from-sample",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Remix a published Selfie product review / demo UGC video ad from the Goose Ads library for a new brand — keep the source's format, energy, and beat/monologue shape, swap in the brand's product, avatar archetype, and dialogue, get the reference stills + Seedance prompt approved in-session, then render ONE Seedance 2.0 reference-to-video call via create-ugc-product-video-from-refs and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's \"Selfie product review / demo\" UGC format tab calls.",
+      "tags": "ads",
+      "path": "skills/ads/packs/ugc-video-formats/remix-ugc-product-from-sample",
+      "files": [
+        "skills/ads/packs/ugc-video-formats/remix-ugc-product-from-sample/SKILL.md",
+        "skills/ads/packs/ugc-video-formats/remix-ugc-product-from-sample/skill.meta.json",
+        "skills/ads/packs/ugc-video-formats/remix-ugc-product-from-sample/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "remix-ugc-product-from-sample",
+        "category": "capabilities",
+        "pack": "ugc-video-formats",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install ugc-video-formats",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "remix-ugc-skincare-from-sample",
+      "name": "remix-ugc-skincare-from-sample",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Remix a published Bathroom skincare application demo UGC video ad from the Goose Ads library for a new brand — keep the source's format, energy, and beat/monologue shape, swap in the brand's product, avatar archetype, and dialogue, get the reference stills + Seedance prompt approved in-session, then render ONE Seedance 2.0 reference-to-video call via create-ugc-skincare-demo-video-from-refs and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's \"Bathroom skincare application demo\" UGC format tab calls.",
+      "tags": "ads",
+      "path": "skills/ads/packs/ugc-video-formats/remix-ugc-skincare-from-sample",
+      "files": [
+        "skills/ads/packs/ugc-video-formats/remix-ugc-skincare-from-sample/SKILL.md",
+        "skills/ads/packs/ugc-video-formats/remix-ugc-skincare-from-sample/skill.meta.json",
+        "skills/ads/packs/ugc-video-formats/remix-ugc-skincare-from-sample/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "remix-ugc-skincare-from-sample",
+        "category": "capabilities",
+        "pack": "ugc-video-formats",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install ugc-video-formats",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "remix-ugc-street-testimonial-from-sample",
+      "name": "remix-ugc-street-testimonial-from-sample",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Remix a published Single-subject street testimonial (yap) UGC video ad from the Goose Ads library for a new brand — keep the source's format, energy, and beat/monologue shape, swap in the brand's product, avatar archetype, and dialogue, get the reference stills + Seedance prompt approved in-session, then render ONE Seedance 2.0 reference-to-video call via create-ugc-street-testimonial-video-from-refs and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's \"Single-subject street testimonial (yap)\" UGC format tab calls.",
+      "tags": "ads",
+      "path": "skills/ads/packs/ugc-video-formats/remix-ugc-street-testimonial-from-sample",
+      "files": [
+        "skills/ads/packs/ugc-video-formats/remix-ugc-street-testimonial-from-sample/SKILL.md",
+        "skills/ads/packs/ugc-video-formats/remix-ugc-street-testimonial-from-sample/skill.meta.json",
+        "skills/ads/packs/ugc-video-formats/remix-ugc-street-testimonial-from-sample/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "remix-ugc-street-testimonial-from-sample",
+        "category": "capabilities",
+        "pack": "ugc-video-formats",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install ugc-video-formats",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "remix-ugc-walk-and-talk-from-sample",
+      "name": "remix-ugc-walk-and-talk-from-sample",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Remix a published Walk-and-talk selfie vlog (yap) UGC video ad from the Goose Ads library for a new brand — keep the source's format, energy, and beat/monologue shape, swap in the brand's product, avatar archetype, and dialogue, get the reference stills + Seedance prompt approved in-session, then render ONE Seedance 2.0 reference-to-video call via create-ugc-walk-and-talk-video-from-refs and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's \"Walk-and-talk selfie vlog (yap)\" UGC format tab calls.",
+      "tags": "ads",
+      "path": "skills/ads/packs/ugc-video-formats/remix-ugc-walk-and-talk-from-sample",
+      "files": [
+        "skills/ads/packs/ugc-video-formats/remix-ugc-walk-and-talk-from-sample/SKILL.md",
+        "skills/ads/packs/ugc-video-formats/remix-ugc-walk-and-talk-from-sample/skill.meta.json",
+        "skills/ads/packs/ugc-video-formats/remix-ugc-walk-and-talk-from-sample/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "remix-ugc-walk-and-talk-from-sample",
+        "category": "capabilities",
+        "pack": "ugc-video-formats",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install ugc-video-formats",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
       "slug": "remotion-best-practices",
       "name": "remotion-best-practices",
       "category": "capabilities",
@@ -4733,6 +5255,36 @@
         ],
         "installation": {
           "base_command": "npx goose-skills install review-site-scraper",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "review-ugc-render",
+      "name": "review-ugc-render",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Mandatory pre-publish review gate for a UGC video render. Transcribes the finished render's AUDIO with Whisper and word-diffs it against the approved spoken script, then gates set_final_render — blocking a render whose generated audio mis-voices a word (e.g. the approved \"human-vetted\" spoken as \"human witted\"), drops an approved phrase, or comes back silent. Runnable, gating counterpart to content-goose's review-transcript-integrity atom. Every ugc-video-formats recipe runs this after render and BEFORE set_final_render.",
+      "tags": "ads",
+      "path": "skills/ads/packs/ugc-video-formats/review-ugc-render",
+      "files": [
+        "skills/ads/packs/ugc-video-formats/review-ugc-render/SKILL.md",
+        "skills/ads/packs/ugc-video-formats/review-ugc-render/scripts/review_render.py",
+        "skills/ads/packs/ugc-video-formats/review-ugc-render/tests/test_review_render.py"
+      ],
+      "metadata": {
+        "slug": "review-ugc-render",
+        "category": "capabilities",
+        "pack": "ugc-video-formats",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install ugc-video-formats",
           "supports": [
             "claude",
             "cursor",
@@ -6594,6 +7146,289 @@
         ],
         "installation": {
           "base_command": "npx goose-skills install lead-gen-devtools",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "ugc-video-formats",
+      "name": "UGC Video Ad Formats",
+      "type": "pack",
+      "domain": "ads",
+      "description": "Remix branded short-form UGC video ads from library templates — one local-render recipe per UGC format (selfie product review, GRWM, skincare demo, car-confessional / walk-and-talk / street-testimonial monologues, plus the hybrid perfect-score + proof-points overlay ad), plus the Seedance 2.0 render engine most of them drive. The Seedance formats are GPT-image-2 + Seedance 2.0 reference-to-video with native lip-synced dialogue, no captions; the overlay-proof-points format is a nano-banana keyframe + Kling i2v base under deterministic PIL/FFmpeg pill overlays. The recipe runs in the user's own Claude Code; the app is the review + viewer.",
+      "tags": "ads",
+      "path": "skills/ads/packs/ugc-video-formats",
+      "shared_files": [],
+      "skills": [
+        {
+          "slug": "remix-ugc-product-from-sample",
+          "name": "remix-ugc-product-from-sample",
+          "description": "Remix a published Selfie product review / demo UGC video ad from the Goose Ads library for a new brand — keep the source's format, energy, and beat/monologue shape, swap in the brand's product, avatar archetype, and dialogue, get the reference stills + Seedance prompt approved in-session, then render ONE Seedance 2.0 reference-to-video call via create-ugc-product-video-from-refs and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's \"Selfie product review / demo\" UGC format tab calls.",
+          "path": "skills/ads/packs/ugc-video-formats/remix-ugc-product-from-sample",
+          "files": [
+            "skills/ads/packs/ugc-video-formats/remix-ugc-product-from-sample/SKILL.md",
+            "skills/ads/packs/ugc-video-formats/remix-ugc-product-from-sample/skill.meta.json",
+            "skills/ads/packs/ugc-video-formats/remix-ugc-product-from-sample/tests/smoke-test.md"
+          ],
+          "source": "pack"
+        },
+        {
+          "slug": "create-ugc-product-video-from-refs",
+          "name": "create-ugc-product-video-from-refs",
+          "description": ">-",
+          "path": "skills/ads/packs/ugc-video-formats/create-ugc-product-video-from-refs",
+          "files": [
+            "skills/ads/packs/ugc-video-formats/create-ugc-product-video-from-refs/SKILL.md",
+            "skills/ads/packs/ugc-video-formats/create-ugc-product-video-from-refs/scripts/stitch_replacement.py",
+            "skills/ads/packs/ugc-video-formats/create-ugc-product-video-from-refs/skill.meta.json",
+            "skills/ads/packs/ugc-video-formats/create-ugc-product-video-from-refs/tests/expected-output.md",
+            "skills/ads/packs/ugc-video-formats/create-ugc-product-video-from-refs/tests/human-test.md",
+            "skills/ads/packs/ugc-video-formats/create-ugc-product-video-from-refs/tests/sample-input.md",
+            "skills/ads/packs/ugc-video-formats/create-ugc-product-video-from-refs/tests/smoke-test.md",
+            "skills/ads/packs/ugc-video-formats/create-ugc-product-video-from-refs/tests/verifier.md"
+          ],
+          "source": "pack"
+        },
+        {
+          "slug": "remix-ugc-grwm-from-sample",
+          "name": "remix-ugc-grwm-from-sample",
+          "description": "Remix a published Get Ready With Me / outfit try-on UGC video ad from the Goose Ads library for a new brand — keep the source's format, energy, and beat/monologue shape, swap in the brand's product, avatar archetype, and dialogue, get the reference stills + Seedance prompt approved in-session, then render ONE Seedance 2.0 reference-to-video call via create-ugc-grwm-video-from-refs and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's \"Get Ready With Me / outfit try-on\" UGC format tab calls.",
+          "path": "skills/ads/packs/ugc-video-formats/remix-ugc-grwm-from-sample",
+          "files": [
+            "skills/ads/packs/ugc-video-formats/remix-ugc-grwm-from-sample/SKILL.md",
+            "skills/ads/packs/ugc-video-formats/remix-ugc-grwm-from-sample/skill.meta.json",
+            "skills/ads/packs/ugc-video-formats/remix-ugc-grwm-from-sample/tests/smoke-test.md"
+          ],
+          "source": "pack"
+        },
+        {
+          "slug": "create-ugc-grwm-video-from-refs",
+          "name": "create-ugc-grwm-video-from-refs",
+          "description": ">-",
+          "path": "skills/ads/packs/ugc-video-formats/create-ugc-grwm-video-from-refs",
+          "files": [
+            "skills/ads/packs/ugc-video-formats/create-ugc-grwm-video-from-refs/SKILL.md",
+            "skills/ads/packs/ugc-video-formats/create-ugc-grwm-video-from-refs/scripts/stitch_replacement.py",
+            "skills/ads/packs/ugc-video-formats/create-ugc-grwm-video-from-refs/skill.meta.json",
+            "skills/ads/packs/ugc-video-formats/create-ugc-grwm-video-from-refs/tests/expected-output.md",
+            "skills/ads/packs/ugc-video-formats/create-ugc-grwm-video-from-refs/tests/human-test.md",
+            "skills/ads/packs/ugc-video-formats/create-ugc-grwm-video-from-refs/tests/sample-input.md",
+            "skills/ads/packs/ugc-video-formats/create-ugc-grwm-video-from-refs/tests/smoke-test.md",
+            "skills/ads/packs/ugc-video-formats/create-ugc-grwm-video-from-refs/tests/verifier.md"
+          ],
+          "source": "pack"
+        },
+        {
+          "slug": "remix-ugc-skincare-from-sample",
+          "name": "remix-ugc-skincare-from-sample",
+          "description": "Remix a published Bathroom skincare application demo UGC video ad from the Goose Ads library for a new brand — keep the source's format, energy, and beat/monologue shape, swap in the brand's product, avatar archetype, and dialogue, get the reference stills + Seedance prompt approved in-session, then render ONE Seedance 2.0 reference-to-video call via create-ugc-skincare-demo-video-from-refs and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's \"Bathroom skincare application demo\" UGC format tab calls.",
+          "path": "skills/ads/packs/ugc-video-formats/remix-ugc-skincare-from-sample",
+          "files": [
+            "skills/ads/packs/ugc-video-formats/remix-ugc-skincare-from-sample/SKILL.md",
+            "skills/ads/packs/ugc-video-formats/remix-ugc-skincare-from-sample/skill.meta.json",
+            "skills/ads/packs/ugc-video-formats/remix-ugc-skincare-from-sample/tests/smoke-test.md"
+          ],
+          "source": "pack"
+        },
+        {
+          "slug": "create-ugc-skincare-demo-video-from-refs",
+          "name": "create-ugc-skincare-demo-video-from-refs",
+          "description": ">-",
+          "path": "skills/ads/packs/ugc-video-formats/create-ugc-skincare-demo-video-from-refs",
+          "files": [
+            "skills/ads/packs/ugc-video-formats/create-ugc-skincare-demo-video-from-refs/SKILL.md",
+            "skills/ads/packs/ugc-video-formats/create-ugc-skincare-demo-video-from-refs/scripts/stitch_replacement.py",
+            "skills/ads/packs/ugc-video-formats/create-ugc-skincare-demo-video-from-refs/skill.meta.json",
+            "skills/ads/packs/ugc-video-formats/create-ugc-skincare-demo-video-from-refs/tests/expected-output.md",
+            "skills/ads/packs/ugc-video-formats/create-ugc-skincare-demo-video-from-refs/tests/human-test.md",
+            "skills/ads/packs/ugc-video-formats/create-ugc-skincare-demo-video-from-refs/tests/sample-input.md",
+            "skills/ads/packs/ugc-video-formats/create-ugc-skincare-demo-video-from-refs/tests/smoke-test.md",
+            "skills/ads/packs/ugc-video-formats/create-ugc-skincare-demo-video-from-refs/tests/verifier.md"
+          ],
+          "source": "pack"
+        },
+        {
+          "slug": "remix-ugc-car-confessional-from-sample",
+          "name": "remix-ugc-car-confessional-from-sample",
+          "description": "Remix a published Car-confessional monologue (yap) UGC video ad from the Goose Ads library for a new brand — keep the source's format, energy, and beat/monologue shape, swap in the brand's product, avatar archetype, and dialogue, get the reference stills + Seedance prompt approved in-session, then render ONE Seedance 2.0 reference-to-video call via create-ugc-car-confessional-video-from-refs and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's \"Car-confessional monologue (yap)\" UGC format tab calls.",
+          "path": "skills/ads/packs/ugc-video-formats/remix-ugc-car-confessional-from-sample",
+          "files": [
+            "skills/ads/packs/ugc-video-formats/remix-ugc-car-confessional-from-sample/SKILL.md",
+            "skills/ads/packs/ugc-video-formats/remix-ugc-car-confessional-from-sample/skill.meta.json",
+            "skills/ads/packs/ugc-video-formats/remix-ugc-car-confessional-from-sample/tests/smoke-test.md"
+          ],
+          "source": "pack"
+        },
+        {
+          "slug": "create-ugc-car-confessional-video-from-refs",
+          "name": "create-ugc-car-confessional-video-from-refs",
+          "description": ">-",
+          "path": "skills/ads/packs/ugc-video-formats/create-ugc-car-confessional-video-from-refs",
+          "files": [
+            "skills/ads/packs/ugc-video-formats/create-ugc-car-confessional-video-from-refs/SKILL.md",
+            "skills/ads/packs/ugc-video-formats/create-ugc-car-confessional-video-from-refs/scripts/stitch_replacement.py",
+            "skills/ads/packs/ugc-video-formats/create-ugc-car-confessional-video-from-refs/skill.meta.json",
+            "skills/ads/packs/ugc-video-formats/create-ugc-car-confessional-video-from-refs/tests/expected-output.md",
+            "skills/ads/packs/ugc-video-formats/create-ugc-car-confessional-video-from-refs/tests/human-test.md",
+            "skills/ads/packs/ugc-video-formats/create-ugc-car-confessional-video-from-refs/tests/sample-input.md",
+            "skills/ads/packs/ugc-video-formats/create-ugc-car-confessional-video-from-refs/tests/smoke-test.md",
+            "skills/ads/packs/ugc-video-formats/create-ugc-car-confessional-video-from-refs/tests/verifier.md"
+          ],
+          "source": "pack"
+        },
+        {
+          "slug": "remix-ugc-walk-and-talk-from-sample",
+          "name": "remix-ugc-walk-and-talk-from-sample",
+          "description": "Remix a published Walk-and-talk selfie vlog (yap) UGC video ad from the Goose Ads library for a new brand — keep the source's format, energy, and beat/monologue shape, swap in the brand's product, avatar archetype, and dialogue, get the reference stills + Seedance prompt approved in-session, then render ONE Seedance 2.0 reference-to-video call via create-ugc-walk-and-talk-video-from-refs and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's \"Walk-and-talk selfie vlog (yap)\" UGC format tab calls.",
+          "path": "skills/ads/packs/ugc-video-formats/remix-ugc-walk-and-talk-from-sample",
+          "files": [
+            "skills/ads/packs/ugc-video-formats/remix-ugc-walk-and-talk-from-sample/SKILL.md",
+            "skills/ads/packs/ugc-video-formats/remix-ugc-walk-and-talk-from-sample/skill.meta.json",
+            "skills/ads/packs/ugc-video-formats/remix-ugc-walk-and-talk-from-sample/tests/smoke-test.md"
+          ],
+          "source": "pack"
+        },
+        {
+          "slug": "create-ugc-walk-and-talk-video-from-refs",
+          "name": "create-ugc-walk-and-talk-video-from-refs",
+          "description": ">-",
+          "path": "skills/ads/packs/ugc-video-formats/create-ugc-walk-and-talk-video-from-refs",
+          "files": [
+            "skills/ads/packs/ugc-video-formats/create-ugc-walk-and-talk-video-from-refs/SKILL.md",
+            "skills/ads/packs/ugc-video-formats/create-ugc-walk-and-talk-video-from-refs/scripts/stitch_replacement.py",
+            "skills/ads/packs/ugc-video-formats/create-ugc-walk-and-talk-video-from-refs/skill.meta.json",
+            "skills/ads/packs/ugc-video-formats/create-ugc-walk-and-talk-video-from-refs/tests/expected-output.md",
+            "skills/ads/packs/ugc-video-formats/create-ugc-walk-and-talk-video-from-refs/tests/human-test.md",
+            "skills/ads/packs/ugc-video-formats/create-ugc-walk-and-talk-video-from-refs/tests/sample-input.md",
+            "skills/ads/packs/ugc-video-formats/create-ugc-walk-and-talk-video-from-refs/tests/smoke-test.md",
+            "skills/ads/packs/ugc-video-formats/create-ugc-walk-and-talk-video-from-refs/tests/verifier.md"
+          ],
+          "source": "pack"
+        },
+        {
+          "slug": "remix-ugc-street-testimonial-from-sample",
+          "name": "remix-ugc-street-testimonial-from-sample",
+          "description": "Remix a published Single-subject street testimonial (yap) UGC video ad from the Goose Ads library for a new brand — keep the source's format, energy, and beat/monologue shape, swap in the brand's product, avatar archetype, and dialogue, get the reference stills + Seedance prompt approved in-session, then render ONE Seedance 2.0 reference-to-video call via create-ugc-street-testimonial-video-from-refs and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's \"Single-subject street testimonial (yap)\" UGC format tab calls.",
+          "path": "skills/ads/packs/ugc-video-formats/remix-ugc-street-testimonial-from-sample",
+          "files": [
+            "skills/ads/packs/ugc-video-formats/remix-ugc-street-testimonial-from-sample/SKILL.md",
+            "skills/ads/packs/ugc-video-formats/remix-ugc-street-testimonial-from-sample/skill.meta.json",
+            "skills/ads/packs/ugc-video-formats/remix-ugc-street-testimonial-from-sample/tests/smoke-test.md"
+          ],
+          "source": "pack"
+        },
+        {
+          "slug": "create-ugc-street-testimonial-video-from-refs",
+          "name": "create-ugc-street-testimonial-video-from-refs",
+          "description": ">-",
+          "path": "skills/ads/packs/ugc-video-formats/create-ugc-street-testimonial-video-from-refs",
+          "files": [
+            "skills/ads/packs/ugc-video-formats/create-ugc-street-testimonial-video-from-refs/SKILL.md",
+            "skills/ads/packs/ugc-video-formats/create-ugc-street-testimonial-video-from-refs/scripts/stitch_replacement.py",
+            "skills/ads/packs/ugc-video-formats/create-ugc-street-testimonial-video-from-refs/skill.meta.json",
+            "skills/ads/packs/ugc-video-formats/create-ugc-street-testimonial-video-from-refs/tests/expected-output.md",
+            "skills/ads/packs/ugc-video-formats/create-ugc-street-testimonial-video-from-refs/tests/human-test.md",
+            "skills/ads/packs/ugc-video-formats/create-ugc-street-testimonial-video-from-refs/tests/sample-input.md",
+            "skills/ads/packs/ugc-video-formats/create-ugc-street-testimonial-video-from-refs/tests/smoke-test.md",
+            "skills/ads/packs/ugc-video-formats/create-ugc-street-testimonial-video-from-refs/tests/verifier.md"
+          ],
+          "source": "pack"
+        },
+        {
+          "slug": "remix-overlay-proof-points-from-sample",
+          "name": "remix-overlay-proof-points-from-sample",
+          "description": "Remix a published \"perfect-score + proof-points\" UGC product ad from the Goose Ads library for a new brand — keep the source's format (one handheld product shot + a white score header + an orange sub + a diagonal cascade of 3–4 green-check proof pills), swap in the brand's product, score claim, and proof copy, get the keyframe still + pill copy approved in-session, then render locally via create-overlay-proof-points-video-from-refs (nano-banana keyframe → Kling i2v → PIL/FFmpeg overlays → music) and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's \"Perfect-score + proof-points\" format tab calls.",
+          "path": "skills/ads/packs/ugc-video-formats/remix-overlay-proof-points-from-sample",
+          "files": [
+            "skills/ads/packs/ugc-video-formats/remix-overlay-proof-points-from-sample/SKILL.md",
+            "skills/ads/packs/ugc-video-formats/remix-overlay-proof-points-from-sample/skill.meta.json"
+          ],
+          "source": "pack"
+        },
+        {
+          "slug": "create-overlay-proof-points-video-from-refs",
+          "name": "create-overlay-proof-points-video-from-refs",
+          "description": ">-",
+          "path": "skills/ads/packs/ugc-video-formats/create-overlay-proof-points-video-from-refs",
+          "files": [
+            "skills/ads/packs/ugc-video-formats/create-overlay-proof-points-video-from-refs/SKILL.md",
+            "skills/ads/packs/ugc-video-formats/create-overlay-proof-points-video-from-refs/scripts/build_overlays.py",
+            "skills/ads/packs/ugc-video-formats/create-overlay-proof-points-video-from-refs/scripts/compose_master.py",
+            "skills/ads/packs/ugc-video-formats/create-overlay-proof-points-video-from-refs/scripts/config.example.json",
+            "skills/ads/packs/ugc-video-formats/create-overlay-proof-points-video-from-refs/scripts/fetch_icons.py",
+            "skills/ads/packs/ugc-video-formats/create-overlay-proof-points-video-from-refs/scripts/gen_base_clip.py",
+            "skills/ads/packs/ugc-video-formats/create-overlay-proof-points-video-from-refs/scripts/gen_music.py",
+            "skills/ads/packs/ugc-video-formats/create-overlay-proof-points-video-from-refs/scripts/one_shot.py",
+            "skills/ads/packs/ugc-video-formats/create-overlay-proof-points-video-from-refs/skill.meta.json",
+            "skills/ads/packs/ugc-video-formats/create-overlay-proof-points-video-from-refs/tests/expected-output.md",
+            "skills/ads/packs/ugc-video-formats/create-overlay-proof-points-video-from-refs/tests/human-test.md",
+            "skills/ads/packs/ugc-video-formats/create-overlay-proof-points-video-from-refs/tests/sample-input.md",
+            "skills/ads/packs/ugc-video-formats/create-overlay-proof-points-video-from-refs/tests/smoke-test.md",
+            "skills/ads/packs/ugc-video-formats/create-overlay-proof-points-video-from-refs/tests/verifier.md"
+          ],
+          "source": "pack"
+        },
+        {
+          "slug": "create-video-seedance-2-fal",
+          "name": "create-video-seedance-2-fal",
+          "description": "Generate a single 4-15s vertical video clip with ByteDance Seedance 2.0 reference-to-video via fal.ai. Multi-image reference (avatar + product + setting), native lip-synced VO + ambient audio via `generate_audio: true`, internal multi-cut handling within one render. The default clip atom for AI-creator UGC ads built on the NB2 + Seedance architecture. Validated on `beauty-by-earth/video-01`.",
+          "path": "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal",
+          "files": [
+            "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/SKILL.md",
+            "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/scripts/generate.py",
+            "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/skill.meta.json",
+            "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests/expected-output.md",
+            "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests/human-test.md",
+            "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests/sample-input.md",
+            "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests/smoke-test.md",
+            "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests/verifier.md"
+          ],
+          "source": "pack"
+        },
+        {
+          "slug": "review-ugc-render",
+          "name": "review-ugc-render",
+          "description": "Mandatory pre-publish review gate for a UGC video render. Transcribes the finished render's AUDIO with Whisper and word-diffs it against the approved spoken script, then gates set_final_render — blocking a render whose generated audio mis-voices a word (e.g. the approved \"human-vetted\" spoken as \"human witted\"), drops an approved phrase, or comes back silent. Runnable, gating counterpart to content-goose's review-transcript-integrity atom. Every ugc-video-formats recipe runs this after render and BEFORE set_final_render.",
+          "path": "skills/ads/packs/ugc-video-formats/review-ugc-render",
+          "files": [
+            "skills/ads/packs/ugc-video-formats/review-ugc-render/SKILL.md",
+            "skills/ads/packs/ugc-video-formats/review-ugc-render/scripts/review_render.py",
+            "skills/ads/packs/ugc-video-formats/review-ugc-render/tests/test_review_render.py"
+          ],
+          "source": "pack"
+        }
+      ],
+      "metadata": {
+        "slug": "ugc-video-formats",
+        "name": "UGC Video Ad Formats",
+        "description": "Remix branded short-form UGC video ads from library templates — one local-render recipe per UGC format (selfie product review, GRWM, skincare demo, car-confessional / walk-and-talk / street-testimonial monologues, plus the hybrid perfect-score + proof-points overlay ad), plus the Seedance 2.0 render engine most of them drive. The Seedance formats are GPT-image-2 + Seedance 2.0 reference-to-video with native lip-synced dialogue, no captions; the overlay-proof-points format is a nano-banana keyframe + Kling i2v base under deterministic PIL/FFmpeg pill overlays. The recipe runs in the user's own Claude Code; the app is the review + viewer.",
+        "tags": [
+          "ads"
+        ],
+        "skills": [
+          "remix-ugc-product-from-sample",
+          "create-ugc-product-video-from-refs",
+          "remix-ugc-grwm-from-sample",
+          "create-ugc-grwm-video-from-refs",
+          "remix-ugc-skincare-from-sample",
+          "create-ugc-skincare-demo-video-from-refs",
+          "remix-ugc-car-confessional-from-sample",
+          "create-ugc-car-confessional-video-from-refs",
+          "remix-ugc-walk-and-talk-from-sample",
+          "create-ugc-walk-and-talk-video-from-refs",
+          "remix-ugc-street-testimonial-from-sample",
+          "create-ugc-street-testimonial-video-from-refs",
+          "remix-overlay-proof-points-from-sample",
+          "create-overlay-proof-points-video-from-refs",
+          "create-video-seedance-2-fal",
+          "review-ugc-render"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install ugc-video-formats",
           "supports": [
             "claude",
             "cursor",

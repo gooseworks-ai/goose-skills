@@ -1,0 +1,48 @@
+{
+  "_comment": "SpoiledChild E27 'Perfect 10/10' worked example. Copy to config.json in your run and edit. Canvas is always 1080x1920 9:16. duration_sec default 10.",
+  "brand_name": "SpoiledChild",
+  "duration_sec": 10,
+  "product_ref": "assets/refs/e27-main-bottle.webp",
+  "keyframe": {
+    "model": "fal-ai/nano-banana/edit",
+    "prompt": "iPhone vertical 9:16 photo, friend snapped a phone photo, daytime natural light. A woman's left hand (visible from wrist down, slim wrist with delicate gold heart-charm bracelet) holds up the WHITE SpoiledChild Liquid Collagen bottle from the reference image at chest height, slightly tilted toward camera. Preserve the label EXACTLY: 'SpoiledChild' orange wordmark, 'E27 Extra Strength Liquid Collagen Types 1 & 3 Collagen + Vitamin C + Hyaluronic Acid' orange text, white screw cap. Background is an outdoor home garden - leafy green hibiscus and pothos plants in a black ceramic planter, brown soil, glimpse of patio tile floor. Bright midday sunlight, soft overcast shadows, sharp natural daylight on the white bottle. NO bokeh, NOT shallow DOF, sharp focus throughout. Photographic with slight grain, NOT cinematic, NOT smooth, NOT studio. Real iPhone photo aesthetic. NO TEXT OVERLAYS, NO subtitles, NO watermarks. Hand and bottle dominate left-center of frame, garden visible around and behind."
+  },
+  "i2v": {
+    "model": "fal-ai/kling-video/v2.1/standard/image-to-video",
+    "prompt": "Subtle natural handheld breathing motion of the camera, NO scale change, NO zoom, NO walk. Tiny micro-wobble of the wrist as if friend is holding an iPhone steady. Plant leaves shift very gently in a light outdoor breeze in the background. The white bottle and hand stay in roughly the same position the whole shot. Sharp natural daylight, real iPhone footage. NO shake, NO earthquake, NO whip, NO dolly, NO orbit. NO text. NO label changes - label stays exactly the same.",
+    "negative_prompt": "shake, earthquake, whip pan, dolly, orbit, zoom, scale change, label morph, text changing, hand morph",
+    "cfg_scale": 0.5
+  },
+  "overlays": {
+    "header": {
+      "lines": ["We got a perfect 10/10 score", "for ingredient quality & purity"],
+      "icon": "medal.png",
+      "icon_line": 0
+    },
+    "subhead": {
+      "lines": ["But here's also why you'll love us:"],
+      "icon": "finger-down.png"
+    },
+    "proof_font_size": 40,
+    "proof_points": [
+      {"slug": "vegan",     "line_a": "Vegan & clean",  "line_b": "ingredients"},
+      {"slug": "collagen",  "line_a": "10g collagen",   "line_b": "per serving"},
+      {"slug": "taste",     "line_a": "Tastes amazing",  "line_b": "mango flavor"},
+      {"slug": "clinical",  "line_a": "Clinically",     "line_b": "tested + proven"}
+    ]
+  },
+  "layout": {
+    "header_x": 100,
+    "header_y": 80,
+    "subhead_y": 260,
+    "pill_left_x": 40,
+    "pill_right_margin": 40,
+    "pill_rows_y": [560, 900, 1240, 1560],
+    "reveal_times": [2.2, 3.4, 4.6, 5.8]
+  },
+  "music": {
+    "prompt": "Upbeat, clean, bright UGC TikTok/Instagram ad music. Light fingerpicked acoustic guitar + soft shaker percussion + warm pad. Cheerful, optimistic, wellness/beauty vibe. Modern and fresh, NOT corporate, NOT cinematic, NOT dramatic. Female-skewing skincare/supplement ad mood. Tempo around 100 BPM. Energy lifts gently throughout. Instrumental only, no vocals.",
+    "raw_length_ms": 13000,
+    "trim_intro_sec": 2.5
+  }
+}

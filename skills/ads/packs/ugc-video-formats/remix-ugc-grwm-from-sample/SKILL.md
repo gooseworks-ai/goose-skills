@@ -104,8 +104,21 @@ mirror — no render row, zero credits. Tell them the draft is visible on the pr
    the take only if identity itself drifts).
 
 ### Phase 3 — QC + publish
-1. `/watch` the master: dialogue matches the script on front-cam beats, identity + product hold,
-   no contact-physics mush, duration within ~20% of the source.
+1. **Review gate (MANDATORY — must PASS before you publish).** First `/watch` the master:
+   dialogue matches the script on front-cam beats, identity + product hold, no contact-physics
+   mush, duration within ~20% of the source. Then run the deterministic audio-vs-script gate —
+   it catches a Seedance-**mis-voiced word** in the generated audio (e.g. approved "vetted"
+   spoken as "witted") that an eyeball `/watch` slips through:
+   ```bash
+   python3 ../review-ugc-render/scripts/review_render.py \
+     --video working/final.mp4 --script-file working/approved-script.txt \
+     --json working/review-verdict.json
+   ```
+   Write the approved **verbatim spoken lines** (no beat notes) to `working/approved-script.txt`
+   at approval time (Phase 1.5), before the paid render. Gate outcome: **exit 0 → proceed to
+   step 2; exit 2 → do NOT publish — re-roll a new seed (audio defect) / fix, then re-run;
+   exit 3 → fix the transcription env (`OPENAI_API_KEY`, optional `OPENAI_BASE_URL` proxy) and
+   re-run.** Never `set_final_render` on a non-zero gate. See the `review-ugc-render` skill.
 2. Publish: `get_upload_url { target: ADS_AGENT }` → PUT the master to `working/final.mp4` +
    a poster to `working/final-thumb.jpg` (always target the org-default Ads agent). Verify servable
    via `get_download_url`.
