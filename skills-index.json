@@ -1290,6 +1290,42 @@
       }
     },
     {
+      "slug": "create-cgi-app-sizzle-video-from-refs",
+      "name": "create-cgi-app-sizzle-video-from-refs",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": ">-",
+      "tags": "ads",
+      "path": "skills/ads/packs/ugc-video-formats/create-cgi-app-sizzle-video-from-refs",
+      "files": [
+        "skills/ads/packs/ugc-video-formats/create-cgi-app-sizzle-video-from-refs/SKILL.md",
+        "skills/ads/packs/ugc-video-formats/create-cgi-app-sizzle-video-from-refs/scripts/PIPELINE.md",
+        "skills/ads/packs/ugc-video-formats/create-cgi-app-sizzle-video-from-refs/scripts/config.example.json",
+        "skills/ads/packs/ugc-video-formats/create-cgi-app-sizzle-video-from-refs/skill.meta.json",
+        "skills/ads/packs/ugc-video-formats/create-cgi-app-sizzle-video-from-refs/tests/expected-output.md",
+        "skills/ads/packs/ugc-video-formats/create-cgi-app-sizzle-video-from-refs/tests/human-test.md",
+        "skills/ads/packs/ugc-video-formats/create-cgi-app-sizzle-video-from-refs/tests/sample-input.md",
+        "skills/ads/packs/ugc-video-formats/create-cgi-app-sizzle-video-from-refs/tests/smoke-test.md",
+        "skills/ads/packs/ugc-video-formats/create-cgi-app-sizzle-video-from-refs/tests/verifier.md"
+      ],
+      "metadata": {
+        "slug": "create-cgi-app-sizzle-video-from-refs",
+        "category": "capabilities",
+        "pack": "ugc-video-formats",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install ugc-video-formats",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
       "slug": "create-dashboard",
       "name": "create-dashboard",
       "category": "capabilities",
@@ -1310,6 +1346,42 @@
         ],
         "installation": {
           "base_command": "npx goose-skills install create-dashboard",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "create-flat-vector-explainer-video-from-refs",
+      "name": "create-flat-vector-explainer-video-from-refs",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": ">-",
+      "tags": "ads",
+      "path": "skills/ads/packs/ugc-video-formats/create-flat-vector-explainer-video-from-refs",
+      "files": [
+        "skills/ads/packs/ugc-video-formats/create-flat-vector-explainer-video-from-refs/SKILL.md",
+        "skills/ads/packs/ugc-video-formats/create-flat-vector-explainer-video-from-refs/scripts/PIPELINE.md",
+        "skills/ads/packs/ugc-video-formats/create-flat-vector-explainer-video-from-refs/scripts/config.example.json",
+        "skills/ads/packs/ugc-video-formats/create-flat-vector-explainer-video-from-refs/skill.meta.json",
+        "skills/ads/packs/ugc-video-formats/create-flat-vector-explainer-video-from-refs/tests/expected-output.md",
+        "skills/ads/packs/ugc-video-formats/create-flat-vector-explainer-video-from-refs/tests/human-test.md",
+        "skills/ads/packs/ugc-video-formats/create-flat-vector-explainer-video-from-refs/tests/sample-input.md",
+        "skills/ads/packs/ugc-video-formats/create-flat-vector-explainer-video-from-refs/tests/smoke-test.md",
+        "skills/ads/packs/ugc-video-formats/create-flat-vector-explainer-video-from-refs/tests/verifier.md"
+      ],
+      "metadata": {
+        "slug": "create-flat-vector-explainer-video-from-refs",
+        "category": "capabilities",
+        "pack": "ugc-video-formats",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install ugc-video-formats",
           "supports": [
             "claude",
             "cursor",
@@ -1494,6 +1566,42 @@
       }
     },
     {
+      "slug": "create-multiworld-product-tour-video-from-refs",
+      "name": "create-multiworld-product-tour-video-from-refs",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": ">-",
+      "tags": "ads",
+      "path": "skills/ads/packs/ugc-video-formats/create-multiworld-product-tour-video-from-refs",
+      "files": [
+        "skills/ads/packs/ugc-video-formats/create-multiworld-product-tour-video-from-refs/SKILL.md",
+        "skills/ads/packs/ugc-video-formats/create-multiworld-product-tour-video-from-refs/scripts/PIPELINE.md",
+        "skills/ads/packs/ugc-video-formats/create-multiworld-product-tour-video-from-refs/scripts/config.example.json",
+        "skills/ads/packs/ugc-video-formats/create-multiworld-product-tour-video-from-refs/skill.meta.json",
+        "skills/ads/packs/ugc-video-formats/create-multiworld-product-tour-video-from-refs/tests/expected-output.md",
+        "skills/ads/packs/ugc-video-formats/create-multiworld-product-tour-video-from-refs/tests/human-test.md",
+        "skills/ads/packs/ugc-video-formats/create-multiworld-product-tour-video-from-refs/tests/sample-input.md",
+        "skills/ads/packs/ugc-video-formats/create-multiworld-product-tour-video-from-refs/tests/smoke-test.md",
+        "skills/ads/packs/ugc-video-formats/create-multiworld-product-tour-video-from-refs/tests/verifier.md"
+      ],
+      "metadata": {
+        "slug": "create-multiworld-product-tour-video-from-refs",
+        "category": "capabilities",
+        "pack": "ugc-video-formats",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install ugc-video-formats",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
       "slug": "create-overlay-proof-points-video-from-refs",
       "name": "create-overlay-proof-points-video-from-refs",
       "category": "capabilities",
@@ -1559,6 +1667,42 @@
       ],
       "metadata": {
         "slug": "create-photo-grid-promo-card-video-from-refs",
+        "category": "capabilities",
+        "pack": "ugc-video-formats",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install ugc-video-formats",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "create-song-driven-music-video-from-refs",
+      "name": "create-song-driven-music-video-from-refs",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": ">-",
+      "tags": "ads",
+      "path": "skills/ads/packs/ugc-video-formats/create-song-driven-music-video-from-refs",
+      "files": [
+        "skills/ads/packs/ugc-video-formats/create-song-driven-music-video-from-refs/SKILL.md",
+        "skills/ads/packs/ugc-video-formats/create-song-driven-music-video-from-refs/scripts/PIPELINE.md",
+        "skills/ads/packs/ugc-video-formats/create-song-driven-music-video-from-refs/scripts/config.example.json",
+        "skills/ads/packs/ugc-video-formats/create-song-driven-music-video-from-refs/skill.meta.json",
+        "skills/ads/packs/ugc-video-formats/create-song-driven-music-video-from-refs/tests/expected-output.md",
+        "skills/ads/packs/ugc-video-formats/create-song-driven-music-video-from-refs/tests/human-test.md",
+        "skills/ads/packs/ugc-video-formats/create-song-driven-music-video-from-refs/tests/sample-input.md",
+        "skills/ads/packs/ugc-video-formats/create-song-driven-music-video-from-refs/tests/smoke-test.md",
+        "skills/ads/packs/ugc-video-formats/create-song-driven-music-video-from-refs/tests/verifier.md"
+      ],
+      "metadata": {
+        "slug": "create-song-driven-music-video-from-refs",
         "category": "capabilities",
         "pack": "ugc-video-formats",
         "tags": [
@@ -4947,6 +5091,66 @@
       }
     },
     {
+      "slug": "remix-cgi-app-sizzle-from-sample",
+      "name": "remix-cgi-app-sizzle-from-sample",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Remix a published \"premium 3D-CGI app-demo sizzle\" ad from the Goose Ads library for a new brand — keep the source's format (a premium ~22s 3D-CGI sizzle: a phone floats in a smoky-black studio and, across 6 feature beats, bursts REAL app-UI elements outward with rim-light + bokeh then settles, over VO + a cinematic music bed, closing on a brand end card), swap in the brand's products/assets/copy, get the drafted scenes approved in-session, then render locally via create-cgi-app-sizzle-video-from-refs and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's \"premium 3D-CGI app-demo sizzle\" format tab calls.",
+      "tags": "ads",
+      "path": "skills/ads/packs/ugc-video-formats/remix-cgi-app-sizzle-from-sample",
+      "files": [
+        "skills/ads/packs/ugc-video-formats/remix-cgi-app-sizzle-from-sample/SKILL.md",
+        "skills/ads/packs/ugc-video-formats/remix-cgi-app-sizzle-from-sample/skill.meta.json",
+        "skills/ads/packs/ugc-video-formats/remix-cgi-app-sizzle-from-sample/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "remix-cgi-app-sizzle-from-sample",
+        "category": "capabilities",
+        "pack": "ugc-video-formats",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install ugc-video-formats",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "remix-flat-vector-explainer-from-sample",
+      "name": "remix-flat-vector-explainer-from-sample",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Remix a published \"flat-vector illustrated product-routine explainer\" ad from the Goose Ads library for a new brand — keep the source's format (a character-locked, scene-orchestrated ~30s flat-vector explainer: a fresh flat-vector creator anchor demonstrates a product routine across numbered beats, with animated text/numeral/product-grid overlays and burned captions over VO + music), swap in the brand's products/assets/copy, get the drafted scenes approved in-session, then render locally via create-flat-vector-explainer-video-from-refs and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's \"flat-vector illustrated product-routine explainer\" format tab calls.",
+      "tags": "ads",
+      "path": "skills/ads/packs/ugc-video-formats/remix-flat-vector-explainer-from-sample",
+      "files": [
+        "skills/ads/packs/ugc-video-formats/remix-flat-vector-explainer-from-sample/SKILL.md",
+        "skills/ads/packs/ugc-video-formats/remix-flat-vector-explainer-from-sample/skill.meta.json",
+        "skills/ads/packs/ugc-video-formats/remix-flat-vector-explainer-from-sample/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "remix-flat-vector-explainer-from-sample",
+        "category": "capabilities",
+        "pack": "ugc-video-formats",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install ugc-video-formats",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
       "slug": "remix-flatlay-product-reveal-from-sample",
       "name": "remix-flatlay-product-reveal-from-sample",
       "category": "capabilities",
@@ -5021,6 +5225,36 @@
       }
     },
     {
+      "slug": "remix-multiworld-product-tour-from-sample",
+      "name": "remix-multiworld-product-tour-from-sample",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Remix a published \"music-led multi-world product tour\" ad from the Goose Ads library for a new brand — keep the source's format (a silent, music-led ~27s tour of 3 distinct 'third-place' worlds (one per product/scent), each a wide kinetic-calm arrival shot + a top-down macro product moment, closing on an HTML end card), swap in the brand's products/assets/copy, get the drafted scenes approved in-session, then render locally via create-multiworld-product-tour-video-from-refs and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's \"music-led multi-world product tour\" format tab calls.",
+      "tags": "ads",
+      "path": "skills/ads/packs/ugc-video-formats/remix-multiworld-product-tour-from-sample",
+      "files": [
+        "skills/ads/packs/ugc-video-formats/remix-multiworld-product-tour-from-sample/SKILL.md",
+        "skills/ads/packs/ugc-video-formats/remix-multiworld-product-tour-from-sample/skill.meta.json",
+        "skills/ads/packs/ugc-video-formats/remix-multiworld-product-tour-from-sample/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "remix-multiworld-product-tour-from-sample",
+        "category": "capabilities",
+        "pack": "ugc-video-formats",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install ugc-video-formats",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
       "slug": "remix-overlay-proof-points-from-sample",
       "name": "remix-overlay-proof-points-from-sample",
       "category": "capabilities",
@@ -5064,6 +5298,36 @@
       ],
       "metadata": {
         "slug": "remix-photo-grid-promo-card-from-sample",
+        "category": "capabilities",
+        "pack": "ugc-video-formats",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install ugc-video-formats",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "remix-song-driven-music-video-from-sample",
+      "name": "remix-song-driven-music-video-from-sample",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Remix a published \"song-driven stylized music-video\" ad from the Goose Ads library for a new brand — keep the source's format (a ~28s song-driven music-video (paper-craft / stylized) where a generated sung track carries the narration across N tableaux (keyframe → i2v per beat), captions synced to the song's own word timings, the hook landing on the chorus drop), swap in the brand's products/assets/copy, get the drafted scenes approved in-session, then render locally via create-song-driven-music-video-from-refs and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's \"song-driven stylized music-video\" format tab calls.",
+      "tags": "ads",
+      "path": "skills/ads/packs/ugc-video-formats/remix-song-driven-music-video-from-sample",
+      "files": [
+        "skills/ads/packs/ugc-video-formats/remix-song-driven-music-video-from-sample/SKILL.md",
+        "skills/ads/packs/ugc-video-formats/remix-song-driven-music-video-from-sample/skill.meta.json",
+        "skills/ads/packs/ugc-video-formats/remix-song-driven-music-video-from-sample/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "remix-song-driven-music-video-from-sample",
         "category": "capabilities",
         "pack": "ugc-video-formats",
         "tags": [
@@ -7587,6 +7851,126 @@
           "source": "pack"
         },
         {
+          "slug": "remix-flat-vector-explainer-from-sample",
+          "name": "remix-flat-vector-explainer-from-sample",
+          "description": "Remix a published \"flat-vector illustrated product-routine explainer\" ad from the Goose Ads library for a new brand — keep the source's format (a character-locked, scene-orchestrated ~30s flat-vector explainer: a fresh flat-vector creator anchor demonstrates a product routine across numbered beats, with animated text/numeral/product-grid overlays and burned captions over VO + music), swap in the brand's products/assets/copy, get the drafted scenes approved in-session, then render locally via create-flat-vector-explainer-video-from-refs and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's \"flat-vector illustrated product-routine explainer\" format tab calls.",
+          "path": "skills/ads/packs/ugc-video-formats/remix-flat-vector-explainer-from-sample",
+          "files": [
+            "skills/ads/packs/ugc-video-formats/remix-flat-vector-explainer-from-sample/SKILL.md",
+            "skills/ads/packs/ugc-video-formats/remix-flat-vector-explainer-from-sample/skill.meta.json",
+            "skills/ads/packs/ugc-video-formats/remix-flat-vector-explainer-from-sample/tests/smoke-test.md"
+          ],
+          "source": "pack"
+        },
+        {
+          "slug": "create-flat-vector-explainer-video-from-refs",
+          "name": "create-flat-vector-explainer-video-from-refs",
+          "description": ">-",
+          "path": "skills/ads/packs/ugc-video-formats/create-flat-vector-explainer-video-from-refs",
+          "files": [
+            "skills/ads/packs/ugc-video-formats/create-flat-vector-explainer-video-from-refs/SKILL.md",
+            "skills/ads/packs/ugc-video-formats/create-flat-vector-explainer-video-from-refs/scripts/PIPELINE.md",
+            "skills/ads/packs/ugc-video-formats/create-flat-vector-explainer-video-from-refs/scripts/config.example.json",
+            "skills/ads/packs/ugc-video-formats/create-flat-vector-explainer-video-from-refs/skill.meta.json",
+            "skills/ads/packs/ugc-video-formats/create-flat-vector-explainer-video-from-refs/tests/expected-output.md",
+            "skills/ads/packs/ugc-video-formats/create-flat-vector-explainer-video-from-refs/tests/human-test.md",
+            "skills/ads/packs/ugc-video-formats/create-flat-vector-explainer-video-from-refs/tests/sample-input.md",
+            "skills/ads/packs/ugc-video-formats/create-flat-vector-explainer-video-from-refs/tests/smoke-test.md",
+            "skills/ads/packs/ugc-video-formats/create-flat-vector-explainer-video-from-refs/tests/verifier.md"
+          ],
+          "source": "pack"
+        },
+        {
+          "slug": "remix-multiworld-product-tour-from-sample",
+          "name": "remix-multiworld-product-tour-from-sample",
+          "description": "Remix a published \"music-led multi-world product tour\" ad from the Goose Ads library for a new brand — keep the source's format (a silent, music-led ~27s tour of 3 distinct 'third-place' worlds (one per product/scent), each a wide kinetic-calm arrival shot + a top-down macro product moment, closing on an HTML end card), swap in the brand's products/assets/copy, get the drafted scenes approved in-session, then render locally via create-multiworld-product-tour-video-from-refs and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's \"music-led multi-world product tour\" format tab calls.",
+          "path": "skills/ads/packs/ugc-video-formats/remix-multiworld-product-tour-from-sample",
+          "files": [
+            "skills/ads/packs/ugc-video-formats/remix-multiworld-product-tour-from-sample/SKILL.md",
+            "skills/ads/packs/ugc-video-formats/remix-multiworld-product-tour-from-sample/skill.meta.json",
+            "skills/ads/packs/ugc-video-formats/remix-multiworld-product-tour-from-sample/tests/smoke-test.md"
+          ],
+          "source": "pack"
+        },
+        {
+          "slug": "create-multiworld-product-tour-video-from-refs",
+          "name": "create-multiworld-product-tour-video-from-refs",
+          "description": ">-",
+          "path": "skills/ads/packs/ugc-video-formats/create-multiworld-product-tour-video-from-refs",
+          "files": [
+            "skills/ads/packs/ugc-video-formats/create-multiworld-product-tour-video-from-refs/SKILL.md",
+            "skills/ads/packs/ugc-video-formats/create-multiworld-product-tour-video-from-refs/scripts/PIPELINE.md",
+            "skills/ads/packs/ugc-video-formats/create-multiworld-product-tour-video-from-refs/scripts/config.example.json",
+            "skills/ads/packs/ugc-video-formats/create-multiworld-product-tour-video-from-refs/skill.meta.json",
+            "skills/ads/packs/ugc-video-formats/create-multiworld-product-tour-video-from-refs/tests/expected-output.md",
+            "skills/ads/packs/ugc-video-formats/create-multiworld-product-tour-video-from-refs/tests/human-test.md",
+            "skills/ads/packs/ugc-video-formats/create-multiworld-product-tour-video-from-refs/tests/sample-input.md",
+            "skills/ads/packs/ugc-video-formats/create-multiworld-product-tour-video-from-refs/tests/smoke-test.md",
+            "skills/ads/packs/ugc-video-formats/create-multiworld-product-tour-video-from-refs/tests/verifier.md"
+          ],
+          "source": "pack"
+        },
+        {
+          "slug": "remix-cgi-app-sizzle-from-sample",
+          "name": "remix-cgi-app-sizzle-from-sample",
+          "description": "Remix a published \"premium 3D-CGI app-demo sizzle\" ad from the Goose Ads library for a new brand — keep the source's format (a premium ~22s 3D-CGI sizzle: a phone floats in a smoky-black studio and, across 6 feature beats, bursts REAL app-UI elements outward with rim-light + bokeh then settles, over VO + a cinematic music bed, closing on a brand end card), swap in the brand's products/assets/copy, get the drafted scenes approved in-session, then render locally via create-cgi-app-sizzle-video-from-refs and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's \"premium 3D-CGI app-demo sizzle\" format tab calls.",
+          "path": "skills/ads/packs/ugc-video-formats/remix-cgi-app-sizzle-from-sample",
+          "files": [
+            "skills/ads/packs/ugc-video-formats/remix-cgi-app-sizzle-from-sample/SKILL.md",
+            "skills/ads/packs/ugc-video-formats/remix-cgi-app-sizzle-from-sample/skill.meta.json",
+            "skills/ads/packs/ugc-video-formats/remix-cgi-app-sizzle-from-sample/tests/smoke-test.md"
+          ],
+          "source": "pack"
+        },
+        {
+          "slug": "create-cgi-app-sizzle-video-from-refs",
+          "name": "create-cgi-app-sizzle-video-from-refs",
+          "description": ">-",
+          "path": "skills/ads/packs/ugc-video-formats/create-cgi-app-sizzle-video-from-refs",
+          "files": [
+            "skills/ads/packs/ugc-video-formats/create-cgi-app-sizzle-video-from-refs/SKILL.md",
+            "skills/ads/packs/ugc-video-formats/create-cgi-app-sizzle-video-from-refs/scripts/PIPELINE.md",
+            "skills/ads/packs/ugc-video-formats/create-cgi-app-sizzle-video-from-refs/scripts/config.example.json",
+            "skills/ads/packs/ugc-video-formats/create-cgi-app-sizzle-video-from-refs/skill.meta.json",
+            "skills/ads/packs/ugc-video-formats/create-cgi-app-sizzle-video-from-refs/tests/expected-output.md",
+            "skills/ads/packs/ugc-video-formats/create-cgi-app-sizzle-video-from-refs/tests/human-test.md",
+            "skills/ads/packs/ugc-video-formats/create-cgi-app-sizzle-video-from-refs/tests/sample-input.md",
+            "skills/ads/packs/ugc-video-formats/create-cgi-app-sizzle-video-from-refs/tests/smoke-test.md",
+            "skills/ads/packs/ugc-video-formats/create-cgi-app-sizzle-video-from-refs/tests/verifier.md"
+          ],
+          "source": "pack"
+        },
+        {
+          "slug": "remix-song-driven-music-video-from-sample",
+          "name": "remix-song-driven-music-video-from-sample",
+          "description": "Remix a published \"song-driven stylized music-video\" ad from the Goose Ads library for a new brand — keep the source's format (a ~28s song-driven music-video (paper-craft / stylized) where a generated sung track carries the narration across N tableaux (keyframe → i2v per beat), captions synced to the song's own word timings, the hook landing on the chorus drop), swap in the brand's products/assets/copy, get the drafted scenes approved in-session, then render locally via create-song-driven-music-video-from-refs and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's \"song-driven stylized music-video\" format tab calls.",
+          "path": "skills/ads/packs/ugc-video-formats/remix-song-driven-music-video-from-sample",
+          "files": [
+            "skills/ads/packs/ugc-video-formats/remix-song-driven-music-video-from-sample/SKILL.md",
+            "skills/ads/packs/ugc-video-formats/remix-song-driven-music-video-from-sample/skill.meta.json",
+            "skills/ads/packs/ugc-video-formats/remix-song-driven-music-video-from-sample/tests/smoke-test.md"
+          ],
+          "source": "pack"
+        },
+        {
+          "slug": "create-song-driven-music-video-from-refs",
+          "name": "create-song-driven-music-video-from-refs",
+          "description": ">-",
+          "path": "skills/ads/packs/ugc-video-formats/create-song-driven-music-video-from-refs",
+          "files": [
+            "skills/ads/packs/ugc-video-formats/create-song-driven-music-video-from-refs/SKILL.md",
+            "skills/ads/packs/ugc-video-formats/create-song-driven-music-video-from-refs/scripts/PIPELINE.md",
+            "skills/ads/packs/ugc-video-formats/create-song-driven-music-video-from-refs/scripts/config.example.json",
+            "skills/ads/packs/ugc-video-formats/create-song-driven-music-video-from-refs/skill.meta.json",
+            "skills/ads/packs/ugc-video-formats/create-song-driven-music-video-from-refs/tests/expected-output.md",
+            "skills/ads/packs/ugc-video-formats/create-song-driven-music-video-from-refs/tests/human-test.md",
+            "skills/ads/packs/ugc-video-formats/create-song-driven-music-video-from-refs/tests/sample-input.md",
+            "skills/ads/packs/ugc-video-formats/create-song-driven-music-video-from-refs/tests/smoke-test.md",
+            "skills/ads/packs/ugc-video-formats/create-song-driven-music-video-from-refs/tests/verifier.md"
+          ],
+          "source": "pack"
+        },
+        {
           "slug": "create-video-seedance-2-fal",
           "name": "create-video-seedance-2-fal",
           "description": "Generate a single 4-15s vertical video clip with ByteDance Seedance 2.0 reference-to-video via fal.ai. Multi-image reference (avatar + product + setting), native lip-synced VO + ambient audio via `generate_audio: true`, internal multi-cut handling within one render. The default clip atom for AI-creator UGC ads built on the NB2 + Seedance architecture. Validated on `beauty-by-earth/video-01`.",
@@ -7642,6 +8026,14 @@
           "create-photo-grid-promo-card-video-from-refs",
           "remix-flatlay-product-reveal-from-sample",
           "create-flatlay-product-reveal-video-from-refs",
+          "remix-flat-vector-explainer-from-sample",
+          "create-flat-vector-explainer-video-from-refs",
+          "remix-multiworld-product-tour-from-sample",
+          "create-multiworld-product-tour-video-from-refs",
+          "remix-cgi-app-sizzle-from-sample",
+          "create-cgi-app-sizzle-video-from-refs",
+          "remix-song-driven-music-video-from-sample",
+          "create-song-driven-music-video-from-refs",
           "create-video-seedance-2-fal",
           "review-ugc-render"
         ],
