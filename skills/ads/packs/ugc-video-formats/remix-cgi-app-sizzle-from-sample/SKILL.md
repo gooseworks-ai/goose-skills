@@ -1,6 +1,7 @@
 ---
 name: remix-cgi-app-sizzle-from-sample
-description: Remix a published "premium 3D-CGI app-demo sizzle" ad from the Goose Ads library for a new brand — keep the source's format (a premium ~22s 3D-CGI sizzle: a phone floats in a smoky-black studio and, across 6 feature beats, bursts REAL app-UI elements outward with rim-light + bokeh then settles, over VO + a cinematic music bed, closing on a brand end card), swap in the brand's products/assets/copy, get the drafted scenes approved in-session, then render locally via create-cgi-app-sizzle-video-from-refs and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's "premium 3D-CGI app-demo sizzle" format tab calls.
+description: >-
+  Remix a published "premium 3D-CGI app-demo sizzle" ad from the Goose Ads library for a new brand — keep the source's format (a premium ~22s 3D-CGI sizzle: a phone floats in a smoky-black studio and, across 6 feature beats, bursts REAL app-UI elements outward with rim-light + bokeh then settles, over VO + a cinematic music bed, closing on a brand end card), swap in the brand's products/assets/copy, get the drafted scenes approved in-session, then render locally via create-cgi-app-sizzle-video-from-refs and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's "premium 3D-CGI app-demo sizzle" format tab calls.
 ---
 
 # remix-cgi-app-sizzle-from-sample

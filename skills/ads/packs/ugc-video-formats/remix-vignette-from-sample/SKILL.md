@@ -1,6 +1,7 @@
 ---
 name: remix-vignette-from-sample
-description: Remix a published "vignette ad (product cutouts over a kinetic background)" ad from the Goose Ads library for a new brand — keep the source's format (a music-led ~10s vignette: brand product cutouts composited over a real-time kinetic background video (Pexels stock first, T2V fallback), with a cold-open text card, a product carousel, and an annotated specimen-sheet end card), swap in the brand's products/assets/copy, get the drafted scenes approved in-session, then render locally via create-vignette-video-from-refs and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's "vignette ad (product cutouts over a kinetic background)" format tab calls.
+description: >-
+  Remix a published "vignette ad (product cutouts over a kinetic background)" ad from the Goose Ads library for a new brand — keep the source's format (a music-led ~10s vignette: brand product cutouts composited over a real-time kinetic background video (Pexels stock first, T2V fallback), with a cold-open text card, a product carousel, and an annotated specimen-sheet end card), swap in the brand's products/assets/copy, get the drafted scenes approved in-session, then render locally via create-vignette-video-from-refs and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's "vignette ad (product cutouts over a kinetic background)" format tab calls.
 ---
 
 # remix-vignette-from-sample

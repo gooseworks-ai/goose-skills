@@ -1,6 +1,7 @@
 ---
 name: remix-value-prop-from-sample
-description: Remix a published "value-prop ad (sequential benefit claims over per-SKU visuals)" ad from the Goose Ads library for a new brand — keep the source's format (a ~17s value-prop ad: 3-5 short noun-phrase benefit claims revealed sequentially over per-SKU product visuals (the hero rotates per claim), sound-off legible, over a quiet instrumental bed), swap in the brand's products/assets/copy, get the drafted scenes approved in-session, then render locally via create-value-prop-video-from-refs and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's "value-prop ad (sequential benefit claims over per-SKU visuals)" format tab calls.
+description: >-
+  Remix a published "value-prop ad (sequential benefit claims over per-SKU visuals)" ad from the Goose Ads library for a new brand — keep the source's format (a ~17s value-prop ad: 3-5 short noun-phrase benefit claims revealed sequentially over per-SKU product visuals (the hero rotates per claim), sound-off legible, over a quiet instrumental bed), swap in the brand's products/assets/copy, get the drafted scenes approved in-session, then render locally via create-value-prop-video-from-refs and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's "value-prop ad (sequential benefit claims over per-SKU visuals)" format tab calls.
 ---
 
 # remix-value-prop-from-sample

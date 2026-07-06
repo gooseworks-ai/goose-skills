@@ -5228,7 +5228,7 @@
       "name": "remix-cgi-app-sizzle-from-sample",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Remix a published \"premium 3D-CGI app-demo sizzle\" ad from the Goose Ads library for a new brand — keep the source's format (a premium ~22s 3D-CGI sizzle: a phone floats in a smoky-black studio and, across 6 feature beats, bursts REAL app-UI elements outward with rim-light + bokeh then settles, over VO + a cinematic music bed, closing on a brand end card), swap in the brand's products/assets/copy, get the drafted scenes approved in-session, then render locally via create-cgi-app-sizzle-video-from-refs and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's \"premium 3D-CGI app-demo sizzle\" format tab calls.",
+      "description": ">-",
       "tags": "ads",
       "path": "skills/ads/packs/ugc-video-formats/remix-cgi-app-sizzle-from-sample",
       "files": [
@@ -5258,7 +5258,7 @@
       "name": "remix-flat-vector-explainer-from-sample",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Remix a published \"flat-vector illustrated product-routine explainer\" ad from the Goose Ads library for a new brand — keep the source's format (a character-locked, scene-orchestrated ~30s flat-vector explainer: a fresh flat-vector creator anchor demonstrates a product routine across numbered beats, with animated text/numeral/product-grid overlays and burned captions over VO + music), swap in the brand's products/assets/copy, get the drafted scenes approved in-session, then render locally via create-flat-vector-explainer-video-from-refs and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's \"flat-vector illustrated product-routine explainer\" format tab calls.",
+      "description": ">-",
       "tags": "ads",
       "path": "skills/ads/packs/ugc-video-formats/remix-flat-vector-explainer-from-sample",
       "files": [
@@ -5451,7 +5451,7 @@
       "name": "remix-product-hypermotion-from-sample",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Remix a published \"product hypermotion + kinetic-typography specs ad\" ad from the Goose Ads library for a new brand — keep the source's format (a ~20-30s music-led hypermotion ad: ONE Seedance i2v virtuoso product clip diced into 5-6 segments and intercut with 5-7 PIL kinetic-typography spec/CTA cards, capped by a real-logo brand end card), swap in the brand's products/assets/copy, get the drafted scenes approved in-session, then render locally via create-product-hypermotion-video-from-refs and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's \"product hypermotion + kinetic-typography specs ad\" format tab calls.",
+      "description": ">-",
       "tags": "ads",
       "path": "skills/ads/packs/ugc-video-formats/remix-product-hypermotion-from-sample",
       "files": [
@@ -5691,7 +5691,7 @@
       "name": "remix-value-prop-from-sample",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Remix a published \"value-prop ad (sequential benefit claims over per-SKU visuals)\" ad from the Goose Ads library for a new brand — keep the source's format (a ~17s value-prop ad: 3-5 short noun-phrase benefit claims revealed sequentially over per-SKU product visuals (the hero rotates per claim), sound-off legible, over a quiet instrumental bed), swap in the brand's products/assets/copy, get the drafted scenes approved in-session, then render locally via create-value-prop-video-from-refs and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's \"value-prop ad (sequential benefit claims over per-SKU visuals)\" format tab calls.",
+      "description": ">-",
       "tags": "ads",
       "path": "skills/ads/packs/ugc-video-formats/remix-value-prop-from-sample",
       "files": [
@@ -5721,7 +5721,7 @@
       "name": "remix-vignette-from-sample",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Remix a published \"vignette ad (product cutouts over a kinetic background)\" ad from the Goose Ads library for a new brand — keep the source's format (a music-led ~10s vignette: brand product cutouts composited over a real-time kinetic background video (Pexels stock first, T2V fallback), with a cold-open text card, a product carousel, and an annotated specimen-sheet end card), swap in the brand's products/assets/copy, get the drafted scenes approved in-session, then render locally via create-vignette-video-from-refs and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's \"vignette ad (product cutouts over a kinetic background)\" format tab calls.",
+      "description": ">-",
       "tags": "ads",
       "path": "skills/ads/packs/ugc-video-formats/remix-vignette-from-sample",
       "files": [
@@ -8076,7 +8076,7 @@
         {
           "slug": "remix-flat-vector-explainer-from-sample",
           "name": "remix-flat-vector-explainer-from-sample",
-          "description": "Remix a published \"flat-vector illustrated product-routine explainer\" ad from the Goose Ads library for a new brand — keep the source's format (a character-locked, scene-orchestrated ~30s flat-vector explainer: a fresh flat-vector creator anchor demonstrates a product routine across numbered beats, with animated text/numeral/product-grid overlays and burned captions over VO + music), swap in the brand's products/assets/copy, get the drafted scenes approved in-session, then render locally via create-flat-vector-explainer-video-from-refs and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's \"flat-vector illustrated product-routine explainer\" format tab calls.",
+          "description": ">-",
           "path": "skills/ads/packs/ugc-video-formats/remix-flat-vector-explainer-from-sample",
           "files": [
             "skills/ads/packs/ugc-video-formats/remix-flat-vector-explainer-from-sample/SKILL.md",
@@ -8136,7 +8136,7 @@
         {
           "slug": "remix-cgi-app-sizzle-from-sample",
           "name": "remix-cgi-app-sizzle-from-sample",
-          "description": "Remix a published \"premium 3D-CGI app-demo sizzle\" ad from the Goose Ads library for a new brand — keep the source's format (a premium ~22s 3D-CGI sizzle: a phone floats in a smoky-black studio and, across 6 feature beats, bursts REAL app-UI elements outward with rim-light + bokeh then settles, over VO + a cinematic music bed, closing on a brand end card), swap in the brand's products/assets/copy, get the drafted scenes approved in-session, then render locally via create-cgi-app-sizzle-video-from-refs and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's \"premium 3D-CGI app-demo sizzle\" format tab calls.",
+          "description": ">-",
           "path": "skills/ads/packs/ugc-video-formats/remix-cgi-app-sizzle-from-sample",
           "files": [
             "skills/ads/packs/ugc-video-formats/remix-cgi-app-sizzle-from-sample/SKILL.md",
@@ -8196,7 +8196,7 @@
         {
           "slug": "remix-vignette-from-sample",
           "name": "remix-vignette-from-sample",
-          "description": "Remix a published \"vignette ad (product cutouts over a kinetic background)\" ad from the Goose Ads library for a new brand — keep the source's format (a music-led ~10s vignette: brand product cutouts composited over a real-time kinetic background video (Pexels stock first, T2V fallback), with a cold-open text card, a product carousel, and an annotated specimen-sheet end card), swap in the brand's products/assets/copy, get the drafted scenes approved in-session, then render locally via create-vignette-video-from-refs and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's \"vignette ad (product cutouts over a kinetic background)\" format tab calls.",
+          "description": ">-",
           "path": "skills/ads/packs/ugc-video-formats/remix-vignette-from-sample",
           "files": [
             "skills/ads/packs/ugc-video-formats/remix-vignette-from-sample/SKILL.md",
@@ -8231,7 +8231,7 @@
         {
           "slug": "remix-product-hypermotion-from-sample",
           "name": "remix-product-hypermotion-from-sample",
-          "description": "Remix a published \"product hypermotion + kinetic-typography specs ad\" ad from the Goose Ads library for a new brand — keep the source's format (a ~20-30s music-led hypermotion ad: ONE Seedance i2v virtuoso product clip diced into 5-6 segments and intercut with 5-7 PIL kinetic-typography spec/CTA cards, capped by a real-logo brand end card), swap in the brand's products/assets/copy, get the drafted scenes approved in-session, then render locally via create-product-hypermotion-video-from-refs and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's \"product hypermotion + kinetic-typography specs ad\" format tab calls.",
+          "description": ">-",
           "path": "skills/ads/packs/ugc-video-formats/remix-product-hypermotion-from-sample",
           "files": [
             "skills/ads/packs/ugc-video-formats/remix-product-hypermotion-from-sample/SKILL.md",
@@ -8261,7 +8261,7 @@
         {
           "slug": "remix-value-prop-from-sample",
           "name": "remix-value-prop-from-sample",
-          "description": "Remix a published \"value-prop ad (sequential benefit claims over per-SKU visuals)\" ad from the Goose Ads library for a new brand — keep the source's format (a ~17s value-prop ad: 3-5 short noun-phrase benefit claims revealed sequentially over per-SKU product visuals (the hero rotates per claim), sound-off legible, over a quiet instrumental bed), swap in the brand's products/assets/copy, get the drafted scenes approved in-session, then render locally via create-value-prop-video-from-refs and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's \"value-prop ad (sequential benefit claims over per-SKU visuals)\" format tab calls.",
+          "description": ">-",
           "path": "skills/ads/packs/ugc-video-formats/remix-value-prop-from-sample",
           "files": [
             "skills/ads/packs/ugc-video-formats/remix-value-prop-from-sample/SKILL.md",

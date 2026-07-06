@@ -1,6 +1,7 @@
 ---
 name: remix-flat-vector-explainer-from-sample
-description: Remix a published "flat-vector illustrated product-routine explainer" ad from the Goose Ads library for a new brand — keep the source's format (a character-locked, scene-orchestrated ~30s flat-vector explainer: a fresh flat-vector creator anchor demonstrates a product routine across numbered beats, with animated text/numeral/product-grid overlays and burned captions over VO + music), swap in the brand's products/assets/copy, get the drafted scenes approved in-session, then render locally via create-flat-vector-explainer-video-from-refs and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's "flat-vector illustrated product-routine explainer" format tab calls.
+description: >-
+  Remix a published "flat-vector illustrated product-routine explainer" ad from the Goose Ads library for a new brand — keep the source's format (a character-locked, scene-orchestrated ~30s flat-vector explainer: a fresh flat-vector creator anchor demonstrates a product routine across numbered beats, with animated text/numeral/product-grid overlays and burned captions over VO + music), swap in the brand's products/assets/copy, get the drafted scenes approved in-session, then render locally via create-flat-vector-explainer-video-from-refs and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's "flat-vector illustrated product-routine explainer" format tab calls.
 ---
 
 # remix-flat-vector-explainer-from-sample

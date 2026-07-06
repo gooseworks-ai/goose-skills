@@ -1,6 +1,7 @@
 ---
 name: remix-product-hypermotion-from-sample
-description: Remix a published "product hypermotion + kinetic-typography specs ad" ad from the Goose Ads library for a new brand — keep the source's format (a ~20-30s music-led hypermotion ad: ONE Seedance i2v virtuoso product clip diced into 5-6 segments and intercut with 5-7 PIL kinetic-typography spec/CTA cards, capped by a real-logo brand end card), swap in the brand's products/assets/copy, get the drafted scenes approved in-session, then render locally via create-product-hypermotion-video-from-refs and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's "product hypermotion + kinetic-typography specs ad" format tab calls.
+description: >-
+  Remix a published "product hypermotion + kinetic-typography specs ad" ad from the Goose Ads library for a new brand — keep the source's format (a ~20-30s music-led hypermotion ad: ONE Seedance i2v virtuoso product clip diced into 5-6 segments and intercut with 5-7 PIL kinetic-typography spec/CTA cards, capped by a real-logo brand end card), swap in the brand's products/assets/copy, get the drafted scenes approved in-session, then render locally via create-product-hypermotion-video-from-refs and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's "product hypermotion + kinetic-typography specs ad" format tab calls.
 ---
 
 # remix-product-hypermotion-from-sample
