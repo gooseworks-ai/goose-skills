@@ -1,6 +1,6 @@
 {
   "version": "1.2.0",
-  "generated": "2026-06-30",
+  "generated": "2026-07-06",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -208,6 +208,40 @@
             "codex"
           ]
         }
+      }
+    },
+    {
+      "slug": "airdrop-notification-carousel-video",
+      "name": "airdrop-notification-carousel-video",
+      "category": "composites",
+      "domain": "ads",
+      "description": ">-",
+      "tags": "ads, content, social, design",
+      "path": "skills/ads/composites/airdrop-notification-carousel-video",
+      "files": [],
+      "metadata": {
+        "slug": "airdrop-notification-carousel-video",
+        "category": "composites",
+        "tags": [
+          "ads",
+          "content",
+          "social",
+          "design"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install airdrop-notification-carousel-video",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "domain": "ads",
+        "requires_tools": [
+          "ffmpeg",
+          "python3 (numpy, Pillow)",
+          "headless Chrome (Playwright)"
+        ]
       }
     },
     {
