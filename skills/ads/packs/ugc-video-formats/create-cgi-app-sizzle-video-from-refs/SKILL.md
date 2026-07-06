@@ -156,6 +156,14 @@ end card + wordmark land; music kicks in with no dead intro; VO lands beat-for-b
 - **Restrained captions, no karaoke pills; suppress on the end card** (the composited text is the message).
 - **Spec-sheet VO, no lipsync, no recurring humans.** Single declarative VO; nobody speaks on camera.
 
+## Post-production
+
+Post-production layers, explicit per the one-shot-videos family convention (default **ON** where the layer applies; **N/A** formats say why). Toggle via `post_production` in `config.json`:
+
+- **Music** — default ON: cinematic bed under the VO, default on.
+- **Captions** — default ON: restrained Klap line-by-line captions, default on.
+- **End card** — default ON: real-wordmark brand end card, default on.
+
 ## Output
 
 - `master-final.mp4` — 1080×1920, ≈22.6s, H.264 (+ AAC music). 6 feature beats + PIL end card,

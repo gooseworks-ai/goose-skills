@@ -173,6 +173,14 @@ re-composite, re-watch.
   cold-open card ~1.5s → one cutout per ~1.5s beat → end card ~2.5s. Multi-variant
   comparison is the right first-run spend when going T2V.
 
+## Post-production
+
+Post-production layers, explicit per the one-shot-videos family convention (default **ON** where the layer applies; **N/A** formats say why). Toggle via `post_production` in `config.json`:
+
+- **Music** — default ON: instrumental bed, loudnorm, default on.
+- **Captions** — N/A: no VO — the cold-open card + carousel + annotated end card carry the copy.
+- **End card** — default ON: annotated specimen-sheet end card, default on.
+
 ## Output
 
 ```

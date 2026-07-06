@@ -1,18 +1,16 @@
 {
-  "_comment": "Loóna 'Fall In Love With Sleep Again' song-driven music-video — the worked example. Copy to config.json and edit. A ~28s paper-craft (DREAMSCAPE_NIGHT) 9:16 music video where a GENERATED SUNG SONG carries the whole narrative (NO separate VO). Pipeline: (1) ElevenLabs music_v1 song from song.structure -> mp3 + words.json; (2) one Higgsfield gpt_image_2 keyframe per tableau (2k 9:16, one look_pack); (3) one Higgsfield kling3_0 i2v clip per tableau; (4) captions from the song's WORD timings, hook word landing on the chorus drop; (5) hard-cut assembly + PIL brand end card + song mux, -14 LUFS. Master 1080x1920 (keyframes rendered at 2k ~= 1520x2688 then downscaled in assembly). See scripts/PIPELINE.md for the source scripts.",
-  "brand_name": "Loóna",
+  "_comment": "Lo\u00f3na 'Fall In Love With Sleep Again' song-driven music-video \u2014 the worked example. Copy to config.json and edit. A ~28s paper-craft (DREAMSCAPE_NIGHT) 9:16 music video where a GENERATED SUNG SONG carries the whole narrative (NO separate VO). Pipeline: (1) ElevenLabs music_v1 song from song.structure -> mp3 + words.json; (2) one Higgsfield gpt_image_2 keyframe per tableau (2k 9:16, one look_pack); (3) one Higgsfield kling3_0 i2v clip per tableau; (4) captions from the song's WORD timings, hook word landing on the chorus drop; (5) hard-cut assembly + PIL brand end card + song mux, -14 LUFS. Master 1080x1920 (keyframes rendered at 2k ~= 1520x2688 then downscaled in assembly). See scripts/PIPELINE.md for the source scripts.",
+  "brand_name": "Lo\u00f3na",
   "campaign": "fall in love with sleep again",
   "title": "Fall In Love With Sleep Again",
-
   "width": 1080,
   "height": 1920,
   "fps": 30,
   "duration_sec": 28,
   "keyframe_resolution": "2k",
   "aspect_ratio": "9:16",
-
   "song": {
-    "_comment": "Generated FIRST. The song carries the narration — there is NO separate voiceover. The delivered track sets the timeline; snap every tableau boundary to its lyric window (see the run's working/timeline.json). No artist names in the prompt (ElevenLabs Music ToS filter).",
+    "_comment": "Generated FIRST. The song carries the narration \u2014 there is NO separate voiceover. The delivered track sets the timeline; snap every tableau boundary to its lyric window (see the run's working/timeline.json). No artist names in the prompt (ElevenLabs Music ToS filter).",
     "provider": "elevenlabs",
     "model": "music_v1",
     "lyrics_md": "source/lyrics-locked.md",
@@ -23,11 +21,43 @@
     "hook_word": "fall",
     "hook_target_sec": 15.24,
     "structure": [
-      {"section": "Intro",      "duration_ms": 3000, "lines": []},
-      {"section": "Verse",      "duration_ms": 7000, "lines": ["two AM and the screen still glows", "endless feeds and the night just slows"]},
-      {"section": "Pre-Chorus", "duration_ms": 5000, "lines": ["then i tap into something soft", "all the noise of the day falls off"]},
-      {"section": "Chorus",     "duration_ms": 8000, "lines": ["fall in love with sleep again", "color worlds till the dreaming ends", "loo-nah, loo-nah, take me in"]},
-      {"section": "Outro",      "duration_ms": 5000, "lines": ["fall in love with sleep again"]}
+      {
+        "section": "Intro",
+        "duration_ms": 3000,
+        "lines": []
+      },
+      {
+        "section": "Verse",
+        "duration_ms": 7000,
+        "lines": [
+          "two AM and the screen still glows",
+          "endless feeds and the night just slows"
+        ]
+      },
+      {
+        "section": "Pre-Chorus",
+        "duration_ms": 5000,
+        "lines": [
+          "then i tap into something soft",
+          "all the noise of the day falls off"
+        ]
+      },
+      {
+        "section": "Chorus",
+        "duration_ms": 8000,
+        "lines": [
+          "fall in love with sleep again",
+          "color worlds till the dreaming ends",
+          "loo-nah, loo-nah, take me in"
+        ]
+      },
+      {
+        "section": "Outro",
+        "duration_ms": 5000,
+        "lines": [
+          "fall in love with sleep again"
+        ]
+      }
     ],
     "outputs": {
       "audio": "audio/music.mp3",
@@ -35,14 +65,20 @@
       "metadata": "audio/music_metadata.json"
     }
   },
-
   "look_pack": {
     "name": "DREAMSCAPE_NIGHT",
-    "palette_anchors": ["lavender night", "soft moonlight silver", "dusty pink", "mint", "cream paper", "deep night blue", "warm window glow"],
-    "style_opener": "A soft PAPER-CRAFT DIORAMA tableau at night. Layered cut-paper construction-paper shapes with visible scissor-cut edges and crisp paper shadows, lit by cool soft moonlight rather than saturated daylight. Pastel dreamscape palette (lavender night, mint, dusty pink, cream, soft sky, moonlight silver, warm window glow). Tiny paper stars, paper crescent moon, paper clouds. Cozy miniature-world quality — like a child's storybook diorama lit by a single desk lamp. When the protagonist appears, she is a young woman paper-doll figure with long wavy dusty-blonde paper hair, soft 3D modeling on hair + head (NOT flat 2D silhouette). MINIMAL FACE DISCIPLINE: lidded/closed soft paper eyes, NO mouth, NO nose, NO eyebrows — face is just hair-frame + a hint of eye-curve.",
+    "palette_anchors": [
+      "lavender night",
+      "soft moonlight silver",
+      "dusty pink",
+      "mint",
+      "cream paper",
+      "deep night blue",
+      "warm window glow"
+    ],
+    "style_opener": "A soft PAPER-CRAFT DIORAMA tableau at night. Layered cut-paper construction-paper shapes with visible scissor-cut edges and crisp paper shadows, lit by cool soft moonlight rather than saturated daylight. Pastel dreamscape palette (lavender night, mint, dusty pink, cream, soft sky, moonlight silver, warm window glow). Tiny paper stars, paper crescent moon, paper clouds. Cozy miniature-world quality \u2014 like a child's storybook diorama lit by a single desk lamp. When the protagonist appears, she is a young woman paper-doll figure with long wavy dusty-blonde paper hair, soft 3D modeling on hair + head (NOT flat 2D silhouette). MINIMAL FACE DISCIPLINE: lidded/closed soft paper eyes, NO mouth, NO nose, NO eyebrows \u2014 face is just hair-frame + a hint of eye-curve.",
     "negative_tail": "NO photoreal humans, NO photorealism, NO 3D render of the world itself (figure may have soft 3D hair only), NO AI-illustration look, NO smooth digital painting, NO oil-painting look, NO saturated daytime colors, NO neon, NO harsh shadows, NO sun, NO daylight, NO mouth on figure, NO nose on figure, NO text or words in the image. Vertical 9:16 composition."
   },
-
   "keyframe_engine": {
     "provider": "higgsfield",
     "model": "gpt_image_2",
@@ -50,7 +86,6 @@
     "aspect_ratio": "9:16",
     "batch_size": 3
   },
-
   "clip_engine": {
     "provider": "higgsfield",
     "model": "kling3_0",
@@ -58,54 +93,205 @@
     "batch_size": 3,
     "motion_opener": "Subtle paper-craft diorama motion. Tiny micro-drift, soft breath, very slow subtle camera push or pulse. Paper textures hold. NO smooth AI-camera glide, NO photoreal CGI swoop, NO sudden movement, NO morphing. "
   },
-
   "captions": {
-    "_comment": "Built from the song's OWN word timings (song.outputs.word_timings), NOT Whisper. Chunk ~3 words at natural lyric-phrase boundaries; accent words get the warm-glow color. The final outro 'with sleep again' is intentionally NOT captioned — the end-card overlay carries the tagline instead.",
+    "_comment": "Built from the song's OWN word timings (song.outputs.word_timings), NOT Whisper. Chunk ~3 words at natural lyric-phrase boundaries; accent words get the warm-glow color. The final outro 'with sleep again' is intentionally NOT captioned \u2014 the end-card overlay carries the tagline instead.",
     "source": "audio/words.json",
     "style": "lower_third_serif_italic",
     "font": "Georgia",
     "font_size": 56,
     "base_color": "#F5EDE0",
     "accent_color": "#FFD89C",
-    "accent_words": ["fall", "love", "sleep", "again", "tap", "soft", "color", "worlds", "dreaming", "loo-nah"],
+    "accent_words": [
+      "fall",
+      "love",
+      "sleep",
+      "again",
+      "tap",
+      "soft",
+      "color",
+      "worlds",
+      "dreaming",
+      "loo-nah"
+    ],
     "chunk_words": 3
   },
-
   "tableaux": [
-    {"id": "T01", "role": "INTRO",           "t_start": 0.0,    "t_end": 3.179,  "lyric_anchor": "(intro / instrumental)",                 "caption": "",                                "keyframe_prompt": "Paper-craft bedroom diorama at night, viewed from above the bed. A paper-doll figure under a layered cut-paper duvet, paper-cut hair fanned on a paper pillow. A tiny paper rectangle (phone) rests on the figure's chest, glowing soft blue and casting cool light up onto the paper face. A small paper-cut window in the wall reveals a paper crescent moon. Pastel lavender-night walls. The phone glow is the hero.", "motion_hint": "The blue phone glow pulses ever so slightly, as if a feed is scrolling on the unseen screen. The paper moon hangs perfectly still."},
-    {"id": "T02", "role": "PERSONAL_BEAT_1", "t_start": 3.179,  "t_end": 6.299,  "lyric_anchor": "two AM, and the screen still glows",       "caption": "two AM and the / screen still glows", "keyframe_prompt": "Close-up on the paper-doll's paper face, lit blue from below by the paper phone. Paper eyes wide open, paper eyebrow furrowed in soft anxiety. A tiny ink-doodle sleep-Z hovers above the head, CROSSED OUT with a hand-drawn ink line. Dusty-pink paper pillow beneath.", "motion_hint": "The blue light flickers as the unseen feed scrolls. The crossed-out Z bobs gently."},
-    {"id": "T03", "role": "PERSONAL_BEAT_2", "t_start": 6.299,  "t_end": 8.319,  "lyric_anchor": "endless feeds, and the night just slows",   "caption": "endless feeds and the",             "keyframe_prompt": "Macro overhead on the paper phone screen — paper rectangles representing feed posts scroll past in a blur, each a different pastel paper color. A paper thumb cuts in from the bottom right edge of frame. Cool moonlight silver fills the negative space around the phone.", "motion_hint": "The paper feed rectangles scroll upward in a continuous loop, blurring slightly. The paper thumb is still."},
-    {"id": "T04", "role": "WIDE_ENSEMBLE",   "t_start": 8.319,  "t_end": 10.34,  "lyric_anchor": "(verse close)",                           "caption": "night just slows",                  "keyframe_prompt": "Wide pull-back — the paper-craft bedroom sits inside a much larger dark paper-craft room, a diorama-within-a-diorama. Cool moonlight pools across the floor. A single warm-glow paper lamp at the bedside is the only warm color. Paper city skyline visible through a far window, all in flat cut paper. Sense of scale: tiny figure, vast quiet night.", "motion_hint": "Very slow continuous pull-back. The warm lamp flickers once. The city windows twinkle faintly."},
-    {"id": "T05", "role": "KINETIC_CLOSE_1", "t_start": 10.34,  "t_end": 12.639, "lyric_anchor": "then i tap, into something soft",         "caption": "then i tap / into something soft",  "keyframe_prompt": "Tight close-up of the paper thumb pressing down on a paper Loóna app icon (a tiny cream-colored crescent moon on a deep night-blue square) on the paper phone screen. A small ripple of paper sparkle radiates outward from the tap point.", "motion_hint": "The thumb presses, the icon flexes inward then releases. Sparkle ripple expands outward."},
-    {"id": "T06", "role": "KINETIC_CLOSE_2", "t_start": 12.639, "t_end": 14.059, "lyric_anchor": "all the noise of the day",               "caption": "all the noise of",                  "keyframe_prompt": "Macro on the paper phone screen — a tiny paper-craft cottage diorama is now visible WITHIN the screen frame: paper roof, paper door, a paper-cut tree beside it, a paper path leading away. The cottage is in mint and dusty pink. Background of the bedroom recedes into blur.", "motion_hint": "The little paper cottage door opens a crack, revealing warm glow inside. A paper bird-shape flies past."},
-    {"id": "T07", "role": "SUSPENDED_TIME",  "t_start": 14.059, "t_end": 15.239, "lyric_anchor": "falls off",                               "caption": "the day falls off",                 "keyframe_prompt": "Slow-motion abstract beat — pastel paper clouds in dusty pink and lavender unfurl upward above an unseen scene. Paper-cut stars twinkle into existence one at a time. Tiny hand-drawn ink doodle sparkles burst at intervals. A frozen-time quality. Pure pattern, no character.", "motion_hint": "Clouds drift slowly upward. Stars pop in. Sparkles burst and fade. Frozen-time. (Match-cut into the hero reveal.)"},
-    {"id": "T08", "role": "HOOK_HERO",       "t_start": 15.239, "t_end": 18.579, "lyric_anchor": "fall in love with sleep again",           "caption": "fall in love",                      "is_hook": true, "keyframe_prompt": "HERO FRAME. The bedroom walls have fallen away like paper opening up — the paper-doll figure now sits in a moonlit paper village. Small paper cottages with warm-glow paper windows line a paper path. A large paper crescent moon hangs overhead in a deep night-blue paper sky scattered with paper stars. Paper hills roll behind. The figure is small in frame, the WORLD is the hero. Cinematic dolly-out composition.", "motion_hint": "Subtle dolly-out reveals more of the village. The moon glows steadily. Cottage windows twinkle in sequence to the beat."},
-    {"id": "T09", "role": "KINETIC_PEAK",    "t_start": 18.579, "t_end": 20.459, "lyric_anchor": "color worlds till the dreaming ends",     "caption": "with sleep again / color worlds till", "keyframe_prompt": "Slow aerial pan over the paper village from a higher angle. Every paper cottage window now glows warm. Paper smoke curls from paper chimneys. A tiny paper koi pond reflects the paper moon in soft silver. Paper trees with mint paper leaves. The whole village is alive in pastel light.", "motion_hint": "Slow continuous aerial pan forward, low altitude. Smoke curls rise. Koi pond ripples once. Windows pulse warmly."},
-    {"id": "T10", "role": "PRODUCT_HERO",    "t_start": 20.459, "t_end": 22.34,  "lyric_anchor": "loóna, loóna",                            "caption": "the dreaming ends",                 "keyframe_prompt": "PRODUCT HERO — the paper phone alone, centered, floating in soft moonlight against a deep night-blue paper background. On the phone screen, the paper-craft sleepscape from T08-T09 is rendered in tiny precise detail. A paper Loóna wordmark hovers in soft cream above the phone. Single key-light from above.", "motion_hint": "The phone rotates a few degrees on its axis. The sleepscape on screen glows softly. Moonlight shifts angle gently."},
-    {"id": "T11", "role": "MICRO_MONTAGE",   "t_start": 22.34,  "t_end": 23.279, "lyric_anchor": "take me in",                              "caption": "loóna, loóna",                      "keyframe_prompt": "4-quadrant paper-craft contact sheet, each panel a different paper-craft sleepscape: TOP-LEFT a snowy paper cabin with paper smoke; TOP-RIGHT a paper lighthouse on a paper cliff at night; BOTTOM-LEFT a paper koi pond under a paper bridge; BOTTOM-RIGHT a paper treehouse in a paper canopy. Each panel a different pastel palette tone.", "motion_hint": "Each panel pulses warm-window glow in alternation to the music-box arpeggio. Subtle motion inside each."},
-    {"id": "T12", "role": "ORIGIN_WINK",     "t_start": 23.279, "t_end": 24.219, "lyric_anchor": "(outro line 1)",                          "caption": "take me in",                        "keyframe_prompt": "A paper-craft moon-and-stars mobile spins slowly above an empty paper crib in a soft pastel nursery. The mobile is in cream and warm window glow against a lavender wall. Paper sheep on the crib bedding. A nostalgic callback — Spanish 'luna' = moon, the brand's name origin. Slightly heavier paper grain.", "motion_hint": "The mobile rotates very slowly. A paper sheep stirs."},
-    {"id": "T13", "role": "TWILIGHT_OUTRO",  "t_start": 24.219, "t_end": 26.239, "lyric_anchor": "fall in love with sleep",                "caption": "fall in love",                      "keyframe_prompt": "Return to the original paper-craft bedroom from T01 — the paper-doll figure is now asleep, paper duvet rising and falling in a slow breath rhythm. The paper phone is face-down on the paper nightstand. The window reveals the paper crescent moon, now bigger and softer. A single warm lamp glow throws long paper shadows. Reflective, peaceful.", "motion_hint": "The paper duvet rises and falls in two slow breath cycles. The moon hangs perfectly still."},
-    {"id": "T14", "role": "END_CARD",        "t_start": 26.239, "t_end": 28.0,   "lyric_anchor": "again",                                  "caption": "",                                  "keyframe_prompt": "END CARD BASE — deep night-blue paper background with a soft paper crescent moon and three small paper stars in a moonlight spotlight. Brand lockup composited on top via PIL (NOT AI-rendered).", "motion_hint": "Static hold. The paper moon sways imperceptibly on a hidden paper thread."}
+    {
+      "id": "T01",
+      "role": "INTRO",
+      "t_start": 0.0,
+      "t_end": 3.179,
+      "lyric_anchor": "(intro / instrumental)",
+      "caption": "",
+      "keyframe_prompt": "Paper-craft bedroom diorama at night, viewed from above the bed. A paper-doll figure under a layered cut-paper duvet, paper-cut hair fanned on a paper pillow. A tiny paper rectangle (phone) rests on the figure's chest, glowing soft blue and casting cool light up onto the paper face. A small paper-cut window in the wall reveals a paper crescent moon. Pastel lavender-night walls. The phone glow is the hero.",
+      "motion_hint": "The blue phone glow pulses ever so slightly, as if a feed is scrolling on the unseen screen. The paper moon hangs perfectly still."
+    },
+    {
+      "id": "T02",
+      "role": "PERSONAL_BEAT_1",
+      "t_start": 3.179,
+      "t_end": 6.299,
+      "lyric_anchor": "two AM, and the screen still glows",
+      "caption": "two AM and the / screen still glows",
+      "keyframe_prompt": "Close-up on the paper-doll's paper face, lit blue from below by the paper phone. Paper eyes wide open, paper eyebrow furrowed in soft anxiety. A tiny ink-doodle sleep-Z hovers above the head, CROSSED OUT with a hand-drawn ink line. Dusty-pink paper pillow beneath.",
+      "motion_hint": "The blue light flickers as the unseen feed scrolls. The crossed-out Z bobs gently."
+    },
+    {
+      "id": "T03",
+      "role": "PERSONAL_BEAT_2",
+      "t_start": 6.299,
+      "t_end": 8.319,
+      "lyric_anchor": "endless feeds, and the night just slows",
+      "caption": "endless feeds and the",
+      "keyframe_prompt": "Macro overhead on the paper phone screen \u2014 paper rectangles representing feed posts scroll past in a blur, each a different pastel paper color. A paper thumb cuts in from the bottom right edge of frame. Cool moonlight silver fills the negative space around the phone.",
+      "motion_hint": "The paper feed rectangles scroll upward in a continuous loop, blurring slightly. The paper thumb is still."
+    },
+    {
+      "id": "T04",
+      "role": "WIDE_ENSEMBLE",
+      "t_start": 8.319,
+      "t_end": 10.34,
+      "lyric_anchor": "(verse close)",
+      "caption": "night just slows",
+      "keyframe_prompt": "Wide pull-back \u2014 the paper-craft bedroom sits inside a much larger dark paper-craft room, a diorama-within-a-diorama. Cool moonlight pools across the floor. A single warm-glow paper lamp at the bedside is the only warm color. Paper city skyline visible through a far window, all in flat cut paper. Sense of scale: tiny figure, vast quiet night.",
+      "motion_hint": "Very slow continuous pull-back. The warm lamp flickers once. The city windows twinkle faintly."
+    },
+    {
+      "id": "T05",
+      "role": "KINETIC_CLOSE_1",
+      "t_start": 10.34,
+      "t_end": 12.639,
+      "lyric_anchor": "then i tap, into something soft",
+      "caption": "then i tap / into something soft",
+      "keyframe_prompt": "Tight close-up of the paper thumb pressing down on a paper Lo\u00f3na app icon (a tiny cream-colored crescent moon on a deep night-blue square) on the paper phone screen. A small ripple of paper sparkle radiates outward from the tap point.",
+      "motion_hint": "The thumb presses, the icon flexes inward then releases. Sparkle ripple expands outward."
+    },
+    {
+      "id": "T06",
+      "role": "KINETIC_CLOSE_2",
+      "t_start": 12.639,
+      "t_end": 14.059,
+      "lyric_anchor": "all the noise of the day",
+      "caption": "all the noise of",
+      "keyframe_prompt": "Macro on the paper phone screen \u2014 a tiny paper-craft cottage diorama is now visible WITHIN the screen frame: paper roof, paper door, a paper-cut tree beside it, a paper path leading away. The cottage is in mint and dusty pink. Background of the bedroom recedes into blur.",
+      "motion_hint": "The little paper cottage door opens a crack, revealing warm glow inside. A paper bird-shape flies past."
+    },
+    {
+      "id": "T07",
+      "role": "SUSPENDED_TIME",
+      "t_start": 14.059,
+      "t_end": 15.239,
+      "lyric_anchor": "falls off",
+      "caption": "the day falls off",
+      "keyframe_prompt": "Slow-motion abstract beat \u2014 pastel paper clouds in dusty pink and lavender unfurl upward above an unseen scene. Paper-cut stars twinkle into existence one at a time. Tiny hand-drawn ink doodle sparkles burst at intervals. A frozen-time quality. Pure pattern, no character.",
+      "motion_hint": "Clouds drift slowly upward. Stars pop in. Sparkles burst and fade. Frozen-time. (Match-cut into the hero reveal.)"
+    },
+    {
+      "id": "T08",
+      "role": "HOOK_HERO",
+      "t_start": 15.239,
+      "t_end": 18.579,
+      "lyric_anchor": "fall in love with sleep again",
+      "caption": "fall in love",
+      "is_hook": true,
+      "keyframe_prompt": "HERO FRAME. The bedroom walls have fallen away like paper opening up \u2014 the paper-doll figure now sits in a moonlit paper village. Small paper cottages with warm-glow paper windows line a paper path. A large paper crescent moon hangs overhead in a deep night-blue paper sky scattered with paper stars. Paper hills roll behind. The figure is small in frame, the WORLD is the hero. Cinematic dolly-out composition.",
+      "motion_hint": "Subtle dolly-out reveals more of the village. The moon glows steadily. Cottage windows twinkle in sequence to the beat."
+    },
+    {
+      "id": "T09",
+      "role": "KINETIC_PEAK",
+      "t_start": 18.579,
+      "t_end": 20.459,
+      "lyric_anchor": "color worlds till the dreaming ends",
+      "caption": "with sleep again / color worlds till",
+      "keyframe_prompt": "Slow aerial pan over the paper village from a higher angle. Every paper cottage window now glows warm. Paper smoke curls from paper chimneys. A tiny paper koi pond reflects the paper moon in soft silver. Paper trees with mint paper leaves. The whole village is alive in pastel light.",
+      "motion_hint": "Slow continuous aerial pan forward, low altitude. Smoke curls rise. Koi pond ripples once. Windows pulse warmly."
+    },
+    {
+      "id": "T10",
+      "role": "PRODUCT_HERO",
+      "t_start": 20.459,
+      "t_end": 22.34,
+      "lyric_anchor": "lo\u00f3na, lo\u00f3na",
+      "caption": "the dreaming ends",
+      "keyframe_prompt": "PRODUCT HERO \u2014 the paper phone alone, centered, floating in soft moonlight against a deep night-blue paper background. On the phone screen, the paper-craft sleepscape from T08-T09 is rendered in tiny precise detail. A paper Lo\u00f3na wordmark hovers in soft cream above the phone. Single key-light from above.",
+      "motion_hint": "The phone rotates a few degrees on its axis. The sleepscape on screen glows softly. Moonlight shifts angle gently."
+    },
+    {
+      "id": "T11",
+      "role": "MICRO_MONTAGE",
+      "t_start": 22.34,
+      "t_end": 23.279,
+      "lyric_anchor": "take me in",
+      "caption": "lo\u00f3na, lo\u00f3na",
+      "keyframe_prompt": "4-quadrant paper-craft contact sheet, each panel a different paper-craft sleepscape: TOP-LEFT a snowy paper cabin with paper smoke; TOP-RIGHT a paper lighthouse on a paper cliff at night; BOTTOM-LEFT a paper koi pond under a paper bridge; BOTTOM-RIGHT a paper treehouse in a paper canopy. Each panel a different pastel palette tone.",
+      "motion_hint": "Each panel pulses warm-window glow in alternation to the music-box arpeggio. Subtle motion inside each."
+    },
+    {
+      "id": "T12",
+      "role": "ORIGIN_WINK",
+      "t_start": 23.279,
+      "t_end": 24.219,
+      "lyric_anchor": "(outro line 1)",
+      "caption": "take me in",
+      "keyframe_prompt": "A paper-craft moon-and-stars mobile spins slowly above an empty paper crib in a soft pastel nursery. The mobile is in cream and warm window glow against a lavender wall. Paper sheep on the crib bedding. A nostalgic callback \u2014 Spanish 'luna' = moon, the brand's name origin. Slightly heavier paper grain.",
+      "motion_hint": "The mobile rotates very slowly. A paper sheep stirs."
+    },
+    {
+      "id": "T13",
+      "role": "TWILIGHT_OUTRO",
+      "t_start": 24.219,
+      "t_end": 26.239,
+      "lyric_anchor": "fall in love with sleep",
+      "caption": "fall in love",
+      "keyframe_prompt": "Return to the original paper-craft bedroom from T01 \u2014 the paper-doll figure is now asleep, paper duvet rising and falling in a slow breath rhythm. The paper phone is face-down on the paper nightstand. The window reveals the paper crescent moon, now bigger and softer. A single warm lamp glow throws long paper shadows. Reflective, peaceful.",
+      "motion_hint": "The paper duvet rises and falls in two slow breath cycles. The moon hangs perfectly still."
+    },
+    {
+      "id": "T14",
+      "role": "END_CARD",
+      "t_start": 26.239,
+      "t_end": 28.0,
+      "lyric_anchor": "again",
+      "caption": "",
+      "keyframe_prompt": "END CARD BASE \u2014 deep night-blue paper background with a soft paper crescent moon and three small paper stars in a moonlight spotlight. Brand lockup composited on top via PIL (NOT AI-rendered).",
+      "motion_hint": "Static hold. The paper moon sways imperceptibly on a hidden paper thread."
+    }
   ],
-
   "end_card": {
-    "_comment": "Brand lockup composited via PIL from the REAL brand asset (the Loóna app icon pulled from iTunes Search API) — NEVER AI-rendered text (LEARNINGS L4). Overlaid on the final tableau window.",
+    "_comment": "Brand lockup composited via PIL from the REAL brand asset (the Lo\u00f3na app icon pulled from iTunes Search API) \u2014 NEVER AI-rendered text (LEARNINGS L4). Overlaid on the final tableau window.",
     "engine": "pil",
     "script": "build_end_card.py",
     "brand_asset": "brand-assets/app-icon-1024.jpg",
-    "wordmark_text": "Loóna",
+    "wordmark_text": "Lo\u00f3na",
     "wordmark_font": "Georgia Bold",
     "tagline_text": "fall in love with sleep again",
     "tagline_font": "Georgia Italic",
     "cta_text": "Download on the App Store",
     "background": "deep brand purple (#2A1F52) gradient + soft stars + circular app icon with warm-glow halo",
-    "overlay_window_sec": [26.24, 28.0]
+    "overlay_window_sec": [
+      26.24,
+      28.0
+    ]
   },
-
   "audio_mix": {
     "loudness_lufs": -14,
     "climax_beat_id": "T08",
     "climax_boost_db": 2.0,
     "duck_under_vo": false
+  },
+  "post_production": {
+    "music": {
+      "default": "on",
+      "note": "the sung generated ElevenLabs track IS the bed (force_instrumental false)"
+    },
+    "captions": {
+      "default": "on",
+      "note": "lyric-synced captions from the song's word timings, default on"
+    },
+    "end_card": {
+      "default": "on",
+      "note": "PIL end card from the real app icon, default on"
+    }
   }
 }

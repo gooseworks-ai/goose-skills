@@ -1,5 +1,5 @@
 {
-  "_comment": "Som Sleep 'Value Prop' ad (VP-SWAP archetype) — the worked example that validated this format on 2026-05-27. Copy to config.json and edit. A 9:16 vertical where 3-5 short noun-phrase benefit claims are revealed sequentially over per-SKU product visuals. Text + product carry it; sound-off legible. The ONLY paid step is the music bed — the visuals are all deterministic PIL + Playwright + ffmpeg. This config is the declarative brief; PIPELINE.md maps each field onto the scripts (it is authored into shot-list.yml, then rendered).",
+  "_comment": "Som Sleep 'Value Prop' ad (VP-SWAP archetype) \u2014 the worked example that validated this format on 2026-05-27. Copy to config.json and edit. A 9:16 vertical where 3-5 short noun-phrase benefit claims are revealed sequentially over per-SKU product visuals. Text + product carry it; sound-off legible. The ONLY paid step is the music bed \u2014 the visuals are all deterministic PIL + Playwright + ffmpeg. This config is the declarative brief; PIPELINE.md maps each field onto the scripts (it is authored into shot-list.yml, then rendered).",
   "brand_name": "Som Sleep",
   "sub_archetype": "VP-SWAP",
   "aspect": "9:16",
@@ -7,12 +7,10 @@
   "height": 1920,
   "fps": 30,
   "duration_s": 17,
-
   "hook_line": "Better Sleep. Better Mornings.",
-  "hook_eyebrow": "🌙  The Sleep Drink  🌙",
+  "hook_eyebrow": "\ud83c\udf19  The Sleep Drink  \ud83c\udf19",
   "tagline": "Better Sleep. Better Mornings.",
   "cta": "Click to See More",
-
   "palette": {
     "ink": "#0B253C",
     "bg": "#FFFFFF",
@@ -24,19 +22,29 @@
       "tangerine": "#E8853A"
     }
   },
-
   "skus": [
-    {"slug": "berry",     "png": "source/sachets/berry.png"},
-    {"slug": "cherry",    "png": "source/sachets/cherry.png"},
-    {"slug": "mango",     "png": "source/sachets/mango.png"},
-    {"slug": "tangerine", "png": "source/sachets/tangerine.png"}
+    {
+      "slug": "berry",
+      "png": "source/sachets/berry.png"
+    },
+    {
+      "slug": "cherry",
+      "png": "source/sachets/cherry.png"
+    },
+    {
+      "slug": "mango",
+      "png": "source/sachets/mango.png"
+    },
+    {
+      "slug": "tangerine",
+      "png": "source/sachets/tangerine.png"
+    }
   ],
-
   "value_props": [
     {
       "label": "NSF Certified",
       "eyebrow": "Pro-Team Tested",
-      "benefit_sentence": "Independently tested — trusted by 100+ pro sports teams.",
+      "benefit_sentence": "Independently tested \u2014 trusted by 100+ pro sports teams.",
       "accent": "berry",
       "layout": "row"
     },
@@ -51,7 +59,7 @@
     {
       "label": "Non-Habit Forming",
       "eyebrow": "No Strings",
-      "benefit_sentence": "Take it when you need it — no dependency.",
+      "benefit_sentence": "Take it when you need it \u2014 no dependency.",
       "accent": "cherry",
       "layout": "hero",
       "hero_sku": "cherry"
@@ -59,7 +67,7 @@
     {
       "label": "Zero Sugar",
       "eyebrow": "Lean Formula",
-      "benefit_sentence": "10 calories per stick — no bedtime sugar crash.",
+      "benefit_sentence": "10 calories per stick \u2014 no bedtime sugar crash.",
       "accent": "mango",
       "layout": "hero",
       "hero_sku": "mango"
@@ -67,19 +75,17 @@
     {
       "label": "No Artificial Flavors",
       "eyebrow": "What's Inside",
-      "benefit_sentence": "Naturally flavored — Berry, Cherry, Mango, Tangerine.",
+      "benefit_sentence": "Naturally flavored \u2014 Berry, Cherry, Mango, Tangerine.",
       "accent": "tangerine",
       "layout": "row"
     }
   ],
-
   "pacing": {
     "hook_s": 3.0,
     "prop_s": 2.4,
     "endcard_s": 2.0
   },
-
-  "music_brief": "Calm ambient sleep music. Soft warm synth pads with gentle bell tones. Dreamy, ethereal atmosphere. Slow tempo around 60 BPM. Restorative and peaceful, premium spa-like calm. No drums, no percussion, no active melody — just sustained atmospheric pads. Instrumental only, no vocals.",
+  "music_brief": "Calm ambient sleep music. Soft warm synth pads with gentle bell tones. Dreamy, ethereal atmosphere. Slow tempo around 60 BPM. Restorative and peaceful, premium spa-like calm. No drums, no percussion, no active melody \u2014 just sustained atmospheric pads. Instrumental only, no vocals.",
   "music": {
     "length_ms": 17000,
     "force_instrumental": true,
@@ -87,6 +93,19 @@
     "fade_in_s": 0.4,
     "fade_out_s": 0.6
   },
-
-  "logo": "source/logo-som-blue.png"
+  "logo": "source/logo-som-blue.png",
+  "post_production": {
+    "music": {
+      "default": "on",
+      "note": "quiet instrumental bed at -14 dB; pass null to ship silent"
+    },
+    "captions": {
+      "default": "n/a",
+      "note": "no VO \u2014 the noun-phrase value-prop claims ARE the on-screen text"
+    },
+    "end_card": {
+      "default": "on",
+      "note": "brand-wordmark end card, default on"
+    }
+  }
 }

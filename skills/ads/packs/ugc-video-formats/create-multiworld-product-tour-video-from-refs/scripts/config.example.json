@@ -1,23 +1,23 @@
 {
-  "_comment": "Primally Pure 'Three-Place Tour' multi-world product tour — THE WORKED EXAMPLE (clients/Primally pure/ad-runs/run-03-run-03, finals/master-v2.mp4). Copy to config.json and edit. Three scent worlds, each = a WIDE kinetic-calm ARRIVAL clip (bottle small, environment dominates) + a top-down MACRO product MOMENT clip. Six Higgsfield Marketing Studio product_showcase clips grounded on imported product UUIDs, an NB2 text-free flat-lay end-card BACKGROUND + an HTML/Playwright text overlay, one ElevenLabs music bed. Silent otherwise (no VO, no captions in scenes). FFmpeg trims to the grid + hard-cut concats + muxes music. 720x1280 9:16, 27.0s. SEALED-BOTTLE is a hard safety rule.",
+  "_comment": "Primally Pure 'Three-Place Tour' multi-world product tour \u2014 THE WORKED EXAMPLE (clients/Primally pure/ad-runs/run-03-run-03, finals/master-v2.mp4). Copy to config.json and edit. Three scent worlds, each = a WIDE kinetic-calm ARRIVAL clip (bottle small, environment dominates) + a top-down MACRO product MOMENT clip. Six Higgsfield Marketing Studio product_showcase clips grounded on imported product UUIDs, an NB2 text-free flat-lay end-card BACKGROUND + an HTML/Playwright text overlay, one ElevenLabs music bed. Silent otherwise (no VO, no captions in scenes). FFmpeg trims to the grid + hard-cut concats + muxes music. 720x1280 9:16, 27.0s. SEALED-BOTTLE is a hard safety rule.",
   "brand_name": "Primally Pure",
   "width": 720,
   "height": 1280,
   "fps": 24,
   "duration_sec": 27.0,
-  "visual_style": "Sunlit-natural / handmade / farm-to-skin. Soft daylight from upper-left, faint contact shadows, linen + clay + cedar. Camera language KINETIC-CALM (slow drift, lateral track, soft push) — NOT whip-pan/fast-dolly. Each scent gets its own color world; bottles are NOT color-coded so world palette + botanical companion carry scent identity.",
+  "visual_style": "Sunlit-natural / handmade / farm-to-skin. Soft daylight from upper-left, faint contact shadows, linen + clay + cedar. Camera language KINETIC-CALM (slow drift, lateral track, soft push) \u2014 NOT whip-pan/fast-dolly. Each scent gets its own color world; bottles are NOT color-coded so world palette + botanical companion carry scent identity.",
   "higgsfield": {
     "model": "marketing_studio_video/product_showcase",
     "arrival_duration_sec": 5,
     "macro_duration_sec": 4,
-    "safety_block": " No bare skin, no exposed body parts in frame. NO smoke, NO vapor, NO aerosol, NO atomizer spray, NO scent visualization — bottle is a sealed twist-stick deodorant, never depict it open, extruded, or spraying. NO whip pans, NO shake, NO wobble, NO earthquake. Label identical to imported product reference. No on-screen text."
+    "safety_block": " No bare skin, no exposed body parts in frame. NO smoke, NO vapor, NO aerosol, NO atomizer spray, NO scent visualization \u2014 bottle is a sealed twist-stick deodorant, never depict it open, extruded, or spraying. NO whip pans, NO shake, NO wobble, NO earthquake. Label identical to imported product reference. No on-screen text."
   },
   "worlds": [
     {
       "slug": "lavender",
       "product": "Lavender Deodorant",
       "product_uuid": "f805f78e-5b74-41da-85fe-eb40b3435202",
-      "world": "Private sunrise reformer pilates studio — sheer linen curtains diffusing mauve-pink dawn light, blonde-pine floor, one wood reformer with cream-strap loops, folded cream linen towel on the carriage edge.",
+      "world": "Private sunrise reformer pilates studio \u2014 sheer linen curtains diffusing mauve-pink dawn light, blonde-pine floor, one wood reformer with cream-strap loops, folded cream linen towel on the carriage edge.",
       "palette": "Mauve dawn + cream linen + blonde pine",
       "botanical": "fresh lavender sprig",
       "bottle_color": "cream/beige",
@@ -28,35 +28,70 @@
       "slug": "blue_tansy",
       "product": "Blue Tansy Deodorant",
       "product_uuid": "fa4e5e33-ee9e-45de-8db5-4b4d71fe9ba9",
-      "world": "Spa / sauna threshold anteroom — vertical cedar slat wall, dark sage-teal slate floor, fresh eucalyptus bundle hanging from a leather loop, low slate bench in foreground, faint soft steam drifting laterally in the back.",
+      "world": "Spa / sauna threshold anteroom \u2014 vertical cedar slat wall, dark sage-teal slate floor, fresh eucalyptus bundle hanging from a leather loop, low slate bench in foreground, faint soft steam drifting laterally in the back.",
       "palette": "Sage-teal + bone + warm cedar",
       "botanical": "blue tansy flower + eucalyptus bundle",
       "bottle_color": "cream/beige",
       "arrival_prompt": "9:16 KINETIC-CALM WIDE spa anteroom for Primally Pure Blue Tansy Deodorant. BOTTLE STAYS SEALED, CAP STAYS ON. Bottle stays small; environment dominates, never macro. Vertical cedar slat wall, dark sage-teal slate floor, fresh bundle of eucalyptus hanging from a leather loop on the wall, low slate bench in foreground. Cream-colored sealed Blue Tansy Deo sits on the bench next to a cracked-glaze sage-blue ceramic bowl holding small blue tansy flowers. Faint soft steam drifting laterally in the back, NOT billowing. Bare ankle in cream linen robe just visible at upper-right edge, no face. 3 ambient cuts: lateral track from hanging eucalyptus down past wall; soft tracking past bench catching bottle and bowl; gentle push-in at medium scale. Sage-teal + bone + warm cedar palette. Soft cool daylight from upper-right.",
       "macro_prompt": "9:16 top-down macro product-only shot for Primally Pure Blue Tansy Deodorant. Cream-colored sealed Blue Tansy Deo rests horizontally on a large cracked-glaze sage-blue ceramic dish on smooth slate stone surface. Two small blue tansy flowers + two fresh eucalyptus leaves arranged loose around it. Cool sage-teal + bone palette, soft cool daylight from upper-left. Slow parallax tilt. NO hands in frame.",
-      "_note": "Arrival re-rolled once (S03 v1 → v2): v1 rendered the bottle with the cap removed — violated the sealed-bottle safety rule. v2 front-loads 'BOTTLE STAYS SEALED, CAP STAYS ON'."
+      "_note": "Arrival re-rolled once (S03 v1 \u2192 v2): v1 rendered the bottle with the cap removed \u2014 violated the sealed-bottle safety rule. v2 front-loads 'BOTTLE STAYS SEALED, CAP STAYS ON'."
     },
     {
       "slug": "bergamot_eucalyptus",
       "product": "Bergamot + Eucalyptus Deodorant",
       "product_uuid": "fc4369ce-8060-4125-b0f0-36202f0463d9",
-      "world": "Outdoor Saturday farmers market stall — cream linen-canvas market tent overhead with dappled morning sunlight, wooden crates of yellow bergamot fruit and sage stems, cream open-weave linen tote bag on a weathered wood crate.",
+      "world": "Outdoor Saturday farmers market stall \u2014 cream linen-canvas market tent overhead with dappled morning sunlight, wooden crates of yellow bergamot fruit and sage stems, cream open-weave linen tote bag on a weathered wood crate.",
       "palette": "Citrus yellow + warm linen + sage",
       "botanical": "bergamot fruit + eucalyptus stems",
       "bottle_color": "matte black",
       "arrival_prompt": "9:16 KINETIC-CALM WIDE outdoor Saturday farmers market for Primally Pure Bergamot + Eucalyptus Deodorant. Bottle stays small; environment dominates, never macro. Cream linen-canvas market tent overhead with dappled morning sunlight breaking through, wooden crates of yellow bergamot fruit and sage stems in foreground, cream open-weave linen tote bag set on weathered wood crate. The matte-black sealed B+E Deo pokes out of the tote alongside three long fresh eucalyptus stems. Bare hand at lower edge reaching to pick a bergamot fruit (only fingers, no face). 3 ambient cuts (slightly more energy to mirror the brighter morning palette, still NO whip pans): slow push past canvas tent catching dappled light; lateral track past crates landing on tote; soft push-in to bottle at medium scale. Citrus yellow + warm linen + sage palette. Crisp contact shadows.",
       "macro_prompt": "9:16 top-down macro product-only shot for Primally Pure Bergamot + Eucalyptus Deodorant. Matte-black sealed B+E Deo rests horizontally on cream linen napkin on pale wood farmhouse table. Halved bergamot fruit (cut face up showing citrus pulp) + one long fresh eucalyptus stem with leaves arranged loose around the bottle. Bright warm morning daylight from upper-left, faint contact shadow. Cream linen + citrus yellow + sage palette. Slow parallax tilt. NO hands in frame.",
-      "_note": "Arrival's mid-clip frame showed a gloved leather hand (storyboard called for bare fingertips) — minor deviation, accepted. Macro (S06) label misrendered 'Eucalyptus'→'Eucaiyptus' at the upright extreme; not visible in the top-down portion the trim dominates."
+      "_note": "Arrival's mid-clip frame showed a gloved leather hand (storyboard called for bare fingertips) \u2014 minor deviation, accepted. Macro (S06) label misrendered 'Eucalyptus'\u2192'Eucaiyptus' at the upright extreme; not visible in the top-down portion the trim dominates."
     }
   ],
   "scene_grid": [
-    {"scene": "S01", "world": "lavender",            "shape": "arrival", "duration_sec": 4.5},
-    {"scene": "S02", "world": "lavender",            "shape": "macro",   "duration_sec": 3.5},
-    {"scene": "S03", "world": "blue_tansy",          "shape": "arrival", "duration_sec": 4.5},
-    {"scene": "S04", "world": "blue_tansy",          "shape": "macro",   "duration_sec": 3.5},
-    {"scene": "S05", "world": "bergamot_eucalyptus", "shape": "arrival", "duration_sec": 4.5},
-    {"scene": "S06", "world": "bergamot_eucalyptus", "shape": "macro",   "duration_sec": 3.5},
-    {"scene": "S07", "world": "end-card",            "shape": "endcard", "duration_sec": 3.0}
+    {
+      "scene": "S01",
+      "world": "lavender",
+      "shape": "arrival",
+      "duration_sec": 4.5
+    },
+    {
+      "scene": "S02",
+      "world": "lavender",
+      "shape": "macro",
+      "duration_sec": 3.5
+    },
+    {
+      "scene": "S03",
+      "world": "blue_tansy",
+      "shape": "arrival",
+      "duration_sec": 4.5
+    },
+    {
+      "scene": "S04",
+      "world": "blue_tansy",
+      "shape": "macro",
+      "duration_sec": 3.5
+    },
+    {
+      "scene": "S05",
+      "world": "bergamot_eucalyptus",
+      "shape": "arrival",
+      "duration_sec": 4.5
+    },
+    {
+      "scene": "S06",
+      "world": "bergamot_eucalyptus",
+      "shape": "macro",
+      "duration_sec": 3.5
+    },
+    {
+      "scene": "S07",
+      "world": "end-card",
+      "shape": "endcard",
+      "duration_sec": 3.0
+    }
   ],
   "end_card": {
     "nb2_model": "nano_banana_2",
@@ -72,9 +107,21 @@
       "headline": "FIND YOUR DAILY.",
       "headline_font": "Inter 900, 'DAILY' outlined via -webkit-text-stroke",
       "scent_labels": [
-        {"label": "lavender.", "font": "Caveat 600", "arrow": "hand-drawn, points to upper-right bottle"},
-        {"label": "blue tansy.", "font": "Caveat 600", "arrow": "hand-drawn, points to center bottle"},
-        {"label": "bergamot + eucalyptus.", "font": "Caveat 600", "arrow": "hand-drawn, points to lower-left bottle"}
+        {
+          "label": "lavender.",
+          "font": "Caveat 600",
+          "arrow": "hand-drawn, points to upper-right bottle"
+        },
+        {
+          "label": "blue tansy.",
+          "font": "Caveat 600",
+          "arrow": "hand-drawn, points to center bottle"
+        },
+        {
+          "label": "bergamot + eucalyptus.",
+          "font": "Caveat 600",
+          "arrow": "hand-drawn, points to lower-left bottle"
+        }
       ],
       "wordmark": "PRIMALLY / PURE (Playfair Display serif, two rows)",
       "url": "primallypure.com",
@@ -93,5 +140,19 @@
     "audio_bitrate": "192k",
     "fade_in_sec": 0.3,
     "fade_out_sec": 0.5
+  },
+  "post_production": {
+    "music": {
+      "default": "on",
+      "note": "ElevenLabs bed, default on"
+    },
+    "captions": {
+      "default": "n/a",
+      "note": "silent / music-led \u2014 no VO"
+    },
+    "end_card": {
+      "default": "on",
+      "note": "HTML 'FIND YOUR DAILY.' end card, default on"
+    }
   }
 }

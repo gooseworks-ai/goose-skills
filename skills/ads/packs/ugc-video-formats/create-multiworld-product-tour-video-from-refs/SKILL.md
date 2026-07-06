@@ -156,6 +156,14 @@ re-watch.
 - **Brand guardrails.** No efficacy claims, no competitor jabs, register stays on-brand
   (the demo is sunlit-natural, not glossy/clinical/neon).
 
+## Post-production
+
+Post-production layers, explicit per the one-shot-videos family convention (default **ON** where the layer applies; **N/A** formats say why). Toggle via `post_production` in `config.json`:
+
+- **Music** — default ON: ElevenLabs bed, default on.
+- **Captions** — N/A: silent / music-led — no VO.
+- **End card** — default ON: HTML 'FIND YOUR DAILY.' end card, default on.
+
 ## Output
 
 - `master-v2.mp4` — 720×1280, ≈27s, h264 (+ aac music bed). 6 clips (3 worlds × arrival

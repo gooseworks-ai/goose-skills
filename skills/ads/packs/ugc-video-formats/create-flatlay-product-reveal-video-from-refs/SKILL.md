@@ -127,6 +127,14 @@ offending beat, re-assemble, re-watch.
   HTML template; product covers are the brand's real art.
 - **One tabletop plate, consistent dressing** across beats so the sequence reads as one shoot.
 
+## Post-production
+
+Post-production layers, explicit per the one-shot-videos family convention (default **ON** where the layer applies; **N/A** formats say why). Toggle via `post_production` in `config.json`:
+
+- **Music** — default ON: ElevenLabs bed, default on.
+- **Captions** — N/A: no spoken dialogue.
+- **End card** — default ON: HTML brand end card (core to the format).
+
 ## Output
 
 - `master-final.mp4` — 1080×1920, ≈14–16s, h264 (+ aac music). N beats + optional
@@ -159,6 +167,6 @@ offending beat, re-assemble, re-watch.
 
 ## Related
 
-- The remix twin — `remix-flatlay-product-reveal-from-sample` — is what the app's
-  format tab calls; it swaps the brand's products + tabletop + end card into this
-  builder's `config.json` and publishes back through the goose-video runtime.
+- The remix twin — `remix-flatlay-product-reveal-from-sample` — is what the app's format tab calls; it swaps
+  the brand into this builder's `config.json` and publishes back through the
+  goose-video runtime. Format link: `recipe.format: "flatlay-product-reveal"`.

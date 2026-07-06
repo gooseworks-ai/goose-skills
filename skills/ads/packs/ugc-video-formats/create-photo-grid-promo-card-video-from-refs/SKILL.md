@@ -122,6 +122,14 @@ immediately (no dead intro). Fix `config.json`; re-render.
 - **Motion is a pure function of `t`** (`renderAt(t)`) — keep it deterministic so the
   frame-step render is reproducible.
 
+## Post-production
+
+Post-production layers, explicit per the one-shot-videos family convention (default **ON** where the layer applies; **N/A** formats say why). Toggle via `post_production` in `config.json`:
+
+- **Music** — default ON: ElevenLabs bed, energetic from t=0, default on.
+- **Captions** — N/A: designed card, no dialogue.
+- **End card** — N/A: the promo card itself is the end frame.
+
 ## Output
 
 - `master-final.mp4` — 1080×1920, ≈10s, h264 (+ aac music). Silent variant with
@@ -153,10 +161,8 @@ immediately (no dead intro). Fix `config.json`; re-render.
 - **Grain/heavy-video temptation** → don't; the format's whole value is crisp static
   design. No generative video in the grid.
 
-## Skill location & related
+## Related
 
-- Composite-render siblings authored the same way (real-DOM card → frame-step →
-  ffmpeg): the AirDrop-carousel and iMessage-cascade formats.
-- The remix twin — `remix-photo-grid-promo-card-from-sample` — is what the app's
-  format tab calls; it swaps the brand into this builder's `config.json` and
-  publishes the result back through the goose-video runtime.
+- The remix twin — `remix-photo-grid-promo-card-from-sample` — is what the app's format tab calls; it swaps
+  the brand into this builder's `config.json` and publishes back through the
+  goose-video runtime. Format link: `recipe.format: "photo-grid-promo-card"`.

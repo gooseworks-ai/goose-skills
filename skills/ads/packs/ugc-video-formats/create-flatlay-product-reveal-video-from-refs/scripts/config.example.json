@@ -1,5 +1,5 @@
 {
-  "_comment": "Wonderbly 'Father's Day book swap' flat-lay product reveal — the worked example. Copy to config.json and edit. Each beat: a flat top-down product shot on a dressed tabletop, hands cup it + lift it away. 1080x1920 9:16. Two paid model calls PER BEAT (flat cover + Veo i2v) + optional FD-card gen + music.",
+  "_comment": "Wonderbly 'Father's Day book swap' flat-lay product reveal \u2014 the worked example. Copy to config.json and edit. Each beat: a flat top-down product shot on a dressed tabletop, hands cup it + lift it away. 1080x1920 9:16. Two paid model calls PER BEAT (flat cover + Veo i2v) + optional FD-card gen + music.",
   "brand_name": "Wonderbly",
   "width": 1080,
   "height": 1920,
@@ -8,18 +8,34 @@
   "tabletop_bg": "assets/tabletop-bg.png",
   "flat_cover": {
     "model": "fal-ai/nano-banana/edit",
-    "prompt": "Top-down overhead photograph of this exact product/cover lying perfectly flat on a clean white background. True 90-degree top-down camera angle, the front face fills the frame as a perfect square (1:1). Natural hardcover thickness as a thin edge. The cover art, illustration, title text, personalized names, decorative elements, and logo must remain IDENTICAL to the reference — do NOT alter, redesign, relayout, restyle, recolor, or change typography or names. Only change the camera angle from 3D-perspective to true top-down flat square. Soft natural daylight upper-left, subtle drop-shadow under the item. No other props, plain white surface."
+    "prompt": "Top-down overhead photograph of this exact product/cover lying perfectly flat on a clean white background. True 90-degree top-down camera angle, the front face fills the frame as a perfect square (1:1). Natural hardcover thickness as a thin edge. The cover art, illustration, title text, personalized names, decorative elements, and logo must remain IDENTICAL to the reference \u2014 do NOT alter, redesign, relayout, restyle, recolor, or change typography or names. Only change the camera angle from 3D-perspective to true top-down flat square. Soft natural daylight upper-left, subtle drop-shadow under the item. No other props, plain white surface."
   },
   "beat_i2v": {
     "model": "fal-ai/veo3/image-to-video",
     "duration_sec": 4,
-    "prompt": "Two adult human hands ENTER from the bottom corners and CUP the item centered on the tabletop. OPENING (0-0.5s): the item is already centered — DO NOT MOVE IT, DO NOT CHANGE THE COVER ART/TEXT/NAMES/LOGO from the start frame. PRESENTATION (0.5-2.5s): both hands enter bottom-left and bottom-right, palms down, cup the bottom edge, HOLD the item centered ~1.5s, cover fully faces camera, all text readable. EXIT (2.5-3.7s): hands LIFT the item 2cm and CARRY it off the bottom edge, fully exiting by 3.7s. CLOSE (3.7-4s): tabletop empty. STYLE: top-down 90-degree overhead, camera does NOT move, wide depth of field, soft daylight upper-left, real linen texture + real skin micro-detail. ABSOLUTE: the item's art/text/names/logo must be PRESERVED EXACTLY from the start frame — no smear, no redesign, no substitution."
+    "prompt": "Two adult human hands ENTER from the bottom corners and CUP the item centered on the tabletop. OPENING (0-0.5s): the item is already centered \u2014 DO NOT MOVE IT, DO NOT CHANGE THE COVER ART/TEXT/NAMES/LOGO from the start frame. PRESENTATION (0.5-2.5s): both hands enter bottom-left and bottom-right, palms down, cup the bottom edge, HOLD the item centered ~1.5s, cover fully faces camera, all text readable. EXIT (2.5-3.7s): hands LIFT the item 2cm and CARRY it off the bottom edge, fully exiting by 3.7s. CLOSE (3.7-4s): tabletop empty. STYLE: top-down 90-degree overhead, camera does NOT move, wide depth of field, soft daylight upper-left, real linen texture + real skin micro-detail. ABSOLUTE: the item's art/text/names/logo must be PRESERVED EXACTLY from the start frame \u2014 no smear, no redesign, no substitution."
   },
   "beats": [
-    {"slug": "book1", "cover_ref": "assets/covers/our-first-fathers-day.png", "label": "Our First Father's Day"},
-    {"slug": "book2", "cover_ref": "assets/covers/daddys-magic-hugs.png", "label": "Daddy's Magic Hugs"},
-    {"slug": "book3", "cover_ref": "assets/covers/where-are-you-dad.png", "label": "Where Are You? Daddy Edition"},
-    {"slug": "book4", "cover_ref": "assets/covers/grandpa-daddy-clover.png", "label": "Grandpa, Daddy and Clover"}
+    {
+      "slug": "book1",
+      "cover_ref": "assets/covers/our-first-fathers-day.png",
+      "label": "Our First Father's Day"
+    },
+    {
+      "slug": "book2",
+      "cover_ref": "assets/covers/daddys-magic-hugs.png",
+      "label": "Daddy's Magic Hugs"
+    },
+    {
+      "slug": "book3",
+      "cover_ref": "assets/covers/where-are-you-dad.png",
+      "label": "Where Are You? Daddy Edition"
+    },
+    {
+      "slug": "book4",
+      "cover_ref": "assets/covers/grandpa-daddy-clover.png",
+      "label": "Grandpa, Daddy and Clover"
+    }
   ],
   "insert_card": {
     "enabled": true,
@@ -37,9 +53,23 @@
     "dwell_sec": 3.0
   },
   "music": {
-    "prompt": "Lively warm acoustic Father's Day bed, ~130 BPM, festive and heartfelt but NOT jingle-bell cliché, light guitar + soft percussion + warm bass, major key, instrumental only, energetic from t=0.",
+    "prompt": "Lively warm acoustic Father's Day bed, ~130 BPM, festive and heartfelt but NOT jingle-bell clich\u00e9, light guitar + soft percussion + warm bass, major key, instrumental only, energetic from t=0.",
     "length_ms": 16500,
     "trim_intro_sec": 0.0,
     "force_instrumental": true
+  },
+  "post_production": {
+    "music": {
+      "default": "on",
+      "note": "ElevenLabs bed, default on"
+    },
+    "captions": {
+      "default": "n/a",
+      "note": "no spoken dialogue"
+    },
+    "end_card": {
+      "default": "on",
+      "note": "HTML brand end card (core to the format)"
+    }
   }
 }

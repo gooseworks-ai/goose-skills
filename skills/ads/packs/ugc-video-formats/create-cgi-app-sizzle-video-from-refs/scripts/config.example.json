@@ -1,41 +1,37 @@
 {
-  "_comment": "MasterClass 'App Sizzle (3D CGI)' — the worked example (clients/masterclass/ad-runs/run-03-run-03). Copy to config.json and edit. A ~22.6s premium 3D-CGI app-demo sizzle: a gold-trimmed phone floats in a smoky-black studio; 6 app features demo in sequence — each bursts REAL App Store UI elements outward in 3D with amaranth rim-light + bokeh, then settles back into the phone at the climax. 1080x1920 9:16. ALL on-screen UI is composited via PIL from real App Store screenshots — NEVER AI-rendered. Per beat: a nano_banana_2 CGI plate (blank-glow phone + placeholder burst-out shapes) -> PIL screen composite (real screenshot onto the bezel) -> kling3_0 i2v steady-float clip (Ken-Burns FFmpeg fallback if Kling garbles the burst-out UI). VO durations are LOCKED from the rendered ElevenLabs audio before the timeline is cut. Final is sped 1.15x + anti-AI grain.",
+  "_comment": "MasterClass 'App Sizzle (3D CGI)' \u2014 the worked example (clients/masterclass/ad-runs/run-03-run-03). Copy to config.json and edit. A ~22.6s premium 3D-CGI app-demo sizzle: a gold-trimmed phone floats in a smoky-black studio; 6 app features demo in sequence \u2014 each bursts REAL App Store UI elements outward in 3D with amaranth rim-light + bokeh, then settles back into the phone at the climax. 1080x1920 9:16. ALL on-screen UI is composited via PIL from real App Store screenshots \u2014 NEVER AI-rendered. Per beat: a nano_banana_2 CGI plate (blank-glow phone + placeholder burst-out shapes) -> PIL screen composite (real screenshot onto the bezel) -> kling3_0 i2v steady-float clip (Ken-Burns FFmpeg fallback if Kling garbles the burst-out UI). VO durations are LOCKED from the rendered ElevenLabs audio before the timeline is cut. Final is sped 1.15x + anti-AI grain.",
   "brand_name": "MasterClass",
   "width": 1080,
   "height": 1920,
   "fps": 24,
   "final_speed": 1.15,
   "target_duration_sec": 22.6,
-
   "studio_look": {
     "background_hex": "#0A0A0A",
     "rim_light_hex": "#E32652",
     "rim_light_direction": "upper-left",
     "phone": "single iPhone 15 Pro, gold/champagne titanium frame, floating center-frame at ~5-12 degree tilt toward camera, screen ON showing only a uniform warm glow (UI composited in post)",
     "bokeh": "warm amaranth sparkles + a few cool-white highlight orbs drifting in the empty space",
-    "register": "Apple-keynote 3D CGI product render — glossy bezel reflections, soft ground shadow, premium luxury grade, no people, no hands, no faces, no English text on the plate",
+    "register": "Apple-keynote 3D CGI product render \u2014 glossy bezel reflections, soft ground shadow, premium luxury grade, no people, no hands, no faces, no English text on the plate",
     "reference_pin": "Pinterest pin 1119566788643692467 ('Ultra-Smooth 3D CGI Advertisement'), re-paletted from champagne studio -> smoky-black + amaranth"
   },
-
   "cgi_plate": {
     "model": "nano_banana_2",
     "provider": "fal",
-    "base_prompt": "Premium 3D CGI advertising still, 9:16 vertical product render. A modern smartphone is the subject, photographed from DIRECTLY IN FRONT so we see the FULL DISPLAY SCREEN facing us. The phone floats centered in frame, tilted only 5 degrees left. The DISPLAY SCREEN is ON and shows ONLY a uniform soft warm glow — completely blank, NO icons, NO UI, NO text. Slim gold/champagne titanium edges catching warm light. SETTING: smoky-black studio backdrop (#0A0A0A), soft amaranth-red rim-light (#E32652) raking from upper-left. Warm amaranth bokeh sparkles + cool-white highlight orbs drift around the phone. Faint window-stripe shadows on the dark floor. LOOK: Apple-keynote 3D CGI product render. Glossy bezel reflections. Soft realistic ground shadow. Premium luxury feel. NEGATIVE: NO back of phone, NO camera lenses, NO people, NO faces, NO English text, NO logos, NO multiple phones, NO furniture.",
+    "base_prompt": "Premium 3D CGI advertising still, 9:16 vertical product render. A modern smartphone is the subject, photographed from DIRECTLY IN FRONT so we see the FULL DISPLAY SCREEN facing us. The phone floats centered in frame, tilted only 5 degrees left. The DISPLAY SCREEN is ON and shows ONLY a uniform soft warm glow \u2014 completely blank, NO icons, NO UI, NO text. Slim gold/champagne titanium edges catching warm light. SETTING: smoky-black studio backdrop (#0A0A0A), soft amaranth-red rim-light (#E32652) raking from upper-left. Warm amaranth bokeh sparkles + cool-white highlight orbs drift around the phone. Faint window-stripe shadows on the dark floor. LOOK: Apple-keynote 3D CGI product render. Glossy bezel reflections. Soft realistic ground shadow. Premium luxury feel. NEGATIVE: NO back of phone, NO camera lenses, NO people, NO faces, NO English text, NO logos, NO multiple phones, NO furniture.",
     "anchor": "beat 1 plate is generated first, then beats 2-6 are anchored on it (--anchor scene-01-plate) so the phone/studio stay identical across beats; each beat appends its burst-out element layer to base_prompt"
   },
-
   "screen_composite": {
-    "method": "PIL — auto-detect the bright warm phone-screen bbox in the plate, resize the real App Store PNG to fit, warm-tint 6%, brightness +5%, feather into a rounded-rect mask so it sits inside the bezel",
-    "hard_rule": "the on-screen UI (instructor faces, course cards, video tiles, brand poster) is ALWAYS the real App Store screenshot — never AI-rendered. Instructor portraits are the real Cuban/Ramsay/Perel App Store faces."
+    "method": "PIL \u2014 auto-detect the bright warm phone-screen bbox in the plate, resize the real App Store PNG to fit, warm-tint 6%, brightness +5%, feather into a rounded-rect mask so it sits inside the bezel",
+    "hard_rule": "the on-screen UI (instructor faces, course cards, video tiles, brand poster) is ALWAYS the real App Store screenshot \u2014 never AI-rendered. Instructor portraits are the real Cuban/Ramsay/Perel App Store faces."
   },
-
   "beats": [
     {
       "id": "beat-01-discovery",
-      "label": "Discovery — For You feed",
+      "label": "Discovery \u2014 For You feed",
       "screen": "screen-01.png",
       "screen_role": "MC 'For You' tab",
-      "burst_out": "3 glass-morphic instructor portrait tiles (Cuban, Ramsay, Perel — REAL faces from screen-01) 3D-pop out toward camera at three depths with parallax",
+      "burst_out": "3 glass-morphic instructor portrait tiles (Cuban, Ramsay, Perel \u2014 REAL faces from screen-01) 3D-pop out toward camera at three depths with parallax",
       "burst_out_source": "real_screenshot_pil",
       "plate_element_layer": "placeholder rectangular glass-morphic tiles popping out toward camera at different depths; real portraits composited in PIL post",
       "kling_motion": "Steady cinematic locked-tripod 3D camera, no shake no wobble. Phone holds centered; three instructor portrait tiles gently 3D-pop outward toward camera, settling at three depths with parallax. Warm amaranth bokeh drifts upward. Phone screen content stays exactly as shown.",
@@ -47,7 +43,7 @@
     },
     {
       "id": "beat-02-library",
-      "label": "Library — catalog breadth",
+      "label": "Library \u2014 catalog breadth",
       "screen": "screen-02.png",
       "screen_role": "MC Library",
       "burst_out": "a deck of 5-7 course thumbnail cards fans out in 3D like a magician spreading cards, each catching the amaranth rim-light",
@@ -58,7 +54,7 @@
       "vo": "Cooking. Writing. Photography. Business. Strategy.",
       "vo_actual_duration_sec": 4.99,
       "t_start_sec": 4.11,
-      "t_end_sec": 9.40
+      "t_end_sec": 9.4
     },
     {
       "id": "beat-03-bite-size",
@@ -72,7 +68,7 @@
       "kenburns_fallback": "slow zoom 1.00->1.06 push-in on screen-03",
       "vo": "Lessons that fit a coffee break.",
       "vo_actual_duration_sec": 1.72,
-      "t_start_sec": 9.40,
+      "t_start_sec": 9.4,
       "t_end_sec": 11.62
     },
     {
@@ -82,8 +78,8 @@
       "screen_role": "MC 'My Learning'",
       "burst_out": "small generic 3D iPad + Apple TV remote + MacBook mockups orbit the phone clockwise (one rotation across ~3.5s), parallax so iPad passes in front, remote behind",
       "burst_out_source": "ai_generic_devices",
-      "plate_element_layer": "generic iPad/TV-remote/laptop mockups orbiting the phone at mid-depth with BLANK screens (no UI, no text — would conflict with the phone screen)",
-      "kling_motion": "Phone holds locked at center; the three device mockups slowly rotate clockwise in orbit at constant velocity, parallaxing — iPad front-left nearer camera, TV remote behind, MacBook crossing front-right. Phone screen content stays exactly as shown.",
+      "plate_element_layer": "generic iPad/TV-remote/laptop mockups orbiting the phone at mid-depth with BLANK screens (no UI, no text \u2014 would conflict with the phone screen)",
+      "kling_motion": "Phone holds locked at center; the three device mockups slowly rotate clockwise in orbit at constant velocity, parallaxing \u2014 iPad front-left nearer camera, TV remote behind, MacBook crossing front-right. Phone screen content stays exactly as shown.",
       "kenburns_fallback": "slow zoom 1.00->1.06 push-in on screen-04",
       "vo": "Mobile. Tablet. Web. TV.",
       "vo_actual_duration_sec": 3.97,
@@ -107,59 +103,75 @@
     },
     {
       "id": "beat-06-the-pitch",
-      "label": "The pitch — CLIMAX",
+      "label": "The pitch \u2014 CLIMAX",
       "screen": "screen-06.png",
       "screen_role": "MC brand poster ('LEARN FROM THE BEST. BE YOUR BEST.')",
-      "burst_out": "NO new burst — all floating elements from prior beats gently collapse BACK into the phone screen; amaranth rim-light intensifies, bokeh thickens; optional baked burst-climax portrait tiles ring the phone (build_burst_climax.py)",
+      "burst_out": "NO new burst \u2014 all floating elements from prior beats gently collapse BACK into the phone screen; amaranth rim-light intensifies, bokeh thickens; optional baked burst-climax portrait tiles ring the phone (build_burst_climax.py)",
       "burst_out_source": "collapse_in",
-      "plate_element_layer": "phone tilted ~9 degrees toward camera (subtle push-in), no floating elements outside the phone (collapsed in), rim-light INTENSIFIED, denser bokeh — reads as the climax hero composition",
+      "plate_element_layer": "phone tilted ~9 degrees toward camera (subtle push-in), no floating elements outside the phone (collapsed in), rim-light INTENSIFIED, denser bokeh \u2014 reads as the climax hero composition",
       "kling_motion": "Phone holds in a hero composition; the amaranth halo slowly intensifies and bokeh thickens for a climax payoff; the phone subtly nudges a few degrees closer to camera (very slow push-in). Phone screen content stays exactly as shown.",
       "kenburns_fallback": "heavier zoom 1.00->1.10 push-in on the scene-06 CGI plate (visual punctuation)",
       "vo": "Two hundred plus classes. One app.",
-      "vo_actual_duration_sec": 3.00,
+      "vo_actual_duration_sec": 3.0,
       "vo_gain_db": 2,
       "is_climax": true,
       "t_start_sec": 18.94,
-      "t_end_sec": 23.00
+      "t_end_sec": 23.0
     }
   ],
-
   "end_card": {
     "method": "PIL composite (no AI)",
     "canvas_hex": "#0A0A0A",
-    "amaranth_bar": {"hex": "#E32652", "width_px": 800, "height_px": 6, "y": 960},
-    "wordmark": {"asset": "masterclass-wordmark.svg", "width_px": 480, "baseline_y": 900},
-    "tagline": {"text": "Learn from the best.", "font": "Montserrat", "size_px": 56, "weight": "medium", "color": "#FFFFFF", "y": 1020},
+    "amaranth_bar": {
+      "hex": "#E32652",
+      "width_px": 800,
+      "height_px": 6,
+      "y": 960
+    },
+    "wordmark": {
+      "asset": "masterclass-wordmark.svg",
+      "width_px": 480,
+      "baseline_y": 900
+    },
+    "tagline": {
+      "text": "Learn from the best.",
+      "font": "Montserrat",
+      "size_px": 56,
+      "weight": "medium",
+      "color": "#FFFFFF",
+      "y": 1020
+    },
     "vignette": true,
     "dwell_sec": 3.0,
     "captions_suppressed": true
   },
-
   "voiceover": {
     "provider": "elevenlabs",
     "voice": "Eryn",
     "voice_id": "dMyQqiVXTU80dDl2eNK8",
     "model_id": "eleven_v3",
-    "voice_settings": {"stability": 0.45, "similarity_boost": 0.75, "style": 0.10, "use_speaker_boost": true},
+    "voice_settings": {
+      "stability": 0.45,
+      "similarity_boost": 0.75,
+      "style": 0.1,
+      "use_speaker_boost": true
+    },
     "direction": "Confident, declarative, restrained. Apple-keynote spec-sheet cadence. NOT lyrical, NOT breathy. Each line lands beat-for-beat with the on-screen feature.",
     "note": "render all 6 cues FIRST, ffprobe each MP3, then lock the beat windows from the MEASURED durations (never from planned word counts)"
   },
-
   "music": {
     "provider": "elevenlabs_music",
-    "prompt": "A premium tech advertisement underscore, cinematic and modern. Slow build over ~27 seconds. Sparse low piano notes establish the first 4 seconds. Add soft warm synth pad at 4s. Gentle pulsing rhythm (no drums — synth pulses) enters at 12s. Subtle string swell at 18s. Full warm string + piano resolution at 22s. NO vocals, NO lyrics, NO chant. Hopeful, confident, premium. Apple keynote register. Key of D major.",
+    "prompt": "A premium tech advertisement underscore, cinematic and modern. Slow build over ~27 seconds. Sparse low piano notes establish the first 4 seconds. Add soft warm synth pad at 4s. Gentle pulsing rhythm (no drums \u2014 synth pulses) enters at 12s. Subtle string swell at 18s. Full warm string + piano resolution at 22s. NO vocals, NO lyrics, NO chant. Hopeful, confident, premium. Apple keynote register. Key of D major.",
     "trim_intro_sec": 2.5,
     "force_instrumental": true,
     "no_artist_names": true
   },
-
   "audio_mix": {
     "vo_bus": "loudnorm -23 LUFS, de-ess, high-pass 80Hz",
     "music_bus": "loudnorm -23 LUFS, sidechain-compress with VO as key (ratio 20:1, attack 5ms, release 250ms), duck -9dB under VO",
     "climax_boost": "+2dB VO on beat-06",
     "master_bus": "loudnorm -14 LUFS (IG/TikTok safe), -1.5 dBTP true peak"
   },
-
   "captions": {
     "style": "klap_restrained_white_sans",
     "treatment": "line-by-line, one cue per beat, NO karaoke pills (MC premium register)",
@@ -167,10 +179,23 @@
     "suppress_on_end_card": true,
     "timing": "fade in +0.05s after VO start, fade out +0.20s after VO end"
   },
-
   "finalize": {
     "speed": "1.15x (setpts=PTS/1.15 on video, atempo=1.15 on audio, pitch preserved) -> 26.0s master becomes ~22.6s",
     "grain": "anti-AI grain pass on the final master",
     "codec": "1080x1920 H.264, AAC 256k"
+  },
+  "post_production": {
+    "music": {
+      "default": "on",
+      "note": "cinematic bed under the VO, default on"
+    },
+    "captions": {
+      "default": "on",
+      "note": "restrained Klap line-by-line captions, default on"
+    },
+    "end_card": {
+      "default": "on",
+      "note": "real-wordmark brand end card, default on"
+    }
   }
 }

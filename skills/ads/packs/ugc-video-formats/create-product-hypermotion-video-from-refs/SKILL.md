@@ -175,6 +175,14 @@ Seedance if the clip itself drifted.
 - **Static fonts + skip-if-exists on all paid calls.** Variable TTFs render as Regular in
   PIL; wrap every `fal_client.subscribe` so a re-run never re-bills.
 
+## Post-production
+
+Post-production layers, explicit per the one-shot-videos family convention (default **ON** where the layer applies; **N/A** formats say why). Toggle via `post_production` in `config.json`:
+
+- **Music** — default ON: 124 BPM bass bed, default on.
+- **Captions** — N/A: no VO — the kinetic-typography spec cards carry the copy.
+- **End card** — default ON: real-logo brand end card, default on.
+
 ## Output
 
 - `master-final.mp4` — 1080×1920, ≈20–30s (25s default), h264 + 192 kbps aac music.

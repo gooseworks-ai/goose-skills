@@ -189,6 +189,14 @@ watch.
   final animated silent master/clips — never an earlier static intermediate. Frame-diff to
   prove localized motion. Trim short beats; slow long beats ≤1.6×; never freeze a frame.
 
+## Post-production
+
+Post-production layers, explicit per the one-shot-videos family convention (default **ON** where the layer applies; **N/A** formats say why). Toggle via `post_production` in `config.json`:
+
+- **Music** — default ON: lo-fi pop bed under the VO, default on.
+- **Captions** — default ON: word-by-word burned captions (libass/Klap), default on.
+- **End card** — default ON: CTA + brand wordmark scene, default on.
+
 ## Output
 
 - `finals/master-final-30s-v1.mp4` — 1080×1920, ~30s, h264 (+ aac stereo). N-step routine

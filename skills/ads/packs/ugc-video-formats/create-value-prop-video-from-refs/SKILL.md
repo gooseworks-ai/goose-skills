@@ -139,6 +139,14 @@ track — some platforms reject audio-less video).
 - **End card is the brand's real wordmark** (CDN, no `?width=N`, ≥1200×600), no
   chromatic-aberration / RGB-shift effects (they read as pixelated noise).
 
+## Post-production
+
+Post-production layers, explicit per the one-shot-videos family convention (default **ON** where the layer applies; **N/A** formats say why). Toggle via `post_production` in `config.json`:
+
+- **Music** — default ON: quiet instrumental bed at -14 dB; pass null to ship silent.
+- **Captions** — N/A: no VO — the noun-phrase value-prop claims ARE the on-screen text.
+- **End card** — default ON: brand-wordmark end card, default on.
+
 ## Output
 
 - `finals/master-*-with-music.mp4` — 1080×1920, ~17s (10-20 range), h264 + aac. Hook +

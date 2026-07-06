@@ -15,20 +15,41 @@
   },
   "overlays": {
     "header": {
-      "lines": ["We got a perfect 10/10 score", "for ingredient quality & purity"],
+      "lines": [
+        "We got a perfect 10/10 score",
+        "for ingredient quality & purity"
+      ],
       "icon": "medal.png",
       "icon_line": 0
     },
     "subhead": {
-      "lines": ["But here's also why you'll love us:"],
+      "lines": [
+        "But here's also why you'll love us:"
+      ],
       "icon": "finger-down.png"
     },
     "proof_font_size": 40,
     "proof_points": [
-      {"slug": "vegan",     "line_a": "Vegan & clean",  "line_b": "ingredients"},
-      {"slug": "collagen",  "line_a": "10g collagen",   "line_b": "per serving"},
-      {"slug": "taste",     "line_a": "Tastes amazing",  "line_b": "mango flavor"},
-      {"slug": "clinical",  "line_a": "Clinically",     "line_b": "tested + proven"}
+      {
+        "slug": "vegan",
+        "line_a": "Vegan & clean",
+        "line_b": "ingredients"
+      },
+      {
+        "slug": "collagen",
+        "line_a": "10g collagen",
+        "line_b": "per serving"
+      },
+      {
+        "slug": "taste",
+        "line_a": "Tastes amazing",
+        "line_b": "mango flavor"
+      },
+      {
+        "slug": "clinical",
+        "line_a": "Clinically",
+        "line_b": "tested + proven"
+      }
     ]
   },
   "layout": {
@@ -37,12 +58,36 @@
     "subhead_y": 260,
     "pill_left_x": 40,
     "pill_right_margin": 40,
-    "pill_rows_y": [560, 900, 1240, 1560],
-    "reveal_times": [2.2, 3.4, 4.6, 5.8]
+    "pill_rows_y": [
+      560,
+      900,
+      1240,
+      1560
+    ],
+    "reveal_times": [
+      2.2,
+      3.4,
+      4.6,
+      5.8
+    ]
   },
   "music": {
     "prompt": "Upbeat, clean, bright UGC TikTok/Instagram ad music. Light fingerpicked acoustic guitar + soft shaker percussion + warm pad. Cheerful, optimistic, wellness/beauty vibe. Modern and fresh, NOT corporate, NOT cinematic, NOT dramatic. Female-skewing skincare/supplement ad mood. Tempo around 100 BPM. Energy lifts gently throughout. Instrumental only, no vocals.",
     "raw_length_ms": 13000,
     "trim_intro_sec": 2.5
+  },
+  "post_production": {
+    "music": {
+      "default": "on",
+      "note": "ElevenLabs bed, default on"
+    },
+    "captions": {
+      "default": "n/a",
+      "note": "no spoken dialogue \u2014 the score + proof pills are the on-screen copy"
+    },
+    "end_card": {
+      "default": "n/a",
+      "note": "the persistent white/orange header pills close the ad"
+    }
   }
 }

@@ -14,7 +14,7 @@ description: >-
   Pinterest/TikTok reel in that layout, or a brand with a clean one-hand bottle
   and 3–4 flexes worth stacking (purity, dose, clinical, taste). NOT for a
   talking-head monologue (use create-ugc-*-video-from-refs) and NOT for a
-  carousel product reveal.
+  carousel (use create-airdrop-notification-carousel-video-from-refs).
 status: active
 ---
 
@@ -30,8 +30,7 @@ screenshot lends credibility) layered on a UGC-feeling product shot.
 
 The canonical source is the Origins Nutra Sea Buckthorn Oil reel
 (`youtube.com/shorts/CEx5v8KplFI`); the canonical worked example is SpoiledChild
-E27 Liquid Collagen, "We got a perfect 10/10 score"
-(`one-shot-videos/create-overlay-proof-points-video-from-refs/demo/`).
+E27 Liquid Collagen, "We got a perfect 10/10 score" (`demo/`).
 
 This is a **hybrid** molecule: the base clip IS generative (one nano-banana
 keyframe → one Kling i2v of subtle handheld motion, no dialogue), but the pills
@@ -51,7 +50,8 @@ Use this when the brand has:
 
 Required:
 - **Product image** — one clean product hero shot (on-white / PDP). Used as the
-  image-ref for the keyframe so the real label + wordmark are preserved.
+  image-ref for the keyframe so the real label + wordmark are preserved. (git-LFS:
+  fetch + checkout first — pointers are ~131-byte stubs.)
 - **Brand name** — for the headline copy.
 - **Score claim** — the top headline, e.g. "We got a perfect 10/10 score / for
   ingredient quality & purity" (two short lines).
@@ -66,10 +66,6 @@ Optional (all have defaults in `config.example.json`):
   left hand, delicate gold heart-charm bracelet").
 - **Music prompt** — ElevenLabs Music bed (default upbeat clean UGC).
 - **Duration** — default 10s.
-
-Environment: `FAL_KEY` (alias from `FAL_API_KEY` if needed) for the keyframe + i2v;
-`ELEVENLABS_API_KEY` for the music bed. `ffmpeg` + Python `Pillow`, `fal_client`,
-`requests` on PATH.
 
 ## Engine (scripts/)
 
@@ -86,27 +82,33 @@ which IS the SpoiledChild worked example, and edit it). Canvas is always
 | `gen_music.py` | **PAID.** ElevenLabs Music bed; trims the sparse 2.5s intro, loudnorm −18 LUFS, fades the tail. |
 | `compose_master.py` | FFmpeg: composite the always-on headers + the cascade proof pills (`enable='gte(t,T)'`), mux the music, apply the anti-AI grain pass, encode the master. Handles any 3–4 pill count. |
 
+Requires `Pillow`, `fal_client`, `requests`, `ffmpeg`; keys `FAL_API_KEY` +
+`ELEVENLABS_API_KEY` from `gtm-goose/.env`.
+
 ## Workflow
 
 ### Phase 0 — Intake (real assets first)
 Derive the checklist: product image, brand name, score claim, subhead, 3–4 proof
-points, setting/creator taste calls. Pull the brand's real product photo + label
-and a proof point or two before asking; then ask only the true taste calls (the
-score, which flexes, the backdrop). Write `config.json` and confirm the brief.
-**Never invent proof — a "10/10 score" or a clinical claim must be the brand's own,
-approved figure**, not an assumption.
+points, setting/creator taste calls. **Research the knowable unknowns first** — if
+the user names a brand, pull its real product photo + label + a proof point or two
+from the brand kit (`clients/<brand>/brand-assets/…`) or site (LFS: `git lfs fetch
+--include="<path>" origin HEAD && git lfs checkout "<path>"`). Then ask only the
+true taste calls (the score, which flexes, the backdrop). Write `config.json` and
+confirm the brief. **Never invent proof — a "10/10 score" or a clinical claim must
+be the brand's own, operator-approved figure**, not a brand-kit assumption.
 
 ### Phase 1 — Preview the design for free [no paid calls]
 Run `one_shot.py --config config.json --run-dir <run> --no-paid` (needs an existing
-`generated/clip-handheld.mp4` — for a design pass, drop any placeholder 9:16 clip).
-This builds the pills and a silent composite so you can check copy, sizing, and the
-cascade before spending. Watch it; fix `config.json`; repeat.
+`generated/clip-handheld.mp4` — for a design pass you can drop any placeholder 9:16
+clip). This builds the pills and a silent composite so you can check copy, sizing,
+and the cascade before spending. `/watch` it; fix `config.json`; repeat.
 
 ### Phase 2 — Keyframe + handheld i2v [PAID — GATE]
 `gen_base_clip.py` fires the two paid calls: the nano-banana keyframe (why edit,
 not t2i: it preserves the actual label/font/brand mark) then the Kling i2v (subtle
 handheld breathing, no zoom/scale). **Wait for explicit approval before running —
-these are the only paid calls.**
+these are the only paid calls.** Spillover: if Higgsfield workspace is out of
+credits, fall back to fal.ai (memory `feedback_higgsfield_burst_credit_reserve`).
 
 ### Phase 3 — Overlays + composite + master
 `build_overlays.py` → `gen_music.py` → `compose_master.py` (the full `one_shot.py`
@@ -119,7 +121,7 @@ without `--no-paid` runs all of these). Layout is fixed by the format:
   revealed at `reveal_times[i]` on the beat. The cascade is the format's signature.
 
 ### Phase 4 — Watch / QC (mandatory before ship)
-Watch the master (frames + audio). Confirm: the label is intact and unmorphed
+`/watch` the master (frames + audio). Confirm: the label is intact and unmorphed
 through the handheld motion, every pill is fully on-frame and readable, the cascade
 reads L→R→L→R on the music beats, headers never overlap the bottle's face, no AI
 smear on the hand/label. Fix `config.json` (copy/timing) or re-roll the i2v seed if
@@ -129,6 +131,7 @@ the label drifts, then re-compose + re-watch.
 
 - **Real label, preserved.** Keyframe via nano-banana `edit` with the real product
   as the image-ref — brand recognition depends on the wordmark/label surviving.
+  Verify the product face is the front (memory `feedback_verify_product_front_vs_back`).
 - **Never AI-render the pill text.** Score, ✅ claims, and wordmark are PIL/DOM
   composited so they stay crisp — a video model smears type.
 - **Bold weight + centered icons are load-bearing.** Regular weight reads as a
@@ -143,23 +146,52 @@ the label drifts, then re-compose + re-watch.
 - **No dialogue, no captions, no contact physics** (nothing floats in the bottle;
   feed a utensil-free product ref).
 
+## Post-production
+
+Post-production layers, explicit per the one-shot-videos family convention (default **ON** where the layer applies; **N/A** formats say why). Toggle via `post_production` in `config.json`:
+
+- **Music** — default ON: ElevenLabs bed, default on.
+- **Captions** — N/A: no spoken dialogue — the score + proof pills are the on-screen copy.
+- **End card** — N/A: the persistent white/orange header pills close the ad.
+
 ## Output
 
 - `master-final.mp4` — 1080×1920, ≈10s, h264 + aac (music bed). Grain-passed,
-  re-encoded crf23/maxrate12M (grain inflates bitrate).
-- A poster still (extract a late frame where all pills show).
+  re-encoded crf23/maxrate12M (grain inflates bitrate — memory
+  `feedback_grain_pass_inflates_bitrate`).
+- A poster still (extract a late frame where all pills show). Register both in the
+  run's `asset-manifest.json` / `versions.json` inside a control-plane run.
+
+## Quality Checks
+
+- Product label + wordmark intact and unmorphed across the full clip.
+- White score header (🏅) + orange subhead (👇) persist 0–duration and don't cover
+  the bottle face.
+- 3–4 ✅ pills each fully on-frame, bold, crisp; each reveals on a beat in the L→R
+  cascade.
+- Handheld motion is a gentle breath — no zoom/scale/label morph.
+- Audio: music bed kicks in immediately (no dead 2.5s intro), fades the tail.
 
 ## Failure Modes
 
 - **Label morph mid-i2v** → tighten the negative prompt, lower `cfg_scale`, or
-  re-roll the seed off the clean keyframe. Keep one wardrobe / one take.
+  re-roll the seed off the clean keyframe (memory
+  `feedback_seedance_chain_off_clean_anchor`). Keep one wardrobe/one take.
 - **PIL emoji bars** → you loaded Apple Color Emoji; use the Twemoji PNGs from
-  `fetch_icons.py`.
+  `fetch_icons.py` (memory `feedback_pil_emoji_use_twemoji_png`).
 - **Icon overflows the pill corner** on a short pill → it's anchored to a text line,
   not the pill middle; use the engine's `icon_y = (box_h - icon_size)//2`.
 - **Stale overlays after a copy change** → `compose_master.py` reads pre-rendered
-  PNGs; always re-run `build_overlays.py` first.
+  PNGs; always re-run `build_overlays.py` first (memory
+  `feedback_composite_doesnt_rebuild_overlays`).
 - **FAL 403 / "exhausted balance"** with funds on the dashboard → a stale ambient
-  `FAL_KEY` shadows the repo key; `export FAL_KEY="$FAL_API_KEY"` and re-run.
-- **Grain pass inflates bitrate** → the engine already re-encodes crf23/maxrate12M;
-  archive any high-bitrate original separately.
+  `FAL_KEY` shadows the repo key; `export FAL_KEY="$FAL_API_KEY"` and re-run
+  (LEARNINGS #10), don't conclude "no balance."
+- **Grain pass inflates bitrate** to 30Mbps+ → the engine already re-encodes
+  crf23/maxrate12M; archive any high-bitrate original separately.
+
+## Related
+
+- The remix twin — `remix-overlay-proof-points-from-sample` — is what the app's format tab calls; it swaps
+  the brand into this builder's `config.json` and publishes back through the
+  goose-video runtime. Format link: `recipe.format: "overlay-proof-points"`.

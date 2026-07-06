@@ -153,6 +153,14 @@ beat; the end card + brand lockup land; the song carries with no separate VO.
 - **Never AI-render the brand lockup.** The end card is composited via PIL from the
   brand's real asset (the app icon/wordmark), never text-in-diffusion.
 
+## Post-production
+
+Post-production layers, explicit per the one-shot-videos family convention (default **ON** where the layer applies; **N/A** formats say why). Toggle via `post_production` in `config.json`:
+
+- **Music** — default ON: the sung generated ElevenLabs track IS the bed (force_instrumental false).
+- **Captions** — default ON: lyric-synced captions from the song's word timings, default on.
+- **End card** — default ON: PIL end card from the real app icon, default on.
+
 ## Output
 
 - `master-v3.mp4` — 1080×1920, ≈28s, h264 + aac (the song). N beats + a composited brand
