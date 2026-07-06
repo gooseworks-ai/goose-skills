@@ -1,0 +1,77 @@
+{
+  "_comment": "Mother Science clinical-luxury Vignette (V-CARD) — the worked example. Copy to config.json and edit. Cutouts over a kinetic BG (T2V here; try bg_source=pexels FIRST for the cost lever) + cold-open card + carousel + annotated end card + instrumental music. 1080x1920 9:16, ~10.5s, no VO. See PIPELINE.md for field→script mapping. The reference scripts are hard-coded to these Mother Science values; this config documents the worked example (parameterize per brand).",
+  "brand_name": "Mother Science",
+  "brand_url": "https://motherscience.com",
+  "aspect_ratio": "9:16",
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "duration_s": 10.5,
+  "sub_archetype": "V-CARD",
+
+  "products": [
+    "molecular-hero-serum",
+    "molecular-genesis-barrier-repair-moisturizer",
+    "retinol-synergist"
+  ],
+  "cutouts": {
+    "model": "fal-ai/birefnet/v2",
+    "scale_by": "width",
+    "widths_pct": {"tall_bottle": 0.75, "squat_jar": 0.65},
+    "anchor": "vertical-center",
+    "note": "9:16 → scale by WIDTH; 1:1 → scale by height (50-70%). Never bottom-anchor mixed shapes; always y=(H-h)/2. Alpha must be >=20% transparent, <=8% partial-edge (no halo)."
+  },
+
+  "bg_source": "t2v",
+  "bg_source_order": ["pexels", "t2v"],
+  "pexels": {
+    "queries": ["ink in water", "liquid bloom", "sheer fabric wind"],
+    "skip_after_weak_passes": 2,
+    "note": "TRY FIRST — free, native 9:16 (validated $0.66 on Clinikally). Skincare/luxury/abstract coverage is thin (~1-in-12); fall back to t2v after 2 weak passes."
+  },
+  "bg_concepts_count": 2,
+  "bg_concepts": [
+    {"slug": "alpha", "brief": "Chrome Molecular Swarm — kinetic chrome metallic spheres on a soft cream gradient; mirrors the Malassezin ingredient viz. Real-time, camera-locked, no cuts.", "dim": "heavy"},
+    {"slug": "beta", "brief": "Black Ink in Cream Bloom — overhead petri-style shot of black ink blooming through cream liquid; the discovery moment. Real-time, camera-locked overhead.", "dim": "light"}
+  ],
+  "bg_model_set": ["veo-3-1-preview", "kling-v2.5-turbo-pro", "seedance-2.0"],
+  "bg_negative_prompt": "blur, distort, low quality, slow motion, slow, sluggish, jitter, camera shake, pan, zoom, cut, scene change, text, watermark, people, hands, product, static",
+  "bg_dim": {
+    "heavy": "eq=brightness=-0.30:saturation=0.50:contrast=1.15",
+    "light": "eq=brightness=-0.18:saturation=0.85:contrast=1.10",
+    "note": "Palette-aware. Heavy for bright/metallic/competing BGs; light for naturally-contrasty BGs. Preceded by scale=-2:1920,crop=1080:1920:(iw-1080)/2:0 for 9:16."
+  },
+
+  "cold_open_text": ["100%", "PROVEN", "RESULTS"],
+  "cold_open_font": "Boska-Black.ttf",
+  "cold_open_size_px": 240,
+  "end_card": {
+    "logo_svg": "assets/end-cards/mother-science-logo-cream.svg",
+    "logo_variant": "cream",
+    "logo_width_pct": 0.80,
+    "annotation_font": "SpaceGrotesk-Medium.ttf",
+    "lines": [
+      "E S T   2 0 2 3",
+      "M A L · U H · S A Y · Z I N",
+      "N O V E L   M O L E C U L E",
+      "10× MORE POWERFUL ANTIOXIDANT THAN VITAMIN C"
+    ],
+    "note": "Specimen-sheet, NOT a bare logo. Use logo_variant=white on dark BGs. cream = #f9f7ef."
+  },
+
+  "beat_timing": {
+    "bg_only": [0.0, 1.5],
+    "cold_open": [1.5, 3.0],
+    "carousel": [[3.0, 4.6], [4.6, 6.2], [6.2, 7.8]],
+    "end_card": [7.8, 10.5]
+  },
+
+  "music": {
+    "model": "fal-ai/elevenlabs/music",
+    "prompt": "Clinical-luxury skincare science vignette bed. Slow-tempo ambient minimal electronic, warm low pads + subtle high-end sparkle. Instrumental only, no vocals, no lyrics. ~90 BPM, sophisticated and quiet. Builds subtly with a single sparkling synth note in the last 2s for the end-card reveal. Augustinus Bader / La Mer luxury mood.",
+    "length_ms": 12000,
+    "force_instrumental": true,
+    "loudnorm": "acompressor=threshold=-12dB:ratio=2:attack=20:release=200,loudnorm=I=-18:TP=-2:LRA=9",
+    "note": "Generate ~20% longer than duration_s, trim. Mux in a SEPARATE pass with -map 0:v:0 -map 1:a:0."
+  }
+}

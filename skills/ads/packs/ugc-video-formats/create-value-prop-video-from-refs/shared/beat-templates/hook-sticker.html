@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<title>Som v4 · beat-1 hook</title>
+<link rel="stylesheet" href="_shared.css">
+<style>
+  body { background: var(--bg-cream); }
+  .hook-sachet {
+    position: absolute;
+    left: 50%;
+    bottom: -120px;
+    height: 1750px;
+    transform-origin: bottom center;
+  }
+  .sticker {
+    position: absolute;
+    top: 380px;
+    left: 50%;
+    background: var(--ink);
+    color: #fff;
+    padding: 44px 68px;
+    border-radius: 20px;
+    box-shadow: 0 28px 70px rgba(11,37,60,0.4);
+    text-align: center;
+    max-width: 900px;
+  }
+  .sticker .eye {
+    font-family: var(--f-body);
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 0.38em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.72);
+    margin-bottom: 18px;
+  }
+  .sticker .h {
+    font-family: var(--f-display);
+    font-weight: 800;
+    font-style: italic;
+    font-size: 108px;
+    line-height: 0.98;
+    letter-spacing: -0.025em;
+    color: #fff;
+  }
+  .badge {
+    position: absolute;
+    bottom: 240px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--f-body);
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 0.36em;
+    text-transform: uppercase;
+    color: var(--ink-55);
+    text-align: center;
+  }
+</style></head><body>
+<div class="stage" style="padding:0;">
+  <img id="sachet" class="hook-sachet" src="../../source/sachets/cherry.png">
+  <div id="sticker" class="sticker"><div class="eye">🌙 &nbsp; The Sleep Drink &nbsp; 🌙</div><div class="h">Better Sleep.<br>Better Mornings.</div></div>
+  <div id="badge" class="badge">Som Sleep · Why It Works</div>
+</div>
+<script src="_shared.js"></script>
+<script>
+  initRenderer(3.0, function (t) {
+    const e1 = tw_lin(t, 0.00, 0.80);
+    const eo1 = easeOut(e1);
+    const sc = 0.94 + 0.06 * eo1;
+    const sachet = document.getElementById('sachet');
+    sachet.style.opacity = eo1;
+    sachet.style.transform = `translateX(-50%) translateY(${(1 - eo1) * 80}px) scale(${sc})`;
+
+    const e2 = tw_lin(t, 0.40, 1.10);
+    const u2 = clamp(e2, 0, 1);
+    const stickerScale = u2 < 1 ? springScale(u2) : 1.0;
+    const stickerRot = -2.5 + (1 - u2) * -4;
+    const sticker = document.getElementById('sticker');
+    sticker.style.opacity = easeOut(u2);
+    sticker.style.transform = `translateX(-50%) rotate(${stickerRot}deg) scale(${stickerScale})`;
+
+    const e3 = tw(t, 1.20, 1.60);
+    document.getElementById('badge').style.opacity = e3;
+  });
+</script>
+</body></html>

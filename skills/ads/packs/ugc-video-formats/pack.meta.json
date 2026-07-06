@@ -32,6 +32,12 @@
     "create-cgi-app-sizzle-video-from-refs",
     "remix-song-driven-music-video-from-sample",
     "create-song-driven-music-video-from-refs",
+    "remix-vignette-from-sample",
+    "create-vignette-video-from-refs",
+    "remix-product-hypermotion-from-sample",
+    "create-product-hypermotion-video-from-refs",
+    "remix-value-prop-from-sample",
+    "create-value-prop-video-from-refs",
     "create-video-seedance-2-fal",
     "review-ugc-render"
   ],
