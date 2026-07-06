@@ -1586,6 +1586,35 @@
       }
     },
     {
+      "slug": "create-image-fal",
+      "name": "create-image-fal",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": ">-",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/create-image-fal",
+      "files": [],
+      "metadata": {
+        "slug": "create-image-fal",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install create-image-fal",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "media-proxy"
+        ]
+      }
+    },
+    {
       "slug": "create-image-gpt-image-fal",
       "name": "create-image-gpt-image-fal",
       "category": "capabilities",
@@ -1746,6 +1775,64 @@
             "codex"
           ]
         }
+      }
+    },
+    {
+      "slug": "create-music-elevenlabs",
+      "name": "create-music-elevenlabs",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": ">-",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/create-music-elevenlabs",
+      "files": [],
+      "metadata": {
+        "slug": "create-music-elevenlabs",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install create-music-elevenlabs",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "media-proxy"
+        ]
+      }
+    },
+    {
+      "slug": "create-video-fal",
+      "name": "create-video-fal",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": ">-",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/create-video-fal",
+      "files": [],
+      "metadata": {
+        "slug": "create-video-fal",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install create-video-fal",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "media-proxy"
+        ]
       }
     },
     {
@@ -4092,6 +4179,32 @@
       }
     },
     {
+      "slug": "media-proxy",
+      "name": "media-proxy",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": ">-",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/media-proxy",
+      "files": [],
+      "metadata": {
+        "slug": "media-proxy",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install media-proxy",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
       "slug": "meeting-brief",
       "name": "meeting-brief",
       "category": "composites",
@@ -5124,6 +5237,35 @@
             "codex"
           ]
         }
+      }
+    },
+    {
+      "slug": "render-photo-grid-card",
+      "name": "render-photo-grid-card",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": ">-",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-photo-grid-card",
+      "files": [],
+      "metadata": {
+        "slug": "render-photo-grid-card",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-photo-grid-card",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
       }
     },
     {
