@@ -1,6 +1,6 @@
 {
   "version": "1.2.0",
-  "generated": "2026-07-05",
+  "generated": "2026-07-06",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -1319,6 +1319,49 @@
       }
     },
     {
+      "slug": "create-flatlay-product-reveal-video-from-refs",
+      "name": "create-flatlay-product-reveal-video-from-refs",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": ">-",
+      "tags": "ads",
+      "path": "skills/ads/packs/ugc-video-formats/create-flatlay-product-reveal-video-from-refs",
+      "files": [
+        "skills/ads/packs/ugc-video-formats/create-flatlay-product-reveal-video-from-refs/SKILL.md",
+        "skills/ads/packs/ugc-video-formats/create-flatlay-product-reveal-video-from-refs/scripts/build_master.py",
+        "skills/ads/packs/ugc-video-formats/create-flatlay-product-reveal-video-from-refs/scripts/build_start_frames.py",
+        "skills/ads/packs/ugc-video-formats/create-flatlay-product-reveal-video-from-refs/scripts/config.example.json",
+        "skills/ads/packs/ugc-video-formats/create-flatlay-product-reveal-video-from-refs/scripts/gen_beats.py",
+        "skills/ads/packs/ugc-video-formats/create-flatlay-product-reveal-video-from-refs/scripts/gen_fd_card.py",
+        "skills/ads/packs/ugc-video-formats/create-flatlay-product-reveal-video-from-refs/scripts/gen_flat_covers.py",
+        "skills/ads/packs/ugc-video-formats/create-flatlay-product-reveal-video-from-refs/scripts/gen_music.py",
+        "skills/ads/packs/ugc-video-formats/create-flatlay-product-reveal-video-from-refs/scripts/one_shot.py",
+        "skills/ads/packs/ugc-video-formats/create-flatlay-product-reveal-video-from-refs/scripts/render_endcard.py",
+        "skills/ads/packs/ugc-video-formats/create-flatlay-product-reveal-video-from-refs/skill.meta.json",
+        "skills/ads/packs/ugc-video-formats/create-flatlay-product-reveal-video-from-refs/tests/expected-output.md",
+        "skills/ads/packs/ugc-video-formats/create-flatlay-product-reveal-video-from-refs/tests/human-test.md",
+        "skills/ads/packs/ugc-video-formats/create-flatlay-product-reveal-video-from-refs/tests/sample-input.md",
+        "skills/ads/packs/ugc-video-formats/create-flatlay-product-reveal-video-from-refs/tests/smoke-test.md",
+        "skills/ads/packs/ugc-video-formats/create-flatlay-product-reveal-video-from-refs/tests/verifier.md"
+      ],
+      "metadata": {
+        "slug": "create-flatlay-product-reveal-video-from-refs",
+        "category": "capabilities",
+        "pack": "ugc-video-formats",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install ugc-video-formats",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
       "slug": "create-html-carousel",
       "name": "create-html-carousel",
       "category": "capabilities",
@@ -1476,6 +1519,46 @@
       ],
       "metadata": {
         "slug": "create-overlay-proof-points-video-from-refs",
+        "category": "capabilities",
+        "pack": "ugc-video-formats",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install ugc-video-formats",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "create-photo-grid-promo-card-video-from-refs",
+      "name": "create-photo-grid-promo-card-video-from-refs",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": ">-",
+      "tags": "ads",
+      "path": "skills/ads/packs/ugc-video-formats/create-photo-grid-promo-card-video-from-refs",
+      "files": [
+        "skills/ads/packs/ugc-video-formats/create-photo-grid-promo-card-video-from-refs/SKILL.md",
+        "skills/ads/packs/ugc-video-formats/create-photo-grid-promo-card-video-from-refs/scripts/_shared.js",
+        "skills/ads/packs/ugc-video-formats/create-photo-grid-promo-card-video-from-refs/scripts/build_card.py",
+        "skills/ads/packs/ugc-video-formats/create-photo-grid-promo-card-video-from-refs/scripts/config.example.json",
+        "skills/ads/packs/ugc-video-formats/create-photo-grid-promo-card-video-from-refs/scripts/gen_music.py",
+        "skills/ads/packs/ugc-video-formats/create-photo-grid-promo-card-video-from-refs/scripts/one_shot.py",
+        "skills/ads/packs/ugc-video-formats/create-photo-grid-promo-card-video-from-refs/scripts/render.py",
+        "skills/ads/packs/ugc-video-formats/create-photo-grid-promo-card-video-from-refs/skill.meta.json",
+        "skills/ads/packs/ugc-video-formats/create-photo-grid-promo-card-video-from-refs/tests/expected-output.md",
+        "skills/ads/packs/ugc-video-formats/create-photo-grid-promo-card-video-from-refs/tests/human-test.md",
+        "skills/ads/packs/ugc-video-formats/create-photo-grid-promo-card-video-from-refs/tests/sample-input.md",
+        "skills/ads/packs/ugc-video-formats/create-photo-grid-promo-card-video-from-refs/tests/smoke-test.md",
+        "skills/ads/packs/ugc-video-formats/create-photo-grid-promo-card-video-from-refs/tests/verifier.md"
+      ],
+      "metadata": {
+        "slug": "create-photo-grid-promo-card-video-from-refs",
         "category": "capabilities",
         "pack": "ugc-video-formats",
         "tags": [
@@ -4864,6 +4947,36 @@
       }
     },
     {
+      "slug": "remix-flatlay-product-reveal-from-sample",
+      "name": "remix-flatlay-product-reveal-from-sample",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Remix a published \"flat-lay product reveal\" ad from the Goose Ads library for a new brand — keep the source's format (top-down tabletop, hands cup + hold + lift each flat product, hard-cut between beats, greeting-card insert + HTML end card + music), swap in the brand's products, tabletop dressing, and end card, get the flat covers + beats approved in-session, then render locally via create-flatlay-product-reveal-video-from-refs (flat-cover transform → Veo 3.1 i2v per beat → deterministic assembly) and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's \"Flat-lay product reveal\" format tab calls.",
+      "tags": "ads",
+      "path": "skills/ads/packs/ugc-video-formats/remix-flatlay-product-reveal-from-sample",
+      "files": [
+        "skills/ads/packs/ugc-video-formats/remix-flatlay-product-reveal-from-sample/SKILL.md",
+        "skills/ads/packs/ugc-video-formats/remix-flatlay-product-reveal-from-sample/skill.meta.json",
+        "skills/ads/packs/ugc-video-formats/remix-flatlay-product-reveal-from-sample/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "remix-flatlay-product-reveal-from-sample",
+        "category": "capabilities",
+        "pack": "ugc-video-formats",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install ugc-video-formats",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
       "slug": "remix-graphic-ad-from-reference",
       "name": "remix-graphic-ad-from-reference",
       "category": "composites",
@@ -4921,6 +5034,36 @@
       ],
       "metadata": {
         "slug": "remix-overlay-proof-points-from-sample",
+        "category": "capabilities",
+        "pack": "ugc-video-formats",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install ugc-video-formats",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "remix-photo-grid-promo-card-from-sample",
+      "name": "remix-photo-grid-promo-card-from-sample",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Remix a published \"photo-grid promo card\" ad from the Goose Ads library for a new brand — keep the source's format (wordmark + big headline + a 2×3 grid of product/lifestyle/%-OFF/promo-code tiles + feature chips, staggered slide-in, then hold), swap in the brand's wordmark, product, offer, photos, and palette, get the built card approved in-session, then render locally via create-photo-grid-promo-card-video-from-refs (deterministic HTML→Playwright→ffmpeg + music) and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's \"Photo-grid promo card\" format tab calls.",
+      "tags": "ads",
+      "path": "skills/ads/packs/ugc-video-formats/remix-photo-grid-promo-card-from-sample",
+      "files": [
+        "skills/ads/packs/ugc-video-formats/remix-photo-grid-promo-card-from-sample/SKILL.md",
+        "skills/ads/packs/ugc-video-formats/remix-photo-grid-promo-card-from-sample/skill.meta.json",
+        "skills/ads/packs/ugc-video-formats/remix-photo-grid-promo-card-from-sample/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "remix-photo-grid-promo-card-from-sample",
         "category": "capabilities",
         "pack": "ugc-video-formats",
         "tags": [
@@ -7373,6 +7516,77 @@
           "source": "pack"
         },
         {
+          "slug": "remix-photo-grid-promo-card-from-sample",
+          "name": "remix-photo-grid-promo-card-from-sample",
+          "description": "Remix a published \"photo-grid promo card\" ad from the Goose Ads library for a new brand — keep the source's format (wordmark + big headline + a 2×3 grid of product/lifestyle/%-OFF/promo-code tiles + feature chips, staggered slide-in, then hold), swap in the brand's wordmark, product, offer, photos, and palette, get the built card approved in-session, then render locally via create-photo-grid-promo-card-video-from-refs (deterministic HTML→Playwright→ffmpeg + music) and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's \"Photo-grid promo card\" format tab calls.",
+          "path": "skills/ads/packs/ugc-video-formats/remix-photo-grid-promo-card-from-sample",
+          "files": [
+            "skills/ads/packs/ugc-video-formats/remix-photo-grid-promo-card-from-sample/SKILL.md",
+            "skills/ads/packs/ugc-video-formats/remix-photo-grid-promo-card-from-sample/skill.meta.json",
+            "skills/ads/packs/ugc-video-formats/remix-photo-grid-promo-card-from-sample/tests/smoke-test.md"
+          ],
+          "source": "pack"
+        },
+        {
+          "slug": "create-photo-grid-promo-card-video-from-refs",
+          "name": "create-photo-grid-promo-card-video-from-refs",
+          "description": ">-",
+          "path": "skills/ads/packs/ugc-video-formats/create-photo-grid-promo-card-video-from-refs",
+          "files": [
+            "skills/ads/packs/ugc-video-formats/create-photo-grid-promo-card-video-from-refs/SKILL.md",
+            "skills/ads/packs/ugc-video-formats/create-photo-grid-promo-card-video-from-refs/scripts/_shared.js",
+            "skills/ads/packs/ugc-video-formats/create-photo-grid-promo-card-video-from-refs/scripts/build_card.py",
+            "skills/ads/packs/ugc-video-formats/create-photo-grid-promo-card-video-from-refs/scripts/config.example.json",
+            "skills/ads/packs/ugc-video-formats/create-photo-grid-promo-card-video-from-refs/scripts/gen_music.py",
+            "skills/ads/packs/ugc-video-formats/create-photo-grid-promo-card-video-from-refs/scripts/one_shot.py",
+            "skills/ads/packs/ugc-video-formats/create-photo-grid-promo-card-video-from-refs/scripts/render.py",
+            "skills/ads/packs/ugc-video-formats/create-photo-grid-promo-card-video-from-refs/skill.meta.json",
+            "skills/ads/packs/ugc-video-formats/create-photo-grid-promo-card-video-from-refs/tests/expected-output.md",
+            "skills/ads/packs/ugc-video-formats/create-photo-grid-promo-card-video-from-refs/tests/human-test.md",
+            "skills/ads/packs/ugc-video-formats/create-photo-grid-promo-card-video-from-refs/tests/sample-input.md",
+            "skills/ads/packs/ugc-video-formats/create-photo-grid-promo-card-video-from-refs/tests/smoke-test.md",
+            "skills/ads/packs/ugc-video-formats/create-photo-grid-promo-card-video-from-refs/tests/verifier.md"
+          ],
+          "source": "pack"
+        },
+        {
+          "slug": "remix-flatlay-product-reveal-from-sample",
+          "name": "remix-flatlay-product-reveal-from-sample",
+          "description": "Remix a published \"flat-lay product reveal\" ad from the Goose Ads library for a new brand — keep the source's format (top-down tabletop, hands cup + hold + lift each flat product, hard-cut between beats, greeting-card insert + HTML end card + music), swap in the brand's products, tabletop dressing, and end card, get the flat covers + beats approved in-session, then render locally via create-flatlay-product-reveal-video-from-refs (flat-cover transform → Veo 3.1 i2v per beat → deterministic assembly) and publish the MP4 back to Gooseworks with live stage reporting. This is what the app's \"Flat-lay product reveal\" format tab calls.",
+          "path": "skills/ads/packs/ugc-video-formats/remix-flatlay-product-reveal-from-sample",
+          "files": [
+            "skills/ads/packs/ugc-video-formats/remix-flatlay-product-reveal-from-sample/SKILL.md",
+            "skills/ads/packs/ugc-video-formats/remix-flatlay-product-reveal-from-sample/skill.meta.json",
+            "skills/ads/packs/ugc-video-formats/remix-flatlay-product-reveal-from-sample/tests/smoke-test.md"
+          ],
+          "source": "pack"
+        },
+        {
+          "slug": "create-flatlay-product-reveal-video-from-refs",
+          "name": "create-flatlay-product-reveal-video-from-refs",
+          "description": ">-",
+          "path": "skills/ads/packs/ugc-video-formats/create-flatlay-product-reveal-video-from-refs",
+          "files": [
+            "skills/ads/packs/ugc-video-formats/create-flatlay-product-reveal-video-from-refs/SKILL.md",
+            "skills/ads/packs/ugc-video-formats/create-flatlay-product-reveal-video-from-refs/scripts/build_master.py",
+            "skills/ads/packs/ugc-video-formats/create-flatlay-product-reveal-video-from-refs/scripts/build_start_frames.py",
+            "skills/ads/packs/ugc-video-formats/create-flatlay-product-reveal-video-from-refs/scripts/config.example.json",
+            "skills/ads/packs/ugc-video-formats/create-flatlay-product-reveal-video-from-refs/scripts/gen_beats.py",
+            "skills/ads/packs/ugc-video-formats/create-flatlay-product-reveal-video-from-refs/scripts/gen_fd_card.py",
+            "skills/ads/packs/ugc-video-formats/create-flatlay-product-reveal-video-from-refs/scripts/gen_flat_covers.py",
+            "skills/ads/packs/ugc-video-formats/create-flatlay-product-reveal-video-from-refs/scripts/gen_music.py",
+            "skills/ads/packs/ugc-video-formats/create-flatlay-product-reveal-video-from-refs/scripts/one_shot.py",
+            "skills/ads/packs/ugc-video-formats/create-flatlay-product-reveal-video-from-refs/scripts/render_endcard.py",
+            "skills/ads/packs/ugc-video-formats/create-flatlay-product-reveal-video-from-refs/skill.meta.json",
+            "skills/ads/packs/ugc-video-formats/create-flatlay-product-reveal-video-from-refs/tests/expected-output.md",
+            "skills/ads/packs/ugc-video-formats/create-flatlay-product-reveal-video-from-refs/tests/human-test.md",
+            "skills/ads/packs/ugc-video-formats/create-flatlay-product-reveal-video-from-refs/tests/sample-input.md",
+            "skills/ads/packs/ugc-video-formats/create-flatlay-product-reveal-video-from-refs/tests/smoke-test.md",
+            "skills/ads/packs/ugc-video-formats/create-flatlay-product-reveal-video-from-refs/tests/verifier.md"
+          ],
+          "source": "pack"
+        },
+        {
           "slug": "create-video-seedance-2-fal",
           "name": "create-video-seedance-2-fal",
           "description": "Generate a single 4-15s vertical video clip with ByteDance Seedance 2.0 reference-to-video via fal.ai. Multi-image reference (avatar + product + setting), native lip-synced VO + ambient audio via `generate_audio: true`, internal multi-cut handling within one render. The default clip atom for AI-creator UGC ads built on the NB2 + Seedance architecture. Validated on `beauty-by-earth/video-01`.",
@@ -7424,6 +7638,10 @@
           "create-ugc-street-testimonial-video-from-refs",
           "remix-overlay-proof-points-from-sample",
           "create-overlay-proof-points-video-from-refs",
+          "remix-photo-grid-promo-card-from-sample",
+          "create-photo-grid-promo-card-video-from-refs",
+          "remix-flatlay-product-reveal-from-sample",
+          "create-flatlay-product-reveal-video-from-refs",
           "create-video-seedance-2-fal",
           "review-ugc-render"
         ],

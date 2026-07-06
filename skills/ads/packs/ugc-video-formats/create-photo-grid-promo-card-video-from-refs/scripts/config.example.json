@@ -1,0 +1,34 @@
+{
+  "_comment": "Hume Health 'For dad, by Hume' Father's Day promo card — the worked example. Copy to config.json and edit. Canvas 1080x1920 9:16, 10s. Tile types: product | photo | off | code. Real DOM text only — never AI-render the wordmark/%/code.",
+  "brand_name": "Hume Health",
+  "width": 1080,
+  "height": 1920,
+  "fps": 25,
+  "duration_sec": 10.0,
+  "wordmark": "assets/hume-logo.svg",
+  "headline": "For dad,<br/>by Hume.",
+  "sub": "The longevity band, gift-wrapped.",
+  "palette": {
+    "ink": "#0E1B22",
+    "ink_soft": "#4A5961",
+    "bg": "#E6EEF3",
+    "bg_tile": "#F4F8FB",
+    "bg_band": "#DCE6EC",
+    "accent": "#31ABE8"
+  },
+  "tiles": [
+    {"type": "product", "image": "assets/band-product-clean.webp"},
+    {"type": "photo", "image": "assets/lifestyle-01.jpg"},
+    {"type": "off", "pct": "25%", "label": "OFF"},
+    {"type": "photo", "image": "assets/lifestyle-02.jpg"},
+    {"type": "photo", "image": "assets/lifestyle-03.jpg"},
+    {"type": "code", "label": "CODE", "value": "DAD25", "accent_prefix": "DAD"}
+  ],
+  "chips": ["14 DAY BATTERY", "NEW PATENTED STRAP"],
+  "music": {
+    "prompt": "Warm uplifting cinematic wellness brand bed for a Father's Day promo. Soft warm synth pads with gentle plucked melodic notes, light percussion (soft kick + subtle hi-hat), warm rounded bass. Major key, open optimistic chords, ~85 BPM. Premium DTC wellness register — modern, confident, celebratory but not pulse-pounding. Instrumental only, NO vocals. Energetic from t=0 with NO slow intro or fade-in. 10 seconds.",
+    "length_ms": 10500,
+    "trim_intro_sec": 0.0,
+    "force_instrumental": true
+  }
+}
