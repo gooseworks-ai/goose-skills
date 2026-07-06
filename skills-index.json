@@ -6888,6 +6888,37 @@
       }
     },
     {
+      "slug": "update-video-template",
+      "name": "update-video-template",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Promote a remix session's improvements back into the DB video TEMPLATE recipe — after you remix a template in Claude Code and iterate (fix copy, tweak a prompt, adjust timings), write the improved config (and optional playbook) back to the template's ad_sample.recipe so every FUTURE remix starts from the better version. Templates are DB data, so this is a single PATCH — no skill re-publish. Use at the END of a remix session when the output is better than the template's current defaults.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/update-video-template",
+      "files": [
+        "skills/ads/capabilities/update-video-template/SKILL.md",
+        "skills/ads/capabilities/update-video-template/scripts/update_template_recipe.py",
+        "skills/ads/capabilities/update-video-template/skill.meta.json",
+        "skills/ads/capabilities/update-video-template/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "update-video-template",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install update-video-template",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
       "slug": "upload-ad-sample",
       "name": "upload-ad-sample",
       "category": "capabilities",
