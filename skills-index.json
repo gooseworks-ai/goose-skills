@@ -1889,6 +1889,41 @@
       }
     },
     {
+      "slug": "create-vo-elevenlabs",
+      "name": "create-vo-elevenlabs",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Generate a voiceover (VO) clip via ElevenLabs text-to-speech, ROUTED THROUGH THE elevenlabs-proxy so it bills the Ads agent. Voice id + script text come from the template recipe. Use for the spoken narration of VO-driven video-ad formats (cgi-app-sizzle, flat-vector-explainer, hypermotion). Never call ElevenLabs directly — the proxy attribution is required.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/create-vo-elevenlabs",
+      "files": [
+        "skills/ads/capabilities/create-vo-elevenlabs/SKILL.md",
+        "skills/ads/capabilities/create-vo-elevenlabs/scripts/gen_vo.py",
+        "skills/ads/capabilities/create-vo-elevenlabs/scripts/media_proxy.py",
+        "skills/ads/capabilities/create-vo-elevenlabs/skill.meta.json",
+        "skills/ads/capabilities/create-vo-elevenlabs/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "create-vo-elevenlabs",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install create-vo-elevenlabs",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "media-proxy"
+        ]
+      }
+    },
+    {
       "slug": "create-workflow-diagram",
       "name": "create-workflow-diagram",
       "category": "capabilities",
@@ -5226,6 +5261,150 @@
       }
     },
     {
+      "slug": "render-cgi-sizzle",
+      "name": "render-cgi-sizzle",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Assemble a 3D-CGI app sizzle — nano-banana CGI plates (blank-glow floating phone + smoky-black studio + amaranth rim-light + placeholder burst shapes) plus PIL compositing of the REAL App Store screenshots onto the bezel + burst-out overlays, driven by Kling 3.0 i2v steady-float per beat with a per-beat Ken-Burns FFmpeg push-in fallback when Kling garbles the UI, then VO/music mix (sidechain duck, loudnorm) + 1.15x speed + anti-AI grain finalize. The on-screen UI, instructor faces, and wordmark are ALWAYS real assets composited via PIL — never AI-rendered. The paid steps (plates, i2v clips, VO, music) are separate capabilities; this ships the config + PIPELINE + FREE assembly and the recipe orchestrates the spend. Use for the cgi-app-sizzle video format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-cgi-sizzle",
+      "files": [
+        "skills/ads/capabilities/render-cgi-sizzle/SKILL.md",
+        "skills/ads/capabilities/render-cgi-sizzle/scripts/PIPELINE.md",
+        "skills/ads/capabilities/render-cgi-sizzle/scripts/README.md",
+        "skills/ads/capabilities/render-cgi-sizzle/scripts/config.example.json",
+        "skills/ads/capabilities/render-cgi-sizzle/skill.meta.json",
+        "skills/ads/capabilities/render-cgi-sizzle/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "render-cgi-sizzle",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-cgi-sizzle",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
+      "slug": "render-flat-vector-explainer",
+      "name": "render-flat-vector-explainer",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Assemble the FREE steps of the flat-vector-explainer video format — a flat-illustration creator-character walks a countable N-step product routine, one step per beat, and Remotion composites every chip/numeral/tagline/slate/CTA as an animated DOM overlay ON TOP of the Kling i2v character clips (text is NEVER baked into a keyframe — i2v warps type), the closing 'N products' grid is a PIL composite of the REAL product photos (not AI), full-sentence VO drives word-by-word burned captions over a VO-forward music bed, and the ~50s animated silent master is re-cut to a 30s deliverable FROM the animated master (never a static intermediate). Documentation-grade — ships config.example.json + PIPELINE.md + a README of the free assembly; the paid gen steps (keyframes, Kling i2v, VO, music) are separate capabilities the recipe orchestrates. Use for the flat-vector-explainer format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-flat-vector-explainer",
+      "files": [
+        "skills/ads/capabilities/render-flat-vector-explainer/SKILL.md",
+        "skills/ads/capabilities/render-flat-vector-explainer/scripts/PIPELINE.md",
+        "skills/ads/capabilities/render-flat-vector-explainer/scripts/README.md",
+        "skills/ads/capabilities/render-flat-vector-explainer/scripts/config.example.json",
+        "skills/ads/capabilities/render-flat-vector-explainer/skill.meta.json",
+        "skills/ads/capabilities/render-flat-vector-explainer/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "render-flat-vector-explainer",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-flat-vector-explainer",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
+      "slug": "render-flatlay",
+      "name": "render-flatlay",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Render the FREE steps of the flatlay-product-reveal video format — composite each flat product cover onto the dressed tabletop plate to make the Veo start frames (build_start_frames), speed-and-hard-cut concat the i2v beats plus the HTML end card and mux the music (build_master), and screenshot the brand end-card HTML to a static-dwell clip (render_endcard). Deterministic, FREE (Playwright + PIL + FFmpeg), no paid calls, product covers and end-card text stay pixel-crisp. The paid steps (flat covers, Veo beats, music) are separate capabilities; the recipe orchestrates them. Use for the flatlay-product-reveal format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-flatlay",
+      "files": [
+        "skills/ads/capabilities/render-flatlay/SKILL.md",
+        "skills/ads/capabilities/render-flatlay/scripts/build_master.py",
+        "skills/ads/capabilities/render-flatlay/scripts/build_start_frames.py",
+        "skills/ads/capabilities/render-flatlay/scripts/render_endcard.py",
+        "skills/ads/capabilities/render-flatlay/skill.meta.json",
+        "skills/ads/capabilities/render-flatlay/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "render-flatlay",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-flatlay",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
+      "slug": "render-hypermotion",
+      "name": "render-hypermotion",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Assemble the FREE steps of the product-hypermotion + kinetic-typography video format — dice ONE Seedance 2.0 hypermotion clip into 5-6 segments and intercut them with PIL kinetic-typography spec/CTA cards (italic skew, 1.08x outline echo, 3D extrusion, slam-with-shake, inversion flash) plus a real-logo PIL end card (base64-decoded from the brand SVG), center-crop 1:1 to 9:16, and explicit-map mux a music bed. Deterministic, FREE (PIL + FFmpeg), no paid calls, the real logo and spec typography stay pixel-crisp. The paid steps (the ONE Seedance i2v, the music) are separate capabilities; the recipe orchestrates them. Use for the product-hypermotion format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-hypermotion",
+      "files": [
+        "skills/ads/capabilities/render-hypermotion/SKILL.md",
+        "skills/ads/capabilities/render-hypermotion/scripts/PIPELINE.md",
+        "skills/ads/capabilities/render-hypermotion/scripts/README.md",
+        "skills/ads/capabilities/render-hypermotion/scripts/config.example.json",
+        "skills/ads/capabilities/render-hypermotion/skill.meta.json",
+        "skills/ads/capabilities/render-hypermotion/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "render-hypermotion",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-hypermotion",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
       "slug": "render-ios-keyboard",
       "name": "render-ios-keyboard",
       "category": "capabilities",
@@ -5263,6 +5442,42 @@
       }
     },
     {
+      "slug": "render-multiworld",
+      "name": "render-multiworld",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Assemble a silent, music-led 3-world product-tour ad — trim and hard-cut-concat the per-world WIDE-arrival + top-down-macro clips, composite the HTML/Playwright brand end card (\"FIND YOUR DAILY.\" + handwritten scent labels + arrows) over an AI flat-lay background, and mux one music bed into a 720x1280 web master. FREE, deterministic assembly (Playwright + PIL/HTML + FFmpeg); the recipe supplies the config and gates the paid clip/background/music calls. Use for the multiworld-product-tour format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-multiworld",
+      "files": [
+        "skills/ads/capabilities/render-multiworld/SKILL.md",
+        "skills/ads/capabilities/render-multiworld/scripts/PIPELINE.md",
+        "skills/ads/capabilities/render-multiworld/scripts/README.md",
+        "skills/ads/capabilities/render-multiworld/scripts/config.example.json",
+        "skills/ads/capabilities/render-multiworld/skill.meta.json",
+        "skills/ads/capabilities/render-multiworld/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "render-multiworld",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-multiworld",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
       "slug": "render-photo-grid-card",
       "name": "render-photo-grid-card",
       "category": "capabilities",
@@ -5287,6 +5502,167 @@
         ],
         "installation": {
           "base_command": "npx goose-skills install render-photo-grid-card",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
+      "slug": "render-proof-points-overlay",
+      "name": "render-proof-points-overlay",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Build the deterministic PIL pill overlays for a 'perfect-score + proof-points' UGC video ad (white 10/10 score header with a medal + orange sub with a finger-down + 3-4 green-check proof pills) and composite them onto a base clip in a diagonal L->R->L->R cascade, then mux the music bed into master-final.mp4. Config-driven (config.json), 1080x1920 9:16, FREE and deterministic (no paid calls, text stays pixel-crisp). Use for the overlay-proof-points format; the base clip + music come from separate paid capabilities.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-proof-points-overlay",
+      "files": [
+        "skills/ads/capabilities/render-proof-points-overlay/SKILL.md",
+        "skills/ads/capabilities/render-proof-points-overlay/scripts/build_overlays.py",
+        "skills/ads/capabilities/render-proof-points-overlay/scripts/compose_master.py",
+        "skills/ads/capabilities/render-proof-points-overlay/scripts/fetch_icons.py",
+        "skills/ads/capabilities/render-proof-points-overlay/skill.meta.json",
+        "skills/ads/capabilities/render-proof-points-overlay/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "render-proof-points-overlay",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-proof-points-overlay",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
+      "slug": "render-song-mv",
+      "name": "render-song-mv",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Assemble a song-driven music-video ad from a config — a generated sung track carries the whole narration across N tableaux (one keyframe -> one i2v clip per lyric beat) with NO separate voiceover, captions synced to the song's OWN word timings (script-window, never Whisper) and the hook word landing on the chorus drop, closed on a PIL brand end card. This is the FREE deterministic assembly stage (clip cut-to-timeline + captions + end card + FFmpeg composite); the song, keyframes, and clips come from create-music-elevenlabs / create-image-fal / create-video-fal. Use for the song-driven-music-video format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-song-mv",
+      "files": [
+        "skills/ads/capabilities/render-song-mv/SKILL.md",
+        "skills/ads/capabilities/render-song-mv/scripts/PIPELINE.md",
+        "skills/ads/capabilities/render-song-mv/scripts/README.md",
+        "skills/ads/capabilities/render-song-mv/scripts/config.example.json",
+        "skills/ads/capabilities/render-song-mv/skill.meta.json",
+        "skills/ads/capabilities/render-song-mv/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "render-song-mv",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-song-mv",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
+      "slug": "render-value-prop",
+      "name": "render-value-prop",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Render a designed 'value prop' video from a config — 3-5 noun-phrase benefit claims (<=4 words each) revealed sequentially over per-SKU product visuals, one crisp editorial frame per claim (hook sticker -> N claim beats -> brand end card). Deterministic PIL/HTML beat renderer frame-stepped via Playwright and encoded with FFmpeg, sound-off legible, hard cuts, uniform pacing. FREE (no paid calls); music is added separately (create-music-elevenlabs). Use for the value-prop format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-value-prop",
+      "files": [
+        "skills/ads/capabilities/render-value-prop/SKILL.md",
+        "skills/ads/capabilities/render-value-prop/scripts/build_storyboard_preview.py",
+        "skills/ads/capabilities/render-value-prop/scripts/build_text_overlays.py",
+        "skills/ads/capabilities/render-value-prop/scripts/render_master.py",
+        "skills/ads/capabilities/render-value-prop/shared/_shared.css",
+        "skills/ads/capabilities/render-value-prop/shared/_shared.js",
+        "skills/ads/capabilities/render-value-prop/shared/animations/registry.yml",
+        "skills/ads/capabilities/render-value-prop/shared/animations/sachet-entrance/cascade-from-top.js",
+        "skills/ads/capabilities/render-value-prop/shared/animations/sachet-entrance/fade-stagger.js",
+        "skills/ads/capabilities/render-value-prop/shared/animations/sachet-entrance/slide-in-lateral.js",
+        "skills/ads/capabilities/render-value-prop/shared/animations/sachet-entrance/springScale-pop.js",
+        "skills/ads/capabilities/render-value-prop/shared/animations/sachet-entrance/tilt-fan.js",
+        "skills/ads/capabilities/render-value-prop/shared/animations/text-entrance/fade-stagger.js",
+        "skills/ads/capabilities/render-value-prop/shared/animations/text-entrance/mask-reveal.js",
+        "skills/ads/capabilities/render-value-prop/shared/animations/text-entrance/type-on.js",
+        "skills/ads/capabilities/render-value-prop/shared/animations/text-entrance/word-by-word.js",
+        "skills/ads/capabilities/render-value-prop/shared/beat-templates/endcard-wordmark.html",
+        "skills/ads/capabilities/render-value-prop/shared/beat-templates/hook-sticker.html",
+        "skills/ads/capabilities/render-value-prop/shared/beat-templates/prop-hero.html",
+        "skills/ads/capabilities/render-value-prop/shared/beat-templates/prop-row.html",
+        "skills/ads/capabilities/render-value-prop/skill.meta.json",
+        "skills/ads/capabilities/render-value-prop/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "render-value-prop",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-value-prop",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
+      "slug": "render-vignette",
+      "name": "render-vignette",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Assemble a short-form 'vignette' ad from clean product cutouts composited over a kinetic background video — birefnet cutout, then a cold-open text card + product carousel + annotated specimen-sheet end card, plus loudnorm + separate-pass music mux. FREE assembly (PIL + rsvg + FFmpeg); the recipe supplies the config and gates the paid BG/cutout/music calls to their own capabilities. Use for the vignette format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-vignette",
+      "files": [
+        "skills/ads/capabilities/render-vignette/SKILL.md",
+        "skills/ads/capabilities/render-vignette/scripts/composite_variants.py",
+        "skills/ads/capabilities/render-vignette/scripts/music_and_mux.py",
+        "skills/ads/capabilities/render-vignette/scripts/render_overlays.py",
+        "skills/ads/capabilities/render-vignette/scripts/strip_product_backgrounds.py",
+        "skills/ads/capabilities/render-vignette/skill.meta.json",
+        "skills/ads/capabilities/render-vignette/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "render-vignette",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-vignette",
           "supports": [
             "claude",
             "cursor",

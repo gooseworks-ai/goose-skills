@@ -89,3 +89,14 @@ def download(url, out_path):
     """Fetch a public result URL to disk."""
     urllib.request.urlretrieve(url, out_path)
     return out_path
+
+
+def eleven_tts(text, voice_id, out_path, model_id="eleven_v3", timeout_s=180):
+    """ElevenLabs text-to-speech (VO) through the proxy → writes mp3 to out_path."""
+    api_base, tok, agent = _cfg()
+    url = api_base + f"/api/internal/elevenlabs-proxy/v1/text-to-speech/{voice_id}"
+    r = requests.post(url, params=_params(tok, agent), timeout=timeout_s,
+                      json={"text": text, "model_id": model_id})
+    r.raise_for_status()
+    pathlib.Path(out_path).write_bytes(r.content)
+    return out_path

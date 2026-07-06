@@ -1,0 +1,245 @@
+{
+  "_comment": "Spoiled Child 'The Perfect Morning Routine = 4 Products' \u2014 the worked example (v3 shipped recipe). Copy to config.json and edit. A flat-vector creator-character walks a countable 4-step routine, one step per beat: large corner numeral + labelled chip + tagline + the step's REAL product photo. Character scenes are Kling i2v off text-stripped clean plates (subtle motion, style-preserving negative); ALL text is an animated Remotion DOM overlay (NEVER baked); slate/grid/CTA scenes get no i2v; the closing grid is a PIL composite of real product webps. eleven_v3 full-sentence VO drives word-by-word burned captions over a VO-forward music bed. Built as a ~50s animated master, then re-cut to 30s FROM the animated master. Values lifted from the source design-brief scene table + meta.json. The runnable scripts live in the source project's working/ (see PIPELINE.md).",
+  "brand_name": "Spoiled Child",
+  "concept": {
+    "single_point": "The perfect morning routine is just 4 products (collagen drink, face serum, eye cream, hair treatment) \u2014 not twenty.",
+    "motif_phrase": "THE PERFECT ROUTINE = 4 PRODUCTS",
+    "closing_phrase": "4 is enough.",
+    "hook_line": "Your morning routine has twenty different products. Why?",
+    "concept_label": "morning routine (NOT 'skincare' \u2014 step 4 is a hair treatment)"
+  },
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "master_duration_sec": 50.0,
+  "deliverable_duration_sec": 30.0,
+  "brand_palette": [
+    "#FAFAFA",
+    "#C96E2F",
+    "#F2C9C2",
+    "#0A0B0D",
+    "#88B6A4",
+    "#B3A7C4"
+  ],
+  "display_font": "Inter",
+  "character": {
+    "mode": "anchor-ref (fresh flat-vector \u2014 NOT a chained photoreal ref)",
+    "anchor_prompt": "Flat-vector illustration of a woman, late 20s, soft brown wavy shoulder-length hair, warm-medium skin tone, cream slip-dress. Clean 2D flat-vector style (Spotify/Anchor lineage), no gradients, no photoreal shading. Consistent character across every scene.",
+    "anchor_path": "assets/character-lock/creator-anchor.png",
+    "style_reference_note": "The brand's existing character (clients/spoiled-child/shared/characters/anchor/character-anchor-05-home-aesthetic.png) is photoreal \u2014 use it ONLY as a written descriptor source, NEVER as a `medias` chained ref (it flattens gens to photoreal).",
+    "keyframe_variants": [
+      "counter-overwhelmed",
+      "smile-shrug",
+      "lifting-spoon",
+      "serum-pump",
+      "under-eye-dab",
+      "hands-through-hair",
+      "mirror-satisfied"
+    ]
+  },
+  "kling": {
+    "model": "fal-ai/kling-video/v2.5-turbo/pro/image-to-video",
+    "duration_sec": 5,
+    "cfg_scale": 0.5,
+    "negative_prompt": "photorealistic, 3D render, realistic skin, style change, gradient shading, text warp, camera shake",
+    "_note": "Holds flat-vector style at LOW motion only. TEST one scene before batching."
+  },
+  "scenes": [
+    {
+      "n": 1,
+      "kind": "character",
+      "duration_sec": 4.0,
+      "motion": "gentle overwhelmed breathing + one blink",
+      "keyframe_prompt": "Creator at a bathroom counter overstuffed with 20+ jars/bottles/tubes from many brands; faintly comedic, overwhelmed.",
+      "overlay": null,
+      "vo": "Your morning routine has twenty different products."
+    },
+    {
+      "n": 2,
+      "kind": "character",
+      "duration_sec": 2.5,
+      "motion": "small natural smile + shrug; clutter settles",
+      "keyframe_prompt": "Same creator, small smile + shrug at the cluttered counter.",
+      "overlay": null,
+      "vo": "Why?"
+    },
+    {
+      "n": 3,
+      "kind": "slate",
+      "duration_sec": 3.5,
+      "motion": "Remotion slate slam-in",
+      "keyframe_prompt": null,
+      "overlay": {
+        "headline": "THE PERFECT ROUTINE = 4 PRODUCTS",
+        "ground": "#C96E2F"
+      },
+      "vo": "The perfect routine is just four products."
+    },
+    {
+      "n": 4,
+      "kind": "character",
+      "duration_sec": 6.5,
+      "motion": "lifts a tablespoon of amber liquid toward camera; minimal drift",
+      "keyframe_prompt": "Creator lifts a tablespoon of amber liquid E27 collagen; teal accent panel.",
+      "overlay": {
+        "numeral": "1",
+        "chip": "01 \u00b7 COLLAGEN DRINK",
+        "tagline": "Liquid collagen for glowing skin from within.",
+        "product_photo": "assets/products/e27-main-bottle.webp",
+        "accent": "#88B6A4"
+      },
+      "vo": "One \u2014 liquid collagen. A spoonful at breakfast for skin from within."
+    },
+    {
+      "n": 5,
+      "kind": "character",
+      "duration_sec": 6.5,
+      "motion": "presses serum pump near cheek",
+      "keyframe_prompt": "Creator presses S33 serum pump near cheek; peach accent panel.",
+      "overlay": {
+        "numeral": "2",
+        "chip": "02 \u00b7 FACE SERUM",
+        "tagline": "Vitamin-C serum for that morning glow that makes you feel radiant.",
+        "product_photo": "assets/products/s33-bottle-close.webp",
+        "accent": "#F2C9C2"
+      },
+      "vo": "Two \u2014 a vitamin-C serum for that morning glow that makes you feel radiant."
+    },
+    {
+      "n": 6,
+      "kind": "character",
+      "duration_sec": 5.5,
+      "motion": "dabs eye cream under-eye",
+      "keyframe_prompt": "Creator dabs eye cream under-eye; lavender accent panel.",
+      "overlay": {
+        "numeral": "3",
+        "chip": "03 \u00b7 EYE CREAM",
+        "tagline": "An eye cream \u2014 your eyes will de-puff in minutes.",
+        "product_photo": "assets/products/t31-main-product.webp",
+        "accent": "#B3A7C4"
+      },
+      "vo": "Three \u2014 an eye cream, and your eyes will de-puff in minutes."
+    },
+    {
+      "n": 7,
+      "kind": "character",
+      "duration_sec": 6.0,
+      "motion": "runs hands through hair, soft steam",
+      "keyframe_prompt": "Creator runs hands through hair, soft steam; warm rust accent panel.",
+      "overlay": {
+        "numeral": "4",
+        "chip": "04 \u00b7 HAIR TREATMENT",
+        "tagline": "A rinse-in treatment that leaves your hair shining all day.",
+        "product_photo": "assets/products/h30-main-product.webp",
+        "accent": "#C96E2F"
+      },
+      "vo": "Four \u2014 a rinse-in hair treatment that leaves your hair shining all day."
+    },
+    {
+      "n": 8,
+      "kind": "grid",
+      "duration_sec": 3.0,
+      "motion": "PIL grid + Remotion slate",
+      "keyframe_prompt": null,
+      "overlay": {
+        "headline": "4 is enough.",
+        "ground": "#C96E2F"
+      },
+      "vo": "Four products. That's it."
+    },
+    {
+      "n": 9,
+      "kind": "character",
+      "duration_sec": 5.0,
+      "motion": "satisfied smile, holding 1 product; clean bathroom (callback to scene 1)",
+      "keyframe_prompt": "Creator at mirror, satisfied smile, holding one product; clean bathroom.",
+      "overlay": null,
+      "vo": "Skip the twenty-step routine. Build the four-product one."
+    },
+    {
+      "n": 10,
+      "kind": "cta",
+      "duration_sec": 8.0,
+      "motion": "Remotion CTA",
+      "keyframe_prompt": null,
+      "overlay": {
+        "wordmark": "Spoiled Child",
+        "cta_pill": "Build your morning routine \u2192",
+        "url": "spoiledchild.com",
+        "ground": "#C96E2F"
+      },
+      "vo": "Spoiled Child. Your morning routine, simplified. Spoiledchild dot com."
+    }
+  ],
+  "product_grid": {
+    "method": "PIL composite of the 4 REAL product webps (never AI \u2014 AI duplicates SKUs)",
+    "ground": "#C96E2F",
+    "layout": "2x2",
+    "preserve_aspect": true,
+    "images": [
+      "assets/products/e27-main-bottle.webp",
+      "assets/products/s33-bottle-close.webp",
+      "assets/products/t31-main-product.webp",
+      "assets/products/h30-main-product.webp"
+    ]
+  },
+  "voice": {
+    "engine": "ElevenLabs",
+    "model": "eleven_v3",
+    "endpoint": "text-to-speech/with-timestamps",
+    "voice_chosen": "Eryn",
+    "voice_id": "dMyQqiVXTU80dDl2eNK8",
+    "casting_ab": [
+      "Eryn (dMyQqiVXTU80dDl2eNK8)",
+      "Angela (FUfBrNit0NNZAwb58KWH)"
+    ],
+    "settings": {
+      "stability": 0.45,
+      "similarity_boost": 0.8,
+      "style": 0.1,
+      "use_speaker_boost": true,
+      "speed": 1.1
+    },
+    "_note": "Write VO as FULL SENTENCES (not keyword fragments). with-timestamps char-level timings drive the word-by-word captions."
+  },
+  "music": {
+    "engine": "ElevenLabs",
+    "prompt": "Lo-fi pop bed, 95-105 BPM, builds across sections (intro pad -> groove -> warm -> lo-fi build -> resolved). NOT cinematic, NOT moody. No melody hooks competing with VO. Instrumental only.",
+    "length_ms": 52000,
+    "force_instrumental": true,
+    "mix_profile": "VO-forward: vo loudnorm I=-15, music loudnorm I=-25 + volume 0.5, sidechaincompress duck, final alimiter limit=0.89, target ~-15 LUFS / -1 dBTP"
+  },
+  "captions": {
+    "method": "word-by-word burned from eleven_v3 with-timestamps (libass; Klap is the hosted equivalent)",
+    "style": "Inter/Arial 56 white + 4px outline, bottom-third (MarginV 360)",
+    "burned_last": true,
+    "suppress_on_scenes": [
+      3,
+      8,
+      10
+    ],
+    "_suppress_note": "slate/grid/CTA scenes carry their own on-screen text \u2014 two text layers collide."
+  },
+  "cutdowns": {
+    "source": "working/silent-master.mp4 (the ANIMATED master \u2014 NEVER a static intermediate)",
+    "rules": "trim short beats (never freeze); gently slow long beats (setpts, clamp <=1.6x); re-burn scaled captions (timestamps / vo_speedup, offset to new scene starts); suppress on 3/8/10",
+    "variants": {
+      "v1": "full 10-beat story, VO @1.25x (atempo), silences trimmed, ~30s \u2014 THE SHIPPED DELIVERABLE",
+      "v2": "hook-led montage: hook -> slate -> grid pulled forward -> rapid 4-product montage (number + product only) -> CTA, ~30s (>=4 cuts/10s)"
+    }
+  },
+  "post_production": {
+    "music": {
+      "default": "on",
+      "note": "lo-fi pop bed under the VO, default on"
+    },
+    "captions": {
+      "default": "on",
+      "note": "word-by-word burned captions (libass/Klap), default on"
+    },
+    "end_card": {
+      "default": "on",
+      "note": "CTA + brand wordmark scene, default on"
+    }
+  }
+}
