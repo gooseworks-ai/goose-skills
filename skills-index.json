@@ -6666,12 +6666,13 @@
       "name": "ugc-fixloop",
       "category": "capabilities",
       "domain": "ads",
-      "description": "the UGC fix-loop toolkit — surgically re-render a bad window/beat of a single-take UGC master (stitch_replacement.py) and swap it onto the VIDEO track only, leaving the master's continuous native audio untouched. Fetch it into a one-shot UGC recipe's fix-loop so the script resolves on any machine. Pure local FFmpeg, no API keys, no network.",
+      "description": "the UGC fix-loop toolkit — surgically re-render a bad window/beat of a single-take UGC master (stitch_replacement.py, pure FFmpeg) and GPT cross-model review a Seedance prompt before render (vet_seedance_prompt.py, routed through the openai-proxy). Fetch it into a one-shot UGC recipe so both scripts resolve on any machine and the vet call bills the Ads agent.",
       "tags": "ads",
       "path": "skills/ads/capabilities/ugc-fixloop",
       "files": [
         "skills/ads/capabilities/ugc-fixloop/SKILL.md",
         "skills/ads/capabilities/ugc-fixloop/scripts/stitch_replacement.py",
+        "skills/ads/capabilities/ugc-fixloop/scripts/vet_seedance_prompt.py",
         "skills/ads/capabilities/ugc-fixloop/skill.meta.json",
         "skills/ads/capabilities/ugc-fixloop/tests/smoke-test.md"
       ],

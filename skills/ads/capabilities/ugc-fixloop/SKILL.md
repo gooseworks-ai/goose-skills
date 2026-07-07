@@ -1,6 +1,6 @@
 ---
 name: ugc-fixloop
-description: the UGC fix-loop toolkit — surgically re-render a bad window/beat of a single-take UGC master (stitch_replacement.py) and swap it onto the VIDEO track only, leaving the master's continuous native audio untouched. Fetch it into a one-shot UGC recipe's fix-loop so the script resolves on any machine. Pure local FFmpeg, no API keys, no network.
+description: the UGC fix-loop toolkit — surgically re-render a bad window/beat of a single-take UGC master (stitch_replacement.py, pure FFmpeg) and GPT cross-model review a Seedance prompt before render (vet_seedance_prompt.py, routed through the openai-proxy). Fetch it into a one-shot UGC recipe so both scripts resolve on any machine and the vet call bills the Ads agent.
 status: active
 ---
 
@@ -8,17 +8,25 @@ status: active
 
 The UGC fix-loop toolkit. The one-shot UGC video recipes (`create-ugc-*-video-from-refs`)
 render a single continuous Seedance 2.0 reference-to-video master with native lip-synced
-audio. When one internal beat drifts, they run a **fix loop** — re-render just that beat as
-a short silent clip and swap it onto the video track only, leaving the master's continuous
-audio untouched. This capability ships the script that fix loop runs, so it exists on the
-remote machine (fetched into `/tmp/gooseworks-scripts/ugc-fixloop/`).
+audio. This capability ships the two scripts those recipes run, so they exist on the remote
+machine (fetched into `/tmp/gooseworks-scripts/ugc-fixloop/`).
 
-> Prompt-vetting is done **inline by the agent** (it's an LLM) — there is no vet script here.
 > Any re-render of a replacement clip goes through the same proxy path the recipe uses for
 > the take (`create-video-fal` / fal-proxy), NEVER a direct `fal.run` call.
 
 ## Env / deps
 - **`stitch_replacement.py`** — no API key, no network. Needs **`ffmpeg` + `ffprobe` on PATH** (all local FFmpeg).
+- **`vet_seedance_prompt.py`** — routes through the GooseWorks **openai-proxy** (`<api_base>/api/internal/openai-proxy/v1/chat/completions`), reading creds from `~/.gooseworks/credentials.json` — **no direct OpenAI call, no local key**; the call **bills the Ads agent**. Exits 3 if the proxy/creds are unavailable so the recipe can fall back to an inline self-review (the vet is advisory, not a gate).
+
+## Run — vet_seedance_prompt.py (GPT cross-model prompt review)
+A deliberately NON-Claude second opinion on the Seedance prompt before you spend the render
+(Claude reviewing its own prompt is a weaker signal). Takes the prompt as an argument:
+```
+vet_seedance_prompt.py --prompt-file working/seedance-prompt.txt \
+    [--brief "one-line intent"] [--refs "@Image1=avatar; @Image2=product; @Image3=env"] \
+    [--words 28] [--out working/seedance-review.md]
+```
+Prints + saves the structured review (verdict, line edits, word budget, consistency risk).
 
 ## Run — stitch_replacement.py (surgical beat/window swap, deterministic)
 Replaces one segment of the master on the VIDEO track only; the master's audio (VO + ambience)
