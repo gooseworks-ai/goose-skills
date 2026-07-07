@@ -1,0 +1,20 @@
+{
+  "slug": "ugc-video-formats",
+  "name": "UGC Video Ad Capabilities",
+  "description": "Shared, reusable capabilities the video-ad orchestrator composes to render short-form ads locally (Seedance 2.0 reference-to-video render engine + the render QC gate). The per-format recipes are NOT skills — each ad format is a TEMPLATE (data) in the ad_sample DB (recipe = the capabilities it uses + its instructions + config + brand-input contract). The goose-video composite reads a template from the DB and runs these capabilities. Removed the per-format create-*/remix-* template-skills (they belong in the DB, not the skill library).",
+  "tags": [
+    "ads"
+  ],
+  "skills": [
+    "create-video-seedance-2-fal",
+    "review-ugc-render"
+  ],
+  "installation": {
+    "base_command": "npx goose-skills install ugc-video-formats",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  }
+}

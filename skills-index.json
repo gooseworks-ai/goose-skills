@@ -1,6 +1,6 @@
 {
   "version": "1.2.0",
-  "generated": "2026-06-30",
+  "generated": "2026-07-07",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -1342,51 +1342,6 @@
       }
     },
     {
-      "slug": "create-apple-notes-video-ad",
-      "name": "create-apple-notes-video-ad",
-      "category": "capabilities",
-      "domain": "ads",
-      "description": "Produce a 9:16 social-native ad recreating the iPhone Apple Notes typing experience — the note begins with 1–2 visible lines, then progressively types additional paragraphs character-by-character with per-keystroke iPhone keyboard SFX. One continuous Playwright recording, music bed underneath, brand end card with CTA. Assembled to a master MP4 plus a 9:16 social export.",
-      "tags": "ads",
-      "path": "skills/ads/packs/video-ad-formats/create-apple-notes-video-ad",
-      "files": [
-        "skills/ads/packs/video-ad-formats/create-apple-notes-video-ad/SKILL.md",
-        "skills/ads/packs/video-ad-formats/create-apple-notes-video-ad/apple-notes-video-skill-build.html",
-        "skills/ads/packs/video-ad-formats/create-apple-notes-video-ad/assets/sfx/README.md",
-        "skills/ads/packs/video-ad-formats/create-apple-notes-video-ad/assets/sfx/kb-return.mp3",
-        "skills/ads/packs/video-ad-formats/create-apple-notes-video-ad/assets/sfx/kb-space.mp3",
-        "skills/ads/packs/video-ad-formats/create-apple-notes-video-ad/assets/sfx/kb-tick.mp3",
-        "skills/ads/packs/video-ad-formats/create-apple-notes-video-ad/examples/full-note.example.json",
-        "skills/ads/packs/video-ad-formats/create-apple-notes-video-ad/scripts/end-card.template.html",
-        "skills/ads/packs/video-ad-formats/create-apple-notes-video-ad/scripts/record-master.template.js",
-        "skills/ads/packs/video-ad-formats/create-apple-notes-video-ad/scripts/render-end-card.template.js",
-        "skills/ads/packs/video-ad-formats/create-apple-notes-video-ad/scripts/stitch.template.sh",
-        "skills/ads/packs/video-ad-formats/create-apple-notes-video-ad/skill.meta.json",
-        "skills/ads/packs/video-ad-formats/create-apple-notes-video-ad/tests/expected-output.md",
-        "skills/ads/packs/video-ad-formats/create-apple-notes-video-ad/tests/human-test.md",
-        "skills/ads/packs/video-ad-formats/create-apple-notes-video-ad/tests/run-all.sh",
-        "skills/ads/packs/video-ad-formats/create-apple-notes-video-ad/tests/sample-input.md",
-        "skills/ads/packs/video-ad-formats/create-apple-notes-video-ad/tests/smoke-test.md",
-        "skills/ads/packs/video-ad-formats/create-apple-notes-video-ad/tests/verifier.md"
-      ],
-      "metadata": {
-        "slug": "create-apple-notes-video-ad",
-        "category": "capabilities",
-        "pack": "video-ad-formats",
-        "tags": [
-          "ads"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install video-ad-formats",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
       "slug": "create-chatgpt-mockup",
       "name": "create-chatgpt-mockup",
       "category": "capabilities",
@@ -1427,54 +1382,6 @@
       ],
       "metadata": {
         "slug": "create-chatgpt-mockup",
-        "category": "capabilities",
-        "pack": "video-ad-formats",
-        "tags": [
-          "ads"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install video-ad-formats",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "create-chatgpt-video-ad",
-      "name": "create-chatgpt-video-ad",
-      "category": "capabilities",
-      "domain": "ads",
-      "description": "Produce a 9:16 social-native ad that recreates a ChatGPT mobile chat — user types in the composer with the iOS keyboard visible, taps send, keyboard slides down, header right-cluster swaps (personPlus/dotted → edit/more), one gray loading dot appears, then the assistant response streams in word-by-word with a soft opacity ramp. Continuous Playwright recording, subtle SFX (key-tap / send-tap / stream-tick / response-done), assembled into a master MP4 plus 9:16 / 1×1 exports. No music bed and no end card by default.",
-      "tags": "ads",
-      "path": "skills/ads/packs/video-ad-formats/create-chatgpt-video-ad",
-      "files": [
-        "skills/ads/packs/video-ad-formats/create-chatgpt-video-ad/SKILL.md",
-        "skills/ads/packs/video-ad-formats/create-chatgpt-video-ad/assets/sfx/key-tap.wav",
-        "skills/ads/packs/video-ad-formats/create-chatgpt-video-ad/assets/sfx/response-done.wav",
-        "skills/ads/packs/video-ad-formats/create-chatgpt-video-ad/assets/sfx/send-tap.wav",
-        "skills/ads/packs/video-ad-formats/create-chatgpt-video-ad/assets/sfx/stream-tick.wav",
-        "skills/ads/packs/video-ad-formats/create-chatgpt-video-ad/examples/smoke-app-question/clips/master-chat.mp4",
-        "skills/ads/packs/video-ad-formats/create-chatgpt-video-ad/examples/smoke-app-question/clips/master-chat.page.html",
-        "skills/ads/packs/video-ad-formats/create-chatgpt-video-ad/examples/smoke-app-question/clips/master-chat.sfx.json",
-        "skills/ads/packs/video-ad-formats/create-chatgpt-video-ad/examples/smoke-app-question/clips/record-master.js",
-        "skills/ads/packs/video-ad-formats/create-chatgpt-video-ad/examples/smoke-app-question/edits/master-final.mp4",
-        "skills/ads/packs/video-ad-formats/create-chatgpt-video-ad/examples/smoke-app-question/scripts/stitch.sh",
-        "skills/ads/packs/video-ad-formats/create-chatgpt-video-ad/examples/smoke-app-question/thread.json",
-        "skills/ads/packs/video-ad-formats/create-chatgpt-video-ad/examples/smoke-app-question/timeline.json",
-        "skills/ads/packs/video-ad-formats/create-chatgpt-video-ad/scripts/record-master.template.js",
-        "skills/ads/packs/video-ad-formats/create-chatgpt-video-ad/scripts/stitch.template.sh",
-        "skills/ads/packs/video-ad-formats/create-chatgpt-video-ad/skill.meta.json",
-        "skills/ads/packs/video-ad-formats/create-chatgpt-video-ad/tests/expected-output.md",
-        "skills/ads/packs/video-ad-formats/create-chatgpt-video-ad/tests/human-test.md",
-        "skills/ads/packs/video-ad-formats/create-chatgpt-video-ad/tests/sample-input.md",
-        "skills/ads/packs/video-ad-formats/create-chatgpt-video-ad/tests/smoke-test.md",
-        "skills/ads/packs/video-ad-formats/create-chatgpt-video-ad/tests/verifier.md"
-      ],
-      "metadata": {
-        "slug": "create-chatgpt-video-ad",
         "category": "capabilities",
         "pack": "video-ad-formats",
         "tags": [
@@ -1586,6 +1493,41 @@
       }
     },
     {
+      "slug": "create-image-fal",
+      "name": "create-image-fal",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Generate or edit an image via any FAL image model (nano-banana edit, gpt-image, flux, ...), ROUTED THROUGH THE fal-proxy so it bills the Ads agent. image_urls must be public URLs (orchestrator hosts local product refs via MCP upload->presign). The recipe names the model + prompt. Use for keyframes, flat-cover transforms, product hero edits. (For the OpenAI gpt-image family specifically, create-image-gpt-image-fal also exists.)",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/create-image-fal",
+      "files": [
+        "skills/ads/capabilities/create-image-fal/SKILL.md",
+        "skills/ads/capabilities/create-image-fal/scripts/gen_image.py",
+        "skills/ads/capabilities/create-image-fal/scripts/media_proxy.py",
+        "skills/ads/capabilities/create-image-fal/skill.meta.json",
+        "skills/ads/capabilities/create-image-fal/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "create-image-fal",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install create-image-fal",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "media-proxy"
+        ]
+      }
+    },
+    {
       "slug": "create-image-gpt-image-fal",
       "name": "create-image-gpt-image-fal",
       "category": "capabilities",
@@ -1672,54 +1614,6 @@
       }
     },
     {
-      "slug": "create-imessage-video-ad",
-      "name": "create-imessage-video-ad",
-      "category": "capabilities",
-      "domain": "ads",
-      "description": "Produce a 9:16 social-native ad that recreates an iMessage conversation reveal — bubbles pop in over time, composer types char-by-char, real Apple iMessage SFX hit on every send/receive, music bed underneath, brand end card with FREEPACK-style CTA. One continuous Playwright recording (no scene-cuts/glitches) in plain-chat or iPhone-framed (Dynamic Island over a background) variants, assembled to a master MP4 plus 9:16 / 1×1 export variants.",
-      "tags": "ads",
-      "path": "skills/ads/packs/video-ad-formats/create-imessage-video-ad",
-      "files": [
-        "skills/ads/packs/video-ad-formats/create-imessage-video-ad/SKILL.md",
-        "skills/ads/packs/video-ad-formats/create-imessage-video-ad/assets/sfx/imessage-receive.mp3",
-        "skills/ads/packs/video-ad-formats/create-imessage-video-ad/assets/sfx/imessage-send.mp3",
-        "skills/ads/packs/video-ad-formats/create-imessage-video-ad/examples/full-thread.example.json",
-        "skills/ads/packs/video-ad-formats/create-imessage-video-ad/examples/strava-card.example.html",
-        "skills/ads/packs/video-ad-formats/create-imessage-video-ad/references/audio-recipe.md",
-        "skills/ads/packs/video-ad-formats/create-imessage-video-ad/references/end-card-recipe.md",
-        "skills/ads/packs/video-ad-formats/create-imessage-video-ad/references/timeline-schema.md",
-        "skills/ads/packs/video-ad-formats/create-imessage-video-ad/scripts/README.md",
-        "skills/ads/packs/video-ad-formats/create-imessage-video-ad/scripts/end-card-photo-bg.template.html",
-        "skills/ads/packs/video-ad-formats/create-imessage-video-ad/scripts/end-card.template.html",
-        "skills/ads/packs/video-ad-formats/create-imessage-video-ad/scripts/fal_helpers.py",
-        "skills/ads/packs/video-ad-formats/create-imessage-video-ad/scripts/record-master.template.js",
-        "skills/ads/packs/video-ad-formats/create-imessage-video-ad/scripts/render-end-card.template.js",
-        "skills/ads/packs/video-ad-formats/create-imessage-video-ad/scripts/stitch.template.sh",
-        "skills/ads/packs/video-ad-formats/create-imessage-video-ad/skill.meta.json",
-        "skills/ads/packs/video-ad-formats/create-imessage-video-ad/tests/expected-output.md",
-        "skills/ads/packs/video-ad-formats/create-imessage-video-ad/tests/human-test.md",
-        "skills/ads/packs/video-ad-formats/create-imessage-video-ad/tests/sample-input.md",
-        "skills/ads/packs/video-ad-formats/create-imessage-video-ad/tests/smoke-test.md",
-        "skills/ads/packs/video-ad-formats/create-imessage-video-ad/tests/verifier.md"
-      ],
-      "metadata": {
-        "slug": "create-imessage-video-ad",
-        "category": "capabilities",
-        "pack": "video-ad-formats",
-        "tags": [
-          "ads"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install video-ad-formats",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
       "slug": "create-linkedin-content",
       "name": "create-linkedin-content",
       "category": "capabilities",
@@ -1746,6 +1640,146 @@
             "codex"
           ]
         }
+      }
+    },
+    {
+      "slug": "create-music-elevenlabs",
+      "name": "create-music-elevenlabs",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Generate an instrumental music bed via ElevenLabs Music, ROUTED THROUGH THE elevenlabs-proxy so it bills the Ads agent. Trims any sparse intro, loudnorm, fades the tail. Prompt + length from the template recipe. Use for the music layer of any video-ad format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/create-music-elevenlabs",
+      "files": [
+        "skills/ads/capabilities/create-music-elevenlabs/SKILL.md",
+        "skills/ads/capabilities/create-music-elevenlabs/scripts/gen_music.py",
+        "skills/ads/capabilities/create-music-elevenlabs/scripts/media_proxy.py",
+        "skills/ads/capabilities/create-music-elevenlabs/skill.meta.json",
+        "skills/ads/capabilities/create-music-elevenlabs/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "create-music-elevenlabs",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install create-music-elevenlabs",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "media-proxy"
+        ]
+      }
+    },
+    {
+      "slug": "create-video-fal",
+      "name": "create-video-fal",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Image-to-video (or text-to-video) via any FAL video model (Kling, Seedance, Veo), ROUTED THROUGH THE GooseWorks fal-proxy so the call bills the Ads agent. The template recipe names the model + params; image_url inputs must be public URLs (the orchestrator hosts local frames via MCP get_upload_url -> get_download_url). Returns the result video URL and downloads it. Use for the generative base clip of any video-ad format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/create-video-fal",
+      "files": [
+        "skills/ads/capabilities/create-video-fal/SKILL.md",
+        "skills/ads/capabilities/create-video-fal/scripts/gen_video.py",
+        "skills/ads/capabilities/create-video-fal/scripts/media_proxy.py",
+        "skills/ads/capabilities/create-video-fal/skill.meta.json",
+        "skills/ads/capabilities/create-video-fal/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "create-video-fal",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install create-video-fal",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "media-proxy"
+        ]
+      }
+    },
+    {
+      "slug": "create-video-seedance-2-fal",
+      "name": "create-video-seedance-2-fal",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Generate a single 4-15s vertical video clip with ByteDance Seedance 2.0 reference-to-video via fal.ai. Multi-image reference (avatar + product + setting), native lip-synced VO + ambient audio via `generate_audio: true`, internal multi-cut handling within one render. The default clip atom for AI-creator UGC ads built on the NB2 + Seedance architecture. Validated on `beauty-by-earth/video-01`.",
+      "tags": "ads",
+      "path": "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal",
+      "files": [
+        "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/SKILL.md",
+        "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/scripts/generate.py",
+        "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/skill.meta.json",
+        "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests/expected-output.md",
+        "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests/human-test.md",
+        "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests/sample-input.md",
+        "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests/smoke-test.md",
+        "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests/verifier.md"
+      ],
+      "metadata": {
+        "slug": "create-video-seedance-2-fal",
+        "category": "capabilities",
+        "pack": "ugc-video-formats",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install ugc-video-formats",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "create-vo-elevenlabs",
+      "name": "create-vo-elevenlabs",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Generate a voiceover (VO) clip via ElevenLabs text-to-speech, ROUTED THROUGH THE elevenlabs-proxy so it bills the Ads agent. Voice id + script text come from the template recipe. Use for the spoken narration of VO-driven video-ad formats (cgi-app-sizzle, flat-vector-explainer, hypermotion). Never call ElevenLabs directly — the proxy attribution is required.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/create-vo-elevenlabs",
+      "files": [
+        "skills/ads/capabilities/create-vo-elevenlabs/SKILL.md",
+        "skills/ads/capabilities/create-vo-elevenlabs/scripts/gen_vo.py",
+        "skills/ads/capabilities/create-vo-elevenlabs/scripts/media_proxy.py",
+        "skills/ads/capabilities/create-vo-elevenlabs/skill.meta.json",
+        "skills/ads/capabilities/create-vo-elevenlabs/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "create-vo-elevenlabs",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install create-vo-elevenlabs",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "media-proxy"
+        ]
       }
     },
     {
@@ -4057,6 +4091,37 @@
       }
     },
     {
+      "slug": "media-proxy",
+      "name": "media-proxy",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Shared helper that routes ALL paid media generation (FAL image/video, ElevenLabs music) through the GooseWorks proxies so every call bills the Ads agent — never a provider SDK's default host. Host-swaps the FAL queue URLs, loads the agent token from ~/.gooseworks/credentials.json, and returns the result CDN URL. Every video-ad media capability imports this; templates never call a provider directly.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/media-proxy",
+      "files": [
+        "skills/ads/capabilities/media-proxy/SKILL.md",
+        "skills/ads/capabilities/media-proxy/scripts/media_proxy.py",
+        "skills/ads/capabilities/media-proxy/skill.meta.json",
+        "skills/ads/capabilities/media-proxy/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "media-proxy",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install media-proxy",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
       "slug": "meeting-brief",
       "name": "meeting-brief",
       "category": "composites",
@@ -4880,74 +4945,6 @@
       }
     },
     {
-      "slug": "remix-apple-notes-ad-from-sample",
-      "name": "remix-apple-notes-ad-from-sample",
-      "category": "capabilities",
-      "domain": "ads",
-      "description": "Remix a published Apple Notes video ad from the Goose Ads library for a new brand — keep the source's note structure and typing pacing, swap in the brand's product, voice, and promo code, get the note approved in-session, then render with create-apple-notes-video-ad and publish the MP4 back to Gooseworks with live stage reporting. The Apple Notes typing-reveal counterpart to remix-imessage-ad-from-sample; this is what the app's Apple Notes format tab calls.",
-      "tags": "ads",
-      "path": "skills/ads/packs/video-ad-formats/remix-apple-notes-ad-from-sample",
-      "files": [
-        "skills/ads/packs/video-ad-formats/remix-apple-notes-ad-from-sample/SKILL.md",
-        "skills/ads/packs/video-ad-formats/remix-apple-notes-ad-from-sample/skill.meta.json",
-        "skills/ads/packs/video-ad-formats/remix-apple-notes-ad-from-sample/tests/expected-output.md",
-        "skills/ads/packs/video-ad-formats/remix-apple-notes-ad-from-sample/tests/human-test.md",
-        "skills/ads/packs/video-ad-formats/remix-apple-notes-ad-from-sample/tests/sample-input.md",
-        "skills/ads/packs/video-ad-formats/remix-apple-notes-ad-from-sample/tests/smoke-test.md",
-        "skills/ads/packs/video-ad-formats/remix-apple-notes-ad-from-sample/tests/verifier.md"
-      ],
-      "metadata": {
-        "slug": "remix-apple-notes-ad-from-sample",
-        "category": "capabilities",
-        "pack": "video-ad-formats",
-        "tags": [
-          "ads"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install video-ad-formats",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "remix-chatgpt-ad-from-sample",
-      "name": "remix-chatgpt-ad-from-sample",
-      "category": "capabilities",
-      "domain": "ads",
-      "description": "Remix a published ChatGPT video ad from the Goose Ads library for a new brand — keep the source's conversation structure and pacing (the single ask → streamed answer beat), swap in the brand's product as the natural recommendation and the promo code woven into the response, get the conversation approved in-session, then render with create-chatgpt-video-ad and publish the MP4 back to Gooseworks with live stage reporting. The ChatGPT chat-reveal / ask-ChatGPT counterpart to remix-imessage-ad-from-sample; this is what the app's ChatGPT format tab calls.",
-      "tags": "ads",
-      "path": "skills/ads/packs/video-ad-formats/remix-chatgpt-ad-from-sample",
-      "files": [
-        "skills/ads/packs/video-ad-formats/remix-chatgpt-ad-from-sample/SKILL.md",
-        "skills/ads/packs/video-ad-formats/remix-chatgpt-ad-from-sample/skill.meta.json",
-        "skills/ads/packs/video-ad-formats/remix-chatgpt-ad-from-sample/tests/expected-output.md",
-        "skills/ads/packs/video-ad-formats/remix-chatgpt-ad-from-sample/tests/human-test.md",
-        "skills/ads/packs/video-ad-formats/remix-chatgpt-ad-from-sample/tests/sample-input.md",
-        "skills/ads/packs/video-ad-formats/remix-chatgpt-ad-from-sample/tests/smoke-test.md",
-        "skills/ads/packs/video-ad-formats/remix-chatgpt-ad-from-sample/tests/verifier.md"
-      ],
-      "metadata": {
-        "slug": "remix-chatgpt-ad-from-sample",
-        "category": "capabilities",
-        "pack": "video-ad-formats",
-        "tags": [
-          "ads"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install video-ad-formats",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
       "slug": "remix-graphic-ad-from-reference",
       "name": "remix-graphic-ad-from-reference",
       "category": "composites",
@@ -4992,40 +4989,6 @@
       }
     },
     {
-      "slug": "remix-imessage-ad-from-sample",
-      "name": "remix-imessage-ad-from-sample",
-      "category": "capabilities",
-      "domain": "ads",
-      "description": "Remix a published iMessage video ad from the Goose Ads library for a new brand — keep the source's conversation structure and pacing, swap in the brand's product, voice, and promo code, get the thread approved in-session, then render with create-imessage-video-ad and publish the MP4 back to Gooseworks with live stage reporting. The video counterpart to remix-graphic-ad-from-reference; this is what the app's iMessage format tab calls.",
-      "tags": "ads",
-      "path": "skills/ads/packs/video-ad-formats/remix-imessage-ad-from-sample",
-      "files": [
-        "skills/ads/packs/video-ad-formats/remix-imessage-ad-from-sample/SKILL.md",
-        "skills/ads/packs/video-ad-formats/remix-imessage-ad-from-sample/skill.meta.json",
-        "skills/ads/packs/video-ad-formats/remix-imessage-ad-from-sample/tests/expected-output.md",
-        "skills/ads/packs/video-ad-formats/remix-imessage-ad-from-sample/tests/human-test.md",
-        "skills/ads/packs/video-ad-formats/remix-imessage-ad-from-sample/tests/sample-input.md",
-        "skills/ads/packs/video-ad-formats/remix-imessage-ad-from-sample/tests/smoke-test.md",
-        "skills/ads/packs/video-ad-formats/remix-imessage-ad-from-sample/tests/verifier.md"
-      ],
-      "metadata": {
-        "slug": "remix-imessage-ad-from-sample",
-        "category": "capabilities",
-        "pack": "video-ad-formats",
-        "tags": [
-          "ads"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install video-ad-formats",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
       "slug": "remotion-best-practices",
       "name": "remotion-best-practices",
       "category": "capabilities",
@@ -5052,6 +5015,150 @@
             "codex"
           ]
         }
+      }
+    },
+    {
+      "slug": "render-cgi-sizzle",
+      "name": "render-cgi-sizzle",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Assemble a 3D-CGI app sizzle — nano-banana CGI plates (blank-glow floating phone + smoky-black studio + amaranth rim-light + placeholder burst shapes) plus PIL compositing of the REAL App Store screenshots onto the bezel + burst-out overlays, driven by Kling 3.0 i2v steady-float per beat with a per-beat Ken-Burns FFmpeg push-in fallback when Kling garbles the UI, then VO/music mix (sidechain duck, loudnorm) + 1.15x speed + anti-AI grain finalize. The on-screen UI, instructor faces, and wordmark are ALWAYS real assets composited via PIL — never AI-rendered. The paid steps (plates, i2v clips, VO, music) are separate capabilities; this ships the config + PIPELINE + FREE assembly and the recipe orchestrates the spend. Use for the cgi-app-sizzle video format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-cgi-sizzle",
+      "files": [
+        "skills/ads/capabilities/render-cgi-sizzle/SKILL.md",
+        "skills/ads/capabilities/render-cgi-sizzle/scripts/PIPELINE.md",
+        "skills/ads/capabilities/render-cgi-sizzle/scripts/README.md",
+        "skills/ads/capabilities/render-cgi-sizzle/scripts/config.example.json",
+        "skills/ads/capabilities/render-cgi-sizzle/skill.meta.json",
+        "skills/ads/capabilities/render-cgi-sizzle/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "render-cgi-sizzle",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-cgi-sizzle",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
+      "slug": "render-flat-vector-explainer",
+      "name": "render-flat-vector-explainer",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Assemble the FREE steps of the flat-vector-explainer video format — a flat-illustration creator-character walks a countable N-step product routine, one step per beat, and Remotion composites every chip/numeral/tagline/slate/CTA as an animated DOM overlay ON TOP of the Kling i2v character clips (text is NEVER baked into a keyframe — i2v warps type), the closing 'N products' grid is a PIL composite of the REAL product photos (not AI), full-sentence VO drives word-by-word burned captions over a VO-forward music bed, and the ~50s animated silent master is re-cut to a 30s deliverable FROM the animated master (never a static intermediate). Documentation-grade — ships config.example.json + PIPELINE.md + a README of the free assembly; the paid gen steps (keyframes, Kling i2v, VO, music) are separate capabilities the recipe orchestrates. Use for the flat-vector-explainer format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-flat-vector-explainer",
+      "files": [
+        "skills/ads/capabilities/render-flat-vector-explainer/SKILL.md",
+        "skills/ads/capabilities/render-flat-vector-explainer/scripts/PIPELINE.md",
+        "skills/ads/capabilities/render-flat-vector-explainer/scripts/README.md",
+        "skills/ads/capabilities/render-flat-vector-explainer/scripts/config.example.json",
+        "skills/ads/capabilities/render-flat-vector-explainer/skill.meta.json",
+        "skills/ads/capabilities/render-flat-vector-explainer/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "render-flat-vector-explainer",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-flat-vector-explainer",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
+      "slug": "render-flatlay",
+      "name": "render-flatlay",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Render the FREE steps of the flatlay-product-reveal video format — composite each flat product cover onto the dressed tabletop plate to make the Veo start frames (build_start_frames), speed-and-hard-cut concat the i2v beats plus the HTML end card and mux the music (build_master), and screenshot the brand end-card HTML to a static-dwell clip (render_endcard). Deterministic, FREE (Playwright + PIL + FFmpeg), no paid calls, product covers and end-card text stay pixel-crisp. The paid steps (flat covers, Veo beats, music) are separate capabilities; the recipe orchestrates them. Use for the flatlay-product-reveal format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-flatlay",
+      "files": [
+        "skills/ads/capabilities/render-flatlay/SKILL.md",
+        "skills/ads/capabilities/render-flatlay/scripts/build_master.py",
+        "skills/ads/capabilities/render-flatlay/scripts/build_start_frames.py",
+        "skills/ads/capabilities/render-flatlay/scripts/render_endcard.py",
+        "skills/ads/capabilities/render-flatlay/skill.meta.json",
+        "skills/ads/capabilities/render-flatlay/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "render-flatlay",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-flatlay",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
+      "slug": "render-hypermotion",
+      "name": "render-hypermotion",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Assemble the FREE steps of the product-hypermotion + kinetic-typography video format — dice ONE Seedance 2.0 hypermotion clip into 5-6 segments and intercut them with PIL kinetic-typography spec/CTA cards (italic skew, 1.08x outline echo, 3D extrusion, slam-with-shake, inversion flash) plus a real-logo PIL end card (base64-decoded from the brand SVG), center-crop 1:1 to 9:16, and explicit-map mux a music bed. Deterministic, FREE (PIL + FFmpeg), no paid calls, the real logo and spec typography stay pixel-crisp. The paid steps (the ONE Seedance i2v, the music) are separate capabilities; the recipe orchestrates them. Use for the product-hypermotion format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-hypermotion",
+      "files": [
+        "skills/ads/capabilities/render-hypermotion/SKILL.md",
+        "skills/ads/capabilities/render-hypermotion/scripts/PIPELINE.md",
+        "skills/ads/capabilities/render-hypermotion/scripts/README.md",
+        "skills/ads/capabilities/render-hypermotion/scripts/config.example.json",
+        "skills/ads/capabilities/render-hypermotion/skill.meta.json",
+        "skills/ads/capabilities/render-hypermotion/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "render-hypermotion",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-hypermotion",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
       }
     },
     {
@@ -5089,6 +5196,239 @@
             "codex"
           ]
         }
+      }
+    },
+    {
+      "slug": "render-multiworld",
+      "name": "render-multiworld",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Assemble a silent, music-led 3-world product-tour ad — trim and hard-cut-concat the per-world WIDE-arrival + top-down-macro clips, composite the HTML/Playwright brand end card (\"FIND YOUR DAILY.\" + handwritten scent labels + arrows) over an AI flat-lay background, and mux one music bed into a 720x1280 web master. FREE, deterministic assembly (Playwright + PIL/HTML + FFmpeg); the recipe supplies the config and gates the paid clip/background/music calls. Use for the multiworld-product-tour format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-multiworld",
+      "files": [
+        "skills/ads/capabilities/render-multiworld/SKILL.md",
+        "skills/ads/capabilities/render-multiworld/scripts/PIPELINE.md",
+        "skills/ads/capabilities/render-multiworld/scripts/README.md",
+        "skills/ads/capabilities/render-multiworld/scripts/config.example.json",
+        "skills/ads/capabilities/render-multiworld/skill.meta.json",
+        "skills/ads/capabilities/render-multiworld/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "render-multiworld",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-multiworld",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
+      "slug": "render-photo-grid-card",
+      "name": "render-photo-grid-card",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Render a 'photo-grid promo card' video from a config — a real-DOM card with a FIXED header/footer and a CONTINUOUSLY SCROLLING 2-row grid of MIXED tiles (video clips, product/lifestyle stills, big-serif %-OFF, dark promo-code or CTA) + feature chips, frame-stepped via Playwright with real-time <video> playback and encoded with FFmpeg — deterministic assembly, FREE (the clips + music come from create-video-fal + create-music-elevenlabs), text stays pixel-crisp. Use for the photo-grid-promo-card format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-photo-grid-card",
+      "files": [
+        "skills/ads/capabilities/render-photo-grid-card/SKILL.md",
+        "skills/ads/capabilities/render-photo-grid-card/scripts/_shared.js",
+        "skills/ads/capabilities/render-photo-grid-card/scripts/build_card.py",
+        "skills/ads/capabilities/render-photo-grid-card/scripts/render.py",
+        "skills/ads/capabilities/render-photo-grid-card/skill.meta.json",
+        "skills/ads/capabilities/render-photo-grid-card/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "render-photo-grid-card",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-photo-grid-card",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
+      "slug": "render-proof-points-overlay",
+      "name": "render-proof-points-overlay",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Build the deterministic PIL pill overlays for a 'perfect-score + proof-points' UGC video ad (white 10/10 score header with a medal + orange sub with a finger-down + 3-4 green-check proof pills) and composite them onto a base clip in a diagonal L->R->L->R cascade, then mux the music bed into master-final.mp4. Config-driven (config.json), 1080x1920 9:16, FREE and deterministic (no paid calls, text stays pixel-crisp). Use for the overlay-proof-points format; the base clip + music come from separate paid capabilities.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-proof-points-overlay",
+      "files": [
+        "skills/ads/capabilities/render-proof-points-overlay/SKILL.md",
+        "skills/ads/capabilities/render-proof-points-overlay/scripts/build_overlays.py",
+        "skills/ads/capabilities/render-proof-points-overlay/scripts/compose_master.py",
+        "skills/ads/capabilities/render-proof-points-overlay/scripts/fetch_icons.py",
+        "skills/ads/capabilities/render-proof-points-overlay/skill.meta.json",
+        "skills/ads/capabilities/render-proof-points-overlay/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "render-proof-points-overlay",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-proof-points-overlay",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
+      "slug": "render-song-mv",
+      "name": "render-song-mv",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Assemble a song-driven music-video ad from a config — a generated sung track carries the whole narration across N tableaux (one keyframe -> one i2v clip per lyric beat) with NO separate voiceover, captions synced to the song's OWN word timings (script-window, never Whisper) and the hook word landing on the chorus drop, closed on a PIL brand end card. This is the FREE deterministic assembly stage (clip cut-to-timeline + captions + end card + FFmpeg composite); the song, keyframes, and clips come from create-music-elevenlabs / create-image-fal / create-video-fal. Use for the song-driven-music-video format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-song-mv",
+      "files": [
+        "skills/ads/capabilities/render-song-mv/SKILL.md",
+        "skills/ads/capabilities/render-song-mv/scripts/PIPELINE.md",
+        "skills/ads/capabilities/render-song-mv/scripts/README.md",
+        "skills/ads/capabilities/render-song-mv/scripts/config.example.json",
+        "skills/ads/capabilities/render-song-mv/skill.meta.json",
+        "skills/ads/capabilities/render-song-mv/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "render-song-mv",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-song-mv",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
+      "slug": "render-value-prop",
+      "name": "render-value-prop",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Render a designed 'value prop' video from a config — 3-5 noun-phrase benefit claims (<=4 words each) revealed sequentially over per-SKU product visuals, one crisp editorial frame per claim (hook sticker -> N claim beats -> brand end card). Deterministic PIL/HTML beat renderer frame-stepped via Playwright and encoded with FFmpeg, sound-off legible, hard cuts, uniform pacing. FREE (no paid calls); music is added separately (create-music-elevenlabs). Use for the value-prop format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-value-prop",
+      "files": [
+        "skills/ads/capabilities/render-value-prop/SKILL.md",
+        "skills/ads/capabilities/render-value-prop/scripts/build_storyboard_preview.py",
+        "skills/ads/capabilities/render-value-prop/scripts/build_text_overlays.py",
+        "skills/ads/capabilities/render-value-prop/scripts/render_master.py",
+        "skills/ads/capabilities/render-value-prop/shared/_shared.css",
+        "skills/ads/capabilities/render-value-prop/shared/_shared.js",
+        "skills/ads/capabilities/render-value-prop/shared/animations/registry.yml",
+        "skills/ads/capabilities/render-value-prop/shared/animations/sachet-entrance/cascade-from-top.js",
+        "skills/ads/capabilities/render-value-prop/shared/animations/sachet-entrance/fade-stagger.js",
+        "skills/ads/capabilities/render-value-prop/shared/animations/sachet-entrance/slide-in-lateral.js",
+        "skills/ads/capabilities/render-value-prop/shared/animations/sachet-entrance/springScale-pop.js",
+        "skills/ads/capabilities/render-value-prop/shared/animations/sachet-entrance/tilt-fan.js",
+        "skills/ads/capabilities/render-value-prop/shared/animations/text-entrance/fade-stagger.js",
+        "skills/ads/capabilities/render-value-prop/shared/animations/text-entrance/mask-reveal.js",
+        "skills/ads/capabilities/render-value-prop/shared/animations/text-entrance/type-on.js",
+        "skills/ads/capabilities/render-value-prop/shared/animations/text-entrance/word-by-word.js",
+        "skills/ads/capabilities/render-value-prop/shared/beat-templates/endcard-wordmark.html",
+        "skills/ads/capabilities/render-value-prop/shared/beat-templates/hook-sticker.html",
+        "skills/ads/capabilities/render-value-prop/shared/beat-templates/prop-hero.html",
+        "skills/ads/capabilities/render-value-prop/shared/beat-templates/prop-row.html",
+        "skills/ads/capabilities/render-value-prop/skill.meta.json",
+        "skills/ads/capabilities/render-value-prop/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "render-value-prop",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-value-prop",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
+      "slug": "render-vignette",
+      "name": "render-vignette",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Assemble a short-form 'vignette' ad from clean product cutouts composited over a kinetic background video — birefnet cutout, then a cold-open text card + product carousel + annotated specimen-sheet end card, plus loudnorm + separate-pass music mux. FREE assembly (PIL + rsvg + FFmpeg); the recipe supplies the config and gates the paid BG/cutout/music calls to their own capabilities. Use for the vignette format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-vignette",
+      "files": [
+        "skills/ads/capabilities/render-vignette/SKILL.md",
+        "skills/ads/capabilities/render-vignette/scripts/composite_variants.py",
+        "skills/ads/capabilities/render-vignette/scripts/music_and_mux.py",
+        "skills/ads/capabilities/render-vignette/scripts/render_overlays.py",
+        "skills/ads/capabilities/render-vignette/scripts/strip_product_backgrounds.py",
+        "skills/ads/capabilities/render-vignette/skill.meta.json",
+        "skills/ads/capabilities/render-vignette/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "render-vignette",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-vignette",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
       }
     },
     {
@@ -5201,6 +5541,36 @@
         ],
         "installation": {
           "base_command": "npx goose-skills install review-site-scraper",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "review-ugc-render",
+      "name": "review-ugc-render",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Mandatory pre-publish review gate for a UGC video render. Transcribes the finished render's AUDIO with Whisper and word-diffs it against the approved spoken script, then gates set_final_render — blocking a render whose generated audio mis-voices a word (e.g. the approved \"human-vetted\" spoken as \"human witted\"), drops an approved phrase, or comes back silent. Runnable, gating counterpart to content-goose's review-transcript-integrity atom. Every ugc-video-formats recipe runs this after render and BEFORE set_final_render.",
+      "tags": "ads",
+      "path": "skills/ads/packs/ugc-video-formats/review-ugc-render",
+      "files": [
+        "skills/ads/packs/ugc-video-formats/review-ugc-render/SKILL.md",
+        "skills/ads/packs/ugc-video-formats/review-ugc-render/scripts/review_render.py",
+        "skills/ads/packs/ugc-video-formats/review-ugc-render/tests/test_review_render.py"
+      ],
+      "metadata": {
+        "slug": "review-ugc-render",
+        "category": "capabilities",
+        "pack": "ugc-video-formats",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install ugc-video-formats",
           "supports": [
             "claude",
             "cursor",
@@ -6275,34 +6645,6 @@
       }
     },
     {
-      "slug": "upload-ad-sample",
-      "name": "upload-ad-sample",
-      "category": "capabilities",
-      "domain": "ads",
-      "description": "Upload a finished Meta or video ad creative (image or video) to the Goose Ads sample library and fill its remix payload — recipe, script, render variant, and (for video formats like iMessage) the source conversation thread — so the sample is remixable in the app. Use after a creative is finalized and approved for showcasing on the public ads pages.",
-      "tags": "ads",
-      "path": "skills/ads/capabilities/upload-ad-sample",
-      "files": [
-        "skills/ads/capabilities/upload-ad-sample/SKILL.md",
-        "skills/ads/capabilities/upload-ad-sample/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "upload-ad-sample",
-        "category": "capabilities",
-        "tags": [
-          "ads"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install upload-ad-sample",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
       "slug": "uptime-monitor",
       "name": "uptime-monitor",
       "category": "capabilities",
@@ -7173,6 +7515,67 @@
       }
     },
     {
+      "slug": "ugc-video-formats",
+      "name": "UGC Video Ad Capabilities",
+      "type": "pack",
+      "domain": "ads",
+      "description": "Shared, reusable capabilities the video-ad orchestrator composes to render short-form ads locally (Seedance 2.0 reference-to-video render engine + the render QC gate). The per-format recipes are NOT skills — each ad format is a TEMPLATE (data) in the ad_sample DB (recipe = the capabilities it uses + its instructions + config + brand-input contract). The goose-video composite reads a template from the DB and runs these capabilities. Removed the per-format create-*/remix-* template-skills (they belong in the DB, not the skill library).",
+      "tags": "ads",
+      "path": "skills/ads/packs/ugc-video-formats",
+      "shared_files": [],
+      "skills": [
+        {
+          "slug": "create-video-seedance-2-fal",
+          "name": "create-video-seedance-2-fal",
+          "description": "Generate a single 4-15s vertical video clip with ByteDance Seedance 2.0 reference-to-video via fal.ai. Multi-image reference (avatar + product + setting), native lip-synced VO + ambient audio via `generate_audio: true`, internal multi-cut handling within one render. The default clip atom for AI-creator UGC ads built on the NB2 + Seedance architecture. Validated on `beauty-by-earth/video-01`.",
+          "path": "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal",
+          "files": [
+            "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/SKILL.md",
+            "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/scripts/generate.py",
+            "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/skill.meta.json",
+            "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests/expected-output.md",
+            "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests/human-test.md",
+            "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests/sample-input.md",
+            "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests/smoke-test.md",
+            "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests/verifier.md"
+          ],
+          "source": "pack"
+        },
+        {
+          "slug": "review-ugc-render",
+          "name": "review-ugc-render",
+          "description": "Mandatory pre-publish review gate for a UGC video render. Transcribes the finished render's AUDIO with Whisper and word-diffs it against the approved spoken script, then gates set_final_render — blocking a render whose generated audio mis-voices a word (e.g. the approved \"human-vetted\" spoken as \"human witted\"), drops an approved phrase, or comes back silent. Runnable, gating counterpart to content-goose's review-transcript-integrity atom. Every ugc-video-formats recipe runs this after render and BEFORE set_final_render.",
+          "path": "skills/ads/packs/ugc-video-formats/review-ugc-render",
+          "files": [
+            "skills/ads/packs/ugc-video-formats/review-ugc-render/SKILL.md",
+            "skills/ads/packs/ugc-video-formats/review-ugc-render/scripts/review_render.py",
+            "skills/ads/packs/ugc-video-formats/review-ugc-render/tests/test_review_render.py"
+          ],
+          "source": "pack"
+        }
+      ],
+      "metadata": {
+        "slug": "ugc-video-formats",
+        "name": "UGC Video Ad Capabilities",
+        "description": "Shared, reusable capabilities the video-ad orchestrator composes to render short-form ads locally (Seedance 2.0 reference-to-video render engine + the render QC gate). The per-format recipes are NOT skills — each ad format is a TEMPLATE (data) in the ad_sample DB (recipe = the capabilities it uses + its instructions + config + brand-input contract). The goose-video composite reads a template from the DB and runs these capabilities. Removed the per-format create-*/remix-* template-skills (they belong in the DB, not the skill library).",
+        "tags": [
+          "ads"
+        ],
+        "skills": [
+          "create-video-seedance-2-fal",
+          "review-ugc-render"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install ugc-video-formats",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
       "slug": "video-ad-formats",
       "name": "Video Ad Formats",
       "type": "pack",
@@ -7182,52 +7585,6 @@
       "path": "skills/ads/packs/video-ad-formats",
       "shared_files": [],
       "skills": [
-        {
-          "slug": "remix-imessage-ad-from-sample",
-          "name": "remix-imessage-ad-from-sample",
-          "description": "Remix a published iMessage video ad from the Goose Ads library for a new brand — keep the source's conversation structure and pacing, swap in the brand's product, voice, and promo code, get the thread approved in-session, then render with create-imessage-video-ad and publish the MP4 back to Gooseworks with live stage reporting. The video counterpart to remix-graphic-ad-from-reference; this is what the app's iMessage format tab calls.",
-          "path": "skills/ads/packs/video-ad-formats/remix-imessage-ad-from-sample",
-          "files": [
-            "skills/ads/packs/video-ad-formats/remix-imessage-ad-from-sample/SKILL.md",
-            "skills/ads/packs/video-ad-formats/remix-imessage-ad-from-sample/skill.meta.json",
-            "skills/ads/packs/video-ad-formats/remix-imessage-ad-from-sample/tests/expected-output.md",
-            "skills/ads/packs/video-ad-formats/remix-imessage-ad-from-sample/tests/human-test.md",
-            "skills/ads/packs/video-ad-formats/remix-imessage-ad-from-sample/tests/sample-input.md",
-            "skills/ads/packs/video-ad-formats/remix-imessage-ad-from-sample/tests/smoke-test.md",
-            "skills/ads/packs/video-ad-formats/remix-imessage-ad-from-sample/tests/verifier.md"
-          ],
-          "source": "pack"
-        },
-        {
-          "slug": "create-imessage-video-ad",
-          "name": "create-imessage-video-ad",
-          "description": "Produce a 9:16 social-native ad that recreates an iMessage conversation reveal — bubbles pop in over time, composer types char-by-char, real Apple iMessage SFX hit on every send/receive, music bed underneath, brand end card with FREEPACK-style CTA. One continuous Playwright recording (no scene-cuts/glitches) in plain-chat or iPhone-framed (Dynamic Island over a background) variants, assembled to a master MP4 plus 9:16 / 1×1 export variants.",
-          "path": "skills/ads/packs/video-ad-formats/create-imessage-video-ad",
-          "files": [
-            "skills/ads/packs/video-ad-formats/create-imessage-video-ad/SKILL.md",
-            "skills/ads/packs/video-ad-formats/create-imessage-video-ad/assets/sfx/imessage-receive.mp3",
-            "skills/ads/packs/video-ad-formats/create-imessage-video-ad/assets/sfx/imessage-send.mp3",
-            "skills/ads/packs/video-ad-formats/create-imessage-video-ad/examples/full-thread.example.json",
-            "skills/ads/packs/video-ad-formats/create-imessage-video-ad/examples/strava-card.example.html",
-            "skills/ads/packs/video-ad-formats/create-imessage-video-ad/references/audio-recipe.md",
-            "skills/ads/packs/video-ad-formats/create-imessage-video-ad/references/end-card-recipe.md",
-            "skills/ads/packs/video-ad-formats/create-imessage-video-ad/references/timeline-schema.md",
-            "skills/ads/packs/video-ad-formats/create-imessage-video-ad/scripts/README.md",
-            "skills/ads/packs/video-ad-formats/create-imessage-video-ad/scripts/end-card-photo-bg.template.html",
-            "skills/ads/packs/video-ad-formats/create-imessage-video-ad/scripts/end-card.template.html",
-            "skills/ads/packs/video-ad-formats/create-imessage-video-ad/scripts/fal_helpers.py",
-            "skills/ads/packs/video-ad-formats/create-imessage-video-ad/scripts/record-master.template.js",
-            "skills/ads/packs/video-ad-formats/create-imessage-video-ad/scripts/render-end-card.template.js",
-            "skills/ads/packs/video-ad-formats/create-imessage-video-ad/scripts/stitch.template.sh",
-            "skills/ads/packs/video-ad-formats/create-imessage-video-ad/skill.meta.json",
-            "skills/ads/packs/video-ad-formats/create-imessage-video-ad/tests/expected-output.md",
-            "skills/ads/packs/video-ad-formats/create-imessage-video-ad/tests/human-test.md",
-            "skills/ads/packs/video-ad-formats/create-imessage-video-ad/tests/sample-input.md",
-            "skills/ads/packs/video-ad-formats/create-imessage-video-ad/tests/smoke-test.md",
-            "skills/ads/packs/video-ad-formats/create-imessage-video-ad/tests/verifier.md"
-          ],
-          "source": "pack"
-        },
         {
           "slug": "create-imessage-mockup",
           "name": "create-imessage-mockup",
@@ -7256,52 +7613,6 @@
             "skills/ads/packs/video-ad-formats/create-imessage-mockup/tests/sample-input.md",
             "skills/ads/packs/video-ad-formats/create-imessage-mockup/tests/smoke-test.md",
             "skills/ads/packs/video-ad-formats/create-imessage-mockup/tests/verifier.md"
-          ],
-          "source": "pack"
-        },
-        {
-          "slug": "remix-chatgpt-ad-from-sample",
-          "name": "remix-chatgpt-ad-from-sample",
-          "description": "Remix a published ChatGPT video ad from the Goose Ads library for a new brand — keep the source's conversation structure and pacing (the single ask → streamed answer beat), swap in the brand's product as the natural recommendation and the promo code woven into the response, get the conversation approved in-session, then render with create-chatgpt-video-ad and publish the MP4 back to Gooseworks with live stage reporting. The ChatGPT chat-reveal / ask-ChatGPT counterpart to remix-imessage-ad-from-sample; this is what the app's ChatGPT format tab calls.",
-          "path": "skills/ads/packs/video-ad-formats/remix-chatgpt-ad-from-sample",
-          "files": [
-            "skills/ads/packs/video-ad-formats/remix-chatgpt-ad-from-sample/SKILL.md",
-            "skills/ads/packs/video-ad-formats/remix-chatgpt-ad-from-sample/skill.meta.json",
-            "skills/ads/packs/video-ad-formats/remix-chatgpt-ad-from-sample/tests/expected-output.md",
-            "skills/ads/packs/video-ad-formats/remix-chatgpt-ad-from-sample/tests/human-test.md",
-            "skills/ads/packs/video-ad-formats/remix-chatgpt-ad-from-sample/tests/sample-input.md",
-            "skills/ads/packs/video-ad-formats/remix-chatgpt-ad-from-sample/tests/smoke-test.md",
-            "skills/ads/packs/video-ad-formats/remix-chatgpt-ad-from-sample/tests/verifier.md"
-          ],
-          "source": "pack"
-        },
-        {
-          "slug": "create-chatgpt-video-ad",
-          "name": "create-chatgpt-video-ad",
-          "description": "Produce a 9:16 social-native ad that recreates a ChatGPT mobile chat — user types in the composer with the iOS keyboard visible, taps send, keyboard slides down, header right-cluster swaps (personPlus/dotted → edit/more), one gray loading dot appears, then the assistant response streams in word-by-word with a soft opacity ramp. Continuous Playwright recording, subtle SFX (key-tap / send-tap / stream-tick / response-done), assembled into a master MP4 plus 9:16 / 1×1 exports. No music bed and no end card by default.",
-          "path": "skills/ads/packs/video-ad-formats/create-chatgpt-video-ad",
-          "files": [
-            "skills/ads/packs/video-ad-formats/create-chatgpt-video-ad/SKILL.md",
-            "skills/ads/packs/video-ad-formats/create-chatgpt-video-ad/assets/sfx/key-tap.wav",
-            "skills/ads/packs/video-ad-formats/create-chatgpt-video-ad/assets/sfx/response-done.wav",
-            "skills/ads/packs/video-ad-formats/create-chatgpt-video-ad/assets/sfx/send-tap.wav",
-            "skills/ads/packs/video-ad-formats/create-chatgpt-video-ad/assets/sfx/stream-tick.wav",
-            "skills/ads/packs/video-ad-formats/create-chatgpt-video-ad/examples/smoke-app-question/clips/master-chat.mp4",
-            "skills/ads/packs/video-ad-formats/create-chatgpt-video-ad/examples/smoke-app-question/clips/master-chat.page.html",
-            "skills/ads/packs/video-ad-formats/create-chatgpt-video-ad/examples/smoke-app-question/clips/master-chat.sfx.json",
-            "skills/ads/packs/video-ad-formats/create-chatgpt-video-ad/examples/smoke-app-question/clips/record-master.js",
-            "skills/ads/packs/video-ad-formats/create-chatgpt-video-ad/examples/smoke-app-question/edits/master-final.mp4",
-            "skills/ads/packs/video-ad-formats/create-chatgpt-video-ad/examples/smoke-app-question/scripts/stitch.sh",
-            "skills/ads/packs/video-ad-formats/create-chatgpt-video-ad/examples/smoke-app-question/thread.json",
-            "skills/ads/packs/video-ad-formats/create-chatgpt-video-ad/examples/smoke-app-question/timeline.json",
-            "skills/ads/packs/video-ad-formats/create-chatgpt-video-ad/scripts/record-master.template.js",
-            "skills/ads/packs/video-ad-formats/create-chatgpt-video-ad/scripts/stitch.template.sh",
-            "skills/ads/packs/video-ad-formats/create-chatgpt-video-ad/skill.meta.json",
-            "skills/ads/packs/video-ad-formats/create-chatgpt-video-ad/tests/expected-output.md",
-            "skills/ads/packs/video-ad-formats/create-chatgpt-video-ad/tests/human-test.md",
-            "skills/ads/packs/video-ad-formats/create-chatgpt-video-ad/tests/sample-input.md",
-            "skills/ads/packs/video-ad-formats/create-chatgpt-video-ad/tests/smoke-test.md",
-            "skills/ads/packs/video-ad-formats/create-chatgpt-video-ad/tests/verifier.md"
           ],
           "source": "pack"
         },
@@ -7340,49 +7651,6 @@
             "skills/ads/packs/video-ad-formats/create-chatgpt-mockup/tests/sample-input.md",
             "skills/ads/packs/video-ad-formats/create-chatgpt-mockup/tests/smoke-test.md",
             "skills/ads/packs/video-ad-formats/create-chatgpt-mockup/tests/verifier.md"
-          ],
-          "source": "pack"
-        },
-        {
-          "slug": "remix-apple-notes-ad-from-sample",
-          "name": "remix-apple-notes-ad-from-sample",
-          "description": "Remix a published Apple Notes video ad from the Goose Ads library for a new brand — keep the source's note structure and typing pacing, swap in the brand's product, voice, and promo code, get the note approved in-session, then render with create-apple-notes-video-ad and publish the MP4 back to Gooseworks with live stage reporting. The Apple Notes typing-reveal counterpart to remix-imessage-ad-from-sample; this is what the app's Apple Notes format tab calls.",
-          "path": "skills/ads/packs/video-ad-formats/remix-apple-notes-ad-from-sample",
-          "files": [
-            "skills/ads/packs/video-ad-formats/remix-apple-notes-ad-from-sample/SKILL.md",
-            "skills/ads/packs/video-ad-formats/remix-apple-notes-ad-from-sample/skill.meta.json",
-            "skills/ads/packs/video-ad-formats/remix-apple-notes-ad-from-sample/tests/expected-output.md",
-            "skills/ads/packs/video-ad-formats/remix-apple-notes-ad-from-sample/tests/human-test.md",
-            "skills/ads/packs/video-ad-formats/remix-apple-notes-ad-from-sample/tests/sample-input.md",
-            "skills/ads/packs/video-ad-formats/remix-apple-notes-ad-from-sample/tests/smoke-test.md",
-            "skills/ads/packs/video-ad-formats/remix-apple-notes-ad-from-sample/tests/verifier.md"
-          ],
-          "source": "pack"
-        },
-        {
-          "slug": "create-apple-notes-video-ad",
-          "name": "create-apple-notes-video-ad",
-          "description": "Produce a 9:16 social-native ad recreating the iPhone Apple Notes typing experience — the note begins with 1–2 visible lines, then progressively types additional paragraphs character-by-character with per-keystroke iPhone keyboard SFX. One continuous Playwright recording, music bed underneath, brand end card with CTA. Assembled to a master MP4 plus a 9:16 social export.",
-          "path": "skills/ads/packs/video-ad-formats/create-apple-notes-video-ad",
-          "files": [
-            "skills/ads/packs/video-ad-formats/create-apple-notes-video-ad/SKILL.md",
-            "skills/ads/packs/video-ad-formats/create-apple-notes-video-ad/apple-notes-video-skill-build.html",
-            "skills/ads/packs/video-ad-formats/create-apple-notes-video-ad/assets/sfx/README.md",
-            "skills/ads/packs/video-ad-formats/create-apple-notes-video-ad/assets/sfx/kb-return.mp3",
-            "skills/ads/packs/video-ad-formats/create-apple-notes-video-ad/assets/sfx/kb-space.mp3",
-            "skills/ads/packs/video-ad-formats/create-apple-notes-video-ad/assets/sfx/kb-tick.mp3",
-            "skills/ads/packs/video-ad-formats/create-apple-notes-video-ad/examples/full-note.example.json",
-            "skills/ads/packs/video-ad-formats/create-apple-notes-video-ad/scripts/end-card.template.html",
-            "skills/ads/packs/video-ad-formats/create-apple-notes-video-ad/scripts/record-master.template.js",
-            "skills/ads/packs/video-ad-formats/create-apple-notes-video-ad/scripts/render-end-card.template.js",
-            "skills/ads/packs/video-ad-formats/create-apple-notes-video-ad/scripts/stitch.template.sh",
-            "skills/ads/packs/video-ad-formats/create-apple-notes-video-ad/skill.meta.json",
-            "skills/ads/packs/video-ad-formats/create-apple-notes-video-ad/tests/expected-output.md",
-            "skills/ads/packs/video-ad-formats/create-apple-notes-video-ad/tests/human-test.md",
-            "skills/ads/packs/video-ad-formats/create-apple-notes-video-ad/tests/run-all.sh",
-            "skills/ads/packs/video-ad-formats/create-apple-notes-video-ad/tests/sample-input.md",
-            "skills/ads/packs/video-ad-formats/create-apple-notes-video-ad/tests/smoke-test.md",
-            "skills/ads/packs/video-ad-formats/create-apple-notes-video-ad/tests/verifier.md"
           ],
           "source": "pack"
         },
@@ -7498,14 +7766,8 @@
           "ads"
         ],
         "skills": [
-          "remix-imessage-ad-from-sample",
-          "create-imessage-video-ad",
           "create-imessage-mockup",
-          "remix-chatgpt-ad-from-sample",
-          "create-chatgpt-video-ad",
           "create-chatgpt-mockup",
-          "remix-apple-notes-ad-from-sample",
-          "create-apple-notes-video-ad",
           "create-apple-notes-mockup",
           "render-ios-keyboard",
           "stitch-videos-ffmpeg",

@@ -1,0 +1,164 @@
+{
+  "_comment": "Soundboks 'product hypermotion + specs' \u2014 the worked example (GOOSE-1783, V10 shipped 2026-05-28, $17.43 total / $4.99 marginal). Copy to config.json and edit. ONE 12-15s Seedance 2.0 i2v hypermotion clip of the hero product, diced into 5-6 segments, INTERCUT with 5-7 PIL kinetic-typography spec/CTA cards, capped by a real-logo end card, over a 124 BPM bass bed. 1080x1920 9:16. Two PAID model calls total (Seedance i2v + ElevenLabs Music); every text card + all assembly is free PIL/ffmpeg. Guard both paid calls with skip-if-exists so re-runs never re-bill.",
+  "brand_name": "Soundboks",
+  "brand_voice": "party",
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "duration_s": 25.0,
+  "accent_color_hex": "#FF6B1A",
+  "bg_color_hex": "#0C0C0C",
+  "product_image": "assets/product/soundboks_4_black_float.png",
+  "logo_png": "assets/logo/soundboks_logo_white.png",
+  "font_bold": "assets/fonts/SpaceGrotesk-Bold.ttf",
+  "spec_callouts": [
+    "126 dB SPL",
+    "40-HOUR BATTERY",
+    "SWAPPABLE BATTERY",
+    "IP65 RATED",
+    "PAIR 5 SPEAKERS"
+  ],
+  "intro_text": "INTRODUCING",
+  "cta_text": "OWN THE PARTY.",
+  "hypermotion_i2v": {
+    "model": "fal-ai/bytedance/seedance/v2/pro/image-to-video",
+    "duration": "15",
+    "resolution": "1080p",
+    "aspect_ratio": "1:1",
+    "generate_audio": false,
+    "prompt_blocks": {
+      "1_style_anchor": "STYLE ANCHOR: hypermotion product film, 124 BPM cuts, raw festival energy, modern.",
+      "2_cinematography": "CINEMATOGRAPHY: ARRI Alexa, 50mm anamorphic, deep-focus, slight handheld, dusk lighting with magenta/blue rim, slight lens flare.",
+      "3_subject_environment": "SUBJECT + ENVIRONMENT: Soundboks 4 (black) on beach festival deck, salt air, dusk lighting with magenta/blue rim, distant crowd silhouettes.",
+      "4_multi_shot_timecodes": "MULTI-SHOT TIMECODES:\n  - 0-3s: crash-zoom from 6m wide to product hero\n  - 3-6s: lateral orbit 180 degrees around the speaker\n  - 6-10s: slow-mo dust kick from bass thump (dust in air, NOT on product)\n  - 10-13s: pull-back to wide hero\n  - 13-15s: final stillness hero",
+      "5_absolute_constraints": "ABSOLUTE CONSTRAINTS:\n  - Locked label geometry: Soundboks wordmark stays sharp + horizontal across all cuts\n  - No character contact: no hands, no people, no body parts touching product\n  - No multi-product: only the one speaker, no clutter, no secondary items\n  - Physics effects (dust, heat-shimmer, salt mist) in environment only, NOT on product surface\n  - No text overlays inside the clip\n  - Single product identity preserved across all camera moves (no shape morph, no color shift)"
+    }
+  },
+  "text_cards": {
+    "_note": "Each card is a full-frame 1080x1920 PIL clip. hero_stat = the headline number (3D extrusion in accent color); the rest cycle italic + outline-echo / sparkle / shadow-stack. All on the dark industrial grain BG.",
+    "intro": {
+      "label": "intro",
+      "text": "INTRODUCING",
+      "duration_s": 1.0,
+      "treatment": "italic_outline_echo"
+    },
+    "spec_1": {
+      "label": "spec_126db",
+      "text": "126 dB SPL",
+      "duration_s": 1.5,
+      "treatment": "extruded_3d_accent"
+    },
+    "spec_2": {
+      "label": "spec_40hour",
+      "text": "40-HOUR BATTERY",
+      "duration_s": 1.5,
+      "treatment": "italic_slam_white_on_black"
+    },
+    "spec_3": {
+      "label": "spec_swappable",
+      "text": "SWAPPABLE BATTERY",
+      "duration_s": 1.5,
+      "treatment": "italic_outline_echo"
+    },
+    "spec_4": {
+      "label": "spec_ip65",
+      "text": "IP65 RATED",
+      "duration_s": 1.5,
+      "treatment": "italic_sparkle_accent"
+    },
+    "spec_5": {
+      "label": "spec_pair5",
+      "text": "PAIR 5 SPEAKERS",
+      "duration_s": 1.5,
+      "treatment": "italic_shadow_stack"
+    },
+    "cta": {
+      "label": "cta_party",
+      "text": "OWN THE PARTY",
+      "duration_s": 1.5,
+      "treatment": "extruded_3d_color_flash"
+    }
+  },
+  "end_card": {
+    "label": "endcard",
+    "duration_s": 3.5,
+    "logo_png": "assets/logo/soundboks_logo_white.png",
+    "logo_target_w": 920,
+    "subtitle": "126 dB \u00b7 40 HRS \u00b7 IP65",
+    "cta": "OWN THE PARTY.",
+    "slam_motion_blur": true,
+    "micro_motion": true,
+    "inversion_flash_at_frac": 0.6,
+    "inversion_colors": [
+      "#0C0C0C",
+      "#FF6B1A"
+    ]
+  },
+  "beat_structure": {
+    "_note": "25s default (5 specs). Dice the ONE 15s hypermotion into 6 segments at beat boundaries (decreasing lengths, first high-energy, last a settle), intercut in this order. 20s/30s variants documented in scripts/PIPELINE.md.",
+    "hypermotion_segments_s": {
+      "segA": [
+        0.0,
+        2.5
+      ],
+      "segB": [
+        2.5,
+        5.0
+      ],
+      "segC": [
+        5.0,
+        7.0
+      ],
+      "segD": [
+        7.0,
+        8.5
+      ],
+      "segE": [
+        8.5,
+        10.0
+      ],
+      "segF": [
+        10.0,
+        11.5
+      ]
+    },
+    "concat_order": [
+      "intro",
+      "segA",
+      "spec_1",
+      "segB",
+      "spec_2",
+      "segC",
+      "spec_3",
+      "segD",
+      "spec_4",
+      "segE",
+      "spec_5",
+      "segF",
+      "cta",
+      "endcard"
+    ]
+  },
+  "music": {
+    "model": "fal-ai/elevenlabs/music",
+    "prompt": "124 BPM bass-driven party banger, driving low-end kick, festival energy, no vocals except a single rallying lyric hook near the end for the CTA/end-card sync. Kick drop at 1s for the cut into product hero, build through 10-20s, peak energy + lyric hook at 20s for the CTA reveal, lyric land at 22s for the brand wordmark inversion flash.",
+    "bpm": 124,
+    "length_ms": 25000,
+    "output_format": "mp3_44100_192",
+    "trim_intro_sec": 0.0
+  },
+  "post_production": {
+    "music": {
+      "default": "on",
+      "note": "124 BPM bass bed, default on"
+    },
+    "captions": {
+      "default": "n/a",
+      "note": "no VO \u2014 the kinetic-typography spec cards carry the copy"
+    },
+    "end_card": {
+      "default": "on",
+      "note": "real-logo brand end card, default on"
+    }
+  }
+}

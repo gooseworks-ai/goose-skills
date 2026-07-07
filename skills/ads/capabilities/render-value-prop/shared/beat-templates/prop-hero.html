@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<title>Som v5 · beat-2</title>
+<link rel="stylesheet" href="_shared.css">
+</head><body>
+<div class="stage">
+  
+  <div class="text-zone" style="position:absolute; top:240px; left:0; right:0; padding:0 70px; text-align:center;">
+    <div id="eyebrow" class="eyebrow" style="opacity:0;">Built Safer</div>
+    <div id="rule" class="accent-rule" style="background:#5BB4D9; opacity:0; transform:scaleX(0.3); transform-origin:center;"></div>
+    <h1 id="headline" class="h-display" style="opacity:0; transform:translateY(28px);"><em>Drug</em>-Free.</h1>
+    <div id="sub" class="body" style="opacity:0; transform:translateY(16px); margin-top:36px;">Works without the pharma-class side effects.</div>
+  </div>
+
+  <img id="s-left" class="sachet" src="../../source/sachets/cherry.png" style="left:80px; width:180px; bottom:280px; opacity:0;">
+  <img id="s-right" class="sachet" src="../../source/sachets/tangerine.png" style="right:80px; width:180px; bottom:280px; opacity:0;">
+  <img id="s-hero" class="sachet" src="../../source/sachets/berry.png" style="left:50%; width:280px; bottom:170px; opacity:0;">
+  
+</div>
+<script src="_shared.js"></script>
+<script>
+  initRenderer(2.4, function (t) {
+    // Eyebrow → rule → headline → sub stagger
+    { const u = tw_lin(t, 0.10, 0.45); const e = easeOut(u);
+       document.getElementById('eyebrow').style.opacity = e; }
+    { const u = tw_lin(t, 0.20, 0.55); const e = easeOut(u);
+       const el = document.getElementById('rule');
+       el.style.opacity = e;
+       el.style.transform = `scaleX(${0.3 + 0.7*e})`; }
+    { const u = tw_lin(t, 0.30, 0.75); const e = easeOut(u);
+       const el = document.getElementById('headline');
+       el.style.opacity = e;
+       el.style.transform = `translateY(${(1-e)*28}px)`; }
+    { const u = tw_lin(t, 0.45, 0.90); const e = easeOut(u);
+       const el = document.getElementById('sub');
+       el.style.opacity = e;
+       el.style.transform = `translateY(${(1-e)*16}px)`; }
+    // Sachet entrance
+  { const u = tw_lin(t, 0.10, 0.50); const e = easeOut(u); const el = document.getElementById('s-left'); el.style.opacity = e * 0.40; el.style.transform = `translateY(${(1-e)*50}px)`; }
+  { const u = tw_lin(t, 0.16, 0.56); const e = easeOut(u); const el = document.getElementById('s-right'); el.style.opacity = e * 0.40; el.style.transform = `translateY(${(1-e)*50}px)`; }
+  { const u = tw_lin(t, 0.20, 0.70); const e = easeOut(u); const el = document.getElementById('s-hero'); el.style.opacity = e; const sc = u < 1 ? springScale(u) * 0.94 + 0.06 : 1; el.style.transform = `translateX(-50%) translateY(${(1-e)*70}px) scale(${sc})`; }
+
+  });
+</script>
+</body></html>
