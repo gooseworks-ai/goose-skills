@@ -1,0 +1,9 @@
+{
+  "name": "render-imessage-chat",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Free renderer for the imessage-chat video ad format (Playwright record + ffmpeg stitch). Run `npm install` here so record-chat.js / render-end-card.js resolve Playwright.",
+  "dependencies": {
+    "playwright": "^1.40.0"
+  }
+}

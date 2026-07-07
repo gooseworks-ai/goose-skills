@@ -1,0 +1,50 @@
+{
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "duration_s": 17,
+  "brand_name": "Acme",
+  "hook_line": "Your Headline.\nSecond Line.",
+  "hook_eyebrow": "THE ONE-LINER",
+  "hook_sku": "sku-a",
+  "tagline": "Your Headline. Second Line.",
+  "cta": "Shop Now",
+  "logo": "source/logo.png",
+  "skus": [
+    { "slug": "sku-a", "png": "source/sku-a.png" },
+    { "slug": "sku-b", "png": "source/sku-b.png" },
+    { "slug": "sku-c", "png": "source/sku-c.png" },
+    { "slug": "sku-d", "png": "source/sku-d.png" }
+  ],
+  "palette": {
+    "bg": "#FFFFFF",
+    "ink": "#161616",
+    "bg_cream": "#F7F4ED",
+    "sku_accents": {
+      "sku-a": "#5BB4D9",
+      "sku-b": "#4A2871",
+      "sku-c": "#F0C234",
+      "sku-d": "#E8853A"
+    }
+  },
+  "pacing": { "hook_s": 3.0, "prop_s": 2.4, "endcard_s": 2.0 },
+  "value_props": [
+    { "label": "Claim One", "eyebrow": "PROOF POINT", "benefit_sentence": "One-line benefit sentence, <=12 words.", "accent": "sku-a", "layout": "row" },
+    { "label": "Claim Two", "eyebrow": "PROOF POINT", "benefit_sentence": "One-line benefit sentence, <=12 words.", "accent": "sku-a", "layout": "hero", "hero_sku": "sku-a" },
+    { "label": "Claim Three", "eyebrow": "PROOF POINT", "benefit_sentence": "One-line benefit sentence, <=12 words.", "accent": "sku-b", "layout": "hero", "hero_sku": "sku-b" },
+    { "label": "Claim Four", "eyebrow": "PROOF POINT", "benefit_sentence": "One-line benefit sentence, <=12 words.", "accent": "#D98A94", "layout": "hero", "hero_sku": "sku-c" }
+  ],
+  "layout": {
+    "text_top": 210,
+    "headline_size": 96,
+    "hero_h": 680,
+    "hero_bottom": 200,
+    "support_h": 300,
+    "support_bottom": 360,
+    "support_opacity": 0.38,
+    "row_h": 300,
+    "row_bottom": 320
+  },
+  "music_brief": "Optional: the instrumental bed brief, consumed by create-music-elevenlabs (not this renderer).",
+  "music": { "length_ms": 17000, "mix_db": -14, "fade_in_s": 0.4, "fade_out_s": 0.6, "force_instrumental": true }
+}

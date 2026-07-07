@@ -5162,6 +5162,51 @@
       }
     },
     {
+      "slug": "render-imessage-chat",
+      "name": "render-imessage-chat",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Assemble an iMessage chat-reveal video ad from a thread JSON — one continuous Playwright recording of the conversation animating in (typing dots, composer typing, bubble pops, auto-scroll) crossfaded into a designed end card, with iMessage send/receive SFX and an optional ducked music bed. FREE assembly (Playwright + ffmpeg); the recipe supplies the per-brand thread + product + end-card config and gates the paid product-image/music calls to their own capabilities. Use for the imessage-chat format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-imessage-chat",
+      "files": [
+        "skills/ads/capabilities/render-imessage-chat/SKILL.md",
+        "skills/ads/capabilities/render-imessage-chat/assets/sfx/imessage-receive.mp3",
+        "skills/ads/capabilities/render-imessage-chat/assets/sfx/imessage-send.mp3",
+        "skills/ads/capabilities/render-imessage-chat/scripts/config.example.json",
+        "skills/ads/capabilities/render-imessage-chat/scripts/end-card.template.html",
+        "skills/ads/capabilities/render-imessage-chat/scripts/mockup/generate.js",
+        "skills/ads/capabilities/render-imessage-chat/scripts/mockup/templates/chat.css",
+        "skills/ads/capabilities/render-imessage-chat/scripts/mockup/templates/icons.js",
+        "skills/ads/capabilities/render-imessage-chat/scripts/package-lock.json",
+        "skills/ads/capabilities/render-imessage-chat/scripts/package.json",
+        "skills/ads/capabilities/render-imessage-chat/scripts/record-chat.js",
+        "skills/ads/capabilities/render-imessage-chat/scripts/render-end-card.js",
+        "skills/ads/capabilities/render-imessage-chat/scripts/stitch.sh",
+        "skills/ads/capabilities/render-imessage-chat/skill.meta.json",
+        "skills/ads/capabilities/render-imessage-chat/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "render-imessage-chat",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-imessage-chat",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
       "slug": "render-ios-keyboard",
       "name": "render-ios-keyboard",
       "category": "capabilities",
@@ -5354,6 +5399,8 @@
         "skills/ads/capabilities/render-value-prop/SKILL.md",
         "skills/ads/capabilities/render-value-prop/scripts/build_storyboard_preview.py",
         "skills/ads/capabilities/render-value-prop/scripts/build_text_overlays.py",
+        "skills/ads/capabilities/render-value-prop/scripts/config.example.json",
+        "skills/ads/capabilities/render-value-prop/scripts/render_hyperframe.py",
         "skills/ads/capabilities/render-value-prop/scripts/render_master.py",
         "skills/ads/capabilities/render-value-prop/shared/_shared.css",
         "skills/ads/capabilities/render-value-prop/shared/_shared.js",

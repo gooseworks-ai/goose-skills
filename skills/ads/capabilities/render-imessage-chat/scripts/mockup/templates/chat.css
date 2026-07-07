@@ -1,0 +1,762 @@
+/* iMessage chat — pixel-targeted to iOS 17 reference screenshots. */
+
+:root {
+  --imsg-blue: #0B84FE;
+  --imsg-grey: #E9E9EB;
+  --imsg-grey-dark: #D1D1D6;
+  --text-primary: #000;
+  --text-on-blue: #FFFFFF;
+  --text-meta: #8E8E93;
+  --page-bg: #FFFFFF;
+  --keyboard-bg: #D1D3D9;
+  --keyboard-input-bg: #FFFFFF;
+  --keyboard-icon: #8E8E93;
+  --header-title: #000;
+  --header-subtitle: #8E8E93;
+  --tail-radius: 10px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--page-bg);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", "Helvetica", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  color: var(--text-primary);
+}
+
+.stage {
+  width: 750px;
+  margin: 0 auto;
+  background: var(--page-bg);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Stretch stage to viewport only when the body asks for it
+   (i.e., when we're rendering a "phone screen" with keyboard pinned to the
+   bottom, or inside a fixed-height phone frame). */
+body.fill-viewport .stage {
+  min-height: 100vh;
+}
+
+/* ----- Header ----- */
+.chat-header {
+  padding: 24px 16px 12px;
+  text-align: center;
+}
+.chat-header .title {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--header-title);
+  letter-spacing: -0.2px;
+}
+.chat-header .subtitle {
+  font-size: 14px;
+  color: var(--header-subtitle);
+  margin-top: 2px;
+  font-weight: 400;
+}
+
+/* Group header with avatar stack */
+.group-header {
+  padding: 14px 16px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  border-bottom: 1px solid #E5E5EA;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: saturate(180%) blur(20px);
+}
+.group-header .avatars {
+  display: flex;
+  margin-bottom: 4px;
+  height: 44px;
+  align-items: flex-end;
+  justify-content: center;
+}
+.group-header .avatars .avatar-tile {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  margin: 0 -3px;
+  border: 2px solid var(--page-bg);
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: white;
+}
+.group-header .group-title {
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--header-title);
+}
+.group-header .group-title .chevron {
+  color: #C7C7CC;
+  font-size: 11px;
+  margin-top: 1px;
+}
+
+/* ----- Conversation ----- */
+.conversation {
+  flex: 1;
+  padding: 6px 24px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* Timestamp pill */
+.timestamp {
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-meta);
+  margin: 16px auto 8px;
+  line-height: 1.45;
+  letter-spacing: 0.1px;
+}
+.timestamp .label-bold {
+  font-weight: 600;
+}
+.timestamp .label-light {
+  font-weight: 400;
+}
+
+/* Message rows */
+.row {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  margin-top: 2px;
+  position: relative;
+}
+.row.sent {
+  flex-direction: row-reverse;
+  margin-right: 2px;
+}
+.row.received {
+  margin-left: 2px;
+}
+.row.tight {
+  margin-top: 2px;
+}
+.row.first-of-run {
+  margin-top: 6px;
+}
+
+/* Sender name above first received in a run (group only) */
+.sender-name {
+  font-size: 11px;
+  color: var(--text-meta);
+  margin: 8px 0 1px 38px;
+  font-weight: 400;
+}
+
+/* Avatar slot for group chat received messages */
+.avatar-slot {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 3;
+}
+.avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+}
+
+/* ----- Bubble ----- */
+.bubble {
+  position: relative;
+  max-width: 530px;
+  padding: 8px 14px 9px;
+  border-radius: 18px;
+  font-size: 17px;
+  line-height: 1.27;
+  letter-spacing: -0.2px;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  isolation: isolate; /* stacking context so tail pseudo-elements can sit behind bubble bg */
+}
+
+.bubble.sent {
+  background: var(--imsg-blue);
+  color: var(--text-on-blue);
+}
+.bubble.received {
+  background: var(--imsg-grey);
+  color: var(--text-primary);
+}
+
+/* iMessage tail using two pseudo-elements that sit BEHIND the bubble's
+   background (z-index:-1 inside the bubble's stacking context):
+   - ::before is a colored bulge that extends past the bubble's tail-side edge.
+     Its bottom-left (sent) / bottom-right (received) corner is rounded so the
+     bulge transitions smoothly into the bubble.
+   - ::after is a page-color cutout that overlaps the bulge from outside,
+     curving away from the bubble. Where its rounded corner dips, the bulge's
+     color shows through — creating the classic tear-drop tail tip.
+
+   Because both are z-index:-1, they're hidden everywhere the bubble's own
+   background paints (i.e., inside the bubble), so they only appear where they
+   extend past the bubble box. */
+
+.bubble.has-tail.sent::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  bottom: -1px;
+  right: -7px;
+  width: 20px;
+  height: 19px;
+  background: var(--imsg-blue);
+  border-bottom-left-radius: 16px 14px;
+}
+.bubble.has-tail.sent::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  bottom: -1px;
+  right: -25px;
+  width: 25px;
+  height: 19px;
+  background: var(--page-bg);
+  border-bottom-left-radius: 10px;
+}
+
+.bubble.has-tail.received::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  bottom: -1px;
+  left: -7px;
+  width: 20px;
+  height: 19px;
+  background: var(--imsg-grey);
+  border-bottom-right-radius: 16px 14px;
+}
+.bubble.has-tail.received::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  bottom: -1px;
+  left: -25px;
+  width: 25px;
+  height: 19px;
+  background: var(--page-bg);
+  border-bottom-right-radius: 10px;
+}
+
+/* Emoji-only message: bigger, no bubble background */
+.bubble.emoji-only {
+  background: transparent !important;
+  color: var(--text-primary);
+  font-size: 50px;
+  padding: 4px 6px;
+  line-height: 1.1;
+}
+.bubble.emoji-only.has-tail::before,
+.bubble.emoji-only.has-tail::after {
+  display: none !important;
+}
+
+/* Delivered caption */
+.delivered-caption {
+  font-size: 11px;
+  color: var(--text-meta);
+  text-align: right;
+  margin: 2px 4px 4px 0;
+  letter-spacing: 0.05px;
+}
+.delivered-caption .read {
+  font-weight: 600;
+  color: var(--text-meta);
+}
+
+/* Typing indicator */
+.bubble.typing {
+  background: var(--imsg-grey);
+  display: inline-flex;
+  align-items: center;
+  padding: 11px 14px 12px;
+  border-radius: 18px;
+  gap: 4px;
+}
+.bubble.typing .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #93939A;
+  display: inline-block;
+  opacity: 0.75;
+}
+.bubble.typing .dot:nth-child(1) { opacity: 0.45; }
+.bubble.typing .dot:nth-child(2) { opacity: 0.7; }
+.bubble.typing .dot:nth-child(3) { opacity: 0.95; }
+
+/* ----- Keyboard ----- */
+.keyboard {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px 14px;
+  background: var(--page-bg);
+  border-top: 0;
+}
+.keyboard .left-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #E9E9EB;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #8E8E93;
+}
+.keyboard .input {
+  flex: 1;
+  height: 36px;
+  border-radius: 18px;
+  background: var(--keyboard-input-bg);
+  border: 1px solid #D1D1D6;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  position: relative;
+}
+.keyboard .input .placeholder {
+  color: #8E8E93;
+  font-size: 17px;
+  letter-spacing: -0.2px;
+}
+.keyboard .input .mic {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #8E8E93;
+}
+.keyboard .icon {
+  width: 22px;
+  height: 22px;
+  display: inline-block;
+}
+
+/* ----- iPhone frame ----- */
+body.framed {
+  background: linear-gradient(135deg, #cfe9ff 0%, #d9efd5 50%, #fef3c7 100%);
+  margin: 0;
+  padding: 64px;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iphone-frame {
+  width: 393px;
+  height: 852px;
+  background: #0a0a0a;
+  border-radius: 55px;
+  padding: 11px;
+  position: relative;
+  box-shadow:
+    0 0 0 2px #2c2c2c,
+    0 30px 60px rgba(0,0,0,0.18),
+    0 12px 24px rgba(0,0,0,0.10);
+}
+.iphone-frame .screen {
+  width: 100%;
+  height: 100%;
+  background: var(--page-bg);
+  border-radius: 44px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Side buttons (subtle) */
+.iphone-frame::before {
+  /* left side: silence + volume */
+  content: "";
+  position: absolute;
+  left: -3px;
+  top: 100px;
+  width: 3px;
+  height: 32px;
+  background: #2c2c2c;
+  border-radius: 2px 0 0 2px;
+  box-shadow:
+    0 60px 0 0 #2c2c2c,
+    0 60px 0 0 #2c2c2c,
+    0 110px 0 0 #2c2c2c;
+}
+.iphone-frame::after {
+  /* right side: power */
+  content: "";
+  position: absolute;
+  right: -3px;
+  top: 180px;
+  width: 3px;
+  height: 90px;
+  background: #2c2c2c;
+  border-radius: 0 2px 2px 0;
+}
+
+/* Dynamic Island */
+.dynamic-island {
+  position: absolute;
+  top: 11px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 122px;
+  height: 36px;
+  background: #000;
+  border-radius: 20px;
+  z-index: 5;
+}
+
+/* Status bar */
+.status-bar {
+  position: relative;
+  height: 54px;
+  padding: 17px 28px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  color: #000;
+  z-index: 4;
+}
+.status-bar .time {
+  width: 70px;
+  text-align: center;
+  margin-left: -8px;
+}
+.status-bar .right-cluster {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.status-bar .right-cluster svg {
+  display: block;
+}
+
+/* When framed, conversation lives inside .screen instead of .stage */
+.framed .stage {
+  width: 100%;
+  min-height: 100%;
+}
+
+/* Framed + dark theme: the status-bar glyphs (time, signal, battery) must be
+   white over the dark screen. Light framed mode keeps the default #000. */
+body.framed.theme-dark .stage { height: 100%; min-height: 100%; }
+body.framed.theme-dark .status-bar { color: #fff; }
+
+/* When framed, the conversation needs to flow under the status bar */
+.framed .group-header {
+  border-bottom: 1px solid #E5E5EA;
+}
+
+/* Minimal mode tweaks */
+.minimal .stage {
+  min-height: 0;
+}
+.minimal .conversation {
+  padding-bottom: 24px;
+  padding-top: 16px;
+}
+
+/* With-keyboard mode breathing room — give the bubbles space above keyboard
+   but don't pad to a full viewport. Use a moderate min-height instead. */
+body.with-keyboard .stage {
+  min-height: 0;
+}
+body.with-keyboard .conversation {
+  padding-bottom: 80px;
+}
+
+/* ===========================================================================
+   Dark theme — iOS dark-mode iMessage palette.
+   Apply by setting <body class="theme-dark"> (or in addition to with-keyboard).
+   =========================================================================== */
+body.theme-dark {
+  min-height: 100vh;
+}
+body.theme-dark .stage {
+  width: 100%;
+  max-width: 720px;
+  padding: 0;
+  min-height: 100vh;
+}
+html.theme-dark, body.theme-dark { background: #000; }
+body.theme-dark .conversation {
+  padding: 6px 16px 16px;
+}
+body.theme-dark {
+  --imsg-blue: #0B84FE;
+  --imsg-grey: #26252A;
+  --imsg-grey-dark: #2C2B30;
+  --text-primary: #FFFFFF;
+  --text-on-blue: #FFFFFF;
+  --text-meta: #8E8E93;
+  --page-bg: #000000;
+  --keyboard-bg: #000000;
+  --keyboard-input-bg: #1C1C1E;
+  --keyboard-icon: #8E8E93;
+  --header-title: #FFFFFF;
+  --header-subtitle: #8E8E93;
+  background: #000;
+  color: #fff;
+}
+body.theme-dark .stage,
+body.theme-dark .keyboard,
+body.theme-dark .group-header {
+  background: #000;
+}
+body.theme-dark .keyboard .left-btn {
+  background: #1C1C1E;
+  color: #8E8E93;
+}
+body.theme-dark .keyboard .input {
+  background: transparent;
+  border: 1px solid #2C2C2E;
+}
+
+/* ===========================================================================
+   Conversation header pill (back-arrow + unread badge + avatar+name + facetime)
+   matches the reference ad's iOS dark-mode top bar.
+   =========================================================================== */
+.conv-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 18px 12px;
+  min-height: 56px;
+}
+.conv-header .left, .conv-header .right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #FFFFFF;
+}
+.conv-header .left .back-btn {
+  width: 14px;
+  height: 22px;
+  color: #FFFFFF;
+}
+.conv-header .left .badge-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 26px;
+  min-width: 46px;
+  padding: 0 10px;
+  border-radius: 13px;
+  background: #1C1C1E;
+  color: #FFFFFF;
+  font-size: 14px;
+  font-weight: 500;
+}
+.conv-header .center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -55%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.conv-header .center .avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  font-size: 22px;
+  font-weight: 600;
+  color: #FFFFFF;
+  background: #6E6E73;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.conv-header .center .name-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 10px;
+  border-radius: 14px;
+  background: #1C1C1E;
+  font-size: 14px;
+  font-weight: 500;
+  color: #FFFFFF;
+}
+.conv-header .center .name-pill .chev {
+  color: #8E8E93;
+  margin-top: 1px;
+}
+.conv-header .right .facetime-btn {
+  width: 26px;
+  height: 26px;
+  color: #FFFFFF;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===========================================================================
+   Attachment message — image card with optional title/subtitle pill below.
+   =========================================================================== */
+.row.attachment {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-top: 6px;
+  gap: 6px;
+}
+.row.attachment.received {
+  align-items: flex-start;
+}
+.attachment-card {
+  max-width: 520px;
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--imsg-grey);
+}
+.attachment-card img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 760px;
+  object-fit: cover;
+}
+.attachment-meta .title { font-size: 22px; }
+.attachment-meta .subtitle { font-size: 28px; }
+.attachment-meta {
+  text-align: center;
+  margin-top: 4px;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+.attachment-meta .title {
+  font-size: 18px;
+  font-weight: 600;
+}
+.attachment-meta .subtitle {
+  font-size: 22px;
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+/* ===========================================================================
+   Composer text — replaces the placeholder when the user is mid-typing.
+   =========================================================================== */
+.keyboard .input .composer-text {
+  color: var(--text-primary);
+  font-size: 17px;
+  letter-spacing: -0.2px;
+  white-space: pre;
+}
+.keyboard .input .caret {
+  display: inline-block;
+  width: 2px;
+  height: 22px;
+  background: var(--imsg-blue);
+  margin: 0 1px -4px;
+  vertical-align: middle;
+  animation: caret-blink 1s step-end infinite;
+}
+@keyframes caret-blink {
+  0%, 50% { opacity: 1; }
+  50.01%, 100% { opacity: 0; }
+}
+.keyboard .input.has-text .placeholder { display: none; }
+.keyboard .input.has-text .mic { display: none; }
+.keyboard .send-btn {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--imsg-blue);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===========================================================================
+   FREEPACK link-detector underline (iOS auto-detects emails/codes).
+   Applied via <span class="link-detector">FREEPACK</span> in message text.
+   =========================================================================== */
+.bubble.sent .link-detector {
+  text-decoration: underline;
+  text-decoration-color: rgba(255,255,255,0.85);
+}
+.bubble.received .link-detector {
+  text-decoration: underline;
+}
+
+/* ===========================================================================
+   Pop-in animation for new bubbles (used by the recorder for scene reveals).
+   .pop-now triggers the animation on load; .pop-pending starts hidden until
+   recorder/animation script removes the class.
+   =========================================================================== */
+@keyframes bubble-pop {
+  0%   { transform: scale(0.6) translateY(8px); opacity: 0; }
+  60%  { transform: scale(1.04) translateY(0);  opacity: 1; }
+  100% { transform: scale(1) translateY(0);      opacity: 1; }
+}
+.bubble.pop-pending {
+  opacity: 0;
+  transform: scale(0.6) translateY(8px);
+}
+/* Pop-pending rows are removed from layout entirely so the conversation grows
+   naturally as bubbles arrive (and JS auto-scroll has new content to follow).
+   Use a custom data flag the driver flips at pop time. */
+.row[data-pending="1"],
+.delivered-caption[data-pending="1"] {
+  display: none !important;
+}
+.bubble.pop-now {
+  animation: bubble-pop 240ms cubic-bezier(0.2, 0.7, 0.2, 1.2) both;
+  transform-origin: bottom var(--pop-origin-x, right);
+}
+.row.received .bubble.pop-now { transform-origin: bottom left; }
+.row.sent .bubble.pop-now    { transform-origin: bottom right; }
+.delivered-caption.pop-pending { opacity: 0; }
+.delivered-caption.pop-now { animation: fade-in 220ms ease-out both; }
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* For long composer text, allow it to truncate gracefully. */
+.keyboard .input { overflow: hidden; }
+.keyboard .input .composer-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: calc(100% - 36px);
+}
+

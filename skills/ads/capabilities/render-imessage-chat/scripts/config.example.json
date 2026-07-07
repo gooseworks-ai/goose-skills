@@ -1,0 +1,54 @@
+{
+  "_comment": "Example config for render-imessage-chat. The recipe binds a brand's own thread/product/end-card here at remix time. AUTHORING RULE (the text-bleed fix): keep every message SHORT — split any long line into multiple bubbles so each fits the bubble width (see the two 'spec' lines below). Attachments render as a real iMessage URL-preview rich link (image + gray meta card + domain + chevron).",
+  "brand_name": "Wonderbly",
+  "theme": "dark",
+  "width": 1080,
+  "height": 1920,
+  "zoom": 2.10,
+  "background_image": "assets/flat-lay-bg.jpg",
+  "thread": {
+    "mode": "dm",
+    "header": { "style": "conversation", "unread": 12 },
+    "participants": [
+      { "id": "me", "name": "Me", "self": true },
+      { "id": "rachel", "name": "Rachel", "color": "#9FE778", "initials": "R" }
+    ],
+    "messages": [
+      { "id": "m01-ask", "type": "text", "from": "rachel", "text": "what did u end up getting ur dad for FD?" },
+      { "id": "m02-typ", "type": "typing", "from": "rachel" },
+      { "id": "m03-wait", "type": "text", "from": "me", "text": "wait look 👀", "delivered": true },
+      { "id": "m04-attach", "type": "attachment", "from": "me",
+        "src": "assets/product-cover.jpg",
+        "title": "Where Are You? Dad Edition | A personalized book about him",
+        "subtitle": "wonderbly.com" },
+      { "id": "m05-omg", "type": "text", "from": "rachel", "text": "OMG HIS NAME" },
+      { "id": "m06-cry", "type": "text", "from": "rachel", "text": "😭😭😭" },
+      { "id": "m07-cried", "type": "text", "from": "me", "text": "he cried. the good kind.", "delivered": true },
+      { "id": "m08-typ", "type": "typing", "from": "rachel" },
+      { "id": "m09-where", "type": "text", "from": "rachel", "text": "where did u find this" },
+      { "id": "m10-brand", "type": "text", "from": "me", "text": "wonderbly", "delivered": true },
+      { "id": "m11a-spec1", "type": "text", "from": "me", "text": "u personalize the whole book", "delivered": true },
+      { "id": "m11b-spec2", "type": "text", "from": "me", "text": "his name is on every page", "delivered": true },
+      { "id": "m12-order", "type": "text", "from": "rachel", "text": "ordering rn" },
+      { "id": "m13-ty", "type": "text", "from": "rachel", "text": "ty bestie 💚" }
+    ]
+  },
+  "end_card": {
+    "bg": "#fbf4e8",
+    "fg": "#1e5751",
+    "cta_bg": "#9fe778",
+    "cta_fg": "#1e5751",
+    "star_color": "#ffd15a",
+    "wordmark_text": "WONDERBLY",
+    "logo_svg": "",
+    "stars": 5,
+    "proof_text": "69,000 families",
+    "trust_trio": [
+      { "label": "Easy to\npersonalize", "icon": "pencil" },
+      { "label": "Made just\nfor him", "icon": "heart" },
+      { "label": "Created\nby artists", "icon": "palette" }
+    ],
+    "cta_text": "Personalize his book",
+    "dwell_sec": 2.5
+  }
+}

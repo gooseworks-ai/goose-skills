@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>iMessage chat — end card</title>
+<style>
+/* Data-driven end card (1080×1920 9:16). All values are substituted by
+   render-end-card.js from the recipe's `end_card` config. Uses a robust system
+   font stack so it renders anywhere; pass a `logo_svg` for a real brand wordmark
+   (strongly preferred over the text fallback). */
+:root {
+  --bg: {{BG}};
+  --fg: {{FG}};
+  --cta-bg: {{CTA_BG}};
+  --cta-fg: {{CTA_FG}};
+  --star: {{STAR}};
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body {
+  width: 1080px; height: 1920px; background: var(--bg); color: var(--fg);
+  font-family: 'Helvetica Neue', Arial, sans-serif; overflow: hidden;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.wordmark { max-width: 640px; max-height: 300px; margin-bottom: 90px; text-align: center; }
+.wordmark svg { width: 100%; height: auto; max-height: 300px; fill: var(--fg); }
+.wordmark .text { font-size: 96px; font-weight: 800; letter-spacing: -1px; color: var(--fg); }
+
+.proof-row { display: flex; flex-direction: column; align-items: center; gap: 18px; margin-bottom: 100px; }
+.proof-row .stars { font-size: 60px; letter-spacing: 8px; color: var(--star); line-height: 1; }
+.proof-row .families { font-weight: 700; font-size: 36px; letter-spacing: 0.5px; color: var(--fg); }
+
+.trust-trio { display: flex; gap: 80px; justify-content: center; align-items: flex-start; margin-bottom: 120px; }
+.trust-trio .item { display: flex; flex-direction: column; align-items: center; width: 240px; }
+.trust-trio .badge { width: 140px; height: 140px; border-radius: 50%; background: var(--fg);
+  display: flex; align-items: center; justify-content: center; margin-bottom: 24px; }
+.trust-trio .badge svg { width: 70px; height: 70px; fill: var(--bg); }
+.trust-trio .label { font-family: Georgia, 'Times New Roman', serif; font-weight: 500; font-size: 32px;
+  line-height: 1.25; text-align: center; color: var(--fg); }
+
+.cta-pill { background: var(--cta-bg); color: var(--cta-fg); padding: 32px 80px; border-radius: 80px;
+  font-family: Georgia, 'Times New Roman', serif; font-weight: 700; font-size: 48px; letter-spacing: 0.5px; }
+</style>
+</head>
+<body>
+  <div class="wordmark">{{WORDMARK}}</div>
+  {{PROOF}}
+  {{TRIO}}
+  <div class="cta-pill">{{CTA}}</div>
+<script>
+// Signal Playwright when a frame has painted (fonts have started).
+requestAnimationFrame(() => {
+  document.body.dataset.ready = 'true';
+  window.__driverReady = Date.now();
+});
+</script>
+</body>
+</html>
