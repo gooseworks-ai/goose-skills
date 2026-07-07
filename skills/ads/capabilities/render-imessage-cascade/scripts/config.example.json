@@ -1,4 +1,5 @@
 {
+  "_comment": "Illustrative example (the source Gooseworks 'inbound leads' remix). The recipe binds a NEW brand's own values here at remix time — EVERY brand-specific field is a placeholder to REPLACE, including end_card.accent (do NOT ship the Gooseworks orange #f05f22 for another brand; set the remixed brand's own accent).",
   "title": "Gooseworks — Notification Cascade (inbound leads)",
   "plate": "/abs/path/plate-phone-desk.png",
   "plate_ref": "/abs/path/source-frame-with-a-notification.jpg",
