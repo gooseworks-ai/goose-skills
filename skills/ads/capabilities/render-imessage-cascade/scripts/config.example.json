@@ -1,0 +1,31 @@
+{
+  "title": "Gooseworks — Notification Cascade (inbound leads)",
+  "plate": "/abs/path/plate-phone-desk.png",
+  "plate_ref": "/abs/path/source-frame-with-a-notification.jpg",
+  "app_icon": "messages",
+  "notifications": [
+    { "title": "New lead", "body": "Hey! Saw your email.", "handle": "Gooseworks" },
+    { "title": "New lead", "body": "Can you send pricing?", "handle": "Gooseworks" },
+    { "title": "New lead", "body": "I'm interested.", "handle": "Gooseworks" },
+    { "title": "New lead", "body": "Let's book a call.", "handle": "Gooseworks" }
+  ],
+  "end_card": {
+    "line1": "MEET YOUR",
+    "line2": "AI COWORKER",
+    "wordmark_text": "Gooseworks",
+    "wordmark_icon": "/abs/path/brand-logo.jpg",
+    "url": "gooseworks.ai",
+    "accent": "#f05f22"
+  },
+  "timing": {
+    "arrivals": [1.6, 3.6, 5.6, 7.6],
+    "clear": 9.2,
+    "endcard_in": 9.9,
+    "duration": 14
+  },
+  "audio": {
+    "bed": "/abs/path/bed.mp3",
+    "pop": "/abs/path/pop.mp3",
+    "swoosh": "/abs/path/swoosh.mp3"
+  }
+}
