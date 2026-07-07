@@ -63,21 +63,26 @@ def composite_one(variant: str) -> dict:
     out = OUT / f"master-9x16-{variant}.mp4"
 
     # filter_complex: BG processed → cold-open overlay → 3 cutouts (vertically centered) → end card
+    # Beat windows are HALF-OPEN [start, next_start): ffmpeg's between(t,a,b) is inclusive on
+    # BOTH ends, so consecutive beats that share a boundary (cold-open ends at 3.0, hero starts
+    # at 3.0, …) both draw on the single frame at the boundary — a ~1-frame flash of the old
+    # beat under the new one (most visible as the cold-open card ghosting behind product 1).
+    # gte(t,a)*lt(t,b) makes each beat own [a, b) exactly: no overlap, and no BG-only gap frame.
     filter_complex = (
         f"[0:v]trim=duration={DURATION},setpts=PTS-STARTPTS,"
         f"{bg_process}[bg];"
-        f"[bg][1:v]overlay=0:0:enable='between(t,1.5,3.0)'[v1];"
+        f"[bg][1:v]overlay=0:0:enable='gte(t,1.5)*lt(t,3.0)'[v1];"
         # Hero Serum — vertical center
         f"[2:v]scale={HERO_W}:-1[hero];"
-        f"[v1][hero]overlay=x=(W-w)/2:y=(H-h)/2:enable='between(t,3.0,4.6)'[v2];"
+        f"[v1][hero]overlay=x=(W-w)/2:y=(H-h)/2:enable='gte(t,3.0)*lt(t,4.6)'[v2];"
         # Genesis — vertical center
         f"[3:v]scale={GEN_W}:-1[gen];"
-        f"[v2][gen]overlay=x=(W-w)/2:y=(H-h)/2:enable='between(t,4.6,6.2)'[v3];"
+        f"[v2][gen]overlay=x=(W-w)/2:y=(H-h)/2:enable='gte(t,4.6)*lt(t,6.2)'[v3];"
         # Retinol — vertical center
         f"[4:v]scale={RET_W}:-1[ret];"
-        f"[v3][ret]overlay=x=(W-w)/2:y=(H-h)/2:enable='between(t,6.2,7.8)'[v4];"
-        # End card
-        f"[v4][5:v]overlay=0:0:enable='between(t,7.8,{DURATION})'[vout]"
+        f"[v3][ret]overlay=x=(W-w)/2:y=(H-h)/2:enable='gte(t,6.2)*lt(t,7.8)'[v4];"
+        # End card — runs to the end (no upper bound so a rounded duration can't drop the tail)
+        f"[v4][5:v]overlay=0:0:enable='gte(t,7.8)'[vout]"
     )
 
     cmd = [
