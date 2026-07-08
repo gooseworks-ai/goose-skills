@@ -1,6 +1,6 @@
 {
   "version": "1.2.0",
-  "generated": "2026-06-23",
+  "generated": "2026-07-08",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -3892,6 +3892,33 @@
       "path": "skills/ads/composites/meta-ads-analyzer",
       "files": [
         "skills/ads/composites/meta-ads-analyzer/SKILL.md",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/campaign-export.csv",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-35-03-212Z/campaign-export.csv",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-35-03-212Z/provenance.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-35-03-212Z/raw/adsets.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-35-03-212Z/raw/campaigns.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-35-03-212Z/raw/insights-52520040908148.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-35-03-212Z/raw/insights-52520044871748.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-35-03-212Z/raw/insights-52529298131348.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-35-03-212Z/raw/insights-52532859121348.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-35-03-212Z/raw/insights-52532860843748.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-35-03-212Z/raw/insights-6963333422544.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-35-03-212Z/raw/insights-6988921740744.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-35-03-212Z/raw/insights-6989038245344.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-35-03-212Z/raw/insights-6991165221344.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-37-13-072Z/campaign-export.csv",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-37-13-072Z/provenance.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-37-13-072Z/raw/adsets.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-37-13-072Z/raw/campaigns.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-37-13-072Z/raw/insights-52520040908148.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-37-13-072Z/raw/insights-52520044871748.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-37-13-072Z/raw/insights-52529298131348.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-37-13-072Z/raw/insights-52532859121348.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-37-13-072Z/raw/insights-52532860843748.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-37-13-072Z/raw/insights-6963333422544.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-37-13-072Z/raw/insights-6988921740744.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-37-13-072Z/raw/insights-6989038245344.json",
+        "skills/ads/composites/meta-ads-analyzer/eval/fixtures/captured/2026-06-26T08-37-13-072Z/raw/insights-6991165221344.json",
         "skills/ads/composites/meta-ads-analyzer/skill.meta.json"
       ],
       "metadata": {
@@ -4621,6 +4648,43 @@
             "codex"
           ]
         }
+      }
+    },
+    {
+      "slug": "render-absurdist-explainer",
+      "name": "render-absurdist-explainer",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Assemble an absurdist animated-explainer video ad (~38s, 9:16) from per-scene i2v clips + their measured VO windows — retime each clip to its VO, re-encode every segment to identical 30fps/libx264/yuv420p so the concat demuxer never drops frames, concat, build a REAL-product PIL end card (never AI) with a slow Ken-Burns, mix VO (loudnorm I=-14) under music (loudnorm I=-26, volume 0.62, amix normalize=0), and burn libass captions last. FREE deterministic assembly (bash-free, Python + ffmpeg + PIL); the recipe supplies the clips, VO, music, product photo, palette, and caption table and gates the paid keyframe/clip/VO/music calls to their own capabilities. Use for the absurdist-explainer format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-absurdist-explainer",
+      "files": [
+        "skills/ads/capabilities/render-absurdist-explainer/SKILL.md",
+        "skills/ads/capabilities/render-absurdist-explainer/scripts/build_endcard.py",
+        "skills/ads/capabilities/render-absurdist-explainer/scripts/compose.py",
+        "skills/ads/capabilities/render-absurdist-explainer/scripts/config.example.json",
+        "skills/ads/capabilities/render-absurdist-explainer/scripts/make_captions.py",
+        "skills/ads/capabilities/render-absurdist-explainer/skill.meta.json",
+        "skills/ads/capabilities/render-absurdist-explainer/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "render-absurdist-explainer",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-absurdist-explainer",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
       }
     },
     {
