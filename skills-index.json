@@ -5246,42 +5246,6 @@
       }
     },
     {
-      "slug": "render-flatlay",
-      "name": "render-flatlay",
-      "category": "capabilities",
-      "domain": "ads",
-      "description": "Render the FREE steps of the flatlay-product-reveal video format — composite each flat product cover onto the dressed tabletop plate to make the Veo start frames (build_start_frames), speed-and-hard-cut concat the i2v beats plus the HTML end card and mux the music (build_master), and screenshot the brand end-card HTML to a static-dwell clip (render_endcard). Deterministic, FREE (Playwright + PIL + FFmpeg), no paid calls, product covers and end-card text stay pixel-crisp. The paid steps (flat covers, Veo beats, music) are separate capabilities; the recipe orchestrates them. Use for the flatlay-product-reveal format.",
-      "tags": "ads",
-      "path": "skills/ads/capabilities/render-flatlay",
-      "files": [
-        "skills/ads/capabilities/render-flatlay/SKILL.md",
-        "skills/ads/capabilities/render-flatlay/scripts/build_master.py",
-        "skills/ads/capabilities/render-flatlay/scripts/build_start_frames.py",
-        "skills/ads/capabilities/render-flatlay/scripts/render_endcard.py",
-        "skills/ads/capabilities/render-flatlay/skill.meta.json",
-        "skills/ads/capabilities/render-flatlay/tests/smoke-test.md"
-      ],
-      "metadata": {
-        "slug": "render-flatlay",
-        "category": "capabilities",
-        "domain": "ads",
-        "tags": [
-          "ads"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install render-flatlay",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
-        "requires_skills": [
-          "watch"
-        ]
-      }
-    },
-    {
       "slug": "render-hypermotion",
       "name": "render-hypermotion",
       "category": "capabilities",
