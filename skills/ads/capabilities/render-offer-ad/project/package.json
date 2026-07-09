@@ -1,0 +1,22 @@
+{
+  "name": "offer-ad",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "render": "remotion render offer-ad"
+  },
+  "dependencies": {
+    "@remotion/bundler": "^4.0.468",
+    "@remotion/cli": "^4.0.468",
+    "@remotion/google-fonts": "^4.0.468",
+    "@remotion/renderer": "^4.0.468",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "remotion": "^4.0.468"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.15",
+    "@types/react-dom": "^19.2.3",
+    "typescript": "^6.0.3"
+  }
+}

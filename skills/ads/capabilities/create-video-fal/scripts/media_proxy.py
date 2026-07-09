@@ -3,7 +3,8 @@
 every call BILLS THE ADS AGENT — never call a provider SDK's default host (your token
 isn't a FAL/ElevenLabs token → 401).
 
-Base = <api_base>/api/internal/<proxy>, with ?token=&agent_id= on every request.
+Base = <api_base>/api/internal/<proxy>, with ?token=&agent_id= (+ &project_id= when
+GW_PROJECT_ID is set, so spend attributes to the ad project) on every request.
 FAL submit returns status_url/response_url on the REAL host (queue.fal.run); we
 host-swap them to the proxy base (keep the path) or polling 401s forever and burns
 credits. Credentials load from ~/.gooseworks/credentials.json (the CLI writes it).
@@ -36,6 +37,11 @@ def _params(tok, agent):
     p = {"token": tok}
     if agent:
         p["agent_id"] = agent
+    # Attribute this generation's credits to the ad project so per-project spend shows in
+    # the app. The goose-video orchestrator sets GW_PROJECT_ID = the project being rendered.
+    pid = os.environ.get("GW_PROJECT_ID")
+    if pid:
+        p["project_id"] = pid
     return p
 
 

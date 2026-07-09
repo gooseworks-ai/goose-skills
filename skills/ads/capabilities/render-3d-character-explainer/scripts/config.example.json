@@ -1,0 +1,42 @@
+{
+  "_comment": "Illustrative example — a brand-neutralised 'N types of X' listicle restyle (the validated Bristle 'Six Types' run's shape, de-branded). The recipe binds a NEW ad's own clips / keyframes / audio / caption table here. Every path is a placeholder to REPLACE with an absolute path or a runtime working/ path. MODE: 'restyle' reuses a source ad's VO+music mix VERBATIM (source_audio) and inherits its scene timing — no per-scene vo/music fields are read. 'original' authors its own per-scene VO windows (scenes[].vo, target_sec = the MEASURED VO duration) + an optional music_bed. `keyframe` per scene is the static-still FALLBACK: if scenes[].clip is missing/failed, that scene's keyframe PNG is looped for target_sec so the master always assembles.",
+
+  "audio_mode": "restyle",
+  "source_audio": "/abs/or/working/audio/source-audio.mp3",
+
+  "music_bed": null,
+  "music_volume": 0.62,
+  "atempo": null,
+
+  "width": 1080,
+  "height": 1920,
+  "pad_color": "0x1c2233",
+
+  "captions_ass": "/abs/or/working/audio/captions.ass",
+  "caption_style": {
+    "font": "Arial",
+    "size": 64,
+    "outline": 6,
+    "shadow": 3,
+    "marginv": 330
+  },
+
+  "scenes": [
+    { "id": "01", "clip": "/abs/or/working/clips/clip-01.mp4", "keyframe": "/abs/or/working/keyframes/scene-01.png", "target_sec": 4.0, "caption": "Think bad breath is just bad breath?" },
+    { "id": "02", "clip": "/abs/or/working/clips/clip-02.mp4", "keyframe": "/abs/or/working/keyframes/scene-02.png", "target_sec": 5.3, "caption": "A mint is just a cover-up." },
+    { "id": "03", "clip": "/abs/or/working/clips/clip-03.mp4", "keyframe": "/abs/or/working/keyframes/scene-03.png", "target_sec": 5.3, "caption": "It's a microbial imbalance." },
+    { "id": "04", "clip": "/abs/or/working/clips/clip-04.mp4", "keyframe": "/abs/or/working/keyframes/scene-04.png", "target_sec": 4.5, "caption": "Six different types." },
+    { "id": "05", "clip": "/abs/or/working/clips/clip-05.mp4", "keyframe": "/abs/or/working/keyframes/scene-05.png", "target_sec": 6.0, "caption": "1. Inflammatory gum bacteria." },
+    { "id": "06", "clip": "/abs/or/working/clips/clip-06.mp4", "keyframe": "/abs/or/working/keyframes/scene-06.png", "target_sec": 5.5, "caption": "2. The plaque partiers." },
+    { "id": "08", "clip": "/abs/or/working/clips/clip-08.mp4", "keyframe": "/abs/or/working/keyframes/scene-08.png", "target_sec": 5.6, "caption": "3. The tongue-coaters." },
+    { "id": "09", "clip": "/abs/or/working/clips/clip-09.mp4", "keyframe": "/abs/or/working/keyframes/scene-09.png", "target_sec": 7.3, "caption": "4. Sneaky opportunistic invaders." },
+    { "id": "10", "clip": "/abs/or/working/clips/clip-10.mp4", "keyframe": "/abs/or/working/keyframes/scene-10.png", "target_sec": 4.6, "caption": "5. The fungal type." },
+    { "id": "11", "clip": "/abs/or/working/clips/clip-11.mp4", "keyframe": "/abs/or/working/keyframes/scene-11.png", "target_sec": 5.8, "caption": "6. Intermittent bad breath." },
+    { "id": "12", "clip": "/abs/or/working/clips/clip-12.mp4", "keyframe": "/abs/or/working/keyframes/scene-12.png", "target_sec": 0.5, "caption": "Here's the kicker." },
+    { "id": "13", "clip": "/abs/or/working/clips/clip-13.mp4", "keyframe": "/abs/or/working/keyframes/scene-13.png", "target_sec": 5.2, "caption": "Brush and floss won't work for every type." },
+    { "id": "14", "clip": "/abs/or/working/clips/clip-14.mp4", "keyframe": "/abs/or/working/keyframes/scene-14.png", "target_sec": 2.3, "caption": "Each needs a different battle plan." },
+    { "id": "15", "clip": "/abs/or/working/clips/clip-15.mp4", "keyframe": "/abs/or/working/keyframes/scene-15.png", "target_sec": 2.6, "caption": "Which enemy are you fighting?" },
+    { "id": "16", "clip": "/abs/or/working/clips/clip-16.mp4", "keyframe": "/abs/or/working/keyframes/scene-16.png", "target_sec": 5.1, "caption": null },
+    { "id": "17", "clip": "/abs/or/working/clips/clip-17.mp4", "keyframe": "/abs/or/working/keyframes/scene-17.png", "target_sec": 7.2, "caption": null }
+  ]
+}

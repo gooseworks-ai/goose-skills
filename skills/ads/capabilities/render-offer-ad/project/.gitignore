@@ -1,0 +1,6 @@
+node_modules/
+out/
+package-lock.json
+# public/ is populated at runtime by render.sh from the config's absolute paths
+public/*
+!public/.gitkeep

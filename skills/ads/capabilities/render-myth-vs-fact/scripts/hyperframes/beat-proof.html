@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8" />
+<title>beat · Proof Reveal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="_shared.css">
+<style>
+  .eyebrow { color: var(--fact-accent); }
+  .stack { position: absolute; top: 470px; left: var(--pad-x); right: var(--pad-x); display: flex; flex-direction: column; gap: 30px; }
+  .active-pill { opacity: 0; }
+  .footnote { position: absolute; bottom: 290px; left: var(--pad-x); right: var(--pad-x); text-align: center; opacity: 0; }
+</style>
+</head><body>
+<div class="bg warm"></div>
+<div class="stage">
+  <div class="eyebrow" id="eyebrow" style="opacity:0"></div>
+  <div class="stack" id="stack"></div>
+  <div class="footnote" id="foot"></div>
+</div>
+<script id="beat-spec" type="application/json">
+{ "duration": 5.06, "palette": {},
+  "proof_eyebrow": "What works — with evidence",
+  "proof_items": [
+    { "name": "Salicylic acid", "badge": "Rx-grade" },
+    { "name": "Benzoyl peroxide", "badge": "Rx-grade" },
+    { "name": "Adapalene", "badge": "Rx-grade" } ],
+  "proof_footnote": "Prescription-grade — [matched to your skin by a doctor.]",
+  "cues": { "items": [0.00, 0.92, 2.00], "footnote": [2.58, 3.10] } }
+</script>
+<script src="_shared.js"></script>
+<script>
+  const BEAT = loadBeatSpec();
+  applyPalette(BEAT.palette);
+  const dur = BEAT.duration || 5.06;
+
+  const eyebrow = document.getElementById('eyebrow');
+  const stack = document.getElementById('stack');
+  const foot = document.getElementById('foot');
+
+  eyebrow.textContent = BEAT.proof_eyebrow || '';
+  const items = BEAT.proof_items || [];
+  stack.innerHTML = items.map((it, i) =>
+    `<div class="active-pill" data-i="${i}"><span class="name">${it.name || ''}</span>` +
+    (it.badge ? `<span class="rx">${it.badge}</span>` : '') + `</div>`).join('');
+  const pills = Array.from(stack.querySelectorAll('.active-pill'));
+  if (BEAT.proof_footnote) {
+    foot.innerHTML = BEAT.proof_footnote.replace(/\[([^\]]+)\]/g, '<b>$1</b>');
+  }
+
+  // one pill per VO word onset; even fallback across the first ~55% of the beat.
+  const pStarts = (BEAT.cues && BEAT.cues.items) ||
+    pills.map((_, i) => (i / Math.max(1, pills.length)) * dur * 0.55);
+  const footWin = (BEAT.cues && BEAT.cues.footnote) || [dur * 0.51, dur * 0.61];
+
+  initRenderer(dur, function (t) {
+    eyebrow.style.opacity = tw(t, 0.00, 0.35) * 0.9;
+    pills.forEach((el, i) => {
+      const p = popIn(t, pStarts[i], pStarts[i] + 0.42, 30);
+      el.style.opacity = p.opacity; el.style.transform = p.transform;
+    });
+    const f = tw(t, footWin[0], footWin[1]);
+    foot.style.opacity = f;
+    foot.style.transform = `translateY(${(1 - f) * 20}px)`;
+  });
+</script>
+</body></html>

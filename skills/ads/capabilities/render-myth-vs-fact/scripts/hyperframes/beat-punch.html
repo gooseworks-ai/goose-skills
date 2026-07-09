@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8" />
+<title>beat · Punch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="_shared.css">
+<style>
+  .center { align-items: center; }
+  .h-punch { opacity: 0; }
+</style>
+</head><body>
+<div class="bg white"></div>
+<div class="stage"></div>
+<div class="center">
+  <h1 class="h-punch" id="punch"></h1>
+</div>
+<script id="beat-spec" type="application/json">
+{ "duration": 1.12, "palette": {}, "punch_line": "Stop guessing." }
+</script>
+<script src="_shared.js"></script>
+<script>
+  const BEAT = loadBeatSpec();
+  applyPalette(BEAT.palette);
+  const dur = BEAT.duration || 1.12;
+  const punch = document.getElementById('punch');
+  punch.textContent = BEAT.punch_line || '';
+  // fast spring in over the first ~0.40s.
+  initRenderer(dur, function (t) {
+    const p = clamp(t / 0.40, 0, 1);
+    punch.style.opacity = clamp(p * 1.6, 0, 1);
+    punch.style.transform = `scale(${springScale(p)})`;
+  });
+</script>
+</body></html>

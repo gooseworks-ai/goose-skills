@@ -1,0 +1,55 @@
+{
+  "_comment": "Illustrative example — the values are the validated Soteri 'Eczema, the pH villain' run, brand-neutralised. The recipe binds a NEW brand's own clips / VO / product / palette / copy here. Every path is a placeholder to REPLACE with an absolute path or a runtime working/ path. `target_sec` per scene is the MEASURED VO window (ffprobe each VO mp3 — never a planned word count). Scene order is the 12-scene spine (villain intro -> teach -> damage list -> hero -> CLIMAX -> payoff); the end card is a SEPARATE block (built by build_endcard.py), not a scene.",
+
+  "atempo": 1.3,
+  "music_bed": "/abs/or/working/audio/music-bed.mp3",
+  "music_volume": 0.62,
+  "captions_ass": "/abs/or/working/audio/captions.ass",
+
+  "caption_style": {
+    "font": "Arial",
+    "size": 64,
+    "outline": 6,
+    "shadow": 3,
+    "marginv": 330
+  },
+
+  "scenes": [
+    { "id": "01", "clip": "/abs/or/working/clips/scene-01.mp4", "target_sec": 3.13, "vo": "/abs/or/working/audio/vo/vo-01-intro.mp3",   "caption": "I'm Eczema." },
+    { "id": "02", "clip": "/abs/or/working/clips/scene-02.mp4", "target_sec": 5.41, "vo": "/abs/or/working/audio/vo/vo-02-barrier.mp3", "caption": "Meet the moisture barrier." },
+    { "id": "03", "clip": "/abs/or/working/clips/scene-03.mp4", "target_sec": 1.40, "vo": "/abs/or/working/audio/vo/vo-03-break.mp3",   "caption": "So I break it." },
+    { "id": "04", "clip": "/abs/or/working/clips/scene-04.mp4", "target_sec": 3.42, "vo": "/abs/or/working/audio/vo/vo-04-secret.mp3",  "caption": "It's really a pH problem." },
+    { "id": "05", "clip": "/abs/or/working/clips/scene-05.mp4", "target_sec": 4.56, "vo": "/abs/or/working/audio/vo/vo-05-healthy.mp3", "caption": "Healthy skin = pH 4.9" },
+    { "id": "06", "clip": "/abs/or/working/clips/scene-06.mp4", "target_sec": 3.94, "vo": "/abs/or/working/audio/vo/vo-06-pushup.mp3",  "caption": "Push the pH up — the wall cracks." },
+    { "id": "07", "clip": "/abs/or/working/clips/scene-07.mp4", "target_sec": 3.39, "vo": "/abs/or/working/audio/vo/vo-07-skin.mp3",    "caption": "Dry. Red. Itchy." },
+    { "id": "08", "clip": "/abs/or/working/clips/scene-08.mp4", "target_sec": 2.41, "vo": "/abs/or/working/audio/vo/vo-08-night.mp3",   "caption": "Nobody sleeps tonight." },
+    { "id": "09", "clip": "/abs/or/working/clips/scene-09.mp4", "target_sec": 2.59, "vo": "/abs/or/working/audio/vo/vo-09-arrive.mp3",  "caption": "Until Soteri Skin shows up." },
+    { "id": "10", "clip": "/abs/or/working/clips/scene-10.mp4", "target_sec": 4.64, "vo": "/abs/or/working/audio/vo/vo-10-lock.mp3",    "caption": "pH/LOCK snaps it back to 4.9" },
+    { "id": "11", "clip": "/abs/or/working/clips/scene-11.mp4", "target_sec": 6.27, "vo": "/abs/or/working/audio/vo/vo-11-defeat.mp3",  "caption": "Calm baby. No more eczema." }
+  ],
+
+  "end_card": {
+    "product_image": "/abs/or/working/raw-materials/product-endcard.jpg",
+    "image": "/abs/or/working/generated/endcard/endcard.png",
+    "dwell_sec": 3.97,
+    "zoom_to": 1.04,
+    "background": null,
+    "product_height": 1015,
+    "product_y": 88,
+    "copy_y": 1190,
+    "wordmark": "Soteri Skin",
+    "product_line": "Baby Eczema Relief Cream",
+    "claims": [
+      "Powered by pH/LOCK® Technology",
+      "Steroid-Free   ·   Fragrance-Free   ·   Ages 0–5"
+    ],
+    "cta": "soteriskin.com"
+  },
+
+  "brand_palette": {
+    "primary": "#2E6F5E",
+    "primary_lite": "#3E8A73",
+    "accent": "#E8674C",
+    "grey": "#6B6F69"
+  }
+}
