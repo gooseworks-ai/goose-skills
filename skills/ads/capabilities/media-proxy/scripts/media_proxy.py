@@ -79,6 +79,21 @@ def fal_generate_video(model_path, payload, **kw):
     return (r.get("video") or {}).get("url") or r["videos"][0]["url"]
 
 
+def fal_whisper(audio_url, language="en", **kw):
+    """fal-ai/whisper (word-level) through the proxy → [{text, start, end}, ...].
+
+    `audio_url` MUST be a PUBLIC url (this module does not upload) — the orchestrator
+    hosts the local VO via MCP `get_upload_url` → `get_download_url` and passes that
+    presigned url in. Proxy-routed, so it bills the Ads agent (never a raw FAL_KEY)."""
+    r = _fal_run("fal-ai/whisper", {"audio_url": audio_url, "task": "transcribe",
+                                    "language": language, "chunk_level": "word"}, **kw)
+    words = []
+    for ch in r.get("chunks", []):
+        ts = ch.get("timestamp") or [None, None]
+        words.append({"text": (ch.get("text") or "").strip(), "start": ts[0], "end": ts[1]})
+    return words
+
+
 def eleven_music(prompt, music_length_ms, out_path, force_instrumental=True, timeout_s=180):
     """ElevenLabs Music through the proxy → writes the mp3 to out_path, returns it."""
     api_base, tok, agent = _cfg()

@@ -9,21 +9,36 @@ Two outputs, written into the work dir:
   - whisper/words-flat.json : [{text, start, end}, ...] (what compose.py's captions read)
   - beat-manifest.json      : the config beats with re-snapped start/end/duration.
 
-Whisper is fetched via FAL (fal-ai/whisper, chunk_level=word). If FAL is unavailable (no
-FAL_KEY / no network), pass --no-whisper to fall back to the DURATIONS ALREADY IN CONFIG
-(cumulative, un-snapped) so the pipeline still runs end-to-end offline. On-card text is the
+Whisper word-timestamps come from fal-ai/whisper (chunk_level=word). Prefer the
+PROXY-ROUTED path so the call bills the Ads agent (never a raw FAL_KEY): the orchestrator
+hosts the rendered VO via MCP `get_upload_url` → `get_download_url` and passes the presigned
+url as `--vo-url` (transcribed through `media_proxy.fal_whisper`). Already have the words?
+pass `--words-file words.json` and beat_snap skips transcription entirely. Legacy: a raw
+`FAL_KEY` in the env still works via `fal_client`. Fully offline: `--no-whisper` keeps the
+config durations un-snapped (NOTE: no words ⇒ no karaoke captions). On-card text is the
 source of truth, so brand-name homophones in the transcript are fine.
 
 Usage:
-  beat_snap.py --config config.json --work-dir /path/to/work [--vo vo.mp3] [--no-whisper]
+  beat_snap.py --config config.json --work-dir DIR --vo-url <presigned-url>   # proxy (preferred)
+  beat_snap.py --config config.json --work-dir DIR --words-file words.json    # pre-fetched
+  beat_snap.py --config config.json --work-dir DIR --vo vo.mp3                 # legacy FAL_KEY
+  beat_snap.py --config config.json --work-dir DIR --no-whisper               # offline
 
-ENV: FAL_KEY (alias FAL_API_KEY) when Whisper is used.
+ENV: GW_PROJECT_ID (attributes proxy spend to the ad project); FAL_KEY only for the legacy path.
 """
 import argparse, json, os
 from pathlib import Path
 
 
+def transcribe_proxy(vo_url):
+    """Proxy-routed Whisper (bills the Ads agent). Needs media_proxy.py on sys.path —
+    the orchestrator fetches it with the create-vo-elevenlabs / media-proxy capability."""
+    from media_proxy import fal_whisper
+    return fal_whisper(vo_url)
+
+
 def transcribe_fal(vo_path):
+    """Legacy: a raw FAL_KEY in the env (NOT proxy-routed — does not bill the Ads agent)."""
     import fal_client
     if "FAL_KEY" not in os.environ and "FAL_API_KEY" in os.environ:
         os.environ["FAL_KEY"] = os.environ["FAL_API_KEY"]
@@ -60,9 +75,11 @@ def main():
     ap = argparse.ArgumentParser(description="Snap beats to VO word onsets.")
     ap.add_argument("--config", required=True)
     ap.add_argument("--work-dir", required=True)
-    ap.add_argument("--vo", help="VO mp3 (defaults to config.vo)")
+    ap.add_argument("--vo", help="VO mp3 (defaults to config.vo) — legacy raw-FAL_KEY path")
+    ap.add_argument("--vo-url", help="presigned PUBLIC url of the rendered VO → proxy Whisper (preferred)")
+    ap.add_argument("--words-file", help="pre-fetched words-flat.json → skip transcription")
     ap.add_argument("--no-whisper", action="store_true",
-                    help="skip FAL; keep config durations (offline fallback)")
+                    help="skip transcription; keep config durations (offline; NO captions)")
     a = ap.parse_args()
 
     cfg = json.load(open(a.config))
@@ -72,12 +89,21 @@ def main():
     vo = a.vo or cfg.get("vo")
 
     words = []
-    if not a.no_whisper and vo and os.path.exists(vo):
-        print(f"[whisper] transcribing {vo}")
+    if a.words_file:
+        words = json.load(open(a.words_file))
+        print(f"[whisper] loaded {len(words)} words from {a.words_file}")
+    elif a.no_whisper:
+        print("[whisper] skipped — using config beat durations un-snapped")
+    elif a.vo_url:
+        print("[whisper] transcribing via proxy (bills the Ads agent)")
+        words = transcribe_proxy(a.vo_url)
+        print(f"[whisper] {len(words)} words: " + " ".join(w["text"] for w in words)[:200])
+    elif vo and os.path.exists(vo) and ("FAL_KEY" in os.environ or "FAL_API_KEY" in os.environ):
+        print(f"[whisper] transcribing {vo} via legacy FAL_KEY (not proxy-billed)")
         words = transcribe_fal(vo)
         print(f"[whisper] {len(words)} words: " + " ".join(w["text"] for w in words)[:200])
     else:
-        print("[whisper] skipped — using config beat durations un-snapped")
+        print("[whisper] no --vo-url / --words-file / FAL_KEY — durations un-snapped, no captions")
 
     (work / "whisper" / "words-flat.json").write_text(json.dumps(words, indent=2))
 

@@ -55,21 +55,30 @@ def concat_silent(beats, frames_dir, work, fps):
     return out
 
 
-def mix_audio(vo, music, work, music_db, tail_fade):
+def mix_audio(vo, music, work, music_db, tail_fade, video_dur=None):
+    """Mix VO (+ optional music) → an m4a as long as the VIDEO. The final `burn` uses
+    -shortest, so if the audio is shorter than the video (the normal case — the end card
+    holds a beat past the last spoken word) the end-card hold gets silently truncated.
+    Pad the audio to `video_dur` so the hold survives. `apad` runs BEFORE amix's
+    duration=first collapses length, so the padded VO drives the output length."""
     out = work / "mixed-audio.m4a"
+    # apad the VO bus to the full video length (harmless no-op when video_dur is None).
+    pad = f",apad=whole_dur={video_dur:.3f}" if video_dur else ""
     if music and os.path.exists(music):
         vo_dur = ffprobe_dur(vo)
-        fc = (f"[1:a]volume={music_db}dB,"
-              f"afade=t=out:st={max(0, vo_dur - tail_fade):.2f}:d={tail_fade}[m];"
-              f"[0:a][m]amix=inputs=2:duration=first:normalize=0[a]")
+        fc = (f"[0:a]apad=whole_dur={video_dur:.3f}[vo];" if video_dur else "[0:a]anull[vo];")
+        fc += (f"[1:a]volume={music_db}dB,"
+               f"afade=t=out:st={max(0, (video_dur or vo_dur) - tail_fade):.2f}:d={tail_fade}[m];"
+               f"[vo][m]amix=inputs=2:duration=first:normalize=0[a]")
         run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(vo), "-i", str(music),
              "-filter_complex", fc, "-map", "[a]",
              "-c:a", "aac", "-b:a", "192k", "-ar", "44100", str(out)])
-        print(f"[mix] {out} (VO + music@{music_db}dB)")
+        print(f"[mix] {out} (VO + music@{music_db}dB, padded to {video_dur or vo_dur:.2f}s)")
     else:
         run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(vo),
-             "-c:a", "aac", "-b:a", "192k", "-ar", "44100", str(out)])
-        print(f"[mix] {out} (VO only)")
+             "-af", f"anull{pad}", "-c:a", "aac", "-b:a", "192k", "-ar", "44100", str(out)])
+        print(f"[mix] {out} (VO only, padded to {video_dur:.2f}s)" if video_dur
+              else f"[mix] {out} (VO only)")
     return out
 
 
@@ -123,7 +132,8 @@ def main():
     tail_fade = mix_cfg.get("tail_fade", 0.8)
 
     silent = concat_silent(beats, frames_dir, work, fps)
-    audio = mix_audio(vo, music, work, music_db, tail_fade)
+    # Pad audio to the silent video's real length so -shortest keeps the full end-card hold.
+    audio = mix_audio(vo, music, work, music_db, tail_fade, video_dur=ffprobe_dur(silent))
     final = burn(silent, audio, captions, a.out)
 
     md = ffprobe_dur(final)

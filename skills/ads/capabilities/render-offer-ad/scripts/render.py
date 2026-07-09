@@ -32,8 +32,31 @@ import subprocess
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-CAP_DIR = os.path.dirname(HERE)
-PROJECT_DIR = os.path.join(CAP_DIR, "project")
+
+
+def _resolve_project_dir() -> str:
+    """Locate the bundled Remotion project/ dir robustly.
+
+    Works whether render.py runs from the REPO layout (capability/scripts/render.py
+    → ../project) OR from a FETCHED layout: `gooseworks fetch` flattens the scripts/
+    prefix, so render.py lands at the capability root and project/ is a sibling
+    (→ ./project). Try both, then a short upward walk; match on package.json.
+    """
+    candidates = [
+        os.path.join(HERE, "project"),                    # fetched: render.py at cap root
+        os.path.join(os.path.dirname(HERE), "project"),   # repo: render.py in scripts/
+    ]
+    d = HERE
+    for _ in range(4):
+        d = os.path.dirname(d)
+        candidates.append(os.path.join(d, "project"))
+    for c in candidates:
+        if os.path.isfile(os.path.join(c, "package.json")):
+            return c
+    return os.path.join(os.path.dirname(HERE), "project")  # repo-layout default
+
+
+PROJECT_DIR = _resolve_project_dir()
 COMPOSITION_ID = "offer-ad"
 
 # ---- physical-format → allowed claim vocabulary (gating check a) -----------
@@ -44,6 +67,11 @@ FORMAT_VOCAB = {
     "gummy": {"chew", "gummy", "gummies", "bite"},
     "cream": {"apply", "rub", "spread", "dab", "massage"},
     "serum": {"drop", "apply", "dropper", "absorb"},
+    # digital products (SaaS / software / app) — the mechanism is the workflow, not a
+    # physical action. Recognized so the gate doesn't WARN "unknown"; no forbidden set.
+    "software": {"search", "prompt", "click", "type", "sync", "one"},
+    "saas": {"search", "prompt", "click", "type", "sync", "one"},
+    "app": {"search", "prompt", "click", "tap", "type", "sync"},
 }
 # vocab that belongs to a DIFFERENT format and must NOT appear (mismatch flag)
 FORMAT_FORBIDDEN = {
@@ -53,6 +81,10 @@ FORMAT_FORBIDDEN = {
     "gummy": {"scoop", "sip", "swallow"},
     "cream": {"drink", "sip", "chew", "swallow"},
     "serum": {"drink", "chew", "swallow"},
+    # digital products have no physical-format vocabulary to collide with.
+    "software": set(),
+    "saas": set(),
+    "app": set(),
 }
 
 
@@ -101,6 +133,18 @@ def gate_mechanism_prop(cfg: dict) -> None:
             "static. Got: "
             + repr(cfg.get("mechanism_prop"))
         )
+
+
+def clean_cta_label(label: str) -> str:
+    """Scene04 ALWAYS appends its own '→' arrow. Strip a trailing arrow (and
+    whitespace) the operator may have typed into cta_label so it never renders a
+    double arrow ('Try it → →')."""
+    s = str(label).rstrip()
+    for arrow in ("→", "->", "➔", "➜", "»", "▶", "➡"):
+        if s.endswith(arrow):
+            s = s[: -len(arrow)].rstrip()
+            break
+    return s
 
 
 def stage_asset(src: str, public_dir: str, dest_name: str) -> str:
@@ -155,7 +199,7 @@ def build_props(cfg: dict, public_dir: str) -> dict:
             "subline": copy.get("subline", ""),
             "motif_chip": copy.get("motif_chip", ""),
             "claim_lines": copy["claim_lines"],
-            "cta_label": copy["cta_label"],
+            "cta_label": clean_cta_label(copy["cta_label"]),
             "cta_url": copy["cta_url"],
             "wordmark": copy["wordmark"],
         },

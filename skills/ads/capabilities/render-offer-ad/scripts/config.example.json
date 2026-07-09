@@ -1,5 +1,11 @@
 {
   "_comment": "Illustrative worked example — brand-neutralised from the validated 'drinkable collagen' offer-ad run. The recipe binds a NEW brand's own product photo / palette / copy / music here. Replace every /abs/or/working/... path with a REAL absolute path or a runtime working/ path. ALL text is typeset in the engine (never AI-rendered). The ONLY composited bitmap is the REAL product photo (objectFit:contain, never stretched) — an AI-rendered packshot is an instant fail.",
+  "_notes": {
+    "cta_label": "Do NOT end cta_label with an arrow — Scene04 appends its own '→' (render.py also strips a stray trailing arrow, but keep the source clean).",
+    "mechanism_prop": "One of TWO engine presets only: 'spoon' (drinkable/liquid) or 'accent' (neutral bar; use for SaaS/software & anything non-CPG). Not arbitrary SVG.",
+    "product_format": "Optional. Physical: liquid/powder/capsule/gummy/cream/serum. Digital: software/saas/app. Omit for a product that fits none → the claim-matches-format gate skips.",
+    "saas": "For a SaaS/software product: product_hero_image = a REAL app UI screenshot (keeps its own bg — fine), product_format = 'saas', mechanism_prop = 'accent'."
+  },
 
   "product_hero_image": "/abs/or/working/raw-materials/product-hero.webp",
   "product_format": "liquid",
