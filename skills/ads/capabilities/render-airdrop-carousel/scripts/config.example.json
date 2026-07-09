@@ -1,0 +1,23 @@
+{
+  "_comment": "Brand-neutral example. The recipe binds a real brand's own line, product photos, and payoff here. Every path is an absolute-path placeholder to REPLACE — never a repo-relative or /Users path. Duration is DERIVED = first_hold + (N-1)*per + final_hold; add images or raise `per` to lengthen (never trim the audio short). Use 6-16 REAL product photos; end on a lineup/range payoff. Chroma contract is load-bearing: neither #00e000 green nor #ff00ff magenta may appear in the card art or any product photo.",
+  "brand": "acme.",
+  "message": "would like to share a candle",
+  "tagline": "The bestselling collection - 4.9 stars",
+  "wordmark_svg": "/abs/path/brand-wordmark.svg",
+  "accent": "#d98695",
+  "band_color": "#f5e9da",
+  "width": 1080,
+  "height": 1920,
+  "images": [
+    "/abs/path/products/hero-01.png",
+    "/abs/path/products/hero-02.png",
+    "/abs/path/products/hero-03.png",
+    "/abs/path/products/hero-04.png",
+    "/abs/path/products/hero-05.png",
+    "/abs/path/products/hero-06.png",
+    "/abs/path/products/hero-07.png",
+    "/abs/path/products/hero-08.png"
+  ],
+  "final_image": "/abs/path/products/lineup-family.jpg",
+  "timing": { "per": 0.34, "first_hold": 1.0, "final_hold": 2.1, "slide": 0.72 }
+}

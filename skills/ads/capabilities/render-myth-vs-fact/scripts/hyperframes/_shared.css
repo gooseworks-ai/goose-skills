@@ -1,0 +1,183 @@
+/* render-myth-vs-fact — shared tokens + scaffold for 1080x1920 9:16.
+ * Ported (generalized, brand-neutral) from the validated Clinikally "acne myths" run.
+ * The whole video is driven off these five CSS-var tokens — render_beats.py overwrites
+ * them per run from config.palette. NO off-palette accents. */
+
+:root {
+  /* --- palette tokens (config.palette overrides these at render time) --- */
+  --bg:           #F4F1F7;  /* scene background */
+  --myth-strike:  #C0392B;  /* red MYTH strike bar */
+  --fact-accent:  #108474;  /* teal FACT check / accent */
+  --headline-ink: #411A1F;  /* wordmark + headline ink */
+  --accent:       #5E3FA0;  /* secondary accent */
+
+  /* derived surfaces (kept in sync with --bg by applyPalette-friendly defaults) */
+  --paper-warm: #FBFAFD;
+  --ink:        #2A2326;
+  --ink-72: rgba(42,35,38,0.72);
+  --ink-56: rgba(42,35,38,0.56);
+  --ink-40: rgba(42,35,38,0.40);
+  --ink-12: rgba(42,35,38,0.12);
+
+  /* --f-display / --f-body are set from config.display_font by render_beats.py */
+  --f-display: 'DM Serif Display', 'Fraunces', Georgia, serif;
+  --f-body:    'Inter', -apple-system, 'Segoe UI', Helvetica, sans-serif;
+
+  /* 88% safe area: 1080 wide -> ~96px side pad; 1920 tall -> ~150px top/bottom */
+  --pad-x: 96px;
+  --pad-y: 150px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--bg); }
+body {
+  width: 1080px;
+  height: 1920px;
+  font-family: var(--f-body);
+  color: var(--ink);
+  overflow: hidden;
+  position: relative;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Two background atmospheres: cool (myth) and warm (turn/actives). */
+.bg {
+  position: absolute; inset: 0; z-index: 0;
+  background:
+    radial-gradient(ellipse 80% 55% at 50% -8%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 70%),
+    radial-gradient(ellipse 70% 45% at 100% 112%, color-mix(in srgb, var(--fact-accent) 8%, transparent), transparent 70%),
+    var(--bg);
+}
+.bg.warm {
+  background:
+    radial-gradient(ellipse 90% 60% at 50% -6%, color-mix(in srgb, var(--fact-accent) 16%, transparent), transparent 72%),
+    radial-gradient(ellipse 70% 50% at 0% 110%, color-mix(in srgb, var(--fact-accent) 14%, transparent), transparent 72%),
+    var(--paper-warm);
+}
+.bg.white { background: var(--paper-warm); }
+
+.stage { position: absolute; inset: 0; padding: var(--pad-y) var(--pad-x); z-index: 1; }
+
+/* eyebrow */
+.eyebrow {
+  position: absolute;
+  top: var(--pad-y); left: var(--pad-x); right: var(--pad-x);
+  font-family: var(--f-body);
+  font-size: 30px; font-weight: 700; letter-spacing: 6px;
+  text-transform: uppercase; color: var(--ink-56);
+}
+
+/* card chrome (MYTH / FACT tags) */
+.card-num {
+  font-family: var(--f-body);
+  font-size: 26px; font-weight: 700; letter-spacing: 4px; text-transform: uppercase;
+  color: var(--ink-40);
+}
+.tag {
+  display: inline-block; font-family: var(--f-body);
+  font-size: 28px; font-weight: 800; letter-spacing: 4px; text-transform: uppercase;
+  padding: 12px 26px; border-radius: 999px;
+}
+.tag.myth { background: color-mix(in srgb, var(--myth-strike) 12%, transparent); color: var(--myth-strike); }
+.tag.fact { background: color-mix(in srgb, var(--fact-accent) 14%, transparent); color: var(--fact-accent); }
+
+/* MYTH line — quoted lie with a per-line strike bar */
+.myth-line {
+  position: relative; display: inline-block;
+  font-family: var(--f-body);
+  font-weight: 700; font-size: 78px; line-height: 1.06; letter-spacing: -1.5px;
+  color: var(--headline-ink);
+}
+
+/* FACT block — accent check + payload */
+.fact-block { display: flex; align-items: flex-start; gap: 26px; }
+.check {
+  flex: 0 0 auto; width: 84px; height: 84px; border-radius: 50%;
+  background: var(--fact-accent);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 50px; font-weight: 800; line-height: 1;
+  box-shadow: 0 14px 34px color-mix(in srgb, var(--fact-accent) 30%, transparent);
+}
+.fact-text {
+  font-family: var(--f-body);
+  font-weight: 600; font-size: 60px; line-height: 1.12; letter-spacing: -1px;
+  color: var(--ink);
+}
+.fact-text .hot { color: var(--fact-accent); font-weight: 700; }
+
+/* hero / statement type */
+.h-hero {
+  font-family: var(--f-display);
+  font-weight: 400; font-size: 116px; line-height: 1.02; letter-spacing: -2px;
+  color: var(--headline-ink);
+}
+.h-hero em { font-style: italic; color: var(--accent); }
+.h-statement {
+  font-family: var(--f-display);
+  font-weight: 400; font-size: 128px; line-height: 1.0; letter-spacing: -2.5px;
+  color: var(--headline-ink);
+}
+.h-statement em { font-style: italic; color: var(--fact-accent); }
+.sub {
+  font-family: var(--f-body);
+  font-size: 46px; font-weight: 500; line-height: 1.3; letter-spacing: -0.3px;
+  color: var(--ink-72);
+}
+.sub b { color: var(--fact-accent); font-weight: 700; }
+
+/* proof / active pills (proof beat) */
+.active-pill {
+  display: flex; align-items: center; justify-content: space-between; gap: 24px;
+  background: var(--paper-warm);
+  border: 2px solid color-mix(in srgb, var(--fact-accent) 30%, transparent);
+  border-radius: 22px; padding: 34px 40px;
+  box-shadow: 0 12px 32px color-mix(in srgb, var(--fact-accent) 10%, transparent);
+}
+.active-pill .name {
+  font-family: var(--f-body);
+  font-weight: 700; font-size: 62px; letter-spacing: -1px; color: var(--headline-ink);
+}
+.active-pill .rx {
+  font-family: var(--f-body);
+  font-weight: 800; font-size: 30px; letter-spacing: 2px;
+  color: #fff; background: var(--fact-accent); padding: 10px 20px; border-radius: 12px;
+}
+.footnote {
+  font-family: var(--f-body);
+  font-size: 36px; font-weight: 500; letter-spacing: 0.2px; line-height: 1.35;
+  color: var(--ink-56);
+}
+.footnote b { color: var(--fact-accent); font-weight: 700; }
+
+/* FACT clause chain (multi-clause fact reveal) */
+.chain { display: flex; flex-direction: column; gap: 22px; }
+.chain .clause { display: flex; align-items: center; gap: 22px; opacity: 0; }
+.chain .dot { flex: 0 0 auto; width: 22px; height: 22px; border-radius: 50%; background: var(--fact-accent); }
+.chain .ctext {
+  font-family: var(--f-body);
+  font-weight: 600; font-size: 56px; line-height: 1.1; letter-spacing: -0.8px; color: var(--ink);
+}
+.chain .ctext.hot { color: var(--fact-accent); font-weight: 700; }
+
+/* punch beat */
+.h-punch {
+  font-family: var(--f-display);
+  font-weight: 400; font-size: 156px; line-height: 0.98; letter-spacing: -3px;
+  color: var(--headline-ink); text-align: center;
+}
+
+/* wordmark bottom (small, unobtrusive) */
+.wordmark {
+  position: absolute;
+  bottom: 92px; left: 0; right: 0; text-align: center;
+  font-family: var(--f-display);
+  font-weight: 400; font-size: 38px; letter-spacing: 0.5px;
+  color: var(--headline-ink);
+}
+
+/* centered layout helper (turn / punch) */
+.center {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 0 var(--pad-x); text-align: center;
+}

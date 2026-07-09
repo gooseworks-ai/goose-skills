@@ -1,6 +1,6 @@
 {
   "version": "1.2.0",
-  "generated": "2026-07-07",
+  "generated": "2026-07-09",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -5018,6 +5018,116 @@
       }
     },
     {
+      "slug": "render-3d-character-explainer",
+      "name": "render-3d-character-explainer",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Assemble a glossy 3D-character animated-explainer video ad (~77s, 9:16) built on an \"N types of X\" listicle spine — a recurring human protagonist plus a locked cast of N persona characters, one per list item. Given the per-scene i2v clips + a per-scene target-duration table + a narration track, it trims each clip to its scene window, re-encodes every segment to identical 1080x1920/30fps/libx264/yuv420p (decrease+pad, never crop) so the concat demuxer never drops frames, concats, and muxes audio — in RESTYLE mode the source ad's VO+music mix is reused verbatim, in ORIGINAL mode fresh per-scene VO (loudnorm I=-14) is mixed under an optional music bed (loudnorm I=-26). A static-still fallback loops a scene's keyframe when its clip is missing/failed, so the master always assembles; libass captions are burned last. FREE deterministic assembly (Python + ffmpeg, no bash, no paid calls); the recipe supplies the clips, keyframes, VO or source audio, and caption table and gates the paid cast-anchor/keyframe/Kling-i2v/VO/music calls to their own capabilities. Use for the 3d-character-explainer listicle format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-3d-character-explainer",
+      "files": [
+        "skills/ads/capabilities/render-3d-character-explainer/SKILL.md",
+        "skills/ads/capabilities/render-3d-character-explainer/scripts/compose.py",
+        "skills/ads/capabilities/render-3d-character-explainer/scripts/config.example.json",
+        "skills/ads/capabilities/render-3d-character-explainer/scripts/make_captions.py",
+        "skills/ads/capabilities/render-3d-character-explainer/skill.meta.json",
+        "skills/ads/capabilities/render-3d-character-explainer/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "render-3d-character-explainer",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-3d-character-explainer",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
+      "slug": "render-absurdist-explainer",
+      "name": "render-absurdist-explainer",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Assemble an absurdist animated-explainer video ad (~38s, 9:16) from per-scene i2v clips + their measured VO windows — retime each clip to its VO, re-encode every segment to identical 30fps/libx264/yuv420p so the concat demuxer never drops frames, concat, build a REAL-product PIL end card (never AI) with a slow Ken-Burns, mix VO (loudnorm I=-14) under music (loudnorm I=-26, volume 0.62, amix normalize=0), and burn libass captions last. FREE deterministic assembly (bash-free, Python + ffmpeg + PIL); the recipe supplies the clips, VO, music, product photo, palette, and caption table and gates the paid keyframe/clip/VO/music calls to their own capabilities. Use for the absurdist-explainer format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-absurdist-explainer",
+      "files": [
+        "skills/ads/capabilities/render-absurdist-explainer/SKILL.md",
+        "skills/ads/capabilities/render-absurdist-explainer/scripts/build_endcard.py",
+        "skills/ads/capabilities/render-absurdist-explainer/scripts/compose.py",
+        "skills/ads/capabilities/render-absurdist-explainer/scripts/config.example.json",
+        "skills/ads/capabilities/render-absurdist-explainer/scripts/make_captions.py",
+        "skills/ads/capabilities/render-absurdist-explainer/skill.meta.json",
+        "skills/ads/capabilities/render-absurdist-explainer/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "render-absurdist-explainer",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-absurdist-explainer",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
+      "slug": "render-airdrop-carousel",
+      "name": "render-airdrop-carousel",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Assemble a viral iOS \"AirDrop\" notification-carousel video ad (≈6–8s, 9:16) from a brand line plus 6–16 real product photos — a native AirDrop share-sheet card (\"Brand would like to share a ___ · Decline / Accept\") springs up and its preview window CYCLES through the products, landing on a range/lineup payoff with an Accept tap; a chime + soft per-swap ticks track the swaps. DETERMINISTIC assembly — an HTML card (real DOM text) rendered to PNG via headless Chrome, chroma-keyed, its magenta window refilled per-product in PIL, then animated + audio-synthed with FFmpeg. FREE (no paid model calls); the recipe supplies the brand line, product images, and payoff and gates the only optional paid step (a hero shot when the brand has NO usable photo → create-image-fal). Use for the airdrop-notification-carousel format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-airdrop-carousel",
+      "files": [
+        "skills/ads/capabilities/render-airdrop-carousel/SKILL.md",
+        "skills/ads/capabilities/render-airdrop-carousel/scripts/build_card.py",
+        "skills/ads/capabilities/render-airdrop-carousel/scripts/compose_carousel.py",
+        "skills/ads/capabilities/render-airdrop-carousel/scripts/config.example.json",
+        "skills/ads/capabilities/render-airdrop-carousel/scripts/one_shot.py",
+        "skills/ads/capabilities/render-airdrop-carousel/skill.meta.json",
+        "skills/ads/capabilities/render-airdrop-carousel/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "render-airdrop-carousel",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-airdrop-carousel",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
       "slug": "render-cgi-sizzle",
       "name": "render-cgi-sizzle",
       "category": "capabilities",
@@ -5350,6 +5460,101 @@
         ],
         "installation": {
           "base_command": "npx goose-skills install render-multiworld",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
+      "slug": "render-myth-vs-fact",
+      "name": "render-myth-vs-fact",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Assemble a myth-vs-fact kinetic-typography explainer video ad (≈29.5s, 9:16) from N myth/fact pairs + hook / turn / punch copy + palette + a brand end-card PNG + a VO track — a hook, 3 red-strike MYTH cards that flip to teal-check FACT cards (per-line strikethrough that crosses EVERY wrapped line), a \"what actually works\" turn, an optional proof reveal, a punch line, and a static end card. DETERMINISTIC assembly with ZERO AI-gen visuals — HTML hyperframes rendered frame-exact via Playwright (`window.renderAt(t)`, animation a pure function of beat-local time), Whisper beat-snap to VO word onsets, concat at a uniform fps, karaoke `.ass` captions burned last (suppressed on the proof + end-card beats), and a VO + optional music mix (music −20 dB, `amix normalize=0`, tail fade). FREE (Python + Playwright + ffmpeg); the recipe supplies the copy / palette / end-card / VO and gates the paid VO / music / Whisper calls to their own capabilities. Use for the myth-vs-fact format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-myth-vs-fact",
+      "files": [
+        "skills/ads/capabilities/render-myth-vs-fact/SKILL.md",
+        "skills/ads/capabilities/render-myth-vs-fact/scripts/beat_snap.py",
+        "skills/ads/capabilities/render-myth-vs-fact/scripts/compose.py",
+        "skills/ads/capabilities/render-myth-vs-fact/scripts/config.example.json",
+        "skills/ads/capabilities/render-myth-vs-fact/scripts/hyperframes/_shared.css",
+        "skills/ads/capabilities/render-myth-vs-fact/scripts/hyperframes/_shared.js",
+        "skills/ads/capabilities/render-myth-vs-fact/scripts/hyperframes/beat-hook.html",
+        "skills/ads/capabilities/render-myth-vs-fact/scripts/hyperframes/beat-myth-fact.html",
+        "skills/ads/capabilities/render-myth-vs-fact/scripts/hyperframes/beat-proof.html",
+        "skills/ads/capabilities/render-myth-vs-fact/scripts/hyperframes/beat-punch.html",
+        "skills/ads/capabilities/render-myth-vs-fact/scripts/hyperframes/beat-turn.html",
+        "skills/ads/capabilities/render-myth-vs-fact/scripts/make_captions.py",
+        "skills/ads/capabilities/render-myth-vs-fact/scripts/render_beats.py",
+        "skills/ads/capabilities/render-myth-vs-fact/skill.meta.json",
+        "skills/ads/capabilities/render-myth-vs-fact/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "render-myth-vs-fact",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-myth-vs-fact",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
+      "slug": "render-offer-ad",
+      "name": "render-offer-ad",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Render a punchy ~12s vertical (9:16) music-only direct-response OFFER ad as a 4-beat kinetic-typography film — HEADLINE slam → real PRODUCT drop → CLAIM/proof → CTA pill — from one config of copy slots, a real product photo, a brand palette, fonts, bpm, and beat split. DETERMINISTIC + FREE (a bundled Remotion project; springs + interpolate, no AI-gen for visuals). Backgrounds are engine gradient divs off the palette, props are inline SVG, the ONLY composited bitmap is the REAL product photo (objectFit:contain, never stretched), and ALL headline/claim/CTA/URL/wordmark text is typeset in the engine — never AI-rendered (the format's credibility guard). A driver binds the config to Remotion input props, renders the 9:16 master, and derives a 1:1 center-crop with ffmpeg. Two gating checks run before render (claim verbs must match the product's physical format; the claim beat needs an edge-entry mechanism prop). Use for the motion-graphics-offer-ad format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-offer-ad",
+      "files": [
+        "skills/ads/capabilities/render-offer-ad/SKILL.md",
+        "skills/ads/capabilities/render-offer-ad/project/.gitignore",
+        "skills/ads/capabilities/render-offer-ad/project/package.json",
+        "skills/ads/capabilities/render-offer-ad/project/public/.gitkeep",
+        "skills/ads/capabilities/render-offer-ad/project/remotion.config.ts",
+        "skills/ads/capabilities/render-offer-ad/project/src/Main.tsx",
+        "skills/ads/capabilities/render-offer-ad/project/src/Root.tsx",
+        "skills/ads/capabilities/render-offer-ad/project/src/fonts.ts",
+        "skills/ads/capabilities/render-offer-ad/project/src/index.ts",
+        "skills/ads/capabilities/render-offer-ad/project/src/lib/anim.ts",
+        "skills/ads/capabilities/render-offer-ad/project/src/props.ts",
+        "skills/ads/capabilities/render-offer-ad/project/src/scenes/Scene01.tsx",
+        "skills/ads/capabilities/render-offer-ad/project/src/scenes/Scene02.tsx",
+        "skills/ads/capabilities/render-offer-ad/project/src/scenes/Scene03.tsx",
+        "skills/ads/capabilities/render-offer-ad/project/src/scenes/Scene04.tsx",
+        "skills/ads/capabilities/render-offer-ad/project/tsconfig.json",
+        "skills/ads/capabilities/render-offer-ad/scripts/config.example.json",
+        "skills/ads/capabilities/render-offer-ad/scripts/render.py",
+        "skills/ads/capabilities/render-offer-ad/skill.meta.json",
+        "skills/ads/capabilities/render-offer-ad/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "render-offer-ad",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-offer-ad",
           "supports": [
             "claude",
             "cursor",

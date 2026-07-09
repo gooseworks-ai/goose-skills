@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8" />
+<title>beat · Hook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="_shared.css">
+<style>
+  .eyebrow .quo { position: relative; display: inline-block; color: var(--headline-ink); }
+  .hero-stack { position: absolute; top: 540px; left: var(--pad-x); right: var(--pad-x); }
+  .word { display: inline-block; opacity: 0; transform: translateY(34px); white-space: pre; }
+</style>
+</head><body>
+<div class="bg"></div>
+<div class="stage">
+  <div class="eyebrow" id="eyebrow"></div>
+  <div class="hero-stack"><h1 class="h-hero" id="hero"></h1></div>
+  <div class="wordmark" id="wm" style="opacity:0"></div>
+</div>
+<!-- In-browser preview fallback. render_beats.py injects window.BEAT to override. -->
+<script id="beat-spec" type="application/json">
+{ "duration": 3.97, "palette": {}, "eyebrow": "3 ACNE \"TIPS\"",
+  "hook_line": "Tips a dermatologist would never give.",
+  "emphasis": "never", "brand_name": "Brand", "strike_word": "TIPS",
+  "cues": { "strike": [2.89, 3.40], "wordmark": [3.45, 3.85] } }
+</script>
+<script src="_shared.js"></script>
+<script>
+  const BEAT = loadBeatSpec();
+  applyPalette(BEAT.palette);
+
+  const eyebrowEl = document.getElementById('eyebrow');
+  const heroEl = document.getElementById('hero');
+  const wm = document.getElementById('wm');
+  wm.textContent = BEAT.brand_name || '';
+
+  // Eyebrow: wrap the strike_word (if present) in a strikeable span.
+  const sw = BEAT.strike_word;
+  if (sw && BEAT.eyebrow && BEAT.eyebrow.includes(sw)) {
+    eyebrowEl.innerHTML = BEAT.eyebrow.replace(sw, `<span class="quo" id="quo">${sw}</span>`);
+  } else {
+    eyebrowEl.textContent = BEAT.eyebrow || '';
+  }
+  const quo = document.getElementById('quo');
+
+  // Hook line: split into words for a staggered reveal, italicizing the emphasis word.
+  const emph = (BEAT.emphasis || '').toLowerCase();
+  const toks = (BEAT.hook_line || '').split(/\s+/);
+  heroEl.innerHTML = toks.map((w, i) => {
+    const bare = w.replace(/[^a-z]/gi, '').toLowerCase();
+    const inner = (emph && bare === emph) ? `<em>${w}</em>` : w;
+    return `<span class="word" data-i="${i}">${inner}</span>`;
+  }).join(' ');
+  const words = Array.from(document.querySelectorAll('.word'));
+  // Even stagger across the first ~65% of the beat.
+  const dur = BEAT.duration || 3.97;
+  const starts = words.map((_, i) => 0.30 + (i / Math.max(1, words.length)) * dur * 0.55);
+
+  let bars = null;
+  const strikeWin = (BEAT.cues && BEAT.cues.strike) || [dur * 0.72, dur * 0.86];
+  const wmWin = (BEAT.cues && BEAT.cues.wordmark) || [dur - 0.5, dur - 0.1];
+
+  initRenderer(dur, function (t) {
+    if (quo && !bars) bars = buildLineStrikes(quo, quo, { thickness: 6, radius: 3 });
+    eyebrowEl.style.opacity = tw(t, 0.00, 0.40);
+    eyebrowEl.style.transform = `translateY(${(1 - tw(t, 0, 0.40)) * -16}px)`;
+    revealWords(words, starts, t, 0.26, 34);
+    if (bars) strikeLines(bars, t, strikeWin[0], strikeWin[1]);
+    wm.style.opacity = tw(t, wmWin[0], wmWin[1]) * 0.9;
+  });
+</script>
+</body></html>

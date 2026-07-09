@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8" />
+<title>beat · Myth -> Fact</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="_shared.css">
+<style>
+  .myth-wrap { position: absolute; top: 420px; left: var(--pad-x); right: var(--pad-x); }
+  .tag { opacity: 0; }
+  .myth-line { margin-top: 34px; opacity: 0; }
+  .fact-wrap { position: absolute; top: 1010px; left: var(--pad-x); right: var(--pad-x); }
+  .fact-tag { opacity: 0; margin-bottom: 30px; }
+  .fact-block { opacity: 0; }
+</style>
+</head><body>
+<div class="bg"></div>
+<div class="stage">
+  <div class="myth-wrap">
+    <div class="tag myth" id="mtag">Myth</div>
+    <div class="myth-line" id="myth"><span class="myth-text" id="mythtext"></span></div>
+  </div>
+  <div class="fact-wrap">
+    <div class="tag fact fact-tag" id="ftag">Fact</div>
+    <!-- single-payload FACT block (default) -->
+    <div class="fact-block" id="fact">
+      <div class="check">&#10003;</div>
+      <div class="fact-text" id="facttext"></div>
+    </div>
+    <!-- multi-clause FACT chain (used when spec.fact_clauses is present) -->
+    <div class="chain" id="chain" style="display:none"></div>
+  </div>
+</div>
+<script id="beat-spec" type="application/json">
+{ "duration": 3.44, "palette": {}, "myth_index": "01",
+  "myth_line": "“Pop it and it clears faster.”",
+  "fact_line": "Popping pushes bacteria deeper — [scars + dark marks.]",
+  "cues": { "strike": [1.36, 1.96], "fact": [2.14, 2.59] } }
+</script>
+<script src="_shared.js"></script>
+<script>
+  const BEAT = loadBeatSpec();
+  applyPalette(BEAT.palette);
+  const dur = BEAT.duration || 3.44;
+
+  const mtag = document.getElementById('mtag');
+  const myth = document.getElementById('myth');
+  const mythtext = document.getElementById('mythtext');
+  const ftag = document.getElementById('ftag');
+  const fact = document.getElementById('fact');
+  const facttext = document.getElementById('facttext');
+  const chainEl = document.getElementById('chain');
+
+  mtag.textContent = 'Myth ' + (BEAT.myth_index || '');
+  mythtext.textContent = BEAT.myth_line || '';
+
+  // FACT payload: text inside [square brackets] becomes the accented "hot" phrase.
+  function hotify(s) {
+    return (s || '').replace(/\[([^\]]+)\]/g, '<span class="hot">$1</span>');
+  }
+
+  const clauses = BEAT.fact_clauses;   // optional array of {text, hot?}
+  const cStarts = (BEAT.cues && BEAT.cues.clauses) || null;
+  if (clauses && clauses.length) {
+    fact.style.display = 'none';
+    chainEl.style.display = 'flex';
+    chainEl.innerHTML = clauses.map((c, i) =>
+      `<div class="clause" data-i="${i}"><span class="dot"></span>` +
+      `<span class="ctext${c.hot ? ' hot' : ''}">${c.text}</span></div>`).join('');
+  } else {
+    facttext.innerHTML = hotify(BEAT.fact_line);
+  }
+
+  let bars = null;
+  const strikeWin = (BEAT.cues && BEAT.cues.strike) || [dur * 0.24, dur * 0.42];
+  const factWin = (BEAT.cues && BEAT.cues.fact) || [dur * 0.60, dur * 0.75];
+  const clauseStarts = cStarts ||
+    (clauses ? clauses.map((_, i) => factWin[0] + i * 0.82) : []);
+
+  initRenderer(dur, function (t) {
+    if (!bars) bars = buildLineStrikes(mythtext, myth);
+    const m = popIn(t, 0.00, 0.45, 26);
+    mtag.style.opacity = m.opacity; mtag.style.transform = m.transform;
+    const ml = tw(t, 0.20, 0.70);
+    myth.style.opacity = ml; myth.style.transform = `translateY(${(1 - ml) * 24}px)`;
+    // red strike crosses EVERY wrapped line, sweeping L->R over the strike window.
+    strikeLines(bars, t, strikeWin[0], strikeWin[1]);
+    ftag.style.opacity = tw(t, factWin[0] - 0.16, factWin[0] + 0.19);
+    if (clauses && clauses.length) {
+      const cls = Array.from(chainEl.querySelectorAll('.clause'));
+      revealWords(cls, clauseStarts, t, 0.30, 26);
+    } else {
+      const f = tw(t, factWin[0], factWin[1]);
+      fact.style.opacity = f; fact.style.transform = `translateY(${(1 - f) * 30}px)`;
+    }
+  });
+</script>
+</body></html>
