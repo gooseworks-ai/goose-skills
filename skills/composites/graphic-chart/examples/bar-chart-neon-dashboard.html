@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 1080px; height: 1080px; overflow: hidden; }
+
+    :root {
+      --color-canvas: #F5F1EA;
+      --color-surface: #1F0E2E;
+      --color-accent: #F18CFF;
+      --color-accent-secondary: #F2E33A;
+      --color-border: rgba(255,255,255,0.10);
+      --text-primary: #FFFFFF;
+      --text-secondary: rgba(255,255,255,0.80);
+      --text-muted: rgba(255,255,255,0.45);
+      --font-display: 'Inter', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --chart-padding: 48px;
+      --card-radius: 28px;
+      --bar-radius: 8px;
+    }
+
+    body {
+      display: flex; flex-direction: column;
+      padding: var(--chart-padding);
+      background: var(--color-canvas);
+      font-family: var(--font-body);
+    }
+
+    .chart-card {
+      background: var(--color-surface);
+      border-radius: var(--card-radius);
+      padding: 48px;
+      flex: 1;
+      display: flex; flex-direction: column;
+    }
+
+    .pill { display: inline-block; padding: 6px 16px; border-radius: 999px; background: rgba(241,140,255,0.15); color: var(--color-accent); font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 16px; }
+    .chart-title { font-size: 42px; font-weight: 700; color: var(--text-primary); line-height: 1.1; margin-bottom: 8px; letter-spacing: -1px; }
+    .chart-context { font-size: 16px; color: var(--text-secondary); margin-bottom: 40px; }
+
+    .bar-chart { display: flex; align-items: flex-end; gap: 20px; flex: 1; padding-top: 24px; }
+    .bar-column { display: flex; flex-direction: column; align-items: center; gap: 12px; flex: 1; }
+    .bar-value { font-size: 20px; font-weight: 700; color: var(--text-primary); }
+    .bar { width: 100%; max-width: 100px; border-radius: var(--bar-radius) var(--bar-radius) 0 0; transition: height 0.3s; }
+    .bar.muted { background: rgba(255,255,255,0.08); }
+    .bar.highlight { background: var(--color-accent); box-shadow: 0 0 24px rgba(241,140,255,0.4); }
+    .bar.secondary { background: var(--color-accent-secondary); }
+    .bar-label { font-size: 14px; font-weight: 500; color: var(--text-muted); }
+
+    .grid-lines { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: space-between; pointer-events: none; z-index: 0; }
+    .grid-line { height: 1px; background: var(--color-border); }
+
+    .chart-body { position: relative; flex: 1; display: flex; flex-direction: column; }
+    .chart-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--color-border); }
+    .source { font-size: 11px; color: var(--text-muted); }
+    .branding { font-size: 11px; font-weight: 600; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; }
+  </style>
+</head>
+<body>
+  <div class="chart-card">
+    <span class="pill">Revenue</span>
+    <h1 class="chart-title">Q1 Revenue Growth</h1>
+    <p class="chart-context">Monthly recurring revenue, Jan–Jun 2026</p>
+
+    <div class="chart-body">
+      <div class="grid-lines">
+        <div class="grid-line"></div>
+        <div class="grid-line"></div>
+        <div class="grid-line"></div>
+        <div class="grid-line"></div>
+      </div>
+      <div class="bar-chart">
+        <div class="bar-column">
+          <span class="bar-value">$42K</span>
+          <div class="bar muted" style="height: 180px;"></div>
+          <span class="bar-label">Jan</span>
+        </div>
+        <div class="bar-column">
+          <span class="bar-value">$58K</span>
+          <div class="bar muted" style="height: 248px;"></div>
+          <span class="bar-label">Feb</span>
+        </div>
+        <div class="bar-column">
+          <span class="bar-value">$73K</span>
+          <div class="bar muted" style="height: 312px;"></div>
+          <span class="bar-label">Mar</span>
+        </div>
+        <div class="bar-column">
+          <span class="bar-value">$81K</span>
+          <div class="bar muted" style="height: 346px;"></div>
+          <span class="bar-label">Apr</span>
+        </div>
+        <div class="bar-column">
+          <span class="bar-value">$94K</span>
+          <div class="bar secondary" style="height: 402px;"></div>
+          <span class="bar-label">May</span>
+        </div>
+        <div class="bar-column">
+          <span class="bar-value">$112K</span>
+          <div class="bar highlight" style="height: 470px;"></div>
+          <span class="bar-label">Jun</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-footer">
+      <span class="source">Source: Internal Analytics</span>
+      <span class="branding">graphic-chart</span>
+    </div>
+  </div>
+</body>
+</html>
