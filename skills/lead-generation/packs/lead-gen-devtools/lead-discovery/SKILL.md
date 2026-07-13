@@ -3,7 +3,7 @@ name: lead-discovery
 description: Orchestrator that runs first for lead generation requests. Gathers business context via website analysis or questions, identifies competitors, builds ICP, and routes to signal skills with pre-filled inputs.
 user-invocable: true
 allowed-tools: Bash, Read, Write, Edit, Grep, Glob, WebFetch, WebSearch
-argument-hint: [website-url]
+argument-hint: "[website-url]"
 ---
 
 # Lead Discovery — Orchestrator
