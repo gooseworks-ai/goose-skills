@@ -1,6 +1,6 @@
 {
   "version": "1.2.0",
-  "generated": "2026-07-09",
+  "generated": "2026-07-13",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -5397,6 +5397,42 @@
             "codex"
           ]
         }
+      }
+    },
+    {
+      "slug": "render-model-comparison-grid",
+      "name": "render-model-comparison-grid",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Render a 'model comparison grid' video from a config — a fal-style \"same prompt, N contenders\" showcase — a dark real-DOM stage where per beat a monospace prompt fades in centered, docks to a small top strip, then a labeled 2-4 panel grid (static images OR muted video clips, mixable per cell) staggers in and holds for comparison, plus a minimal end card — frame-stepped via Playwright (video cells are frame-seeked deterministically) and encoded with FFmpeg. Deterministic assembly, FREE (cell media comes from create-image-fal / create-video-fal, music from create-music-elevenlabs), text stays pixel-crisp. Use for the model-comparison-grid format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-model-comparison-grid",
+      "files": [
+        "skills/ads/capabilities/render-model-comparison-grid/SKILL.md",
+        "skills/ads/capabilities/render-model-comparison-grid/scripts/build_composition.py",
+        "skills/ads/capabilities/render-model-comparison-grid/scripts/config.example.json",
+        "skills/ads/capabilities/render-model-comparison-grid/scripts/render_seekable_hyperframe.py",
+        "skills/ads/capabilities/render-model-comparison-grid/skill.meta.json",
+        "skills/ads/capabilities/render-model-comparison-grid/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "render-model-comparison-grid",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-model-comparison-grid",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
       }
     },
     {
