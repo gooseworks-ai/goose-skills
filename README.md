@@ -1,6 +1,6 @@
 <div align="center">
-
-<img width="1934" height="1910" alt="CleanShot 2026-07-02 at 13 46 24@2x" src="https://github.com/user-attachments/assets/9ab12011-ba78-457d-a64a-d50bb8e2a90a" />
+<img width="3148" height="1828" alt="CleanShot 2026-07-13 at 20 15 47@2x" src="https://github.com/user-attachments/assets/4984e98c-d53e-4191-a64a-59533cbc0847" />
+<img width="3350" height="1802" alt="CleanShot 2026-07-13 at 20 16 54@2x" src="https://github.com/user-attachments/assets/2e912363-8f86-4754-adc9-d6b23f798abd" />
 
 # Goose Skills
 
@@ -40,7 +40,7 @@ Works with [Claude Code](https://claude.ai/claude-code) &middot; [Cursor](https:
 ```
 Install the Gooseworks skills:
 
-In the terminal, run `npx gooseworks install` with the flag for your agent — `--claude`, `--cursor`, or `--codex`.
+In the terminal, run `npx gooseworks install --all`.
 
 Then run `npx gooseworks login` and it'll open a browser to sign in and set up the tools, then confirm it worked.
 
@@ -70,9 +70,6 @@ Prefer to run it yourself? Use the command directly:
 
 ```bash
 npx gooseworks install --all       # All detected agents
-npx gooseworks install --claude    # Claude Code
-npx gooseworks install --cursor    # Cursor
-npx gooseworks install --codex     # Codex
 ```
 
 This gives your coding agent access to the **full catalog of 200+ skills**. After installing, just ask your agent to use any skill by name.
@@ -117,10 +114,11 @@ Browse and search every skill at **[skills.gooseworks.ai](https://skills.goosewo
 After installing, just ask your coding agent naturally:
 
 ```
-"Use the reddit-post-finder skill to search r/startups"
-"Use the apollo-lead-finder skill to find CTOs at AI companies"
-"Use the competitor-intel skill to research Acme Corp"
-"Use the goose-graphics skill to create a LinkedIn carousel about our launch"
+"/gooseworks Generate static ad creatives for my brand"
+"/gooseworks Use the reddit-post-finder skill to search r/startups"
+"/gooseworks Use the apollo-lead-finder skill to find CTOs at AI companies"
+"/gooseworks Use the competitor-intel skill to research Acme Corp"
+"/gooseworks Use the goose-graphics skill to create a LinkedIn carousel about our launch"
 ```
 
 Your agent will search the GooseWorks catalog, download the skill, and run it automatically.
