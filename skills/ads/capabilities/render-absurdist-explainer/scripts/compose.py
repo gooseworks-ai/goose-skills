@@ -214,8 +214,11 @@ def main():
 
 
 def _ass_escape(path):
-    # ffmpeg filtergraph escaping for a filename inside ass=...
-    return path.replace("\\", "\\\\").replace(":", "\\:").replace("'", "\\'")
+    # ffmpeg filtergraph escaping for a filename inside ass='...': use FORWARD
+    # slashes — doubled backslashes break the ass filter's filename parse on
+    # Windows — and escape the drive colon, which otherwise terminates the
+    # option value.
+    return path.replace("\\", "/").replace(":", "\\:").replace("'", "\\'")
 
 
 if __name__ == "__main__":
