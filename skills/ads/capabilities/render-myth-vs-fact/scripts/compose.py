@@ -85,7 +85,11 @@ def mix_audio(vo, music, work, music_db, tail_fade, video_dur=None):
 def burn(silent, audio, captions, out):
     ass = str(Path(captions).resolve()) if captions and os.path.exists(captions) else None
     if ass:
-        vf = f"[0:v]ass='{ass}'[v]"
+        # Escape for the filtergraph: FORWARD slashes (doubled backslashes break
+        # the ass filter's filename parse on Windows) and escape the drive
+        # colon, which otherwise terminates the option value.
+        ass_esc = ass.replace("\\", "/").replace(":", "\\:").replace("'", "\\'")
+        vf = f"[0:v]ass='{ass_esc}'[v]"
         run(["ffmpeg", "-y", "-loglevel", "error",
              "-i", str(silent), "-i", str(audio),
              "-filter_complex", vf, "-map", "[v]", "-map", "1:a:0",
