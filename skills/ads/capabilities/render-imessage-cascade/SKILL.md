@@ -49,6 +49,11 @@ text starts ~150px from the banner's left edge. Change one, change both.
   brand's colors — the brand lives ONLY on the handle (bottom-right) + the end card.
 - **SF Pro for all banner text** (title Semibold ~38, body Regular ~36, NOW/handle ~25).
   Never AI-render text.
+- **No emoji in notification copy.** Banner text is drawn with PIL, which cannot
+  render color emoji — a 👀 or 🔥 in a title/body comes out as mojibake
+  (`ðŸ'€`) baked into the video. Keep the texting voice with words/punctuation
+  ("where's that tee from??"); emoji are fine in the Chromium-rendered chat
+  formats (imessage-chat / chatgpt-chat), just not here.
 - 3–5 notifications (more crowds the top / clips the pill); newest enters at the BOTTOM,
   so banner 1 is the oldest and ends up on TOP.
 - ✕-clear then end card (a real hand-swipe needs a paid i2v — out of scope here).
