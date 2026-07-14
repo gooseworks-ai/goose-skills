@@ -25,7 +25,6 @@ This atom encodes the protocol that landed and ships it as the default. Operator
 - `--vo-volume <float>` — per-clip VO volume multiplier (default `3.0`)
 - `--vo-mix-volume <float>` — extra mix-bus volume on VO (default `2.0`)
 - `--music-volume <float>` — base music volume (default `0.13`)
-- `--music-swell-volume <float>` — peak music volume during apad/swell (default `0.21`)
 - `--sidechain-ratio <float>` — sidechain ratio, capped at 20 by FFmpeg (default `20`)
 - `--sidechain-threshold <float>` — sidechain threshold (default `0.01`)
 - `--target-i <lufs>` — VO loudnorm integrated target (default `-16`)
