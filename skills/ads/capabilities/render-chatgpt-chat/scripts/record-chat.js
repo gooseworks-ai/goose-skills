@@ -345,7 +345,7 @@ window.__START_DRIVER__ = function () { ${driverFn} };
   await page.evaluate(() => window.__START_DRIVER__ && window.__START_DRIVER__());
 
   // 5) Wait for the driver to flag done, then flush the recording.
-  await page.waitForFunction(() => window.__DONE__ === true, { timeout: totalDurMs + 5000, polling: 100 });
+  await page.waitForFunction(() => window.__DONE__ === true, undefined, { timeout: totalDurMs + 5000, polling: 100 });
   const video = page.video();
   await page.close();
   await ctx.close();
