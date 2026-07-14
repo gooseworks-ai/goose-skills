@@ -36,7 +36,7 @@ Use this atom when:
 Required:
 - `--prompt` — structured prompt block (see "Prompt template" below). Long, multi-block. Reference run example: `beauty-by-earth/video-01-three-product-grwm/working/fire_seedance_facewash.py`.
 - `--output` — local MP4 destination.
-- `--image-ref` — at least one reference image (repeatable). The atom uploads each and passes as `image_urls`. Order matters — first ref = `@Image1` in prompt addressing.
+- `--image-url` (alias `--image-ref`) — at least one **PUBLIC** reference image URL (repeatable), passed as `image_urls`. Order matters — first = `@Image1` in prompt addressing. The proxy does NOT upload local files: host local refs via MCP `get_upload_url` → `get_download_url` and pass the URL (identical to `create-video-fal`).
 
 Optional:
 - `--resolution` — `480p` | `720p` | `1080p` (default). 1080p meaningfully better for product label fidelity.
@@ -44,10 +44,9 @@ Optional:
 - `--aspect-ratio` — `9:16` (default), `16:9`, `1:1`, etc.
 - `--generate-audio` — bool, default true. Set false for silent B-roll where VO is added post.
 - `--seed` — integer for deterministic re-runs (FAL returns a seed; pass it back to reproduce).
-- `--with-logs` — stream FAL queue updates to stdout.
 
 Credentials:
-- `FAL_API_KEY` (or `FAL_KEY`) in `.env`.
+- **No FAL key.** Routes through the GooseWorks FAL proxy (`media_proxy.py`, bundled) and bills the Ads agent, using `~/.gooseworks/credentials.json` (written by the `gooseworks` CLI). Your `cal_`/agent token is not a FAL key — the old direct-key path 401'd; that's why this capability was rerouted through the proxy.
 
 ## Decision Rules
 
@@ -97,11 +96,11 @@ For confessional / single-sitting UGC, wardrobe should be IDENTICAL across all c
 ## Workflow
 
 ```bash
-python3 coworkers/video/atoms/video-generation/create-video-seedance-2-fal/scripts/generate.py \
+python3 scripts/generate.py \
   --prompt "$(cat prompt-scene-1.txt)" \
   --output /path/to/scene-1.mp4 \
-  --image-ref /path/to/portrait.png \
-  --image-ref /path/to/product.png \
+  --image-url "https://<hosted>/portrait.png" \
+  --image-url "https://<hosted>/product.png" \
   --resolution 1080p \
   --duration 15 \
   --aspect-ratio 9:16 \
@@ -109,9 +108,9 @@ python3 coworkers/video/atoms/video-generation/create-video-seedance-2-fal/scrip
 ```
 
 The script:
-1. Loads FAL key via shared `fal_helpers.load_fal_key()`.
-2. Uploads each `--image-ref` to FAL storage (returns `https://v3.fal.media/...` URLs).
-3. Calls `fal_client.subscribe("bytedance/seedance-2.0/reference-to-video", arguments={...})` with:
+1. Routes through the bundled `media_proxy.py` (GooseWorks FAL proxy) — no FAL key; bills the Ads agent via `~/.gooseworks/credentials.json`.
+2. Passes the `--image-url` values straight through as `image_urls` (they must already be PUBLIC URLs; the orchestrator hosts local refs via MCP).
+3. Submits `bytedance/seedance-2.0/reference-to-video` through the proxy and polls to completion with:
    ```python
    {
        "prompt": <prompt>,

@@ -1,6 +1,6 @@
 {
   "version": "1.2.0",
-  "generated": "2026-07-13",
+  "generated": "2026-07-14",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -1723,6 +1723,7 @@
       "files": [
         "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/SKILL.md",
         "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/scripts/generate.py",
+        "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/scripts/media_proxy.py",
         "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/skill.meta.json",
         "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests/expected-output.md",
         "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests/human-test.md",
@@ -7901,6 +7902,7 @@
           "files": [
             "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/SKILL.md",
             "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/scripts/generate.py",
+            "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/scripts/media_proxy.py",
             "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/skill.meta.json",
             "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests/expected-output.md",
             "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests/human-test.md",

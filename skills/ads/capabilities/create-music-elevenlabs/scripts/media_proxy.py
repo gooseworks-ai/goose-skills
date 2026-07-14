@@ -45,6 +45,30 @@ def _params(tok, agent):
     return p
 
 
+_FAL_RESULT_KEYS = ("images", "videos", "video", "audio", "image", "output",
+                    "status_url", "status", "seed", "url")
+
+
+def _raise_if_fal_error(resp, model_path):
+    """FAL/proxy errors come back as a dict carrying `detail`/`error`/`message` and NO
+    result payload. Surface the real reason (content-policy block, 'path not found',
+    NSFW, quota) instead of letting a downstream ["images"][0] raise a cryptic KeyError."""
+    if not isinstance(resp, dict):
+        raise RuntimeError(f"FAL returned a non-object response for {model_path}: {str(resp)[:400]}")
+    if any(k in resp for k in _FAL_RESULT_KEYS):
+        return
+    for key in ("detail", "error", "message"):
+        if resp.get(key):
+            msg = resp[key]
+            if isinstance(msg, list):
+                msg = "; ".join(
+                    str(m.get("msg") or m.get("message") or m) if isinstance(m, dict) else str(m)
+                    for m in msg)
+            elif isinstance(msg, dict):
+                msg = msg.get("message") or msg.get("detail") or json.dumps(msg)
+            raise RuntimeError(f"FAL error for {model_path}: {msg}")
+
+
 def _fal_run(model_path, payload, timeout_s=600, poll_s=3):
     """Submit a FAL job through the proxy, poll to completion, return the raw result
     dict. `model_path` e.g. 'fal-ai/kling-video/v2.1/standard/image-to-video'."""
@@ -52,6 +76,7 @@ def _fal_run(model_path, payload, timeout_s=600, poll_s=3):
     base = api_base + "/api/internal/fal-proxy"
     params = _params(tok, agent)
     sub = requests.post(f"{base}/{model_path}", params=params, json=payload, timeout=120).json()
+    _raise_if_fal_error(sub, model_path)
     if "status_url" not in sub:  # some models return a result synchronously
         return sub
     to_proxy = lambda u: base + urlparse(u).path
@@ -61,7 +86,9 @@ def _fal_run(model_path, payload, timeout_s=600, poll_s=3):
         st = requests.get(status_url, params=params, timeout=60).json()
         s = st.get("status")
         if s == "COMPLETED":
-            return requests.get(response_url, params=params, timeout=120).json()
+            out = requests.get(response_url, params=params, timeout=120).json()
+            _raise_if_fal_error(out, model_path)
+            return out
         if s in ("FAILED", "ERROR"):
             raise RuntimeError(f"FAL failed: {st}")
         time.sleep(poll_s)
@@ -70,13 +97,23 @@ def _fal_run(model_path, payload, timeout_s=600, poll_s=3):
 
 def fal_generate(model_path, payload, **kw):
     """Image models → returns the first result image URL (public *.fal.media CDN)."""
-    return _fal_run(model_path, payload, **kw)["images"][0]["url"]
+    r = _fal_run(model_path, payload, **kw)
+    imgs = r.get("images") if isinstance(r, dict) else None
+    if not imgs:
+        raise RuntimeError(f"FAL returned no image for {model_path}: {str(r)[:400]}")
+    return imgs[0]["url"]
 
 
 def fal_generate_video(model_path, payload, **kw):
     """Video (i2v/t2v) models → returns the result video URL."""
     r = _fal_run(model_path, payload, **kw)
-    return (r.get("video") or {}).get("url") or r["videos"][0]["url"]
+    url = (r.get("video") or {}).get("url") if isinstance(r, dict) else None
+    if not url:
+        vids = r.get("videos") if isinstance(r, dict) else None
+        url = vids[0]["url"] if vids else None
+    if not url:
+        raise RuntimeError(f"FAL returned no video for {model_path}: {str(r)[:400]}")
+    return url
 
 
 def eleven_music(prompt, music_length_ms, out_path, force_instrumental=True, timeout_s=180):
