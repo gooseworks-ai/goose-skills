@@ -73,14 +73,14 @@ END_DUR=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$END")
 XFADE=0.30
 TOTAL=$(python3 -c "print($CHAT_DUR + $END_DUR - $XFADE)")
 XSTART=$(python3 -c "print($CHAT_DUR - $XFADE)")
-TMP_VIDEO=$(mktemp -t gpt-stitch).mp4
+TMP_VIDEO=$(mktemp "${TMPDIR:-/tmp}/gpt-stitch.XXXXXX").mp4
 ffmpeg -y -i "$CHAT" -i "$END" \
   -filter_complex "[1:v]scale=${CW}:${CH}:force_original_aspect_ratio=decrease,pad=${CW}:${CH}:-1:-1:color=${PAD_COLOR},setsar=1[end];[0:v][end]xfade=transition=fade:duration=${XFADE}:offset=${XSTART}[v]" \
   -map "[v]" -an -c:v libx264 -pix_fmt yuv420p -movflags +faststart "$TMP_VIDEO" >/dev/null 2>&1
 echo "  video stitched, ${TOTAL}s (${CW}x${CH})"
 
 # 2) Build the audio mix (subliminal ChatGPT SFX cues [+ optional ducked bed]).
-TMP_AUDIO=$(mktemp -t gpt-audio).m4a
+TMP_AUDIO=$(mktemp "${TMPDIR:-/tmp}/gpt-audio.XXXXXX").m4a
 MUSIC_ARG="${MUSIC:-NONE}"
 python3 - "$SFX_JSON" "$SFX_DIR" "$MUSIC_ARG" "$TOTAL" "$TMP_AUDIO" <<'PY'
 import json, sys, subprocess
