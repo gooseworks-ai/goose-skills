@@ -1539,6 +1539,7 @@
         "skills/ads/capabilities/create-image-gpt-image-fal/SKILL.md",
         "skills/ads/capabilities/create-image-gpt-image-fal/scripts/fal_helpers.py",
         "skills/ads/capabilities/create-image-gpt-image-fal/scripts/generate.py",
+        "skills/ads/capabilities/create-image-gpt-image-fal/scripts/media_proxy.py",
         "skills/ads/capabilities/create-image-gpt-image-fal/skill.meta.json",
         "skills/ads/capabilities/create-image-gpt-image-fal/tests/expected-output.md",
         "skills/ads/capabilities/create-image-gpt-image-fal/tests/human-test.md",

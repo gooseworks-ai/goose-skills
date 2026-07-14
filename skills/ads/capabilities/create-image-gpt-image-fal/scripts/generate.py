@@ -22,22 +22,17 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 from pathlib import Path
 
-# fal_helpers is vendored next to this script so the skill is self-contained —
-# it works when fetched/installed standalone (the DB/CLI path), not only in a
-# full-tree sandbox checkout.
+# media_proxy is bundled next to this script so the skill is self-contained AND
+# routes every paid call through the GooseWorks FAL proxy (bills the Ads agent).
+# The old vendored fal_helpers used a raw FAL_KEY (load_fal_key/subscribe), which
+# 401s with an agent/`cal_` token — that key isn't a FAL key.
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from fal_helpers import (  # noqa: E402
-    download,
-    is_error_response,
-    load_fal_key,
-    subscribe,
-    upload_file,
-    write_meta,
-)
+from media_proxy import fal_generate, download  # noqa: E402  (bundled)
 
 # Per-model config. `custom_size` says whether the model accepts arbitrary
 # width/height; gpt-image-1 only supports a fixed set of sizes.
@@ -93,13 +88,11 @@ def main() -> int:
     ap.add_argument("--image-size", default=None,
                     help="Explicit WIDTHxHEIGHT. gpt-image-2 only; ignored with a warning on gpt-image-1.")
     ap.add_argument("--quality", default="medium", choices=["low", "medium", "high"])
-    ap.add_argument("--ref-image", action="append", type=Path, default=[],
-                    help="Reference image for the edit variant. Repeatable; "
-                         "all refs are uploaded and passed as image_urls.")
-    ap.add_argument("--with-logs", action="store_true")
+    ap.add_argument("--ref-url", "--ref-image", action="append", dest="ref_urls", default=[],
+                    help="PUBLIC reference image URL for the edit variant (repeatable). The proxy "
+                         "does not upload local files — host them via MCP get_upload_url -> "
+                         "get_download_url and pass the URL. Identity ref first, then style refs.")
     args = ap.parse_args()
-
-    load_fal_key()
 
     cfg = MODELS[args.model]
 
@@ -132,53 +125,41 @@ def main() -> int:
         "num_images": 1,
     }
 
-    if args.ref_image:
-        image_urls: list[str] = []
-        for ref in args.ref_image:
-            if not ref.exists():
-                sys.exit(f"ERROR: ref-image not found: {ref}")
-            print(f"[gpt-image-fal] uploading ref: {ref.name}", flush=True)
-            image_urls.append(upload_file(ref))
-        payload["image_urls"] = image_urls
+    if args.ref_urls:
+        local = [u for u in args.ref_urls if not (u.startswith("http://") or u.startswith("https://"))]
+        if local:
+            sys.exit("ERROR: ref images must be PUBLIC URLs (the proxy does not upload local files). "
+                     "Host each via MCP get_upload_url -> get_download_url and pass the URL. "
+                     f"Got local path(s): {local}")
+        payload["image_urls"] = args.ref_urls
         model = cfg["edit"]
     else:
         model = cfg["t2i"]
 
-    print(f"[gpt-image-fal] submitting {model} ({w}x{h}, q={args.quality})...", flush=True)
-    result = subscribe(model, payload, with_logs=args.with_logs,
-                       on_log=lambda m: print(f"  [fal] {m}", flush=True) if args.with_logs else None)
-
-    err, reason = is_error_response(result)
-    if err:
-        sys.exit(f"ERROR: fal returned error response: {reason}")
-
-    images = result.get("images") or []
-    if not images:
-        sys.exit(f"ERROR: no images in result: {result}")
-    image_url = images[0].get("url")
-    if not image_url:
-        sys.exit(f"ERROR: no url in first image: {images[0]}")
+    print(f"[gpt-image-fal] submitting {model} via proxy ({w}x{h}, q={args.quality})...", flush=True)
+    # fal_generate routes through the proxy and (with the hardened media_proxy) surfaces
+    # FAL's real error instead of a KeyError.
+    image_url = fal_generate(model, payload)
 
     print(f"[gpt-image-fal] downloading to {args.output}...", flush=True)
-    nbytes = download(image_url, args.output)
+    download(image_url, str(args.output))
+    nbytes = args.output.stat().st_size if args.output.exists() else 0
     print(f"[gpt-image-fal] wrote {nbytes} bytes", flush=True)
 
     cost = cfg["cost_by_quality"][args.quality]
-    write_meta(
-        args.output,
-        gateway="fal",
-        model=model,
-        model_family=args.model,
-        prompt=args.prompt,
-        aspect_ratio=args.aspect_ratio,
-        image_size=f"{w}x{h}",
-        quality=args.quality,
-        ref_images=[str(r) for r in args.ref_image] if args.ref_image else None,
-        image_url=image_url,
-        request=payload,
-        result_meta={k: v for k, v in (result or {}).items() if k != "images"},
-        cost_estimate_usd=cost,
-    )
+    meta = {
+        "gateway": "fal-proxy",
+        "model": model,
+        "model_family": args.model,
+        "prompt": args.prompt,
+        "aspect_ratio": args.aspect_ratio,
+        "image_size": f"{w}x{h}",
+        "quality": args.quality,
+        "ref_urls": args.ref_urls or None,
+        "image_url": image_url,
+        "cost_estimate_usd": cost,
+    }
+    Path(str(args.output) + ".meta.json").write_text(json.dumps(meta, indent=2))
     print(f"[gpt-image-fal] est cost: ${cost:.2f}", flush=True)
     return 0
 
