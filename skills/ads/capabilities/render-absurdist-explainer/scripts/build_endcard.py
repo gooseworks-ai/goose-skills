@@ -18,23 +18,25 @@ Layout (top -> bottom):
 
 Reads a config.json; writes endcard.png into --out (or the config's end_card.image).
 """
-import argparse, json, os
+import argparse, json, os, sys
 from PIL import Image, ImageDraw, ImageFont
 
 W, H = 1080, 1920
 
 # Portable font fallback chain: DejaVu (ships with Pillow / most Linux), then macOS
-# Arial, then Pillow's built-in. Bold + regular variants each.
+# Arial, then Windows Arial, then Pillow's built-in. Bold + regular variants each.
 _BOLD_CANDS = [
     "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
     "/System/Library/Fonts/Supplemental/Arial Bold.ttf",
     "/Library/Fonts/Arial Bold.ttf",
+    "C:/Windows/Fonts/arialbd.ttf",
     "DejaVuSans-Bold.ttf",
 ]
 _REG_CANDS = [
     "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
     "/System/Library/Fonts/Supplemental/Arial.ttf",
     "/Library/Fonts/Arial.ttf",
+    "C:/Windows/Fonts/arial.ttf",
     "DejaVuSans.ttf",
 ]
 
