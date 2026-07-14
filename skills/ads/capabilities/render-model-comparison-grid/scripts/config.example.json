@@ -1,0 +1,67 @@
+{
+  "_comment": "This IS the shipped worked example: the 3-model image comparison (2026-07-08). Cell paths point at the source project; re-point them at your own media. Cells accept images (.png/.jpg/.webp) AND muted video clips (.mp4/.mov/.webm) interchangeably.",
+  "canvas": { "width": 1280, "height": 720, "fps": 30 },
+  "beat_seconds": 4.5,
+  "cell_aspect": "3:4",
+  "columns": [
+    { "label": "GPT IMAGE 2" },
+    { "label": "NANO BANANA PRO" },
+    { "label": "SEEDREAM 5.0 PRO" }
+  ],
+  "beats": [
+    {
+      "tag": "01 — TYPOGRAPHY",
+      "prompt": "Art-deco travel poster for Istanbul — gold lettering, 'Orient Express · Est. 1883', 1930s lithograph texture.",
+      "cells": [
+        "../../../internal/experiments/image-model-triptych-comparison/generated/beat1-typography__gpt-image-2.png",
+        "../../../internal/experiments/image-model-triptych-comparison/generated/beat1-typography__nano-banana-pro.png",
+        "../../../internal/experiments/image-model-triptych-comparison/generated/beat1-typography__seedream-5-pro.png"
+      ]
+    },
+    {
+      "tag": "02 — PHOTOREALISM",
+      "prompt": "Candid photo of a woman in her 60s laughing at a market stall, holding an orange. 85mm, no retouching.",
+      "cells": [
+        "../../../internal/experiments/image-model-triptych-comparison/generated/beat2-photoreal__gpt-image-2.png",
+        "../../../internal/experiments/image-model-triptych-comparison/generated/beat2-photoreal__nano-banana-pro.png",
+        "../../../internal/experiments/image-model-triptych-comparison/generated/beat2-photoreal__seedream-5-pro.png"
+      ]
+    },
+    {
+      "tag": "03 — PRODUCT",
+      "prompt": "Amber glass dropper bottle on wet slate, label 'MORNING RITUAL · Vitamin C · 30ml', premium ad photography.",
+      "cells": [
+        "../../../internal/experiments/image-model-triptych-comparison/generated/beat3-product__gpt-image-2.png",
+        "../../../internal/experiments/image-model-triptych-comparison/generated/beat3-product__nano-banana-pro.png",
+        "../../../internal/experiments/image-model-triptych-comparison/generated/beat3-product__seedream-5-pro.png"
+      ]
+    },
+    {
+      "tag": "04 — ILLUSTRATION",
+      "prompt": "Ukiyo-e woodblock print of a modern subway platform, commuters on smartphones, in the style of Hiroshige.",
+      "cells": [
+        "../../../internal/experiments/image-model-triptych-comparison/generated/beat4-illustration__gpt-image-2.png",
+        "../../../internal/experiments/image-model-triptych-comparison/generated/beat4-illustration__nano-banana-pro.png",
+        "../../../internal/experiments/image-model-triptych-comparison/generated/beat4-illustration__seedream-5-pro.png"
+      ]
+    },
+    {
+      "tag": "05 — PROMPT ADHERENCE",
+      "prompt": "Bassist in red, trumpeter in white, drummer in green. Neon sign 'BLUE ROOM'. A black cat on the unplayed piano.",
+      "cells": [
+        "../../../internal/experiments/image-model-triptych-comparison/generated/beat5-adherence__gpt-image-2.png",
+        "../../../internal/experiments/image-model-triptych-comparison/generated/beat5-adherence__nano-banana-pro.png",
+        "../../../internal/experiments/image-model-triptych-comparison/generated/beat5-adherence__seedream-5-pro.png"
+      ]
+    }
+  ],
+  "endcard": {
+    "headline": "Same prompt. Three models.",
+    "subline": "GPT IMAGE 2 · NANO BANANA PRO · SEEDREAM 5.0 PRO",
+    "seconds": 2.5
+  },
+  "music": {
+    "enabled": true,
+    "prompt": "Minimal dark electronic music bed for a sleek AI product showcase video. Slow-pulsing analog synth bass, soft airy pads, sparse clicky percussion around 100 BPM, understated and modern, gradually building subtle anticipation, gentle resolve at the end. Instrumental only, no vocals, no prominent melody hook, clean ending. 25 seconds."
+  }
+}

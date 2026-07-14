@@ -12,6 +12,22 @@ the wrong account): all paid calls now go through
 `<api_base>/api/internal/{fal-proxy,elevenlabs-proxy}` with `?token=&agent_id=`, which
 **bills the Ads agent**.
 
+## Crash-resume (never lose / double-bill a paid render)
+
+A FAL submit BILLS immediately, but the local backend can blip during a multi-minute
+render. Two built-in protections (automatic for every capability that imports this):
+- **Poll-through-outage** — `_fal_run`'s poll loop re-attaches to the same status/result
+  URL through `connection refused` / timeout blips instead of crashing.
+- **Persist + resume** — each submit's `request_id` + poll URLs are written to
+  `~/.gooseworks/pending-fal-jobs/`. If the poller still dies, **re-attach instead of
+  re-firing** (re-firing double-bills): `resume_fal(request_id)` in Python, or the CLI:
+
+  ```bash
+  resume.py --list                              # resumable (submitted, unfinished) jobs
+  resume.py --request-id <id> --out final.mp4   # poll to completion + download
+  ```
+  `resume_fal` NEVER re-submits, so it can't double-charge.
+
 ## Use it
 
 ```python
