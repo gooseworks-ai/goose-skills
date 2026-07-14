@@ -69,9 +69,75 @@ def _raise_if_fal_error(resp, model_path):
             raise RuntimeError(f"FAL error for {model_path}: {msg}")
 
 
+# ── Crash-resume: persist submitted jobs + poll through backend outages ──────
+# A FAL submit BILLS immediately, but the local backend (:5999) can blip mid-render
+# (a ~4-min Seedance take outlives a flaky proxy). Two protections so a blip never
+# loses a paid render or forces a double-billing re-submit:
+#   1. persist {request_id, status_url, response_url} at submit → resume_fal() can
+#      re-attach by request-id later (never re-submits).
+#   2. the poll loop RETRIES the same URL through connection-refused / timeout blips
+#      instead of crashing.
+_PENDING_DIR = pathlib.Path(os.path.expanduser("~/.gooseworks/pending-fal-jobs"))
+_TRANSIENT = (requests.ConnectionError, requests.Timeout,
+              requests.exceptions.ChunkedEncodingError)
+
+
+def _pending_path(request_id):
+    return _PENDING_DIR / f"{request_id}.json"
+
+
+def _persist_pending(model_path, request_id, status_url, response_url):
+    if not request_id:
+        return
+    try:  # best-effort — never block a render on bookkeeping
+        _PENDING_DIR.mkdir(parents=True, exist_ok=True)
+        _pending_path(request_id).write_text(json.dumps({
+            "model_path": model_path, "request_id": request_id,
+            "status_url": status_url, "response_url": response_url,
+            "project_id": os.environ.get("GW_PROJECT_ID"), "ts": int(time.time()),
+        }))
+    except OSError:
+        pass
+
+
+def _clear_pending(request_id):
+    try:
+        _pending_path(request_id).unlink()
+    except OSError:
+        pass
+
+
+def _poll_get(url, params, deadline, what):
+    """GET that RE-ATTACHES through transient backend outages until the deadline —
+    a proxy blip must not kill an already-submitted+billed job."""
+    last = None
+    while time.time() < deadline:
+        try:
+            return requests.get(url, params=params, timeout=60)
+        except _TRANSIENT as e:
+            last = e
+            time.sleep(3)  # backend is down/reconnecting — keep re-attaching
+    raise TimeoutError(f"FAL {what} unreachable through the outage: {last}")
+
+
+def _poll_to_result(model_path, status_url, response_url, params, timeout_s, poll_s):
+    deadline = time.time() + timeout_s
+    while time.time() < deadline:
+        st = _poll_get(status_url, params, deadline, "status").json()
+        s = st.get("status")
+        if s == "COMPLETED":
+            out = _poll_get(response_url, params, deadline, "result").json()
+            _raise_if_fal_error(out, model_path)
+            return out
+        if s in ("FAILED", "ERROR"):
+            raise RuntimeError(f"FAL failed: {st}")
+        time.sleep(poll_s)
+    raise TimeoutError(f"FAL polling exceeded {timeout_s}s for {model_path}")
+
+
 def _fal_run(model_path, payload, timeout_s=600, poll_s=3):
-    """Submit a FAL job through the proxy, poll to completion, return the raw result
-    dict. `model_path` e.g. 'fal-ai/kling-video/v2.1/standard/image-to-video'."""
+    """Submit a FAL job through the proxy, poll to completion (surviving backend blips),
+    return the raw result dict. `model_path` e.g. 'fal-ai/kling-video/.../image-to-video'."""
     api_base, tok, agent = _cfg()
     base = api_base + "/api/internal/fal-proxy"
     params = _params(tok, agent)
@@ -81,18 +147,37 @@ def _fal_run(model_path, payload, timeout_s=600, poll_s=3):
         return sub
     to_proxy = lambda u: base + urlparse(u).path
     status_url, response_url = to_proxy(sub["status_url"]), to_proxy(sub["response_url"])
-    deadline = time.time() + timeout_s
-    while time.time() < deadline:
-        st = requests.get(status_url, params=params, timeout=60).json()
-        s = st.get("status")
-        if s == "COMPLETED":
-            out = requests.get(response_url, params=params, timeout=120).json()
-            _raise_if_fal_error(out, model_path)
-            return out
-        if s in ("FAILED", "ERROR"):
-            raise RuntimeError(f"FAL failed: {st}")
-        time.sleep(poll_s)
-    raise TimeoutError(f"FAL polling exceeded {timeout_s}s for {model_path}")
+    request_id = sub.get("request_id") or urlparse(sub["response_url"]).path.rstrip("/").rsplit("/", 1)[-1]
+    _persist_pending(model_path, request_id, status_url, response_url)
+    result = _poll_to_result(model_path, status_url, response_url, params, timeout_s, poll_s)
+    _clear_pending(request_id)
+    return result
+
+
+def resume_fal(request_id, timeout_s=600, poll_s=3):
+    """Re-attach to an already-submitted FAL job by request-id (after a mid-poll backend
+    crash) using the pending record persisted at submit. NEVER re-submits → can't
+    double-bill. Returns the raw result dict; clears the pending record on success."""
+    rec = json.loads(_pending_path(request_id).read_text())
+    _, tok, agent = _cfg()
+    params = _params(tok, agent)
+    result = _poll_to_result(rec["model_path"], rec["status_url"], rec["response_url"],
+                             params, timeout_s, poll_s)
+    _clear_pending(request_id)
+    return result
+
+
+def list_pending():
+    """Submitted-but-not-yet-finished FAL jobs (resume candidates after a crash)."""
+    if not _PENDING_DIR.exists():
+        return []
+    out = []
+    for p in sorted(_PENDING_DIR.glob("*.json")):
+        try:
+            out.append(json.loads(p.read_text()))
+        except (OSError, json.JSONDecodeError):
+            pass
+    return out
 
 
 def fal_generate(model_path, payload, **kw):

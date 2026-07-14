@@ -4103,6 +4103,7 @@
       "files": [
         "skills/ads/capabilities/media-proxy/SKILL.md",
         "skills/ads/capabilities/media-proxy/scripts/media_proxy.py",
+        "skills/ads/capabilities/media-proxy/scripts/resume.py",
         "skills/ads/capabilities/media-proxy/skill.meta.json",
         "skills/ads/capabilities/media-proxy/tests/smoke-test.md"
       ],
