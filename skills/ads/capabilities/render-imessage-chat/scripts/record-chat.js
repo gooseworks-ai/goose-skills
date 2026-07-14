@@ -367,7 +367,7 @@ async function main() {
   });
   const page = await ctx.newPage();
   await page.setContent(html, { waitUntil: 'load' });
-  await page.waitForFunction(() => window.__driverReady === true, { timeout: 5000 });
+  await page.waitForFunction(() => window.__driverReady === true, undefined, { timeout: 5000 });
   const paintOffsetSec = (Date.now() - ctxCreateTime) / 1000;
   await page.evaluate(() => window.__startDriver());
   await page.waitForTimeout(total * 1000);
