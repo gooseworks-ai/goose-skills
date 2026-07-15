@@ -1,0 +1,51 @@
+{
+  "canvas": { "width": 1080, "height": 1920, "fps": 30 },
+
+  "plate": {
+    "_comment": "PAID: generated once via create-image-fal (fal-ai/flux-pro/v1.1-ultra). Empty lit poster frame in a real space. Pick a wall color that makes the brand's poster colors POP (complement of the dominant brand hue).",
+    "model": "fal-ai/flux-pro/v1.1-ultra",
+    "aspect_ratio": "9:16",
+    "wall_style": "soft sage-green glossy subway tiles with fine grout lines",
+    "prompt": "Photorealistic vertical 9:16 photograph, cinematic soft light, shallow depth of field. A single empty poster frame mounted flat on a wall, viewed nearly straight-on with only slight perspective. Slim brushed/wood snap poster frame with a thin bevel and soft drop shadow. The poster panel inside is a BLANK plain matte off-white surface, evenly and brightly lit like an illuminated lightbox, completely empty with NO text/logo/image. Lower-left foreground: a real potted plant with green leaves thrown heavily out of focus (creamy bokeh), leaves rising to about the bottom edge of the frame. Gentle dappled leaf shadows on the wall upper area. Premium boutique interior, warm inviting light, subtle vignette. {wall_style}."
+  },
+
+  "camera": {
+    "_comment": "Frame size in the composition. recrop.py <interior_width_frac> <top_frac>. Larger frac = closer camera / bigger frame. 0.72 = frame fills ~72% of width.",
+    "interior_width_frac": 0.72,
+    "top_frac": 0.13
+  },
+
+  "composite": {
+    "_comment": "composite.py: perspective-warp each mockup into the detected frame quad, MULTIPLY the plate's real leaf-shadow/light back onto the poster (shadow_strength), add glass sheen.",
+    "shadow_strength": 0.85,
+    "sheen": true
+  },
+
+  "beats": [
+    { "id": 1,  "kind": "hero-product",        "seconds": 1.05, "note": "real product on brand-color bg + ghosted brand icon" },
+    { "id": 2,  "kind": "social-post",         "seconds": 0.95, "note": "IG-post mockup: product/lifestyle image + approved caption" },
+    { "id": 3,  "kind": "hanging-banners",     "seconds": 0.95, "note": "two banners: wordmark + product + 3-word descriptor" },
+    { "id": 4,  "kind": "sticker-sheet",       "seconds": 1.05, "note": "repeating brand-icon badge grid + one peel sticker" },
+    { "id": 5,  "kind": "logo-lockup",         "seconds": 1.00, "note": "icon + wordmark + tagline" },
+    { "id": 6,  "kind": "poster",              "seconds": 1.05, "note": "editorial hero still + approved headline + URL" },
+    { "id": 7,  "kind": "lifestyle-a",         "seconds": 0.95, "note": "real lifestyle still, full-bleed" },
+    { "id": 8,  "kind": "packaging",           "seconds": 0.95, "note": "real packaging hero + short label" },
+    { "id": 9,  "kind": "lifestyle-b",         "seconds": 1.00, "note": "second real lifestyle still, full-bleed" },
+    { "id": 10, "kind": "big-icon",            "seconds": 1.10, "note": "large brand icon sign-off on brand color" },
+    { "id": 11, "kind": "end-card",            "seconds": 3.00, "note": "BRAND END CARD: icon + wordmark + tagline + what the brand makes + Shop Now + URL. Held long." }
+  ],
+
+  "music": {
+    "_comment": "PAID (optional, default ON): create-music-elevenlabs, instrumental. Reference is music-bed-only, NO VO.",
+    "direction": "upbeat playful pop / soft house, 90-120 BPM, instrumental, beauty-brand Reels energy",
+    "start_offset_s": 1.0
+  },
+
+  "end_card": {
+    "tagline": "<brand tagline>",
+    "descriptor": "<one approved descriptor line>",
+    "product_lines": "<what the brand makes, e.g. 'hand mist · body & hair mist · glow essence'>",
+    "cta": "Shop Now",
+    "url": "<brand.com>"
+  }
+}

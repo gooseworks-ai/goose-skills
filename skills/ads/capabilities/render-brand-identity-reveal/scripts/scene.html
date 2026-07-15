@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>touchland — brand identity reveal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pink:#FF9DB6; --pink-deep:#FF6F8A; --coral:#FF8A7A;
+    --lav:#C7B4F0; --lav-deep:#A98FE6; --mint:#9FE0C6; --mint-deep:#6FD0AC;
+    --lemon:#F3E483; --bone:#F7F0E4; --cream:#F3E8D8; --ink:#2A2A2E; --ink-soft:#6b6b70;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{width:1080px; height:1920px; overflow:hidden; font-family:'Inter',sans-serif; background:#ded6cb;}
+
+  /* ============ WALL ============ */
+  .wall{position:absolute; inset:0;
+    background:
+      radial-gradient(120% 90% at 50% 22%, #efe8dd 0%, #e6ded2 42%, #d9d0c3 78%, #cabfb0 100%);
+  }
+  .wall::after{ /* vignette */
+    content:""; position:absolute; inset:0;
+    background:radial-gradient(130% 100% at 50% 42%, rgba(0,0,0,0) 55%, rgba(60,45,40,.16) 100%);
+  }
+  .grain{position:absolute; inset:0; opacity:.05; mix-blend-mode:multiply; pointer-events:none;}
+  /* soft leaf shadow cast on wall (upper area, like the reference) */
+  .leafshadow{position:absolute; top:-140px; right:-120px; width:900px; height:1000px;
+    opacity:.07; filter:blur(12px); mix-blend-mode:multiply; transform:rotate(8deg);}
+  .leafshadow svg{width:100%;height:100%;}
+
+  /* ============ FRAME ============ */
+  .frame{position:absolute; left:144px; top:352px; width:792px; height:1128px;
+    border:24px solid #f6f1ea;
+    border-radius:4px;
+    box-shadow:
+      0 2px 0 2px #cdbfae inset,          /* inner molding shade */
+      0 0 0 2px #b7a892,                  /* outer edge */
+      -26px 34px 60px rgba(40,28,22,.34), /* drop shadow */
+      10px 10px 24px rgba(40,28,22,.12);
+    background:#ffffff;
+    overflow:hidden;
+    z-index:5;
+  }
+  .frame::after{ /* subtle glass sheen across the artwork */
+    content:""; position:absolute; inset:0; z-index:40; pointer-events:none;
+    background:linear-gradient(128deg, rgba(255,255,255,.22) 0%, rgba(255,255,255,0) 26%, rgba(255,255,255,0) 82%, rgba(255,255,255,.10) 100%);
+  }
+  .art{position:absolute; inset:0; opacity:0; overflow:hidden;}
+  .art.on{opacity:1;}
+
+  /* bare mode: render only the artwork (for compositing into a real photo plate) */
+  body.bare .wall, body.bare .leafshadow, body.bare .plant, body.bare .pot{display:none !important;}
+  body.bare .frame{left:0 !important; top:0 !important; width:100vw !important; height:100vh !important;
+    border:0 !important; border-radius:0 !important; box-shadow:none !important; background:#fff;}
+  body.bare .frame::after{display:none !important;}
+  .cover{position:absolute; inset:0; width:100%; height:100%; object-fit:cover;}
+
+  /* ============ FOREGROUND PLANT ============ */
+  .plant{position:absolute; left:-70px; bottom:-40px; width:640px; height:660px;
+    z-index:20; filter:blur(14px); opacity:.97;}
+  .plant svg{width:100%; height:100%;}
+  .pot{position:absolute; left:70px; bottom:-60px; width:300px; height:300px; z-index:19;
+    filter:blur(13px);
+    background:radial-gradient(60% 70% at 50% 30%, #d8b48f 0%, #c69a72 55%, #a97e58 100%);
+    border-radius:20px 20px 40px 40px;}
+
+  /* ============ shared brand bits ============ */
+  .ic{color:#fff;}
+  .ic svg{display:block; width:100%; height:100%;}
+  .wm{height:44px;}                    /* wordmark png, dark */
+  .wm.white{filter:brightness(0) invert(1);}
+  .badge{position:absolute; display:flex; align-items:center; justify-content:center; border-radius:50%;}
+
+  /* ---------- Art 1: HERO ---------- */
+  .a1{background:radial-gradient(85% 75% at 50% 42%, #FFB3C6 0%, #FF9DB6 55%, #FF7E9E 100%);}
+  .a1 .rings{position:absolute; inset:0; display:flex; align-items:center; justify-content:center;}
+  .a1 .rings i{position:absolute; border:2px solid rgba(255,255,255,.28); border-radius:50%;}
+  .a1 .ghost{position:absolute; left:50%; top:44%; transform:translate(-50%,-50%); width:360px; height:420px; opacity:.16;}
+  .a1 .tile{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:74%;
+    border-radius:26px; overflow:hidden; box-shadow:0 24px 50px rgba(120,30,50,.28); border:8px solid #fff;}
+  .a1 .tile img{width:100%; display:block;}
+  .a1 .tag{position:absolute; left:0; right:0; bottom:52px; text-align:center; color:#fff;
+    font-family:'Poppins'; font-weight:700; font-size:44px; letter-spacing:1px; text-shadow:0 2px 10px rgba(150,30,60,.3);}
+
+  /* ---------- Art 2: IG POST ---------- */
+  .a2{background:linear-gradient(160deg,#D8C6F5,#C0A9EC);}
+  .post{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:84%;
+    background:#fff; border-radius:22px; overflow:hidden; box-shadow:0 26px 54px rgba(70,40,110,.3);}
+  .post .hd{display:flex; align-items:center; gap:14px; padding:20px 22px;}
+  .post .av{width:56px; height:56px; border-radius:50%; background:linear-gradient(135deg,#FF9DB6,#FF7E9E);
+    display:flex; align-items:center; justify-content:center;}
+  .post .av .ic{width:30px; height:34px;}
+  .post .hn{font-family:'Poppins'; font-weight:700; font-size:30px; color:#1a1a1a;}
+  .post .dots{margin-left:auto; font-size:34px; color:#333; letter-spacing:2px; font-weight:700;}
+  .post .im{position:relative; width:100%; aspect-ratio:1/1; overflow:hidden; background:#f3eee6;}
+  .post .im img{width:100%; height:100%; object-fit:cover;}
+  .post .cap-on{position:absolute; left:26px; bottom:24px; color:#fff; font-family:'Poppins'; font-weight:800;
+    font-size:52px; line-height:.98; text-shadow:0 3px 14px rgba(0,0,0,.28);}
+  .post .im::after{content:""; position:absolute; inset:0; background:linear-gradient(0deg, rgba(30,10,30,.34) 0%, rgba(0,0,0,0) 40%);}
+  .post .row{display:flex; align-items:center; gap:24px; padding:20px 24px 6px; font-size:38px;}
+  .post .row .sp{margin-left:auto;}
+  .post .cap{padding:2px 24px 26px; font-size:26px; color:#222; line-height:1.3;}
+  .post .cap b{font-family:'Poppins'; font-weight:600;}
+
+  /* ---------- Art 3: BANNERS ---------- */
+  .a3{background:radial-gradient(90% 80% at 50% 40%, #B9EBD6 0%, #9FE0C6 60%, #7FD0AC 100%);}
+  .banner{position:absolute; top:70px; width:300px; height:830px; border-radius:12px 12px 6px 6px;
+    box-shadow:0 22px 40px rgba(20,80,60,.28); overflow:hidden; display:flex; flex-direction:column; align-items:center;}
+  .banner::before{content:""; position:absolute; top:-26px; left:50%; transform:translateX(-50%);
+    width:150px; height:16px; background:#4a4a4a; border-radius:8px;}
+  .banner::after{content:""; position:absolute; top:-30px; left:50%; transform:translateX(-50%);
+    width:8px; height:20px; background:#4a4a4a;}
+  .bL{left:74px; transform:rotate(-2.5deg); background:#F4E9DA;}
+  .bR{right:74px; top:100px; transform:rotate(2deg); background:#FBFAF6;}
+  .banner .wm{margin-top:40px; height:36px;}
+  .banner .ptile{width:180px; height:230px; margin-top:30px; border-radius:16px; overflow:hidden; box-shadow:0 10px 22px rgba(40,40,40,.16);}
+  .banner .ptile img{width:100%; height:100%; object-fit:cover;}
+  .banner h4{font-family:'Poppins'; font-weight:800; font-size:40px; color:#c65a72; margin-top:30px; text-align:center; line-height:1; padding:0 18px;}
+  .bR h4{color:#3aa07e;}
+  .banner p{font-size:22px; color:#6b6b70; margin-top:12px; letter-spacing:1px; text-transform:uppercase;}
+  .banner .mini{margin-top:auto; margin-bottom:26px; width:38px; height:44px;}
+  .bL .mini{color:#c65a72;} .bR .mini{color:#3aa07e;}
+
+  /* ---------- Art 4: STICKER SHEET ---------- */
+  .a4{background:#F4ECDD;}
+  .sheet{position:absolute; inset:0; display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(4,1fr);
+    place-items:center; padding:24px; opacity:.9;}
+  .stk{width:180px; height:180px; border-radius:50%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
+    box-shadow:0 6px 14px rgba(0,0,0,.08);}
+  .stk .ic{width:70px; height:80px;}
+  .stk small{font-family:'Poppins'; font-weight:700; font-size:19px; color:#fff; letter-spacing:.5px;}
+  .peel{position:absolute; left:50%; top:50%; transform:translate(-50%,-52%) rotate(-6deg); width:320px; height:320px; border-radius:50%;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px;
+    box-shadow:0 30px 50px rgba(0,0,0,.28), 0 0 0 10px rgba(255,255,255,.9);}
+  .peel .ic{width:120px; height:138px;}
+  .peel small{font-family:'Poppins'; font-weight:800; font-size:34px; color:#fff; letter-spacing:1px;}
+  .peel .curl{position:absolute; right:-6px; bottom:-6px; width:120px; height:120px; border-radius:50%;
+    background:linear-gradient(135deg, rgba(255,255,255,0), rgba(0,0,0,.18)); filter:blur(4px);}
+
+  /* ---------- Art 5: LOGO LOCKUP ---------- */
+  .a5{background:linear-gradient(180deg,#FBF4E9,#F3E8D6); display:flex; flex-direction:column; align-items:center; justify-content:center;}
+  .a5 .ic{width:150px; height:172px; color:#FF7E9E; margin-bottom:8px;}
+  .a5 .wm{height:78px;}
+  .a5 .tl{margin-top:26px; font-family:'Poppins'; font-weight:600; letter-spacing:8px; text-transform:uppercase; font-size:26px; color:#8a8088;}
+  .a5 .rule{width:70px; height:4px; background:#FF7E9E; border-radius:2px; margin-top:30px;}
+
+  /* ---------- Art 6: POSTER (rose editorial) ---------- */
+  .a6 .cover{object-position:50% 20%;}
+  .a6 .scrim{position:absolute; inset:0; background:linear-gradient(0deg, rgba(48,14,26,.82) 0%, rgba(48,14,26,.55) 24%, rgba(48,14,26,0) 50%);}
+  .a6 .badge{top:34px; right:34px; width:118px; height:118px; background:rgba(255,255,255,.16); border:2px solid rgba(255,255,255,.7);}
+  .a6 .badge .ic{width:60px; height:70px; color:#fff;}
+  .a6 .cta{position:absolute; left:44px; right:44px; bottom:200px; color:#fff;}
+  .a6 .cta h2{font-family:'Poppins'; font-weight:800; font-size:64px; line-height:1.0; text-shadow:0 3px 14px rgba(0,0,0,.35);}
+  .a6 .cta .url{margin-top:20px; font-family:'Poppins'; font-weight:600; letter-spacing:4px; text-transform:uppercase; font-size:25px; opacity:.92;}
+
+  /* ---------- Art 7 & 9: full-bleed lifestyle ---------- */
+  .a7 .wmk,.a9 .wmk{position:absolute; right:40px; bottom:40px; height:38px; z-index:5; filter:brightness(0) invert(1); opacity:.95;}
+
+  /* ---------- Art 8: PACKAGING ---------- */
+  .a8{background:radial-gradient(85% 75% at 50% 42%, #BFE7FF 0%, #A6D8FA 55%, #86C4F0 100%);}
+  .a8 .tile{position:absolute; left:50%; top:46%; transform:translate(-50%,-50%); width:80%;
+    border-radius:24px; overflow:hidden; box-shadow:0 26px 52px rgba(20,60,110,.3); border:8px solid #fff;}
+  .a8 .tile img{width:100%; display:block;}
+  .a8 .badge{top:34px; right:34px; width:104px; height:104px; background:#fff; box-shadow:0 8px 18px rgba(20,60,110,.2);}
+  .a8 .badge .ic{width:52px; height:60px; color:#5AA6E0;}
+  .a8 .lab{position:absolute; left:0; right:0; bottom:150px; text-align:center;}
+  .a8 .lab h3{font-family:'Poppins'; font-weight:800; font-size:52px; color:#fff; letter-spacing:1px; text-shadow:0 2px 10px rgba(20,60,110,.3);}
+  .a8 .lab p{margin-top:8px; font-family:'Poppins'; font-weight:500; letter-spacing:4px; text-transform:uppercase; font-size:24px; color:rgba(255,255,255,.92);}
+
+  /* ---------- Art 11: END CARD ---------- */
+  .a11{background:linear-gradient(165deg,#FCEFEA 0%,#F8DEE3 58%,#F3CDD7 100%);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:0 56px;}
+  .a11 .ic{width:118px; height:136px; color:#FF6F8A; margin-bottom:6px;}
+  .a11 .wm{height:66px;}
+  .a11 .tl{margin-top:18px; font-family:'Poppins'; font-weight:600; letter-spacing:7px; text-transform:uppercase; font-size:23px; color:#E1607E;}
+  .a11 .rule{width:62px; height:4px; background:#FF6F8A; border-radius:2px; margin:28px 0;}
+  .a11 .desc{font-family:'Poppins'; font-weight:800; font-size:44px; line-height:1.04; color:#2A2A2E;}
+  .a11 .cats{margin-top:16px; font-family:'Inter'; font-weight:500; font-size:21px; letter-spacing:.5px; color:#8a7c7f;}
+  .a11 .shop{margin-top:44px; display:flex; flex-direction:column; align-items:center; gap:16px;}
+  .a11 .pill{background:#2A2A2E; color:#fff; font-family:'Poppins'; font-weight:600; font-size:27px; padding:17px 42px; border-radius:44px;}
+  .a11 .url{font-family:'Poppins'; font-weight:600; letter-spacing:3px; font-size:22px; color:#2A2A2E; text-transform:uppercase;}
+
+  /* ---------- Art 10: BIG ICON ---------- */
+  .a10{background:radial-gradient(80% 70% at 50% 42%, #FF9DB6 0%, #FF7E9E 60%, #FF6486 100%); display:flex; align-items:center; justify-content:center;}
+  .a10 .rings{position:absolute; inset:0; display:flex; align-items:center; justify-content:center;}
+  .a10 .rings i{position:absolute; border:2px solid rgba(255,255,255,.22); border-radius:50%;}
+  .a10 .ic{width:360px; height:420px; color:#fff; z-index:2; filter:drop-shadow(0 10px 24px rgba(150,30,60,.28));}
+</style>
+</head>
+<body>
+  <!-- reusable icon symbol -->
+  <svg width="0" height="0" style="position:absolute">
+    <symbol id="thand" viewBox="0 0 120 140">
+      <mask id="hm">
+        <rect x="0" y="0" width="120" height="140" fill="black"/>
+        <g fill="white">
+          <rect x="26" y="52" width="70" height="66" rx="30" ry="32"/>
+          <rect x="31" y="34" width="15" height="44" rx="7.5"/>
+          <rect x="48" y="20" width="15" height="60" rx="7.5"/>
+          <rect x="64" y="24" width="15" height="56" rx="7.5"/>
+          <rect x="80" y="36" width="15" height="46" rx="7.5"/>
+          <rect x="12" y="60" width="15" height="38" rx="7.5" transform="rotate(38 19.5 79)"/>
+        </g>
+        <path d="M 46 90 Q 61 106 76 90" stroke="black" stroke-width="8" stroke-linecap="round" fill="none"/>
+      </mask>
+      <rect x="0" y="0" width="120" height="140" fill="currentColor" mask="url(#hm)"/>
+    </symbol>
+  </svg>
+
+  <div class="wall"></div>
+  <div class="leafshadow">
+    <svg viewBox="0 0 200 220">
+      <g fill="#2a2018">
+        <path d="M100 10 C60 60 55 140 100 210 C145 140 140 60 100 10 Z"/>
+        <path d="M100 40 C70 70 40 90 20 120 M100 70 C130 95 165 105 185 130 M100 110 C72 130 50 160 40 190 M100 130 C132 150 150 175 160 200" stroke="#2a2018" stroke-width="6" fill="none"/>
+      </g>
+    </svg>
+  </div>
+
+  <div class="frame">
+    <!-- ART 1: HERO -->
+    <div class="art a1" data-i="1">
+      <div class="rings"><i style="width:300px;height:300px"></i><i style="width:440px;height:440px"></i><i style="width:600px;height:600px"></i></div>
+      <div class="ghost ic"><svg><use href="#thand"/></svg></div>
+      <div class="tile"><img src="../assets/products/mist_watermelon.jpg"></div>
+    </div>
+
+    <!-- ART 2: IG POST -->
+    <div class="art a2" data-i="2">
+      <div class="post">
+        <div class="hd">
+          <div class="av"><div class="ic"><svg><use href="#thand"/></svg></div></div>
+          <div class="hn">touchland</div>
+          <div class="dots">•••</div>
+        </div>
+        <div class="im">
+          <img src="../assets/products/cases_overview.jpg">
+          <div class="cap-on">move<br>your mood</div>
+        </div>
+        <div class="row"><span>♥</span><span>💬</span><span>➦</span><span class="sp">🔖</span></div>
+        <div class="cap"><b>touchland</b> &nbsp;sensorial essentials for everyday joy 💕</div>
+      </div>
+    </div>
+
+    <!-- ART 3: BANNERS -->
+    <div class="art a3" data-i="3">
+      <div class="banner bL">
+        <img class="wm" src="../assets/products/../brand/touchland_wordmark.png">
+        <div class="ptile"><img src="../assets/products/case_pink.jpg"></div>
+        <h4>a purse<br>essential</h4>
+        <p>everyday carry</p>
+        <div class="mini ic"><svg><use href="#thand"/></svg></div>
+      </div>
+      <div class="banner bR">
+        <img class="wm" src="../assets/brand/touchland_wordmark.png">
+        <div class="ptile"><img src="../assets/products/mist_mint.jpg"></div>
+        <h4>move<br>your mood</h4>
+        <p>power mist</p>
+        <div class="mini ic"><svg><use href="#thand"/></svg></div>
+      </div>
+    </div>
+
+    <!-- ART 4: STICKER SHEET -->
+    <div class="art a4" data-i="4">
+      <div class="sheet" id="sheet"></div>
+      <div class="peel" style="background:linear-gradient(135deg,#FF9DB6,#FF6F8A)">
+        <div class="ic"><svg><use href="#thand"/></svg></div>
+        <small>move your mood</small>
+        <div class="curl"></div>
+      </div>
+    </div>
+
+    <!-- ART 5: LOGO LOCKUP -->
+    <div class="art a5" data-i="5">
+      <div class="ic"><svg><use href="#thand"/></svg></div>
+      <img class="wm" src="../assets/brand/touchland_wordmark.png">
+      <div class="tl">move your mood</div>
+      <div class="rule"></div>
+    </div>
+
+    <!-- ART 6: POSTER -->
+    <div class="art a6" data-i="6">
+      <img class="cover" src="../assets/products/blushrose_hero_rose.png">
+      <div class="scrim"></div>
+      <div class="badge"><div class="ic"><svg><use href="#thand"/></svg></div></div>
+      <div class="cta">
+        <h2>sensorial essentials<br>for everyday joy</h2>
+        <div class="url">touchland.com</div>
+      </div>
+    </div>
+
+    <!-- ART 7: LIFESTYLE spritz -->
+    <div class="art a7" data-i="7">
+      <img class="cover" src="../assets/products/life_spritz.png">
+      <img class="wmk" src="../assets/brand/touchland_wordmark.png" style="filter:brightness(0) invert(1)">
+    </div>
+
+    <!-- ART 8: PACKAGING -->
+    <div class="art a8" data-i="8">
+      <div class="badge"><div class="ic"><svg><use href="#thand"/></svg></div></div>
+      <div class="tile"><img src="../assets/products/case_pink.jpg"></div>
+      <div class="lab"><h3>the mist case</h3><p>carry it everywhere</p></div>
+    </div>
+
+    <!-- ART 9: LIFESTYLE model -->
+    <div class="art a9" data-i="9">
+      <img class="cover" src="../assets/products/life_model.png">
+      <img class="wmk" src="../assets/brand/touchland_wordmark.png" style="filter:brightness(0) invert(1)">
+    </div>
+
+    <!-- ART 10: BIG ICON -->
+    <div class="art a10" data-i="10">
+      <div class="rings"><i style="width:520px;height:520px"></i><i style="width:680px;height:680px"></i></div>
+      <div class="ic"><svg><use href="#thand"/></svg></div>
+    </div>
+
+    <!-- ART 11: END CARD -->
+    <div class="art a11" data-i="11">
+      <div class="ic"><svg><use href="#thand"/></svg></div>
+      <img class="wm" src="../assets/brand/touchland_wordmark.png">
+      <div class="tl">move your mood</div>
+      <div class="rule"></div>
+      <div class="desc">sensorial essentials<br>for everyday joy</div>
+      <div class="cats">hand mist &middot; body &amp; hair mist &middot; glow essence</div>
+      <div class="shop">
+        <div class="pill">Shop Now</div>
+        <div class="url">touchland.com</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pot"></div>
+  <div class="plant">
+    <svg viewBox="0 0 200 210">
+      <defs>
+        <linearGradient id="lg" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#63bd7e"/><stop offset="1" stop-color="#2f7d4a"/></linearGradient>
+        <linearGradient id="lg2" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#7cc98f"/><stop offset="1" stop-color="#3f9159"/></linearGradient>
+      </defs>
+      <g fill="url(#lg2)">
+        <ellipse cx="46" cy="60" rx="40" ry="86" transform="rotate(-34 46 60)"/>
+        <ellipse cx="135" cy="50" rx="38" ry="88" transform="rotate(26 135 50)"/>
+        <ellipse cx="170" cy="120" rx="36" ry="72" transform="rotate(52 170 120)"/>
+        <ellipse cx="24" cy="140" rx="34" ry="70" transform="rotate(-58 24 140)"/>
+      </g>
+      <g fill="url(#lg)">
+        <ellipse cx="72" cy="66" rx="44" ry="82" transform="rotate(-22 72 66)"/>
+        <ellipse cx="118" cy="58" rx="42" ry="84" transform="rotate(16 118 58)"/>
+        <ellipse cx="95" cy="38" rx="40" ry="78" transform="rotate(-4 95 38)"/>
+        <ellipse cx="150" cy="112" rx="40" ry="70" transform="rotate(40 150 112)"/>
+        <ellipse cx="44" cy="128" rx="38" ry="66" transform="rotate(-48 44 128)"/>
+        <ellipse cx="105" cy="120" rx="46" ry="66" transform="rotate(6 105 120)"/>
+      </g>
+    </svg>
+  </div>
+
+<script>
+  // build sticker grid
+  const cols=['#FF9DB6','#9FE0C6','#C7B4F0','#F3E483','#FF8A7A','#86C4F0','#FF9DB6','#9FE0C6','#C7B4F0','#F3E483','#FF8A7A','#86C4F0'];
+  const sheet=document.getElementById('sheet');
+  for(let k=0;k<12;k++){
+    const d=document.createElement('div'); d.className='stk'; d.style.background=cols[k];
+    d.innerHTML='<div class="ic"><svg><use href="#thand"/></svg></div><small>touchland</small>';
+    sheet.appendChild(d);
+  }
+  // show requested state
+  const i = new URLSearchParams(location.search).get('i') || '1';
+  const el = document.querySelector('.art[data-i="'+i+'"]');
+  if(el) el.classList.add('on');
+</script>
+</body>
+</html>
