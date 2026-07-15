@@ -5131,6 +5131,47 @@
       }
     },
     {
+      "slug": "render-brand-identity-reveal",
+      "name": "render-brand-identity-reveal",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Render a 'brand identity reveal' video from a config — a single poster frame in a real, softly-lit space (real wall, soft-focus plant in the corner, dappled leaf shadow, illuminated poster) whose artwork HARD-CUTS through ~10 on-brand poster mockups (hero product, IG post, hanging banners, sticker sheet, logo lockup, poster, two lifestyle stills, packaging, big icon) then holds on a brand end card. The environment plate is one create-image-fal generation; the mockups are real-DOM HTML frame-stepped via Playwright, perspective-composited into the detected frame quad with the plate's real leaf-shadow multiplied back onto each poster (reads as behind glass), sequenced by FFmpeg. Deterministic assembly, FREE (the plate comes from create-image-fal, the bed from create-music-elevenlabs), music bed only and approved brand copy only. Use for the brand-identity-reveal format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-brand-identity-reveal",
+      "files": [
+        "skills/ads/capabilities/render-brand-identity-reveal/SKILL.md",
+        "skills/ads/capabilities/render-brand-identity-reveal/scripts/PIPELINE.md",
+        "skills/ads/capabilities/render-brand-identity-reveal/scripts/build_video.sh",
+        "skills/ads/capabilities/render-brand-identity-reveal/scripts/composite.py",
+        "skills/ads/capabilities/render-brand-identity-reveal/scripts/config.example.json",
+        "skills/ads/capabilities/render-brand-identity-reveal/scripts/measure_frame.py",
+        "skills/ads/capabilities/render-brand-identity-reveal/scripts/recrop.py",
+        "skills/ads/capabilities/render-brand-identity-reveal/scripts/render_art.py",
+        "skills/ads/capabilities/render-brand-identity-reveal/scripts/scene.html",
+        "skills/ads/capabilities/render-brand-identity-reveal/skill.meta.json",
+        "skills/ads/capabilities/render-brand-identity-reveal/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "render-brand-identity-reveal",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-brand-identity-reveal",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
       "slug": "render-cgi-sizzle",
       "name": "render-cgi-sizzle",
       "category": "capabilities",
