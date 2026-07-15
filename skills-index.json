@@ -5755,6 +5755,44 @@
       }
     },
     {
+      "slug": "render-search-grid",
+      "name": "render-search-grid",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Render a 'search-grid' (Pinterest search-moodboard) video from a config — a real-DOM page with four continuous beats (masonry search grid + typing hook with counter-drift columns → 3 cards slide in from the right and stack → the top card box-grows to fullscreen then swipe-left ×2 through captioned feature shots → warm end card), frame-stepped via Chromium and encoded with FFmpeg — deterministic assembly, FREE (real brand photos + logo; the optional music bed comes from create-music-elevenlabs), so type/logo/photos stay pixel-crisp. Use for the search-grid format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-search-grid",
+      "files": [
+        "skills/ads/capabilities/render-search-grid/SKILL.md",
+        "skills/ads/capabilities/render-search-grid/scripts/build_html.py",
+        "skills/ads/capabilities/render-search-grid/scripts/capture.js",
+        "skills/ads/capabilities/render-search-grid/scripts/config.example.json",
+        "skills/ads/capabilities/render-search-grid/scripts/prep_assets.py",
+        "skills/ads/capabilities/render-search-grid/scripts/render.py",
+        "skills/ads/capabilities/render-search-grid/skill.meta.json",
+        "skills/ads/capabilities/render-search-grid/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "render-search-grid",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-search-grid",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
       "slug": "render-song-mv",
       "name": "render-song-mv",
       "category": "capabilities",

@@ -1,0 +1,56 @@
+{
+  "_comment": "Shipped worked example — Ruggable 'search-grid' (run-02, 2026-07). Paths point at the source project; re-point them at your own brand's real product/lifestyle photos + logo. Run prep_assets.py first: crop white margins off the end-card hero, and key the white out of the logo. All images are REAL brand assets (never AI-rendered); the only paid step is the optional music bed (create-music-elevenlabs).",
+  "canvas": { "width": 1080, "height": 1920, "fps": 30, "duration_ms": 18000 },
+  "hook": "cozy living room rug edit",
+  "placeholder": "Search for anything",
+  "caret_color": "#c8102e",
+
+  "_grid_note": "3 columns × 6 distinct tiles each (18 total). Side columns drift DOWN, middle column drifts UP. Use 6 distinct tiles/column so the drift never repeats a tile or reveals a gap. Cohesive palette is everything — warm here.",
+  "grid_cols": [
+    ["../../../clients/ruggable/ad-runs/run-02-pinterest-search-grid/source/grid/02-boho-plant-room.jpg",
+     "../../../clients/ruggable/ad-runs/run-02-pinterest-search-grid/source/grid/06-red-persian-macro.jpg",
+     "../../../clients/ruggable/ad-runs/run-02-pinterest-search-grid/source/grid/03-warm-kitchen-runner.jpg",
+     "../../../clients/ruggable/ad-runs/run-02-pinterest-search-grid/source/grid/11-frida-flat.jpg",
+     "../../../clients/ruggable/ad-runs/run-02-pinterest-search-grid/source/grid/14-blue-faded-macro.jpg",
+     "../../../clients/ruggable/ad-runs/run-02-pinterest-search-grid/source/grid/16-patchwork-flat.jpg"],
+    ["../../../clients/ruggable/ad-runs/run-02-pinterest-search-grid/source/grid/08-faded-rose-macro.jpg",
+     "../../../clients/ruggable/ad-runs/run-02-pinterest-search-grid/source/grid/01-living-room-fireplace.jpg",
+     "../../../clients/ruggable/ad-runs/run-02-pinterest-search-grid/source/grid/04-dining-chandelier.jpg",
+     "../../../clients/ruggable/ad-runs/run-02-pinterest-search-grid/source/grid/10-cambria-flat.jpg",
+     "../../../clients/ruggable/ad-runs/run-02-pinterest-search-grid/source/grid/17-linear-stripe-flat.jpg",
+     "../../../clients/ruggable/ad-runs/run-02-pinterest-search-grid/source/grid/13-cambria-kitchen.jpg"],
+    ["../../../clients/ruggable/ad-runs/run-02-pinterest-search-grid/source/grid/07-folk-floral-macro.jpg",
+     "../../../clients/ruggable/ad-runs/run-02-pinterest-search-grid/source/grid/05-armchair-vignette.jpg",
+     "../../../clients/ruggable/ad-runs/run-02-pinterest-search-grid/source/grid/09-moody-floral-macro.jpg",
+     "../../../clients/ruggable/ad-runs/run-02-pinterest-search-grid/source/grid/12-vintage-daisy-flat.jpg",
+     "../../../clients/ruggable/ad-runs/run-02-pinterest-search-grid/source/grid/15-watercolor-flat.jpg",
+     "../../../clients/ruggable/ad-runs/run-02-pinterest-search-grid/source/grid/18-polychrome-flat.jpg"]
+  ],
+
+  "_rooms_note": "The 3 rooms are BOTH the stacked cards AND the enlarged/swiped features. Warm + rug-dominant + low white-wall. Captions are the brand's OWN approved product attributes — never invented claims.",
+  "rooms": [
+    { "image": "../../../clients/ruggable/ad-runs/run-02-pinterest-search-grid/source/grid/03-warm-kitchen-runner.jpg", "caption": "Machine Washable" },
+    { "image": "../../../clients/ruggable/ad-runs/run-02-pinterest-search-grid/source/grid/04-dining-chandelier.jpg", "caption": "Stain-Resistant" },
+    { "image": "../../../clients/ruggable/ad-runs/run-02-pinterest-search-grid/source/grid/02-boho-plant-room.jpg", "caption": "Pet & Kid Friendly" }
+  ],
+
+  "stack_bg": "../../../clients/ruggable/ad-runs/run-02-pinterest-search-grid/source/grid/06-red-persian-macro.jpg",
+
+  "endcard": {
+    "_hero_note": "Crop white margins off first (prep_assets.py crop). Warm, rug-dominant hero.",
+    "hero": "../../../clients/ruggable/ad-runs/run-02-pinterest-search-grid/source/endcard-hero.jpg",
+    "_wordmark_note": "Transparent-bg PNG (prep_assets.py logo) — NOT a white-bg JPG.",
+    "wordmark": "../../../clients/ruggable/ad-runs/run-02-pinterest-search-grid/source/endcard-logo.png",
+    "tagline": "Designed for whatever life unrolls.",
+    "cta": "Washable rugs · ruggable.com",
+    "cta_short": "ruggable.com",
+    "bg": "radial-gradient(120% 82% at 50% 42%, #ecdfce 0%, #d9c6ac 100%)"
+  },
+
+  "music": {
+    "prompt": "Warm, cozy home-decor moodboard background music. Soft nylon acoustic guitar with gentle warm Rhodes keys and light brushed percussion, mellow and inviting, relaxed lo-fi tempo. Instrumental only, no vocals. Full and present from the very first second; calm, uplifting mood with a soft warm resolve at the end.",
+    "length_ms": 23000,
+    "trim_to_ms": 18000,
+    "force_instrumental": true
+  }
+}
