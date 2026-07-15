@@ -1,0 +1,42 @@
+{
+  "_comment": "Pair Eyewear 'RANGE' mosaic-grid-reveal — the worked example. Copy to config.json (in a dir with an assets/ folder) and edit. Canvas 1080x1920 9:16. FULL-BLEED 3x3 mosaic of REAL product tiles pops in one at a time (scatter order), clears, then the REAL brand wordmark builds line-by-line + tagline + CTA. Real DOM text/SVG only — never AI-render the wordmark or copy. Copy slots = the brand's OWN approved lines; never invent claims/customers/results.",
+  "brand_name": "Pair Eyewear",
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "wordmark": "assets/pair-wordmark.svg",
+  "wordmark_viewbox": "0 0 170 92",
+  "wordmark_width": 430,
+  "palette": {
+    "bg": "#F4EFE6",
+    "accent": "#92BA8F",
+    "accent_deep": "#5F8A5C",
+    "ink": "#1D1D1B",
+    "cap": "#9A948A"
+  },
+  "grid": { "cols": 3, "rows": 3, "inset": 20, "gap": 14 },
+  "pop_order": [0, 8, 2, 6, 4, 1, 7, 3, 5],
+  "timing": { "grid_in0": 0.35, "cadence": 0.42, "pop": 0.44, "hold": 0.80, "clear": 0.50 },
+  "tiles": [
+    { "image": "assets/1-aqua-shimmer.png",    "name": "Aqua Shimmer",          "bg": "#CFE8E5", "ink": "#2E6B65" },
+    { "image": "assets/2-rose-shimmer.png",    "name": "Rose Shimmer",          "bg": "#F1D8DE", "ink": "#9A4A5A" },
+    { "image": "assets/3-forest-tortoise.png", "name": "Forest Tortoise",       "bg": "#E6DAC4", "ink": "#6B5A38" },
+    { "image": "assets/4-cobalt-check.png",    "name": "Cobalt Check",          "bg": "#D2DDF1", "ink": "#37507F" },
+    { "image": "assets/5-cherries.png",        "name": "Cherries",              "bg": "#F0DEDE", "ink": "#9B4340" },
+    { "image": "assets/6-watermelon.png",      "name": "Watermelon",            "bg": "#D7E9D6", "ink": "#3B7A4A" },
+    { "image": "assets/7-butterflies.png",     "name": "Beautiful Butterflies", "bg": "#E3DAED", "ink": "#5B4A82" },
+    { "image": "assets/8-pride.png",           "name": "Traditional Pride",     "bg": "#ECE5D6", "ink": "#6E6448" },
+    { "image": "assets/9-sunset-palms.png",    "name": "Sunset Palms",          "bg": "#F3DEC8", "ink": "#9A6437" }
+  ],
+  "end_card": {
+    "sub": "Eyewear",
+    "tagline_top": "One Pair.",
+    "tagline_bottom": "Infinite Possibilities.",
+    "cta": "Shop Now",
+    "url": "paireyewear.com"
+  },
+  "music": {
+    "prompt": "Light, upbeat, modern lifestyle bed for a short fashion-eyewear ad. Bright plucky marimba and soft synth mallets, gentle claps, warm and playful, clean and minimal, no vocals, no lyrics, positive and friendly, quick tempo but relaxed, boutique DTC brand feel. Kicks in immediately with no long intro.",
+    "length_ms": 11000
+  }
+}
