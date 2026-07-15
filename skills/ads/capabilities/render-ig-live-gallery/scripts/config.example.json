@@ -1,0 +1,45 @@
+{
+  "_note": "Worked example (Glossier). At remix time the orchestrator binds the brand's real product stills, wordmark, benefit phrases, and claim-free comments. Image paths are relative to --assets.",
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "username": "glossier",
+  "verified": true,
+  "slide_dur": 3.4,
+  "endcard_dur": 3.8,
+  "crossfade": 0.35,
+  "palette": {
+    "ink": [26, 24, 25],
+    "prod_bg": [247, 247, 247],
+    "pink": [240, 122, 158],
+    "pink_hi": [250, 176, 197],
+    "pink_bg": [252, 230, 233],
+    "plum": [58, 20, 34],
+    "red": [233, 0, 47],
+    "live_red": [237, 28, 76]
+  },
+  "slides": [
+    { "image": "stretch-fluid-foundation-medium3-standalone.jpg", "phrase": "Skin first,", "viewers": "8.2k",
+      "comments": [["mara.k", "so lightweight"], ["devon.r", "skin first, always"]] },
+    { "image": "futuredew-standalone.png", "phrase": "then a little dew,", "viewers": "9.6k",
+      "comments": [["noor.b", "that glow"], ["els", "so dewy"]] },
+    { "image": "cloud-paint-soar-standalone.jpg", "phrase": "a dab of color,", "viewers": "11k",
+      "comments": [["jules", "prettiest flush"], ["tay.m", "so blendable"]] },
+    { "image": "boy-brow-standalone.jpg", "phrase": "brows in seconds,", "viewers": "12k",
+      "comments": [["remi", "fluffy brows"], ["dana.k", "brows in secs"]] },
+    { "image": "balm-dotcom-black-cherry-standalone.jpg", "phrase": "a swipe of balm —", "viewers": "13k",
+      "comments": [["cleo", "so glossy"], ["suki", "forever fave"]] }
+  ],
+  "endcard": {
+    "logo": "glossier-logo-white.png",
+    "logo_is_white": true,
+    "payoff": "you look good.",
+    "handle": "@glossier",
+    "cta": "shop the edit  ·  glossier.com"
+  },
+  "music": {
+    "prompt": "Soft dreamy beauty-ad instrumental: airy warm synth pads, light plucky bells, a gentle uplifting build, subtle soft heartbeat kick, clean modern and aspirational, feminine and calm, no vocals. Instrumental only.",
+    "length_ms": 22000,
+    "trim_intro_sec": 1.2
+  }
+}
