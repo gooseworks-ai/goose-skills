@@ -1,6 +1,6 @@
 {
   "version": "1.2.0",
-  "generated": "2026-07-15",
+  "generated": "2026-07-16",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -7784,6 +7784,36 @@
             "codex"
           ]
         }
+      }
+    },
+    {
+      "slug": "webinar-content-engine",
+      "name": "webinar-content-engine",
+      "category": "composites",
+      "domain": "content",
+      "description": "Turn a webinar recording, transcript, notes, or slide deck into a factual multichannel content campaign with a long-form article, newsletter, social posts, short-video clip plan, sales follow-up, quote bank, and publishing calendar. Use when a marketing team needs to repurpose one webinar or virtual event into channel-ready assets without inventing claims or losing speaker attribution.",
+      "tags": "content",
+      "path": "skills/content/composites/webinar-content-engine",
+      "files": [
+        "skills/content/composites/webinar-content-engine/SKILL.md",
+        "skills/content/composites/webinar-content-engine/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "webinar-content-engine",
+        "category": "composites",
+        "description": "Turn one webinar into a factual multichannel campaign with an article, newsletter, social posts, clip plan, sales follow-up, quote bank, and publishing calendar.",
+        "tags": [
+          "content"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install webinar-content-engine",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "example_prompt": "Turn this webinar transcript into a two-week content campaign with a blog post, newsletter, social posts, and timestamped clip plan."
       }
     },
     {
