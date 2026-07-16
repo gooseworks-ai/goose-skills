@@ -178,6 +178,8 @@ Found something that looks off? [Open an issue](https://github.com/gooseworks-ai
 
 MIT &mdash; see [LICENSE](LICENSE) for details.
 
+The skill files and CLI in this repository are MIT-licensed. The GooseWorks API they connect to is a separate paid service governed by its own [terms](https://gooseworks.ai/terms).
+
 <div align="center">
 
 **Built by [GooseWorks](https://gooseworks.sh)**
