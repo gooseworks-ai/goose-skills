@@ -1,0 +1,202 @@
+{
+  "_comment": "Klarify 'Rat Park' editorial-motion podcast-clip ad — the worked example. Copy to config.json and edit. A ~40.8s bold flat 2-tone editorial-illustration (EDITORIAL_2TONE) 9:16 explainer where a REAL podcast audio clip carries the whole narrative (NO generated song, NO AI VO). Pipeline: (1) clip the source episode MP3 to the payoff range + Whisper word timings; (2) one Nano Banana keyframe per beat (9:16, chained ref images off the style anchor, ONE look pack); (3) DETERMINISTIC ffmpeg ken-burns motion + hard-cut concat (NO generative i2v); (4) mux the real audio + frosted-subtle Whisper captions (ON only mid-sentence); (5) PIL brand end card (never AI text). Master 1080x1920, 24fps, h264+aac, ~40.8s. See scripts/PIPELINE.md for the source scripts.",
+  "brand_name": "Klarify",
+  "campaign": "the-rat-park-experiment",
+  "title": "The Rat Park Experiment",
+  "width": 1080,
+  "height": 1920,
+  "fps": 24,
+  "duration_sec": 40.8,
+  "aspect_ratio": "9:16",
+
+  "audio": {
+    "_comment": "This worked example uses a REAL clipped podcast line (NO generated song). Note the format ALSO supports a generated VO when no source episode is supplied — that's the recipe's STEP-0 intake decision (ASK the user; provider 'generated_vo' via create-vo-elevenlabs from a short truthful script). Here the payoff hinges on host Tamer's real cadence at 'it was more about community.' Clip to the payoff range + a fade-out tail so the trailing 'Because...' doesn't bleed in. THIS AUDIO SETS THE TIMELINE.",
+    "provider": "podcast_clip",
+    "source_mp3": "clients/klarify/podcasts/future-of-therapy/why-motivation-is-the-worst-foundation-for-lasting-change.mp3",
+    "clip_start_sec": 933.5,
+    "clip_end_sec": 973.3,
+    "fade_out": { "st_sec": 39.3, "d_sec": 0.5, "_note": "afade=t=out:st=39.30:d=0.5 — cleans the sharp final 'community.' cut and drops the host's 'Because...' tail" },
+    "clipped_output": "audio/source-rat-park-40s.mp3",
+    "_clip_cmd": "ffmpeg -y -ss 933.5 -to 973.30 -i <source_mp3> -af 'afade=t=out:st=39.30:d=0.5' -c:a libmp3lame -b:a 192k audio/source-rat-park-40s.mp3  ->  39.84s clip ending cleanly on the payoff line",
+    "transcript": {
+      "_note": "Default to fal-ai/whisper for podcast-length audio (~$0.04, <30s vs. local whisper 40min+ CPU). Word-level timestamps used to mark each beat's payoff word.",
+      "provider": "fal",
+      "model": "whisper",
+      "word_timestamps": true,
+      "output": "audio/words.json"
+    }
+  },
+
+  "look_pack": {
+    "_comment": "ONE look pack + CHAINED ref images (pass the anchor + any earlier matching frame as an extra --ref-image) is what makes N beats read as one printed set. Independent Nano Banana rolls drift cage/character geometry; crossfades then expose it, so hard-cut. Reference: moodboard/style-ref-01.png (Niemann/Steinberg/New Yorker lineage).",
+    "name": "EDITORIAL_2TONE",
+    "palette": {
+      "paper": "#F4EBD9",
+      "ink": "#1A1A1A",
+      "accent": "#86987A",
+      "_note": "STRICT 2-tone — cream paper + charcoal ink + ONE sage accent (on the 'COMMUNITY' label only). No rust, no other colors. Nano Banana sometimes adds ambient warmth (a faint orange lamp glow) unprompted — re-roll if it catches the eye."
+    },
+    "style_ref": "moodboard/style-ref-01.png",
+    "anchor_keyframe": "generated/style-anchor/anchor-cage-1.png",
+    "style_opener": "Editorial illustration: bold flat 2-tone — solid charcoal-black silhouettes on warm cream off-white paper, thick uniform line weight, halftone-dot shading for depth. Christoph Niemann / Saul Steinberg / New Yorker spot-illustration lineage. Printed-magazine editorial illustration, NOT vector-clean, NOT Kurzgesagt, NOT pen-and-marker. 9:16 vertical with cream negative space.",
+    "negative_tail": "No color besides cream and charcoal (plus the single sage accent only where specified). No gradients (halftone dots for shading). No vector cleanliness, no motion-graphics-template look, no photorealism. CRITICAL: ABSOLUTELY NO TEXT, NO LETTERS, NO WORDS, NO LABELS anywhere in the image."
+  },
+
+  "keyframe_engine": {
+    "_note": "create-image-nano-banana-fal. Per beat: prompt = look_pack.style_opener + beats[i].keyframe_prompt + look_pack.negative_tail, --ref-image style_ref --ref-image anchor_keyframe (+ any earlier matching frame). Generate the anchor FIRST and approve it before fanning out. ~26 rolls incl. re-rolls ~= $1.00.",
+    "provider": "fal",
+    "model": "nano-banana",
+    "skill": "create-image-nano-banana-fal",
+    "aspect_ratio": "9:16",
+    "chain_refs": true
+  },
+
+  "motion_engine": {
+    "_comment": "NO generative i2v. The first pass tried fal-ai/bytedance/seedance/v1/pro/image-to-video and it (a) hallucinated a photoreal human hand holding a marker on the 'pen draws on' beat and (b) morphed the rats into menacing humanoids + hallucinated whimsical cartoon clouds on the decline beat — Seedance is photoreal-trained and invents naturalistic middle states, collapsing the 2-tone discipline. Retired it; saved ~$4-5. Deterministic ffmpeg zoompan on static keyframes = 'printed page that moves' + exact timing control.",
+    "engine": "ffmpeg_kenburns",
+    "fps": 24,
+    "render_scale": "2x_then_downscale",
+    "helpers": {
+      "render_kb": "push-in ken-burns: scale to 2x, crop, zoompan z=min(zoom+step,zoom_end) 1.0->zoom_end (default 1.04), d=dur*fps, trim=duration",
+      "render_kb_out": "pull-back ken-burns: zoompan z from zoom_start (default 1.08) down to 1.0"
+    },
+    "concat": "hard_cut",
+    "_concat_note": "Hard cuts on the beat — NO crossfades (they ghost two drifting cages through each other; different bar counts / dropper positions). Belt-and-suspenders: NEVER use -loop 1 with zoompan d=N — d runs per input frame per loop, so a 3s target ballooned to 225s. Feed a single image, let zoompan d=<frames> + -t <dur> + trim=duration=<dur> clamp."
+  },
+
+  "beats": [
+    {
+      "id": "beat-1",
+      "role": "HOOK_CAGE1_REVEAL",
+      "t_start": 0.0,
+      "t_end": 3.5,
+      "audio_line": "I remember reading this study, the famous rat study",
+      "payoff_word": "study",
+      "caption_on": true,
+      "keyframe": "generated/style-anchor/anchor-cage-1.png",
+      "keyframe_prompt": "Subject: a small rectangular wire cage with two small rats inside reaching up at a dropper labeled with a tiny test-tube icon. Cream negative space. This is the ANCHOR frame — every later frame chains off it via --ref-image so the cage geometry stays consistent.",
+      "motion": { "type": "render_kb", "dur": 3.5, "zoom_end": 1.05 }
+    },
+    {
+      "id": "beat-2",
+      "role": "DECLINE_ARC",
+      "t_start": 3.5,
+      "t_end": 11.5,
+      "audio_line": "they laced their water with cocaine ... kept drinking till they died",
+      "payoff_word": "died",
+      "caption_on": true,
+      "panels": [
+        "generated/beat2-consistent/p-reaching.png",
+        "generated/beat2-consistent/p-sitting.png",
+        "generated/beat2-consistent/p-slumped.png",
+        "generated/beat2-consistent/p4-lying.png"
+      ],
+      "keyframe_prompt": "EXACT SAME cage as the reference image — same bars, same dropper, same charcoal silhouette + halftone style. The ONLY change across the 4 panels is the two rats progressively slumping (reaching -> sitting -> slumped -> lying). USE METAPHOR-FORWARD LANGUAGE ('energy fades / grow tired / settle resting / halftone wisps drift up like quiet breath') — 'cocaine' / 'kept drinking' / 'died' trips FAL's content_policy filter; the metaphor prompt produced the same visual and passed.",
+      "motion": { "type": "render_kb", "dur": 2.0, "per_panel": true, "zoom_end": 1.04, "concat": "hard_cut", "_note": "4 x 2.0s panels, hard-cut concat = 8s" }
+    },
+    {
+      "id": "beat-3",
+      "role": "REFRAME_RATPARK",
+      "t_start": 11.5,
+      "t_end": 22.0,
+      "audio_line": "for so many years people were like oh my god ... they redid that study ... they gave it a really nice cage",
+      "payoff_word": "really nice cage",
+      "caption_on": true,
+      "_note": "Split into 3 sub-beats so each aligns to a DIFFERENT sentence (LEARNINGS L3): 12-15 'for so many years' -> dead-rats reflective hold; 15-19 'they redid the study, tiny cage' -> empty new cage; 19-22 'a really nice cage' -> populated Rat Park lands exactly on its line. Concat sub-segments hard-cut. Total 10s.",
+      "sub_segments": [
+        { "id": "b3a-dead-hold", "dur": 3.0, "audio_anchor": "for so many years (reflective hold)", "keyframe": "generated/beat2-consistent/p4-lying.png", "motion": { "type": "render_kb_out", "zoom_start": 1.06 } },
+        { "id": "b3b-empty", "dur": 4.0, "audio_anchor": "they redid that study, instead of a tiny cage", "keyframe": "generated/ratpark-empty.png", "motion": { "type": "render_kb", "zoom_end": 1.05 } },
+        { "id": "b3c-full", "dur": 3.0, "audio_anchor": "a really nice cage (populated Rat Park revealed)", "keyframe": "generated/style-anchor/anchor-cage-2-rat-park.png", "motion": { "type": "render_kb", "zoom_end": 1.04 } }
+      ],
+      "motion": { "concat": "hard_cut" }
+    },
+    {
+      "id": "beat-4",
+      "role": "PULLBACK_COMMUNITY",
+      "t_start": 22.0,
+      "t_end": 30.0,
+      "audio_line": "bunch of fun things to do and other friends and lo and behold, didn't touch the cocaine-laced water",
+      "payoff_word": "didn't touch",
+      "caption_on": true,
+      "keyframe": "generated/beat4-wide-v3.png",
+      "keyframe_prompt": "Wide pull-back — both cages side-by-side. A 'COMMUNITY' label punches in — the ONLY sage-accent element in the whole spot. NOTE: the wide pull-back kept generating tiny 'CAGE 1' labels even with 'NO TEXT'; the all-caps 'ABSOLUTELY NO TEXT, NO LETTERS, NO WORDS, NO LABELS' tail fixed it. Composite the deliberate COMMUNITY label separately (PIL/drawtext) if Nano Banana can't be trusted with it.",
+      "motion": { "type": "render_kb", "dur": 8.0, "zoom_end": 1.05, "_note": "pull-back zoompan + render_kb on the COMMUNITY reveal" }
+    },
+    {
+      "id": "beat-5",
+      "role": "PIVOT_THERAPISTS",
+      "t_start": 30.0,
+      "t_end": 37.0,
+      "audio_line": "mind-blowing. It's very true. And it wasn't just about fun.",
+      "payoff_word": "community",
+      "caption_on": true,
+      "_note": "THE PIVOT (the conceptual fix, LEARNINGS L11): the cages dissolve rats into therapists — solo therapist hunched over a laptop at midnight (Cage 1) vs. supported therapists + a Klarify glow on a closed laptop (Cage 2). Split into 3 micro-cuts (full split 3s -> solo CU 1.5s -> supported CU 2.5s) = 3 visual moments in one beat so it doesn't read static (LEARNINGS L10). This sells Klarify to therapists, not therapy to clients.",
+      "sub_segments": [
+        { "id": "b5-split", "dur": 3.0, "keyframe": "generated/beat5-split.png", "motion": { "type": "render_kb", "zoom_end": 1.04 } },
+        { "id": "b5-solo-cu", "dur": 1.5, "keyframe": "generated/beat5-solo-closeup.png", "motion": { "type": "render_kb", "zoom_end": 1.05 } },
+        { "id": "b5-supported-cu", "dur": 2.5, "keyframe": "generated/beat5-supported-closeup.png", "motion": { "type": "render_kb", "zoom_end": 1.05 } }
+      ],
+      "motion": { "concat": "hard_cut" }
+    },
+    {
+      "id": "beat-6",
+      "role": "END_CARD",
+      "t_start": 37.0,
+      "t_end": 40.8,
+      "audio_line": "It was more about community. (+ ~1.5s silent hold)",
+      "payoff_word": "",
+      "caption_on": false,
+      "keyframe": "generated/klarify-endcard-9x16-final.png",
+      "motion": { "type": "kenburns_static", "dur": 4.3, "zoom_end": 1.03, "fade_in": 0.3, "fade_out": 0.3, "_note": "PIL-composited end card; ~2.8s active + ~1.5s silent hold. The video runs past the audio for the hold (fade the first/last 0.3s so it doesn't hard-black-flash)." }
+    }
+  ],
+
+  "captions": {
+    "_comment": "Whisper (fal) on the MASTER -> frosted-subtle ASS burn. ON only while the speaker is mid-sentence — leave silent/reflective beats (and the end card) uncaptioned so captions don't fight the visual. This is REAL spoken VO, so Whisper works (unlike sung audio, which returns 'Music Playing'). ls the burn-in-captions skill's templates/ before assuming a style exists — only frosted-subtle + karaoke-fill were present (clean-bubble was documented but missing).",
+    "provider": "fal",
+    "model": "whisper",
+    "style": "frosted-subtle",
+    "skill": "burn-in-captions",
+    "on_when": "speaker_mid_sentence_only",
+    "no_overlap": "MANDATORY — clamp each line to end before the next starts (end = min(last_word_end+~0.15, next_start-0.03)); two boxes must never stack. The #1 caption bug.",
+    "safe_area": "Captions sit in the lower third; keep the subject in the upper ~75%. If a keyframe subject intrudes into the caption band, shift the subject UP into the empty top space (PIL) before assembly.",
+    "burn_engine": "Prefer libass; if `ffmpeg -filters` lacks it (common on Homebrew), render each line as a transparent PNG (frosted box + text) and composite via the `overlay` filter with timed enable windows."
+  },
+
+  "end_card": {
+    "_comment": "Brand lockup composited via PIL from the REAL brand asset (the canonical Klarify wordmark PNG) — NEVER AI-rendered text (Nano Banana spelled 'AI to empower therapists' as 'therapits'). Before generating an end card from scratch, `find <brand> -name '*wordmark*'` — the brand team already produced the right asset.",
+    "engine": "pil",
+    "script": "build_endcard.py",
+    "brand_asset": "clients/klarify/ad-runs/future-of-therapy-practice-stakes-low/brand-assets/logos/klarify-wordmark-on-green.png",
+    "wordmark_text": "klarify",
+    "wordmark_font": "/System/Library/Fonts/Helvetica.ttc",
+    "tagline_text": "AI to empower therapists, not replace them",
+    "tagline_font": "/System/Library/Fonts/Helvetica.ttc",
+    "background": "stretch a 1px-wide center column of the source PNG to 1080x1920, GaussianBlur(80) to kill banding",
+    "mascot_crop": "feathered radial-alpha ellipse crop of the brand 'carrot' mascot from the source PNG (box 1290,700,1750,1200), resized to ~30% width, pasted centered-upper (cy = 0.30*H)",
+    "overlay_window_sec": [37.0, 40.8]
+  },
+
+  "audio_mix": {
+    "_note": "The real podcast VO carries the spot. Any bed is soft licensed acoustic (finger-picked guitar / soft strings, swell on 'community') at <= -22 LUFS ducked under the VO — NEVER a generated song. Pencil-scribble SFX per drawn line, light not cartoony.",
+    "loudness_lufs": -22,
+    "vo_source": "real_podcast_clip",
+    "music_bed": "optional_licensed_only",
+    "duck_under_vo": true
+  },
+
+  "post_production": {
+    "music": {
+      "default": "off",
+      "note": "the real podcast VO carries the spot; a bed is optional licensed acoustic <= -22 LUFS ducked under the VO, never generated"
+    },
+    "captions": {
+      "default": "on",
+      "note": "frosted-subtle Whisper captions, ON only while the speaker is mid-sentence (not silent beats)"
+    },
+    "end_card": {
+      "default": "on",
+      "note": "PIL end card from the real brand wordmark PNG, default on"
+    }
+  }
+}

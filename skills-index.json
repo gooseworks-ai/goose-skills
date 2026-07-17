@@ -1,6 +1,6 @@
 {
   "version": "1.2.0",
-  "generated": "2026-07-15",
+  "generated": "2026-07-17",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -5057,6 +5057,45 @@
       }
     },
     {
+      "slug": "render-3d-product-showcase",
+      "name": "render-3d-product-showcase",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Assemble a premium 3D product-showcase ad from a config — four beat clips (an orbiting hero rotation, a macro push-in, a physics reveal, a typographic close) normalized to the brand-color canvas, hard-concatenated in order, closed on a deterministic Playwright brand end card, and mixed under one instrumental bed at loudnorm I=-16 (music-only, no VO). Ships the runnable build_endcard.py + build_masters.py; the rotation/macro clips are create-video-fal i2v seeded on a create-image-fal styled hero, the reveal is Veo3 i2v, and the bed is create-music-elevenlabs. Use for the 3d-product-showcase format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-3d-product-showcase",
+      "files": [
+        "skills/ads/capabilities/render-3d-product-showcase/SKILL.md",
+        "skills/ads/capabilities/render-3d-product-showcase/scripts/PIPELINE.md",
+        "skills/ads/capabilities/render-3d-product-showcase/scripts/README.md",
+        "skills/ads/capabilities/render-3d-product-showcase/scripts/build_endcard.py",
+        "skills/ads/capabilities/render-3d-product-showcase/scripts/build_masters.py",
+        "skills/ads/capabilities/render-3d-product-showcase/scripts/config.example.json",
+        "skills/ads/capabilities/render-3d-product-showcase/scripts/shoot.js",
+        "skills/ads/capabilities/render-3d-product-showcase/skill.meta.json",
+        "skills/ads/capabilities/render-3d-product-showcase/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "render-3d-product-showcase",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-3d-product-showcase",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
       "slug": "render-absurdist-explainer",
       "name": "render-absurdist-explainer",
       "category": "capabilities",
@@ -5172,6 +5211,42 @@
       }
     },
     {
+      "slug": "render-cartoon-music-video",
+      "name": "render-cartoon-music-video",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Assemble a cartoon / animated / hand-crafted music-video ad from a config — a sung song carries the whole narrative while N per-bar i2v clips (one recurring animated character, one look pack) are each cut to their BAR window from librosa beat-tracking and hard-concatenated on the bar, VEED-whisper white bold-sans captions in the BOTTOM third (Alignment 2, above the logo bug, no pill) burned from the song's word timings re-spelled against the locked lyrics, a persistent brand logo bug held over the body (suppressed on the end card), and closed on a solid-brand-color PIL end card with the song still playing under it — never AI-rendered text. This is the FREE deterministic assembly stage (cut-to-bar + hard concat + logo bug + captions + end card + song mux); the song, character, keyframes, and clips come from create-music-elevenlabs / create-image-fal / create-video-fal. Use for the cartoon-music-video format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-cartoon-music-video",
+      "files": [
+        "skills/ads/capabilities/render-cartoon-music-video/SKILL.md",
+        "skills/ads/capabilities/render-cartoon-music-video/scripts/PIPELINE.md",
+        "skills/ads/capabilities/render-cartoon-music-video/scripts/README.md",
+        "skills/ads/capabilities/render-cartoon-music-video/scripts/config.example.json",
+        "skills/ads/capabilities/render-cartoon-music-video/skill.meta.json",
+        "skills/ads/capabilities/render-cartoon-music-video/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "render-cartoon-music-video",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-cartoon-music-video",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
       "slug": "render-cgi-sizzle",
       "name": "render-cgi-sizzle",
       "category": "capabilities",
@@ -5242,6 +5317,78 @@
         ],
         "installation": {
           "base_command": "npx goose-skills install render-chatgpt-chat",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
+      "slug": "render-cinematic-music-video",
+      "name": "render-cinematic-music-video",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Assemble a cinematic live-action-style music-video ad from a config — an original sung anthem carries the whole narrative while N 35mm-film-look i2v clips are each cut to their lyric window and hard-concatenated on the beat as a 3-act arc, the anthem muxed at loudnorm I=-14, cinematic lower-third serif captions built from the song's OWN word timings (never Whisper) with the hook line landing on the chorus drop, and closed on a brand end card composited from the real asset — never AI-rendered text. This is the FREE deterministic assembly stage (cut-to-window + hard concat + anthem mux + captions + end card); the anthem, keyframes, and clips come from create-music-elevenlabs / create-image-fal / create-video-fal. Use for the cinematic-music-video format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-cinematic-music-video",
+      "files": [
+        "skills/ads/capabilities/render-cinematic-music-video/SKILL.md",
+        "skills/ads/capabilities/render-cinematic-music-video/scripts/PIPELINE.md",
+        "skills/ads/capabilities/render-cinematic-music-video/scripts/README.md",
+        "skills/ads/capabilities/render-cinematic-music-video/scripts/config.example.json",
+        "skills/ads/capabilities/render-cinematic-music-video/skill.meta.json",
+        "skills/ads/capabilities/render-cinematic-music-video/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "render-cinematic-music-video",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-cinematic-music-video",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
+      "slug": "render-editorial-motion-podcast",
+      "name": "render-editorial-motion-podcast",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Assemble an editorial-motion podcast-clip ad from a config — a real clipped podcast MP3 carries the narrative while N flat 2-tone editorial-illustration keyframes are animated NOT by generative i2v but by DETERMINISTIC ffmpeg ken-burns (zoompan) + hard cuts (no crossfades, which expose geometric drift), each beat snapped to its spoken line, the real audio muxed, Whisper-driven captions burned only mid-sentence, and closed on a PIL brand end card — never AI-rendered text. This is the FREE deterministic assembly stage (ffmpeg ken-burns + hard concat + audio mux + captions + end card); the real audio is clipped from source and the keyframes come from create-image-fal. Use for the editorial-motion-podcast format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-editorial-motion-podcast",
+      "files": [
+        "skills/ads/capabilities/render-editorial-motion-podcast/SKILL.md",
+        "skills/ads/capabilities/render-editorial-motion-podcast/scripts/PIPELINE.md",
+        "skills/ads/capabilities/render-editorial-motion-podcast/scripts/README.md",
+        "skills/ads/capabilities/render-editorial-motion-podcast/scripts/config.example.json",
+        "skills/ads/capabilities/render-editorial-motion-podcast/skill.meta.json",
+        "skills/ads/capabilities/render-editorial-motion-podcast/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "render-editorial-motion-podcast",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-editorial-motion-podcast",
           "supports": [
             "claude",
             "cursor",
@@ -5707,6 +5854,42 @@
         ],
         "installation": {
           "base_command": "npx goose-skills install render-photo-grid-card",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
+      "slug": "render-podcast-skit",
+      "name": "render-podcast-skit",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Assemble a two-host fake-podcast skit ad from a config — per-line lipsync clips hard-concatenated in script order, scaled/padded to 1080×1920, WHITE bottom-center captions (up to 5 words per cue, broken on sentence punctuation, word-wrapped to stay in-frame, held at least 0.9s) built from each line's OWN ElevenLabs char-level timestamps (offset by cumulative clip start, never Whisper), and closed on a Playwright/PIL brand end card composited from the real wordmark — never AI-rendered text. This is the FREE deterministic assembly stage (concat + white captions + end card + crf28 encode); the per-line VOs, photoreal gpt-image-2 base stills, expression variants, and lipsync clips come from create-vo-elevenlabs / create-image-gpt-image-fal / create-video-fal. Use for the podcast-skit format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-podcast-skit",
+      "files": [
+        "skills/ads/capabilities/render-podcast-skit/SKILL.md",
+        "skills/ads/capabilities/render-podcast-skit/scripts/PIPELINE.md",
+        "skills/ads/capabilities/render-podcast-skit/scripts/README.md",
+        "skills/ads/capabilities/render-podcast-skit/scripts/config.example.json",
+        "skills/ads/capabilities/render-podcast-skit/skill.meta.json",
+        "skills/ads/capabilities/render-podcast-skit/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "render-podcast-skit",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-podcast-skit",
           "supports": [
             "claude",
             "cursor",
