@@ -12,13 +12,18 @@ clips and cost **$0**.
 `PIPELINE.md` maps every config block to its source step. This README documents the FREE
 assembly pieces that `render-podcast-skit` owns.
 
-## 1. Karaoke captions — from the VO's OWN char-level timestamps (script-window, NOT Whisper)
+## 1. WHITE captions — from the VO's OWN char-level timestamps (script-window, NOT Whisper)
 
 Captions come from each line's ElevenLabs with-timestamps response — the char-level word timings
 returned **with** the VO — never from Whisper (Whisper on the rendered clips mistimes). The
 assembler walks the scenes in script order and builds a **global `words.json`**: each word's time
 is its local char-level time **+ the cumulative clip start** (the sum of the preceding clips'
-durations). It emits a yellow (`#FFEB3B`) karaoke ASS with a 3-word phrase cap, bottom-center.
+durations). It groups words into **≤5-word cues broken on sentence-final punctuation** and renders
+**WHITE `#FFFFFF`** bottom-center captions (black outline), **word-wrapped to stay inside the frame**
+(never off the edges) and held **≥0.9s** each. Yellow 3-word karaoke was the old style and was
+**rejected in testing** — match the `add-captions-veed-fal --preset whisper` house style. Render as
+**PIL PNG overlays** when the host ffmpeg lacks libass (the common case — check
+`ffmpeg -filters | grep subtitle`), else an ASS burn.
 
 ## 2. Per-line clip assembly, hard-concat in script order
 
@@ -36,6 +41,8 @@ model garbles a wordmark.
 
 ## 4. FFmpeg composite
 
-FFmpeg stitches the master: concat the per-line clips (scale/pad 1080×1920, re-encode), burn the
-karaoke ASS via libass, and auto-append the 2.5s end-card mp4. The VOs carry the audio (no music
-bed by default). Output is a 1080×1920 h264 + aac master. Deterministic, no paid calls, no keys.
+FFmpeg stitches the master: concat the per-line clips (scale/pad 1080×1920), overlay the WHITE
+caption PNGs (or burn the ASS via libass), and auto-append the 2.5s end-card mp4. The VOs carry the
+audio (no music bed by default). **Final-encode `libx264 -preset slow -crf 28` + aac 96k** so a
+~28s master lands near **~6MB** (the old `-crf 20` produced oversized ~16MB files). Output is a
+1080×1920 h264 + aac master. Deterministic, no paid calls, no keys.

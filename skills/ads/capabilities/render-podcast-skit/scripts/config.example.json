@@ -1,5 +1,5 @@
 {
-  "_comment": "Ladder run-02 'Laundromat 2am' podcast-skit — the worked example. Copy to config.json and edit. A ~49s two-host (skeptic Brittney + believer Brad) 9:16 fake-podcast skit at a 24hr laundromat set (unrelated to fitness — that's the joke). Pipeline: (1) ElevenLabs with-timestamps VO per line, one voice per host; (2) two base stills (Higgsfield nano_banana_2, mouths closed) + ~10 img2img expression variants anchored on the bases; (3) Veed Fabric 1.0 lipsync per (still, VO) pair @ 720p; (4) yellow karaoke captions from the VO's char-level timestamps, 3-word cap; (5) hard-cut concat + a 2.5s Playwright/PIL brand end card. Master 1080x1920 h264+aac. See scripts/PIPELINE.md for the source scripts.",
+  "_comment": "Ladder run-02 'Laundromat 2am' podcast-skit — the worked example. Copy to config.json and edit. A ~49s two-host (skeptic Brittney + believer Brad) 9:16 fake-podcast skit at a 24hr laundromat set (unrelated to fitness — that's the joke). Pipeline: (1) ElevenLabs with-timestamps VO per line, one voice per host; (2) two base stills (gpt-image-2 quality=high, photoreal, mouths closed) + ~10 edit-anchored expression variants on the bases; (3) Veed Fabric 1.0 lipsync per (still, VO) pair @ 720p; (4) WHITE captions from the VO's char-level timestamps, <=5 words/cue, sentence-broken, word-wrapped; (5) hard-cut concat + a 2.5s Playwright/PIL brand end card, final-encode crf28. Master 1080x1920 h264+aac. NOTE: this Ladder example is worked-reference — write a FRESH script + hook for each brand, do not reuse these lines. See scripts/PIPELINE.md for the source scripts.",
   "brand_name": "Ladder",
   "campaign": "podcast-skit — laundromat 2am",
   "title": "Ladder Podcast Ad run-02 — Laundromat 2am",
@@ -53,10 +53,11 @@
   },
 
   "characters": {
-    "_note": "Two bases first (nano_banana_2, 9:16, tight bust, mic foreground, headphones, MOUTH CLOSED). Brittney base first, then Brad using Brittney's still as a bg reference for set consistency. Then fan out variants — each img2img on its host's base as the SOLE reference, prompt describes ONLY the pose/expression change so the background is pixel-identical across all cuts.",
-    "engine": { "provider": "higgsfield", "model": "nano_banana_2", "aspect_ratio": "9:16", "submit": "sequential" },
-    "still_rules": "Tight bust framing, broadcast mic foreground, over-ear headphones. MOUTH NEUTRAL/CLOSED (open-mouth still breaks lipsync). Photorealistic, 35mm lens, shallow background blur.",
-    "variant_template": "Use the reference image as the EXACT base. Keep face, hair, headphones, clothing, background, microphone, and lighting IDENTICAL. Change ONLY: {change} Lips remain closed naturally, no open mouth, no smile showing teeth. Photorealistic, same 35mm lens, same shallow background blur.",
+    "_note": "REALISM: generate with gpt-image-2 quality=high, NOT nano-banana (nano faces read as AI-stock, rejected in testing). ALWAYS append realism_suffix. Two bases first (9:16, tight bust, mic foreground, headphones, MOUTH CLOSED). Skeptic base first, then believer via gpt-image-2/edit anchored on the skeptic's still for set consistency. Then fan out variants — each edit on its host's base as the SOLE reference, prompt describes ONLY the pose/expression change so the identity + background stay across all cuts. QC every still for hallucinations (asymmetric long hair-lock, extra fingers, morphed ears) before lipsync.",
+    "engine": { "provider": "fal", "model_t2i": "openai/gpt-image-2", "model_edit": "openai/gpt-image-2/edit", "image_size": { "width": 1024, "height": 1792 }, "quality_base": "high", "quality_variant": "high", "submit": "sequential" },
+    "realism_suffix": " PHOTOREALISM IS CRITICAL: a real candid documentary photograph of a real human — NOT illustration/3D/CGI/AI-stock. Real skin with pores, fine lines, uneven tone, slight asymmetry; no smoothing/retouching/waxy skin/perfect teeth. HAIR MUST BE COHERENT: one consistent hairstyle all around — no single long lock on one side that mismatches the top (a common gpt-image hallucination). No extra hands/fingers, no deformed ears.",
+    "still_rules": "Tight bust framing, broadcast mic foreground, over-ear headphones. MOUTH NEUTRAL/CLOSED (open-mouth still breaks lipsync). State the hairstyle EXPLICITLY and coherently (e.g. 'short neatly tousled hair above the collar, no long strands'). Photorealistic, 35mm lens, shallow background blur.",
+    "variant_template": "Use the reference image as the EXACT base — the SAME real person. Keep the face, skin texture, hair (same length + shape), headphones, clothing, background, microphone, and lighting IDENTICAL. Change ONLY: {change} Lips remain closed naturally, no open mouth, no smile showing teeth.",
     "bases": [
       { "who": "HER", "file": "brittney-base.png", "_note": "generate FIRST; sets the laundromat set" },
       { "who": "HIM", "file": "brad-base.png",     "_note": "generate SECOND with brittney-base.png as a bg reference so the set matches" }
@@ -87,14 +88,20 @@
   },
 
   "captions": {
-    "_note": "Yellow karaoke from the VO's OWN char-level timestamps (scene-NN-<who>.timestamps.json), NOT Whisper. stitch.py offsets each word by cumulative clip start into a global words.json, then make_subtitles.py emits the ASS (--accent-bgr 3BEBFF). 3-word phrase cap, bottom-center. `caption` per scene is the phrase intent; the actual burned text comes from the VO timings.",
-    "style": "karaoke_bottom_center",
+    "_note": "WHITE captions in the add-captions-veed-fal whisper house style (yellow karaoke was rejected in testing). Words come from the VO's OWN char-level timestamps (scene-NN-<who>.timestamps.json), NOT Whisper, offset by cumulative clip start. Cue = up to 5 words, FLUSHED on sentence-final punctuation (. ? !). Each cue word-wraps to stay INSIDE the frame (never off the edges) and stays on screen >= min_dur_sec. Rendered as PIL PNG overlays (libass-free) or ASS if libass is available; bottom-anchored. `caption` per scene is the phrase intent; the actual burned text comes from the VO timings.",
+    "style": "white_bottom_center",
     "source": "vo_timestamps",
     "font": "Avenir Next Bold",
-    "font_size": 44,
-    "color_hex": "#FFEB3B",
-    "accent_bgr": "3BEBFF",
-    "chunk_words": 3
+    "font_size": 66,
+    "color_hex": "#FFFFFF",
+    "stroke_hex": "#000000",
+    "stroke_width": 6,
+    "max_words_per_cue": 5,
+    "break_on_sentence_punctuation": true,
+    "min_dur_sec": 0.9,
+    "wrap_max_width_px": 900,
+    "position": "bottom_center",
+    "bottom_anchor_px": 1720
   },
 
   "scenes": [
@@ -135,16 +142,17 @@
   },
 
   "assembly": {
-    "_note": "stitch.py: walk scenes in order, ffprobe each clip, build a GLOBAL words.json (each word offset by cumulative clip start), emit yellow karaoke ASS via make_subtitles.py, concat all clips (scale/pad 1080x1920, re-encode libx264 -preset veryfast -crf 20), burn the ASS, auto-append clips/end-card.mp4.",
+    "_note": "stitch.py: walk scenes in order, ffprobe each clip, build a GLOBAL words.json (each word offset by cumulative clip start), group into <=5-word cues broken on sentence punctuation, render WHITE bottom-center captions word-wrapped to stay in-frame (PIL PNG overlays if the host ffmpeg lacks libass — the common case — else an ASS burn), concat all clips (scale/pad 1080x1920), auto-append clips/end-card.mp4. FINAL ENCODE libx264 -preset slow -crf 28 + aac 96k (keeps a ~28s master near ~6MB; crf20 produced ~16MB).",
     "concat": "ffmpeg_concat_reencode",
     "scale_pad": "scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2:black,setsar=1",
-    "caption_burn": "libass",
+    "caption_burn": "pil_png_overlay_or_libass",
+    "final_encode": "libx264 -preset slow -crf 28 -pix_fmt yuv420p -c:a aac -b:a 96k -movflags +faststart",
     "append_end_card": true
   },
 
   "post_production": {
     "music": { "default": "off", "note": "podcast skit is dialogue-carried; the per-line VO is the audio. No music bed (optional low ambience is a taste call, off by default)." },
-    "captions": { "default": "on", "note": "yellow #FFEB3B karaoke from the VO's own char-level timestamps, 3-word phrase cap, bottom-center" },
+    "captions": { "default": "on", "note": "WHITE #FFFFFF bottom-center from the VO's own char-level timestamps, <=5 words per cue, cue breaks on sentence punctuation, word-wrapped to stay in-frame, >=0.9s on screen (NOT yellow karaoke)" },
     "end_card": { "default": "on", "note": "Playwright/PIL end card from the brand's real wordmark SVG, default on" }
   }
 }
