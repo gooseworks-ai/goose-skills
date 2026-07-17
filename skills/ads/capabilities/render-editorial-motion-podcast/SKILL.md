@@ -31,9 +31,10 @@ card → the master. Re-cuts reuse the existing audio / keyframes and cost **$0*
 
 ## Contract (the free assembly)
 
-- **The real podcast audio carries the narrative — no song, no VO.** Mux the clipped source
-  MP3 (`-map 0:v:0 -map 1:a:0`); do not generate a sung track or a spoken voiceover — the
-  payoff hinges on the host's real recorded cadence.
+- **A spoken narration carries the whole spot — no generated SONG.** Mux the provided
+  narration MP3 (`-map 0:v:0 -map 1:a:0`) — a real clipped podcast line (preferred) OR an
+  approved generated VO (`create-vo-elevenlabs`). Never a sung/generated track. (Clip-vs-generate
+  is the recipe's STEP-0 intake decision — if no source episode is supplied, ASK the user.)
 - **NO generative i2v — deterministic ffmpeg ken-burns only.** Animate each static keyframe
   with `zoompan` (push-in / pull-back, 1.0→~1.06×, 24fps); Seedance/Kling are photoreal-trained
   and invent naturalistic middle states that collapse the 2-tone look. Never `-loop 1` with
@@ -41,9 +42,22 @@ card → the master. Re-cuts reuse the existing audio / keyframes and cost **$0*
 - **Hard cuts on the beat — no crossfades.** Crossfades ghost two drifting cages through each
   other; hard-concat each beat's segments and split long beats into micro-cuts (target 8–10
   distinct visual moments). Each beat's visual STARTS within ~0.5s of its spoken line.
-- **Captions from Whisper, ON only mid-sentence.** Burn `frosted-subtle` ASS from Whisper on
-  the master while the speaker is talking; leave silent/reflective beats and the end card
-  uncaptioned. (This is real spoken VO, so Whisper works.)
+- **Captions from Whisper word-timestamps, ON only mid-sentence.** Burn `frosted-subtle`
+  captions while the speaker talks; leave silent/reflective beats and the end card uncaptioned.
+  THREE mandatory rules (each bit us in prod — bake them in):
+  1. **NON-OVERLAP** — clamp every line to END before the next STARTS
+     (`end = min(last_word_end + ~0.15, next_start - 0.03)`). Two boxes must never stack at the
+     same spot; an end-tail bleeding into the next window is the #1 caption bug.
+  2. **SAFE AREA** — captions sit in the lower third, so the keyframe's subject must stay in the
+     upper ~75% (see the recipe's `look_pack.caption_safe_area`). If a finished keyframe's subject
+     intrudes into the caption band, deterministically **shift the subject UP** into the empty top
+     space (PIL: paste up ~0.24H onto a canvas pre-filled with the exact paper color from a clean
+     corner) — never let the box sit on the subject.
+  3. **BURN ENGINE** — prefer libass (`ass`/`subtitles` filter), but **check `ffmpeg -filters`
+     first**: many builds (Homebrew) lack libass/drawtext. If absent, use the deterministic
+     **overlay fallback** — render each line as a transparent PNG (frosted rounded box + white
+     text, PIL) and composite via the ffmpeg `overlay` filter with timed
+     `enable='between(t,st,en)'` windows. Same look, no libass.
 - **End card via PIL from the real wordmark PNG — never AI-render brand text.** The lockup is
   composited deterministically (stretched-gradient bg + feathered mascot crop + wordmark +
   tagline with a system font); a diffusion model garbles a wordmark ("therapits"). The video

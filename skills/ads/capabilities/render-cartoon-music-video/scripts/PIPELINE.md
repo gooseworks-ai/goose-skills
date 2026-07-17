@@ -76,10 +76,14 @@ firing all N. Batches of 3.
 Reads the song's `word-timestamps.json` and **re-spells the timed tokens against the locked
 lyrics** (`align_to_lyrics`) — Whisper mishears shouted accents ("BETS" → "Hearts", "WIN" →
 "Went"); never edit the lyrics to match Whisper. Feed a `lyrics-plain.md` (lyric text only, no
-bar-grid table) so the parser doesn't ingest 700+ markdown-table "words". It chunks ~1–3 words,
-times each event, italic-emphasizes `captions.accent_words` at 160pt against the 130pt base,
-renders big mid-frame serif (New York/Georgia, Alignment 5, NO pill, 8px outline), and STOPS
-captions at `caption_end_s` (= body end = 51.9) so the end card breathes → `captions/master-final.ass`.
+bar-grid table) so the parser doesn't ingest 700+ markdown-table "words". It chunks ~4–5 words per
+cue, times each event, and renders VEED-whisper style — clean white **bold sans** in the **BOTTOM
+third** (Alignment 2, `margin_v` above the bottom-left logo bug, NO pill, 6px outline, ≥0.9s on
+screen) — and STOPS captions at `caption_end_s` (= body end = 51.9) so the end card breathes →
+`captions/master-final.ass`. Never mid-frame (Alignment 5) — it covers the character (fixed 2026-07).
+NOTE: if the host ffmpeg lacks libass (no `subtitles`/`ass` filter), render the cues as timed PIL
+PNG overlays composited with ffmpeg `overlay=…:enable='between(t,st,en)'` instead — same bottom
+placement, no libass dependency.
 The repeated "you called it" ×3 hook had a Whisper gap — hand-patch the chorus repetitions.
 
 ## 6. Logo bug + end card + assembly → `scripts/stitch.py`  (config: `logo_bug`, `end_card`, `audio_mix`)

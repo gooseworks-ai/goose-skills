@@ -5061,14 +5061,17 @@
       "name": "render-3d-product-showcase",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Assemble a premium 3D product-showcase ad from a config — four beat clips (a 360 hero rotation, a macro push-in, a physics reveal, a typographic close) normalized to the brand-color canvas, hard-concatenated in order, closed on a deterministic Playwright/PIL brand end card, and mixed under one instrumental bed at loudnorm I=-16 (music-only, no VO). This is the FREE deterministic assembly stage (last-frame extract, end-card hyperframe, normalize, concat, music mix); the rotation/macro clips come from Marketing Studio, the reveal from Veo3 i2v, and the bed from create-music-elevenlabs. Use for the 3d-product-showcase format.",
+      "description": "Assemble a premium 3D product-showcase ad from a config — four beat clips (an orbiting hero rotation, a macro push-in, a physics reveal, a typographic close) normalized to the brand-color canvas, hard-concatenated in order, closed on a deterministic Playwright brand end card, and mixed under one instrumental bed at loudnorm I=-16 (music-only, no VO). Ships the runnable build_endcard.py + build_masters.py; the rotation/macro clips are create-video-fal i2v seeded on a create-image-fal styled hero, the reveal is Veo3 i2v, and the bed is create-music-elevenlabs. Use for the 3d-product-showcase format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-3d-product-showcase",
       "files": [
         "skills/ads/capabilities/render-3d-product-showcase/SKILL.md",
         "skills/ads/capabilities/render-3d-product-showcase/scripts/PIPELINE.md",
         "skills/ads/capabilities/render-3d-product-showcase/scripts/README.md",
+        "skills/ads/capabilities/render-3d-product-showcase/scripts/build_endcard.py",
+        "skills/ads/capabilities/render-3d-product-showcase/scripts/build_masters.py",
         "skills/ads/capabilities/render-3d-product-showcase/scripts/config.example.json",
+        "skills/ads/capabilities/render-3d-product-showcase/scripts/shoot.js",
         "skills/ads/capabilities/render-3d-product-showcase/skill.meta.json",
         "skills/ads/capabilities/render-3d-product-showcase/tests/smoke-test.md"
       ],
@@ -5212,7 +5215,7 @@
       "name": "render-cartoon-music-video",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Assemble a cartoon / animated / hand-crafted music-video ad from a config — a sung song carries the whole narrative while N per-bar i2v clips (one recurring animated character, one look pack) are each cut to their BAR window from librosa beat-tracking and hard-concatenated on the bar, big mid-frame serif captions burned from the song's word timings re-spelled against the locked lyrics with accent words emphasized, a persistent brand logo bug held over the body (suppressed on the end card), and closed on a solid-brand-color PIL end card with the song still playing under it — never AI-rendered text. This is the FREE deterministic assembly stage (cut-to-bar + hard concat + logo bug + captions + end card + song mux); the song, character, keyframes, and clips come from create-music-elevenlabs / create-image-fal / create-video-fal. Use for the cartoon-music-video format.",
+      "description": "Assemble a cartoon / animated / hand-crafted music-video ad from a config — a sung song carries the whole narrative while N per-bar i2v clips (one recurring animated character, one look pack) are each cut to their BAR window from librosa beat-tracking and hard-concatenated on the bar, VEED-whisper white bold-sans captions in the BOTTOM third (Alignment 2, above the logo bug, no pill) burned from the song's word timings re-spelled against the locked lyrics, a persistent brand logo bug held over the body (suppressed on the end card), and closed on a solid-brand-color PIL end card with the song still playing under it — never AI-rendered text. This is the FREE deterministic assembly stage (cut-to-bar + hard concat + logo bug + captions + end card + song mux); the song, character, keyframes, and clips come from create-music-elevenlabs / create-image-fal / create-video-fal. Use for the cartoon-music-video format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-cartoon-music-video",
       "files": [

@@ -10,7 +10,7 @@
   "aspect_ratio": "9:16",
 
   "audio": {
-    "_comment": "REAL podcast audio carries the whole narrative — NO generated song, NO AI voiceover. The whole emotional payoff hinges on the host Tamer's real recorded cadence at 'it was more about community.' Clip the source episode to the payoff range and add a fade-out tail so the trailing 'Because...' next sentence doesn't bleed in. THIS AUDIO SETS THE TIMELINE.",
+    "_comment": "This worked example uses a REAL clipped podcast line (NO generated song). Note the format ALSO supports a generated VO when no source episode is supplied — that's the recipe's STEP-0 intake decision (ASK the user; provider 'generated_vo' via create-vo-elevenlabs from a short truthful script). Here the payoff hinges on host Tamer's real cadence at 'it was more about community.' Clip to the payoff range + a fade-out tail so the trailing 'Because...' doesn't bleed in. THIS AUDIO SETS THE TIMELINE.",
     "provider": "podcast_clip",
     "source_mp3": "clients/klarify/podcasts/future-of-therapy/why-motivation-is-the-worst-foundation-for-lasting-change.mp3",
     "clip_start_sec": 933.5,
@@ -157,7 +157,10 @@
     "model": "whisper",
     "style": "frosted-subtle",
     "skill": "burn-in-captions",
-    "on_when": "speaker_mid_sentence_only"
+    "on_when": "speaker_mid_sentence_only",
+    "no_overlap": "MANDATORY — clamp each line to end before the next starts (end = min(last_word_end+~0.15, next_start-0.03)); two boxes must never stack. The #1 caption bug.",
+    "safe_area": "Captions sit in the lower third; keep the subject in the upper ~75%. If a keyframe subject intrudes into the caption band, shift the subject UP into the empty top space (PIL) before assembly.",
+    "burn_engine": "Prefer libass; if `ffmpeg -filters` lacks it (common on Homebrew), render each line as a transparent PNG (frosted box + text) and composite via the `overlay` filter with timed enable windows."
   },
 
   "end_card": {

@@ -1,6 +1,6 @@
 ---
 name: render-cartoon-music-video
-description: Assemble a cartoon / animated / hand-crafted music-video ad from a config — a sung song carries the whole narrative while N per-bar i2v clips (one recurring animated character, one look pack) are each cut to their BAR window from librosa beat-tracking and hard-concatenated on the bar, big mid-frame serif captions burned from the song's word timings re-spelled against the locked lyrics with accent words emphasized, a persistent brand logo bug held over the body (suppressed on the end card), and closed on a solid-brand-color PIL end card with the song still playing under it — never AI-rendered text. This is the FREE deterministic assembly stage (cut-to-bar + hard concat + logo bug + captions + end card + song mux); the song, character, keyframes, and clips come from create-music-elevenlabs / create-image-fal / create-video-fal. Use for the cartoon-music-video format.
+description: Assemble a cartoon / animated / hand-crafted music-video ad from a config — a sung song carries the whole narrative while N per-bar i2v clips (one recurring animated character, one look pack) are each cut to their BAR window from librosa beat-tracking and hard-concatenated on the bar, VEED-whisper white bold-sans captions in the BOTTOM third (Alignment 2, above the logo bug, no pill) burned from the song's word timings re-spelled against the locked lyrics, a persistent brand logo bug held over the body (suppressed on the end card), and closed on a solid-brand-color PIL end card with the song still playing under it — never AI-rendered text. This is the FREE deterministic assembly stage (cut-to-bar + hard concat + logo bug + captions + end card + song mux); the song, character, keyframes, and clips come from create-music-elevenlabs / create-image-fal / create-video-fal. Use for the cartoon-music-video format.
 status: active
 ---
 
@@ -37,8 +37,11 @@ keyframes / clips and cost **$0**.
   never trim the song to a pre-planned grid.
 - **Captions from the song's word timings, re-spelled against the locked lyrics.** Whisper
   mishears shouted accents ("BETS" → "Hearts"); re-spell the timed tokens against the locked
-  lyric file (never edit lyrics to match Whisper). Big mid-frame serif, accent words
-  italic-emphasized, NO background pill; captions STOP at the end-card boundary.
+  lyric file (never edit lyrics to match Whisper). VEED-whisper white **bold sans** in the
+  **BOTTOM third** (Alignment 2, `margin_v` above the bottom-left logo bug), ~4–5 words per cue,
+  NO background pill; captions STOP at the end-card boundary. Never mid-frame — it covers the
+  character (fixed 2026-07). If the host ffmpeg lacks libass, render the cues as timed PIL PNG
+  overlays (ffmpeg `overlay=…:enable='between(t,st,en)'`) at the same bottom placement.
 - **Land the climax line on the drop.** The climax tableau is timed so the payoff line sits on
   the sub-bass drop; accent that line.
 - **Persistent logo bug, suppressed on the end card.** Burn a white brand wordmark bottom-left

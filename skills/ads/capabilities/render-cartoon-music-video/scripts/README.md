@@ -18,9 +18,12 @@ Captions come from the song's `word-timestamps.json` **re-spelled against the lo
 (`align_to_lyrics`) — Whisper mishears shouted accents ("BETS" → "Hearts", "WIN" → "Went"), so
 the timed tokens are re-spelled against the locked lyric file (never edit the lyrics to match
 Whisper). Feed a `lyrics-plain.md` (lyric text only, no bar-grid table) so the parser doesn't
-ingest hundreds of markdown-table "words". It chunks ~1–3 words, italic-emphasizes the accent
-words at ~125% size, renders big mid-frame serif (Alignment 5, NO pill, 8px outline), and STOPS
-captions at the end-card boundary so the brand frame breathes.
+ingest hundreds of markdown-table "words". It chunks ~4–5 words per cue and renders VEED-whisper
+style — clean white **bold sans** in the **BOTTOM third** (Alignment 2, `margin_v` above the
+bottom-left logo bug so they don't collide, NO pill, 6px outline), ≥0.9s on screen — and STOPS
+captions at the end-card boundary so the brand frame breathes. Do **not** place captions mid-frame
+(Alignment 5) — it covers the character (fixed 2026-07). Matches the `ugc-walk-and-talk` recipe's
+`add-captions-veed-fal --preset whisper --position bottom` treatment.
 
 ## 2. Cut-to-bar + hard-concat on the bar
 

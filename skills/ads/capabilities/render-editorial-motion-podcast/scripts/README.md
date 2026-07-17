@@ -29,14 +29,32 @@ Each beat's segments are hard-concatenated on the beat; long beats split into mi
 crossfades** — they ghost two drifting cages through each other. Each beat's visual STARTS within
 ~0.5s of its spoken line (marked from the Whisper timings upstream), never ahead, never lag.
 
-## 3. Real-audio mux + mid-sentence captions
+## 3. Narration mux + mid-sentence captions
 
-The clipped source MP3 is muxed as the master audio (`-map 0:v:0 -map 1:a:0`) — no song, no VO,
-the host's real recorded line carries the spot. The video runs a ~1.5s silent hold past the audio
-on the end card (fade the first/last 0.3s so it doesn't hard-black-flash). Captions are burned
-`frosted-subtle` (Whisper on the master → ASS via libass) **ON only while the speaker is
-mid-sentence** — silent/reflective beats and the end card stay uncaptioned so captions don't
-fight the visual.
+The narration MP3 is muxed as the master audio (`-map 0:v:0 -map 1:a:0`) — no generated song.
+The narration is a real clipped podcast line (preferred) OR an approved generated VO
+(`create-vo-elevenlabs`); clip-vs-generate is the recipe's STEP-0 intake decision (if no source
+episode is supplied, ASK the user — don't fabricate or silently skip). The video runs a ~1.5s
+silent hold past the audio on the end card (fade the first/last 0.3s so it doesn't hard-black-flash).
+
+Captions are `frosted-subtle` (Whisper word-timestamps on the master) **ON only while the speaker
+is mid-sentence** — silent/reflective beats and the end card stay uncaptioned. **Three mandatory
+rules, all learned the hard way:**
+
+- **NON-OVERLAP** — clamp every line to END before the next STARTS
+  (`end = min(last_word_end + ~0.15, next_start - 0.03)`). Two boxes must never be on screen at
+  once; an end-tail bleeding into the next window stacks two boxes at the same spot (the #1
+  caption bug). Verify zero remaining window overlaps before burning.
+- **SAFE AREA** — captions sit in the lower third, so the keyframe's subject must live in the
+  upper ~75% (recipe `look_pack.caption_safe_area`). If a finished keyframe's subject intrudes
+  into the caption band, deterministically **shift the subject up** into the empty top space
+  (PIL: paste up ~0.24H onto a canvas pre-filled with the exact paper color sampled from a clean
+  corner, so the vacated bottom is clean paper) — never let the box sit on the subject.
+- **BURN ENGINE** — prefer libass (`ass`/`subtitles`), but **check `ffmpeg -filters` first**:
+  many builds (Homebrew) ship without libass/drawtext. If absent, use the deterministic **overlay
+  fallback** — render each caption line as a transparent PNG (frosted rounded box + white text,
+  PIL) and composite with the ffmpeg `overlay` filter using timed `enable='between(t,st,en)'`
+  windows. Identical frosted-subtle look, no libass required.
 
 ## 4. PIL end card — from the real wordmark PNG, no AI text
 
