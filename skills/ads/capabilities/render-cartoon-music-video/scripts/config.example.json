@@ -1,0 +1,191 @@
+{
+  "_comment": "Coinbase 'Bet on anything' cartoon music-video — THE WORKED EXAMPLE. Copy to config.json and edit. A ~55s felt-and-foam-core stop-motion 9:16 music video where a SUNG song carries the whole narrative (NO separate VO) and ONE recurring felt character walks miniature sportsbook dioramas. Pipeline: (1) lock the song (here user-supplied) + Groq Whisper word timings + librosa bars.json (the BAR GRID sets the timeline, one bar = one shot); (2) lock the felt character (nano_banana_2 anchor + 4 drift-checked angles); (3) one nano_banana_2 keyframe per bar (9:16, ONE look_pack, anchor ref threaded into character shots); (4) one seedance_2_0 i2v clip per bar (veo3_1_lite fallback on ip_detected/nsfw), CHARACTER-VERB-led motion; (5) captions from the word timings re-spelled against the locked lyrics, persistent logo bug, hard-cut assembly + solid-Coinbase-Blue PIL end card + song-under-end-card. Master 1080x1920 h264+aac, ~54.9s (16 body bars + 3.0s end card). See scripts/PIPELINE.md for the source scripts.",
+  "brand_name": "Coinbase",
+  "campaign": "Bet on anything",
+  "title": "Prediction markets — now on Coinbase",
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "duration_sec": 54.9,
+  "aspect_ratio": "9:16",
+  "song": {
+    "_comment": "Locked FIRST — the song + its BAR GRID set the timeline (one bar = one shot). Here `source` = user_supplied: the mp3 landed before State 2.6 could fire ElevenLabs, so word timings came from Groq whisper-large-v3 word-level, not native music_v1 timestamps. `source` = generate would call ElevenLabs music_v1 from `structure` + `prompt`. STRIP `[...]` section markers from the lyric text before ANY music-gen call — the brainstorm lyrics still had `[CTA — 2 bars]` and the model SANG 'CTA, two bars' over bar 22 (unusable). No artist names in `prompt` (ElevenLabs ToS filter).",
+    "source": "user_supplied",
+    "provider": "elevenlabs",
+    "model": "music_v1",
+    "lyrics_md": "lyrics/lyrics-locked.md",
+    "lyrics_plain": "lyrics/lyrics-plain.md",
+    "_note_lyrics_plain": "Feed sync-captions the lyric TEXT only (no bar-grid table / no headers). Feeding the full lyrics-locked.md parsed 700+ 'words' from markdown table rows and near-zero alignment.",
+    "bpm": 73.83,
+    "_note_bpm": "Brief targeted 124 BPM; delivered track is 73.83 BPM half-time (143.55 BPM dynamic — classic half-time-trap beat-track ambiguity). ~3.25s/bar gives a comfortable ~1 shot / 3.2s music-video rate. NOT a regression — the song sets the tempo, not the plan.",
+    "time_signature": "4/4",
+    "bar_duration_s": 3.25,
+    "prompt": "Hype, brash dance-pop / EDM-trap hybrid with jersey-club horn stabs. Male lead, half-shouted half-rapped, hyperpop pitched-up backing vocals on the chorus. Four-on-the-floor kick, trap snare/hat pattern, brass-stab hook, sub-bass on the drop. Verse: driving, sports-broadcast energy. Pre-drop: build. Chorus: full drop, shouted accent hits ('BETS', 'WIN'). Bridge: climax line lands on the sub-bass drop. Brooklyn-rooftop-watching-the-playoffs energy.",
+    "force_instrumental": false,
+    "hook_line": "BETS — you called it",
+    "climax_line": "Whoever wins — you called it",
+    "climax_bar": 15,
+    "_note_climax": "Chorus B ('Whoever wins — you called it') is the payoff. It repeats bars 15–17; the accent word CALLED lands on the drop. The song's attempt at 'Coinbase' (bar 18) is mumbled 'Can't base' and in the unusable region — the brand name is delivered on the END CARD, not the song.",
+    "recommended_trim_end_s": 51.9,
+    "recommended_trim_end_bar": 17,
+    "_note_trim": "Full track is 78.24s; bars 18–24 are a degraded outro (mumbled 'Coinbase' + the 'CTA, two bars' artifact). Trim at 51.9s (end of the 3rd 'Whoever wins' — the strongest chorus repetition). Body video ends at bar 16 (51.9s); bar 17 window is the end card.",
+    "structure": [
+      { "section": "Verse", "bars": "1-4", "lines": [
+        "Super Bowl Sunday, you knew the line",
+        "Election night Tuesday, you saw it in time",
+        "Oscars, the playoffs, the rate cut, the chain",
+        "You called every shot — and got nothing to gain"
+      ] },
+      { "section": "Pre-drop", "bars": "5-8", "lines": [
+        "They said the floor was closed",
+        "Said the smart money already chose",
+        "But the smart money's the money in your hand",
+        "And tonight the floor is wherever you stand"
+      ] },
+      { "section": "Chorus A", "bars": "10-13", "lines": [
+        "BETS — you called it",
+        "BETS — you called it",
+        "BETS — you called it",
+        "BETS on the Knicks, on the chair, on the spread"
+      ] },
+      { "section": "Bridge", "bars": "14", "lines": [
+        "WIN on the call you already said"
+      ] },
+      { "section": "Chorus B (climax)", "bars": "15-17", "lines": [
+        "Whoever wins — you called it",
+        "Whoever wins — you called it",
+        "Whoever wins — you called it"
+      ] }
+    ],
+    "outputs": {
+      "audio": "audio/coinbase-prediction-market.mp3",
+      "word_timings": "audio/word-timestamps.json",
+      "beats": "audio/beats.json",
+      "bars": "audio/bars.json"
+    }
+  },
+  "character": {
+    "_comment": "ONE recurring ANIMATED character, locked once (LOCKED.json). `descriptor` threads VERBATIM into every character-bearing keyframe; the approved anchor job is passed as the media ref so the figure holds across bars. Skip the ref on style-only shots (S03, S05, S06). Anchor drift here was < 5% (method anchor-ref); drift > 15% would escalate to Higgsfield Soul ID (~$15).",
+    "name": "felt_protagonist_1",
+    "method": "anchor-ref",
+    "max_drift": 0.05,
+    "appears_in": "13 of 16 body shots (>60%)",
+    "descriptor": "Single felt figure, gender-neutral build, age ~25. Coinbase Blue (#0052FF) sleeveless basketball-style felt jersey with a white felt stitched '1' on the front center. Medium-brown felt skin, short cropped tightly-coiled black-brown yarn hair, denim-blue felt shorts, white felt low-top sneakers. Holds a tiny felt Coinbase Blue phone with an embroidered white 'C' arc. Calm posture, never frantic.",
+    "anchor": "generated/character-lock/anchor-portrait.png",
+    "anchor_job": "bb01e794-a64c-403d-ab21-55754d34d8f2",
+    "angles": {
+      "3q-left": "generated/character-lock/angle-3q-left.png",
+      "3q-right": "generated/character-lock/angle-3q-right.png",
+      "action-medium": "generated/character-lock/angle-phone-up.png",
+      "climax-hero": "generated/character-lock/angle-climax-confetti.png"
+    },
+    "_note_angles": "The climax-confetti angle doubles as the S15 (climax) keyframe."
+  },
+  "look_pack": {
+    "name": "DIORAMA_FELT",
+    "palette_anchors": [
+      "warm felt earth-tones",
+      "foam-core cream/white",
+      "Coinbase Blue #0052FF (jersey, phone, climax confetti only)",
+      "soft practical warm key light"
+    ],
+    "style_descriptor": "Stop-motion miniature diorama, felt and foam-core construction, hand-built scale, macro photography, soft key + practical lighting, 1080x1920 vertical, slight tilt-shift focus. Felt is the dominant texture for soft elements (people, clothing, crowd); foam-core for hard elements (arenas, booths, stages). Hand-articulated stop-motion craft feel preserved.",
+    "negative_tail": "NO photoreal humans, NO photorealism, NO smooth digital 3D render, NO AI-illustration look, NO oil-painting look. NO RULERS, NO PENCILS, NO MEASUREMENT TOOLS, NO HANDS (except the character's own felt hands), NO HUMAN-SCALE REFERENCE OBJECTS. NO readable text or brand logos in the world (brand appears only on the end card). Vertical 9:16 composition.",
+    "_note": "ONE look pack drives all N keyframes so the sequence reads as one film. The 'no human-scale reference objects' negative is load-bearing: without it the model reads 'miniature' by ADDING a ruler/pencil/hand as a scale prop (S03, S05 got a literal blue pencil / an intruding hand)."
+  },
+  "keyframe_engine": {
+    "provider": "higgsfield",
+    "model": "nano_banana_2",
+    "aspect_ratio": "9:16",
+    "batch_size": 3,
+    "character_ref": "thread the locked anchor job (bb01e794-...) as media[role=image] on every character-bearing shot; for room continuity pass BOTH the anchor AND the prior keyframe (e.g. S04 off S02)",
+    "_note": "nano_banana_2 honors multiple media refs. Never include readable brand text in a keyframe prompt — the model garbles it into typos."
+  },
+  "clip_engine": {
+    "provider": "higgsfield",
+    "model": "seedance_2_0",
+    "fallback": "veo3_1_lite",
+    "fallback_triggers": ["ip_detected", "nsfw"],
+    "duration_sec": 4,
+    "batch_size": 3,
+    "motion_opener": "CHARACTER-VERB LEAD (never camera-led): the character does a specific action, THEN any secondary background motion. Hand-articulated stop-motion craft feel preserved. NO camera 'slow push-in' opener (reads static), NO morphing, NO human-scale reference objects. ",
+    "_note": "The single biggest quality lever (v1 -> v4): lead the prompt with the CHARACTER VERB, not the camera. 'Slow push-in toward the felt protagonist...' produced static clips; 'scrolls the phone with a thumb, glances up at the scoreboard...' read as music-video-grade animation. Auto-retry on veo3_1_lite when Seedance returns ip_detected (Oscar-trophy shapes) or nsfw ('intimate'/'leans toward' false positives)."
+  },
+  "captions": {
+    "_comment": "Built from the song's word timings (Groq Whisper word-level for this supplied track) RE-SPELLED against the locked lyrics via align_to_lyrics — Whisper mishears shouted accents ('BETS' -> 'Hearts', 'WIN' -> 'Went'). Big mid-frame serif (Alignment 5), NO background pill, accent words italic at ~125% (160pt vs 130pt base). Captions STOP at the end-card boundary (BODY_END_S = 51.9) so the brand frame breathes. Repeated hook phrases ('you called it' x3) had a Whisper caption gap — hand-patch the chorus repetitions.",
+    "source": "audio/word-timestamps.json",
+    "chunks": "edits/chunks.json",
+    "style": "big_mid_frame_serif",
+    "font": "New York",
+    "font_fallback": ["/Library/Fonts/NewYork.ttf", "/System/Library/Fonts/Supplemental/Georgia.ttf"],
+    "font_size": 130,
+    "accent_font_size": 160,
+    "accent_style": "italic",
+    "no_pill": true,
+    "alignment": 5,
+    "outline_px": 8,
+    "base_color": "#FFFFFF",
+    "chunk_words": 3,
+    "_note_chunk": "124 BPM would need 1–2-word chunks; at the delivered 73.83 BPM half-time, 3-word chunks breathe fine.",
+    "accent_words": ["BET", "BETS", "WIN", "WINS", "CALLED", "Whoever", "Knicks", "Coinbase", "opened", "bought"],
+    "stop_at_end_card": true,
+    "caption_end_s": 51.9
+  },
+  "tableaux": [
+    { "id": "S01", "bar": 1, "role": "VERSE", "t_start": 0.0, "t_end": 3.25, "uses_character": true, "lyric_anchor": "Super Bowl Sunday, you knew the line", "caption": "Super Bowl Sunday / you knew the line", "keyframe_prompt": "Miniature felt-and-foam-core stadium under tiny stadium lights, the felt protagonist on a front-row felt bench reading from a tiny felt Coinbase-Blue phone, jersey '1' visible. Character occupies ~60% of the vertical frame.", "motion_hint": "The protagonist scrolls the felt phone with a thumb and glances up at the scoreboard." },
+    { "id": "S02", "bar": 2, "role": "VERSE", "t_start": 3.25, "t_end": 6.5, "uses_character": true, "lyric_anchor": "Election night Tuesday, you saw it in time", "caption": "Election night Tuesday / you saw it in time", "keyframe_prompt": "Felt protagonist in a felt living room watching a tiny felt CRT TV showing foam-core squiggle probability graphs. Warm felt lamp practical.", "motion_hint": "The protagonist leans forward toward the TV, eyes widen." },
+    { "id": "S03", "bar": 3, "role": "VERSE", "t_start": 6.5, "t_end": 9.7, "uses_character": false, "lyric_anchor": "Oscars, the playoffs, the rate cut, the chain", "caption": "Oscars, the playoffs / the rate cut, the chain", "keyframe_prompt": "Quad-split of four tiny felt-and-foam-core nouns: a felt awards envelope, a foam-core basketball hoop, a felt percent-sign rate-cut placard, a felt chain. No character. NO rulers, NO pencils, NO hands, NO human-scale reference objects.", "motion_hint": "Per-quadrant felt-prop micro-motions (envelope flap, ball spin, placard tilt, chain sway). [veo3_1_lite fallback — Seedance flagged ip_detected on the awards shape.]" },
+    { "id": "S04", "bar": 4, "role": "VERSE", "t_start": 9.7, "t_end": 13.0, "uses_character": true, "lyric_anchor": "You called every shot — and got nothing to gain", "caption": "You called every shot / and got nothing to gain", "keyframe_prompt": "Felt protagonist slumped alone on a felt couch in the SAME felt living room as S02 (room continuity), an empty felt wallet on the cushion. Reflective, deflated.", "motion_hint": "The protagonist slumps deeper, head drops, the felt remote slides off the cushion.", "_note": "Re-rolled once with S02 as a second media ref for room continuity." },
+    { "id": "S05", "bar": 5, "role": "PRE_DROP", "t_start": 13.0, "t_end": 16.2, "uses_character": false, "lyric_anchor": "They said the floor was closed", "caption": "They said the floor / was closed", "keyframe_prompt": "Miniature foam-core exchange / trading-floor entrance, a felt velvet rope across the door, a tiny foam-core 'MEMBERS ONLY' sign. No character. No readable brand text.", "motion_hint": "The velvet rope sways, the sign flutters. [veo3_1_lite fallback — Seedance nsfw false-positive.]" },
+    { "id": "S06", "bar": 6, "role": "PRE_DROP", "t_start": 16.2, "t_end": 19.5, "uses_character": false, "lyric_anchor": "Said the smart money already chose", "caption": "Said the smart money / already chose", "keyframe_prompt": "Miniature felt suit-rack: headless felt suits walking past on tiny felt legs (no torsos, no heads). Deadpan. No character.", "motion_hint": "Three felt suits do a stop-motion walk-cycle across frame." },
+    { "id": "S07", "bar": 7, "role": "PRE_DROP", "t_start": 19.5, "t_end": 22.7, "uses_character": true, "lyric_anchor": "But the smart money's the money in your hand", "caption": "But the smart money's / the money in your hand", "keyframe_prompt": "Macro of the felt protagonist's felt hand cradling the felt Coinbase-Blue phone with the embroidered 'C' arc. Tilt-shift focus on the phone.", "motion_hint": "The thumb taps the felt phone screen twice." },
+    { "id": "S08", "bar": 8, "role": "PRE_DROP", "t_start": 22.7, "t_end": 26.0, "uses_character": true, "lyric_anchor": "And tonight the floor is wherever you stand", "caption": "And tonight the floor / is wherever you stand", "keyframe_prompt": "Felt protagonist standing on a tiny felt rooftop, a foam-core NYC skyline behind, looking out. Character occupies ~55% of frame, world reads big.", "motion_hint": "The head turns across the skyline, a slow deep breath." },
+    { "id": "S09", "bar": 9, "role": "INSTRUMENTAL_SWELL", "t_start": 26.0, "t_end": 29.2, "uses_character": true, "lyric_anchor": "(instrumental swell)", "caption": "", "keyframe_prompt": "Felt protagonist at a tiny felt maker-workbench, tiny felt tools around, looking up toward camera as the swell builds. Warm key + practical.", "motion_hint": "One step forward, looks up at camera." },
+    { "id": "S10", "bar": 10, "role": "CHORUS_A", "t_start": 29.2, "t_end": 32.4, "uses_character": true, "lyric_anchor": "BETS — you called it", "caption": "BETS / you called it", "keyframe_prompt": "Felt protagonist on a tiny felt basketball court, arm extended pointing, a felt basketball mid-air, a foam-core scoreboard reading '+3'. Energy.", "motion_hint": "The arm extends to point, the felt ball spins." },
+    { "id": "S11", "bar": 11, "role": "CHORUS_A", "t_start": 32.4, "t_end": 35.7, "uses_character": true, "lyric_anchor": "BETS — you called it", "caption": "BETS / you called it", "keyframe_prompt": "Felt protagonist at a tiny foam-core voting booth drawing a felt checkmark on a felt ballot. Decisive.", "motion_hint": "The hand draws a checkmark, the stroke completes." },
+    { "id": "S12", "bar": 12, "role": "CHORUS_A", "t_start": 35.7, "t_end": 38.9, "uses_character": true, "lyric_anchor": "BETS — you called it", "caption": "BETS / you called it", "keyframe_prompt": "Felt protagonist on a tiny foam-core awards stage opening a felt envelope, a small felt-confetti puff. Smiling.", "motion_hint": "Opens the envelope, the smile widens." },
+    { "id": "S13", "bar": 13, "role": "CHORUS_A", "t_start": 38.9, "t_end": 42.2, "uses_character": true, "lyric_anchor": "BETS on the Knicks, on the chair, on the spread", "caption": "on the Knicks / on the chair / on the spread", "keyframe_prompt": "Triple-split: felt basketball / felt chair-seat / foam-core scoreboard '+3', the protagonist small and IN the foreground of the center panel (NOT a silhouette). Cuts-within-a-cut energy.", "motion_hint": "Three independent panel motions, the character holds still in the center panel.", "_note": "A prior version read the silhouette as an '11' jersey — re-roll with 'NOT a silhouette, character in foreground'." },
+    { "id": "S14", "bar": 14, "role": "BRIDGE", "t_start": 42.2, "t_end": 45.4, "uses_character": true, "lyric_anchor": "WIN on the call you already said", "caption": "WIN / on the call you / already said", "keyframe_prompt": "Felt protagonist leaning into a felt friend at a tiny felt bar, mouthing the call. Warm practical bar lights.", "motion_hint": "Leans into the friend, the friend nods." },
+    { "id": "S15", "bar": 15, "role": "CLIMAX", "t_start": 45.4, "t_end": 48.6, "uses_character": true, "is_climax": true, "lyric_anchor": "Whoever wins — you called it", "caption": "Whoever wins / you CALLED it", "keyframe_prompt": "CLIMAX HERO. Coinbase-Blue felt confetti rains across the frame, the felt protagonist arms raised, head tilted back, a foam-core skyline behind. Doubles as the character-lock climax angle.", "motion_hint": "CLIMAX: arms lift overhead, head tilts back, Coinbase-Blue confetti rains." },
+    { "id": "S16", "bar": 16, "role": "CHORUS_B", "t_start": 48.6, "t_end": 51.9, "uses_character": true, "lyric_anchor": "Whoever wins — you called it", "caption": "Whoever wins / you called it", "keyframe_prompt": "Macro of the felt Coinbase-Blue phone filling frame, screen lights up solid Coinbase Blue. Last body shot before the end card.", "motion_hint": "Thumb taps the phone twice, the screen pulses." },
+    { "id": "END", "bar": 17, "role": "END_CARD", "t_start": 51.9, "t_end": 54.9, "uses_character": false, "lyric_anchor": "(end card — song plays under)", "caption": "", "keyframe_prompt": "END CARD — solid Coinbase-Blue (#0052FF) card, white 'coinbase' wordmark centered + subhead 'Prediction markets  ·  now on Coinbase', composited via cairosvg + PIL (NOT AI-rendered). Logo bug suppressed. Holds 3s with the song under it.", "motion_hint": "Static hold (built by scripts/stitch.py, not i2v)." }
+  ],
+  "logo_bug": {
+    "_comment": "Persistent white Coinbase wordmark burned bottom-left over the 16 body bars, SUPPRESSED on the end card (where the big wordmark dominates). Recolor the black Wikimedia Coinbase SVG to white via cairosvg + PIL. NEVER AI-render brand text.",
+    "engine": "cairosvg+pil",
+    "script": "scripts/stitch.py",
+    "brand_wordmark_svg": "brand-assets/logos/coinbase-wordmark.svg",
+    "position": "bottom-left",
+    "width_px": 220,
+    "margin_px": 56,
+    "suppress_on_end_card": true
+  },
+  "end_card": {
+    "_comment": "Solid Coinbase-Blue card + white wordmark (from the real SVG) + subhead, composited via cairosvg + PIL — NEVER AI-rendered. Holds 3.0s WITH the song still playing under it (1.85s was too short to read); the song afade-outs 0.5s over the tail so there is NO silent tail. macOS New York Semibold lacks the em-dash glyph (U+2014) — the subhead uses a middle dot ' · ' instead.",
+    "engine": "cairosvg+pil",
+    "script": "scripts/stitch.py",
+    "background": "#0052FF",
+    "brand_wordmark_svg": "brand-assets/logos/coinbase-wordmark.svg",
+    "wordmark_scale": 0.62,
+    "subhead_text": "Prediction markets  ·  now on Coinbase",
+    "subhead_font": "New York",
+    "hold_sec": 3.0,
+    "audio_fade_out_sec": 0.5
+  },
+  "audio_mix": {
+    "_comment": "The song is the full audio bed — no VO to duck under. The song plays UNDER the end card and afade-outs over the last 0.5s (master tail), so the video ends WITH the music — no trailing silence.",
+    "loudness_lufs": -14,
+    "climax_beat_id": "S15",
+    "duck_under_vo": false,
+    "audio_over_end_card": true,
+    "audio_fade_out_sec": 0.5,
+    "body_end_s": 51.9,
+    "master_duration_s": 54.9
+  },
+  "post_production": {
+    "music": { "default": "on", "note": "the sung supplied/generated track IS the bed (no VO to duck under)" },
+    "captions": { "default": "on", "note": "big mid-frame serif captions from the word timings, accents italic, no pill, stop at the end card" },
+    "logo_bug": { "default": "on", "note": "persistent white wordmark bottom-left over the body, suppressed on the end card" },
+    "end_card": { "default": "on", "note": "solid-brand-color PIL end card + real wordmark, song plays under it, afade tail (no silent tail)" }
+  }
+}

@@ -1,0 +1,310 @@
+{
+  "_comment": "Hype and Vice 'Game Day Girls' cinematic music-video — the worked example. Copy to config.json and edit. A ~28s 35mm-film-look (FILM_TAILGATE_35MM) 9:16 LIVE-ACTION-STYLE short film cut to an original anthem (NO separate VO). Pipeline: (1) ElevenLabs music_v1 anthem from song.structure -> mp3 + music_metadata.json (words_timestamps) -> build_word_timestamps.py -> words.json; (2) one Higgsfield gpt_image_2 keyframe per tableau (2k, 2:3~=9:16, one look_pack); (3) one Higgsfield kling3_0 i2v clip per tableau; (4) beat-locked hard-cut assembly + anthem mux (-14 LUFS) + cinematic lower-third serif captions via sync-captions-to-music (music-video preset, --placement low). Master 1080x1920. See scripts/PIPELINE.md for the source scripts (clients/hype-and-vice/ad-runs/run-01-game-day-girls/working/).",
+  "brand_name": "Hype and Vice",
+  "campaign": "every day is game day",
+  "title": "Game Day Girls",
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "duration_sec": 28,
+  "keyframe_resolution": "2k",
+  "aspect_ratio": "9:16",
+  "song": {
+    "_comment": "Generated FIRST. The anthem carries the narration — there is NO separate voiceover. The delivered track sets the timeline; snap every tableau boundary to its lyric window (the stitch.py TIMELINE). music_v1 returns music_metadata.json with words_timestamps (ms); build_word_timestamps.py derives audio/words.json (s). No artist names in the prompt (ElevenLabs Music ToS filter — describe the arrangement only).",
+    "provider": "elevenlabs",
+    "model": "music_v1",
+    "lyrics_md": "source/lyrics-locked.md",
+    "bpm": 120,
+    "prompt": "Indie-pop cinematic anthem, 120 BPM, confident-but-warm female lead vocal, triumphant. Verse: soft piano opening + light kick, intimate and anticipatory. Pre-chorus: drums build, cinematic strings enter, rising tension. Chorus: full-band drop + soaring cinematic strings + electric guitar, the hook lands on the one. Outro: stripped back to acoustic guitar + vocal for the emotional landing. Female pop vocal, not bro-coded.",
+    "force_instrumental": false,
+    "hook_line": "every day is game day",
+    "hook_word": "game",
+    "_note_hook_target": "The chorus L1 'every day is game day' lands at ~14.4s (chorus drop). The hero tableau T08 (split-screen brand-range frame) is timed to it.",
+    "hook_target_sec": 14.4,
+    "structure": [
+      {
+        "_note": "music_metadata.json also carries positive_local_styles / negative_local_styles per section — feed those to music_v1 as the per-section style arrays.",
+        "section": "Verse",
+        "duration_ms": 9000,
+        "positive_local_styles": ["soft piano opening", "light kick drum", "bright confident female pop voice", "anticipatory mood", "steady rhythm"],
+        "negative_local_styles": ["full band", "electric guitar", "loud drums", "heavy strings"],
+        "lines": [
+          "Saturday, six A M.",
+          "Crewneck on, paint on then.",
+          "Down the row with the girls in tow.",
+          "Every weekend, we own this road."
+        ]
+      },
+      {
+        "section": "Pre-Chorus",
+        "duration_ms": 5000,
+        "positive_local_styles": ["building drums", "cinematic strings entering", "rising tension", "anticipatory build", "vocal intensity increases"],
+        "negative_local_styles": ["piano only", "acoustic guitar", "sparse", "quiet"],
+        "lines": [
+          "The lights, the chant, the crowd, the way she scream.",
+          "Every Saturday, we live the dream."
+        ]
+      },
+      {
+        "section": "Chorus",
+        "duration_ms": 8000,
+        "positive_local_styles": ["full band drop", "triumphant chorus", "driving rhythm", "electric guitar", "powerful drums", "cinematic strings swelling"],
+        "negative_local_styles": ["acoustic", "minimalist", "soft", "reflective"],
+        "lines": [
+          "Every day, every day, every day is game day.",
+          "Every day, every day, every day is her day.",
+          "Hype and Vice, what the girls wear.",
+          "Every day, every day, every day, every day."
+        ]
+      },
+      {
+        "section": "Outro",
+        "duration_ms": 6000,
+        "positive_local_styles": ["stripped down", "acoustic guitar", "confident vocal", "reflective mood", "gentle fade", "clean ending"],
+        "negative_local_styles": ["full band", "loud", "heavy drums", "electric guitar"],
+        "lines": [
+          "The girls who started this.",
+          "The girls who finish this.",
+          "Every day is game day."
+        ]
+      }
+    ],
+    "global_styles": {
+      "_note": "music_metadata.composition_plan.positive_global_styles / negative_global_styles — the top-level vibe.",
+      "positive": ["indie pop", "cinematic", "anthem", "confident female pop vocal", "triumphant", "120 bpm", "acoustic guitar"],
+      "negative": ["rap", "male vocal", "slow tempo", "lo-fi", "dark"]
+    },
+    "outputs": {
+      "audio": "audio/music.mp3",
+      "word_timings": "audio/words.json",
+      "metadata": "audio/music_metadata.json"
+    }
+  },
+  "look_pack": {
+    "name": "FILM_TAILGATE_35MM",
+    "_comment": "ONE look pack held across all 14 beats so they read as shot by one cinematographer. The style_opener (the 35mm-film clause) is prepended to EVERY keyframe prompt; the negative_tail is appended. This is the divider from the paper-craft molecule: a NAMED FILM STOCK + grain + flares + golden hour + handheld, hard-negating the AI-glossy sheen. The continuity_anchor (the branded garment in every frame) stitches 14 shots into one ad.",
+    "continuity_anchor": "The HYPE AND VICE branded garment appears in EVERY tableau in a different team color but the same brand mark + similar silhouette.",
+    "palette_anchors": [
+      "Kodak Portra warm skin tones",
+      "golden hour",
+      "cardinal red",
+      "maize",
+      "UCLA blue",
+      "Ohio scarlet",
+      "muted greens",
+      "blown highlights",
+      "sunset orange to indigo"
+    ],
+    "style_opener": "A cinematic 35mm film photograph shot on Kodak Portra 400. Visible film grain, warm color profile, slightly blown highlights, soft light leaks bleeding from the corners, a faint diagonal lens flare. Handheld framing — not perfectly leveled, lived-in documentary composition. American college town setting in autumn — brick, oak trees, brass house letters. Late afternoon golden hour light. Cinematic indie-film mood, like a still from an A24 short. ",
+    "negative_tail": " AVOID: studio-glossy AI render, smoothed AI skin, fashion-magazine airbrush, perfectly symmetric AI faces, plastic-skin look, oversaturated Instagram filter, sterile lighting, perfect studio backdrop. Vertical 9:16 composition."
+  },
+  "keyframe_engine": {
+    "_note": "Higgsfield CLI: `higgsfield generate create gpt_image_2 --prompt ... --aspect_ratio 2:3 --resolution 2k --wait --json`. 2:3 is the closest supported ratio to 9:16; assembly scale/crops to 1080x1920. Parallel batches of 3 (burst-credit reserve). Prompt = style_opener + tableaux[i].keyframe_prompt + negative_tail.",
+    "provider": "higgsfield",
+    "model": "gpt_image_2",
+    "resolution": "2k",
+    "aspect_ratio": "9:16",
+    "batch_size": 3
+  },
+  "clip_engine": {
+    "_note": "Higgsfield CLI: `higgsfield generate create kling3_0 --prompt ... --start-image <keyframe> --duration 5 --wait --json`. Kling 3.0 (not Seedance) holds the film register + real faces through the motion. Prompt = motion_opener + tableaux[i].motion_hint. Subtle documentary micro-motion only.",
+    "provider": "higgsfield",
+    "model": "kling3_0",
+    "duration_sec": 5,
+    "batch_size": 3,
+    "motion_opener": "Subtle cinematic 35mm-film documentary motion. Handheld micro-drift, natural breath, slight forward push-in. Film grain holds. NO smooth AI-camera glide, NO photoreal CGI swoop. "
+  },
+  "captions": {
+    "_comment": "Cinematic lower-third serif (film-credit feel), NOT a TikTok word-burst. Built from the song's OWN word timings (audio/words.json, derived by build_word_timestamps.py from music_metadata.words_timestamps), NEVER Whisper (Whisper on sung audio returns 'Music Playing'). Burned by the sync-captions-to-music atom: --style-preset music-video --placement low --chunk-size 4 --accent-words <list>. Accent words get bold-italic; the chorus hook line gets the accent treatment for the hero moment. The rendered ASS uses a serif font (New York).",
+    "source": "audio/words.json",
+    "style": "cinematic_lower_third_serif_italic",
+    "style_preset": "music-video",
+    "placement": "low",
+    "font": "New York",
+    "font_size": 64,
+    "base_color": "#FFFFFF",
+    "chunk_words": 4,
+    "accent_words": ["every", "day", "game", "HER", "Hype", "Vice", "wear", "girls", "started", "finish"]
+  },
+  "tableaux": [
+    {
+      "id": "T01",
+      "role": "INTRO_HOOK",
+      "t_start": 0.0,
+      "t_end": 2.1,
+      "lyric_anchor": "(instrumental intro / 'Saturday, six A M')",
+      "caption": "",
+      "keyframe_prompt": "Hero subject: a cardinal-red HYPE AND VICE USC collegiate crewneck sweater hanging on a wooden hanger inside a sunlit college dorm room. A hand from the right edge of frame reaches in to lift the crewneck off the hanger. Morning golden side-light streams through gauzy curtains, dust motes visible in the beam. A small analog alarm clock on a desk in the foreground reads 6:00. Composition: low angle on the crewneck, intimate and anticipatory. The crewneck is the hero.",
+      "motion_hint": "The hand reaches in slow motion and lifts the cardinal crewneck off the hanger. Dust motes drift through the morning light beam. Quiet, anticipatory. 5 seconds."
+    },
+    {
+      "id": "T02",
+      "role": "GETTING_READY",
+      "t_start": 2.1,
+      "t_end": 4.1,
+      "lyric_anchor": "Crewneck on, paint on then",
+      "caption": "Crewneck on, paint on then",
+      "keyframe_prompt": "Two young women stand side-by-side at a steamy bathroom mirror, applying eyeliner and cardinal-red face paint. The left woman wears a HYPE AND VICE USC fitted baby tee in cardinal red. The right woman wears a HYPE AND VICE Michigan crewneck in maize and blue. Warm vanity-bulb light reflects in the mirror. A curling iron rests on the counter with a wisp of steam. A faint lipstick kiss in the corner of the mirror. They are laughing softly together.",
+      "motion_hint": "Both women's hands continue applying eyeliner and face paint in slight motion. Steam from the curling iron rises. Their shoulders shake with soft laughter. 5 seconds."
+    },
+    {
+      "id": "T03",
+      "role": "STEP_OUT",
+      "t_start": 4.1,
+      "t_end": 6.2,
+      "lyric_anchor": "Down the row with the girls in tow",
+      "caption": "Down the row with the",
+      "keyframe_prompt": "A young woman steps out the front door of a Victorian sorority house in a college town. She wears a HYPE AND VICE cardinal-red cropped baby tee with USC text and a coordinating mini skirt. Red Solo cup in her hand. Ivy on the brick wall behind her, weathered brass house letters above the door. Mid-morning sun. Tracking-shot framing, low angle, forward dolly perspective.",
+      "motion_hint": "Slow forward tracking dolly as she steps fully out the sorority house door and walks toward camera. Sunlight catches her hair. Confident stride. 5 seconds."
+    },
+    {
+      "id": "T04",
+      "role": "WIDE_ENSEMBLE",
+      "t_start": 6.2,
+      "t_end": 9.4,
+      "lyric_anchor": "Every weekend, we own this road",
+      "caption": "Every weekend, we own this road",
+      "keyframe_prompt": "Wide cinematic shot — FOUR young women walking toward camera down a leafy sorority-row street, arms linked, all in different HYPE AND VICE collegiate pieces (one cardinal-red USC crewneck, one maize Michigan baby tee, one UCLA blue cropped top, one Ohio State scarlet jersey). Golden hour lens flare cuts diagonally across the frame. Brick fraternity houses line both sides of the street. Slightly out-of-focus oak leaves frame the foreground. The walk is confident, lived-in.",
+      "motion_hint": "Slow forward walk by all four girls. Their hair moves naturally. The lens flare drifts diagonally across the frame as the camera moves. Cinematic dolly-in. 5 seconds."
+    },
+    {
+      "id": "T05",
+      "role": "TAILGATE_WIDE",
+      "t_start": 9.4,
+      "t_end": 11.0,
+      "lyric_anchor": "The lights, the chant, the crowd",
+      "caption": "The lights, the chant, the crowd",
+      "keyframe_prompt": "Wide establishing shot of a Saturday college tailgate — dozens of young people in collegiate apparel, tents, music speakers, a folding table with red Solo cups. The hero subject: a young woman in a cardinal-red HYPE AND VICE USC crewneck jumps onto her friend's back mid-cheer, both laughing, beer in hand. Late afternoon golden light, long shadows. American college town in autumn — oak leaves, brick, string lights overhead.",
+      "motion_hint": "Wide tailgate scene comes alive — the hero girl jumps onto her friend's back, both laugh, surrounding crowd cheers, slight handheld wobble, music carries through the scene. 5 seconds."
+    },
+    {
+      "id": "T06",
+      "role": "SCREAM_CLOSEUP",
+      "t_start": 11.0,
+      "t_end": 11.9,
+      "lyric_anchor": "the way she scream",
+      "caption": "the way she scream",
+      "keyframe_prompt": "Tight close-up portrait of a young woman's face mid-scream of pure joy. Her hand is over her open mouth, eyes wide and shining, a single streak of cardinal-red body paint across her cheekbone. She wears a HYPE AND VICE collegiate jersey collar visible at the edge of frame. Slight motion blur on her hand suggests movement. The background is a soft out-of-focus stadium crowd. Tight framing.",
+      "motion_hint": "Tight close-up. Her scream of joy plays out, hand slightly moving across her mouth, eyes filling with tears of celebration. Single tight moment. 5 seconds."
+    },
+    {
+      "id": "T07",
+      "role": "SUSPENDED_TIME",
+      "t_start": 11.9,
+      "t_end": 14.4,
+      "lyric_anchor": "Every Saturday, we live the dream",
+      "caption": "Every Saturday, we live the dream",
+      "keyframe_prompt": "Slow-motion mid-air confetti — pom-poms, school-color streamers in cardinal red, maize yellow, UCLA blue, and Ohio scarlet — frozen mid-fall against an out-of-focus young woman in a HYPE AND VICE crewneck. The confetti is the subject; she is a soft-focus presence behind it. Stadium-light backdrop, late golden hour. Cinematic frozen-time quality.",
+      "motion_hint": "The confetti and streamers drift downward in true slow-motion. The out-of-focus girl behind shifts slightly with the celebration. Cinematic suspended-time moment. 5 seconds."
+    },
+    {
+      "id": "T08",
+      "role": "HOOK_HERO",
+      "t_start": 14.4,
+      "t_end": 16.0,
+      "lyric_anchor": "Every day, every day, every day is game day",
+      "caption": "Every day, every day, every day is game day",
+      "is_hook": true,
+      "keyframe_prompt": "A SPLIT-SCREEN four-quadrant tableau. Each quadrant is a separate documentary-style 35mm film photograph of a different young woman at a different American college, all wearing HYPE AND VICE collegiate apparel in her school's colors. TOP-LEFT: a girl in a cardinal-red USC crewneck, USC campus background. TOP-RIGHT: a girl in a UCLA blue cropped top, UCLA campus background. BOTTOM-LEFT: a girl in a Michigan maize and blue baby tee, Ann Arbor street. BOTTOM-RIGHT: a girl in an Ohio State scarlet jersey, Columbus campus. Each quadrant separately framed with a thin cream divider. Hero composition — this is the brand range frame.",
+      "motion_hint": "Four-quadrant split — each quadrant pulses gently to the beat in alternation: USC, then UCLA, then Michigan, then Ohio State. Each girl has subtle individual motion (hair, smile, gesture). 5 seconds."
+    },
+    {
+      "id": "T09",
+      "role": "STADIUM_PEAK",
+      "t_start": 16.0,
+      "t_end": 18.0,
+      "lyric_anchor": "Every day, every day, every day is her day",
+      "caption": "Every day, every day, every day is her day",
+      "keyframe_prompt": "Low-angle wide shot from inside a packed college football stadium row — a sea of young women in HYPE AND VICE collegiate apparel cheering with hands raised in a wave motion. Late afternoon golden hour light streaming horizontally across the stadium seats, casting long shadows. Cardinal red, maize, UCLA blue, scarlet visible scattered through the crowd. One girl in foreground stands with arms wide, head back in celebration.",
+      "motion_hint": "The wave of hands in the stadium row rises and falls in slow motion, the foreground girl tilts her head back, joy on her face. Golden light moves across the seats. 5 seconds."
+    },
+    {
+      "id": "T10",
+      "role": "PRODUCT_HERO",
+      "t_start": 18.0,
+      "t_end": 19.9,
+      "lyric_anchor": "Hype and Vice, what the girls wear",
+      "caption": "Hype and Vice, what the girls wear",
+      "keyframe_prompt": "Close-up product hero — a young woman's hands unfolding a HYPE AND VICE cardinal-red USC crewneck in slow motion against a moody dark background lit by a single warm side-light. The folded garment catches the light, the embroidered HYPE AND VICE brand mark visible on the cuff or chest. The crewneck IS the subject. No face, just garment and hands. Dramatic side-lit composition, like a fashion still life.",
+      "motion_hint": "Slow-motion hands unfold the crewneck. The fabric falls open with a soft drape. The brand mark catches the light briefly. Pure product moment. 5 seconds."
+    },
+    {
+      "id": "T11",
+      "role": "MICRO_MONTAGE",
+      "t_start": 19.9,
+      "t_end": 22.3,
+      "lyric_anchor": "Every day, every day, every day, every day",
+      "caption": "Every day, every day, every day, every day",
+      "keyframe_prompt": "A QUAD-FRAME composition like a contact sheet — four small photographic frames arranged 2x2, each a different moment from the day. TOP-LEFT: a young woman applying eyeliner in a bathroom mirror in HYPE AND VICE baby tee. TOP-RIGHT: a tailgate cheer with cardinal red. BOTTOM-LEFT: stadium hands raised mid-celebration. BOTTOM-RIGHT: an empty stadium at twilight. Each panel separately framed. Treat like a 35mm contact-sheet of one Saturday.",
+      "motion_hint": "Each of the four contact-sheet panels has its own subtle motion: panel 1 mirror gesture, panel 2 tailgate cheer, panel 3 stadium hands, panel 4 wind in empty stadium. Rapid alternating accents. 5 seconds."
+    },
+    {
+      "id": "T12",
+      "role": "ORIGIN_WINK",
+      "t_start": 22.3,
+      "t_end": 24.2,
+      "lyric_anchor": "the girls who started this",
+      "caption": "the girls who started this",
+      "keyframe_prompt": "A nostalgic 2015-coded tailgate photograph with a slightly heavier film grain and warmer faded color (like a recovered old photo). Two young women in early-2010s fashion — high-waisted denim cutoffs, men's-cut USC T-shirts — sit on a tailgate truck bed at a college game day. One holds a pair of scissors and is mid-cut on her T-shirt, customizing it. The other smiles at her. The mood is the origin story — two girls about to start something.",
+      "motion_hint": "The 2015-coded scene plays — one girl finishes a scissor cut, holds up the customized T-shirt, both girls laugh together. Slight VHS warmth on the motion. 5 seconds."
+    },
+    {
+      "id": "T13",
+      "role": "TWILIGHT_OUTRO",
+      "t_start": 24.2,
+      "t_end": 26.1,
+      "lyric_anchor": "the girls who finish this",
+      "caption": "the girls who finish this",
+      "keyframe_prompt": "Silhouettes against a deep orange sunset — a dozen young women in HYPE AND VICE collegiate apparel walk away from camera out of a stadium, arms around each other's shoulders. The sky is full sunset orange into deep red into indigo. Their silhouettes are dark but you can read the H&V crewneck shapes and the team-color hints. Slow tracking-out shot. Emotional, reflective.",
+      "motion_hint": "Twilight silhouettes walk slowly away from camera, arms around each other, hair moving in the breeze. The sunset deepens slightly as they walk. Slow tracking-out. 5 seconds."
+    },
+    {
+      "id": "T14",
+      "role": "END_CARD",
+      "t_start": 26.1,
+      "t_end": 28.0,
+      "lyric_anchor": "every day is game day",
+      "caption": "",
+      "keyframe_prompt": "A moody end-card composition. CENTER: the brand wordmark 'HYPE AND VICE' rendered in elegant cream cursive italic serif typography against a warm dark brown background. BELOW the wordmark in smaller italic serif: 'every day is game day.' RIGHT SIDE of frame: a single HYPE AND VICE cardinal-red USC crewneck hangs on a wooden hanger in soft cinematic side-light, slightly out of focus. The wordmark is the hero. Cinematic side-lit still-life feel. (Wordmark authored as a designed base — do NOT trust free diffusion text; composite the real lockup in post if drift appears.)",
+      "motion_hint": "End card holds. The wordmark stays still. The hanging crewneck on the right sways imperceptibly. Dust motes drift in the warm side-light. Static, screenshot-ready. 5 seconds."
+    }
+  ],
+  "end_card": {
+    "_comment": "Brand lockup — NEVER AI-rendered as free diffusion text (LEARNINGS L4 — a prior end card rendered 'therapits'). For H&V the end card was authored as a designed keyframe base (T14): cream cursive italic serif wordmark on a warm-dark background with the real garment hung in soft side-light. Prefer a PIL/ffmpeg composite from the real brand wordmark/asset where one exists; overlaid on the final tableau window.",
+    "engine": "designed_keyframe",
+    "brand_asset": "brand-assets/hype-and-vice-wordmark.png",
+    "wordmark_text": "HYPE AND VICE",
+    "wordmark_font": "cream cursive italic serif",
+    "tagline_text": "every day is game day",
+    "tagline_font": "serif italic",
+    "cta_text": "",
+    "background": "warm dark brown, soft tungsten side-light, real brand garment hung on a wooden hanger",
+    "overlay_window_sec": [26.1, 28.0]
+  },
+  "audio_mix": {
+    "_comment": "The sung anthem IS the bed (no VO). afade in 0.15s / out 0.6s, atrim 0:28, loudnorm to -14 LUFS. climax_beat_id T08 is the hook drop.",
+    "loudness_lufs": -14,
+    "fade_in_sec": 0.15,
+    "fade_out_sec": 0.6,
+    "climax_beat_id": "T08",
+    "duck_under_vo": false
+  },
+  "post_production": {
+    "music": {
+      "default": "on",
+      "note": "the sung generated ElevenLabs anthem IS the bed (force_instrumental false); no separate VO"
+    },
+    "captions": {
+      "default": "on",
+      "note": "cinematic lower-third serif captions from the song's word timings, hook line accent-treated, default on"
+    },
+    "end_card": {
+      "default": "on",
+      "note": "brand lockup from the real brand asset (designed keyframe / PIL composite), never diffusion text, default on"
+    },
+    "film_grain": {
+      "default": "on",
+      "note": "baked into each keyframe by the look pack (the anti-AI signal); no separate post grain pass needed"
+    }
+  }
+}

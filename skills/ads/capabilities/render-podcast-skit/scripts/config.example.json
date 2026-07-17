@@ -1,0 +1,150 @@
+{
+  "_comment": "Ladder run-02 'Laundromat 2am' podcast-skit — the worked example. Copy to config.json and edit. A ~49s two-host (skeptic Brittney + believer Brad) 9:16 fake-podcast skit at a 24hr laundromat set (unrelated to fitness — that's the joke). Pipeline: (1) ElevenLabs with-timestamps VO per line, one voice per host; (2) two base stills (Higgsfield nano_banana_2, mouths closed) + ~10 img2img expression variants anchored on the bases; (3) Veed Fabric 1.0 lipsync per (still, VO) pair @ 720p; (4) yellow karaoke captions from the VO's char-level timestamps, 3-word cap; (5) hard-cut concat + a 2.5s Playwright/PIL brand end card. Master 1080x1920 h264+aac. See scripts/PIPELINE.md for the source scripts.",
+  "brand_name": "Ladder",
+  "campaign": "podcast-skit — laundromat 2am",
+  "title": "Ladder Podcast Ad run-02 — Laundromat 2am",
+  "width": 1080,
+  "height": 1920,
+  "fps": 24,
+  "duration_sec": 49,
+  "duration_target_sec": 42,
+  "aspect_ratio": "9:16",
+
+  "set_description": "24hr laundromat at 2am. Two hosts at a wedged-in podcast desk between two front-load dryers. Broadcast mic stands, over-ear headphones, fluorescent overhead light, faded WASH DRY FOLD sign behind. Lone sock tumbling in a back dryer. The set is deliberately unrelated to the product — that is the joke.",
+
+  "brand_guardrails": [
+    "No transformation claims ('lose 20 lbs'). Ladder sells STRUCTURE, not OUTCOME.",
+    "No celebrity name-drops outside the actual coach roster.",
+    "Plain-spoken voice — 'Get stronger, with a plan' beats hype.",
+    "Lime/black palette only when product surfaces appear.",
+    "The believer never mocks the user — the villain is the friction, not the buyer."
+  ],
+
+  "intonation_legend": {
+    "_note": "Written into script.json so ElevenLabs delivers the intended prosody. Applied inline in each scene's `text`.",
+    "...": "trailing thought / dramatic pause (~0.7-1.2s)",
+    " — ": "crisp em-dash pause, sharper than comma (~0.4s)",
+    "?": "rising intonation",
+    ".": "hard stop, drops pitch",
+    ",": "natural breath beat",
+    "CAPS": "emphasized word (slightly louder + slower)"
+  },
+
+  "voices": {
+    "_note": "Exactly TWO hosts, one voice each, held across the whole skit. Real ElevenLabs voice_ids. HER = skeptic (validated as the Ramp v1.2 skeptic); HIM = believer (Ramp v1 believer-bro). eleven_multilingual_v2 with-timestamps.",
+    "HER": {
+      "role": "skeptic",
+      "name": "Brittney",
+      "voice_id": "kPzsL2i3teMYv0FxEYQ6",
+      "provider": "elevenlabs",
+      "model": "eleven_multilingual_v2",
+      "endpoint": "with-timestamps",
+      "settings": { "stability": 0.45, "similarity_boost": 0.78, "style": 0.45, "use_speaker_boost": true }
+    },
+    "HIM": {
+      "role": "believer",
+      "name": "Brad",
+      "voice_id": "T4x5CtnhOiichhcqFzgg",
+      "provider": "elevenlabs",
+      "model": "eleven_multilingual_v2",
+      "endpoint": "with-timestamps",
+      "settings": { "stability": 0.45, "similarity_boost": 0.78, "style": 0.35, "use_speaker_boost": true }
+    }
+  },
+
+  "characters": {
+    "_note": "Two bases first (nano_banana_2, 9:16, tight bust, mic foreground, headphones, MOUTH CLOSED). Brittney base first, then Brad using Brittney's still as a bg reference for set consistency. Then fan out variants — each img2img on its host's base as the SOLE reference, prompt describes ONLY the pose/expression change so the background is pixel-identical across all cuts.",
+    "engine": { "provider": "higgsfield", "model": "nano_banana_2", "aspect_ratio": "9:16", "submit": "sequential" },
+    "still_rules": "Tight bust framing, broadcast mic foreground, over-ear headphones. MOUTH NEUTRAL/CLOSED (open-mouth still breaks lipsync). Photorealistic, 35mm lens, shallow background blur.",
+    "variant_template": "Use the reference image as the EXACT base. Keep face, hair, headphones, clothing, background, microphone, and lighting IDENTICAL. Change ONLY: {change} Lips remain closed naturally, no open mouth, no smile showing teeth. Photorealistic, same 35mm lens, same shallow background blur.",
+    "bases": [
+      { "who": "HER", "file": "brittney-base.png", "_note": "generate FIRST; sets the laundromat set" },
+      { "who": "HIM", "file": "brad-base.png",     "_note": "generate SECOND with brittney-base.png as a bg reference so the set matches" }
+    ],
+    "expression_variants": [
+      { "out_name": "brittney-eyebrow-up.png", "who": "HER", "change": "her left eyebrow raised slightly, mildly skeptical look, eyes narrowed just a touch.", "_note": "'narrowed eyes' NSFW-rejected first pass — if it fails swap to 'curious questioning look, eyes wide open and bright'" },
+      { "out_name": "brittney-shrug.png",      "who": "HER", "change": "her shoulders raised slightly in a small shrug, head tilted a few degrees to her left, palms upturned just visible at bottom edge." },
+      { "out_name": "brittney-hand-ear.png",   "who": "HER", "change": "her right hand lifted to touch the right headphone cup, fingers visible at side of head, focused listening expression." },
+      { "out_name": "brittney-half-smile.png", "who": "HER", "change": "a subtle closed-lip half-smile, the corner of her mouth lifted slightly, eyes warm and amused." },
+      { "out_name": "brittney-deal-close.png", "who": "HER", "change": "a slight lean forward toward the microphone, attentive engaged look, eyes locked on camera." },
+      { "out_name": "brad-explain.png",        "who": "HIM", "change": "head turned a few degrees more toward the camera, attentive engaged look, his right hand opening upward in a small explanatory gesture just visible at bottom-right edge." },
+      { "out_name": "brad-grin.png",           "who": "HIM", "change": "a subtle confident closed-lip grin starting, corner of mouth lifted slightly, eyes amused, the trace of a gotcha-look." },
+      { "out_name": "brad-listing.png",        "who": "HIM", "change": "his right hand raised with three fingers extended as if counting items, hand visible at bottom-right edge, head turned slightly." },
+      { "out_name": "brad-phone-up.png",       "who": "HIM", "change": "his right hand visible holding a smartphone vertically, the phone screen showing a generic dark-blue workout app interface with white text bars (no logos), held just below his chin, raised slightly toward camera.", "_note": "generic app UI only — NO real logos/screens" },
+      { "out_name": "brad-leans-back.png",     "who": "HIM", "change": "leaning slightly back from the microphone, satisfied confident posture, head tilted back a few degrees, eyes relaxed." }
+    ]
+  },
+
+  "lipsync_engine": {
+    "_note": "Each (still, VO) pair -> one clip. Default veed-fal (veed/fabric-1.0) @ 720p, concurrency 4, idempotent. Hedra Character-3 fallback if fal.ai balance exhausted. Empty text-prompt on Veed Fabric — a text prompt interferes with lipsync.",
+    "gateway": "veed-fal",
+    "model": "veed/fabric-1.0",
+    "resolution": "720p",
+    "aspect_ratio": "9:16",
+    "concurrency": 4,
+    "text_prompt": "",
+    "fallback": { "gateway": "hedra", "model": "character-3", "model_id": "d1dd37a3-e39a-4854-a298-6510289f9cf2" }
+  },
+
+  "captions": {
+    "_note": "Yellow karaoke from the VO's OWN char-level timestamps (scene-NN-<who>.timestamps.json), NOT Whisper. stitch.py offsets each word by cumulative clip start into a global words.json, then make_subtitles.py emits the ASS (--accent-bgr 3BEBFF). 3-word phrase cap, bottom-center. `caption` per scene is the phrase intent; the actual burned text comes from the VO timings.",
+    "style": "karaoke_bottom_center",
+    "source": "vo_timestamps",
+    "font": "Avenir Next Bold",
+    "font_size": 44,
+    "color_hex": "#FFEB3B",
+    "accent_bgr": "3BEBFF",
+    "chunk_words": 3
+  },
+
+  "scenes": [
+    { "scene": 1,  "who": "HER", "time": "0:00-0:02", "still": "brittney-base.png",       "caption": "what app today",        "text": "So... what app are we ad-reading today?" },
+    { "scene": 2,  "who": "HIM", "time": "0:02-0:03", "still": "brad-explain.png",        "caption": "called LADDER",         "text": "It's called LADDER." },
+    { "scene": 3,  "who": "HER", "time": "0:03-0:05", "still": "brittney-eyebrow-up.png", "caption": "thing you climb?",      "text": "Like... the thing you climb?" },
+    { "scene": 4,  "who": "HIM", "time": "0:05-0:07", "still": "brad-explain.png",        "caption": "number one app",        "text": "Strength training app. Number one in the App Store." },
+    { "scene": 5,  "who": "HER", "time": "0:07-0:08", "still": "brittney-shrug.png",      "caption": "I go to gym",           "text": "OK but I already go to the gym?" },
+    { "scene": 6,  "who": "HIM", "time": "0:08-0:10", "still": "brad-grin.png",           "caption": "workout tomorrow?",     "text": "Cool. What workout are you doing tomorrow?" },
+    { "scene": 7,  "who": "HER", "time": "0:10-0:12", "still": "brittney-base.png",       "caption": "I don't know",          "text": "I DON'T KNOW... I'll figure it out when I get there.", "_note": "v2 re-render — v1 read too clean for a skeptic" },
+    { "scene": 8,  "who": "HIM", "time": "0:12-0:14", "still": "brad-explain.png",        "caption": "LADDER fixes that",     "text": "Right — that's the part LADDER fixes." },
+    { "scene": 9,  "who": "HIM", "time": "0:14-0:17", "still": "brad-explain.png",        "caption": "do what it says",       "text": "Open the app. It tells you what to do. You do it." },
+    { "scene": 10, "who": "HER", "time": "0:17-0:19", "still": "brittney-eyebrow-up.png", "caption": "insultingly simple",    "text": "That sounds... almost insultingly simple." },
+    { "scene": 11, "who": "HIM", "time": "0:19-0:20", "still": "brad-base.png",           "caption": "it is",                 "text": "It is." },
+    { "scene": 12, "who": "HER", "time": "0:20-0:21", "still": "brittney-base.png",       "caption": "who writes these",      "text": "Who's writing these workouts?" },
+    { "scene": 13, "who": "HIM", "time": "0:21-0:23", "still": "brad-phone-up.png",       "caption": "nineteen coaches",      "text": "Actual coaches. NINETEEN of them." },
+    { "scene": 14, "who": "HIM", "time": "0:23-0:25", "still": "brad-listing.png",        "caption": "pilates kettlebell yoga","text": "Strength... pilates... kettlebell... yoga." },
+    { "scene": 15, "who": "HER", "time": "0:25-0:27", "still": "brittney-eyebrow-up.png", "caption": "new every day?",        "text": "Wait — so it's new every day?", "_note": "v2 re-render — more natural skeptic phrasing" },
+    { "scene": 16, "who": "HIM", "time": "0:27-0:30", "still": "brad-phone-up.png",       "caption": "coach in ear",          "text": "New every day. Coach in your ear. Timer built in." },
+    { "scene": 17, "who": "HER", "time": "0:30-0:32", "still": "brittney-hand-ear.png",   "caption": "coach in my ear?",      "text": "Wait — coach in my ear?" },
+    { "scene": 18, "who": "HIM", "time": "0:32-0:34", "still": "brad-listing.png",        "caption": "counts your reps",      "text": "Like a real one. Counts your reps, talks you through it." },
+    { "scene": 19, "who": "HER", "time": "0:34-0:36", "still": "brittney-half-smile.png", "caption": "stop thinking",         "text": "...so I just stop thinking?" },
+    { "scene": 20, "who": "HIM", "time": "0:36-0:37", "still": "brad-base.png",           "caption": "you just lift",         "text": "You just lift." },
+    { "scene": 21, "who": "HER", "time": "0:37-0:39", "still": "brittney-deal-close.png", "caption": "seven-day free trial?", "text": "Seven-day free trial?" },
+    { "scene": 22, "who": "HIM", "time": "0:39-0:41", "still": "brad-leans-back.png",     "caption": "seven-day free trial",  "text": "Seven-day free trial. Go." }
+  ],
+
+  "end_card": {
+    "_note": "Playwright HTML -> PNG (1080x1920) -> 2.5s silent mp4, appended after scene 22 by stitch.py (auto-appends clips/end-card.mp4). NEVER AI-rendered text — the wordmark is the brand's REAL SVG (Ladder wordmark pulled from run-01-app-sizzle). Black bg, lime wordmark center, lime CTA pill, URL at bottom.",
+    "engine": "playwright_html",
+    "script": "build_end_card.py",
+    "duration_sec": 2.5,
+    "background": "#000000",
+    "wordmark_svg": "run-01-app-sizzle/source/brand/ladder-wordmark-white.svg",
+    "accent_hex": "#DBFF00",
+    "cta_text": "Start free trial",
+    "url_text": "joinladder.com"
+  },
+
+  "assembly": {
+    "_note": "stitch.py: walk scenes in order, ffprobe each clip, build a GLOBAL words.json (each word offset by cumulative clip start), emit yellow karaoke ASS via make_subtitles.py, concat all clips (scale/pad 1080x1920, re-encode libx264 -preset veryfast -crf 20), burn the ASS, auto-append clips/end-card.mp4.",
+    "concat": "ffmpeg_concat_reencode",
+    "scale_pad": "scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2:black,setsar=1",
+    "caption_burn": "libass",
+    "append_end_card": true
+  },
+
+  "post_production": {
+    "music": { "default": "off", "note": "podcast skit is dialogue-carried; the per-line VO is the audio. No music bed (optional low ambience is a taste call, off by default)." },
+    "captions": { "default": "on", "note": "yellow #FFEB3B karaoke from the VO's own char-level timestamps, 3-word phrase cap, bottom-center" },
+    "end_card": { "default": "on", "note": "Playwright/PIL end card from the brand's real wordmark SVG, default on" }
+  }
+}

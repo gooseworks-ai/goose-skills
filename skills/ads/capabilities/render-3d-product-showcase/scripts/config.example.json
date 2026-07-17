@@ -1,0 +1,165 @@
+{
+  "_comment": "DIBS Beauty 'Desert Island Duo (shade 3)' — the worked example (clients/dibsbeauty/concept-9-3d-product-showcase/desert-island-duo). Copy to config.json and edit. A ~14s premium 3D product showcase: one real product floats centered on a clean seamless brand-color backdrop and sells itself across 4 beats — Beat 1 a 360 hero rotation, Beat 2 a macro push-in on the surface detail, Beat 3 a physics reveal (reveal_variant), then Beat 4 a typographic brand close. 720x1280 9:16, music-only (no VO). Beats 1+2 render in Higgsfield Marketing Studio 'product_showcase' Hyper Motion off the IMPORTED PDP product (real label, never AI-invented). Beat 3 is Veo3 i2v seeded on Beat 1's last frame. Beat 4 is a deterministic Playwright hyperframe. One ElevenLabs instrumental bed, loudnorm I=-16.",
+  "brand_name": "DIBS Beauty",
+  "width": 720,
+  "height": 1280,
+  "fps": 24,
+  "duration_s": 14,
+  "target_duration_sec": 14.1,
+
+  "product": {
+    "_note": "the REAL product — its label + geometry are identity-locked via the Marketing Studio PDP import; never AI-invented",
+    "name": "Desert Island Duo (shade 3)",
+    "category": "cosmetic",
+    "form_factor": "dual-ended cream stick, pink barrel, bronzer one side + blush the other",
+    "hero_png": "../../brand-assets/product-photos/desert-island-duo/did-sku_4050A-03_featured1.png",
+    "pdp_url": "https://www.dibsbeauty.com/products/desert-island-duo"
+  },
+
+  "reveal_variant": "exploded_view",
+  "_reveal_variant_note": "pick by category: cosmetic bottle/liquid or fragrance -> particle_disintegration; beverage -> liquid_splash; dual-ended/structural product -> exploded_view; tool/no-reveal product -> rotation_only (skip Beat 3). DID is a dual-ended stick -> exploded_view.",
+
+  "studio_look": {
+    "bg": "#F8B8C6",
+    "_bg_note": "bubblegum pink (DIBS brand primary) — the seamless backdrop AND the normalize pad color",
+    "lighting_preset": "luxe_botanical_warm",
+    "rim_light": "strong warm rim light from upper-right; soft fill from below",
+    "register": "premium beauty product film — glossy speculars, warm bokeh, clean seamless backdrop, no people, no hands, no on-screen text on the plate",
+    "reference_videos": "9 catalogued 3D-product-showcase shorts (GOOSE-1778) — the format reference"
+  },
+
+  "product_import": {
+    "_note": "identity lock — the analog of a character lock. Run BEFORE any paid clip call.",
+    "step_1": "higgsfield upload create <hero>.png --json  -> upload_id",
+    "step_2": "higgsfield marketing-studio products fetch --url <pdp> --wait --json  -> product_id",
+    "product_id_example": "2d9cf49a-1f8f-4a50-900c-2fb9f48bd9b4",
+    "upload_id_example": "dafa19d6-684f-4c4e-a3d8-c6204ad008a6",
+    "hard_rule": "USE fetch --url, NEVER create --image (the --image flag advertises but the backend 405s). If PDP fetch fails ('No product images passed validation'), route ALL beats through Veo3 i2v (the documented fallback)."
+  },
+
+  "beats": [
+    {
+      "id": "beat-01-hero-rotation",
+      "label": "Hero rotation — 360 orbit",
+      "engine": "marketing_studio_video",
+      "provider": "higgsfield_marketing_studio",
+      "ms_mode": "product_showcase",
+      "_ms_mode_note": "the CLI takes the SLUG 'product_showcase', not the label 'Hyper Motion' (mode=Hyper Motion errors; MCP is the opposite)",
+      "duration_sec": 4,
+      "_duration_note": "MS 'product_showcase' min duration is 4s — you cannot request 3s here",
+      "motion": "Camera orbits 360 degrees around the product at a smooth deliberate pace; product stays centered horizontally, occupying ~50% of frame height.",
+      "prompt": "9:16 PRODUCT-SHOWCASE HERO ROTATION. The DIBS Desert Island Duo — a glossy pink dual-ended cream stick with a rosy-bronzer end and a pink-blush end, shade 3. Camera orbits 360 degrees around the stick at smooth deliberate pace. Stick stays centered horizontally, occupying ~50% of frame height. Bubblegum pink seamless backdrop. Strong warm rim light from upper-right; soft fill from below. Subtle warm bokeh in background. Lowercase 'dibs.' wordmark on the barrel visible during rotation. Cinematic, premium beauty product film. Label identical to imported product reference. No on-screen text.",
+      "produces_anchor": "beat1_last_frame.png (ffmpeg -sseof -0.1 -i beat1.mp4 -frames:v 1) — the SHARED seed for Veo3 Beat 3 AND the Beat 4 hyperframe background",
+      "t_start_sec": 0.0,
+      "t_end_sec": 4.0
+    },
+    {
+      "id": "beat-02-macro-detail",
+      "label": "Macro detail — push-in on the swatch line",
+      "engine": "marketing_studio_video",
+      "provider": "higgsfield_marketing_studio",
+      "ms_mode": "product_showcase",
+      "duration_sec": 4,
+      "motion": "Camera moves smoothly along the barrel, revealing the swatch line where the two creams meet, with texture detail catching warm rim light; shallow DOF.",
+      "prompt": "9:16 MACRO PUSH-IN along the length of the DIBS Desert Island Duo cream stick. Camera moves smoothly along the barrel, revealing the swatch line where the rosy-bronzer cream meets the pink-blush cream, with cream texture detail catching warm rim light. Shallow depth of field. Strong specular highlights on the glossy pink barrel. Warm bokeh background. Lowercase 'dibs.' wordmark visible. Label identical to imported product reference. No on-screen text.",
+      "t_start_sec": 4.0,
+      "t_end_sec": 8.0
+    },
+    {
+      "id": "beat-03-reveal",
+      "label": "Reveal — exploded_view",
+      "engine": "veo3_i2v",
+      "provider": "fal",
+      "veo3_model": "fal-ai/veo3/fast/image-to-video",
+      "veo3_tier": "fast",
+      "start_image": "beat1_last_frame.png",
+      "generate_audio": false,
+      "duration_sec": 4,
+      "_reveal_spatial_rule": "the reveal prompt MUST name WHERE the reveal happens (which surface faces the gap) — omitting it garbled the SHIPPED DID Beat 3 (P1: Veo3 cap-popped + smeared ambient swatches instead of a clean cross-section). The prompt below is the PROPOSED spatial-clause FIX.",
+      "prompt": "The DIBS Desert Island Duo cream stick separates smoothly along its long horizontal axis, the two halves sliding apart to create a visible gap. At the join, each half's cream is visible in circular cross-section facing the gap — rosy-bronzer cream on the left half's exposed end, pink-blush cream on the right half's exposed end (like a sliced apple). Subtle pink shimmer particles drift through the gap. Halves smoothly reassemble. Bubblegum pink seamless backdrop. Camera holds steady, stick stays centered. No on-screen text. No text whatsoever.",
+      "shipped_prompt": "The DIBS Desert Island Duo cream stick separates smoothly into two halves that float apart slightly, revealing the rosy-bronzer cream and the pink-blush cream in cross-section on each end. Subtle pink shimmer particles drift between the halves in mid-air. Cinematic slow-motion. Strong warm rim light from upper-right; clean clarity on the cream textures. The two halves then smoothly reassemble into a single stick. Bubblegum pink seamless backdrop. Camera holds steady, stick stays centered horizontally. No on-screen text. No text whatsoever.",
+      "_shipped_note": "shipped_prompt is what actually rendered the demo (P1 accepted); prompt is the spatial-clause fix reserved for a re-roll ($1.00). skip_when reveal_variant == rotation_only.",
+      "t_start_sec": 8.0,
+      "t_end_sec": 12.0
+    },
+    {
+      "id": "beat-04-brand-close",
+      "label": "Brand close — typographic end card",
+      "engine": "html_hyperframe",
+      "provider": "playwright",
+      "is_end_card": true,
+      "method": "build_endcard.py — deterministic Playwright hyperframe (NO AI)",
+      "background": "beat1_last_frame.png (stilled)",
+      "headline": "ONE STICK · TWO FACES",
+      "headline_size_px": 92,
+      "_headline_size_note": "shrunk from the 110 default because the middot string needs to fit one line at 88% safe area",
+      "duration_sec": 3,
+      "t_start_sec": 12.0,
+      "t_end_sec": 15.0
+    }
+  ],
+
+  "end_card": {
+    "method": "Playwright hyperframe (build_endcard.py, no AI)",
+    "background": "beat1_last_frame.png (stilled)",
+    "scrim": "linear-gradient(180deg, transparent 38%, rgba(248,184,198,.50) 100%)",
+    "headline": {
+      "text": "ONE STICK · TWO FACES",
+      "font": "Playfair Display SemiBold",
+      "size_px": 92,
+      "uppercase": true,
+      "color": "#2A1F26",
+      "animation": "0.55s spring-rise cubic-bezier(.34,1.56,.64,1), 88% safe area"
+    },
+    "wordmark": {
+      "asset": "dibs-logo-black.svg",
+      "width_px": 180,
+      "animation": "0.35s fade-in +0.55s",
+      "_note": "the REAL brand wordmark — lowercase 'dibs.' only, never uppercase, never AI-rendered"
+    },
+    "dwell_sec": 3.0,
+    "render_dims": "1080x1920 then ffmpeg scale -> 720x1280 (matching the viewport to the output clips the right edge)"
+  },
+
+  "music": {
+    "provider": "elevenlabs_music",
+    "model_id": "music_v1",
+    "prompt": "Uplifting pop-ambient instrumental, soft female-led harmonies, slow warm build for 6 seconds, gentle kick + sub-bass drop at 7s carrying through to end. 100 BPM. Premium beauty product film aesthetic. No vocals with lyrics, atmospheric only.",
+    "bpm": 100,
+    "music_length_ms": 14000,
+    "force_instrumental": true,
+    "no_artist_names": true
+  },
+
+  "audio_mix": {
+    "music_bus": "afade in 0.3s + afade out 0.5s (at duration-0.5) + loudnorm I=-16 TP=-1.5 LRA=11, atrim to master duration",
+    "master_bus": "loudnorm I=-16 (IG/TikTok safe), -1.5 dBTP true peak",
+    "vo": "none — music-only product film"
+  },
+
+  "captions": {
+    "style": "none",
+    "_note": "N/A — music-only, no VO; the only on-screen text is the Beat 4 hyperframe headline (deterministic, not a burned caption)"
+  },
+
+  "finalize": {
+    "codec": "720x1280 H.264, AAC 192k",
+    "normalize": "per beat: scale=720:1280:force_original_aspect_ratio=decrease,pad=720:1280:(ow-iw)/2:(oh-ih)/2:color=#F8B8C6,setsar=1 + 24fps + yuv420p + -an (strip MS auto-audio) + crf 18",
+    "concat": "ffmpeg concat demuxer over the normalized segments"
+  },
+
+  "post_production": {
+    "music": {
+      "default": "on",
+      "note": "one ElevenLabs instrumental bed under the beats, loudnorm-mixed"
+    },
+    "captions": {
+      "default": "n/a",
+      "note": "music-only, no VO — the end-card headline is the only on-screen text"
+    },
+    "end_card": {
+      "default": "on",
+      "note": "real-wordmark Playwright brand close (Playfair headline + wordmark), default on"
+    }
+  }
+}
