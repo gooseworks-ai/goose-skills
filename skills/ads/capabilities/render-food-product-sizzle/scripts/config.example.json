@@ -1,0 +1,118 @@
+{
+  "_comment": "Lineage Provisions 'Beef Sticks Sizzle' food-product sizzle — THE WORKED EXAMPLE. Copy to config.json and edit. A ~14s warm-tungsten macro-tabletop 9:16 sizzle for a physical grass-fed beef-stick product: WORDLESS (no VO), driven by a non-diegetic bluegrass bed + diegetic snap/tear SFX. Pipeline: (1) ~4 photographic macro keyframes via create-image-fal (the box hero grounds on the REAL product PNG); (2) one locked-off anti-shake create-video-fal i2v clip per keyframe (tear / flat-lay / bite / box-hero); (3) an ElevenLabs Music ~22s bluegrass bed trimmed of its 2.5s sparse intro + two ffmpeg-lavfi diegetic SFX; (4) a STATIC PIL end card (real Lineage logo PNG + real product PNG + serif headline + CTA) + ffmpeg filter_complex concat + anti-AI grain pass + audio composite + 5 serif stat-callout pills. Master 1080x1920 h264+aac, ~14.04s (24fps). See scripts/PIPELINE.md for the source scripts.",
+  "brand_name": "Lineage Provisions",
+  "campaign": "Beef Sticks Sizzle",
+  "title": "Grass-fed. Air-dried. Nothing else.",
+  "width": 1080,
+  "height": 1920,
+  "fps": 24,
+  "aspect_ratio": "9:16",
+  "duration_sec": 14.04,
+  "look_pack": {
+    "name": "WARM_TUNGSTEN_KITCHEN",
+    "palette_anchors": [
+      "ivory #F6F1E7 background tone",
+      "ranch brown #3B2A1E shadows",
+      "dried-blood red #7A1F1F on the beef",
+      "honey-gold highlights",
+      "warm tungsten window daylight, slightly desaturated"
+    ],
+    "style_descriptor": "Tactile macro-tabletop food photography, warm tungsten kitchen register, linen + wood + butcher paper + cast iron surfaces, warm window daylight raking from camera-left, slight 35mm film grain. Photographic, NOT cinematic, NOT smooth. iPhone-shot daytime kitchen feel, NOT studio polish. Sharp focus on the product. 1080x1920 vertical.",
+    "negative_tail": "NO studio polish, NO bokeh, NOT shallow DOF, NO smooth digital 3D render, NO AI-illustration look. NO invented label text, NO captions, NO brand wordmarks rendered by the model (the brand appears only on the composited end card). NO faces beyond a partial jaw / hands crop. Vertical 9:16 composition.",
+    "_note": "ONE look pack drives all 4 keyframes so the sizzle reads as one spot. Palette sampled from the Lineage packaging + site (brand-research/visual-identity.md). The 'no invented label text' negative is load-bearing — the box hero grounds on the real product PNG so the label is real."
+  },
+  "keyframe_engine": {
+    "atom": "create-image-fal",
+    "aspect_ratio": "9:16",
+    "product_ref": "S04 (box hero) passes the real meat-sticks-classic.png (+ the variety pack) as media[role=image] with 'reproduce the label EXACTLY, invent no text'; S01/S02/S03 pass no product ref",
+    "_note": "See scripts/.hf_S04.json — it threaded the real box + variety-pack PNGs as media_input and instructed the model to reproduce the label exactly. NEVER include readable brand text in a prompt — the model garbles it into typos."
+  },
+  "clip_engine": {
+    "atom": "create-video-fal",
+    "duration_sec": 4,
+    "resolution": "720p",
+    "aspect_ratio": "9:16",
+    "submission": "sequential",
+    "anti_shake_tail": "Camera is locked off, tripod-stable. NO shake, NO wobble, NO earthquake. Slow, deliberate motion only.",
+    "_note": "Locked-off, anti-shake. Submitted SEQUENTIALLY (gen_clips_hf.sh) to avoid the burst-credit reserve gate. Per-scene durations match tStart/tEnd — S01/S02 3s, S03/S04 4s."
+  },
+  "music": {
+    "atom": "create-music-elevenlabs",
+    "provider": "elevenlabs",
+    "model": "music_v1",
+    "request_length_ms": 22000,
+    "trim_intro_sec": 2.5,
+    "target_length_sec": 14.04,
+    "fade_in_sec": 0.4,
+    "fade_out_sec": 1.0,
+    "loudnorm_i": -16,
+    "prompt": "Upbeat warm bluegrass instrumental. Picked banjo as the lead voice with a supportive flat-picked acoustic guitar and very light brush percussion. Friendly Americana, ranch-honest, heritage food-brand register. NO vocals, NO fiddle solo, NO heavy drums. Mid-tempo, major key, walking forward groove. The banjo and guitar should start IMMEDIATELY with a clear rolling phrase — do NOT begin with silence or a long sparse intro. Builds slightly in energy toward the end with one tasteful banjo flourish around the 16-second mark.",
+    "force_instrumental": true,
+    "outputs": {
+      "raw": "audio/music_raw_v2.mp3",
+      "bed": "audio/music-bed-v2.mp3"
+    },
+    "_note": "gen_music_v2.py requested 22s to allow the 2.5s sparse-intro trim; build_master_v2.sh step 1 trims start=2.5, loudnorm I=-16, fade in 0.4s + fade out 1.0s, clamps -t 14.04. No artist names (ElevenLabs Music ToS filter)."
+  },
+  "sfx": {
+    "engine": "ffmpeg-lavfi-anoisesrc",
+    "script": "make_sfx.sh",
+    "cues": [
+      { "name": "snap", "wav": "audio/snap.wav", "dur_ms": 120, "cue_t": 1.5, "note": "crisp white-noise crack at the fiber tear (S01), highpass 900 / lowpass 5500, acompressor" },
+      { "name": "tear", "wav": "audio/tear.wav", "dur_ms": 180, "cue_t": 11.0, "note": "pink-noise pull at the box-open / hand reach (S04), highpass 350 / lowpass 4000" }
+    ],
+    "_note": "Two short diegetic hits synthesized with ffmpeg lavfi anoisesrc (make_sfx.sh) at measured cue points."
+  },
+  "scenes": [
+    { "id": "S01", "role": "MACRO_TEAR", "t_start": 0.0, "t_end": 3.0, "uses_product_ref": false, "keyframe_prompt": "Slow-motion macro: two weathered hands hold a dark grass-fed beef stick at a break line on butcher paper, coarse meat fibers visible, a few crumbs. Warm window daylight from camera-left.", "motion_hint": "The two weathered hands tear the dark grass-fed beef stick apart; real coarse meat fibers stretch and separate at the break line; a few crumbs fall straight down with gravity; hands stay in frame, daylight steady from camera-left." },
+    { "id": "S02", "role": "FLAT_LAY", "t_start": 3.0, "t_end": 6.0, "uses_product_ref": false, "keyframe_prompt": "Top-down flat lay of three beef sticks fanned on butcher paper next to a single sprig of rosemary and flaky salt. Warm daylight, slight film grain.", "motion_hint": "Gentle slow 2% top-down push-in on the flat lay; a tiny breath of air moves one rosemary leaf slightly; salt grains catch the light; otherwise still life." },
+    { "id": "S03", "role": "BITE", "t_start": 6.0, "t_end": 10.0, "uses_product_ref": false, "keyframe_prompt": "Side profile, ONLY the jaw and lower lip in frame (eyes and forehead cropped OUT), a man about to bite a beef stick. Background defocused warm ivory-brown, consistent stubble shadow.", "motion_hint": "The man bites cleanly into the beef stick — a clean tear, then a slow chew; background stays defocused warm ivory-brown; stubble shadow stays consistent." },
+    { "id": "S04", "role": "BOX_HERO", "t_start": 10.0, "t_end": 14.04, "uses_product_ref": true, "keyframe_prompt": "Locked medium shot. The EXACT Lineage Provisions 100% Grass-Fed Beef Sticks Original box (from the reference PNG) stands upright on a light oak kitchen counter with a linen runner. A man's hand enters from the right edge, fingers reaching to lift one beef stick out. A second variety pack box (from the reference) sits in soft focus behind. Reproduce the box label EXACTLY as in the reference — invent no text, no captions, no stickers.", "motion_hint": "The hand enters from the right, fingers gently grasp one beef stick and lift it slowly straight up out of the box; the box itself stays put; the variety pack stays still in soft focus behind; daylight from camera-left holds steady." }
+  ],
+  "end_card": {
+    "engine": "pil",
+    "script": "make_end_card.py",
+    "background": "#F6F1E7",
+    "brand_logo_png": "brand-assets/logo/lineage-logo.png",
+    "product_png": "brand-assets/products/meat-sticks-classic.png",
+    "logo_scale": 0.62,
+    "product_scale": 0.62,
+    "headline": "Grass-fed. Air-dried. Nothing else.",
+    "headline_font": "Times New Roman / Georgia (serif heritage)",
+    "cta": "30% off your first subscription  ·  lineageprovisions.com",
+    "hold_sec": 3.0,
+    "_note": "make_end_card.py composes scene-S05.png entirely in PIL — ivory #F6F1E7 bg + the real Lineage wordmark PNG (upper third) + the real meat-sticks-classic product PNG (centered, soft shadow) + the serif headline + the CTA. NEVER AI-rendered. The demo's Memorial-Day promo added the '30% off' tag. Uses a middle dot ' · ' (macOS serif em-dash gap)."
+  },
+  "stat_callouts": {
+    "enabled": true,
+    "style": "serif-pill",
+    "font": "Georgia Bold / Big Caslon (serif)",
+    "_note": "The demo burned 5 serif stat-callout pills (ivory or dried-blood-red pill, serif type) at choreographed beats via build_master_v2.sh drawtext. % strings ('100% GRASS-FED', '30% OFF') were written to textfiles (c1.txt / c5.txt) with expansion=none — drawtext reads a raw % as a strftime spec.",
+    "callouts": [
+      { "text": "100% GRASS-FED + GRASS-FINISHED", "t_start": 0.6, "t_end": 2.4, "pill": "ivory" },
+      { "text": "20G PROTEIN", "t_start": 2.7, "t_end": 4.7, "pill": "dried-blood-red" },
+      { "text": "0 SEED OILS · 0 FILLERS", "t_start": 5.0, "t_end": 7.0, "pill": "ivory" },
+      { "text": "ANCESTRAL RECIPE / 54 iterations · 2 years", "t_start": 7.5, "t_end": 9.5, "pill": "ivory" },
+      { "text": "30% OFF FIRST SUBSCRIPTION", "t_start": 13.5, "t_end": 14.04, "pill": "dried-blood-red" }
+    ]
+  },
+  "grain_pass": {
+    "enabled": true,
+    "filter": "eq=contrast=1.06:saturation=0.93,hqdn3d=1.5:1.5:3:3,noise=alls=8:allf=t+u",
+    "_note": "Anti-AI-look grain applied globally in build_master_v2.sh so the sizzle doesn't read AI-smooth."
+  },
+  "audio_mix": {
+    "loudness_lufs": -16,
+    "duck_under_vo": false,
+    "music_over_end_card": true,
+    "audio_fade_out_sec": 1.0,
+    "_note": "The bluegrass bed is the full audio bed — no VO to duck under. snap.wav (~1.5s) + tear.wav (~11s) mix in at their cue points. The bed plays UNDER the end card and fades out over the tail — no trailing silence."
+  },
+  "post_production": {
+    "music": { "default": "on", "note": "non-diegetic bluegrass bed (no vocals), sparse intro trimmed, loudnorm + fades" },
+    "sfx": { "default": "on", "note": "diegetic snap (fiber tear) + tear (box-open) at measured cue points" },
+    "grain": { "default": "on", "note": "anti-AI-look grain (eq + hqdn3d + noise) applied globally" },
+    "stat_callouts": { "default": "on", "note": "5 serif stat-callout pills at beats (protein / ingredients / provenance / promo)" },
+    "end_card": { "default": "on", "note": "static PIL end card (real logo PNG + real product PNG + serif headline + CTA), music under it" }
+  }
+}

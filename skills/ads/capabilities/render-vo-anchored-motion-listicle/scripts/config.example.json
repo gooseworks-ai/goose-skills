@@ -1,0 +1,104 @@
+{
+  "_comment": "Everself 'doctor-educator' listicle — THE WORKED EXAMPLE. Copy to config.json and edit. A ~66s 9:16 (1080x1920, 25fps, h264 crf18 + aac 192k) EXPERT motion-graphic LISTICLE where a CLONED authoritative clinician VO narrates a numbered listicle and every beat reveal is anchored to the VO's word-level timestamps. Pipeline: (1) lock the VO (ElevenLabs clone, eleven_v3, atempo) — it sets the timeline; (2) Groq whisper-large-v3 word-level -> working/whisper/words-flat.json; (3) author N hyperframe beats (HTML + Web Animations window.renderAt(t)) in ONE design system (_shared.css / _shared.js); (4) periodic color-graded B-roll windows for breath; (5) render each beat frame-by-frame via Playwright (render_hf.py, ALL beats fps 25), concat, mix the VO under a low music bed, composite + burn window-masked captions (build_master_v4.py) -> finals/everself-v4-master.mp4. NO lipsync — the still headshot is kept only for a future lipsync variant. See scripts/PIPELINE.md for the source scripts.",
+  "brand_name": "Everself",
+  "campaign": "doctor-educator listicle",
+  "title": "What your dermatologist wishes you knew",
+  "width": 1080,
+  "height": 1920,
+  "fps": 25,
+  "duration_sec": 66.0,
+  "aspect_ratio": "9:16",
+  "video_codec": "h264 crf18",
+  "audio_codec": "aac 192k",
+  "voice": {
+    "_comment": "Locked FIRST — the VO sets the timeline. mode 'clone' here: an ElevenLabs voice cloned from a short reference sample of the clinician (Dr. McGowan), then narrated over the listicle script with eleven_v3, then atempo'd to the target pace. Word-level timestamps come from Groq whisper-large-v3 on the RENDERED VO. The clinician headshot is retained only for a FUTURE lipsync variant — this master has NO lipsync.",
+    "mode": "clone",
+    "provider": "elevenlabs",
+    "model": "eleven_v3",
+    "voice_id": "cloned-mcgowan",
+    "atempo": 1.06,
+    "reference_sample": "voice/dr-mcgowan-all-shorts.mp3",
+    "clone_script": "voice/clone_voice.py",
+    "narrate_script": "voice/render_listicle_v2.py",
+    "outputs": {
+      "audio": "voice/listicle-mcgowan-v2-render.mp3",
+      "raw": "voice/listicle-mcgowan-v2-raw.mp3",
+      "word_timings": "working/whisper/words-flat.json"
+    }
+  },
+  "design": {
+    "_comment": "ONE branded design system for all N beats. _shared.css holds the tokens (palette, type, alternating background tiles, decorative SVG accents, glass-pill callout); _shared.js holds initRenderer + revealWords + easing. Alternate ONLY the background tile per beat; keep the big hero numerals, body type, accents, and pills CONSISTENT so the reel reads as one designed piece.",
+    "name": "EVERSELF_EDUCATOR",
+    "heading_font": "Editorial serif (heading)",
+    "body_font": "Grotesk sans (body)",
+    "numeral_style": "big hero numeral in the brand accent color, top-left of each point beat",
+    "palette": ["warm cream #F6F1EA", "deep clinical teal", "brand accent coral", "soft charcoal type"],
+    "background_tiles": ["cream-tile", "teal-tile"],
+    "accents": ["hand-drawn arc underlines", "dotted rule", "small SVG plus marks"],
+    "callout_style": "glass-pill (frosted rounded rectangle, coral border, charcoal type)",
+    "shared_css": "working/hyperframes-v4/_shared.css",
+    "shared_js": "working/hyperframes-v4/_shared.js"
+  },
+  "beats": [
+    { "id": "B01", "role": "hook", "anchor_word": "wishes", "anchor_t": 0.0, "hero_numeral": "", "headline": "What your dermatologist wishes you knew", "body": "5 things most routines get wrong.", "callout": "", "accent": "cream-tile" },
+    { "id": "B02", "role": "point", "anchor_word": "first", "anchor_t": 6.4, "hero_numeral": "1", "headline": "More product isn't more results", "body": "Layering actives fights your barrier.", "callout": "Barrier first", "accent": "teal-tile" },
+    { "id": "BR01", "role": "broll", "anchor_word": "", "anchor_t": 12.2, "broll_ref": "broll[0]", "_comment": "B-roll breath window — captions burn HERE only." },
+    { "id": "B03", "role": "point", "anchor_word": "second", "anchor_t": 16.8, "hero_numeral": "2", "headline": "Sunscreen is the actual anti-aging step", "body": "Daily SPF beats every serum.", "callout": "SPF > serum", "accent": "cream-tile" },
+    { "id": "B04", "role": "point", "anchor_word": "third", "anchor_t": 24.5, "hero_numeral": "3", "headline": "Retinol works slowly — on purpose", "body": "Twelve weeks, not twelve days.", "callout": "12 weeks", "accent": "teal-tile" },
+    { "id": "BR02", "role": "broll", "anchor_word": "", "anchor_t": 32.0, "broll_ref": "broll[1]", "_comment": "Second B-roll breath window." },
+    { "id": "B05", "role": "point", "anchor_word": "fourth", "anchor_t": 36.6, "hero_numeral": "4", "headline": "Fragrance is the hidden irritant", "body": "It's the first thing to cut.", "callout": "Cut fragrance", "accent": "cream-tile" },
+    { "id": "B06", "role": "point", "anchor_word": "fifth", "anchor_t": 44.9, "hero_numeral": "5", "headline": "Consistency beats the fancy routine", "body": "Three steps you'll actually do.", "callout": "3 steps", "accent": "teal-tile" },
+    { "id": "BCTA", "role": "cta", "anchor_word": "start", "anchor_t": 58.0, "hero_numeral": "", "headline": "Build a routine that actually works", "body": "", "callout": "everself.com", "wordmark": "brand-assets/logos/everself-wordmark.svg", "accent": "cream-tile", "_comment": "CTA / end beat — Everself wordmark composited from the real SVG (NEVER AI-rendered text)." }
+  ],
+  "broll": [
+    { "id": "broll[0]", "source": "media-proxy", "query": "close-up serum drop skincare macro", "brand_clip": "", "t_start": 12.2, "t_end": 16.8, "graded": true, "captioned": true, "_comment": "Stock macro via media-proxy, trimmed + color-graded to the palette. Captions burn ONLY inside this window." },
+    { "id": "broll[1]", "source": "media-proxy", "query": "woman applying sunscreen morning bathroom", "brand_clip": "", "t_start": 32.0, "t_end": 36.6, "graded": true, "captioned": true, "_comment": "Second stock breath window, graded to the palette; captioned." }
+  ],
+  "captions": {
+    "_comment": "Built from the VO word timings (working/whisper/words-flat.json), kept ONLY inside the B-roll windows (broll[0], broll[1]), 2-word chunks, closing a cue on any >0.4s word gap. The ASS `Format:` header MUST include a `Name` field or the leading-comma bug eats the first field and captions silently drop. The motion-graphic beats are NOT captioned — their on-screen type IS the caption.",
+    "source": "working/whisper/words-flat.json",
+    "mask": "broll_windows_only",
+    "chunk_words": 2,
+    "gap_close_s": 0.4,
+    "ass_format_has_name_field": true,
+    "position": "lower-third",
+    "no_pill": false,
+    "font": "Grotesk sans Bold",
+    "base_color": "#FFFFFF",
+    "outline_px": 4
+  },
+  "music": {
+    "_comment": "Low ElevenLabs Music bed UNDER the VO (~0.18 vol). The VO is the spine — the bed must not fight it. No artist names in the prompt (ElevenLabs Music ToS filter).",
+    "provider": "elevenlabs",
+    "model": "music_v1",
+    "prompt": "Warm, minimal, editorial lo-fi bed — soft rhodes, brushed percussion, unobtrusive, clinical-calm. Sits low under a spoken voiceover.",
+    "bed_volume": 0.18
+  },
+  "audio_mix": {
+    "_comment": "VO at full, music bed ~0.18 under it. Loudnorm to -14 LUFS. No ducking needed at this bed level.",
+    "vo_volume": 1.0,
+    "music_bed_volume": 0.18,
+    "loudness_lufs": -14
+  },
+  "headshot": {
+    "_comment": "The still clinician headshot is kept for a FUTURE lipsync variant. The shipped motion-graphic + VO master does NOT use it.",
+    "asset": "source/mcgowan-headshot.png",
+    "used_in_master": false
+  },
+  "render_engine": {
+    "_comment": "Each beat is an HTML hyperframe + the Web Animations API driven by window.renderAt(t); Playwright screenshots it frame-by-frame and ffmpeg encodes it. Deterministic web motion graphics, NOT i2v. ALL beats MUST share fps 25 — a mismatched-fps beat stutters at the concat seam.",
+    "engine": "playwright+ffmpeg",
+    "renderer": "window.renderAt(t) per frame -> Playwright screenshot -> ffmpeg encode",
+    "fps": 25,
+    "script": "working/render_hf.py",
+    "hyperframes_dir": "working/hyperframes-v4/",
+    "shared_css": "working/hyperframes-v4/_shared.css",
+    "shared_js": "working/hyperframes-v4/_shared.js"
+  },
+  "post_production": {
+    "voiceover": { "default": "on", "note": "the cloned/cast expert VO IS the spine and sets the timeline" },
+    "music": { "default": "on", "note": "low ElevenLabs Music bed (~0.18 vol) under the VO" },
+    "captions": { "default": "on", "note": "window-masked (B-roll only), 2-word chunks, close on >0.4s gaps, ASS Name-field header" },
+    "end_card": { "default": "on", "note": "CTA beat uses the brand's real wordmark, never AI-rendered text" }
+  }
+}

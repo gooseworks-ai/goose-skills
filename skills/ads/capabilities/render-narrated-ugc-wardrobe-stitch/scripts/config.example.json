@@ -1,0 +1,158 @@
+{
+  "_comment": "Bioma 'Do NOT buy Bioma Probiotics' narrated-ugc-wardrobe-stitch — THE WORKED EXAMPLE. Copy to config.json and edit. A ~37s (34.8s body + ~2s end card) fast-cut narrated UGC 'stitch reply' where a single synthetic VO carries a verbatim ~13-sentence testimonial (the 'don't buy X... here's why you SHOULD' reversal hook) across ONE creator in 5 wardrobes + ~3 rooms, interspersed with product B-roll (capsule macro, unboxing, landing-page scroll). Pipeline: (1) lock the VO FIRST (ElevenLabs v3 + Whisper word-align — the word boundaries set the cut grid); (2) build a ~30-cut role-tagged EDL from the word boundaries; (3) lock the creator (gpt-image-2 anchor + 5 wardrobe edits chained off the anchor) + 3 world wides; (4) one start-frame per cut (gpt-image-2 creator + product composites + a Playwright landing-page); (5) one Veo 3.1 i2v clip per cut (verb-led, ~4s); (6) trim + filter_complex concat, VO+music sidechain-ducked mix, karaoke-pop captions throughout, brand end-card append. Master 1080x1920 h264+aac, ~36.8s. See scripts/PIPELINE.md for the source scripts.",
+  "brand_name": "Bioma",
+  "campaign": "Do NOT buy (recreation)",
+  "title": "Do NOT buy Bioma Probiotics",
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "aspect_ratio": "9:16",
+  "duration_sec": 36.8,
+  "body_end_s": 34.8,
+  "end_card_hold_s": 2.0,
+  "vo": {
+    "_comment": "Locked FIRST — the VO + its Whisper WORD BOUNDARIES set the cut grid. Verbatim Whisper transcript of source/source-ad.mp4, locked 2026-06-02. ElevenLabs v3 (Professional Speaker) reads slow; atempo ~1.24x clamps to ~32s. Kept 'I'ma' verbatim (creator-native); locked 'synbiotic' over Whisper's 'symbiotic' homophone. Payoff line 'and just look at my belly.' lands the payoff-hold beat.",
+    "provider": "elevenlabs",
+    "model": "eleven_v3",
+    "voice_id": "Fc5CaIGWKvLHapoOSM2K",
+    "script_md": "script/script-locked.md",
+    "hook_line": "Do not buy Bioma Probiotics.",
+    "payoff_line": "and just look at my belly.",
+    "target_duration_s": 30,
+    "target_wpm": 180,
+    "atempo_expected": 1.24,
+    "settings": { "stability": 0.35, "similarity_boost": 0.75, "style": 0.55, "use_speaker_boost": true },
+    "outputs": {
+      "audio": "audio/vo-final.mp3",
+      "word_timings": "audio/vo-final.words.json"
+    },
+    "sentences": [
+      { "n": "S01", "t_in": 0.0, "t_out": 1.8, "role": "hook · pattern-interrupt", "text": "Do not buy Bioma Probiotics." },
+      { "n": "S02", "t_in": 1.8, "t_out": 4.8, "role": "feature", "text": "They said it would reduce bloating and improve digestion." },
+      { "n": "S03", "t_in": 4.8, "t_out": 7.4, "role": "feature", "text": "Okay, but they did not warn me how fast it would work." },
+      { "n": "S04", "t_in": 7.4, "t_out": 10.5, "role": "feature · b-roll-insert", "text": "I've been taking these little capsules daily for only one week," },
+      { "n": "S05", "t_in": 10.5, "t_out": 12.8, "role": "payoff-hold", "text": "and just look at my belly." },
+      { "n": "S06", "t_in": 12.8, "t_out": 14.8, "role": "reaction-insert", "text": "Plus the puffiness in my face is gone." },
+      { "n": "S07", "t_in": 14.8, "t_out": 18.0, "role": "feature · b-roll-insert", "text": "The targeted synbiotic formula in here works like magic." },
+      { "n": "S08", "t_in": 18.0, "t_out": 20.5, "role": "feature", "text": "And I thought it was going to take at least three months," },
+      { "n": "S09", "t_in": 20.5, "t_out": 22.5, "role": "feature", "text": "but I started seeing changes after week one." },
+      { "n": "S10", "t_in": 22.5, "t_out": 25.5, "role": "reaction-insert", "text": "Y'all keep doing your crunches," },
+      { "n": "S11", "t_in": 25.5, "t_out": 26.5, "role": "feature", "text": "I'ma keep taking my Bioma." },
+      { "n": "S12", "t_in": 26.5, "t_out": 30.0, "role": "b-roll-insert · landing-page", "text": "Oh, and they're running a huge sale with free shipping and free gifts with your first order." },
+      { "n": "S13", "t_in": 30.0, "t_out": 32.5, "role": "feature · multi-bottle unboxing", "text": "I put the link below — go grab yours now before they're sold out again." }
+    ]
+  },
+  "character": {
+    "_comment": "ONE recurring UGC creator, locked once. `descriptor` threads VERBATIM (byte-identical block) into every creator start-frame; the anchor is passed as the ref (--anchor) on EVERY wardrobe/pose edit so identity holds across all 5 wardrobe changes. Chain every wardrobe off the CLEAN anchor.",
+    "name": "hailey",
+    "method": "anchor-ref",
+    "max_drift": 0.05,
+    "descriptor": "28-year-old white-European woman, fit athletic build, 5'6, long blonde beach-wave hair center-parted at mid-back length, natural un-retouched skin with visible pores and subtle freckling, slightly asymmetrical features, natural full brows, minimal makeup. Small turquoise athletic wristband on right wrist.",
+    "framing": "iPhone 14 front-cam selfie video still, slightly grainy and slightly soft, handheld with slight natural motion blur, real iPhone color science, slight wide-angle edge distortion, warm natural light, NOT sharp NOT studio NOT glam, photojournalistic UGC.",
+    "anchor": "generated/character-lock/anchor-portrait.png",
+    "wardrobes": [
+      "generated/character-lock/wardrobes/w1.png",
+      "generated/character-lock/wardrobes/w2.png",
+      "generated/character-lock/wardrobes/w3.png",
+      "generated/character-lock/wardrobes/w4.png",
+      "generated/character-lock/wardrobes/w5.png"
+    ],
+    "wardrobe_count": 5,
+    "_note_w2": "W2 (gray tee + sweats, midriff MS, hem-lift pose) is the payoff-hold belly-reveal wardrobe (cut s11)."
+  },
+  "worlds": {
+    "_comment": "3 world wides, NO creator — the establishing rooms the creator start-frames composite into.",
+    "count": 3,
+    "briefs": ["bedroom / mirror room", "kitchen counter", "bathroom / vanity"],
+    "outputs": [
+      "generated/world-lock/world1/world1-1-establishing.png",
+      "generated/world-lock/world2/world2-1-establishing.png",
+      "generated/world-lock/world3/world3-1-establishing.png"
+    ]
+  },
+  "product": {
+    "_comment": "The real Bioma bottle hero drives the B-roll composites (capsule pile macro, single-capsule, label, unboxing flatlay). Ground on the real hero — never an AI-hallucinated bottle.",
+    "hero_png": "../../brand-assets/product-photos/bioma-probiotics-bottle.png",
+    "unboxing_ref": "../../brand-assets/product-photos/bioma-multi-bottle-unboxing.png"
+  },
+  "landing_page": {
+    "_comment": "The sale/CTA scroll cuts (s24-s26) are a Playwright render of the real Bioma landing page (2160x3840 @ 2x DSR) -> FFmpeg zoompan. NOT i2v. Zoom targets: wide -> Best Value $26.14 card -> Order-now button.",
+    "url": "https://www.bioma.health/",
+    "render_png": "assets/overlays/landing-page.png",
+    "method": "playwright + ffmpeg-zoompan"
+  },
+  "keyframe_engine": {
+    "creator_model": "gpt-image-2",
+    "broll_model": "nano-banana",
+    "provider": "fal",
+    "aspect_ratio": "9:16",
+    "batch_size": 3,
+    "character_ref": "pass the locked anchor + the matching wardrobe as media refs on every creator start-frame"
+  },
+  "clip_engine": {
+    "provider": "fal",
+    "model": "veo3_1",
+    "alternative": "seedance_2_0",
+    "duration_sec": 4,
+    "resolution": "1080p",
+    "batch_size": 3,
+    "motion_opener": "VERB-LED (never camera-led): the creator/product does a specific action, THEN any secondary motion. Stable start pose, action in the prompt. NO camera 'slow push-in' opener (reads static), NO morphing, single person only.",
+    "_note": "Veo 3.1 via FAL @1080p, ~4s/clip. Cuts 24-26 (landing-page scroll) are FFmpeg zoompan, not i2v. gen_veo_retries.sh re-rolls any drifted clip off its clean start-frame."
+  },
+  "edl": {
+    "_comment": "30 role-tagged cuts built from the VO word boundaries (build_edl.py -> edl.json). archetype reaction-montage-explainer, caption_family karaoke-pop, pacing_profile front-load-hold-decelerate. The payoff-hold (s11) is the held reveal beat (~3x mean shot length). A representative subset is inlined here; the full 30-cut grid is edl.json.",
+    "schema_version": "1.0",
+    "cut_count": 30,
+    "hook_type": "claim-caption",
+    "caption_family": "karaoke-pop",
+    "pacing_profile": "front-load-hold-decelerate",
+    "payoff_hold_id": "s11-payoff-belly-reveal",
+    "source": "edl.json",
+    "timeline_sample": [
+      { "id": "s01-hook-bottle-mcu", "role": "hook", "t_in": 0.03, "t_out": 0.39, "source": "generate", "image_refs": ["anchor", "world1-establishing", "product-hero"] },
+      { "id": "s02-hook-hand-bottle-ecu", "role": "hook", "t_in": 0.39, "t_out": 2.27, "source": "generate", "image_refs": ["product-hero"] },
+      { "id": "s05-they-said-w4-hands", "role": "feature", "t_in": 3.99, "t_out": 5.29, "source": "generate", "image_refs": ["anchor", "w4", "world2-establishing"] },
+      { "id": "s08-capsule-pile-ecu", "role": "b-roll-insert", "t_in": 10.73, "t_out": 11.37, "source": "generate", "image_refs": ["product-hero"] },
+      { "id": "s11-payoff-belly-reveal", "role": "payoff-hold", "t_in": 14.21, "t_out": 15.65, "source": "generate", "image_refs": ["anchor", "w2", "world1-establishing"] },
+      { "id": "s21-changes-mirror-3q", "role": "feature", "t_in": 25.95, "t_out": 28.27, "source": "generate", "image_refs": ["anchor", "w3", "world1-establishing"] },
+      { "id": "s24-sale-landingpage-ws", "role": "landing-page", "t_in": 31.49, "t_out": 33.03, "source": "landing-page", "image_refs": ["landing-page-png"] },
+      { "id": "s25-sale-bestvalue-zoom", "role": "landing-page", "t_in": 33.03, "t_out": 34.69, "source": "landing-page", "image_refs": ["landing-page-png"] },
+      { "id": "s27-link-unboxing-flatlay", "role": "b-roll-insert", "t_in": 36.81, "t_out": 37.53, "source": "generate", "image_refs": ["unboxing-ref"] }
+    ]
+  },
+  "captions": {
+    "_comment": "Karaoke-pop captions on EVERY word, throughout (VEED Whisper preset, bold yellow). Built from vo-final.words.json. Re-spell brand tokens Whisper mishears against the locked script: 'synbiotic' (not 'symbiotic'/'cymbiotic'); keep 'I'ma' verbatim. If VEED falls back to a wrong spelling on S07, hand-patch that sentence with local ASS karaoke.",
+    "style": "karaoke-pop",
+    "preset": "veed-whisper",
+    "position": "center",
+    "base_color": "#FFFFFF",
+    "accent_color": "#FFE800",
+    "font": "bold",
+    "source": "audio/vo-final.words.json",
+    "on_every_word": true,
+    "throughout": true,
+    "respell_tokens": { "symbiotic": "synbiotic", "cymbiotic": "synbiotic" }
+  },
+  "audio_mix": {
+    "_comment": "The VO is the narration bed; the whole ad is cut to it. An instrumental music bed is sidechain-ducked UNDER the VO (-20dB, 20:1), dropping in at 14.21s (the payoff-hold). VO stays clearly on top. End card appended after the body.",
+    "vo": "audio/vo-final.mp3",
+    "music": "audio/music/bed.mp3",
+    "music_optional": true,
+    "ducking": "sidechain-20:1",
+    "music_gain_db": -20,
+    "music_drop_s": 14.21,
+    "loudness_lufs": -14
+  },
+  "end_card": {
+    "_comment": "The real Bioma end-card PNG appended ~2s on the tail — NEVER AI-rendered text. Captions suppressed over the card.",
+    "brand_png": "../../brand-assets/bioma-end-card.png",
+    "hold_sec": 2.0,
+    "suppress_captions": true
+  },
+  "post_production": {
+    "vo": { "default": "on", "note": "the synthetic VO IS the narration; the whole ad is cut to its word timings" },
+    "music": { "default": "on", "note": "instrumental bed sidechain-ducked under the VO (-20dB, 20:1), VO clearly on top" },
+    "captions": { "default": "on", "note": "karaoke-pop captions on every word, throughout, re-spelled against the locked script" },
+    "end_card": { "default": "on", "note": "the real Bioma end-card PNG appended ~2s on the tail, captions suppressed, never AI-rendered" }
+  }
+}
