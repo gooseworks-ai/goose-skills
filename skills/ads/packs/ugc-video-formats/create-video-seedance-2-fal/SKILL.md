@@ -40,7 +40,7 @@ Required:
 
 Optional:
 - `--resolution` — `480p` | `720p` | `1080p` (default). 1080p meaningfully better for product label fidelity.
-- `--duration` — `4`–`15` seconds (default `15`). Passed as **string** per FAL schema.
+- `--duration` — `4`–`15` seconds (default `15`). Passed as an **int** (`seedance-2.0/reference-to-video` enum {auto,4..15}); a string 400s with `invalid_request` (validated 2026-07-18).
 - `--aspect-ratio` — `9:16` (default), `16:9`, `1:1`, etc.
 - `--generate-audio` — bool, default true. Set false for silent B-roll where VO is added post.
 - `--seed` — integer for deterministic re-runs (FAL returns a seed; pass it back to reproduce).
@@ -87,7 +87,7 @@ For confessional / single-sitting UGC, wardrobe should be IDENTICAL across all c
 
 **2. NSFW reject → STOP and surface, do not auto-retry.** Body-application + female + water/lather hits the classifier reliably. If FAL returns `content_policy_violation` or `status: failed` with `nsfw` reason, do NOT retry the same prompt. Surface to the caller with 3 options: rewrite the application beat as smell-test / fingertips-show, reframe as POV (no face), or skip the scene. Follows the project-wide moderation policy (see memory `feedback_hf_moderation_surface.md`).
 
-**3. `duration` as string.** Pass `"15"`, not `15`. FAL schema accepts string only.
+**3. `duration` as an INT.** Pass `15`, not `"15"`. `seedance-2.0/reference-to-video` rejects a string duration with `invalid_request` (validated 2026-07-18; the old "string only" note was the deprecated v1 i2v endpoint).
 
 **4. Single product per call (except hook).** Multi-product hero scenes within a single Seedance call degrade label fidelity. The exception is the hook/intro scene where all products appear together but no single label is hero.
 
@@ -116,7 +116,7 @@ The script:
        "prompt": <prompt>,
        "image_urls": [<refs>],
        "resolution": <res>,
-       "duration": "<dur>",  # string
+       "duration": <dur>,  # int
        "aspect_ratio": <ar>,
        "generate_audio": <bool>,
        "seed": <optional int>,
@@ -215,7 +215,7 @@ Full template reference: `prompt-example.md` at the repo root, plus all four scr
 | FAL 422 `content_policy_violation: partner_validation_failed` | AI-gen scene passed as `video_urls` | Remove `video_urls`. Use `image_urls` only for identity continuity. |
 | FAL response `status: failed`, `nsfw` reason | Body-application + female + water/lather hit classifier | STOP. Surface to caller. Rewrite sidestep beat as smell-test or fingertips-show. NEVER auto-retry. |
 | FAL 404 on endpoint path | Wrong endpoint slug | Use `bytedance/seedance-2.0/reference-to-video` exactly — no `fal-ai/` prefix. |
-| Output longer than requested | `duration` sent as int not string | Send as string: `"duration": "15"`. |
+| `invalid_request` on submit | `duration` sent as a **string** | Send an **int**: `"duration": 15` (enum {auto,4..15}). |
 | Product label garbled / wrong | Multi-image refs drifted, or 720p | Move to 1080p, ensure product ref is sharp + correctly cropped, add "label MUST be sharp and clearly readable" to the hero sub-scene. |
 | Mouth moving when not speaking | Default Seedance behavior | Add to Global Rules: "Lips remain CLOSED between dialogue beats — no mouth movement when not speaking." |
 | Cinematic slow pacing despite "iPhone selfie" prompt | Seedance prior leans cinematic | Strengthen anti-pattern block: "Casual real-time pace, NOT slow-motion, NOT dolly moves, NOT cinematic." Optionally post-process with `ffmpeg setpts=0.66*PTS` for 1.5x speed. |

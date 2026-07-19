@@ -1,0 +1,150 @@
+{
+  "_comment": "DIBS Beauty '5-Step Glassy Matte Routine' — THE WORKED EXAMPLE. Copy to config.json and edit. A ~32s 9:16 (1080x1920, 30fps) MULTI-SCENE GRWM beauty demo where a locked-identity creator applies 5 DIBS products step-by-step at a sage vanity, a SEPARATE locked ElevenLabs Karri VO narrates the routine, and every scene cut is snapped to the VO's 'step N' / product-name word-starts (Whisper), with 5 Playwright product overlay cards (real PDP taglines) on the product-name beats, a warm acoustic music bed ducked under the VO, clean-white 3-words/cue captions, closing on a gpt-image-2 flat-lay end card. Pipeline: (1) lock creator anchor + sage-vanity world + hook keyframe + Karri VO (atempo 1.15x -> ~27.5s); (2) 7 Seedance 2.0 scene clips (720p, --no-audio) + the flat-lay still; (3) Groq whisper-large-v3 word-level on the VO; (4) re-cut + hard-concat to the 12 VO cuts (build_v4.py, -crf 20 re-encode); (5) 5 white-bg gpt-image-2 product cutouts (PDP-verified taglines) + Playwright cards (render_cards.py); (6) composite cards on the product-name beats (composite_cards.py, -loop 1 -t) + mix VO/music + burn captions + flat-lay end card (build_master.py). Master 1080x1920 h264+aac, ~32s. See scripts/PIPELINE.md for the source scripts.",
+  "brand_name": "DIBS Beauty",
+  "campaign": "5-Step Glassy Matte Routine",
+  "title": "5 products, one finish",
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "duration_sec": 32.0,
+  "aspect_ratio": "9:16",
+  "palette": {
+    "card_bg": "#F8EEDE",
+    "accent": "#E879A6"
+  },
+  "assets": {
+    "creator_anchor": "assets/characters/grwm-creator.png",
+    "_note_creator": "26yo brunette w/ caramel highlights, black satin headband, white ribbed tank, in a sage-green bathroom. Identity + wardrobe + setting held across every scene clip.",
+    "vanity_world": "assets/worlds/sage-vanity.png",
+    "hook_keyframe": "assets/keyframes/five-pink-barrels.png",
+    "_note_hook": "Creator holding 5 pink DIBS barrels fanned near her face. Doubles as the payoff-smile beat (s07a)."
+  },
+  "vo": {
+    "_comment": "SEPARATE locked ElevenLabs Karri VO — NOT a native Seedance take. Whispered FIRST; the word-starts set the timeline. atempo 1.15x makes it end at ~27.5s (NOT 45s). Script written clean (no eleven_v3 audio tags).",
+    "source": "user_supplied",
+    "provider": "elevenlabs",
+    "model": "eleven_v3",
+    "voice_id": "3mip1Cv2rZYeio9MCzfr",
+    "voice_name": "Karri",
+    "stability": 0.40,
+    "similarity_boost": 0.75,
+    "style": 0.25,
+    "atempo": 1.15,
+    "script": "okay, my five-step glassy matte routine. step one, Love Beam Perfector. it's basically skincare you put on first. step two, Desert Island Duo. blush and bronzer in one stick. step three, Glow Tour for contour. step four, Love Beam Powder. it brightens and blurs. step five, Setting Mist. that's the lock. five products, one finish. about three minutes.",
+    "actual_duration_s": 27.5,
+    "outputs": {
+      "audio": "working/voiceovers/locked/karri-full-atempo115.mp3",
+      "word_timings": "working/voiceovers/locked/karri-full-atempo115.words.json"
+    },
+    "_word_starts": {
+      "_comment": "Whisper-verified word-starts for this exact atempo'd mp3. Scene cuts snap to the 'step N' starts; cards snap to the product-NAME starts.",
+      "step_one": 3.32, "Love Beam Perfector": 4.34,
+      "step_two": 8.64, "Desert Island Duo": 9.56,
+      "step_three": 13.82, "Glow Tour": 14.86,
+      "step_four": 17.00, "Love Beam Powder": 17.94,
+      "step_five": 21.48, "Setting Mist": 22.42,
+      "five_products_one_finish": 24.62, "about_three_minutes": 26.50
+    }
+  },
+  "scene_clips": {
+    "_comment": "7 Seedance 2.0 clips (create-video-seedance-fal, Fal direct, 720p, 9:16, --no-audio) off the locked anchor + world. Softer verbs — s05 powder used 'swirls'/'dusts' after a 422 on 'press'/'brush her face'. ~$12.60 total.",
+    "provider": "fal",
+    "model": "seedance_2_0",
+    "resolution": "720p",
+    "aspect_ratio": "9:16",
+    "audio": false,
+    "clips": [
+      { "id": "s01-hook",      "role": "HOOK",   "duration_sec": 4, "ref": ["hook_keyframe"],               "beat": "holds five glossy pink DIBS cream-sticks fanned near her face, eye contact with selfie camera, playful smile" },
+      { "id": "s02-perfector", "role": "STEP_1", "duration_sec": 7, "ref": ["creator_anchor", "vanity_world"], "beat": "dabs a few pearls of pink LoveBeam Perfector onto cheekbones + forehead with fingertips, taps them in" },
+      { "id": "s03-did",       "role": "STEP_2", "duration_sec": 8, "ref": ["creator_anchor"],              "beat": "swipes the Desert Island Duo cream-stick on cheeks/nose/forehead, presses in with a dense face brush" },
+      { "id": "s04-glowtour",  "role": "STEP_3", "duration_sec": 7, "ref": ["creator_anchor"],              "beat": "stripes the Glow Tour contour stick along cheekbone hollow + jawline, blends down with fingertips" },
+      { "id": "s05-powder",    "role": "STEP_4", "duration_sec": 6, "ref": ["creator_anchor"], "tier": "fast", "beat": "swirls a soft brush in the pink compact, taps it, dusts across her T-zone (softer verbs — 'press'/'brush her face' 422'd)" },
+      { "id": "s06-mist",      "role": "STEP_5", "duration_sec": 6, "ref": ["creator_anchor"],              "beat": "holds the LoveBeam Setting Mist ~8in from her face and sprays a fine even mist; skin gains a glassy glow" },
+      { "id": "s07a-payoff",   "role": "PAYOFF", "duration_sec": 4, "ref": ["hook_keyframe"],               "beat": "smiles fully into the selfie camera, fresh glassy-matte makeup on, warm confident expression" }
+    ]
+  },
+  "cuts": {
+    "_comment": "12 cuts derived from the VO word-starts (build_v4.py). Scene cuts land on 'step N' starts; s02 + s03 + s05 sub-cut for pacing. Hard-concat, re-encode -c:v libx264 -crf 20. cuts/10s = 12/32*10 = 3.75.",
+    "hard_concat": true,
+    "reencode": "-c:v libx264 -crf 20",
+    "count": 12,
+    "cuts_per_10s": 3.75,
+    "windows": [
+      { "t_start": 0.00,  "t_end": 3.00,  "clip": "s01-hook",      "src_in": 0.0, "dur": 3.00, "why": "hook ends as 'step one' begins" },
+      { "t_start": 3.00,  "t_end": 6.00,  "clip": "s02-perfector", "src_in": 0.0, "dur": 3.00, "why": "perfector first half" },
+      { "t_start": 6.00,  "t_end": 9.56,  "clip": "s02-perfector", "src_in": 3.0, "dur": 3.56, "why": "perfector second half — ends as 'Desert Island Duo' begins" },
+      { "t_start": 9.56,  "t_end": 12.00, "clip": "s03-did",       "src_in": 0.0, "dur": 2.44, "why": "DID swipe begin" },
+      { "t_start": 12.00, "t_end": 13.82, "clip": "s03-did",       "src_in": 2.5, "dur": 1.82, "why": "DID continuation — ends as 'step three' begins" },
+      { "t_start": 13.82, "t_end": 17.00, "clip": "s04-glowtour",  "src_in": 0.0, "dur": 3.18, "why": "glowtour — ends as 'step four' begins" },
+      { "t_start": 17.00, "t_end": 19.22, "clip": "s05-powder",    "src_in": 0.0, "dur": 2.22, "why": "powder swirl" },
+      { "t_start": 19.22, "t_end": 21.48, "clip": "s05-powder",    "src_in": 2.3, "dur": 2.26, "why": "powder application — ends as 'step five' begins" },
+      { "t_start": 21.48, "t_end": 24.52, "clip": "s06-mist",      "src_in": 0.0, "dur": 3.04, "why": "mist — ends as 'five products' payoff begins" },
+      { "t_start": 24.52, "t_end": 27.80, "clip": "s07a-payoff",   "src_in": 0.0, "dur": 3.28, "why": "payoff smile during 'five products, one finish'" },
+      { "t_start": 27.80, "t_end": 32.00, "clip": "FLAT_LAY",      "src_in": 0.0, "dur": 4.20, "why": "end-card ken-burns on the flat-lay still" }
+    ]
+  },
+  "products": {
+    "_comment": "5 white-bg standalone gpt-image-2 cutouts (gen-product-cutouts.sh). Taglines VERIFIED against dibsbeauty.com PDPs — the gpt-image-2 flat-lay renders WRONG sublines ('SCULPT + GLOW' on DID, 'BLUSH + HIGHLIGHT' on GlowTour). LoveBeam Perfector is a slim liquid bottle, NOT a wide cream stick (even though the Seedance s02 clip shows a wide barrel — the card shows the REAL product).",
+    "cutouts": [
+      { "id": "perfector", "name": "LoveBeam Perfector",   "tagline": "GLOW SERUM",       "cutout": "working/products/perfector.png", "vo_name_start_s": 4.34 },
+      { "id": "did",       "name": "Desert Island Duo",    "tagline": "BLUSH + BRONZER",  "cutout": "working/products/did.png",       "vo_name_start_s": 9.56 },
+      { "id": "glowtour",  "name": "Glow Tour Duo",        "tagline": "CONTOUR + BLUSH",  "cutout": "working/products/glowtour.png",  "vo_name_start_s": 14.86 },
+      { "id": "powder",    "name": "LoveBeam Powder",      "tagline": "BRIGHTEN + BLUR",  "cutout": "working/products/powder.png",    "vo_name_start_s": 17.94 },
+      { "id": "mist",      "name": "Setting Mist",         "tagline": "LOCK IT IN",       "cutout": "working/products/mist.png",      "vo_name_start_s": 22.42 }
+    ],
+    "_note_taglines": "Taglines above are the card lines used in the worked example; ALWAYS re-verify against the live PDP before shipping a new brand — do not carry these forward."
+  },
+  "cards": {
+    "_comment": "5 Playwright cards from working/product-card.html.tmpl at 2x scale (render_cards.py): warm cream card (#F8EEDE gradient) + pink accent bar (#E879A6) + cutout thumb + Georgia name + uppercase pink tagline. Composited (composite_cards.py) snapped to the product-NAME word-start (~1s after the scene cut), 1s fade-in. PNG overlays NEED -loop 1 -t <dur>.",
+    "template": "working/product-card.html.tmpl",
+    "playwright_scale": 2,
+    "fade_in_s": 1.0,
+    "loop_flag_required": true,
+    "timing": [
+      { "card": "perfector", "start": 4.34,  "end": 9.56,  "matches": "'Love Beam Perfector' -> 'Desert Island Duo'" },
+      { "card": "did",       "start": 9.56,  "end": 13.82, "matches": "'Desert Island Duo' -> 'step three'" },
+      { "card": "glowtour",  "start": 14.86, "end": 17.94, "matches": "'Glow Tour for contour' -> 'Love Beam Powder'" },
+      { "card": "powder",    "start": 17.94, "end": 22.42, "matches": "'Love Beam Powder' -> 'Setting Mist'" },
+      { "card": "mist",      "start": 22.42, "end": 27.80, "matches": "'Setting Mist' -> payoff" }
+    ]
+  },
+  "music": {
+    "_comment": "Warm acoustic instrumental bed (ElevenLabs Music, 45s — only ~32s consumed), ducked under the VO. No artist names in the prompt (ElevenLabs ToS filter).",
+    "provider": "elevenlabs",
+    "prompt": "Warm acoustic instrumental, soft nylon guitar + light percussion, gentle and aspirational, easygoing morning-routine energy, no vocals.",
+    "source": "working/music/music.mp3",
+    "duration_s": 45,
+    "force_instrumental": true
+  },
+  "audio_mix": {
+    "_comment": "The SEPARATE Karri VO is the lead; the music sits well under it. loudnorm I=-14.",
+    "loudness_lufs": -14,
+    "vo_lead": true,
+    "music_duck": true
+  },
+  "captions": {
+    "_comment": "Clean-white captions from the VO's Whisper words. OVERRIDE the clean-white preset: 3 words/cue, 3.0% font, 20% from the bottom, NO pill, NO shadow (default 5-words/4.5%/18% is too dense). Built in cue_builder.py within build_master.py.",
+    "source": "working/voiceovers/locked/karri-full-atempo115.words.json",
+    "style": "clean_white",
+    "chunk_words": 3,
+    "font_size_pct": 3.0,
+    "margin_bottom_pct": 20,
+    "no_pill": true,
+    "no_shadow": true,
+    "base_color": "#FFFFFF"
+  },
+  "end_card": {
+    "_comment": "gpt-image-2 9:16 flat-lay still of the 5 products on cream linen, ken-burns held ~4.2s at the tail (27.80 -> 32.00). Do NOT trust the flat-lay's AI sublines for taglines — PDP-verify (see products[]).",
+    "engine": "gpt-image-2",
+    "flat_lay": "assets/keyframes/grwm-flat-lay.png",
+    "hold_sec": 4.2,
+    "effect": "ken-burns"
+  },
+  "post_production": {
+    "vo": { "default": "on", "note": "the SEPARATE locked ElevenLabs VO (atempo 1.15x) narrates the routine and drives every cut" },
+    "product_cards": { "default": "on", "note": "5 Playwright cards (real cutout + PDP tagline), each on its product-NAME word-start" },
+    "music": { "default": "on", "note": "warm instrumental bed ducked under the VO, loudnorm I=-14" },
+    "captions": { "default": "on", "note": "clean-white, 3 words/cue, 3.0% font, 20% margin, no pill/shadow" },
+    "end_card": { "default": "on", "note": "gpt-image-2 flat-lay still of the 5 products, ken-burns held ~4s" }
+  }
+}

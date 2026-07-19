@@ -1,0 +1,123 @@
+{
+  "_comment": "WishAstro 'Saturn isn't your villain' cosmic-mythology-voiceover reel — THE WORKED EXAMPLE. Copy to config.json and edit. A ~31s faceless 9:16 reel where a warm contemplative spoken VO reframes Saturn / Shani as 'the strict teacher, not the punisher' over 12 weighted Ken-Burns cuts of cosmic stills, with the hook 'Stop calling Saturn your villain.' faded on over the open + Whisper captions. Pipeline: (1) lock the VO (ElevenLabs eleven_v3 tone-tagged, atempo-clamped 1.25 -> 31.4s — the delivered duration sets the timeline); (2) 6 Flux Pro 1.1 cosmic stills in ONE indigo+gold look (reused to 12 cuts); (3) FREE assembly — weighted beat-sync (cut_dur = VO_dur * weight / Sum(weights)), Ken-Burns per still, ffmpeg concat + VO composite (crf18) + hook alpha-fade overlay + VEED/Whisper caption burn. Master 1080x1920 h264+aac, ~31.4s (12 cuts). See scripts/PIPELINE.md for the source scripts.",
+  "brand_name": "WishAstro",
+  "campaign": "WishAstro IG pilot — mythology lane",
+  "title": "Saturn isn't your villain",
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "crf": 18,
+  "duration_sec": 31.4,
+  "aspect_ratio": "9:16",
+  "vo": {
+    "_comment": "Locked FIRST — the delivered, atempo-stretched VO duration sets the timeline. Rendered 39.24s at eleven_v3; a 23s target needed atempo 1.71, CLAMPED at 1.25 -> 31.4s final (manifest flagged 'atempo_clamped' + 'duration_overshoot' rather than chipmunking the voice). The first draft used eleven_multilingual_v2 + the Lauren voice (l4Coq6695JDX9xtLqXDE); v2 used eleven_v3 with the tone-tagged script.",
+    "provider": "elevenlabs",
+    "model": "eleven_v3",
+    "model_fallback": "eleven_multilingual_v2",
+    "voice_id": "jqcCZkN6Knx8BJ5TBdYR",
+    "voice_settings": {
+      "stability": 0.4,
+      "similarity_boost": 0.75,
+      "style": 0.05,
+      "use_speaker_boost": true
+    },
+    "script": "[soft, casual] Okay… can we talk about Saturn for a second? Everyone treats him like the villain of their birth chart — but that's so wrong. Saturn isn't here to punish you — he's here to teach you. In Vedic astrology, he's Shani… basically the strict professor of the zodiac. Your Saturn return, your Sade Sati? Those aren't curses… they're final exams. He strips away everything that was never really yours — so you're left with what actually is. Saturn doesn't break you. He builds you. So next time he tests you… pass.",
+    "tone_tags": "[soft, casual] opener; warm, contemplative, unhurried delivery",
+    "atempo_factor": 1.25,
+    "atempo_clamp_max": 1.25,
+    "target_duration_s": 23.0,
+    "rendered_duration_s": 39.236,
+    "final_duration_s": 31.399,
+    "_note_atempo": "atempo_clamped: rendered 39.24s vs target 23.00s would require factor 1.706, clamped at 1.25. The reel runs 31.4s rather than chipmunk the voice — consider trimming the script if a tighter cut is required.",
+    "outputs": {
+      "raw": "working/vo2/saturn-vo2.mp3",
+      "final": "working/vo2/saturn-vo2_atempo1.25.mp3",
+      "manifest": "working/vo2/saturn-vo2.manifest.json"
+    }
+  },
+  "hook": {
+    "_comment": "The ONE on-screen reframe line, faded on over the OPEN via ffmpeg drawtext alpha window (in ~0.5s at t=0.3, hold, out ~0.6s ending t=3.0) — never persistent, never a caption, never in-world text on a still.",
+    "text": "Stop calling Saturn your villain.",
+    "font": "Georgia",
+    "font_fallback": ["/System/Library/Fonts/Supplemental/Georgia.ttf"],
+    "font_color": "white",
+    "font_size": 62,
+    "placement": "centered upper third (y=h*0.13)",
+    "shadow": "black@0.7 (2,2)",
+    "fade_in_s": 0.5,
+    "hold_until_s": 2.4,
+    "fade_out_s": 0.6
+  },
+  "look_pack": {
+    "_comment": "ONE cosmic look baked into EVERY image prompt so all stills read as one film. 'no text, no words' is load-bearing — the reel's only text is the hook + captions, added in post.",
+    "name": "COSMIC_INDIGO_GOLD",
+    "style_descriptor": "cinematic, ethereal, mystical, deep indigo and gold color palette, fine star particles, volumetric light, ultra-detailed, vertical 9:16 composition, no text, no words",
+    "palette_anchors": [
+      "deep indigo starfield (primary)",
+      "warm gold rings / particles / dawn light (accent)",
+      "fine star particles + soft nebula",
+      "volumetric god-ray lighting"
+    ]
+  },
+  "image_engine": {
+    "provider": "fal",
+    "model": "fal-ai/flux-pro/v1.1",
+    "image_size": { "width": 1080, "height": 1920 },
+    "safety_tolerance": "5",
+    "output_format": "png",
+    "_note": "Generate at the OUTPUT resolution 1080x1920 (the old 'portrait_16_9' preset returned ~576x1024, soft after the 2x Ken-Burns). gen_images2.py generated 6 hero stills (img5..img10); gen_images.py generated the first 4 (img1..img4). 10 assets total; the sequence reuses a few to reach 12 cuts."
+  },
+  "shots": [
+    { "id": "img1_saturn", "prompt": "Ringed Saturn glowing gold on a deep-indigo starfield, awe and gravity" },
+    { "id": "img2_silhouette", "prompt": "A lone silhouette on a cliff under a vast cosmic sky, Saturn on the horizon" },
+    { "id": "img3_rings", "prompt": "Abstract golden rings and particles swirling in deep space" },
+    { "id": "img4_dawn", "prompt": "Dawn light over a figure walking forward, Saturn fading behind them — 'he builds you'" },
+    { "id": "img5_shani", "prompt": "A dark imposing ringed planet like Shani looming as a stern wise presence in deep space, awe and gravity" },
+    { "id": "img6_exam", "prompt": "A lone figure standing before a vast glowing cosmic doorway of stars, a threshold or test, dramatic" },
+    { "id": "img7_strip", "prompt": "Golden particles and dust being swept away from a silhouetted figure by a cosmic wind, shedding and release" },
+    { "id": "img8_rings2", "prompt": "Dramatic side view of Saturn's golden rings cutting across a starfield, fine particles catching light" },
+    { "id": "img9_built", "prompt": "A strong solitary figure standing tall bathed in warm golden cosmic light, resilience and transformation" },
+    { "id": "img10_star", "prompt": "A single brilliant golden star blazing in a deep indigo cosmos surrounded by soft nebula, hopeful finality" }
+  ],
+  "sequence": {
+    "_comment": "Weighted beat-sync (from build_video2.py's SEQ array): cut_dur = VO_dur * weight / Sum(weights). 12 cuts, ~10 unique stills (img1_saturn + img8_rings2 each reused twice). Heavier weights hold LONGER on the open (1.15) and the dawn 'he builds you' close (1.2); the setup cuts run shorter (0.8-0.95). Ken-Burns: scale 2x, center crop, zoompan to zoom_end 1.10; zoom_out on the flagged cuts; fade_in 0.4 on the FIRST cut, fade_out 0.6 on the LAST.",
+    "zoom_end": 1.10,
+    "fade_in_first_s": 0.4,
+    "fade_out_last_s": 0.6,
+    "cuts": [
+      { "still": "img1_saturn", "zoom_out": false, "weight": 1.15 },
+      { "still": "img5_shani", "zoom_out": false, "weight": 1.0 },
+      { "still": "img2_silhouette", "zoom_out": true, "weight": 0.95 },
+      { "still": "img6_exam", "zoom_out": false, "weight": 1.0 },
+      { "still": "img8_rings2", "zoom_out": false, "weight": 1.0 },
+      { "still": "img3_rings", "zoom_out": true, "weight": 0.9 },
+      { "still": "img10_star", "zoom_out": false, "weight": 0.85 },
+      { "still": "img8_rings2", "zoom_out": false, "weight": 0.8 },
+      { "still": "img7_strip", "zoom_out": true, "weight": 1.0 },
+      { "still": "img9_built", "zoom_out": false, "weight": 1.0 },
+      { "still": "img1_saturn", "zoom_out": false, "weight": 0.9 },
+      { "still": "img4_dawn", "zoom_out": false, "weight": 1.2 }
+    ]
+  },
+  "captions": {
+    "_comment": "VEED/Whisper subtitle burn on working/draft2.mp4 -> finals/saturn-myth-v2.mp4. Tracks the spoken VO. Bottom third, white, mid shadow. The stills carry NO in-world text (the reel's only text is the hook + these captions). Local Whisper + ffmpeg subtitles burn is the free fallback if VEED is locked.",
+    "engine": "veed/subtitles",
+    "preset": "whisper",
+    "position": "bottom",
+    "font_color": "#FFFFFF",
+    "shadow": "mid",
+    "input_video": "working/draft2.mp4",
+    "output_video": "finals/saturn-myth-v2.mp4"
+  },
+  "audio_mix": {
+    "_comment": "The spoken VO is the full audio bed — there is NO music bed by default. Add a ducked instrumental only if the brief calls for one; then mix it UNDER the VO.",
+    "voiceover_only": true,
+    "music_bed": false
+  },
+  "post_production": {
+    "voiceover": { "default": "on", "note": "the spoken eleven_v3 VO IS the spine; no music bed by default" },
+    "hook": { "default": "on", "note": "the ONE on-screen reframe line, alpha-faded on over the open, never persistent / never in-world" },
+    "captions": { "default": "on", "note": "VEED/Whisper subtitle burn tracking the VO, bottom, white #FFFFFF" },
+    "fades": { "default": "on", "note": "fade-in on the first Ken-Burns cut, fade-out on the last" }
+  }
+}

@@ -1,0 +1,157 @@
+{
+  "_comment": "Perplexity concept-10 'Bloomberg terminal' split-screen creator ad — THE WORKED EXAMPLE. Copy to config.json and edit. A ~40s 9:16 two-zone ad where an AI creator anchor (VEED Fabric lip-sync) fills the bottom ~48% and real Perplexity Computer UI screen-recordings run uncropped in the top ~52%, a 3px brand-color divider between. The creator delivers the WHOLE VO cold-to-camera and each top clip PROVES its VO line's claim. Pipeline: (1) lock the script into 6 scenes + ElevenLabs eleven_v3 with-timestamps VO + per-scene timing.json; (2) gpt-image creator anchor + ONE VEED Fabric 1.0 @720p lip-sync take of the whole VO (~$5.90); (3) source 16:9 top clips + the scene-1 hook graphic; (4) assemble.py two-zone composite (contain-fit + blurred-cover fill + 3px divider + creator slice), hard-concat + end card; (5) transcribe the ASSEMBLED cut + burn serif-accent word captions. Master 1080x1920 h264+aac 30fps, ~40.37s. See scripts/PIPELINE.md + clients/perplexity/ads/concept-10-bloomberg-terminal/HOW_TO.md.",
+  "brand_name": "Perplexity",
+  "campaign": "Perplexity Computer",
+  "title": "Perplexity Computer — the analyst that just does it",
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "aspect_ratio": "9:16",
+  "duration_sec": 40.37,
+  "layout": {
+    "_comment": "Two-zone split. TOP ~52% (top_height 998) runs the 16:9 UI screen-recording contain-fit + a darkened blurred cover-scale fill of the SAME clip (never black/charcoal bars — trap L3). Brand-color divider (keep stacked heights EVEN: 998+4+918=1920, or libx264 rejects the odd frame — trap L6). BOTTOM ~48% is the creator lip-sync framed head-to-shoulders: scale-to-width x a small ZOOM (~1.15-1.2) then crop with a DOWNWARD offset so the face is upper-middle and the shoulders enter (a plain crop-toward-top shows only the head and cuts the shoulders — trap L7). Requires a MEDIUM chest-up anchor (see creator._comment).",
+    "canvas_w": 1080,
+    "canvas_h": 1920,
+    "top_height": 998,
+    "top_pct": 0.52,
+    "bottom_pct": 0.48,
+    "divider_px": 3,
+    "divider_color": "#20808D",
+    "top_fill": "blurred-cover",
+    "bottom_fit": "cover-crop-top"
+  },
+  "creator": {
+    "_comment": "ONE AI-creator anchor lip-synced to the WHOLE VO in ONE VEED Fabric 1.0 take @ 720p (480p reads soft). THE ANCHOR MUST BE a PHOTOREAL, candid MEDIUM chest-up shot at natural webcam distance (whole head with headroom + shoulders + upper chest, real lived-in room, anti-AI skin cues) — NOT a plain-background close-up headshot (reads as AI) and NOT a phone-selfie / arm-extended pose copied from another format (wrong for a fixed talking-head, and too-close can't be reframed). Watch the source video and match its creator distance. gpt-image-2, quality high, 1024x1536. VEED handles photoreal fine. VEED Fabric is a NO-ATOM paid step: image_url = the anchor, audio_url = voiceover/vo-arlo.mp3; ~$0.15/sec (~$5.90 for the 39s VO). Run its calls SEQUENTIALLY with sleep 3 — veed/fabric-1.0 storage-auth 403s under parallel load (trap L1). The example explored a 2nd voice (Brad) which DOUBLED the lip-sync spend (~+$6) — lock the voice first. Re-run VEED only when the anchor IMAGE changes; a crop/zoom tweak is a free re-assemble.",
+    "anchor": "avatar/creator-anchor.png",
+    "anchor_model": "gpt-image-2",
+    "anchor_shot": "medium chest-up, natural webcam distance, headroom + shoulders — not a tight close-up, not a phone selfie",
+    "lipsync_engine": "veed/fabric-1.0",
+    "lipsync_resolution": "720p",
+    "lipsync_provider": "fal",
+    "lipsync_output": "avatar/concept-10-bloomberg-terminal-creator-arlo.mp4",
+    "voice": "arlo",
+    "voice_locked": true
+  },
+  "voiceover": {
+    "_comment": "The creator delivers the ENTIRE VO cold-to-camera — the VO IS the audio bed (no music). ElevenLabs eleven_v3 with-timestamps -> voiceover/vo-arlo.mp3 + timestamp JSON. Per-scene start/end sliced from the char timestamps into voiceover/timing.json. speed 1.2 (creator-native VO reads ~1.15-1.2x).",
+    "provider": "elevenlabs",
+    "model": "eleven_v3",
+    "endpoint": "with-timestamps",
+    "speed": 1.2,
+    "script_txt": "voiceover/script.txt",
+    "outputs": {
+      "audio": "voiceover/vo-arlo.mp3",
+      "word_timings": "voiceover/vo-arlo.timestamps.json",
+      "timing": "voiceover/timing.json"
+    }
+  },
+  "scenes": [
+    {
+      "id": "S01",
+      "role": "HOOK",
+      "start": 0.0,
+      "end": 5.602,
+      "uses_top_clip": false,
+      "vo": "Okay, this used to need a twenty-five-thousand-dollar-a-year terminal and an actual analyst to run it. Watch this.",
+      "top_visual": "Scene-1 hook graphic — a kinetic '$25,000/year terminal + an analyst' stat title-card (HTML-rendered, NOT a demo clip).",
+      "top_clip": "assets/scene-01-graphic.png",
+      "top_start": 0.0,
+      "top_end": 5.602,
+      "notes": "Scene 1 is the designed hook graphic, not a product clip."
+    },
+    {
+      "id": "S02",
+      "role": "DEMO",
+      "start": 6.105,
+      "end": 14.725,
+      "uses_top_clip": true,
+      "vo": "I gave Perplexity Computer one prompt — basically, is NVIDIA undervalued, pull the comps, build the model, make it visual. And it just went.",
+      "top_visual": "Perplexity Computer taking the one prompt and kicking off — the UI accepts the request and starts working.",
+      "top_clip": "assets/scene-02-clip.mp4",
+      "top_start": 0.0,
+      "top_end": 8.6,
+      "notes": "The clip shows the exact prompt going in and the tool starting."
+    },
+    {
+      "id": "S03",
+      "role": "DEMO",
+      "start": 15.093,
+      "end": 20.82,
+      "uses_top_clip": true,
+      "vo": "It spun up this whole team of little agents, pulling live market data across, like, nineteen AI models at the same time.",
+      "top_visual": "The agents spinning up, live market data pulling across ~19 models simultaneously.",
+      "top_clip": "assets/scene-03-clip.mp4",
+      "top_start": 0.0,
+      "top_end": 5.7,
+      "notes": "Set top_start/top_end to the on-message window — never loop a short clip (trap L5)."
+    },
+    {
+      "id": "S04",
+      "role": "DEMO",
+      "start": 21.092,
+      "end": 27.244,
+      "uses_top_clip": true,
+      "vo": "And in a few minutes, it literally built a full valuation model AND deployed an interactive dashboard I can actually click around in.",
+      "top_visual": "The full valuation model building + the interactive dashboard being clicked around in.",
+      "top_clip": "assets/scene-04-clip.mp4",
+      "top_start": 0.0,
+      "top_end": 6.1,
+      "notes": "The clip proves the model + dashboard claim as it is said."
+    },
+    {
+      "id": "S05",
+      "role": "DEMO",
+      "start": 27.825,
+      "end": 31.23,
+      "uses_top_clip": true,
+      "vo": "Oh — and it set itself to re-run automatically every time earnings drop.",
+      "top_visual": "The automation / auto-re-run-on-earnings setting being enabled in the UI.",
+      "top_clip": "assets/scene-05-clip.mp4",
+      "top_start": 0.0,
+      "top_end": 3.4,
+      "notes": "One feature, shown."
+    },
+    {
+      "id": "S06",
+      "role": "PAYOFF_ENDCARD",
+      "start": 31.55,
+      "end": 39.358,
+      "uses_top_clip": true,
+      "vo": "Like, look at that. It didn't explain how I could do the analysis. It didn't give me steps. It just did the whole thing. That's Perplexity Computer.",
+      "top_visual": "The finished dashboard into the Perplexity Computer end card (held on the last SHARP frame ~3s).",
+      "top_clip": "assets/scene-06-clip.mp4",
+      "top_start": 0.0,
+      "top_end": 7.8,
+      "endcard_clip_end": 7.8,
+      "notes": "Note the last SHARP second before any fade-to-black as endcard.clip_end (trap L4)."
+    }
+  ],
+  "endcard": {
+    "_comment": "The Perplexity Computer end card held on the last SHARP frame ~3s. If the end-card clip fades to black, hold the last sharp second (clip_end), NOT the black tail (trap L4).",
+    "clip": "assets/scene-06-clip.mp4",
+    "clip_end": 7.8,
+    "hold_sec": 3.0
+  },
+  "captions": {
+    "_comment": "Word-level captions burned from the ASSEMBLED cut (transcribe master-precaption.mp4 with local faster-whisper, NOT vo-arlo.mp3 — concat drops inter-scene silence so the ad timeline != the VO timeline; trap L2). Sentence-aware chunking. concept-10 shipped serif-accent (after a kinetic-pop pass). Kept: master-precaption cut + captions/serif-accent.ass sidecar for restyle without re-render.",
+    "source": "assembled-cut",
+    "engine": "faster-whisper",
+    "style": "serif-accent",
+    "chunk": "sentence-aware word-level",
+    "ass_sidecar": "captions/serif-accent.ass",
+    "keep_precaption": true,
+    "keep_ass_sidecar": true
+  },
+  "audio_mix": {
+    "_comment": "The creator VO is the entire audio bed — no separate music to duck under. Body audio = the concatenated creator VO slices; the end card holds under the VO tail.",
+    "duck_under_music": false,
+    "loudness_lufs": -14,
+    "bed": "creator_vo"
+  },
+  "post_production": {
+    "vo": { "default": "on", "note": "the creator's ElevenLabs VO IS the audio bed; the lip-sync drives the mouth (no music)" },
+    "captions": { "default": "on", "note": "word-level captions burned from the ASSEMBLED cut (serif-accent), tracking the ad timeline not the raw VO" },
+    "divider": { "default": "on", "note": "a 3px brand-color divider between the two zones" },
+    "endcard": { "default": "on", "note": "the Perplexity Computer end card held on the last sharp frame ~3s" }
+  }
+}

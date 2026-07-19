@@ -1,6 +1,6 @@
 {
   "version": "1.2.0",
-  "generated": "2026-07-17",
+  "generated": "2026-07-19",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -5365,6 +5365,79 @@
       }
     },
     {
+      "slug": "render-cosmic-mythology-voiceover",
+      "name": "render-cosmic-mythology-voiceover",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Assemble a cosmic-mythology-voiceover reel from a config — a warm spoken voiceover carries the whole narrative while N curated cosmic stills are weighted beat-synced across the delivered VO duration (cut_dur = VO_dur times weight over the weight sum, so emotional beats hold longer), Ken-Burns-zoomed per still (scale 2x, center crop, zoompan, fade-in first and fade-out last), ffmpeg-concatenated, the VO composited under the picture (libx264 crf18 plus aac), the ONE on-screen hook line faded on over the open with a drawtext alpha window, and Whisper/VEED captions burned along the bottom — never in-world text on a still. This is the FREE deterministic assembly stage (weighted sequence plus Ken-Burns plus concat plus VO composite plus hook overlay plus caption burn); the VO and the stills come from create-vo-elevenlabs and create-image-fal. Use for the cosmic-mythology-voiceover format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-cosmic-mythology-voiceover",
+      "files": [
+        "skills/ads/capabilities/render-cosmic-mythology-voiceover/SKILL.md",
+        "skills/ads/capabilities/render-cosmic-mythology-voiceover/scripts/PIPELINE.md",
+        "skills/ads/capabilities/render-cosmic-mythology-voiceover/scripts/README.md",
+        "skills/ads/capabilities/render-cosmic-mythology-voiceover/scripts/config.example.json",
+        "skills/ads/capabilities/render-cosmic-mythology-voiceover/scripts/render.py",
+        "skills/ads/capabilities/render-cosmic-mythology-voiceover/skill.meta.json",
+        "skills/ads/capabilities/render-cosmic-mythology-voiceover/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "render-cosmic-mythology-voiceover",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-cosmic-mythology-voiceover",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
+      "slug": "render-creator-pip-listicle",
+      "name": "render-creator-pip-listicle",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Assemble a creator picture-in-picture product-listicle ad from a config — the creator stays FULL-FRAME the whole beat (voice plus lips generated together per beat, no separate VO, no cut to a full-frame product shot), and on each product beat three persistent overlays ride on top for the WHOLE beat — a title pill top-center, the DEMO in a rounded PiP window top-right (the brand's real UGC clip MUTED, or for a no-UGC brand the product's own autocropped UI still / screen-recording sized to fill the window), and a bottom product card (rounded thumbnail plus 'N · CATEGORY' small-caps plus product NAME in a serif face). Hook plus CTA beats are the creator full-frame with the title pill only. Assembly builds ONE full-1080x1920 transparent overlay PNG per beat, overlays it on the creator clip (cover-scaled to 1080x1920) for the whole beat keeping the native audio, concats all beats, then burns captions LAST as timed PIL PNG overlays (this ffmpeg has no libass) timed deterministically from the known per-beat script. This is the FREE deterministic assembly stage (overlay-PNG build plus cover-scale composite plus concat plus PIL-PNG caption burn); the creator anchor and the N native talking clips come from create-image-fal (Seedream v5 Pro) and create-video-fal (Seedance 2.0). Use for the creator-pip-listicle format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-creator-pip-listicle",
+      "files": [
+        "skills/ads/capabilities/render-creator-pip-listicle/SKILL.md",
+        "skills/ads/capabilities/render-creator-pip-listicle/scripts/PIPELINE.md",
+        "skills/ads/capabilities/render-creator-pip-listicle/scripts/README.md",
+        "skills/ads/capabilities/render-creator-pip-listicle/scripts/config.example.json",
+        "skills/ads/capabilities/render-creator-pip-listicle/skill.meta.json",
+        "skills/ads/capabilities/render-creator-pip-listicle/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "render-creator-pip-listicle",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-creator-pip-listicle",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
       "slug": "render-editorial-motion-podcast",
       "name": "render-editorial-motion-podcast",
       "category": "capabilities",
@@ -5425,6 +5498,78 @@
         ],
         "installation": {
           "base_command": "npx goose-skills install render-flat-vector-explainer",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
+      "slug": "render-food-product-sizzle",
+      "name": "render-food-product-sizzle",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Assemble a wordless macro-tabletop food-product sizzle ad from a config — normalize fps and SAR across ~4 photorealistic macro clips (hands tearing, flat lay, bite, box hero), concat them, apply a global anti-AI grain pass (eq plus hqdn3d plus noise), composite the audio (a non-diegetic acoustic music bed plus a couple of short diegetic SFX like a snap and a tear placed at measured cue points, loudnorm), composite a STATIC end card entirely in PIL (real logo PNG plus real product PNG plus a serif heritage headline plus a CTA — never AI-rendered text), and burn optional serif stat-callout pills at beats. This is the FREE deterministic assembly stage (normalized concat plus grain plus music and SFX mix plus PIL end card plus callouts); the macro keyframes, i2v clips, and music bed come from create-image-fal, create-video-fal, and create-music-elevenlabs. Use for the food-product-sizzle format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-food-product-sizzle",
+      "files": [
+        "skills/ads/capabilities/render-food-product-sizzle/SKILL.md",
+        "skills/ads/capabilities/render-food-product-sizzle/scripts/PIPELINE.md",
+        "skills/ads/capabilities/render-food-product-sizzle/scripts/README.md",
+        "skills/ads/capabilities/render-food-product-sizzle/scripts/config.example.json",
+        "skills/ads/capabilities/render-food-product-sizzle/skill.meta.json",
+        "skills/ads/capabilities/render-food-product-sizzle/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "render-food-product-sizzle",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-food-product-sizzle",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
+      "slug": "render-glassy-matte-grwm",
+      "name": "render-glassy-matte-grwm",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Assemble a multi-scene GRWM beauty-demo ad from a config — a locked-identity creator applies ~5 products step by step while a SEPARATE ElevenLabs voiceover narrates and every scene cut is snapped to the VO's product-name word-starts (Whisper word-level timestamps), then ~5 Playwright product overlay cards (real PDP-verified taglines) are composited onto the master each on its product-NAME word-start, the SEPARATE VO is mixed on top of a ducked music bed at loudnorm I=-14, clean-white 3-words/cue captions are burned, and the video closes on a flat-lay end card. This is the FREE deterministic assembly stage (re-cut to the VO word-starts, hard-concat, Playwright card render + card composite, VO plus music mix, caption burn, flat-lay end card); the VO, scene clips, product cutouts, and music come from create-music-elevenlabs / create-image-gpt-image-fal / create-video-fal. Use for the glassy-matte-grwm format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-glassy-matte-grwm",
+      "files": [
+        "skills/ads/capabilities/render-glassy-matte-grwm/SKILL.md",
+        "skills/ads/capabilities/render-glassy-matte-grwm/scripts/PIPELINE.md",
+        "skills/ads/capabilities/render-glassy-matte-grwm/scripts/README.md",
+        "skills/ads/capabilities/render-glassy-matte-grwm/scripts/config.example.json",
+        "skills/ads/capabilities/render-glassy-matte-grwm/skill.meta.json",
+        "skills/ads/capabilities/render-glassy-matte-grwm/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "render-glassy-matte-grwm",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-glassy-matte-grwm",
           "supports": [
             "claude",
             "cursor",
@@ -5780,6 +5925,42 @@
       }
     },
     {
+      "slug": "render-narrated-ugc-wardrobe-stitch",
+      "name": "render-narrated-ugc-wardrobe-stitch",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Assemble a narrated-UGC \"stitch reply\" ad from a config — a single spoken VO carries a verbatim testimonial while ~30 per-cut i2v clips (one creator across ~5 wardrobes in ~3 worlds, plus product B-roll) are each trimmed to their EDL window built from the VO's Whisper word boundaries and hard-concatenated via filter_complex concat (never the demuxer, which drops audio on a duration mismatch), the VO mixed over an optional sidechain-ducked instrumental bed (−20dB, 20 to 1) so the VO stays on top, karaoke-pop captions burned on every word throughout (VEED Whisper preset, re-spelled against the locked script), a landing-page scroll rendered as FFmpeg zoompan over a Playwright PNG (not i2v), and closed on the brand's real end-card PNG — never AI-rendered text. This is the FREE deterministic assembly stage (trim-to-EDL + filter_complex concat + VO and music mix + karaoke captions + landing-page zoompan + end-card append); the VO, creator, start-frames, and clips come from create-vo-elevenlabs / create-image-gpt-image-fal / create-image-fal / create-video-fal. Use for the narrated-ugc-wardrobe-stitch format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-narrated-ugc-wardrobe-stitch",
+      "files": [
+        "skills/ads/capabilities/render-narrated-ugc-wardrobe-stitch/SKILL.md",
+        "skills/ads/capabilities/render-narrated-ugc-wardrobe-stitch/scripts/PIPELINE.md",
+        "skills/ads/capabilities/render-narrated-ugc-wardrobe-stitch/scripts/README.md",
+        "skills/ads/capabilities/render-narrated-ugc-wardrobe-stitch/scripts/config.example.json",
+        "skills/ads/capabilities/render-narrated-ugc-wardrobe-stitch/skill.meta.json",
+        "skills/ads/capabilities/render-narrated-ugc-wardrobe-stitch/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "render-narrated-ugc-wardrobe-stitch",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-narrated-ugc-wardrobe-stitch",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
       "slug": "render-offer-ad",
       "name": "render-offer-ad",
       "category": "capabilities",
@@ -6012,6 +6193,78 @@
       }
     },
     {
+      "slug": "render-split-screen-creator",
+      "name": "render-split-screen-creator",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Assemble a split-screen creator ad from a config — a two-zone vertical composite where a supplied AI-creator lip-sync take fills the BOTTOM ~48% while real 16:9 product/demo clips run uncropped in the TOP ~52%, each top clip contain-fit with a darkened blurred cover-scale fill of the same clip (never black bars), a 3px brand-color divider between the zones, the creator slice cover-fit per the per-scene VO timing, scenes hard-concatenated with the body audio being the concatenated creator VO slices, an end card held on the last sharp frame ~3s, then the ASSEMBLED cut transcribed with local Whisper (not the raw VO — concat drops inter-scene silence) and word-level captions burned in the chosen style. This is the FREE deterministic assembly + caption stage (two-zone composite + blurred fill + divider + hard-concat + end card + captions); the VO comes from create-vo-elevenlabs, the anchor from create-image-gpt-image-fal, and the whole-VO lip-sync from a paid VEED Fabric 1.0 take (a no-atom upstream input). Use for the split-screen-creator format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-split-screen-creator",
+      "files": [
+        "skills/ads/capabilities/render-split-screen-creator/SKILL.md",
+        "skills/ads/capabilities/render-split-screen-creator/scripts/PIPELINE.md",
+        "skills/ads/capabilities/render-split-screen-creator/scripts/README.md",
+        "skills/ads/capabilities/render-split-screen-creator/scripts/config.example.json",
+        "skills/ads/capabilities/render-split-screen-creator/skill.meta.json",
+        "skills/ads/capabilities/render-split-screen-creator/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "render-split-screen-creator",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-split-screen-creator",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
+      "slug": "render-stopmotion-hand-swatch-cycle",
+      "name": "render-stopmotion-hand-swatch-cycle",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Assemble a stop-motion hand-swatch-cycle product-demo ad from a config — a sequence of still PLATES (one hand swiping a single-barrel cosmetic across a cream skin-patch, the barrel + swatch changing per plate while the hand, background, crop, and lighting stay locked) is PNG→mp4 loop-encoded at each plate's own stop-motion hold (fast motion frames 150–250ms, per-shade ~380ms, hero beats 1100–1800ms), concat-demuxed with HARD cuts into a silent master, closed on a Playwright HTML-rendered branded end card (serif tagline + sans subtitle + real logo SVG over a hero BG, never AI-rendered text), and muxed with a pre-sourced music track playing under the end card with a fade tail (no VO). This is the FREE deterministic assembly stage (loop-encode + concat-demux + end-card render + music mux); the master-anchor plate, shade plates, and end-card BG come from create-image-gpt-image-fal and the track from create-music-elevenlabs. Use for the stopmotion-hand-swatch-cycle format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-stopmotion-hand-swatch-cycle",
+      "files": [
+        "skills/ads/capabilities/render-stopmotion-hand-swatch-cycle/SKILL.md",
+        "skills/ads/capabilities/render-stopmotion-hand-swatch-cycle/scripts/PIPELINE.md",
+        "skills/ads/capabilities/render-stopmotion-hand-swatch-cycle/scripts/README.md",
+        "skills/ads/capabilities/render-stopmotion-hand-swatch-cycle/scripts/config.example.json",
+        "skills/ads/capabilities/render-stopmotion-hand-swatch-cycle/skill.meta.json",
+        "skills/ads/capabilities/render-stopmotion-hand-swatch-cycle/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "render-stopmotion-hand-swatch-cycle",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-stopmotion-hand-swatch-cycle",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
       "slug": "render-value-prop",
       "name": "render-value-prop",
       "category": "capabilities",
@@ -6091,6 +6344,42 @@
         ],
         "installation": {
           "base_command": "npx goose-skills install render-vignette",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
+      "slug": "render-vo-anchored-motion-listicle",
+      "name": "render-vo-anchored-motion-listicle",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Assemble an expert/educator motion-graphic LISTICLE video ad from a config — a spoken authoritative voiceover carries a numbered listicle while N web-animated hyperframe beats (HTML plus the Web Animations API, one branded design system of alternating tiles, big hero numerals, and glass-pill callouts) are rendered frame-by-frame via Playwright and anchored to the VO's word-level timestamps, periodic color-graded B-roll windows give visual breath, and captions burn ONLY inside those B-roll windows (2-word chunks, ASS Format header carrying a Name field so none drop) with the VO mixed under a low music bed. This is the FREE deterministic assembly stage (Playwright beat render plus ffmpeg concat plus window-masked caption burn plus VO-and-music mix plus final composite) — the VO, the music bed, and the stock B-roll come from create-vo-elevenlabs, create-music-elevenlabs, and media-proxy. Use for the vo-anchored-motion-listicle format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-vo-anchored-motion-listicle",
+      "files": [
+        "skills/ads/capabilities/render-vo-anchored-motion-listicle/SKILL.md",
+        "skills/ads/capabilities/render-vo-anchored-motion-listicle/scripts/PIPELINE.md",
+        "skills/ads/capabilities/render-vo-anchored-motion-listicle/scripts/README.md",
+        "skills/ads/capabilities/render-vo-anchored-motion-listicle/scripts/config.example.json",
+        "skills/ads/capabilities/render-vo-anchored-motion-listicle/skill.meta.json",
+        "skills/ads/capabilities/render-vo-anchored-motion-listicle/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "render-vo-anchored-motion-listicle",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-vo-anchored-motion-listicle",
           "supports": [
             "claude",
             "cursor",

@@ -35,17 +35,18 @@ Optional:
 - `--aspect-ratio` — `9:16` (default), `16:9`, `1:1`, `2:3`, `3:2`. gpt-image-2 also accepts `3:4`, `4:3`, `4:5`. Used when `--image-size` is not given.
 - `--image-size` — explicit `WIDTHxHEIGHT` (e.g. `1728x2304`). **gpt-image-2 only** — values are rounded to multiples of 16 and capped at 3840px. On `gpt-image-1` a custom size is ignored with a warning and the aspect-ratio mapping is used instead.
 - `--quality` — `low | medium | high` (default `medium`).
-- `--ref-image` — local image path. **Repeatable** — pass `--ref-image PATH --ref-image PATH` to send multiple refs (e.g. identity + style). When present, routes to the model's `/edit` variant so the model can match the references (used for character angle gens off an anchor, and for style-anchor + identity-anchor composition). Order matters: pass identity (character) first, then style refs.
+- `--ref-image` / `--ref-url` — a **PUBLIC image URL** for the `/edit` variant. **Repeatable** — pass it twice to send multiple refs (e.g. identity + style). The proxy does **not** upload local files, so a **local path is rejected** — host the image first (MCP `get_upload_url` → `get_download_url`, or any public URL) and pass that URL. When present, routes to the model's `/edit` variant so the model can match the references. Order matters: pass identity (character) first, then style refs.
 - `--with-logs` — stream fal queue logs.
 
-Credentials:
-- `FAL_API_KEY` (or `FAL_KEY`) in `.env`.
+Credentials (proxy-routed — NOT a raw FAL key):
+- The bundled `scripts/media_proxy.py` routes every call through the GooseWorks **fal-proxy**, which **bills the Ads agent**. It reads `~/.gooseworks/credentials.json` (`api_base`, `api_key`, `agent_id`) — written by `gooseworks login`. Do **not** set `FAL_API_KEY`: an agent (`cal_`) token is not a FAL key and 401s against fal directly.
+- Set `GW_PROJECT_ID=<ad project id>` in the env so the generation's spend attributes to that ad project (per-project cost shows in the app).
 
 ## Preflight
 
 ```bash
-test -n "$FAL_API_KEY" || test -n "$FAL_KEY" || { echo "Missing FAL_API_KEY / FAL_KEY in .env"; exit 1; }
-python3 -c "import fal_client" || pip3 install fal_client
+test -f ~/.gooseworks/credentials.json || { echo "Missing credentials — run: gooseworks login"; exit 1; }
+python3 -c "import requests" || pip3 install requests
 ```
 
 ## Workflow
@@ -58,11 +59,12 @@ python3 skills/ads/capabilities/create-image-gpt-image-fal/scripts/generate.py \
   --aspect-ratio 9:16 \
   --quality medium
 
-# Edit-from-reference (anchor -> angle), default model
+# Edit-from-reference (anchor -> angle). --ref-image must be a PUBLIC URL,
+# NOT a local path (the proxy does not upload local files):
 python3 .../generate.py \
   --prompt "..." \
   --output /path/to/angle-3q-left.png \
-  --ref-image /path/to/anchor.png \
+  --ref-image "https://.../anchor.png" \
   --aspect-ratio 9:16
 
 # gpt-image-2 with a custom output size (e.g. a designed storyboard sheet)
@@ -75,12 +77,12 @@ python3 .../generate.py \
 ```
 
 The script:
-1. Loads the FAL key via `fal_helpers.load_fal_key()`.
+1. Loads the agent credentials from `~/.gooseworks/credentials.json` via the bundled `media_proxy.py` (proxy-routed; bills the Ads agent).
 2. Resolves the model family (`--model`) and output size (`--image-size` if given and supported, else the aspect-ratio mapping).
-3. If one or more `--ref-image` flags are set, uploads each to fal storage and routes to the model's `/edit` variant with `image_urls=[url1, url2, ...]`. Otherwise routes to the `/text-to-image` variant.
-4. Calls `fal_client.subscribe(model, payload)` via `fal_helpers.subscribe`.
+3. If one or more `--ref-image` / `--ref-url` flags are set, passes them as `image_urls=[url1, url2, ...]` (they must already be PUBLIC URLs) and routes to the model's `/edit` variant. Otherwise routes to the `/text-to-image` variant.
+4. Submits through the GooseWorks **fal-proxy** and polls the queue to completion — host-swapping the `queue.fal.run` status/response URLs to the proxy base (see `media_proxy.py`); never polls `queue.fal.run` directly.
 5. Downloads the first result image to `--output`.
-6. Writes `<output>.meta.json` with gateway, model id, `model_family`, request, and cost.
+6. Writes `<output>.meta.json` with `gateway: "fal-proxy"`, model id, `model_family`, request, and cost.
 
 ## Output
 
@@ -91,7 +93,7 @@ The script:
 
 - Output file exists and is > 1 KB.
 - For character anchors: visually inspect against the descriptor block (hair, shirt color, age).
-- `meta.json` includes `gateway: "fal"`, the resolved `model` id, `model_family`, `image_size`, and `quality`.
+- `meta.json` includes `gateway: "fal-proxy"`, the resolved `model` id, `model_family`, `image_size`, and `quality`.
 - For gpt-image-2 custom sizes: confirm the output dimensions match the requested `WIDTHxHEIGHT`.
 - **No readable text in the prompt that should appear in the image.** AI image models mangle short brand text, URLs, code tokens, captions, and wordmarks even with explicit prompting. Examples observed: `"ffmpeg"` → `"ffmmg"`; `"klarify"` → `"clarify"`; `"therapists"` → `"therapits"`. Use PIL or `ffmpeg drawtext` for any overlay containing readable text. Reserve image gen for purely visual content (characters, scenes, backgrounds). Repeats LEARNINGS L4.
 
@@ -99,7 +101,8 @@ The script:
 
 | Symptom | Likely cause | Fix |
 |---|---|---|
-| `401 Unauthorized` | Bad FAL key | Verify `FAL_API_KEY` / `FAL_KEY` in `.env`. |
+| `401 Unauthorized` from fal | Calling fal directly with an agent token, or polling `queue.fal.run` instead of the proxy | This atom is **proxy-routed** — it uses the `~/.gooseworks/credentials.json` agent token via `media_proxy.py`, never a raw `FAL_API_KEY`. Run `gooseworks login` if the credentials file is missing. |
+| `ERROR: ref images must be PUBLIC URLs` | Passed a **local path** to `--ref-image` / `--ref-url` | The proxy does not upload local files. Host it (MCP `get_upload_url` → `get_download_url`) and pass the resulting public URL. |
 | `429 Too Many Requests` | RPS limit | Drop concurrency to 2-3. |
 | Custom size ignored | `--image-size` passed with `--model gpt-image-1` | gpt-image-1 only supports fixed sizes; use `--model gpt-image-2` for custom sizes. |
 | Aspect-ratio drift (gpt-image-1) | gpt-image-1 only supports 1024x1024, 1024x1536, 1536x1024 | The script maps aspect ratios to these internally. |
@@ -116,5 +119,5 @@ When this atom generates a character anchor (lock-character Phase 0), the anchor
 - [fal.ai/models/fal-ai/gpt-image-1](https://fal.ai/models/fal-ai/gpt-image-1)
 - [fal.ai/models/openai/gpt-image-2](https://fal.ai/models/openai/gpt-image-2)
 - Sibling Higgsfield path: `mcp__higgsfield__generate_image` with `model="gpt_image_2"`
-- Shared helpers: `scripts/fal_helpers.py` (vendored alongside generate.py — self-contained)
+- Shared helper: `scripts/media_proxy.py` (proxy-routed FAL/ElevenLabs; bills the Ads agent — the helper `generate.py` actually imports). `scripts/fal_helpers.py` is a LEGACY raw-FAL helper kept for reference only; `generate.py` does **not** use it (it would need a real `FAL_KEY`).
 - Storyboard-sheet consumer: `create-storyboard-sheets-fal` (video flow, in the separate ads-video repo)

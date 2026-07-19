@@ -1,0 +1,19 @@
+{
+  "slug": "render-cosmic-mythology-voiceover",
+  "category": "capabilities",
+  "domain": "ads",
+  "tags": [
+    "ads"
+  ],
+  "installation": {
+    "base_command": "npx goose-skills install render-cosmic-mythology-voiceover",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  },
+  "requires_skills": [
+    "watch"
+  ]
+}

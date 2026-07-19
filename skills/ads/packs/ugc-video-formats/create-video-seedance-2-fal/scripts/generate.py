@@ -14,7 +14,7 @@ Native lip-synced VO + ambient audio (generate_audio=true). Multi-image referenc
 Hard rules:
 - NEVER pass AI-generated video as video refs (content_policy_violation)
 - NSFW / partner-validation reject → surface and exit; do NOT auto-retry
-- duration must be a STRING per FAL schema
+- duration must be an INT for bytedance/seedance-2.0/reference-to-video (enum {auto,4..15}); a string 400s (invalid_request)
 - image refs must be PUBLIC URLs — the proxy does not upload local files. The
   orchestrator hosts local refs via MCP get_upload_url -> get_download_url and passes
   the URL here (identical to create-video-fal).
@@ -76,7 +76,7 @@ def main() -> int:
         "prompt": args.prompt,
         "image_urls": args.image_urls,
         "resolution": args.resolution,
-        "duration": str(args.duration),  # FAL schema requires string
+        "duration": args.duration,  # INT — bytedance/seedance-2.0/reference-to-video enum {auto,4..15}; a STRING 400s (invalid_request), validated 2026-07-18
         "aspect_ratio": args.aspect_ratio,
         "generate_audio": args.generate_audio,
     }

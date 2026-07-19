@@ -1,0 +1,93 @@
+{
+  "_comment": "DIBS Beauty 'Pick Your Match' stop-motion hand-swatch-cycle — THE WORKED EXAMPLE. Copy to config.json and edit. A ~16.6s vertical 9:16 stop-motion where a fair hand swipes the Desert Island Duo cream stick across a cream skin-patch on a saturated bubblegum-pink background, cycling through the shade family (~10 shades), exiting frame to reveal all 10 swatches, then returning on the hero pick (shade 3), closing on a DIBS end card. NO voiceover — a pre-sourced music track carries it. Pipeline: (1) ONE gpt-image-2 master-anchor plate (hand + barrel + EMPTY cream patch on pink BG); (2) each shade plate in gpt-image-2 EDIT mode anchored to [master-anchor, shade-swatch, shade-hero] — NEVER chained; (3) motion / half-painted transition plates + finale plates (hand-exits -> all-swatches -> hero-pick); (4) PNG->mp4 loop-encode at each plate's hold, concat-demux -> silent master; (5) Playwright HTML end card + brand music mux. Master 1080x1920 h264+aac, ~16.6s (13.6s body + 3.0s end card). See scripts/PIPELINE.md for the source scripts.",
+  "brand_name": "DIBS Beauty",
+  "campaign": "Pick Your Match",
+  "title": "Find your Desert Island Duo shade",
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "crf": 18,
+  "duration_sec": 16.6,
+  "aspect_ratio": "9:16",
+  "background": {
+    "_comment": "Format constants held VERBATIM in EVERY plate prompt so the frame never moves — only the barrel shade + the painted swatch stripe change per plate.",
+    "bg_hex": "#F4B3C4",
+    "bg_desc": "saturated bubblegum-pink (#F4B3C4) seamless paper background",
+    "hand": "single fair-skinned hand (fingers + thumb, palm down, glossy pale-pink long-shaped nails) entering from the bottom edge in the LOWER-LEFT third, holding the Desert Island Duo cream stick by its mid-section (cream-and-black ridged barrel, lowercase 'dibs.' wordmark crisp, cap on)",
+    "skin_patch": "a soft round cream-colored 'skin patch' surface (~400px wide) in the UPPER-RIGHT third — a curved warm cream-toned section of clean skin that swatches are tested on, flat, smooth, soft-shadowed, no markings",
+    "lighting": "editorial soft daylight, glossy gentle highlights, top-down macro, 9:16 vertical, photorealistic beauty editorial, no text overlay",
+    "camera": "top-down editorial macro, LOCKED — no camera move, no zoom, no pan"
+  },
+  "anchor": {
+    "_comment": "The MASTER-ANCHOR plate. EVERY other plate is generated in gpt-image-2 EDIT mode anchored back to THIS plate (plus per-shade swatch + hero refs) — NEVER chained plate-to-plate. Source: plates-v3.json `v2-p01`.",
+    "id": "master-anchor",
+    "out": "assets/plates-v3/v2-p01-hand-anchor.png",
+    "hero_ref": "source/product-photos/did-shade-03-hero.png",
+    "pose_hold_ms": 1600,
+    "prompt": "Top-down editorial macro on a saturated bubblegum-pink (#F4B3C4) seamless paper background. In the LOWER-LEFT third, a single fair-skinned hand enters from the bottom holding a Desert Island Duo cream stick by its mid-section (cream-and-black ridged barrel, lowercase 'dibs.' wordmark crisp, cap on, blush-pink tip toward upper-right). In the UPPER-RIGHT third, a soft round cream-colored 'skin patch' (~400px wide, flat, smooth, soft-shadowed, no markings) — the surface swatches are tested on. Editorial soft daylight, glossy highlights. 9:16 vertical. Photorealistic beauty editorial. No text overlay."
+  },
+  "plate_engine": {
+    "_comment": "All plates + the end-card BG are gpt-image-2 via fal. EDIT mode: each shade / motion / finale plate passes the master-anchor (`v2-p01-hand-anchor.png`) as the first EDIT anchor so the hand + crop + BG stay frozen; shade plates ALSO pass that variant's real swatch + hero refs. NEVER pass a prior plate as the anchor.",
+    "provider": "fal",
+    "model": "gpt-image-2",
+    "mode": "edit",
+    "aspect_ratio": "9:16",
+    "always_anchor_master": true,
+    "never_chain": true,
+    "batch_size": 4
+  },
+  "cadence": {
+    "_comment": "DIBS v3 holds: half-painted / mid-swipe motion plates ~180ms; per-shade plates ~380ms (v3 stretched some to ~1000ms for a slower, more scannable cycle); the anchor + finale hero beats 1100-1800ms. HARD cuts between plates. Average ~380ms hold. 27 plate clips across the run.",
+    "motion_hold_ms": [150, 250],
+    "shade_hold_ms": 380,
+    "shade_hold_ms_slow": 1000,
+    "hero_hold_ms": [1100, 1800],
+    "cut_type": "hard"
+  },
+  "plates": [
+    { "id": "master-anchor", "beat_id": "hand-anchor-empty", "phase": "intro", "variant_slot": "none", "pose_hold_ms": 1600, "cut_type": "hard", "anchors": ["source/product-photos/did-shade-03-hero.png"], "prompt": "MASTER-ANCHOR — hand holding the barrel in the lower-left, EMPTY cream skin-patch in the upper-right, on the bubblegum-pink BG. See config.anchor.prompt. (plates-v3.json v2-p01)" },
+    { "id": "empty-swipe-demo", "beat_id": "empty-swipe-demo", "phase": "intro", "variant_slot": "none", "pose_hold_ms": 280, "cut_type": "hard", "anchors": ["assets/plates-v3/v2-p01-hand-anchor.png"], "prompt": "Same locked frame. The hand extends slightly toward the skin-patch, the barrel tip hovering ~30mm above the patch (about to swipe). No swatch yet. Preview gesture. (plates-v3.json v3-empty-swipe-demo)" },
+    { "id": "shade-01", "beat_id": "swatch-shade-01", "phase": "cycle", "variant_slot": "shade", "cycle_index": 1, "pose_hold_ms": 380, "cut_type": "hard", "anchors": ["assets/plates-v3/v2-p01-hand-anchor.png", "source/swatches/did-shade-01-swatch.jpg", "source/product-photos/did-shade-01-hero.png"], "prompt": "Same locked frame. NEW: a thick painted swatch stripe in SHADE 1 (very fair cool-pink rose cream) swiped horizontally across the center of the cream skin-patch. The hand now holds the SHADE 1 barrel. Only the shade changed. (plates-v3.json v2-p02)" },
+    { "id": "swipe-01", "beat_id": "half-painted-015", "phase": "cycle", "variant_slot": "shade", "pose_hold_ms": 180, "cut_type": "hard", "anchors": ["assets/plates-v3/v2-p01-hand-anchor.png"], "prompt": "Same locked frame, captured MID-SWIPE — the barrel tip touches the patch, the shade 1.5 fresh swatch about half-painted, slight diagonal hand motion. Transition plate. (plates-v3.json v33-swipe-01)" },
+    { "id": "shade-015", "beat_id": "swatch-shade-015", "phase": "cycle", "variant_slot": "shade", "cycle_index": 2, "pose_hold_ms": 380, "cut_type": "hard", "anchors": ["assets/plates-v3/v2-p01-hand-anchor.png", "source/swatches/did-shade-015-swatch.jpg", "source/product-photos/did-shade-015-hero.png"], "prompt": "Same locked frame. The swatch on the patch is REPLACED with SHADE 1.5 (warmer-fair pink); the hand holds the SHADE 1.5 barrel. Same crop, same light — only the shade changed. (plates-v3.json v2-p03)" },
+    { "id": "shade-N", "beat_id": "swatch-shade-N", "phase": "cycle", "variant_slot": "shade", "cycle_index": 99, "pose_hold_ms": 380, "cut_type": "hard", "anchors": ["assets/plates-v3/v2-p01-hand-anchor.png", "source/swatches/did-shade-N-swatch.jpg", "source/product-photos/did-shade-N-hero.png"], "prompt": "Repeat one {shade plate + half-painted-transition} pair per shade in the family (DIBS ran ~10 shades: 01, 015, 02, 025, 03, 04, 05, 055, 06, 07 → ~24 cycle plates). Same locked frame throughout, each shade EDIT-anchored to the master-anchor + its own swatch + hero. (plates-v3.json v2-p04…v2-p11 + v33-swipe-*)" },
+    { "id": "hand-exits", "beat_id": "hand-exits-reveal", "phase": "finale", "variant_slot": "none", "pose_hold_ms": 1200, "cut_type": "hard", "anchors": ["assets/plates-v3/v2-p01-hand-anchor.png", "source/swatches/did-all-shades-family.jpg"], "prompt": "Same locked frame, but the HAND EXITS the frame, revealing ALL 10 painted swatches stacked on the skin-patch. Grounded on the all-shades family reference. (plates-v3.json v3-hand-exits)" },
+    { "id": "all-swatches", "beat_id": "all-swatches-reveal", "phase": "finale", "variant_slot": "none", "pose_hold_ms": 1400, "cut_type": "hard", "anchors": ["assets/plates-v3/v2-p01-hand-anchor.png", "source/swatches/did-all-shades-family.jpg"], "prompt": "The full 10-swatch family on the patch, no hand — the 'here's everything' reveal beat. Holds so the viewer scans for their match. (plates-v3.json v33-finale-shade-3-tilt)" },
+    { "id": "hero-pick", "beat_id": "hero-pick-finale", "phase": "finale", "variant_slot": "shade", "pose_hold_ms": 1800, "cut_type": "hard", "anchors": ["assets/plates-v3/v2-p01-hand-anchor.png", "source/product-photos/did-shade-03-hero.png"], "prompt": "The hand RETURNS holding the HERO pick (SHADE 3), the other 9 swatches still visible underneath. The payoff — 'this one is your match'. Hero hold. (plates-v3.json v3-hero-pick-shade-3 / v33-finale-shade-3-macro)" }
+  ],
+  "end_card": {
+    "_comment": "A DIBS end card: a gpt-image-2 hero BG (endcard-bgs/match-hero.png) + a Playwright render of end-card-template-v3.html (serif tagline + sans subtitle + the DIBS logo SVG) — NEVER AI-rendered text. Holds 3.0s WITH the music still playing under it, fade at the tail (no silent tail).",
+    "engine": "gpt-image-2-bg + playwright-html",
+    "bg_image": "assets/endcard-bgs/match-hero.png",
+    "template": "working/end-card-template-v3.html",
+    "logo_svg": "source/dibs-logo-black.svg",
+    "tagline": "Pick your match.",
+    "subtitle": "Desert Island Duo · dibsbeauty.com",
+    "hold_sec": 3.0,
+    "audio_fade_out_sec": 0.5
+  },
+  "music": {
+    "_comment": "Pre-sourced DIBS brand track (dibs-on-me-4.mp3, ~128 BPM instrumental). Volume 0.4, fade in/out. NO VO. `source` = generate would call create-music-elevenlabs music_v1 from `prompt` (no artist names — ElevenLabs ToS filter).",
+    "source": "brand_supplied",
+    "provider": "elevenlabs",
+    "model": "music_v1",
+    "track": "clients/dibsbeauty/music/dibs-on-me-4.mp3",
+    "prompt": "Upbeat, bright, playful instrumental pop, ~128 BPM, light percussion, clean modern beauty-brand energy. No vocals.",
+    "volume": 0.4,
+    "fade_in_sec": 0.3,
+    "fade_out_sec": 0.5
+  },
+  "audio_mix": {
+    "_comment": "The music is the full bed — no VO to duck under. It plays UNDER the end card and fades over the tail, so the video ends WITH the music — no trailing silence.",
+    "duck_under_vo": false,
+    "audio_over_end_card": true,
+    "audio_fade_out_sec": 0.5,
+    "body_end_s": 13.6,
+    "master_duration_s": 16.6
+  },
+  "post_production": {
+    "music": { "default": "on", "note": "the pre-sourced dibs-on-me-4 track IS the bed (no VO), volume 0.4, fade in/out" },
+    "captions": { "default": "off", "note": "the swatch cycle reads visually; on-screen type is only the end-card tagline/subtitle" },
+    "end_card": { "default": "on", "note": "hero-BG + HTML-template card (serif 'Pick your match.' + sans subtitle + DIBS logo SVG), music under it, fade tail (no silent tail)" }
+  }
+}
