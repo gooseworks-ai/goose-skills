@@ -51,5 +51,15 @@ keyframes / clips and cost **$0**.
   brand-color card + white wordmark + subhead, holding ~3s WITH the song still playing under it
   (afade-out over the tail — no silent tail). A diffusion model garbles a wordmark.
 - **FFmpeg composite, deterministic, FREE.** Cut each clip to its bar window, hard-concat, burn
-  the logo bug + caption ASS, append the end card, mux the song over the whole video with a 0.5s
-  afade tail, `loudnorm I=-14` → a 1080×1920 h264+aac master. No paid calls, no keys.
+  the logo bug + captions, append the end card, mux the song over the whole video with a 0.5s
+  afade tail, `loudnorm I=-14` → a 1080×1920 h264+aac master. No paid calls, no keys. When the host
+  ffmpeg lacks libass/drawtext, BOTH the captions and the logo bug are timed **PIL PNG overlays**
+  (`overlay=x:y:enable='between(t,st,en)'`), not an ASS burn.
+- **QC PER SCENE, never just the master — the two failure modes are content, not assembly.** The
+  upstream keyframe/i2v steps can (a) drift the character **felt → smooth-3D "man"** partway
+  through and (b) hallucinate hands — realistic fingers in a hand macro, a **pointing finger** on a
+  "tap the phone" shot, or a **disembodied hand** sliding in from the frame edge. Both hide at
+  thumbnail size. Extract a **2 fps** contact sheet + a per-bar **FACE** crop and **HAND** crop
+  (across each clip's full duration), confirm every bar is matte felt with the ONE character and no
+  human/floating hands, and re-check the **served** bytes after publish. A drifted bar means
+  regenerating that bar's **KEYFRAME** (not re-cutting) — see the recipe STEP 3/6.

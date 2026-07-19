@@ -17,7 +17,7 @@ ASSEMBLED cut (not the raw VO).
 |---|---|---|---|
 | `voiceover.*`, `scenes[].vo` | 1 VO | ElevenLabs `eleven_v3` with-timestamps (`create-vo-elevenlabs`) → vo mp3 + timestamp JSON | **PAID** (~$0.06) |
 | `scenes[].start/end`, `voiceover.outputs.timing` | 1 VO | slice per-scene start/end from the char timestamps → `timing.json` | free |
-| `creator.anchor` | 2 Creator | gpt-image neutral portrait (`create-image-gpt-image-fal`) | **PAID** (~$0.10) |
+| `creator.anchor` | 2 Creator | photoreal MEDIUM chest-up anchor, `gpt-image-2` (`create-image-gpt-image-fal`) | **PAID** (~$0.10) |
 | `creator.lipsync_*` | 2 Creator | **VEED Fabric 1.0 @ 720p — a NO-ATOM paid step** (`image_url` = anchor, `audio_url` = vo mp3) → creator lip-sync mp4 | **PAID** (~$5.90 / 39s) |
 | `scenes[].top_clip` + `top_start/top_end` | 3 Top | brand-owned 16:9 UI screen-recordings (S02–SN) + the scene-1 hook graphic | (brand-supplied) |
 | `layout.*`, `endcard.*`, assembly | 4 Assembly | the split-screen assembler — two-zone composite + hard-concat + end card → `master-precaption.mp4` | free |
@@ -34,8 +34,13 @@ second voice doubles the VEED spend downstream. This is upstream of the capabili
 
 ## 2. Creator anchor + lip-sync (config `creator`) — PAID, no-atom VEED step
 
-A gpt-image neutral head-and-shoulders portrait (centered, plain background), then
-the **whole VO** lip-synced in **one VEED Fabric 1.0 take @ 720p** (`veed/fabric-1.0`,
+A **photoreal MEDIUM chest-up** `gpt-image-2` anchor at a natural webcam distance —
+whole head with headroom, shoulders + upper chest, real lived-in room, anti-AI skin
+cues — **not** a plain-background close-up headshot and **not** a phone-selfie pose
+(borrow another format's realism, never its arm-extended framing). Watch the source
+video first and match its creator distance; get the anchor framing right BEFORE the
+lip-sync, since a too-close image can't be reframed in the composite. Then the
+**whole VO** lip-synced in **one VEED Fabric 1.0 take @ 720p** (`veed/fabric-1.0`,
 `image_url` = the portrait, `audio_url` = the vo mp3) → the creator lip-sync mp4.
 **VEED Fabric is a no-atom paid step** — there is no `create-lipsync-*` atom; it's
 an external FAL call (~$0.15/sec, ~$5.90 for a 39s VO). Always 720p — 480p reads
@@ -56,9 +61,12 @@ Author the ad-spec (canvas 1080×1920, `top_height` ~998, `divider_color`, per-s
 `top_clip` + `top_start`/`top_end`, `endcard.clip` + `clip_end`) and run the
 split-screen assembler. Per scene: TOP zone = the clip **contain-fit** + a darkened
 **blurred cover-scale of the same clip** filling the letterbox margins (never
-charcoal/black bars); a 3px brand-color divider; BOTTOM zone = the creator lip-sync
-slice per `timing.json` (cover-fit, crop toward the top). **Never loop a short clip**
-— window it and the assembler speed-fits it. Hard-concat the scenes; body audio =
+charcoal/black bars); a 3px brand-color divider (keep stacked heights EVEN, e.g.
+998+4+918=1920, or libx264 rejects the odd frame); BOTTOM zone = the creator lip-sync
+framed head-to-shoulders (scale-to-width × ZOOM ~1.15–1.2, then crop with a downward
+offset so the face is upper-middle and the shoulders enter — NOT a plain crop-toward-top,
+which cuts the shoulders). Tune zoom/offset visually (free re-assemble). **Never loop a
+short clip** — window it and the assembler speed-fits it. Hard-concat the scenes; body audio =
 the concatenated creator VO slices; append the end card holding the last sharp frame
 ~3s → `master-precaption.mp4`. Deterministic, $0.
 

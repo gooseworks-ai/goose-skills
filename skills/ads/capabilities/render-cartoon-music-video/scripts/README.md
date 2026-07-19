@@ -44,7 +44,24 @@ The brand text is **never** AI-rendered — a diffusion model garbles a wordmark
 ## 4. FFmpeg composite
 
 FFmpeg stitches the master: cut each body clip to its bar window, hard-concat on the bar, burn the
-logo bug (bottom-left) + the caption ASS via libass, append the end card holding ~3s, mux the song
-OVER the whole video including the end card with a 0.5s `afade` at the tail (no silent tail), and
-`loudnorm I=-14`. The sung song IS the bed — no separate VO. Output is a 1080×1920 h264 + aac
+logo bug (bottom-left) + the captions, append the end card holding ~3s, mux the song OVER the whole
+video including the end card with a 0.5s `afade` at the tail (no silent tail), and `loudnorm I=-14`.
+Captions burn via libass **if present**; on a host without libass/drawtext (common — Homebrew ffmpeg),
+render each caption cue AND the logo bug as timed **PIL PNG overlays** (`overlay=x:y:enable='between(t,st,en)'`)
+at the same placement. The sung song IS the bed — no separate VO. Output is a 1080×1920 h264 + aac
 master. Deterministic, no paid calls, no keys.
+
+## 5. QC per scene before publish (the two content failure modes)
+
+The assembly is faithful, but the upstream keyframe/i2v can slip two defects that a sparse-still
+watch misses in a ~55s master:
+
+- **Character drift felt → smooth-3D "man"** partway through (lives in the KEYFRAME; regenerate the
+  drifted bar's keyframe, don't re-cut).
+- **Hallucinated hands** — realistic fingers in a hand macro, a pointing finger on a "tap the
+  phone" shot, or a disembodied hand from the frame edge.
+
+Extract a **2 fps** contact sheet across the whole master + a per-bar **FACE** crop and **HAND**
+crop (across each clip's full duration); audit ALL bars at head-crop resolution to find the true
+drift boundary; then re-extract frames from the **served** bytes (`get_download_url`), not the local
+file, after publish. (cartoon-music-video, Figma run 2026-07-18.)

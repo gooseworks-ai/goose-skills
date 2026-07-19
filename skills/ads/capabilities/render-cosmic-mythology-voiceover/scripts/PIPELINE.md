@@ -1,11 +1,12 @@
 # Pipeline — cosmic-mythology-voiceover reel
 
-How `config.example.json` maps to the real production steps. This capability ships a
-**config + this map**, not a bundled runner: the worked example (WishAstro "Saturn isn't your
-villain") was produced by a handful of per-project drivers that live in
-`clients/wishastro/accounts/wishastro-ig/posts/saturn-myth/working/`
-(`vo.py`, `gen_images2.py`, `build_video2.py`). Reference those directly, or drive the whole run
-via `video-orchestrator-with-control-plane`.
+How `config.example.json` maps to the real production steps. The free assembly (steps 3+) now ships
+as a **runnable script — `scripts/render.py`** (config-driven; ffmpeg + Pillow only; see
+`README.md` §0). The worked example (WishAstro "Saturn isn't your villain") was originally produced
+by per-project drivers (`vo.py`, `gen_images2.py`, `build_video2.py` under
+`clients/wishastro/accounts/wishastro-ig/posts/saturn-myth/working/`); `render.py` is the
+generalized, config-driven successor to `build_video2.py`. The paid steps (VO, stills) remain the
+media capabilities.
 
 The steps run **in order** because each depends on the last: the VO sets the timeline (its
 delivered, atempo-stretched duration), the timeline + the weight array drive each cut's length,

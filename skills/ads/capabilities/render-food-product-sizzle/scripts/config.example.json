@@ -42,7 +42,7 @@
     "model": "music_v1",
     "request_length_ms": 22000,
     "trim_intro_sec": 2.5,
-    "target_length_sec": 14.04,
+    "target_length_sec": 17.04,
     "fade_in_sec": 0.4,
     "fade_out_sec": 1.0,
     "loudnorm_i": -16,
@@ -52,7 +52,7 @@
       "raw": "audio/music_raw_v2.mp3",
       "bed": "audio/music-bed-v2.mp3"
     },
-    "_note": "gen_music_v2.py requested 22s to allow the 2.5s sparse-intro trim; build_master_v2.sh step 1 trims start=2.5, loudnorm I=-16, fade in 0.4s + fade out 1.0s, clamps -t 14.04. No artist names (ElevenLabs Music ToS filter)."
+    "_note": "gen_music_v2.py requested 22s to allow the 2.5s sparse-intro trim; build_master_v2.sh step 1 trims start=2.5, loudnorm I=-16, fade in 0.4s + fade out 1.0s, clamps -t to the FULL master length. target_length_sec MUST equal duration_sec (body, 14.04) + end_card.hold_sec (3.0) = 17.04 so the bed plays under the end card and fades on the tail — audio_mix.music_over_end_card is true, so a 14.04 bed would leave the 3s end card silent. No artist names (ElevenLabs Music ToS filter)."
   },
   "sfx": {
     "engine": "ffmpeg-lavfi-anoisesrc",

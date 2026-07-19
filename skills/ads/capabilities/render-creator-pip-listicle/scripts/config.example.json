@@ -1,5 +1,5 @@
 {
-  "_comment": "DIBS Beauty '5 products that replaced my whole makeup bag' creator-pip-listicle — THE WORKED EXAMPLE. Copy to config.json and edit. A ~46s 9:16 (1080x1920, 30fps) AI-creator talking-head PRODUCT LISTICLE with NATIVE Seedance audio: an AI creator counts down 5 DIBS products, and every product beat is a TWO-SHOT micro-cut (creator + real-brand UGC picture-in-picture top-right + product card bottom ~60% -> full-frame Ken-Burns product cutaway + card ~40%). Voice + lips are generated TOGETHER in one Seedance take per beat (no separate VO, no lip-sync bolt-on); DIBS-pink 2-word captions burned LAST. Pipeline: (1) lock the conversational beat script -> native-beats.json; (2) lock the creator anchor (gpt-image-2 iPhone-candid, realism-gated); (3) one native Seedance clip per beat (generate_audio=ON, SAME seed); (4) FREE Ken-Burns product macros + product cards; (5) FREE 2-shot multicut composite (PiP + card + rank badge, native audio continuous); (6) FREE stitch + ~$1 caption burn. Master 1080x1920 h264+aac, ~46s. See scripts/PIPELINE.md for the source scripts.",
+  "_comment": "DIBS Beauty '5 products that replaced my whole makeup bag' creator-pip-listicle — THE WORKED EXAMPLE. Copy to config.json and edit. A ~46s 9:16 (1080x1920, 30fps) AI-creator talking-head PRODUCT LISTICLE with NATIVE Seedance audio: an AI creator counts down 5 DIBS products, and the creator stays FULL-FRAME the WHOLE time — there is NO cut to a full-frame product shot. On each product beat three persistent overlays ride on top of the full-frame creator for the whole beat: (1) a title pill top-center (carries the listicle title), (2) the DEMO in a rounded PiP window top-right (the brand's real UGC clip MUTED — or, for a no-UGC brand, the product's own autocropped UI still / screen-recording sized to fill the window), (3) a product card pinned bottom (rounded thumbnail + 'N · CATEGORY' small-caps + serif product name). Hook + CTA are the creator full-frame with the title pill only. Voice + lips are generated TOGETHER in one Seedance take per beat (no separate VO, no lip-sync bolt-on); DIBS-pink 2-word captions burned LAST as PIL PNG overlays. Pipeline: (1) lock the conversational beat script -> native-beats.json; (2) lock the creator anchor (Seedream v5 Pro candid portrait, realism-gated); (3) one native Seedance clip per beat (generate_audio=ON, SAME seed); (4) FREE demo-PiP prep (autocrop) + product cards; (5) FREE single-shot full-frame composite (build the per-beat overlay PNG, cover-scale + overlay, native audio kept); (6) FREE stitch + PIL-PNG caption burn. Master 1080x1920 h264+aac, ~46s. See scripts/PIPELINE.md for the source steps.",
   "brand_name": "DIBS Beauty",
   "campaign": "5 products that replaced my whole makeup bag",
   "title": "5 products that replaced my whole makeup bag",
@@ -14,102 +14,94 @@
   },
   "beats": [
     {"name": "00-hook",        "dialogue": "Okay — five products that genuinely replaced my whole makeup bag.",                          "duration": 6, "pip": null,             "card": null,             "badge": null, "show_title": true},
-    {"name": "01-did",         "dialogue": "First, the Desert Island Duo. Blush and bronzer in one stick, I just swipe it on with my fingers.", "duration": 8, "pip": "01-did",         "card": "01-did",         "badge": 2,    "show_title": true},
-    {"name": "02-lovebeam",    "dialogue": "Then the LoveBeam Perfector. I'm obsessed — it's primer, highlight, and skincare in one.",     "duration": 7, "pip": "02-lovebeam",    "card": "02-lovebeam",    "badge": 3,    "show_title": true},
-    {"name": "03-status",      "dialogue": "The Status Stick on your collarbones gives this lit-from-within glow that's never greasy.",         "duration": 7, "pip": "03-status",      "card": "03-status",      "badge": 4,    "show_title": true},
-    {"name": "04-glowtour",    "dialogue": "Glow Tour Duo is blush and contour together — two swipes and my face looks snatched.",         "duration": 7, "pip": "04-glowtour",    "card": "04-glowtour",    "badge": 5,    "show_title": true},
-    {"name": "05-no-pressure", "dialogue": "And the No Pressure liner with the Go-To balm stays put through everything.",                      "duration": 6, "pip": "05-no-pressure", "card": "05-no-pressure", "badge": 6,    "show_title": true},
+    {"name": "01-did",         "dialogue": "First, the Desert Island Duo. Blush and bronzer in one stick, I just swipe it on with my fingers.", "duration": 8, "pip": "01-did",         "card": "01-did",         "badge": 1,    "show_title": true},
+    {"name": "02-lovebeam",    "dialogue": "Then the LoveBeam Perfector. I'm obsessed — it's primer, highlight, and skincare in one.",     "duration": 7, "pip": "02-lovebeam",    "card": "02-lovebeam",    "badge": 2,    "show_title": true},
+    {"name": "03-status",      "dialogue": "The Status Stick on your collarbones gives this lit-from-within glow that's never greasy.",         "duration": 7, "pip": "03-status",      "card": "03-status",      "badge": 3,    "show_title": true},
+    {"name": "04-glowtour",    "dialogue": "Glow Tour Duo is blush and contour together — two swipes and my face looks snatched.",         "duration": 7, "pip": "04-glowtour",    "card": "04-glowtour",    "badge": 4,    "show_title": true},
+    {"name": "05-no-pressure", "dialogue": "And the No Pressure liner with the Go-To balm stays put through everything.",                      "duration": 6, "pip": "05-no-pressure", "card": "05-no-pressure", "badge": 5,    "show_title": true},
     {"name": "06-cta",         "dialogue": "Fewer products, better face. You're welcome.",                                                     "duration": 5, "pip": null,             "card": null,             "badge": null, "show_title": false}
   ],
-  "_note_beats": "duration = clamp(ceil(words / 2.3) + 1, 4, 11) s (Seedance native pace ~2.3 words/s). Hook + CTA carry no PiP/card/badge; the 5 product beats each carry a PiP slug + a card slug + a rank badge (2..6). Status Stick (03) has no clean e-comm photo -> its b-roll + card fall back to a branded PIL text card, not an AI product render.",
+  "_note_beats": "duration = clamp(ceil(words / 2.3) + 1, 4, 11) s (Seedance native pace ~2.3 words/s). Hook + CTA carry no PiP/card/badge (title pill only). Each of the 5 product beats is ONE continuous full-frame creator shot with three persistent overlays for the whole beat: the title pill (top), the demo PiP (top-right), and the product card (bottom) with a rank number (1..5). Status Stick (03) has no clean e-comm photo -> its card thumbnail falls back to a branded brand-color tile, not an AI product render.",
   "creator": {
-    "_comment": "ONE creator anchor, locked once and threaded (with the SAME Seedance seed) into every native clip so the face holds. gpt-image-2 iPhone-candid, gated on realism.",
+    "_comment": "ONE creator anchor, generated FRESH with Seedream v5 Pro (create-image-fal, model `bytedance/seedream/v5/pro/text-to-image` — NO `fal-ai/` prefix), locked once and threaded (with the SAME Seedance seed) into every native clip so the face holds. CRITICAL — Seedance 2.0's partner-validation gate REJECTS photoreal faces from gpt-image-2 AND Seedream v4 ('may contain likenesses of real people'); a Seedream v5 Pro face PASSES. Use a FRESHLY generated image (reusing an existing photoreal face also trips the gate). Realism-gated.",
     "anchor": "assets/characters/anchor.png",
     "method": "anchor-ref",
-    "realism": "candid iPhone selfie — visible pores, natural matte skin, no gloss/retouch, soft window light, unposed documentary framing. AVOID 'beautiful/perfect/8k/hyperreal'.",
-    "descriptor": "Woman ~27, warm medium skin, soft natural makeup, casual at-home top, relaxed friendly delivery to camera."
+    "image_model": "bytedance/seedream/v5/pro/text-to-image",
+    "realism": "plain, calm, candid head-and-shoulders portrait on a neutral wall — un-retouched skin (visible pores, faint freckles, fine lines, slightly uneven tone), minimal makeup, no perfect teeth, soft even indoor daylight. AVOID 'beautiful/perfect/8k/hyperreal/studio'.",
+    "descriptor": "Woman ~27, warm medium skin, minimal makeup, casual at-home top, relaxed friendly delivery to camera."
   },
   "clip_engine": {
-    "_comment": "ONE Seedance 2.0 reference-to-video call PER BEAT with generate_audio=ON — voice + lips generated TOGETHER (no separate VO, no lip-sync bolt-on). Dialogue INLINE in the prompt. SAME seed across beats off the creator anchor. Driver: create-hand-swipe-flavor-listicle .../scripts/gen_seedance_native.py.",
+    "_comment": "ONE Seedance 2.0 reference-to-video call PER BEAT with generate_audio=ON — voice + lips generated TOGETHER (no separate VO, no lip-sync bolt-on). Dialogue INLINE in the prompt. SAME seed across beats off the creator anchor. 720p default deliverable. BILLING: a REJECTED submit STILL bills via the fal-proxy — pre-flight ONE test clip (the hook) before firing the batch. Presigned anchor URLs expire ~1h -> re-host if a batch runs long. Intermittent fal 'User is locked: Exhausted balance' is the proxy's upstream account (not GooseWorks credits) -> retry with backoff.",
     "provider": "fal",
-    "model": "seedance-2.0",
+    "model": "bytedance/seedance-2.0/reference-to-video",
     "mode": "reference-to-video",
+    "resolution": "720p",
     "native_audio": true,
     "seed_locked": true,
     "duration_formula": "clamp(ceil(words / 2.3) + 1, 4, 11)"
   },
   "pip": {
-    "_comment": "The brand's REAL existing UGC ad, one per product beat, played picture-in-picture top-right with a hairline white border and audio MUTED (the creator beat's native audio is the only voice). NEVER AI-regenerated. Source: source/pip-candidates/pip-<slug>.mp4.",
-    "source": "source/pip-candidates/pip-<slug>.mp4",
+    "_comment": "The DEMO in a rounded window top-right, played picture-in-picture for the whole product beat with audio MUTED (the creator beat's native audio is the only voice). It's the brand's REAL existing UGC ad (one per product beat, NEVER AI-regenerated) — OR, for a brand with NO UGC (B2B/SaaS), the product's own demo: a real screen-recording, or an autocropped high-res product-UI/dashboard still. AUTOCROP the demo (trim transparent/near-white margins) and size the window to the cropped content's aspect ratio so it FILLS the window (no letterbox whitespace); a WIDE screenshot -> a SHORT + WIDE window. Source: source/pip-candidates/pip-<slug>.mp4 (UGC) or working/demo/demo-<slug>.png (product-UI still).",
+    "content_source": "source/pip-candidates/pip-<slug>.mp4 (real UGC clip) OR working/demo/demo-<slug>.png (autocropped product-UI still / screen-recording)",
     "position": "top-right",
-    "size_frac": [0.42, 0.32],
-    "margin_px": 28,
-    "top_y": 170,
-    "border": "white @0.75, 3px, rounded 24px",
+    "top_y": 175,
+    "right_margin_px": 30,
+    "max_w": 520,
+    "max_h": 600,
+    "fit": "AUTOCROP to remove transparent/near-white margins, then size the window to the cropped content's aspect ratio so it FILLS the window (no letterbox whitespace).",
+    "border": "white hairline ~5px, rounded ~26px, soft drop shadow",
+    "tag": "a small dark '▶ DEMO' pill bottom-left of the window (a real UGC clip may instead show its view-count badge; do NOT fabricate view counts for a product demo)",
     "audio": "MUTED"
   },
-  "broll": {
-    "_comment": "FREE full-frame product cutaway (shot b of each product beat). Ken-Burns push-in on the REAL DIBS product photo on a soft pink/cream gradient canvas — never an AI product render (i2v mangles labels). Status Stick has no clean photo -> branded PIL text card fallback. Script: working/scripts/broll_kenburns.py.",
-    "kind": "ken-burns-macro",
-    "engine": "pil+ffmpeg",
-    "script": "working/scripts/broll_kenburns.py",
-    "duration_s": 2.6,
-    "zoom": "push-in to 1.16x",
-    "gradient": ["#F4A5C1 pink", "#FBF6F2 cream"],
-    "fallback": "branded PIL text card when a product has no clean e-comm photo (e.g. Status Stick)"
-  },
   "product_cards": {
-    "_comment": "FREE bottom-pinned card PNG (accent stripe + thumbnail + name + subtitle in DIBS type), from the real product photo (or a brand-pink 'dibs.' tile if no photo). Script: working/scripts/render_product_cards.py.",
+    "_comment": "FREE bottom-pinned card PNG pinned on the whole product beat: rounded product/UI thumbnail LEFT, then 'N · CATEGORY' (rank + short category, DIBS-pink, small caps) and the product NAME in a serif face (Georgia/Times) below. From the real product photo (or a brand-pink 'dibs.' tile if no photo). Script: working/scripts/render_product_cards.py.",
     "engine": "pil",
     "script": "working/scripts/render_product_cards.py",
-    "card_h": 320,
+    "card_h": 300,
     "palette": { "pink": "#E27098", "paper": "#FBF6F2", "ink": "#281C20" },
     "output": "assets/overlays/product-card-<slug>.png",
     "no_photo_fallback": "brand-pink tile with 'dibs.' wordmark in place of the thumbnail"
   },
   "title_pill": {
-    "_comment": "OPT-IN per beat via beats[].show_title. A persistent DIBS text bar rendered once as a PNG at top-center. Default OFF on new projects (an always-on pill was rejected as ugly); the DIBS run had it ON on the body beats.",
+    "_comment": "PERSISTENT title pill top-center — faithful to the source video, which carries the listicle title the whole reel. ON by default (this format's identity). A DIBS text bar rendered once as a PNG at top-center; keep the copy short so it fits one line.",
     "on": true,
     "asset": "assets/overlays/title-pill.png",
     "position": "top-center",
-    "top_y": 60
+    "top_y": 55
   },
   "rank_badge": {
-    "_comment": "A counting rank/view-count badge on the PiP on product beats (badge 2..6 in the DIBS run).",
+    "_comment": "A counting rank number (1..5) rendered on the product CARD (badge circle / 'N ·' prefix) on product beats.",
     "on": true,
-    "asset": "assets/overlays/badge-<NN>.png",
-    "anchored_to": "pip"
+    "anchored_to": "card"
   },
   "composite": {
-    "_comment": "FREE multicut: each product beat = 2 shots (creator+PiP+card ~60% -> full-frame Ken-Burns cutaway+card ~40%). Hook front-loads a ~1.6s swipe macro (working/broll/broll-hook-swipe.mp4); CTA is one creator shot. Overlays (PiP top-right + hairline, product card bottom, title pill, rank badge) burned in; the creator beat's NATIVE audio muxed continuous under both shots; PiP audio muted. Script: working/scripts/composite_native_multicut.py.",
+    "_comment": "FREE single-shot full-frame composite: each beat is ONE continuous full-frame creator shot with persistent overlays (NO cut to a full-frame product shot). Per beat: build ONE full-1080x1920 transparent overlay PNG (title pill on all beats; + demo PiP top-right + bottom product card + rank number on product beats), scale the creator clip to 1080x1920 (cover), overlay the beat's overlay PNG for the WHOLE beat, keep the native audio. PiP audio muted. Script: working/scripts/composite_pip.py.",
     "engine": "ffmpeg",
-    "script": "working/scripts/composite_native_multicut.py",
-    "per_beat_shots": 2,
-    "creator_shot_frac": 0.60,
-    "broll_shot_frac": 0.40,
-    "hook_broll_s": 1.6,
-    "broll_max_s": 2.6,
-    "targets": ">=4 cuts/10s, <=50% direct-face share"
+    "script": "working/scripts/composite_pip.py",
+    "per_beat_shots": 1,
+    "model": "creator FULL-FRAME the whole beat + persistent overlays (title pill + demo PiP top-right + product card bottom). NO cut to a full-frame product shot.",
+    "overlay": "Build ONE full-1080x1920 transparent overlay PNG per beat (title pill; + PiP + card on product beats; title only on hook/CTA), then overlay it on the creator clip (scaled cover to 1080x1920) for the whole beat. Native audio preserved."
   },
   "stitch": {
-    "_comment": "FREE. Concat the per-beat composites @ 30fps / yuv420p -> the pre-caption master.",
+    "_comment": "FREE. Concat the per-beat composites @ 30fps / yuv420p -> the pre-caption master. Probe durations with `ffprobe -of csv=p=0` (NOT `default=nk=1:np=1`, which errors on some builds).",
     "engine": "ffmpeg-concat-demuxer",
     "fps": 30,
     "pix_fmt": "yuv420p",
-    "output": "finals-native/master-multicut.mp4"
+    "output": "finals-native/master-pip.mp4"
   },
   "captions": {
-    "_comment": "Burned LAST (~$1). White 2-ish-word chunks in the lower third with the DIBS-pink accent, from the native audio's word timings — the on-screen safety net for brand tokens Seedance may mis-voice.",
+    "_comment": "Burned LAST as timed PIL PNG overlays (this ffmpeg has NO libass — no subtitles/ass filter). White ~2-word chunks with the DIBS-pink accent underline, positioned CLEAR of the top-right PiP and the bottom card. Timed DETERMINISTICALLY from the known per-beat script (the fal-ai/whisper proxy is unreliable, 900s timeouts — do NOT depend on it); the known script is the brand-correct source so brand tokens are always spelled right.",
     "on": true,
-    "tool": "burn-in-captions --style white-words --accent \"#E27098\"",
-    "style": "white 2-ish-word chunks, lower-third, DIBS-pink accent",
-    "source": "native audio word timings",
+    "engine": "PIL PNG overlays (overlay=...:enable='between(t,s,e)')",
+    "style": "white ~2-word chunks, DIBS-pink underline bar, black stroke",
+    "position": "mid-to-lower, clear of the PiP (top) and card (bottom)",
+    "source": "the known per-beat script, distributed across each beat's time window (deterministic)",
     "last": true
   },
   "post_production": {
-    "native_audio": { "default": "on", "note": "the Seedance take's native voice IS the bed (no separate VO); PiP audio muted; creator beat audio continuous under both shots" },
-    "captions": { "default": "on", "note": "white 2-ish-word chunks, lower-third, DIBS-pink accent, from the native audio word timings, burned LAST" },
-    "title_pill": { "default": "on-for-this-run", "note": "persistent DIBS text bar on the body beats; opt-in per beat via show_title (default OFF on new projects)" },
-    "rank_badge": { "default": "on", "note": "counting rank badge (2..6) on the PiP on product beats" }
+    "native_audio": { "default": "on", "note": "the Seedance take's native voice IS the bed (no separate VO); PiP audio muted; the creator clip's native audio plays continuous across the whole beat" },
+    "captions": { "default": "on", "note": "white ~2-word chunks, DIBS-pink accent, PIL PNG overlays, deterministic from the known script, burned LAST, clear of PiP+card" },
+    "title_pill": { "default": "on", "note": "persistent DIBS title pill top-center — this format's identity" },
+    "rank_badge": { "default": "on", "note": "counting rank number (1..5) on the product card on product beats" }
   }
 }

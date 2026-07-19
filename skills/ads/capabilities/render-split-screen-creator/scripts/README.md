@@ -22,8 +22,12 @@ Per scene the assembler builds a 1080×1920 frame in two zones. The TOP zone
 (`top_height` ~998, ~52%) runs the real 16:9 product/demo clip **contain-fit**
 (uncropped) — its letterbox margins filled with a darkened **blurred cover-scale of
 the same clip** (never charcoal/black bars — a flat bar reads cheap). The BOTTOM
-zone (~48%) is the creator lip-sync slice **cover-fit**, cropped toward the top so
-the face stays framed. A 3px brand-color divider separates the zones.
+zone (~48%) is the creator lip-sync framed **head-to-shoulders**: scale-to-width × a
+small **ZOOM** (~1.15–1.2) then crop with a **downward offset** so the face sits
+upper-middle and the shoulders enter (a plain crop-toward-top shows only the head and
+cuts the shoulders — and needs a **medium chest-up** anchor to begin with, not a tight
+close-up). A 3px brand-color divider separates the zones — keep stacked heights **even**
+(998 + 4 + 918 = 1920), or libx264 rejects the odd frame.
 
 ## 2. Windowing — one claim per scene, never loop a short clip
 

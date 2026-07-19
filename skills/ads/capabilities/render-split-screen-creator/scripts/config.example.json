@@ -9,7 +9,7 @@
   "aspect_ratio": "9:16",
   "duration_sec": 40.37,
   "layout": {
-    "_comment": "Two-zone split. TOP ~52% (top_height 998) runs the 16:9 UI screen-recording contain-fit + a darkened blurred cover-scale fill of the SAME clip (never black/charcoal bars — trap L3). 3px brand-color divider. BOTTOM ~48% is the creator lip-sync slice, cover-fit + cropped toward the top so the face stays framed.",
+    "_comment": "Two-zone split. TOP ~52% (top_height 998) runs the 16:9 UI screen-recording contain-fit + a darkened blurred cover-scale fill of the SAME clip (never black/charcoal bars — trap L3). Brand-color divider (keep stacked heights EVEN: 998+4+918=1920, or libx264 rejects the odd frame — trap L6). BOTTOM ~48% is the creator lip-sync framed head-to-shoulders: scale-to-width x a small ZOOM (~1.15-1.2) then crop with a DOWNWARD offset so the face is upper-middle and the shoulders enter (a plain crop-toward-top shows only the head and cuts the shoulders — trap L7). Requires a MEDIUM chest-up anchor (see creator._comment).",
     "canvas_w": 1080,
     "canvas_h": 1920,
     "top_height": 998,
@@ -21,9 +21,10 @@
     "bottom_fit": "cover-crop-top"
   },
   "creator": {
-    "_comment": "ONE AI-creator anchor lip-synced to the WHOLE VO in ONE VEED Fabric 1.0 take @ 720p (480p reads soft). VEED Fabric is a NO-ATOM paid step: image_url = the gpt-image portrait, audio_url = voiceover/vo-arlo.mp3; ~$0.15/sec (~$5.90 for the 39s VO). Run its calls SEQUENTIALLY with sleep 3 — veed/fabric-1.0 storage-auth 403s under parallel load (trap L1). The example explored a 2nd voice (Brad) which DOUBLED the lip-sync spend (~+$6) — lock the voice first.",
+    "_comment": "ONE AI-creator anchor lip-synced to the WHOLE VO in ONE VEED Fabric 1.0 take @ 720p (480p reads soft). THE ANCHOR MUST BE a PHOTOREAL, candid MEDIUM chest-up shot at natural webcam distance (whole head with headroom + shoulders + upper chest, real lived-in room, anti-AI skin cues) — NOT a plain-background close-up headshot (reads as AI) and NOT a phone-selfie / arm-extended pose copied from another format (wrong for a fixed talking-head, and too-close can't be reframed). Watch the source video and match its creator distance. gpt-image-2, quality high, 1024x1536. VEED handles photoreal fine. VEED Fabric is a NO-ATOM paid step: image_url = the anchor, audio_url = voiceover/vo-arlo.mp3; ~$0.15/sec (~$5.90 for the 39s VO). Run its calls SEQUENTIALLY with sleep 3 — veed/fabric-1.0 storage-auth 403s under parallel load (trap L1). The example explored a 2nd voice (Brad) which DOUBLED the lip-sync spend (~+$6) — lock the voice first. Re-run VEED only when the anchor IMAGE changes; a crop/zoom tweak is a free re-assemble.",
     "anchor": "avatar/creator-anchor.png",
-    "anchor_model": "gpt-image",
+    "anchor_model": "gpt-image-2",
+    "anchor_shot": "medium chest-up, natural webcam distance, headroom + shoulders — not a tight close-up, not a phone selfie",
     "lipsync_engine": "veed/fabric-1.0",
     "lipsync_resolution": "720p",
     "lipsync_provider": "fal",

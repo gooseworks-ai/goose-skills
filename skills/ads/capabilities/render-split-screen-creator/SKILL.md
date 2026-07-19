@@ -25,7 +25,9 @@ hard-concat, the end card, and the word-level caption burn from the assembled cu
 This is the **FREE, deterministic** assembly + captions stage — it spends
 nothing. The paid inputs are separate steps — the VO (`create-vo-elevenlabs`,
 ElevenLabs `eleven_v3` with-timestamps, sliced into per-scene windows), the
-neutral AI-creator anchor portrait (`create-image-gpt-image-fal`, gpt-image), and
+**photoreal MEDIUM chest-up** AI-creator anchor (`create-image-gpt-image-fal`,
+`gpt-image-2`) — shot at a natural webcam distance (headroom + shoulders, real
+room), **not** a plain-background close-up headshot (see the anchor note below), and
 the whole-VO lip-sync (a **paid VEED Fabric 1.0 @ 720p take — a no-atom step**,
 `image_url` = the anchor, `audio_url` = the vo mp3, ~$0.15/sec, ~$5.90 for a 39s
 VO; run its calls sequentially, `veed/fabric-1.0` storage-auths 403 under
@@ -39,8 +41,19 @@ master. Re-cuts reuse the existing VO / lip-sync / clips and cost **$0**.
 
 - **Two-zone split, top ~52% / creator ~48%.** The TOP zone runs the real 16:9
   product/demo clip **contain-fit** (uncropped), the BOTTOM zone is the creator
-  lip-sync slice **cover-fit** (crop toward the top so the face stays framed); a
-  3px brand-color divider separates them. Canvas 1080×1920, `top_height` ~998.
+  lip-sync framed **head-to-shoulders**: scale-to-width × a small **ZOOM** (~1.15–1.2)
+  then crop the zone with a **downward offset** so the face sits upper-middle and the
+  shoulders enter the bottom. (A plain cover + crop-toward-top shows only the head and
+  cuts the shoulders — and it can't rescue an anchor that was shot too close; fix the
+  anchor distance first.) Tune zoom/offset visually against the source video's creator
+  framing — it's a FREE re-assemble, no VEED re-run. A 3px brand-color divider separates
+  the zones. Canvas 1080×1920, `top_height` ~998. **Keep every stacked height EVEN**
+  (998 + 4 divider + 918 = 1920) — libx264 rejects odd dimensions.
+- **Anchor = photoreal MEDIUM shot, not a studio headshot.** The lip-sync only looks as
+  good as the anchor. It must be photoreal/candid (real lived-in room, natural skin
+  cues), framed chest-up at a natural webcam distance (headroom + shoulders), **not** a
+  plain-background close-up and **not** a phone-selfie pose copied from another format
+  (e.g. `ugc-walk-and-talk`). VEED Fabric handles photoreal fine (unlike Seedance).
 - **Blurred-cover fill, never black bars.** The top clip's letterbox margins are
   filled with a darkened **blurred cover-scale of the same clip** — a flat
   charcoal/black bar reads cheap.

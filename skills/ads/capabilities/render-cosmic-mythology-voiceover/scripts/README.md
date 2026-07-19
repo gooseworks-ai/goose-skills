@@ -12,6 +12,28 @@ windows, new hook timing, caption chunking, zoom params) reuse the existing VO /
 1080×1920). `PIPELINE.md` maps every config block to its source step. This README documents the
 FREE assembly pieces that `render-cosmic-mythology-voiceover` owns.
 
+## 0. Run it — `render.py` (config-driven, portable)
+
+There IS a single runnable script: `scripts/render.py`. Given the bound recipe config + the atempo
+VO + the stills, it does the whole free assembly (sequence → Ken-Burns → concat → VO composite →
+hook → captions → optional end card) and reports duration/size/bitrate:
+
+```bash
+python3 scripts/render.py \
+  --config config.json \                 # the recipe.config bound for this brand
+  --vo     working/vo2/vo_atempo.mp3 \    # the atempo VO (delivered duration sets the timeline)
+  --stills-dir working/stills \           # holds <still-id>.png for every sequence cut
+  --out    working/final.mp4 \
+  --words  working/vo2/words.json \       # OPTIONAL word-timing JSON → captions (skipped if absent)
+  --endcard working/endcard.png           # OPTIONAL brand end card, appended ~2.6s
+```
+
+Deps: **ffmpeg + Pillow only** — NO API keys, and NO `drawtext`/`libass` required (the hook +
+captions burn as timed PIL PNG overlays; see §3–4). `--words` is any word-level timing list
+(`[{word|text,start,end}]`, groq/fal shapes both accepted) — the orchestrator makes it from the VO
+via the proxy Whisper. A re-cut (new weights/hook timing/caption chunking/zoom) reuses the same VO +
+stills for **$0**.
+
 ## 1. Weighted beat-sync sequencing
 
 The delivered VO duration sets the timeline. For each cut in `sequence.cuts[]`, the cut duration is
@@ -32,9 +54,11 @@ hard-join.
 - **Concat:** ffmpeg-concat the N Ken-Burns clips (`-c copy`) → the background.
 - **VO composite:** one ffmpeg pass composites the atempo VO under the picture (libx264 `crf 18` +
   aac 192k). The spoken VO IS the bed — no separate VO and no music bed by default.
-- **Hook overlay:** the ONE reframe line is burned via ffmpeg `drawtext` with an alpha-fade window
-  (fade in ~0.5s, hold, fade out ~0.6s) over the **open** only — never a persistent caption, never
-  in-world text on a still.
+- **Hook overlay:** the ONE reframe line, alpha-faded over the **open** only (fade in ~0.5s, hold,
+  fade out ~0.6s) — never a persistent caption, never in-world text. `render.py` renders the line to
+  a transparent PIL PNG and fades it with ffmpeg `fade=…:alpha=1`, so it needs NO `drawtext` filter
+  (stock Homebrew ffmpeg often lacks it). If your ffmpeg *has* `drawtext`, that's an equivalent
+  alternative — but the PIL path is the portable default.
 
 ## 4. Caption burn
 

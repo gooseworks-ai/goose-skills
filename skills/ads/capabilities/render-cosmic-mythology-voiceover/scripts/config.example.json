@@ -62,10 +62,10 @@
   "image_engine": {
     "provider": "fal",
     "model": "fal-ai/flux-pro/v1.1",
-    "image_size": "portrait_16_9",
+    "image_size": { "width": 1080, "height": 1920 },
     "safety_tolerance": "5",
     "output_format": "png",
-    "_note": "gen_images2.py generated 6 hero stills (img5..img10); gen_images.py generated the first 4 (img1..img4). 10 assets total; the sequence reuses a few to reach 12 cuts."
+    "_note": "Generate at the OUTPUT resolution 1080x1920 (the old 'portrait_16_9' preset returned ~576x1024, soft after the 2x Ken-Burns). gen_images2.py generated 6 hero stills (img5..img10); gen_images.py generated the first 4 (img1..img4). 10 assets total; the sequence reuses a few to reach 12 cuts."
   },
   "shots": [
     { "id": "img1_saturn", "prompt": "Ringed Saturn glowing gold on a deep-indigo starfield, awe and gravity" },

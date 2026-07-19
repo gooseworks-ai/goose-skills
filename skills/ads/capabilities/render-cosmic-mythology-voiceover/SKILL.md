@@ -19,14 +19,24 @@ source step and `scripts/README.md` documents the free assembly.
 
 ## Run
 
+There is a single runnable script — `scripts/render.py` (config-driven, ffmpeg + Pillow only, NO
+API keys and NO `drawtext`/`libass` required):
+
+```bash
+python3 scripts/render.py --config config.json --vo working/vo2/vo_atempo.mp3 \
+  --stills-dir working/stills --out working/final.mp4 \
+  [--words working/vo2/words.json] [--endcard working/endcard.png]
+```
+
 This is the **FREE, deterministic** assembly stage — it spends nothing. The paid inputs are
 separate capabilities — the spoken VO (`create-vo-elevenlabs`, ElevenLabs `eleven_v3` from a
 tone-tagged script, atempo time-stretched so the delivered duration sets the timeline) and the 4–6
-cosmic hero stills in one look pack (`create-image-fal`, Flux Pro 1.1, reused as repeats to reach
-the ~10–12 cuts). Given the VO + the stills + the per-cut weight array + the hook line,
-`render-cosmic-mythology-voiceover` distributes the cuts across the VO duration by the weighted
-formula, Ken-Burns-renders each still, concats, composites the VO, fades the hook line on over the
-open, and burns the captions → the master. Re-cuts reuse the existing VO / stills and cost **$0**.
+hero stills in one look pack (`create-image-fal`, Flux Pro 1.1, reused as repeats to reach the
+~10–12 cuts). Given the VO + the stills + the per-cut weight array + the hook line, `render.py`
+distributes the cuts across the VO duration by the weighted formula, Ken-Burns-renders each still,
+concats, composites the VO, fades the hook line on over the open, burns the captions, and (if
+`--endcard` is passed) appends a brand end card → the master + a poster. Re-cuts reuse the existing
+VO / stills and cost **$0**. See `scripts/README.md` §0 for the full arg contract.
 
 ## Contract (the free assembly)
 
@@ -44,9 +54,10 @@ open, and burns the captions → the master. Re-cuts reuse the existing VO / sti
 - **ONE cosmic look, no in-world text.** Every still reads in the single deep-indigo + gold +
   volumetric-light look; the reel's only text is the hook + the captions, added in post (the "no
   text, no words" descriptor keeps words off the stills).
-- **ONE hook line, alpha-faded on over the open.** Burn the single reframe line with an ffmpeg
-  `drawtext` alpha window (fade in ~0.5s, hold, fade out ~0.6s) over the OPEN only — never a
-  persistent caption, never in-world.
+- **ONE hook line, alpha-faded on over the open.** Burn the single reframe line over the OPEN only
+  (fade in ~0.5s, hold, fade out ~0.6s) — never a persistent caption, never in-world. `render.py`
+  does this with a PIL PNG + ffmpeg `fade=…:alpha=1` (no `drawtext` dependency, since stock ffmpeg
+  often lacks it); an ffmpeg `drawtext` alpha window is an equivalent alternative where available.
 - **Captions from Whisper — bottom, white.** VEED/Whisper subtitle burn tracks the spoken VO in the
   bottom third, white `#FFFFFF`. If the host ffmpeg lacks libass (no `subtitles`/`ass` filter),
   render the cues as timed PIL PNG overlays (ffmpeg `overlay=…:enable='between(t,st,en)'`) at the
