@@ -1,0 +1,273 @@
+{
+  "_comment": "Duolingo 'Don't Skip' mascot horror short — THE WORKED EXAMPLE. Copy to config.json and edit. A ~22s A24-style 9:16 horror short where the Duolingo owl (Duo, kept 100% on-model, only re-lit for horror) stalks you through friendly-then-menacing push-notifications, reveals himself dead-eyed with a head-tilt + slow blink, whispers 'Five… minutes?', and closes on 'DON'T SKIP.' + a real push. Pipeline: (1) lock the mascot anchor FIRST (nano-banana-2 EDIT off the official 3D render, num_images=4 → a DISTANT silhouette + a CLOSE reveal); (2) 2 atmospheric plates (nano-banana v1 text-only, 2k); (3) HTML hyperframes via Chrome headless (4 banners + title + end card + icon — never AI text); (4) the reveal (Kling V3 Pro i2v off the close still, 5s audio-off → trim to 4.4s); (5) audio (ElevenLabs instrumental music-box bed + one whispered VO line + 4 ffmpeg-synth SFX); (6) per-beat grade + zoom + eased banner overlays + 8-track amix (music drops to silence at the reveal) + 2-pass loudnorm to -14 LUFS. Master 1080x1920 h264+aac, ~22.0s, ~$1.8 total spend. See scripts/PIPELINE.md for the source scripts (clients/duolingo/video-01-dont-skip-horror/working/).",
+  "brand_name": "Duolingo",
+  "campaign": "Don't Skip",
+  "title": "DON'T SKIP — a Duolingo horror short",
+  "genre": "horror",
+  "_note_genre": "The genre parameterizes the anchor re-light, plate mood, music bed, SFX voicing, and banner tone. This example is horror-specific — a detuned music-box lullaby + heartbeat + reveal sting will not read comedic. comedy | thriller | scifi | action each need a NEW music+SFX+banner-tone pass.",
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "duration_sec": 22.0,
+  "aspect_ratio": "9:16",
+  "mascot": {
+    "_comment": "Lock the anchor FIRST (the #1 risk). Duo grabbed from a Sketchfab official 3D render thumbnail, cropped tight → duo-ref-crop.png. nano-banana-2 EDIT (multi-ref) re-lights him for horror while preserving EXACT shape/colors/proportions. num_images=4 gives the two-stage scare in one call: lock a DISTANT silhouette (var1, hallway) + a CLOSE reveal (var2, the i2v start). NEVER redesign — the horror is in the lighting, and the dead-eyed owl is uncanny BECAUSE he should be cute.",
+    "name": "Duo (the Duolingo owl)",
+    "method": "anchor-ref-nb2-edit",
+    "ref_image": "source/duo-reference/duo-ref-crop.png",
+    "keep_exact_descriptor": "the green Duolingo owl character — keep his EXACT shape, proportions, bright green feathers, big round white eyes with dark pupils, small orange beak and orange feet",
+    "anchor_engine": {
+      "gateway": "fal",
+      "model": "fal-ai/nano-banana-2/edit",
+      "num_images": 4,
+      "aspect_ratio": "9:16",
+      "cost_estimate_usd": 0.32
+    },
+    "distant_still": "assets/nb2-stills/duo-distant-LOCKED.png",
+    "close_still": "assets/nb2-stills/duo-reveal-LOCKED.png",
+    "_note_stills": "duo-distant-LOCKED.png (var1) = the hallway silhouette for b4; duo-reveal-LOCKED.png (var2) = the close reveal, the Kling i2v start_image.",
+    "anchor_prompt": "Cinematic horror film still, vertical 9:16. The green Duolingo owl character from the reference image — keep his EXACT shape, proportions, bright green feathers, big round white eyes with dark pupils, small orange beak and orange feet — now standing perfectly still and upright in the dark open doorway of a dim apartment at night. Lit only by an eerie sickly-green glow spilling from the room behind him, strong green rim light tracing his silhouette, his face and body half-swallowed by deep black shadow, the rest of the frame nearly pitch black. He stares directly into the camera, motionless, unblinking, deeply unsettling. Low camera angle looking slightly up at him. Photoreal cinematic horror lighting, shallow depth of field, heavy 35mm film grain, A24 horror movie aesthetic, ominous and menacing. No text, no logos, no watermark."
+  },
+  "plates": {
+    "_comment": "nano-banana v1 TEXT-ONLY (no ref, no people, no text) — POV horror needs no consistent human face. 2 plates, 2k, ~$0.04 each: a cozy-dark living-room POV (couch + blanket + hallway-with-door built in) and a dark hallway with a sickly-green glow under a door.",
+    "engine": {
+      "gateway": "fal",
+      "model": "fal-ai/nano-banana",
+      "resolution": "2k",
+      "aspect_ratio": "9:16",
+      "num_images": 1,
+      "cost_estimate_usd": 0.039
+    },
+    "cozy": "assets/nb2-stills/plate-livingroom.png",
+    "hallway": "assets/nb2-stills/plate-hallway.png",
+    "cozy_prompt": "Cinematic horror film still, vertical 9:16 photograph. First-person POV of someone lying back on a couch in a dark cozy living room late at night, looking up and across the dim room. A soft blanket, a coffee table, the faint cool glow of a phone screen is the only nearby light. Across the room, a hallway leads to a closed door with a faint line of light beneath it. Moody low-key lighting, deep shadows, muted teal-and-green night color grade, 35mm film grain, shallow depth of field, A24 horror aesthetic. Quiet, ominous, empty room. No people, no text, no logos.",
+    "hallway_prompt": "Cinematic horror film still, vertical 9:16 photograph. A dark narrow apartment hallway at night, looking straight toward a closed white door at the end of the hall. An eerie bright sickly-green glow spills out from the gap beneath the door and leaks around its edges, pooling on the wooden floor and casting long shadows. The rest of the hallway is in deep blackness. Volumetric green light, moody low-key horror lighting, deep black shadows, heavy 35mm film grain, shallow depth of field, A24 horror movie aesthetic, dread. Empty, no people, no text, no logos."
+  },
+  "brand_colors": {
+    "_comment": "Duolingo green (#58CC02) is re-purposed as the 'evil light' — brand color against itself. The secondary teal-lean (#0c160a, the end-card radial base) anchors the grade so the electric NB green reads premium, not video-game.",
+    "primary": "#58CC02",
+    "primary_dark": "#46a302",
+    "secondary_teal_lean": "#0c160a"
+  },
+  "hyperframes": {
+    "_comment": "ALL on-screen text is crisp HTML via Chrome headless — NEVER AI-rendered (LEARNINGS #6). Font: Nunito (the free stand-in for Duolingo's Feather). The app-icon is a square head-crop of duo-ref-crop.png (PIL) on #58CC02, reused in every banner + the end card.",
+    "engine": "chrome-headless-html-to-png",
+    "chrome": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    "chrome_flags": "--headless=new --disable-gpu --no-sandbox --hide-scrollbars --force-device-scale-factor=1 --window-size=W,H --virtual-time-budget=3500 --default-background-color=00000000 (banners only) --screenshot",
+    "font": "Nunito",
+    "banners": [
+      "assets/overlays/banner-1.png",
+      "assets/overlays/banner-2.png",
+      "assets/overlays/banner-3.png",
+      "assets/overlays/banner-4.png"
+    ],
+    "banner_size": "1080x300",
+    "banner_style": "iOS dark-mode push-notification banner, transparent PNG, rgba(44,44,48,0.92) pill, 42px radius, app-icon on #58CC02, 'Duolingo' + 'now', 35px message",
+    "title_card": "assets/overlays/title-card.png",
+    "end_card": "assets/overlays/endcard.png",
+    "icon_crop": "assets/overlays/icon-duo.png",
+    "title_card_text": "Don't skip.  ·  do your lesson.",
+    "end_card_text": "duolingo  ·  five minutes a day. for your own safety."
+  },
+  "banner_messages": [
+    "Time for your Spanish lesson! 🦉",
+    "These reminders don't seem to be working.",
+    "I'm already inside.",
+    "Your streak misses you. I can see you."
+  ],
+  "_note_banner_messages": "Duolingo's streak-guilt + stalker-notification engine IS the horror (the mechanic is diegetic — we filmed the meme the internet already believes). Banner 1 = cozy friendly ping (b1). Banner 2 = the passive-aggressive turn ('These reminders don't seem to be working' is a REAL Duo push) (b2). Banner 3 = the punch ('I'm already inside') (b5). Banner 4 = the real end-card push that reaches off-screen into the phone (b7b). The banners carry the whole on-screen narrative; no karaoke captions.",
+  "i2v": {
+    "_comment": "THE REVEAL — the money shot. Kling V3 Pro i2v off duo-reveal-LOCKED.png, 5s, audio off. CHARACTER+VERB in the first 8 words (LEARNINGS #19). Sparse + glacial motion: head-tilt → single blink → stare, with a creeping slow push-in, no warping (an owl needs no lip-sync). Render 5s (the sweet spot; >10s drifts), trim to the 4.4s reveal beat.",
+    "engine": "kling_v3_pro",
+    "gateway": "fal",
+    "model": "fal-ai/kling-video/v3/pro/image-to-video",
+    "start_image": "assets/nb2-stills/duo-reveal-LOCKED.png",
+    "duration_sec": 5,
+    "generate_audio": false,
+    "trim_to_sec": 4.4,
+    "output": "assets/kling-clips/duo-reveal.mp4",
+    "cost_estimate_usd": 0.56,
+    "prompt": "The green owl slowly tilts its head to one side and blinks once, staring dead-eyed straight into the camera. Faint sickly-green light flickers across its face. Slow ominous camera push-in. Eerie horror film, minimal motion, the owl stays in the doorway."
+  },
+  "music": {
+    "_comment": "force_instrumental TRUE — there are NO sung lyrics (the notification text is the script). ~24s to cover the 22s master. Horror = a detuned music-box / lullaby bed (ties to childlike-Duo). The DROP-TO-SILENCE at the reveal is done in the MIX (audio_mix.music_automation), NOT the prompt — single-prompt drops don't render (LEARNINGS #18).",
+    "engine": "create-music-elevenlabs",
+    "provider": "elevenlabs",
+    "force_instrumental": true,
+    "duration_sec": 24,
+    "output": "assets/audio/horror-bed.mp3",
+    "cost_estimate_usd": 0.40,
+    "prompt": "A detuned music-box / lullaby horror bed — childlike celesta melody slightly out of tune, sparse, creeping dread building under a dark apartment at night, minimal percussion, tension rising toward a reveal. No drums drop, no resolution."
+  },
+  "vo": {
+    "_comment": "ONE line only (~2s). The owl voice is a MIX treatment: pitch +~5% (asetrate 1.05 + atempo 0.952) + reverb (aecho) in the mix, NOT the gen. Menacing-but-lovable — the torment is because Duo LOVES you, never mean to the user.",
+    "engine": "create-vo-elevenlabs",
+    "provider": "elevenlabs",
+    "voice": "Goose (soft / unhinged)",
+    "voice_id": "<goose-voice-id>",
+    "model": "eleven_v3",
+    "delivery": "[whispering]",
+    "line": "Five… minutes?",
+    "output": "assets/audio/vo-five-a.mp3",
+    "cost_estimate_usd": 0.02
+  },
+  "sfx": {
+    "_comment": "The FAL SFX endpoint is BROKEN (LEARNINGS #24) — synthesize all 4 locally with ffmpeg. FREE, owned by scripts/gen_sfx.py. Params are the exact horror voicing.",
+    "engine": "ffmpeg-synth",
+    "tracks": {
+      "notif": {
+        "output": "assets/audio/sfx/notif.wav",
+        "dur": 0.7,
+        "recipe": "sine 932/1397/1864 Hz, exp-decay envelopes (exp(-5.5t)/exp(-6.5t)*0.5/exp(-8.0t)*0.25), amix, highpass 400, aecho 0.5:0.5:55:0.22, volume 1.5"
+      },
+      "heartbeat": {
+        "output": "assets/audio/sfx/heartbeat.wav",
+        "dur": 1.1,
+        "loopable": true,
+        "recipe": "sine 55 + sine 110 lub-dub, two exp bumps at t=0 and t=0.34, amix, lowpass 180, volume 1.7 — one ~1.1s cycle"
+      },
+      "riser": {
+        "output": "assets/audio/sfx/riser.wav",
+        "dur": 3.0,
+        "recipe": "aevalsrc '0.5*sin(2*PI*(150+(1500-150)*t/3)*t)' 3s + anoisesrc pink through bandpass 1500:w1000 with (t/3)^2*0.6 swell, sweep vol (t/3)*0.7, amix, volume 1.2"
+      },
+      "sting": {
+        "output": "assets/audio/sfx/sting.wav",
+        "dur": 1.4,
+        "recipe": "sine 1800/1912/2360 Hz cluster + sub sine 52 Hz, exp decays, amix, aecho 0.6:0.6:60:0.45, volume 1.3"
+      }
+    }
+  },
+  "beats": [
+    {
+      "id": "b1", "role": "cozy", "source": "plate", "plate": "cozy",
+      "duration": 3.0, "zoom_max": 1.06, "grain": 3,
+      "grade": { "bright": 0.03, "sat": 1.0, "contrast": 1.04, "blackpt": 0.045, "vig": "PI/5.6" },
+      "banner": { "png": "banner-1.png", "tin": 0.45, "by": 160 },
+      "audio": "notif ping at 0.55s (adelay 550)",
+      "_note": "Cozy dark POV, first friendly ping. Reads COZY not green yet — lifted shadows (blackpt 0.045)."
+    },
+    {
+      "id": "b2", "role": "green-creep", "source": "plate", "plate": "cozy",
+      "duration": 3.0, "zoom_max": 1.08, "grain": 3,
+      "grade": { "gm": 0.08, "gs": 0.05, "teal": 0.03, "bright": 0.0, "sat": 0.9, "contrast": 1.06, "blackpt": 0.035, "vig": "PI/5.2" },
+      "banner": { "png": "banner-2.png", "tin": 0.25, "by": 160 },
+      "audio": "notif ping at 3.45s (adelay 3450)",
+      "_note": "Passive-aggressive turn; the room goes green (desaturated, teal-leaning). Same plate re-graded — green CREEPS IN."
+    },
+    {
+      "id": "b3", "role": "hallway-glow", "source": "plate", "plate": "hallway",
+      "duration": 3.0, "zoom_max": 1.10, "grain": 3,
+      "grade": { "gm": 0.03, "gs": 0.03, "teal": 0.05, "bright": -0.01, "sat": 0.78, "contrast": 1.08, "blackpt": 0.03, "vig": "PI/5.2" },
+      "banner": null,
+      "audio": "heartbeat loop starts at 6.0s (adelay 6000, loop=7)",
+      "_note": "Green glow pours under the hallway door. NB plate is electric green — DESATURATE toward teal-horror (sat 0.78)."
+    },
+    {
+      "id": "b4", "role": "distant-mascot", "source": "still", "still": "distant",
+      "duration": 3.0, "zoom_max": 1.06, "grain": 3,
+      "grade": { "gm": 0.04, "gs": 0.04, "teal": 0.04, "bright": -0.02, "sat": 0.82, "contrast": 1.06, "blackpt": 0.03, "vig": "PI/5.2" },
+      "banner": null,
+      "audio": "heartbeat continues; riser starts at 10.6s (adelay 10600)",
+      "_note": "Two-stage scare stage one: Duo at the end of the hall, DISTANT silhouette. Keep him visible (sat 0.82). Framing, NOT redesign."
+    },
+    {
+      "id": "b5", "role": "dark-inside", "source": "plate", "plate": "cozy",
+      "duration": 1.6, "zoom_max": 1.05, "grain": 3,
+      "grade": { "gm": 0.05, "gs": 0.03, "teal": 0.03, "bright": -0.07, "sat": 0.8, "contrast": 1.06, "blackpt": 0.02, "vig": "PI/5.2" },
+      "banner": { "png": "banner-3.png", "tin": 0.08, "by": 160 },
+      "audio": "sting at 13.56s (adelay 13560); music drops to 0.07 at 13.3-13.7s",
+      "_note": "The punch — 'I'm already inside.' Short (1.6s), dark but NOT crushed (blackpt 0.02). Banner snaps fast (tin 0.08). Music DROPS here."
+    },
+    {
+      "id": "b6", "role": "REVEAL", "source": "i2v", "clip": "assets/kling-clips/duo-reveal.mp4",
+      "duration": 4.4, "zoom_max": null, "grain": 2,
+      "grade": { "gm": 0.03, "gs": 0.02, "teal": 0.02, "bright": -0.01, "sat": 0.92, "contrast": 1.06, "blackpt": 0.03, "vig": "PI/5.6" },
+      "banner": null,
+      "audio": "VO ('Five… minutes?') at 15.25s; music held 0.07 until 17.8s then returns to 0.47 by 18.8s",
+      "_note": "THE REVEAL — the Kling clip (no zoompan; it already pushes in). Light-touch grade + LOW grain (2) to preserve Duo. Uncanny BECAUSE he should be cute."
+    },
+    {
+      "id": "b7", "role": "title", "source": "card", "card": "title-card.png",
+      "duration": 2.0, "zoom_max": null, "grain": 0, "grade": null,
+      "fade_in": { "st": 0.25, "d": 0.4, "alpha": true },
+      "banner": null,
+      "audio": "music returns for the button",
+      "_note": "Smash-cut to 'DON'T SKIP.' over black. NO grain (flat blacks betray grain). Title fades in over a black lavfi source."
+    },
+    {
+      "id": "b7b", "role": "endcard", "source": "card", "card": "endcard.png",
+      "duration": 2.0, "zoom_max": null, "grain": 0, "grade": null,
+      "fade_in": { "st": 0.0, "d": 0.35 },
+      "banner": { "png": "banner-4.png", "tin": 0.7, "ease": "160-460*exp(-13*max(0,t-0.7))" },
+      "audio": "music afade-out st21.2 d0.8 (no silent tail)",
+      "_note": "End card fades in, then the REAL push (banner-4) eases over the logo — the ad reaches off-screen into the phone. NO grain. Music afade-outs (no silent tail)."
+    }
+  ],
+  "_note_beats": "8 beats: durations [3.0, 3.0, 3.0, 3.0, 1.6, 4.4, 2.0, 2.0] = 22.0s. Verified against clients/duolingo/video-01-dont-skip-horror/working/build_master.py (still()/video_seg()/grade() calls).",
+  "still_render": {
+    "pre_upscale": "2160x3840",
+    "base_chain": "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,scale=2160:3840",
+    "zoompan": "zoompan=z='min(1+((zmax-1)*on/N),zmax)':d=N:x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s=1080x1920:fps=30",
+    "banner_overlay": "overlay=0:'by-(300+by)*exp(-13*max(0,t-tin))'  (by=160)",
+    "setsar": "setsar=1",
+    "_note": "Per graded still: scale/crop → PRE-UPSCALE 2160x3840 (kills zoompan jitter) → zoompan slow push-in → grade() → setsar=1, banner eased via exponential settle. The reveal (b6) uses video_seg() (no zoompan). Cards use lavfi black / endcard fade."
+  },
+  "grade_fn": {
+    "_note": "The exact grade() curve chain from build_master.py. Lift the black point so cozy reads cozy; desaturate the electric green toward teal; gentle vignette (PI/5.2+). Grain subtle on photographic beats, ZERO on cards.",
+    "curves": "all='0/{blackpt} 0.25/0.23 0.5/0.5 0.78/0.79 1/0.985'",
+    "eq": "contrast={contrast}:saturation={sat}:brightness={bright}",
+    "colorbalance": "rm=-0.03:gm={gm}:bm={teal}:rs=-0.02:gs={gs}:bs={teal}  (only when gm|gs|teal set)",
+    "vignette": "{vig}  (default PI/5.2)",
+    "noise": "alls={grain}:allf=t"
+  },
+  "audio_mix": {
+    "_comment": "8-track amix (normalize=0). The music-drop AUTOMATION (drop to 0.07 at the 13.6s reveal, return for the button) is the load-bearing move — silence louder than a jump-scare. All delays verified against build_master.py.",
+    "loudness_lufs": -14,
+    "amix_inputs": 8,
+    "master_duration_s": 22,
+    "music_automation": "volume=volume='if(lt(t,13.3),0.82,if(lt(t,13.7),0.82-0.75*((t-13.3)/0.4),if(lt(t,17.8),0.07,if(lt(t,18.8),0.07+0.4*((t-17.8)/1.0),0.47))))':eval=frame",
+    "music_fades": "afade=t=in:st=0:d=1.6, afade=t=out:st=21.2:d=0.8",
+    "delays_ms": {
+      "notif_1": 550,
+      "notif_2": 3450,
+      "notif_3": 12150,
+      "heartbeat_loop_start": 6000,
+      "riser": 10600,
+      "sting": 13560,
+      "vo": 15250
+    },
+    "heartbeat": "aloop=loop=7:size=48510, atrim 0:7.4, afade in d0.6 + out st6.8 d0.6, volume 0.5, adelay 6000|6000",
+    "vo_chain": "asetrate=44100*1.05, aresample=44100, atempo=0.952, aecho=0.8:0.5:45:0.2, volume=1.5, adelay 15250|15250",
+    "sfx_volumes": { "notif": 0.8, "heartbeat": 0.5, "riser": 0.5, "sting": 0.9, "vo": 1.5 },
+    "loudnorm": "2-pass loudnorm I=-14:TP=-1.5:LRA=11 (measure pass 1 -> apply measured_* with linear=true)",
+    "mux": "-map 0:v:0 -map 1:a:0 -c:v copy -c:a aac -b:a 192k -t 22 -movflags +faststart"
+  },
+  "encode": {
+    "codec": "libx264",
+    "preset": "slow",
+    "crf": 20,
+    "maxrate": "10M",
+    "bufsize": "20M",
+    "pix_fmt": "yuv420p",
+    "r": 30,
+    "video_track_timescale": 90000,
+    "_note": "v1 (noise=alls=8) → 64Mbps/176MB slop; v2 (alls=3 photographic / 0 on cards) ≈ 25MB. Cap the encode."
+  },
+  "post_production": {
+    "music": { "default": "on", "note": "instrumental music-box bed (force_instrumental); the music-drop automation carries the reveal" },
+    "vo": { "default": "on", "note": "one whispered 'Five… minutes?' line, pitch+reverb in the mix" },
+    "sfx": { "default": "on", "note": "4 ffmpeg-synth tracks (notif / heartbeat / riser / sting) placed by adelay" },
+    "banners": { "default": "on", "note": "HTML iOS-notification hyperframes eased in over the beats — never AI-rendered text" },
+    "end_card": { "default": "on", "note": "HTML end card + the real push (banner-4) easing over the logo; music under it, afade tail (no silent tail)" }
+  },
+  "cost_summary_usd": {
+    "duo_anchor_nb2_x4": 0.32,
+    "plates_nb1_x2": 0.08,
+    "kling_reveal_5s": 0.56,
+    "music_x2_takes": 0.80,
+    "vo_x2_takes": 0.02,
+    "sfx_html_ffmpeg": 0.0,
+    "total": 1.78
+  }
+}

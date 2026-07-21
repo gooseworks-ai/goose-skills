@@ -1,0 +1,194 @@
+{
+  "_comment": "Bioma 'dance story' voiceless UGC dance-story — THE WORKED EXAMPLE. Copy to config.json and edit. An 18s 9:16 fast-cut ad where MUSIC + MOVEMENT + burned TEXT OVERLAYS are the whole ad (NO voiceover, NO auto-captions) and ONE recurring generated creator dances through a gut-health de-shame arc ('I blamed myself -> it was my gut -> I feel like me'). Pipeline: (1) lock an 18s ElevenLabs music_v1 track + librosa beat-grid.json (the DOWNBEATS set the segment durations); (2) lock the creator (gpt-image-2 anchor, 1024x1536, 4 candidates, wardrobe hard-lock); (3) 8 per-shot stills via nano-banana-pro/edit chained to the anchor as PRIMARY ref (bottle 2nd ref on s04/s08); (4) 8 Seedance 2.0 i2v dance clips (~4s, 720p, generate_audio false); (5) 7 Playwright text overlays (bold white, upper-third, hard-pop on the beat, green progress bar + 'Results vary.' disclaimer) + 5-stage ffmpeg compose + cream Bioma end card. Master 1080x1920 h264+aac, 18.0s (8 dance shots 15.5s + 2.5s end card). See scripts/PIPELINE.md for the source scripts (clients/bioma/ad-runs/run-01-dance-story/working/).",
+  "brand_name": "Bioma",
+  "campaign": "Voiceless Dance-Story",
+  "title": "It's not you. It's your bacteria.",
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "duration_sec": 18.0,
+  "aspect_ratio": "9:16",
+  "character": {
+    "_comment": "ONE recurring live-action-style creator, generated + locked once (LOCKED.json). anchor = 1 of 4 gpt-image-2 candidates (1024x1536, quality high). descriptor + wardrobe_lock thread VERBATIM into every still; the anchor PNG is the FIRST (PRIMARY) media ref on all 8 stills. chain_strategy = anchor-ONLY: a second product ref (s04/s08) must NOT override identity. wardrobe HARD-LOCK held across all 8. Drift here < 5% (method anchor-ref); drift > 15% would escalate to face-swap-then-Soul-ID.",
+    "name": "bioma_creator_1",
+    "method": "anchor-ref",
+    "chain_strategy": "anchor-only",
+    "max_drift": 0.05,
+    "appears_in": "8 of 8 dance shots (100%)",
+    "anchor": "generated/character-lock/candidate-anchors/anchor-3.png",
+    "candidates": 4,
+    "descriptor": "Relatable Latina woman around 38, dark wavy shoulder-length hair, warm natural makeup, soft dusty-pink athleisure (matching crop top + high-waist leggings), standing by a window against a warm neutral wall in a sunlit modern home. Realistic candid iPhone look, real-person texture — not a model/studio portrait.",
+    "wardrobe_lock": "soft dusty-pink athleisure: matching crop top + high-waist leggings; barefoot or clean white sneakers; no jacket, no change of outfit across shots",
+    "world_lock": {
+      "set": "sunlit modern home, warm neutral wall by a large window, light wood floor, minimal warm decor",
+      "lighting": "soft natural window light, warm, bright",
+      "color_grade": "warm, airy, slightly cream-lifted",
+      "time_of_day": "morning"
+    },
+    "identity_lock_string": " CRITICAL — she is the SAME woman as the FIRST reference image: keep her face, dark wavy shoulder-length hair, skin tone and her soft dusty-pink athleisure set (matching top and high-waist leggings) IDENTICAL across the shot. Bright sunlit modern home, warm neutral wall by a window, light wood floor. Photorealistic candid iPhone look, real natural skin texture, correct hand anatomy with five fingers, NOT a studio portrait, NOT AI-plastic. Vertical 9:16. No on-screen text, no logos, no watermark.",
+    "_note_identity_lock": "Appended verbatim after every still_prompt (gen_shot_stills.py IDENTITY). The 'correct hand anatomy with five fingers' clause pre-empts the Seedance hand distortion downstream.",
+    "candidates_considered": [
+      { "id": "anchor-1", "desc": "~40, cream loungewear, sunlit kitchen" },
+      { "id": "anchor-2", "desc": "~45, Black, sage athleisure, living room" },
+      { "id": "anchor-3", "desc": "~38, Latina, dusty-pink athleisure, by window", "chosen": true },
+      { "id": "anchor-4", "desc": "~50, blonde bob, beige loungewear" }
+    ]
+  },
+  "music": {
+    "_comment": "Locked FIRST — the delivered track + its librosa BEAT GRID set the timeline. source = generate: ElevenLabs music_v1 from `prompt`, 18s, force_instrumental FALSE (but vocals are SPARSE female hooks only — the overlays carry the message). VOICELESS: this track is the ENTIRE audio bed, NO separate VO, NO auto-captions. Soft intro 0-2s stays minimal so the visual doesn't fight the anticipation; the DROP at ~2.0-2.2s syncs to the Turn beat. No artist names in `prompt` (ElevenLabs ToS filter). See working/request.json (real payload) + working/music-prompt.md (brief).",
+    "source": "generate",
+    "provider": "elevenlabs",
+    "model": "music_v1",
+    "length_ms": 18000,
+    "force_instrumental": false,
+    "bpm": 123.0469,
+    "_note_bpm": "Brief targeted ~124 BPM; the delivered track landed at 123.0469 BPM (beat_interval 0.487619s) — on target. The BEAT GRID, not the plan, sets the cuts.",
+    "prompt": "Upbeat feel-good empowering dance-pop for an 18-second vertical social ad about a woman's joyful transformation. Bright and danceable with warm female vocals, around 124 BPM, four-on-the-floor groove, punchy claps and finger-snaps, plucky bright synths, warm sub-bass, uplifting major key. Confident, celebratory, sunny TikTok glow-up energy. Structure: 0:00-0:02 soft intimate held-back intro (filtered keys and a single soft pulse, anticipation); at 0:02 a DROP where the full beat kicks in with claps, bass and a bright vocal hook on the downbeat; 0:02-0:15 driving danceable full-energy groove with a catchy wordless ooh-oh vocal hook and a few light empowering ad-libs; 0:15-0:18 resolve into a warm satisfied final hook that settles gently for an end card, not an abrupt ending. Vocals: female, warm, joyful, sparse hooky phrases only (leave room for on-screen text). No rap, no melancholy, no aggressive EDM, no profanity. Clean and radio-ready.",
+    "structure": {
+      "soft_intro": "0.0-2.0s soft, intimate, held-back intro (filtered keys + a single soft pulse, anticipation)",
+      "drop": "~2.0s DROP: full beat kicks in, claps + bass + a bright vocal hook land hard on the downbeat (syncs to the Turn)",
+      "groove": "2.0-15.0s driving danceable full-energy groove; wordless ooh-oh hook + a few light empowering ad-libs; sparse female vocals",
+      "resolve": "15.0-18.0s resolve into a warm satisfied final hook that settles gently under the end card (no abrupt cut)"
+    },
+    "vocal_presence": "female, warm, joyful, sparse hooky phrases / vowel hooks ONLY",
+    "outputs": {
+      "audio": "working/music.mp3",
+      "beat_grid": "working/beat-grid.json"
+    }
+  },
+  "beat_grid": {
+    "_comment": "THE BEAT GRID IS GOSPEL. librosa beat_track + onset_detect on the DELIVERED music.mp3; segment durations are SNAPPED to the downbeats, NOT the beat-sheet. If the music changes, re-extract. Extracted values below are the real worked-example grid.",
+    "tool": "librosa.beat.beat_track + librosa.onset.onset_detect",
+    "assume_time_signature": "4/4",
+    "output": "working/beat-grid.json",
+    "bpm": 123.0469,
+    "beat_interval_s": 0.487619,
+    "downbeats": [0.0348, 2.2175, 4.1564, 6.0952, 8.0341, 9.973, 11.9002],
+    "_note": "Downbeats drive the cut points (shots 4-9 land on consecutive downbeats) and the overlay pop-times."
+  },
+  "look_pack": {
+    "_comment": "ONE look pack drives all 8 stills so the arc reads as one continuous home video. aesthetic = the candid-iPhone-vs-polished call (here candid iPhone, handheld micro-jitter intentional). style_descriptor + the character wardrobe/world lock thread verbatim into every still. negative_tail is load-bearing on the i2v step — Seedance distorts hands + garbles the label.",
+    "name": "UGC_SUNLIT_HOME",
+    "aesthetic": "candid iPhone home-video (handheld micro-jitter INTENTIONAL — reads as a real creator, not a gimbal); bright sunlit modern home; NOT a studio portrait, NOT AI-plastic",
+    "palette_anchors": [
+      "warm airy cream-lifted grade",
+      "soft dusty-pink athleisure",
+      "light wood + warm neutral wall",
+      "Bioma teal #1d3d39 (bottle label + optional overlay accent)",
+      "progress-bar green #00a66f"
+    ],
+    "style_descriptor": "Photorealistic candid iPhone home video, bright sunlit modern home, warm neutral wall by a window, light wood floor, warm airy slightly cream-lifted grade, real natural skin texture, vertical 9:16. NOT a studio portrait, NOT AI-plastic.",
+    "negative_tail": "NEGATIVE: distorted or extra fingers, morphing face, warping or garbled bottle label, text artifacts, slow-motion freeze. Correct hand anatomy with five fingers. No on-screen text, no logos, no watermark in the plate (overlays are burned in post)."
+  },
+  "product": {
+    "_comment": "The hero product PNG, passed as a SECOND image_url on the two product shots (s04, s08). The anchor stays the PRIMARY ref so identity holds. The bottle-lock string (below) is appended so nano-banana-pro reproduces the real label instead of hallucinating one.",
+    "image": "clients/bioma/brand-assets/product-photos/bioma-probiotics-bottle.png",
+    "bottle_lock_string": " She holds the product from the SECOND reference image: a dark amber glass bottle with a black cap and a deep teal-green (#1d3d39) label reading 'BIOMA' with a white starburst symbol and the word 'PROBIOTICS' — reproduce that label exactly, do not garble the text."
+  },
+  "keyframe_engine": {
+    "_comment": "Anchor = gpt-image-2 (create-image-gpt-image-fal), 1024x1536 9:16, quality high, 4 candidates. Per-shot stills = nano-banana-pro/edit (create-image-fal). nano-banana-pro is the PERMISSIVE PRIMARY — plain gpt-image-2/edit false-flags benign athleisure/dance prompts via its content checker; nano-banana/edit is the fallback. Thread the anchor as PRIMARY on all 8; add the bottle as a SECOND ref only on s04/s08.",
+    "anchor_model": "gpt-image-2",
+    "anchor_provider": "fal",
+    "anchor_image_size": "1024x1536",
+    "anchor_quality": "high",
+    "still_model": "fal-ai/nano-banana-pro/edit",
+    "still_fallback": "fal-ai/nano-banana/edit",
+    "still_provider": "fal",
+    "aspect_ratio": "9:16",
+    "output_format": "png",
+    "batch_size": 4,
+    "character_ref": "anchor PNG = FIRST (primary) image_url on every still; product bottle = SECOND image_url on s04/s08 only"
+  },
+  "clip_engine": {
+    "_comment": "8 dance i2v clips off the clean stills: Seedance 2.0 image-to-video, ~4s each, 720p, 9:16, generate_audio FALSE (the ad uses our own ElevenLabs track). Lead the prompt with the CHARACTER VERB. Seedance distorts HANDS + garbles the product LABEL — the hand/label negative is critical on s04/s08. NO slow-mo freeze — 'holds/stands/minimal motion', never 'freezes/pauses'. Handheld micro-jitter intentional.",
+    "model": "bytedance/seedance-2.0/image-to-video",
+    "fallback": "fal-ai/bytedance/seedance/v1/pro/image-to-video",
+    "provider": "fal",
+    "resolution": "720p",
+    "aspect_ratio": "9:16",
+    "duration_sec": 4,
+    "generate_audio": false,
+    "batch_size": 3,
+    "motion_opener": "SUBJECT + ACTION VERB LEAD (Seedance prompt rule): the woman does a specific dance action, THEN keep moves simple + handheld. Realistic home video, natural motion.",
+    "negative_tail": " Keep her face, hair and dusty-pink outfit consistent; realistic natural motion. NEGATIVE: distorted or extra fingers, morphing face, warping or garbled bottle label, text artifacts, slow-motion freeze."
+  },
+  "overlays": {
+    "_comment": "The 7 text-overlay PNGs ARE the ad copy — voiceless, NO VO, NO auto-captions. Playwright + Chromium from HTML: bold white (font-weight 800), ~104px (84px on the two long mechanism/proof lines), soft dark text-shadow stack, upper-third (padding 300px 110px 0), 88% safe area, one line per beat, HARD pop on the beat. A brand-accent GREEN progress bar (#00a66f, 78%) fills on the proof overlay (t5/s06); the 'Results vary.' disclaimer sits on the CTA overlay (t7, always-on compliance). accent_color (.b) is the emphasis-word color, legible over the plate.",
+    "engine": "playwright+chromium",
+    "font": "Plus Jakarta Sans",
+    "_note_font": "Beat-sheet/storyboard spec Lexend; the REAL render used Plus Jakarta Sans (webfont). Either bold geometric sans works — load-bearing is weight 800 + the soft dark shadow + upper-third placement.",
+    "font_weight": 800,
+    "font_size_px": 104,
+    "font_size_small_px": 84,
+    "color": "#FFFFFF",
+    "accent_color": "#f0c9d5",
+    "text_shadow": "0 0 14px rgba(0,0,0,.65), 0 4px 22px rgba(0,0,0,.55), 0 2px 6px rgba(0,0,0,.85)",
+    "position": "upper-third",
+    "padding": "300px 110px 0",
+    "safe_area_pct": 88,
+    "progress_bar": {
+      "on_overlay": "t5-bloat",
+      "on_shot": "s06",
+      "width_px": 560,
+      "height_px": 26,
+      "track": "rgba(255,255,255,.35)",
+      "fill_color": "#00a66f",
+      "fill_pct": 78
+    },
+    "disclaimer": {
+      "on_overlay": "t7-cta",
+      "on_shot": "cta",
+      "text": "Results vary.",
+      "font_size_px": 30
+    }
+  },
+  "tableaux": [
+    { "id": "S01", "beat_role": "hook", "t_start": 0.0, "t_end": 2.22, "src_in": 0.0, "uses_product": false, "overlay_text": "I blamed myself for years.", "overlay_key": "t1-hook", "still_prompt": "Hook frame: she stands by the window facing the camera, arms relaxed at her sides, a soft neutral, slightly tired expression. Full-body wide shot.", "motion_hint": "The woman stands and lets out a small breath, her shoulders dropping slightly; very subtle minimal motion. Mostly still, gentle handheld framing. Realistic home video." },
+    { "id": "S02", "beat_role": "turn", "t_start": 2.22, "t_end": 3.68, "src_in": 0.3, "uses_product": false, "overlay_text": "Turns out it was my gut.", "overlay_key": "t2-turn", "still_prompt": "Turn frame: she stands facing camera, posture softening, the very start of a warm smile, hands beginning to lift as if about to move. Medium-full shot.", "motion_hint": "The woman starts to sway and lifts her hands as a smile grows; gentle bounce to a beat. Subtle handheld. Realistic home video." },
+    { "id": "S03", "beat_role": "proof", "t_start": 4.72, "t_end": 6.10, "src_in": 0.5, "uses_product": false, "overlay_text": "Probiotic + prebiotic + postbiotic.", "overlay_key": "t3-mech", "still_prompt": "Proof frame: a relaxed casual dance step-touch, weight shifting onto one foot, smiling, arms loosely out to the sides. Full-body.", "motion_hint": "The woman does a happy step-touch dance, swaying side to side with loose arms, smiling. Light handheld bounce. Realistic home video." },
+    { "id": "S04", "beat_role": "proof", "t_start": 6.18, "t_end": 7.56, "src_in": 0.3, "uses_product": true, "overlay_text": "One capsule.", "overlay_key": "t4-one", "still_prompt": "Proof insert: she holds the bottle up toward the camera with a playful smile, her other hand on her hip. Waist-up framing.", "motion_hint": "The woman holds the bottle up and gives it a small playful shake toward the camera, smiling. Slight push-in. Keep the bottle label readable. Realistic home video." },
+    { "id": "S05", "beat_role": "proof", "t_start": 7.64, "t_end": 9.48, "src_in": 0.4, "uses_product": false, "overlay_text": "Less bloating by week two.", "overlay_key": "t5-bloat", "has_progress_bar": true, "still_prompt": "Proof frame: caught mid twirl/spin, hair and body in motion, joyful expression, slight three-quarter side angle. Full-body.", "motion_hint": "The woman twirls and spins once, her hair swinging, laughing joyfully. The camera follows slightly. Realistic home video." },
+    { "id": "S06", "beat_role": "proof", "t_start": 9.56, "t_end": 11.90, "src_in": 0.3, "uses_product": false, "overlay_text": "I finally feel like me.", "overlay_key": "t6-payoff", "still_prompt": "Proof frame: dancing with arms swinging happily, big smile, facing the camera. Medium-full shot.", "motion_hint": "The woman dances with her arms swinging happily, bouncing to a beat, facing the camera. Handheld. Realistic home video.", "_note": "The t5-bloat progress-bar overlay window spans s05->s06; the t6-payoff line lands on this shot." },
+    { "id": "S07", "beat_role": "payoff", "t_start": 12.00, "t_end": 14.42, "src_in": 0.5, "uses_product": false, "overlay_text": "It's not you. It's your bacteria.", "overlay_key": "t7-cta", "still_prompt": "Payoff frame: both arms raised up in a celebratory cheer, huge genuine smile, chin slightly up. Full-body hero shot.", "motion_hint": "The woman throws both arms up in celebration with a joyful little hop, beaming. Energetic, upbeat. Handheld. Realistic home video." },
+    { "id": "S08", "beat_role": "cta", "t_start": 14.42, "t_end": 15.50, "src_in": 0.0, "uses_product": true, "overlay_text": "It's not you. It's your bacteria.", "overlay_key": "t7-cta", "still_prompt": "CTA frame: she holds the bottle up near her face toward the camera, beaming with joy. Close, waist-up framing.", "motion_hint": "The woman holds the bottle near her face and smiles warmly at the camera with a gentle happy nod. Minimal motion, keep the bottle label readable. Slight push-in. Realistic home video.", "_note": "Held still (src_in 0.0) so the bottle label stays clean; last body shot before the end card. The t7-cta overlay window spans s07->s08." },
+    { "id": "END", "beat_role": "end_card", "t_start": 15.50, "t_end": 18.00, "uses_product": false, "overlay_text": "", "still_prompt": "END CARD — assets/end-cards/end-card-01-cream.png (cream Bioma card + wordmark + bioma.health handle). Static hold, built by the render cap (not i2v). Holds 2.5s with the music settling under it.", "motion_hint": "Static hold (end-card PNG, not i2v)." }
+  ],
+  "overlay_windows": [
+    { "key": "t1-hook", "start": 0.15, "end": 2.22 },
+    { "key": "t2-turn", "start": 2.30, "end": 3.68 },
+    { "key": "t3-mech", "start": 4.72, "end": 6.10 },
+    { "key": "t4-one", "start": 6.18, "end": 7.56 },
+    { "key": "t5-bloat", "start": 7.64, "end": 9.48 },
+    { "key": "t6-payoff", "start": 9.56, "end": 11.90 },
+    { "key": "t7-cta", "start": 12.00, "end": 15.50 }
+  ],
+  "end_card": {
+    "_comment": "The brand end-card PNG, held 2.5s as a segment inside the concat (before the -t 18 cap), with the music settling + fading under it. Not AI-rendered.",
+    "image": "assets/end-cards/end-card-01-cream.png",
+    "hold_sec": 2.50,
+    "handle": "bioma.health"
+  },
+  "audio_mix": {
+    "_comment": "The music is the FULL audio bed — no VO to duck under, no auto-captions. Trim to 18s, afade=t=out:st=17.2:d=0.8 (0.8s fade so the end card breathes, no abrupt cut), aresample=44100, cap the master at -t 18.",
+    "duck_under_vo": false,
+    "master_duration_s": 18.0,
+    "music_trim": "atrim=0:18",
+    "fade_out_st": 17.2,
+    "fade_out_d": 0.8,
+    "resample": 44100,
+    "loudness_note": "the source run did not run a separate loudnorm pass; the delivered music_v1 track was already broadcast-level"
+  },
+  "look": {
+    "grade": "warm airy cream-lifted",
+    "handheld": "intentional micro-jitter (iPhone home-video)",
+    "cut_style": "fast-cut hard cuts, beat-snapped (no dissolves)"
+  },
+  "post_production": {
+    "music": { "default": "on", "note": "the generated ElevenLabs track IS the full bed (no VO, no ducking)" },
+    "overlays": { "default": "on", "note": "the 7 Playwright text PNGs ARE the ad copy — voiceless, hard pop on the beat, upper-third, 88% safe area" },
+    "captions": { "default": "off", "note": "NO YouTube/auto captions — they collide with the overlays (overlays ARE the copy)" },
+    "progress_bar": { "default": "on", "note": "green progress bar (#00a66f, 78%) fills on the proof overlay (s06)" },
+    "disclaimer": { "default": "on", "note": "'Results vary.' on the CTA overlay — always-on compliance" },
+    "end_card": { "default": "on", "note": "cream Bioma end-card PNG holds 2.5s with the music settling under it" }
+  }
+}

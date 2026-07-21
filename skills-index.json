@@ -1,6 +1,6 @@
 {
   "version": "1.2.0",
-  "generated": "2026-07-19",
+  "generated": "2026-07-21",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -421,7 +421,7 @@
       "name": "brand-research",
       "category": "composites",
       "domain": "ads",
-      "description": "Kickoff research for a brand you haven't worked on before — web research, existing-ad analysis from the Meta Ad Library, editorial-grammar profiling, sourced + AI-generated brand assets, hook/CTA libraries, and an ad concept brief. Produces one reusable brand-context pack (brand-summary, visual-identity, competitors, audience, existing-ads, brand-grammar, an asset manifest, and a concept brief) in a single pass. Use when starting on a brand the workspace hasn't touched.",
+      "description": "Kickoff research for a brand you haven't worked on before — web research, direct-competitor analysis, sourced + AI-generated brand assets, hook/CTA libraries, and an ad concept brief. Produces one reusable brand-context pack (brand-summary, visual-identity, competitors, audience, an asset manifest, and a concept brief) in a single pass. Use when starting on a brand the workspace hasn't touched.",
       "tags": "ads, brand, research",
       "path": "skills/ads/composites/brand-research",
       "files": [
@@ -5771,6 +5771,42 @@
       }
     },
     {
+      "slug": "render-mascot-genre-film",
+      "name": "render-mascot-genre-film",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Assemble a mascot genre-film ad (worked example — horror) from a config — a ~22s A24-style POV short where a brand mascot is re-lit (never redesigned) into the genre while the brand's own notification mechanic is dramatized as the scare. This is the FREE deterministic assembly stage — HTML→PNG hyperframes (iOS notification banners + title + end card, never AI-rendered text), 4 ffmpeg-synth SFX (notif ping / heartbeat / riser / reveal sting; the FAL SFX endpoint is broken), per-beat grade (curves/eq/colorbalance/vignette/subtle-grain) + zoompan push-in + eased banner overlays, an 8-track amix with the music dropping to near-silence at the reveal and a 2-pass loudnorm to −14 LUFS, then concat + mux. The mascot anchor, plates, i2v reveal, music, and VO come from create-image-fal / create-video-fal / create-music-elevenlabs / create-vo-elevenlabs. Use for the mascot-genre-film format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-mascot-genre-film",
+      "files": [
+        "skills/ads/capabilities/render-mascot-genre-film/SKILL.md",
+        "skills/ads/capabilities/render-mascot-genre-film/scripts/PIPELINE.md",
+        "skills/ads/capabilities/render-mascot-genre-film/scripts/README.md",
+        "skills/ads/capabilities/render-mascot-genre-film/scripts/config.example.json",
+        "skills/ads/capabilities/render-mascot-genre-film/skill.meta.json",
+        "skills/ads/capabilities/render-mascot-genre-film/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "render-mascot-genre-film",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-mascot-genre-film",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
       "slug": "render-model-comparison-grid",
       "name": "render-model-comparison-grid",
       "category": "capabilities",
@@ -6380,6 +6416,42 @@
         ],
         "installation": {
           "base_command": "npx goose-skills install render-vo-anchored-motion-listicle",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
+      "slug": "render-voiceless-ugc-dance-story",
+      "name": "render-voiceless-ugc-dance-story",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Assemble a voiceless UGC-style dance-story ad from a config — music plus movement plus burned TEXT OVERLAYS are the whole ad (NO voiceover, NO auto-captions) while N per-shot i2v dance clips (one recurring locked creator, one look pack) are each cut to their beat-snapped window from a librosa beat grid and hard-concatenated on the beat, 7 Playwright text-overlay PNGs (bold white, upper-third, 88% safe area, hard-pop on the beat, a brand-accent progress bar plus a Results-vary disclaimer) applied as time-gated overlays, and closed on a brand end-card PNG with the music settling and fading under it — never AI-rendered text. This is the FREE deterministic assembly stage (build overlays plus cut-to-beat plus hard concat plus time-gated overlays plus music mux plus end card); the music, creator, stills, and clips come from create-music-elevenlabs / create-image-gpt-image-fal / create-image-fal / create-video-fal. Use for the voiceless-ugc-dance-story format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-voiceless-ugc-dance-story",
+      "files": [
+        "skills/ads/capabilities/render-voiceless-ugc-dance-story/SKILL.md",
+        "skills/ads/capabilities/render-voiceless-ugc-dance-story/scripts/PIPELINE.md",
+        "skills/ads/capabilities/render-voiceless-ugc-dance-story/scripts/README.md",
+        "skills/ads/capabilities/render-voiceless-ugc-dance-story/scripts/config.example.json",
+        "skills/ads/capabilities/render-voiceless-ugc-dance-story/skill.meta.json",
+        "skills/ads/capabilities/render-voiceless-ugc-dance-story/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "render-voiceless-ugc-dance-story",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-voiceless-ugc-dance-story",
           "supports": [
             "claude",
             "cursor",
