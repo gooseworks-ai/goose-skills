@@ -13,6 +13,11 @@ This is the shared helper every media capability imports. Import it, don't reinv
 
   from media_proxy import fal_generate, fal_generate_video, eleven_music
 
+Every paid call is auto-logged to the app for diagnostics (GOOSE-2862) — successes
+as a `generation` trail, failures as an `api_failure` with the error + prompt — so a
+local skill run isn't a black box. Import `gw_log(...)` to log your own steps/issues
+and `run_id()` to read the current run id. Best-effort; never breaks a render.
+
 FAL inputs that are local files (a product image, an audio track) must be a PUBLIC
 URL — the orchestrator hosts them via the MCP `get_upload_url` → `get_download_url`
 presigned URL and passes that URL in; this module does NOT do MCP uploads.
@@ -22,6 +27,7 @@ import os
 import pathlib
 import time
 import urllib.request
+import uuid
 from urllib.parse import urlparse
 
 import requests
@@ -43,6 +49,59 @@ def _params(tok, agent):
     if pid:
         p["project_id"] = pid
     return p
+
+
+# ── CLI/skill run diagnostics (GOOSE-2862) ───────────────────────────────────
+# A skill running in a LOCAL agent (Claude Code, Cursor, …) is otherwise a black
+# box. `gw_log` POSTs a diagnostic event to the app (`/api/internal/cli-logs`,
+# same creds as the media proxies) so the team can see what happened — and, when
+# a paid call FAILS, exactly why. Every media capability imports this module, so
+# instrumenting here covers video, static images, and audio in one place.
+#
+# Best-effort by contract: a logging failure (bad creds, offline backend, slow
+# endpoint) must NEVER break a render — every path swallows its own errors. Set
+# GW_CLI_LOG_DISABLED=1 to turn it off. The agent can also log richer, non-media
+# events itself via the `log_cli_event` MCP tool; both land in the same table.
+_RUN_ID = os.environ.get("GW_RUN_ID") or f"run-{uuid.uuid4().hex[:12]}"
+
+
+def run_id():
+    """This run's id — env GW_RUN_ID if the orchestrator set one, else a stable
+    per-process id. Groups every event (agent-logged + auto-logged) from one run."""
+    return _RUN_ID
+
+
+def gw_log(message, event_type="info", level="info", *, skill=None, provider=None,
+           model=None, duration_ms=None, details=None):
+    """Record one diagnostic event for this run. Fire-and-forget; never raises.
+
+    event_type: info | step | generation | api_failure | error | blocker |
+                missing_input | confusion
+    """
+    if os.environ.get("GW_CLI_LOG_DISABLED"):
+        return
+    try:
+        api_base, tok, agent = _cfg()
+    except Exception:
+        return  # no creds → nothing to attribute the event to
+    body = {"run_id": _RUN_ID, "message": str(message)[:4000],
+            "event_type": event_type, "level": level, "source": "cli"}
+    skill = skill or os.environ.get("GW_SKILL")
+    if skill:
+        body["skill"] = skill
+    if provider:
+        body["provider"] = provider
+    if model:
+        body["model"] = model
+    if duration_ms is not None:
+        body["duration_ms"] = int(duration_ms)
+    if details is not None:
+        body["details"] = details
+    try:
+        requests.post(api_base + "/api/internal/cli-logs",
+                      params=_params(tok, agent), json=body, timeout=5)
+    except Exception:
+        pass  # diagnostics must never break a render
 
 
 _FAL_RESULT_KEYS = ("images", "videos", "video", "audio", "image", "output",
@@ -141,17 +200,34 @@ def _fal_run(model_path, payload, timeout_s=600, poll_s=3):
     api_base, tok, agent = _cfg()
     base = api_base + "/api/internal/fal-proxy"
     params = _params(tok, agent)
-    sub = requests.post(f"{base}/{model_path}", params=params, json=payload, timeout=120).json()
-    _raise_if_fal_error(sub, model_path)
-    if "status_url" not in sub:  # some models return a result synchronously
-        return sub
-    to_proxy = lambda u: base + urlparse(u).path
-    status_url, response_url = to_proxy(sub["status_url"]), to_proxy(sub["response_url"])
-    request_id = sub.get("request_id") or urlparse(sub["response_url"]).path.rstrip("/").rsplit("/", 1)[-1]
-    _persist_pending(model_path, request_id, status_url, response_url)
-    result = _poll_to_result(model_path, status_url, response_url, params, timeout_s, poll_s)
-    _clear_pending(request_id)
-    return result
+    t0 = time.time()
+    prompt = payload.get("prompt") if isinstance(payload, dict) else None
+    try:
+        sub = requests.post(f"{base}/{model_path}", params=params, json=payload, timeout=120).json()
+        _raise_if_fal_error(sub, model_path)
+        if "status_url" not in sub:  # some models return a result synchronously
+            gw_log(f"FAL {model_path} completed (sync)", "generation", provider="fal",
+                   model=model_path, duration_ms=(time.time() - t0) * 1000)
+            return sub
+        to_proxy = lambda u: base + urlparse(u).path
+        status_url, response_url = to_proxy(sub["status_url"]), to_proxy(sub["response_url"])
+        request_id = sub.get("request_id") or urlparse(sub["response_url"]).path.rstrip("/").rsplit("/", 1)[-1]
+        _persist_pending(model_path, request_id, status_url, response_url)
+        result = _poll_to_result(model_path, status_url, response_url, params, timeout_s, poll_s)
+        _clear_pending(request_id)
+        gw_log(f"FAL {model_path} completed", "generation", provider="fal",
+               model=model_path, duration_ms=(time.time() - t0) * 1000,
+               details={"request_id": request_id})
+        return result
+    except Exception as e:
+        # Auto-log the failure so a stuck/broken model is visible upstream, then
+        # re-raise unchanged (the caller's error handling is untouched).
+        gw_log(f"FAL {model_path} failed: {e}", "api_failure", level="error",
+               provider="fal", model=model_path, duration_ms=(time.time() - t0) * 1000,
+               details={"prompt": (str(prompt)[:1000] if prompt else None),
+                        "payload_keys": sorted(payload.keys()) if isinstance(payload, dict) else None,
+                        "error": str(e)[:2000]})
+        raise
 
 
 def resume_fal(request_id, timeout_s=600, poll_s=3):
@@ -220,10 +296,18 @@ def eleven_music(prompt, music_length_ms, out_path, force_instrumental=True, tim
     """ElevenLabs Music through the proxy → writes the mp3 to out_path, returns it."""
     api_base, tok, agent = _cfg()
     url = api_base + "/api/internal/elevenlabs-proxy/v1/music"
-    r = requests.post(url, params=_params(tok, agent), timeout=timeout_s,
-                      json={"prompt": prompt, "music_length_ms": int(music_length_ms),
-                            "force_instrumental": force_instrumental})
-    r.raise_for_status()
+    t0 = time.time()
+    try:
+        r = requests.post(url, params=_params(tok, agent), timeout=timeout_s,
+                          json={"prompt": prompt, "music_length_ms": int(music_length_ms),
+                                "force_instrumental": force_instrumental})
+        r.raise_for_status()
+    except Exception as e:
+        gw_log(f"ElevenLabs music failed: {e}", "api_failure", level="error",
+               provider="elevenlabs", model="music", duration_ms=(time.time() - t0) * 1000,
+               details={"prompt": str(prompt)[:500], "error": str(e)[:2000],
+                        "status": getattr(getattr(e, "response", None), "status_code", None)})
+        raise
     pathlib.Path(out_path).write_bytes(r.content)
     return out_path
 
@@ -238,8 +322,16 @@ def eleven_tts(text, voice_id, out_path, model_id="eleven_v3", timeout_s=180):
     """ElevenLabs text-to-speech (VO) through the proxy → writes mp3 to out_path."""
     api_base, tok, agent = _cfg()
     url = api_base + f"/api/internal/elevenlabs-proxy/v1/text-to-speech/{voice_id}"
-    r = requests.post(url, params=_params(tok, agent), timeout=timeout_s,
-                      json={"text": text, "model_id": model_id})
-    r.raise_for_status()
+    t0 = time.time()
+    try:
+        r = requests.post(url, params=_params(tok, agent), timeout=timeout_s,
+                          json={"text": text, "model_id": model_id})
+        r.raise_for_status()
+    except Exception as e:
+        gw_log(f"ElevenLabs TTS failed: {e}", "api_failure", level="error",
+               provider="elevenlabs", model=model_id, duration_ms=(time.time() - t0) * 1000,
+               details={"voice_id": voice_id, "text": str(text)[:500], "error": str(e)[:2000],
+                        "status": getattr(getattr(e, "response", None), "status_code", None)})
+        raise
     pathlib.Path(out_path).write_bytes(r.content)
     return out_path
