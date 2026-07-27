@@ -1,251 +1,439 @@
 #!/usr/bin/env python3
-"""
-Search Twitter/X posts using Apify Tweet Scraper.
-Uses Twitter native search syntax (since:/until:) for date filtering
-since the actor's date params are unreliable.
+"""Search public X posts with an explicitly selected Apify Actor."""
 
-Usage:
-  python3 search_twitter.py --query "YourCompany" --since 2026-02-15 --until 2026-02-23 --max-tweets 10
-  python3 search_twitter.py --query "@yourhandle" --max-tweets 20 --output summary
-"""
-
+import argparse
+from datetime import date
 import json
 import os
 import sys
-import argparse
+import time
+
 import requests
-import time as time_mod
-from datetime import datetime, timezone
 
 
-ACTOR_ID = "apidojo~tweet-scraper"
-
-GOOSEWORKS_API_BASE = os.environ.get("GOOSEWORKS_API_BASE", "https://api.gooseworks.ai")
+ACTOR_IDS = {
+    "apidojo": "apidojo~tweet-scraper",
+    "xquik": "xquik~x-tweet-scraper",
+}
+DEFAULT_ACTOR = "apidojo"
+APIFY_API_BASE = "https://api.apify.com/v2"
+GOOSEWORKS_API_BASE = os.environ.get(
+    "GOOSEWORKS_API_BASE",
+    "https://api.gooseworks.ai",
+)
 GOOSEWORKS_API_KEY = os.environ.get("GOOSEWORKS_API_KEY")
+BASE_URL = (
+    f"{GOOSEWORKS_API_BASE}/v1/proxy/apify"
+    if GOOSEWORKS_API_KEY
+    else APIFY_API_BASE
+)
+POLL_INTERVAL_SECONDS = 5
+REQUEST_TIMEOUT_SECONDS = 30
+TERMINAL_FAILURE_STATUSES = {"FAILED", "ABORTED", "TIMED-OUT"}
+QUERY_TYPES = {
+    "latest": "Latest",
+    "top": "Top",
+    "latest+top": "Latest + Top",
+}
 
-if GOOSEWORKS_API_KEY:
-    BASE_URL = f"{GOOSEWORKS_API_BASE}/v1/proxy/apify"
-else:
-    BASE_URL = "https://api.apify.com/v2"
+
+def positive_int(value):
+    """Parse a positive integer for argparse."""
+    parsed = int(value)
+    if parsed < 1:
+        raise argparse.ArgumentTypeError("value must be at least 1")
+    return parsed
 
 
-def get_token(cli_token=None):
-    """Get API token from CLI arg, GOOSEWORKS_API_KEY, or APIFY_API_TOKEN env var."""
-    token = cli_token or GOOSEWORKS_API_KEY or os.environ.get("APIFY_API_TOKEN")
+def result_cap(value):
+    """Parse the minimum result cap accepted by both Actor schemas."""
+    parsed = positive_int(value)
+    if parsed < 20:
+        raise argparse.ArgumentTypeError("result cap must be at least 20")
+    return parsed
+
+
+def iso_date(value):
+    """Parse and normalize an ISO date for argparse."""
+    try:
+        return date.fromisoformat(value).isoformat()
+    except ValueError as error:
+        raise argparse.ArgumentTypeError("date must use YYYY-MM-DD") from error
+
+
+def get_token():
+    """Return a Gooseworks or Apify API token from the environment."""
+    token = GOOSEWORKS_API_KEY or os.environ.get("APIFY_API_TOKEN")
     if not token:
-        print("Error: Set GOOSEWORKS_API_KEY or APIFY_API_TOKEN env var.", file=sys.stderr)
-        sys.exit(1)
+        raise RuntimeError(
+            "Set GOOSEWORKS_API_KEY or APIFY_API_TOKEN before starting a run."
+        )
     return token
 
 
+def authorization_headers(token):
+    """Build headers without placing credentials in a URL."""
+    return {
+        "Accept": "application/json",
+        "Authorization": f"Bearer {token}",
+    }
+
+
+def parse_response(response, label):
+    """Raise useful HTTP and JSON errors for one API response."""
+    response.raise_for_status()
+    try:
+        return response.json()
+    except ValueError as error:
+        raise RuntimeError(f"{label} returned invalid JSON.") from error
+
+
+def unwrap_data(payload):
+    """Return an Apify response's data value when present."""
+    if isinstance(payload, dict) and "data" in payload:
+        return payload["data"]
+    return payload
+
+
 def build_search_term(query, since=None, until=None):
-    """
-    Build Twitter search term with native date operators.
-
-    The apidojo/tweet-scraper actor ignores its own date params,
-    so we embed since:/until: directly into the search query.
-    Twitter's advanced search syntax handles date filtering server-side.
-
-    Args:
-        query: Search query string
-        since: Start date as YYYY-MM-DD string (inclusive)
-        until: End date as YYYY-MM-DD string (exclusive)
-
-    Returns:
-        Search term string with date operators embedded
-    """
-    term = f'"{query}"'
+    """Preserve an X query and append optional native date operators."""
+    term = query.strip()
+    if not term:
+        raise ValueError("Search query cannot be empty.")
     if since:
-        term += f" since:{since}"
+        term = f"{term} since:{since}"
     if until:
-        term += f" until:{until}"
+        term = f"{term} until:{until}"
     return term
 
 
-def run_apify_actor(token, search_terms, max_tweets=50, timeout=300):
-    """
-    Run the Apify Tweet Scraper actor and return results.
+def abort_run(session, run_id, headers):
+    """Best-effort abort for a run that outlives the local wait budget."""
+    try:
+        response = session.post(
+            f"{BASE_URL}/actor-runs/{run_id}/abort",
+            headers=headers,
+            timeout=REQUEST_TIMEOUT_SECONDS,
+        )
+        response.raise_for_status()
+    except requests.RequestException as error:
+        print(f"Warning: could not abort Actor run {run_id}: {error}", file=sys.stderr)
 
-    Args:
-        token: Apify API token
-        search_terms: List of search term strings
-        max_tweets: Maximum tweets to scrape
-        timeout: Max seconds to wait for the run to complete
 
-    Returns:
-        List of tweet dicts from the actor's dataset
-    """
-    run_input = {
+def build_run_input(actor, search_terms, max_tweets, query_type):
+    """Build one Actor's input without mixing provider-specific fields."""
+    if actor == "apidojo":
+        if query_type != "latest":
+            raise ValueError("--query-type is only supported with --actor xquik.")
+        return {
+            "searchTerms": search_terms,
+            "maxTweets": max_tweets,
+            "searchMode": "live",
+        }
+
+    return {
         "searchTerms": search_terms,
-        "maxTweets": max_tweets,
-        "searchMode": "live",
+        "maxItems": max_tweets,
+        "queryType": QUERY_TYPES[query_type],
+        "outputVariant": "rich",
+        "fieldStyle": "camelCase",
+        "includeSearchTerms": True,
     }
 
-    print(f"Starting Apify actor run ({ACTOR_ID})...", file=sys.stderr)
-    print(f"Search terms: {search_terms}", file=sys.stderr)
 
-    resp = requests.post(
-        f"{BASE_URL}/acts/{ACTOR_ID}/runs",
+def run_apify_actor(
+    token,
+    search_terms,
+    max_tweets=50,
+    timeout=300,
+    query_type="latest",
+    actor=DEFAULT_ACTOR,
+    session=requests,
+    sleep=time.sleep,
+    clock=time.monotonic,
+):
+    """Run the Actor, wait for a terminal status, and return dataset rows."""
+    if actor not in ACTOR_IDS:
+        raise ValueError(f"Unsupported Actor route: {actor}")
+    actor_id = ACTOR_IDS[actor]
+    run_input = build_run_input(actor, search_terms, max_tweets, query_type)
+    headers = authorization_headers(token)
+    start_headers = {**headers, "Content-Type": "application/json"}
+
+    print(f"Starting paid Apify Actor run ({actor_id}).", file=sys.stderr)
+    print(f"Run-wide item cap: {max_tweets}", file=sys.stderr)
+
+    start_response = session.post(
+        f"{BASE_URL}/acts/{actor_id}/runs",
+        headers=start_headers,
         json=run_input,
-        params={"token": token},
+        timeout=REQUEST_TIMEOUT_SECONDS,
     )
-    resp.raise_for_status()
-    run_data = resp.json()
-    run_id = run_data["data"]["id"]
-    print(f"Run started (ID: {run_id})", file=sys.stderr)
+    run_data = unwrap_data(parse_response(start_response, "Actor start"))
+    if not isinstance(run_data, dict) or not run_data.get("id"):
+        raise RuntimeError("Actor start response did not include a run ID.")
 
-    # Poll for completion
-    deadline = time_mod.time() + timeout
-    status_data = None
-    while time_mod.time() < deadline:
-        status_resp = requests.get(
-            f"{BASE_URL}/acts/{ACTOR_ID}/runs/{run_id}",
-            params={"token": token},
-        )
-        status_resp.raise_for_status()
-        status_data = status_resp.json()
-        status = status_data["data"]["status"]
+    run_id = run_data["id"]
+    deadline = clock() + timeout
 
+    while True:
+        status = run_data.get("status")
         if status == "SUCCEEDED":
-            print("Scraping complete.", file=sys.stderr)
             break
-        elif status in ("FAILED", "ABORTED", "TIMED-OUT"):
-            print(f"Actor run {status}.", file=sys.stderr)
-            raise RuntimeError(f"Actor run {status}: {json.dumps(status_data['data'], indent=2)}")
+        if status in TERMINAL_FAILURE_STATUSES:
+            detail = run_data.get("statusMessage") or "No status message returned."
+            raise RuntimeError(f"Actor run {status}: {detail}")
+        if clock() >= deadline:
+            abort_run(session, run_id, headers)
+            raise TimeoutError(
+                f"Actor run exceeded {timeout} seconds and an abort was requested."
+            )
 
-        print(f"Status: {status}...", file=sys.stderr)
-        time_mod.sleep(5)
-    else:
-        raise TimeoutError(f"Actor run did not complete within {timeout}s")
+        sleep(POLL_INTERVAL_SECONDS)
+        status_response = session.get(
+            f"{BASE_URL}/actor-runs/{run_id}",
+            headers=headers,
+            timeout=REQUEST_TIMEOUT_SECONDS,
+        )
+        run_data = unwrap_data(parse_response(status_response, "Actor status"))
+        if not isinstance(run_data, dict):
+            raise RuntimeError("Actor status response did not include run data.")
 
-    # Fetch dataset items
-    dataset_id = status_data["data"]["defaultDatasetId"]
-    dataset_resp = requests.get(
+    dataset_id = run_data.get("defaultDatasetId")
+    if not dataset_id:
+        raise RuntimeError("Successful Actor run did not include a dataset ID.")
+
+    dataset_response = session.get(
         f"{BASE_URL}/datasets/{dataset_id}/items",
-        params={"token": token, "format": "json"},
+        headers=headers,
+        params={"clean": "true", "format": "json"},
+        timeout=REQUEST_TIMEOUT_SECONDS,
     )
-    dataset_resp.raise_for_status()
-    tweets = dataset_resp.json()
-    print(f"Fetched {len(tweets)} tweets.", file=sys.stderr)
-    return tweets
+    rows = unwrap_data(parse_response(dataset_response, "Actor dataset"))
+    if not isinstance(rows, list):
+        raise RuntimeError("Actor dataset response was not a JSON array.")
+    return rows
+
+
+def partition_actor_rows(rows):
+    """Separate tweet records from control rows."""
+    tweets = []
+    diagnostics = []
+    reports = []
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        result_type = row.get("resultType")
+        if result_type == "diagnostic":
+            diagnostics.append(row)
+        elif result_type == "run-report":
+            reports.append(row)
+        else:
+            tweets.append(row)
+    return tweets, diagnostics, reports
 
 
 def dedup_tweets(tweets):
-    """Deduplicate tweets by ID or URL."""
+    """Deduplicate tweets by stable identifiers or content."""
     seen = set()
     deduped = []
-    for t in tweets:
-        tid = t.get("id") or t.get("twitterUrl") or t.get("url", str(id(t)))
-        if tid not in seen:
-            seen.add(tid)
-            deduped.append(t)
+    for tweet in tweets:
+        key = (
+            tweet.get("id")
+            or tweet.get("restId")
+            or tweet.get("tweetUrl")
+            or tweet.get("twitterUrl")
+            or tweet.get("url")
+            or json.dumps(tweet, sort_keys=True, default=str)
+        )
+        if key not in seen:
+            seen.add(key)
+            deduped.append(tweet)
     return deduped
 
 
 def filter_tweets(tweets, keywords=None):
-    """
-    Client-side keyword filtering (OR logic, case-insensitive).
-
-    Args:
-        tweets: List of tweet dicts
-        keywords: Optional list of keywords to filter by
-
-    Returns:
-        Filtered list of tweets
-    """
+    """Apply an optional case-insensitive OR keyword filter."""
     if not keywords:
         return tweets
 
-    kw_lower = [k.lower() for k in keywords]
-    filtered = []
-    for t in tweets:
-        text = " ".join([
-            str(t.get("text", "")),
-            str(t.get("fullText", "")),
-        ]).lower()
-        if any(kw in text for kw in kw_lower):
-            filtered.append(t)
-    return filtered
+    normalized_keywords = [keyword.casefold() for keyword in keywords if keyword]
+    return [
+        tweet
+        for tweet in tweets
+        if any(
+            keyword
+            in " ".join(
+                [
+                    str(tweet.get("text", "")),
+                    str(tweet.get("fullText", "")),
+                    str(tweet.get("full_text", "")),
+                ]
+            ).casefold()
+            for keyword in normalized_keywords
+        )
+    ]
+
+
+def integer_value(value):
+    """Convert numeric output fields to sortable integers."""
+    try:
+        return int(value or 0)
+    except (TypeError, ValueError):
+        return 0
+
+
+def like_count(tweet):
+    """Read a like count from supported field styles."""
+    return integer_value(tweet.get("likeCount", tweet.get("like_count", 0)))
 
 
 def format_summary(tweets):
-    """Format tweets as a human-readable summary table."""
-    lines = []
-    lines.append(f"{'#':<4} {'Likes':<7} {'RTs':<6} {'Author':<20} {'Text'}")
-    lines.append("-" * 100)
-    for i, t in enumerate(tweets, 1):
-        text = (t.get("text") or t.get("fullText") or "")[:60].replace("\n", " ")
-        likes = t.get("likeCount", 0)
-        rts = t.get("retweetCount", 0)
-        author = ""
-        if isinstance(t.get("author"), dict):
-            author = t["author"].get("userName", "")
-        elif t.get("author"):
-            author = str(t["author"])
-        author = author[:18]
-        lines.append(f"{i:<4} {likes:<7} {rts:<6} {author:<20} {text}")
+    """Format tweet rows as a compact table."""
+    lines = [f"{'#':<4} {'Likes':<7} {'Reposts':<9} {'Author':<20} Text"]
+    lines.append("-" * 104)
+    for index, tweet in enumerate(tweets, 1):
+        text = (
+            tweet.get("text")
+            or tweet.get("fullText")
+            or tweet.get("full_text")
+            or ""
+        )
+        text = str(text)[:60].replace("\n", " ")
+        author = tweet.get("author") if isinstance(tweet.get("author"), dict) else {}
+        username = (
+            author.get("userName")
+            or author.get("username")
+            or tweet.get("authorUsername")
+            or tweet.get("author_username")
+            or ""
+        )
+        reposts = integer_value(
+            tweet.get("retweetCount", tweet.get("retweet_count", 0))
+        )
+        lines.append(
+            f"{index:<4} {like_count(tweet):<7} {reposts:<9} "
+            f"{str(username)[:18]:<20} {text}"
+        )
     return "\n".join(lines)
 
 
-def main():
+def report_control_rows(diagnostics, reports):
+    """Describe non-data rows without mixing them into tweet output."""
+    for diagnostic in diagnostics:
+        status = diagnostic.get("status", "unknown")
+        message = diagnostic.get("message", "No diagnostic message returned.")
+        print(f"Actor diagnostic ({status}): {message}", file=sys.stderr)
+    for report in reports:
+        status = report.get("status", "completed")
+        print(f"Actor run report: {status}", file=sys.stderr)
+
+
+def build_parser():
+    """Create the command-line parser."""
     parser = argparse.ArgumentParser(
-        description="Search Twitter/X posts using Apify",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
-Examples:
-  # Search for a company with date range
-  %(prog)s --query "YourCompany" --since 2026-02-15 --until 2026-02-23
-
-  # Quick summary of recent mentions
-  %(prog)s --query "@yourhandle" --max-tweets 20 --output summary
-
-  # Search without date filtering
-  %(prog)s --query "AI content marketing" --max-tweets 50
-""",
+        description="Search public X posts with a selected Apify Actor."
     )
+    parser.add_argument(
+        "--query",
+        required=True,
+        help="X search query. Existing operators are preserved.",
+    )
+    parser.add_argument(
+        "--since",
+        type=iso_date,
+        help="Inclusive start date in YYYY-MM-DD format.",
+    )
+    parser.add_argument(
+        "--until",
+        type=iso_date,
+        help="Exclusive end date in YYYY-MM-DD format.",
+    )
+    parser.add_argument(
+        "--max-tweets",
+        type=result_cap,
+        default=50,
+        help="Run-wide result cap. Default: 50.",
+    )
+    parser.add_argument(
+        "--query-type",
+        choices=sorted(QUERY_TYPES),
+        default="latest",
+        help="Xquik search ranking mode. Default: latest.",
+    )
+    parser.add_argument(
+        "--actor",
+        choices=tuple(ACTOR_IDS),
+        default=DEFAULT_ACTOR,
+        help="Tweet Actor route. Default: apidojo.",
+    )
+    parser.add_argument(
+        "--keywords",
+        help="Optional comma-separated client-side filter with OR logic.",
+    )
+    parser.add_argument(
+        "--output",
+        choices=["json", "summary"],
+        default="json",
+        help="Output format. Default: json.",
+    )
+    parser.add_argument(
+        "--timeout",
+        type=positive_int,
+        default=300,
+        help="Maximum seconds to wait before requesting an abort. Default: 300.",
+    )
+    return parser
 
-    parser.add_argument("--query", required=True,
-                        help="Search query (will be quoted in Twitter search)")
-    parser.add_argument("--since", help="Start date YYYY-MM-DD (inclusive, uses Twitter since: operator)")
-    parser.add_argument("--until", help="End date YYYY-MM-DD (exclusive, uses Twitter until: operator)")
-    parser.add_argument("--max-tweets", type=int, default=50,
-                        help="Max tweets to scrape (default: 50)")
-    parser.add_argument("--keywords", help="Additional keywords to filter results (comma-separated, OR logic)")
-    parser.add_argument("--output", choices=["json", "summary"], default="json",
-                        help="Output format (default: json)")
-    parser.add_argument("--token", help="Apify API token (or set APIFY_API_TOKEN env var)")
-    parser.add_argument("--timeout", type=int, default=300,
-                        help="Max seconds to wait for Apify run (default: 300)")
 
+def main():
+    """Run the command-line workflow."""
+    parser = build_parser()
     args = parser.parse_args()
+    if args.since and args.until and args.since >= args.until:
+        parser.error("--since must be earlier than --until")
 
-    token = get_token(args.token)
+    try:
+        token = get_token()
+        search_term = build_search_term(args.query, args.since, args.until)
+        rows = run_apify_actor(
+            token,
+            [search_term],
+            max_tweets=args.max_tweets,
+            timeout=args.timeout,
+            query_type=args.query_type,
+            actor=args.actor,
+        )
+        tweets, diagnostics, reports = partition_actor_rows(rows)
+        report_control_rows(diagnostics, reports)
+        tweets = dedup_tweets(tweets)
 
-    # Build search term with date operators embedded
-    search_term = build_search_term(args.query, since=args.since, until=args.until)
+        if args.keywords:
+            keywords = [
+                keyword.strip()
+                for keyword in args.keywords.split(",")
+                if keyword.strip()
+            ]
+            tweets = filter_tweets(tweets, keywords)
 
-    # Run actor
-    tweets = run_apify_actor(token, [search_term], max_tweets=args.max_tweets, timeout=args.timeout)
-
-    # Dedup
-    tweets = dedup_tweets(tweets)
-
-    # Optional keyword filtering
-    if args.keywords:
-        keywords = [k.strip() for k in args.keywords.split(",")]
-        tweets = filter_tweets(tweets, keywords=keywords)
-
-    # Sort by likes descending
-    tweets.sort(key=lambda t: t.get("likeCount", 0), reverse=True)
-
-    print(f"Results: {len(tweets)} tweets after filtering.", file=sys.stderr)
-
-    # Output
-    if args.output == "summary":
-        print(format_summary(tweets))
-    else:
-        print(json.dumps(tweets, indent=2))
+        tweets.sort(key=like_count, reverse=True)
+        print(f"Returned {len(tweets)} tweet records.", file=sys.stderr)
+        if args.output == "summary":
+            print(format_summary(tweets))
+        else:
+            print(json.dumps(tweets, indent=2, ensure_ascii=False))
+        return 0
+    except (
+        KeyError,
+        RuntimeError,
+        TimeoutError,
+        TypeError,
+        ValueError,
+        requests.RequestException,
+    ) as error:
+        print(f"Error: {error}", file=sys.stderr)
+        return 1
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

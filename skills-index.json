@@ -1,6 +1,6 @@
 {
   "version": "1.3.0",
-  "generated": "2026-08-14",
+  "generated": "2026-08-17",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -8163,7 +8163,7 @@
       "name": "twitter-mention-tracker",
       "category": "capabilities",
       "domain": "monitoring",
-      "description": ">",
+      "description": "Search public X posts with an existing Apify route or Xquik X Tweet Scraper. Track mentions, competitors, date ranges, engagement, and recurring conversations.",
       "tags": "monitoring",
       "path": "skills/monitoring/capabilities/twitter-mention-tracker",
       "files": [
@@ -8177,6 +8177,16 @@
         "tags": [
           "monitoring"
         ],
+        "providers": [
+          "Apidojo",
+          "Xquik"
+        ],
+        "actor_ids": [
+          "apidojo~tweet-scraper",
+          "xquik~x-tweet-scraper"
+        ],
+        "xquik_actor_url": "https://apify.com/xquik/x-tweet-scraper",
+        "example_prompt": "Find recent public X posts mentioning my product and summarize the strongest engagement signals.",
         "installation": {
           "base_command": "npx goose-skills install twitter-mention-tracker",
           "supports": [
@@ -8924,6 +8934,39 @@
         "source": "orthogonal",
         "installation": {
           "base_command": "npx goose-skills install website-screenshot-notte",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "x-follower-scraper",
+      "name": "x-follower-scraper",
+      "category": "capabilities",
+      "domain": "social",
+      "description": "Export public X audiences with Xquik X Follower Scraper on Apify. Compare followers, following, verified users, lists, communities, filters, and audience overlap.",
+      "tags": "social",
+      "path": "skills/social/capabilities/x-follower-scraper",
+      "files": [
+        "skills/social/capabilities/x-follower-scraper/SKILL.md",
+        "skills/social/capabilities/x-follower-scraper/scripts/export_x_audience.py",
+        "skills/social/capabilities/x-follower-scraper/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "x-follower-scraper",
+        "category": "capabilities",
+        "tags": [
+          "social"
+        ],
+        "provider": "Xquik",
+        "actor_id": "xquik~x-follower-scraper",
+        "actor_url": "https://apify.com/xquik/x-follower-scraper",
+        "example_prompt": "Compare the public follower audiences for these X accounts and summarize their overlap.",
+        "installation": {
+          "base_command": "npx goose-skills install x-follower-scraper",
           "supports": [
             "claude",
             "cursor",
