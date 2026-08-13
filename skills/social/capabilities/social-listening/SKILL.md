@@ -52,22 +52,16 @@ curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/orthogonal/run \
 Check what's being posted on X/Twitter:
 
 ```bash
-curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/orthogonal/run \
-  -H "Authorization: Bearer $GOOSEWORKS_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"api":"scrapecreators","path":"/v1/twitter/user-tweets","query":{"handle":"NotionHQ"}}'
+gooseworks call scrapecreators /v1/twitter/user-tweets --query='{"handle":"NotionHQ"}'
 ```
 
 Check LinkedIn company activity:
 
 ```bash
-curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/orthogonal/run \
-  -H "Authorization: Bearer $GOOSEWORKS_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"api":"scrapecreators","path":"/v1/linkedin/company","query":{"url":"https://linkedin.com/company/notion"}}'
+gooseworks call scrapecreators /v1/linkedin/company/posts --query='{"url":"https://linkedin.com/company/notion"}'
 ```
 
-> **Note:** Scrape Creators does not have a dedicated "company posts" endpoint. Use `/v1/linkedin/company` to get company page data, or `/v1/linkedin/post` with a specific post URL.
+Use `/v1/linkedin/company` when only the company page is needed, and `/v1/linkedin/post` for one specific post URL.
 
 ### Step 3: Deep Scrape Key Pages with Scrapegraph
 
@@ -94,10 +88,7 @@ curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/orthogonal/run \
   -d '{"api":"exa","path":"/search","body":{"query":"Slack reviews complaints praise 2025 2026","numResults":20,"contents":{"text":true}}}'
 
 # Step 2: Their social presence
-curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/orthogonal/run \
-  -H "Authorization: Bearer $GOOSEWORKS_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"api":"scrapecreators","path":"/v1/twitter/user-tweets","query":{"handle":"SlackHQ"}}'
+gooseworks call scrapecreators /v1/twitter/user-tweets --query='{"handle":"SlackHQ"}'
 ```
 
 **User:** "Monitor competitor launches in the AI space"

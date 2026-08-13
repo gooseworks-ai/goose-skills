@@ -2,7 +2,7 @@
   "slug": "social-media-scraping-scrapecreators",
   "category": "capabilities",
   "tags": ["social", "research-tools"],
-  "source": "orthogonal",
+  "source": "scrapecreators",
   "deprecated": true,
   "superseded_by": "scrapecreators-api",
   "installation": {

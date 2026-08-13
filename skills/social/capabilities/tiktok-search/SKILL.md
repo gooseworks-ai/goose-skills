@@ -1,7 +1,7 @@
 ---
 name: tiktok-search
 description: Search TikTok - find profiles, videos, hashtags, and trending content
-source: orthogonal
+source: scrapecreators
 ---
 
 
@@ -9,15 +9,7 @@ source: orthogonal
 
 ## Setup
 
-Read your credentials from ~/.gooseworks/credentials.json:
-```bash
-export GOOSEWORKS_API_KEY=$(python3 -c "import json;print(json.load(open('$HOME/.gooseworks/credentials.json'))['api_key'])")
-export GOOSEWORKS_API_BASE=$(python3 -c "import json;print(json.load(open('$HOME/.gooseworks/credentials.json')).get('api_base','https://api.gooseworks.ai'))")
-```
-
-If ~/.gooseworks/credentials.json does not exist, tell the user to run: `npx gooseworks login`
-
-All endpoints use Bearer auth: `-H "Authorization: Bearer $GOOSEWORKS_API_KEY"`
+Use `scrapecreators-api` for authentication and current endpoint guidance. With GooseWorks, run `npx gooseworks login` once; the commands below use the managed ScrapeCreators key.
 
 
 Search TikTok for profiles, videos, and hashtag content.
@@ -31,46 +23,26 @@ Search TikTok for profiles, videos, and hashtag content.
 
 ## How It Works
 
-Uses the Scrape Creators API via Orthogonal to scrape TikTok data including profiles, hashtags, and trending content.
+Uses the ScrapeCreators API through its direct GooseWorks proxy.
 
 ## Usage
 
 ### Get TikTok Profile
 
 ```bash
-curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/orthogonal/run \
-  -H "Authorization: Bearer $GOOSEWORKS_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"api":"scrapecreators","path":"/v1/tiktok/profile","query":{"handle":"charlidamelio"}}'
+gooseworks call scrapecreators /v1/tiktok/profile --query='{"handle":"charlidamelio"}'
 ```
-
-<details>
-<summary>curl equivalent</summary>
-
-```bash
-curl -X POST "https://api.orth.sh/v1/run" \
-
-  -H "Content-Type: application/json" \
-  -d '{"api":"scrapecreators","path":"/v1/tiktok/profile","query":{"handle":"charlidamelio"}}'
-```
-</details>
 
 ### Search Hashtag Videos
 
 ```bash
-curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/orthogonal/run \
-  -H "Authorization: Bearer $GOOSEWORKS_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"api":"scrapecreators","path":"/v1/tiktok/search/hashtag","query":{"hashtag":"tech"}}'
+gooseworks call scrapecreators /v1/tiktok/search/hashtag --query='{"hashtag":"tech"}'
 ```
 
 ### Get Trending Feed
 
 ```bash
-curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/orthogonal/run \
-  -H "Authorization: Bearer $GOOSEWORKS_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"api":"scrapecreators","path":"/v1/tiktok/get-trending-feed","query":{"region":"US"}}'
+gooseworks call scrapecreators /v1/tiktok/get-trending-feed --query='{"region":"US"}'
 ```
 
 ## Parameters
@@ -109,26 +81,17 @@ curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/orthogonal/run \
 
 **User:** "Look up charlidamelio on TikTok"
 ```bash
-curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/orthogonal/run \
-  -H "Authorization: Bearer $GOOSEWORKS_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"api":"scrapecreators","path":"/v1/tiktok/profile","query":{"handle":"charlidamelio"}}'
+gooseworks call scrapecreators /v1/tiktok/profile --query='{"handle":"charlidamelio"}'
 ```
 
 **User:** "What's trending on TikTok?"
 ```bash
-curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/orthogonal/run \
-  -H "Authorization: Bearer $GOOSEWORKS_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"api":"scrapecreators","path":"/v1/tiktok/get-trending-feed","query":{"region":"US"}}'
+gooseworks call scrapecreators /v1/tiktok/get-trending-feed --query='{"region":"US"}'
 ```
 
 **User:** "What's trending with #tech on TikTok?"
 ```bash
-curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/orthogonal/run \
-  -H "Authorization: Bearer $GOOSEWORKS_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"api":"scrapecreators","path":"/v1/tiktok/search/hashtag","query":{"hashtag":"tech"}}'
+gooseworks call scrapecreators /v1/tiktok/search/hashtag --query='{"hashtag":"tech"}'
 ```
 
 ## Error Handling

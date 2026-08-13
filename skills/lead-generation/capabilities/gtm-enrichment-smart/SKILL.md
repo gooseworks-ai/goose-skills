@@ -268,10 +268,7 @@ Sum the top repo stars or report the flagship repo star count.
 **5b. Twitter/X Followers** (Scrape Creators — ONLY if a Twitter handle was found in Brand.dev socials or Apollo data):
 
 ```bash
-curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/orthogonal/run \
-  -H "Authorization: Bearer $GOOSEWORKS_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"api":"scrapecreators","path":"/v1/twitter/profile","query":{"handle":"{twitter_handle}"}}'
+gooseworks call scrapecreators /v1/twitter/profile --query='{"handle":"{twitter_handle}"}'
 ```
 
 Extract: `legacy.followers_count`, `legacy.friends_count`, `legacy.statuses_count`, `legacy.description`.

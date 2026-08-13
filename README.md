@@ -92,7 +92,7 @@ The **Brand Growth** collection is a curated path through the normal Goose Skill
 | **Create** | Remix graphic ads, make product photography and social graphics, and animate static images | `remix-graphic-ad-from-reference`, `product-photoshoot`, `goose-graphics`, `animate-image` |
 | **Learn and iterate** | Bring results back into research and analysis, then decide the next test | Re-run the relevant analysis skill with current performance and audience evidence |
 
-ScrapeCreators powers structured public social and ad-library research behind several workflows. The user-facing skills turn that source data into a brief, shortlist, analysis, or recommendation instead of returning raw API output.
+ScrapeCreators powers structured public social and ad-library research behind several workflows. Signed-in GooseWorks users access it through the managed first-party proxy and do not need a separate ScrapeCreators key. The user-facing skills turn that source data into a brief, shortlist, analysis, or recommendation instead of returning raw API output.
 
 [Browse the Brand Growth collection](https://skills.gooseworks.ai/?collection=brand-growth#library)
 
