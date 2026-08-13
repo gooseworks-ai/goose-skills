@@ -1,0 +1,15 @@
+{
+  "slug": "creator-profile-teardown",
+  "category": "composites",
+  "domain": "social",
+  "tags": ["social", "research", "competitive-intel", "brand"],
+  "collections": ["brand-growth"],
+  "collection_stage": "analyze",
+  "source": "scrapecreators",
+  "installation": {
+    "base_command": "npx goose-skills install creator-profile-teardown",
+    "supports": ["claude", "cursor", "codex"]
+  },
+  "example_prompt": "Tear down this creator's account and give me the content pillars, hooks, formats, and five patterns our brand should test.",
+  "requires_skills": ["scrapecreators-api", "outlier-post-finder", "transcript-intelligence", "comment-mining"]
+}

@@ -1,0 +1,15 @@
+{
+  "slug": "audience-research",
+  "category": "composites",
+  "domain": "social",
+  "tags": ["social", "research", "brand"],
+  "collections": ["brand-growth"],
+  "collection_stage": "research",
+  "source": "scrapecreators",
+  "installation": {
+    "base_command": "npx goose-skills install audience-research",
+    "supports": ["claude", "cursor", "codex"]
+  },
+  "example_prompt": "Compare these five skincare creators and tell me whose audience best matches women aged 25–40 in the US.",
+  "requires_skills": ["scrapecreators-api", "comment-mining"]
+}

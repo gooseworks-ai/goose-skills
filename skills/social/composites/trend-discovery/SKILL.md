@@ -16,10 +16,10 @@ Find trends a brand can use without producing a generic list of popular hashtags
 ## Workflow
 
 1. Build search seeds from category language, problems, desired outcomes, products, competitors, creators, and adjacent interests.
-2. Use `scrapecreators-api` to collect trending feeds, hashtag/search results, and recent posts from seed accounts.
+2. Use `scrapecreators-api` to collect relevant TikTok trend feeds, songs, song-linked videos, hashtags and creators; Instagram trending Reels, audio and search results; YouTube trending Shorts and search results; and Reddit or Pinterest discovery signals where the category warrants them.
 3. Compare the recent window with a baseline. A trend must show acceleration, cross-account repetition, or migration across platforms—not merely high lifetime views.
 4. Use `outlier-post-finder` and `transcript-intelligence` to understand the content, not just the metric.
-5. Classify each signal as emerging, accelerating, established, fading, or seasonal. Score brand fit, audience fit, shelf life, production effort, and reputational risk.
+5. Keep topic, sound, format, creator, and search-demand signals distinct. Classify each as emerging, accelerating, established, fading, or seasonal. Score brand fit, audience fit, regional relevance, shelf life, production effort, and reputational risk.
 6. Turn the best signals into a response: participate, adapt the format, answer the question, create an evergreen variant, or ignore.
 
 ## Output

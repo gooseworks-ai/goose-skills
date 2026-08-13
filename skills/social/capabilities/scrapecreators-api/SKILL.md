@@ -29,7 +29,12 @@ Use ScrapeCreators' official OpenAPI as the endpoint source of truth: `https://d
 | X profile, posts, or post details | `/v1/twitter/profile`, `/v1/twitter/user-tweets`, `/v1/twitter/tweet` |
 | LinkedIn profile, company, posts, or ads | `/v1/linkedin/profile`, `/v1/linkedin/company`, `/v1/linkedin/post`, `/v1/linkedin/ads/search` |
 | Meta Ad Library | `/v1/facebook/adLibrary/search/ads`, `/v1/facebook/adLibrary/ad` |
+| TikTok Ad Library | Resolve the current search and ad-detail operations from the official OpenAPI |
 | Google advertiser ads | `/v1/google/company/ads`, `/v1/google/ad` |
+| TikTok Shop products, reviews, and creator showcases | Resolve the current shop search, product, review, and user-showcase operations from the official OpenAPI |
+| Instagram and YouTube discovery | Resolve current Reel, audio, Shorts, hashtag, search, and trend operations from the official OpenAPI |
+| Reddit, Threads, Bluesky, and Pinterest research | Resolve current search, profile, post, comment, board, and pin operations from the official OpenAPI |
+| Public creator links and shops | Resolve current Linktree, Komi, Pillar, Linkbio, Linkme, and Amazon Shop operations from the official OpenAPI |
 
 Most operations are GET requests and `gooseworks call scrapecreators` defaults to GET. ScrapeCreators' official OpenAPI currently also defines POST variants for Meta ad search, Meta company ads, and Reddit post comments. Use `--method POST` only when the official operation requires it:
 

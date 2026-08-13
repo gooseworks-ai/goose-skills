@@ -87,9 +87,9 @@ The **Brand Growth** collection is a curated path through the normal Goose Skill
 
 | Stage | What your agent can do | Example skills |
 |---|---|---|
-| **Research** | Understand the brand, customers, competitors, creators, trends, comments, and product demand | `brand-research`, `comment-mining`, `competitor-social-research`, `influencer-prospecting`, `trend-discovery`, `product-demand-research` |
-| **Analyze** | Diagnose ads, policy risk, landing-page message match, and unusual social performance | `meta-ads-analyzer`, `meta-ad-policy-checker`, `ad-to-landing-page-auditor`, `outlier-post-finder` |
-| **Create** | Remix graphic ads, make product photography and social graphics, and animate static images | `remix-graphic-ad-from-reference`, `product-photoshoot`, `goose-graphics`, `animate-image` |
+| **Research** | Understand the brand, customers, competitors, audiences, creators, trends, comments, and product demand | `brand-research`, `audience-research`, `comment-mining`, `competitor-social-research`, `influencer-prospecting`, `trend-discovery`, `product-demand-research` |
+| **Analyze** | Diagnose ads, creator profiles, transcripts, policy risk, landing-page message match, and unusual social performance | `competitor-ad-intelligence`, `creator-profile-teardown`, `transcript-intelligence`, `meta-ads-analyzer`, `meta-ad-policy-checker`, `ad-to-landing-page-auditor`, `outlier-post-finder` |
+| **Create** | Repurpose research, remix graphic ads, make product photography and social graphics, and animate static images | `content-repurposing`, `remix-graphic-ad-from-reference`, `product-photoshoot`, `goose-graphics`, `animate-image` |
 | **Learn and iterate** | Bring results back into research and analysis, then decide the next test | Re-run the relevant analysis skill with current performance and audience evidence |
 
 ScrapeCreators powers structured public social and ad-library research behind several workflows. Signed-in GooseWorks users access it through the managed first-party proxy and do not need a separate ScrapeCreators key. The user-facing skills turn that source data into a brief, shortlist, analysis, or recommendation instead of returning raw API output.

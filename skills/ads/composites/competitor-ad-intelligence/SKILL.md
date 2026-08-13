@@ -1,7 +1,7 @@
 ---
 name: competitor-ad-intelligence
 description: >
-  Scrape competitor ads from Meta Ad Library and Google Ads Transparency Center,
+  Scrape competitor ads from Meta, TikTok, Google, and LinkedIn ad libraries,
   analyze creative patterns (hooks, formats, CTAs), reverse-engineer landing page funnels,
   and produce a strategic teardown with vulnerability analysis and counter-play recommendations.
   Use when you need to understand the competitive ad landscape, find new creative directions,
@@ -11,9 +11,9 @@ tags: [ads]
 
 # Competitor Ad Intelligence
 
-Scrape competitor ads from Meta and Google, analyze creative patterns, reverse-engineer landing page funnels, and produce a full strategic teardown — hooks, formats, positioning bets, vulnerabilities, and counter-plays.
+Scrape competitor ads from Meta, TikTok, Google, and LinkedIn, analyze creative patterns, reverse-engineer landing page funnels, and produce a full strategic teardown — hooks, formats, positioning bets, vulnerabilities, and counter-plays.
 
-**Core principle:** A competitor's ad portfolio is a window into their growth strategy. Long-running ads reveal what converts. New ads reveal what they're testing. Landing pages reveal their positioning bets. The best ad creative teams start with evidence from what's already working, then differentiate.
+**Core principle:** A competitor's ad portfolio is evidence about its growth strategy, not access to its results. Long-running ads suggest sustained use. New ads suggest active testing. Landing pages reveal positioning bets. Use these signals to form differentiated tests without claiming conversion, spend, or causality the libraries do not expose.
 
 ## When to Use
 
@@ -32,7 +32,7 @@ Gather from the user:
 
 1. **Competitor names + domains** (e.g., `apollo.io`, `clay.run`)
 2. **Your product/domain** — for comparison framing
-3. **Channels:** Meta only, Google only, or both? (default: both)
+3. **Channels:** Meta, TikTok, Google, LinkedIn, or all relevant libraries? (default: all channels relevant to the brand and market)
 4. **Depth level:**
    - **Standard:** Ad scrape + creative analysis + landing page analysis
    - **Deep:** Standard + historical comparison + funnel reconstruction + counter-plays
@@ -61,8 +61,17 @@ If the structured endpoint cannot resolve an advertiser, verify the name in the 
 - Active duration (first seen, still running or stopped)
 - Platforms (Facebook, Instagram, Audience Network)
 - Ad variations (A/B tests — same landing page, different creative)
+- Video transcript when available; use `transcript-intelligence` to extract hooks, claims, proof, objections, and CTA structure
 
-## Phase 2: Scrape Google Ads
+## Phase 2: Scrape TikTok Ads
+
+For each competitor or category, use `scrapecreators-api` to resolve the current TikTok Ad Library search and ad-detail operations from the official provider reference.
+
+Collect the advertiser, ad ID, caption or script, format, landing page, first-seen date, market, and available performance or reach indicators. Keep organic TikTok posts separate from paid-library ads.
+
+Use `transcript-intelligence` when the ad includes spoken content. Analyze TikTok-native mechanics such as creator-led openings, product demonstrations, comment-style hooks, native captions, sounds, offer timing, and the first visible payoff.
+
+## Phase 3: Scrape Google Ads
 
 For each competitor domain, scrape ads from Google Ads Transparency Center.
 
@@ -82,7 +91,15 @@ Use the public Google Ads Transparency Center or web search only when the struct
 - Landing page URL
 - Geographic targeting (if visible)
 
-## Phase 3: Analyze Creative Patterns
+## Phase 4: Scrape LinkedIn Ads
+
+For each relevant competitor, use `scrapecreators-api` to resolve the current LinkedIn Ad Library search and ad-detail operations from the official provider reference.
+
+Collect the advertiser, ad copy, creative format, CTA, landing page, dates, and visible targeting or company context. Keep organic company posts separate from paid-library ads.
+
+LinkedIn is optional for consumer brands. Include it when the competitor sells high-consideration products, wholesale or retail partnerships, franchises, professional education, recruiting, or another business-facing offer.
+
+## Phase 5: Analyze Creative Patterns
 
 After collecting all ads, perform structured analysis.
 
@@ -104,13 +121,13 @@ Count how many ads per competitor use each hook type. This reveals their primary
 
 ### Format Distribution
 
-| Format | Meta | Google |
-|--------|------|--------|
-| Static image | [N] | N/A |
-| Video | [N] | [N] |
-| Carousel | [N] | N/A |
-| Search text | N/A | [N] |
-| Display banner | N/A | [N] |
+| Format | Meta | TikTok | Google | LinkedIn |
+|--------|------|--------|--------|----------|
+| Static image | [N] | [N] | [N] | [N] |
+| Video | [N] | [N] | [N] | [N] |
+| Carousel | [N] | [N] | N/A | [N] |
+| Search text | N/A | N/A | [N] | N/A |
+| Display banner | N/A | N/A | [N] | [N] |
 
 ### CTA Taxonomy
 
@@ -119,7 +136,7 @@ List all unique CTAs found. Common patterns:
 - **Low-friction:** "See how it works", "Watch demo", "Learn more"
 - **Outcome:** "Book a demo", "Get your free audit", "Calculate your ROI"
 
-## Phase 4: Landing Page & Funnel Analysis
+## Phase 6: Landing Page & Funnel Analysis
 
 For each unique landing page URL found in ads, fetch and analyze:
 
@@ -157,22 +174,26 @@ For each campaign cluster:
 | **Positioning bet** | What market position are they claiming? |
 | **Hook strategy** | Fear / Outcome / Social proof / Contrarian / Product-led |
 | **Conversion path** | Ad → LP → CTA → [Demo call / Free trial / Content download] |
-| **Longevity signal** | How long has this been running? (Longer = likely working) |
+| **Longevity signal** | How long has this been running? Treat duration as sustained use, not proof of performance. |
 | **A/B tests detected** | Multiple creatives to same LP = active testing |
 
-### Budget Allocation Inference
+### Portfolio Emphasis
 
-Based on ad volume and platform distribution, estimate where they're concentrating spend:
+Use ad volume and platform distribution to describe where the visible portfolio is concentrated:
 
-| Platform | Ad Count | % of Total | Estimated Focus |
-|----------|----------|-----------|-----------------|
+| Platform | Ad Count | % of Visible Portfolio | Likely Objective |
+|----------|----------|------------------------|------------------|
 | Meta (Facebook) | [N] | [X%] | [Awareness / Retargeting] |
 | Meta (Instagram) | [N] | [X%] | [Visual / younger audience] |
+| TikTok | [N] | [X%] | [Creator-led discovery / conversion] |
 | Google Search | [N] | [X%] | [Bottom-funnel capture] |
 | Google Display | [N] | [X%] | [Awareness / retargeting] |
 | YouTube | [N] | [X%] | [Education / awareness] |
+| LinkedIn | [N] | [X%] | [Professional / partnership / high-consideration] |
 
-## Phase 5: Strategic Analysis
+Treat ad count as portfolio emphasis, not spend. Never label this table a budget estimate unless the library provides defensible spend data.
+
+## Phase 7: Strategic Analysis
 
 ### Creative Gap Analysis
 
@@ -205,7 +226,7 @@ If Web Archive data exists for their landing pages:
 - What campaigns did they retire? (Possible losers)
 - What campaigns have they scaled up? (Possible winners)
 
-## Phase 6: Output
+## Phase 8: Output
 
 ```markdown
 # Competitor Ad Intelligence Report — [DATE]
@@ -213,7 +234,9 @@ If Web Archive data exists for their landing pages:
 ## Coverage
 - Competitors analyzed: [list]
 - Meta ads collected: [N]
+- TikTok ads collected: [N]
 - Google ads collected: [N]
+- LinkedIn ads collected: [N]
 - Unique landing pages analyzed: [N]
 - Estimated active campaigns: [N]
 
@@ -234,13 +257,13 @@ If Web Archive data exists for their landing pages:
 | Outcome | 30% | 50% | 60% |
 ...
 
-### Top Performing Ads (Longest Running)
+### Longest-Running Ads (Not Performance Proof)
 **[Competitor] — [Ad Title/Hook]**
 > [Ad copy excerpt]
 - Format: [type]
 - CTA: [text]
 - Running since: [date]
-- Why it likely works: [analysis]
+- Why it may have been sustained: [evidence and hypotheses to test]
 
 ---
 
@@ -251,6 +274,23 @@ If Web Archive data exists for their landing pages:
 
 ### Most Common CTAs
 [ranked list]
+
+---
+
+## TikTok Ad Analysis
+
+### Native Creative Patterns
+[Creator style, opening hooks, demonstrations, sounds, captions, offers, and CTA timing]
+
+### Reusable Script Structures
+[Sourced structures and why they may be working]
+
+---
+
+## LinkedIn Ad Analysis
+
+### Professional and Partnership Angles
+[Relevant messages, proof, formats, and landing-page paths; omit this section when LinkedIn is not relevant]
 
 ---
 
@@ -292,7 +332,7 @@ If Web Archive data exists for their landing pages:
 
 ---
 
-## Budget Allocation Estimate
+## Portfolio Emphasis
 
 | Platform | Share | Focus Area |
 |----------|-------|-----------|
@@ -341,13 +381,14 @@ If Web Archive data exists for their landing pages:
 
 ## Tools Used
 
-- **`scrapecreators-api`** — structured Meta, Google, and LinkedIn ad-library collection
+- **`scrapecreators-api`** — structured Meta, TikTok, Google, and LinkedIn ad-library collection
+- **`transcript-intelligence`** — spoken-hook, claim, proof, objection, sponsorship, and CTA analysis for video ads
 - **`web_search`** — verify advertiser identity and fill documented gaps
 - **`fetch_webpage`** or **`curl`** — fetch and analyze landing pages
 
 ## Trigger Phrases
 
-- "What ads are [competitor] running?"
+- "What ads are [competitor] running across Meta, TikTok, Google, and LinkedIn?"
 - "Tear down [competitor]'s ad strategy"
 - "Audit the ad landscape for [product category]"
 - "Run ad intelligence for [competitors]"

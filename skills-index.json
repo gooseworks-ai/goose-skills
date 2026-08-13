@@ -26,7 +26,7 @@
         "collections": [
           "brand-growth"
         ],
-        "collection_stage": "research",
+        "collection_stage": "analyze",
         "installation": {
           "base_command": "npx goose-skills install ad-angle-miner",
           "supports": [
@@ -344,6 +344,47 @@
             "codex"
           ]
         }
+      }
+    },
+    {
+      "slug": "audience-research",
+      "name": "audience-research",
+      "category": "composites",
+      "domain": "social",
+      "description": "Evaluate whether a creator, influencer, or brand account reaches the right audience using public profile, aggregate demographic, geography, language, content, comment, and commerce signals. Use for creator comparisons, sponsorship fit, market fit, and audience-quality research.",
+      "tags": "social, research, brand",
+      "path": "skills/social/composites/audience-research",
+      "files": [
+        "skills/social/composites/audience-research/SKILL.md",
+        "skills/social/composites/audience-research/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "audience-research",
+        "category": "composites",
+        "domain": "social",
+        "tags": [
+          "social",
+          "research",
+          "brand"
+        ],
+        "collections": [
+          "brand-growth"
+        ],
+        "collection_stage": "research",
+        "source": "scrapecreators",
+        "installation": {
+          "base_command": "npx goose-skills install audience-research",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "example_prompt": "Compare these five skincare creators and tell me whose audience best matches women aged 25–40 in the US.",
+        "requires_skills": [
+          "scrapecreators-api",
+          "comment-mining"
+        ]
       }
     },
     {
@@ -757,7 +798,7 @@
       "name": "comment-mining",
       "category": "composites",
       "domain": "social",
-      "description": "Mine comments on social posts and ads for recurring customer language, questions, objections, desired outcomes, purchase signals, and creative opportunities. Use for voice-of-customer research grounded in linked source evidence.",
+      "description": "Mine comments and replies on social posts, videos, and ads for recurring customer language, questions, objections, desired outcomes, complaints, product requests, purchase signals, and creative opportunities. Use for voice-of-customer research grounded in linked source evidence.",
       "tags": "social, research, brand",
       "path": "skills/social/composites/comment-mining",
       "files": [
@@ -1022,7 +1063,7 @@
         "collections": [
           "brand-growth"
         ],
-        "collection_stage": "research",
+        "collection_stage": "analyze",
         "source": "scrapecreators",
         "installation": {
           "base_command": "npx goose-skills install competitor-ad-intelligence",
@@ -1033,7 +1074,8 @@
           ]
         },
         "requires_skills": [
-          "scrapecreators-api"
+          "scrapecreators-api",
+          "transcript-intelligence"
         ]
       }
     },
@@ -1256,7 +1298,8 @@
           "scrapecreators-api",
           "outlier-post-finder",
           "transcript-intelligence",
-          "comment-mining"
+          "comment-mining",
+          "creator-profile-teardown"
         ]
       }
     },
@@ -1435,6 +1478,52 @@
           "review-site-scraper",
           "seo-domain-analyzer",
           "site-content-catalog"
+        ]
+      }
+    },
+    {
+      "slug": "content-repurposing",
+      "name": "content-repurposing",
+      "category": "composites",
+      "domain": "content",
+      "description": "Turn public social videos, transcripts, posts, creator research, or the user's own source material into platform-specific LinkedIn posts, X posts and threads, short-form scripts, newsletters, blog outlines, carousel briefs, and content calendars. Use when the user wants to reuse a strong idea without copying the source.",
+      "tags": "content, social, brand",
+      "path": "skills/content/composites/content-repurposing",
+      "files": [
+        "skills/content/composites/content-repurposing/SKILL.md",
+        "skills/content/composites/content-repurposing/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "content-repurposing",
+        "category": "composites",
+        "domain": "content",
+        "tags": [
+          "content",
+          "social",
+          "brand"
+        ],
+        "collections": [
+          "brand-growth"
+        ],
+        "collection_stage": "create",
+        "source": "scrapecreators",
+        "installation": {
+          "base_command": "npx goose-skills install content-repurposing",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "example_prompt": "Turn these three customer interview clips into an X thread, two LinkedIn posts, and four short-form video scripts in our brand voice.",
+        "requires_skills": [
+          "scrapecreators-api",
+          "comment-mining",
+          "transcript-intelligence",
+          "outlier-post-finder",
+          "creator-profile-teardown",
+          "create-linkedin-content",
+          "create-x-content"
         ]
       }
     },
@@ -1992,6 +2081,50 @@
             "codex"
           ]
         }
+      }
+    },
+    {
+      "slug": "creator-profile-teardown",
+      "name": "creator-profile-teardown",
+      "category": "composites",
+      "domain": "social",
+      "description": "Analyze a creator, influencer, founder, competitor, or brand social account to explain its positioning, content pillars, winning posts, hooks, formats, series, calls to action, and audience response. Use when the user wants to understand why an account works and what patterns to test without copying it.",
+      "tags": "social, research, competitive-intel, brand",
+      "path": "skills/social/composites/creator-profile-teardown",
+      "files": [
+        "skills/social/composites/creator-profile-teardown/SKILL.md",
+        "skills/social/composites/creator-profile-teardown/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "creator-profile-teardown",
+        "category": "composites",
+        "domain": "social",
+        "tags": [
+          "social",
+          "research",
+          "competitive-intel",
+          "brand"
+        ],
+        "collections": [
+          "brand-growth"
+        ],
+        "collection_stage": "analyze",
+        "source": "scrapecreators",
+        "installation": {
+          "base_command": "npx goose-skills install creator-profile-teardown",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "example_prompt": "Tear down this creator's account and give me the content pillars, hooks, formats, and five patterns our brand should test.",
+        "requires_skills": [
+          "scrapecreators-api",
+          "outlier-post-finder",
+          "transcript-intelligence",
+          "comment-mining"
+        ]
       }
     },
     {
@@ -3473,7 +3606,7 @@
       "name": "influencer-prospecting",
       "category": "composites",
       "domain": "social",
-      "description": "Find and evaluate creators for a brand using audience fit, content fit, authentic product adjacency, engagement quality, contactability, and brand-safety evidence—not follower count alone.",
+      "description": "Find and evaluate creators, influencers, affiliates, and UGC partners using audience fit, content fit, authentic product adjacency, engagement quality, public contactability, commerce signals, and brand-safety evidence—not follower count alone.",
       "tags": "social, research, brand",
       "path": "skills/social/composites/influencer-prospecting",
       "files": [
@@ -3504,6 +3637,8 @@
         },
         "requires_skills": [
           "scrapecreators-api",
+          "audience-research",
+          "creator-profile-teardown",
           "transcript-intelligence",
           "comment-mining"
         ]
@@ -4771,7 +4906,8 @@
         },
         "requires_skills": [
           "scrapecreators-api",
-          "transcript-intelligence"
+          "transcript-intelligence",
+          "comment-mining"
         ]
       }
     },
@@ -5057,7 +5193,7 @@
       "name": "product-demand-research",
       "category": "composites",
       "domain": "research",
-      "description": "Test product-demand hypotheses using public customer language, search and social signals, competitor offers, reviews, comments, and creator content before committing to a launch or campaign.",
+      "description": "Test product-demand hypotheses using public customer language, search and social signals, competitor offers, reviews, comments, creator content, and social-commerce evidence before committing to a product, launch, offer, or campaign.",
       "tags": "research, social, brand",
       "path": "skills/research/composites/product-demand-research",
       "files": [
@@ -7912,7 +8048,7 @@
       "name": "transcript-intelligence",
       "category": "capabilities",
       "domain": "social",
-      "description": "Turn social-video transcripts into timestamped hooks, claims, objections, proof, calls to action, and reusable audience language. Use as a supporting capability for creator, competitor, trend, and demand research.",
+      "description": "Turn TikTok, Instagram, YouTube, Facebook, X, LinkedIn, Reddit, or Rumble transcripts into timestamped hooks, claims, objections, proof, calls to action, sponsorship signals, and reusable content atoms. Use directly for transcript analysis or as support for creator, competitor, trend, demand, and repurposing work.",
       "tags": "social, research",
       "path": "skills/social/capabilities/transcript-intelligence",
       "files": [
@@ -7923,11 +8059,14 @@
         "slug": "transcript-intelligence",
         "category": "capabilities",
         "domain": "social",
-        "visibility": "dependency",
         "tags": [
           "social",
           "research"
         ],
+        "collections": [
+          "brand-growth"
+        ],
+        "collection_stage": "analyze",
         "source": "scrapecreators",
         "installation": {
           "base_command": "npx goose-skills install transcript-intelligence",
@@ -7937,6 +8076,7 @@
             "codex"
           ]
         },
+        "example_prompt": "Analyze these ten product videos and extract their hooks, claims, proof, objections, calls to action, and reusable content atoms.",
         "requires_skills": [
           "scrapecreators-api"
         ]
