@@ -43,19 +43,15 @@ Gather from the user:
 
 For each competitor domain, scrape ads from Meta Ad Library.
 
-Use `web_search` to find competitor ads in the Meta Ad Library (publicly accessible, no API key needed):
+Use `scrapecreators-api` as the primary collection path. Resolve the advertiser first, then fetch its ads and individual ad details:
 
 ```
-web_search: site:facebook.com/ads/library "[competitor_name]"
-web_search: "[competitor_name]" Meta Ad Library active ads
-web_search: "[competitor_name]" facebook ads examples
+gooseworks call scrapecreators /v1/facebook/adLibrary/search/companies --query='{"query":"[competitor_name]"}'
+gooseworks call scrapecreators /v1/facebook/adLibrary/company/ads --query='{"companyName":"[competitor_name]"}'
+gooseworks call scrapecreators /v1/facebook/adLibrary/ad --query='{"id":"[ad_id]"}'
 ```
 
-You can also visit the Meta Ad Library directly: `https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=US&q=<competitor_name>`
-
-Use `fetch_webpage` on the Ad Library URL to extract ad details if your agent supports it.
-
-> **Note:** Apify actors for Meta Ad Library scraping exist but are unreliable as of April 2026 due to Meta's anti-scraping measures. Use `web_search` as the primary method.
+If the structured endpoint cannot resolve an advertiser, verify the name in the public Meta Ad Library and use web search as a documented fallback. Keep the library URL and ad ID with every result.
 
 **Collect per ad:**
 - Ad copy (headline + primary text)
@@ -70,17 +66,14 @@ Use `fetch_webpage` on the Ad Library URL to extract ad details if your agent su
 
 For each competitor domain, scrape ads from Google Ads Transparency Center.
 
-Use `web_search` to find competitor ads in Google Ads Transparency Center (publicly accessible):
+Use the structured advertiser endpoints first:
 
 ```
-web_search: site:adstransparency.google.com "[competitor_name]"
-web_search: "[competitor_name]" Google Ads transparency
-web_search: "[competitor_name]" google search ads examples
+gooseworks call scrapecreators /v1/google/company/ads --query='{"domain":"[competitor_domain]","get_ad_details":true}'
+gooseworks call scrapecreators /v1/google/ad --query='{"id":"[ad_id]"}'
 ```
 
-You can also visit directly: `https://adstransparency.google.com/?search_text=<competitor_name>`
-
-Use `fetch_webpage` on the Transparency Center URL to extract ad details if your agent supports it.
+Use the public Google Ads Transparency Center or web search only when the structured endpoint is incomplete. Mark fallback records so coverage limits remain visible.
 
 **Collect per ad:**
 - Headline variants (up to 3)
@@ -346,23 +339,10 @@ If Web Archive data exists for their landing pages:
 ### Counter-Play 2: ...
 ```
 
-## Cost
-
-| Component | Cost |
-|-----------|------|
-| Ad library research (web_search) | Free |
-| Landing page fetching | Free |
-| Web Archive lookup (deep mode) | Free |
-| Analysis | Free (LLM reasoning) |
-| **Total** | **Free** |
-
-## Environment Variables
-
-- No API keys required. This skill uses publicly accessible ad libraries and web search.
-
 ## Tools Used
 
-- **`web_search`** — query Meta Ad Library and Google Ads Transparency Center
+- **`scrapecreators-api`** — structured Meta, Google, and LinkedIn ad-library collection
+- **`web_search`** — verify advertiser identity and fill documented gaps
 - **`fetch_webpage`** or **`curl`** — fetch and analyze landing pages
 
 ## Trigger Phrases

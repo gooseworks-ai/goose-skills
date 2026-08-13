@@ -1,6 +1,6 @@
 {
   "version": "1.2.0",
-  "generated": "2026-07-19",
+  "generated": "2026-08-13",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -8,7 +8,7 @@
       "category": "composites",
       "domain": "ads",
       "description": ">",
-      "tags": "ads",
+      "tags": "ads, research, social",
       "path": "skills/ads/composites/ad-angle-miner",
       "files": [
         "skills/ads/composites/ad-angle-miner/SKILL.md",
@@ -17,9 +17,16 @@
       "metadata": {
         "slug": "ad-angle-miner",
         "category": "composites",
+        "domain": "ads",
         "tags": [
-          "ads"
+          "ads",
+          "research",
+          "social"
         ],
+        "collections": [
+          "brand-growth"
+        ],
+        "collection_stage": "research",
         "installation": {
           "base_command": "npx goose-skills install ad-angle-miner",
           "supports": [
@@ -31,7 +38,8 @@
         "requires_skills": [
           "reddit-post-finder",
           "review-site-scraper",
-          "twitter-mention-tracker"
+          "twitter-mention-tracker",
+          "comment-mining"
         ]
       }
     },
@@ -99,7 +107,7 @@
       "category": "composites",
       "domain": "ads",
       "description": ">",
-      "tags": "ads",
+      "tags": "ads, research",
       "path": "skills/ads/composites/ad-to-landing-page-auditor",
       "files": [
         "skills/ads/composites/ad-to-landing-page-auditor/SKILL.md",
@@ -108,9 +116,15 @@
       "metadata": {
         "slug": "ad-to-landing-page-auditor",
         "category": "composites",
+        "domain": "ads",
         "tags": [
-          "ads"
+          "ads",
+          "research"
         ],
+        "collections": [
+          "brand-growth"
+        ],
+        "collection_stage": "analyze",
         "installation": {
           "base_command": "npx goose-skills install ad-to-landing-page-auditor",
           "supports": [
@@ -231,6 +245,41 @@
         "source": "orthogonal",
         "installation": {
           "base_command": "npx goose-skills install amazon-search",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "animate-image",
+      "name": "animate-image",
+      "category": "composites",
+      "domain": "ads",
+      "description": "Animate an existing product image or static ad into a short branded video using the GooseWorks Animate Images workflow, with source-image continuity and optional end-frame control.",
+      "tags": "ads, design, content",
+      "path": "skills/ads/composites/animate-image",
+      "files": [
+        "skills/ads/composites/animate-image/SKILL.md",
+        "skills/ads/composites/animate-image/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "animate-image",
+        "category": "composites",
+        "domain": "ads",
+        "tags": [
+          "ads",
+          "design",
+          "content"
+        ],
+        "collections": [
+          "brand-growth"
+        ],
+        "collection_stage": "create",
+        "installation": {
+          "base_command": "npx goose-skills install animate-image",
           "supports": [
             "claude",
             "cursor",
@@ -421,7 +470,7 @@
       "name": "brand-research",
       "category": "composites",
       "domain": "ads",
-      "description": "Kickoff research for a brand you haven't worked on before — web research, existing-ad analysis from the Meta Ad Library, editorial-grammar profiling, sourced + AI-generated brand assets, hook/CTA libraries, and an ad concept brief. Produces one reusable brand-context pack (brand-summary, visual-identity, competitors, audience, existing-ads, brand-grammar, an asset manifest, and a concept brief) in a single pass. Use when starting on a brand the workspace hasn't touched.",
+      "description": "Research a company or brand from its website and produce a reusable Brand Core covering products, audience, competitors, positioning, offers, messaging evidence, voice, and visual identity. Use before growth, ad, content, creator, or product work when reliable brand context is missing.",
       "tags": "ads, brand, research",
       "path": "skills/ads/composites/brand-research",
       "files": [
@@ -449,6 +498,10 @@
           "brand",
           "research"
         ],
+        "collections": [
+          "brand-growth"
+        ],
+        "collection_stage": "research",
         "installation": {
           "base_command": "npx goose-skills install brand-research",
           "supports": [
@@ -456,7 +509,11 @@
             "cursor",
             "codex"
           ]
-        }
+        },
+        "requires_skills": [
+          "competitor-ad-intelligence",
+          "comment-mining"
+        ]
       }
     },
     {
@@ -696,6 +753,45 @@
       }
     },
     {
+      "slug": "comment-mining",
+      "name": "comment-mining",
+      "category": "composites",
+      "domain": "social",
+      "description": "Mine comments on social posts and ads for recurring customer language, questions, objections, desired outcomes, purchase signals, and creative opportunities. Use for voice-of-customer research grounded in linked source evidence.",
+      "tags": "social, research, brand",
+      "path": "skills/social/composites/comment-mining",
+      "files": [
+        "skills/social/composites/comment-mining/SKILL.md",
+        "skills/social/composites/comment-mining/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "comment-mining",
+        "category": "composites",
+        "domain": "social",
+        "tags": [
+          "social",
+          "research",
+          "brand"
+        ],
+        "collections": [
+          "brand-growth"
+        ],
+        "collection_stage": "research",
+        "source": "scrapecreators",
+        "installation": {
+          "base_command": "npx goose-skills install comment-mining",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "scrapecreators-api"
+        ]
+      }
+    },
+    {
       "slug": "community-signals",
       "name": "community-signals",
       "category": "capabilities",
@@ -908,7 +1004,7 @@
       "category": "composites",
       "domain": "ads",
       "description": ">",
-      "tags": "ads",
+      "tags": "ads, competitive-intel, research",
       "path": "skills/ads/composites/competitor-ad-intelligence",
       "files": [
         "skills/ads/composites/competitor-ad-intelligence/SKILL.md",
@@ -917,9 +1013,17 @@
       "metadata": {
         "slug": "competitor-ad-intelligence",
         "category": "composites",
+        "domain": "ads",
         "tags": [
-          "ads"
+          "ads",
+          "competitive-intel",
+          "research"
         ],
+        "collections": [
+          "brand-growth"
+        ],
+        "collection_stage": "research",
+        "source": "scrapecreators",
         "installation": {
           "base_command": "npx goose-skills install competitor-ad-intelligence",
           "supports": [
@@ -927,7 +1031,10 @@
             "cursor",
             "codex"
           ]
-        }
+        },
+        "requires_skills": [
+          "scrapecreators-api"
+        ]
       }
     },
     {
@@ -1109,6 +1216,48 @@
             "codex"
           ]
         }
+      }
+    },
+    {
+      "slug": "competitor-social-research",
+      "name": "competitor-social-research",
+      "category": "composites",
+      "domain": "social",
+      "description": "Compare competitors' social content across platforms to identify recurring topics, formats, hooks, audience reactions, distribution patterns, and credible content opportunities for a brand.",
+      "tags": "social, competitive-intel, research",
+      "path": "skills/social/composites/competitor-social-research",
+      "files": [
+        "skills/social/composites/competitor-social-research/SKILL.md",
+        "skills/social/composites/competitor-social-research/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "competitor-social-research",
+        "category": "composites",
+        "domain": "social",
+        "tags": [
+          "social",
+          "competitive-intel",
+          "research"
+        ],
+        "collections": [
+          "brand-growth"
+        ],
+        "collection_stage": "research",
+        "source": "scrapecreators",
+        "installation": {
+          "base_command": "npx goose-skills install competitor-social-research",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "scrapecreators-api",
+          "outlier-post-finder",
+          "transcript-intelligence",
+          "comment-mining"
+        ]
       }
     },
     {
@@ -2730,7 +2879,7 @@
       "category": "composites",
       "domain": "design",
       "description": "Portable visual skill pack for the Agent Skills ecosystem (Claude Code, Claude Desktop, Claude Cowork, Claude Design, Goose, Cursor, Codex). Discovers community-published styles + formats via the gooseworks CLI, runs an extract-style workflow on reference images, and exports rendered PNGs via Playwright.",
-      "tags": "content, design, social",
+      "tags": "content, design, social, brand",
       "path": "skills/design/composites/goose-graphics",
       "files": [
         "skills/design/composites/goose-graphics/README.md",
@@ -2749,11 +2898,17 @@
       "metadata": {
         "slug": "goose-graphics",
         "category": "composites",
+        "domain": "design",
         "tags": [
           "content",
           "design",
-          "social"
+          "social",
+          "brand"
         ],
+        "collections": [
+          "brand-growth"
+        ],
+        "collection_stage": "create",
         "installation": {
           "base_command": "npx goose-skills install goose-graphics",
           "supports": [
@@ -3304,6 +3459,47 @@
           "review-site-scraper",
           "twitter-mention-tracker",
           "web-archive-scraper"
+        ]
+      }
+    },
+    {
+      "slug": "influencer-prospecting",
+      "name": "influencer-prospecting",
+      "category": "composites",
+      "domain": "social",
+      "description": "Find and evaluate creators for a brand using audience fit, content fit, authentic product adjacency, engagement quality, contactability, and brand-safety evidence—not follower count alone.",
+      "tags": "social, research, brand",
+      "path": "skills/social/composites/influencer-prospecting",
+      "files": [
+        "skills/social/composites/influencer-prospecting/SKILL.md",
+        "skills/social/composites/influencer-prospecting/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "influencer-prospecting",
+        "category": "composites",
+        "domain": "social",
+        "tags": [
+          "social",
+          "research",
+          "brand"
+        ],
+        "collections": [
+          "brand-growth"
+        ],
+        "collection_stage": "research",
+        "source": "scrapecreators",
+        "installation": {
+          "base_command": "npx goose-skills install influencer-prospecting",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "scrapecreators-api",
+          "transcript-intelligence",
+          "comment-mining"
         ]
       }
     },
@@ -4196,7 +4392,7 @@
       "category": "composites",
       "domain": "ads",
       "description": "Pre-flight policy check for Meta ads. Takes ad copy plus advertiser context, resolves and fetches the relevant Meta transparency-center policy pages at runtime, and returns a Pass / Fix Required / Block verdict with cited findings and rewrites.",
-      "tags": "ads",
+      "tags": "ads, research",
       "path": "skills/ads/composites/meta-ad-policy-checker",
       "files": [
         "skills/ads/composites/meta-ad-policy-checker/SKILL.md",
@@ -4206,9 +4402,15 @@
         "slug": "meta-ad-policy-checker",
         "category": "composites",
         "description": "Pre-flight policy check for Meta ads. Takes ad copy plus a short advertiser context, resolves and fetches the relevant policy pages from Meta's transparency center at runtime, and returns a verdict (Pass / Fix Required / Block) with cited findings and rewrites. Uses Meta's own published policies as source of truth, no hardcoded rule list. Designed to gate ad-write workflows or audit existing live ads.",
+        "domain": "ads",
         "tags": [
-          "ads"
+          "ads",
+          "research"
         ],
+        "collections": [
+          "brand-growth"
+        ],
+        "collection_stage": "analyze",
         "installation": {
           "base_command": "npx goose-skills install meta-ad-policy-checker",
           "supports": [
@@ -4254,7 +4456,7 @@
       "category": "composites",
       "domain": "ads",
       "description": "Diagnose Meta Ads campaign performance using Meta's actual system mechanics — Breakdown Effect, Learning Phase, Auction Overlap, Pacing, and Creative Fatigue — and produce structured, testable recommendations that avoid judging segments by average CPA instead of marginal efficiency.",
-      "tags": "ads",
+      "tags": "ads, research",
       "path": "skills/ads/composites/meta-ads-analyzer",
       "files": [
         "skills/ads/composites/meta-ads-analyzer/SKILL.md",
@@ -4265,9 +4467,15 @@
         "slug": "meta-ads-analyzer",
         "category": "composites",
         "description": "Diagnose Meta Ads campaigns using Meta's actual system mechanics — Breakdown Effect, Learning Phase, Auction Overlap, Pacing, and Creative Fatigue. Produces a structured diagnosis with root causes and testable hypotheses, designed to avoid the most common analysis mistake of judging segments by average CPA instead of marginal efficiency.",
+        "domain": "ads",
         "tags": [
-          "ads"
+          "ads",
+          "research"
         ],
+        "collections": [
+          "brand-growth"
+        ],
+        "collection_stage": "analyze",
         "installation": {
           "base_command": "npx goose-skills install meta-ads-analyzer",
           "supports": [
@@ -4514,6 +4722,45 @@
             "codex"
           ]
         }
+      }
+    },
+    {
+      "slug": "outlier-post-finder",
+      "name": "outlier-post-finder",
+      "category": "composites",
+      "domain": "social",
+      "description": "Find posts that materially outperform an account's normal baseline and explain the hook, topic, format, timing, and audience response patterns worth testing.",
+      "tags": "social, research",
+      "path": "skills/social/composites/outlier-post-finder",
+      "files": [
+        "skills/social/composites/outlier-post-finder/SKILL.md",
+        "skills/social/composites/outlier-post-finder/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "outlier-post-finder",
+        "category": "composites",
+        "domain": "social",
+        "tags": [
+          "social",
+          "research"
+        ],
+        "collections": [
+          "brand-growth"
+        ],
+        "collection_stage": "analyze",
+        "source": "scrapecreators",
+        "installation": {
+          "base_command": "npx goose-skills install outlier-post-finder",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "scrapecreators-api",
+          "transcript-intelligence"
+        ]
       }
     },
     {
@@ -4794,6 +5041,47 @@
       }
     },
     {
+      "slug": "product-demand-research",
+      "name": "product-demand-research",
+      "category": "composites",
+      "domain": "research",
+      "description": "Test product-demand hypotheses using public customer language, search and social signals, competitor offers, reviews, comments, and creator content before committing to a launch or campaign.",
+      "tags": "research, social, brand",
+      "path": "skills/research/composites/product-demand-research",
+      "files": [
+        "skills/research/composites/product-demand-research/SKILL.md",
+        "skills/research/composites/product-demand-research/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "product-demand-research",
+        "category": "composites",
+        "domain": "research",
+        "tags": [
+          "research",
+          "social",
+          "brand"
+        ],
+        "collections": [
+          "brand-growth"
+        ],
+        "collection_stage": "research",
+        "source": "scrapecreators",
+        "installation": {
+          "base_command": "npx goose-skills install product-demand-research",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "scrapecreators-api",
+          "comment-mining",
+          "transcript-intelligence"
+        ]
+      }
+    },
+    {
       "slug": "product-hunt-scraper",
       "name": "product-hunt-scraper",
       "category": "capabilities",
@@ -4814,6 +5102,41 @@
         ],
         "installation": {
           "base_command": "npx goose-skills install product-hunt-scraper",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "product-photoshoot",
+      "name": "product-photoshoot",
+      "category": "composites",
+      "domain": "ads",
+      "description": "Create faithful studio, lifestyle, and on-model product photography through the GooseWorks Product Photos workflow, then approve selected results for reuse in future creative work.",
+      "tags": "ads, design, brand",
+      "path": "skills/ads/composites/product-photoshoot",
+      "files": [
+        "skills/ads/composites/product-photoshoot/SKILL.md",
+        "skills/ads/composites/product-photoshoot/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "product-photoshoot",
+        "category": "composites",
+        "domain": "ads",
+        "tags": [
+          "ads",
+          "design",
+          "brand"
+        ],
+        "collections": [
+          "brand-growth"
+        ],
+        "collection_stage": "create",
+        "installation": {
+          "base_command": "npx goose-skills install product-photoshoot",
           "supports": [
             "claude",
             "cursor",
@@ -4953,7 +5276,7 @@
       "category": "composites",
       "domain": "ads",
       "description": "Recreate a static graphic ad (Pinterest pin, IG/FB feed image, poster) from a reference image, swapping in a new brand's product and new copy while keeping the reference's layout, composition, and visual energy. ALWAYS generated with GPT Image 2 in edit-the-reference mode (fal-ai/gpt-image-1/edit-image, a billed FAL generation); the HTML/goose-graphics overlay is only an optional text-finishing step, never the generator. The static-graphics counterpart to the video remix-ad skill; this is what the app calls when a user picks a reference ad and wants it for their own product.",
-      "tags": "ads, design",
+      "tags": "ads, design, brand",
       "path": "skills/ads/composites/remix-graphic-ad-from-reference",
       "files": [
         "skills/ads/composites/remix-graphic-ad-from-reference/SKILL.md",
@@ -4973,8 +5296,13 @@
         "domain": "ads",
         "tags": [
           "ads",
-          "design"
+          "design",
+          "brand"
         ],
+        "collections": [
+          "brand-growth"
+        ],
+        "collection_stage": "create",
         "installation": {
           "base_command": "npx goose-skills install remix-graphic-ad-from-reference",
           "supports": [
@@ -4987,7 +5315,8 @@
           "goose-graphics",
           "create-image-gpt-image-fal",
           "verify-product-image",
-          "brand-research"
+          "brand-research",
+          "product-photoshoot"
         ]
       }
     },
@@ -6628,6 +6957,38 @@
       }
     },
     {
+      "slug": "scrapecreators-api",
+      "name": "scrapecreators-api",
+      "category": "capabilities",
+      "domain": "social",
+      "description": "Provider reference for collecting public profiles, posts, comments, transcripts, trends, and ad-library data from major social platforms through ScrapeCreators. Use as a dependency of research workflows, not as the final user-facing deliverable.",
+      "tags": "social, research-tools",
+      "path": "skills/social/capabilities/scrapecreators-api",
+      "files": [
+        "skills/social/capabilities/scrapecreators-api/SKILL.md",
+        "skills/social/capabilities/scrapecreators-api/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "scrapecreators-api",
+        "category": "capabilities",
+        "domain": "social",
+        "visibility": "dependency",
+        "tags": [
+          "social",
+          "research-tools"
+        ],
+        "source": "scrapecreators",
+        "installation": {
+          "base_command": "npx goose-skills install scrapecreators-api",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
       "slug": "send-sms-textbelt",
       "name": "send-sms-textbelt",
       "category": "capabilities",
@@ -7093,12 +7454,52 @@
       }
     },
     {
+      "slug": "social-listening-brief",
+      "name": "social-listening-brief",
+      "category": "composites",
+      "domain": "social",
+      "description": "Produce a decision-ready brief of current brand, product, category, and competitor conversations across social platforms, including sentiment drivers, questions, risks, and growth opportunities.",
+      "tags": "social, research, monitoring",
+      "path": "skills/social/composites/social-listening-brief",
+      "files": [
+        "skills/social/composites/social-listening-brief/SKILL.md",
+        "skills/social/composites/social-listening-brief/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "social-listening-brief",
+        "category": "composites",
+        "domain": "social",
+        "tags": [
+          "social",
+          "research",
+          "monitoring"
+        ],
+        "collections": [
+          "brand-growth"
+        ],
+        "collection_stage": "research",
+        "source": "scrapecreators",
+        "installation": {
+          "base_command": "npx goose-skills install social-listening-brief",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "scrapecreators-api",
+          "comment-mining"
+        ]
+      }
+    },
+    {
       "slug": "social-media-scraping-scrapecreators",
       "name": "social-media-scraping-scrapecreators",
       "category": "capabilities",
       "domain": "social",
-      "description": "Social media scraping - Instagram, TikTok, LinkedIn, and X/Twitter profiles, posts, and content",
-      "tags": "social",
+      "description": "Compatibility alias for the original ScrapeCreators social scraping skill. Use scrapecreators-api for current endpoint guidance and the task-specific Brand Growth research skills for finished analysis.",
+      "tags": "social, research-tools",
       "path": "skills/social/capabilities/social-media-scraping-scrapecreators",
       "files": [
         "skills/social/capabilities/social-media-scraping-scrapecreators/SKILL.md",
@@ -7108,9 +7509,12 @@
         "slug": "social-media-scraping-scrapecreators",
         "category": "capabilities",
         "tags": [
-          "social"
+          "social",
+          "research-tools"
         ],
         "source": "orthogonal",
+        "deprecated": true,
+        "superseded_by": "scrapecreators-api",
         "installation": {
           "base_command": "npx goose-skills install social-media-scraping-scrapecreators",
           "supports": [
@@ -7118,7 +7522,10 @@
             "cursor",
             "codex"
           ]
-        }
+        },
+        "requires_skills": [
+          "scrapecreators-api"
+        ]
       }
     },
     {
@@ -7479,6 +7886,82 @@
           "reddit-post-finder",
           "seo-domain-analyzer",
           "site-content-catalog"
+        ]
+      }
+    },
+    {
+      "slug": "transcript-intelligence",
+      "name": "transcript-intelligence",
+      "category": "capabilities",
+      "domain": "social",
+      "description": "Turn social-video transcripts into timestamped hooks, claims, objections, proof, calls to action, and reusable audience language. Use as a supporting capability for creator, competitor, trend, and demand research.",
+      "tags": "social, research",
+      "path": "skills/social/capabilities/transcript-intelligence",
+      "files": [
+        "skills/social/capabilities/transcript-intelligence/SKILL.md",
+        "skills/social/capabilities/transcript-intelligence/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "transcript-intelligence",
+        "category": "capabilities",
+        "domain": "social",
+        "visibility": "dependency",
+        "tags": [
+          "social",
+          "research"
+        ],
+        "source": "scrapecreators",
+        "installation": {
+          "base_command": "npx goose-skills install transcript-intelligence",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "scrapecreators-api"
+        ]
+      }
+    },
+    {
+      "slug": "trend-discovery",
+      "name": "trend-discovery",
+      "category": "composites",
+      "domain": "social",
+      "description": "Discover rising category conversations, formats, sounds, questions, and creator patterns across social platforms, then separate durable demand signals from short-lived noise.",
+      "tags": "social, research, monitoring",
+      "path": "skills/social/composites/trend-discovery",
+      "files": [
+        "skills/social/composites/trend-discovery/SKILL.md",
+        "skills/social/composites/trend-discovery/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "trend-discovery",
+        "category": "composites",
+        "domain": "social",
+        "tags": [
+          "social",
+          "research",
+          "monitoring"
+        ],
+        "collections": [
+          "brand-growth"
+        ],
+        "collection_stage": "research",
+        "source": "scrapecreators",
+        "installation": {
+          "base_command": "npx goose-skills install trend-discovery",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "scrapecreators-api",
+          "outlier-post-finder",
+          "transcript-intelligence"
         ]
       }
     },

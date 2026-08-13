@@ -1,0 +1,14 @@
+{
+  "slug": "comment-mining",
+  "category": "composites",
+  "domain": "social",
+  "tags": ["social", "research", "brand"],
+  "collections": ["brand-growth"],
+  "collection_stage": "research",
+  "source": "scrapecreators",
+  "installation": {
+    "base_command": "npx goose-skills install comment-mining",
+    "supports": ["claude", "cursor", "codex"]
+  },
+  "requires_skills": ["scrapecreators-api"]
+}

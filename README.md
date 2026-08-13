@@ -2,9 +2,11 @@
 <img width="3148" height="1828" alt="CleanShot 2026-07-13 at 20 15 47@2x" src="https://github.com/user-attachments/assets/4984e98c-d53e-4191-a64a-59533cbc0847" />
 <img width="3350" height="1802" alt="CleanShot 2026-07-13 at 20 16 54@2x" src="https://github.com/user-attachments/assets/2e912363-8f86-4754-adc9-d6b23f798abd" />
 
-# Goose Skills
+# AI Skills for Brand Growth
 
-**Growth skills for AI agents. Ready-to-use skills for ads, social media, content, marketing, competitive intelligence, SEO, lead generation and GTM.**
+**Put your AI agent on the growth team.**
+
+Research customers and competitors, analyze what is working, create the next campaign, and learn from the result. Goose Skills gives Claude Code, Cursor, Codex, and other coding agents ready-to-use workflows for ads, social media, content, competitive intelligence, SEO, lead generation, and GTM.
 
 Browse all skills at https://skills.gooseworks.ai
 
@@ -21,6 +23,7 @@ Works with [Claude Code](https://claude.ai/claude-code) &middot; [Cursor](https:
 ## Contents
 
 - [Quick Start](#-quick-start)
+- [Brand Growth collection](#-brand-growth-collection)
 - [Commands](#-commands)
 - [Skills Catalog](#-skills-catalog)
 - [Usage Examples](#-usage-examples)
@@ -75,6 +78,31 @@ npx gooseworks install --all       # All detected agents
 This gives your coding agent access to the **full catalog of 200+ skills**. After installing, just ask your agent to use any skill by name.
 
 > If you want a cloud-based AI coworker that already knows all these skills and more, sign up to [Gooseworks](https://app.gooseworks.ai)
+
+---
+
+## Brand Growth collection
+
+The **Brand Growth** collection is a curated path through the normal Goose Skills catalog for consumer and ecommerce brand work. It is not a separate package or command: install GooseWorks once, then ask `/gooseworks` for the outcome you need.
+
+| Stage | What your agent can do | Example skills |
+|---|---|---|
+| **Research** | Understand the brand, customers, competitors, creators, trends, comments, and product demand | `brand-research`, `comment-mining`, `competitor-social-research`, `influencer-prospecting`, `trend-discovery`, `product-demand-research` |
+| **Analyze** | Diagnose ads, policy risk, landing-page message match, and unusual social performance | `meta-ads-analyzer`, `meta-ad-policy-checker`, `ad-to-landing-page-auditor`, `outlier-post-finder` |
+| **Create** | Remix graphic ads, make product photography and social graphics, and animate static images | `remix-graphic-ad-from-reference`, `product-photoshoot`, `goose-graphics`, `animate-image` |
+| **Learn and iterate** | Bring results back into research and analysis, then decide the next test | Re-run the relevant analysis skill with current performance and audience evidence |
+
+ScrapeCreators powers structured public social and ad-library research behind several workflows. The user-facing skills turn that source data into a brief, shortlist, analysis, or recommendation instead of returning raw API output.
+
+[Browse the Brand Growth collection](https://skills.gooseworks.ai/?collection=brand-growth#library)
+
+After installation, start with:
+
+```text
+/gooseworks onboard me
+```
+
+The agent will collect the useful company context for future growth work and finish by asking what you want to do first. Existing users can skip onboarding and keep using `/gooseworks` exactly as they do today.
 
 ---
 
