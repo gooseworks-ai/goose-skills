@@ -1,5 +1,5 @@
 {
-  "version": "1.2.0",
+  "version": "1.3.0",
   "generated": "2026-08-14",
   "skills": [
     {
@@ -9526,6 +9526,224 @@
             "codex"
           ]
         }
+      }
+    }
+  ],
+  "collections": [
+    {
+      "slug": "brand-growth",
+      "name": "Brand Growth",
+      "type": "collection",
+      "headline": "Put your AI agent on the growth team.",
+      "description": "A curated path through the Goose Skills catalog for consumer and ecommerce brands to research the market, analyze opportunities and performance, create on-brand work, and improve the next iteration.",
+      "path": "collections/brand-growth",
+      "files": [
+        "collections/brand-growth/collection.meta.json"
+      ],
+      "installable": false,
+      "skills": [
+        {
+          "slug": "ad-angle-miner",
+          "name": "ad-angle-miner",
+          "description": ">",
+          "stage": "analyze",
+          "path": "skills/ads/composites/ad-angle-miner"
+        },
+        {
+          "slug": "ad-to-landing-page-auditor",
+          "name": "ad-to-landing-page-auditor",
+          "description": ">",
+          "stage": "analyze",
+          "path": "skills/ads/composites/ad-to-landing-page-auditor"
+        },
+        {
+          "slug": "animate-image",
+          "name": "animate-image",
+          "description": "Animate an existing product image or static ad into a short branded video using the GooseWorks Animate Images workflow, with source-image continuity and optional end-frame control.",
+          "stage": "create",
+          "path": "skills/ads/composites/animate-image"
+        },
+        {
+          "slug": "audience-research",
+          "name": "audience-research",
+          "description": "Evaluate whether a creator, influencer, or brand account reaches the right audience using public profile, aggregate demographic, geography, language, content, comment, and commerce signals. Use for creator comparisons, sponsorship fit, market fit, and audience-quality research.",
+          "stage": "research",
+          "path": "skills/social/composites/audience-research"
+        },
+        {
+          "slug": "brand-research",
+          "name": "brand-research",
+          "description": "Research a company or brand from its website and produce a reusable Brand Core covering products, audience, competitors, positioning, offers, messaging evidence, voice, and visual identity. Use before growth, ad, content, creator, or product work when reliable brand context is missing.",
+          "stage": "research",
+          "path": "skills/ads/composites/brand-research"
+        },
+        {
+          "slug": "comment-mining",
+          "name": "comment-mining",
+          "description": "Mine comments and replies on social posts, videos, and ads for recurring customer language, questions, objections, desired outcomes, complaints, product requests, purchase signals, and creative opportunities. Use for voice-of-customer research grounded in linked source evidence.",
+          "stage": "research",
+          "path": "skills/social/composites/comment-mining"
+        },
+        {
+          "slug": "competitor-ad-intelligence",
+          "name": "competitor-ad-intelligence",
+          "description": ">",
+          "stage": "analyze",
+          "path": "skills/ads/composites/competitor-ad-intelligence"
+        },
+        {
+          "slug": "competitor-social-research",
+          "name": "competitor-social-research",
+          "description": "Compare competitors' social content across platforms to identify recurring topics, formats, hooks, audience reactions, distribution patterns, and credible content opportunities for a brand.",
+          "stage": "research",
+          "path": "skills/social/composites/competitor-social-research"
+        },
+        {
+          "slug": "content-repurposing",
+          "name": "content-repurposing",
+          "description": "Turn public social videos, transcripts, posts, creator research, or the user's own source material into platform-specific LinkedIn posts, X posts and threads, short-form scripts, newsletters, blog outlines, carousel briefs, and content calendars. Use when the user wants to reuse a strong idea without copying the source.",
+          "stage": "create",
+          "path": "skills/content/composites/content-repurposing"
+        },
+        {
+          "slug": "creator-profile-teardown",
+          "name": "creator-profile-teardown",
+          "description": "Analyze a creator, influencer, founder, competitor, or brand social account to explain its positioning, content pillars, winning posts, hooks, formats, series, calls to action, and audience response. Use when the user wants to understand why an account works and what patterns to test without copying it.",
+          "stage": "analyze",
+          "path": "skills/social/composites/creator-profile-teardown"
+        },
+        {
+          "slug": "goose-graphics",
+          "name": "goose-graphics",
+          "description": "Portable visual skill pack for the Agent Skills ecosystem (Claude Code, Claude Desktop, Claude Cowork, Claude Design, Goose, Cursor, Codex). Discovers community-published styles + formats via the gooseworks CLI, runs an extract-style workflow on reference images, and exports rendered PNGs via Playwright.",
+          "stage": "create",
+          "path": "skills/design/composites/goose-graphics"
+        },
+        {
+          "slug": "influencer-prospecting",
+          "name": "influencer-prospecting",
+          "description": "Find and evaluate creators, influencers, affiliates, and UGC partners using audience fit, content fit, authentic product adjacency, engagement quality, public contactability, commerce signals, and brand-safety evidence—not follower count alone.",
+          "stage": "research",
+          "path": "skills/social/composites/influencer-prospecting"
+        },
+        {
+          "slug": "meta-ad-policy-checker",
+          "name": "meta-ad-policy-checker",
+          "description": "Pre-flight policy check for Meta ads. Takes ad copy plus advertiser context, resolves and fetches the relevant Meta transparency-center policy pages at runtime, and returns a Pass / Fix Required / Block verdict with cited findings and rewrites.",
+          "stage": "analyze",
+          "path": "skills/ads/composites/meta-ad-policy-checker"
+        },
+        {
+          "slug": "meta-ads-analyzer",
+          "name": "meta-ads-analyzer",
+          "description": "Diagnose Meta Ads campaign performance and account gaps using Meta's actual system mechanics — including customer-journey coverage, Breakdown Effect, Learning Phase, Auction Overlap, Pacing, and Creative Fatigue. Use for performance diagnosis, account audits, full-funnel or TOF/MOF/BOF gap analysis, deciding what to test or create next, and producing novice-friendly recommendations without forcing every campaign or ad into a funnel stage.",
+          "stage": "analyze",
+          "path": "skills/ads/composites/meta-ads-analyzer"
+        },
+        {
+          "slug": "outlier-post-finder",
+          "name": "outlier-post-finder",
+          "description": "Find posts that materially outperform an account's normal baseline and explain the hook, topic, format, timing, and audience response patterns worth testing.",
+          "stage": "analyze",
+          "path": "skills/social/composites/outlier-post-finder"
+        },
+        {
+          "slug": "product-demand-research",
+          "name": "product-demand-research",
+          "description": "Test product-demand hypotheses using public customer language, search and social signals, competitor offers, reviews, comments, creator content, and social-commerce evidence before committing to a product, launch, offer, or campaign.",
+          "stage": "research",
+          "path": "skills/research/composites/product-demand-research"
+        },
+        {
+          "slug": "product-photoshoot",
+          "name": "product-photoshoot",
+          "description": "Create faithful studio, lifestyle, and on-model product photography through the GooseWorks Product Photos workflow, then approve selected results for reuse in future creative work.",
+          "stage": "create",
+          "path": "skills/ads/composites/product-photoshoot"
+        },
+        {
+          "slug": "remix-graphic-ad-from-reference",
+          "name": "remix-graphic-ad-from-reference",
+          "description": "Recreate a static graphic ad (Pinterest pin, IG/FB feed image, poster) from a reference image, swapping in a new brand's product and new copy while keeping the reference's layout, composition, and visual energy. ALWAYS generated with GPT Image 2 in edit-the-reference mode (fal-ai/gpt-image-1/edit-image, a billed FAL generation); the HTML/goose-graphics overlay is only an optional text-finishing step, never the generator. The static-graphics counterpart to the video remix-ad skill; this is what the app calls when a user picks a reference ad and wants it for their own product.",
+          "stage": "create",
+          "path": "skills/ads/composites/remix-graphic-ad-from-reference"
+        },
+        {
+          "slug": "social-listening-brief",
+          "name": "social-listening-brief",
+          "description": "Produce a decision-ready brief of current brand, product, category, and competitor conversations across social platforms, including sentiment drivers, questions, risks, and growth opportunities.",
+          "stage": "research",
+          "path": "skills/social/composites/social-listening-brief"
+        },
+        {
+          "slug": "transcript-intelligence",
+          "name": "transcript-intelligence",
+          "description": "Turn TikTok, Instagram, YouTube, Facebook, X, LinkedIn, Reddit, or Rumble transcripts into timestamped hooks, claims, objections, proof, calls to action, sponsorship signals, and reusable content atoms. Use directly for transcript analysis or as support for creator, competitor, trend, demand, and repurposing work.",
+          "stage": "analyze",
+          "path": "skills/social/capabilities/transcript-intelligence"
+        },
+        {
+          "slug": "trend-discovery",
+          "name": "trend-discovery",
+          "description": "Discover rising category conversations, formats, sounds, questions, and creator patterns across social platforms, then separate durable demand signals from short-lived noise.",
+          "stage": "research",
+          "path": "skills/social/composites/trend-discovery"
+        }
+      ],
+      "metadata": {
+        "slug": "brand-growth",
+        "name": "Brand Growth",
+        "headline": "Put your AI agent on the growth team.",
+        "description": "A curated path through the Goose Skills catalog for consumer and ecommerce brands to research the market, analyze opportunities and performance, create on-brand work, and improve the next iteration.",
+        "audience": [
+          "consumer brands",
+          "ecommerce brands"
+        ],
+        "tags": [
+          "ads",
+          "brand",
+          "content",
+          "design",
+          "research",
+          "social"
+        ],
+        "installable": false,
+        "entry": {
+          "skill": "gooseworks",
+          "command": "/gooseworks",
+          "onboarding_command": "/gooseworks onboard me"
+        },
+        "stages": [
+          {
+            "slug": "research",
+            "name": "Research",
+            "description": "Understand the brand, customers, competitors, audiences, creators, trends, comments, and product demand."
+          },
+          {
+            "slug": "analyze",
+            "name": "Analyze",
+            "description": "Diagnose ads, creator profiles, transcripts, policy risk, landing-page alignment, and performance gaps."
+          },
+          {
+            "slug": "create",
+            "name": "Create",
+            "description": "Turn the evidence into ads, product photography, graphics, social content, and motion creative."
+          }
+        ],
+        "growth_loop": [
+          "research",
+          "create",
+          "run",
+          "measure",
+          "improve"
+        ],
+        "example_prompts": [
+          "Analyze the ads my three competitors are currently running.",
+          "Mine these TikTok and Instagram comments for objections and buying intent.",
+          "Find skincare creators whose audiences match women aged 25–40 in the US.",
+          "Diagnose our Meta performance and recommend the next creative test.",
+          "Research demand for this new product idea."
+        ]
       }
     }
   ]

@@ -50,6 +50,15 @@ function writePack(root, packSlug, packMeta) {
   fs.writeFileSync(path.join(dir, 'pack.meta.json'), JSON.stringify(packMeta, null, 2));
 }
 
+function writeCollection(root, collectionSlug, collectionMeta) {
+  const dir = path.join(root, 'collections', collectionSlug);
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(
+    path.join(dir, 'collection.meta.json'),
+    JSON.stringify(collectionMeta, null, 2),
+  );
+}
+
 function runBuild(root) {
   return execFileSync('node', [BUILD_INDEX], {
     env: { ...process.env, GOOSE_SKILLS_ROOT: root },
@@ -213,6 +222,64 @@ test('handles tree with no packs', () => {
   // No promoted entries — none have metadata.pack
   const withPack = idx.skills.filter((s) => s.metadata && s.metadata.pack);
   assert.equal(withPack.length, 0);
+
+  fs.rmSync(root, { recursive: true, force: true });
+});
+
+test('builds collection membership from skill metadata without making a pack', () => {
+  const root = makeFixtureRoot();
+  writeSkill(
+    root,
+    'composites',
+    'audience-research',
+    { name: 'audience-research', description: 'Research an audience.' },
+    {
+      ...baseMeta('audience-research', 'composites'),
+      collections: ['brand-growth'],
+      collection_stage: 'research',
+    },
+  );
+  writeCollection(root, 'brand-growth', {
+    slug: 'brand-growth',
+    name: 'Brand Growth',
+    headline: 'Put your AI agent on the growth team.',
+    description: 'A curated growth collection.',
+    installable: false,
+    stages: [{ slug: 'research', name: 'Research', description: 'Find evidence.' }],
+  });
+
+  runBuild(root);
+  const idx = readIndex(root);
+  const collection = idx.collections.find(({ slug }) => slug === 'brand-growth');
+
+  assert.ok(collection);
+  assert.equal(collection.installable, false);
+  assert.deepEqual(collection.files, ['collections/brand-growth/collection.meta.json']);
+  assert.deepEqual(collection.skills.map(({ slug }) => slug), ['audience-research']);
+  assert.equal(collection.skills[0].stage, 'research');
+  assert.equal(idx.packs.some(({ slug }) => slug === 'brand-growth'), false);
+
+  fs.rmSync(root, { recursive: true, force: true });
+});
+
+test('throws when a skill references an undefined collection', () => {
+  const root = makeFixtureRoot();
+  writeSkill(
+    root,
+    'composites',
+    'audience-research',
+    { name: 'audience-research', description: 'Research an audience.' },
+    {
+      ...baseMeta('audience-research', 'composites'),
+      collections: ['missing-collection'],
+      collection_stage: 'research',
+    },
+  );
+
+  assert.throws(
+    () => runBuild(root),
+    /references unknown collection "missing-collection"/,
+  );
 
   fs.rmSync(root, { recursive: true, force: true });
 });

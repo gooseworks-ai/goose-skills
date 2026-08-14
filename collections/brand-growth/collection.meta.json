@@ -1,0 +1,55 @@
+{
+  "slug": "brand-growth",
+  "name": "Brand Growth",
+  "headline": "Put your AI agent on the growth team.",
+  "description": "A curated path through the Goose Skills catalog for consumer and ecommerce brands to research the market, analyze opportunities and performance, create on-brand work, and improve the next iteration.",
+  "audience": [
+    "consumer brands",
+    "ecommerce brands"
+  ],
+  "tags": [
+    "ads",
+    "brand",
+    "content",
+    "design",
+    "research",
+    "social"
+  ],
+  "installable": false,
+  "entry": {
+    "skill": "gooseworks",
+    "command": "/gooseworks",
+    "onboarding_command": "/gooseworks onboard me"
+  },
+  "stages": [
+    {
+      "slug": "research",
+      "name": "Research",
+      "description": "Understand the brand, customers, competitors, audiences, creators, trends, comments, and product demand."
+    },
+    {
+      "slug": "analyze",
+      "name": "Analyze",
+      "description": "Diagnose ads, creator profiles, transcripts, policy risk, landing-page alignment, and performance gaps."
+    },
+    {
+      "slug": "create",
+      "name": "Create",
+      "description": "Turn the evidence into ads, product photography, graphics, social content, and motion creative."
+    }
+  ],
+  "growth_loop": [
+    "research",
+    "create",
+    "run",
+    "measure",
+    "improve"
+  ],
+  "example_prompts": [
+    "Analyze the ads my three competitors are currently running.",
+    "Mine these TikTok and Instagram comments for objections and buying intent.",
+    "Find skincare creators whose audiences match women aged 25–40 in the US.",
+    "Diagnose our Meta performance and recommend the next creative test.",
+    "Research demand for this new product idea."
+  ]
+}

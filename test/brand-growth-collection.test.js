@@ -8,6 +8,30 @@ const index = JSON.parse(
 );
 const skillsBySlug = new Map(index.skills.map((skill) => [skill.slug, skill]));
 
+test('Brand Growth has first-class, non-installable collection metadata', () => {
+  const collection = index.collections.find(({ slug }) => slug === 'brand-growth');
+
+  assert.ok(collection, 'Brand Growth should be present in skills-index.json');
+  assert.equal(collection.type, 'collection');
+  assert.equal(collection.installable, false);
+  assert.equal(collection.metadata.entry.command, '/gooseworks');
+  assert.equal(collection.metadata.entry.onboarding_command, '/gooseworks onboard me');
+  assert.deepEqual(
+    collection.metadata.growth_loop,
+    ['research', 'create', 'run', 'measure', 'improve'],
+  );
+
+  const indexedMembers = index.skills
+    .filter((skill) => skill.metadata?.collections?.includes('brand-growth'))
+    .map(({ slug }) => slug)
+    .sort();
+  assert.deepEqual(
+    collection.skills.map(({ slug }) => slug).sort(),
+    indexedMembers,
+    'collection membership should be derived from skill metadata',
+  );
+});
+
 test('new Brand Growth workflows are indexed in the intended stages', () => {
   const expected = {
     'audience-research': 'research',

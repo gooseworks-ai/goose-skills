@@ -230,6 +230,78 @@ function scanPacks(registrySkills) {
   return packs;
 }
 
+/**
+ * Scan editorial collections from collections/<slug>/collection.meta.json.
+ *
+ * Collections are discovery metadata, not installable packs. Membership stays
+ * on each skill's metadata.collections field so there is only one source of
+ * truth for which skills belong to a collection.
+ */
+function scanCollections(skills) {
+  const collectionsRoot = path.join(ROOT, 'collections');
+  if (!fs.existsSync(collectionsRoot)) return [];
+
+  const collections = [];
+  const slugs = fs.readdirSync(collectionsRoot).filter((entry) =>
+    fs.statSync(path.join(collectionsRoot, entry)).isDirectory(),
+  );
+
+  for (const slug of slugs) {
+    const collectionDir = path.join(collectionsRoot, slug);
+    const metaPath = path.join(collectionDir, 'collection.meta.json');
+    if (!fs.existsSync(metaPath)) continue;
+
+    const meta = JSON.parse(fs.readFileSync(metaPath, 'utf8'));
+    if (meta.slug !== slug) {
+      throw new Error(`Collection slug mismatch: directory=${slug}, metadata=${meta.slug}`);
+    }
+    if (meta.installable !== false) {
+      throw new Error(`Collection "${slug}" must set installable=false; collections are not packs`);
+    }
+
+    const validStages = new Set((meta.stages || []).map((stage) => stage.slug));
+    if (validStages.size === 0) {
+      throw new Error(`Collection "${slug}" must declare at least one stage`);
+    }
+    const members = skills
+      .filter((skill) =>
+        Array.isArray(skill.metadata && skill.metadata.collections) &&
+        skill.metadata.collections.includes(slug),
+      )
+      .map((skill) => {
+        const stage = skill.metadata.collection_stage;
+        if (!stage || !validStages.has(stage)) {
+          throw new Error(
+            `Collection "${slug}": skill "${skill.slug}" has invalid collection_stage "${stage || ''}"`,
+          );
+        }
+
+        return {
+          slug: skill.slug,
+          name: skill.name,
+          description: skill.description,
+          stage,
+          path: skill.path,
+        };
+      });
+
+    collections.push({
+      slug,
+      name: meta.name || slug,
+      type: 'collection',
+      headline: meta.headline || '',
+      description: meta.description || '',
+      path: `collections/${slug}`,
+      files: collectFiles(collectionDir).map((file) => path.relative(ROOT, file)),
+      installable: false,
+      skills: members,
+      metadata: meta,
+    });
+  }
+
+  return collections;
+}
+
 const registrySkills = [
   ...scanCategory('capabilities'),
   ...scanCategory('composites'),
@@ -297,6 +369,18 @@ const skills = [
   ...promotedFromPacks,
 ].sort((a, b) => a.slug.localeCompare(b.slug));
 
+const collections = scanCollections(skills).sort((a, b) => a.slug.localeCompare(b.slug));
+const collectionSlugs = new Set(collections.map((collection) => collection.slug));
+for (const skill of skills) {
+  for (const collectionSlug of skill.metadata?.collections || []) {
+    if (!collectionSlugs.has(collectionSlug)) {
+      throw new Error(
+        `Skill "${skill.slug}" references unknown collection "${collectionSlug}"`,
+      );
+    }
+  }
+}
+
 // Validate no slug collisions between packs and skills
 const skillSlugs = new Set(skills.map((s) => s.slug));
 for (const pack of packs) {
@@ -311,8 +395,12 @@ let generatedDate = new Date().toISOString().split('T')[0];
 if (fs.existsSync(OUTPUT)) {
   try {
     const existing = JSON.parse(fs.readFileSync(OUTPUT, 'utf8'));
-    const newContent = JSON.stringify({ skills, packs });
-    const oldContent = JSON.stringify({ skills: existing.skills, packs: existing.packs });
+    const newContent = JSON.stringify({ skills, packs, collections });
+    const oldContent = JSON.stringify({
+      skills: existing.skills,
+      packs: existing.packs,
+      collections: existing.collections || [],
+    });
     if (newContent === oldContent && existing.generated) {
       generatedDate = existing.generated;
     }
@@ -320,11 +408,15 @@ if (fs.existsSync(OUTPUT)) {
 }
 
 const index = {
-  version: '1.2.0',
+  version: '1.3.0',
   generated: generatedDate,
   skills,
   packs,
+  collections,
 };
 
 fs.writeFileSync(OUTPUT, JSON.stringify(index, null, 2) + '\n');
-console.log(`Generated ${OUTPUT} with ${skills.length} skills and ${packs.length} packs.`);
+console.log(
+  `Generated ${OUTPUT} with ${skills.length} skills, ${packs.length} packs, ` +
+    `and ${collections.length} collections.`,
+);

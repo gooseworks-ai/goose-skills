@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gooseworks.ai/schemas/collection-meta.schema.json",
+  "type": "object",
+  "required": [
+    "slug",
+    "name",
+    "headline",
+    "description",
+    "audience",
+    "tags",
+    "installable",
+    "entry",
+    "stages",
+    "growth_loop",
+    "example_prompts"
+  ],
+  "properties": {
+    "slug": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "name": { "type": "string", "minLength": 1 },
+    "headline": { "type": "string", "minLength": 1 },
+    "description": { "type": "string", "minLength": 1 },
+    "audience": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "installable": { "const": false },
+    "entry": {
+      "type": "object",
+      "required": ["skill", "command", "onboarding_command"],
+      "properties": {
+        "skill": { "type": "string", "minLength": 1 },
+        "command": { "type": "string", "minLength": 1 },
+        "onboarding_command": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "stages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["slug", "name", "description"],
+        "properties": {
+          "slug": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+          "name": { "type": "string", "minLength": 1 },
+          "description": { "type": "string", "minLength": 1 }
+        },
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "growth_loop": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1
+    },
+    "example_prompts": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1
+    }
+  },
+  "additionalProperties": false
+}
