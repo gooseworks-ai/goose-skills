@@ -29,12 +29,13 @@ RADIUS = 40
 FILL = (246, 228, 219, 205)
 SHADOW = (30, 22, 16)                # warm-dark soft box-shadow
 
-# ---- fonts (macOS; SF Pro with Arial fallback, Times for the serif CTA) ----
-SF = "/System/Library/Fonts/SFNS.ttf"
-ARIAL_B = "/System/Library/Fonts/Supplemental/Arial Bold.ttf"
-ARIAL = "/System/Library/Fonts/Supplemental/Arial.ttf"
-ARIAL_I = "/System/Library/Fonts/Supplemental/Arial Italic.ttf"
-TIMES = "/System/Library/Fonts/Times.ttc"
+# ---- fonts (SF Pro on macOS; Arial/Times fallback — cross-platform) ----
+_WIN = os.name == "nt"
+SF = "/System/Library/Fonts/SFNS.ttf"  # macOS variable font; falls back below elsewhere
+ARIAL_B = "C:/Windows/Fonts/arialbd.ttf" if _WIN else "/System/Library/Fonts/Supplemental/Arial Bold.ttf"
+ARIAL = "C:/Windows/Fonts/arial.ttf" if _WIN else "/System/Library/Fonts/Supplemental/Arial.ttf"
+ARIAL_I = "C:/Windows/Fonts/ariali.ttf" if _WIN else "/System/Library/Fonts/Supplemental/Arial Italic.ttf"
+TIMES = "C:/Windows/Fonts/times.ttf" if _WIN else "/System/Library/Fonts/Times.ttc"
 
 def font(kind, size):
     try:
@@ -47,6 +48,14 @@ def font(kind, size):
     return ImageFont.truetype({"bold": ARIAL_B, "semibold": ARIAL_B, "medium": ARIAL_B, "reg": ARIAL, "italic": ARIAL_I}.get(kind, ARIAL), size)
 
 def serif(size):
+    # macOS Times.ttc is a collection (index=1 = Bold); Windows ships a separate
+    # bold face (timesbd.ttf) as a single-face file, so index=1 is invalid there.
+    if _WIN:
+        for p in ("C:/Windows/Fonts/timesbd.ttf", "C:/Windows/Fonts/georgiab.ttf", "C:/Windows/Fonts/times.ttf"):
+            try:
+                return ImageFont.truetype(p, size)
+            except Exception:
+                continue
     try:
         return ImageFont.truetype(TIMES, size, index=1)
     except Exception:
