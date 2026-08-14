@@ -1,0 +1,14 @@
+{
+  "slug": "social-listening-brief",
+  "category": "composites",
+  "domain": "social",
+  "tags": ["social", "research", "monitoring"],
+  "collections": ["brand-growth"],
+  "collection_stage": "research",
+  "source": "scrapecreators",
+  "installation": {
+    "base_command": "npx goose-skills install social-listening-brief",
+    "supports": ["claude", "cursor", "codex"]
+  },
+  "requires_skills": ["scrapecreators-api", "comment-mining"]
+}

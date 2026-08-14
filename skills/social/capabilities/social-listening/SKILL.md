@@ -9,6 +9,11 @@ source: orthogonal
 
 ## Setup
 
+Choose the available runtime before doing any credential setup:
+
+- **Terminal-free client:** skip the shell commands below. Use connected MCP tools. For ScrapeCreators operations, read `scrapecreators-api` and prefer `call_data_provider`. For another provider step without a connected tool, use an equivalent built-in public-web method when it preserves the workflow, or clearly report that step as unavailable.
+- **Local terminal:** use the GooseWorks credentials and proxy commands below.
+
 Read your credentials from ~/.gooseworks/credentials.json:
 ```bash
 export GOOSEWORKS_API_KEY=$(python3 -c "import json;print(json.load(open('$HOME/.gooseworks/credentials.json'))['api_key'])")
@@ -17,7 +22,7 @@ export GOOSEWORKS_API_BASE=$(python3 -c "import json;print(json.load(open('$HOME
 
 If ~/.gooseworks/credentials.json does not exist, tell the user to run: `npx gooseworks login`
 
-All endpoints use Bearer auth: `-H "Authorization: Bearer $GOOSEWORKS_API_KEY"`
+The local proxy endpoints use Bearer auth: `-H "Authorization: Bearer $GOOSEWORKS_API_KEY"`. ScrapeCreators operation descriptions below remain environment-neutral in both runtimes.
 
 
 Track brand mentions, competitor activity, and industry conversations across social media and the web.
@@ -51,23 +56,25 @@ curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/orthogonal/run \
 
 Check what's being posted on X/Twitter:
 
-```bash
-curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/orthogonal/run \
-  -H "Authorization: Bearer $GOOSEWORKS_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"api":"scrapecreators","path":"/v1/twitter/user-tweets","query":{"handle":"NotionHQ"}}'
+```yaml
+provider: scrapecreators
+method: GET
+path: /v1/twitter/user-tweets
+query:
+  handle: NotionHQ
 ```
 
 Check LinkedIn company activity:
 
-```bash
-curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/orthogonal/run \
-  -H "Authorization: Bearer $GOOSEWORKS_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"api":"scrapecreators","path":"/v1/linkedin/company","query":{"url":"https://linkedin.com/company/notion"}}'
+```yaml
+provider: scrapecreators
+method: GET
+path: /v1/linkedin/company/posts
+query:
+  url: https://linkedin.com/company/notion
 ```
 
-> **Note:** Scrape Creators does not have a dedicated "company posts" endpoint. Use `/v1/linkedin/company` to get company page data, or `/v1/linkedin/post` with a specific post URL.
+Use `/v1/linkedin/company` when only the company page is needed, and `/v1/linkedin/post` for one specific post URL.
 
 ### Step 3: Deep Scrape Key Pages with Scrapegraph
 
@@ -92,13 +99,9 @@ curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/orthogonal/run \
   -H "Authorization: Bearer $GOOSEWORKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"api":"exa","path":"/search","body":{"query":"Slack reviews complaints praise 2025 2026","numResults":20,"contents":{"text":true}}}'
-
-# Step 2: Their social presence
-curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/orthogonal/run \
-  -H "Authorization: Bearer $GOOSEWORKS_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"api":"scrapecreators","path":"/v1/twitter/user-tweets","query":{"handle":"SlackHQ"}}'
 ```
+
+Then run the X/Twitter operation from Step 2 with `handle: SlackHQ` through the selected ScrapeCreators runtime.
 
 **User:** "Monitor competitor launches in the AI space"
 ```bash

@@ -9,6 +9,11 @@ source: orthogonal
 
 ## Setup
 
+Choose the available runtime before doing any credential setup:
+
+- **Terminal-free client:** skip the shell commands below. Use connected MCP tools. For ScrapeCreators operations, read `scrapecreators-api` and prefer `call_data_provider`. If a required enrichment provider has no connected tool, report that part of the waterfall as unavailable rather than fabricating enrichment data.
+- **Local terminal:** use the GooseWorks credentials and proxy commands below.
+
 Read your credentials from ~/.gooseworks/credentials.json:
 ```bash
 export GOOSEWORKS_API_KEY=$(python3 -c "import json;print(json.load(open('$HOME/.gooseworks/credentials.json'))['api_key'])")
@@ -17,7 +22,7 @@ export GOOSEWORKS_API_BASE=$(python3 -c "import json;print(json.load(open('$HOME
 
 If ~/.gooseworks/credentials.json does not exist, tell the user to run: `npx gooseworks login`
 
-All endpoints use Bearer auth: `-H "Authorization: Bearer $GOOSEWORKS_API_KEY"`
+The local proxy endpoints use Bearer auth: `-H "Authorization: Bearer $GOOSEWORKS_API_KEY"`. ScrapeCreators operation descriptions below remain environment-neutral in both runtimes.
 
 
 Enrich a lead from an email address (+ optional name) using a waterfall strategy: start with cheap APIs ($0.01 each), cross-reference for confidence, then use expensive AI agents only for gaps. Spends proportionally to lead quality.
@@ -267,11 +272,12 @@ Sum the top repo stars or report the flagship repo star count.
 
 **5b. Twitter/X Followers** (Scrape Creators — ONLY if a Twitter handle was found in Brand.dev socials or Apollo data):
 
-```bash
-curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/orthogonal/run \
-  -H "Authorization: Bearer $GOOSEWORKS_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"api":"scrapecreators","path":"/v1/twitter/profile","query":{"handle":"{twitter_handle}"}}'
+```yaml
+provider: scrapecreators
+method: GET
+path: /v1/twitter/profile
+query:
+  handle: "{twitter_handle}"
 ```
 
 Extract: `legacy.followers_count`, `legacy.friends_count`, `legacy.statuses_count`, `legacy.description`.

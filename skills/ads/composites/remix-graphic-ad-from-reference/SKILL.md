@@ -72,7 +72,7 @@ look is the expected default.
 
 - `goose-graphics` (`skills/design/composites/goose-graphics`) — renders the HTML-overlay path to PNG via the goose-graphics Playwright pipeline.
 - `create-image-gpt-image-fal` (`skills/ads/capabilities/create-image-gpt-image-fal`) — GPT Image 2, run in **edit mode on the reference** for the photographic path.
-- `create-product-images-higgsfield-product-photoshoot` — OPTIONAL: only when no clean product render exists and one must be generated first. Not bundled in goose-skills yet; if absent, require the caller to supply a clean product image.
+- `product-photoshoot` — OPTIONAL: when no clean product render exists, generate one through the GooseWorks Product Photos workflow, ask before spending credits, and use only a result the user approves.
 
 ## Workflow
 

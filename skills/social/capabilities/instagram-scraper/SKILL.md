@@ -1,7 +1,7 @@
 ---
 name: instagram-scraper
 description: Get Instagram profiles, posts, and reels
-source: orthogonal
+source: scrapecreators
 ---
 
 
@@ -9,15 +9,7 @@ source: orthogonal
 
 ## Setup
 
-Read your credentials from ~/.gooseworks/credentials.json:
-```bash
-export GOOSEWORKS_API_KEY=$(python3 -c "import json;print(json.load(open('$HOME/.gooseworks/credentials.json'))['api_key'])")
-export GOOSEWORKS_API_BASE=$(python3 -c "import json;print(json.load(open('$HOME/.gooseworks/credentials.json')).get('api_base','https://api.gooseworks.ai'))")
-```
-
-If ~/.gooseworks/credentials.json does not exist, tell the user to run: `npx gooseworks login`
-
-All endpoints use Bearer auth: `-H "Authorization: Bearer $GOOSEWORKS_API_KEY"`
+Read `scrapecreators-api` first. Execute every operation below through the runtime it selects: the GooseWorks MCP tool in terminal-free clients, the GooseWorks CLI in a local terminal, or the direct API with the user's own key. Never assume a shell is available.
 
 
 Scrape public Instagram data including profiles, posts, and reels.
@@ -30,46 +22,38 @@ Scrape public Instagram data including profiles, posts, and reels.
 
 ## How It Works
 
-Uses the Scrape Creators API via Orthogonal to scrape Instagram data.
+Uses the ScrapeCreators API through its direct GooseWorks proxy.
 
 ## Usage
 
 ### Get User Profile & Posts
 
-```bash
-curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/orthogonal/run \
-  -H "Authorization: Bearer $GOOSEWORKS_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"api":"scrapecreators","path":"/v1/instagram/profile","query":{"handle":"openai"}}'
+```yaml
+provider: scrapecreators
+method: GET
+path: /v1/instagram/profile
+query:
+  handle: openai
 ```
-
-<details>
-<summary>curl equivalent</summary>
-
-```bash
-curl -X POST "https://api.orth.sh/v1/run" \
-
-  -H "Content-Type: application/json" \
-  -d '{"api":"scrapecreators","path":"/v1/instagram/profile","query":{"handle":"openai"}}'
-```
-</details>
 
 ### Get Individual Post/Reel
 
-```bash
-curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/orthogonal/run \
-  -H "Authorization: Bearer $GOOSEWORKS_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"api":"scrapecreators","path":"/v1/instagram/post","query":{"url":"https://instagram.com/p/abc123"}}'
+```yaml
+provider: scrapecreators
+method: GET
+path: /v1/instagram/post
+query:
+  url: https://instagram.com/p/abc123
 ```
 
 ### Get Basic Profile by User ID
 
-```bash
-curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/orthogonal/run \
-  -H "Authorization: Bearer $GOOSEWORKS_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"api":"scrapecreators","path":"/v1/instagram/basic-profile","query":{"userId":"12345"}}'
+```yaml
+provider: scrapecreators
+method: GET
+path: /v1/instagram/basic-profile
+query:
+  userId: "12345"
 ```
 
 ## Parameters
@@ -103,20 +87,10 @@ curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/orthogonal/run \
 ## Examples
 
 **User:** "What's OpenAI posting on Instagram?"
-```bash
-curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/orthogonal/run \
-  -H "Authorization: Bearer $GOOSEWORKS_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"api":"scrapecreators","path":"/v1/instagram/profile","query":{"handle":"openai"}}'
-```
+Use the **Get User Profile & Posts** operation with `handle: openai`.
 
 **User:** "Get details on this Instagram post"
-```bash
-curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/orthogonal/run \
-  -H "Authorization: Bearer $GOOSEWORKS_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"api":"scrapecreators","path":"/v1/instagram/post","query":{"url":"https://instagram.com/p/abc123"}}'
-```
+Use the **Get Individual Post/Reel** operation with the supplied post URL.
 
 ## Error Handling
 

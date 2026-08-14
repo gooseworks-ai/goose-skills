@@ -1,6 +1,6 @@
 ---
 name: meta-ads-analyzer
-description: Diagnose Meta Ads campaign performance using Meta's actual system mechanics — Breakdown Effect, Learning Phase, Auction Overlap, Pacing, and Creative Fatigue — and produce structured, testable recommendations that avoid judging segments by average CPA instead of marginal efficiency.
+description: Diagnose Meta Ads campaign performance and account gaps using Meta's actual system mechanics — including customer-journey coverage, Breakdown Effect, Learning Phase, Auction Overlap, Pacing, and Creative Fatigue. Use for performance diagnosis, account audits, full-funnel or TOF/MOF/BOF gap analysis, deciding what to test or create next, and producing novice-friendly recommendations without forcing every campaign or ad into a funnel stage.
 tags: [ads]
 ---
 
@@ -8,9 +8,11 @@ tags: [ads]
 
 Most "Meta Ads analysis" stops at "this CPA is high, pause it." That's wrong more often than it's right. Meta's delivery system optimizes for **marginal efficiency** — the cost of the *next* conversion — not average efficiency across a snapshot. A segment with a higher average CPA is often the one keeping your overall campaign cheap. Pausing it makes things worse.
 
-This skill diagnoses Meta campaigns the way a senior media buyer would: at the right evaluation level, accounting for learning state, separating noise from signal, and explaining *why* the system is making the decisions it's making before recommending any change.
+This skill diagnoses Meta campaigns the way a senior media buyer would: at the right evaluation level, accounting for learning state, separating noise from signal, and explaining *why* the system is making the decisions it's making before recommending any change. It can also audit whether the account supports the complete customer journey without assuming that TOF, MOF, and BOF must be separate campaigns.
 
-**Core principle:** Holistic first, then drill down. Marginal over average. Dynamic over static. Every recommendation is a testable hypothesis with expected impact, not a directive.
+**Core principle:** Holistic first, then drill down. Marginal over average. Customer-journey coverage over rigid funnel structure. Dynamic over static. Every recommendation is a testable hypothesis with expected impact, not a directive.
+
+For account audits, full-funnel reviews, or questions about what is missing, read and apply [references/customer-journey-coverage.md](references/customer-journey-coverage.md) before analyzing the account.
 
 ## When to Use
 
@@ -21,6 +23,10 @@ This skill diagnoses Meta campaigns the way a senior media buyer would: at the r
 - "My CPA jumped — is this normal or a real problem?"
 - "Audit this campaign before I scale budget"
 - "I exported my Meta data — what does it actually mean?"
+- "Audit my Meta ad account and tell me what is missing"
+- "Do I have enough TOF, MOF, and BOF coverage?"
+- "Why are customers not moving through the funnel?"
+- "What ads should I create next?"
 
 ## Phase 0: Intake
 
@@ -38,6 +44,15 @@ This skill diagnoses Meta campaigns the way a senior media buyer would: at the r
 4. **Target metrics** — CPA target, ROAS target, or "no target — benchmark me"
 5. **Funnel context** (if relevant) — On-platform conversion vs. website event vs. downstream qualification rate
 6. **What's making you ask?** — Specific concern ("CPA up 40%"), routine review, or pre-scale audit
+7. **Account coverage evidence** (for account/funnel audits, when available):
+   - Campaign objective, optimization event, and attribution setting
+   - Audience strategy, exclusions, and retargeting windows
+   - Creative format, message, proof, offer, and landing-page destination
+   - Pixel/CAPI and relevant conversion-event health
+   - Campaign, ad-set, and ad-level spend and results
+8. **Report style** — `guided` by default; use `expert` when the user asks for technical detail or demonstrates strong media-buying knowledge
+
+Do not block when some coverage fields are absent. Record what is missing, lower confidence, and distinguish "no evidence available" from "the account has no coverage."
 
 ## Phase 1: Identify the Correct Evaluation Level
 
@@ -75,7 +90,7 @@ Before judging anything, check delivery state per ad set.
 
 ## Phase 3: Diagnose with Meta-Specific Lenses
 
-Run the diagnosis through these five lenses. Each one explains a different class of "weird" behavior.
+Run the diagnosis through these six lenses. Each one explains a different class of "weird" behavior.
 
 ### 3A: Marginal Efficiency Analysis (Breakdown Effect)
 
@@ -133,13 +148,27 @@ Distinguish noise from trend before recommending anything.
 
 Always check sample size. A 1-conversion difference at low volume is meaningless.
 
+### 3F: Customer-Journey Coverage Audit
+
+Run this lens for account audits, full-funnel reviews, requests about TOF/MOF/BOF, or questions about what to create next. Follow [references/customer-journey-coverage.md](references/customer-journey-coverage.md).
+
+Start by identifying whether the account is **consolidated**, **funnel-segmented**, **hybrid**, or **unclear**. Then evaluate whether the account supports these customer jobs:
+
+- **Create demand** — reach and persuade potential new customers
+- **Build consideration** — educate, demonstrate, establish proof, and answer comparisons
+- **Convert intent** — remove objections, present the offer, and help high-intent customers act
+
+Campaigns and ads are evidence for the coverage map; they are not objects that must each receive one TOF/MOF/BOF label. One campaign or creative may support multiple customer jobs. Only make a stage-specific claim when the audience, message, offer, destination, or optimization event supports it.
+
+Identify gaps in coverage, messaging, handoffs, delivery, or measurement. Do not report a missing stage merely because there is no campaign named after that stage, and do not recommend splitting a consolidated campaign unless the evidence shows a specific problem that separation would test.
+
 ## Phase 4: Synthesize Through the Breakdown Effect Lens
 
-Before writing the report, restate every finding from Phase 3 in terms of *what the system is trying to do*:
+Before writing the report, restate every performance finding from Phase 3 in terms of *what the system is trying to do*:
 
 > "Placement A shows $10 average CPA vs Placement B's $15. Time-series shows A's CPA rising. The system is correctly shifting toward B because B's marginal CPA is now lower. Recommendation: do nothing on placements; test new creative in A to lower its marginal CPA."
 
-If a finding can't be restated in marginal/system-mechanics terms, it's probably noise — drop it.
+If a performance finding can't be restated in marginal/system-mechanics terms, it's probably noise — drop it. For coverage findings, require evidence from the customer journey and state confidence explicitly.
 
 ## Phase 5: Generate the Report
 
@@ -162,17 +191,25 @@ Use this exact structure. No deviation.
    - Aggregate first, then drill-down
    - Compare to target where given, benchmarks otherwise
 
-5. DIAGNOSIS
+5. CUSTOMER-JOURNEY COVERAGE (include for account/funnel audits)
+   - Account model: Consolidated / Funnel-segmented / Hybrid / Unclear
+   - Table: Customer job / What exists / Gap or no gap / Evidence / Confidence / Next test
+   - Customer jobs: Create demand / Build consideration / Convert intent
+   - One campaign or ad may support multiple jobs
+   - Never infer a gap from campaign names alone
+
+6. DIAGNOSIS
    - Findings from Phase 3, each tagged to its lens
-     (Marginal / Relevance / Overlap / Pacing / Fluctuation)
+     (Marginal / Relevance / Overlap / Pacing / Fluctuation / Coverage)
    - Each finding cites specific data
 
-6. RECOMMENDATIONS
+7. RECOMMENDATIONS
    - Each = hypothesis + expected impact + how to test
    - Marked Critical / High / Medium / Low priority
    - Anything paused/scaled has a rollback plan
+   - For guided reports, end with no more than three prioritized actions
 
-7. BREAKDOWN EFFECT NOTES
+8. BREAKDOWN EFFECT NOTES
    - Explicit callouts where average ≠ marginal
    - "Do not do X" warnings if the data tempts a wrong move
 ```
@@ -187,6 +224,10 @@ These are not style suggestions. Violating them produces wrong analysis.
 - **Disambiguate clicks.** Never use bare "clicks". Use **Clicks (all)** for total interactions or **Link Clicks** for offsite clicks.
 - **Audience size language.** Use "Accounts Center accounts" or a bare number. Never "people". If quoting a specific count, use "person" as the noun (e.g., "17,000 person").
 - **Check `get_recommendations` first** if you have live API access. If your recommendation diverges from Meta's, explicitly explain why.
+- **Treat TOF/MOF/BOF as a diagnostic lens, not a required campaign structure.** Never recommend three separate campaigns merely because three funnel stages exist.
+- **Do not force one stage label onto every ad.** Map customer-journey coverage at account level; allow one campaign or creative to support multiple jobs.
+- **Separate absence of evidence from evidence of absence.** Missing creative, audience, landing-page, or event data lowers confidence; it does not prove a funnel gap.
+- **Make guided reports understandable without media-buying experience.** Spell out acronyms on first use, explain why each gap matters, and separate the finding from the next action. Keep the underlying analysis identical to expert mode.
 
 ## Metric Naming Standard
 
@@ -242,6 +283,8 @@ Day-to-day CPA variation within 20–30% is normal. Weekend/weekday differences 
 - **Will not generate creative.** Use `messaging-ab-tester` for variants and `ad-angle-miner` for source material.
 - **Will not analyze landing pages.** Use `ad-to-landing-page-auditor` — and use it whenever Conversion Rate Ranking is below average.
 - **Will not multi-platform compare.** Use `ad-campaign-analyzer` for cross-channel budget reallocation.
+- **Will not require separate TOF, MOF, and BOF campaigns.** It audits whether the customer journey is supported, regardless of whether the account is consolidated, segmented, or hybrid.
+- **Will not classify every ad into one funnel stage.** Individual ads are evidence and may support multiple customer jobs.
 
 ## Related Skills
 

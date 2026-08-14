@@ -1,7 +1,7 @@
 {
   "$schema": "../../../../../schemas/eval.schema.json",
   "skill": "meta-ads-analyzer",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "safety": {
     "readOnly": true,
     "mutatesExternalState": false,
@@ -32,6 +32,18 @@
         "required": false,
         "type": "string",
         "description": "CPA / ROAS target, or 'benchmark me'."
+      },
+      {
+        "name": "account_coverage_evidence",
+        "required": false,
+        "type": "file|table|screenshot|live",
+        "description": "For full-funnel audits: objectives, optimization events, audiences/exclusions, creative messages and offers, landing pages, conversion-event health, and performance. Missing evidence must lower confidence rather than be treated as a missing stage."
+      },
+      {
+        "name": "report_style",
+        "required": false,
+        "type": "enum",
+        "description": "guided (default) or expert. Changes explanation depth, not analytical rigor."
       }
     ],
     "outputs": [
@@ -39,7 +51,7 @@
         "type": "text",
         "format": "markdown",
         "min": 1,
-        "description": "A 7-section diagnostic report: Executive Summary, Evaluation Level, Learning Status, Performance Overview, Diagnosis, Recommendations, Breakdown Effect Notes."
+        "description": "A structured diagnostic report with an optional customer-journey coverage section for account/funnel audits, followed by evidence-backed diagnosis and testable recommendations."
       }
     ]
   },
@@ -71,6 +83,36 @@
         { "type": "output_contains_any", "patterns": ["registration", "lead", "cost per result", "sample"] }
       ],
       "rubric": "This is REAL data with no planted answer — grade the METHODOLOGY a senior Meta media buyer would apply, not specific verdicts:\n1. OBJECTIVE-AWARE KPIs: Does it judge the OUTCOME_LEADS campaigns on cost per registration/lead (NOT purchases or ROAS, which are absent here), and treat OUTCOME_TRAFFIC campaigns on their own terms (clicks/landing-page views, not conversions)? Conflating objectives or demanding purchase metrics that don't exist is a fail.\n2. DATA HONESTY: Does it correctly handle the UNKNOWN quality/engagement/conversion rankings — i.e. NOT fabricate or assume rankings, and attribute UNKNOWN to insufficient volume? Inventing ranking verdicts is an automatic fail.\n3. SAMPLE SIZE / PAUSED STATE: Does it flag that most ad sets are paused and that active conversion volume is tiny (single-digit registrations), so conclusions are low-confidence? Does it avoid analyzing paused ad sets as if they were live?\n4. EVALUATION LEVEL: Does it state the evaluation level and reason about it, and note that budget type (CBO vs ABO) isn't in the data so it's caveated/inferred rather than asserted?\n5. NO NAIVE CUTS + FORMAT: Recommendations framed as testable hypotheses with expected impact + rollback; follows the report structure; no average-metric knee-jerk pauses.\nReturn pass only if items 1 and 2 are both satisfied (objective-aware KPIs AND no fabricated rankings).",
+      "weight": 1
+    },
+    {
+      "name": "full-funnel-insufficient-evidence",
+      "description": "A user requests TOF/MOF/BOF gaps from an export that contains campaign names and performance but lacks creative, destination, audience-exclusion, and event-health evidence. The analyzer must not classify every ad or infer a missing stage from names alone.",
+      "prompt": "Audit this Meta account for TOF, MOF, and BOF gaps in beginner-friendly language. The export is in campaign-export.csv. Tell me what customer-journey coverage exists, what is missing, and what I should create next. Be explicit when the export cannot support a confident conclusion.",
+      "fixtures": ["fixtures/campaign-export.csv"],
+      "assertions": [
+        { "type": "artifact_produced", "artifactType": "text", "min": 1 },
+        { "type": "no_tool_errors" },
+        { "type": "no_external_mutations" },
+        { "type": "output_contains_all", "patterns": ["customer", "coverage", "confidence"] },
+        { "type": "output_contains_any", "patterns": ["insufficient", "cannot determine", "not available", "missing data"] }
+      ],
+      "rubric": "Pass only if the report treats TOF/MOF/BOF as customer-journey coverage rather than required campaign structure; does not assign every campaign/ad to one stage from names alone; distinguishes missing evidence from a proven coverage gap; uses plain-language explanations; and identifies the creative, audience, destination, or event data needed to raise confidence. Fail if it recommends creating three stage campaigns merely because the framework has three stages.",
+      "weight": 1
+    },
+    {
+      "name": "consolidated-account-coverage",
+      "description": "A single Advantage+ campaign contains acquisition, proof/comparison, and offer/objection creative. The analyzer should recognize multi-job coverage and avoid recommending separate stage campaigns without evidence that restructuring would help.",
+      "prompt": "Run a full-funnel account audit for this account. I am a novice media buyer. There is one active Advantage+ Shopping CBO campaign with a broad Advantage+ audience, existing-customer exclusions, and Purchase optimization. It has three active creatives: (1) a problem-to-product UGC ad that introduces the problem, demonstrates the product, and includes a customer quote; (2) a review-and-comparison ad that shows proof and compares the product with the common alternative; and (3) an offer-and-guarantee ad that handles purchase objections and leads to the product page. Explain whether the account supports demand creation, consideration, and conversion, identify only evidence-backed gaps, and tell me the smallest next test. Do not assume separate funnel campaigns are required.",
+      "fixtures": [],
+      "assertions": [
+        { "type": "artifact_produced", "artifactType": "text", "min": 1 },
+        { "type": "no_tool_errors" },
+        { "type": "no_external_mutations" },
+        { "type": "output_contains_all", "patterns": ["consolidated", "create demand", "build consideration", "convert intent"] },
+        { "type": "output_contains_any", "patterns": ["does not require", "not required", "no demonstrated gap", "preserve"] }
+      ],
+      "rubric": "Pass only if the analyzer identifies the consolidated model; allows the same campaign and creatives to support multiple customer jobs; does not prescribe separate TOF/MOF/BOF campaigns; distinguishes real evidence-backed gaps from work invented to fill a framework; and gives no more than three beginner-friendly next actions. Fail if it forces one funnel-stage label per ad or treats consolidation itself as a defect.",
       "weight": 1
     },
     {

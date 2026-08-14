@@ -12,5 +12,6 @@
       "cursor",
       "codex"
     ]
-  }
+  },
+  "requires_skills": ["scrapecreators-api"]
 }

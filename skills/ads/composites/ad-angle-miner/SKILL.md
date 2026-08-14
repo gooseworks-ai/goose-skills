@@ -25,7 +25,8 @@ Dig through customer voice data — reviews, Reddit, support tickets, competitor
 ## Prerequisites
 
 - **Environment variable:** `APIFY_API_TOKEN` — required for review scraping and Reddit scraping
-- **Web search access** — your AI agent must support `web_search` or equivalent for Twitter/X and competitor ad lookups
+- **GooseWorks or a direct ScrapeCreators key** — for structured social comments and ad-library evidence
+- **Web search access** — for review sources and verification fallbacks
 
 ## Phase 0: Intake
 
@@ -36,6 +37,7 @@ Dig through customer voice data — reviews, Reddit, support tickets, competitor
    - G2/Capterra/Trustpilot reviews (yours + competitors)
    - Reddit threads in relevant subreddits
    - Twitter/X complaints or praise
+   - Social comments on creator, competitor, or brand posts
    - Support tickets or NPS comments (paste or file)
    - Competitor ads (Meta + Google)
 5. **Any angles you've already tested?** — So we can skip those
@@ -143,9 +145,9 @@ Extract:
 - "I wish [product] would..." statements
 - Comparison threads (vs discussions)
 
-### 1C: Twitter/X Mining (web_search)
+### 1C: Social Post and Comment Mining
 
-Use web_search to find relevant Twitter/X posts — no scraper or credentials needed:
+Use `scrapecreators-api` to collect relevant X posts plus Instagram, TikTok, YouTube, or Facebook posts where the audience is discussing the problem. Run `comment-mining` on the highest-signal threads. Use web search only as a fallback:
 
 ```
 web_search: "<competitor> (frustrating OR broken OR hate) site:x.com"
@@ -159,9 +161,9 @@ Run 3-5 queries covering:
 - Product category praise / switching stories
 - "What do you use for X?" buying-intent threads
 
-### 1D: Competitor Ad Mining (web_search)
+### 1D: Competitor Ad Mining
 
-Use web_search to check the Meta Ad Library for competitor ad creatives — no separate tool needed:
+Use `competitor-ad-intelligence` for structured Meta and Google ad-library collection. Use web search only to verify an advertiser or fill a documented gap:
 
 ```
 web_search: "<competitor_name> site:facebook.com/ads/library"
@@ -282,23 +284,12 @@ Top-tier angles (score 70+): [N]
 
 Save to `angle-bank-[YYYY-MM-DD].md` in the current working directory (or user-specified path).
 
-## Cost
-
-| Component | Cost |
-|-----------|------|
-| Amazon review scraper (per product) | ~$0.10-0.30 (Apify) |
-| Reddit scraper | ~$0.05-0.10 (Apify) |
-| Twitter/X (web_search) | Free |
-| Competitor ads (web_search) | Free |
-| G2/Capterra reviews (web_search) | Free |
-| Analysis | Free (LLM reasoning) |
-| **Total** | **~$0.15-0.40** |
-
 ## Tools Required
 
 - **Environment variable:** `APIFY_API_TOKEN` — for Apify actors (review scraper, Reddit scraper)
-- **Web search** — built into your AI agent (for Twitter/X, competitor ads, G2/Capterra reviews)
-- No third-party libraries needed. All data collection uses HTTP APIs (`requests` or equivalent) and web_search.
+- **`comment-mining`** — customer language from social and ad comment threads
+- **`competitor-ad-intelligence`** — structured ad-library research through ScrapeCreators
+- **Web search** — built into your AI agent for verification and review sources
 
 ## Trigger Phrases
 

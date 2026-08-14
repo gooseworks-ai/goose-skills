@@ -19,5 +19,5 @@ Concrete paths and shell commands belong in the install template, tool wrappers,
 - (Optional) Set `example_prompt` in `skill.meta.json` to a short, copyable prompt that shows the skill in action. It's surfaced in the catalog and docs; if omitted, one is generated from the description.
 - Use plain prose over code blocks where possible — the agent reads this, not a build tool.
 - Keep the body focused on agent behaviour: decision flow, non-negotiables, troubleshooting. Tool plumbing belongs elsewhere.
-- After editing a skill, run the local sync to update your dev DB:
-  - `cd backend && npx tsx src/scripts/sync-predefined-skills-catalog.ts --local ../goose-skills`
+- After editing a skill, rebuild the local index and run the skill validation and tests.
+- The GooseWorks backend sync reads the catalog from GitHub; it does not accept a local-directory flag. To test catalog ingestion against a dev database, push a draft branch, set the backend's predefined-skills source ref to that branch, and run the forced catalog sync.
