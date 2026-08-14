@@ -61,3 +61,18 @@ test('every indexed skill dependency resolves to another indexed skill', () => {
     }
   }
 });
+
+test('content repurposing has a terminal-free path and never requires FFmpeg', () => {
+  const content = fs.readFileSync(
+    path.join(
+      __dirname,
+      '..',
+      'skills/content/composites/content-repurposing/SKILL.md',
+    ),
+    'utf8',
+  );
+
+  assert.match(content, /Transcript or text supplied.*fully terminal-free/i);
+  assert.match(content, /Do not require FFmpeg or a local terminal/i);
+  assert.match(content, /request pasted captions or a transcript/i);
+});

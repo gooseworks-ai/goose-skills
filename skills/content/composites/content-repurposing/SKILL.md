@@ -16,12 +16,19 @@ Convert source material into original, voice-matched content for the channels th
 ## Workflow
 
 1. Confirm which sources may be transformed and whether they are owned, quoted, or used only as inspiration.
-2. Use `transcript-intelligence` for video sources. Use `outlier-post-finder` or `creator-profile-teardown` when the user wants to repurpose a winning pattern rather than a single source.
-3. Extract content atoms: hooks, stories, claims, proof, frameworks, questions, examples, objections, visuals, and calls to action. Retain the source and support for every factual atom.
-4. Choose only formats that fit the audience and objective. Define the platform constraint, distinct angle, and intended action for each output.
-5. Rewrite from the user's perspective and voice. Use `create-linkedin-content` and `create-x-content` for final platform tuning when those formats are requested.
-6. Produce ready-to-edit drafts, not a list of generic ideas. Vary the structure by platform and include attribution notes where a source materially influenced the output.
-7. Self-check for voice, factual support, repetition, plagiarism risk, platform fit, and whether each derivative stands on its own.
+2. For a video source, use `transcript-intelligence` to obtain or analyze its transcript. Do not download, transcode, or edit the video, and do not introduce an FFmpeg dependency. If the user already supplied a transcript or captions, work from them directly. If only a URL is available and the current environment cannot call the transcript provider, ask for the transcript or captions; do not improvise a terminal-only media workflow.
+3. Use `outlier-post-finder` or `creator-profile-teardown` when the user wants to repurpose a winning pattern rather than a single source.
+4. Extract content atoms: hooks, stories, claims, proof, frameworks, questions, examples, objections, visuals, and calls to action. Retain the source and support for every factual atom.
+5. Choose only formats that fit the audience and objective. Define the platform constraint, distinct angle, and intended action for each output.
+6. Rewrite from the user's perspective and voice. Use `create-linkedin-content` and `create-x-content` for final platform tuning when those formats are requested.
+7. Produce ready-to-edit drafts, not a list of generic ideas. Vary the structure by platform and include attribution notes where a source materially influenced the output.
+8. Self-check for voice, factual support, repetition, plagiarism risk, platform fit, and whether each derivative stands on its own.
+
+## Runtime paths
+
+- **Transcript or text supplied:** fully terminal-free. Repurpose the supplied material directly.
+- **Public video URL with transcript-provider access:** use `transcript-intelligence` and its declared provider dependency, then continue with the transcript.
+- **Public video URL without provider access:** explain that the transcript cannot be fetched in this environment and request pasted captions or a transcript. Skill discovery over MCP does not imply that every managed data provider can also be called over MCP.
 
 ## Output
 
@@ -38,3 +45,4 @@ Convert source material into original, voice-matched content for the channels th
 - Quote only short, necessary excerpts and retain attribution.
 - Do not flatten every platform into the same draft with a different character count.
 - Do not invent facts, personal experience, customer proof, or first-person claims for the user.
+- Do not require FFmpeg or a local terminal. This skill transforms source meaning into written content; it does not process video files.
