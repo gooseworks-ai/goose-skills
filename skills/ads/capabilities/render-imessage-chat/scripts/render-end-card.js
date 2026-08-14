@@ -116,7 +116,7 @@ function main() {
     const ctx = await browser.newContext({ viewport: { width: 1080, height: 1920 }, deviceScaleFactor: 1 });
     const page = await ctx.newPage();
     await page.goto('file://' + htmlPath, { waitUntil: 'load' });
-    await page.waitForFunction(() => document.body.dataset.ready === 'true', { timeout: 5000 });
+    await page.waitForFunction(() => document.body.dataset.ready === 'true', undefined, { timeout: 5000 });
     await page.waitForTimeout(400);
     await page.screenshot({ path: outPng });
     await browser.close();
