@@ -1,6 +1,6 @@
 {
   "version": "1.2.0",
-  "generated": "2026-08-13",
+  "generated": "2026-08-14",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -4602,18 +4602,19 @@
       "name": "meta-ads-analyzer",
       "category": "composites",
       "domain": "ads",
-      "description": "Diagnose Meta Ads campaign performance using Meta's actual system mechanics — Breakdown Effect, Learning Phase, Auction Overlap, Pacing, and Creative Fatigue — and produce structured, testable recommendations that avoid judging segments by average CPA instead of marginal efficiency.",
+      "description": "Diagnose Meta Ads campaign performance and account gaps using Meta's actual system mechanics — including customer-journey coverage, Breakdown Effect, Learning Phase, Auction Overlap, Pacing, and Creative Fatigue. Use for performance diagnosis, account audits, full-funnel or TOF/MOF/BOF gap analysis, deciding what to test or create next, and producing novice-friendly recommendations without forcing every campaign or ad into a funnel stage.",
       "tags": "ads, research",
       "path": "skills/ads/composites/meta-ads-analyzer",
       "files": [
         "skills/ads/composites/meta-ads-analyzer/SKILL.md",
         "skills/ads/composites/meta-ads-analyzer/eval/eval.json",
+        "skills/ads/composites/meta-ads-analyzer/references/customer-journey-coverage.md",
         "skills/ads/composites/meta-ads-analyzer/skill.meta.json"
       ],
       "metadata": {
         "slug": "meta-ads-analyzer",
         "category": "composites",
-        "description": "Diagnose Meta Ads campaigns using Meta's actual system mechanics — Breakdown Effect, Learning Phase, Auction Overlap, Pacing, and Creative Fatigue. Produces a structured diagnosis with root causes and testable hypotheses, designed to avoid the most common analysis mistake of judging segments by average CPA instead of marginal efficiency.",
+        "description": "Diagnose Meta Ads performance and account gaps using customer-journey coverage, Breakdown Effect, Learning Phase, Auction Overlap, Pacing, and Creative Fatigue. Audits TOF/MOF/BOF coverage without forcing separate funnel campaigns or assigning every ad to one stage, then produces novice-friendly, testable recommendations.",
         "domain": "ads",
         "tags": [
           "ads",

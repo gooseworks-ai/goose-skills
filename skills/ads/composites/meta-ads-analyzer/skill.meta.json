@@ -1,7 +1,7 @@
 {
   "slug": "meta-ads-analyzer",
   "category": "composites",
-  "description": "Diagnose Meta Ads campaigns using Meta's actual system mechanics — Breakdown Effect, Learning Phase, Auction Overlap, Pacing, and Creative Fatigue. Produces a structured diagnosis with root causes and testable hypotheses, designed to avoid the most common analysis mistake of judging segments by average CPA instead of marginal efficiency.",
+  "description": "Diagnose Meta Ads performance and account gaps using customer-journey coverage, Breakdown Effect, Learning Phase, Auction Overlap, Pacing, and Creative Fatigue. Audits TOF/MOF/BOF coverage without forcing separate funnel campaigns or assigning every ad to one stage, then produces novice-friendly, testable recommendations.",
   "domain": "ads",
   "tags": ["ads", "research"],
   "collections": ["brand-growth"],
