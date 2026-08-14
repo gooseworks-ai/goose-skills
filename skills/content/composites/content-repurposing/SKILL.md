@@ -27,8 +27,9 @@ Convert source material into original, voice-matched content for the channels th
 ## Runtime paths
 
 - **Transcript or text supplied:** fully terminal-free. Repurpose the supplied material directly.
-- **Public video URL with transcript-provider access:** use `transcript-intelligence` and its declared provider dependency, then continue with the transcript.
-- **Public video URL without provider access:** explain that the transcript cannot be fetched in this environment and request pasted captions or a transcript. Skill discovery over MCP does not imply that every managed data provider can also be called over MCP.
+- **Public video URL with GooseWorks MCP:** use `transcript-intelligence`, then call the managed provider through the live `call_data_provider` schema. No terminal or separate provider key is required.
+- **Public video URL with GooseWorks CLI:** use `transcript-intelligence` and its declared provider dependency, then continue with the transcript.
+- **Public video URL without either provider path:** explain that the transcript cannot be fetched in this environment and request pasted captions or a transcript.
 
 ## Output
 

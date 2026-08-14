@@ -7,15 +7,26 @@ description: Provider reference for collecting public profiles, posts, comments,
 
 Use ScrapeCreators when a workflow needs structured public social or ad-library data at a scale that ordinary web search cannot provide.
 
-## Authentication
+## Runtime selection
 
-When the user is signed in to GooseWorks, use the dedicated first-party proxy. It uses GooseWorks' managed ScrapeCreators key directly; it does not route through Orthogonal:
+Task skills describe each request as an environment-neutral operation containing `provider`, `method`, `path`, and optional `query` or `body`. Execute that same operation through the first available runtime:
 
-```bash
-gooseworks call scrapecreators /v1/instagram/profile --query='{"handle":"brand"}'
+1. **GooseWorks MCP available:** inspect and call the live `call_data_provider` tool. Pass the operation fields directly. This is the preferred path in ChatGPT, Cowork, and any client without a terminal. It uses the first-party GooseWorks ScrapeCreators proxy and managed key; it does not route through Orthogonal.
+2. **Local GooseWorks CLI available:** translate the operation into `gooseworks call <provider> <path>`, adding the method, query, or body options represented in the operation. The CLI uses the same first-party proxy.
+3. **User-owned ScrapeCreators key available:** call `https://api.scrapecreators.com<path>` with `SCRAPECREATORS_API_KEY` in the `x-api-key` header, using the operation's method, query, and JSON body.
+4. **No runtime available:** ask the user to connect GooseWorks MCP, sign in through the local GooseWorks CLI, or provide their own ScrapeCreators key. Do not pretend the operation ran.
+
+Prefer MCP whenever `call_data_provider` is registered, even if a shell might also exist. Never ask for a separate provider key when the managed MCP or CLI path is available. Never print, store, or return either credential.
+
+Example operation:
+
+```yaml
+provider: scrapecreators
+method: GET
+path: /v1/instagram/profile
+query:
+  handle: brand
 ```
-
-For a direct ScrapeCreators account, send `SCRAPECREATORS_API_KEY` as the `x-api-key` header to `https://api.scrapecreators.com`. Never print, store, or return either credential.
 
 Use ScrapeCreators' official OpenAPI as the endpoint source of truth: `https://docs.scrapecreators.com/openapi.json`. Do not use Orthogonal search or details to discover ScrapeCreators operations because its mirrored catalog can be incomplete.
 
@@ -36,12 +47,15 @@ Use ScrapeCreators' official OpenAPI as the endpoint source of truth: `https://d
 | Reddit, Threads, Bluesky, and Pinterest research | Resolve current search, profile, post, comment, board, and pin operations from the official OpenAPI |
 | Public creator links and shops | Resolve current Linktree, Komi, Pillar, Linkbio, Linkme, and Amazon Shop operations from the official OpenAPI |
 
-Most operations are GET requests and `gooseworks call scrapecreators` defaults to GET. ScrapeCreators' official OpenAPI currently also defines POST variants for Meta ad search, Meta company ads, and Reddit post comments. Use `--method POST` only when the official operation requires it:
+Most operations are GET requests. ScrapeCreators' official OpenAPI currently also defines POST variants for Meta ad search, Meta company ads, and Reddit post comments. Use POST only when the official operation requires it:
 
-```bash
-gooseworks call scrapecreators /v1/facebook/adLibrary/search/ads \
-  --method POST \
-  --body='{"query":"running shoes","country":"US"}'
+```yaml
+provider: scrapecreators
+method: POST
+path: /v1/facebook/adLibrary/search/ads
+body:
+  query: running shoes
+  country: US
 ```
 
 Endpoint names can change. If a request fails or the exact parameters are unclear, read `https://docs.scrapecreators.com/openapi.json` before guessing.

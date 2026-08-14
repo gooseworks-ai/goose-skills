@@ -74,5 +74,65 @@ test('content repurposing has a terminal-free path and never requires FFmpeg', (
 
   assert.match(content, /Transcript or text supplied.*fully terminal-free/i);
   assert.match(content, /Do not require FFmpeg or a local terminal/i);
+  assert.match(content, /call_data_provider/i);
   assert.match(content, /request pasted captions or a transcript/i);
+});
+
+test('ScrapeCreators skills describe operations without assuming the CLI', () => {
+  const dependencyPath = path.join(
+    __dirname,
+    '..',
+    'skills/social/capabilities/scrapecreators-api/SKILL.md',
+  );
+  const dependency = fs.readFileSync(dependencyPath, 'utf8');
+
+  assert.match(dependency, /Runtime selection/i);
+  assert.match(dependency, /call_data_provider/i);
+  assert.match(dependency, /GooseWorks CLI available/i);
+  assert.match(dependency, /User-owned ScrapeCreators key/i);
+  assert.doesNotMatch(
+    dependency,
+    /(?:npx\s+)?gooseworks call scrapecreators/i,
+  );
+
+  const dependents = index.skills.filter((skill) =>
+    skill.metadata?.requires_skills?.includes('scrapecreators-api'),
+  );
+  assert.ok(dependents.length > 0, 'expected ScrapeCreators-dependent skills');
+
+  for (const skill of dependents) {
+    const content = fs.readFileSync(
+      path.join(__dirname, '..', skill.path, 'SKILL.md'),
+      'utf8',
+    );
+    assert.doesNotMatch(
+      content,
+      /(?:npx\s+)?gooseworks call scrapecreators/i,
+      `${skill.slug} should not assume the GooseWorks CLI`,
+    );
+  }
+
+  const operationSkills = [
+    'competitor-ad-intelligence',
+    'find-twitter-influencers',
+    'gtm-enrichment-smart',
+    'instagram-scraper',
+    'linkedin-scraper',
+    'social-listening',
+    'tiktok-search',
+    'twitter-profile-lookup',
+  ];
+  for (const slug of operationSkills) {
+    const skill = skillsBySlug.get(slug);
+    assert.ok(skill, `${slug} should be indexed`);
+    const content = fs.readFileSync(
+      path.join(__dirname, '..', skill.path, 'SKILL.md'),
+      'utf8',
+    );
+    assert.match(
+      content,
+      /provider:\s*scrapecreators/i,
+      `${slug} should preserve the provider operation`,
+    );
+  }
 });

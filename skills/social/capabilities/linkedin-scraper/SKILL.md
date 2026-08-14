@@ -9,7 +9,7 @@ source: scrapecreators
 
 ## Setup
 
-Use `scrapecreators-api` for authentication and current endpoint guidance. With GooseWorks, run `npx gooseworks login` once; the commands below use the managed ScrapeCreators key.
+Read `scrapecreators-api` first. Execute every operation below through the runtime it selects: the GooseWorks MCP tool in terminal-free clients, the GooseWorks CLI in a local terminal, or the direct API with the user's own key. Never assume a shell is available.
 
 
 Scrape public LinkedIn data including profiles, company pages, and posts.
@@ -30,20 +30,32 @@ Uses the ScrapeCreators API through its direct GooseWorks proxy.
 
 ### Get User Profile
 
-```bash
-gooseworks call scrapecreators /v1/linkedin/profile --query='{"url":"https://linkedin.com/in/satyanadella"}'
+```yaml
+provider: scrapecreators
+method: GET
+path: /v1/linkedin/profile
+query:
+  url: https://linkedin.com/in/satyanadella
 ```
 
 ### Get Company Page
 
-```bash
-gooseworks call scrapecreators /v1/linkedin/company --query='{"url":"https://linkedin.com/company/anthropic"}'
+```yaml
+provider: scrapecreators
+method: GET
+path: /v1/linkedin/company
+query:
+  url: https://linkedin.com/company/anthropic
 ```
 
 ### Get Specific Post
 
-```bash
-gooseworks call scrapecreators /v1/linkedin/post --query='{"url":"https://linkedin.com/posts/somepost"}'
+```yaml
+provider: scrapecreators
+method: GET
+path: /v1/linkedin/post
+query:
+  url: https://linkedin.com/posts/somepost
 ```
 
 ## Parameters
@@ -78,14 +90,10 @@ gooseworks call scrapecreators /v1/linkedin/post --query='{"url":"https://linked
 ## Examples
 
 **User:** "Look up Satya Nadella on LinkedIn"
-```bash
-gooseworks call scrapecreators /v1/linkedin/profile --query='{"url":"https://linkedin.com/in/satyanadella"}'
-```
+Use the **Get User Profile** operation with the supplied LinkedIn profile URL.
 
 **User:** "Tell me about Anthropic's LinkedIn page"
-```bash
-gooseworks call scrapecreators /v1/linkedin/company --query='{"url":"https://linkedin.com/company/anthropic"}'
-```
+Use the **Get Company Page** operation with the supplied LinkedIn company URL.
 
 ## Error Handling
 

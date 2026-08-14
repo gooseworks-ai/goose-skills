@@ -45,10 +45,22 @@ For each competitor domain, scrape ads from Meta Ad Library.
 
 Use `scrapecreators-api` as the primary collection path. Resolve the advertiser first, then fetch its ads and individual ad details:
 
-```
-gooseworks call scrapecreators /v1/facebook/adLibrary/search/companies --query='{"query":"[competitor_name]"}'
-gooseworks call scrapecreators /v1/facebook/adLibrary/company/ads --query='{"companyName":"[competitor_name]"}'
-gooseworks call scrapecreators /v1/facebook/adLibrary/ad --query='{"id":"[ad_id]"}'
+```yaml
+- provider: scrapecreators
+  method: GET
+  path: /v1/facebook/adLibrary/search/companies
+  query:
+    query: "[competitor_name]"
+- provider: scrapecreators
+  method: GET
+  path: /v1/facebook/adLibrary/company/ads
+  query:
+    companyName: "[competitor_name]"
+- provider: scrapecreators
+  method: GET
+  path: /v1/facebook/adLibrary/ad
+  query:
+    id: "[ad_id]"
 ```
 
 If the structured endpoint cannot resolve an advertiser, verify the name in the public Meta Ad Library and use web search as a documented fallback. Keep the library URL and ad ID with every result.
@@ -77,9 +89,18 @@ For each competitor domain, scrape ads from Google Ads Transparency Center.
 
 Use the structured advertiser endpoints first:
 
-```
-gooseworks call scrapecreators /v1/google/company/ads --query='{"domain":"[competitor_domain]","get_ad_details":true}'
-gooseworks call scrapecreators /v1/google/ad --query='{"id":"[ad_id]"}'
+```yaml
+- provider: scrapecreators
+  method: GET
+  path: /v1/google/company/ads
+  query:
+    domain: "[competitor_domain]"
+    get_ad_details: true
+- provider: scrapecreators
+  method: GET
+  path: /v1/google/ad
+  query:
+    id: "[ad_id]"
 ```
 
 Use the public Google Ads Transparency Center or web search only when the structured endpoint is incomplete. Mark fallback records so coverage limits remain visible.

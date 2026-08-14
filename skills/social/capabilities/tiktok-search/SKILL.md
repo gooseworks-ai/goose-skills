@@ -9,7 +9,7 @@ source: scrapecreators
 
 ## Setup
 
-Use `scrapecreators-api` for authentication and current endpoint guidance. With GooseWorks, run `npx gooseworks login` once; the commands below use the managed ScrapeCreators key.
+Read `scrapecreators-api` first. Execute every operation below through the runtime it selects: the GooseWorks MCP tool in terminal-free clients, the GooseWorks CLI in a local terminal, or the direct API with the user's own key. Never assume a shell is available.
 
 
 Search TikTok for profiles, videos, and hashtag content.
@@ -29,20 +29,32 @@ Uses the ScrapeCreators API through its direct GooseWorks proxy.
 
 ### Get TikTok Profile
 
-```bash
-gooseworks call scrapecreators /v1/tiktok/profile --query='{"handle":"charlidamelio"}'
+```yaml
+provider: scrapecreators
+method: GET
+path: /v1/tiktok/profile
+query:
+  handle: charlidamelio
 ```
 
 ### Search Hashtag Videos
 
-```bash
-gooseworks call scrapecreators /v1/tiktok/search/hashtag --query='{"hashtag":"tech"}'
+```yaml
+provider: scrapecreators
+method: GET
+path: /v1/tiktok/search/hashtag
+query:
+  hashtag: tech
 ```
 
 ### Get Trending Feed
 
-```bash
-gooseworks call scrapecreators /v1/tiktok/get-trending-feed --query='{"region":"US"}'
+```yaml
+provider: scrapecreators
+method: GET
+path: /v1/tiktok/get-trending-feed
+query:
+  region: US
 ```
 
 ## Parameters
@@ -80,19 +92,13 @@ gooseworks call scrapecreators /v1/tiktok/get-trending-feed --query='{"region":"
 ## Examples
 
 **User:** "Look up charlidamelio on TikTok"
-```bash
-gooseworks call scrapecreators /v1/tiktok/profile --query='{"handle":"charlidamelio"}'
-```
+Use the **Get TikTok Profile** operation with `handle: charlidamelio`.
 
 **User:** "What's trending on TikTok?"
-```bash
-gooseworks call scrapecreators /v1/tiktok/get-trending-feed --query='{"region":"US"}'
-```
+Use the **Get Trending Feed** operation with the user's region, defaulting to `US` only when appropriate.
 
 **User:** "What's trending with #tech on TikTok?"
-```bash
-gooseworks call scrapecreators /v1/tiktok/search/hashtag --query='{"hashtag":"tech"}'
-```
+Use the **Search Hashtag Videos** operation with `hashtag: tech`.
 
 ## Error Handling
 

@@ -9,6 +9,11 @@ source: orthogonal
 
 ## Setup
 
+Choose the available runtime before doing any credential setup:
+
+- **Terminal-free client:** skip the shell commands below. Use connected MCP tools. For ScrapeCreators operations, read `scrapecreators-api` and prefer `call_data_provider`. For another provider step without a connected tool, use an equivalent built-in public-web method when it preserves the workflow, or clearly report that step as unavailable.
+- **Local terminal:** use the GooseWorks credentials and proxy commands below.
+
 Read your credentials from ~/.gooseworks/credentials.json:
 ```bash
 export GOOSEWORKS_API_KEY=$(python3 -c "import json;print(json.load(open('$HOME/.gooseworks/credentials.json'))['api_key'])")
@@ -17,7 +22,7 @@ export GOOSEWORKS_API_BASE=$(python3 -c "import json;print(json.load(open('$HOME
 
 If ~/.gooseworks/credentials.json does not exist, tell the user to run: `npx gooseworks login`
 
-All endpoints use Bearer auth: `-H "Authorization: Bearer $GOOSEWORKS_API_KEY"`
+The local proxy endpoints use Bearer auth: `-H "Authorization: Bearer $GOOSEWORKS_API_KEY"`. ScrapeCreators operation descriptions below remain environment-neutral in both runtimes.
 
 
 Discover, score, and enrich Twitter/X influencers relevant to a company, product, or niche. Returns a ranked list with engagement metrics, relevance reasoning, and contact info.
@@ -188,8 +193,12 @@ Use Scrape Creators to fetch structured Twitter data. This is a two-step process
 
 **Step 1 — Fetch profiles for all candidates:**
 
-```bash
-gooseworks call scrapecreators /v1/twitter/profile --query='{"handle":"examplehandle"}'
+```yaml
+provider: scrapecreators
+method: GET
+path: /v1/twitter/profile
+query:
+  handle: examplehandle
 ```
 
 Returns nested JSON. Key fields are inside `core` and `legacy` objects:
@@ -212,8 +221,12 @@ Apply **hard filters** to narrow the pool:
 
 **Step 2 — Fetch tweets for top candidates** (after profile filtering — fetch ~2x the target result count to allow for filtering, e.g., ~40 if targeting 20 results):
 
-```bash
-gooseworks call scrapecreators /v1/twitter/user-tweets --query='{"handle":"examplehandle"}'
+```yaml
+provider: scrapecreators
+method: GET
+path: /v1/twitter/user-tweets
+query:
+  handle: examplehandle
 ```
 
 Returns an array of tweet objects. **IMPORTANT — The data is nested inside each tweet object:**
@@ -359,10 +372,7 @@ Include a brief summary of search coverage: how many candidates were found, how 
 Only if the user requests more detail on specific influencers:
 
 **Full tweet analysis** (recent content, top tweets, audience reactions):
-```bash
-gooseworks call scrapecreators /v1/twitter/profile --query='{"handle":"TARGET"}'
-gooseworks call scrapecreators /v1/twitter/user-tweets --query='{"handle":"TARGET"}'
-```
+Run both ScrapeCreators operations defined in Steps 1 and 2 for the selected handle.
 
 If deeper tweet history is needed, Nyne can fetch recent newsfeed data asynchronously:
 ```bash
