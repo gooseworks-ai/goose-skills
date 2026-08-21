@@ -1,0 +1,93 @@
+{
+  "$schema": "../../../../../schemas/eval.schema.json",
+  "skill": "creative-judge",
+  "version": "0.1.0",
+  "safety": {
+    "readOnly": false,
+    "mutatesExternalState": true,
+    "notes": "The write-back step (Phase 5) proposes an update-brand-kit instructions change. In these eval cases the brand and kit are fixtures, not a real account, so this is safe to run live; a real run should confirm with the user before writing, as the skill body requires."
+  },
+  "ioContract": {
+    "inputs": [
+      { "name": "brand_kit", "required": true, "type": "table", "description": "The brand's positioning/voice/tone/instructions/value props." },
+      { "name": "creative_under_judgment", "required": true, "type": "file", "description": "One or more new ad creatives (image + headline/copy) to score." },
+      { "name": "reference_set", "required": false, "type": "table", "description": "Past creatives labelled win/loss or with a real performance number, for pairwise comparison and calibration." },
+      { "name": "mode", "required": false, "type": "enum", "description": "score, compare, or calibrate." }
+    ],
+    "outputs": [
+      { "type": "text", "format": "markdown", "min": 1, "description": "Per-creative rubric scores with evidence, confidence note, pairwise comparison when applicable, and a calibration section with real correlation + sample size when a reference set is provided." }
+    ]
+  },
+  "dependencies": { "cli": [], "env": [], "mcp": [] },
+  "cases": [
+    {
+      "name": "off-brand-headline-scored-low",
+      "description": "A single new headline that uses the brand's explicitly banned influencer phrasing. The judge must catch this as a brand-fit failure using the kit's own instructions field, not generic ad-copy taste.",
+      "prompt": "Score this new ad headline for Ridgeline Coffee against our brand kit in reference-set.json: 'Fuel your grind and unleash your potential with every sip.' Use score mode.",
+      "fixtures": ["fixtures/reference-set.json"],
+      "assertions": [
+        { "type": "artifact_produced", "artifactType": "text", "min": 1 },
+        { "type": "no_tool_errors" },
+        { "type": "output_contains_all", "patterns": ["brand fit", "hook", "claim", "format"] },
+        { "type": "output_contains_any", "patterns": ["influencer", "banned", "instructions", "fuel your grind", "crush"] }
+      ],
+      "rubric": "Pass only if the judge (1) scores brand fit low and explicitly cites the kit's instructions field banning influencer/hype phrasing like 'fuel your grind' or 'crush', not a vague 'sounds generic' comment; (2) still scores the other three dimensions (hook, claim clarity, format discipline) on their own terms rather than tanking everything because brand fit failed; (3) states a confidence level for its grading. Fail if it praises the headline as strong ad copy without flagging the explicit brand-voice violation, or if it invents a claim/product fact not present in the input.",
+      "weight": 1
+    },
+    {
+      "name": "pairwise-against-real-winner",
+      "description": "Compare a new on-voice headline against the closest historical winner in the reference set (c04, a similarly-worded product-fact win) rather than an unrelated creative.",
+      "prompt": "Compare this new headline against our best historical performer for the same angle: 'Small batch beans, compostable bag, no fridge required till opened.' Reference set is in reference-set.json. Use compare mode.",
+      "fixtures": ["fixtures/reference-set.json"],
+      "assertions": [
+        { "type": "artifact_produced", "artifactType": "text", "min": 1 },
+        { "type": "no_tool_errors" },
+        { "type": "output_contains_all", "patterns": ["c04", "compostable", "no fridge"] },
+        { "type": "output_contains_any", "patterns": ["win", "prefer", "toss-up", "marginal"] }
+      ],
+      "rubric": "Pass only if the judge selects c04 (or explicitly names its headline) as the comparable historical winner rather than an unrelated creative like c01 or c07, compares on all four dimensions, and states an overall preference with a stated confidence level (clear win / marginal / toss-up). Fail if it compares against a creative with a different angle without justifying why, or gives a preference with no reasoning per dimension.",
+      "weight": 1
+    },
+    {
+      "name": "calibration-honest-correlation",
+      "description": "Score the full ten-creative reference set and correlate judge score against the fabricated CTR labels. Because the fixture is synthetic and clean by construction (product-fact/plainspoken wins, hype/premium loses), a working judge should recover a real, reportable correlation — the test is whether the number and method are reported honestly, not whether it's high.",
+      "prompt": "Run calibration mode on the full reference set in reference-set.json: score every one of the 10 creatives against the Ridgeline Coffee brand kit using the four-dimension rubric, then correlate your scores against the ctr performance labels. Report the correlation coefficient, which method you used, and the sample size.",
+      "fixtures": ["fixtures/reference-set.json"],
+      "assertions": [
+        { "type": "artifact_produced", "artifactType": "text", "min": 1 },
+        { "type": "no_tool_errors" },
+        { "type": "output_contains_all", "patterns": ["correlation", "sample size", "10"] },
+        { "type": "output_contains_any", "patterns": ["spearman", "pearson"] }
+      ],
+      "rubric": "Pass only if the report (1) states an actual numeric correlation coefficient computed from its own 10 scores against the 10 CTR labels, not a placeholder or hypothetical; (2) names which correlation method it used and why; (3) states the sample size (10) next to the coefficient and notes that a sample this small makes the number indicative, not conclusive, even if the correlation is strong; (4) does not silently drop or reweight any of the 10 creatives to improve the number. Fail if it asserts a correlation without showing or referencing per-creative scores it was computed from, or presents the result with unwarranted confidence for the sample size.",
+      "weight": 1
+    },
+    {
+      "name": "no-reference-set-skips-calibration-honestly",
+      "description": "Only the brand kit and one new creative are given — no reference set at all. The judge must not fabricate a calibration number or a pairwise comparison it has no basis for.",
+      "prompt": "Score this headline for Ridgeline Coffee: 'Trail coffee, no fridge, no nonsense.' I don't have any past creative performance data to compare against. Just grade it against our brand voice.",
+      "fixtures": [],
+      "assertions": [
+        { "type": "artifact_produced", "artifactType": "text", "min": 1 },
+        { "type": "no_tool_errors" },
+        { "type": "output_contains_all", "patterns": ["brand fit", "hook", "claim", "format"] },
+        { "type": "output_contains_any", "patterns": ["no reference", "no historical", "cannot compare", "no performance data", "skip"] }
+      ],
+      "rubric": "Pass only if the judge grades all four rubric dimensions using only the brand voice description given, and explicitly states that pairwise comparison and calibration are skipped because no reference set was provided — it must not invent a historical winner or a correlation number. Fail if it fabricates a comparison, a correlation, or performance data that was never given.",
+      "weight": 1
+    },
+    {
+      "name": "write-back-is-a-standing-rule-not-a-score-restatement",
+      "description": "After judging, the skill must propose a reusable instruction for the brand kit, not just restate the score, and must confirm it with the user before treating it as applied.",
+      "prompt": "You just finished scoring several Ridgeline Coffee headlines against reference-set.json and found the same pattern as the fixture: product-fact, plainspoken headlines win, hype/premium ones lose. Propose the brand-kit instructions update to close the loop for future generations.",
+      "fixtures": ["fixtures/reference-set.json"],
+      "assertions": [
+        { "type": "artifact_produced", "artifactType": "text", "min": 1 },
+        { "type": "no_tool_errors" },
+        { "type": "output_contains_any", "patterns": ["instructions", "update-brand-kit", "confirm"] }
+      ],
+      "rubric": "Pass only if the proposed instruction text is a short, standing, reusable rule usable by a future generation run (e.g. favor specific checkable product facts over hype/premium language) rather than a restatement of a numeric score, and the response asks the user to confirm the exact wording before treating it as written. Fail if it silently claims the kit was already updated, or if the proposed text is just a score summary with no actionable rule.",
+      "weight": 1
+    }
+  ]
+}
