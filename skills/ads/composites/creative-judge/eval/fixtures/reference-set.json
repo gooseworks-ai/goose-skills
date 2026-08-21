@@ -1,0 +1,28 @@
+{
+  "_comment": "Synthetic reference set — not real ad-account data. Ten fabricated creatives for a fictional brand 'Ridgeline Coffee' with fabricated but internally-consistent performance labels, so this eval runs on a fresh clone with no external credentials.",
+  "brand": {
+    "name": "Ridgeline Coffee",
+    "brandType": "product",
+    "voice": "plainspoken, outdoorsy, dry-humored — never corporate, never precious about coffee",
+    "toneWords": ["plainspoken", "outdoorsy", "dry-humored", "unpretentious"],
+    "valueProps": [
+      "Cold-brew concentrate made for trail packs — no fridge required until opened",
+      "Single-origin beans, roasted in small batches",
+      "Compostable pouches, not aluminum"
+    ],
+    "instructions": "Never use fitness-influencer language ('fuel your grind', 'crush your day'). Keep claims specific and checkable."
+  },
+  "creatives": [
+    { "id": "c01", "headline": "Fuel your grind. Crush your morning.", "angle": "energy/hype", "performance": { "ctr": 0.4, "label": "loss" }, "note": "Uses exactly the banned influencer phrasing." },
+    { "id": "c02", "headline": "Coffee that doesn't need a fridge until you open it.", "angle": "product fact", "performance": { "ctr": 2.1, "label": "win" }, "note": "Specific, checkable claim, matches value prop verbatim." },
+    { "id": "c03", "headline": "Elevate your daily ritual with artisanal excellence.", "angle": "premium/lifestyle", "performance": { "ctr": 0.5, "label": "loss" }, "note": "Generic premium-CPG voice, contradicts 'unpretentious'." },
+    { "id": "c04", "headline": "Single-origin. Small batch. No fridge till you crack it open.", "angle": "product fact", "performance": { "ctr": 1.9, "label": "win" }, "note": "On-voice, specific, dry." },
+    { "id": "c05", "headline": "Unleash your inner athlete with every sip.", "angle": "energy/hype", "performance": { "ctr": 0.3, "label": "loss" }, "note": "Fitness-influencer language again." },
+    { "id": "c06", "headline": "Compostable pouch. Real coffee. That's it.", "angle": "product fact", "performance": { "ctr": 1.7, "label": "win" }, "note": "Plainspoken, dry, on-brand." },
+    { "id": "c07", "headline": "The ultimate premium coffee experience awaits.", "angle": "premium/lifestyle", "performance": { "ctr": 0.4, "label": "loss" }, "note": "Vague, corporate, no checkable claim." },
+    { "id": "c08", "headline": "Trail-tested. Fridge-optional. Actually tastes like coffee.", "angle": "product fact", "performance": { "ctr": 2.0, "label": "win" }, "note": "Dry humor, specific, on-voice." },
+    { "id": "c09", "headline": "Maximize your potential, one cup at a time.", "angle": "energy/hype", "performance": { "ctr": 0.35, "label": "loss" }, "note": "Corporate hype language, no specific claim." },
+    { "id": "c10", "headline": "Small batch roast, compostable pouch, no BS.", "angle": "product fact", "performance": { "ctr": 1.85, "label": "win" }, "note": "On-voice, specific." }
+  ],
+  "_pattern": "In this fabricated set, 'product fact' angle creatives with specific/checkable claims and dry, plainspoken tone win; 'energy/hype' and 'premium/lifestyle' angle creatives with generic or influencer-style language lose. A working judge should recover this pattern and a correlation should be strong BECAUSE the fixture is synthetic and clean by construction — real-world calibration will be noisier; the eval's live-account case is skipped for that reason."
+}

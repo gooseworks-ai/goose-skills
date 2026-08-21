@@ -1,6 +1,6 @@
 {
   "version": "1.3.0",
-  "generated": "2026-08-14",
+  "generated": "2026-08-21",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -2075,6 +2075,38 @@
         ],
         "installation": {
           "base_command": "npx goose-skills install create-x-content",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "creative-judge",
+      "name": "creative-judge",
+      "category": "composites",
+      "domain": "ads",
+      "description": "Score generated ad creative against the brand's own voice and its historical winners before it ships. Grades brand fit, hook strength, claim clarity, and format discipline with an LLM judge, compares pairwise against the closest historical winner, and when performance labels exist, calibrates the judge against real outcomes and reports the correlation honestly. Writes winning and losing patterns back into the brand kit so the next generation run learns from them. Use after generating ad creative and before it ships, or when asked to \"judge this ad\", \"score this creative\", \"is this ad any good\", \"compare these ad variants\", or \"calibrate the judge against performance\".",
+      "tags": "ads, research",
+      "path": "skills/ads/composites/creative-judge",
+      "files": [],
+      "metadata": {
+        "slug": "creative-judge",
+        "category": "composites",
+        "description": "Score generated ad creative against a brand's own voice and its historical winners before it ships. Reads the brand kit and a labelled reference set of past creatives (win/loss + performance), grades new creative on brand fit, hook strength, claim clarity, and format discipline with an LLM judge, runs pairwise comparison against the closest historical winner, reports judge confidence, and — when performance labels exist — calibrates judge score against real outcomes and reports the correlation honestly. Writes the resulting winning/losing patterns back into the brand kit's instructions field so the next generation run consumes them. Composes with meta-ad-policy-checker for compliance rather than re-checking policy itself.",
+        "domain": "ads",
+        "tags": [
+          "ads",
+          "research"
+        ],
+        "collections": [
+          "brand-growth"
+        ],
+        "collection_stage": "analyze",
+        "installation": {
+          "base_command": "npx goose-skills install creative-judge",
           "supports": [
             "claude",
             "cursor",
@@ -9604,6 +9636,13 @@
           "description": "Turn public social videos, transcripts, posts, creator research, or the user's own source material into platform-specific LinkedIn posts, X posts and threads, short-form scripts, newsletters, blog outlines, carousel briefs, and content calendars. Use when the user wants to reuse a strong idea without copying the source.",
           "stage": "create",
           "path": "skills/content/composites/content-repurposing"
+        },
+        {
+          "slug": "creative-judge",
+          "name": "creative-judge",
+          "description": "Score generated ad creative against the brand's own voice and its historical winners before it ships. Grades brand fit, hook strength, claim clarity, and format discipline with an LLM judge, compares pairwise against the closest historical winner, and when performance labels exist, calibrates the judge against real outcomes and reports the correlation honestly. Writes winning and losing patterns back into the brand kit so the next generation run learns from them. Use after generating ad creative and before it ships, or when asked to \"judge this ad\", \"score this creative\", \"is this ad any good\", \"compare these ad variants\", or \"calibrate the judge against performance\".",
+          "stage": "analyze",
+          "path": "skills/ads/composites/creative-judge"
         },
         {
           "slug": "creator-profile-teardown",
