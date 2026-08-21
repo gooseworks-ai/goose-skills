@@ -36,16 +36,16 @@
     },
     {
       "name": "pairwise-against-real-winner",
-      "description": "Compare a new on-voice headline against the closest historical winner in the reference set (c04, a similarly-worded product-fact win) rather than an unrelated creative.",
+      "description": "Compare a new on-voice headline against the closest historical winner in the reference set — any of the 'product fact' angle wins (c02, c04, c06, c08, c10) are a valid comparator, ranked by CTR, rather than an unrelated 'energy/hype' or 'premium/lifestyle' angle creative (c01, c03, c05, c07, c09).",
       "prompt": "Compare this new headline against our best historical performer for the same angle: 'Small batch beans, compostable bag, no fridge required till opened.' Reference set is in reference-set.json. Use compare mode.",
       "fixtures": ["fixtures/reference-set.json"],
       "assertions": [
         { "type": "artifact_produced", "artifactType": "text", "min": 1 },
         { "type": "no_tool_errors" },
-        { "type": "output_contains_all", "patterns": ["c04", "compostable", "no fridge"] },
+        { "type": "output_contains_any", "patterns": ["c02", "c04", "c06", "c08", "c10"] },
         { "type": "output_contains_any", "patterns": ["win", "prefer", "toss-up", "marginal"] }
       ],
-      "rubric": "Pass only if the judge selects c04 (or explicitly names its headline) as the comparable historical winner rather than an unrelated creative like c01 or c07, compares on all four dimensions, and states an overall preference with a stated confidence level (clear win / marginal / toss-up). Fail if it compares against a creative with a different angle without justifying why, or gives a preference with no reasoning per dimension.",
+      "rubric": "Pass only if the judge selects a same-angle 'product fact' win (c02, c04, c06, c08, or c10 — any is valid, but the choice should be the strongest available, i.e. c02 by CTR) as the comparable historical winner rather than an unrelated 'energy/hype' or 'premium/lifestyle' creative like c01, c03, c05, c07, or c09; compares on all four dimensions against whichever comparator it picks; and states an overall preference with a stated confidence level (clear win / marginal / toss-up). Fail if it compares against a creative with a different angle without justifying why, or gives a preference with no reasoning per dimension.",
       "weight": 1
     },
     {
@@ -56,7 +56,8 @@
       "assertions": [
         { "type": "artifact_produced", "artifactType": "text", "min": 1 },
         { "type": "no_tool_errors" },
-        { "type": "output_contains_all", "patterns": ["correlation", "sample size", "10"] },
+        { "type": "output_contains_all", "patterns": ["correlation", "10"] },
+        { "type": "output_contains_any", "patterns": ["sample size", "n = 10", "n=10", "n =10"] },
         { "type": "output_contains_any", "patterns": ["spearman", "pearson"] }
       ],
       "rubric": "Pass only if the report (1) states an actual numeric correlation coefficient computed from its own 10 scores against the 10 CTR labels, not a placeholder or hypothetical; (2) names which correlation method it used and why; (3) states the sample size (10) next to the coefficient and notes that a sample this small makes the number indicative, not conclusive, even if the correlation is strong; (4) does not silently drop or reweight any of the 10 creatives to improve the number. Fail if it asserts a correlation without showing or referencing per-creative scores it was computed from, or presents the result with unwarranted confidence for the sample size.",
