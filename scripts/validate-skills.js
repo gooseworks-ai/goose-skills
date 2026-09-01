@@ -59,10 +59,21 @@ const domains = fs.existsSync(skillsRoot)
   ? fs.readdirSync(skillsRoot).filter((d) => isDir(path.join(skillsRoot, d)))
   : [];
 
+// Folder names that were TOP-LEVEL abstraction levels before the 2026-06-17
+// domain-first reorg. Nothing in git creates them any more, but a working copy
+// checked out before the reorg still has them lying around untracked, and they
+// then fail validation with a confusing "unknown domain" error (GOOSE-3191).
+// Name the real problem instead.
+const PRE_REORG_LEFTOVERS = new Set(['capabilities', 'composites', 'playbooks', 'packs']);
+
 for (const domain of domains) {
   if (allowedDomains.size && !allowedDomains.has(domain)) {
     errors.push(
-      `Unknown domain folder skills/${domain} — allowed: ${[...allowedDomains].sort().join(', ')}`,
+      PRE_REORG_LEFTOVERS.has(domain)
+        ? `skills/${domain} is a stale pre-reorg leftover, not a domain. Levels live UNDER a ` +
+            `domain now (skills/<domain>/${domain}/). Nothing in git creates skills/${domain} — ` +
+            `it is an untracked remnant of a pre-2026-06-17 checkout. Delete it: rm -rf skills/${domain}`
+        : `Unknown domain folder skills/${domain} — allowed: ${[...allowedDomains].sort().join(', ')}`,
     );
   }
 
