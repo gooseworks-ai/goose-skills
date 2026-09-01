@@ -36,7 +36,7 @@ Use this atom when:
 Required:
 - `--prompt` — structured prompt block (see "Prompt template" below). Long, multi-block. Reference run example: `beauty-by-earth/video-01-three-product-grwm/working/fire_seedance_facewash.py`.
 - `--output` — local MP4 destination.
-- `--image-url` (alias `--image-ref`) — at least one **PUBLIC** reference image URL (repeatable), passed as `image_urls`. Order matters — first = `@Image1` in prompt addressing. The proxy does NOT upload local files: host local refs via MCP `get_upload_url` → `get_download_url` and pass the URL (identical to `create-video-fal`).
+- `--image-url` (alias `--image-ref`) — at least one **PUBLIC** reference image URL (repeatable), passed as `image_urls`. Order matters — first = `@Image1` in prompt addressing. The proxy does NOT upload local files: host local refs via MCP `file_url` (mode `upload` → mode `download`) and pass the URL (identical to `create-video-fal`).
 
 Optional:
 - `--resolution` — `480p` | `720p` | `1080p` (default). 1080p meaningfully better for product label fidelity.

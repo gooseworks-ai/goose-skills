@@ -19,9 +19,9 @@ This workflow requires the GooseWorks MCP tools. If the animate-image tools are 
    - source image as the end frame;
    - source plus a separate end-frame image.
 3. Write a motion prompt describing camera movement, subject movement, environment movement, pacing, and what must remain unchanged. Do not redesign the product or add unsupported claims.
-4. Call `estimate_animate_image` and confirm the quoted credits before generation.
-5. Call `submit_animate_image` once. Save the returned job ID.
-6. Poll `get_animate_image` until it completes or fails. Never re-submit a running job.
+4. Call `ads_creative_edit` with `action: "animate", dry_run: true` and confirm the quoted credits (`estimate`) before generation.
+5. Call `ads_creative_edit` with `action: "animate"` (source render or `animate.source_image_url`, `animate.prompt`, `animate.duration_seconds`) once. Save the returned job ID.
+6. Poll `job_get { job_id, kind: "animate" }` until it completes or fails. Never re-submit a running job.
 7. Return the finished video URL and the source image used. If it fails, report the backend reason before proposing a retry.
 
 ## Rules

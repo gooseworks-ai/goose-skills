@@ -63,5 +63,5 @@ watch misses in a ~55s master:
 
 Extract a **2 fps** contact sheet across the whole master + a per-bar **FACE** crop and **HAND**
 crop (across each clip's full duration); audit ALL bars at head-crop resolution to find the true
-drift boundary; then re-extract frames from the **served** bytes (`get_download_url`), not the local
+drift boundary; then re-extract frames from the **served** bytes (`file_url` mode `download`), not the local
 file, after publish. (cartoon-music-video, Figma run 2026-07-18.)

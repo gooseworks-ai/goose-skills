@@ -11,7 +11,7 @@ Two outputs, written into the work dir:
 
 Whisper word-timestamps come from fal-ai/whisper (chunk_level=word). Prefer the
 PROXY-ROUTED path so the call bills the Ads agent (never a raw FAL_KEY): the orchestrator
-hosts the rendered VO via MCP `get_upload_url` → `get_download_url` and passes the presigned
+hosts the rendered VO via MCP `file_url` (mode `upload` → mode `download`) and passes the presigned
 url as `--vo-url` (transcribed through `media_proxy.fal_whisper`). Already have the words?
 pass `--words-file words.json` and beat_snap skips transcription entirely. Legacy: a raw
 `FAL_KEY` in the env still works via `fal_client`. Fully offline: `--no-whisper` keeps the

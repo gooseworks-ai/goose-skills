@@ -35,7 +35,7 @@ Optional:
 - `--aspect-ratio` — `9:16` (default), `16:9`, `1:1`, `2:3`, `3:2`. gpt-image-2 also accepts `3:4`, `4:3`, `4:5`. Used when `--image-size` is not given.
 - `--image-size` — explicit `WIDTHxHEIGHT` (e.g. `1728x2304`). **gpt-image-2 only** — values are rounded to multiples of 16 and capped at 3840px. On `gpt-image-1` a custom size is ignored with a warning and the aspect-ratio mapping is used instead.
 - `--quality` — `low | medium | high` (default `medium`).
-- `--ref-image` / `--ref-url` — a **PUBLIC image URL** for the `/edit` variant. **Repeatable** — pass it twice to send multiple refs (e.g. identity + style). The proxy does **not** upload local files, so a **local path is rejected** — host the image first (MCP `get_upload_url` → `get_download_url`, or any public URL) and pass that URL. When present, routes to the model's `/edit` variant so the model can match the references. Order matters: pass identity (character) first, then style refs.
+- `--ref-image` / `--ref-url` — a **PUBLIC image URL** for the `/edit` variant. **Repeatable** — pass it twice to send multiple refs (e.g. identity + style). The proxy does **not** upload local files, so a **local path is rejected** — host the image first (MCP `file_url` (mode `upload` → mode `download`), or any public URL) and pass that URL. When present, routes to the model's `/edit` variant so the model can match the references. Order matters: pass identity (character) first, then style refs.
 - `--with-logs` — stream fal queue logs.
 
 Credentials (proxy-routed — NOT a raw FAL key):
@@ -102,7 +102,7 @@ The script:
 | Symptom | Likely cause | Fix |
 |---|---|---|
 | `401 Unauthorized` from fal | Calling fal directly with an agent token, or polling `queue.fal.run` instead of the proxy | This atom is **proxy-routed** — it uses the `~/.gooseworks/credentials.json` agent token via `media_proxy.py`, never a raw `FAL_API_KEY`. Run `gooseworks login` if the credentials file is missing. |
-| `ERROR: ref images must be PUBLIC URLs` | Passed a **local path** to `--ref-image` / `--ref-url` | The proxy does not upload local files. Host it (MCP `get_upload_url` → `get_download_url`) and pass the resulting public URL. |
+| `ERROR: ref images must be PUBLIC URLs` | Passed a **local path** to `--ref-image` / `--ref-url` | The proxy does not upload local files. Host it (MCP `file_url` (mode `upload` → mode `download`)) and pass the resulting public URL. |
 | `429 Too Many Requests` | RPS limit | Drop concurrency to 2-3. |
 | Custom size ignored | `--image-size` passed with `--model gpt-image-1` | gpt-image-1 only supports fixed sizes; use `--model gpt-image-2` for custom sizes. |
 | Aspect-ratio drift (gpt-image-1) | gpt-image-1 only supports 1024x1024, 1024x1536, 1536x1024 | The script maps aspect ratios to these internally. |

@@ -29,7 +29,7 @@ the reference, then recreates it with GPT Image 2:
 | `reference_image` | yes | The ad to recreate (local path or URL). One image. |
 | `product` | yes | Target product: a clean product render/photo (PNG/webp). Pull the **real** brand asset; grounding/swapping on it is what keeps the label correct. **If the brand asset is a multi-product lineup, crop to the ONE relevant product first** — the remix grounds on a single clean product per `product_slot` (use `product_images_needed` from the slot map for how many distinct products the layout needs). |
 | `copy_changes` | optional | If omitted, **the agent auto-writes it** from the brand pack mapped to the template's `slot_map` (see Phase 0.5). New headline, benefit callouts, social-proof line, discount/badge text. Keep the reference's *structure* (same zones), swap the words. |
-| `brand` | recommended | Palette (hex), font, logo/wordmark, voice — from `get_brand_kit` / a `brand-research` pack. |
+| `brand` | recommended | Palette (hex), font, logo/wordmark, voice — from `brand_get_context` (the `kit` section) / a `brand-research` pack. |
 | `style_source` | optional | **`template` (DEFAULT)** keeps the reference ad's palette/theme; **`brand`** recolours to the brand kit's documented palette. See "Brand grounding" below. The caller sets it (e.g. the user asks to "match my brand colours" → `brand`); absent → `template`. |
 | `route_hint` | optional | Engine override. Default is **always `gpt_image_2`**; `html` is only a text-overlay finishing step, never the generator. |
 | `aspect` | optional | Inherit from the reference; map to the renderer canvas. Default 4:5 / 1080×1350. |
@@ -39,7 +39,7 @@ the reference, then recreates it with GPT Image 2:
 
 ## Brand grounding — read the kit, never improvise (do this before generating)
 
-The brand context comes from `get_brand_kit` (structured): `colors` (palette hex), `typography`,
+The brand context comes from `brand_get_context`'s `kit` section (structured): `colors` (palette hex), `typography`,
 `products[]` (with `imageUrls` + `name`/`description`), `screenshotUrls`, and `referenceImages[]`
 (each tagged with `productName` + `kind: "product" | "website_screenshot"`). **Read the full kit, not
 a preview.**
