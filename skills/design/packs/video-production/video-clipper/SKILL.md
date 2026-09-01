@@ -3,7 +3,7 @@ name: video-clipper
 description: Repurposes long-form video (podcasts, interviews, talks) into short-form vertical clips for Instagram Reels, TikTok, and YouTube Shorts. Handles transcription, moment selection, clip extraction, speaker-tracked reframing (16:9 to 9:16), and animated captions.
 user-invocable: true
 allowed-tools: Bash, Read, Write, Edit, Grep, Glob, WebSearch, WebFetch
-argument-hint: [video-file-path-or-url]
+argument-hint: "[video-file-path-or-url]"
 ---
 
 # Video Clipper

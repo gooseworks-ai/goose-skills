@@ -3,7 +3,7 @@ name: talking-head-video
 description: Creates talking head videos from any source material (docs, changelogs, blog posts, notes, transcripts). Produces multi-scene videos with avatar narration over screenshots/images using HeyGen v2 API. Supports Quick Shot and Full Producer modes.
 user-invocable: true
 allowed-tools: Bash, Read, Write, Edit, Grep, Glob, WebSearch, WebFetch
-argument-hint: [source-content-path]
+argument-hint: "[source-content-path]"
 ---
 
 # Talking Head Video Skill
