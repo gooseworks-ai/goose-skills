@@ -1,7 +1,7 @@
 {
   "name": "goose-skills",
   "version": "1.0.1",
-  "description": "GTM skills for Claude Code — install with npx goose-skills install <slug>",
+  "description": "GTM skills for Claude Code \u2014 install with npx goose-skills install <slug>",
   "bin": {
     "goose-skills": "./bin/goose-skills.js"
   },
@@ -10,7 +10,7 @@
     "url": "https://github.com/athina-ai/goose-skills"
   },
   "scripts": {
-    "test": "node --test test/brand-growth-collection.test.js test/goose-skills-targets.test.js test/goose-skills-packs.test.js scripts/__tests__/build-index.test.js scripts/__tests__/validate-skills.test.js",
+    "test": "node --test test/brand-growth-collection.test.js test/brand-growth-routes.test.js test/goose-skills-targets.test.js test/goose-skills-packs.test.js scripts/__tests__/build-index.test.js scripts/__tests__/validate-skills.test.js",
     "test:eval": "node test/run-eval.js",
     "test:eval:run": "node test/run-eval.js",
     "test:eval:check": "node test/evaluate-run.js",
