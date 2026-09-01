@@ -15,7 +15,7 @@ seeded on the styled hero → extract Beat 1 last frame → Veo3 Beat 3 reveal s
 
 | config field | source step | phase | what it does | paid? |
 |---|---|---|---|---|
-| `product.hero_png`, `product_identity.*`, `studio_look.*` | `create-image-fal` (`fal-ai/nano-banana/edit`) | Hero | Restyle the brand's REAL product photo onto the seamless brand-color studio set → `hero_styled.png`; host it (MCP get_upload_url → get_download_url) so i2v can seed off a public url. Locks the product's real geometry — no Marketing Studio, no PDP import. | **PAID** (cheap, ~1 image) |
+| `product.hero_png`, `product_identity.*`, `studio_look.*` | `create-image-fal` (`fal-ai/nano-banana/edit`) | Hero | Restyle the brand's REAL product photo onto the seamless brand-color studio set → `hero_styled.png`; host it (MCP file_url mode upload → mode download) so i2v can seed off a public url. Locks the product's real geometry — no Marketing Studio, no PDP import. | **PAID** (cheap, ~1 image) |
 | `beats[0].prompt`, `beats[0].model`, `beats[0].start_image`, `beats[0].duration_sec` | `create-video-fal` i2v (`beats[].model` — Seedance Lite default) | Beat 1 | i2v hero rotation seeded on `hero_styled.png`. A single i2v is a partial arc, not a literal 360. Result mp4 → `working/clips/beat1.mp4`. | **PAID** |
 | `beats[1].prompt`, `beats[1].model`, `beats[1].start_image` | `create-video-fal` i2v (same model) | Beat 2 | i2v macro push-in seeded on the SAME `hero_styled.png` so the product reads identical. → `working/clips/beat2.mp4`. | **PAID** |
 | `beats[0].produces_anchor` | `ffmpeg -sseof -0.1 -i beat1.mp4 -frames:v 1 beat1_last_frame.png` | Beat 1→3 | Extract Beat 1's **last frame** — the shared anchor: Veo3 Beat-3 seed AND the Beat-4 hyperframe background. | free |

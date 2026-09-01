@@ -19,7 +19,7 @@ local skill run isn't a black box. Import `gw_log(...)` to log your own steps/is
 and `run_id()` to read the current run id. Best-effort; never breaks a render.
 
 FAL inputs that are local files (a product image, an audio track) must be a PUBLIC
-URL — the orchestrator hosts them via the MCP `get_upload_url` → `get_download_url`
+URL — the orchestrator hosts them via the MCP `file_url` (mode `upload` → mode `download`)
 presigned URL and passes that URL in; this module does NOT do MCP uploads.
 """
 import json
@@ -281,7 +281,7 @@ def fal_whisper(audio_url, language="en", **kw):
     """fal-ai/whisper (word-level) through the proxy → [{text, start, end}, ...].
 
     `audio_url` MUST be a PUBLIC url (this module does not upload) — the orchestrator
-    hosts the local VO via MCP `get_upload_url` → `get_download_url` and passes that
+    hosts the local VO via MCP `file_url` (mode `upload` → mode `download`) and passes that
     presigned url in. Proxy-routed, so it bills the Ads agent (never a raw FAL_KEY)."""
     r = _fal_run("fal-ai/whisper", {"audio_url": audio_url, "task": "transcribe",
                                     "language": language, "chunk_level": "word"}, **kw)

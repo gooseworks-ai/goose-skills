@@ -31,7 +31,7 @@
   "product_identity": {
     "_note": "identity lock — the analog of a character lock. Run BEFORE any i2v clip call. NO Marketing Studio.",
     "step_1": "create-image-fal (fal-ai/nano-banana/edit) — restyle the real product photo onto the seamless brand-color set (centered ~50-55% frame height, warm rim light upper-right, warm bokeh, 9:16, geometry IDENTICAL to the reference, no people/hands/text) -> hero_styled.png",
-    "step_2": "host hero_styled.png via MCP get_upload_url -> get_download_url so create-video-fal can seed the beats off a PUBLIC url",
+    "step_2": "host hero_styled.png via MCP file_url mode upload -> mode download so create-video-fal can seed the beats off a PUBLIC url",
     "hard_rule": "the product geometry ALWAYS comes from the real product photo via the create-image-fal restyle — never a text-only AI invention. A lifestyle photo works too; the restyle isolates the product onto the studio set."
   },
 
