@@ -21,6 +21,12 @@
     "command": "/gooseworks",
     "onboarding_command": "/gooseworks onboard me"
   },
+  "routes": {
+    "$ref": "./routes.json",
+    "$comment": "Routing is NOT declared here. This collection derives it from the single source — gooseworks/src/skills/routes.ts, published as skills/routes.json in the gooseworks CLI package. See routes.json for the mirror and test/brand-growth-routes.test.js for the drift guard.",
+    "source_repo": "gooseworks-ai/gooseworks",
+    "source_file": "src/skills/routes.ts"
+  },
   "stages": [
     {
       "slug": "research",

@@ -1,6 +1,6 @@
 {
   "version": "1.3.0",
-  "generated": "2026-08-14",
+  "generated": "2026-09-01",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -9538,7 +9538,8 @@
       "description": "A curated path through the Goose Skills catalog for consumer and ecommerce brands to research the market, analyze opportunities and performance, create on-brand work, and improve the next iteration.",
       "path": "collections/brand-growth",
       "files": [
-        "collections/brand-growth/collection.meta.json"
+        "collections/brand-growth/collection.meta.json",
+        "collections/brand-growth/routes.json"
       ],
       "installable": false,
       "skills": [
@@ -9712,6 +9713,12 @@
           "skill": "gooseworks",
           "command": "/gooseworks",
           "onboarding_command": "/gooseworks onboard me"
+        },
+        "routes": {
+          "$ref": "./routes.json",
+          "$comment": "Routing is NOT declared here. This collection derives it from the single source — gooseworks/src/skills/routes.ts, published as skills/routes.json in the gooseworks CLI package. See routes.json for the mirror and test/brand-growth-routes.test.js for the drift guard.",
+          "source_repo": "gooseworks-ai/gooseworks",
+          "source_file": "src/skills/routes.ts"
         },
         "stages": [
           {

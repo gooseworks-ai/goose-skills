@@ -1,0 +1,135 @@
+{
+  "$comment": "DERIVED, do not hand-edit. The single source for GooseWorks skill routing is gooseworks/src/skills/routes.ts (GOOSE-3190), published as skills/routes.json in the gooseworks CLI package. This file mirrors the Brand Growth half of it so the collection, the CLI router SKILL.md, and the backend hosted-connector pointer cannot drift apart. Regenerate by copying from the source below, then run: npm run build:index && npm test",
+  "source": {
+    "repo": "gooseworks-ai/gooseworks",
+    "file": "src/skills/routes.ts",
+    "published_as": "skills/routes.json",
+    "raw_url": "https://raw.githubusercontent.com/gooseworks-ai/gooseworks/main/skills/routes.json"
+  },
+  "route_table_version": 1,
+  "captured": "2026-08-31",
+  "$comment_entry_skills": "Vendored by the CLI and installed to ~/.agents/skills/ — they are NOT members of this collection, they are the entry points into it.",
+  "entry_skills": [
+    "goose-ads",
+    "goose-product-photos",
+    "goose-video"
+  ],
+  "brand_growth_routes": [
+    {
+      "job": "Brand foundation",
+      "skills": [
+        "brand-research"
+      ]
+    },
+    {
+      "job": "Competitor ads",
+      "skills": [
+        "competitor-ad-intelligence"
+      ]
+    },
+    {
+      "job": "Customer language and angles",
+      "skills": [
+        "comment-mining",
+        "ad-angle-miner"
+      ]
+    },
+    {
+      "job": "Competitor social content",
+      "skills": [
+        "competitor-social-research"
+      ]
+    },
+    {
+      "job": "Audience definition",
+      "skills": [
+        "audience-research"
+      ]
+    },
+    {
+      "job": "Creator discovery and evaluation",
+      "skills": [
+        "influencer-prospecting",
+        "creator-profile-teardown"
+      ]
+    },
+    {
+      "job": "Trends and outlier posts",
+      "skills": [
+        "trend-discovery",
+        "outlier-post-finder"
+      ]
+    },
+    {
+      "job": "Social listening and product demand",
+      "skills": [
+        "social-listening-brief",
+        "product-demand-research"
+      ]
+    },
+    {
+      "job": "Long-form source material (calls, podcasts, videos)",
+      "skills": [
+        "transcript-intelligence"
+      ]
+    },
+    {
+      "job": "Meta performance, policy, and landing-page match",
+      "skills": [
+        "meta-ads-analyzer",
+        "meta-ad-policy-checker",
+        "ad-to-landing-page-auditor"
+      ]
+    },
+    {
+      "job": "Static ads",
+      "skills": [
+        "goose-ads",
+        "remix-graphic-ad-from-reference"
+      ]
+    },
+    {
+      "job": "Product photos",
+      "skills": [
+        "goose-product-photos",
+        "product-photoshoot"
+      ]
+    },
+    {
+      "job": "Written content and repurposing",
+      "skills": [
+        "content-repurposing"
+      ]
+    },
+    {
+      "job": "Graphics and animation",
+      "skills": [
+        "goose-graphics",
+        "animate-image"
+      ]
+    }
+  ],
+  "brand_growth_skills": [
+    "ad-angle-miner",
+    "ad-to-landing-page-auditor",
+    "animate-image",
+    "audience-research",
+    "brand-research",
+    "comment-mining",
+    "competitor-ad-intelligence",
+    "competitor-social-research",
+    "content-repurposing",
+    "creator-profile-teardown",
+    "goose-graphics",
+    "influencer-prospecting",
+    "meta-ad-policy-checker",
+    "meta-ads-analyzer",
+    "outlier-post-finder",
+    "product-demand-research",
+    "product-photoshoot",
+    "remix-graphic-ad-from-reference",
+    "social-listening-brief",
+    "transcript-intelligence",
+    "trend-discovery"
+  ]
+}
