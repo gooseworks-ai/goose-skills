@@ -1,0 +1,23 @@
+{
+  "slug": "vid-animated-explainer-2d",
+  "category": "composites",
+  "tags": [
+    "content",
+    "design"
+  ],
+  "installation": {
+    "base_command": "npx goose-skills install vid-animated-explainer-2d",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  },
+  "features": [
+    "Creates 2D animated explainer videos from scene-based scripts and character notes",
+    "Supports flat, cartoon, corporate, and sketch animation directions",
+    "Uses a structured problem, solution, how-it-works, proof, and CTA flow",
+    "Optimized for onboarding, product-page, investor, and educational explainer use cases",
+    "Outputs a polished MP4 with narration, scene transitions, and optional captions"
+  ]
+}

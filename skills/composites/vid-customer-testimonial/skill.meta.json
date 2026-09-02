@@ -1,0 +1,24 @@
+{
+  "slug": "vid-customer-testimonial",
+  "category": "composites",
+  "tags": [
+    "content",
+    "design",
+    "social"
+  ],
+  "installation": {
+    "base_command": "npx goose-skills install vid-customer-testimonial",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  },
+  "features": [
+    "Creates customer testimonial videos from verbatim quotes, customer identity details, and result highlights",
+    "Supports talking-head, text-on-video, and split-screen testimonial formats",
+    "Preserves customer voice while tightening for short-form trust-building delivery",
+    "Works for landing pages, paid social, sales decks, email follow-up, and website proof sections",
+    "Outputs a testimonial MP4 with optional photo-based animation, identity overlays, and result-stat callouts"
+  ]
+}

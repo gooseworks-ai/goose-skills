@@ -1,0 +1,24 @@
+{
+  "slug": "vid-talking-head",
+  "category": "composites",
+  "tags": [
+    "content",
+    "design",
+    "social"
+  ],
+  "installation": {
+    "base_command": "npx goose-skills install vid-talking-head",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  },
+  "features": [
+    "Creates talking-head videos from exact scripts, avatars or source faces, voices, and background settings",
+    "Supports lip-synced avatar, animated-photo, and real-footage-based talking-head production paths",
+    "Optimizes scripts for spoken rhythm, pause control, captions, and presenter credibility overlays",
+    "Works for founder messaging, thought leadership, product explanation, and educational presenter video",
+    "Outputs a polished talking-head MP4 in horizontal or vertical aspect ratios"
+  ]
+}
