@@ -1,6 +1,6 @@
 {
   "version": "1.3.0",
-  "generated": "2026-09-01",
+  "generated": "2026-09-02",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -1770,7 +1770,7 @@
       "name": "create-image-gpt-image-fal",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Generate a single photoreal or designed image with OpenAI gpt-image via fal.ai. Supports gpt-image-1 (default, fixed sizes — the FAL fallback for Higgsfield's `gpt_image_2`) and gpt-image-2 (`openai/gpt-image-2`, custom output sizes up to 3840px). Routes to text-to-image or the edit variant depending on whether a reference image is provided. Use for photoreal character anchors, scene keyframes, and designed sheets (e.g. storyboards) where precise layout and legible text matter.",
+      "description": "Generate a single photoreal or designed image with OpenAI gpt-image through the GooseWorks FAL proxy or the optional Atlas Cloud provider. FAL remains the default. Supports gpt-image-1 and gpt-image-2, and routes to text-to-image or edit based on whether a reference image is provided.",
       "tags": "ads, design",
       "path": "skills/ads/capabilities/create-image-gpt-image-fal",
       "files": [

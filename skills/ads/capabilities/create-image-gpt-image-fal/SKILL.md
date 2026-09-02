@@ -1,13 +1,13 @@
 ---
 name: create-image-gpt-image-fal
-description: Generate a single photoreal or designed image with OpenAI gpt-image via fal.ai. Supports gpt-image-1 (default, fixed sizes — the FAL fallback for Higgsfield's `gpt_image_2`) and gpt-image-2 (`openai/gpt-image-2`, custom output sizes up to 3840px). Routes to text-to-image or the edit variant depending on whether a reference image is provided. Use for photoreal character anchors, scene keyframes, and designed sheets (e.g. storyboards) where precise layout and legible text matter.
+description: Generate a single photoreal or designed image with OpenAI gpt-image through the GooseWorks FAL proxy or the optional Atlas Cloud provider. FAL remains the default. Supports gpt-image-1 and gpt-image-2, and routes to text-to-image or edit based on whether a reference image is provided.
 ---
 
 # create-image-gpt-image-fal
 
 ## Purpose
 
-Generate one image via fal.ai's OpenAI gpt-image endpoints. Two model families are supported through a single `--model` flag:
+Generate one image with OpenAI gpt-image. The existing GooseWorks FAL proxy remains the default; Atlas Cloud is an explicit opt-in provider. Two model families are supported through a single `--model` flag:
 
 - **`gpt-image-1`** (default) — `fal-ai/gpt-image-1`. The FAL fallback for Higgsfield's `gpt_image_2`. Fixed output sizes only. Used by:
   - `video-orchestrator/lock-character` Phase 0 (anchor portrait) and Phase 1 (angle keyframes via `/edit`)
@@ -32,6 +32,8 @@ Required:
 
 Optional:
 - `--model` — `gpt-image-1` (default) or `gpt-image-2`.
+- `--provider` — `fal` (default) or `atlas`. Selecting Atlas does not change existing FAL callers.
+- `--yes` — confirms the billable Atlas request after the script reads the live model catalog, schema, and unit price. Atlas never submits without this flag.
 - `--aspect-ratio` — `9:16` (default), `16:9`, `1:1`, `2:3`, `3:2`. gpt-image-2 also accepts `3:4`, `4:3`, `4:5`. Used when `--image-size` is not given.
 - `--image-size` — explicit `WIDTHxHEIGHT` (e.g. `1728x2304`). **gpt-image-2 only** — values are rounded to multiples of 16 and capped at 3840px. On `gpt-image-1` a custom size is ignored with a warning and the aspect-ratio mapping is used instead.
 - `--quality` — `low | medium | high` (default `medium`).
@@ -41,6 +43,11 @@ Optional:
 Credentials (proxy-routed — NOT a raw FAL key):
 - The bundled `scripts/media_proxy.py` routes every call through the GooseWorks **fal-proxy**, which **bills the Ads agent**. It reads `~/.gooseworks/credentials.json` (`api_base`, `api_key`, `agent_id`) — written by `gooseworks login`. Do **not** set `FAL_API_KEY`: an agent (`cal_`) token is not a FAL key and 401s against fal directly.
 - Set `GW_PROJECT_ID=<ad project id>` in the env so the generation's spend attributes to that ad project (per-project cost shows in the app).
+
+Atlas credentials:
+- Set `ATLASCLOUD_API_KEY` when using `--provider atlas`.
+- The Atlas adapter resolves the matching text-to-image or edit model from the live catalog and validates the request against its current schema before submission.
+- A generation POST is made exactly once. Only result polling uses bounded retry and backoff.
 
 ## Preflight
 
@@ -74,20 +81,28 @@ python3 .../generate.py \
   --model gpt-image-2 \
   --image-size 1728x2304 \
   --quality high
+
+# Explicit Atlas Cloud provider; FAL remains the default when this flag is absent
+python3 .../generate.py \
+  --prompt "..." \
+  --output /path/to/storyboard.png \
+  --model gpt-image-2 \
+  --provider atlas \
+  --yes
 ```
 
 The script:
-1. Loads the agent credentials from `~/.gooseworks/credentials.json` via the bundled `media_proxy.py` (proxy-routed; bills the Ads agent).
-2. Resolves the model family (`--model`) and output size (`--image-size` if given and supported, else the aspect-ratio mapping).
-3. If one or more `--ref-image` / `--ref-url` flags are set, passes them as `image_urls=[url1, url2, ...]` (they must already be PUBLIC URLs) and routes to the model's `/edit` variant. Otherwise routes to the `/text-to-image` variant.
-4. Submits through the GooseWorks **fal-proxy** and polls the queue to completion — host-swapping the `queue.fal.run` status/response URLs to the proxy base (see `media_proxy.py`); never polls `queue.fal.run` directly.
+1. Resolves the model family (`--model`) and output size (`--image-size` if given and supported, else the aspect-ratio mapping).
+2. If one or more `--ref-image` / `--ref-url` flags are set, routes to the provider's edit variant. Otherwise it uses text-to-image.
+3. With the default FAL provider, loads the agent credentials from `~/.gooseworks/credentials.json`, submits through the GooseWorks fal-proxy, and polls its queue to completion.
+4. With Atlas, reads the live catalog and model schema, prints the current request plan, requires `--yes`, submits once, and polls the returned prediction with bounded GET retries.
 5. Downloads the first result image to `--output`.
-6. Writes `<output>.meta.json` with `gateway: "fal-proxy"`, model id, `model_family`, request, and cost.
+6. Writes `<output>.meta.json` with the selected gateway, model id, `model_family`, request, and cost.
 
 ## Output
 
 - `<output_path>` — PNG (≥ 1 KB).
-- `<output_path>.meta.json` — request + result metadata + cost, including `model_family` (`gpt-image-1` or `gpt-image-2`).
+- `<output_path>.meta.json` — request + result metadata, including the selected gateway, resolved model, and `model_family` (`gpt-image-1` or `gpt-image-2`). Atlas output also records the prediction id and live unit price.
 
 ## Quality Checks
 
@@ -102,6 +117,8 @@ The script:
 | Symptom | Likely cause | Fix |
 |---|---|---|
 | `401 Unauthorized` from fal | Calling fal directly with an agent token, or polling `queue.fal.run` instead of the proxy | This atom is **proxy-routed** — it uses the `~/.gooseworks/credentials.json` agent token via `media_proxy.py`, never a raw `FAL_API_KEY`. Run `gooseworks login` if the credentials file is missing. |
+| Atlas confirmation required | Atlas preflight completed but `--yes` was omitted | Review the printed live model, size, quality, and unit price, then rerun with `--yes`. |
+| Missing Atlas API key | Atlas was selected without credentials | Set `ATLASCLOUD_API_KEY`; the default FAL path does not require it. |
 | `ERROR: ref images must be PUBLIC URLs` | Passed a **local path** to `--ref-image` / `--ref-url` | The proxy does not upload local files. Host it (MCP `get_upload_url` → `get_download_url`) and pass the resulting public URL. |
 | `429 Too Many Requests` | RPS limit | Drop concurrency to 2-3. |
 | Custom size ignored | `--image-size` passed with `--model gpt-image-1` | gpt-image-1 only supports fixed sizes; use `--model gpt-image-2` for custom sizes. |
