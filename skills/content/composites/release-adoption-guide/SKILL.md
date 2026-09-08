@@ -15,7 +15,7 @@ Read the release notes, migration guidance and relevant public API documentation
 
 ## Prove the adoption path
 
-Build the smallest example that demonstrates the chosen workflow on the starting version. Adapt that example for the target version in a separate temporary workspace, within the user's execution permissions. Record prerequisites, actual output and the change needed to preserve the intended result.
+Build the smallest example that demonstrates the chosen workflow on the starting version in a fresh temporary workspace. Adapt that example for the target version in a second fresh temporary workspace. Both runs must stay within the user's execution permissions and leave the original project, dependencies and lockfiles unchanged. Record prerequisites, actual output and the change needed to preserve the intended result.
 
 Keep the baseline and adapted runs separate. If the old example fails on the new version, preserve that failure as migration evidence. If execution is unavailable, label the example as unexecuted and distinguish its expected output from observations. Do not report a successful upgrade from a source comparison alone.
 
