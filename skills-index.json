@@ -1,6 +1,6 @@
 {
   "version": "1.3.0",
-  "generated": "2026-09-01",
+  "generated": "2026-09-08",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -5420,6 +5420,35 @@
       }
     },
     {
+      "slug": "release-adoption-guide",
+      "name": "release-adoption-guide",
+      "category": "composites",
+      "domain": "content",
+      "description": "Turn an SDK or CLI release into an upgrade guide and launch copy with source citations and a runnable before-and-after example. Use when a developer product has shipped a release and needs to explain who should upgrade, what changes in their code, and how to verify the result.",
+      "tags": "content, research",
+      "path": "skills/content/composites/release-adoption-guide",
+      "files": [],
+      "metadata": {
+        "slug": "release-adoption-guide",
+        "category": "composites",
+        "domain": "content",
+        "tags": [
+          "content",
+          "research"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install release-adoption-guide",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "author": "tunnckoCore",
+        "example_prompt": "Use the two SDK releases I linked to create an upgrade guide and a short launch announcement. Verify the quickstart before and after the upgrade and cite the evidence for each launch claim."
+      }
+    },
+    {
       "slug": "remix-graphic-ad-from-reference",
       "name": "remix-graphic-ad-from-reference",
       "category": "composites",
@@ -7138,6 +7167,35 @@
       }
     },
     {
+      "slug": "sdk-onboarding-check",
+      "name": "sdk-onboarding-check",
+      "category": "composites",
+      "domain": "research",
+      "description": "Replay an SDK or CLI quickstart to identify what prevents a new user from reaching the first useful result. Use when improving developer activation or onboarding documentation; produces observed setup failures, a prioritized fix list and a corrected quickstart grounded in an actual run.",
+      "tags": "research, content",
+      "path": "skills/research/composites/sdk-onboarding-check",
+      "files": [],
+      "metadata": {
+        "slug": "sdk-onboarding-check",
+        "category": "composites",
+        "domain": "research",
+        "tags": [
+          "research",
+          "content"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install sdk-onboarding-check",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "author": "tunnckoCore",
+        "example_prompt": "Replay this CLI quickstart in a fresh temporary workspace. Show the first useful result or the exact blocker, then verify the smallest documentation correction without changing my existing project."
+      }
+    },
+    {
       "slug": "send-sms-textbelt",
       "name": "send-sms-textbelt",
       "category": "capabilities",
@@ -7774,6 +7832,35 @@
             "codex"
           ]
         }
+      }
+    },
+    {
+      "slug": "support-to-docs-backlog",
+      "name": "support-to-docs-backlog",
+      "category": "composites",
+      "domain": "content",
+      "description": "Turn recurring non-security questions from public SDK or developer-tool issues into a prioritized documentation backlog and FAQ drafts with source citations. Use when maintainers want to reduce repeated support questions and help new users complete common workflows.",
+      "tags": "content, research",
+      "path": "skills/content/composites/support-to-docs-backlog",
+      "files": [],
+      "metadata": {
+        "slug": "support-to-docs-backlog",
+        "category": "composites",
+        "domain": "content",
+        "tags": [
+          "content",
+          "research"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install support-to-docs-backlog",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "author": "tunnckoCore",
+        "example_prompt": "Use these public issue threads and the current SDK docs to identify repeated onboarding questions. Deduplicate the reports, separate open bugs from documentation gaps, and draft verified FAQ answers with source links."
       }
     },
     {
