@@ -5427,7 +5427,10 @@
       "description": "Turn an SDK or CLI release into an upgrade guide and launch copy with source citations and a runnable before-and-after example. Use when a developer product has shipped a release and needs to explain who should upgrade, what changes in their code, and how to verify the result.",
       "tags": "content, research",
       "path": "skills/content/composites/release-adoption-guide",
-      "files": [],
+      "files": [
+        "skills/content/composites/release-adoption-guide/SKILL.md",
+        "skills/content/composites/release-adoption-guide/skill.meta.json"
+      ],
       "metadata": {
         "slug": "release-adoption-guide",
         "category": "composites",
@@ -7174,7 +7177,10 @@
       "description": "Replay an SDK or CLI quickstart to identify what prevents a new user from reaching the first useful result. Use when improving developer activation or onboarding documentation; produces observed setup failures, a prioritized fix list and a corrected quickstart grounded in an actual run.",
       "tags": "research, content",
       "path": "skills/research/composites/sdk-onboarding-check",
-      "files": [],
+      "files": [
+        "skills/research/composites/sdk-onboarding-check/SKILL.md",
+        "skills/research/composites/sdk-onboarding-check/skill.meta.json"
+      ],
       "metadata": {
         "slug": "sdk-onboarding-check",
         "category": "composites",
@@ -7842,7 +7848,10 @@
       "description": "Turn recurring non-security questions from public SDK or developer-tool issues into a prioritized documentation backlog and FAQ drafts with source citations. Use when maintainers want to reduce repeated support questions and help new users complete common workflows.",
       "tags": "content, research",
       "path": "skills/content/composites/support-to-docs-backlog",
-      "files": [],
+      "files": [
+        "skills/content/composites/support-to-docs-backlog/SKILL.md",
+        "skills/content/composites/support-to-docs-backlog/skill.meta.json"
+      ],
       "metadata": {
         "slug": "support-to-docs-backlog",
         "category": "composites",
