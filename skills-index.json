@@ -1,6 +1,6 @@
 {
   "version": "1.3.0",
-  "generated": "2026-09-01",
+  "generated": "2026-09-15",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -8364,6 +8364,42 @@
         ],
         "installation": {
           "base_command": "npx goose-skills install verify-product-image",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "vibe-prospecting",
+      "name": "vibe-prospecting",
+      "category": "capabilities",
+      "domain": "lead-generation",
+      "description": ">",
+      "tags": "lead-generation, sales, research",
+      "path": "skills/lead-generation/capabilities/vibe-prospecting",
+      "files": [],
+      "metadata": {
+        "slug": "vibe-prospecting",
+        "category": "capabilities",
+        "domain": "lead-generation",
+        "tags": [
+          "lead-generation",
+          "sales",
+          "research"
+        ],
+        "author": "Explorium",
+        "example_prompt": "Use vibe-prospecting to find VP Sales at Series B SaaS companies in the US",
+        "features": [
+          "B2B company and contact search via Vibe Prospecting MCP",
+          "Sample-first preview then full list export",
+          "Firmographic and technographic enrichment",
+          "OAuth remote MCP — no local API key in the skill"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install vibe-prospecting",
           "supports": [
             "claude",
             "cursor",
