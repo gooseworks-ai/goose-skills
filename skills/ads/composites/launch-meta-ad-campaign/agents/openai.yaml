@@ -1,0 +1,4 @@
+interface:
+  display_name: "Launch Meta Ad Campaign"
+  short_description: "Plan or safely create paused Meta campaigns"
+  default_prompt: "Help me plan and launch Meta ads safely, using the best available adapter and requiring approval before any write."

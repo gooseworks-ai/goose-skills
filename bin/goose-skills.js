@@ -19,6 +19,7 @@ const {
   placeForCodex,
   placeForCursor,
 } = require('./lib/targets');
+const { getToolFiles } = require('./lib/tool-files');
 
 const REPO = 'gooseworks-ai/goose-skills';
 const BRANCH = 'main';
@@ -67,12 +68,6 @@ function getCodexSkillsRoot() {
   return path.join(home, '.codex', 'skills');
 }
 
-// Map of tool names to their file paths relative to repo root
-const TOOL_FILE_MAP = {
-  apify_guard: ['tools/apify_guard.py'],
-  supabase: ['tools/supabase/__init__.py', 'tools/supabase/supabase_client.py'],
-};
-
 async function downloadSkillFiles(skill, installDir) {
   let downloaded = 0;
   for (const filePath of skill.files) {
@@ -95,8 +90,13 @@ async function downloadSkillFiles(skill, installDir) {
   // Download shared tools if requires_tools is declared
   const requiresTools = skill.metadata?.requires_tools || [];
   for (const toolName of requiresTools) {
-    const toolFiles = TOOL_FILE_MAP[toolName];
-    if (!toolFiles) continue;
+    const toolFiles = getToolFiles(toolName);
+    if (!toolFiles) {
+      throw new Error(
+        `Skill "${skill.slug}" requires unknown shared tool "${toolName}". ` +
+        'Add it to bin/lib/tool-files.js before publishing the skill.',
+      );
+    }
     for (const toolPath of toolFiles) {
       const url = `${RAW_BASE}/${toolPath}`;
       const localPath = path.join(installDir, toolPath);

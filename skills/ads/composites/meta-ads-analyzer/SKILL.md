@@ -291,7 +291,7 @@ Day-to-day CPA variation within 20–30% is normal. Weekend/weekday differences 
 - **`ad-campaign-analyzer`** — Multi-platform performance review and budget reallocation. Run this first if you have multiple channels; run `meta-ads-analyzer` after for the Meta-specific deep dive.
 - **`ad-to-landing-page-auditor`** — Always pair with this when Conversion Rate Ranking is below average.
 - **`messaging-ab-tester`** — Generate variants when creative fatigue is the diagnosis.
-- **`meta-ads-campaign-builder`** — Architect a new campaign when the diagnosis points to "rebuild, don't fix".
+- **`launch-meta-ad-campaign`** — Prepare a new paused campaign when the diagnosis points to "rebuild, don't fix".
 
 ## Credit
 
