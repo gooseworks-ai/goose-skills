@@ -3955,12 +3955,15 @@
       "name": "launch-meta-ad-campaign",
       "category": "composites",
       "domain": "ads",
-      "description": "Guide a user from campaign intent through a verified, human-approved Meta/Facebook/Instagram launch that creates only paused objects. Use automatically when the user asks to launch, run, create, publish, or set up Meta ads; use analysis skills instead for reporting-only requests.",
+      "description": "Plan or safely create Meta/Facebook/Instagram campaigns through GooseWorks tools or a bundled direct Meta Marketing API adapter. Use automatically for requests to launch, run, create, publish, set up, or plan Meta ads; use reporting skills for analysis-only requests.",
       "tags": "ads",
       "path": "skills/ads/composites/launch-meta-ad-campaign",
       "files": [
         "skills/ads/composites/launch-meta-ad-campaign/SKILL.md",
         "skills/ads/composites/launch-meta-ad-campaign/agents/openai.yaml",
+        "skills/ads/composites/launch-meta-ad-campaign/references/direct-meta-adapter.md",
+        "skills/ads/composites/launch-meta-ad-campaign/references/gooseworks-adapter.md",
+        "skills/ads/composites/launch-meta-ad-campaign/references/planning-only.md",
         "skills/ads/composites/launch-meta-ad-campaign/skill.meta.json"
       ],
       "metadata": {
@@ -3980,22 +3983,16 @@
         },
         "features": [
           "automatic launch-intent routing",
-          "existing Goose and Meta context inspection",
-          "rendered destination preflight",
-          "human approval handoff",
+          "GooseWorks and direct Meta Marketing API adapters",
+          "planning-only fallback",
+          "existing Meta campaign inspection",
+          "destination and policy preflight",
+          "explicit human approval boundary",
           "paused creation and readback verification",
           "recoverable partial-failure reporting"
         ],
         "requires_tools": [
-          "list_campaigns",
-          "get_campaign",
-          "list_brand_creatives",
-          "get_meta_sync_status",
-          "get_meta_account_summary",
-          "list_meta_entities",
-          "get_meta_ad_context",
-          "prepare_meta_ad_push",
-          "get_meta_push_status"
+          "meta_marketing_api"
         ],
         "example_prompt": "Launch a small Meta traffic campaign for these three creatives."
       }

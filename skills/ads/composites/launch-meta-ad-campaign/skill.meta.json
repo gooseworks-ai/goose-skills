@@ -9,22 +9,16 @@
   },
   "features": [
     "automatic launch-intent routing",
-    "existing Goose and Meta context inspection",
-    "rendered destination preflight",
-    "human approval handoff",
+    "GooseWorks and direct Meta Marketing API adapters",
+    "planning-only fallback",
+    "existing Meta campaign inspection",
+    "destination and policy preflight",
+    "explicit human approval boundary",
     "paused creation and readback verification",
     "recoverable partial-failure reporting"
   ],
   "requires_tools": [
-    "list_campaigns",
-    "get_campaign",
-    "list_brand_creatives",
-    "get_meta_sync_status",
-    "get_meta_account_summary",
-    "list_meta_entities",
-    "get_meta_ad_context",
-    "prepare_meta_ad_push",
-    "get_meta_push_status"
+    "meta_marketing_api"
   ],
   "example_prompt": "Launch a small Meta traffic campaign for these three creatives."
 }
