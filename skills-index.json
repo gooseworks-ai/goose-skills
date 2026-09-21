@@ -1,6 +1,6 @@
 {
   "version": "1.3.0",
-  "generated": "2026-09-01",
+  "generated": "2026-09-21",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -3951,6 +3951,56 @@
       }
     },
     {
+      "slug": "launch-meta-ad-campaign",
+      "name": "launch-meta-ad-campaign",
+      "category": "composites",
+      "domain": "ads",
+      "description": "Guide a user from campaign intent through a verified, human-approved Meta/Facebook/Instagram launch that creates only paused objects. Use automatically when the user asks to launch, run, create, publish, or set up Meta ads; use analysis skills instead for reporting-only requests.",
+      "tags": "ads",
+      "path": "skills/ads/composites/launch-meta-ad-campaign",
+      "files": [
+        "skills/ads/composites/launch-meta-ad-campaign/SKILL.md",
+        "skills/ads/composites/launch-meta-ad-campaign/agents/openai.yaml",
+        "skills/ads/composites/launch-meta-ad-campaign/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "launch-meta-ad-campaign",
+        "category": "composites",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install launch-meta-ad-campaign",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "features": [
+          "automatic launch-intent routing",
+          "existing Goose and Meta context inspection",
+          "rendered destination preflight",
+          "human approval handoff",
+          "paused creation and readback verification",
+          "recoverable partial-failure reporting"
+        ],
+        "requires_tools": [
+          "list_campaigns",
+          "get_campaign",
+          "list_brand_creatives",
+          "get_meta_sync_status",
+          "get_meta_account_summary",
+          "list_meta_entities",
+          "get_meta_ad_context",
+          "prepare_meta_ad_push",
+          "get_meta_push_status"
+        ],
+        "example_prompt": "Launch a small Meta traffic campaign for these three creatives."
+      }
+    },
+    {
       "slug": "launch-positioning-builder",
       "name": "launch-positioning-builder",
       "category": "composites",
@@ -4626,34 +4676,6 @@
         "collection_stage": "analyze",
         "installation": {
           "base_command": "npx goose-skills install meta-ads-analyzer",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "meta-ads-campaign-builder",
-      "name": "meta-ads-campaign-builder",
-      "category": "composites",
-      "domain": "ads",
-      "description": ">",
-      "tags": "ads",
-      "path": "skills/ads/composites/meta-ads-campaign-builder",
-      "files": [
-        "skills/ads/composites/meta-ads-campaign-builder/SKILL.md",
-        "skills/ads/composites/meta-ads-campaign-builder/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "meta-ads-campaign-builder",
-        "category": "composites",
-        "tags": [
-          "ads"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install meta-ads-campaign-builder",
           "supports": [
             "claude",
             "cursor",

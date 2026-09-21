@@ -931,12 +931,12 @@
       ]
     },
     {
-      "slug": "meta-ads-campaign-builder",
+      "slug": "launch-meta-ad-campaign",
       "category": "composites",
       "prompts": [
-        "Set up Meta Ads for our product",
-        "Build a Facebook/Instagram ad campaign",
-        "Meta Ads Campaign Builder"
+        "Launch these three creatives as a paused Meta traffic campaign",
+        "Run Facebook ads for this landing page with a $200 total budget",
+        "Create a Meta ad campaign and let me approve it before publishing"
       ],
       "expectedOutputPatterns": [
         "ad",
