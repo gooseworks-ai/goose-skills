@@ -23,9 +23,9 @@ If the conversation already contains a `push_id`, call `get_meta_push_status` fi
 
 Before proposing a new campaign:
 
-1. Use `list_campaigns`, `get_campaign`, and `list_brand_creatives` to understand the current Goose campaign, approved creative, and reusable renders.
+1. Use `campaign_read` and `ads_creative_read` to understand the current Goose campaign, approved creative, and reusable renders. Keep the first creative read bounded to `status: "published", limit: 10`; if none are published, say so and inspect at most five review candidates. Fetch full render detail only for the 2–3 candidates under consideration. Never dump the full creative library into the conversation.
 2. Use `get_meta_sync_status`, `get_meta_account_summary`, and `list_meta_entities` to inspect the connected account and its campaigns, ad sets, and ads.
-3. For every current Meta ad that could be reused or overlaps the proposed work, call `get_meta_ad_context`. Treat its evidence map as the trustworthy dossier for Meta facts, Goose provenance, current creative identity, performance, and approval history. If it reports `conflict` or `stale_creative`, do not attribute that ad's results to the old Goose creative.
+3. For every current Meta ad that could be reused or overlaps the proposed work, call `get_meta_ad_context`. Treat its evidence map as the trustworthy dossier for Meta facts, Goose provenance, current creative identity, Facebook Page identity, optional Instagram actor identity, performance, and approval history. Reuse that identity for a new launch when it matches the requested brand; do not ask the user for an opaque Page ID already present in the dossier. If it reports `conflict` or `stale_creative`, do not attribute that ad's results to the old Goose creative.
 
 Then explain which path you recommend:
 
