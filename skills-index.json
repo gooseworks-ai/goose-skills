@@ -1,6 +1,6 @@
 {
   "version": "1.3.0",
-  "generated": "2026-09-21",
+  "generated": "2026-09-22",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -3955,7 +3955,7 @@
       "name": "launch-meta-ad-campaign",
       "category": "composites",
       "domain": "ads",
-      "description": "Plan or safely create Meta/Facebook/Instagram campaigns through GooseWorks tools or a bundled direct Meta Marketing API adapter. Use automatically for requests to launch, run, create, publish, set up, or plan Meta ads; use reporting skills for analysis-only requests.",
+      "description": "Take someone from a business goal to a verified, paused-then-live Meta/Facebook/Instagram campaign without making them learn Meta's hierarchy. Use automatically for requests to launch, run, create, publish, set up, or plan Meta ads; use reporting skills for analysis-only requests.",
       "tags": "ads",
       "path": "skills/ads/composites/launch-meta-ad-campaign",
       "files": [
@@ -3983,18 +3983,22 @@
         },
         "features": [
           "automatic launch-intent routing",
+          "goal-first intake that never asks the user to pick a Meta setting",
+          "objective, optimization goal and structure derived from the brief",
+          "readiness findings in a fixed what/why/blocks/I-fix/you-fix template",
+          "a stated test frame before spend: one variable, winner metric, evidence threshold",
           "GooseWorks and direct Meta Marketing API adapters",
           "planning-only fallback",
           "existing Meta campaign inspection",
           "destination and policy preflight",
-          "explicit human approval boundary",
+          "nine-section launch brief and two separate human confirmations",
           "paused creation and readback verification",
           "recoverable partial-failure reporting"
         ],
         "requires_tools": [
           "meta_marketing_api"
         ],
-        "example_prompt": "Launch a small Meta traffic campaign for these three creatives."
+        "example_prompt": "I want more trial signups from agency owners. $400 over two weeks — can you get some ads running?"
       }
     },
     {
