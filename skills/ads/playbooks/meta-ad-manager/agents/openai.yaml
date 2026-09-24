@@ -1,0 +1,4 @@
+interface:
+  display_name: "Meta Ad Manager"
+  short_description: "Run Meta ads end to end from the brand's ads/ docs"
+  default_prompt: "I want to run ads on Meta. Work out where we are and take the next step, asking only what you can't work out yourself."

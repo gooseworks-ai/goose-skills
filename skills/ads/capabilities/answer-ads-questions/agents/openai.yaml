@@ -1,0 +1,4 @@
+interface:
+  display_name: "Answer Ads Questions"
+  short_description: "Dated, honest answers about Meta ad performance"
+  default_prompt: "How are my Meta ads doing this week? Give me the dates and when the data was last synced."

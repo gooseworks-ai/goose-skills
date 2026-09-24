@@ -1,0 +1,4 @@
+interface:
+  display_name: "Ad Management Intake"
+  short_description: "Learn a brand's ad facts with the fewest possible questions"
+  default_prompt: "I want to run Meta ads. Research my business first and ask only what you can't work out."

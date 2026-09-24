@@ -1,0 +1,31 @@
+{
+  "slug": "meta-ad-manager",
+  "category": "playbooks",
+  "domain": "ads",
+  "tags": [
+    "ads"
+  ],
+  "installation": {
+    "base_command": "npx goose-skills install meta-ad-manager",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  },
+  "features": [
+    "front door for running Meta ads: new campaigns, resume, scheduled checks",
+    "keeps a small ads/ folder per brand: index, brand facts, and per-campaign strategy, state and an append-only decision log",
+    "routes each campaign stage to its own skill and writes every stage change back",
+    "never asks what the docs already answer; tone set by the user's Meta familiarity",
+    "GooseWorks, direct Meta and planning-only modes",
+    "bundled docs contract with templates and a standard-library validator"
+  ],
+  "requires_skills": [
+    "ad-management-intake",
+    "ads-north-star-strategy",
+    "answer-ads-questions",
+    "launch-meta-ad-campaign"
+  ],
+  "example_prompt": "I want to run ads on Meta for our new serum. Where do we start?"
+}

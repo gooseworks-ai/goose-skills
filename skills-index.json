@@ -1,6 +1,6 @@
 {
   "version": "1.3.0",
-  "generated": "2026-09-22",
+  "generated": "2026-09-24",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -102,6 +102,50 @@
       }
     },
     {
+      "slug": "ad-management-intake",
+      "name": "ad-management-intake",
+      "category": "composites",
+      "domain": "ads",
+      "description": "The intake stage of a Meta ad harness. Researches the brand first, states what it assumes, and asks only what it cannot infer and what would change money, claims or legal exposure if guessed wrong — at most four questions a turn, in plain business language. Writes the brand's stable facts (ads/brand.md), the campaign brief, and a log of what was asked vs assumed. Use it when someone wants to run Meta ads and the brand's ad facts are not yet recorded.",
+      "tags": "ads",
+      "path": "skills/ads/composites/ad-management-intake",
+      "files": [
+        "skills/ads/composites/ad-management-intake/SKILL.md",
+        "skills/ads/composites/ad-management-intake/agents/openai.yaml",
+        "skills/ads/composites/ad-management-intake/references/business-types.md",
+        "skills/ads/composites/ad-management-intake/references/gooseworks-adapter.md",
+        "skills/ads/composites/ad-management-intake/references/local-adapter.md",
+        "skills/ads/composites/ad-management-intake/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "ad-management-intake",
+        "category": "composites",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install ad-management-intake",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "features": [
+          "research first, then only the questions a wrong guess would make expensive",
+          "at most four questions a turn, in plain business language",
+          "states every assumption out loud before writing it down",
+          "writes the brand facts, the campaign brief and a log of what was asked vs assumed",
+          "corrections update one fact without re-interviewing"
+        ],
+        "requires_skills": [
+          "meta-ad-manager"
+        ],
+        "example_prompt": "Help me set up Meta ads for my shop. Ask me only what you really need."
+      }
+    },
+    {
       "slug": "ad-to-landing-page-auditor",
       "name": "ad-to-landing-page-auditor",
       "category": "composites",
@@ -136,6 +180,52 @@
         "requires_skills": [
           "google-ad-scraper"
         ]
+      }
+    },
+    {
+      "slug": "ads-north-star-strategy",
+      "name": "ads-north-star-strategy",
+      "category": "composites",
+      "domain": "ads",
+      "description": "Turn a brand's facts, a campaign brief and the product into a one-minute Meta ad strategy with its reasoning — goal, audience, objective and placements, budget split, how many ads and how different they must be (generate 3x so the user can choose), the test frame, the success metric, and safety rules for the user to accept. Decides what launch-meta-ad-campaign then executes, and re-reads the strategy after a deep check to show which assumption changed. Use it after intake and before any creative is generated or any campaign is built.",
+      "tags": "ads",
+      "path": "skills/ads/composites/ads-north-star-strategy",
+      "files": [
+        "skills/ads/composites/ads-north-star-strategy/SKILL.md",
+        "skills/ads/composites/ads-north-star-strategy/agents/openai.yaml",
+        "skills/ads/composites/ads-north-star-strategy/references/direct-meta-adapter.md",
+        "skills/ads/composites/ads-north-star-strategy/references/gooseworks-adapter.md",
+        "skills/ads/composites/ads-north-star-strategy/references/planning-only.md",
+        "skills/ads/composites/ads-north-star-strategy/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "ads-north-star-strategy",
+        "category": "composites",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install ads-north-star-strategy",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "features": [
+          "a one-minute strategy with the reason behind every choice",
+          "objective chosen from the business outcome, with an honest bridge when the host cannot launch it",
+          "one ad set on small budgets; 2-3 ads that differ in argument, generated at 3x so the user can choose",
+          "test frame and success metric with a threshold from the unit economics",
+          "safety rules proposed, saved only once accepted",
+          "re-read after a deep check names the assumption that changed"
+        ],
+        "requires_skills": [
+          "meta-ad-manager",
+          "launch-meta-ad-campaign"
+        ],
+        "example_prompt": "We have $1,500 for three weeks to get demo requests. What should the Meta ads strategy be?"
       }
     },
     {
@@ -286,6 +376,51 @@
             "codex"
           ]
         }
+      }
+    },
+    {
+      "slug": "answer-ads-questions",
+      "name": "answer-ads-questions",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Answer questions about a brand's Meta ads (spend, results, which ad is winning, is it paused, why did Goose do that) only from reads made in the same turn, with the data window and sync time on every number and a plain caveat when the connection is stale or partial. Use it whenever a user asks how their ads are doing or why an ad action was taken.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/answer-ads-questions",
+      "files": [
+        "skills/ads/capabilities/answer-ads-questions/SKILL.md",
+        "skills/ads/capabilities/answer-ads-questions/agents/openai.yaml",
+        "skills/ads/capabilities/answer-ads-questions/references/direct-meta-adapter.md",
+        "skills/ads/capabilities/answer-ads-questions/references/gooseworks-adapter.md",
+        "skills/ads/capabilities/answer-ads-questions/references/planning-only.md",
+        "skills/ads/capabilities/answer-ads-questions/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "answer-ads-questions",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install answer-ads-questions",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "features": [
+          "answers only from reads made in the same turn",
+          "data window and sync time on every number",
+          "a plain caveat when the connection is partial, stale or disconnected",
+          "why-questions answered from the recorded decision log, never reconstructed",
+          "ads Goose did not publish are treated as read-only",
+          "GooseWorks, direct Meta and planning-only modes"
+        ],
+        "requires_skills": [
+          "meta-ad-manager"
+        ],
+        "example_prompt": "How are my Meta ads doing this week, and why did you pause the gift ad?"
       }
     },
     {
@@ -4582,6 +4717,71 @@
             "codex"
           ]
         }
+      }
+    },
+    {
+      "slug": "meta-ad-manager",
+      "name": "meta-ad-manager",
+      "category": "playbooks",
+      "domain": "ads",
+      "description": "Front door and loop owner of a Meta (Facebook/Instagram) ad harness. Reads the brand's ads/ docs, works out which campaign the user means and which stage it is at, hands off to the stage skill that runs it (intake, strategy, creative, launch, checks, fixes, answers), and writes every stage change back to the docs. Use it when someone wants to run ads on Meta, comes back to ads they started earlier, a stage skill hands back, or a scheduled check fires.",
+      "tags": "ads",
+      "path": "skills/ads/playbooks/meta-ad-manager",
+      "files": [
+        "skills/ads/playbooks/meta-ad-manager/SKILL.md",
+        "skills/ads/playbooks/meta-ad-manager/agents/openai.yaml",
+        "skills/ads/playbooks/meta-ad-manager/contract/README.md",
+        "skills/ads/playbooks/meta-ad-manager/contract/RULES.md",
+        "skills/ads/playbooks/meta-ad-manager/contract/examples/sample-brand/ads/README.md",
+        "skills/ads/playbooks/meta-ad-manager/contract/examples/sample-brand/ads/brand.md",
+        "skills/ads/playbooks/meta-ad-manager/contract/examples/sample-brand/ads/campaigns/fall-subscription-launch/decisions.md",
+        "skills/ads/playbooks/meta-ad-manager/contract/examples/sample-brand/ads/campaigns/fall-subscription-launch/state.md",
+        "skills/ads/playbooks/meta-ad-manager/contract/examples/sample-brand/ads/campaigns/fall-subscription-launch/strategy.md",
+        "skills/ads/playbooks/meta-ad-manager/contract/examples/sample-brand/ads/campaigns/holiday-gift-bundles/decisions.md",
+        "skills/ads/playbooks/meta-ad-manager/contract/examples/sample-brand/ads/campaigns/holiday-gift-bundles/state.md",
+        "skills/ads/playbooks/meta-ad-manager/contract/examples/sample-brand/ads/campaigns/holiday-gift-bundles/strategy.md",
+        "skills/ads/playbooks/meta-ad-manager/contract/templates/README.md",
+        "skills/ads/playbooks/meta-ad-manager/contract/templates/brand.md",
+        "skills/ads/playbooks/meta-ad-manager/contract/templates/campaign/decisions.md",
+        "skills/ads/playbooks/meta-ad-manager/contract/templates/campaign/state.md",
+        "skills/ads/playbooks/meta-ad-manager/contract/templates/campaign/strategy.md",
+        "skills/ads/playbooks/meta-ad-manager/contract/tests/test_validate.py",
+        "skills/ads/playbooks/meta-ad-manager/contract/validate.py",
+        "skills/ads/playbooks/meta-ad-manager/references/direct-meta-adapter.md",
+        "skills/ads/playbooks/meta-ad-manager/references/gooseworks-adapter.md",
+        "skills/ads/playbooks/meta-ad-manager/references/planning-only.md",
+        "skills/ads/playbooks/meta-ad-manager/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "meta-ad-manager",
+        "category": "playbooks",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install meta-ad-manager",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "features": [
+          "front door for running Meta ads: new campaigns, resume, scheduled checks",
+          "keeps a small ads/ folder per brand: index, brand facts, and per-campaign strategy, state and an append-only decision log",
+          "routes each campaign stage to its own skill and writes every stage change back",
+          "never asks what the docs already answer; tone set by the user's Meta familiarity",
+          "GooseWorks, direct Meta and planning-only modes",
+          "bundled docs contract with templates and a standard-library validator"
+        ],
+        "requires_skills": [
+          "ad-management-intake",
+          "ads-north-star-strategy",
+          "answer-ads-questions",
+          "launch-meta-ad-campaign"
+        ],
+        "example_prompt": "I want to run ads on Meta for our new serum. Where do we start?"
       }
     },
     {

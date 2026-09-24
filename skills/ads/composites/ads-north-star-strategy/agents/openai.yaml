@@ -1,0 +1,4 @@
+interface:
+  display_name: "Ads North Star Strategy"
+  short_description: "A one-minute Meta ad strategy with the reason for every choice"
+  default_prompt: "Turn my campaign brief into a Meta ad strategy I can read in a minute, with the reasoning."
