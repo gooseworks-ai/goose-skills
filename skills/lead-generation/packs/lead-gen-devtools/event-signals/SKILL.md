@@ -3,7 +3,7 @@ name: event-signals
 description: Extract leads from conferences, meetups, hackathons, and podcasts by analyzing speaker lists, sponsor lists, hackathon entries, and podcast guests. Discovers events via Sessionize, Confs.tech, Meetup, Luma, ListenNotes, and Devpost. Looks back 90 days and forward 180 days.
 user-invocable: true
 allowed-tools: Bash, Read, Write, Edit, Grep, Glob, WebFetch, WebSearch
-argument-hint: [config-json-path]
+argument-hint: "[config-json-path]"
 ---
 
 # Event Signals
