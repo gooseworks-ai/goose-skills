@@ -169,7 +169,7 @@ If that skill is not installed, do what the **Fallback** column says.
 | `launch` | `launch-meta-ad-campaign` | — |
 | `live` or `paused` + a daily scheduled run, or "send me the report" | quick check (the daily report) | — |
 | `live` or `paused` + "dig in", "what's working", or a weekly scheduled run | `meta-ads-analyzer` as a deep check | — |
-| An open recommendation in `state.md` is approved or declined | the fix-and-adjust action it names | Pause and revert only. Say plainly that a budget change or creative swap is not available yet |
+| An open recommendation in `state.md` is approved or declined | the fix-and-adjust action it names | Pause or revert, or propose the budget change or creative swap. A proposal changes nothing in Meta until the user approves it on the page the tool returns: say so and give them that link |
 | Any stage + a question in chat ("how are the ads doing?", "how much have we spent?") | `answer-ads-questions` | Answer from the read tools only, with each number's data window and sync time (RULES.md §5). Never from the docs |
 | `live` or `paused` + an open recommendation still awaiting + "what's next?" | Put that recommendation to the user as the one next step, with its evidence; act only on a yes | — |
 | The user asks to pause ads or a campaign | the pause action (their request is the approval); stage `live → paused` when the whole campaign stops | — |

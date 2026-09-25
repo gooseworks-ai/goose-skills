@@ -36,6 +36,27 @@ tools fall back to the user's default agent, which is usually not the brand's.
 **Ids.** `brand_id` is the GooseWorks brand id and `coworker_agent_id` its coworker agent, both
 from `brand_list`.
 
+## Meta tools from an outside host
+
+The launch, pause and proposal tools take **`brand_id`** on every call from an outside host (the
+GooseWorks brand id from `brand_list`, not the coworker agent id). Inside the coworker they take no
+brand: the session is already bound to one. Everything else about them is the same, and so are
+the gates: they act as the signed-in user, on a brand in the user's own organisation.
+
+```json
+{ "tool": "list_meta_pages",      "args": { "brand_id": "<brand.id>" } }
+{ "tool": "prepare_meta_ad_push", "args": { "brand_id": "<brand.id>", "render_ids": ["<render id>"],
+    "mode": "NEW_CAMPAIGN", "page_id": "<id from list_meta_pages>", "...": "..." } }
+{ "tool": "pause_meta_ad_push",   "args": { "brand_id": "<brand.id>", "push_id": "<push id>",
+    "meta_ad_ids": ["<meta ad id>"], "user_instruction": "<the user's words>" } }
+{ "tool": "propose_meta_budget_change", "args": { "brand_id": "<brand.id>", "push_id": "<push id>",
+    "new_budget_minor_units": 5000, "reason": "<why, with the evidence>" } }
+```
+
+No tool approves, executes or activates anything. `prepare_meta_ad_push` and the two `propose_*`
+tools return an `approval_url`: the user approves there, in the GooseWorks app. Give them the link
+and never say it is done.
+
 **Caching.** The coworker's file mount caches file info for up to two minutes. After an outside
 `file_write`, a coworker run can see a stale or missing file for that long. Do not write a harness
 file from outside and immediately start a run that reads it; wait, or put the change in the
@@ -58,11 +79,13 @@ message instead.
 | launch | `launch-meta-ad-campaign` (its GooseWorks adapter): `list_meta_pages`, `prepare_meta_ad_push`, the approval page, `get_meta_push_status`, then `refresh_meta_sync` so the new ads show in reads |
 | quick check | the daily Meta ads report automation and its watch findings |
 | deep check | `meta-ads-analyzer` over `query_meta_insights` complete days |
-| fix and adjust | `pause_meta_ad_push` (a whole push or one ad), `revert_meta_ad_push`. Budget changes and creative swaps: say plainly when the tools for them are not available |
+| fix and adjust | `pause_meta_ad_push` (a whole push or one ad), `revert_meta_ad_push`, `propose_meta_budget_change`, `propose_meta_creative_replacement`, then `get_meta_change_status` after the user approves on the page |
 | answers | `answer-ads-questions` (its GooseWorks adapter) |
 
-Some tools (the push tools, `render_meta_connection`) are visible inside the coworker only. From
-an outside host, say that step needs the brand's coworker in GooseWorks, and do not guess.
+`render_meta_connection` works inside the coworker only: from an outside host, send the user to
+connect Meta in the GooseWorks app. The Meta read tools (`meta_status_get`, `list_meta_entities`,
+`query_meta_insights`, `get_meta_ad_context`) may not be listed on an outside connection yet. When a
+tool is not listed, say that step needs the brand's coworker in GooseWorks, and do not guess.
 
 ## Evidence pointers
 
