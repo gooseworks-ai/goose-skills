@@ -1,0 +1,28 @@
+{
+  "slug": "answer-ads-questions",
+  "category": "capabilities",
+  "domain": "ads",
+  "tags": [
+    "ads"
+  ],
+  "installation": {
+    "base_command": "npx goose-skills install answer-ads-questions",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  },
+  "features": [
+    "answers only from reads made in the same turn",
+    "data window and sync time on every number",
+    "a plain caveat when the connection is partial, stale or disconnected",
+    "why-questions answered from the recorded decision log, never reconstructed",
+    "ads Goose did not publish are treated as read-only",
+    "GooseWorks, direct Meta and planning-only modes"
+  ],
+  "requires_skills": [
+    "meta-ad-manager"
+  ],
+  "example_prompt": "How are my Meta ads doing this week, and why did you pause the gift ad?"
+}
