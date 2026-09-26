@@ -221,7 +221,10 @@ def build_props(cfg: dict, public_dir: str) -> dict:
 
 def run(cmd, cwd=None):
     print("[render-offer-ad] $", " ".join(cmd))
-    subprocess.run(cmd, cwd=cwd, check=True)
+    # Resolve the executable so this works on Windows too, where npx/npm are
+    # .cmd shims that bare subprocess.run (no shell) cannot find (WinError 2).
+    exe = shutil.which(cmd[0]) or cmd[0]
+    subprocess.run([exe] + list(cmd[1:]), cwd=cwd, check=True)
 
 
 def main() -> None:
