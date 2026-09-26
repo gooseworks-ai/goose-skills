@@ -4,7 +4,7 @@ music bed, apply the anti-AI grain pass -> master-final.mp4. Config-driven so it
 handles any 3-4 proof-point count.
 
 Assumes overlays already built into <run>/generated/overlays by build_overlays.py
-(the one_shot.py driver runs that first). Positions + reveal times from config.layout.
+(run fetch_icons.py + build_overlays.py first). Positions + reveal times from config.layout.
 
 Cascade signature: pills alternate LEFT / RIGHT down the frame, each revealed at
 its own time via overlay enable='gte(t,T)' — eye follows L->R->L->R on the beat.
