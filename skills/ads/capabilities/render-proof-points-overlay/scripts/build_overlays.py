@@ -15,15 +15,23 @@ Usage:  build_overlays.py --config config.json --out-dir <run>/generated/overlay
 import argparse
 import json
 import pathlib
+import sys
 from PIL import Image, ImageDraw, ImageFont
 
 # ---- font resolution (bold is load-bearing: regular reads as a generic UI card) ----
 FONT_CANDIDATES = [
+    # macOS
     "/System/Library/Fonts/Supplemental/Arial Bold.ttf",
     "/System/Library/Fonts/Supplemental/Arial Rounded Bold.ttf",
     "/System/Library/Fonts/HelveticaNeue.ttc",
     "/System/Library/Fonts/SFNS.ttf",
     "/System/Library/Fonts/Supplemental/Arial.ttf",
+    # Windows
+    "C:/Windows/Fonts/arialbd.ttf",
+    "C:/Windows/Fonts/arial.ttf",
+    # Linux
+    "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+    "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf",
 ]
 
 
