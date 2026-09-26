@@ -140,7 +140,7 @@ VO_LABELS=""
 for i in $(seq 0 $((N_VO - 1))); do
   VO_LABELS+="[vo${i}]"
 done
-CHAIN+="${VO_LABELS}amix=inputs=${N_VO}:duration=longest,volume=${VO_MIX_VOLUME}[vo_pre];"$'\n'
+CHAIN+="${VO_LABELS}amix=inputs=${N_VO}:duration=longest,volume=${VO_MIX_VOLUME},apad=whole_dur=${TOTAL}[vo_pre];"$'\n'
 CHAIN+="[vo_pre]asplit=2[vo_final][vo_sc];"$'\n'
 
 # Music: pad, trim, fade out
