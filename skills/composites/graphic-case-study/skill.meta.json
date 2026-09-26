@@ -1,0 +1,31 @@
+{
+  "slug": "graphic-case-study",
+  "category": "composites",
+  "tags": [
+    "content",
+    "design"
+  ],
+  "installation": {
+    "base_command": "npx goose-skills install graphic-case-study",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  },
+  "requires_skills": [
+    "goose-graphics"
+  ],
+  "recommends_skills": [
+    "visual-brand-extractor",
+    "goose-graphics-create-style",
+    "graphic-chart"
+  ],
+  "features": [
+    "Creates professionally designed B2B SaaS case study PDFs from customer-story inputs",
+    "Supports 1-page, 2-page, and 4-page structures built around challenge, solution, results, testimonial, and CTA flows",
+    "Uses Gooseworks style themes with validated recommendations for enterprise-safe and premium proof assets",
+    "Outputs one HTML file per page with optional preview and print files",
+    "Includes guidance for anonymized customers, stat-led proof, testimonial handling, and print-ready PDF export"
+  ]
+}
