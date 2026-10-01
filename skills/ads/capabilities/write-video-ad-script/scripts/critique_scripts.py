@@ -1,0 +1,336 @@
+#!/usr/bin/env python3
+"""Second opinion on video ad script candidates from a NON-Claude model.
+
+A model judging its own writing is a weak signal (it prefers its own output), so the
+critic is a different model family, reached through the GooseWorks fal proxy
+(OpenRouter on fal). It reads every concept and scores it like a tough creative
+director, picks the best hook, proposes line edits and ranks the set.
+
+Judges also favour whatever they read first, so with two or more concepts it runs TWICE
+with the concepts in opposite orders and averages the two (scores averaged, ranking by
+Borda count). One concept gets one pass. The critic raises the floor; it does not
+predict the winner. About 1 credit per pass.
+
+Run it from the folder that holds working/:
+
+  critique_scripts.py --candidates working/script/candidates.json \
+      [--customer-words working/script/customer-words.json] [--rules working/brand-rules.json] \
+      [--shape working/script/shape.json] [--brief "what the ad is for"] \
+      [--model openai/gpt-6-sol] [--orders 2] [--out working/script/critique.json]
+
+Credentials and billing are media_proxy's: the sandbox token, else the CLI login, else
+MCP RELAY. In relay mode both passes are written at once under working/mcp-requests/ and
+the script exits 3: make each call (data_post_provider, then job_get until complete), save
+each result where its request says, and run this same command again. GW_PROJECT_ID must be
+set (every call is billed to that video project).
+
+Exit 0 = critique saved. 3 = make the relayed MCP calls, then re-run.
+4 = the critic gave no usable answer: judge the concepts against the same rubric yourself.
+"""
+import argparse
+import collections
+import hashlib
+import json
+import pathlib
+import re
+import sys
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+
+from media_proxy import RELAY_EXIT, _fal_run  # noqa: E402  (bundled)
+
+FAL_LLM = "openrouter/router"
+DEFAULT_MODEL = "openai/gpt-6-sol"
+AXES = ("hook", "specific", "spoken", "proof", "payoff", "fresh")
+
+SYSTEM_PROMPT = """\
+You are a performance creative director who has written, shot and tested thousands of
+short-form video ads for TikTok, Reels and Meta. You judge scripts the way the feed
+does: a cold viewer, thumb moving, who owes the ad nothing. You have no patience for
+ad-speak, for lines no real person would say out loud, or for scripts that sound like an
+AI wrote them. Polish and length earn nothing. Specificity, a real voice and a promise
+that the body pays off earn everything.
+
+Know the difference between a CLAIM and CRAFT. A claim is anything about the product
+the viewer could hold the brand to: a result or outcome, a number, an ingredient or
+feature, a price, a comparison, a guarantee. Claims must be backed by the brand facts or
+a customer quote you are given (a result a customer quote states may be told as the
+speaker's own experience). Craft is the speaker's situation, feelings, habits, voice and
+small human details ("doing math on how tired I'd be"). Craft is what makes a script
+feel real: never strip it as "unsupported", and push for more of it when a line is flat.
+Your edits never add a claim the facts or quotes don't back."""
+
+RUBRIC = """\
+Score each concept 1-10 on:
+- hook: would a cold viewer stop in the first two seconds? Does the first line land the
+  pain, the claim or the moment, with no wind-up and no brand introduction?
+- specific: one real person in one real situation, concrete details, a physical detail
+  or real number, versus generic category talk.
+- spoken: sounds like this person actually talking (contractions, fragments, their
+  words), not an ad and not an AI. Customer phrasing reused well scores high.
+- proof: the claim is shown or earned, not just asserted.
+- payoff: one message, and the body pays off exactly what the hook promised.
+- fresh: not the first idea every brand in this category runs.
+
+Then for each concept: the id of its best hook, up to 4 line edits (quote the exact text
+you would replace, give the replacement, say why in 12 words or fewer), and a kill reason
+ONLY if the concept is fatally generic or breaks its own promise (otherwise null). Edits
+make a line sharper, more specific or more spoken, or cut an unbacked claim. An edit that
+only makes a line flatter or more factual is not an improvement.
+
+Finally rank all concepts best first and say in one sentence why the top one wins.
+Use the concept ids and hook ids exactly as written above (for example c1, c1h2).
+
+Answer with ONLY this JSON, no prose around it:
+{"concepts": [{"id": "...", "scores": {"hook": 0, "specific": 0, "spoken": 0, "proof": 0,
+"payoff": 0, "fresh": 0}, "best_hook_id": "...", "hook_notes": "...", "edits": [{"beat":
+"...", "from": "...", "to": "...", "why": "..."}], "kill": null}], "ranking": ["..."],
+"why_top": "..."}"""
+
+
+class BadAnswer(Exception):
+    """The critic answered, but not with something we can use."""
+
+
+def load(path):
+    if not path:
+        return None
+    p = pathlib.Path(path)
+    return json.loads(p.read_text()) if p.exists() else None
+
+
+def concept_block(c, quotes_by_id, shape_beats):
+    budgets = {b.get("id"): b for b in shape_beats if isinstance(b, dict)}
+    lines = [f"## Concept {c.get('id')}",
+             f"Angle: {c.get('angle', '')}",
+             f"Persona: {c.get('persona', '')}"]
+    for qid in c.get("quote_ids") or []:
+        q = quotes_by_id.get(qid)
+        if q:
+            lines.append(f"Built on this customer quote ({qid}): \"{q.get('text', '')}\"")
+    lines.append("Hooks to choose from:")
+    for h in c.get("hooks") or []:
+        lines.append(f"- {h.get('id')} [{h.get('family', '')}]: {h.get('text') or ''}")
+    lines.append("Script (beat: line):")
+    for b in c.get("beats") or []:
+        sb = budgets.get(b.get("id"), {})
+        meta = []
+        if b.get("speaker") or sb.get("speaker"):
+            meta.append(b.get("speaker") or sb.get("speaker"))
+        if sb.get("seconds"):
+            meta.append(f"{sb['seconds']}s")
+        if sb.get("kind") and sb.get("kind") != "spoken":
+            meta.append(sb["kind"])
+        tag = f" ({', '.join(meta)})" if meta else ""
+        lines.append(f"- {b.get('id')}{tag}: {b.get('text') or ''}")
+    return "\n".join(lines)
+
+
+def build_prompt(concepts, quotes_by_id, rules, shape, brief):
+    shape = shape or {}
+    facts = []
+    for p in (rules or {}).get("products", []) or []:
+        facts.append(f"{p.get('name', '')}: " + "; ".join(str(f) for f in p.get("facts", []) or []))
+    never = [n.get("text", "") if isinstance(n, dict) else str(n) for n in (rules or {}).get("never_say", []) or []]
+    head = [f"Format: {shape.get('format', 'short-form video ad')}"
+            + (f", about {shape['total_seconds']} seconds" if shape.get("total_seconds") else ""),
+            f"Brand: {(rules or {}).get('name', '')}"]
+    if brief:
+        head.append(f"What the ad is for: {brief}")
+    if facts:
+        head.append("Brand facts (the only facts an edit may use): " + " | ".join(facts))
+    if never:
+        head.append("The brand never says: " + " | ".join(never))
+    blocks = [concept_block(c, quotes_by_id, shape.get("beats") or []) for c in concepts]
+    return "\n".join(head) + "\n\n" + "\n\n".join(blocks) + "\n\n" + RUBRIC
+
+
+def parse_json(text):
+    t = re.sub(r"^```(?:json)?\s*|\s*```$", "", (text or "").strip())
+    i, j = t.find("{"), t.rfind("}")
+    if i < 0 or j <= i:
+        raise BadAnswer("no JSON object in the critic's answer")
+    try:
+        return json.loads(t[i:j + 1])
+    except json.JSONDecodeError as e:
+        raise BadAnswer(f"the critic's answer is not valid JSON: {e}") from e
+
+
+def answer_text(res):
+    """The model's text from fal's result. Also accepts the shapes an agent may save by
+    mistake when relaying: the whole job_get reply, or its result object."""
+    for cand in (res, (res or {}).get("result") if isinstance(res, dict) else None):
+        if not isinstance(cand, dict):
+            continue
+        out = cand.get("output")
+        if isinstance(out, dict):
+            cand, out = out, out.get("output")
+        if isinstance(out, str) and out.strip():
+            if cand.get("partial"):
+                raise BadAnswer("the critic's answer was cut off (partial)")
+            return out, cand.get("usage") or {}
+        if cand.get("error"):
+            raise BadAnswer(f"critic model error: {str(cand['error'])[:300]}")
+    raise BadAnswer(f"no answer text in the saved result: {str(res)[:300]}")
+
+
+def ask(model, system, prompt, temperature):
+    payload = {"model": model, "system_prompt": system, "prompt": prompt,
+               "temperature": temperature, "max_tokens": 6000}
+    digest = hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()[:24]
+    return answer_text(_fal_run(FAL_LLM, payload, input_digest=f"script-critic-{digest}"))
+
+
+def _key(x):
+    return re.sub(r"[^a-z0-9]", "", re.sub(r"^\s*concept\s*", "", str(x or "").lower()))
+
+
+def normalize_run(run, ids, hook_ids):
+    """Map the critic's ids onto ours (it may write 'Concept c2' or 'C2') and check the
+    answer's shape. Raises BadAnswer when nothing in it matches our concepts."""
+    if not isinstance(run, dict):
+        raise BadAnswer("the critic's answer is not a JSON object")
+    by_key = {_key(i): i for i in ids}
+    hooks_by_key = {_key(h): h for h in hook_ids}
+    concepts = []
+    for c in run.get("concepts") or []:
+        if not isinstance(c, dict) or _key(c.get("id")) not in by_key:
+            continue
+        scores = c.get("scores") if isinstance(c.get("scores"), dict) else {}
+        edits = [e for e in c.get("edits") or [] if isinstance(e, dict)]
+        concepts.append({
+            "id": by_key[_key(c.get("id"))],
+            "scores": {ax: float(v) for ax, v in scores.items()
+                       if ax in AXES and isinstance(v, (int, float)) and not isinstance(v, bool)},
+            "best_hook_id": hooks_by_key.get(_key(c.get("best_hook_id"))),
+            "hook_notes": c.get("hook_notes") if isinstance(c.get("hook_notes"), str) else None,
+            "edits": edits,
+            "kill": c.get("kill") if isinstance(c.get("kill"), str) and c.get("kill").strip() else None,
+        })
+    if not concepts:
+        raise BadAnswer("none of the critic's concept ids match the candidates")
+    ranking = []
+    for r in run.get("ranking") or []:
+        cid = by_key.get(_key(r))
+        if cid and cid not in ranking:
+            ranking.append(cid)
+    why = run.get("why_top") if isinstance(run.get("why_top"), str) else None
+    return {"concepts": concepts, "ranking": ranking, "why_top": why}
+
+
+def merge(runs, ids):
+    """Average scores across runs; Borda-count the rankings; union the edits. Runs must
+    already be normalized (normalize_run)."""
+    merged = {cid: {"scores": {}, "best_hook_ids": [], "hook_notes": [], "edits": [], "kills": []}
+              for cid in ids}
+    borda = {cid: 0.0 for cid in ids}
+    why = []
+    for r in runs:
+        for c in r["concepts"]:
+            m = merged[c["id"]]
+            for ax, v in c["scores"].items():
+                m["scores"].setdefault(ax, []).append(v)
+            if c["best_hook_id"]:
+                m["best_hook_ids"].append(c["best_hook_id"])
+            if c["hook_notes"]:
+                m["hook_notes"].append(c["hook_notes"])
+            seen = {(e.get("beat"), e.get("from")) for e in m["edits"]}
+            for e in c["edits"]:
+                if (e.get("beat"), e.get("from")) not in seen:
+                    m["edits"].append(e)
+            if c["kill"]:
+                m["kills"].append(c["kill"])
+        for pos, cid in enumerate(r["ranking"]):
+            borda[cid] += len(ids) - pos
+        if r["why_top"]:
+            why.append(r["why_top"])
+    out = []
+    for cid in ids:
+        m = merged[cid]
+        avg = {ax: round(sum(v) / len(v), 1) for ax, v in m["scores"].items() if v}
+        # Ties go to the first pass's pick (Counter keeps first-seen order on equal counts).
+        best = collections.Counter(m["best_hook_ids"]).most_common(1)[0][0] if m["best_hook_ids"] else None
+        out.append({
+            "id": cid, "scores": avg,
+            "total": round(sum(avg.values()) / len(avg), 1) if avg else None,
+            "best_hook_id": best,
+            "hook_agreement": len(set(m["best_hook_ids"])) <= 1,
+            "hook_notes": m["hook_notes"], "edits": m["edits"],
+            "kill": m["kills"][0] if m["kills"] and len(m["kills"]) == len(runs) else None,
+            "kill_split": bool(m["kills"]) and len(m["kills"]) < len(runs),
+            "borda": borda[cid],
+        })
+    totals = {o["id"]: o["total"] or 0 for o in out}
+    ranking = sorted(ids, key=lambda cid: (-borda[cid], -totals[cid], ids.index(cid)))
+    return {"concepts": out, "ranking": ranking, "why_top": why}
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--candidates", required=True)
+    ap.add_argument("--customer-words")
+    ap.add_argument("--rules")
+    ap.add_argument("--shape")
+    ap.add_argument("--brief", default="")
+    ap.add_argument("--model", default=DEFAULT_MODEL, help="any non-Claude OpenRouter model id")
+    ap.add_argument("--orders", type=int, choices=(1, 2), default=2,
+                    help="2 = judge in both orders and average (default); 1 = one pass")
+    ap.add_argument("--temperature", type=float, default=0.2)
+    ap.add_argument("--out", default="working/script/critique.json")
+    a = ap.parse_args()
+
+    if a.model.lower().startswith("anthropic/"):
+        sys.exit("the critic must be a different model family from the writer: pick a non-Claude model")
+    cands = load(a.candidates) or {}
+    if isinstance(cands, list):
+        cands = {"concepts": cands}
+    concepts = [c for c in cands.get("concepts") or [] if isinstance(c, dict) and c.get("id")]
+    if not concepts:
+        sys.exit(f"no concepts with ids in {a.candidates}")
+    bank = load(a.customer_words) or {}
+    quotes_by_id = {q.get("id"): q for q in bank.get("quotes", []) or [] if isinstance(q, dict)}
+    rules, shape = load(a.rules), load(a.shape)
+    ids = [c["id"] for c in concepts]
+    hook_ids = [h.get("id") for c in concepts for h in c.get("hooks") or [] if isinstance(h, dict) and h.get("id")]
+
+    orders = [concepts] if a.orders == 1 or len(concepts) == 1 else [concepts, list(reversed(concepts))]
+    runs, usage, relayed = [], [], 0
+    for order in orders:
+        prompt = build_prompt(order, quotes_by_id, rules, shape, a.brief)
+        try:
+            text, u = ask(a.model, SYSTEM_PROMPT, prompt, a.temperature)
+            runs.append(normalize_run(parse_json(text), ids, hook_ids))
+            usage.append(u)
+        except SystemExit as e:
+            if e.code != RELAY_EXIT:
+                raise
+            relayed += 1  # request written; write the other pass's too, then stop once
+        except Exception as e:  # noqa: BLE001  a bad answer, a model error, the proxy unreachable
+            print(f"[critic] {e}", file=sys.stderr)
+            print("[critic] if you saved a relayed result by hand, it must be job_get's result.output "
+                  "(fal's JSON with an 'output' text): fix or delete that .result.json and run this again",
+                  file=sys.stderr)
+            sys.exit(4)
+    if relayed:
+        sys.exit(RELAY_EXIT)
+
+    result = merge(runs, ids)
+    result.update({"model": a.model, "orders": len(orders), "usage": usage})
+    out = pathlib.Path(a.out)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(result, indent=1, ensure_ascii=False))
+
+    print(f"[critic] {a.model}, {len(orders)} pass(es), saved {out}")
+    for cid in result["ranking"]:
+        c = next(x for x in result["concepts"] if x["id"] == cid)
+        flag = " KILLED: " + c["kill"] if c["kill"] else (" (one pass wanted to kill it)" if c["kill_split"] else "")
+        print(f"  {cid}: {c['total']} avg {c['scores']} best hook {c['best_hook_id']}"
+              f"{'' if c['hook_agreement'] else ' (passes disagreed)'}{flag}")
+        for e in c["edits"][:4]:
+            print(f"     edit @{e.get('beat')}: \"{e.get('from')}\" -> \"{e.get('to')}\" ({e.get('why')})")
+    for w in result["why_top"]:
+        print(f"  why top: {w}")
+
+
+if __name__ == "__main__":
+    main()
