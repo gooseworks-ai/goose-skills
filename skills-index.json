@@ -6478,6 +6478,42 @@
       }
     },
     {
+      "slug": "render-hand-swipe-flavor-listicle",
+      "name": "render-hand-swipe-flavor-listicle",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Render a 'hand-swipe flavor listicle' video from a config — the brand's REAL product cutouts each float on a flat flavor-matched color field under a persistent title and slide RIGHT-TO-LEFT one to the next like a phone-feed scroll, while a green-screen hand clip (back of hand toward camera, index finger up) is trimmed to its clean finger-up window, looped once per flavor, keyed with a green-dominance alpha key, scaled down and anchored at the bottom, with an optional end card and an optional instrumental music bed — deterministic PIL plus FFmpeg assembly, FREE (the hand clip comes from create-video-fal and the bed from create-music-elevenlabs), so labels stay pixel-crisp. Use for the hand-swipe-flavor-listicle format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-hand-swipe-flavor-listicle",
+      "files": [
+        "skills/ads/capabilities/render-hand-swipe-flavor-listicle/SKILL.md",
+        "skills/ads/capabilities/render-hand-swipe-flavor-listicle/scripts/build_hand_swipe_listicle.py",
+        "skills/ads/capabilities/render-hand-swipe-flavor-listicle/scripts/config.example.json",
+        "skills/ads/capabilities/render-hand-swipe-flavor-listicle/skill.meta.json",
+        "skills/ads/capabilities/render-hand-swipe-flavor-listicle/tests/make_smoke_inputs.py",
+        "skills/ads/capabilities/render-hand-swipe-flavor-listicle/tests/smoke-test.md"
+      ],
+      "metadata": {
+        "slug": "render-hand-swipe-flavor-listicle",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-hand-swipe-flavor-listicle",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
       "slug": "render-hypermotion",
       "name": "render-hypermotion",
       "category": "capabilities",
@@ -7356,7 +7392,7 @@
       "name": "review-finished-ad",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Final QC gate for a rendered 9:16 video ad, run before it is published. One script checks what a machine can decide — exact 1080x1920 size, a hook that moves and speaks in the first second, no frozen stretches, no dead air, no black frames, the brand's real logo on the end card (never a favicon, never a redrawn or wrong logo), end-card colours near the brand palette — and builds one contact sheet (frames with the TikTok/Reels UI safe zones shaded, beside the logo, product images and a font specimen) for the checks that need eyes: font, product likeness, product consistency across scenes, safe zones. Exit 0 PASS / 2 FAIL / 3 ERROR. Use on every finished video master before pinning it.",
+      "description": "Final QC gate for a rendered 9:16 video ad, run before it is published. One script checks what a machine can decide — exact 1080x1920 size, a hook that moves and speaks in the first second, no frozen stretches, no dead air, no black frames, the brand's real logo on the end card (never a favicon, never a redrawn or wrong logo), end-card colours near the brand palette — and builds one contact sheet (frames with the TikTok/Reels UI safe zones shaded, beside the logo, product images and a font specimen) for the checks that need eyes — font, product likeness, product consistency across scenes, safe zones. Exit 0 PASS / 2 FAIL / 3 ERROR. Use on every finished video master before pinning it.",
       "tags": "ads, brand",
       "path": "skills/ads/capabilities/review-finished-ad",
       "files": [
