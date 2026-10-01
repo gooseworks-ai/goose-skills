@@ -27,6 +27,8 @@ notes are fine.
 - `max_words` overrides the seconds-based budget for a beat.
 - `optional` beats may be left out.
 - The first beat is the opening beat; every hook must fit its budget.
+- Ids may repeat when the format alternates (a chat thread: them, me, them, me). Each
+  concept beat fills the next slot with that id, in order.
 
 ## customer-words.json: the buyers' own words (Step 2)
 

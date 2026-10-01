@@ -177,7 +177,7 @@ def never_say_checks(rules):
         if VISUAL_RULE_RE.search(text) and not SPEECH_RULE_RE.search(text):
             continue
         for a, b in QUOTED_RE.findall(text):
-            ph = [stem(w) for w in norm_words(a or b)]
+            ph = norm_words(a or b)
             if ph:
                 out.append(("phrase", ph, text))
         claim = text.split(":", 1)[1] if ":" in text else text
@@ -188,9 +188,25 @@ def never_say_checks(rules):
     return out
 
 
-def has_phrase(stems, phrase):
-    n = len(phrase)
-    return any(stems[i:i + n] == phrase for i in range(len(stems) - n + 1))
+def forms(w):
+    """The word and its regular inflections. Quoted banned phrases match on these, never
+    on stems: a stem collides ("fat" vs "fate", "cut" vs "cute") and these are errors."""
+    out = {w, w + "s", w + "es", w + "ed", w + "d", w + "ing", w + "ly", w + "er", w + "est"}
+    if w.endswith("e"):
+        out |= {w[:-1] + "ing", w[:-1] + "y"}
+    if w.endswith("y") and len(w) > 2:
+        out |= {w[:-1] + "ies", w[:-1] + "ied", w[:-1] + "ily"}
+    if len(w) >= 3 and w[-1] not in "aeiouwxy" and w[-2] in "aeiou" and w[-3] not in "aeiou":
+        out |= {w + w[-1] + "ing", w + w[-1] + "ed", w + w[-1] + "er", w + w[-1] + "y"}
+    return out
+
+
+def has_phrase(text_words, phrase):
+    """True when the quoted phrase appears, each word in any regular form."""
+    wanted = [forms(p) for p in phrase]
+    n = len(wanted)
+    return any(all(text_words[i + k] in wanted[k] for k in range(n))
+               for i in range(len(text_words) - n + 1))
 
 
 def allowed_numbers(rules, quotes_text):
@@ -221,7 +237,6 @@ def lint(cands, shape=None, rules=None, bank=None, report_only=False):
     wps = float(shape.get("words_per_second") or DEFAULT_WPS)
     shape_beats = [b for b in shape.get("beats") or [] if isinstance(b, dict)]
     by_id = {b["id"]: b for b in shape_beats if b.get("id")}
-    order = {b.get("id"): i for i, b in enumerate(shape_beats)}
     hook_beat = shape_beats[0] if shape_beats else None
     hook_kind = (hook_beat or {}).get("kind", "spoken")
     cta_id = shape.get("cta_beat")
@@ -274,7 +289,9 @@ def lint(cands, shape=None, rules=None, bank=None, report_only=False):
                 if not shared:
                     warn("W_NOT_THEIR_WORDS", "never uses a phrase from the quotes it cites: borrow their wording")
 
-        # Shape: beats present, in the format's order, nothing spoken after the CTA
+        # Shape: beats present, in the format's order, nothing spoken after the CTA.
+        # slot[i] is the exact shape beat concept beat i fills (a shape may repeat ids).
+        slot = {}
         if shape_beats:
             have = [b.get("id") for b in beats]
             for sb in shape_beats:
@@ -283,9 +300,16 @@ def lint(cands, shape=None, rules=None, bank=None, report_only=False):
             for b in beats:
                 if b.get("id") not in by_id:
                     warn("W_BEAT_UNKNOWN", f"beat '{b.get('id')}' is not in the format's shape", b.get("id"))
-            known = [order[i] for i in have if i in order]
-            if known != sorted(known):
-                err("E_BEAT_ORDER", "beats are not in the format's order: " + " > ".join(str(i) for i in have))
+            pos = -1
+            for i, b in enumerate(beats):
+                nxt = next((j for j in range(pos + 1, len(shape_beats))
+                            if shape_beats[j].get("id") == b.get("id")), None)
+                if nxt is None and b.get("id") in by_id:
+                    err("E_BEAT_ORDER", "beats are not in the format's order: " + " > ".join(str(i) for i in have))
+                    break
+                if nxt is not None:
+                    pos = nxt
+                    slot[i] = shape_beats[nxt]
         if cta_id and cta_id in [b.get("id") for b in beats]:
             at = [b.get("id") for b in beats].index(cta_id)
             after = [b for b in beats[at + 1:]
@@ -297,11 +321,11 @@ def lint(cands, shape=None, rules=None, bank=None, report_only=False):
 
         # Word budgets and how each line reads out loud
         words_by_beat, total = {}, 0
-        for b in beats:
+        for i, b in enumerate(beats):
             bid, text = b.get("id"), text_of(b)
             n = len(words(text))
             words_by_beat[bid] = n
-            sb = by_id.get(bid)
+            sb = slot.get(i) or by_id.get(bid)
             budget, kind = beat_budget(sb, wps) if sb else (None, b.get("kind", "spoken"))
             if kind != "on_screen":
                 total += n
@@ -360,10 +384,10 @@ def lint(cands, shape=None, rules=None, bank=None, report_only=False):
             warn("W_TRICOLON", f"\"{t.group(0)}\": a list of three is often padding; name one or two real things")
 
         # Brand rules: never say, and numbers no fact or quote backs
-        stems = [stem(w) for w in norm_words(everything)]
+        text_words = norm_words(everything)
         for kind, needle, label in nsay:
             if kind == "phrase":
-                if has_phrase(stems, needle):
+                if has_phrase(text_words, needle):
                     err("E_NEVER_SAY", f"breaks a brand rule: {label}")
                 continue
             short = len(needle) <= 3

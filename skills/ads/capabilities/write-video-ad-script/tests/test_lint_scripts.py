@@ -245,3 +245,29 @@ def test_report_only_skips_quote_checks():
     c["concepts"][0]["quote_ids"] = []
     rep = ls.lint(c, SHAPE, RULES, BANK, report_only=True)
     assert "E_NO_QUOTE" not in codes(rep)
+
+
+def test_quoted_phrase_matches_word_forms_not_lookalikes():
+    for rule, line, hit in (('Never say "fat"', "It felt like fate. Lavender and magnesium.", False),
+                            ('Never say "cut"', "The bottle is so cute. Lavender and magnesium.", False),
+                            ('Never say "car"', "I take care of everyone. Lavender and magnesium.", False),
+                            ('Never say "natural"', "It's naturally calming. Lavender and magnesium.", True),
+                            ('Never say "cure"', "It cured my nights. Lavender and magnesium.", True),
+                            ('Never say "cut"', "Cutting caffeine didn't help. Lavender and magnesium.", True)):
+        rep = with_rule(rule, line)
+        assert ("E_NEVER_SAY" in codes(rep)) == hit, (rule, line)
+
+
+def test_repeated_beat_ids_in_a_chat_shape():
+    shape = {"words_per_second": 3.0, "cta_beat": "cta", "beats": [
+        {"id": "them", "kind": "bubble", "max_words": 12}, {"id": "me", "kind": "bubble", "max_words": 12},
+        {"id": "them", "kind": "bubble", "max_words": 12}, {"id": "me", "kind": "bubble", "max_words": 12},
+        {"id": "cta", "kind": "on_screen", "max_words": 6}]}
+    c = {"concepts": [{"id": "c1", "quote_ids": ["q1"], "hooks": [], "beats": [
+        {"id": "them", "text": "you up? it's 3am again"}, {"id": "me", "text": "staring at the ceiling, every single night"},
+        {"id": "them", "text": "try the lavender mist"}, {"id": "me", "text": "ok ordering it"},
+        {"id": "cta", "text": "Driftwell Sleep Mist"}]}]}
+    rep = run(c, shape=shape)
+    assert "E_BEAT_ORDER" not in codes(rep), rep
+    c["concepts"][0]["beats"].insert(0, c["concepts"][0]["beats"].pop(4))  # CTA first
+    assert "E_BEAT_ORDER" in codes(run(c, shape=shape))
