@@ -81,7 +81,10 @@ fetched copy has no `assets/` folder. `stitch.sh` handles that by itself, in thi
 3. Otherwise it decodes `scripts/sfx-embedded.json` (sha256-checked) into a temp dir.
 
 If none is there it stops and names what it looked for. **Never substitute
-made-up pops** — keep `sfx-embedded.json` byte for byte when saving fetched files.
+made-up pops** — keep `sfx-embedded.json` byte for byte when saving fetched files:
+write it with a program from the fetch output (e.g. a short Python loop over the
+fetched files), never by re-typing it. A damaged copy stops the render with a
+"re-fetch" message.
 After changing an mp3, run `python3 tests/test_stitch.py --write-embedded`.
 
 ## Contract

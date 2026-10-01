@@ -175,6 +175,18 @@ def test_damaged_embedded_copy_fails_clearly(clips, tmp_path):
     assert "imessage-send.mp3" in r.stderr and "sha256" in r.stderr
 
 
+def test_truncated_embedded_copy_fails_clearly(clips, tmp_path):
+    """An agent that saves only part of the fetched json gets the same clear message, not a traceback."""
+    stitch_sh = catalog_copy(tmp_path / "cap")
+    emb = tmp_path / "cap" / "scripts" / "sfx-embedded.json"
+    text = emb.read_text()
+    emb.write_text(text[: len(text) // 2])
+    r = stitch(stitch_sh, clips, tmp_path / "final.mp4")
+    assert r.returncode != 0
+    assert "is damaged" in r.stderr and "Re-fetch render-imessage-chat" in r.stderr
+    assert "Traceback" not in r.stderr
+
+
 def test_sfx_dir_missing_a_file_names_it(clips, tmp_path):
     d = tmp_path / "sfx"
     d.mkdir()

@@ -66,11 +66,17 @@ if [ -z "$SFX_DIR" ]; then
     python3 - "$EMBEDDED" "$SFX_DIR" <<'PY'
 import base64, hashlib, json, sys
 src, out = sys.argv[1], sys.argv[2]
-for name, f in json.load(open(src))["files"].items():
-    data = base64.b64decode(f["base64"])
-    if hashlib.sha256(data).hexdigest() != f["sha256"]:
-        sys.exit(f"stitch.sh: {src} is damaged: {name} does not match its sha256. "
-                 "Re-fetch render-imessage-chat (the file must be saved byte for byte).")
+def damaged(why):
+    sys.exit(f"stitch.sh: {src} is damaged: {why}. "
+             "Re-fetch render-imessage-chat (the file must be saved byte for byte).")
+try:
+    files = json.load(open(src))["files"]
+    items = [(name, base64.b64decode(f["base64"]), f["sha256"]) for name, f in files.items()]
+except (ValueError, KeyError, TypeError, AttributeError) as e:
+    damaged(f"not the expected JSON ({type(e).__name__})")
+for name, data, sha in items:
+    if hashlib.sha256(data).hexdigest() != sha:
+        damaged(f"{name} does not match its sha256")
     open(f"{out}/{name}", "wb").write(data)
 PY
   else
@@ -141,10 +147,12 @@ n = len(mix_labels)
 # cue instead, and a peak limiter at -2 dBFS (auto-level off), run at 4x the
 # sample rate so it also catches inter-sample peaks, keeps the AAC master below
 # -1 dBTP. A lone cue loses little; overlapping cues are held down.
+# Use only alimiter options FFmpeg 4.x knows (`latency` is 5.1+, and an unknown
+# option is fatal): Ubuntu 22.04 apt ships 4.4.
 filter_parts.append(
     "".join(mix_labels) +
     f"amix=inputs={n}:duration=first:dropout_transition=0:normalize=0,"
-    "aresample=176400,alimiter=limit=0.794:level=0:latency=1,aresample=44100[aout]")
+    "aresample=176400,alimiter=limit=0.794:level=0,aresample=44100[aout]")
 fc = ";".join(filter_parts)
 cmd = ["ffmpeg", "-y"] + inputs + ["-filter_complex", fc, "-map", "[aout]", "-c:a", "aac", "-b:a", "192k", out]
 r = subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True)
