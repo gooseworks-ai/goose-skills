@@ -1,0 +1,42 @@
+{
+  "_comment": "Example config for build_hand_swipe_listicle.py. Relative paths resolve against THIS file's directory. Structure only: the title, title_font, flavors (lineup, order, colors), hand_clip and music come from the recipe's choices (flavor_lineup, title_style, hand, music) and the brand's real assets. Never copy these creative values as defaults. Worked example = the Lucky Energy '5 Flavors of Lucky' build.",
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "target_duration_sec": 7.5,
+  "title": "5 Flavors of Lucky",
+  "title_font": "fonts/script-title.ttf",
+  "title_size": 118,
+  "title_y": 200,
+  "title_color": "#FFFFFF",
+  "title_underline": true,
+  "can_height": 950,
+  "can_center_y": 940,
+  "slide": {
+    "direction": "right-to-left",
+    "frames": 12
+  },
+  "flavors": [
+    { "bg": "#2FA84F", "can": "cutouts/can-og-luck.png" },
+    { "bg": "#F47B20", "can": "cutouts/can-orange-drizzle.png" },
+    { "bg": "#7A3FA0", "can": "cutouts/can-bodacious-berry.png" },
+    { "bg": "#16A8A0", "can": "cutouts/can-tropical-thrill.png" },
+    { "bg": "#E01B2E", "can": "cutouts/can-red-ryder-punch.png" }
+  ],
+  "hand_clip": "hand-swipe-greenscreen.mp4",
+  "hand": {
+    "trim_start": 0.0,
+    "trim_end": 1.0,
+    "speed": 1.0,
+    "scale": 0.45,
+    "green_margin": 1.12
+  },
+  "end_card": null,
+  "end_card_hold_frames": 60,
+  "music": {
+    "path": "music-bed.mp3",
+    "trim_intro_sec": 2.5,
+    "volume": 1.0
+  },
+  "output": "hand-swipe-listicle.mp4"
+}
