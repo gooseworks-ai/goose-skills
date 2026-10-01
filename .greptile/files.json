@@ -1,0 +1,7 @@
+{
+  "files": [
+    {"path":"CONTRIBUTING.md","description":"SKILL.md authoring rules, including WAF-safe prose constraints.","scope":["skills/**"]},
+    {"path":"schemas/skill-meta.schema.json","description":"Required schema for skill metadata.","scope":["skills/**"]},
+    {"path":"schemas/pack-meta.schema.json","description":"Required schema for skill-pack metadata.","scope":["skills/**","packs/**"]}
+  ]
+}
