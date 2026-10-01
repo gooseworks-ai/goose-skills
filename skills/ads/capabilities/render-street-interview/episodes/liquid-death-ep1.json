@@ -1,0 +1,23 @@
+{
+  "_comment": "The FIRST multi-take episode on this format, and it breaks the rule SKILL.md opens with. Critical knowledge 1 says ONE generation per video, never assembled, and that rule is not wrong: it was paid for by five rejections caused by stitching. It is scoped to a SINGLE-TAKE cut. An episode is a different object and the operator approved it explicitly for this run, so the guards move rather than disappear: every take must be one generation with its manifest on disk, every take must be the same model, and every take's prompt must carry the IDENTICAL location clause. check-cut.py's check C enforces all three and still fails a cut with a missing manifest. See SKILL.md 'Critical knowledge 24'.",
+  "episode": "ep1",
+  "brand": "Liquid Death",
+  "slug": "ld",
+  "title": "What's in the can",
+  "_output_comment": "The output name carries all three seeds ON PURPOSE. build_looks.py's look filenames do not carry a seed, and on 2026-09-30 a seed-4816 build silently overwrote street-ld-clean.mp4, which was seed 4815's shipped deliverable. A name that cannot collide is free.",
+  "output": "episode-ld-ep1-seed4817-4818-4819",
+  "takes": [
+    "liquid-death-4817",
+    "liquid-death-4818",
+    "liquid-death-4819"
+  ],
+  "brand_layer": {
+    "logo": "clients/liquid-death/brand-assets/logos/liquid-death-logo-3840.png",
+    "end_card": [
+      "DON'T BE SCARED.",
+      "IT'S JUST WATER."
+    ]
+  },
+  "_grade_comment": "Not stored. The episode is graded ONCE on the concatenated cut, and the black lift is solved against that file by fit_grade.py at build time (--black-lift, or --fit to solve it here). A grade constant measured on one take outlives the take it was measured on: that is SKILL.md Critical knowledge 19, and the ambience gap made the identical mistake before it (Critical knowledge 13). Grading each take separately would also be wrong for a different reason - three different curves across three joins is a visible step.",
+  "_ambience_comment": "Not stored either, for the same reason, and this one has bitten twice (Critical knowledge 13 and 21a): the speech-free window belongs to a FILE. build_episode.py finds it on the finished concatenation with the envelope detector and asserts it is speech-free before cutting a bed or an end-card room tone from it."
+}

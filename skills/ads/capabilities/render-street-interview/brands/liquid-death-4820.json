@@ -1,0 +1,66 @@
+{
+  "_comment": "EPISODE 2, TAKE A of three (seeds 4820, 4821, 4822). THE ONLY TAKE THAT ASKS THE QUESTION. Episode 1 carried `handover_first` in all three takes, so the interviewer asked at 0:00, 0:09 and 0:18 and the transcript ran 'Motor oil. Quick question. Any idea what is in this can?' together in one breath; that is what made the joins abrupt. Takes B and C are now answers only. product and location are IDENTICAL BYTE FOR BYTE across all three configs, which is what check-cut.py's provenance check C compares across the manifests rather than trusting this comment. Four grammars on: pace, guards, mic (the Klemens stick mic, pinned identical across all three takes) and plain (no lettering on anyone, adults only).",
+  "brand": "Liquid Death",
+  "slug": "ld",
+  "episode_role": "opening",
+  "episode": "ep2",
+  "product": {
+    "noun": "can",
+    "phrase": "white can",
+    "reference_image": "clients/liquid-death/brand-assets/reference-photos/mountain-water-still-19oz-tallboy-official.png",
+    "appearance": "same white body, same dark blackletter lettering, same gold illustration",
+    "colour_ban": "It never turns gold or yellow.",
+    "opening_extra": " and no ring pull is touched",
+    "open_state": "open"
+  },
+  "location": {
+    "description": "a wide pavement on one street corner outside a red brick building wrapped in green scaffolding, with a bus shelter to the left, parked cars along the kerb and bare plane trees behind",
+    "landmarks": "The same scaffolding, bus shelter and parked cars"
+  },
+  "question": "Quick question. What's in this can?",
+  "_props_comment": "Plain and unprinted, every one. Episode 1's props included a printed carrier bag and a backpack with lettering and both rendered as mush. NO_LETTERING bans printing in the prompt; naming a printable prop in the config would put the two in an argument the model resolves however it likes.",
+  "props": "a plain canvas bag, a phone",
+  "cast_size": 2,
+  "shots": [
+    {
+      "kind": "handover_first",
+      "subject": "a man in his fifties in a plain navy work coat carrying a plain canvas bag",
+      "pronoun": "he",
+      "noun": "man"
+    },
+    {
+      "kind": "speak",
+      "noun": "man",
+      "reaction": "shrugs",
+      "manner": "flatly",
+      "line": "Some kind of energy drink."
+    },
+    {
+      "kind": "handover",
+      "subject": "a woman in her forties in a plain grey raincoat holding a phone",
+      "pronoun": "she"
+    },
+    {
+      "kind": "react",
+      "noun": "woman",
+      "reaction": "turns it around in her hand"
+    },
+    {
+      "kind": "speak",
+      "noun": "woman",
+      "reaction": "frowns",
+      "manner": "",
+      "line": "Beer. That's a beer."
+    }
+  ],
+  "generation": {
+    "seed": 4820,
+    "duration": 12,
+    "fast": false,
+    "pace_grammar": true,
+    "guard_grammar": true,
+    "mic_grammar": true,
+    "plain_grammar": true,
+    "answers_only": false
+  }
+}

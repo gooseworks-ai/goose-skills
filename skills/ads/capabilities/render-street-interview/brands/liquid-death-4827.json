@@ -1,0 +1,91 @@
+{
+ "_comment": "EPISODE 3, TAKE A, SECOND ATTEMPT (seed 4827; 4824 is the rejected first attempt). Three changes from 4824, and nothing else moves. (1) NO mic_grammar. Words have failed to pin this microphone three times and the third attempt rendered a legible RODE brand mark, so the object comes from the SCENE REFERENCE instead: mic_ref_grammar points the prompt at @Image2 and says nothing else about it, and the run passes --scene-ref refs/scene/sceneref-4820-t5-noface.png, which holds the correct unbranded slim black stick mic on this same London corner. (2) FOUR people, EIGHT shots, two each. That is the pace lever: measured on the takes on disk, seeds 4815 and 4816 both configured four people and eight shots, and the one with the pace grammar (4816) rendered EIGHT shots at a 1.36s median while the two-person takes 4820 and 4824 rendered four at 1.79s and 2.26s. (3) The can grammar is unchanged, reach/payoff included. The ~150 words freed by change 1 are exactly what pays for the two extra people.",
+ "brand": "Liquid Death",
+ "slug": "ld",
+ "episode_role": "opening",
+ "episode": "ep3",
+ "product": {
+  "noun": "can",
+  "phrase": "white can",
+  "reference_image": "clients/liquid-death/brand-assets/reference-photos/mountain-water-still-19oz-tallboy-official.png",
+  "appearance": "same white body, same dark blackletter lettering, same gold illustration",
+  "colour_ban": "It never turns gold or yellow.",
+  "_size_comment": "Unchanged from 4824. The can drifted between tallboy and soda scale inside that take, so the absolute size stays and is bound against the hand, which is the only other object in frame at a known size.",
+  "size": "a 19oz tallboy about two hand-widths tall, taller than that hand can span",
+  "_state_comment": "No open_state and no opening_extra: the can grammar REPLACES the whole state sentence. NOTE for the record that seed 4824 rendered this can OPEN despite the clause, the per-shot restatement and a product reference photo that is itself a sealed can. The image channel carried the object and not its state. This is attempt two, unchanged, so that it is tested rather than abandoned on one take."
+ },
+ "location": {
+  "_comment": "Byte-identical to 4824, and the scene reference is now doing the real work: sceneref-4820-t5-noface.png is this same corner. Naming the city stays, because it is the only prompt-side lever against the drift that put episode 2's third take in New York.",
+  "description": "a wide pavement on one street corner in London, outside a red brick building wrapped in green scaffolding, with a bus shelter to the left, parked cars along the kerb and bare plane trees behind",
+  "landmarks": "The same scaffolding, bus shelter and parked cars"
+ },
+ "_question_comment": "IDENTICAL BYTE FOR BYTE across all three episode-3 configs. Take A speaks it; takes B and C carry it only so ANSWERS_ONLY can quote the one line nobody says.",
+ "question": "Quick question. What's in this can?",
+ "_props_comment": "Four props for four people, every one plain and unprinted. No newspaper, no carrier bag, no hi-vis, no team kit: a garment or prop whose prior IS lettering beats the no-lettering clause (Critical knowledge 24).",
+ "props": "a canvas bag, keys, a folded umbrella, a bike helmet",
+ "cast_size": 4,
+ "_shots_comment": "EIGHT shots, two per person, which is what PACE_BLOCK asks for and what seed 4816 rendered at a 1.36s median. Four wrong guesses, escalating, and the reveal is held back for take C.",
+ "shots": [
+  {
+   "kind": "handover_first",
+   "subject": "a man in his fifties in a plain navy coat",
+   "pronoun": "he",
+   "noun": "man"
+  },
+  {
+   "kind": "speak",
+   "noun": "man",
+   "reaction": "turns it over",
+   "manner": "",
+   "line": "Nitro coffee."
+  },
+  {
+   "kind": "handover",
+   "subject": "a woman in her thirties in a plain red jacket",
+   "pronoun": "she"
+  },
+  {
+   "kind": "speak",
+   "noun": "woman",
+   "reaction": "shakes her head",
+   "manner": "flatly",
+   "line": "That's a lager."
+  },
+  {
+   "kind": "handover",
+   "subject": "a man in his sixties in a plain brown overcoat",
+   "pronoun": "he"
+  },
+  {
+   "kind": "speak",
+   "noun": "man in the brown overcoat",
+   "reaction": "squints at it",
+   "manner": "",
+   "line": "Paint stripper."
+  },
+  {
+   "kind": "handover",
+   "subject": "a woman in her twenties in a plain grey hoodie",
+   "pronoun": "she"
+  },
+  {
+   "kind": "speak",
+   "noun": "woman in the grey hoodie",
+   "reaction": "laughs",
+   "manner": "",
+   "line": "Something you regret."
+  }
+ ],
+ "generation": {
+  "seed": 4827,
+  "duration": 12,
+  "fast": false,
+  "pace_grammar": true,
+  "guard_grammar": true,
+  "mic_grammar": false,
+  "mic_ref_grammar": true,
+  "plain_grammar": true,
+  "answers_only": false,
+  "can_grammar": true
+ }
+}

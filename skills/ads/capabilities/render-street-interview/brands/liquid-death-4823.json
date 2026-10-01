@@ -1,0 +1,61 @@
+{
+ "_comment": "SCENE-REFERENCE TEST. Identical to take B of episode 2 (seed 4821) except: the hi-vis vest is now a plain jacket, and the call carries a SECOND reference image, a still from take A (seed 4820). The question under test is whether a reference still carries the microphone and the street between calls, which a byte-identical prompt clause demonstrably does not.",
+ "brand": "Liquid Death",
+ "slug": "ld",
+ "episode_role": "middle",
+ "episode": "ep2",
+ "product": {
+  "noun": "can",
+  "phrase": "white can",
+  "reference_image": "clients/liquid-death/brand-assets/reference-photos/mountain-water-still-19oz-tallboy-official.png",
+  "appearance": "same white body, same dark blackletter lettering, same gold illustration",
+  "colour_ban": "It never turns gold or yellow.",
+  "opening_extra": " and no ring pull is touched",
+  "open_state": "open"
+ },
+ "location": {
+  "description": "a wide pavement on one street corner outside a red brick building wrapped in green scaffolding, with a bus shelter to the left, parked cars along the kerb and bare plane trees behind",
+  "landmarks": "The same scaffolding, bus shelter and parked cars"
+ },
+ "_question_comment": "Recorded but NEVER SPOKEN in this take, and it is the IDENTICAL string take A asks. That is not tidiness: ANSWERS_ONLY quotes it as the line nobody says, so the thing takes B and C must not say is exactly the one question the episode did ask. Episode 1 gave each take its own wording and the viewer heard three questions.",
+ "question": "Quick question. What's in this can?",
+ "props": "a trolley, a hard hat",
+ "cast_size": 2,
+ "shots": [
+  {
+   "kind": "handover_cold",
+   "subject": "a woman in her sixties in a brown wool coat pushing a trolley",
+   "pronoun": "she",
+   "noun": "woman"
+  },
+  {
+   "kind": "speak",
+   "noun": "woman",
+   "reaction": "laughs",
+   "manner": "",
+   "line": "Something illegal."
+  },
+  {
+   "kind": "handover",
+   "subject": "a man in his forties in a plain dark green work jacket and a hard hat",
+   "pronoun": "he"
+  },
+  {
+   "kind": "speak",
+   "noun": "man",
+   "reaction": "sniffs it",
+   "manner": "deadpan",
+   "line": "Motor oil."
+  }
+ ],
+ "generation": {
+  "seed": 4823,
+  "duration": 12,
+  "fast": false,
+  "pace_grammar": true,
+  "guard_grammar": true,
+  "mic_grammar": true,
+  "plain_grammar": true,
+  "answers_only": true
+ }
+}

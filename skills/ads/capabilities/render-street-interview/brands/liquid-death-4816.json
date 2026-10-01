@@ -1,0 +1,152 @@
+{
+  "_comment": "The approved seed-4815 run, as data. This file plus format_spec.py reproduces that take's prompt byte for byte; selftest.py asserts it. Nothing here is format knowledge - every field is a creative choice this brand made.",
+  "brand": "Liquid Death",
+  "slug": "ld",
+  "product": {
+    "noun": "can",
+    "phrase": "white can",
+    "reference_image": "clients/liquid-death/brand-assets/reference-photos/mountain-water-still-19oz-tallboy-official.png",
+    "appearance": "same white body, same dark blackletter lettering, same gold illustration",
+    "colour_ban": "It never turns gold or yellow.",
+    "opening_extra": " and no ring pull is touched",
+    "open_state": "open"
+  },
+  "location": {
+    "description": "a wide pavement on one street corner outside a red brick building wrapped in green scaffolding, with a bus shelter to the left, parked cars along the kerb and bare plane trees behind",
+    "landmarks": "The same scaffolding, bus shelter and parked cars"
+  },
+  "question": "Quick question. What's in this can?",
+  "props": "a carrier bag, a phone, a backpack",
+  "cast_size": 4,
+  "shots": [
+    {
+      "kind": "handover_first",
+      "subject": "a man in his fifties in a navy work coat with a carrier bag",
+      "pronoun": "he",
+      "noun": "man"
+    },
+    {
+      "kind": "react",
+      "noun": "man",
+      "reaction": "shrugs"
+    },
+    {
+      "kind": "handover",
+      "subject": "a heavyset balding man in a paint-stained work jacket",
+      "pronoun": "he"
+    },
+    {
+      "kind": "speak",
+      "noun": "man",
+      "reaction": "snorts",
+      "manner": "flatly",
+      "line": "Beer. Obviously."
+    },
+    {
+      "_comment": "The trailing comma on `subject` is deliberate and is used verbatim: the approved payload reads '...across her chest, on that same corner' while shot 3 reads '...work jacket on that same corner'. Kept so the approved prompt reproduces exactly.",
+      "kind": "handover",
+      "subject": "a woman in her thirties in teal medical scrubs with a bag strap across her chest,",
+      "pronoun": "she"
+    },
+    {
+      "kind": "speak",
+      "noun": "woman",
+      "reaction": "winces",
+      "manner": "",
+      "line": "Something that's gonna kill me."
+    },
+    {
+      "kind": "sip",
+      "subject": "A young woman in a yellow raincoat with a backpack"
+    },
+    {
+      "kind": "payoff",
+      "noun": "young woman",
+      "manner": "surprised",
+      "line": "Wait, that's water."
+    }
+  ],
+  "generation": {
+    "seed": 4816,
+    "duration": 12,
+    "fast": false
+  },
+  "brand_layer": {
+    "_comment": "MEASURED off ld-single-seed4816.mp4 (the --pace take), not seed 4815. 7 cuts, 8 shots. Caption spans come from whisper word timings and are split wherever a spoken line crosses one of those cuts, which the pace grammar deliberately makes happen.",
+    "cuts": [
+      2.633,
+      4.0,
+      6.0,
+      7.333,
+      8.2,
+      9.533,
+      10.1
+    ],
+    "ambience_gap": [
+      2.2,
+      3.0
+    ],
+    "_ambience_gap_comment": "Start, duration, in seconds, inside THIS take. Measured: speech runs 0.30-2.00 and resumes at 5.10, so 2.20-5.20 is silent with margin. Seed 4815's window (1.75-3.90) overlaps speech in this take and recut.py correctly refused it.",
+    "series_header": "WHAT'S IN THE CAN?",
+    "logo": "clients/liquid-death/brand-assets/logos/liquid-death-logo-3840.png",
+    "end_card": [
+      "DON'T BE SCARED.",
+      "IT'S JUST WATER."
+    ],
+    "captions": [
+      [
+        0.1,
+        2.0,
+        "WE ASKED PEOPLE|WHAT'S IN THIS CAN.",
+        "title",
+        "",
+        "We asked people what's in this can."
+      ],
+      [
+        5.1,
+        5.85,
+        "BEER.",
+        "answer",
+        "PAINTER",
+        "Beer."
+      ],
+      [
+        6.3,
+        7.0,
+        "OBVIOUSLY.",
+        "answer",
+        "PAINTER",
+        "Obviously."
+      ],
+      [
+        7.76,
+        8.05,
+        "SOMETHING THAT'S",
+        "answer",
+        "NURSE",
+        "Something that's"
+      ],
+      [
+        8.54,
+        9.23,
+        "GONNA KILL ME.",
+        "answer",
+        "NURSE",
+        "gonna kill me."
+      ],
+      [
+        10.44,
+        11.75,
+        "WAIT, THAT'S WATER.",
+        "payoff",
+        "STUDENT",
+        "Wait, that's water."
+      ]
+    ],
+    "grade": {
+      "black_lift": 0.0226,
+      "saturation": 1.0,
+      "_comment": "SOLVED against ld-single-seed4816.mp4 by fit_grade.py, not a constant. Per-take: re-solve after any new generation. Verified black 8.17 (band 7.0-10.3), face_sat 0.307 (band 0.14-0.228)."
+    }
+  }
+}

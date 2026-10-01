@@ -1,0 +1,23 @@
+{
+  "_comment": "EPISODE 3b. Identical takes, identical grammars, identical brand layer to ep3 -- the ONLY difference is that the re-cut is SHOT-ALIGNED. ep3's planner sliced mid-shot: it dropped 0.7s and 0.5s out of the middle of take A and 1.5s and 2.4s out of the middle of take B, cutting out of a continuous shot and straight back into the same shot with the same framing and the same person. That is a jump, not an edit, and it is what the operator saw as 'still abrupt cuts' after the joins themselves had been fixed. It showed in ep3's cut list as two cuts 0.13s apart at 11.2s and two 0.23s apart at 15.0s. build_episode.shot_plan now keeps or drops whole SHOTS, so every boundary is a picture change by construction and dropped dead air disappears on a cut. check-cut.py check S re-derives each take's cuts from the take and fails on any boundary that is not one. ep3 is kept on disk for comparison.",
+  "episode": "ep3b",
+  "brand": "Liquid Death",
+  "slug": "ld",
+  "title": "What's in the can",
+  "_output_comment": "The output name carries all three seeds ON PURPOSE. build_looks.py's look filenames do not carry a seed and a seed-4816 build silently overwrote seed 4815's shipped deliverable once. This name cannot collide with episode 1 (4817-4819), episode 2 (4820-4822), any street-ld-*.mp4, or any 4815/4816/4823-4828 file.",
+  "output": "episode-ld-ep3b-seed4828-4829-4830",
+  "takes": [
+    "liquid-death-4828",
+    "liquid-death-4829",
+    "liquid-death-4830"
+  ],
+  "brand_layer": {
+    "logo": "clients/liquid-death/brand-assets/logos/liquid-death-logo-3840.png",
+    "end_card": [
+      "DON'T BE SCARED.",
+      "IT'S JUST WATER."
+    ]
+  },
+  "_grade_comment": "Not stored, same as episode 2. The episode is graded ONCE on the concatenated cut and the black lift is solved against that file by fit_grade.py at build time. A grade constant measured on one take outlives the take it was measured on (SKILL.md 19), and grading three takes separately is three curves across two joins, which is a visible step.",
+  "_ambience_comment": "Not stored either, and this one has bitten twice (SKILL.md 13 and 21a): the speech-free window belongs to a FILE. build_episode.py finds it on the finished concatenation and asserts it is speech-free before cutting a bed or an end-card room tone from it."
+}

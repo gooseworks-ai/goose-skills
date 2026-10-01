@@ -90,10 +90,12 @@ Brand facts come from the brand kit.
 - a beats file — see the example beside the scripts
 - a brand kit for the facts
 
-**A gap worth knowing about.** The sanctioned voice capability, `create-vo-elevenlabs`, returns
-audio only. This format needs word-level timings for every mark, so they have to come with the
-audio. Until that capability can return them, the timings are supplied alongside. Never call the
-speech provider directly; the proxy attribution is required.
+**The voice comes with its word timings.** `create-vo-elevenlabs` returns audio only, and this
+format needs a timing for every word. `scripts/gen-voice.py --project <dir>` reads `vo` and `voice`
+from `beats.json` and calls the proxy's `/with-timestamps` route, writing `voice/vo.mp3` and
+`voice/words.json`, which `make-episode.py` requires. A dry run prints the character count and the
+cost; `--yes` spends. It routes through the GooseWorks proxy (`scripts/media_proxy.py`), never the
+speech provider directly, and refuses a payload it has already paid for.
 
 ## Checks it runs itself
 

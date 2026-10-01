@@ -1,0 +1,45 @@
+{
+  "_comment": "EPISODE 2 REPAIR. The user approved episode 2 (4820-4822) for its microphone, cast, grading and naturalness and asked for THAT fixed rather than replaced. So take A is seed 4820 ITSELF, the approved footage, untouched beyond the grade every take gets. Only the two takes that were wrong are new: 4834 and 4835, both generated with --scene-ref refs/scene/sceneref-4820-t5-noface.png so they inherit 4820's own microphone, street and light rather than re-deriving them from words -- which is the finding the whole run turned on (SKILL.md 27, 30). Episode 2's defect was that each take invented its own mic and its own street; the repair couples all three to 4820's.",
+  "episode": "ep2fix-v2",
+  "brand": "Liquid Death",
+  "slug": "ld",
+  "title": "What's in the can",
+  "_output_comment": "The output name carries all three seeds ON PURPOSE. build_looks.py's look filenames do not carry a seed and a seed-4816 build silently overwrote seed 4815's shipped deliverable once. This name cannot collide with episode 1 (4817-4819), episode 2 (4820-4822), any street-ld-*.mp4, or any 4815/4816/4823-4828 file.",
+  "output": "episode-ld-ep2fix-v2-seed4820-4834-4835",
+  "takes": [
+    "liquid-death-4820",
+    "liquid-death-4834",
+    "liquid-death-4835"
+  ],
+  "brand_layer": {
+    "logo": "clients/liquid-death/brand-assets/logos/liquid-death-logo-3840.png",
+    "end_card": [
+      "DON'T BE SCARED.",
+      "IT'S JUST WATER."
+    ]
+  },
+  "_grade_comment": "Not stored, same as episode 2. The episode is graded ONCE on the concatenated cut and the black lift is solved against that file by fit_grade.py at build time. A grade constant measured on one take outlives the take it was measured on (SKILL.md 19), and grading three takes separately is three curves across two joins, which is a visible step.",
+  "_ambience_comment": "Not stored either, and this one has bitten twice (SKILL.md 13 and 21a): the speech-free window belongs to a FILE. build_episode.py finds it on the finished concatenation and asserts it is speech-free before cutting a bed or an end-card room tone from it.",
+  "_drop_comment": "TWO SHOTS OF SEED 4820 COME OUT, both of the woman in the grey raincoat. The user saw a subject 'holding a second microphone' at episode-2 7.5s. Checked against the source: the object in her left hand is her PHONE, which is a configured prop in brands/liquid-death-4820.json. It is not a microphone -- and at playback size, dark, vertical and held at chest height next to the interviewer's mic, it reads as one, which is what matters. The viewer's reading is the defect. It is in BOTH of her shots (4.54-6.33 and 6.33-12.10), not just the second, so both go and she comes out of the episode; her line 'Beer. That's a beer.' is recorded as cut. The lesson for the configs is the real finding: do not give a subject a dark handheld prop. A phone next to a microphone is a second microphone. ALSO DROPPED, v2: take B's 0.53s shot at 8.33-8.88. It is above the 0.40s floor, but it sat between a 0.83s and a 0.93s shot OF THE SAME WOMAN, so the same person was cut three times in 2.3s with no new information and it read as a stumble rather than rhythm. The middle fragment carries no speech, so dropping it costs nothing and removes half a second of nothing. It also nudges the median UP toward the reference band, because it is a long way below it.",
+  "drop_shots": {
+    "ld-single-seed4820.mp4": [
+      [
+        4.54,
+        6.33
+      ],
+      [
+        6.33,
+        12.096
+      ]
+    ],
+    "ld-single-seed4834.mp4": [
+      [
+        8.33,
+        8.88
+      ]
+    ]
+  },
+  "coupled_by_scene_ref": "refs/scene/sceneref-4820-t5-noface.png",
+  "_coupled_comment": "Seed 4820 predates the 'name the city' change, so its location clause differs from 4834's and 4835's by the two words ', in London' and the string comparison refuses the episode. The takes are in fact coupled more tightly than any episode that has passed that check: 4834 and 4835 were generated FROM A CROP OF 4820 ITSELF, so they inherit 4820's actual street, microphone and light rather than a description of them. Verified by eye across nine frames: same red brick mansion block, same green scaffolding, same bus shelter, same cycle lane, same mic. The build prints the differing clauses every time and check C reports them.",
+  "_v2_comment": "v2 of the approved episode-2 repair. Nothing about the takes, the cast, the mic, the grade or the caption grammar changes. Two fixes: (1) PACE -- dead air trimmed off each take's OUTER edges, which are joins rather than mid-shot splices, so no jump is created and no word is clipped; 2.95s came off take B's head and 0.20s off take C's. (2) THE END CARD NO LONGER CARRIES THE STREET -- the room-tone bed was running flat at -40 dB under the whole card and now decays to silence over 0.8s, so the street drops away behind the card instead of running under it. A hard cut to digital silence after 28s of traffic reads as a dropout, which is why it is a decay and not a mute."
+}

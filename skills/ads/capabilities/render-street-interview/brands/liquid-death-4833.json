@@ -1,0 +1,99 @@
+{
+ "_comment": "EPISODE 4, TAKE C, THE PAYOFF. Answers only. The payoff is on the FACE and the LINE, not on a drink: drinking puts the can's lid at the person's mouth, which is the one thing keeping the can's state off screen. The format's premise is that the strangers guess wrong and the LAST ONE GETS IT RIGHT, so the last person simply knows.",
+ "brand": "Liquid Death",
+ "slug": "ld",
+ "episode_role": "payoff",
+ "episode": "ep4",
+ "product": {
+  "noun": "can",
+  "phrase": "white can",
+  "reference_image": "clients/liquid-death/brand-assets/reference-photos/mountain-water-still-19oz-tallboy-official.png",
+  "appearance": "same white body, same dark blackletter lettering, same gold illustration",
+  "colour_ban": "It never turns gold or yellow.",
+  "size": "a 19oz tallboy about two hand-widths tall, taller than that hand can span",
+  "_state_comment": "can_sealed is OFF. Two takes proved the clause does not render. The mechanism is that the LID IS NEVER IN SHOT: the can stays vertical and square, so only the thin top rim is ever visible and the state cannot be read. The new glance beat is eyes and head only, so it does not tip the can and does not put the lid in view.",
+  "opening_extra": " and no ring pull is touched",
+  "open_state": "open"
+ },
+ "location": {
+  "_comment": "Byte-identical to 4824 and 4827. The scene reference is a crop of 4827 itself, so this is the same corner in the words and in the image.",
+  "description": "a wide pavement on one street corner in London, outside a red brick building wrapped in green scaffolding, with a bus shelter to the left, parked cars along the kerb and bare plane trees behind",
+  "landmarks": "The same scaffolding, bus shelter and parked cars"
+ },
+ "_question_comment": "IDENTICAL BYTE FOR BYTE across all three episode-3 configs.",
+ "question": "Quick question. What's in this can?",
+ "_props_comment": "Plain and unprinted. Nothing printed, nothing hi-vis (Critical knowledge 24).",
+ "props": "a rucksack, a cup, a hat, a satchel",
+ "cast_size": 4,
+ "_shots_comment": "EIGHT shots, two per person, unchanged from 4827. EVERY REACTION IS FACIAL. There is no 'turns it over', no 'sniffs it', no 'squints at it' aimed at the can, no 'reads the label' -- because each of those is an instruction to lift and rotate the product, and that is the defect this take exists to remove.",
+ "shots": [
+  {
+   "kind": "handover_cold",
+   "subject": "a man in his forties, grey overcoat",
+   "pronoun": "he",
+   "noun": "man"
+  },
+  {
+   "kind": "speak",
+   "noun": "man",
+   "reaction": "winces",
+   "manner": "",
+   "line": "Battery acid."
+  },
+  {
+   "kind": "handover",
+   "subject": "a woman in her fifties, burgundy coat",
+   "pronoun": "she",
+   "noun": "woman"
+  },
+  {
+   "kind": "speak",
+   "noun": "woman",
+   "reaction": "grimaces",
+   "manner": "",
+   "line": "Cheap lager."
+  },
+  {
+   "kind": "handover",
+   "subject": "a man in his sixties, navy jacket",
+   "pronoun": "he",
+   "noun": "older man"
+  },
+  {
+   "kind": "speak",
+   "noun": "older man",
+   "reaction": "frowns",
+   "manner": "",
+   "line": "Something industrial."
+  },
+  {
+   "kind": "handover",
+   "subject": "a woman in her thirties, tan coat",
+   "pronoun": "she",
+   "noun": "younger woman"
+  },
+  {
+   "kind": "payoff",
+   "noun": "younger woman",
+   "reaction": "smiles",
+   "manner": "plainly",
+   "line": "It's water. It's just water.",
+   "pronoun": "she"
+  }
+ ],
+ "generation": {
+  "seed": 4833,
+  "duration": 12,
+  "fast": false,
+  "pace_grammar": true,
+  "guard_grammar": true,
+  "mic_grammar": false,
+  "mic_ref_grammar": true,
+  "plain_grammar": true,
+  "answers_only": true,
+  "can_size_grammar": true,
+  "can_sealed_grammar": false,
+  "upright_grammar": true,
+  "one_mic_grammar": true
+ }
+}

@@ -1,0 +1,23 @@
+{
+  "_comment": "EPISODE 2. Episode 1 was watched end to end and approved on faces, pace, framing, captions and the small mic; four defects were named and only those four are addressed here. (1) The microphone changed between takes: the `mic` grammar pins it to the Chris Klemens reference and the clause is byte-identical in all three payloads. (2) The interviewer's question was asked three times, at 0:00, 0:09 and 0:18, which is what made the joins abrupt: only take A asks it now, takes B and C are answers only. (3) Text and logos on clothing and gear garbled: the `plain` grammar bans lettering on any person or anything they carry. (4) A teenager held a can branded to look like beer: the same grammar restricts the cast to clear adults, and the teenager is out of the config. Nothing else changed - not the caption grammar, not the grade, not the cast direction.",
+  "episode": "ep2",
+  "brand": "Liquid Death",
+  "slug": "ld",
+  "title": "What's in the can",
+  "_output_comment": "The output name carries all three seeds ON PURPOSE. build_looks.py's look filenames do not carry a seed and a seed-4816 build silently overwrote seed 4815's shipped deliverable once. This name cannot collide with episode 1's (seeds 4817-4818-4819), with any street-ld-*.mp4, or with any 4816 file.",
+  "output": "episode-ld-ep2-seed4820-4821-4822",
+  "takes": [
+    "liquid-death-4820",
+    "liquid-death-4821",
+    "liquid-death-4822"
+  ],
+  "brand_layer": {
+    "logo": "clients/liquid-death/brand-assets/logos/liquid-death-logo-3840.png",
+    "end_card": [
+      "DON'T BE SCARED.",
+      "IT'S JUST WATER."
+    ]
+  },
+  "_grade_comment": "Not stored. The episode is graded ONCE on the concatenated cut and the black lift is solved against that file by fit_grade.py at build time. A grade constant measured on one take outlives the take it was measured on (SKILL.md Critical knowledge 19), and grading each take separately is three curves across three joins, which is a visible step.",
+  "_ambience_comment": "Not stored either, and this one has bitten twice (Critical knowledge 13 and 21a): the speech-free window belongs to a FILE. build_episode.py finds it on the finished concatenation and asserts it is speech-free before cutting a bed or an end-card room tone from it."
+}

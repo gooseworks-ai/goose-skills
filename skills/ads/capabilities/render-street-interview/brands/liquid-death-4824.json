@@ -1,0 +1,66 @@
+{
+ "_comment": "EPISODE 3, TAKE A of three (seeds 4824, 4825, 4826). THE ONLY TAKE THAT ASKS THE QUESTION, and the take that DEFINES the episode: the mic, the street and the light in this clip are what takes B and C inherit, through a cropped still from this render passed as a second reference image (--scene-ref). Episode 2 proved a prompt clause cannot carry a prop between calls and a reference image can, so take A is generated FIRST, watched, and only then referenced. Five grammars on: pace, guards, mic, plain and the new `can`.",
+ "brand": "Liquid Death",
+ "slug": "ld",
+ "episode_role": "opening",
+ "episode": "ep3",
+ "product": {
+  "noun": "can",
+  "phrase": "white can",
+  "reference_image": "clients/liquid-death/brand-assets/reference-photos/mountain-water-still-19oz-tallboy-official.png",
+  "appearance": "same white body, same dark blackletter lettering, same gold illustration",
+  "colour_ban": "It never turns gold or yellow.",
+  "_size_comment": "The can drifted in scale in BOTH earlier episodes, because the only size words in the prompt were 'the same size and shape in every frame' -- a relation between frames, which a soda-sized can satisfies in all four shots. This is the absolute size, bound against the hand holding it because the hand is the only other object in frame at a known size. 19oz is a fact about this product, which is why the measurement is here and the grammar around it is in format_spec.CAN_SIZE.",
+  "size": "a 19oz tallboy about two hand-widths tall, taller than that hand can span",
+  "_state_comment": "No `open_state` and no `opening_extra`. Both are the ungrammared wording and the can grammar REPLACES the whole state sentence: every can is CLOSED, SEALED AND UNOPENED with an intact ring pull. Leaving stale keys here would read as configuration that is doing something."
+ },
+ "location": {
+  "_comment": "NAMED CITY, which is new. Every episode-2 payload carried a London-SHAPED description with no city in it, and take C rendered New York off the same clause: a description satisfiable on two continents will be satisfied on two continents (SKILL.md Critical knowledge 26). Naming the city is the only prompt-side lever there is, and it is a help rather than a guarantee -- the guarantee is the scene reference, which is why this take is generated first.",
+  "description": "a wide pavement on one street corner in London, outside a red brick building wrapped in green scaffolding, with a bus shelter to the left, parked cars along the kerb and bare plane trees behind",
+  "landmarks": "The same scaffolding, bus shelter and parked cars"
+ },
+ "_question_comment": "IDENTICAL BYTE FOR BYTE in all three episode-3 configs. Take A speaks it; takes B and C carry it only so ANSWERS_ONLY can quote the one line nobody says. Episode 1 gave each take its own wording and the viewer heard three different questions.",
+ "question": "Quick question. What's in this can?",
+ "_props_comment": "Plain and unprinted, both of them. No newspaper, no carrier bag, no hi-vis: a garment or a prop whose prior IS lettering beats the no-lettering clause, which is what episode 2's garbled hi-vis chest logo cost (Critical knowledge 24).",
+ "props": "a canvas bag, a set of keys",
+ "cast_size": 2,
+ "_shots_comment": "FOUR shots, two per person, which is exactly what PACE_BLOCK asks for ('each person gets TWO separate shots'). Episode 2's take A configured five and the fifth was a silent `react` beat that the pace grammar contradicts. Dropping it also buys the word budget the can grammar spends.",
+ "shots": [
+  {
+   "kind": "handover_first",
+   "subject": "a man in his fifties in a plain navy coat",
+   "pronoun": "he",
+   "noun": "man"
+  },
+  {
+   "kind": "speak",
+   "noun": "man",
+   "reaction": "turns it over",
+   "manner": "",
+   "line": "Nitro coffee."
+  },
+  {
+   "kind": "handover",
+   "subject": "a woman in her thirties in a plain red jacket",
+   "pronoun": "she"
+  },
+  {
+   "kind": "speak",
+   "noun": "woman",
+   "reaction": "shakes her head",
+   "manner": "flatly",
+   "line": "That's a lager."
+  }
+ ],
+ "generation": {
+  "seed": 4824,
+  "duration": 12,
+  "fast": false,
+  "pace_grammar": true,
+  "guard_grammar": true,
+  "mic_grammar": true,
+  "plain_grammar": true,
+  "answers_only": false,
+  "can_grammar": true
+ }
+}
