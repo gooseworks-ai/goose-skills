@@ -1,0 +1,96 @@
+{
+  "title": "ONE SCOOP OF AG1",
+  "title_say": "What's",
+  "subtitle": "WHAT IS IN IT",
+  "subtitle_say": "AG1",
+  "payoff": "IN ONE SCOOP",
+  "payoff_say": "In",
+  "payoff_n": 2,
+  "ring_on": "75+",
+  "beats": [
+    {
+      "say": "First",
+      "art": "scoop"
+    },
+    {
+      "say": "vitamins",
+      "text": "VITAMINS"
+    },
+    {
+      "say": "minerals",
+      "text": "MINERALS"
+    },
+    {
+      "say": "hundred",
+      "text": "500mg VIT C"
+    },
+    {
+      "say": "of",
+      "say_n": 2,
+      "art": "capsules"
+    },
+    {
+      "say": "Then",
+      "say_n": 1,
+      "text": "SUPERFOODS"
+    },
+    {
+      "say": "blend",
+      "art": "greens"
+    },
+    {
+      "say": "Spirulina",
+      "text": "SPIRULINA"
+    },
+    {
+      "say": "ginger",
+      "text": "GINGER"
+    },
+    {
+      "say": "rhodiola",
+      "text": "RHODIOLA"
+    },
+    {
+      "say": "twenty",
+      "text": "21 PLANTS"
+    },
+    {
+      "say": "more",
+      "art": "mushrooms"
+    },
+    {
+      "say": "And",
+      "say_n": 3,
+      "text": "10 BILLION"
+    },
+    {
+      "say": "billion",
+      "art": "cells"
+    },
+    {
+      "say": "strains",
+      "text": "5 STRAINS"
+    },
+    {
+      "say": "seventy",
+      "text": "75+",
+      "big": true
+    },
+    {
+      "say": "replace",
+      "art": "jars"
+    },
+    {
+      "say": "six",
+      "text": "REPLACES 6"
+    }
+  ],
+  "subjects": {
+    "scoop": "A measuring scoop tipped over a tall drinking glass, pouring a stream of loose powder into the glass.",
+    "capsules": "A small supplement bottle on its side with its cap off and six or seven oval capsules spilling out.",
+    "greens": "A loose bunch of leafy greens tied at the stem with a knob of fresh ginger root beside the base.",
+    "mushrooms": "Two mushrooms of different sizes growing from a ground line with two small leafy sprigs beside them.",
+    "cells": "A loose scatter of about twenty tiny bacteria, each a small comma or rod shape, in a rough uneven drift. No containing circle.",
+    "jars": "Six supplement bottles of different heights standing in a row on a straight shelf line."
+  }
+}
