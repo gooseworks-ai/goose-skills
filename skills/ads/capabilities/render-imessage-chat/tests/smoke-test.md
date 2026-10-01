@@ -41,6 +41,16 @@ bash stitch.sh \
   is 1080×1080.
 - `ffprobe` confirms dimensions/duration; run the `watch` skill on the master to
   confirm beat order, the rich link, and the end card.
+- No clipping: `ffmpeg -i master-final.mp4 -af ebur128=peak=true -f null -` reports
+  a true peak below -1 dBTP (it lands at about -2), even where chimes overlap.
+
+## Automated checks
+
+`python3 -m pytest tests/` (ffmpeg + bash, no network, ~15s) renders synthetic
+clips through `stitch.sh` and checks: a catalog-fetched copy (no `assets/`) still
+gets the real SFX from `scripts/sfx-embedded.json`; stacked chimes and the music
+bed stay below -1 dBTP; and a missing or damaged SFX source fails with a clear
+message.
 
 ## Fail signals
 
@@ -49,3 +59,5 @@ bash stitch.sh \
 - Text overflowing a bubble → the thread has an over-long line; split it into
   multiple bubbles (authoring rule).
 - `Cannot find module 'playwright'` → run `npm install` in `scripts/`.
+- `stitch.sh: no iMessage SFX` → the fetched copy lost `scripts/sfx-embedded.json`
+  (or saved it altered). Re-fetch the capability; don't fake the pops.
