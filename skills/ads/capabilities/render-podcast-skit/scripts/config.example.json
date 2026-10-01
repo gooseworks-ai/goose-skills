@@ -1,5 +1,5 @@
 {
-  "_comment": "Worked example (the Ladder run-02 'Laundromat 2am' build) — copy the STRUCTURE and field names, never the creative values. Creative fields — set_description, voices.HER/HIM (name, voice_id, settings.style), characters.bases + expression_variants, scenes[] (text/caption/still), brand_guardrails, end_card colours/CTA/URL — come from the format recipe's choices (tone, set, skeptic_host, believer_host) and the brand; never copy them as defaults. The demo combination was: comedy tone, an absurd laundromat set, a young-woman skeptic (Brittney) and a young-man believer (Brad). HER/HIM are the skeptic/believer SLOTS, not genders. Write a FRESH script + hook for each brand in the chosen tone; only a comedy tone gets jokes. Pipeline: (1) ElevenLabs with-timestamps VO per line, one voice per host; (2) two base stills (gpt-image-2 quality=high, photoreal, mouths closed) + ~10 edit-anchored expression variants on the bases; (3) Veed Fabric 1.0 lipsync per (still, VO) pair @ 720p; (4) WHITE captions from the VO's char-level timestamps, <=5 words/cue, sentence-broken, word-wrapped; (5) hard-cut concat + a 2.5s Playwright/PIL brand end card, final-encode crf28. Master 1080x1920 h264+aac. See scripts/PIPELINE.md.",
+  "_comment": "Worked example (the Ladder run-02 'Laundromat 2am' build) — copy the STRUCTURE and field names, never the creative values. Creative fields — set_description, voices.HER/HIM (name, voice_id, settings.style), characters.bases + expression_variants, scenes[] (text/caption/still), brand_guardrails, end_card colours/CTA/URL — come from the format recipe's choices (dynamic, tone, set, host_a, host_b) and the brand; never copy them as defaults. The demo combination was: the 'a doubter won over' dynamic (host A Brittney, a young woman, doubts; host B Brad, a young man, answers), comedy tone, an absurd laundromat set. That skeptic/believer pair is ONE dynamic option, not the format. HER/HIM are only the host A and host B SLOTS — they fix neither gender nor role. Write a FRESH script + hook for each brand in the chosen tone; only a comedy tone gets jokes. Pipeline: (1) ElevenLabs with-timestamps VO per line, one voice per host; (2) two base stills (gpt-image-2 quality=high, photoreal, mouths closed) + ~10 edit-anchored expression variants on the bases; (3) Veed Fabric 1.0 lipsync per (still, VO) pair @ 720p; (4) WHITE captions from the VO's char-level timestamps, <=5 words/cue, sentence-broken, word-wrapped; (5) hard-cut concat + a 2.5s Playwright/PIL brand end card, final-encode crf28. Master 1080x1920 h264+aac. See scripts/PIPELINE.md.",
   "brand_name": "Ladder",
   "campaign": "podcast-skit — laundromat 2am",
   "title": "Ladder Podcast Ad run-02 — Laundromat 2am",
@@ -17,7 +17,7 @@
     "No celebrity name-drops outside the actual coach roster.",
     "Plain-spoken voice — 'Get stronger, with a plan' beats hype.",
     "Lime/black palette only when product surfaces appear.",
-    "The believer never mocks the user — the villain is the friction, not the buyer."
+    "Neither host mocks the user — the problem is the friction, not the buyer."
   ],
 
   "intonation_legend": {
@@ -31,9 +31,10 @@
   },
 
   "voices": {
-    "_note": "Exactly TWO hosts, one voice each, held across the whole skit. HER = the SKEPTIC slot, HIM = the BELIEVER slot — slot labels only, not genders. Pick each voice to match the chosen host; set settings.style for the chosen tone. The voices below are the Ladder demo cast (Brittney, Brad). eleven_multilingual_v2 with-timestamps.",
+    "_note": "Exactly TWO hosts, one voice each, held across the whole skit. HER = the host A slot, HIM = the host B slot — slot labels only, not genders or roles. Pick each voice to match the chosen host, set role from choices.dynamic, and set settings.style for the chosen tone. The voices below are the Ladder demo cast (Brittney, Brad) in the demo's 'a doubter won over' dynamic. eleven_multilingual_v2 with-timestamps.",
     "HER": {
-      "role": "skeptic",
+      "role": "host A — role from choices.dynamic",
+      "_example_role": "skeptic (the demo's 'a doubter won over' dynamic)",
       "name": "Brittney",
       "voice_id": "kPzsL2i3teMYv0FxEYQ6",
       "provider": "elevenlabs",
@@ -42,7 +43,8 @@
       "settings": { "stability": 0.45, "similarity_boost": 0.78, "style": 0.45, "use_speaker_boost": true }
     },
     "HIM": {
-      "role": "believer",
+      "role": "host B — role from choices.dynamic",
+      "_example_role": "believer (the demo's 'a doubter won over' dynamic)",
       "name": "Brad",
       "voice_id": "T4x5CtnhOiichhcqFzgg",
       "provider": "elevenlabs",
@@ -53,7 +55,7 @@
   },
 
   "characters": {
-    "_note": "REALISM: generate with gpt-image-2 quality=high, NOT nano-banana (nano faces read as AI-stock, rejected in testing). ALWAYS append realism_suffix. Two bases first (9:16, tight bust, mic foreground, headphones, MOUTH CLOSED). Skeptic base first, then believer via gpt-image-2/edit anchored on the skeptic's still for set consistency. Then fan out variants — each edit on its host's base as the SOLE reference, prompt describes ONLY the pose/expression change so the identity + background stay across all cuts. QC every still for hallucinations (asymmetric long hair-lock, extra fingers, morphed ears) before lipsync.",
+    "_note": "REALISM: generate with gpt-image-2 quality=high, NOT nano-banana (nano faces read as AI-stock, rejected in testing). ALWAYS append realism_suffix. Two bases first (9:16, tight bust, mic foreground, headphones, MOUTH CLOSED). Host A's base first, then host B's via gpt-image-2/edit anchored on host A's still for set consistency (a new run names them host-a-base.png / host-b-base.png; the demo's brittney/brad names below are kept so this worked example's scenes still resolve). Then fan out variants — each edit on its host's base as the SOLE reference, prompt describes ONLY the pose/expression change so the identity + background stay across all cuts. QC every still for hallucinations (asymmetric long hair-lock, extra fingers, morphed ears) before lipsync.",
     "engine": { "provider": "fal", "model_t2i": "openai/gpt-image-2", "model_edit": "openai/gpt-image-2/edit", "image_size": { "width": 1024, "height": 1792 }, "quality_base": "high", "quality_variant": "high", "submit": "sequential" },
     "realism_suffix": " PHOTOREALISM IS CRITICAL: a real candid documentary photograph of a real human — NOT illustration/3D/CGI/AI-stock. Real skin with pores, fine lines, uneven tone, slight asymmetry; no smoothing/retouching/waxy skin/perfect teeth. HAIR MUST BE COHERENT: one consistent hairstyle all around — no single long lock on one side that mismatches the top (a common gpt-image hallucination). No extra hands/fingers, no deformed ears.",
     "still_rules": "Tight bust framing, broadcast mic foreground, over-ear headphones. MOUTH NEUTRAL/CLOSED (open-mouth still breaks lipsync). State the hairstyle EXPLICITLY and coherently (e.g. 'short neatly tousled hair above the collar, no long strands'). Photorealistic, 35mm lens, shallow background blur.",

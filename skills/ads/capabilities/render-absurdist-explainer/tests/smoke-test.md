@@ -50,7 +50,7 @@ python3 compose.py --config /tmp/absurdist-smoke/config.json \
 - `compose.py` prints per-scene retime lines, the total runtime, and a final
   `WROTE ... (expected ~Xs, delta ±...)`. `master.mp4` is 1080×1920, 30fps; its duration is
   within ±0.1s of `sum(scenes[].target_sec) + end_card.dwell_sec`.
-- Run the `watch` skill on `master.mp4`: every character's silhouette holds across scenes,
+- Run the `watch` skill on `master.mp4`: every character's look holds across scenes,
   the single narrator voice (whoever the recipe's `choices.narrator` picked) carries the
   whole spot, the motif word lands ≥3×, no AI brand text
   leaked into a cartoon background, captions don't collide with on-screen text, and the end

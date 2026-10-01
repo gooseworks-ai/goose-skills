@@ -7,10 +7,11 @@ produced by per-step driver scripts that live in
 the whole run via `video-orchestrator-with-control-plane` (variant mode — this format has no
 specialised orchestrator).
 
-**Choices, not defaults.** The tone, the set and both hosts come from the format recipe's
-`choices` (`tone`, `set`, `skeptic_host`, `believer_host`). The Ladder values quoted below
-(comedy tone, laundromat set, Brittney/Brad, lime end card) are the worked example only. `HER` /
-`HIM` are the skeptic / believer slots, not genders.
+**Choices, not defaults.** How the hosts relate, the tone, the set and both hosts come from the
+format recipe's `choices` (`dynamic`, `tone`, `set`, `host_a`, `host_b`). The Ladder values quoted
+below (a doubter-won-over dynamic, comedy tone, laundromat set, Brittney/Brad, lime end card) are
+the worked example only. `HER` / `HIM` are the host A / host B slots — they fix neither gender nor
+role.
 
 The steps run **in order** because each depends on the last: the script sets the timeline, the VO
 gives the per-line timings, the timings + set drive the stills, the stills seed the lipsync clips,
@@ -23,7 +24,7 @@ the VO's timestamps drive the captions, and the stitch stitches all of it + the 
 | `voices.HER` / `voices.HIM` | one voice per host, `eleven_multilingual_v2` with-timestamps | `render_vo.py` | 1 | **PAID** (ElevenLabs, ~22 lines) |
 | `scenes[].text` | the per-line VO copy (intonation-marked) | `render_vo.py` | 1 | **PAID** |
 | `set_description` | the chosen set fed into the base-still prompts | (hand-generated bases) | 2 | — |
-| `characters.bases[]` (2) | two base stills, mouth closed, at the desk | (skeptic first, believer on skeptic's still as ref) | 2 | **PAID** (`gpt-image-2` quality=high, 2 imgs — NOT nano-banana, which reads AI-stock) |
+| `characters.bases[]` (2) | two base stills, mouth closed, at the desk | (host A first, host B on host A's still as ref; `host-a-base.png` / `host-b-base.png`) | 2 | **PAID** (`gpt-image-2` quality=high, 2 imgs — NOT nano-banana, which reads AI-stock) |
 | `characters.variant_template` + `expression_variants[]` | ~10 edit-anchored expression variants, base as SOLE ref | `render_variants.py` | 2 | **PAID** (`gpt-image-2/edit` quality=high, ~10 imgs, sequential; append `realism_suffix`, QC for hallucinated hair-lock/hands) |
 | `scenes[].still` | which still each line lipsyncs from | `render_clips.py` (reads `script.json`) | 3 | — |
 | `lipsync_engine` | Veed Fabric 1.0 via fal.ai per (still, VO) pair | `render_clips.py --gateway veed-fal --resolution 720p` | 3 | **PAID** (fal.ai, ~22 × 720p) |
@@ -45,7 +46,7 @@ sync to — do NOT Whisper.** Lines are intonation-marked (`...` pause, ` — ` 
 
 - **Two bases** (hand-generated): tight bust, broadcast mic foreground, over-ear headphones, at
   the chosen set's desk, **mouth NEUTRAL/CLOSED** (an open-mouth still breaks the lipsync driver).
-  Generate the skeptic base FIRST, then the believer using the skeptic's still as a background
+  Generate host A's base FIRST, then host B's using host A's still as a background
   reference so the set matches.
   Generate with **gpt-image-2 quality=high** and append `characters.realism_suffix` — NOT
   nano-banana (its faces read as smooth "AI-stock" and were rejected in testing). State the
@@ -90,5 +91,5 @@ Its `--stills-dir` / `--clips-dir` are relative to the script's own `working/` r
 
 Re-cuts (new caption chunking, re-timed clips, swapped end card) reuse the existing VOs/stills/clips
 and cost **$0** — only steps 1–3 spend. The v2 master re-rendered only scenes 7 + 15 (more natural
-skeptic reads) and re-stitched — a targeted `render_vo.py` + `render_clips.py --only 7,15` + a
+reads from the demo's doubting host) and re-stitched — a targeted `render_vo.py` + `render_clips.py --only 7,15` + a
 free re-stitch.

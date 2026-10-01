@@ -7,28 +7,35 @@ status: active
 # render-absurdist-explainer
 
 The free, deterministic renderer for the **absurdist-explainer** video ad format — an
-animated spot where the problem is a personified villain, the ad teaches the product's
-ownable mechanism through cartoon biology, lists the damage, then collapses the villain's
-scheme when the product arrives. One narrator voice carries the whole spot. This
-capability is the **FREE assembly stage only**. All generative work (nano-banana
-keyframes, Seedance i2v clips, ElevenLabs VO + music) happens upstream in the recipe and
-is handed to this capability as files.
+animated spot that explains one problem and how the product fixes it. The format is the
+mechanics: show the problem in a funny, exaggerated cartoon way, teach the product's
+ownable mechanism visually, show what the problem costs, bring the product in, land the
+fix as the climax, pay it off, end on a real-product card. One narrator voice carries the
+whole spot. *How* the story is told (problem → fix, how it works, a day in the life, the
+product as hero, or a villain arc) is the user's choice, made upstream. This capability
+is the **FREE assembly stage only**. All generative work (nano-banana keyframes, Seedance
+i2v clips, ElevenLabs VO + music) happens upstream in the recipe and is handed to this
+capability as files.
 
 It ports the validated compose recipe from two reference runs (a cortisol/stress
-supplement and a baby-eczema cream). The recipe is deterministic — iterate the cut for
-free, re-roll only the offending paid beat.
+supplement and a baby-eczema cream; both happened to use the villain arc). The recipe is
+deterministic — iterate the cut for free, re-roll only the offending paid beat.
 
 ## Choices
 
 The creative calls are made upstream by the recipe's `choices` and arrive here only as
-files and config values. This renderer is style-agnostic: it never assumes a look, a
-narrator or a music style.
+files and config values. This renderer is story- and style-agnostic: it never assumes a
+story shape, a cast, a look, a narrator or a music style.
 
-- **`story_shape`** — how the story is told. Reaches this capability as the per-scene
-  `caption` text and the VO files. Asked of the user; the demo used "the villain narrates
-  its own defeat".
+- **`story_shape`** — how the story is told: problem → fix (no villain) / how it works /
+  a day in the life / the product as hero / villain arc (the problem as a cartoon villain
+  who schemes and loses). Reaches this capability as the per-scene `caption` text and the
+  VO files. Asked of the user; the demo used the villain arc.
+- **`cast`** — who the cartoon characters are (the customer, the product as a character,
+  a mascot; a personified problem only on the villain arc). Reaches this capability only
+  inside the clips. Asked of the user.
 - **`narrator`** — who speaks the single VO track. Arrives as the `scenes[].vo` files.
-  Asked of the user; the demo used the villain.
+  Asked of the user; the demo used the villain (villain arc only).
 - **`visual_style`** — the art style of the i2v clips (`scenes[].clip`). Asked of the
   user; the demo used Pixar-style 3D. Nothing here depends on it.
 - **`narrator_voice`** — the voice cast for the VO. Asked of the user; the demo used a
@@ -67,7 +74,8 @@ narrator or a music style.
 - `scripts/compose.py` — the assembler: per-scene retime + identical 30fps re-encode →
   concat → Ken-Burns end card → VO/music loudnorm mix → burn captions → master mp4.
 - `scripts/config.example.json` — the shape of the `config` the recipe binds. Its values
-  are a worked example (the demo build: villain-narrated eczema story, placeholder brand).
+  are a labelled worked example (the demo build: a villain-arc eczema story, placeholder
+  brand).
   Captions, end-card copy and palette come from the user's brand and choices — never copy
   them as defaults.
 
@@ -98,7 +106,7 @@ read slow), `captions_ass`, and `caption_style`. See `config.example.json`.
 
 ## Requires
 
-`watch` (QC the final master — confirm every character's silhouette holds, the single
+`watch` (QC the final master — confirm every character's look holds, the single
 narrator voice carries the whole spot, the motif lands ≥3×, no AI brand text leaked into a cartoon
 background, the end card is the real product, and duration is within ±0.1s of the summed
 windows). The recipe gates the paid `create-image-fal` (keyframes), `create-video-fal`

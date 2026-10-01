@@ -6,8 +6,9 @@ status: active
 
 # render-podcast-skit
 
-Assemble a **two-host podcast skit** ad from a config: a skeptic and a believer at a podcast
-desk do a snappy back-and-forth about the product. Each line is its own lipsync clip so the edit can
+Assemble a **two-host podcast skit** ad from a config: two hosts at a podcast desk do a snappy
+back-and-forth about the product, related however the user chose (friends, interviewer + guest,
+a doubter won over, two fans, a friendly debate). Each line is its own lipsync clip so the edit can
 cut on the dialogue beat (~1.8s avg); this capability is the **FREE, deterministic assembly**
 that concatenates those clips, renders the WHITE captions, and appends the brand end card.
 
@@ -20,9 +21,13 @@ assembly just renders whatever the config holds:
   voice style. Don't force humour: jokes only for the comedy tone. *The demo used funny banter.*
 - **set** — home studio, living room, café, office, or an absurd product-irrelevant set (where the
   mismatch is the joke). *The demo used a 24hr laundromat at 2am.*
-- **skeptic_host / believer_host** — each host's gender, age, look. `voices.HER` / `voices.HIM`
-  and `who: HER|HIM` are only the skeptic and believer SLOTS, not genders. *The demo used a young
-  woman skeptic and a young man believer.*
+- **dynamic** — how the two hosts relate: two friends chatting, a host interviewing a guest, one
+  doubting and the other winning them over, two fans swapping tips, or a friendly debate. Sets the
+  script and each voice's `role`. Never default to skeptic vs believer. *The demo used "a doubter
+  won over".*
+- **host_a / host_b** — each host's gender, age, look. `voices.HER` / `voices.HIM` and
+  `who: HER|HIM` are only the host A and host B SLOTS — they fix neither gender nor role. *The demo
+  used a young woman as host A (the doubter) and a young man as host B.*
 
 `scripts/config.example.json` is the worked example (Ladder run-02 "Laundromat 2am", ~49s
 1080×1920 9:16, ~22 lines) — copy its structure, never its creative values; `scripts/PIPELINE.md` maps every config block to its source step
