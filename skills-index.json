@@ -7311,6 +7311,38 @@
       }
     },
     {
+      "slug": "render-whiteboard-explainer",
+      "name": "render-whiteboard-explainer",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Assemble a whiteboard explainer video ad from a beats file — a narrator explains one idea while a real whiteboard fills up in black marker, with a hand-lettered title, bulleted rows down the left, a drawing filling the right, and a payoff that letters the closing line and rings the claim. The board is a PHOTOGRAPH and the ink is multiplied onto it, so the surface sheen and window light come through the strokes; the drawings are generated as line art and traced to ordered strokes, then revealed in drawing order on the word they belong to. The layout is SOLVED from the beats, never hand-placed. FREE assembly (Pillow plus ffmpeg) apart from one board photo and one drawing per subject, both one-time per brand. Use for the whiteboard format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-whiteboard-explainer",
+      "files": [],
+      "metadata": {
+        "slug": "render-whiteboard-explainer",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "example_prompt": "Make a whiteboard explainer for this brand: a narrator talks while a real whiteboard fills up in black marker.",
+        "installation": {
+          "base_command": "npx goose-skills install render-whiteboard-explainer",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch",
+          "create-image-gpt-image-fal",
+          "create-vo-elevenlabs"
+        ]
+      }
+    },
+    {
       "slug": "restaurant-booking",
       "name": "restaurant-booking",
       "category": "capabilities",
