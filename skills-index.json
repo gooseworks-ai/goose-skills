@@ -7356,7 +7356,7 @@
       "name": "review-finished-ad",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Final QC gate for a rendered 9:16 video ad, run before it is published. One script checks what a machine can decide — exact 1080x1920 size, a hook that moves and speaks in the first second, no frozen stretches, no dead air, no black frames, the brand's real logo on the end card (never a favicon, never a redrawn or wrong logo), end-card colours near the brand palette — and builds one contact sheet (frames with the TikTok/Reels UI safe zones shaded, beside the logo, product images and a font specimen) for the checks that need eyes: font, product likeness, product consistency across scenes, safe zones. Exit 0 PASS / 2 FAIL / 3 ERROR. Use on every finished video master before pinning it.",
+      "description": "Final QC gate for a rendered 9:16 video ad, run before it is published. One script checks what a machine can decide — exact 1080x1920 size, a hook that moves and speaks in the first second, no frozen stretches, no dead air, no black frames, the brand's real logo on the end card (never a favicon, never a redrawn or wrong logo), end-card colours near the brand palette — and builds one contact sheet (frames with the TikTok/Reels UI safe zones shaded, beside the logo, product images and a font specimen) for the checks that need eyes — font, product likeness, product consistency across scenes, safe zones. Exit 0 PASS / 2 FAIL / 3 ERROR. Use on every finished video master before pinning it.",
       "tags": "ads, brand",
       "path": "skills/ads/capabilities/review-finished-ad",
       "files": [
