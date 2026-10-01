@@ -9454,6 +9454,47 @@
       }
     },
     {
+      "slug": "write-video-ad-script",
+      "name": "write-video-ad-script",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Write the words of a short-form video ad (voiceover, dialogue, chat bubbles, on-screen lines) the way performance creative teams do instead of from a blank page. Builds the script from the buyers' own words, the beat sheet of an ad that already works and three deliberately different angles, filters them with a rule check and a second non-Claude model, and takes the strongest into the review with the other two as one-line swaps. Use it in every video ad run before any paid step, and whenever the user asks to write, rewrite or improve a video ad script or says a script sounds generic or AI-written.",
+      "tags": "ads, content",
+      "path": "skills/ads/capabilities/write-video-ad-script",
+      "files": [
+        "skills/ads/capabilities/write-video-ad-script/SKILL.md",
+        "skills/ads/capabilities/write-video-ad-script/references/files.md",
+        "skills/ads/capabilities/write-video-ad-script/references/hook-families.md",
+        "skills/ads/capabilities/write-video-ad-script/scripts/critique_scripts.py",
+        "skills/ads/capabilities/write-video-ad-script/scripts/lint_scripts.py",
+        "skills/ads/capabilities/write-video-ad-script/scripts/media_proxy.py",
+        "skills/ads/capabilities/write-video-ad-script/skill.meta.json",
+        "skills/ads/capabilities/write-video-ad-script/tests/test_critique_scripts.py",
+        "skills/ads/capabilities/write-video-ad-script/tests/test_lint_scripts.py"
+      ],
+      "metadata": {
+        "slug": "write-video-ad-script",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads",
+          "content"
+        ],
+        "example_prompt": "Write the script for my video ad from what our customers actually say",
+        "installation": {
+          "base_command": "npx goose-skills install write-video-ad-script",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
       "slug": "yc-batch-evaluator",
       "name": "yc-batch-evaluator",
       "category": "capabilities",
