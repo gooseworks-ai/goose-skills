@@ -29,17 +29,19 @@ NEUTRAL_ACCENT = (34, 34, 34)
 NEUTRAL_GREY = (107, 107, 107)
 
 # Portable font fallback chain: DejaVu (ships with Pillow / most Linux), then macOS
-# Arial, then Pillow's built-in. Bold + regular variants each.
+# Arial, then Windows Arial, then Pillow's built-in. Bold + regular variants each.
 _BOLD_CANDS = [
     "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
     "/System/Library/Fonts/Supplemental/Arial Bold.ttf",
     "/Library/Fonts/Arial Bold.ttf",
+    "C:/Windows/Fonts/arialbd.ttf",
     "DejaVuSans-Bold.ttf",
 ]
 _REG_CANDS = [
     "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
     "/System/Library/Fonts/Supplemental/Arial.ttf",
     "/Library/Fonts/Arial.ttf",
+    "C:/Windows/Fonts/arial.ttf",
     "DejaVuSans.ttf",
 ]
 
