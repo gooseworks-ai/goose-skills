@@ -1,496 +1,370 @@
 ---
 name: ad-angle-miner
 description: >
-  Find the ad angles worth running, then turn them into what the user asked for: copy angles
-  only, video ad ideas, or static ad ideas. Mines customer language (reviews, Reddit, social
-  comments, support tickets) and competitor ads, and for video or static also mines what is
-  getting organic reach on TikTok, Instagram, YouTube Shorts and X. Every reference is labelled
-  paid or organic, so boosted "winners" are not copied. Outputs a ranked angle bank; for video
-  and static, each angle comes with a creative (a format or template to make it with) and can
-  be handed straight to making the ads.
+  Find the ad angles worth running and turn them into ready-to-make ad ideas: static ads, video
+  ads, or just the copy. Each angle is backed by what buyers actually say (the brand's reviews,
+  competitors' bad reviews, comments on the ads and posts that work) and by what advertisers keep
+  paying to run, never by one Reddit thread. Static ideas come with a matching template from the
+  live template library; video ideas with a video format and the organic posts behind them. Every
+  reference is labelled paid or organic and links to the real post or ad. Picked ideas can be
+  handed straight to making the ads.
 tags: [ads]
 ---
 
 # Ad Angle Miner
 
-An ad is **copy plus creative**. This skill finds the angles real buyers respond to and returns
-the part the user asked for:
+An ad is **copy plus creative**. This skill finds the angles real buyers respond to and turns each
+into an ad idea the user can make:
 
-- **Copy**: the angle bank: pain, outcome and proof language with headlines and body copy.
-- **Video**: ranked video ad ideas: each angle as a hook, a video format and the posts or ads behind it.
-- **Static**: ranked static ad ideas: each angle as a headline plus a static template to make it with.
+- **Static**: a headline and primary text, plus a template from the live library whose layout fits the message.
+- **Video**: a hook, plus a video format from the live catalogue and the organic posts that prove the pattern.
+- **Copy only**: the headline and primary text lines, with no creative. Same evidence as static.
 
-**Core principle:** The best ad angles aren't invented in a brainstorm. They're extracted from what
-real people are already saying and watching. This skill finds those angles and ranks them by the
-strength of the evidence, and a paid ad's reach never counts as evidence that it works.
+**Core principle:** a good angle shows up in two places at once: in what buyers say (reviews,
+comments) and in what the market keeps paying to run (long-running ads, many variants). One
+source alone is a hunch. A paid ad's reach is never proof on its own, and a single forum thread
+never is either.
 
-**Do only the work the chosen output needs.** A copy request never searches for videos, reads ad
-formats or looks at templates. A video request doesn't mine G2 reviews unless the user asks.
+**Do only the work the chosen output needs.** Copy and static never search for videos or read
+video formats. Copy never looks at templates. Video doesn't mine product reviews unless asked.
 
 ## When to Use
 
-- "What angles should we run in our ads?" / "Mine reviews for ad messaging" (copy)
-- "What are people complaining about with [competitor]?" (copy)
-- "What video ads should I make?" / "Give me video ad ideas / hooks for [brand]" (video)
-- "What's working in my competitors' video ads?" (video)
-- "Give me static ad ideas" / "What image ads should we run?" (static)
-- "I need fresh ad angles, not the same tired stuff" (ask which output, below)
+- "What static ads should I make?" / "Give me image ad ideas for [brand]" (static)
+- "What video ads should I make?" / "Give me video ad hooks for [brand]" (video)
+- "Write ad copy / headlines for [brand]" / "What should our ads say?" (copy)
+- "What's working in my competitors' ads?" (any; ask which output)
+- "I need fresh ad angles" (ask which output)
 
 ## Prerequisites
 
-- **GooseWorks MCP connector** (recommended): brand context, competitors, the competitor ad
-  library, saved inspiration, ScrapeCreators searches through the GooseWorks proxy (no key), the
+- **GooseWorks MCP connector** (recommended): brand context, competitors, the Meta Ad Library
+  (imported and live search), comments and reviews through the ScrapeCreators proxy (no key), the
   video format catalogue and the static template library. With it connected, no API key is needed.
-- **Without GooseWorks**: a direct ScrapeCreators key for social and ad-library evidence
-  (`scrapecreators-api`, `competitor-ad-intelligence`) and web search. Video and static outputs
-  then recommend a format in words instead of a catalogue entry, and there is no hand-off step.
-- **Optional:** `APIFY_API_TOKEN` for bulk Amazon review and Reddit scraping (copy mode). Without it,
-  use web search for reviews and `scrapecreators-api` for Reddit.
+- **Without GooseWorks**: a direct ScrapeCreators key (`scrapecreators-api`,
+  `competitor-ad-intelligence`) and web search. Static and video ideas then describe the layout or
+  format in words instead of naming a library entry, and there is no hand-off step.
 
 ## Phase 0: Intake
 
-### 0A: Choose the output (this decides everything else)
+### 0A: Choose the output
 
 Read it from the request:
 
 | The user says | Output |
 |---|---|
-| angles, messaging, copy, headlines, pain points, "what should we say" | **copy** |
-| video, UGC, reels, TikTok, "what video should I make" | **video** |
 | static, image ads, banners, "what image ads" | **static** |
-| "ads" with no hint, or "fresh angles" | **ask once**: "Copy angles only, video ad ideas, or static ad ideas?" |
+| video, UGC, reels, TikTok, "what video should I make" | **video** |
+| copy, headlines, primary text, "what should our ads say" | **copy** |
+| "ads" or "angles" with no hint | **ask once**: "Static ad ideas, video ad ideas, or just the copy?" |
 
-The user can pick more than one (for example video and static); then run the union of their
+The user can pick more than one (for example static and video); then run the union of their
 sources, once. Never widen the scope on your own.
 
 ### 0B: What each output runs
 
-| Source | copy | video | static |
+| Source | static | video | copy |
 |---|---|---|---|
 | Brand context (1-0) | yes | yes | yes |
-| Reviews: G2 / Capterra / Amazon (1A) | yes | only if asked | only if asked |
-| Reddit / community (1B) | yes | only if asked | only if asked |
-| Social comments (1C) | yes | optional: only on 1-2 top posts, via the TikTok, Instagram or YouTube comments endpoints | no |
-| Competitor ads (1D) | copy text only | video ads first, then any | static ads first, then any |
+| The brand's own ads (1A) | yes | yes | yes |
+| Competitor ads (1B) | yes, image ads first | yes, video ads first | yes, the copy |
+| Customer voice: reviews + comments (1C) | **yes** | comments on the top posts only | **yes** |
+| Organic short-form reach (1D) | no | **yes** | no |
 | Internal data (1E) | if provided | if provided | if provided |
-| Organic short-form reach (1F) | **no** | yes | no |
-| Format catalogue / template library (Phase 2.5) | **no** | video formats | static templates |
+| Reddit and forums (1F) | only if asked | only if asked | only if asked |
+| Template library (2.5) | **yes** | no | no |
+| Video format catalogue (2.5) | no | **yes** | no |
 
 ### 0C: The rest of the intake
 
 Take what the request and the brand context already answer; ask only for what's missing, in one message:
 
 1. **Your product**: name and what it does in one sentence (with GooseWorks: the brand context).
-2. **Competitors**: 2-5 names (with GooseWorks: the brand's tracked competitors, or the suggested ones).
-3. **ICP**: who you're targeting.
+2. **Competitors**: 2-5 names (with GooseWorks: the tracked ones, or the suggested ones).
+3. **Who it's for**, if the brand context doesn't say.
 4. **Search terms** the user wants covered, if any. Use them first.
-5. **Angles already tested**, so we can skip them.
 
 Never invent a customer, a result or a claim: an angle may only promise what the brand's own facts support.
 
 ## Phase 1: Source Collection
 
-Run only the sections Phase 0B selected.
+Run only the sections Phase 0B selected. ScrapeCreators calls go through `scrapecreators-api`
+(GooseWorks: `data_call_provider` with provider scrapecreators, GET). Each is billed per call:
+before the first one, say roughly how many you'll run and ask one yes/no. Free sources never need
+asking. Large results are saved to a file by some hosts: request a full page and parse the saved
+file rather than paging in small pieces.
 
-### 1-0: Brand Context (GooseWorks)
+### 1-0: Brand Context
 
-With the GooseWorks MCP: resolve the brand with `brand_read` (one brand in the org means use it
-and say which), then read it with sections summary, products, competitors, accounts and learnings.
-Note what it sells (physical product, app, service), who buys it, its claims and can't-say rules,
-which products have clean photos, and whether it has screen recordings or footage. `competitor_read`
-lists tracked competitors; with none, its suggestions view names likely ones. Say them in one line
-and carry on.
+With the GooseWorks MCP: `brand_read` (one brand in the org means use it and say which), with
+sections summary, products, competitors, accounts and learnings (the reply is large: parse the
+saved file); add kit when you need claims,
+voice or photos. Note what it sells, who buys it, its claims and can't-say rules, its offers, which
+products have clean photos (check the files: an SVG logo or a small thumbnail is not a clean
+product photo), and whether it has screen recordings or footage. `competitor_read` lists tracked
+competitors; with none, its suggestions view names likely ones. Say them in one line and carry on.
 
-### 1A: Review Mining (Apify)
+### 1A: The Brand's Own Ads
 
-Use the Apify Amazon Reviews Scraper (or web_search for G2/Capterra/TrustRadius reviews).
+What the brand already runs decides what is new.
 
-**Option 1: Amazon product reviews via Apify**
+1. **Find the right page.** Search the Meta Ad Library for the brand by name
+   (/v1/facebook/adLibrary/search/companies, query = brand name) and compare the page with the
+   one stored on the brand. If the stored page returns no ads but the search finds an active page
+   with the brand's name, use the found page and tell the user the stored page looks wrong.
+2. **Read its ads** (/v1/facebook/adLibrary/company/ads with that page id; status ACTIVE, then
+   INACTIVE for the stopped ones when the endpoint returns them). Group ads with the same primary
+   text as variants of one message.
+3. **Sort them:**
+   - **Still running for 30+ days, or with 3+ variants**: the brand's own winner. A young ad
+     account has few old ads, so lean on the variant rule there. Don't skip it;
+     an idea can refresh it with a new creative. Flag fatigue if it has run for months.
+   - **Stopped**: tested and dropped. Don't propose it again unless the evidence is new.
+   - **Never run**: the white space. An angle buyers talk about that the brand has never run is
+     the most valuable find.
 
-Start a run of the `web_wanderer/amazon-reviews-extractor` actor:
+### 1B: Competitor Ads
 
-```
-POST https://api.apify.com/v2/acts/web_wanderer~amazon-reviews-extractor/runs?token=$APIFY_API_TOKEN
-Content-Type: application/json
+1. **Imported ads (free)**: `ads_template_read` in competitor mode, one tracked competitor at a time
+   (filter by its source id). Rows are heavy; keep the source ad id, primary text, CTA, start and
+   end dates and ratio. Today most imported ads are images; their copy is still evidence.
+2. **Keep it on-category.** A tracked competitor can sell something else in another market. Drop
+   ads that aren't about the same kind of product, and say which competitor was off-category.
+3. **Find who actually advertises in the category** (paid): Meta Ad Library keyword search
+   (/v1/facebook/adLibrary/search/ads) with 2-3 category terms ("chai concentrate", "masala chai"),
+   country set to the brand's market and status ACTIVE. Keyword search also returns unrelated
+   advertisers: drop anything off-category. This finds the real competitors the roster misses.
+4. For every ad keep: the link, advertiser, the hook (first line), the offer, the CTA, **days
+   running** and the **number of variants**. Live searches return each ad's url: use it. Imported
+   rows return only the ad id: there, and only there, build the link as facebook.com/ads/library
+   with that id. For a live ad the end date is the day it was fetched (imported rows: the day they
+   were imported), so write "at least N days, still running".
 
-{
-  "products": [
-    "https://www.amazon.com/dp/PRODUCT_ASIN"
-  ],
-  "maxReviews": 100
-}
-```
+### 1C: Customer Voice
 
-Poll until the run finishes:
+What buyers say in their own words. This is what keeps angles from being guesses.
 
-```
-GET https://api.apify.com/v2/acts/web_wanderer~amazon-reviews-extractor/runs/{RUN_ID}?token=$APIFY_API_TOKEN
-```
+1. **The brand's own reviews**: its product pages (review widgets often load by script, so a
+   plain web fetch shows only a few; fetch the raw page HTML and read the review blocks and any
+   "customers say" summary in it), its TikTok Shop reviews if it sells there (/v1/tiktok/shop/product/reviews), its Amazon
+   listing (web search and fetch). Keep 4-5 star reviews for outcomes and proof, and 1-3 star
+   reviews for objections to answer.
+2. **Competitors' bad reviews**: 1-2 star reviews of the top 2 competitors' products, from the same
+   kinds of sources. These are the gaps the brand can claim.
+3. **Comments on what's working**: most ads link to a landing page, not a post, so their comments
+   usually can't be read. Read comments instead on:
+   - the brand's own top posts (its accounts from the brand context; Instagram
+     /v2/instagram/user/posts, TikTok /v3/tiktok/profile/videos, then the comments of the 2 best);
+   - 1-2 complaint or comparison threads found by keyword search in the category (TikTok
+     /v1/tiktok/search/keyword, then /v1/tiktok/video/comments);
+   - in video mode, the top organic posts from 1D.
 
-When `status` is `SUCCEEDED`, fetch results:
+   Comments paths: TikTok /v1/tiktok/video/comments, Instagram /v2/instagram/post/comments, YouTube
+   /v1/youtube/video/comments, Facebook /v1/facebook/post/comments. Look for questions, objections
+   and "I switched because…".
 
-```
-GET https://api.apify.com/v2/datasets/{DATASET_ID}/items?token=$APIFY_API_TOKEN
-```
+Keep every quote verbatim with its link. Never paraphrase a quote into something the buyer didn't say.
 
-**Output fields:** Each review has `rating` (1-5), `reviewTitle`, `reviewText`, `reviewDate`, `verifiedPurchase` (bool), `productAsin`, `productTitle`, `helpfulVoteCount`.
+### 1D: Organic Short-Form Reach (video only)
 
-**Option 2: G2/Capterra/TrustRadius reviews via web_search**
+What is getting **earned** reach right now.
 
-For B2B products, run web searches to find review content:
-
-```
-web_search: "<product_name> reviews site:g2.com"
-web_search: "<product_name> reviews site:capterra.com"
-web_search: "<product_name> reviews site:trustradius.com"
-web_search: "<competitor_name> reviews site:g2.com"
-```
-
-Focus on:
-- **1-2 star reviews of competitors** — Pain they're failing to solve
-- **4-5 star reviews of you** — Outcomes that delight buyers
-- **4-5 star reviews of competitors** — Strengths you need to counter or match
-- **Review language patterns** — Exact phrases buyers use
-
-### 1B: Reddit/Community Mining (Apify)
-
-Use the `trudax/reddit-scraper-lite` actor to search Reddit for relevant threads:
-
-**Search by keyword:**
-```
-POST https://api.apify.com/v2/acts/trudax~reddit-scraper-lite/runs?token=$APIFY_API_TOKEN
-Content-Type: application/json
-
-{
-  "searches": [
-    "<product category> OR <competitor> OR <pain keyword>"
-  ],
-  "maxItems": 50
-}
-```
-
-**Browse a specific subreddit:**
-```
-POST https://api.apify.com/v2/acts/trudax~reddit-scraper-lite/runs?token=$APIFY_API_TOKEN
-Content-Type: application/json
-
-{
-  "startUrls": [
-    {"url": "https://www.reddit.com/r/SUBREDDIT_NAME/hot/"}
-  ],
-  "maxItems": 50
-}
-```
-
-Poll until complete:
-
-```
-GET https://api.apify.com/v2/acts/trudax~reddit-scraper-lite/runs/{RUN_ID}?token=$APIFY_API_TOKEN
-```
-
-Fetch results when `status` is `SUCCEEDED`:
-
-```
-GET https://api.apify.com/v2/datasets/{DATASET_ID}/items?token=$APIFY_API_TOKEN
-```
-
-**Output fields:** Each item has `dataType` ("post" or "comment"), `title` (posts only), `body`, `communityName`, `upVotes`, `numberOfComments` (posts), `url`, `createdAt`.
-
-Extract:
-- Questions people ask before buying
-- Complaints about current solutions
-- "I wish [product] would..." statements
-- Comparison threads (vs discussions)
-
-### 1C: Social Post and Comment Mining
-
-Use `scrapecreators-api` to collect relevant X posts plus Instagram, TikTok, YouTube, or Facebook posts where the audience is discussing the problem. Run `comment-mining` on the highest-signal threads. Use web search only as a fallback:
-
-```
-web_search: "<competitor> (frustrating OR broken OR hate) site:x.com"
-web_search: "<competitor> (love OR switched to OR replaced) site:x.com"
-web_search: "<product category> (recommendation OR alternative OR looking for) site:twitter.com"
-web_search: "<competitor> site:x.com" (for general sentiment)
-```
-
-Run 3-5 queries covering:
-- Competitor complaints and frustrations
-- Product category praise / switching stories
-- "What do you use for X?" buying-intent threads
-
-### 1D: Competitor Ad Mining
-
-With the GooseWorks MCP, read the competitor ads already imported: `ads_template_read` in
-competitor mode, one competitor at a time (filter by its source id). Rows are heavy (about 4KB
-each, full layout descriptions): page with a small limit and keep only the fields below. Rows
-carry no video/image field, and today the imported ads are mostly images; their copy is still
-angle evidence. If a tracked competitor has none, `ads_library_scrape` with its source id starts
-a free import; read it when the job finishes. For each ad keep the Ad Library link
-(facebook.com/ads/library with the ad's source ad id), the hook (first line of the primary text),
-the offer, the CTA and **days running** (end date minus start date). For an ad that is still
-live, the end date is just the day it was imported, so write "at least N days, still running".
-Group ads with the same primary text: **many variants of one message** is as strong a signal as
-a long run.
-
-Otherwise:
-
-Use `competitor-ad-intelligence` for structured Meta and Google ad-library collection. Use web search only to verify an advertiser or fill a documented gap:
-
-```
-web_search: "<competitor_name> site:facebook.com/ads/library"
-web_search: "<competitor_name> facebook ads library"
-web_search: "<competitor_name> ad creative examples"
-```
-
-This reveals:
-- Angles they've validated (long-running ads = working)
-- Angles they're testing (new ads)
-- Angles nobody is running (white space)
-
-### 1F: Organic Short-Form Reach (video only)
-
-What is getting **earned** reach right now, on TikTok, Instagram Reels, YouTube Shorts and X.
-
-1. **Free first** (GooseWorks): the competitor dossiers (`competitor_read` with a slug) hold recent
-   posts; `social_inspiration_library` and `social_inspiration_search` hold saved and researched posts.
-   These are often empty (research still pending). If they are, go straight to the paid ask below.
-2. **Paid searches, ask once**: "I'd run about N searches (TikTok, Instagram Reels, YouTube Shorts,
-   plus X mentions of your competitors). Each is billed per call. Go ahead?" On yes, run these
-   through `scrapecreators-api` (GooseWorks: `data_call_provider` with provider scrapecreators,
-   GET). Terms: the user's own first, then the category, the main problem it solves, each
-   competitor's name.
+1. **Free first**: the competitor dossiers (`competitor_read` with a slug) and `social_inspiration_library`
+   / `social_inspiration_search`. These are often empty; then go to the paid searches.
+2. **Paid searches** (one yes/no for the batch). Terms: the user's own first, then the category, the
+   main problem it solves, each competitor's name.
 
    | Platform | Path | Query | Notes |
    |---|---|---|---|
-   | TikTok | /v1/tiktok/search/keyword | query, date_posted last-3-months, sort_by most-liked | About 2MB per call: parse it, keep url (tiktok.com/@author/video/id), author, follower count, statistics.play_count, create_time, desc, commerce_info |
-   | Instagram Reels | /v2/instagram/reels/search | query, date_posted last-month | Google-indexed, best-effort, about 9 results a page (1-11). No follower count, so reach can't be compared to the account's usual |
-   | YouTube Shorts | /v1/youtube/search | query, type shorts, **nothing else** | Adding uploadDate or sortBy with type shorts returns no results. Rows carry only id, url, title and views, and results skew old. For the 3-5 you'd cite, call /v1/youtube/video (url): channel, publishDate, and isPaidPromotion. YouTube evidence is evergreen: cite its date, skip the 90-day rule |
-   | X | none | none | ScrapeCreators has no X keyword search. Use `competitor_search_mentions` with platform x, or /v1/twitter/user-tweets for a competitor's own handle |
+   | TikTok | /v1/tiktok/search/keyword | query, date_posted last-3-months, sort_by most-liked | About 2MB per call: parse it; keep url (tiktok.com/@author/video/id), author, followers, statistics.play_count, create_time, desc, commerce_info |
+   | Instagram Reels | /v2/instagram/reels/search | query, date_posted last-month | Google-indexed, best-effort, about 9 results a page; no follower count |
+   | YouTube Shorts | /v1/youtube/search | query, type shorts, nothing else | Adding uploadDate or sortBy with type shorts returns nothing. Rows have only url, title and views: for the 3-5 you'd cite, call /v1/youtube/video for channel, publishDate and isPaidPromotion. YouTube evidence is evergreen: cite its date |
+   | X | none | none | No X keyword search: use `competitor_search_mentions` with platform x, or /v1/twitter/user-tweets for a handle |
 
-   The full, current list is the official OpenAPI (docs.scrapecreators.com/openapi.json). If a
-   call errors, read it there; never guess a path. On no: continue with the free evidence and
-   say the list has no fresh social data behind it.
-3. Keep vertical videos only. Keep posts far above their account's usual views (an outlier at 10×
-   its normal beats a big account's average post), from the last ~90 days.
-4. Watch the 3-5 strongest (the `watch` skill, or `social_inspiration_watch` for saved posts) so the
-   hook and structure you describe are what's actually in them. When neither is available, read
-   the video's transcript (YouTube: /v1/youtube/video/transcript; TikTok and Reels: the caption
-   plus the first line of speech) rather than guessing from the title.
+   The full list is the official OpenAPI (docs.scrapecreators.com/openapi.json). If a call errors,
+   read it there; never guess a path.
+3. Keep vertical videos only, far above their account's usual views, from the last ~90 days.
+4. Watch the 3-5 strongest (the `watch` skill, or `social_inspiration_watch` for saved posts). When
+   neither is available, read the transcript (YouTube /v1/youtube/video/transcript; otherwise the
+   caption and first spoken line) rather than guessing from the title.
 
-### 1G: Label Every Reference Paid or Organic (video and static)
+### 1E: Internal Data (Optional)
 
-For every post or ad you might cite:
+Support tickets, NPS comments, sales call notes the user provides. Treat them as customer voice.
+
+### 1F: Reddit and Forums (only if asked)
+
+Only when the user asks, or for a product whose buyers mainly talk there (developer tools, some
+software). Use `reddit-post-finder` or /v1/reddit/search. A thread is one person's view: it counts
+as customer voice only when the same point also shows up in reviews or comments.
+
+### 1G: Label Every Reference Paid or Organic
 
 - **paid**: any of
   - it came from an ad library;
   - TikTok: commerce_info.bc_label_test_text says "Paid partnership", "Promotional content" or
-    "Creator earns commission" (a TikTok Shop affiliate post is paid). The is_ads flag is almost
-    always false, so don't rely on it; ad_source or adv_promotable alone means unknown;
-  - Instagram: is_paid_partnership or sponsor tags, **or** the caption says #ad, sponsored,
-    gifted or tags the brand as a partner (the flag misses many disclosed posts);
-  - YouTube: isPaidPromotion from /v1/youtube/video. Call /v1/youtube/video/sponsors only when you
-    need the sponsor's name; if the two disagree, mark it unknown;
-  - **boosted**: the same caption or script on several accounts, or plays far above the account's
-    followers (100K plays on a 58-follower account), or the same creative in the ad library.
+    "Creator earns commission". The is_ads flag is almost always false; ad_source or adv_promotable
+    alone means unknown;
+  - Instagram: is_paid_partnership or sponsor tags, or the caption says #ad, sponsored, gifted or
+    tags the brand as a partner;
+  - YouTube: isPaidPromotion from /v1/youtube/video (/v1/youtube/video/sponsors only for the
+    sponsor's name; if they disagree, unknown);
+  - **boosted**: the same caption or script on several accounts, plays far above the account's
+    followers, or the same creative in the ad library.
 - **organic**: a post with none of the above.
 - **unknown**: you can't tell. Say so; never guess organic.
 
-Organic strength = reach relative to the account's normal, and recency. Paid strength = how long
-the advertiser kept running it and how many variants they made. **Never treat a paid post's views
-as proof.** Money bought them.
-
-### 1E: Internal Data (Optional)
-
-If the user provides support tickets, NPS comments, or sales call transcripts — ingest and tag with the same framework below.
+Reviews and comments are **customer voice**, a third kind of evidence. Label them as such.
 
 ## Phase 2: Angle Extraction
 
-Process all collected data through this extraction framework:
+| Category | What to look for |
+|---|---|
+| **Pain** | Specific frustrations with the status quo or competitors |
+| **Outcome** | Results buyers describe in their own words |
+| **Identity** | How buyers describe themselves or want to be seen |
+| **Switching** | Why people left a competitor |
+| **Proof** | Outcomes, ratings or credentials buyers and the brand can back up |
+| **Contrast** | Old way vs new way, them vs us |
+| **Objection** | The doubt that stops a purchase, answered |
 
-### Angle Categories
+For each angle record: the one-sentence angle, 2-5 verbatim quotes with links, which kinds of
+evidence back it (customer voice, organic reach, sustained ads), whether the brand already runs it
+(1A: winner, stopped, or never run) and the competitor gap it exploits, if any.
 
-| Category | What to Look For | Ad Power |
-|----------|-----------------|----------|
-| **Pain angles** | Specific frustrations with status quo or competitors | High — pain motivates action |
-| **Outcome angles** | Desired results buyers describe in their own words | High — positive aspiration |
-| **Identity angles** | How buyers describe themselves or want to be seen | Medium — emotional resonance |
-| **Fear angles** | Risks of NOT switching or acting | Medium — loss aversion |
-| **Competitive displacement** | Specific reasons people switched from a competitor | Very high — direct comparison |
-| **Social proof angles** | Outcomes or metrics buyers cite in reviews | High — credibility |
-| **Contrast angles** | Before/after or old way/new way framings | High — clear value prop |
+## Phase 2.5: Turn Each Angle Into an Ad
 
-### For Each Angle, Extract:
+**Every output** gets the words: a headline (8 words or fewer for static, 12 or fewer as a video
+hook) and 1-2 sentences of primary text, in the brand's voice.
 
-1. **The angle** — One-sentence framing
-2. **Proof quotes** — 2-5 verbatim quotes from sources
-3. **Source count** — How many independent sources mention this?
-4. **Competitor weakness?** — Does this exploit a specific competitor's gap?
-5. **Emotional register** — Frustration / Aspiration / Fear / Relief / Pride
-6. **Recommended format** — Search ad / Meta static / Meta video / LinkedIn / Twitter
+**Claims**: only what the brand's own data says (certifications, guarantees, ingredients, offers),
+checked **for the exact product the ad shows**: two products of one brand can differ (one has no
+added sugar, the other does).
+Flag anything the brand should approve, such as review counts, health benefits, price comparisons
+or a named person, rather than writing it as fact. When the brand's sources disagree (two
+different numbers for the same claim), flag both.
 
-## Phase 2.5: Match Each Angle to a Creative (video and static only)
+### Static: find the template live, never from a list
 
-Skip this phase for copy.
+The template library grows every week, so never rely on a remembered list of templates or layouts.
 
-**Video.** Read the format catalogue (GooseWorks: `video_catalog_list` with kind formats and the
-brand id). Each row has a template id, a card description, best-for, needs and demo examples. Only
-these formats can be made; never map to one that isn't listed. For each angle write:
+1. **Describe the layout the message needs**, in a sentence. Work it out from the angle, not from
+   a menu: a contrast angle wants two things side by side with ticks and crosses; a proof angle
+   wants a review card or a rating next to the product; an objection angle might want the doubt as
+   a quote and the answer as the headline; an offer wants the price story.
+2. **Search for it**: `ads_template_read` in query mode, with the brand id and that sentence as the
+   query. It searches the whole library by meaning and returns each match with its description,
+   search tags and a score, so templates added tomorrow are found the same way. Rank by score.
+   Run one search per angle; when the best similarity is under about 0.5, try a second phrasing.
+3. **Judge the fit from the template's own description**: does the layout carry this message, does
+   it have room for the headline (some layouts have no text slot), and can the brand supply what it
+   shows (a product photo, a lifestyle shot, a person)? Pick the best one and say why in one line.
+4. **A competitor's ad can be the template** only when nothing in the library fits (from 1B; its
+   row id is a template id). It is a third party's ad: take the layout only, never its words,
+   branding or images, and say it's a competitor's ad.
+5. Keep the result's source type with the id: a community result goes to `goose-ads` as a
+   community ad id, a template as a template id.
 
-- **Hook**: the first line or shot, in the brand's voice, 12 words or fewer.
-- **Format**: the template id, its card description quoted (never reworded), and why it fits.
-  Match the product to the format: a creator holding a product needs a physical product; a
-  screen-recording format needs an app.
-- **Needs**: the card's needs against what the brand has. Check the actual files: an SVG logo or a
-  small resized thumbnail is not a clean product photo. A missing need lowers the rank; say it.
-- **References**: 1-3 links, each with platform, account, paid / organic / unknown, and the number
-  that matters (views vs usual, or days running).
+### Video: pick from the live format catalogue
 
-**Static.** Find a template for each angle (GooseWorks: `ads_template_read` in static_library mode
-filtered by industry or style, community mode, or a competitor ad from 1D as a remix source). For
-each angle write the headline, the template id with one line on why its layout fits, what the
-brand must supply (product photo, logo), and the references.
+`video_catalog_list` with kind formats and the brand id. Only these formats can be made; never map
+to one that isn't listed. For each angle: the format's template id, its card description quoted
+(never reworded), why it fits, and its needs checked against what the brand has. Match the product
+to the format: a creator holding a product needs a physical product; a screen-recording format
+needs an app.
 
-**Claims**: a hook may only claim what the brand's own data says (certifications, guarantees,
-ingredients, offers). Flag any claim the brand should approve, such as a review count or a
-health benefit, rather than writing it as fact.
+### Copy only
 
-Adapt the pattern, never copy: take the hook shape, structure and angle, never another brand's
-words, claims, faces, footage or offer. Spread the list: no more than 3 ideas on one format or
-template, and no more than 3 on one angle (variants of the same angle count toward that 3).
+No template or format. Give 2-3 headline and primary-text variants per angle instead.
+
+Adapt the pattern, never copy: take the shape, structure and angle, never another brand's words,
+claims, faces, footage or offer. Spread the list: no more than 3 ideas on one template or format,
+and no more than 3 on one angle (variants of one angle count toward that 3).
 
 ## Phase 3: Scoring & Ranking
 
-Score each angle on:
-
 | Factor | Weight | Description |
-|--------|--------|-------------|
-| **Evidence strength** | 30% | Number of independent sources mentioning it |
-| **Emotional intensity** | 25% | How strongly people feel about this (language intensity) |
-| **Competitive differentiation** | 20% | Does this set you apart, or could any competitor claim it? |
-| **ICP relevance** | 15% | How closely does this match the target buyer's world? |
-| **Freshness** | 10% | Is this angle already overused in competitor ads? |
+|---|---|---|
+| **Evidence** | 40% | How many kinds back it (customer voice, organic reach, sustained ads) and how strong each is |
+| **Gap** | 20% | Never run by the brand, and weak or absent in competitors' ads |
+| **Fit** | 20% | The brand can claim it with its own facts, and buyers like its own customers say it |
+| **Make-ready** | 20% | The template or format fits and the brand has what it needs (copy: 100%) |
 
-**Total score out of 100. Rank all angles.**
+Score out of 100 and rank.
 
-For video and static, evidence strength counts organic outliers and long-running ads most, and an
-angle backed **only by paid references caps at 60**. Add readiness: an idea whose format or
-template needs something the brand lacks drops a tier.
+- **Sustained ads** means still running for 30+ days, or 3+ variants of one message. A single
+  short-lived ad is weak evidence.
+- **Static and copy** can have two kinds (customer voice and sustained ads; there is no organic
+  search). The brand's own winners count as sustained ads, but lower the Gap score.
+- **Caps**: an idea backed by only one kind of evidence caps at 70. One backed only by short-lived
+  ads or a single thread caps at 50. In video, a paid post's views never count as evidence.
 
-## Phase 4: Output Format
+## Phase 4: Output
 
-```markdown
-# Ad Angle Bank — [Product Name] — [DATE]
+Print one table in the chat, best first, with 10-15 ideas. Every idea needs at least one link a
+tool actually returned; no link, no idea.
 
-Sources mined: [list]
-Total angles extracted: [N]
-Top-tier angles (score 70+): [N]
+**Static:**
 
----
-
-## Tier 1: Highest-Conviction Angles (Score 70+)
-
-### Angle 1: [One-sentence angle]
-- **Category:** [Pain / Outcome / Identity / Fear / Displacement / Proof / Contrast]
-- **Score:** [X/100]
-- **Emotional register:** [Frustration / Aspiration / etc.]
-- **Proof quotes:**
-  > "[Verbatim quote 1]" — [Source: G2 review / Reddit / etc.]
-  > "[Verbatim quote 2]" — [Source]
-  > "[Verbatim quote 3]" — [Source]
-- **Source count:** [N] independent mentions
-- **Competitor weakness exploited:** [Competitor name + specific gap, or "N/A"]
-- **Recommended formats:** [Search ad headline / Meta static / Video hook / etc.]
-- **Sample headline:** "[Draft headline using this angle]"
-- **Sample body copy:** "[Draft 1-2 sentence body]"
-
-### Angle 2: ...
-
----
-
-## Tier 2: Worth Testing (Score 50-69)
-
-[Same format, briefer]
-
----
-
-## Tier 3: Emerging / Low-Evidence (Score < 50)
-
-[Brief list — angles with potential but insufficient evidence]
-
----
-
-## Competitive Angle Map
-
-| Angle | Your Product | [Comp A] | [Comp B] | [Comp C] |
-|-------|-------------|----------|----------|----------|
-| [Angle 1] | Can claim ✓ | Weak here ✗ | Also claims | Not relevant |
-| [Angle 2] | Strong ✓ | Strong | Weak ✗ | Not relevant |
-...
-
----
-
-## Recommended Test Plan
-
-### Week 1-2: Test Tier 1 Angles
-- [Angle] → [Format] → [Platform]
-- [Angle] → [Format] → [Platform]
-
-### Week 3-4: Test Tier 2 Angles
-- [Angle] → [Format] → [Platform]
-```
-
-Save to `angle-bank-[YYYY-MM-DD].md` in the current working directory (or user-specified path).
-
-**Copy** returns exactly the bank above. **Video and static** return the same bank trimmed to one
-line per angle, plus the idea table below.
-
-### Video / Static Ideas (video and static only)
-
-Print one table in the chat, best first, with 10-15 ideas. Every idea needs at least one link the
-tools actually returned; no link, no idea.
-
-| # | Idea (hook or headline) | Angle | Format / template | Why it should work | References | Needs | Score |
+| # | Headline | Primary text | Angle | Template (why it fits) | Evidence | Needs | Score |
 |---|---|---|---|---|---|---|---|
-| 1 | "I stopped taking melatonin. Here's why." | Contrast | Myth vs fact ([demo](https://…)) | Organic: 3 creators at 8-15× their usual views in 60 days | [TikTok @a](https://…) (organic, 12× usual) · [Meta ad](https://…) (paid, 94 days) | product photo ✓ | 86 |
 
-Under it, one line: which sources ran and which were skipped (and why), and how many references
-were paid vs organic. Also save the ideas as JSON next to the angle bank (rank, hook, angle,
-format or template id, why, references with url / platform / account / reach / metric, needs,
-score) so a later session can pick them up without re-running research.
+**Video:**
 
-Then ask: "Which ones should I make? Pick up to 5, or say 'the top 3'."
+| # | Hook | Angle | Format (quoted card) | Evidence | Needs | Score |
+|---|---|---|---|---|---|---|
 
-## Phase 5: Make These (video and static, GooseWorks only)
+**Copy:**
+
+| # | Angle | Headline variants | Primary text | Evidence | Score |
+|---|---|---|---|---|---|
+
+In Evidence, label each link: customer voice, organic (with views vs usual), or paid (with days
+running and variants).
+
+Under the table:
+
+- one line on which sources ran and which were skipped (and why);
+- the brand's own ads in one line: winners, stopped, and the white space found;
+- the claims the brand must approve;
+- if the stored ad page looked wrong (1A), say so.
+
+Save the angle bank (one line per angle with its quotes) as angle-bank-[brand]-[YYYY-MM-DD].md and
+the ideas as JSON next to it (rank, headline or hook, primary text, angle, template or format id
+with its source type, why, references with url / kind / metric, needs, score), so a later session
+can pick them up without re-running the research.
+
+Then ask: "Which ones should I make? Pick up to 5, or say 'the top 3'." (Copy: skip this.)
+
+## Phase 5: Make These (GooseWorks only)
 
 For the picked ideas, with no manual step in between:
 
+- **Static**: hand each idea's template id (with its source type), headline and primary text to
+  the `goose-ads` skill as the source and the brief.
 - **Video**: one project per idea with `video_project_upsert` (brand id, a short name from the
   hook, format set to the template id, and no brief, since a brief makes a multi-concept batch).
-  Then make them one after another with the `goose-video-local` skill; each idea (hook, angle,
-  audience, must-say and avoid notes, references as style guidance) is that project's brief, so
-  it never re-asks. It needs a terminal agent (Claude Code, Codex, Cursor); on a hosted connector,
-  say the ideas are ready and making them needs one of those.
-- **Static**: hand the picked template ids and each idea's headline and angle to the `goose-ads`
-  skill as the source templates and the brief.
+  Then make them one after another with `goose-video-local`; each idea is that project's brief.
+  It needs a terminal agent (Claude Code, Codex, Cursor); on a hosted connector, say the ideas are
+  ready and making them needs one of those.
 
 Up to 5 per request; offer the rest after. Each paid step of making an ad is approved before it runs.
 
 ## Tools Required
 
 - **GooseWorks MCP** (recommended): `brand_read`, `competitor_read`, `competitor_search_mentions`,
-  `ads_template_read`, `ads_library_scrape`, `social_inspiration_library`, `social_inspiration_search`,
+  `ads_template_read`, `social_inspiration_library`, `social_inspiration_search`,
   `data_call_provider`, `video_catalog_list`, `video_project_upsert`
-- **Optional environment variable:** `APIFY_API_TOKEN` — for Apify actors (review scraper, Reddit scraper), copy mode
-- **`comment-mining`** — customer language from social and ad comment threads
-- **`competitor-ad-intelligence`** — structured ad-library research through ScrapeCreators
-- **Web search** — built into your AI agent for verification and review sources
+- **`scrapecreators-api`**: ad libraries, comments, reviews, social search
+- **`competitor-ad-intelligence`**: deeper teardown of one competitor's ads, when asked
+- **`comment-mining`**: structured mining of a long comment thread
+- **`reddit-post-finder`**: only when Reddit is asked for (1F)
+- **Web search and fetch**: product-page and Amazon reviews
 
 ## Trigger Phrases
 
-- "Mine ad angles from reviews"
-- "What angles should we run?"
-- "Find pain language for our ads"
-- "Build an ad angle bank for [client]"
-- "What are people complaining about with [competitor]?"
+- "What static ads should I make for [brand]?"
 - "What video ads should I make for [brand]?"
-- "Give me static ad ideas for [brand]"
+- "Write ad copy for [brand]"
+- "What angles should we run?"
+- "What's working in my competitors' ads?"
