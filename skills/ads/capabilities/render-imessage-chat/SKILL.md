@@ -66,8 +66,26 @@ bash stitch.sh --chat <work>/master-chat.mp4 --end <work>/scene-end-endcard.mp4 
 2. **`render-end-card.js`** — fills `end-card.template.html` from `config.end_card`
    (wordmark/`logo_svg`, stars, proof text, trust trio, CTA, colors) → still MP4.
 3. **`stitch.sh`** — crossfades chat → end card, layers the send/receive SFX (from
-   the cue list; the mp3s ship in `assets/sfx`), optionally ducks a music bed
-   under it, and optionally derives a 1:1 variant. All FREE ffmpeg.
+   the cue list), optionally ducks a music bed under it, and optionally derives a
+   1:1 variant. All FREE ffmpeg. A limiter keeps the mix below -1 dBTP, so
+   back-to-back or overlapping chimes never clip.
+
+### Where the SFX come from
+
+The two real iMessage sounds ship twice: as mp3s in `assets/sfx` and as base64 text
+in `scripts/sfx-embedded.json`. A catalog fetch delivers text files only, so a
+fetched copy has no `assets/` folder. `stitch.sh` handles that by itself, in this order:
+
+1. `--sfx-dir <dir>` if passed (must hold `imessage-send.mp3` + `imessage-receive.mp3`).
+2. `assets/sfx`, if both mp3s are real audio (not git-LFS pointers).
+3. Otherwise it decodes `scripts/sfx-embedded.json` (sha256-checked) into a temp dir.
+
+If none is there it stops and names what it looked for. **Never substitute
+made-up pops** — keep `sfx-embedded.json` byte for byte when saving fetched files:
+write it with a program from the fetch output (e.g. a short Python loop over the
+fetched files), never by re-typing it. A damaged copy stops the render with a
+"re-fetch" message.
+After changing an mp3, run `python3 tests/test_stitch.py --write-embedded`.
 
 ## Contract
 

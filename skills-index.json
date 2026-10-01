@@ -6641,9 +6641,11 @@
         "skills/ads/capabilities/render-imessage-chat/scripts/package.json",
         "skills/ads/capabilities/render-imessage-chat/scripts/record-chat.js",
         "skills/ads/capabilities/render-imessage-chat/scripts/render-end-card.js",
+        "skills/ads/capabilities/render-imessage-chat/scripts/sfx-embedded.json",
         "skills/ads/capabilities/render-imessage-chat/scripts/stitch.sh",
         "skills/ads/capabilities/render-imessage-chat/skill.meta.json",
-        "skills/ads/capabilities/render-imessage-chat/tests/smoke-test.md"
+        "skills/ads/capabilities/render-imessage-chat/tests/smoke-test.md",
+        "skills/ads/capabilities/render-imessage-chat/tests/test_stitch.py"
       ],
       "metadata": {
         "slug": "render-imessage-chat",
