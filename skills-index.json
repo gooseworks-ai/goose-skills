@@ -1,6 +1,6 @@
 {
   "version": "1.3.0",
-  "generated": "2026-09-30",
+  "generated": "2026-10-01",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -6032,7 +6032,21 @@
       "description": "Assemble an Apple Notes list video ad from a note + end-card JSON — a frame-accurate fake iPhone screen recording of a short list being typed into Apple Notes (character by character, key pops, blinking caret, the note scrolling up as it fills) crossfaded into a checklist end card (the note's picks as ticked rows, real product photos, logo, CTA, in the brand's colours and fonts), with an optional music bed. FREE assembly (Playwright + ffmpeg); the recipe supplies the per-brand note + end card and gates the paid music call to its own capability. The Apple Notes sibling of render-imessage-chat and render-chatgpt-chat. Use for the apple-notes format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-apple-notes-chat",
-      "files": [],
+      "files": [
+        "skills/ads/capabilities/render-apple-notes-chat/SKILL.md",
+        "skills/ads/capabilities/render-apple-notes-chat/scripts/config.example.json",
+        "skills/ads/capabilities/render-apple-notes-chat/scripts/end-card.template.html",
+        "skills/ads/capabilities/render-apple-notes-chat/scripts/mockup/generate.js",
+        "skills/ads/capabilities/render-apple-notes-chat/scripts/mockup/templates/icons.js",
+        "skills/ads/capabilities/render-apple-notes-chat/scripts/mockup/templates/note.css",
+        "skills/ads/capabilities/render-apple-notes-chat/scripts/package-lock.json",
+        "skills/ads/capabilities/render-apple-notes-chat/scripts/package.json",
+        "skills/ads/capabilities/render-apple-notes-chat/scripts/record-notes.js",
+        "skills/ads/capabilities/render-apple-notes-chat/scripts/render-end-card.js",
+        "skills/ads/capabilities/render-apple-notes-chat/scripts/stitch.sh",
+        "skills/ads/capabilities/render-apple-notes-chat/skill.meta.json",
+        "skills/ads/capabilities/render-apple-notes-chat/tests/smoke-test.md"
+      ],
       "metadata": {
         "slug": "render-apple-notes-chat",
         "category": "capabilities",
@@ -7318,7 +7332,21 @@
       "description": "Assemble a whiteboard explainer video ad from a beats file — a narrator explains one idea while a real whiteboard fills up in black marker, with a hand-lettered title, bulleted rows down the left, a drawing filling the right, and a payoff that letters the closing line and rings the claim. The board is a PHOTOGRAPH and the ink is multiplied onto it, so the surface sheen and window light come through the strokes; the drawings are generated as line art and traced to ordered strokes, then revealed in drawing order on the word they belong to. The layout is SOLVED from the beats, never hand-placed. FREE assembly (Pillow plus ffmpeg) apart from one board photo and one drawing per subject, both one-time per brand. Use for the whiteboard format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-whiteboard-explainer",
-      "files": [],
+      "files": [
+        "skills/ads/capabilities/render-whiteboard-explainer/SKILL.md",
+        "skills/ads/capabilities/render-whiteboard-explainer/scripts/anchors.py",
+        "skills/ads/capabilities/render-whiteboard-explainer/scripts/beats.example.json",
+        "skills/ads/capabilities/render-whiteboard-explainer/scripts/gen-art.py",
+        "skills/ads/capabilities/render-whiteboard-explainer/scripts/illos.py",
+        "skills/ads/capabilities/render-whiteboard-explainer/scripts/lettering.py",
+        "skills/ads/capabilities/render-whiteboard-explainer/scripts/make-episode.py",
+        "skills/ads/capabilities/render-whiteboard-explainer/scripts/master.py",
+        "skills/ads/capabilities/render-whiteboard-explainer/scripts/prep-plate.py",
+        "skills/ads/capabilities/render-whiteboard-explainer/scripts/render.py",
+        "skills/ads/capabilities/render-whiteboard-explainer/scripts/solve-layout.py",
+        "skills/ads/capabilities/render-whiteboard-explainer/scripts/trace.py",
+        "skills/ads/capabilities/render-whiteboard-explainer/skill.meta.json"
+      ],
       "metadata": {
         "slug": "render-whiteboard-explainer",
         "category": "capabilities",

@@ -63,6 +63,13 @@ function parseFrontmatter(content) {
   return result;
 }
 
+// git ls-files always reports POSIX separators. path.relative() reports the
+// platform's, so on Windows every lookup in TRACKED missed and `files` came
+// back empty for every entry. Normalise once, here.
+function relFromRoot(full) {
+  return path.relative(ROOT, full).split(path.sep).join('/');
+}
+
 const SKIP_DIRS = new Set(['.tmp', '__pycache__', 'node_modules', '.git']);
 const SKIP_EXTS = new Set(['.pyc', '.pyo']);
 const SKIP_FILES = new Set(['.DS_Store', 'Thumbs.db']);
@@ -71,7 +78,9 @@ function collectFiles(dir) {
   const files = [];
   if (!fs.existsSync(dir)) return files;
 
-  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+  const entries = fs.readdirSync(dir, { withFileTypes: true })
+    .sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
+  for (const entry of entries) {
     const full = path.join(dir, entry.name);
     if (entry.isDirectory()) {
       if (SKIP_DIRS.has(entry.name)) continue;
@@ -80,7 +89,7 @@ function collectFiles(dir) {
       if (SKIP_FILES.has(entry.name)) continue;
       if (SKIP_EXTS.has(path.extname(entry.name))) continue;
       // Skip uncommitted / gitignored files so the sync never 404s on them.
-      if (TRACKED && !TRACKED.has(path.relative(ROOT, full))) continue;
+      if (TRACKED && !TRACKED.has(relFromRoot(full))) continue;
       files.push(full);
     }
   }
@@ -123,7 +132,7 @@ function scanCategory(category) {
       const metaFromFrontmatter = parseFrontmatter(content);
       const meta = JSON.parse(fs.readFileSync(metaPath, 'utf8'));
 
-      const allFiles = collectFiles(skillDir).map((f) => path.relative(ROOT, f));
+      const allFiles = collectFiles(skillDir).map((f) => relFromRoot(f));
 
       skills.push({
         slug,
@@ -179,7 +188,7 @@ function scanPacks(registrySkills) {
 
         const content = fs.readFileSync(skillMd, 'utf8');
         const frontmatter = parseFrontmatter(content);
-        const allFiles = collectFiles(skillDir).map((f) => path.relative(ROOT, f));
+        const allFiles = collectFiles(skillDir).map((f) => relFromRoot(f));
 
         subSkills.push({
           slug: skillSlug,
@@ -292,7 +301,7 @@ function scanCollections(skills) {
       headline: meta.headline || '',
       description: meta.description || '',
       path: `collections/${slug}`,
-      files: collectFiles(collectionDir).map((file) => path.relative(ROOT, file)),
+      files: collectFiles(collectionDir).map((file) => relFromRoot(file)),
       installable: false,
       skills: members,
       metadata: meta,
