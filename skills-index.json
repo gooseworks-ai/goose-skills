@@ -36,15 +36,13 @@
           ]
         },
         "requires_skills": [
-          "reddit-post-finder",
-          "review-site-scraper",
-          "twitter-mention-tracker",
-          "comment-mining",
-          "competitor-ad-intelligence",
           "scrapecreators-api",
+          "competitor-ad-intelligence",
+          "comment-mining",
+          "reddit-post-finder",
           "watch"
         ],
-        "example_prompt": "What video ads should I make for my brand? Show me the posts behind each idea."
+        "example_prompt": "What static ads should I make for my brand? Show me the reviews and ads behind each idea."
       }
     },
     {
