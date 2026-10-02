@@ -92,6 +92,15 @@ Agent-authored scripts and controls without independent reviewer labels can demo
 that the judge distinguishes those examples. They cannot establish reviewer agreement,
 conversion lift or a safe automatic release threshold.
 
+For dialogue, evaluate spoken language and turn logic explicitly. A supported product
+explanation can still be stiff. Use operator-rejected examples to expose false acceptance
+and accepted examples to calibrate the positive end. An editorial transcript establishes
+observed human turns, not approval of the generated ad. Preserve rubric versions when
+adding this check; earlier brand-voice scores are not interchangeable with it.
+Set a minimum on each essential criterion instead of averaging weak speech with strong
+proof. Retain failed rewrites; do not tune a rubric or repeatedly query to manufacture
+the requested 4/5 or 5/5 result.
+
 ## Proxy boundary
 
 Do not put a TypeSafe key in a public skill or customer machine. A managed integration

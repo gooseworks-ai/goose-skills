@@ -80,6 +80,24 @@ def test_agreement_does_not_request_extra_review_and_single_pass_has_no_agreemen
     assert m["top_choice_agreement"] is None and not m["needs_review"]
 
 
+def test_dialogue_floor_cannot_be_averaged_away():
+    first, second = norm(answer(9, IDS, False)), norm(answer(9, IDS, False))
+    for run in (first, second):
+        for concept in run["concepts"]:
+            concept["scores"].update(spoken=9, template_fit=9)
+    first["concepts"][0]["scores"]["spoken"] = 7
+    result = cs.merge([first, second], IDS, dialogue_required=True)
+    c1 = next(c for c in result["concepts"] if c["id"] == "c1")
+    assert c1["scores"]["spoken"] == 8.0 and not c1["dialogue_ready"]
+    assert result["needs_review"]
+    assert next(c for c in result["concepts"] if c["id"] == "c2")["dialogue_ready"]
+
+
+def test_missing_dialogue_judgment_is_unresolved():
+    result = cs.merge([norm(answer(9, IDS, False))], IDS, dialogue_required=True)
+    assert result["needs_review"] and all(not c["dialogue_ready"] for c in result["concepts"])
+
+
 def test_merge_kills_when_every_pass_agrees():
     m = cs.merge([norm(answer(6, ["c1", "c2"], True)), norm(answer(6, ["c1", "c2"], True))], IDS)
     assert next(c for c in m["concepts"] if c["id"] == "c2")["kill"] == "generic"

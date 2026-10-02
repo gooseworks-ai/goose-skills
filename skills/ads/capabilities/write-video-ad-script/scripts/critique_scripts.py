@@ -39,10 +39,27 @@ import sys
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 
 from media_proxy import RELAY_EXIT, _fal_run  # noqa: E402  (bundled)
+from lint_scripts import dialogue_mode  # noqa: E402
 
 FAL_LLM = "openrouter/router"
 DEFAULT_MODEL = "openai/gpt-6-sol"
 AXES = ("hook", "specific", "spoken", "proof", "payoff", "fresh", "template_fit", "claim_support", "strategic_fit")
+
+DIALOGUE_RUBRIC = """\
+For this conversation, judge spoken and template_fit strictly against the observed
+speaker turns. Read only the dialogue, without visuals, as well as the full plan.
+Each speaker needs a reason to say their line; the next turn must respond to something
+the previous person actually said, noticed or did. A convenient question followed by a
+product-page paragraph is a disguised sales monologue. Penalize orderly feature recitals,
+slogan replies, rehearsed admiration and a participant who only helps the presenter sell.
+Natural contractions or inserted laughs do not repair that structure.
+Distinguish a disclosed staged interview from a real customer interview. Do not invent
+personal product use, expertise or results. A useful objection, clarification or observed
+action can carry the exchange. Product facts can sit in an insert or endcard instead of
+making every speaker recite them. Report exact stiff lines and the broken turn dependency
+in hook_notes or line edits. Scores below 8/10 on spoken or template_fit require a dialogue
+rewrite; a high aggregate cannot compensate. Do not inflate those scores to clear a gate.
+"""
 
 SYSTEM_PROMPT = """\
 You are a performance creative director who has written, shot and tested thousands of
@@ -168,7 +185,8 @@ def build_prompt(concepts, quotes_by_id, rules, shape, brief, context=None, refe
     if references:
         head.append("Observed reference structures (not performance proof): " + json.dumps(references, ensure_ascii=False))
     blocks = [concept_block(c, quotes_by_id, shape.get("beats") or []) for c in concepts]
-    return "\n".join(head) + "\n\n" + "\n\n".join(blocks) + "\n\n" + RUBRIC
+    dialogue = DIALOGUE_RUBRIC + "\n\n" if dialogue_mode(shape) else ""
+    return "\n".join(head) + "\n\n" + "\n\n".join(blocks) + "\n\n" + dialogue + RUBRIC
 
 
 def parse_json(text):
@@ -244,7 +262,7 @@ def normalize_run(run, ids, hook_ids):
     return {"concepts": concepts, "ranking": ranking, "why_top": why}
 
 
-def merge(runs, ids):
+def merge(runs, ids, dialogue_required=False):
     """Average scores across runs; Borda-count the rankings; union the edits. Runs must
     already be normalized (normalize_run)."""
     merged = {cid: {"scores": {}, "best_hook_ids": [], "hook_notes": [], "edits": [], "kills": []}
@@ -299,6 +317,13 @@ def merge(runs, ids):
     if top_choice_agreement is False:
         review_reasons.append("Critic passes preferred different concepts; the merged ranking is diagnostic only.")
     for c in out:
+        if dialogue_required:
+            per_pass = [next((x for x in r["concepts"] if x["id"] == c["id"]), {}) for r in runs]
+            c["dialogue_ready"] = all(
+                isinstance(p.get("scores", {}).get(axis), (int, float))
+                and p["scores"][axis] >= 8 for p in per_pass for axis in ("spoken", "template_fit"))
+            if not c["dialogue_ready"]:
+                review_reasons.append(f"{c['id']}: dialogue needs rewrite or judgment; spoken and template_fit must each reach 8/10 in every pass.")
         if c["kill_split"]:
             review_reasons.append(f"{c['id']}: a critic pass reported a fatal defect; resolve its kill_reasons.")
         if not c["hook_agreement"]:
@@ -362,7 +387,7 @@ def main():
     if relayed:
         sys.exit(RELAY_EXIT)
 
-    result = merge(runs, ids)
+    result = merge(runs, ids, dialogue_required=bool(dialogue_mode(shape)))
     result.update({"model": a.model, "orders": len(orders), "usage": usage})
     out = pathlib.Path(a.out)
     out.parent.mkdir(parents=True, exist_ok=True)

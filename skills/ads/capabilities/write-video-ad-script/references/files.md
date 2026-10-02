@@ -60,6 +60,32 @@ folders.
 
 ## references.json: persuasion records (Step 3)
 
+Podcast/street records additionally require observed conversation provenance. This
+example records paraphrased turn functions, not invented dialogue or a copied transcript:
+
+```json
+{
+  "id": "conversation-1",
+  "url": "https://publisher.example/interview",
+  "dialogue_mode": "podcast",
+  "observed": true,
+  "observed_scope": "transcript",
+  "speaker_turns": [
+    {"speaker": "host", "does": "describes one concrete habit"},
+    {"speaker": "guest", "does": "reacts to that habit"},
+    {"speaker": "host", "does": "clarifies the guest's reaction"}
+  ],
+  "transfer_rule": "Transfer habit, reaction and clarification; not wording or claims.",
+  "limitations": "Editorial transcript; audio delivery and ad performance unverified."
+}
+```
+
+Use dialogue_mode podcast or street-interview. At least three observed turns from
+two speakers and a real source pointer are required. Cite the record in the candidate's
+reference_id. The lint check verifies these inputs, not the truth of an observation or
+the human quality of a script. The critic must inspect the same record. Transcript-only
+observations must not claim to have heard delivery or watched reactions.
+
 ```json
 [
   {"id": "r1", "source": "format demo", "url": "https://…",
@@ -151,7 +177,7 @@ that holds working/. Call each script by its path in the scripts folder: their f
 arguments, and the relay's result paths, are relative to where you run them.
 
 ```
-python3 <scripts folder>/lint_scripts.py --candidates working/script/candidates.json --shape working/script/shape.json --rules working/brand-rules.json --customer-words working/script/customer-words.json --angle-context working/script/angle-context.json --strict
+python3 <scripts folder>/lint_scripts.py --candidates working/script/candidates.json --shape working/script/shape.json --rules working/brand-rules.json --customer-words working/script/customer-words.json --angle-context working/script/angle-context.json --references working/script/references.json --strict
 python3 <scripts folder>/critique_scripts.py --candidates working/script/candidates.json --shape working/script/shape.json --rules working/brand-rules.json --customer-words working/script/customer-words.json --angle-context working/script/angle-context.json --references working/script/references.json --brief "what the ad is for"
 ```
 

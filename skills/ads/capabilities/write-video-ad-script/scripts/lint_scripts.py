@@ -234,7 +234,38 @@ def beat_budget(shape_beat, wps):
     return None, kind
 
 
-def lint(cands, shape=None, rules=None, bank=None, report_only=False, context=None, strict=False):
+def dialogue_mode(shape):
+    """Recognize conversation formats, not chat bubbles or single-host ad reads."""
+    shape = shape or {}
+    explicit = shape.get("dialogue_mode")
+    if explicit in ("podcast", "street-interview"):
+        return explicit
+    name = re.sub(r"[^a-z0-9]+", " ", str(shape.get("format", "")).lower())
+    if "podcast" in name:
+        speakers = {b.get("speaker") for b in shape.get("beats") or []
+                    if isinstance(b, dict) and b.get("kind", "spoken") == "spoken" and b.get("speaker")}
+        if len(speakers) == 1:
+            return None
+        return "podcast"
+    if re.search(r"street.*interview|man on the street|vox pop", name):
+        return "street-interview"
+    return None
+
+
+def observed_dialogue_references(references, mode):
+    """Validate provenance and observed turn structure, not whether copy sounds human."""
+    return [r for r in references or [] if isinstance(r, dict)
+            and r.get("id") and r.get("observed") is True and r.get("dialogue_mode") == mode
+            and (r.get("url") or r.get("source"))
+            and r.get("observed_scope") in ("transcript", "audio", "video")
+            and r.get("transfer_rule")
+            and isinstance(r.get("speaker_turns"), list) and len(r["speaker_turns"]) >= 3
+            and all(isinstance(t, dict) and t.get("speaker") and t.get("does")
+                    for t in r["speaker_turns"])
+            and len({t["speaker"] for t in r["speaker_turns"]}) >= 2]
+
+
+def lint(cands, shape=None, rules=None, bank=None, report_only=False, context=None, strict=False, references=None):
     if isinstance(cands, list):
         cands = {"concepts": cands}
     shape = shape or {}
@@ -257,6 +288,10 @@ def lint(cands, shape=None, rules=None, bank=None, report_only=False, context=No
         report["input_errors"].append("the selected recipe's shape is required")
     if strict and not report_only and not context:
         report["input_errors"].append("a validated angle-context is required for generated scripts")
+    mode = dialogue_mode(shape)
+    dialogue_refs = observed_dialogue_references(references, mode) if mode else []
+    if strict and not report_only and mode and not dialogue_refs:
+        report["input_errors"].append("generated dialogue needs an observed same-format conversation reference with speaker turns")
     if not cands.get("concepts"):
         report["input_errors"].append("no script concepts to check")
     angles, evidence, facts = {}, {}, {}
@@ -302,6 +337,9 @@ def lint(cands, shape=None, rules=None, bank=None, report_only=False, context=No
         hooks = [h for h in c.get("hooks") or [] if isinstance(h, dict)]
         full_text = " ".join(text_of(b) for b in beats)
         everything = plain(full_text + " " + " ".join(text_of(h) for h in hooks))
+        if strict and not report_only and mode:
+            if c.get("reference_id") not in {r["id"] for r in dialogue_refs}:
+                err("E_DIALOGUE_REFERENCE", "cite the observed conversation reference used for this execution")
         if not beats or any(not text_of(b).strip() and not by_id.get(b.get("id"), {}).get("optional")
                             and by_id.get(b.get("id"), {}).get("kind") != "visual" for b in beats):
             err("E_EMPTY_SCRIPT", "required beats need usable text")
@@ -523,6 +561,7 @@ def main():
     ap.add_argument("--rules")
     ap.add_argument("--customer-words")
     ap.add_argument("--angle-context")
+    ap.add_argument("--references", help="observed persuasion and conversation records")
     ap.add_argument("--strict", action="store_true", help="require the research handoff and recipe contract")
     ap.add_argument("--out", default="working/script/lint.json")
     ap.add_argument("--report-only", action="store_true",
@@ -533,7 +572,8 @@ def main():
         print(f"{a.candidates} must hold an object with a concepts list", file=sys.stderr)
         sys.exit(1)
     rep = lint(cands, load_json(a.shape), load_json(a.rules), load_json(a.customer_words),
-               report_only=a.report_only, context=load_json(a.angle_context), strict=a.strict)
+               report_only=a.report_only, context=load_json(a.angle_context), strict=a.strict,
+               references=load_json(a.references))
     out = pathlib.Path(a.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(rep, indent=1, ensure_ascii=False))

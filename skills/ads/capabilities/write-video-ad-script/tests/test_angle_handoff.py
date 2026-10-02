@@ -59,6 +59,50 @@ def test_reuses_selected_angle_and_accepts_product_led_script_without_reviews():
     assert [a["id"] for a in x["angles"]] == ["a1"]
 
 
+def dialogue_reference(mode="podcast"):
+    return {"id": "r-dialogue", "url": "https://publisher.example/interview",
+            "dialogue_mode": mode, "observed": True, "observed_scope": "transcript",
+            "speaker_turns": [{"speaker": "host", "does": "asks about one specific habit"},
+                              {"speaker": "guest", "does": "answers with a concrete example"},
+                              {"speaker": "host", "does": "clarifies that example"}],
+            "transfer_rule": "Use the turn dependency, not wording or claims."}
+
+
+def test_generated_podcast_needs_observed_and_cited_conversation():
+    c, s, x = fixture()
+    s["format"] = "podcast-clip"
+    s["dialogue_mode"] = "podcast"
+    assert not lint(c, s, context=x, strict=True)["ok"]
+    c["concepts"][0]["reference_id"] = "r-dialogue"
+    assert lint(c, s, context=x, strict=True, references=[dialogue_reference()])["ok"]
+
+
+@pytest.mark.parametrize("change", [
+    {"observed": False}, {"url": ""}, {"speaker_turns": []},
+    {"dialogue_mode": "street-interview"}, {"transfer_rule": ""},
+])
+def test_product_facts_or_unobserved_map_cannot_replace_conversation_reference(change):
+    c, s, x = fixture()
+    s["format"] = "podcast"
+    s["dialogue_mode"] = "podcast"
+    c["concepts"][0]["reference_id"] = "r-dialogue"
+    ref = dialogue_reference()
+    ref.update(change)
+    assert not lint(c, s, context=x, strict=True, references=[ref])["ok"]
+
+
+def test_user_dialogue_remains_report_only_without_references():
+    c, s, x = fixture()
+    s["format"] = "street-interview"
+    assert lint(c, s, context=x, strict=True, report_only=True)["ok"]
+
+
+def test_single_host_ad_read_does_not_need_a_two_person_reference():
+    c, s, x = fixture()
+    s["format"] = "podcast-ad-read"
+    assert lint(c, s, context=x, strict=True)["ok"]
+
+
 @pytest.mark.parametrize("brand,product,template,angles", [
     ("other", "bottle", "demo", ["a1"]), ("brand", "other", "demo", ["a1"]),
     ("brand", "bottle", "demo", ["missing"]), ("brand", "bottle", "demo", ["a2"]),

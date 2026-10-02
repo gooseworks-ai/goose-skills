@@ -123,6 +123,16 @@ Add at most three relevant references from existing research. For each record th
 visual and words, beat order, product entrance, proof, objection, payoff and CTA. Record
 what transfers and what belongs to the source brand.
 
+For a podcast or street interview, load [dialogue-writing](references/dialogue-writing.md). Obtain at least
+one actually observed conversation in that format, preferably the brand's own or a
+relevant ad, and record its speaker turns. A format description, product page or imagined
+beat map is not a conversation reference. A publisher transcript can establish turn
+structure; only inspected audio/video establishes delivery, pauses and reactions.
+If a nearby editorial interview is used, state that it supplies conversation mechanics,
+not commercial performance or product claims. Record missing commercial/delivery evidence
+and keep that execution provisional. Reuse the miner's sources first; retrieve missing
+references rather than asking the user to supply them when access is available.
+
 Keep performance labels honest: running duration and variants show advertiser persistence;
 views show reach or engagement. Neither proves conversions, profitability or causal lift.
 Use measured first-party results when available and keep audience, placement, objective and
@@ -158,11 +168,18 @@ promise changes.
   simply because it is early.
 - Include only supported product claims. A source id is traceability, not a semantic check.
 
+For conversational formats, write the exchange before allocating it to timed slots.
+Give each person an intention and a reason to respond to the previous turn. Then trim
+and add product inserts, captions and the CTA. Do not turn every slot into a sentence
+from the product page or have the participant rehearse the presenter's selling points.
+
 Create candidates.json with angle ids, evidence ids, claims, hooks, beats and visual plans.
 
 ## Step 6. Validate, critique, repair
 
 Run the rule check in strict mode with shape, brand rules, customer words and angle context.
+Pass references.json too. Generated podcast/street dialogue must cite an observed
+conversation record; a claim-only research bank cannot satisfy this requirement.
 It checks research scope, angle preservation, source ids, template identity, required slots
 (including repeated speakers), text limits, speakers and available assets. Fix errors and
 resolve material warnings. The machine cannot prove that a cited fact entails a claim.
@@ -177,6 +194,12 @@ Apply supported edits, then recheck. The final chosen hook must also pass with t
 Inspect `pass_rankings`, `needs_review` and `kill_reasons`. A split fatal-defect judgment
 needs resolution; an order-sensitive top choice remains a shortlist. Do not treat a
 merged average or Borda ranking as agreement between critic passes.
+For podcast/street dialogue, each critic pass must reach at least 8/10 on spoken and
+template_fit, with supported claims and no unresolved defects. This is the proposed
+4/5 quality floor for those criteria, not a calibrated guarantee of human preference.
+If dialogue_ready is false, repair the exchange and recheck. After two supported repair
+passes, retain a failed result as a draft and report the remaining defect; do not relax
+the rubric or loop until the judge returns a desired number.
 
 The files reference explains the critic's relay and failure exits. If it is unavailable,
 do an explicit agent review against the same rubric and record that limitation; never

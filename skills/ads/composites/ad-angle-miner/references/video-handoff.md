@@ -68,6 +68,11 @@ brief use a stable run-local product key and keep it consistent.
   competitor/category scope. They do not authorize general claims or fake testimonials.
 - **References** describe observed storytelling. Keep paid, verified organic and unknown
   distribution separate. Duration, variants and views are not conversion labels.
+  Podcast/street directions additionally retain dialogue_mode, observed=true,
+  observed_scope, speaker_turns and transfer_rule so the writer can study actual
+  conversation. Preserve transcript-only and editorial-source limitations. The
+  writer's files reference defines these fields; do not relabel an invented beat map
+  as observed dialogue.
 - **Angles** cite those evidence ids and template ids whose full recipes were checked.
   A provisional angle records missing support. It cannot be described as proven.
 
