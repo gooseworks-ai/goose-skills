@@ -42,7 +42,7 @@ function isEmojiOnly(text) {
   const stripped = text.trim();
   if (!stripped) return false;
   const emojiRe = /^(\p{Extended_Pictographic}|\p{Emoji_Presentation}|️|‍|\s)+$/u;
-  return emojiRe.test(stripped) && [...stripped.replace(/\s/g, '')].length <= 6;
+  return emojiRe.test(stripped) && [...new Intl.Segmenter('en', { granularity: 'grapheme' }).segment(stripped.replace(/\s/g, ''))].length <= 3; // iMessage: 1-3 emoji alone render large
 }
 
 // ---------------------------------------------------------------------------
@@ -128,10 +128,10 @@ function renderGroupHeader(thread, participantMap) {
 }
 
 // Status bar (only shown when framed)
-function renderStatusBar() {
+function renderStatusBar(time) {
   return `
     <div class="status-bar">
-      <div class="time">9:41</div>
+      <div class="time">${escapeHTML(time || '9:41')}</div>
       <div class="right-cluster">
         ${ICONS.signal}
         ${ICONS.wifi}
@@ -197,7 +197,9 @@ function renderTextBubble(msg, participant, opts) {
   html += `<div class="bubble ${sideClass} ${tailClass} ${emojiClass} ${animClass}">${formatMessageText(msg.text)}</div>`;
   html += `</div>`;
 
-  if (isSent && msg.delivered && isLastOfRun) {
+  // Real iMessage: "Delivered" sits under the newest sent message only. Every sent message
+  // carries a caption; the recorder's driver hides all but the newest as bubbles arrive.
+  if (isSent && msg.delivered) {
     const capAnim = msg.popState === 'pending' ? 'pop-pending'
                   : msg.popState === 'now' ? 'pop-now' : '';
     const capPending = msg.popState === 'pending' ? ' data-pending="1"' : '';
@@ -228,7 +230,7 @@ function renderAttachment(msg, participant, opts) {
         ${subtitle ? `<div class="subtitle">${escapeHTML(subtitle)}</div>` : ''}
       </div>` : ''}
     </div>
-  `;
+  ` + ((isSent && msg.delivered) ? `<div class="delivered-caption ${animClass}"${pendingAttr}${msg.id ? ` data-cap-id="${escapeHTML(msg.id)}"` : ''}>Delivered</div>` : '');
 }
 
 function renderTypingBubble(msg, participant, opts) {
@@ -352,7 +354,7 @@ function renderHTML(thread, options = {}) {
     <div class="dynamic-island"></div>
     <div class="screen">
       <div class="stage">
-        ${renderStatusBar()}
+        ${renderStatusBar(thread.status_time)}
         ${headerHTML}
         ${conversationHTML}
         ${keyboard}
