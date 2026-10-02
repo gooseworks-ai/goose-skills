@@ -1,319 +1,247 @@
 ---
 name: write-video-ad-script
-description: Write the words of a short-form video ad (voiceover, dialogue, chat bubbles, on-screen lines) the way performance creative teams do instead of from a blank page. Builds the script from the buyers' own words, the beat sheet of an ad that already works and three deliberately different angles, filters them with a rule check and a second non-Claude model, and takes the strongest into the review with the other two as one-line swaps. Use it in every video ad run before any paid step, and whenever the user asks to write, rewrite or improve a video ad script or says a script sounds generic or AI-written.
+description: Write a short-form video ad from an evidence-backed angle and the selected template's actual recipe. Reuses or fetches ad-angle-miner, preserves the chosen angle, plans words and visuals together, checks product claims and production fit, and delivers the strongest script with useful alternatives. Use before video production and for script rewrites. Customer language is one input alongside audience, promise, product proof, offer and format.
 status: active
 ---
 
-# write-video-ad-script
-
-A model asked to "write a 30-second ad for this product" writes the average of every ad
-it has read. That is why AI scripts sound generic. The tools and teams whose scripts
-perform never start there. They build each script from four things, and so does this
-skill:
+# Write Video Ad Script
+
+**Summary.** Turn a researched advertising promise into a video this template can actually
+make. First load the angle research, then bind it to the recipe's story, visuals, timing and
+assets. Write and check the complete concept before the user reviews it. The output is one
+recommended script, its visual plan and up to two viable alternatives. A model score is a
+quality screen; ad results establish performance.
+
+## When to use
+
+Use before production for voiceover, dialogue, chat, cards or lyrics. For a silent format,
+still plan its visual promise and payoff; skip spoken copy, not creative strategy.
 
-1. **What buyers actually say**, word for word (reviews, comments, complaints).
-2. **The beat sheet of an ad that already works** in this format: borrow the persuasion
-   (hook type, timing, proof, objection, CTA), never the words.
-3. **Angles that are different on purpose**: one specific person, one pain, one angle
-   type each, and never the first idea every brand in the category runs.
-4. **A filter**: a rule check a machine can decide, then a second opinion from a
-   different model family.
+When the user supplied exact lines, keep them verbatim. Check them in report-only mode and
+raise material timing, claim or format conflicts. Rewrite only with their authorization.
+The runtime owns research-spend permissions and production approval. Follow its existing
+review round; this skill adds no approval round of its own.
+
+## Inputs and precedence
 
-The output is one script in the format's own shape, two runner-up concepts the user can
-swap to, and a record of what the script was built on.
-
-## When to use it, and when not
-
-- **Every video ad run, before any paid step**, for any format whose ad has words:
-  voiceover, dialogue, a chat thread, on-screen lines, lyrics. The goose-video-local
-  runtime calls it after reading the format's recipe and before it assembles the review.
-- **When the user asks** to write, rewrite or improve a video ad script.
-- **The user gave their own lines**: keep them verbatim. Run only the rule check in its
-  report-only mode, and raise only what changes something for them (a line too long to
-  say in time, a claim the brand can't make). Change nothing unless they say so.
-- **The format has no words** (a voiceless dance story, a music-only product loop) apart
-  from an end card: skip this skill.
-
-### When the angle is already decided
-
-These answers are the frame. Never ask them again:
-
-- a recipe choice whose answer sets the script (a script angle, story, hook angle or
-  story shape: any choice whose sets list includes the script);
-- the brief's angle or hook;
-- a batch concept's angle;
-- an idea the user picked from ad-angle-miner;
-- a remix's direction.
-
-**If the answer leaves room**, the three concepts all work inside it, differing in the
-person, the pain or the proof.
-
-**If it fixes the whole angle** (a remix of a finished video, a batch concept with its
-own hook), write one concept on it and vary only the hooks.
-
-## What you work from
-
-- The project brief and the answers to the format's choices (tone, narrator, setting).
-- The brand rules file the video runtime wrote (name, pronunciations, must say, never
-  say, product facts). Product facts come only from there.
-- The format's recipe: its instructions, config and assets.
-- Anything already researched: buyer quotes saved for this brand, an angle bank from
-  ad-angle-miner, quotes in the brief.
-
-The working files live in the project's working folder, under a script subfolder. Their
-exact shapes, and how to run the two scripts, are in this skill's files reference: read
-it before writing them. Run both scripts from the folder that holds the working folder,
-calling them where this skill's scripts were saved.
-
-## Step 1. The script shape
-
-Read the recipe's instructions and config, and write the shape file. It lists:
-
-- the beats in order, each with an id, who speaks, its seconds and its kind (spoken,
-  on-screen, chat bubble or lyric);
-- which beat is the CTA;
-- the words per second.
-
-Take the words per second from the recipe first (many configs carry a word budget or
-per-beat lines). If the recipe has none, measure the demo ad: its spoken words divided by
-its spoken seconds. With neither, use 3.0 for conversational talking-head delivery and
-2.5 for slow narration.
-
-- A spoken beat fits about seconds times words-per-second words.
-- An on-screen card fits 8 words unless the format says otherwise.
-
-The format's own rules win on shape. When the recipe says "a 13-sentence testimonial" or
-"one hook line on screen", the shape says that.
-
-## Step 2. Buyer quotes (the input that matters most)
-
-Practitioners name this as the single biggest lever. Real phrases from real buyers
-replace the model's generic idea of the customer.
-
-**Reuse before you collect.** Check these in order:
-
-1. Quotes saved for this brand in the GooseWorks workspace: read them with the MCP file
-   tools, at video-scripts, then the brand id, then customer-words.json. Use them if
-   they are under 60 days old.
-2. An angle bank ad-angle-miner wrote in this session or the workspace. Its quotes come
-   with links.
-3. Quotes in the brief or the batch concept.
-
-**Collect when there is nothing to reuse.** Free sources come first:
-
-- the brand's saved learnings and kit;
-- its product pages, fetched raw (review widgets load by script, so a plain fetch shows
-  only a few reviews);
-- its marketplace listing.
-
-Then the paid sources, through the GooseWorks data proxy (ScrapeCreators): comments on
-the brand's own best posts, product reviews, and a category complaint search. Fetch
-ad-angle-miner and follow its customer-voice section for the exact paths.
-
-Paid calls need one yes from the user, asked with a rough credit count. Inside the video
-runtime, that question rides in the recipe's choices round; never ask it in a round of
-its own. Run on its own, ask it once, before the first paid call.
-
-**Aim for 20 to 30 quotes.** Mix:
-
-- outcomes from happy buyers;
-- objections and doubts from the 1 to 3 star reviews;
-- complaints about competitors;
-- small specific moments ("3am, staring at the ceiling").
-
-Keep each quote verbatim, with its link and a tag: pain, desire, objection, outcome,
-moment or switching. Never paraphrase one. A quote without a link is not a quote.
-
-**Save the bank** to the workspace path above with the MCP file tools, so the next video
-for this brand reuses it for free. If the file tools refuse, skip saving: the bank still
-lives in this project's working folder. Never write it into the user's own folders.
-
-**When nothing can be found** (a new brand with no reviews anywhere), build on the
-brand's own facts and the category's complaints from competitors' reviews. Tell the user
-in one line that the scripts aren't built on their buyers' words yet.
-
-## Step 3. References (borrow the persuasion, never the words)
-
-**Reference one is the format's demo ad.** Read its lines and timing from the recipe's
-instructions and config first; the template's extracted script is often empty. Watch the
-demo video with the watch skill only when the recipe doesn't carry its lines.
-
-**Add up to three more ads in the same format** from the evidence already gathered:
-
-- organic posts far above the account's usual views;
-- ads still running after 30 or more days, or with 3 or more variants;
-- the brand's saved inspiration (social inspiration library or search).
-
-Ad libraries show what runs, not what converts, so treat every one as a candidate.
-
-**For each reference, write a persuasion record:**
-
-- the hook line and its family (see the hook families reference);
-- the beat map, with seconds and word counts;
-- when the product enters;
-- the proof device;
-- the objection it answers;
-- the CTA wording;
-- one line on why it works;
-- a transfer rule: what you keep (the structure, the move), and what belongs to the
-  other brand and is never reused (its words, claims, offer, names, faces).
-
-## Step 4. Angles: different on purpose
-
-Models converge on the same few ideas, and a creative system prompt does little to change
-that. What works: generate many, rate how obvious each one is, and keep the unobvious ones
-that have real evidence behind them.
-
-1. **List 15 candidate angles.** Each one is:
-   - one specific person in one situation (not "busy moms", but "a nurse coming off a
-     night shift who can't switch off");
-   - one pain or desire, anchored to one or more quote ids;
-   - an awareness stage: unaware, problem-aware, solution-aware, product-aware or
-     most-aware;
-   - an angle type: pain, outcome, identity, switching, proof, contrast or objection;
-   - one concrete product fact it rests on.
-2. **Rate how likely a typical ad writer for this category is to write it**, from 0 to
-   1. Be honest: "it saves you time" is 0.9.
-3. **Drop anything above 0.4**, unless its evidence is the strongest you have (many
-   quotes, or a reference that has run for months).
-4. **Keep three** that differ in both the person and the angle type. Never two on the
-   same quote, and never two on the same hook family.
-
-**In a batch**, build the quotes and the angle list once for the brand. Give every
-concept whose angle is open a different angle from that list.
-
-## Step 5. Write
-
-For each concept, write the body on the reference's beat map, in the format's shape.
-Then write 3 or 4 hooks, each from a different family in the hook families reference. At
-least one hook reuses a buyer's own phrase.
-
-The laws:
-
-- **One message.** A script carrying two beliefs carries none.
-- **The first line lands the pain, the claim or the moment.** No wind-up, no brand
-  introduction, no "Have you ever".
-- **Specific beats general**: a named moment, a physical detail the viewer can check, a
-  real number from the facts.
-- **Show the proof**: a demo, a test, a before and after, a reaction. Don't just say it.
-- **The body pays off exactly what the hook promised.**
-- **End on the CTA.** Nothing is said after it (an end card may follow).
-- **Write how this person talks**: contractions, fragments, the buyers' own words, short
-  sentences. Read every line out loud; if a person wouldn't say it, rewrite it.
-- **Fit the budget.** Count words per beat: overstuffed lines get rushed, thin ones drag.
-- **Brand rules always hold.** Nothing in never-say, in words or in meaning. Every
-  product claim (a result, number, ingredient, price, comparison) comes from the facts or
-  a quote. The speaker's situation, feelings and small human details are craft, not
-  claims, and they are what make it feel real.
-
-Write the candidates file: the concepts with their angle, person, awareness stage, quote
-ids, reference id, typicality, hooks and beats.
-
-## Step 6. Check: rules, then a second model
-
-**The rule check.** Run the lint script on the candidates, with the shape, the brand
-rules and the buyer quotes.
-
-It fails on:
-
-- a line over budget, a missing beat, beats out of the format's order, or anything
-  said after the CTA;
-- a dead opener;
-- a phrase the brand quoted as banned;
-- a concept with no buyer quote behind it.
-
-It warns on:
-
-- a line that may break a brand rule. Rewrite it, unless it clearly means something
-  else ("I work overnights" against "never claim it works overnight");
-- AI tells and stiff, contraction-free lines;
-- numbers no fact or quote backs;
-- the brand name in the first line;
-- a concept that never uses its buyers' words;
-- softer openers;
-- duplicate hooks.
-
-Fix every error and read every warning. Run it again until it passes.
-
-**The second opinion.** Run the critique script with the same files and the brief. A
-model from a different family (never Claude) judges every concept twice, once in each
-order, because judges favour whatever they read first. It scores hook, specificity, how
-spoken it sounds, proof, payoff and freshness, and gives a best hook, line edits and a
-ranking. It costs about 2 credits and runs without asking.
-
-The script's exit codes:
-
-- **3**: it wrote one MCP call per pass under the working folder's mcp-requests folder.
-  For each, make the call (data post provider, then poll the job until it is complete),
-  save the result where the request says, then run the same command again. The relay
-  needs the video project id exported, like every paid call in the runtime.
-- **4**: the critic gave no usable answer. Judge the concepts against the same rubric
-  yourself, and carry on.
-
-**Apply the edits that hold up.** Never apply an edit that adds a claim the facts don't
-back, or one that only makes a line flatter. Drop a concept the critic killed in both
-passes, if its reason is real. Then run the rule check again.
-
-The critic raises the floor. It does not pick the winner: the user does, and later the
-ad's results.
-
-## Step 7. Into the review (no extra pause)
-
-**Take the top-ranked concept and its best hook.** Put the script into the recipe's own
-script shape (a thread, beats with voiceover lines, slates, lyrics) and hand it to the
-runtime's review step. That review's single approval covers it.
-
-**In the same review, list the two runner-ups**, one line each: the angle and the hook.
-The user can swap to one in a word. A swap redoes only the cheap pieces built from the
-script.
-
-**Add a note to the review** labelled "How this script was made", with:
-
-- the angle;
-- what the buyers said, as a theme ("built on 6 buyer reviews about 3am wake-ups");
-- the kind of ad it borrows its structure from.
-
-Never put the quotes themselves or their links in the note. Review sets can be remixed
-into other brands' videos.
-
-**When the user asks to choose** ("show me a few scripts"), show the three concepts
-before the review: the angle and the hook, one line each. Then build the review on the
-one they pick.
-
-**Talk to the user like a creative partner.** Never mention files, scripts, scores,
-models, the rule check or the second opinion unless they ask. If they change a line,
-their words are kept verbatim. Run the rule check in report-only mode, and raise only
-what changes something for them.
-
-## Step 8. Remember
-
-Keep a script history for the brand in the GooseWorks workspace, next to the buyer
-quotes, as one JSON line per run. The file tools can't append, so read it, add the line
-and write it back. Each line records:
-
-- the date and the format;
-- the concept that shipped, and its hook;
-- the concepts passed over;
-- every line the user changed, before and after.
-
-The next run reads it first: lean toward what they kept, away from what they passed on,
-and write the way their edits show.
-
-A standing rule the user states ("never mention price", "we don't say 'cure'") is a
-brand rule. Save it to the brand the way the runtime says, not only to the history.
-
-## Cost
-
-| Step | Cost |
-|---|---|
-| Writing, the rule check, workspace reads | Free |
-| The second opinion | About 2 credits, billed to the video project, not asked |
-| Paid buyer-research sources | Billed per call, asked once, saved so the brand pays once |
-
-## Rules that never bend
-
-- Never invent a customer, a quote, a number or a result.
-- Never reuse a reference's lines, claims, offer, names or faces.
-- The user's own words are kept verbatim.
-- Nothing paid runs before the runtime's approval, except the second opinion (about 2
-  credits) and buyer research the user said yes to.
+Read this skill's files reference before creating working files. Required context:
+
+- The brand and exact product, current facts, voice and prohibited claims.
+- Audience, campaign objective, offer and CTA, using saved context and brief first.
+- The selected template and full recipe: instructions, config, choices, assets and inputs.
+- A validated angle context from ad-angle-miner, including source records.
+- Reference footage or its observed beat map, plus available brand assets.
+
+The user's explicit direction and chosen angle are fixed. The recipe determines what is
+possible. If those conflict, explain the concrete conflict and offer a compatible execution
+or format before production. Do not silently replace the angle or rewrite the template.
+A reference provides a storytelling structure; the product's facts provide claims.
+
+## Step 0. Load the angle research, explicitly
+
+**Fetch ad-angle-miner through the skill catalogue if its instructions and handoff reference
+are not already loaded.** It is a declared dependency. Fetching it does not run research.
+
+Check, in order:
+
+1. An angle bank or selected idea already present in this run.
+2. The brief's research pointer and selected angle id.
+3. The brand and product's saved video-scripts workspace: angle-bank.json, beside
+   customer-words.json. Check a legacy brand-level bank only if its product scope matches.
+4. Legacy angle-bank Markdown and ideas JSON from a previous miner run. Read their actual
+   sources and normalize them into the shared handoff; never manufacture missing evidence.
+
+The shared handoff is video-angle-bank.v1, defined in ad-angle-miner's video-handoff reference.
+Use the preparation script to check brand, product, source ids and template compatibility,
+and write angle-context.json. Preserve selected ids and the original angle. Keep facts,
+quotes and observed ad structures separate. Refresh changing prices, offers and claims
+against current product sources; research age alone does not invalidate every insight.
+
+**If no usable bank exists, run ad-angle-miner in video mode**, limited to this audience,
+product and selected template. Reuse existing evidence. Its output is an angle bank, not a
+second script-writing workflow. Paid research follows the runtime's permissions. If access
+is missing or paid research is declined, build a smaller, explicitly provisional bank from
+verified product facts and available references. Do not require 20 reviews or invent quotes.
+
+If the user has already chosen an angle, research supports that direction; it does not
+reopen the choice. If the selected angle cannot be supported, name the missing proof and
+propose a supported version. Never pretend to have run the miner when it could not run.
+
+## Step 1. Bind the template before writing
+
+Read the actual recipe, not just its catalogue card. Write shape.json with:
+
+- Template id, format, story mechanism, audience and objective.
+- Ordered slots, speakers, text kind, durations and explicit word/character/line limits.
+- Product entrance, proof device, payoff and CTA placement allowed by this recipe.
+- Available asset ids, permitted visual modes and any required demonstration.
+- What can change and what stays fixed, including silence, music or lyric constraints.
+
+Use recipe limits first. For speech without limits, measure the reference delivery; only
+then use a provisional 3 words per second for conversation or 2.5 for slower narration.
+Read chat and cards against their own display time and layout. Lyric timing follows bars
+and syllables. A word estimate never establishes that speech or text fits the finished cut.
+
+Examples of adaptation, not a fixed format catalogue:
+
+| Recipe | Script must do | Failure to reject |
+|---|---|---|
+| iMessage conversation | Build a believable exchange and reveal through short turns | A sales monologue split into bubbles |
+| Product demonstration | Pair a supported benefit with a visible action or test | A testimonial over unrelated beauty shots |
+| Creator narration | Match what is said to what appears at that moment | Invented personal results or unavailable footage |
+| Silent product loop | Express one visual promise through reveal and final card | Forcing a spoken problem-solution script into it |
+| Music or lyrics | Make the product story work within musical timing | Treating a lyric as ordinary voiceover |
+
+If the recipe lacks enough information, inspect the demo and capability instructions.
+Record any provisional timing. Resolve essential missing assets before proposing a script
+that relies on them.
+
+## Step 2. Form the creative brief
+
+For each eligible angle, write a compact brief:
+
+- One audience in a recognizable situation, and its awareness or buying context.
+- One promise that matters, and why this product can credibly deliver it.
+- The mechanism or differentiator, supported facts and one feasible proof device.
+- The desire, identity, tension or objection the story uses. Pain is optional.
+- The offer, CTA, visual opening and payoff, within the selected format.
+
+Buyer language improves relevance and voice. It is not a mandatory plot and does not
+substantiate the brand's claims. Competitor complaints suggest a research question; they
+do not establish that this product fixes it. Quotes may be attributed as real quotes when
+appropriate, never recast as an invented narrator's own purchase or result. Fictional
+scenes must not masquerade as genuine interviews, reviews or customer experience.
+
+Reuse collected quotes and history before collecting more. Store verbatim quotes with real
+sources and their product/competitor scope. A product-led demo or launch may have no quotes;
+verified facts and a strong feasible demonstration are valid foundations.
+
+## Step 3. Learn the reference's persuasion
+
+Read the recipe's demo lines and timing, or inspect its footage when they are missing.
+Add at most three relevant references from existing research. For each record the opening
+visual and words, beat order, product entrance, proof, objection, payoff and CTA. Record
+what transfers and what belongs to the source brand.
+
+For a podcast or street interview, load [dialogue-writing](references/dialogue-writing.md). Obtain at least
+one actually observed conversation in that format, preferably the brand's own or a
+relevant ad, and record its speaker turns. A format description, product page or imagined
+beat map is not a conversation reference. A publisher transcript can establish turn
+structure; only inspected audio/video establishes delivery, pauses and reactions.
+If a nearby editorial interview is used, state that it supplies conversation mechanics,
+not commercial performance or product claims. Record missing commercial/delivery evidence
+and keep that execution provisional. Reuse the miner's sources first; retrieve missing
+references rather than asking the user to supply them when access is available.
+
+Keep performance labels honest: running duration and variants show advertiser persistence;
+views show reach or engagement. Neither proves conversions, profitability or causal lift.
+Use measured first-party results when available and keep audience, placement, objective and
+measurement window attached. Never describe an untested reference as a proven winner.
+
+## Step 4. Choose distinct angle–execution pairs
+
+When the angle is open, work from up to 10 researched candidates. Filter unsupported
+promises and incompatible executions first, then shortlist up to three with genuinely
+different promises or proof devices. Do not create ten paraphrases to fill a quota.
+
+When the angle is selected, keep its id and promise. Write one concept with hook variations,
+or several executions within the same direction when useful. Batch assignments should be
+different where the brief permits, and use the bank once per brand and product.
+
+Rank relevance, product credibility, template fit, feasible proof and hook payoff before
+freshness. Prefer clear, well-supported familiar angles over obscure weak ones. No arbitrary
+novelty cutoff. Fewer than three good concepts is better than padded alternatives.
+
+## Step 5. Write words and visuals together
+
+For every beat write the exact line, speaker, visual action, production mode and existing
+asset ids when applicable. Keep a proof plan and a claim ledger with current product fact
+ids. Every hook variant must lead into the same body's promise; repair the body when the
+promise changes.
+
+- Make the first moment intelligible and worth watching through words, visuals or both.
+- Keep one main promise and pay it off visibly.
+- Use the product's actual mechanism, differentiator or demonstration where the recipe fits.
+- Match dialogue, cards and lyrics to their medium and the brand's voice.
+- Make the offer and CTA clear. Respect the recipe's ending and permitted CTA placement.
+- Brand visibility depends on objective and format. Do not ban an early product or brand
+  simply because it is early.
+- Include only supported product claims. A source id is traceability, not a semantic check.
+
+For conversational formats, write the exchange before allocating it to timed slots.
+Give each person an intention and a reason to respond to the previous turn. Then trim
+and add product inserts, captions and the CTA. Do not turn every slot into a sentence
+from the product page or have the participant rehearse the presenter's selling points.
+
+Create candidates.json with angle ids, evidence ids, claims, hooks, beats and visual plans.
+
+## Step 6. Validate, critique, repair
+
+Run the rule check in strict mode with shape, brand rules, customer words and angle context.
+Pass references.json too. Generated podcast/street dialogue must cite an observed
+conversation record; a claim-only research bank cannot satisfy this requirement.
+It checks research scope, angle preservation, source ids, template identity, required slots
+(including repeated speakers), text limits, speakers and available assets. Fix errors and
+resolve material warnings. The machine cannot prove that a cited fact entails a claim.
+
+Then run the independent critic with the same context and references. Set its writer-family
+to the actual writer and select a critic from a different family; a blanket ban on Claude
+does not make an OpenAI critic independent of a Codex writer. It sees the campaign
+brief, recipe, visual plans and evidence, not just the lines. It checks strategic fit,
+template fit, feasible visual proof, claim support, hook payoff, clarity and voice. Never
+let a strong style score compensate for an unsupported claim or an impossible execution.
+Apply supported edits, then recheck. The final chosen hook must also pass with the body.
+Inspect `pass_rankings`, `needs_review` and `kill_reasons`. A split fatal-defect judgment
+needs resolution; an order-sensitive top choice remains a shortlist. Do not treat a
+merged average or Borda ranking as agreement between critic passes.
+For podcast/street dialogue, each critic pass must reach at least 8/10 on spoken and
+template_fit, with supported claims and no unresolved defects. This is the proposed
+4/5 quality floor for those criteria, not a calibrated guarantee of human preference.
+If dialogue_ready is false, repair the exchange and recheck. After two supported repair
+passes, retain a failed result as a draft and report the remaining defect; do not relax
+the rubric or loop until the judge returns a desired number.
+
+The files reference explains the critic's relay and failure exits. If it is unavailable,
+do an explicit agent review against the same rubric and record that limitation; never
+record a failed critic call as a pass. If every candidate fails, repair or regenerate
+within the supported angle and recipe before review. Do not automatically choose the
+highest-ranked rejected candidate.
+
+**Optional Jev screen.** Jev may cheaply judge narrow text questions about relevance,
+supported claims, format fit and hook payoff. Use separate criteria, keep probabilities,
+include an insufficient-context route and compare with labelled examples before enabling
+an automatic gate. Jev does not write repairs or inspect video. Keep the generative critic
+for diagnosis and edits. The judge-contract reference defines the evaluation and proxy
+integration boundary; Jev is not a required production provider.
+
+## Step 7. Deliver the review
+
+Take the strongest eligible concept and validated hook into the recipe's native script
+shape, with its visual plan. Show up to two viable alternatives in the same review when
+the angle was open. Do not add a separate pause. Existing runtime approval still applies.
+
+Explain briefly why this promise suits this audience and what the video will show. When
+research is provisional or essential proof is missing, say so plainly. Keep private quote
+links and customer data out of remixable review payloads; retain them in research provenance.
+
+## Step 8. Learn from decisions and results
+
+Read and update the brand's script history: selected angle id, template and recipe version,
+hooks, user edits, rejected concepts and reasons. Preserve the user's exact edits. Store
+standing brand rules through the runtime's normal brand update flow.
+
+Keep user approval, generated quality scores and paid performance separate. A liked script
+is not a converting ad. When results arrive, attach spend, impressions, audience, placement,
+objective and window. Learn which angle–format pairs worked without treating every loss
+as a copy failure.
+
+## Quality checks
+
+The selected angle survives, the claim ledger is supported, the script fits the actual
+recipe, every essential visual can be made, the hook pays off, and the user receives a
+complete proposal that does not require repairing obvious defects.
+
+## Related
+
+- [[composes::ad-angle-miner]] — evidence and shared video handoff.
+- [[composes::watch]] — observe reference footage when its beat map is missing.

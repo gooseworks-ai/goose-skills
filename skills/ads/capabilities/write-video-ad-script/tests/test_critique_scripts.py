@@ -60,7 +60,42 @@ def test_merge_averages_and_needs_both_passes_to_kill():
     assert c1["scores"] == {"hook": 8.0, "fresh": 5.0}
     assert len(c1["edits"]) == 1                    # same edit from both passes, kept once
     assert c2["kill"] is None and c2["kill_split"]  # only one pass wanted it gone
+    assert c2["kill_reasons"] == ["generic"]      # preserve the defect for resolution
     assert m["ranking"][0] == "c1"                   # Borda tie broken by the higher average
+    assert m["needs_review"] and m["top_choice_agreement"] is False
+    assert m["pass_rankings"] == [["c1", "c2"], ["c2", "c1"]]
+
+
+def test_split_kill_requires_review_even_when_rankings_agree():
+    m = cs.merge([norm(answer(6, IDS, True)), norm(answer(6, IDS, False))], IDS)
+    assert m["top_choice_agreement"] is True
+    assert m["needs_review"]
+    assert any("fatal defect" in reason for reason in m["review_reasons"])
+
+
+def test_agreement_does_not_request_extra_review_and_single_pass_has_no_agreement_claim():
+    m = cs.merge([norm(answer(6, IDS, False)), norm(answer(6, IDS, False))], IDS)
+    assert m["top_choice_agreement"] is True and not m["needs_review"]
+    m = cs.merge([norm(answer(6, IDS, False))], IDS)
+    assert m["top_choice_agreement"] is None and not m["needs_review"]
+
+
+def test_dialogue_floor_cannot_be_averaged_away():
+    first, second = norm(answer(9, IDS, False)), norm(answer(9, IDS, False))
+    for run in (first, second):
+        for concept in run["concepts"]:
+            concept["scores"].update(spoken=9, template_fit=9)
+    first["concepts"][0]["scores"]["spoken"] = 7
+    result = cs.merge([first, second], IDS, dialogue_required=True)
+    c1 = next(c for c in result["concepts"] if c["id"] == "c1")
+    assert c1["scores"]["spoken"] == 8.0 and not c1["dialogue_ready"]
+    assert result["needs_review"]
+    assert next(c for c in result["concepts"] if c["id"] == "c2")["dialogue_ready"]
+
+
+def test_missing_dialogue_judgment_is_unresolved():
+    result = cs.merge([norm(answer(9, IDS, False))], IDS, dialogue_required=True)
+    assert result["needs_review"] and all(not c["dialogue_ready"] for c in result["concepts"])
 
 
 def test_merge_kills_when_every_pass_agrees():
@@ -118,6 +153,18 @@ def test_refuses_a_claude_critic(tmp_path):
     (tmp_path / "c.json").write_text(json.dumps(two_concepts()))
     r = run_cli(tmp_path, "--model", "anthropic/claude-opus-5.5")
     assert r.returncode != 0 and "different model family" in r.stderr
+
+
+def test_codex_writer_cannot_use_an_openai_critic(tmp_path):
+    (tmp_path / "c.json").write_text(json.dumps(two_concepts()))
+    r = run_cli(tmp_path, "--writer-family", "openai", "--model", "openai/gpt-6-sol")
+    assert r.returncode != 0 and "different model family" in r.stderr
+
+
+def test_codex_writer_can_use_a_different_family_in_relay(tmp_path):
+    (tmp_path / "c.json").write_text(json.dumps(GOOD))
+    r = run_cli(tmp_path, "--writer-family", "openai", "--model", "anthropic/claude-sonnet-4.6")
+    assert r.returncode == 3, r.stderr
 
 
 def test_relay_round_trip_writes_both_passes_at_once_then_finishes(tmp_path):
