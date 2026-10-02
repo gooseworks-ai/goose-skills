@@ -7239,7 +7239,7 @@
       "name": "render-street-interview",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Build a vox-pop street interview video ad. An interviewer with a handheld mic asks passers-by one question about the brand's product, they give blunt wrong guesses, one gives the real answer, and the cut lands on a branded end card. Generates the takes through the GooseWorks fal proxy (Seedance 2.0 with native voice), then grades, re-cuts, captions and gates them locally. Use for the street-interview format.",
+      "description": "Write a street-interview ad using selected observed references and the brand's angle. Render product guessing with a visible object, or prepare a mic-only conversation script/prompt preview for a service or other brand. Story and questions vary; capture rules stay fixed. The existing product render uses the GooseWorks proxy and local finishing. Conversation media delivery is unverified.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-street-interview",
       "files": [
@@ -7275,12 +7275,15 @@
         "skills/ads/capabilities/render-street-interview/episodes/liquid-death-ep3b.json",
         "skills/ads/capabilities/render-street-interview/episodes/liquid-death-ep3c.json",
         "skills/ads/capabilities/render-street-interview/episodes/liquid-death-ep4.json",
+        "skills/ads/capabilities/render-street-interview/references/street-reference-library.json",
+        "skills/ads/capabilities/render-street-interview/references/street-script-writing.md",
         "skills/ads/capabilities/render-street-interview/scripts/bench.py",
         "skills/ads/capabilities/render-street-interview/scripts/brandkit.py",
         "skills/ads/capabilities/render-street-interview/scripts/build.py",
         "skills/ads/capabilities/render-street-interview/scripts/build_episode.py",
         "skills/ads/capabilities/render-street-interview/scripts/build_looks.py",
         "skills/ads/capabilities/render-street-interview/scripts/check-cut.py",
+        "skills/ads/capabilities/render-street-interview/scripts/conversation.py",
         "skills/ads/capabilities/render-street-interview/scripts/falsify-all.py",
         "skills/ads/capabilities/render-street-interview/scripts/fit_grade.py",
         "skills/ads/capabilities/render-street-interview/scripts/format_spec.py",
@@ -7288,12 +7291,14 @@
         "skills/ads/capabilities/render-street-interview/scripts/media_proxy.py",
         "skills/ads/capabilities/render-street-interview/scripts/paths.py",
         "skills/ads/capabilities/render-street-interview/scripts/phone_look_video.py",
+        "skills/ads/capabilities/render-street-interview/scripts/prepare_script_context.py",
         "skills/ads/capabilities/render-street-interview/scripts/recut.py",
         "skills/ads/capabilities/render-street-interview/scripts/selftest.py",
         "skills/ads/capabilities/render-street-interview/scripts/single_gen.py",
         "skills/ads/capabilities/render-street-interview/scripts/variants_gen.py",
         "skills/ads/capabilities/render-street-interview/skill.meta.json",
-        "skills/ads/capabilities/render-street-interview/tests/smoke-test.md"
+        "skills/ads/capabilities/render-street-interview/tests/smoke-test.md",
+        "skills/ads/capabilities/render-street-interview/tests/test_conversation.py"
       ],
       "metadata": {
         "slug": "render-street-interview",
@@ -7313,7 +7318,8 @@
         },
         "requires_skills": [
           "watch",
-          "create-video-seedance-2-fal"
+          "create-video-seedance-2-fal",
+          "write-video-ad-script"
         ]
       }
     },
@@ -9597,6 +9603,7 @@
       "path": "skills/ads/capabilities/write-video-ad-script",
       "files": [
         "skills/ads/capabilities/write-video-ad-script/SKILL.md",
+        "skills/ads/capabilities/write-video-ad-script/references/dialogue-writing.md",
         "skills/ads/capabilities/write-video-ad-script/references/files.md",
         "skills/ads/capabilities/write-video-ad-script/references/hook-families.md",
         "skills/ads/capabilities/write-video-ad-script/references/judge-contract.md",

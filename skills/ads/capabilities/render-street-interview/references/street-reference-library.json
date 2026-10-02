@@ -1,0 +1,147 @@
+{
+  "schema_version": "street-reference-library.v1",
+  "summary": "Small diverse seed library of observed turn mechanics. Authorship and performance are separate; private/project references stay outside this file.",
+  "references": [
+    {
+      "id": "gainful-street-1",
+      "format": "street-interview",
+      "dialogue_mode": "street-interview",
+      "execution_modes": [
+        "product-guess"
+      ],
+      "language": "en",
+      "audience_groups": [
+        "consumer"
+      ],
+      "buying_contexts": [
+        "product-discovery"
+      ],
+      "brand_id": "gainful",
+      "commercial": true,
+      "origin": "seed",
+      "observed": true,
+      "observed_scope": "transcript",
+      "source": "clients/gainful/existing-ads/street-interview-1.mp4",
+      "source_url": "https://www.facebook.com/ads/library/?view_all_page_id=510816675756087",
+      "asset_sha256": "49a2df5ec349ff722b113897eddefa80c833d66d6829dfee39911feae8f5f645",
+      "observed_at": "2026-10-02",
+      "observation_method": "faster-whisper base.en ASR and sampled frames at 0/5/12/20/30 seconds; speaker functions inferred from exchange and frames",
+      "speaker_turns": [
+        {
+          "speaker": "interviewer",
+          "does": "asks participants to identify flavours after tasting"
+        },
+        {
+          "speaker": "participants",
+          "does": "give short, different guesses rather than reciting specs"
+        },
+        {
+          "speaker": "interviewer",
+          "does": "reveals an unexpected common source"
+        },
+        {
+          "speaker": "participant",
+          "does": "acknowledges the explanation briefly"
+        }
+      ],
+      "transfer_rule": "Let a real observable test produce the answer; transfer the reveal sequence, not protein claims or scripted endorsement.",
+      "authorship": "unknown",
+      "limitations": "Workspace source video, exact public ad id unavailable. ASR can mishear words. Sampled frames are not full delivery review; pauses and vocal naturalness were not listened to. No conversion or author-credit evidence. Product facts do not transfer."
+    },
+    {
+      "id": "gainful-street-2",
+      "format": "street-interview",
+      "dialogue_mode": "street-interview",
+      "execution_modes": [
+        "conversation"
+      ],
+      "language": "en",
+      "audience_groups": [
+        "consumer"
+      ],
+      "buying_contexts": [
+        "everyday-friction"
+      ],
+      "brand_id": "gainful",
+      "commercial": true,
+      "origin": "seed",
+      "observed": true,
+      "observed_scope": "transcript",
+      "source": "clients/gainful/existing-ads/street-interview-2.mp4",
+      "source_url": "https://www.facebook.com/ads/library/?view_all_page_id=510816675756087",
+      "asset_sha256": "f8b04677f16d3a026ee0930c366cd5605a2a498689a822615fb87ae61dc10adf",
+      "observed_at": "2026-10-02",
+      "observation_method": "faster-whisper base.en ASR and sampled frames at 0/5/12/20/30 seconds; speaker functions inferred from exchange and frames",
+      "speaker_turns": [
+        {
+          "speaker": "interviewer",
+          "does": "asks how many flavours the participant already keeps at home",
+          "excerpt": "How many different flavors of protein powder do you have at home?"
+        },
+        {
+          "speaker": "participant",
+          "does": "answers with a number and adds a storage detail",
+          "excerpt": "Probably have three different flavors. It's kind of like taking up a whole cabinet."
+        },
+        {
+          "speaker": "interviewer",
+          "does": "connects that specific storage issue to the proposed product"
+        },
+        {
+          "speaker": "participant",
+          "does": "responds to the explanation and chooses a flavour"
+        }
+      ],
+      "transfer_rule": "Ask about an ordinary existing routine; let the extra detail earn the follow-up. For a service, transfer that causal link without requiring tasting or a prop.",
+      "authorship": "unknown",
+      "limitations": "Workspace source video, exact public ad id unavailable. ASR can mishear words. Sampled frames are not full delivery review; pauses and vocal naturalness were not listened to. No conversion or author-credit evidence. Product facts do not transfer."
+    },
+    {
+      "id": "tal-night-market",
+      "format": "street-interview",
+      "dialogue_mode": "street-interview",
+      "execution_modes": [
+        "conversation"
+      ],
+      "language": "en",
+      "audience_groups": [
+        "workplace",
+        "consumer"
+      ],
+      "buying_contexts": [
+        "everyday-friction",
+        "work-routine"
+      ],
+      "commercial": false,
+      "origin": "seed",
+      "observed": true,
+      "observed_scope": "transcript",
+      "source": "https://www.thisamericanlife.org/395/transcript",
+      "observed_at": "2026-10-02",
+      "speaker_turns": [
+        {
+          "speaker": "Henry",
+          "does": "mentions his dislike of daytime during an overnight work exchange"
+        },
+        {
+          "speaker": "Adam",
+          "does": "repeats the unexpected detail as a clarification",
+          "excerpt": "Wait, you hate the day?"
+        },
+        {
+          "speaker": "Henry",
+          "does": "confirms rather than supplying a prepared explanation",
+          "excerpt": "Oh, I hate it."
+        },
+        {
+          "speaker": "Adam",
+          "does": "asks specifically about that dislike",
+          "excerpt": "What do you hate about the day?"
+        }
+      ],
+      "transfer_rule": "An unexpected detail in the answer causes the next question. Do not force agreement, a perfect punchline or a sales request.",
+      "authorship": "publisher-attributed real field exchange; unscripted-authorship details unknown",
+      "limitations": "Editorial overnight-market interview, not an ad. Transcript only; no delivery or commercial performance inference. Transfer turn mechanics only."
+    }
+  ]
+}
