@@ -15,6 +15,7 @@ Usage:  build_overlays.py --config config.json --out-dir <run>/generated/overlay
 import argparse
 import json
 import pathlib
+import math
 from PIL import Image, ImageDraw, ImageFont
 
 # ---- font resolution (bold is load-bearing: regular reads as a generic UI card) ----
@@ -24,6 +25,8 @@ FONT_CANDIDATES = [
     "/System/Library/Fonts/HelveticaNeue.ttc",
     "/System/Library/Fonts/SFNS.ttf",
     "/System/Library/Fonts/Supplemental/Arial.ttf",
+    "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+    "C:/Windows/Fonts/arialbd.ttf",
 ]
 
 
@@ -33,12 +36,57 @@ def load_font(size):
             return ImageFont.truetype(p, size)
         except Exception:
             continue
-    return ImageFont.load_default()
+    raise RuntimeError("No bold TrueType font found; install Arial or DejaVu Sans.")
+
+
+SYMBOL_FONTS = [
+    "/System/Library/Fonts/Apple Symbols.ttf",
+    "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
+    "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+    "C:/Windows/Fonts/seguisym.ttf",
+]
+
+
+def text_runs(text, font):
+    """Keep the bold face for text; use a real glyph when that face lacks a symbol."""
+    missing = font.getmask("\u0378")  # unassigned codepoint: this font's missing-glyph box
+    missing_signature = (missing.size, bytes(missing))
+    runs = []
+    for ch in text:
+        chosen = font
+        mask = font.getmask(ch)
+        if not ch.isspace() and (mask.size, bytes(mask)) == missing_signature:
+            for path in SYMBOL_FONTS:
+                try:
+                    candidate = ImageFont.truetype(path, font.size)
+                except OSError:
+                    continue
+                glyph, absent = candidate.getmask(ch), candidate.getmask("\u0378")
+                if glyph.getbbox() and (glyph.size, bytes(glyph)) != (absent.size, bytes(absent)):
+                    chosen = candidate
+                    break
+            else:
+                raise ValueError(f"No installed font contains {ch!r}; install a Unicode symbol font.")
+        if runs and runs[-1][1] is chosen:
+            runs[-1] = (runs[-1][0] + ch, chosen)
+        else:
+            runs.append((ch, chosen))
+    return runs
 
 
 def measure(draw, text, font):
-    b = draw.textbbox((0, 0), text, font=font)
-    return b[2] - b[0], b[3] - b[1]
+    runs = text_runs(text, font)
+    width = math.ceil(sum(draw.textlength(part, font=face) for part, face in runs))
+    height = max((draw.textbbox((0, 0), part, font=face)[3] - draw.textbbox((0, 0), part, font=face)[1]
+                  for part, face in runs), default=0)
+    return width, height
+
+
+def draw_text(draw, xy, text, font, fill):
+    x, y = xy
+    for part, face in text_runs(text, font):
+        draw.text((x, y), part, font=face, fill=fill, anchor="lm")
+        x += draw.textlength(part, font=face)
 
 
 class Icons:
@@ -64,7 +112,7 @@ def rounded_pill(lines, font, pad_x=36, pad_y=14, bg=(255, 255, 255, 255),
                  fg=(0, 0, 0, 255), radius=28, trailing_icon=None, leading_icon=None,
                  icon_scale=0.95, icon_line=-1, min_width=0, min_height=0):
     """Render one rounded-rect pill. Icon is sized off single-line cap-height and
-    pasted inline (trailing = right end of `icon_line`; leading = left of line 0).
+    pasted beside the entire text block (trailing = after the longest line; leading = left).
     Both icons vertically center on the pill's geometric middle."""
     dummy = Image.new("RGBA", (10, 10))
     d = ImageDraw.Draw(dummy)
@@ -77,18 +125,18 @@ def rounded_pill(lines, font, pad_x=36, pad_y=14, bg=(255, 255, 255, 255),
         widths.append(w)
         heights.append(h)
     line_gap = 6
-    text_h = sum(heights) + line_gap * (len(lines) - 1)
+    text_h = max(heights) * len(lines) + line_gap * (len(lines) - 1)
 
     icon_pad = max(8, int(cap_h * 0.15))
     icon_size = int(cap_h * icon_scale)
 
     target = icon_line if icon_line >= 0 else len(lines) + icon_line
     extra = (icon_pad + icon_size) if trailing_icon else 0
-    text_w = max(max(widths), widths[target] + extra)
+    text_w = max(widths) + extra
 
     lead_extra = (icon_pad + icon_size) if leading_icon else 0
     box_w = max(min_width, text_w + 2 * pad_x + lead_extra)
-    box_h = max(min_height, text_h + 2 * pad_y)
+    box_h = max(min_height, text_h + 2 * pad_y, icon_size + 2 * pad_y if trailing_icon or leading_icon else 0)
 
     img = Image.new("RGBA", (box_w, box_h), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
@@ -105,9 +153,9 @@ def rounded_pill(lines, font, pad_x=36, pad_y=14, bg=(255, 255, 255, 255),
 
     for i, ln in enumerate(lines):
         cy = block_top + i * (line_h + line_gap) + line_h // 2
-        d.text((text_x, cy), ln, font=font, fill=fg, anchor="lm")
+        draw_text(d, (text_x, cy), ln, font=font, fill=fg)
         if trailing_icon and i == target:
-            trailing_icon(img, text_x + widths[i] + icon_pad, icon_y, icon_size)
+            trailing_icon(img, text_x + max(widths) + icon_pad, icon_y, icon_size)
     return img
 
 

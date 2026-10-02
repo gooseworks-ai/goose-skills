@@ -23,6 +23,7 @@ Every treatment writes text with PIL. No model renders a letter, ever.
 import argparse
 import json
 import subprocess
+import sys
 import tempfile
 from pathlib import Path
 
@@ -41,12 +42,24 @@ TAKE = None                          # the approved base for this brand; never r
 # SRC / OUTDIR / CTRL are resolved per run in main(), not at import, because the take lives in
 # the RUN folder and not next to the script. They are module-level names because check-cut.py
 # imports this module for LINES and CUTS.
-SRC = OUTDIR = CTRL = None
+SRC = OUTDIR = CTRL = RUN = None
 W, H = 1080, 1920
 SAFE_TOP, SAFE_BOT = 285, 1635
-BLACK = "C:/Windows/Fonts/ariblk.ttf"
-BOLD = "C:/Windows/Fonts/arialbd.ttf"
-REG = "C:/Windows/Fonts/arial.ttf"
+def resolve_font(weight):
+    names = {"black": ("ariblk.ttf", "Arial Black.ttf", "DejaVuSans-Bold.ttf"),
+             "bold": ("arialbd.ttf", "Arial Bold.ttf", "DejaVuSans-Bold.ttf"),
+             "regular": ("arial.ttf", "Arial.ttf", "DejaVuSans.ttf")}[weight]
+    roots = (Path("C:/Windows/Fonts"), Path("/System/Library/Fonts/Supplemental"),
+             Path("/usr/share/fonts/truetype/dejavu"))
+    for root in roots:
+        for name in names:
+            candidate = root / name
+            if candidate.is_file():
+                return str(candidate)
+    raise RuntimeError(f"No {weight} TrueType font found. Install Arial or DejaVu Sans.")
+
+
+BLACK, BOLD, REG = (resolve_font(w) for w in ("black", "bold", "regular"))
 GOLD, CREAM, INK = (203, 161, 79), (252, 246, 239), (12, 12, 12)
 
 # The take's OWN internal cuts, MEASURED off the render and stored in the brand config, never
@@ -65,8 +78,8 @@ def run(c, **k):
     subprocess.run([str(x) for x in c], check=True, **k)
 
 
-def heavy(text, size, fill, font=BLACK, italic=True, outline=6, alpha=235):
-    f = ImageFont.truetype(font, size)
+def heavy(text, size, fill, font=None, italic=True, outline=6, alpha=235):
+    f = ImageFont.truetype(font or BLACK, size)
     tw = int(ImageDraw.Draw(Image.new("RGBA", (10, 10))).textlength(text, font=f))
     pad = outline * 2 + size
     img = Image.new("RGBA", (tw + pad * 2, int(size * 1.9)), (0, 0, 0, 0))
@@ -122,14 +135,22 @@ def t_clean(text, style, job, sent):
     return c
 
 
-def t_subway(text, style, job, sent):
+def subway_brand_layer():
     c = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     # the series bar: on screen the whole video, which is what makes a vox pop read as a format
     plate(c, (0, 300, W, 386), fill=(24, 24, 24, 235), r=0)
     f = ImageFont.truetype(BLACK, 40)
     d = ImageDraw.Draw(c)
     hdr = CFG["brand_layer"]["series_header"]
+    if d.textlength(hdr, font=f) > W - 120:
+        raise ValueError("series_header is wider than the safe area; shorten it")
     d.text(((W - d.textlength(hdr, font=f)) // 2, 316), hdr, font=f, fill=GOLD + (255,))
+    return c
+
+
+def t_subway(text, style, job, sent):
+    c = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    d = ImageDraw.Draw(c)
     body = sent
     fb = ImageFont.truetype(BOLD, 52)
     words, rows, cur = body.split(), [], ""
@@ -252,9 +273,9 @@ def karaoke_cards(td):
     return out
 
 
-def end_card(path):
+def end_card(path, brand_layer=None):
     img = Image.new("RGB", (W, H), INK).convert("RGBA")
-    bl = CFG["brand_layer"]
+    bl = brand_layer if brand_layer is not None else CFG["brand_layer"]
     lw, ly = 720, 520
     logo_h = 0
     if bl.get("logo"):
@@ -266,12 +287,21 @@ def end_card(path):
         white.putalpha(logo.split()[3])
         img.alpha_composite(white, ((W - lw) // 2, ly))
         logo_h = logo.height
-    y = ly + logo_h + 130
-    rows = [(r, CREAM if i == 0 else GOLD) for i, r in enumerate(bl["end_card"])]
-    for i, (row, col) in enumerate(rows):
-        t = heavy(row, 66, col, italic=False, outline=5)
-        img.alpha_composite(t, ((W - t.width) // 2, y + i * 86))
-    assert y + 86 + 66 < SAFE_BOT
+    y = max(SAFE_TOP, ly + logo_h + 130)
+    rows = bl["end_card"]
+    if not rows:
+        raise ValueError("brand_layer.end_card needs at least one line")
+    max_h = SAFE_BOT - y - 20
+    for size in range(66, 19, -2):
+        rendered = [heavy(row, size, CREAM if i == 0 else GOLD, italic=False, outline=5)
+                    for i, row in enumerate(rows)]
+        if max(t.width for t in rendered) <= W - 120 and sum(t.height for t in rendered) + 20 * (len(rows) - 1) <= max_h:
+            break
+    else:
+        raise ValueError("end-card copy does not fit the safe area; shorten it")
+    for t in rendered:
+        img.alpha_composite(t, ((W - t.width) // 2, y))
+        y += t.height + 20
     img.convert("RGB").save(path)
 
 
@@ -288,7 +318,7 @@ def build(look, captions=True):
     with tempfile.TemporaryDirectory() as td:
         td = Path(td)
         graded = td / "g.mp4"
-        run(["python", HERE / "phone_look_video.py", SRC, graded, *grade_args(look)])
+        run([sys.executable, HERE / "phone_look_video.py", SRC, graded, "--run", RUN, *grade_args(look)])
 
         cards = []
         if not captions:
@@ -306,10 +336,16 @@ def build(look, captions=True):
                 img.save(p)
                 cards.append((s, min(e, cut), p))
 
+        # Keep series branding through caption gaps and in the caption-free control.
+        if look == "subway":
+            p = td / "series.png"
+            subway_brand_layer().save(p)
+            cards.insert(0, (None, None, p))
         ins, filt, last = ["-i", str(graded)], [], "0:v"
         for i, (s, e, p) in enumerate(cards, start=1):
             ins += ["-i", str(p)]
-            filt.append(f"[{last}][{i}:v]overlay=0:0:enable='between(t,{s:.2f},{e:.2f})'[v{i}]")
+            enable = "" if s is None else f":enable='between(t,{s:.2f},{e:.2f})'"
+            filt.append(f"[{last}][{i}:v]overlay=0:0{enable}[v{i}]")
             last = f"v{i}"
         capped = td / "capped.mp4"
         run(["ffmpeg", "-v", "error", "-y", *ins,
@@ -409,15 +445,39 @@ def control_path(look):
     return new if new.exists() or not legacy.exists() else legacy
 
 
+def configure_brand_layer(bl):
+    """Apply approved palette/fonts for either a single take or an episode."""
+    global GOLD, CREAM, INK, BLACK, BOLD, REG
+    palette = bl.get("palette") or {}
+    def colour(key, default):
+        value = palette.get(key, default)
+        if isinstance(value, str):
+            value = value.removeprefix("#")
+            if len(value) != 6:
+                raise ValueError(f"palette.{key} must be #RRGGBB or three RGB values")
+            value = tuple(int(value[i:i + 2], 16) for i in (0, 2, 4))
+        if len(value) != 3 or any(not isinstance(c, int) or not 0 <= c <= 255 for c in value):
+            raise ValueError(f"palette.{key} must have three RGB values in 0..255")
+        return tuple(value)
+    GOLD = colour("accent", (203, 161, 79))
+    CREAM = colour("text", (252, 246, 239))
+    INK = colour("background", (12, 12, 12))
+    fonts = bl.get("fonts") or {}
+    BLACK, BOLD, REG = (str(paths.ROOT / fonts[w]) if fonts.get(w) else resolve_font(w)
+                        for w in ("black", "bold", "regular"))
+
+
 def resolve(run=None, brand=None):
     """Point SRC / OUTDIR / CTRL and the brand layer at a run folder. Also used by check-cut.py."""
-    global SRC, OUTDIR, CTRL, CFG, TAKE, CUTS, LINES
+    global SRC, OUTDIR, CTRL, RUN, CFG, TAKE, CUTS, LINES, GOLD, CREAM, INK, BLACK, BOLD, REG
     CFG = brandkit.load(brand)
     bl = CFG["brand_layer"]
+    configure_brand_layer(bl)
     TAKE = f"{brandkit.take_name(CFG)}.mp4"
     CUTS = list(bl["cuts"] or [])
     LINES = [tuple(r) for r in bl.get("captions") or []]
     L = paths.layout(run)
+    RUN = L["run"]
     SRC, OUTDIR, CTRL = L["takes"] / TAKE, L["looks"], L["graded"]
     return L
 

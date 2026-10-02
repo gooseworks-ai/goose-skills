@@ -42,7 +42,14 @@ def main():
     rows = lay["pill_rows_y"]
     times = lay["reveal_times"]
     left_x = lay.get("pill_left_x", 40)
-    right_margin = lay.get("pill_right_margin", 40)
+    right_margin = max(120, lay.get("pill_right_margin", 120))
+    # Keep copy clear of the right-hand platform action rail. Fit before compositing.
+    from PIL import Image
+    for p in [header, subhead, *pills]:
+        with Image.open(p) as img:
+            x = lay["header_x"] if p in (header, subhead) else left_x
+            if img.width > 1080 - x - right_margin:
+                raise SystemExit(f"{p.name} is too wide for the platform safe area; reduce its font size or wrap the copy.")
 
     inputs = ["-i", str(clip), "-i", str(header), "-i", str(subhead)]
     for p in pills:
