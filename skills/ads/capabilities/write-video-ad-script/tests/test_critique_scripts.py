@@ -120,6 +120,18 @@ def test_refuses_a_claude_critic(tmp_path):
     assert r.returncode != 0 and "different model family" in r.stderr
 
 
+def test_codex_writer_cannot_use_an_openai_critic(tmp_path):
+    (tmp_path / "c.json").write_text(json.dumps(two_concepts()))
+    r = run_cli(tmp_path, "--writer-family", "openai", "--model", "openai/gpt-6-sol")
+    assert r.returncode != 0 and "different model family" in r.stderr
+
+
+def test_codex_writer_can_use_a_different_family_in_relay(tmp_path):
+    (tmp_path / "c.json").write_text(json.dumps(GOOD))
+    r = run_cli(tmp_path, "--writer-family", "openai", "--model", "anthropic/claude-sonnet-4.6")
+    assert r.returncode == 3, r.stderr
+
+
 def test_relay_round_trip_writes_both_passes_at_once_then_finishes(tmp_path):
     (tmp_path / "c.json").write_text(json.dumps(two_concepts()))
     first = run_cli(tmp_path)
