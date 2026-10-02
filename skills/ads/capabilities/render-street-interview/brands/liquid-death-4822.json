@@ -1,0 +1,59 @@
+{
+  "_comment": "EPISODE 2, TAKE C of three. THE PAYOFF, and ANSWERS ONLY like take B: shot 1 is `handover_cold` and generation.answers_only is set, so the interviewer's question is asked once in the whole episode, in take A. It has to be last: brandkit.validate requires the `payoff` shot to end a config with this role, and build_episode.py requires exactly one payoff take and requires it to be the last one. The last person drinks and finds out it is water, which is the joke and the only reason the episode exists. product and location are IDENTICAL BYTE FOR BYTE with takes A and B. The backpack from episode 1 is gone: it rendered with garbled lettering across it.",
+  "brand": "Liquid Death",
+  "slug": "ld",
+  "episode_role": "payoff",
+  "episode": "ep2",
+  "product": {
+    "noun": "can",
+    "phrase": "white can",
+    "reference_image": "clients/liquid-death/brand-assets/reference-photos/mountain-water-still-19oz-tallboy-official.png",
+    "appearance": "same white body, same dark blackletter lettering, same gold illustration",
+    "colour_ban": "It never turns gold or yellow.",
+    "opening_extra": " and no ring pull is touched",
+    "open_state": "open"
+  },
+  "location": {
+    "description": "a wide pavement on one street corner outside a red brick building wrapped in green scaffolding, with a bus shelter to the left, parked cars along the kerb and bare plane trees behind",
+    "landmarks": "The same scaffolding, bus shelter and parked cars"
+  },
+  "_question_comment": "Recorded but NEVER SPOKEN in this take, and identical to take A's. See take B.",
+  "question": "Quick question. What's in this can?",
+  "props": "a dark rucksack, a folded umbrella",
+  "cast_size": 2,
+  "shots": [
+    {
+      "kind": "handover_cold",
+      "subject": "a man in his thirties in a charcoal hooded sweatshirt with a dark rucksack",
+      "pronoun": "he",
+      "noun": "man"
+    },
+    {
+      "kind": "speak",
+      "noun": "man",
+      "reaction": "weighs it in his hand",
+      "manner": "",
+      "line": "No idea. Something strong."
+    },
+    {
+      "kind": "sip",
+      "subject": "A woman in her twenties in a yellow raincoat with a folded umbrella"
+    },
+    {
+      "kind": "payoff",
+      "noun": "woman",
+      "manner": "surprised",
+      "line": "Wait. That's water."
+    }
+  ],
+  "generation": {
+    "seed": 4822,
+    "duration": 12,
+    "fast": false,
+    "pace_grammar": true,
+    "guard_grammar": true,
+    "mic_grammar": true,
+    "plain_grammar": true,
+    "answers_only": true
+  }
+}

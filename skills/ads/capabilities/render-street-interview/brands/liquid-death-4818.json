@@ -1,0 +1,69 @@
+{
+  "_comment": "EPISODE 1, TAKE B of three. The MIDDLE: three new people and the guesses get strange, which is where the gag has to develop. If the middle take repeats the opening's beat the episode dies at its own first join. product and location are IDENTICAL BYTE FOR BYTE with takes A and C; the question is reworded because an interviewer asking three people does not read the same sentence off a card, and because the identical line three times in one episode reads as a duplicated segment (the seed-4814 fault, which was real duplication and sounded exactly like this).",
+  "brand": "Liquid Death",
+  "slug": "ld",
+  "episode_role": "middle",
+  "episode": "ep1",
+  "product": {
+    "noun": "can",
+    "phrase": "white can",
+    "reference_image": "clients/liquid-death/brand-assets/reference-photos/mountain-water-still-19oz-tallboy-official.png",
+    "appearance": "same white body, same dark blackletter lettering, same gold illustration",
+    "colour_ban": "It never turns gold or yellow.",
+    "opening_extra": " and no ring pull is touched",
+    "open_state": "open"
+  },
+  "location": {
+    "description": "a wide pavement on one street corner outside a red brick building wrapped in green scaffolding, with a bus shelter to the left, parked cars along the kerb and bare plane trees behind",
+    "landmarks": "The same scaffolding, bus shelter and parked cars"
+  },
+  "question": "Quick question. What do you think is in this can?",
+  "props": "a skateboard, a shopping trolley, a hard hat",
+  "cast_size": 3,
+  "shots": [
+    {
+      "kind": "handover_first",
+      "subject": "a teenager in a red puffer jacket with a skateboard under one arm",
+      "pronoun": "he",
+      "noun": "teenager"
+    },
+    {
+      "kind": "speak",
+      "noun": "teenager",
+      "reaction": "squints at it",
+      "manner": "",
+      "line": "Paint. That's paint."
+    },
+    {
+      "kind": "handover",
+      "subject": "a woman in her sixties in a brown wool coat pushing a shopping trolley",
+      "pronoun": "she"
+    },
+    {
+      "kind": "speak",
+      "noun": "woman",
+      "reaction": "laughs",
+      "manner": "",
+      "line": "Something illegal."
+    },
+    {
+      "kind": "handover",
+      "subject": "a man in a yellow hi-vis vest with a hard hat under his arm",
+      "pronoun": "he"
+    },
+    {
+      "kind": "speak",
+      "noun": "man",
+      "reaction": "sniffs it",
+      "manner": "deadpan",
+      "line": "Motor oil."
+    }
+  ],
+  "generation": {
+    "seed": 4818,
+    "duration": 12,
+    "fast": false,
+    "pace_grammar": true,
+    "guard_grammar": true
+  }
+}

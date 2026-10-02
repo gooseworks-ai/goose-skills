@@ -1,0 +1,60 @@
+{
+  "_comment": "EPISODE 1, TAKE C of three. The PAYOFF, and it has to be last: the final person drinks and finds out it is water. brandkit.validate requires the `payoff` shot to be last in a config with this role, and build_episode.py requires exactly one payoff take in an episode and requires it to be the last one. product and location are IDENTICAL BYTE FOR BYTE with takes A and B.",
+  "brand": "Liquid Death",
+  "slug": "ld",
+  "episode_role": "payoff",
+  "episode": "ep1",
+  "product": {
+    "noun": "can",
+    "phrase": "white can",
+    "reference_image": "clients/liquid-death/brand-assets/reference-photos/mountain-water-still-19oz-tallboy-official.png",
+    "appearance": "same white body, same dark blackletter lettering, same gold illustration",
+    "colour_ban": "It never turns gold or yellow.",
+    "opening_extra": " and no ring pull is touched",
+    "open_state": "open"
+  },
+  "location": {
+    "description": "a wide pavement on one street corner outside a red brick building wrapped in green scaffolding, with a bus shelter to the left, parked cars along the kerb and bare plane trees behind",
+    "landmarks": "The same scaffolding, bus shelter and parked cars"
+  },
+  "question": "Quick question. Any idea what is in this can?",
+  "props": "a backpack, a tote bag",
+  "cast_size": 2,
+  "shots": [
+    {
+      "kind": "handover_first",
+      "subject": "a man in his thirties in a charcoal hooded sweatshirt with a backpack",
+      "pronoun": "he",
+      "noun": "man"
+    },
+    {
+      "kind": "speak",
+      "noun": "man",
+      "reaction": "weighs it in his hand",
+      "manner": "",
+      "line": "No idea. Something strong."
+    },
+    {
+      "kind": "sip",
+      "subject": "A young woman in a yellow raincoat with a canvas tote bag"
+    },
+    {
+      "kind": "react",
+      "noun": "young woman",
+      "reaction": "blinks"
+    },
+    {
+      "kind": "payoff",
+      "noun": "young woman",
+      "manner": "surprised",
+      "line": "Wait. That's water."
+    }
+  ],
+  "generation": {
+    "seed": 4819,
+    "duration": 12,
+    "fast": false,
+    "pace_grammar": true,
+    "guard_grammar": true
+  }
+}

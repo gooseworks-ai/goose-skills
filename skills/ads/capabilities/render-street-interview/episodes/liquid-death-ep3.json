@@ -1,0 +1,23 @@
+{
+  "_comment": "EPISODE 3. Rebuilt from episode 2's shape with four named fixes and nothing else. (1) THE MICROPHONE: no mic grammar at all. Three rounds of describing it in words produced three wrong mics and then a legible RODE brand mark, so the object comes from a face-cropped SCENE REFERENCE instead (SKILL.md 27, 30). All three takes reference the same crop, which is why the mic is one object across the episode rather than three. (2) THE CAN'S SIZE: can_size states a real-world 19oz tallboy bound against the hand, replacing 'the same size and shape in every frame', which was a relation between frames that a soda-sized can satisfied completely. (3) THE OPEN CAN: not argued with. Two takes ran an explicit sealed clause, with a per-shot restatement and a sealed product photo, and both rendered it open (SKILL.md 31). The upright grammar keeps the LID OUT OF SHOT, so the state is never on screen. (4) THE ABRUPT CUTS: the question is asked once, in take A, and takes B and C are answers only -- and the joins now also share a microphone and a street, which is what episodes 1 and 2 lacked (SKILL.md 25 named those as the two remaining causes).",
+  "episode": "ep3",
+  "brand": "Liquid Death",
+  "slug": "ld",
+  "title": "What's in the can",
+  "_output_comment": "The output name carries all three seeds ON PURPOSE. build_looks.py's look filenames do not carry a seed and a seed-4816 build silently overwrote seed 4815's shipped deliverable once. This name cannot collide with episode 1 (4817-4819), episode 2 (4820-4822), any street-ld-*.mp4, or any 4815/4816/4823-4828 file.",
+  "output": "episode-ld-ep3-seed4828-4829-4830",
+  "takes": [
+    "liquid-death-4828",
+    "liquid-death-4829",
+    "liquid-death-4830"
+  ],
+  "brand_layer": {
+    "logo": "clients/liquid-death/brand-assets/logos/liquid-death-logo-3840.png",
+    "end_card": [
+      "DON'T BE SCARED.",
+      "IT'S JUST WATER."
+    ]
+  },
+  "_grade_comment": "Not stored, same as episode 2. The episode is graded ONCE on the concatenated cut and the black lift is solved against that file by fit_grade.py at build time. A grade constant measured on one take outlives the take it was measured on (SKILL.md 19), and grading three takes separately is three curves across two joins, which is a visible step.",
+  "_ambience_comment": "Not stored either, and this one has bitten twice (SKILL.md 13 and 21a): the speech-free window belongs to a FILE. build_episode.py finds it on the finished concatenation and asserts it is speech-free before cutting a bed or an end-card room tone from it."
+}

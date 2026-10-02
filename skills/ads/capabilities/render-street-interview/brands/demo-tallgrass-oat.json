@@ -1,0 +1,81 @@
+{
+  "_comment": "AN INVENTED DEMO BRAND. Tallgrass Oat does not exist, has no client and has never been pitched to anyone. It is here to prove the recipe is parameterised and for nothing else, which is why the demo carries a made-up brand rather than a real one: a demo config naming a real client is how a sample run's creative choices end up being treated as the format. The product noun is `carton`, not `can`, on purpose - it exercises the inflected clauses (the position-pinning line, the no-opening rule, the mic-never-becomes-the-product line) rather than reusing the approved take's noun.",
+  "brand": "Tallgrass Oat",
+  "slug": "demo-tallgrass",
+  "product": {
+    "noun": "carton",
+    "phrase": "sage green carton",
+    "reference_image": "skills/molecules/create-street-interview-video/demo/tallgrass-oat-carton-PLACEHOLDER.png",
+    "appearance": "same sage green body, same cream serif wordmark, same single wheat-ear mark",
+    "colour_ban": "It never turns white or blue.",
+    "opening_extra": "",
+    "open_state": "open"
+  },
+  "location": {
+    "description": "a wide pavement on one street corner outside a glass-fronted office block, with a cycle rack to the right, a taxi rank along the kerb and a row of pollarded lime trees behind",
+    "landmarks": "The same glass frontage, cycle rack and taxi rank"
+  },
+  "question": "One second. What do you think this is?",
+  "props": "a folded newspaper, a gym bag, a tote bag",
+  "cast_size": 4,
+  "shots": [
+    {
+      "kind": "handover_first",
+      "subject": "a man in his sixties in a grey anorak carrying a folded newspaper",
+      "pronoun": "he",
+      "noun": "man"
+    },
+    { "kind": "react", "noun": "man", "reaction": "shrugs" },
+    {
+      "kind": "handover",
+      "subject": "a woman in her twenties in a cropped puffer jacket with a gym bag",
+      "pronoun": "she"
+    },
+    {
+      "kind": "speak",
+      "noun": "woman",
+      "reaction": "laughs",
+      "manner": "",
+      "line": "Paint. It's paint."
+    },
+    {
+      "kind": "handover",
+      "subject": "a tall man in his forties in a courier's high-vis vest",
+      "pronoun": "he"
+    },
+    {
+      "kind": "speak",
+      "noun": "man",
+      "reaction": "frowns",
+      "manner": "slowly",
+      "line": "Wallpaper paste, probably."
+    },
+    { "kind": "sip", "subject": "A woman in her fifties in a red cardigan with a tote bag" },
+    {
+      "kind": "payoff",
+      "noun": "woman",
+      "manner": "delighted",
+      "line": "Oh. That's oat milk."
+    }
+  ],
+  "generation": {
+    "_comment": "A seed in its own range, so a demo run can never overwrite a Liquid Death take. NOTHING HAS BEEN GENERATED AGAINST THIS CONFIG: no clip, no still, no voice. It is a dry run only.",
+    "seed": 5001,
+    "duration": 12,
+    "fast": false
+  },
+  "brand_layer": {
+    "_comment": "`cuts` is null because cuts are MEASURED off a take and no take exists. build_looks.py refuses to run rather than clamping captions to numbers calculated from the script, which is the mistake that printed one person's words over the next person's face. `ambience_gap` is null for the same reason: the speech-free window is a property of a take, not of a script, and a bed cut over speech loops that speech under the whole video. The caption spans below are placeholders for shape only and have not been measured against anything.",
+    "cuts": null,
+    "ambience_gap": null,
+    "series_header": "WHAT IS IT?",
+    "logo": null,
+    "end_card": ["IT IS NOT PAINT.", "IT IS OAT MILK."],
+    "captions": [
+      [0.1, 2.15, "WE ASKED PEOPLE|WHAT THIS ACTUALLY IS.", "title", "", "We asked people what this actually is."],
+      [3.3, 5.1, "PAINT. IT'S PAINT.", "answer", "COMMUTER", "Paint. It's paint."],
+      [5.4, 6.85, "WALLPAPER PASTE.", "answer", "COURIER", "Wallpaper paste, probably."],
+      [10.9, 11.95, "THAT'S OAT MILK.", "payoff", "PASSER-BY", "Oh. That's oat milk."]
+    ]
+  }
+}

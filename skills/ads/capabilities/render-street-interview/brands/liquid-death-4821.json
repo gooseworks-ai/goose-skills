@@ -1,0 +1,61 @@
+{
+  "_comment": "EPISODE 2, TAKE B of three. THE MIDDLE, and ANSWERS ONLY: shot 1 is `handover_cold`, which is the same handover with no spoken question, and generation.answers_only adds the clip-level block that stops the model inventing one. The teenager with the skateboard is GONE: episode 1 had a minor holding a can branded to look like beer at about 0:10, which is a brand-safety problem, and the `plain` grammar now bans anyone who could read as under eighteen. The cast is two adults rather than three for a measured reason: with four grammars on, three people put this prompt at 1318 words, over the 1200-word ceiling where seed 4811 started dropping rules. product and location are IDENTICAL BYTE FOR BYTE with takes A and C.",
+  "brand": "Liquid Death",
+  "slug": "ld",
+  "episode_role": "middle",
+  "episode": "ep2",
+  "product": {
+    "noun": "can",
+    "phrase": "white can",
+    "reference_image": "clients/liquid-death/brand-assets/reference-photos/mountain-water-still-19oz-tallboy-official.png",
+    "appearance": "same white body, same dark blackletter lettering, same gold illustration",
+    "colour_ban": "It never turns gold or yellow.",
+    "opening_extra": " and no ring pull is touched",
+    "open_state": "open"
+  },
+  "location": {
+    "description": "a wide pavement on one street corner outside a red brick building wrapped in green scaffolding, with a bus shelter to the left, parked cars along the kerb and bare plane trees behind",
+    "landmarks": "The same scaffolding, bus shelter and parked cars"
+  },
+  "_question_comment": "Recorded but NEVER SPOKEN in this take, and it is the IDENTICAL string take A asks. That is not tidiness: ANSWERS_ONLY quotes it as the line nobody says, so the thing takes B and C must not say is exactly the one question the episode did ask. Episode 1 gave each take its own wording and the viewer heard three questions.",
+  "question": "Quick question. What's in this can?",
+  "props": "a trolley, a hard hat",
+  "cast_size": 2,
+  "shots": [
+    {
+      "kind": "handover_cold",
+      "subject": "a woman in her sixties in a brown wool coat pushing a trolley",
+      "pronoun": "she",
+      "noun": "woman"
+    },
+    {
+      "kind": "speak",
+      "noun": "woman",
+      "reaction": "laughs",
+      "manner": "",
+      "line": "Something illegal."
+    },
+    {
+      "kind": "handover",
+      "subject": "a man in his forties in an unmarked yellow hi-vis vest and a hard hat",
+      "pronoun": "he"
+    },
+    {
+      "kind": "speak",
+      "noun": "man",
+      "reaction": "sniffs it",
+      "manner": "deadpan",
+      "line": "Motor oil."
+    }
+  ],
+  "generation": {
+    "seed": 4821,
+    "duration": 12,
+    "fast": false,
+    "pace_grammar": true,
+    "guard_grammar": true,
+    "mic_grammar": true,
+    "plain_grammar": true,
+    "answers_only": true
+  }
+}

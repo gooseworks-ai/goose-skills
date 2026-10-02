@@ -7234,6 +7234,37 @@
       }
     },
     {
+      "slug": "render-street-interview",
+      "name": "render-street-interview",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Build a vox-pop street interview video ad. An interviewer with a handheld mic asks passers-by one question about the brand's product, they give blunt wrong guesses, one gives the real answer, and the cut lands on a branded end card. Generates the takes through the GooseWorks fal proxy (Seedance 2.0 with native voice), then grades, re-cuts, captions and gates them locally. Use for the street-interview format.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-street-interview",
+      "files": [],
+      "metadata": {
+        "slug": "render-street-interview",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "example_prompt": "Make a street interview ad for this brand: an interviewer asks passers-by what the product is, they guess wrong, one gets it right.",
+        "installation": {
+          "base_command": "npx goose-skills install render-street-interview",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch",
+          "create-video-seedance-2-fal"
+        ]
+      }
+    },
+    {
       "slug": "render-value-prop",
       "name": "render-value-prop",
       "category": "capabilities",
@@ -7365,7 +7396,7 @@
       "name": "render-whiteboard-explainer",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Assemble a whiteboard explainer video ad from a beats file — a narrator explains one idea while a real whiteboard fills up in black marker, with a hand-lettered title, bulleted rows down the left, a drawing filling the right, and a payoff that letters the closing line and rings the claim. The board is a PHOTOGRAPH and the ink is multiplied onto it, so the surface sheen and window light come through the strokes; the drawings are generated as line art and traced to ordered strokes, then revealed in drawing order on the word they belong to. The layout is SOLVED from the beats, never hand-placed. FREE assembly (Pillow plus ffmpeg) apart from one board photo and one drawing per subject, both one-time per brand. Use for the whiteboard format.",
+      "description": "",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-whiteboard-explainer",
       "files": [
