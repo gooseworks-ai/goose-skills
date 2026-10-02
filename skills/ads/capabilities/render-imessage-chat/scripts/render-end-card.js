@@ -146,7 +146,8 @@ function main() {
   const outPng = path.join(outDir, 'end-card.png');
   const outMp4 = path.join(outDir, 'scene-end-endcard.mp4');
   const dwell = ec.dwell_sec || 2.5;
-  fs.writeFileSync(htmlPath, html);
+  // No brand fonts requested: the placeholder must still go, or it prints on the card.
+  fs.writeFileSync(htmlPath, html.replace('{{FONTLINK}}', ''));
 
   // Download the Google Fonts CSS + font files once, cache them, and inline them as data URIs,
   // so a slow or flaky network can never swap the brand type for a fallback mid-render.
