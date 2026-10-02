@@ -174,6 +174,9 @@ brief, recipe, visual plans and evidence, not just the lines. It checks strategi
 template fit, feasible visual proof, claim support, hook payoff, clarity and voice. Never
 let a strong style score compensate for an unsupported claim or an impossible execution.
 Apply supported edits, then recheck. The final chosen hook must also pass with the body.
+Inspect `pass_rankings`, `needs_review` and `kill_reasons`. A split fatal-defect judgment
+needs resolution; an order-sensitive top choice remains a shortlist. Do not treat a
+merged average or Borda ranking as agreement between critic passes.
 
 The files reference explains the critic's relay and failure exits. If it is unavailable,
 do an explicit agent review against the same rubric and record that limitation; never

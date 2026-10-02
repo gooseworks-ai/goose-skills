@@ -62,6 +62,36 @@ Proposed release criteria, to be agreed with the product owner:
 A tiny synthetic pilot demonstrates bounded classification only. It does not establish
 creative taste, ad lift or production reliability.
 
+### Real-brand creative evaluation
+
+Name the brand and exact product in every brief. Verify current product facts and label
+audience hypotheses separately from observed customer research. Generate distinct angles
+only where the evidence supports them; nine or ten is a useful exploration size, not a
+quota to fill with unsupported promises.
+
+When format selection is open, compare concrete angle–format treatments before writing.
+An animated explainer needs a coherent visual mechanism; a podcast needs a meaningful
+exchange; a street interview needs a question and follow-up; a UGC demo needs an
+observable product action; hypermotion needs movement that carries the promise. Short
+chat can be a comparison case, but six messages alone cannot establish long-form video
+writing quality. Use creative format briefs for a writing-only study when requested;
+production still needs the full recipe contract and actual asset checks.
+
+Evaluate the exact words together with the visual plan. Ask separately about the hook,
+product role, native execution, proof, payoff, voice and CTA, as well as claim support.
+Include factually correct but bland controls: supported claims are not evidence of good
+creative. Preserve the full rubric, model version, inputs, distributions and repairs.
+
+If a shortlist needs a preference comparison, reverse candidate order and map answers
+back to the actual scripts. An order-sensitive or low-confidence choice remains
+unresolved. A high mean across creative axes is only a diagnostic index; it must not
+override a critical defect, uncertainty or direct comparison. Report improvements and
+regressions after repairs rather than repeatedly rewriting to maximize judge scores.
+
+Agent-authored scripts and controls without independent reviewer labels can demonstrate
+that the judge distinguishes those examples. They cannot establish reviewer agreement,
+conversion lift or a safe automatic release threshold.
+
 ## Proxy boundary
 
 Do not put a TypeSafe key in a public skill or customer machine. A managed integration

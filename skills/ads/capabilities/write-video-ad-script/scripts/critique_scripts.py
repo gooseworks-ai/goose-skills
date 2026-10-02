@@ -67,14 +67,17 @@ should sing, and silent cards should read; not every format is a talking-head ad
 RUBRIC = """\
 Score each concept 1-10 on:
 - hook: would a cold viewer stop in the first two seconds? Does the first line land the
-  pain, the claim or the moment, with no wind-up and no brand introduction?
+  situation, desire, question, product action or promise with no wind-up? Early product
+  or branding is useful when it serves the story; pain is not required.
 - specific: one real person in one real situation, concrete details, a physical detail
   or real number, versus generic category talk.
-- spoken: sounds like this person actually talking (contractions, fragments, their
-  words), not an ad and not an AI. Customer phrasing reused well scores high.
+- spoken: delivery sounds natural for the format and brand. Dialogue should sound like
+  people, chat like messages, cards should read and lyrics should sing. Customer wording
+  can help where relevant, but is optional and earns nothing merely for being quoted.
 - proof: the claim is shown or earned, not just asserted.
 - payoff: one message, and the body pays off exactly what the hook promised.
-- fresh: not the first idea every brand in this category runs.
+- fresh: useful product and audience specificity rather than interchangeable category
+  copy. A familiar, clear demonstration can beat a novel but weak idea.
 - template_fit: fits the recipe's story, speakers, visual capabilities and text density.
 - claim_support: every claim is supported for this exact product; no fake testimonial.
 - strategic_fit: the promise matters to this audience, the product makes it credible,
@@ -87,8 +90,9 @@ Long-running ads and organic engagement are observations, never conversion label
 
 Then for each concept: the id of its best hook, up to 4 line edits (quote the exact text
 you would replace, give the replacement, say why in 12 words or fewer), and a kill reason
-ONLY if the concept is fatally generic or breaks its own promise (otherwise null). Edits
-make a line sharper, more specific or more spoken, or cut an unbacked claim. An edit that
+for any critical defect listed above or a fatally generic concept. Use null for ordinary
+creative weaknesses that a line or visual edit can repair. Edits make a line sharper,
+more specific or more natural for its format, or cut an unbacked claim. An edit that
 only makes a line flatter or more factual is not an improvement.
 
 Finally rank all concepts best first and say in one sentence why the top one wins.
@@ -279,12 +283,29 @@ def merge(runs, ids):
             "hook_agreement": len(set(m["best_hook_ids"])) <= 1,
             "hook_notes": m["hook_notes"], "edits": m["edits"],
             "kill": m["kills"][0] if m["kills"] and len(m["kills"]) == len(runs) else None,
+            "kill_reasons": list(dict.fromkeys(m["kills"])),
             "kill_split": bool(m["kills"]) and len(m["kills"]) < len(runs),
             "borda": borda[cid],
         })
     totals = {o["id"]: o["total"] or 0 for o in out}
     ranking = sorted(ids, key=lambda cid: (-borda[cid], -totals[cid], ids.index(cid)))
-    return {"concepts": out, "ranking": ranking, "why_top": why}
+    pass_rankings = [r["ranking"] for r in runs]
+    top_choices = [r[0] for r in pass_rankings if r]
+    top_choice_agreement = (len(set(top_choices)) == 1 if len(runs) > 1
+                            and len(top_choices) == len(runs) else None)
+    review_reasons = []
+    if len(top_choices) != len(runs):
+        review_reasons.append("A critic pass did not rank the candidates.")
+    if top_choice_agreement is False:
+        review_reasons.append("Critic passes preferred different concepts; the merged ranking is diagnostic only.")
+    for c in out:
+        if c["kill_split"]:
+            review_reasons.append(f"{c['id']}: a critic pass reported a fatal defect; resolve its kill_reasons.")
+        if not c["hook_agreement"]:
+            review_reasons.append(f"{c['id']}: critic passes preferred different hooks; recheck the selected hook with the body.")
+    return {"concepts": out, "ranking": ranking, "why_top": why,
+            "pass_rankings": pass_rankings, "top_choice_agreement": top_choice_agreement,
+            "needs_review": bool(review_reasons), "review_reasons": review_reasons}
 
 
 def main():
@@ -348,6 +369,8 @@ def main():
     out.write_text(json.dumps(result, indent=1, ensure_ascii=False))
 
     print(f"[critic] {a.model}, {len(orders)} pass(es), saved {out}")
+    for reason in result["review_reasons"]:
+        print(f"  REVIEW: {reason}")
     for cid in result["ranking"]:
         c = next(x for x in result["concepts"] if x["id"] == cid)
         flag = " KILLED: " + c["kill"] if c["kill"] else (" (one pass wanted to kill it)" if c["kill_split"] else "")

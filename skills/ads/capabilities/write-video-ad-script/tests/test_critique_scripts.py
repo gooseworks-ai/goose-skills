@@ -60,7 +60,24 @@ def test_merge_averages_and_needs_both_passes_to_kill():
     assert c1["scores"] == {"hook": 8.0, "fresh": 5.0}
     assert len(c1["edits"]) == 1                    # same edit from both passes, kept once
     assert c2["kill"] is None and c2["kill_split"]  # only one pass wanted it gone
+    assert c2["kill_reasons"] == ["generic"]      # preserve the defect for resolution
     assert m["ranking"][0] == "c1"                   # Borda tie broken by the higher average
+    assert m["needs_review"] and m["top_choice_agreement"] is False
+    assert m["pass_rankings"] == [["c1", "c2"], ["c2", "c1"]]
+
+
+def test_split_kill_requires_review_even_when_rankings_agree():
+    m = cs.merge([norm(answer(6, IDS, True)), norm(answer(6, IDS, False))], IDS)
+    assert m["top_choice_agreement"] is True
+    assert m["needs_review"]
+    assert any("fatal defect" in reason for reason in m["review_reasons"])
+
+
+def test_agreement_does_not_request_extra_review_and_single_pass_has_no_agreement_claim():
+    m = cs.merge([norm(answer(6, IDS, False)), norm(answer(6, IDS, False))], IDS)
+    assert m["top_choice_agreement"] is True and not m["needs_review"]
+    m = cs.merge([norm(answer(6, IDS, False))], IDS)
+    assert m["top_choice_agreement"] is None and not m["needs_review"]
 
 
 def test_merge_kills_when_every_pass_agrees():
