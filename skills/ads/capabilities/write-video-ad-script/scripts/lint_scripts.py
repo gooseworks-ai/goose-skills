@@ -398,6 +398,13 @@ def lint(cands, shape=None, rules=None, bank=None, report_only=False, references
                 err("E_CTA_NOT_LAST", f"'{after[0].get('id')}' is said after the CTA: end on the CTA",
                     after[0].get("id"))
 
+        # Beats occupy ordered, sequential windows. An omitted optional beat
+        # reserves no time; repeated ids retain the distinct slots chosen above.
+        if shape.get("total_seconds") is not None:
+            selected_seconds = sum(sb.get("seconds", 0) for sb in slot.values())
+            if selected_seconds > shape["total_seconds"] + 1e-9:
+                err("E_TIMELINE", f"selected beats need {selected_seconds:g}s but the ad has {shape['total_seconds']:g}s; fit speech, pauses and silent beats inside the runtime")
+
         # Word budgets and how each line reads out loud
         words_by_beat, total, timings, spoken_budgets = {}, 0, [], []
         for i, b in enumerate(beats):
@@ -444,6 +451,17 @@ def lint(cands, shape=None, rules=None, bank=None, report_only=False, references
             cap = float(shape["total_seconds"]) * wps
             if total > cap * OVER_BUDGET:
                 err("E_BUDGET", f"{total} spoken words in a {shape['total_seconds']}s ad (about {round(cap)} fit)")
+
+        if shape.get("total_seconds") is not None and timings:
+            # Keep an overall estimate when legacy explicit limits override a
+            # short window or a beat has no duration. Use each beat's own rate.
+            reserved = sum((row["seconds"] or 0) - (row["speech_seconds"] or 0) for row in timings)
+            reserved += sum(sb.get("seconds", 0) for sb in slot.values() if sb.get("kind", "spoken") != "spoken")
+            read_seconds = sum(row["words"] / row["words_per_second"] for row in timings)
+            rounding = sum(0.5 / row["words_per_second"] for row in timings)
+            tolerance = 1.0 if strict else OVER_BUDGET
+            if reserved + read_seconds > shape["total_seconds"] * tolerance + rounding:
+                err("E_TIMELINE", f"planned reads and reserved silence need about {reserved + read_seconds:.2f}s but the ad has {shape['total_seconds']:g}s; preserve the runtime and each beat's cadence")
 
         # Hooks: each alternative must open cleanly and fit the first beat
         hook_budget = (spoken_timing(hook_beat, shape, references)["word_budget"] if hook_kind == "spoken"

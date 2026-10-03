@@ -213,3 +213,38 @@ def test_critic_receives_resolved_windows_sources_and_preservation_rule():
     assert '"speech_seconds": 2.0' in prompt and '"word_budget": 6' in prompt
     assert '"required_words_per_second": 3.0' in prompt and "Untested recipe estimate" in prompt
     assert "Keep recipe limits and proof/CTA intact" in prompt
+
+
+def test_total_runtime_rejects_inflated_windows_in_real_cli(tmp_path):
+    shape = profile([{"id": "hook", "seconds": 10}, {"id": "proof", "seconds": 10}], total_seconds=10)
+    cands = candidates(shape, [30, 30])
+    for name, value in [("candidates", cands), ("shape", shape)]:
+        (tmp_path / f"{name}.json").write_text(json.dumps(value))
+    result = subprocess.run([sys.executable, ls.__file__, "--strict", "--candidates", str(tmp_path / "candidates.json"),
+                             "--shape", str(tmp_path / "shape.json"), "--out", str(tmp_path / "lint.json")], capture_output=True, text=True)
+    assert result.returncode == 2, result.stdout + result.stderr
+    assert "E_TIMELINE" in codes(json.loads((tmp_path / "lint.json").read_text()))
+
+
+def test_timeline_reserves_pause_visual_and_endcard_windows():
+    shape = profile([{"id": "hook", "seconds": 3, "pause_seconds": 1},
+                     {"id": "demo", "kind": "visual", "seconds": 4},
+                     {"id": "card", "kind": "on_screen", "seconds": 4}], total_seconds=10)
+    assert "E_TIMELINE" in codes(check(shape, [6, 0, 3], strict=True))
+    shape["total_seconds"] = 11
+    assert check(shape, [6, 0, 3], strict=True)["ok"]
+
+
+def test_timeline_skips_unselected_optional_beats_and_keeps_variable_rates():
+    shape = profile([{"id": "hook", "seconds": 2, "words_per_second": 4},
+                     {"id": "optional", "seconds": 20, "optional": True},
+                     {"id": "proof", "seconds": 4, "words_per_second": 1.5}], total_seconds=6)
+    cands = candidates({"beats": [shape["beats"][0], shape["beats"][2]]}, [8, 6])
+    report = ls.lint(cands, shape, strict=True)
+    assert report["ok"], report
+    assert [r["words_per_second"] for r in report["concepts"][0]["timing"]] == [4, 1.5]
+
+
+def test_total_runtime_still_limits_legacy_explicit_override():
+    shape = {"words_per_second": 3, "beats": [{"id": "hook", "seconds": 3, "max_words": 20}], "total_seconds": 3}
+    assert "E_TIMELINE" in codes(check(shape, [20], strict=True))
