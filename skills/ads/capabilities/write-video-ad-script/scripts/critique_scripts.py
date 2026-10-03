@@ -39,7 +39,7 @@ import sys
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 
 from media_proxy import RELAY_EXIT, _fal_run  # noqa: E402  (bundled)
-from lint_scripts import dialogue_mode  # noqa: E402
+from lint_scripts import dialogue_mode, lint  # noqa: E402
 
 FAL_LLM = "openrouter/router"
 DEFAULT_MODEL = "openai/gpt-6-sol"
@@ -180,6 +180,13 @@ def build_prompt(concepts, quotes_by_id, rules, shape, brief, context=None, refe
     if never:
         head.append("The brand never says: " + " | ".join(never))
     head.append("Full recipe contract: " + json.dumps(shape, ensure_ascii=False))
+    timing = lint({"concepts": concepts}, shape, report_only=True, references=references)
+    head.append("Resolved speech plans (estimates, not audio verification): " + json.dumps(
+        {"input_errors": timing["input_errors"],
+         "concepts": [{"id": c["id"], "timing": c["timing"]} for c in timing["concepts"]]}, ensure_ascii=False))
+    head.append("Judge cadence against each speech window and its source. Silent visuals, pauses and end cards add no speech capacity. "
+                "Keep recipe limits and proof/CTA intact. A reference target or observed baseline does not prove engine capacity; "
+                "flag unverified faster reads rather than claiming rendered delivery passes.")
     if context:
         head.append("Selected research and campaign context: " + json.dumps(context, ensure_ascii=False))
     if references:

@@ -77,10 +77,20 @@ Read the actual recipe, not just its catalogue card. Write shape.json with:
 - Available asset ids, permitted visual modes and any required demonstration.
 - What can change and what stays fixed, including silence, music or lyric constraints.
 
-Use recipe limits first. For speech without limits, measure the reference delivery; only
-then use a provisional 3 words per second for conversation or 2.5 for slower narration.
-Read chat and cards against their own display time and layout. Lyric timing follows bars
-and syllables. A word estimate never establishes that speech or text fits the finished cut.
+For speech, load [pacing](references/pacing.md). Separate **desired cadence** from recipe
+limits and generation evidence. Use the brief's explicit delivery direction or actually
+observed reference audio for this ad's target, then the recipe's default. Preserve explicit
+recipe limits. If these disagree, record the conflict instead of quietly choosing the
+slower rate and deleting the message. Without usable context, use a provisional 3 words
+per second for conversation or 2.5 for slower narration, labelled as a fallback.
+
+Budget each spoken beat from its speech window, excluding silent demonstrations, end cards
+and intentional pauses. Rates can differ across beats and speakers. Record the rate's
+source and keep recipe estimates separate from observed rendered delivery. Carry this
+timing plan into production direction. Read chat and cards against their own display time
+and layout. Lyric timing follows bars and syllables. A word estimate never establishes
+that speech or text fits the finished cut. Do not change the recipe to express this run's
+target, promise forty words in fifteen seconds, or apply a universal speed-up.
 
 Examples of adaptation, not a fixed format catalogue:
 
@@ -174,6 +184,9 @@ and add product inserts, captions and the CTA. Do not turn every slot into a sen
 from the product page or have the participant rehearse the presenter's selling points.
 
 Create candidates.json with angle ids, evidence ids, claims, hooks, beats and visual plans.
+Keep the proof and CTA when repairing timing. Offer tighter wording, a longer execution
+within the recipe, or an explicitly evaluated faster read. Do not drop essential content
+just to hit a generic word count.
 
 ## Step 6. Validate, critique, repair
 
@@ -223,6 +236,10 @@ the angle was open. Do not add a separate pause. Existing runtime approval still
 Explain briefly why this promise suits this audience and what the video will show. When
 research is provisional or essential proof is missing, say so plainly. Keep private quote
 links and customer data out of remixable review payloads; retain them in research provenance.
+Include the chosen delivery style, per-beat word counts and speech windows, intentional
+pauses, recipe conflicts and unverified delivery targets. The production handoff carries
+the same timing plan and preserves recipe limits. A finished-audio check must establish
+the complete read, pronunciation, naturalness and sync before declaring delivery fixed.
 
 ## Step 8. Learn from decisions and results
 
