@@ -26,3 +26,8 @@ jobs:
 
       - name: Test CLI
         run: npm test
+
+      - name: Test street-interview prompt preflight
+        run: |
+          python3 skills/ads/capabilities/render-street-interview/scripts/selftest.py
+          python3 -m unittest discover -s skills/ads/capabilities/render-street-interview/tests -p 'test_prompt_budget.py' -v

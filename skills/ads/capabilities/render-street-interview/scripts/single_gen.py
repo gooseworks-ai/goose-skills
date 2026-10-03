@@ -181,6 +181,8 @@ def main():
     # The prompt lint runs on the DRY RUN, not only in the gate. A clause that was paid for going
     # missing is worth catching before the call, not after it: every one of these was a rejected
     # take. The gate re-runs the identical lint from the identical dict on the finished render.
+    for advice in format_spec.prompt_warnings(prompt):
+        print("PROMPT ADVISORY: " + advice)
     problems = format_spec.lint(prompt, **G)
     if problems:
         print("\nPROMPT LINT FAILED:")
@@ -222,7 +224,8 @@ def main():
     if not A.yes:
         print()
         print(prompt)
-        sys.exit("\ndry run. Nothing sent.")
+        print("\ndry run. Nothing sent.")
+        return
 
     # THROUGH THE GOOSEWORKS PROXY, never a local fal key: the call is billed to and recorded
     # on the user's project, and a resumed run re-attaches to a job it already paid for.

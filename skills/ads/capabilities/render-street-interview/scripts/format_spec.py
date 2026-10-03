@@ -17,9 +17,9 @@ EVERY CLAUSE BELOW WAS PAID FOR. `REQUIRED_CLAUSES` names the rejection each one
 `check-cut.py` imports that dict rather than keeping its own copy, so a clause cannot be deleted
 from the prompt without the gate noticing. Do NOT shorten the scaffold to make it tidy: cutting
 the prompt from 1379 to 684 words on 2026-09-30 (seed 4812) silently deleted six of these guards
-and they had to be restored. There is a real ceiling at ~1200 words, where the model starts
-dropping rules; the scaffold plus a four-person cast lands at ~950. If a new rule is needed, put
-it inside the shot grammar and delete something else.
+and they had to be restored. Seed 4811 missed instructions with a long prompt, but that
+observation does not prove an exact word ceiling. Length advice is non-blocking; missing clauses
+still fail. Preserve the approved prompt text rather than trimming guards to hit a count.
 
 `build_prompt(cfg)` is deterministic: the same config produces the same prompt, byte for byte.
 `selftest.py` asserts that the Liquid Death config reproduces the approved seed-4815 prompt
@@ -300,8 +300,8 @@ MIC_SCALE_CLAUSES = {
 #     visibly -- space above the head, the waist in frame -- and adds the negation that was
 #     missing. Both required needles ("every shot is wide", "detail falls away behind the
 #     subject") survive the replacement, which `selftest.py` and the gate both re-check.
-# Kept deliberately short. The ~1200-word ceiling is real (seed 4811) and the pace grammar
-# already spends 214 words of it, so a guard that has to survive has to be one sentence.
+# Kept deliberately short for clarity. Seed 4811 motivated the former 1200-word gate,
+# but an exact quality boundary was not proved. Keep the guard even in a long prompt.
 LABEL_FACING = (
     "THE LABEL FACES THE CAMERA: whenever the {prod} is visible its front label is turned toward "
     "the lens, never rotated away and never showing a blank unprinted side. ")
@@ -357,7 +357,7 @@ GUARD_CLAUSES = {
 # trade an approved element for a fix, which is not what was asked for.
 #
 # WORD COST. This REPLACES rather than adds, so the mic grammar costs +24 words on the Liquid
-# Death cast, which is the only reason all four grammars fit under the 1200-word ceiling at all.
+# Death cast. This helped fit the former internal 1200-word budget; that budget is now advice.
 # The first draft stated the never-changes rule in its own sentence and the description in
 # another; they are merged here because that was a duplicate I had written myself, and the lint
 # refused all three episode-2 payloads until it came out. Measured, not guessed.
@@ -424,13 +424,13 @@ _CAST_ADULTS = ("clearly different people, ALL CLEARLY ADULT, in their twenties 
 # INTERVIEWER NEVER SPEAKS", eight words earlier in the same sentence, and the needle the lint
 # checks is that capitalised phrase. Both distinct rules are kept -- the interviewer says nothing,
 # and nobody in frame asks a question either -- because those are two different mouths. The eight
-# words went to episode 3's can grammar, which had none spare under the 1200-word ceiling.
+# words went to episode 3's can grammar under the former internal 1200-word budget.
 # "Each person is already reacting to a {prod} just put into their hand." came out on
 # 2026-10-01. It was context explaining why nobody asks anything -- and the shot list SHOWS it:
 # every handover in an answers-only take reads "The interviewer holds the {prod} out to X; X
 # takes it and holds it...". A sentence describing what the numbered shots already stage is the
 # _MIC_SCALE_TAIL case, and episode 3's takes B and C needed the thirteen words to fit the
-# eight-shot cast under the 1200-word ceiling.
+# eight-shot cast under the former internal 1200-word budget.
 ANSWERS_ONLY = (
     "NO QUESTION IS ASKED IN THIS CLIP AND THE INTERVIEWER NEVER SPEAKS: the interviewer does not "
     "say this line, \"{question}\", and nobody in frame asks a question either. ")
@@ -457,8 +457,8 @@ ANSWERS_ONLY = (
 # every shot" is supplied by the PRODUCT paragraph, which every prompt carries, so nothing that
 # was paid for goes missing -- that is the same proof _MIC_SCALE_TAIL needed before deletion.
 #
-# It is also worth ~150 words, which is what pays for a four-person cast under the 1200-word
-# ceiling, and cast size is the pace lever (see MIC_REF_CLAUSES' note and TAKES.md).
+# It also saves ~150 words. This helped fit the former internal word budget; length alone
+# is now advisory. Cast size is not a proven pace lever (see REFERENCE.md items 32/33).
 # NOTE the position pin in the middle of this sentence, and why it is there. The first draft of
 # this block left it out, and the lint immediately refused the payload for missing "is in the
 # same place in every shot" -- a REQUIRED_CLAUSE whose docstring says it covers BOTH objects and
@@ -935,7 +935,11 @@ RATE_FAST = 0.2419
 GEN_CAP_S = 15.0       # Seedance single-call ceiling; the idea has to fit inside it
 RESOLUTION = "720p"    # MODEL_BEHAVIORS.md: the classifier sweeps harder at 1080p
 ASPECT = "9:16"
-WORD_CEILING = 1200    # past this the model starts dropping rules (measured on seed 4811)
+# Quality guidance, not an API maximum or a precise failure boundary. BytePlus recommends
+# at most 1000 English words because lengthy prompts may miss details:
+# https://docs.byteplus.com/en/docs/modelark/create-video-generation-task-api
+# Fal's reference-to-video schema declares no maxLength for prompt (checked 2026-10-03).
+PROMPT_WORD_GUIDELINE = 1000
 
 
 # Clauses that must appear in EVERY numbered shot, not merely somewhere in the prompt. The
@@ -958,7 +962,8 @@ def lint(prompt: str, pace: bool = False, guards: bool = False, mic: bool = Fals
          mic_ref: bool = False, can_size: bool = False, can_sealed: bool = False,
          upright: bool = False, one_mic: bool = False, prompt_version: int = 1):
     """The prompt lint, as a function, so `check-cut.py` and `single_gen.py --dry-run` apply the
-    SAME rule to the same text. Returns a list of failure strings.
+    SAME rule to the same text. Returns structural failure strings. Length is advisory
+    and lives in prompt_warnings(), so a complete prompt is never refused for its count.
 
     `pace=True` adds PACE_CLAUSES and `guards=True` adds GUARD_CLAUSES. Both are additive and
     off by default: a prompt built without them lints exactly as it did before, so nothing that
@@ -1001,10 +1006,17 @@ def lint(prompt: str, pace: bool = False, guards: bool = False, mic: bool = Fals
             out.append(f'no numbered shot list, so "{n}" cannot be counted per shot -- {why}')
         elif bare:
             out.append(f'shot(s) {bare} do not restate "{n}" -- {why}')
-    if len(prompt.split()) > WORD_CEILING:
-        out.append(f"the prompt is {len(prompt.split())} words, over the {WORD_CEILING}-word "
-                   f"ceiling where seed 4811 started dropping rules")
     return out
+
+
+def prompt_warnings(prompt: str):
+    """Non-blocking length advice; never rewrite the prompt or authorize a paid call."""
+    words = len(prompt.split())
+    if words <= PROMPT_WORD_GUIDELINE:
+        return []
+    return [f"the prompt is {words} words, above BytePlus's recommended "
+            f"{PROMPT_WORD_GUIDELINE}-English-word guideline; lengthy prompts may miss details. "
+            "Advisory only: structural checks and existing spend approval still apply."]
 
 
 # ── reading a prompt back ──────────────────────────────────────────────────────────────────
