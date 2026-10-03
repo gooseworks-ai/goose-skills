@@ -182,6 +182,13 @@ The October street trial found that reference ids alone did not clear the qualit
 Review the complete interaction and brand card together. A product feature alone does not
 establish a customer result, and an observed opening does not establish unseen recruitment.
 
+A later brand-first trial still failed the required quality floor after complete commercial
+references and two creative repairs. A reviewer with separate context but the same model
+family accepted the final wording; Jev rejected it. Neither technical validation nor that
+review established human acceptance. Keep conflicting judgments visible and the result a
+draft. Brand-led concepts and supported claims are necessary inputs, not proof that the
+exchange sounds human or makes a compelling ad.
+
 Run native config validation and `single_gen.py --brand <config.json>` before review.
 Keep product-guess regression checks. Human review happens on the saved situation brief,
 script, action timeline, ending-card specification and full prompt preview. **Every
