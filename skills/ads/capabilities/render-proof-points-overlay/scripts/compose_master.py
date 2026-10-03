@@ -16,6 +16,7 @@ import argparse
 import json
 import pathlib
 import subprocess
+from music_coverage import prepare_music
 
 
 def main():
@@ -23,7 +24,10 @@ def main():
     ap.add_argument("--config", required=True)
     ap.add_argument("--run-dir", required=True)
     ap.add_argument("--no-music", action="store_true", help="skip music mux (silent master)")
+    ap.add_argument("--loop-music", action="store_true", help="extend a reviewed loopable instrumental with crossfades; listen to the finished joins")
     args = ap.parse_args()
+    if args.no_music and args.loop_music:
+        ap.error("--no-music and --loop-music cannot be combined")
 
     cfg = json.loads(pathlib.Path(args.config).read_text())
     run = pathlib.Path(args.run_dir)
@@ -31,6 +35,14 @@ def main():
     ov = gen / "overlays"
     lay = cfg["layout"]
     dur = cfg.get("duration_sec", 10)
+    music = gen / "music-checked.wav"
+    if not args.no_music:
+        try:
+            check = prepare_music(gen / "music-bed.m4a", music, dur, loop=args.loop_music)
+        except (ValueError, subprocess.CalledProcessError) as error:
+            raise SystemExit(f"music preflight failed: {error}") from error
+        if check["looped"]:
+            print("[music] Extended locally; listen to every join and the ending before delivery.")
 
     clip = gen / "clip-handheld.mp4"
     header = ov / "01-header-white.png"
@@ -85,8 +97,7 @@ def main():
     # (noise inflates bitrate — see memory feedback_grain_pass_inflates_bitrate).
     out = run / "master-final.mp4"
     grain = "[0:v]eq=contrast=1.06:saturation=0.93,hqdn3d=1.5:1.5:3:3,noise=alls=9:allf=t+u[v]"
-    music = gen / "music-bed.m4a"
-    if args.no_music or not music.exists():
+    if args.no_music:
         subprocess.run([
             "ffmpeg", "-y", "-hide_banner", "-loglevel", "error", "-i", str(composite),
             "-filter_complex", grain, "-map", "[v]",

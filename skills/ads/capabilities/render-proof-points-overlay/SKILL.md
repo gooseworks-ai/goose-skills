@@ -27,6 +27,15 @@ fetch_icons.py --run-dir <run> ; build_overlays.py --config config.json --out-di
 ## Choices
 This atom renders no people, setting or music. The template's creative choices (whose hand, the setting, the music style) are asked of the user by the recipe and go to the paid keyframe / i2v / music capabilities; this atom only composites the pills over whatever base clip and music bed it is given.
 
+## Music coverage
+
+Read the [music preparation instructions](references/music.md) for the composition options and listening checks.
+
+The bed must cover the complete master, including its end card. Composition checks audio coverage before rendering and stops for missing, short or prematurely silent music. A silent preview requires the explicit no-music option.
+
+Use a full-length approved bed first. For an approved instrumental that can repeat cleanly, the loop-music option trims silent edges and extends it locally with crossfades. It preserves the source and puts the final half-second fade at the master ending. Do not loop speech, lyrics or a musical ending that makes the join obvious. Do not regenerate paid music automatically.
+
+Listen to every join and the final seconds before delivery. The automated check detects silence and insufficient duration; it does not judge musical phrasing, a gradual early fade or how the bed sounds under dialogue.
 
 ## Local layout checks
 

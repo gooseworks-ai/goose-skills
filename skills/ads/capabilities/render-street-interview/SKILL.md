@@ -13,6 +13,8 @@ brand's own line. The people are generated; everything after the takes is free a
 
 `REFERENCE.md` holds the format's full history: every numbered **Critical knowledge** entry and
 the rejected takes behind it. Read it before changing the prompt scaffold or a gate.
+Read [take history](TAKES.md) before reusing a seed. It keeps reported successes and
+product-scale, print and handling limits together; a seed is not a quality guarantee.
 
 ## Run
 
