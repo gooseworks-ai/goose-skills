@@ -176,6 +176,12 @@ novelty cutoff. Fewer than three good concepts is better than padded alternative
 
 ## Step 5. Write words and visuals together
 
+Load [scene and hook](references/scene-and-hook.md) before writing dialogue. Plan the
+encounter, the literal first 0–3 seconds and the story's development/payoff first.
+Separate the participant's filming context from the context actually given to a new
+viewer. A complete question can be the hook; a reply-first opening needs its subject
+or task established in the retained picture, words or rendered text.
+
 For every beat write the exact line, speaker, visual action, production mode and existing
 asset ids when applicable. Keep a proof plan and a claim ledger with current product fact
 ids. Every hook variant must lead into the same body's promise; repair the body when the
@@ -217,6 +223,12 @@ or partial source cannot satisfy this requirement.
 It checks research scope, angle preservation, source ids, template identity, required slots
 (including repeated speakers), text limits, speakers and available assets. Fix errors and
 resolve material warnings. The machine cannot prove that a cited fact entails a claim.
+
+Before full-context critique, run the scene-and-hook guide's brief-blind opening review.
+Give a fresh reviewer only the exact first picture/action, audible words and rendered
+text. Require an evidence-based account of what is happening and what comes next; do not
+let the brief or ending rescue missing context. Repair a confusing opening before scoring
+the full ad. Keep this diagnostic separate from frozen evaluation rubrics.
 
 Then run the independent critic with the same context and references. Set its writer-family
 to the actual writer and select a critic from a different family; a blanket ban on Claude

@@ -49,6 +49,12 @@ because real people appear in it.
 
 ## Write an exchange, then an ad
 
+First load [scene and hook](scene-and-hook.md). Plan the encounter and the opening the
+viewer receives separately, then map development and payoff. A reply to an omitted
+question must still have an identifiable subject. Review the first 0–3 seconds without
+the brief before reviewing the whole conversation. Private scene notes cannot supply
+context that is absent from the actual words, action or rendered text.
+
 - Define what each person wants from this moment. Give the second person a role beyond
   prompting the sales pitch.
 - Start with a concrete question, observed action or disagreement. Let the answer change

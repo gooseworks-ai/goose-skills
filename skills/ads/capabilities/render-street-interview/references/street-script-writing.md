@@ -24,6 +24,8 @@ conversations produce **script and prompt previews only**; performed media remai
 The first frame may be a participant reply or silent action from an edited encounter.
 Do not force a greeting or consent exchange into the ad. Do record how participation
 works in the proposed situation, and distinguish it from what the reference actually shows.
+The retained opening must establish its subject through the actual picture, words or
+rendered text. Private setup notes cannot explain an answer to a missing question.
 
 ---
 
@@ -134,6 +136,13 @@ answering an incidental preparation question does not by itself make a useful le
 
 ## Write the requested exchange, then map actions and timing
 
+Before dialogue, load the writer's `references/scene-and-hook.md`. Save the encounter
+start separately from a time-mapped first 0–3 seconds: literal image/action, exact audible
+words and any exact rendered text. State what a new viewer understands, what they want
+answered, what changes during the exchange, and how the supported brand role earns the
+payoff. A complete interviewer question can be the strongest opening. Do not require
+reply-first editing or hide a necessary question to fit the duration.
+
 1. Write **the count the user requested**. If a general writer guide proposes two exchanges
    and this request asks for one, write one. Keep alternatives distinct when requested.
 2. Pick a question this participant could answer without knowing the sponsor. Let the reply
@@ -172,6 +181,15 @@ conversation preview.
 
 ## Review and stop at the supported surface
 
+First show a fresh reviewer only the literal opening's picture/action, words and rendered
+text, withholding the brief, participant intentions and ending. Require the reviewer to
+describe the situation, topic and expected next answer using only those inputs; flag any
+context they invented. Rebuild an opening that depends on private notes before full-ad
+scoring. This diagnostic does not replace the commercial reference or alter a frozen rubric.
+An opening-only test still found the manager-rejected Som and Goose lines plausible.
+Basic topic comprehension is not creative acceptance; this check cannot clear human speech,
+story interest or ad quality. Retain the human rejection even when the model disagrees.
+
 Review the situation, full visual sequence, dialogue and ad connection separately. Use
 the writer's dialogue review and a words-only reading. Natural language and turn logic
 must each reach the proposed 4/5 floor; factual support and a good average do not compensate.
@@ -188,6 +206,12 @@ family accepted the final wording; Jev rejected it. Neither technical validation
 review established human acceptance. Keep conflicting judgments visible and the result a
 draft. Brand-led concepts and supported claims are necessary inputs, not proof that the
 exchange sounds human or makes a compelling ad.
+
+The manager subsequently rejected both final cold opens for missing viewer context and
+awkward speech. Answers about bedtime planning and repeating an ad brief began without
+the question or another visible explanation of the topic. The same-family review had
+seen the supporting brief, so its approval did not establish that a new viewer could
+follow the opening. Preserve these drafts as rejected; test the new opening plan separately.
 
 Run native config validation and `single_gen.py --brand <config.json>` before review.
 Keep product-guess regression checks. Human review happens on the saved situation brief,
