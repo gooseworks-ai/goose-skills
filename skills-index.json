@@ -7287,6 +7287,7 @@
         "skills/ads/capabilities/render-street-interview/scripts/build_episode.py",
         "skills/ads/capabilities/render-street-interview/scripts/build_looks.py",
         "skills/ads/capabilities/render-street-interview/scripts/check-cut.py",
+        "skills/ads/capabilities/render-street-interview/scripts/edit_timeline.py",
         "skills/ads/capabilities/render-street-interview/scripts/falsify-all.py",
         "skills/ads/capabilities/render-street-interview/scripts/fit_grade.py",
         "skills/ads/capabilities/render-street-interview/scripts/format_spec.py",
@@ -7301,8 +7302,10 @@
         "skills/ads/capabilities/render-street-interview/skill.meta.json",
         "skills/ads/capabilities/render-street-interview/tests/fixtures/prompt-snapshots.json",
         "skills/ads/capabilities/render-street-interview/tests/smoke-test.md",
+        "skills/ads/capabilities/render-street-interview/tests/test_edit_timeline.py",
         "skills/ads/capabilities/render-street-interview/tests/test_finishing.py",
-        "skills/ads/capabilities/render-street-interview/tests/test_prompt_budget.py"
+        "skills/ads/capabilities/render-street-interview/tests/test_prompt_budget.py",
+        "skills/ads/capabilities/render-street-interview/tests/test_recut_media.py"
       ],
       "metadata": {
         "slug": "render-street-interview",

@@ -121,7 +121,10 @@ def main():
     # Transparent, both outside the 7-10.3 real band). The measured black lift does the work.
     run([HERE / "phone_look_video.py", take, graded, "--ref", run_dir / a.ref, "--strength", "0"],
         "2/4  grade to the real-footage bands  (free)")
-    run([HERE / "recut.py", graded, final], "3/4  strip dead air, match ambience  (free)")
+    recut_args = [HERE / "recut.py", graded, final]
+    if a.brand:
+        recut_args += ["--brand", a.brand]
+    run(recut_args, "3/4  strip dead air, match ambience  (free)")
     # --render, not --look. --look gates one of the five stored treatments, which is a DIFFERENT
     # file from the one this build just produced; wiring it that way made the gate report on a
     # stale artefact and fail for reasons that had nothing to do with this run.
@@ -139,11 +142,13 @@ def main():
         "4/4  ship gate on the re-cut take  (free; E and F cannot run, see below)")
 
     print(f"\ndone: {final}")
-    print("This is a graded, re-cut TAKE, not a finished ad: nothing here drew a caption, a "
-          "title or an end card. The brand layer is build_looks.py, and its caption spans are "
-          "measured against the take's ORIGINAL timeline, so they do not survive the re-cut -- "
-          f"{final.with_suffix('.plan.json').name} records which source span each finished "
-          "second came from, which is what a re-timed caption schedule would be derived from.")
+    print("This is a graded, re-cut TAKE. Add the chosen brand layer with build_looks.py "
+          "--edit-map <this take's .plan.json> --pregraded --looks <approved look>. "
+          "The mapper retimes original measured words and cuts; room tone comes from the "
+          "original source, even when its quiet window was removed. Supply --word-times "
+          "for a saved local source transcription, or the renderer uses local Whisper. "
+          "No additional generation is needed. Gate the finished recut look with "
+          "check-cut.py --edit-map <same map> --look <same look> and the original --take.")
     print("NOW WATCH IT END TO END. The gate cannot see a soft or plasticky render: seed 4813 "
           "passed every check and was visibly wrong.")
 
