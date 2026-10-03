@@ -3,7 +3,7 @@ name: video-polish
 description: Takes an existing screen recording or demo video and adds professional zoom/pan effects synchronized to the narration. Uses transcript-driven zoom targeting and Remotion for rendering. Optionally replaces audio with a soundtrack.
 user-invocable: true
 allowed-tools: Bash, Read, Write, Edit, Grep, Glob, WebSearch
-argument-hint: [video-file-path]
+argument-hint: "[video-file-path]"
 ---
 
 # Video Polish Skill
