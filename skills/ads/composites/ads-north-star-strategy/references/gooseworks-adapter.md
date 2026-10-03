@@ -29,7 +29,7 @@ judged on cost per lead or purchase, and write the one-line limit.
 - **Files:** `file_read` / `file_write` with `scope: {type: "agent", agent_id: <brand.coworker_agent_id from brand_list>}`.
   Leaving out `scope` writes to the wrong agent. Do not write and then immediately start a coworker
   run that reads the file: its file cache can be up to two minutes behind.
-- **Research:** `brand_get_context` returns brand facts and products. `catalog_search` searches
+- **Research:** `brand_read {brand_id, sections: ["kit", "products", "learnings", "onboarding"]}` returns existing brand facts and products. Use `brand_get_context` only when that older name is advertised. `catalog_search` searches
   skills and templates, **not** products.
 - **The brief:** `campaign_read`, `campaign_upsert`.
 - **Account facts:** the Meta read tools the host shows (`meta_status_get`, `list_meta_entities`).
@@ -46,3 +46,40 @@ judged on cost per lead or purchase, and write the one-line limit.
   user and add templates or raise versions before requesting the rest.
 - **Nothing spends until the user approves** in the approval queue (the Generate button, or
   `ads_approval_decide`). Tell the user where to approve.
+
+## Author concepts in this agent, then save
+
+Read the saved brand/product and campaign context before writing. Outside the coworker, use
+`brand_read` (kit, products, learnings, onboarding) and `campaign_read`. Inside the coworker, use
+`get_brand_kit`, `get_product_knowledge` and `get_campaign` (`list_campaigns` to find existing campaigns).
+Check the advertised tool list. **You write the campaign and its ideas.** `propose_campaign_concepts` remains a compatibility server proposal; do not call
+it to outsource creative reasoning. Keep the supplied occasion, offer, audiences and product ids.
+Give each audience a distinct angle, a short complete title and one usable message about the
+selected product. Use only that product's facts.
+
+`kit.approvedClaims` includes `id`, exact `text`, `applicability` and `product_id`. Brand scope
+applies to the company; product scope only to that product; **unknown is not brand-wide**.
+For approved claim proof, keep the exact text and save
+`evidence: [{kind: "approved_claim", ref: <claim id>, summary: <exact text>}]`.
+Goose checks this association and current approval. Performance evidence explains why an angle
+was chosen; it is not a customer claim. If no applicable claim exists, use a verified product fact
+or save `proof: ""` and state what is missing. Generation remains blocked until proof is filled.
+Older connections without claim applicability cannot certify a brand-wide rating; use verified
+product facts or leave proof missing. Never assign another product's rating.
+
+**Save fields.** `campaign_upsert` creates on the public connector with `brand_id` and
+updates with `campaign_id`. An internal coworker uses its bound brand. Optional fields are `name`, `goal`, `status`, `starts_on`, `ends_on`,
+`budget_cents` (total integer cents), `channels`, `hero_product_ids`, `intake`, `brief_md`, `concepts`.
+Intake preserves `objective`, `about`, `audience`, `core_message`, `situation`, `offer`,
+`hero_product_ids` and `constraints` (list). Omit unknown optional facts; never invent dates or money.
+
+Each concept requires `person`, `message`, `proof` (empty when missing). Optional: `id`, `name`,
+`moment`, `product_id`, `template_ids`, `variant_count`, `evidence`, `confidence`, `engine`,
+`quality`, `ratios`. Omitted templates retain existing picks when saving the same id; new concepts
+follow the tool's current auto-pick guidance. Keep `product_id` stable when editing its copy.
+
+Use `add_campaign_concept` for one new idea and `update_campaign_concept` for one existing idea.
+`save_campaign_concepts` or `campaign_upsert.concepts` replaces the entire ordered list: read ids,
+retain the concepts to keep, and send the whole list only when replacement/reordering is intended.
+Read back with `campaign_read` outside or `get_campaign` inside before claiming saved. Saving planning data does not approve paid
+creative generation; preserve the tool's existing credit estimate and explicit user approval.
