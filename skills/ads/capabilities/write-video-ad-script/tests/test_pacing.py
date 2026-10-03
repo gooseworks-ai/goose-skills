@@ -248,3 +248,29 @@ def test_timeline_skips_unselected_optional_beats_and_keeps_variable_rates():
 def test_total_runtime_still_limits_legacy_explicit_override():
     shape = {"words_per_second": 3, "beats": [{"id": "hook", "seconds": 3, "max_words": 20}], "total_seconds": 3}
     assert "E_TIMELINE" in codes(check(shape, [20], strict=True))
+
+
+@pytest.mark.parametrize("strict", [False, True])
+def test_unshaped_spoken_copy_cannot_bypass_total_runtime(strict):
+    shape = {"words_per_second": 3, "beats": [{"id": "hook", "seconds": 3}], "total_seconds": 10}
+    cands = candidates(shape, [9])
+    cands["concepts"][0]["beats"].append({"id": "unlisted-proof", "kind": "spoken", "text": " ".join(["detail"] * 120)})
+    report = ls.lint(cands, shape, strict=strict)
+    assert not report["ok"] and "E_TIMELINE" in codes(report)
+    assert "W_BEAT_UNKNOWN" in codes(report, "warnings")
+
+
+def test_unshaped_spoken_copy_is_counted_without_any_resolved_spoken_slot():
+    shape = {"words_per_second": 3, "beats": [{"id": "demo", "kind": "visual", "seconds": 5, "optional": True}], "total_seconds": 10}
+    cands = {"concepts": [{"id": "c1", "beats": [{"id": "unlisted", "text": " ".join(["detail"] * 60)}]}]}
+    report = ls.lint(cands, shape, strict=True)
+    assert "E_TIMELINE" in codes(report)
+
+
+def test_unshaped_brief_speech_keeps_warning_and_variable_known_rate():
+    shape = profile([{"id": "hook", "seconds": 3, "words_per_second": 4}], total_seconds=5)
+    cands = candidates(shape, [12])
+    cands["concepts"][0]["beats"].append({"id": "unlisted", "text": "Pocket proof"})
+    report = ls.lint(cands, shape, strict=True)
+    assert report["ok"], report
+    assert "W_BEAT_UNKNOWN" in codes(report, "warnings")

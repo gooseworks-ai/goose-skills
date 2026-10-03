@@ -407,6 +407,7 @@ def lint(cands, shape=None, rules=None, bank=None, report_only=False, references
 
         # Word budgets and how each line reads out loud
         words_by_beat, total, timings, spoken_budgets = {}, 0, [], []
+        unshaped_spoken_words = 0
         for i, b in enumerate(beats):
             bid, text = b.get("id"), text_of(b)
             n = len(words(text))
@@ -427,6 +428,8 @@ def lint(cands, shape=None, rules=None, bank=None, report_only=False, references
             if kind == "spoken":
                 total += n
                 spoken_budgets.append(budget)
+                if timing is None:
+                    unshaped_spoken_words += n
             if budget is not None:
                 tolerance = budget_tolerance(sb or {}, shape, strict)
                 if n > budget * tolerance:
@@ -452,12 +455,13 @@ def lint(cands, shape=None, rules=None, bank=None, report_only=False, references
             if total > cap * OVER_BUDGET:
                 err("E_BUDGET", f"{total} spoken words in a {shape['total_seconds']}s ad (about {round(cap)} fit)")
 
-        if shape.get("total_seconds") is not None and timings:
+        if shape.get("total_seconds") is not None and (timings or unshaped_spoken_words):
             # Keep an overall estimate when legacy explicit limits override a
-            # short window or a beat has no duration. Use each beat's own rate.
+            # short window or a beat has no duration. Use each beat's own rate;
+            # unmatched spoken copy still consumes time at the shape fallback rate.
             reserved = sum((row["seconds"] or 0) - (row["speech_seconds"] or 0) for row in timings)
             reserved += sum(sb.get("seconds", 0) for sb in slot.values() if sb.get("kind", "spoken") != "spoken")
-            read_seconds = sum(row["words"] / row["words_per_second"] for row in timings)
+            read_seconds = sum(row["words"] / row["words_per_second"] for row in timings) + unshaped_spoken_words / wps
             rounding = sum(0.5 / row["words_per_second"] for row in timings)
             tolerance = 1.0 if strict else OVER_BUDGET
             if reserved + read_seconds > shape["total_seconds"] * tolerance + rounding:
