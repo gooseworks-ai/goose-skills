@@ -1,13 +1,13 @@
 {
   "version": "1.3.0",
-  "generated": "2026-10-02",
+  "generated": "2026-10-03",
   "skills": [
     {
       "slug": "ad-angle-miner",
       "name": "ad-angle-miner",
       "category": "composites",
       "domain": "ads",
-      "description": ">",
+      "description": "Find the ad angles worth running and turn them into ready-to-make ad ideas: static ads, video ads, or just the copy. Each angle is backed by what buyers actually say (the brand's reviews, competitors' bad reviews, comments on the ads and posts that work) and by what advertisers keep paying to run, never by one Reddit thread. Static ideas come with a matching template from the live template library; video ideas with a video format and the organic posts behind them. Every reference is labelled paid or organic and links to the real post or ad. Picked ideas can be handed straight to making the ads.",
       "tags": "ads, research, social",
       "path": "skills/ads/composites/ad-angle-miner",
       "files": [
@@ -50,7 +50,7 @@
       "name": "ad-campaign-analyzer",
       "category": "composites",
       "domain": "ads",
-      "description": ">",
+      "description": "Analyze ad campaign performance data (Google, Meta, LinkedIn) to identify what's working, what's wasting budget, and specific cut/scale/test recommendations. Runs statistical analysis, funnel diagnostics, and multi-channel budget reallocation with specific dollar-amount shift recommendations and scenario modeling.",
       "tags": "ads",
       "path": "skills/ads/composites/ad-campaign-analyzer",
       "files": [
@@ -152,7 +152,7 @@
       "name": "ad-to-landing-page-auditor",
       "category": "composites",
       "domain": "ads",
-      "description": ">",
+      "description": "Analyze the message match between your ads and landing pages. Checks if the promise in the ad copy carries through to the landing page headline, body, and CTA. Flags disconnects that kill conversion rates. Works with Google, Meta, and LinkedIn ads.",
       "tags": "ads, research",
       "path": "skills/ads/composites/ad-to-landing-page-auditor",
       "files": [
@@ -235,7 +235,7 @@
       "name": "aeo",
       "category": "capabilities",
       "domain": "seo",
-      "description": ">",
+      "description": "Check and improve your brand's visibility across AI search engines (ChatGPT, Perplexity, Gemini, Grok, Claude, DeepSeek). Set up tracking, run visibility analyses, audit your website for AI readability, and get actionable recommendations. Uses the npx goose-aeo@latest CLI.",
       "tags": "seo",
       "path": "skills/seo/capabilities/aeo",
       "files": [
@@ -459,7 +459,7 @@
       "name": "apollo-lead-finder",
       "category": "capabilities",
       "domain": "lead-generation",
-      "description": ">",
+      "description": "Two-phase Apollo.io prospecting: free People Search to discover ICP-matching leads, then selective enrichment to reveal emails/phones (credits per contact). Creates Apollo lists. Deduplicates against existing contacts by LinkedIn URL.",
       "tags": "lead-generation",
       "path": "skills/lead-generation/capabilities/apollo-lead-finder",
       "files": [
@@ -529,7 +529,7 @@
       "name": "battlecard-generator",
       "category": "composites",
       "domain": "competitive-intel",
-      "description": ">",
+      "description": "Research a specific competitor across their website, reviews, ads, social presence, and pricing — then produce a structured sales battlecard with positioning traps, objection handlers, landmine questions, and win/loss themes. Chains web research, review mining, and ad intelligence. Use when sales needs competitive ammo or when entering a new market with established incumbents.",
       "tags": "competitive-intel",
       "path": "skills/competitive-intel/composites/battlecard-generator",
       "files": [
@@ -590,7 +590,7 @@
       "name": "blog-feed-monitor",
       "category": "capabilities",
       "domain": "monitoring",
-      "description": ">",
+      "description": "Scrape blog posts via RSS feeds (free, no API key) with Apify fallback for JS-heavy sites. Use when you need to monitor competitor blogs, track industry content, or aggregate blog posts by keyword.",
       "tags": "content",
       "path": "skills/monitoring/capabilities/blog-feed-monitor",
       "files": [
@@ -699,7 +699,7 @@
       "name": "brand-voice-extractor",
       "category": "capabilities",
       "domain": "brand",
-      "description": ">",
+      "description": "Analyze a company's published content to extract their brand voice, writing style, and tone guidelines. Reads 10-20 of their best content pieces and produces a brand voice profile covering tone, vocabulary level, sentence structure, formatting patterns, CTAs, and target persona. Useful before writing outreach, content, or campaigns that should match a client's existing voice.",
       "tags": "brand",
       "path": "skills/brand/capabilities/brand-voice-extractor",
       "files": [
@@ -756,7 +756,7 @@
       "name": "buyer-persona-generator",
       "category": "capabilities",
       "domain": "research",
-      "description": ">",
+      "description": "Research a company's ideal customer profiles and build detailed synthetic buyer personas. Identifies 4-6 distinct buyer segments through web research, then creates rich, realistic personas with demographics, motivations, skepticism profiles, decision criteria, and language patterns. Use when you need to understand who your buyers are at a deep level — their motivations, objections, and how they evaluate solutions.",
       "tags": "research",
       "path": "skills/research/capabilities/buyer-persona-generator",
       "files": [
@@ -784,7 +784,7 @@
       "name": "campaign-brief-generator",
       "category": "composites",
       "domain": "content",
-      "description": ">",
+      "description": "Generate a complete marketing campaign brief from a launch goal, ICP, and product context. Pure reasoning skill. Outputs channel plan, messaging angles, content types, timeline, and success metrics. Designed for seed/Series A founders and small GTM teams who aren't professional marketers but need to run focused campaigns. No scripts — pure reasoning.",
       "tags": "content",
       "path": "skills/content/composites/campaign-brief-generator",
       "files": [
@@ -851,7 +851,7 @@
       "name": "champion-move-outreach",
       "category": "composites",
       "domain": "outreach",
-      "description": ">",
+      "description": "End-to-end champion/buyer/user job change signal composite. Takes a set of known people (past buyers, champions, power users), detects when they move to a new company, researches the new company for ICP fit, and drafts personalized outreach leveraging the existing relationship. Tool-agnostic — works with any people source, detection method, and outreach platform.",
       "tags": "outreach",
       "path": "skills/outreach/composites/champion-move-outreach",
       "files": [
@@ -884,7 +884,7 @@
       "name": "champion-tracker",
       "category": "capabilities",
       "domain": "sales",
-      "description": ">",
+      "description": "Track product champions for job changes and qualify their new companies against ICP. Takes a CSV of known champions (with LinkedIn URLs), creates a baseline snapshot via Apify enrichment, then detects when champions move to new companies. Scores new companies on a 0-4 ICP fit scale. Outputs a downloadable CSV of movers with qualification verdicts.",
       "tags": "lead-generation",
       "path": "skills/sales/capabilities/champion-tracker",
       "files": [
@@ -918,7 +918,7 @@
       "name": "churn-risk-detector",
       "category": "composites",
       "domain": "research",
-      "description": ">",
+      "description": "Scan support tickets, Slack channels, NPS scores, and usage patterns to flag accounts showing early churn indicators. Produces a weekly risk scorecard with severity tiers, root cause hypotheses, and suggested save plays per account. Designed for seed/Series A teams where the founder or a single CSM manages all accounts manually.",
       "tags": "research",
       "path": "skills/research/composites/churn-risk-detector",
       "files": [
@@ -946,7 +946,7 @@
       "name": "cold-email-outreach",
       "category": "capabilities",
       "domain": "outreach",
-      "description": ">",
+      "description": "End-to-end cold email outreach orchestration. Handles goal alignment, lead ingestion from any source (CSV, paste, CRM export, database), sequence design, email generation, campaign setup in the user's chosen outreach tool, and launch. Tool-agnostic — supports Smartlead (full MCP automation), Instantly, Lemlist, Apollo, or manual CSV export.",
       "tags": "outreach",
       "path": "skills/outreach/capabilities/cold-email-outreach",
       "files": [
@@ -1044,7 +1044,7 @@
       "name": "company-contact-finder",
       "category": "capabilities",
       "domain": "lead-generation",
-      "description": ">",
+      "description": "Find decision-makers at a specific company using Apollo, Crustdata, Fiber, and PDL people search via Gooseworks MCP. Given a company name and target titles, returns a list of contacts with name, title, LinkedIn URL, and location.",
       "tags": "lead-generation",
       "path": "skills/lead-generation/capabilities/company-contact-finder",
       "files": [
@@ -1072,7 +1072,7 @@
       "name": "company-current-gtm-analysis",
       "category": "composites",
       "domain": "competitive-intel",
-      "description": ">",
+      "description": "Comprehensive GTM analysis of any target company. Researches what a company is currently doing across all go-to-market dimensions — content/blog, founder LinkedIn activity, SEO/traffic, hiring signals, social/community presence, customer acquisition channels, podcast appearances, review sites, competitive positioning, and partnerships. Produces a structured report identifying what's working, what's missing, and where white space exists for new strategies. Use before designing GTM strategies for a client or prospect.",
       "tags": "competitive-intel",
       "path": "skills/competitive-intel/composites/company-current-gtm-analysis",
       "files": [
@@ -1192,7 +1192,7 @@
       "name": "competitive-pricing-intel",
       "category": "composites",
       "domain": "competitive-intel",
-      "description": ">",
+      "description": "Monitor competitor pricing pages via live web scrape and Web Archive snapshots. Track plan changes, tier restructuring, new pricing models, and feature gating shifts. Produces a pricing comparison matrix and flags when a competitor changes packaging. Use when a product marketing team needs to stay current on competitive pricing or when preparing for a pricing change of their own.",
       "tags": "competitive-intel",
       "path": "skills/competitive-intel/composites/competitive-pricing-intel",
       "files": [
@@ -1220,7 +1220,7 @@
       "name": "competitor-ad-intelligence",
       "category": "composites",
       "domain": "ads",
-      "description": ">",
+      "description": "Scrape competitor ads from Meta, TikTok, Google, and LinkedIn ad libraries, analyze creative patterns (hooks, formats, CTAs), reverse-engineer landing page funnels, and produce a strategic teardown with vulnerability analysis and counter-play recommendations. Use when you need to understand the competitive ad landscape, find new creative directions, or identify weaknesses in a competitor's paid strategy.",
       "tags": "ads, competitive-intel, research",
       "path": "skills/ads/composites/competitor-ad-intelligence",
       "files": [
@@ -1260,7 +1260,7 @@
       "name": "competitor-content-tracker",
       "category": "composites",
       "domain": "competitive-intel",
-      "description": ">",
+      "description": "Monitor competitor content across blogs, LinkedIn, and Twitter/X on a recurring basis. Surfaces new posts, trending topics, and content gaps you can own. Chains blog-feed-monitor, linkedin-profile-post-scraper, and twitter-mention-tracker. Use when you want a weekly digest of what competitors are publishing and which topics are generating engagement.",
       "tags": "competitive-intel",
       "path": "skills/competitive-intel/composites/competitor-content-tracker",
       "files": [
@@ -1293,7 +1293,7 @@
       "name": "competitor-intel",
       "category": "composites",
       "domain": "competitive-intel",
-      "description": ">",
+      "description": "Competitor intelligence system. Research competitors across web, Reddit, Twitter/X, LinkedIn, and blogs. Build deep competitor profiles, monitor content and positioning changes, track what gets traction, and identify competitive gaps. Covers data collection, content tracking, and strategy analysis. Pure research skill — uses web search, web fetch, and optionally Apify for social scraping. No scripts required.",
       "tags": "competitive-intel",
       "path": "skills/competitive-intel/composites/competitor-intel",
       "files": [
@@ -1321,7 +1321,7 @@
       "name": "competitor-monitoring-system",
       "category": "playbooks",
       "domain": "competitive-intel",
-      "description": ">",
+      "description": "Set up and run ongoing competitive intelligence monitoring for a client. Tracks competitor content, ads, reviews, social, and product moves.",
       "tags": "competitive-intel",
       "path": "skills/competitive-intel/playbooks/competitor-monitoring-system",
       "files": [
@@ -1349,7 +1349,7 @@
       "name": "competitor-post-engagers",
       "category": "capabilities",
       "domain": "lead-generation",
-      "description": ">",
+      "description": "Find leads by scraping engagers from a competitor's top LinkedIn posts. Given one or more company page URLs, scrapes recent posts, ranks by engagement, selects the top N, extracts all reactors and commenters, ICP-classifies, and exports CSV. Use when someone wants to \"find leads engaging with competitor content\" or \"scrape people who interact with [company]'s LinkedIn posts\".",
       "tags": "lead-generation",
       "path": "skills/lead-generation/capabilities/competitor-post-engagers",
       "files": [
@@ -1545,7 +1545,7 @@
       "name": "conference-speaker-scraper",
       "category": "capabilities",
       "domain": "lead-generation",
-      "description": ">",
+      "description": "Extract speaker names, titles, companies, and bios from conference websites. Supports direct HTML scraping and Apify web scraper fallback for JS-heavy sites. Use for pre-event research and outreach targeting.",
       "tags": "lead-generation",
       "path": "skills/lead-generation/capabilities/conference-speaker-scraper",
       "files": [
@@ -1574,7 +1574,7 @@
       "name": "contact-cache",
       "category": "capabilities",
       "domain": "lead-generation",
-      "description": ">",
+      "description": "Track all identified/contacted people across strategies. CSV-backed contact database with dedup by LinkedIn URL or email. Prevents duplicate outreach when running strategies on a recurring cadence.",
       "tags": "lead-generation",
       "path": "skills/lead-generation/capabilities/contact-cache",
       "files": [
@@ -1632,7 +1632,7 @@
       "name": "content-asset-creator",
       "category": "capabilities",
       "domain": "content",
-      "description": ">",
+      "description": "Creates beautiful, branded HTML content assets — industry reports, landing pages, comparison sheets, one-pagers — from structured data. Uses Gamma API (preferred), v0.dev Platform API, or a self-hosted HTML template system with Tailwind CSS. Outputs self-contained HTML files that can be hosted as web pages or converted to PDF.",
       "tags": "content",
       "path": "skills/content/capabilities/content-asset-creator",
       "files": [
@@ -1660,7 +1660,7 @@
       "name": "content-brief-factory",
       "category": "composites",
       "domain": "content",
-      "description": ">",
+      "description": "Generate detailed, differentiated content briefs at scale. Each brief includes SERP analysis, competing page breakdown, unique angles from real customer language (reviews, Reddit), internal linking plan, and SERP feature targets. Batch mode produces 10-50 briefs in one run. Crushes generic \"keyword density\" briefs from tools like Surfer or Clearscope.",
       "tags": "content",
       "path": "skills/content/composites/content-brief-factory",
       "files": [
@@ -1889,7 +1889,7 @@
       "name": "create-dashboard",
       "category": "capabilities",
       "domain": "design",
-      "description": ">",
+      "description": "Create a custom web dashboard (React + Vite + Express) inside your sandbox to visualize the agent's Turso database. The dashboard is served on port 3847 and the user sees it live in the \"App\" tab in Gooseworks. Use when the user asks for a dashboard, visualization, chart, metric view, or any custom UI powered by their agent's data.",
       "tags": "content, design",
       "path": "skills/design/capabilities/create-dashboard",
       "files": [
@@ -2106,7 +2106,7 @@
       "name": "create-linkedin-content",
       "category": "capabilities",
       "domain": "content",
-      "description": ">",
+      "description": "Draft voice-tuned LinkedIn post variants from a free-form brief. Reads a personal voice guide (generated via generate-voice-guide), produces 2–5 variants with distinct framings, applies LinkedIn-specific defaults (arrow bullets, \"why this matters\" beat, 150–500 words), and self-checks against the voice guide's banned phrases before returning.",
       "tags": "content, social",
       "path": "skills/content/capabilities/create-linkedin-content",
       "files": [
@@ -2309,7 +2309,7 @@
       "name": "create-x-content",
       "category": "capabilities",
       "domain": "content",
-      "description": ">",
+      "description": "Draft voice-tuned X (Twitter) post variants from a free-form brief. Reads a personal voice guide (generated via generate-voice-guide), produces 2–5 variants with distinct framings (simple-howto, problem-first, hype, mechanism-breakdown, etc.), and self-checks against the voice guide's banned phrases before returning.",
       "tags": "content, social",
       "path": "skills/content/capabilities/create-x-content",
       "files": [
@@ -2382,7 +2382,7 @@
       "name": "customer-discovery",
       "category": "capabilities",
       "domain": "research",
-      "description": ">",
+      "description": "Discover all customers of a given company by scanning websites, case studies, review sites, press, social media, job postings, and more. Use when you need competitive intelligence on who a company sells to.",
       "tags": "competitive-intel, research",
       "path": "skills/research/capabilities/customer-discovery",
       "files": [
@@ -2414,7 +2414,7 @@
       "name": "customer-story-builder",
       "category": "composites",
       "domain": "content",
-      "description": ">",
+      "description": "Take raw customer inputs — interview transcripts, survey responses, Slack quotes, support tickets, review excerpts — and generate a structured case study draft with problem/solution/result narrative, pull-quotes, metric callouts, and multi-format outputs (full case study, one-pager, social proof snippet, sales deck slide). Pure reasoning skill. Use when a product marketing team has customer signal but no time to write the story.",
       "tags": "content",
       "path": "skills/content/composites/customer-story-builder",
       "files": [
@@ -2442,7 +2442,7 @@
       "name": "customer-win-back-sequencer",
       "category": "composites",
       "domain": "outreach",
-      "description": ">",
+      "description": "For churned accounts, research what has changed since they left — new funding, team growth, competitor dissatisfaction, product updates that address their pain — then assess re-engagement potential and generate a personalized win-back email sequence with timing recommendations. Chains web research and LinkedIn monitoring with email sequence generation.",
       "tags": "outreach",
       "path": "skills/outreach/composites/customer-win-back-sequencer",
       "files": [
@@ -2533,7 +2533,7 @@
       "name": "disqualification-handling",
       "category": "composites",
       "domain": "sales",
-      "description": ">",
+      "description": "Handles disqualified and near-miss inbound leads gracefully. Drafts polite rejection emails, referral requests (right company wrong person), and nurture routing (future fit). Ensures no inbound lead gets ignored and every disqualification preserves the relationship. Tool-agnostic.",
       "tags": "outreach",
       "path": "skills/sales/composites/disqualification-handling",
       "files": [
@@ -2623,7 +2623,7 @@
       "name": "email-drafting",
       "category": "capabilities",
       "domain": "outreach",
-      "description": ">",
+      "description": "Write high-converting cold emails using structured frameworks, personalization tiers, and patterns from real campaigns. Pure reasoning skill — no scripts. Auto-loads when any task requires outreach copy.",
       "tags": "outreach",
       "path": "skills/outreach/capabilities/email-drafting",
       "files": [
@@ -2797,7 +2797,7 @@
       "name": "expansion-signal-spotter",
       "category": "composites",
       "domain": "sales",
-      "description": ">",
+      "description": "Monitor existing customer accounts for upsell and cross-sell signals: team growth on LinkedIn, new job postings, product usage patterns, funding announcements, and public company news. Produces a weekly expansion opportunity list with context and talk tracks. Chains web search, LinkedIn profile monitoring, and job posting detection.",
       "tags": "lead-generation",
       "path": "skills/sales/composites/expansion-signal-spotter",
       "files": [
@@ -2890,7 +2890,7 @@
       "name": "feature-launch-playbook",
       "category": "composites",
       "domain": "content",
-      "description": ">",
+      "description": "Take a new feature or product update and generate the full launch kit: changelog entry, email announcement, LinkedIn post variants, in-app banner text, Twitter/X thread, and internal sales enablement one-pager. Pure reasoning skill that chains product context with audience-specific copy generation. Use when a product marketing team needs to turn a feature spec into launch-ready assets fast.",
       "tags": "content",
       "path": "skills/content/composites/feature-launch-playbook",
       "files": [
@@ -3045,7 +3045,7 @@
       "name": "funding-signal-monitor",
       "category": "composites",
       "domain": "monitoring",
-      "description": ">",
+      "description": "Monitor web sources for Series A-C funding announcements. Aggregates signals from TechCrunch, Crunchbase (via web search), Twitter, Hacker News, and LinkedIn. Filters by stage, amount, and industry. Returns qualified recently-funded companies ready for outreach.",
       "tags": "lead-generation",
       "path": "skills/monitoring/composites/funding-signal-monitor",
       "files": [
@@ -3081,7 +3081,7 @@
       "name": "funding-signal-outreach",
       "category": "composites",
       "domain": "outreach",
-      "description": ">",
+      "description": "End-to-end funding signal composite. Takes any set of companies, detects recent funding events, qualifies against your company context, finds relevant people (buyers, champions, users), and drafts personalized outreach. Tool-agnostic — works with any company source, contact finder, and outreach platform.",
       "tags": "outreach",
       "path": "skills/outreach/composites/funding-signal-outreach",
       "files": [
@@ -3114,7 +3114,7 @@
       "name": "generate-voice-guide",
       "category": "capabilities",
       "domain": "brand",
-      "description": ">",
+      "description": "Generate a personal voice guide for X (Twitter) and/or LinkedIn by scanning a user's past posts and iteratively refining with sample-and-feedback loops. Produces a structured markdown voice guide that sibling skills (create-x-content, create-linkedin-content) consume to draft in-voice posts. Different from brand-voice-extractor, which analyses company blogs/landing pages — this skill is for personal social voice.",
       "tags": "content, social",
       "path": "skills/brand/capabilities/generate-voice-guide",
       "files": [
@@ -3172,7 +3172,7 @@
       "name": "get-qualified-leads-from-luma",
       "category": "composites",
       "domain": "lead-generation",
-      "description": ">",
+      "description": "End-to-end lead prospecting from Luma events. Searches Luma for events by topic and location, extracts all attendees/hosts, qualifies them against a qualification prompt, outputs results to a Google Sheet, and sends a Slack alert with top leads. Use this skill whenever someone wants to find qualified leads from events, prospect event attendees, or run an event-based lead gen workflow. Also triggers for \"find people at events and qualify them\" or \"who's attending X events that matches our ICP.\"",
       "tags": "lead-generation",
       "path": "skills/lead-generation/composites/get-qualified-leads-from-luma",
       "files": [
@@ -3270,7 +3270,7 @@
       "name": "google-search-ads-builder",
       "category": "composites",
       "domain": "ads",
-      "description": ">",
+      "description": "End-to-end Google Search Ads campaign builder. Performs deep keyword research (competitor SEO, review language mining, Reddit/HN community terminology, site audit), builds keyword architecture with funnel mapping and intent classification, creates ad group structure, generates headline/description variants, builds negative keyword lists, recommends bid strategy, and exports a campaign-ready CSV for Google Ads Editor import.",
       "tags": "ads",
       "path": "skills/ads/composites/google-search-ads-builder",
       "files": [
@@ -3355,7 +3355,7 @@
       "name": "goose-graphics-create-format",
       "category": "composites",
       "domain": "design",
-      "description": ">",
+      "description": "Creates a new graphics format spec (custom canvas dimensions + content rules) and publishes it to the Gooseworks library so any agent can render against it. Use when the existing community formats (carousel, story, infographic, slides, poster, chart, tweet, plus community additions) don't fit the user's canvas — e.g., LinkedIn banner 1584×396, story cover 1080×1920, event flyer 8.5×11in. Mirrors goose-graphics-create-style but for formats.",
       "tags": "design, content",
       "path": "skills/design/composites/goose-graphics-create-format",
       "files": [
@@ -3393,7 +3393,7 @@
       "name": "goose-graphics-create-style",
       "category": "composites",
       "domain": "design",
-      "description": ">",
+      "description": "End-to-end skill that turns a single reference image into a published Gooseworks style — analyzes the image, drafts the slim style spec, renders a hero example plus 2-3 additional formats via Playwright, writes the `gooseworks-style.json` manifest, and publishes via `npx gooseworks styles publish` so other agents can discover it. Mirrors goose-graphics-create-format but for styles.",
       "tags": "design, content",
       "path": "skills/design/composites/goose-graphics-create-style",
       "files": [
@@ -3492,7 +3492,7 @@
       "name": "hacker-news-scraper",
       "category": "capabilities",
       "domain": "monitoring",
-      "description": ">",
+      "description": "Search Hacker News stories and comments using the free Algolia API. No Apify token needed. Use when you need to find HN discussions, track mentions, discover Show HN launches, or monitor tech community sentiment.",
       "tags": "monitoring",
       "path": "skills/monitoring/capabilities/hacker-news-scraper",
       "files": [
@@ -3521,7 +3521,7 @@
       "name": "help-center-article-generator",
       "category": "composites",
       "domain": "content",
-      "description": ">",
+      "description": "Take support ticket clusters, FAQ patterns, product documentation, or feature specs and generate structured help center articles with step-by-step instructions, screenshot placeholders, troubleshooting sections, and related article links. Batch mode generates multiple articles from a ticket export. Pure reasoning skill.",
       "tags": "content",
       "path": "skills/content/composites/help-center-article-generator",
       "files": [
@@ -3549,7 +3549,7 @@
       "name": "hiring-signal-outreach",
       "category": "composites",
       "domain": "outreach",
-      "description": ">",
+      "description": "End-to-end hiring signal composite. Takes any set of companies, detects job postings that your product augments or replaces, finds relevant people (the hiring manager, buyers, champions, users), and drafts personalized outreach using the job role as the hook. Tool-agnostic — works with any company source, job board, contact finder, and outreach platform.",
       "tags": "outreach",
       "path": "skills/outreach/composites/hiring-signal-outreach",
       "files": [
@@ -3611,7 +3611,7 @@
       "name": "icp-identification",
       "category": "capabilities",
       "domain": "lead-generation",
-      "description": ">",
+      "description": "Research a company or idea, define the Ideal Customer Profile, and route to the right next step — either mapping the TAM or finding leads/prospects directly. The entry point for any \"find me leads\", \"map my market\", or \"who should I sell to\" request. Auto-loads when a user provides a company URL or idea and asks for leads or market mapping.",
       "tags": "research",
       "path": "skills/lead-generation/capabilities/icp-identification",
       "files": [
@@ -3639,7 +3639,7 @@
       "name": "icp-website-audit",
       "category": "composites",
       "domain": "lead-generation",
-      "description": ">",
+      "description": "End-to-end website audit through ICP eyes. Builds synthetic personas (if they don't already exist), runs a structured scorecard review of the client's site, then runs a head-to-head competitive comparison against top competitors. Produces a single consolidated report with persona feedback, competitive positioning, and prioritized recommendations. The complete \"how do our buyers actually experience our site vs the competition?\" workflow.",
       "tags": "research",
       "path": "skills/lead-generation/composites/icp-website-audit",
       "files": [
@@ -3670,7 +3670,7 @@
       "name": "icp-website-review",
       "category": "capabilities",
       "domain": "lead-generation",
-      "description": ">",
+      "description": "Evaluate a website, landing page, content, or any online asset through the eyes of pre-built synthetic ICP personas. Loads personas from buyer-persona-generator output, then runs them against target URLs. Supports three modes: structured scorecard, freeform focus group, and head-to-head competitive comparison. Reusable — run against the same site after changes, or against new content anytime.",
       "tags": "research",
       "path": "skills/lead-generation/capabilities/icp-website-review",
       "files": [
@@ -3756,7 +3756,7 @@
       "name": "inbound-lead-enrichment",
       "category": "composites",
       "domain": "lead-generation",
-      "description": ">",
+      "description": "Fills in missing data for inbound leads — researches the company, identifies the person's role and seniority, finds other stakeholders at the company, checks for existing CRM relationships, and updates the lead record. Produces enriched lead data ready for qualification or outreach. Tool-agnostic.",
       "tags": "lead-generation",
       "path": "skills/lead-generation/composites/inbound-lead-enrichment",
       "files": [
@@ -3787,7 +3787,7 @@
       "name": "inbound-lead-qualification",
       "category": "composites",
       "domain": "lead-generation",
-      "description": ">",
+      "description": "Qualifies inbound leads against full ICP criteria — company size, industry, use case fit, role/seniority of the person. Checks CRM and existing customer base for duplicates and existing relationships. Outputs a scored CSV with qualification status, reasoning, and pipeline overlap flags. Tool-agnostic — works with any CRM, enrichment tool, or data source.",
       "tags": "lead-generation",
       "path": "skills/lead-generation/composites/inbound-lead-qualification",
       "files": [
@@ -3818,7 +3818,7 @@
       "name": "inbound-lead-triage",
       "category": "composites",
       "domain": "lead-generation",
-      "description": ">",
+      "description": "Triages all inbound leads from a given period — demo requests, free trial signups, content downloads, webinar registrations, chatbot conversations. Classifies by urgency, qualifies against ICP, enriches with context, and produces a prioritized action queue with recommended response for each lead. Tool-agnostic — works with any CRM, form tool, or lead source.",
       "tags": "lead-generation",
       "path": "skills/lead-generation/composites/inbound-lead-triage",
       "files": [
@@ -3851,7 +3851,7 @@
       "name": "industry-scanner",
       "category": "composites",
       "domain": "competitive-intel",
-      "description": ">",
+      "description": "Daily industry intelligence scanner. Scans web, social media, news, blogs, and communities for industry-relevant events, trends, and signals. Produces a comprehensive intelligence briefing plus strategic GTM opportunity ideas. Orchestrates existing scraping skills — does not reimplement data collection.",
       "tags": "competitive-intel",
       "path": "skills/competitive-intel/composites/industry-scanner",
       "files": [
@@ -4026,7 +4026,7 @@
       "name": "job-posting-intent",
       "category": "capabilities",
       "domain": "lead-generation",
-      "description": ">",
+      "description": "Detect buying intent from job postings. When a company posts a job in your problem area, they've allocated budget and are actively thinking about the problem. This skill finds those companies, qualifies them, extracts personalization context, and outputs everything to a Google Sheet. Does NOT do outreach — just delivers qualified leads with reasoning.",
       "tags": "lead-generation, outreach",
       "path": "skills/lead-generation/capabilities/job-posting-intent",
       "files": [
@@ -4058,7 +4058,7 @@
       "name": "job-scraper",
       "category": "capabilities",
       "domain": "lead-generation",
-      "description": ">",
+      "description": "Search for job postings across LinkedIn and Indeed. Use when users want to find open roles, monitor hiring signals, identify companies hiring for specific positions, or research competitor hiring activity. Returns job title, company, location, salary, description, seniority level, and direct apply URLs. No login or cookies required.",
       "tags": "lead-generation, research",
       "path": "skills/lead-generation/capabilities/job-scraper",
       "files": [
@@ -4116,7 +4116,7 @@
       "name": "kol-content-monitor",
       "category": "composites",
       "domain": "monitoring",
-      "description": ">",
+      "description": "Track what key opinion leaders (KOLs) in your space are posting on LinkedIn and Twitter/X. Surfaces trending narratives, high-engagement topics, and early signals of emerging conversations before they peak. Chains linkedin-profile-post-scraper and twitter-mention-tracker. Use when a marketing team wants to ride trends rather than create them from scratch, or when a founder wants to know which topics are resonating with their audience.",
       "tags": "monitoring",
       "path": "skills/monitoring/composites/kol-content-monitor",
       "files": [
@@ -4149,7 +4149,7 @@
       "name": "kol-discovery",
       "category": "capabilities",
       "domain": "social",
-      "description": ">",
+      "description": "Find Key Opinion Leaders (KOLs) in a given domain by combining web research with LinkedIn post search. Given a company/idea and target domain, generates authority keywords, searches LinkedIn posts to find prolific authors with high engagement, and merges with web-researched influencers. Use when someone wants to \"find influencers in X space\" or \"who are the KOLs for Y industry.\"",
       "tags": "outreach",
       "path": "skills/social/capabilities/kol-discovery",
       "files": [
@@ -4181,7 +4181,7 @@
       "name": "kol-engager-icp",
       "category": "capabilities",
       "domain": "lead-generation",
-      "description": ">",
+      "description": "Find ICP-fit leads from KOL audiences on LinkedIn. Given a list of KOLs, scrapes their most relevant high-engagement post from the last 30 days, extracts engagers (reactors + commenters), pre-filters by position, enriches top profiles, and ICP-classifies. Cost-controlled: 1 post per KOL. Use when someone wants to \"find leads from KOL audiences\" or \"scrape engagers from influencer posts\" or after running kol-discovery.",
       "tags": "lead-generation",
       "path": "skills/lead-generation/capabilities/kol-engager-icp",
       "files": [
@@ -4213,7 +4213,7 @@
       "name": "landing-page-intel",
       "category": "capabilities",
       "domain": "competitive-intel",
-      "description": ">",
+      "description": "Extract competitor and customer intelligence from any company's landing page HTML. Discovers tech stack, analytics tools, ad pixels, customer logos, SEO metadata, CTAs, hidden elements, and more. No API keys required.",
       "tags": "competitive-intel",
       "path": "skills/competitive-intel/capabilities/landing-page-intel",
       "files": [
@@ -4293,7 +4293,7 @@
       "name": "launch-positioning-builder",
       "category": "composites",
       "domain": "brand",
-      "description": ">",
+      "description": "Research competitors, analyze their messaging, and generate a positioning document with category definition, differentiation claims, value propositions, and proof points. Chains web research, competitor site analysis, and review mining to produce a positioning doc ready for website copy and sales deck use. Use when a product marketing team needs to define or refresh positioning ahead of a launch, rebrand, or competitive shift.",
       "tags": "brand",
       "path": "skills/brand/composites/launch-positioning-builder",
       "files": [
@@ -4412,7 +4412,7 @@
       "name": "lead-qualification",
       "category": "capabilities",
       "domain": "lead-generation",
-      "description": ">",
+      "description": "Lead qualification engine with conversational intake. Asks structured questions to understand your qualification criteria, generates a reusable qualification prompt, then batch-enriches leads via Apify LinkedIn scraping and scores them with parallel processing. Outputs qualified/disqualified verdicts with confidence scores and reasoning to CSV or whatever output format the user prefers. Supports calibration mode for prompt refinement.",
       "tags": "lead-generation",
       "path": "skills/lead-generation/capabilities/lead-qualification",
       "files": [
@@ -4443,7 +4443,7 @@
       "name": "leadership-change-outreach",
       "category": "composites",
       "domain": "outreach",
-      "description": ">",
+      "description": "End-to-end leadership change signal composite. Takes any set of companies, detects recent leadership changes (new VP+, C-suite hires and promotions), evaluates relevance to your product, and drafts personalized outreach. Uses Apollo People Search (free) for fast detection + Apollo Enrichment (1 credit/person) for employment history, start dates, LinkedIn URLs, and verified emails.",
       "tags": "outreach",
       "path": "skills/outreach/composites/leadership-change-outreach",
       "files": [
@@ -4477,7 +4477,7 @@
       "name": "linkedin-commenter-extractor",
       "category": "capabilities",
       "domain": "lead-generation",
-      "description": ">",
+      "description": "Extract commenters from LinkedIn posts via Apify. Returns commenter names, titles, LinkedIn profile URLs, and comment text. Use to find warm leads engaging with relevant discussions. No LinkedIn cookies required.",
       "tags": "outreach",
       "path": "skills/lead-generation/capabilities/linkedin-commenter-extractor",
       "files": [
@@ -4506,7 +4506,7 @@
       "name": "linkedin-influencer-discovery",
       "category": "capabilities",
       "domain": "social",
-      "description": ">",
+      "description": "Discover top LinkedIn influencers and voices by topic, industry, follower count, and country. Use when you need to find the top 100 voices in a space, build influencer lists for outreach, or identify thought leaders on LinkedIn.",
       "tags": "outreach",
       "path": "skills/social/capabilities/linkedin-influencer-discovery",
       "files": [
@@ -4535,7 +4535,7 @@
       "name": "linkedin-job-scraper",
       "category": "capabilities",
       "domain": "lead-generation",
-      "description": ">",
+      "description": "Scrapes LinkedIn job postings using the JobSpy library (python-jobspy). Use this skill whenever the user wants to find jobs on LinkedIn, search for open roles, pull job listings, build a job pipeline, source job targets for GTM research, or monitor hiring signals. Even if the user just says \"find me some jobs\" or \"what roles is [company] hiring for\", use this skill. It runs a local Python script that outputs a CSV of job postings with title, company, location, salary, job type, description, and direct URLs.",
       "tags": "lead-generation",
       "path": "skills/lead-generation/capabilities/linkedin-job-scraper",
       "files": [
@@ -4564,7 +4564,7 @@
       "name": "linkedin-message-writer",
       "category": "capabilities",
       "domain": "outreach",
-      "description": ">",
+      "description": "Research LinkedIn profiles and write personalized messages for any LinkedIn message type — connection requests, InMails, DMs, message requests, post comments, and comment replies. Takes LinkedIn URLs as input, researches each person (profile data + recent posts via Apify), and generates messages tailored to each lead's background, interests, and recent activity. Exports tool-ready CSVs for Dripify, Expandi, Botdog, PhantomBuster, or generic format. No LinkedIn cookies or login required.",
       "tags": "outreach, social",
       "path": "skills/outreach/capabilities/linkedin-message-writer",
       "files": [
@@ -4593,7 +4593,7 @@
       "name": "linkedin-outreach",
       "category": "capabilities",
       "domain": "outreach",
-      "description": ">",
+      "description": "End-to-end LinkedIn outreach campaign builder. Takes leads from Supabase, upstream skills, or CSV. Aligns on campaign goal and tone, writes personalized LinkedIn message sequences (connection request + follow-ups + optional InMail), presents for review, and exports for the user's outreach tool (Dripify, Botdog, Expandi, or manual CSV). Logs to Supabase outreach_log.",
       "tags": "outreach",
       "path": "skills/outreach/capabilities/linkedin-outreach",
       "files": [
@@ -4628,7 +4628,7 @@
       "name": "linkedin-post-research",
       "category": "capabilities",
       "domain": "social",
-      "description": ">",
+      "description": "Search LinkedIn posts by keywords, sorted by engagement or date. Use when researching what people are saying about a topic on LinkedIn, finding high-engagement content, identifying thought leaders, or discovering warm leads through post engagement. Returns author, post text, reactions, comments, shares, post URL, and date. No LinkedIn cookies or login required.",
       "tags": "outreach",
       "path": "skills/social/capabilities/linkedin-post-research",
       "files": [
@@ -4657,7 +4657,7 @@
       "name": "linkedin-profile-post-scraper",
       "category": "capabilities",
       "domain": "social",
-      "description": ">",
+      "description": "Scrape recent posts from LinkedIn profiles using Apify. Use when you need to monitor what specific people are posting on LinkedIn, track founder/exec activity, or gather LinkedIn content for competitive intelligence.",
       "tags": "outreach",
       "path": "skills/social/capabilities/linkedin-profile-post-scraper",
       "files": [
@@ -4848,7 +4848,7 @@
       "name": "messaging-ab-tester",
       "category": "composites",
       "domain": "brand",
-      "description": ">",
+      "description": "Generate 3-5 messaging variants for a value proposition, design structured A/B tests, and analyze results to determine which framing resonates most with ICP. Tests can run via LinkedIn organic posts, cold email subject line splits, or both. Pure reasoning for variant generation and analysis — the user deploys the tests through their own tools. Use when a team can't decide between messaging angles and needs data, not opinions.",
       "tags": "brand",
       "path": "skills/brand/composites/messaging-ab-tester",
       "files": [
@@ -5101,7 +5101,7 @@
       "name": "news-signal-outreach",
       "category": "composites",
       "domain": "outreach",
-      "description": ">",
+      "description": "End-to-end news-triggered signal composite. Takes any piece of news — an article, LinkedIn post, tweet, announcement, event, trend, regulation, product launch, acquisition, layoff, expansion, or any other public event — and evaluates whether the companies or people mentioned are ICP fits. If yes, identifies the connection between the news and your product, finds the right people to contact, and drafts personalized outreach using the news as the hook. Tool-agnostic. Accepts both company-level and person-level news triggers.\nAUTO-TRIGGER: Load this composite whenever a user shares a URL (LinkedIn post, article, tweet, blog post) or mentions a company/person they \"came across\", \"saw\", or \"found\" from any external source and asks about relevance, fit, ICP match, or whether to reach out. The user does NOT need to explicitly say \"outreach\" — any signal evaluation request from an external source triggers this.",
       "tags": "outreach",
       "path": "skills/outreach/composites/news-signal-outreach",
       "files": [
@@ -5134,7 +5134,7 @@
       "name": "newsletter-monitor",
       "category": "composites",
       "domain": "monitoring",
-      "description": ">",
+      "description": "Scan an AgentMail inbox for newsletter signals using configurable keyword campaigns. Extracts matched keywords, context snippets, and company mentions from incoming emails. Use for monitoring accounting industry newsletters for buying signals like acquisitions, migrations, and staffing news.",
       "tags": "monitoring",
       "path": "skills/monitoring/composites/newsletter-monitor",
       "files": [
@@ -5167,7 +5167,7 @@
       "name": "newsletter-signal-scanner",
       "category": "composites",
       "domain": "monitoring",
-      "description": ">",
+      "description": "Subscribe to and scan industry newsletters for buying signals, competitor mentions, ICP pain-point language, and market shifts. Parses incoming newsletter emails via AgentMail, matches against keyword campaigns, and delivers a weekly digest of actionable signals. Use when a marketing team wants to turn newsletter subscriptions into an ongoing intelligence feed without manual reading.",
       "tags": "monitoring",
       "path": "skills/monitoring/composites/newsletter-signal-scanner",
       "files": [
@@ -5195,7 +5195,7 @@
       "name": "newsletter-sponsorship-finder",
       "category": "capabilities",
       "domain": "ads",
-      "description": ">",
+      "description": "Find newsletters relevant to a target audience/industry for sponsorship opportunities. Discovers newsletters through web search, newsletter directories, and industry research. Returns newsletter name, author, estimated audience, topic focus, sponsorship rates (if available), and contact info.",
       "tags": "monitoring",
       "path": "skills/ads/capabilities/newsletter-sponsorship-finder",
       "files": [
@@ -5224,7 +5224,7 @@
       "name": "outbound-prospecting-engine",
       "category": "playbooks",
       "domain": "outreach",
-      "description": ">",
+      "description": "End-to-end outbound prospecting: detect intent signals, research companies, find decision-maker contacts, personalize messaging, launch campaign.",
       "tags": "outreach",
       "path": "skills/outreach/playbooks/outbound-prospecting-engine",
       "files": [
@@ -5292,7 +5292,7 @@
       "name": "paid-channel-prioritizer",
       "category": "composites",
       "domain": "ads",
-      "description": ">",
+      "description": "For founders who don't know where to start with paid ads. Analyzes ICP, competitor ad presence, budget constraints, and product type to recommend which 1-2 paid channels to start with and provides a 90-day ramp plan. Prevents the common mistake of spreading a small budget across too many platforms.",
       "tags": "ads",
       "path": "skills/ads/composites/paid-channel-prioritizer",
       "files": [
@@ -5323,7 +5323,7 @@
       "name": "pain-language-engagers",
       "category": "capabilities",
       "domain": "lead-generation",
-      "description": ">",
+      "description": "Find warm leads by searching LinkedIn for pain-language posts — the frustrations, complaints, and operational struggles your ICP talks about publicly. Asks clarifying questions to understand your product, ICP, and their pain points, then generates pain-language search keywords, scrapes LinkedIn for posts and engagers, enriches profiles, and ICP-filters the results. Use when someone wants to \"find leads who are complaining about X\" or \"find people discussing problems we solve\" or \"LinkedIn pain-based prospecting.\"",
       "tags": "lead-generation",
       "path": "skills/lead-generation/capabilities/pain-language-engagers",
       "files": [
@@ -5480,7 +5480,7 @@
       "name": "pipeline-review",
       "category": "composites",
       "domain": "sales",
-      "description": ">",
+      "description": "Pipeline analysis composite. Pulls deal/meeting data from any CRM or tracking system, analyzes the pipeline over a user-defined period (weekly, fortnightly, monthly, quarterly), and produces both an executive summary and a detailed diagnostic report. Covers volume, qualification rates, source effectiveness, stage velocity, stuck deals, and actionable recommendations. Tool-agnostic — works with any CRM (Salesforce, HubSpot, Pipedrive, Close, Supabase, CSV).",
       "tags": "research",
       "path": "skills/sales/composites/pipeline-review",
       "files": [
@@ -5610,7 +5610,7 @@
       "name": "product-hunt-scraper",
       "category": "capabilities",
       "domain": "monitoring",
-      "description": ">",
+      "description": "Scrape Product Hunt trending products using Apify. Use when you need to discover new product launches, track competitors on Product Hunt, or monitor the startup ecosystem for relevant launches.",
       "tags": "monitoring",
       "path": "skills/monitoring/capabilities/product-hunt-scraper",
       "files": [
@@ -5704,7 +5704,7 @@
       "name": "programmatic-seo-planner",
       "category": "composites",
       "domain": "seo",
-      "description": ">",
+      "description": "Identify programmatic SEO page patterns worth building for your product — vs/ pages, integrations/, for-{industry}/, alternatives-to/, use-cases/ — and design the template structure, data model, and priority order. Outputs a complete pSEO blueprint with URL patterns, title templates, content frameworks, and data sources per variable.",
       "tags": "seo",
       "path": "skills/seo/composites/programmatic-seo-planner",
       "files": [
@@ -5737,7 +5737,7 @@
       "name": "programmatic-seo-spy",
       "category": "composites",
       "domain": "seo",
-      "description": ">",
+      "description": "Reverse-engineer how competitors do programmatic SEO. Detects URL pattern clusters (vs/, integrations/, for-{industry}/), estimates page count per pattern, analyzes template quality, infers which patterns actually drive traffic, and identifies gaps you can exploit. Outputs a competitive pSEO landscape report.",
       "tags": "seo",
       "path": "skills/seo/composites/programmatic-seo-spy",
       "files": [
@@ -7557,7 +7557,7 @@
       "name": "review-intelligence-digest",
       "category": "composites",
       "domain": "research",
-      "description": ">",
+      "description": "Scrape G2, Capterra, and Trustpilot reviews for your product and competitors, then extract recurring themes, objections, proof points, and exact customer language for use in messaging. Chains review-site-scraper with LLM analysis. Produces a weekly or monthly digest that feeds directly into copywriting, positioning, and sales enablement. Use when a marketing team needs to ground messaging in real customer language.",
       "tags": "research",
       "path": "skills/research/composites/review-intelligence-digest",
       "files": [
@@ -7588,7 +7588,7 @@
       "name": "review-scraper",
       "category": "capabilities",
       "domain": "monitoring",
-      "description": ">",
+      "description": "Scrape product reviews from G2, Capterra, and Trustpilot using Apify. Single script with platform dispatch. Use when you need to monitor competitor reviews, track product sentiment, or gather customer feedback from review sites.",
       "tags": "monitoring",
       "path": "skills/monitoring/capabilities/review-scraper",
       "files": [
@@ -7617,7 +7617,7 @@
       "name": "review-site-scraper",
       "category": "capabilities",
       "domain": "monitoring",
-      "description": ">",
+      "description": "Scrape product reviews from G2, Capterra, and Trustpilot using Apify. Single script with platform dispatch. Use when you need to monitor competitor reviews, track product sentiment, or gather customer feedback from review sites.",
       "tags": "monitoring",
       "path": "skills/monitoring/capabilities/review-site-scraper",
       "files": [
@@ -7676,7 +7676,7 @@
       "name": "sales-call-prep",
       "category": "composites",
       "domain": "sales",
-      "description": ">",
+      "description": "Pre-sales-call intelligence composite. Deep dives on the person AND their company before a sales call, then maps findings to your product to generate talking points, objection prep, and a call strategy. Goes beyond generic attendee research — this is sales-specific intelligence that helps SDRs, AEs, and founders walk into calls with a plan. Tool-agnostic — works with any CRM, research source, and calendar.",
       "tags": "research",
       "path": "skills/sales/composites/sales-call-prep",
       "files": [
@@ -7704,7 +7704,7 @@
       "name": "sales-coaching",
       "category": "composites",
       "domain": "sales",
-      "description": ">",
+      "description": "AI sales coach composite. Analyzes all available sales data — email campaigns, call recordings/transcripts, reply patterns, pipeline outcomes — to identify what the user does well, where they struggle, and how to improve. Finds patterns in top-performing emails, winning call techniques, successful objection handles, and deal progression. Produces personalized coaching recommendations based on their specific product, market, and selling style. Tool-agnostic.",
       "tags": "research",
       "path": "skills/sales/composites/sales-coaching",
       "files": [
@@ -7854,7 +7854,7 @@
       "name": "seo-content-audit",
       "category": "composites",
       "domain": "seo",
-      "description": ">",
+      "description": "Comprehensive SEO footprint analysis. Catalogs all content, pulls real SEO metrics (via Apify Semrush/Ahrefs scrapers or free web search probes), runs competitor analysis, builds topic/keyword and content-type gap matrices, and produces a prioritized recommendations report. The complete SEO audit for any company.",
       "tags": "seo",
       "path": "skills/seo/composites/seo-content-audit",
       "files": [
@@ -7887,7 +7887,7 @@
       "name": "seo-content-engine",
       "category": "playbooks",
       "domain": "seo",
-      "description": ">",
+      "description": "Build and run an SEO content engine: audit current state, identify gaps, build keyword architecture, generate content calendar, draft content.",
       "tags": "seo",
       "path": "skills/seo/playbooks/seo-content-engine",
       "files": [
@@ -7915,7 +7915,7 @@
       "name": "seo-domain-analyzer",
       "category": "capabilities",
       "domain": "seo",
-      "description": ">",
+      "description": "Pull real SEO metrics for any domain using Apify scrapers for Semrush and Ahrefs data. Gets domain authority, organic traffic estimates, keyword rankings, backlink profiles, top performing pages, and auto-discovers competitors from keyword overlap. No Semrush/Ahrefs subscription needed — uses Apify actors that scrape public pages.",
       "tags": "competitive-intel, seo",
       "path": "skills/seo/capabilities/seo-domain-analyzer",
       "files": [
@@ -7945,7 +7945,7 @@
       "name": "seo-opportunity-finder",
       "category": "composites",
       "domain": "seo",
-      "description": ">",
+      "description": "Find quick-win SEO content opportunities by comparing your site's existing content against competitor keyword rankings. Chains site-content-catalog and seo-domain-analyzer to build a content inventory, then identifies gaps — topics competitors rank for that you don't cover yet. Outputs a prioritized list of posts to write or update. Use when a seed/Series A team wants to start winning organic traffic without guessing.",
       "tags": "seo",
       "path": "skills/seo/composites/seo-opportunity-finder",
       "files": [
@@ -7978,7 +7978,7 @@
       "name": "seo-traffic-analyzer",
       "category": "capabilities",
       "domain": "seo",
-      "description": ">",
+      "description": "Analyze a website's SEO visibility, keyword rankings, traffic estimates, and competitive positioning. Uses web search probes, SimilarWeb (free tier via web), and site: queries to build an SEO profile without requiring paid tool subscriptions. Useful for competitive intel, gap analysis, and reverse-engineering a company's organic acquisition strategy.",
       "tags": "competitive-intel, seo",
       "path": "skills/seo/capabilities/seo-traffic-analyzer",
       "files": [
@@ -8007,7 +8007,7 @@
       "name": "sequence-performance",
       "category": "composites",
       "domain": "outreach",
-      "description": ">",
+      "description": "Email campaign/sequence performance review composite. Pulls campaign data (sends, opens, replies, bounces), reads actual email copy and subject lines, analyzes reply content (objections, positive interest, questions), and produces a diagnostic report covering quantitative metrics, copy quality, lead quality, and actionable recommendations. Tool-agnostic — works with Smartlead (MCP), Instantly, Outreach, Lemlist, Apollo, or CSV data.",
       "tags": "research",
       "path": "skills/outreach/composites/sequence-performance",
       "files": [
@@ -8039,7 +8039,7 @@
       "name": "setup-outreach-campaign-smartlead",
       "category": "capabilities",
       "domain": "outreach",
-      "description": ">",
+      "description": "Set up a complete outbound email campaign in Smartlead. Asks the user for campaign goal, audience, messaging, schedule, and mailbox allocation. Creates the campaign, adds leads, saves email sequences, sets schedule, and assigns available mailboxes. Use when a user wants to launch email outreach via Smartlead.",
       "tags": "outreach",
       "path": "skills/outreach/capabilities/setup-outreach-campaign-smartlead",
       "files": [
@@ -8095,7 +8095,7 @@
       "name": "signal-scanner",
       "category": "capabilities",
       "domain": "lead-generation",
-      "description": ">",
+      "description": "Detect buying signals across TAM companies and watchlist personas. Three-phase architecture: (1) free diff-based signals from existing data (headcount growth, tech stack changes, funding rounds), (2) Apify-powered signals (job postings, LinkedIn content analysis, profile changes), and (3) post-processing with dedup, scoring, and lead status updates. Writes signals to Supabase signals table for downstream activation.",
       "tags": "lead-generation",
       "path": "skills/lead-generation/capabilities/signal-scanner",
       "files": [
@@ -8130,7 +8130,7 @@
       "name": "site-content-catalog",
       "category": "capabilities",
       "domain": "seo",
-      "description": ">",
+      "description": "Crawl a website's sitemap and blog index to build a complete content inventory. Lists every page with URL, title, publish date, content type, and topic cluster. Groups content by category and topic. Optionally deep-reads top N pages for quality analysis and funnel stage tagging. Use before SEO audits, content gap analysis, or brand voice extraction.",
       "tags": "content, seo",
       "path": "skills/seo/capabilities/site-content-catalog",
       "files": [
@@ -8189,7 +8189,7 @@
       "name": "social-kit",
       "category": "composites",
       "domain": "social",
-      "description": ">",
+      "description": "End-to-end composite that turns a single brief into voice-tuned X post variants, LinkedIn post variants, and a matching social graphic. Orchestrates create-x-content + create-linkedin-content + goose-graphics in one invocation. Asks about graphic format when not specified, with heuristic-driven recommendations.",
       "tags": "content, social",
       "path": "skills/social/composites/social-kit",
       "files": [
@@ -8339,7 +8339,7 @@
       "name": "sponsored-newsletter-finder",
       "category": "composites",
       "domain": "ads",
-      "description": ">",
+      "description": "Discover newsletters in a target niche relevant to your ICP, evaluate audience fit, estimate reach and CPM, and output a ranked shortlist of sponsorship opportunities. Uses web search to find newsletters, then scores each against ICP alignment criteria. Use when a marketing team wants to reach an existing engaged audience for less than the cost of building their own, or when testing a new channel before committing.",
       "tags": "ads",
       "path": "skills/ads/composites/sponsored-newsletter-finder",
       "files": [
@@ -8465,7 +8465,7 @@
       "name": "tam-builder",
       "category": "capabilities",
       "domain": "lead-generation",
-      "description": ">",
+      "description": "Build and maintain a scored Total Addressable Market (TAM) using Apollo Company Search. Discovers companies matching ICP, scores fit (0-100), assigns tiers (1/2/3), and auto-builds a persona watchlist for Tier 1-2 companies using Apollo People Search (free). Outputs to CSV.",
       "tags": "lead-generation",
       "path": "skills/lead-generation/capabilities/tam-builder",
       "files": [
@@ -8551,7 +8551,7 @@
       "name": "tech-stack-teardown",
       "category": "capabilities",
       "domain": "competitive-intel",
-      "description": ">",
+      "description": "Reverse-engineer a company's sales and marketing tech stack from public signals. Detects CRMs, cold email tools, people databases, ad pixels, email delivery services, and outbound sending domains via DNS records, website source inspection, Apify technology profiling, blacklist checks, and public spam complaint searches. Works on single companies or batches. Outputs a structured markdown report per company.",
       "tags": "competitive-intel",
       "path": "skills/competitive-intel/capabilities/tech-stack-teardown",
       "files": [
@@ -8670,7 +8670,7 @@
       "name": "topical-authority-mapper",
       "category": "composites",
       "domain": "seo",
-      "description": ">",
+      "description": "Map complete topic clusters for any subject area — hub pages, spoke articles, supporting content, internal linking architecture. Identifies content gaps, priority order, and builds a structured content calendar. Produces topic maps that build genuine topical authority, not random blog posts.",
       "tags": "seo",
       "path": "skills/seo/composites/topical-authority-mapper",
       "files": [
@@ -8783,7 +8783,7 @@
       "name": "trending-ad-hook-spotter",
       "category": "composites",
       "domain": "ads",
-      "description": ">",
+      "description": "Monitor Twitter/X, Reddit, LinkedIn, and Hacker News for trending narratives, viral posts, and hot-button topics in your space. Maps trends to ad hook opportunities with timing urgency scores. Tells you what to run ads about right now while the topic is hot.",
       "tags": "ads",
       "path": "skills/ads/composites/trending-ad-hook-spotter",
       "files": [
@@ -8817,7 +8817,7 @@
       "name": "twitter-mention-tracker",
       "category": "capabilities",
       "domain": "monitoring",
-      "description": ">",
+      "description": "Search and scrape Twitter/X posts using Apify. Use when you need to find tweets, track brand mentions, monitor competitors on Twitter, or analyze Twitter discussions. Uses Twitter native search syntax (since:/until:) for reliable date filtering.",
       "tags": "monitoring",
       "path": "skills/monitoring/capabilities/twitter-mention-tracker",
       "files": [
@@ -9150,7 +9150,7 @@
       "name": "visual-brand-extractor",
       "category": "capabilities",
       "domain": "brand",
-      "description": ">",
+      "description": "Extract visual branding (colors, typography, layout patterns) from a client's website and generate a style preset compatible with the HTML slides skill and a brand config JSON for the content asset creator. Uses WebFetch to read pages and analyzes CSS/HTML to identify the color palette, font pairings, and aesthetic patterns.",
       "tags": "brand",
       "path": "skills/brand/capabilities/visual-brand-extractor",
       "files": [
@@ -9178,7 +9178,7 @@
       "name": "voice-of-customer-synthesizer",
       "category": "composites",
       "domain": "research",
-      "description": ">",
+      "description": "Aggregate customer feedback from multiple sources — support tickets, NPS comments, Slack messages, G2 reviews, call transcripts, survey responses — into a unified VoC report with theme clustering, sentiment analysis, trend detection, and actionable recommendations for product, marketing, and CS teams. Chains review-site-scraper for public review data.",
       "tags": "research",
       "path": "skills/research/composites/voice-of-customer-synthesizer",
       "files": [
@@ -9275,7 +9275,7 @@
       "name": "web-archive-scraper",
       "category": "capabilities",
       "domain": "research-tools",
-      "description": ">",
+      "description": "Search the Wayback Machine for archived versions of websites. Extract cached pages, customer lists, testimonials, and partner directories from sites that have changed or gone offline. Uses the free CDX API — no API key needed.",
       "tags": "monitoring",
       "path": "skills/research-tools/capabilities/web-archive-scraper",
       "files": [
@@ -9867,7 +9867,7 @@
         {
           "slug": "hiring-signal-outreach",
           "name": "hiring-signal-outreach",
-          "description": ">",
+          "description": "End-to-end hiring signal composite. Takes any set of companies, detects job postings that your product augments or replaces, finds relevant people (the hiring manager, buyers, champions, users), and drafts personalized outreach using the job role as the hook. Tool-agnostic — works with any company source, job board, contact finder, and outreach platform.",
           "path": "skills/outreach/composites/hiring-signal-outreach",
           "files": [
             "skills/outreach/composites/hiring-signal-outreach/SKILL.md",
@@ -10302,14 +10302,14 @@
         {
           "slug": "ad-angle-miner",
           "name": "ad-angle-miner",
-          "description": ">",
+          "description": "Find the ad angles worth running and turn them into ready-to-make ad ideas: static ads, video ads, or just the copy. Each angle is backed by what buyers actually say (the brand's reviews, competitors' bad reviews, comments on the ads and posts that work) and by what advertisers keep paying to run, never by one Reddit thread. Static ideas come with a matching template from the live template library; video ideas with a video format and the organic posts behind them. Every reference is labelled paid or organic and links to the real post or ad. Picked ideas can be handed straight to making the ads.",
           "stage": "analyze",
           "path": "skills/ads/composites/ad-angle-miner"
         },
         {
           "slug": "ad-to-landing-page-auditor",
           "name": "ad-to-landing-page-auditor",
-          "description": ">",
+          "description": "Analyze the message match between your ads and landing pages. Checks if the promise in the ad copy carries through to the landing page headline, body, and CTA. Flags disconnects that kill conversion rates. Works with Google, Meta, and LinkedIn ads.",
           "stage": "analyze",
           "path": "skills/ads/composites/ad-to-landing-page-auditor"
         },
@@ -10344,7 +10344,7 @@
         {
           "slug": "competitor-ad-intelligence",
           "name": "competitor-ad-intelligence",
-          "description": ">",
+          "description": "Scrape competitor ads from Meta, TikTok, Google, and LinkedIn ad libraries, analyze creative patterns (hooks, formats, CTAs), reverse-engineer landing page funnels, and produce a strategic teardown with vulnerability analysis and counter-play recommendations. Use when you need to understand the competitive ad landscape, find new creative directions, or identify weaknesses in a competitor's paid strategy.",
           "stage": "analyze",
           "path": "skills/ads/composites/competitor-ad-intelligence"
         },

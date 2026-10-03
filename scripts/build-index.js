@@ -49,11 +49,26 @@ function parseFrontmatter(content) {
   const match = content.match(/^---\n([\s\S]*?)\n---/);
   if (!match) return {};
 
-  const yaml = match[1];
+  const lines = match[1].split('\n');
   const result = {};
-  for (const line of yaml.split('\n')) {
-    const kvMatch = line.match(/^(\w[\w-]*):\s*(.*)/);
+  for (let i = 0; i < lines.length; i++) {
+    const kvMatch = lines[i].match(/^(\w[\w-]*):\s*(.*)/);
     if (!kvMatch) continue;
+
+    // Block scalars (`description: >` / `|`): the value is the indented lines
+    // that follow. Without this the value is just the ">" indicator.
+    const block = kvMatch[2].trim().match(/^([>|])[+-]?\d*$/);
+    if (block) {
+      const blockLines = [];
+      while (i + 1 < lines.length && (/^\s/.test(lines[i + 1]) || lines[i + 1] === '')) {
+        blockLines.push(lines[++i].trim());
+      }
+      result[kvMatch[1]] = block[1] === '|'
+        ? blockLines.join('\n').trim()
+        : blockLines.join('\n').trim().split(/\n{2,}/).map((p) => p.replace(/\n/g, ' ')).join('\n');
+      continue;
+    }
+
     let value = kvMatch[2].trim().replace(/^['"]|['"]$/g, '');
     if (value.startsWith('[') && value.endsWith(']')) {
       value = value.slice(1, -1).split(',').map((s) => s.trim());
