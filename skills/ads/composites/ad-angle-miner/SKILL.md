@@ -286,13 +286,22 @@ record the actual template id and compatibility reason. A physical demo needs a 
 a screen demo needs usable recordings; a silent reveal needs a visual payoff. Do not turn all
 angles into testimonials. An unmet essential input makes the pair provisional or incompatible.
 
-For podcast or street-interview directions, return an observed conversation reference
-alongside the angle: source pointer, observation scope (transcript/audio/video), at least
-three speaker turns with their functions, and what can transfer. Prefer the brand's own
-or relevant ad creative; reuse collected sources before retrieving more. A caption,
-format description or imagined beat map cannot establish human dialogue. Editorial
-interviews can provisionally teach turn structure, with commercial relevance and delivery
-limitations recorded. The writer's dialogue-writing reference defines the review bar.
+For dialogue directions, return an observed same-format reference alongside the angle.
+Reuse collected sources before retrieving more. A caption, format description or imagined
+beat map cannot establish human dialogue.
+
+**Street ads require a complete commercial interaction**, with full visual timeline and
+spoken exchange inspected. Match physical/service/digital offering and the actual
+interaction (sampling, mic-only conversation, or challenge). Preserve source, observation
+method/limits, timestamped words and actions, visible setup, participation reason, hook,
+brand connection, payoff, and unseen recruitment as explicitly unknown. Label paraphrases
+and retain full transcript evidence. Partial hooks and editorial radio excerpts cannot
+fill this gap; seed summaries are source leads until inspected in full. The selected
+[[references::render-street-interview]] guide and writer's files reference define the record.
+
+For podcasts, an appropriate editorial interview can provisionally teach turn structure,
+with commercial and delivery limitations recorded. Neither real performers nor an
+observed transcript establishes human authorship or conversion performance.
 
 Carry audience, objective, offer, CTA and exact product through this match. When the angle or
 format is fixed, do not replace it to improve a ranking. Report a conflict and suggest a

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Select inspected examples; return explicit research gaps instead of invented sources."""
+"""Select complete commercial interactions; snippets cannot satisfy an ad-writing gap."""
 import argparse
 import json
 from pathlib import Path
@@ -7,29 +7,85 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 DEFAULT_LIBRARY = HERE.parent / "references" / "street-reference-library.json"
 MODES = ("product-guess", "conversation")
+INTERACTIONS = ("product-guess", "mic-only", "product-sample", "concept-challenge")
+SITUATION_FIELDS = ("edited_opening", "visible_setup", "participant_reason", "viewer_hook",
+                    "product_connection", "payoff", "unseen_setup")
+
+
+def reference_gap(ref):
+    """Check observation coverage, not prose quality or claimed performance."""
+    if ref.get("use_status") in ("excluded", "rejected"):
+        return ref.get("exclusion_reason", "reference excluded from ad writing")
+    if ref.get("commercial") is not True or not ref.get("commercial_evidence"):
+        return "no evidenced commercial interaction; editorial material is not an ad reference"
+    inspection = ref.get("inspection")
+    if not isinstance(inspection, dict):
+        return "missing complete-clip inspection record"
+    duration = inspection.get("duration_s")
+    if (inspection.get("coverage") != "complete-clip"
+            or not {"visual", "transcript"}.issubset(inspection.get("modalities", []))
+            or not isinstance(duration, (int, float)) or isinstance(duration, bool) or duration <= 0
+            or not inspection.get("method")):
+        return "full visual interaction and complete spoken exchange have not been inspected"
+    if not (ref.get("observed") is True and ref.get("source") and ref.get("transfer_rule")
+            and ref.get("limitations") and ref.get("allowed_offering_types")
+            and ref.get("interaction_types")):
+        return "missing source, observation limits or interaction compatibility"
+    situation = ref.get("ad_interaction")
+    if not isinstance(situation, dict):
+        return "missing ad interaction record"
+    if not all(isinstance(situation.get(k), str) and situation[k].strip() for k in SITUATION_FIELDS):
+        return "missing ad setup, participation reason, hook, product connection or payoff"
+    turns = ref.get("speaker_turns", [])
+    if (not isinstance(turns, list) or len(turns) < 3 or not all(isinstance(t, dict) for t in turns)
+            or len({t.get("speaker") for t in turns if t.get("speaker")}) < 2):
+        return "missing complete two-person turn sequence"
+    previous_start = -1
+    for turn in turns:
+        start, end = turn.get("start"), turn.get("end")
+        if (not isinstance(start, (int, float)) or not isinstance(end, (int, float))
+                or isinstance(start, bool) or isinstance(end, bool)
+                or not 0 <= start < end <= duration + 0.5 or start < previous_start
+                or not isinstance(turn.get("text"), str) or not turn["text"].strip()
+                or not turn.get("speaker") or not turn.get("does")):
+            return "turns need ordered clip timestamps and observed content (labeled if paraphrased), not functions alone"
+        previous_start = start
+    return None
 
 
 def select_context(brief, references, limit=2):
     mode = brief.get("mode")
     if mode not in MODES:
         raise ValueError("mode must be product-guess or conversation")
+    brief_gaps = []
+    if brief.get("offering_type") not in ("physical", "service", "digital"):
+        brief_gaps.append("offering_type must identify physical, service or digital")
+    if brief.get("interaction_type") not in INTERACTIONS:
+        brief_gaps.append("interaction_type must identify the proposed visible interaction")
+    if mode == "product-guess" and brief.get("interaction_type") != "product-guess":
+        brief_gaps.append("product-guess execution needs product-guess interaction")
+    if mode == "conversation" and brief.get("interaction_type") == "product-guess":
+        brief_gaps.append("object guessing belongs to product-guess execution")
     eligible, excluded = [], []
-    for ref in references:
-        turns = ref.get("speaker_turns", [])
+    # Project observations replace a seed summary with the same id. Private full
+    # transcripts stay project-scoped rather than being copied into the library.
+    unique = {r["id"]: r for r in references if isinstance(r, dict) and r.get("id")}
+    for ref in unique.values():
         reason = None
         if ref.get("format") != "street-interview" or mode not in ref.get("execution_modes", []):
             reason = "wrong format or unsupported execution"
         elif ref.get("language") != brief.get("language", "en"):
             reason = "language mismatch"
-        elif not (ref.get("observed") is True and ref.get("source") and ref.get("transfer_rule")
-                  and ref.get("limitations") and ref.get("observed_scope") in ("transcript", "audio", "video")
-                  and len(turns) >= 3 and len({t.get("speaker") for t in turns if t.get("speaker")}) >= 2
-                  and all(t.get("does") for t in turns)):
-            reason = "missing observed exchange or provenance"
+        elif reference_gap(ref):
+            reason = reference_gap(ref)
+        elif brief.get("offering_type") not in ref["allowed_offering_types"]:
+            reason = "product/service interaction mismatch"
+        elif brief.get("interaction_type") not in ref["interaction_types"]:
+            reason = "visible interaction mismatch"
         if reason:
             excluded.append({"id": ref.get("id"), "reason": reason})
             continue
-        score = (100 if ref.get("origin") == "user" else 0)
+        score = (100 if ref.get("origin") == "user" else 15 if ref.get("origin") == "project" else 0)
         score += 40 if ref.get("brand_id") == brief.get("brand_id") else 0
         score += 20 if ref.get("approved") is True else 0
         score += 10 if brief.get("buying_context") in ref.get("buying_contexts", []) else 0
@@ -37,29 +93,23 @@ def select_context(brief, references, limit=2):
         score += 5 if ref.get("commercial") else 0
         eligible.append((score, ref))
     eligible.sort(key=lambda pair: (-pair[0], pair[1]["id"]))
-    # Keep one useful commercial reference AND one contrasting conversation when available.
-    selected = [ref for _, ref in eligible[:limit]]
-    if len(selected) > 1 and not any(not r.get("commercial") for r in selected):
-        contrast = next((r for _, r in eligible[limit:] if not r.get("commercial")), None)
-        if contrast and selected[-1].get("origin") != "user":
-            selected[-1] = contrast
+    selected = [] if brief_gaps else [ref for _, ref in eligible[:limit]]
     queries = []
     if not selected:
-        queries.append(f"{brief.get('audience_group', 'audience')} {brief.get('buying_context', '')} "
-                       f"{mode} street interview transcript {brief.get('language', 'en')}")
-    if selected and not any(r.get("observed_scope") in ("audio", "video") for r in selected):
-        queries.append("same-format source clip for delivery observation")
+        queries.append(f"{brief.get('offering_type', 'offering')} {brief.get('audience_group', 'audience')} "
+                       f"{brief.get('interaction_type', mode)} branded street interview full ad video "
+                       f"{brief.get('language', 'en')}")
     return {
-        "schema_version": "street-script-context.v1", "brand_id": brief.get("brand_id"),
+        "schema_version": "street-script-context.v2", "brand_id": brief.get("brand_id"),
         "mode": mode, "brief": brief,
         "references": selected,
         "selection": [{"id": r["id"], "reason": "user reference" if r.get("origin") == "user"
-                       else "same execution; audience/buying fit ranked; contrasting mechanics retained"}
+                       else "complete commercial interaction; offering/action fit; audience/buying fit ranked"}
                       for r in selected],
-        "excluded": excluded, "research_queries": queries,
+        "excluded": excluded, "research_queries": queries, "brief_gaps": brief_gaps,
         "status": "needs-reference" if not selected else "ready-for-writing",
-        "limitations": ["Input provenance is recorded, not independently verified by this selector.",
-                         "Authorship, dialogue quality and performance require separate evidence."]}
+        "limitations": ["This checks recorded observation coverage; it cannot verify that the observer's account is true.",
+                         "Reference compatibility is not script quality, verified authorship or ad performance."]}
 
 
 def main():

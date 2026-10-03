@@ -1,6 +1,6 @@
 {
-  "schema_version": "street-reference-library.v1",
-  "summary": "Small diverse seed library of observed turn mechanics. Authorship and performance are separate; private/project references stay outside this file.",
+  "schema_version": "street-reference-library.v2",
+  "summary": "Source leads and compact observations. A seed snippet is not sufficient ad-writing context: inspect the complete commercial clip and keep full/private transcripts project-scoped.",
   "references": [
     {
       "id": "gainful-street-1",
@@ -46,7 +46,15 @@
       ],
       "transfer_rule": "Let a real observable test produce the answer; transfer the reveal sequence, not protein claims or scripted endorsement.",
       "authorship": "unknown",
-      "limitations": "Workspace source video, exact public ad id unavailable. ASR can mishear words. Sampled frames are not full delivery review; pauses and vocal naturalness were not listened to. No conversion or author-credit evidence. Product facts do not transfer."
+      "limitations": "Workspace source video, exact public ad id unavailable. ASR can mishear words. Sampled frames are not full delivery review; pauses and vocal naturalness were not listened to. No conversion or author-credit evidence. Product facts do not transfer. The stored turns are partial; inspect the complete clip before using it to write an ad.",
+      "use_status": "needs-full-context",
+      "inspection": {
+        "coverage": "partial",
+        "modalities": [
+          "transcript"
+        ],
+        "method": "faster-whisper base.en ASR and sampled frames at 0/5/12/20/30 seconds; speaker functions inferred from exchange and frames"
+      }
     },
     {
       "id": "gainful-street-2",
@@ -92,9 +100,17 @@
           "does": "responds to the explanation and chooses a flavour"
         }
       ],
-      "transfer_rule": "Ask about an ordinary existing routine; let the extra detail earn the follow-up. For a service, transfer that causal link without requiring tasting or a prop.",
+      "transfer_rule": "The edited ad begins with a later taste reaction. Inspect the visible sampling setup, earned follow-ups and full product connection before adapting; a routine-question snippet alone loses the ad mechanism.",
       "authorship": "unknown",
-      "limitations": "Workspace source video, exact public ad id unavailable. ASR can mishear words. Sampled frames are not full delivery review; pauses and vocal naturalness were not listened to. No conversion or author-credit evidence. Product facts do not transfer."
+      "limitations": "Workspace source video, exact public ad id unavailable. ASR can mishear words. Sampled frames are not full delivery review; pauses and vocal naturalness were not listened to. No conversion or author-credit evidence. Product facts do not transfer. The stored turns are partial; inspect the complete clip before using it to write an ad.",
+      "use_status": "needs-full-context",
+      "inspection": {
+        "coverage": "partial",
+        "modalities": [
+          "transcript"
+        ],
+        "method": "faster-whisper base.en ASR and sampled frames at 0/5/12/20/30 seconds; speaker functions inferred from exchange and frames"
+      }
     },
     {
       "id": "tal-night-market",
@@ -141,7 +157,9 @@
       ],
       "transfer_rule": "An unexpected detail in the answer causes the next question. Do not force agreement, a perfect punchline or a sales request.",
       "authorship": "publisher-attributed real field exchange; unscripted-authorship details unknown",
-      "limitations": "Editorial overnight-market interview, not an ad. Transcript only; no delivery or commercial performance inference. Transfer turn mechanics only."
+      "limitations": "Editorial overnight-market interview, not an ad. Transcript only; no delivery or commercial performance inference. Transfer turn mechanics only.",
+      "use_status": "excluded",
+      "exclusion_reason": "Operator rejected this editorial radio excerpt as an ad-writing reference; it lacks an understandable commercial setup and payoff."
     }
   ]
 }

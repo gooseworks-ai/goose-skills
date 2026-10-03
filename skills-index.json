@@ -1,6 +1,6 @@
 {
   "version": "1.3.0",
-  "generated": "2026-10-02",
+  "generated": "2026-10-03",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -7239,7 +7239,7 @@
       "name": "render-street-interview",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Write a street-interview ad using selected observed references and the brand's angle. Render product guessing with a visible object, or prepare a mic-only conversation script/prompt preview for a service or other brand. Story and questions vary; capture rules stay fixed. The existing product render uses the GooseWorks proxy and local finishing. Conversation media delivery is unverified.",
+      "description": "Write a street-interview ad from a complete inspected commercial interaction and current brand facts. Render product guessing, or prepare mic-only, prepared-sample or visible-task conversation script/prompt previews. Premise, actions and ad connection vary; capture rules stay fixed. Conversation media delivery is unverified.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-street-interview",
       "files": [

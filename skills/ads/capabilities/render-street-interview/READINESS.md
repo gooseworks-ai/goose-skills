@@ -1,5 +1,41 @@
 # create-street-interview-video — readiness
 
+**Current summary (2026-10-03).** Product-guess retains the existing object renderer and
+approved prompt baseline. Conversation supports **free script/config/prompt previews only**
+for mic-only, prepared-sample and visible-task interactions. No conversation media endpoint,
+price, performed timing, sampling action or camera/audio result is validated. Every subtype
+still refuses `single_gen.py --yes` and product/scene reference bindings.
+
+## Current conversation preview support
+
+- Configs may describe `interaction.type`, `visible_setup`, `participant_reason` and optional
+  props. Missing interaction data remains mic-only. Product-sample uses a prepared plain cup;
+  concept-challenge uses described non-UI props; mic-only can explain a service without a
+  device. Phone, screen and UI demonstrations remain unsupported.
+- Ordered shots can include explicit visual/action descriptions and silent action/reaction.
+  A participant answer or silent action can open the edit. The first actual interviewer
+  question exactly matches `cfg.question` and is spoken once. Both people still speak.
+- The native preview checks retain 3–8 shots, a 6–15s duration and the provisional ceiling of
+  2.5 spoken words/s. Authors must leave breathing room for actions; these checks cannot
+  verify performed timing or quality.
+- Writing starts with a complete inspected commercial street interaction and a coherent
+  situation brief. Full visual and spoken coverage, setup, participation, hook, product
+  role and payoff are required. Seed snippets are leads; radio/editorial material is not
+  a fallback. Unseen recruitment stays unknown. See
+  [street-script-writing](references/street-script-writing.md).
+- Human review is on the situation brief, words, action timeline, earned brand connection,
+  ending-card specification and prompt preview. A clean dry run verifies construction,
+  not media delivery. A rendered pilot and delivery review are still required before
+  conversation can become a paid production path.
+
+## Historical product-guess readiness (2026-09-29)
+
+The report below is preserved as history, not the current production verdict. The later
+[REFERENCE.md status](REFERENCE.md#status) records that the user accepted the single-take
+faces on 2026-10-01 and that a product-guess episode shipped. That does not validate any
+conversation subtype. Product-guess prompt instructions remain unchanged.
+
+
 State as of 2026-09-29. Written from a pass over the skill with **no paid generation of any
 kind**: no still, no clip, no voice. Everything measured below came out of the take already paid
 for (`ld-single-seed4802`) and the local reference footage.

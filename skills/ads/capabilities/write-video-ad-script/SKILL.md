@@ -123,15 +123,25 @@ Add at most three relevant references from existing research. For each record th
 visual and words, beat order, product entrance, proof, objection, payoff and CTA. Record
 what transfers and what belongs to the source brand.
 
-For a podcast or street interview, load [dialogue-writing](references/dialogue-writing.md). Obtain at least
-one actually observed conversation in that format, preferably the brand's own or a
-relevant ad, and record its speaker turns. A format description, product page or imagined
-beat map is not a conversation reference. A publisher transcript can establish turn
-structure; only inspected audio/video establishes delivery, pauses and reactions.
-If a nearby editorial interview is used, state that it supplies conversation mechanics,
-not commercial performance or product claims. Record missing commercial/delivery evidence
-and keep that execution provisional. Reuse the miner's sources first; retrieve missing
-references rather than asking the user to supply them when access is available.
+For dialogue, load [dialogue-writing](references/dialogue-writing.md). A format description,
+product page or imagined beat map is not an observed conversation. Reuse the miner's
+sources first; retrieve missing references when access is available.
+
+For a **street ad**, inspect a complete commercial clip: its full visual interaction and
+spoken exchange. Record the edited opening, visible setup, why the participant engages,
+viewer hook, product connection, payoff, and any unseen approach as unknown. Match the
+offering and visible interaction (sampling, mic-only service conversation, or challenge),
+not just the format name. Keep ordered timestamped turns with words and actions; label
+paraphrases and retain the full transcript evidence separately. A hook snippet or an
+editorial radio interview cannot fill this gap. Load the selected renderer's
+[[references::render-street-interview]] street-script-writing guide and run its selector.
+Seed summaries are source leads until a complete project observation replaces them.
+
+For a **podcast**, an appropriate publisher transcript can establish turn structure.
+Editorial conversation may be provisional evidence of that mechanic, with missing
+commercial context explicit. Neither a transcript nor sampled frames establishes vocal
+delivery; record what was actually heard or viewed. Authorship and ad performance remain
+unknown unless independently evidenced.
 
 Keep performance labels honest: running duration and variants show advertiser persistence;
 views show reach or engagement. Neither proves conversions, profitability or causal lift.
@@ -173,13 +183,25 @@ Give each person an intention and a reason to respond to the previous turn. Then
 and add product inserts, captions and the CTA. Do not turn every slot into a sentence
 from the product page or have the participant rehearse the presenter's selling points.
 
+Before a street exchange, write a short situation brief: who the participant is in this
+moment, why the interviewer is here, what invitation or visible task they accepted,
+what each person wants, and how this brand helps with the resulting task or question.
+Separate filming/recruitment assumptions from what the viewer sees. An edited ad may
+begin with a later reaction; its action and context must make that opening intelligible.
+Do not force greeting or consent dialogue into the cut. Write actions beside the words,
+including preparation, handover, looking and listening time. If the premise needs more
+time than the recipe permits, change the premise or flag a longer production route;
+do not accelerate the speakers to hide the missing setup. A generic problem followed
+by a pasted brand card does not establish a useful ad connection.
+
 Create candidates.json with angle ids, evidence ids, claims, hooks, beats and visual plans.
 
 ## Step 6. Validate, critique, repair
 
 Run the rule check in strict mode with shape, brand rules, customer words and angle context.
-Pass references.json too. Generated podcast/street dialogue must cite an observed
-conversation record; a claim-only research bank cannot satisfy this requirement.
+Pass references.json too. Generated dialogue must cite an observed conversation record;
+street ads require the complete commercial interaction above. A claim-only research bank
+or partial source cannot satisfy this requirement.
 It checks research scope, angle preservation, source ids, template identity, required slots
 (including repeated speakers), text limits, speakers and available assets. Fix errors and
 resolve material warnings. The machine cannot prove that a cited fact entails a claim.
@@ -197,6 +219,8 @@ merged average or Borda ranking as agreement between critic passes.
 For podcast/street dialogue, each critic pass must reach at least 8/10 on spoken and
 template_fit, with supported claims and no unresolved defects. This is the proposed
 4/5 quality floor for those criteria, not a calibrated guarantee of human preference.
+For a street ad also review situational credibility and the brand's useful role against
+the words **and** visible actions. Ordinary vocabulary alone cannot clear either check.
 If dialogue_ready is false, repair the exchange and recheck. After two supported repair
 passes, retain a failed result as a draft and report the remaining defect; do not relax
 the rubric or loop until the judge returns a desired number.

@@ -61,6 +61,19 @@ in hook_notes or line edits. Scores below 8/10 on spoken or template_fit require
 rewrite; a high aggregate cannot compensate. Do not inflate those scores to clear a gate.
 """
 
+STREET_RUBRIC = """\
+For this street ad, also judge the visible situation under template_fit. Why is the
+interviewer here? What invitation or task does this participant accept? Does the
+problem survive an ordinary person's obvious next action? The words and actions must
+form a coherent encounter with enough time to taste, listen or respond. A reaction
+cold open may precede a question if its visible context is intelligible; do not demand
+a greeting in the edited ad. Do not invent the reference's unseen recruitment.
+Judge proof and payoff against the brand's useful role in this specific encounter.
+A detached endcard does not repair a generic exchange; a service can offer relevant
+help verbally without showing UI. Report the exact missing setup, causal jump or
+unearned brand entrance. Plausible vocabulary alone cannot clear template_fit.
+"""
+
 SYSTEM_PROMPT = """\
 You are a performance creative director who has written, shot and tested thousands of
 short-form video ads for TikTok, Reels and Meta. You judge scripts the way the feed
@@ -140,6 +153,8 @@ def concept_block(c, quotes_by_id, shape_beats):
              f"Persona: {c.get('persona', '')}"]
     lines.append("Evidence and declared claims: " + json.dumps(
         {k: c.get(k) for k in ("angle_id", "evidence_ids", "claims", "proof_plan")}, ensure_ascii=False))
+    if c.get("situation_brief"):
+        lines.append("Situation brief: " + json.dumps(c["situation_brief"], ensure_ascii=False))
     for qid in c.get("quote_ids") or []:
         q = quotes_by_id.get(qid)
         if q:
@@ -185,7 +200,10 @@ def build_prompt(concepts, quotes_by_id, rules, shape, brief, context=None, refe
     if references:
         head.append("Observed reference structures (not performance proof): " + json.dumps(references, ensure_ascii=False))
     blocks = [concept_block(c, quotes_by_id, shape.get("beats") or []) for c in concepts]
-    dialogue = DIALOGUE_RUBRIC + "\n\n" if dialogue_mode(shape) else ""
+    mode = dialogue_mode(shape)
+    dialogue = DIALOGUE_RUBRIC + "\n\n" if mode else ""
+    if mode == "street-interview":
+        dialogue += STREET_RUBRIC + "\n\n"
     return "\n".join(head) + "\n\n" + "\n\n".join(blocks) + "\n\n" + dialogue + RUBRIC
 
 

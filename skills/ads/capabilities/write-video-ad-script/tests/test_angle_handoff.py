@@ -97,6 +97,55 @@ def test_user_dialogue_remains_report_only_without_references():
     assert lint(c, s, context=x, strict=True, report_only=True)["ok"]
 
 
+def street_reference():
+    r = dialogue_reference('street-interview')
+    r.update({"observed_scope":"video", "commercial":True, "commercial_evidence":"Named sponsor offers help.",
+              "limitations":"Authorship, performance and vocal delivery unverified.",
+              "allowed_offering_types":["physical"],"interaction_types":["product-sample"],
+              "inspection":{"coverage":"complete-clip","modalities":["visual","transcript"],
+                            "duration_s":12,"method":"Complete frame timeline and transcript."},
+              "ad_interaction":{k:'Observed description or explicitly unknown setup.' for k in
+                                ('edited_opening','visible_setup','participant_reason','viewer_hook',
+                                 'product_connection','payoff','unseen_setup')}})
+    for i,t in enumerate(r['speaker_turns']):
+        t.update({'start':i*3,'end':(i+1)*3,'text':'Recorded observed content.'})
+    return r
+
+
+def test_street_generation_requires_complete_commercial_words_and_actions():
+    c,s,x=fixture();s['format']='street-interview'
+    c['concepts'][0]['reference_id']='r-dialogue'
+    assert not lint(c,s,context=x,strict=True,references=[dialogue_reference('street-interview')])['ok']
+    assert lint(c,s,context=x,strict=True,references=[street_reference()])['ok']
+
+
+@pytest.mark.parametrize('change',[
+    {'commercial':False}, {'use_status':'excluded'}, {'ad_interaction':{}},
+    {'inspection':{'coverage':'partial'}}, {'inspection':None},
+])
+def test_street_editorial_and_partial_records_are_rejected(change):
+    c,s,x=fixture();s['format']='street-interview';c['concepts'][0]['reference_id']='r-dialogue'
+    r=street_reference();r.update(change)
+    assert not lint(c,s,context=x,strict=True,references=[r])['ok']
+
+
+def test_street_function_only_or_impossible_timestamps_are_rejected():
+    c,s,x=fixture();s['format']='street-interview';c['concepts'][0]['reference_id']='r-dialogue'
+    r=street_reference();del r['speaker_turns'][0]['text']
+    assert not lint(c,s,context=x,strict=True,references=[r])['ok']
+    r=street_reference();r['speaker_turns'][0]['end']=90
+    assert not lint(c,s,context=x,strict=True,references=[r])['ok']
+
+
+def test_street_critic_receives_situation_and_causal_checks():
+    c,s,x=fixture();s['format']='street-interview'
+    c['concepts'][0]['situation_brief']={'participant_reason':'Invited to taste a prepared sample.'}
+    prompt=build_prompt(c['concepts'],{}, {},s,'',context=x,references=[street_reference()])
+    assert 'Invited to taste a prepared sample.' in prompt
+    assert "problem survive an ordinary person's obvious next action" in prompt
+    assert 'reaction\ncold open may precede a question' in prompt
+
+
 def test_single_host_ad_read_does_not_need_a_two_person_reference():
     c, s, x = fixture()
     s["format"] = "podcast-ad-read"

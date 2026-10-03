@@ -14,10 +14,23 @@ other person actually answers, what prompts the follow-up and how the exchange e
 Use short quotations only when needed; preserve source links and paraphrase mechanics.
 
 Do not invent an observation. A publisher transcript supports words and turn order;
-it does not establish vocal delivery or camera reactions. A real editorial interview
-can be a provisional conversation reference, but its authority, claims, reputation and
-performance do not transfer to an advertisement. Search for missing commercial
-references when useful; if access fails, keep that limitation explicit.
+it does not establish vocal delivery or camera reactions. Sampled frames establish
+visible context at those times, not continuous motion or what the observer heard.
+
+For street ads, use a **complete commercial interaction**. Inspect the full visual
+timeline and spoken exchange, from the published opening through the ending. Record
+the visible setup, why the person engages, hook, relevant brand explanation or action,
+and payoff. Keep timestamped words and actions, label paraphrases, and link full transcript
+evidence. If recruitment or the tasting invitation is outside the edit, say it is unknown;
+do not invent an observed approach. Match product/service and interaction mechanics.
+A sampling ad is not automatically a service reference. An editorial radio excerpt,
+hook-only snippet, or isolated funny answer cannot satisfy the street-ad reference gate.
+Fetch and inspect a suitable ad when the library has this gap.
+
+For podcasts, a relevant editorial exchange may provisionally supply conversation
+mechanics. Its authority, claims, reputation and performance do not transfer. Record
+missing commercial/delivery evidence. A real ad is not verified human-written simply
+because real people appear in it.
 
 ## Write an exchange, then an ad
 
@@ -46,7 +59,17 @@ be mundane, practical or unexpected. Follow that answer. When an actor demonstra
 product, keep the reaction about what is observable, not a made-up review.
 Disclose a staged ad; do not pretend it is consumer research.
 
-## Review without the scene directions
+Write a situation brief before dialogue: participant role, interviewer purpose, invitation
+or task, each person's intention, visible opening, and relevant brand help/payoff. A
+plausible independent concern must survive an ordinary person's next obvious action.
+If the problem disappears through a trivial action, do not manufacture an elaborate
+emotional response to it. Keep a natural edited reaction opening when the viewer can
+understand the object or task. A greeting is optional in the edit; causal context is not.
+For a service, the help can be explained verbally after a concrete task is established.
+For a sample, leave real time to taste before speaking and do not infer an immediate
+health effect. Generic problem talk plus a detached ending is insufficient brand work.
+
+## Review the words and the situation
 
 Read only the words as an alternating exchange. For each turn ask:
 
@@ -59,6 +82,12 @@ Reject convenient setup questions, unprompted spec recitals, identical sentence 
 rehearsed admiration and slogan-shaped answers. For example, “What would you change
 first?” followed by a catalogue sentence gives no evidence of actual listening.
 Contractions alone do not make it human.
+
+Then read the words **with** the visible setup and actions. Can this person reasonably
+participate and answer now? Does the question follow the visible task or previous reply?
+Does the brand address that specific situation, with a useful explanation or action?
+Is there time to do it? Reject a structurally valid exchange when these fail. Scene notes
+must not rescue incomprehensible words, and a words-only score must not ignore the scene.
 
 Treat 4/5 as usable with minor delivery edits and 5/5 as ready to perform as written.
 Natural language and conversational logic must each clear the bar; their average must

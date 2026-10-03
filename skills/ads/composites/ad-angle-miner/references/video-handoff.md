@@ -68,9 +68,15 @@ brief use a stable run-local product key and keep it consistent.
   competitor/category scope. They do not authorize general claims or fake testimonials.
 - **References** describe observed storytelling. Keep paid, verified organic and unknown
   distribution separate. Duration, variants and views are not conversion labels.
-  Podcast/street directions additionally retain dialogue_mode, observed=true,
+  Dialogue directions additionally retain dialogue_mode, observed=true,
   observed_scope, speaker_turns and transfer_rule so the writer can study actual
-  conversation. Preserve transcript-only and editorial-source limitations. The
+  conversation. Street ads require a complete inspected commercial interaction:
+  commercial_evidence, inspection coverage/modalities/duration/method, ordered timestamped
+  turn text and actions, ad_interaction setup/reason/hook/product connection/payoff,
+  explicit unseen-setup limits, offering/action compatibility and observation limitations.
+  Partial hooks or editorial transcripts cannot satisfy that requirement. Keep full
+  private transcripts project-scoped and link them; label paraphrased turn content.
+  Podcast editorial references remain provisional with their limitations. The
   writer's files reference defines these fields; do not relabel an invented beat map
   as observed dialogue.
 - **Angles** cite those evidence ids and template ids whose full recipes were checked.

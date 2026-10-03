@@ -201,7 +201,13 @@ def main():
             if A.yes:
                 sys.exit("refusing to spend without the product reference")
     else:
-        print("mic-only conversation: no product reference, handover or screen required")
+        import conversation
+        interaction = conversation.interaction_type(cfg)
+        if interaction == "mic-only":
+            print("mic-only conversation: no product reference, handover or screen required")
+        else:
+            print(f"{interaction} conversation: text setup/action preview; no product reference "
+                  "or screen binding; sample/task media performance unverified")
         if A.scene_ref:
             sys.exit("conversation has no scene-reference binding; remove --scene-ref")
         if A.yes:

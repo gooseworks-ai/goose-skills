@@ -252,6 +252,35 @@ def dialogue_mode(shape):
     return None
 
 
+def complete_street_reference(ref):
+    """Coverage/provenance gate only; recorded observations still need human review."""
+    inspection, situation = ref.get("inspection"), ref.get("ad_interaction")
+    if (ref.get("commercial") is not True or not ref.get("commercial_evidence")
+            or ref.get("use_status") in ("excluded", "rejected")
+            or not isinstance(inspection, dict) or not isinstance(situation, dict)):
+        return False
+    duration = inspection.get("duration_s")
+    fields = ("edited_opening", "visible_setup", "participant_reason", "viewer_hook",
+              "product_connection", "payoff", "unseen_setup")
+    if (inspection.get("coverage") != "complete-clip" or not inspection.get("method")
+            or not {"visual", "transcript"}.issubset(inspection.get("modalities", []))
+            or not isinstance(duration, (int, float)) or isinstance(duration, bool) or duration <= 0
+            or not all(isinstance(situation.get(k), str) and situation[k].strip() for k in fields)
+            or not ref.get("limitations") or not ref.get("allowed_offering_types")
+            or not ref.get("interaction_types")):
+        return False
+    previous_start = -1
+    for turn in ref.get("speaker_turns", []):
+        start, end = turn.get("start"), turn.get("end")
+        if (not isinstance(start, (int, float)) or not isinstance(end, (int, float))
+                or isinstance(start, bool) or isinstance(end, bool)
+                or not 0 <= start < end <= duration + .5 or start < previous_start
+                or not isinstance(turn.get("text"), str) or not turn["text"].strip()):
+            return False
+        previous_start = start
+    return True
+
+
 def observed_dialogue_references(references, mode):
     """Validate provenance and observed turn structure, not whether copy sounds human."""
     return [r for r in references or [] if isinstance(r, dict)
@@ -262,7 +291,8 @@ def observed_dialogue_references(references, mode):
             and isinstance(r.get("speaker_turns"), list) and len(r["speaker_turns"]) >= 3
             and all(isinstance(t, dict) and t.get("speaker") and t.get("does")
                     for t in r["speaker_turns"])
-            and len({t["speaker"] for t in r["speaker_turns"]}) >= 2]
+            and len({t["speaker"] for t in r["speaker_turns"]}) >= 2
+            and (mode != "street-interview" or complete_street_reference(r))]
 
 
 def lint(cands, shape=None, rules=None, bank=None, report_only=False, context=None, strict=False, references=None):
@@ -291,7 +321,7 @@ def lint(cands, shape=None, rules=None, bank=None, report_only=False, context=No
     mode = dialogue_mode(shape)
     dialogue_refs = observed_dialogue_references(references, mode) if mode else []
     if strict and not report_only and mode and not dialogue_refs:
-        report["input_errors"].append("generated dialogue needs an observed same-format conversation reference with speaker turns")
+        report["input_errors"].append("generated dialogue needs an observed same-format reference; street ads need a complete commercial interaction with words and actions")
     if not cands.get("concepts"):
         report["input_errors"].append("no script concepts to check")
     angles, evidence, facts = {}, {}, {}

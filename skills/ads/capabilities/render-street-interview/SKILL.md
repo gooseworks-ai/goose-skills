@@ -1,34 +1,60 @@
 ---
 name: render-street-interview
-description: Write a street-interview ad using selected observed references and the brand's angle. Render product guessing with a visible object, or prepare a mic-only conversation script/prompt preview for a service or other brand. Story and questions vary; capture rules stay fixed. The existing product render uses the GooseWorks proxy and local finishing. Conversation media delivery is unverified.
+description: Write a street-interview ad from a complete inspected commercial interaction and current brand facts. Render product guessing, or prepare mic-only, prepared-sample or visible-task conversation script/prompt previews. Premise, actions and ad connection vary; capture rules stay fixed. Conversation media delivery is unverified.
 status: draft
 ---
 
-# render-street-interview
+# Human version
 
-The renderer for the **street-interview** video ad format (goose-studio recipe
-`one-shot-videos/create-street-interview-video`). An interviewer asks people on one street
-corner a relevant question. Product guessing uses a visible object and reveal. Mic-only
-conversation explores a situation and follows the reply, without an object or winner.
-The people are generated. Conversation currently produces script and prompt previews.
+## render-street-interview
+
+**Summary.** This is the renderer for the **street-interview** ad format (goose-studio
+recipe `one-shot-videos/create-street-interview-video`). Product guessing retains its
+visible object and reveal. Conversation supports mic-only, prepared-sample and visible-task
+**script/prompt previews**. Choose a coherent situation and earned ad connection before
+writing words. People are generated; conversation media delivery remains unverified.
+
+---
+
+# Agent version
 
 ## Script first: choose the execution
 
 Read [street-script-writing](references/street-script-writing.md) before adapting a brand.
-The recipe's fixed rules govern capture and finishing. Its story choices govern question,
-participant, premise, reply sequence and brand entrance. A physical object is required for
-`product-guess`; `conversation` is a mic-only script/prompt preview with no product or phone.
-Do not force a correct-answer winner into a service conversation.
+The recipe fixes camera, audio, native timing and finishing rules. Its story choices govern
+premise, participant role, participation reason, visible task, actions, edited opening,
+hook, supported brand explanation and payoff. Do not force a correct-answer winner into a
+service conversation or reduce every brand to a routine problem followed by a logo card.
+
+| Interaction | Current support |
+| --- | --- |
+| `product-guess` | Existing object renderer; standalone product reference required |
+| `mic-only` | Conversation preview; service explanation without a product or device |
+| `product-sample` | Conversation preview; prepared sample in a plain cup, no exact package reference |
+| `concept-challenge` | Conversation preview; described visible task using non-UI props |
 
 Use [[composes::write-video-ad-script]] with the scoped angle bank, current facts and
-selected observed references. `scripts/prepare_script_context.py` selects compatible
-user/project examples and the seed library, or returns targeted research gaps. Inspect
-and save missing sources before writing. Keep the original brand script as a worked
-example; transfer useful turn mechanics, not its words or product claims.
+selected complete commercial street interactions. `scripts/prepare_script_context.py`
+requires a brief with `offering_type=physical|service|digital` and
+`interaction_type=product-guess|mic-only|product-sample|concept-challenge`. Inspect the full
+visual timeline and spoken exchange: setup, participation reason, hook, product role and
+payoff. Record unseen recruitment or setup as unknown; inference is not observation.
+Seed snippets are leads. Radio and editorial exchanges cannot fill a street-ad gap.
+Keep private observations project-scoped and transfer mechanics, not source-brand claims.
+
+Save a situation brief before dialogue. Write the user's requested count, then map words
+and actions to ordered shots. An edited participant answer or silent action/reaction may
+open the ad. `cfg.question` mirrors the first actual interviewer question, spoken once.
+Keep both spoken voices and 3–8 shots in 6–15 seconds, at no more than 2.5 spoken words/s;
+leave time for actions. New configs describe `interaction.type`, `visible_setup`,
+`participant_reason` and optional `props`; missing interaction defaults to mic-only.
+No forced greeting/consent speech, invented use history or instant product efficacy.
 
 `conversation` currently runs config validation and prompt previews. `single_gen.py --yes`
 refuses that mode until a rendered pilot is validated. Natural speech, audio and camera
 performance remain unverified. The existing product-guess render path is preserved.
+All conversation subtypes refuse product/scene reference bindings and phone, screen or UI
+demonstrations. Dry-run success is not a performed sample, challenge or finished video.
 
 `REFERENCE.md` holds the format's full history: every numbered **Critical knowledge** entry and
 the rejected takes behind it. Read it before changing the prompt scaffold or a gate.

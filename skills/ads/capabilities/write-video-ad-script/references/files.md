@@ -60,7 +60,7 @@ folders.
 
 ## references.json: persuasion records (Step 3)
 
-Podcast/street records additionally require observed conversation provenance. This
+Dialogue records additionally require observed conversation provenance. This podcast
 example records paraphrased turn functions, not invented dialogue or a copied transcript:
 
 ```json
@@ -81,7 +81,21 @@ example records paraphrased turn functions, not invented dialogue or a copied tr
 ```
 
 Use dialogue_mode podcast or street-interview. At least three observed turns from
-two speakers and a real source pointer are required. Cite the record in the candidate's
+two speakers and a real source pointer are required. **Street ads additionally need**:
+
+- commercial true and commercial_evidence; excluded/editorial records cannot pass;
+- inspection coverage complete-clip, modalities visual and transcript, duration_s and method;
+- ad_interaction strings: edited_opening, visible_setup, participant_reason, viewer_hook,
+  product_connection, payoff, unseen_setup (explicitly unknown where outside the edit);
+- ordered speaker_turns with start, end, text, speaker and does; label paraphrases and
+  retain/link the complete transcript evidence;
+- allowed_offering_types, interaction_types, transfer_rule and observation limitations.
+
+Run [[references::render-street-interview]]'s prepare_script_context with offering_type
+and interaction_type before writing. Its detailed street-script-writing guide explains
+the shared record. Keep source-brand claims separate from current product facts.
+Store the candidate's situation_brief alongside its words/actions for review.
+Cite the record in the candidate's
 reference_id. The lint check verifies these inputs, not the truth of an observation or
 the human quality of a script. The critic must inspect the same record. Transcript-only
 observations must not claim to have heard delivery or watched reactions.

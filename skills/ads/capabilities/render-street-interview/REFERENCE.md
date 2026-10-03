@@ -10,6 +10,37 @@ updated: 2026-09-29
 
 # create-street-interview-video
 
+**Current scope (2026-10-03).** This ledger preserves the paid product-guess findings below.
+Its product prompt instructions and regression baseline remain unchanged. The separate
+conversation path supports mic-only, prepared-sample and visible-task script/prompt previews;
+all variants still refuse paid generation and reference-image bindings.
+
+## Conversation preview authoring update
+
+Read [street-script-writing](references/street-script-writing.md) for the current authoring
+contract. Require a complete inspected **commercial street interaction**: full visual
+timeline, complete spoken exchange, visible setup, participation reason, opening/hook,
+product role and payoff. Seed snippets are leads; radio/editorial exchanges cannot fill
+this gap. Record unseen recruitment or setup as unknown and label inferred explanations.
+
+Write a coherent situation brief before dialogue, with an earned connection to a supported
+product fact. Fixed camera/audio/native timing rules do not fix the premise, participant
+role, visible task, hook, explanation, actions or payoff. A generic problem plus logo card
+is insufficient. Do not add greeting/consent speech to an edited ad by default, invented
+customer history, filler, arbitrary gimmicks or instant product efficacy.
+
+Conversation previews can open with a participant answer or silent action/reaction.
+`cfg.question` exactly mirrors the first actual interviewer question, performed once;
+both people speak. Use 3–8 ordered shots, including silent action when needed, in 6–15s,
+with at most 2.5 spoken words/s and space for actions. New `interaction` data records type,
+visible setup, participation reason and optional props. Legacy configs remain mic-only.
+
+Product-sample is an already prepared sample in a plain cup, with no exact package
+reference. Mic-only may explain a service without a device. Concept-challenge uses only
+described non-UI props. No conversation subtype supports phone, screen or UI demonstration,
+product/scene-reference binding or validated media delivery. The legacy product-guess
+rules below continue to apply only to that production branch.
+
 ## Purpose
 
 The vox pop, as a repeatable recipe. Someone asks strangers a question about a product, they
