@@ -368,7 +368,6 @@ def main(argv=None):
             sys.exit(f"no {what} at {p}. Produce it with {how}.")
 
     if A.falsify:
-        n_falsify = 4
         return falsify(render, control, L, ep=ep, ep_takes=ep_takes)
 
     # -- A. format -------------------------------------------------------------------------
@@ -525,7 +524,8 @@ def main(argv=None):
                                         can_size=bool(pl.get("can_size_grammar")),
                                         can_sealed=bool(pl.get("can_sealed_grammar")),
                                         upright=bool(pl.get("upright_grammar")),
-                                        one_mic=bool(pl.get("one_mic_grammar"))):
+                                        one_mic=bool(pl.get("one_mic_grammar")),
+                                        prompt_version=pl.get("prompt_version", 1)):
             fails.append(f"D {tag}" + problem)
         # Comprehension, as far as the payload can carry it: the product has to be in the opening
         # AND in the payoff, or there is no setup and no joke. This is what "couldn't understand
@@ -916,6 +916,8 @@ def falsify(render, control, L, ep=None, ep_takes=()):
     thing as a check that cannot fail. If either passes silently the gate is decoration."""
     import tempfile
     bad = 0
+    n_falsify = 0
+    n_falsify += 1
     print("falsifying F (safe zone) with a planted caption at y=1700..1792, outside "
           f"{SAFE_TOP}..{SAFE_BOT}")
     with tempfile.TemporaryDirectory() as td:
@@ -939,6 +941,7 @@ def falsify(render, control, L, ep=None, ep_takes=()):
             else:
                 print("  F falsified.")
 
+        n_falsify += 1
         print(f"\nfalsifying R (realism proxy) with a planted unsharp, ceiling {DETAIL_MAX}")
         sharp = Path(td) / "sharp.mp4"
         subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(render), "-vf",
@@ -963,6 +966,7 @@ def falsify(render, control, L, ep=None, ep_takes=()):
         # not actually violate the rule proves nothing -- so the shifted boundary is asserted
         # to be further from every cut than the tolerance before the check is asked about it.
 
+        n_falsify += 1
         print("\nfalsifying S (mid-shot splice) by moving one boundary off its cut")
         if not ep or not ep.get("plan"):
             print("  S SKIPPED: not an episode, or no plan recorded. S cannot be falsified "
@@ -1004,6 +1008,7 @@ def falsify(render, control, L, ep=None, ep_takes=()):
         # did not apply, and `n_falsify` was left saying 4 while only 3 ran -- a gate claiming
         # coverage it did not have, which is the exact shape of the two dead checks in
         # Critical knowledge 12 and 17. Count what actually runs.
+        n_falsify += 1
         print("\nfalsifying T (flash shot) by planting a cut just after a real one")
         import build_episode as _be2
         rc = sorted(cuts(render))

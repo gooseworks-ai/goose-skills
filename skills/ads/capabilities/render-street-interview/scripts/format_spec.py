@@ -54,7 +54,7 @@ SHOT_KINDS = ("handover_first", "handover_cold", "handover", "react", "speak", "
               "payoff")
 
 
-def _shot(n, s, cfg, can=False, prev_kind=None, upright=False, one_mic=False):
+def _shot(n, s, cfg, can=False, prev_kind=None, upright=False, one_mic=False, prompt_version=1):
     kind = s["kind"]
     prod = cfg["product"]["noun"]
     # PER-SHOT RESTATEMENT OF THE THING THAT MUST HOLD IN EVERY SHOT. Critical knowledge 2: a
@@ -69,6 +69,7 @@ def _shot(n, s, cfg, can=False, prev_kind=None, upright=False, one_mic=False):
     # else, so there is no room in the shot for a second microphone. One word per shot.
     if one_mic:
         held = f"only the {held}"
+    holding = f"holding {held}" if one_mic and prompt_version == 2 else f"holding the {held}"
     # In a handover the object is being passed, so it reads better as a verb phrase than as a
     # noun phrase. Same three facts.
     # THE HANDOVER IS NOW ONLY THE HANDOVER. Episode 3 removed "takes it and looks at it"
@@ -92,6 +93,7 @@ def _shot(n, s, cfg, can=False, prev_kind=None, upright=False, one_mic=False):
     # on `took` and the noun stays bare. Without the upright grammar it keeps whatever the
     # sealed grammar put on it, so a rebuilt 4824/4827 prompt still matches its own manifest.
     offered = prod if upright else held
+    offering = offered if prompt_version == 2 and offered.startswith("only the ") else f"the {offered}"
     if kind == "handover_cold":
         # `handover_first` WITHOUT the interviewer's question. Paid for by episode 1: the
         # interviewer's question was generated inside all three takes, so the finished episode
@@ -99,29 +101,29 @@ def _shot(n, s, cfg, can=False, prev_kind=None, upright=False, one_mic=False):
         # Any idea what is in this can?" in one breath. A real episode asks once, at the top, and
         # every take after the first is answers only. See ANSWERS_ONLY, which is the clip-level
         # half of this: this kind removes the line, that block forbids anyone re-inventing it.
-        return (f"{n}. The interviewer holds the {offered} out to {s['subject']}; {s['pronoun']} "
+        return (f"{n}. The interviewer holds {offering} out to {s['subject']}; {s['pronoun']} "
                 f"{took}, SILENT, on that corner. Nobody speaks in this shot "
                 f"and no question is asked. ")
     if kind == "handover_first":
         # The ask-and-answer guard. Without "does not say this line" the subject speaks the
         # interviewer's question back at the camera.
-        return (f"{n}. The interviewer holds the {offered} out to {s['subject']}; {s['pronoun']} "
+        return (f"{n}. The interviewer holds {offering} out to {s['subject']}; {s['pronoun']} "
                 f"{took}, SILENT, on that corner. The interviewer asks from "
                 f"off camera, unseen: \"{cfg['question']}\" The {s['noun']} in frame does not "
                 f"say this line. ")
     if kind == "handover":
-        return (f"{n}. The interviewer holds the {offered} out to {s['subject']} on that same "
+        return (f"{n}. The interviewer holds {offering} out to {s['subject']} on that same "
                 f"corner; {s['pronoun']} {took}. Silent. ")
     if kind == "react":
-        return (f"{n}. The same {s['noun']} on that same corner, holding the {held}, looks at "
+        return (f"{n}. The same {s['noun']} on that same corner, {holding}, looks at "
                 f"the interviewer and {s['reaction']}. Silent. ")
     if kind == "speak":
         manner = f" {s['manner']}" if s.get("manner") else ""
-        return (f"{n}. The same {s['noun']} on that same corner, holding the {held}, "
+        return (f"{n}. The same {s['noun']} on that same corner, {holding}, "
                 f"{glance}looks at the interviewer, {s['reaction']} and says{manner}: "
                 f"\"{s['line']}\" ")
     if kind == "sip":
-        return (f"{n}. {s['subject']} on that same corner, holding the {held}, raises it and "
+        return (f"{n}. {s['subject']} on that same corner, {holding}, raises it and "
                 f"takes one sip. Silent. ")
     if kind == "reach":
         # THE FIRST HALF OF AN OPENING THAT HAPPENS IN THE CUT. Seed 4806 spent $3.64 asking the
@@ -135,7 +137,7 @@ def _shot(n, s, cfg, can=False, prev_kind=None, upright=False, one_mic=False):
         # pull, nothing opened on camera -- are in _SEALED_CUT, which every can-grammar prompt
         # carries and the lint requires by needle. Stating them twice is the duplication
         # _MIC_SCALE_TAIL was deleted for, and the word budget has none to spare.
-        return (f"{n}. {s['subject']} on that same corner, holding the {held}, brings the other "
+        return (f"{n}. {s['subject']} on that same corner, {holding}, brings the other "
                 f"hand up to its top and the shot CUTS AWAY. Nothing is opened on camera. "
                 f"Silent. ")
     if kind == "payoff":
@@ -160,10 +162,11 @@ def _shot(n, s, cfg, can=False, prev_kind=None, upright=False, one_mic=False):
             # different kind of shot. `payoff` stays a distinct kind because brandkit and
             # build_episode both use it structurally: exactly one take pays off, and it is last.
             said = f" {s['manner']}" if s.get("manner") else ""
-            return (f"{n}. The same {s['noun']} on that same corner, holding the {held}, "
+            return (f"{n}. The same {s['noun']} on that same corner, {holding}, "
                     f"{glance}looks at the interviewer, {s['reaction']} and says{said}: "
                     f"\"{s['line']}\" ")
-        return (f"{n}. The same {s['noun']} on that same corner lowers the {held} and says to "
+        lowering = held if one_mic and prompt_version == 2 else f"the {held}"
+        return (f"{n}. The same {s['noun']} on that same corner lowers {lowering} and says to "
                 f"the interviewer{manner}: \"{s['line']}\" ")
     raise ValueError(f"unknown shot kind {kind!r}. Known: {', '.join(SHOT_KINDS)}")
 
@@ -688,11 +691,16 @@ ONE_MIC_PER_SHOT = {
 def build_prompt(cfg: dict, pace: bool = False, guards: bool = False, mic: bool = False,
                  plain: bool = False, answers_only: bool = False, can: bool = False,
                  mic_ref: bool = False, can_size: bool = False, can_sealed: bool = False,
-                 upright: bool = False, one_mic: bool = False) -> str:
+                 upright: bool = False, one_mic: bool = False, prompt_version: int = 1) -> str:
+    if prompt_version not in (1, 2):
+        raise ValueError("prompt_version must be 1 or 2")
     # `can` is the pre-split name and means BOTH halves, so seeds 4824 and 4827 reproduce.
     can_size, can_sealed = can_size or can, can_sealed or can
     p = cfg["product"]
     prod, phrase = p["noun"], p["phrase"]
+    upright_block = UPRIGHT
+    if prompt_version == 2 and prod != "can":
+        upright_block = UPRIGHT.replace("THE LID IS NEVER SHOWN", "THE TOP EDGE IS NEVER SHOWN")
     shots = cfg["shots"]
     n_shots = word(len(shots))
     # `handover_cold` counts as a handover here. Leaving it out made the cast size fall by one
@@ -701,7 +709,7 @@ def build_prompt(cfg: dict, pace: bool = False, guards: bool = False, mic: bool 
                    ("handover_first", "handover_cold", "handover", "sip")})
     n_cast = word(cfg.get("cast_size") or len(cast))
 
-    return (
+    prompt = (
         # capture grammar. "cinematic" and "shallow depth of field" are BANNED_VOCAB below: both
         # pull a commercial grade, which is the first thing that reads as AI here.
         "Raw unedited phone footage of a street interview, filmed vertically, handheld, flat grey "
@@ -789,7 +797,7 @@ def build_prompt(cfg: dict, pace: bool = False, guards: bool = False, mic: bool 
         # UPRIGHT REPLACES this whole sentence. See its comment: the position was never the
         # problem, the ORIENTATION was, and nothing had ever stated which way up the can is.
         + (NO_SUBJECT_MIC if one_mic else "")
-        + (UPRIGHT.format(prod=prod, PROD=prod.upper()) if upright else
+        + (upright_block.format(prod=prod, PROD=prod.upper()) if upright else
            f"THE {prod.upper()} IS HELD "
            f"IN THE SAME PLACE IN EVERY SHOT: in the person's own hand, raised to chest height "
            f"on the LEFT side of the frame, "
@@ -850,13 +858,15 @@ def build_prompt(cfg: dict, pace: bool = False, guards: bool = False, mic: bool 
         f"ONE corner: {cfg['location']['description']}. "
         f"{cfg['location']['landmarks']} are behind every person in all {n_shots}. "
 
-        + "".join(_shot(i, s, cfg, can=can_sealed, upright=upright, one_mic=one_mic,
+        + "".join(_shot(i, s, cfg, can=can_sealed, upright=upright, one_mic=one_mic, prompt_version=prompt_version,
                         prev_kind=(shots[i - 2]["kind"] if i >= 2 else None))
                   for i, s in enumerate(shots, start=1)) +
 
         "Sound: the voices close on the microphone and one continuous street ambience across the "
         "cuts, traffic, footsteps and a distant horn. No music, no score, no logo, no on-screen text, "
         "no subtitles.")
+    return prompt
+
 
 
 # ── what the gate lints for ────────────────────────────────────────────────────────────────
@@ -946,7 +956,7 @@ REQUIRED_PER_SHOT = {
 def lint(prompt: str, pace: bool = False, guards: bool = False, mic: bool = False,
          plain: bool = False, answers_only: bool = False, can: bool = False,
          mic_ref: bool = False, can_size: bool = False, can_sealed: bool = False,
-         upright: bool = False, one_mic: bool = False):
+         upright: bool = False, one_mic: bool = False, prompt_version: int = 1):
     """The prompt lint, as a function, so `check-cut.py` and `single_gen.py --dry-run` apply the
     SAME rule to the same text. Returns a list of failure strings.
 
@@ -977,6 +987,8 @@ def lint(prompt: str, pace: bool = False, guards: bool = False, mic: bool = Fals
                 **(CAN_SEALED_CLAUSES if can_sealed else {}),
                 **(UPRIGHT_CLAUSES if upright else {}),
                 **(ONE_MIC_CLAUSES if one_mic else {}))
+    if prompt_version == 2 and upright and "the top edge is never shown" in pr:
+        need["the top edge is never shown"] = need.pop("the lid is never shown")
     out = [f'the prompt is missing "{n}" -- {why}' for n, why in need.items()
            if n not in pr]
     out += [f'the prompt contains "{n}" -- {why}' for n, why in BANNED_VOCAB.items() if n in pr]

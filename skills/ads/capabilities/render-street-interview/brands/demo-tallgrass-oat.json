@@ -61,6 +61,7 @@
   "generation": {
     "_comment": "A seed in its own range, so a demo run can never overwrite a Liquid Death take. NOTHING HAS BEEN GENERATED AGAINST THIS CONFIG: no clip, no still, no voice. It is a dry run only.",
     "seed": 5001,
+    "prompt_version": 2,
     "duration": 12,
     "fast": false
   },

@@ -739,6 +739,9 @@ def load_episode(arg):
     if len(ep["takes"]) < 2:
         sys.exit(f"{p}: an 'episode' of one take is a single-take cut. Use build_looks.py, which "
                  f"is the pipeline the one-generation rule was written for.")
+    build_looks.configure_brand_layer(ep["brand_layer"])
+    global CAP_COLOUR
+    CAP_COLOUR = build_looks.CREAM
     return ep
 
 
@@ -993,7 +996,7 @@ def main():
         lift = A.black_lift
         if lift is None:
             print("  solving the grade on the concatenated cut (fit_grade.py)...")
-            r = run(["python", HERE / "fit_grade.py", "--take", joined])
+            r = run([sys.executable, HERE / "fit_grade.py", "--take", joined, "--run", L["run"]])
             for ln in r.stdout.splitlines():
                 if "solved" in ln and "lift" in ln:
                     lift = float(ln.split("lift")[1].split()[0])
@@ -1001,7 +1004,7 @@ def main():
                 sys.exit("fit_grade.py printed no solved lift:\n" + r.stdout[-800:])
         print(f"  grade      black lift {lift:.4f}, saturation 1.0 over the whole episode")
         graded = td / "graded.mp4"
-        run(["python", HERE / "phone_look_video.py", joined, graded,
+        run([sys.executable, HERE / "phone_look_video.py", joined, graded, "--run", L["run"],
              "--black-lift", f"{lift:.4f}", "--saturation", "1.0"])
 
         # -- 3b. DROP FLASH SHOTS, measured on the graded cut ---------------------------------
@@ -1270,23 +1273,8 @@ def _loudnorm_filter(p):
 
 
 def _end_card(ep, path):
-    bl = ep["brand_layer"]
-    img = Image.new("RGB", (W, H), build_looks.INK).convert("RGBA")
-    lw, ly, logo_h = 720, 520, 0
-    if bl.get("logo"):
-        logo = Image.open(paths.ROOT / bl["logo"]).convert("RGBA")
-        logo = logo.resize((lw, int(logo.height * lw / logo.width)), Image.LANCZOS)
-        white = Image.new("RGBA", logo.size, (255, 255, 255, 255))
-        white.putalpha(logo.split()[3])
-        img.alpha_composite(white, ((W - lw) // 2, ly))
-        logo_h = logo.height
-    y = ly + logo_h + 130
-    for i, row in enumerate(bl["end_card"]):
-        col = build_looks.CREAM if i == 0 else build_looks.GOLD
-        t = build_looks.heavy(row, 66, col, italic=False, outline=5)
-        img.alpha_composite(t, ((W - t.width) // 2, y + i * 86))
-    assert y + 86 + 66 < SAFE_BOT
-    img.convert("RGB").save(path)
+    build_looks.configure_brand_layer(ep["brand_layer"])
+    build_looks.end_card(path, brand_layer=ep["brand_layer"])
 
 
 def join_report(render, take_lengths):

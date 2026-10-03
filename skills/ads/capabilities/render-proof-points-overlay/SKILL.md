@@ -26,3 +26,10 @@ fetch_icons.py --run-dir <run> ; build_overlays.py --config config.json --out-di
 
 ## Choices
 This atom renders no people, setting or music. The template's creative choices (whose hand, the setting, the music style) are asked of the user by the recipe and go to the paid keyframe / i2v / music capabilities; this atom only composites the pills over whatever base clip and music bed it is given.
+
+
+## Local layout checks
+
+The renderer preserves the bold text font and falls back to an installed symbol font for missing glyphs such as ★. Trailing icons sit beyond the longest line of the pill. The composer reserves at least 120 px at the right edge for platform controls and stops if copy does not fit; wrap the text or reduce its font size before rendering.
+
+Run the free regressions with `python -m unittest discover -s tests -p 'test_*.py' -v`.

@@ -14,7 +14,7 @@ for (`ld-single-seed4802`) and the local reference footage.
 | `single_gen.py` | dry run clean, no network | prints model, seed, price, destination and the full prompt; `fal_helpers` import is now lazy so a dry run needs no key |
 | `variants_gen.py` | dry run clean, no network | 6 variants, seeds 4810–4815, **$21.84** total ($17.42 on `--fast`) |
 | `build_looks.py` | `--dry-run` clean, and a **real free render verified end to end** | dry run renders every caption layer and asserts the safe zone with no ffmpeg; the real run produced `street-ld-bare.mp4` 14.30s and its caption-free control |
-| `phone_look_video.py` | runs; now fails loudly instead of silently | refuses to run without a real colour reference rather than grading against nothing |
+| `phone_look_video.py` | runs; now fails loudly instead of silently | zero-strength finishing needs no reference; positive-strength matching requires a real reference |
 | `check-cut.py` | **new gate, 9 checks, falsified both ways** | full PASS on the `bare` look with every check live, including Whisper |
 
 Run order, all of it free except step 2:
