@@ -135,6 +135,13 @@ creator needs continuous narration tied to feasible actions. Freeze a new, label
 rubric before scoring. Scores from different rubric versions are not direct deltas.
 Writing readiness and verified footage/audio readiness are separate decisions.
 
+The 4 October human review called the four podcast and UGC test scripts “fine now
+not great but better”, while Jev's frozen speech scores remained below 4/5. Treat
+those exact drafts as an acceptable improved baseline, with room for polish. Preserve
+the human finding separately; it does not establish consistent unseen script quality,
+production approval or ad performance. Do not rerun the same batch to make the judge
+agree with the operator.
+
 ## Proxy boundary
 
 Do not put a TypeSafe key in a public skill or customer machine. A managed integration
