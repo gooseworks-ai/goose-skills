@@ -52,8 +52,10 @@ with no `brand_id` (use the older `brand_list` only if advertised).
 
 ## Author concepts in this agent, then save
 
-Read the saved brand/product context and `campaign_read` before writing. **You write the campaign
-and its ideas.** `propose_campaign_concepts` remains a compatibility server proposal; do not call
+Read the saved brand/product and campaign context before writing. Outside the coworker, use
+`brand_read` (kit, products, learnings, onboarding) and `campaign_read`. Inside the coworker, use
+`get_brand_kit`, `get_product_knowledge` and `get_campaign` (`list_campaigns` to find existing campaigns).
+Check the advertised tool list. **You write the campaign and its ideas.** `propose_campaign_concepts` remains a compatibility server proposal; do not call
 it to outsource creative reasoning. Keep the supplied occasion, offer, audiences and product ids.
 Give each audience a distinct angle, a short complete title and one usable message about the
 selected product. Use only that product's facts.
@@ -82,5 +84,5 @@ follow the tool's current auto-pick guidance. Keep `product_id` stable when edit
 Use `add_campaign_concept` for one new idea and `update_campaign_concept` for one existing idea.
 `save_campaign_concepts` or `campaign_upsert.concepts` replaces the entire ordered list: read ids,
 retain the concepts to keep, and send the whole list only when replacement/reordering is intended.
-Read `campaign_read` back before claiming saved. Saving planning data does not approve paid
+Read back with `campaign_read` outside or `get_campaign` inside before claiming saved. Saving planning data does not approve paid
 creative generation; preserve the tool's existing credit estimate and explicit user approval.
