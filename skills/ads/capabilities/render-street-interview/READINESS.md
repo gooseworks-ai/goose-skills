@@ -1,3 +1,13 @@
+# Human version
+
+**Summary.** This is a dated readiness audit from 2026-09-29, not today's runbook. The 2026-10-01 face verdict in `REFERENCE.md` supersedes its unruled-face blocker, but does not prove a new take's quality. Current execution uses `SKILL.md`, the selected recipe and [bundled model notes](references/model-behaviors.md).
+
+The private paths, missing measurement guide, footage and proposed experiments below are optional historical authoring evidence. No Studio checkout or avatar still is required. Default zero-strength finishing needs no colour reference. Old cost figures and classifier observations are not current pricing or policy guarantees.
+
+---
+
+# Agent version
+
 # create-street-interview-video — readiness
 
 State as of 2026-09-29. Written from a pass over the skill with **no paid generation of any
