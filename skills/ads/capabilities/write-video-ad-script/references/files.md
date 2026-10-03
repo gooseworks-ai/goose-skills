@@ -10,7 +10,7 @@ notes are fine.
 {
   "format": "ugc-talking-head",
   "words_per_second": 3.0,
-  "total_seconds": 20,
+  "total_seconds": 21,
   "cta_beat": "cta",
   "beats": [
     {"id": "hook",  "speaker": "creator", "seconds": 3, "kind": "spoken"},
@@ -69,6 +69,8 @@ modify the recipe. This example uses a hypothetical brief target, not a measured
   and any explicit `max_words`. Strict lint allows no extra word-count tolerance. A
   target cannot override a recipe's word limit; W_PACING_LIMIT exposes the conflict.
   Legacy shapes retain the max_words override and existing estimate tolerance.
+- Ordered selected beat durations must fit `total_seconds`, including pauses and silent
+  beats. Omitted optional beats reserve no time; repeated ids keep separate slots.
 - Only `spoken` beats count toward spoken totals. Chat, cards, visual-only beats and
   lyrics keep their separate reading/layout or musical checks. The timing report is an
   ordered array so repeated ids retain their own speakers' windows and rates.
