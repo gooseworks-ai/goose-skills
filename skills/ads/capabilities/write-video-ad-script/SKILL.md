@@ -106,6 +106,14 @@ For each eligible angle, write a compact brief:
 - The desire, identity, tension or objection the story uses. Pain is optional.
 - The offer, CTA, visual opening and payoff, within the selected format.
 
+Establish this message **before selecting the reference or locking a street interaction
+subtype**. State what the viewer should understand and why that matters to the objective.
+A supported preparation detail is not automatically a reason to choose the product. Do
+not reshape the audience or buying concern to fit an available example. If an internally
+generated angle has no useful brand message, return to the angle research; if the user
+selected it, preserve that choice and flag the concrete weakness rather than silently
+changing it.
+
 Buyer language improves relevance and voice. It is not a mandatory plot and does not
 substantiate the brand's claims. Competitor complaints suggest a research question; they
 do not establish that this product fixes it. Quotes may be attributed as real quotes when
@@ -122,6 +130,10 @@ Read the recipe's demo lines and timing, or inspect its footage when they are mi
 Add at most three relevant references from existing research. For each record the opening
 visual and words, beat order, product entrance, proof, objection, payoff and CTA. Record
 what transfers and what belongs to the source brand.
+
+Match the reference's persuasive purpose to the creative brief, not just its category or
+visible action. Complete inspection establishes what is in the source; it does not make
+the source appropriate for this brand. Reject an unsuitable transfer before writing.
 
 For dialogue, load [dialogue-writing](references/dialogue-writing.md). A format description,
 product page or imagined beat map is not an observed conversation. Reuse the miner's

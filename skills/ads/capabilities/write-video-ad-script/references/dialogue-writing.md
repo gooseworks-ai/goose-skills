@@ -1,9 +1,23 @@
 # Podcast and street-interview dialogue
 
 **Summary.** A conversation needs two people responding to each other. Product facts
-authorize claims; observed conversations teach turn structure. Write the exchange
-first, then fit timing and visuals. A feature list split between speakers is a failed
+authorize claims; the brand message determines the idea; observed conversations teach
+turn structure. Establish that message before selecting examples. Write the exchange
+before fitting timing and visuals. A feature list split between speakers is a failed
 conversation even when every fact is correct.
+
+## Establish what the ad needs to communicate
+
+Start with the brand's positioning, exact product, audience and objective. State what the
+viewer should understand, why it matters, and the supported role of this offering. For a
+purchase-oriented ad, explain a relevant reason to choose it. A fact about preparation can
+serve a requested FAQ, but is not automatically a persuasive lead message.
+
+Choose a premise, then find examples that help express it. Do not choose a tasting clip
+because both products are drinks and reshape the brief around it. Check the source's
+buyer question, objection, proof and payoff as well as its conversation mechanics. A
+reference may teach delivery while being unsuitable for the brand's central argument.
+Reject that transfer rather than adding more natural wording to an irrelevant premise.
 
 ## Gather the right reference
 
@@ -22,7 +36,8 @@ timeline and spoken exchange, from the published opening through the ending. Rec
 the visible setup, why the person engages, hook, relevant brand explanation or action,
 and payoff. Keep timestamped words and actions, label paraphrases, and link full transcript
 evidence. If recruitment or the tasting invitation is outside the edit, say it is unknown;
-do not invent an observed approach. Match product/service and interaction mechanics.
+do not invent an observed approach. Match product/service, interaction mechanics and
+persuasive purpose against the brand message already established.
 A sampling ad is not automatically a service reference. An editorial radio excerpt,
 hook-only snippet, or isolated funny answer cannot satisfy the street-ad reference gate.
 Fetch and inspect a suitable ad when the library has this gap.

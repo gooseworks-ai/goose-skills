@@ -110,6 +110,19 @@ street test exposed this: both aggregate labels said usable with less than 30% c
 while required dialogue dimensions remained below 4/5. Six agreeing rejection labels
 without accepted controls did not establish a reliable positive acceptance gate.
 
+The next operator review also rejected the Som Sleep premise despite Jev's high product
+integration score. The draft answered a warm-water preparation question without explaining
+the offering's relevant sleep role or a reason to choose it. This is a brand-message defect,
+not just a wording defect. Preserve the frozen rubric and scores; do not reinterpret them
+as successful creative validation.
+
+For a future rubric version, judge **buyer relevance separately from factual integration**:
+does the stated message matter to this audience and objective, and does the encounter
+explain the supported product role? Naming the sponsor or answering an incidental feature
+question is insufficient for a lead purchase ad. Use this human-rejected, factually supported
+example as a negative control and include accepted concepts. Until calibrated, a positive
+Jev score cannot override a human rejection or establish that a reference fits the brand.
+
 ## Proxy boundary
 
 Do not put a TypeSafe key in a public skill or customer machine. A managed integration

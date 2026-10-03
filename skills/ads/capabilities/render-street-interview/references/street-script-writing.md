@@ -1,7 +1,8 @@
 # Human version
 
-**Summary.** Start with a complete inspected commercial street interaction, then write a
-coherent situation before writing dialogue. Keep the camera, audio and timing rules fixed;
+**Summary.** Decide what this brand's ad needs to communicate before choosing an interaction
+or reference. Use a complete inspected commercial interaction to develop that idea, then
+write a coherent situation before dialogue. Keep camera, audio and timing rules fixed;
 choose the participant, visible setup, actions, hook and ad connection for the brand.
 Product guessing retains its existing renderer. Mic-only, prepared-sample and visible-task
 conversations produce **script and prompt previews only**; performed media remains unverified.
@@ -27,6 +28,29 @@ works in the proposed situation, and distinguish it from what the reference actu
 ---
 
 # Agent version
+
+## Establish the brand message before selecting a reference
+
+Read current brand/product positioning and the selected angle, not only preparation facts.
+State the audience, campaign objective, what the viewer should understand, why that matters
+to this buyer, and the supported product role. Label audience assumptions and missing proof.
+For a purchase-oriented ad, a truthful feature is insufficient without a relevant reason
+to choose the offering. An explicitly requested preparation FAQ can have a narrower purpose.
+
+Develop the premise from that message. Then choose the subtype and reference that can
+express it. A physical drink does not automatically require sampling; a service does not
+automatically require a problem-and-pitch exchange. Check the source's persuasion as well
+as its actions: what question or objection does it resolve, and can this brand truthfully
+use that structure? Do not narrow the audience or invent a buying concern to justify an
+already selected example. Reject a fully inspected reference when its persuasive purpose
+does not fit. The selector validates recorded compatibility, not this creative decision.
+
+The Som Sleep trial exposed this error: a tasting reference led to warm-water preparation
+as the whole message. That explains how to prepare a drink, but does not explain its sleep
+role or a relevant reason to choose it. A sip can demonstrate taste; it cannot demonstrate
+a later sleep effect. Sampling may serve a genuine taste objection within an established
+brand idea, but it must not substitute for that idea. Keep unknown benefits or mechanisms
+explicit instead of inventing claims to repair the connection.
 
 ## Choose a subtype and inspect the whole commercial interaction
 
@@ -85,6 +109,7 @@ whole ad from this brief before reading dialogue.
 
 | Field | Required decision |
 | --- | --- |
+| Brand message and buyer relevance | What this ad should communicate, why it matters to this audience, and which current facts support the product's role |
 | Reference and transfer | Selected ids, exact observed mechanic used, and observation limits |
 | Participant and role | Who this adult is in this scene; their independent concern |
 | Visible setup | What is in frame before the first spoken line; any prepared props or task |
@@ -104,6 +129,8 @@ The ad connection must be earned by the situation. A generic problem followed by
 card is insufficient. State what the viewer now understands about the offering and which
 current fact supports that understanding. A supported interviewer explanation can do this;
 the participant need not endorse the sponsor, recite a slogan or ask for a link.
+Also check why that understanding matters to the stated objective. Naming the product or
+answering an incidental preparation question does not by itself make a useful lead ad.
 
 ## Write the requested exchange, then map actions and timing
 
