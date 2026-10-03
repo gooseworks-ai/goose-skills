@@ -95,11 +95,20 @@ conversion lift or a safe automatic release threshold.
 For dialogue, evaluate spoken language and turn logic explicitly. A supported product
 explanation can still be stiff. Use operator-rejected examples to expose false acceptance
 and accepted examples to calibrate the positive end. An editorial transcript establishes
-observed human turns, not approval of the generated ad. Preserve rubric versions when
+turn structure for a provisional podcast reference; it cannot satisfy a street ad's
+complete-commercial-interaction requirement. Preserve rubric versions when
 adding this check; earlier brand-voice scores are not interchangeable with it.
 Set a minimum on each essential criterion instead of averaging weak speech with strong
 proof. Retain failed rewrites; do not tune a rubric or repeatedly query to manufacture
 the requested 4/5 or 5/5 result.
+
+Compute the final gate from the **mandatory criterion results and uncertainty**, not an
+independent aggregate `usable` or `approve` answer. Questions run independently and that
+label may contradict their scores. Preserve the contradictory raw fields and route the
+draft to review; never promote it because the aggregate label is positive. The October
+street test exposed this: both aggregate labels said usable with less than 30% confidence,
+while required dialogue dimensions remained below 4/5. Six agreeing rejection labels
+without accepted controls did not establish a reliable positive acceptance gate.
 
 ## Proxy boundary
 
