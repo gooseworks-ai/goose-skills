@@ -19,6 +19,7 @@ def validate_bank(bank):
         if not bank.get(key):
             errors.append(f"angle bank needs {key}")
     sources = {}
+    fact_ids = set()
     for group in ("facts", "quotes", "references"):
         rows = bank.get(group, [])
         if not isinstance(rows, list):
@@ -31,6 +32,8 @@ def validate_bank(bank):
             if row["id"] in sources:
                 errors.append(f"duplicate evidence id {row['id']}")
             sources[row["id"]] = row
+            if group == "facts":
+                fact_ids.add(row["id"])
             if not row.get("source"):
                 errors.append(f"{row['id']} needs its real source")
             if group in ("facts", "quotes") and not row.get("text"):
@@ -61,6 +64,32 @@ def validate_bank(bank):
         for eid in angle.get("evidence_ids", []) if isinstance(angle.get("evidence_ids"), list) else []:
             if not isinstance(eid, str) or eid not in sources:
                 errors.append(f"angle {aid} cites unknown evidence {eid}")
+        # Optional v1 extensions: old sourced banks remain usable. New consumer
+        # context must not smuggle a quote or another source in as a product fact.
+        for field, required, id_key in (
+            ("buyer_case", ("role_or_routine", "task_or_decision", "constraint", "desired_output"), "evidence_ids"),
+            ("product_role", ("operation_or_purpose", "output_or_role", "why_it_helps"), "fact_ids"),
+        ):
+            if field not in angle:
+                continue
+            detail = angle[field]
+            if not isinstance(detail, dict):
+                errors.append(f"angle {aid} {field} must be an object")
+                continue
+            for key in required:
+                if not isinstance(detail.get(key), str) or not detail[key].strip():
+                    errors.append(f"angle {aid} {field} needs {key}")
+            ids = detail.get(id_key, [])
+            if not isinstance(ids, list) or any(not isinstance(value, str) or not value for value in ids):
+                errors.append(f"angle {aid} {field} {id_key} must be a list of source ids")
+                continue
+            if field == "product_role" and not ids:
+                errors.append(f"angle {aid} product_role needs fact_ids")
+            for eid in ids:
+                if eid not in sources:
+                    errors.append(f"angle {aid} {field} cites unknown evidence {eid}")
+                elif field == "product_role" and eid not in fact_ids:
+                    errors.append(f"angle {aid} product_role {eid} is not a product fact")
     return errors
 
 

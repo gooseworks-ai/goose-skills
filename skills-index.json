@@ -7,11 +7,12 @@
       "name": "ad-angle-miner",
       "category": "composites",
       "domain": "ads",
-      "description": ">",
+      "description": "Research supported advertising promises from a specific buyer's context, current product facts, customer language and observed ads. Turn them into static, video or copy ideas; match video ideas to actual recipes and save a product-scoped angle bank for write-video-ad-script. Product-led discovery can use verified facts without reviews. Reference persistence and reach are observations, not proof of performance.",
       "tags": "ads, research, social",
       "path": "skills/ads/composites/ad-angle-miner",
       "files": [
         "skills/ads/composites/ad-angle-miner/SKILL.md",
+        "skills/ads/composites/ad-angle-miner/references/buyer-and-product-role.md",
         "skills/ads/composites/ad-angle-miner/references/video-handoff.md",
         "skills/ads/composites/ad-angle-miner/skill.meta.json"
       ],
@@ -9603,10 +9604,13 @@
       "path": "skills/ads/capabilities/write-video-ad-script",
       "files": [
         "skills/ads/capabilities/write-video-ad-script/SKILL.md",
+        "skills/ads/capabilities/write-video-ad-script/references/buyer-and-mechanism.md",
         "skills/ads/capabilities/write-video-ad-script/references/dialogue-writing.md",
         "skills/ads/capabilities/write-video-ad-script/references/files.md",
         "skills/ads/capabilities/write-video-ad-script/references/hook-families.md",
+        "skills/ads/capabilities/write-video-ad-script/references/human-behavior.md",
         "skills/ads/capabilities/write-video-ad-script/references/judge-contract.md",
+        "skills/ads/capabilities/write-video-ad-script/references/scene-and-hook.md",
         "skills/ads/capabilities/write-video-ad-script/scripts/critique_scripts.py",
         "skills/ads/capabilities/write-video-ad-script/scripts/lint_scripts.py",
         "skills/ads/capabilities/write-video-ad-script/scripts/media_proxy.py",
@@ -10253,7 +10257,7 @@
         {
           "slug": "ad-angle-miner",
           "name": "ad-angle-miner",
-          "description": ">",
+          "description": "Research supported advertising promises from a specific buyer's context, current product facts, customer language and observed ads. Turn them into static, video or copy ideas; match video ideas to actual recipes and save a product-scoped angle bank for write-video-ad-script. Product-led discovery can use verified facts without reviews. Reference persistence and reach are observations, not proof of performance.",
           "stage": "analyze",
           "path": "skills/ads/composites/ad-angle-miner"
         },

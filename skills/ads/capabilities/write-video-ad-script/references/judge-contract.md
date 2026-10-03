@@ -123,6 +123,18 @@ question is insufficient for a lead purchase ad. Use this human-rejected, factua
 example as a negative control and include accepted concepts. Until calibrated, a positive
 Jev score cannot override a human rejection or establish that a reference fits the brand.
 
+The later human review called the fuller buyer-and-product-explanation scripts “much
+better”, while the frozen Jev rubric still classified all six as needing a rewrite.
+Keep both observations. That disagreement is evidence against using this uncalibrated
+rubric as an automatic creative approval gate. The human accepted the direction and
+requested podcast and UGC tests before approving shared changes.
+
+When testing another format, preserve common speech, buyer relevance and claim checks,
+but define its native flow explicitly. A podcast needs responsive turns; a single
+creator needs continuous narration tied to feasible actions. Freeze a new, labelled
+rubric before scoring. Scores from different rubric versions are not direct deltas.
+Writing readiness and verified footage/audio readiness are separate decisions.
+
 ## Proxy boundary
 
 Do not put a TypeSafe key in a public skill or customer machine. A managed integration

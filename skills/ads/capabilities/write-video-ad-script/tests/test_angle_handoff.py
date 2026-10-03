@@ -177,6 +177,46 @@ def test_no_matching_angle_does_not_invent_one():
         select_context(BANK, "brand", "bottle", "nonexistent")
 
 
+def enriched_bank():
+    bank = copy.deepcopy(BANK)
+    bank["quotes"] = [{"id": "q1", "text": "I keep it beside my laptop",
+                       "source": "https://example.com/review"}]
+    angle = bank["angles"][0]
+    angle["compatible_template_ids"] = ["demo", "podcast"]
+    angle["buyer_case"] = {"role_or_routine": "a commuter", "task_or_decision": "packing a drink",
+                           "constraint": "keeping belongings together", "desired_output": "a visible closure",
+                           "evidence_ids": ["q1"]}
+    angle["product_role"] = {"operation_or_purpose": "screw the lid closed",
+                             "output_or_role": "a visible closed lid", "why_it_helps": "inspect closure before packing",
+                             "fact_ids": ["f1"]}
+    return bank
+
+
+def test_consumer_case_and_product_role_survive_a_different_recipe():
+    bank = enriched_bank()
+    for template in ("demo", "podcast"):
+        context = select_context(bank, "brand", "bottle", template, ["a1"])
+        assert context["angles"][0] == bank["angles"][0]
+        assert context["locked_angle_ids"] == ["a1"]
+
+
+@pytest.mark.parametrize("ids", [["q1"], ["unknown"], []])
+def test_product_role_cannot_use_quotes_or_missing_sources_as_facts(ids):
+    bank = enriched_bank()
+    bank["angles"][0]["product_role"]["fact_ids"] = ids
+    assert validate_bank(bank)
+
+
+def test_malformed_consumer_extension_is_rejected_without_breaking_legacy_banks():
+    assert validate_bank(BANK) == []
+    bank = enriched_bank()
+    bank["angles"][0]["buyer_case"] = "a generic customer problem"
+    assert "must be an object" in " ".join(validate_bank(bank))
+    bank = enriched_bank()
+    bank["facts"] = None
+    assert "facts must be a list" in " ".join(validate_bank(bank))
+
+
 def test_handoff_rejects_broken_sources_and_cross_product_facts():
     b = copy.deepcopy(BANK)
     b["facts"][0]["source"] = ""

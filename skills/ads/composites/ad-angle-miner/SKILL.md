@@ -1,13 +1,6 @@
 ---
 name: ad-angle-miner
-description: >
-  Find the ad angles worth running and turn them into ready-to-make ad ideas: static ads, video
-  ads, or just the copy. Each angle is backed by what buyers actually say (the brand's reviews,
-  competitors' bad reviews, comments on the ads and posts that work) and by what advertisers keep
-  paying to run, never by one Reddit thread. Static ideas come with a matching template from the
-  live template library; video ideas with a compatible recipe and the observed posts behind them. Every
-  reference is labelled paid, verified organic or unknown and links to the real post or ad. Picked ideas can be
-  handed straight to making the ads.
+description: Research supported advertising promises from a specific buyer's context, current product facts, customer language and observed ads. Turn them into static, video or copy ideas; match video ideas to actual recipes and save a product-scoped angle bank for write-video-ad-script. Product-led discovery can use verified facts without reviews. Reference persistence and reach are observations, not proof of performance.
 tags: [ads]
 ---
 
@@ -227,6 +220,14 @@ Reviews and comments are **customer voice**, a third kind of evidence. Label the
 
 ## Phase 2: Angle Extraction
 
+Read [buyer case and supported product role](references/buyer-and-product-role.md).
+Before naming an angle, extract a specific current consumer task or decision and
+explain why this exact product can help. Record the buyer's inputs, current approach,
+constraint and desired output, plus the supported product action and useful role.
+Keep source limits and authored scenarios explicit. Carry these as `buyer_case` and
+`product_role` in the video handoff; a generic pain label or ingredient list is not
+enough. Preserve human feedback separately from model ranking.
+
 | Category | What to look for |
 |---|---|
 | **Pain** | Specific frustrations with the status quo or competitors |
@@ -237,8 +238,10 @@ Reviews and comments are **customer voice**, a third kind of evidence. Label the
 | **Contrast** | Old way vs new way, them vs us |
 | **Objection** | The doubt that stops a purchase, answered |
 
-For each angle record: the one-sentence angle, 2-5 verbatim quotes with links, which kinds of
-evidence back it (customer voice, organic reach, sustained ads), whether the brand already runs it
+For each angle record: the one-sentence angle, relevant verbatim quotes with links when
+available, and the sourced product facts or observations that support it. Do not invent
+quotes to meet a quota or require a complaint for a product-led discovery angle. State
+which kinds of evidence back it (customer voice, product facts, organic reach, sustained ads), whether the brand already runs it
 (1A: measured winner, persistent, inactive, or never observed) and the competitor gap it exploits, if any.
 
 ## Phase 2.5: Turn Each Angle Into an Ad

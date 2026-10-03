@@ -42,6 +42,13 @@ A reference provides a storytelling structure; the product's facts provide claim
 **Fetch ad-angle-miner through the skill catalogue if its instructions and handoff reference
 are not already loaded.** It is a declared dependency. Fetching it does not run research.
 
+With the GooseWorks MCP, use `catalog_fetch {type: "skill", slug: "ad-angle-miner"}`;
+with the CLI, use `gooseworks fetch ad-angle-miner`. Read the returned instructions and
+handoff files. If an explicitly supplied draft/local copy is under test, load that
+copy and record the override rather than claiming the published skill includes it.
+Record how the dependency was loaded, which bank/pointer was read, and whether research
+was reused or run. Naming the miner in a plan is not loading or executing it.
+
 Check, in order:
 
 1. An angle bank or selected idea already present in this run.
@@ -56,6 +63,11 @@ Use the preparation script to check brand, product, source ids and template comp
 and write angle-context.json. Preserve selected ids and the original angle. Keep facts,
 quotes and observed ad structures separate. Refresh changing prices, offers and claims
 against current product sources; research age alone does not invalidate every insight.
+
+Retain each angle's `buyer_case` and `product_role`. For a legacy bank missing them,
+enrich the selected angle from its actual sources before Step 2, keeping its id and
+promise. Record an unsupported connection as a gap, not an invented mechanism. These
+fields travel across recipes; their dialogue, narrative role and visible proof do not.
 
 **If no usable bank exists, run ad-angle-miner in video mode**, limited to this audience,
 product and selected template. Reuse existing evidence. Its output is an angle bank, not a
@@ -93,8 +105,10 @@ Examples of adaptation, not a fixed format catalogue:
 | Music or lyrics | Make the product story work within musical timing | Treating a lyric as ordinary voiceover |
 
 If the recipe lacks enough information, inspect the demo and capability instructions.
-Record any provisional timing. Resolve essential missing assets before proposing a script
-that relies on them.
+Record any provisional timing. Resolve essential missing assets before approving a
+production plan that relies on them. In a requested writing-only test, specify the
+exact missing capture or reference and mark the draft not production-ready. A planned
+demonstration is not verified proof; never generate a fake UI to fill the gap.
 
 ## Step 2. Form the creative brief
 

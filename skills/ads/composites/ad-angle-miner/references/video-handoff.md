@@ -63,6 +63,36 @@ brief use a stable run-local product key and keep it consistent.
 
 ## Evidence meaning
 
+New video banks include the following on every angle:
+
+```json
+"buyer_case": {
+  "role_or_routine": "the current campaign consumer",
+  "task_or_decision": "a concrete task or choice",
+  "available_inputs": "what they already have",
+  "current_approach": "what they do now, if relevant",
+  "constraint": "what matters to this choice",
+  "desired_output": "what they want instead",
+  "evidence_ids": ["q1"],
+  "status": "sourced concern; proposed scene is authored"
+},
+"product_role": {
+  "buyer_action": "what the buyer supplies or does",
+  "operation_or_purpose": "supported operation or intended role",
+  "output_or_role": "what they receive or use it for",
+  "why_it_helps": "the connection to this case",
+  "fact_ids": ["f1"],
+  "limits": "what is not established"
+}
+```
+
+These fields extend v1 without invalidating older sourced banks. The writer enriches
+a missing case or role from existing evidence before writing, preserving the selected
+id and promise. If evidence cannot support the connection, record the gap and a
+provisional status; do not fabricate details or silently replace the chosen angle.
+Context fields explain strategy, not dialogue. The actual ad must still communicate
+the useful connection without relying on its private brief.
+
 - **Facts** authorize only what their current source supports for this exact product.
 - **Quotes** preserve buyer language and attributed experience, with brand/product or
   competitor/category scope. They do not authorize general claims or fake testimonials.
