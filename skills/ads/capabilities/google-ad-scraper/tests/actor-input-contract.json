@@ -1,0 +1,10 @@
+{
+  "source": "https://apify.com/burbn/google-ads-search/input-schema",
+  "checked_at": "2026-10-04",
+  "actor": "burbn/google-ads-search",
+  "result_limit_field": "maxResults",
+  "type": "integer",
+  "minimum": 1,
+  "maximum": 5000,
+  "default": 40
+}
