@@ -50,25 +50,54 @@ copy only). Missing end-card colours fall back to a neutral white/black card.
 ## Run
 
 ```bash
-cd scripts && npm install            # once — installs Playwright for the recorders
-node record-chat.js    --config config.json --out-dir <work>   # → master-chat.mp4 + .sfx.json
-node render-end-card.js --config config.json --out-dir <work>  # → scene-end-endcard.mp4
-bash stitch.sh --chat <work>/master-chat.mp4 --end <work>/scene-end-endcard.mp4 \
-     --sfx <work>/master-chat.sfx.json --out <work>/master-final.mp4 \
-     [--music <work>/music-bed.mp3] [--also-1x1]
+cd scripts && npm install && npx playwright install chromium   # once
+bash render.sh --config config.json --out <work>/final.mp4 [--music bed.mp3] [--also-1x1]
 ```
 
-1. **`record-chat.js`** — reads `config.json` (`thread` + `theme` + geometry +
-   optional `background_image`), derives a believable per-message timeline
-   (received bubbles pop after an optional `…`; sent bubbles are typed out in the
-   composer then popped + Delivered; attachments dwell so a rich link lands),
-   records it as one continuous MP4, and emits a deterministic SFX cue list.
-2. **`render-end-card.js`** — fills `end-card.template.html` from `config.end_card`
-   (wordmark/`logo_svg`, stars, proof text, trust trio, CTA, colors) → still MP4.
-3. **`stitch.sh`** — crossfades chat → end card, layers the send/receive SFX (from
-   the cue list), optionally ducks a music bed under it, and optionally derives a
-   1:1 variant. All FREE ffmpeg. A limiter keeps the mix below -1 dBTP, so
-   back-to-back or overlapping chimes never clip.
+One command: `record-chat.js` -> `render-end-card.js` -> `stitch.sh` -> `check-render.py`.
+It exits non-zero on any failure, so a bad video never looks finished. The steps can still
+be run one by one (same flags as before).
+
+**What it guarantees (and checks on the finished file):**
+- **Sound on the bubble.** A magenta sync curtain is shown until the chat starts and the
+  capture is trimmed at its first missing frame. Each sound is placed by its measured
+  onset and leads its bubble by 40 ms (`stitch.sh --sfx-lead`). A sound is cut (40 ms
+  fade) where the next one starts, as a phone restarts the alert. `check-render.py`
+  fails the render if any cue's onset is outside -150..+20 ms of its bubble. Per-cue gain and a
+  -2 dBFS limiter keep the mix below -1 dBTP, so back-to-back chimes never clip.
+- **Real-phone details.** Apple Color Emoji glyphs (not Segoe/Noto); "Delivered" only under
+  the newest sent message (text or link); 1-3 emoji alone render large; sent bubbles rise
+  from the text field; the status-bar clock follows the thread's timestamp line; light
+  theme header icons are dark; link images sit on a grey card.
+- **Authoring guards (fail before recording):** em/en dashes, self typing dots, duplicate
+  ids, attachment files under 2 KB (git-LFS pointers), text overflowing its bubble. Over
+  16 messages warns (each adds ~1.6 s; 10-16 lands at 20-27 s).
+- **End card:** `logo_svg` / `logo_svg_path`, or `logo_image_path` (PNG/JPG) for brands
+  with no SVG; `wordmark_width` (default 560); a logo under 3:1 contrast with the card is
+  recoloured to `fg`; `url_text` under the CTA; `footnote` for legal lines (the FDA
+  disclaimer every supplement benefit claim needs), kept inside the 4:5 safe zone.
+
+**Grammar and punctuation are enforced** (iPhones auto-capitalise and add apostrophes, so
+correct text is also the realistic text): every message starts with a capital, ends with
+`. ! ? …` or an emoji, has no texting shorthand (u, ur, im, dont, tmrw, rn...), no lowercase
+"i", and clean spacing around punctuation. A sentence sent as two bubbles marks the first
+half `"continues": true` (it may skip end punctuation; the second half may start lowercase).
+Straight apostrophes render curly, as iOS Smart Punctuation does.
+
+**Texture without typos:** `{ "type": "tapback", "from": "<id>", "target": "<message id>",
+"emoji": "😂" }` lands an iOS reaction on an earlier bubble: a round badge mostly above the message on its outer top corner (left on your blue bubbles, right on theirs), grey for theirs and blue for yours, with a two-dot tail touching the corner; the message steps down to make room; split sentences as above.
+Short threads sit under the header and
+auto-scroll once the screen fills, as in Messages.
+
+**Editorial end card** (`end_card.layout: "editorial"`): the brand's own type system instead
+of the badge template. `fonts.{headline,body,mono} = { family, weight, style, google }`
+(`google` = a Google Fonts family spec, the free stand-in when the brand's font is
+licensed), `headline: [line, line]` (second line in `accent`), `headline_case`, `points`
++ `points_case` + `points_sep`, optional `cta_text`, `url_text`, `footnote`. The render fails
+if any requested font does not load.
+
+Put `{ "type": "timestamp", "bold": "iMessage", "light": "Today 7:12 AM" }` first in the
+thread; real conversations open with it and the clock is read from it.
 
 ### Where the SFX come from
 
@@ -114,3 +143,42 @@ After changing an mp3, run `python3 tests/test_stitch.py --write-embedded`.
   at it.
 - Requires **ffmpeg/ffprobe** on PATH and Playwright Chromium (`npx playwright
   install chromium`) — `gooseworks doctor` checks both.
+
+## Critical knowledge
+
+1. **Never trim the capture by a clock guess.** `Date.now()` around `newContext()` put every
+   sound a median 204 ms late (range -450..+236 ms) on the Graza audit run. The sync
+   curtain + first-missing-frame trim fixed it; the curtain must be held ~600 ms or the
+   screencast (it only emits frames on change) never records it.
+2. **Measure each SFX file's onset.** `imessage-send.mp3` has 99 ms of lead-in; placing the
+   file at the cue made the send sound late even with perfect video sync.
+3. **The receive tone is ~1.4 s at full level.** Two received messages 0.75 s apart blurred
+   into one sound until each sound was cut where the next begins.
+4. **`scrollWidth` is not a text-bleed test.** Bubble tails are pseudo-elements that stick out
+   by design; compare the text's Range box with the bubble box instead.
+5. **Chromium on Windows/Linux draws Segoe/Noto emoji** and the render reads fake instantly.
+6. **BSD `mktemp -t name`** (no XXXXXX) fails on GNU/Git Bash; use a template.
+7. **Short threads were bottom-aligned** with an empty screen above; Messages top-aligns them.
+8. **Sounds snap to the picture, not the plan.** The page fires on time, but the screencast
+   delivered a tapback ~0.6 s late in one capture. `record-chat.js` now finds the frame where
+   each bubble/reaction appears (changed-pixel count in the chat area) and moves its sound there.
+9. **No push-in on the link.** It read as a camera move a phone recording can't make; removed.
+10. **The generic badge end card looked the same for every brand.** Use the editorial layout
+   with the brand's fonts (or named free stand-ins).
+11. **Keep the receive chime; shorten it only when another message follows fast.** Its loud
+    second note lands ~0.3 s in, so with two received messages ~0.8 s apart it rang just
+    before the second bubble (Som Sleep). Cutting every chime to one note changed the tone
+    everywhere and was rejected; `stitch.sh` now cuts only a chime followed within 1.3 s.
+12. **Typed text must equal sent text.** Cumulative random keystroke sleeps overran the send,
+    and the composer truncated long lines with an ellipsis. Keystrokes now run on an absolute
+    seeded schedule ending at 90% of the window, the composer wraps like Messages, the caret
+    follows the last character, and the render fails (`TYPED != SENT`) on any mismatch.
+13. **Embed end-card fonts.** Loading Google Fonts live during capture failed intermittently;
+    they are downloaded once (with retries), cached, and inlined as data URIs.
+14. **Take end-card colours from the brand's live CSS variables**, not the product photo
+    (Graza: `--color-background #F6E6D9`, `--color-text #3C422E`, `--color-brand #D1E030`).
+15. **The mix was clipping** (-4.8 LUFS, peaks above 0 dBFS, limiter squashing every chime).
+    Now ~-11.4 LUFS, peaks ~-1.2 dBFS.
+16. **The real-time capture can stall under CPU load** (a sync marker missed; bubbles bunched
+    by 637 ms). `record-chat.js` exits 4 when the marker is missing or any bubble is >250 ms
+    off plan, and `render.sh` re-records up to 3 times.
