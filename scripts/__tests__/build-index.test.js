@@ -283,3 +283,52 @@ test('throws when a skill references an undefined collection', () => {
 
   fs.rmSync(root, { recursive: true, force: true });
 });
+
+test('reads folded and literal block scalar descriptions', () => {
+  const root = makeFixtureRoot();
+  writeSkill(
+    root,
+    'capabilities',
+    'folded-skill',
+    {
+      name: 'folded-skill',
+      description: '>\n  Find the ad angles\n  worth running.\n\n  Second paragraph.',
+      'allowed-tools': 'Bash',
+    },
+    baseMeta('folded-skill', 'capabilities'),
+  );
+  writeSkill(
+    root,
+    'capabilities',
+    'chomped-skill',
+    { name: 'chomped-skill', description: '>-\n  Strip the\n  final newline.' },
+    baseMeta('chomped-skill', 'capabilities'),
+  );
+  writeSkill(
+    root,
+    'capabilities',
+    'literal-skill',
+    { name: 'literal-skill', description: '|\n  Line one.\n  Line two.' },
+    baseMeta('literal-skill', 'capabilities'),
+  );
+  writePack(root, 'demo-pack', { slug: 'demo-pack', name: 'Demo Pack', skills: ['pack-sub'] });
+  writePackSubSkill(root, 'demo-pack', 'pack-sub', {
+    name: 'pack-sub',
+    description: '>\n  Pack sub-skill\n  description.',
+  });
+
+  runBuild(root);
+  const idx = readIndex(root);
+  const desc = (slug) => idx.skills.find((s) => s.slug === slug).description;
+
+  assert.equal(desc('folded-skill'), 'Find the ad angles worth running.\nSecond paragraph.');
+  assert.equal(desc('chomped-skill'), 'Strip the final newline.');
+  assert.equal(desc('literal-skill'), 'Line one.\nLine two.');
+  assert.equal(desc('pack-sub'), 'Pack sub-skill description.');
+  assert.equal(
+    idx.packs.find((p) => p.slug === 'demo-pack').skills[0].description,
+    'Pack sub-skill description.',
+  );
+
+  fs.rmSync(root, { recursive: true, force: true });
+});
