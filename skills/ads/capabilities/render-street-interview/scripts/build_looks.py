@@ -59,7 +59,9 @@ def resolve_font(weight):
     raise RuntimeError(f"No {weight} TrueType font found. Install Arial or DejaVu Sans.")
 
 
-BLACK, BOLD, REG = (resolve_font(w) for w in ("black", "bold", "regular"))
+# A run may supply all its fonts on a host without our system fallbacks.
+# Resolve defaults only when configuring a run or drawing an unconfigured helper.
+BLACK = BOLD = REG = None
 GOLD, CREAM, INK = (203, 161, 79), (252, 246, 239), (12, 12, 12)
 
 # The take's OWN internal cuts, MEASURED off the render and stored in the brand config, never
@@ -79,7 +81,7 @@ def run(c, **k):
 
 
 def heavy(text, size, fill, font=None, italic=True, outline=6, alpha=235):
-    f = ImageFont.truetype(font or BLACK, size)
+    f = ImageFont.truetype(font or BLACK or resolve_font("black"), size)
     tw = int(ImageDraw.Draw(Image.new("RGBA", (10, 10))).textlength(text, font=f))
     pad = outline * 2 + size
     img = Image.new("RGBA", (tw + pad * 2, int(size * 1.9)), (0, 0, 0, 0))
