@@ -98,6 +98,12 @@ that relies on them.
 
 ## Step 2. Form the creative brief
 
+Load [buyer perspective and product explanation](references/buyer-and-mechanism.md).
+Use the current campaign's consumer role and a concrete task or decision. Map what
+the buyer supplies or does, what the offering does, what they receive and why it
+helps here. That connection must survive in the actual words or feasible actions;
+neither a private brief nor a benefit label can explain it for the viewer.
+
 For each eligible angle, write a compact brief:
 
 - One audience in a recognizable situation, and its awareness or buying context.

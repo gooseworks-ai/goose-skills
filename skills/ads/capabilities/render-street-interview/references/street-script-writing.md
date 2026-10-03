@@ -33,6 +33,15 @@ rendered text. Private setup notes cannot explain an answer to a missing questio
 
 ## Establish the brand message before selecting a reference
 
+Load the writer's `references/buyer-and-mechanism.md`. Research the current buyer's
+actual task, inputs, workaround, constraint and desired output. Preserve any human
+acceptance of speech separately from unresolved explanation or buyer relevance.
+Put the supported connection between the situation and the product into the actual
+exchange or feasible action. A short natural exchange that omits how the product
+helps is not a complete explanation. If that explanation exceeds this recipe's
+6–15-second take, label the script as requiring a longer production route; do not
+expand the fixed take limit or strip out the useful explanation to pass it.
+
 Read current brand/product positioning and the selected angle, not only preparation facts.
 State the audience, campaign objective, what the viewer should understand, why that matters
 to this buyer, and the supported product role. Label audience assumptions and missing proof.
