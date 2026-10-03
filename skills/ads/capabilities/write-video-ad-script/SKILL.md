@@ -197,6 +197,9 @@ promise changes.
 - Include only supported product claims. A source id is traceability, not a semantic check.
 
 For conversational formats, write the exchange before allocating it to timed slots.
+Use [human speech and behavior](references/human-behavior.md), with matched language
+evidence and the human's rejected examples. Establish ordinary immediate motives,
+bounded speaker knowledge and why each question or recommendation happens now.
 Give each person an intention and a reason to respond to the previous turn. Then trim
 and add product inserts, captions and the CTA. Do not turn every slot into a sentence
 from the product page or have the participant rehearse the presenter's selling points.

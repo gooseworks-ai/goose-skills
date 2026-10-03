@@ -136,6 +136,12 @@ answering an incidental preparation question does not by itself make a useful le
 
 ## Write the requested exchange, then map actions and timing
 
+Load the writer's `references/human-behavior.md` as well as its dialogue guide. Keep
+the participant's immediate purpose separate from the advertiser's message. Bound what
+each person knows, follow the actual reply and establish why a recommendation happens
+here. Use matched parent/reply language evidence and preserve manager-rejected examples.
+An ad may promote openly; believable human speech and behavior are the target.
+
 Before dialogue, load the writer's `references/scene-and-hook.md`. Save the encounter
 start separately from a time-mapped first 0–3 seconds: literal image/action, exact audible
 words and any exact rendered text. State what a new viewer understands, what they want
