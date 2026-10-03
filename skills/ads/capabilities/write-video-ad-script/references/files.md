@@ -60,6 +60,9 @@ folders.
 
 ## references.json: persuasion records (Step 3)
 
+The checker accepts a record list, a single record, or the selector's context envelope
+with a `references` list. Pass the selector output directly; do not rewrite its records.
+
 Dialogue records additionally require observed conversation provenance. This podcast
 example records paraphrased turn functions, not invented dialogue or a copied transcript:
 

@@ -119,6 +119,17 @@ def test_street_generation_requires_complete_commercial_words_and_actions():
     assert lint(c,s,context=x,strict=True,references=[street_reference()])['ok']
 
 
+def test_selector_reference_wrapper_and_single_record_are_accepted_without_rewriting():
+    c,s,x=fixture();s['format']='street-interview'
+    c['concepts'][0]['reference_id']='r-dialogue'
+    r=street_reference()
+    envelope={'schema_version':'street-script-context.v2','references':[r]}
+    assert lint(c,s,context=x,strict=True,references=envelope)['ok']
+    assert lint(c,s,context=x,strict=True,references=r)['ok']
+    r['inspection']['coverage']='partial'
+    assert not lint(c,s,context=x,strict=True,references=envelope)['ok']
+
+
 @pytest.mark.parametrize('change',[
     {'commercial':False}, {'use_status':'excluded'}, {'ad_interaction':{}},
     {'inspection':{'coverage':'partial'}}, {'inspection':None},

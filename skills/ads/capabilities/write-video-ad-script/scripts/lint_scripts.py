@@ -283,6 +283,12 @@ def complete_street_reference(ref):
 
 def observed_dialogue_references(references, mode):
     """Validate provenance and observed turn structure, not whether copy sounds human."""
+    if isinstance(references, dict):
+        # The street selector emits a context envelope; saved legacy records may
+        # instead be a list or a single record. Preserve their contents unchanged.
+        references = references.get("references", [references] if references.get("id") else [])
+    if not isinstance(references, list):
+        return []
     return [r for r in references or [] if isinstance(r, dict)
             and r.get("id") and r.get("observed") is True and r.get("dialogue_mode") == mode
             and (r.get("url") or r.get("source"))
