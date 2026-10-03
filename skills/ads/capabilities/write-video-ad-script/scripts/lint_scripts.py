@@ -28,6 +28,7 @@ Exit 0 = no errors, 2 = errors to fix, 1 = unreadable input.
 """
 import argparse
 import json
+import math
 import pathlib
 import re
 import sys
@@ -221,7 +222,7 @@ def allowed_numbers(rules, quotes_text):
 
 def beat_budget(shape_beat, wps):
     kind = shape_beat.get("kind", "spoken")
-    if shape_beat.get("max_words"):
+    if shape_beat.get("max_words") is not None:
         return int(shape_beat["max_words"]), kind
     if kind == "on_screen":
         return ON_SCREEN_MAX_WORDS, kind
@@ -230,11 +231,76 @@ def beat_budget(shape_beat, wps):
     return None, kind
 
 
-def lint(cands, shape=None, rules=None, bank=None, report_only=False):
+def timing_number(value, label, minimum=0):
+    if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or value < minimum:
+        raise ValueError(f"{label} must be a finite number >= {minimum}")
+    return float(value)
+
+
+def has_timing_profile(beat, shape):
+    return any(key in beat or key in shape for key in
+               ("pacing_source", "speech_seconds", "pause_seconds", "delivery_guidance")) or "words_per_second" in beat
+
+
+def spoken_timing(beat, shape, references=None):
+    """Resolve this run's target separately from recipe limits and observed guidance.
+
+    Legacy shapes remain estimates. A reference's brisk read is not evidence that
+    the selected engine can reproduce it. No input script or recipe is rewritten.
+    """
+    rate = timing_number(beat.get("words_per_second", shape.get("words_per_second", DEFAULT_WPS)),
+                         "words_per_second", 0.01)
+    seconds = timing_number(beat["seconds"], "seconds") if "seconds" in beat else None
+    pause = timing_number(beat.get("pause_seconds", 0), "pause_seconds")
+    if seconds is None and ("pause_seconds" in beat or "speech_seconds" in beat):
+        raise ValueError("speech/pause windows require the beat's seconds")
+    if seconds is not None and pause > seconds:
+        raise ValueError("pause_seconds exceeds the beat's seconds")
+    window = timing_number(beat["speech_seconds"], "speech_seconds") if "speech_seconds" in beat else (
+        seconds - pause if seconds is not None else None)
+    if seconds is not None and window + pause > seconds + 1e-9:
+        raise ValueError("speech_seconds plus pause_seconds exceeds the beat's seconds")
+    source = beat.get("pacing_source", shape.get("pacing_source"))
+    if source is None:
+        source = {"kind": "legacy" if "words_per_second" in shape or "words_per_second" in beat else "fallback",
+                  "detail": "Unverified planning rate; no measured delivery provenance supplied."}
+    if not isinstance(source, dict) or source.get("kind") not in ("recipe", "reference", "brief", "fallback", "legacy") or not source.get("detail"):
+        raise ValueError("pacing_source needs kind and detail")
+    if source["kind"] == "reference":
+        ref = next((r for r in references or [] if isinstance(r, dict) and r.get("id") == source.get("reference_id")), None)
+        if not ref or not (ref.get("url") or ref.get("source")) or ref.get("observed") is not True or ref.get("observed_scope") not in ("audio", "video"):
+            raise ValueError("reference pacing needs an observed audio/video record in references.json")
+    target = round(window * rate) if window is not None else None
+    limit = beat.get("max_words")
+    if limit is not None:
+        timing_number(limit, "max_words")
+        if int(limit) != limit:
+            raise ValueError("max_words must be an integer")
+    # A successful render is a baseline, not a hard engine ceiling.
+    guidance = beat.get("delivery_guidance", shape.get("delivery_guidance"))
+    if guidance is not None:
+        if not isinstance(guidance, dict) or guidance.get("basis") not in ("recipe_estimate", "observed_render") or not guidance.get("detail"):
+            raise ValueError("delivery_guidance needs words_per_second, basis and detail")
+        timing_number(guidance.get("words_per_second"), "delivery_guidance.words_per_second", 0.01)
+    budget = min(target, limit) if target is not None and limit is not None else (
+        limit if limit is not None else target)
+    if limit is not None and not has_timing_profile(beat, shape):
+        budget = limit  # preserve the legacy explicit max_words override
+    return {"seconds": seconds, "speech_seconds": window, "words_per_second": rate,
+            "target_words": target, "word_budget": budget, "max_words": limit,
+            "pacing_source": source, "delivery_guidance": guidance}
+
+
+def budget_tolerance(beat, shape, strict):
+    profiled_speech = beat.get("kind", "spoken") == "spoken" and has_timing_profile(beat, shape)
+    return 1.0 if strict and (profiled_speech or beat.get("max_words") is not None) else OVER_BUDGET
+
+
+def lint(cands, shape=None, rules=None, bank=None, report_only=False, references=None, strict=False):
     if isinstance(cands, list):
         cands = {"concepts": cands}
     shape = shape or {}
-    wps = float(shape.get("words_per_second") or DEFAULT_WPS)
+    wps = shape.get("words_per_second", DEFAULT_WPS)
     shape_beats = [b for b in shape.get("beats") or [] if isinstance(b, dict)]
     by_id = {b["id"]: b for b in shape_beats if b.get("id")}
     hook_beat = shape_beats[0] if shape_beats else None
@@ -248,7 +314,20 @@ def lint(cands, shape=None, rules=None, bank=None, report_only=False):
                    if isinstance(q, dict) and q.get("id")}
     nsay = never_say_checks(rules)
 
-    report = {"ok": True, "concepts": [], "set_warnings": []}
+    report = {"ok": True, "concepts": [], "set_warnings": [], "input_errors": []}
+    try:
+        wps = timing_number(wps, "words_per_second", 0.01)
+        for i, beat in enumerate(shape_beats):
+            if beat.get("kind", "spoken") == "spoken":
+                spoken_timing(beat, shape, references)
+            elif "seconds" in beat:
+                timing_number(beat["seconds"], f"beat {i} seconds")
+        if "total_seconds" in shape:
+            timing_number(shape["total_seconds"], "total_seconds")
+    except ValueError as exc:
+        report["input_errors"].append(str(exc))
+        report["ok"] = False
+        return report
     all_hooks = []
 
     for c in cands.get("concepts", []) or []:
@@ -319,21 +398,44 @@ def lint(cands, shape=None, rules=None, bank=None, report_only=False):
                 err("E_CTA_NOT_LAST", f"'{after[0].get('id')}' is said after the CTA: end on the CTA",
                     after[0].get("id"))
 
+        # Beats occupy ordered, sequential windows. An omitted optional beat
+        # reserves no time; repeated ids retain the distinct slots chosen above.
+        if shape.get("total_seconds") is not None:
+            selected_seconds = sum(sb.get("seconds", 0) for sb in slot.values())
+            if selected_seconds > shape["total_seconds"] + 1e-9:
+                err("E_TIMELINE", f"selected beats need {selected_seconds:g}s but the ad has {shape['total_seconds']:g}s; fit speech, pauses and silent beats inside the runtime")
+
         # Word budgets and how each line reads out loud
-        words_by_beat, total = {}, 0
+        words_by_beat, total, timings, spoken_budgets = {}, 0, [], []
+        unshaped_spoken_words = 0
         for i, b in enumerate(beats):
             bid, text = b.get("id"), text_of(b)
             n = len(words(text))
             words_by_beat[bid] = n
             sb = slot.get(i) or by_id.get(bid)
             budget, kind = beat_budget(sb, wps) if sb else (None, b.get("kind", "spoken"))
-            if kind != "on_screen":
+            timing = spoken_timing(sb, shape, references) if sb and kind == "spoken" else None
+            if timing:
+                budget = timing["word_budget"]
+                timings.append({"slot": i, "id": bid, "speaker": sb.get("speaker"), "words": n, **timing,
+                                "required_words_per_second": round(n / timing["speech_seconds"], 3) if timing["speech_seconds"] else None,
+                                "estimated_speech_seconds": round(n / timing["words_per_second"], 3)})
+                guidance = timing["delivery_guidance"]
+                if guidance and timing["words_per_second"] > guidance["words_per_second"]:
+                    warn("W_PACING_EXPERIMENT", "desired cadence exceeds delivery guidance; validate the rendered read before promising it fits", bid)
+                if timing["max_words"] is not None and timing["target_words"] is not None and timing["target_words"] > timing["max_words"]:
+                    warn("W_PACING_LIMIT", "desired cadence does not override the recipe's explicit word limit", bid)
+            if kind == "spoken":
                 total += n
-            if budget:
-                if n > budget * OVER_BUDGET:
-                    err("E_BUDGET", f"{n} words, the beat fits about {budget}: cut it or it will be rushed", bid)
+                spoken_budgets.append(budget)
+                if timing is None:
+                    unshaped_spoken_words += n
+            if budget is not None:
+                tolerance = budget_tolerance(sb or {}, shape, strict)
+                if n > budget * tolerance:
+                    err("E_BUDGET", f"{n} words against a {budget}-word plan: tighten wording, extend supported timing or evaluate a faster read; preserve proof and CTA", bid)
                 elif kind == "spoken" and n < budget * UNDER_BUDGET:
-                    warn("W_UNDER_BUDGET", f"{n} words for a beat that fits about {budget}: it will drag", bid)
+                    warn("W_UNDER_BUDGET", f"{n} words against a {budget}-word plan: confirm the read or intentional silence; do not add filler", bid)
             if kind in SPOKEN_KINDS:
                 for s in sentences(text):
                     if len(words(s)) > LONG_SENTENCE:
@@ -344,17 +446,34 @@ def lint(cands, shape=None, rules=None, bank=None, report_only=False):
             gen = [w for w in norm_words(text) if w in GENERIC_WORDS]
             if len(gen) >= 2:
                 warn("W_GENERIC", f"filler words {sorted(set(gen))}: say the specific thing", bid)
-        if shape.get("total_seconds") and total:
+        if spoken_budgets and all(budget is not None for budget in spoken_budgets):
+            cap = sum(spoken_budgets)
+            if total > cap * max(budget_tolerance(sb, shape, strict) for sb in shape_beats if sb.get("kind", "spoken") == "spoken"):
+                err("E_BUDGET", f"{total} spoken words against a {cap}-word plan for spoken windows; silent visuals and end cards add no speech time")
+        elif not shape_beats and shape.get("total_seconds") and total:
             cap = float(shape["total_seconds"]) * wps
             if total > cap * OVER_BUDGET:
                 err("E_BUDGET", f"{total} spoken words in a {shape['total_seconds']}s ad (about {round(cap)} fit)")
 
+        if shape.get("total_seconds") is not None and (timings or unshaped_spoken_words):
+            # Keep an overall estimate when legacy explicit limits override a
+            # short window or a beat has no duration. Use each beat's own rate;
+            # unmatched spoken copy still consumes time at the shape fallback rate.
+            reserved = sum((row["seconds"] or 0) - (row["speech_seconds"] or 0) for row in timings)
+            reserved += sum(sb.get("seconds", 0) for sb in slot.values() if sb.get("kind", "spoken") != "spoken")
+            read_seconds = sum(row["words"] / row["words_per_second"] for row in timings) + unshaped_spoken_words / wps
+            rounding = sum(0.5 / row["words_per_second"] for row in timings)
+            tolerance = 1.0 if strict else OVER_BUDGET
+            if reserved + read_seconds > shape["total_seconds"] * tolerance + rounding:
+                err("E_TIMELINE", f"planned reads and reserved silence need about {reserved + read_seconds:.2f}s but the ad has {shape['total_seconds']:g}s; preserve the runtime and each beat's cadence")
+
         # Hooks: each alternative must open cleanly and fit the first beat
-        hook_budget = beat_budget(hook_beat, wps)[0] if hook_beat else None
-        lines = [("hook " + str(h.get("id", "?")), text_of(h)) for h in hooks]
+        hook_budget = (spoken_timing(hook_beat, shape, references)["word_budget"] if hook_kind == "spoken"
+                       else beat_budget(hook_beat, wps)[0]) if hook_beat else None
+        lines = [("hook " + str(h.get("id", "?")), text_of(h), True) for h in hooks]
         if beats:
-            lines.append((beats[0].get("id") or "first beat", text_of(beats[0])))
-        for label, text in lines:
+            lines.append((beats[0].get("id") or "first beat", text_of(beats[0]), False))
+        for label, text, alternative in lines:
             first = first_sentence(text)
             if hook_kind in OPENER_KINDS:
                 if HARD_OPENER_RE.search(first):
@@ -365,7 +484,7 @@ def lint(cands, shape=None, rules=None, bank=None, report_only=False):
                     warn("W_QUESTION_HOOK", "a question hook delays the claim: keep it only if it is specific and answered fast", label)
             if brand_re and brand_re.search(first):
                 warn("W_BRAND_FIRST", "brand name in the first line: earn attention before you introduce the brand", label)
-            if label.startswith("hook") and hook_budget and len(words(text)) > hook_budget * OVER_BUDGET:
+            if alternative and hook_budget is not None and len(words(text)) > hook_budget * budget_tolerance(hook_beat, shape, strict):
                 err("E_BUDGET", f"hook is {len(words(text))} words, the opening beat fits about {hook_budget}", label)
         fams = [h.get("family") for h in hooks if h.get("family")]
         if len(fams) != len(set(fams)):
@@ -403,7 +522,7 @@ def lint(cands, shape=None, rules=None, bank=None, report_only=False):
             if n and n not in allowed:
                 warn("W_UNSOURCED_NUMBER", f"\"{m.group(0).strip()}\" is not in the product facts or quotes: make sure it is true")
 
-        report["concepts"].append({"id": cid, "words": words_by_beat, "spoken_words": total,
+        report["concepts"].append({"id": cid, "words": words_by_beat, "spoken_words": total, "timing": timings,
                                    "errors": errs, "warnings": warns})
         if errs:
             report["ok"] = False
@@ -420,6 +539,8 @@ def lint(cands, shape=None, rules=None, bank=None, report_only=False):
 
 
 def print_report(rep):
+    for message in rep.get("input_errors", []):
+        print(f"  FIX input: {message}")
     for c in rep["concepts"]:
         state = "OK" if not c["errors"] else f"{len(c['errors'])} to fix"
         print(f"\n[{c['id']}] {state} · {c['spoken_words']} spoken words · per beat {c['words']}")
@@ -438,6 +559,8 @@ def main():
     ap.add_argument("--shape")
     ap.add_argument("--rules")
     ap.add_argument("--customer-words")
+    ap.add_argument("--references", help="observed audio/video reference records for pacing provenance")
+    ap.add_argument("--strict", action="store_true", help="enforce explicit limits and profiled speech budgets exactly")
     ap.add_argument("--out", default="working/script/lint.json")
     ap.add_argument("--report-only", action="store_true",
                     help="the lines are the user's own words: report, never fail")
@@ -447,7 +570,7 @@ def main():
         print(f"{a.candidates} must hold an object with a concepts list", file=sys.stderr)
         sys.exit(1)
     rep = lint(cands, load_json(a.shape), load_json(a.rules), load_json(a.customer_words),
-               report_only=a.report_only)
+               report_only=a.report_only, references=load_json(a.references), strict=a.strict)
     out = pathlib.Path(a.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(rep, indent=1, ensure_ascii=False))
