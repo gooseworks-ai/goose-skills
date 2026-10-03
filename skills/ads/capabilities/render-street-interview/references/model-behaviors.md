@@ -23,6 +23,19 @@ Use the recipe's product reference and declared reference bindings. Do not add a
 - **Deep focus fits this format.** Keep the street legible; cinematic blur and a sustained near-still pose can undermine the intended phone-footage register.
 - **Product facts belong to this project.** Questions, correct answers, dimensions and label claims must come from the bound product and its supporting evidence. Never copy another brand's take into the current defaults.
 
+## Prompt length guidance
+
+[BytePlus recommends at most 1,000 English words](https://docs.byteplus.com/en/docs/modelark/create-video-generation-task-api)
+because longer prompts may miss details. [Fal's current reference-to-video schema](https://fal.ai/api/openapi/queue/openapi.json?endpoint_id=bytedance%2Fseedance-2.0%2Freference-to-video)
+does not declare a maximum prompt length. These sources were checked on 2026-10-03;
+absence of a declared limit does not establish unlimited acceptance.
+
+The renderer prints an advisory above the recommendation, without refusing solely on
+length. The former 1,200-word gate came from a historical observation, not a demonstrated
+failure boundary. Keep mandatory constraints and exact approved speech. Do not silently
+shorten the brief or buy a retry to hit a count. Structural validation and spend approval
+still apply; inspect the actual generated result for missed instructions.
+
 ## Resolution and reference limits
 
 Historical Studio runs observed different likeness-policy outcomes at different resolutions. Do not state that 720p bypasses a classifier or that a successful preview certifies 1080p. Use the approved recipe tier; do not add a paid test or tier change without approval.

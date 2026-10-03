@@ -107,6 +107,12 @@ fails, notes, warns = [], [], []
 skips = []
 
 
+def record_prompt_advice(prompt, tag=""):
+    """Length is informational; warns/skips would make report() block the ship gate."""
+    notes.extend(f"D ADVISORY {tag}{advice}"
+                 for advice in format_spec.prompt_warnings(prompt))
+
+
 def skip(check, why):
     """Record a check that could not run. Loud, and it prevents a PASS."""
     skips.append(f"{check} NOT RUN: {why}")
@@ -527,6 +533,7 @@ def main(argv=None):
                                         one_mic=bool(pl.get("one_mic_grammar")),
                                         prompt_version=pl.get("prompt_version", 1)):
             fails.append(f"D {tag}" + problem)
+        record_prompt_advice(pr, tag)
         # Comprehension, as far as the payload can carry it: the product has to be in the opening
         # AND in the payoff, or there is no setup and no joke. This is what "couldn't understand
         # what it's about" was: the can was banned from every shot and first appeared at 19s.

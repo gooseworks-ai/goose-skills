@@ -44,6 +44,21 @@ python scripts/check-cut.py --episode <render>.episode.json   # free: the ship g
   On a poll timeout, resume with `media_proxy.resume_fal(request_id)`. Never resubmit, since a
   dropped poll has already been billed.
 
+## Prompt length
+
+The final Seedance prompt is built from the project brief and shared shot instructions.
+[BytePlus recommends at most 1,000 English words](https://docs.byteplus.com/en/docs/modelark/create-video-generation-task-api)
+because lengthy prompts may miss details. This is quality guidance. The current
+[Fal schema](https://fal.ai/api/openapi/queue/openapi.json?endpoint_id=bytedance%2Fseedance-2.0%2Freference-to-video)
+declares no maximum prompt length; that does not prove unlimited acceptance.
+
+`single_gen.py` prints a non-blocking advisory above that guideline. The old 1,200-word
+refusal is removed: its source-run observation did not prove a precise boundary. Keep the
+exact approved dialogue and required clauses; do not trim them, reduce the cast or add a paid
+retry just to meet a count. Missing clauses, invalid inputs and existing spend approval still
+block generation. The finished-cut gate reports length as advice, without failing on it.
+Review actual video adherence through the normal gate and full watch/listen pass.
+
 ## Guarantees
 
 - The prompt carries every format clause; `single_gen.py` lints it before any spend, and

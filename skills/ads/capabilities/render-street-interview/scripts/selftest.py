@@ -133,41 +133,17 @@ def main():
         problems = format_spec.lint(p, **G)
         tag = "+".join(sorted(k for k, v in G.items() if v)) or "none"
         ok(f"{slug} [{tag}]: {_n_clauses(G)} clauses, no banned vocabulary, "
-           f"{len(p.split())} of {format_spec.WORD_CEILING} words", not problems,
+           f"{len(p.split())} words", not problems,
            "; ".join(problems)[:300])
 
-    # The pace and guard grammars are ADDITIVE, which means nothing above this line looks at
-    # them: `build_prompt(cfg)` builds neither, so their clauses and, more importantly, their
-    # WORD COST were invisible to every assertion in this file. Measured 2026-09-30: the
-    # four-person Liquid Death cast lands at 948 words plain, 1162 with the pace grammar and
-    # 1190 with both -- 10 words under the 1200-word ceiling where seed 4811 started dropping
-    # rules. A fifth person, or one more sentence anywhere, blows it. That has to fail here, for
-    # free, and not in a paid dry run someone types `--yes` past.
-    print("\n2b. every grammar combination is CLAUSE-clean, and the word headroom is printed")
-    # The WORD COST is the thing this section exists for, and it matters more with five grammars
-    # than it did with two. The episode-2 combination (pace+guards+mic+plain, and +answers_only
-    # for a non-opening take) is the largest prompt this format has ever built. Measured
-    # 2026-09-30 it lands under the 1200-word ceiling where seed 4811 started dropping rules --
-    # and the margin is small, so a sixth person or one more sentence blows it. That has to fail
-    # here, for free, and not in a paid dry run someone types `--yes` past.
-    # WHAT THIS ASSERTS AND WHAT IT ONLY REPORTS, because the difference is the whole point.
-    #
-    # CLAUSES are asserted for every combination: a grammar that drops a guard when combined with
-    # another is a defect in the format layer and has to fail here, for free.
-    #
-    # The WORD CEILING is asserted in section 2, against the grammars each config DECLARES --
-    # i.e. against the payload that would actually be sent -- and is only REPORTED here. Measured
-    # 2026-09-30: the six-shot three-person episode-1 casts (liquid-death, -4816, -4818,
-    # demo-tallgrass-oat) run 1219-1259 words under all four grammars, over the ceiling. That is
-    # a true and useful fact -- a three-person cast cannot carry all four -- and it is printed
-    # rather than hidden. It is not a hole: `single_gen.py` lints unconditionally before any
-    # spend and refuses an over-ceiling prompt whatever this file says, which is what actually
-    # stopped the first draft of the episode-2 payloads reaching a paid call.
+    # All grammar combinations must retain their structural clauses. Word count is quality
+    # advice, never a failure: the former 1200-word boundary was not a proved API/quality limit.
+    print("\n2b. every grammar combination is CLAUSE-clean; length advice is non-blocking")
     combos = [dict(pace=True), dict(guards=True), dict(pace=True, guards=True),
               dict(mic=True), dict(plain=True),
               dict(pace=True, guards=True, mic=True, plain=True),
               dict(pace=True, guards=True, mic=True, plain=True, answers_only=True)]
-    tight = []
+    advised = []
     for slug in brands:
         c = brandkit.load(slug)
         cold = c["shots"][0]["kind"] == "handover_cold"
@@ -179,17 +155,16 @@ def main():
                 continue
             p = format_spec.build_prompt(c, **G)
             n = len(p.split())
-            over = f"the prompt is {n} words"
-            problems = [x for x in format_spec.lint(p, **G) if not x.startswith(over)]
+            problems = format_spec.lint(p, **G)
             tag = "+".join(sorted(G))
             ok(f"{slug} [{tag}]: {_n_clauses(G)} clauses clean, {n} words", not problems,
                "; ".join(problems)[:300])
-            if n > format_spec.WORD_CEILING:
-                tight.append(f"{slug} [{tag}] {n}")
-    if tight:
-        print(f"  NOTE (not a failure) these combinations exceed the {format_spec.WORD_CEILING}"
-              f"-word ceiling and so cannot be sent for those configs; single_gen.py refuses "
-              f"them before spending: {', '.join(tight)}")
+            if format_spec.prompt_warnings(p):
+                advised.append(f"{slug} [{tag}] {n}")
+    if advised:
+        print(f"  ADVISORY: these combinations exceed BytePlus's recommended "
+              f"{format_spec.PROMPT_WORD_GUIDELINE} English words; details may be missed. "
+              f"Length alone does not block generation: {', '.join(advised)}")
 
     print("\n3. every brand's prompt reads back")
     for slug in brands:

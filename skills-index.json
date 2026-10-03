@@ -7299,8 +7299,10 @@
         "skills/ads/capabilities/render-street-interview/scripts/single_gen.py",
         "skills/ads/capabilities/render-street-interview/scripts/variants_gen.py",
         "skills/ads/capabilities/render-street-interview/skill.meta.json",
+        "skills/ads/capabilities/render-street-interview/tests/fixtures/prompt-snapshots.json",
         "skills/ads/capabilities/render-street-interview/tests/smoke-test.md",
-        "skills/ads/capabilities/render-street-interview/tests/test_finishing.py"
+        "skills/ads/capabilities/render-street-interview/tests/test_finishing.py",
+        "skills/ads/capabilities/render-street-interview/tests/test_prompt_budget.py"
       ],
       "metadata": {
         "slug": "render-street-interview",
