@@ -50,6 +50,10 @@ def coverage(path, seconds, fade=0.5):
     count = max(1, math.ceil((seconds - fade) / WINDOW))
     if has_gap(rms[:count], threshold):
         return "music has an inaudible gap before the final fade"
+    # An internal rest may be brief, but a terminal rest must not borrow the
+    # final fade window and silently extend the ending. Require music at its edge.
+    if rms[count - 1] < threshold:
+        return "music ends before the final fade"
     return None
 
 

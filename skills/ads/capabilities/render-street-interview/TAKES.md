@@ -1,33 +1,29 @@
-# Street-interview take history
+# Project take-ledger guidance
 
-**Summary.** Keep usable takes and their limits together so the next run can reuse what
-worked without treating one seed as a guarantee. This entry records Shiv's reported Som
-take; its media has not been independently inspected for this record.
+**Summary.** Keep approved takes and their measured or reported limitations in the
+project they belong to. Shared skill instructions describe the checks; they do not
+carry a client's take history. A seed alone is not a quality or reproducibility guarantee.
 
-## Som — seed 6102
+## Record the actual run
 
-**Evidence:** QA-58 in [Shiv's 2 October 2026 video QA report](https://claude.ai/artifact/5BsnvgWVxmb9X8bhhKycYq).
-Status: **reported usable first-try take**, not independently verified or newly rendered.
+For each take, retain its media and generation manifest together. Record:
 
-Reported successes:
+- Brand, exact product, project and take identifier.
+- Provider, model and revision when available, seed, prompt version and exact prompt.
+- Input reference assets and the generation request identifier when available.
+- Measured successes, defects and frame or audio timestamps.
+- Approval scope: which properties were reviewed and which remain unverified.
+- Source and inspection status for observations reported by someone else.
 
-- Four adults appear on one Brooklyn corner.
-- The Som wordmark is correct.
-- All four supplied spoken lines are present.
-- The BROOKLYN print is correct.
+Mark missing run details as unknown. Do not invent scale measurements or treat reported
+frame references as measured defect boundaries. Keep successes and limitations together.
 
-Reported limits:
+## Reuse within the selected project
 
-- The pouch appears undersized; no physical measurement is available.
-- ONE WAY print is mirrored in the last two shots.
-- Blue-awning print is garbled.
-- The pouch tilts despite the upright-product instruction.
+Inspect the actual media before reusing it. Check product scale and fidelity, visible
+print, handling, faces, the complete spoken read, location and ambience. Use that project's
+own evidence; another brand's seed or result does not establish suitability.
 
-The report points to frames at **5.2, 9.9 and 13.9 seconds** for inspection. These are
-reported frame references, not new measured defect boundaries.
-
-Before reusing this take, inspect its actual media, scale, print, handling and full spoken
-read. Keep its approved bytes and manifest intact. A seed alone does not establish the
-prompt version, input references, model revision or reproducibility. Those run details
-were not independently recovered here. New seeds or prompts need their own quality check;
-this record does not authorize a paid re-roll.
+Preserve approved media bytes, exact dialogue and the original manifest. Changed prompts
+or inputs need a distinct take record and quality review. A new seed or prior approval
+does not authorize a paid re-roll; follow the current run's spending approval.

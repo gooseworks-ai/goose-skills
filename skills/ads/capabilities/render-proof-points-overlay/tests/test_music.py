@@ -73,6 +73,28 @@ class MusicTests(unittest.TestCase):
             music.prepare_music(source, output, 5, loop=True)
             self.assertIsNone(music.coverage(output, 5))
 
+    def test_brief_terminal_silence_cannot_borrow_the_final_fade(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            source, output = Path(tmp) / "bed.wav", Path(tmp) / "checked.wav"
+            # Only 0.3s precedes the final 0.5s fade, within the internal-gap tolerance.
+            bed(source, 5, silent_from=4.2)
+            with self.assertRaisesRegex(ValueError, "ends before the final fade"):
+                music.prepare_music(source, output, 5)
+            self.assertFalse(output.exists())
+            result = music.prepare_music(source, output, 5, loop=True)
+            self.assertTrue(result["looped"])
+            self.assertIsNone(music.coverage(output, 5))
+            _, rms = music.levels(output, 5)
+            self.assertGreater(min(rms[210:225]), music.FLOOR)
+
+    def test_short_internal_rest_can_resume_before_the_ending(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            source, output = Path(tmp) / "bed.wav", Path(tmp) / "checked.wav"
+            bed(source, 5, gap=(2, 2.2))
+            result = music.prepare_music(source, output, 5)
+            self.assertFalse(result["looped"])
+            self.assertIsNone(music.coverage(output, 5))
+
     def test_internal_dropout_is_not_repeated(self):
         with tempfile.TemporaryDirectory() as tmp:
             source = Path(tmp) / "bed.wav"

@@ -165,7 +165,8 @@ def _shot(n, s, cfg, can=False, prev_kind=None, upright=False, one_mic=False, pr
             return (f"{n}. The same {s['noun']} on that same corner, {holding}, "
                     f"{glance}looks at the interviewer, {s['reaction']} and says{said}: "
                     f"\"{s['line']}\" ")
-        return (f"{n}. The same {s['noun']} on that same corner lowers the {held} and says to "
+        lowering = held if one_mic and prompt_version == 2 else f"the {held}"
+        return (f"{n}. The same {s['noun']} on that same corner lowers {lowering} and says to "
                 f"the interviewer{manner}: \"{s['line']}\" ")
     raise ValueError(f"unknown shot kind {kind!r}. Known: {', '.join(SHOT_KINDS)}")
 

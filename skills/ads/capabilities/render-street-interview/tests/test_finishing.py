@@ -4,6 +4,7 @@ import importlib.util
 import io
 import json
 import subprocess
+import shutil
 import sys
 import tempfile
 import unittest
@@ -53,6 +54,22 @@ class FinishingTests(unittest.TestCase):
         self.assertEqual(command[0], sys.executable)
         self.assertEqual(command[command.index("--run") + 1], str(self.run.resolve()))
 
+    def test_supplied_fonts_work_without_system_fallbacks(self):
+        shutil.copyfile(build_looks.resolve_font("black"), self.run / "custom.ttf")
+        spec = importlib.util.spec_from_file_location("looks_without_defaults", SCRIPTS / "build_looks.py")
+        isolated = importlib.util.module_from_spec(spec)
+        layer = {
+            "logo": None, "end_card": ["CUSTOM FONT"],
+            "fonts": {weight: "custom.ttf" for weight in ("black", "bold", "regular")},
+        }
+        # Simulate a host with no fallback fonts, while retaining a valid project font.
+        with patch.object(Path, "is_file", return_value=False), patch.object(build_looks.paths, "ROOT", self.run):
+            spec.loader.exec_module(isolated)
+            isolated.configure_brand_layer(layer)
+            isolated.end_card(self.run / "custom-end.png", layer)
+            self.assertEqual(isolated.BLACK, str(self.run / "custom.ttf"))
+            self.assertTrue((self.run / "custom-end.png").exists())
+
     def test_versioned_pouch_grammar_preserves_historical_prompt(self):
         cfg = brandkit.load("liquid-death-4828")
         cfg["product"]["noun"] = "pouch"
@@ -69,6 +86,18 @@ class FinishingTests(unittest.TestCase):
         self.assertIn("Keep the only the phrase verbatim.", format_spec.build_prompt(cfg, **flags, prompt_version=2))
         # The replacement guard is still load-bearing.
         self.assertTrue(format_spec.lint(repaired.replace("THE TOP EDGE IS NEVER SHOWN", ""), **flags, prompt_version=2))
+
+    def test_versioned_non_upright_payoff_repairs_only_scaffold_articles(self):
+        cfg = brandkit.load("liquid-death")
+        cfg["shots"][-1]["line"] = "Keep the only the phrase verbatim."
+        old = format_spec.build_prompt(cfg, one_mic=True)
+        new = format_spec.build_prompt(cfg, one_mic=True, prompt_version=2)
+        self.assertIn("lowers the only the can", old)
+        self.assertIn("lowers only the can", new)
+        self.assertNotIn("lowers the only the can", new)
+        self.assertIn("Keep the only the phrase verbatim.", new)
+        self.assertEqual(format_spec.lint(new, one_mic=True, prompt_version=2), [])
+        self.assertEqual(format_spec.build_prompt(cfg, one_mic=True, prompt_version=1), old)
 
     def test_missed_falsifications_report_failure_instead_of_crashing(self):
         spec = importlib.util.spec_from_file_location("check_cut", SCRIPTS / "check-cut.py")

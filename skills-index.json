@@ -9091,6 +9091,67 @@
       }
     },
     {
+      "slug": "video-production-harness",
+      "name": "video-production-harness",
+      "category": "playbooks",
+      "domain": "ads",
+      "description": "Full video production sequence with script review, actual ingredient choices, controlled generation, editing, evidence-based quality review, polish, captions and delivery. A host binding supplies project storage, authentic approvals, provider access and billing.",
+      "tags": "ads, content",
+      "path": "skills/ads/playbooks/video-production-harness",
+      "files": [
+        "skills/ads/playbooks/video-production-harness/SKILL.md",
+        "skills/ads/playbooks/video-production-harness/auto-fix-from-review-notes.md",
+        "skills/ads/playbooks/video-production-harness/auto-refine.md",
+        "skills/ads/playbooks/video-production-harness/brainstorm.md",
+        "skills/ads/playbooks/video-production-harness/capabilities.md",
+        "skills/ads/playbooks/video-production-harness/create-clips.md",
+        "skills/ads/playbooks/video-production-harness/create-design-brief.md",
+        "skills/ads/playbooks/video-production-harness/create-storyboard.md",
+        "skills/ads/playbooks/video-production-harness/edit-clip.md",
+        "skills/ads/playbooks/video-production-harness/edit-video.md",
+        "skills/ads/playbooks/video-production-harness/lock-character.md",
+        "skills/ads/playbooks/video-production-harness/lock-script.md",
+        "skills/ads/playbooks/video-production-harness/orchestrator.md",
+        "skills/ads/playbooks/video-production-harness/polish.md",
+        "skills/ads/playbooks/video-production-harness/preflight-audit.md",
+        "skills/ads/playbooks/video-production-harness/promote.md",
+        "skills/ads/playbooks/video-production-harness/references/review-script-shortform.md",
+        "skills/ads/playbooks/video-production-harness/release.json",
+        "skills/ads/playbooks/video-production-harness/review-video.md",
+        "skills/ads/playbooks/video-production-harness/scripts/assemble.py",
+        "skills/ads/playbooks/video-production-harness/scripts/qc_evidence.py",
+        "skills/ads/playbooks/video-production-harness/skill.meta.json",
+        "skills/ads/playbooks/video-production-harness/wrap-session.md"
+      ],
+      "metadata": {
+        "author": "GooseWorks",
+        "category": "playbooks",
+        "domain": "ads",
+        "features": [
+          "Original video production",
+          "Human review gates",
+          "Shared Studio production source"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install video-production-harness",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [],
+        "slug": "video-production-harness",
+        "source_commit": "49717bd5410839dd1180e4223287179a487240b9",
+        "source_hash": "03982f80249d14db7aefed474a85612c6970ec964433497a9c7cf477ee1442fa",
+        "source_version": "2-03982f80249d",
+        "tags": [
+          "ads",
+          "content"
+        ]
+      }
+    },
+    {
       "slug": "visual-brand-extractor",
       "name": "visual-brand-extractor",
       "category": "capabilities",
