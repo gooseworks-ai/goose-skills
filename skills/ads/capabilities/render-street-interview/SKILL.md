@@ -13,6 +13,8 @@ brand's own line. The people are generated; everything after the takes is free a
 
 `REFERENCE.md` holds the format's full history: every numbered **Critical knowledge** entry and
 the rejected takes behind it. Read it before changing the prompt scaffold or a gate.
+Use the [project take-ledger guidance](TAKES.md) before reusing a seed. Keep each
+brand's observed successes and limitations in its own project; a seed is not a quality guarantee.
 
 ## Run
 
@@ -56,6 +58,22 @@ python scripts/check-cut.py --episode <render>.episode.json   # free: the ship g
 A take is about **$3.64** (12 s at 720p, $0.3034/s); a 30 s episode is three takes, about
 **$10.92**. Grading, re-cut, captions, looks and every gate are free. Staging prices move, so
 price the first call of a run and quote from that.
+
+## Local finishing
+
+The local finishing scripts use the current Python interpreter and carry `--run` into child commands. The default grade (`--strength 0`) needs no colour-reference file. A positive strength requires the real reference.
+
+Set approved colours in `brand_layer.palette`: `accent`, `text`, and `background`, each `#RRGGBB` or three RGB integers. Optional `brand_layer.fonts` keys are `black`, `bold`, and `regular` (paths relative to the project). Without overrides, fonts resolve on macOS, Windows or Linux. End-card rows shrink together to fit the safe area; shorten copy if it cannot fit.
+
+The `subway` series bar stays visible through caption gaps. It is also in the caption-free control so the gate measures captions separately from persistent branding.
+
+For a **new** prompt, `generation.prompt_version: 2` (or `--prompt-version 2`) repairs duplicate articles and uses a top-edge rule for non-can packaging. The manifest records the version for the gate. Historical prompts default to version 1 and retain their hashes. Use a new approved seed for a new prompt; do not overwrite an approved take.
+
+Free regression checks:
+
+```bash
+python -m unittest discover -s tests -p 'test_*.py' -v
+```
 
 ## Known limits
 

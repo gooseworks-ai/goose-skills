@@ -56,9 +56,11 @@ ap.add_argument("--unsharp", type=float, default=0.12, help="ISP halo; 0.4 over-
 # the result with check-cut.py; a reference darker or brighter than the take will push it out.
 ap.add_argument("--strength", type=float, default=0.0, help="0..1 blend toward the reference; see note above")
 A = ap.parse_args()
+if not 0 <= A.strength <= 1:
+    ap.error("--strength must be between 0 and 1")
 if A.ref is None:
     A.ref = paths.layout(A.run)["refs"] / "tools" / "arcads-1.mp4"
-if not A.ref.exists():
+if A.strength > 0 and not A.ref.exists():
     raise SystemExit(
         f"no colour reference at {A.ref}. The grade is FITTED to real footage rather than "
         "guessed, so there is no sane fallback: put a real reference clip there (see "
@@ -85,17 +87,20 @@ def duration(p):
 
 with tempfile.TemporaryDirectory() as td:
     td = Path(td)
-    mo, so = stats(frame(A.src, duration(A.src) * 0.4, td / "a.png"))
-    if A.ref.suffix.lower() in (".mp4", ".webm", ".mkv", ".mov"):
-        rp = frame(A.ref, duration(A.ref) * 0.4, td / "b.png")
-    else:
-        rp = A.ref
-    ma, sa = stats(rp)
+    gain, off = np.ones(3), np.zeros(3)
+    # At zero strength the reference contributes nothing. Fresh runs need no reference asset.
+    if A.strength > 0:
+        mo, so = stats(frame(A.src, duration(A.src) * 0.4, td / "a.png"))
+        if A.ref.suffix.lower() in (".mp4", ".webm", ".mkv", ".mov"):
+            rp = frame(A.ref, duration(A.ref) * 0.4, td / "b.png")
+        else:
+            rp = A.ref
+        ma, sa = stats(rp)
 
-    gain = np.clip(sa / np.maximum(so, 1e-6), 0.6, 1.6)
-    off = ma - gain * mo
-    gain = 1 + A.strength * (gain - 1)
-    off = A.strength * off
+        gain = np.clip(sa / np.maximum(so, 1e-6), 0.6, 1.6)
+        off = ma - gain * mo
+        gain = 1 + A.strength * (gain - 1)
+        off = A.strength * off
     print("colour match gain", gain.round(3), "offset", off.round(3))
 
     lut = ":".join(f"{c}='clip(val*{gain[i]:.4f}+{off[i] * 255:.2f},0,255)'"

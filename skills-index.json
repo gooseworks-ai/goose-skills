@@ -7061,11 +7061,15 @@
       "path": "skills/ads/capabilities/render-proof-points-overlay",
       "files": [
         "skills/ads/capabilities/render-proof-points-overlay/SKILL.md",
+        "skills/ads/capabilities/render-proof-points-overlay/references/music.md",
         "skills/ads/capabilities/render-proof-points-overlay/scripts/build_overlays.py",
         "skills/ads/capabilities/render-proof-points-overlay/scripts/compose_master.py",
         "skills/ads/capabilities/render-proof-points-overlay/scripts/fetch_icons.py",
+        "skills/ads/capabilities/render-proof-points-overlay/scripts/music_coverage.py",
         "skills/ads/capabilities/render-proof-points-overlay/skill.meta.json",
-        "skills/ads/capabilities/render-proof-points-overlay/tests/smoke-test.md"
+        "skills/ads/capabilities/render-proof-points-overlay/tests/smoke-test.md",
+        "skills/ads/capabilities/render-proof-points-overlay/tests/test_layout.py",
+        "skills/ads/capabilities/render-proof-points-overlay/tests/test_music.py"
       ],
       "metadata": {
         "slug": "render-proof-points-overlay",
@@ -7245,6 +7249,7 @@
         "skills/ads/capabilities/render-street-interview/READINESS.md",
         "skills/ads/capabilities/render-street-interview/REFERENCE.md",
         "skills/ads/capabilities/render-street-interview/SKILL.md",
+        "skills/ads/capabilities/render-street-interview/TAKES.md",
         "skills/ads/capabilities/render-street-interview/brands/demo-tallgrass-oat.json",
         "skills/ads/capabilities/render-street-interview/brands/liquid-death-4816.json",
         "skills/ads/capabilities/render-street-interview/brands/liquid-death-4817.json",
@@ -7292,7 +7297,8 @@
         "skills/ads/capabilities/render-street-interview/scripts/single_gen.py",
         "skills/ads/capabilities/render-street-interview/scripts/variants_gen.py",
         "skills/ads/capabilities/render-street-interview/skill.meta.json",
-        "skills/ads/capabilities/render-street-interview/tests/smoke-test.md"
+        "skills/ads/capabilities/render-street-interview/tests/smoke-test.md",
+        "skills/ads/capabilities/render-street-interview/tests/test_finishing.py"
       ],
       "metadata": {
         "slug": "render-street-interview",
