@@ -11,8 +11,11 @@ The renderer for the **street-interview** video ad format (goose-studio recipe
 street corner and asks one question. A few guess wrong, one gets it right, and the cut ends on the
 brand's own line. The people are generated; everything after the takes is free and local.
 
-`REFERENCE.md` holds the format's full history: every numbered **Critical knowledge** entry and
-the rejected takes behind it. Read it before changing the prompt scaffold or a gate.
+Read the bundled [model notes](references/model-behaviors.md) before generation.
+If a required guide cannot be fetched or opened, stop before spending and name it.
+`REFERENCE.md` holds the format's historical **Critical knowledge** entries and
+the rejected takes behind them. Read it before changing the prompt scaffold or a gate;
+its older experiments do not override the current recipe or this entry.
 Use the [project take-ledger guidance](TAKES.md) before reusing a seed. Keep each
 brand's observed successes and limitations in its own project; a seed is not a quality guarantee.
 

@@ -1989,6 +1989,7 @@
       "path": "skills/ads/capabilities/create-image-fal",
       "files": [
         "skills/ads/capabilities/create-image-fal/SKILL.md",
+        "skills/ads/capabilities/create-image-fal/references/avatar-generation.md",
         "skills/ads/capabilities/create-image-fal/scripts/gen_image.py",
         "skills/ads/capabilities/create-image-fal/scripts/media_proxy.py",
         "skills/ads/capabilities/create-image-fal/skill.meta.json",
@@ -7279,6 +7280,7 @@
         "skills/ads/capabilities/render-street-interview/episodes/liquid-death-ep3b.json",
         "skills/ads/capabilities/render-street-interview/episodes/liquid-death-ep3c.json",
         "skills/ads/capabilities/render-street-interview/episodes/liquid-death-ep4.json",
+        "skills/ads/capabilities/render-street-interview/references/model-behaviors.md",
         "skills/ads/capabilities/render-street-interview/scripts/bench.py",
         "skills/ads/capabilities/render-street-interview/scripts/brandkit.py",
         "skills/ads/capabilities/render-street-interview/scripts/build.py",
