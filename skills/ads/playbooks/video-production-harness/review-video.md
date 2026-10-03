@@ -21,6 +21,7 @@ Stage 8 has five phases. The names below identify review responsibilities, not e
 
 **Phase 7a — deterministic (run in parallel):**
 - Run `python3 scripts/qc_evidence.py VIDEO.mp4 EVIDENCE_DIR` for the real probe, 2 fps frame set, decoded audio and loudness/tail diagnostics. Separately measure per-scene RMS with FFmpeg astats and compare cut timestamps against actual word timings; the helper does not claim to perform those comparisons.
+- Frame `sample_center_s` labels are nominal review slots, not exact source times. Use the measured `source_pts_s` to identify the sampled bytes; resampling can duplicate a source frame. Verify caption boundaries, transitions and other timed claims with independent seeks and decoded frame timestamps in Phase 7d.
 - `review-video-hallucination-check` (OCR + brand allowlist — **visual** hallucinations)
 - `review-video-transcript-integrity` (Whisper vs locked_script — **audio** hallucinations: silent-tail invented words, mid-word truncations at scene splits, dropped/substituted script lines). Required whenever speech is present; use the actual host quote or installed local engine.
 - `review-video-character-consistency` (face-grid drift — wardrobe / accessories / hair across scenes)
