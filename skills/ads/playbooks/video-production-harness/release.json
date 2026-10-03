@@ -86,9 +86,9 @@
       "sha256": "8619e640410e40c6b1a5458092f96b9f79bb2b7acd23e24825df6945534c36c7"
     },
     "review-video.md": {
-      "bytes": 12245,
-      "catalog_sha256": "0833a435f9709e45f179d7bed5e1cfd1f58489e29129544c6e2ba7798287e127",
-      "sha256": "0833a435f9709e45f179d7bed5e1cfd1f58489e29129544c6e2ba7798287e127"
+      "bytes": 12559,
+      "catalog_sha256": "867edc1fcc753486288701fbd0ec3338c548e8ff58c7fe9273cdd3947a1a322e",
+      "sha256": "867edc1fcc753486288701fbd0ec3338c548e8ff58c7fe9273cdd3947a1a322e"
     },
     "scripts/assemble.py": {
       "bytes": 6224,
@@ -96,14 +96,14 @@
       "sha256": "16b8b148e8d2404654b0a5856ab27e5b0ef524975f094c36fc03fe7bfca923bf"
     },
     "scripts/qc_evidence.py": {
-      "bytes": 3946,
-      "catalog_sha256": "1d3d2367b409b2d150a55032c6c5e5406a7753511411cd1c6f2d9d31bbe061fc",
-      "sha256": "1d3d2367b409b2d150a55032c6c5e5406a7753511411cd1c6f2d9d31bbe061fc"
+      "bytes": 6575,
+      "catalog_sha256": "bb75a1c69eb394a2436de6f6d7fbe2b3b73d6cd4027d5c5730feae64dd55d216",
+      "sha256": "bb75a1c69eb394a2436de6f6d7fbe2b3b73d6cd4027d5c5730feae64dd55d216"
     },
     "skill.meta.json": {
       "bytes": 652,
-      "catalog_sha256": "f8633cc5ea5180ae488447fe1273639a4216469b6a3d7724ea570020977b487d",
-      "sha256": "f8633cc5ea5180ae488447fe1273639a4216469b6a3d7724ea570020977b487d"
+      "catalog_sha256": "6dcac054b454ab9802407feeaa9c30cafb98047140b68384ac210ee0804475b2",
+      "sha256": "6dcac054b454ab9802407feeaa9c30cafb98047140b68384ac210ee0804475b2"
     },
     "wrap-session.md": {
       "bytes": 14394,
@@ -132,7 +132,7 @@
   ],
   "schema_version": 1,
   "slug": "video-production-harness",
-  "source_commit": "49717bd5410839dd1180e4223287179a487240b9",
+  "source_commit": "4ea3d4f7e95d862b40a843d8f7679b0f417b171b",
   "source_files": {
     "SKILL.md": {
       "sha256": "aba66dd45ba5d10f46f4adeb0f77a6e94d36bee8b107726b682d55933e595059",
@@ -203,7 +203,7 @@
       "source": "references/review-script-shortform.md"
     },
     "review-video.md": {
-      "sha256": "0833a435f9709e45f179d7bed5e1cfd1f58489e29129544c6e2ba7798287e127",
+      "sha256": "867edc1fcc753486288701fbd0ec3338c548e8ff58c7fe9273cdd3947a1a322e",
       "source": "review-video.md"
     },
     "scripts/assemble.py": {
@@ -211,7 +211,7 @@
       "source": "scripts/assemble.py"
     },
     "scripts/qc_evidence.py": {
-      "sha256": "1d3d2367b409b2d150a55032c6c5e5406a7753511411cd1c6f2d9d31bbe061fc",
+      "sha256": "bb75a1c69eb394a2436de6f6d7fbe2b3b73d6cd4027d5c5730feae64dd55d216",
       "source": "scripts/qc_evidence.py"
     },
     "wrap-session.md": {
@@ -219,6 +219,6 @@
       "source": "wrap-session.md"
     }
   },
-  "source_hash": "03982f80249d14db7aefed474a85612c6970ec964433497a9c7cf477ee1442fa",
-  "source_version": "2-03982f80249d"
+  "source_hash": "c714786a99b7e7d42507e5a3284cd280c5849b3a5454ccf32a773e0267b41080",
+  "source_version": "2-c714786a99b7"
 }
