@@ -23,7 +23,7 @@ notes are fine.
 ```
 
 - `kind` is one of `spoken` (voiceover or dialogue), `on_screen` (a text card), `bubble`
-  (a chat message) or `lyric`.
+  (a chat message), `lyric` or `visual` (a silent demonstration).
 - `max_words` overrides the seconds-based budget for a beat.
 - `optional` beats may be left out.
 - The first beat is the opening beat; every hook must fit its budget.
