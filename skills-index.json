@@ -1,6 +1,6 @@
 {
   "version": "1.3.0",
-  "generated": "2026-10-02",
+  "generated": "2026-10-03",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -9659,12 +9659,14 @@
         "skills/ads/capabilities/write-video-ad-script/SKILL.md",
         "skills/ads/capabilities/write-video-ad-script/references/files.md",
         "skills/ads/capabilities/write-video-ad-script/references/hook-families.md",
+        "skills/ads/capabilities/write-video-ad-script/references/pacing.md",
         "skills/ads/capabilities/write-video-ad-script/scripts/critique_scripts.py",
         "skills/ads/capabilities/write-video-ad-script/scripts/lint_scripts.py",
         "skills/ads/capabilities/write-video-ad-script/scripts/media_proxy.py",
         "skills/ads/capabilities/write-video-ad-script/skill.meta.json",
         "skills/ads/capabilities/write-video-ad-script/tests/test_critique_scripts.py",
-        "skills/ads/capabilities/write-video-ad-script/tests/test_lint_scripts.py"
+        "skills/ads/capabilities/write-video-ad-script/tests/test_lint_scripts.py",
+        "skills/ads/capabilities/write-video-ad-script/tests/test_pacing.py"
       ],
       "metadata": {
         "slug": "write-video-ad-script",

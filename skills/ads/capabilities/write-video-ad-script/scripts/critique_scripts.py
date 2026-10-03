@@ -38,6 +38,7 @@ import sys
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 
 from media_proxy import RELAY_EXIT, _fal_run  # noqa: E402  (bundled)
+from lint_scripts import lint  # noqa: E402
 
 FAL_LLM = "openrouter/router"
 DEFAULT_MODEL = "openai/gpt-6-sol"
@@ -126,7 +127,7 @@ def concept_block(c, quotes_by_id, shape_beats):
     return "\n".join(lines)
 
 
-def build_prompt(concepts, quotes_by_id, rules, shape, brief):
+def build_prompt(concepts, quotes_by_id, rules, shape, brief, references=None):
     shape = shape or {}
     facts = []
     for p in (rules or {}).get("products", []) or []:
@@ -141,6 +142,14 @@ def build_prompt(concepts, quotes_by_id, rules, shape, brief):
         head.append("Brand facts (the only facts an edit may use): " + " | ".join(facts))
     if never:
         head.append("The brand never says: " + " | ".join(never))
+    head.append("Full recipe contract: " + json.dumps(shape, ensure_ascii=False))
+    timing = lint({"concepts": concepts}, shape, report_only=True, references=references)
+    head.append("Resolved speech plans (estimates, not audio verification): " + json.dumps(
+        {"input_errors": timing["input_errors"],
+         "concepts": [{"id": c["id"], "timing": c["timing"]} for c in timing["concepts"]]}, ensure_ascii=False))
+    head.append("Judge cadence against each speech window and its source. Silent visuals, pauses and end cards add no speech capacity. "
+                "Keep recipe limits and proof/CTA intact. A reference target or observed baseline does not prove engine capacity; "
+                "flag unverified faster reads rather than claiming rendered delivery passes.")
     blocks = [concept_block(c, quotes_by_id, shape.get("beats") or []) for c in concepts]
     return "\n".join(head) + "\n\n" + "\n\n".join(blocks) + "\n\n" + RUBRIC
 
@@ -271,6 +280,7 @@ def main():
     ap.add_argument("--customer-words")
     ap.add_argument("--rules")
     ap.add_argument("--shape")
+    ap.add_argument("--references", help="observed audio/video reference records for pacing provenance")
     ap.add_argument("--brief", default="")
     ap.add_argument("--model", default=DEFAULT_MODEL, help="any non-Claude OpenRouter model id")
     ap.add_argument("--orders", type=int, choices=(1, 2), default=2,
@@ -296,7 +306,7 @@ def main():
     orders = [concepts] if a.orders == 1 or len(concepts) == 1 else [concepts, list(reversed(concepts))]
     runs, usage, relayed = [], [], 0
     for order in orders:
-        prompt = build_prompt(order, quotes_by_id, rules, shape, a.brief)
+        prompt = build_prompt(order, quotes_by_id, rules, shape, a.brief, references=load(a.references))
         try:
             text, u = ask(a.model, SYSTEM_PROMPT, prompt, a.temperature)
             runs.append(normalize_run(parse_json(text), ids, hook_ids))

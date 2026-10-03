@@ -74,13 +74,19 @@ Read the recipe's instructions and config, and write the shape file. It lists:
 - which beat is the CTA;
 - the words per second.
 
-Take the words per second from the recipe first (many configs carry a word budget or
-per-beat lines). If the recipe has none, measure the demo ad: its spoken words divided by
-its spoken seconds. With neither, use 3.0 for conversational talking-head delivery and
-2.5 for slow narration.
+For speech, read [pacing](references/pacing.md). Set the desired cadence from the brief's
+explicit delivery direction or observed reference audio, then the recipe's default.
+Preserve explicit recipe limits and record any conflict. Without usable evidence, use a
+provisional 3 words per second for conversation or 2.5 for slow narration, labelled as a
+fallback.
 
-- A spoken beat fits about seconds times words-per-second words.
-- An on-screen card fits 8 words unless the format says otherwise.
+Budget each spoken beat from its speech window, excluding pauses, silent demonstrations
+and end cards. Rates can differ across beats and speakers. Record the rate's source and
+keep recipe estimates separate from observed rendered delivery. Carry this plan into
+production direction. Read chat and cards against their own display time; lyric timing
+follows bars and syllables. A word estimate does not prove that a generated read fits.
+Do not change the recipe to express one run's target or promise forty words in fifteen
+seconds.
 
 The format's own rules win on shape. When the recipe says "a 13-sentence testimonial" or
 "one hook line on screen", the shape says that.
@@ -200,7 +206,9 @@ The laws:
 - **End on the CTA.** Nothing is said after it (an end card may follow).
 - **Write how this person talks**: contractions, fragments, the buyers' own words, short
   sentences. Read every line out loud; if a person wouldn't say it, rewrite it.
-- **Fit the budget.** Count words per beat: overstuffed lines get rushed, thin ones drag.
+- **Fit the speech plan.** Keep proof and CTA when repairing timing. Offer tighter wording,
+  a longer execution within the recipe or an explicitly evaluated faster read. Review
+  short reads for intentional silence; do not add filler.
 - **Brand rules always hold.** Nothing in never-say, in words or in meaning. Every
   product claim (a result, number, ingredient, price, comparison) comes from the facts or
   a quote. The speaker's situation, feelings and small human details are craft, not
@@ -212,7 +220,8 @@ ids, reference id, typicality, hooks and beats.
 ## Step 6. Check: rules, then a second model
 
 **The rule check.** Run the lint script on the candidates, with the shape, the brand
-rules and the buyer quotes.
+rules, buyer quotes and observed references. Use `--strict` to enforce profiled speech
+budgets and explicit word limits exactly; this flag checks timing, not research completion.
 
 It fails on:
 
@@ -317,3 +326,10 @@ brand rule. Save it to the brand the way the runtime says, not only to the histo
 - The user's own words are kept verbatim.
 - Nothing paid runs before the runtime's approval, except the second opinion (about 2
   credits) and buyer research the user said yes to.
+
+## Delivery handoff
+
+Include the chosen delivery style, per-beat word counts and speech windows, intentional
+pauses, recipe conflicts and unverified targets in the existing review. Production uses
+the same plan and preserves recipe limits. Review finished audio for the complete read,
+pronunciation, naturalness and sync before declaring delivery fixed.
