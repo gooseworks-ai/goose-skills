@@ -72,6 +72,15 @@ Judge proof and payoff against the brand's useful role in this specific encounte
 A detached endcard does not repair a generic exchange; a service can offer relevant
 help verbally without showing UI. Report the exact missing setup, causal jump or
 unearned brand entrance. Plausible vocabulary alone cannot clear template_fit.
+Judge strategic_fit separately: does the actual encounter communicate a supported
+product role and why that role matters to this audience and objective? A product name,
+bedtime label or incidental preparation fact is insufficient for a lead purchase ad.
+Do not supply a missing causal connection on the writer's behalf or reward a convenient
+audience concern invented to justify the chosen reference. A sample can show taste,
+not a later health effect. A source's physical compatibility does not establish its
+persuasive fit. Report a weak brand premise before proposing wording edits. Street
+strategic_fit must reach 8/10 in every pass; strong speech or factual support cannot
+compensate for a weak brand idea.
 """
 
 SYSTEM_PROMPT = """\
@@ -280,7 +289,7 @@ def normalize_run(run, ids, hook_ids):
     return {"concepts": concepts, "ranking": ranking, "why_top": why}
 
 
-def merge(runs, ids, dialogue_required=False):
+def merge(runs, ids, dialogue_required=False, strategic_required=False):
     """Average scores across runs; Borda-count the rankings; union the edits. Runs must
     already be normalized (normalize_run)."""
     merged = {cid: {"scores": {}, "best_hook_ids": [], "hook_notes": [], "edits": [], "kills": []}
@@ -337,11 +346,12 @@ def merge(runs, ids, dialogue_required=False):
     for c in out:
         if dialogue_required:
             per_pass = [next((x for x in r["concepts"] if x["id"] == c["id"]), {}) for r in runs]
+            required_axes = ("spoken", "template_fit") + (("strategic_fit",) if strategic_required else ())
             c["dialogue_ready"] = all(
                 isinstance(p.get("scores", {}).get(axis), (int, float))
-                and p["scores"][axis] >= 8 for p in per_pass for axis in ("spoken", "template_fit"))
+                and p["scores"][axis] >= 8 for p in per_pass for axis in required_axes)
             if not c["dialogue_ready"]:
-                review_reasons.append(f"{c['id']}: dialogue needs rewrite or judgment; spoken and template_fit must each reach 8/10 in every pass.")
+                review_reasons.append(f"{c['id']}: dialogue needs rewrite or judgment; {', '.join(required_axes)} must each reach 8/10 in every pass.")
         if c["kill_split"]:
             review_reasons.append(f"{c['id']}: a critic pass reported a fatal defect; resolve its kill_reasons.")
         if not c["hook_agreement"]:
@@ -405,7 +415,9 @@ def main():
     if relayed:
         sys.exit(RELAY_EXIT)
 
-    result = merge(runs, ids, dialogue_required=bool(dialogue_mode(shape)))
+    mode = dialogue_mode(shape)
+    result = merge(runs, ids, dialogue_required=bool(mode),
+                   strategic_required=mode == "street-interview")
     result.update({"model": a.model, "orders": len(orders), "usage": usage})
     out = pathlib.Path(a.out)
     out.parent.mkdir(parents=True, exist_ok=True)

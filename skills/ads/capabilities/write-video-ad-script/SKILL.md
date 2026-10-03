@@ -233,6 +233,11 @@ template_fit, with supported claims and no unresolved defects. This is the propo
 4/5 quality floor for those criteria, not a calibrated guarantee of human preference.
 For a street ad also review situational credibility and the brand's useful role against
 the words **and** visible actions. Ordinary vocabulary alone cannot clear either check.
+Street `strategic_fit` must also reach 8/10 in every critic pass. A relevant reason to
+consider this offering must appear in the actual encounter; a name, bedtime label or
+incidental preparation detail cannot substitute for it. The merger treats a low or missing
+street strategic score as unresolved even when speech, template fit and factual support
+score highly. Diagnose a failed premise before proposing line edits.
 If dialogue_ready is false, repair the exchange and recheck. After two supported repair
 passes, retain a failed result as a draft and report the remaining defect; do not relax
 the rubric or loop until the judge returns a desired number.

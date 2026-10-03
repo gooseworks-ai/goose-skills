@@ -98,6 +98,28 @@ def test_missing_dialogue_judgment_is_unresolved():
     assert result["needs_review"] and all(not c["dialogue_ready"] for c in result["concepts"])
 
 
+def test_street_brand_premise_cannot_be_averaged_away():
+    first, second = norm(answer(9, IDS, False)), norm(answer(9, IDS, False))
+    for run in (first, second):
+        for concept in run["concepts"]:
+            concept["scores"].update(spoken=9, template_fit=9, claim_support=10, strategic_fit=9)
+    first["concepts"][0]["scores"]["strategic_fit"] = 7
+    result = cs.merge([first, second], IDS, dialogue_required=True, strategic_required=True)
+    c1 = next(c for c in result["concepts"] if c["id"] == "c1")
+    assert c1["scores"]["strategic_fit"] == 8 and not c1["dialogue_ready"]
+    assert next(c for c in result["concepts"] if c["id"] == "c2")["dialogue_ready"]
+    assert result["needs_review"] and any("strategic_fit" in r for r in result["review_reasons"])
+
+
+def test_missing_street_brand_judgment_requires_review():
+    run = norm(answer(9, IDS, False))
+    for concept in run["concepts"]:
+        concept["scores"].update(spoken=9, template_fit=9)
+    result = cs.merge([run], IDS, dialogue_required=True, strategic_required=True)
+    assert all(not c["dialogue_ready"] for c in result["concepts"])
+    assert result["needs_review"]
+
+
 def test_merge_kills_when_every_pass_agrees():
     m = cs.merge([norm(answer(6, ["c1", "c2"], True)), norm(answer(6, ["c1", "c2"], True))], IDS)
     assert next(c for c in m["concepts"] if c["id"] == "c2")["kill"] == "generic"
