@@ -3248,7 +3248,9 @@
       "files": [
         "skills/ads/capabilities/google-ad-scraper/SKILL.md",
         "skills/ads/capabilities/google-ad-scraper/scripts/search_google_ads.py",
-        "skills/ads/capabilities/google-ad-scraper/skill.meta.json"
+        "skills/ads/capabilities/google-ad-scraper/skill.meta.json",
+        "skills/ads/capabilities/google-ad-scraper/tests/actor-input-contract.json",
+        "skills/ads/capabilities/google-ad-scraper/tests/test_search_contract.py"
       ],
       "metadata": {
         "slug": "google-ad-scraper",
