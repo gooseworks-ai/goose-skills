@@ -63,9 +63,12 @@ Review actual video adherence through the normal gate and full watch/listen pass
 
 - The prompt carries every format clause; `single_gen.py` lints it before any spend, and
   `check-cut.py` imports the same clause list, so a clause cannot be dropped silently.
-- **Captions are derived, never authored:** timing comes from Whisper on the finished render,
-  spelling from the script. A scripted word Whisper skips or mishears inside a sentence is
-  restored. Lines whose shots were dropped leave the caption script.
+- **Captions follow the edited picture.** An episode derives word timing from its finished
+  assembly. A single-take recut measures words on the original take, aligns spelling to the
+  approved script and moves only kept whole words through the same source-span map as the video
+  and shot boundaries. Dropped speech is not captioned; moved or repeated spans move or repeat
+  their captions. A boundary through a word stops finishing: widen the kept span and rebuild.
+  Never reuse raw-take caption timestamps on an edited video.
 - The gate measures the finished file: shot lengths, splices on real cuts, caption timing and
   safe zone, ambience floor per shot, loudness and true peak, every scripted line audible, and
   detail and black point. It prints what it can NOT assess (faces, comprehension, how it sounds)
@@ -86,6 +89,47 @@ Set approved colours in `brand_layer.palette`: `accent`, `text`, and `background
 The `subway` series bar stays visible through caption gaps. It is also in the caption-free control so the gate measures captions separately from persistent branding.
 
 For a **new** prompt, `generation.prompt_version: 2` (or `--prompt-version 2`) repairs duplicate articles and uses a top-edge rule for non-can packaging. The manifest records the version for the gate. Historical prompts default to version 1 and retain their hashes. Use a new approved seed for a new prompt; do not overwrite an approved take.
+
+### Single-take recuts
+
+Check local finishing prerequisites **before buying a take**: ffmpeg/ffprobe, PIL, NumPy,
+fonts, and local Whisper with its `base` model available. The existing episode transcription
+helper can download an absent Whisper model; prepare it separately before spend. This fix does
+not call another video or voice model. A reused take may supply previously measured original
+word times instead of transcribing again.
+
+Keep the original take and generation manifest. Measure its internal cuts, caption source spans
+and a genuinely speech-free ambience window in `brand_layer`; these remain **source seconds**.
+Remove dead air locally, then add the approved brand layer and end card:
+
+```bash
+python scripts/recut.py <original-take.mp4> <run>/working/interview-recut.mp4 --brand <slug>
+python scripts/build_looks.py --brand <slug> --run <run> --looks <look> \
+  --edit-map <run>/working/interview-recut.plan.json
+python scripts/check-cut.py --brand <slug> --run <run> --look <look> \
+  --edit-map <run>/working/interview-recut.plan.json --take <original-take.mp4> --falsify
+# Repeat the same gate without --falsify, then watch and listen to the entire finished file.
+```
+
+`recut.py` emits the source-span `.plan.json` beside its edited output. `build_looks.py` consumes
+that file, measures source words with the existing free local Whisper helper and saves
+`interview-recut.plan.words.json`. To reuse saved timing, pass `--word-times <file>` to finishing
+and the gate. Its JSON names the original `source` and contains ordered `[start, end, word]`
+rows. It must come from actual source audio, not estimates from the script. Missing transcription
+or incompatible timing stops finishing; there is no fallback to the original caption schedule.
+
+Recut masters and caption-free controls have separate `-recut-` names. The original takes,
+controls and episode outputs stay intact. Ambience is extracted from the measured quiet window
+of the **original** source even if that window was dropped; only that WAV is looped. If the recut
+already applied its continuous bed, finishing does not mix it a second time. The end card always
+uses original room tone. The same mapped cuts clamp captions with a half-open end boundary so
+one person's last words do not appear on the next shot's first frame.
+
+`build.py` remains an intermediate grade-and-recut helper. To finish its already graded output,
+use its printed map with `build_looks.py --pregraded`; do not grade it twice. A changed spoken
+line, story, paid retry or generation count still needs its existing review and approval. Run the
+normal finished-file gate and full watch/listen review; a synthetic timing test does not approve
+faces or the original customer's ad.
 
 Free regression checks:
 
