@@ -43,11 +43,15 @@ if __name__ == "__main__":
     ap.add_argument("--out", required=True)
     ap.add_argument("--say-as", action="append", help='"Term=how it is said" (repeatable)')
     ap.add_argument("--rules", help="brand-rules.json with a pronunciations list")
+    ap.add_argument("--dry-run", action="store_true", help="print the spoken plan without generating audio")
     a = ap.parse_args()
-    from media_proxy import eleven_tts
 
     spoken = apply_say_as(a.text, load_pairs(a.say_as, a.rules))
     if spoken != a.text:
         print(f"spoken text: {spoken}")
+    if a.dry_run:
+        print(spoken)
+        raise SystemExit(0)
+    from media_proxy import eleven_tts
     eleven_tts(spoken, a.voice, a.out, a.model)
     print(a.out)

@@ -66,7 +66,6 @@ SKIN = {
 IMPERFECTIONS = [
     "a small raised mole below the left jawline",
     "faint acne scarring across both cheeks, shallow and old",
-    "a thin pale scar through one eyebrow",
     "sun freckles scattered across the nose bridge and upper cheeks",
     "slightly chapped lips with fine vertical cracks",
     "a broken capillary at one nostril crease",

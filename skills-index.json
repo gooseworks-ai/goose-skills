@@ -821,6 +821,7 @@
         "skills/ads/capabilities/caption-burn/SKILL.md",
         "skills/ads/capabilities/caption-burn/scripts/_fonts.py",
         "skills/ads/capabilities/caption-burn/scripts/captions.py",
+        "skills/ads/capabilities/caption-burn/scripts/footprint.py",
         "skills/ads/capabilities/caption-burn/scripts/media_proxy.py",
         "skills/ads/capabilities/caption-burn/scripts/plates.py",
         "skills/ads/capabilities/caption-burn/scripts/transcribe.py",
@@ -2105,6 +2106,40 @@
       }
     },
     {
+      "slug": "create-kinetic-typography",
+      "name": "create-kinetic-typography",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Render a deterministic text-only video ad from approved copy, font, colors, timing and CTA. Use when a brand needs an animated message without product photography or a creator.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/create-kinetic-typography",
+      "files": [
+        "skills/ads/capabilities/create-kinetic-typography/SKILL.md",
+        "skills/ads/capabilities/create-kinetic-typography/scripts/config.example.json",
+        "skills/ads/capabilities/create-kinetic-typography/scripts/render.py",
+        "skills/ads/capabilities/create-kinetic-typography/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "create-kinetic-typography",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install create-kinetic-typography",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
       "slug": "create-linkedin-content",
       "name": "create-linkedin-content",
       "category": "capabilities",
@@ -2251,6 +2286,7 @@
         "skills/ads/capabilities/create-vo-elevenlabs/SKILL.md",
         "skills/ads/capabilities/create-vo-elevenlabs/scripts/gen_vo.py",
         "skills/ads/capabilities/create-vo-elevenlabs/scripts/media_proxy.py",
+        "skills/ads/capabilities/create-vo-elevenlabs/scripts/read_pronunciations.py",
         "skills/ads/capabilities/create-vo-elevenlabs/skill.meta.json",
         "skills/ads/capabilities/create-vo-elevenlabs/tests/smoke-test.md",
         "skills/ads/capabilities/create-vo-elevenlabs/tests/test_gen_vo.py"
@@ -3020,6 +3056,7 @@
         "skills/ads/capabilities/footage-cutlist/scripts/cut.py",
         "skills/ads/capabilities/footage-cutlist/scripts/cutlist.py",
         "skills/ads/capabilities/footage-cutlist/scripts/filmed.py",
+        "skills/ads/capabilities/footage-cutlist/scripts/photo.py",
         "skills/ads/capabilities/footage-cutlist/scripts/preview.py",
         "skills/ads/capabilities/footage-cutlist/scripts/survey.py",
         "skills/ads/capabilities/footage-cutlist/skill.meta.json",
@@ -6602,6 +6639,7 @@
         "skills/ads/capabilities/render-imessage-cascade/scripts/build_assets.py",
         "skills/ads/capabilities/render-imessage-cascade/scripts/compose.py",
         "skills/ads/capabilities/render-imessage-cascade/scripts/config.example.json",
+        "skills/ads/capabilities/render-imessage-cascade/scripts/layout.py",
         "skills/ads/capabilities/render-imessage-cascade/skill.meta.json",
         "skills/ads/capabilities/render-imessage-cascade/tests/smoke-test.md"
       ],
@@ -7555,7 +7593,8 @@
         "skills/ads/capabilities/review-finished-ad/SKILL.md",
         "skills/ads/capabilities/review-finished-ad/scripts/review_finished_ad.py",
         "skills/ads/capabilities/review-finished-ad/skill.meta.json",
-        "skills/ads/capabilities/review-finished-ad/tests/test_review_finished_ad.py"
+        "skills/ads/capabilities/review-finished-ad/tests/test_review_finished_ad.py",
+        "skills/ads/capabilities/review-finished-ad/tests/test_sampling.py"
       ],
       "metadata": {
         "slug": "review-finished-ad",

@@ -60,3 +60,9 @@ hangs the logo tile under the block. Write lines a person would type: the same s
 5. **Fonts:** a bold sans is found on macOS, Linux or Windows; if none is present, Roboto
    Bold is fetched once into `~/.cache/gooseworks/fonts`. `--font` or `GW_CAPTION_FONT`
    overrides.
+
+## Footprint before composition
+
+The bundled footprint helper uses this renderer's cue grouping, selected font, stroke, plate padding and anchor. Export it from the approved beat list and pass it to the footage-cutlist preview. The JSON includes every group and the union of its rendered bounds per beat. Use the same style, anchor, font and fixed-position settings for the final burn; regenerate after alignment or copy changes. Caption coverage must leave claim qualifications readable. Inspect final captioned frames as well as this planned coverage.
+
+Pass the same highlight terms to footprint and burn, including serif-word quotes. Preview rejects a changed cut list until its footprint is rebuilt. An explicitly supplied missing font fails in both commands.

@@ -31,7 +31,8 @@ python plan_takes.py --beats cutlist.json --character character.json --out work/
 python run_takes.py --spec work/takes/takes.json                  # dry run: plan + estimate
 python run_takes.py --spec work/takes/takes.json --only t1 --go   # after the user approves
 python run_takes.py --spec work/takes/takes.json --go             # the rest, voice chained
-python join_takes.py --spec work/takes/takes.json --end <reel length> --out work/creator.mp4
+# Transcribe and inspect EACH take into its planned tN.words.json BEFORE joining.
+python join_takes.py --require-words --spec work/takes/takes.json --end <reel length> --out work/creator.mp4
 # caption-burn: transcribe.py --media work/creator.mp4 --out work/creator.words.json
 python align_beats.py --beats cutlist.json --words work/creator.words.json \
     --out cutlist.aligned.json --max-end <creator.mp4 length>
@@ -118,3 +119,17 @@ These are the user's calls (the recipe's `choices`), never defaults of this atom
    first generation. When it does not, fix the inputs (`--hair`, `--wardrobe`, `--scene`, or a
    different `--seed`, which reshuffles which three skin imperfections are asked for) rather than re-rolling the same brief; an unchanged payload
    with a pinned seed reproduces the same image and wastes the spend.
+
+## Measured join acceptance
+
+Per-take word timing is required in recipes before joining. Confirm every line is complete in each source take; timing cannot recover a word the model never spoke. The join normalizes frame rate and time base, adds silent lead before an early incoming word, and moves a transition after a late outgoing word. It writes the actual mapping and duration in `creator.mp4.timeline.json`. Re-align the cut list to the final audio and extend the layer to that measured duration; do not clamp it back to the planned end. Estimated joins remain available for legacy callers and print a warning.
+
+Use ordinary skin texture and subtle asymmetry for realism. An eyebrow scar is no longer a random default: scars or other distinctive marks require the user's explicit choice. Inspect the still before approving takes.
+
+## Rejection, physical constraints and cast planning
+
+A provider likeness/policy rejection stops the attempt. Preserve the provider's reason, request id and charged/uncharged/unknown state. Do not resubmit an identical rejected payload. Offer a permitted original character, user-cleared reference, or a supported non-likeness route only when allowed by that provider. A different model is not a policy bypass. Review changed inputs and extra spend through the normal approval flow.
+
+Before generation, write a scene checklist from the brief: each wearable's exact count and body location; which hand holds each object; allowed gestures; object contacts and movement; cast identities and reference ownership. Keep unnecessary hands still, use one simple action per shot, and review the whole generated take against the checklist. A prompt is prevention, not proof: reject extra/missing products, impossible contacts or identity drift.
+
+For multiple characters, compare a shared scene with pinned references, fewer people per shot, and separately generated/composed plates. The first preserves interaction but risks identity drift; separate plates improve control but add composition work and may weaken interaction. Lock an approved reference per person and map who speaks each line. No six-character/two-attempt guarantee is supported. A future paid benchmark must state cast size, attempts, budget, model/settings and pass criteria (identity, speaker, counts, gestures and complete dialogue) and retain every failure.

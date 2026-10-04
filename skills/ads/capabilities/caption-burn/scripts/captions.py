@@ -210,6 +210,8 @@ def main():
     anchor = a.anchor or ("seam" if seam else "fixed")
     st = STYLES[a.style]
     px = int(round(st["cap"] * H * 1.38))
+    if a.font and not pathlib.Path(a.font).is_file():
+        raise SystemExit("supplied caption font is missing")
     fnt = serif(px) if st.get("serif") else font(px, a.font)
     heard = []
     if a.words:

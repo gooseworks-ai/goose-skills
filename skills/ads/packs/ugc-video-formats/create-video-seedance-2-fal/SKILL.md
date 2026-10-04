@@ -248,3 +248,9 @@ Memory: `feedback_fal_helpers_timeout_bug.md`. Validated: Lineage Video 01 Call 
 - Sibling NB2 atom (avatar / product stills): `coworkers/video/atoms/image-generation/create-image-nano-banana-2-fal`
 - Composing molecule: `coworkers/video/molecules/ugc-ad/create-ugc-style-video`
 - Shared helpers: `coworkers/video/atoms/_shared/fal_helpers.py`
+
+## Provider rejection and scene acceptance
+
+Preserve the exact rejection reason, request id and charged/uncharged/unknown state. Stop identical rejected submissions; do not batch them or assume a provider switch is a policy bypass. Check which references the selected provider permits and review a permitted original character or non-likeness route, including changed cost, before another paid step. Historical incidents do not establish current universal policy or billing.
+
+Record wearable counts/body locations, holding hands, object contacts and permitted gestures before generation. Review every generated frame against that checklist. Pin a reference per cast member and map speakers to lines. Compare fewer people per shot, shared referenced scenes and separately composed plates. Multi-character success rates and a six-character/two-attempt target remain unmeasured until a separately approved benchmark retains both successes and failures.

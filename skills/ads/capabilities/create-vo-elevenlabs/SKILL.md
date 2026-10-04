@@ -23,3 +23,9 @@ Only the SPOKEN text changes. Captions, on-screen text and the approved script
 keep the written name. When captions are timed from this VO, map the spoken words
 back to the written term.
 
+
+## Read confirmed pronunciation before spending
+
+At the start of every video, read the selected brand's persistent facts, including user-authored pronunciation rules. A previous video's notes or a cached rules file do not establish current pronunciation. For an unknown or ambiguous name, resolve how it is said before the paid voice step. Save the user's confirmed choice in the existing brand-facts store, update an existing rule by its id, then make a separate read and confirm it survived. Never infer successful persistence from a write acknowledgement.
+
+The bundled `read_pronunciations.py` exports user-authored must rules from a fresh context snapshot. It rejects a different brand, conflicting rules and required names that remain unknown. The resulting local rules file is a per-run voice input; the brand store remains the durable source. `gen_vo.py` supports a free dry run to review the resulting spoken text. Captions retain written names.
