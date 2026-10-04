@@ -526,7 +526,7 @@ def main(argv=None):
         # run with the grammars THIS payload recorded. Linting a --pace/--guards prompt with the
         # flags off passes while the clauses those grammars paid for go unchecked, which is
         # exactly how PACE_BLOCK was deleted at seed 4812 and nothing noticed for four seeds.
-        for problem in format_spec.lint(pr, pace=bool(pl.get("pace_grammar")),
+        for problem in format_spec.lint(pr, mode=pl.get("mode", "product-guess"), pace=bool(pl.get("pace_grammar")),
                                         guards=bool(pl.get("guard_grammar")),
                                         mic=bool(pl.get("mic_grammar")),
                                         plain=bool(pl.get("plain_grammar")),
@@ -556,6 +556,8 @@ def main(argv=None):
         if not shots:
             fails.append(f"D {tag}the prompt has no numbered shot list, so the model has nothing "
                          f"to cut on and the product-in-the-opening check cannot run")
+        elif pl.get("mode") == "conversation":
+            notes.append(f"D {tag}mic-only conversation: {len(shots)} ordered shots; no product binding")
         elif not noun:
             fails.append(f"D {tag}cannot tell what the product is: the manifest records no "
                          f"`product_noun` and the no-opening clause is missing, so the "
@@ -817,9 +819,9 @@ def main(argv=None):
                                  "vacuously on that third of the episode.")
                     continue
                 c2 = brandkit.load(bc)
-                expected += [c2["question"]] + brandkit.spoken_lines(c2)
+                expected += brandkit.expected_lines(c2)
         else:
-            expected = [cfg["question"]] + brandkit.spoken_lines(cfg)
+            expected = brandkit.expected_lines(cfg)
         # A NEAR MISS IS A LINE THAT WAS SAID. This was an exact substring test, and on episode
         # 3 it failed "cider maybe" because Whisper transcribed the spoken line as "sider
         # maybe": one letter, on a word the model said correctly. The question this check asks

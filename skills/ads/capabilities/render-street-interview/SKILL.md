@@ -1,15 +1,60 @@
 ---
 name: render-street-interview
-description: Build a vox-pop street interview video ad. An interviewer with a handheld mic asks passers-by one question about the brand's product, they give blunt wrong guesses, one gives the real answer, and the cut lands on a branded end card. Generates the takes through the GooseWorks fal proxy (Seedance 2.0 with native voice), then grades, re-cuts, captions and gates them locally. Use for the street-interview format.
+description: Write a street-interview ad from a complete inspected commercial interaction and current brand facts. Render product guessing, or prepare mic-only, prepared-sample or visible-task conversation script/prompt previews. Premise, actions and ad connection vary; capture rules stay fixed. Conversation media delivery is unverified.
 status: draft
 ---
 
-# render-street-interview
+# Human version
 
-The renderer for the **street-interview** video ad format (goose-studio recipe
-`one-shot-videos/create-street-interview-video`). A handheld interviewer stops people on one
-street corner and asks one question. A few guess wrong, one gets it right, and the cut ends on the
-brand's own line. The people are generated; everything after the takes is free and local.
+## render-street-interview
+
+**Summary.** This is the renderer for the **street-interview** ad format (goose-studio
+recipe `one-shot-videos/create-street-interview-video`). Product guessing retains its
+visible object and reveal. Conversation supports mic-only, prepared-sample and visible-task
+**script/prompt previews**. Choose a coherent situation and earned ad connection before
+writing words. People are generated; conversation media delivery remains unverified.
+
+---
+
+# Agent version
+
+## Script first: choose the execution
+
+Read [street-script-writing](references/street-script-writing.md) before adapting a brand.
+The recipe fixes camera, audio, native timing and finishing rules. Its story choices govern
+premise, participant role, participation reason, visible task, actions, edited opening,
+hook, supported brand explanation and payoff. Do not force a correct-answer winner into a
+service conversation or reduce every brand to a routine problem followed by a logo card.
+
+| Interaction | Current support |
+| --- | --- |
+| `product-guess` | Existing object renderer; standalone product reference required |
+| `mic-only` | Conversation preview; service explanation without a product or device |
+| `product-sample` | Conversation preview; prepared sample in a plain cup, no exact package reference |
+| `concept-challenge` | Conversation preview; described visible task using non-UI props |
+
+Use [[composes::write-video-ad-script]] with the scoped angle bank, current facts and
+selected complete commercial street interactions. `scripts/prepare_script_context.py`
+requires a brief with `offering_type=physical|service|digital` and
+`interaction_type=product-guess|mic-only|product-sample|concept-challenge`. Inspect the full
+visual timeline and spoken exchange: setup, participation reason, hook, product role and
+payoff. Record unseen recruitment or setup as unknown; inference is not observation.
+Seed snippets are leads. Radio and editorial exchanges cannot fill a street-ad gap.
+Keep private observations project-scoped and transfer mechanics, not source-brand claims.
+
+Save a situation brief before dialogue. Write the user's requested count, then map words
+and actions to ordered shots. An edited participant answer or silent action/reaction may
+open the ad. `cfg.question` mirrors the first actual interviewer question, spoken once.
+Keep both spoken voices and 3–8 shots in 6–15 seconds, at no more than 2.5 spoken words/s;
+leave time for actions. New configs describe `interaction.type`, `visible_setup`,
+`participant_reason` and optional `props`; missing interaction defaults to mic-only.
+No forced greeting/consent speech, invented use history or instant product efficacy.
+
+`conversation` currently runs config validation and prompt previews. `single_gen.py --yes`
+refuses that mode until a rendered pilot is validated. Natural speech, audio and camera
+performance remain unverified. The existing product-guess render path is preserved.
+All conversation subtypes refuse product/scene reference bindings and phone, screen or UI
+demonstrations. Dry-run success is not a performed sample, challenge or finished video.
 
 Read the bundled [model notes](references/model-behaviors.md) before generation.
 If a required guide cannot be fetched or opened, stop before spending and name it.
@@ -20,6 +65,9 @@ Use the [project take-ledger guidance](TAKES.md) before reusing a seed. Keep eac
 brand's observed successes and limitations in its own project; a seed is not a quality guarantee.
 
 ## Run
+
+The paid generation and finishing commands below are for `product-guess`. Conversation
+supports `brandkit.py` validation and `single_gen.py` dry runs only.
 
 Run everything from the project the video belongs to. Brand-asset paths in the configs
 (logo, product photo, end-card sting) resolve against that folder, or `$STREET_INTERVIEW_ROOT`.
@@ -34,7 +82,7 @@ python scripts/build_episode.py --episode <name>              # free: grade, re-
 python scripts/check-cut.py --episode <render>.episode.json   # free: the ship gate
 ```
 
-- **A brand is data:** `brands/<slug>.json` holds the product and its reference photo, the
+- **Product-guess brand data:** `brands/<slug>.json` holds the product and its reference photo, the
   street, the question, the cast and their lines, props, captions, logo and end card. Copy
   `brands/demo-tallgrass-oat.json`. No brand appears in `format_spec.py`.
 - **An episode** (`episodes/<name>.json`) joins three takes into a ~25-30 s cut. It names the takes,
@@ -76,9 +124,10 @@ Review actual video adherence through the normal gate and full watch/listen pass
 
 ## Cost
 
-A take is about **$3.64** (12 s at 720p, $0.3034/s); a 30 s episode is three takes, about
+A product-guess take is about **$3.64** (12 s at 720p, $0.3034/s); a 30 s episode is three takes, about
 **$10.92**. Grading, re-cut, captions, looks and every gate are free. Staging prices move, so
 price the first call of a run and quote from that.
+Conversation prompt previews send no media call; no conversation media price is verified.
 
 ## Local finishing
 

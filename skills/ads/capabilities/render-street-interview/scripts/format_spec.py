@@ -694,6 +694,11 @@ def build_prompt(cfg: dict, pace: bool = False, guards: bool = False, mic: bool 
                  upright: bool = False, one_mic: bool = False, prompt_version: int = 1) -> str:
     if prompt_version not in (1, 2):
         raise ValueError("prompt_version must be 1 or 2")
+    if cfg.get("mode") == "conversation":
+        import conversation
+        if any((guards, answers_only, can, mic_ref, can_size, can_sealed, upright)):
+            raise ValueError("product/episode grammars cannot be applied to conversation")
+        return conversation.build_prompt(cfg)
     # `can` is the pre-split name and means BOTH halves, so seeds 4824 and 4827 reproduce.
     can_size, can_sealed = can_size or can, can_sealed or can
     p = cfg["product"]
@@ -712,8 +717,9 @@ def build_prompt(cfg: dict, pace: bool = False, guards: bool = False, mic: bool 
     prompt = (
         # capture grammar. "cinematic" and "shallow depth of field" are BANNED_VOCAB below: both
         # pull a commercial grade, which is the first thing that reads as AI here.
-        "Raw unedited phone footage of a street interview, filmed vertically, handheld, flat grey "
-        "overcast daylight, 30 frames per second. Fast hard jump cuts. "
+        "Raw unedited phone footage of a street interview, filmed vertically, handheld, "
+        f"{cfg['location'].get('light', 'flat grey overcast daylight')}, "
+        "30 frames per second. Fast hard jump cuts. "
 
         # The pace block sits HIGH on purpose: whatever leads the prompt wins (Critical knowledge
         # 2), it is about cutting so it belongs with the capture grammar, and on seed 4809 -- the
@@ -960,7 +966,7 @@ REQUIRED_PER_SHOT = {
 def lint(prompt: str, pace: bool = False, guards: bool = False, mic: bool = False,
          plain: bool = False, answers_only: bool = False, can: bool = False,
          mic_ref: bool = False, can_size: bool = False, can_sealed: bool = False,
-         upright: bool = False, one_mic: bool = False, prompt_version: int = 1):
+         upright: bool = False, one_mic: bool = False, prompt_version: int = 1, mode: str = "product-guess"):
     """The prompt lint, as a function, so `check-cut.py` and `single_gen.py --dry-run` apply the
     SAME rule to the same text. Returns structural failure strings. Length is advisory
     and lives in prompt_warnings(), so a complete prompt is never refused for its count.
@@ -975,6 +981,13 @@ def lint(prompt: str, pace: bool = False, guards: bool = False, mic: bool = Fals
     `guard_grammar` out of the manifest for exactly this reason -- linting a pace prompt with
     `pace=False` would report a PASS while the four clauses the pace grammar paid for went
     unchecked, which is how the pace block was deleted at seed 4812 and nothing noticed."""
+    if mode == "conversation":
+        import conversation
+        if any((guards, answers_only, can, mic_ref, can_size, can_sealed, upright)):
+            return ["product/episode grammars cannot be applied to conversation"]
+        return conversation.lint(prompt, split_shots)
+    if mode != "product-guess":
+        return ["unknown street execution mode"]
     can_size, can_sealed = can_size or can, can_sealed or can
     if mic and mic_ref:
         return ["`mic` and `mic_ref` are two different answers to the same question and the "

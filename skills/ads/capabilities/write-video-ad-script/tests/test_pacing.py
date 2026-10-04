@@ -10,6 +10,7 @@ import pytest
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1] / "scripts"))
 import lint_scripts as ls
 from critique_scripts import build_prompt
+from test_angle_handoff import fixture as angle_fixture
 
 SOURCE = {"kind": "brief", "detail": "A brisk creator read for this ad."}
 
@@ -21,7 +22,24 @@ def candidates(shape, counts):
 
 
 def check(shape, counts, **kwargs):
-    return ls.lint(candidates(shape, counts), shape, **kwargs)
+    cands = candidates(shape, counts)
+    if kwargs.get("strict") and not kwargs.get("report_only"):
+        cands, shape, context = researched(cands, shape)
+        kwargs["context"] = context
+    return ls.lint(cands, shape, **kwargs)
+
+
+def researched(cands, shape):
+    """Timing fixtures also satisfy the new generated-script research/visual contract."""
+    _, _, context = angle_fixture()
+    cands, shape = copy.deepcopy(cands), copy.deepcopy(shape)
+    shape.update(template_id="demo", requires_visuals=True, allowed_visual_modes=["text"])
+    cands.update(brand_id="brand", product_id="bottle", template_id="demo")
+    for concept in cands["concepts"]:
+        concept.update(angle_id="a1", angle=context["angles"][0]["angle"], evidence_ids=["f1"], claims=[])
+        for beat in concept["beats"]:
+            beat["visual"] = {"description": "Synthetic text timing fixture", "mode": "text"}
+    return cands, shape, context
 
 
 def profile(beats, **kwargs):
@@ -187,10 +205,11 @@ def test_cli_strict_checks_timing_preserves_lines_and_report_only(tmp_path):
 def test_generated_strict_cli_rejects_excess_then_passes_supported_plan(tmp_path):
     shape = profile([{"id": "hook", "seconds": 3}, {"id": "proof", "seconds": 5}, {"id": "cta", "seconds": 3}], cta_beat="cta")
     cands = candidates(shape, [5, 10, 7])
+    cands, shape, context = researched(cands, shape)
     shape["pacing_source"] = SOURCE
     shape["beats"][0]["speech_seconds"] = 1
     cmd = [sys.executable, ls.__file__, "--strict", "--out", str(tmp_path / "lint.json")]
-    for name, value in [("candidates", cands), ("shape", shape)]:
+    for name, value in [("candidates", cands), ("shape", shape), ("angle-context", context)]:
         file = tmp_path / f"{name}.json"
         file.write_text(json.dumps(value))
         cmd.extend([f"--{name}", str(file)])
@@ -240,7 +259,8 @@ def test_timeline_skips_unselected_optional_beats_and_keeps_variable_rates():
                      {"id": "optional", "seconds": 20, "optional": True},
                      {"id": "proof", "seconds": 4, "words_per_second": 1.5}], total_seconds=6)
     cands = candidates({"beats": [shape["beats"][0], shape["beats"][2]]}, [8, 6])
-    report = ls.lint(cands, shape, strict=True)
+    cands, shape, context = researched(cands, shape)
+    report = ls.lint(cands, shape, context=context, strict=True)
     assert report["ok"], report
     assert [r["words_per_second"] for r in report["concepts"][0]["timing"]] == [4, 1.5]
 
@@ -257,7 +277,7 @@ def test_unshaped_spoken_copy_cannot_bypass_total_runtime(strict):
     cands["concepts"][0]["beats"].append({"id": "unlisted-proof", "kind": "spoken", "text": " ".join(["detail"] * 120)})
     report = ls.lint(cands, shape, strict=strict)
     assert not report["ok"] and "E_TIMELINE" in codes(report)
-    assert "W_BEAT_UNKNOWN" in codes(report, "warnings")
+    assert ("E_BEAT_UNKNOWN" in codes(report) if strict else "W_BEAT_UNKNOWN" in codes(report, "warnings"))
 
 
 def test_unshaped_spoken_copy_is_counted_without_any_resolved_spoken_slot():
@@ -271,6 +291,9 @@ def test_unshaped_brief_speech_keeps_warning_and_variable_known_rate():
     shape = profile([{"id": "hook", "seconds": 3, "words_per_second": 4}], total_seconds=5)
     cands = candidates(shape, [12])
     cands["concepts"][0]["beats"].append({"id": "unlisted", "text": "Pocket proof"})
-    report = ls.lint(cands, shape, strict=True)
+    report = ls.lint(cands, shape)
     assert report["ok"], report
     assert "W_BEAT_UNKNOWN" in codes(report, "warnings")
+    cands, shape, context = researched(cands, shape)
+    strict_report = ls.lint(cands, shape, context=context, strict=True)
+    assert not strict_report["ok"] and "E_BEAT_UNKNOWN" in codes(strict_report)

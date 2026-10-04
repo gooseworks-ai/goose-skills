@@ -1,17 +1,19 @@
 {
   "version": "1.3.0",
-  "generated": "2026-10-03",
+  "generated": "2026-10-04",
   "skills": [
     {
       "slug": "ad-angle-miner",
       "name": "ad-angle-miner",
       "category": "composites",
       "domain": "ads",
-      "description": ">",
+      "description": "Research supported advertising promises from a specific buyer's context, current product facts, customer language and observed ads. Turn them into static, video or copy ideas; match video ideas to actual recipes and save a product-scoped angle bank for write-video-ad-script. Product-led discovery can use verified facts without reviews. Reference persistence and reach are observations, not proof of performance.",
       "tags": "ads, research, social",
       "path": "skills/ads/composites/ad-angle-miner",
       "files": [
         "skills/ads/composites/ad-angle-miner/SKILL.md",
+        "skills/ads/composites/ad-angle-miner/references/buyer-and-product-role.md",
+        "skills/ads/composites/ad-angle-miner/references/video-handoff.md",
         "skills/ads/composites/ad-angle-miner/skill.meta.json"
       ],
       "metadata": {
@@ -7245,7 +7247,7 @@
       "name": "render-street-interview",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Build a vox-pop street interview video ad. An interviewer with a handheld mic asks passers-by one question about the brand's product, they give blunt wrong guesses, one gives the real answer, and the cut lands on a branded end card. Generates the takes through the GooseWorks fal proxy (Seedance 2.0 with native voice), then grades, re-cuts, captions and gates them locally. Use for the street-interview format.",
+      "description": "Write a street-interview ad from a complete inspected commercial interaction and current brand facts. Render product guessing, or prepare mic-only, prepared-sample or visible-task conversation script/prompt previews. Premise, actions and ad connection vary; capture rules stay fixed. Conversation media delivery is unverified.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-street-interview",
       "files": [
@@ -7283,12 +7285,15 @@
         "skills/ads/capabilities/render-street-interview/episodes/liquid-death-ep3c.json",
         "skills/ads/capabilities/render-street-interview/episodes/liquid-death-ep4.json",
         "skills/ads/capabilities/render-street-interview/references/model-behaviors.md",
+        "skills/ads/capabilities/render-street-interview/references/street-reference-library.json",
+        "skills/ads/capabilities/render-street-interview/references/street-script-writing.md",
         "skills/ads/capabilities/render-street-interview/scripts/bench.py",
         "skills/ads/capabilities/render-street-interview/scripts/brandkit.py",
         "skills/ads/capabilities/render-street-interview/scripts/build.py",
         "skills/ads/capabilities/render-street-interview/scripts/build_episode.py",
         "skills/ads/capabilities/render-street-interview/scripts/build_looks.py",
         "skills/ads/capabilities/render-street-interview/scripts/check-cut.py",
+        "skills/ads/capabilities/render-street-interview/scripts/conversation.py",
         "skills/ads/capabilities/render-street-interview/scripts/edit_timeline.py",
         "skills/ads/capabilities/render-street-interview/scripts/falsify-all.py",
         "skills/ads/capabilities/render-street-interview/scripts/fit_grade.py",
@@ -7297,6 +7302,7 @@
         "skills/ads/capabilities/render-street-interview/scripts/media_proxy.py",
         "skills/ads/capabilities/render-street-interview/scripts/paths.py",
         "skills/ads/capabilities/render-street-interview/scripts/phone_look_video.py",
+        "skills/ads/capabilities/render-street-interview/scripts/prepare_script_context.py",
         "skills/ads/capabilities/render-street-interview/scripts/recut.py",
         "skills/ads/capabilities/render-street-interview/scripts/selftest.py",
         "skills/ads/capabilities/render-street-interview/scripts/single_gen.py",
@@ -7304,6 +7310,7 @@
         "skills/ads/capabilities/render-street-interview/skill.meta.json",
         "skills/ads/capabilities/render-street-interview/tests/fixtures/prompt-snapshots.json",
         "skills/ads/capabilities/render-street-interview/tests/smoke-test.md",
+        "skills/ads/capabilities/render-street-interview/tests/test_conversation.py",
         "skills/ads/capabilities/render-street-interview/tests/test_edit_timeline.py",
         "skills/ads/capabilities/render-street-interview/tests/test_finishing.py",
         "skills/ads/capabilities/render-street-interview/tests/test_prompt_budget.py",
@@ -7327,7 +7334,8 @@
         },
         "requires_skills": [
           "watch",
-          "create-video-seedance-2-fal"
+          "create-video-seedance-2-fal",
+          "write-video-ad-script"
         ]
       }
     },
@@ -9667,18 +9675,25 @@
       "name": "write-video-ad-script",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Write the words of a short-form video ad (voiceover, dialogue, chat bubbles, on-screen lines) the way performance creative teams do instead of from a blank page. Builds the script from the buyers' own words, the beat sheet of an ad that already works and three deliberately different angles, filters them with a rule check and a second non-Claude model, and takes the strongest into the review with the other two as one-line swaps. Use it in every video ad run before any paid step, and whenever the user asks to write, rewrite or improve a video ad script or says a script sounds generic or AI-written.",
+      "description": "Write a short-form video ad from an evidence-backed angle and the selected template's actual recipe. Reuses or fetches ad-angle-miner, preserves the chosen angle, plans words and visuals together, checks product claims and production fit, and delivers the strongest script with useful alternatives. Use before video production and for script rewrites. Customer language is one input alongside audience, promise, product proof, offer and format.",
       "tags": "ads, content",
       "path": "skills/ads/capabilities/write-video-ad-script",
       "files": [
         "skills/ads/capabilities/write-video-ad-script/SKILL.md",
+        "skills/ads/capabilities/write-video-ad-script/references/buyer-and-mechanism.md",
+        "skills/ads/capabilities/write-video-ad-script/references/dialogue-writing.md",
         "skills/ads/capabilities/write-video-ad-script/references/files.md",
         "skills/ads/capabilities/write-video-ad-script/references/hook-families.md",
+        "skills/ads/capabilities/write-video-ad-script/references/human-behavior.md",
+        "skills/ads/capabilities/write-video-ad-script/references/judge-contract.md",
         "skills/ads/capabilities/write-video-ad-script/references/pacing.md",
+        "skills/ads/capabilities/write-video-ad-script/references/scene-and-hook.md",
         "skills/ads/capabilities/write-video-ad-script/scripts/critique_scripts.py",
         "skills/ads/capabilities/write-video-ad-script/scripts/lint_scripts.py",
         "skills/ads/capabilities/write-video-ad-script/scripts/media_proxy.py",
+        "skills/ads/capabilities/write-video-ad-script/scripts/prepare_angle_context.py",
         "skills/ads/capabilities/write-video-ad-script/skill.meta.json",
+        "skills/ads/capabilities/write-video-ad-script/tests/test_angle_handoff.py",
         "skills/ads/capabilities/write-video-ad-script/tests/test_critique_scripts.py",
         "skills/ads/capabilities/write-video-ad-script/tests/test_lint_scripts.py",
         "skills/ads/capabilities/write-video-ad-script/tests/test_pacing.py"
@@ -9691,7 +9706,7 @@
           "ads",
           "content"
         ],
-        "example_prompt": "Write the script for my video ad from what our customers actually say",
+        "example_prompt": "Write a video ad from our researched angle that fits the selected template and shows credible product proof",
         "installation": {
           "base_command": "npx goose-skills install write-video-ad-script",
           "supports": [
@@ -9701,6 +9716,7 @@
           ]
         },
         "requires_skills": [
+          "ad-angle-miner",
           "watch"
         ]
       }
@@ -10319,7 +10335,7 @@
         {
           "slug": "ad-angle-miner",
           "name": "ad-angle-miner",
-          "description": ">",
+          "description": "Research supported advertising promises from a specific buyer's context, current product facts, customer language and observed ads. Turn them into static, video or copy ideas; match video ideas to actual recipes and save a product-scoped angle bank for write-video-ad-script. Product-led discovery can use verified facts without reviews. Reference persistence and reach are observations, not proof of performance.",
           "stage": "analyze",
           "path": "skills/ads/composites/ad-angle-miner"
         },
