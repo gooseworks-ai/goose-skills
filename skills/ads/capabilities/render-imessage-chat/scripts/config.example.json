@@ -1,5 +1,5 @@
 {
-  "_example_note": "Fictional worked example; choose new contact names, copy and brand facts for each customer. Runs without image assets or paid calls.",
+  "_example_note": "Fictional worked example; choose new contact names, phone time, copy and brand facts for each customer. Runs with no chat images or background image and no paid calls; attachments may be inserted anywhere in authored order.",
   "brand_name": "Sample Goods",
   "theme": "dark",
   "dynamic_island": true,
@@ -61,7 +61,8 @@
         "from": "friend",
         "text": "checking it out 👀"
       }
-    ]
+    ],
+    "clock": "10:24"
   },
   "end_card": {
     "bg": "#faf7f2",

@@ -2,10 +2,12 @@
 
 This format recreates the feel of the approved Clinikally Goa texting ad: a
 proportional phone over a background, a believable conversation, real message
-sounds and a brand ending. The contact names and story change for every run.
+sounds and a brand ending. Contact names, phone time, background and story are
+editable for every run.
 
 Keep the approved visual mechanics. Choose new people, words and brand facts.
-Photos, product links and music are optional. The chat itself supplies the copy.
+Images can appear anywhere in the chat, or be omitted entirely. Backgrounds,
+product links and music are optional. The chat itself supplies the copy.
 
 ---
 
@@ -32,16 +34,26 @@ because they appeared in a demo. Blank names fail. Group title is separate from
 individual names; sender labels appear with each sender's first real message,
 including after typing dots and after another person speaks.
 
+Bind the user's displayed phone time to `thread.clock`; both 12-hour and 24-hour
+display text work. An omitted clock uses the neutral shell fallback, not a story
+requirement. Timestamp messages have their own editable labels. The outer
+background is optional `background_image`: replace it with the user's chosen
+local image, or omit it for the neutral background. A text-only conversation
+does not require a chat image or a background image.
+
 Use natural texting in the chosen language and tone. Do not force capitalization,
 formal English or a particular script. The thread is illustrative; do not claim
 that it documents a real customer. Brand claims, prices, coupon codes and ratings
 must come from current approved facts. The archived demo's sunscreen advice and
 offer are historical example copy, not reusable product claims.
 
-An opening photo can be an attachment with `presentation:"photo"`. A product URL
-preview uses `presentation:"rich-link"`, a real image, short title and correct
-brand domain. Neither is mandatory in every story. Files are local or data URIs;
-resolve/download intended assets before rendering and check LFS files are real.
+Use zero, one or several images. Insert each `attachment` directly in
+`thread.messages` where it belongs, from either participant: first, between any
+messages or last. Preserve the authored order. There is no required photo opening,
+midpoint product image or attachment sequence. A photo uses `presentation:"photo"`;
+a product URL preview uses `presentation:"rich-link"`, a real image, short title
+and correct brand domain. Files are local or data URIs; resolve intended assets
+before rendering and check LFS files are real.
 
 ## Timing and repair
 

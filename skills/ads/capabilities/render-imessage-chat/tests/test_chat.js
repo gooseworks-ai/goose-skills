@@ -2,6 +2,9 @@
 // Run: node --test tests/test_chat.js (Playwright Chromium, no network or paid API).
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
 const { chromium } = require('node:module').createRequire(require.resolve('../scripts/record-chat'))('playwright');
 const { buildDocument, buildTimeline, validateThread, checkLayout } = require('../scripts/record-chat');
 const fixture = () => ({ mode:'dm', header:{style:'conversation',unread:0}, participants:[
@@ -25,6 +28,73 @@ test('configuration changes the header name and initial, without a demo identity
     assert.ok(html.includes(name)); assert.ok(!html.includes('Rachel')); assert.ok(!html.includes('Sam'));
     assert.ok(!html.includes('badge-pill">0'));
   }
+});
+
+test('chosen clock and optional/replaced background reach the rendered page', async () => {
+  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'imessage-options-'));
+  const backgrounds=['#8f2244','#22788f'].map((fill,i)=>{
+    const file=path.join(dir,`background-${i}.svg`);
+    fs.writeFileSync(file,`<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><rect width="20" height="20" fill="${fill}"/></svg>`);
+    return file;
+  });
+  let browser;
+  try {
+    browser=await chromium.launch({timeout:15000});
+    const cases=[['10:24',null],['18:07',backgrounds[0]],['7:15 AM',backgrounds[1]]];
+    for (const [clock,background_image] of cases) {
+      const t=fixture(); t.clock=clock;
+      const doc=buildDocument({thread:t,background_image},dir);
+      const p=await browser.newPage({viewport:{width:1080,height:1920}});
+      await p.setContent(doc.html); await p.evaluate(t=>window.__renderAt(t),doc.total);
+      assert.equal(await p.locator('.status-bar .time').textContent(),clock);
+      const actual=await p.locator('body').evaluate(e=>getComputedStyle(e).backgroundImage);
+      if (background_image) assert.ok(actual.includes(fs.readFileSync(background_image).toString('base64')));
+      else assert.ok(actual.includes('radial-gradient'));
+      assert.equal(await p.locator('.attachment').count(),0);
+      assert.deepEqual(await checkLayout(p),[]);
+      await p.close();
+    }
+  } finally {
+    if (browser) await browser.close();
+    fs.rmSync(dir,{recursive:true,force:true});
+  }
+});
+
+test('zero or multiple images preserve authored order at any chat position', async () => {
+  const src='data:image/svg+xml;base64,'+Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" width="160" height="90"><rect width="160" height="90" fill="#557799"/></svg>').toString('base64');
+  const photo=(id,from)=>({id,type:'attachment',from,src,presentation:'photo'});
+  const a={id:'a',type:'text',from:'peer',text:'look at this'};
+  const b={id:'b',type:'text',from:'me',text:'love it'};
+  const first=photo('first','peer'),middle=photo('middle','me'),last=photo('last','peer');
+  middle.presentation='rich-link'; middle.title='See the collection'; middle.subtitle='example.test';
+  const cases=[[a,b],[first,a,b],[a,middle,b],[a,b,last],[first,a,middle,b,last]];
+  const browser=await chromium.launch({timeout:15000});
+  try {
+    for (const messages of cases) {
+      const t=fixture(); t.messages=messages;
+      const doc=buildDocument({thread:t},__dirname);
+      assert.deepEqual(doc.timeline.filter(e=>e.sfx).map(e=>e.id),messages.map(m=>m.id));
+      const p=await browser.newPage({viewport:{width:1080,height:1920}});
+      await p.setContent(doc.html);
+      await p.waitForFunction(()=>[...document.images].every(img=>img.complete && img.naturalWidth>0));
+      assert.deepEqual(await p.locator('[data-anim-id]').evaluateAll(rows=>rows.map(e=>e.dataset.animId)),messages.map(m=>m.id));
+      const images=messages.filter(m=>m.type==='attachment');
+      assert.equal(await p.locator('.attachment').count(),images.length);
+      for (const m of images) {
+        const event=doc.timeline.find(e=>e.id===m.id);
+        assert.equal(event.sfx,m.from==='me'?'send':'receive');
+        await p.evaluate(t=>window.__renderAt(t),event.t-1/30);
+        assert.equal(await p.locator(`[data-anim-id="${m.id}"]`).getAttribute('data-pending'),'1');
+        await p.evaluate(t=>window.__renderAt(t),event.t+0.3);
+        assert.equal(await p.locator(`[data-anim-id="${m.id}"]`).getAttribute('data-pending'),null);
+      }
+      await p.evaluate(t=>window.__renderAt(t),doc.total);
+      assert.deepEqual(await checkLayout(p),[]);
+      const final=await p.locator('[data-anim-id]').last().getAttribute('data-anim-id');
+      assert.equal(final,messages.at(-1).id);
+      await p.close();
+    }
+  } finally {await browser.close();}
 });
 
 test('frame bounds, island inset, light chrome, typing and newest messages', async () => {

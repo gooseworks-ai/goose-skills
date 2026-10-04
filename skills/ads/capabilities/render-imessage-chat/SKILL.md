@@ -6,9 +6,10 @@ status: active
 
 # Human version
 
-Make a texting-story ad with the chosen contact names, a proportional phone,
-an inset Dynamic Island and the original iMessage sounds. The brand and story
-are inputs. A photo, product link, background and music are optional.
+Make a texting-story ad with the chosen contact names and phone time, a
+proportional phone, an inset Dynamic Island and the original iMessage sounds.
+The brand, story and background can change. Images are optional and can appear
+anywhere in the conversation; product links and music are optional too.
 
 This rebuild preserves the shell and sounds from the approved Clinikally Goa
 build. It fixes missing identity binding, the island touching the screen edge,
@@ -27,7 +28,10 @@ The calling recipe supplies NEW names, copy, brand facts and real assets.
 ## Choices and bindings
 
 - Relationship, contact names and group title → `thread.participants`, `thread.title`.
+- Displayed phone time → `thread.clock`, preserving the user's chosen text.
 - Story, tone and language → `thread.messages`. Casual spelling and emojis are allowed.
+- Chat images → zero or more `attachment` entries at their authored positions in
+  `thread.messages`; either participant may send them. Never reorder by type.
 - Theme → `theme: "dark" | "light"`.
 - Background → optional local `background_image`; neutral when absent.
 - Hardware → `dynamic_island: true | false`; true floats inside the screen.
@@ -37,6 +41,8 @@ Exactly one participant is `self:true`. A DM has two participants; its header
 reads the other participant's `name` and derives the first initial unless supplied.
 A group requires a title and named contacts. Missing names fail before capture.
 There is no demo-name fallback. Changing the config changes the visible name.
+When a name changes, update any derived initials too. Keep explicit user-supplied
+initials only when they still match the requested identity.
 
 ## Run
 
@@ -79,7 +85,13 @@ also supports even preview dimensions; the phone must fit with a margin.
 - Optional attachment: `src` local image/data URI, `presentation:"photo"` for a
   photo or `"rich-link"` for image + flush meta card + title/domain/chevron.
   Optional `dwell_sec` overrides its default 3.6-second reading hold.
-- Optional `thread.clock` sets the status time; 9:41 is a neutral UI seed.
+  Text-only chats need no images. One or several attachments can come first,
+  between any messages or last; preserve the user's placement and sender.
+  Never require an opening photo or a product image at a fixed beat.
+- Optional `thread.clock` sets the displayed status-bar time, such as `10:24` or
+  `18:07`. Bind the chosen time; do not replace it with a demo time. Only when
+  absent does the shell use its neutral `9:41` fallback. In-chat timestamp labels
+  are separate message inputs, not a required fixed timestamp.
 - End card: approved `image_path`, or real `logo_svg_path`, `logo_image_path`,
   inline `logo_svg` or `wordmark_text`, brand colors, CTA and optional benefits.
   `stars` defaults to **0**. Ratings require approved `proof_text`.
@@ -105,9 +117,10 @@ copy with `python3 tests/test_stitch.py --write-embedded`.
 ## Verification and failures
 
 Run `node --test tests/test_chat.js` and `python3 -m pytest tests/test_stitch.py`.
-Browser tests cover changing names, blank-name rejection, inset hardware,
-dark/light chrome, group labels after typing, Unicode composer text and long
-threads. Audio tests cover fetched-package delivery and limited overlapping cues.
+Browser tests cover changing names/time/background, text-only chats, attachment
+placement, blank-name rejection, inset hardware, dark/light chrome, group labels
+after typing, Unicode composer text and long threads. Audio tests cover
+fetched-package delivery and limited overlapping cues.
 
 Fix the configuration error and rerender locally. UI defects never justify paid
 generation. Watch the final for the selected name, readable bubbles, smooth scroll,
