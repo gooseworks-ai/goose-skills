@@ -47,6 +47,8 @@ def test_partial_words_fail():
 def test_word_sidecar_rejects_missing_audio(tmp_path):
     p=tmp_path/'words.json';p.write_text(json.dumps([{'text':'x','start':.1,'end':8}]))
     with pytest.raises(ValueError):join.read_words(p,3)
+    p.write_text(json.dumps([{'text':'complete','start':'0.1','end':'0.8'}]))
+    assert join.read_words(p,3)==[{'text':'complete','start':.1,'end':.8}]
 
 def test_notification_wrap_and_legacy_geometry():
     f=build.font('reg',36)

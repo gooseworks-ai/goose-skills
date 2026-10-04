@@ -44,6 +44,7 @@ def read_words(path, duration):
             raise ValueError("invalid measured word")
         if not 0 <= start < end <= duration + .02 or start < previous:
             raise ValueError("words must be ordered and inside their source take")
+        w["start"], w["end"] = start, end
         previous = end
     return words
 
