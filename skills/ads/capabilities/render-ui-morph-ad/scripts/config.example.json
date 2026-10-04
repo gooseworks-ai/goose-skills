@@ -1,0 +1,12 @@
+{
+  "brand":"Your brand","cta":"Explore the product","url":"example.com",
+  "logo":"assets/real-logo.png","font":"assets/brand-font.woff2",
+  "palette":{"paper":"#FAF8F4","ink":"#101010","accent":"#FF4D12","muted":"#6B635B"},
+  "bpm":120,"footer":"Concept animation",
+  "states":[
+    {"kind":"button","title":"An approved hook.","description":"The audience's real problem.","label":"Start a brief"},
+    {"kind":"brief","title":"One specific ask.","label":"A real task this product supports.","items":["Constraint one","Constraint two"]},
+    {"kind":"brain","title":"An approved benefit.","items":["Input one","Input two"]},
+    {"kind":"cta","title":"An approved payoff.","description":"A clear next step."}
+  ]
+}

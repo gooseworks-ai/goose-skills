@@ -7340,6 +7340,37 @@
       }
     },
     {
+      "slug": "render-ui-morph-ad",
+      "name": "render-ui-morph-ad",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Render a brand-bound single-shape motion ad with pure-time HTML, local audio, and deterministic Playwright export.",
+      "tags": "ads, brand, design",
+      "path": "skills/ads/capabilities/render-ui-morph-ad",
+      "files": [],
+      "metadata": {
+        "slug": "render-ui-morph-ad",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads",
+          "brand",
+          "design"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-ui-morph-ad",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
       "slug": "render-value-prop",
       "name": "render-value-prop",
       "category": "capabilities",

@@ -1,0 +1,75 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Single-shape brand film</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;overflow:hidden;width:100%;height:100%}body{color:var(--ink);background:var(--paper);font-family:Brand,sans-serif}
+#stage{width:720px;height:1280px;position:absolute;transform-origin:top left;overflow:hidden;background:var(--paper)}
+#grid{position:absolute;inset:0;background-image:radial-gradient(#b7afa3 1px,transparent 1px);background-size:36px 36px;opacity:.17}
+#brandmark{position:absolute;top:82px;left:60px;width:28px;height:55px;object-fit:contain}#brandlabel{position:absolute;left:101px;top:101px;font-size:22px;letter-spacing:-.7px}
+#counter{position:absolute;right:60px;top:105px;font-size:12px;letter-spacing:2px;color:var(--muted)}
+#headline{position:absolute;left:60px;right:60px;top:232px;font-size:66px;font-weight:500;line-height:1.03;letter-spacing:-3px;text-align:center;white-space:pre-line}
+#description{position:absolute;left:68px;right:68px;top:404px;font-size:21px;line-height:1.4;text-align:center;color:var(--muted)}
+#world{position:absolute;left:0;top:0;width:720px;height:1280px;transform-origin:360px 690px}
+#shell{position:absolute;left:360px;top:705px;transform:translate(-50%,-50%);overflow:hidden;border:1.5px solid #d8d1c8;background:var(--ink);box-shadow:0 20px 40px #2920180d}
+.content{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:18px;padding:28px;opacity:0;color:var(--paper);text-align:center}
+.button-label{font-size:29px;letter-spacing:-.8px}.tiny{font-size:13px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
+.brieftext{font-size:29px;letter-spacing:-.8px;line-height:1.2;max-width:470px}.line{height:2px;width:100%;background:#e3ded5}
+.brainlogo{width:86px;height:162px;object-fit:contain}.chiprow{display:flex;gap:12px}.chip{border:1px solid #d8d1c8;border-radius:30px;padding:12px 15px;font-size:18px;color:var(--ink)}
+.tiles{display:flex;gap:14px;width:100%;height:200px}.tile{flex:1;border-radius:12px;border:1px solid #d8d1c8;position:relative;overflow:hidden;background:var(--paper);color:var(--ink)}
+.tile:nth-child(2){background:#eae5dc}.tile:nth-child(3){background:#e8e9df}.tilelogo{position:absolute;width:47px;height:90px;object-fit:contain;bottom:20px;right:18px}.tileword{font-size:20px;line-height:1.05;text-align:left;position:absolute;left:16px;top:19px;right:14px;letter-spacing:-.7px}.ribbon{position:absolute;bottom:20px;left:16px;width:28px;height:6px;border-radius:3px;background:var(--accent)}
+.photoframe{width:190px;height:185px;border:1.5px solid #d8d1c8;border-radius:16px;background:#ede8df;position:relative;overflow:hidden}.photologo{position:absolute;width:64px;height:123px;object-fit:contain;left:65px;bottom:23px}
+.post{width:240px;border:1.5px solid #d8d1c8;border-radius:18px;padding:20px;color:var(--ink);background:var(--paper)}.postbar{display:flex;align-items:center;gap:10px;font-size:17px;margin-bottom:15px}.postbody{font-size:24px;line-height:1.1;letter-spacing:-.7px;text-align:left}.postimage{background:#e9e3da;height:93px;border-radius:8px;margin-top:16px;position:relative}.postimage img{height:78px;position:absolute;left:90px;top:8px}
+.archive{display:flex;flex-direction:column;width:100%;gap:10px}.archive-row{display:flex;align-items:center;gap:16px;color:var(--ink);padding:13px 18px;border:1px solid #d8d1c8;border-radius:12px;font-size:22px}.archive-dot{width:9px;height:9px;border-radius:50%;background:var(--accent)}.archive-check{margin-left:auto;font-size:20px;color:var(--muted)}
+.cta-logo{width:77px;height:147px;object-fit:contain}#cursor{position:absolute;width:31px;height:42px;transform-origin:0 0;z-index:12;filter:drop-shadow(0 2px 1px #0002)}
+#clickring{position:absolute;width:44px;height:44px;border:2px solid var(--accent);border-radius:50%;opacity:0;z-index:11}
+#footer{position:absolute;left:60px;right:60px;bottom:98px;border-top:1px solid #d8d1c8;padding-top:21px;display:flex;align-items:center;justify-content:space-between;font-size:16px;color:var(--muted)}#footerurl{color:var(--ink);font-size:20px;letter-spacing:-.5px}
+</style></head><body><script id="config" type="application/json">__CONFIG__</script>
+<div id="stage"><div id="grid"></div><img id="brandmark"><div id="brandlabel"></div><div id="counter"></div><div id="headline"></div><div id="description"></div><div id="world"><div id="shell"></div><svg id="cursor" viewBox="0 0 31 42"><path d="M3 2L26 23L16 25L12 37L3 2Z" fill="#0c0a09" stroke="#FAF8F4" stroke-width="2.5" stroke-linejoin="round"/></svg><div id="clickring"></div></div><div id="footer"><span id="footercopy"></span><span id="footerurl"></span></div></div>
+<script>
+const C=JSON.parse(document.getElementById('config').textContent), $=id=>document.getElementById(id), P=C.palette;
+document.documentElement.style.cssText=`--ink:${P.ink};--paper:${P.paper};--accent:${P.accent};--muted:${P.muted}`;
+const fs=document.createElement('style');fs.textContent=`@font-face{font-family:Brand;src:url('${C.font}') format('woff2');font-weight:100 900}`;document.head.append(fs);
+const square=C.ratio==='1:1';const H=square?720:1280;
+$('stage').style.height=H+'px';$('stage').style.transform=`scale(${innerWidth/720})`;
+if(square){$('brandmark').style.top='34px';$('brandlabel').style.top='53px';$('counter').style.top='57px';$('headline').style.top='123px';$('headline').style.fontSize='48px';$('headline').style.letterSpacing='-2px';$('description').style.top='243px';$('description').style.fontSize='18px';$('footer').style.bottom='40px';$('world').style.transformOrigin='360px 450px'}
+$('brandmark').src=C.logo;$('brandlabel').textContent=C.brand;$('footerurl').textContent=C.url;$('footercopy').textContent=C.footer || 'Concept animation';
+$('grid').style.opacity=C.grid===false?'0':'.17';
+const esc=s=>String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
+const logo=cls=>`<img class="${cls}" src="${C.logo}">`;
+const states=C.states, B=C.beat_seconds, duration=states.length*B;
+const geometry={button:[430,100,50,0],brief:[590,240,30,1],brain:[420,295,40,1],ads:[620,290,30,1],photos:[420,295,32,1],social:[350,310,30,1],library:[540,275,30,1],cta:[430,100,50,2]};
+function content(s){const items=s.items||[];switch(s.kind){
+case'button':return `<div class="button-label">${esc(s.label||C.cta)} <span style="color:${P.accent}">↗</span></div>`;
+case'brief':return `<div class="tiny">CAMPAIGN BRIEF</div><div class="brieftext">${esc(s.label)}</div><div class="line"></div><div class="tiny">${esc(items.join(' · '))}</div>`;
+case'brain':return `${logo('brainlogo')}<div class="chiprow">${items.map(x=>`<div class="chip">${esc(x)}</div>`).join('')}</div>`;
+case'ads':return `<div class="tiny">${esc(s.label)}</div><div class="tiles">${items.map((x,i)=>`<div class="tile"><div class="tileword">${esc(x)}</div>${logo('tilelogo')}<div class="ribbon"></div></div>`).join('')}</div>`;
+case'photos':return `<div class="tiny">${esc(s.label)}</div><div class="photoframe">${logo('photologo')}</div>`;
+case'social':return `<div class="post"><div class="postbar"><span style="width:12px;height:12px;border-radius:50%;background:${P.accent}"></span>${esc(C.brand)}</div><div class="postbody">${esc(s.label)}</div><div class="postimage">${logo('')}</div></div>`;
+case'library':return `<div class="tiny">${esc(s.label)}</div><div class="archive">${items.map(x=>`<div class="archive-row"><span class="archive-dot"></span>${esc(x)}<span class="archive-check">✓</span></div>`).join('')}</div>`;
+case'cta':return `<div class="button-label">${esc(C.cta)} <span>↗</span></div>`;
+}}
+const contents=states.map((s,i)=>{const e=document.createElement('div');e.className='content';e.dataset.i=i;e.innerHTML=content(s);$('shell').append(e);return e});
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));const smooth=x=>{x=clamp(x);return x*x*(3-2*x)};
+// Closed-form damped response; no timers, accumulated transforms or previous-frame state.
+const spring=t=>t<=0?0:1-Math.exp(-12*t)*(Math.cos(14*t)+12/14*Math.sin(14*t));
+function timeline(values,t){let v=values[0];for(let i=1;i<values.length;i++)v+=(values[i]-values[i-1])*spring(t-i*B);return v;}
+function mix(a,b,t){return a+(b-a)*t}function color(a,b,t){return '#'+[1,3,5].map(i=>Math.round(mix(parseInt(a.slice(i,i+2),16),parseInt(b.slice(i,i+2),16),clamp(t))).toString(16).padStart(2,'0')).join('')}
+window.renderAt=function(input){let t=clamp(Number(input)||0,0,duration);const close=C.loop&&t>=duration-1;const closing=close?smooth((t-(duration-1))/(1-1/C.fps)):0;if(C.loop&&input>=duration-1/C.fps)t=0;
+const idx=Math.min(states.length-1,Math.floor(t/B)),local=t-idx*B,s=states[idx],geo=states.map(s=>geometry[s.kind]);
+const w=timeline(geo.map(g=>g[0]),t),h=timeline(geo.map(g=>g[1]),t),rad=timeline(geo.map(g=>g[2]),t),cy=square?448:705;
+Object.assign($('shell').style,{width:w+'px',height:h+'px',borderRadius:rad+'px',top:cy+'px'});
+const prev=idx?geometry[states[idx-1].kind][3]:geo[0][3],dest=geo[idx][3],fade=smooth(local/.32),colors=[P.ink,P.paper,P.accent];$('shell').style.background=color(colors[prev],colors[dest],fade);
+contents.forEach((e,i)=>{const enter=smooth((t-i*B-.10)/.24),exit=i===states.length-1?1:1-smooth((t-(i+1)*B+.18)/.15),a=enter*exit;e.style.opacity=a;e.style.filter=`blur(${(1-a)*7}px)`;e.style.transform=`translateY(${(1-enter)*14-(1-exit)*9}px)`;e.style.color=geo[i][3]===1?P.ink:P.paper;
+e.querySelectorAll('.tile').forEach((q,j)=>{const p=spring(t-i*B-.25-j*.14);q.style.transform=`translateY(${(1-p)*75}px) rotate(${(1-p)*(j-1)*8}deg)`;q.style.opacity=clamp(p)});
+e.querySelectorAll('.chip,.archive-row').forEach((q,j)=>{const p=spring(t-i*B-.2-j*.15);q.style.transform=`translateX(${(1-p)*35}px)`;q.style.opacity=clamp(p)});
+const ph=e.querySelector('.photologo');if(ph)ph.style.transform=`rotate(${Math.sin(local*2)*2}deg) scale(${1+.035*Math.sin(local*2)})`;
+});
+// Initial hero and terminal CTA stay readable on the first and last frame.
+if(t<.1){contents[0].style.opacity='1';contents[0].style.filter='none';contents[0].style.transform='none'}
+const tx=smooth(local/.26);$('headline').textContent=s.title;$('description').textContent=s.description||'';$('headline').style.opacity=idx===0?1:tx;$('description').style.opacity=idx===0?1:tx;$('headline').style.transform=`translateY(${idx===0?0:(1-tx)*16}px)`;$('counter').textContent=`${String(idx+1).padStart(2,'0')} / ${String(states.length).padStart(2,'0')}`;
+const cp=smooth(clamp(local/.8)),x=mix(610,535,cp),y=mix(cy+195,cy+44,cp),press=smooth((local-.82)/.12)*(1-smooth((local-1.02)/.12));$('cursor').style.left=x+'px';$('cursor').style.top=y+'px';$('cursor').style.transform=`scale(${1-press*.18})`;$('cursor').style.opacity=idx===states.length-1?1-smooth((local-1)/.3):1;
+const ring=clamp((local-.9)/.35);Object.assign($('clickring').style,{left:(x-22)+'px',top:(y-22)+'px',opacity:(1-ring)*(local>=.9&&local<=1.25?1:0),transform:`scale(${.5+ring*1.2})`});
+$('world').style.transform=`scale(${1+.008*Math.sin(t*Math.PI/B)})`;
+if(close&&t!==0){contents.forEach(e=>e.style.opacity='0');contents[0].style.opacity=Math.max(0,2*closing-1);contents[0].style.filter='none';contents[0].style.transform='none';contents[contents.length-1].style.opacity=Math.max(0,1-2*closing);$('shell').style.background=color(P.accent,P.ink,closing);const first=states[0];$('headline').textContent=closing<.5?s.title:first.title;$('description').textContent=closing<.5?s.description:first.description;$('headline').style.opacity=Math.abs(2*closing-1);$('description').style.opacity=Math.abs(2*closing-1);$('cursor').style.left=mix(x,610,closing)+'px';$('cursor').style.top=mix(y,cy+195,closing)+'px';$('cursor').style.opacity=closing;$('counter').textContent=closing<.5?`${String(states.length).padStart(2,'0')} / ${String(states.length).padStart(2,'0')}`:`01 / ${String(states.length).padStart(2,'0')}`;$('world').style.transform=`scale(${mix(1+.008*Math.sin(t*Math.PI/B),1,closing)})`}
+window.__qa={index:idx,kind:s.kind,title:s.title,time:t,width:w,height:h,ratio:C.ratio};return window.__qa;
+};window.seek=window.renderAt;window.duration=duration;window.renderAt(0);
+</script></body></html>
