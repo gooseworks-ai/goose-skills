@@ -89,10 +89,19 @@ Read the actual recipe, not just its catalogue card. Write shape.json with:
 - Available asset ids, permitted visual modes and any required demonstration.
 - What can change and what stays fixed, including silence, music or lyric constraints.
 
-Use recipe limits first. For speech without limits, measure the reference delivery; only
-then use a provisional 3 words per second for conversation or 2.5 for slower narration.
-Read chat and cards against their own display time and layout. Lyric timing follows bars
-and syllables. A word estimate never establishes that speech or text fits the finished cut.
+For speech, read [pacing](references/pacing.md). Set the desired cadence from the brief's
+explicit delivery direction or observed reference audio, then the recipe's default.
+Preserve explicit recipe limits and record any conflict. Without usable evidence, use a
+provisional 3 words per second for conversation or 2.5 for slow narration, labelled as a
+fallback.
+
+Budget each spoken beat from its speech window, excluding pauses, silent demonstrations
+and end cards. Rates can differ across beats and speakers. Record the rate's source and
+keep recipe estimates separate from observed rendered delivery. Carry this plan into
+production direction. Read chat and cards against their own display time; lyric timing
+follows bars and syllables. A word estimate does not prove that a generated read fits.
+Do not change the recipe to express one run's target or promise forty words in fifteen
+seconds.
 
 Examples of adaptation, not a fixed format catalogue:
 
@@ -244,7 +253,8 @@ Pass references.json too. Generated dialogue must cite an observed conversation 
 street ads require the complete commercial interaction above. A claim-only research bank
 or partial source cannot satisfy this requirement.
 It checks research scope, angle preservation, source ids, template identity, required slots
-(including repeated speakers), text limits, speakers and available assets. Fix errors and
+(including repeated speakers), text limits, speakers and available assets. Strict mode also
+enforces profiled speech budgets and explicit word limits exactly. Fix errors and
 resolve material warnings. The machine cannot prove that a cited fact entails a claim.
 
 Before full-context critique, run the scene-and-hook guide's brief-blind opening review.
@@ -321,3 +331,10 @@ complete proposal that does not require repairing obvious defects.
 
 - [[composes::ad-angle-miner]] — evidence and shared video handoff.
 - [[composes::watch]] — observe reference footage when its beat map is missing.
+
+## Delivery handoff
+
+Include the chosen delivery style, per-beat word counts and speech windows, intentional
+pauses, recipe conflicts and unverified targets in the existing review. Production uses
+the same plan and preserves recipe limits. Review finished audio for the complete read,
+pronunciation, naturalness and sync before declaring delivery fixed.

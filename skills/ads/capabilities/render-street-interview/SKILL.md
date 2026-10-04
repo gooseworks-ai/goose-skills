@@ -56,8 +56,13 @@ performance remain unverified. The existing product-guess render path is preserv
 All conversation subtypes refuse product/scene reference bindings and phone, screen or UI
 demonstrations. Dry-run success is not a performed sample, challenge or finished video.
 
-`REFERENCE.md` holds the format's full history: every numbered **Critical knowledge** entry and
-the rejected takes behind it. Read it before changing the prompt scaffold or a gate.
+Read the bundled [model notes](references/model-behaviors.md) before generation.
+If a required guide cannot be fetched or opened, stop before spending and name it.
+`REFERENCE.md` holds the format's historical **Critical knowledge** entries and
+the rejected takes behind them. Read it before changing the prompt scaffold or a gate;
+its older experiments do not override the current recipe or this entry.
+Use the [project take-ledger guidance](TAKES.md) before reusing a seed. Keep each
+brand's observed successes and limitations in its own project; a seed is not a quality guarantee.
 
 ## Run
 
@@ -87,13 +92,31 @@ python scripts/check-cut.py --episode <render>.episode.json   # free: the ship g
   On a poll timeout, resume with `media_proxy.resume_fal(request_id)`. Never resubmit, since a
   dropped poll has already been billed.
 
+## Prompt length
+
+The final Seedance prompt is built from the project brief and shared shot instructions.
+[BytePlus recommends at most 1,000 English words](https://docs.byteplus.com/en/docs/modelark/create-video-generation-task-api)
+because lengthy prompts may miss details. This is quality guidance. The current
+[Fal schema](https://fal.ai/api/openapi/queue/openapi.json?endpoint_id=bytedance%2Fseedance-2.0%2Freference-to-video)
+declares no maximum prompt length; that does not prove unlimited acceptance.
+
+`single_gen.py` prints a non-blocking advisory above that guideline. The old 1,200-word
+refusal is removed: its source-run observation did not prove a precise boundary. Keep the
+exact approved dialogue and required clauses; do not trim them, reduce the cast or add a paid
+retry just to meet a count. Missing clauses, invalid inputs and existing spend approval still
+block generation. The finished-cut gate reports length as advice, without failing on it.
+Review actual video adherence through the normal gate and full watch/listen pass.
+
 ## Guarantees
 
 - The prompt carries every format clause; `single_gen.py` lints it before any spend, and
   `check-cut.py` imports the same clause list, so a clause cannot be dropped silently.
-- **Captions are derived, never authored:** timing comes from Whisper on the finished render,
-  spelling from the script. A scripted word Whisper skips or mishears inside a sentence is
-  restored. Lines whose shots were dropped leave the caption script.
+- **Captions follow the edited picture.** An episode derives word timing from its finished
+  assembly. A single-take recut measures words on the original take, aligns spelling to the
+  approved script and moves only kept whole words through the same source-span map as the video
+  and shot boundaries. Dropped speech is not captioned; moved or repeated spans move or repeat
+  their captions. A boundary through a word stops finishing: widen the kept span and rebuild.
+  Never reuse raw-take caption timestamps on an edited video.
 - The gate measures the finished file: shot lengths, splices on real cuts, caption timing and
   safe zone, ambience floor per shot, loudness and true peak, every scripted line audible, and
   detail and black point. It prints what it can NOT assess (faces, comprehension, how it sounds)
@@ -105,6 +128,63 @@ A product-guess take is about **$3.64** (12 s at 720p, $0.3034/s); a 30 s episod
 **$10.92**. Grading, re-cut, captions, looks and every gate are free. Staging prices move, so
 price the first call of a run and quote from that.
 Conversation prompt previews send no media call; no conversation media price is verified.
+
+## Local finishing
+
+The local finishing scripts use the current Python interpreter and carry `--run` into child commands. The default grade (`--strength 0`) needs no colour-reference file. A positive strength requires the real reference.
+
+Set approved colours in `brand_layer.palette`: `accent`, `text`, and `background`, each `#RRGGBB` or three RGB integers. Optional `brand_layer.fonts` keys are `black`, `bold`, and `regular` (paths relative to the project). Without overrides, fonts resolve on macOS, Windows or Linux. End-card rows shrink together to fit the safe area; shorten copy if it cannot fit.
+
+The `subway` series bar stays visible through caption gaps. It is also in the caption-free control so the gate measures captions separately from persistent branding.
+
+For a **new** prompt, `generation.prompt_version: 2` (or `--prompt-version 2`) repairs duplicate articles and uses a top-edge rule for non-can packaging. The manifest records the version for the gate. Historical prompts default to version 1 and retain their hashes. Use a new approved seed for a new prompt; do not overwrite an approved take.
+
+### Single-take recuts
+
+Check local finishing prerequisites **before buying a take**: ffmpeg/ffprobe, PIL, NumPy,
+fonts, and local Whisper with its `base` model available. The existing episode transcription
+helper can download an absent Whisper model; prepare it separately before spend. This fix does
+not call another video or voice model. A reused take may supply previously measured original
+word times instead of transcribing again.
+
+Keep the original take and generation manifest. Measure its internal cuts, caption source spans
+and a genuinely speech-free ambience window in `brand_layer`; these remain **source seconds**.
+Remove dead air locally, then add the approved brand layer and end card:
+
+```bash
+python scripts/recut.py <original-take.mp4> <run>/working/interview-recut.mp4 --brand <slug>
+python scripts/build_looks.py --brand <slug> --run <run> --looks <look> \
+  --edit-map <run>/working/interview-recut.plan.json
+python scripts/check-cut.py --brand <slug> --run <run> --look <look> \
+  --edit-map <run>/working/interview-recut.plan.json --take <original-take.mp4> --falsify
+# Repeat the same gate without --falsify, then watch and listen to the entire finished file.
+```
+
+`recut.py` emits the source-span `.plan.json` beside its edited output. `build_looks.py` consumes
+that file, measures source words with the existing free local Whisper helper and saves
+`interview-recut.plan.words.json`. To reuse saved timing, pass `--word-times <file>` to finishing
+and the gate. Its JSON names the original `source` and contains ordered `[start, end, word]`
+rows. It must come from actual source audio, not estimates from the script. Missing transcription
+or incompatible timing stops finishing; there is no fallback to the original caption schedule.
+
+Recut masters and caption-free controls have separate `-recut-` names. The original takes,
+controls and episode outputs stay intact. Ambience is extracted from the measured quiet window
+of the **original** source even if that window was dropped; only that WAV is looped. If the recut
+already applied its continuous bed, finishing does not mix it a second time. The end card always
+uses original room tone. The same mapped cuts clamp captions with a half-open end boundary so
+one person's last words do not appear on the next shot's first frame.
+
+`build.py` remains an intermediate grade-and-recut helper. To finish its already graded output,
+use its printed map with `build_looks.py --pregraded`; do not grade it twice. A changed spoken
+line, story, paid retry or generation count still needs its existing review and approval. Run the
+normal finished-file gate and full watch/listen review; a synthetic timing test does not approve
+faces or the original customer's ad.
+
+Free regression checks:
+
+```bash
+python -m unittest discover -s tests -p 'test_*.py' -v
+```
 
 ## Known limits
 

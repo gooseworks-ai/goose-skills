@@ -236,6 +236,15 @@ class StreetPreviewTests(unittest.TestCase):
         c=cfg();c['location']['light']='late afternoon sunlight'
         self.assertIn('late afternoon sunlight',format_spec.build_prompt(c))
 
+    def test_complete_conversation_prompt_uses_shared_length_advice(self):
+        c = cfg()
+        c['location']['landmarks'] = ' '.join(['brickwork'] * 1001)
+        p = format_spec.build_prompt(c)
+        self.assertEqual(format_spec.lint(p, mode='conversation'), [])
+        self.assertTrue(format_spec.prompt_warnings(p))
+        self.assertTrue(format_spec.lint(p.replace('same microphone', 'same object'),
+                                        mode='conversation'))
+
     def test_invalid_shot_types_and_spoken_reactions_are_rejected(self):
         for malformed in ('not a shot', {'kind':'reaction','speaker':'participant','line':'Yes'},
                           {'kind':'reaction','speaker':'participant','line':32}):

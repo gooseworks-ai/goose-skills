@@ -87,7 +87,38 @@ Use `transcript-intelligence` when the ad includes spoken content. Analyze TikTo
 
 For each competitor domain, scrape ads from Google Ads Transparency Center.
 
-Use the structured advertiser endpoints first:
+### Save confirmed Google research in GooseWorks
+
+When the user wants saved research and the connected app exposes `ads_library_scrape`, use the durable import path. First identify the exact public advertiser URL/AR ID and the existing brand competitor ID. Ask the user to confirm that advertiser belongs to the selected competitor and approve the ad, request and provider USD limits. Do not infer that confirmation from a name or the first discovery result.
+
+```json
+{
+  "tool": "ads_library_scrape",
+  "arguments": {
+    "brand_id": "<active brand UUID>",
+    "library_provider": "google",
+    "advertiser_id": "AR01614014350098432001",
+    "relationship": "competitor",
+    "competitor_id": "<existing competitor UUID in this brand>",
+    "name": "<confirmed advertiser label>",
+    "confirmed": true,
+    "max_ads": 10,
+    "max_provider_requests": 11,
+    "max_spend_usd": 0.10,
+    "refresh": false
+  }
+}
+```
+
+`max_ads` accepts 1–25; `max_provider_requests` accepts 1–26 and includes the listing; `max_spend_usd` must be positive and at most 5. The USD cap uses the app's configured provider tariff; imports use managed workspace credits. The example limits are examples, not permission to spend. An exact advertiser URL can replace `advertiser_id` using `ad_library_url`.
+
+Poll the returned stable `source_id` using `job_get { "kind": "library_scrape", "brand_id": "<same brand UUID>", "job_id": "<source_id>" }`. Read the saved entries, canonical Google creative citations, added/changed/unchanged/failed counts and actual/null cost receipts from `result`. Report queued/running/partial/empty/failed states honestly. A saved source can be imported again with `source_id`; `refresh:true` incurs detail requests and needs fresh explicit limits/confirmation. Complete saved details are reused otherwise. Research is reference-only: no activation, remix rights, guaranteed downloadable videos or approved claims.
+
+Unconfirmed discovery stays separate. Browse the public library to select an advertiser; generic provider results are temporary until this confirmed import succeeds. If the live app does not expose the Google fields, report that limitation and retain cited temporary research rather than claiming it was saved. The generic `data_call_provider` operation, does not persist a Google source.
+
+### Temporary provider research
+
+Use the structured advertiser endpoints for temporary research only after any required paid-call approval. This path alone does not save entries in the brand:
 
 ```yaml
 - provider: scrapecreators
@@ -100,8 +131,10 @@ Use the structured advertiser endpoints first:
   method: GET
   path: /v1/google/ad
   query:
-    id: "[ad_id]"
+    url: "[adUrl returned by the advertiser listing]"
 ```
+
+Pass the full public Google creative URL to the detail endpoint; a creative ID alone is not its input. See the [official detail contract](https://docs.scrapecreators.com/v1/google/ad/).
 
 Use the public Google Ads Transparency Center or web search only when the structured endpoint is incomplete. Mark fallback records so coverage limits remain visible.
 

@@ -8,6 +8,16 @@ created: 2026-09-29
 updated: 2026-09-29
 ---
 
+# Human version
+
+**Summary.** This is the historical street-interview development record, through 2026-10-01. It preserves successes, rejected takes and measured limitations. Some entries describe older single-take modes, proposed experiments and superseded defaults. Use the current `SKILL.md`, selected recipe and bundled [model notes](references/model-behaviors.md) for execution. Dated cost figures are not current credit estimates.
+
+Private Studio/project paths, missing `references/REFERENCES.md`, original footage and `SYNC.md` below are optional authoring evidence. They are not customer prerequisites. Brand names, seeds and props describe those experiments; they must not become another brand's defaults.
+
+---
+
+# Agent version
+
 # create-street-interview-video
 
 **Current scope (2026-10-03).** This ledger preserves the paid product-guess findings below.
@@ -48,15 +58,7 @@ guess wrong in an escalating way, and the last answer is the truth. It is the hi
 short-form format in this niche and the most dangerous to build, because it needs believable
 human faces.
 
-**Closest siblings:** `molecules/create-avatar-reel` for generated people, and
-`molecules/create-goose-host-list-reel` for the caption and mastering machinery. Read
-`skills/atoms/_shared/MODEL_BEHAVIORS.md` and `one-shot-videos/AVATAR_GENERATION.md` before
-generating.
-
-**Read `READINESS.md` first.** It states what is proven, what is not, and what the next
-experiment is. The short version: the scripts run unattended, and whether the generated faces
-clear the realism bar has never been ruled on. Four earlier rounds did not. `TAKES.md` has every
-rejected take and seed; `references/REFERENCES.md` has the measured bar.
+Read the bundled [model notes](references/model-behaviors.md) and current `SKILL.md` before generating. This format does not require an avatar still. `READINESS.md` records the 2026-09-29 assessment; its then-unruled face question was superseded by the 2026-10-01 observation in Status below. That later success does not certify a new take. `TAKES.md` explains how to record this project's successes, rejections, limitations and seeds. Missing private measurements and sibling molecules are optional authoring context.
 
 NOT the right molecule for: a single talking head to camera (`create-avatar-reel`), a product
 demo (`product-video/`), or anything where the faces must be a specific real person.
@@ -210,10 +212,7 @@ Every script resolves the repo root by marker and the run folder by `--run`
 (default `projects/street-interview/`, or `$STREET_INTERVIEW_RUN`). See `scripts/paths.py`:
 none of them may assume they sit next to the take, which is what broke all of them once.
 
-Reference build: `projects/street-interview/`. Copy it, do not blank-page a new one. **Note that
-`projects/` is gitignored**, so a fresh checkout has this skill's `TAKES.md` and
-`references/REFERENCES.md` but none of the footage, the approved take or the colour target. Those
-have to be re-fetched before a paid run; `READINESS.md` says what.
+Historical reference build: `projects/street-interview/` was private and gitignored. Its footage, approved take and colour target are optional development evidence, not inputs that a customer must re-fetch. Start with the bundled generic brand config, bind this project's assets and choices, and use zero-strength finishing unless a real colour reference is supplied.
 
 ## Critical knowledge
 
@@ -762,4 +761,4 @@ was not done.
 ## Sync
 
 Studio-authored. Needs back-porting to the lab or it is silently overwritten on the next
-promote. See `SYNC.md`.
+promote. `SYNC.md` was a private authoring ledger, not a customer prerequisite; publish package updates through the current source PR workflow.

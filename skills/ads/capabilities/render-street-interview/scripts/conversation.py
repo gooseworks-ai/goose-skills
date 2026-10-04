@@ -183,7 +183,7 @@ def build_prompt(cfg):
     return "".join(parts)
 
 
-def lint(prompt, split_shots, word_ceiling):
+def lint(prompt, split_shots):
     low = prompt.lower()
     errors = [f'conversation prompt is missing "{k}" -- {v}' for k, v in CLAUSES.items() if k not in low]
     kinds = re.findall(r"interaction type: ([a-z-]+)\.", low)
@@ -201,6 +201,4 @@ def lint(prompt, split_shots, word_ceiling):
                 errors.append(f"conversation shot {i} misses {needle}")
     if "@image" in low:
         errors.append("conversation preview must not refer to an unbound image")
-    if len(prompt.split()) > word_ceiling:
-        errors.append("conversation prompt exceeds the prompt word ceiling")
     return errors

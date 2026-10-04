@@ -23,6 +23,7 @@ Every treatment writes text with PIL. No model renders a letter, ever.
 import argparse
 import json
 import subprocess
+import sys
 import tempfile
 from pathlib import Path
 
@@ -30,6 +31,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 import brandkit
 import paths
+import edit_timeline
 
 HERE = paths.HERE
 ROOT = paths.ROOT
@@ -41,12 +43,28 @@ TAKE = None                          # the approved base for this brand; never r
 # SRC / OUTDIR / CTRL are resolved per run in main(), not at import, because the take lives in
 # the RUN folder and not next to the script. They are module-level names because check-cut.py
 # imports this module for LINES and CUTS.
-SRC = OUTDIR = CTRL = None
+SRC = OUTDIR = CTRL = RUN = None
+SOURCE = BASE_TAKE = EDIT_MAP = None
+PRE_GRADED = False
 W, H = 1080, 1920
 SAFE_TOP, SAFE_BOT = 285, 1635
-BLACK = "C:/Windows/Fonts/ariblk.ttf"
-BOLD = "C:/Windows/Fonts/arialbd.ttf"
-REG = "C:/Windows/Fonts/arial.ttf"
+def resolve_font(weight):
+    names = {"black": ("ariblk.ttf", "Arial Black.ttf", "DejaVuSans-Bold.ttf"),
+             "bold": ("arialbd.ttf", "Arial Bold.ttf", "DejaVuSans-Bold.ttf"),
+             "regular": ("arial.ttf", "Arial.ttf", "DejaVuSans.ttf")}[weight]
+    roots = (Path("C:/Windows/Fonts"), Path("/System/Library/Fonts/Supplemental"),
+             Path("/usr/share/fonts/truetype/dejavu"))
+    for root in roots:
+        for name in names:
+            candidate = root / name
+            if candidate.is_file():
+                return str(candidate)
+    raise RuntimeError(f"No {weight} TrueType font found. Install Arial or DejaVu Sans.")
+
+
+# A run may supply all its fonts on a host without our system fallbacks.
+# Resolve defaults only when configuring a run or drawing an unconfigured helper.
+BLACK = BOLD = REG = None
 GOLD, CREAM, INK = (203, 161, 79), (252, 246, 239), (12, 12, 12)
 
 # The take's OWN internal cuts, MEASURED off the render and stored in the brand config, never
@@ -65,8 +83,8 @@ def run(c, **k):
     subprocess.run([str(x) for x in c], check=True, **k)
 
 
-def heavy(text, size, fill, font=BLACK, italic=True, outline=6, alpha=235):
-    f = ImageFont.truetype(font, size)
+def heavy(text, size, fill, font=None, italic=True, outline=6, alpha=235):
+    f = ImageFont.truetype(font or BLACK or resolve_font("black"), size)
     tw = int(ImageDraw.Draw(Image.new("RGBA", (10, 10))).textlength(text, font=f))
     pad = outline * 2 + size
     img = Image.new("RGBA", (tw + pad * 2, int(size * 1.9)), (0, 0, 0, 0))
@@ -122,14 +140,22 @@ def t_clean(text, style, job, sent):
     return c
 
 
-def t_subway(text, style, job, sent):
+def subway_brand_layer():
     c = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     # the series bar: on screen the whole video, which is what makes a vox pop read as a format
     plate(c, (0, 300, W, 386), fill=(24, 24, 24, 235), r=0)
     f = ImageFont.truetype(BLACK, 40)
     d = ImageDraw.Draw(c)
     hdr = CFG["brand_layer"]["series_header"]
+    if d.textlength(hdr, font=f) > W - 120:
+        raise ValueError("series_header is wider than the safe area; shorten it")
     d.text(((W - d.textlength(hdr, font=f)) // 2, 316), hdr, font=f, fill=GOLD + (255,))
+    return c
+
+
+def t_subway(text, style, job, sent):
+    c = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    d = ImageDraw.Draw(c)
     body = sent
     fb = ImageFont.truetype(BOLD, 52)
     words, rows, cur = body.split(), [], ""
@@ -252,9 +278,9 @@ def karaoke_cards(td):
     return out
 
 
-def end_card(path):
+def end_card(path, brand_layer=None):
     img = Image.new("RGB", (W, H), INK).convert("RGBA")
-    bl = CFG["brand_layer"]
+    bl = brand_layer if brand_layer is not None else CFG["brand_layer"]
     lw, ly = 720, 520
     logo_h = 0
     if bl.get("logo"):
@@ -266,12 +292,21 @@ def end_card(path):
         white.putalpha(logo.split()[3])
         img.alpha_composite(white, ((W - lw) // 2, ly))
         logo_h = logo.height
-    y = ly + logo_h + 130
-    rows = [(r, CREAM if i == 0 else GOLD) for i, r in enumerate(bl["end_card"])]
-    for i, (row, col) in enumerate(rows):
-        t = heavy(row, 66, col, italic=False, outline=5)
-        img.alpha_composite(t, ((W - t.width) // 2, y + i * 86))
-    assert y + 86 + 66 < SAFE_BOT
+    y = max(SAFE_TOP, ly + logo_h + 130)
+    rows = bl["end_card"]
+    if not rows:
+        raise ValueError("brand_layer.end_card needs at least one line")
+    max_h = SAFE_BOT - y - 20
+    for size in range(66, 19, -2):
+        rendered = [heavy(row, size, CREAM if i == 0 else GOLD, italic=False, outline=5)
+                    for i, row in enumerate(rows)]
+        if max(t.width for t in rendered) <= W - 120 and sum(t.height for t in rendered) + 20 * (len(rows) - 1) <= max_h:
+            break
+    else:
+        raise ValueError("end-card copy does not fit the safe area; shorten it")
+    for t in rendered:
+        img.alpha_composite(t, ((W - t.width) // 2, y))
+        y += t.height + 20
     img.convert("RGB").save(path)
 
 
@@ -284,11 +319,19 @@ def build(look, captions=True):
         raise RuntimeError("call resolve(run) first: the take lives in the run folder")
     OUTDIR.mkdir(parents=True, exist_ok=True)
     CTRL.mkdir(parents=True, exist_ok=True)
-    OUT = (OUTDIR / f"street-{CFG['slug']}-{look}.mp4") if captions else control_path(look)
+    OUT = output_path(look) if captions else control_path(look)
     with tempfile.TemporaryDirectory() as td:
         td = Path(td)
         graded = td / "g.mp4"
-        run(["python", HERE / "phone_look_video.py", SRC, graded, *grade_args(look)])
+        if PRE_GRADED:
+            import shutil
+            if look == "doc":
+                run(["ffmpeg", "-v", "error", "-y", "-i", SRC, "-vf", "eq=saturation=0.78",
+                     "-c:v", "libx264", "-crf", "17", "-c:a", "copy", graded])
+            else:
+                shutil.copyfile(SRC, graded)
+        else:
+            run([sys.executable, HERE / "phone_look_video.py", SRC, graded, "--run", RUN, *grade_args(look)])
 
         cards = []
         if not captions:
@@ -306,10 +349,16 @@ def build(look, captions=True):
                 img.save(p)
                 cards.append((s, min(e, cut), p))
 
+        # Keep series branding through caption gaps and in the caption-free control.
+        if look == "subway":
+            p = td / "series.png"
+            subway_brand_layer().save(p)
+            cards.insert(0, (None, None, p))
         ins, filt, last = ["-i", str(graded)], [], "0:v"
         for i, (s, e, p) in enumerate(cards, start=1):
             ins += ["-i", str(p)]
-            filt.append(f"[{last}][{i}:v]overlay=0:0:enable='between(t,{s:.2f},{e:.2f})'[v{i}]")
+            enable = "" if s is None else f":enable='gte(t,{s:.6f})*lt(t,{e:.6f})'"
+            filt.append(f"[{last}][{i}:v]overlay=0:0{enable}[v{i}]")
             last = f"v{i}"
         capped = td / "capped.mp4"
         run(["ffmpeg", "-v", "error", "-y", *ins,
@@ -328,10 +377,23 @@ def build(look, captions=True):
         # the whole video. That is the documented "random background noises" fault, reintroduced
         # by a constant that outlived the take it was measured on.
         gap_s, gap_d = CFG["brand_layer"]["ambience_gap"]
+        mapped_ambient = (EDIT_MAP or {}).get("ambience", {})
+        if mapped_ambient.get("start") is not None:
+            gap_s, gap_d = mapped_ambient["start"], mapped_ambient["duration"]
+        # The gap is in SOURCE seconds, even when it was dropped or moved by the edit.
+        # Extract exactly this measured window, then loop the WAV, never the whole take.
+        source = SOURCE or SRC
+        if gap_s < 0 or gap_d <= 0 or gap_s + gap_d > float(subprocess.run(
+                ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(source)],
+                capture_output=True, text=True, check=True).stdout) + 0.01:
+            raise ValueError("measured ambience gap is outside the original source")
+        room = td / "room.wav"
+        run(["ffmpeg", "-v", "error", "-y", "-ss", str(gap_s), "-t", str(gap_d), "-i", source,
+             "-vn", "-af", "aresample=48000,highpass=f=80,lowpass=f=4000", room])
         amb = td / "amb.m4a"
-        run(["ffmpeg", "-v", "error", "-y", "-ss", f"{gap_s}", "-t", "2.2", "-i", SRC, "-vn",
-             "-af", "aresample=48000,lowpass=f=2200,volume=-10dB,afade=t=in:d=0.25,"
-                    "afade=t=out:st=1.95:d=0.25", "-c:a", "aac", "-b:a", "160k", amb])
+        run(["ffmpeg", "-v", "error", "-y", "-stream_loop", "-1", "-i", room, "-t", "2.2",
+             "-af", "lowpass=f=2200,volume=-10dB,afade=t=in:d=0.25,afade=t=out:st=1.95:d=0.25",
+             "-c:a", "aac", "-b:a", "160k", amb])
         endclip = td / "end.mp4"
         run(["ffmpeg", "-v", "error", "-y", "-loop", "1", "-t", "2.2", "-i", ep, "-i", amb,
              "-vf", f"scale={W}:{H},gblur=sigma=0.7,noise=c0s=4:c0f=t+u,format=yuv420p",
@@ -342,16 +404,18 @@ def build(look, captions=True):
         # ambience across its own internal cuts too (mean 18.0dB on this take, against 5.9dB on
         # the real reference), so the bed is needed even here. It comes from the take's own
         # speech-free gap, so it is the same street on the same afternoon.
-        bed = td / "bed.m4a"
-        run(["ffmpeg", "-v", "error", "-y", "-stream_loop", "-1", "-ss", f"{gap_s}",
-             "-t", f"{gap_d}",
-             "-i", SRC, "-vn", "-af", "aresample=48000,highpass=f=80,lowpass=f=4000,volume=-4dB",
-             "-t", "40", "-c:a", "aac", "-b:a", "160k", bed])
         bedded = td / "bedded.mp4"
-        run(["ffmpeg", "-v", "error", "-y", "-i", capped, "-i", bed, "-filter_complex",
-             "[1:a]aformat=channel_layouts=stereo:sample_rates=48000[b];"
-             "[0:a][b]amix=inputs=2:normalize=0[a]", "-map", "0:v", "-map", "[a]",
-             "-c:v", "copy", "-shortest", "-c:a", "aac", "-b:a", "192k", bedded])
+        if EDIT_MAP and EDIT_MAP.get("ambience", {}).get("bed_applied"):
+            import shutil
+            shutil.copyfile(capped, bedded)
+        else:
+            bed = td / "bed.m4a"
+            run(["ffmpeg", "-v", "error", "-y", "-stream_loop", "-1", "-i", room,
+                 "-af", "volume=-4dB", "-t", "40", "-c:a", "aac", "-b:a", "160k", bed])
+            run(["ffmpeg", "-v", "error", "-y", "-i", capped, "-i", bed, "-filter_complex",
+                 "[1:a]aformat=channel_layouts=stereo:sample_rates=48000[b];"
+                 "[0:a][b]amix=inputs=2:normalize=0[a]", "-map", "0:v", "-map", "[a]",
+                 "-c:v", "copy", "-shortest", "-c:a", "aac", "-b:a", "192k", bedded])
 
         lst = td / "l.txt"
         lst.write_text(f"file '{bedded.as_posix()}'\nfile '{endclip.as_posix()}'", encoding="utf-8")
@@ -393,6 +457,11 @@ def build(look, captions=True):
     print(f"  {OUT.name}  {float(d):.2f}s  {OUT.stat().st_size // 1024} KB")
 
 
+def output_path(look):
+    suffix = "-recut" if EDIT_MAP else ""
+    return OUTDIR / f"street-{CFG['slug']}{suffix}-{look}.mp4"
+
+
 def control_path(look):
     """The caption-free control for one look.
 
@@ -404,21 +473,60 @@ def control_path(look):
     left out: a control encoded any other way differs in every pixel, because the concat pass is
     bitrate-capped, and then the whole frame reads as a caption.
     """
-    new = CTRL / f"graded-{CFG['slug']}-{look}.mp4"
+    suffix = "-recut" if EDIT_MAP else ""
+    new = CTRL / f"graded-{CFG['slug']}{suffix}-{look}.mp4"
+    if EDIT_MAP:
+        return new
     legacy = CTRL / f"graded-{look}.mp4"
     return new if new.exists() or not legacy.exists() else legacy
 
 
-def resolve(run=None, brand=None):
+def configure_brand_layer(bl):
+    """Apply approved palette/fonts for either a single take or an episode."""
+    global GOLD, CREAM, INK, BLACK, BOLD, REG
+    palette = bl.get("palette") or {}
+    def colour(key, default):
+        value = palette.get(key, default)
+        if isinstance(value, str):
+            value = value.removeprefix("#")
+            if len(value) != 6:
+                raise ValueError(f"palette.{key} must be #RRGGBB or three RGB values")
+            value = tuple(int(value[i:i + 2], 16) for i in (0, 2, 4))
+        if len(value) != 3 or any(not isinstance(c, int) or not 0 <= c <= 255 for c in value):
+            raise ValueError(f"palette.{key} must have three RGB values in 0..255")
+        return tuple(value)
+    GOLD = colour("accent", (203, 161, 79))
+    CREAM = colour("text", (252, 246, 239))
+    INK = colour("background", (12, 12, 12))
+    fonts = bl.get("fonts") or {}
+    BLACK, BOLD, REG = (str(paths.ROOT / fonts[w]) if fonts.get(w) else resolve_font(w)
+                        for w in ("black", "bold", "regular"))
+
+
+def resolve(run=None, brand=None, edit_map=None, word_times=None, pregraded=False):
     """Point SRC / OUTDIR / CTRL and the brand layer at a run folder. Also used by check-cut.py."""
-    global SRC, OUTDIR, CTRL, CFG, TAKE, CUTS, LINES
+    global SRC, OUTDIR, CTRL, RUN, CFG, TAKE, CUTS, LINES, GOLD, CREAM, INK, BLACK, BOLD, REG
+    global SOURCE, BASE_TAKE, EDIT_MAP, PRE_GRADED
     CFG = brandkit.load(brand)
     bl = CFG["brand_layer"]
+    configure_brand_layer(bl)
     TAKE = f"{brandkit.take_name(CFG)}.mp4"
     CUTS = list(bl["cuts"] or [])
     LINES = [tuple(r) for r in bl.get("captions") or []]
     L = paths.layout(run)
+    RUN = L["run"]
     SRC, OUTDIR, CTRL = L["takes"] / TAKE, L["looks"], L["graded"]
+    SOURCE = BASE_TAKE = SRC
+    EDIT_MAP = None
+    PRE_GRADED = pregraded
+    if edit_map:
+        EDIT_MAP = edit_timeline.load_map(edit_map)
+        SOURCE, SRC = Path(EDIT_MAP["source"]), Path(EDIT_MAP["output"])
+        cache = Path(EDIT_MAP["_path"]).with_suffix(".words.json")
+        word_times = word_times or (cache if cache.exists() else None)
+        words = edit_timeline.load_words(word_times, SOURCE) if word_times else None
+        LINES = edit_timeline.captions_after_edit(LINES, EDIT_MAP, words)
+        CUTS = edit_timeline.cuts_after_edit(CUTS, EDIT_MAP)
     return L
 
 
@@ -426,6 +534,9 @@ if __name__ == "__main__":
     ap = paths.add_run_arg(argparse.ArgumentParser())
     ap.add_argument("--brand", default=None, help="brand slug in brands/ (default liquid-death)")
     ap.add_argument("--looks", default=",".join(TREAT))
+    ap.add_argument("--edit-map", type=Path, help="recut.py source-span .plan.json; uses its edited output")
+    ap.add_argument("--word-times", type=Path, help="measured original-source words JSON; required for partial spoken spans")
+    ap.add_argument("--pregraded", action="store_true", help="the recut already has the approved base grade (build.py output)")
     ap.add_argument("--dry-run", action="store_true",
                     help="resolve paths, render every caption LAYER to PNG and assert the safe "
                          "zone, but run no ffmpeg and touch no network")
@@ -434,7 +545,18 @@ if __name__ == "__main__":
     for look in looks:
         if look not in TREAT:
             raise SystemExit(f"no look {look!r}. Known: {', '.join(TREAT)}")
-    L = resolve(A.run, A.brand)
+    if A.word_times and not A.edit_map:
+        ap.error("--word-times requires --edit-map")
+    if A.pregraded and not A.edit_map:
+        ap.error("--pregraded requires --edit-map")
+    if A.edit_map and not A.word_times and not A.dry_run:
+        plan = edit_timeline.load_map(A.edit_map)
+        cache = A.edit_map.resolve().with_suffix(".words.json")
+        if not cache.exists():
+            words = edit_timeline.measure_words(plan["source"], brandkit.load(A.brand))
+            cache.write_text(json.dumps({"source": plan["source"], "source_sha256": edit_timeline.file_hash(plan["source"]), "words": words}, indent=2), encoding="utf-8")
+        A.word_times = cache
+    L = resolve(A.run, A.brand, A.edit_map, A.word_times, A.pregraded)
     print(f"brand      {CFG['brand']}  ({CFG['_path']})")
     if not CUTS:
         raise SystemExit(
@@ -482,6 +604,15 @@ if __name__ == "__main__":
     if not SRC.exists():
         raise SystemExit(f"no take at {SRC}. Generate it with single_gen.py (PAID, ~$3.64) or "
                          f"pass --run at the folder that holds it.")
+    if EDIT_MAP:
+        source_duration = float(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration",
+                       "-of", "csv=p=0", str(SOURCE)], capture_output=True, text=True, check=True).stdout)
+        if abs(source_duration - EDIT_MAP["source_duration"]) > 0.1:
+            raise SystemExit("edit map source duration is stale; rebuild the map and word timings")
+        actual = float(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration",
+                       "-of", "csv=p=0", str(SRC)], capture_output=True, text=True, check=True).stdout)
+        if abs(actual - EDIT_MAP["output_duration"]) > 0.1:
+            raise SystemExit("edit map does not match the recut duration; rebuild the map, never reuse original caption times")
     for look in looks:
         print(f"{look}:")
         build(look, captions=True)

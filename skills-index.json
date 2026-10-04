@@ -1,6 +1,6 @@
 {
   "version": "1.3.0",
-  "generated": "2026-10-03",
+  "generated": "2026-10-04",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -1991,6 +1991,7 @@
       "path": "skills/ads/capabilities/create-image-fal",
       "files": [
         "skills/ads/capabilities/create-image-fal/SKILL.md",
+        "skills/ads/capabilities/create-image-fal/references/avatar-generation.md",
         "skills/ads/capabilities/create-image-fal/scripts/gen_image.py",
         "skills/ads/capabilities/create-image-fal/scripts/media_proxy.py",
         "skills/ads/capabilities/create-image-fal/skill.meta.json",
@@ -3249,7 +3250,9 @@
       "files": [
         "skills/ads/capabilities/google-ad-scraper/SKILL.md",
         "skills/ads/capabilities/google-ad-scraper/scripts/search_google_ads.py",
-        "skills/ads/capabilities/google-ad-scraper/skill.meta.json"
+        "skills/ads/capabilities/google-ad-scraper/skill.meta.json",
+        "skills/ads/capabilities/google-ad-scraper/tests/actor-input-contract.json",
+        "skills/ads/capabilities/google-ad-scraper/tests/test_search_contract.py"
       ],
       "metadata": {
         "slug": "google-ad-scraper",
@@ -7063,11 +7066,15 @@
       "path": "skills/ads/capabilities/render-proof-points-overlay",
       "files": [
         "skills/ads/capabilities/render-proof-points-overlay/SKILL.md",
+        "skills/ads/capabilities/render-proof-points-overlay/references/music.md",
         "skills/ads/capabilities/render-proof-points-overlay/scripts/build_overlays.py",
         "skills/ads/capabilities/render-proof-points-overlay/scripts/compose_master.py",
         "skills/ads/capabilities/render-proof-points-overlay/scripts/fetch_icons.py",
+        "skills/ads/capabilities/render-proof-points-overlay/scripts/music_coverage.py",
         "skills/ads/capabilities/render-proof-points-overlay/skill.meta.json",
-        "skills/ads/capabilities/render-proof-points-overlay/tests/smoke-test.md"
+        "skills/ads/capabilities/render-proof-points-overlay/tests/smoke-test.md",
+        "skills/ads/capabilities/render-proof-points-overlay/tests/test_layout.py",
+        "skills/ads/capabilities/render-proof-points-overlay/tests/test_music.py"
       ],
       "metadata": {
         "slug": "render-proof-points-overlay",
@@ -7247,6 +7254,7 @@
         "skills/ads/capabilities/render-street-interview/READINESS.md",
         "skills/ads/capabilities/render-street-interview/REFERENCE.md",
         "skills/ads/capabilities/render-street-interview/SKILL.md",
+        "skills/ads/capabilities/render-street-interview/TAKES.md",
         "skills/ads/capabilities/render-street-interview/brands/demo-tallgrass-oat.json",
         "skills/ads/capabilities/render-street-interview/brands/liquid-death-4816.json",
         "skills/ads/capabilities/render-street-interview/brands/liquid-death-4817.json",
@@ -7276,6 +7284,7 @@
         "skills/ads/capabilities/render-street-interview/episodes/liquid-death-ep3b.json",
         "skills/ads/capabilities/render-street-interview/episodes/liquid-death-ep3c.json",
         "skills/ads/capabilities/render-street-interview/episodes/liquid-death-ep4.json",
+        "skills/ads/capabilities/render-street-interview/references/model-behaviors.md",
         "skills/ads/capabilities/render-street-interview/references/street-reference-library.json",
         "skills/ads/capabilities/render-street-interview/references/street-script-writing.md",
         "skills/ads/capabilities/render-street-interview/scripts/bench.py",
@@ -7285,6 +7294,7 @@
         "skills/ads/capabilities/render-street-interview/scripts/build_looks.py",
         "skills/ads/capabilities/render-street-interview/scripts/check-cut.py",
         "skills/ads/capabilities/render-street-interview/scripts/conversation.py",
+        "skills/ads/capabilities/render-street-interview/scripts/edit_timeline.py",
         "skills/ads/capabilities/render-street-interview/scripts/falsify-all.py",
         "skills/ads/capabilities/render-street-interview/scripts/fit_grade.py",
         "skills/ads/capabilities/render-street-interview/scripts/format_spec.py",
@@ -7298,8 +7308,13 @@
         "skills/ads/capabilities/render-street-interview/scripts/single_gen.py",
         "skills/ads/capabilities/render-street-interview/scripts/variants_gen.py",
         "skills/ads/capabilities/render-street-interview/skill.meta.json",
+        "skills/ads/capabilities/render-street-interview/tests/fixtures/prompt-snapshots.json",
         "skills/ads/capabilities/render-street-interview/tests/smoke-test.md",
-        "skills/ads/capabilities/render-street-interview/tests/test_conversation.py"
+        "skills/ads/capabilities/render-street-interview/tests/test_conversation.py",
+        "skills/ads/capabilities/render-street-interview/tests/test_edit_timeline.py",
+        "skills/ads/capabilities/render-street-interview/tests/test_finishing.py",
+        "skills/ads/capabilities/render-street-interview/tests/test_prompt_budget.py",
+        "skills/ads/capabilities/render-street-interview/tests/test_recut_media.py"
       ],
       "metadata": {
         "slug": "render-street-interview",
@@ -9093,6 +9108,67 @@
       }
     },
     {
+      "slug": "video-production-harness",
+      "name": "video-production-harness",
+      "category": "playbooks",
+      "domain": "ads",
+      "description": "Full video production sequence with script review, actual ingredient choices, controlled generation, editing, evidence-based quality review, polish, captions and delivery. A host binding supplies project storage, authentic approvals, provider access and billing.",
+      "tags": "ads, content",
+      "path": "skills/ads/playbooks/video-production-harness",
+      "files": [
+        "skills/ads/playbooks/video-production-harness/SKILL.md",
+        "skills/ads/playbooks/video-production-harness/auto-fix-from-review-notes.md",
+        "skills/ads/playbooks/video-production-harness/auto-refine.md",
+        "skills/ads/playbooks/video-production-harness/brainstorm.md",
+        "skills/ads/playbooks/video-production-harness/capabilities.md",
+        "skills/ads/playbooks/video-production-harness/create-clips.md",
+        "skills/ads/playbooks/video-production-harness/create-design-brief.md",
+        "skills/ads/playbooks/video-production-harness/create-storyboard.md",
+        "skills/ads/playbooks/video-production-harness/edit-clip.md",
+        "skills/ads/playbooks/video-production-harness/edit-video.md",
+        "skills/ads/playbooks/video-production-harness/lock-character.md",
+        "skills/ads/playbooks/video-production-harness/lock-script.md",
+        "skills/ads/playbooks/video-production-harness/orchestrator.md",
+        "skills/ads/playbooks/video-production-harness/polish.md",
+        "skills/ads/playbooks/video-production-harness/preflight-audit.md",
+        "skills/ads/playbooks/video-production-harness/promote.md",
+        "skills/ads/playbooks/video-production-harness/references/review-script-shortform.md",
+        "skills/ads/playbooks/video-production-harness/release.json",
+        "skills/ads/playbooks/video-production-harness/review-video.md",
+        "skills/ads/playbooks/video-production-harness/scripts/assemble.py",
+        "skills/ads/playbooks/video-production-harness/scripts/qc_evidence.py",
+        "skills/ads/playbooks/video-production-harness/skill.meta.json",
+        "skills/ads/playbooks/video-production-harness/wrap-session.md"
+      ],
+      "metadata": {
+        "author": "GooseWorks",
+        "category": "playbooks",
+        "domain": "ads",
+        "features": [
+          "Original video production",
+          "Human review gates",
+          "Shared Studio production source"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install video-production-harness",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [],
+        "slug": "video-production-harness",
+        "source_commit": "4ea3d4f7e95d862b40a843d8f7679b0f417b171b",
+        "source_hash": "c714786a99b7e7d42507e5a3284cd280c5849b3a5454ccf32a773e0267b41080",
+        "source_version": "2-c714786a99b7",
+        "tags": [
+          "ads",
+          "content"
+        ]
+      }
+    },
+    {
       "slug": "visual-brand-extractor",
       "name": "visual-brand-extractor",
       "category": "capabilities",
@@ -9610,6 +9686,7 @@
         "skills/ads/capabilities/write-video-ad-script/references/hook-families.md",
         "skills/ads/capabilities/write-video-ad-script/references/human-behavior.md",
         "skills/ads/capabilities/write-video-ad-script/references/judge-contract.md",
+        "skills/ads/capabilities/write-video-ad-script/references/pacing.md",
         "skills/ads/capabilities/write-video-ad-script/references/scene-and-hook.md",
         "skills/ads/capabilities/write-video-ad-script/scripts/critique_scripts.py",
         "skills/ads/capabilities/write-video-ad-script/scripts/lint_scripts.py",
@@ -9618,7 +9695,8 @@
         "skills/ads/capabilities/write-video-ad-script/skill.meta.json",
         "skills/ads/capabilities/write-video-ad-script/tests/test_angle_handoff.py",
         "skills/ads/capabilities/write-video-ad-script/tests/test_critique_scripts.py",
-        "skills/ads/capabilities/write-video-ad-script/tests/test_lint_scripts.py"
+        "skills/ads/capabilities/write-video-ad-script/tests/test_lint_scripts.py",
+        "skills/ads/capabilities/write-video-ad-script/tests/test_pacing.py"
       ],
       "metadata": {
         "slug": "write-video-ad-script",

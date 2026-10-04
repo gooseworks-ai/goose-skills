@@ -15,3 +15,11 @@ gen_image.py --model fal-ai/nano-banana/edit --payload '{...}' --out keyframe.pn
 - Paid calls route through the GooseWorks proxies (bills the Ads agent) via the
   bundled `media_proxy.py` — never a provider SDK's default host.
 - The template recipe (DB) supplies the model + params; this capability is generic.
+
+## Creator references
+
+When a recipe requires a creator/avatar still, read the bundled
+[avatar-generation guide](references/avatar-generation.md) before any paid call.
+If a required guide cannot be fetched or opened, stop and name the missing file.
+Use the current project's creator choices and approved model binding; fetching
+this guide does not authorize another image, a retry or a different render engine.

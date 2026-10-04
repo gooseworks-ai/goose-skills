@@ -124,6 +124,8 @@ def main():
                          "continent. A prompt cannot bind an object between calls; a reference "
                          "image can, which is why the can has never drifted.")
     ap.add_argument("--yes", action="store_true", help="SPENDS real money")
+    ap.add_argument("--prompt-version", type=int, choices=(1, 2), default=None,
+                    help="2 repairs articles and uses product-neutral closure wording; 1 reproduces historical prompts")
     A = ap.parse_args()
 
     cfg = brandkit.load(A.brand)
@@ -154,7 +156,8 @@ def main():
     mode = cfg.get("mode", "product-guess")
     G = dict(pace=pace, guards=guards, mic=mic, plain=plain, answers_only=answers_only,
              can_size=can_size, can_sealed=can_sealed, upright=upright,
-             mic_ref=mic_ref, one_mic=one_mic)
+             mic_ref=mic_ref, one_mic=one_mic,
+             prompt_version=A.prompt_version or gen.get("prompt_version", 1))
     # mic_ref points the prompt at @Image2 and says nothing else about the microphone, so a
     # run without a scene reference would ask the model to copy an image that was never sent.
     # Refused here rather than at the gate: this is a $3.64 call and the check is free.
@@ -182,6 +185,8 @@ def main():
     # The prompt lint runs on the DRY RUN, not only in the gate. A clause that was paid for going
     # missing is worth catching before the call, not after it: every one of these was a rejected
     # take. The gate re-runs the identical lint from the identical dict on the finished render.
+    for advice in format_spec.prompt_warnings(prompt):
+        print("PROMPT ADVISORY: " + advice)
     problems = format_spec.lint(prompt, mode=mode, **G)
     if problems:
         print("\nPROMPT LINT FAILED:")
@@ -281,7 +286,7 @@ def main():
          "answers_only": answers_only, "can_grammar": can,
          "mic_ref_grammar": mic_ref, "can_size_grammar": can_size,
          "can_sealed_grammar": can_sealed, "upright_grammar": upright,
-         "one_mic_grammar": one_mic,
+         "one_mic_grammar": one_mic, "prompt_version": G["prompt_version"],
          # Recorded because episode 2's repair needed it and it was not there: a
          # take coupled to another by a scene reference is coupled more tightly
          # than by any clause, and the gate could not see that it had happened.

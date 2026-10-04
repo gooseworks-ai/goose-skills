@@ -1,3 +1,13 @@
+# Human version
+
+**Summary.** This is a dated readiness audit from 2026-09-29, not today's runbook. The 2026-10-01 face verdict in `REFERENCE.md` supersedes its unruled-face blocker, but does not prove a new take's quality. Current execution uses `SKILL.md`, the selected recipe and [bundled model notes](references/model-behaviors.md).
+
+The private paths, missing measurement guide, footage and proposed experiments below are optional historical authoring evidence. No Studio checkout or avatar still is required. Default zero-strength finishing needs no colour reference. Old cost figures and classifier observations are not current pricing or policy guarantees.
+
+---
+
+# Agent version
+
 # create-street-interview-video — readiness
 
 **Current summary (2026-10-03).** Product-guess retains the existing object renderer and
@@ -50,7 +60,7 @@ for (`ld-single-seed4802`) and the local reference footage.
 | `single_gen.py` | dry run clean, no network | prints model, seed, price, destination and the full prompt; `fal_helpers` import is now lazy so a dry run needs no key |
 | `variants_gen.py` | dry run clean, no network | 6 variants, seeds 4810–4815, **$21.84** total ($17.42 on `--fast`) |
 | `build_looks.py` | `--dry-run` clean, and a **real free render verified end to end** | dry run renders every caption layer and asserts the safe zone with no ffmpeg; the real run produced `street-ld-bare.mp4` 14.30s and its caption-free control |
-| `phone_look_video.py` | runs; now fails loudly instead of silently | refuses to run without a real colour reference rather than grading against nothing |
+| `phone_look_video.py` | runs; now fails loudly instead of silently | zero-strength finishing needs no reference; positive-strength matching requires a real reference |
 | `check-cut.py` | **new gate, 9 checks, falsified both ways** | full PASS on the `bare` look with every check live, including Whisper |
 
 Run order, all of it free except step 2:

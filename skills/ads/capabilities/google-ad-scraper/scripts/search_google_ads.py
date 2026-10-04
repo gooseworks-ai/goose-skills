@@ -187,7 +187,7 @@ def run_ad_scraper(token, domain, max_ads=50, timeout=300):
     """
     run_input = {
         "domain": domain,
-        "maxItems": max_ads,
+        "maxResults": max_ads,
     }
 
     print(f"Starting Google Ads scraper for domain: {domain}...", file=sys.stderr)

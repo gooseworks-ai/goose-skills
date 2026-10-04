@@ -112,5 +112,19 @@ After changing an mp3, run `python3 tests/test_stitch.py --write-embedded`.
 - **Background flat-lay** is optional; omit it for a clean neutral gradient behind
   the phone, or generate one via `create-image-fal` and point `background_image`
   at it.
-- Requires **ffmpeg/ffprobe** on PATH and Playwright Chromium (`npx playwright
-  install chromium`) — `gooseworks doctor` checks both.
+- Requires **ffmpeg/ffprobe** on PATH and Playwright Chromium. Run
+  `gooseworks doctor --no-browser` for common setup. After installing dependencies
+  in the fetched `scripts/` folder, run
+  `gooseworks doctor --renderer-script "/absolute/path/to/scripts/record-chat.js"`
+  and the same check for `render-end-card.js`, before any paid product-image or music
+  call. Use the actual fetched paths and the render's environment, including `NODE_PATH`
+  and `PLAYWRIGHT_BROWSERS_PATH`. The check launches and closes that script's own
+  Playwright Chromium with default settings; it downloads nothing. On failure, repair
+  the named folder under existing setup permissions, then recheck. An unscoped doctor
+  result or an existing cache folder does not prove these recorders can launch.
+  Without the CLI, or if it lacks these flags, run a bounded free launch/close probe using
+  `require('node:module').createRequire(require('node:path').resolve(actualScript))`
+  to load `playwright`, preserve the same cwd/environment and default launch settings,
+  and await `chromium.launch({ timeout: 15000 })` then `browser.close()` (3-second close
+  limit, 20-second whole-process limit; stop its own process tree on failure/timeout).
+  A missing module, browser, runtime or failed launch stops work before spending.

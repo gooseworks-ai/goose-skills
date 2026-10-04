@@ -34,6 +34,56 @@ Keep research sources separate from product claim authorization.
 - Ids may repeat when the format alternates (a chat thread: them, me, them, me). Each
   concept beat fills the next slot with that id, in order.
 
+### Speech timing for this run
+
+Read [pacing](pacing.md). Add these fields to the shape and spoken beats; they do not
+modify the recipe. This example uses a hypothetical brief target, not a measured result:
+
+```json
+{
+  "words_per_second": 3.0,
+  "pacing_source": {"kind": "brief", "detail": "Brief requests a brisk, natural creator read."},
+  "delivery_guidance": {"words_per_second": 1.9, "basis": "recipe_estimate", "detail": "Existing recipe guidance, not independently tested."},
+  "total_seconds": 15,
+  "beats": [
+    {"id": "hook", "kind": "spoken", "seconds": 3, "pause_seconds": 0.5},
+    {"id": "proof", "kind": "spoken", "seconds": 7, "speech_seconds": 5, "words_per_second": 2.6,
+     "pacing_source": {"kind": "brief", "detail": "Leave room to see the product action."}},
+    {"id": "cta", "kind": "spoken", "seconds": 3, "max_words": 7},
+    {"id": "endcard", "kind": "on_screen", "seconds": 2, "max_words": 6}
+  ]
+}
+```
+
+- `words_per_second` is the desired rate, inherited from the shape unless a spoken beat
+  overrides it. Different templates and ads keep different rates.
+- `pacing_source` has `kind` (recipe, reference, brief or fallback) and a concrete `detail`.
+  Reference sources also require `reference_id` pointing to an observed audio/video
+  record in references.json. Transcript-only records cannot establish cadence. Legacy
+  files without a source receive an explicit unverified legacy/fallback label in lint.
+- `speech_seconds` is the audible speech window within `seconds`. Otherwise it defaults
+  to `seconds` minus `pause_seconds`. Both are nonnegative; the speech window plus pauses
+  cannot exceed the beat. Remaining time can carry silent visual action. Bracketed cues
+  do not automatically allocate a pause; record its duration explicitly.
+- `delivery_guidance` optionally preserves a recipe estimate or an observed rendered
+  baseline: `words_per_second`, `basis` (recipe_estimate or observed_render), and `detail`
+  identifying the recipe or rendered evidence. It is inherited or overridden by beat.
+  A target above it raises W_PACING_EXPERIMENT; it is not a hard engine ceiling or a pass.
+- For these timing profiles the budget is the smaller of speech-window × rate (rounded)
+  and any explicit `max_words`. Strict lint allows no extra word-count tolerance. A
+  target cannot override a recipe's word limit; W_PACING_LIMIT exposes the conflict.
+  Legacy shapes retain the max_words override and existing estimate tolerance.
+- Ordered selected beat durations must fit `total_seconds`, including pauses and silent
+  beats. Omitted optional beats reserve no time; repeated ids keep separate slots.
+- Only `spoken` beats count toward spoken totals. Chat, cards, visual-only beats and
+  lyrics keep their separate reading/layout or musical checks. The timing report is an
+  ordered array so repeated ids retain their own speakers' windows and rates.
+
+Lint writes per-concept `timing` rows with slot, id, words, speech_seconds,
+words_per_second, target_words, word_budget, max_words, pacing_source, delivery_guidance,
+required_words_per_second and estimated_speech_seconds. Keep these rows with the reviewed
+native script and production direction. They are estimates, not generated-audio evidence.
+
 ## customer-words.json: the buyers' own words (Step 2)
 
 ```json
@@ -200,7 +250,9 @@ python3 <scripts folder>/critique_scripts.py --candidates working/script/candida
 
 **The rule check exits** 0 when the scripts pass and 2 when there are errors to fix.
 Use strict mode for newly generated scripts. Legacy calls remain readable, but they do
-not enforce the research handoff. A source id check establishes traceability only. Add
+not enforce the research handoff. Strict mode also enforces profiled speech budgets and
+explicit word limits exactly; references carry observed delivery evidence. A source id
+check establishes traceability only. Add
 `--report-only` for lines the user wrote: it reports but never fails, and skips the
 buyer-quote checks.
 

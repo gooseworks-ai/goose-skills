@@ -40,9 +40,9 @@ TARGET_BLACK = 8.6
 PROBE_LIFTS = (0.030, 0.065)
 
 
-def render(src, dst, lift, sat, extra=()):
-    cmd = ["python", str(HERE / "phone_look_video.py"), str(src), str(dst),
-           "--black-lift", f"{lift:.4f}", "--saturation", f"{sat:.4f}", *extra]
+def render(src, dst, lift, sat, extra=(), run=None):
+    cmd = [sys.executable, str(HERE / "phone_look_video.py"), str(src), str(dst),
+           "--black-lift", f"{lift:.4f}", "--saturation", f"{sat:.4f}", "--run", str(paths.run_dir(run)), *extra]
     r = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
     if r.returncode:
         sys.exit(f"phone_look_video.py failed:\n{r.stdout}\n{r.stderr}")
@@ -99,7 +99,7 @@ def main():
         td = Path(td)
         probes = []
         for i, lift in enumerate(PROBE_LIFTS):
-            m = measure(render(take, td / f"p{i}.mp4", lift, 1.0))
+            m = measure(render(take, td / f"p{i}.mp4", lift, 1.0, run=A.run))
             probes.append((lift, m))
             print(f"  probe lift {lift:.3f} sat 1.000 -> black {m['black']:.2f}  "
                   f"face_sat {m['face_sat']:.3f}  detail {m['detail']:.2f}")
@@ -114,7 +114,7 @@ def main():
         base = m0 if abs(l0 - lift) < abs(l1 - lift) else m1
         sat = 1.0 if A.keep_sat else max(0.2, min(2.0, tsat / max(base["face_sat"], 1e-6)))
         print(f"  solved     lift {lift:.4f}  saturation {sat:.4f}")
-        fin = measure(render(take, td / "fit.mp4", lift, sat))
+        fin = measure(render(take, td / "fit.mp4", lift, sat, run=A.run))
         print(f"  verify     black {fin['black']:.2f}  face_sat {fin['face_sat']:.3f}  "
               f"detail {fin['detail']:.2f}  detail_native {fin['detail_native']:.2f}")
 
