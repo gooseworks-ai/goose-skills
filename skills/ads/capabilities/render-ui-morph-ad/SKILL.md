@@ -65,6 +65,7 @@ Final MP4, JPG poster and `.manifest.json`. Working HTML, silent intermediate an
 | Text clips during a morph | Shorten copy or change geometry; check both layouts. |
 | Loop flashes through earlier states | Morph the final shell directly to the first; never rewind the whole timeline. |
 | Clean stills conceal faulty timing | Inspect frames extracted from the actual MP4 around every boundary. |
+| New catalog entry has an empty file list | Stage the new package before building the tracked-file index; regenerate and check the committed index again. |
 
 ## Related
 
