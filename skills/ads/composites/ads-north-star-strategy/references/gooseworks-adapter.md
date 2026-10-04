@@ -26,7 +26,7 @@ judged on cost per lead or purchase, and write the one-line limit.
 
 ## From an outside host (Claude Code, Cursor, any MCP client)
 
-- **Files:** `file_read` / `file_write` with `scope: {type: "agent", agent_id: <brand.coworker_agent_id from brand_list>}`.
+- **Files:** `file_read` / `file_write` with `scope: {type: "agent", agent_id: <brand.coworker_agent_id from brand_read without brand_id>}` (older `brand_list` only if advertised).
   Leaving out `scope` writes to the wrong agent. Do not write and then immediately start a coworker
   run that reads the file: its file cache can be up to two minutes behind.
 - **Research:** `brand_read {brand_id, sections: ["kit", "products", "learnings", "onboarding"]}` returns existing brand facts and products. Use `brand_get_context` only when that older name is advertised. `catalog_search` searches
@@ -68,7 +68,14 @@ Older connections without claim applicability cannot certify a brand-wide rating
 product facts or leave proof missing. Never assign another product's rating.
 
 **Save fields.** `campaign_upsert` creates on the public connector with `brand_id` and
-updates with `campaign_id`. An internal coworker uses its bound brand. Optional fields are `name`, `goal`, `status`, `starts_on`, `ends_on`,
+updates with `campaign_id`. An internal coworker uses its bound brand. Internal creation also
+requires `creation_decision`: first read every current campaign and usable creative, explain
+continue/change/create and any overlap, then obtain the user's explicit choice to create.
+Pass `{mode: "create_new", explanation: <why a new campaign fits, at least 10 characters>,
+user_confirmed: true, overlap_checked_campaign_ids: [...], overlap_checked_project_ids: [...]}`
+with the actual inspected ids (empty lists only when none exist). Never invent confirmation.
+An update with `campaign_id` does not need this decision; do not send the internal-only field
+to the public connector. Optional fields are `name`, `goal`, `status`, `starts_on`, `ends_on`,
 `budget_cents` (total integer cents), `channels`, `hero_product_ids`, `intake`, `brief_md`, `concepts`.
 Intake preserves `objective`, `about`, `audience`, `core_message`, `situation`, `offer`,
 `hero_product_ids` and `constraints` (list). Omit unknown optional facts; never invent dates or money.
