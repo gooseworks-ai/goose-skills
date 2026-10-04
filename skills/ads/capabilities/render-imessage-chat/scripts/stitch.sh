@@ -107,9 +107,19 @@ echo "  video stitched, ${TOTAL}s"
 TMP_AUDIO="$WORK/audio.m4a"
 MUSIC_ARG="${MUSIC:-NONE}"
 python3 - "$SFX_JSON" "$SFX_DIR" "$MUSIC_ARG" "$TOTAL" "$TMP_AUDIO" <<'PY'
-import json, sys, subprocess
+import array, json, sys, subprocess
 sfx_json, sfx_dir, music, total, out = sys.argv[1], sys.argv[2], sys.argv[3], float(sys.argv[4]), sys.argv[5]
 cues = json.load(open(sfx_json))
+def onset(file):
+    raw = subprocess.run(['ffmpeg', '-v', 'error', '-i', file, '-ac', '1', '-ar', '48000', '-f', 's16le', '-'], capture_output=True, check=True).stdout
+    samples = array.array('h'); samples.frombytes(raw)
+    threshold = max(map(abs, samples), default=0) * 0.05
+    if not threshold: sys.exit(f'Silent SFX: {file}')
+    return next(i for i, x in enumerate(samples) if abs(x) > threshold) / 48000
+onsets = {name: onset(f'{sfx_dir}/imessage-{name}.mp3') for name in ('send', 'receive')}
+for c in cues:
+    if c.get('name') not in onsets or not isinstance(c.get('t'), (int, float)) or not 0 <= c['t'] < float(total):
+        sys.exit(f'Invalid SFX cue: {c}')
 has_music = music != "NONE"
 # Per-cue gain (+4 dB). With the -2 dBFS limiter below, a lone cue lands within
 # ~2 dB of the old loudness while stacked cues no longer clip. Soft cues keep
@@ -137,7 +147,8 @@ for c in cues:
     inputs += ["-i", sfx_file]
     delay = int(c['t'] * 1000)
     vol = SOFT_GAIN if c.get('soft') else CUE_GAIN
-    filter_parts.append(f"[{idx}:a]adelay={delay}|{delay},volume={vol}[s{idx}]")
+    # Strip only the leading silence. Audible onset follows the visible movie frame.
+    filter_parts.append(f"[{idx}:a]atrim=start={onsets[c['name']]},asetpts=PTS-STARTPTS,adelay={delay}|{delay},volume={vol}[s{idx}]")
     mix_labels.append(f"[s{idx}]")
     idx += 1
 n = len(mix_labels)

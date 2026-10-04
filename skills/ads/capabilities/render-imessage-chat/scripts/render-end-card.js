@@ -30,7 +30,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { execSync } = require('child_process');
+const { execFileSync } = require('child_process');
 const { chromium } = require('playwright');
 
 function parseArgs(argv) {
@@ -63,24 +63,37 @@ function iconSvg(name) {
   return `<svg viewBox="0 0 24 24">${p}</svg>`;
 }
 
-function main() {
+async function main() {
   const args = parseArgs(process.argv);
   const configPath = path.resolve(args.config);
   const cfgDir = path.dirname(configPath);
   const cfg = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
   const ec = cfg.end_card || {};
+  if (!(ec.image_path || ec.logo_svg || ec.logo_svg_path || ec.logo_image_path || ec.wordmark_text || cfg.brand_name)) {
+    throw Error('Supply an approved end-card image, logo or brand wordmark');
+  }
+  const imageURI = file => {
+    const data = fs.readFileSync(path.resolve(cfgDir, file));
+    if (data.subarray(0, 80).toString().includes('version https://git-lfs')) throw Error(`Fetch the real LFS asset: ${file}`);
+    const ext = path.extname(file).slice(1).toLowerCase();
+    const mime = { png:'image/png', jpg:'image/jpeg', jpeg:'image/jpeg', webp:'image/webp', svg:'image/svg+xml' }[ext];
+    if (!mime) throw Error(`Unsupported end-card image: ${file}`);
+    return `data:${mime};base64,${data.toString('base64')}`;
+  };
 
   const tpl = fs.readFileSync(path.join(__dirname, 'end-card.template.html'), 'utf-8');
 
   // Wordmark: prefer an inline SVG (or a path to one), else a bold text fallback.
   let logoSvg = ec.logo_svg || '';
   if (!logoSvg && ec.logo_svg_path) logoSvg = fs.readFileSync(path.resolve(cfgDir, ec.logo_svg_path), 'utf-8');
-  const wordmark = logoSvg
+  const wordmark = ec.logo_image_path ? `<img style="max-width:640px;max-height:300px" src="${imageURI(ec.logo_image_path)}">` : logoSvg
     ? logoSvg
-    : `<div class="text">${esc(ec.wordmark_text || cfg.brand_name || 'BRAND')}</div>`;
+    : `<div class="text">${esc(ec.wordmark_text || cfg.brand_name)}</div>`;
 
   // Proof row (⭐ + text) — omit entirely if stars is 0/absent.
-  const starCount = ec.stars == null ? 5 : ec.stars;
+  const starCount = ec.stars == null ? 0 : ec.stars;
+  if (!Number.isInteger(starCount) || starCount < 0 || starCount > 5) throw Error('end_card.stars must be 0–5');
+  if (starCount > 0 && !ec.proof_text) throw Error('Stars need approved proof_text; omit unsupported ratings');
   const proof = (starCount > 0)
     ? `<div class="proof-row"><div class="stars">${'★'.repeat(starCount)}</div>` +
       (ec.proof_text ? `<div class="families">${esc(ec.proof_text)}</div>` : '') + `</div>`
@@ -94,7 +107,7 @@ function main() {
       ).join('') + `</div>`
     : '';
 
-  const html = tpl
+  let html = tpl
     .replace('{{BG}}', ec.bg || '#ffffff')
     .replace('{{FG}}', ec.fg || '#111111')
     .replace('{{CTA_BG}}', ec.cta_bg || '#111111')
@@ -104,6 +117,7 @@ function main() {
     .replace('{{PROOF}}', proof)
     .replace('{{TRIO}}', trio)
     .replace('{{CTA}}', esc(ec.cta_text || 'Learn more'));
+  if (ec.image_path) html = `<!doctype html><html><body style="margin:0;width:1080px;height:1920px;overflow:hidden"><img style="width:100%;height:100%;object-fit:contain" src="${imageURI(ec.image_path)}"></body></html>`;
 
   const outDir = path.resolve(args.outDir);
   fs.mkdirSync(outDir, { recursive: true });
@@ -111,25 +125,20 @@ function main() {
   const outPng = path.join(outDir, 'end-card.png');
   const outMp4 = path.join(outDir, 'scene-end-endcard.mp4');
   const dwell = ec.dwell_sec || 2.5;
+  if (!Number.isFinite(dwell) || dwell < 0.5) throw Error('end_card.dwell_sec must be at least 0.5s');
   fs.writeFileSync(htmlPath, html);
 
-  (async () => {
     const browser = await chromium.launch();
+    try {
     const ctx = await browser.newContext({ viewport: { width: 1080, height: 1920 }, deviceScaleFactor: 1 });
     const page = await ctx.newPage();
     await page.goto('file://' + htmlPath, { waitUntil: 'load' });
-    await page.waitForFunction(() => document.body.dataset.ready === 'true', { timeout: 5000 });
-    await page.waitForTimeout(400);
+    await page.evaluate(async () => { await document.fonts.ready; await Promise.all([...document.images].map(i => i.decode())); });
     await page.screenshot({ path: outPng });
-    await browser.close();
-    execSync(
-      `ffmpeg -y -loop 1 -i "${outPng}" -t ${dwell} -r 30 ` +
-      `-vf "scale=1080:1920,format=yuv420p" -c:v libx264 -pix_fmt yuv420p -movflags +faststart "${outMp4}"`,
-      { stdio: 'pipe' }
-    );
+    } finally { await browser.close(); }
+    execFileSync('ffmpeg', ['-y', '-loop', '1', '-i', outPng, '-t', String(dwell), '-r', '30', '-vf', 'scale=1080:1920,format=yuv420p', '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', outMp4], { stdio:'pipe' });
     console.log(`png  → ${path.relative(process.cwd(), outPng)}`);
     console.log(`mp4  → ${path.relative(process.cwd(), outMp4)} (${dwell}s)`);
-  })().catch(e => { console.error(e); process.exit(1); });
 }
 
-main();
+main().catch(e => { console.error(e.message); process.exitCode = 1; });
