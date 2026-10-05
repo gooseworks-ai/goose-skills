@@ -4,13 +4,17 @@ description: Write a short-form video ad from an evidence-backed angle and the s
 status: active
 ---
 
-# Write Video Ad Script
+# Human version
 
 **Summary.** Turn a researched advertising promise into a video this template can actually
 make. First load the angle research, then bind it to the recipe's story, visuals, timing and
 assets. Write and check the complete concept before the user reviews it. The output is one
 recommended script, its visual plan and up to two viable alternatives. A model score is a
 quality screen; ad results establish performance.
+
+---
+
+# Agent version
 
 ## When to use
 
@@ -31,6 +35,8 @@ Read this skill's files reference before creating working files. Required contex
 - The selected template and full recipe: instructions, config, choices, assets and inputs.
 - A validated angle context from ad-angle-miner, including source records.
 - Reference footage or its observed beat map, plus available brand assets.
+- The current sourced creative brief and applicable project/brand decisions, including
+  exact rejected wording, pronunciations and user-locked copy.
 
 The user's explicit direction and chosen angle are fixed. The recipe determines what is
 possible. If those conflict, explain the concrete conflict and offer a compatible execution
@@ -120,6 +126,27 @@ exact missing capture or reference and mark the draft not production-ready. A pl
 demonstration is not verified proof; never generate a fake UI to fill the gap.
 
 ## Step 2. Form the creative brief
+
+Read current product/variant evidence from the connected Brain/brand tools and the
+project's saved history **before drafting**, using their existing scopes and IDs. The
+angle bank supplies research; it does not silently override a newer user direction,
+offer or variant. Read the actual source behind each material field and retain its
+pointer/revision. Reuse answered questions. Surface only unresolved conflicts that
+change the promise, execution or spend at the existing review boundary.
+
+Save the concise current-run `creative-brief.json` described in the files reference.
+Keep approved product facts separate from customer language and authored direction.
+Record the exact variant, buyer situation, supported mechanism, objective, offer,
+CTA, constraints, relevant previous decisions, locked words and delivery intent.
+An absent offer is explicitly “no offer supplied”; an unknown claim or variant is
+a gap, not a default. Retrieve prior rejected wording with its reason and scope;
+carry project-specific taste only when it applies to this run. Do not turn it into a
+standing brand rule. The existing history file remains the durable record.
+
+Pass this brief to `prepare_angle_context.py --brief …`; it travels inside the
+existing angle-context to lint, the critic and production. New custom and template
+runs set `requires_creative_brief: true` in their shape. Older saved contexts remain
+readable; enrich them before a new production run instead of inventing provenance.
 
 Load [buyer perspective and product explanation](references/buyer-and-mechanism.md).
 Use the current campaign's consumer role and a concrete task or decision. Map what
@@ -215,6 +242,14 @@ For every beat write the exact line, speaker, visual action, production mode and
 asset ids when applicable. Keep a proof plan and a claim ledger with current product fact
 ids. Every hook variant must lead into the same body's promise; repair the body when the
 promise changes.
+
+Tie each material claim to the moment its demonstration is visible. Include action
+completion, recognition and text-reading time in the existing scene plan. Inspect the
+actual selected media before calling that plan feasible; metadata is a shortlist.
+Keep product truth/style references separate from usable production footage. If the
+needed proof is absent, narrow the claim or specify the missing capture; do not treat
+a simulated result as evidence. A useful silent format still communicates through
+exact on-screen words and visible actions, with no invented speech.
 
 - Make the first moment intelligible and worth watching through words, visuals or both.
 - Keep one main promise and pay it off visibly.
@@ -338,3 +373,8 @@ Include the chosen delivery style, per-beat word counts and speech windows, inte
 pauses, recipe conflicts and unverified targets in the existing review. Production uses
 the same plan and preserves recipe limits. Review finished audio for the complete read,
 pronunciation, naturalness and sync before declaring delivery fixed.
+
+Carry the brief's pronunciation source, energy progression, emphasized words, pauses
+and phrases that should sound conversational into the voice-performance task. Keep
+literal user copy fixed. Written read-throughs and word budgets are provisional until
+the actual audio is heard and measured; never use a global speed-up to certify fit.

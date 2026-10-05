@@ -19,6 +19,16 @@ template id to the video runtime. A hook-only handoff loses the strategy and evi
 When the runtime cannot save a pointer, keep the full context in the current run. Workspace
 failure is a reuse limitation, not permission to fabricate a bank in a later session.
 
+The caller also hands the writer the **current creative brief**, read from the existing
+Brain/brand and project records: exact variant, buyer situation, supported mechanism,
+objective, current offer/CTA, constraints, applicable prior rejections and pronunciations,
+locked words and delivery intent. Keep source pointers/revisions and missing evidence
+visible. This run-specific brief travels as `creative_brief` inside the prepared angle
+context via the writer's `--brief` option; the writer's files reference defines it.
+Do not overwrite the reusable angle bank with one project's taste or let an old bank
+replace a newer explicit direction. Quotes and preferences never become product facts.
+The writer and the chosen custom/template production skill receive the same brief.
+
 ## Required JSON shape
 
 ```json

@@ -206,6 +206,12 @@ def build_prompt(concepts, quotes_by_id, rules, shape, brief, context=None, refe
     head.append("Full recipe contract: " + json.dumps(shape, ensure_ascii=False))
     if context:
         head.append("Selected research and campaign context: " + json.dumps(context, ensure_ascii=False))
+        if context.get("creative_brief"):
+            head.append("Use creative_brief as the current-run handoff: check exact variant, buyer situation, "
+                        "supported mechanism, offer, CTA, constraints, applicable prior decisions and locked copy. "
+                        "Its sources establish traceability, not truth; inspect whether product facts support the claim. "
+                        "Respect missing-evidence alternatives and pronunciation/delivery intent. "
+                        "Do not infer measured vocal naturalness from written copy or promote project taste to brand policy.")
     if references:
         head.append("Observed reference structures (not performance proof): " + json.dumps(references, ensure_ascii=False))
     timing = lint({"concepts": concepts}, shape, report_only=True, references=references)

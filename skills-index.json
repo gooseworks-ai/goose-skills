@@ -1,6 +1,6 @@
 {
   "version": "1.3.0",
-  "generated": "2026-10-04",
+  "generated": "2026-10-05",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -9175,7 +9175,10 @@
         "skills/ads/playbooks/video-production-harness/polish.md",
         "skills/ads/playbooks/video-production-harness/preflight-audit.md",
         "skills/ads/playbooks/video-production-harness/promote.md",
+        "skills/ads/playbooks/video-production-harness/references/editorial-review.md",
+        "skills/ads/playbooks/video-production-harness/references/hook-compatibility.md",
         "skills/ads/playbooks/video-production-harness/references/review-script-shortform.md",
+        "skills/ads/playbooks/video-production-harness/references/specialist-handoff.md",
         "skills/ads/playbooks/video-production-harness/release.json",
         "skills/ads/playbooks/video-production-harness/review-video.md",
         "skills/ads/playbooks/video-production-harness/scripts/assemble.py",
@@ -9202,9 +9205,9 @@
         },
         "requires_skills": [],
         "slug": "video-production-harness",
-        "source_commit": "4ea3d4f7e95d862b40a843d8f7679b0f417b171b",
-        "source_hash": "c714786a99b7e7d42507e5a3284cd280c5849b3a5454ccf32a773e0267b41080",
-        "source_version": "2-c714786a99b7",
+        "source_commit": "a953cc21cd34054af4add3d5a6738642915d7534",
+        "source_hash": "3ba9f34a7217757d1985096326b592548f642fa305ff42fa1f8b4719f72d7e83",
+        "source_version": "3-3ba9f34a7217",
         "tags": [
           "ads",
           "content"
@@ -9737,6 +9740,7 @@
         "skills/ads/capabilities/write-video-ad-script/scripts/prepare_angle_context.py",
         "skills/ads/capabilities/write-video-ad-script/skill.meta.json",
         "skills/ads/capabilities/write-video-ad-script/tests/test_angle_handoff.py",
+        "skills/ads/capabilities/write-video-ad-script/tests/test_creative_brief.py",
         "skills/ads/capabilities/write-video-ad-script/tests/test_critique_scripts.py",
         "skills/ads/capabilities/write-video-ad-script/tests/test_lint_scripts.py",
         "skills/ads/capabilities/write-video-ad-script/tests/test_pacing.py"
