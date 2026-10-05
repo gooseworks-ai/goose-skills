@@ -351,12 +351,11 @@
     }
   },
   "sample": {
-    "slug": "coppice-podcast-skit-payroll-for-building-firms-split",
+    "slug": "podcast-skit-ad",
     "title": "Podcast skit: payroll for building firms (split)",
     "ratio": "9:16",
     "media_url": "https://d2m0qbg34x1ii2.cloudfront.net/ads/samples/6eb98bf4-802e-4156-a443-1d15be0bd02b/media-master-split.mp4",
-    "thumbnail_url": "https://d2m0qbg34x1ii2.cloudfront.net/ads/samples/14a8882f-1618-4473-bd20-c4146d38630c/media-poster.jpg",
-    "_note": "Published in the staging sample library 2026-10-04, remixable, with this recipe attached. It replaces fernwick-podcast-skit-one-week-of-dinners, which was a real episode this recipe produced but predates the landscape plate, the split layer, the brand card, the room tone and the current pacing. That row was UNPUBLISHED rather than deleted: its media still resolves on its direct link, so anyone holding the old URL keeps a working video."
+    "thumbnail_url": "https://d2m0qbg34x1ii2.cloudfront.net/ads/samples/14a8882f-1618-4473-bd20-c4146d38630c/media-poster.jpg"
   },
   "_demo_note": "The demo is the Fernwick build, an INVENTED brand. The references for this format are nine real podcast clips with no advertiser in them, so there is no source brand for a demo brand to differ from. Its mark is typographic and drawn from a font, not from a generator; a real client supplies display_font or wordmark_file and the card stamps PREVIEW with neither.",
   "execution": "client",
