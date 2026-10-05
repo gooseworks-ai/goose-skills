@@ -60,6 +60,9 @@ The original must be CFR, unrotated square-pixel 8-bit yuv420p with zero video
 start time. Other sources fail before assembly. If normalization is necessary,
 make it a separately approved source version and freeze that version; do not
 quietly remaster the selected original. Audio is optional.
+An original audio/container tail more than 2ms beyond the last video frame also
+blocks; make a reviewed source version with a final-frame hold before editing.
+The renderer never trims that narration/music tail and calls it preserved.
 
 ## Workflow
 
@@ -136,6 +139,7 @@ remain available if one fails; retry the failed target with the single renderer.
 | Wrong source hash or stale word file | Refetch the selected version and remeasure; never switch versions silently. |
 | Cut clips speech or a separate caption | Choose a safe boundary; supply measured words for a partial caption. |
 | VFR, HDR/10-bit, rotated or nonzero-start original | Create an explicitly reviewed normalized source version first. |
+| Original audio outlasts video | Make a reviewed source version with a final-frame hold, then freeze that version; never drop the audio tail. |
 | Missing/corrupt media or LFS pointer | Resolve real media before rendering or generation. |
 | Existing output path | Use a fresh version path; never overwrite the original. |
 | Local ffmpeg has no drawtext | Text uses Pillow PNG + fade/slide overlay; drawtext is not required. |

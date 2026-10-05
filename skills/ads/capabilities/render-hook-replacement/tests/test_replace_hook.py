@@ -47,6 +47,9 @@ class HookReplacementTests(unittest.TestCase):
             self.assertTrue(manifest["verification"][key], key)
         self.assertEqual(manifest["verification"]["video"]["frames"], 138)
         self.assertEqual(manifest["review"]["status"], "needs_review")
+        self.assertEqual(manifest["review"]["source_sha256"], self.hash)
+        self.assertEqual(manifest["review"]["output_sha256"], manifest["output"]["sha256"])
+        self.assertIsNone(manifest["review"]["checked_at"])
         self.assertEqual(render.file_hash(self.root / "original.mp4"), self.hash)
         rows = render.read_captions(self.root / "shorter.srt")
         self.assertEqual([r["text"] for r in rows], ["Original body", "Original ending"])
@@ -90,6 +93,22 @@ class HookReplacementTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, expected):
                 render.replace(config, self.root)
         self.assertEqual(render.file_hash(self.root / "original.mp4"), self.hash)
+
+    def test_original_audio_tail_beyond_video_is_rejected_without_dropping_it(self):
+        source = self.root / "audio-tail-original.mp4"
+        render.ffmpeg("-f", "lavfi", "-i", "color=c=blue:s=320x568:r=30:d=3",
+                      "-f", "lavfi", "-i", "sine=frequency=330:sample_rate=48000:duration=3.3",
+                      "-c:v", "libx264", "-pix_fmt", "yuv420p", "-c:a", "aac", source)
+        config = self.config_for("tail-result")
+        config["source"] = {"path": str(source)}
+        config["hook_end_sec"] = 1.0
+        config.pop("words")
+        config.pop("captions")
+        original_hash = render.file_hash(source)
+        with self.assertRaisesRegex(ValueError, "extends beyond its final video frame"):
+            render.replace(config, self.root)
+        self.assertFalse((self.root / "tail-result.mp4").exists())
+        self.assertEqual(render.file_hash(source), original_hash)
 
     def test_crossing_captions_need_measured_whole_words(self):
         rows = [{"start": 2, "end": 3, "text": "OLD NEW"}]

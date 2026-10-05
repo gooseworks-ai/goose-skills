@@ -77,7 +77,8 @@ def probe(path):
             "video_start_sec": float(video.get("start_time", 0)),
             "audio": {"sample_rate": int(audio["sample_rate"]), "channels": audio["channels"],
                       "channel_layout": audio.get("channel_layout") or {1: "mono", 2: "stereo"}.get(audio["channels"]),
-                      "start_sec": float(audio.get("start_time", 0))} if audio else None}
+                      "start_sec": float(audio.get("start_time", 0)),
+                      "duration_sec": float(audio.get("duration") or data["format"]["duration"])} if audio else None}
 
 
 def frame_times(path):
@@ -343,6 +344,10 @@ def replace(config, base):
     times = frame_times(source)
     if len(times) < 2 or any(abs((b - a) - 1 / info["fps"]) > 0.001 for a, b in zip(times, times[1:])):
         raise ValueError("original is variable-frame-rate; normalize an explicit source version before replacement")
+    video_end = times[-1] + 1 / info["fps"]
+    audio_end = info["audio"]["start_sec"] + info["audio"]["duration_sec"] if info["audio"] else video_end
+    if max(audio_end, info["container_duration_sec"]) > video_end + 0.002:
+        raise ValueError("original audio/container extends beyond its final video frame; create an explicitly reviewed source version with a last-frame hold before replacement, so no original audio tail is dropped")
     cut = number(config.get("hook_end_sec"), "hook_end_sec", positive=True)
     if cut >= times[-1]:
         raise ValueError("hook_end_sec must leave at least one complete original body frame")
