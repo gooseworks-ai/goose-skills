@@ -7383,6 +7383,52 @@
       }
     },
     {
+      "slug": "render-ui-morph-ad",
+      "name": "render-ui-morph-ad",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Render a brand-bound single-shape motion ad with pure-time HTML, local audio, and deterministic Playwright export.",
+      "tags": "ads, brand, design",
+      "path": "skills/ads/capabilities/render-ui-morph-ad",
+      "files": [
+        "skills/ads/capabilities/render-ui-morph-ad/SKILL.md",
+        "skills/ads/capabilities/render-ui-morph-ad/scripts/build_composition.py",
+        "skills/ads/capabilities/render-ui-morph-ad/scripts/composition.html",
+        "skills/ads/capabilities/render-ui-morph-ad/scripts/config.example.json",
+        "skills/ads/capabilities/render-ui-morph-ad/scripts/render.py",
+        "skills/ads/capabilities/render-ui-morph-ad/scripts/render_hyperframe.py",
+        "skills/ads/capabilities/render-ui-morph-ad/scripts/synth_audio.py",
+        "skills/ads/capabilities/render-ui-morph-ad/skill.meta.json",
+        "skills/ads/capabilities/render-ui-morph-ad/tests/expected-output.md",
+        "skills/ads/capabilities/render-ui-morph-ad/tests/human-test.md",
+        "skills/ads/capabilities/render-ui-morph-ad/tests/sample-input.md",
+        "skills/ads/capabilities/render-ui-morph-ad/tests/smoke-test.md",
+        "skills/ads/capabilities/render-ui-morph-ad/tests/test_renderer.py",
+        "skills/ads/capabilities/render-ui-morph-ad/tests/verifier.md"
+      ],
+      "metadata": {
+        "slug": "render-ui-morph-ad",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads",
+          "brand",
+          "design"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-ui-morph-ad",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
       "slug": "render-value-prop",
       "name": "render-value-prop",
       "category": "capabilities",

@@ -31,3 +31,6 @@ jobs:
         run: |
           python3 skills/ads/capabilities/render-street-interview/scripts/selftest.py
           python3 -m unittest discover -s skills/ads/capabilities/render-street-interview/tests -p 'test_prompt_budget.py' -v
+
+      - name: Test UI-morph config preflight
+        run: python3 -m unittest discover -s skills/ads/capabilities/render-ui-morph-ad/tests -p 'test_*.py' -v
