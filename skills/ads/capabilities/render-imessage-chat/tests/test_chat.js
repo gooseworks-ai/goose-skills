@@ -157,3 +157,32 @@ test('timeline uses output frames and holds the ending beyond the crossfade',()=
   assert.equal(doc.timeline.filter(e=>e.sfx).length,2);
   assert.throws(()=>buildDocument({thread:fixture(),zoom:8},__dirname),/does not fit/);
 });
+
+test('reactions seek correctly, long input stays at the bottom, and only newest sent message is Delivered',async()=>{
+  const t=fixture();
+  t.messages.push({id:'reaction',type:'tapback',from:'peer',target:'reply',emoji:'❤️'},
+    {id:'later',type:'text',from:'me',text:'this longer reply wraps in the input and still finishes before it is sent 👨‍👩‍👧‍👦',delivered:true});
+  t.messages.unshift({type:'timestamp',light:'Today 6:20 PM'});
+  const doc=buildDocument({thread:t},__dirname),browser=await chromium.launch();
+  try {
+    const p=await browser.newPage({viewport:{width:1080,height:1920}}); await p.setContent(doc.html);
+    assert.equal(await p.locator('.status-bar .time').textContent(),'6:20');
+    const ev=doc.timeline.find(e=>e.id==='reaction');
+    await p.evaluate(t=>window.__renderAt(t),ev.t+0.3);
+    assert.equal(await p.locator('[data-reaction-id="reaction"]').count(),1);
+    assert.deepEqual(await checkLayout(p),[]);
+    await p.evaluate(t=>window.__renderAt(t),ev.t-1/30);
+    assert.equal(await p.locator('.tapback').count(),0);
+    const send=doc.timeline.find(e=>e.id==='later');
+    await p.evaluate(t=>window.__renderAt(t),send.t-1/30);
+    assert.equal(await p.locator('[data-composer-text]').textContent(),t.messages.at(-1).text);
+    assert.deepEqual(await checkLayout(p),[]);
+    const gap=await p.evaluate(()=>document.querySelector('.screen').getBoundingClientRect().bottom-document.querySelector('.keyboard').getBoundingClientRect().bottom);
+    assert.ok(Math.abs(gap)<2);
+    await p.evaluate(t=>window.__renderAt(t),doc.total);
+    assert.equal(await p.locator('.delivered-caption:visible').count(),1);
+    assert.equal(await p.locator('.delivered-caption:visible').getAttribute('data-cap-id'),'later');
+    const invalid=fixture(); invalid.messages.unshift({id:'bad',type:'tapback',from:'peer',target:'reply',emoji:'❤️'});
+    assert.throws(()=>validateThread(invalid),/earlier message/);
+  } finally {await browser.close();}
+});

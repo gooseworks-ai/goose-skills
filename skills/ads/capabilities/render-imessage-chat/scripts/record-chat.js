@@ -2,6 +2,7 @@
 // Frame-by-frame iMessage capture. Movie time is independent of browser startup
 // and machine speed. One timeline supplies picture and send/receive SFX.
 const fs = require('node:fs');
+const os = require('node:os');
 const path = require('node:path');
 const { spawn } = require('node:child_process');
 const { once } = require('node:events');
@@ -32,13 +33,17 @@ function validateThread(thread) {
   if (!messages.some(m => m.type === 'text' || m.type === 'attachment')) throw Error('Supply a nonempty conversation');
   const msgIds = new Set();
   messages.forEach((m,i) => {
-    if (!['text','typing','attachment','timestamp'].includes(m.type)) throw Error(`Unsupported message type ${m.type}`);
+    if (!['text','typing','attachment','timestamp','tapback'].includes(m.type)) throw Error(`Unsupported message type ${m.type}`);
     if (m.type === 'timestamp') return;
     if (!m.id || msgIds.has(m.id)) throw Error('Every text, typing and attachment needs a unique id');
     msgIds.add(m.id);
     if (!ids.has(m.from)) throw Error(`Unknown participant ${m.from} in ${m.id}`);
     if (m.type === 'text' && !String(m.text || '').trim()) throw Error(`Empty message ${m.id}`);
     if (m.type === 'attachment' && !m.src) throw Error(`Missing attachment image in ${m.id}`);
+    if (m.type === 'tapback') {
+      if (!String(m.emoji || '').trim() || !messages.slice(0,i).some(x => x.id === m.target && ['text','attachment'].includes(x.type)))
+        throw Error(`Tapback ${m.id} needs an emoji and an earlier message target`);
+    }
     if (m.type === 'typing') {
       const next = messages[i+1];
       if (people.find(p => p.id === m.from).self || !next || !['text','attachment'].includes(next.type) || next.from !== m.from)
@@ -56,6 +61,7 @@ function buildTimeline(thread, overrides = {}) {
   let t = T.start, typing = null;
   for (const m of thread.messages) {
     if (m.type === 'timestamp') continue;
+    if (m.type === 'tapback') { add(t,{ kind:'tapback',id:m.id,target:m.target,emoji:m.emoji,from:m.from,self:m.from===self,sfx:'receive',soft:true }); t+=T.emoji_gap; continue; }
     if (m.type === 'typing') { add(t,{ kind:'typing-pop',id:m.id }); typing=m.id; t+=T.typing_dwell; continue; }
     const sent = m.from === self;
     if (sent && m.type === 'text') {
@@ -92,6 +98,11 @@ function buildDocument(cfg,baseDir) {
   const zoom=cfg.zoom || Math.min(width/514,height/914);
   if (![width,height,zoom].every(Number.isFinite) || width<320 || height<568 || zoom<=0 || width%2 || height%2) throw Error('Use even output dimensions and a positive zoom');
   if (393*zoom>width-32 || 852*zoom>height-32) throw Error('Phone does not fit the canvas; reduce zoom (keep a margin on every edge)');
+  if (!thread.clock) {
+    const ts=thread.messages.find(m => m.type==='timestamp');
+    const time=ts && /(\d{1,2}:\d{2})/.exec(`${ts.light || ''} ${ts.label || ''}`);
+    thread.clock=thread.status_time || (time && time[1]) || '9:41';
+  }
   thread.dynamic_island = cfg.dynamic_island ?? thread.dynamic_island ?? true;
   for (const m of thread.messages) {
     if (m.type === 'attachment') {
@@ -99,6 +110,7 @@ function buildDocument(cfg,baseDir) {
       if (m.dwell_sec != null && (!Number.isFinite(m.dwell_sec) || m.dwell_sec<0.3)) throw Error(`Invalid attachment dwell in ${m.id}`);
     }
     if (m.type !== 'timestamp') m.popState='pending';
+    if (m.from===thread.participants.find(p=>p.self).id && ['text','attachment'].includes(m.type) && m.delivered!==false) m.delivered=true;
   }
   thread.composer={ text:'' };
   const { timeline,total }=buildTimeline(thread,cfg.timing);
@@ -119,7 +131,7 @@ function buildDocument(cfg,baseDir) {
     .conv-header .left,.conv-header .right,.conv-header .left .back-btn,.conv-header .right .facetime-btn { color:var(--text-primary); }
     .conv-header .left .badge-pill,.conv-header .center .name-pill { background:${dark ? '#1c1c1e':'#e9e9eb'}; color:var(--text-primary); }
     body.framed .conversation { flex:1; min-height:0; display:block; overflow:hidden; padding:6px 14px 10px; }
-    .message-list { display:flex; flex-direction:column; justify-content:flex-end; min-height:100%; gap:2px; }
+    .message-list { display:flex; flex-direction:column; justify-content:flex-start; min-height:100%; gap:2px; }
     .message-list > * { flex-shrink:0; }
     .bubble { overflow-wrap:anywhere; }
     .sender-name { margin-left:38px; }
@@ -133,6 +145,12 @@ function buildDocument(cfg,baseDir) {
     .row.rich-link .attachment-meta::after { content:'›'; position:absolute; right:12px; top:50%; transform:translateY(-50%); font-size:22px; color:var(--text-meta); }
     .row.photo .attachment-card { border-radius:16px; }
     .row.photo .attachment-meta { background:transparent; padding:6px 0; }
+    .bubble { position:relative; }
+    .tapback { position:absolute; top:-34px; width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center; z-index:3; box-shadow:0 0 0 2.5px ${dark ? '#000':'#fff'}; font-size:21px; }
+    .tapback.on-sent { left:-24px; } .tapback.on-received { right:-24px; }
+    .tapback.theirs { background:${dark ? '#3a3a3c':'#e9e9eb'}; } .tapback.mine { background:#0a84ff; }
+    .tapback::after { content:''; position:absolute; bottom:-5px; width:8px; height:8px; border-radius:50%; background:inherit; }
+    .tapback.on-sent::after { right:0; } .tapback.on-received::after { left:0; }
     .bubble.pop-now,.delivered-caption.pop-now,.caret { animation:none; }
   </style>`;
   const script=fs.readFileSync(path.join(__dirname,'chat-driver.js'),'utf8');
@@ -149,14 +167,46 @@ async function checkLayout(page) {
     if (island && island.getBoundingClientRect().top<=screen.top+2) errors.push('Dynamic Island must float inside the screen');
     for (const el of document.querySelectorAll('.bubble,.name-pill,.attachment-meta')) {
       if (el.closest('[data-pending="1"]')) continue;
-      const box=el.getBoundingClientRect(),r=document.createRange(); r.selectNodeContents(el); const text=r.getBoundingClientRect();
+      const box=el.getBoundingClientRect(),r=document.createRange();
+      const children=[...el.childNodes].filter(n=>!n.classList?.contains('tapback'));
+      if (!children.length) continue;
+      r.setStartBefore(children[0]); r.setEndAfter(children.at(-1)); const text=r.getBoundingClientRect();
       if (!box.width || !box.height) continue;
       if (text.width && (text.left<box.left-1 || text.right>box.right+1 || text.bottom>box.bottom+1)) errors.push(`Text overflow: ${el.closest('[data-anim-id]')?.dataset.animId || el.textContent}`);
       if (box.left<screen.left || box.right>screen.right) errors.push(`Outside phone: ${el.textContent}`);
     }
+    const keyboard=document.querySelector('.keyboard').getBoundingClientRect();
+    if (Math.abs(keyboard.bottom-screen.bottom)>2) errors.push('Text input must remain at the bottom of the phone');
     return errors;
   });
 }
+
+const EMOJI_CDN = 'https://cdn.jsdelivr.net/npm/emoji-datasource-apple@15.1.2/img/apple/64/';
+const isPictographic = g => /\p{Extended_Pictographic}|\p{Regional_Indicator}/u.test(g);
+async function appleEmojiMap(texts) {
+  const seg = new Intl.Segmenter('en', { granularity: 'grapheme' });
+  const cacheDir = path.join(os.tmpdir(), 'imsg-apple-emoji');
+  fs.mkdirSync(cacheDir, { recursive: true });
+  const map = {};
+  for (const t of texts) for (const { segment: g } of seg.segment(t || '')) {
+    if (map[g] || !isPictographic(g)) continue;
+    const full = [...g].map(c => c.codePointAt(0).toString(16)).join('-');
+    const names = [full, full.replace(/-fe0f/g, '')];
+    for (const n of names) {
+      const file = path.join(cacheDir, n + '.png');
+      if (!fs.existsSync(file)) {
+        const r = await fetch(EMOJI_CDN + n + '.png');
+        if (!r.ok) continue;
+        fs.writeFileSync(file, Buffer.from(await r.arrayBuffer()));
+      }
+      map[g] = dataURI(file);
+      break;
+    }
+    if (!map[g]) console.warn(`emoji  ${g} (${full}): no Apple glyph found, system font used`);
+  }
+  return map;
+}
+
 
 async function record(cfgPath,outDir,previewOnly=false) {
   const cfg=JSON.parse(fs.readFileSync(cfgPath,'utf8')),doc=buildDocument(cfg,path.dirname(cfgPath));
@@ -165,9 +215,15 @@ async function record(cfgPath,outDir,previewOnly=false) {
   try {
     const page=await browser.newPage({ viewport:{ width:doc.width,height:doc.height },deviceScaleFactor:1 });
     await page.setContent(doc.html,{ waitUntil:'load' });
+    const emojiMap=await appleEmojiMap(doc.thread.messages.map(m=>m.text || m.emoji || ''));
+    await page.evaluate(map=>window.__setEmojiMap(map),emojiMap);
     await page.evaluate(async () => { await document.fonts.ready; await Promise.all([...document.images].map(i=>i.decode())); });
     for (const ev of doc.timeline) {
       await page.evaluate(t=>window.__renderAt(t),ev.t+(ev.kind==='composer' ? ev.dur*0.95:0.3));
+      if (ev.kind==='composer') {
+        const typed=await page.locator('[data-composer-text]').evaluate(el=>[...el.childNodes].map(n=>n.nodeType===3 ? n.textContent : n.alt || n.textContent).join(''));
+        if (typed!==ev.text) throw Error(`TYPED != SENT: ${typed} / ${ev.text}`);
+      }
       const errors=await checkLayout(page); if (errors.length) throw Error(errors.join('\n'));
     }
     await page.evaluate(t=>window.__renderAt(t),doc.total);
@@ -192,7 +248,7 @@ async function record(cfgPath,outDir,previewOnly=false) {
     }
     encoder.stdin.end(); await done;
     fs.writeFileSync(path.join(outDir,'master-chat.timeline.json'),JSON.stringify({ fps:FPS,total:doc.total,timeline:doc.timeline },null,2));
-    fs.writeFileSync(path.join(outDir,'master-chat.sfx.json'),JSON.stringify(doc.timeline.filter(e=>e.sfx).map(e=>({ t:snap(e.t+1/FPS),name:e.sfx,id:e.id })),null,2));
+    fs.writeFileSync(path.join(outDir,'master-chat.sfx.json'),JSON.stringify(doc.timeline.filter(e=>e.sfx).map(e=>({ t:snap(e.t+1/FPS),name:e.sfx,id:e.id,soft:!!e.soft })),null,2));
     console.log(`chat: ${frames} frames, ${doc.total}s, ${doc.width}×${doc.height}; no startup trim`); return doc;
   } finally { if (encoder && encoder.exitCode==null) encoder.kill(); await browser.close(); }
 }

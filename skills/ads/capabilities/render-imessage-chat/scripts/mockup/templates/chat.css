@@ -754,10 +754,8 @@ body.theme-dark .keyboard .input {
   to   { opacity: 1; }
 }
 
-/* For long composer text, allow it to truncate gracefully. */
-.keyboard .input { overflow: hidden; }
-.keyboard .input .composer-text {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: calc(100% - 36px);
-}
+/* Long messages wrap; the flex layout reserves the composer at the screen bottom. */
+.keyboard .input.has-text { height:auto; min-height:36px; padding-top:7px; padding-bottom:7px; align-items:flex-end; }
+.keyboard .input .composer-text { white-space:pre-wrap; overflow-wrap:anywhere; line-height:1.3; max-width:calc(100% - 36px); }
+img.ae { width:1.2em; height:1.2em; vertical-align:-0.22em; display:inline-block; }
+.bubble.emoji-only img.ae { width:1em; height:1em; }

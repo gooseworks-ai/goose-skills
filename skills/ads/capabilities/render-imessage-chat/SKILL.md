@@ -79,7 +79,7 @@ also supports even preview dimensions; the phone must fit with a margin.
 
 - Inline `thread` or `thread_path`. Relative files resolve against config.json.
 - Unique message IDs and valid `from` participants. Types: text, typing, timestamp,
-  attachment. Typing immediately precedes a received text/attachment from the same
+  attachment, tapback. Reactions target an earlier message ID and carry an emoji. Typing immediately precedes a received text/attachment from the same
   person. Self messages type in the composer, including complete emoji graphemes.
 - Short messages read best. Longer words wrap; real overflow fails preflight.
 - Optional attachment: `src` local image/data URI, `presentation:"photo"` for a
@@ -126,3 +126,24 @@ Fix the configuration error and rerender locally. UI defects never justify paid
 generation. Watch the final for the selected name, readable bubbles, smooth scroll,
 correct sender labels and sounds, complete last message and correct brand end card.
 Use `review-finished-ad` for brand/copy review when called by the recipe.
+
+## Critical knowledge
+
+The current renderer combines the fixed-frame repair with the lessons from the live-capture audit. Read [[references::references/imessage-reference.md]] before authoring.
+
+1. Browser startup and CPU load must never change movie time. Fixed output frames replace capture-clock guesses, sync curtains and picture-snapping retries.
+2. Measure each sound's audible onset. The original send file includes lead-in; trim silence before placing it on the visible reveal frame.
+3. Keep the original receive chime. Shorten it only when another message follows quickly, so its second note cannot mask that next message.
+4. Check the text Range against the bubble bounds. Bubble tails intentionally extend beyond the box.
+5. Use Apple emoji assets for recordings on hosts whose native emoji differ. Cache and inline them before capture; keep complete Unicode graphemes while typing.
+6. Scratch directory templates must work on macOS and GNU systems.
+7. Start short conversations under the header. Keep the input fixed at the bottom and scroll only the conversation.
+8. Picture and sounds share output-frame time. Reactions use that same timeline and must target an earlier real message.
+9. Do not zoom into a link as if a camera were moving across the phone screen.
+10. Editorial endings use the brand's own fonts, headlines, benefits, URL and footnote. Approved complete artwork can replace the template.
+11. Show Delivered only beneath the newest sent text or attachment.
+12. Typed text must equal sent text. The deterministic composer completes before sending and wraps long lines.
+13. Download and inline requested end-card fonts before capture. A missing font fails the render instead of silently changing the brand.
+14. Read approved brand colours from the brand kit or site styling. Preserve the selected background and contact names.
+15. Keep the quieter audit mix with the existing peak limiter. Unsupported ratings remain absent unless approved proof is supplied.
+16. Inspect the actual encoded ending and sound alignment. Frame counts and a passing stream probe do not establish creative acceptance.
