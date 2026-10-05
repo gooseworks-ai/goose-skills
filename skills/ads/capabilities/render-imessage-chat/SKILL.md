@@ -1,198 +1,149 @@
 ---
 name: render-imessage-chat
-description: Assemble an iMessage chat-reveal video ad from a thread JSON — one continuous Playwright recording of the conversation animating in (typing dots, composer typing, bubble pops, auto-scroll) crossfaded into a designed end card, with iMessage send/receive SFX and an optional ducked music bed. FREE assembly (Playwright + ffmpeg); the recipe supplies the per-brand thread + product + end-card config and gates the paid product-image/music calls to their own capabilities. Use for the imessage-chat format.
+description: Render a configurable iMessage conversation inside a properly framed phone, then a brand end card. Uses the original send/receive sounds and a shared frame timeline for text, typing, scrolling and sound. Free local Playwright + ffmpeg assembly; optional image/music generation belongs to separate gated capabilities.
 status: active
 ---
 
-# render-imessage-chat
+# Human version
 
-The free renderer for the **imessage-chat** video ad format — a texting-thread
-reveal where a two-person conversation animates in on a phone (typing
-indicators, composer typing, bubble pops, smooth auto-scroll) and lands on a
-designed brand end card. Deterministic Playwright + ffmpeg assembly; no
-generative video of the UI, so bubble text and the wordmark stay pixel-crisp.
+Make a texting-story ad with the chosen contact names and phone time, a
+proportional phone, an inset Dynamic Island and the original iMessage sounds.
+The brand, story and background can change. Images are optional and can appear
+anywhere in the conversation; product links and music are optional too.
 
-This capability is the generic assembler — the template recipe (DB) supplies the
-per-brand `thread`, product image, and `end_card` config, and gates the paid
-calls (product image → create-image-fal, music bed → create-music-elevenlabs) to
-their own capabilities. It bundles the iMessage-mockup HTML generator + the
-send/receive SFX so a chat render is self-contained and $0.
+This rebuild preserves the shell and sounds from the approved Clinikally Goa
+build. It fixes missing identity binding, the island touching the screen edge,
+light-mode header colors, early/missing group names and capture timing drift.
+Every movie frame and sound cue uses the same timeline; browser startup cannot
+trim the beginning or ending. No paid API is needed to render or repair the UI.
 
-## Choices
+---
 
-The calling recipe asks the user these before any paid step; this capability only renders
-the config it is given. The Wonderbly values in `config.example.json` are a worked example,
-never defaults.
+# Agent version
 
-- **relationship** — who is texting whom (friends, siblings, parent + adult kid, coworkers,
-  a couple) → `thread.participants` + the voice of `thread.messages`.
-- **story** — the micro-story in the thread → `thread.messages`.
-- **tone** — casual, funny, sincere, deadpan, hype → the wording of `thread.messages`.
-- **theme** — dark or light iMessage → `theme` (renderer falls back to dark if unset).
-- **music** — none (SFX only) or a bed genre → `stitch.sh --music` (optional).
+Read [the reference and authoring rules](references/imessage-reference.md).
+The calling recipe supplies NEW names, copy, brand facts and real assets.
+`scripts/config.example.json` is a fictional, runnable example, never defaults.
 
-End-card colours, wordmark, proof, trust trio and CTA are brand facts (brand kit, approved
-copy only). Missing end-card colours fall back to a neutral white/black card.
+## Choices and bindings
 
-## The three defects it fixes (QA GOOSE-2481)
+- Relationship, contact names and group title → `thread.participants`, `thread.title`.
+- Displayed phone time → `thread.clock`, preserving the user's chosen text.
+- Story, tone and language → `thread.messages`. Casual spelling and emojis are allowed.
+- Chat images → zero or more `attachment` entries at their authored positions in
+  `thread.messages`; either participant may send them. Never reorder by type.
+- Theme → `theme: "dark" | "light"`.
+- Background → optional local `background_image`; neutral when absent.
+- Hardware → `dynamic_island: true | false`; true floats inside the screen.
+- Music → optional existing bed passed to `render.sh --music`; no bed means SFX only.
 
-1. **Rich-link attachment** — a product/link renders as a REAL iMessage URL
-   preview: the image (top-rounded corners) flush against a gray meta card with a
-   bold title + domain subtitle + chevron. NOT a bare image with a distorted
-   caption floating centered below it (the mockup's default `.attachment-meta`).
-   The fix is baked into `record-chat.js`'s injected style, theme-aware.
-2. **No text bleed** — every bubble fits. This is an AUTHORING rule the recipe
-   enforces: split any long line into multiple short bubbles (see the two `spec`
-   lines in `config.example.json`). The renderer honors the thread it's given.
-3. **A designed end card** — wordmark + ⭐ proof row + trust trio + CTA pill
-   (`render-end-card.js` + `end-card.template.html`), not a bare logo.
+Exactly one participant is `self:true`. A DM has two participants; its header
+reads the other participant's `name` and derives the first initial unless supplied.
+A group requires a title and named contacts. Missing names fail before capture.
+There is no demo-name fallback. Changing the config changes the visible name.
+When a name changes, update any derived initials too. Keep explicit user-supplied
+initials only when they still match the requested identity.
 
 ## Run
 
+Requires Node 18+, Python 3, ffmpeg with libx264, ffprobe and Playwright Chromium.
+Install dependencies in the fetched **scripts folder**, then launch/close that
+script's own Chromium before any optional paid image/music call. Preserve its
+cwd, NODE_PATH and PLAYWRIGHT_BROWSERS_PATH. `gooseworks doctor --renderer-script
+"/absolute/path/scripts/record-chat.js"` can check that runtime. If unavailable,
+use a bounded free `createRequire(actualScript)` launch/close probe (15-second
+launch timeout, 20-second whole-process limit). Cache presence alone is not proof.
+
 ```bash
-cd scripts && npm install && npx playwright install chromium   # once
-bash render.sh --config config.json --out <work>/final.mp4 [--music bed.mp3] [--also-1x1]
+cd scripts
+npm ci
+# Install Chromium only if the free launch probe says it is missing:
+# npx playwright install chromium
+node record-chat.js --config /absolute/path/config.json --out-dir /absolute/path/working/preview --preview-only
+bash render.sh --config /absolute/path/config.json --out /absolute/path/finals/master-final.mp4
+# Optional: append --music /absolute/path/bed.mp3
 ```
 
-One command: `record-chat.js` -> `render-end-card.js` -> `stitch.sh` -> `check-render.py`.
-It exits non-zero on any failure, so a bad video never looks finished. The steps can still
-be run one by one (same flags as before).
+Preview produces `chat.html` and `chat-preview.png`; the HTML exposes
+`window.__renderAt(seconds)` for frame inspection. Full render keeps those,
+`master-chat.mp4`, `.timeline.json`, `.sfx.json`, the end-card HTML/PNG/MP4 and
+the finished master. `check-render.py` verifies dimensions, audio stream,
+frame count and complete ending. Review the ACTUAL master after every repair;
+these technical checks do not establish creative acceptance.
 
-**What it guarantees (and checks on the finished file):**
-- **Sound on the bubble.** A magenta sync curtain is shown until the chat starts and the
-  capture is trimmed at its first missing frame. Each sound is placed by its measured
-  onset and leads its bubble by 40 ms (`stitch.sh --sfx-lead`). A sound is cut (40 ms
-  fade) where the next one starts, as a phone restarts the alert. `check-render.py`
-  fails the render if any cue's onset is outside -150..+20 ms of its bubble. Per-cue gain and a
-  -2 dBFS limiter keep the mix below -1 dBTP, so back-to-back chimes never clip.
-- **Real-phone details.** Apple Color Emoji glyphs (not Segoe/Noto); "Delivered" only under
-  the newest sent message (text or link); 1-3 emoji alone render large; sent bubbles rise
-  from the text field; the status-bar clock follows the thread's timestamp line; light
-  theme header icons are dark; link images sit on a grey card.
-- **Authoring guards (fail before recording):** em/en dashes, self typing dots, duplicate
-  ids, attachment files under 2 KB (git-LFS pointers), text overflowing its bubble. Over
-  16 messages warns (each adds ~1.6 s; 10-16 lands at 20-27 s).
-- **End card:** `logo_svg` / `logo_svg_path`, or `logo_image_path` (PNG/JPG) for brands
-  with no SVG; `wordmark_width` (default 560); a logo under 3:1 contrast with the card is
-  recoloured to `fg`; `url_text` under the CTA; `footnote` for legal lines (the FDA
-  disclaimer every supplement benefit claim needs), kept inside the 4:5 safe zone.
+Individual `record-chat.js`, `render-end-card.js` and `stitch.sh` commands remain
+available. `render.sh` produces the 1080×1920 recipe master. The chat recorder
+also supports even preview dimensions; the phone must fit with a margin.
 
-**Grammar and punctuation are enforced** (iPhones auto-capitalise and add apostrophes, so
-correct text is also the realistic text): every message starts with a capital, ends with
-`. ! ? …` or an emoji, has no texting shorthand (u, ur, im, dont, tmrw, rn...), no lowercase
-"i", and clean spacing around punctuation. A sentence sent as two bubbles marks the first
-half `"continues": true` (it may skip end punctuation; the second half may start lowercase).
-Straight apostrophes render curly, as iOS Smart Punctuation does.
+## Config contract
 
-**Texture without typos:** `{ "type": "tapback", "from": "<id>", "target": "<message id>",
-"emoji": "😂" }` lands an iOS reaction on an earlier bubble: a round badge mostly above the message on its outer top corner (left on your blue bubbles, right on theirs), grey for theirs and blue for yours, with a two-dot tail touching the corner; the message steps down to make room; split sentences as above.
-Short threads sit under the header and
-auto-scroll once the screen fills, as in Messages.
+- Inline `thread` or `thread_path`. Relative files resolve against config.json.
+- Unique message IDs and valid `from` participants. Types: text, typing, timestamp,
+  attachment, tapback. Reactions target an earlier message ID and carry an emoji. Typing immediately precedes a received text/attachment from the same
+  person. Self messages type in the composer, including complete emoji graphemes.
+- Short messages read best. Longer words wrap; real overflow fails preflight.
+- Optional attachment: `src` local image/data URI, `presentation:"photo"` for a
+  photo or `"rich-link"` for image + flush meta card + title/domain/chevron.
+  Optional `dwell_sec` overrides its default 3.6-second reading hold.
+  Text-only chats need no images. One or several attachments can come first,
+  between any messages or last; preserve the user's placement and sender.
+  Never require an opening photo or a product image at a fixed beat.
+- Optional `thread.clock` sets the displayed status-bar time, such as `10:24` or
+  `18:07`. Bind the chosen time; do not replace it with a demo time. Only when
+  absent does the shell use its neutral `9:41` fallback. In-chat timestamp labels
+  are separate message inputs, not a required fixed timestamp.
+- End card: approved `image_path`, or real `logo_svg_path`, `logo_image_path`,
+  inline `logo_svg` or `wordmark_text`, brand colors, CTA and optional benefits.
+  `stars` defaults to **0**. Ratings require approved `proof_text`.
+  An artwork path replaces the complete template; check its copy and CTA first.
+- Default outer canvas 1080×1920; zoom fits the 393×852 phone proportionally.
+  Excess zoom fails rather than cropping the phone. `timing` can override the
+  named pacing fields in record-chat.js; ending hold must be at least 0.5 seconds.
 
-**Editorial end card** (`end_card.layout: "editorial"`): the brand's own type system instead
-of the badge template. `fonts.{headline,body,mono} = { family, weight, style, google }`
-(`google` = a Google Fonts family spec, the free stand-in when the brand's font is
-licensed), `headline: [line, line]` (second line in `accent`), `headline_case`, `points`
-+ `points_case` + `points_sep`, optional `cta_text`, `url_text`, `footnote`. The render fails
-if any requested font does not load.
+## Original sound contract
 
-Put `{ "type": "timestamp", "bold": "iMessage", "light": "Today 7:12 AM" }` first in the
-thread; real conversations open with it and the clock is read from it.
+The send/receive MP3s are byte-identical to both archived Clinikally and Wonderbly
+builds. Keep them. No substitute ringtone, notification-cascade sound or generated
+pop. One cue per real text/attachment; none for typing or composer keystrokes.
+Picture reveals and cues share fixed output-frame times; the audible onset follows
+the first visible reveal frame. The mixer strips leading silence and limits peaks.
 
-### Where the SFX come from
+Full checkouts use `assets/sfx`. Text-only catalog packages use the hash-checked
+`scripts/sfx-embedded.json` fallback. Keep that file byte for byte. `--sfx-dir`
+can override the source explicitly. Missing, silent, corrupt or LFS-pointer audio
+stops the render. After an intentional MP3 replacement, regenerate the embedded
+copy with `python3 tests/test_stitch.py --write-embedded`.
 
-The two real iMessage sounds ship twice: as mp3s in `assets/sfx` and as base64 text
-in `scripts/sfx-embedded.json`. A catalog fetch delivers text files only, so a
-fetched copy has no `assets/` folder. `stitch.sh` handles that by itself, in this order:
+## Verification and failures
 
-1. `--sfx-dir <dir>` if passed (must hold `imessage-send.mp3` + `imessage-receive.mp3`).
-2. `assets/sfx`, if both mp3s are real audio (not git-LFS pointers).
-3. Otherwise it decodes `scripts/sfx-embedded.json` (sha256-checked) into a temp dir.
+Run `node --test tests/test_chat.js` and `python3 -m pytest tests/test_stitch.py`.
+Browser tests cover changing names/time/background, text-only chats, attachment
+placement, blank-name rejection, inset hardware, dark/light chrome, group labels
+after typing, Unicode composer text and long threads. Audio tests cover
+fetched-package delivery and limited overlapping cues.
 
-If none is there it stops and names what it looked for. **Never substitute
-made-up pops** — keep `sfx-embedded.json` byte for byte when saving fetched files:
-write it with a program from the fetch output (e.g. a short Python loop over the
-fetched files), never by re-typing it. A damaged copy stops the render with a
-"re-fetch" message.
-After changing an mp3, run `python3 tests/test_stitch.py --write-embedded`.
-
-## Contract
-
-- FREE assembly: Playwright record + ffmpeg composite/mux + the bundled SFX. No
-  AI-rendered text — the bubbles, rich-link title/domain, and end-card copy are
-  all real HTML/PIL, never invented by a model.
-- The recipe (DB) supplies the per-brand config: the `thread` (kept short — split
-  long lines), the product image bound into the attachment, the `end_card`
-  (prefer a real `logo_svg` wordmark), theme (the user's choice; dark if unset), and an optional
-  `background_image` (a flat-lay behind the phone) + optional music bed.
-- Craft rules preserved from the reference build (Wonderbly Concept E):
-  - Rich-link attachment card (image top-rounded, flush on the gray meta card).
-  - Keep messages SHORT — split long thoughts into multiple bubbles (no bleed).
-  - You never see your own typing dots — sent messages type in the composer.
-  - Attachment dwell (~3.6s) so the product/link registers.
-  - Designed end card (wordmark + proof + trust trio + CTA), not a bare logo.
-
-## Gaps / routing notes
-
-- **Product image** (the attachment) and the optional **music bed** are inputs,
-  not generated here — the recipe gates them to `create-image-fal` /
-  `create-music-elevenlabs` (paid, proxy-routed, billed to the Ads agent). Pass
-  the resulting files into the config / `stitch.sh --music`.
-- **Background flat-lay** is optional; omit it for a clean neutral gradient behind
-  the phone, or generate one via `create-image-fal` and point `background_image`
-  at it.
-- Requires **ffmpeg/ffprobe** on PATH and Playwright Chromium. Run
-  `gooseworks doctor --no-browser` for common setup. After installing dependencies
-  in the fetched `scripts/` folder, run
-  `gooseworks doctor --renderer-script "/absolute/path/to/scripts/record-chat.js"`
-  and the same check for `render-end-card.js`, before any paid product-image or music
-  call. Use the actual fetched paths and the render's environment, including `NODE_PATH`
-  and `PLAYWRIGHT_BROWSERS_PATH`. The check launches and closes that script's own
-  Playwright Chromium with default settings; it downloads nothing. On failure, repair
-  the named folder under existing setup permissions, then recheck. An unscoped doctor
-  result or an existing cache folder does not prove these recorders can launch.
-  Without the CLI, or if it lacks these flags, run a bounded free launch/close probe using
-  `require('node:module').createRequire(require('node:path').resolve(actualScript))`
-  to load `playwright`, preserve the same cwd/environment and default launch settings,
-  and await `chromium.launch({ timeout: 15000 })` then `browser.close()` (3-second close
-  limit, 20-second whole-process limit; stop its own process tree on failure/timeout).
-  A missing module, browser, runtime or failed launch stops work before spending.
+Fix the configuration error and rerender locally. UI defects never justify paid
+generation. Watch the final for the selected name, readable bubbles, smooth scroll,
+correct sender labels and sounds, complete last message and correct brand end card.
+Use `review-finished-ad` for brand/copy review when called by the recipe.
 
 ## Critical knowledge
 
-1. **Never trim the capture by a clock guess.** `Date.now()` around `newContext()` put every
-   sound a median 204 ms late (range -450..+236 ms) on the Graza audit run. The sync
-   curtain + first-missing-frame trim fixed it; the curtain must be held ~600 ms or the
-   screencast (it only emits frames on change) never records it.
-2. **Measure each SFX file's onset.** `imessage-send.mp3` has 99 ms of lead-in; placing the
-   file at the cue made the send sound late even with perfect video sync.
-3. **The receive tone is ~1.4 s at full level.** Two received messages 0.75 s apart blurred
-   into one sound until each sound was cut where the next begins.
-4. **`scrollWidth` is not a text-bleed test.** Bubble tails are pseudo-elements that stick out
-   by design; compare the text's Range box with the bubble box instead.
-5. **Chromium on Windows/Linux draws Segoe/Noto emoji** and the render reads fake instantly.
-6. **BSD `mktemp -t name`** (no XXXXXX) fails on GNU/Git Bash; use a template.
-7. **Short threads were bottom-aligned** with an empty screen above; Messages top-aligns them.
-8. **Sounds snap to the picture, not the plan.** The page fires on time, but the screencast
-   delivered a tapback ~0.6 s late in one capture. `record-chat.js` now finds the frame where
-   each bubble/reaction appears (changed-pixel count in the chat area) and moves its sound there.
-9. **No push-in on the link.** It read as a camera move a phone recording can't make; removed.
-10. **The generic badge end card looked the same for every brand.** Use the editorial layout
-   with the brand's fonts (or named free stand-ins).
-11. **Keep the receive chime; shorten it only when another message follows fast.** Its loud
-    second note lands ~0.3 s in, so with two received messages ~0.8 s apart it rang just
-    before the second bubble (Som Sleep). Cutting every chime to one note changed the tone
-    everywhere and was rejected; `stitch.sh` now cuts only a chime followed within 1.3 s.
-12. **Typed text must equal sent text.** Cumulative random keystroke sleeps overran the send,
-    and the composer truncated long lines with an ellipsis. Keystrokes now run on an absolute
-    seeded schedule ending at 90% of the window, the composer wraps like Messages, the caret
-    follows the last character, and the render fails (`TYPED != SENT`) on any mismatch.
-13. **Embed end-card fonts.** Loading Google Fonts live during capture failed intermittently;
-    they are downloaded once (with retries), cached, and inlined as data URIs.
-14. **Take end-card colours from the brand's live CSS variables**, not the product photo
-    (Graza: `--color-background #F6E6D9`, `--color-text #3C422E`, `--color-brand #D1E030`).
-15. **The mix was clipping** (-4.8 LUFS, peaks above 0 dBFS, limiter squashing every chime).
-    Now ~-11.4 LUFS, peaks ~-1.2 dBFS.
-16. **The real-time capture can stall under CPU load** (a sync marker missed; bubbles bunched
-    by 637 ms). `record-chat.js` exits 4 when the marker is missing or any bubble is >250 ms
-    off plan, and `render.sh` re-records up to 3 times.
+The current renderer combines the fixed-frame repair with the lessons from the live-capture audit. Read [[references::references/imessage-reference.md]] before authoring.
+
+1. Browser startup and CPU load must never change movie time. Fixed output frames replace capture-clock guesses, sync curtains and picture-snapping retries.
+2. Measure each sound's audible onset. The original send file includes lead-in; trim silence before placing it on the visible reveal frame.
+3. Keep the original receive chime. Shorten it only when another message follows quickly, so its second note cannot mask that next message.
+4. Check the text Range against the bubble bounds. Bubble tails intentionally extend beyond the box.
+5. Use Apple emoji assets for recordings on hosts whose native emoji differ. Cache and inline them before capture; keep complete Unicode graphemes while typing.
+6. Scratch directory templates must work on macOS and GNU systems.
+7. Start short conversations under the header. Keep the input fixed at the bottom and scroll only the conversation.
+8. Picture and sounds share output-frame time. Reactions use that same timeline and must target an earlier real message.
+9. Do not zoom into a link as if a camera were moving across the phone screen.
+10. Editorial endings use the brand's own fonts, headlines, benefits, URL and footnote. Approved complete artwork can replace the template.
+11. Show Delivered only beneath the newest sent text or attachment.
+12. Typed text must equal sent text. The deterministic composer completes before sending and wraps long lines.
+13. Download and inline requested end-card fonts before capture. A missing font fails the render instead of silently changing the brand.
+14. Read approved brand colours from the brand kit or site styling. Preserve the selected background and contact names.
+15. Keep the quieter audit mix with the existing peak limiter. Unsupported ratings remain absent unless approved proof is supplied.
+16. Inspect the actual encoded ending and sound alignment. Frame counts and a passing stream probe do not establish creative acceptance.

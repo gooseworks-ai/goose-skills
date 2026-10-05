@@ -1,6 +1,6 @@
 {
   "version": "1.3.0",
-  "generated": "2026-10-05",
+  "generated": "2026-10-04",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -6631,13 +6631,15 @@
       "name": "render-imessage-chat",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Assemble an iMessage chat-reveal video ad from a thread JSON — one continuous Playwright recording of the conversation animating in (typing dots, composer typing, bubble pops, auto-scroll) crossfaded into a designed end card, with iMessage send/receive SFX and an optional ducked music bed. FREE assembly (Playwright + ffmpeg); the recipe supplies the per-brand thread + product + end-card config and gates the paid product-image/music calls to their own capabilities. Use for the imessage-chat format.",
+      "description": "Render a configurable iMessage conversation inside a properly framed phone, then a brand end card. Uses the original send/receive sounds and a shared frame timeline for text, typing, scrolling and sound. Free local Playwright + ffmpeg assembly; optional image/music generation belongs to separate gated capabilities.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-imessage-chat",
       "files": [
         "skills/ads/capabilities/render-imessage-chat/SKILL.md",
         "skills/ads/capabilities/render-imessage-chat/assets/sfx/imessage-receive.mp3",
         "skills/ads/capabilities/render-imessage-chat/assets/sfx/imessage-send.mp3",
+        "skills/ads/capabilities/render-imessage-chat/references/imessage-reference.md",
+        "skills/ads/capabilities/render-imessage-chat/scripts/chat-driver.js",
         "skills/ads/capabilities/render-imessage-chat/scripts/check-render.py",
         "skills/ads/capabilities/render-imessage-chat/scripts/config.example.json",
         "skills/ads/capabilities/render-imessage-chat/scripts/end-card.template.html",
@@ -6653,6 +6655,7 @@
         "skills/ads/capabilities/render-imessage-chat/scripts/stitch.sh",
         "skills/ads/capabilities/render-imessage-chat/skill.meta.json",
         "skills/ads/capabilities/render-imessage-chat/tests/smoke-test.md",
+        "skills/ads/capabilities/render-imessage-chat/tests/test_chat.js",
         "skills/ads/capabilities/render-imessage-chat/tests/test_stitch.py"
       ],
       "metadata": {

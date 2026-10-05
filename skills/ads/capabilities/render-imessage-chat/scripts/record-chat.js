@@ -1,429 +1,187 @@
 #!/usr/bin/env node
-/**
- * record-chat.js — render an iMessage CHAT-REVEAL video ad as a single
- * continuous Playwright recording, from DATA (a thread + style config). This is
- * the generalized, data-driven version of the hand-tuned per-client recorders
- * (e.g. Wonderbly Concept E) — the format is a template, not a per-brand script.
- *
- * What it fixes (QA GOOSE-2481, the recurring iMessage defects):
- *   1. The product/link renders as a REAL iMessage URL-preview rich link — image
- *      with only top-rounded corners flush against a gray meta card (bold title +
- *      domain subtitle + chevron). NOT a bare image with a distorted caption
- *      floating centered below it (the old default `.attachment-meta` style).
- *   2. Text never bleeds out of a bubble — the timeline is derived per message and
- *      the AUTHORING rule (enforced in the recipe) is to split any long line into
- *      multiple short bubbles, each of which fits. This renderer just honors the
- *      thread it's given; keep messages short.
- *   3. A clean single continuous timeline (no per-scene reloads / flicker).
- *
- * Output: <out-dir>/master-chat.mp4  +  <out-dir>/master-chat.sfx.json
- *
- * Usage:
- *   npm install                       # once, in this scripts/ folder (Playwright)
- *   node record-chat.js --config config.json [--out-dir .]
- *
- * config.json shape (see config.example.json):
- *   {
- *     "thread":   { ...iMessage thread JSON (participants + messages) },  // or "thread_path"
- *     "theme":    "dark" | "light",            // the user's theme choice; falls back to "dark"
- *     "background_image": "assets/bg.jpg",     // optional flat-lay behind the phone
- *     "width": 1080, "height": 1920, "zoom": 2.10,   // output geometry (defaults)
- *     "timing": { ...optional per-kind overrides }   // see TIMING below
- *   }
- * Relative paths in config (thread_path, background_image, message attachment `src`)
- * resolve against the config file's directory.
- */
-
-const fs = require('fs');
-const path = require('path');
-const os = require('os');
-const { execSync } = require('child_process');
+// Frame-by-frame iMessage capture. Movie time is independent of browser startup
+// and machine speed. One timeline supplies picture and send/receive SFX.
+const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
+const { spawn } = require('node:child_process');
+const { once } = require('node:events');
 const { chromium } = require('playwright');
 const { renderHTML } = require('./mockup/generate.js');
-
-// ── args ────────────────────────────────────────────────────────────────────
-function parseArgs(argv) {
-  const a = { config: 'config.json', outDir: '.' };
-  for (let i = 2; i < argv.length; i++) {
-    if (argv[i] === '--config') a.config = argv[++i];
-    else if (argv[i] === '--out-dir') a.outDir = argv[++i];
-  }
-  return a;
-}
-
-// ── timing defaults (seconds) — believable thumb-typing pacing ────────────────
+const FPS = 30;
 const TIMING = {
-  start: 0.40,        // first beat
-  received_gap: 0.75, // dwell after a received bubble before the next beat
-  emoji_gap: 0.55,    // shorter dwell after an emoji-only reaction
-  typing_dwell: 1.00, // how long the "…" indicator shows before it swaps to text
-  self_pre: 0.30,     // pause before the composer starts typing a sent message
-  send_hold: 0.10,    // beat between the composer finishing and the bubble popping
-  attach_dwell: 3.60, // let a rich-link / image attachment LAND
-  tail_hold: 1.00,    // breathing room at the end before the crossfade to end card
-  char_per_sec: 15,   // composer typing speed (chars/sec)
-  min_type: 0.50,     // clamp composer typing duration
-  max_type: 2.00,
-  scroll_ms: 300,     // smooth auto-scroll duration after each beat
-  tapback_gap: 0.70,  // dwell after a tapback reaction lands
+  start:0.4, received_gap:0.75, emoji_gap:0.55, typing_dwell:1,
+  self_pre:0.3, send_hold:0.1, attach_dwell:3.6, tail_hold:1,
+  char_per_sec:15, min_type:0.5, max_type:2, scroll_ms:300,
 };
+const snap = t => Math.ceil((t - 1e-8) * FPS) / FPS;
+const emojiOnly = s => /^(\p{Extended_Pictographic}|\p{Emoji_Presentation}|️|‍|\s)+$/u.test(s || '');
 
-function isEmojiOnly(text) {
-  if (!text) return false;
-  const s = text.trim();
-  if (!s) return false;
-  const re = /^(\p{Extended_Pictographic}|\p{Emoji_Presentation}|️|‍|\s)+$/u;
-  return re.test(s) && [...new Intl.Segmenter('en', { granularity: 'grapheme' }).segment(s.replace(/\s/g, ''))].length <= 3; // iMessage: 1-3 emoji alone render large
-}
-
-// ── build the animation timeline from the thread (one source of truth) ────────
-// Rules that mirror a real iMessage exchange:
-//   • Received text: pops in on the LEFT (optionally after a "…" typing bubble
-//     authored immediately before it from the same sender → typing-swap).
-//   • Sent ("self") text: the COMPOSER types it out, then the blue bubble pops on
-//     the right + "Delivered". You never see your OWN typing dots, so a self
-//     `typing` message is left hidden.
-//   • Attachment: pops + a long dwell so a rich-link/image can land.
-function buildTimeline(thread, T) {
-  const selfIds = new Set((thread.participants || []).filter(p => p.self).map(p => p.id));
-  const isSelf = from => selfIds.has(from);
-  const msgs = thread.messages || [];
-  const TL = [];
-  const scrollAfter = t => TL.push({ t: +(t + 0.10).toFixed(2), kind: 'scroll', dur: T.scroll_ms });
-  let t = T.start;
-  let pendingTyping = null; // { id, from } — a received "…" awaiting its text
-
-  for (let i = 0; i < msgs.length; i++) {
-    const m = msgs[i];
+function validateThread(thread) {
+  if (!thread || !['dm','group'].includes(thread.mode)) throw Error('thread.mode must be dm or group');
+  const people = thread.participants || [];
+  if (people.length < 2 || people.filter(p => p.self).length !== 1) throw Error('Supply at least two participants and exactly one self participant');
+  const ids = new Set();
+  for (const p of people) {
+    if (!p.id || ids.has(p.id)) throw Error('Participant IDs must be nonempty and unique');
+    ids.add(p.id);
+    if (!p.self && !String(p.name || '').trim()) throw Error(`Set thread.participants name for ${p.id}; there is no demo-name fallback`);
+  }
+  if (thread.mode === 'dm' && people.length !== 2) throw Error('DM needs two participants; use group for more');
+  if (thread.mode === 'group' && !String(thread.title || '').trim()) throw Error('Set thread.title for a group');
+  const messages = thread.messages || [];
+  if (!messages.some(m => m.type === 'text' || m.type === 'attachment')) throw Error('Supply a nonempty conversation');
+  const msgIds = new Set();
+  messages.forEach((m,i) => {
+    if (!['text','typing','attachment','timestamp','tapback'].includes(m.type)) throw Error(`Unsupported message type ${m.type}`);
+    if (m.type === 'timestamp') return;
+    if (!m.id || msgIds.has(m.id)) throw Error('Every text, typing and attachment needs a unique id');
+    msgIds.add(m.id);
+    if (!ids.has(m.from)) throw Error(`Unknown participant ${m.from} in ${m.id}`);
+    if (m.type === 'text' && !String(m.text || '').trim()) throw Error(`Empty message ${m.id}`);
+    if (m.type === 'attachment' && !m.src) throw Error(`Missing attachment image in ${m.id}`);
+    if (m.type === 'tapback') {
+      if (!String(m.emoji || '').trim() || !messages.slice(0,i).some(x => x.id === m.target && ['text','attachment'].includes(x.type)))
+        throw Error(`Tapback ${m.id} needs an emoji and an earlier message target`);
+    }
     if (m.type === 'typing') {
-      if (isSelf(m.from)) continue; // never show your own typing dots — stays hidden
-      TL.push({ t: +t.toFixed(2), kind: 'typing-pop', id: m.id });
-      scrollAfter(t);
-      pendingTyping = { id: m.id, from: m.from };
-      t += T.typing_dwell;
-      continue;
+      const next = messages[i+1];
+      if (people.find(p => p.id === m.from).self || !next || !['text','attachment'].includes(next.type) || next.from !== m.from)
+        throw Error(`Typing ${m.id} must immediately precede a received message from the same participant`);
     }
-    if (m.type === 'text') {
-      const emoji = isEmojiOnly(m.text);
-      if (isSelf(m.from)) {
-        t += T.self_pre;
-        const dur = Math.min(T.max_type, Math.max(T.min_type, (m.text || '').length / T.char_per_sec));
-        TL.push({ t: +t.toFixed(2), kind: 'composer', text: m.text, dur: +dur.toFixed(2) });
-        const sendT = t + dur + T.send_hold;
-        TL.push({ t: +sendT.toFixed(2), kind: 'pop', id: m.id, sfx: 'send' });
-        TL.push({ t: +sendT.toFixed(2), kind: 'composer-clear' });
-        scrollAfter(sendT);
-        t = sendT + (emoji ? T.emoji_gap : T.received_gap);
-      } else {
-        if (pendingTyping && pendingTyping.from === m.from) {
-          TL.push({ t: +t.toFixed(2), kind: 'typing-swap', id: pendingTyping.id, toId: m.id, sfx: 'receive' });
-          pendingTyping = null;
-        } else {
-          TL.push({ t: +t.toFixed(2), kind: 'pop', id: m.id, sfx: 'receive' });
-        }
-        scrollAfter(t);
-        t += emoji ? T.emoji_gap : T.received_gap;
-      }
-    } else if (m.type === 'attachment') {
-      TL.push({ t: +t.toFixed(2), kind: 'pop', id: m.id, sfx: isSelf(m.from) ? 'send' : 'receive' });
-      scrollAfter(t);
-      t += T.attach_dwell;
-    } else if (m.type === 'tapback') {
-      // A reaction lands on an earlier bubble (iOS "tapback"); soft receive sound if it's theirs.
-      TL.push({ t: +t.toFixed(2), kind: 'tapback', target: m.target, emoji: m.emoji, self: isSelf(m.from),
-                ...(isSelf(m.from) ? {} : { sfx: 'receive', soft: true }) });
-      t += T.tapback_gap;
-    }
-  }
-  const total = +(t + T.tail_hold).toFixed(2);
-  return { timeline: TL, total };
+  });
 }
 
-// ── inline local assets as data URIs so setContent has no file deps ───────────
+function buildTimeline(thread, overrides = {}) {
+  const T = { ...TIMING, ...overrides };
+  for (const [key,value] of Object.entries(T)) if (!Number.isFinite(value) || value < 0) throw Error(`Invalid timing.${key}`);
+  if (!T.char_per_sec || !T.scroll_ms || T.max_type < T.min_type || T.tail_hold < 0.5) throw Error('Typing/scroll speeds must be positive and tail_hold at least 0.5s');
+  const self = thread.participants.find(p => p.self).id, timeline = [];
+  const add = (time,event) => timeline.push({ t:snap(time), ...event });
+  let t = T.start, typing = null;
+  for (const m of thread.messages) {
+    if (m.type === 'timestamp') continue;
+    if (m.type === 'tapback') { add(t,{ kind:'tapback',id:m.id,target:m.target,emoji:m.emoji,from:m.from,self:m.from===self,sfx:'receive',soft:true }); t+=T.emoji_gap; continue; }
+    if (m.type === 'typing') { add(t,{ kind:'typing-pop',id:m.id }); typing=m.id; t+=T.typing_dwell; continue; }
+    const sent = m.from === self;
+    if (sent && m.type === 'text') {
+      t += T.self_pre;
+      const chars = [...new Intl.Segmenter(undefined,{ granularity:'grapheme' }).segment(m.text)].length;
+      const dur = Math.min(T.max_type,Math.max(T.min_type,chars/T.char_per_sec));
+      add(t,{ kind:'composer',text:m.text,dur }); t += dur + T.send_hold;
+    }
+    add(t,{ kind:typing ? 'typing-swap':'pop',id:m.id,typingId:typing,sfx:sent ? 'send':'receive',scroll_ms:T.scroll_ms });
+    typing=null;
+    if (sent) add(t,{ kind:'composer-clear' });
+    t += m.type === 'attachment' ? (m.dwell_sec ?? T.attach_dwell) : emojiOnly(m.text) ? T.emoji_gap : T.received_gap;
+  }
+  const total = snap(Math.max(t+T.tail_hold,timeline.at(-1).t+T.scroll_ms/1000+0.5));
+  return { timeline,total };
+}
+
 function dataURI(file) {
-  const buf = fs.readFileSync(file);
+  const data = fs.readFileSync(file);
+  if (data.subarray(0,80).toString().includes('version https://git-lfs')) throw Error(`Fetch the real LFS asset: ${file}`);
   const ext = path.extname(file).slice(1).toLowerCase();
-  const mime = (ext === 'jpg' || ext === 'jpeg') ? 'image/jpeg' : `image/${ext}`;
-  return `data:${mime};base64,${buf.toString('base64')}`;
+  const mime = { jpg:'image/jpeg',jpeg:'image/jpeg',png:'image/png',webp:'image/webp',svg:'image/svg+xml' }[ext];
+  if (!mime) throw Error(`Unsupported image type: ${file}`);
+  return `data:${mime};base64,${data.toString('base64')}`;
 }
 
-function inlineAttachments(thread, baseDir) {
-  for (const m of thread.messages || []) {
-    if (m.type === 'attachment' && m.src && !m.src.startsWith('data:')) {
-      m.src = dataURI(path.resolve(baseDir, m.src));
-    }
+function buildDocument(cfg,baseDir) {
+  const thread = cfg.thread ? structuredClone(cfg.thread) : JSON.parse(fs.readFileSync(path.resolve(baseDir,cfg.thread_path),'utf8'));
+  validateThread(thread);
+  if (cfg.theme && !['light','dark'].includes(cfg.theme)) throw Error('theme must be dark or light');
+  thread.theme = cfg.theme || thread.theme || 'dark';
+  if (!['light','dark'].includes(thread.theme)) throw Error('thread.theme must be dark or light');
+  const width=cfg.width || 1080, height=cfg.height || 1920;
+  const zoom=cfg.zoom || Math.min(width/514,height/914);
+  if (![width,height,zoom].every(Number.isFinite) || width<320 || height<568 || zoom<=0 || width%2 || height%2) throw Error('Use even output dimensions and a positive zoom');
+  if (393*zoom>width-32 || 852*zoom>height-32) throw Error('Phone does not fit the canvas; reduce zoom (keep a margin on every edge)');
+  if (!thread.clock) {
+    const ts=thread.messages.find(m => m.type==='timestamp');
+    const time=ts && /(\d{1,2}:\d{2})/.exec(`${ts.light || ''} ${ts.label || ''}`);
+    thread.clock=thread.status_time || (time && time[1]) || '9:41';
   }
-  return thread;
-}
-
-// ── injected style: geometry + background + the rich-link attachment fix ──────
-// This is the load-bearing look. The rich-link block turns the mockup's default
-// (image + centered caption floating below) into a real iMessage URL preview:
-// image with top-rounded corners flush on a gray meta card (bold title + domain
-// + chevron). Theme-aware so it reads on dark and light.
-function injectedStyle({ zoom, logicalH, theme, bgCss }) {
-  const dark = theme !== 'light';
-  const metaBg = dark ? '#2c2c2e' : '#e9e9eb';
-  const metaTitle = dark ? '#ffffff' : '#000000';
-  const metaSub = dark ? '#98989d' : '#6b6b70';
-  const chevron = dark ? '#8e8e93' : '#8e8e93';
-  const statusColor = dark ? '#fff' : '#000';
-  return `
-  <style>
-    html { zoom: ${zoom}; scroll-behavior: auto; height: ${logicalH}px; }
-    body.framed { padding: 0; margin: 0; height: ${logicalH}px; min-height: ${logicalH}px;
-      ${bgCss} }
-    body.framed .stage { height: 100%; min-height: 100%; }
-    body.framed .status-bar { color: ${statusColor}; }
-    ${dark ? '' : `body.framed .conv-header .left, body.framed .conv-header .right,
-    body.framed .conv-header .left .back-btn, body.framed .conv-header .right .facetime-btn { color: #000; }
-    body.framed .conv-header .left .badge-pill, body.framed .conv-header .center .name-pill { background: #E9E9EB; color: #000; }`}
-    body.framed .conv-header { min-height: 66px; }
-    body.framed .conv-header .center { transform: translate(-50%, -50%); }
-    body.framed .conv-header .center .avatar { width: 42px; height: 42px; font-size: 17px; }
-    body.framed .conv-header .center .name-pill { font-size: 13px; }
-    body.framed .conversation { flex: 1; overflow: hidden;
-      justify-content: flex-start; /* iOS: a short thread sits under the header; auto-scroll follows once it fills */ padding: 6px 14px 10px; }
-
-    /* ---- URL-preview rich-link card (the iMsg #1 fix) ---- */
-    body.framed .row.attachment { gap: 0; }
-    body.framed .row.attachment .attachment-card {
-      max-width: 62%; width: 62%; border-radius: 16px 16px 0 0; overflow: hidden; background: ${dark ? '#3a3a3c' : '#f2f2f7'}; /* a cut-out PNG sits on the card, like a real preview */
+  thread.dynamic_island = cfg.dynamic_island ?? thread.dynamic_island ?? true;
+  if (thread.mode !== 'group' && !thread.header) thread.header = { style:'conversation' };
+  for (const m of thread.messages) {
+    if (m.type === 'attachment') {
+      if (!m.src.startsWith('data:')) m.src=dataURI(path.resolve(baseDir,m.src));
+      if (m.dwell_sec != null && (!Number.isFinite(m.dwell_sec) || m.dwell_sec<0.3)) throw Error(`Invalid attachment dwell in ${m.id}`);
     }
-    body.framed .row.attachment .attachment-card img { max-height: none; display: block; }
-    body.framed .row.attachment .attachment-meta {
-      max-width: 62%; width: 62%; box-sizing: border-box;
-      background: ${metaBg}; border-radius: 0 0 16px 16px;
-      padding: 10px 32px 10px 12px; margin-top: 0; text-align: left;
-      position: relative; line-height: 1.25;
-    }
-    body.framed .row.attachment .attachment-meta .title {
-      font-size: 13px; font-weight: 600; color: ${metaTitle}; letter-spacing: -0.1px;
-    }
-    body.framed .row.attachment .attachment-meta .subtitle {
-      font-size: 11px; font-weight: 400; color: ${metaSub}; margin-top: 3px; letter-spacing: 0;
-    }
-    body.framed .row.attachment .attachment-meta::after {
-      content: '\\203A'; position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
-      font-size: 22px; font-weight: 300; color: ${chevron}; line-height: 1;
-    }
-    img.ae { width: 1.2em; height: 1.2em; vertical-align: -0.22em; display: inline-block; }
-    /* iOS tapback: a round reaction bubble sitting mostly ABOVE the reacted message, on its
-       outer top corner (left on your blue bubbles, right on theirs), with a two-dot tail
-       pointing down at the message. Theirs is grey, yours is blue. */
-    /* Caret sits right after the last typed character, even when the text wraps. */
-    .keyboard .input.has-text .caret { display: none; }
-    .keyboard .input [data-composer-text]::after { content: ''; display: inline-block; width: 2px; height: 1.15em;
-      margin-left: 1px; vertical-align: -0.2em; background: #0a84ff; animation: caret-blink 1s step-end infinite; }
-    .tapback { position: absolute; top: -34px; width: 38px; height: 38px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center; z-index: 3;
-      box-shadow: 0 0 0 2.5px ${dark ? '#000' : '#fff'};
-      animation: bubble-grow 240ms cubic-bezier(0.2,0.8,0.2,1.15) both; }
-    .tapback.on-sent { left: -24px; transform-origin: 70% 90%; }
-    .tapback.on-received { right: -24px; transform-origin: 30% 90%; }
-    .tapback::before, .tapback::after { content: ''; position: absolute; border-radius: 50%;
-      background: inherit; box-shadow: 0 0 0 2px ${dark ? '#000' : '#fff'}; }
-    .tapback.on-sent::before { width: 9px; height: 9px; right: -1px; bottom: -2px; }
-    .tapback.on-sent::after  { width: 4.5px; height: 4.5px; right: -6px; bottom: -7px; }
-    .tapback.on-received::before { width: 9px; height: 9px; left: -1px; bottom: -2px; }
-    .tapback.on-received::after  { width: 4.5px; height: 4.5px; left: -6px; bottom: -7px; }
-    .tapback.theirs { background: ${dark ? '#3a3a3c' : '#e9e9eb'}; }
-    .tapback.mine { background: #0a84ff; }
-    .tapback img.ae { width: 21px; height: 21px; vertical-align: 0; position: relative; z-index: 1; }
+    if (m.type !== 'timestamp') m.popState='pending';
+    if (m.from===thread.participants.find(p=>p.self).id && ['text','attachment'].includes(m.type) && m.delivered!==false) m.delivered=true;
+  }
+  thread.composer={ text:'' };
+  const { timeline,total }=buildTimeline(thread,cfg.timing);
+  const dark=thread.theme === 'dark';
+  const bg=cfg.background_image ? `url('${dataURI(path.resolve(baseDir,cfg.background_image))}') center/cover no-repeat`
+    : dark ? 'radial-gradient(ellipse at top,#2a2a2e,#0d0d0f)' : 'radial-gradient(ellipse at top,#f3efe9,#d8cfc2)';
+  const style=`<style>
+    html { zoom:${zoom}; height:${height/zoom}px; }
+    body.framed { padding:0; margin:0; height:${height/zoom}px; min-height:0; background:${bg}; overflow:hidden; }
+    .iphone-frame { flex-shrink:0; }
+    body.framed .stage { height:100%; min-height:0; }
+    .status-bar,.conv-header,.group-header,.keyboard { flex-shrink:0; }
+    .status-bar { color:var(--text-primary); }
+    .conv-header { min-height:66px; }
+    .conv-header .center { transform:translate(-50%,-50%); max-width:60%; }
+    .conv-header .center .avatar { width:42px; height:42px; font-size:17px; }
+    .conv-header .center .name-pill { font-size:13px; max-width:100%; white-space:nowrap; }
+    .conv-header .left,.conv-header .right,.conv-header .left .back-btn,.conv-header .right .facetime-btn { color:var(--text-primary); }
+    .conv-header .left .badge-pill,.conv-header .center .name-pill { background:${dark ? '#1c1c1e':'#e9e9eb'}; color:var(--text-primary); }
+    body.framed .conversation { flex:1; min-height:0; display:block; overflow:hidden; padding:6px 14px 10px; }
+    .message-list { display:flex; flex-direction:column; justify-content:flex-start; min-height:100%; gap:2px; }
+    .message-list > * { flex-shrink:0; }
+    .bubble { overflow-wrap:anywhere; }
+    .sender-name { margin-left:38px; }
+    .row.attachment { gap:0; }
+    .row.attachment .attachment-card { width:62%; max-width:62%; border-radius:16px 16px 0 0; }
+    .row.attachment .attachment-card img { display:block; width:100%; max-height:300px; object-fit:cover; }
+    .row.attachment .attachment-meta { width:62%; max-width:62%; background:${dark ? '#2c2c2e':'#e9e9eb'}; border-radius:0 0 16px 16px;
+      padding:10px 32px 10px 12px; margin:0; text-align:left; position:relative; line-height:1.25; }
+    .attachment-meta .title { font-size:13px; font-weight:600; color:var(--text-primary); }
+    .attachment-meta .subtitle { font-size:11px; font-weight:400; color:var(--text-meta); margin-top:3px; }
+    .row.rich-link .attachment-meta::after { content:'›'; position:absolute; right:12px; top:50%; transform:translateY(-50%); font-size:22px; color:var(--text-meta); }
+    .row.photo .attachment-card { border-radius:16px; }
+    .row.photo .attachment-meta { background:transparent; padding:6px 0; }
+    .bubble { position:relative; }
+    .tapback { position:absolute; top:-34px; width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center; z-index:3; box-shadow:0 0 0 2.5px ${dark ? '#000':'#fff'}; font-size:21px; }
+    .tapback.on-sent { left:-24px; } .tapback.on-received { right:-24px; }
+    .tapback.theirs { background:${dark ? '#3a3a3c':'#e9e9eb'}; } .tapback.mine { background:#0a84ff; }
+    .tapback::after { content:''; position:absolute; bottom:-5px; width:8px; height:8px; border-radius:50%; background:inherit; }
+    .tapback.on-sent::after { right:0; } .tapback.on-received::after { left:0; }
+    .bubble.pop-now,.delivered-caption.pop-now,.caret { animation:none; }
   </style>`;
+  const script=fs.readFileSync(path.join(__dirname,'chat-driver.js'),'utf8');
+  const timelineJSON=JSON.stringify(timeline).replace(/</g,'\\u003c');
+  let html=renderHTML(thread,{ mode:'with-iphone-frame' });
+  html=html.replace('</head>',`${style}</head>`).replace('</body>',`<script>const CHAT_TIMELINE=${timelineJSON};\n${script}</script></body>`);
+  return { html,thread,timeline,total,width,height };
 }
 
-// ── the driver: paced by the timeline, runs inside the recorded page ──────────
-function makeDriverScript(timeline, emojiMap = {}) {
-  return `
-  <script>
-  (() => {
-    const TIMELINE = ${JSON.stringify(timeline)};
-    const EMOJI = ${JSON.stringify(emojiMap)};
-    const SEG = new Intl.Segmenter('en', { granularity: 'grapheme' });
-    function emojiNode(g) {
-      if (!EMOJI[g]) return document.createTextNode(g);
-      const img = document.createElement('img');
-      img.className = 'ae'; img.alt = g; img.src = EMOJI[g];
-      return img;
+async function checkLayout(page) {
+  return page.evaluate(() => {
+    const errors=[],screen=document.querySelector('.screen').getBoundingClientRect();
+    const island=document.querySelector('.dynamic-island');
+    if (island && island.getBoundingClientRect().top<=screen.top+2) errors.push('Dynamic Island must float inside the screen');
+    for (const el of document.querySelectorAll('.bubble,.name-pill,.attachment-meta')) {
+      if (el.closest('[data-pending="1"]')) continue;
+      const box=el.getBoundingClientRect(),r=document.createRange();
+      const children=[...el.childNodes].filter(n=>!n.classList?.contains('tapback'));
+      if (!children.length) continue;
+      r.setStartBefore(children[0]); r.setEndAfter(children.at(-1)); const text=r.getBoundingClientRect();
+      if (!box.width || !box.height) continue;
+      if (text.width && (text.left<box.left-1 || text.right>box.right+1 || text.bottom>box.bottom+1)) errors.push(`Text overflow: ${el.closest('[data-anim-id]')?.dataset.animId || el.textContent}`);
+      if (box.left<screen.left || box.right>screen.right) errors.push(`Outside phone: ${el.textContent}`);
     }
-    function emojify(root) {
-      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
-      const nodes = []; while (walker.nextNode()) nodes.push(walker.currentNode);
-      for (const n of nodes) {
-        const parts = [...SEG.segment(n.nodeValue)].map(x => x.segment);
-        if (!parts.some(g => EMOJI[g])) continue;
-        const frag = document.createDocumentFragment();
-        for (const g of parts) frag.appendChild(emojiNode(g));
-        n.replaceWith(frag);
-      }
-    }
-    document.querySelectorAll('.bubble').forEach(emojify);
-    const sleep = ms => new Promise(r => setTimeout(r, ms));
-    function findRow(id) { return document.querySelector('[data-anim-id="' + id + '"]'); }
-    function scroller() { return document.querySelector('.conversation'); }
-
-    const SEND_SVG = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19 V5 M5 12 L12 5 L19 12"/></svg>';
-    const MIC_SVG = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3z"/><path d="M19 11a1 1 0 0 0-2 0 5 5 0 0 1-10 0 1 1 0 0 0-2 0 7 7 0 0 0 6 6.92V20H8a1 1 0 0 0 0 2h8a1 1 0 0 0 0-2h-3v-2.08A7 7 0 0 0 19 11z"/></svg>';
-
-    function popBubble(row) {
-      if (!row) return;
-      row.removeAttribute('data-pending');
-      const b = row.classList.contains('bubble') ? row : row.querySelector('.bubble');
-      if (b) { b.classList.remove('pop-pending'); void b.offsetWidth; b.classList.add('pop-now'); }
-      const id = row.getAttribute('data-anim-id');
-      if (id) {
-        const cap = document.querySelector('.delivered-caption[data-cap-id="' + id + '"]');
-        if (cap) {
-          // Real iMessage shows "Delivered" only under the most recent sent message.
-          document.querySelectorAll('.delivered-caption.pop-now').forEach(c => { if (c !== cap) c.style.display = 'none'; });
-          cap.removeAttribute('data-pending'); cap.classList.remove('pop-pending'); cap.classList.add('pop-now');
-        }
-      }
-      if (row.classList.contains('row') && row.classList.contains('pop-pending')) {
-        row.classList.remove('pop-pending'); row.classList.add('pop-now');
-      }
-    }
-
-    function swapTyping(typId, textId) {
-      const typRow = findRow(typId);
-      const textRow = findRow(textId);
-      if (!typRow || !textRow) return;
-      typRow.style.display = 'none';
-      popBubble(textRow);
-    }
-
-    function addTapback(ev) {
-      const row = findRow(ev.target);
-      const b = row && (row.classList.contains('bubble') ? row : row.querySelector('.bubble, .attachment-card'));
-      if (!b) return;
-      const onSent = row.classList.contains('sent');
-      const tb = document.createElement('div');
-      tb.className = 'tapback ' + (ev.self ? 'mine' : 'theirs') + (onSent ? ' on-sent' : ' on-received');
-      tb.appendChild(emojiNode(ev.emoji));
-      b.style.position = 'relative';
-      row.style.marginTop = '36px';  // the message steps down to make room, as in Messages
-      b.appendChild(tb);
-    }
-
-    function smoothScroll(durMs) {
-      const sc = scroller();
-      if (!sc) return;
-      const target = sc.scrollHeight - sc.clientHeight;
-      const start = sc.scrollTop;
-      if (target <= start + 2) return;
-      const t0 = performance.now();
-      function tick(t) {
-        const p = Math.min(1, (t - t0) / durMs);
-        const ease = 1 - Math.pow(1 - p, 3);
-        sc.scrollTop = start + (target - start) * ease;
-        if (p < 1) requestAnimationFrame(tick);
-      }
-      requestAnimationFrame(tick);
-    }
-
-    function composerSpan() {
-      const input = document.querySelector('.keyboard .input');
-      if (!input) return null;
-      if (!input.querySelector('[data-composer-text]')) {
-        input.classList.add('has-text');
-        input.innerHTML = '<span class="composer-text" data-composer-text></span>'
-          + '<span class="caret"></span>'
-          + '<span class="send-btn">' + SEND_SVG + '</span>';
-      }
-      return input.querySelector('[data-composer-text]');
-    }
-
-    async function typeComposer(text, durSec) {
-      const span = composerSpan();
-      if (!span) return;
-      span.textContent = '';
-      span.dataset.expect = text;
-      // Keystrokes on an absolute schedule that finishes at 90% of the window, with a
-      // seeded human rhythm. Cumulative random sleeps used to overrun the send, so a
-      // message could leave the composer half typed.
-      const graphemes = [...SEG.segment(text)].map(x => x.segment);
-      let seed = text.length * 7919;
-      const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
-      const w = graphemes.map(() => 0.7 + rnd() * 0.6), total = w.reduce((a, b) => a + b, 0);
-      const start = performance.now(), span_ms = durSec * 1000 * 0.9;
-      let acc = 0;
-      for (let i = 0; i < graphemes.length; i++) {
-        const due = start + (acc / total) * span_ms; acc += w[i];
-        const wait = due - performance.now(); if (wait > 0) await sleep(wait);
-        if (!span.isConnected) return;
-        span.appendChild(emojiNode(graphemes[i]));
-      }
-    }
-
-    function clearComposer() {
-      const input = document.querySelector('.keyboard .input');
-      if (!input) return;
-      input.classList.remove('has-text');
-      input.innerHTML = '<span class="placeholder">iMessage</span><span class="mic">' + MIC_SVG + '</span>';
-    }
-
-    async function run() {
-      // Sync marker: the curtain is visible from load until now. The recorder finds the
-      // first frame without it and trims there, so video t=0 is exactly this moment.
-      const curtain = document.getElementById('__sync');
-      if (curtain) curtain.remove();
-      const t0 = performance.now();
-      for (const ev of TIMELINE) {
-        const target = t0 + ev.t * 1000;
-        const wait = target - performance.now();
-        if (wait > 0) await sleep(wait);
-        switch (ev.kind) {
-          case 'pop':            popBubble(findRow(ev.id)); break;
-          case 'typing-pop':     popBubble(findRow(ev.id)); break;
-          case 'typing-swap':    swapTyping(ev.id, ev.toId); break;
-          case 'composer':       typeComposer(ev.text, ev.dur); break;
-          case 'composer-clear': {
-            // What was typed must be exactly what is sent.
-            const sp = document.querySelector('[data-composer-text]');
-            if (sp && sp.dataset.expect != null) {
-              const shown = [...sp.childNodes].map(n => n.nodeType === 3 ? n.nodeValue : (n.alt || '')).join('');
-              if (shown !== sp.dataset.expect) (window.__typedMismatch = window.__typedMismatch || []).push([sp.dataset.expect, shown]);
-            }
-            clearComposer(); break;
-          }
-          case 'scroll':         smoothScroll(ev.dur); break;
-          case 'tapback':        addTapback(ev); break;
-          case 'noop':           break;
-        }
-      }
-    }
-
-    const sync = document.createElement('div');
-    sync.id = '__sync';
-    sync.style.cssText = 'position:fixed;inset:0;background:#ff00ff;z-index:2147483647';
-    document.body.appendChild(sync);
-    window.__driverReady = true;
-    window.__startDriver = run;
-  })();
-  </script>`;
+    const keyboard=document.querySelector('.keyboard').getBoundingClientRect();
+    if (Math.abs(keyboard.bottom-screen.bottom)>2) errors.push('Text input must remain at the bottom of the phone');
+    return errors;
+  });
 }
 
-// First frame (at 100 fps) whose centre is no longer the magenta sync curtain.
-function findSyncFrame(videoPath) {
-  const FPS = 100;
-  const buf = execSync(`ffmpeg -v error -i "${videoPath}" -vf "fps=${FPS},scale=4:4" -f rawvideo -pix_fmt rgb24 -`,
-    { maxBuffer: 1 << 28 });
-  const px = 4 * 4 * 3;
-  let seen = false;
-  for (let f = 0; f * px < buf.length; f++) {
-    const o = f * px + (2 * 4 + 2) * 3;
-    const magenta = buf[o] > 200 && buf[o + 1] < 70 && buf[o + 2] > 200;
-    if (magenta) seen = true;
-    else if (seen) return f / FPS;
-  }
-  return null;
-}
-
-// ── Apple Color Emoji ─────────────────────────────────────────────────────────
-// Chromium on Windows/Linux draws Segoe/Noto emoji, an instant "fake" tell. Swap every
-// emoji in the thread for Apple's glyph (emoji-datasource-apple PNGs), inlined so the
-// page has no network dependency while recording. Cached on disk between runs.
 const EMOJI_CDN = 'https://cdn.jsdelivr.net/npm/emoji-datasource-apple@15.1.2/img/apple/64/';
 const isPictographic = g => /\p{Extended_Pictographic}|\p{Regional_Indicator}/u.test(g);
 async function appleEmojiMap(texts) {
@@ -450,219 +208,57 @@ async function appleEmojiMap(texts) {
   return map;
 }
 
-function snapCuesToPicture(cues, mp4) {
-  const W = 135, H = 240, FPS = 30;
-  const top = Math.round(H * 0.10), bot = Math.round(H * 0.86);   // chat area, not the composer
-  const buf = execSync(`ffmpeg -v error -i "${mp4}" -vf "scale=${W}:${H},format=gray" -f rawvideo -`, { maxBuffer: 1 << 30 });
-  const n = Math.floor(buf.length / (W * H));
-  const diff = new Float64Array(n);
-  for (let f = 1; f < n; f++) {
-    // Count pixels that changed visibly: a small grey bubble on white moves few levels on
-    // average but flips a clear block of pixels.
-    let cnt = 0;
-    for (let y = top; y < bot; y++) { const o = y * W, a = f * W * H + o, b = (f - 1) * W * H + o;
-      for (let x = 0; x < W; x++) if (Math.abs(buf[a + x] - buf[b + x]) > 12) cnt++; }
-    diff[f] = cnt;
-  }
-  const lags = [];
-  const out = cues.map(c => {
-    const f0 = Math.max(1, Math.round((c.t - 0.05) * FPS)), f1 = Math.min(n - 1, Math.round((c.t + 0.9) * FPS));
-    for (let f = f0; f <= f1; f++) if (diff[f] >= 25) {
-      const seen = f / FPS - 1 / FPS / 2;          // change first visible between frames f-1 and f
-      lags.push(Math.round((seen - c.t) * 1000));
-      return { ...c, t: +Math.max(c.t - 0.05, seen).toFixed(3), planned: c.t };
+
+async function record(cfgPath,outDir,previewOnly=false) {
+  const cfg=JSON.parse(fs.readFileSync(cfgPath,'utf8')),doc=buildDocument(cfg,path.dirname(cfgPath));
+  fs.mkdirSync(outDir,{ recursive:true }); fs.writeFileSync(path.join(outDir,'chat.html'),doc.html);
+  const browser=await chromium.launch({ timeout:15000 }); let encoder;
+  try {
+    const page=await browser.newPage({ viewport:{ width:doc.width,height:doc.height },deviceScaleFactor:1 });
+    await page.setContent(doc.html,{ waitUntil:'load' });
+    const emojiMap=await appleEmojiMap(doc.thread.messages.map(m=>m.text || m.emoji || ''));
+    await page.evaluate(map=>window.__setEmojiMap(map),emojiMap);
+    await page.evaluate(async () => { await document.fonts.ready; await Promise.all([...document.images].map(i=>i.decode())); });
+    for (const ev of doc.timeline) {
+      await page.evaluate(t=>window.__renderAt(t),ev.t+(ev.kind==='composer' ? ev.dur*0.95:0.3));
+      if (ev.kind==='composer') {
+        const typed=await page.locator('[data-composer-text]').evaluate(el=>[...el.childNodes].map(n=>n.nodeType===3 ? n.textContent : n.alt || n.textContent).join(''));
+        if (typed!==ev.text) throw Error(`TYPED != SENT: ${typed} / ${ev.text}`);
+      }
+      const errors=await checkLayout(page); if (errors.length) throw Error(errors.join('\n'));
     }
-    lags.push(null);
-    return c;                                      // nothing detected: keep the planned time
-  });
-  const found = lags.filter(x => x != null);
-  console.log(`sfx  → snapped ${found.length}/${cues.length} cues to the picture; capture lag ${Math.min(...found)}..${Math.max(...found)} ms`);
-  // A real-time capture can stall under CPU load and bunch bubbles together. The pacing is
-  // the story, so a bubble more than 250 ms off its plan (or not found) means record again.
-  const worst = Math.max(...found.map(Math.abs));
-  if (found.length < cues.length || worst > 250) {
-    console.error(`CAPTURE STALLED: ${cues.length - found.length} cue(s) not seen, worst drift ${worst} ms; re-record.`);
-    process.exit(4);
-  }
-  return out;
-}
-
-function buildCueList(timeline) {
-  const cues = [];
-  for (const ev of timeline) if (ev.sfx) cues.push({ t: ev.t, name: ev.sfx, soft: !!ev.soft });
-  return cues;
-}
-
-async function main() {
-  const args = parseArgs(process.argv);
-  const configPath = path.resolve(args.config);
-  const cfgDir = path.dirname(configPath);
-  const cfg = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
-
-  const OUT_W = cfg.width || 1080;
-  const OUT_H = cfg.height || 1920;
-  const ZOOM = cfg.zoom || 2.10;
-  const theme = cfg.theme === 'light' ? 'light' : 'dark';
-  const T = { ...TIMING, ...(cfg.timing || {}) };
-
-  // Load the thread (inline or from a path relative to the config).
-  const thread = cfg.thread
-    ? JSON.parse(JSON.stringify(cfg.thread))
-    : JSON.parse(fs.readFileSync(path.resolve(cfgDir, cfg.thread_path), 'utf-8'));
-  thread.theme = theme; // config theme wins
-  inlineAttachments(thread, cfgDir);
-
-  // ── authoring guards: fail before recording, not after a bad render ──
-  const selfIds = new Set((thread.participants || []).filter(p => p.self).map(p => p.id));
-  const problems = [];
-  const ids = new Set();
-  for (const m of thread.messages || []) {
-    if (m.id) { if (ids.has(m.id)) problems.push(`duplicate id ${m.id}`); ids.add(m.id); }
-    if (m.text && /[—–]/.test(m.text)) problems.push(`${m.id}: em/en dash in "${m.text}" (nobody texts those)`);
-    if (m.type === 'typing' && selfIds.has(m.from)) problems.push(`${m.id}: self typing dots (you never see your own)`);
-    if (m.type === 'attachment') {
-      if (!m.src) problems.push(`${m.id}: attachment has no src`);
-      else if (!m.src.startsWith('data:') && fs.statSync(path.resolve(cfgDir, m.src)).size < 2048)
-        problems.push(`${m.id}: ${m.src} is under 2 KB (a git-LFS pointer?)`);
+    await page.evaluate(t=>window.__renderAt(t),doc.total);
+    await page.screenshot({ path:path.join(outDir,'chat-preview.png') });
+    if (previewOnly) return doc;
+    const out=path.join(outDir,'master-chat.mp4');
+    encoder=spawn('ffmpeg',['-y','-v','error','-f','image2pipe','-framerate',String(FPS),'-i','-',
+      '-an','-c:v','libx264','-preset','fast','-crf','18','-pix_fmt','yuv420p','-movflags','+faststart',out]);
+    let log=''; encoder.stderr.on('data',b=>{ log=(log+b).slice(-5000); }); encoder.stdin.on('error',()=>{});
+    const done=new Promise((resolve,reject)=>{ encoder.on('error',reject); encoder.on('close',c=>c===0 ? resolve():reject(Error(`ffmpeg failed: ${log}`))); });
+    done.catch(()=>{});
+    const frames=Math.round(doc.total*FPS);
+    for (let frame=0;frame<frames;frame++) {
+      await page.evaluate(t=>window.__renderAt(t),frame/FPS);
+      const png=await page.screenshot({ type:'png' });
+      if (encoder.exitCode!=null) throw Error(`ffmpeg failed: ${log}`);
+      if (!encoder.stdin.write(png)) await Promise.race([
+        once(encoder.stdin,'drain'),
+        done.then(() => { throw Error('ffmpeg ended before all frames were written'); }),
+      ]);
+      if (frame%150===0) console.log(`chat: ${frame}/${frames} frames`);
     }
-    // Real iMessage marks every sent message Delivered; the driver shows only the newest.
-    if (selfIds.has(m.from) && (m.type === 'text' || m.type === 'attachment') && m.delivered !== false) m.delivered = true;
-  }
-  // Grammar and punctuation: iPhones auto-capitalise and add apostrophes, so correct text is
-  // also the realistic text. Fails the render with the exact message and fix.
-  const SLANG = { u: 'you', ur: 'your', im: "I'm", dont: "don't", cant: "can't", wont: "won't",
-    thats: "that's", whats: "what's", isnt: "isn't", doesnt: "doesn't", didnt: "didn't", ive: "I've",
-    youre: "you're", theyre: "they're", tmrw: 'tomorrow', rn: 'right now', ok: 'okay' };
-  const ENDS = /([.!?…]|\p{Extended_Pictographic}\uFE0F?|\))$/u;
-  const ids2 = new Set((thread.messages || []).map(m => m.id));
-  let prevContinues = false;
-  for (const m of thread.messages || []) {
-    const afterSplit = prevContinues; if (m.type === 'text') prevContinues = !!m.continues;
-    if (m.type === 'tapback' && !ids2.has(m.target)) problems.push(`${m.id}: tapback target ${m.target} not found`);
-    if (m.type !== 'text' || !m.text || isEmojiOnly(m.text) || m.allow_casual) continue;
-    const txt = m.text.trim();
-    const first = txt.replace(/^[^\p{L}\p{N}]+/u, '');
-    if (!afterSplit && first && /^\p{Ll}/u.test(first) && !/^(iPhone|iMessage|iOS|eBay|iPad)\b/.test(first))
-      problems.push(`${m.id}: starts lowercase ("${txt}")`);
-    // `continues: true` = the first half of a sentence sent as two bubbles (real texting).
-    if (!m.continues && !ENDS.test(txt)) problems.push(`${m.id}: no end punctuation ("${txt}")`);
-    for (const w of txt.toLowerCase().match(/[a-z']+/g) || [])
-      if (SLANG[w.replace(/'/g, '')] && !w.includes("'") && w !== 'ok') problems.push(`${m.id}: "${w}" -> "${SLANG[w]}"`);
-    if (/\bi\b/.test(txt)) problems.push(`${m.id}: lowercase "i"`);
-    if (/\s[,.!?]/.test(txt) || /,(?=\S)/.test(txt)) problems.push(`${m.id}: spacing around punctuation ("${txt}")`);
-    // Smart Punctuation is on by default on iOS: straight quotes render curly.
-    m.text = txt.replace(/(\w)'(\w)/g, '$1\u2019$2').replace(/'/g, '\u2019');
-  }
-  const nMsgs = (thread.messages || []).filter(m => m.type === 'text' || m.type === 'attachment').length;
-  if (problems.length) { console.error('THREAD REJECTED: ' + problems.join(' | ')); process.exit(2); }
-  if (nMsgs > 16) console.warn(`warn: ${nMsgs} messages; the format reads best at 10-16 (runtime grows ~1.6 s each)`);
-
-  // Everything starts hidden; the driver pops each piece in on cue.
-  for (const m of thread.messages || []) {
-    if (m.type === 'text' || m.type === 'typing' || m.type === 'attachment') m.popState = 'pending';
-  }
-  thread.composer = { text: '' };
-  // The status-bar clock matches the conversation ("Today 2:14 AM" -> 2:14), unless set.
-  if (!thread.status_time) {
-    const ts = (thread.messages || []).find(m => m.type === 'timestamp');
-    const hit = ts && /(\d{1,2}:\d{2})/.exec(`${ts.light || ''} ${ts.label || ''}`);
-    thread.status_time = hit ? hit[1] : '9:41';
-  }
-
-  const { timeline, total } = buildTimeline(thread, T);
-
-  // Background behind the phone: a flat-lay if provided, else a neutral gradient.
-  let bgCss;
-  if (cfg.background_image) {
-    bgCss = `background: url('${dataURI(path.resolve(cfgDir, cfg.background_image))}') center/cover no-repeat;`;
-  } else if (theme === 'light') {
-    bgCss = `background: radial-gradient(120% 120% at 50% 0%, #f3efe9 0%, #e7e1d7 60%, #d8cfc2 100%);`;
-  } else {
-    bgCss = `background: radial-gradient(120% 120% at 50% 0%, #2a2a2e 0%, #1a1a1d 55%, #0d0d0f 100%);`;
-  }
-
-  const logicalH = Math.round(OUT_H / ZOOM);
-  let html = renderHTML(thread, { mode: 'with-iphone-frame' });
-  html = html.replace('</head>', injectedStyle({ zoom: ZOOM, logicalH, theme, bgCss }) + '\n</head>');
-  html = html.replace('</body>', makeDriverScript(timeline, await appleEmojiMap((thread.messages || []).map(m => m.text || m.emoji || ''))) + '\n</body>');
-
-  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'imessage-chat-'));
-  const browser = await chromium.launch();
-  // Measure the paint offset: recordVideo starts at newContext(), but the shell
-  // paints ~500ms later. We -ss that delta so MP4 t=0 == TIMELINE t=0.
-  const ctxCreateTime = Date.now();
-  const ctx = await browser.newContext({
-    viewport: { width: OUT_W, height: OUT_H },
-    deviceScaleFactor: 1,
-    recordVideo: { dir: tmpDir, size: { width: OUT_W, height: OUT_H } },
-  });
-  const page = await ctx.newPage();
-  await page.setContent(html, { waitUntil: 'load' });
-  await page.waitForFunction(() => window.__driverReady === true, { timeout: 5000 });
-  const paintOffsetSec = (Date.now() - ctxCreateTime) / 1000;
-  // Hold the sync curtain long enough for the screencast to capture it (it only emits
-  // frames on change, so a curtain that lives a few ms never reaches the video).
-  // Text-bleed guard: measure every bubble with everything temporarily visible.
-  const bleed = await page.evaluate(() => {
-    const out = [];
-    document.querySelectorAll('.bubble').forEach(b => {
-      const row = b.closest('[data-anim-id]');
-      const was = row && row.getAttribute('data-pending');
-      if (row) row.removeAttribute('data-pending');
-      // Compare the TEXT box with the bubble box (scrollWidth also counts the tail pseudo-element).
-      const r = document.createRange(); r.selectNodeContents(b);
-      const t = r.getBoundingClientRect(), bb = b.getBoundingClientRect();
-      const screen = (b.closest('.screen, .iphone, .phone') || document.body).getBoundingClientRect();
-      if (t.width && (t.right > bb.right + 1 || t.left < bb.left - 1 || bb.right > screen.right + 1 || bb.left < screen.left - 1))
-        out.push((row && row.getAttribute('data-anim-id')) || b.textContent.slice(0, 30));
-      if (row && was) row.setAttribute('data-pending', was);
-    });
-    return out;
-  });
-  if (bleed.length) { console.error('TEXT BLEED in: ' + bleed.join(', ') + ' (split the line into two bubbles)'); process.exit(3); }
-  // Make sure the curtain has actually been painted (two animation frames), then hold it
-  // long enough for the screencast to emit frames of it.
-  await page.evaluate(() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))));
-  await page.waitForTimeout(1000);
-  await page.evaluate(() => window.__startDriver());
-  await page.waitForTimeout(total * 1000);
-  const typed = await page.evaluate(() => window.__typedMismatch || []);
-  if (typed.length) {
-    console.error('TYPED != SENT: ' + typed.map(([want, got]) => `"${got}" was on screen when "${want}" sent`).join(' | '));
-    process.exit(6);
-  }
-  const videoPath = await page.video().path();
-  await ctx.close();
-  await browser.close();
-
-  const outDir = path.resolve(args.outDir);
-  fs.mkdirSync(outDir, { recursive: true });
-  const outMp4 = path.join(outDir, 'master-chat.mp4');
-  const syncSec = findSyncFrame(videoPath);
-  if (syncSec == null) {
-    console.error('SYNC MARKER NOT FOUND in the raw capture; refusing to guess (sounds would drift).');
-    process.exit(4);
-  }
-  const startSec = syncSec;
-  execSync(
-    `ffmpeg -y -ss ${startSec.toFixed(3)} -i "${videoPath}" -t ${total} -r 30 ` +
-    `-vf "scale=${OUT_W}:${OUT_H}" -c:v libx264 -pix_fmt yuv420p -movflags +faststart "${outMp4}"`,
-    { stdio: 'pipe' }
-  );
-  // Snap every sound to the frame where its bubble/reaction ACTUALLY appears in the recording.
-  // The page fires on time, but the screencast can deliver a small change (a tapback) late,
-  // so the timeline alone is not what the viewer sees.
-  const cues = snapCuesToPicture(buildCueList(timeline), outMp4);
-  fs.writeFileSync(outMp4.replace(/\.mp4$/, '.timeline.json'), JSON.stringify(timeline, null, 1));
-  fs.writeFileSync(outMp4.replace(/\.mp4$/, '.sfx.json'), JSON.stringify(cues, null, 2));
-  if (process.env.IMSG_KEEP_RAW) console.log(`raw  → ${videoPath}`); else fs.rmSync(tmpDir, { recursive: true, force: true });
-
-  console.log(syncSec != null
-    ? `sync: curtain dropped at ${syncSec.toFixed(3)}s in the raw capture (trimmed there)`
-    : `sync: marker NOT found, fell back to paint offset ${paintOffsetSec.toFixed(3)}s (SFX may drift)`);
-  console.log(`mp4  → ${path.relative(process.cwd(), outMp4)}`);
-  console.log(`sfx  → ${cues.length} cues`);
-  console.log(`duration → ${total}s`);
+    encoder.stdin.end(); await done;
+    fs.writeFileSync(path.join(outDir,'master-chat.timeline.json'),JSON.stringify({ fps:FPS,total:doc.total,timeline:doc.timeline },null,2));
+    fs.writeFileSync(path.join(outDir,'master-chat.sfx.json'),JSON.stringify(doc.timeline.filter(e=>e.sfx).map(e=>({ t:snap(e.t+1/FPS),name:e.sfx,id:e.id,soft:!!e.soft })),null,2));
+    console.log(`chat: ${frames} frames, ${doc.total}s, ${doc.width}×${doc.height}; no startup trim`); return doc;
+  } finally { if (encoder && encoder.exitCode==null) encoder.kill(); await browser.close(); }
 }
-
-main().catch(e => { console.error(e); process.exit(1); });
+if (require.main===module) {
+  const args=process.argv.slice(2); let config='config.json',out='.',preview=false;
+  for (let i=0;i<args.length;i++) {
+    if (args[i]==='--config') config=args[++i]; else if (args[i]==='--out-dir') out=args[++i];
+    else if (args[i]==='--preview-only') preview=true; else throw Error(`Unknown argument ${args[i]}`);
+  }
+  record(path.resolve(config),path.resolve(out),preview).catch(e=>{ console.error(e.message); process.exitCode=1; });
+}
+module.exports={ buildDocument,buildTimeline,validateThread,checkLayout,record,FPS };

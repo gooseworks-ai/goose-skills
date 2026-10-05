@@ -69,6 +69,7 @@ function main() {
   const cfgDir = path.dirname(configPath);
   const cfg = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
   const ec = cfg.end_card || {};
+  if (!(ec.image_path || ec.logo_svg || ec.logo_svg_path || ec.logo_image_path || ec.wordmark_text || cfg.brand_name)) throw Error('Supply an approved end-card image, logo or brand wordmark');
 
   const tpl = fs.readFileSync(path.join(__dirname, 'end-card.template.html'), 'utf-8');
 
@@ -87,7 +88,9 @@ function main() {
     `<div class="text">${esc(ec.wordmark_text || cfg.brand_name || 'BRAND')}</div>`;
 
   // Proof row (⭐ + text) — omit entirely if stars is 0/absent.
-  const starCount = ec.stars == null ? 5 : ec.stars;
+  const starCount = ec.stars == null ? 0 : ec.stars;
+  if (!Number.isInteger(starCount) || starCount<0 || starCount>5) throw Error('end_card.stars must be 0–5');
+  if (starCount>0 && !ec.proof_text) throw Error('Stars need approved proof_text; omit unsupported ratings');
   const proof = (starCount > 0)
     ? `<div class="proof-row"><div class="stars">${'★'.repeat(starCount)}</div>` +
       (ec.proof_text ? `<div class="families">${esc(ec.proof_text)}</div>` : '') + `</div>`
@@ -120,7 +123,7 @@ function main() {
     editorial = `<div class="wordmark">${wordmark}</div><div class="hls">${hl}</div>${pts}${cta}${url}`;
   }
 
-  const html = tpl
+  let html = tpl
     .replace('{{BG}}', ec.bg || '#ffffff')
     .replace('{{FG}}', ec.fg || '#111111')
     .replace('{{CTA_BG}}', ec.cta_bg || '#111111')
@@ -140,12 +143,21 @@ function main() {
     .replace('{{BADGES_END}}', ec.layout === 'editorial' ? '</template>' : '')
     .replace('{{FOOTNOTE}}', ec.footnote ? `<div class="footnote">${esc(ec.footnote)}</div>` : '');
 
+  if (ec.image_path) {
+    const f=path.resolve(cfgDir,ec.image_path),buf=fs.readFileSync(f);
+    if (buf.subarray(0,80).toString().includes('version https://git-lfs')) throw Error('Fetch the real end-card asset');
+    const ext=path.extname(f).slice(1).toLowerCase();
+    const mime={png:'image/png',jpg:'image/jpeg',jpeg:'image/jpeg',webp:'image/webp',svg:'image/svg+xml'}[ext];
+    if (!mime) throw Error('Unsupported end-card image');
+    html=`<!doctype html><html><head></head><body data-ready="true" style="margin:0;width:1080px;height:1920px;overflow:hidden"><img style="width:100%;height:100%;object-fit:contain" src="data:${mime};base64,${buf.toString('base64')}"></body></html>`;
+  }
   const outDir = path.resolve(args.outDir);
   fs.mkdirSync(outDir, { recursive: true });
   const htmlPath = path.join(outDir, 'end-card.html');
   const outPng = path.join(outDir, 'end-card.png');
   const outMp4 = path.join(outDir, 'scene-end-endcard.mp4');
   const dwell = ec.dwell_sec || 2.5;
+  if (!Number.isFinite(dwell) || dwell<0.5) throw Error('end_card.dwell_sec must be at least 0.5s');
   // No brand fonts requested: the placeholder must still go, or it prints on the card.
   fs.writeFileSync(htmlPath, html.replace('{{FONTLINK}}', ''));
 
@@ -192,7 +204,7 @@ function main() {
     }, Object.values(F));
     if (missing.length) { console.error('END CARD FONT NOT LOADED: ' + missing.map(f => f.family).join(', ')); process.exit(5); }
     await page.waitForFunction(() => document.body.dataset.ready === 'true', { timeout: 5000 });
-    await page.waitForTimeout(400);
+    await page.evaluate(async()=>{ await Promise.all([...document.images].map(i=>i.decode())); });
     // A logo that barely contrasts with the card (a black PNG on a black plate) is
     // recoloured to the card's text colour, so the brand never vanishes.
     const tint = await page.evaluate(() => {

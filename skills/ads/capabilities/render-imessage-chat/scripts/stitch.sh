@@ -20,7 +20,6 @@ HERE="$(cd "$(dirname "$0")" && pwd)"
 SFX_DIR=""   # --sfx-dir wins; else assets/sfx; else the embedded base64 copy
 MUSIC=""
 ALSO_1X1=0
-SFX_LEAD=0.04   # seconds each sound leads its bubble; a hair early reads as "on it"
 CHAT="" END="" SFX_JSON="" OUT=""
 
 while [ $# -gt 0 ]; do
@@ -31,7 +30,6 @@ while [ $# -gt 0 ]; do
     --out) OUT="$2"; shift 2;;
     --music) MUSIC="$2"; shift 2;;
     --sfx-dir) SFX_DIR="$2"; shift 2;;
-    --sfx-lead) SFX_LEAD="$2"; shift 2;;
     --also-1x1) ALSO_1X1=1; shift;;
     *) echo "unknown arg: $1" >&2; exit 1;;
   esac
@@ -108,28 +106,25 @@ echo "  video stitched, ${TOTAL}s"
 # 2) Build the audio mix (deterministic SFX cues [+ optional ducked music bed]).
 TMP_AUDIO="$WORK/audio.m4a"
 MUSIC_ARG="${MUSIC:-NONE}"
-python3 - "$SFX_JSON" "$SFX_DIR" "$MUSIC_ARG" "$TOTAL" "$TMP_AUDIO" "$SFX_LEAD" <<'PY'
-import json, sys, subprocess, array
+python3 - "$SFX_JSON" "$SFX_DIR" "$MUSIC_ARG" "$TOTAL" "$TMP_AUDIO" <<'PY'
+import array, json, sys, subprocess
 sfx_json, sfx_dir, music, total, out = sys.argv[1], sys.argv[2], sys.argv[3], float(sys.argv[4]), sys.argv[5]
-lead = float(sys.argv[6])
 cues = json.load(open(sfx_json))
-
-def onset(path):
-    # Seconds of lead-in before the sound is audible (mp3 encoder delay + any padding).
-    raw = subprocess.run(["ffmpeg", "-v", "error", "-i", path, "-ac", "1", "-ar", "48000", "-f", "s16le", "-"],
-                         capture_output=True, check=True).stdout
-    a = array.array("h"); a.frombytes(raw[: len(raw) // 2 * 2])
-    peak = max((abs(x) for x in a), default=0)
-    thr = peak * 0.05
-    for i, x in enumerate(a):
-        if abs(x) > thr:
-            return i / 48000
-    return 0.0
-ONSET = {}
+def onset(file):
+    raw = subprocess.run(['ffmpeg', '-v', 'error', '-i', file, '-ac', '1', '-ar', '48000', '-f', 's16le', '-'], capture_output=True, check=True).stdout
+    samples = array.array('h'); samples.frombytes(raw)
+    threshold = max(map(abs, samples), default=0) * 0.05
+    if not threshold: sys.exit(f'Silent SFX: {file}')
+    return next(i for i, x in enumerate(samples) if abs(x) > threshold) / 48000
+onsets = {name: onset(f'{sfx_dir}/imessage-{name}.mp3') for name in ('send', 'receive')}
+for c in cues:
+    if c.get('name') not in onsets or not isinstance(c.get('t'), (int, float)) or not 0 <= c['t'] < float(total):
+        sys.exit(f'Invalid SFX cue: {c}')
 has_music = music != "NONE"
-# Per-cue gain: the levels approved in the GOOSE-3741 audit renders (0.95 / 0.55 into a
-# 0.85 master, bed 0.30 into the same). The -2 dBFS limiter below still holds stacked
-# cues down. +4 dB over this read as too loud next to the approved takes.
+# Per-cue gain at the approved quieter audit level. With the -2 dBFS limiter below, a lone cue lands within
+# ~2 dB of the old loudness while stacked cues no longer clip. Soft cues keep
+# the old soft/normal ratio (0.55/0.95). MUSIC_GAIN keeps the old bed-to-SFX
+# balance (it was 0.30 x 2.5 against 0.95 x 2.5).
 CUE_GAIN = 0.81
 SOFT_GAIN = 0.47
 MUSIC_GAIN = 0.26
@@ -147,32 +142,18 @@ if has_music:
         f"highpass=f=60,volume={MUSIC_GAIN},afade=t=out:st={max(0,total-1.5)}:d=1.5[mus]")
     mix_labels.append("[mus]")
     idx += 1
-def start_ms(c):
-    f = f"{sfx_dir}/imessage-{c['name']}.mp3"
-    if c['name'] not in ONSET:
-        ONSET[c['name']] = onset(f)
-    return max(0, int(round((c['t'] - ONSET[c['name']] - lead) * 1000)))
-starts = [start_ms(c) for c in cues]
 for n, c in enumerate(cues):
     sfx_file = f"{sfx_dir}/imessage-{c['name']}.mp3"
     inputs += ["-i", sfx_file]
-    # The audible start of the sound lands `lead` seconds before the bubble appears.
-    delay = starts[n]
+    delay = int(c['t'] * 1000)
     vol = SOFT_GAIN if c.get('soft') else CUE_GAIN
-    # A phone restarts the alert for each message: cut this sound (40 ms fade) where the
-    # next one starts, or a long receive tone masks the next bubble's sound entirely.
-    cut = ""
+    # Strip only the leading silence. Audible onset follows the visible movie frame.
+    cut = ''
     if n + 1 < len(cues):
-        room = (starts[n + 1] - delay) / 1000
-        room -= 0.005  # silent by 5 ms before the next sound starts
-        # The receive chime's loud second note lands ~0.3 s in. If another message arrives
-        # before the chime ends, that note would ring just BEFORE the next bubble, so stop
-        # this chime after its first note (0.20 s). Isolated messages keep the full tone.
-        if c['name'] == 'receive' and room < 1.3:
-            room = min(room, 0.20)
-        if room > 0.05:
-            cut = f"atrim=0:{room:.3f},afade=t=out:st={max(0, room - 0.06):.3f}:d=0.06,"
-    filter_parts.append(f"[{idx}:a]{cut}adelay={delay}|{delay},volume={vol}[s{idx}]")
+        room = cues[n+1]['t'] - c['t'] - 0.005
+        if c['name']=='receive' and room<1.3: room=min(room,0.20)
+        if room>0.05: cut=f'atrim=duration={room:.3f},afade=t=out:st={max(0,room-0.06):.3f}:d=0.06,'
+    filter_parts.append(f"[{idx}:a]atrim=start={onsets[c['name']]},asetpts=PTS-STARTPTS,{cut}adelay={delay}|{delay},volume={vol}[s{idx}]")
     mix_labels.append(f"[s{idx}]")
     idx += 1
 n = len(mix_labels)
@@ -194,8 +175,7 @@ r = subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=
 if r.returncode != 0:
     sys.stderr.write(r.stderr[-3000:])
     sys.exit(f"stitch.sh: ffmpeg audio mix failed (exit {r.returncode})")
-print(f"  audio: {'1 music bed + ' if has_music else ''}{len(cues)} sfx cues, lead {lead:.3f}s, onsets " +
-      ", ".join(f"{k} {v*1000:.0f}ms" for k, v in ONSET.items()))
+print(f"  audio: {'1 music bed + ' if has_music else ''}{len(cues)} sfx cues")
 PY
 
 # 3) Mux video + audio → 9:16 master.

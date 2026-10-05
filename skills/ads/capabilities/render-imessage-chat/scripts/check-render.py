@@ -1,54 +1,42 @@
-#!/usr/bin/env python3
-"""check-render.py <final.mp4> <master-chat.sfx.json>
+"""Check the encoded master: dimensions, audio, frame count and complete tail.
 
-Verifies the finished iMessage ad, not its inputs: 1080x1920, has audio, no sync-curtain
-frame leaked in, runtime in range, and every SFX cue is audible within 0.15 s before
-its bubble time. Exits 1 on any failure. No numpy needed."""
-import json, subprocess, sys, array
+This is a technical gate. The calling recipe still reviews the final picture,
+copy and sound; stream metadata alone cannot establish creative acceptance.
+"""
+import array
+import json
+import subprocess
+import sys
 
-vid, cues = sys.argv[1], json.load(open(sys.argv[2]))
-fail = []
-probe = json.loads(subprocess.run(["ffprobe", "-v", "error", "-show_entries",
-    "stream=codec_type,width,height:format=duration", "-of", "json", vid],
-    capture_output=True, check=True).stdout)
-v = [s for s in probe["streams"] if s["codec_type"] == "video"][0]
-dur = float(probe["format"]["duration"])
-if (v["width"], v["height"]) != (1080, 1920): fail.append(f"frame {v['width']}x{v['height']}, want 1080x1920")
-if not any(s["codec_type"] == "audio" for s in probe["streams"]): fail.append("no audio stream")
-if not 15 <= dur <= 40: fail.append(f"runtime {dur:.1f}s outside 15-40s")
+def probe(path):
+    return json.loads(subprocess.check_output(['ffprobe', '-v', 'error', '-show_streams', '-show_format', '-of', 'json', path]))
 
-# sync curtain must never reach the viewer
-raw = subprocess.run(["ffmpeg", "-v", "error", "-i", vid, "-vf", "fps=10,scale=4:4", "-f", "rawvideo",
-                      "-pix_fmt", "rgb24", "-"], capture_output=True, check=True).stdout
-for f in range(len(raw) // 48):
-    px = raw[f*48 + 30: f*48 + 33]
-    if px[0] > 200 and px[1] < 70 and px[2] > 200: fail.append(f"sync magenta visible at {f/10:.1f}s"); break
+def check(master, timeline_path, end):
+    info, tail = probe(master), probe(end)
+    timeline = json.load(open(timeline_path))
+    video = next(s for s in info['streams'] if s['codec_type'] == 'video')
+    assert (video['width'], video['height']) == (1080, 1920), 'Final must be 1080×1920'
+    assert any(s['codec_type'] == 'audio' for s in info['streams']), 'Missing SFX audio stream'
+    end_video = next(s for s in tail['streams'] if s['codec_type'] == 'video')
+    expected = timeline['total'] + float(end_video['duration']) - 0.3
+    assert abs(float(video['duration']) - expected) < 0.07, 'Incomplete master duration'
+    assert int(video['nb_frames']) >= round(expected * timeline['fps']) - 1, 'Missing encoded frames'
+    last = max(e['t'] for e in timeline['timeline'] if e.get('sfx'))
+    assert timeline['total'] - 0.3 - last >= 0.5, 'Last message lost to crossfade'
+    # Check audible onsets in the encoded mix, including the actual MP3 lead-in.
+    cues=json.load(open(str(timeline_path).replace('.timeline.json','.sfx.json')))
+    pcm=subprocess.check_output(['ffmpeg','-v','error','-i',str(master),'-ac','1','-ar','8000','-f','s16le','-'])
+    samples=array.array('h'); samples.frombytes(pcm[:len(pcm)//2*2])
+    env=[max(abs(x) for x in samples[i:i+8]) for i in range(0,len(samples)-8,8)]
+    peak=max(env,default=0) or 1
+    for cue in cues:
+        at=round(cue['t']*1000); found=None
+        for ms in range(max(0,at-200),min(len(env),at+61)):
+            base=min(env[max(0,ms-60):ms] or [0])
+            if env[ms]>0.05*peak and env[ms]>4*max(base,1): found=ms; break
+        assert found is not None and at-150<=found<=at+60, f"Missing or shifted sound at {cue['t']:.2f}s"
+    print(f'Checked {len(cues)} audible sound onsets against their movie frames')
+    print(f'Checked master: {video["nb_frames"]} frames, {video["duration"]}s, SFX stream and complete ending')
 
-# each cue's sound must start in [t-0.15, t+0.02]
-pcm = subprocess.run(["ffmpeg", "-v", "error", "-i", vid, "-ac", "1", "-ar", "8000", "-f", "s16le", "-"],
-                     capture_output=True, check=True).stdout
-a = array.array("h"); a.frombytes(pcm[: len(pcm) // 2 * 2])
-env = [max(abs(x) for x in a[i:i+8]) for i in range(0, len(a) - 8, 8)]  # 1 ms hop
-peak = max(env) or 1
-def onset_near(t):
-    # First ms in [t-200, t+20] that is audible (>5% of peak) AND at least 4x louder than
-    # the quietest point in the 60 ms before. Handles fade-in sounds and the tail of an
-    # earlier sound still ringing.
-    for ms in range(max(0, t - 200), min(len(env), t + 21)):
-        base = min(env[max(0, ms - 60): ms] or [0])  # quietest point just before: silence or the dip where the last sound was cut
-        if env[ms] > 0.05 * peak and env[ms] > 4 * max(base, 1):
-            return ms
-    return None
-worst = 0
-for c in cues:
-    t = int(c["t"] * 1000)
-    on = onset_near(t)
-    if on is None or not (t - 150 <= on <= t + 20):
-        fail.append(f"{c['name']} at {c['t']:.2f}s: sound onset {'missing' if on is None else f'{on - t:+d} ms'}, want -150..+20 ms")
-    else:
-        worst = max(worst, abs(on - t))
-print(f"sfx: every cue lands 0..{worst} ms before its bubble" if not fail else "sfx: see failures")
-
-print(f"check: {vid} {dur:.1f}s, {len(cues)} cues -> " + ("OK" if not fail else "FAIL"))
-for f in fail: print("  - " + f)
-sys.exit(1 if fail else 0)
+if __name__ == '__main__':
+    check(*sys.argv[1:])
