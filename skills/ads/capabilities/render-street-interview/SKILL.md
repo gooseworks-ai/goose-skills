@@ -133,7 +133,7 @@ Conversation prompt previews send no media call; no conversation media price is 
 
 The local finishing scripts use the current Python interpreter and carry `--run` into child commands. The default grade (`--strength 0`) needs no colour-reference file. A positive strength requires the real reference.
 
-Set approved colours in `brand_layer.palette`: `accent`, `text`, and `background`, each `#RRGGBB` or three RGB integers. Optional `brand_layer.fonts` keys are `black`, `bold`, and `regular` (paths relative to the project). Without overrides, fonts resolve on macOS, Windows or Linux. End-card rows shrink together to fit the safe area; shorten copy if it cannot fit.
+Set approved colours in `brand_layer.palette`: `accent`, `text`, and `background`, each `#RRGGBB` or three RGB integers. Optional `brand_layer.fonts` keys are `black`, `bold`, and `regular` (paths relative to the project). Without overrides, fonts resolve on macOS, Windows or Linux. End-card rows keep the approved 86px spacing and 66px type. Shrink only an individual line whose visible text cannot fit the safe area; shorten copy if that line still cannot fit. Transparent text-image padding does not set the line spacing.
 
 The `subway` series bar stays visible through caption gaps. It is also in the caption-free control so the gate measures captions separately from persistent branding.
 

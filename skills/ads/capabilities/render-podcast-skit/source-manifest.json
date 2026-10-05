@@ -24,7 +24,7 @@
     "scripts/selftest.py": "a080813c3897a7a9daf2e0d76b3182aa71a87cf5313ccfdd73045b558fdaf201",
     "scripts/shape_vo.py": "5574e60b687960b3226da436fb04b2afec3cb95693b0455ac1dcdd94be460272",
     "scripts/test_distribution.py": "547fded803b7e221fdec7ff53eb32b8e1b561d01434e3e67d849029984a508ba",
-    "recipe.json": "4fb43558ec6acbb8d3738f278bdf60f2fd15fa5f61096ce49c29aaebe384b67a",
+    "recipe.json": "6268fcb937fa0b85ad438aa6eaa6da5ed36b22005969e1464ae49df6766f632a",
     "scripts/README.md": "499c31de666f10c9f85a818c470e694630322818458eaaa3c20efec9f7bf628e"
   }
 }

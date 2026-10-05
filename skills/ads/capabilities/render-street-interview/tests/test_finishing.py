@@ -54,6 +54,29 @@ class FinishingTests(unittest.TestCase):
         self.assertEqual(command[0], sys.executable)
         self.assertEqual(command[command.index("--run") + 1], str(self.run.resolve()))
 
+    def test_approved_endcard_keeps_original_pixels_and_86px_spacing(self):
+        layer = {"logo": None, "end_card": ["MURDER YOUR THIRST.", "DRINK LIQUID DEATH."]}
+        build_looks.configure_brand_layer(layer)
+        expected = Image.new("RGB", (1080, 1920), build_looks.INK).convert("RGBA")
+        for i, row in enumerate(layer["end_card"]):
+            text = build_looks.heavy(row, 66, build_looks.CREAM if i == 0 else build_looks.GOLD,
+                                     italic=False, outline=5)
+            expected.alpha_composite(text, ((1080 - text.width) // 2, 650 + i * 86))
+        out = self.run / "approved-end.png"
+        build_looks.end_card(out, layer)
+        with Image.open(out) as actual:
+            self.assertIsNone(ImageChops.difference(actual, expected.convert("RGB")).getbbox())
+
+    def test_only_the_overlong_endcard_line_shrinks(self):
+        layer = {"logo": None, "end_card": ["A LONG APPROVED END CARD LINE THAT NEEDS TO FIT", "SHORT LINE"]}
+        build_looks.configure_brand_layer(layer)
+        out = self.run / "mixed-end.png"
+        with patch.object(build_looks, "heavy", wraps=build_looks.heavy) as draw:
+            build_looks.end_card(out, layer)
+        sizes = [(call.args[0], call.args[1]) for call in draw.call_args_list]
+        self.assertTrue(any(row == layer["end_card"][0] and size < 66 for row, size in sizes))
+        self.assertEqual([size for row, size in sizes if row == "SHORT LINE"], [66])
+
     def test_supplied_fonts_work_without_system_fallbacks(self):
         shutil.copyfile(build_looks.resolve_font("black"), self.run / "custom.ttf")
         spec = importlib.util.spec_from_file_location("looks_without_defaults", SCRIPTS / "build_looks.py")
