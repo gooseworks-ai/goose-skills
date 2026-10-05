@@ -1,0 +1,118 @@
+{
+  "_comment": "DIRECTION, NOT A STORY. The recipe supplies no arc, no cast, no stances and no lines: gates.gate_recipe_carries_no_narrative and gates.gate_recipe_has_no_script_fixture enforce that and selftest cases 32 and 33 prove both bite. What was missing was the other half: with the arc removed and nothing put in its place, whoever writes script.json defaults to comedy with a doubter, every run. This file is the menu. The script author PICKS ONE id and writes it into script.json as \"arc\"; gates.gate_script_direction refuses a script that declares no arc, declares an arc that is not on this list, or writes the doubter-and-convert shape anyway. Every arc below was OBSERVED in a real clip in references/REFERENCES.md and is cited with the clip it came from. None of them was invented here, and none of them is a doubter.",
+  "source": "references/REFERENCES.md, section 'Arc: eight real structures, none of them skeptic-and-convert'. Nine real clips across five shows.",
+  "how_to_use": [
+    "1. Pick one id. Put it in script.json as \"arc\". One per script.",
+    "2. Write the lines to that engine. The engine is the only thing this file fixes; who the hosts are, what the product is and what is true about it are yours.",
+    "3. Obey tone_rule and brand_the_frame_rule below. Both are measured findings, not taste.",
+    "4. Run gates.py --script before anything is paid for."
+  ],
+  "tone_rule": {
+    "rule": "The subject can be funny. The writing should not try to be.",
+    "evidence": "Of nine real clips measured, roughly two thirds are comedy and NONE of the comedy is scripted comedy. Every laugh in the set is a reaction to something true: a real story (dod-blender), a real price (wf-apple), a real document (smosh-hr), a real clip (nh-reeses), an honest answer from somebody who is not selling (nh-mama).",
+    "do": "Write the true thing and leave room for the reaction.",
+    "do_not": "Write a gag, a punchline both hosts are in on, or a line whose only job is to be funny."
+  },
+  "outside_the_room_rule": {
+    "rule": "The hosts react to something that came from OUTSIDE the room: a witness, a clip, a document, a listing, a price.",
+    "evidence": "Arcs 6, 7 and 8 share this, and none of the eight arcs is two hosts generating an opinion about a product between themselves, which is exactly what the shipped demo does."
+  },
+  "brand_the_frame_rule": {
+    "rule": "Brand the FRAME, not the dialogue. A persistent corner lockup carries the sponsor; the conversation is left alone.",
+    "evidence": "Seven sponsor-tagged New Heights shorts (Expedia, Xfinity, Reese's, Nissan, Raising Cane's, Mentos, American Express) were downloaded and transcribed end to end. In every one the sponsorship is a persistent corner lockup beside the show wordmark, and in NOT ONE of the seven is the brand name spoken. The Expedia clip is about brunch. The Cane's clip never mentions chicken. Five of nine references never name a product at all, and one of those five is a sponsored clip.",
+    "config": "edit.frame_brand in config.example.json expresses the lockup: corner, width, margin, and whether it persists for the whole runtime. compose_master.py composites it; gates.gate_frame_brand_asset fails if it is declared and the file is not there.",
+    "do_not": [
+      "Announce the format. The shipped demo opens with 'we ad-reading today?' and tells the viewer it is an ad inside two seconds. No reference says what it is.",
+      "Read a feature list. No reference reads one; wf-telly comes closest and even there every spec is answering a question somebody just asked.",
+      "End on a CTA. There is no CTA and no offer anywhere in nine references."
+    ]
+  },
+  "hook_rule": {
+    "rule": "The hook is a claim with a number in it, not a question about the show.",
+    "evidence": "'What if I told you you could get a free 55-inch 4K TV.' 'Apple selling 10 year old computer for 5149 pounds.' Numbers carry the hook: 5149 pounds, 6400 dollars, 15 blenders, 400 dollars.",
+    "note": "Digits are banned in VO text by gates.gate_script because the voice reads them wrong. Spell the number out."
+  },
+  "pace": {
+    "words_per_second_band": [2.3, 3.6],
+    "note": "Re-derived over six transcribable references. A script timed to 2.4 words per second reads as slow against this set; the centre of mass is near 2.9."
+  },
+  "arcs": [
+    {
+      "id": "story_with_corroborators",
+      "name": "Story with corroborators",
+      "reference": "dod-blender (6.45M views), dod-essentials (3.03M)",
+      "engine": "One host tells a true story about the product. The others interject, confirm, laugh, add a detail. Nobody doubts anything.",
+      "product_enters": "Inside the story, not introduced. dod-blender names the product 38% of the way in.",
+      "ends": "Mid-laugh. No resolution, no CTA.",
+      "not": "Not a testimonial and not a debate. The corroborators agree from the first line."
+    },
+    {
+      "id": "pitch_and_probe",
+      "name": "Pitch and probe",
+      "reference": "wf-telly (2.66M views)",
+      "engine": "One host presents an offer. The others ask specific FACTUAL questions: what data, how many ads, is there a camera, can I use a fake name. Each spec in the piece is an answer to a question somebody just asked.",
+      "product_enters": "First line, as a category and a number.",
+      "ends": "Unresolved, on a single word ('Damn.').",
+      "not": "The questioner is asking for facts, not expressing disbelief, and is never converted. This is the closest arc in the whole set to a doubter and it still is not one."
+    },
+    {
+      "id": "shared_incredulity",
+      "name": "Shared incredulity",
+      "reference": "wf-apple (2.43M views)",
+      "engine": "Everyone agrees from the first line that the thing is absurd, and they escalate together. The energy comes from agreement, not disagreement.",
+      "product_enters": "Brand at 0s, exact product about 4s in, with the price.",
+      "ends": "On the joke the escalation earned.",
+      "not": "Nobody is persuading anybody of anything."
+    },
+    {
+      "id": "narrated_case_file",
+      "name": "Narrated case file",
+      "reference": "tbpn-scam (1.83M views)",
+      "engine": "One host reads a chronology aloud over product b-roll. The second host is present and mostly silent. Deadpan, no jokes at all.",
+      "product_enters": "Immediately; it is the subject of the chronology.",
+      "ends": "When the chronology ends.",
+      "not": "No reaction comedy. This is the most ad-like structure in the set and it earns that by being dry."
+    },
+    {
+      "id": "observation_and_build",
+      "name": "Observation and build",
+      "reference": "tbpn-applemkt (126k views)",
+      "engine": "One host makes a craft observation about the product; the other extends it with a second example. Analytical.",
+      "product_enters": "As the object of the observation.",
+      "ends": "On the second example.",
+      "not": "Nobody sells and nobody reacts; the second host adds evidence, not enthusiasm."
+    },
+    {
+      "id": "outside_witness",
+      "name": "Outside witness",
+      "reference": "nh-mama (2.07M views)",
+      "engine": "A third person who was not part of the events is asked ONE question about the two hosts. Her answer makes them defend themselves. Question, answer, two guilty parties interrupting each other.",
+      "product_enters": "Not at all in the reference. The format does not require a product in the dialogue.",
+      "ends": "On a groan, then a show end card.",
+      "not": "Neither host is the authority, and the funniest line comes from the person who is not selling."
+    },
+    {
+      "id": "called_out_then_dared",
+      "name": "Called out, then dared",
+      "reference": "nh-reeses (533k views, and a sponsored clip)",
+      "engine": "An external artefact (a clip, a post, a review) makes a claim about one host. The other host reads it as a challenge and presses.",
+      "product_enters": "The sponsor brand is NEVER spoken. It is a corner lockup for the whole runtime.",
+      "ends": "On a conditional, not a conversion: 'if I ever find myself in Italy, I'll put it to the test.'",
+      "not": "Nobody wins the dare inside the clip."
+    },
+    {
+      "id": "read_and_react",
+      "name": "Read and react",
+      "reference": "smosh-hr (1.43M views)",
+      "engine": "One person reads a REAL document aloud (a post, a review, a support ticket, a changelog) from a tablet. The others interrupt with reactions. The entire engine is the document being real.",
+      "product_enters": "Not at all in the reference.",
+      "ends": "Mid-reaction.",
+      "not": "The reader is not arguing a position and nobody is persuaded of anything."
+    }
+  ],
+  "refused": {
+    "shape": "comedy with a doubter and a convert",
+    "why": "It appears in none of nine real clips across five shows, and after two reference passes the absence is not a sampling artefact. It is what a script author defaults to when the recipe hands them no direction, which is what this file exists to stop.",
+    "enforced_by": "gates.gate_script_direction, failure ids script_arc_declared, script_no_doubter_arc, script_no_format_announcement, script_feature_list. selftest.py cases 42 to 45 plant each shape and prove the gate bites."
+  }
+}

@@ -14,6 +14,20 @@
     ]
   },
   "requires_skills": [
+    "create-vo-elevenlabs",
+    "create-image-gpt-image-fal",
+    "create-video-fal",
     "watch"
+  ],
+  "version": 2,
+  "features": [
+    "Two-host dialogue rendering",
+    "Measured audio timeline",
+    "Full-frame and split cuts",
+    "65 quality-check falsification cases"
+  ],
+  "requires_tools": [
+    "ffmpeg",
+    "python"
   ]
 }
