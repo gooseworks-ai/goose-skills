@@ -1,17 +1,25 @@
 ---
 name: video-production-harness/review-video
-description: Watch the latest cut with complete-video frame and audio review, evaluate it against the design-brief, and write a dated review-notes/[idx]-[timestamp].md with strengths, issues, and concrete fixes.
+description: Watch the explicitly selected cut with complete-video frame and audio review, evaluate it against the design-brief, and write a dated review-notes/[idx]-[timestamp].md with strengths, issues, and concrete fixes.
 ---
 
-# review-video
+# Human version
+
+Review the exact cut at its current stage, record what a viewer receives, and route each problem to the smallest useful revision. Required playback, listening and evidence remain explicit; technical cleanliness alone cannot approve a confused story.
+
+---
+
+# Agent version
 
 ## Host contract
 
-Read `capabilities.md` and the selected host binding first. Artifact names are logical roles resolved by that binding. Named review tasks use the documented rubrics and actual frame/audio tools; they are not assumed installed commands. Required tooling, human approval and available budget must exist before the operation.
+Read `capabilities.md` and the selected host binding first. Artifact names are logical roles resolved by that binding. Named review tasks use the documented rubrics and actual frame/audio tools; they are not assumed installed commands. Required tooling, human approval and available budget must exist before the operation. Read [the editorial review guide](references/editorial-review.md) for source binding, stage decisions, note disposition, impact checks and saved edit history.
 
 ## Purpose
 
-Independent QA pass on a video cut. Acts as a fresh-eyes reviewer — runs the full suite of specialized review responsibilities, aggregates their findings, and produces a structured review document with prioritized issues and proposed fixes (each fix maps to `edit-clip`, `edit-video`, or one of the polish atoms).
+Independent QA pass on a video cut. Acts as a fresh-eyes reviewer — runs the full suite of specialized review responsibilities, aggregates their findings, and produces a structured review document with prioritized issues and proposed fixes (each fix routes to concept/script, production, sequence edit or local repair according to its cause).
+
+Use the stage-specific questions in [the editorial review guide](references/editorial-review.md). Diagnose promise/payoff and sequence problems before dispatching repairs. Prepare authorized cheap alternatives before an unresolved taste decision.
 
 This skill never edits the video. It only writes notes. The aggregate review-notes file is written in the contract that `auto-fix-from-review-notes` consumes, so the orchestrator can deterministically apply P0/P1 items in the NEEDS REVISION branch.
 
@@ -36,7 +44,7 @@ Stage 8 has five phases. The names below identify review responsibilities, not e
 - `review-video-for-platform-fit` (existing)
 - **UGC family only**:
   - `review-video-ugc-shotcraft` — cut density (cuts/10s) + face-share + intra-shot motion. Storyboard-level decisions that hide AI tells; reads `metrics.cuts_per_10s` and `metrics.face_share_planned` from `scene_contract` and compares to delivered cut.
-  - `review-video-vo-authenticity` — synthetic-VO tell detection (breath sounds, pause variance, pitch jitter). Skipped if `voiceover_strategy: real_voice`.
+- **All spoken formats, including real recorded/native speech:** perform the speech-performance responsibility on actual isolated takes and final mix (pronunciation, rhythm, pauses/emphasis, joins and final consonants). Use the actual fetched voice-performance reviewer when available, or the documented listening rubric with real tools; no named tool is assumed installed. A transcript/score cannot replace listening.
 - NOTE: `review-video-hook-strength` and `review-video-synthetic-persona` ran earlier in State 7.5 (scroll-test gate). Re-run here only on revision passes or if first-stitch is bypassed.
 
 **UGC gate (overrides Phase 7c status when `concept_format` is in the UGC family):** APPROVED requires ALL of:
@@ -44,12 +52,12 @@ Stage 8 has five phases. The names below identify review responsibilities, not e
 - `identity-drift` same_person_score ≥ 9 AND continuity_break == false
 - `world-consistency` score ≥ 8.5 AND no axis < 6
 - `ugc-shotcraft` composite ≥ 7
-- `vo-authenticity` verdict != synthetic (skipped if voiceover_strategy == real_voice)
+- Actual speech-performance/listening checks are complete with no required unresolved defect, including real_voice; synthetic-tell rubric applies where relevant and does not replace this gate.
 
 Any one of these failing sets status to NEEDS REVISION regardless of other axes. This is a prior review v3 lesson: the standard 6-axis rubric scored that cut as shippable; the UGC-specific atoms would have blocked it. The aggregated gate verdict is persisted into `review_issues` and reflected in `project_state`.
 
 **Phase 7c — aggregate:**
-- Merge every atom's findings into a single `review-notes/<idx>-<ts>.md` using the markdown contract defined in `auto-fix-from-review-notes.md`. Score each axis (existing 6-axis rubric below) using per-atom outputs as evidence. Status: APPROVED or NEEDS REVISION (after Phase 7d gates).
+- Merge every atom's findings into a single `review-notes/<idx>-<ts>.md` using the markdown contract defined in `auto-fix-from-review-notes.md`. Score each axis (existing 6-axis rubric below) using per-atom outputs as evidence. Status: APPROVED, NEEDS REVISION or INCOMPLETE (after Phase 7d gates).
 
 **Phase 7d — claim verification (deterministic, required):**
 - Every visual claim MUST include a `timecode:` field. Re-extract the actual frame at that timestamp with FFmpeg, inspect it and neighboring frames, and confirm or reject the claim against those bytes.
@@ -58,38 +66,41 @@ Any one of these failing sets status to NEEDS REVISION regardless of other axes.
 
 ### Phase 7e — complete watch (required)
 
-Read the entire 2 fps frame sequence and listen to the complete actual audio; also obtain and compare the actual transcript for speech. Use a real player when available to check continuous motion, timing and perceived mix. Save observations for every scene and the first-to-last playback duration. A storyboard, clip thumbnails, metadata, or only a few frames cannot clear this gate.
+Read the entire 2 fps frame sequence and listen to the complete actual audio; also obtain and compare the actual transcript for speech. Continuous full-speed playback is required to check motion, timing and perceived mix; if the playback/listening capability is unavailable, mark that gate incomplete rather than treating the frame sequence as equivalent. Save observations for every scene and the first-to-last playback duration. A storyboard, clip thumbnails, metadata, or only a few frames cannot clear this gate.
 
 ## Inputs
 
 - `<video_folder>` (required)
-- `<video_path>` — path to the cut to review (default: `<video_folder>/edits/master-final.mp4`, falls back to `master-no-captions.mp4`, then `clip_review` if no master exists yet)
+- `<video_path>` — explicit cut resolved from the host review selection or source note; record render/version ID and checksum. On a first cut use the newly registered candidate. Never fall back to a different master or thumbnails when a watched source is missing.
+- `<stage>` — concept, rough, fine or final; record which decision this review can clear. Concept reviews cannot claim watched-cut evidence.
 - `<review_idx>` — optional sequence number; if omitted, auto-increment based on existing files in `review-notes/`
 
 ## Workflow
 
-1. Read `<video_folder>/design_brief`, `<video_folder>/implementation_brief`, and `<video_folder>/locked_script` to load the spec.
-2. Read the current brand evidence (or equivalent) for brand rules.
+1. Branch by stage. For **concept**, read the sourced brief and available truthful proof, answer the Concept questions in the editorial guide and record “no cut yet; no received-message/playback verdict claimed”; skip cut-dependent checks until actual media exists. For **rough/fine/final**, resolve the exact candidate and preserve its source identity. Before loading its intended story, play the complete cut and save the received-message observation: offer, buyer, promise, proof, payoff, action and uncertainties with timestamps. A reviewer who already knows the brief labels this context-aware; no invented fresh-viewer testimony.
+For concept-only review, record its supported/unsupported promise and decision, then continue at strengths/issues/status below; do not run cut-dependent Steps 3–7 or claim their verdicts.
+
+2. Then read `<video_folder>/design_brief`, `<video_folder>/implementation_brief`, `<video_folder>/locked_script` and current brand evidence. Compare the received message with the intended story; save mismatches even if every technical check passes.
 3. **Run every applicable Phase 7a responsibility** — save the measured or rubric evidence in a working check list. Every visual finding includes its timecode and actual frame path.
 4. **Decide Phase 7b set** — by default run concept-landing + pacing-rhythm + brand-fit + platform-fit (hook-strength + synthetic-persona already ran in State 7.5). Apply the selected rubrics and collect their actual evidence.
 5. **Run Phase 7d** — verify each claim against the actual frame and record verified, rejected or incomplete. Exclude rejected claims; block approval on incomplete required checks.
-6. Use complete-video frame and audio review to actually watch the video file (this is the reviewer's own first-pass watch — keep it focused on whatever the atoms didn't cover). Capture:
+6. Use complete-video frame and audio review to actually watch the video file (this is the focused follow-up to the initial received-message pass). Capture:
    - Total runtime
    - Per-scene observations the atoms missed
    - Overall feel / coherence
-6. Score the cut on these axes (0–10 each, with one-sentence justification), pulling evidence from each atom's output:
+7. Score the cut on these axes (0–10 each, with one-sentence justification), pulling evidence from each atom's output:
    - **Hook strength** (does it stop the scroll in 2s?)
    - **Story clarity** (could a muted viewer follow the arc?)
    - **Brand fit** (does it match current brand visual rules?)
    - **Comedic / emotional landing** (do the punchlines land?)
    - **Technical polish** (cuts, sync, levels, captions)
    - **Platform fit** (9:16 safe area, opening frame, length)
-5. List **strengths** (what to keep / lean into).
-6. List **issues** ranked by severity:
+8. List **strengths** (what to keep / lean into).
+9. List **issues** ranked by severity:
    - **P0 blocker** — ship-stopper (e.g. VO inaudible, hero shot broken, screen leakage in a no-screens ad)
    - **P1 should fix** — meaningfully degrades the cut
    - **P2 nice-to-have** — polish
-7. For each issue, propose a concrete fix in the markdown contract `auto-fix-from-review-notes` consumes:
+10. For each issue, propose a concrete fix in the markdown contract `auto-fix-from-review-notes` consumes:
 
 ```markdown
 ### <axis> · <short title>
@@ -105,21 +116,27 @@ Examples of `fix:` lines:
 - `repair caption overflow; input=captions/captions.srt; output=captions/captions-fixed.srt; maximum=2 lines of 38 characters` — edit cues, verify real timings, burn only after polish.
 - `extend end-card hold; input=clips/scene-16-endcard.mp4; output=clips/scene-16-endcard-extended.mp4; added_hold=0.6 seconds` — resolve to a real FFmpeg last-frame hold and re-stitch.
 
-8. Determine **next-pass status**:
-   - **APPROVED** — review gate cleared → orchestrator advances to State 9 (Polish), then captions and final delivery QC.
-   - **NEEDS REVISION** — list which P0/P1 issues must be addressed before next review. If every NEEDS REVISION item has a deterministic fix line (no `edit-clip`), the orchestrator may shortcut by calling `auto-fix-from-review-notes` directly instead of looping back to State 5/6.
-9. Write `<video_folder>/review-notes/<idx>-<timestamp>.md` (e.g. a dated review record). Format below.
+11. Consolidate critical findings into a diagnosis, acceptance conditions and smallest sufficient return route. Concept/script repairs return to their current gate; missing proof goes to production; correct-but-misordered material to edit; isolated defects to local repair. Save cheap alternatives and the decision owner for unresolved taste/conflicts.
+12. Determine **next-pass status**:
+   - **APPROVED** — this stage's questions and required evidence are cleared; advance to the next applicable stage. An approved rough cut still needs fine/final review. Fine review may advance to State 9 polish; the actual captioned exports need fresh final QC.
+   - **INCOMPLETE** — required playback/listening, source or evidence is unavailable; save what was checked and the missing capability. Do not convert absence into approval or a speculative repair.
+   - **NEEDS REVISION** — list which P0/P1 issues must be addressed before next review. Only if the diagnosis is local repair and every required NEEDS REVISION item has an authorized deterministic fix line, the orchestrator may shortcut by calling `auto-fix-from-review-notes` directly instead of looping back to State 5/6.
+13. Write `<video_folder>/review-notes/<idx>-<timestamp>.md` (e.g. a dated review record). Format below.
 
 ## Output document format
 
 ```markdown
 # Review NN — <video name>
 
-- **Cut reviewed:** <path>
+- **Cut reviewed:** <path, immutable render/version ID, checksum>
+- **Stage:** concept | rough | fine | final
+- **Received message:** <recorded before loading the brief, or labeled context-aware>
+- **Coverage:** <continuous playback and full audio evidence, gaps, transcript where applicable>
+- **Diagnosis / return route:** <cause, smallest sufficient revision and decision owner>
 - **Runtime:** <s>
-- **Reviewer:** Claude (review-video skill)
+- **Reviewer:** <actual reviewer and context-aware/independent status>
 - **Date:** <ISO timestamp>
-- **Status:** APPROVED | NEEDS REVISION
+- **Status:** APPROVED | NEEDS REVISION | INCOMPLETE
 
 ## Scores
 
@@ -135,16 +152,22 @@ Examples of `fix:` lines:
 ## Strengths
 - ...
 
-## Issues
+## P0
 
-### P0 — blockers
-- **<scene/area>**: <issue>. **Fix:** <skill call>.
+### <axis> · <short title>
+- **timecode:** <actual source timestamp or range>
+- **issue:** <observed viewer problem, linked note ID and evidence>
+- **root cause:** <diagnosis>
+- **fix:** `<real repair responsibility>; input=<source>; output=<candidate>; parameters=<values>`
+- **intended effect / acceptance:** <what the rewatch must demonstrate>
 
-### P1 — should fix
-- ...
+## P1
 
-### P2 — nice to have
-- ...
+<same item form, or none>
+
+## P2
+
+<same item form, or none>
 
 ## Per-scene notes
 - Scene 1: ...
@@ -166,9 +189,11 @@ For auto-refine, also save JSON `{checks: [{id, severity, pass, machine_check, e
 
 - Review actually used the complete-video evidence/watch capability (not just the storyboard).
 - Per-scene notes exist for every scene.
-- Every issue has a concrete fix mapped to `edit-clip` or `edit-video`.
+- Every issue has a diagnosis and explicit concept/script, production, sequence edit or local repair route; unresolved taste has alternatives and a decision owner.
+- Original source identity, received message and stage-specific decision are recorded. A technically clean incoherent cut remains NEEDS REVISION.
+- Scores describe predicted quality only; no audience-performance claim follows from them.
 - Every P0/P1 issue has `claim:verified` status from Phase 7d. Unverified claims are not eligible to gate status.
-- Status is set unambiguously (APPROVED or NEEDS REVISION).
+- Status is set unambiguously (APPROVED, NEEDS REVISION or INCOMPLETE).
 - Note file is saved under `review-notes/` with `<idx>-<timestamp>.md` naming.
 - Brand-aesthetic violations are called out explicitly.
 

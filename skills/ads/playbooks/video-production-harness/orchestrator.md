@@ -3,7 +3,13 @@ name: video-production-harness/orchestrator
 description: Host-independent runner for the complete shared video production pipeline. Sequences preflight → brainstorm → design → script-lock → storyboard → character-lock → clips → review → edit-clip / edit-video → scroll-test → review → polish → deliver. Honors human gates, writes structured JSON project state, and produces a single ad folder ready to ship.
 ---
 
-# orchestrator
+# Human version
+
+Run one saved production sequence from sourced brief to checked output. Carry approved decisions into specialists, review the actual story and performance, preserve versions, and resume valid media without generating it again.
+
+---
+
+# Agent version
 
 ## Host contract
 
@@ -28,7 +34,7 @@ After every state:
 5. Save render outputs and immutable version lineage; do not overwrite the previous master.
 6. Validate the selected binding's schemas and cross-references before a human gate, handoff and delivery.
 
-Consume saved timestamped feedback and review passes. Resolve addressed comments; keep their history. The final write of every turn records current state and the remaining blocker/gate.
+Consume saved timestamped feedback and review passes on the exact watched version. Follow [the editorial review guide](references/editorial-review.md): changed is distinct from verified, source notes never move with final selection, and affected approvals/evidence are refreshed while valid unrelated decisions remain. Resolve comments only after their intended effect and the full output are verified; keep their history. The final write of every turn records current state and the remaining blocker/gate.
 
 ## When to use
 
@@ -79,7 +85,7 @@ The orchestrator advances from State 0 through State 11, including the condition
 
 This sequence remains the entry point when a customer names a format such as UGC, music video, podcast, explainer, motion graphics, product video or a style restyle. A specialist format supplies prompts, lookpacks and supported phase implementations; it never bypasses the shared gates, state, billing or review.
 
-Check the host's actual format capabilities first. No specialist is assumed installed. If available, delegate within the corresponding state and translate every output into the host's concept/script/scene/asset/job/version roles. Otherwise use the full generic sequence or present a supported revised approach for approval.
+Read [specialist handoffs](references/specialist-handoff.md), resolve the sourced creative brief and exact scene/script/asset revisions, and save each route in the existing capability plan. Check the host's actual format capabilities first. No specialist is assumed installed. If available, delegate within the corresponding state and translate every output into the host's concept/script/scene/asset/job/version roles. If a required route is missing, stop that route before spending and present a concrete supported revised approach for approval; a local skill name alone is not execution readiness.
 
 - UGC discipline applies from design through review; persist shotcraft and pacing metrics.
 - Song/music formats preserve locked lyrics, audio strategy and beat timing; they still need script/ingredient gates and final intelligibility review.
@@ -142,26 +148,26 @@ For podcast-style skit ads, use an actual available specialist through the bindi
 5. No gate by default — design-brief is mechanical from idea-brief. If `<auto>` is false and significant creative decisions surfaced (e.g. style choice, voice options), pause for the user to weigh in on the open-decisions section.
 
 ### State 2.5 — Script lock
-1. **Variant mode:** skip entirely. Copy `<source>/script.json` and `<source>/voiceovers/` into `<video_folder>/` verbatim — these are the locked source of truth for the variant. Re-rendering VO would invalidate the variant premise; if the script needs to change, treat it as a new ad.
+1. **Variant mode:** reuse exact source script and selected audio only when the current host-approved revisions/fingerprints remain valid. Run [hook compatibility](references/hook-compatibility.md) for the proposed visual/action/audio change; a new promise returns to script/body/coverage planning instead of inheriting approval.
 2. Reuse the locked_script only if its content/revision still matches the host-approved script. Continue to voice audition before storyboard when applicable.
-3. Otherwise call `lock-script.md` with `<concept_type>` inferred from idea-brief (default `transformation` if idea-brief mentions before/after, comeback, journey, ramp-up).
+3. Before writing, carry the sourced creative brief into the actual write-video-ad-script preparation command with `--brief working/script/creative-brief.json`; use its documented fields and set `shape.requires_creative_brief: true` for new custom/template work. The writer/critic receive the same angle-context; missing brief fails strict review. Preserve source/rejection/locked-copy evidence. Then call `lock-script.md` with `<concept_type>` inferred from idea-brief (default `transformation` if idea-brief mentions before/after, comeback, journey, ramp-up).
 4. **HUMAN GATE.** The arc review runs on text only — cheap. The gate exists because every script change AFTER this state forces VO re-renders. Capture the climax-line mark and any line-level edits.
 5. After approval, `locked_script` is the single source of truth — all downstream skills read VO text from this file, NOT from `design_brief`.
 
-### State 2.6 — Voice audition (mandatory when `audioStrategy ∈ {vo-narrator, hybrid}`; skip when `silent` or `song-as-script`)
-1. **Skip when** the active script's audio strategy is `silent` or `song-as-script`. In variant mode, skip — voice is inherited from the source's `voiceovers/`.
-2. **Read** the active script's voice direction + the locked script. Propose 2–3 candidate auditions covering the dimensions the operator should choose between (e.g. two voice IDs at the same settings, or one voice ID at two settings extremes). Each candidate gets its own `id` like `audition-01`, `audition-02`.
-3. **For each candidate**, render per-beat MP3s via the host voice-generation operation into `voiceovers/<auditionId>/<beatId>.mp3`. Use the full locked beat text so the operator hears the actual production read, not a sample line.
-4. Register every per-beat MP3, voice ID/name/settings, exact script revision, provenance and audition ID in voice_auditions and asset_manifest. Leave selection unset until the human picks through the host. Then STOP; descriptions cannot replace playable auditions.
+### State 2.6 — Voice/performance selection
 
-5. **On resume**, load the host-authoritative selected voice audition. Downstream `create-clips.md` Phase 4 only uses that audition's per-beat files. If the operator hasn't picked, do not advance — surface the gate.
+1. Read approved audio strategy and delivery intent. Silent work needs no voice audition; song/native dialogue uses its selected route's actual performance review rather than an invented narrator ID. A restyle reuses the exact approved performance when copy/settings/timing are unchanged.
+2. If the voice or delivery is unresolved, select representative uncertain material: pronunciation, conversational transition, intentional pause/emphasis and longest constrained line. Prepare only the alternatives that answer that uncertainty; do not regenerate every beat for every candidate by default. Paid auditions require the existing preview budget.
+3. Register playable auditions, exact covered lines/beat IDs, voice/settings, script revision and provenance. Listen to the actual isolated audio; text, waveform, duration and transcript alone cannot establish performance quality. Surface the existing human selection gate with remaining uncertainty; never present an unplayed audition as chosen.
+4. Reuse approved audition/performance audio where it covers the production line. Render only missing/changed lines with selected settings after the appropriate gate. Native first-take video still needs ingredient approval; listen before chaining later takes. Do not force a faster read or louder climax.
+5. Recheck actual isolated performance for every speech scene and the full mixed output in States 5/8/10, including native or real recorded speech. On resume, restore selected IDs/files; missing selection blocks only the route that needs it.
 
 ### State 3 — Storyboard
-1. **Variant mode:** skip entirely. The source's storyboard already proved pacing and visual direction. If you want a fresh review surface for the variant's per-scene keyframes specifically, generate one via the binding's actual keyframe review surface atom AFTER State 5 instead of regenerating the full pacing storyboard here.
+1. **Variant mode:** reuse unchanged numeric timing and scene IDs, then inspect the new visuals' recognition/reading time, proof, continuity and crop. New ingredients still need their current gate; inherited timing is not evidence that a new treatment lands.
 2. Reuse a saved storyboard only when it matches the current approved script and scene plan.
 3. Call `create-storyboard.md`. Storyboard reads VO from `locked_script` so caption bubbles match the locked script.
 4. **HUMAN GATE:** show the saved storyboard on the host review surface and confirm pacing/visual direction before final clip credits. Any generated preview still needs the script-approved preview budget. This is the cheapest place to catch a wrong concept.
-5. **Visual-variety floor.** For a 30–60s ad, target **8–10 distinct visual moments minimum**. Flag any single beat > 6s as a potential static dead zone. If a long beat is intentional, add internal micro-cuts in the storyboard (e.g. wide → CU 1 → CU 2). The "split-screen held for 9.5s reads as static" failure mode comes from skipping this check.
+5. **Coverage and pace.** Use the brief/reference-derived targets and actual picture cuts/direct-face time from `create-storyboard.md`. Every beat needs a viewer purpose and enough action/reading/proof time. A long hold or low cut count is a diagnosis prompt, not a universal failure; do not add arbitrary cuts to meet a quota.
 
 ### State 3.4 — Motion strategy classifier
 1. **Reads** `design_brief` `visual_style:` field (and the storyboard's aesthetic notes if explicit).
@@ -213,7 +219,7 @@ For podcast-style skit ads, use an actual available specialist through the bindi
 ### State 5 — Create clips
 1. Reuse clips only when all scene IDs, exact inputs, approvals, job results and passing clip evidence match the current plan.
 2. Re-run `preflight-audit` as a sub-step (new assets may have landed since State 0).
-3. Call `create-clips.md`. It reads `character_locks` if it exists and threads the locked anchor/soul_id into every keyframe.
+3. Verify the selected specialist package/input handoff and free dependency preflight, then call `create-clips.md`. It reads `character_locks` if it exists and threads the locked anchor/soul_id into every keyframe.
 4. Phase 0 of create-clips remains for style-anchor on cartoon scenes; for human characters it's a no-op (the lock-character anchor already covers it).
 
 ### State 5.8 — Transition layer (opt-in)
@@ -239,31 +245,30 @@ Quote each actual transition operation from current host pricing before approvin
 ### State 7 — Edit video
 
 1. Read `edit-video.md` and assemble a labeled candidate from current passing clips. Use the packaged assembly helper only when it implements the plan; otherwise use the documented real FFmpeg filters.
-2. For narration/hybrid, use the human-selected audition settings/assets, loudness normalization and music ducking. Song-as-script and silent take their explicit audio branches. Missing selected voice blocks narration; it does not block a genuinely silent plan.
-3. Preserve climax timing/boost, grade harmonization, SFX restrictions and revisions such as music-level/cue changes. Measure actual output instead of treating gain constants as proof.
+2. For narration/hybrid, reuse human-selected performance settings/assets and mix according to the approved sound plan with measured cue gains/ducking only where needed. Song-as-script and silent take their explicit audio branches. Missing selected voice blocks narration; it does not block a genuinely silent plan.
+3. Preserve intended emphasis/timing, intentional grade and SFX restrictions and revisions such as music-level/cue changes. Measure actual output instead of treating gain constants as proof.
 4. Read `promote.md` to register the candidate, asset and immutable version lineage through the binding. Preserve earlier versions. The candidate is visible for review; successful completion/pinning waits for all current gates and final QC.
 5. Validate the binding's actual render/asset/version relationships and save the true state. The binding supplies the review/pick transaction; never simulate it with a local master copy.
 
-### State 7.5 — Scroll-test gate
-1. Runs only on the FIRST stitch (skip on revision passes; full review takes over).
-2. **Variant mode:** skip entirely. Hook strength was already validated when the source ad shipped; re-running it on a restyle just burns credits to re-confirm what's already known. (If the variant changes the hook visual itself — e.g. cold-open shot is no longer recognizable — the operator should manually flag for a focused hook re-check.)
-3. Calls a lightweight subset of `review-video` atoms:
-   - `review-video-hook-strength` (3-second muted + sound test)
-   - `review-video-synthetic-persona` (TikTok-scroll viewer perspective)
-4. If hook-strength < 7 OR synthetic-persona flags a P0 ("wouldn't watch"), loop back to State 6 BEFORE running the full Phase 7 suite. The full review requires more evidence; this gate catches the worst regressions cheap.
-5. If both pass, advance to State 8.
-6. This is the breakthrough from v03: the viewer-perspective review should run at preview-v3 or v4, not just at the end.
+### State 7.5 — Opening and compatibility review
+
+1. Run on the first stitch and every changed opening, including visual-only restyles and revised image/action/audio/text. It may share the same saved review as State 8, but cannot be skipped because the old script passed.
+2. Follow [hook compatibility](references/hook-compatibility.md): save baseline promise/proof/payoff and classify same-promise isolated opening versus changed-promise recut before any new media spend. Fetch and preflight the existing hook renderer if that route is requested; an unavailable package blocks it before calls.
+3. Review the actual opening muted and with sound at normal speed, then its connection to the full body/ending. Save the received message before consulting intended direction where possible. Hook-strength and simulated-viewer scores are diagnostic hypotheses, not measured performance or automatic ship thresholds.
+4. Route unsupported promise to concept/script, missing proof to production, sequence problems to edit and local defects to repair. Prepare authorized cheap alternatives before unresolved taste escalation. Preserve exact source and compare complete labeled candidates; never auto-select the highest score.
+5. Advance only when the applicable questions and evidence are complete; missing playback/listening remains INCOMPLETE. Keep the existing bounded repair/spend limits.
 
 ### State 8 — Review (full parallel suite)
-1. Call `review-video.md` against `edits/master-final.mp4`. Run every applicable documented review responsibility; parallel execution is optional:
+1. Call `review-video.md` against the explicitly selected candidate ID/checksum, with rough or fine stage recorded. First save actual received message, then compare with the sourced brief. The stage questions can share the existing review surface; no additional approval meeting is required. Run every applicable documented review responsibility; parallel execution is optional:
    - **Phase 7a (deterministic, parallel):** the packaged technical-evidence tool + `review-video-hallucination-check` + `review-video-character-consistency` + `check-audio-visual-alignment` (validates payoff lines land on payoff visuals via Whisper word-timestamps + beat table — catches the "dead rats arrived 2s early" class of bug from LEARNINGS L3). **For `concept_format: ugc-diary | testimonial | founder-led | before-after`, also dispatch:** `review-video-identity-drift` (cross-cut identity check — catches "different person in scene 7" from a prior review v3 diagnostic) AND `review-video-world-consistency` (set + wardrobe + lighting drift across cuts — catches "bathroom → kitchen → living room" failure). Findings on both are persisted into `review_issues`.
-   - **Phase 7b (creative, parallel; user toggles which):** `review-video-concept-landing` + `review-video-pacing-rhythm` + `review-video-for-brand-fit` + `review-video-for-platform-fit` (hook-strength + synthetic-persona already ran in State 7.5). **For UGC concept formats, also dispatch:** `review-video-ugc-shotcraft` (cut density + face-share + intra-shot motion — storyboard-level decisions that hide AI tells) AND `review-video-vo-authenticity` (synthetic-VO tell detection; skipped if `voiceover_strategy: real_voice`).
+   - **Phase 7b (creative, parallel; user toggles which):** `review-video-concept-landing` + `review-video-pacing-rhythm` + `review-video-for-brand-fit` + `review-video-for-platform-fit` (hook-strength + synthetic-persona already ran in State 7.5). **For UGC concept formats, also dispatch:** `review-video-ugc-shotcraft` (cut density + face-share + intra-shot motion — storyboard-level decisions that hide AI tells) The speech-performance responsibility applies to **all spoken formats**, including `real_voice`: listen to isolated takes and the actual mix, joins and ending for pronunciation, timing, delivery and defects. Use the fetched voice-performance reviewer when available or the documented listening rubric with real media tools; the responsibility name is not an assumed installed command.
    - **Phase 7c (aggregate):** merge all reports into a single `review-notes/<idx>-<timestamp>.md` with P0/P1/P2 sections in the contract that `auto-fix-from-review-notes` consumes.
    - **Phase 7d (claim verification):** for every visual claim in 7a/7b output, re-extract the frame at the claimed timecode and verify. Reports unverified claims as `claim:unverified`. Don't trust sub-agent visual assertions without frame-extraction proof.
-   - **Phase 7e — Complete-cut watch and audio.** Mandatory before APPROVED. Run `python3 scripts/qc_evidence.py master.mp4 evidence-review-N` and Read every 4–5 frames spanning the full duration. Single-frame spot-checks (Phase 7d) miss timing drift, redundant beats, caption-visual collisions, and visual-variety problems. Use this on every iteration to catch cross-frame inconsistency, narrative regression, end-card/caption overlap and wasted hook time.
+   - **Phase 7e — Complete-cut watch and audio.** Mandatory before APPROVED. Run `python3 scripts/qc_evidence.py master.mp4 evidence-review-N`, read the full frame evidence, play the complete cut continuously at normal speed and listen to all actual audio. Obtain transcript/word evidence for speech; missing review capability leaves INCOMPLETE, never a pass. Single-frame spot-checks (Phase 7d) miss timing drift, redundant beats, caption-visual collisions, and visual-variety problems. Use this on every iteration to catch cross-frame inconsistency, narrative regression, end-card/caption overlap and wasted hook time.
 2. Branch on the review status:
-   - **APPROVED** → continue to State 9 (Polish).
-   - **NEEDS REVISION** → loop back to State 6/7, or follow `auto-fix-from-review-notes.md` with priorities P0 and P1 on the aggregate notes if every flagged item is auto-fixable (deterministic shortcut path).
+   - **APPROVED** → a rough-cut decision advances to fine-cut questions on the same review surface; after fine-cut execution and evidence pass, continue to State 9. It never clears the later exact-export final gate.
+   - **NEEDS REVISION** → follow the diagnosis: State 1/2.5 for concept/script, State 3/5 for missing coverage/performance, State 7 for sequence or State 6/local repair for defects. Use `auto-fix-from-review-notes.md` only for authorized deterministic local repairs. Rewatch the new candidate against original acceptance conditions.
+   - **INCOMPLETE** → save available evidence and the missing review/tool/source capability; do not advance, spend on speculative fixes or call the output approved.
 3. **Loop guard:** maximum 3 review iterations. If still NEEDS REVISION after 3 passes, escalate to the user.
 
 ### State 9 — Polish
@@ -274,8 +279,8 @@ Quote each actual transition operation from current host pricing before approvin
    - Watch the master and propose polish-notes across 9 axes (loudness, captions overflow/timing, music/VO balance, end-card, tail, hook, color, brand fit, **vo-intelligibility**)
    - Apply every P0/P1 via `auto-fix-from-review-notes`
    - Produce `edits/master-polished.mp4` + `polish-notes/<idx>-<ts>-applied.md`
-3. **Whisper-test is a ship gate.** If any locked VO line mistranscribes, that's a P0 — fix mix and re-test before delivery.
-4. **HUMAN GATE:** show before/after deltas. On approval, swap polished → final and continue to State 10.
+3. **Speech integrity and listening are ship gates.** Investigate transcript mismatches against actual audio and pronunciation intent; a recognizer error is not a heard defect, and transcription success is not performance/mix approval. Silent work uses visible reading-time checks.
+4. **HUMAN GATE:** show before/after deltas and original note outcomes. On approval, register the exact polished candidate through `promote.md`; retain source/selection history and continue to State 10 final export review.
 5. If polish proposes only P2 items (cosmetic), the operator can skip-fix; the master proceeds to delivery unchanged.
 
 ### State 10 — Deliver
@@ -283,12 +288,12 @@ Quote each actual transition operation from current host pricing before approvin
 1. Burn approved captions on the polished picture/mix as the final visual post-production step. Choose the real host caption capability or packaged local ASS path with verified libass/font support. The style comes from the current brand brief; no private house preset or stale price table is assumed.
 2. Check caption spelling, word timing, safe areas, suppressed cues on text-heavy scenes, and end-card/offer/logo collisions. Reposition or omit the overlapping approved cue explicitly.
 3. Extract each cue start+0.3s and transition frame, then watch the whole actual captioned cut with audio/transcript comparison. Probe final duration, dimensions, streams and codec. All shared QC and current clip coverage must pass.
-4. Export required variants from those final captioned bytes and inspect each changed ratio/crop. Register the real owned uploads and immutable evidence through the binding.
+4. Build each required ratio/cutdown/language from editable sources, adapt its own caption layout/timing and burn once. Run separate final review at destination size on each actual output/checksum, including full ending, proof/CTA and complete playback/listening. Parent-master QC does not clear a derivative. Register real owned uploads and immutable evidence through the binding.
 5. Show the playable captioned master and variants for the explicit host delivery decision. Read `promote.md` for successful final completion/selection; backend minimum checks never replace this suite.
 6. Publishing to external channels needs explicit authorization through an available publishing capability. Saving a project final does not authorize ad-account posting.
 
 ### State 11 — Wrap session
-1. After DELIVER is approved, call `wrap-session.md`. Runs three sub-steps with a gate on each:
+1. Keep the existing production manifest/editable sources and decision history current at every checkpoint, not only delivery. Preserve selected/rejected choices, exact notes, scoped preferences and measured results separately. After DELIVER is approved, call `wrap-session.md`. Runs three sub-steps with a gate on each:
    - **A · reproduction_recipe** — process-focused recipe that a future agent can use to recreate this *kind* of video for a slightly different concept or brand. Reads `project_state`, `implementation_brief`, `design_brief`, `storyboard`, cost tracker, audio artifacts, and the folder layout.
    - **B · learnings** — failure-driven retrospective. One entry per iteration cycle that changed the master, plus tool/API quirks. TL;DR (exactly 3 lessons) up top.
    - **C · `improvement_proposals`** — concrete diffs to atoms / molecules / orchestrator skills based on LEARNINGS. Read-only against `shared skills` — never auto-edits.
@@ -358,11 +363,11 @@ When writing or reviewing prompts in any state, consult actual model capability/
 - **UGC discipline (a prior production review v3 diagnostic).** When `concept_format` is `ugc-diary | testimonial | founder-led | before-after`:
   - `world_lock:` block is REQUIRED in design-brief; State 3.55 (world lock) runs.
   - `voiceover_strategy:` is REQUIRED and defaults to `real_voice`. `synthetic_vo` requires an explicit host-persisted synthetic-voice approval and is flagged at every gate.
-  - Storyboard MUST compute and surface `cuts_per_10s` and `face_share_planned`; gate fails if `cuts_per_10s < 4` or `face_share_planned > 0.40` unless operator explicitly overrides with reason (override recorded in `scene_contract`).
+  - Storyboard MUST compute and surface `cuts_per_10s` and `face_share_planned`; compare those measurements with the brief/reference-derived targets and explain any mismatch; actual picture cuts and all direct-face exposure count. No universal cut or face-share quota replaces the viewer-purpose judgment.
   - Hard cuts only between AI-generated stills; crossfades reserved for non-AI compositions (LEARNINGS L2 extension).
   - Brand text is never AI-rendered; always composite the real wordmark/screenshot via PIL.
   - End-card style defaults to `narrative_resolution` (talent walks out / closes laptop / picks up phone), not flat brand panel.
-  - Phase 7a/7b review suites mandatorily include the four UGC atoms: `review-video-identity-drift`, `review-video-world-consistency`, `review-video-ugc-shotcraft`, `review-video-vo-authenticity`. APPROVED requires all four to pass per their atom-level gates. Findings are persisted into `review_issues`.
+  - Phase 7a/7b review includes UGC identity/world/shotcraft and the all-speech performance responsibility: `review-video-identity-drift`, `review-video-world-consistency`, `review-video-ugc-shotcraft`, `review-video-vo-authenticity`. APPROVED requires all four to pass per their atom-level gates. Findings are persisted into `review_issues`.
   - Within a single video, once an anchor (character or style) is approved on a specific provider, all subsequent regenerations for that anchor's downstream calls inherit the same `gateway` from `.meta.json` (no mid-pipeline provider swap on the same character).
 
 ## Quality Checks

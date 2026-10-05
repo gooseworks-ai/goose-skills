@@ -49,6 +49,10 @@ Use real media probes, image decoding and the host capability checks below. No e
 | `vo-script-length-vs-target` | Estimate VO duration at 150 wpm vs design-brief target. Warn if > 1.5× over. |
 | `approved-voice-check` | If design-brief names a voice ID not in `the host-approved voice catalog`, warn. (Hard-fail belongs in create-design-brief.) |
 
+## Executable readiness
+
+Before paid work, run the selected FFmpeg/FFprobe binaries themselves and probe one real planned input. A path returned by an executable lookup does not prove runtime readiness: missing dynamic libraries can make a present binary fail immediately. Record the exact executable/version and result. For a selected specialist, run its documented free import/dry-run or browser launch/close in its own package environment. A failed probe blocks that route before spending; do not silently install or change global media tools.
+
 ## Workflow
 
 1. Read `<video_folder>/design_brief` and pull `assets_manifest`. If absent, scan the host-provided registered source/brand assets for image references.

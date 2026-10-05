@@ -3,11 +3,17 @@ name: video-production-harness/wrap-session
 description: Post-deliver session ritual. After a video ships, this skill auto-generates reproduction_recipe (recipe for recreating this kind of video for a new concept/brand), learnings (failure-driven retrospective from this run's iterations), and `improvement_proposals` (concrete diffs/edits to atoms, molecules, and orchestrator skills based on what the run taught us). Read-only against the skills tree — never auto-edits skill files. Runs as State 11, after DELIVER.
 ---
 
-# wrap-session
+# Human version
+
+Save the choices and editable sources needed to resume this project and inform the next one. Preserve rejected directions and evidence; separate preferences and quality predictions from measured audience results.
+
+---
+
+# Agent version
 
 ## Host contract
 
-Read `capabilities.md` and the selected host binding first. Artifact names are logical roles resolved by that binding. Named review tasks use the documented rubrics and actual frame/audio tools; they are not assumed installed commands. Required tooling, human approval and available budget must exist before the operation.
+Read `capabilities.md` and the selected host binding first. Artifact names are logical roles resolved by that binding. Named review tasks use the documented rubrics and actual frame/audio tools; they are not assumed installed commands. Required tooling, human approval and available budget must exist before the operation. Read [the editorial review guide](references/editorial-review.md) for source binding, stage decisions, note disposition, impact checks and saved edit history.
 
 ## Purpose
 
@@ -33,6 +39,8 @@ It does NOT auto-edit skills. Every proposed change goes into `improvement_propo
 
 ## Workflow
 
+First update the existing production manifest and decision history using [the editorial review guide](references/editorial-review.md). Resolve the exact accepted cut and editable sources, notes, candidates, rejected takes/hooks and reasons. Preserve exact user wording and distinguish project taste from standing brand pronunciation/delivery rules. Save a brief readback proving a new executor can locate one scene's sources and affected checks without chat. Missing assets/access remain explicit.
+
 The skill produces three artifacts in sequence. Each is a separate sub-step with its own gate.
 
 ### Sub-step A · Generate `reproduction_recipe`
@@ -47,7 +55,7 @@ Recipe-style document that lets a future agent recreate this *kind* of video for
 - `storyboard` — pacing, scene table, saved decision log
 - Host actual media charges, including retries/probes. Give verified session spend and clean-run retained cost separately; unknown attribution remains unknown.
 - Audio strategy artifacts (`audio/`, `voiceovers/`, lyrics)
-- `polish-notes/`, `review-notes/` — only count, not contents
+- `polish-notes/`, `review-notes/` — read contents, original note/source IDs, dispositions, intended effects and verified outcomes; counts alone lose the editorial decisions
 - Saved operation/version history; use a project-scoped Git log only if the host supplies it
 
 **Sections to write** (numbered 0 through N+1; mirror the reference template):
@@ -116,6 +124,8 @@ Failure-driven retrospective. Each entry = a specific iteration cycle, paired wi
 **Quantitative tally.** Render counts (clips generated, kept, rerolled), spend (USD total + per-provider breakdown), time (hours from preflight to deliver), human-gate counts (how many gates, how many sent back).
 
 **Tone:** failure-driven, opinionated, next-time protocols. Avoid neutral / corporate / both-sides framing. If a model behaved badly, say so. If a state was useless, say so.
+
+**Before saving history:** Link applicable rejected phrases/hooks/assets and selected pronunciations/delivery rules for retrieval before the next related brief. Store preference, quality prediction and measured audience outcome separately. Measured performance needs variant, audience, placement, objective and observation window; otherwise write “audience results unavailable.” Never infer performance from an approved cut or model score.
 
 **Write to:** `<video_folder>/learnings`.
 
@@ -199,6 +209,8 @@ The binding saves these proposals within this project for review. Never expose a
 - Skill-update-proposals trace to specific LEARNINGS entries (no orphans).
 - No proposal modifies a skill file in-place — this skill is strictly read-only against shared skills.
 - HUMAN GATE was hit on each of the three artifacts.
+- Existing manifest links resolve to the accepted cut and editable scene/timeline/audio/caption sources. Record a fresh-context resume readback and targeted candidate edit when requested, preserving unaffected checksums and previous versions.
+- A new related brief retrieves applicable rejection/pronunciation/delivery decisions; project preferences never become standing brand rules without authority.
 
 ## Failure Modes
 

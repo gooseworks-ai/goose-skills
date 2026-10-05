@@ -3,17 +3,23 @@ name: video-production-harness/edit-clip
 description: Re-generate or modify a single scene clip — keyframe swap, motion re-roll, post-effects, comp swap, or VO re-render — without disturbing the rest of the video.
 ---
 
-# edit-clip
+# Human version
+
+Revise one scene from the exact reviewed version while preserving good work. Record timing and approval consequences and review the replacement in context.
+
+---
+
+# Agent version
 
 ## Host contract
 
-Read `capabilities.md` and the selected host binding first. Artifact names are logical roles resolved by that binding. Named review tasks use the documented rubrics and actual frame/audio tools; they are not assumed installed commands. Required tooling, human approval and available budget must exist before the operation.
+Read `capabilities.md` and the selected host binding first. Artifact names are logical roles resolved by that binding. Named review tasks use the documented rubrics and actual frame/audio tools; they are not assumed installed commands. Required tooling, human approval and available budget must exist before the operation. Read [the editorial review guide](references/editorial-review.md) for source binding, stage decisions, note disposition, impact checks and saved edit history.
 
 ## Purpose
 
 Targeted iteration on a single scene. Use after `create-clips` when a clip didn't land — wrong character pose, weak motion, missing comp, off-tone VO — and the operator wants to fix that one clip without re-running the full pipeline.
 
-Updates the same `clips/scene-NN.mp4` (and/or `audio/vo-scene-NN.mp3`) and the embedded preview in `clip_review`.
+Writes a labeled scene candidate and updates `clip_review` through the binding. Canonical aliases may change only after preserving the original bytes/provenance; the accepted cut and note source keep their immutable identities.
 
 ## Inputs
 
@@ -32,9 +38,11 @@ Updates the same `clips/scene-NN.mp4` (and/or `audio/vo-scene-NN.mp3`) and the e
 ## Workflow
 
 ### Common prep
-1. Read `design_brief` and find the target scene's spec.
+1. Read `design_brief`, saved production sources and the note on its exact reviewed version. Resolve the stable scene ID, retained takes and intended viewer effect before editing. Do not select a scene from the latest master by filename.
 2. Snapshot the current asset(s) to `<video_folder>/_archive/scene-NN_<timestamp>.mp4` (and/or `.mp3`) before overwriting. Never blow away the old version.
 3. **Read the scene's `<output>.meta.json`** (alongside the existing clip/keyframe) to determine the original `gateway` (`higgsfield` or `fal`). Re-rolls default to the SAME provider as the original to avoid cross-provider drift mid-scene. Only switch providers if the operator explicitly passes a different `<provider_override>` for this edit.
+
+Before execution, record the impact row from [the editorial review guide](references/editorial-review.md): changed line/delivery/pause can affect picture holds, word timings, later captions, transitions, music/SFX, CTA, approvals and derivatives. Preserve unaffected media and valid decisions. A duration match is not evidence that all dependent timings remain correct.
 
 ### Per edit type
 
@@ -79,7 +87,7 @@ Updates the same `clips/scene-NN.mp4` (and/or `audio/vo-scene-NN.mp3`) and the e
 2. If aspect ratio or codec doesn't match, re-encode: `ffmpeg -i in.mp4 -vf "scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2" -c:v libx264 -pix_fmt yuv420p clips/scene-NN.mp4`.
 
 ### Update preview
-Save the replacement asset/job/provenance and fresh named clip checks through the binding. Expose actual changed media on the host review surface and invalidate affected approvals. Preserve unchanged approved assets.
+Save the replacement asset/job/provenance and fresh named clip checks through the binding. Expose actual changed media on the host review surface and invalidate affected approvals. Preserve unchanged approved assets. Compare the changed scene with its neighbors in the actual new master, then rewatch the whole output. Link changed and verified states separately to the original note and its acceptance condition; a successful clip render cannot resolve feedback by itself.
 
 ## Output
 
