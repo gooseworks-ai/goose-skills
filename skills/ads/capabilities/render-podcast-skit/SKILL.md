@@ -1,68 +1,68 @@
 ---
 name: render-podcast-skit
-description: Assemble a two-host fake-podcast skit ad from a config — per-line lipsync clips hard-concatenated in script order, scaled/padded to 1080×1920, WHITE bottom-center captions (up to 5 words per cue, broken on sentence punctuation, word-wrapped to stay in-frame, held at least 0.9s) built from each line's OWN ElevenLabs char-level timestamps (offset by cumulative clip start, never Whisper), and closed on a Playwright/PIL brand end card composited from the real wordmark — never AI-rendered text. This is the FREE deterministic assembly stage (concat + white captions + end card + crf28 encode); the per-line VOs, photoreal gpt-image-2 base stills, expression variants, and lipsync clips come from create-vo-elevenlabs / create-image-gpt-image-fal / create-video-fal. Use for the podcast-skit format.
+description: Render a two-host podcast ad from a brand config and dialogue script. Includes the working planner, full-frame and split-screen assembly, captions from measured character timings, brand end card, approved paid-step adapters, and 65 quality-check falsification cases. Use for short conversational ads with two stable hosts in one room.
+owner: team
 status: active
+version: 2
+updated: 2026-10-05
 ---
 
-# render-podcast-skit
+# Human version
 
-Assemble a **two-host podcast skit** ad from a config: two hosts at a podcast desk do a snappy
-back-and-forth about the product, related however the user chose (friends, interviewer + guest,
-a doubter won over, two fans, a friendly debate). Each line is its own lipsync clip so the edit can
-cut on the dialogue beat (~1.8s avg); this capability is the **FREE, deterministic assembly**
-that concatenates those clips, renders the WHITE captions, and appends the brand end card.
+This package contains the working two-host podcast pipeline, examples and
+quality checks. It plans and renders the edit for free. Voice, image and
+lip-sync generation use the separately installed provider capabilities.
 
-## Choices
+---
 
-The creative calls are the user's, asked by the format recipe before any paid step — this
-assembly just renders whatever the config holds:
+# Agent version
 
-- **tone** — comedy banter, sincere, deadpan, hype, or calm/informative; shapes the script and
-  voice style. Don't force humour: jokes only for the comedy tone. *The demo used funny banter.*
-- **set** — home studio, living room, café, office, or an absurd product-irrelevant set (where the
-  mismatch is the joke). *The demo used a 24hr laundromat at 2am.*
-- **dynamic** — how the two hosts relate: two friends chatting, a host interviewing a guest, one
-  doubting and the other winning them over, two fans swapping tips, or a friendly debate. Sets the
-  script and each voice's `role`. Never default to skeptic vs believer. *The demo used "a doubter
-  won over".*
-- **host_a / host_b** — each host's gender, age, look. `voices.HER` / `voices.HIM` and
-  `who: HER|HIM` are only the host A and host B SLOTS — they fix neither gender nor role. *The demo
-  used a young woman as host A (the doubter) and a young man as host B.*
+## Inputs and prerequisites
 
-`scripts/config.example.json` is the worked example (Ladder run-02 "Laundromat 2am", ~49s
-1080×1920 9:16, ~22 lines) — copy its structure, never its creative values; `scripts/PIPELINE.md` maps every config block to its source step
-and `scripts/README.md` documents the free assembly.
+Read the bundled scripts README first. All relative paths in that guide refer
+to this installed skill folder. Keep the brand config, dialogue script and
+outputs in the brand project outside the package. Never edit the examples in
+place. Install the required sibling capabilities and prepare Python, Pillow,
+requests, ffmpeg, ffprobe, a caption font and the real brand wordmark or font.
 
-## Run
+Choose the conversation's tone, room, host dynamic and host appearances with
+the user. Write fresh dialogue for the brand and respect its claim guardrails.
+Choose an arc from the bundled menu and actually write that turn structure.
+Match each confirmed voice to its host before generation; save the voice's
+name and gender with its ID. The voice picker accepts an exported library so
+it can propose matches without reading account credentials.
 
-This is the **FREE, deterministic** assembly stage — it spends nothing. The paid inputs are
-separate capabilities: one ElevenLabs **with-timestamps** VO per line (one voice per host) via
-`create-vo-elevenlabs`; two photoreal base stills at the chosen set's desk plus ~10 expression variants
-(mouths NEUTRAL/CLOSED, **gpt-image-2 quality=high**, not nano-banana) via
-`create-image-gpt-image-fal`; and one lipsync clip per (still, VO) pair via `create-video-fal`.
-Given the per-line clips + their VO timestamps + the brand wordmark SVG, `render-podcast-skit`
-walks the scenes in script order, builds the global caption timeline, renders the WHITE captions,
-hard-concats the clips, auto-appends the end card, and final-encodes crf28 → the master. Re-cuts
-reuse the existing VOs / stills / clips and cost **$0**.
+## Workflow
 
-## Contract (the free assembly)
+1. Copy the examples into the brand project and replace their fictional
+   product, cast and dialogue. Supply the brand assets, or disable optional
+   supplied-asset layers until those files exist.
+2. Use the bundled driver for a free preview. Review the script, caption
+   layout, cut pace and full-frame or split choice before generation.
+3. Generate each approved voiceover beat with character timings. Measure the
+   audio and re-plan the timeline before lip-sync. Timing files must share the
+   audio's stem; guessed caption times are unsuitable for delivery.
+4. Lock one wide two-host plate and crop both singles from it. Review the
+   plate before spending on clips. Hold the approved cast through reference
+   edits; independent host generations can drift into different rooms.
+5. Generate each beat's lip-sync with its own audio. Split edits also require
+   a silent idle clip per host, so the listener does not visibly speak.
+6. Assemble and check the finished render, then watch it end to end. Run the
+   bundled self-test to prove the checks reject their known-bad inputs.
 
-- **Dialogue-carried, no music bed by default.** The per-line VO is the audio; a podcast skit
-  needs no music (an optional low ambience is a taste call, off by default).
-- **One line = one scene = one hard cut, in script order.** Hard-concat the per-line clips in
-  order (scale/pad to 1080×1920, re-encode) — no dissolves.
-- **Captions from the VO's OWN char-level timestamps, not Whisper (script-window).** Build a
-  global `words.json` by offsetting each line's char-level word timings by the cumulative clip
-  start, group into **≤5-word cues broken on sentence-final punctuation**, and render **WHITE
-  `#FFFFFF`** bottom-center captions (black outline), **word-wrapped to stay in-frame** and held
-  **≥0.9s** — PIL PNG overlays when the host ffmpeg lacks libass (common), else ASS. (Yellow 3-word
-  karaoke was the old style, rejected in testing.) Whisper on the rendered clips mistimes; the VO
-  timestamps are ground truth.
-- **End card via Playwright/PIL from the real wordmark — never AI-render brand text.** The
-  lockup is a deterministic HTML → PNG → 2.5s mp4 from the brand's real wordmark SVG (black bg,
-  brand wordmark, CTA pill, URL), auto-appended after the last line. A diffusion model garbles
-  a wordmark.
-- **FFmpeg composite, deterministic, FREE.** Concat the clips, overlay the WHITE caption PNGs (or
-  burn ASS via libass), append the end-card mp4, and **final-encode `-preset slow -crf 28` + aac
-  96k** → a 1080×1920 h264+aac master (~6MB for ~28s; the old `-crf 20` produced ~16MB). No paid
-  calls, no keys.
+## Non-negotiables
+
+Paid commands print cost by default. Both confirmation and execution flags
+are required after explicit approval. Preserve completed audio and timing
+responses when resuming. Never re-bill a completed beat to recover a missing
+local file. Motion inserts are unimplemented and fail explicitly if enabled.
+
+Captions follow the voiceover's own character timings. Brand type comes from
+real files. Review identity, voice fit, room continuity, lip-sync, caption
+safety and the brand card on the finished video. A preview or package check
+alone does not establish final creative quality.
+
+## Related
+
+[[composes::create-vo-elevenlabs]], [[composes::create-image-gpt-image-fal]],
+[[composes::create-video-fal]], [[composes::watch]].

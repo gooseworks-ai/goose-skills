@@ -1,160 +1,520 @@
 {
-  "_comment": "Worked example (the Ladder run-02 'Laundromat 2am' build) — copy the STRUCTURE and field names, never the creative values. Creative fields — set_description, voices.HER/HIM (name, voice_id, settings.style), characters.bases + expression_variants, scenes[] (text/caption/still), brand_guardrails, end_card colours/CTA/URL — come from the format recipe's choices (dynamic, tone, set, host_a, host_b) and the brand; never copy them as defaults. The demo combination was: the 'a doubter won over' dynamic (host A Brittney, a young woman, doubts; host B Brad, a young man, answers), comedy tone, an absurd laundromat set. That skeptic/believer pair is ONE dynamic option, not the format. HER/HIM are only the host A and host B SLOTS — they fix neither gender nor role. Write a FRESH script + hook for each brand in the chosen tone; only a comedy tone gets jokes. Pipeline: (1) ElevenLabs with-timestamps VO per line, one voice per host; (2) two base stills (gpt-image-2 quality=high, photoreal, mouths closed) + ~10 edit-anchored expression variants on the bases; (3) Veed Fabric 1.0 lipsync per (still, VO) pair @ 720p; (4) WHITE captions from the VO's char-level timestamps, <=5 words/cue, sentence-broken, word-wrapped; (5) hard-cut concat + a 2.5s Playwright/PIL brand end card, final-encode crf28. Master 1080x1920 h264+aac. See scripts/PIPELINE.md.",
-  "brand_name": "Ladder",
-  "campaign": "podcast-skit — laundromat 2am",
-  "title": "Ladder Podcast Ad run-02 — Laundromat 2am",
+  "_comment": "PODCAST-SKIT example config. INVENTED DEMO BRAND: Fernwick, a weekly meal-prep planner. Never a real client. The script is NOT in here: it is a separate script.json passed to plan_beats.py, so a new brand is a config file plus a script file, not a code edit. Nothing in this file states a narrative arc; who doubts whom, and whether anyone doubts anyone, is written per brand in script.json.",
+  "brand_name": "Fernwick",
+  "product": "a weekly meal-prep planner app",
+  "campaign": "podcast-skit demo",
+  "title": "Fernwick podcast skit demo",
   "width": 1080,
   "height": 1920,
-  "fps": 24,
-  "duration_sec": 49,
-  "duration_target_sec": 42,
+  "fps": 30,
   "aspect_ratio": "9:16",
-
-  "set_description": "24hr laundromat at 2am. Two hosts at a wedged-in podcast desk between two front-load dryers. Broadcast mic stands, over-ear headphones, fluorescent overhead light, faded WASH DRY FOLD sign behind. Lone sock tumbling in a back dryer. The set is deliberately unrelated to the product — that is the joke.",
-
   "brand_guardrails": [
-    "No transformation claims ('lose 20 lbs'). Ladder sells STRUCTURE, not OUTCOME.",
-    "No celebrity name-drops outside the actual coach roster.",
-    "Plain-spoken voice — 'Get stronger, with a plan' beats hype.",
-    "Lime/black palette only when product surfaces appear.",
-    "Neither host mocks the user — the problem is the friction, not the buyer."
+    "No health, weight or outcome claims.",
+    "No named competitors.",
+    "No invented customer numbers, reviews or results.",
+    "Brand type is composited from the real asset, never drawn by a generator."
   ],
-
+  "set_description": "A spare room converted for recording, not a built studio. Two mismatched upholstered armchairs angled about forty five degrees toward each other with a low wooden table between them. The wall behind is treated with vertical dark walnut wood slat acoustic panels over black felt; the adjoining wall is ordinary painted plaster with a framed print hung slightly off centre. A large monstera in a terracotta pot, a shelf of books, worn floorboards and a faded rug. A broadcast mic on a floor boom arm for each host, over-ear headphones on both, a visible cable run. A floor lamp with a fabric shade lighting from one side plus daylight from a window out of frame. Lived in and slightly untidy.",
+  "_set_note": "Measured spec, references/REFERENCES.md section 'Set', drawn from five real sets: a room somebody would ACTUALLY record in (an office, a studio, a den, a home office, a stage), visible recording apparatus (boom arms, headphones, a laptop, cable), one identity object rather than a prop pile, and a wall one to three metres behind and in focus. The shipped tier-1 demo is in a working laundromat: the apparatus is right and the room is the defect, because nobody records a podcast in a laundromat, so the set reads as a joke the script never makes and a fluorescent green cast sits under every face for 49 seconds. The rooms do NOT have to match each other: nh-mama holds three visibly different homes, at different colour temperatures, in one frame.",
   "intonation_legend": {
-    "_note": "Written into script.json so ElevenLabs delivers the intended prosody. Applied inline in each scene's `text`.",
-    "...": "trailing thought / dramatic pause (~0.7-1.2s)",
-    " — ": "crisp em-dash pause, sharper than comma (~0.4s)",
+    "...": "trailing thought, roughly a three quarter second pause",
     "?": "rising intonation",
-    ".": "hard stop, drops pitch",
+    ".": "hard stop, pitch drops",
     ",": "natural breath beat",
-    "CAPS": "emphasized word (slightly louder + slower)"
+    "CAPS": "emphasised word, slightly louder and slower"
   },
-
-  "voices": {
-    "_note": "Exactly TWO hosts, one voice each, held across the whole skit. HER = the host A slot, HIM = the host B slot — slot labels only, not genders or roles. Pick each voice to match the chosen host, set role from choices.dynamic, and set settings.style for the chosen tone. The voices below are the Ladder demo cast (Brittney, Brad) in the demo's 'a doubter won over' dynamic. eleven_multilingual_v2 with-timestamps.",
-    "HER": {
-      "role": "host A — role from choices.dynamic",
-      "_example_role": "skeptic (the demo's 'a doubter won over' dynamic)",
-      "name": "Brittney",
-      "voice_id": "kPzsL2i3teMYv0FxEYQ6",
+  "_appearance_note": "hosts.<X>.appearance is the ONLY place a host's looks are written. Before it existed the config carried names, stances and voice ids and nothing about faces, so both base prompts came out byte identical and the two hosts were generated into two different rooms. The approved plate for this demo is projects/podcast-v5-stills/stills/locked/twoshot-room-LOCKED.png: both hosts in ONE room, angled toward each other, shot wide. Singles should be cropped from a plate like that, not generated separately.",
+  "_voice_note": "voice_gender and voice_name are recorded next to voice_id so a mismatch is visible in the file and catchable offline. They are not decoration: the first real render of this demo gave the host written as a man a young female social media voice and the host written as a woman a middle aged male voice, and shipped, because nothing in the config related a voice to a person. gates.gate_host_voice_gender compares voice_gender against the gendered noun in appearance and fails before any spend.",
+  "hosts": {
+    "A": {
+      "name": "Marlo",
+      "stance": "opens the beat and hands off",
+      "appearance": "a man in his late thirties, South Asian, short black hair greying at the temples, trimmed beard, wire-framed glasses, plain charcoal crew-neck sweatshirt, a small mole on his left cheek",
       "provider": "elevenlabs",
+      "voice_id": "swh0hLPsEaD50F02tIJJ",
+      "voice_name": "Rahul - Expressive and Clear",
+      "voice_gender": "male",
       "model": "eleven_multilingual_v2",
       "endpoint": "with-timestamps",
-      "settings": { "stability": 0.45, "similarity_boost": 0.78, "style": 0.45, "use_speaker_boost": true }
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.05,
+        "use_speaker_boost": true,
+        "speed": 0.92
+      }
     },
-    "HIM": {
-      "role": "host B — role from choices.dynamic",
-      "_example_role": "believer (the demo's 'a doubter won over' dynamic)",
-      "name": "Brad",
-      "voice_id": "T4x5CtnhOiichhcqFzgg",
+    "B": {
+      "name": "Devi",
+      "stance": "lands the beat",
+      "appearance": "a woman in her early thirties, East Asian, shoulder-length dark brown hair tucked behind one ear, small gold stud earrings, plain rust-orange button-up shirt with the sleeves rolled, freckles across the nose",
       "provider": "elevenlabs",
+      "voice_id": "6u6JbqKdaQy89ENzLSju",
+      "voice_name": "Brielle - podcast girl extremely natural",
+      "voice_gender": "female",
       "model": "eleven_multilingual_v2",
       "endpoint": "with-timestamps",
-      "settings": { "stability": 0.45, "similarity_boost": 0.78, "style": 0.35, "use_speaker_boost": true }
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.05,
+        "use_speaker_boost": true,
+        "speed": 0.92
+      }
     }
   },
-
+  "script_limits": {
+    "max_words_per_line": 14,
+    "_note": "gates.gate_script enforces this, plus no acronyms, no digits and no em dashes in any spoken line."
+  },
+  "engines": {
+    "_comment": "See cost_model.py for every rate and the file in this repo that records it. lipsync MUST be audio-driven: it has to move the mouth to an ElevenLabs MP3 we already paid for. motion is image-to-video for inserts only and never carries dialogue.",
+    "stills": "openai/gpt-image-2@high",
+    "lipsync": "veed-fabric-1.0@720p",
+    "lipsync_fallback": "hedra-character-3",
+    "motion": "kling-v3-std-i2v",
+    "_forbidden": [
+      "seedance-2.0@720p",
+      "seedance-2.0-r2v@720p",
+      "veo3.1-fast-i2v@720p",
+      "minimax-h3@768p"
+    ],
+    "stills_image_size": "2304x1296"
+  },
   "characters": {
-    "_note": "REALISM: generate with gpt-image-2 quality=high, NOT nano-banana (nano faces read as AI-stock, rejected in testing). ALWAYS append realism_suffix. Two bases first (9:16, tight bust, mic foreground, headphones, MOUTH CLOSED). Host A's base first, then host B's via gpt-image-2/edit anchored on host A's still for set consistency (a new run names them host-a-base.png / host-b-base.png; the demo's brittney/brad names below are kept so this worked example's scenes still resolve). Then fan out variants — each edit on its host's base as the SOLE reference, prompt describes ONLY the pose/expression change so the identity + background stay across all cuts. QC every still for hallucinations (asymmetric long hair-lock, extra fingers, morphed ears) before lipsync.",
-    "engine": { "provider": "fal", "model_t2i": "openai/gpt-image-2", "model_edit": "openai/gpt-image-2/edit", "image_size": { "width": 1024, "height": 1792 }, "quality_base": "high", "quality_variant": "high", "submit": "sequential" },
-    "realism_suffix": " PHOTOREALISM IS CRITICAL: a real candid documentary photograph of a real human — NOT illustration/3D/CGI/AI-stock. Real skin with pores, fine lines, uneven tone, slight asymmetry; no smoothing/retouching/waxy skin/perfect teeth. HAIR MUST BE COHERENT: one consistent hairstyle all around — no single long lock on one side that mismatches the top (a common gpt-image hallucination). No extra hands/fingers, no deformed ears.",
-    "still_rules": "Tight bust framing, broadcast mic foreground, over-ear headphones. MOUTH NEUTRAL/CLOSED (open-mouth still breaks lipsync). State the hairstyle EXPLICITLY and coherently (e.g. 'short neatly tousled hair above the collar, no long strands'). Photorealistic, 35mm lens, shallow background blur.",
-    "variant_template": "Use the reference image as the EXACT base — the SAME real person. Keep the face, skin texture, hair (same length + shape), headphones, clothing, background, microphone, and lighting IDENTICAL. Change ONLY: {change} Lips remain closed naturally, no open mouth, no smile showing teeth.",
+    "realism_suffix": " Real candid documentary photograph of a real person, visible skin texture and pores, slight facial asymmetry, ONE coherent hairstyle with no stray long lock, natural hands with five fingers, unmodified ears, overcast daylight, shot on a phone. Lips closed naturally, no open mouth, no teeth.",
+    "still_rules": "Tight bust framing, broadcast mic in the foreground, over-ear headphones. MOUTH NEUTRAL AND CLOSED on the base and on every variant: an open mouth breaks the lipsync driver. State the hairstyle explicitly.",
+    "variant_template": "Use the reference image as the EXACT base, the SAME real person, the SAME set, the SAME framing and the SAME light. Change ONLY this: {change}. Keep the lips closed. Do not restyle, do not re-light, do not move the camera.",
     "bases": [
-      { "who": "HER", "file": "brittney-base.png", "_note": "generate FIRST; sets the set (Ladder demo: the laundromat)" },
-      { "who": "HIM", "file": "brad-base.png",     "_note": "generate SECOND with brittney-base.png as a bg reference so the set matches" }
+      {
+        "who": "A",
+        "file": "marlo-base.png"
+      },
+      {
+        "who": "B",
+        "file": "devi-base.png"
+      }
     ],
     "expression_variants": [
-      { "out_name": "brittney-eyebrow-up.png", "who": "HER", "change": "her left eyebrow raised slightly, mildly skeptical look, eyes narrowed just a touch.", "_note": "'narrowed eyes' NSFW-rejected first pass — if it fails swap to 'curious questioning look, eyes wide open and bright'" },
-      { "out_name": "brittney-shrug.png",      "who": "HER", "change": "her shoulders raised slightly in a small shrug, head tilted a few degrees to her left, palms upturned just visible at bottom edge." },
-      { "out_name": "brittney-hand-ear.png",   "who": "HER", "change": "her right hand lifted to touch the right headphone cup, fingers visible at side of head, focused listening expression." },
-      { "out_name": "brittney-half-smile.png", "who": "HER", "change": "a subtle closed-lip half-smile, the corner of her mouth lifted slightly, eyes warm and amused." },
-      { "out_name": "brittney-deal-close.png", "who": "HER", "change": "a slight lean forward toward the microphone, attentive engaged look, eyes locked on camera." },
-      { "out_name": "brad-explain.png",        "who": "HIM", "change": "head turned a few degrees more toward the camera, attentive engaged look, his right hand opening upward in a small explanatory gesture just visible at bottom-right edge." },
-      { "out_name": "brad-grin.png",           "who": "HIM", "change": "a subtle confident closed-lip grin starting, corner of mouth lifted slightly, eyes amused, the trace of a gotcha-look." },
-      { "out_name": "brad-listing.png",        "who": "HIM", "change": "his right hand raised with three fingers extended as if counting items, hand visible at bottom-right edge, head turned slightly." },
-      { "out_name": "brad-phone-up.png",       "who": "HIM", "change": "his right hand visible holding a smartphone vertically, the phone screen showing a generic dark-blue workout app interface with white text bars (no logos), held just below his chin, raised slightly toward camera.", "_note": "generic app UI only — NO real logos/screens" },
-      { "out_name": "brad-leans-back.png",     "who": "HIM", "change": "leaning slightly back from the microphone, satisfied confident posture, head tilted back a few degrees, eyes relaxed." }
-    ]
+      {
+        "out_name": "marlo-brow-up.png",
+        "who": "A",
+        "change": "one eyebrow lifted, curious questioning look, eyes wide open and bright"
+      },
+      {
+        "out_name": "marlo-lean-in.png",
+        "who": "A",
+        "change": "leaning a little closer to the microphone, shoulders forward"
+      },
+      {
+        "out_name": "marlo-half-smile.png",
+        "who": "A",
+        "change": "a small closed half smile, chin slightly down"
+      },
+      {
+        "out_name": "marlo-hand-cup.png",
+        "who": "A",
+        "change": "one hand resting on the headphone cup"
+      },
+      {
+        "out_name": "devi-brow-up.png",
+        "who": "B",
+        "change": "one eyebrow lifted, curious questioning look, eyes wide open and bright"
+      },
+      {
+        "out_name": "devi-lean-back.png",
+        "who": "B",
+        "change": "leaning back off the microphone, relaxed shoulders"
+      },
+      {
+        "out_name": "devi-count-fingers.png",
+        "who": "B",
+        "change": "one hand raised, counting on two fingers, five fingers visible and natural"
+      },
+      {
+        "out_name": "devi-nod.png",
+        "who": "B",
+        "change": "chin dipped in a small nod, eyes toward the other host"
+      }
+    ],
+    "plate_file": "twoshot-room-LOCKED.png",
+    "_plate_note": "The ONE wide two-shot both singles are cropped out of. gen_paid.py plate generates it; crop_singles.py cuts the singles for free. Generating a still per host instead is what put the two hosts in two different rooms, and step_stills now refuses that path unless characters.allow_per_host_stills is set.",
+    "single_crop": {
+      "_note": "Where each host's single is cut out of the plate, as a normalised centre plus a crop size. Declared, not detected: three cheap detectors were measured against the real head centres on the demo plate and all three found furniture instead. See crop_singles.py. One look at the plate per brand sets these.",
+      "A": {
+        "cx": 0.211,
+        "w": 0.423,
+        "h": 0.426,
+        "y": 0.281
+      },
+      "B": {
+        "cx": 0.822,
+        "w": 0.357,
+        "h": 0.359,
+        "y": 0.3125
+      },
+      "y": 0.28
+    },
+    "plate_rules": "Shot on a phone in available light, not lit and not styled. Both people seated well apart, facing the camera and turned slightly toward each other, mid-conversation. Each wears over-ear headphones and speaks into a broadcast microphone on its own boom arm. Camera at seated eye level, both framed from the CHEST UP, generous space above both heads. Both mouths closed and neutral. No manufacturer names, model names, maker decals or sponsor logos anywhere: not on the equipment, the furniture, the tools, the packaging or their clothes. Every object is unbranded and plain.",
+    "_plate_shape_note": "LANDSCAPE, and that is the point. A single is a FULL-HEIGHT vertical slice of a wide two-shot, which is how the reference anchors in projects/podcast-skit-ref-handoff/anchors/ were cut. A tall 9:16 plate forces every single to be a small window out of the middle: legs in frame, face small, no depth behind, and a 2.37x upscale to 1080. Full-height slices of 2304x1296 are 729x1296, a 1.48x upscale, and both slices share the same vertical band of the same room.",
+    "plate_ref": [],
+    "_plate_ref_note": "Paths, relative to the run directory, handed to the image model as reference images when the plate is generated. This engine takes NO seed, so a re-roll returns different people and a different room every time: three takes produced three casts. Point this at the plate whose cast was accepted and re-roll the room against it. It pulls on framing as well as faces, so check the composition on the new plate, not just the people."
   },
-
-  "lipsync_engine": {
-    "_note": "Each (still, VO) pair -> one clip. Default veed-fal (veed/fabric-1.0) @ 720p, concurrency 4, idempotent. Hedra Character-3 fallback if fal.ai balance exhausted. Empty text-prompt on Veed Fabric — a text prompt interferes with lipsync.",
-    "gateway": "veed-fal",
-    "model": "veed/fabric-1.0",
-    "resolution": "720p",
-    "aspect_ratio": "9:16",
-    "concurrency": 4,
-    "text_prompt": "",
-    "fallback": { "gateway": "hedra", "model": "character-3", "model_id": "d1dd37a3-e39a-4854-a298-6510289f9cf2" }
+  "edit": {
+    "_comment": "The multicut and the split-screen live here and are implemented by plan_cuts.py and compose_master.py. They only re-edit picture over an audio timeline that is already paid for, so every value in this block is free to change and free to re-render.",
+    "seed": 4201,
+    "words_per_sec": 2.6,
+    "multicut": {
+      "enabled": true,
+      "split_long_lines": true,
+      "split_min_words": 3,
+      "max_beat_sec": 4.0,
+      "min_cut_sec": 0.5,
+      "max_cut_sec": 1.9
+    },
+    "split_screen": {
+      "enabled": true,
+      "layout": "vstack",
+      "auto_every": 4,
+      "max_consecutive": 1,
+      "min_beat_sec": 0.8,
+      "gap_px": 0,
+      "gap_hex": "#000000",
+      "listener_dim": 1.0,
+      "crop_bias_y": 0.25,
+      "seam_ratios": [
+        0.62,
+        0.37,
+        0.5
+      ],
+      "bottom_sources": [
+        "listener",
+        "product"
+      ],
+      "product_still": "brand/product-still.png",
+      "_seam_note": "The seam is the fraction of the usable height taken by the TOP panel, so 0.62 is a large speaker panel and 0.37 makes the lower panel the bigger one. Observed in references/REFERENCES.md technique 2: the primary reference moves its own seam between 0.62 and 0.37 mid-clip. plan_cuts.py picks one per split cut and counts each seam as a different framing, because it is a different picture.",
+      "_bottom_note": "'listener' is the other host, live and dimmed. 'product' puts a supplied product still in the lower panel while the top stays on the speaker (technique 3). The product still is a file the operator provides, resolved relative to the run directory, so it generates nothing and costs nothing. gates.gate_split_bottom_assets fails if the plan uses it and the file is not there.",
+      "listener_source": "clip",
+      "idle_sec": 6.0,
+      "_listener_source_note": "'clip' samples the listener's own SPEAKING footage, which puts two people on screen talking at once with only one audible. 'idle' uses the per-host file clips/idle-A.mp4 or idle-B.mp4, the same still lipsynced against silence, so the mouth stays shut and the head still moves. Generate them with `gen_paid.py idle`; `idle_sec` is how long each one runs before it loops.",
+      "_dim_note": "listener_dim 1.0 means the two panels are graded the SAME. At 0.62 the lower half was desaturated and darkened by a quarter stop, which reads as two differently graded shots stacked on each other rather than one room seen twice. gap_px 0 for the same reason: a black bar between the panels is a visible seam, and 0.5 of 1920 with no gap divides exactly into 960 and 960.",
+      "panel_bias_y": {
+        "A": 0.25,
+        "B": 0.25
+      },
+      "target_share": 1.0
+    },
+    "payoff_single": {
+      "enabled": true,
+      "_note": "Technique 4. Drop the split for one full-frame single on the payoff beat, which is the last beat unless a script line sets \"payoff\": true. It is applied only when the piece is split somewhere earlier, because a single only reads as emphasis against a split. One segment, never a mode."
+    },
+    "framing": {
+      "_comment": "The framing dimension. A segment kind says WHAT the viewer looks at; a framing says how big it is in the frame. Without this, four segment kinds still only produce about two distinct pictures, which is the single measured gap in references/REFERENCES.md. Each crop is a normalised rect on the source plate, applied by compose_master.py in the same ffmpeg call it already makes, so a reframe costs nothing and re-rolls nothing.",
+      "sizes": [
+        "wide",
+        "mid",
+        "tight",
+        "mid_left",
+        "tight_right"
+      ],
+      "crops": {
+        "wide": {
+          "x": 0.0,
+          "y": 0.0,
+          "w": 1.0,
+          "h": 1.0
+        },
+        "mid": {
+          "x": 0.1,
+          "y": 0.05,
+          "w": 0.8,
+          "h": 0.8
+        },
+        "tight": {
+          "x": 0.21,
+          "y": 0.03,
+          "w": 0.58,
+          "h": 0.58
+        },
+        "mid_left": {
+          "x": 0.02,
+          "y": 0.08,
+          "w": 0.76,
+          "h": 0.76
+        },
+        "tight_right": {
+          "x": 0.4,
+          "y": 0.06,
+          "w": 0.56,
+          "h": 0.56
+        }
+      },
+      "bands": {
+        "per_10s_min": 2.9,
+        "per_10s_max": 7.1,
+        "max_share": 0.17,
+        "real_per_10s_min": 1.9,
+        "real_max_share": 0.35,
+        "_note": "ENFORCED band first, REAL band second, and they are different on purpose. The second reference pass re-derived the real band over all nine clips and widened it to 1.9 to 7.1 per 10s with a 35% biggest-framing ceiling. The gate stays at 2.9 to 7.1 and 17%, which was the six-reference band. Why: the widening comes from one row, nh-mama, which scores 1.95 and 35% by holding a persistent three-panel stack with every host live on screen, so it never has to cut. That is a legitimate way to be dynamic and it is NOT a layout this recipe can build yet, so the wider band would admit a pass we cannot produce. real_per_10s_min and real_max_share are carried here, and quoted in the gate's own failure message, so a later session can see the real numbers without having to loosen the gate to find them. Loosen the gate only together with the three-panel layout, never instead of it."
+      }
+    },
+    "grade": {
+      "enabled": true,
+      "chain": "curves=all='0/0.055 0.5/0.5 1/0.97',eq=saturation=1.60,noise=alls=5:allf=t+u",
+      "_note": "Operator-approved look, picked by eye from three candidates on 2026-10-01. Lifts the blacks off zero, pushes colour, lays down fine grain. It is applied to the concatenated picture only, never to captions or the lockup.",
+      "_measured": {
+        "on": "the locked two-shot plate",
+        "mean_luma": 67.1,
+        "p10": 20,
+        "p90": 120,
+        "pct_above_150": 2.7,
+        "chroma": 26.0,
+        "black_crush_pct": 0.0
+      },
+      "_real_reference_band": {
+        "source": "nine real podcast clips in projects/goose-video-qa/podcast-refs, the same set REFERENCES.md was built from",
+        "mean_luma": 101.3,
+        "p10": 23,
+        "p90": 190,
+        "pct_above_150": 23.9,
+        "chroma": 16.2,
+        "black_crush_pct": 0.88,
+        "_honest_note": "This look is DARKER and more saturated than the real references, by choice. The real clips are brightly lit: mean luma 101 against this grade's 67, and 24 percent of their pixels are above 150 against this grade's 3. A brighter grade measured closer and was rejected on sight. Taste won, and that is allowed, but the gap is recorded here so nobody re-derives it from scratch and nobody mistakes this for the measured answer."
+      }
+    },
+    "frame_brand": {
+      "enabled": true,
+      "lockup_file": "brand/fernwick-lockup.png",
+      "corner": "top_right",
+      "width_px": 165,
+      "margin_px": 40,
+      "opacity": 0.9,
+      "persistent": true,
+      "_note": "BRAND THE FRAME, NOT THE DIALOGUE. Seven sponsor-tagged New Heights shorts were downloaded and transcribed end to end: in every one the sponsorship is a persistent corner lockup beside the show wordmark, and in NOT ONE of the seven is the brand spoken (references/REFERENCES.md, technique 26 and 'The sponsor-read finding'). The Expedia clip is about brunch. Five of nine references never name a product at all and one of those five is a sponsored clip. compose_master.py composites this file over the whole runtime for $0; gates.gate_frame_brand_asset fails if it is enabled and the file is not on disk. The file is operator-supplied real brand type, never drawn by a generator. Set enabled:false if the brand will not supply one."
+    },
+    "inserts": {
+      "enabled": false,
+      "count": 0,
+      "sec": 2.0,
+      "_note": "The only part of the edit that spends. Off by default. When on, each insert is one image-to-video call on engines.motion at that engine's per-second rate."
+    },
+    "cut_patterns": [
+      {
+        "id": "A",
+        "segments": [
+          "speaker"
+        ],
+        "weights": [
+          1.0
+        ]
+      },
+      {
+        "id": "A-R",
+        "segments": [
+          "speaker",
+          "listener"
+        ],
+        "weights": [
+          0.68,
+          0.32
+        ]
+      },
+      {
+        "id": "A-R-A",
+        "segments": [
+          "speaker",
+          "listener",
+          "speaker"
+        ],
+        "weights": [
+          0.42,
+          0.22,
+          0.36
+        ]
+      },
+      {
+        "id": "R-A",
+        "segments": [
+          "listener",
+          "speaker"
+        ],
+        "weights": [
+          0.28,
+          0.72
+        ]
+      },
+      {
+        "id": "S",
+        "segments": [
+          "split"
+        ],
+        "weights": [
+          1.0
+        ]
+      },
+      {
+        "id": "A-S",
+        "segments": [
+          "speaker",
+          "split"
+        ],
+        "weights": [
+          0.55,
+          0.45
+        ]
+      },
+      {
+        "id": "A-I-A",
+        "segments": [
+          "speaker",
+          "insert",
+          "speaker"
+        ],
+        "weights": [
+          0.4,
+          0.25,
+          0.35
+        ]
+      }
+    ],
+    "room_tone": {
+      "enabled": true,
+      "gain_db": -27.0,
+      "highpass_hz": 90,
+      "lowpass_hz": 2600,
+      "_note": "Air under the whole mix. Nine real podcast clips run 2.2 to 5.5 percent silence at their own level minus 18dB; these episodes ran 11 to 15, because synthesised speech sits at digital silence between phrases and a real room never does. Brown noise, band-limited so it reads as air not hiss, mixed in before loudnorm. Raise gain_db toward -44 for a livelier room, drop toward -56 for a treated one.",
+      "_measured": "Mixed AFTER loudnorm, so the figure is absolute and the same on every brand. Swept and measured as each file's own quietest 200ms: -36 gave -54.9/-55.3/-54.4 dB (consistent but too subtle to hear), -30 gave -49.6, -24 gave -43.5. -27 lands near -46, about 30 dB under program, which is where a real room sits. Before loudnorm the SAME setting came out 13 dB apart between brands, because quieter dialogue earns more make-up gain and drags the air up with it. Picked by level, not by chasing the pct_quiet score."
+    }
   },
-
   "captions": {
-    "_note": "WHITE captions in the add-captions-veed-fal whisper house style (yellow karaoke was rejected in testing). Words come from the VO's OWN char-level timestamps (scene-NN-<who>.timestamps.json), NOT Whisper, offset by cumulative clip start. Cue = up to 5 words, FLUSHED on sentence-final punctuation (. ? !). Each cue word-wraps to stay INSIDE the frame (never off the edges) and stays on screen >= min_dur_sec. Rendered as PIL PNG overlays (libass-free) or ASS if libass is available; bottom-anchored. `caption` per scene is the phrase intent; the actual burned text comes from the VO timings.",
-    "style": "white_bottom_center",
     "source": "vo_timestamps",
-    "font": "Avenir Next Bold",
-    "font_size": 66,
+    "renderer": "pil_png_overlay",
+    "font_file": null,
+    "font_size": 58,
     "color_hex": "#FFFFFF",
     "stroke_hex": "#000000",
-    "stroke_width": 6,
+    "stroke_width": 3,
+    "uppercase": false,
     "max_words_per_cue": 5,
-    "break_on_sentence_punctuation": true,
-    "min_dur_sec": 0.9,
+    "min_dur_sec": 0.85,
     "wrap_max_width_px": 900,
-    "position": "bottom_center",
-    "bottom_anchor_px": 1720
+    "bottom_anchor_px": 1500,
+    "_note": "bottom_anchor_px is the baseline of the LAST line; the block grows upward. gates.gate_caption_safe_zone measures the rendered PNG's alpha box and requires it inside y=285..1635."
   },
-
-  "scenes": [
-    { "scene": 1,  "who": "HER", "time": "0:00-0:02", "still": "brittney-base.png",       "caption": "what app today",        "text": "So... what app are we ad-reading today?" },
-    { "scene": 2,  "who": "HIM", "time": "0:02-0:03", "still": "brad-explain.png",        "caption": "called LADDER",         "text": "It's called LADDER." },
-    { "scene": 3,  "who": "HER", "time": "0:03-0:05", "still": "brittney-eyebrow-up.png", "caption": "thing you climb?",      "text": "Like... the thing you climb?" },
-    { "scene": 4,  "who": "HIM", "time": "0:05-0:07", "still": "brad-explain.png",        "caption": "number one app",        "text": "Strength training app. Number one in the App Store." },
-    { "scene": 5,  "who": "HER", "time": "0:07-0:08", "still": "brittney-shrug.png",      "caption": "I go to gym",           "text": "OK but I already go to the gym?" },
-    { "scene": 6,  "who": "HIM", "time": "0:08-0:10", "still": "brad-grin.png",           "caption": "workout tomorrow?",     "text": "Cool. What workout are you doing tomorrow?" },
-    { "scene": 7,  "who": "HER", "time": "0:10-0:12", "still": "brittney-base.png",       "caption": "I don't know",          "text": "I DON'T KNOW... I'll figure it out when I get there.", "_note": "v2 re-render — v1 read too clean for a skeptic" },
-    { "scene": 8,  "who": "HIM", "time": "0:12-0:14", "still": "brad-explain.png",        "caption": "LADDER fixes that",     "text": "Right — that's the part LADDER fixes." },
-    { "scene": 9,  "who": "HIM", "time": "0:14-0:17", "still": "brad-explain.png",        "caption": "do what it says",       "text": "Open the app. It tells you what to do. You do it." },
-    { "scene": 10, "who": "HER", "time": "0:17-0:19", "still": "brittney-eyebrow-up.png", "caption": "insultingly simple",    "text": "That sounds... almost insultingly simple." },
-    { "scene": 11, "who": "HIM", "time": "0:19-0:20", "still": "brad-base.png",           "caption": "it is",                 "text": "It is." },
-    { "scene": 12, "who": "HER", "time": "0:20-0:21", "still": "brittney-base.png",       "caption": "who writes these",      "text": "Who's writing these workouts?" },
-    { "scene": 13, "who": "HIM", "time": "0:21-0:23", "still": "brad-phone-up.png",       "caption": "nineteen coaches",      "text": "Actual coaches. NINETEEN of them." },
-    { "scene": 14, "who": "HIM", "time": "0:23-0:25", "still": "brad-listing.png",        "caption": "pilates kettlebell yoga","text": "Strength... pilates... kettlebell... yoga." },
-    { "scene": 15, "who": "HER", "time": "0:25-0:27", "still": "brittney-eyebrow-up.png", "caption": "new every day?",        "text": "Wait — so it's new every day?", "_note": "v2 re-render — more natural skeptic phrasing" },
-    { "scene": 16, "who": "HIM", "time": "0:27-0:30", "still": "brad-phone-up.png",       "caption": "coach in ear",          "text": "New every day. Coach in your ear. Timer built in." },
-    { "scene": 17, "who": "HER", "time": "0:30-0:32", "still": "brittney-hand-ear.png",   "caption": "coach in my ear?",      "text": "Wait — coach in my ear?" },
-    { "scene": 18, "who": "HIM", "time": "0:32-0:34", "still": "brad-listing.png",        "caption": "counts your reps",      "text": "Like a real one. Counts your reps, talks you through it." },
-    { "scene": 19, "who": "HER", "time": "0:34-0:36", "still": "brittney-half-smile.png", "caption": "stop thinking",         "text": "...so I just stop thinking?" },
-    { "scene": 20, "who": "HIM", "time": "0:36-0:37", "still": "brad-base.png",           "caption": "you just lift",         "text": "You just lift." },
-    { "scene": 21, "who": "HER", "time": "0:37-0:39", "still": "brittney-deal-close.png", "caption": "seven-day free trial?", "text": "Seven-day free trial?" },
-    { "scene": 22, "who": "HIM", "time": "0:39-0:41", "still": "brad-leans-back.png",     "caption": "seven-day free trial",  "text": "Seven-day free trial. Go." }
-  ],
-
   "end_card": {
-    "_note": "Playwright HTML -> PNG (1080x1920) -> 2.5s silent mp4, appended after scene 22 by stitch.py (auto-appends clips/end-card.mp4). NEVER AI-rendered text — the wordmark is the brand's REAL SVG (Ladder wordmark pulled from run-01-app-sizzle). Black bg, lime wordmark center, lime CTA pill, URL at bottom.",
-    "engine": "playwright_html",
-    "script": "build_end_card.py",
-    "duration_sec": 2.5,
-    "background": "#000000",
-    "wordmark_svg": "run-01-app-sizzle/source/brand/ladder-wordmark-white.svg",
-    "accent_hex": "#DBFF00",
-    "cta_text": "Start free trial",
-    "url_text": "joinladder.com"
+    "duration_sec": 3.5,
+    "background": "#12301F",
+    "wordmark_file": "brand/fernwick-wordmark.png",
+    "url_text": "fernwick.example",
+    "_note": "Resolved relative to the run directory, and now read through cfg['brand'] first. No CTA: of nine real references none ends on a call to action, and the arc this recipe writes ends mid-thought on purpose."
   },
-
   "assembly": {
-    "_note": "stitch.py: walk scenes in order, ffprobe each clip, build a GLOBAL words.json (each word offset by cumulative clip start), group into <=5-word cues broken on sentence punctuation, render WHITE bottom-center captions word-wrapped to stay in-frame (PIL PNG overlays if the host ffmpeg lacks libass — the common case — else an ASS burn), concat all clips (scale/pad 1080x1920), auto-append clips/end-card.mp4. FINAL ENCODE libx264 -preset slow -crf 28 + aac 96k (keeps a ~28s master near ~6MB; crf20 produced ~16MB).",
-    "concat": "ffmpeg_concat_reencode",
-    "scale_pad": "scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2:black,setsar=1",
-    "caption_burn": "pil_png_overlay_or_libass",
-    "final_encode": "libx264 -preset slow -crf 28 -pix_fmt yuv420p -c:a aac -b:a 96k -movflags +faststart",
-    "append_end_card": true
+    "preset": "medium",
+    "crf": 24,
+    "audio_bitrate": "128k"
   },
-
   "post_production": {
-    "music": { "default": "off", "note": "podcast skit is dialogue-carried; the per-line VO is the audio. No music bed (optional low ambience is a taste call, off by default)." },
-    "captions": { "default": "on", "note": "WHITE #FFFFFF bottom-center from the VO's own char-level timestamps, <=5 words per cue, cue breaks on sentence punctuation, word-wrapped to stay in-frame, >=0.9s on screen (NOT yellow karaoke)" },
-    "end_card": { "default": "on", "note": "Playwright/PIL end card from the brand's real wordmark SVG, default on" }
-  }
+    "music": {
+      "default": "off",
+      "note": "dialogue carried; the per-beat voiceover is the audio"
+    },
+    "captions": {
+      "default": "on"
+    },
+    "end_card": {
+      "default": "on"
+    }
+  },
+  "brand": {
+    "name": "Fernwick",
+    "layout": "editorial",
+    "display_font": "C:/Windows/Fonts/LibreBaskerville-Bold.ttf",
+    "text_font": "C:/Windows/Fonts/Raleway-Regular.ttf",
+    "wordmark_file": null,
+    "logo_file": null,
+    "lockup_file": "brand/fernwick-lockup.png",
+    "bg_hex": "#12301F",
+    "ink_hex": "#F3EFE6",
+    "dim_hex": "#9DB3A4",
+    "url_text": "fernwick.example",
+    "tagline": "Plan once. Eat all week.",
+    "_note": "One brand block, read by the end card and the corner lockup. A new brand is these values plus a lockup file; nothing in scripts/ changes. layout=editorial sets the name in display_font with a rule and a tracked tagline, and uses no mark: a brand card is mostly typography, and the first version of this card stacked a line-art leaf in a circle over the OS system font, which is three cliches at once. layout=stack is still there for a brand with a real logo worth showing. A client supplies display_font and/or wordmark_file; with neither, the card stamps PREVIEW and gate reports it.",
+    "cta_text": "",
+    "_layout_note": "`brandkit` is the full card: mark, wordmark, rule, tagline, a call to action in a pill, and the url, centred on the optical centre and inside the caption safe zone. `editorial` is type only, left aligned, no mark. `stack` is for a brand with a supplied wordmark image. brandkit wants `logo_file` and `cta_text`; with no logo it still composes, just without the mark. A real client supplies the logo: do not generate one."
+  },
+  "presets": {
+    "_note": "Sparse overlays, deep-merged over the base, applied with --preset. They may only override keys that already exist, so a typo fails loudly instead of becoming a setting nobody reads. See config_io.py for why this replaced three config files.",
+    "plain": {
+      "_note": "No dynamic layer: one full-frame picture per beat, cut only where the speaker changes. The five gates that measure a dynamic edit skip themselves when multicut and split are both off, so this is a declared choice and not a silenced gate.",
+      "edit": {
+        "multicut": {
+          "enabled": false
+        },
+        "split_screen": {
+          "enabled": false
+        },
+        "payoff_single": {
+          "enabled": false
+        },
+        "framing": {
+          "sizes": [
+            "wide"
+          ]
+        }
+      }
+    },
+    "cropped-stills": {
+      "_note": "Singles cropped free from one locked two-shot plate instead of generated, which is how the 2026-10-01 demo was built: both hosts in ONE room, so the set cannot drift between them. Saves the whole stills spend. expression_variants is emptied because the cut's variety comes from edit.framing, and gate_still_pool_depth counts stills x framings for exactly this case.",
+      "characters": {
+        "expression_variants": []
+      }
+    },
+    "preview-480p": {
+      "_note": "Cheaper lipsync for a look-see. 480p upscales 2.25x to 1080 and visibly costs skin texture; never ship from it.",
+      "engines": {
+        "lipsync": "veed-fabric-1.0@480p"
+      }
+    },
+    "split": {
+      "_note": "Both hosts on screen at once, for essentially the whole runtime, which is what dod-blender does (REFERENCES.md technique 2). The speaker fills the top panel; the listener's own footage runs muted and dimmed below. It drops to a full-frame single on the payoff, which is technique 4: the single reads as emphasis BECAUSE everything around it is split.",
+      "edit": {
+        "multicut": {
+          "enabled": false,
+          "max_cut_sec": 6.0,
+          "min_cut_sec": 0.5
+        },
+        "split_screen": {
+          "enabled": true,
+          "bottom_sources": [
+            "listener"
+          ],
+          "auto_every": 1,
+          "max_consecutive": 99,
+          "min_beat_sec": 0.6,
+          "seam_ratios": [
+            0.5
+          ],
+          "listener_source": "idle"
+        },
+        "payoff_single": {
+          "enabled": true
+        },
+        "framing": {
+          "sizes": [
+            "wide"
+          ]
+        }
+      }
+    }
+  },
+  "_voice_settings_note": "speed 0.92, style 0.05, similarity_boost 0.75, stability 0.55 (0.70 for a host whose voice reads punchy).\nspeed is the ONLY rate control; the script rewrite did not change the rate at all. Measured on one line: 0.80 -> 2.87 wps, 0.85 -> 2.94, 0.88 -> 3.27, 0.92 -> 3.40, 1.00 -> 3.69. 0.85 was an overcorrection and read as slow; 0.92 sits between the two complaints.\nAn earlier note here claimed 0.90 was clamped because it returned a byte-identical file to 1.00. That reasoning was WRONG: mp3 size tracks duration, so identical size meant identical length, not a clamp. 0.88 and 0.92 both work.",
+  "vo": {
+    "trim": {
+      "lead_sec": 0.08,
+      "tail_sec": 0.14,
+      "rel_db": 18.0
+    },
+    "pauses": {}
+  },
+  "_pauses_note": "`trim` is the default and it matters: every beat arrives with about a quarter second of lead-in and tail, and with one beat per turn that is dead air at every speaker change. Measured against nine real clips, each judged at its own level minus 18dB, real podcasts run 2.2 to 5.5% silence at 4 to 9 gaps a minute; untrimmed, this recipe ran 22 to 32% at 26 to 34. `pauses` is the exception, one beat at a time, and starts empty. Do NOT try either in the line text: `...` and `<break time=\"0.7s\" />` were both measured on eleven_multilingual_v2 and both do nothing."
 }
