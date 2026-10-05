@@ -752,11 +752,28 @@ body.theme-dark .keyboard .input {
   to   { opacity: 1; }
 }
 
-/* For long composer text, allow it to truncate gracefully. */
-.keyboard .input { overflow: hidden; }
+/* Long composer text wraps and the field grows, as in Messages (it never truncates with
+   an ellipsis, so what you see typed is exactly what gets sent). */
+.keyboard .input.has-text { height: auto; min-height: 36px; padding-top: 7px; padding-bottom: 7px;
+  align-items: flex-end; }
 .keyboard .input .composer-text {
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.3;
   max-width: calc(100% - 36px);
 }
 
+
+/* Motion closer to iOS: a sent bubble rises out of the text field; a received one
+   grows from its tail with no overshoot. (Durations approximate; not frame-matched
+   to a device recording.) */
+@keyframes bubble-rise {
+  0%   { transform: translateY(70px) scale(0.94); opacity: 0.2; }
+  100% { transform: translateY(0) scale(1);       opacity: 1; }
+}
+@keyframes bubble-grow {
+  0%   { transform: scale(0.82); opacity: 0; }
+  100% { transform: scale(1);    opacity: 1; }
+}
+.row.sent .bubble.pop-now,
+.row.attachment.sent.pop-now { animation: bubble-rise 280ms cubic-bezier(0.2, 0.8, 0.2, 1) both; transform-origin: bottom right; }
+.row.received .bubble.pop-now,
+.row.attachment.received.pop-now { animation: bubble-grow 200ms cubic-bezier(0.2, 0.8, 0.2, 1) both; transform-origin: bottom left; }
