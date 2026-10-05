@@ -42,7 +42,7 @@ function isEmojiOnly(text) {
   const stripped = text.trim();
   if (!stripped) return false;
   const emojiRe = /^(\p{Extended_Pictographic}|\p{Emoji_Presentation}|️|‍|\s)+$/u;
-  return emojiRe.test(stripped) && [...stripped.replace(/\s/g, '')].length <= 6;
+  return emojiRe.test(stripped) && [...new Intl.Segmenter('en', {granularity:'grapheme'}).segment(stripped.replace(/\s/g, ''))].length <= 3;
 }
 
 // ---------------------------------------------------------------------------

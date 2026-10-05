@@ -30,6 +30,21 @@ test('configuration changes the header name and initial, without a demo identity
   }
 });
 
+test('a DM without header options still shows its contact above the conversation', async () => {
+  const t=fixture(); delete t.header;
+  const doc=buildDocument({thread:t},__dirname),browser=await chromium.launch({timeout:15000});
+  try {
+    const p=await browser.newPage({viewport:{width:1080,height:1920}});
+    await p.setContent(doc.html); await p.evaluate(t=>window.__renderAt(t),doc.total);
+    assert.ok((await p.locator('.conv-header .name-pill').textContent()).includes('Zoë Chen'));
+    assert.equal(await p.locator('.conv-header .avatar').textContent(),'Z');
+    const bounds=await p.evaluate(()=>({header:document.querySelector('.conv-header').getBoundingClientRect().toJSON(),
+      conversation:document.querySelector('.conversation').getBoundingClientRect().toJSON()}));
+    assert.ok(bounds.header.height>0 && bounds.header.bottom<=bounds.conversation.top+1);
+    assert.deepEqual(await checkLayout(p),[]);
+  } finally {await browser.close();}
+});
+
 test('chosen clock and optional/replaced background reach the rendered page', async () => {
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),'imessage-options-'));
   const backgrounds=['#8f2244','#22788f'].map((fill,i)=>{

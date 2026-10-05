@@ -104,6 +104,7 @@ function buildDocument(cfg,baseDir) {
     thread.clock=thread.status_time || (time && time[1]) || '9:41';
   }
   thread.dynamic_island = cfg.dynamic_island ?? thread.dynamic_island ?? true;
+  if (thread.mode !== 'group' && !thread.header) thread.header = { style:'conversation' };
   for (const m of thread.messages) {
     if (m.type === 'attachment') {
       if (!m.src.startsWith('data:')) m.src=dataURI(path.resolve(baseDir,m.src));
