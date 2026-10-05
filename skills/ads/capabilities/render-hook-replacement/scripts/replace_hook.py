@@ -416,12 +416,13 @@ def replace(config, base):
         shifted = shift_captions(rows, cut, hook_duration, words, info["duration_sec"]) if rows is not None else None
         if shifted is not None:
             write_captions(caption_output, shifted)
+        output_hash = file_hash(candidate)
         manifest = {"version": 1, "status": "needs_review", "source": {"path": str(source), "sha256": source_hash,
                     "project_id": config["source"].get("project_id"), "render_id": config["source"].get("render_id"), "probe": info},
                     "hook": {"path": str(hook_path) if hook_path else None, "sha256": hook_hash, "treatment": "supplied-clip" if hook_path else "text", "text": hook.get("text"), "source_duration_sec": hook_info["duration_sec"]},
                     "hook_end_sec": cut, "body_start_sec": cut, "replacement_duration_sec": hook_duration,
                     "new_body_start_sec": hook_duration, "duration_delta_sec": round(hook_duration - cut, 9),
-                    "output": {"path": str(output), "sha256": file_hash(candidate), "duration_sec": rendered["container_duration_sec"], "video_duration_sec": rendered["duration_sec"]},
+                    "output": {"path": str(output), "sha256": output_hash, "duration_sec": rendered["container_duration_sec"], "video_duration_sec": rendered["duration_sec"]},
                     "captions": {"path": str(caption_output) if caption_output else None, "source_path": str(caption_path) if caption_path else None,
                                  "source_sha256": file_hash(caption_path) if caption_path else None, "retained_cues": len(shifted) if shifted is not None else None,
                                  "burned_in": "preserved in original body frames, not reburned"},
@@ -430,7 +431,8 @@ def replace(config, base):
                                      "video": {**video_detail, "first_kept_source_frame_sec": first_frame,
                                                "frame_grid_offset_sec": round(first_frame - cut, 9)},
                                      "audio": audio_detail, "word_boundary": "checked against supplied measured words" if words else "not measured; agent must review speech at join"},
-                    "review": {"status": "needs_review", "required": ["watch complete finished video", "listen to join and entire retained body", "check caption/text/brand facts", "compare ending with selected original"]},
+                    "review": {"status": "needs_review", "source_sha256": source_hash, "output_sha256": output_hash,
+                               "checked_at": None, "required": ["watch complete finished video", "listen to join and entire retained body", "check caption/text/brand facts", "compare ending with selected original"]},
                     "media_generation_cost_usd": 0}
         os.replace(candidate, output)
         manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")

@@ -81,6 +81,9 @@ quietly remaster the selected original. Audio is optional.
    to the hook/body join, narration/music and ending. Check the new hook copy and
    brand facts. Fix only the opening and re-run to a new path. Keep the result
    awaiting review until the review report names this output hash and source.
+   Only after actual watch/audio/caption review, record
+   `review:{status:'passed',source_sha256:<original hash>,output_sha256:<finished hash>,checked_at:<ISO datetime>}`
+   alongside the passing quality report. Never recycle another output's review.
 
 ## Free demonstration
 

@@ -75,6 +75,13 @@ brand-safe, readable or semantically connected. The review report must identify
 the finished output hash and its frozen source. A failed/unreviewed result remains
 a candidate and does not replace the chosen final or source file.
 
+The renderer seeds `review.status: needs_review`, both SHA256 identities and
+`checked_at: null`. Only after actual full-output viewing/audio/caption review,
+set `review.status:'passed'`, keep `source_sha256` and `output_sha256` bound to
+that manifest and record `checked_at` as an ISO datetime. Preserve the helper's
+verification results and attach the actual passing quality report. A prior
+generic report without these exact identities does not approve a new output.
+
 For a pack, repeat against the **same frozen source** for every named opening.
 Return one complete ad plus manifest per candidate. Project-version/batch saving
 is a host decision handled by its integration adapter, never hidden in this script.
