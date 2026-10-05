@@ -61,9 +61,9 @@
       "sha256": "202e1c60a120ce1d382b9c17896e143c8d12c9257310380a3c939f8eb1b88127"
     },
     "orchestrator.md": {
-      "bytes": 49950,
-      "catalog_sha256": "0564ed188223a3c92a4a3a784f2b6f727c676ab44acfb369031a5ca28e9a6e76",
-      "sha256": "0564ed188223a3c92a4a3a784f2b6f727c676ab44acfb369031a5ca28e9a6e76"
+      "bytes": 50271,
+      "catalog_sha256": "cc8b4def442fead1b8485c9bde2f66e16bbf6723d4df0d74339847006b5dc4fd",
+      "sha256": "cc8b4def442fead1b8485c9bde2f66e16bbf6723d4df0d74339847006b5dc4fd"
     },
     "polish.md": {
       "bytes": 16206,
@@ -101,9 +101,9 @@
       "sha256": "f1a31b6fa6916f186fb9fc875bc0a401c1991ed166ad9c7e03f042afe35fdd3e"
     },
     "review-video.md": {
-      "bytes": 16623,
-      "catalog_sha256": "d6b7e26257b1e90eb45a705675dfa33a4878250e1f1cf1cd4404a2e9e0566a46",
-      "sha256": "d6b7e26257b1e90eb45a705675dfa33a4878250e1f1cf1cd4404a2e9e0566a46"
+      "bytes": 17074,
+      "catalog_sha256": "58fbdaa8fbea37f297a7b7a1b2f6f6210a432713bdb24e25a59e814610825330",
+      "sha256": "58fbdaa8fbea37f297a7b7a1b2f6f6210a432713bdb24e25a59e814610825330"
     },
     "scripts/assemble.py": {
       "bytes": 6224,
@@ -117,8 +117,8 @@
     },
     "skill.meta.json": {
       "bytes": 652,
-      "catalog_sha256": "4a968d33d955f86ffe43f0e50bcd6aabb220461c761857ea559e5d7a1e1fec64",
-      "sha256": "4a968d33d955f86ffe43f0e50bcd6aabb220461c761857ea559e5d7a1e1fec64"
+      "catalog_sha256": "7d484122220308765c0369ac26e9a2cbd12abed5239b9aa856f94024b4976a9e",
+      "sha256": "7d484122220308765c0369ac26e9a2cbd12abed5239b9aa856f94024b4976a9e"
     },
     "wrap-session.md": {
       "bytes": 16249,
@@ -147,7 +147,7 @@
   ],
   "schema_version": 1,
   "slug": "video-production-harness",
-  "source_commit": "3b0778d8b524f51e031fa25e24bbdd6a2d15e89c",
+  "source_commit": "a953cc21cd34054af4add3d5a6738642915d7534",
   "source_files": {
     "SKILL.md": {
       "sha256": "421035e3b0fd1d15aa3b2d7ff8bc461e4e770d7388dc568b2cc9de09ca50703b",
@@ -198,7 +198,7 @@
       "source": "lock-script.md"
     },
     "orchestrator.md": {
-      "sha256": "0564ed188223a3c92a4a3a784f2b6f727c676ab44acfb369031a5ca28e9a6e76",
+      "sha256": "cc8b4def442fead1b8485c9bde2f66e16bbf6723d4df0d74339847006b5dc4fd",
       "source": "orchestrator.md"
     },
     "polish.md": {
@@ -230,7 +230,7 @@
       "source": "references/specialist-handoff.md"
     },
     "review-video.md": {
-      "sha256": "d6b7e26257b1e90eb45a705675dfa33a4878250e1f1cf1cd4404a2e9e0566a46",
+      "sha256": "58fbdaa8fbea37f297a7b7a1b2f6f6210a432713bdb24e25a59e814610825330",
       "source": "review-video.md"
     },
     "scripts/assemble.py": {
@@ -246,6 +246,6 @@
       "source": "wrap-session.md"
     }
   },
-  "source_hash": "af5d741fd6117693255f08ed366150b3c94451b588709e6211a72fb0fd7cfdcb",
-  "source_version": "3-af5d741fd611"
+  "source_hash": "3ba9f34a7217757d1985096326b592548f642fa305ff42fa1f8b4719f72d7e83",
+  "source_version": "3-3ba9f34a7217"
 }

@@ -43,7 +43,7 @@ Stage 8 has five phases. The names below identify review responsibilities, not e
 - `review-video-for-brand-fit` (existing)
 - `review-video-for-platform-fit` (existing)
 - **UGC family only**:
-  - `review-video-ugc-shotcraft` — cut density (cuts/10s) + face-share + intra-shot motion. Storyboard-level decisions that hide AI tells; reads `metrics.cuts_per_10s` and `metrics.face_share_planned` from `scene_contract` and compares to delivered cut.
+  - `review-video-ugc-shotcraft` — inspect actual shot choices, proof/reading windows and joins against approved intent. Compare actual picture cuts and time-based direct-face share (including close-ups) with the current plan; count fractions and motion diagnostics stay distinct. Use explicit agreed recipe targets only, never universal cut/face quotas. Apply this rubric with actual timeline/media tools even when no separate reviewer package is installed.
 - **All spoken formats, including real recorded/native speech:** perform the speech-performance responsibility on actual isolated takes and final mix (pronunciation, rhythm, pauses/emphasis, joins and final consonants). Use the actual fetched voice-performance reviewer when available, or the documented listening rubric with real tools; no named tool is assumed installed. A transcript/score cannot replace listening.
 - NOTE: `review-video-hook-strength` and `review-video-synthetic-persona` ran earlier in State 7.5 (scroll-test gate). Re-run here only on revision passes or if first-stitch is bypassed.
 
@@ -51,7 +51,7 @@ Stage 8 has five phases. The names below identify review responsibilities, not e
 - `character-consistency` drift count == 0
 - `identity-drift` same_person_score ≥ 9 AND continuity_break == false
 - `world-consistency` score ≥ 8.5 AND no axis < 6
-- `ugc-shotcraft` composite ≥ 7
+- Shotcraft review has complete temporal evidence and no unresolved proof, readability, action/continuity or agreed-recipe defect. An optional score, cut density or face share cannot approve or reject the cut by itself; preserve deliberate calm and current authorized exceptions.
 - Actual speech-performance/listening checks are complete with no required unresolved defect, including real_voice; synthetic-tell rubric applies where relevant and does not replace this gate.
 
 Any one of these failing sets status to NEEDS REVISION regardless of other axes. This is a prior review v3 lesson: the standard 6-axis rubric scored that cut as shippable; the UGC-specific atoms would have blocked it. The aggregated gate verdict is persisted into `review_issues` and reflected in `project_state`.
