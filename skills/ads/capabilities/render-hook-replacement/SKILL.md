@@ -69,6 +69,10 @@ The renderer never trims that narration/music tail and calls it preserved.
 1. Watch the exact original and confirm source identity, hook boundary and selected
    replacement. Keep the original file read-only. Ask only for missing choices.
 2. Probe source/hook, validate SHA256, measured words and captions before encoding.
+   Before creating any new hook, run
+   `python3 scripts/replace_hook.py --preflight --config /path/to/source-config.json`.
+   This needs only source/cut and optional words/captions, verifies runtime encoders
+   and supported source shape, and writes no media or paid job.
    Generated hooks are separate work: read the chosen generation capability, quote
    only the required new opening, obtain approval, then bind its finished clip here.
 3. Run `python3 scripts/replace_hook.py --config /path/to/config.json`.

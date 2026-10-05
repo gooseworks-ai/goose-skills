@@ -34,6 +34,18 @@ class HookReplacementTests(unittest.TestCase):
         config["captions"]["output_path"] = name + ".srt"
         return config
 
+    def test_free_preflight_accepts_only_original_cut_without_hook_or_output(self):
+        source_only = {key: self.config[key] for key in ["source", "hook_end_sec", "words"]}
+        path = self.root / "source-only.json"
+        path.write_text(json.dumps(source_only))
+        result = subprocess.run([sys.executable, str(SCRIPTS / "replace_hook.py"), "--preflight", "--config", str(path)],
+                                capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        report = json.loads(result.stdout)
+        self.assertEqual(report["status"], "preflight_passed")
+        self.assertEqual(report["source"]["sha256"], self.hash)
+        self.assertEqual(report["media_generation_cost_usd"], 0)
+
     def test_real_unequal_supplied_hook_preserves_every_body_frame_and_audio(self):
         manifest = render.replace(self.config_for("shorter"), self.root)
         self.assertEqual(manifest["version"], 1)

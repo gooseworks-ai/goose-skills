@@ -314,25 +314,10 @@ def text_hook(hook, source, base, work):
     return output
 
 
-def replace(config, base):
-    if not isinstance(config, dict) or not isinstance(config.get("source"), dict) or not isinstance(config.get("hook"), dict):
-        raise ValueError("config needs source and hook objects")
-    output_config = config.get("output")
-    if isinstance(output_config, str):
-        output_config = {"path": output_config}
-    if not isinstance(output_config, dict):
-        raise ValueError("config needs output:{path}")
+def preflight_source(config, base):
+    if not isinstance(config, dict) or not isinstance(config.get("source"), dict):
+        raise ValueError("config needs source:{path} and hook_end_sec")
     source = resolve(base, config["source"].get("path"), "source.path")
-    output = resolve(base, output_config.get("path"), "output.path")
-    manifest_path = resolve(base, output_config.get("manifest_path", str(output) + ".manifest.json"), "output.manifest_path")
-    hook = config["hook"]
-    hook_path = resolve(base, hook["path"], "hook.path") if hook.get("path") else None
-    if output in [source, hook_path] or manifest_path in [source, hook_path, output]:
-        raise ValueError("output/manifest must not overwrite an input or each other")
-    if output.exists() or manifest_path.exists():
-        raise ValueError("output already exists; use a new version path")
-    if output.suffix.lower() != ".mp4":
-        raise ValueError("output.path must end in .mp4")
     source_hash = file_hash(source)
     if config["source"].get("sha256") and config["source"]["sha256"] != source_hash:
         raise ValueError("source SHA256 mismatch; selected original changed")
@@ -354,6 +339,36 @@ def replace(config, base):
     words = read_words(config, base, source_hash)
     guard_words(words, cut, info["duration_sec"])
     first_frame = next(t for t in times if t >= cut - 1e-7)
+    if info["width"] % 2 or info["height"] % 2:
+        raise ValueError("original dimensions must be even for browser-compatible H264")
+    if info["audio"] and not info["audio"]["channel_layout"]:
+        raise ValueError("original needs a defined audio channel layout")
+    encoders = run(["ffmpeg", "-hide_banner", "-encoders"])
+    if "libx264" not in encoders or not re.search(r"\baac\b", encoders):
+        raise ValueError("ffmpeg needs libx264 and AAC encoders before optional generation")
+    return source, source_hash, info, times, cut, words, first_frame
+
+
+def replace(config, base):
+    if not isinstance(config, dict) or not isinstance(config.get("source"), dict) or not isinstance(config.get("hook"), dict):
+        raise ValueError("config needs source and hook objects")
+    output_config = config.get("output")
+    if isinstance(output_config, str):
+        output_config = {"path": output_config}
+    if not isinstance(output_config, dict):
+        raise ValueError("config needs output:{path}")
+    source = resolve(base, config["source"].get("path"), "source.path")
+    output = resolve(base, output_config.get("path"), "output.path")
+    manifest_path = resolve(base, output_config.get("manifest_path", str(output) + ".manifest.json"), "output.manifest_path")
+    hook = config["hook"]
+    hook_path = resolve(base, hook["path"], "hook.path") if hook.get("path") else None
+    if output in [source, hook_path] or manifest_path in [source, hook_path, output]:
+        raise ValueError("output/manifest must not overwrite an input or each other")
+    if output.exists() or manifest_path.exists():
+        raise ValueError("output already exists; use a new version path")
+    if output.suffix.lower() != ".mp4":
+        raise ValueError("output.path must end in .mp4")
+    source, source_hash, info, times, cut, words, first_frame = preflight_source(config, base)
     captions = config.get("captions")
     caption_path, caption_output, rows = None, None, None
     if captions:
@@ -447,10 +462,23 @@ def replace(config, base):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--config", type=Path, required=True)
+    parser.add_argument("--preflight", action="store_true", help="validate exact original/cut/runtime before creating a hook; writes no media")
     args = parser.parse_args()
     try:
         path = args.config.resolve()
-        result = replace(json.loads(path.read_text()), path.parent)
+        config = json.loads(path.read_text())
+        if args.preflight:
+            source, digest, info, times, cut, words, first_frame = preflight_source(config, path.parent)
+            captions = config.get("captions")
+            if captions:
+                if not isinstance(captions, dict):
+                    raise ValueError("captions must be {path}")
+                rows = read_captions(resolve(path.parent, captions.get("path"), "captions.path"))
+                shift_captions(rows, cut, 0, words, info["duration_sec"])
+            print(json.dumps({"status": "preflight_passed", "source": {"path": str(source), "sha256": digest, "probe": info},
+                              "hook_end_sec": cut, "first_kept_video_frame_sec": first_frame, "media_generation_cost_usd": 0}, indent=2))
+            return 0
+        result = replace(config, path.parent)
         print(json.dumps({"status": result["status"], "output": result["output"], "verification": result["verification"]}, indent=2))
     except (ValueError, OSError, KeyError, TypeError, json.JSONDecodeError) as error:
         print(f"Hook replacement blocked: {error}", file=sys.stderr)
