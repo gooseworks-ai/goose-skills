@@ -13,7 +13,7 @@ Read `capabilities.md` and the selected host binding first. Artifact names are l
 
 The single highest-leverage thing to nail before rendering anything is the **script**. In the v03 Ironman run, the VO arc kept evolving through round 12 — every script revision forced VO re-renders and visual re-syncs. The "day-tracker" framing (DAY 1 / DAY 5 / DAY 21) surfaced too late.
 
-This skill locks the script BEFORE keyframes. It runs an opinionated viewer-perspective review on text only, applies pattern defaults (day-tracker for transformations), marks the climax line so `edit-video` can boost it +20%, and gates with a human approval.
+This skill locks the script BEFORE keyframes. It runs an opinionated viewer-perspective review on text only, applies pattern defaults (day-tracker for transformations), records intended emphasis and delivery so `edit-video` can preserve it, and gates with a human approval.
 
 ## When to use
 
@@ -108,17 +108,18 @@ Capture the output to `<video_folder>/script/shortform-review-<idx>.md` (+ `.yam
 - Union of rewrites (Track A's beat-level + Track B's craft-level; dedupe by line number)
 - If Track B verdict is `kill`, do NOT advance — surface to operator, loop back to State 1 brainstorm.
 
-### Step 4 — Mark the climax
+### Step 4 — Record emphasis and performance intent
 
-The arc review must return ONE line tagged as the climax. Write it into `<video_folder>/implementation_brief` under `## Audio plan` as:
+Record the main emphasis/payoff line when this script has one, with the intended delivery and viewer effect. Use `climax_line: null` for silent work or a format without a single spoken climax; do not invent a sentence to fill the field. This is a direction cue, not an automatic loudness change.
 
 ```markdown
 - **Climax line:** SCENE 14 — "I'm making it happen."
-  - Mix: +20% per-clip VO boost vs other lines (read by `edit-video` Phase 4).
-  - Voice settings: stability 0.35, style 0.45 (peakier emotional read).
+  - Delivery: conversational resolve; a short pause before the line.
+  - Mix: preserve the selected performance; adjust only if actual listening/measurements reveal a problem.
+  - Voice/settings: reuse the approved audition; no preset override.
 ```
 
-This is the contract `edit-video` consumes; without it, the climax sits at the same loudness as the rest.
+Keep raw/source speech and measure actual takes. A `vo_speed` review category describes the format, not permission to time-stretch or remove pauses. Any source-podcast timing change must have an explicit recorded rate/purpose, raw-versus-edited listening and refreshed word/caption sync. Original narration defaults to its approved natural performance.
 
 ### Step 5 — HUMAN GATE
 
@@ -169,7 +170,7 @@ After this point, **any change to the VO script** requires re-running this skill
 ## Quality Checks
 
 - Every VO line in locked_script is also in `design_brief` (no drift between docs).
-- Exactly ONE climax line is marked in `implementation_brief`.
+- Emphasis/payoff intent and selected delivery are recorded; a null climax is explicit when the format has none. No automatic gain/speed change follows from this marker.
 - Arc review has a score for every beat (no missing axes).
 - Human gate was actually hit (status file shows operator-approval timestamp).
 - If `<concept_type>` is `transformation`, the script uses some form of day-tracker or number-progression — OR the operator explicitly opted out (logged in decision log).
@@ -177,8 +178,7 @@ After this point, **any change to the VO script** requires re-running this skill
 ## Failure Modes
 
 - **Skill silently rewrites the operator's script.** Never. Always surface proposals; the operator decides.
-- **No climax marked.** Hard fail — without it, `edit-video` can't apply the +20% boost. Re-run Step 3.
-- **Multiple climax lines marked.** Hard fail — there's only ever one. Make the operator pick.
+- **Emphasis becomes an automatic boost.** Preserve performance intent and selected settings; actual listening/mix measurements determine a justified repair, not a fixed gain. A silent or distributed-payoff format need not invent one climax.
 - **Operator approves, then `create-clips` shows a different VO line in `audio/vo-scene-NN.mp3`.** Script drift bug. The orchestrator's quality check should diff locked_script against the rendered VO every time `create-clips` runs.
 
 ## Relationship to other skills

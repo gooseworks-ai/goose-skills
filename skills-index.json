@@ -9175,7 +9175,10 @@
         "skills/ads/playbooks/video-production-harness/polish.md",
         "skills/ads/playbooks/video-production-harness/preflight-audit.md",
         "skills/ads/playbooks/video-production-harness/promote.md",
+        "skills/ads/playbooks/video-production-harness/references/editorial-review.md",
+        "skills/ads/playbooks/video-production-harness/references/hook-compatibility.md",
         "skills/ads/playbooks/video-production-harness/references/review-script-shortform.md",
+        "skills/ads/playbooks/video-production-harness/references/specialist-handoff.md",
         "skills/ads/playbooks/video-production-harness/release.json",
         "skills/ads/playbooks/video-production-harness/review-video.md",
         "skills/ads/playbooks/video-production-harness/scripts/assemble.py",
@@ -9202,9 +9205,9 @@
         },
         "requires_skills": [],
         "slug": "video-production-harness",
-        "source_commit": "e3128bb0488d700ff0db095ff444cb229bed6489",
-        "source_hash": "0d0a515e4e87d276befb79667472f8755968f51dadde3a39c2493d9d69e92fea",
-        "source_version": "3-0d0a515e4e87",
+        "source_commit": "2c7c59536f14787e91529573e835d4fe2eb17bb8",
+        "source_hash": "6ea2118f6e9fb554c4df6f8cb909b8733ae82d4fea349ee47430d7f841020ce2",
+        "source_version": "3-6ea2118f6e9f",
         "tags": [
           "ads",
           "content"
@@ -9737,6 +9740,7 @@
         "skills/ads/capabilities/write-video-ad-script/scripts/prepare_angle_context.py",
         "skills/ads/capabilities/write-video-ad-script/skill.meta.json",
         "skills/ads/capabilities/write-video-ad-script/tests/test_angle_handoff.py",
+        "skills/ads/capabilities/write-video-ad-script/tests/test_creative_brief.py",
         "skills/ads/capabilities/write-video-ad-script/tests/test_critique_scripts.py",
         "skills/ads/capabilities/write-video-ad-script/tests/test_lint_scripts.py",
         "skills/ads/capabilities/write-video-ad-script/tests/test_pacing.py"

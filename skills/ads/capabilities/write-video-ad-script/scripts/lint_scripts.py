@@ -390,6 +390,8 @@ def lint(cands, shape=None, rules=None, bank=None, report_only=False, context=No
         report["input_errors"].append("the selected recipe's shape is required")
     if strict and not report_only and not context:
         report["input_errors"].append("a validated angle-context is required for generated scripts")
+    if strict and not report_only and shape.get("requires_creative_brief") and not (context or {}).get("creative_brief"):
+        report["input_errors"].append("this run requires a sourced creative_brief in angle-context")
     mode = dialogue_mode(shape)
     dialogue_refs = observed_dialogue_references(references, mode) if mode else []
     if strict and not report_only and mode and not dialogue_refs:
@@ -450,6 +452,16 @@ def lint(cands, shape=None, rules=None, bank=None, report_only=False, context=No
         hooks = [h for h in c.get("hooks") or [] if isinstance(h, dict)]
         full_text = " ".join(text_of(b) for b in beats)
         everything = plain(full_text + " " + " ".join(text_of(h) for h in hooks))
+        brief = (context or {}).get("creative_brief") or {}
+        if brief and not report_only:
+            normalized = " ".join(everything.casefold().split())
+            for decision in brief.get("prior_decisions", []):
+                rejected = " ".join(decision.get("avoid_phrase", "").casefold().split())
+                if rejected and re.search(r"(?<!\w)" + re.escape(rejected) + r"(?!\w)", normalized):
+                    err("E_PRIOR_REJECTION", f"script repeats a retrieved rejection: {decision['avoid_phrase']}")
+            for locked in brief.get("locked_copy", []):
+                if locked["text"] not in full_text:
+                    err("E_LOCKED_COPY", "preserve the user's exact locked copy; resolve conflicts in review")
         if strict and not report_only and mode:
             if c.get("reference_id") not in {r["id"] for r in dialogue_refs}:
                 err("E_DIALOGUE_REFERENCE", "cite the observed conversation reference used for this execution")
@@ -670,7 +682,9 @@ def lint(cands, shape=None, rules=None, bank=None, report_only=False, context=No
                 if (short and hit == 1) or (not short and hit >= 0.75):
                     warn("W_NEVER_SAY", f"\"{s[:60]}\" may break a brand rule ({label}): rewrite it unless it clearly means something else")
                     break
-        allowed = allowed_numbers(rules, cited)
+        # The shared research handoff is also a fact source. A value need not be
+        # copied into legacy brand rules merely to avoid an unsourced warning.
+        allowed = allowed_numbers(rules, cited + [str(f.get("text", "")) for f in facts.values()])
         for m in NUMBER_RE.finditer(CUE_RE.sub(" ", everything)):
             n = re.sub(r"[^\d.]", "", m.group(0)).rstrip(".")
             if n and n not in allowed:
