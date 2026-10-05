@@ -2253,7 +2253,8 @@
         "skills/ads/capabilities/create-vo-elevenlabs/scripts/media_proxy.py",
         "skills/ads/capabilities/create-vo-elevenlabs/skill.meta.json",
         "skills/ads/capabilities/create-vo-elevenlabs/tests/smoke-test.md",
-        "skills/ads/capabilities/create-vo-elevenlabs/tests/test_gen_vo.py"
+        "skills/ads/capabilities/create-vo-elevenlabs/tests/test_gen_vo.py",
+        "skills/ads/capabilities/create-vo-elevenlabs/tests/test_timestamps.py"
       ],
       "metadata": {
         "slug": "create-vo-elevenlabs",
@@ -7027,15 +7028,38 @@
       "name": "render-podcast-skit",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Assemble a two-host fake-podcast skit ad from a config — per-line lipsync clips hard-concatenated in script order, scaled/padded to 1080×1920, WHITE bottom-center captions (up to 5 words per cue, broken on sentence punctuation, word-wrapped to stay in-frame, held at least 0.9s) built from each line's OWN ElevenLabs char-level timestamps (offset by cumulative clip start, never Whisper), and closed on a Playwright/PIL brand end card composited from the real wordmark — never AI-rendered text. This is the FREE deterministic assembly stage (concat + white captions + end card + crf28 encode); the per-line VOs, photoreal gpt-image-2 base stills, expression variants, and lipsync clips come from create-vo-elevenlabs / create-image-gpt-image-fal / create-video-fal. Use for the podcast-skit format.",
+      "description": "Render a two-host podcast ad from a brand config and dialogue script. Includes the working planner, full-frame and split-screen assembly, captions from measured character timings, brand end card, approved paid-step adapters, and 65 quality-check falsification cases. Use for short conversational ads with two stable hosts in one room.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-podcast-skit",
       "files": [
         "skills/ads/capabilities/render-podcast-skit/SKILL.md",
+        "skills/ads/capabilities/render-podcast-skit/recipe.json",
         "skills/ads/capabilities/render-podcast-skit/scripts/PIPELINE.md",
         "skills/ads/capabilities/render-podcast-skit/scripts/README.md",
+        "skills/ads/capabilities/render-podcast-skit/scripts/arcs.json",
+        "skills/ads/capabilities/render-podcast-skit/scripts/build_overlays.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/check_framing_render.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/compose_master.py",
         "skills/ads/capabilities/render-podcast-skit/scripts/config.example.json",
+        "skills/ads/capabilities/render-podcast-skit/scripts/config_io.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/cost_model.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/crop_singles.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/gates.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/gen_paid.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/grade_episode.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/make_lockup.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/one_shot.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/pick_voices.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/plan_beats.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/plan_cuts.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/preview_framing.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/provider_commands.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/script.example.json",
+        "skills/ads/capabilities/render-podcast-skit/scripts/selftest.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/shape_vo.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/test_distribution.py",
         "skills/ads/capabilities/render-podcast-skit/skill.meta.json",
+        "skills/ads/capabilities/render-podcast-skit/source-manifest.json",
         "skills/ads/capabilities/render-podcast-skit/tests/smoke-test.md"
       ],
       "metadata": {
@@ -7054,7 +7078,21 @@
           ]
         },
         "requires_skills": [
+          "create-vo-elevenlabs",
+          "create-image-gpt-image-fal",
+          "create-video-fal",
           "watch"
+        ],
+        "version": 2,
+        "features": [
+          "Two-host dialogue rendering",
+          "Measured audio timeline",
+          "Full-frame and split cuts",
+          "65 quality-check falsification cases"
+        ],
+        "requires_tools": [
+          "ffmpeg",
+          "python"
         ]
       }
     },

@@ -1,0 +1,30 @@
+{
+  "source": "one-shot-videos/create-podcast-skit-video-from-refs",
+  "recipe_version": 8,
+  "sha256": {
+    "scripts/arcs.json": "80e086b65aa5909f8f4b0d40361b810040e1e04f7e3c54733870ecd3224c55d5",
+    "scripts/build_overlays.py": "da2d6c064ceb394908614d257bea800df29dd6c1efbe3c7c4e8b894bb44010c3",
+    "scripts/check_framing_render.py": "6e65f6795403ad8fd6790506022afc77e4f5cb5d52f63297fd23621ee34ddc0d",
+    "scripts/compose_master.py": "bfdbdcf4ee668925e69f7c5cff9aac4f280f24e545db1765eaa0fe6dbd19793b",
+    "scripts/config.example.json": "47661ae840b68f7eb700d192017a9f4c80d9cdc0ac618fe381304fe924fd423f",
+    "scripts/config_io.py": "94689d147a4cc580aea93c2ead646577d7edcbd1a7e585e580e28a5a13b02baa",
+    "scripts/cost_model.py": "564db734feee30c78f9360a1d53a17632a62e2790f7aa26fa3ca704a9ef46c1f",
+    "scripts/crop_singles.py": "37e8212c01d08b1e9917995cfeb6ec28ad838f7e731aaf6aeded9a37303b7784",
+    "scripts/gates.py": "5fa504d5a8d309af2891acc4eae4b4e076a8b050f439d328a29649a83452255e",
+    "scripts/gen_paid.py": "c3187a68d763c3a4288e5657168fa7e2effca619dbc99d01e77ee1913e11e731",
+    "scripts/grade_episode.py": "a54c2c3e18c87e7723cbe7128606065ca8ad7c1b96926fbfa436424d28ff67e1",
+    "scripts/make_lockup.py": "70063af4d4aa41edf230ecca3f5e863370ac2de47402a0982553341ef9ab124e",
+    "scripts/one_shot.py": "ee1d27eafe73ee5d02db865eb5b814de8552c93a1d6fcb391fe59be898297a5b",
+    "scripts/pick_voices.py": "10a3314e0f995284b3ba9ebd58e270883d8ff3c318710c9424eafb23146a238f",
+    "scripts/plan_beats.py": "bc68a71a81e7979e8775508823b5d7ea5913588474db7af3c8e507cf0fb12b47",
+    "scripts/plan_cuts.py": "642d38c191f69e72ba2393859c1592cbd675613350b1245f3ad813ce89ded6ee",
+    "scripts/preview_framing.py": "1109a9280a80089df35948b6f8314e97eea9ea2740fd2400cb4e565d7e25e142",
+    "scripts/provider_commands.py": "f7c5bd4d68ec5d11696d2568bd83bfb2dc6f7ef5fc3990b6c87eb72a35db188b",
+    "scripts/script.example.json": "65e5c4d3f136b9ca32e25c1b97a500655c21a8d49bcd8c496a8a9dd6f1f75b20",
+    "scripts/selftest.py": "a080813c3897a7a9daf2e0d76b3182aa71a87cf5313ccfdd73045b558fdaf201",
+    "scripts/shape_vo.py": "5574e60b687960b3226da436fb04b2afec3cb95693b0455ac1dcdd94be460272",
+    "scripts/test_distribution.py": "547fded803b7e221fdec7ff53eb32b8e1b561d01434e3e67d849029984a508ba",
+    "recipe.json": "4fb43558ec6acbb8d3738f278bdf60f2fd15fa5f61096ce49c29aaebe384b67a",
+    "scripts/README.md": "499c31de666f10c9f85a818c470e694630322818458eaaa3c20efec9f7bf628e"
+  }
+}

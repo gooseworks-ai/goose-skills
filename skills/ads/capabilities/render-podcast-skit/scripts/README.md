@@ -1,49 +1,82 @@
-# render-podcast-skit scripts — the FREE assembly
+# Human version
 
-`render-podcast-skit` is the **deterministic, $0 assembly stage** of the fake-podcast skit
-format. The paid stages — the per-line ElevenLabs with-timestamps VOs, the two base stills, the
-~10 expression variants, and the per-line lipsync clips — are separate capabilities
-(`create-vo-elevenlabs`, `create-image-gpt-image-fal`, `create-video-fal`). This capability spends nothing:
-it takes the per-line clips + their VO timestamps + the brand wordmark and stitches the finished
-master. Re-cuts (new caption chunking, a re-timed slice, a swapped end card) reuse the existing
-clips and cost **$0**.
+The installed podcast renderer contains the tested two-host pipeline, its
+example inputs and its quality checks. Version 8 uses the existing public
+voice, image and video skills. A private Studio checkout is no longer required.
 
-`config.example.json` is the worked example (Ladder run-02 "Laundromat 2am", ~49s 1080×1920) —
-its tone, set and cast are that demo's choices, not defaults.
-`PIPELINE.md` maps every config block to its source step. This README documents the FREE
-assembly pieces that `render-podcast-skit` owns.
+Prepare the brand script, two host appearances, matched voices, a logo and
+fonts. Preview the edit for free, approve each paid step, then check the finished
+video. Choose the full-frame or split edit before generation; the split needs
+two additional silent listener clips.
 
-## 1. WHITE captions — from the VO's OWN char-level timestamps (script-window, NOT Whisper)
+---
 
-Captions come from each line's ElevenLabs with-timestamps response — the char-level word timings
-returned **with** the VO — never from Whisper (Whisper on the rendered clips mistimes). The
-assembler walks the scenes in script order and builds a **global `words.json`**: each word's time
-is its local char-level time **+ the cumulative clip start** (the sum of the preceding clips'
-durations). It groups words into **≤5-word cues broken on sentence-final punctuation** and renders
-**WHITE `#FFFFFF`** bottom-center captions (black outline), **word-wrapped to stay inside the frame**
-(never off the edges) and held **≥0.9s** each. Yellow 3-word karaoke was the old style and was
-**rejected in testing** — match the `add-captions-veed-fal --preset whisper` house style. Render as
-**PIL PNG overlays** when the host ffmpeg lacks libass (the common case — check
-`ffmpeg -filters | grep subtitle`), else an ASS burn.
+# Agent version
 
-## 2. Per-line clip assembly, hard-concat in script order
+All `scripts/` paths are relative to **render-podcast-skit's installed folder**.
+Keep the brand's inputs and run outputs outside that folder. Never overwrite
+the package examples. The package's root `recipe.json` is the gate input.
 
-One line = one scene = one clip. The clips are hard-concatenated in script order (scale/pad to
-1080×1920, final-encode `libx264 -preset slow -crf 28`, see §4), so the edit cuts on the dialogue beat.
-No dissolves. Anchoring every still on one base upstream keeps the set pixel-identical across all
-~22 cuts, so the many cuts read as one continuous podcast.
+## Prerequisites
 
-## 3. End card — Playwright/PIL from the real wordmark, no AI text
+- Python 3.10 or newer, Pillow 10 or newer, requests, ffmpeg and ffprobe.
+- Installed sibling capabilities: create-vo-elevenlabs, create-image-gpt-image-fal,
+  create-video-fal and watch. `PODCAST_SKILLS_DIR` may point to their common parent.
+- Authorized provider transport for the paid capabilities. In an app agent,
+  the existing media transport handles billing and relay requests. A relay
+  request is pending work: complete it and resume the command; do not replace
+  it with a direct provider call.
+- Brand wordmark or display font, caption font, two host appearances and a
+  confirmed voice per host. Export the approved voice library to a JSON file
+  with a `voices` array, then pass it to `pick_voices.py --library`.
 
-The brand lockup is composited via **Playwright** from the brand's REAL wordmark SVG: a
-background + the brand wordmark + a CTA pill (colours from the brand kit) + the URL → an HTML file → a screenshot to a
-1080×1920 PNG → a **2.5s** silent mp4. The brand text is **never** AI-rendered — a diffusion
-model garbles a wordmark.
+## Free preview
 
-## 4. FFmpeg composite
+Copy `scripts/config.example.json` and `scripts/script.example.json` into the
+brand project. Replace the fictional demo's product, cast and lines. Set both
+voice IDs, names and gender metadata. Match the declared conversation arc to
+the actual script. Supply brand assets and fonts as absolute paths or relative
+to the run directory where the field requires it.
 
-FFmpeg stitches the master: concat the per-line clips (scale/pad 1080×1920), overlay the WHITE
-caption PNGs (or burn the ASS via libass), and auto-append the 2.5s end-card mp4. The VOs carry the
-audio (no music bed by default). **Final-encode `libx264 -preset slow -crf 28` + aac 96k** so a
-~28s master lands near **~6MB** (the old `-crf 20` produced oversized ~16MB files). Output is a
-1080×1920 h264 + aac master. Deterministic, no paid calls, no keys.
+```bash
+python3 scripts/pick_voices.py --config <brand-config> --library <voice-library> --write
+python3 scripts/one_shot.py --config <brand-config> --script <brand-script> --run-dir <run> --no-paid
+```
+
+The example enables a supplied product panel and corner logo. Supply those
+files or disable their corresponding options before previewing. The preview
+uses stand-ins, writes `master-preview.mp4`, and spends nothing. Review the
+script, pacing and layout here.
+
+## Approved paid inputs and final render
+
+Each generation command defaults to printing cost without calling a provider.
+Add **both** `--confirm --execute` only after approval of that step.
+
+```bash
+python3 scripts/gen_paid.py vo --config <brand-config> --run-dir <run>
+python3 scripts/plan_beats.py --config <brand-config> --script <brand-script> --run-dir <run>
+python3 scripts/gen_paid.py plate --config <brand-config> --run-dir <run>
+python3 scripts/crop_singles.py --config <brand-config> --run-dir <run>
+python3 scripts/gen_paid.py clips --config <brand-config> --run-dir <run>
+# Split cuts also need idle clips; full-frame-only cuts do not.
+python3 scripts/gen_paid.py idle --config <brand-config> --run-dir <run>
+python3 scripts/one_shot.py --config <brand-config> --script <brand-script> --run-dir <run>
+python3 scripts/selftest.py
+```
+
+The second command must run **after** voice generation. It measures the audio
+and writes the timeline used for lip-sync and captions. Voice generation writes
+`voiceovers/beat-NN.mp3` and `voiceovers/beat-NN.timestamps.json`; both are required
+to resume. The image adapter uploads local references through the installed
+image capability. Lip-sync uses Veed Fabric with that host's exact audio and
+stills through the installed video capability. No provider key is copied into
+the package. Motion inserts are unimplemented and fail explicitly if enabled.
+
+## Acceptance and review
+
+The driver checks `master.mp4` against the plan. Run the 65-case self-test, then
+watch the whole result. Require matching host voices, stable identity and room,
+caption timing, no frozen speaking host, a real brand lockup and the chosen
+conversation dynamic. Review the finished video in the run directory. A free
+preview or successful package check does not certify generation quality.
