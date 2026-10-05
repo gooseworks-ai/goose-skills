@@ -191,3 +191,11 @@ Resolve the source cut and its editable timeline from the original note/version.
 - An unintended abrupt music tail needs repair; an approved silent/loop ending must be preserved. Do not impose padding or a black fade on every format.
 - Captions "rendered" per sub-agent but frame extraction shows nothing — the `fade=alpha=1` PNG bug. Use `overlay=enable='between(...)'`.
 - Sidechain ratio set to 30 — FFmpeg returns "Result too large". Cap is 20.
+
+## Use stored original footage
+
+When the customer asks to reuse footage, ask the host to search the current owned media and inspect actual frames plus timed transcript. An analysis description or thumbnail URL alone is not a visual review. Known user-selected trims remain usable when optional semantic analysis is unavailable; record that limitation instead of requesting a duplicate upload.
+
+Freeze `{asset_id, analysis_revision, scene_id, start_ms, end_ms, audio_mode}` in each selected scene and ingredient. `analysis_revision` is the verified SHA-256 of original bytes, `scene_id` may be null for a known trim, bounds are integer milliseconds, and audio is `original` or `muted`. Attach the canonical original through the host, preserve the requested format and user locks, then obtain the usual script and ingredient approvals. Research links and competitor ads never grant production rights.
+
+Before consumption and publication, the host rechecks current ownership, product/project scope, permission and revision. Download the verified original, trim that exact window at normal speed, and preserve the chosen audio. The portable assembler accepts `source_excerpt` beside a clip's path/duration, validates its SHA and range and returns the lineage. It refuses a separate voice track that would replace approved original audio. Only newly generated or replaced ingredients may consume the approved generation budget.
