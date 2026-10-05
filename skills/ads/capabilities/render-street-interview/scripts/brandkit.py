@@ -67,6 +67,12 @@ def validate(cfg: dict):
         if missing:
             raise SystemExit(f"{cfg.get('_path', '?')}: {where} is missing "
                              f"{', '.join(missing)}")
+    if cfg.get("mode", "product-guess") == "conversation":
+        import conversation
+        conversation.validate(cfg)
+        return
+    if cfg.get("mode", "product-guess") != "product-guess":
+        raise SystemExit("unknown street execution mode")
     need(cfg, _REQ_TOP, "the config")
     need(cfg["product"], _REQ_PRODUCT, "product")
     need(cfg["location"], _REQ_LOCATION, "location")
@@ -197,9 +203,14 @@ def take_name(cfg, seed=None):
     return f"{cfg['slug']}-single-seed{seed or cfg['generation']['seed']}"
 
 
+def expected_lines(cfg):
+    """Question occurs once in conversation shots; legacy guesses keep it separately."""
+    return spoken_lines(cfg) if cfg.get("mode") == "conversation" else [cfg["question"]] + spoken_lines(cfg)
+
+
 def reference_image(cfg) -> Path:
     """Product reference, resolved against the repo root so a config is checkout-portable."""
-    return paths.ROOT / cfg["product"]["reference_image"]
+    return None if cfg.get("mode") == "conversation" else paths.ROOT / cfg["product"]["reference_image"]
 
 
 if __name__ == "__main__":
@@ -210,7 +221,9 @@ if __name__ == "__main__":
     cfg = load(A.brand)
     print(f"\n{cfg['_path']}")
     print(f"  brand      {cfg['brand']}  (slug {cfg['slug']})")
-    print(f"  product    {cfg['product']['phrase']}  ->  {reference_image(cfg)}")
+    print(f"  mode       {cfg.get('mode', 'product-guess')}")
+    if cfg.get("product"):
+        print(f"  product    {cfg['product']['phrase']}  ->  {reference_image(cfg)}")
     print(f"  location   {cfg['location']['description'][:70]}...")
     print(f"  question   {cfg['question']}")
     print(f"  shots      {len(cfg['shots'])}: {', '.join(s['kind'] for s in cfg['shots'])}")

@@ -16,6 +16,7 @@
   },
   "requires_skills": [
     "watch",
-    "create-video-seedance-2-fal"
+    "create-video-seedance-2-fal",
+    "write-video-ad-script"
   ]
 }

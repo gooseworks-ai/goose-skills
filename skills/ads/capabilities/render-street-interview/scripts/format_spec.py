@@ -17,9 +17,9 @@ EVERY CLAUSE BELOW WAS PAID FOR. `REQUIRED_CLAUSES` names the rejection each one
 `check-cut.py` imports that dict rather than keeping its own copy, so a clause cannot be deleted
 from the prompt without the gate noticing. Do NOT shorten the scaffold to make it tidy: cutting
 the prompt from 1379 to 684 words on 2026-09-30 (seed 4812) silently deleted six of these guards
-and they had to be restored. There is a real ceiling at ~1200 words, where the model starts
-dropping rules; the scaffold plus a four-person cast lands at ~950. If a new rule is needed, put
-it inside the shot grammar and delete something else.
+and they had to be restored. Seed 4811 missed instructions with a long prompt, but that
+observation does not prove an exact word ceiling. Length advice is non-blocking; missing clauses
+still fail. Preserve the approved prompt text rather than trimming guards to hit a count.
 
 `build_prompt(cfg)` is deterministic: the same config produces the same prompt, byte for byte.
 `selftest.py` asserts that the Liquid Death config reproduces the approved seed-4815 prompt
@@ -54,7 +54,7 @@ SHOT_KINDS = ("handover_first", "handover_cold", "handover", "react", "speak", "
               "payoff")
 
 
-def _shot(n, s, cfg, can=False, prev_kind=None, upright=False, one_mic=False):
+def _shot(n, s, cfg, can=False, prev_kind=None, upright=False, one_mic=False, prompt_version=1):
     kind = s["kind"]
     prod = cfg["product"]["noun"]
     # PER-SHOT RESTATEMENT OF THE THING THAT MUST HOLD IN EVERY SHOT. Critical knowledge 2: a
@@ -69,6 +69,7 @@ def _shot(n, s, cfg, can=False, prev_kind=None, upright=False, one_mic=False):
     # else, so there is no room in the shot for a second microphone. One word per shot.
     if one_mic:
         held = f"only the {held}"
+    holding = f"holding {held}" if one_mic and prompt_version == 2 else f"holding the {held}"
     # In a handover the object is being passed, so it reads better as a verb phrase than as a
     # noun phrase. Same three facts.
     # THE HANDOVER IS NOW ONLY THE HANDOVER. Episode 3 removed "takes it and looks at it"
@@ -92,6 +93,7 @@ def _shot(n, s, cfg, can=False, prev_kind=None, upright=False, one_mic=False):
     # on `took` and the noun stays bare. Without the upright grammar it keeps whatever the
     # sealed grammar put on it, so a rebuilt 4824/4827 prompt still matches its own manifest.
     offered = prod if upright else held
+    offering = offered if prompt_version == 2 and offered.startswith("only the ") else f"the {offered}"
     if kind == "handover_cold":
         # `handover_first` WITHOUT the interviewer's question. Paid for by episode 1: the
         # interviewer's question was generated inside all three takes, so the finished episode
@@ -99,29 +101,29 @@ def _shot(n, s, cfg, can=False, prev_kind=None, upright=False, one_mic=False):
         # Any idea what is in this can?" in one breath. A real episode asks once, at the top, and
         # every take after the first is answers only. See ANSWERS_ONLY, which is the clip-level
         # half of this: this kind removes the line, that block forbids anyone re-inventing it.
-        return (f"{n}. The interviewer holds the {offered} out to {s['subject']}; {s['pronoun']} "
+        return (f"{n}. The interviewer holds {offering} out to {s['subject']}; {s['pronoun']} "
                 f"{took}, SILENT, on that corner. Nobody speaks in this shot "
                 f"and no question is asked. ")
     if kind == "handover_first":
         # The ask-and-answer guard. Without "does not say this line" the subject speaks the
         # interviewer's question back at the camera.
-        return (f"{n}. The interviewer holds the {offered} out to {s['subject']}; {s['pronoun']} "
+        return (f"{n}. The interviewer holds {offering} out to {s['subject']}; {s['pronoun']} "
                 f"{took}, SILENT, on that corner. The interviewer asks from "
                 f"off camera, unseen: \"{cfg['question']}\" The {s['noun']} in frame does not "
                 f"say this line. ")
     if kind == "handover":
-        return (f"{n}. The interviewer holds the {offered} out to {s['subject']} on that same "
+        return (f"{n}. The interviewer holds {offering} out to {s['subject']} on that same "
                 f"corner; {s['pronoun']} {took}. Silent. ")
     if kind == "react":
-        return (f"{n}. The same {s['noun']} on that same corner, holding the {held}, looks at "
+        return (f"{n}. The same {s['noun']} on that same corner, {holding}, looks at "
                 f"the interviewer and {s['reaction']}. Silent. ")
     if kind == "speak":
         manner = f" {s['manner']}" if s.get("manner") else ""
-        return (f"{n}. The same {s['noun']} on that same corner, holding the {held}, "
+        return (f"{n}. The same {s['noun']} on that same corner, {holding}, "
                 f"{glance}looks at the interviewer, {s['reaction']} and says{manner}: "
                 f"\"{s['line']}\" ")
     if kind == "sip":
-        return (f"{n}. {s['subject']} on that same corner, holding the {held}, raises it and "
+        return (f"{n}. {s['subject']} on that same corner, {holding}, raises it and "
                 f"takes one sip. Silent. ")
     if kind == "reach":
         # THE FIRST HALF OF AN OPENING THAT HAPPENS IN THE CUT. Seed 4806 spent $3.64 asking the
@@ -135,7 +137,7 @@ def _shot(n, s, cfg, can=False, prev_kind=None, upright=False, one_mic=False):
         # pull, nothing opened on camera -- are in _SEALED_CUT, which every can-grammar prompt
         # carries and the lint requires by needle. Stating them twice is the duplication
         # _MIC_SCALE_TAIL was deleted for, and the word budget has none to spare.
-        return (f"{n}. {s['subject']} on that same corner, holding the {held}, brings the other "
+        return (f"{n}. {s['subject']} on that same corner, {holding}, brings the other "
                 f"hand up to its top and the shot CUTS AWAY. Nothing is opened on camera. "
                 f"Silent. ")
     if kind == "payoff":
@@ -160,10 +162,11 @@ def _shot(n, s, cfg, can=False, prev_kind=None, upright=False, one_mic=False):
             # different kind of shot. `payoff` stays a distinct kind because brandkit and
             # build_episode both use it structurally: exactly one take pays off, and it is last.
             said = f" {s['manner']}" if s.get("manner") else ""
-            return (f"{n}. The same {s['noun']} on that same corner, holding the {held}, "
+            return (f"{n}. The same {s['noun']} on that same corner, {holding}, "
                     f"{glance}looks at the interviewer, {s['reaction']} and says{said}: "
                     f"\"{s['line']}\" ")
-        return (f"{n}. The same {s['noun']} on that same corner lowers the {held} and says to "
+        lowering = held if one_mic and prompt_version == 2 else f"the {held}"
+        return (f"{n}. The same {s['noun']} on that same corner lowers {lowering} and says to "
                 f"the interviewer{manner}: \"{s['line']}\" ")
     raise ValueError(f"unknown shot kind {kind!r}. Known: {', '.join(SHOT_KINDS)}")
 
@@ -297,8 +300,8 @@ MIC_SCALE_CLAUSES = {
 #     visibly -- space above the head, the waist in frame -- and adds the negation that was
 #     missing. Both required needles ("every shot is wide", "detail falls away behind the
 #     subject") survive the replacement, which `selftest.py` and the gate both re-check.
-# Kept deliberately short. The ~1200-word ceiling is real (seed 4811) and the pace grammar
-# already spends 214 words of it, so a guard that has to survive has to be one sentence.
+# Kept deliberately short for clarity. Seed 4811 motivated the former 1200-word gate,
+# but an exact quality boundary was not proved. Keep the guard even in a long prompt.
 LABEL_FACING = (
     "THE LABEL FACES THE CAMERA: whenever the {prod} is visible its front label is turned toward "
     "the lens, never rotated away and never showing a blank unprinted side. ")
@@ -354,7 +357,7 @@ GUARD_CLAUSES = {
 # trade an approved element for a fix, which is not what was asked for.
 #
 # WORD COST. This REPLACES rather than adds, so the mic grammar costs +24 words on the Liquid
-# Death cast, which is the only reason all four grammars fit under the 1200-word ceiling at all.
+# Death cast. This helped fit the former internal 1200-word budget; that budget is now advice.
 # The first draft stated the never-changes rule in its own sentence and the description in
 # another; they are merged here because that was a duplicate I had written myself, and the lint
 # refused all three episode-2 payloads until it came out. Measured, not guessed.
@@ -421,13 +424,13 @@ _CAST_ADULTS = ("clearly different people, ALL CLEARLY ADULT, in their twenties 
 # INTERVIEWER NEVER SPEAKS", eight words earlier in the same sentence, and the needle the lint
 # checks is that capitalised phrase. Both distinct rules are kept -- the interviewer says nothing,
 # and nobody in frame asks a question either -- because those are two different mouths. The eight
-# words went to episode 3's can grammar, which had none spare under the 1200-word ceiling.
+# words went to episode 3's can grammar under the former internal 1200-word budget.
 # "Each person is already reacting to a {prod} just put into their hand." came out on
 # 2026-10-01. It was context explaining why nobody asks anything -- and the shot list SHOWS it:
 # every handover in an answers-only take reads "The interviewer holds the {prod} out to X; X
 # takes it and holds it...". A sentence describing what the numbered shots already stage is the
 # _MIC_SCALE_TAIL case, and episode 3's takes B and C needed the thirteen words to fit the
-# eight-shot cast under the 1200-word ceiling.
+# eight-shot cast under the former internal 1200-word budget.
 ANSWERS_ONLY = (
     "NO QUESTION IS ASKED IN THIS CLIP AND THE INTERVIEWER NEVER SPEAKS: the interviewer does not "
     "say this line, \"{question}\", and nobody in frame asks a question either. ")
@@ -454,8 +457,8 @@ ANSWERS_ONLY = (
 # every shot" is supplied by the PRODUCT paragraph, which every prompt carries, so nothing that
 # was paid for goes missing -- that is the same proof _MIC_SCALE_TAIL needed before deletion.
 #
-# It is also worth ~150 words, which is what pays for a four-person cast under the 1200-word
-# ceiling, and cast size is the pace lever (see MIC_REF_CLAUSES' note and TAKES.md).
+# It also saves ~150 words. This helped fit the former internal word budget; length alone
+# is now advisory. Cast size is not a proven pace lever (see REFERENCE.md items 32/33).
 # NOTE the position pin in the middle of this sentence, and why it is there. The first draft of
 # this block left it out, and the lint immediately refused the payload for missing "is in the
 # same place in every shot" -- a REQUIRED_CLAUSE whose docstring says it covers BOTH objects and
@@ -688,11 +691,21 @@ ONE_MIC_PER_SHOT = {
 def build_prompt(cfg: dict, pace: bool = False, guards: bool = False, mic: bool = False,
                  plain: bool = False, answers_only: bool = False, can: bool = False,
                  mic_ref: bool = False, can_size: bool = False, can_sealed: bool = False,
-                 upright: bool = False, one_mic: bool = False) -> str:
+                 upright: bool = False, one_mic: bool = False, prompt_version: int = 1) -> str:
+    if prompt_version not in (1, 2):
+        raise ValueError("prompt_version must be 1 or 2")
+    if cfg.get("mode") == "conversation":
+        import conversation
+        if any((guards, answers_only, can, mic_ref, can_size, can_sealed, upright)):
+            raise ValueError("product/episode grammars cannot be applied to conversation")
+        return conversation.build_prompt(cfg)
     # `can` is the pre-split name and means BOTH halves, so seeds 4824 and 4827 reproduce.
     can_size, can_sealed = can_size or can, can_sealed or can
     p = cfg["product"]
     prod, phrase = p["noun"], p["phrase"]
+    upright_block = UPRIGHT
+    if prompt_version == 2 and prod != "can":
+        upright_block = UPRIGHT.replace("THE LID IS NEVER SHOWN", "THE TOP EDGE IS NEVER SHOWN")
     shots = cfg["shots"]
     n_shots = word(len(shots))
     # `handover_cold` counts as a handover here. Leaving it out made the cast size fall by one
@@ -701,11 +714,12 @@ def build_prompt(cfg: dict, pace: bool = False, guards: bool = False, mic: bool 
                    ("handover_first", "handover_cold", "handover", "sip")})
     n_cast = word(cfg.get("cast_size") or len(cast))
 
-    return (
+    prompt = (
         # capture grammar. "cinematic" and "shallow depth of field" are BANNED_VOCAB below: both
         # pull a commercial grade, which is the first thing that reads as AI here.
-        "Raw unedited phone footage of a street interview, filmed vertically, handheld, flat grey "
-        "overcast daylight, 30 frames per second. Fast hard jump cuts. "
+        "Raw unedited phone footage of a street interview, filmed vertically, handheld, "
+        f"{cfg['location'].get('light', 'flat grey overcast daylight')}, "
+        "30 frames per second. Fast hard jump cuts. "
 
         # The pace block sits HIGH on purpose: whatever leads the prompt wins (Critical knowledge
         # 2), it is about cutting so it belongs with the capture grammar, and on seed 4809 -- the
@@ -789,7 +803,7 @@ def build_prompt(cfg: dict, pace: bool = False, guards: bool = False, mic: bool 
         # UPRIGHT REPLACES this whole sentence. See its comment: the position was never the
         # problem, the ORIENTATION was, and nothing had ever stated which way up the can is.
         + (NO_SUBJECT_MIC if one_mic else "")
-        + (UPRIGHT.format(prod=prod, PROD=prod.upper()) if upright else
+        + (upright_block.format(prod=prod, PROD=prod.upper()) if upright else
            f"THE {prod.upper()} IS HELD "
            f"IN THE SAME PLACE IN EVERY SHOT: in the person's own hand, raised to chest height "
            f"on the LEFT side of the frame, "
@@ -850,13 +864,15 @@ def build_prompt(cfg: dict, pace: bool = False, guards: bool = False, mic: bool 
         f"ONE corner: {cfg['location']['description']}. "
         f"{cfg['location']['landmarks']} are behind every person in all {n_shots}. "
 
-        + "".join(_shot(i, s, cfg, can=can_sealed, upright=upright, one_mic=one_mic,
+        + "".join(_shot(i, s, cfg, can=can_sealed, upright=upright, one_mic=one_mic, prompt_version=prompt_version,
                         prev_kind=(shots[i - 2]["kind"] if i >= 2 else None))
                   for i, s in enumerate(shots, start=1)) +
 
         "Sound: the voices close on the microphone and one continuous street ambience across the "
         "cuts, traffic, footsteps and a distant horn. No music, no score, no logo, no on-screen text, "
         "no subtitles.")
+    return prompt
+
 
 
 # ── what the gate lints for ────────────────────────────────────────────────────────────────
@@ -925,7 +941,11 @@ RATE_FAST = 0.2419
 GEN_CAP_S = 15.0       # Seedance single-call ceiling; the idea has to fit inside it
 RESOLUTION = "720p"    # MODEL_BEHAVIORS.md: the classifier sweeps harder at 1080p
 ASPECT = "9:16"
-WORD_CEILING = 1200    # past this the model starts dropping rules (measured on seed 4811)
+# Quality guidance, not an API maximum or a precise failure boundary. BytePlus recommends
+# at most 1000 English words because lengthy prompts may miss details:
+# https://docs.byteplus.com/en/docs/modelark/create-video-generation-task-api
+# Fal's reference-to-video schema declares no maxLength for prompt (checked 2026-10-03).
+PROMPT_WORD_GUIDELINE = 1000
 
 
 # Clauses that must appear in EVERY numbered shot, not merely somewhere in the prompt. The
@@ -946,9 +966,10 @@ REQUIRED_PER_SHOT = {
 def lint(prompt: str, pace: bool = False, guards: bool = False, mic: bool = False,
          plain: bool = False, answers_only: bool = False, can: bool = False,
          mic_ref: bool = False, can_size: bool = False, can_sealed: bool = False,
-         upright: bool = False, one_mic: bool = False):
+         upright: bool = False, one_mic: bool = False, prompt_version: int = 1, mode: str = "product-guess"):
     """The prompt lint, as a function, so `check-cut.py` and `single_gen.py --dry-run` apply the
-    SAME rule to the same text. Returns a list of failure strings.
+    SAME rule to the same text. Returns structural failure strings. Length is advisory
+    and lives in prompt_warnings(), so a complete prompt is never refused for its count.
 
     `pace=True` adds PACE_CLAUSES and `guards=True` adds GUARD_CLAUSES. Both are additive and
     off by default: a prompt built without them lints exactly as it did before, so nothing that
@@ -960,6 +981,13 @@ def lint(prompt: str, pace: bool = False, guards: bool = False, mic: bool = Fals
     `guard_grammar` out of the manifest for exactly this reason -- linting a pace prompt with
     `pace=False` would report a PASS while the four clauses the pace grammar paid for went
     unchecked, which is how the pace block was deleted at seed 4812 and nothing noticed."""
+    if mode == "conversation":
+        import conversation
+        if any((guards, answers_only, can, mic_ref, can_size, can_sealed, upright)):
+            return ["product/episode grammars cannot be applied to conversation"]
+        return conversation.lint(prompt, split_shots)
+    if mode != "product-guess":
+        return ["unknown street execution mode"]
     can_size, can_sealed = can_size or can, can_sealed or can
     if mic and mic_ref:
         return ["`mic` and `mic_ref` are two different answers to the same question and the "
@@ -977,6 +1005,8 @@ def lint(prompt: str, pace: bool = False, guards: bool = False, mic: bool = Fals
                 **(CAN_SEALED_CLAUSES if can_sealed else {}),
                 **(UPRIGHT_CLAUSES if upright else {}),
                 **(ONE_MIC_CLAUSES if one_mic else {}))
+    if prompt_version == 2 and upright and "the top edge is never shown" in pr:
+        need["the top edge is never shown"] = need.pop("the lid is never shown")
     out = [f'the prompt is missing "{n}" -- {why}' for n, why in need.items()
            if n not in pr]
     out += [f'the prompt contains "{n}" -- {why}' for n, why in BANNED_VOCAB.items() if n in pr]
@@ -989,10 +1019,17 @@ def lint(prompt: str, pace: bool = False, guards: bool = False, mic: bool = Fals
             out.append(f'no numbered shot list, so "{n}" cannot be counted per shot -- {why}')
         elif bare:
             out.append(f'shot(s) {bare} do not restate "{n}" -- {why}')
-    if len(prompt.split()) > WORD_CEILING:
-        out.append(f"the prompt is {len(prompt.split())} words, over the {WORD_CEILING}-word "
-                   f"ceiling where seed 4811 started dropping rules")
     return out
+
+
+def prompt_warnings(prompt: str):
+    """Non-blocking length advice; never rewrite the prompt or authorize a paid call."""
+    words = len(prompt.split())
+    if words <= PROMPT_WORD_GUIDELINE:
+        return []
+    return [f"the prompt is {words} words, above BytePlus's recommended "
+            f"{PROMPT_WORD_GUIDELINE}-English-word guideline; lengthy prompts may miss details. "
+            "Advisory only: structural checks and existing spend approval still apply."]
 
 
 # ── reading a prompt back ──────────────────────────────────────────────────────────────────

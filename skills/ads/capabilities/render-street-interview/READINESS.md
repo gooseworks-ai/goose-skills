@@ -1,4 +1,50 @@
+# Human version
+
+**Summary.** This is a dated readiness audit from 2026-09-29, not today's runbook. The 2026-10-01 face verdict in `REFERENCE.md` supersedes its unruled-face blocker, but does not prove a new take's quality. Current execution uses `SKILL.md`, the selected recipe and [bundled model notes](references/model-behaviors.md).
+
+The private paths, missing measurement guide, footage and proposed experiments below are optional historical authoring evidence. No Studio checkout or avatar still is required. Default zero-strength finishing needs no colour reference. Old cost figures and classifier observations are not current pricing or policy guarantees.
+
+---
+
+# Agent version
+
 # create-street-interview-video — readiness
+
+**Current summary (2026-10-03).** Product-guess retains the existing object renderer and
+approved prompt baseline. Conversation supports **free script/config/prompt previews only**
+for mic-only, prepared-sample and visible-task interactions. No conversation media endpoint,
+price, performed timing, sampling action or camera/audio result is validated. Every subtype
+still refuses `single_gen.py --yes` and product/scene reference bindings.
+
+## Current conversation preview support
+
+- Configs may describe `interaction.type`, `visible_setup`, `participant_reason` and optional
+  props. Missing interaction data remains mic-only. Product-sample uses a prepared plain cup;
+  concept-challenge uses described non-UI props; mic-only can explain a service without a
+  device. Phone, screen and UI demonstrations remain unsupported.
+- Ordered shots can include explicit visual/action descriptions and silent action/reaction.
+  A participant answer or silent action can open the edit. The first actual interviewer
+  question exactly matches `cfg.question` and is spoken once. Both people still speak.
+- The native preview checks retain 3–8 shots, a 6–15s duration and the provisional ceiling of
+  2.5 spoken words/s. Authors must leave breathing room for actions; these checks cannot
+  verify performed timing or quality.
+- Writing starts with a complete inspected commercial street interaction and a coherent
+  situation brief. Full visual and spoken coverage, setup, participation, hook, product
+  role and payoff are required. Seed snippets are leads; radio/editorial material is not
+  a fallback. Unseen recruitment stays unknown. See
+  [street-script-writing](references/street-script-writing.md).
+- Human review is on the situation brief, words, action timeline, earned brand connection,
+  ending-card specification and prompt preview. A clean dry run verifies construction,
+  not media delivery. A rendered pilot and delivery review are still required before
+  conversation can become a paid production path.
+
+## Historical product-guess readiness (2026-09-29)
+
+The report below is preserved as history, not the current production verdict. The later
+[REFERENCE.md status](REFERENCE.md#status) records that the user accepted the single-take
+faces on 2026-10-01 and that a product-guess episode shipped. That does not validate any
+conversation subtype. Product-guess prompt instructions remain unchanged.
+
 
 State as of 2026-09-29. Written from a pass over the skill with **no paid generation of any
 kind**: no still, no clip, no voice. Everything measured below came out of the take already paid
@@ -14,7 +60,7 @@ for (`ld-single-seed4802`) and the local reference footage.
 | `single_gen.py` | dry run clean, no network | prints model, seed, price, destination and the full prompt; `fal_helpers` import is now lazy so a dry run needs no key |
 | `variants_gen.py` | dry run clean, no network | 6 variants, seeds 4810–4815, **$21.84** total ($17.42 on `--fast`) |
 | `build_looks.py` | `--dry-run` clean, and a **real free render verified end to end** | dry run renders every caption layer and asserts the safe zone with no ffmpeg; the real run produced `street-ld-bare.mp4` 14.30s and its caption-free control |
-| `phone_look_video.py` | runs; now fails loudly instead of silently | refuses to run without a real colour reference rather than grading against nothing |
+| `phone_look_video.py` | runs; now fails loudly instead of silently | zero-strength finishing needs no reference; positive-strength matching requires a real reference |
 | `check-cut.py` | **new gate, 9 checks, falsified both ways** | full PASS on the `bare` look with every check live, including Whisper |
 
 Run order, all of it free except step 2:

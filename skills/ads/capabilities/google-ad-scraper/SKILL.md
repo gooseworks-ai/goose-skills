@@ -33,8 +33,10 @@ python3 skills/google-ad-scraper/scripts/search_google_ads.py \
 
 1. **Domain Input**: Pass the target company's domain directly via `--domain`
 2. **Company Name Resolution** (optional): If only `--company` is provided, the script searches Google Ads Transparency Center using Apify's web-scraper (Puppeteer) to resolve the company name to advertiser info
-3. **Ad Scraping**: Calls the Apify `burbn/google-ads-search` actor with `{"domain": "...", "maxItems": N}`
+3. **Ad Scraping**: Calls the Apify `burbn/google-ads-search` actor with `{"domain": "...", "maxResults": N}`
 4. **Output**: Returns ads as JSON or human-readable summary
+
+**Input contract:** `maxResults` is the actor’s documented limit field ([official schema](https://apify.com/burbn/google-ads-search/input-schema)). This fallback remains temporary research; it does not create a saved GooseWorks ad-library source. Prefer the confirmed durable Google workflow in `competitor-ad-intelligence` when saving is requested.
 
 ## CLI Reference
 
