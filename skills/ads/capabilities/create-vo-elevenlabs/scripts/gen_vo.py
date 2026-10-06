@@ -85,6 +85,7 @@ def main():
     ap.add_argument("--settings", help="voice_settings as JSON; requires --with-timestamps")
     ap.add_argument("--say-as", action="append", help='"Term=how it is said" (repeatable)')
     ap.add_argument("--rules", help="brand-rules.json with a pronunciations list")
+    ap.add_argument("--dry-run", action="store_true", help="print the spoken plan without generating audio")
     a = ap.parse_args()
     if not a.text.strip():
         ap.error("--text is empty; refusing to pay for silence")
@@ -96,6 +97,9 @@ def main():
     spoken = apply_say_as(a.text, load_pairs(a.say_as, a.rules))
     if spoken != a.text:
         print(f"spoken text: {spoken}")
+    if a.dry_run:
+        print(spoken)
+        return 0
     if a.with_timestamps:
         timestamped_tts(spoken, a.voice, a.out, a.model, settings)
     else:

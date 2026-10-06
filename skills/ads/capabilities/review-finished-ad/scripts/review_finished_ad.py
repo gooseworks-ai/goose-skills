@@ -490,6 +490,25 @@ def build_sheet(frames: list[tuple[float, Image.Image]], refs: list[tuple[str, I
 
 # ---------------------------------------------------------------- main
 
+def sample_times(duration: float, cuts: list[float], endcard_s: float, cap: int = 17) -> list[float]:
+    """Cover the body throughout time, then add shot samples within the existing cap."""
+    body = max(0.0, duration - min(max(0.0, endcard_s), duration))
+    if body <= 0.05 or cap <= 0:
+        return []
+    edge = min(0.1, body / 4)
+    count = min(cap, max(1, min(6, int(body / 0.25))))
+    required = [round(edge + (body - 2 * edge) * i / max(1, count - 1), 3)
+                for i in range(count)]
+    bounds = [0.0] + sorted({c for c in cuts if 0 < c < body}) + [body]
+    shots = [(a + b) / 2 for a, b in zip(bounds, bounds[1:]) if b - a > 0.2]
+    candidates = [t for t in shots if all(abs(t - s) >= 0.15 for s in required)]
+    remaining = cap - len(required)
+    if len(candidates) > remaining:
+        candidates = [candidates[round(i * (len(candidates) - 1) / max(1, remaining - 1))]
+                      for i in range(remaining)]
+    return sorted(set(required + candidates))
+
+
 def review(args: argparse.Namespace) -> dict:
     meta = probe(args.video)
     dur = meta["duration"]
@@ -502,9 +521,8 @@ def review(args: argparse.Namespace) -> dict:
 
     logo = load_image(args.logo) if args.logo else None
     tmp = Path(tempfile.mkdtemp(prefix="rfa-"))
-    # One frame per shot (mid-shot) + the end card.
-    bounds = [0.0] + cuts + [dur]
-    shot_times = [(a + b) / 2 for a, b in zip(bounds, bounds[1:]) if b - a > 0.2][:17]
+    # Time coverage prevents a continuous chat from producing only one body frame.
+    shot_times = sample_times(dur, cuts, args.endcard_s)
     end_times = [max(0.0, dur - s) for s in (1.6, 0.9, 0.3)]
     frames = [(t, Image.open(grab(args.video, t, tmp / f"f{i:02d}.png")).convert("RGB"))
               for i, t in enumerate(shot_times)]
@@ -547,7 +565,8 @@ def review(args: argparse.Namespace) -> dict:
     return {
         "verdict": "FAIL" if failed else "PASS",
         "failed": failed,
-        "video": {**meta, "cuts": [round(c, 2) for c in cuts]},
+        "video": {**meta, "cuts": [round(c, 2) for c in cuts],
+                  "sheet_samples": shot_times + end_times[-1:]},
         "checks": {k: asdict(c) for k, c in checks.items()},
         "sheet": str(sheet),
         "judge_on_sheet": [

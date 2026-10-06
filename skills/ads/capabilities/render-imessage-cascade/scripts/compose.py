@@ -16,6 +16,7 @@ the clear. With no bed, the pops + swoosh play over silence (the 'pops + swoosh 
 Geometry constants MUST match build_assets.py.
 """
 import argparse, json, os, subprocess, sys
+from layout import signature, timing
 
 CANVAS_W = 1080
 BODY_W = 810
@@ -39,14 +40,12 @@ def main():
     cfg = json.load(open(a.config))
     work = a.work_dir
     N = len(cfg["notifications"])
-    tm = cfg.get("timing", {})
-    arrivals = tm.get("arrivals") or [round(1.6 + 2.0*i, 2) for i in range(N)]
-    assert len(arrivals) == N, "timing.arrivals length must equal number of notifications"
-    Tc = tm.get("clear", round(arrivals[-1] + 1.6, 2))
-    EC_IN = tm.get("endcard_in", round(Tc + 0.7, 2))
-    DUR = tm.get("duration", round(EC_IN + 4.1, 2))
-    if N > 5:
-        print(f"WARNING: {N} notifications — the top of the stack may clip / crowd the pill. 3-5 recommended.", file=sys.stderr)
+    with open(os.path.join(work, "layout.json")) as f:
+        g = json.load(f)
+    if g["config_sha256"] != signature(cfg):
+        raise ValueError("config changed after assets were built; rebuild assets")
+    H, YB = g["row_pitch"], g["bottom_y"]
+    arrivals, Tc, RES_IN, EC_IN, DUR = timing(cfg)
 
     plate = cfg["plate"]
     CLEAR = f"(560*(1-exp(-12*max(0\\,t-{Tc}))))"
@@ -67,6 +66,11 @@ def main():
     idx_ec = N+2
     inp += ["-loop", "1", "-framerate", "30", "-t", str(DUR), "-i", os.path.join(work, "endcard.png")]
 
+    idx_res = None
+    if cfg.get("resolution"):
+        idx_res = idx_ec + 1
+        inp += ["-loop", "1", "-framerate", "30", "-t", str(DUR), "-i", os.path.join(work, "resolution.png")]
+
     # ---- video filtergraph ----
     fc = []
     fc.append("[0:v]scale=1188:2088:force_original_aspect_ratio=increase,crop=1188:2088,setsar=1,"
@@ -80,16 +84,24 @@ def main():
     for k in range(1, N+1):
         fc.append(f"[{cur}][b{k}]overlay=x=0:y='{ybanner(k)}'[v{k}]"); cur = f"v{k}"
     fc.append(f"[{cur}][pill]overlay=x=0:y='{y_pill}'[vp]")
-    fc.append(f"[vp][ec]overlay=x=0:y=0:enable='gte(t,{round(EC_IN-0.3,2)})',format=yuv420p[vout]")
+    if idx_res is not None:
+        fc.append(f"[{idx_res}:v]format=rgba,fade=t=in:st={RES_IN}:d=0.3:alpha=1,fade=t=out:st={EC_IN-.3}:d=0.3:alpha=1[res]")
+        fc.append(f"[vp][res]overlay=x=0:y='{YB}+{spring(RES_IN)}'[vr]")
+    before_ec = "vr" if idx_res is not None else "vp"
+    fc.append(f"[{before_ec}][ec]overlay=x=0:y=0:enable='gte(t,{round(EC_IN-0.3,2)})',format=yuv420p[vout]")
 
     # ---- optional audio ----
     audio = cfg.get("audio", {}) or {}
+    res_sound = (cfg.get("resolution") or {}).get("sound")
+    for path in [audio.get(k) for k in ("bed", "pop", "swoosh")] + [res_sound]:
+        if path and not os.path.isfile(path):
+            raise ValueError(f"audio file missing: {path}")
     _ok = lambda k: bool(audio.get(k)) and os.path.exists(audio.get(k, ""))
-    have_audio = (not a.no_audio) and (_ok("bed") or _ok("pop") or _ok("swoosh"))
+    have_audio = (not a.no_audio) and (_ok("bed") or _ok("pop") or _ok("swoosh") or res_sound)
     aud_inputs = []
     if have_audio:
         bed = audio.get("bed"); pop = audio.get("pop"); swoosh = audio.get("swoosh")
-        base_i = idx_ec + 1
+        base_i = (idx_res if idx_res is not None else idx_ec) + 1
         if _ok("bed"):
             aud_inputs += ["-i", bed]
         else:  # no music bed chosen: silent base so the pops + swoosh still play
@@ -101,6 +113,9 @@ def main():
             aud_inputs += ["-i", pop]; pop_i = nxt; nxt += 1
         if swoosh and os.path.exists(swoosh):
             aud_inputs += ["-i", swoosh]; swoosh_i = nxt; nxt += 1
+        res_i = None
+        if res_sound:
+            aud_inputs += ["-i", res_sound]; res_i = nxt
         parts = []
         mixes = []
         if pop_i is not None:
@@ -109,9 +124,12 @@ def main():
                 ms = int(arrivals[k]*1000)
                 vol = 0.62 if k == N-1 else 0.55
                 parts.append(f"[pp{k}]adelay={ms}|{ms},volume={vol}[p{k}];"); mixes.append(f"[p{k}]")
+        if res_i is not None:
+            ms = int(RES_IN*1000)
+            parts.append(f"[{res_i}:a]adelay={ms}|{ms},volume=0.55[rs];"); mixes.append("[rs]")
         if swoosh_i is not None:
             ms = int(Tc*1000); parts.append(f"[{swoosh_i}:a]adelay={ms}|{ms},volume=0.5[sw];"); mixes.append("[sw]")
-        parts.append(f"[{bed_i}:a]volume=1.0[bed];")
+        parts.append(f"[{bed_i}:a]apad,atrim=duration={DUR},volume=1.0[bed];")
         n_mix = 1 + len(mixes)
         parts.append("[bed]" + "".join(mixes) + f"amix=inputs={n_mix}:normalize=0:duration=first:dropout_transition=0,"
                      f"loudnorm=I=-14:TP=-1.5:LRA=11,afade=t=in:st=0:d=0.4,afade=t=out:st={round(DUR-0.8,2)}:d=0.8[aout]")

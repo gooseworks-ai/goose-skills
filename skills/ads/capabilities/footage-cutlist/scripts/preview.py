@@ -34,6 +34,12 @@ def framed(spec, b, t):
         im = _I.open(src["path"]).convert("RGB")
     else:
         im = grab(src["path"], t)
+    if b.get("look") == "photo":
+        from photo import render
+        fr = render(im, W, bh, b, (t-b["in"])/(b["out"]-b["in"]), b.get("bg") or spec.get("bg", "auto"))
+        canvas = Image.new("RGB", (W, H), (26,26,26))
+        canvas.paste(fr, (0,y))
+        return canvas.resize((TW, int(TW*H/W)))
     if b.get("look") == "screen":
         from filmed import ScreenLook
         fr = ScreenLook(W, bh, b.get("screen")).render(im, 0.0, 0, crop=b.get("crop"), masks=b.get("mask"))
@@ -54,6 +60,10 @@ def framed(spec, b, t):
     if bg == "auto" and not src.get("still"):
         hx = sample_bg(src["path"], b["in"] + 0.1)
         col = tuple(int(hx[i:i + 2], 16) for i in (2, 4, 6))
+    elif bg == "auto":
+        import statistics
+        corners = [im.getpixel(p) for p in ((0,0),(im.width-1,0),(0,im.height-1),(im.width-1,im.height-1))]
+        col = tuple(round(statistics.median(p[i] for p in corners)) for i in range(3))
     elif bg != "blur":
         hx = bg.lstrip("#")
         col = tuple(int(hx[i:i + 2], 16) for i in (0, 2, 4))
@@ -83,9 +93,20 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--cutlist", required=True)
     ap.add_argument("--out", required=True)
+    ap.add_argument("--caption-footprint", help="JSON from caption-burn footprint.py with the final style/font")
     x = ap.parse_args()
     spec = check_or_die(x.cutlist)
+    import json
+    footprints = json.loads(pathlib.Path(x.caption_footprint).read_text()) if x.caption_footprint else None
     W, H = spec["size"]
+    if footprints:
+        import hashlib
+        obj={"size":[W,H],"seam":spec.get("seam"),
+             "beats":[{k:b.get(k,"split" if k=="state" else None) for k in ("id","vo","start","end","state")} for b in spec["beats"]]}
+        if footprints.get("cutlist_sha256") != hashlib.sha256(json.dumps(obj,sort_keys=True).encode()).hexdigest():
+            raise SystemExit("cut list changed; regenerate caption footprint")
+    if footprints and footprints["size"] != [W,H]:
+        raise SystemExit("caption footprint size does not match cut list")
     th = int(TW * H / W)
     txt_w = 560
     f_id, f_txt, f_meta = font(34), font(24), font(20)
@@ -112,7 +133,15 @@ def main():
                     d.text((14, yy + 12), line, font=f_meta, fill=(150, 150, 150))
                 a, o = b["in"], b["out"]
                 for k, t in enumerate((a + 0.05, (a + o) / 2, o - 0.08)):
-                    sheet.paste(framed(spec, b, t), (txt_w + 10 + k * (TW + 10), y))
+                    fr = framed(spec, b, t).convert("RGBA")
+                    fp = footprints["beats"].get(b["id"]) if footprints else None
+                    if fp and fp.get("bbox"):
+                        overlay = Image.new("RGBA", fr.size)
+                        od = ImageDraw.Draw(overlay)
+                        rect = [round(v*TW/W) for v in fp["bbox"]]
+                        od.rectangle(rect, fill=(255,180,0,95), outline=(255,180,0,255), width=2)
+                        fr = Image.alpha_composite(fr, overlay)
+                    sheet.paste(fr.convert("RGB"), (txt_w + 10 + k * (TW + 10), y))
             else:
                 d.text((txt_w + 20, y + th // 2 - 20), "creator full frame (no footage)", font=f_txt,
                        fill=(150, 150, 150))

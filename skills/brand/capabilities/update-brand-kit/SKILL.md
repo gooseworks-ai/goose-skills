@@ -122,3 +122,7 @@ human-readable summary of what changed and any limits hit.
 | User friction over field names | Asked the user to name fields | Translate their free-form description into fields yourself. |
 | A cap was hit silently (12th product / 9th image / 6th value prop dropped) | Exceeded a hard limit | Tell the user the limit and what was dropped; trim or replace. |
 | Standing rule ignored on later generations | Put it in a one-off prompt, not `instructions` | Move recurring do/don'ts into `instructions`. |
+
+## Confirmed pronunciation
+
+A confirmed brand/product pronunciation is a standing rule. Save it in the host's existing brand-facts store as a user-authored must rule whose text is exactly `Pronounce "<written term>" as "<spoken form>"` (for example `Pronounce "Gooseworks" as "Goose Works"`). Readers still accept the older `Pronunciation: written term => spoken form`; write the new form. Match an existing rule by its id to avoid duplicates. Read that brand's rules separately after the write, verify the exact term/form and preserve unrelated facts. Every subsequent voice plan reads these rules before spending. An unknown name is resolved before generation.

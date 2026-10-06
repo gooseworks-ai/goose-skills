@@ -70,3 +70,11 @@ text starts ~150px from the banner's left edge. Change one, change both.
 
 `watch` (QC the final master). The recipe gates `create-image-fal` (plate clean) and
 `create-music-elevenlabs` (bed/pop) — both paid, proxy-routed, billed to the Ads agent.
+
+## Wrapped notifications and software endings
+
+Bodies are measured and wrap to two lines. Oversized words, excessive lines, titles/handles that do not fit and stacks outside the safe area fail with a correction request. Shorten copy or reduce the notification count; never silently truncate or shrink the type. Asset building writes shared geometry and a config signature. Compose requires that manifest and rejects changed inputs until assets are rebuilt. Single-line configs retain their established dimensions and timing.
+
+An optional resolution object supplies title, body and handle after the stack clears, plus an optional arrival time, hold duration and supplied sound file. Omit the old explicit end-card/duration overrides when using derived resolution timing. It holds at least 1.5 seconds before the ending. Missing supplied audio fails rather than silently disappearing.
+
+For a software ending, set the end-card layout to b2b and supply a verified quote, attribution, optional CTA, a font file and one or two logo files. Logos retain their aspect ratio and transparency. Missing fonts/assets and excessive copy fail. Neutral layout samples are not customer endorsements.

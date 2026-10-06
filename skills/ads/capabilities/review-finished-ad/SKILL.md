@@ -69,7 +69,8 @@ logo.
 
 ## Eye checks — read the sheet every time
 
-`finished-ad-sheet.png` shows one frame per shot plus the end card, with the
+`finished-ad-sheet.png` shows samples spread across the body plus useful shot midpoints
+and the end card, with the
 platform UI areas shaded red, and the brand references underneath. Open it and
 confirm each line in the verdict's `judge_on_sheet`:
 
@@ -83,6 +84,11 @@ confirm each line in the verdict's `judge_on_sheet`:
 - **Logo unaltered:** not stretched, recoloured, cropped or redrawn.
 
 Any of these failing is a FAIL, the same as a machine check.
+
+Continuous formats need early, middle and late coverage even when there are no cuts.
+A body of at least 1.5 seconds gets at least six time samples, within the existing
+17-body-frame cap. Read the actual timestamps recorded in the result; inspect additional
+frames when a fast event or small qualification needs a closer look.
 
 ## Fix loop
 

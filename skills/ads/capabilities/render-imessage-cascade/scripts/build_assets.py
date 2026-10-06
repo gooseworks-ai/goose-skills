@@ -12,10 +12,11 @@ warm TRANSLUCENT greige (NOT white) with a soft dark drop shadow (NOT a white bl
 — sampled from the source trend (fill composites to ~RGB 220,197,186 over a warm
 desk). ALL text is composited here, never AI-rendered (LEARNINGS L4).
 
-Geometry constants MUST stay in sync with compose.py (BODY_W, BANNER_H, PAD, SIDE).
+layout.py measures text and writes the shared layout.json geometry for compose.py.
 """
 import argparse, json, os
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
+from layout import geometry, timing, wrap, TEXT_RIGHT
 
 # ---- geometry (keep in sync with compose.py) ----
 CANVAS_W = 1080
@@ -30,10 +31,11 @@ FILL = (246, 228, 219, 205)
 SHADOW = (30, 22, 16)                # warm-dark soft box-shadow
 
 # ---- fonts (macOS; SF Pro with Arial fallback, Times for the serif CTA) ----
+_WIN = os.name == "nt"
 SF = "/System/Library/Fonts/SFNS.ttf"
-ARIAL_B = "/System/Library/Fonts/Supplemental/Arial Bold.ttf"
-ARIAL = "/System/Library/Fonts/Supplemental/Arial.ttf"
-ARIAL_I = "/System/Library/Fonts/Supplemental/Arial Italic.ttf"
+ARIAL_B = "C:/Windows/Fonts/arialbd.ttf" if _WIN else "/System/Library/Fonts/Supplemental/Arial Bold.ttf"
+ARIAL = "C:/Windows/Fonts/arial.ttf" if _WIN else "/System/Library/Fonts/Supplemental/Arial.ttf"
+ARIAL_I = "C:/Windows/Fonts/ariali.ttf" if _WIN else "/System/Library/Fonts/Supplemental/Arial Italic.ttf"
 TIMES = "/System/Library/Fonts/Times.ttc"
 
 def font(kind, size):
@@ -47,6 +49,8 @@ def font(kind, size):
     return ImageFont.truetype({"bold": ARIAL_B, "semibold": ARIAL_B, "medium": ARIAL_B, "reg": ARIAL, "italic": ARIAL_I}.get(kind, ARIAL), size)
 
 def serif(size):
+    if _WIN:
+        return ImageFont.truetype("C:/Windows/Fonts/timesbd.ttf", size)
     try:
         return ImageFont.truetype(TIMES, size, index=1)
     except Exception:
@@ -97,7 +101,9 @@ def get_icon(cfg, px=100):
     return messages_icon(px)
 
 # ---- one notification banner ----
-def build_banner(cfg, title, body, handle, out):
+def build_banner(cfg, title, body, handle, out, height=176):
+    BANNER_H = height
+    ROW_CANVAS_H = height + PAD * 2
     canvas = Image.new("RGBA", (CANVAS_W, ROW_CANVAS_H), (0, 0, 0, 0))
     bx0, by0 = SIDE, PAD; bx1, by1 = SIDE+BODY_W, PAD+BANNER_H
     # soft dark drop shadow (real box-shadow; diffuse, low opacity) — NOT a white bloom
@@ -111,8 +117,11 @@ def build_banner(cfg, title, body, handle, out):
     text_x = ix+100+24
     f_title, f_body, f_now, f_handle = font("bold", 38), font("reg", 36), font("reg", 25), font("italic", 25)
     ty = by0+34
+    wrap(title, f_title, TEXT_RIGHT - text_x - 95, 1)
+    wrap(handle, f_handle, TEXT_RIGHT - text_x, 1)
     d.text((text_x, ty), title, font=f_title, fill=(20, 20, 22, 255))
-    d.text((text_x, ty+50), body, font=f_body, fill=(70, 68, 72, 255))
+    for line_no, line in enumerate(wrap(body, f_body, TEXT_RIGHT - text_x, 2)):
+        d.text((text_x, ty+50+44*line_no), line, font=f_body, fill=(70, 68, 72, 255))
     now_w = d.textlength("NOW", font=f_now); d.text((bx1-26-now_w, by0+30), "NOW", font=f_now, fill=(140, 138, 140, 255))
     h_w = d.textlength(handle, font=f_handle); d.text((bx1-26-h_w, by1-42), handle, font=f_handle, fill=(150, 146, 146, 255))
     canvas.save(out)
@@ -139,7 +148,36 @@ def build_pill(out):
     canvas.save(out)
 
 # ---- serif CTA + brand wordmark end card ----
+def build_b2b_endcard(ec, out):
+    if not ec.get("font"):
+        raise ValueError("B2B end card requires a supplied font path")
+    logos = ec.get("logos") or []
+    if not 1 <= len(logos) <= 2:
+        raise ValueError("B2B end card requires 1–2 supplied logos")
+    if not ec.get("quote") or not ec.get("attribution"):
+        raise ValueError("supply a verified quote and attribution")
+    card = Image.new("RGBA", (1080, 1920), (0, 0, 0, 0))
+    d = ImageDraw.Draw(card)
+    y = 450
+    for key, px, limit in (("quote", 62, 5), ("attribution", 34, 2), ("cta", 48, 2)):
+        f = ImageFont.truetype(ec["font"], px)  # fail if unavailable, never substitute
+        for line in wrap(ec.get(key, ""), f, 810, limit):
+            d.text((540, y), line, font=f, anchor="mt", fill=(247, 244, 240, 255))
+            y += int(px * 1.3)
+        y += 45
+    if y > 1320:
+        raise ValueError("end card copy exceeds the safe area")
+    slot = 810 // len(logos)
+    for i, path in enumerate(logos):
+        logo = Image.open(path).convert("RGBA")
+        logo.thumbnail((slot - 48, 150), Image.Resampling.LANCZOS)
+        card.alpha_composite(logo, (135 + i*slot + (slot-logo.width)//2, y))
+    card.save(out)
+
+
 def build_endcard(ec, out):
+    if ec.get("layout") == "b2b":
+        return build_b2b_endcard(ec, out)
     W, Hh = 1080, 1920; card = Image.new("RGBA", (W, Hh), (0, 0, 0, 0)); d = ImageDraw.Draw(card)
     accent = hex_rgb(ec.get("accent", "#f05f22"))
     def center(txt, fnt, y, fill, sh=True):
@@ -180,8 +218,15 @@ def main():
     cfg = json.load(open(a.config))
     os.makedirs(a.work_dir, exist_ok=True)
     notifs = cfg["notifications"]
+    g = geometry(cfg, font("reg", 36))
+    timing(cfg)
     for i, n in enumerate(notifs, 1):
-        build_banner(cfg, n["title"], n["body"], n.get("handle", ""), os.path.join(a.work_dir, f"nb-{i}.png"))
+        build_banner(cfg, n["title"], n["body"], n.get("handle", ""), os.path.join(a.work_dir, f"nb-{i}.png"), g["banner_height"])
+    if cfg.get("resolution"):
+        r = cfg["resolution"]
+        build_banner(cfg, r["title"], r["body"], r.get("handle", ""), os.path.join(a.work_dir, "resolution.png"), g["banner_height"])
+    with open(os.path.join(a.work_dir, "layout.json"), "w") as f:
+        json.dump(g, f, indent=2)
     build_pill(os.path.join(a.work_dir, "pill.png"))
     build_endcard(cfg.get("end_card", {}), os.path.join(a.work_dir, "endcard.png"))
     print(f"built {len(notifs)} banners + pill + endcard -> {a.work_dir}")

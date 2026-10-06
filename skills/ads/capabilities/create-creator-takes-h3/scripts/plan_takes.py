@@ -189,6 +189,7 @@ def main():
         plan.append({"id": tid, "seed": seed(a.slug, tid),
                      "dur": max(MIN_TAKE, min(MAX_TAKE, math.ceil(end - start + TAIL))),
                      "covers": [round(start, 2), round(end, 2)],
+                     "words": str((out / (tid + ".words.json")).resolve()),
                      "beats": [b["id"] for b in group]})
 
     takes = {"model": "minimax/h3-max/reference-to-video", "char": str(img.resolve()),
