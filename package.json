@@ -7,7 +7,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/athina-ai/goose-skills"
+    "url": "https://github.com/gooseworks-ai/goose-skills"
   },
   "scripts": {
     "test": "node --test test/goose-skills-targets.test.js test/goose-skills-packs.test.js",
