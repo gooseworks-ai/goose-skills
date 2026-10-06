@@ -302,6 +302,36 @@ class LedgerTests(unittest.TestCase):
         self.assertIsNone(self.mp.rejected_request(MODEL, self.payload()))
         self.assertEqual(run("forget", cm.exception.ledger_key).returncode, 1)
 
+    def test_forget_only_deletes_ledger_records(self):
+        home = pathlib.Path(self.tmp.name)
+        project = home / "project"
+        project.mkdir()
+        manifest = project / "manifest.json"
+        manifest.write_text('{"takes": []}')
+        self.rej.mkdir(parents=True, exist_ok=True)
+        stray = self.rej / ("ab" * 16 + ".json")  # a key-shaped file that is not a record
+        stray.write_text('{"note": "not a record"}')
+        for bad in (str(manifest), "manifest.json", "../project/manifest.json",
+                    str(self.rej / ".." / "project" / "manifest.json"), stray.name, ""):
+            with self.subTest(bad=bad):
+                with self.assertRaises(ValueError):
+                    self.mp.forget_rejection(bad)
+        self.assertEqual(manifest.read_text(), '{"takes": []}')
+        self.assertTrue(stray.exists())
+        cli = subprocess.run([sys.executable, str(SCRIPT), "forget", str(manifest)],
+                             capture_output=True, text=True, env=dict(os.environ), timeout=60)
+        self.assertEqual(cli.returncode, 2)
+        self.assertIn("refused", cli.stderr)
+        self.assertTrue(manifest.exists())
+        # a real record can be cleared by key, by filename or by its path in the ledger
+        self.decision["likeness"] = (422, MSG_AND_TYPE)
+        with self.assertRaises(self.mp.FalPolicyRejection) as cm:
+            self.mp._fal_run(MODEL, self.payload(), poll_s=0)
+        removed = self.mp.forget_rejection(cm.exception.ledger_paths[0])
+        self.assertEqual([str(pathlib.Path(r).resolve()) for r in removed],
+                         [str(pathlib.Path(r).resolve()) for r in cm.exception.ledger_paths])
+        self.assertEqual(self.mp.forget_rejection(cm.exception.ledger_key), [])
+
     def test_5xx_429_and_408_are_never_recorded(self):
         for status, body in ((503, {"detail": [{"type": "content_policy_violation", "msg": LIKENESS}]}),
                              (429, {"detail": [{"msg": LIKENESS}]}),

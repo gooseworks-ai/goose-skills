@@ -19,6 +19,7 @@ MARK = "REAL-PERSON-REF"  # prompts carrying this are refused by the mock
 LIKENESS = "The images may contain likenesses of real people"
 REJECT = {"detail": [{"loc": ["body", "reference_image_urls"], "msg": LIKENESS,
                       "type": "content_policy_violation"}]}
+PARTNER = {"detail": [{"msg": "partner_validation_failed", "type": "content_policy_violation"}]}
 PROMPT_POLICY = {"detail": [{"msg": "This prompt contains words that violate the usage guidelines.",
                              "type": "invalid_request"}]}
 NON_POLICY = {"detail": [{"loc": ["body", "reference_image_urls", 0],
@@ -196,12 +197,37 @@ class RunTakesRejectionTests(unittest.TestCase):
         self.assertEqual(len(self.fal.submits), 2)
         self.assertTrue((self.out / "t3-seed345678.mp4").exists())
 
-    def test_a_likeness_rejection_stops_the_takes_that_share_the_still(self):
+    def test_a_still_rejection_stops_the_takes_that_share_the_still(self):
+        for name, body in (("likeness", REJECT), ("partner_validation", PARTNER)):
+            with self.subTest(name):
+                self.fal.reject_body, before = body, len(self.fal.submits)
+                self.char.write_bytes(b"creator-still-" + name.encode())  # a fresh request
+                r = self.run_takes("--only", "t2,t3", "--unchained", "--go")
+                self.assertEqual(r.returncode, 3, r.stderr)
+                self.assertEqual(len(self.fal.submits) - before, 1)
+                self.assertIn("not sent: t3 (they use the same unchanged character still", r.stderr)
+                self.assertFalse((self.out / "t3-seed345678.mp4").exists())
+
+    def test_a_recorded_still_rejection_holds_back_every_take(self):
+        self.fal.reject_body = PARTNER  # the photoreal-face refusal, recorded for t2
+        self.assertEqual(self.run_takes("--only", "t2", "--unchained", "--go").returncode, 3)
+        self.assertEqual((len(self.fal.submits), len(self.fal.uploads)), (1, 1))
+        for _ in range(2):  # re-runs send nothing: not t2, and not t3 one run at a time
+            r = self.run_takes("--only", "t2,t3", "--unchained", "--go")
+            self.assertEqual(r.returncode, 3, r.stderr)
+            self.assertEqual((len(self.fal.submits), len(self.fal.uploads)), (1, 1))
+            self.assertIn("not sent: t3. They use the same unchanged character still", r.stderr)
+        self.char.write_bytes(b"creator-still-v2")  # a new still: a new request, so it is sent
         r = self.run_takes("--only", "t2,t3", "--unchained", "--go")
         self.assertEqual(r.returncode, 3, r.stderr)
-        self.assertEqual(len(self.fal.submits), 1)
-        self.assertIn("not attempted: t3 (every take uses this same character still", r.stderr)
-        self.assertFalse((self.out / "t3-seed345678.mp4").exists())
+        self.assertEqual(len(self.fal.submits), 2)  # t2 sent; refused again, so t3 held back
+        self.assertIn("rejected by the provider", r.stderr)
+        self.fal.reject_body = PROMPT_POLICY  # the provider now objects to t2's prompt only
+        self.char.write_bytes(b"creator-still-v3")
+        r = self.run_takes("--only", "t2,t3", "--unchained", "--go")
+        self.assertEqual(r.returncode, 3, r.stderr)
+        self.assertEqual(len(self.fal.submits), 4)  # t2 refused for its prompt, t3 rendered
+        self.assertTrue((self.out / "t3-seed345678.mp4").exists())
 
     def test_non_policy_error_is_not_recorded(self):
         self.fal.reject_body = NON_POLICY

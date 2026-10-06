@@ -111,8 +111,10 @@ NSFW / safety checker.
   python3 media_proxy.py rejections        # list recorded rejections (key, model, reason, request id)
   python3 media_proxy.py forget <key>      # clear one record (all its keys); USER-APPROVED ONLY
   ```
-  `forget_rejection(key)` does the same in Python. Agents never clear a record on their own
-  to get a retry through.
+  `forget_rejection(key)` does the same in Python. It only ever deletes ledger records: it
+  takes the 32-hex key (or that record's filename or path inside the ledger directory) and
+  refuses anything else, such as another `.json` file or a file without a `keys` field.
+  Agents never clear a record on their own to get a retry through.
 
 ## Use it
 

@@ -141,7 +141,8 @@ Use ordinary skin texture and subtle asymmetry for realism. An eyebrow scar is n
 `run_takes.py` enforces the stop. When the provider refuses a take on policy grounds
 (likeness of a real person, `content_policy_violation`, `partner_validation_failed`, NSFW):
 
-- The run **exits 3** at the end: surface, do not retry. A **likeness** rejection stops the
+- The run **exits 3** at the end: surface, do not retry. A **still** rejection (likeness, or
+  `partner_validation_failed`, which is the provider refusing the photoreal face) stops the
   run at that take, because every take in a spec uses the same character still. Any other
   rejection (about that take's own prompt) skips only that take; the rest still render.
 - It prints the reason, type, request id, charge state and the ledger record path, and keeps
@@ -151,8 +152,10 @@ Use ordinary skin texture and subtle asymmetry for realism. An eyebrow scar is n
   source. Upload URLs change every run, so this digest is what lets media-proxy's
   rejected-request ledger recognise the same take again.
 - **Re-running the unchanged take is refused before anything is sent for it** (exit 3
-  again, "already rejected"). Only that take is refused: the other takes in the run are
-  different requests and still render. The dry run marks it `REJECTED BEFORE: <reason>`.
+  again, "already rejected"). If it was a still rejection, the other takes are held back
+  too while the still is unchanged: nothing is uploaded or sent, instead of one refused
+  submit per re-run. If it was about that take's prompt, only that take is refused and the
+  others still render. The dry run marks it `REJECTED BEFORE: <reason>`.
 - A new still, a changed prompt or `--reseed` makes it a new request, which is sent.
 
 A provider likeness/policy rejection stops the attempt. Preserve the provider's reason, request id and charged/uncharged/unknown state. Do not resubmit an identical rejected payload. Offer a permitted original character, user-cleared reference, or a supported non-likeness route only when allowed by that provider. A different model is not a policy bypass. Review changed inputs and extra spend through the normal approval flow.

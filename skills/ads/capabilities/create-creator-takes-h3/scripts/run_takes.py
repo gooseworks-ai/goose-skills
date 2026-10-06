@@ -25,13 +25,16 @@ the same clip, so a take that already exists on disk is skipped. The finished fi
 A PROVIDER POLICY REJECTION IS FINAL FOR THOSE INPUTS (QA-14). If fal refuses a take
 (likeness of a real person, content policy, partner validation, NSFW), the take is reported
 (reason, request id, charge state), kept in manifest.json under "rejected", and the run exits
-3 at the end: surface it to the user, do not retry. A LIKENESS rejection stops the run there,
-because every take in a spec uses the same character still; any other rejection skips only
+3 at the end: surface it to the user, do not retry. A STILL rejection (likeness or partner
+validation: the provider refusing the photoreal face) stops every take that uses the same
+unchanged character still, which is every take in a spec; any other rejection skips only
 that take. Every take is submitted with an input digest over the CONTENT of its inputs
 (prompt, settings, seed, and the sha256 of the character still, mannerism clip and t1 voice
 source), so a re-run of an unchanged rejected take is refused before anything is sent, even
-though the upload URLs are new each run. Only the matching take is refused; the other takes
-still run. Change the still, the prompt or the seed (--reseed) and the take is a new request.
+though the upload URLs are new each run. On a re-run, a take recorded as a still rejection
+holds back the other takes too (nothing is uploaded or sent); a take recorded for its own
+prompt is refused alone and the others still run. Change the still, the prompt or the seed
+(--reseed) and the take is a new request.
 """
 import argparse
 import hashlib
@@ -102,6 +105,10 @@ def take_digests(spec, takes, first, voice_src):
 
 KEEP = ("reason", "kind", "error_type", "request_id", "http_status", "charged", "charge_note",
         "rejected_at", "from_ledger", "matched", "ledger_key", "ledger_paths")
+# Rejections caused by the character still (for H3 and Seedance, partner validation is the
+# photoreal-face refusal). Every take in a spec uses the same still, so one such rejection
+# speaks for all of them while the still is unchanged.
+STILL_KINDS = ("likeness", "partner_validation")
 
 
 def report_rejection(t, e, man_p, manifest, not_sent=()):
@@ -116,8 +123,9 @@ def report_rejection(t, e, man_p, manifest, not_sent=()):
         print("  record:     %s%s" % (e.ledger_paths[0], " (matched by %s)" % e.matched if e.matched else ""),
               file=sys.stderr)
     if not_sent:
-        print("  not attempted: %s (every take uses this same character still, which the provider "
-              "refused as a likeness)" % ", ".join(not_sent), file=sys.stderr)
+        print("  not sent: %s (they use the same unchanged character still, which the provider "
+              "refused: %s). Change the still to try them." % (", ".join(not_sent), e.kind),
+              file=sys.stderr)
     print("Tell the user. Offer a permitted original character, a user-cleared reference or a "
           "non-likeness route, with its cost, through the normal approval. Re-running this exact "
           "take is refused; change the still, the prompt or the seed (--reseed) to try again.",
@@ -188,10 +196,12 @@ def main():
 
     man_p = pathlib.Path(spec["out"]) / "manifest.json"
     manifest = json.loads(man_p.read_text()) if man_p.exists() else {"model": spec["model"], "takes": []}
-    # Refuse an unchanged rejected take BEFORE uploading or sending anything. Only that take:
-    # the others are different requests and still run.
+    # Refuse an unchanged rejected take BEFORE uploading or sending anything. A take refused for
+    # its own prompt is refused alone; the others are different requests and still run. A take
+    # refused for the STILL (its digest matched, so the still is unchanged) holds back every
+    # take, because they all use that still: one submit per re-run would only repeat it.
     refused = 0
-    send = []
+    send, still_refusal = [], None
     for t in todo:
         try:
             refuse_if_rejected(spec["model"], input_digest=digests.get(t["id"]))
@@ -199,6 +209,14 @@ def main():
         except FalPolicyRejection as e:  # from the local ledger: no network call
             report_rejection(t, e, man_p, manifest)
             refused += 1
+            if e.kind in STILL_KINDS and still_refusal is None:
+                still_refusal = (t, e)
+    if still_refusal and send:
+        t0, e0 = still_refusal
+        print("\n[takes] not sent: %s. They use the same unchanged character still that the "
+              "provider refused for %s (%s). Change the still to try them."
+              % (", ".join(x["id"] for x in send), t0["id"], e0.kind), file=sys.stderr)
+        send = []
     if not send:
         sys.exit(POLICY_EXIT)
 
@@ -221,7 +239,7 @@ def main():
                                      input_digest=digests.get(t["id"]))
         except FalPolicyRejection as e:
             refused += 1
-            if e.kind == "likeness":  # the still is the cause, and every take shares it
+            if e.kind in STILL_KINDS:  # the still is the cause, and every take shares it
                 report_rejection(t, e, man_p, manifest, [x["id"] for x in send[i + 1:]])
                 break
             report_rejection(t, e, man_p, manifest)  # this take's own inputs: skip only it

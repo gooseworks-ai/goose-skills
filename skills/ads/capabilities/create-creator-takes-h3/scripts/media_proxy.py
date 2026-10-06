@@ -615,28 +615,47 @@ def list_rejections():
     return out
 
 
-def forget_rejection(key_or_path):
+_LEDGER_KEY = re.compile(r"^[0-9a-f]{32}$")
+
+
+def forget_rejection(key):
     """USER-APPROVED ONLY. Delete one recorded rejection (all its keys) so the identical
     request can be sent again, e.g. after the provider changed its policy. Agents never do
     this on their own: the record exists because the provider refused the request.
-    Returns the paths removed."""
-    p = pathlib.Path(os.path.expanduser(str(key_or_path)))
-    if p.suffix != ".json":
-        p = _rejections_dir() / f"{key_or_path}.json"
+
+    `key` is a ledger key (the 32-hex key a refusal or `rejections` prints), or that
+    record's filename / path inside the ledger directory. Anything else raises ValueError
+    and nothing is deleted: this only ever removes ledger records, never another .json.
+    Returns the paths removed ([] when there is no such record)."""
+    ledger = _rejections_dir().resolve()
+    raw = str(key).strip()
+    name = pathlib.Path(raw).name
+    stem = name[:-len(".json")] if name.endswith(".json") else name
+    if not _LEDGER_KEY.match(stem):
+        raise ValueError(f"not a rejection key: {key!r} (expected the 32-hex key a refusal "
+                         f"or `media_proxy.py rejections` prints)")
+    if raw not in (stem, name):  # a path: it must point into the ledger directory
+        if pathlib.Path(os.path.expanduser(raw)).resolve().parent != ledger:
+            raise ValueError(f"{key!r} is not inside the rejection ledger {ledger}")
+    p = ledger / f"{stem}.json"
     if not p.exists():
         return []
     try:
-        keys = json.loads(p.read_text()).get("keys") or []
+        rec = json.loads(p.read_text())
     except (OSError, ValueError):
-        keys = []
+        rec = None
+    keys = rec.get("keys") if isinstance(rec, dict) else None
+    if not isinstance(keys, list) or stem not in keys:
+        raise ValueError(f"{p} is not a rejection record (no matching `keys` field); not deleted")
     removed = []
-    for q in {p, *(p.parent / f"{k}.json" for k in keys)}:
+    for k in sorted({stem, *(k for k in keys if isinstance(k, str) and _LEDGER_KEY.match(k))}):
+        q = ledger / f"{k}.json"
         try:
             q.unlink()
             removed.append(str(q))
         except OSError:
             pass
-    return sorted(removed)
+    return removed
 
 
 # ── Crash-resume: persist submitted jobs + poll through backend outages ──────
@@ -1052,7 +1071,7 @@ def eleven_tts(text, voice_id, out_path, model_id="eleven_v3", timeout_s=180):
 
 def _main(argv):
     """`media_proxy.py rejections` lists recorded policy rejections; `media_proxy.py forget
-    <key|path>` clears one. Forgetting is a USER-APPROVED action only."""
+    <key>` clears one (ledger records only). Forgetting is a USER-APPROVED action only."""
     if argv[:1] == ["rejections"]:
         recs = list_rejections()
         for r in recs:
@@ -1063,10 +1082,14 @@ def _main(argv):
             print("no recorded rejections in %s" % _rejections_dir())
         return 0
     if argv[:1] == ["forget"] and len(argv) == 2:
-        removed = forget_rejection(argv[1])
+        try:
+            removed = forget_rejection(argv[1])
+        except ValueError as e:
+            print("refused: %s" % e, file=sys.stderr)
+            return 2
         print("\n".join("removed %s" % r for r in removed) or "no record %s" % argv[1])
         return 0 if removed else 1
-    print("usage: media_proxy.py rejections | media_proxy.py forget <key|path>  "
+    print("usage: media_proxy.py rejections | media_proxy.py forget <key>  "
           "(forget only with the user's approval)", file=sys.stderr)
     return 2
 
