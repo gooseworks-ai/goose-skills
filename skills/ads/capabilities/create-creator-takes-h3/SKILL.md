@@ -2,6 +2,8 @@
 name: create-creator-takes-h3
 description: Generate an AI creator talking to camera, saying an approved script, as one continuous track — H3 Max reference-to-video through the GooseWorks fal-proxy (bills the Ads agent). Plans takes on line boundaries under H3's 15s cap, dry-runs a cost estimate, generates the first take alone so its voice can be locked and passed to every later take, joins takes with measured 0.10s dissolves, and moves each line's timing onto the words actually spoken. Use for any format with a generated creator speaking a script (split-screen, screen inserts, talking-head ads).
 status: active
+version: 2
+updated: 2026-10-06
 ---
 
 # create-creator-takes-h3
@@ -110,6 +112,8 @@ These are the user's calls (the recipe's `choices`), never defaults of this atom
     use another brand's creator footage.
 11. **Seeds are pinned.** Re-running an unchanged take repays for the same clip. Existing
     take files are skipped.
+12. **A policy rejection stops the run (exit 3).** See "Rejection, physical constraints and
+    cast planning" below.
 
 ## Failure modes
 
@@ -133,6 +137,21 @@ Per-take word timing is required in recipes before joining. Confirm every line i
 Use ordinary skin texture and subtle asymmetry for realism. An eyebrow scar is no longer a random default: scars or other distinctive marks require the user's explicit choice. Inspect the still before approving takes.
 
 ## Rejection, physical constraints and cast planning
+
+`run_takes.py` enforces the stop. When the provider refuses a take on policy grounds
+(likeness of a real person, `content_policy_violation`, `partner_validation_failed`, NSFW):
+
+- The run stops at that take and **exits 3**: surface, do not retry. Later takes are not
+  attempted; they share the same still and would most likely be refused too.
+- It prints the reason, type, request id and charge state, and keeps them in
+  `manifest.json` under `"rejected"` (cleared when that take later renders).
+- Each take is submitted with an `input_digest` over the **content** of its inputs: prompt,
+  settings, seed, and the sha256 of the character still, mannerism clip and t1 voice
+  source. Upload URLs change every run, so this digest is what lets media-proxy's
+  rejected-request ledger recognise the same take again.
+- **Re-running the unchanged take is refused before anything is uploaded or sent** (exit 3
+  again, "already rejected"). The dry run marks it `REJECTED BEFORE: <reason>`.
+- A new still, a changed prompt or `--reseed` makes it a new request, which is sent.
 
 A provider likeness/policy rejection stops the attempt. Preserve the provider's reason, request id and charged/uncharged/unknown state. Do not resubmit an identical rejected payload. Offer a permitted original character, user-cleared reference, or a supported non-likeness route only when allowed by that provider. A different model is not a policy bypass. Review changed inputs and extra spend through the normal approval flow.
 

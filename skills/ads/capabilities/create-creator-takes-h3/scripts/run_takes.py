@@ -21,21 +21,106 @@ the same clip, so a take that already exists on disk is skipped. The finished fi
 <out>/<id>-seed<seed>.mp4, and manifest.json records each payload.
 
 `prompt_expansion_mode: disabled` keeps the dialogue verbatim; expansion rewrites lines.
+
+A PROVIDER POLICY REJECTION IS FINAL FOR THOSE INPUTS (QA-14). If fal refuses a take
+(likeness of a real person, content policy, partner validation, NSFW), the run stops, prints
+the reason, request id and charge state, records it in manifest.json under "rejected", and
+exits 3: surface it to the user, do not retry. Every take is submitted with an input digest
+over the CONTENT of its inputs (prompt, settings, seed, and the sha256 of the character still,
+mannerism clip and t1 voice source), so a re-run of an unchanged rejected take is refused
+before anything is uploaded or sent, even though the upload URLs are new each run. Change
+the still, the prompt or the seed (--reseed) and the take is a new request again.
 """
 import argparse
+import hashlib
 import json
 import pathlib
 import subprocess
+import sys
 
-from media_proxy import download, fal_generate_video, fal_upload
+from media_proxy import (POLICY_EXIT, FalPolicyRejection, download, fal_generate_video,
+                         fal_upload, input_digest, refuse_if_rejected, rejected_request)
 
 # Approximate USD per generated second, for the dry-run estimate only. The proxy bills the
 # real amount. Measured on the reference builds; check the balance after the first take.
 RATE = {"1080P": 0.16, "768P": 0.10, "480P": 0.05}
 
 
+VOICE_CLIP = ["-vn", "-t", "12", "-ac", "1", "-ar", "24000"]  # t1's voice -> reference audio
+
+
 def take_file(spec, t):
     return pathlib.Path(spec["out"]) / ("%s-seed%d.mp4" % (t["id"], t["seed"]))
+
+
+def prompt_file(spec, t):
+    return pathlib.Path(spec["out"]) / ("%s-prompt.txt" % t["id"])
+
+
+def file_sha256(path):
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(1 << 20), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def take_payload(spec, t, prompt, img, vid, aud, first_id):
+    """The exact H3 request for one take. Called with the uploaded URLs to submit, and with
+    content stand-ins ({"sha256": ...}) to digest, so both always describe the same request."""
+    payload = {"prompt": prompt, "duration": int(t["dur"]), "resolution": spec.get("resolution", "1080P"),
+               "aspect_ratio": spec.get("aspect_ratio", "9:16"), "seed": int(t["seed"]),
+               "prompt_expansion_mode": "disabled", "reference_image_urls": [img]}
+    if vid:
+        payload["reference_video_urls"] = [vid]
+    if aud and t["id"] != first_id:
+        payload["reference_audio_urls"] = [aud]
+    return payload
+
+
+def take_digests(spec, takes, first, voice_src):
+    """{take id: input digest over the content of everything that take would send}. A take
+    whose prompt or still is missing has no digest (it cannot be sent either)."""
+    char = pathlib.Path(spec["char"])
+    if not char.exists():
+        return {}
+    img = {"sha256": file_sha256(char)}
+    mann = pathlib.Path(spec["mann"]) if spec.get("mann") else None
+    vid = {"sha256": file_sha256(mann)} if mann and mann.exists() else None
+    aud = ({"sha256": file_sha256(voice_src), "extract": VOICE_CLIP}
+           if voice_src is not None and voice_src.exists() else None)
+    out = {}
+    for t in takes:
+        pf = prompt_file(spec, t)
+        if pf.exists():
+            stable = take_payload(spec, t, pf.read_text(encoding="utf-8"), img, vid, aud, first["id"])
+            out[t["id"]] = input_digest(spec["model"], stable)
+    return out
+
+
+def report_rejection(t, e, man_p, manifest, not_sent):
+    """Stop the run on a policy rejection: say why, keep it in the manifest, exit 3."""
+    what = "already rejected: nothing was uploaded or sent" if e.from_ledger else "rejected by the provider"
+    print("\n[%s] SURFACE, DO NOT RETRY: %s %s.\n"
+          "  reason:     %s\n  type:       %s\n  request id: %s\n  charge:     %s"
+          % (t["id"], e.model_path, what, e.reason, e.error_type or e.kind,
+             e.request_id or "none returned", e.charge_note), file=sys.stderr)
+    if not_sent:
+        print("  not attempted: %s (they share this still; same likely outcome)" % ", ".join(not_sent),
+              file=sys.stderr)
+    print("Tell the user. Offer a permitted original character, a user-cleared reference or a "
+          "non-likeness route, with its cost, through the normal approval. Re-running this exact "
+          "take is refused; change the still, the prompt or the seed (--reseed) to try again.",
+          file=sys.stderr)
+    if man_p is not None:
+        manifest["rejected"] = [r for r in manifest.get("rejected", []) if r.get("id") != t["id"]] + [
+            {"id": t["id"], "seed": t["seed"], **{k: v for k, v in e.as_dict().items()
+                                                  if k in ("reason", "kind", "error_type", "request_id",
+                                                           "http_status", "charged", "charge_note",
+                                                           "rejected_at", "from_ledger")}}]
+        man_p.parent.mkdir(parents=True, exist_ok=True)
+        man_p.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+    sys.exit(POLICY_EXIT)
 
 
 def main():
@@ -68,15 +153,19 @@ def main():
     rate = RATE.get(spec.get("resolution", "1080P"), 0.16)
     est = sum(t["dur"] for t in todo) * rate
     print("[takes] %s  %s %s" % (spec["model"], spec.get("aspect_ratio"), spec.get("resolution")))
-    for t in todo:
-        pf = pathlib.Path(spec["out"]) / ("%s-prompt.txt" % t["id"])
-        print("  %-3s seed %d  %2ds  covers %.2f-%.2f  prompt %s" % (t["id"], t["seed"], t["dur"],
-              t["covers"][0], t["covers"][1], "%d chars" % len(pf.read_text()) if pf.exists() else "MISSING"))
-    print("  estimate ~$%.2f (%ds at ~$%.2f/s; the proxy bills the real amount)"
-          % (est, sum(t["dur"] for t in todo), rate))
-
     chained = [t for t in todo if t["id"] != first["id"]]
     src = take_file(spec, first)
+    voice_src = src if chained and src.exists() else None
+    digests = take_digests(spec, todo, first, voice_src)
+    blocked = {tid: rec for tid, d in digests.items()
+               for rec in [rejected_request(spec["model"], input_digest=d)] if rec}
+    for t in todo:
+        pf = prompt_file(spec, t)
+        print("  %-3s seed %d  %2ds  covers %.2f-%.2f  prompt %s%s" % (t["id"], t["seed"], t["dur"],
+              t["covers"][0], t["covers"][1], "%d chars" % len(pf.read_text()) if pf.exists() else "MISSING",
+              "  REJECTED BEFORE: %s" % blocked[t["id"]].get("reason") if t["id"] in blocked else ""))
+    print("  estimate ~$%.2f (%ds at ~$%.2f/s; the proxy bills the real amount)"
+          % (est, sum(t["dur"] for t in todo), rate))
     problem = None
     if chained and first in todo:
         problem = ("generate the first take alone (--only %s --go), listen to it, then the rest: "
@@ -92,34 +181,42 @@ def main():
     if problem:
         raise SystemExit(problem)
 
+    man_p = pathlib.Path(spec["out"]) / "manifest.json"
+    manifest = json.loads(man_p.read_text()) if man_p.exists() else {"model": spec["model"], "takes": []}
+    # Refuse an unchanged rejected take BEFORE uploading or sending anything.
+    for t in todo:
+        try:
+            refuse_if_rejected(spec["model"], input_digest=digests.get(t["id"]))
+        except FalPolicyRejection as e:  # from the local ledger: no network call
+            report_rejection(t, e, man_p, manifest, [x["id"] for x in todo if x is not t])
+
     img = fal_upload(spec["char"])
     vid = fal_upload(spec["mann"]) if spec.get("mann") else None
     aud = None
-    if chained and src.exists():
+    if voice_src is not None:
         wav = pathlib.Path(spec["out"]) / ("_%s-voice.wav" % first["id"])
-        subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(src), "-vn", "-t", "12", "-ac", "1",
-                        "-ar", "24000", str(wav)], check=True)
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(src), *VOICE_CLIP, str(wav)], check=True)
         aud = fal_upload(wav)
         print("[chain] %s's voice -> reference audio for %s" % (first["id"], ", ".join(t["id"] for t in chained)))
-    man_p = pathlib.Path(spec["out"]) / "manifest.json"
-    manifest = json.loads(man_p.read_text()) if man_p.exists() else {"model": spec["model"], "takes": []}
-    for t in todo:
-        prompt = (pathlib.Path(spec["out"]) / ("%s-prompt.txt" % t["id"])).read_text(encoding="utf-8")
-        payload = {"prompt": prompt, "duration": int(t["dur"]), "resolution": spec.get("resolution", "1080P"),
-                   "aspect_ratio": spec.get("aspect_ratio", "9:16"), "seed": int(t["seed"]),
-                   "prompt_expansion_mode": "disabled", "reference_image_urls": [img]}
-        if vid:
-            payload["reference_video_urls"] = [vid]
-        if aud and t["id"] != first["id"]:
-            payload["reference_audio_urls"] = [aud]
+    for i, t in enumerate(todo):
+        prompt = prompt_file(spec, t).read_text(encoding="utf-8")
+        payload = take_payload(spec, t, prompt, img, vid, aud, first["id"])
         print("\n[%s] submitting seed %d ..." % (t["id"], t["seed"]))
-        url = fal_generate_video(spec["model"], payload, timeout_s=1800, poll_s=5)
+        try:
+            # input_digest = the content digest: the ledger recognises this take on a re-run
+            # (new upload URLs), and the proxy re-attaches to a job it already paid for.
+            url = fal_generate_video(spec["model"], payload, timeout_s=1800, poll_s=5,
+                                     input_digest=digests.get(t["id"]))
+        except FalPolicyRejection as e:
+            report_rejection(t, e, man_p, manifest, [x["id"] for x in todo[i + 1:]])
         out = take_file(spec, t)
         download(url, out)
         print("  -> %s (%.1f MB)" % (out, out.stat().st_size / 1e6))
         manifest["takes"] = [m for m in manifest["takes"] if m["id"] != t["id"]] + [
-            {**t, "file": str(out), "url": url,
+            {**t, "file": str(out), "url": url, "input_digest": digests.get(t["id"]),
              "payload": {k: v for k, v in payload.items() if k != "prompt"}}]
+        if manifest.get("rejected"):  # this take id now rendered from changed inputs
+            manifest["rejected"] = [r for r in manifest["rejected"] if r.get("id") != t["id"]]
         man_p.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
     print("\n[takes] done. Watch every take end to end (eyeline, hands, voice) before joining.")
 

@@ -1865,7 +1865,8 @@
         "skills/ads/capabilities/create-creator-takes-h3/scripts/run_takes.py",
         "skills/ads/capabilities/create-creator-takes-h3/skill.meta.json",
         "skills/ads/capabilities/create-creator-takes-h3/tests/smoke-test.md",
-        "skills/ads/capabilities/create-creator-takes-h3/tests/test_make_character.py"
+        "skills/ads/capabilities/create-creator-takes-h3/tests/test_make_character.py",
+        "skills/ads/capabilities/create-creator-takes-h3/tests/test_run_takes_rejection.py"
       ],
       "metadata": {
         "slug": "create-creator-takes-h3",
@@ -2256,6 +2257,7 @@
         "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests/human-test.md",
         "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests/sample-input.md",
         "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests/smoke-test.md",
+        "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests/test_seedance_policy_rejection.py",
         "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests/verifier.md"
       ],
       "metadata": {
@@ -4830,7 +4832,8 @@
         "skills/ads/capabilities/media-proxy/scripts/media_proxy.py",
         "skills/ads/capabilities/media-proxy/scripts/resume.py",
         "skills/ads/capabilities/media-proxy/skill.meta.json",
-        "skills/ads/capabilities/media-proxy/tests/smoke-test.md"
+        "skills/ads/capabilities/media-proxy/tests/smoke-test.md",
+        "skills/ads/capabilities/media-proxy/tests/test_media_proxy_policy.py"
       ],
       "metadata": {
         "slug": "media-proxy",
@@ -10111,6 +10114,7 @@
             "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests/human-test.md",
             "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests/sample-input.md",
             "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests/smoke-test.md",
+            "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests/test_seedance_policy_rejection.py",
             "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests/verifier.md"
           ],
           "source": "pack"

@@ -2,6 +2,8 @@
 name: media-proxy
 description: Shared helper that routes ALL paid media generation (FAL image/video, ElevenLabs music) through the GooseWorks proxies so every call bills the Ads agent — never a provider SDK's default host. Host-swaps the FAL queue URLs, loads the agent token from the sandbox env (GW_MEDIA_PROXY_TOKEN) or ~/.gooseworks/credentials.json, and returns the result CDN URL. Every video-ad media capability imports this; templates never call a provider directly.
 status: active
+version: 2
+updated: 2026-10-06
 ---
 
 # media-proxy
@@ -48,6 +50,46 @@ render. Two built-in protections (automatic for every capability that imports th
   paid for. Use the same stable digest you save with `media_upload` (see below). If
   that job's result has since expired at fal, the poll fails: retry once with
   `new_take=True`.
+
+## Policy rejections are final: surface, do not retry (QA-14)
+
+When fal refuses a request on policy grounds, `_fal_run` (and so `fal_generate*`) raises
+**`FalPolicyRejection`**, a `RuntimeError` subclass, so old `except RuntimeError` handlers
+still work. Policy grounds means a likeness of a real person ("likenesses of real people",
+"real person", "public figure"), `content_policy_violation`, `partner_validation_failed`, or
+NSFW / safety checker.
+
+- **Every body shape is read.** fal's `detail` as a list of `{msg, type, loc, ctx}`, a dict
+  or a string; a top-level `type`/`code`/`error`; and the GooseWorks MCP wrapper
+  `{"error": {"code": "provider_validation_failed", "status": 422, "detail": <fal body>}}`.
+  Before this, a body with both `msg` and `type` kept the message and lost the type, so the
+  rejection looked like a generic error.
+- **What it carries:** `reason` (the provider's words), `kind` (`likeness` |
+  `partner_validation` | `content_policy` | `nsfw`), `error_type`, `request_id`,
+  `http_status`, `stage`, `charged` and `charge_note`. `charged` is `False` for an explicit
+  provider 4xx: the GooseWorks proxy debits only a successful response and releases the
+  hold on a 4xx (read from the proxy code, not yet confirmed on a real rejection). It is
+  `None` (unknown) for a job that failed after it was accepted.
+- **The exact request is recorded** in `~/.gooseworks/rejected-fal-requests/<key>.json`,
+  next to `pending-fal-jobs/` (`GW_FAL_REJECTIONS_DIR` overrides). The key is a digest of
+  the model plus the canonical JSON payload (sorted keys), and also of `input_digest` when
+  one is passed.
+- **An identical request is refused before any network call**, with the same exception
+  and `from_ledger=True`: "surface, do not retry: this exact request was already rejected
+  by the provider for ...; change the inputs (image, prompt, model) to try again".
+  `new_take=True` does **not** bypass it: a re-roll of a rejected payload is still the same
+  payload. Any change to the prompt, an image, the seed or the model is a new request and
+  is sent.
+- **Inputs re-uploaded each run get new URLs**, so the payload digest never matches twice.
+  Pass `input_digest=` over the inputs' content (file sha256, ingredient keys), as
+  `create-creator-takes-h3/run_takes.py` does. The ledger then matches on that too.
+  `refuse_if_rejected(model, input_digest=d)` checks before you upload anything.
+- **Exit code:** scripts exit with `POLICY_EXIT` (3). The MCP relay also exits 3; the relay
+  prints `[mcp-relay]`, a rejection prints "surface, do not retry".
+- Non-policy errors (an unreadable image URL, a bad duration) stay a plain `RuntimeError`
+  with the provider's message and type, and are never recorded.
+- Operator only: a record is a plain file. Delete it only if you have a reason to think
+  the provider changed its policy. Agents must not delete records to get a retry through.
 
 ## Use it
 
@@ -121,6 +163,9 @@ nor `~/.gooseworks/credentials.json`, so scripts cannot reach the proxies over H
      `local_file`; save `{ "url": <its url> }`.
 3. It saves that JSON to `save_result_to` and **re-runs the same command**. The script finds
    the result and continues; the next paid call relays the same way.
+4. If `data_post_provider` returns a `provider_validation_failed` error, the agent saves
+   that error JSON as the result instead. The script then reports it: a policy rejection
+   raises `FalPolicyRejection` and is recorded, like the HTTP path.
 
 Set `GW_PROJECT_ID` (required: every call is billed to that video project, the same
 attribution the HTTP proxy records) and `GW_BRAND_ID` (for uploads). The MCP tools bill

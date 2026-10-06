@@ -13,7 +13,12 @@ Native lip-synced VO + ambient audio (generate_audio=true). Multi-image referenc
 
 Hard rules:
 - NEVER pass AI-generated video as video refs (content_policy_violation)
-- NSFW / partner-validation reject → surface and exit; do NOT auto-retry
+- Policy rejection (likeness of a real person, content_policy_violation,
+  partner_validation_failed) → exit 3; NSFW / safety checker → exit 4. Both mean
+  "surface, do not retry": one submit, never an automatic retry. The reason, request id
+  and charge state are printed and written to <output>.rejection.json, and media_proxy
+  records the exact request so an identical re-run is refused (exit 3/4 again) without
+  any network call. Change the inputs (image, prompt, model) to try again.
 - duration must be an INT for bytedance/seedance-2.0/reference-to-video (enum {auto,4..15}); a string 400s (invalid_request)
 - image refs must be PUBLIC URLs — the proxy does not upload local files. The
   orchestrator hosts local refs via MCP get_upload_url -> get_download_url and passes
@@ -22,7 +27,11 @@ Hard rules:
 Usage:
     generate.py --prompt "..." --output PATH --image-url URL [--image-url URL ...]
                 [--resolution 1080p] [--duration 15] [--aspect-ratio 9:16]
-                [--generate-audio | --no-generate-audio] [--seed N]
+                [--generate-audio | --no-generate-audio] [--seed N] [--input-digest D]
+
+Exit codes: 0 done; 1 other error; 3 policy rejection (or an identical request that was
+already rejected); 4 NSFW / safety-checker rejection. (The MCP relay also exits 3 when it
+needs the agent to make a call; it prints "[mcp-relay]" instead of "surface, do not retry".)
 """
 from __future__ import annotations
 
@@ -31,12 +40,35 @@ import json
 import sys
 from pathlib import Path
 
-from media_proxy import _fal_run, download  # bundled; routes+bills through the proxy
+from media_proxy import FalPolicyRejection, POLICY_EXIT, _fal_run, download  # bundled; routes+bills through the proxy
 
 MODEL = "bytedance/seedance-2.0/reference-to-video"
 
 # Pricing per second (USD), 2026-05
 PRICE_PER_SEC = {"480p": 0.18, "720p": 0.30, "1080p": 0.68}
+NSFW_EXIT = 4
+
+
+def _report_rejection(e: FalPolicyRejection, output: Path) -> int:
+    """Print the rejection for the user and keep it next to the output. One submit only:
+    never retried here, and the ledger refuses the identical request on a re-run."""
+    code = NSFW_EXIT if e.kind == "nsfw" else POLICY_EXIT
+    what = ("already rejected: nothing was sent" if e.from_ledger
+            else "rejected by the provider")
+    print(f"ERROR: surface, do not retry. {MODEL} {what}.\n"
+          f"  reason:     {e.reason}\n"
+          f"  type:       {e.error_type or e.kind}\n"
+          f"  request id: {e.request_id or 'none returned'}\n"
+          f"  charge:     {e.charge_note}\n"
+          f"Tell the user, keep this reason, and offer a permitted alternative with its cost "
+          f"(an original character, a user-cleared reference, or a non-likeness route). "
+          f"Change the inputs (image, prompt, model) to try again.\n{e}", file=sys.stderr)
+    try:
+        Path(str(output) + ".rejection.json").write_text(json.dumps(
+            {**e.as_dict(), "exit_code": code}, indent=2))
+    except OSError:
+        pass
+    return code
 
 
 def _looks_like_url(s: str) -> bool:
@@ -60,6 +92,11 @@ def main() -> int:
                      help="Silent clip (VO added in post).")
     ap.set_defaults(generate_audio=True)
     ap.add_argument("--seed", type=int, default=None)
+    ap.add_argument("--input-digest", default=None,
+                    help="Stable id of the inputs (media_proxy.input_digest over the refs' "
+                         "ingredient keys / file hashes, not their URLs). Optional: lets a "
+                         "re-hosted identical ref still match a recorded rejection, and the "
+                         "proxy re-attach to a running job instead of paying twice.")
     args = ap.parse_args()
 
     if not args.image_urls:
@@ -91,17 +128,21 @@ def main() -> int:
     try:
         # Default poll timeout for video (1800s). A timeout raises FalPollTimeout with the
         # request_id — resume it (media-proxy resume.py), never resubmit (GOOSE-3729).
-        result = _fal_run(MODEL, payload)
+        # A request the provider already refused raises FalPolicyRejection before any
+        # network call (media_proxy's rejected-request ledger).
+        result = _fal_run(MODEL, payload, input_digest=args.input_digest)
+    except FalPolicyRejection as e:
+        return _report_rejection(e, args.output)
     except RuntimeError as e:
         msg = str(e).lower()
         if "content_policy_violation" in msg or "partner_validation" in msg:
-            print(f"ERROR: FAL content-policy / partner-validation reject. Surface to user — "
-                  f"do NOT auto-retry.\n{e}", file=sys.stderr)
-            return 3
+            print(f"ERROR: surface, do not retry. FAL content-policy / partner-validation "
+                  f"reject.\n{e}", file=sys.stderr)
+            return POLICY_EXIT
         if "nsfw" in msg:
-            print(f"ERROR: FAL NSFW classifier reject. Surface to user — do NOT auto-retry.\n{e}",
+            print(f"ERROR: surface, do not retry. FAL NSFW classifier reject.\n{e}",
                   file=sys.stderr)
-            return 4
+            return NSFW_EXIT
         print(f"ERROR: {e}", file=sys.stderr)
         return 1
 
@@ -132,6 +173,7 @@ def main() -> int:
         "cost_estimate_usd": round(cost, 2),
     }
     Path(str(args.output) + ".meta.json").write_text(json.dumps(meta, indent=2))
+    Path(str(args.output) + ".rejection.json").unlink(missing_ok=True)  # stale from older inputs
     print(f"[seedance-2-fal] est cost: ${cost:.2f}", flush=True)
     return 0
 
