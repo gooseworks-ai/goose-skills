@@ -1,0 +1,73 @@
+{
+ "brand": "Olipop",
+ "slug": "olipop",
+ "product": {
+  "noun": "can",
+  "phrase": "red can",
+  "reference_image": "projects/ugc-olipop/product/clean1.png",
+  "appearance": "same red body, same large white lettering across the top, same two cola bottles illustration, same mint green lettering below",
+  "colour_ban": "It never turns white or blue.",
+  "size": "a standard 12oz can about one hand-width tall, held easily in one hand",
+  "opening_extra": "",
+  "open_state": "sealed"
+ },
+ "question": "How much sugar do you think is in this can?",
+ "location": {
+  "description": "a wide pavement on one street corner beside a park, with black iron railings and tall trees behind, a plain red brick wall to the left and parked cars along the kerb",
+  "landmarks": "The same railings, trees and brick wall"
+ },
+ "_comment": "Olipop episode 3 (GOOSE-3746). Same approved script. level_camera on: no glance-down beat. Payoff no longer reads the can on camera (option 1, approved 2026-10-06). Seed and prompt are the paid take exactly.",
+ "episode_role": "opening",
+ "episode": "olipop-ep3",
+ "props": "a plain tote bag, a rucksack",
+ "cast_size": 2,
+ "shots": [
+  {
+   "kind": "handover_first",
+   "subject": "a woman in her twenties, denim jacket, with a plain tote bag",
+   "pronoun": "she",
+   "noun": "young woman"
+  },
+  {
+   "kind": "speak",
+   "noun": "young woman",
+   "reaction": "nods",
+   "manner": "confidently",
+   "line": "It's a cola, so I would say about forty grams."
+  },
+  {
+   "kind": "handover",
+   "subject": "a man in his forties, dark green work jacket, with a rucksack",
+   "pronoun": "he",
+   "noun": "man"
+  },
+  {
+   "kind": "speak",
+   "noun": "man",
+   "reaction": "shakes his head",
+   "manner": "",
+   "line": "I think it is more than that, maybe fifty."
+  }
+ ],
+ "generation": {
+  "seed": 6131,
+  "prompt_version": 2,
+  "duration": 15,
+  "fast": true,
+  "pace_grammar": true,
+  "guard_grammar": true,
+  "mic_grammar": false,
+  "mic_ref_grammar": true,
+  "plain_grammar": true,
+  "answers_only": false,
+  "can_size_grammar": true,
+  "can_sealed_grammar": true,
+  "upright_grammar": true,
+  "one_mic_grammar": true,
+  "handover_grammar": true,
+  "natural_grammar": true,
+  "no_signage": true,
+  "real_grammar": true,
+  "level_camera": true
+ }
+}

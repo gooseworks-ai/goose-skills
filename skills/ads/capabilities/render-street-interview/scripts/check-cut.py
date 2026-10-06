@@ -832,6 +832,12 @@ def main(argv=None):
         # not satisfy it and loose enough that a transcription slip does not fail it.
         # FALSIFIED by falsify-all.py, which mutes a scripted line and asserts I still fires.
         import difflib
+        # Whisper writes spoken numbers as digits. "It has to be at least 30 grams" failed this
+        # check on Olipop episode 1 (0.79 against a scripted "thirty") with the line clearly said.
+        # Spell 0-99 out first, the same fix build_episode._norm carries for captions.
+        import re as _re
+        import build_episode as _be_num
+        txt = _re.sub(r"(?<![0-9])([0-9]{1,2})(?![0-9])", lambda m: _be_num._number_words(int(m.group(1))), txt)
         heard_n = _norm(txt)
         # Lines the EDIT deliberately removed are not expected to be audible. They are named
         # in the sidecar by build_episode, which is the only place that knows what the plan

@@ -1,0 +1,21 @@
+{
+ "_comment": "Graza episode 1. Take B line 4 = first attempt up to 'on a' (0-7.80) joined to the second attempt from 'fancy' (10.23 on), because neither attempt had the whole line. Take C: invented speech removed (2.6-6.875). Colour matched to take A. Opening replaced by re-take 6214 (both people upright); 2.5s of silent standing removed (8.3-10.83).",
+ "episode": "graza-ep1",
+ "brand": "Graza",
+ "slug": "graza",
+ "title": "What is inside this bottle",
+ "output": "episode-graza-ep1c-seed6214-6212-6213",
+ "takes": [
+  "graza-ep1-a2",
+  "graza-ep1-b",
+  "graza-ep1-c"
+ ],
+ "brand_layer": {
+  "logo": "projects/street-interview-brands/graza/assets/graza-logo.png",
+  "end_card": [
+   "IT IS OLIVE OIL YOU CAN SQUEEZE.",
+   "GRAZA SIZZLE."
+  ]
+ },
+ "extra_head_s": 4.0
+}

@@ -1,0 +1,23 @@
+{
+ "_comment": "Olipop episode 3: level_camera takes 6131/6132/6133. Take B's first person is spliced from 6122 (clean line). Take C has 3.4s of tipped can removed. Colour matched.",
+ "episode": "olipop-ep3",
+ "brand": "Olipop",
+ "slug": "olipop",
+ "title": "How much sugar is in this can",
+ "output": "episode-olipop-ep3c-seed6131-6132-6133",
+ "takes": [
+  "olipop-ep3-a",
+  "olipop-ep3-b",
+  "olipop-ep3-c"
+ ],
+ "brand_layer": {
+  "logo": "projects/street-interview-brands/olipop/assets/olipop-logo.png",
+  "end_card": [
+   "IT HAS FOUR GRAMS OF SUGAR.",
+   "OLIPOP VINTAGE COLA."
+  ]
+ },
+ "extra_head_s": 4.0,
+ "_handover_comment": "ep1b: extra_head_s keeps the pass of the can at the top of each take; built with --max-gap 3.0 so a silent handover shot is not dropped as dead air.",
+ "_colour_comment": "ep1c: the same three takes after colour_match.py (levels, mid-tone lift and near-neutral cast matched to the 15s take 6102). See olipop-ep1c/working/takes/colour-match.json."
+}
