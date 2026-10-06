@@ -47,9 +47,14 @@ no beat notes) to `working/approved-script.txt`. Then, after render:
 python3 <pack>/review-ugc-render/scripts/review_render.py \
   --video working/final.mp4 \
   --script-file working/approved-script.txt \
-  --pronunciations working/pronunciations.json \
   --json working/review-verdict.json
 ```
+
+**When the voice-over used confirmed pronunciations, add them (recommended):**
+`--pronunciations working/brand-rules.json` — the same file `create-vo-elevenlabs`
+read (its `--rules` brand-rules.json, or the `read_pronunciations.py` output; both
+carry a `pronunciations: [{term, say_as}]` list). Leave the flag out when there is
+no such file: a missing file is an ERROR (exit 3).
 
 - **exit 0 → PASS** — proceed: pin the final render (`video_project_upsert` `patch.final_render_id`).
 - **exit 2 → FAIL** — do NOT pin it. Read the report, fix, re-run.
@@ -67,15 +72,17 @@ diff. The rules are **bounded** — each is an exact rewrite, never a fuzzy matc
 
 | Written | Heard | Rule |
 |---|---|---|
-| `49`, `105`, `2,500` | `forty-nine`, `one hundred and five`, `two thousand five hundred` | number words = digits |
-| `2.5`, `2026`, `1st` | `two point five`, `twenty twenty six`, `first` | decimals, years, ordinals |
+| `49`, `105`, `2,500`, `1 million` | `forty-nine`, `one hundred and five`, `two thousand five hundred`, `a million` | number words = digits |
+| `2.5`, `2026`, `249`, `1st`, `2nd` | `two point five`, `twenty twenty six`, `two forty-nine`, `first`, `second` | decimals, years, prices read in pairs, ordinals (`second` = `2nd` only when the script writes `2nd`) |
+| `No. 1`, `#1` | `number one` | number sign (but `no one` stays a negation) |
 | `5mg`, `30g`, `500ml`, `12oz`, `10 lbs` | `five milligrams`, `thirty grams`, … | unit **after a quantity** |
 | `30%` | `thirty percent` / `30 per cent` | percent |
 | `$49`, `$49.99` | `forty nine dollars`, `forty nine dollars and ninety nine cents` | money |
 | `braxleybands.com`, `www.example.com` | `braxleybands dot com`, `w w w dot example dot com`, `example dot com` | URL; `www.` is optional |
 | `don't`, `can't`, `it's`, `you're` | `do not`, `cannot` / `can not`, `it is`, `you are` | contractions |
-| `Braxleybands`, `Gooseworks` | `Braxley Bands`, `goose works` | fused/split: exact join of 2–3 words |
-| `AG1` | `A G one`, `A.G. one`, `A G 1`, `AG one` | **only** with a confirmed alias |
+| `Braxleybands`, `Gooseworks`, `everyone`, `OneSkin` | `Braxley Bands`, `goose works`, `every one`, `One Skin` | fused/split: exact join of 2–3 words |
+| `AG1` | `AG1`, `AG one`, `A.G. one` | written forms, no alias needed |
+| `AG1` | `A G one`, `A G 1` (letters spaced out) | **only** with a confirmed alias |
 
 Guards that keep the rules honest:
 
@@ -84,12 +91,14 @@ Guards that keep the rules honest:
 - Letters spelled one by one ("A G") are **not** fused into a word. That needs a
   confirmed pronunciation.
 - Fusion is exact concatenation. "Braxly Bands" is not "Braxleybands".
+- A join never swallows a negation: "no table" is not "notable" ("no thing" is "nothing").
 
 ## What still FAILS
 
 | Report line | Root cause | Fix |
 |---|---|---|
-| `[high] said "59" where script has "49" — number differs…` | Wrong number (also a wrong unit) | **Re-roll.** A number is never a benign paraphrase. |
+| `[high] said "59" where script has "49" — number differs…` | Wrong, added or dropped number | **Re-roll.** A number is never a benign paraphrase. |
+| `[high] dropped "5mg" — unit differs…` | A unit after a number was changed, added or dropped ("5mg" said "five") | **Re-roll.** Only a dropped currency word alone ("$9.99" said "nine ninety-nine") is not HIGH. |
 | `[high] extra "doesn't" … negation changed` | A `not`/`never`/`no`/`without` was added or lost — the claim flips | Re-roll. |
 | `[high] said "Hune" where script has "Hume" — brand name not heard as approved` | Brand mis-voiced or dropped (`--brand-term` / confirmed pronunciation) | Re-roll; spell it phonetically in the `SPOKEN LINE` (e.g. `Ali-too`, never a `(pronounced …)` parenthetical). See `create-video-seedance-2-fal` Failure Modes. |
 | `[high] said "witted" where script has "vetted" — audio likely mis-voices…` | Seedance mis-voiced a similar-looking word | **Re-roll a new seed.** |
@@ -100,6 +109,10 @@ Guards that keep the rules honest:
 | `ERROR: alias … would change a number, unit or negation` | A bad `--alias` or pronunciation entry | Fix the alias. Aliases may only respell a name. |
 
 The verdict passes only when similarity ≥ `--min-ratio` **and** there is no HIGH issue.
+Numbers, units, negations and declared brand names fail on their own (HIGH). Any
+other dropped or extra word is medium/low: it lowers the similarity, and fails the
+gate only when the similarity drops below `--min-ratio` (so one dropped ordinary
+word in a long line can pass).
 `--expect-music` is advisory only; it does not by itself fail the gate.
 
 ## Brand names and confirmed pronunciations
@@ -107,23 +120,36 @@ The verdict passes only when similarity ≥ `--min-ratio` **and** there is no HI
 **Brand words are never removed from the diff.** (Before 2026-10-06, `--brand-term`
 fuzzily stripped brand-like words, which let "Hune" pass for "Hume". That is gone.)
 
-- `--brand-term TERM` (repeatable) — marks a brand name. Where it appears in the
-  script, a mismatch is **HIGH** (a brand mis-voicing) and a dropped brand is HIGH.
-  Its fused/split forms count as equal.
-- `--alias "TERM=SPOKEN"` (repeatable) — a confirmed spoken form, e.g.
-  `--alias "AG1=A G one"`. The term also becomes a brand term.
-- `--pronunciations PATH` — the file `create-vo-elevenlabs`'s
-  `scripts/read_pronunciations.py` writes
+- **`--pronunciations PATH` (recommended when the voice-over used one)** — the
+  confirmed pronunciations file: `create-vo-elevenlabs`'s `brand-rules.json` or the
+  output of its `scripts/read_pronunciations.py`
   (`{"brand_id", "basis", "pronunciations": [{"term", "say_as", "fact_id"}]}`).
-  Every entry becomes an alias and a brand term. Pass the same file the voice-over used.
+  Every entry becomes an alias and its term a brand term. An entry that cannot be used
+  (see alias rules) is skipped with a `WARNING`, never fatal. A missing or unreadable
+  file is an ERROR (exit 3), so pass the flag only when the file exists.
+- `--alias "TERM=SPOKEN"` (repeatable) — one confirmed spoken form, e.g.
+  `--alias "AG1=A G one"`. The term also becomes a brand term. A bad `--alias` is an
+  ERROR (exit 3), checked before any transcription is spent.
+- `--brand-term TERM` (repeatable) — marks a brand name. Exactly:
+  1. Where the term's words appear in the script, a substitution or drop there is
+     **HIGH** (a brand mis-voicing). Its fused/split forms count as equal.
+  2. A differing span where **every** word on **both** sides is a word of some
+     `--brand-term` (and none is a negation) is accepted as the same brand (reported
+     `[low]`, counted as a match). This keeps the older calling pattern working: a
+     script written in the spoken form (`Try ak-mee today`) with `--brand-term Acme
+     --brand-term ak --brand-term mee` passes when Whisper writes `Try Acme today`.
+     A heard word that is not a declared term (`Hume` heard `Hune`) still fails HIGH.
+  Prefer `--pronunciations` over passing `say_as` words as `--brand-term`.
 
 Rules for aliases:
 
 - Only pass spoken forms the **user confirmed** (saved brand pronunciations, or a form
   they confirmed in chat). Never invent one from the transcript to make the gate pass.
-- An alias may respell a name, digits included ("AG1" = "A G one"), but may **never**
-  add, drop or change a number, unit or negation. Such an alias is an ERROR (exit 3),
-  checked before any transcription is spent.
+- An alias may respell a name, digits and number-like syllables included ("AG1" =
+  "A G one", "Tenzing" = "ten-zing", "Notion" = "NO-shun"). It is refused when the
+  written term has a number, unit or negation that the spoken form changes ("AG1" =
+  "A G two"), or when the spoken form is only numbers, units or negations ("Decagon" =
+  "five").
 - If you listened and the audio is right but Whisper spelled a coined brand name in a
   new way, ask the user to confirm that spelling, save it as a pronunciation, and re-run.
 
@@ -149,9 +175,10 @@ python3 tests/test_review_render.py    # or: python3 -m pytest tests/
 
 Pure Python, no audio, network or paid call. Covers the QA-71 audit fixture table
 (units, URL, numbers, percent, contractions, fused brands, wrong price, negation,
-Hume→Hune), number words, units, URLs, negation flips, fused/split words, confirmed
-AG1 aliases and their validation, omission, extra speech, the report wording, and the
-CLI exit codes with transcription stubbed out.
+Hume→Hune), number words, units (including added/dropped units in long lines), URLs,
+negation flips, fused/split words, CLI-style brand terms, confirmed AG1 aliases and
+saved pronunciations with number-like syllables, omission, extra speech, the report
+wording, and the CLI exit codes with transcription stubbed out.
 
 ## Relationship to the content-goose review engine
 

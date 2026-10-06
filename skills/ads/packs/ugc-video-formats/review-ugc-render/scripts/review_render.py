@@ -37,10 +37,12 @@ is not a defect:
   - fused/split words: "braxleybands" == "braxley bands" (exact concatenation of
     2-3 words only, never fuzzy; letters spelled one by one are NOT fused)
   - confirmed spoken aliases (--alias / --pronunciations): "AG1" == "A G one"
-These still FAIL: a different number, unit or negation (always HIGH), a brand
-name not heard as approved (HIGH when --brand-term or a confirmed pronunciation
-names it), a mis-voiced word, dropped approved words, and extra speech beyond
-benign filler. Brand words are never removed from the diff.
+Always a HIGH failure: a different, added or dropped number, unit or negation;
+a brand name not heard as approved (named by --brand-term or a confirmed
+pronunciation); a similar-looking word swapped 1:1 ("vetted" → "witted").
+Other dropped or extra words are medium/low: they lower the similarity, and the
+gate fails only when it falls below --min-ratio (0.90). Brand words are never
+removed from the diff.
 
 The word-alignment + verdict logic is a pure function (`review_transcript`)
 so it is unit-tested without needing audio or a network call.
@@ -77,12 +79,18 @@ def _char_sim(a: str, b: str) -> float:
 # the original words it came from so the report can quote what was written/heard.
 
 class _Tok:
-    __slots__ = ("text", "orig", "src")
+    __slots__ = ("text", "orig", "src", "unit")
 
-    def __init__(self, text: str, orig: str, src: object):
+    def __init__(self, text: str, orig: str, src: object, unit: bool = False):
         self.text = text    # canonical token
         self.orig = orig    # original wording it came from (for the report)
         self.src = src      # identity of the source word (dedupes the report)
+        self.unit = unit    # a unit word that follows a quantity ("5 [milligrams]")
+
+    def spelled(self) -> str | None:
+        """'one' for a 1 that was written as the word "one" (lets every one == everyone)."""
+        w = self.orig.lower()
+        return w if w.isalpha() and w in _NUMBER_WORDS and self.text != w else None
 
     def __repr__(self) -> str:  # pragma: no cover - debugging aid
         return f"_Tok({self.text!r}, {self.orig!r})"
@@ -114,6 +122,7 @@ _ORD_SMALL = {"first": 1, "third": 3, "fourth": 4, "fifth": 5, "sixth": 6, "seve
 _ORD_TENS = {w: 10 * (i + 2) for i, w in enumerate(
     "twentieth thirtieth fortieth fiftieth sixtieth seventieth eightieth ninetieth".split())}
 _NUMBER_WORDS = set(_SMALL) | set(_TENS) | set(_ORD_SMALL) | set(_ORD_TENS) | {"hundred", "thousand"}
+_A_COUNTS = ("hundred", "thousand", "million", "billion")   # "a million" == "one million"
 _MULTIPLIERS = {"hundred": 100, "thousand": 1000, "k": 1000, "million": 10 ** 6, "billion": 10 ** 9}
 
 # Unit spellings → one canonical word. Applied ONLY right after a quantity.
@@ -138,7 +147,6 @@ _UNIT_WORDS = {
     "cal": "calories", "calorie": "calories", "calories": "calories",
     "x": "times", "times": "times",
 }
-_UNIT_SET = frozenset(_UNIT_WORDS.values())
 _CURRENCY = {"$": "dollars", "£": "pounds", "€": "euros"}
 
 _NEGATIONS = frozenset({"not", "no", "never", "nothing", "nobody", "none", "nowhere",
@@ -268,7 +276,19 @@ def _raw_tokens(text: str) -> list[_Tok]:
     text = _DASHES_RE.sub("-", text.translate(_APOSTROPHES))
     text = text.replace("&", " and ").replace("+", " plus ")
     out: list[_Tok] = []
-    for chunk in text.split():
+    chunks = text.split()
+    for ci, chunk in enumerate(chunks):
+        # "No. 1" / "No.1" is "number one", not a negation
+        bare = chunk.strip(_EDGE_CHARS)
+        m = re.fullmatch(r"[Nn][Oo]\.(\d[\d,]*)", bare)
+        if m:
+            src = object()
+            out.extend(_Tok(w, bare, src) for w in ["number"] + _piece_words(m.group(1)))
+            continue
+        if re.fullmatch(r"[Nn][Oo]\.", bare) and ci + 1 < len(chunks) and \
+                chunks[ci + 1].lstrip(_EDGE_CHARS)[:1].isdigit():
+            out.append(_Tok("number", bare, object()))
+            continue
         orig = chunk.strip(_EDGE_CHARS + ".")
         if not orig:
             continue
@@ -323,7 +343,7 @@ def _parse_below100(w: list[str], i: int):
 
 def _parse_below1000(w: list[str], i: int):
     n = len(w)
-    if w[i] == "a" and i + 1 < n and w[i + 1] in ("hundred", "thousand"):
+    if w[i] == "a" and i + 1 < n and w[i + 1] in _A_COUNTS:
         v, j, o = 1, i + 1, False
     elif w[i] == "hundred":
         v, j, o = 1, i, False
@@ -368,7 +388,7 @@ def _spell_numbers(toks: list[_Tok]) -> list[_Tok]:
     i = 0
     while i < len(toks):
         x = w[i]
-        start = x in _NUMBER_WORDS or (x == "a" and i + 1 < len(w) and w[i + 1] in ("hundred", "thousand"))
+        start = x in _NUMBER_WORDS or (x == "a" and i + 1 < len(w) and w[i + 1] in _A_COUNTS)
         if x in ("hundred", "thousand") and out and _is_int(out[-1].text):
             start = False   # "5 hundred" → the multiplier pass makes 500
         r = _parse_number(w, i) if start else None
@@ -423,7 +443,7 @@ def _units(toks: list[_Tok]) -> list[_Tok]:
     out: list[_Tok] = []
     for t in toks:
         if t.text in _UNIT_WORDS and out and _is_int(out[-1].text):
-            t = _Tok(_UNIT_WORDS[t.text], t.orig, t.src)
+            t = _Tok(_UNIT_WORDS[t.text], t.orig, t.src, unit=True)
         out.append(t)
     # money: "N dollars (and) M cents" → N dollars M  (matches "$N.MM")
     res: list[_Tok] = []
@@ -455,6 +475,9 @@ def _context_fixes(toks: list[_Tok]) -> list[_Tok]:
         if t.text == "is" and t.orig.translate(_APOSTROPHES).lower().endswith("'s") and \
                 i + 1 < n and toks[i + 1].text in ("been", "got", "gotten"):
             t = _Tok("has", t.orig, t.src)
+        # "No 1 pick" → number 1 (a digit right after "no"); "no one" stays a negation
+        if t.text == "no" and i + 1 < n and _is_int(toks[i + 1].text) and toks[i + 1].orig[:1].isdigit():
+            t = _Tok("number", t.orig, t.src)
         # spelled letters next to "dot": "w w w dot" → www dot, "dot a i" → dot ai
         if len(t.text) == 1 and t.text.isalpha():
             j = i
@@ -488,9 +511,9 @@ def _base_tokens(text: str) -> list[_Tok]:
     return _context_fixes(toks)
 
 
-def _protected(words) -> list[str]:
-    """The words an alias may never change: quantities, units and negations."""
-    return [w for w in words if _QUANTITY_RE.fullmatch(w) or w in _UNIT_SET or w in _NEGATIONS]
+def _protected(toks: list[_Tok]) -> list[str]:
+    """Quantities, units (after a quantity) and negations — what an alias may never rewrite."""
+    return [t.text for t in toks if _QUANTITY_RE.fullmatch(t.text) or t.unit or t.text in _NEGATIONS]
 
 
 def _alias_pairs(aliases) -> list[tuple[str, str]]:
@@ -517,19 +540,26 @@ def build_aliases(aliases) -> list[tuple[tuple[str, ...], tuple[str, ...]]]:
 
     `aliases`: {term: say_as | [say_as, ...]}, [(term, say_as), ...] or
     [{"term", "say_as"}, ...] (the read_pronunciations.py `pronunciations` list).
-    An alias may respell a name ("AG1" said "A G one") but may never add, drop or
-    change a number, unit or negation. Raises ValueError on a bad alias."""
+    An alias may respell a name, digits and number-like syllables included ("AG1" said
+    "A G one", "Tenzing" said "ten-zing"). It is refused when the written term has a
+    number, unit or negation the spoken form changes ("AG1" = "A G two"), or when the
+    spoken form is nothing but numbers, units or negations ("Decagon" = "five").
+    Raises ValueError on a bad alias."""
     rules: dict[tuple[str, ...], tuple[str, ...]] = {}
     for term, form in _alias_pairs(aliases):
         if not isinstance(term, str) or not isinstance(form, str) or not term.strip() or not form.strip():
             raise ValueError("each alias needs a written term and a confirmed spoken form")
-        term_w = tuple(t.text for t in _base_tokens(term))
-        form_w = tuple(t.text for t in _base_tokens(form))
+        term_t, form_t = _base_tokens(term), _base_tokens(form)
+        term_w, form_w = tuple(t.text for t in term_t), tuple(t.text for t in form_t)
         if not term_w or not form_w:
             raise ValueError(f'alias "{term}" = "{form}" has no words to match')
-        if _protected(term_w) != _protected(form_w):
+        term_p, form_p = _protected(term_t), _protected(form_t)
+        if term_p and term_p != form_p:
             raise ValueError(f'alias "{term}" = "{form}" would change a number, unit or negation; '
                              "an alias may only respell a name")
+        if not term_p and len(form_p) == len(form_w):
+            raise ValueError(f'alias "{term}" = "{form}": the spoken form is only numbers, units or '
+                             "negations; an alias may only respell a name")
         candidates = {form_w}
         if len(form_w) > 1 and all(w.isalpha() for w in form_w):
             candidates.add(("".join(form_w),))   # "goose works" also heard as "gooseworks"
@@ -574,25 +604,35 @@ def tokenize(text: str, aliases=None) -> list[str]:
 def _fusable(parts: list[str], whole: str) -> bool:
     if all(p.isalpha() for p in parts):
         # Letters spelled one by one ("a g") are NOT a fused word — that needs a confirmed alias.
-        return not all(len(p) == 1 for p in parts) and "not" not in parts
-    # years: "twenty twenty six" → 20 26 == 2026
-    return (len(parts) == 2 and bool(re.fullmatch(r"\d{4}", whole))
-            and all(re.fullmatch(r"[1-9]\d", p) for p in parts))
+        # A join may not swallow a negation: "no table" is not "notable" ("no thing" is "nothing").
+        return (not all(len(p) == 1 for p in parts)
+                and sum(p in _NEGATIONS for p in parts) == (whole in _NEGATIONS))
+    if len(parts) == 2 and all(p.isdigit() for p in parts):
+        # years and prices read in pairs: "twenty twenty six" = 2026, "two forty-nine" = 249
+        return bool(re.fullmatch(r"[1-9]\d?", parts[0]) and re.fullmatch(r"[1-9]\d", parts[1]))
+    return False
 
 
 def _fuse(toks: list[_Tok], other: set[str]) -> list[_Tok]:
-    """Join 2-3 consecutive tokens whose exact concatenation is a token on the other side."""
+    """Join 2-3 consecutive tokens whose exact concatenation is a token on the other side.
+    A number written as a word joins by its spelling: "every one" == "everyone"."""
     out: list[_Tok] = []
     i = 0
     while i < len(toks):
         for k in (3, 2):
-            if i + k <= len(toks):
-                parts = [t.text for t in toks[i:i + k]]
+            if i + k > len(toks):
+                continue
+            window = toks[i:i + k]
+            joined = None
+            for parts in ([t.text for t in window], [t.spelled() or t.text for t in window]):
                 whole = "".join(parts)
                 if whole in other and _fusable(parts, whole):
-                    out.append(_merge(toks[i:i + k], whole))
-                    i += k
+                    joined = whole
                     break
+            if joined:
+                out.append(_merge(window, joined))
+                i += k
+                break
         else:
             out.append(toks[i])
             i += 1
@@ -642,31 +682,56 @@ class Verdict:
         return asdict(self)
 
 
-def _classify(tag: str, sw: list[str], hw: list[str], brand_hit: bool) -> tuple[str, str]:
+_CURRENCY_WORDS = frozenset({"dollars", "cents", "euros", "pounds"})
+
+
+def _classify(tag: str, sw_t: list[_Tok], hw_t: list[_Tok], brand_hit: bool,
+              declared: set[str]) -> tuple[str, str, bool]:
+    """(severity, note, equivalent) for one differing span of the alignment."""
+    sw, hw = [x.text for x in sw_t], [x.text for x in hw_t]
+    # Backward compatibility with callers that pass --brand-term for the brand AND for each
+    # word of its spoken form: a span that is ONLY declared brand-term tokens on BOTH sides
+    # (script "ak mee" vs heard "Acme") is the same brand, said as confirmed.
+    if tag == "replace" and declared and all(w in declared for w in sw + hw) \
+            and not any(w in _NEGATIONS for w in sw + hw):
+        return "low", "declared brand terms on both sides (spoken form vs brand spelling) — accepted", True
     if sum(w in _NEGATIONS for w in sw) != sum(w in _NEGATIONS for w in hw):
-        return "high", "negation changed (not/never/no/without added or lost) — the claim flips"
+        return "high", "negation changed (not/never/no/without added or lost) — the claim flips", False
     sq = [w for w in sw if _QUANTITY_RE.fullmatch(w)]
     hq = [w for w in hw if _QUANTITY_RE.fullmatch(w)]
     if sq != hq:
-        return "high", "number differs from the approved script — a number is never a benign paraphrase"
-    su = [w for w in sw if w in _UNIT_SET]
-    hu = [w for w in hw if w in _UNIT_SET]
-    if su and hu and su != hu:
-        return "high", "unit differs from the approved script"
+        return "high", "number differs from the approved script — a number is never a benign paraphrase", False
+    # Units count only right after a quantity. Any unit added, dropped or changed is HIGH,
+    # except a dropped/added currency word alone ("$9.99" read "nine ninety-nine").
+    su = [x.text for x in sw_t if x.unit]
+    hu = [x.text for x in hw_t if x.unit]
+    if su != hu and ((su and hu) or [u for u in su + hu if u not in _CURRENCY_WORDS]):
+        return "high", "unit differs from the approved script (added, dropped or changed)", False
     if brand_hit:
         return "high", ("brand name not heard as approved (mis-voiced or dropped) — re-roll; if the audio is "
-                        "right and only the spelling differs, confirm the spoken form and pass it as an alias")
+                        "right and only the spelling differs, confirm the spoken form and pass it as an alias"), False
     if tag == "replace":
         if len(sw) == 1 and len(hw) == 1:
             a, b = sw[0], hw[0]
             if abs(len(a) - len(b)) <= MISVOICE_MAX_LEN_DELTA and _char_sim(a, b) >= MISVOICE_MIN_CHAR_SIM:
                 return "high", (f'audio likely mis-voices "{a}" as "{b}" (re-roll a new seed; if it is a '
-                                "brand token, spell it phonetically in the SPOKEN LINE)")
-        return "medium", "spoken word differs from the approved script"
+                                "brand token, spell it phonetically in the SPOKEN LINE)"), False
+        return "medium", "spoken word differs from the approved script", False
     if tag == "delete":
-        return "medium", "approved words not heard in the render"
+        return "medium", "approved words not heard in the render", False
     # Extra heard words are often benign (filler / whisper tail); low severity.
-    return "low", "extra words heard that are not in the script"
+    return "low", "extra words heard that are not in the script", False
+
+
+def _term_seqs(terms: list[str], rules) -> list[tuple[str, ...]]:
+    seqs = []
+    for term in terms:
+        seq = tuple(x.text for x in _apply_aliases(_base_tokens(term), rules))
+        if seq:
+            seqs.append(seq)
+            if len(seq) > 1 and all(w.isalpha() for w in seq):
+                seqs.append(("".join(seq),))
+    return seqs
 
 
 def review_transcript(script: str, transcript: str, min_ratio: float = DEFAULT_MIN_RATIO,
@@ -674,28 +739,25 @@ def review_transcript(script: str, transcript: str, min_ratio: float = DEFAULT_M
     """Pure verdict from approved script vs heard transcript. No I/O.
 
     brand_terms: brand names. They are NEVER removed from the diff; a brand word not
-        heard as approved is a HIGH failure. Fused/split spellings are equal.
+        heard as approved is a HIGH failure. Fused/split spellings are equal, and a span
+        made only of declared brand-term tokens on both sides is accepted.
     aliases: confirmed spoken forms, e.g. {"AG1": "A G one"} or the read_pronunciations
-        `pronunciations` list. Raises ValueError on an alias that would change a number,
-        unit or negation."""
+        `pronunciations` list. Raises ValueError on a bad alias (see build_aliases)."""
     rules = build_aliases(aliases)
     pairs = _alias_pairs(aliases)
     s_toks = _apply_aliases(_base_tokens(script), rules)
     t_toks = _apply_aliases(_base_tokens(transcript), rules)
+    if any(x.text == "2nd" for x in s_toks):
+        # the script writes the ordinal "2nd", so a plain "second" is that ordinal
+        s_toks, t_toks = ([_Tok("2nd", x.orig, x.src) if x.text == "second" else x for x in toks]
+                          for toks in (s_toks, t_toks))
     s_set, t_set = {t.text for t in s_toks}, {t.text for t in t_toks}
     s_toks, t_toks = _fuse(s_toks, t_set), _fuse(t_toks, s_set)
     s = [t.text for t in s_toks]
     t = [x.text for x in t_toks]
 
-    brand_list = list(brand_terms or []) + [term for term, _ in pairs]
-    brand_seqs = []
-    for term in brand_list:
-        seq = tuple(x.text for x in _apply_aliases(_base_tokens(term), rules))
-        if seq:
-            brand_seqs.append(seq)
-            if len(seq) > 1 and all(w.isalpha() for w in seq):
-                brand_seqs.append(("".join(seq),))
-    brand_pos = _brand_positions(s, brand_seqs)
+    brand_pos = _brand_positions(s, _term_seqs(list(brand_terms or []) + [a for a, _ in pairs], rules))
+    declared = {w for seq in _term_seqs(list(brand_terms or []), rules) for w in seq}
 
     v = Verdict(passed=False, ratio=0.0, script_tokens=len(s), transcript_tokens=len(t),
                 brand_terms=list(brand_terms or []),
@@ -709,19 +771,21 @@ def review_transcript(script: str, transcript: str, min_ratio: float = DEFAULT_M
         return v
 
     matcher = SequenceMatcher(None, s, t, autojunk=False)
-    v.ratio = matcher.ratio()
+    matched = 2 * sum(b.size for b in matcher.get_matching_blocks())
 
     kinds = {"replace": "substitution", "delete": "dropped", "insert": "inserted"}
     for tag, i1, i2, j1, j2 in matcher.get_opcodes():
         if tag == "equal":
             continue
-        sw, hw = s[i1:i2], t[j1:j2]
         brand_hit = bool(brand_pos.intersection(range(i1, i2)))
-        severity, note = _classify(tag, sw, hw, brand_hit)
-        v.issues.append(Issue(kinds[tag], severity, sw, hw, note,
+        severity, note, equivalent = _classify(tag, s_toks[i1:i2], t_toks[j1:j2], brand_hit, declared)
+        if equivalent:
+            matched += (i2 - i1) + (j2 - j1)
+        v.issues.append(Issue(kinds[tag], severity, s[i1:i2], t[j1:j2], note,
                               script_text=_orig_text(s_toks[i1:i2]),
                               heard_text=_orig_text(t_toks[j1:j2])))
 
+    v.ratio = matched / (len(s) + len(t))
     has_high = any(i.severity == "high" for i in v.issues)
     v.passed = (v.ratio >= min_ratio) and not has_high
     return v
@@ -957,8 +1021,9 @@ def main(argv: list[str] | None = None) -> int:
                     help='confirmed spoken form, "TERM=SPOKEN" (repeatable), e.g. --alias "AG1=A G one". '
                          "Only pass forms the user confirmed; never infer one from the transcript.")
     ap.add_argument("--pronunciations",
-                    help="read_pronunciations.py output (create-vo-elevenlabs): every confirmed "
-                         "{term, say_as} becomes an alias and its term a brand term.")
+                    help="confirmed pronunciations the voice-over used: read_pronunciations.py output or "
+                         "brand-rules.json (create-vo-elevenlabs). Each {term, say_as} becomes an alias and "
+                         "its term a brand term; an entry that cannot be used is skipped with a warning.")
     ap.add_argument("--captions-srt",
                     help="optional SRT to check for caption-text defects (stray leading punctuation, "
                          "empty cues). Caption POSITION stays a visual /watch item.")
@@ -984,15 +1049,22 @@ def main(argv: list[str] | None = None) -> int:
         with open(args.script_file) as fh:
             script = fh.read()
 
-    # Validate confirmed aliases BEFORE any (paid) transcription call.
+    # Validate confirmed aliases BEFORE any (paid) transcription call. --alias is strict
+    # (exit 3); a saved pronunciation that cannot be used is skipped with a warning.
     try:
         aliases = [parse_alias_arg(a) for a in args.aliases]
-        if args.pronunciations:
-            if not os.path.exists(args.pronunciations):
-                raise ValueError(f"pronunciations file not found: {args.pronunciations}")
-            aliases += load_pronunciations(args.pronunciations)
         build_aliases(aliases)
-    except (ValueError, json.JSONDecodeError) as e:
+        if args.pronunciations:
+            if not os.path.isfile(args.pronunciations):
+                raise ValueError(f"pronunciations file not found or not a file: {args.pronunciations}")
+            for term, say_as in load_pronunciations(args.pronunciations):
+                try:
+                    build_aliases(aliases + [(term, say_as)])
+                except ValueError as e:
+                    print(f"WARNING: skipping pronunciation {term!r} = {say_as!r}: {e}", file=sys.stderr)
+                    continue
+                aliases.append((term, say_as))
+    except (ValueError, OSError) as e:   # JSONDecodeError and UnicodeDecodeError are ValueErrors
         print(f"ERROR: {e}", file=sys.stderr)
         return 3
 
