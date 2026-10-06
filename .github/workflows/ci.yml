@@ -58,3 +58,4 @@ jobs:
           skills/ads/capabilities/review-finished-ad/tests
           skills/ads/capabilities/create-vo-elevenlabs/tests
           skills/ads/capabilities/create-creator-takes-h3/tests
+          skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests
