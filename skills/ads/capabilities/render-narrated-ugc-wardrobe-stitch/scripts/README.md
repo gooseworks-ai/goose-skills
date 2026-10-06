@@ -9,7 +9,8 @@ one clip per cut + a Playwright landing-page PNG + the brand end-card PNG and st
 finished master. Re-cuts (new caption timing, re-timed windows, an end-card swap) reuse the
 existing VO / start-frames / clips and cost **$0**.
 
-`config.example.json` is one worked example (Bioma "Do NOT buy Bioma Probiotics", ~37s 1080×1920).
+`config.example.json` is one worked example (Bioma "Do NOT buy Bioma Probiotics", 1080×1920; the
+original run's master was ~37 s).
 Its creator, voice, hook angle, worlds and music bed are the demo's answers to the recipe's
 `choices` — never copy them as defaults.
 `PIPELINE.md` maps every config block to its source step. This README documents the FREE assembly.
@@ -35,12 +36,13 @@ Write `montage.json` from `config.json` like this:
 |---|---|
 | `width`, `height`, `fps` | `output.width`, `output.height`, `output.fps` |
 | `vo.outputs.word_timings` | `words` (cut grid) and `captions.words` (captions) |
-| `edl.timeline[]` — one entry per cut | `clips[]` in order: `file` = that cut's clip, `label` = its role, `word_range: [first, last]` = the words it covers |
+| `edl.timeline_sample[]` (a sample; the full ~30-cut grid is the run's `edl.json`) — one entry per cut | `clips[]` in order: `file` = that cut's clip, `label` = its role, `word_range: [first, last]` = the words it covers |
 | `landing_page.render_png` scroll cuts | `clips[]` stills with `duration` and `pan` (zoom/pan across the PNG) |
 | `end_card.brand_png`, `end_card.hold_sec` | the last `clips[]` entry: the PNG with `duration` |
 | `captions.respell_tokens`, `captions.accent_color` | `captions.respell`, `captions.style.color` (`position: center` = `style.y: 0.5`) |
 | `audio_mix.vo`, `audio_mix.music` | `audio.vo`, `audio.music` (leave `music` out when the user chose no music) |
 | `audio_mix.music_drop_s`, `audio_mix.loudness_lufs` | `audio.music_start`, `audio.target_lufs` |
+| `audio_mix.music_gain_db` (-20 in the demo) | no direct field: the bed is set by loudness instead, `audio.music_lufs` (default -24 LUFS between VO lines, then ducked 20:1). Raise or lower it to taste. |
 
 ```json
 {
@@ -60,7 +62,18 @@ Write `montage.json` from `config.json` like this:
 }
 ```
 
-The word indexes above are illustrative and the middle cuts are left out. In a real spec the
+Notes:
+
+- **Words file:** use `vo-final.words.json` exactly as the transcriber wrote it. Whisper's nested
+  `segments[].words[]` (goose-studio's `transcribe-audio-fal`), a flat `[{text|word, start, end}]`
+  list, `{words: [...]}` and fal's `{chunks: [...]}` all work.
+- **Keep `audio.vo_start` at 0.** `word_range` cuts and word captions are timed on the words file's
+  clock; `vo_start` moves only the VO audio, not the cuts or captions.
+- **Length:** the master is as long as the VO (to its last word) plus the end card. `word_range`
+  keeps the VO's pauses, so a VO with natural pauses runs longer than the demo's ~37 s (a VO whose
+  last word ends at 39.9 s gives a ~41.9 s master with a 2 s card). Tighten the VO itself (tempo,
+  pauses) before cutting if the length matters.
+- The word indexes above are illustrative and the middle cuts are left out. In a real spec the
 ranges run on with no gaps (the `edl` step warns about any gap); take them from your own
 `vo-final.words.json`.
 
@@ -93,11 +106,13 @@ Bioma run rendered `landing-page.png` at 2160×3840 and zoomed wide → best-val
 still with a `pan` (window centre `x`/`y` and `zoom`, from → to). The capsule/unboxing composites
 come from the paid start-frame stage grounded on the real product hero.
 
-## 4. Karaoke-pop captions — from the VO word timings, re-spelled against the locked script
+## 4. Word-by-word captions — from the VO word timings, re-spelled against the locked script
 
-Captions come from the VO's `vo-final.words.json` (VEED Whisper preset, bold yellow), on every word,
-throughout. `montage.py` burns them for free with `captions.words` and `per: 1` (one word at a time,
-each held until the next). Re-spell brand tokens Whisper mishears against the locked script with
+The demo burned VEED's karaoke-pop preset (bold yellow, every word, throughout). `montage.py` burns a
+simpler free version from `vo-final.words.json` with `captions.words` and `per: 1`: one word at a
+time, each held until the next, in one colour (`captions.style.color`, e.g. `#FFE800`) with a dark
+outline. It does not highlight the active word inside a phrase, and `captions.base_color` is not
+used. For VEED's exact look, burn the captions in VEED instead. Re-spell brand tokens Whisper mishears against the locked script with
 `captions.respell` (Bioma demo: "synbiotic" over "symbiotic"; kept "I'ma" verbatim) — never edit the
 script to match Whisper. Captions stop with the last word, so they are suppressed over the end card.
 The helper draws captions with Pillow when it is installed and with libass otherwise, so the host
@@ -113,5 +128,6 @@ ffmpeg does not need libass.
   The brand text is **never** AI-rendered — a diffusion model garbles a wordmark.
 - **Composite:** `montage.py run` trims each cut to its window, builds the landing-page zoompan
   cuts, `filter_complex concat`s all ~30 cuts, burns the captions, mixes the VO + bed, and
-  masters to -14 LUFS → a 1080×1920 h264 + aac master (~37s) plus `manifest.json`. Deterministic,
+  masters to -14 LUFS → a 1080×1920 h264 + aac master (as long as the VO plus the end card) plus
+  `manifest.json`. Deterministic,
   no paid calls, no keys.

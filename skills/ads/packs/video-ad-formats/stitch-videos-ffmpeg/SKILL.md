@@ -81,8 +81,11 @@ Paths are relative to the spec file. Times are seconds or a timecode string (`"S
 
 **How long each cut is** (first match wins):
 
-- `word_range: [i, j]` cuts on the VO's word boundaries. It needs a top-level `words` file
-  (`[{text, start, end}]`). The cut runs from the start of word `i` to the start of word
+- `word_range: [i, j]` cuts on the VO's word boundaries. It needs a top-level `words` file,
+  used as the transcriber wrote it: a flat `[{text|word, start, end}]` list, `{words: [...]}`
+  (OpenAI, ElevenLabs; `spacing` entries are skipped), Whisper's `{segments: [{words: [...]}]}`
+  (goose-studio's `transcribe-audio-fal`), or fal's `{chunks: [{text, timestamp: [s, e]}]}`.
+  Words with no time are skipped, and leading spaces are stripped. The cut runs from the start of word `i` to the start of word
   `j + 1`, or to the last word's end. The first cut starts at 0 so it covers the lead-in.
   Consecutive ranges tile the VO with no gaps.
 - `t_in` / `t_out` give a window on the timeline. The cut is `t_out - t_in` long. A window
@@ -92,8 +95,9 @@ Paths are relative to the spec file. Times are seconds or a timecode string (`"S
 - With nothing set, the whole clip plays (from `in`, default 0).
 
 Every cut starts at `in` in its source (default 0). A still image (`.png`, `.jpg`, `.webp`)
-needs a length; `pan` zooms and pans across it (`x`/`y` are the window centre as a fraction
-of the image, `zoom` ≥ 1). A video clip may be up to 0.1 s short of its cut, and then its
+needs a length; `pan` zooms and pans across it. The still is first cover-cropped to the output
+aspect (9:16 by default), and `x`/`y` are the window centre as a fraction of that cropped image
+(`zoom` ≥ 1). A video clip may be up to 0.1 s short of its cut, and then its
 last frame is held. Anything shorter is an error.
 
 `clip_audio` (`--clip-audio` on `assemble`): `drop` (default) or `keep`. `keep` keeps each
@@ -102,8 +106,14 @@ clip's own sound and fills silence under stills and silent clips.
 ### Captions
 
 - **Sources:** `srt`, `cues` (a list or a JSON file of `{start, end, text}`), or `words`
-  plus `per` and an optional `respell` map. `respell` swaps a misheard word for the locked
-  spelling and keeps the punctuation around it. Overlapping cues: the later one wins.
+  (any of the word-file shapes above) plus `per` and an optional `respell` map. `respell`
+  swaps a misheard word for the locked spelling and keeps the punctuation around it.
+  Overlapping cues: the later one wins.
+- **Look:** each cue is drawn whole, in one colour with an outline. With `per: 1` that is one
+  word at a time, each held until the next. There is no active-word (karaoke) highlight.
+- **Timing:** a cue shows from the first output frame at or after its start until the first
+  frame at or after its end (a 1 ms caption grid; ffmpeg older than 5 falls back to 1/25 s and
+  says so in the step's warnings).
 - **Style:** `font`, `font_size` (px, default 4.5% of the height), `color`, `outline_color`,
   `outline` (px), `y` (centre of the caption block as a fraction of the height, default
   0.72) and `max_width` (default 0.86 of the width).
@@ -120,7 +130,7 @@ clip's own sound and fills silence under stills and silent clips.
 | `music_lufs` | -24 | Bed level between VO lines, before ducking |
 | `duck_threshold` / `duck_ratio` | 0.02 / 20 | The bed ducks while the VO is above the threshold. ffmpeg caps the ratio at 20. |
 | `duck_attack` / `duck_release` | 20 / 400 ms | How fast the bed dips and comes back |
-| `vo_start`, `music_start` | 0 | Where each track enters on the timeline |
+| `vo_start`, `music_start` | 0 | Where each track enters on the timeline. `vo_start` moves only the VO audio, not `word_range` cuts or word captions, so keep it 0 when those come from the same VO. |
 | `music_fade_in` / `music_fade_out` | 0 / 1 s | A bed shorter than the video loops (with a warning) |
 | `target_lufs` / `target_tp` | -14 / -1 | Master loudness. `off` skips it. |
 | `keep_video_audio` | false | Mix the video's own audio in too (not ducked) |

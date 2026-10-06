@@ -62,6 +62,23 @@ def gray_rows(path, t, y0, y1):
     return raw[y0 * W:y1 * W]
 
 
+def band_frames(path):
+    """Every frame's caption band (rows 0.62-0.82 of the height) as gray bytes."""
+    y0, y1 = int(0.62 * H), int(0.82 * H)
+    raw = subprocess.run(["ffmpeg", "-hide_banner", "-loglevel", "error", "-i", str(path), "-vf",
+                          f"crop={W}:{y1 - y0}:0:{y0}", "-f", "rawvideo", "-pix_fmt", "gray", "-"],
+                         capture_output=True, check=True).stdout
+    size = W * (y1 - y0)
+    return [raw[i:i + size] for i in range(0, len(raw), size)]
+
+
+def load_module():
+    spec = importlib.util.spec_from_file_location("stitch_montage", SCRIPT)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
 def caption_diff(a, b, t):
     """Mean absolute luma difference in the caption band (rows around y=0.72) at time t."""
     y0, y1 = int(0.62 * H), int(0.82 * H)
@@ -99,6 +116,13 @@ def fx(tmp_path_factory):
         {"text": "Do", "start": 0.05, "end": 0.30}, {"text": "not", "start": 0.35, "end": 0.60},
         {"text": "buy", "start": 0.62, "end": 0.90}, {"text": "symbiotic,", "start": 1.20, "end": 1.80},
         {"text": "really.", "start": 2.00, "end": 2.60}]), encoding="utf-8")
+    # The same words as goose-studio's transcribe-audio-fal writes them: Whisper's nested
+    # segments, `word` keys with a leading space.
+    (d / "vo.whisper.json").write_text(json.dumps({"text": " Do not buy symbiotic, really.", "segments": [
+        {"id": 0, "start": 0.05, "end": 2.6, "text": "Do not buy symbiotic, really.", "words": [
+            {"word": " Do", "start": 0.05, "end": 0.30}, {"word": " not", "start": 0.35, "end": 0.60},
+            {"word": " buy", "start": 0.62, "end": 0.90}, {"word": " symbiotic,", "start": 1.20, "end": 1.80},
+            {"word": " really.", "start": 2.00, "end": 2.60}]}], "language": "en"}), encoding="utf-8")
     spec = {
         "output": {"width": W, "height": H, "fps": FPS},
         "clips": [
@@ -143,6 +167,25 @@ def test_assemble_can_keep_clip_audio(fx):
     assert abs(float(s["audio"]["duration"]) - 4.5) < 0.1       # silence filled in for clips/stills without audio
 
 
+def test_kept_clip_audio_stays_in_sync_from_zero(fx):
+    """A cut at in=0 on an AAC clip must not pull its audio one AAC frame (~21 ms) early."""
+    d = fx["dir"]
+    ff("-f", "lavfi", "-i", "color=black:s=160x90:r=30:d=1.5", "-f", "lavfi", "-i",
+       "aevalsrc='if(between(t,0.3,0.33),0.8*sin(2*PI*1000*t),0)':s=48000:c=mono:d=1.5",
+       "-c:v", "libx264", "-preset", "ultrafast", "-pix_fmt", "yuv420p", "-c:a", "aac", "-shortest", d / "click.mp4")
+    spec = {"output": {"width": W, "height": H, "fps": FPS},
+            "clips": [{"file": "click.mp4", "in": 0, "duration": 1.0}, {"file": "click.mp4", "in": 0.1, "duration": 1.0}]}
+    (d / "click.json").write_text(json.dumps(spec), encoding="utf-8")
+    montage("assemble", "--edl", d / "click.json", "--out", d / "click_out.mp4", "--preset", "ultrafast",
+            "--clip-audio", "keep")
+    pcm = subprocess.run(["ffmpeg", "-hide_banner", "-loglevel", "error", "-i", str(d / "click_out.mp4"), "-ac", "1",
+                          "-ar", "48000", "-f", "s16le", "-"], capture_output=True, check=True).stdout
+    loud = [i for i in range(0, len(pcm) // 2) if abs(int.from_bytes(pcm[2 * i:2 * i + 2], "little", signed=True)) > 3000]
+    first, second = loud[0] / 48000, next(i for i in loud if i / 48000 > 0.9) / 48000
+    print(f"clicks at {first * 1000:.1f} ms and {second * 1000:.1f} ms (expected 300 and 1200)")
+    assert abs(first - 0.3) < 0.005 and abs(second - 1.2) < 0.005
+
+
 def test_captions_burn_exact_text_on_the_right_frames(fx):
     renderer = caption_renderer()
     if renderer is None:
@@ -158,6 +201,12 @@ def test_captions_burn_exact_text_on_the_right_frames(fx):
     assert shown1 > 2.0 and shown2 > 2.0
     assert shown1 > 4 * hidden and shown2 > 4 * hidden
     assert streams(d / "cap.mp4")["video"]["nb_read_frames"] == "135"
+    # Frame-exact: 0.5-1.5 s and 3.0-4.0 s at 30 fps are frames 15-44 and 90-119. (0.5 s is
+    # off the image demuxer's default 1/25 s grid, which would show the cue a frame late.)
+    base, cap = band_frames(d / "body.mp4"), band_frames(d / "cap.mp4")
+    on = [i for i, (x, y) in enumerate(zip(base, cap)) if sum(abs(p - q) for p, q in zip(x[::3], y[::3])) / len(x[::3]) > 2.0]
+    print("caption on-frames:", on[0], "-", on[-1])
+    assert on == list(range(15, 45)) + list(range(90, 120))
 
 
 def test_mix_ducks_music_under_vo_and_masters_loudness(fx):
@@ -187,13 +236,13 @@ def test_run_builds_from_word_ranges_with_respelled_captions(fx):
     d = fx["dir"]
     spec = {
         "output": {"width": W, "height": H, "fps": FPS},
-        "words": "words.json",
+        "words": "vo.whisper.json",
         "clips": [
             {"file": "a.mp4", "label": "hook", "word_range": [0, 2]},
             {"file": "b.mp4", "label": "payoff-hold", "word_range": [3, 4]},
             {"file": "card.png", "label": "end-card", "duration": 1.0},
         ],
-        "captions": {"words": "words.json", "per": 1, "respell": {"symbiotic": "synbiotic"},
+        "captions": {"words": "vo.whisper.json", "per": 1, "respell": {"symbiotic": "synbiotic"},
                      "style": {"color": "#FFE800"}},
         "audio": {"vo": "vo.wav", "music": "music.wav", "music_start": 0.5},
     }
@@ -243,10 +292,35 @@ def test_edl_warns_on_window_gaps_and_strict_fails(fx):
     assert proc.returncode == 2 and "--strict" in proc.stderr
 
 
+def test_load_words_accepts_transcriber_shapes(tmp_path):
+    mod = load_module()
+    want = [{"text": "Do", "start": 0.05, "end": 0.3}, {"text": "not", "start": 0.35, "end": 0.6}]
+    shapes = {
+        "flat-text": [{"text": "Do", "start": 0.05, "end": 0.3}, {"text": "not", "start": 0.35, "end": 0.6}],
+        "flat-word": [{"word": " Do", "start": 0.05, "end": 0.3}, {"word": " not", "start": 0.35, "end": 0.6}],
+        "openai-words": {"text": "Do not", "words": [{"word": "Do", "start": 0.05, "end": 0.3},
+                                                     {"word": "not", "start": 0.35, "end": 0.6}]},
+        "whisper-segments": {"text": " Do not", "segments": [
+            {"words": [{"word": " Do", "start": 0.05, "end": 0.3}]},
+            {"words": [{"word": " not", "start": 0.35, "end": 0.6}, {"word": " um", "start": None, "end": None}]}]},
+        "fal-chunks": {"text": "Do not", "chunks": [{"text": " Do", "timestamp": [0.05, 0.3]},
+                                                    {"text": " not", "timestamp": [0.35, 0.6]},
+                                                    {"text": " x", "timestamp": [0.7, None]}]},
+        "elevenlabs": {"words": [{"text": "Do", "start": 0.05, "end": 0.3, "type": "word"},
+                                 {"text": " ", "start": 0.3, "end": 0.35, "type": "spacing"},
+                                 {"text": "not", "start": 0.35, "end": 0.6, "type": "word"}]},
+    }
+    for name, data in shapes.items():
+        f = tmp_path / f"{name}.json"
+        f.write_text(json.dumps(data), encoding="utf-8")
+        assert mod.load_words(f) == want, name
+    (tmp_path / "none.json").write_text(json.dumps({"text": "no timings"}), encoding="utf-8")
+    with pytest.raises(mod.SpecError, match="no word timings"):
+        mod.load_words(tmp_path / "none.json")
+
+
 def test_parsers_keep_text_exact():
-    spec = importlib.util.spec_from_file_location("stitch_montage", SCRIPT)
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
+    mod = load_module()
     assert mod.parse_time("01:02.5") == 62.5 and mod.parse_time(3) == 3.0
     cues = mod.parse_srt("﻿1\r\n00:00:01,000 --> 00:00:02,250\r\n  Two  spaces,\r\nsecond line \r\n")
     assert cues == [{"start": 1.0, "end": 2.25, "text": "  Two  spaces,\nsecond line "}]

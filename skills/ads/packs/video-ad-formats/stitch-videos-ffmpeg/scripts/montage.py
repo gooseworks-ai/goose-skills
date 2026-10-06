@@ -198,18 +198,45 @@ def resolve_path(value, base: Path) -> Path:
     return p if p.is_absolute() else (base / p)
 
 
+WORD_SHAPES = ("[{text|word, start, end}], {words: [...]}, {segments: [{words: [...]}]}, "
+               "or {chunks: [{text, timestamp: [start, end]}]}")
+
+
 def load_words(path: Path) -> list:
-    words = load_json(path)
-    if isinstance(words, dict):
-        words = words.get("words", [])
-    if not isinstance(words, list) or not words:
-        raise SpecError(f"{path}: expected a non-empty list of {{text, start, end}} words")
+    """Word timings in any of the shapes transcribers write, as [{text, start, end}] by start.
+
+    Accepts a flat list; {"words": [...]} (OpenAI/ElevenLabs, `word` or `text` key);
+    Whisper's {"segments": [{"words": [...]}]} (goose-studio transcribe-audio-fal); and fal's
+    {"chunks": [{"text", "timestamp": [start, end]}]}. Skips entries with no time and
+    ElevenLabs `spacing` entries, and strips the leading space Whisper puts on each word.
+    """
+    data = load_json(path)
+    entries = None
+    if isinstance(data, list):
+        entries = data
+    elif isinstance(data, dict):
+        if isinstance(data.get("words"), list):
+            entries = data["words"]
+        elif isinstance(data.get("segments"), list):
+            entries = [w for seg in data["segments"] if isinstance(seg, dict) for w in (seg.get("words") or [])]
+        elif isinstance(data.get("chunks"), list):
+            entries = data["chunks"]
+    if entries is None:
+        raise SpecError(f"{path}: no word timings found; expected {WORD_SHAPES}")
     out = []
-    for i, w in enumerate(words):
-        try:
-            out.append({"text": str(w["text"]), "start": float(w["start"]), "end": float(w["end"])})
-        except (KeyError, TypeError, ValueError):
-            raise SpecError(f"{path}: word {i} needs text, start and end")
+    for i, w in enumerate(entries):
+        if not isinstance(w, dict) or w.get("type") == "spacing":
+            continue
+        text = w.get("text") if w.get("text") is not None else w.get("word")
+        start, end = w.get("start"), w.get("end")
+        if isinstance(w.get("timestamp"), (list, tuple)) and len(w["timestamp"]) == 2:
+            start, end = w["timestamp"]
+        start, end = _num(start), _num(end)
+        if text is None or start is None or end is None or not str(text).strip():
+            continue
+        out.append({"text": str(text).strip(), "start": start, "end": max(end, start)})
+    if not out:
+        raise SpecError(f"{path}: no timed words found; expected {WORD_SHAPES}")
     return sorted(out, key=lambda w: w["start"])
 
 
@@ -440,7 +467,10 @@ def assemble(edl: dict, out: Path, crf=18, preset="fast", clip_audio="drop") -> 
         graph.append(f"[{k}:v]{chain}[v{k}]")
         if keep_audio:
             if seg.get("has_audio"):
-                graph.append(f"[{k}:a]aresample=48000,aformat=sample_fmts=fltp:sample_rates=48000:"
+                # async + first_pts=0 anchors the audio to the cut's start (the seek point), padding
+                # or trimming as needed; resetting to the first decoded sample instead shifts AAC
+                # audio one frame (~21 ms) early when the cut starts at 0.
+                graph.append(f"[{k}:a]aresample=48000:async=1:first_pts=0,aformat=sample_fmts=fltp:sample_rates=48000:"
                              f"channel_layouts=stereo,apad,atrim=0:{exact:.6f},asetpts=PTS-STARTPTS[a{k}]")
             else:
                 graph.append(f"anullsrc=channel_layout=stereo:sample_rate=48000,atrim=0:{exact:.6f},"
@@ -638,9 +668,11 @@ def _render_pil(cues, w, h, style, tmp: Path):
     return blank, files
 
 
-def _caption_track(cues, files, blank, duration, tmp: Path) -> Path:
+def _caption_track(cues, files, blank, duration, tmp: Path, exact: bool = True) -> Path:
     """An ffconcat slideshow of full-frame RGBA stills: blank between cues. This is an image
-    track for one overlay, not a clip concat, so the demuxer's audio caveat does not apply."""
+    track for one overlay, not a clip concat, so the demuxer's audio caveat does not apply.
+    `option framerate 1000` puts the stills on a 1 ms grid; without it the image demuxer's
+    default 25 fps snaps cue times to 1/25 s, a frame late on 30 fps video."""
     def q(p):
         return "'" + str(p).replace("'", "'\\''") + "'"
     entries, t = [], 0.0
@@ -653,10 +685,11 @@ def _caption_track(cues, files, blank, duration, tmp: Path) -> Path:
         entries.append((f, end - start))
         t = end
     entries.append((blank, max(duration - t, 1.0)))
+    opt = ["option framerate 1000"] if exact else []
     lines = ["ffconcat version 1.0"]
     for f, d in entries:
-        lines += [f"file {q(f)}", f"duration {d:.6f}"]
-    lines.append(f"file {q(blank)}")  # the last duration only counts if a file follows it
+        lines += [f"file {q(f)}", *opt, f"duration {d:.6f}"]
+    lines += [f"file {q(blank)}", *opt]  # the last duration only counts if a file follows it
     track = tmp / "captions.ffconcat"
     track.write_text("\n".join(lines) + "\n", encoding="utf-8")
     return track
@@ -707,23 +740,35 @@ def burn_captions(video: Path, out: Path, cues: list, style: dict, crf=18, prese
     out = Path(out)
     out.parent.mkdir(parents=True, exist_ok=True)
     video = Path(video).resolve()
+    warnings = []
     with tempfile.TemporaryDirectory(prefix="montage-captions-") as td:
         tmp = Path(td)
-        cmd = ffmpeg_cmd() + ["-i", str(video)]
+        tail = ["-map", "0:a?", "-c:a", "copy", "-c:v", "libx264", "-preset", preset, "-crf", str(crf),
+                "-pix_fmt", "yuv420p", "-movflags", "+faststart", str(out.resolve())]
         if renderer == "pil":
             blank, files = _render_pil(cues, w, h, style, tmp)
-            track = _caption_track(cues, files, blank, duration, tmp)
-            cmd += ["-f", "concat", "-safe", "0", "-i", str(track), "-filter_complex",
-                    "[0:v][1:v]overlay=0:0:eof_action=pass:format=auto,format=yuv420p[v]", "-map", "[v]"]
+
+            def overlay_cmd(exact):
+                track = _caption_track(cues, files, blank, duration, tmp, exact)
+                return ffmpeg_cmd() + ["-i", str(video), "-f", "concat", "-safe", "0", "-i", str(track),
+                                       "-filter_complex",
+                                       "[0:v][1:v]overlay=0:0:eof_action=pass:format=auto,format=yuv420p[v]",
+                                       "-map", "[v]"] + tail
+            try:
+                run_ff(overlay_cmd(True), cwd=td)
+            except FFmpegError as e:
+                if "keyword" not in str(e) and "option" not in str(e):
+                    raise
+                # ffmpeg < 5 has no per-file `option` in ffconcat: fall back to the 1/25 s grid.
+                run_ff(overlay_cmd(False), cwd=td)
+                warnings.append("this ffmpeg is too old for exact caption timing; cue times snap to 1/25 s")
         else:
             # The ASS file is passed by bare name (cwd = tmp) so no path needs filtergraph escaping.
             _write_ass(cues, w, h, style, tmp / "captions.ass")
-            cmd += ["-filter_complex", "[0:v]ass=captions.ass,format=yuv420p[v]", "-map", "[v]"]
-        cmd += ["-map", "0:a?", "-c:a", "copy", "-c:v", "libx264", "-preset", preset, "-crf", str(crf),
-                "-pix_fmt", "yuv420p", "-movflags", "+faststart", str(out.resolve())]
-        run_ff(cmd, cwd=td)
+            run_ff(ffmpeg_cmd() + ["-i", str(video), "-filter_complex", "[0:v]ass=captions.ass,format=yuv420p[v]",
+                                   "-map", "[v]"] + tail, cwd=td)
     return {"step": "captions", "out": str(out), "renderer": renderer, "cues": cues,
-            "font_size": style["font_size"], "duration": probe(out)["duration"]}
+            "font_size": style["font_size"], "duration": probe(out)["duration"], "warnings": warnings}
 
 
 # ---------------------------------------------------------------- mix

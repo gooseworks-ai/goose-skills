@@ -72,8 +72,9 @@ prompt (mid-action keyframes freeze). The landing-page-scroll cuts are FFmpeg zo
 
 ## 6. Captions + end card + assembly → `montage.py run`  (config: `captions`, `audio_mix`, `end_card`)
 
-- Captions — karaoke-pop from `vo-final.words.json` (bold yellow), on every word, throughout:
-  `montage.py` `captions.words` with `per: 1`. Re-spell brand tokens Whisper mishears against the
+- Captions — on every word, throughout, from `vo-final.words.json`: `montage.py` `captions.words`
+  with `per: 1` shows one word at a time in one colour (bold yellow `#FFE800` in the demo) with an
+  outline. It does not highlight the active word the way VEED's karaoke-pop preset does. Re-spell brand tokens Whisper mishears against the
   locked script with `captions.respell`; captions end with the last word, so none sit over the end
   card. The helper draws them with Pillow, or with libass when Pillow is missing, so the host
   ffmpeg needs no libass.
@@ -82,7 +83,8 @@ prompt (mid-action keyframes freeze). The landing-page-scroll cuts are FFmpeg zo
   all ~30 trimmed cuts (NOT the demuxer — it drops audio on a duration mismatch), burn the
   captions, mix the VO with an optional sidechain-ducked instrumental bed (20:1, `audio.music_start`
   14.21 in the demo) so the VO stays on top, append the brand's real end-card PNG (~2s) as the last
-  still, master to -14 LUFS → `edits/master-final.mp4` (1080×1920, 30fps, h264+aac, ~36.8s).
+  still, master to -14 LUFS → `edits/master-final.mp4` (1080×1920, 30fps, h264+aac; as long as the VO
+  plus the end card, 36.8 s in the demo).
 
 Re-cuts (new caption timing, re-timed windows, an end-card swap) reuse the existing
 VO/start-frames/clips and cost **$0** — only steps 1, 3, 4, 5 spend.
