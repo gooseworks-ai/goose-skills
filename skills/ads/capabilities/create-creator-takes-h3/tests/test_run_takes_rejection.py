@@ -19,6 +19,8 @@ MARK = "REAL-PERSON-REF"  # prompts carrying this are refused by the mock
 LIKENESS = "The images may contain likenesses of real people"
 REJECT = {"detail": [{"loc": ["body", "reference_image_urls"], "msg": LIKENESS,
                       "type": "content_policy_violation"}]}
+PROMPT_POLICY = {"detail": [{"msg": "This prompt contains words that violate the usage guidelines.",
+                             "type": "invalid_request"}]}
 NON_POLICY = {"detail": [{"loc": ["body", "reference_image_urls", 0],
                           "msg": "Failed to download the file from the given URL",
                           "type": "file_download_error"}]}
@@ -106,7 +108,11 @@ class RunTakesRejectionTests(unittest.TestCase):
         self.spec.write_text(json.dumps({
             "model": MODEL, "out": str(self.out), "char": str(self.char),
             "resolution": "768P", "aspect_ratio": "9:16",
-            "takes": [{"id": "t1", "seed": 123456, "dur": 6, "covers": [0, 6]}]}))
+            "takes": [{"id": "t1", "seed": 123456, "dur": 6, "covers": [0, 6]},
+                      {"id": "t2", "seed": 234567, "dur": 5, "covers": [6, 11]},
+                      {"id": "t3", "seed": 345678, "dur": 5, "covers": [11, 16]}]}))
+        (self.out / "t2-prompt.txt").write_text("She holds up the jar. " + MARK)
+        (self.out / "t3-prompt.txt").write_text("She smiles and says: try it.")
 
     def tearDown(self):
         self.fal.close()
@@ -163,6 +169,39 @@ class RunTakesRejectionTests(unittest.TestCase):
         man = self.manifest()
         self.assertEqual(man.get("rejected"), [])
         self.assertEqual(man["takes"][0]["input_digest"], self.fal.submits[-1]["digest"])
+
+    def test_a_recorded_take_refuses_only_itself(self):
+        self.fal.reject_body = PROMPT_POLICY  # about t2's own prompt, not the still
+        r = self.run_takes("--only", "t2", "--unchained", "--go")
+        self.assertEqual(r.returncode, 3, r.stderr)
+        self.assertEqual(len(self.fal.submits), 1)
+        r = self.run_takes("--only", "t2,t3", "--unchained", "--go")
+        self.assertEqual(r.returncode, 3, r.stderr)  # t2 refused locally, t3 still rendered
+        self.assertEqual(len(self.fal.submits), 2)
+        self.assertNotIn(MARK, self.fal.submits[1]["payload"]["prompt"])
+        self.assertTrue((self.out / "t3-seed345678.mp4").exists())
+        self.assertNotIn("not attempted", r.stderr)
+        self.assertIn("(matched by input_digest)", r.stderr)
+        rej = {x["id"]: x for x in self.manifest()["rejected"]}
+        self.assertEqual(set(rej), {"t2"})
+        self.assertTrue(rej["t2"]["from_ledger"])
+        self.assertEqual(rej["t2"]["matched"], "input_digest")
+        self.assertTrue(pathlib.Path(rej["t2"]["ledger_paths"][0]).exists())
+        self.assertEqual([t["id"] for t in self.manifest()["takes"]], ["t3"])
+
+    def test_a_prompt_rejection_skips_only_that_take(self):
+        self.fal.reject_body = PROMPT_POLICY
+        r = self.run_takes("--only", "t2,t3", "--unchained", "--go")
+        self.assertEqual(r.returncode, 3, r.stderr)
+        self.assertEqual(len(self.fal.submits), 2)
+        self.assertTrue((self.out / "t3-seed345678.mp4").exists())
+
+    def test_a_likeness_rejection_stops_the_takes_that_share_the_still(self):
+        r = self.run_takes("--only", "t2,t3", "--unchained", "--go")
+        self.assertEqual(r.returncode, 3, r.stderr)
+        self.assertEqual(len(self.fal.submits), 1)
+        self.assertIn("not attempted: t3 (every take uses this same character still", r.stderr)
+        self.assertFalse((self.out / "t3-seed345678.mp4").exists())
 
     def test_non_policy_error_is_not_recorded(self):
         self.fal.reject_body = NON_POLICY

@@ -5,6 +5,8 @@ import importlib.util
 import json
 import os
 import pathlib
+import subprocess
+import sys
 import tempfile
 import threading
 import unittest
@@ -154,6 +156,54 @@ class ClassifierTests(unittest.TestCase):
         self.assertIn("Failed to download the file", str(cm.exception))
         self.assertTrue(str(cm.exception).startswith("FAL error for " + MODEL))
 
+    def test_review_probe_table(self):
+        """The reviewer's probe (PR 194): input errors, rate limits and 5xx are never policy;
+        provider refusals in plain words are, on an explicit 4xx."""
+        job_get_failed = {"job_id": "j", "kind": "provider_call", "status": "failed",
+                          "error": "fal returned HTTP 422 for the result.",
+                          "result": {"provider": "fal", "request_id": "r1", "fal_status": "COMPLETED",
+                                     "detail": MSG_AND_TYPE}}
+        cases = [  # (name, body, http_status, is_policy)
+            ("image url must be real", {"detail": [{"loc": ["body", "image_url"], "msg": "image_url must be a real URL", "type": "value_error"}]}, 422, False),
+            ("face not detected", {"detail": [{"msg": "Could not detect a real person's face in the reference image", "type": "face_detection_error"}]}, 422, False),
+            ("safety checker param", {"detail": [{"loc": ["body", "enable_safety_checker"], "msg": "enable_safety_checker cannot be disabled for this model", "type": "value_error"}]}, 422, False),
+            ("no media generated", {"detail": [{"msg": "The model did not generate the expected output for this prompt. This may occur for several reasons, including unsafe content, an image that is too large, or other cases where the input cannot be processed.", "type": "no_media_generated"}]}, 422, False),
+            ("enum literal", {"detail": [{"loc": ["body", "style"], "msg": "Input should be 'real person' or 'anime'", "type": "literal_error"}]}, 422, False),
+            ("429 rate limit", {"detail": "Rate limit exceeded"}, 429, False),
+            ("429 with a likeness phrase", {"detail": [{"msg": LIKENESS}]}, 429, False),
+            ("500 downstream", {"detail": [{"msg": "Downstream service error", "type": "downstream_service_error"}]}, 500, False),
+            ("402 balance", {"detail": "User is locked. Reason: Exhausted balance."}, 402, False),
+            ("503 policy words (infra)", {"detail": "content policy service timed out"}, 503, False),
+            ("kling risk control", {"detail": [{"msg": "Failure to pass the risk control system", "type": "invalid_request"}]}, 422, True),
+            ("veo usage guidelines", {"detail": "This prompt contains words that violate Vertex AI's usage guidelines."}, 422, True),
+            ("gemini safety block", {"detail": [{"msg": "Gemini blocked the request due to safety reasons", "type": "content_blocked"}]}, 422, True),
+            ("moderation", {"detail": "Your request was rejected by the moderation system"}, 400, True),
+            ("likeness msg only", {"detail": [{"msg": LIKENESS}]}, 422, True),
+            ("job_get failed reply", job_get_failed, None, True),
+            ("job_get failed result object", job_get_failed["result"], None, True),
+        ]
+        for name, body, status, is_policy in cases:
+            with self.subTest(name):
+                with self.assertRaises(RuntimeError) as cm:
+                    self.mp._raise_if_fal_error(body, MODEL, http_status=status, stage="submit")
+                self.assertEqual(isinstance(cm.exception, self.mp.FalPolicyRejection), is_policy,
+                                 str(cm.exception))
+
+    def test_job_get_failed_reply_reads_status_and_request_id(self):
+        body = {"status": "failed", "error": "fal returned HTTP 422 for the result.",
+                "result": {"request_id": "r1", "fal_status": "COMPLETED", "detail": MSG_AND_TYPE}}
+        with self.assertRaises(self.mp.FalPolicyRejection) as cm:
+            self.mp._raise_if_fal_error(body, MODEL, stage="relay")
+        e = cm.exception
+        self.assertEqual((e.kind, e.request_id, e.http_status, e.charged), ("likeness", "r1", 422, False))
+        self.assertEqual(e.reason, LIKENESS)
+
+    def test_explicit_code_on_5xx_is_surfaced_but_not_recordable(self):
+        with self.assertRaises(self.mp.FalPolicyRejection) as cm:
+            self.mp._raise_if_fal_error({"detail": [{"type": "content_policy_violation"}]}, MODEL,
+                                        http_status=503)
+        self.assertFalse(cm.exception.recordable)
+
     def test_result_payload_is_not_an_error(self):
         self.mp._raise_if_fal_error({"video": {"url": "https://x/y.mp4"}, "seed": 1}, MODEL)
         self.mp._raise_if_fal_error({"text": "hi", "chunks": []}, "fal-ai/whisper")
@@ -175,7 +225,7 @@ class LedgerTests(unittest.TestCase):
                "no_proxy": "127.0.0.1"}
         self.env = mock.patch.dict(os.environ, env)
         self.env.start()
-        for k in ("GW_MEDIA_PROXY_TOKEN", "GW_PROJECT_ID", "GW_FAL_POLL_TIMEOUT_S"):
+        for k in ("GW_MEDIA_PROXY_TOKEN", "GW_PROJECT_ID", "GW_FAL_POLL_TIMEOUT_S", "GW_RELAY_DIR"):
             os.environ.pop(k, None)
         self.mp._PENDING_DIR = home / "pending"
 
@@ -207,6 +257,92 @@ class LedgerTests(unittest.TestCase):
         rec = self.mp.rejected_request(MODEL, self.payload())
         self.assertEqual(rec["reason"], LIKENESS)
         self.assertEqual(rec["request_id"], "req-rejected-1")
+
+    def test_refusal_names_the_record_and_how_it_matched(self):
+        self.decision["likeness"] = (422, MSG_AND_TYPE)
+        with self.assertRaises(self.mp.FalPolicyRejection):
+            self.mp._fal_run(MODEL, self.payload(), poll_s=0, input_digest="content-A")
+        with self.assertRaises(self.mp.FalPolicyRejection) as cm:  # same payload
+            self.mp._fal_run(MODEL, self.payload(), poll_s=0)
+        self.assertEqual(cm.exception.matched, "payload")
+        self.assertIn("Matched by the exact payload in " + str(self.rej), str(cm.exception))
+        self.assertIn("forget " + cm.exception.ledger_key, str(cm.exception))
+        with self.assertRaises(self.mp.FalPolicyRejection) as cm:  # same digest, new URL
+            self.mp._fal_run(MODEL, self.payload(url="https://cdn/new.png"), poll_s=0,
+                             input_digest="content-A")
+        self.assertEqual(cm.exception.matched, "input_digest")
+        self.assertIn("the caller's input_digest", str(cm.exception))
+
+    def test_forget_clears_every_key_of_a_record(self):
+        self.decision["likeness"] = (422, MSG_AND_TYPE)
+        with self.assertRaises(self.mp.FalPolicyRejection) as cm:
+            self.mp._fal_run(MODEL, self.payload(), poll_s=0, input_digest="content-A")
+        self.assertEqual(len(cm.exception.ledger_paths), 2)  # payload key + digest key
+        self.assertEqual(len(self.mp.list_rejections()), 1)
+        removed = self.mp.forget_rejection(cm.exception.ledger_key)
+        self.assertEqual(len(removed), 2)
+        self.assertEqual(self.mp.list_rejections(), [])
+        with self.assertRaises(self.mp.FalPolicyRejection) as again:  # sent again
+            self.mp._fal_run(MODEL, self.payload(), poll_s=0, input_digest="content-A")
+        self.assertFalse(again.exception.from_ledger)
+        self.assertEqual(len(self.proxy.submits), 2)
+
+    def test_forget_cli(self):
+        self.decision["likeness"] = (422, MSG_AND_TYPE)
+        with self.assertRaises(self.mp.FalPolicyRejection) as cm:
+            self.mp._fal_run(MODEL, self.payload(), poll_s=0)
+        run = lambda *a: subprocess.run([sys.executable, str(SCRIPT), *a], capture_output=True,
+                                        text=True, env=dict(os.environ), timeout=60)
+        listed = run("rejections")
+        self.assertEqual(listed.returncode, 0, listed.stderr)
+        self.assertIn(cm.exception.ledger_key, listed.stdout)
+        self.assertIn(LIKENESS, listed.stdout)
+        gone = run("forget", cm.exception.ledger_key)
+        self.assertEqual(gone.returncode, 0, gone.stderr)
+        self.assertIsNone(self.mp.rejected_request(MODEL, self.payload()))
+        self.assertEqual(run("forget", cm.exception.ledger_key).returncode, 1)
+
+    def test_5xx_429_and_408_are_never_recorded(self):
+        for status, body in ((503, {"detail": [{"type": "content_policy_violation", "msg": LIKENESS}]}),
+                             (429, {"detail": [{"msg": LIKENESS}]}),
+                             (408, {"detail": [{"msg": "partner_validation_failed"}]})):
+            with self.subTest(status=status):
+                self.decision["likeness"] = (status, body)
+                for _ in range(2):  # both calls are sent: nothing was recorded
+                    with self.assertRaises(RuntimeError):
+                        self.mp._fal_run(MODEL, self.payload(), poll_s=0)
+        self.assertEqual(len(self.proxy.submits), 6)
+        self.assertEqual(self.mp.list_rejections(), [])
+
+    def test_mcp_relay_failed_job_get_reply(self):
+        relay = pathlib.Path(self.tmp.name) / "relay"
+        os.environ.update(GW_MEDIA_VIA="mcp", GW_PROJECT_ID="proj-test", GW_RELAY_DIR=str(relay))
+        with self.assertRaises(SystemExit) as ex:  # the relay asks the agent for the call
+            self.mp._fal_run(MODEL, self.payload(prompt="relay"), poll_s=0)
+        self.assertEqual(ex.exception.code, 3)
+        req = json.loads(next(relay.glob("fal-*[0-9a-f].json")).read_text())
+        self.assertIn("job_get returns status failed", req["then"])
+        res = pathlib.Path(req["save_result_to"])
+        # a transient failure: reported, then moved aside so a re-run makes the call again
+        res.write_text(json.dumps({"status": "failed", "error": "downstream_service_unavailable"}))
+        with self.assertRaises(RuntimeError) as cm:
+            self.mp._fal_run(MODEL, self.payload(prompt="relay"), poll_s=0)
+        self.assertNotIsInstance(cm.exception, self.mp.FalPolicyRejection)
+        self.assertFalse(res.exists())
+        self.assertTrue(res.with_name(res.name[:-5] + ".error.json").exists())
+        with self.assertRaises(SystemExit):
+            self.mp._fal_run(MODEL, self.payload(prompt="relay"), poll_s=0)
+        # the agent saves the failed job_get reply for a likeness rejection
+        res.write_text(json.dumps({"job_id": "j", "status": "failed",
+                                   "error": "fal returned HTTP 422 for the result.",
+                                   "result": {"request_id": "r9", "detail": MSG_AND_TYPE}}))
+        with self.assertRaises(self.mp.FalPolicyRejection) as cm:
+            self.mp._fal_run(MODEL, self.payload(prompt="relay"), poll_s=0)
+        self.assertEqual((cm.exception.request_id, cm.exception.charged), ("r9", False))
+        with self.assertRaises(self.mp.FalPolicyRejection) as cm:  # ledger, no relay request
+            self.mp._fal_run(MODEL, self.payload(prompt="relay"), poll_s=0)
+        self.assertTrue(cm.exception.from_ledger)
+        self.assertEqual(self.proxy.submits, [])
 
     def test_changed_inputs_are_sent(self):
         self.decision["likeness"] = (422, MSG_AND_TYPE)

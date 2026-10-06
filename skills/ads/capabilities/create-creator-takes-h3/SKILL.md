@@ -141,16 +141,18 @@ Use ordinary skin texture and subtle asymmetry for realism. An eyebrow scar is n
 `run_takes.py` enforces the stop. When the provider refuses a take on policy grounds
 (likeness of a real person, `content_policy_violation`, `partner_validation_failed`, NSFW):
 
-- The run stops at that take and **exits 3**: surface, do not retry. Later takes are not
-  attempted; they share the same still and would most likely be refused too.
-- It prints the reason, type, request id and charge state, and keeps them in
-  `manifest.json` under `"rejected"` (cleared when that take later renders).
+- The run **exits 3** at the end: surface, do not retry. A **likeness** rejection stops the
+  run at that take, because every take in a spec uses the same character still. Any other
+  rejection (about that take's own prompt) skips only that take; the rest still render.
+- It prints the reason, type, request id, charge state and the ledger record path, and keeps
+  them in `manifest.json` under `"rejected"` (cleared when that take later renders).
 - Each take is submitted with an `input_digest` over the **content** of its inputs: prompt,
   settings, seed, and the sha256 of the character still, mannerism clip and t1 voice
   source. Upload URLs change every run, so this digest is what lets media-proxy's
   rejected-request ledger recognise the same take again.
-- **Re-running the unchanged take is refused before anything is uploaded or sent** (exit 3
-  again, "already rejected"). The dry run marks it `REJECTED BEFORE: <reason>`.
+- **Re-running the unchanged take is refused before anything is sent for it** (exit 3
+  again, "already rejected"). Only that take is refused: the other takes in the run are
+  different requests and still render. The dry run marks it `REJECTED BEFORE: <reason>`.
 - A new still, a changed prompt or `--reseed` makes it a new request, which is sent.
 
 A provider likeness/policy rejection stops the attempt. Preserve the provider's reason, request id and charged/uncharged/unknown state. Do not resubmit an identical rejected payload. Offer a permitted original character, user-cleared reference, or a supported non-likeness route only when allowed by that provider. A different model is not a policy bypass. Review changed inputs and extra spend through the normal approval flow.

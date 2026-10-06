@@ -93,10 +93,13 @@ def main() -> int:
     ap.set_defaults(generate_audio=True)
     ap.add_argument("--seed", type=int, default=None)
     ap.add_argument("--input-digest", default=None,
-                    help="Stable id of the inputs (media_proxy.input_digest over the refs' "
-                         "ingredient keys / file hashes, not their URLs). Optional: lets a "
-                         "re-hosted identical ref still match a recorded rejection, and the "
-                         "proxy re-attach to a running job instead of paying twice.")
+                    help="Stable id of the WHOLE request: media_proxy.input_digest(model, "
+                         "payload) over the full payload (prompt and every setting) with each "
+                         "ref URL replaced by its file's sha256 or ingredient key. Optional: lets "
+                         "a re-hosted identical ref still match a recorded rejection, and the "
+                         "proxy re-attach to a running job instead of paying twice. After a "
+                         "policy rejection it is a PERMANENT refusal key, so it must cover "
+                         "every input.")
     args = ap.parse_args()
 
     if not args.image_urls:

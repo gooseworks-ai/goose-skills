@@ -198,7 +198,9 @@ class SeedancePolicyRejectionTests(unittest.TestCase):
         self.assertIn("surface, do not retry", r2.stderr)
         self.assertNotIn("[mcp-relay]", r2.stderr)
         self.assertIs(json.loads(pathlib.Path(str(out) + ".rejection.json").read_text())["charged"], False)
-        pathlib.Path(req["save_result_to"]).unlink()
+        saved = pathlib.Path(req["save_result_to"])
+        self.assertFalse(saved.exists())  # moved aside: a re-run never re-reads the error
+        self.assertTrue(saved.with_name(saved.name[:-5] + ".error.json").exists())
         r3, _ = self.run_generate(env_extra=env)  # refused from the ledger, no new MCP call
         self.assertEqual(r3.returncode, 3, r3.stderr)
         self.assertIn("already rejected", r3.stderr)

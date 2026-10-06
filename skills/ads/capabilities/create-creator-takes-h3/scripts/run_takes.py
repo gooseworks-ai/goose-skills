@@ -23,13 +23,15 @@ the same clip, so a take that already exists on disk is skipped. The finished fi
 `prompt_expansion_mode: disabled` keeps the dialogue verbatim; expansion rewrites lines.
 
 A PROVIDER POLICY REJECTION IS FINAL FOR THOSE INPUTS (QA-14). If fal refuses a take
-(likeness of a real person, content policy, partner validation, NSFW), the run stops, prints
-the reason, request id and charge state, records it in manifest.json under "rejected", and
-exits 3: surface it to the user, do not retry. Every take is submitted with an input digest
-over the CONTENT of its inputs (prompt, settings, seed, and the sha256 of the character still,
-mannerism clip and t1 voice source), so a re-run of an unchanged rejected take is refused
-before anything is uploaded or sent, even though the upload URLs are new each run. Change
-the still, the prompt or the seed (--reseed) and the take is a new request again.
+(likeness of a real person, content policy, partner validation, NSFW), the take is reported
+(reason, request id, charge state), kept in manifest.json under "rejected", and the run exits
+3 at the end: surface it to the user, do not retry. A LIKENESS rejection stops the run there,
+because every take in a spec uses the same character still; any other rejection skips only
+that take. Every take is submitted with an input digest over the CONTENT of its inputs
+(prompt, settings, seed, and the sha256 of the character still, mannerism clip and t1 voice
+source), so a re-run of an unchanged rejected take is refused before anything is sent, even
+though the upload URLs are new each run. Only the matching take is refused; the other takes
+still run. Change the still, the prompt or the seed (--reseed) and the take is a new request.
 """
 import argparse
 import hashlib
@@ -98,29 +100,32 @@ def take_digests(spec, takes, first, voice_src):
     return out
 
 
-def report_rejection(t, e, man_p, manifest, not_sent):
-    """Stop the run on a policy rejection: say why, keep it in the manifest, exit 3."""
-    what = "already rejected: nothing was uploaded or sent" if e.from_ledger else "rejected by the provider"
+KEEP = ("reason", "kind", "error_type", "request_id", "http_status", "charged", "charge_note",
+        "rejected_at", "from_ledger", "matched", "ledger_key", "ledger_paths")
+
+
+def report_rejection(t, e, man_p, manifest, not_sent=()):
+    """Say why one take was refused and keep it in the manifest. The caller exits 3."""
+    what = ("already rejected: nothing was sent for it" if e.from_ledger
+            else "rejected by the provider")
     print("\n[%s] SURFACE, DO NOT RETRY: %s %s.\n"
           "  reason:     %s\n  type:       %s\n  request id: %s\n  charge:     %s"
           % (t["id"], e.model_path, what, e.reason, e.error_type or e.kind,
              e.request_id or "none returned", e.charge_note), file=sys.stderr)
-    if not_sent:
-        print("  not attempted: %s (they share this still; same likely outcome)" % ", ".join(not_sent),
+    if e.ledger_paths:
+        print("  record:     %s%s" % (e.ledger_paths[0], " (matched by %s)" % e.matched if e.matched else ""),
               file=sys.stderr)
+    if not_sent:
+        print("  not attempted: %s (every take uses this same character still, which the provider "
+              "refused as a likeness)" % ", ".join(not_sent), file=sys.stderr)
     print("Tell the user. Offer a permitted original character, a user-cleared reference or a "
           "non-likeness route, with its cost, through the normal approval. Re-running this exact "
           "take is refused; change the still, the prompt or the seed (--reseed) to try again.",
           file=sys.stderr)
-    if man_p is not None:
-        manifest["rejected"] = [r for r in manifest.get("rejected", []) if r.get("id") != t["id"]] + [
-            {"id": t["id"], "seed": t["seed"], **{k: v for k, v in e.as_dict().items()
-                                                  if k in ("reason", "kind", "error_type", "request_id",
-                                                           "http_status", "charged", "charge_note",
-                                                           "rejected_at", "from_ledger")}}]
-        man_p.parent.mkdir(parents=True, exist_ok=True)
-        man_p.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
-    sys.exit(POLICY_EXIT)
+    manifest["rejected"] = [r for r in manifest.get("rejected", []) if r.get("id") != t["id"]] + [
+        {"id": t["id"], "seed": t["seed"], **{k: v for k, v in e.as_dict().items() if k in KEEP}}]
+    man_p.parent.mkdir(parents=True, exist_ok=True)
+    man_p.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
 
 
 def main():
@@ -183,12 +188,19 @@ def main():
 
     man_p = pathlib.Path(spec["out"]) / "manifest.json"
     manifest = json.loads(man_p.read_text()) if man_p.exists() else {"model": spec["model"], "takes": []}
-    # Refuse an unchanged rejected take BEFORE uploading or sending anything.
+    # Refuse an unchanged rejected take BEFORE uploading or sending anything. Only that take:
+    # the others are different requests and still run.
+    refused = 0
+    send = []
     for t in todo:
         try:
             refuse_if_rejected(spec["model"], input_digest=digests.get(t["id"]))
+            send.append(t)
         except FalPolicyRejection as e:  # from the local ledger: no network call
-            report_rejection(t, e, man_p, manifest, [x["id"] for x in todo if x is not t])
+            report_rejection(t, e, man_p, manifest)
+            refused += 1
+    if not send:
+        sys.exit(POLICY_EXIT)
 
     img = fal_upload(spec["char"])
     vid = fal_upload(spec["mann"]) if spec.get("mann") else None
@@ -198,7 +210,7 @@ def main():
         subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(src), *VOICE_CLIP, str(wav)], check=True)
         aud = fal_upload(wav)
         print("[chain] %s's voice -> reference audio for %s" % (first["id"], ", ".join(t["id"] for t in chained)))
-    for i, t in enumerate(todo):
+    for i, t in enumerate(send):
         prompt = prompt_file(spec, t).read_text(encoding="utf-8")
         payload = take_payload(spec, t, prompt, img, vid, aud, first["id"])
         print("\n[%s] submitting seed %d ..." % (t["id"], t["seed"]))
@@ -208,7 +220,12 @@ def main():
             url = fal_generate_video(spec["model"], payload, timeout_s=1800, poll_s=5,
                                      input_digest=digests.get(t["id"]))
         except FalPolicyRejection as e:
-            report_rejection(t, e, man_p, manifest, [x["id"] for x in todo[i + 1:]])
+            refused += 1
+            if e.kind == "likeness":  # the still is the cause, and every take shares it
+                report_rejection(t, e, man_p, manifest, [x["id"] for x in send[i + 1:]])
+                break
+            report_rejection(t, e, man_p, manifest)  # this take's own inputs: skip only it
+            continue
         out = take_file(spec, t)
         download(url, out)
         print("  -> %s (%.1f MB)" % (out, out.stat().st_size / 1e6))
@@ -218,6 +235,10 @@ def main():
         if manifest.get("rejected"):  # this take id now rendered from changed inputs
             manifest["rejected"] = [r for r in manifest["rejected"] if r.get("id") != t["id"]]
         man_p.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+    if refused:
+        print("\n[takes] %d take(s) refused on policy grounds (above). Surface to the user; do "
+              "not retry them unchanged." % refused, file=sys.stderr)
+        sys.exit(POLICY_EXIT)
     print("\n[takes] done. Watch every take end to end (eyeline, hands, voice) before joining.")
 
 

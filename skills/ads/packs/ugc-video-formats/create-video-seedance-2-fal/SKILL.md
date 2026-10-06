@@ -44,7 +44,7 @@ Optional:
 - `--aspect-ratio` — `9:16` (default), `16:9`, `1:1`, etc.
 - `--generate-audio` — bool, default true. Set false for silent B-roll where VO is added post.
 - `--seed` — integer for deterministic re-runs (FAL returns a seed; pass it back to reproduce).
-- `--input-digest` — a stable id of the inputs (`media_proxy.input_digest` over the refs' ingredient keys or file hashes, not their URLs). Pass it when refs are re-hosted between runs: a recorded rejection then still matches, and the proxy re-attaches to a running job instead of paying twice.
+- `--input-digest` — a stable id of the WHOLE request: `media_proxy.input_digest(model, payload)` over the full payload (prompt, resolution, duration, aspect ratio, audio, seed) with each ref URL replaced by its file's sha256 or ingredient key. Pass it when refs are re-hosted between runs: a recorded rejection then still matches, and the proxy re-attaches to a running job instead of paying twice. **It becomes a permanent refusal key after a policy rejection**, so it must cover every input: leave the prompt or an image out and a run that changed only that input is refused.
 
 Credentials:
 - **No FAL key.** Routes through the GooseWorks FAL proxy (`media_proxy.py`, bundled) and bills the Ads agent, using `~/.gooseworks/credentials.json` (written by the `gooseworks` CLI). Your `cal_`/agent token is not a FAL key — the old direct-key path 401'd; that's why this capability was rerouted through the proxy.

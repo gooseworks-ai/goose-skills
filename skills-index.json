@@ -7454,7 +7454,8 @@
         "skills/ads/capabilities/render-street-interview/tests/test_opt_in_hold_grammar.py",
         "skills/ads/capabilities/render-street-interview/tests/test_prompt_budget.py",
         "skills/ads/capabilities/render-street-interview/tests/test_recut_media.py",
-        "skills/ads/capabilities/render-street-interview/tests/test_selector_route.py"
+        "skills/ads/capabilities/render-street-interview/tests/test_selector_route.py",
+        "skills/ads/capabilities/render-street-interview/tests/test_single_gen_rejection.py"
       ],
       "metadata": {
         "slug": "render-street-interview",

@@ -2,6 +2,8 @@
 name: render-street-interview
 description: Write a street-interview ad from a complete inspected commercial interaction and current brand facts. Render product guessing, or prepare mic-only, prepared-sample or visible-task conversation script/prompt previews. Premise, actions and ad connection vary; capture rules stay fixed. Conversation media delivery is unverified.
 status: draft
+version: 2
+updated: 2026-10-06
 ---
 
 # Human version
@@ -98,6 +100,11 @@ python scripts/check-cut.py --episode <render>.episode.json   # free: the ship g
 - Paid calls go **through the GooseWorks proxy** (`scripts/media_proxy.py`), never a local key.
   On a poll timeout, resume with `media_proxy.resume_fal(request_id)`. Never resubmit, since a
   dropped poll has already been billed.
+- A provider **policy rejection** (likeness of a real person, content policy) makes
+  `single_gen.py --yes` exit **3**: surface the reason, do not retry. The take's input digest
+  covers every input by content (prompt, settings, seed, and the sha256 of the product image
+  and the scene reference), so the unchanged request is refused before anything is uploaded,
+  and a changed image, prompt or seed is sent as a new request.
 
 ## Prompt length
 
