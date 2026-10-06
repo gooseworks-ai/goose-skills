@@ -1863,7 +1863,8 @@
         "skills/ads/capabilities/create-creator-takes-h3/scripts/plan_takes.py",
         "skills/ads/capabilities/create-creator-takes-h3/scripts/run_takes.py",
         "skills/ads/capabilities/create-creator-takes-h3/skill.meta.json",
-        "skills/ads/capabilities/create-creator-takes-h3/tests/smoke-test.md"
+        "skills/ads/capabilities/create-creator-takes-h3/tests/smoke-test.md",
+        "skills/ads/capabilities/create-creator-takes-h3/tests/test_make_character.py"
       ],
       "metadata": {
         "slug": "create-creator-takes-h3",
@@ -7402,7 +7403,8 @@
         "skills/ads/capabilities/render-street-interview/tests/test_edit_timeline.py",
         "skills/ads/capabilities/render-street-interview/tests/test_finishing.py",
         "skills/ads/capabilities/render-street-interview/tests/test_prompt_budget.py",
-        "skills/ads/capabilities/render-street-interview/tests/test_recut_media.py"
+        "skills/ads/capabilities/render-street-interview/tests/test_recut_media.py",
+        "skills/ads/capabilities/render-street-interview/tests/test_selector_route.py"
       ],
       "metadata": {
         "slug": "render-street-interview",

@@ -18,8 +18,12 @@ gen_image.py --model fal-ai/nano-banana/edit --payload '{...}' --out keyframe.pn
 
 ## Creator references
 
-When a recipe requires a creator/avatar still, read the bundled
-[avatar-generation guide](references/avatar-generation.md) before any paid call.
+Whenever the image will contain a person (creator, presenter, interviewee or any face in
+focus), with or without a template recipe, read the bundled
+[avatar-generation guide](references/avatar-generation.md) before any paid call. Unless the
+selected recipe prescribes its own creator still, make the person with
+create-creator-takes-h3's scripts/make_character.py, which calls this skill. Never hand-write
+a person prompt here and never use a Flux route (fal-ai/flux/dev, fal-ai/flux/schnell) for a face.
 If a required guide cannot be fetched or opened, stop and name the missing file.
 Use the current project's creator choices and approved model binding; fetching
 this guide does not authorize another image, a retry or a different render engine.

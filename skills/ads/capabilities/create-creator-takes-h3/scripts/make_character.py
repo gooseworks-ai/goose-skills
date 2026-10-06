@@ -4,10 +4,12 @@
     make_character.py --age 34 --gender woman --ethnicity "South Asian" \
         --hair "shoulder-length black hair, slightly frizzy at the crown, tucked behind one ear" \
         --wardrobe "plain charcoal crew-neck t-shirt" \
-        --scene "a lived-in home office, bookshelf softly out of focus behind her" \
+        --scene "a lived-in home office, a full bookshelf behind her, in focus" \
         --out character/
 
 Writes <out>/character.png and <out>/character.json, the latter ready for plan_takes.py.
+`--payload-out <file>` writes {"model", "body"}: the exact request gen_image.py will send. With
+`--dry-run` it generates nothing, so the body can be quoted for free before the paid call.
 
 WHY THIS EXISTS
 
@@ -221,6 +223,9 @@ def main():
     ap.add_argument("--seed", type=int, default=None)
     ap.add_argument("--out", required=True, type=pathlib.Path)
     ap.add_argument("--dry-run", action="store_true", help="print the prompt, generate nothing")
+    ap.add_argument("--payload-out", type=pathlib.Path, default=None,
+                    help='write {"model", "body"}, the exact request gen_image.py will send, so it '
+                         "can be quoted before the paid call; works with --dry-run")
     a = ap.parse_args()
 
     prompt, negative, ident, slots = build(a)
@@ -232,15 +237,22 @@ def main():
     print("skin     : %s" % slots["skin_tone"])
     print("marks    : %s" % slots["imperfections"][:96] + "...")
     print("prompt   : %d chars -> %s" % (len(prompt), out / "character-prompt.txt"))
+
+    # Built once, before the dry-run return, so the quoted body and the paid body are one object.
+    payload = {"prompt": prompt, "negative_prompt": negative, "aspect_ratio": a.aspect,
+               "resolution": a.resolution}
+    if a.seed is not None:
+        payload["seed"] = a.seed
+    if a.payload_out:
+        a.payload_out.parent.mkdir(parents=True, exist_ok=True)
+        a.payload_out.write_text(json.dumps({"model": a.model, "body": payload}, indent=1),
+                                 encoding="utf-8")
+        print("payload  : %s (quote this body before the paid call)" % a.payload_out)
     if a.dry_run:
         print("\n(dry run, nothing generated)")
         return
 
     png = out / "character.png"
-    payload = {"prompt": prompt, "negative_prompt": negative, "aspect_ratio": a.aspect,
-               "resolution": a.resolution}
-    if a.seed is not None:
-        payload["seed"] = a.seed
     r = subprocess.run([sys.executable, str(HERE.parent.parent / "create-image-fal" / "scripts"
                                             / "gen_image.py"),
                         "--model", a.model, "--payload", json.dumps(payload),

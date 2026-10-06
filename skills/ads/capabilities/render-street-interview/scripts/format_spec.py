@@ -69,7 +69,7 @@ def _shot(n, s, cfg, can=False, prev_kind=None, upright=False, one_mic=False, pr
     # else, so there is no room in the shot for a second microphone. One word per shot.
     if one_mic:
         held = f"only the {held}"
-    holding = f"holding {held}" if one_mic and prompt_version == 2 else f"holding the {held}"
+    holding = f"holding {held}" if one_mic and prompt_version >= 2 else f"holding the {held}"
     # In a handover the object is being passed, so it reads better as a verb phrase than as a
     # noun phrase. Same three facts.
     # THE HANDOVER IS NOW ONLY THE HANDOVER. Episode 3 removed "takes it and looks at it"
@@ -93,7 +93,7 @@ def _shot(n, s, cfg, can=False, prev_kind=None, upright=False, one_mic=False, pr
     # on `took` and the noun stays bare. Without the upright grammar it keeps whatever the
     # sealed grammar put on it, so a rebuilt 4824/4827 prompt still matches its own manifest.
     offered = prod if upright else held
-    offering = offered if prompt_version == 2 and offered.startswith("only the ") else f"the {offered}"
+    offering = offered if prompt_version >= 2 and offered.startswith("only the ") else f"the {offered}"
     if kind == "handover_cold":
         # `handover_first` WITHOUT the interviewer's question. Paid for by episode 1: the
         # interviewer's question was generated inside all three takes, so the finished episode
@@ -165,7 +165,7 @@ def _shot(n, s, cfg, can=False, prev_kind=None, upright=False, one_mic=False, pr
             return (f"{n}. The same {s['noun']} on that same corner, {holding}, "
                     f"{glance}looks at the interviewer, {s['reaction']} and says{said}: "
                     f"\"{s['line']}\" ")
-        lowering = held if one_mic and prompt_version == 2 else f"the {held}"
+        lowering = held if one_mic and prompt_version >= 2 else f"the {held}"
         return (f"{n}. The same {s['noun']} on that same corner lowers {lowering} and says to "
                 f"the interviewer{manner}: \"{s['line']}\" ")
     raise ValueError(f"unknown shot kind {kind!r}. Known: {', '.join(SHOT_KINDS)}")
@@ -315,6 +315,23 @@ _FRAME_WIDER = (
     "head and their waist in frame, the street open behind them, and detail falls away behind "
     "the subject so the background is softer than the person. No close-ups, never chest-up, "
     "nobody's face fills the frame. ")
+# PROMPT VERSION 3 (opt-in; v1/v2 keep the two constants above byte-identical, so every
+# approved take's hash still reproduces). The operator rejects blurred backgrounds, and
+# "softer than the person" reads to the model as permission to blur. v3 keeps the measured
+# falloff needle ("detail falls away behind the subject") but bounds it: only slightly, the
+# street stays in focus, never blurred and never bokeh. It does NOT go back to the plain
+# "deep depth of field" clause, which produced detail 15.92 against 4.76-9.60 for real footage
+# (see the "detail falls away behind the subject" lint note below). v3 is draft until a 720p take measures inside that band.
+_FRAME_DEFAULT_V3 = (
+    "Every shot is WIDE: each person seen from head to hips or below, with the street open behind "
+    "them, and detail falls away behind the subject only slightly: the street stays in focus and "
+    "readable as a real place, never blurred and never bokeh. "
+    "No close-ups, nobody's face fills the frame. ")
+_FRAME_WIDER_V3 = (
+    "Every shot is WIDE: each person seen from head to hips or below, with space above their "
+    "head and their waist in frame, the street open behind them, and detail falls away behind "
+    "the subject only slightly: the street stays in focus and readable as a real place, never "
+    "blurred and never bokeh. No close-ups, never chest-up, nobody's face fills the frame. ")
 
 GUARD_CLAUSES = {
     "front label is turned toward the lens": "the label's FACING. Seed 4816 turned the can "
@@ -692,8 +709,8 @@ def build_prompt(cfg: dict, pace: bool = False, guards: bool = False, mic: bool 
                  plain: bool = False, answers_only: bool = False, can: bool = False,
                  mic_ref: bool = False, can_size: bool = False, can_sealed: bool = False,
                  upright: bool = False, one_mic: bool = False, prompt_version: int = 1) -> str:
-    if prompt_version not in (1, 2):
-        raise ValueError("prompt_version must be 1 or 2")
+    if prompt_version not in (1, 2, 3):
+        raise ValueError("prompt_version must be 1, 2 or 3")
     if cfg.get("mode") == "conversation":
         import conversation
         if any((guards, answers_only, can, mic_ref, can_size, can_sealed, upright)):
@@ -704,7 +721,7 @@ def build_prompt(cfg: dict, pace: bool = False, guards: bool = False, mic: bool 
     p = cfg["product"]
     prod, phrase = p["noun"], p["phrase"]
     upright_block = UPRIGHT
-    if prompt_version == 2 and prod != "can":
+    if prompt_version >= 2 and prod != "can":
         upright_block = UPRIGHT.replace("THE LID IS NEVER SHOWN", "THE TOP EDGE IS NEVER SHOWN")
     shots = cfg["shots"]
     n_shots = word(len(shots))
@@ -835,7 +852,9 @@ def build_prompt(cfg: dict, pace: bool = False, guards: bool = False, mic: bool 
         # framing, wide: 4802 was a tight close-up, which also forced every pore to render.
         # _FRAME_WIDER is a REPLACEMENT, not an addition: seed 4816 came back chest-up with
         # _FRAME_DEFAULT in the prompt, and two framing sentences would contradict each other.
-        (_FRAME_WIDER if guards else _FRAME_DEFAULT)
+        # v3 swaps in the deep-focus pair (see _FRAME_DEFAULT_V3); v1/v2 keep the legacy pair.
+        ((_FRAME_WIDER_V3 if guards else _FRAME_DEFAULT_V3) if prompt_version >= 3
+         else (_FRAME_WIDER if guards else _FRAME_DEFAULT))
         + (_PIN_PACE if pace else _PIN_DEFAULT) +
         f"{n_cast.capitalize()} "
         # _CAST_ADULTS REPLACES this sentence. One statement about who these people are, not two:
@@ -1005,7 +1024,7 @@ def lint(prompt: str, pace: bool = False, guards: bool = False, mic: bool = Fals
                 **(CAN_SEALED_CLAUSES if can_sealed else {}),
                 **(UPRIGHT_CLAUSES if upright else {}),
                 **(ONE_MIC_CLAUSES if one_mic else {}))
-    if prompt_version == 2 and upright and "the top edge is never shown" in pr:
+    if prompt_version >= 2 and upright and "the top edge is never shown" in pr:
         need["the top edge is never shown"] = need.pop("the lid is never shown")
     out = [f'the prompt is missing "{n}" -- {why}' for n, why in need.items()
            if n not in pr]

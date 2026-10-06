@@ -14,6 +14,8 @@ Read this file before generating an avatar for a recipe that requires it. If a r
 
 Use the image model and render engine specified by the current approved recipe. Confirm the exact model ID and payload against current provider documentation and the GooseWorks proxy's supported path. Quote current costs through the existing estimate flow. This guide does not authorize a different engine, another avatar, a test clip or a retry.
 
+When the recipe does not prescribe its own creator still, including custom videos, generate the person with create-creator-takes-h3's scripts/make_character.py. It fills the realism formula from six required choices and defaults to fal-ai/nano-banana-pro, 4K and a phone-camera capture with deep focus. A hand-filled prompt is not a substitute: hand-filled runs left slots blank and produced the composite face this guide warns about. Never use Flux dev or schnell for a person. When the selected video route forbids person references (for example render-street-interview), make no person still at all.
+
 The Studio guide recorded a Seedream v5/pro proxy failure in July 2026, while later recipes name that model. That dated failure is not a current availability rule. Neither a Seedream nor a GPT-image portrait is a guaranteed pass through a video's likeness policy.
 
 ## Bind the creator to the brief
@@ -36,9 +38,13 @@ Choose the photographic register from the approved style:
 | Phone-native UGC | Front-camera framing, face large in frame, deep depth of field, sharp background, even light, slight sensor texture; avoid bokeh. |
 | Cinematic brand portrait | A specific camera/lens, light direction, restrained film grain and documentary framing. Use shallow focus only when the approved style calls for it. |
 
-Generic template; fill every bracket from this project's brief:
+Reference only. This shows what a recipe-prescribed still must contain; do not hand-fill it for a paid call when make_character.py applies:
 
 > A vertical [phone-native / documentary] portrait of [approved creator description], wearing [approved wardrobe], against [identity-only background]. They look directly into the lens. Their skin is matte and natural, with visible pores and no retouching. [Approved light direction] produces physically plausible shadows. [Hands empty / approved product composite]. [Approved photographic register and framing].
+
+## Person references and the video route
+
+Never send a generated photoreal person as a reference image to bytedance/seedance-2.0/reference-to-video; its likeness gate refuses uploaded images of people. Describe people in text for Seedance, or use a route that accepts an approved still, such as create-creator-takes-h3 or a recipe that prescribes a creator still.
 
 ## Preserve the product
 
@@ -48,7 +54,7 @@ For a worn small item, follow the recipe's composition step and inspect the resu
 
 ## Review the still before video
 
-Check gaze, framing, wardrobe, hands, skin treatment, product fidelity and the correspondence between every reference slot and its prompt binding. A slightly off-lens gaze can carry into the take. Fix or seek approval for a defective reference before submitting video.
+Check gaze, framing, wardrobe, hands, skin treatment, product fidelity and the correspondence between every reference slot and its prompt binding. Crop each face, enlarge it 2× and inspect it: reject waxy or glossy skin, missing pores, a blurred or bokeh background, garbled lettering, or a face under about 300 px tall. A slightly off-lens gaze can carry into the take. Fix or seek approval for a defective reference before submitting video.
 
 Keep the canonical avatar as actual PNG bytes. For Seedream v5 Pro, request `output_format: "png"` (its documented default is JPEG); otherwise inspect the returned format and convert it locally to PNG. Renaming a `.jpg` file to `.png` does not convert it. Lossy conversion changes its pixels. Any optional watermark must be separately approved; this guide requires no new watermark operation.
 

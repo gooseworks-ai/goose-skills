@@ -758,5 +758,43 @@
     },
     "words": 1194,
     "sha256": "abf5c1fc98ac336b86da3df88c7f3a33770694850847a3b6e9c1999ea29c38b5"
+  },
+  {
+    "config": "demo-tallgrass-oat",
+    "version": 3,
+    "flags": {
+      "pace": false,
+      "guards": false,
+      "mic": false,
+      "plain": false,
+      "answers_only": false,
+      "can": false,
+      "mic_ref": false,
+      "can_size": false,
+      "can_sealed": false,
+      "upright": false,
+      "one_mic": false
+    },
+    "words": 962,
+    "sha256": "5a21433d940f98fe29914cb9d2420cd4e5b4a3968f12c95447dc47d2bd27bf77"
+  },
+  {
+    "config": "demo-tallgrass-oat",
+    "version": 3,
+    "flags": {
+      "pace": false,
+      "guards": true,
+      "mic": false,
+      "plain": false,
+      "answers_only": false,
+      "can": false,
+      "mic_ref": false,
+      "can_size": false,
+      "can_sealed": false,
+      "upright": false,
+      "one_mic": false
+    },
+    "words": 1001,
+    "sha256": "c3ebbad31c29087b3fe57b69786d69883998450e28d2c20fa968e1b64ce24e67"
   }
 ]

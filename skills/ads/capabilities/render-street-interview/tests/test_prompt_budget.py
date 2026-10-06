@@ -72,6 +72,30 @@ class PromptBudgetTests(unittest.TestCase):
                 self.assertEqual(hashlib.sha256(prompt.encode()).hexdigest(), row["sha256"])
                 self.assertEqual(len(prompt.split()), row["words"])
 
+    def test_prompt_version_3_keeps_the_street_in_focus_and_v2_repairs(self):
+        for guards in (False, True):
+            with self.subTest(guards=guards):
+                v2 = format_spec.build_prompt(self.cfg, guards=guards, prompt_version=2)
+                v3 = format_spec.build_prompt(self.cfg, guards=guards, prompt_version=3)
+                self.assertEqual(format_spec.lint(v3, guards=guards, prompt_version=3), [])
+                self.assertIn("never blurred and never bokeh", v3)
+                self.assertIn("detail falls away behind the subject", v3)
+                self.assertNotIn("softer than the person", v3)
+                self.assertIn("softer than the person", v2)
+                # Only the framing sentence differs between v2 and v3.
+                legacy = format_spec._FRAME_WIDER if guards else format_spec._FRAME_DEFAULT
+                deep = format_spec._FRAME_WIDER_V3 if guards else format_spec._FRAME_DEFAULT_V3
+                self.assertEqual(v2.replace(legacy, deep), v3)
+        pouch = brandkit.load("liquid-death-4828")
+        pouch["product"]["noun"] = "pouch"
+        pouch["product"]["phrase"] = "product pouch"
+        repaired = format_spec.build_prompt(pouch, upright=True, one_mic=True, prompt_version=3)
+        self.assertIn("THE TOP EDGE IS NEVER SHOWN", repaired)
+        self.assertNotIn("the only the", repaired)
+        self.assertEqual(format_spec.lint(repaired, upright=True, one_mic=True, prompt_version=3), [])
+        with self.assertRaises(ValueError):
+            format_spec.build_prompt(self.cfg, prompt_version=4)
+
     def run_cli(self, directory, brand=None, yes=False):
         # The real entry point runs in an empty project. Import/network guards make an
         # accidental provider call fail this test before any request can be sent.
