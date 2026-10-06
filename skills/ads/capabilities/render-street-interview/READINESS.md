@@ -16,6 +16,12 @@ for mic-only, prepared-sample and visible-task interactions. No conversation med
 price, performed timing, sampling action or camera/audio result is validated. Every subtype
 still refuses `single_gen.py --yes` and product/scene reference bindings.
 
+**Prompt version 3 (2026-10-06): draft.** v3 bounds the background falloff so the street stays
+in focus, never blurred and never bokeh. Versions 1 and 2 are byte-identical to before. v3 has
+passed only free checks (lint, snapshots). It stays draft until one 720p take, separately
+approved with its quoted price, measures inside the real-footage detail band (4.76-9.60) with
+no bokeh.
+
 ## Current conversation preview support
 
 - Configs may describe `interaction.type`, `visible_setup`, `participant_reason` and optional

@@ -208,6 +208,9 @@ not just the format name. Keep ordered timestamped turns with words and actions;
 paraphrases and retain the full transcript evidence separately. A hook snippet or an
 editorial radio interview cannot fill this gap. Load the selected renderer's
 [[references::render-street-interview]] street-script-writing guide and run its selector.
+If it returns needs-reference or unsupported-route, stop before writing dialogue for approval:
+report the gap and its listed alternatives. A provisional creative review, or a note that no
+complete reference was observed, is an open gate, not a pass.
 Seed summaries are source leads until a complete project observation replaces them.
 
 For a **podcast**, an appropriate publisher transcript can establish turn structure.

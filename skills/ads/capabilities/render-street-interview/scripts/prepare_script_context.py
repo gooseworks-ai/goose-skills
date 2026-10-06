@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Select complete commercial interactions; snippets cannot satisfy an ad-writing gap."""
 import argparse
+import copy
 import json
 from pathlib import Path
 
@@ -10,6 +11,28 @@ MODES = ("product-guess", "conversation")
 INTERACTIONS = ("product-guess", "mic-only", "product-sample", "concept-challenge")
 SITUATION_FIELDS = ("edited_opening", "visible_setup", "participant_reason", "viewer_hook",
                     "product_connection", "payoff", "unseen_setup")
+# The route contract. It binds any project built on this format, including a custom one.
+# product-guess allows four participants because the recipe casts "the four people on the
+# corner"; conversation allows one because conversation.py writes "One adult participant".
+# Neither route accepts an image of a person: the likeness gate refuses uploaded people
+# (REFERENCE #4), so people are written in the prompt.
+ROUTES = {
+    "product-guess": {"support": "render", "max_participants": 4,
+                      "person_reference": "forbidden",
+                      "reference_images": ["standalone physical product photo on a plain background"],
+                      "offering_types": ["physical"]},
+    "conversation": {"support": "preview-only", "max_participants": 1,
+                     "person_reference": "forbidden", "reference_images": [],
+                     "offering_types": ["physical", "service", "digital"]},
+}
+DEFAULT_PARTICIPANTS = {"product-guess": 4, "conversation": 1}
+MIC_ONLY = {"route": "conversation/mic-only", "differs": "one participant; preview only, no paid render yet"}
+ALTERNATIVES = [
+    {"route": "ugc-street-testimonial", "differs": "one person talking to camera, no interviewer; needs a creator still"},
+    {"route": "custom", "differs": "keeps this format's hard constraints: people in text, one take, deep focus, "
+                                   "720p first, local lettering; unvalidated"},
+]
+NUMBER_WORDS = {1: "one", 2: "two", 3: "three", 4: "four"}
 
 
 def reference_gap(ref):
@@ -53,11 +76,50 @@ def reference_gap(ref):
     return None
 
 
+def valid_participants(value):
+    return isinstance(value, int) and not isinstance(value, bool) and value >= 1
+
+
+def route_contract(brief, mode):
+    """The route this brief asks for, and why the format cannot render it (if it cannot)."""
+    rule = ROUTES[mode]
+    participants = brief.get("participants", DEFAULT_PARTICIPANTS[mode])
+    limit = rule["max_participants"]
+    allowed = "one participant" if limit == 1 else f"up to {NUMBER_WORDS[limit]} participants"
+    too_many = valid_participants(participants) and participants > limit
+    wrong_offering = (brief.get("offering_type") in ("physical", "service", "digital")
+                      and brief["offering_type"] not in rule["offering_types"])
+    gaps = []
+    if too_many:
+        gaps.append(f"{mode} supports {allowed}; {participants} requested")
+    if wrong_offering:
+        gaps.append(f"{mode} needs a physical product to hand over")
+    interaction = brief.get("interaction_type")
+    route = dict(copy.deepcopy(rule), name=mode, interaction_type=interaction,
+                 participants=participants if valid_participants(participants) else None)
+    if not gaps:
+        return route, gaps, []
+    alternatives = []
+    if too_many and not wrong_offering:
+        # The same route with fewer people is the closest thing the customer can still choose.
+        support = "preview only, no paid render yet" if rule["support"] == "preview-only" else "renders"
+        name = mode if interaction in (None, mode) else f"{mode}/{interaction}"
+        alternatives.append({"route": name, "differs": f"{allowed}; {support}"})
+    elif wrong_offering:
+        alternatives.append(dict(MIC_ONLY))
+    alternatives += [dict(a) for a in ALTERNATIVES]
+    return route, gaps, alternatives
+
+
 def select_context(brief, references, limit=2):
     mode = brief.get("mode")
     if mode not in MODES:
         raise ValueError("mode must be product-guess or conversation")
+    route, route_gaps, alternatives = route_contract(brief, mode)
     brief_gaps = []
+    if not valid_participants(brief.get("participants", DEFAULT_PARTICIPANTS[mode])):
+        brief_gaps.append("participants must be a whole number of people interviewed on screen, "
+                          "not counting the interviewer")
     if brief.get("offering_type") not in ("physical", "service", "digital"):
         brief_gaps.append("offering_type must identify physical, service or digital")
     if brief.get("interaction_type") not in INTERACTIONS:
@@ -93,21 +155,25 @@ def select_context(brief, references, limit=2):
         score += 5 if ref.get("commercial") else 0
         eligible.append((score, ref))
     eligible.sort(key=lambda pair: (-pair[0], pair[1]["id"]))
-    selected = [] if brief_gaps else [ref for _, ref in eligible[:limit]]
+    # An unsupported route selects nothing, so no downstream gate can treat it as ready.
+    selected = [] if brief_gaps or route_gaps else [ref for _, ref in eligible[:limit]]
     queries = []
     if not selected:
         queries.append(f"{brief.get('offering_type', 'offering')} {brief.get('audience_group', 'audience')} "
                        f"{brief.get('interaction_type', mode)} branded street interview full ad video "
                        f"{brief.get('language', 'en')}")
+    status = ("unsupported-route" if route_gaps
+              else "needs-reference" if not selected else "ready-for-writing")
     return {
-        "schema_version": "street-script-context.v2", "brand_id": brief.get("brand_id"),
+        "schema_version": "street-script-context.v3", "brand_id": brief.get("brand_id"),
         "mode": mode, "brief": brief,
+        "route": route, "route_gaps": route_gaps, "alternatives": alternatives,
         "references": selected,
         "selection": [{"id": r["id"], "reason": "user reference" if r.get("origin") == "user"
                        else "complete commercial interaction; offering/action fit; audience/buying fit ranked"}
                       for r in selected],
         "excluded": excluded, "research_queries": queries, "brief_gaps": brief_gaps,
-        "status": "needs-reference" if not selected else "ready-for-writing",
+        "status": status,
         "limitations": ["This checks recorded observation coverage; it cannot verify that the observer's account is true.",
                          "Reference compatibility is not script quality, verified authorship or ad performance."]}
 
@@ -126,6 +192,10 @@ def main():
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(result, indent=2)+"\n")
     print(result["status"], ", ".join(r["id"] for r in result["references"]))
+    for gap in result["route_gaps"]:
+        print("route gap:", gap)
+    for alt in result["alternatives"]:
+        print(f"alternative: {alt['route']} -- {alt['differs']}")
     if result["status"] != "ready-for-writing":
         raise SystemExit(2)
 

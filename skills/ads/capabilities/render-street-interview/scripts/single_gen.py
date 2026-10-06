@@ -124,8 +124,9 @@ def main():
                          "continent. A prompt cannot bind an object between calls; a reference "
                          "image can, which is why the can has never drifted.")
     ap.add_argument("--yes", action="store_true", help="SPENDS real money")
-    ap.add_argument("--prompt-version", type=int, choices=(1, 2), default=None,
-                    help="2 repairs articles and uses product-neutral closure wording; 1 reproduces historical prompts")
+    ap.add_argument("--prompt-version", type=int, choices=(1, 2, 3), default=None,
+                    help="3 keeps v2's repairs and keeps the street in focus (never blurred, never bokeh); "
+                         "2 repairs articles and uses product-neutral closure wording; 1 reproduces historical prompts")
     A = ap.parse_args()
 
     cfg = brandkit.load(A.brand)
