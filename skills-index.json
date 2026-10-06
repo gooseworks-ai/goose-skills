@@ -6995,7 +6995,7 @@
       "name": "render-narrated-ugc-wardrobe-stitch",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Assemble a narrated-UGC \"stitch reply\" ad from a config — a single spoken VO carries a verbatim testimonial while ~30 per-cut i2v clips (one creator across ~5 wardrobes in ~3 worlds, plus product B-roll) are each trimmed to their EDL window built from the VO's Whisper word boundaries and hard-concatenated via filter_complex concat (never the demuxer, which drops audio on a duration mismatch), the VO mixed over an optional sidechain-ducked instrumental bed (−20dB, 20 to 1) so the VO stays on top, karaoke-pop captions burned on every word throughout (VEED Whisper preset, re-spelled against the locked script), a landing-page scroll rendered as FFmpeg zoompan over a Playwright PNG (not i2v), and closed on the brand's real end-card PNG — never AI-rendered text. This is the FREE deterministic assembly stage (trim-to-EDL + filter_complex concat + VO and music mix + karaoke captions + landing-page zoompan + end-card append); the VO, creator, start-frames, and clips come from create-vo-elevenlabs / create-image-gpt-image-fal / create-image-fal / create-video-fal. Use for the narrated-ugc-wardrobe-stitch format.",
+      "description": "Assemble a narrated-UGC \"stitch reply\" ad from a config — a single spoken VO carries a verbatim testimonial while ~30 per-cut i2v clips (one creator across ~5 wardrobes in ~3 worlds, plus product B-roll) are each trimmed to their EDL window built from the VO's Whisper word boundaries and hard-concatenated via filter_complex concat (never the demuxer, which drops audio on a duration mismatch), the VO mixed over an optional sidechain-ducked instrumental bed (−20dB, 20 to 1) so the VO stays on top, karaoke-pop captions burned on every word throughout (VEED Whisper preset, re-spelled against the locked script), a landing-page scroll rendered as FFmpeg zoompan over a Playwright PNG (not i2v), and closed on the brand's real end-card PNG — never AI-rendered text. This is the FREE deterministic assembly stage (trim-to-EDL + filter_complex concat + VO and music mix + karaoke captions + landing-page zoompan + end-card append), run with the shared stitch-videos-ffmpeg montage.py helper that installs with this package; the VO, creator, start-frames, and clips come from create-vo-elevenlabs / create-image-gpt-image-fal / create-image-fal / create-video-fal. Use for the narrated-ugc-wardrobe-stitch format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-narrated-ugc-wardrobe-stitch",
       "files": [
@@ -7013,6 +7013,7 @@
         "tags": [
           "ads"
         ],
+        "version": "1.0.1",
         "installation": {
           "base_command": "npx goose-skills install render-narrated-ugc-wardrobe-stitch",
           "supports": [
@@ -7022,7 +7023,8 @@
           ]
         },
         "requires_skills": [
-          "watch"
+          "watch",
+          "stitch-videos-ffmpeg"
         ]
       }
     },
@@ -8530,7 +8532,7 @@
       "name": "stitch-videos-ffmpeg",
       "category": "capabilities",
       "domain": "ads",
-      "description": "stitch video segments with ffmpeg concat, xfade, overlay, audio mux, and export settings.",
+      "description": "Stitch video segments with ffmpeg concat, xfade, overlay, audio mux, and export settings. Ships montage.py, a free montage assembler (python3 + ffmpeg, no keys). It takes a JSON EDL of clips and stills, normalizes them and hard-cuts them in order, burns captions from an SRT, a cue list or word timings, and lays a VO over a music bed that ducks under it, mastered to -14 LUFS.",
       "tags": "ads",
       "path": "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg",
       "files": [
@@ -8538,6 +8540,7 @@
         "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/composite.py",
         "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/composite_final.py",
         "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/composite_final.sh",
+        "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/montage.py",
         "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/normalize_clip.sh",
         "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/voiceless/composite.py",
         "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/skill.meta.json",
@@ -8545,6 +8548,7 @@
         "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/human-test.md",
         "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/sample-input.md",
         "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/smoke-test.md",
+        "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/test_stitch_montage.py",
         "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/verifier.md"
       ],
       "metadata": {
@@ -10286,13 +10290,14 @@
         {
           "slug": "stitch-videos-ffmpeg",
           "name": "stitch-videos-ffmpeg",
-          "description": "stitch video segments with ffmpeg concat, xfade, overlay, audio mux, and export settings.",
+          "description": "Stitch video segments with ffmpeg concat, xfade, overlay, audio mux, and export settings. Ships montage.py, a free montage assembler (python3 + ffmpeg, no keys). It takes a JSON EDL of clips and stills, normalizes them and hard-cuts them in order, burns captions from an SRT, a cue list or word timings, and lays a VO over a music bed that ducks under it, mastered to -14 LUFS.",
           "path": "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg",
           "files": [
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/SKILL.md",
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/composite.py",
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/composite_final.py",
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/composite_final.sh",
+            "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/montage.py",
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/normalize_clip.sh",
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/voiceless/composite.py",
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/skill.meta.json",
@@ -10300,6 +10305,7 @@
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/human-test.md",
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/sample-input.md",
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/smoke-test.md",
+            "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/test_stitch_montage.py",
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/verifier.md"
           ],
           "source": "pack"
