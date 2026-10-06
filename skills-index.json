@@ -7815,7 +7815,7 @@
       "name": "review-ugc-render",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Mandatory pre-publish review gate for a UGC video render. Transcribes the finished render's AUDIO with Whisper and word-diffs it against the approved spoken script, then gates set_final_render — blocking a render whose generated audio mis-voices a word (e.g. the approved \"human-vetted\" spoken as \"human witted\"), drops an approved phrase, or comes back silent. Runnable, gating counterpart to content-goose's review-transcript-integrity atom. Every ugc-video-formats recipe runs this after render and BEFORE set_final_render.",
+      "description": "Mandatory pre-publish review gate for a UGC video render. Transcribes the finished render's AUDIO with Whisper and word-diffs it against the approved spoken script, then gates pinning the final render (video_project_upsert patch.final_render_id) — blocking a render whose generated audio mis-voices a word (e.g. the approved \"human-vetted\" spoken as \"human witted\"), says a different number or brand name, flips a negation, drops an approved phrase, or comes back silent. Correct speech written differently (\"5mg\" said \"five milligrams\", \"30%\" said \"thirty percent\", a spoken URL, \"don't\" said \"do not\", \"braxleybands\" said \"braxley bands\", a confirmed pronunciation like \"AG1\" said \"A G one\") passes. Runnable, gating counterpart to content-goose's review-transcript-integrity atom. Every ugc-video-formats recipe runs this after render and BEFORE pinning the final render.",
       "tags": "ads",
       "path": "skills/ads/packs/ugc-video-formats/review-ugc-render",
       "files": [
@@ -10129,7 +10129,7 @@
         {
           "slug": "review-ugc-render",
           "name": "review-ugc-render",
-          "description": "Mandatory pre-publish review gate for a UGC video render. Transcribes the finished render's AUDIO with Whisper and word-diffs it against the approved spoken script, then gates set_final_render — blocking a render whose generated audio mis-voices a word (e.g. the approved \"human-vetted\" spoken as \"human witted\"), drops an approved phrase, or comes back silent. Runnable, gating counterpart to content-goose's review-transcript-integrity atom. Every ugc-video-formats recipe runs this after render and BEFORE set_final_render.",
+          "description": "Mandatory pre-publish review gate for a UGC video render. Transcribes the finished render's AUDIO with Whisper and word-diffs it against the approved spoken script, then gates pinning the final render (video_project_upsert patch.final_render_id) — blocking a render whose generated audio mis-voices a word (e.g. the approved \"human-vetted\" spoken as \"human witted\"), says a different number or brand name, flips a negation, drops an approved phrase, or comes back silent. Correct speech written differently (\"5mg\" said \"five milligrams\", \"30%\" said \"thirty percent\", a spoken URL, \"don't\" said \"do not\", \"braxleybands\" said \"braxley bands\", a confirmed pronunciation like \"AG1\" said \"A G one\") passes. Runnable, gating counterpart to content-goose's review-transcript-integrity atom. Every ugc-video-formats recipe runs this after render and BEFORE pinning the final render.",
           "path": "skills/ads/packs/ugc-video-formats/review-ugc-render",
           "files": [
             "skills/ads/packs/ugc-video-formats/review-ugc-render/SKILL.md",

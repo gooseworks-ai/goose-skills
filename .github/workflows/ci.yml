@@ -30,6 +30,10 @@ jobs:
       - name: Verify packaged writer handoff
         run: python3 skills/ads/capabilities/write-video-ad-script/scripts/verify_handoff.py
 
+      - name: Test review-ugc-render speech gate
+        # Pure stdlib Python: no ffmpeg, pytest or network (transcription is stubbed).
+        run: python3 skills/ads/packs/ugc-video-formats/review-ugc-render/tests/test_review_render.py
+
       - name: Test street-interview prompt preflight
         run: |
           python3 skills/ads/capabilities/render-street-interview/scripts/selftest.py
