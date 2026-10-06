@@ -601,6 +601,23 @@ def test_cli_unusable_saved_pronunciation_is_skipped_not_fatal():
     assert verdict["aliases"] == [{"term": "OneSkin", "say_as": "one skin"}]
 
 
+
+def test_price_per_period_reads_as_spoken():
+    # "$29/month" is said "twenty nine dollars a month"; the currency word follows the amount.
+    for script, heard in [("It is $29/month for the full plan", "It is twenty nine dollars a month for the full plan"),
+                          ("Just $1/day to start", "Just one dollar a day to start"),
+                          ("Only 99\u00a2 each", "Only ninety nine cents each")]:
+        v = review_transcript(script, heard)
+        assert v.passed, (script, heard, [(i.kind, i.severity, i.script_words, i.heard_words) for i in v.issues])
+
+
+def test_thousands_with_decimal_keep_the_decimal():
+    assert review_transcript("Save $2.5k this year", "Save twenty five hundred dollars this year").passed
+    assert review_transcript("Save $10.25k this year", "Save ten thousand two hundred fifty dollars this year").passed
+    v = review_transcript("Save $2.5k this year", "Save two thousand dollars this year")
+    assert not v.passed and any(i.severity == "high" for i in v.issues)
+
+
 if __name__ == "__main__":
     fns = [v for k, v in sorted(globals().items()) if k.startswith("test_") and callable(v)]
     failed = 0

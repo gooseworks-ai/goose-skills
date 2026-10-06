@@ -240,7 +240,7 @@ def _piece_words(p: str) -> list[str]:
         whole = whole.replace(",", "")
         unit = _CURRENCY[sym]
         if k:
-            return [str(int(whole) * 1000), unit]
+            return [str(int(whole) * 1000 + (int(cents.ljust(3, "0")) if cents else 0)), unit]
         if cents and int(whole) == 0 and sym == "$":
             return [str(int(cents.ljust(2, "0"))), "cents"]
         words = [whole, unit]
@@ -248,7 +248,14 @@ def _piece_words(p: str) -> list[str]:
             words.append(cents.ljust(2, "0"))
         return words
     if p[0] in _CURRENCY:
-        return _piece_words(p[1:]) + [_CURRENCY[p[0]]]
+        rest = _piece_words(p[1:])
+        # the currency word follows the amount, as spoken: "$29/month" → 29 dollars month
+        j = 0
+        while j < len(rest) and (rest[j].isdigit() or rest[j] in ("point", "k", "m", "million", "billion")):
+            j += 1
+        return rest[:j] + [_CURRENCY[p[0]]] + rest[j:]
+    if p.endswith("¢"):
+        return _piece_words(p[:-1]) + ["cents"]
     if p.endswith("%"):
         return _piece_words(p[:-1]) + ["percent"]
     if p[0] == "@":
