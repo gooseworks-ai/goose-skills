@@ -2,11 +2,12 @@
 """Pre-publish review gate for UGC video renders.
 
 Transcribes a finished render's AUDIO with Whisper, word-diffs the transcript
-against the approved spoken script, and gates `set_final_render`. This catches
-the failure mode where Seedance mis-voices a word in the generated audio
-(e.g. the approved line "human-vetted" is spoken as "human witted") — a defect
-the render carries in its audio, which an eyeball `/watch` QC routinely misses
-and which a caption pass then faithfully bakes in.
+against the approved spoken script, and gates pinning the final render
+(video_project_upsert patch.final_render_id). This catches the failure mode
+where Seedance mis-voices a word in the generated audio (e.g. the approved line
+"human-vetted" is spoken as "human witted") — a defect the render carries in its
+audio, which an eyeball `/watch` QC routinely misses and which a caption pass
+then faithfully bakes in.
 
 It is the runnable, gating counterpart to the content-goose
 `coworkers/video/atoms/review/review-transcript-integrity` atom.
@@ -14,11 +15,32 @@ It is the runnable, gating counterpart to the content-goose
 Usage:
     review_render.py --video working/final.mp4 --script-file working/approved-script.txt
     review_render.py --video final.mp4 --script "Okay, real talk..." --expect-music
+    review_render.py --video final.mp4 --script-file s.txt \
+        --brand-term "AG1" --alias "AG1=A G one" --pronunciations working/pronunciations.json
 
 Exit codes:
-    0  PASS  — safe to set_final_render
-    2  FAIL  — do NOT publish; fix (usually re-roll a new seed) and re-run
+    0  PASS  — safe to pin the final render (video_project_upsert patch.final_render_id)
+    2  FAIL  — do NOT pin it; fix (usually re-roll a new seed) and re-run
     3  ERROR — could not run the check (no transcription backend / bad input)
+
+Bounded equivalence. Before the diff, the script and the transcript are put in
+one canonical spoken form, so correct speech that is merely WRITTEN differently
+is not a defect:
+  - numbers: digits == number words ("49" == "forty-nine", "105" == "one hundred
+    and five", "2,500" == "two thousand five hundred", "2.5" == "two point five",
+    "2026" == "twenty twenty six")
+  - units after a quantity: "5mg" == "five milligrams", "30%" == "thirty
+    percent", "$49" == "forty nine dollars" (a unit word NOT after a quantity is
+    left alone, so a brand "MG" never becomes "milligrams")
+  - URLs: "example.com" == "example dot com"; a leading "www." is optional
+  - contractions: "don't" == "do not", "can't" == "cannot" == "can not"
+  - fused/split words: "braxleybands" == "braxley bands" (exact concatenation of
+    2-3 words only, never fuzzy; letters spelled one by one are NOT fused)
+  - confirmed spoken aliases (--alias / --pronunciations): "AG1" == "A G one"
+These still FAIL: a different number, unit or negation (always HIGH), a brand
+name not heard as approved (HIGH when --brand-term or a confirmed pronunciation
+names it), a mis-voiced word, dropped approved words, and extra speech beyond
+benign filler. Brand words are never removed from the diff.
 
 The word-alignment + verdict logic is a pure function (`review_transcript`)
 so it is unit-tested without needing audio or a network call.
@@ -33,6 +55,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import unicodedata
 from dataclasses import dataclass, field, asdict
 from difflib import SequenceMatcher
 
@@ -44,25 +67,563 @@ SILENCE_MEAN_DB = -45.0       # quieter mean volume than this ⇒ effectively si
 MISVOICE_MAX_LEN_DELTA = 3
 MISVOICE_MIN_CHAR_SIM = 0.5
 
-_WORD_RE = re.compile(r"[a-z0-9]+")
-
-
-def tokenize(text: str) -> list[str]:
-    """Lowercase word tokens, punctuation stripped. 'human-vetted!' → [human, vetted]."""
-    return _WORD_RE.findall((text or "").lower())
-
 
 def _char_sim(a: str, b: str) -> float:
     return SequenceMatcher(None, a, b).ratio()
 
 
+# ── Canonical spoken form ───────────────────────────────────────────────────
+# Every rule below is bounded and deterministic. Each canonical token remembers
+# the original words it came from so the report can quote what was written/heard.
+
+class _Tok:
+    __slots__ = ("text", "orig", "src")
+
+    def __init__(self, text: str, orig: str, src: object):
+        self.text = text    # canonical token
+        self.orig = orig    # original wording it came from (for the report)
+        self.src = src      # identity of the source word (dedupes the report)
+
+    def __repr__(self) -> str:  # pragma: no cover - debugging aid
+        return f"_Tok({self.text!r}, {self.orig!r})"
+
+
+def _merge(toks: list[_Tok], text: str) -> _Tok:
+    return _Tok(text, _orig_text(toks), object())
+
+
+def _orig_text(toks: list[_Tok]) -> str:
+    parts, last = [], None
+    for t in toks:
+        if t.src is not last:
+            parts.append(t.orig)
+            last = t.src
+    return " ".join(parts)
+
+
+_SMALL = {w: i for i, w in enumerate(
+    "zero one two three four five six seven eight nine ten eleven twelve thirteen "
+    "fourteen fifteen sixteen seventeen eighteen nineteen".split())}
+_TENS = {w: 10 * (i + 2) for i, w in enumerate(
+    "twenty thirty forty fifty sixty seventy eighty ninety".split())}
+# "second" is left out on purpose: "one second" is a duration far more often than an ordinal.
+_ORD_SMALL = {"first": 1, "third": 3, "fourth": 4, "fifth": 5, "sixth": 6, "seventh": 7,
+              "eighth": 8, "ninth": 9, "tenth": 10, "eleventh": 11, "twelfth": 12,
+              "thirteenth": 13, "fourteenth": 14, "fifteenth": 15, "sixteenth": 16,
+              "seventeenth": 17, "eighteenth": 18, "nineteenth": 19}
+_ORD_TENS = {w: 10 * (i + 2) for i, w in enumerate(
+    "twentieth thirtieth fortieth fiftieth sixtieth seventieth eightieth ninetieth".split())}
+_NUMBER_WORDS = set(_SMALL) | set(_TENS) | set(_ORD_SMALL) | set(_ORD_TENS) | {"hundred", "thousand"}
+_MULTIPLIERS = {"hundred": 100, "thousand": 1000, "k": 1000, "million": 10 ** 6, "billion": 10 ** 9}
+
+# Unit spellings → one canonical word. Applied ONLY right after a quantity.
+_UNIT_WORDS = {
+    "mg": "milligrams", "milligram": "milligrams", "milligrams": "milligrams",
+    "mcg": "micrograms", "µg": "micrograms", "ug": "micrograms",
+    "microgram": "micrograms", "micrograms": "micrograms",
+    "g": "grams", "gram": "grams", "grams": "grams",
+    "kg": "kilograms", "kgs": "kilograms", "kilo": "kilograms", "kilos": "kilograms",
+    "kilogram": "kilograms", "kilograms": "kilograms",
+    "ml": "milliliters", "milliliter": "milliliters", "milliliters": "milliliters",
+    "millilitre": "milliliters", "millilitres": "milliliters",
+    "l": "liters", "liter": "liters", "liters": "liters", "litre": "liters", "litres": "liters",
+    "oz": "ounces", "ounce": "ounces", "ounces": "ounces",
+    "lb": "pounds", "lbs": "pounds", "pound": "pounds", "pounds": "pounds",
+    "percent": "percent", "pct": "percent",
+    "dollar": "dollars", "dollars": "dollars", "usd": "dollars",
+    "cent": "cents", "cents": "cents", "euro": "euros", "euros": "euros",
+    "hr": "hours", "hrs": "hours", "hour": "hours", "hours": "hours",
+    "min": "minutes", "mins": "minutes", "minute": "minutes", "minutes": "minutes",
+    "sec": "seconds", "secs": "seconds", "second": "seconds", "seconds": "seconds",
+    "cal": "calories", "calorie": "calories", "calories": "calories",
+    "x": "times", "times": "times",
+}
+_UNIT_SET = frozenset(_UNIT_WORDS.values())
+_CURRENCY = {"$": "dollars", "£": "pounds", "€": "euros"}
+
+_NEGATIONS = frozenset({"not", "no", "never", "nothing", "nobody", "none", "nowhere",
+                        "neither", "nor", "without"})
+
+# Contractions. Ambiguous apostrophe-less spellings (cant, wont, ill, well, were,
+# shell, hell, id, shed) are deliberately NOT expanded.
+_APOS_CONTRACTIONS = {"can't": ["can", "not"], "won't": ["will", "not"],
+                      "shan't": ["shall", "not"], "i'm": ["i", "am"], "let's": ["let", "us"]}
+_BARE_CONTRACTIONS = {
+    "dont": ["do", "not"], "doesnt": ["does", "not"], "didnt": ["did", "not"],
+    "isnt": ["is", "not"], "arent": ["are", "not"], "wasnt": ["was", "not"],
+    "werent": ["were", "not"], "havent": ["have", "not"], "hasnt": ["has", "not"],
+    "hadnt": ["had", "not"], "wouldnt": ["would", "not"], "shouldnt": ["should", "not"],
+    "couldnt": ["could", "not"], "mustnt": ["must", "not"], "neednt": ["need", "not"],
+    "cannot": ["can", "not"], "im": ["i", "am"], "youre": ["you", "are"],
+    "theyre": ["they", "are"], "ive": ["i", "have"], "youve": ["you", "have"],
+    "weve": ["we", "have"], "theyve": ["they", "have"], "youll": ["you", "will"],
+    "theyll": ["they", "will"], "itll": ["it", "will"], "thatll": ["that", "will"],
+    "youd": ["you", "would"], "theyd": ["they", "would"],
+    # "its" and "it's" sound the same; Whisper and script writers swap them.
+    "its": ["it", "is"], "thats": ["that", "is"], "whats": ["what", "is"],
+    "theres": ["there", "is"], "heres": ["here", "is"],
+}
+_S_IS = frozenset({"it", "that", "there", "here", "what", "who", "where", "when", "why", "how",
+                   "he", "she", "everyone", "everything", "nothing", "someone", "something", "this"})
+_APOS_SUFFIX = (("n't", "not"), ("'re", "are"), ("'ve", "have"), ("'ll", "will"),
+                ("'d", "would"), ("'m", "am"))
+
+_APOSTROPHES = str.maketrans({"’": "'", "‘": "'", "ʼ": "'", "`": "'"})
+_DASHES_RE = re.compile(r"[‐-―−]")
+_EDGE_CHARS = "\"'()[]{}<>«»,;:!?….*_~|"
+_DOMAIN_RE = re.compile(r"^(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}(?:/\S*)?$")
+_INITIALISM_RE = re.compile(r"^[a-z](?:\.[a-z])+$")           # a.g  p.m  u.s.a
+_ORDINAL_RE = re.compile(r"^(\d+)(?:st|nd|rd|th)$")
+_CURRENCY_RE = re.compile(r"^([$£€])(\d{1,3}(?:,\d{3})+|\d+)(?:\.(\d{1,2}))?(k)?$")
+_RUN_RE = re.compile(r"\d+(?:[.,]\d+)*|[^\W\d_]+")
+_INT_RE = re.compile(r"\d+")
+_QUANTITY_RE = re.compile(r"\d+(?:st|nd|rd|th)?")
+
+
+def _ordinal(n: int) -> str:
+    if 10 <= n % 100 <= 20:
+        return f"{n}th"
+    return f"{n}{ {1: 'st', 2: 'nd', 3: 'rd'}.get(n % 10, 'th') }"
+
+
+def _is_int(text: str) -> bool:
+    return bool(_INT_RE.fullmatch(text))
+
+
+def _digit_run(run: str) -> list[str]:
+    """'1,000' → ['1000']; '2.5' → ['2', 'point', '5']; '1,2' → ['1', '2']."""
+    if "," in run:
+        if re.fullmatch(r"\d{1,3}(?:,\d{3})+(?:\.\d+)?", run):
+            run = run.replace(",", "")
+        else:
+            return [x for part in run.split(",") for x in _digit_run(part) if x]
+    if "." in run:
+        out = []
+        for k, part in enumerate(run.split(".")):
+            if k:
+                out.append("point")
+            out.append(part)
+        return out
+    return [run]
+
+
+def _runs(piece: str) -> list[str]:
+    out = []
+    for run in _RUN_RE.findall(piece):
+        out.extend(_digit_run(run) if run[0].isdigit() else [run])
+    return out
+
+
+def _piece_words(p: str) -> list[str]:
+    """Canonical words for one hyphen-free piece of a written word (lowercase)."""
+    p = p.strip(_EDGE_CHARS + ".")
+    if not p:
+        return []
+    m = _CURRENCY_RE.match(p)
+    if m:
+        sym, whole, cents, k = m.groups()
+        whole = whole.replace(",", "")
+        unit = _CURRENCY[sym]
+        if k:
+            return [str(int(whole) * 1000), unit]
+        if cents and int(whole) == 0 and sym == "$":
+            return [str(int(cents.ljust(2, "0"))), "cents"]
+        words = [whole, unit]
+        if cents and int(cents.ljust(2, "0")):
+            words.append(cents.ljust(2, "0"))
+        return words
+    if p[0] in _CURRENCY:
+        return _piece_words(p[1:]) + [_CURRENCY[p[0]]]
+    if p.endswith("%"):
+        return _piece_words(p[:-1]) + ["percent"]
+    if p[0] == "@":
+        return ["at"] + _piece_words(p[1:])
+    if p[0] == "#":
+        rest = _piece_words(p[1:])
+        return (["number"] if rest and rest[0][0].isdigit() else ["hashtag"]) + rest
+    m = _ORDINAL_RE.match(p)
+    if m:
+        return [_ordinal(int(m.group(1)))]
+    if _INITIALISM_RE.match(p):
+        return [p.replace(".", "")]
+    if "'" in p:
+        if p in _APOS_CONTRACTIONS:
+            return list(_APOS_CONTRACTIONS[p])
+        for suffix, word in _APOS_SUFFIX:
+            if p.endswith(suffix) and len(p) > len(suffix):
+                return _runs(p[: -len(suffix)]) + [word]
+        if p.endswith("'s") and p[:-2] in _S_IS:
+            return [p[:-2], "is"]
+        # possessive / plural possessive / o'clock / y'all: the apostrophe is silent
+        p = p.replace("'", "")
+    if p in _BARE_CONTRACTIONS:
+        return list(_BARE_CONTRACTIONS[p])
+    return _runs(p)
+
+
+def _raw_tokens(text: str) -> list[_Tok]:
+    """Split written text into canonical word tokens (before cross-word rules)."""
+    text = unicodedata.normalize("NFKD", text or "")
+    text = "".join(c for c in text if not unicodedata.combining(c))
+    text = _DASHES_RE.sub("-", text.translate(_APOSTROPHES))
+    text = text.replace("&", " and ").replace("+", " plus ")
+    out: list[_Tok] = []
+    for chunk in text.split():
+        orig = chunk.strip(_EDGE_CHARS + ".")
+        if not orig:
+            continue
+        low = orig.lower()
+        low_url = re.sub(r"^https?://", "", low)
+        if _DOMAIN_RE.match(low_url):
+            src = object()
+            host, _, path = low_url.partition("/")
+            labels = host.split(".")
+            if labels[0] == "www" and len(labels) > 2:
+                labels = labels[1:]
+            words: list[str] = []
+            for k, label in enumerate(labels):
+                if k:
+                    words.append("dot")
+                words.extend(_runs(label))
+            for seg in path.split("/") if path else []:
+                if seg:
+                    words.append("slash")
+                    words.extend(_runs(seg))
+            out.extend(_Tok(w, orig, src) for w in words)
+            continue
+        if _CURRENCY_RE.match(low):
+            src = object()
+            out.extend(_Tok(w, orig, src) for w in _piece_words(low))
+            continue
+        for piece in orig.split("-"):
+            src = object()
+            out.extend(_Tok(w, piece, src) for w in _piece_words(piece.lower()))
+    return out
+
+
+def _parse_below100(w: list[str], i: int):
+    x, n = w[i], len(w)
+    if x in _SMALL:
+        return _SMALL[x], i + 1, False
+    if x in _ORD_SMALL:
+        return _ORD_SMALL[x], i + 1, True
+    if x in _ORD_TENS:
+        return _ORD_TENS[x], i + 1, True
+    if x in _TENS:
+        v = _TENS[x]
+        if i + 1 < n:
+            y = w[i + 1]
+            if y in _SMALL and 1 <= _SMALL[y] <= 9:
+                return v + _SMALL[y], i + 2, False
+            if y in _ORD_SMALL and _ORD_SMALL[y] <= 9:
+                return v + _ORD_SMALL[y], i + 2, True
+        return v, i + 1, False
+    return None
+
+
+def _parse_below1000(w: list[str], i: int):
+    n = len(w)
+    if w[i] == "a" and i + 1 < n and w[i + 1] in ("hundred", "thousand"):
+        v, j, o = 1, i + 1, False
+    elif w[i] == "hundred":
+        v, j, o = 1, i, False
+    else:
+        r = _parse_below100(w, i)
+        if r is None:
+            return None
+        v, j, o = r
+    if not o and j < n and w[j] == "hundred" and 1 <= v < 100:
+        v *= 100
+        j += 1
+        k = j + 1 if (j + 1 < n and w[j] == "and" and _parse_below100(w, j + 1)) else j
+        r = _parse_below100(w, k) if k < n else None
+        if r:
+            v, j, o = v + r[0], r[1], r[2]
+    return v, j, o
+
+
+def _parse_number(w: list[str], i: int):
+    """(value, next_index, is_ordinal) for a spelled number starting at w[i], else None."""
+    n = len(w)
+    if w[i] == "thousand":
+        v, j, o = 1, i, False
+    else:
+        r = _parse_below1000(w, i)
+        if r is None:
+            return None
+        v, j, o = r
+    if not o and j < n and w[j] == "thousand" and v < 1000:
+        v *= 1000
+        j += 1
+        k = j + 1 if (j + 1 < n and w[j] == "and" and _parse_below1000(w, j + 1)) else j
+        r = _parse_below1000(w, k) if k < n else None
+        if r:
+            v, j, o = v + r[0], r[1], r[2]
+    return v, j, o
+
+
+def _spell_numbers(toks: list[_Tok]) -> list[_Tok]:
+    w = [t.text for t in toks]
+    out: list[_Tok] = []
+    i = 0
+    while i < len(toks):
+        x = w[i]
+        start = x in _NUMBER_WORDS or (x == "a" and i + 1 < len(w) and w[i + 1] in ("hundred", "thousand"))
+        if x in ("hundred", "thousand") and out and _is_int(out[-1].text):
+            start = False   # "5 hundred" → the multiplier pass makes 500
+        r = _parse_number(w, i) if start else None
+        if r:
+            v, j, o = r
+            out.append(_merge(toks[i:j], _ordinal(v) if o else str(v)))
+            i = j
+        else:
+            out.append(toks[i])
+            i += 1
+    return out
+
+
+def _decimals_and_multipliers(toks: list[_Tok]) -> list[_Tok]:
+    out: list[_Tok] = []
+    i, n = 0, len(toks)
+    while i < n:
+        t = toks[i]
+        prev = out[-1].text if out else ""
+        # "nine point nine nine" → 9 point 99 (fraction digits read one by one)
+        if t.text == "point" and _is_int(prev):
+            j = i + 1
+            while j < n and re.fullmatch(r"\d", toks[j].text):
+                j += 1
+            out.append(t)
+            if j - (i + 1) >= 2:
+                out.append(_merge(toks[i + 1:j], "".join(x.text for x in toks[i + 1:j])))
+                i = j
+            else:
+                i += 1
+            continue
+        nxt = toks[i + 1].text if i + 1 < n else ""
+        if _is_int(t.text) and prev != "point":
+            # "one and a half" → 1 point 5
+            if [x.text for x in toks[i + 1:i + 4]] == ["and", "a", "half"]:
+                src = object()
+                orig = _orig_text(toks[i:i + 4])
+                out.extend([_Tok(t.text, orig, src), _Tok("point", orig, src), _Tok("5", orig, src)])
+                i += 4
+                continue
+            # "5 hundred" / "10k" / "ten thousand" / "1 million" → one integer
+            if nxt in _MULTIPLIERS:
+                out.append(_merge(toks[i:i + 2], str(int(t.text) * _MULTIPLIERS[nxt])))
+                i += 2
+                continue
+        out.append(t)
+        i += 1
+    return out
+
+
+def _units(toks: list[_Tok]) -> list[_Tok]:
+    out: list[_Tok] = []
+    for t in toks:
+        if t.text in _UNIT_WORDS and out and _is_int(out[-1].text):
+            t = _Tok(_UNIT_WORDS[t.text], t.orig, t.src)
+        out.append(t)
+    # money: "N dollars (and) M cents" → N dollars M  (matches "$N.MM")
+    res: list[_Tok] = []
+    i = 0
+    while i < len(out):
+        t = out[i]
+        res.append(t)
+        if t.text == "dollars" and len(res) > 1 and _is_int(res[-2].text):
+            rest = [x.text for x in out[i + 1:i + 4]]
+            if len(rest) >= 3 and rest[0] == "and" and _is_int(rest[1]) and rest[2] == "cents":
+                res.append(_merge(out[i + 1:i + 4], rest[1]))
+                i += 4
+                continue
+            if len(rest) >= 2 and _is_int(rest[0]) and rest[1] == "cents":
+                res.append(_merge(out[i + 1:i + 3], rest[0]))
+                i += 3
+                continue
+        i += 1
+    return res
+
+
+def _context_fixes(toks: list[_Tok]) -> list[_Tok]:
+    out: list[_Tok] = []
+    n = len(toks)
+    i = 0
+    while i < n:
+        t = toks[i]
+        # "it's been" → it HAS been
+        if t.text == "is" and t.orig.translate(_APOSTROPHES).lower().endswith("'s") and \
+                i + 1 < n and toks[i + 1].text in ("been", "got", "gotten"):
+            t = _Tok("has", t.orig, t.src)
+        # spelled letters next to "dot": "w w w dot" → www dot, "dot a i" → dot ai
+        if len(t.text) == 1 and t.text.isalpha():
+            j = i
+            while j < n and len(toks[j].text) == 1 and toks[j].text.isalpha():
+                j += 1
+            before = out[-1].text if out else ""
+            after = toks[j].text if j < n else ""
+            if j - i >= 2 and "dot" in (before, after):
+                out.append(_merge(toks[i:j], "".join(x.text for x in toks[i:j])))
+                i = j
+                continue
+        out.append(t)
+        i += 1
+    # a leading "www dot" in front of a domain ("www dot example dot com") is optional
+    res: list[_Tok] = []
+    i = 0
+    while i < len(out):
+        if out[i].text == "www" and [x.text for x in out[i + 1:i + 4:2]] == ["dot", "dot"]:
+            i += 2
+            continue
+        res.append(out[i])
+        i += 1
+    return res
+
+
+def _base_tokens(text: str) -> list[_Tok]:
+    toks = _raw_tokens(text)
+    toks = _spell_numbers(toks)
+    toks = _decimals_and_multipliers(toks)
+    toks = _units(toks)
+    return _context_fixes(toks)
+
+
+def _protected(words) -> list[str]:
+    """The words an alias may never change: quantities, units and negations."""
+    return [w for w in words if _QUANTITY_RE.fullmatch(w) or w in _UNIT_SET or w in _NEGATIONS]
+
+
+def _alias_pairs(aliases) -> list[tuple[str, str]]:
+    if not aliases:
+        return []
+    if isinstance(aliases, dict):
+        pairs = []
+        for term, forms in aliases.items():
+            for form in ([forms] if isinstance(forms, str) else list(forms or [])):
+                pairs.append((term, form))
+        return pairs
+    pairs = []
+    for item in aliases:
+        if isinstance(item, dict):
+            pairs.append((item.get("term"), item.get("say_as")))
+        else:
+            term, form = item
+            pairs.append((term, form))
+    return pairs
+
+
+def build_aliases(aliases) -> list[tuple[tuple[str, ...], tuple[str, ...]]]:
+    """Validate confirmed spoken aliases and compile them to (spoken-form, term) token rules.
+
+    `aliases`: {term: say_as | [say_as, ...]}, [(term, say_as), ...] or
+    [{"term", "say_as"}, ...] (the read_pronunciations.py `pronunciations` list).
+    An alias may respell a name ("AG1" said "A G one") but may never add, drop or
+    change a number, unit or negation. Raises ValueError on a bad alias."""
+    rules: dict[tuple[str, ...], tuple[str, ...]] = {}
+    for term, form in _alias_pairs(aliases):
+        if not isinstance(term, str) or not isinstance(form, str) or not term.strip() or not form.strip():
+            raise ValueError("each alias needs a written term and a confirmed spoken form")
+        term_w = tuple(t.text for t in _base_tokens(term))
+        form_w = tuple(t.text for t in _base_tokens(form))
+        if not term_w or not form_w:
+            raise ValueError(f'alias "{term}" = "{form}" has no words to match')
+        if _protected(term_w) != _protected(form_w):
+            raise ValueError(f'alias "{term}" = "{form}" would change a number, unit or negation; '
+                             "an alias may only respell a name")
+        candidates = {form_w}
+        if len(form_w) > 1 and all(w.isalpha() for w in form_w):
+            candidates.add(("".join(form_w),))   # "goose works" also heard as "gooseworks"
+        for cand in candidates:
+            if cand == term_w:
+                continue
+            if cand in rules and rules[cand] != term_w:
+                raise ValueError(f'spoken form "{" ".join(cand)}" is confirmed for two different terms')
+            rules[cand] = term_w
+    return sorted(rules.items(), key=lambda kv: -len(kv[0]))
+
+
+def _apply_aliases(toks: list[_Tok], rules) -> list[_Tok]:
+    if not rules:
+        return toks
+    texts = [t.text for t in toks]
+    out: list[_Tok] = []
+    i = 0
+    while i < len(toks):
+        for form, term in rules:
+            if tuple(texts[i:i + len(form)]) == form:
+                orig, src = _orig_text(toks[i:i + len(form)]), object()
+                out.extend(_Tok(w, orig, src) for w in term)
+                i += len(form)
+                break
+        else:
+            out.append(toks[i])
+            i += 1
+    return out
+
+
+def canonical_tokens(text: str, aliases=None) -> list[_Tok]:
+    """Canonical spoken-form tokens (with their original wording) for `text`."""
+    return _apply_aliases(_base_tokens(text), build_aliases(aliases))
+
+
+def tokenize(text: str, aliases=None) -> list[str]:
+    """Canonical spoken-form word tokens. 'human-vetted!' → [human, vetted]; '5mg' → [5, milligrams]."""
+    return [t.text for t in canonical_tokens(text, aliases)]
+
+
+def _fusable(parts: list[str], whole: str) -> bool:
+    if all(p.isalpha() for p in parts):
+        # Letters spelled one by one ("a g") are NOT a fused word — that needs a confirmed alias.
+        return not all(len(p) == 1 for p in parts) and "not" not in parts
+    # years: "twenty twenty six" → 20 26 == 2026
+    return (len(parts) == 2 and bool(re.fullmatch(r"\d{4}", whole))
+            and all(re.fullmatch(r"[1-9]\d", p) for p in parts))
+
+
+def _fuse(toks: list[_Tok], other: set[str]) -> list[_Tok]:
+    """Join 2-3 consecutive tokens whose exact concatenation is a token on the other side."""
+    out: list[_Tok] = []
+    i = 0
+    while i < len(toks):
+        for k in (3, 2):
+            if i + k <= len(toks):
+                parts = [t.text for t in toks[i:i + k]]
+                whole = "".join(parts)
+                if whole in other and _fusable(parts, whole):
+                    out.append(_merge(toks[i:i + k], whole))
+                    i += k
+                    break
+        else:
+            out.append(toks[i])
+            i += 1
+    return out
+
+
+def _brand_positions(s_texts: list[str], brand_seqs: list[tuple[str, ...]]) -> set[int]:
+    pos: set[int] = set()
+    for seq in brand_seqs:
+        L = len(seq)
+        for i in range(len(s_texts) - L + 1):
+            if tuple(s_texts[i:i + L]) == seq:
+                pos.update(range(i, i + L))
+        if L == 1 and seq[0].isalpha():
+            # brand written split in the script: "Braxley Bands" for --brand-term Braxleybands
+            for k in (2, 3):
+                for i in range(len(s_texts) - k + 1):
+                    if "".join(s_texts[i:i + k]) == seq[0]:
+                        pos.update(range(i, i + k))
+    return pos
+
+
 @dataclass
 class Issue:
-    kind: str                 # substitution | dropped | inserted
+    kind: str                 # substitution | dropped | inserted | silent | no_script | caption_*
     severity: str             # high | medium | low
-    script_words: list[str] = field(default_factory=list)
-    heard_words: list[str] = field(default_factory=list)
+    script_words: list[str] = field(default_factory=list)   # canonical tokens
+    heard_words: list[str] = field(default_factory=list)    # canonical tokens
     note: str = ""
+    script_text: str = ""     # original wording in the approved script
+    heard_text: str = ""      # original wording in the transcript
 
 
 @dataclass
@@ -74,39 +635,71 @@ class Verdict:
     music_present: bool | None = None
     script_tokens: int = 0
     transcript_tokens: int = 0
+    brand_terms: list[str] = field(default_factory=list)
+    aliases: list[dict] = field(default_factory=list)
 
     def to_dict(self) -> dict:
-        d = asdict(self)
-        return d
+        return asdict(self)
 
 
-BRAND_FUZZY_SIM = 0.62   # transcript token this close to a brand token ⇒ treat as the brand
-
-
-def _strip_brand_tokens(tokens: list[str], brand_tokens: set[str]) -> list[str]:
-    """Drop tokens that ARE (or closely sound like) a brand token. Whisper reliably
-    mangles brand names ("gooseworks coworkers" → "goose works cohorts"), and the
-    brand-correct on-screen SRT covers the word anyway — so brand tokens must not
-    contribute to the spoken-drift diff or every correct take flags falsely."""
-    if not brand_tokens:
-        return tokens
-    out = []
-    for tok in tokens:
-        if tok in brand_tokens:
-            continue
-        if any(_char_sim(tok, b) >= BRAND_FUZZY_SIM for b in brand_tokens):
-            continue
-        out.append(tok)
-    return out
+def _classify(tag: str, sw: list[str], hw: list[str], brand_hit: bool) -> tuple[str, str]:
+    if sum(w in _NEGATIONS for w in sw) != sum(w in _NEGATIONS for w in hw):
+        return "high", "negation changed (not/never/no/without added or lost) — the claim flips"
+    sq = [w for w in sw if _QUANTITY_RE.fullmatch(w)]
+    hq = [w for w in hw if _QUANTITY_RE.fullmatch(w)]
+    if sq != hq:
+        return "high", "number differs from the approved script — a number is never a benign paraphrase"
+    su = [w for w in sw if w in _UNIT_SET]
+    hu = [w for w in hw if w in _UNIT_SET]
+    if su and hu and su != hu:
+        return "high", "unit differs from the approved script"
+    if brand_hit:
+        return "high", ("brand name not heard as approved (mis-voiced or dropped) — re-roll; if the audio is "
+                        "right and only the spelling differs, confirm the spoken form and pass it as an alias")
+    if tag == "replace":
+        if len(sw) == 1 and len(hw) == 1:
+            a, b = sw[0], hw[0]
+            if abs(len(a) - len(b)) <= MISVOICE_MAX_LEN_DELTA and _char_sim(a, b) >= MISVOICE_MIN_CHAR_SIM:
+                return "high", (f'audio likely mis-voices "{a}" as "{b}" (re-roll a new seed; if it is a '
+                                "brand token, spell it phonetically in the SPOKEN LINE)")
+        return "medium", "spoken word differs from the approved script"
+    if tag == "delete":
+        return "medium", "approved words not heard in the render"
+    # Extra heard words are often benign (filler / whisper tail); low severity.
+    return "low", "extra words heard that are not in the script"
 
 
 def review_transcript(script: str, transcript: str, min_ratio: float = DEFAULT_MIN_RATIO,
-                      brand_terms: list[str] | None = None) -> Verdict:
-    """Pure verdict from approved script vs heard transcript. No I/O."""
-    brand_tokens = {b for term in (brand_terms or []) for b in tokenize(term)}
-    s = _strip_brand_tokens(tokenize(script), brand_tokens)
-    t = _strip_brand_tokens(tokenize(transcript), brand_tokens)
-    v = Verdict(passed=False, ratio=0.0, script_tokens=len(s), transcript_tokens=len(t))
+                      brand_terms: list[str] | None = None, aliases=None) -> Verdict:
+    """Pure verdict from approved script vs heard transcript. No I/O.
+
+    brand_terms: brand names. They are NEVER removed from the diff; a brand word not
+        heard as approved is a HIGH failure. Fused/split spellings are equal.
+    aliases: confirmed spoken forms, e.g. {"AG1": "A G one"} or the read_pronunciations
+        `pronunciations` list. Raises ValueError on an alias that would change a number,
+        unit or negation."""
+    rules = build_aliases(aliases)
+    pairs = _alias_pairs(aliases)
+    s_toks = _apply_aliases(_base_tokens(script), rules)
+    t_toks = _apply_aliases(_base_tokens(transcript), rules)
+    s_set, t_set = {t.text for t in s_toks}, {t.text for t in t_toks}
+    s_toks, t_toks = _fuse(s_toks, t_set), _fuse(t_toks, s_set)
+    s = [t.text for t in s_toks]
+    t = [x.text for x in t_toks]
+
+    brand_list = list(brand_terms or []) + [term for term, _ in pairs]
+    brand_seqs = []
+    for term in brand_list:
+        seq = tuple(x.text for x in _apply_aliases(_base_tokens(term), rules))
+        if seq:
+            brand_seqs.append(seq)
+            if len(seq) > 1 and all(w.isalpha() for w in seq):
+                brand_seqs.append(("".join(seq),))
+    brand_pos = _brand_positions(s, brand_seqs)
+
+    v = Verdict(passed=False, ratio=0.0, script_tokens=len(s), transcript_tokens=len(t),
+                brand_terms=list(brand_terms or []),
+                aliases=[{"term": a, "say_as": b} for a, b in pairs])
 
     if not s:
         # No script to compare against — cannot gate on drift, treat as advisory pass.
@@ -118,32 +711,45 @@ def review_transcript(script: str, transcript: str, min_ratio: float = DEFAULT_M
     matcher = SequenceMatcher(None, s, t, autojunk=False)
     v.ratio = matcher.ratio()
 
+    kinds = {"replace": "substitution", "delete": "dropped", "insert": "inserted"}
     for tag, i1, i2, j1, j2 in matcher.get_opcodes():
         if tag == "equal":
             continue
-        sw = s[i1:i2]
-        hw = t[j1:j2]
-        if tag == "replace":
-            severity = "medium"
-            note = "spoken word differs from the approved script"
-            # 1:1 replacement of a similar-looking word ⇒ almost certainly mis-voiced audio.
-            if len(sw) == 1 and len(hw) == 1:
-                a, b = sw[0], hw[0]
-                if abs(len(a) - len(b)) <= MISVOICE_MAX_LEN_DELTA and _char_sim(a, b) >= MISVOICE_MIN_CHAR_SIM:
-                    severity = "high"
-                    note = f'audio likely mis-voices "{a}" as "{b}" (re-roll a new seed; if it is a brand token, spell it phonetically in the SPOKEN LINE)'
-            v.issues.append(Issue("substitution", severity, sw, hw, note))
-        elif tag == "delete":
-            v.issues.append(Issue("dropped", "medium", script_words=sw,
-                                  note="approved words not heard in the render"))
-        elif tag == "insert":
-            # Extra heard words are often benign (filler / whisper tail); low severity.
-            v.issues.append(Issue("inserted", "low", heard_words=hw,
-                                  note="extra words heard that are not in the script"))
+        sw, hw = s[i1:i2], t[j1:j2]
+        brand_hit = bool(brand_pos.intersection(range(i1, i2)))
+        severity, note = _classify(tag, sw, hw, brand_hit)
+        v.issues.append(Issue(kinds[tag], severity, sw, hw, note,
+                              script_text=_orig_text(s_toks[i1:i2]),
+                              heard_text=_orig_text(t_toks[j1:j2])))
 
     has_high = any(i.severity == "high" for i in v.issues)
     v.passed = (v.ratio >= min_ratio) and not has_high
     return v
+
+
+# ── Confirmed pronunciations ────────────────────────────────────────────────
+def parse_alias_arg(arg: str) -> tuple[str, str]:
+    """'AG1=A G one' → ('AG1', 'A G one')."""
+    term, sep, form = (arg or "").partition("=")
+    if not sep or not term.strip() or not form.strip():
+        raise ValueError(f'--alias must look like "TERM=SPOKEN FORM", got: {arg!r}')
+    return term.strip(), form.strip()
+
+
+def load_pronunciations(path: str) -> list[tuple[str, str]]:
+    """Read create-vo-elevenlabs' read_pronunciations.py output:
+    {"brand_id", "basis", "pronunciations": [{"term", "say_as", "fact_id"}]} (a bare list also works)."""
+    with open(path, encoding="utf-8") as fh:
+        data = json.load(fh)
+    rows = data.get("pronunciations") if isinstance(data, dict) else data
+    if not isinstance(rows, list):
+        raise ValueError(f"{path}: expected a JSON object with a 'pronunciations' list")
+    pairs = []
+    for row in rows:
+        if not isinstance(row, dict) or not isinstance(row.get("term"), str) or not isinstance(row.get("say_as"), str):
+            raise ValueError(f"{path}: every pronunciation needs a 'term' and a 'say_as'")
+        pairs.append((row["term"], row["say_as"]))
+    return pairs
 
 
 # ── Audio / transcription I/O ───────────────────────────────────────────────
@@ -297,11 +903,19 @@ def check_caption_srt(srt_path: str) -> list[Issue]:
 
 
 # ── Reporting ───────────────────────────────────────────────────────────────
+def _quote(text: str, words: list[str]) -> str:
+    return '"' + (text or " ".join(words)) + '"'
+
+
 def render_report(v: Verdict) -> str:
     lines = []
     status = "PASS ✅" if v.passed else "FAIL ❌"
     lines.append(f"Pre-publish review: {status}  (transcript↔script similarity {v.ratio:.2f})")
     lines.append(f"  script tokens={v.script_tokens}  heard tokens={v.transcript_tokens}")
+    if v.brand_terms:
+        lines.append("  brand terms (a mismatch is HIGH): " + ", ".join(v.brand_terms))
+    if v.aliases:
+        lines.append("  confirmed spoken forms: " + "; ".join(f'{a["term"]} = {a["say_as"]}' for a in v.aliases))
     if v.silent:
         lines.append("  ⚠ audio is effectively silent")
     if v.music_present is False:
@@ -310,16 +924,22 @@ def render_report(v: Verdict) -> str:
         lines.append("  no transcript drift.")
     for i in v.issues:
         if i.kind == "substitution":
-            lines.append(f"  [{i.severity}] said {i.heard_words} where script has {i.script_words} — {i.note}")
+            lines.append(f"  [{i.severity}] said {_quote(i.heard_text, i.heard_words)} where script has "
+                         f"{_quote(i.script_text, i.script_words)} — {i.note}")
         elif i.kind == "dropped":
-            lines.append(f"  [{i.severity}] dropped {i.script_words} — {i.note}")
+            lines.append(f"  [{i.severity}] dropped {_quote(i.script_text, i.script_words)} — {i.note}")
         elif i.kind == "inserted":
-            lines.append(f"  [{i.severity}] extra {i.heard_words} — {i.note}")
+            lines.append(f"  [{i.severity}] extra {_quote(i.heard_text, i.heard_words)} — {i.note}")
         else:
             lines.append(f"  [{i.severity}] {i.note}")
     if not v.passed:
-        lines.append("  → DO NOT set_final_render. Fix (usually re-roll a new seed for an audio defect), then re-run this gate.")
+        lines.append("  → Do NOT pin this render as final (video_project_upsert patch.final_render_id). "
+                     "Fix (usually re-roll a new seed for an audio defect), then re-run this gate.")
     return "\n".join(lines)
+
+
+def ffmpeg_available() -> bool:
+    return bool(shutil.which("ffmpeg"))
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -330,8 +950,15 @@ def main(argv: list[str] | None = None) -> int:
     g.add_argument("--script-file", help="path to a file with the approved spoken script")
     ap.add_argument("--min-ratio", type=float, default=DEFAULT_MIN_RATIO)
     ap.add_argument("--brand-term", action="append", default=[], dest="brand_terms",
-                    help="brand token(s) to normalize out of the spoken-drift diff (repeatable) — "
-                         "Whisper mangles brand names and the on-screen SRT covers them anyway.")
+                    help="brand name (repeatable). Brand words are NEVER removed from the diff: a brand "
+                         "word not heard as approved is a HIGH failure; fused/split spellings "
+                         "(braxleybands = braxley bands) count as equal.")
+    ap.add_argument("--alias", action="append", default=[], dest="aliases",
+                    help='confirmed spoken form, "TERM=SPOKEN" (repeatable), e.g. --alias "AG1=A G one". '
+                         "Only pass forms the user confirmed; never infer one from the transcript.")
+    ap.add_argument("--pronunciations",
+                    help="read_pronunciations.py output (create-vo-elevenlabs): every confirmed "
+                         "{term, say_as} becomes an alias and its term a brand term.")
     ap.add_argument("--captions-srt",
                     help="optional SRT to check for caption-text defects (stray leading punctuation, "
                          "empty cues). Caption POSITION stays a visual /watch item.")
@@ -343,7 +970,7 @@ def main(argv: list[str] | None = None) -> int:
     if not os.path.exists(args.video):
         print(f"ERROR: video not found: {args.video}", file=sys.stderr)
         return 3
-    if not shutil.which("ffmpeg"):
+    if not ffmpeg_available():
         print("ERROR: ffmpeg not on PATH", file=sys.stderr)
         return 3
 
@@ -357,13 +984,26 @@ def main(argv: list[str] | None = None) -> int:
         with open(args.script_file) as fh:
             script = fh.read()
 
+    # Validate confirmed aliases BEFORE any (paid) transcription call.
+    try:
+        aliases = [parse_alias_arg(a) for a in args.aliases]
+        if args.pronunciations:
+            if not os.path.exists(args.pronunciations):
+                raise ValueError(f"pronunciations file not found: {args.pronunciations}")
+            aliases += load_pronunciations(args.pronunciations)
+        build_aliases(aliases)
+    except (ValueError, json.JSONDecodeError) as e:
+        print(f"ERROR: {e}", file=sys.stderr)
+        return 3
+
     try:
         with tempfile.TemporaryDirectory() as td:
             audio = os.path.join(td, "audio.mp3")
             extract_audio(args.video, audio)
             silent = mean_volume_db(audio) <= SILENCE_MEAN_DB
             transcript = "" if silent else transcribe(audio)
-            v = review_transcript(script, transcript, args.min_ratio, brand_terms=args.brand_terms)
+            v = review_transcript(script, transcript, args.min_ratio,
+                                  brand_terms=args.brand_terms, aliases=aliases)
             v.silent = silent
             if silent:
                 v.passed = False
