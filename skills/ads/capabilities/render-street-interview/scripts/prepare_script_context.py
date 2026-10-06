@@ -96,7 +96,7 @@ def route_contract(brief, mode):
         gaps.append(f"{mode} needs a physical product to hand over")
     interaction = brief.get("interaction_type")
     route = dict(copy.deepcopy(rule), name=mode, interaction_type=interaction,
-                 participants=participants)
+                 participants=participants if valid_participants(participants) else None)
     if not gaps:
         return route, gaps, []
     alternatives = []

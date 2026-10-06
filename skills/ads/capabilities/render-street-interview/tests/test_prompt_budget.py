@@ -85,6 +85,13 @@ class PromptBudgetTests(unittest.TestCase):
                 # Nothing else in v3 asks for blur: the passers-by sentence loses "blurred by".
                 self.assertIn("blurred by their own movement", v2)
                 self.assertNotIn("blurred by", v3)
+                # Signage stays unreadable by distance, not by defocus, in v3.
+                self.assertIn("out of focus", v2)
+                self.assertNotIn("out of focus", v3)
+                self.assertIn("too distant to read, never legible", v3)
+                unreadable = v3.replace("never legible", "")
+                self.assertTrue(any('"never legible"' in e for e in
+                                    format_spec.lint(unreadable, guards=guards, prompt_version=3)))
                 # The v3 bound is linted, so a recorded v3 prompt without it fails the gate.
                 missing = v3.replace("never blurred and never bokeh", "")
                 self.assertTrue(any("never blurred and never bokeh" in e for e in

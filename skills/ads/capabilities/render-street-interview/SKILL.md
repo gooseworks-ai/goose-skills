@@ -45,7 +45,9 @@ Keep private observations project-scoped and transfer mechanics, not source-bran
 Pass `participants` too: the number of people interviewed on screen, not counting the
 interviewer (default 4 for product-guess, 1 for conversation). Its `route` output is binding
 for any project built on this format, including custom ones. `unsupported-route` means stop
-and offer the listed alternatives; it is not permission to go custom.
+and offer the listed alternatives; it is not permission to go custom. `custom` is one of those
+alternatives only when the customer picks it, and a custom video still keeps every `route`
+constraint: people in text, no person image references, one take, deep focus, local lettering.
 
 Save a situation brief before dialogue. Write the user's requested count, then map words
 and actions to ordered shots. An edited participant answer or silent action/reaction may

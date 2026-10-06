@@ -872,8 +872,13 @@ def build_prompt(cfg: dict, pace: bool = False, guards: bool = False, mic: bool 
         # NO_LETTERING is a SECOND rule about a DIFFERENT surface and does not replace this one:
         # this clause is about the background, and every word episode 1 garbled was in the
         # foreground, on a person, sharp and central.
-        "Street signs and shopfronts are present far behind the subject but small, distant and out of "
-        "focus, never sharp and never legible. "
+        # v3 keeps the street in focus, so "out of focus" would contradict its framing sentence;
+        # distance alone keeps the signs unreadable. Lint needle: "never legible" for v3.
+        + ("Street signs and shopfronts are present far behind the subject but small and too "
+           "distant to read, never legible. "
+           if prompt_version >= 3 else
+           "Street signs and shopfronts are present far behind the subject but small, distant and out of "
+           "focus, never sharp and never legible. ")
         + (NO_LETTERING.format(prod=prod) if plain else "") +
 
         # invented speech: 4808 filled 4.5 unscripted seconds with gibberish
@@ -1032,6 +1037,7 @@ def lint(prompt: str, pace: bool = False, guards: bool = False, mic: bool = Fals
                 **(UPRIGHT_CLAUSES if upright else {}),
                 **(ONE_MIC_CLAUSES if one_mic else {}))
     if prompt_version >= 3:
+        need["never legible"] = need.pop("never sharp and never legible")
         need["never blurred and never bokeh"] = ("the v3 deep-focus bound. The operator rejects "
                                                  "blurred backgrounds; v3 keeps the falloff needle "
                                                  "but the street stays in focus")

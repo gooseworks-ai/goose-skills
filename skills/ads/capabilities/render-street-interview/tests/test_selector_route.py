@@ -117,6 +117,7 @@ class SelectorRouteTests(unittest.TestCase):
                                     for gap in result["brief_gaps"]))
                 self.assertEqual(result["route_gaps"], [])
                 self.assertEqual(result["status"], "needs-reference")
+                self.assertIsNone(result["route"]["participants"])
 
     def test_cli_exits_2_and_writes_the_route_for_an_unsupported_brief(self):
         with tempfile.TemporaryDirectory() as tmp:
