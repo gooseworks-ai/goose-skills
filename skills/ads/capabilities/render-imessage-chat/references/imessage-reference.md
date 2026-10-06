@@ -18,6 +18,9 @@ product links and music are optional. The chat itself supplies the copy.
 - A 393×852 phone shell inside a 1080×1920 outer video. Scale together, with a
   margin on all four edges. The island sits **12 logical pixels inside the screen**,
   after the bezel. It is never attached to the canvas edge or bezel.
+- On 9:16 the conversation sits inside the platform-safe zone (`safe_area`, on by
+  default): the newest message stays above the bottom 400 px caption band and
+  left of the right 140 px button rail. Never push it back under the controls.
 - Contact avatar/name, status bar, left received bubbles, blue sent bubbles,
   composer typing for self messages and received-only typing dots.
 - Bottom-anchored short threads, followed by scrolling when the conversation fills.

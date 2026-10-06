@@ -1,0 +1,157 @@
+{
+  "_fixture_note": "QA-60 long group thread: 16 messages, newest is a wrapped punchline. Fictional; no images, emoji or network.",
+  "theme": "dark",
+  "dynamic_island": true,
+  "width": 1080,
+  "height": 1920,
+  "thread": {
+    "mode": "group",
+    "title": "Support crew",
+    "clock": "10:24",
+    "participants": [
+      {
+        "id": "me",
+        "name": "Me",
+        "self": true
+      },
+      {
+        "id": "jo",
+        "name": "Jo",
+        "color": "#E07A8B"
+      },
+      {
+        "id": "sam",
+        "name": "Sam",
+        "color": "#5AA9E6"
+      }
+    ],
+    "messages": [
+      {
+        "type": "timestamp",
+        "light": "Today 10:24 AM"
+      },
+      {
+        "id": "m01",
+        "type": "text",
+        "from": "jo",
+        "text": "did anyone fix the support queue yet"
+      },
+      {
+        "id": "typing1",
+        "type": "typing",
+        "from": "sam"
+      },
+      {
+        "id": "m02",
+        "type": "text",
+        "from": "sam",
+        "text": "no, 400 tickets still open"
+      },
+      {
+        "id": "m03",
+        "type": "text",
+        "from": "me",
+        "text": "we tried a new tool last week",
+        "delivered": true
+      },
+      {
+        "id": "m04",
+        "type": "text",
+        "from": "jo",
+        "text": "which one"
+      },
+      {
+        "id": "m05",
+        "type": "text",
+        "from": "sam",
+        "text": "the one with the shared inbox?"
+      },
+      {
+        "id": "m06",
+        "type": "text",
+        "from": "me",
+        "text": "yes, it sorts the tickets for us",
+        "delivered": true
+      },
+      {
+        "id": "m07",
+        "type": "text",
+        "from": "jo",
+        "text": "and the refunds backlog too?"
+      },
+      {
+        "id": "m08",
+        "type": "text",
+        "from": "me",
+        "text": "refunds, returns and the angry ones",
+        "delivered": true
+      },
+      {
+        "id": "m09",
+        "type": "text",
+        "from": "sam",
+        "text": "ok that is a long list"
+      },
+      {
+        "id": "m10",
+        "type": "text",
+        "from": "jo",
+        "text": "so what happened"
+      },
+      {
+        "id": "m11",
+        "type": "text",
+        "from": "me",
+        "text": "it tagged every ticket in an hour",
+        "delivered": true
+      },
+      {
+        "id": "m12",
+        "type": "text",
+        "from": "sam",
+        "text": "and then"
+      },
+      {
+        "id": "m13",
+        "type": "text",
+        "from": "jo",
+        "text": "dont leave us hanging"
+      },
+      {
+        "id": "m14",
+        "type": "text",
+        "from": "me",
+        "text": "we cleared the easy ones by lunch",
+        "delivered": true
+      },
+      {
+        "id": "m15",
+        "type": "text",
+        "from": "sam",
+        "text": "and the rest??"
+      },
+      {
+        "id": "typing15",
+        "type": "typing",
+        "from": "jo"
+      },
+      {
+        "id": "m16",
+        "type": "text",
+        "from": "jo",
+        "text": "the queue is at zero now. ZERO. this is the punchline line that must stay readable above the platform controls"
+      }
+    ]
+  },
+  "end_card": {
+    "bg": "#faf7f2",
+    "fg": "#1a1a1d",
+    "cta_bg": "#1a1a1d",
+    "cta_fg": "#ffffff",
+    "wordmark_text": "Sample Goods",
+    "stars": 0,
+    "trust_trio": [],
+    "cta_text": "Explore the collection",
+    "dwell_sec": 2.5
+  }
+}

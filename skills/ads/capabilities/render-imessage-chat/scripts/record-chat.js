@@ -15,6 +15,17 @@ const TIMING = {
   char_per_sec:15, min_type:0.5, max_type:2, scroll_ms:300,
 };
 const snap = t => Math.ceil((t - 1e-8) * FPS) / FPS;
+// Platform-safe layout (QA-60). TikTok/Reels draw tabs over the top of a 9:16
+// video, caption/composer UI over the bottom and buttons down the right. These
+// are review-finished-ad's bands at 1080×1920; they scale with the canvas.
+const SAFE_BANDS = { top:220, bottom:400, right:140, left:0 };
+// Phone geometry in unzoomed CSS px (chat.css + the framed overrides below).
+// `keep` is the conversation viewport: every chat row is clipped to it, so a
+// layout that keeps this box in the safe zone keeps the newest row there on
+// every frame. top = the shortest (DM) header; bottom = above the composer.
+// A skin that adds bottom sheets must extend keep.bottom to the screen (841).
+const PHONE = { width:393, height:852, keep:{ left:11, top:131, right:382, bottom:781 } };
+const MARGIN = 16, SAFE_GAP = 8;
 const emojiOnly = s => /^(\p{Extended_Pictographic}|\p{Emoji_Presentation}|️|‍|\s)+$/u.test(s || '');
 
 function validateThread(thread) {
@@ -79,6 +90,55 @@ function buildTimeline(thread, overrides = {}) {
   return { timeline,total };
 }
 
+// safe_area: omitted = on for 9:16 canvases, off otherwise. true = the platform
+// bands scaled to the canvas. An object overrides individual bands in output px.
+function resolveSafeArea(option,width,height) {
+  if (option == null) option = width*16 === height*9;
+  if (option === false) return null;
+  const bands = { top:SAFE_BANDS.top*height/1920, bottom:SAFE_BANDS.bottom*height/1920, right:SAFE_BANDS.right*width/1080, left:SAFE_BANDS.left };
+  if (option !== true) {
+    if (typeof option !== 'object' || Array.isArray(option)) throw Error('safe_area must be true, false or {top,bottom,right,left} in output pixels');
+    for (const [key,value] of Object.entries(option)) {
+      if (!(key in bands)) throw Error(`Unknown safe_area band ${key}; use top, bottom, right or left`);
+      if (!Number.isFinite(value) || value < 0) throw Error(`safe_area.${key} must be a non-negative number of output pixels`);
+      bands[key] = value;
+    }
+  }
+  if (bands.top+bands.bottom >= height || bands.left+bands.right >= width) throw Error('safe_area bands leave no safe zone');
+  return bands;
+}
+
+// Largest proportional phone whose conversation viewport sits inside the safe
+// zone while the whole phone keeps a margin on every edge. Each constraint is
+// linear in zoom, so the limit is the smallest of the per-constraint limits.
+// With the safe area on, an explicit zoom is a ceiling: kept when it is safe,
+// lowered to the safe maximum when not (recipes seed zoom 2.1, the old fill).
+// safe_area:false keeps an explicit zoom exactly.
+function phoneLayout(width,height,userZoom,safe) {
+  const P = PHONE, K = PHONE.keep, m = MARGIN;
+  const fitZoom = Math.min(width/514,height/914);
+  if (!safe) {
+    const zoom = userZoom || fitZoom;
+    return { zoom,left:(width-P.width*zoom)/2,top:(height-P.height*zoom)/2,safe:null,zone:null };
+  }
+  const zone = { left:safe.left,top:safe.top,right:width-safe.right,bottom:height-safe.bottom };
+  // Solve against a zone inset by SAFE_GAP: a row clipped mid-scroll reaches the
+  // conversation edge, which must sit strictly inside the band, not on it.
+  const g = SAFE_GAP, z = { left:zone.left ? zone.left+g : 0,top:zone.top+g,right:zone.right-g,bottom:zone.bottom-g };
+  const limits = [(width-2*m)/P.width,(height-2*m)/P.height,(z.bottom-m)/K.bottom,(z.right-m)/K.right,
+    (z.bottom-z.top)/(K.bottom-K.top),(height-m-z.top)/(P.height-K.top)];
+  if (z.left) limits.push((width-m-z.left)/(P.width-K.left),(z.right-z.left)/(K.right-K.left));
+  const maxZoom = Math.min(...limits);
+  if (!(maxZoom > 0)) throw Error('safe_area bands leave no room for the phone');
+  const zoom = Math.min(userZoom || fitZoom,maxZoom);
+  const lowered = userZoom && userZoom > maxZoom ? userZoom : null;
+  const clamp = (value,low,high) => Math.min(Math.max(value,low),high);
+  // Stay centred when that is already safe; otherwise move only as far as needed.
+  const top = clamp((height-P.height*zoom)/2,Math.max(m,z.top-K.top*zoom),Math.min(height-m-P.height*zoom,z.bottom-K.bottom*zoom));
+  const left = clamp((width-P.width*zoom)/2,Math.max(m,z.left-K.left*zoom),Math.min(width-m-P.width*zoom,z.right-K.right*zoom));
+  return { zoom,left,top,safe,zone,maxZoom,lowered };
+}
+
 function dataURI(file) {
   const data = fs.readFileSync(file);
   if (data.subarray(0,80).toString().includes('version https://git-lfs')) throw Error(`Fetch the real LFS asset: ${file}`);
@@ -95,9 +155,12 @@ function buildDocument(cfg,baseDir) {
   thread.theme = cfg.theme || thread.theme || 'dark';
   if (!['light','dark'].includes(thread.theme)) throw Error('thread.theme must be dark or light');
   const width=cfg.width || 1080, height=cfg.height || 1920;
-  const zoom=cfg.zoom || Math.min(width/514,height/914);
-  if (![width,height,zoom].every(Number.isFinite) || width<320 || height<568 || zoom<=0 || width%2 || height%2) throw Error('Use even output dimensions and a positive zoom');
-  if (393*zoom>width-32 || 852*zoom>height-32) throw Error('Phone does not fit the canvas; reduce zoom (keep a margin on every edge)');
+  const requested=cfg.zoom || Math.min(width/514,height/914);
+  if (![width,height,requested].every(Number.isFinite) || width<320 || height<568 || requested<=0 || width%2 || height%2) throw Error('Use even output dimensions and a positive zoom');
+  if (393*requested>width-32 || 852*requested>height-32) throw Error('Phone does not fit the canvas; reduce zoom (keep a margin on every edge)');
+  const layout=phoneLayout(width,height,cfg.zoom,resolveSafeArea(cfg.safe_area,width,height)),zoom=layout.zoom;
+  // Safe layout only: pin the phone where phoneLayout put it (legacy CSS stays byte-identical when off).
+  const safeCSS=layout.safe ? `\n    body.framed { display:block; position:relative; }\n    body.framed .iphone-frame { position:absolute; left:${layout.left/zoom}px; top:${layout.top/zoom}px; }` : '';
   if (!thread.clock) {
     const ts=thread.messages.find(m => m.type==='timestamp');
     const time=ts && /(\d{1,2}:\d{2})/.exec(`${ts.light || ''} ${ts.label || ''}`);
@@ -152,13 +215,14 @@ function buildDocument(cfg,baseDir) {
     .tapback.theirs { background:${dark ? '#3a3a3c':'#e9e9eb'}; } .tapback.mine { background:#0a84ff; }
     .tapback::after { content:''; position:absolute; bottom:-5px; width:8px; height:8px; border-radius:50%; background:inherit; }
     .tapback.on-sent::after { right:0; } .tapback.on-received::after { left:0; }
-    .bubble.pop-now,.delivered-caption.pop-now,.caret { animation:none; }
+    .bubble.pop-now,.delivered-caption.pop-now,.caret { animation:none; }${safeCSS}
   </style>`;
   const script=fs.readFileSync(path.join(__dirname,'chat-driver.js'),'utf8');
   const timelineJSON=JSON.stringify(timeline).replace(/</g,'\\u003c');
+  const layoutJSON=JSON.stringify({ zone:layout.zone });
   let html=renderHTML(thread,{ mode:'with-iphone-frame' });
-  html=html.replace('</head>',`${style}</head>`).replace('</body>',`<script>const CHAT_TIMELINE=${timelineJSON};\n${script}</script></body>`);
-  return { html,thread,timeline,total,width,height };
+  html=html.replace('</head>',`${style}</head>`).replace('</body>',`<script>const CHAT_TIMELINE=${timelineJSON};\nconst CHAT_LAYOUT=${layoutJSON};\n${script}</script></body>`);
+  return { html,thread,timeline,total,width,height,layout };
 }
 
 async function checkLayout(page) {
@@ -178,8 +242,42 @@ async function checkLayout(page) {
     }
     const keyboard=document.querySelector('.keyboard').getBoundingClientRect();
     if (Math.abs(keyboard.bottom-screen.bottom)>2) errors.push('Text input must remain at the bottom of the phone');
+    const {zone,violations}=window.__safeAreaReport(),n=Math.round;
+    for (const b of violations) errors.push(`Outside the platform safe area: ${b.kind} ${b.id} box [${n(b.left)},${n(b.top)} to ${n(b.right)},${n(b.bottom)}], safe zone [${n(zone.left)},${n(zone.top)} to ${n(zone.right)},${n(zone.bottom)}]. Lower zoom or set safe_area:false`);
     return errors;
   });
+}
+
+// Union of every checked box per kind, with the movie times that set the bottom
+// and right extremes. Written beside the master so check-render.py re-verifies it.
+function safeAreaTracker(doc) {
+  const extent={},final={},violations=[],L=doc.layout;
+  return {
+    add(report,t) {
+      for (const b of report.boxes) {
+        const e=extent[b.kind] ||= { left:b.left,top:b.top,right:b.right,bottom:b.bottom,right_t:t,bottom_t:t };
+        e.left=Math.min(e.left,b.left); e.top=Math.min(e.top,b.top);
+        if (b.right>e.right) { e.right=b.right; e.right_t=t; }
+        if (b.bottom>e.bottom) { e.bottom=b.bottom; e.bottom_t=t; }
+      }
+      violations.push(...report.violations.map(b=>({ t,...b })));
+      final.t=t; final.boxes=report.boxes;
+    },
+    json:checked => ({ enabled:!!L.zone,canvas:{ width:doc.width,height:doc.height },bands:L.safe,zone:L.zone,zoom:L.zoom,zoom_requested:L.lowered,
+      phone:{ left:L.left,top:L.top,right:L.left+PHONE.width*L.zoom,bottom:L.top+PHONE.height*L.zoom },
+      checked,extent,final,violations:violations.slice(0,20) }),
+  };
+}
+
+function checkLayoutUnsafe(report,frame) {
+  const b=report.violations[0],z=report.zone,n=Math.round;
+  return `Outside the platform safe area at frame ${frame}: ${b.kind} ${b.id} box [${n(b.left)},${n(b.top)} to ${n(b.right)},${n(b.bottom)}], safe zone [${n(z.left)},${n(z.top)} to ${n(z.right)},${n(z.bottom)}]. Lower zoom or set safe_area:false`;
+}
+
+function safeSummary(report) {
+  const e=report.extent.newest,n=Math.round;
+  if (!report.enabled || !e) return `chat: safe area ${report.enabled ? 'on' : 'off'} (zoom ${report.zoom.toFixed(3)})`;
+  return `chat: safe area on (zoom ${report.zoom.toFixed(3)}); newest row stays within x ${n(e.left)}-${n(e.right)} < ${n(report.zone.right)}, y ${n(e.top)}-${n(e.bottom)} < ${n(report.zone.bottom)}`;
 }
 
 const EMOJI_CDN = 'https://cdn.jsdelivr.net/npm/emoji-datasource-apple@15.1.2/img/apple/64/';
@@ -212,6 +310,7 @@ async function appleEmojiMap(texts) {
 async function record(cfgPath,outDir,previewOnly=false) {
   const cfg=JSON.parse(fs.readFileSync(cfgPath,'utf8')),doc=buildDocument(cfg,path.dirname(cfgPath));
   fs.mkdirSync(outDir,{ recursive:true }); fs.writeFileSync(path.join(outDir,'chat.html'),doc.html);
+  if (doc.layout.lowered) console.log(`chat: zoom ${doc.layout.lowered} lowered to ${doc.layout.zoom.toFixed(3)} to keep the chat above the platform controls; set safe_area:false to keep it`);
   const browser=await chromium.launch({ timeout:15000 }); let encoder;
   try {
     const page=await browser.newPage({ viewport:{ width:doc.width,height:doc.height },deviceScaleFactor:1 });
@@ -219,17 +318,22 @@ async function record(cfgPath,outDir,previewOnly=false) {
     const emojiMap=await appleEmojiMap(doc.thread.messages.map(m=>m.text || m.emoji || ''));
     await page.evaluate(map=>window.__setEmojiMap(map),emojiMap);
     await page.evaluate(async () => { await document.fonts.ready; await Promise.all([...document.images].map(i=>i.decode())); });
+    const safe=safeAreaTracker(doc),sidecar=path.join(outDir,'master-chat.safe-area.json');
+    const saveSafe=checked=>fs.writeFileSync(sidecar,JSON.stringify(safe.json(checked),null,2));
     for (const ev of doc.timeline) {
-      await page.evaluate(t=>window.__renderAt(t),ev.t+(ev.kind==='composer' ? ev.dur*0.95:0.3));
+      const at=ev.t+(ev.kind==='composer' ? ev.dur*0.95:0.3);
+      await page.evaluate(t=>window.__renderAt(t),at);
       if (ev.kind==='composer') {
         const typed=await page.locator('[data-composer-text]').evaluate(el=>[...el.childNodes].map(n=>n.nodeType===3 ? n.textContent : n.alt || n.textContent).join(''));
         if (typed!==ev.text) throw Error(`TYPED != SENT: ${typed} / ${ev.text}`);
       }
-      const errors=await checkLayout(page); if (errors.length) throw Error(errors.join('\n'));
+      safe.add(await page.evaluate(()=>window.__safeAreaReport()),at);
+      const errors=await checkLayout(page); if (errors.length) { saveSafe('timeline events (failed)'); throw Error(errors.join('\n')); }
     }
     await page.evaluate(t=>window.__renderAt(t),doc.total);
+    safe.add(await page.evaluate(()=>window.__safeAreaReport()),doc.total);
     await page.screenshot({ path:path.join(outDir,'chat-preview.png') });
-    if (previewOnly) return doc;
+    if (previewOnly) { saveSafe(`${doc.timeline.length} timeline events + final frame`); console.log(safeSummary(safe.json())); return doc; }
     const out=path.join(outDir,'master-chat.mp4');
     encoder=spawn('ffmpeg',['-y','-v','error','-f','image2pipe','-framerate',String(FPS),'-i','-',
       '-an','-c:v','libx264','-preset','fast','-crf','18','-pix_fmt','yuv420p','-movflags','+faststart',out]);
@@ -238,7 +342,9 @@ async function record(cfgPath,outDir,previewOnly=false) {
     done.catch(()=>{});
     const frames=Math.round(doc.total*FPS);
     for (let frame=0;frame<frames;frame++) {
-      await page.evaluate(t=>window.__renderAt(t),frame/FPS);
+      const report=await page.evaluate(t=>{ window.__renderAt(t); return window.__safeAreaReport(); },frame/FPS);
+      safe.add(report,frame/FPS);
+      if (report.violations.length) { saveSafe(`frames 0-${frame} (failed)`); throw Error(checkLayoutUnsafe(report,frame)); }
       const png=await page.screenshot({ type:'png' });
       if (encoder.exitCode!=null) throw Error(`ffmpeg failed: ${log}`);
       if (!encoder.stdin.write(png)) await Promise.race([
@@ -250,6 +356,7 @@ async function record(cfgPath,outDir,previewOnly=false) {
     encoder.stdin.end(); await done;
     fs.writeFileSync(path.join(outDir,'master-chat.timeline.json'),JSON.stringify({ fps:FPS,total:doc.total,timeline:doc.timeline },null,2));
     fs.writeFileSync(path.join(outDir,'master-chat.sfx.json'),JSON.stringify(doc.timeline.filter(e=>e.sfx).map(e=>({ t:snap(e.t+1/FPS),name:e.sfx,id:e.id,soft:!!e.soft })),null,2));
+    saveSafe(`${doc.timeline.length} timeline events + all ${frames} frames`); console.log(safeSummary(safe.json()));
     console.log(`chat: ${frames} frames, ${doc.total}s, ${doc.width}×${doc.height}; no startup trim`); return doc;
   } finally { if (encoder && encoder.exitCode==null) encoder.kill(); await browser.close(); }
 }
@@ -261,4 +368,4 @@ if (require.main===module) {
   }
   record(path.resolve(config),path.resolve(out),preview).catch(e=>{ console.error(e.message); process.exitCode=1; });
 }
-module.exports={ buildDocument,buildTimeline,validateThread,checkLayout,record,FPS };
+module.exports={ buildDocument,buildTimeline,validateThread,checkLayout,record,resolveSafeArea,phoneLayout,FPS,PHONE,SAFE_BANDS };

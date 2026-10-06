@@ -2,6 +2,8 @@
 name: render-imessage-chat
 description: Render a configurable iMessage conversation inside a properly framed phone, then a brand end card. Uses the original send/receive sounds and a shared frame timeline for text, typing, scrolling and sound. Free local Playwright + ffmpeg assembly; optional image/music generation belongs to separate gated capabilities.
 status: active
+version: 2
+updated: 2026-10-06
 ---
 
 # Human version
@@ -16,6 +18,10 @@ build. It fixes missing identity binding, the island touching the screen edge,
 light-mode header colors, early/missing group names and capture timing drift.
 Every movie frame and sound cue uses the same timeline; browser startup cannot
 trim the beginning or ending. No paid API is needed to render or repair the UI.
+
+On a 9:16 canvas the phone now sits clear of the TikTok/Reels controls by
+default: the newest message, including the punchline, always stays above the
+bottom caption band and left of the button rail (`safe_area`).
 
 ---
 
@@ -64,11 +70,16 @@ bash render.sh --config /absolute/path/config.json --out /absolute/path/finals/m
 # Optional: append --music /absolute/path/bed.mp3
 ```
 
-Preview produces `chat.html` and `chat-preview.png`; the HTML exposes
-`window.__renderAt(seconds)` for frame inspection. Full render keeps those,
+Preview produces `chat.html`, `chat-preview.png` and
+`master-chat.safe-area.json`; the HTML exposes `window.__renderAt(seconds)` and
+`window.__safeAreaReport()` (canvas-pixel boxes of the newest row and any
+`data-safe-keep` sheet or dialog) for frame inspection. Full render keeps those,
 `master-chat.mp4`, `.timeline.json`, `.sfx.json`, the end-card HTML/PNG/MP4 and
-the finished master. `check-render.py` verifies dimensions, audio stream,
-frame count and complete ending. Review the ACTUAL master after every repair;
+the finished master. The recorder checks the safe area on every output frame and
+fails on a violation. `check-render.py` verifies dimensions, audio stream,
+frame count, complete ending and the safe-area report;
+`python3 scripts/check-render.py --safe-area <work>/master-chat.safe-area.json`
+checks a preview alone. Review the ACTUAL master after every repair;
 these technical checks do not establish creative acceptance.
 
 Individual `record-chat.js`, `render-end-card.js` and `stitch.sh` commands remain
@@ -99,6 +110,21 @@ also supports even preview dimensions; the phone must fit with a margin.
 - Default outer canvas 1080×1920; zoom fits the 393×852 phone proportionally.
   Excess zoom fails rather than cropping the phone. `timing` can override the
   named pacing fields in record-chat.js; ending hold must be at least 0.5 seconds.
+- `safe_area` keeps the conversation clear of the platform controls (QA-60).
+  Omitted: **on** for 9:16 canvases, off for other shapes. `true` uses the
+  review-finished-ad bands (top 220, bottom 400, right 140, left 0 px at
+  1080×1920, scaled to the canvas). An object such as `{"bottom":480}` overrides
+  single bands in output pixels; omitted keys keep the defaults. `false` restores
+  the old centred full-height phone exactly.
+- With `safe_area` on, the phone is the largest proportional size whose
+  conversation viewport sits inside the zone (an 8 px inset), centred unless that
+  is unsafe, then moved only as far as needed. At 1080×1920 that is zoom about
+  1.915 with the phone 16 px from the top. Every row is clipped to that viewport,
+  so the newest row is safe on every frame. The composer, home bar and group
+  avatars may sit in the bands; typed text reappears as the newest row.
+- An explicit `zoom` is a ceiling while `safe_area` is on: kept when safe,
+  otherwise lowered to the safe maximum with a log line (the recipe seed
+  `zoom: 2.1` becomes about 1.915). Set `safe_area:false` to keep it exactly.
 
 ## Original sound contract
 
@@ -116,10 +142,16 @@ copy with `python3 tests/test_stitch.py --write-embedded`.
 
 ## Verification and failures
 
-Run `node --test tests/test_chat.js` and `python3 -m pytest tests/test_stitch.py`.
+Run `node --test tests/test_chat.js`, `node --test tests/test_safe_area.js` and
+`python3 -m pytest tests/test_stitch.py`. Run one test file at a time; each test
+opens and closes one Chromium.
 Browser tests cover changing names/time/background, text-only chats, attachment
 placement, blank-name rejection, inset hardware, dark/light chrome, group labels
-after typing, Unicode composer text and long threads. Audio tests cover
+after typing, Unicode composer text and long threads. `test_safe_area.js` walks
+every frame of `tests/fixtures/long-group-thread.json` (16-message group thread,
+wrapped punchline) and asserts the newest row stays above y 1520 and left of
+x 940, that a bottom sheet in the band fails, and that `safe_area:false` keeps
+the old layout. CI runs both browser files. Audio tests cover
 fetched-package delivery and limited overlapping cues.
 
 Fix the configuration error and rerender locally. UI defects never justify paid
@@ -147,3 +179,4 @@ The current renderer combines the fixed-frame repair with the lessons from the l
 14. Read approved brand colours from the brand kit or site styling. Preserve the selected background and contact names.
 15. Keep the quieter audit mix with the existing peak limiter. Unsupported ratings remain absent unless approved proof is supplied.
 16. Inspect the actual encoded ending and sound alignment. Frame counts and a passing stream probe do not establish creative acceptance.
+17. Keep the newest message out of the platform controls (QA-60). A full-height phone put the punchline under the TikTok/Reels caption band. Fit the conversation viewport, not the whole phone, into the safe zone: the phone stays large and native. A future skin with bottom sheets must extend `PHONE.keep` to the screen bottom and mark sheets `data-safe-keep`.
