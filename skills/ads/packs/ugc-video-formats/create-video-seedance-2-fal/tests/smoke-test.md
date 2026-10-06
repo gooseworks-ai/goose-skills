@@ -13,3 +13,7 @@ Steps:
 Pass/fail: pass when the MP4 exists, plays end-to-end, has audio, duration ≈ 4s, and `meta.json` records `gateway: "fal"`, `model: "bytedance/seedance-2.0/reference-to-video"`, and a numeric seed.
 
 ⚠️ This smoke run hits a paid API (~$1.21 for a 4s 720p call). Get explicit approval before firing.
+
+## Free rejection check (no provider call)
+
+`python -m pytest skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests` runs `generate.py` against a local mock of the GooseWorks fal-proxy. Pass when a likeness / content-policy 422 exits 3 after exactly one submit in every body shape (`type` only, `msg` + `type`, `partner_validation_failed`, the GooseWorks `provider_validation_failed` wrapper, also through the MCP relay), an identical re-run exits 3 with no submit, a changed prompt, image or seed submits again, NSFW exits 4, and a non-policy 422 exits 1 and is not recorded.

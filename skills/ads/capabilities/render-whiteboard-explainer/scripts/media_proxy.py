@@ -40,11 +40,26 @@ exits with code 3; the agent makes it (data_post_provider [+ job_get] for fal/El
 media_upload for a local file), saves the result JSON where the request says, and
 re-runs the same command. Same server proxy, same price, billed to GW_PROJECT_ID.
 GW_MEDIA_VIA=proxy forces the HTTP path.
+
+POLICY REJECTIONS ARE FINAL (QA-14). When fal refuses a request on policy grounds
+(likeness of a real person, content_policy_violation, partner_validation_failed, NSFW /
+safety checker) `_fal_run` raises `FalPolicyRejection` (a RuntimeError subclass) carrying
+the reason, type, request id, HTTP status and a charge hint, whatever shape the error body
+has (fal's `detail` list/dict/string, or the GooseWorks MCP `provider_validation_failed`
+wrapper). It also records the exact request in a local ledger
+(~/.gooseworks/rejected-fal-requests/, next to pending-fal-jobs/), and refuses an
+identical request before any network call from then on. Callers exit with
+POLICY_EXIT (3): surface the reason to the user, do not retry. Changing any input (prompt,
+image, model) makes a new request, which is allowed. A caller's input_digest is a
+permanent refusal key too, so it must cover every input. With the user's approval only:
+  python3 media_proxy.py rejections        # list recorded rejections
+  python3 media_proxy.py forget <key>      # clear one (e.g. the provider changed policy)
 """
 import hashlib
 import json
 import os
 import pathlib
+import re
 import sys
 import time
 import urllib.request
@@ -105,8 +120,11 @@ def relay_mode():
     return not pathlib.Path(os.path.expanduser(_CREDS_PATH)).exists()
 
 
-def _relay(kind, tool, args, then, extra=None):
-    """Return the saved result of this exact MCP call, or write the call and exit(3)."""
+def _relay(kind, tool, args, then, extra=None, check=None):
+    """Return the saved result of this exact MCP call, or write the call and exit(3).
+    check(result) may raise on a saved error reply; the reply is then moved aside to
+    <name>.error.json, so a re-run makes the call again instead of re-reading the error
+    (a recorded policy rejection is refused before this, by the ledger)."""
     pid = os.environ.get("GW_PROJECT_ID")
     if tool.startswith("data_"):
         if not pid:
@@ -118,7 +136,17 @@ def _relay(kind, tool, args, then, extra=None):
     d.mkdir(parents=True, exist_ok=True)
     req, res = d / f"{kind}-{key}.json", d / f"{kind}-{key}.result.json"
     if res.exists():
-        return json.loads(res.read_text())
+        out = json.loads(res.read_text())
+        if check is not None:
+            try:
+                check(out)
+            except Exception:
+                try:
+                    os.replace(res, res.with_name(res.name[:-len(".json")] + ".error.json"))
+                except OSError:
+                    pass
+                raise
+        return out
     req.write_text(json.dumps({"tool": tool, "args": args, **(extra or {}), "then": then,
                                "save_result_to": str(res)}, indent=1, ensure_ascii=False))
     print("\n[mcp-relay] %s needs an MCP tool call (no GooseWorks credentials on this machine):\n"
@@ -171,7 +199,15 @@ def input_digest(model, args):
     payload/params you send (prompt, voice_id, model_id, seed, duration, aspect...).
     Replace inputs that change between runs without changing the result - a
     presigned or proxy URL of an input file - with something stable (that input's
-    own ingredient_key + input_digest) before hashing, or the digest never matches.
+    own ingredient_key + input_digest, or the file's sha256) before hashing, or the
+    digest never matches.
+
+    A digest passed to a FAL submit is ALSO a permanent refusal key (QA-14): after a
+    policy rejection, any later request with the same digest is refused locally. So it
+    must cover EVERY input that is sent: prompt, every setting (duration, resolution,
+    aspect ratio, audio, seed...) and the CONTENT of every input file. Leave one out and
+    a run that changed only that input (a new, acceptable image) is refused forever.
+    Simplest: hash the real payload with each uploaded URL replaced by its file's sha256.
     """
     canonical = json.dumps({"model": model, "args": args}, sort_keys=True,
                            separators=(",", ":"), ensure_ascii=False)
@@ -215,24 +251,411 @@ _FAL_RESULT_KEYS = ("images", "videos", "video", "audio", "image", "output",
                     "status_url", "status", "seed", "url")
 
 
-def _raise_if_fal_error(resp, model_path):
-    """FAL/proxy errors come back as a dict carrying `detail`/`error`/`message` and NO
-    result payload. Surface the real reason (content-policy block, 'path not found',
-    NSFW, quota) instead of letting a downstream ["images"][0] raise a cryptic KeyError."""
+# ── Policy rejections: classify, surface, never resubmit the same request (QA-14) ──
+# Exit code for "the provider refused this on policy grounds: surface it, do not retry".
+# (RELAY_EXIT is also 3; the two are told apart by what the script prints.)
+POLICY_EXIT = 3
+
+# Provider error CODES that mean "refused on policy grounds". A code is unambiguous, so it
+# counts in any type/code or message, at any HTTP status.
+_POLICY_CODES = (
+    ("partner_validation", re.compile(r"\bpartner_validation(?:_failed)?\b", re.I)),
+    ("content_policy", re.compile(r"\bcontent_policy(?:_violation)?\b|\bcontent_blocked\b", re.I)),
+)
+# Plain-language PHRASES. Trusted only on an explicit provider 4xx (not 408/429): a 5xx
+# saying "content policy service timed out" is infrastructure, not a refusal. Kept tight,
+# because a false match records the request and blocks an identical retry: "Could not
+# detect a real person's face" and "enable_safety_checker cannot be disabled" are input
+# errors and must not match.
+_POLICY_PHRASES = (
+    ("likeness", re.compile(r"likeness|public figure|\b(?:depicts?|depicting|resembles?|resembling)"
+                            r" (?:an? )?real (?:person|people|individual)", re.I)),
+    ("content_policy", re.compile(r"content policy|policy violation|usage guidelines|risk control"
+                                  r"|moderation (?:system|filter|check)"
+                                  r"|\b(?:blocked|rejected|refused)\b[^.;]{0,50}\b(?:safety|moderation)\b",
+                                  re.I)),
+    ("nsfw", re.compile(r"\bnsfw\b|flagged by (?:the |a |an )?(?:safety|content|nsfw) "
+                        r"(?:checker|filter|classifier)", re.I)),
+)
+_KIND_ORDER = ("likeness", "partner_validation", "content_policy", "nsfw")
+_MSG_KEYS = ("msg", "message", "detail", "details", "error", "reason", "description",
+             "error_message", "provider_body")
+_TYPE_KEYS = ("type", "code", "error_type", "error_code")
+_REQUEST_ID_KEYS = ("request_id", "requestid", "fal_request_id", "x-fal-request-id")
+# The GooseWorks wrappers' own sentence ("fal returned HTTP 422." / "... for the result.").
+_GENERIC_WRAPPER_MSG = re.compile(r"^\s*\w+ returned HTTP \d{3}\b", re.I)
+_WRAPPER_STATUS = re.compile(r"\breturned HTTP (\d{3})\b", re.I)
+_ERRORISH_TYPE = re.compile(r"(error|failed|failure|violation|invalid|forbidden|denied)", re.I)
+_FAILED_STATUSES = ("failed", "failure", "error")
+
+
+def _explicit_4xx(status):
+    return bool(status) and 400 <= status < 500 and status not in (408, 429)
+
+
+class FalPolicyRejection(RuntimeError):
+    """fal refused this request on policy grounds (likeness of a real person, content
+    policy, partner validation, NSFW / safety checker). Final for these exact inputs.
+
+    Surface it to the user with the reason, request id and charge state, and offer a
+    permitted alternative. Do NOT resubmit the same request: the ledger refuses an
+    identical one anyway (from_ledger=True, no network call). A RuntimeError subclass,
+    so existing `except RuntimeError` handlers keep working.
+
+    Attributes: model_path, reason, kind (likeness | partner_validation | content_policy
+    | nsfw), error_type (the provider's policy type/code, e.g. content_policy_violation),
+    provider_types (every type/code in the body), request_id, http_status, stage
+    (submit | status | result | relay | ledger), charged (False = not debited, None =
+    unknown), charge_note, recordable (False for a 5xx/408/429: never written to the
+    ledger), from_ledger, matched (ledger refusals: "payload" or "input_digest"),
+    ledger_key, ledger_paths, rejected_at."""
+
+    def __init__(self, model_path, reason, *, kind="content_policy", error_type=None,
+                 provider_types=(), request_id=None, http_status=None, stage=None,
+                 charged=None, charge_note=None, recordable=True, from_ledger=False,
+                 matched=None, ledger_key=None, ledger_paths=(), rejected_at=None):
+        self.model_path = model_path
+        self.reason = (reason or "").strip().rstrip(".") or (error_type or kind)
+        self.kind = kind
+        self.error_type = error_type
+        self.provider_types = list(provider_types or ())
+        self.request_id = request_id
+        self.http_status = http_status
+        self.stage = stage
+        self.charged = charged
+        self.charge_note = charge_note or _charge_note(charged)
+        self.recordable = recordable
+        self.from_ledger = from_ledger
+        self.matched = matched
+        self.ledger_key = ledger_key
+        self.ledger_paths = list(ledger_paths or ())
+        self.rejected_at = rejected_at
+        super().__init__(self._compose())
+
+    def _compose(self):
+        label = self.error_type or self.kind
+        rid = self.request_id or "none returned"
+        if self.from_ledger:
+            when = f", {self.rejected_at}" if self.rejected_at else ""
+            how = ("the exact payload" if self.matched == "payload"
+                   else "the caller's input_digest" if self.matched == "input_digest"
+                   else "a recorded key")
+            where = self.ledger_paths[0] if self.ledger_paths else "the rejection ledger"
+            return (f"FAL policy rejection for {self.model_path} ({label}): surface, do not retry: "
+                    f"this exact request was already rejected by the provider for "
+                    f"\"{self.reason}\" (request {rid}{when}; charge: {self.charge_note}). "
+                    f"Nothing was sent this time. Change the inputs (image, prompt, model) to "
+                    f"try again. Matched by {how} in {where}. Only with the user's explicit "
+                    f"approval (e.g. the provider changed its policy): python3 "
+                    f"{os.path.abspath(__file__)} forget {self.ledger_key or '<key>'}")
+        return (f"FAL policy rejection for {self.model_path} ({label}): {self.reason}. "
+                f"Request id: {rid}. Charge: {self.charge_note}. Surface this to the user; do "
+                f"not retry the same request. Change the inputs (image, prompt, model) to try "
+                f"again.")
+
+    def as_dict(self):
+        return {"model_path": self.model_path, "reason": self.reason, "kind": self.kind,
+                "error_type": self.error_type, "provider_types": self.provider_types,
+                "request_id": self.request_id,
+                "http_status": self.http_status, "stage": self.stage, "charged": self.charged,
+                "charge_note": self.charge_note, "from_ledger": self.from_ledger,
+                "matched": self.matched, "ledger_key": self.ledger_key,
+                "ledger_paths": self.ledger_paths, "rejected_at": self.rejected_at}
+
+
+def _charge_note(charged):
+    if charged is False:
+        return ("not debited (the GooseWorks proxy releases the hold on an explicit provider "
+                "4xx; confirm on the balance)")
+    if charged:
+        return "charged"
+    return "unknown (check the credit balance)"
+
+
+def _walk_error(node, info, depth=0, msg_ctx=True):
+    """Collect every message, type/code, request id and HTTP status in an error body,
+    whatever its nesting: fal's `detail` (list of {msg,type,loc,ctx} / dict / string),
+    top-level type/code/error, the GooseWorks MCP wrapper
+    {"error": {"code": "provider_validation_failed", "status": 422, "detail": <fal body>}}
+    and a failed job_get reply {"status": "failed", "error": ..., "result": {"detail": ...}}."""
+    if depth > 8:
+        return
+    if isinstance(node, dict):
+        for k, v in node.items():
+            lk = str(k).lower()
+            if lk in ("loc", "input", "url", "documentation_url"):
+                continue  # field paths and echoed inputs are not the provider's reason
+            if isinstance(v, str):
+                if lk in _TYPE_KEYS:
+                    info["types"].append(v)
+                elif lk in _REQUEST_ID_KEYS:
+                    info["request_id"] = info["request_id"] or v
+                elif lk in _MSG_KEYS:
+                    info["messages"].append(v)
+            elif isinstance(v, (int, float)) and not isinstance(v, bool):
+                if lk in ("status", "status_code", "http_status") and 100 <= v < 600:
+                    info["http_status"] = info["http_status"] or int(v)
+            elif isinstance(v, (dict, list)):
+                _walk_error(v, info, depth + 1, lk in _MSG_KEYS)
+    elif isinstance(node, list):
+        for x in node:
+            if isinstance(x, str):
+                if msg_ctx and x.strip():
+                    info["messages"].append(x)
+            else:
+                _walk_error(x, info, depth + 1, msg_ctx)
+    elif isinstance(node, str) and node.strip():
+        info["messages"].append(node)
+
+
+def _uniq(items):
+    seen, out = set(), []
+    for s in items:
+        s = str(s).strip()
+        if s and s.lower() not in seen:
+            seen.add(s.lower())
+            out.append(s)
+    return out
+
+
+def _fal_error(resp, model_path, *, http_status=None, stage=None, request_id=None, force=False):
+    """The exception an error body stands for (FalPolicyRejection for a policy refusal,
+    else RuntimeError with the provider's own words), or None when it is not an error.
+    force=True: the caller already knows it failed (a FAILED status).
+
+    Policy needs an explicit policy code (content_policy_violation,
+    partner_validation_failed) at any status, or a policy phrase on an explicit 4xx that
+    is not 408/429. A rejection on a 5xx/408/429 is still surfaced but never recorded."""
+    info = {"messages": [], "types": [], "request_id": None, "http_status": None}
+    _walk_error(resp, info)
+    types, msgs = _uniq(info["types"]), _uniq(info["messages"])
+    status = http_status or info["http_status"]
+    if not status:  # "fal returned HTTP 422 for the result." (job_get / MCP wrappers)
+        status = next((int(m.group(1)) for m in map(_WRAPPER_STATUS.search, msgs) if m), None)
+    is_error = force or bool(status and status >= 400)
+    if isinstance(resp, dict):
+        is_error = is_error or any(resp.get(k) for k in ("detail", "error", "message", "errors"))
+        is_error = is_error or any(isinstance(resp.get(k), str) and _ERRORISH_TYPE.search(resp[k])
+                                   for k in _TYPE_KEYS)
+    elif isinstance(resp, (list, str)):
+        is_error = is_error or bool(resp)
+    if not is_error:
+        return None
+    texts = types + msgs
+    code_kinds = {k for k, rx in _POLICY_CODES if any(rx.search(t) for t in texts)}
+    phrase_kinds = {k for k, rx in _POLICY_PHRASES if any(rx.search(t) for t in texts)}
+    # The provider's own words: drop the GooseWorks wrapper's "fal returned HTTP 422." and
+    # any fragment already contained in a longer message.
+    specific = [m for m in msgs if not _GENERIC_WRAPPER_MSG.match(m)]
+    specific = [m for m in specific
+                if not any(m.lower() in o.lower() and m != o for o in specific)]
+    rid = request_id or info["request_id"]
+    if code_kinds or (phrase_kinds and _explicit_4xx(status)):
+        kinds = code_kinds | phrase_kinds
+        kind = next(k for k in _KIND_ORDER if k in kinds)
+        policy_type = next((t for t in types if any(rx.search(t) for _, rx in _POLICY_CODES)),
+                           None)
+        reason_msgs = [m for m in specific if m not in types]
+        charged = False if (status and 400 <= status < 500 and status != 408) else None
+        recordable = not (status and (status >= 500 or status in (408, 429)))
+        return FalPolicyRejection(model_path, "; ".join(reason_msgs), kind=kind,
+                                  error_type=policy_type, provider_types=types,
+                                  request_id=rid, http_status=status, stage=stage,
+                                  charged=charged, recordable=recordable)
+    reason = "; ".join(specific or msgs)
+    extra = [t for t in types if t.lower() not in reason.lower()]
+    if extra:
+        reason = (reason + " " if reason else "") + "[type: %s]" % ", ".join(extra)
+    if not reason:
+        reason = (f"HTTP {status}: " if status else "") + json.dumps(resp, default=str)[:400]
+    return RuntimeError(f"FAL error for {model_path}: {reason}")
+
+
+def _raise_if_fal_error(resp, model_path, *, http_status=None, stage=None, request_id=None):
+    """FAL/proxy errors come back as a dict carrying `detail`/`error`/`message`/`type` and
+    NO result payload. Surface the real reason (content-policy block, 'path not found',
+    NSFW, quota) instead of letting a downstream ["images"][0] raise a cryptic KeyError.
+    A policy refusal raises FalPolicyRejection (keeps the type, not just the message).
+    A body whose `status` is failed/error (a failed job_get reply) is an error even though
+    `status` is otherwise a result key."""
     if not isinstance(resp, dict):
         raise RuntimeError(f"FAL returned a non-object response for {model_path}: {str(resp)[:400]}")
-    if any(k in resp for k in _FAL_RESULT_KEYS):
+    failed_http = bool(http_status and http_status >= 400)
+    st = resp.get("status")
+    failed_status = isinstance(st, str) and st.strip().lower() in _FAILED_STATUSES
+    if any(k in resp for k in _FAL_RESULT_KEYS) and not failed_http and not failed_status:
         return
-    for key in ("detail", "error", "message"):
-        if resp.get(key):
-            msg = resp[key]
-            if isinstance(msg, list):
-                msg = "; ".join(
-                    str(m.get("msg") or m.get("message") or m) if isinstance(m, dict) else str(m)
-                    for m in msg)
-            elif isinstance(msg, dict):
-                msg = msg.get("message") or msg.get("detail") or json.dumps(msg)
-            raise RuntimeError(f"FAL error for {model_path}: {msg}")
+    err = _fal_error(resp, model_path, http_status=http_status, stage=stage,
+                     request_id=request_id, force=failed_status)
+    if err is not None:
+        raise err
+
+
+def _json_body(resp, model_path, stage):
+    """resp.json(), or the classified error when the body is not JSON (an HTML 502 page)."""
+    try:
+        return resp.json()
+    except ValueError:
+        text = (getattr(resp, "text", "") or "")[:2000]
+        status = getattr(resp, "status_code", None)
+        err = _fal_error(text, model_path, http_status=status, stage=stage, force=True)
+        raise err if err is not None else RuntimeError(
+            f"FAL error for {model_path}: HTTP {status}: {text[:400]}")
+
+
+# The rejected-request ledger. One small JSON file per rejected request, keyed by a digest
+# of exactly what was sent, next to the crash-resume job store (pending-fal-jobs/).
+# GW_FAL_REJECTIONS_DIR overrides the location (tests, ephemeral sandboxes).
+def _rejections_dir():
+    env = os.environ.get("GW_FAL_REJECTIONS_DIR")
+    return pathlib.Path(os.path.expanduser(env or "~/.gooseworks/rejected-fal-requests"))
+
+
+def _digest(obj):
+    canonical = json.dumps(obj, sort_keys=True, separators=(",", ":"), ensure_ascii=False,
+                           default=str)
+    return hashlib.sha256(canonical.encode("utf-8")).hexdigest()[:32]
+
+
+def _ledger_keys(model_path, payload, digest=None):
+    """[(matched, key)] for one request: the exact payload as sent (model + canonical
+    JSON, the same hash as input_digest(model, payload)) and, when the caller gives an
+    input_digest, that digest too. URLs that change between runs (re-uploads) defeat the
+    first key; the caller's content digest is what catches those, which is why it must
+    cover EVERY input (see input_digest)."""
+    keys = []
+    if payload is not None:
+        keys.append(("payload", _digest({"model": model_path, "args": payload})))
+    if digest:
+        keys.append(("input_digest", _digest({"model": model_path, "input_digest": str(digest)})))
+    return keys
+
+
+def rejected_request(model_path, payload=None, input_digest=None):
+    """The ledger record if this exact request was already refused on policy grounds,
+    else None. Adds ledger_path, ledger_key and matched ("payload" | "input_digest").
+    Local file check only; never touches the network."""
+    d = _rejections_dir()
+    for matched, key in _ledger_keys(model_path, payload, input_digest):
+        p = d / f"{key}.json"
+        if p.exists():
+            try:
+                rec = json.loads(p.read_text())
+            except (OSError, ValueError):
+                rec = {"reason": "recorded provider rejection (record unreadable)"}
+            rec.update(ledger_path=str(p), ledger_key=key, matched=matched)
+            return rec
+    return None
+
+
+def _record_rejection(model_path, payload, digest, exc):
+    """Best-effort: write the ledger record for a provider policy refusal."""
+    keys = [k for _, k in _ledger_keys(model_path, payload, digest)]
+    skip = ("from_ledger", "ledger_paths", "matched", "ledger_key")
+    rec = {k: v for k, v in exc.as_dict().items() if k not in skip}
+    rec["rejected_at"] = exc.rejected_at = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    rec["input_digest"] = digest
+    rec["keys"] = keys
+    if isinstance(payload, dict):
+        rec["payload_keys"] = sorted(payload.keys())
+        if isinstance(payload.get("prompt"), str):
+            rec["prompt_excerpt"] = payload["prompt"][:200]
+    paths = []
+    try:
+        d = _rejections_dir()
+        d.mkdir(parents=True, exist_ok=True)
+        for key in keys:
+            p = d / f"{key}.json"
+            tmp = p.with_suffix(".json.tmp")
+            tmp.write_text(json.dumps(rec, indent=1, ensure_ascii=False))
+            os.replace(tmp, p)
+            paths.append(str(p))
+    except OSError:
+        pass  # bookkeeping must never hide the rejection itself
+    exc.ledger_paths = paths
+    exc.ledger_key = keys[0] if keys else None
+    return paths
+
+
+def refuse_if_rejected(model_path, payload=None, input_digest=None):
+    """Raise FalPolicyRejection(from_ledger=True) for a request the provider already
+    refused; return None otherwise. No network call. Call it before uploading inputs when
+    you can name them by content (input_digest). new_take does NOT bypass this: a re-roll
+    of a rejected payload is still the same payload."""
+    rec = rejected_request(model_path, payload, input_digest)
+    if rec is None:
+        return
+    exc = FalPolicyRejection(
+        model_path, rec.get("reason") or "a policy rejection", kind=rec.get("kind") or "content_policy",
+        error_type=rec.get("error_type"), provider_types=rec.get("provider_types") or (),
+        request_id=rec.get("request_id"),
+        http_status=rec.get("http_status"), stage="ledger", charged=rec.get("charged"),
+        charge_note=rec.get("charge_note"), from_ledger=True, matched=rec.get("matched"),
+        ledger_key=rec.get("ledger_key"), ledger_paths=[rec["ledger_path"]],
+        rejected_at=rec.get("rejected_at"))
+    gw_log(f"FAL {model_path}: refused locally, identical request already rejected "
+           f"({exc.error_type or exc.kind}); nothing sent", "blocker", level="warn",
+           provider="fal", model=model_path, details=exc.as_dict())
+    raise exc
+
+
+def list_rejections():
+    """Every recorded rejection (one entry per request, not per key)."""
+    d = _rejections_dir()
+    out, seen = [], set()
+    for p in sorted(d.glob("*.json")) if d.exists() else []:
+        try:
+            rec = json.loads(p.read_text())
+        except (OSError, ValueError):
+            rec = {"reason": "unreadable record", "keys": [p.stem]}
+        ident = tuple(sorted(rec.get("keys") or [p.stem]))
+        if ident not in seen:
+            seen.add(ident)
+            out.append({**rec, "ledger_path": str(p)})
+    return out
+
+
+_LEDGER_KEY = re.compile(r"^[0-9a-f]{32}$")
+
+
+def forget_rejection(key):
+    """USER-APPROVED ONLY. Delete one recorded rejection (all its keys) so the identical
+    request can be sent again, e.g. after the provider changed its policy. Agents never do
+    this on their own: the record exists because the provider refused the request.
+
+    `key` is a ledger key (the 32-hex key a refusal or `rejections` prints), or that
+    record's filename / path inside the ledger directory. Anything else raises ValueError
+    and nothing is deleted: this only ever removes ledger records, never another .json.
+    Returns the paths removed ([] when there is no such record)."""
+    ledger = _rejections_dir().resolve()
+    raw = str(key).strip()
+    name = pathlib.Path(raw).name
+    stem = name[:-len(".json")] if name.endswith(".json") else name
+    if not _LEDGER_KEY.match(stem):
+        raise ValueError(f"not a rejection key: {key!r} (expected the 32-hex key a refusal "
+                         f"or `media_proxy.py rejections` prints)")
+    if raw not in (stem, name):  # a path: it must point into the ledger directory
+        if pathlib.Path(os.path.expanduser(raw)).resolve().parent != ledger:
+            raise ValueError(f"{key!r} is not inside the rejection ledger {ledger}")
+    p = ledger / f"{stem}.json"
+    if not p.exists():
+        return []
+    try:
+        rec = json.loads(p.read_text())
+    except (OSError, ValueError):
+        rec = None
+    keys = rec.get("keys") if isinstance(rec, dict) else None
+    if not isinstance(keys, list) or stem not in keys:
+        raise ValueError(f"{p} is not a rejection record (no matching `keys` field); not deleted")
+    removed = []
+    for k in sorted({stem, *(k for k in keys if isinstance(k, str) and _LEDGER_KEY.match(k))}):
+        q = ledger / f"{k}.json"
+        try:
+            q.unlink()
+            removed.append(str(q))
+        except OSError:
+            pass
+    return removed
 
 
 # ── Crash-resume: persist submitted jobs + poll through backend outages ──────
@@ -338,14 +761,30 @@ def _poll_to_result(model_path, status_url, response_url, params, timeout_s, pol
     last = None
     try:
         while time.time() < deadline:
-            st = _poll_get(status_url, params, deadline, "status").json()
+            st_resp = _poll_get(status_url, params, deadline, "status")
+            st = _json_body(st_resp, model_path, "status")
+            if not isinstance(st, dict):
+                raise RuntimeError(f"FAL returned a non-object status for {model_path}: {str(st)[:400]}")
+            if st_resp.status_code >= 400 and "status" not in st:
+                # Only a policy refusal ends the poll here; any other 4xx/5xx keeps polling
+                # as before (a rate limit or proxy blip must not lose a paid job).
+                err = _fal_error(st, model_path, http_status=st_resp.status_code,
+                                 stage="status", request_id=request_id)
+                if isinstance(err, FalPolicyRejection):
+                    raise err
             s = st.get("status")
             last = s or last
             if s == "COMPLETED":
-                out = _poll_get(response_url, params, deadline, "result").json()
-                _raise_if_fal_error(out, model_path)
+                res = _poll_get(response_url, params, deadline, "result")
+                out = _json_body(res, model_path, "result")
+                _raise_if_fal_error(out, model_path, http_status=res.status_code,
+                                    stage="result", request_id=request_id)
                 return out
             if s in ("FAILED", "ERROR"):
+                err = _fal_error(st, model_path, http_status=st_resp.status_code,
+                                 stage="status", request_id=request_id, force=True)
+                if isinstance(err, FalPolicyRejection):
+                    raise err
                 raise RuntimeError(f"FAL failed: {st}")
             time.sleep(poll_s)
     except FalPollTimeout:
@@ -371,14 +810,38 @@ def _fal_run(model_path, payload, timeout_s=None, poll_s=3, new_take=False,
     the proxy then dedupes on (agent, model, digest) for 24 h instead of on the exact
     body, so a resumed run with re-uploaded inputs re-attaches to the job it already
     paid for. If that job's result has expired upstream the poll fails: retry with
-    new_take=True."""
+    new_take=True.
+
+    Policy rejections (QA-14): a refusal on policy grounds raises FalPolicyRejection and
+    records this request in the rejected-request ledger (rejected_request()). An identical
+    request is then refused here before any network call, with or without new_take: a
+    re-roll of a rejected payload is still the same payload. The ledger matches on the
+    exact payload, and on input_digest when given. That makes input_digest a PERMANENT
+    refusal key: it must cover every input (prompt, settings, seed, each file's content),
+    or a run that changed only the uncovered input is refused. A rejection on a 5xx, 408
+    or 429 is surfaced but never recorded. To clear a record (user-approved only):
+    `python3 media_proxy.py forget <key>`."""
+    refuse_if_rejected(model_path, payload, input_digest)
+    try:
+        return _fal_run_once(model_path, payload, timeout_s, poll_s, new_take, input_digest)
+    except FalPolicyRejection as e:
+        if not e.from_ledger and e.recordable:
+            _record_rejection(model_path, payload, input_digest, e)
+        raise
+
+
+def _fal_run_once(model_path, payload, timeout_s, poll_s, new_take, input_digest):
     if relay_mode():
         args = {"provider": "fal", "path": model_path, "body": payload}
         if input_digest:
             args["idempotency_key"] = input_digest
         return _relay("fal", "data_post_provider", args,
                       "poll job_get { job_id } from the reply until status is complete; the result is "
-                      "job_get's result.output (fal's JSON with the media URLs)")
+                      "job_get's result.output (fal's JSON with the media URLs). If "
+                      "data_post_provider returns a provider_validation_failed error, save that "
+                      "error JSON instead; if job_get returns status failed, save that whole "
+                      "job_get reply instead. The script reports either and stops",
+                      check=lambda out: _raise_if_fal_error(out, model_path, stage="relay"))
     if timeout_s is None:
         timeout_s = default_poll_timeout(model_path)
     api_base, tok, agent = _cfg()
@@ -394,12 +857,13 @@ def _fal_run(model_path, payload, timeout_s=None, poll_s=3, new_take=False,
     try:
         sub_resp = requests.post(f"{base}/{model_path}", params=params, json=payload,
                                  headers=headers or None, timeout=120)
-        sub = sub_resp.json()
+        sub = _json_body(sub_resp, model_path, "submit")
         if sub_resp.headers.get("x-gw-deduped") == "1":
             gw_log(f"FAL {model_path}: identical submit already running — re-attached to "
                    f"{sub.get('request_id')} (no new job, no new charge)", "info",
                    provider="fal", model=model_path, details={"request_id": sub.get("request_id")})
-        _raise_if_fal_error(sub, model_path)
+        _raise_if_fal_error(sub, model_path, http_status=sub_resp.status_code, stage="submit",
+                            request_id=sub_resp.headers.get("x-fal-request-id"))
         if "status_url" not in sub:  # some models return a result synchronously
             gw_log(f"FAL {model_path} completed (sync)", "generation", provider="fal",
                    model=model_path, duration_ms=(time.time() - t0) * 1000)
@@ -408,8 +872,12 @@ def _fal_run(model_path, payload, timeout_s=None, poll_s=3, new_take=False,
         status_url, response_url = to_proxy(sub["status_url"]), to_proxy(sub["response_url"])
         request_id = sub.get("request_id") or urlparse(sub["response_url"]).path.rstrip("/").rsplit("/", 1)[-1]
         _persist_pending(model_path, request_id, status_url, response_url)
-        result = _poll_to_result(model_path, status_url, response_url, params, timeout_s,
-                                 poll_s, request_id=request_id)
+        try:
+            result = _poll_to_result(model_path, status_url, response_url, params, timeout_s,
+                                     poll_s, request_id=request_id)
+        except FalPolicyRejection:
+            _clear_pending(request_id)  # terminal: nothing left to resume
+            raise
         _clear_pending(request_id)
         gw_log(f"FAL {model_path} completed", "generation", provider="fal",
                model=model_path, duration_ms=(time.time() - t0) * 1000,
@@ -422,7 +890,9 @@ def _fal_run(model_path, payload, timeout_s=None, poll_s=3, new_take=False,
                provider="fal", model=model_path, duration_ms=(time.time() - t0) * 1000,
                details={"prompt": (str(prompt)[:1000] if prompt else None),
                         "payload_keys": sorted(payload.keys()) if isinstance(payload, dict) else None,
-                        "error": str(e)[:2000]})
+                        "error": str(e)[:2000],
+                        "policy_rejection": (e.as_dict() if isinstance(e, FalPolicyRejection)
+                                             else None)})
         raise
 
 
@@ -438,8 +908,12 @@ def resume_fal(request_id, timeout_s=None, poll_s=3):
     # Bill the resumed result to the project it was SUBMITTED for, not whatever
     # GW_PROJECT_ID this (possibly different) process has.
     params = _params(tok, agent, project_id=rec.get("project_id"))
-    result = _poll_to_result(rec["model_path"], rec["status_url"], rec["response_url"],
-                             params, timeout_s, poll_s, request_id=request_id)
+    try:
+        result = _poll_to_result(rec["model_path"], rec["status_url"], rec["response_url"],
+                                 params, timeout_s, poll_s, request_id=request_id)
+    except FalPolicyRejection:
+        _clear_pending(request_id)  # the provider refused it: terminal, nothing to resume
+        raise
     _clear_pending(request_id)
     return result
 
@@ -593,3 +1067,32 @@ def eleven_tts(text, voice_id, out_path, model_id="eleven_v3", timeout_s=180):
         raise
     pathlib.Path(out_path).write_bytes(r.content)
     return out_path
+
+
+def _main(argv):
+    """`media_proxy.py rejections` lists recorded policy rejections; `media_proxy.py forget
+    <key>` clears one (ledger records only). Forgetting is a USER-APPROVED action only."""
+    if argv[:1] == ["rejections"]:
+        recs = list_rejections()
+        for r in recs:
+            print("%s  %s  %s  (%s, request %s, %s)" % (
+                (r.get("keys") or ["?"])[0], r.get("model_path"), r.get("reason"),
+                r.get("error_type") or r.get("kind"), r.get("request_id"), r.get("rejected_at")))
+        if not recs:
+            print("no recorded rejections in %s" % _rejections_dir())
+        return 0
+    if argv[:1] == ["forget"] and len(argv) == 2:
+        try:
+            removed = forget_rejection(argv[1])
+        except ValueError as e:
+            print("refused: %s" % e, file=sys.stderr)
+            return 2
+        print("\n".join("removed %s" % r for r in removed) or "no record %s" % argv[1])
+        return 0 if removed else 1
+    print("usage: media_proxy.py rejections | media_proxy.py forget <key>  "
+          "(forget only with the user's approval)", file=sys.stderr)
+    return 2
+
+
+if __name__ == "__main__":
+    sys.exit(_main(sys.argv[1:]))

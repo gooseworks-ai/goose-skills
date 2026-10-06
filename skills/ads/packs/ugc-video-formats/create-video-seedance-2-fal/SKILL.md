@@ -3,9 +3,9 @@ name: create-video-seedance-2-fal
 description: Generate a single 4-15s vertical video clip with ByteDance Seedance 2.0 reference-to-video via fal.ai. Multi-image reference (avatar + product + setting), native lip-synced VO + ambient audio (generate-audio on by default), internal multi-cut handling within one render. Routes through the GooseWorks FAL proxy (bills the Ads agent). The default clip atom for AI-creator UGC ads built on the NB2 + Seedance architecture. Validated on beauty-by-earth/video-01.
 owner: team
 status: active
-version: 1
+version: 2
 created: 2026-05-26
-updated: 2026-06-22
+updated: 2026-10-06
 ---
 
 # create-video-seedance-2-fal
@@ -44,6 +44,7 @@ Optional:
 - `--aspect-ratio` — `9:16` (default), `16:9`, `1:1`, etc.
 - `--generate-audio` — bool, default true. Set false for silent B-roll where VO is added post.
 - `--seed` — integer for deterministic re-runs (FAL returns a seed; pass it back to reproduce).
+- `--input-digest` — a stable id of the WHOLE request: `media_proxy.input_digest(model, payload)` over the full payload (prompt, resolution, duration, aspect ratio, audio, seed) with each ref URL replaced by its file's sha256 or ingredient key. Pass it when refs are re-hosted between runs: a recorded rejection then still matches, and the proxy re-attaches to a running job instead of paying twice. **It becomes a permanent refusal key after a policy rejection**, so it must cover every input: leave the prompt or an image out and a run that changed only that input is refused.
 
 Credentials:
 - **No FAL key.** Routes through the GooseWorks FAL proxy (`media_proxy.py`, bundled) and bills the Ads agent, using `~/.gooseworks/credentials.json` (written by the `gooseworks` CLI). Your `cal_`/agent token is not a FAL key — the old direct-key path 401'd; that's why this capability was rerouted through the proxy.
@@ -85,7 +86,7 @@ For confessional / single-sitting UGC, wardrobe should be IDENTICAL across all c
 
 **1. NEVER pass AI-generated video as `video_urls`.** FAL's content-policy validator rejects this with `partner_validation_failed`. The 60% video-input discount is real but only applies to REAL HUMAN reference video. For AI-avatar continuity across multiple scenes, use the same identity portrait as `image_urls` in every scene. Validated on BBE.
 
-**2. NSFW reject → STOP and surface, do not auto-retry.** Body-application + female + water/lather hits the classifier reliably. If FAL returns `content_policy_violation` or `status: failed` with `nsfw` reason, do NOT retry the same prompt. Surface to the caller with 3 options: rewrite the application beat as smell-test / fingertips-show, reframe as POV (no face), or skip the scene. Follows the project-wide moderation policy (see memory `feedback_hf_moderation_surface.md`).
+**2. NSFW reject → STOP and surface, do not auto-retry (exit 4).** Body-application + female + water/lather hits the classifier reliably. If FAL returns `content_policy_violation` or `status: failed` with `nsfw` reason, do NOT retry the same prompt. Surface to the caller with 3 options: rewrite the application beat as smell-test / fingertips-show, reframe as POV (no face), or skip the scene. Follows the project-wide moderation policy (see memory `feedback_hf_moderation_surface.md`).
 
 **3. `duration` as an INT.** Pass `15`, not `"15"`. `seedance-2.0/reference-to-video` rejects a string duration with `invalid_request` (validated 2026-07-18; the old "string only" note was the deprecated v1 i2v endpoint).
 
@@ -124,12 +125,15 @@ The script:
    ```
 4. Downloads the result MP4 to `--output`.
 5. Writes `<output>.meta.json` with prompt, refs, video URL, seed, duration, cost estimate.
-6. On `content_policy_violation` or NSFW failure: surfaces the error and exits non-zero (no silent retry).
+6. On a policy rejection: one submit, no retry. Prints the reason, type, request id and charge state, writes `<output>.rejection.json`, and exits **3** (likeness, `content_policy_violation`, `partner_validation_failed`) or **4** (NSFW / safety checker). See "Provider rejection and scene acceptance".
+
+Exit codes: `0` done · `1` other error · `3` policy rejection, or the same request already rejected · `4` NSFW rejection. The MCP relay also exits 3 when it needs the agent to make a call; it prints `[mcp-relay]` instead of "surface, do not retry".
 
 ## Output
 
 - `<output>` — MP4 clip at requested duration, resolution, aspect ratio.
 - `<output>.meta.json` — request + result metadata + seed for reproducibility + cost estimate.
+- `<output>.rejection.json` — only after a policy rejection: reason, kind, type, request id, HTTP status, charge state, exit code. Removed by the next successful render to the same path.
 
 ## Pricing (2026-05)
 
@@ -213,6 +217,7 @@ Full template reference: `prompt-example.md` at the repo root, plus all four scr
 | Failure | Cause | Recovery |
 |---|---|---|
 | FAL 422 `content_policy_violation: partner_validation_failed` | AI-gen scene passed as `video_urls` | Remove `video_urls`. Use `image_urls` only for identity continuity. |
+| FAL 422 "may contain likenesses of real people" (exit 3) | A photoreal face in `image_urls` read as a real person | STOP. Surface the reason, request id and charge state. Re-running the same command is refused locally. Offer a permitted route with its cost (see below). |
 | FAL response `status: failed`, `nsfw` reason | Body-application + female + water/lather hit classifier | STOP. Surface to caller. Rewrite sidestep beat as smell-test or fingertips-show. NEVER auto-retry. |
 | FAL 404 on endpoint path | Wrong endpoint slug | Use `bytedance/seedance-2.0/reference-to-video` exactly — no `fal-ai/` prefix. |
 | `invalid_request` on submit | `duration` sent as a **string** | Send an **int**: `"duration": 15` (enum {auto,4..15}). |
@@ -250,6 +255,8 @@ Memory: `feedback_fal_helpers_timeout_bug.md`. Validated: Lineage Video 01 Call 
 - Shared helpers: `coworkers/video/atoms/_shared/fal_helpers.py`
 
 ## Provider rejection and scene acceptance
+
+`generate.py` enforces the first part. A rejection in any body shape (fal's `detail` with `msg` and/or `type`, or the GooseWorks `provider_validation_failed` wrapper) exits 3 after exactly one submit. The reason, request id and charge state go to stderr and `<output>.rejection.json`. The exact request is recorded (media-proxy's rejected-request ledger), so running the same command again exits 3 without sending anything. Changing the prompt, an image, the seed or the model makes a new request. `charged: false` means the GooseWorks proxy did not debit the explicit 4xx (read from the proxy code; one paid reproduction is still needed to confirm it).
 
 Preserve the exact rejection reason, request id and charged/uncharged/unknown state. Stop identical rejected submissions; do not batch them or assume a provider switch is a policy bypass. Check which references the selected provider permits and review a permitted original character or non-likeness route, including changed cost, before another paid step. Historical incidents do not establish current universal policy or billing.
 

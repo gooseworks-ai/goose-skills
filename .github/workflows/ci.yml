@@ -81,4 +81,7 @@ jobs:
           skills/ads/capabilities/review-finished-ad/tests
           skills/ads/capabilities/create-vo-elevenlabs/tests
           skills/ads/capabilities/create-creator-takes-h3/tests
+          skills/ads/capabilities/media-proxy/tests
+          skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests
+          skills/ads/capabilities/render-street-interview/tests/test_single_gen_rejection.py
           skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests
