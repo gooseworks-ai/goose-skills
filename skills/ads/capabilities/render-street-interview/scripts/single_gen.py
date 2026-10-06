@@ -28,6 +28,7 @@ approved seed-4815 prompt BYTE FOR BYTE, so the split provably did not reword an
 paid for.
 """
 import argparse
+import hashlib
 import json
 import sys
 import urllib.request
@@ -42,6 +43,14 @@ ROOT = paths.ROOT
 # media_proxy is imported LAZILY, inside the --yes branch only. It used to be a module-level
 # import, which meant the *dry run* could not even start outside the run folder: the point of a
 # dry run is that it needs no key and no network.
+
+
+def _file_sha256(path):
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(1 << 20), b""):
+            h.update(chunk)
+    return h.hexdigest()
 
 
 def main():
@@ -241,6 +250,25 @@ def main():
         sys.exit(f"{dest.name} exists and the recorded prompt is "
                  f"{'IDENTICAL, so the same payload+seed reproduces it' if same else 'DIFFERENT. '
                     'Bump the seed: reusing it would overwrite a take TAKES.md refers to'}.")
+    sref = Path(A.scene_ref) if A.scene_ref else None
+    if sref is not None and not sref.exists():
+        sys.exit(f"no scene reference at {sref}. Extract one from the episode's first take: "
+                 f"ffmpeg -ss <t> -i <takeA.mp4> -frames:v 1 <out.png>")
+    # The input digest names EVERY input by content: the exact payload with each uploaded
+    # image replaced by its file's sha256. media_proxy re-attaches a resumed run to the job it
+    # already paid for by this digest, and after a policy rejection it refuses the same digest
+    # for good (QA-14). It used to hash only prompt, seed, duration and the scene-ref PATH, so
+    # after one likeness rejection a run with a different, acceptable product image was
+    # refused forever.
+    settings = {"prompt": prompt, "duration": dur, "resolution": format_spec.RESOLUTION,
+                "aspect_ratio": format_spec.ASPECT, "generate_audio": True, "seed": seed}
+    image_ids = [{"sha256": _file_sha256(p)} for p in [Path(ref)] + ([sref] if sref else [])]
+    digest = media_proxy.input_digest(model, {**settings, "image_urls": image_ids})
+    try:  # an identical request the provider already refused: stop before uploading anything
+        media_proxy.refuse_if_rejected(model, input_digest=digest)
+    except media_proxy.FalPolicyRejection as e:
+        print(f"FAILED: {e}", file=sys.stderr)
+        sys.exit(media_proxy.POLICY_EXIT)
     urls = [upload_file(ref)]
     # THE SCENE REFERENCE. A prompt clause binds an object only WITHIN one generation: episodes 1
     # and 2 both carried a byte-identical microphone clause across three calls and rendered three
@@ -250,21 +278,18 @@ def main():
     # drifted. Passing a still from the episode's FIRST take as a second reference hands every
     # later take the mic, the street and the light instead of asking it to imagine them again.
     # @Image1 stays the product; the scene still is @Image2.
-    if A.scene_ref:
-        sref = Path(A.scene_ref)
-        if not sref.exists():
-            sys.exit(f"no scene reference at {sref}. Extract one from the episode's first take: "
-                     f"ffmpeg -ss <t> -i <takeA.mp4> -frames:v 1 <out.png>")
+    if sref is not None:
         urls.append(upload_file(sref))
         print(f"scene ref   {sref.name}  (@Image2: mic, street and light carried from take A)")
     try:
-        url = media_proxy.fal_generate_video(model, {
-            "prompt": prompt, "image_urls": urls, "duration": dur,
-            "resolution": format_spec.RESOLUTION, "aspect_ratio": format_spec.ASPECT,
-            "generate_audio": True, "seed": seed},
-            input_digest=media_proxy.input_digest(model, {"prompt": prompt, "seed": seed,
-                                                          "duration": dur, "scene_ref": str(A.scene_ref)}))
+        url = media_proxy.fal_generate_video(model, {**settings, "image_urls": urls},
+                                             input_digest=digest)
         res, rid = {"video": {"url": url}}, None
+    except media_proxy.FalPolicyRejection as e:
+        # Final for these inputs: surface it, do not retry. A changed image, prompt or seed is
+        # a new request.
+        print(f"FAILED: {e}", file=sys.stderr)
+        sys.exit(media_proxy.POLICY_EXIT)
     except RuntimeError as e:
         # A dropped network mid-poll has already billed you. Never resubmit: a poll timeout
         # raises FalPollTimeout carrying the request id, and media_proxy.resume_fal(id) returns
