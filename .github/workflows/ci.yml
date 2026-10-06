@@ -27,6 +27,9 @@ jobs:
       - name: Test CLI
         run: npm test
 
+      - name: Verify packaged writer handoff
+        run: python3 skills/ads/capabilities/write-video-ad-script/scripts/verify_handoff.py
+
       - name: Test street-interview prompt preflight
         run: |
           python3 skills/ads/capabilities/render-street-interview/scripts/selftest.py

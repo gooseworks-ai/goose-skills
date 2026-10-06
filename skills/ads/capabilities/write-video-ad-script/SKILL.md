@@ -147,6 +147,11 @@ Pass this brief to `prepare_angle_context.py --brief …`; it travels inside the
 existing angle-context to lint, the critic and production. New custom and template
 runs set `requires_creative_brief: true` in their shape. Older saved contexts remain
 readable; enrich them before a new production run instead of inventing provenance.
+If a fetched preparation rejects `--brief`, stop and refresh the writer through the
+existing release flow; do not drop the argument or its strict requirement. The files
+reference's `verify_handoff.py` smoke tests the actual saved package before release,
+including a missing-brief rejection and legacy compatibility. A source merge alone
+does not establish that a connection serves those scripts.
 
 Load [buyer perspective and product explanation](references/buyer-and-mechanism.md).
 Use the current campaign's consumer role and a concrete task or decision. Map what
