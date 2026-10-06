@@ -241,7 +241,10 @@ def test_spec_join_without_any_word_files_stays_estimated(tmp_path):
     r = _join_cli(_spec_fixture(tmp_path), tmp_path)
     assert r.returncode == 0, r.stderr
     assert 'estimated' in r.stdout and (tmp_path / 'creator.mp4').is_file()
-    assert json.loads((tmp_path / 'creator.mp4.timeline.json').read_text())['timing'] == 'estimated'
+    timeline = json.loads((tmp_path / 'creator.mp4.timeline.json').read_text())
+    assert timeline['timing'] == 'estimated'
+    # Recipes read the join time from this line ("Note the 'joins at' time it prints").
+    assert f"[join] 2 takes, joins at {timeline['takes'][1]['start']:.2f}, " in r.stdout
 
 def test_spec_join_require_words_or_partial_sidecars_fail(tmp_path):
     r = _join_cli(_spec_fixture(tmp_path), tmp_path, '--require-words')
@@ -249,3 +252,49 @@ def test_spec_join_require_words_or_partial_sidecars_fail(tmp_path):
     partial = tmp_path / 'partial'; partial.mkdir()
     r = _join_cli(_spec_fixture(partial, sidecars=('t1',)), partial)
     assert r.returncode != 0 and 'missing measured words' in r.stderr
+
+def _lead_silence_take(path, seconds=6, lead=0.3):
+    import subprocess
+    subprocess.run(['ffmpeg', '-v', 'error', '-y', '-f', 'lavfi', '-i', f'color=c=gray:s=160x240:r=30:d={seconds}',
+                    '-f', 'lavfi', '-i', f'sine=frequency=300:duration={seconds}:sample_rate=48000',
+                    '-af', f'adelay={int(lead * 1000)}:all=1,atrim=0:{seconds}', '-c:v', 'libx264', '-c:a', 'aac',
+                    str(path)], check=True)
+    return path
+
+def _take_cli(tmp_path, takes, end, out='joined.mp4'):
+    import subprocess
+    args = [sys.executable, str(CAP / 'create-creator-takes-h3/scripts/join_takes.py')]
+    for p, start in takes:
+        args += ['--take', f'{p}:{start}']
+    return subprocess.run(args + ['--end', str(end), '--out', str(tmp_path / out)], capture_output=True, text=True)
+
+def test_take_join_prints_joins_at_like_main(tmp_path):
+    # trust-checklist STEP 8 runs `join_takes.py --take ... --take ...` and reads J from 'joins at'.
+    # main printed '[join] 2 takes, joins at 4.70, 9.50s -> ...' for exactly this input.
+    t1, t2 = _lead_silence_take(tmp_path / 't1.mp4'), _lead_silence_take(tmp_path / 't2.mp4')
+    r = _take_cli(tmp_path, [(t1, 0), (t2, 5.0)], 9.5)
+    assert r.returncode == 0, r.stderr
+    line = next(l for l in r.stdout.splitlines() if 'joins at' in l)
+    assert line.startswith(f"[join] 2 takes, joins at 4.70, 9.50s -> {tmp_path / 'joined.mp4'}  (measured 9.5")
+    assert json.loads((tmp_path / 'joined.mp4.timeline.json').read_text())['takes'][1]['start'] == pytest.approx(4.7)
+
+def test_single_estimated_take_trims_like_main(tmp_path):
+    t1 = _lead_silence_take(tmp_path / 't1.mp4')
+    r = _take_cli(tmp_path, [(t1, 0)], 6.6)  # --end past the take: main trimmed, never raised
+    assert r.returncode == 0, r.stderr
+    assert f"[join] one take, trimmed to 6.00s -> {tmp_path / 'joined.mp4'}" in r.stdout
+    assert abs(join.length(tmp_path / 'joined.mp4') - 6.0) <= 1 / 30 + .02
+    r = _take_cli(tmp_path, [(t1, 0)], 4.0, out='short.mp4')
+    assert r.returncode == 0 and '[join] one take, trimmed to 4.00s' in r.stdout
+
+def test_missing_or_short_take_is_a_clear_error(tmp_path):
+    spec = _spec_fixture(tmp_path)
+    for mp4 in (tmp_path / 'takes').glob('*.mp4'):
+        mp4.unlink()
+    r = _join_cli(spec, tmp_path)
+    assert r.returncode != 0 and 'Traceback' not in r.stderr
+    assert f"take missing: {tmp_path.resolve() / 'takes' / 't1-seed100.mp4'} (run run_takes.py)" in r.stderr
+    t1, t2 = _lead_silence_take(tmp_path / 't1.mp4'), _lead_silence_take(tmp_path / 't2.mp4')
+    r = _take_cli(tmp_path, [(t1, 0), (t2, 5.0)], 14.0)  # t2 cannot reach --end
+    assert r.returncode != 0 and 'Traceback' not in r.stderr
+    assert 'to reach its join; plan a longer take' in r.stderr

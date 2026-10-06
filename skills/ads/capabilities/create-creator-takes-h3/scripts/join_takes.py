@@ -7,6 +7,14 @@ takes.json's planned word files exist (legacy recipes that never transcribe take
 the join falls back to estimated timing with a warning; some-but-not-all is an error.
 --require-words rejects estimated timing. Writes OUT.timeline.json with the actual
 reel mapping.
+
+Prints the same summary line main always printed; recipes read the join times from it
+(e.g. "Note the 'joins at' time it prints"):
+    [join] 2 takes, joins at 4.70, 9.50s -> creator.mp4  (measured 9.50s)
+    [join] one take, trimmed to 6.00s -> creator.mp4
+Each "joins at" value is the reel time where the dissolve into that take begins
+(timeline.json takes[k].start). The durations are the actual reel length, which a measured
+join may extend past --end.
 """
 import argparse
 import json
@@ -90,6 +98,9 @@ def schedule(takes, end, fps):
                     "source_duration": t["duration"], "words": words})
     actual_end = max(end, out[-1]["speech_end"] + PAD) if all(measured) else end
     actual_end = math.ceil((actual_end - 1e-8) * fps) / fps
+    if len(out) == 1 and not all(measured):
+        # A lone take is trimmed to --end, never padded past its own last frame (main's behavior).
+        actual_end = min(actual_end, math.floor((takes[0]["duration"] + 1e-8) * fps) / fps)
     for k, t in enumerate(out):
         t["body_end"] = (out[k + 1]["start"] if k + 1 < len(out) else actual_end) - t["start"]
         t["need"] = t["body_end"] + (xf if k + 1 < len(out) else 0)
@@ -97,7 +108,8 @@ def schedule(takes, end, fps):
             raise ValueError("takes overlap too closely to join")
         short = t["need"] - t["source_duration"] - t["head_pad"]
         if short > .02 and (not all(measured) or short > 2):
-            raise ValueError("take too short to reach its join; plan a longer take")
+            raise ValueError("%s is %.2fs but must run %.2fs to reach its join; plan a longer take"
+                             % (t["path"], t["source_duration"], t["need"] - t["head_pad"]))
         t["tail_pad"] = max(0, short)
     return {"timing": "measured" if all(measured) else "estimated", "fps": fps,
             "dissolve_s": xf, "requested_end": end, "duration": actual_end, "takes": out}
@@ -167,6 +179,9 @@ def main():
         entries = [(t.rsplit(":", 1)[0], float(t.rsplit(":", 1)[1]), None) for t in a.take]
     else:
         ap.error("give --spec or --take")
+    for p, _, _ in entries:
+        if not pathlib.Path(p).is_file():
+            raise SystemExit(f"take missing: {p} (run run_takes.py)")
     if a.words:
         if len(a.words) != len(entries):
             ap.error("--words count must match takes")
@@ -189,7 +204,10 @@ def main():
                       "words": read_words(w, d) if w else None, "onset": onset(p) if not w else None})
     if a.require_words and not all(t["words"] for t in takes):
         raise SystemExit("measured words are required before joining")
-    plan = schedule(takes, a.end, a.fps)
+    try:
+        plan = schedule(takes, a.end, a.fps)
+    except ValueError as e:
+        raise SystemExit(str(e))
     if plan["timing"] == "estimated":
         print("WARNING: estimated speech timing; this join cannot certify complete words")
     render(plan, a.out)
@@ -200,7 +218,14 @@ def main():
                            "end": w["end"] + t["start"] + t["head_pad"]})
     plan["words"] = joined
     pathlib.Path(a.out + ".timeline.json").write_text(json.dumps(plan, indent=2), encoding="utf-8")
-    print(f"[join] {plan['timing']}, {plan['duration']:.3f}s -> {a.out}")
+    n = len(plan["takes"])
+    if n == 1:
+        print("[join] one take, trimmed to %.2fs -> %s" % (plan["duration"], a.out))
+    else:
+        print("[join] %d takes, joins at %s, %.2fs -> %s  (measured %.2fs)"
+              % (n, ", ".join("%.2f" % t["start"] for t in plan["takes"][1:]),
+                 plan["duration"], a.out, length(a.out)))
+    print(f"[join] timing {plan['timing']}; reel mapping -> {a.out}.timeline.json")
 
 
 if __name__ == "__main__":
