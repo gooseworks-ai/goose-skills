@@ -34,3 +34,27 @@ jobs:
         run: |
           python3 skills/ads/capabilities/render-street-interview/scripts/selftest.py
           python3 -m unittest discover -s skills/ads/capabilities/render-street-interview/tests -p 'test_prompt_budget.py' -v
+
+  media-tests:
+    # The media helpers are pinned to macOS system fonts (render-imessage-cascade), so these
+    # run on macOS. Local ffmpeg fixtures only; no provider calls.
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install ffmpeg and test deps
+        run: |
+          brew install ffmpeg
+          python -m pip install pytest pillow numpy requests
+
+      - name: Test video media helpers
+        run: >
+          python -m pytest -q
+          test/recipe-media-fixes
+          skills/ads/capabilities/review-finished-ad/tests
+          skills/ads/capabilities/create-vo-elevenlabs/tests
+          skills/ads/capabilities/create-creator-takes-h3/tests

@@ -128,7 +128,7 @@ These are the user's calls (the recipe's `choices`), never defaults of this atom
 
 ## Measured join acceptance
 
-Per-take word timing is required in recipes before joining. Confirm every line is complete in each source take; timing cannot recover a word the model never spoke. The join normalizes frame rate and time base, adds silent lead before an early incoming word, and moves a transition after a late outgoing word. It writes the actual mapping and duration in `creator.mp4.timeline.json`. Re-align the cut list to the final audio and extend the layer to that measured duration; do not clamp it back to the planned end. Estimated joins remain available for legacy callers and print a warning.
+Per-take word timing is required in recipes before joining. Confirm every line is complete in each source take; timing cannot recover a word the model never spoke. The join normalizes frame rate and time base, adds silent lead before an early incoming word, and moves a transition after a late outgoing word. It writes the actual mapping and duration in `creator.mp4.timeline.json`. Re-align the cut list to the final audio and extend the layer to that measured duration; do not clamp it back to the planned end. Estimated joins remain available for legacy callers and print a warning: `--take` without `--words`, or `--spec` when none of the take set's planned word files exist (recipes written before measured joins). Some-but-not-all word files is an error, and `--require-words` turns any estimated join into an error.
 
 Use ordinary skin texture and subtle asymmetry for realism. An eyebrow scar is no longer a random default: scars or other distinctive marks require the user's explicit choice. Inspect the still before approving takes.
 

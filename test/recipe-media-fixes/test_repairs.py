@@ -212,3 +212,40 @@ def test_join_keeps_source_loudness(tmp_path, layout_args):
     source = mean_db(takes[0]['path'])
     out = tmp_path / 'joined.mp4'; join.render(join.schedule(takes, 4.0, 30), str(out))
     assert abs(mean_db(out) - source) < 0.6
+
+def _spec_fixture(tmp_path, sidecars=()):
+    """takes.json in the plan_takes.py shape: every take names a word file."""
+    import subprocess
+    out = tmp_path / 'takes'; out.mkdir()
+    takes = []
+    for i, start in enumerate((0.0, 3.4)):
+        tid, seed = f't{i+1}', 100 + i
+        subprocess.run(['ffmpeg', '-v', 'error', '-y', '-f', 'lavfi', '-i', 'color=c=gray:s=160x240:r=30:d=4',
+                        '-f', 'lavfi', '-i', 'sine=frequency=300:duration=4', '-c:v', 'libx264', '-c:a', 'aac',
+                        str(out / f'{tid}-seed{seed}.mp4')], check=True)
+        words = out / f'{tid}.words.json'
+        if tid in sidecars:
+            words.write_text(json.dumps([{'text': 'complete', 'start': 0.1, 'end': 1.2}]))
+        takes.append({'id': tid, 'seed': seed, 'dur': 4, 'covers': [start, start + 3], 'words': str(words.resolve())})
+    spec = out / 'takes.json'; spec.write_text(json.dumps({'out': str(out.resolve()), 'takes': takes}))
+    return spec
+
+def _join_cli(spec, tmp_path, *extra):
+    import subprocess
+    return subprocess.run([sys.executable, str(CAP / 'create-creator-takes-h3/scripts/join_takes.py'),
+                           '--spec', str(spec), '--end', '7.2', '--out', str(tmp_path / 'creator.mp4'), *extra],
+                          capture_output=True, text=True)
+
+def test_spec_join_without_any_word_files_stays_estimated(tmp_path):
+    # Served H3 recipes run `join_takes.py --spec takes.json` with no per-take transcription.
+    r = _join_cli(_spec_fixture(tmp_path), tmp_path)
+    assert r.returncode == 0, r.stderr
+    assert 'estimated' in r.stdout and (tmp_path / 'creator.mp4').is_file()
+    assert json.loads((tmp_path / 'creator.mp4.timeline.json').read_text())['timing'] == 'estimated'
+
+def test_spec_join_require_words_or_partial_sidecars_fail(tmp_path):
+    r = _join_cli(_spec_fixture(tmp_path), tmp_path, '--require-words')
+    assert r.returncode != 0 and 'missing measured words' in r.stderr
+    partial = tmp_path / 'partial'; partial.mkdir()
+    r = _join_cli(_spec_fixture(partial, sidecars=('t1',)), partial)
+    assert r.returncode != 0 and 'missing measured words' in r.stderr

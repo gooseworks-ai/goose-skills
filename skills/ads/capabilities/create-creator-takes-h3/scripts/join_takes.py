@@ -2,8 +2,11 @@
 """Join normalized creator takes, preserving measured speech before dissolving.
 
 Use --spec takes.json or repeated --take file:reel_start. Supply per-take word
-sidecars with --words (same order), or takes.json's `words` fields. --require-words
-rejects estimated timing. Writes OUT.timeline.json with the actual reel mapping.
+sidecars with --words (same order), or takes.json's `words` fields. When none of
+takes.json's planned word files exist (legacy recipes that never transcribe takes),
+the join falls back to estimated timing with a warning; some-but-not-all is an error.
+--require-words rejects estimated timing. Writes OUT.timeline.json with the actual
+reel mapping.
 """
 import argparse
 import json
@@ -168,6 +171,15 @@ def main():
         if len(a.words) != len(entries):
             ap.error("--words count must match takes")
         entries = [(p, s, w) for (p, s, _), w in zip(entries, a.words)]
+    if a.spec and not a.words and not a.require_words:
+        planned = [w for _, _, w in entries if w]
+        if planned and not any(pathlib.Path(w).is_file() for w in planned):
+            # plan_takes.py names a word file for every take, but recipes written before
+            # measured joins never transcribe takes. Keep those joins working (estimated,
+            # with the warning below); a partial set still stops.
+            print("WARNING: no per-take word files exist yet; falling back to estimated timing. "
+                  "Pass --require-words to make this an error.")
+            entries = [(p, s, None) for p, s, _ in entries]
     takes = []
     for p, s, w in sorted(entries, key=lambda t: t[1]):
         d = length(p)
