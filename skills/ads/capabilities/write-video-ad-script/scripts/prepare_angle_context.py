@@ -160,6 +160,8 @@ def validate_bank(bank):
 
 
 def select_context(bank, brand_id, product_id, template_id, angle_ids=None, brief=None):
+    if not isinstance(bank, dict):
+        raise ValueError("angle bank must be an object")
     if brief is not None:
         bank = dict(bank, creative_brief=brief)
     errors = validate_bank(bank)
@@ -191,9 +193,15 @@ def main():
     ap.add_argument("--out", default="working/script/angle-context.json")
     args = ap.parse_args()
     try:
+        brief = None
+        if args.brief:
+            brief = json.loads(Path(args.brief).read_text())
+            # An explicitly supplied null must not take the legacy no-brief path.
+            if not isinstance(brief, dict):
+                raise ValueError("creative_brief must be an object")
         context = select_context(json.loads(Path(args.bank).read_text()), args.brand_id,
                                  args.product_id, args.template_id, args.angle_id,
-                                 json.loads(Path(args.brief).read_text()) if args.brief else None)
+                                 brief)
     except (OSError, ValueError, TypeError) as exc:
         ap.exit(2, f"angle handoff: {exc}\n")
     out = Path(args.out)

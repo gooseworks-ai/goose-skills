@@ -1,6 +1,6 @@
 {
   "version": "1.3.0",
-  "generated": "2026-10-05",
+  "generated": "2026-10-06",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -9738,10 +9738,12 @@
         "skills/ads/capabilities/write-video-ad-script/scripts/lint_scripts.py",
         "skills/ads/capabilities/write-video-ad-script/scripts/media_proxy.py",
         "skills/ads/capabilities/write-video-ad-script/scripts/prepare_angle_context.py",
+        "skills/ads/capabilities/write-video-ad-script/scripts/verify_handoff.py",
         "skills/ads/capabilities/write-video-ad-script/skill.meta.json",
         "skills/ads/capabilities/write-video-ad-script/tests/test_angle_handoff.py",
         "skills/ads/capabilities/write-video-ad-script/tests/test_creative_brief.py",
         "skills/ads/capabilities/write-video-ad-script/tests/test_critique_scripts.py",
+        "skills/ads/capabilities/write-video-ad-script/tests/test_handoff_release.py",
         "skills/ads/capabilities/write-video-ad-script/tests/test_lint_scripts.py",
         "skills/ads/capabilities/write-video-ad-script/tests/test_pacing.py"
       ],

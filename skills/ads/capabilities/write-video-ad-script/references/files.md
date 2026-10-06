@@ -52,6 +52,34 @@ verbatim; user-script report-only mode reports conflicts without rewriting or
 failing. This run snapshot supplements the existing history; it is not another
 brand memory store or a media-selection schema.
 
+### Verify the fetched handoff before releasing new callers
+
+New caller instructions and the served writer must agree. A merged source change,
+catalogue version label or preparation `--help` alone does not prove compatibility.
+Save the actual `catalog_fetch` writer result from each intended connection, then
+run the reviewed release's provider-free checker against that response:
+
+```sh
+python3 <reviewed writer scripts>/verify_handoff.py --catalog-response writer-production.json --out writer-production-check.json
+python3 <reviewed writer scripts>/verify_handoff.py --catalog-response writer-staging.json --out writer-staging-check.json
+```
+
+The input is the result payload with `slug: "write-video-ad-script"` and the `scripts`
+basename-to-content map. A package already saved on disk can instead use
+`--package-dir <writer package root>`. With neither option, it checks its own package.
+The checker executes the saved preparation and lint CLIs in a temporary workspace,
+records actual script hashes, and verifies sourced-brief preservation, strict
+missing-brief rejection, prior decisions, locked copy and legacy no-brief behavior.
+It exits 0 only when all checks pass and 2 on a mismatch. Fixtures are authored
+compatibility inputs; they do not establish current product facts or audio quality.
+
+If a served preparation rejects `--brief`, or served lint ignores the brief requirement,
+stop this handoff and refresh/publish the matching writer package through the existing
+release process. Do not remove `--brief` or clear `requires_creative_brief` to make a new
+run pass. Preserve the original brief and retry after a fresh fetch. Legacy saved runs
+without the new requirement remain readable. An explicitly supplied malformed brief,
+including JSON `null`, is an input error; it is not the legacy omitted-argument path.
+
 ## shape.json: what the format needs (Step 1)
 
 ```json
