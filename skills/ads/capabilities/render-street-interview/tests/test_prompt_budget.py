@@ -72,6 +72,43 @@ class PromptBudgetTests(unittest.TestCase):
                 self.assertEqual(hashlib.sha256(prompt.encode()).hexdigest(), row["sha256"])
                 self.assertEqual(len(prompt.split()), row["words"])
 
+    def test_prompt_version_3_keeps_the_street_in_focus_and_v2_repairs(self):
+        for guards in (False, True):
+            with self.subTest(guards=guards):
+                v2 = format_spec.build_prompt(self.cfg, guards=guards, prompt_version=2)
+                v3 = format_spec.build_prompt(self.cfg, guards=guards, prompt_version=3)
+                self.assertEqual(format_spec.lint(v3, guards=guards, prompt_version=3), [])
+                self.assertIn("never blurred and never bokeh", v3)
+                self.assertIn("detail falls away behind the subject", v3)
+                self.assertNotIn("softer than the person", v3)
+                self.assertIn("softer than the person", v2)
+                # Nothing else in v3 asks for blur: the passers-by sentence loses "blurred by".
+                self.assertIn("blurred by their own movement", v2)
+                self.assertNotIn("blurred by", v3)
+                # Signage stays unreadable by distance, not by defocus, in v3.
+                self.assertIn("out of focus", v2)
+                self.assertNotIn("out of focus", v3)
+                self.assertIn("too distant to read, never legible", v3)
+                unreadable = v3.replace("never legible", "")
+                self.assertTrue(any('"never legible"' in e for e in
+                                    format_spec.lint(unreadable, guards=guards, prompt_version=3)))
+                # The v3 bound is linted, so a recorded v3 prompt without it fails the gate.
+                missing = v3.replace("never blurred and never bokeh", "")
+                self.assertTrue(any("never blurred and never bokeh" in e for e in
+                                    format_spec.lint(missing, guards=guards, prompt_version=3)))
+                self.assertEqual(format_spec.lint(v2, guards=guards, prompt_version=2), [])
+        pouch = brandkit.load("liquid-death-4828")
+        pouch["product"]["noun"] = "pouch"
+        pouch["product"]["phrase"] = "product pouch"
+        repaired = format_spec.build_prompt(pouch, upright=True, one_mic=True, prompt_version=3)
+        self.assertIn("THE TOP EDGE IS NEVER SHOWN", repaired)
+        self.assertNotIn("the only the", repaired)
+        self.assertEqual(format_spec.lint(repaired, upright=True, one_mic=True, prompt_version=3), [])
+        with self.assertRaises(ValueError):
+            format_spec.build_prompt(self.cfg, prompt_version=4)
+        self.assertEqual(format_spec.lint(self.prompt, **FLAGS, prompt_version=4),
+                         ["prompt_version must be 1, 2 or 3"])
+
     def run_cli(self, directory, brand=None, yes=False):
         # The real entry point runs in an empty project. Import/network guards make an
         # accidental provider call fail this test before any request can be sent.

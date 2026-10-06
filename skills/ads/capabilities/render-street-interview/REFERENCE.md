@@ -115,6 +115,13 @@ rejected for, reproduced inside a single take.
 Real phone footage keeps the street sharp behind the subject. MEASURED: real reference footage
 is stabilised at 0.00px drift, so the usual "make it handheld and shaky" advice is backwards.
 
+Prompt version 3 (2026-10-06): the operator rejects blurred backgrounds. v1/v2 ask for "the
+background is softer than the person", which the model can read as permission to blur. v3 keeps
+the natural falloff needle ("detail falls away behind the subject") but bounds it: only slightly,
+the street stays in focus, "never blurred and never bokeh". It does not return to the plain
+"deep depth of field" clause, which measured over-sharp (15.92 against 4.76-9.60 for real
+footage). v3 is draft until one 720p take measures inside that band with no bokeh.
+
 ### 9. Do not sharpen or grain in the finishing pass.
 MEASURED: the raw generation already sits at 534 laplacian sharpness against 530 for the real
 reference. An 0.4 unsharp "phone ISP halo" pushed the finished cut to 695, so the finishing pass

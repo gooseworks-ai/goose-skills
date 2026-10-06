@@ -1,8 +1,84 @@
 # Working files
 
+**Summary.** Keep the sourced brief, research, script and timing together so production
+can use the approved words and evidence. Checks establish traceability and budgets;
+actual media inspection and listening establish whether the ad works.
+
 Every file lives in the project's working folder under a script subfolder. The rule
 check and the critic read these exact shapes. The strict rule check also consumes the shared angle context and visual plan.
 Keep research sources separate from product claim authorization.
+
+## creative-brief.json: current run, current decisions
+
+New custom and template runs save this brief, then pass it through the existing angle
+preparation command with `--brief working/script/creative-brief.json`. It is embedded
+as `creative_brief` in angle-context.json. Set `requires_creative_brief: true` in the
+run's shape to enforce its presence in strict lint. The same brief goes into the
+design brief and scene plan; do not rebuild it from a hook or a catalogue summary.
+
+```json
+{
+  "brand_id": "brand-demo", "product_id": "product-bottle",
+  "sources": [
+    {"id": "brief-1", "source": "project brief revision 3", "observed_at": "2026-10-05"},
+    {"id": "history-1", "source": "video-scripts/brand-demo/product-bottle/history.jsonl, decision 2"}
+  ],
+  "product_variant": {"text": "Blue screw-top 500 ml; exact supplied variant", "source_ids": ["brief-1"]},
+  "audience_situation": {"text": "Packing a bottle in the outside pocket before commuting", "source_ids": ["brief-1"]},
+  "objective": {"text": "Show the closure so shoppers can inspect it", "source_ids": ["brief-1"]},
+  "mechanism": {"text": "Twisting the lid closes the bottle; no leak test available", "source_ids": ["f1"], "fact_ids": ["f1"]},
+  "offer": {"text": "No offer supplied", "source_ids": ["brief-1"]},
+  "cta": {"text": "Shop the bottle", "source_ids": ["brief-1"]},
+  "constraints": {"text": "No leak-proof claim or invented customer result", "source_ids": ["brief-1"]},
+  "delivery_intent": {"text": "Conversational demonstration; pause as the lid finishes closing", "source_ids": ["brief-1"]},
+  "prior_decisions": [{"text": "Do not say game changer; it sounds generic", "avoid_phrase": "game changer", "source_ids": ["history-1"], "scope": "project", "applies_to": "same product campaign"}],
+  "locked_copy": [{"text": "Shop the bottle.", "source_ids": ["brief-1"]}],
+  "unknowns": ["No leak test: show the screw closure without claiming it never leaks."]
+}
+```
+
+This is a fixture shape, not real product evidence. Use actual read source pointers,
+not these example labels. Source IDs may reference the bank's facts, quotes or
+references, or the brief's own source records. Mechanism `fact_ids` must reference
+product facts; a quote or user preference cannot substantiate efficacy. If the
+mechanism is unknown, use `status: "unknown"`, empty `fact_ids` and name the missing
+evidence and supported alternative in a **nonempty** `unknowns` list. Empty `prior_decisions` and
+`locked_copy` lists mean none apply; record inaccessible history as an unknown.
+
+Only include prior decisions whose scope applies. Keep exact feedback in `text`,
+record why it applies, and optionally provide an exact `avoid_phrase` for the rule
+check. The critic checks broader meaning and repetition. `locked_copy` remains
+verbatim; user-script report-only mode reports conflicts without rewriting or
+failing. This run snapshot supplements the existing history; it is not another
+brand memory store or a media-selection schema.
+
+### Verify the fetched handoff before releasing new callers
+
+New caller instructions and the served writer must agree. A merged source change,
+catalogue version label or preparation `--help` alone does not prove compatibility.
+Save the actual `catalog_fetch` writer result from each intended connection, then
+run the reviewed release's provider-free checker against that response:
+
+```sh
+python3 <reviewed writer scripts>/verify_handoff.py --catalog-response writer-production.json --out writer-production-check.json
+python3 <reviewed writer scripts>/verify_handoff.py --catalog-response writer-staging.json --out writer-staging-check.json
+```
+
+The input is the result payload with `slug: "write-video-ad-script"` and the `scripts`
+basename-to-content map. A package already saved on disk can instead use
+`--package-dir <writer package root>`. With neither option, it checks its own package.
+The checker executes the saved preparation and lint CLIs in a temporary workspace,
+records actual script hashes, and verifies sourced-brief preservation, strict
+missing-brief rejection, prior decisions, locked copy and legacy no-brief behavior.
+It exits 0 only when all checks pass and 2 on a mismatch. Fixtures are authored
+compatibility inputs; they do not establish current product facts or audio quality.
+
+If a served preparation rejects `--brief`, or served lint ignores the brief requirement,
+stop this handoff and refresh/publish the matching writer package through the existing
+release process. Do not remove `--brief` or clear `requires_creative_brief` to make a new
+run pass. Preserve the original brief and retry after a fresh fetch. Legacy saved runs
+without the new requirement remain readable. An explicitly supplied malformed brief,
+including JSON `null`, is an input error; it is not the legacy omitted-argument path.
 
 ## shape.json: what the format needs (Step 1)
 
@@ -144,8 +220,9 @@ two speakers and a real source pointer are required. **Street ads additionally n
   retain/link the complete transcript evidence;
 - allowed_offering_types, interaction_types, transfer_rule and observation limitations.
 
-Run [[references::render-street-interview]]'s prepare_script_context with offering_type
-and interaction_type before writing. Its detailed street-script-writing guide explains
+Run [[references::render-street-interview]]'s prepare_script_context with offering_type,
+interaction_type and participants before writing; needs-reference or unsupported-route stops
+the script. Its detailed street-script-writing guide explains
 the shared record. Keep source-brand claims separate from current product facts.
 Store the candidate's situation_brief alongside its words/actions for review.
 Cite the record in the candidate's

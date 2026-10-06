@@ -296,17 +296,23 @@ def end_card(path, brand_layer=None):
     rows = bl["end_card"]
     if not rows:
         raise ValueError("brand_layer.end_card needs at least one line")
-    max_h = SAFE_BOT - y - 20
-    for size in range(66, 19, -2):
-        rendered = [heavy(row, size, CREAM if i == 0 else GOLD, italic=False, outline=5)
-                    for i, row in enumerate(rows)]
-        if max(t.width for t in rendered) <= W - 120 and sum(t.height for t in rendered) + 20 * (len(rows) - 1) <= max_h:
-            break
-    else:
-        raise ValueError("end-card copy does not fit the safe area; shorten it")
-    for t in rendered:
-        img.alpha_composite(t, ((W - t.width) // 2, y))
-        y += t.height + 20
+    # Preserve the approved 86px row origins. Transparent padding in heavy()
+    # is not visible text and must not become extra line spacing.
+    for i, row in enumerate(rows):
+        row_y = y + i * 86
+        for size in range(66, 19, -2):
+            rendered = heavy(row, size, CREAM if i == 0 else GOLD, italic=False, outline=5)
+            ink = rendered.getbbox()
+            if ink is None:
+                raise ValueError("end-card rows need visible text")
+            x = (W - rendered.width) // 2
+            if (60 <= x + ink[0] and x + ink[2] <= W - 60
+                    and SAFE_TOP <= row_y + ink[1] and row_y + ink[3] <= SAFE_BOT
+                    and ink[3] - ink[1] <= 86):
+                break
+        else:
+            raise ValueError("end-card copy does not fit the safe area; shorten it")
+        img.alpha_composite(rendered, (x, row_y))
     img.convert("RGB").save(path)
 
 

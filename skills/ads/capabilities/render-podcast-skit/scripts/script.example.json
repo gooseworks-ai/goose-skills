@@ -1,0 +1,22 @@
+{
+  "_comment": "The script is a PARAMETER of the recipe, not a fixture inside it. One file per brand. The recipe does not know or care what the arc is. Rewritten 2026-10-01 after the first real render: the previous draft declared story_with_corroborators and then wrote strict A/B/A/B for all fourteen lines with a fifty-fifty word split. That ping-pong reads as setup-and-payoff, which is the doubter-and-convert rhythm even when nobody doubts anything, and that is exactly what a viewer said it felt like. The arc was declared and not written.",
+  "brand": "Fernwick",
+  "arc": "story_with_corroborators",
+  "_arc_note": "dod-blender, the reference this arc is drawn from: ONE host tells a true story and the other interjects, confirms, adds a detail. So host A carries it in runs of two and three lines, host B lands five short ones, and the word split is about seventy-thirty. The product is named at line four, which is a quarter of the way in; the reference names it at thirty-eight percent. It ends on a half-finished thought with no resolution and no call to action, which is what the reference does.",
+  "lines": [
+    { "n": 1,  "who": "A", "text": "Sunday night, fridge open, and nothing decided." },
+    { "n": 2,  "who": "A", "text": "So we gave the planner a week. One week." },
+    { "n": 3,  "who": "B", "text": "One week." },
+    { "n": 4,  "who": "A", "text": "Monday Fernwick picked the meals and built the list." },
+    { "n": 5,  "who": "A", "text": "I shopped once. Twenty minutes, in and out." },
+    { "n": 6,  "who": "B", "text": "You texted me from the car park." },
+    { "n": 7,  "who": "A", "text": "I did." },
+    { "n": 8,  "who": "A", "text": "Tuesday was the test. Late, tired, no ideas." },
+    { "n": 9,  "who": "A", "text": "And the app already had one waiting." },
+    { "n": 10, "who": "B", "text": "One pan, wasn't it." },
+    { "n": 11, "who": "A", "text": "One pan. Nobody argued about dinner." },
+    { "n": 12, "who": "B", "text": "Nobody argues about dinner in your house." },
+    { "n": 13, "who": "A", "text": "By Friday the list was shorter. Less food binned." },
+    { "n": 14, "who": "B", "text": "That is the whole thing, really." }
+  ]
+}

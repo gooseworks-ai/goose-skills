@@ -142,8 +142,10 @@ def test_stacked_chimes_do_not_clip(clips, tmp_path):
     assert r.returncode == 0, r.stderr
     assert true_peak(out) < -1.0
     assert_cues_audible(out)
-    # A lone receive chime stays loud (the old mix put it at about -4 dB mean in this window).
-    assert window(out, CUES[0]["t"], 0.35)[1] > -8.0
+    # A lone receive chime stays clearly audible. The level is the one approved in the
+    # GOOSE-3741 audit renders (about -10.4 dB mean in this window, -11.4 LUFS on a
+    # full Graza render); the old +4 dB mix was heard as too loud next to them.
+    assert window(out, CUES[0]["t"], 0.35)[1] > -12.0
 
 
 def test_music_bed_mix_stays_below_minus_1_dbtp(clips, tmp_path):

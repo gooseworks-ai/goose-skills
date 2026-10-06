@@ -80,8 +80,10 @@ checks; do not transplant its handover, wrong answers or winner into a conversat
 Run `scripts/prepare_script_context.py --brief <brief.json> --references <project-refs.json>
 --out <script-context.json>`. The brief must identify `brand_id`, `mode`, language,
 audience group, buying context, **`offering_type` (`physical|service|digital`)** and
-**`interaction_type` (`product-guess|mic-only|product-sample|concept-challenge`)**.
-Offering and visible interaction must both fit the selected reference.
+**`interaction_type` (`product-guess|mic-only|product-sample|concept-challenge`)**, plus
+`participants`: the people interviewed on screen, not counting the interviewer (default 4
+for product-guess, 1 for conversation). Offering and visible interaction must both fit the
+selected reference.
 
 Prefer compatible user observations, then project observations and inspected commercial
 examples. **Seed snippets are research leads.** A URL, caption, isolated transcript turn,
@@ -107,6 +109,10 @@ Record unseen recruitment, prior instructions or sampling setup as **unknown** u
 source shows or explicitly establishes them. A plausible recruitment explanation is an
 inference, never an observed fact. The new ad's proposed participation reason can differ;
 label it as the authored plan. Do not transfer the source brand's claims or endorsements.
+
+If selection returns `unsupported-route`, no reference can fix it: the format cannot make
+this video. Stop, report its `route_gaps` and offer its `alternatives` in plain words. The
+`route` output binds any project built on this format, including a custom one.
 
 If selection returns `needs-reference`, inspect and save a compatible full commercial
 interaction, then select again. Keep the reference gap explicit until it is filled.

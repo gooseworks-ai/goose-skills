@@ -1,0 +1,10 @@
+{
+  "source": {
+    "path": "original.mp4",
+    "project_id": "<caller-selected-project-id>",
+    "render_id": "<caller-selected-render-id>"
+  },
+  "hook_end_sec": 4.2,
+  "hook": {"path": "approved-new-hook.mp4"},
+  "output": {"path": "candidate.mp4"}
+}

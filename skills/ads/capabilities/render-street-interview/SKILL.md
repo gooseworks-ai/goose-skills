@@ -26,12 +26,12 @@ premise, participant role, participation reason, visible task, actions, edited o
 hook, supported brand explanation and payoff. Do not force a correct-answer winner into a
 service conversation or reduce every brand to a routine problem followed by a logo card.
 
-| Interaction | Current support |
-| --- | --- |
-| `product-guess` | Existing object renderer; standalone product reference required |
-| `mic-only` | Conversation preview; service explanation without a product or device |
-| `product-sample` | Conversation preview; prepared sample in a plain cup, no exact package reference |
-| `concept-challenge` | Conversation preview; described visible task using non-UI props |
+| Interaction | Current support | Person image reference | Max participants |
+| --- | --- | --- | --- |
+| `product-guess` | Existing object renderer; standalone product reference required | forbidden | 4 |
+| `mic-only` | Conversation preview; service explanation without a product or device | forbidden | 1 |
+| `product-sample` | Conversation preview; prepared sample in a plain cup, no exact package reference | forbidden | 1 |
+| `concept-challenge` | Conversation preview; described visible task using non-UI props | forbidden | 1 |
 
 Use [[composes::write-video-ad-script]] with the scoped angle bank, current facts and
 selected complete commercial street interactions. `scripts/prepare_script_context.py`
@@ -41,6 +41,13 @@ visual timeline and spoken exchange: setup, participation reason, hook, product 
 payoff. Record unseen recruitment or setup as unknown; inference is not observation.
 Seed snippets are leads. Radio and editorial exchanges cannot fill a street-ad gap.
 Keep private observations project-scoped and transfer mechanics, not source-brand claims.
+
+Pass `participants` too: the number of people interviewed on screen, not counting the
+interviewer (default 4 for product-guess, 1 for conversation). Its `route` output is binding
+for any project built on this format, including custom ones. `unsupported-route` means stop
+and offer the listed alternatives; it is not permission to go custom. `custom` is one of those
+alternatives only when the customer picks it, and a custom video still keeps every `route`
+constraint: people in text, no person image references, one take, deep focus, local lettering.
 
 Save a situation brief before dialogue. Write the user's requested count, then map words
 and actions to ordered shots. An edited participant answer or silent action/reaction may
@@ -133,11 +140,11 @@ Conversation prompt previews send no media call; no conversation media price is 
 
 The local finishing scripts use the current Python interpreter and carry `--run` into child commands. The default grade (`--strength 0`) needs no colour-reference file. A positive strength requires the real reference.
 
-Set approved colours in `brand_layer.palette`: `accent`, `text`, and `background`, each `#RRGGBB` or three RGB integers. Optional `brand_layer.fonts` keys are `black`, `bold`, and `regular` (paths relative to the project). Without overrides, fonts resolve on macOS, Windows or Linux. End-card rows shrink together to fit the safe area; shorten copy if it cannot fit.
+Set approved colours in `brand_layer.palette`: `accent`, `text`, and `background`, each `#RRGGBB` or three RGB integers. Optional `brand_layer.fonts` keys are `black`, `bold`, and `regular` (paths relative to the project). Without overrides, fonts resolve on macOS, Windows or Linux. End-card rows keep the approved 86px spacing and 66px type. Shrink only an individual line whose visible text cannot fit the safe area; shorten copy if that line still cannot fit. Transparent text-image padding does not set the line spacing.
 
 The `subway` series bar stays visible through caption gaps. It is also in the caption-free control so the gate measures captions separately from persistent branding.
 
-For a **new** prompt, `generation.prompt_version: 2` (or `--prompt-version 2`) repairs duplicate articles and uses a top-edge rule for non-can packaging. The manifest records the version for the gate. Historical prompts default to version 1 and retain their hashes. Use a new approved seed for a new prompt; do not overwrite an approved take.
+For a **new** prompt, use `generation.prompt_version: 3` (or `--prompt-version 3`). It keeps version 2's repairs (no duplicate articles, a top-edge rule for non-can packaging) and keeps the street in focus behind the people: never blurred and never bokeh (see REFERENCE #8). Version 3 is draft until a 720p take measures inside the real-footage detail band; its paid validation take needs its own approval. The bundled demo config stays on version 2 until then. The manifest records the version for the gate. Historical prompts default to version 1, and versions 1 and 2 retain their hashes. Use a new approved seed for a new prompt; do not overwrite an approved take.
 
 ### Single-take recuts
 

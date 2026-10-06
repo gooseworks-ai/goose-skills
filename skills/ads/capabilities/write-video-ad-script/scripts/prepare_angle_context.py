@@ -9,6 +9,70 @@ import json
 from pathlib import Path
 
 
+def validate_brief(brief, bank):
+    """Check run-context provenance, not truth or whether an ad sounds natural."""
+    if not isinstance(brief, dict):
+        return ["creative_brief must be an object"]
+    errors = []
+    for key in ("brand_id", "product_id"):
+        if brief.get(key) != bank.get(key):
+            errors.append(f"creative_brief {key} must match the angle bank")
+    sources = {row["id"] for group in ("facts", "quotes", "references")
+               for row in bank.get(group, []) if isinstance(row, dict) and row.get("id")}
+    rows = brief.get("sources", [])
+    if not isinstance(rows, list):
+        errors.append("creative_brief sources must be a list")
+        rows = []
+    for row in rows:
+        if not isinstance(row, dict) or not isinstance(row.get("id"), str) or not row["id"]:
+            errors.append("creative_brief sources need a string id")
+            continue
+        if row["id"] in sources:
+            errors.append(f"duplicate creative_brief source id {row['id']}")
+        sources.add(row["id"])
+        if not isinstance(row.get("source"), str) or not row["source"].strip():
+            errors.append(f"creative_brief source {row['id']} needs its real pointer")
+
+    def sourced(row, name):
+        if not isinstance(row, dict):
+            errors.append(f"creative_brief {name} must be a sourced object")
+            return False
+        if not isinstance(row.get("text"), str) or not row["text"].strip():
+            errors.append(f"creative_brief {name} needs text")
+        ids = row.get("source_ids")
+        if not isinstance(ids, list) or not ids or any(not isinstance(x, str) or x not in sources for x in ids):
+            errors.append(f"creative_brief {name} needs known source_ids")
+        return True
+
+    for name in ("product_variant", "audience_situation", "objective", "mechanism",
+                 "offer", "cta", "constraints", "delivery_intent"):
+        sourced(brief.get(name), name)
+    mechanism = brief.get("mechanism")
+    facts = {row["id"] for row in bank.get("facts", []) if isinstance(row, dict) and row.get("id")}
+    if isinstance(mechanism, dict):
+        ids = mechanism.get("fact_ids")
+        if not isinstance(ids, list) or any(not isinstance(x, str) or x not in facts for x in ids):
+            errors.append("creative_brief mechanism fact_ids must cite product facts")
+        elif not ids and mechanism.get("status") != "unknown":
+            errors.append("creative_brief mechanism needs product facts or status unknown")
+        if mechanism.get("status") == "unknown" and not brief.get("unknowns"):
+            errors.append("creative_brief unknown mechanism needs a nonempty unknowns list")
+    for name in ("prior_decisions", "locked_copy"):
+        rows = brief.get(name)
+        if not isinstance(rows, list):
+            errors.append(f"creative_brief {name} must be a list, empty when none apply")
+            continue
+        for i, row in enumerate(rows):
+            if sourced(row, f"{name}[{i}]") and name == "prior_decisions":
+                if row.get("scope") not in ("project", "brand") or not row.get("applies_to"):
+                    errors.append("creative_brief prior decision needs scope and applicability")
+                if "avoid_phrase" in row and (not isinstance(row["avoid_phrase"], str) or not row["avoid_phrase"].strip()):
+                    errors.append("creative_brief avoid_phrase must be a nonempty string")
+    if not isinstance(brief.get("unknowns"), list) or any(not isinstance(x, str) or not x.strip() for x in brief.get("unknowns", [])):
+        errors.append("creative_brief unknowns must be a list of gaps and supported alternatives")
+    return errors
+
+
 def validate_bank(bank):
     errors = []
     if not isinstance(bank, dict):
@@ -90,10 +154,16 @@ def validate_bank(bank):
                     errors.append(f"angle {aid} {field} cites unknown evidence {eid}")
                 elif field == "product_role" and eid not in fact_ids:
                     errors.append(f"angle {aid} product_role {eid} is not a product fact")
+    if "creative_brief" in bank and not errors:
+        errors.extend(validate_brief(bank["creative_brief"], bank))
     return errors
 
 
-def select_context(bank, brand_id, product_id, template_id, angle_ids=None):
+def select_context(bank, brand_id, product_id, template_id, angle_ids=None, brief=None):
+    if not isinstance(bank, dict):
+        raise ValueError("angle bank must be an object")
+    if brief is not None:
+        bank = dict(bank, creative_brief=brief)
     errors = validate_bank(bank)
     if errors:
         raise ValueError("; ".join(errors))
@@ -119,11 +189,19 @@ def main():
     ap.add_argument("--product-id", required=True)
     ap.add_argument("--template-id", required=True)
     ap.add_argument("--angle-id", action="append")
+    ap.add_argument("--brief", help="Sourced current-run creative brief; retained in angle-context")
     ap.add_argument("--out", default="working/script/angle-context.json")
     args = ap.parse_args()
     try:
+        brief = None
+        if args.brief:
+            brief = json.loads(Path(args.brief).read_text())
+            # An explicitly supplied null must not take the legacy no-brief path.
+            if not isinstance(brief, dict):
+                raise ValueError("creative_brief must be an object")
         context = select_context(json.loads(Path(args.bank).read_text()), args.brand_id,
-                                 args.product_id, args.template_id, args.angle_id)
+                                 args.product_id, args.template_id, args.angle_id,
+                                 brief)
     except (OSError, ValueError, TypeError) as exc:
         ap.exit(2, f"angle handoff: {exc}\n")
     out = Path(args.out)

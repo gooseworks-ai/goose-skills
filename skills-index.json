@@ -1,6 +1,6 @@
 {
   "version": "1.3.0",
-  "generated": "2026-10-04",
+  "generated": "2026-10-06",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -1864,7 +1864,8 @@
         "skills/ads/capabilities/create-creator-takes-h3/scripts/plan_takes.py",
         "skills/ads/capabilities/create-creator-takes-h3/scripts/run_takes.py",
         "skills/ads/capabilities/create-creator-takes-h3/skill.meta.json",
-        "skills/ads/capabilities/create-creator-takes-h3/tests/smoke-test.md"
+        "skills/ads/capabilities/create-creator-takes-h3/tests/smoke-test.md",
+        "skills/ads/capabilities/create-creator-takes-h3/tests/test_make_character.py"
       ],
       "metadata": {
         "slug": "create-creator-takes-h3",
@@ -2289,7 +2290,8 @@
         "skills/ads/capabilities/create-vo-elevenlabs/scripts/read_pronunciations.py",
         "skills/ads/capabilities/create-vo-elevenlabs/skill.meta.json",
         "skills/ads/capabilities/create-vo-elevenlabs/tests/smoke-test.md",
-        "skills/ads/capabilities/create-vo-elevenlabs/tests/test_gen_vo.py"
+        "skills/ads/capabilities/create-vo-elevenlabs/tests/test_gen_vo.py",
+        "skills/ads/capabilities/create-vo-elevenlabs/tests/test_timestamps.py"
       ],
       "metadata": {
         "slug": "create-vo-elevenlabs",
@@ -6556,6 +6558,51 @@
       }
     },
     {
+      "slug": "render-hook-replacement",
+      "name": "render-hook-replacement",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Replace an existing video's opening with a supplied clip or free kinetic text hook while retaining and verifying every original body frame, audio, captions and ending. Use for surgical hook tests rather than regenerating the complete ad.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-hook-replacement",
+      "files": [
+        "skills/ads/capabilities/render-hook-replacement/SKILL.md",
+        "skills/ads/capabilities/render-hook-replacement/config.example.json",
+        "skills/ads/capabilities/render-hook-replacement/references/hook-replacement.md",
+        "skills/ads/capabilities/render-hook-replacement/scripts/make_demo.py",
+        "skills/ads/capabilities/render-hook-replacement/scripts/replace_hook.py",
+        "skills/ads/capabilities/render-hook-replacement/scripts/replace_pack.py",
+        "skills/ads/capabilities/render-hook-replacement/skill.meta.json",
+        "skills/ads/capabilities/render-hook-replacement/tests/smoke-test.md",
+        "skills/ads/capabilities/render-hook-replacement/tests/test_replace_hook.py"
+      ],
+      "metadata": {
+        "slug": "render-hook-replacement",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-hook-replacement",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch",
+          "review-finished-ad"
+        ],
+        "requires_tools": [
+          "python3",
+          "ffmpeg",
+          "ffprobe"
+        ]
+      }
+    },
+    {
       "slug": "render-hypermotion",
       "name": "render-hypermotion",
       "category": "capabilities",
@@ -6668,13 +6715,16 @@
       "name": "render-imessage-chat",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Assemble an iMessage chat-reveal video ad from a thread JSON — one continuous Playwright recording of the conversation animating in (typing dots, composer typing, bubble pops, auto-scroll) crossfaded into a designed end card, with iMessage send/receive SFX and an optional ducked music bed. FREE assembly (Playwright + ffmpeg); the recipe supplies the per-brand thread + product + end-card config and gates the paid product-image/music calls to their own capabilities. Use for the imessage-chat format.",
+      "description": "Render a configurable iMessage conversation inside a properly framed phone, then a brand end card. Uses the original send/receive sounds and a shared frame timeline for text, typing, scrolling and sound. Free local Playwright + ffmpeg assembly; optional image/music generation belongs to separate gated capabilities.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-imessage-chat",
       "files": [
         "skills/ads/capabilities/render-imessage-chat/SKILL.md",
         "skills/ads/capabilities/render-imessage-chat/assets/sfx/imessage-receive.mp3",
         "skills/ads/capabilities/render-imessage-chat/assets/sfx/imessage-send.mp3",
+        "skills/ads/capabilities/render-imessage-chat/references/imessage-reference.md",
+        "skills/ads/capabilities/render-imessage-chat/scripts/chat-driver.js",
+        "skills/ads/capabilities/render-imessage-chat/scripts/check-render.py",
         "skills/ads/capabilities/render-imessage-chat/scripts/config.example.json",
         "skills/ads/capabilities/render-imessage-chat/scripts/end-card.template.html",
         "skills/ads/capabilities/render-imessage-chat/scripts/mockup/generate.js",
@@ -6684,10 +6734,12 @@
         "skills/ads/capabilities/render-imessage-chat/scripts/package.json",
         "skills/ads/capabilities/render-imessage-chat/scripts/record-chat.js",
         "skills/ads/capabilities/render-imessage-chat/scripts/render-end-card.js",
+        "skills/ads/capabilities/render-imessage-chat/scripts/render.sh",
         "skills/ads/capabilities/render-imessage-chat/scripts/sfx-embedded.json",
         "skills/ads/capabilities/render-imessage-chat/scripts/stitch.sh",
         "skills/ads/capabilities/render-imessage-chat/skill.meta.json",
         "skills/ads/capabilities/render-imessage-chat/tests/smoke-test.md",
+        "skills/ads/capabilities/render-imessage-chat/tests/test_chat.js",
         "skills/ads/capabilities/render-imessage-chat/tests/test_stitch.py"
       ],
       "metadata": {
@@ -7063,15 +7115,38 @@
       "name": "render-podcast-skit",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Assemble a two-host fake-podcast skit ad from a config — per-line lipsync clips hard-concatenated in script order, scaled/padded to 1080×1920, WHITE bottom-center captions (up to 5 words per cue, broken on sentence punctuation, word-wrapped to stay in-frame, held at least 0.9s) built from each line's OWN ElevenLabs char-level timestamps (offset by cumulative clip start, never Whisper), and closed on a Playwright/PIL brand end card composited from the real wordmark — never AI-rendered text. This is the FREE deterministic assembly stage (concat + white captions + end card + crf28 encode); the per-line VOs, photoreal gpt-image-2 base stills, expression variants, and lipsync clips come from create-vo-elevenlabs / create-image-gpt-image-fal / create-video-fal. Use for the podcast-skit format.",
+      "description": "Render a two-host podcast ad from a brand config and dialogue script. Includes the working planner, full-frame and split-screen assembly, captions from measured character timings, brand end card, approved paid-step adapters, and 65 quality-check falsification cases. Use for short conversational ads with two stable hosts in one room.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-podcast-skit",
       "files": [
         "skills/ads/capabilities/render-podcast-skit/SKILL.md",
+        "skills/ads/capabilities/render-podcast-skit/recipe.json",
         "skills/ads/capabilities/render-podcast-skit/scripts/PIPELINE.md",
         "skills/ads/capabilities/render-podcast-skit/scripts/README.md",
+        "skills/ads/capabilities/render-podcast-skit/scripts/arcs.json",
+        "skills/ads/capabilities/render-podcast-skit/scripts/build_overlays.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/check_framing_render.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/compose_master.py",
         "skills/ads/capabilities/render-podcast-skit/scripts/config.example.json",
+        "skills/ads/capabilities/render-podcast-skit/scripts/config_io.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/cost_model.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/crop_singles.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/gates.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/gen_paid.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/grade_episode.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/make_lockup.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/one_shot.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/pick_voices.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/plan_beats.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/plan_cuts.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/preview_framing.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/provider_commands.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/script.example.json",
+        "skills/ads/capabilities/render-podcast-skit/scripts/selftest.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/shape_vo.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/test_distribution.py",
         "skills/ads/capabilities/render-podcast-skit/skill.meta.json",
+        "skills/ads/capabilities/render-podcast-skit/source-manifest.json",
         "skills/ads/capabilities/render-podcast-skit/tests/smoke-test.md"
       ],
       "metadata": {
@@ -7090,7 +7165,21 @@
           ]
         },
         "requires_skills": [
+          "create-vo-elevenlabs",
+          "create-image-gpt-image-fal",
+          "create-video-fal",
           "watch"
+        ],
+        "version": 2,
+        "features": [
+          "Two-host dialogue rendering",
+          "Measured audio timeline",
+          "Full-frame and split cuts",
+          "65 quality-check falsification cases"
+        ],
+        "requires_tools": [
+          "ffmpeg",
+          "python"
         ]
       }
     },
@@ -7352,7 +7441,8 @@
         "skills/ads/capabilities/render-street-interview/tests/test_edit_timeline.py",
         "skills/ads/capabilities/render-street-interview/tests/test_finishing.py",
         "skills/ads/capabilities/render-street-interview/tests/test_prompt_budget.py",
-        "skills/ads/capabilities/render-street-interview/tests/test_recut_media.py"
+        "skills/ads/capabilities/render-street-interview/tests/test_recut_media.py",
+        "skills/ads/capabilities/render-street-interview/tests/test_selector_route.py"
       ],
       "metadata": {
         "slug": "render-street-interview",
@@ -9171,7 +9261,10 @@
         "skills/ads/playbooks/video-production-harness/polish.md",
         "skills/ads/playbooks/video-production-harness/preflight-audit.md",
         "skills/ads/playbooks/video-production-harness/promote.md",
+        "skills/ads/playbooks/video-production-harness/references/editorial-review.md",
+        "skills/ads/playbooks/video-production-harness/references/hook-compatibility.md",
         "skills/ads/playbooks/video-production-harness/references/review-script-shortform.md",
+        "skills/ads/playbooks/video-production-harness/references/specialist-handoff.md",
         "skills/ads/playbooks/video-production-harness/release.json",
         "skills/ads/playbooks/video-production-harness/review-video.md",
         "skills/ads/playbooks/video-production-harness/scripts/assemble.py",
@@ -9198,9 +9291,9 @@
         },
         "requires_skills": [],
         "slug": "video-production-harness",
-        "source_commit": "4ea3d4f7e95d862b40a843d8f7679b0f417b171b",
-        "source_hash": "c714786a99b7e7d42507e5a3284cd280c5849b3a5454ccf32a773e0267b41080",
-        "source_version": "2-c714786a99b7",
+        "source_commit": "2c7c59536f14787e91529573e835d4fe2eb17bb8",
+        "source_hash": "6ea2118f6e9fb554c4df6f8cb909b8733ae82d4fea349ee47430d7f841020ce2",
+        "source_version": "3-6ea2118f6e9f",
         "tags": [
           "ads",
           "content"
@@ -9731,9 +9824,12 @@
         "skills/ads/capabilities/write-video-ad-script/scripts/lint_scripts.py",
         "skills/ads/capabilities/write-video-ad-script/scripts/media_proxy.py",
         "skills/ads/capabilities/write-video-ad-script/scripts/prepare_angle_context.py",
+        "skills/ads/capabilities/write-video-ad-script/scripts/verify_handoff.py",
         "skills/ads/capabilities/write-video-ad-script/skill.meta.json",
         "skills/ads/capabilities/write-video-ad-script/tests/test_angle_handoff.py",
+        "skills/ads/capabilities/write-video-ad-script/tests/test_creative_brief.py",
         "skills/ads/capabilities/write-video-ad-script/tests/test_critique_scripts.py",
+        "skills/ads/capabilities/write-video-ad-script/tests/test_handoff_release.py",
         "skills/ads/capabilities/write-video-ad-script/tests/test_lint_scripts.py",
         "skills/ads/capabilities/write-video-ad-script/tests/test_pacing.py"
       ],

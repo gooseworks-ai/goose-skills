@@ -1,0 +1,370 @@
+{
+  "engine": "agent-recipe",
+  "version": 8,
+  "format": "podcast-skit",
+  "atoms": [
+    "create-vo-elevenlabs",
+    "create-image-gpt-image-fal",
+    "create-video-fal",
+    "render-podcast-skit",
+    "watch"
+  ],
+  "runner": {
+    "_comment": "The installed render-podcast-skit capability bundles every runner script, example and gate. All relative scripts/ paths below are relative to that installed capability, not the user project. Studio remains the canonical source; scripts/video-formats/export-podcast.py exports the package.",
+    "free": [
+      "scripts/plan_beats.py   script.json -> beats.json",
+      "scripts/plan_cuts.py    beats.json  -> cutplan.json (multicut + split-screen)",
+      "scripts/build_overlays.py  caption PNGs + end card PNG",
+      "scripts/compose_master.py  one ffmpeg call -> master.mp4",
+      "scripts/gates.py        every check, on the render",
+      "scripts/selftest.py     proves each check fails on known-bad input",
+      "scripts/cost_model.py   per-second prices with the repo file that records each",
+      "scripts/crop_singles.py   cut both singles out of the plate, $0",
+      "scripts/pick_voices.py    propose a voice per host from the account library",
+      "scripts/grade_episode.py  score the render against the nine real clips"
+    ],
+    "paid": [
+      "scripts/gen_paid.py plate    ONE two-shot carrying BOTH hosts and the set",
+      "scripts/gen_paid.py vo       ElevenLabs with-timestamps, one call per beat",
+      "scripts/gen_paid.py stills   per-host stills: OPT-IN, it is how the set drifts",
+      "scripts/gen_paid.py clips    audio-driven lipsync, one call per beat",
+      "scripts/gen_paid.py idle     one silent listener clip per host for split-screen"
+    ],
+    "driver": "scripts/one_shot.py --config config.json --script script.json --run-dir <run> [--no-paid]",
+    "_paid_note": "ONE script with a step argument, not four scripts. recipe.json named gen_vo.py, gen_stills.py, gen_clips.py and gen_inserts.py, none of which exist, so anyone following the recipe hit a missing file at the first paid step.",
+    "presets": "Every script takes --preset, applied from the `presets` block of the one config: `plain` (no dynamic layer), `cropped-stills` (singles cropped free from a locked two-shot plate), `preview-480p` (cheaper lipsync, never for delivery)."
+  },
+  "inputs": {
+    "config": "required. One JSON file per brand. Copy scripts/config.example.json (invented demo brand Fernwick) and bind brand_name, product, set_description, hosts, characters, end_card, and whatever you want to change in edit/captions/assembly. No code edit for a new brand.",
+    "script": "required. A SEPARATE JSON file: {arc, lines:[{n, who, text, still?, caption?, split?}]}. The recipe does not supply lines and does not supply an arc. It supplies a MENU: scripts/arcs.json, the eight structures observed in the measured reference set, from which this file picks one id. Which one, and what is true about this brand, is a decision made here.",
+    "character_stills": "required. Two base stills, mouths closed, plus at least two expression variants per host so the multicut has somewhere to cut to. Variants are edit-anchored on their host's base as the sole reference.",
+    "end_card_asset": "required. The brand's real wordmark file plus CTA and URL. If it is absent the end card renders a stand-in stamped PREVIEW STAND-IN and warns; that is never a deliverable."
+  },
+  "config_contract": {
+    "_comment": "What the config may set. Anything not listed is not configurable and lives in the scripts. Defaults are in scripts/config.example.json.",
+    "identity": [
+      "brand_name",
+      "product",
+      "campaign",
+      "title",
+      "brand_guardrails",
+      "set_description"
+    ],
+    "canvas": [
+      "width",
+      "height",
+      "fps",
+      "aspect_ratio"
+    ],
+    "cast": [
+      "hosts.<key>.name",
+      "hosts.<key>.stance",
+      "hosts.<key>.voice_id",
+      "hosts.<key>.model",
+      "hosts.<key>.settings"
+    ],
+    "engines": [
+      "engines.stills",
+      "engines.lipsync",
+      "engines.lipsync_fallback",
+      "engines.motion"
+    ],
+    "characters": [
+      "characters.realism_suffix",
+      "characters.still_rules",
+      "characters.variant_template",
+      "characters.bases",
+      "characters.expression_variants"
+    ],
+    "edit": [
+      "edit.seed",
+      "edit.words_per_sec",
+      "edit.multicut.enabled",
+      "edit.multicut.split_long_lines",
+      "edit.multicut.split_min_words",
+      "edit.multicut.max_beat_sec",
+      "edit.multicut.min_cut_sec",
+      "edit.multicut.max_cut_sec",
+      "edit.split_screen.enabled",
+      "edit.split_screen.layout",
+      "edit.split_screen.auto_every",
+      "edit.split_screen.max_consecutive",
+      "edit.split_screen.min_beat_sec",
+      "edit.split_screen.gap_px",
+      "edit.split_screen.gap_hex",
+      "edit.split_screen.listener_dim",
+      "edit.split_screen.crop_bias_y",
+      "edit.split_screen.seam_ratios",
+      "edit.split_screen.bottom_sources",
+      "edit.split_screen.product_still",
+      "edit.payoff_single.enabled",
+      "edit.framing.sizes",
+      "edit.framing.crops",
+      "edit.framing.bands.per_10s_min",
+      "edit.framing.bands.per_10s_max",
+      "edit.framing.bands.max_share",
+      "edit.framing.bands.real_per_10s_min",
+      "edit.framing.bands.real_max_share",
+      "edit.frame_brand.enabled",
+      "edit.frame_brand.lockup_file",
+      "edit.frame_brand.corner",
+      "edit.frame_brand.width_px",
+      "edit.frame_brand.margin_px",
+      "edit.frame_brand.opacity",
+      "edit.frame_brand.persistent",
+      "edit.inserts.enabled",
+      "edit.inserts.count",
+      "edit.inserts.sec",
+      "edit.cut_patterns"
+    ],
+    "captions": [
+      "captions.font_file",
+      "captions.font_size",
+      "captions.color_hex",
+      "captions.stroke_hex",
+      "captions.stroke_width",
+      "captions.uppercase",
+      "captions.max_words_per_cue",
+      "captions.min_dur_sec",
+      "captions.wrap_max_width_px",
+      "captions.bottom_anchor_px"
+    ],
+    "end_card": [
+      "end_card.duration_sec",
+      "end_card.background",
+      "end_card.accent_hex",
+      "end_card.wordmark_file",
+      "end_card.cta_text",
+      "end_card.url_text"
+    ],
+    "assembly": [
+      "assembly.preset",
+      "assembly.crf",
+      "assembly.audio_bitrate"
+    ],
+    "fixed_in_code_not_config": [
+      "the safe zone y=285..1635 for caption ink",
+      "filter_complex concat (the concat demuxer drops audio on a duration mismatch)",
+      "one audio segment per beat, one video segment per cut",
+      "captions built from the voiceover's own timestamps, never from Whisper",
+      "brand type composited from a file, never drawn by a generator",
+      "every paid script refusing to fire without --confirm"
+    ]
+  },
+  "script_contract": {
+    "_comment": "Enforced by scripts/gates.py, and scripts/selftest.py proves each rule fails on a known-bad line.",
+    "shape": "{arc:<an id from scripts/arcs.json>, lines:[{n:int, who:<a host key>, text:str, still?:str, caption?:str, split?:bool, payoff?:bool}]}",
+    "direction": "scripts/arcs.json carries the eight structures observed in the measured reference set, the tone rule, the brand-the-frame rule, the hook rule and the words-per-second band. It is DIRECTION, not a story: no cast, no stances and no lines live in this recipe or in that file. The author picks one arc id; the recipe supplies the menu and never the choice.",
+    "rules": [
+      "max_words_per_line words or fewer per line (default 10)",
+      "no acronyms: ElevenLabs reads them letter by letter",
+      "no digits: spell them, 'nine at night' not '9pm'",
+      "no em dashes anywhere, in a line or in a caption",
+      "who must be a declared host key",
+      "still, if given, must be a declared base or variant belonging to that host",
+      "split:true forces a split-screen beat regardless of the automatic cadence",
+      "arc must be declared and must be one of the ids in scripts/arcs.json",
+      "the opening line must not announce the format: nothing in the measured set says what it is",
+      "no feature list: in the references every specification is an answer to a question somebody just asked",
+      "the one shape that none of the nine measured references uses is refused outright by gates.gate_script_direction"
+    ],
+    "intonation_marks": {
+      "...": "trailing thought",
+      "?": "rising",
+      ".": "hard stop",
+      ",": "breath beat",
+      "CAPS": "emphasis"
+    }
+  },
+  "engines": {
+    "_comment": "Rates and the repo file recording each are in scripts/cost_model.py; run it for the table. Two roles, and they are not interchangeable.",
+    "stills": {
+      "default": "openai/gpt-image-2@high",
+      "usd_per_image": 0.19,
+      "note": "Quality-driven choice, not a cost one. Nano Banana faces read as AI stock. Seedream v5 lite is cheaper at $0.04 and is a legitimate swap on cost, but it does NOT fix the Seedance refusal, so do not swap for that reason."
+    },
+    "lipsync": {
+      "default": "veed-fabric-1.0@720p",
+      "usd_per_sec": 0.15,
+      "requirement": "must move the mouth to a supplied ElevenLabs MP3. Any engine that speaks its own invented dialogue is disqualified for the hosts, whatever it costs."
+    },
+    "motion": {
+      "default": "kling-v3-std-i2v",
+      "usd_per_sec": 0.08,
+      "use": "Reserved configuration only. Motion inserts are not implemented by this runner; keep edit.inserts.enabled false."
+    },
+    "forbidden": {
+      "seedance-2.0": "Refuses photoreal human faces at submit (partner_validation_failed). Recorded as firing for GPT-Image-2, Seedream v4 and a fresh Seedream v5 Pro face, so swapping the image model does not clear it, and a refused submit still bills.",
+      "minimax-h3": "Its image-to-video does not honour the input image as a literal first frame (measured 42.3/255 drift at frame 0, a 1.8x reframe, an invented background). This format sells a set that holds across every cut. H3 Max additionally will not hold an eyeline on the lens.",
+      "veo3.1-fast": "Writes and speaks its own audio and ad-libs words, so it cannot carry an approved read."
+    }
+  },
+  "edit_model": {
+    "_comment": "Implemented in scripts/plan_cuts.py and scripts/compose_master.py, not described in prose and left to the operator. It can be switched off wholesale with the `plain` preset, and five gates measure it and skip themselves when it is off.",
+    "principle": "The audio timeline is fixed and paid for. The picture is re-cut over it. So multicut and split-screen are free, and so is every re-cut.",
+    "beat": "one voiceover call, one lipsync clip. A script line longer than edit.multicut.max_beat_sec is split at its own punctuation into several beats: same seconds, same spend, more cuts.",
+    "segment_kinds": {
+      "speaker": "the beat's own lipsync clip, trimmed to this window. The only kind that may show the speaking host full frame, because it is the only one whose mouth tracks.",
+      "listener": "the other host full frame, muted, sampled from one of their own clips at a seeded offset. This is what makes a cut inside a beat possible: cutting to another still of the speaker would show a mouth that does not move.",
+      "insert": "a short image-to-video cutaway on engines.motion. The only segment that spends, so it is budgeted and off by default.",
+      "split": "both hosts at once, stacked, speaker on top, listener dimmed. Picture only, so free."
+    },
+    "pattern_bank": "edit.cut_patterns. A cursor walk started at edit.seed picks the first geometrically eligible pattern that is not a repeat of the previous beat. No random numbers, so the same seed and script always produce the same cut plan and a regression is a diff.",
+    "eligibility": "a pattern is eligible only if every segment clears edit.multicut.min_cut_sec and none exceeds edit.multicut.max_cut_sec at this beat's duration. That is why a long beat cannot be a single held shot and a very short beat cannot be a three-way."
+  },
+  "instructions": {
+    "inline": "PODCAST-SKIT, version 8. Fetch render-podcast-skit and its required skills before starting. Run every scripts/ command from the installed render-podcast-skit capability folder; config.json, script.json and the run directory belong to the brand project, outside the package. Read the bundled scripts/README.md for prerequisites and exact commands. Set PODCAST_SKILLS_DIR to the parent folder containing the installed capabilities if they are not siblings. The runner uses the existing create-vo-elevenlabs, create-image-gpt-image-fal and create-video-fal capabilities for paid generation. It requires no private Studio checkout. A vertical 1080x1920 two-host dialogue piece in one room. One voiceover beat per lipsync clip. Roughly 28 to 35 seconds. It should read like a clip from a real podcast.\n\nTWO EDITS, ONE RECIPE. By default the picture cuts inside a beat, reframes, and splits on a cadence. With --preset plain it is one full-frame picture per beat, cut only where the speaker changes. Ask which the brand wants; see choices.edit_energy.\n\nWHAT THIS RECIPE DOES NOT DECIDE. It does not decide the story. It carries no arc, no stances and no worked-example lines. Those live in script.json. The eight arcs in scripts/arcs.json were each observed in a real clip; pick one and WRITE it, because gates.gate_script_turn_structure measures turn runs and word share and will refuse an arc that was declared and not written.\n\nHARD RULES. Never invent a claim, a customer, a number or a result. Respect config.brand_guardrails. Brand type comes from brand.display_font or brand.wordmark_file and is never drawn by a generator; with neither, the end card stamps PREVIEW. Never make a paid call without explicit operator approval: gen_paid.py refuses to fire without --confirm and prints the exact dollar amount first, and --execute without --confirm is an error.\n\nSTEP 0 - Intake, free. Write config.json from scripts/config.example.json and script.json from scripts/script.example.json. Give every host an `appearance`, then run pick_voices.py with --library pointing at an exported voice-library JSON, which proposes a voice per host from that library matched to it and records voice_name and voice_gender beside the id. Without appearance the plate cannot tell the two people apart; without voice_gender nothing relates a voice to a body, which is how a man shipped reading in a young woman's voice. Then plan_beats, plan_cuts, build_overlays, compose_master --no-paid, and gates.py. That is a watchable $0 preview of the real cut. Fix the script and the edit knobs here, where changes are free.\n\nSTEP 1 - Voiceover, PAID. gen_paid.py vo --confirm --execute. The character timestamps are what the captions sync to; never Whisper the render. The step writes voiceovers/manifest.json, and re-running plan_beats.py then switches the timeline from estimated to MEASURED. Do that before paying for lipsync or you pay per second against word-count guesses.\n\nSTEP 2 - The plate, PAID, $0.19. gen_paid.py plate --confirm --execute builds ONE wide two-shot from set_description plus both hosts' appearance, then crop_singles.py cuts both singles out of it for nothing. Generating a still PER HOST puts the two hosts in two different rooms, every time, and that path now refuses to run unless characters.allow_per_host_stills is set. LOOK AT THE PLATE before spending again: a bad plate is inherited by every single. The crop centres are config values, not detected; three cheap detectors were measured on the demo plate and all three found furniture.\n\nFor a split cut, also run gen_paid.py idle --confirm --execute after the singles exist; each listener must have a silent idle clip.\n\nSTEP 3 - Lipsync clips, PAID, largest spend. gen_paid.py clips --confirm --execute. 720p: 480p upscales 2.25x to 1080 and visibly costs skin texture. Idempotent, so a partial failure re-runs and already-rendered clips are skipped. One retry is built in.\n\nSTEP 4 - Assemble, FREE. build_overlays.py then compose_master.py. Each clip is retimed to its beat, because the lipsync engine returns clips a few milliseconds short and concatenation turns that into picture running ahead of sound.\n\nSTEP 5 - Check the render, not the inputs. gates.py, then check_framing_render.py with --master EXPLICITLY (it defaults to master-preview.mp4 and will measure a stale file). Then watch the whole thing end to end. Then selftest.py, which proves every check can fail.\n\nRE-CUTTING IS FREE. A different edit energy, a new cadence, new caption chunking, a swapped end card: change the config or add a preset and re-run steps 0 and 4. Nothing regenerates."
+  },
+  "quality_checks": [
+    "1080x1920, an audio stream present, duration within 0.3s of the plan. Measured from the file by gates.gate_master.",
+    "Every caption cue's rendered ink inside y=285..1635 and not touching a frame edge. Measured from the PNG's alpha by gates.gate_caption_safe_zone.",
+    "Every beat's cuts tile that beat with no gap and no overlap, and the picture covers the voiceover exactly.",
+    "No cut under edit.multicut.min_cut_sec and none over max_cut_sec.",
+    "No full-frame speaking cut from a source that is not that beat's lipsync clip.",
+    "Every split-screen cut shows two different hosts.",
+    "No two adjacent single cuts on the same still.",
+    "No acronyms, digits or em dashes in any spoken line.",
+    "No real client name anywhere in the config.",
+    "Every still is a real binary, not a git-LFS pointer.",
+    "scripts/selftest.py green: every check above is clean on good input and bites on a named mutation.",
+    "SCORED, NOT GATED: grade_episode.py measures cuts per 10s, median shot, mean luma and the share of pixels above 150 on the finished render, against the same four measured on the nine real clips. Bands are those clips' observed min and max, not a target anyone invented, and the scorecard blocks nothing. The bar is GRADING.md, written before the next brands were built so it could not be fitted to them. The shipped demo scores inside all four."
+  ],
+  "cost": {
+    "usd": 5.97,
+    "low_usd": 4.2,
+    "high_usd": 6.29,
+    "basis": "measured",
+    "as_of": "2026-10-04",
+    "note": "Measured across three brands built end to end: Marrow $5.62, Coppice $5.99, Fathom $6.29. One landscape two-shot plate $0.19, voiceover $0.12-0.14, two idle listener clips for the split $1.80, lipsync at 720p $3.51-$4.16. low_usd is the same episode WITHOUT the split layer, which drops the two idle clips. Everything else is free: planning, cropping, captions, grade, brand card, room tone and every gate. The earlier $4.67 predates the split layer and the landscape plate."
+  },
+  "card": {
+    "title": "Podcast skit",
+    "blurb": "Two hosts in one room, talking. One voiceover beat per lipsync clip, cut on the speaker.",
+    "ratio": "9:16",
+    "duration_sec": "28-35",
+    "good_for": [
+      "a product story told as a conversation",
+      "a sponsor read that is never spoken, only on the frame",
+      "a format that can run weekly with one locked set"
+    ],
+    "not_for": [
+      "hosts handling a product",
+      "hosts moving around the room",
+      "anything needing them to look at each other on cue"
+    ],
+    "description": "Two hosts in one room, talking. One voiceover beat per lipsync clip, cut on the speaker."
+  },
+  "choices": {
+    "_comment": "Creative calls the USER makes. Ask them all in one round before any paid step. `reference` is what the demo build used: an example, never a default. Everything NOT here is format knowledge (scripts/) or a brand fact from the brand kit. There is deliberately no music choice: of nine measured references none scores a two-host clip under dialogue, and the bed is the room.",
+    "arc": {
+      "ask": "What shape is the conversation?",
+      "options": [
+        "one host tells a true story, the other confirms and adds detail",
+        "one host presents an offer, the other asks factual questions",
+        "both agree from the first line that something is absurd and escalate",
+        "one host reads a chronology aloud, deadpan, the other mostly silent",
+        "one host makes a craft observation, the other extends it with a second example",
+        "a third person who was not there answers one question about the two hosts",
+        "an outside artefact makes a claim about one host and the other presses",
+        "one host reads a real document aloud and the others react"
+      ],
+      "reference": "one host tells a true story about a week with the product (story_with_corroborators)",
+      "sets": [
+        "script.arc",
+        "script.lines"
+      ],
+      "_note": "The eight are scripts/arcs.json, each one observed in a real clip. The shape that gates.gate_script_direction refuses by name is not among them and is not described here, because gate_recipe_carries_no_narrative refuses to let the recipe carry it even as a warning. Picking an arc is not enough either: gate_script_turn_structure checks the lines were actually WRITTEN to it, by turn runs and word share."
+    },
+    "hosts": {
+      "ask": "Who are the two people, and what do they sound like?",
+      "options": [
+        "two colleagues who both use the product",
+        "a host and a guest who tried it first",
+        "two friends, one of whom recommended it",
+        "match the brand's target customer"
+      ],
+      "reference": "a South Asian man in his late thirties and an East Asian woman in her early thirties, both in plain clothes",
+      "sets": [
+        "config.hosts.A.appearance",
+        "config.hosts.B.appearance",
+        "config.hosts.A.voice_id",
+        "config.hosts.B.voice_id",
+        "config.hosts.A.voice_gender",
+        "config.hosts.B.voice_gender"
+      ],
+      "_note": "appearance and voice_gender are both required and gate_host_voice_gender compares them. Without appearance the two base prompts are identical and the hosts come back as two strangers in two rooms."
+    },
+    "room": {
+      "ask": "What room are they recording in?",
+      "options": [
+        "a spare room at home, lived in, slightly untidy",
+        "a treated corner of an office, acoustic panels and plants",
+        "a purpose-built studio with a lit backdrop",
+        "a den or games room"
+      ],
+      "reference": "a converted spare room: slat acoustic wall, mismatched armchairs angled toward each other, plants, floorboards",
+      "sets": [
+        "config.set_description"
+      ],
+      "_note": "Keep printed packaging out of it. Lettering is prompt-resistant and came back garbled on a shelf of board games."
+    },
+    "edit_energy": {
+      "ask": "How much should the picture move?",
+      "options": [
+        "still: one full-frame picture per beat, cut only on the speaker",
+        "dynamic: cuts inside a beat, reframes, and a split screen on a cadence"
+      ],
+      "reference": "still (the plain preset)",
+      "sets": [
+        "preset"
+      ],
+      "_note": "`plain` for still, no preset for dynamic. Five gates measure the dynamic edit and skip themselves when it is off, so a still cut is a declared choice rather than a silenced gate. The dynamic planner currently picks framings by least-used rather than by what is being said, which is a known gap."
+    },
+    "end_card": {
+      "ask": "How does it end?",
+      "options": [
+        "a typographic card: the name set large with a rule and a tagline",
+        "a logo card: the brand's own mark over its wordmark",
+        "no card, ending on the last line"
+      ],
+      "reference": "typographic (brand.layout = editorial)",
+      "sets": [
+        "config.brand.layout",
+        "config.brand.display_font",
+        "config.brand.wordmark_file",
+        "config.brand.tagline"
+      ],
+      "_note": "No call to action in any option: of nine references none ends on one. A brand with real type supplies display_font or wordmark_file; with neither the card stamps PREVIEW."
+    },
+    "end_card_style": {
+      "ask": "How should the end card look?",
+      "options": [
+        "brandkit: the full card, mark, wordmark, rule, tagline, a call to action in a pill, and the url",
+        "editorial: type only, left aligned, no mark and no call to action",
+        "stack: a supplied wordmark image over the url, centred, for a brand with real artwork"
+      ],
+      "reference": "brandkit (what the three demo brands used)",
+      "sets": [
+        "config.brand.layout"
+      ],
+      "_note": "Made an explicit choice because the card shipped three times with no mark and no call to action and nobody had decided that: it was inherited from whatever the previous brand used. brandkit needs brand.logo_file and brand.cta_text; with no logo it still composes, just without the mark."
+    }
+  },
+  "sample": {
+    "slug": "podcast-skit-ad",
+    "title": "Podcast skit: payroll for building firms (split)",
+    "ratio": "9:16",
+    "media_url": "https://d2m0qbg34x1ii2.cloudfront.net/ads/samples/6eb98bf4-802e-4156-a443-1d15be0bd02b/media-master-split.mp4",
+    "thumbnail_url": "https://d2m0qbg34x1ii2.cloudfront.net/ads/samples/14a8882f-1618-4473-bd20-c4146d38630c/media-poster.jpg"
+  },
+  "_demo_note": "The demo is the Fernwick build, an INVENTED brand. The references for this format are nine real podcast clips with no advertiser in them, so there is no source brand for a demo brand to differ from. Its mark is typographic and drawn from a font, not from a generator; a real client supplies display_font or wordmark_file and the card stamps PREVIEW with neither.",
+  "execution": "client",
+  "config": {
+    "reference_guides": [
+      {
+        "skill": "render-podcast-skit",
+        "path": "scripts/README.md"
+      }
+    ]
+  }
+}

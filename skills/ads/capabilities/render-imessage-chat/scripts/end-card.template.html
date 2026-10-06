@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>iMessage chat — end card</title>
+{{FONTLINK}}
 <style>
 /* Data-driven end card (1080×1920 9:16). All values are substituted by
    render-end-card.js from the recipe's `end_card` config. Uses a robust system
@@ -21,8 +22,9 @@ html, body {
   font-family: 'Helvetica Neue', Arial, sans-serif; overflow: hidden;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
 }
-.wordmark { max-width: 640px; max-height: 300px; margin-bottom: 90px; text-align: center; }
+.wordmark { width: {{WORDMARK_W}}px; max-width: 640px; max-height: 300px; margin-bottom: 90px; text-align: center; }
 .wordmark svg { width: 100%; height: auto; max-height: 300px; fill: var(--fg); }
+.wordmark img { width: 100%; height: auto; max-height: 300px; object-fit: contain; }
 .wordmark .text { font-size: 96px; font-weight: 800; letter-spacing: -1px; color: var(--fg); }
 
 .proof-row { display: flex; flex-direction: column; align-items: center; gap: 18px; margin-bottom: 100px; }
@@ -39,13 +41,26 @@ html, body {
 
 .cta-pill { background: var(--cta-bg); color: var(--cta-fg); padding: 32px 80px; border-radius: 80px;
   font-family: Georgia, 'Times New Roman', serif; font-weight: 700; font-size: 48px; letter-spacing: 0.5px; }
+.url { margin-top: 40px; font-size: 34px; font-weight: 600; letter-spacing: 0.5px; color: var(--fg); opacity: 0.85; }
+.footnote { position: absolute; left: 90px; right: 90px; bottom: 310px; font-size: 22px; line-height: 1.35;
+  text-align: center; color: var(--fg); opacity: 0.7; }
+.hls { display: flex; flex-direction: column; align-items: center; gap: 6px; margin-bottom: 70px; }
+.hl { font-size: 78px; line-height: 1.05; text-align: center; max-width: 900px; letter-spacing: -0.5px; text-wrap: balance; }
+.pts { text-wrap: balance; font-size: 30px; letter-spacing: 1.5px; text-align: center; max-width: 900px; line-height: 1.6; margin-bottom: 80px; opacity: 0.9; }
+.pts .sep { opacity: 0.5; }
+.pts .pt { white-space: nowrap; }
+body.editorial .wordmark { margin-bottom: 70px; }
+body.editorial .url { margin-top: 44px; }
 </style>
 </head>
-<body>
+<body class="{{LAYOUT}}">
+  {{BODY}}{{BADGES_START}}
   <div class="wordmark">{{WORDMARK}}</div>
   {{PROOF}}
   {{TRIO}}
   <div class="cta-pill">{{CTA}}</div>
+  {{URL}}{{BADGES_END}}
+  {{FOOTNOTE}}
 <script>
 // Signal Playwright when a frame has painted (fonts have started).
 requestAnimationFrame(() => {

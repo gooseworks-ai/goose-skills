@@ -79,6 +79,9 @@ class StreetPreviewTests(unittest.TestCase):
         self.assertEqual(brandkit.expected_lines(c).count(c["question"]),1)
         self.assertEqual(conversation.interaction_type(c), "mic-only")
         self.assertIn("No product, phone or screen is held or demonstrated", p)
+        self.assertIn("The street behind them stays in focus and readable as a real place, never blurred "
+                      "and never bokeh.", p)
+        self.assertTrue(format_spec.lint(p.replace("never blurred and never bokeh", ""), mode="conversation"))
 
     def test_sample_and_challenge_preserve_setup_and_silent_action(self):
         for kind in ("product-sample", "concept-challenge"):

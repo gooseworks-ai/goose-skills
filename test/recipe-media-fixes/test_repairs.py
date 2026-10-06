@@ -149,3 +149,66 @@ def test_real_mixed_rate_measured_join(tmp_path,fps_values):
             assert len(data)==3 and sum(data)>60
             frames.append(data)
         assert sum(abs(a-b) for a,b in zip(*frames))>60
+
+# The exact fact saved on staging on 30 Sep 2026 by the goose-video entry skill.
+STAGING_GOOSEWORKS = {'brand': {'id': '37400aa6-f34b-4956-bab6-afd08159f7bb', 'name': 'Gooseworks'},
+                      'learnings': [{'id': '0d874c21-342e-4381-aba4-2dffea4363f0', 'kind': 'must',
+                                     'text': 'Pronounce "Gooseworks" as "Goose Works"', 'source': 'user',
+                                     'created_at': '2026-09-30T12:02:39.329Z'},
+                                    {'id': 'd557a54c', 'kind': 'dont', 'source': 'user',
+                                     'text': 'Never say or imply: GooseWorks has named customers'}]}
+
+@pytest.mark.parametrize('wrap', ['payload', 'result', 'tool_result', 'text_only'])
+def test_pronunciation_reads_live_entry_format_and_mcp_shapes(wrap):
+    payload = json.loads(json.dumps(STAGING_GOOSEWORKS))
+    context = {'payload': payload, 'result': {'result': payload},
+               'tool_result': {'content': [{'type': 'text', 'text': json.dumps(payload)}],
+                               'structuredContent': {'result': payload}},
+               'text_only': {'content': [{'type': 'text', 'text': json.dumps(payload)}]}}[wrap]
+    rules = pron.rules_from_context(context, payload['brand']['id'], ['Gooseworks', 'GOOSEWORKS'])
+    assert rules['pronunciations'] == [{'term': 'Gooseworks', 'say_as': 'Goose Works',
+                                        'fact_id': '0d874c21-342e-4381-aba4-2dffea4363f0'}]
+
+def test_pronunciation_formats_agree_and_unrelated_facts_ignored():
+    assert pron.parse_fact('Pronounce "Drinkag1" as "drink A G one"') == ('Drinkag1', 'drink A G one')
+    assert pron.parse_fact('Pronounce “Hume” as “hyoom”.') == ('Hume', 'hyoom')
+    assert pron.parse_fact('Pronunciation: Demo => dee mo') == ('Demo', 'dee mo')
+    for text in ['Never say or imply: GooseWorks has named customers', 'Pronounce it carefully', '']:
+        assert pron.parse_fact(text) is None
+    c = {'brand': {'id': 'x'}, 'learnings': [
+        {'id': '1', 'kind': 'must', 'source': 'user', 'text': 'Pronounce "X" as "ex"'},
+        {'id': '2', 'kind': 'must', 'source': 'user', 'text': 'Pronunciation: X => axe'}]}
+    with pytest.raises(ValueError):
+        pron.rules_from_context(c, 'x', ['X'])
+
+def test_pronunciation_cli_writes_rules_for_gen_vo(tmp_path):
+    import subprocess
+    ctx = tmp_path / 'brand.json'; ctx.write_text(json.dumps({'result': STAGING_GOOSEWORKS}))
+    out = tmp_path / 'brand-rules.json'
+    subprocess.run([sys.executable, str(CAP / 'create-vo-elevenlabs/scripts/read_pronunciations.py'),
+                    '--context', str(ctx), '--brand', STAGING_GOOSEWORKS['brand']['id'],
+                    '--require', 'Gooseworks', '--out', str(out)], check=True)
+    plan = subprocess.run([sys.executable, str(CAP / 'create-vo-elevenlabs/scripts/gen_vo.py'),
+                           '--text', 'Gooseworks makes the video.', '--voice', 'v', '--out', str(tmp_path / 'vo.mp3'),
+                           '--rules', str(out), '--dry-run'], check=True, capture_output=True, text=True).stdout
+    assert plan.strip().splitlines()[-1] == 'Goose Works makes the video.'
+    assert not (tmp_path / 'vo.mp3').exists()
+
+@pytest.mark.parametrize('layout_args', [['-ac', '1'], ['-ac', '2']])
+def test_join_keeps_source_loudness(tmp_path, layout_args):
+    import subprocess
+    def mean_db(path):
+        err = subprocess.run(['ffmpeg', '-v', 'info', '-i', str(path), '-af', 'volumedetect', '-f', 'null', '-'],
+                             capture_output=True, text=True, check=True).stderr
+        return float(err.split('mean_volume:')[1].split('dB')[0])
+    takes = []
+    for i, fps in enumerate((25, 30)):
+        p = tmp_path / f't{i}.mp4'
+        subprocess.run(['ffmpeg', '-v', 'error', '-y', '-f', 'lavfi', '-i', f'color=c=gray:s=160x240:r={fps}:d=2.5',
+                        '-f', 'lavfi', '-i', 'sine=frequency=300:duration=2.5:sample_rate=48000', *layout_args,
+                        '-c:v', 'libx264', '-c:a', 'pcm_s16le', str(p.with_suffix('.mov'))], check=True)
+        takes.append({'path': str(p.with_suffix('.mov')), 'start': i * 2.0, 'duration': 2.5,
+                      'words': [{'text': f'word{i}', 'start': 0, 'end': 1.5}]})
+    source = mean_db(takes[0]['path'])
+    out = tmp_path / 'joined.mp4'; join.render(join.schedule(takes, 4.0, 30), str(out))
+    assert abs(mean_db(out) - source) < 0.6

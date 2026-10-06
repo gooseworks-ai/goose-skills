@@ -3,11 +3,17 @@ name: video-production-harness/polish
 description: Final-mile polish pass on a finished video. Watches the cut, runs deterministic QC, proposes polish-notes with prioritized fixes across the full polish axes (loudness, captions, music/VO balance, end-card, tail, hook, color, brand fit). Two modes — `polish` writes the proposal only; `polish-and-fix` also applies P0+P1 via auto-fix-from-review-notes.
 ---
 
-# /polish
+# Human version
+
+Finish the accepted edit without changing its direction. Check the actual mix, captions, picture and ending at delivery size, then verify each revised export independently.
+
+---
+
+# Agent version
 
 ## Host contract
 
-Read `capabilities.md` and the selected host binding first. Artifact names are logical roles resolved by that binding. Named review tasks use the documented rubrics and actual frame/audio tools; they are not assumed installed commands. Required tooling, human approval and available budget must exist before the operation.
+Read `capabilities.md` and the selected host binding first. Artifact names are logical roles resolved by that binding. Named review tasks use the documented rubrics and actual frame/audio tools; they are not assumed installed commands. Required tooling, human approval and available budget must exist before the operation. Read [the editorial review guide](references/editorial-review.md) for source binding, stage decisions, note disposition, impact checks and saved edit history.
 
 ## Purpose
 
@@ -18,7 +24,7 @@ It is **not** a creative review skill (that's `review-video.md`). It is not an i
 ## When to use
 
 - Right after `review-video` returns APPROVED.
-- Right after `auto-refine` exits clean.
+- After auto-refine exits objective-clean AND review-video clears the applicable creative stage; an objective-only pass cannot approve story quality.
 - Any time the operator says "polish this" / "tighten this up" without specifying issues.
 
 Do **not** use if `review-video` is still NEEDS REVISION — fix creative issues first.
@@ -44,18 +50,18 @@ Each axis maps to a repair or review responsibility. The labels below are not sh
 | Axis | What we check | Atom(s) used |
 |---|---|---|
 | audio-loudness | Integrated LUFS within ±0.5 of platform target (default -14 social). True-peak under -1 dBTP. | `normalize-loudness` |
-| **vo-intelligibility** | Whisper transcribes every locked VO line correctly (zero substitutions/omissions). | actual transcript comparison → measured per-line FFmpeg mix correction |
-| captions-overflow | Any cue with line > 38 chars, > 2 lines, or sub-0.6 s + >6 words. | `fix-caption-overflow` |
+| **vo-intelligibility** | Full-speed listening confirms every line and ending remains clear against actual music/SFX; transcript comparison corroborates locked wording. | actual transcript comparison → measured per-line FFmpeg mix correction |
+| captions-overflow | Check actual cue readability at destination size. More than 38 chars/line, two lines or six words in under 0.6s are diagnostic prompts; approved layout and measured reading time decide. | `fix-caption-overflow` |
 | captions-timing | Cue starts within ±100 ms of the matching word in word-timestamps. | `retime-captions-to-words` |
-| music-vo-balance | Music RMS at least 6 dB below VO RMS in every dialogue scene. | `mix-master` (sidechain + boost) |
-| end-card | Composite readability score ≥ 7. Hold ≥ 1.2 s. Logo/CTA contrast meets the agreed legibility target; text meets WCAG AA (4.5:1 ordinary text, 3:1 large text) when applicable. Brand-quality design (not generic gradient). | `score-readability`, then `extend-hold`; if regen needed, follow the approved brand design and deterministic logo/text composition. Use an installed supported browser renderer for motion chrome; use Pillow or FFmpeg for static compositions. New paid visual assets require the appropriate renewed gate. |
-| final-tail | Last frame fades to black; last 100 ms RMS < -30 dB. Music must NOT end before video. | `append-tail-fade` |
-| pacing-speedup | Podcast-clip-derived projects: master is sped 1.25–1.35× (default 1.30× — sweet spot for conversational male VO ~120Hz; ≥1.45× chipmunks). Speed locks at lock-script; this stage only verifies it was applied. | `speedup-master` (in `edit-video`); verify only here |
+| music-vo-balance | Measure stems in dialogue windows and listen to the final mix for masking/pumping; level gap is diagnostic, not a universal perceptual threshold. Preserve the approved audio strategy. | Measured cue gain/automation or tuned sidechain |
+| end-card | Judge readability/hold against actual copy and destination size; score 7 and 1.2s are diagnostic starting points, not universal pass thresholds. Logo/CTA contrast meets the agreed legibility target; text meets WCAG AA (4.5:1 ordinary text, 3:1 large text) when applicable. Brand-quality design (not generic gradient). | `score-readability`, then `extend-hold`; if regen needed, follow the approved brand design and deterministic logo/text composition. Use an installed supported browser renderer for motion chrome; use Pillow or FFmpeg for static compositions. New paid visual assets require the appropriate renewed gate. |
+| final-tail | Full ending matches the approved fade, hold, silence or loop. No chopped final speech, unintended abruptness or accidental gap; black/silent tails only when planned. | Planned tail repair |
+| pacing-performance | Verify only the exact approved timing/performance choice. Preserve raw speech; listen to raw and edited versions and recheck word/caption sync. No automatic speed target. | Actual performance/timing comparison; repair only within approved scope |
 | hook-frames | First 3 s: frame-1 readable, subject clear, motion legible. (Diagnostic only — fix means re-rolling scene 1 via `edit-clip`.) | none (escalate) |
-| color-consistency | Y-channel variance across clips ≤ 50% of initial. | `grade-consistency-pass` |
+| color-consistency | Inspect intended continuity against the approved look; luminance variance is diagnostic and must not erase intentional lighting changes. | `grade-consistency-pass` |
 | brand-fit | Palette match, approved logo usage, no banned phrases. (Defers to `review-video-for-brand-fit`.) | none (escalate) |
 
-**vo-intelligibility is a ship gate.** If Whisper can't transcribe a locked VO line, neither can a real viewer. This is the final check before `master-polished.mp4` can swap into `master-final.mp4`. Surfaced from v03 LEARNINGS as the only objective "is the mix actually good?" test.
+**Speech integrity and actual listening are ship gates.** A transcript failure is a finding to investigate against the audio, including brand pronunciation and recognizer errors. A passing transcript cannot establish natural speech, intelligibility against music or clean timing. Record heard defects separately from transcription mismatches; missing listening capability leaves the verdict incomplete. For silent/text-led work, verify intended silence and reading time instead of demanding a speech transcript.
 
 ## Workflow
 
@@ -78,14 +84,14 @@ Run `python3 scripts/qc_evidence.py VIDEO.mp4 EVIDENCE_DIR` and inspect the evid
 
 Inspect the actual end-card frames and score legibility, hold, safe margins, logo contrast and brand design with the table above. Save the rubric score and recommendations; distinguish visual judgments from measured contrast values.
 
-Run the actual transcription capability against the full master and perform the intelligibility comparison:
+When speech is present, run the actual transcription capability against the full master and perform the intelligibility comparison:
 - Transcribes actual audio through an available host-managed transcription route or installed local engine. If neither is available, stop at this gate.
 - Diffs the transcript against `locked_script`, line-by-line.
-- Any meaningful locked-line substitution or omission = P0 finding tagged `axis: vo-intelligibility`.
+- Verify each meaningful substitution/omission against actual audio before recording a P0 speech-integrity finding. Preserve known pronunciation/spelling intent; a recognizer mistake is not proof of missing speech.
 - Output: `<video_folder>/polish-notes/<idx>/qc/whisper-test.md` with per-line pass/fail and specific per-line mix correction, with actual target level and timing.
 
 ### Step 3 — Watch pass
-Read all extracted frames and listen to the entire decoded audio using the actual tools in `capabilities.md`. Apply this prompt template:
+Play the entire cut continuously at normal speed, read all extracted frames and listen to the entire decoded audio using the actual tools in `capabilities.md`. Apply this prompt template:
 
 > You are reviewing a finished social-ad cut for a final polish pass. The creative is already approved — focus only on technical/objective polish. For each of these axes, list every issue you can identify with a timecode and one-sentence root-cause:
 >
@@ -99,6 +105,8 @@ Read all extracted frames and listen to the entire decoded audio using the actua
 > 8. Brand fit — any obvious unbranded elements, banned text, or logo errors?
 >
 > Be specific and pessimistic. If nothing is wrong on an axis, say so explicitly.
+
+Inspect caption boundaries and overlapping text at actual destination size, including product/feature visibility, hierarchy, contrast and reading time. A caption-only change starts from the clean picture and burns once; never stack a new burn on old captions. Check every derived ratio/duration/language as a separate edit. Record exact file identities and complete coverage in the quality report.
 
 ### Step 4 — Propose
 Aggregate the deterministic pre-flight findings + watch-pass findings into `polish-notes/<idx>-<ts>.md`. **Use the exact markdown contract from `auto-fix-from-review-notes.md`** so it can be auto-applied. Each item has:
@@ -133,9 +141,9 @@ Priorities:
 4. Final result is `edits/master-polished.mp4`.
 
 ### Step 7 — Re-verify
-Re-run the packaged evidence helper, actual end-card readability review, and actual transcript/mix comparison against the polished master. Write `polish-notes/<idx>-<ts>-applied.md` (extends the dispatcher's report) with before/after deltas:
+Re-run the packaged evidence helper, actual end-card readability review, and actual transcript/mix comparison against the polished master. Rewatch/listen to the whole candidate and verify the original notes' intended effects. Required unresolved notes remain changed, not verified. Repeat final checks for every delivered derivative after its own caption/export changes. Write `polish-notes/<idx>-<ts>-applied.md` (extends the dispatcher's report) with before/after deltas:
 - LUFS before → after
-- **Whisper-test pass count before → after** (must be 100% after; if not, polish is NOT complete)
+- **Verified locked-line integrity before → after** (all actual spoken lines must pass; investigate recognizer errors rather than reporting them as heard defects)
 - Caption overflow count before → after
 - End-card composite score before → after
 - Final-tail last-100ms-RMS before → after
@@ -148,7 +156,9 @@ Print a summary to the operator:
 ```
 Polish complete:
   LUFS:               -24.3 → -13.9 (target -14)
-  Whisper-test:       8/13 passing → 13/13 passing  ✅ ship gate
+  Speech integrity:   8/13 passing → 13/13 verified
+  Full playback/audio: complete on this candidate
+  Notes verified:     original effects checked; no required items open
   Caption overflow:   4 → 0
   End-card score:     4.25/10 → 8.0/10
   Length:             30.0s → 30.6s (+0.6s end-card hold)
@@ -158,7 +168,7 @@ Approve (swap master)? [y/N]
 
 On approval:
 - Read `promote.md` and record the approved polished candidate/version through the binding; never overwrite the selected master directly.
-- Proceed to the final caption burn and fresh actual final QC before delivery; export variants from those final bytes.
+- Proceed to the final caption burn and fresh actual final QC before delivery; build each variant from the matching editable sources and perform its own final caption burn and QC.
 
 On rejection: leave `master-polished.mp4` in place for operator inspection; do not swap.
 
@@ -189,5 +199,5 @@ On rejection: leave `master-polished.mp4` in place for operator inspection; do n
 ## Relationship to other skills
 
 - `review-video.md` decides APPROVED vs NEEDS REVISION. /polish runs after APPROVED.
-- `auto-refine.md` is a creative-and-objective iteration loop. /polish is a single deterministic polish round. They don't overlap — auto-refine handles the road from "first cut" to "good cut"; /polish handles "good cut" to "ready to ship."
+- `auto-refine.md` is a bounded objective repair loop with creative diagnosis/return paths. /polish is a single deterministic polish round. They don't overlap — auto-refine handles the road from "first cut" to "good cut"; /polish handles "good cut" to "ready to ship."
 - `auto-fix-from-review-notes.md` is the dispatcher this skill calls in `polish-and-fix` mode.

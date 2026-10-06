@@ -107,17 +107,27 @@ echo "  video stitched, ${TOTAL}s"
 TMP_AUDIO="$WORK/audio.m4a"
 MUSIC_ARG="${MUSIC:-NONE}"
 python3 - "$SFX_JSON" "$SFX_DIR" "$MUSIC_ARG" "$TOTAL" "$TMP_AUDIO" <<'PY'
-import json, sys, subprocess
+import array, json, sys, subprocess
 sfx_json, sfx_dir, music, total, out = sys.argv[1], sys.argv[2], sys.argv[3], float(sys.argv[4]), sys.argv[5]
 cues = json.load(open(sfx_json))
+def onset(file):
+    raw = subprocess.run(['ffmpeg', '-v', 'error', '-i', file, '-ac', '1', '-ar', '48000', '-f', 's16le', '-'], capture_output=True, check=True).stdout
+    samples = array.array('h'); samples.frombytes(raw)
+    threshold = max(map(abs, samples), default=0) * 0.05
+    if not threshold: sys.exit(f'Silent SFX: {file}')
+    return next(i for i, x in enumerate(samples) if abs(x) > threshold) / 48000
+onsets = {name: onset(f'{sfx_dir}/imessage-{name}.mp3') for name in ('send', 'receive')}
+for c in cues:
+    if c.get('name') not in onsets or not isinstance(c.get('t'), (int, float)) or not 0 <= c['t'] < float(total):
+        sys.exit(f'Invalid SFX cue: {c}')
 has_music = music != "NONE"
-# Per-cue gain (+4 dB). With the -2 dBFS limiter below, a lone cue lands within
+# Per-cue gain at the approved quieter audit level. With the -2 dBFS limiter below, a lone cue lands within
 # ~2 dB of the old loudness while stacked cues no longer clip. Soft cues keep
 # the old soft/normal ratio (0.55/0.95). MUSIC_GAIN keeps the old bed-to-SFX
 # balance (it was 0.30 x 2.5 against 0.95 x 2.5).
-CUE_GAIN = 1.6
-SOFT_GAIN = 0.93
-MUSIC_GAIN = 0.50
+CUE_GAIN = 0.81
+SOFT_GAIN = 0.47
+MUSIC_GAIN = 0.26
 # Base: a silent stereo bed of the full length so amix always has an anchor.
 inputs = ["-f", "lavfi", "-t", str(total), "-i", "anullsrc=r=44100:cl=stereo"]
 filter_parts = []
@@ -132,12 +142,18 @@ if has_music:
         f"highpass=f=60,volume={MUSIC_GAIN},afade=t=out:st={max(0,total-1.5)}:d=1.5[mus]")
     mix_labels.append("[mus]")
     idx += 1
-for c in cues:
+for n, c in enumerate(cues):
     sfx_file = f"{sfx_dir}/imessage-{c['name']}.mp3"
     inputs += ["-i", sfx_file]
     delay = int(c['t'] * 1000)
     vol = SOFT_GAIN if c.get('soft') else CUE_GAIN
-    filter_parts.append(f"[{idx}:a]adelay={delay}|{delay},volume={vol}[s{idx}]")
+    # Strip only the leading silence. Audible onset follows the visible movie frame.
+    cut = ''
+    if n + 1 < len(cues):
+        room = cues[n+1]['t'] - c['t'] - 0.005
+        if c['name']=='receive' and room<1.3: room=min(room,0.20)
+        if room>0.05: cut=f'atrim=duration={room:.3f},afade=t=out:st={max(0,room-0.06):.3f}:d=0.06,'
+    filter_parts.append(f"[{idx}:a]atrim=start={onsets[c['name']]},asetpts=PTS-STARTPTS,{cut}adelay={delay}|{delay},volume={vol}[s{idx}]")
     mix_labels.append(f"[s{idx}]")
     idx += 1
 n = len(mix_labels)

@@ -3,7 +3,13 @@ name: video-production-harness/create-clips
 description: Generate every scene clip per the implementation brief — orchestrates Higgsfield image+video, FFmpeg, PIL, and ElevenLabs — and saves actual clip assets/evidence for review. Step 4 of the pipeline.
 ---
 
-# create-clips
+# Human version
+
+Make only the missing approved scene material, using the exact brief, assets, script and performance choices. Check specialist inputs and returned media before assembly, preserve valid work on resume, and listen to real speech rather than inferring its quality.
+
+---
+
+# Agent version
 
 ## Host contract
 
@@ -25,10 +31,17 @@ Uses these production responsibilities when the actual route is available. The l
 - `mux-broll-with-voice` — pair silent B-roll videos with their voice audio for clean concat-copy in the next stage
 - Actual host-managed image/video generation and job polling (`the host image-generation operation`, `the host video-generation operation`, `the host job-status operation`)
 
-**B-roll copy rule** (locked in from the example brand v3→v4 LEARNINGS): the text on every B-roll card must mirror the audio playing under it. Cute synonyms ("HOOPS" for "basketball", "GAME ON" for "when the game starts") create cognitive dissonance and reduce comprehension. Pull the literal key phrases from locked_script and use them verbatim where possible.
+**B-roll copy rule** (locked in from the example brand v3→v4 LEARNINGS): the text on every B-roll card must mirror the audio playing under it. Cute synonyms ("HOOPS" for "basketball", "GAME ON" for "when the game starts") create cognitive dissonance and reduce comprehension. Pull literal key phrases from locked_script where they serve the approved design; preserve explicit user-approved on-screen wording and pronunciation-versus-spelling distinctions. Do not add duplicate copy over an already readable product/UI layer.
+
+## Specialist handoff and route checks
+
+Read [specialist handoffs](references/specialist-handoff.md). For UGC/native creator, product/demo footage and motion graphics, fetch the actual selected package and dependencies; record version/hash, input/source/script/beat revisions and expected outputs in the existing capability plan. Validate its free imports/probes/dry run before any paid call. A named specialist or a PNG-returning graphics package is not proof of video capability. No unrecorded machine path may be required.
+
+Load the existing jobs and approved media first. Match exact input fingerprints and probe bytes before honoring a helper's existing-file skip. Reuse valid selected takes, voice auditions, footage windows and keyframes; regenerate only changed or missing work. Returned output must resolve to the planned scene and selected source/version, with actual duration, provenance and review evidence.
 
 ## Inputs
 
+- The sourced creative-brief revision/pointer used by the writer, approved product/variant and locked copy
 - `<video_folder>/design_brief` (visual spec)
 - `<video_folder>/implementation_brief` (operator checklist; required)
 - `<video_folder>/locked_script` (canonical VO; required — must exist from State 2.5)
@@ -65,7 +78,7 @@ If the constraint is *soft* (a preference, a hint, something the operator would 
 - **`.avif` references are rejected by the Anthropic API.** State 0 preflight should have caught this; double-check at Phase 0.
 - **Local file paths sometimes can't pass directly to the actual model's reference-value field.** Fallback: upload via the host's actual upload/confirmation operations first, then use the returned media ID.
 - **Dark / heavy-vignette keyframes silently fail in Veo Lite.** Generate on neutral background; apply vignette/color in post via FFmpeg.
-- **ElevenLabs concurrent limit is ~3 on team plans.** Gate VO gen at 3 in parallel; verify each MP3 is > 5 KB (small files = error JSON).
+- **Provider limits vary.** Read the actual account/model concurrency contract, reconcile existing jobs and probe every audio response. File size alone cannot distinguish a valid short take from an error.
 - **Fallback to FAL on detected Higgsfield failure.** A Higgsfield call counts as failed (and triggers the fallback router) when ANY of:
   1. The real submit operation raises an exception (network, auth, server error).
   2. `the host job-status operation` returns `status: "failed"` after polling.
@@ -79,15 +92,30 @@ If the constraint is *soft* (a preference, a hint, something the operator would 
 ## Workflow
 
 ### Phase 0 — Pre-flight
-1. Read implementation_brief and `locked_script`.
+1. Read sourced creative brief, implementation_brief, `locked_script`, scene/timing IDs, source/asset selections and performance intent. Validate the selected specialist handoff, required runtime/dependencies and existing approved jobs/results before generation.
 2. Re-run `video-production-harness/preflight-audit` (new assets may have landed since State 0).
 3. Create folder layout per the brief: `clips/`, `audio/`, `generated/style-tests/`, `generated/keyframes/`, `raw-materials/`.
 4. Copy hero assets (e.g. `hero-photo.jpg`) into `raw-materials/`.
 5. **If `character_locks` exists** (ad has a human character): skip the cartoon style-anchor step. The anchor portrait already serves that role. Read `character_locks` and resolve `method` (`anchor-ref` or `soul-id`) — this drives the actual model's reference inputs payload for every scene with the character.
 6. **If `world_locks` exists** (UGC family — produced by State 3.55): read `set_refs[]`, `wardrobe`, `lighting`, `color_grade`, `recurring_props`, `time_of_day`. Every character scene keyframe MUST pass BOTH the locked anchor (identity) AND the most-relevant `world-N.png` (set + lighting + grade) as actual image references in supported schema fields, and BOTH refs MUST appear in the saved scene reference list. The verbatim `wardrobe` + `lighting` + `color_grade` + `time_of_day` strings get baked into every prompt. Missing `world_locks` on a UGC project is a P0 — hard-fail and surface "State 3.55 (world lock) was not run; without it scenes will drift across aesthetic universes."
-7. **If `character_locks` is absent** (cartoon-only / product-only ad): generate **one style-anchor image** through an actually supported approved image model (Nano Banana 2 is a preference when available). Save to `generated/style-tests/style-anchor.png`. **Style lock gate** — inspect; if the style is wrong, iterate before committing video credits.
+7. **If `character_locks` is absent**, reuse approved product footage/stills or selected style references. Only when a planned generated cartoon/style route needs a missing style anchor, generate **one style-anchor image** through an actually supported approved image model (Nano Banana 2 is a preference when available). Save to `generated/style-tests/style-anchor.png`. **Style lock gate** — inspect; if the style is wrong, iterate before committing video credits.
+
+### Route dispatch after preflight
+
+Execute only the route assigned to each scene in the approved capability plan. Resolve missing tools/dependencies before any paid operation. If route/input/output mapping is ambiguous, save the blocker before creating assets.
+
+| Approved scene route | Execute | Skip |
+| --- | --- | --- |
+| Reuse owned product/demo footage | Fetched footage-cutlist survey/inspection, approved source windows and cut render; then Phase 5 validation. | New style anchor, keyframe generation and generative animation. |
+| Native-speaking creator | Fetched creator package's actual plan/approved native-take procedure; review selected first-take performance before remaining takes, then Phase 5. | Generic still-to-video replacement and separate TTS over native dialogue. |
+| Deterministic graphic/still motion | Actual local composition/FFmpeg or installed browser/motion renderer, then Phase 5. | Generative image/video unless separately assigned and approved as a missing input. |
+| Generic approved image-to-video | Phase 1 only for missing/unapproved required keyframes, Phase 2 for missing/invalid animation, then Phase 5. | Regeneration of any valid selected keyframe or clip. |
+
+Phase 3 handles planned static/local elements; Phase 4 supplies separate audio only where the audio plan requires it. All routes share source/return validation and final performance/mix review. Presence of a human/product alone does not authorize creating a new anchor. Each successful return carries the existing handoff's scene/beat and source revision into Phase 5.
 
 ### Phase 1 — Keyframes
+
+Run only for scenes assigned generic image-to-video or an explicitly approved generated-still input. Reuse valid selected keyframes.
 1. For each scene:
    - **Scenes with the locked character** — generate the keyframe with the locked anchor (or soul_id) as a confirmed reference in that model's actual supported image-reference field. Prompt template threads the verbatim `<character_descriptors>` block from `design_brief` plus the scene-specific action.
    - **Scenes without the character** — use the cartoon style anchor as a style ref (mapped to the actual supported image-reference field), or no ref for non-cartoon scenes.
@@ -98,10 +126,12 @@ Resolve this operation through the selected host binding and the real implementa
 
    If `<provider_override>=fal`, skip the Higgsfield call and invoke the host managed FAL operation. If `<provider_override>=higgsfield`, no fallback — fail loud.
 5. Poll the real returned request through the binding's status/result operations. In a verified direct Higgsfield route this may be job_status; managed FAL uses its documented submit/status/result contract. Save the confirmed image to `generated/keyframes/scene-NN.png`.
-6. Spot-check 2–3 keyframes via the Read tool before animating. For character scenes, also run a quick consistency diff against the anchor (one-frame compare) — if drift is > 15% on a scene, re-roll the keyframe BEFORE burning the video credit.
+6. Inspect every selected keyframe before animating: correct product/variant, feature visibility, crop/text space and neighboring continuity. Compare character scenes to approved anchors/worlds; do not invent a numeric drift percentage without a real measurement. Repair the relevant still within approval/budget before video spend.
 7. **Inherit gateway for downstream calls in the same scene.** Read the keyframe's `<output>.meta.json` to determine `gateway`. The animation in Phase 2 should use the same provider for that scene to avoid cross-provider drift, unless the operator explicitly overrides.
 
 ### Phase 2 — Animate clips
+
+Run only for missing/invalid generative animation explicitly assigned by the capability plan. Native specialist clips, retrieved footage and deterministic motion bypass this phase.
 1. **Provider routing.** Use the host's supported video-generation operation and current approved scene plan. Veo 3.1 Lite is a preference when available; alternatives such as Veo, Kling, Seedance or Grok require real catalog model IDs, schemas and priced units. Resolve the approved ratio/duration and starting-image input from the actual confirmed keyframe/result, never an assumed job ID. Use a tight motion-only prompt. On detected failure per the 6 failure-detection rules, invoke the fallback router:
 Resolve this operation through the selected host binding and the real implementation in `capabilities.md`. Preserve its approved inputs, provenance and cost; stop if the capability is unavailable.
 
@@ -116,15 +146,17 @@ Resolve this operation through the selected host binding and the real implementa
 
 ### Phase 4 — Voiceover
 
+Apply only to the selected separate-narrator/source-speech/song route; silent scenes skip voice, native-dialogue scenes reuse their checked clip audio. Speech review still applies wherever speech exists.
+
 1. Read exact locked_script/locked_lyrics and the host-selected audition for every speaker role. Never select a new voice or regenerate a valid selected per-beat audition silently.
 2. Reuse its actual audio files and preserve voice ID, settings, beat IDs and script revision. If full-production rendering is necessary, use those exact settings/text through the managed voice capability under the approved budget.
 3. Source audio is split at actual word boundaries using the transcript; inspect cuts for partial phonemes. Native generated dialogue stays on its clip; never double it with a separate narration track.
-4. Check valid decoded audio, duration and exact line agreement. A small/error response is a failure. Concurrency follows the actual provider contract; known 429/concurrency failures back off rather than duplicate jobs.
+4. Listen to each actual isolated take/line at normal speed for pronunciation, conversational rhythm, phrase stress, pause intent, endings and defects; later listen again inside the actual full mix. Compare transcript/word timings as supporting evidence. Record unavailable listening as incomplete; do not force faster delivery, global pause removal or louder climax. Check valid decoded audio, duration and exact line agreement. A small/error response is a failure. Concurrency follows the actual provider contract; known 429/concurrency failures back off rather than duplicate jobs.
 5. If music is generated, follow the actual provider schema and approved music/lyrics plan. Unsupported artist-name or composition parameters must be resolved before spending.
 
 ### Phase 5 — Register reviewable clips
 
-Register every scene clip, voice file, keyframe, model/settings/input fingerprint, job ID and named pass/fail checks in the binding. Update the host's actual clip review surface. Each scene must have visual-artifact, brand, product, voice/script and duration/ratio evidence before assembly. Failed candidates remain visible; do not assemble them as passing.
+Validate the actual returned media against the handoff: matching scene/beat and source revision, exact approved line/assets, supported visible proof, measured duration/ratio, performance and neighboring continuity. A provider URL or successful process alone is insufficient. Register every scene clip, voice file, keyframe, selected package/version, model/settings/input fingerprint, job ID and named pass/fail checks in the binding. Update the host's actual clip review surface. Each scene must have visual-artifact, brand, product, voice/script and duration/ratio evidence before assembly. Failed candidates remain visible; do not assemble them as passing.
 
 ## Output
 
@@ -160,3 +192,11 @@ Register every scene clip, voice file, keyframe, model/settings/input fingerprin
 - VO rendered from `design_brief` instead of locked_script — silently re-introduces an unlocked script. Hard fail if they diverge.
 - **Both Higgsfield AND FAL failing on the same scene** — the prompt or keyframe is likely the issue, not the gateway. Don't loop the fallback. Surface to the operator with both error contexts; investigate the prompt before any further attempt.
 - **Mid-pipeline provider swap on a character** — if scene 3's keyframe came from Higgsfield and scene 4's came from FAL, character drift will show. Always inherit `gateway` from the anchor's `.meta.json` for character-scene calls; only swap providers if the operator explicitly chooses.
+
+## Use stored original footage
+
+When the customer asks to reuse footage, ask the host to search the current owned media and inspect actual frames plus timed transcript. An analysis description or thumbnail URL alone is not a visual review. Known user-selected trims remain usable when optional semantic analysis is unavailable; record that limitation instead of requesting a duplicate upload.
+
+Freeze `{asset_id, analysis_revision, scene_id, start_ms, end_ms, audio_mode}` in each selected scene and ingredient. `analysis_revision` is the verified SHA-256 of original bytes, `scene_id` may be null for a known trim, bounds are integer milliseconds, and audio is `original` or `muted`. Attach the canonical original through the host, preserve the requested format and user locks, then obtain the usual script and ingredient approvals. Research links and competitor ads never grant production rights.
+
+Before consumption and publication, the host rechecks current ownership, product/project scope, permission and revision. Download the verified original, trim that exact window at normal speed, and preserve the chosen audio. The portable assembler accepts `source_excerpt` beside a clip's path/duration, validates its SHA and range and returns the lineage. It refuses a separate voice track that would replace approved original audio. Only newly generated or replaced ingredients may consume the approved generation budget.

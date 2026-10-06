@@ -31,6 +31,22 @@ def length(path):
                                 check=True).stdout)
 
 
+def channels(path):
+    """Audio channel count of the first audio stream (0 when there is none)."""
+    out = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "a:0", "-show_entries",
+                          "stream=channels", "-of", "csv=p=0", path], capture_output=True,
+                         text=True, check=True).stdout.strip()
+    return int(out.split(",")[0]) if out else 0
+
+
+def to_stereo(path):
+    """Filter that brings a take to stereo at its original level. ffmpeg's automatic
+    mono->stereo upmix applies a -3 dB pan law, so duplicate a mono channel instead."""
+    if channels(path) == 1:
+        return "pan=stereo|c0=c0|c1=c0"
+    return "aformat=channel_layouts=stereo"
+
+
 def read_words(path, duration):
     words = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
     if isinstance(words, dict):
@@ -106,7 +122,7 @@ def render(plan, out):
                       f"setsar=1,format=yuv420p[xb{k}]")
             fc.append(f"[xa{k}][xb{k}]xfade=duration={xf:.6f}:offset=0[x{k}]")
             pieces.append(f"[x{k}]")
-        fc.append(f"[{k}:a]aresample=48000,aformat=channel_layouts=stereo,"
+        fc.append(f"[{k}:a]aresample=48000,{to_stereo(t['path'])},"
                   f"adelay={t['head_pad']*1000:.6f}:all=1,apad,atrim=0:{t['need']:.6f},"
                   f"asetpts=PTS-STARTPTS[a{k}]")
         audio.append(f"[a{k}]")

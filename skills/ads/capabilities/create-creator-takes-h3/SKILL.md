@@ -22,11 +22,17 @@ hand.** `make_character.py` fills every slot and calls `create-image-fal`, becau
 hand-filled prompt left slots blank and produced the composite face the formula warns about,
 and different runs filled it differently.
 
+`make_character.py` is the shared builder for any generated person still in a custom video, not
+only for H3 takes. Fetch create-image-fal with it; the script calls its `gen_image.py`. Before
+the paid call, quote the exact `--payload-out` body through the host's free quote:
+`--dry-run --payload-out work/character/payload.json` writes `{"model", "body"}`, the exact
+request `gen_image.py` will send, and generates nothing.
+
 ## Run
 
 ```bash
 # the user's person, one command, one still. --dry-run prints the prompt and spends nothing.
-python make_character.py --age 34 --gender woman --ethnicity "South Asian"     --hair "shoulder-length black hair, slightly frizzy at the crown, one side tucked back"     --wardrobe "plain charcoal crew-neck t-shirt, slightly creased"     --scene "a lived-in home office, a bookshelf softly out of focus behind her"     --out work/character        # writes character.png AND character.json
+python make_character.py --age 34 --gender woman --ethnicity "South Asian"     --hair "shoulder-length black hair, slightly frizzy at the crown, one side tucked back"     --wardrobe "plain charcoal crew-neck t-shirt, slightly creased"     --scene "a lived-in home office, a full bookshelf behind her, in focus"     --out work/character        # writes character.png AND character.json
 python plan_takes.py --beats cutlist.json --character character.json --out work/takes
 python run_takes.py --spec work/takes/takes.json                  # dry run: plan + estimate
 python run_takes.py --spec work/takes/takes.json --only t1 --go   # after the user approves

@@ -13,6 +13,7 @@ CLAUSES = {
     "one continuous street ambience": "keep audio in the same space",
     "every shot is filmed on one corner": "bind location across cuts",
     "no on-screen text, no subtitles": "draw brand graphics after generation",
+    "never blurred and never bokeh": "keep the street in focus; blurred backgrounds are rejected",
 }
 INTERACTION_CLAUSES = {
     "mic-only": {
@@ -156,7 +157,8 @@ def build_prompt(cfg):
         "Relaxed real-time pace with room between turns; perform the supplied words without "
         "adding laughs or verbal filler. NOBODY SAYS ANY WORD THAT IS NOT WRITTEN BELOW. "
         "When the other person speaks, lips remain closed. People and traffic move in the "
-        "background. No legible clothing logos or signage. No on-screen text, no subtitles. "
+        "background. The street behind them stays in focus and readable as a real place, never "
+        "blurred and never bokeh. No legible clothing logos or signage. No on-screen text, no subtitles. "
         f"EVERY SHOT IS FILMED on ONE corner: {loc['description']}. "
         f"{loc['landmarks']} stay behind the participant. "
         f"Participant: {cfg['participant']}. THE {len(shots)} SHOTS: "

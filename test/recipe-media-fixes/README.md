@@ -10,4 +10,4 @@ python3 -m pytest -q test/recipe-media-fixes/test_repairs.py \
   skills/ads/capabilities/create-vo-elevenlabs/tests
 ```
 
-The real join cases use two or three differently colored local clips at 24/25/30 fps with synthetic audio and declared fixture word boundaries. Actual customer speech still needs measured transcription and listening. Pronunciation tests use a mock brand-context snapshot; they do not prove persistence against the live brand service.
+The real join cases use two or three differently colored local clips at 24/25/30 fps with synthetic audio and declared fixture word boundaries. Actual customer speech still needs measured transcription and listening. Pronunciation tests use the exact staging Gooseworks fact (`Pronounce "Gooseworks" as "Goose Works"`) in every brand-read result shape, plus the older `Pronunciation: term => say` form; they do not prove persistence against the live brand service. The loudness case checks that a mono take keeps its level when the join makes stereo.
