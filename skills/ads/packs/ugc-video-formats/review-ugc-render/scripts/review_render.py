@@ -68,6 +68,9 @@ SILENCE_MEAN_DB = -45.0       # quieter mean volume than this ⇒ effectively si
 # mis-voicing (vetted→witted, Hume→Hune), not a paraphrase. Flag it HIGH.
 MISVOICE_MAX_LEN_DELTA = 3
 MISVOICE_MIN_CHAR_SIM = 0.5
+# Spoken form vs brand spelling made only of declared --brand-term words ("ak mee" vs
+# "acme" = 0.67) must at least look this alike to be accepted.
+BRAND_SWAP_MIN_CHAR_SIM = 0.6
 
 
 def _char_sim(a: str, b: str) -> float:
@@ -145,10 +148,14 @@ _UNIT_WORDS = {
     "min": "minutes", "mins": "minutes", "minute": "minutes", "minutes": "minutes",
     "sec": "seconds", "secs": "seconds", "second": "seconds", "seconds": "seconds",
     "cal": "calories", "calorie": "calories", "calories": "calories",
+    "day": "days", "days": "days", "week": "weeks", "weeks": "weeks",
+    "month": "months", "months": "months", "year": "years", "years": "years",
     "x": "times", "times": "times",
 }
 _CURRENCY = {"$": "dollars", "£": "pounds", "€": "euros"}
 
+# Negations an alias's spoken form may not add ("no"/"nor" are allowed as syllables: "no-mad").
+_ALIAS_FORBIDDEN = frozenset({"not", "never", "without", "none", "nothing", "nobody"})
 _NEGATIONS = frozenset({"not", "no", "never", "nothing", "nobody", "none", "nowhere",
                         "neither", "nor", "without"})
 
@@ -285,7 +292,8 @@ def _raw_tokens(text: str) -> list[_Tok]:
             src = object()
             out.extend(_Tok(w, bare, src) for w in ["number"] + _piece_words(m.group(1)))
             continue
-        if re.fullmatch(r"[Nn][Oo]\.", bare) and ci + 1 < len(chunks) and \
+        if re.fullmatch(r"[Nn][Oo]\.", chunk.strip(_EDGE_CHARS.replace(".", "").replace("…", ""))) and \
+                ci + 1 < len(chunks) and \
                 chunks[ci + 1].lstrip(_EDGE_CHARS)[:1].isdigit():
             out.append(_Tok("number", bare, object()))
             continue
@@ -475,9 +483,6 @@ def _context_fixes(toks: list[_Tok]) -> list[_Tok]:
         if t.text == "is" and t.orig.translate(_APOSTROPHES).lower().endswith("'s") and \
                 i + 1 < n and toks[i + 1].text in ("been", "got", "gotten"):
             t = _Tok("has", t.orig, t.src)
-        # "No 1 pick" → number 1 (a digit right after "no"); "no one" stays a negation
-        if t.text == "no" and i + 1 < n and _is_int(toks[i + 1].text) and toks[i + 1].orig[:1].isdigit():
-            t = _Tok("number", t.orig, t.src)
         # spelled letters next to "dot": "w w w dot" → www dot, "dot a i" → dot ai
         if len(t.text) == 1 and t.text.isalpha():
             j = i
@@ -557,6 +562,9 @@ def build_aliases(aliases) -> list[tuple[tuple[str, ...], tuple[str, ...]]]:
         if term_p and term_p != form_p:
             raise ValueError(f'alias "{term}" = "{form}" would change a number, unit or negation; '
                              "an alias may only respell a name")
+        if not term_p and any(w in _ALIAS_FORBIDDEN for w in form_w):
+            raise ValueError(f'alias "{term}" = "{form}": the spoken form adds a negation; '
+                             "an alias may only respell a name")
         if not term_p and len(form_p) == len(form_w):
             raise ValueError(f'alias "{term}" = "{form}": the spoken form is only numbers, units or '
                              "negations; an alias may only respell a name")
@@ -624,11 +632,20 @@ def _fuse(toks: list[_Tok], other: set[str]) -> list[_Tok]:
                 continue
             window = toks[i:i + k]
             joined = None
-            for parts in ([t.text for t in window], [t.spelled() or t.text for t in window]):
+            canon = [t.text for t in window]
+            spelled = [t.spelled() or t.text for t in window]
+            for parts in (canon, spelled):
                 whole = "".join(parts)
-                if whole in other and _fusable(parts, whole):
-                    joined = whole
-                    break
+                if whole not in other or not _fusable(parts, whole):
+                    continue
+                # "two forty-nine" == 249, but written digits never join: "2 20-minute" is not 220
+                if all(p.isdigit() for p in parts) and not all(t.orig[:1].isalpha() for t in window):
+                    continue
+                # a number word joins a word only with parts of 2+ letters: "g one" is not "gone"
+                if parts is spelled and parts != canon and any(len(p) < 2 for p in parts):
+                    continue
+                joined = whole
+                break
             if joined:
                 out.append(_merge(window, joined))
                 i += k
@@ -682,19 +699,13 @@ class Verdict:
         return asdict(self)
 
 
-_CURRENCY_WORDS = frozenset({"dollars", "cents", "euros", "pounds"})
+_CURRENCY_WORDS = frozenset({"dollars", "euros", "pounds"})   # "$9.99" read "nine ninety-nine"; cents still count
 
 
 def _classify(tag: str, sw_t: list[_Tok], hw_t: list[_Tok], brand_hit: bool,
               declared: set[str]) -> tuple[str, str, bool]:
     """(severity, note, equivalent) for one differing span of the alignment."""
     sw, hw = [x.text for x in sw_t], [x.text for x in hw_t]
-    # Backward compatibility with callers that pass --brand-term for the brand AND for each
-    # word of its spoken form: a span that is ONLY declared brand-term tokens on BOTH sides
-    # (script "ak mee" vs heard "Acme") is the same brand, said as confirmed.
-    if tag == "replace" and declared and all(w in declared for w in sw + hw) \
-            and not any(w in _NEGATIONS for w in sw + hw):
-        return "low", "declared brand terms on both sides (spoken form vs brand spelling) — accepted", True
     if sum(w in _NEGATIONS for w in sw) != sum(w in _NEGATIONS for w in hw):
         return "high", "negation changed (not/never/no/without added or lost) — the claim flips", False
     sq = [w for w in sw if _QUANTITY_RE.fullmatch(w)]
@@ -702,11 +713,18 @@ def _classify(tag: str, sw_t: list[_Tok], hw_t: list[_Tok], brand_hit: bool,
     if sq != hq:
         return "high", "number differs from the approved script — a number is never a benign paraphrase", False
     # Units count only right after a quantity. Any unit added, dropped or changed is HIGH,
-    # except a dropped/added currency word alone ("$9.99" read "nine ninety-nine").
+    # except a dropped/added dollars/euros/pounds alone ("$9.99" read "nine ninety-nine").
     su = [x.text for x in sw_t if x.unit]
     hu = [x.text for x in hw_t if x.unit]
     if su != hu and ((su and hu) or [u for u in su + hu if u not in _CURRENCY_WORDS]):
         return "high", "unit differs from the approved script (added, dropped or changed)", False
+    # Backward compatibility with callers that pass --brand-term for the brand AND for each
+    # word of its spoken form: a span of ONLY declared, alphabetic brand-term words on BOTH
+    # sides that also sound alike (script "ak mee" vs heard "Acme") is the same brand.
+    # Different declared names ("Hims" vs "Hers", "Body Pod" vs "Band") still fail.
+    if tag == "replace" and declared and all(w in declared and w.isalpha() for w in sw + hw) \
+            and _char_sim("".join(sw), "".join(hw)) >= BRAND_SWAP_MIN_CHAR_SIM:
+        return "low", "declared brand terms on both sides (spoken form vs brand spelling) — accepted", True
     if brand_hit:
         return "high", ("brand name not heard as approved (mis-voiced or dropped) — re-roll; if the audio is "
                         "right and only the spelling differs, confirm the spoken form and pass it as an alias"), False

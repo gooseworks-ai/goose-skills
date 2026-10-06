@@ -434,6 +434,96 @@ def test_ag1_without_alias_written_forms():
     ])
 
 
+# ── Re-review: rules that must not let real defects through ────────────────
+def _fails_high(cases):
+    wrong = []
+    for script, heard, kw in cases:
+        v = review_transcript(script + " " + _TAIL, heard + " " + _TAIL, **kw)
+        if v.passed or not _high(v):
+            wrong.append(f"{script!r} vs {heard!r} {kw}: expected HIGH fail, got {v.passed} {v.issues}")
+    assert not wrong, "\n".join(wrong)
+
+
+def _passes_long(cases):
+    _check([(s + " " + _TAIL, h + " " + _TAIL, kw, True) for s, h, kw in cases])
+
+
+def test_brand_term_swap_rule_does_not_hide_wrong_numbers_or_names():
+    # Re-review P1-A: the declared-term rule must not accept digits, different names or products.
+    _fails_high([
+        ("Open 7 days a week", "Open 11 days a week", {"brand_terms": ["7-Eleven"]}),
+        ("The Pod 4 cools your bed", "The Pod 5 cools your bed", {"brand_terms": ["Pod 4", "Pod 5"]}),
+        ("Hims is made for men", "Hers is made for men", {"brand_terms": ["Hims & Hers"]}),
+        ("Hims is made for men", "Hers is made for men", {"brand_terms": ["Hims", "Hers"]}),
+        ("Meet the Hume Body Pod", "Meet the Hume Band", {"brand_terms": ["Hume", "Hume Band", "Hume Body Pod"]}),
+        ("Try Acme today", "Try ak today", {"brand_terms": ["Acme", "ak", "mee"]}),
+    ])
+    # common words in a declared term are not "the same brand"
+    v = review_transcript("It just works every time", "It just goose every time", brand_terms=["Goose Works"])
+    assert not v.passed and not any("accepted" in i.note for i in v.issues), v.issues
+    # still accepted: the spoken form of the brand vs its spelling
+    _passes_long([("Try ak-mee today", "Try Acme today", {"brand_terms": ["Acme", "ak", "mee"]})])
+
+
+def test_no_before_a_number_stays_a_negation():
+    # Re-review P1-B: only a written "No." means "number".
+    _fails_high([
+        ("There is no 2-year contract", "There is a 2-year contract", {}),
+        ("We have no 1-star reviews", "We have 1-star reviews", {}),
+    ])
+    _passes_long([
+        ("No 30-day lock-in", "No thirty-day lock-in", {}),
+        ("It is the No. 1 pick", "It is the number one pick", {}),
+        ("The No.1 choice", "The number one choice", {}),
+    ])
+
+
+def test_written_digits_never_join():
+    # Re-review P1-C: two written numbers are two numbers.
+    _fails_high([
+        ("Do 2 20-minute workouts", "Do 220 minute workouts", {}),
+        ("Book 1 15-minute session", "Book 115 minute session", {}),
+        ("Grab 3 10-packs", "Grab 310 packs", {}),
+    ])
+    _passes_long([
+        ("It is only two-forty-nine", "It is only 249", {}),
+        ("Only 249 today", "Only two forty nine today", {}),
+        ("Launching in 2026", "Launching in twenty twenty six", {}),
+    ])
+    _fails_high([("Launching in 2026", "Launching in twenty twenty five", {})])
+
+
+def test_spelled_number_does_not_join_a_single_letter():
+    _fails_high([("Drink A G one daily", "Drink a gone daily", {})])
+
+
+def test_alias_may_not_add_a_strong_negation():
+    for bad in [("Hume", "Hume not"), ("Hume", "never Hume"), ("Lux", "without lux"),
+                ("Nonea", "none a"), ("Nothingbut", "nothing but"), ("Nobodee", "nobody")]:
+        try:
+            build_aliases([bad])
+        except ValueError:
+            continue
+        raise AssertionError(f"alias {bad!r} should be rejected")
+    build_aliases([("Nomad", "no mad"), ("Norwex", "nor-wex")])   # "no"/"nor" are fine as syllables
+    _passes_long([("Nomad bags last", "No mad bags last", {"aliases": {"Nomad": "no mad"}})])
+
+
+def test_time_units_and_cents():
+    _fails_high([
+        ("Our 30-day guarantee", "Our 30-year guarantee", {}),
+        ("Results in 4 weeks", "Results in 4 days", {}),
+        ("Only 99 cents a day", "Only ninety nine a day", {}),
+    ])
+    _passes_long([
+        ("Try it for 30 day", "Try it for thirty days", {}),
+        ("Take it 5 times a day", "Take it five times a day", {}),
+        ("Just 30 minutes a day", "Just thirty minutes a day", {}),
+        ("Just 30 min a day", "Just thirty minutes a day", {}),
+        ("Just $9.99 a month", "Just nine ninety nine a month", {}),
+    ])
+
+
 # ── Omission and extra speech ───────────────────────────────────────────────
 def test_omission_fails():
     v = review_transcript("Take two capsules every morning with water", "Take two capsules every morning")

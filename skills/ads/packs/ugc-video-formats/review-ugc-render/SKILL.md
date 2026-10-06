@@ -73,9 +73,9 @@ diff. The rules are **bounded** — each is an exact rewrite, never a fuzzy matc
 | Written | Heard | Rule |
 |---|---|---|
 | `49`, `105`, `2,500`, `1 million` | `forty-nine`, `one hundred and five`, `two thousand five hundred`, `a million` | number words = digits |
-| `2.5`, `2026`, `249`, `1st`, `2nd` | `two point five`, `twenty twenty six`, `two forty-nine`, `first`, `second` | decimals, years, prices read in pairs, ordinals (`second` = `2nd` only when the script writes `2nd`) |
-| `No. 1`, `#1` | `number one` | number sign (but `no one` stays a negation) |
-| `5mg`, `30g`, `500ml`, `12oz`, `10 lbs` | `five milligrams`, `thirty grams`, … | unit **after a quantity** |
+| `2.5`, `2026`, `249`, `1st`, `2nd` | `two point five`, `twenty twenty six`, `two forty-nine`, `first`, `second` | decimals, years and prices read in pairs (only when spoken as words: written `2 20-minute` is never `220`), ordinals (`second` = `2nd` only when the script writes `2nd`) |
+| `No. 1`, `No.1`, `#1` | `number one` | number sign, only when written with the dot or `#` (`no 1-star reviews` and `no one` stay negations) |
+| `5mg`, `30g`, `500ml`, `12oz`, `10 lbs`, `30-day` | `five milligrams`, `thirty grams`, …, `thirty days` | unit **after a quantity** (weights, volumes, %, money, hours/minutes/seconds, days/weeks/months/years, calories, `x` times) |
 | `30%` | `thirty percent` / `30 per cent` | percent |
 | `$49`, `$49.99` | `forty nine dollars`, `forty nine dollars and ninety nine cents` | money |
 | `braxleybands.com`, `www.example.com` | `braxleybands dot com`, `w w w dot example dot com`, `example dot com` | URL; `www.` is optional |
@@ -92,13 +92,15 @@ Guards that keep the rules honest:
   confirmed pronunciation.
 - Fusion is exact concatenation. "Braxly Bands" is not "Braxleybands".
 - A join never swallows a negation: "no table" is not "notable" ("no thing" is "nothing").
+- A number word joins a word only when every part has 2+ letters: "every one" is
+  "everyone", but "G one" is not "gone".
 
 ## What still FAILS
 
 | Report line | Root cause | Fix |
 |---|---|---|
 | `[high] said "59" where script has "49" — number differs…` | Wrong, added or dropped number | **Re-roll.** A number is never a benign paraphrase. |
-| `[high] dropped "5mg" — unit differs…` | A unit after a number was changed, added or dropped ("5mg" said "five") | **Re-roll.** Only a dropped currency word alone ("$9.99" said "nine ninety-nine") is not HIGH. |
+| `[high] dropped "5mg" — unit differs…` | A unit after a number was changed, added or dropped ("5mg" said "five") | **Re-roll.** Only a dropped `dollars`/`euros`/`pounds` alone ("$9.99" said "nine ninety-nine") is not HIGH; dropped `cents` is. |
 | `[high] extra "doesn't" … negation changed` | A `not`/`never`/`no`/`without` was added or lost — the claim flips | Re-roll. |
 | `[high] said "Hune" where script has "Hume" — brand name not heard as approved` | Brand mis-voiced or dropped (`--brand-term` / confirmed pronunciation) | Re-roll; spell it phonetically in the `SPOKEN LINE` (e.g. `Ali-too`, never a `(pronounced …)` parenthetical). See `create-video-seedance-2-fal` Failure Modes. |
 | `[high] said "witted" where script has "vetted" — audio likely mis-voices…` | Seedance mis-voiced a similar-looking word | **Re-roll a new seed.** |
@@ -133,12 +135,17 @@ fuzzily stripped brand-like words, which let "Hune" pass for "Hume". That is gon
 - `--brand-term TERM` (repeatable) — marks a brand name. Exactly:
   1. Where the term's words appear in the script, a substitution or drop there is
      **HIGH** (a brand mis-voicing). Its fused/split forms count as equal.
-  2. A differing span where **every** word on **both** sides is a word of some
-     `--brand-term` (and none is a negation) is accepted as the same brand (reported
-     `[low]`, counted as a match). This keeps the older calling pattern working: a
-     script written in the spoken form (`Try ak-mee today`) with `--brand-term Acme
-     --brand-term ak --brand-term mee` passes when Whisper writes `Try Acme today`.
-     A heard word that is not a declared term (`Hume` heard `Hune`) still fails HIGH.
+  2. A differing span is accepted as the same brand (reported `[low]`, counted as a
+     match) only when **all** of these hold: it has no negation, number or unit
+     change; **every** word on **both** sides is an alphabetic word of some
+     `--brand-term`; and the two sides look alike (character similarity ≥ 0.6). This
+     keeps the older calling pattern working: a script written in the spoken form
+     (`Try ak-mee today`) with `--brand-term Acme --brand-term ak --brand-term mee`
+     passes when Whisper writes `Try Acme today` ("ak mee" vs "acme" = 0.67).
+     Everything else still fails HIGH: a heard word that is not a declared term
+     (`Hume` heard `Hune`), two different declared names (`Hims` vs `Hers`, `Hume Body
+     Pod` vs `Hume Band`), a truncation (`Acme` heard `ak`), or a number inside a term
+     (`Pod 4` vs `Pod 5`, `7-Eleven`: `7 days` vs `11 days`).
   Prefer `--pronunciations` over passing `say_as` words as `--brand-term`.
 
 Rules for aliases:
@@ -148,7 +155,9 @@ Rules for aliases:
 - An alias may respell a name, digits and number-like syllables included ("AG1" =
   "A G one", "Tenzing" = "ten-zing", "Notion" = "NO-shun"). It is refused when the
   written term has a number, unit or negation that the spoken form changes ("AG1" =
-  "A G two"), or when the spoken form is only numbers, units or negations ("Decagon" =
+  "A G two"), when the spoken form adds `not`, `never`, `without`, `none`, `nothing`
+  or `nobody` ("Hume" = "never Hume"; `no` and `nor` are fine as syllables, "Nomad" =
+  "no-mad"), or when the spoken form is only numbers, units or negations ("Decagon" =
   "five").
 - If you listened and the audio is right but Whisper spelled a coined brand name in a
   new way, ask the user to confirm that spelling, save it as a pronunciation, and re-run.
