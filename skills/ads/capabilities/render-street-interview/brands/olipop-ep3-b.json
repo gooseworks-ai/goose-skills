@@ -1,0 +1,86 @@
+{
+ "brand": "Olipop",
+ "slug": "olipop",
+ "product": {
+  "noun": "can",
+  "phrase": "red can",
+  "reference_image": "projects/ugc-olipop/product/clean1.png",
+  "appearance": "same red body, same large white lettering across the top, same two cola bottles illustration, same mint green lettering below",
+  "colour_ban": "It never turns white or blue.",
+  "size": "a standard 12oz can about one hand-width tall, held easily in one hand",
+  "opening_extra": "",
+  "open_state": "sealed"
+ },
+ "question": "How much sugar do you think is in this can?",
+ "location": {
+  "description": "a wide pavement on one street corner beside a park, with black iron railings and tall trees behind, a plain red brick wall to the left and parked cars along the kerb",
+  "landmarks": "The same railings, trees and brick wall"
+ },
+ "_comment": "Olipop episode 3 (GOOSE-3746). Same approved script. level_camera on: no glance-down beat. Payoff no longer reads the can on camera (option 1, approved 2026-10-06). Seed and prompt are the paid take exactly.",
+ "episode_role": "middle",
+ "episode": "olipop-ep3",
+ "props": "a plain rucksack, a plain shopping bag, a closed plain umbrella",
+ "cast_size": 3,
+ "shots": [
+  {
+   "kind": "handover_cold",
+   "subject": "a man in his early twenties, grey hoodie, with a plain rucksack",
+   "pronoun": "he",
+   "noun": "young man"
+  },
+  {
+   "kind": "speak",
+   "noun": "young man",
+   "reaction": "grins",
+   "manner": "",
+   "line": "My dentist would tell me not to even hold this."
+  },
+  {
+   "kind": "handover",
+   "subject": "a woman in her thirties, navy raincoat, with a plain shopping bag",
+   "pronoun": "she",
+   "noun": "woman"
+  },
+  {
+   "kind": "speak",
+   "noun": "woman",
+   "reaction": "shrugs",
+   "manner": "",
+   "line": "I would guess ten teaspoons, like every other soda."
+  },
+  {
+   "kind": "handover",
+   "subject": "a man in his seventies, tan flat cap and cardigan, with a closed plain umbrella",
+   "pronoun": "he",
+   "noun": "older man"
+  },
+  {
+   "kind": "speak",
+   "noun": "older man",
+   "reaction": "laughs",
+   "manner": "",
+   "line": "Honestly, I do not want to know the number."
+  }
+ ],
+ "generation": {
+  "seed": 6132,
+  "prompt_version": 2,
+  "duration": 15,
+  "fast": true,
+  "pace_grammar": true,
+  "guard_grammar": true,
+  "mic_grammar": false,
+  "mic_ref_grammar": true,
+  "plain_grammar": true,
+  "answers_only": true,
+  "can_size_grammar": true,
+  "can_sealed_grammar": true,
+  "upright_grammar": true,
+  "one_mic_grammar": true,
+  "handover_grammar": true,
+  "natural_grammar": true,
+  "no_signage": true,
+  "real_grammar": true,
+  "level_camera": true
+ }
+}

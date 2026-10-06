@@ -193,6 +193,25 @@ Free regression checks:
 python -m unittest discover -s tests -p 'test_*.py' -v
 ```
 
+## Opt-in hold and handover settings
+
+Six `generation` keys on the brand config, all off by default, so every recorded prompt and its
+hash are unchanged. They were paid for on Olipop and Graza (REFERENCE.md items 37-42); start a new
+brand from `brands/olipop-ep3-a.json` (a can) or `brands/graza-ep1-a2.json` (a bottle).
+
+| key | what it does |
+|---|---|
+| `handover_grammar` | every person's first shot opens on the interviewer passing the product |
+| `natural_grammar` | the product is held like a drink someone was just handed, not presented |
+| `real_grammar` | chest-height relaxed hold, one consistent interviewer, nothing printed carried |
+| `level_camera` | removes the glance down from speaking shots, which is what tips the product |
+| `no_signage` | no shops, signs or lettering behind the cast (names park-corner landmarks) |
+| `can_sealed_grammar` | existing flag; holds with the keys above, so the can stays closed |
+
+Episode files take `extra_head_s` (seconds of run-up kept at the head of each take, so the
+handover is not trimmed as silence) and `brand_layer.caption_centre_y`. Transcribe every take with
+word timestamps before assembly: a fast take can repeat, slur or invent a line.
+
 ## Known limits
 
 - **Seedance refuses some photoreal faces** (its likeness gate). Faces here come from the prompt,

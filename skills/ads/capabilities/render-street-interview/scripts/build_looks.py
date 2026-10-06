@@ -166,7 +166,9 @@ def t_subway(text, style, job, sent):
             rows.append(cur)
             cur = wd
     rows.append(cur)
-    top = 1330 - len(rows) * 34
+    # brand_layer.caption_centre_y (opt-in) moves the plate off the product. Olipop seed 6101: at the
+    # default 1330 the plate covered the can's label in every speaking shot.
+    top = int(CFG["brand_layer"].get("caption_centre_y", 1330)) - len(rows) * 34
     plate(c, (80, top - 26, W - 80, top + len(rows) * 66 + 18))
     for i, row in enumerate(rows):
         d.text(((W - d.textlength(row, font=fb)) // 2, top + i * 66), row, font=fb,

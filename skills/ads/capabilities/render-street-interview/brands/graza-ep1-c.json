@@ -1,0 +1,74 @@
+{
+ "brand": "Graza",
+ "slug": "graza",
+ "product": {
+  "noun": "bottle",
+  "phrase": "dark green squeeze bottle",
+  "reference_image": "projects/street-interview-brands/graza/assets/sizzle-tight.png",
+  "appearance": "same dark green body, same bright lime green pointed squeeze cap, same lime green label with a black line drawing and black lettering",
+  "colour_ban": "It never turns clear, white or red.",
+  "size": "a tall slim squeeze bottle about two hand-widths tall, held easily in one hand",
+  "opening_extra": " and the cap is never touched",
+  "open_state": "capped"
+ },
+ "question": "What do you think is inside this bottle?",
+ "location": {
+  "description": "a wide pavement on one street corner beside a park, with black iron railings and tall trees behind, a plain red brick wall to the left and parked cars along the kerb",
+  "landmarks": "The same railings, trees and brick wall"
+ },
+ "_comment": "Graza episode 1 (GOOSE-3746 third-brand test). Same settings as the Olipop episode 3 that passed: handover, natural + real hold, level_camera (no glance), no signage, plain props. Park corner location kept because no_signage names its landmarks. The paid take says \"it's olive oil\"; the episode caption was set to match the audio.",
+ "episode_role": "payoff",
+ "episode": "graza-ep1",
+ "props": "a plain satchel, a folded scarf",
+ "cast_size": 2,
+ "shots": [
+  {
+   "kind": "handover_cold",
+   "subject": "a man in his fifties, denim jacket, with a plain satchel",
+   "pronoun": "he",
+   "noun": "grey-haired man"
+  },
+  {
+   "kind": "speak",
+   "noun": "grey-haired man",
+   "reaction": "frowns",
+   "manner": "certain",
+   "line": "I think it is mustard, the kind you squeeze."
+  },
+  {
+   "kind": "handover",
+   "subject": "a woman in her twenties, tan jacket, with a folded scarf",
+   "pronoun": "she",
+   "noun": "young woman"
+  },
+  {
+   "kind": "payoff",
+   "noun": "young woman",
+   "reaction": "smiles",
+   "manner": "delighted",
+   "line": "Oh, I know this one, it is olive oil.",
+   "pronoun": "she"
+  }
+ ],
+ "generation": {
+  "seed": 6213,
+  "prompt_version": 2,
+  "duration": 15,
+  "fast": true,
+  "pace_grammar": true,
+  "guard_grammar": true,
+  "mic_grammar": false,
+  "mic_ref_grammar": true,
+  "plain_grammar": true,
+  "answers_only": true,
+  "can_size_grammar": true,
+  "can_sealed_grammar": false,
+  "upright_grammar": true,
+  "one_mic_grammar": true,
+  "handover_grammar": true,
+  "natural_grammar": true,
+  "no_signage": true,
+  "real_grammar": true,
+  "level_camera": true
+ }
+}

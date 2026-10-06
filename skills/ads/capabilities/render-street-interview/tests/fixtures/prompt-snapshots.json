@@ -796,5 +796,119 @@
     },
     "words": 998,
     "sha256": "86881585a1109c37986236787e2aaa0d98b839e281456b781647493f6f963110"
+  },
+  {
+    "config": "olipop-ep3-a",
+    "version": 2,
+    "flags": {
+      "pace": true,
+      "guards": true,
+      "mic": false,
+      "plain": true,
+      "answers_only": false,
+      "can": false,
+      "mic_ref": true,
+      "can_size": true,
+      "can_sealed": true,
+      "upright": true,
+      "one_mic": true
+    },
+    "words": 1470,
+    "sha256": "1ea94f298cfad3e54c4b509a1b5e1a13685e00449cfa281b78a8f4ed4373d477"
+  },
+  {
+    "config": "olipop-ep3-b",
+    "version": 2,
+    "flags": {
+      "pace": true,
+      "guards": true,
+      "mic": false,
+      "plain": true,
+      "answers_only": true,
+      "can": false,
+      "mic_ref": true,
+      "can_size": true,
+      "can_sealed": true,
+      "upright": true,
+      "one_mic": true
+    },
+    "words": 1634,
+    "sha256": "2071be4d217f5c8717fa173ecee3b48bf92427d3ba0b3dd265c0006a96134177"
+  },
+  {
+    "config": "olipop-ep3-c",
+    "version": 2,
+    "flags": {
+      "pace": true,
+      "guards": true,
+      "mic": false,
+      "plain": true,
+      "answers_only": true,
+      "can": false,
+      "mic_ref": true,
+      "can_size": true,
+      "can_sealed": true,
+      "upright": true,
+      "one_mic": true
+    },
+    "words": 1487,
+    "sha256": "bb92dcec026bd80529f24fa8d742273e5cefc270759010f4dd5738621311bbd6"
+  },
+  {
+    "config": "graza-ep1-a2",
+    "version": 2,
+    "flags": {
+      "pace": true,
+      "guards": true,
+      "mic": false,
+      "plain": true,
+      "answers_only": false,
+      "can": false,
+      "mic_ref": true,
+      "can_size": true,
+      "can_sealed": false,
+      "upright": true,
+      "one_mic": true
+    },
+    "words": 1462,
+    "sha256": "3914a5aff260fd7e3d0f3772ed083acf28ecfd912d4db50c8b2eb1b44ed74c25"
+  },
+  {
+    "config": "graza-ep1-b",
+    "version": 2,
+    "flags": {
+      "pace": true,
+      "guards": true,
+      "mic": false,
+      "plain": true,
+      "answers_only": true,
+      "can": false,
+      "mic_ref": true,
+      "can_size": true,
+      "can_sealed": false,
+      "upright": true,
+      "one_mic": true
+    },
+    "words": 1635,
+    "sha256": "dc951e246110994faf4407417b96b1335ebde1c8c4563133a8a6c29063ffa90c"
+  },
+  {
+    "config": "graza-ep1-c",
+    "version": 2,
+    "flags": {
+      "pace": true,
+      "guards": true,
+      "mic": false,
+      "plain": true,
+      "answers_only": true,
+      "can": false,
+      "mic_ref": true,
+      "can_size": true,
+      "can_sealed": false,
+      "upright": true,
+      "one_mic": true
+    },
+    "words": 1481,
+    "sha256": "94e09d48bea4d1629a41d728cd2ba1e3f6ef3dd4f61836e7696e285b3630dfc7"
   }
 ]
