@@ -776,7 +776,7 @@
       "one_mic": false
     },
     "words": 962,
-    "sha256": "5a21433d940f98fe29914cb9d2420cd4e5b4a3968f12c95447dc47d2bd27bf77"
+    "sha256": "c6281aafd8182379efd6320c2c8713331ea13327240e102d5d6a613aa9789288"
   },
   {
     "config": "demo-tallgrass-oat",
@@ -795,6 +795,6 @@
       "one_mic": false
     },
     "words": 1001,
-    "sha256": "c3ebbad31c29087b3fe57b69786d69883998450e28d2c20fa968e1b64ce24e67"
+    "sha256": "63e435dfdbe58362051e361366a46a326ca2f9ea861c93bcbabc5607b931daf5"
   }
 ]

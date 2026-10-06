@@ -1,6 +1,6 @@
 # Human version
 
-**Summary.** Use this guide when a recipe needs a generated creator reference. The current brief supplies the person, wardrobe and setting; this guide supplies the photographic craft and checks. Model availability and a previous successful face do not guarantee that the video provider will accept a new reference.
+**Summary.** Use this guide whenever a generated image will contain a person: a recipe's creator reference, or any person in a custom video. Outside a recipe that prescribes its own still, the person comes from create-creator-takes-h3's `make_character.py`, never a hand-written prompt. The current brief supplies the person, wardrobe and setting; this guide supplies the photographic craft and checks. Model availability and a previous successful face do not guarantee that the video provider will accept a new reference.
 
 This reference travels with `create-image-fal`. It requires no Studio checkout. It is derived from the Studio avatar guide at source revision `1db6399e0cb75f52cd876a818475abdc6cf09c23`; historical experiments are observations, not defaults.
 
@@ -10,7 +10,7 @@ This reference travels with `create-image-fal`. It requires no Studio checkout. 
 
 ## Read before spending
 
-Read this file before generating an avatar for a recipe that requires it. If a required guide or capability cannot be fetched or opened, identify the missing package/file and stop before any paid call. Do not invent its instructions.
+Read this file before generating any image that contains a person, with or without a recipe. If a required guide or capability cannot be fetched or opened, identify the missing package/file and stop before any paid call. Do not invent its instructions.
 
 Use the image model and render engine specified by the current approved recipe. Confirm the exact model ID and payload against current provider documentation and the GooseWorks proxy's supported path. Quote current costs through the existing estimate flow. This guide does not authorize a different engine, another avatar, a test clip or a retry.
 
@@ -54,7 +54,7 @@ For a worn small item, follow the recipe's composition step and inspect the resu
 
 ## Review the still before video
 
-Check gaze, framing, wardrobe, hands, skin treatment, product fidelity and the correspondence between every reference slot and its prompt binding. Crop each face, enlarge it 2× and inspect it: reject waxy or glossy skin, missing pores, a blurred or bokeh background, garbled lettering, or a face under about 300 px tall. A slightly off-lens gaze can carry into the take. Fix or seek approval for a defective reference before submitting video.
+Check gaze, framing, wardrobe, hands, skin treatment, product fidelity and the correspondence between every reference slot and its prompt binding. Crop each face, enlarge it 2× and inspect it: reject waxy or glossy skin, missing pores, a blurred or bokeh background (unless the approved style explicitly calls for shallow focus), garbled lettering, or a face under about 300 px tall. A slightly off-lens gaze can carry into the take. Fix or seek approval for a defective reference before submitting video.
 
 Keep the canonical avatar as actual PNG bytes. For Seedream v5 Pro, request `output_format: "png"` (its documented default is JPEG); otherwise inspect the returned format and convert it locally to PNG. Renaming a `.jpg` file to `.png` does not convert it. Lossy conversion changes its pixels. Any optional watermark must be separately approved; this guide requires no new watermark operation.
 

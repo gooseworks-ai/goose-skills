@@ -14,6 +14,9 @@ SCRIPTS = Path(__file__).resolve().parents[1] / "scripts"
 sys.path.insert(0, str(SCRIPTS))
 from prepare_script_context import select_context
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from test_conversation import ref as compatible_reference
+
 
 def brief(**fields):
     base = {"brand_id": "route-test", "language": "en"}
@@ -80,6 +83,40 @@ class SelectorRouteTests(unittest.TestCase):
         self.assertIn("object guessing belongs to product-guess execution", result["brief_gaps"])
         self.assertEqual(result["route_gaps"], [])
         self.assertEqual(result["status"], "needs-reference")
+
+    def test_unsupported_route_selects_no_reference_even_when_one_fits(self):
+        result = select_context(brief(mode="conversation", offering_type="service",
+                                      interaction_type="mic-only", participants=3),
+                                [compatible_reference()])
+        self.assertEqual(result["status"], "unsupported-route")
+        self.assertEqual(result["references"], [])
+        # The same brief with one participant would have selected it.
+        ready = select_context(brief(mode="conversation", offering_type="service",
+                                     interaction_type="mic-only", participants=1),
+                               [compatible_reference()])
+        self.assertEqual(ready["status"], "ready-for-writing")
+
+    def test_too_many_people_offers_the_same_route_at_its_limit(self):
+        guess = select_context(brief(mode="product-guess", offering_type="physical",
+                                     interaction_type="product-guess", participants=5), [])
+        self.assertEqual(guess["status"], "unsupported-route")
+        self.assertIn("product-guess supports up to four participants; 5 requested", guess["route_gaps"])
+        self.assertEqual(guess["alternatives"][0],
+                         {"route": "product-guess", "differs": "up to four participants; renders"})
+        sample = select_context(brief(mode="conversation", offering_type="physical",
+                                      interaction_type="product-sample", participants=3), [])
+        self.assertEqual(sample["alternatives"][0]["route"], "conversation/product-sample")
+        self.assertNotIn("conversation/mic-only", routes(sample))
+
+    def test_invalid_participant_count_is_a_brief_gap_not_a_route_gap(self):
+        for value in (0, True, "3", 2.5):
+            with self.subTest(participants=value):
+                result = select_context(brief(mode="conversation", offering_type="digital",
+                                              interaction_type="mic-only", participants=value), [])
+                self.assertTrue(any("participants must be a whole number" in gap
+                                    for gap in result["brief_gaps"]))
+                self.assertEqual(result["route_gaps"], [])
+                self.assertEqual(result["status"], "needs-reference")
 
     def test_cli_exits_2_and_writes_the_route_for_an_unsupported_brief(self):
         with tempfile.TemporaryDirectory() as tmp:

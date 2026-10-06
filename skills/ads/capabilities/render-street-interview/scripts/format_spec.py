@@ -754,8 +754,13 @@ def build_prompt(cfg: dict, pace: bool = False, guards: bool = False, mic: bool 
         "person is turned three quarters toward that interviewer. "
 
         # live street: 4802's corner was empty, which read as a set
-        "The street is busy: other passers-by walk through the background of every shot, blurred by "
-        "their own movement, and traffic moves along the road. This corner is never empty. "
+        # v3 drops "blurred by their own movement": next to the v3 framing sentence's "never
+        # blurred", the word reads as a contradiction the model could settle by blurring the street.
+        + ("The street is busy: other passers-by walk through the background of every shot in "
+           "their own natural motion, and traffic moves along the road. This corner is never empty. "
+           if prompt_version >= 3 else
+           "The street is busy: other passers-by walk through the background of every shot, blurred by "
+           "their own movement, and traffic moves along the road. This corner is never empty. ") +
 
         # one object per hand: asking for two in the interviewer's hands caused every object
         # failure up to seed 4803, and asking for one merged them on 4801
@@ -1007,6 +1012,8 @@ def lint(prompt: str, pace: bool = False, guards: bool = False, mic: bool = Fals
         return conversation.lint(prompt, split_shots)
     if mode != "product-guess":
         return ["unknown street execution mode"]
+    if prompt_version not in (1, 2, 3):
+        return ["prompt_version must be 1, 2 or 3"]
     can_size, can_sealed = can_size or can, can_sealed or can
     if mic and mic_ref:
         return ["`mic` and `mic_ref` are two different answers to the same question and the "
@@ -1024,6 +1031,10 @@ def lint(prompt: str, pace: bool = False, guards: bool = False, mic: bool = Fals
                 **(CAN_SEALED_CLAUSES if can_sealed else {}),
                 **(UPRIGHT_CLAUSES if upright else {}),
                 **(ONE_MIC_CLAUSES if one_mic else {}))
+    if prompt_version >= 3:
+        need["never blurred and never bokeh"] = ("the v3 deep-focus bound. The operator rejects "
+                                                 "blurred backgrounds; v3 keeps the falloff needle "
+                                                 "but the street stays in focus")
     if prompt_version >= 2 and upright and "the top edge is never shown" in pr:
         need["the top edge is never shown"] = need.pop("the lid is never shown")
     out = [f'the prompt is missing "{n}" -- {why}' for n, why in need.items()

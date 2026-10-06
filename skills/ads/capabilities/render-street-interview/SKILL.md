@@ -26,7 +26,7 @@ premise, participant role, participation reason, visible task, actions, edited o
 hook, supported brand explanation and payoff. Do not force a correct-answer winner into a
 service conversation or reduce every brand to a routine problem followed by a logo card.
 
-| Interaction | Current support | Person image reference | Participants |
+| Interaction | Current support | Person image reference | Max participants |
 | --- | --- | --- | --- |
 | `product-guess` | Existing object renderer; standalone product reference required | forbidden | 4 |
 | `mic-only` | Conversation preview; service explanation without a product or device | forbidden | 1 |
@@ -142,7 +142,7 @@ Set approved colours in `brand_layer.palette`: `accent`, `text`, and `background
 
 The `subway` series bar stays visible through caption gaps. It is also in the caption-free control so the gate measures captions separately from persistent branding.
 
-For a **new** prompt, use `generation.prompt_version: 3` (or `--prompt-version 3`). It keeps version 2's repairs (no duplicate articles, a top-edge rule for non-can packaging) and keeps the street in focus behind the people: never blurred and never bokeh (see REFERENCE #8). Version 3 is draft until a 720p take measures inside the real-footage detail band; its paid validation take needs its own approval. The manifest records the version for the gate. Historical prompts default to version 1, and versions 1 and 2 retain their hashes. Use a new approved seed for a new prompt; do not overwrite an approved take.
+For a **new** prompt, use `generation.prompt_version: 3` (or `--prompt-version 3`). It keeps version 2's repairs (no duplicate articles, a top-edge rule for non-can packaging) and keeps the street in focus behind the people: never blurred and never bokeh (see REFERENCE #8). Version 3 is draft until a 720p take measures inside the real-footage detail band; its paid validation take needs its own approval. The bundled demo config stays on version 2 until then. The manifest records the version for the gate. Historical prompts default to version 1, and versions 1 and 2 retain their hashes. Use a new approved seed for a new prompt; do not overwrite an approved take.
 
 ### Single-take recuts
 

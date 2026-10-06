@@ -26,8 +26,8 @@ ROUTES = {
                      "offering_types": ["physical", "service", "digital"]},
 }
 DEFAULT_PARTICIPANTS = {"product-guess": 4, "conversation": 1}
+MIC_ONLY = {"route": "conversation/mic-only", "differs": "one participant; preview only, no paid render yet"}
 ALTERNATIVES = [
-    {"route": "conversation/mic-only", "differs": "one participant; preview only, no paid render yet"},
     {"route": "ugc-street-testimonial", "differs": "one person talking to camera, no interviewer; needs a creator still"},
     {"route": "custom", "differs": "keeps this format's hard constraints: people in text, one take, deep focus, "
                                    "720p first, local lettering; unvalidated"},
@@ -84,20 +84,30 @@ def route_contract(brief, mode):
     """The route this brief asks for, and why the format cannot render it (if it cannot)."""
     rule = ROUTES[mode]
     participants = brief.get("participants", DEFAULT_PARTICIPANTS[mode])
+    limit = rule["max_participants"]
+    allowed = "one participant" if limit == 1 else f"up to {NUMBER_WORDS[limit]} participants"
+    too_many = valid_participants(participants) and participants > limit
+    wrong_offering = (brief.get("offering_type") in ("physical", "service", "digital")
+                      and brief["offering_type"] not in rule["offering_types"])
     gaps = []
-    if valid_participants(participants) and participants > rule["max_participants"]:
-        limit = rule["max_participants"]
-        gaps.append(f"{mode} supports {'one participant' if limit == 1 else f'up to {NUMBER_WORDS[limit]} participants'}; "
-                    f"{participants} requested")
-    if brief.get("offering_type") in ("physical", "service", "digital") \
-            and brief["offering_type"] not in rule["offering_types"]:
+    if too_many:
+        gaps.append(f"{mode} supports {allowed}; {participants} requested")
+    if wrong_offering:
         gaps.append(f"{mode} needs a physical product to hand over")
-    route = dict(copy.deepcopy(rule), name=mode, interaction_type=brief.get("interaction_type"),
+    interaction = brief.get("interaction_type")
+    route = dict(copy.deepcopy(rule), name=mode, interaction_type=interaction,
                  participants=participants)
-    # Never offer the failing route back unchanged. A single-participant mic-only conversation
-    # stays on the list when a conversation fails on participant count: it is the reduced
-    # version the customer can still choose, and it says how it differs.
-    alternatives = [dict(a) for a in ALTERNATIVES if a["route"] != mode] if gaps else []
+    if not gaps:
+        return route, gaps, []
+    alternatives = []
+    if too_many and not wrong_offering:
+        # The same route with fewer people is the closest thing the customer can still choose.
+        support = "preview only, no paid render yet" if rule["support"] == "preview-only" else "renders"
+        name = mode if interaction in (None, mode) else f"{mode}/{interaction}"
+        alternatives.append({"route": name, "differs": f"{allowed}; {support}"})
+    elif wrong_offering:
+        alternatives.append(dict(MIC_ONLY))
+    alternatives += [dict(a) for a in ALTERNATIVES]
     return route, gaps, alternatives
 
 
@@ -145,7 +155,8 @@ def select_context(brief, references, limit=2):
         score += 5 if ref.get("commercial") else 0
         eligible.append((score, ref))
     eligible.sort(key=lambda pair: (-pair[0], pair[1]["id"]))
-    selected = [] if brief_gaps else [ref for _, ref in eligible[:limit]]
+    # An unsupported route selects nothing, so no downstream gate can treat it as ready.
+    selected = [] if brief_gaps or route_gaps else [ref for _, ref in eligible[:limit]]
     queries = []
     if not selected:
         queries.append(f"{brief.get('offering_type', 'offering')} {brief.get('audience_group', 'audience')} "
