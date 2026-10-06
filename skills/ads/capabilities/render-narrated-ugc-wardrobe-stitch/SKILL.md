@@ -1,7 +1,9 @@
 ---
 name: render-narrated-ugc-wardrobe-stitch
-description: Assemble a narrated-UGC "stitch reply" ad from a config — a single spoken VO carries a verbatim testimonial while ~30 per-cut i2v clips (one creator across ~5 wardrobes in ~3 worlds, plus product B-roll) are each trimmed to their EDL window built from the VO's Whisper word boundaries and hard-concatenated via filter_complex concat (never the demuxer, which drops audio on a duration mismatch), the VO mixed over an optional sidechain-ducked instrumental bed (−20dB, 20 to 1) so the VO stays on top, karaoke-pop captions burned on every word throughout (VEED Whisper preset, re-spelled against the locked script), a landing-page scroll rendered as FFmpeg zoompan over a Playwright PNG (not i2v), and closed on the brand's real end-card PNG — never AI-rendered text. This is the FREE deterministic assembly stage (trim-to-EDL + filter_complex concat + VO and music mix + karaoke captions + landing-page zoompan + end-card append); the VO, creator, start-frames, and clips come from create-vo-elevenlabs / create-image-gpt-image-fal / create-image-fal / create-video-fal. Use for the narrated-ugc-wardrobe-stitch format.
+description: Assemble a narrated-UGC "stitch reply" ad from a config — a single spoken VO carries a verbatim testimonial while ~30 per-cut i2v clips (one creator across ~5 wardrobes in ~3 worlds, plus product B-roll) are each trimmed to their EDL window built from the VO's Whisper word boundaries and hard-concatenated via filter_complex concat (never the demuxer, which drops audio on a duration mismatch), the VO mixed over an optional sidechain-ducked instrumental bed (−20dB, 20 to 1) so the VO stays on top, karaoke-pop captions burned on every word throughout (VEED Whisper preset, re-spelled against the locked script), a landing-page scroll rendered as FFmpeg zoompan over a Playwright PNG (not i2v), and closed on the brand's real end-card PNG — never AI-rendered text. This is the FREE deterministic assembly stage (trim-to-EDL + filter_complex concat + VO and music mix + karaoke captions + landing-page zoompan + end-card append), run with the shared stitch-videos-ffmpeg montage.py helper that installs with this package; the VO, creator, start-frames, and clips come from create-vo-elevenlabs / create-image-gpt-image-fal / create-image-fal / create-video-fal. Use for the narrated-ugc-wardrobe-stitch format.
 status: active
+version: "1.0.1"
+updated: 2026-10-06
 ---
 
 # render-narrated-ugc-wardrobe-stitch
@@ -11,7 +13,7 @@ where a single spoken VO carries a verbatim ~13-sentence testimonial over ONE cr
 across ~5 wardrobe changes in ~3 micro-worlds, interspersed with product B-roll (e.g. product macro,
 unboxing, a landing-page scroll), ~30 hard cuts on the VO cadence, closing on a brand end card.
 This capability is the **FREE, deterministic assembly** — trim-to-EDL, hard-concat, the VO+music
-mix, the karaoke-pop caption burn, the landing-page zoompan, and the end-card append.
+mix, the word-by-word caption burn, the landing-page zoompan, and the end-card append.
 
 `scripts/config.example.json` is one worked example (Bioma "Do NOT buy Bioma Probiotics", ~37s
 1080×1920 9:16, ~30 body cuts + a ~2s end card) — its creator, voice, hook, worlds and music are
@@ -42,8 +44,27 @@ edits chained off the anchor) + 3 world wides + per-cut start-frames (`create-im
 composites); and one Veo/Seedance i2v clip per cut (`create-video-fal`). Given the VO +
 `vo-final.words.json` + `edl.json` + one clip per cut + a Playwright landing-page PNG + the brand
 end-card PNG, `render-narrated-ugc-wardrobe-stitch` trims each clip to its EDL window, hard-concats
-on the VO cadence, mixes the VO over the ducked bed, burns the karaoke-pop captions, appends the
+on the VO cadence, mixes the VO over the ducked bed, burns the word-by-word captions, appends the
 end card → the master. Re-cuts reuse the existing VO / start-frames / clips and cost **$0**.
+
+**The assembly runs on a shared helper.** `montage.py` lives in the shared `stitch-videos-ffmpeg`
+atom, which this package lists in `requires_skills`, so it installs alongside. After
+`gooseworks fetch render-narrated-ugc-wardrobe-stitch` it is at
+`/tmp/gooseworks-scripts/stitch-videos-ffmpeg/scripts/montage.py`. Write a `montage.json` from the
+config (field mapping in `scripts/README.md`), then:
+
+```bash
+M=/tmp/gooseworks-scripts/stitch-videos-ffmpeg/scripts/montage.py
+python3 $M edl --spec montage.json --out edits/edl.json            # check every clip + window first
+python3 $M run --spec montage.json --out edits/master-final.mp4 --workdir edits/work
+```
+
+`run` builds the EDL from the VO word boundaries (`word_range`), trims and hard-cuts every clip
+with the `filter_complex` concat filter, renders the landing-page scroll as a zoom/pan over the PNG,
+holds the end-card PNG, burns word-by-word captions (one word at a time in one colour, with
+`respell`; no active-word highlight), mixes the VO over the
+ducked bed, and masters to -14 LUFS. It writes `edits/work/manifest.json`. This package ships no
+scripts of its own.
 
 ## Contract (the free assembly)
 
@@ -69,4 +90,4 @@ end card → the master. Re-cuts reuse the existing VO / start-frames / clips an
   end-card PNG (~2s) on the tail, captions suppressed. A diffusion model garbles a wordmark.
 - **FFmpeg composite, deterministic, FREE.** Trim-to-EDL, `filter_complex concat`, VO+music mix,
   caption burn, landing-page zoompan, end-card append, `loudnorm I=-14` → a 1080×1920 h264+aac
-  master (~37s). No paid calls, no keys.
+  master as long as the VO plus the end card (~37 s in the demo). No paid calls, no keys.

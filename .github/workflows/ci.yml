@@ -35,6 +35,29 @@ jobs:
           python3 skills/ads/capabilities/render-street-interview/scripts/selftest.py
           python3 -m unittest discover -s skills/ads/capabilities/render-street-interview/tests -p 'test_prompt_budget.py' -v
 
+  imessage-chat-browser-tests:
+    # Headless-Chromium tests for render-imessage-chat, including the QA-60
+    # platform safe-area layout. Installs only Playwright's Chromium (no other
+    # browsers); local fixtures, no media downloads or provider calls.
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: skills/ads/capabilities/render-imessage-chat
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Playwright and Chromium
+        run: |
+          npm ci --prefix scripts
+          cd scripts && npx playwright install --with-deps chromium
+
+      - name: Test chat renderer and safe-area layout
+        run: node --test --test-concurrency=1 tests/test_safe_area.js tests/test_chat.js
+
   media-tests:
     # The media helpers are pinned to macOS system fonts (render-imessage-cascade), so these
     # run on macOS. Local ffmpeg fixtures only; no provider calls.
@@ -61,3 +84,4 @@ jobs:
           skills/ads/capabilities/media-proxy/tests
           skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests
           skills/ads/capabilities/render-street-interview/tests/test_single_gen_rejection.py
+          skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests

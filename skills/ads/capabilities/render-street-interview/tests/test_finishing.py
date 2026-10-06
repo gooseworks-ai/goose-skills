@@ -133,7 +133,38 @@ class FinishingTests(unittest.TestCase):
              patch("build_episode.duration", return_value=2), contextlib.redirect_stdout(output):
             result = gate.falsify(self.run / "render.mp4", self.run / "control.mp4", {})
         self.assertEqual(result, 1)
-        self.assertIn("4 of 4 falsifications", output.getvalue())
+        # A single take has no episode plan, so S is not applicable: F, R and T are counted.
+        self.assertIn("3 of 3 falsifications", output.getvalue())
+        self.assertIn("S not applicable", output.getvalue())
+
+    def test_single_take_falsify_passes_when_every_applicable_check_trips(self):
+        spec = importlib.util.spec_from_file_location("check_cut", SCRIPTS / "check-cut.py")
+        gate = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(gate)
+        output = io.StringIO()
+        with patch.object(gate.subprocess, "run"), \
+             patch.object(gate, "graphics_span", return_value=(1690.0, 1800.0)), \
+             patch.object(gate, "check_realism", return_value=(["R over-detailed. planted"], [], [])), \
+             patch.object(gate, "cuts", return_value=[1.0]), \
+             patch("build_episode.duration", return_value=4), contextlib.redirect_stdout(output):
+            result = gate.falsify(self.run / "render.mp4", self.run / "control.mp4", {})
+        self.assertEqual(result, 0, output.getvalue())
+        self.assertIn("S not applicable", output.getvalue())
+        self.assertIn("FALSIFIED", output.getvalue())
+
+    def test_episode_without_plan_still_fails_s(self):
+        spec = importlib.util.spec_from_file_location("check_cut", SCRIPTS / "check-cut.py")
+        gate = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(gate)
+        output = io.StringIO()
+        with patch.object(gate.subprocess, "run"), \
+             patch.object(gate, "graphics_span", return_value=(1690.0, 1800.0)), \
+             patch.object(gate, "check_realism", return_value=(["R over-detailed. planted"], [], [])), \
+             patch.object(gate, "cuts", return_value=[1.0]), \
+             patch("build_episode.duration", return_value=4), contextlib.redirect_stdout(output):
+            result = gate.falsify(self.run / "render.mp4", self.run / "control.mp4", {}, ep={"plan": None})
+        self.assertEqual(result, 1)
+        self.assertIn("1 of 4 falsifications", output.getvalue())
 
     def test_zero_strength_grade_and_brand_bar_through_caption_gaps(self):
         # Entirely synthetic input; no model call, real customer or wallet involved.

@@ -97,10 +97,10 @@
     "resolution": "1080p",
     "batch_size": 3,
     "motion_opener": "VERB-LED (never camera-led): the creator/product does a specific action, THEN any secondary motion. Stable start pose, action in the prompt. NO camera 'slow push-in' opener (reads static), NO morphing, single person only.",
-    "_note": "Veo 3.1 via FAL @1080p, ~4s/clip. Cuts 24-26 (landing-page scroll) are FFmpeg zoompan, not i2v. gen_veo_retries.sh re-rolls any drifted clip off its clean start-frame."
+    "_note": "Veo 3.1 via FAL @1080p, ~4s/clip. Cuts 24-26 (landing-page scroll) are FFmpeg zoompan, not i2v. Re-roll any drifted clip off its clean start-frame (create-video-fal)."
   },
   "edl": {
-    "_comment": "30 role-tagged cuts built from the VO word boundaries (build_edl.py -> edl.json). archetype reaction-montage-explainer, caption_family karaoke-pop, pacing_profile front-load-hold-decelerate. The payoff-hold (s11) is the held reveal beat (~3x mean shot length). A representative subset is inlined here; the full 30-cut grid is edl.json.",
+    "_comment": "30 role-tagged cuts built from the VO word boundaries (montage.py edl from stitch-videos-ffmpeg: one montage.json clip per cut with a word_range -> edl.json; see README.md section 0). archetype reaction-montage-explainer, caption_family karaoke-pop, pacing_profile front-load-hold-decelerate. The payoff-hold (s11) is the held reveal beat (~3x mean shot length). A representative subset is inlined here; the full 30-cut grid is edl.json.",
     "schema_version": "1.0",
     "cut_count": 30,
     "hook_type": "claim-caption",

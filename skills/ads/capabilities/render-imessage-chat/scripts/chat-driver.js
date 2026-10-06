@@ -79,5 +79,25 @@
       d.style.opacity = 0.45 + 0.5 * (1 + Math.sin(now * 7 - i * 1.5)) / 2;
     });
   };
+  // Platform-safe zone report (QA-60), in output-canvas pixels: the visible part
+  // of the newest row (rows clip to the conversation) and every shown sheet or
+  // dialog. A skin that adds sheets marks them data-safe-keep.
+  const box = r => ({ left:r.left, top:r.top, right:r.right, bottom:r.bottom });
+  window.__safeAreaReport = () => {
+    const zone = CHAT_LAYOUT.zone, boxes = [], view = sc.getBoundingClientRect();
+    const newest = rows.filter(r => !r.hasAttribute('data-pending') && r.style.display !== 'none').at(-1);
+    if (newest) {
+      const r = newest.getBoundingClientRect();
+      const b = { left:Math.max(r.left,view.left), top:Math.max(r.top,view.top), right:Math.min(r.right,view.right), bottom:Math.min(r.bottom,view.bottom) };
+      if (b.right > b.left && b.bottom > b.top) boxes.push({ kind:'newest', id:newest.dataset.animId, ...b });
+    }
+    for (const el of document.querySelectorAll('[data-safe-keep],[role="dialog"],[role="alertdialog"]')) {
+      const r = el.getBoundingClientRect();
+      if (el.closest('[data-pending="1"]') || !r.width || !r.height || getComputedStyle(el).visibility === 'hidden') continue;
+      boxes.push({ kind:'sheet', id:el.dataset.safeKeep || el.id || el.className, ...box(r) });
+    }
+    const outside = b => b.left < zone.left-0.5 || b.top < zone.top-0.5 || b.right > zone.right+0.5 || b.bottom > zone.bottom+0.5;
+    return { enabled:!!zone, zone, boxes, violations:zone ? boxes.filter(outside) : [] };
+  };
   window.__renderAt(0);
 })();

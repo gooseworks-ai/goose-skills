@@ -26,3 +26,11 @@ Pass when the assembly runs to a valid MP4 and:
 - **no paid call is made** — the VO, creator, start-frames, and clips come from the paid
   capabilities (create-vo-elevenlabs / create-image-gpt-image-fal / create-image-fal /
   create-video-fal); this assembly is $0 and a re-cut reuses the existing assets.
+
+Free check of the assembler itself (no keys, no paid assets): the shared helper installs with this
+package, and its fixture test cuts synthetic clips through the same EDL → concat → captions → ducked
+mix path and checks length, format, caption frames and ducking:
+
+```bash
+python3 -m pytest -q /tmp/gooseworks-scripts/stitch-videos-ffmpeg/tests   # needs ffmpeg + pytest (+ pillow)
+```

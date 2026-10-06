@@ -14,6 +14,8 @@ bash render.sh --config config.example.json --out /tmp/imsg-smoke/master-final.m
 Expect a proportional phone, inset island, Maya in the header, natural texts,
 original receive/send sounds and Sample Goods on the end card. Stars are absent.
 The final message remains visible before the end card. Output is 1080×1920.
+The newest message sits above the bottom 400 px and left of the right 140 px
+(`master-chat.safe-area.json`; check-render prints the measured range).
 Change participant name to Akhil and theme to light; check the header/initial,
 visible black header controls, hardware inset and frame margins again.
 
@@ -25,6 +27,7 @@ From the capability root:
 
 ```bash
 node --test tests/test_chat.js
+node --test tests/test_safe_area.js
 python3 -m pytest tests/test_stitch.py
 ```
 
