@@ -1,0 +1,12 @@
+{
+  "slug": "render-hook-replacement",
+  "category": "capabilities",
+  "domain": "ads",
+  "tags": ["ads"],
+  "installation": {
+    "base_command": "npx goose-skills install render-hook-replacement",
+    "supports": ["claude", "cursor", "codex"]
+  },
+  "requires_skills": ["watch", "review-finished-ad"],
+  "requires_tools": ["python3", "ffmpeg", "ffprobe"]
+}
