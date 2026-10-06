@@ -6738,8 +6738,10 @@
         "skills/ads/capabilities/render-imessage-chat/scripts/sfx-embedded.json",
         "skills/ads/capabilities/render-imessage-chat/scripts/stitch.sh",
         "skills/ads/capabilities/render-imessage-chat/skill.meta.json",
+        "skills/ads/capabilities/render-imessage-chat/tests/fixtures/long-group-thread.json",
         "skills/ads/capabilities/render-imessage-chat/tests/smoke-test.md",
         "skills/ads/capabilities/render-imessage-chat/tests/test_chat.js",
+        "skills/ads/capabilities/render-imessage-chat/tests/test_safe_area.js",
         "skills/ads/capabilities/render-imessage-chat/tests/test_stitch.py"
       ],
       "metadata": {

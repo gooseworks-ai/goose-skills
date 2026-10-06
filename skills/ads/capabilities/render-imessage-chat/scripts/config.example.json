@@ -5,6 +5,7 @@
   "dynamic_island": true,
   "width": 1080,
   "height": 1920,
+  "safe_area": true,
   "thread": {
     "mode": "dm",
     "header": {

@@ -994,13 +994,19 @@ def falsify(render, control, L, ep=None, ep_takes=()):
         # not actually violate the rule proves nothing -- so the shifted boundary is asserted
         # to be further from every cut than the tolerance before the check is asked about it.
 
-        n_falsify += 1
         print("\nfalsifying S (mid-shot splice) by moving one boundary off its cut")
-        if not ep or not ep.get("plan"):
-            print("  S SKIPPED: not an episode, or no plan recorded. S cannot be falsified "
-                  "here and is therefore unproven on this run.")
+        if not ep:
+            # The gate runs S only on assembled episodes (see `if ep:` in the main gate). A
+            # single take, including a mapped recut, has no episode plan to splice, so S is
+            # not part of its gate and is not counted here.
+            print("  S not applicable: single take. The gate runs S only on episodes.")
+        elif not ep.get("plan"):
+            n_falsify += 1
+            print("  S SKIPPED: the episode recorded no plan. S cannot be falsified here and "
+                  "is therefore unproven on this run.")
             bad += 1
         else:
+            n_falsify += 1
             import build_episode as _be
             tol = float(ep.get("splice_tol", 0.12))
             tp = ep_takes[0]
