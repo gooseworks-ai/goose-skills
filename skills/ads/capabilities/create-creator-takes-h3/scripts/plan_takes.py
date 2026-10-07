@@ -53,9 +53,9 @@ DEFAULT_DELIVERY = ("natural and conversational, speaking directly to one viewer
                     "not announcing, not reading. Sentences run together with almost no gap. Pitch falls on "
                     "the last word of each sentence. Consonants relaxed, volume varying word to word.")
 
-TEMPLATE = """A single continuous locked-off medium shot of <Subject 1>, filmed on a phone propped on a stand.
+TEMPLATE = """A single continuous locked-off medium shot of <Subject 1>, with a natural front-camera recording look. The recording device and its support stay outside the frame.
 
-[Shot 1] The phone is PROPPED ON A STAND at eye level and the person sits in front of it. Chest-up framing, both shoulders in frame, head roughly centred with a little headroom, shot straight on. The hands are FREE and gesture while talking, one coming up and settling. Nobody holds the phone, there is no arm extended toward the camera. THE CAMERA DOES NOT MOVE: locked off, no handheld drift, no pan, no zoom, no reframing. One continuous unbroken shot.
+[Shot 1] The viewpoint is fixed at eye level, with the person facing the lens. No phone, camera, tripod or stand is visible. Chest-up framing, both shoulders in frame, head roughly centred with a little headroom, shot straight on. The hands are FREE and gesture while talking, one coming up and settling. Nobody holds the phone, there is no arm extended toward the camera. THE CAMERA DOES NOT MOVE: locked off, no handheld drift, no pan, no zoom, no reframing. One continuous unbroken shot.
 
 EYES STAY ON THE CAMERA LENS FOR THE WHOLE CLIP, from the very first frame to the very last, including the final word. Never glancing away, never looking down, never letting the gaze drift off the lens at the end of a sentence.
 
@@ -132,6 +132,7 @@ def main():
     ap.add_argument("--slug", default="creator")
     ap.add_argument("--split-at", help="comma-separated reel times to join takes at (e.g. where screen "
                                        "inserts end); default: greedy under 15s")
+    ap.add_argument("--plan-only", action="store_true", help="free planning with a not-yet-generated character image; never authorizes generation")
     a = ap.parse_args()
 
     spec = json.loads(pathlib.Path(a.beats).read_text(encoding="utf-8"))
@@ -144,7 +145,7 @@ def main():
     ch = json.loads(chp.read_text(encoding="utf-8"))
     img = pathlib.Path(ch["image"])
     img = img if img.is_absolute() else (chp.parent / img)
-    if not img.exists():
+    if not img.exists() and not a.plan_only:
         raise SystemExit("character image not found: %s" % img)
     ident = (ch.get("identity") or "").strip()
     if not ident:
@@ -194,6 +195,7 @@ def main():
     takes = {"model": "minimax/h3-max/reference-to-video", "char": str(img.resolve()),
              "mann": str(pathlib.Path(a.mannerism).resolve()) if a.mannerism else None,
              "slug": a.slug, "out": str(out.resolve()), "resolution": a.resolution,
+             "planning_only": a.plan_only,
              "aspect_ratio": a.aspect or pick_aspect(spec), "takes": plan}
     (out / "takes.json").write_text(json.dumps(takes, indent=2), encoding="utf-8")
     for t in plan:

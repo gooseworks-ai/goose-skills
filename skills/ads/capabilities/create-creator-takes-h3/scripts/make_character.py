@@ -232,6 +232,12 @@ def main():
     print("skin     : %s" % slots["skin_tone"])
     print("marks    : %s" % slots["imperfections"][:96] + "...")
     print("prompt   : %d chars -> %s" % (len(prompt), out / "character-prompt.txt"))
+    # Save the same identity metadata for free planning and actual generation.
+    (out / "character.json").write_text(json.dumps({
+        "image": "character.png",
+        "identity": ident + ", " + slots["hair"].rstrip(".") + ", " + slots["wardrobe"].rstrip("."),
+        "environment": slots["scene"].rstrip("."),
+    }, indent=1), encoding="utf-8")
     if a.dry_run:
         print("\n(dry run, nothing generated)")
         return

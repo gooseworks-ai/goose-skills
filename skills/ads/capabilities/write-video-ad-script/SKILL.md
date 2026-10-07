@@ -248,7 +248,7 @@ Fix every error and read every warning. Run it again until it passes.
 model from a different family (never Claude) judges every concept twice, once in each
 order, because judges favour whatever they read first. It scores hook, specificity, how
 spoken it sounds, proof, payoff and freshness, and gives a best hook, line edits and a
-ranking. It costs about 2 credits and runs without asking.
+ranking. This is a paid operation: use the current managed quote and host approval, never a fixed credit claim. For a custom project whose spend gate refuses a pre-approval critic, perform the same rubric locally before review, save the scores and edits, and label the reviewer honestly. Do not submit a paid critic or retry a 409 before approval. A different-model critic is required only where the host supports it in the current phase and approved budget; never claim it ran when it did not.
 
 The script's exit codes:
 

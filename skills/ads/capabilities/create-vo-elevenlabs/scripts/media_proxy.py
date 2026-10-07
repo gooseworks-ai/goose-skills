@@ -66,6 +66,13 @@ def _base_from_proxy_url(url):
     return u[:i] if i > 0 else None
 
 
+def _checked_origin(base):
+    expected = os.environ.get("GW_EXPECTED_API_ORIGIN")
+    if expected and base.rstrip("/") != expected.rstrip("/"):
+        raise RuntimeError("Selected connection and HTTP proxy origins differ. Set GW_MEDIA_VIA=mcp; do not switch credentials or environments.")
+    return base.rstrip("/")
+
+
 def _cfg():
     """(api_base, token, agent_id).
 
@@ -79,14 +86,14 @@ def _cfg():
                 or _base_from_proxy_url(os.environ.get("GW_FAL_PROXY_URL"))
                 or _base_from_proxy_url(os.environ.get("GW_ELEVENLABS_PROXY_URL")))
         if base:
-            return base.rstrip("/"), env_tok, None
+            return _checked_origin(base), env_tok, None
     p = pathlib.Path(os.path.expanduser(_CREDS_PATH))
     if not p.exists():
         raise RuntimeError(
             "No GooseWorks credentials: set GW_MEDIA_PROXY_TOKEN + GW_API_BASE (cloud "
             f"sandbox) or log in with the GooseWorks CLI (writes {_CREDS_PATH}).")
     c = json.loads(p.read_text())
-    return c["api_base"].rstrip("/"), c["api_key"], c.get("agent_id")
+    return _checked_origin(c["api_base"]), c["api_key"], c.get("agent_id")
 
 
 RELAY_EXIT = 3

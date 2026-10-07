@@ -118,3 +118,7 @@ These are the user's calls (the recipe's `choices`), never defaults of this atom
    first generation. When it does not, fix the inputs (`--hair`, `--wardrobe`, `--scene`, or a
    different `--seed`, which reshuffles which three skin imperfections are asked for) rather than re-rolling the same brief; an unchanged payload
    with a pinned seed reproduces the same image and wastes the spend.
+
+## Free planning before the still exists
+
+`make_character.py --dry-run` saves the prompt and character.json without generating an image. Run `plan_takes.py --plan-only` with that metadata, then `run_takes.py` without --go to inspect durations. These are planning estimates, not a current provider quote. After the approved still exists and has been reviewed, rerun plan_takes without --plan-only. Generation refuses planning-only specs. Never generate a placeholder just to price takes.

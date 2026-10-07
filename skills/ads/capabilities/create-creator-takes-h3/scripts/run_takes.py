@@ -92,6 +92,8 @@ def main():
     if problem:
         raise SystemExit(problem)
 
+    if spec.get("planning_only"):
+        raise SystemExit("This is a planning-only spec. Generate and review the actual still, then rerun plan_takes without --plan-only before --go.")
     img = fal_upload(spec["char"])
     vid = fal_upload(spec["mann"]) if spec.get("mann") else None
     aud = None

@@ -43,7 +43,7 @@ sheets; open a single `frame-*.png` (from `--frames`) when you need to read smal
   "beats": [
     {"id": "b1", "start": 0.0, "end": 3.1, "state": "creator", "vo": "..."},
     {"id": "b2", "start": 3.1, "end": 7.4, "state": "split", "vo": "...",
-     "source": "demo", "in": 12.0, "fit": "width", "why": "the brand kit fills in at 13.4s"}
+     "source": "demo", "in": 12.0, "out": 16.3, "fit": "width", "why": "the brand kit fills in at 13.4s"}
   ]
 }
 ```
@@ -110,3 +110,5 @@ Expect several rounds. Each round:
 
 Picking is free, so take as many rounds as the user needs. Never spend on the creator
 until the user has approved the cut list.
+
+Source paths resolve relative to the cut-list file, never the shell working directory. Use absolute source paths when preparing a run. Save explicit inspected in/out bounds; defaults are compatibility behavior, not evidence that a window was watched. Screen framing defaults to width to preserve UI text; height fitting is an explicit reviewed choice.
