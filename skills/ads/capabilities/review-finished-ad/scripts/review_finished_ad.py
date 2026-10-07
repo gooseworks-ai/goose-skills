@@ -28,15 +28,19 @@ changes three checks and nothing else:
 and every check in the default profile, is unchanged.
 
 Robustness rules that apply to every profile:
-  - A file whose audio runs past its last video frame is judged on the picture (end card,
-    pacing, dead air) and the overrun is reported under pacing: > 0.5s warns, longer than both
-    --max-freeze-s and --endcard-s fails (the last frame holds while the audio plays out).
-  - A still run that ffmpeg's freeze detector reports is re-checked at 540px: if a real
-    change (pixels clearly changed across rows >= 2% of the width, e.g. thin low-contrast
-    text) happens inside it, the run is split there. Identical frames, or only a thin progress
-    bar moving, stay frozen.
+  - A file whose audio runs past its last video frame is judged as players show it: the last
+    frame held through the tail (pacing, dead air and the end card keep the file's timeline;
+    frames are grabbed from the picture). pacing also reports the overrun: > 0.5s warns, longer
+    than both --max-freeze-s and --endcard-s fails.
+  - A still run that ffmpeg's freeze detector reports is re-checked at 540px. It is split where
+    the picture changes to a new state that holds >= 0.3s and never goes back (thin
+    low-contrast text beats), or where it moves continuously for >= 0.3s across >= 15% of the
+    frame (a pointer gliding). A change means pixels clearly moved across rows >= 2% of the
+    width. Identical frames, a thin progress bar, a blinking caret, a pulsing icon or a small
+    spinner stay frozen.
   - Speech expected (no --no-speech, default profile): a stretch with only isolated clicks or
-    ticks (no sound lasting 40ms or more) counts as silence for hook and dead_air.
+    ticks (no sound lasting 40ms or more, fewer than 6 a second) counts as silence for hook
+    and dead_air.
 
 Exit codes: 0 PASS, 2 FAIL (a machine check failed), 3 ERROR (could not run).
 Needs ffmpeg/ffprobe on PATH and Python packages numpy + pillow.
@@ -101,11 +105,14 @@ FREEZE_CONFIRM_FPS = 10
 FREEZE_CHANGE_DELTA = 24     # a pixel this far (max RGB channel) from the run's first frame changed
 FREEZE_CHANGE_ROWS = 0.02    # a real change spans rows >= 2% of the width (a thin progress bar does not)
 FREEZE_MIN_RUN_S = 1.0       # still sub-runs shorter than freezedetect's own duration are dropped
+FREEZE_HOLD_S = 0.3          # a new picture must hold this long to count (a blink or flash does not)
+FREEZE_MOTION_SPAN = 0.15    # continuous motion counts when it covers 15% of the width or height
 # Sound events: 10ms peak windows above the silence floor, grouped when < 50ms apart. An event
 # lasting >= 40ms is sound; a shorter one is an isolated click or tick.
 SOUND_WINDOW_S = 0.01
-SOUND_EVENT_GAP_S = 0.05
-SOUND_SUSTAINED_S = 0.04
+SOUND_EVENT_GAP_WINDOWS = 5      # audible windows fewer than 5 apart (50ms) are one event
+SOUND_SUSTAINED_WINDOWS = 4      # an event of 4+ windows (40ms) is sound, shorter is a click
+SOUND_DENSE_PER_S = 6.0          # 6+ clicks a second is a texture or a rhythm (hi-hats), not isolated clicks
 
 
 @dataclass
@@ -236,9 +243,10 @@ def probe_audio(video: str) -> dict:
 
 def picture_end(video: str) -> float | None:
     """When the last video frame ends, on the file's timeline (the container can run longer:
-    an audio tail). The stream's duration, or the last video packet when it has none."""
+    an audio tail). The earlier of the stream's stated duration and its last packet's end:
+    some MKV files state the container length as the stream's."""
     info = run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries",
-                "stream=start_time,duration:format=start_time", "-of", "json", video])
+                "stream=start_time,duration,avg_frame_rate:format=start_time", "-of", "json", video])
     if info.returncode != 0:
         return None
     parsed = json.loads(info.stdout)
@@ -246,76 +254,160 @@ def picture_end(video: str) -> float | None:
 
     def num(x: dict, key: str) -> float | None:
         try:
-            return float(x[key])
-        except (KeyError, TypeError, ValueError):
+            v = x[key]
+            if isinstance(v, str) and "/" in v:
+                a, b = v.split("/")
+                return float(a) / float(b) if float(b) else None
+            return float(v)
+        except (KeyError, TypeError, ValueError, ZeroDivisionError):
             return None
 
-    origin = num(stream, "start_time") or 0.0
-    origin -= num(parsed.get("format") or {}, "start_time") or 0.0
+    fmt0 = num(parsed.get("format") or {}, "start_time") or 0.0
+    candidates = []
     length = num(stream, "duration")
     if length is not None:
-        return origin + length
+        candidates.append((num(stream, "start_time") or 0.0) - fmt0 + length)
+    frame = 1.0 / (num(stream, "avg_frame_rate") or 30.0)
     pk = run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries",
               "packet=pts_time,duration_time", "-of", "csv=p=0", video])
     ends = []
     for line in pk.stdout.splitlines():
         parts = line.strip().split(",")
         try:
-            ends.append(float(parts[0]) + (float(parts[1]) if len(parts) > 1 and parts[1] else 0.0))
+            pts = float(parts[0])
         except ValueError:
             continue
-    fmt0 = num(parsed.get("format") or {}, "start_time") or 0.0
-    return max(ends) - fmt0 if ends else None
+        try:
+            ends.append(pts + float(parts[1]))
+        except (IndexError, ValueError):
+            ends.append(pts + frame)
+    if ends:
+        candidates.append(max(ends) - fmt0)
+    return min(candidates) if candidates else None
+
+
+def file_timeline_frames(video: str, meta: dict, fps: int, width: int, until: float | None = None):
+    """Yield (t, RGB frame) at `fps`, `width` px wide (area-averaged), on the same timeline as the
+    analyse pass: the audio stays mapped (to a null output) so ffmpeg computes the file's start
+    time from every stream, as it does for freezedetect/silencedetect. Read as they decode."""
+    h = max(2, int(round(width * meta["height"] / meta["width"] / 2)) * 2)
+    size = width * h * 3
+    limit = ["-t", f"{until:.3f}"] if until is not None else []
+    cmd = ["ffmpeg", "-hide_banner", "-loglevel", "error", "-i", video,
+           "-map", "0:v:0", "-vf", f"fps={fps},scale={width}:{h}:flags=area,format=rgb24", *limit,
+           "-f", "rawvideo", "pipe:1"]
+    if meta.get("has_audio"):
+        cmd += ["-map", "0:a:0?", "-c:a", "pcm_s16le", *limit, "-f", "null", "-"]
+    with tempfile.TemporaryFile() as log:
+        proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=log)
+        assert proc.stdout is not None
+        k = 0
+        try:
+            while True:
+                buf = proc.stdout.read(size)
+                if len(buf) < size:
+                    break
+                yield k / fps, np.frombuffer(buf, dtype=np.uint8).reshape(h, width, 3)
+                k += 1
+        finally:
+            proc.stdout.close()
+            code = proc.wait()
+            log.seek(0)
+            err = log.read().decode(errors="replace")
+        if code != 0 and k == 0:
+            raise RuntimeError(f"ffmpeg could not read the frames: {err.strip()[-300:]}")
 
 
 def change_points(video: str, meta: dict, runs) -> list[list[float]]:
-    """For each still run (start, end), the times inside it where the picture really changes:
-    pixels moved > FREEZE_CHANGE_DELTA from the run's current still frame on at least
-    FREEZE_CHANGE_ROWS x width rows. Compared with that frame (not the previous one), so a slow
-    change adds up; measured against the width, so a thin bar (about 1% of the width tall)
-    never counts at any aspect ratio. One decode from the start, on the same timeline as
-    freezedetect (no seeking: some files cannot be seeked accurately)."""
+    """For each still run (start, end), the times inside it where the picture really changes.
+    Two frames differ when pixels moved > FREEZE_CHANGE_DELTA across rows at least
+    FREEZE_CHANGE_ROWS x width tall (a thin bar, about 1% of the width, never does). Inside a
+    run the picture is followed two ways:
+      - stable states, each held >= FREEZE_HOLD_S: a state counts as a change only if it is new
+        and the run never goes back to an earlier state afterwards (thin text beats count; a
+        blinking caret or a pulsing icon alternates and does not);
+      - continuous motion, every sample differing from the one before for >= FREEZE_HOLD_S,
+        over an area that travels or spans >= FREEZE_MOTION_SPAN of the frame (a pointer
+        gliding, shapes moving); a spinner or a sticker animating in place does not.
+    A moving stretch cuts the run at its start and end."""
     w = FREEZE_CONFIRM_WIDTH
     h = max(2, int(round(w * meta["height"] / meta["width"] / 2)) * 2)
-    size = w * h * 3
     need = FREEZE_CHANGE_ROWS * w
-    found: list[list[float]] = [[] for _ in runs]
-    refs: list = [None for _ in runs]
-    with tempfile.TemporaryFile() as log:
-        proc = subprocess.Popen(
-            ["ffmpeg", "-hide_banner", "-loglevel", "error", "-i", video, "-an",
-             "-vf", f"fps={FREEZE_CONFIRM_FPS},scale={w}:{h}:flags=area,format=rgb24", "-f", "rawvideo", "-"],
-            stdout=subprocess.PIPE, stderr=log)
-        assert proc.stdout is not None
-        k = 0
-        while True:
-            buf = proc.stdout.read(size)
-            if len(buf) < size:
-                break
-            t = k / FREEZE_CONFIRM_FPS
-            k += 1
-            inside = [i for i, (a, b) in enumerate(runs) if a <= t <= b]
-            if not inside:
+    hold = max(1, round(FREEZE_HOLD_S * FREEZE_CONFIRM_FPS))
+
+    def moved(a: np.ndarray, b: np.ndarray) -> np.ndarray | None:
+        mask = np.abs(a.astype(np.int16) - b.astype(np.int16)).max(axis=2) > FREEZE_CHANGE_DELTA
+        return mask if (mask.sum(axis=1) >= 2).sum() >= need else None
+
+    tracks = [{"states": [], "seq": [], "cur": None, "cand": None, "prev": None, "streak": None, "motion": []}
+              for _ in runs]
+
+    def close_streak(tr: dict) -> None:
+        st = tr["streak"]
+        if st and st["n"] >= hold and ((st["r1"] - st["r0"]) >= FREEZE_MOTION_SPAN * h
+                                       or (st["c1"] - st["c0"]) >= FREEZE_MOTION_SPAN * w):
+            tr["motion"] += [st["t0"], st["t1"]]
+        tr["streak"] = None
+
+    until = max((b for _, b in runs), default=0.0) + 0.2
+    for t, frame in file_timeline_frames(video, meta, FREEZE_CONFIRM_FPS, w, until):
+        for i, (a, b) in enumerate(runs):
+            if not a <= t <= b:
                 continue
-            frame = np.frombuffer(buf, dtype=np.uint8).reshape(h, w, 3).astype(np.int16)
-            for i in inside:
-                if refs[i] is None:
-                    refs[i] = frame
+            tr = tracks[i]
+            # continuous motion: compare with the previous sample
+            if tr["prev"] is not None:
+                mask = moved(frame, tr["prev"])
+                if mask is not None:
+                    rows, cols = np.nonzero(mask.any(axis=1))[0], np.nonzero(mask.any(axis=0))[0]
+                    st = tr["streak"] or {"t0": t - 1.0 / FREEZE_CONFIRM_FPS, "n": 0, "r0": h, "r1": 0, "c0": w, "c1": 0}
+                    st.update(t1=t, n=st["n"] + 1, r0=min(st["r0"], int(rows[0])), r1=max(st["r1"], int(rows[-1])),
+                              c0=min(st["c0"], int(cols[0])), c1=max(st["c1"], int(cols[-1])))
+                    tr["streak"] = st
+                else:
+                    close_streak(tr)
+            tr["prev"] = frame
+            # stable states
+            if tr["cur"] is None:
+                tr["states"].append(frame)
+                tr["seq"].append((t, 0))
+                tr["cur"] = 0
+                continue
+            cand = tr["cand"]
+            if cand is not None:
+                if moved(frame, cand[1]) is None:
+                    cand[2] += 1
+                    if cand[2] >= hold:  # the new picture held: record it as a state
+                        sid = next((k for k, st in enumerate(tr["states"]) if moved(cand[1], st) is None), None)
+                        if sid is None:
+                            tr["states"].append(cand[1])
+                            sid = len(tr["states"]) - 1
+                        tr["seq"].append((cand[0], sid))
+                        tr["cur"], tr["cand"] = sid, None
                     continue
-                moved = np.abs(frame - refs[i]).max(axis=2) > FREEZE_CHANGE_DELTA
-                if (moved.sum(axis=1) >= 2).sum() >= need:
-                    found[i].append(t)
-                    refs[i] = frame
-        proc.stdout.close()
-        proc.wait()
+                tr["cand"] = None
+            if moved(frame, tr["states"][tr["cur"]]) is not None:
+                tr["cand"] = [t, frame, 1]
+    found: list[list[float]] = []
+    for tr in tracks:
+        close_streak(tr)
+        seq, out = tr["seq"], list(tr["motion"])
+        for i in range(1, len(seq)):
+            earlier = {sid for _, sid in seq[:i]}
+            if seq[i][1] not in earlier and all(sid not in earlier for _, sid in seq[i + 1:]):
+                out.append(seq[i][0])
+        found.append(sorted(set(out)))
     return found
 
 
-def confirm_freezes(video: str, meta: dict, freezes, min_len: float) -> list[tuple[float, float]]:
-    """Split each reported still run (longer than min_len, the shortest that any check judges)
-    at the real changes inside it. Runs only ever shrink: a run with no real change is
+def confirm_freezes(video: str, meta: dict, freezes, min_len: float, body_end: float,
+                    max_freeze_s: float) -> list[tuple[float, float]]:
+    """Split each still run that could fail a check (an opening still longer than min_len, or
+    a body freeze longer than --max-freeze-s before the end card) at the real changes inside
+    it. Runs only ever shrink: a run with no real change, or one no check could fail on, is
     returned exactly as reported."""
-    judged = [(s, e) for s, e in freezes if e - s > min_len]
+    judged = [(s, e) for s, e in freezes
+              if (s <= 0.3 and e - s > min_len) or (min(e, body_end) - s > max_freeze_s)]
     cuts = dict(zip(judged, change_points(video, meta, judged))) if judged else {}
     out: list[tuple[float, float]] = []
     for s, e in freezes:
@@ -328,65 +420,70 @@ def confirm_freezes(video: str, meta: dict, freezes, min_len: float) -> list[tup
     return out
 
 
-def sound_windows(video: str) -> list[tuple[float, float]]:
-    """(time, peak dBFS) for every 10ms of the first audio track, on the same timeline as
-    silencedetect (one fast audio-only decode)."""
-    with tempfile.TemporaryDirectory(prefix="rfa-snd-") as d:
-        dest = Path(d) / "peaks.txt"
-        out = run(["ffmpeg", "-hide_banner", "-nostats", "-i", video, "-map", "0:a:0", "-af",
-                   f"aresample=16000,asetnsamples=n={int(16000 * SOUND_WINDOW_S)}:p=0,"
+def sound_windows(video: str) -> list[tuple[float, float]] | None:
+    """(time, peak dBFS) for every 10ms of audio, on silencedetect's timeline: the same default
+    stream choice as the analyse pass (the "best" audio track) with the video kept in (copied),
+    so the start time matches. None when it cannot be measured (old ffmpeg, odd stream): the
+    caller then judges as before, from silencedetect alone."""
+    try:
+        out = run(["ffmpeg", "-hide_banner", "-nostats", "-i", video, "-c:v", "copy", "-sn", "-dn", "-af",
+                   f"aresample=16000,asetnsamples=n={int(round(16000 * SOUND_WINDOW_S))}:p=0,"
                    "astats=metadata=1:reset=1:measure_overall=Peak_level:measure_perchannel=none,"
-                   f"ametadata=mode=print:key=lavfi.astats.Overall.Peak_level:file={dest}",
-                   "-f", "null", "-"])
-        if out.returncode != 0 or not dest.exists():
-            raise RuntimeError(f"ffmpeg could not measure the audio: {out.stderr.strip()[-300:]}")
-        windows, t = [], None
-        for line in dest.read_text().splitlines():
-            m = re.search(rf"pts_time:({NUM})", line)
-            if m:
-                t = float(m.group(1))
-                continue
-            m = re.search(rf"Peak_level=(-?inf|{NUM})", line)
-            if m and t is not None:
-                windows.append((t, float("-inf") if "inf" in m.group(1) else float(m.group(1))))
-                t = None
-    return windows
+                   "ametadata=mode=print:key=lavfi.astats.Overall.Peak_level", "-f", "null", "-"])
+    except OSError:
+        return None
+    if out.returncode != 0:
+        return None
+    windows, t = [], None
+    for line in out.stderr.splitlines():
+        m = re.search(rf"pts_time:({NUM})", line)
+        if m:
+            t = float(m.group(1))
+            continue
+        m = re.search(rf"Peak_level=(-?inf|{NUM})", line)
+        if m and t is not None:
+            windows.append((t, float("-inf") if "inf" in m.group(1) else float(m.group(1))))
+            t = None
+    return windows or None
 
 
-def sound_events(windows) -> list[tuple[float, float]]:
-    """Audible 10ms windows (peak above the silence floor) grouped when < 50ms apart."""
-    events: list[list[float]] = []
+def sound_events(windows) -> list[tuple[float, float, int]]:
+    """Audible 10ms windows (peak above the silence floor) grouped when fewer than 5 windows
+    apart: (start, end, windows spanned). Counted in whole windows, not float seconds."""
+    events: list[list] = []
     for t, peak in windows:
         if peak <= SILENT_PEAK_DB:
             continue
-        if events and t - events[-1][1] < SOUND_EVENT_GAP_S:
-            events[-1][1] = t + SOUND_WINDOW_S
+        idx = int(round(t / SOUND_WINDOW_S))
+        if events and idx - events[-1][3] < SOUND_EVENT_GAP_WINDOWS:
+            events[-1][1], events[-1][3] = t + SOUND_WINDOW_S, idx
         else:
-            events.append([t, t + SOUND_WINDOW_S])
-    return [(a, b) for a, b in events]
+            events.append([t, t + SOUND_WINDOW_S, idx, idx])
+    return [(a, b, last - first + 1) for a, b, first, last in events]
 
 
 def click_only_spans(windows, min_len: float) -> list[tuple[float, float]]:
-    """Stretches with sound in them but none that lasts >= 40ms (only isolated clicks or
-    ticks), at least min_len long. Pure silence is left to silencedetect."""
+    """Stretches with sound in them but none that lasts >= 40ms, only isolated clicks or ticks
+    (fewer than 6 a second; denser ticking is a rhythm or texture), at least min_len long.
+    Pure silence is left to silencedetect."""
     if not windows:
         return []
     events = sound_events(windows)
     begin, finish = windows[0][0], windows[-1][0] + SOUND_WINDOW_S
-    sustained = [(a, b) for a, b in events if b - a >= SOUND_SUSTAINED_S]
+    sustained = [(a, b) for a, b, n in events if n >= SOUND_SUSTAINED_WINDOWS]
     edges = [begin] + [x for a, b in sustained for x in (a, b)] + [finish]
     out = []
     for a, b in zip(edges[0::2], edges[1::2]):
-        clicks = any(a <= ea and eb <= b for ea, eb in events if eb - ea < SOUND_SUSTAINED_S)
-        if clicks and b - a >= min_len:
+        clicks = [1 for ea, eb, n in events if n < SOUND_SUSTAINED_WINDOWS and a <= ea and eb <= b]
+        if clicks and b - a >= min_len and len(clicks) / (b - a) < SOUND_DENSE_PER_S:
             out.append((a, b))
     return out
 
 
-def merge_spans(*groups) -> list[tuple[float, float]]:
+def merge_spans(*groups, slack: float = 0.0) -> list[tuple[float, float]]:
     out: list[list[float]] = []
     for s, e in sorted(x for g in groups for x in g):
-        if out and s <= out[-1][1]:
+        if out and s <= out[-1][1] + slack:
             out[-1][1] = max(out[-1][1], e)
         else:
             out.append([s, e])
@@ -419,32 +516,13 @@ def content_share(rgb: np.ndarray) -> float:
 
 
 def blank_spans(video: str, meta: dict, fps: int = BLANK_FPS) -> tuple[list[tuple[float, float]], int]:
-    """Blank stretches (black, or one flat colour with no text), as (start, end) seconds, and
-    the number of frames sampled. One extra decode, only for the silent-text profile."""
-    w = BLANK_WORK_WIDTH
-    h = max(2, int(round(w * meta["height"] / meta["width"] / 2)) * 2)
-    size = w * h * 3
-    blank: list[bool] = []
-    # Frames are read as they decode (a long video never sits in memory); stderr goes to a
-    # file so a chatty decoder cannot fill a pipe and stall the read.
-    with tempfile.TemporaryFile() as log:
-        proc = subprocess.Popen(
-            ["ffmpeg", "-hide_banner", "-loglevel", "error", "-i", video, "-an",
-             "-vf", f"fps={fps},scale={w}:{h}:flags=area,format=rgb24", "-f", "rawvideo", "-"],
-            stdout=subprocess.PIPE, stderr=log)
-        assert proc.stdout is not None
-        while True:
-            buf = proc.stdout.read(size)
-            if len(buf) < size:
-                break
-            frame = np.frombuffer(buf, dtype=np.uint8).reshape(h, w, 3)
-            blank.append(content_share(frame) < BLANK_MIN_CONTENT_ROWS)
-        proc.stdout.close()
-        code = proc.wait()
-        log.seek(0)
-        err = log.read().decode(errors="replace")
-    if code != 0 or not blank:
-        raise RuntimeError(f"ffmpeg could not sample frames for the blank check: {err.strip()[-300:]}")
+    """Blank stretches (black, or one flat colour with no text), as (start, end) seconds on the
+    file's timeline, and the number of frames sampled. One extra decode, only for the
+    silent-text profile."""
+    blank = [content_share(frame) < BLANK_MIN_CONTENT_ROWS
+             for _, frame in file_timeline_frames(video, meta, fps, BLANK_WORK_WIDTH)]
+    if not blank:
+        raise RuntimeError("ffmpeg could not sample frames for the blank check")
     out: list[tuple[float, float]] = []
     start = None
     for i, b in enumerate(blank + [False]):
@@ -456,21 +534,47 @@ def blank_spans(video: str, meta: dict, fps: int = BLANK_FPS) -> tuple[list[tupl
     return out, len(blank)
 
 
-def grab(video: str, t: float, dest: Path) -> Path:
-    """One frame at t. The container can run longer than the picture (an audio tail past the
-    last frame), so a grab near the end steps back until a frame exists."""
+def fast_grab(video: str, t: float, dest: Path) -> bool:
+    """One frame at t by a fast seek. The container can run longer than the picture (an audio
+    tail past the last frame), so a grab near the end steps back until a frame exists."""
     for back in (0.0, 0.3, 0.8, 1.5, 3.0):
         run(["ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-ss", f"{max(t - back, 0):.3f}",
              "-i", video, "-frames:v", "1", str(dest)])
         if dest.exists():
-            return dest
-    # Some files cannot be seeked fast (MPEG-TS with one keyframe): decode from the start instead.
-    for back in (0.0, 0.3, 0.8, 1.5, 3.0):
-        run(["ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-i", video,
-             "-ss", f"{max(t - back, 0):.3f}", "-frames:v", "1", str(dest)])
-        if dest.exists():
-            return dest
+            return True
+    return False
+
+
+def grab(video: str, t: float, dest: Path) -> Path:
+    if fast_grab(video, t, dest):
+        return dest
     raise RuntimeError(f"could not grab a frame at {t:.2f}s")
+
+
+def grab_frames(video: str, meta: dict, times: list[float], dest_dir: Path, tag: str) -> list[Image.Image]:
+    """Frames at `times`. A fast seek per frame; a file that cannot be seeked fast (MPEG-TS with
+    a single keyframe) is read once from the start instead, keeping the frame at or just before
+    each time (one decode, not one per frame)."""
+    out: list[Image.Image] = []
+    for i, t in enumerate(times):
+        dest = dest_dir / f"{tag}{i:02d}.png"
+        if fast_grab(video, t, dest):
+            out.append(Image.open(dest).convert("RGB"))
+            continue
+        rest, picked = sorted(set(times[i:])), {}
+        last = None
+        for ft, frame in file_timeline_frames(video, meta, 10, meta["width"], max(rest) + 0.2):
+            for want in rest:
+                if want not in picked and ft > want + 1e-6 and last is not None:
+                    picked[want] = last
+            last = frame
+        for want in rest:
+            if want not in picked and last is not None:
+                picked[want] = last
+        if len(picked) < len(rest):
+            raise RuntimeError(f"could not grab a frame at {t:.2f}s")
+        return out + [Image.fromarray(np.ascontiguousarray(picked[w])) for w in times[i:]]
+    return out
 
 
 # ---------------------------------------------------------------- image helpers
@@ -714,8 +818,11 @@ def audio_state(meta: dict, audio: dict | None, windows=None) -> str:
         return "none"
     if audio["peak_db"] < SILENT_PEAK_DB:
         return "silent"
-    if windows is not None and not any(b - a >= SOUND_SUSTAINED_S for a, b in sound_events(windows)):
-        return "clicks"
+    if windows:
+        events = sound_events(windows)
+        span = max(windows[-1][0] - windows[0][0], SOUND_WINDOW_S)
+        if not any(n >= SOUND_SUSTAINED_WINDOWS for _, _, n in events) and len(events) / span < SOUND_DENSE_PER_S:
+            return "clicks"
     return "audible"
 
 
@@ -941,18 +1048,21 @@ def review(args: argparse.Namespace) -> dict:
     meta = probe(args.video)
     dur = meta["duration"]
     expect = tuple(int(v) for v in args.expect_size.lower().split("x"))
-    # Audio past the last frame: judge the picture, report the overrun (it used to crash).
+    # Audio past the last frame (it used to crash): the checks keep the file's timeline, with the
+    # last frame held through the tail (that is what players show); frames are grabbed from the
+    # picture; pacing reports the overrun.
     end = picture_end(args.video)
     overrun = dur - end if end is not None else 0.0
-    if overrun > OVERRUN_JUDGE_S:
-        dur = end
-    judged = {**meta, "duration": dur}
+    pic = end if overrun > OVERRUN_JUDGE_S else dur
     log = analyse(args.video, meta["has_audio"], args.max_silence_s / 2)
-    silences = spans(log, "silence", meta["duration"])
+    silences = spans(log, "silence", dur)
     freezes = spans(log, "freeze", dur)
     blacks = spans(log, "black", dur)
     cuts = [float(m) for m in re.findall(rf"pts_time:({NUM})", log)]
-    freezes = confirm_freezes(args.video, meta, freezes, min(1.5, args.max_freeze_s))
+    freezes = confirm_freezes(args.video, meta, freezes, min(1.5, args.max_freeze_s), dur - args.endcard_s,
+                              args.max_freeze_s)
+    if overrun > OVERRUN_JUDGE_S:
+        freezes = merge_spans(freezes, [(pic, dur)], slack=0.05)
     silent_text = args.format_profile == SILENT_TEXT
     windows = sound_windows(args.video) if meta["has_audio"] and (silent_text or args.speech) else None
     if windows is not None and not silent_text:
@@ -962,27 +1072,24 @@ def review(args: argparse.Namespace) -> dict:
     logo = load_image(args.logo) if args.logo else None
     tmp = Path(tempfile.mkdtemp(prefix="rfa-"))
     # Time coverage prevents a continuous chat from producing only one body frame.
-    shot_times = sample_times(dur, cuts, args.endcard_s)
-    end_times = [max(0.0, dur - s) for s in (1.6, 0.9, 0.3)]
-    frames = [(t, Image.open(grab(args.video, t, tmp / f"f{i:02d}.png")).convert("RGB"))
-              for i, t in enumerate(shot_times)]
-    end_frames = [(t, Image.open(grab(args.video, t, tmp / f"e{i}.png")).convert("RGB"))
-                  for i, t in enumerate(end_times)]
-    extra = [(t, Image.open(grab(args.video, t, tmp / f"x{i}.png")).convert("RGB"))
-             for i, t in enumerate(args.logo_at or [])]
+    shot_times = sample_times(pic, cuts, args.endcard_s)
+    end_times = [max(0.0, pic - s) for s in (1.6, 0.9, 0.3)]
+    frames = list(zip(shot_times, grab_frames(args.video, meta, shot_times, tmp, "f")))
+    end_frames = list(zip(end_times, grab_frames(args.video, meta, end_times, tmp, "e")))
+    extra = list(zip(args.logo_at or [], grab_frames(args.video, meta, list(args.logo_at or []), tmp, "x")))
 
     checks = {
         "ratio": check_ratio(meta, expect),  # type: ignore[arg-type]
         "hook": check_hook(meta, silences, freezes, args.hook_audio_s),
-        "pacing": check_pacing(judged, freezes, cuts, args.max_freeze_s, args.endcard_s),
-        "dead_air": check_dead_air(judged, silences, args.max_silence_s, args.endcard_s),
+        "pacing": check_pacing(meta, freezes, cuts, args.max_freeze_s, args.endcard_s),
+        "dead_air": check_dead_air(meta, silences, args.max_silence_s, args.endcard_s),
         "black_frames": check_black(blacks),
         "logo_asset": check_logo_asset(logo),
         "logo": check_logo(end_frames + extra, logo),
         "palette": check_palette(end_frames, [p for p in (args.palette or "").split(",") if p.strip()]),
     }
     if overrun > OVERRUN_JUDGE_S:
-        checks["pacing"] = judge_overrun(checks["pacing"], overrun, dur, args.max_freeze_s, args.endcard_s)
+        checks["pacing"] = judge_overrun(checks["pacing"], overrun, pic, args.max_freeze_s, args.endcard_s)
     if silent_text:
         # Declared silent, text-led format: replaces three checks in place (same keys, same
         # order). --no-speech is implied and does not switch off the audio-integrity check.
@@ -1021,7 +1128,7 @@ def review(args: argparse.Namespace) -> dict:
         "format_profile": args.format_profile,
         "video": {**meta, "cuts": [round(c, 2) for c in cuts],
                   "sheet_samples": shot_times + end_times[-1:],
-                  **({"picture_duration": round(dur, 3)} if overrun > OVERRUN_JUDGE_S else {})},
+                  **({"picture_duration": round(pic, 3)} if overrun > OVERRUN_JUDGE_S else {})},
         "checks": {k: asdict(c) for k, c in checks.items()},
         "sheet": str(sheet),
         "judge_on_sheet": [

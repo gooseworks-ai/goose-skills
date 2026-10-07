@@ -81,10 +81,10 @@ def thin_beats(tmp, name, beats=5, beat_s=1.4, cta_s=3.0, width=2, change=True):
 # ---------------------------------------------------------------- 1. audio past the last frame
 
 @needs_ffmpeg
-@pytest.mark.parametrize("tail,status", [(4.0, "fail"), (3.0, "warn"), (2.0, "warn")])
+@pytest.mark.parametrize("tail,status", [(4.0, "fail"), (2.7, "warn"), (2.0, "warn")])
 def test_audio_past_the_last_frame_is_judged_not_an_error(tmp_path, tail, status):
     """Used to exit 3 ("could not grab a frame") once the tail passed ~3s. Up to the end card's
-    length (3s default) the end card just holds longer (warn); beyond it, fail."""
+    length (3s default) the last frame just holds longer (warn); beyond it, fail."""
     v = moving(tmp_path, "tail", 7.0, audio_s=7.0 + tail)
     code, r = run(tmp_path, v)
     assert code in (0, 2) and r is not None, "must not ERROR"
@@ -111,6 +111,26 @@ def test_audio_tail_in_mpeg_ts_is_judged_not_an_error(tmp_path):
     ff("-i", mp4, "-c", "copy", "-f", "mpegts", ts)
     code, r = run(tmp_path, ts)
     assert r is not None and r["checks"]["pacing"]["status"] == "fail"
+
+
+@needs_ffmpeg
+def test_a_frozen_ending_is_still_a_freeze_with_an_audio_tail(tmp_path):
+    """Reviewer repro: motion to 5s, the last frame held to 10s, audio to 12s. main fails pacing;
+    the tail must not hide it (players show the held frame through the tail)."""
+    out = tmp_path / "frozen_end.mp4"
+    ff("-f", "lavfi", "-i", "testsrc2=s=1080x1920:r=30:d=5", "-f", "lavfi", "-i", f"aevalsrc='{TONE}':s=44100:d=12",
+       "-filter_complex", "[0:v]tpad=stop_mode=clone:stop_duration=5[v]", "-map", "[v]", "-map", "1:a",
+       "-c:v", "libx264", "-preset", "ultrafast", "-pix_fmt", "yuv420p", "-c:a", "aac", out)
+    code, r = run(tmp_path, out)
+    assert r["checks"]["pacing"]["status"] == "fail" and "picture frozen 5.0" in r["checks"]["pacing"]["note"]
+
+
+@needs_ffmpeg
+def test_a_silent_ending_is_still_dead_air_with_an_audio_tail(tmp_path):
+    """10s picture, sound to 7.5s, silence to 12s: dead air, as on main."""
+    v = moving(tmp_path, "silent_end", 10.0, f"if(lt(t,7.5),{TONE},0)", audio_s=12.0)
+    code, r = run(tmp_path, v)
+    assert r["checks"]["dead_air"]["status"] == "fail", r["checks"]["dead_air"]
 
 
 # ---------------------------------------------------------------- 2. freezes vs thin low-contrast text
@@ -157,20 +177,86 @@ def test_a_thin_progress_bar_alone_does_not_break_a_freeze(tmp_path, w, h):
         assert r["checks"]["pacing"]["status"] == "fail", r["checks"]["pacing"]
 
 
+@needs_ffmpeg
+@pytest.mark.parametrize("element", [
+    "drawbox=x=700:y=900:w=4:h=60:c=0x2b2622:t=fill:enable='lt(mod(t,0.9),0.45)'",   # a blinking caret
+    "drawbox=x=520:y=1300:w=40:h=40:c=0xd04040:t=fill:enable='lt(mod(t,0.6),0.3)'",    # a pulsing icon
+    "drawbox=x=0:y=0:w=1080:h=1920:c=white:t=fill:enable='between(t,3.0,3.04)'",        # a one-frame flash
+])
+def test_a_blink_pulse_or_flash_does_not_unfreeze_a_still_card(tmp_path, element):
+    """Reviewer repro: a still card with a small element that comes and goes (main calls each of
+    these frozen). The picture returns to an earlier state, or never holds 0.3s, so nothing new
+    appears: still frozen."""
+    card = tmp_path / "card.png"
+    im = Image.new("RGB", (1080, 1920), BEIGE)
+    ImageDraw.Draw(im).rectangle([200, 820, 880, 1000], fill=(20, 23, 32))
+    im.save(card)
+    out = tmp_path / "blink.mp4"
+    ff("-loop", "1", "-framerate", "30", "-t", "8", "-i", card, "-f", "lavfi", "-i", f"aevalsrc='{TONE}':s=44100:d=8",
+       "-vf", f"{element},format=yuv420p", "-map", "0:v", "-map", "1:a",
+       "-c:v", "libx264", "-preset", "ultrafast", "-c:a", "aac", out)
+    code, r = run(tmp_path, out, "--no-speech")
+    assert r["checks"]["pacing"]["status"] == "fail", r["checks"]["pacing"]
+    assert r["checks"]["hook"]["status"] == "fail", r["checks"]["hook"]
+
+
+@needs_ffmpeg
+def test_a_freeze_in_mpeg_ts_with_late_video_still_fails(tmp_path):
+    """Reviewer repro: TS whose video starts 1s after the audio, with a real 3s freeze. The
+    re-read must sit on freezedetect's timeline (audio kept mapped), not 1s early."""
+    mp4 = tmp_path / "vdelay.mp4"
+    ff("-f", "lavfi", "-i", "testsrc2=s=1080x1920:r=30:d=3", "-f", "lavfi", "-i", "testsrc2=s=1080x1920:r=30:d=3",
+       "-f", "lavfi", "-i", f"aevalsrc='{TONE}':s=44100:d=10",
+       "-filter_complex", "[0:v]tpad=stop_mode=clone:stop_duration=3[a];[a][1:v]concat=n=2:v=1:a=0,format=yuv420p,"
+       "setpts=PTS+1/TB[v]", "-map", "[v]", "-map", "2:a", "-c:v", "libx264", "-preset", "ultrafast",
+       "-g", "15", "-c:a", "aac", mp4)
+    ts = tmp_path / "vdelay.ts"
+    ff("-i", mp4, "-c", "copy", "-f", "mpegts", ts)
+    code_mp4, r_mp4 = run(tmp_path, mp4)
+    code_ts, r_ts = run(tmp_path, ts)
+    assert r_mp4["checks"]["pacing"]["status"] == "fail", r_mp4["checks"]["pacing"]
+    assert r_ts["checks"]["pacing"]["status"] == "fail", r_ts["checks"]["pacing"]
+
+
+def test_change_points_ignore_returns_and_count_new_states(monkeypatch):
+    """A(0-1) B(1-2) A(2-3): B is a return trip, no change. A(0-1) B(1-2) C(2-3): B and C count."""
+    import numpy as np
+
+    def frames(seq):
+        def gen(*_a, **_k):
+            for k, label in enumerate(seq):
+                f = np.zeros((960, 540, 3), dtype=np.uint8)
+                f[100 + 200 * label: 160 + 200 * label, 100:400] = 255
+                yield k / 10, f
+        return gen
+    meta = {"width": 1080, "height": 1920, "has_audio": False}
+    monkeypatch.setattr(rfa, "file_timeline_frames", frames([0] * 10 + [1] * 10 + [0] * 10))
+    assert rfa.change_points("v", meta, [(0.0, 3.0)]) == [[]]
+    monkeypatch.setattr(rfa, "file_timeline_frames", frames([0] * 10 + [1] * 10 + [2] * 10))
+    assert rfa.change_points("v", meta, [(0.0, 3.0)]) == [[1.0, 2.0]]
+    monkeypatch.setattr(rfa, "file_timeline_frames", frames([0] * 10 + [1] * 2 + [0] * 18))  # a 0.2s blip
+    assert rfa.change_points("v", meta, [(0.0, 3.0)]) == [[]]
+
+
 def test_confirm_freezes_only_ever_shrinks_runs(monkeypatch):
     runs = [(0.2, 3.7), (5.0, 9.0), (9.5, 10.5)]
     monkeypatch.setattr(rfa, "change_points", lambda v, m, judged: [[] for _ in judged])
-    assert rfa.confirm_freezes("v.mp4", {}, runs, 1.5) == runs
+    assert rfa.confirm_freezes("v.mp4", {}, runs, 1.5, 20.0, 2.5) == runs
     # Changes at 1.7 and 2.2 split the first run; a "change" outside a run is ignored; the
-    # short third run is never re-read.
+    # third run (1.0s, mid-video) cannot fail a check and is never re-read.
     seen = []
 
     def fake(v, m, judged):
         seen.extend(judged)
         return [[1.7, 2.2], [12.0]]
     monkeypatch.setattr(rfa, "change_points", fake)
-    assert rfa.confirm_freezes("v.mp4", {}, runs, 1.5) == [(0.2, 1.7), (2.2, 3.7), (5.0, 9.0), (9.5, 10.5)]
+    assert rfa.confirm_freezes("v.mp4", {}, runs, 1.5, 20.0, 2.5) == [(0.2, 1.7), (2.2, 3.7), (5.0, 9.0), (9.5, 10.5)]
     assert seen == [(0.2, 3.7), (5.0, 9.0)]
+    # The end-card still (no check can fail on it: 0.1s before the end card) is never re-read.
+    seen.clear()
+    monkeypatch.setattr(rfa, "change_points", lambda v, m, judged: seen.extend(judged) or [[] for _ in judged])
+    rfa.confirm_freezes("v.mp4", {}, [(0.2, 3.7), (7.4, 10.5)], 1.5, 7.5, 2.5)
+    assert seen == [(0.2, 3.7)]
 
 
 # ---------------------------------------------------------------- 3. click-only audio
@@ -189,6 +275,49 @@ def test_clicks_inside_a_pause_are_still_dead_air(tmp_path):
     code, r = run(tmp_path, moving(tmp_path, "gap", 7.0, expr))
     assert r["checks"]["dead_air"]["status"] == "fail", r["checks"]["dead_air"]
     assert r["checks"]["hook"]["status"] == "pass"
+
+
+@needs_ffmpeg
+def test_click_stretch_times_hold_in_mpeg_ts_with_late_audio(tmp_path):
+    """Reviewer repro: TS whose audio starts 0.7s late. The click-only stretch (2.0-3.5s of the
+    track) must be reported on silencedetect's timeline (about 2.7-4.2s)."""
+    v = moving(tmp_path, "late_a", 7.0, f"if(between(t,2,3.5),{CLICKS},{TONE})")
+    shifted = tmp_path / "late_a.ts"
+    ff("-i", v, "-itsoffset", "0.7", "-i", v, "-map", "0:v", "-map", "1:a", "-c", "copy", "-f", "mpegts", shifted)
+    code, r = run(tmp_path, shifted)
+    gaps = r["checks"]["dead_air"]["data"].get("gaps") or []
+    assert r["checks"]["dead_air"]["status"] == "fail" and gaps, r["checks"]["dead_air"]
+    assert abs(gaps[0][0] - 2.7) < 0.15 and abs(gaps[0][1] - 4.2) < 0.15, gaps
+
+
+@needs_ffmpeg
+def test_the_same_audio_track_as_silencedetect_is_read(tmp_path):
+    """The click reader uses ffmpeg's default track choice, like silencedetect: a click-only
+    second track next to a stereo tone does not change the verdict (PASS, as on main)."""
+    out = tmp_path / "two.mp4"
+    ff("-f", "lavfi", "-i", "testsrc2=s=1080x1920:r=30:d=7", "-f", "lavfi", "-i", f"aevalsrc='{TONE}|{TONE}':s=44100:d=7",
+       "-f", "lavfi", "-i", f"aevalsrc='{CLICKS}':s=44100:d=7",
+       "-map", "0:v", "-map", "1:a", "-map", "2:a", "-c:v", "libx264", "-preset", "ultrafast", "-pix_fmt", "yuv420p",
+       "-c:a", "aac", out)
+    code, r = run(tmp_path, out)
+    assert code == 0, r["checks"]
+
+
+@needs_ffmpeg
+def test_dense_ticking_is_a_rhythm_not_silence(tmp_path):
+    """Hi-hat-like ticks 8 times a second under a 1.5s VO pause are a music bed, not dead air."""
+    hats = "if(lt(mod(t,0.125),0.004),0.3*sin(2*PI*7000*t),0)"
+    code, r = run(tmp_path, moving(tmp_path, "hats", 7.0, f"if(between(t,2,3.5),{hats},{TONE})"))
+    assert r["checks"]["dead_air"]["status"] == "pass", r["checks"]["dead_air"]
+
+
+@needs_ffmpeg
+def test_click_reading_failure_falls_back_to_silencedetect(tmp_path, monkeypatch):
+    """If the 10ms reading cannot run (an old ffmpeg), the check judges as before, not exit 3."""
+    v = moving(tmp_path, "fb", 7.0, CLICKS)
+    monkeypatch.setattr(rfa, "sound_windows", lambda *_a: None)
+    code, r = run(tmp_path, v)
+    assert code == 0 and r["checks"]["hook"]["status"] == "pass", r["checks"]
 
 
 @needs_ffmpeg
@@ -238,6 +367,14 @@ def test_sound_events_and_click_spans():
     loud(2.50, 2.53)                       # a 30ms click (still short)
     loud(2.80, 2.95)                       # sound again
     events = rfa.sound_events(w)
-    assert [round(b - a, 2) for a, b in events] == [0.3, 0.01, 0.01, 0.01, 0.03, 0.15]
+    assert [n for _, _, n in events] == [30, 1, 1, 1, 3, 15]
     assert [(round(a, 2), round(b, 2)) for a, b in rfa.click_only_spans(w, 0.5)] == [(0.3, 2.8)]
     assert rfa.click_only_spans([(t, -80.0) for t, _ in w], 0.5) == []  # pure silence: silencedetect's job
+
+
+def test_a_40ms_event_is_sound_at_any_start_time():
+    """Window counts are integers: a 4-window event is sound wherever it starts (float seconds
+    used to make some start times read as 39.99ms)."""
+    for start in range(0, 700):
+        w = [(round((start + i) * 0.01, 2), -10.0 if i < 4 else -80.0) for i in range(60)]
+        assert rfa.sound_events(w)[0][2] == 4, start

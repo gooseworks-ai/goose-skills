@@ -51,7 +51,7 @@ re-run. Never publish blind.
 |---|---|---|
 | `ratio` | output is not exactly 1080x1920 | scale + pad every clip to 1080x1920 BEFORE the concat |
 | `hook` | no sound in the first 1.0s, or the opening frame is still for > 1.5s | start the VO/music at 0s; open on motion or a cut, not a held title |
-| `pacing` | the picture is frozen for > 2.5s before the end card, or the audio runs past the last video frame by more than both `--max-freeze-s` and `--endcard-s` (> 0.5s warns) | add motion (push-in, b-roll, a cut) or trim the hold; trim the audio or extend the picture |
+| `pacing` | the picture is frozen for > 2.5s before the end card, or the audio runs past the last video frame by more than both `--max-freeze-s` and `--endcard-s` (> 0.5s warns; see below) | add motion (push-in, b-roll, a cut) or trim the hold; trim the audio or extend the picture |
 | `dead_air` | silence > 1.0s mid-video (skipped with `--no-speech`) | tighten the VO timing or run the music bed under the gap |
 | `black_frames` | a black stretch > 0.3s | fix the concat / transition |
 | `logo_asset` | the logo file is favicon-sized (long side < 256px, or under 40,000 px²) | do not upscale it: ask for a real logo, or set the wordmark as text in the brand font (then drop `--logo`) |
@@ -63,19 +63,29 @@ re-run. Never publish blind.
 These rules apply to every profile:
 
 - **Sound.** With speech expected (no `--no-speech`), a stretch that holds only isolated
-  clicks or ticks (nothing lasting 40ms or more) counts as silence for `hook` and `dead_air`:
-  a tick is not speech or music. With `--no-speech` any sound counts, as before (sound-effect
-  formats). In the silent-text profile a click-only track is "no meaningful audio": `dead_air`
-  is not applicable and the sheet asks a person to listen (typewriter keys are fine, glitches
-  are not).
-- **Motion.** ffmpeg's freeze detector reads a 270px copy, so thin, low-contrast text changing
-  (a script font on beige) can look frozen. Every still run it reports that matters is re-read
-  at 540px and split where pixels clearly change across rows at least 2% of the width tall. Identical frames,
-  or only a thin progress bar moving, stay frozen.
-- **The end.** When the audio runs past the last video frame, the end card, `pacing` and
-  `dead_air` are judged on the picture, and `pacing` reports the overrun: up to 0.5s is encoder
-  padding; more warns, because the end card simply holds longer; more than both
-  `--max-freeze-s` and `--endcard-s` fails (the picture has stopped while the audio plays out). The JSON adds `video.picture_duration` and `pacing.data.audio_overrun_s`.
+  clicks or ticks counts as silence for `hook` and `dead_air`: nothing in it lasts 40ms or
+  more, and there are fewer than 6 a second (denser ticking, like a hi-hat bed, is a rhythm
+  and counts as sound). A tick is not speech or music, so a ticking intro before the VO, or a
+  VO pause covered only by sparse taps, fails like silence. With `--no-speech` any sound counts,
+  as before (sound-effect formats). In the silent-text profile a click-only track is "no
+  meaningful audio": `dead_air` is not applicable and the sheet asks a person to listen
+  (typewriter keys are fine, glitches are not). The audio is read on the same track and
+  timeline as the silence check; if it cannot be read, the check falls back to silence alone.
+- **Motion.** ffmpeg's freeze detector reads a 270px copy, so thin, low-contrast text
+  changing (a script font on beige) can look frozen. A still run that could fail `hook` or
+  `pacing` is re-read at 540px and split where the picture changes for real: a new state that
+  holds 0.3s and never goes back (text beats), or continuous motion for 0.3s across at least
+  15% of the frame (a pointer gliding). A change means pixels clearly moved across rows at
+  least 2% of the width tall. Identical frames, a thin progress bar, a blinking caret, a
+  pulsing icon, a one-frame flash or a small spinner stay frozen. Strokes about 1px wide at
+  1080px are still below what it can see; judge those on the sheet.
+- **The end.** When the audio runs past the last video frame, the check judges what players
+  show: the last frame held through the tail. `pacing`, `dead_air` and the end card keep the
+  file's timeline (a frozen or silent ending fails as before), frames are grabbed from the
+  picture, and `pacing` also reports the overrun: up to 0.5s is encoder padding, more warns
+  (the end card holds longer), and more than both `--max-freeze-s` and `--endcard-s` fails.
+  The JSON adds `video.picture_duration` and `pacing.data.picture_end_s` / `audio_overrun_s`.
+  A file that cannot be seeked fast (MPEG-TS with one keyframe) is read once from the start.
 
 ### Silent-text profile
 
