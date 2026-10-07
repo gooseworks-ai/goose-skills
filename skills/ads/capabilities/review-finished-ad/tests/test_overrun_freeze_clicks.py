@@ -252,6 +252,98 @@ def test_change_points_ignore_returns_and_count_new_states(monkeypatch):
     assert rfa.change_points("v", meta, [(0.0, 3.0)]) == [[]]
 
 
+@needs_ffmpeg
+@pytest.mark.parametrize("rate", ["300k", "450k", "600k"])
+def test_a_still_the_encoder_keeps_sharpening_is_still_frozen(tmp_path, rate):
+    """Reviewer repro: one testsrc2 frame held for 10s, encoded at a constant bitrate too low for
+    it. The encoder sharpens the picture a little every frame and redraws it at every keyframe
+    (2s); none of that is a new picture. main fails hook and pacing; cutting the run at every
+    sharper copy passed it."""
+    still = tmp_path / "still.png"
+    ff("-f", "lavfi", "-i", "testsrc2=s=1080x1920:r=30:d=0.04", "-frames:v", "1", still)
+    out = tmp_path / f"starved_{rate}.mp4"
+    ff("-loop", "1", "-framerate", "30", "-t", "10", "-i", still, "-f", "lavfi", "-i", f"aevalsrc='{TONE}':s=44100:d=10",
+       "-c:v", "libx264", "-b:v", rate, "-maxrate", rate, "-bufsize", rate, "-g", "60", "-keyint_min", "60",
+       "-sc_threshold", "0", "-pix_fmt", "yuv420p", "-c:a", "aac", "-map", "0:v", "-map", "1:a", out)
+    code, r = run(tmp_path, out, "--no-speech")
+    assert code == 2, r["checks"]
+    assert r["checks"]["hook"]["status"] == "fail" and r["checks"]["pacing"]["status"] == "fail", r["checks"]
+
+
+@needs_ffmpeg
+def test_a_hold_after_motion_is_frozen_while_the_encoder_catches_up(tmp_path):
+    """Reviewer repro: 3s of motion, the last frame held 3.6s, then 4s of other motion, under a
+    1Mbit/s cap. The encoder is out of bits after the motion and refines the held frame for
+    seconds; the hold is still a 3.6s freeze (main fails pacing)."""
+    out = tmp_path / "hold.mp4"
+    ff("-f", "lavfi", "-i", "testsrc2=s=1080x1920:r=30:d=3", "-f", "lavfi", "-i", "testsrc2=s=1080x1920:r=30:d=4",
+       "-f", "lavfi", "-i", f"aevalsrc='{TONE}':s=44100:d=10.6",
+       "-filter_complex", "[0:v]tpad=stop_mode=clone:stop_duration=3.6[a];[1:v]hue=h=90[b];"
+       "[a][b]concat=n=2:v=1:a=0,format=yuv420p[v]",
+       "-map", "[v]", "-map", "2:a", "-c:v", "libx264", "-crf", "23", "-maxrate", "1M", "-bufsize", "1M",
+       "-c:a", "aac", out)
+    code, r = run(tmp_path, out)
+    pacing = r["checks"]["pacing"]
+    assert pacing["status"] == "fail" and "picture frozen 3.0-6.6s" in pacing["note"], pacing
+
+
+@needs_ffmpeg
+@pytest.mark.parametrize("enc", [["-b:v", "300k", "-maxrate", "300k", "-bufsize", "300k", "-g", "60"], ["-crf", "35"]])
+def test_thin_low_contrast_beats_are_motion_at_a_low_bitrate_too(tmp_path, enc):
+    """The other side of the codec rule: thin low-contrast beats encoded with too few bits still
+    move tile averages where the strokes change, so they still count as motion."""
+    src = thin_beats(tmp_path, "thin_src")
+    out = tmp_path / "thin_low.mp4"
+    ff("-i", src, "-c:v", "libx264", *enc, "-pix_fmt", "yuv420p", "-c:a", "copy", out)
+    code, r = run(tmp_path, out, "--no-speech")
+    assert r["checks"]["pacing"]["status"] == "pass" and r["checks"]["hook"]["status"] == "pass", r["checks"]
+
+
+def test_tile_averages_tell_text_from_codec_sharpening():
+    """picture_change: a thin stroke appearing moves the averages of the tiles it crosses; the
+    same pixels changed in +/- pairs (an edge getting sharper) leave them where they were."""
+    import numpy as np
+    bg = np.full((960, 540, 3), 128, dtype=np.uint8)
+    stroke, sharpen = bg.copy(), bg.copy()
+    stroke[400:440, 100:400:7] = 56          # 1px strokes, 72 levels darker, 40 rows tall
+    sharpen[400:440, 100:400:7] = 98         # 30 darker on one column...
+    sharpen[400:440, 101:401:7] = 158        # ...30 lighter on the next
+    need = rfa.FREEZE_CHANGE_ROWS * 540
+    assert rfa.picture_change(stroke, bg, need) is not None
+    assert rfa.picture_change(sharpen, bg, need) is None
+
+
+def test_many_text_states_stay_fast_and_small(monkeypatch):
+    """Reviewer repro: a 60s ad of small low-contrast glyphs (8x26px, 158 on 120), one added
+    every 0.4s, is one long still run with 150 states. Matching each new state against every
+    earlier whole frame took ~38s and ~430MB; the region check and the state cap keep it to a
+    few seconds and a bounded memory, with the same cuts (every glyph is a new state)."""
+    import time
+    import tracemalloc
+
+    import numpy as np
+
+    def frames(*_a, **_k):
+        for k in range(600):  # 60s at 10 fps
+            f = np.full((960, 540, 3), 120, dtype=np.uint8)
+            for j in range(k // 4 + 1):  # a new glyph every 0.4s
+                r, c = divmod(j, 30)
+                f[150 + r * 20:163 + r * 20, 50 + c * 15:54 + c * 15] = 158
+            yield k / 10, f
+    monkeypatch.setattr(rfa, "file_timeline_frames", frames)
+    meta = {"width": 1080, "height": 1920, "has_audio": False}
+    tracemalloc.start()
+    t0 = time.time()
+    try:
+        cuts = rfa.change_points("v.mp4", meta, [(0.0, 60.0)])[0]
+        elapsed, peak = time.time() - t0, tracemalloc.get_traced_memory()[1]
+    finally:
+        tracemalloc.stop()
+    assert len(cuts) == 149 and abs(cuts[0] - 0.4) < 1e-6, cuts[:5]
+    assert peak < 150e6, f"peak memory {peak / 1e6:.0f}MB"
+    assert elapsed < 20, f"{elapsed:.1f}s"
+
+
 def test_confirm_freezes_only_ever_shrinks_runs(monkeypatch):
     runs = [(0.2, 3.7), (5.0, 9.0), (9.5, 10.5)]
     monkeypatch.setattr(rfa, "change_points", lambda v, m, judged: [[] for _ in judged])

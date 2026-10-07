@@ -37,8 +37,10 @@ Robustness rules that apply to every profile:
     the picture changes to a new state that holds >= 0.3s and never goes back (thin
     low-contrast text beats), or where it moves continuously for >= 0.3s across >= 15% of the
     frame (a pointer gliding). A change means pixels clearly moved across rows >= 2% of the
-    width. Identical frames, a thin progress bar, a blinking caret, a pulsing icon or a small
-    spinner stay frozen.
+    width, inside 12px tiles (at 1080) whose average brightness or colour moved too. Identical
+    frames, a thin progress bar, a blinking caret, a pulsing icon, a small spinner and a still
+    that an encoder short of bits keeps sharpening (edges and colours refine frame by frame,
+    tile averages stay put) stay frozen.
   - Speech expected (no --no-speech, default profile): a stretch with only isolated clicks or
     ticks (no sound lasting 40ms or more, fewer than 6 a second) counts as silence for hook
     and dead_air.
@@ -110,6 +112,13 @@ FREEZE_CHANGE_ROWS = 0.02    # a real change spans rows >= 2% of the width (a th
 FREEZE_MIN_RUN_S = 1.0       # still sub-runs shorter than freezedetect's own duration are dropped
 FREEZE_HOLD_S = 0.3          # a new picture must hold this long to count (a blink or flash does not)
 FREEZE_MOTION_SPAN = 0.15    # continuous motion counts when it covers 15% of the width or height
+# A changed pixel only counts inside a tile whose average moved: an encoder short of bits keeps
+# sharpening a still frame by frame, which moves single pixels (edges, colour fringes) but leaves
+# the tile averages nearly where they were; new text, a pointer or a shape moves them.
+FREEZE_TILE = 6              # tile size at the work width (12px at 1080), tiles overlap by half
+FREEZE_TILE_LUMA = 8.0       # a tile's average brightness moved more than this (0-255 levels), or
+FREEZE_TILE_COLOUR = 16.0    # one colour channel's average moved more than this (chroma is coded coarser)
+FREEZE_MAX_STATES = 32       # still pictures kept for the no-return match (the least recently seen go)
 # Sound events: 10ms peak windows above the silence floor, grouped when < 50ms apart. An event
 # lasting >= 40ms is sound; a shorter one is an isolated click or tick.
 SOUND_WINDOW_S = 0.01
@@ -327,35 +336,99 @@ def file_timeline_frames(video: str, meta: dict, fps: int, width: int, until: fl
             raise RuntimeError(f"ffmpeg could not read the frames: {err.strip()[-300:]}")
 
 
+LUMA_WEIGHTS = np.array([299, 587, 114], dtype=np.int64)  # Rec. 601 brightness, x1000
+
+
+def half_tile_sums(x: np.ndarray, st: int) -> np.ndarray:
+    """Sums over st x st squares (rows and columns already a multiple of st)."""
+    cols = sum(x[:, k::st] for k in range(st))
+    return sum(cols[k::st] for k in range(st))
+
+
+def picture_change(a: np.ndarray, b: np.ndarray, need: float, box: tuple[int, int, int, int] | None = None):
+    """Where picture b really differs from picture a, as a pixel mask, or None. A pixel changed
+    when it moved more than FREEZE_CHANGE_DELTA (any RGB channel) AND it sits in a tile
+    (FREEZE_TILE square, tiles overlapping by half) whose average moved: more than
+    FREEZE_TILE_LUMA in brightness or FREEZE_TILE_COLOUR in one channel. The changed pixels must
+    cover rows at least `need` tall. Codec refinement of a still (sharper edges, colour fringes)
+    moves pixels but not tile averages, so it is not a change. `box` (top, bottom, left, right
+    in pixels, multiples of half a tile) judges only that region: a change found there is a
+    change of the whole picture too (a region never has more changed rows than the frame)."""
+    st = FREEZE_TILE // 2
+    if box is not None:
+        a, b = a[box[0]:box[1], box[2]:box[3]], b[box[0]:box[1], box[2]:box[3]]
+    d = np.maximum(a, b)
+    d -= np.minimum(a, b)
+    mask = np.maximum(np.maximum(d[..., 0], d[..., 1]), d[..., 2]) > FREEZE_CHANGE_DELTA
+    if (np.count_nonzero(mask, axis=1) >= 2).sum() < need:
+        return None
+    # Tile averages only matter over changed pixels: read the changed area plus half a tile all
+    # round, so every tile that covers a changed pixel is whole (the same tiles as the frame's).
+    h, w = mask.shape
+    rows, cols = np.nonzero(mask.any(axis=1))[0], np.nonzero(mask.any(axis=0))[0]
+    y0, y1 = max(0, (int(rows[0]) // st - 1) * st), min(h, (int(rows[-1]) // st + 2) * st)
+    x0, x1 = max(0, (int(cols[0]) // st - 1) * st), min(w, (int(cols[-1]) // st + 2) * st)
+    diff = a[y0:y1, x0:x1].astype(np.int32) - b[y0:y1, x0:x1]
+    hh, ww = -(-(y1 - y0) // st) * st, -(-(x1 - x0) // st) * st
+    if (hh, ww) != diff.shape[:2]:
+        diff = np.pad(diff, ((0, hh - diff.shape[0]), (0, ww - diff.shape[1]), (0, 0)))
+    part = half_tile_sums(diff, st)
+    if min(part.shape[:2]) < 2:
+        return None
+    tile = part[:-1, :-1] + part[1:, :-1] + part[:-1, 1:] + part[1:, 1:]
+    n = FREEZE_TILE * FREEZE_TILE
+    hot = (np.abs(tile @ LUMA_WEIGHTS) > FREEZE_TILE_LUMA * n * 1000) | (np.abs(tile).max(axis=2) > FREEZE_TILE_COLOUR * n)
+    if not hot.any():
+        return None
+    near = np.zeros(part.shape[:2], dtype=bool)  # half-tiles inside a moved tile
+    near[:-1, :-1] |= hot
+    near[1:, :-1] |= hot
+    near[:-1, 1:] |= hot
+    near[1:, 1:] |= hot
+    keep = np.zeros_like(mask)
+    keep[y0:y1, x0:x1] = np.repeat(np.repeat(near, st, axis=0), st, axis=1)[:y1 - y0, :x1 - x0]
+    mask &= keep
+    return mask if (np.count_nonzero(mask, axis=1) >= 2).sum() >= need else None
+
+
 def change_points(video: str, meta: dict, runs) -> list[list[float]]:
-    """For each still run (start, end), the times inside it where the picture really changes.
-    Two frames differ when pixels moved > FREEZE_CHANGE_DELTA across rows at least
-    FREEZE_CHANGE_ROWS x width tall (a thin bar, about 1% of the width, never does). Inside a
-    run the picture is followed two ways:
+    """For each still run (start, end), the times inside it where the picture really changes
+    (see picture_change: a thin bar, about 1% of the width, or a still an encoder keeps
+    sharpening, never does). Inside a run the picture is followed two ways:
       - stable states, each held >= FREEZE_HOLD_S: a state counts as a change only if it is new
         and the run never goes back to an earlier state afterwards (thin text beats count; a
         blinking caret or a pulsing icon alternates and does not);
       - continuous motion, every sample differing from the one before for >= FREEZE_HOLD_S,
         over an area that travels or spans >= FREEZE_MOTION_SPAN of the frame (a pointer
         gliding, shapes moving); a spinner or a sticker animating in place does not.
-    A moving stretch cuts the run at its start and end."""
+    A moving stretch cuts the run at its start and end. The no-return match keeps the
+    FREEZE_MAX_STATES most recently seen states, and compares the region where the new state
+    differs from the current one first, so a long run of states costs a cheap check each."""
     w = FREEZE_CONFIRM_WIDTH
     h = max(2, int(round(w * meta["height"] / meta["width"] / 2)) * 2)
     need = FREEZE_CHANGE_ROWS * w
     hold = max(1, round(FREEZE_HOLD_S * FREEZE_CONFIRM_FPS))
+    st = FREEZE_TILE // 2
 
-    def moved(a: np.ndarray, b: np.ndarray) -> np.ndarray | None:
-        mask = np.abs(a.astype(np.int16) - b.astype(np.int16)).max(axis=2) > FREEZE_CHANGE_DELTA
-        return mask if (mask.sum(axis=1) >= 2).sum() >= need else None
+    def region(mask: np.ndarray) -> tuple[int, int, int, int]:
+        """Where a new state differs from the current one, plus a tile all round, in whole half-tiles."""
+        rows, cols = np.nonzero(mask.any(axis=1))[0], np.nonzero(mask.any(axis=0))[0]
+        return (max(0, (int(rows[0]) // st - 2) * st), min(h, (int(rows[-1]) // st + 3) * st),
+                max(0, (int(cols[0]) // st - 2) * st), min(w, (int(cols[-1]) // st + 3) * st))
 
-    tracks = [{"states": [], "seq": [], "cur": None, "cand": None, "prev": None, "streak": None, "motion": []}
-              for _ in runs]
+    def same(x: np.ndarray, y: np.ndarray, box) -> bool:
+        if picture_change(x, y, need, box) is not None:
+            return False  # differs inside the region alone: no need to compare whole frames
+        return picture_change(x, y, need) is None
+
+    tracks = [{"states": {}, "next": 1, "seq": [], "cur": None, "cand": None, "prev": None, "streak": None,
+               "motion": []} for _ in runs]
 
     def close_streak(tr: dict) -> None:
-        st = tr["streak"]
-        if st and st["n"] >= hold and ((st["r1"] - st["r0"]) >= FREEZE_MOTION_SPAN * h
-                                       or (st["c1"] - st["c0"]) >= FREEZE_MOTION_SPAN * w):
-            tr["motion"] += [st["t0"], st["t1"]]
+        sk = tr["streak"]
+        if sk and sk["n"] >= hold and ((sk["r1"] - sk["r0"]) >= FREEZE_MOTION_SPAN * h
+                                       or (sk["c1"] - sk["c0"]) >= FREEZE_MOTION_SPAN * w):
+            tr["motion"] += [sk["t0"], sk["t1"]]
         tr["streak"] = None
 
     until = max((b for _, b in runs), default=0.0) + 0.2
@@ -366,37 +439,44 @@ def change_points(video: str, meta: dict, runs) -> list[list[float]]:
             tr = tracks[i]
             # continuous motion: compare with the previous sample
             if tr["prev"] is not None:
-                mask = moved(frame, tr["prev"])
+                mask = picture_change(frame, tr["prev"], need)
                 if mask is not None:
                     rows, cols = np.nonzero(mask.any(axis=1))[0], np.nonzero(mask.any(axis=0))[0]
-                    st = tr["streak"] or {"t0": t - 1.0 / FREEZE_CONFIRM_FPS, "n": 0, "r0": h, "r1": 0, "c0": w, "c1": 0}
-                    st.update(t1=t, n=st["n"] + 1, r0=min(st["r0"], int(rows[0])), r1=max(st["r1"], int(rows[-1])),
-                              c0=min(st["c0"], int(cols[0])), c1=max(st["c1"], int(cols[-1])))
-                    tr["streak"] = st
+                    sk = tr["streak"] or {"t0": t - 1.0 / FREEZE_CONFIRM_FPS, "n": 0, "r0": h, "r1": 0, "c0": w, "c1": 0}
+                    sk.update(t1=t, n=sk["n"] + 1, r0=min(sk["r0"], int(rows[0])), r1=max(sk["r1"], int(rows[-1])),
+                              c0=min(sk["c0"], int(cols[0])), c1=max(sk["c1"], int(cols[-1])))
+                    tr["streak"] = sk
                 else:
                     close_streak(tr)
             tr["prev"] = frame
             # stable states
+            states = tr["states"]
             if tr["cur"] is None:
-                tr["states"].append(frame)
+                states[0] = frame
                 tr["seq"].append((t, 0))
                 tr["cur"] = 0
                 continue
             cand = tr["cand"]
             if cand is not None:
-                if moved(frame, cand[1]) is None:
+                if picture_change(frame, cand[1], need) is None:
                     cand[2] += 1
                     if cand[2] >= hold:  # the new picture held: record it as a state
-                        sid = next((k for k, st in enumerate(tr["states"]) if moved(cand[1], st) is None), None)
+                        sid = next((k for k in sorted(states) if same(cand[1], states[k], cand[3])), None)
                         if sid is None:
-                            tr["states"].append(cand[1])
-                            sid = len(tr["states"]) - 1
+                            sid = tr["next"]
+                            tr["next"] += 1
+                            states[sid] = cand[1]
+                            if len(states) > FREEZE_MAX_STATES:
+                                del states[next(iter(states))]  # the least recently seen state
+                        else:
+                            states[sid] = states.pop(sid)  # now the most recently seen
                         tr["seq"].append((cand[0], sid))
                         tr["cur"], tr["cand"] = sid, None
                     continue
                 tr["cand"] = None
-            if moved(frame, tr["states"][tr["cur"]]) is not None:
-                tr["cand"] = [t, frame, 1]
+            mask = picture_change(frame, states[tr["cur"]], need)
+            if mask is not None:
+                tr["cand"] = [t, frame, 1, region(mask)]
     found: list[list[float]] = []
     for tr in tracks:
         close_streak(tr)

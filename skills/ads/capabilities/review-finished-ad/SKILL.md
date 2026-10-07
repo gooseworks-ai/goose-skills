@@ -79,9 +79,14 @@ These rules apply to every profile:
   `pacing` is re-read at 540px and split where the picture changes for real: a new state that
   holds 0.3s and never goes back (text beats), or continuous motion for 0.3s across at least
   15% of the frame (a pointer gliding). A change means pixels clearly moved across rows at
-  least 2% of the width tall. Identical frames, a thin progress bar, a blinking caret, a
-  pulsing icon, a one-frame flash or a small spinner stay frozen. Strokes about 1px wide at
-  1080px are still below what it can see; judge those on the sheet.
+  least 2% of the width tall, inside 12px squares (at 1080px) whose average moved too: by more
+  than 8 levels of brightness, or 16 in one colour. An encoder short of bits keeps sharpening a
+  still frame by frame; that moves edges and colour fringes but not the averages, so a starved
+  still stays frozen. Identical frames, a thin progress bar, a blinking caret, a pulsing icon,
+  a one-frame flash or a small spinner stay frozen too. Strokes about 1px wide at 1080px are
+  still below what it can see; judge those on the sheet. A still encoded with so few bits that
+  it never stops refining can escape ffmpeg's freeze detector itself (as it always has): if
+  the sheet's frames all look the same, treat the ad as frozen.
 - **The end.** When the audio runs past the last video frame, the check judges what players
   show: the last frame held through the tail. `pacing`, `dead_air` and the end card keep the
   file's timeline (a frozen or silent ending fails as before), frames are grabbed from the
