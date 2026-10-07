@@ -7700,6 +7700,7 @@
         "skills/ads/capabilities/review-finished-ad/SKILL.md",
         "skills/ads/capabilities/review-finished-ad/scripts/review_finished_ad.py",
         "skills/ads/capabilities/review-finished-ad/skill.meta.json",
+        "skills/ads/capabilities/review-finished-ad/tests/test_overrun_freeze_clicks.py",
         "skills/ads/capabilities/review-finished-ad/tests/test_review_finished_ad.py",
         "skills/ads/capabilities/review-finished-ad/tests/test_sampling.py",
         "skills/ads/capabilities/review-finished-ad/tests/test_silent_text_profile.py"
