@@ -11,7 +11,7 @@ const { renderHTML } = require('./mockup/generate.js');
 const FPS = 30;
 const TIMING = {
   start:0.4, received_gap:0.75, emoji_gap:0.55, typing_dwell:1,
-  self_pre:0.3, send_hold:0.1, attach_dwell:3.6, tail_hold:1,
+  self_pre:0.3, send_hold:0.1, attach_dwell:3.6, tail_hold:2,
   char_per_sec:15, min_type:0.5, max_type:2, scroll_ms:300,
 };
 const snap = t => Math.ceil((t - 1e-8) * FPS) / FPS;
@@ -24,7 +24,7 @@ const SAFE_BANDS = { top:220, bottom:400, right:140, left:0 };
 // layout that keeps this box in the safe zone keeps the newest row there on
 // every frame. top = the shortest (DM) header; bottom = above the composer.
 // A skin that adds bottom sheets must extend keep.bottom to the screen (841).
-const PHONE = { width:393, height:852, keep:{ left:11, top:131, right:382, bottom:781 } };
+const PHONE = { width:393, height:852, keep:{ left:11, top:131, right:382, bottom:761 } };
 const MARGIN = 16, SAFE_GAP = 8;
 const emojiOnly = s => /^(\p{Extended_Pictographic}|\p{Emoji_Presentation}|️|‍|\s)+$/u.test(s || '');
 
@@ -114,7 +114,7 @@ function resolveSafeArea(option,width,height) {
 // With the safe area on, an explicit zoom is a ceiling: kept when it is safe,
 // lowered to the safe maximum when not (recipes seed zoom 2.1, the old fill).
 // safe_area:false keeps an explicit zoom exactly.
-function phoneLayout(width,height,userZoom,safe) {
+function phoneLayout(width,height,userZoom,safe,fit='centred') {
   const P = PHONE, K = PHONE.keep, m = MARGIN;
   const fitZoom = Math.min(width/514,height/914);
   if (!safe) {
@@ -128,6 +128,15 @@ function phoneLayout(width,height,userZoom,safe) {
   const limits = [(width-2*m)/P.width,(height-2*m)/P.height,(z.bottom-m)/K.bottom,(z.right-m)/K.right,
     (z.bottom-z.top)/(K.bottom-K.top),(height-m-z.top)/(P.height-K.top)];
   if (z.left) limits.push((width-m-z.left)/(P.width-K.left),(z.right-z.left)/(K.right-K.left));
+  // 'centred' (default): the largest phone that is safe while it sits in the
+  // middle of the canvas. The largest safe phone overall has to be pushed up
+  // against the top margin (16 px above it, 273 below at 1080x1920), which
+  // reads as a layout mistake. 'largest' keeps that bigger, off-centre phone.
+  if (fit !== 'largest') {
+    const mid = { x:width/2,y:height/2 }, c = { x:P.width/2,y:P.height/2 };
+    limits.push((z.bottom-mid.y)/(K.bottom-c.y),(mid.y-z.top)/(c.y-K.top),(z.right-mid.x)/(K.right-c.x));
+    if (z.left) limits.push((mid.x-z.left)/(c.x-K.left));
+  }
   const maxZoom = Math.min(...limits);
   if (!(maxZoom > 0)) throw Error('safe_area bands leave no room for the phone');
   const zoom = Math.min(userZoom || fitZoom,maxZoom);
@@ -158,7 +167,8 @@ function buildDocument(cfg,baseDir) {
   const requested=cfg.zoom || Math.min(width/514,height/914);
   if (![width,height,requested].every(Number.isFinite) || width<320 || height<568 || requested<=0 || width%2 || height%2) throw Error('Use even output dimensions and a positive zoom');
   if (393*requested>width-32 || 852*requested>height-32) throw Error('Phone does not fit the canvas; reduce zoom (keep a margin on every edge)');
-  const layout=phoneLayout(width,height,cfg.zoom,resolveSafeArea(cfg.safe_area,width,height)),zoom=layout.zoom;
+  if (cfg.phone_fit !== undefined && !['centred','largest'].includes(cfg.phone_fit)) throw Error('phone_fit must be "centred" or "largest"');
+  const layout=phoneLayout(width,height,cfg.zoom,resolveSafeArea(cfg.safe_area,width,height),cfg.phone_fit),zoom=layout.zoom;
   // Safe layout only: pin the phone where phoneLayout put it (legacy CSS stays byte-identical when off).
   const safeCSS=layout.safe ? `\n    body.framed { display:block; position:relative; }\n    body.framed .iphone-frame { position:absolute; left:${layout.left/zoom}px; top:${layout.top/zoom}px; }` : '';
   if (!thread.clock) {
