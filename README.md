@@ -215,3 +215,7 @@ The skill files and CLI in this repository are MIT-licensed. The GooseWorks API 
 [Get Started](https://app.gooseworks.ai) &middot; [Report an Issue](https://github.com/gooseworks-ai/goose-skills/issues)
 
 </div>
+
+## Agent catalog releases
+
+Feature PRs target `dev` and update staging after CI passes. Promote tested changes to `main` for production. See [deployment setup and recovery](DEPLOYMENT.md).
