@@ -1,6 +1,6 @@
 ---
 name: review-finished-ad
-description: Final QC gate for a rendered 9:16 video ad, run before it is published. One script checks what a machine can decide — exact 1080x1920 size, a hook that moves and speaks in the first second, no frozen stretches, no dead air, no black frames, the brand's real logo on the end card (never a favicon, never a redrawn or wrong logo), end-card colours near the brand palette — and builds one contact sheet (frames with the TikTok/Reels UI safe zones shaded, beside the logo, product images and a font specimen) for the checks that need eyes — font, product likeness, product consistency across scenes, safe zones. Exit 0 PASS / 2 FAIL / 3 ERROR. Use on every finished video master before pinning it.
+description: Final QC gate for a rendered 9:16 video ad, run before it is published. One script checks what a machine can decide — exact 1080x1920 size, a hook that moves and speaks in the first second, no frozen stretches, no dead air, no black frames, the brand's real logo on the end card (never a favicon, never a redrawn or wrong logo), end-card colours near the brand palette — and builds one contact sheet (frames with the TikTok/Reels UI safe zones shaded, beside the logo, product images and a font specimen) for the checks that need eyes — font, product likeness, product consistency across scenes, safe zones. A declared silent-text profile covers silent, text-led formats such as kinetic text (no audio track needed, short blank beats between text beats allowed within fixed bounds). Exit 0 PASS / 2 FAIL / 3 ERROR. Use on every finished video master before pinning it.
 ---
 
 # review-finished-ad
@@ -35,6 +35,9 @@ python3 scripts/review_finished_ad.py \
   mid-video; the end card (last ~1.6s) is always checked.
 - `--no-speech` for formats with no voiceover or dialogue (music-only), so
   silence is not judged.
+- `--format-profile silent-text` for a **declared silent, text-led format** (kinetic text).
+  Use it only when the recipe names it. It implies `--no-speech` and changes three checks
+  (see "Silent-text profile" below); every other check stays the same.
 - `--expect-size` defaults to `1080x1920`. Video ads are always 9:16.
 
 **Exit 0 → PASS.** Still read the sheet (below) before publishing.
@@ -54,6 +57,27 @@ re-run. Never publish blind.
 | `logo_asset` | the logo file is favicon-sized (long side < 256px, or under 40,000 px²) | do not upscale it: ask for a real logo, or set the wordmark as text in the brand font (then drop `--logo`) |
 | `logo` | the kit logo is not found on the end card (below the fail line for its mode) | composite the uploaded logo file onto the end card; never regenerate or retype it |
 | `palette` | *(warn only)* no kit colour among the end card's main colours | use a kit colour for the end-card background or text |
+
+### Silent-text profile
+
+For a format that is silent by design and made of text beats on a solid colour. The
+default profile wrongly fails it: "no audio track", dark text frames or dark beats between
+text beats read as black frames, and a first beat held for reading reads as a still
+opening. The profile replaces three checks. The blank-beat bounds are fixed (no option
+widens them), and `--max-freeze-s` may not exceed 10s here (exit 3), the longest text beat:
+
+| Check | Default profile | `--format-profile silent-text` |
+|---|---|---|
+| `hook` | sound in the first 1.0s, and an opening that moves | no audio track needed. The first beat must arrive with motion (a still first frame held > 1.5s fails), and the opening may then hold no longer than a planned beat: max(1.5s, `--max-freeze-s`). An audible track must start in the first 1.0s, counting a track muxed with a delay |
+| `dead_air` | silence > 1.0s mid-video fails | not applicable with no audio or an inaudible track (peak below -45 dB). An audible track (a supplied music bed) fails if it drops out > 1.0s or stops > 1.0s before the picture ends, CTA included (`--endcard-s` excuses nothing here, the CTA is a beat), even with `--no-speech` |
+| `black_frames` | a dark stretch > 0.3s fails | judges **blank** frames (black, or one flat colour with no text): a blank beat between two text beats may last up to 1.0s; a blank opening or ending keeps the 0.3s limit; all blank beats together stay under 25% of the video; a fully blank video fails |
+
+`pacing` is unchanged, so a frozen picture still fails. Set `--max-freeze-s` to the longest
+planned text beat in seconds when one holds longer than 2.5s, never more (CTA excluded, it is
+the `--endcard-s` window).
+Missing text fails as blank frames on any solid background colour; on a busy or gradient
+background, judge it on the sheet. The sheet adds one eye check: every text beat is
+complete, spelled as approved and readable. Speech checks (review-ugc-render) do not apply.
 
 `logo` is grayscale correlation with a fine size search, so the right logo scores
 0.9+ at any size:
@@ -99,6 +123,6 @@ blocked with the failed checks, so the user sees a clear warning.
 
 ## Output
 
-`--json` writes `{ verdict, failed[], video{width,height,duration,has_audio,cuts},
+`--json` writes `{ verdict, failed[], format_profile, video{width,height,duration,has_audio,cuts},
 checks{<name>: {status, note, data}}, sheet, judge_on_sheet[] }`. Status is one of
 `pass`, `fail`, `warn`, `not_applicable`.
