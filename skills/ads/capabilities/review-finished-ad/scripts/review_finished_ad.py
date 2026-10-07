@@ -174,8 +174,9 @@ def probe_audio(video: str) -> dict:
     or the decoded sample count when the container does not say (WebM/MKV), so an early stop
     is caught in any container; the start catches a track muxed with a delay."""
     info = run(["ffprobe", "-v", "error", "-show_entries",
-                "stream=codec_type,start_time,duration,sample_rate,channels", "-of", "json", video])
-    streams = json.loads(info.stdout).get("streams") or [] if info.returncode == 0 else []
+                "stream=codec_type,start_time,duration,sample_rate,channels:format=start_time", "-of", "json", video])
+    parsed = json.loads(info.stdout) if info.returncode == 0 else {}
+    streams = parsed.get("streams") or []
     stream = next((x for x in streams if x.get("codec_type") == "audio"), {})
     picture = next((x for x in streams if x.get("codec_type") == "video"), {})
 
@@ -201,7 +202,10 @@ def probe_audio(video: str) -> dict:
             length = None
     peak_db = float("-inf") if not peaks or "inf" in peaks[-1] else float(peaks[-1])
     return {"peak_db": peak_db, "length": length,
-            "start": max(0.0, start_of(stream) - start_of(picture)), "pts_start": start_of(stream)}
+            "start": max(0.0, start_of(stream) - start_of(picture)),
+            # ffmpeg shifts every timestamp by the container's start before filters see it, so
+            # silencedetect times are relative to that, not to the stream's raw start_time.
+            "pts_start": start_of(stream) - start_of(parsed.get("format") or {})}
 
 
 def content_share(rgb: np.ndarray) -> float:
@@ -533,7 +537,7 @@ def check_hook_silent_text(silences, freezes, hook_audio_s: float, audio: str, m
 
 
 def check_audio_silent_text(meta: dict, silences, audio: str, track: dict | None,
-                            max_silence_s: float) -> Check:
+                            max_silence_s: float, picture_end: float | None = None) -> Check:
     """Silent-text formats need no audio, so there is no speech to judge. An audible track
     (a supplied or approved music bed) must still play through to the end of the picture: the
     CTA is a beat, not a silent end card, so --endcard-s does not excuse a drop-out here."""
@@ -542,7 +546,8 @@ def check_audio_silent_text(meta: dict, silences, audio: str, track: dict | None
     if audio == "silent":
         return Check(NA, "silent-text: the audio track is inaudible throughout, the same as no audio",
                      {"audio": "silent"})
-    body_end = meta["duration"]
+    # The end of the PICTURE (a music bed padded past the last frame is not a drop-out).
+    body_end = picture_end if picture_end else meta["duration"]
     track = track or {}
     shift = track.get("start", 0.0) - track.get("pts_start", 0.0)  # audio pts -> picture time
     timeline = [(s + shift, e + shift) for s, e in silences]
@@ -760,7 +765,8 @@ def review(args: argparse.Namespace) -> dict:
         blanks, n_samples = blank_spans(args.video, meta)
         checks["hook"] = check_hook_silent_text(silences, freezes, args.hook_audio_s, audio, args.max_freeze_s,
                                                 track)
-        checks["dead_air"] = check_audio_silent_text(meta, silences, audio, track, args.max_silence_s)
+        checks["dead_air"] = check_audio_silent_text(meta, silences, audio, track, args.max_silence_s,
+                                                     picture_end=n_samples / BLANK_FPS)
         checks["black_frames"] = check_blank_silent_text(blanks, n_samples, blacks)
     elif args.speech is False:
         checks["dead_air"] = Check(NA, "--no-speech: music-only format")

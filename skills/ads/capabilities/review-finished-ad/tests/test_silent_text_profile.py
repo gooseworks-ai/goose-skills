@@ -311,6 +311,34 @@ def test_audio_muxed_with_a_delay_counts_as_a_late_start(tmp_path):
 
 
 @needs_ffmpeg
+def test_audio_timing_holds_when_the_container_does_not_start_at_zero(tmp_path):
+    """Reviewer repro: MPEG-TS starts at ~1.4s and -output_ts_offset shifts every stream; the
+    silence times must not be shifted twice."""
+    late, drop = kinetic(tmp_path, "tlate", audio="late"), kinetic(tmp_path, "tdrop", audio="dropout")
+    ts_late, ts_drop, off_late = tmp_path / "late.ts", tmp_path / "drop.ts", tmp_path / "late-offset.mp4"
+    for src, dst, extra in ((late, ts_late, ["-f", "mpegts"]), (drop, ts_drop, ["-f", "mpegts"]),
+                            (late, off_late, ["-output_ts_offset", "5"])):
+        subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(src), "-c", "copy", *extra, str(dst)],
+                       check=True)
+    for video in (ts_late, off_late):
+        code, r = run(tmp_path, video, *SILENT)
+        assert r["checks"]["hook"]["status"] == "fail", (video.name, r["checks"]["hook"])
+        assert "no sound for the first 1.8s" in r["checks"]["hook"]["note"], r["checks"]["hook"]
+    code, r = run(tmp_path, ts_drop, *SILENT)
+    assert "drops out 3.0-5.5s" in r["checks"]["dead_air"]["note"], r["checks"]["dead_air"]
+
+
+@needs_ffmpeg
+def test_music_padded_past_the_last_frame_is_not_a_drop_out(tmp_path):
+    v = kinetic(tmp_path, "pad", audio="tone")
+    out = tmp_path / "padded.mp4"
+    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(v), "-af", "apad=whole_dur=12",
+                    "-c:v", "copy", "-c:a", "aac", str(out)], check=True)
+    code, r = run(tmp_path, out, *SILENT)
+    assert r["checks"]["dead_air"]["status"] == "pass", r["checks"]["dead_air"]
+
+
+@needs_ffmpeg
 def test_audible_track_that_starts_late_fails_hook(tmp_path):
     code, r = run(tmp_path, kinetic(tmp_path, "late", audio="late"), *SILENT)
     assert code == 2
