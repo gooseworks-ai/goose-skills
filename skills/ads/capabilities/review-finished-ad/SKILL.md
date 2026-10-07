@@ -51,12 +51,31 @@ re-run. Never publish blind.
 |---|---|---|
 | `ratio` | output is not exactly 1080x1920 | scale + pad every clip to 1080x1920 BEFORE the concat |
 | `hook` | no sound in the first 1.0s, or the opening frame is still for > 1.5s | start the VO/music at 0s; open on motion or a cut, not a held title |
-| `pacing` | the picture is frozen for > 2.5s before the end card | add motion (push-in, b-roll, a cut) or trim the hold |
+| `pacing` | the picture is frozen for > 2.5s before the end card, or the audio runs past the last video frame by more than both `--max-freeze-s` and `--endcard-s` (> 0.5s warns) | add motion (push-in, b-roll, a cut) or trim the hold; trim the audio or extend the picture |
 | `dead_air` | silence > 1.0s mid-video (skipped with `--no-speech`) | tighten the VO timing or run the music bed under the gap |
 | `black_frames` | a black stretch > 0.3s | fix the concat / transition |
 | `logo_asset` | the logo file is favicon-sized (long side < 256px, or under 40,000 px²) | do not upscale it: ask for a real logo, or set the wordmark as text in the brand font (then drop `--logo`) |
 | `logo` | the kit logo is not found on the end card (below the fail line for its mode) | composite the uploaded logo file onto the end card; never regenerate or retype it |
 | `palette` | *(warn only)* no kit colour among the end card's main colours | use a kit colour for the end-card background or text |
+
+### What counts as sound, motion and the end of the video
+
+These rules apply to every profile:
+
+- **Sound.** With speech expected (no `--no-speech`), a stretch that holds only isolated
+  clicks or ticks (nothing lasting 40ms or more) counts as silence for `hook` and `dead_air`:
+  a tick is not speech or music. With `--no-speech` any sound counts, as before (sound-effect
+  formats). In the silent-text profile a click-only track is "no meaningful audio": `dead_air`
+  is not applicable and the sheet asks a person to listen (typewriter keys are fine, glitches
+  are not).
+- **Motion.** ffmpeg's freeze detector reads a 270px copy, so thin, low-contrast text changing
+  (a script font on beige) can look frozen. Every still run it reports that matters is re-read
+  at 540px and split where pixels clearly change across rows at least 2% of the width tall. Identical frames,
+  or only a thin progress bar moving, stay frozen.
+- **The end.** When the audio runs past the last video frame, the end card, `pacing` and
+  `dead_air` are judged on the picture, and `pacing` reports the overrun: up to 0.5s is encoder
+  padding; more warns, because the end card simply holds longer; more than both
+  `--max-freeze-s` and `--endcard-s` fails (the picture has stopped while the audio plays out). The JSON adds `video.picture_duration` and `pacing.data.audio_overrun_s`.
 
 ### Silent-text profile
 
@@ -123,6 +142,6 @@ blocked with the failed checks, so the user sees a clear warning.
 
 ## Output
 
-`--json` writes `{ verdict, failed[], format_profile, video{width,height,duration,has_audio,cuts},
+`--json` writes `{ verdict, failed[], format_profile, video{width,height,duration,has_audio,cuts,picture_duration?},
 checks{<name>: {status, note, data}}, sheet, judge_on_sheet[] }`. Status is one of
 `pass`, `fail`, `warn`, `not_applicable`.
