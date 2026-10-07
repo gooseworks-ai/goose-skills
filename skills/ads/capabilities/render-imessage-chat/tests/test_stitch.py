@@ -159,6 +159,65 @@ def test_music_bed_mix_stays_below_minus_1_dbtp(clips, tmp_path):
     assert (tmp_path / "final-1x1.mp4").exists()
 
 
+def load_check_render():
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("check_render", CAP / "scripts" / "check-render.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+# A thread as the recorder paces one: no cue lands inside the previous cue's
+# attack. (CUES above stacks chimes 0.2 s apart to stress the limiter; the onset
+# check cannot separate those and was never run against them.)
+THREAD_CUES = [
+    {"t": 0.50, "name": "receive", "soft": False},
+    {"t": 2.50, "name": "send", "soft": False},
+    {"t": 3.30, "name": "send", "soft": False},
+    {"t": 5.00, "name": "receive", "soft": False},
+    {"t": 7.00, "name": "send", "soft": False},
+    {"t": 9.00, "name": "receive", "soft": False},
+]
+
+
+def thread_clips(clips, tmp_path):
+    d = tmp_path / "thread"
+    d.mkdir()
+    for name in ("chat.mp4", "end.mp4"):
+        shutil.copy2(clips / name, d / name)
+    (d / "cues.json").write_text(json.dumps(THREAD_CUES))
+    return d
+
+
+def test_onset_check_passes_over_a_bed_with_its_own_attacks(clips, tmp_path):
+    """The Brightland clean run (2026-10-07): a correct render with a guitar bed
+    failed "Missing or shifted sound" because a note just before a cue read as
+    the cue arriving early. A plucked bed (a hit every 0.37 s) stands in for it."""
+    bed = tmp_path / "plucked.mp3"
+    ffmpeg("-f", "lavfi", "-i", "sine=f=220:d=14", "-af",
+           "volume='if(lt(mod(t,0.37),0.04),2.4,0.5)':eval=frame,aformat=channel_layouts=stereo",
+           "-c:a", "libmp3lame", str(bed))
+    out = tmp_path / "final.mp4"
+    r = stitch(CAP / "scripts" / "stitch.sh", thread_clips(clips, tmp_path), out, "--music", str(bed))
+    assert r.returncode == 0, r.stderr
+    check = load_check_render()
+    check.check_onsets(out, THREAD_CUES)
+    with pytest.raises(AssertionError, match="Missing or shifted"):
+        check.check_onsets(out, THREAD_CUES + [{"t": 11.0, "name": "receive", "soft": False}])
+    with pytest.raises(AssertionError, match="Missing or shifted"):
+        check.check_onsets(out, [dict(c, t=c["t"] + 0.6) for c in THREAD_CUES])
+
+
+def test_onset_check_keeps_the_tight_window_without_a_bed(clips, tmp_path):
+    out = tmp_path / "final.mp4"
+    r = stitch(CAP / "scripts" / "stitch.sh", thread_clips(clips, tmp_path), out)
+    assert r.returncode == 0, r.stderr
+    check = load_check_render()
+    check.check_onsets(out, THREAD_CUES)
+    with pytest.raises(AssertionError, match="Missing or shifted"):
+        check.check_onsets(out, [dict(c, t=c["t"] - 0.12) for c in THREAD_CUES])  # each sound 120 ms late
+
+
 def test_no_sfx_anywhere_fails_clearly(clips, tmp_path):
     stitch_sh = catalog_copy(tmp_path / "cap", keep_embedded=False)
     r = stitch(stitch_sh, clips, tmp_path / "final.mp4")
