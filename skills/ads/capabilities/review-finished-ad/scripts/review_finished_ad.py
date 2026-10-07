@@ -17,10 +17,11 @@ sheet for the checks that need eyes (font, product likeness, safe zones):
 changes three checks and nothing else:
   hook         no audio track is needed. The first beat must arrive with motion (a still first
                frame held > 1.5s fails) and the opening may then hold no longer than a planned
-               beat (max(1.5, --max-freeze-s)). Audible audio must start within --hook-audio-s
-  dead_air     becomes an audio-integrity check: not applicable with no audio or an inaudible
-               track (peak below -45 dB); an audible track must not drop out or stop before the
-               picture ends (the CTA is a beat, not a silent end card)
+               beat (max(1.5, --max-freeze-s)). Audible audio, or a track of only clicks
+               (typewriter keys), must start within --hook-audio-s
+  dead_air     becomes an audio-integrity check: not applicable with no audio, an inaudible
+               track (peak below -45 dB) or a track of only clicks; an audible track must not
+               drop out or stop before the picture ends (the CTA is a beat, not a silent end card)
   black_frames judges blank frames (black, or one flat colour with no readable text) instead of
                dark pixels: a blank beat between two text beats may last up to 1.0s, the opening
                and the ending keep the 0.3s bound, and all blank beats together stay under 25%
@@ -41,6 +42,8 @@ Robustness rules that apply to every profile:
   - Speech expected (no --no-speech, default profile): a stretch with only isolated clicks or
     ticks (no sound lasting 40ms or more, fewer than 6 a second) counts as silence for hook
     and dead_air.
+  - Every audio reader takes ffmpeg's default audio track (the default-flagged one, else the
+    one with most channels): the track players play.
 
 Exit codes: 0 PASS, 2 FAIL (a machine check failed), 3 ERROR (could not run).
 Needs ffmpeg/ffprobe on PATH and Python packages numpy + pillow.
@@ -202,15 +205,17 @@ def spans(log: str, key: str, duration: float) -> list[tuple[float, float]]:
 
 
 def probe_audio(video: str) -> dict:
-    """The first audio stream's peak level (dB, -inf for digital silence), where it starts
-    relative to the picture (s) and its length (s). The length is the stream's own duration,
-    or the decoded sample count when the container does not say (WebM/MKV), so an early stop
-    is caught in any container; the start catches a track muxed with a delay."""
+    """The audio track's peak level (dB, -inf for digital silence), where it starts relative to
+    the picture (s) and its length (s). The track is ffmpeg's default choice, the one the
+    silence and click readers use and players play (the default-flagged track, else the one
+    with most channels). The length is the stream's own duration, or the decoded sample count
+    when the container does not say (WebM/MKV), so an early stop is caught in any container;
+    the start catches a track muxed with a delay."""
     info = run(["ffprobe", "-v", "error", "-show_entries",
-                "stream=codec_type,start_time,duration,sample_rate,channels:format=start_time", "-of", "json", video])
+                "stream=index,codec_type,start_time,duration,sample_rate,channels:format=start_time",
+                "-of", "json", video])
     parsed = json.loads(info.stdout) if info.returncode == 0 else {}
     streams = parsed.get("streams") or []
-    stream = next((x for x in streams if x.get("codec_type") == "audio"), {})
     picture = next((x for x in streams if x.get("codec_type") == "video"), {})
 
     def start_of(x: dict) -> float:
@@ -218,10 +223,13 @@ def probe_audio(video: str) -> dict:
             return float(x["start_time"])
         except (KeyError, TypeError, ValueError):
             return 0.0
-    out = run(["ffmpeg", "-hide_banner", "-nostats", "-i", video, "-map", "0:a:0",
+    out = run(["ffmpeg", "-hide_banner", "-nostats", "-i", video, "-vn", "-sn", "-dn",
                "-af", "volumedetect", "-f", "null", "-"])
     if out.returncode != 0:
         raise RuntimeError(f"ffmpeg could not decode the audio: {out.stderr.strip()[-300:]}")
+    picked = re.search(r"Stream mapping:\s*\n\s*Stream #0:(\d+)", out.stderr)
+    audio = [x for x in streams if x.get("codec_type") == "audio"]
+    stream = next((x for x in audio if picked and x.get("index") == int(picked.group(1))), audio[0] if audio else {})
     # volumedetect can report more than once (a probe pass first); the last report is the stream.
     peaks = re.findall(rf"max_volume:\s*(-?inf|{NUM}) dB", out.stderr)
     samples = re.findall(r"n_samples:\s*(\d+)", out.stderr)
@@ -288,8 +296,9 @@ def picture_end(video: str) -> float | None:
 
 def file_timeline_frames(video: str, meta: dict, fps: int, width: int, until: float | None = None):
     """Yield (t, RGB frame) at `fps`, `width` px wide (area-averaged), on the same timeline as the
-    analyse pass: the audio stays mapped (to a null output) so ffmpeg computes the file's start
-    time from every stream, as it does for freezedetect/silencedetect. Read as they decode."""
+    analyse pass: the audio stays mapped (ffmpeg's default track, to a null output) so ffmpeg
+    computes the file's start time from every stream, as it does for freezedetect/silencedetect.
+    Read as they decode."""
     h = max(2, int(round(width * meta["height"] / meta["width"] / 2)) * 2)
     size = width * h * 3
     limit = ["-t", f"{until:.3f}"] if until is not None else []
@@ -297,7 +306,7 @@ def file_timeline_frames(video: str, meta: dict, fps: int, width: int, until: fl
            "-map", "0:v:0", "-vf", f"fps={fps},scale={width}:{h}:flags=area,format=rgb24", *limit,
            "-f", "rawvideo", "pipe:1"]
     if meta.get("has_audio"):
-        cmd += ["-map", "0:a:0?", "-c:a", "pcm_s16le", *limit, "-f", "null", "-"]
+        cmd += ["-vn", "-sn", "-dn", "-c:a", "pcm_s16le", *limit, "-f", "null", "-"]
     with tempfile.TemporaryFile() as log:
         proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=log)
         assert proc.stdout is not None
@@ -834,12 +843,14 @@ def check_hook_silent_text(silences, freezes, hook_audio_s: float, audio: str, m
     """A text-led opening is the first beat ARRIVING (punch, rise, typewriter), then a reading
     hold. It fails when nothing arrives (the picture is still from the first frames for > 1.5s)
     or when the opening then holds longer than a planned beat (max(1.5, --max-freeze-s)),
-    measured over the whole still run, end card included."""
+    measured over the whole still run, end card included. Any track a viewer hears, music or
+    only clicks (typewriter keys), must start with the opening."""
     problems = []
     # Silence timestamps are the audio stream's own; a track muxed with a delay starts late too.
     track_start, pts0 = (track or {}).get("start", 0.0), (track or {}).get("pts_start", 0.0)
     lead = track_start + max((e - pts0 for s, e in silences if s - pts0 <= 0.3), default=0.0)
-    if audio == "audible" and lead > hook_audio_s:
+    heard = audio in ("audible", "clicks")
+    if heard and lead > hook_audio_s:
         problems.append(f"no sound for the first {lead:.1f}s of the audio track")
     first = next(((s, e) for s, e in freezes if s <= 0.3), None)
     hold_limit = max(1.5, max_freeze_s)
@@ -853,6 +864,8 @@ def check_hook_silent_text(silences, freezes, hook_audio_s: float, audio: str, m
         return Check(FAIL, "; ".join(problems) + ": the opening must move, and any audio must start with it", data)
     if audio == "audible":
         return Check(PASS, f"silent-text: sound at {lead:.1f}s, opening moves", data)
+    if audio == "clicks":
+        return Check(PASS, f"silent-text: clicks from {lead:.1f}s, opening moves", data)
     return Check(PASS, "silent-text: no audio needed, opening moves", data)
 
 

@@ -69,8 +69,11 @@ These rules apply to every profile:
   VO pause covered only by sparse taps, fails like silence. With `--no-speech` any sound counts,
   as before (sound-effect formats). In the silent-text profile a click-only track is "no
   meaningful audio": `dead_air` is not applicable and the sheet asks a person to listen
-  (typewriter keys are fine, glitches are not). The audio is read on the same track and
-  timeline as the silence check; if it cannot be read, the check falls back to silence alone.
+  (typewriter keys are fine, glitches are not). The clicks are still heard, so `hook` still
+  needs them to start in the first 1.0s, like music. Every audio check reads ffmpeg's default
+  audio track (the one flagged default, else the one with most channels): the track players
+  play. The clicks are read on the same timeline as the silence check; if they cannot be read,
+  the check falls back to silence alone.
 - **Motion.** ffmpeg's freeze detector reads a 270px copy, so thin, low-contrast text
   changing (a script font on beige) can look frozen. A still run that could fail `hook` or
   `pacing` is re-read at 540px and split where the picture changes for real: a new state that
@@ -97,8 +100,8 @@ widens them), and `--max-freeze-s` may not exceed 10s here (exit 3), the longest
 
 | Check | Default profile | `--format-profile silent-text` |
 |---|---|---|
-| `hook` | sound in the first 1.0s, and an opening that moves | no audio track needed. The first beat must arrive with motion (a still first frame held > 1.5s fails), and the opening may then hold no longer than a planned beat: max(1.5s, `--max-freeze-s`). An audible track must start in the first 1.0s, counting a track muxed with a delay |
-| `dead_air` | silence > 1.0s mid-video fails | not applicable with no audio or an inaudible track (peak below -45 dB). An audible track (a supplied music bed) fails if it drops out > 1.0s or stops > 1.0s before the picture ends, CTA included (`--endcard-s` excuses nothing here, the CTA is a beat), even with `--no-speech` |
+| `hook` | sound in the first 1.0s, and an opening that moves | no audio track needed. The first beat must arrive with motion (a still first frame held > 1.5s fails), and the opening may then hold no longer than a planned beat: max(1.5s, `--max-freeze-s`). An audible track, or one of only clicks (typewriter keys), must start in the first 1.0s, counting a track muxed with a delay |
+| `dead_air` | silence > 1.0s mid-video fails | not applicable with no audio, an inaudible track (peak below -45 dB) or a track of only clicks (the sheet asks a person to listen). An audible track (a supplied music bed) fails if it drops out > 1.0s or stops > 1.0s before the picture ends, CTA included (`--endcard-s` excuses nothing here, the CTA is a beat), even with `--no-speech` |
 | `black_frames` | a dark stretch > 0.3s fails | judges **blank** frames (black, or one flat colour with no text): a blank beat between two text beats may last up to 1.0s; a blank opening or ending keeps the 0.3s limit; all blank beats together stay under 25% of the video; a fully blank video fails |
 
 `pacing` is unchanged, so a frozen picture still fails. Set `--max-freeze-s` to the longest

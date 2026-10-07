@@ -304,17 +304,69 @@ def test_click_stretch_times_hold_in_mpeg_ts_with_late_audio(tmp_path):
     assert abs(gaps[0][0] - 2.7) < 0.15 and abs(gaps[0][1] - 4.2) < 0.15, gaps
 
 
-@needs_ffmpeg
-def test_the_same_audio_track_as_silencedetect_is_read(tmp_path):
-    """The click reader uses ffmpeg's default track choice, like silencedetect: a click-only
-    second track next to a stereo tone does not change the verdict (PASS, as on main)."""
-    out = tmp_path / "two.mp4"
-    ff("-f", "lavfi", "-i", "testsrc2=s=1080x1920:r=30:d=7", "-f", "lavfi", "-i", f"aevalsrc='{TONE}|{TONE}':s=44100:d=7",
-       "-f", "lavfi", "-i", f"aevalsrc='{CLICKS}':s=44100:d=7",
+def two_tracks(tmp, name, clicks_default, tone_start=0.0, first=CLICKS):
+    """Two audio tracks: a click-only mono track FIRST (0:a:0), then a stereo tone. With
+    clicks_default the click track carries the default flag (players play it); otherwise the
+    tone does. The tone can start late (silent until tone_start); `first` replaces the clicks."""
+    out = Path(tmp) / f"{name}.mp4"
+    tone = f"if(lt(t,{tone_start}),0,{TONE})"
+    ff("-f", "lavfi", "-i", "testsrc2=s=1080x1920:r=30:d=7", "-f", "lavfi", "-i", f"aevalsrc='{first}':s=44100:d=7",
+       "-f", "lavfi", "-i", f"aevalsrc='{tone}|{tone}':s=44100:d=7",
        "-map", "0:v", "-map", "1:a", "-map", "2:a", "-c:v", "libx264", "-preset", "ultrafast", "-pix_fmt", "yuv420p",
-       "-c:a", "aac", out)
+       "-c:a", "aac", "-disposition:a:0", "default" if clicks_default else "0",
+       "-disposition:a:1", "0" if clicks_default else "default", out)
+    return out
+
+
+def first_track_is_clicks_only(video):
+    """Fixture guard: the FIRST audio track (0:a:0) on its own holds only clicks, so a reader
+    that took 0:a:0 instead of the default track would call this a click-only ad."""
+    out = subprocess.run(["ffmpeg", "-hide_banner", "-nostats", "-i", str(video), "-map", "0:a:0", "-af",
+                          "aresample=16000,asetnsamples=n=160:p=0,astats=metadata=1:reset=1:measure_overall=Peak_level:"
+                          "measure_perchannel=none,ametadata=mode=print:key=lavfi.astats.Overall.Peak_level",
+                          "-f", "null", "-"], capture_output=True, text=True)
+    windows, t = [], None
+    for line in out.stderr.splitlines():
+        if "pts_time:" in line:
+            t = float(line.split("pts_time:")[1].split()[0])
+        elif "Peak_level=" in line and t is not None:
+            v = line.split("Peak_level=")[1].strip()
+            windows.append((t, float("-inf") if "inf" in v else float(v)))
+            t = None
+    return bool(rfa.click_only_spans(windows, 0.5))
+
+
+@needs_ffmpeg
+def test_the_default_audio_track_is_read_not_the_first(tmp_path):
+    """The click reader takes ffmpeg's default track, like silencedetect and like players: a
+    click-only FIRST track next to a default stereo tone does not change the verdict (PASS, as
+    on main). Reading 0:a:0 would call this ad click-only and fail its hook."""
+    out = two_tracks(tmp_path, "two", clicks_default=False)
+    assert first_track_is_clicks_only(out), "fixture: 0:a:0 must be the click-only track"
     code, r = run(tmp_path, out)
     assert code == 0, r["checks"]
+
+
+@needs_ffmpeg
+def test_a_default_click_only_track_fails_even_with_music_on_another_track(tmp_path):
+    """The click-only track is first AND default: players play it, and both readers take it, so
+    the ad has no sound a viewer hears as speech or music (hook fails)."""
+    out = two_tracks(tmp_path, "two_clicks", clicks_default=True)
+    code, r = run(tmp_path, out)
+    assert code == 2 and r["checks"]["hook"]["status"] == "fail", r["checks"]["hook"]
+    assert "no sound for the first" in r["checks"]["hook"]["note"]
+
+
+@needs_ffmpeg
+def test_silent_text_judges_the_default_track_not_the_first(tmp_path):
+    """Silent-text: a digitally silent first track, and a default music track that starts 2.5s
+    late. The default track is the one that plays, so the late start fails the hook. Reading the
+    level from 0:a:0 called the audio "inaudible" and skipped the check."""
+    out = two_tracks(tmp_path, "two_late", clicks_default=False, tone_start=2.5, first="0")
+    code, r = run(tmp_path, out, "--format-profile", "silent-text", "--no-speech", "--endcard-s", "3")
+    hook = r["checks"]["hook"]
+    assert hook["status"] == "fail" and "no sound for the first 2.5s" in hook["note"], hook
+    assert r["checks"]["dead_air"]["data"]["audio"] == "audible", r["checks"]["dead_air"]
 
 
 @needs_ffmpeg
@@ -353,19 +405,39 @@ def test_real_sound_with_gaps_is_unchanged(tmp_path, expr):
     assert code == 0, r["checks"]
 
 
+def kinetic(tmp, name, audio_expr):
+    """A dark card with a light block sliding across it (a moving kinetic beat), 7s, with an
+    audio track built from an expression."""
+    out = Path(tmp) / f"{name}.mp4"
+    ff("-f", "lavfi", "-i", "color=c=0x141720:s=1080x1920:r=30:d=7", "-f", "lavfi", "-i", "color=c=0xf5f2eb:s=300x120:r=30:d=7",
+       "-f", "lavfi", "-i", f"aevalsrc='{audio_expr}':s=44100:d=7",
+       "-filter_complex", "[0:v][1:v]overlay=x='100+mod(t*300,600)':y=900,format=yuv420p[v]",
+       "-map", "[v]", "-map", "2:a", "-c:v", "libx264", "-preset", "ultrafast", "-c:a", "aac", out)
+    return out
+
+
 @needs_ffmpeg
 def test_click_only_track_in_silent_text_is_no_meaningful_audio(tmp_path):
     """Typewriter key clicks in a silent kinetic ad are legitimate sound effects; the machine
     calls them 'no meaningful audio' and the sheet asks a person to listen."""
-    out = tmp_path / "kt.mp4"
-    ff("-f", "lavfi", "-i", "color=c=0x141720:s=1080x1920:r=30:d=7", "-f", "lavfi", "-i",
-       f"aevalsrc='{CLICKS}':s=44100:d=7",
-       "-vf", "drawbox=x='100+mod(t*300\\,600)':y=900:w=300:h=120:c=0xf5f2eb:t=fill",
-       "-c:v", "libx264", "-preset", "ultrafast", "-pix_fmt", "yuv420p", "-c:a", "aac", out)
+    out = kinetic(tmp_path, "kt", CLICKS)
     code, r = run(tmp_path, out, "--format-profile", "silent-text", "--no-speech", "--endcard-s", "3")
     da = r["checks"]["dead_air"]
     assert da["status"] == "not_applicable" and da["data"]["audio"] == "clicks", da
     assert any(line.startswith("audio: the track has only isolated clicks") for line in r["judge_on_sheet"])
+    assert r["checks"]["hook"]["status"] == "pass" and "clicks from 0.0s" in r["checks"]["hook"]["note"]
+
+
+@needs_ffmpeg
+def test_click_only_track_in_silent_text_must_start_with_the_opening(tmp_path):
+    """Clicks are heard: a typewriter track whose first click comes 2.8s in leaves the opening
+    silent, so the hook fails as it does for music (and as on main)."""
+    out = kinetic(tmp_path, "kt_late", f"if(lt(t,2.5),0,{CLICKS})")
+    code, r = run(tmp_path, out, "--format-profile", "silent-text", "--no-speech", "--endcard-s", "3")
+    hook = r["checks"]["hook"]
+    assert hook["status"] == "fail" and "no sound for the first" in hook["note"], hook
+    assert hook["data"]["lead_silence_s"] > 2.4 and hook["data"]["audio"] == "clicks", hook
+    assert r["checks"]["dead_air"]["status"] == "not_applicable"
 
 
 def test_sound_events_and_click_spans():
