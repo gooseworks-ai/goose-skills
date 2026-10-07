@@ -173,9 +173,7 @@ for that input's own ingredient_key + digest first, or the digest never matches.
 
 ## No credentials at all? The MCP relay
 
-A session that only has the GooseWorks MCP connector (the Claude desktop app, a Codex
-session without `gooseworks login`) has neither `GW_MEDIA_PROXY_TOKEN` (the cloud sandbox's)
-nor `~/.gooseworks/credentials.json`, so scripts cannot reach the proxies over HTTP. Then every paid call is **relayed through the agent**:
+A connected Claude Code session can have CLI credentials for a different environment. Set `GW_MEDIA_VIA=mcp` before running its media helpers so the selected connector remains authoritative. A session with neither a sandbox proxy token nor CLI credentials also uses this route automatically. Every paid call is **relayed through the agent**:
 
 1. The script writes the exact MCP tool call to `working/mcp-requests/<kind>-<hash>.json`
    and exits with code **3**, printing what to do.
@@ -200,6 +198,14 @@ attribution the HTTP proxy records) and `GW_BRAND_ID` (for uploads). The MCP too
 through the same server proxy code, so price and project attribution are identical.
 `GW_MEDIA_VIA=mcp` forces the relay (e.g. the CLI login points at another environment);
 `GW_MEDIA_VIA=proxy` forces HTTP.
+
+## Large request bodies without prompt copying
+
+The relay writes a `.body.json` file for request bodies over 8 KB and adds `body_file` plus `compact_call` to its request record. When data_post_provider advertises `body_asset_id`, upload that file with media_upload using scope:video_project, scope_id:GW_PROJECT_ID, path:working/mcp-requests/<filename>.body.json, kind:reference and source:{type:file,filename:<filename>,content_type:application/json}; PUT the file to the returned upload URL and call media_confirm, then send the compact call with the returned media.id as body_asset_id. Omit body. The backend loads that exact file and applies the same secret, approval and billing checks. Do not paste its prompt into chat.
+
+Older connectors without body_asset_id use the original args record. Read the exact JSON into the host's tool runner; never retype prompts or reconstruct them from memory.
+
+For a connected Claude Code run, set GW_MEDIA_VIA=mcp, GW_PROJECT_ID and GW_BRAND_ID before running any media scripts. Record the public API origin from account_whoami in GW_EXPECTED_API_ORIGIN. Do not inspect CLI credential files to identify the connected environment. Automatic diagnostics also skip HTTP credentials while relay mode is active.
 
 ## Related
 - Used by `create-image-fal`, `create-video-fal`, `create-music-elevenlabs`.

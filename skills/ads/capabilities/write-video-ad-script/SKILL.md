@@ -336,6 +336,11 @@ record a failed critic call as a pass. If every candidate fails, repair or regen
 within the supported angle and recipe before review. Do not automatically choose the
 highest-ranked rejected candidate.
 
+**The second opinion.** Run the critique script with the same files and the brief. A
+model from a different family (never Claude) judges every concept twice, once in each
+order, because judges favour whatever they read first. It scores hook, specificity, how
+spoken it sounds, proof, payoff and freshness, and gives a best hook, line edits and a
+ranking. This is a paid operation: use the current managed quote and host approval, never a fixed credit claim. For a custom project whose spend gate refuses a pre-approval critic, perform the same rubric locally before review, save the scores and edits, and label the reviewer honestly. Do not submit a paid critic or retry a 409 before approval. A different-model critic is required only where the host supports it in the current phase and approved budget; never claim it ran when it did not.
 **Optional Jev screen.** Jev may cheaply judge narrow text questions about relevance,
 supported claims, format fit and hook payoff. Use separate criteria, keep probabilities,
 include an insufficient-context route and compare with labelled examples before enabling

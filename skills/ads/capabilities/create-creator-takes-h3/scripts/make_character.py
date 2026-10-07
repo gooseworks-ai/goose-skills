@@ -236,6 +236,12 @@ def main():
     print("skin     : %s" % slots["skin_tone"])
     print("marks    : %s" % slots["imperfections"][:96] + "...")
     print("prompt   : %d chars -> %s" % (len(prompt), out / "character-prompt.txt"))
+    # Save the same identity metadata for free planning and actual generation.
+    (out / "character.json").write_text(json.dumps({
+        "image": "character.png",
+        "identity": ident + ", " + slots["hair"].rstrip(".") + ", " + slots["wardrobe"].rstrip("."),
+        "environment": slots["scene"].rstrip("."),
+    }, indent=1), encoding="utf-8")
 
     # Built once, before the dry-run return, so the quoted body and the paid body are one object.
     payload = {"prompt": prompt, "negative_prompt": negative, "aspect_ratio": a.aspect,
