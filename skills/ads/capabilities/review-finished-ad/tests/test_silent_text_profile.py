@@ -17,10 +17,13 @@ from PIL import Image, ImageDraw, ImageFont
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "scripts"))
 
 import review_finished_ad as rfa  # noqa: E402
-from test_review_finished_ad import make_endcard, make_logo, make_video  # noqa: E402
 
+FONTS = [p for p in ("/System/Library/Fonts/Supplemental/Arial Bold.ttf",
+                     "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf") if os.path.exists(p)]
+# The fixtures draw real 108px text; Pillow's tiny bitmap fallback would not be a fair test.
 needs_ffmpeg = pytest.mark.skipif(
-    subprocess.run(["which", "ffmpeg"], capture_output=True).returncode != 0, reason="ffmpeg not installed"
+    subprocess.run(["which", "ffmpeg"], capture_output=True).returncode != 0 or not FONTS,
+    reason="ffmpeg or a bold TrueType font (Arial Bold / DejaVu Sans Bold) not installed",
 )
 
 DARK, LIGHT = (20, 23, 32), (244, 239, 230)
@@ -28,11 +31,7 @@ BEATS = [("One clear message.", 1.8), ("Give it room.", 1.8), ("Keep it readable
 
 
 def _font(size):
-    for p in ("/System/Library/Fonts/Supplemental/Arial Bold.ttf",
-              "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"):
-        if os.path.exists(p):
-            return ImageFont.truetype(p, size)
-    return ImageFont.load_default()
+    return ImageFont.truetype(FONTS[0], size)
 
 
 def _text_png(path, text, colour=(245, 242, 235)):
@@ -50,8 +49,9 @@ def kinetic(tmp, name, beats=BEATS, gaps=0.5, bg=DARK, lead_blank_s=0.0, text=Tr
     """A silent kinetic-text style ad. Each beat's text rises in over `rise_s` on a solid
     colour and then holds; `gaps` seconds of bare background (a dark beat) sit between beats.
 
-    audio: None (no track), "silent" (an all-silent track), "tone" (sound throughout),
-    "dropout" (sound muted 3.0-5.5s), "short" (track ends at 3.0s), "late" (first 1.8s silent).
+    audio: None (no track), "silent" (an all-silent track), "stub" (a 0.3s silent track),
+    "tone" (sound throughout), "dropout" (sound muted 3.0-5.5s), "short" (track ends at 3.0s),
+    "tailcut" (track ends 2.0s before the picture, inside the CTA), "late" (first 1.8s silent).
     """
     tmp = Path(tmp)
     gaps = gaps if isinstance(gaps, list) else [gaps] * (len(beats) - 1)
@@ -78,7 +78,9 @@ def kinetic(tmp, name, beats=BEATS, gaps=0.5, bg=DARK, lead_blank_s=0.0, text=Tr
     chain.append(f"{last}format=yuv420p,setsar=1[vout]")
     if audio:
         src = {"silent": f"anullsrc=r=44100:cl=mono:d={total}",
-               "short": "sine=frequency=330:sample_rate=44100:duration=3.0"}.get(
+               "stub": "anullsrc=r=44100:cl=mono:d=0.3",
+               "short": "sine=frequency=330:sample_rate=44100:duration=3.0",
+               "tailcut": f"sine=frequency=330:sample_rate=44100:duration={total - 2.0:.3f}"}.get(
             audio, f"sine=frequency=330:sample_rate=44100:duration={total}")
         cmd += ["-f", "lavfi", "-i", src]
         mute = {"dropout": "between(t,3.0,5.5)", "late": "between(t,0,1.8)"}.get(audio)
@@ -159,11 +161,21 @@ def test_a_long_first_beat_is_a_reading_hold_judged_by_pacing(tmp_path):
     v = kinetic(tmp_path, "longbeat", beats=beats, gaps=0.5, rise_s=0.2)
     code, r = run(tmp_path, v, "--no-speech", "--endcard-s", "3")
     assert r["checks"]["hook"]["status"] == "fail" and "still" in r["checks"]["hook"]["note"]
-    code, r = run(tmp_path, v, *SILENT)
-    assert r["checks"]["hook"]["status"] == "pass", r["checks"]["hook"]
-    assert r["checks"]["pacing"]["status"] == "fail"  # 2.8s hold > the default 2.5s
+    code, r = run(tmp_path, v, *SILENT)  # no declared beat length: 2.8s hold > the default 2.5s
+    assert r["checks"]["hook"]["status"] == "fail" and "longer than a planned beat" in r["checks"]["hook"]["note"]
+    assert r["checks"]["pacing"]["status"] == "fail"
     code, r = run(tmp_path, v, *SILENT, "--max-freeze-s", "3")
     assert code == 0, r["checks"]
+
+
+@needs_ffmpeg
+def test_frozen_after_a_few_arrival_frames_still_fails(tmp_path):
+    """Reviewer repro: three moving frames, then one frame held to the end (the CTA never
+    comes). pacing ignores the end-card window, so the opening hold must catch it."""
+    v = kinetic(tmp_path, "flicker", beats=[("One clear message.", 6.0)], gaps=[], rise_s=0.1)
+    code, r = run(tmp_path, v, *SILENT, "--max-freeze-s", "3")
+    assert code == 2
+    assert r["checks"]["hook"]["status"] == "fail", r["checks"]["hook"]
 
 
 # ---------------------------------------------------------------- real problems still fail
@@ -261,23 +273,81 @@ def test_audible_track_that_stops_early_fails(tmp_path):
 
 
 @needs_ffmpeg
+def test_audible_track_that_stops_inside_the_cta_fails(tmp_path):
+    """The CTA is a beat, not a silent end card: --endcard-s does not excuse the music stopping."""
+    code, r = run(tmp_path, kinetic(tmp_path, "tail", audio="tailcut"), *SILENT)
+    assert code == 2
+    assert r["checks"]["dead_air"]["status"] == "fail", r["checks"]["dead_air"]
+
+
+@needs_ffmpeg
+def test_short_silent_stub_track_counts_as_no_audio(tmp_path):
+    code, r = run(tmp_path, kinetic(tmp_path, "stub", audio="stub"), *SILENT)
+    assert code == 0, r["checks"]
+    assert r["checks"]["dead_air"]["data"]["audio"] == "silent"
+
+
+@needs_ffmpeg
+def test_early_stop_is_caught_in_webm_too(tmp_path):
+    """WebM has no per-stream duration; the decoded length is used instead."""
+    mp4 = kinetic(tmp_path, "wshort", audio="short")
+    webm = tmp_path / "wshort.webm"
+    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(mp4), "-c:v", "libvpx-vp9", "-deadline",
+                    "realtime", "-cpu-used", "8", "-b:v", "1M", "-c:a", "libopus", str(webm)], check=True)
+    code, r = run(tmp_path, webm, *SILENT)
+    assert r["checks"]["dead_air"]["status"] == "fail", r["checks"]["dead_air"]
+    assert "stops at 3.0s" in r["checks"]["dead_air"]["note"]
+
+
+@needs_ffmpeg
+def test_audio_muxed_with_a_delay_counts_as_a_late_start(tmp_path):
+    v = kinetic(tmp_path, "delay", audio="tone")
+    out = tmp_path / "delay2.mp4"
+    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(v), "-itsoffset", "2", "-i", str(v),
+                    "-map", "0:v", "-map", "1:a", "-c", "copy", "-t", "9.9", str(out)], check=True)
+    code, r = run(tmp_path, out, *SILENT)
+    assert code == 2
+    assert "no sound for the first 2.0s" in r["checks"]["hook"]["note"], r["checks"]["hook"]
+
+
+@needs_ffmpeg
 def test_audible_track_that_starts_late_fails_hook(tmp_path):
     code, r = run(tmp_path, kinetic(tmp_path, "late", audio="late"), *SILENT)
     assert code == 2
-    assert r["checks"]["hook"]["status"] == "fail" and "silent for the first" in r["checks"]["hook"]["note"]
+    assert r["checks"]["hook"]["status"] == "fail" and "no sound for the first" in r["checks"]["hook"]["note"]
 
 
 # ---------------------------------------------------------------- every other format is unchanged
 
+def spoken_video(tmp, name, gap=None):
+    """A spoken-style ad: a moving test pattern with a tone under it (optionally a silent gap)."""
+    out = Path(tmp) / f"{name}.mp4"
+    af = f"volume=enable='between(t,{gap[0]},{gap[1]})':volume=0" if gap else "anull"
+    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-f", "lavfi", "-i", "testsrc2=s=1080x1920:r=30:d=7",
+                    "-f", "lavfi", "-i", "sine=frequency=330:sample_rate=44100:duration=7", "-af", af,
+                    "-c:v", "libx264", "-preset", "ultrafast", "-pix_fmt", "yuv420p", "-c:a", "aac", str(out)],
+                   check=True)
+    return out
+
+
 @needs_ffmpeg
-def test_spoken_ad_result_is_unchanged_by_the_new_option(tmp_path):
-    acme = make_logo(tmp_path / "acme.png", "ACME", (20, 60, 200, 255), "circle")
-    for kwargs in ({}, {"gap": (1.5, 3.2)}, {"silent_lead": 1.8}):
-        v = make_video(tmp_path, make_endcard(tmp_path / "card.png", acme), **kwargs)
-        code_a, plain = run(tmp_path, v, "--logo", str(acme))
-        code_b, explicit = run(tmp_path, v, "--logo", str(acme), "--format-profile", "default")
-        assert code_a == code_b
-        assert plain["checks"] == explicit["checks"] and plain["format_profile"] == "default"
+def test_default_profile_never_runs_the_silent_text_code(tmp_path, monkeypatch):
+    """The default path is the old code path: the new probes are never called, and an explicit
+    --format-profile default gives the same result. (main's script vs this one, on the suite's
+    spoken fixtures, is compared in the PR body.)"""
+    def boom(*_a, **_k):
+        raise AssertionError("silent-text code ran in the default profile")
+    for gap in (None, (1.5, 3.2)):
+        v = spoken_video(tmp_path, "spoken", gap)
+        code_a, plain = run(tmp_path, v)
+        with monkeypatch.context() as m:
+            for name in ("blank_spans", "probe_audio", "check_hook_silent_text", "check_audio_silent_text",
+                         "check_blank_silent_text"):
+                m.setattr(rfa, name, boom)
+            code_b, explicit = run(tmp_path, v, "--format-profile", "default")
+        assert code_a == code_b and plain["checks"] == explicit["checks"]
+        assert plain["format_profile"] == "default"
+        assert plain["checks"]["dead_air"]["status"] == ("fail" if gap else "pass")
         assert not any(line.startswith(("text_beats:", "audio:")) for line in plain["judge_on_sheet"])
 
 
@@ -326,3 +396,6 @@ def test_blank_bounds_are_fixed_not_flags(tmp_path):
     for extra in (["--max-blank-s", "9"], ["--format-profile", "silent"]):
         with pytest.raises(SystemExit):
             rfa.main(["--video", str(video), "--json", str(tmp_path / "o.json"), *extra])
+    # The reading-hold allowance is capped at the longest text beat.
+    assert rfa.main(["--video", str(video), "--json", str(tmp_path / "o.json"),
+                     "--format-profile", "silent-text", "--max-freeze-s", "30"]) == 3

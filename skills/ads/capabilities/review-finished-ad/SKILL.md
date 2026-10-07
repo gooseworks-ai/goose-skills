@@ -61,19 +61,22 @@ re-run. Never publish blind.
 ### Silent-text profile
 
 For a format that is silent by design and made of text beats on a solid colour. The
-default profile wrongly fails it twice: "no audio track", and dark text frames or dark
-beats between text beats read as black frames. The profile replaces three checks, with
-fixed bounds and no option to widen them:
+default profile wrongly fails it: "no audio track", dark text frames or dark beats between
+text beats read as black frames, and a first beat held for reading reads as a still
+opening. The profile replaces three checks. The blank-beat bounds are fixed (no option
+widens them), and `--max-freeze-s` may not exceed 10s here (exit 3), the longest text beat:
 
 | Check | Default profile | `--format-profile silent-text` |
 |---|---|---|
-| `hook` | sound in the first 1.0s, and an opening that moves | no audio track needed; the first beat must arrive with motion (a still first frame held > 1.5s fails, the reading hold after an arrival is left to `pacing`); an audible track must start in the first 1.0s |
-| `dead_air` | silence > 1.0s mid-video fails | not applicable with no audio or an all-silent track. An audible track (a supplied music bed) fails if it drops out > 1.0s mid-video or stops before the picture ends, even with `--no-speech` |
+| `hook` | sound in the first 1.0s, and an opening that moves | no audio track needed. The first beat must arrive with motion (a still first frame held > 1.5s fails), and the opening may then hold no longer than a planned beat: max(1.5s, `--max-freeze-s`). An audible track must start in the first 1.0s, counting a track muxed with a delay |
+| `dead_air` | silence > 1.0s mid-video fails | not applicable with no audio or an inaudible track (peak below -45 dB). An audible track (a supplied music bed) fails if it drops out > 1.0s or stops > 1.0s before the picture ends, CTA included (`--endcard-s` excuses nothing here, the CTA is a beat), even with `--no-speech` |
 | `black_frames` | a dark stretch > 0.3s fails | judges **blank** frames (black, or one flat colour with no text): a blank beat between two text beats may last up to 1.0s; a blank opening or ending keeps the 0.3s limit; all blank beats together stay under 25% of the video; a fully blank video fails |
 
-`pacing` is unchanged, so a frozen picture still fails. A text beat held longer than
-2.5s needs `--max-freeze-s` set to the longest planned beat, in seconds (never more). Missing text fails as blank
-frames on any background colour. The sheet adds one eye check: every text beat is
+`pacing` is unchanged, so a frozen picture still fails. Set `--max-freeze-s` to the longest
+planned text beat in seconds when one holds longer than 2.5s, never more (CTA excluded, it is
+the `--endcard-s` window).
+Missing text fails as blank frames on any solid background colour; on a busy or gradient
+background, judge it on the sheet. The sheet adds one eye check: every text beat is
 complete, spelled as approved and readable. Speech checks (review-ugc-render) do not apply.
 
 `logo` is grayscale correlation with a fine size search, so the right logo scores

@@ -15,15 +15,17 @@ sheet for the checks that need eyes (font, product likeness, safe zones):
 
 --format-profile silent-text is for a declared silent, text-led format (kinetic text). It
 changes three checks and nothing else:
-  hook         no audio track is needed; the first beat must arrive with motion (a still
-               first frame fails; the reading hold after an arrival is left to pacing), and
-               audible audio, when present, must start within --hook-audio-s
-  dead_air     becomes an audio-integrity check: not applicable with no audio (or an all-silent
-               track); an audible track must not drop out mid-video or stop early
-  black_frames judges blank frames (black, or one flat colour with no text) instead of dark
-               pixels: a blank beat between two text beats may last up to 1.0s, the opening and
-               the ending keep the 0.3s bound, and all blank beats together stay under 25%
-Every other check, and every check in the default profile, is unchanged.
+  hook         no audio track is needed. The first beat must arrive with motion (a still first
+               frame held > 1.5s fails) and the opening may then hold no longer than a planned
+               beat (max(1.5, --max-freeze-s)). Audible audio must start within --hook-audio-s
+  dead_air     becomes an audio-integrity check: not applicable with no audio or an inaudible
+               track (peak below -45 dB); an audible track must not drop out or stop before the
+               picture ends (the CTA is a beat, not a silent end card)
+  black_frames judges blank frames (black, or one flat colour with no readable text) instead of
+               dark pixels: a blank beat between two text beats may last up to 1.0s, the opening
+               and the ending keep the 0.3s bound, and all blank beats together stay under 25%
+--max-freeze-s is capped at 10s (the longest text beat) in this profile. Every other check,
+and every check in the default profile, is unchanged.
 
 Exit codes: 0 PASS, 2 FAIL (a machine check failed), 3 ERROR (could not run).
 Needs ffmpeg/ffprobe on PATH and Python packages numpy + pillow.
@@ -72,11 +74,12 @@ BLANK_INTERIOR_MAX_S = 1.0   # one intentional blank beat between two text beats
 BLANK_EDGE_MAX_S = 0.3       # a blank opening or ending keeps the default black-frame bound
 BLANK_MAX_SHARE = 0.25       # all blank beats together, as a share of the video
 BLANK_FPS = 10               # blank-frame sampling rate
-BLANK_WORK_WIDTH = 270       # frames are area-averaged to this width (grain does not read as text)
+BLANK_WORK_WIDTH = 270       # frames are area-averaged to this width (light grain does not read as text)
 BLANK_PIXEL_DELTA = 48       # a pixel this far (max RGB channel) from the dominant colour is content
 BLANK_MIN_CONTENT_ROWS = 0.015  # a frame with text has content on >= 1.5% of its rows
-SILENT_TRACK_SLACK_S = 0.25  # an audio track this close to all-silent counts as silent
+SILENT_PEAK_DB = -45.0       # a track whose peak stays below this is inaudible (silencedetect's floor)
 OPENING_ARRIVAL_S = 0.1      # a still run starting this early means the opening never moved
+SILENT_TEXT_MAX_FREEZE_S = 10.0  # the longest text beat; --max-freeze-s may not exceed it here
 
 
 @dataclass
@@ -165,17 +168,40 @@ def spans(log: str, key: str, duration: float) -> list[tuple[float, float]]:
     return out
 
 
-def probe_audio_duration(video: str) -> float | None:
-    """Length of the first audio stream, or None when the container does not say."""
-    out = run(["ffprobe", "-v", "error", "-select_streams", "a:0", "-show_entries",
-               "stream=duration", "-of", "json", video])
+def probe_audio(video: str) -> dict:
+    """The first audio stream's peak level (dB, -inf for digital silence), where it starts
+    relative to the picture (s) and its length (s). The length is the stream's own duration,
+    or the decoded sample count when the container does not say (WebM/MKV), so an early stop
+    is caught in any container; the start catches a track muxed with a delay."""
+    info = run(["ffprobe", "-v", "error", "-show_entries",
+                "stream=codec_type,start_time,duration,sample_rate,channels", "-of", "json", video])
+    streams = json.loads(info.stdout).get("streams") or [] if info.returncode == 0 else []
+    stream = next((x for x in streams if x.get("codec_type") == "audio"), {})
+    picture = next((x for x in streams if x.get("codec_type") == "video"), {})
+
+    def start_of(x: dict) -> float:
+        try:
+            return float(x["start_time"])
+        except (KeyError, TypeError, ValueError):
+            return 0.0
+    out = run(["ffmpeg", "-hide_banner", "-nostats", "-i", video, "-map", "0:a:0",
+               "-af", "volumedetect", "-f", "null", "-"])
     if out.returncode != 0:
-        return None
+        raise RuntimeError(f"ffmpeg could not decode the audio: {out.stderr.strip()[-300:]}")
+    # volumedetect can report more than once (a probe pass first); the last report is the stream.
+    peaks = re.findall(rf"max_volume:\s*(-?inf|{NUM}) dB", out.stderr)
+    samples = re.findall(r"n_samples:\s*(\d+)", out.stderr)
+    length = None
     try:
-        streams = json.loads(out.stdout).get("streams") or []
-        return float(streams[0]["duration"]) if streams else None
+        length = float(stream["duration"])
     except (KeyError, TypeError, ValueError):
-        return None
+        try:
+            length = int(samples[-1]) / (int(stream["sample_rate"]) * int(stream["channels"]))
+        except (IndexError, KeyError, TypeError, ValueError, ZeroDivisionError):
+            length = None
+    peak_db = float("-inf") if not peaks or "inf" in peaks[-1] else float(peaks[-1])
+    return {"peak_db": peak_db, "length": length,
+            "start": max(0.0, start_of(stream) - start_of(picture)), "pts_start": start_of(stream)}
 
 
 def content_share(rgb: np.ndarray) -> float:
@@ -472,26 +498,32 @@ def check_black(blacks) -> Check:
     return Check(PASS, "no black frames")
 
 
-def audio_state(meta: dict, silences, audio_len: float | None) -> str:
-    """none (no audio stream), silent (a track that is silent throughout) or audible."""
-    if not meta["has_audio"]:
+def audio_state(meta: dict, audio: dict | None) -> str:
+    """none (no audio stream), silent (inaudible throughout: peak below -45 dB) or audible."""
+    if not meta["has_audio"] or audio is None:
         return "none"
-    length = audio_len if audio_len is not None else meta["duration"]
-    covered = sum(max(0.0, min(e, length) - max(s, 0.0)) for s, e in silences)
-    return "silent" if covered >= length - SILENT_TRACK_SLACK_S else "audible"
+    return "silent" if audio["peak_db"] < SILENT_PEAK_DB else "audible"
 
 
-def check_hook_silent_text(silences, freezes, hook_audio_s: float, audio: str) -> Check:
+def check_hook_silent_text(silences, freezes, hook_audio_s: float, audio: str, max_freeze_s: float,
+                           track: dict | None = None) -> Check:
     """A text-led opening is the first beat ARRIVING (punch, rise, typewriter), then a reading
-    hold. So the opening fails when the picture is already still at the first frames (nothing
-    arrives); the hold that follows an arrival is judged by `pacing` (--max-freeze-s)."""
+    hold. It fails when nothing arrives (the picture is still from the first frames for > 1.5s)
+    or when the opening then holds longer than a planned beat (max(1.5, --max-freeze-s)),
+    measured over the whole still run, end card included."""
     problems = []
-    lead = max((e for s, e in silences if s <= 0.3), default=0.0)
+    # Silence timestamps are the audio stream's own; a track muxed with a delay starts late too.
+    track_start, pts0 = (track or {}).get("start", 0.0), (track or {}).get("pts_start", 0.0)
+    lead = track_start + max((e - pts0 for s, e in silences if s - pts0 <= 0.3), default=0.0)
     if audio == "audible" and lead > hook_audio_s:
-        problems.append(f"the audio track is silent for the first {lead:.1f}s")
-    still = next((e - s for s, e in freezes if s < OPENING_ARRIVAL_S), 0.0)
-    if still > 1.5:
-        problems.append(f"opening frame is still for {still:.1f}s (nothing arrives)")
+        problems.append(f"no sound for the first {lead:.1f}s of the audio track")
+    first = next(((s, e) for s, e in freezes if s <= 0.3), None)
+    hold_limit = max(1.5, max_freeze_s)
+    if first and first[0] < OPENING_ARRIVAL_S and first[1] - first[0] > 1.5:
+        problems.append(f"opening frame is still for {first[1] - first[0]:.1f}s (nothing arrives)")
+    elif first and first[1] - first[0] > hold_limit:
+        problems.append(f"the opening holds still for {first[1] - first[0]:.1f}s, longer than a planned beat "
+                        f"({hold_limit:.1f}s; set --max-freeze-s to the longest beat)")
     data = {"lead_silence_s": lead, "audio": audio}
     if problems:
         return Check(FAIL, "; ".join(problems) + ": the opening must move, and any audio must start with it", data)
@@ -500,25 +532,33 @@ def check_hook_silent_text(silences, freezes, hook_audio_s: float, audio: str) -
     return Check(PASS, "silent-text: no audio needed, opening moves", data)
 
 
-def check_audio_silent_text(meta: dict, silences, audio: str, audio_len: float | None,
-                            max_silence_s: float, endcard_s: float) -> Check:
+def check_audio_silent_text(meta: dict, silences, audio: str, track: dict | None,
+                            max_silence_s: float) -> Check:
     """Silent-text formats need no audio, so there is no speech to judge. An audible track
-    (a supplied or approved music bed) must still play through: no drop-out, no early stop."""
+    (a supplied or approved music bed) must still play through to the end of the picture: the
+    CTA is a beat, not a silent end card, so --endcard-s does not excuse a drop-out here."""
     if audio == "none":
         return Check(NA, "silent-text: no audio track, none needed", {"audio": "none"})
     if audio == "silent":
-        return Check(NA, "silent-text: the audio track is silent throughout, the same as no audio",
+        return Check(NA, "silent-text: the audio track is inaudible throughout, the same as no audio",
                      {"audio": "silent"})
-    body_end = meta["duration"] - endcard_s
-    gaps = [(s, e) for s, e in silences if s > 0.3 and s < body_end and (min(e, body_end) - s) > max_silence_s]
+    body_end = meta["duration"]
+    track = track or {}
+    shift = track.get("start", 0.0) - track.get("pts_start", 0.0)  # audio pts -> picture time
+    timeline = [(s + shift, e + shift) for s, e in silences]
+    # The opening silence belongs to `hook`; any silence that starts after sound is a drop-out.
+    gaps = [(s, e) for s, e in timeline
+            if s > track.get("start", 0.0) + 0.05 and s < body_end and (min(e, body_end) - s) > max_silence_s]
+    end = track["start"] + track["length"] if track.get("length") is not None else None
     data = {"audio": "audible", "gaps": [[round(a, 2), round(b, 2)] for a, b in gaps],
-            "audio_duration_s": round(audio_len, 2) if audio_len is not None else None}
+            "audio_start_s": round(track.get("start", 0.0), 2),
+            "audio_end_s": round(end, 2) if end is not None else None}
     problems = []
     if gaps:
         s, e = gaps[0]
-        problems.append(f"the audio drops out {s:.1f}-{e:.1f}s")
-    if audio_len is not None and audio_len < body_end - max_silence_s:
-        problems.append(f"the audio stops at {audio_len:.1f}s, {meta['duration'] - audio_len:.1f}s before the picture ends")
+        problems.append(f"the audio drops out {s:.1f}-{min(e, body_end):.1f}s")
+    if end is not None and end < body_end - max_silence_s:
+        problems.append(f"the audio stops at {end:.1f}s, {body_end - end:.1f}s before the picture ends")
     if problems:
         return Check(FAIL, "; ".join(problems) + ": the audio track is broken. Fix the mix, or leave the "
                            "ad silent if no audio was asked for", data)
@@ -543,12 +583,12 @@ def check_blank_silent_text(blanks, n_samples: int, blacks, fps: int = BLANK_FPS
             "limits": {"between_beats_s": BLANK_INTERIOR_MAX_S, "opening_or_ending_s": BLANK_EDGE_MAX_S,
                        "share": BLANK_MAX_SHARE}}
     if n_samples and round(total * fps) >= n_samples:
-        return Check(FAIL, "the whole video is blank (black or one flat colour, no text)", data)
+        return Check(FAIL, "the whole video is blank (black or one flat colour, no readable text)", data)
     if picture > 0 and total > BLANK_MAX_SHARE * picture:
         problems.append(f"blank for {total:.1f}s of {picture:.1f}s (limit {BLANK_MAX_SHARE:.0%})")
     if problems:
-        return Check(FAIL, "; ".join(problems) + ": missing text or a dead stretch; shorten the blank "
-                           "beat or put the text back", data)
+        return Check(FAIL, "; ".join(problems) + ": missing or unreadably faint text, or a dead stretch; "
+                           "shorten the blank beat or put the text back", data)
     if blanks:
         return Check(PASS, f"silent-text: {len(blanks)} short blank beat(s), {total:.1f}s in all", data)
     return Check(PASS, "silent-text: no blank frames", data)
@@ -715,12 +755,12 @@ def review(args: argparse.Namespace) -> dict:
     if silent_text:
         # Declared silent, text-led format: replaces three checks in place (same keys, same
         # order). --no-speech is implied and does not switch off the audio-integrity check.
-        audio_len = probe_audio_duration(args.video) if meta["has_audio"] else None
-        audio = audio_state(meta, silences, audio_len)
+        track = probe_audio(args.video) if meta["has_audio"] else None
+        audio = audio_state(meta, track)
         blanks, n_samples = blank_spans(args.video, meta)
-        checks["hook"] = check_hook_silent_text(silences, freezes, args.hook_audio_s, audio)
-        checks["dead_air"] = check_audio_silent_text(meta, silences, audio, audio_len,
-                                                     args.max_silence_s, args.endcard_s)
+        checks["hook"] = check_hook_silent_text(silences, freezes, args.hook_audio_s, audio, args.max_freeze_s,
+                                                track)
+        checks["dead_air"] = check_audio_silent_text(meta, silences, audio, track, args.max_silence_s)
         checks["black_frames"] = check_blank_silent_text(blanks, n_samples, blacks)
     elif args.speech is False:
         checks["dead_air"] = Check(NA, "--no-speech: music-only format")
@@ -793,6 +833,10 @@ def main(argv: list[str] | None = None) -> int:
 
     if not Path(args.video).exists():
         print(f"ERROR: video not found: {args.video}", file=sys.stderr)
+        return 3
+    if args.format_profile == SILENT_TEXT and args.max_freeze_s > SILENT_TEXT_MAX_FREEZE_S:
+        print(f"ERROR: --max-freeze-s {args.max_freeze_s:g} is longer than a text beat can hold "
+              f"({SILENT_TEXT_MAX_FREEZE_S:g}s) in the silent-text profile", file=sys.stderr)
         return 3
     try:
         result = review(args)
