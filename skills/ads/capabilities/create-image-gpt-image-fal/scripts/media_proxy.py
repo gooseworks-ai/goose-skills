@@ -109,6 +109,8 @@ def relay_mode():
         return False
     if os.environ.get("GW_MEDIA_PROXY_TOKEN"):
         return False
+    if os.environ.get("GW_EXPECTED_API_ORIGIN"):
+        return True  # Connected origin is authoritative; do not inspect CLI credentials.
     return not pathlib.Path(os.path.expanduser(_CREDS_PATH)).exists()
 
 
@@ -126,6 +128,12 @@ def _relay(kind, tool, args, then, extra=None):
     req, res = d / f"{kind}-{key}.json", d / f"{kind}-{key}.result.json"
     if res.exists():
         return json.loads(res.read_text())
+    if isinstance(args.get("body"), dict) and len(json.dumps(args["body"])) > 8000:
+        body_file = d / f"{kind}-{key}.body.json"
+        body_file.write_text(json.dumps(args["body"], ensure_ascii=False))
+        extra = dict(extra or {}, body_file=str(body_file), body_file_mime="application/json",
+                     compact_call={"tool": tool, "args": {k: v for k, v in args.items() if k != "body"},
+                                   "add": {"body_asset_id": "<confirmed JSON upload media.id>"}})
     req.write_text(json.dumps({"tool": tool, "args": args, **(extra or {}), "then": then,
                                "save_result_to": str(res)}, indent=1, ensure_ascii=False))
     print("\n[mcp-relay] %s needs an MCP tool call (no GooseWorks credentials on this machine):\n"
@@ -192,7 +200,7 @@ def gw_log(message, event_type="info", level="info", *, skill=None, provider=Non
     event_type: info | step | generation | api_failure | error | blocker |
                 missing_input | confusion
     """
-    if os.environ.get("GW_CLI_LOG_DISABLED"):
+    if os.environ.get("GW_CLI_LOG_DISABLED") or relay_mode():
         return
     try:
         api_base, tok, agent = _cfg()

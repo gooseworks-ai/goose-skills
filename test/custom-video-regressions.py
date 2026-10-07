@@ -46,6 +46,26 @@ class CustomVideoRegressions(unittest.TestCase):
         with patch.dict(os.environ, {'GW_MEDIA_VIA': 'mcp'}, clear=True), patch.object(Path, 'exists', side_effect=AssertionError('credentials inspected')):
             self.assertTrue(proxy.relay_mode())
 
+    def test_connected_origin_uses_relay_without_credentials(self):
+        proxy = load('connected_proxy', ROOT/'media-proxy/scripts/media_proxy.py')
+        with patch.dict(os.environ, {'GW_EXPECTED_API_ORIGIN': 'https://api.staging.gooseworks.ai'}, clear=True), patch.object(Path, 'exists', side_effect=AssertionError('credentials inspected')):
+            self.assertTrue(proxy.relay_mode())
+
+    def test_large_relay_preserves_exact_prompt_in_body_file(self):
+        proxy = load('large_proxy', ROOT/'media-proxy/scripts/media_proxy.py')
+        with tempfile.TemporaryDirectory() as tmp, patch.dict(os.environ, {'GW_PROJECT_ID': 'project', 'GW_RELAY_DIR': tmp}, clear=True):
+            body = {'prompt': 'exact original dialogue ' * 1000, 'model': 'test'}
+            with self.assertRaises(SystemExit) as exited:
+                proxy._relay('fal', 'data_post_provider', {'provider': 'fal', 'path': 'model/path', 'body': body}, 'save result')
+            self.assertEqual(exited.exception.code, 3)
+            request = next(Path(tmp).glob('fal-*.json'))
+            if '.body.' in request.name:
+                request = next(p for p in Path(tmp).glob('fal-*.json') if '.body.' not in p.name)
+            record = json.loads(request.read_text())
+            self.assertEqual(json.loads(Path(record['body_file']).read_text()), body)
+            self.assertNotIn('body', record['compact_call']['args'])
+            self.assertEqual(record['compact_call']['args']['project_id'], 'project')
+
     def test_screen_framing_preserves_full_width(self):
         sys.path.insert(0, str(ROOT/'footage-cutlist/scripts'))
         filmed = load('filmed', ROOT/'footage-cutlist/scripts/filmed.py')
