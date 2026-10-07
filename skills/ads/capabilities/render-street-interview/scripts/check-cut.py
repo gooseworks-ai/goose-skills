@@ -38,8 +38,8 @@ See TAKES.md.
                        turned out to be.
   H. LOUDNESS          -14 LUFS +/- 0.7, true peak under -1.5 dBTP, measured on the render.
   I. SPEECH            every scripted line actually audible, checked with Whisper. The only
-                       valid answer to "is this line in the video" on a stack where nobody has
-                       ever heard it.
+                       measured answer to "is this line in the video"; it does not replace a
+                       full listen to the finished file.
   R. REALISM PROXY     detail and black point on the RENDER against real street footage. Two
                        numbers, not a verdict: they catch a frame that is sharper or more
                        crushed than any real reference. See NOT ASSESSED below for what they
@@ -60,8 +60,8 @@ been mistaken for "this is good" before:
   * whether a viewer can follow the video. Every metric in an earlier scorecard passed while the
     cut was incomprehensible, because the can was not shown until 19s in. D checks that the can
     is in the opening and the payoff shot; a human still has to watch it (`/watch`).
-  * how it SOUNDS. Nobody on this stack has ever listened to one of these cuts. G, H and I are
-    measurements, not listening.
+  * how it SOUNDS. G, H and I are measurements, not listening. Record whether the finished
+    file was actually listened to; a machine cannot infer that from these measurements.
   * whether the pace reads right. Shot lengths are measured by `measure-pace.py`, not here.
 
 Before believing a FAILURE, run --falsify. Five detectors written for this format were
@@ -316,6 +316,8 @@ def main(argv=None):
                     help="brand slug in brands/ (default liquid-death). Supplies the scripted "
                          "lines check I listens for and the take/render names.")
     ap.add_argument("--look", default="subway", help="which of the five treatments to gate")
+    ap.add_argument("--edit-map", type=Path, help="single-take recut .plan.json used by build_looks.py")
+    ap.add_argument("--word-times", type=Path, help="the same measured source-word file used for the recut captions")
     ap.add_argument("--take", default=None,
                     help="the generation this render came from; its .json manifest carries the "
                          "prompt and seed the D and C checks need")
@@ -336,7 +338,11 @@ def main(argv=None):
                     help="exit 0 even when a check could not run. The holes are printed either "
                          "way. Only for a deliberately partial check, never for a ship decision.")
     A = ap.parse_args(argv)
-    L = build_looks.resolve(A.run, A.brand)
+    if A.episode and A.edit_map:
+        ap.error("--episode and --edit-map select different finishing paths")
+    if A.word_times and not A.edit_map:
+        ap.error("--word-times requires --edit-map")
+    L = build_looks.resolve(A.run, A.brand, A.edit_map, A.word_times)
     cfg = build_looks.CFG
 
     # An EPISODE replaces three of this gate's inputs -- the render, the control and the list of
@@ -359,12 +365,12 @@ def main(argv=None):
         A.control = A.control or ep["control"]
 
     render = (Path(A.render) if A.render
-              else L["looks"] / f"street-{cfg['slug']}-{A.look}.mp4")
+              else build_looks.output_path(A.look))
     control = Path(A.control) if A.control else build_looks.control_path(A.look)
     # --take, added because --render alone left the gate with no manifest to read, so every
     # prompt clause reported as "missing" when the real problem was that it had no prompt at
     # all. build.py gates a file it just produced, which is not one of the stored looks.
-    take = Path(A.take) if getattr(A, "take", None) else build_looks.SRC
+    take = Path(A.take) if getattr(A, "take", None) else build_looks.BASE_TAKE
     takes = ep_takes or [take]
     need = [(render, "render", "build_looks.py"),
             (control, "caption-free control", "build_looks.py, which writes it")]
@@ -520,7 +526,7 @@ def main(argv=None):
         # run with the grammars THIS payload recorded. Linting a --pace/--guards prompt with the
         # flags off passes while the clauses those grammars paid for go unchecked, which is
         # exactly how PACE_BLOCK was deleted at seed 4812 and nothing noticed for four seeds.
-        for problem in format_spec.lint(pr, pace=bool(pl.get("pace_grammar")),
+        for problem in format_spec.lint(pr, mode=pl.get("mode", "product-guess"), pace=bool(pl.get("pace_grammar")),
                                         guards=bool(pl.get("guard_grammar")),
                                         mic=bool(pl.get("mic_grammar")),
                                         plain=bool(pl.get("plain_grammar")),
@@ -550,6 +556,8 @@ def main(argv=None):
         if not shots:
             fails.append(f"D {tag}the prompt has no numbered shot list, so the model has nothing "
                          f"to cut on and the product-in-the-opening check cannot run")
+        elif pl.get("mode") == "conversation":
+            notes.append(f"D {tag}mic-only conversation: {len(shots)} ordered shots; no product binding")
         elif not noun:
             fails.append(f"D {tag}cannot tell what the product is: the manifest records no "
                          f"`product_noun` and the no-opening clause is missing, so the "
@@ -672,13 +680,20 @@ def main(argv=None):
                      f"clamp and this check cannot say anything. A render with captions in it "
                      f"and no schedule beside it is unverifiable.")
     elif not ep:
-        src_cuts = [c for c in cuts(take) if 0.4 < c < tdur]
-        notes.append("E  take's internal cuts at " + ", ".join(f"{c:.2f}" for c in src_cuts))
+        timeline_source = build_looks.SRC if A.edit_map else take
+        timeline_duration = duration(timeline_source) if A.edit_map else tdur
+        src_cuts = [c for c in cuts(timeline_source) if 0.4 < c < timeline_duration]
+        notes.append("E  picture's internal cuts at " + ", ".join(f"{c:.2f}" for c in src_cuts))
         if not build_looks.CUTS:
             fails.append(f"E {cfg['brand']} has no measured brand_layer.cuts. Without them every "
                          f"caption is clamped to its own end time, i.e. not clamped.")
-        if len(src_cuts) != len(build_looks.CUTS) or any(
-                abs(x - y) > 0.15 for x, y in zip(sorted(src_cuts), sorted(build_looks.CUTS))):
+        # An edit join can be a conservative caption boundary without a scene-detector
+        # jump (e.g. the same face twice). Every measured picture cut must still be mapped.
+        unmatched = any(not any(abs(c - mapped) <= 0.15 for mapped in build_looks.CUTS)
+                        for c in src_cuts) if A.edit_map else (
+            len(src_cuts) != len(build_looks.CUTS) or any(
+                abs(x - y) > 0.15 for x, y in zip(sorted(src_cuts), sorted(build_looks.CUTS))))
+        if unmatched:
             fails.append(f"E the take's cuts {[round(c, 2) for c in src_cuts]} are not the ones "
                          f"the build clamps to, {build_looks.CUTS}. Re-measure and update "
                          f"brand_layer.cuts in {cfg['_path']}; a caption clamped to the wrong cut "
@@ -804,9 +819,9 @@ def main(argv=None):
                                  "vacuously on that third of the episode.")
                     continue
                 c2 = brandkit.load(bc)
-                expected += [c2["question"]] + brandkit.spoken_lines(c2)
+                expected += brandkit.expected_lines(c2)
         else:
-            expected = [cfg["question"]] + brandkit.spoken_lines(cfg)
+            expected = brandkit.expected_lines(cfg)
         # A NEAR MISS IS A LINE THAT WAS SAID. This was an exact substring test, and on episode
         # 3 it failed "cider maybe" because Whisper transcribed the spoken line as "sider
         # maybe": one letter, on a word the model said correctly. The question this check asks
@@ -817,6 +832,12 @@ def main(argv=None):
         # not satisfy it and loose enough that a transcription slip does not fail it.
         # FALSIFIED by falsify-all.py, which mutes a scripted line and asserts I still fires.
         import difflib
+        # Whisper writes spoken numbers as digits. "It has to be at least 30 grams" failed this
+        # check on Olipop episode 1 (0.79 against a scripted "thirty") with the line clearly said.
+        # Spell 0-99 out first, the same fix build_episode._norm carries for captions.
+        import re as _re
+        import build_episode as _be_num
+        txt = _re.sub(r"(?<![0-9])([0-9]{1,2})(?![0-9])", lambda m: _be_num._number_words(int(m.group(1))), txt)
         heard_n = _norm(txt)
         # Lines the EDIT deliberately removed are not expected to be audible. They are named
         # in the sidecar by build_episode, which is the only place that knows what the plan
@@ -845,8 +866,8 @@ def main(argv=None):
         # "is this line in the video", so its absence is a hole in the gate, not a formality,
         # and the run is not clean without it.
         skip("I", "whisper is not installed, so no scripted line was confirmed audible. "
-                  "`pip install openai-whisper`. Nobody on this stack has ever HEARD one of "
-                  "these cuts; an unchecked I is the largest hole this gate has.")
+                  "`pip install openai-whisper`. An unchecked I cannot confirm dialogue; "
+                  "the finished file still needs a full listen.")
     except Exception as e:                                      # noqa: BLE001
         fails.append(f"I whisper failed on {Path(render).name}: {type(e).__name__}: {e}. The "
                      f"speech check did not run and a transcription error is not a clearance.")
@@ -899,8 +920,8 @@ NOT_ASSESSED = (
     "    GRADE (detail, black point) and says nothing about a face.",
     "  * whether a viewer can follow the video. D only checks that the product is named in the",
     "    opening and the payoff shot of the PROMPT.",
-    "  * how it sounds. G, H and I are measurements; nobody on this stack has listened to one",
-    "    of these cuts.",
+    "  * how it sounds. G, H and I are measurements. Record whether this finished cut was",
+    "    actually listened to and report any listening limit honestly.",
     "  * whether the pace reads right. Shot lengths are measured by measure-pace.py.",
     "  * for a MULTI-TAKE episode, whether the takes actually rendered the same corner. C",
     "    compares the location CLAUSE in the three payloads, which is a string, not a street.",
@@ -973,13 +994,19 @@ def falsify(render, control, L, ep=None, ep_takes=()):
         # not actually violate the rule proves nothing -- so the shifted boundary is asserted
         # to be further from every cut than the tolerance before the check is asked about it.
 
-        n_falsify += 1
         print("\nfalsifying S (mid-shot splice) by moving one boundary off its cut")
-        if not ep or not ep.get("plan"):
-            print("  S SKIPPED: not an episode, or no plan recorded. S cannot be falsified "
-                  "here and is therefore unproven on this run.")
+        if not ep:
+            # The gate runs S only on assembled episodes (see `if ep:` in the main gate). A
+            # single take, including a mapped recut, has no episode plan to splice, so S is
+            # not part of its gate and is not counted here.
+            print("  S not applicable: single take. The gate runs S only on episodes.")
+        elif not ep.get("plan"):
+            n_falsify += 1
+            print("  S SKIPPED: the episode recorded no plan. S cannot be falsified here and "
+                  "is therefore unproven on this run.")
             bad += 1
         else:
+            n_falsify += 1
             import build_episode as _be
             tol = float(ep.get("splice_tol", 0.12))
             tp = ep_takes[0]

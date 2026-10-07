@@ -1,15 +1,69 @@
 ---
 name: render-street-interview
-description: Build a vox-pop street interview video ad. An interviewer with a handheld mic asks passers-by one question about the brand's product, they give blunt wrong guesses, one gives the real answer, and the cut lands on a branded end card. Generates the takes through the GooseWorks fal proxy (Seedance 2.0 with native voice), then grades, re-cuts, captions and gates them locally. Use for the street-interview format.
+description: Write a street-interview ad from a complete inspected commercial interaction and current brand facts. Render product guessing, or prepare mic-only, prepared-sample or visible-task conversation script/prompt previews. Premise, actions and ad connection vary; capture rules stay fixed. Conversation media delivery is unverified.
 status: draft
+version: 2
+updated: 2026-10-06
 ---
 
-# render-street-interview
+# Human version
 
-The renderer for the **street-interview** video ad format (goose-studio recipe
-`one-shot-videos/create-street-interview-video`). A handheld interviewer stops people on one
-street corner and asks one question. A few guess wrong, one gets it right, and the cut ends on the
-brand's own line. The people are generated; everything after the takes is free and local.
+## render-street-interview
+
+**Summary.** This is the renderer for the **street-interview** ad format (goose-studio
+recipe `one-shot-videos/create-street-interview-video`). Product guessing retains its
+visible object and reveal. Conversation supports mic-only, prepared-sample and visible-task
+**script/prompt previews**. Choose a coherent situation and earned ad connection before
+writing words. People are generated; conversation media delivery remains unverified.
+
+---
+
+# Agent version
+
+## Script first: choose the execution
+
+Read [street-script-writing](references/street-script-writing.md) before adapting a brand.
+The recipe fixes camera, audio, native timing and finishing rules. Its story choices govern
+premise, participant role, participation reason, visible task, actions, edited opening,
+hook, supported brand explanation and payoff. Do not force a correct-answer winner into a
+service conversation or reduce every brand to a routine problem followed by a logo card.
+
+| Interaction | Current support | Person image reference | Max participants |
+| --- | --- | --- | --- |
+| `product-guess` | Existing object renderer; standalone product reference required | forbidden | 4 |
+| `mic-only` | Conversation preview; service explanation without a product or device | forbidden | 1 |
+| `product-sample` | Conversation preview; prepared sample in a plain cup, no exact package reference | forbidden | 1 |
+| `concept-challenge` | Conversation preview; described visible task using non-UI props | forbidden | 1 |
+
+Use [[composes::write-video-ad-script]] with the scoped angle bank, current facts and
+selected complete commercial street interactions. `scripts/prepare_script_context.py`
+requires a brief with `offering_type=physical|service|digital` and
+`interaction_type=product-guess|mic-only|product-sample|concept-challenge`. Inspect the full
+visual timeline and spoken exchange: setup, participation reason, hook, product role and
+payoff. Record unseen recruitment or setup as unknown; inference is not observation.
+Seed snippets are leads. Radio and editorial exchanges cannot fill a street-ad gap.
+Keep private observations project-scoped and transfer mechanics, not source-brand claims.
+
+Pass `participants` too: the number of people interviewed on screen, not counting the
+interviewer (default 4 for product-guess, 1 for conversation). Its `route` output is binding
+for any project built on this format, including custom ones. `unsupported-route` means stop
+and offer the listed alternatives; it is not permission to go custom. `custom` is one of those
+alternatives only when the customer picks it, and a custom video still keeps every `route`
+constraint: people in text, no person image references, one take, deep focus, local lettering.
+
+Save a situation brief before dialogue. Write the user's requested count, then map words
+and actions to ordered shots. An edited participant answer or silent action/reaction may
+open the ad. `cfg.question` mirrors the first actual interviewer question, spoken once.
+Keep both spoken voices and 3–8 shots in 6–15 seconds, at no more than 2.5 spoken words/s;
+leave time for actions. New configs describe `interaction.type`, `visible_setup`,
+`participant_reason` and optional `props`; missing interaction defaults to mic-only.
+No forced greeting/consent speech, invented use history or instant product efficacy.
+
+`conversation` currently runs config validation and prompt previews. `single_gen.py --yes`
+refuses that mode until a rendered pilot is validated. Natural speech, audio and camera
+performance remain unverified. The existing product-guess render path is preserved.
+All conversation subtypes refuse product/scene reference bindings and phone, screen or UI
+demonstrations. Dry-run success is not a performed sample, challenge or finished video.
 
 Read the bundled [model notes](references/model-behaviors.md) before generation.
 If a required guide cannot be fetched or opened, stop before spending and name it.
@@ -20,6 +74,9 @@ Use the [project take-ledger guidance](TAKES.md) before reusing a seed. Keep eac
 brand's observed successes and limitations in its own project; a seed is not a quality guarantee.
 
 ## Run
+
+The paid generation and finishing commands below are for `product-guess`. Conversation
+supports `brandkit.py` validation and `single_gen.py` dry runs only.
 
 Run everything from the project the video belongs to. Brand-asset paths in the configs
 (logo, product photo, end-card sting) resolve against that folder, or `$STREET_INTERVIEW_ROOT`.
@@ -34,7 +91,7 @@ python scripts/build_episode.py --episode <name>              # free: grade, re-
 python scripts/check-cut.py --episode <render>.episode.json   # free: the ship gate
 ```
 
-- **A brand is data:** `brands/<slug>.json` holds the product and its reference photo, the
+- **Product-guess brand data:** `brands/<slug>.json` holds the product and its reference photo, the
   street, the question, the cast and their lines, props, captions, logo and end card. Copy
   `brands/demo-tallgrass-oat.json`. No brand appears in `format_spec.py`.
 - **An episode** (`episodes/<name>.json`) joins three takes into a ~25-30 s cut. It names the takes,
@@ -43,6 +100,11 @@ python scripts/check-cut.py --episode <render>.episode.json   # free: the ship g
 - Paid calls go **through the GooseWorks proxy** (`scripts/media_proxy.py`), never a local key.
   On a poll timeout, resume with `media_proxy.resume_fal(request_id)`. Never resubmit, since a
   dropped poll has already been billed.
+- A provider **policy rejection** (likeness of a real person, content policy) makes
+  `single_gen.py --yes` exit **3**: surface the reason, do not retry. The take's input digest
+  covers every input by content (prompt, settings, seed, and the sha256 of the product image
+  and the scene reference), so the unchanged request is refused before anything is uploaded,
+  and a changed image, prompt or seed is sent as a new request.
 
 ## Prompt length
 
@@ -63,9 +125,12 @@ Review actual video adherence through the normal gate and full watch/listen pass
 
 - The prompt carries every format clause; `single_gen.py` lints it before any spend, and
   `check-cut.py` imports the same clause list, so a clause cannot be dropped silently.
-- **Captions are derived, never authored:** timing comes from Whisper on the finished render,
-  spelling from the script. A scripted word Whisper skips or mishears inside a sentence is
-  restored. Lines whose shots were dropped leave the caption script.
+- **Captions follow the edited picture.** An episode derives word timing from its finished
+  assembly. A single-take recut measures words on the original take, aligns spelling to the
+  approved script and moves only kept whole words through the same source-span map as the video
+  and shot boundaries. Dropped speech is not captioned; moved or repeated spans move or repeat
+  their captions. A boundary through a word stops finishing: widen the kept span and rebuild.
+  Never reuse raw-take caption timestamps on an edited video.
 - The gate measures the finished file: shot lengths, splices on real cuts, caption timing and
   safe zone, ambience floor per shot, loudness and true peak, every scripted line audible, and
   detail and black point. It prints what it can NOT assess (faces, comprehension, how it sounds)
@@ -73,25 +138,86 @@ Review actual video adherence through the normal gate and full watch/listen pass
 
 ## Cost
 
-A take is about **$3.64** (12 s at 720p, $0.3034/s); a 30 s episode is three takes, about
+A product-guess take is about **$3.64** (12 s at 720p, $0.3034/s); a 30 s episode is three takes, about
 **$10.92**. Grading, re-cut, captions, looks and every gate are free. Staging prices move, so
 price the first call of a run and quote from that.
+Conversation prompt previews send no media call; no conversation media price is verified.
 
 ## Local finishing
 
 The local finishing scripts use the current Python interpreter and carry `--run` into child commands. The default grade (`--strength 0`) needs no colour-reference file. A positive strength requires the real reference.
 
-Set approved colours in `brand_layer.palette`: `accent`, `text`, and `background`, each `#RRGGBB` or three RGB integers. Optional `brand_layer.fonts` keys are `black`, `bold`, and `regular` (paths relative to the project). Without overrides, fonts resolve on macOS, Windows or Linux. End-card rows shrink together to fit the safe area; shorten copy if it cannot fit.
+Set approved colours in `brand_layer.palette`: `accent`, `text`, and `background`, each `#RRGGBB` or three RGB integers. Optional `brand_layer.fonts` keys are `black`, `bold`, and `regular` (paths relative to the project). Without overrides, fonts resolve on macOS, Windows or Linux. End-card rows keep the approved 86px spacing and 66px type. Shrink only an individual line whose visible text cannot fit the safe area; shorten copy if that line still cannot fit. Transparent text-image padding does not set the line spacing.
 
 The `subway` series bar stays visible through caption gaps. It is also in the caption-free control so the gate measures captions separately from persistent branding.
 
-For a **new** prompt, `generation.prompt_version: 2` (or `--prompt-version 2`) repairs duplicate articles and uses a top-edge rule for non-can packaging. The manifest records the version for the gate. Historical prompts default to version 1 and retain their hashes. Use a new approved seed for a new prompt; do not overwrite an approved take.
+For a **new** prompt, use `generation.prompt_version: 3` (or `--prompt-version 3`). It keeps version 2's repairs (no duplicate articles, a top-edge rule for non-can packaging) and keeps the street in focus behind the people: never blurred and never bokeh (see REFERENCE #8). Version 3 is draft until a 720p take measures inside the real-footage detail band; its paid validation take needs its own approval. The bundled demo config stays on version 2 until then. The manifest records the version for the gate. Historical prompts default to version 1, and versions 1 and 2 retain their hashes. Use a new approved seed for a new prompt; do not overwrite an approved take.
+
+### Single-take recuts
+
+Check local finishing prerequisites **before buying a take**: ffmpeg/ffprobe, PIL, NumPy,
+fonts, and local Whisper with its `base` model available. The existing episode transcription
+helper can download an absent Whisper model; prepare it separately before spend. This fix does
+not call another video or voice model. A reused take may supply previously measured original
+word times instead of transcribing again.
+
+Keep the original take and generation manifest. Measure its internal cuts, caption source spans
+and a genuinely speech-free ambience window in `brand_layer`; these remain **source seconds**.
+Remove dead air locally, then add the approved brand layer and end card:
+
+```bash
+python scripts/recut.py <original-take.mp4> <run>/working/interview-recut.mp4 --brand <slug>
+python scripts/build_looks.py --brand <slug> --run <run> --looks <look> \
+  --edit-map <run>/working/interview-recut.plan.json
+python scripts/check-cut.py --brand <slug> --run <run> --look <look> \
+  --edit-map <run>/working/interview-recut.plan.json --take <original-take.mp4> --falsify
+# Repeat the same gate without --falsify, then watch and listen to the entire finished file.
+```
+
+`recut.py` emits the source-span `.plan.json` beside its edited output. `build_looks.py` consumes
+that file, measures source words with the existing free local Whisper helper and saves
+`interview-recut.plan.words.json`. To reuse saved timing, pass `--word-times <file>` to finishing
+and the gate. Its JSON names the original `source` and contains ordered `[start, end, word]`
+rows. It must come from actual source audio, not estimates from the script. Missing transcription
+or incompatible timing stops finishing; there is no fallback to the original caption schedule.
+
+Recut masters and caption-free controls have separate `-recut-` names. The original takes,
+controls and episode outputs stay intact. Ambience is extracted from the measured quiet window
+of the **original** source even if that window was dropped; only that WAV is looped. If the recut
+already applied its continuous bed, finishing does not mix it a second time. The end card always
+uses original room tone. The same mapped cuts clamp captions with a half-open end boundary so
+one person's last words do not appear on the next shot's first frame.
+
+`build.py` remains an intermediate grade-and-recut helper. To finish its already graded output,
+use its printed map with `build_looks.py --pregraded`; do not grade it twice. A changed spoken
+line, story, paid retry or generation count still needs its existing review and approval. Run the
+normal finished-file gate and full watch/listen review; a synthetic timing test does not approve
+faces or the original customer's ad.
 
 Free regression checks:
 
 ```bash
 python -m unittest discover -s tests -p 'test_*.py' -v
 ```
+
+## Opt-in hold and handover settings
+
+Six `generation` keys on the brand config, all off by default, so every recorded prompt and its
+hash are unchanged. They were paid for on Olipop and Graza (REFERENCE.md items 37-42); start a new
+brand from `brands/olipop-ep3-a.json` (a can) or `brands/graza-ep1-a2.json` (a bottle).
+
+| key | what it does |
+|---|---|
+| `handover_grammar` | every person's first shot opens on the interviewer passing the product |
+| `natural_grammar` | the product is held like a drink someone was just handed, not presented |
+| `real_grammar` | chest-height relaxed hold, one consistent interviewer, nothing printed carried |
+| `level_camera` | removes the glance down from speaking shots, which is what tips the product |
+| `no_signage` | no shops, signs or lettering behind the cast (names park-corner landmarks) |
+| `can_sealed_grammar` | existing flag; holds with the keys above, so the can stays closed |
+
+Episode files take `extra_head_s` (seconds of run-up kept at the head of each take, so the
+handover is not trimmed as silence) and `brand_layer.caption_centre_y`. Transcribe every take with
+word timestamps before assembly: a fast take can repeat, slur or invent a line.
 
 ## Known limits
 

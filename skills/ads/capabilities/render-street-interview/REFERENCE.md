@@ -20,6 +20,37 @@ Private Studio/project paths, missing `references/REFERENCES.md`, original foota
 
 # create-street-interview-video
 
+**Current scope (2026-10-03).** This ledger preserves the paid product-guess findings below.
+Its product prompt instructions and regression baseline remain unchanged. The separate
+conversation path supports mic-only, prepared-sample and visible-task script/prompt previews;
+all variants still refuse paid generation and reference-image bindings.
+
+## Conversation preview authoring update
+
+Read [street-script-writing](references/street-script-writing.md) for the current authoring
+contract. Require a complete inspected **commercial street interaction**: full visual
+timeline, complete spoken exchange, visible setup, participation reason, opening/hook,
+product role and payoff. Seed snippets are leads; radio/editorial exchanges cannot fill
+this gap. Record unseen recruitment or setup as unknown and label inferred explanations.
+
+Write a coherent situation brief before dialogue, with an earned connection to a supported
+product fact. Fixed camera/audio/native timing rules do not fix the premise, participant
+role, visible task, hook, explanation, actions or payoff. A generic problem plus logo card
+is insufficient. Do not add greeting/consent speech to an edited ad by default, invented
+customer history, filler, arbitrary gimmicks or instant product efficacy.
+
+Conversation previews can open with a participant answer or silent action/reaction.
+`cfg.question` exactly mirrors the first actual interviewer question, performed once;
+both people speak. Use 3–8 ordered shots, including silent action when needed, in 6–15s,
+with at most 2.5 spoken words/s and space for actions. New `interaction` data records type,
+visible setup, participation reason and optional props. Legacy configs remain mic-only.
+
+Product-sample is an already prepared sample in a plain cup, with no exact package
+reference. Mic-only may explain a service without a device. Concept-challenge uses only
+described non-UI props. No conversation subtype supports phone, screen or UI demonstration,
+product/scene-reference binding or validated media delivery. The legacy product-guess
+rules below continue to apply only to that production branch.
+
 ## Purpose
 
 The vox pop, as a repeatable recipe. Someone asks strangers a question about a product, they
@@ -83,6 +114,13 @@ rejected for, reproduced inside a single take.
 ### 8. Deep focus. "Cinematic shallow depth of field" is the AI tell here.
 Real phone footage keeps the street sharp behind the subject. MEASURED: real reference footage
 is stabilised at 0.00px drift, so the usual "make it handheld and shaky" advice is backwards.
+
+Prompt version 3 (2026-10-06): the operator rejects blurred backgrounds. v1/v2 ask for "the
+background is softer than the person", which the model can read as permission to blur. v3 keeps
+the natural falloff needle ("detail falls away behind the subject") but bounds it: only slightly,
+the street stays in focus, "never blurred and never bokeh". It does not return to the plain
+"deep depth of field" clause, which measured over-sharp (15.92 against 4.76-9.60 for real
+footage). v3 is draft until one 720p take measures inside that band with no bokeh.
 
 ### 9. Do not sharpen or grain in the finishing pass.
 MEASURED: the raw generation already sits at 534 laplacian sharpness against 530 for the real
@@ -649,6 +687,57 @@ Historical reference build: `projects/street-interview/` was private and gitigno
     now mixes a short sting under it (2 credits). Still open: check G, the "Definitely alcohol"
     and "Battery acid" shots carry a street bed only ~5 dB under the speech (-19 dB floor).
     **Run the gate on the exact file before it goes to staging, and do not publish a FAIL.**
+
+37. **A HANDOVER ASKED FOR IN THE SHOT AND FORBIDDEN IN THE PRODUCT CLAUSE NEVER HAPPENS.** Olipop
+    seed 6101: every person was already holding the can on their first frame. The shot said the
+    interviewer holds it out; the product clause said it is "in the hand of the person being
+    interviewed, never the interviewer's", and the clause won. `generation.handover_grammar` makes
+    the shot OPEN on the pass and rewrites the product clause to allow it. 6102, 6111-6113,
+    6121-6123, 6131-6133 and Graza 6211-6214: the pass is on screen for every person. Keep the
+    head of each take in the episode (`extra_head_s` on the episode file, and `--max-gap 3.0`), or
+    the builder trims the pass off as silence: the first Olipop episode showed 3 of 7 handovers.
+
+38. **THE LID-TO-LENS TILT IS CAUSED BY THE GLANCE, NOT BY THE HOLD WORDING.** The can came back
+    tipped with its lid to the lens on 4 of 7 people (Olipop episode 1) and 5 of 7 (episode 2)
+    across two rewrites of the hold sentence. Same seed, one change: removing "glances down and
+    back up" from the speaking shot (`generation.level_camera`) took it to 1 of 7 (6131-6133), and
+    7 of 7 upright on Graza after one re-take. The "camera at chest height" sentence that ships
+    with the flag did NOT lower the camera; it is the missing glance that does the work. Do not
+    put the glance back to get "naturalness".
+
+39. **NOBODY READS THE PRODUCT ON CAMERA.** A person asked to read a can tips it toward their
+    face, which puts the lid to the lens, and they read the lid (6123, both wordings). The payoff
+    line works without the beat: "Hang on, it says four grams right here" was delivered upright
+    on 6133. The `reads` shot key still exists; with `level_camera` it reads "the side that faces
+    her". Leave it off.
+
+40. **THE RELAXED HOLD IS A PLACE THE HAND RESTS, AND THE SCENE REFERENCE CARRIES IT.**
+    `natural_grammar` + `real_grammar` describe a sealed can at chest height in one relaxed hand,
+    one interviewer (black sleeve, mic always lower right) and nothing printed in anyone's hands.
+    The scene reference for takes B and C should be a frame of take A's UPRIGHT hold cropped
+    below the face. On Graza the take whose reference showed the upright bottle came back 5 of 5
+    upright; the take that used the bare mic reference had one diagonal bottle (6211).
+    `can_sealed_grammar` DOES hold on this stack with these flags: 16 of 16 people across seven Olipop takes held a sealed can,
+    against item 31's two failures on Liquid Death. A bottle is not a can: with a non-can noun
+    the hold block is kept and its cap may be seen ("never shown from above").
+
+41. **A SPOKEN NUMBER COMES BACK AS DIGITS, AND A LINE CAN BE SAID TWICE, HALF OR INVENTED.**
+    Whisper returns "40 grams" for a scripted "forty grams"; `build_episode._norm` and check I in
+    `check-cut.py` now spell 0-99 out before aligning, or the number words go uncaptioned and
+    the gate fails a line that was said. Across the last eight fast takes: one line said twice (6123 retake),
+    one line said twice with neither attempt whole (Graza 6212), one invented sentence in a
+    silent shot (Graza 6213), one slurred line (6132). All four were caught by transcribing every
+    take with word timestamps BEFORE assembly and repaired by cutting on the take's own shot
+    boundaries. Transcribe first; nobody has listened to these by ear.
+
+42. **THE CAPTION PLATE BELONGS WHERE THE PRODUCT IS NOT, MEASURED ON THE RENDER.**
+    `brand_layer.caption_centre_y` moves the subway plate. A 12oz can at chest height clears a
+    plate centred at y=985 (between chin and can) on every close shot; the question stays at
+    1540 on the wide opening. A tall bottle fills y=800..1650, so no band is free: put the plate
+    on the plain body between cap and label, found per line from the render. The framing
+    sentence ("each person in the upper two thirds") was ignored on every take, so do not rely
+    on the prompt to make room.
+
 
 ## The five looks
 

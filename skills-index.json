@@ -7,11 +7,13 @@
       "name": "ad-angle-miner",
       "category": "composites",
       "domain": "ads",
-      "description": ">",
+      "description": "Research supported advertising promises from a specific buyer's context, current product facts, customer language and observed ads. Turn them into static, video or copy ideas; match video ideas to actual recipes and save a product-scoped angle bank for write-video-ad-script. Product-led discovery can use verified facts without reviews. Reference persistence and reach are observations, not proof of performance.",
       "tags": "ads, research, social",
       "path": "skills/ads/composites/ad-angle-miner",
       "files": [
         "skills/ads/composites/ad-angle-miner/SKILL.md",
+        "skills/ads/composites/ad-angle-miner/references/buyer-and-product-role.md",
+        "skills/ads/composites/ad-angle-miner/references/video-handoff.md",
         "skills/ads/composites/ad-angle-miner/skill.meta.json"
       ],
       "metadata": {
@@ -819,6 +821,7 @@
         "skills/ads/capabilities/caption-burn/SKILL.md",
         "skills/ads/capabilities/caption-burn/scripts/_fonts.py",
         "skills/ads/capabilities/caption-burn/scripts/captions.py",
+        "skills/ads/capabilities/caption-burn/scripts/footprint.py",
         "skills/ads/capabilities/caption-burn/scripts/media_proxy.py",
         "skills/ads/capabilities/caption-burn/scripts/plates.py",
         "skills/ads/capabilities/caption-burn/scripts/transcribe.py",
@@ -1861,7 +1864,9 @@
         "skills/ads/capabilities/create-creator-takes-h3/scripts/plan_takes.py",
         "skills/ads/capabilities/create-creator-takes-h3/scripts/run_takes.py",
         "skills/ads/capabilities/create-creator-takes-h3/skill.meta.json",
-        "skills/ads/capabilities/create-creator-takes-h3/tests/smoke-test.md"
+        "skills/ads/capabilities/create-creator-takes-h3/tests/smoke-test.md",
+        "skills/ads/capabilities/create-creator-takes-h3/tests/test_make_character.py",
+        "skills/ads/capabilities/create-creator-takes-h3/tests/test_run_takes_rejection.py"
       ],
       "metadata": {
         "slug": "create-creator-takes-h3",
@@ -2103,6 +2108,40 @@
       }
     },
     {
+      "slug": "create-kinetic-typography",
+      "name": "create-kinetic-typography",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Render a deterministic text-only video ad from approved copy, font, colors, timing and CTA. Use when a brand needs an animated message without product photography or a creator.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/create-kinetic-typography",
+      "files": [
+        "skills/ads/capabilities/create-kinetic-typography/SKILL.md",
+        "skills/ads/capabilities/create-kinetic-typography/scripts/config.example.json",
+        "skills/ads/capabilities/create-kinetic-typography/scripts/render.py",
+        "skills/ads/capabilities/create-kinetic-typography/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "create-kinetic-typography",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install create-kinetic-typography",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch"
+        ]
+      }
+    },
+    {
       "slug": "create-linkedin-content",
       "name": "create-linkedin-content",
       "category": "capabilities",
@@ -2218,6 +2257,7 @@
         "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests/human-test.md",
         "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests/sample-input.md",
         "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests/smoke-test.md",
+        "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests/test_seedance_policy_rejection.py",
         "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests/verifier.md"
       ],
       "metadata": {
@@ -2249,9 +2289,11 @@
         "skills/ads/capabilities/create-vo-elevenlabs/SKILL.md",
         "skills/ads/capabilities/create-vo-elevenlabs/scripts/gen_vo.py",
         "skills/ads/capabilities/create-vo-elevenlabs/scripts/media_proxy.py",
+        "skills/ads/capabilities/create-vo-elevenlabs/scripts/read_pronunciations.py",
         "skills/ads/capabilities/create-vo-elevenlabs/skill.meta.json",
         "skills/ads/capabilities/create-vo-elevenlabs/tests/smoke-test.md",
-        "skills/ads/capabilities/create-vo-elevenlabs/tests/test_gen_vo.py"
+        "skills/ads/capabilities/create-vo-elevenlabs/tests/test_gen_vo.py",
+        "skills/ads/capabilities/create-vo-elevenlabs/tests/test_timestamps.py"
       ],
       "metadata": {
         "slug": "create-vo-elevenlabs",
@@ -3018,6 +3060,7 @@
         "skills/ads/capabilities/footage-cutlist/scripts/cut.py",
         "skills/ads/capabilities/footage-cutlist/scripts/cutlist.py",
         "skills/ads/capabilities/footage-cutlist/scripts/filmed.py",
+        "skills/ads/capabilities/footage-cutlist/scripts/photo.py",
         "skills/ads/capabilities/footage-cutlist/scripts/preview.py",
         "skills/ads/capabilities/footage-cutlist/scripts/survey.py",
         "skills/ads/capabilities/footage-cutlist/skill.meta.json",
@@ -3248,7 +3291,9 @@
       "files": [
         "skills/ads/capabilities/google-ad-scraper/SKILL.md",
         "skills/ads/capabilities/google-ad-scraper/scripts/search_google_ads.py",
-        "skills/ads/capabilities/google-ad-scraper/skill.meta.json"
+        "skills/ads/capabilities/google-ad-scraper/skill.meta.json",
+        "skills/ads/capabilities/google-ad-scraper/tests/actor-input-contract.json",
+        "skills/ads/capabilities/google-ad-scraper/tests/test_search_contract.py"
       ],
       "metadata": {
         "slug": "google-ad-scraper",
@@ -4787,7 +4832,8 @@
         "skills/ads/capabilities/media-proxy/scripts/media_proxy.py",
         "skills/ads/capabilities/media-proxy/scripts/resume.py",
         "skills/ads/capabilities/media-proxy/skill.meta.json",
-        "skills/ads/capabilities/media-proxy/tests/smoke-test.md"
+        "skills/ads/capabilities/media-proxy/tests/smoke-test.md",
+        "skills/ads/capabilities/media-proxy/tests/test_media_proxy_policy.py"
       ],
       "metadata": {
         "slug": "media-proxy",
@@ -6515,6 +6561,51 @@
       }
     },
     {
+      "slug": "render-hook-replacement",
+      "name": "render-hook-replacement",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "Replace an existing video's opening with a supplied clip or free kinetic text hook while retaining and verifying every original body frame, audio, captions and ending. Use for surgical hook tests rather than regenerating the complete ad.",
+      "tags": "ads",
+      "path": "skills/ads/capabilities/render-hook-replacement",
+      "files": [
+        "skills/ads/capabilities/render-hook-replacement/SKILL.md",
+        "skills/ads/capabilities/render-hook-replacement/config.example.json",
+        "skills/ads/capabilities/render-hook-replacement/references/hook-replacement.md",
+        "skills/ads/capabilities/render-hook-replacement/scripts/make_demo.py",
+        "skills/ads/capabilities/render-hook-replacement/scripts/replace_hook.py",
+        "skills/ads/capabilities/render-hook-replacement/scripts/replace_pack.py",
+        "skills/ads/capabilities/render-hook-replacement/skill.meta.json",
+        "skills/ads/capabilities/render-hook-replacement/tests/smoke-test.md",
+        "skills/ads/capabilities/render-hook-replacement/tests/test_replace_hook.py"
+      ],
+      "metadata": {
+        "slug": "render-hook-replacement",
+        "category": "capabilities",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install render-hook-replacement",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "watch",
+          "review-finished-ad"
+        ],
+        "requires_tools": [
+          "python3",
+          "ffmpeg",
+          "ffprobe"
+        ]
+      }
+    },
+    {
       "slug": "render-hypermotion",
       "name": "render-hypermotion",
       "category": "capabilities",
@@ -6598,6 +6689,7 @@
         "skills/ads/capabilities/render-imessage-cascade/scripts/build_assets.py",
         "skills/ads/capabilities/render-imessage-cascade/scripts/compose.py",
         "skills/ads/capabilities/render-imessage-cascade/scripts/config.example.json",
+        "skills/ads/capabilities/render-imessage-cascade/scripts/layout.py",
         "skills/ads/capabilities/render-imessage-cascade/skill.meta.json",
         "skills/ads/capabilities/render-imessage-cascade/tests/smoke-test.md"
       ],
@@ -6626,13 +6718,16 @@
       "name": "render-imessage-chat",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Assemble an iMessage chat-reveal video ad from a thread JSON — one continuous Playwright recording of the conversation animating in (typing dots, composer typing, bubble pops, auto-scroll) crossfaded into a designed end card, with iMessage send/receive SFX and an optional ducked music bed. FREE assembly (Playwright + ffmpeg); the recipe supplies the per-brand thread + product + end-card config and gates the paid product-image/music calls to their own capabilities. Use for the imessage-chat format.",
+      "description": "Render a configurable iMessage conversation inside a properly framed phone, then a brand end card. Uses the original send/receive sounds and a shared frame timeline for text, typing, scrolling and sound. Free local Playwright + ffmpeg assembly; optional image/music generation belongs to separate gated capabilities.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-imessage-chat",
       "files": [
         "skills/ads/capabilities/render-imessage-chat/SKILL.md",
         "skills/ads/capabilities/render-imessage-chat/assets/sfx/imessage-receive.mp3",
         "skills/ads/capabilities/render-imessage-chat/assets/sfx/imessage-send.mp3",
+        "skills/ads/capabilities/render-imessage-chat/references/imessage-reference.md",
+        "skills/ads/capabilities/render-imessage-chat/scripts/chat-driver.js",
+        "skills/ads/capabilities/render-imessage-chat/scripts/check-render.py",
         "skills/ads/capabilities/render-imessage-chat/scripts/config.example.json",
         "skills/ads/capabilities/render-imessage-chat/scripts/end-card.template.html",
         "skills/ads/capabilities/render-imessage-chat/scripts/mockup/generate.js",
@@ -6642,10 +6737,14 @@
         "skills/ads/capabilities/render-imessage-chat/scripts/package.json",
         "skills/ads/capabilities/render-imessage-chat/scripts/record-chat.js",
         "skills/ads/capabilities/render-imessage-chat/scripts/render-end-card.js",
+        "skills/ads/capabilities/render-imessage-chat/scripts/render.sh",
         "skills/ads/capabilities/render-imessage-chat/scripts/sfx-embedded.json",
         "skills/ads/capabilities/render-imessage-chat/scripts/stitch.sh",
         "skills/ads/capabilities/render-imessage-chat/skill.meta.json",
+        "skills/ads/capabilities/render-imessage-chat/tests/fixtures/long-group-thread.json",
         "skills/ads/capabilities/render-imessage-chat/tests/smoke-test.md",
+        "skills/ads/capabilities/render-imessage-chat/tests/test_chat.js",
+        "skills/ads/capabilities/render-imessage-chat/tests/test_safe_area.js",
         "skills/ads/capabilities/render-imessage-chat/tests/test_stitch.py"
       ],
       "metadata": {
@@ -6899,7 +6998,7 @@
       "name": "render-narrated-ugc-wardrobe-stitch",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Assemble a narrated-UGC \"stitch reply\" ad from a config — a single spoken VO carries a verbatim testimonial while ~30 per-cut i2v clips (one creator across ~5 wardrobes in ~3 worlds, plus product B-roll) are each trimmed to their EDL window built from the VO's Whisper word boundaries and hard-concatenated via filter_complex concat (never the demuxer, which drops audio on a duration mismatch), the VO mixed over an optional sidechain-ducked instrumental bed (−20dB, 20 to 1) so the VO stays on top, karaoke-pop captions burned on every word throughout (VEED Whisper preset, re-spelled against the locked script), a landing-page scroll rendered as FFmpeg zoompan over a Playwright PNG (not i2v), and closed on the brand's real end-card PNG — never AI-rendered text. This is the FREE deterministic assembly stage (trim-to-EDL + filter_complex concat + VO and music mix + karaoke captions + landing-page zoompan + end-card append); the VO, creator, start-frames, and clips come from create-vo-elevenlabs / create-image-gpt-image-fal / create-image-fal / create-video-fal. Use for the narrated-ugc-wardrobe-stitch format.",
+      "description": "Assemble a narrated-UGC \"stitch reply\" ad from a config — a single spoken VO carries a verbatim testimonial while ~30 per-cut i2v clips (one creator across ~5 wardrobes in ~3 worlds, plus product B-roll) are each trimmed to their EDL window built from the VO's Whisper word boundaries and hard-concatenated via filter_complex concat (never the demuxer, which drops audio on a duration mismatch), the VO mixed over an optional sidechain-ducked instrumental bed (−20dB, 20 to 1) so the VO stays on top, karaoke-pop captions burned on every word throughout (VEED Whisper preset, re-spelled against the locked script), a landing-page scroll rendered as FFmpeg zoompan over a Playwright PNG (not i2v), and closed on the brand's real end-card PNG — never AI-rendered text. This is the FREE deterministic assembly stage (trim-to-EDL + filter_complex concat + VO and music mix + karaoke captions + landing-page zoompan + end-card append), run with the shared stitch-videos-ffmpeg montage.py helper that installs with this package; the VO, creator, start-frames, and clips come from create-vo-elevenlabs / create-image-gpt-image-fal / create-image-fal / create-video-fal. Use for the narrated-ugc-wardrobe-stitch format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-narrated-ugc-wardrobe-stitch",
       "files": [
@@ -6917,6 +7016,7 @@
         "tags": [
           "ads"
         ],
+        "version": "1.0.1",
         "installation": {
           "base_command": "npx goose-skills install render-narrated-ugc-wardrobe-stitch",
           "supports": [
@@ -6926,7 +7026,8 @@
           ]
         },
         "requires_skills": [
-          "watch"
+          "watch",
+          "stitch-videos-ffmpeg"
         ]
       }
     },
@@ -7021,15 +7122,38 @@
       "name": "render-podcast-skit",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Assemble a two-host fake-podcast skit ad from a config — per-line lipsync clips hard-concatenated in script order, scaled/padded to 1080×1920, WHITE bottom-center captions (up to 5 words per cue, broken on sentence punctuation, word-wrapped to stay in-frame, held at least 0.9s) built from each line's OWN ElevenLabs char-level timestamps (offset by cumulative clip start, never Whisper), and closed on a Playwright/PIL brand end card composited from the real wordmark — never AI-rendered text. This is the FREE deterministic assembly stage (concat + white captions + end card + crf28 encode); the per-line VOs, photoreal gpt-image-2 base stills, expression variants, and lipsync clips come from create-vo-elevenlabs / create-image-gpt-image-fal / create-video-fal. Use for the podcast-skit format.",
+      "description": "Render a two-host podcast ad from a brand config and dialogue script. Includes the working planner, full-frame and split-screen assembly, captions from measured character timings, brand end card, approved paid-step adapters, and 65 quality-check falsification cases. Use for short conversational ads with two stable hosts in one room.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-podcast-skit",
       "files": [
         "skills/ads/capabilities/render-podcast-skit/SKILL.md",
+        "skills/ads/capabilities/render-podcast-skit/recipe.json",
         "skills/ads/capabilities/render-podcast-skit/scripts/PIPELINE.md",
         "skills/ads/capabilities/render-podcast-skit/scripts/README.md",
+        "skills/ads/capabilities/render-podcast-skit/scripts/arcs.json",
+        "skills/ads/capabilities/render-podcast-skit/scripts/build_overlays.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/check_framing_render.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/compose_master.py",
         "skills/ads/capabilities/render-podcast-skit/scripts/config.example.json",
+        "skills/ads/capabilities/render-podcast-skit/scripts/config_io.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/cost_model.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/crop_singles.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/gates.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/gen_paid.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/grade_episode.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/make_lockup.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/one_shot.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/pick_voices.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/plan_beats.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/plan_cuts.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/preview_framing.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/provider_commands.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/script.example.json",
+        "skills/ads/capabilities/render-podcast-skit/scripts/selftest.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/shape_vo.py",
+        "skills/ads/capabilities/render-podcast-skit/scripts/test_distribution.py",
         "skills/ads/capabilities/render-podcast-skit/skill.meta.json",
+        "skills/ads/capabilities/render-podcast-skit/source-manifest.json",
         "skills/ads/capabilities/render-podcast-skit/tests/smoke-test.md"
       ],
       "metadata": {
@@ -7048,7 +7172,21 @@
           ]
         },
         "requires_skills": [
+          "create-vo-elevenlabs",
+          "create-image-gpt-image-fal",
+          "create-video-fal",
           "watch"
+        ],
+        "version": 2,
+        "features": [
+          "Two-host dialogue rendering",
+          "Measured audio timeline",
+          "Full-frame and split cuts",
+          "65 quality-check falsification cases"
+        ],
+        "requires_tools": [
+          "ffmpeg",
+          "python"
         ]
       }
     },
@@ -7243,7 +7381,7 @@
       "name": "render-street-interview",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Build a vox-pop street interview video ad. An interviewer with a handheld mic asks passers-by one question about the brand's product, they give blunt wrong guesses, one gives the real answer, and the cut lands on a branded end card. Generates the takes through the GooseWorks fal proxy (Seedance 2.0 with native voice), then grades, re-cuts, captions and gates them locally. Use for the street-interview format.",
+      "description": "Write a street-interview ad from a complete inspected commercial interaction and current brand facts. Render product guessing, or prepare mic-only, prepared-sample or visible-task conversation script/prompt previews. Premise, actions and ad connection vary; capture rules stay fixed. Conversation media delivery is unverified.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-street-interview",
       "files": [
@@ -7252,6 +7390,9 @@
         "skills/ads/capabilities/render-street-interview/SKILL.md",
         "skills/ads/capabilities/render-street-interview/TAKES.md",
         "skills/ads/capabilities/render-street-interview/brands/demo-tallgrass-oat.json",
+        "skills/ads/capabilities/render-street-interview/brands/graza-ep1-a2.json",
+        "skills/ads/capabilities/render-street-interview/brands/graza-ep1-b.json",
+        "skills/ads/capabilities/render-street-interview/brands/graza-ep1-c.json",
         "skills/ads/capabilities/render-street-interview/brands/liquid-death-4816.json",
         "skills/ads/capabilities/render-street-interview/brands/liquid-death-4817.json",
         "skills/ads/capabilities/render-street-interview/brands/liquid-death-4818.json",
@@ -7271,6 +7412,10 @@
         "skills/ads/capabilities/render-street-interview/brands/liquid-death-4834.json",
         "skills/ads/capabilities/render-street-interview/brands/liquid-death-4835.json",
         "skills/ads/capabilities/render-street-interview/brands/liquid-death.json",
+        "skills/ads/capabilities/render-street-interview/brands/olipop-ep3-a.json",
+        "skills/ads/capabilities/render-street-interview/brands/olipop-ep3-b.json",
+        "skills/ads/capabilities/render-street-interview/brands/olipop-ep3-c.json",
+        "skills/ads/capabilities/render-street-interview/episodes/graza-ep1.json",
         "skills/ads/capabilities/render-street-interview/episodes/liquid-death-ep1.json",
         "skills/ads/capabilities/render-street-interview/episodes/liquid-death-ep2.json",
         "skills/ads/capabilities/render-street-interview/episodes/liquid-death-ep2fix-v2.json",
@@ -7280,13 +7425,18 @@
         "skills/ads/capabilities/render-street-interview/episodes/liquid-death-ep3b.json",
         "skills/ads/capabilities/render-street-interview/episodes/liquid-death-ep3c.json",
         "skills/ads/capabilities/render-street-interview/episodes/liquid-death-ep4.json",
+        "skills/ads/capabilities/render-street-interview/episodes/olipop-ep3.json",
         "skills/ads/capabilities/render-street-interview/references/model-behaviors.md",
+        "skills/ads/capabilities/render-street-interview/references/street-reference-library.json",
+        "skills/ads/capabilities/render-street-interview/references/street-script-writing.md",
         "skills/ads/capabilities/render-street-interview/scripts/bench.py",
         "skills/ads/capabilities/render-street-interview/scripts/brandkit.py",
         "skills/ads/capabilities/render-street-interview/scripts/build.py",
         "skills/ads/capabilities/render-street-interview/scripts/build_episode.py",
         "skills/ads/capabilities/render-street-interview/scripts/build_looks.py",
         "skills/ads/capabilities/render-street-interview/scripts/check-cut.py",
+        "skills/ads/capabilities/render-street-interview/scripts/conversation.py",
+        "skills/ads/capabilities/render-street-interview/scripts/edit_timeline.py",
         "skills/ads/capabilities/render-street-interview/scripts/falsify-all.py",
         "skills/ads/capabilities/render-street-interview/scripts/fit_grade.py",
         "skills/ads/capabilities/render-street-interview/scripts/format_spec.py",
@@ -7294,6 +7444,7 @@
         "skills/ads/capabilities/render-street-interview/scripts/media_proxy.py",
         "skills/ads/capabilities/render-street-interview/scripts/paths.py",
         "skills/ads/capabilities/render-street-interview/scripts/phone_look_video.py",
+        "skills/ads/capabilities/render-street-interview/scripts/prepare_script_context.py",
         "skills/ads/capabilities/render-street-interview/scripts/recut.py",
         "skills/ads/capabilities/render-street-interview/scripts/selftest.py",
         "skills/ads/capabilities/render-street-interview/scripts/single_gen.py",
@@ -7301,8 +7452,14 @@
         "skills/ads/capabilities/render-street-interview/skill.meta.json",
         "skills/ads/capabilities/render-street-interview/tests/fixtures/prompt-snapshots.json",
         "skills/ads/capabilities/render-street-interview/tests/smoke-test.md",
+        "skills/ads/capabilities/render-street-interview/tests/test_conversation.py",
+        "skills/ads/capabilities/render-street-interview/tests/test_edit_timeline.py",
         "skills/ads/capabilities/render-street-interview/tests/test_finishing.py",
-        "skills/ads/capabilities/render-street-interview/tests/test_prompt_budget.py"
+        "skills/ads/capabilities/render-street-interview/tests/test_opt_in_hold_grammar.py",
+        "skills/ads/capabilities/render-street-interview/tests/test_prompt_budget.py",
+        "skills/ads/capabilities/render-street-interview/tests/test_recut_media.py",
+        "skills/ads/capabilities/render-street-interview/tests/test_selector_route.py",
+        "skills/ads/capabilities/render-street-interview/tests/test_single_gen_rejection.py"
       ],
       "metadata": {
         "slug": "render-street-interview",
@@ -7322,7 +7479,8 @@
         },
         "requires_skills": [
           "watch",
-          "create-video-seedance-2-fal"
+          "create-video-seedance-2-fal",
+          "write-video-ad-script"
         ]
       }
     },
@@ -7535,14 +7693,17 @@
       "name": "review-finished-ad",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Final QC gate for a rendered 9:16 video ad, run before it is published. One script checks what a machine can decide — exact 1080x1920 size, a hook that moves and speaks in the first second, no frozen stretches, no dead air, no black frames, the brand's real logo on the end card (never a favicon, never a redrawn or wrong logo), end-card colours near the brand palette — and builds one contact sheet (frames with the TikTok/Reels UI safe zones shaded, beside the logo, product images and a font specimen) for the checks that need eyes — font, product likeness, product consistency across scenes, safe zones. Exit 0 PASS / 2 FAIL / 3 ERROR. Use on every finished video master before pinning it.",
+      "description": "Final QC gate for a rendered 9:16 video ad, run before it is published. One script checks what a machine can decide — exact 1080x1920 size, a hook that moves and speaks in the first second, no frozen stretches, no dead air, no black frames, the brand's real logo on the end card (never a favicon, never a redrawn or wrong logo), end-card colours near the brand palette — and builds one contact sheet (frames with the TikTok/Reels UI safe zones shaded, beside the logo, product images and a font specimen) for the checks that need eyes — font, product likeness, product consistency across scenes, safe zones. A declared silent-text profile covers silent, text-led formats such as kinetic text (no audio track needed, short blank beats between text beats allowed within fixed bounds). Exit 0 PASS / 2 FAIL / 3 ERROR. Use on every finished video master before pinning it.",
       "tags": "ads, brand",
       "path": "skills/ads/capabilities/review-finished-ad",
       "files": [
         "skills/ads/capabilities/review-finished-ad/SKILL.md",
         "skills/ads/capabilities/review-finished-ad/scripts/review_finished_ad.py",
         "skills/ads/capabilities/review-finished-ad/skill.meta.json",
-        "skills/ads/capabilities/review-finished-ad/tests/test_review_finished_ad.py"
+        "skills/ads/capabilities/review-finished-ad/tests/test_overrun_freeze_clicks.py",
+        "skills/ads/capabilities/review-finished-ad/tests/test_review_finished_ad.py",
+        "skills/ads/capabilities/review-finished-ad/tests/test_sampling.py",
+        "skills/ads/capabilities/review-finished-ad/tests/test_silent_text_profile.py"
       ],
       "metadata": {
         "slug": "review-finished-ad",
@@ -7656,7 +7817,7 @@
       "name": "review-ugc-render",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Mandatory pre-publish review gate for a UGC video render. Transcribes the finished render's AUDIO with Whisper and word-diffs it against the approved spoken script, then gates set_final_render — blocking a render whose generated audio mis-voices a word (e.g. the approved \"human-vetted\" spoken as \"human witted\"), drops an approved phrase, or comes back silent. Runnable, gating counterpart to content-goose's review-transcript-integrity atom. Every ugc-video-formats recipe runs this after render and BEFORE set_final_render.",
+      "description": "Mandatory pre-publish review gate for a UGC video render. Transcribes the finished render's AUDIO with Whisper and word-diffs it against the approved spoken script, then gates pinning the final render (video_project_upsert patch.final_render_id) — blocking a render whose generated audio mis-voices a word (e.g. the approved \"human-vetted\" spoken as \"human witted\"), says a different number or brand name, flips a negation, drops an approved phrase, or comes back silent. Correct speech written differently (\"5mg\" said \"five milligrams\", \"30%\" said \"thirty percent\", a spoken URL, \"don't\" said \"do not\", \"braxleybands\" said \"braxley bands\", a confirmed pronunciation like \"AG1\" said \"A G one\") passes. Runnable, gating counterpart to content-goose's review-transcript-integrity atom. Every ugc-video-formats recipe runs this after render and BEFORE pinning the final render.",
       "tags": "ads",
       "path": "skills/ads/packs/ugc-video-formats/review-ugc-render",
       "files": [
@@ -8377,7 +8538,7 @@
       "name": "stitch-videos-ffmpeg",
       "category": "capabilities",
       "domain": "ads",
-      "description": "stitch video segments with ffmpeg concat, xfade, overlay, audio mux, and export settings.",
+      "description": "Stitch video segments with ffmpeg concat, xfade, overlay, audio mux, and export settings. Ships montage.py, a free montage assembler (python3 + ffmpeg, no keys). It takes a JSON EDL of clips and stills, normalizes them and hard-cuts them in order, burns captions from an SRT, a cue list or word timings, and lays a VO over a music bed that ducks under it, mastered to -14 LUFS.",
       "tags": "ads",
       "path": "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg",
       "files": [
@@ -8385,6 +8546,7 @@
         "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/composite.py",
         "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/composite_final.py",
         "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/composite_final.sh",
+        "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/montage.py",
         "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/normalize_clip.sh",
         "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/voiceless/composite.py",
         "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/skill.meta.json",
@@ -8392,6 +8554,7 @@
         "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/human-test.md",
         "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/sample-input.md",
         "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/smoke-test.md",
+        "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/test_stitch_montage.py",
         "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/verifier.md"
       ],
       "metadata": {
@@ -9119,7 +9282,10 @@
         "skills/ads/playbooks/video-production-harness/polish.md",
         "skills/ads/playbooks/video-production-harness/preflight-audit.md",
         "skills/ads/playbooks/video-production-harness/promote.md",
+        "skills/ads/playbooks/video-production-harness/references/editorial-review.md",
+        "skills/ads/playbooks/video-production-harness/references/hook-compatibility.md",
         "skills/ads/playbooks/video-production-harness/references/review-script-shortform.md",
+        "skills/ads/playbooks/video-production-harness/references/specialist-handoff.md",
         "skills/ads/playbooks/video-production-harness/release.json",
         "skills/ads/playbooks/video-production-harness/review-video.md",
         "skills/ads/playbooks/video-production-harness/scripts/assemble.py",
@@ -9146,9 +9312,9 @@
         },
         "requires_skills": [],
         "slug": "video-production-harness",
-        "source_commit": "a76dbcd67955636ca4007d4f3cbd8d314967e618",
-        "source_hash": "6d704185624388979245de474bb4b16f21d3f9c88d7a3ede185e02db42422f86",
-        "source_version": "2-6d7041856243",
+        "source_commit": "153cbb809d7f1d159e041baca54229c82dde450c",
+        "source_hash": "9de13482b53f7120ff09d0dbecded5b0a06a9e693166ff129485b06769cdecd6",
+        "source_version": "3-9de13482b53f",
         "tags": [
           "ads",
           "content"
@@ -9662,19 +9828,29 @@
       "name": "write-video-ad-script",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Write the words of a short-form video ad (voiceover, dialogue, chat bubbles, on-screen lines) the way performance creative teams do instead of from a blank page. Builds the script from the buyers' own words, the beat sheet of an ad that already works and three deliberately different angles, filters them with a rule check and a second non-Claude model, and takes the strongest into the review with the other two as one-line swaps. Use it in every video ad run before any paid step, and whenever the user asks to write, rewrite or improve a video ad script or says a script sounds generic or AI-written.",
+      "description": "Write a short-form video ad from an evidence-backed angle and the selected template's actual recipe. Reuses or fetches ad-angle-miner, preserves the chosen angle, plans words and visuals together, checks product claims and production fit, and delivers the strongest script with useful alternatives. Use before video production and for script rewrites. Customer language is one input alongside audience, promise, product proof, offer and format.",
       "tags": "ads, content",
       "path": "skills/ads/capabilities/write-video-ad-script",
       "files": [
         "skills/ads/capabilities/write-video-ad-script/SKILL.md",
+        "skills/ads/capabilities/write-video-ad-script/references/buyer-and-mechanism.md",
+        "skills/ads/capabilities/write-video-ad-script/references/dialogue-writing.md",
         "skills/ads/capabilities/write-video-ad-script/references/files.md",
         "skills/ads/capabilities/write-video-ad-script/references/hook-families.md",
+        "skills/ads/capabilities/write-video-ad-script/references/human-behavior.md",
+        "skills/ads/capabilities/write-video-ad-script/references/judge-contract.md",
         "skills/ads/capabilities/write-video-ad-script/references/pacing.md",
+        "skills/ads/capabilities/write-video-ad-script/references/scene-and-hook.md",
         "skills/ads/capabilities/write-video-ad-script/scripts/critique_scripts.py",
         "skills/ads/capabilities/write-video-ad-script/scripts/lint_scripts.py",
         "skills/ads/capabilities/write-video-ad-script/scripts/media_proxy.py",
+        "skills/ads/capabilities/write-video-ad-script/scripts/prepare_angle_context.py",
+        "skills/ads/capabilities/write-video-ad-script/scripts/verify_handoff.py",
         "skills/ads/capabilities/write-video-ad-script/skill.meta.json",
+        "skills/ads/capabilities/write-video-ad-script/tests/test_angle_handoff.py",
+        "skills/ads/capabilities/write-video-ad-script/tests/test_creative_brief.py",
         "skills/ads/capabilities/write-video-ad-script/tests/test_critique_scripts.py",
+        "skills/ads/capabilities/write-video-ad-script/tests/test_handoff_release.py",
         "skills/ads/capabilities/write-video-ad-script/tests/test_lint_scripts.py",
         "skills/ads/capabilities/write-video-ad-script/tests/test_pacing.py"
       ],
@@ -9686,7 +9862,7 @@
           "ads",
           "content"
         ],
-        "example_prompt": "Write the script for my video ad from what our customers actually say",
+        "example_prompt": "Write a video ad from our researched angle that fits the selected template and shows credible product proof",
         "installation": {
           "base_command": "npx goose-skills install write-video-ad-script",
           "supports": [
@@ -9696,6 +9872,7 @@
           ]
         },
         "requires_skills": [
+          "ad-angle-miner",
           "watch"
         ]
       }
@@ -9946,6 +10123,7 @@
             "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests/human-test.md",
             "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests/sample-input.md",
             "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests/smoke-test.md",
+            "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests/test_seedance_policy_rejection.py",
             "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests/verifier.md"
           ],
           "source": "pack"
@@ -9953,7 +10131,7 @@
         {
           "slug": "review-ugc-render",
           "name": "review-ugc-render",
-          "description": "Mandatory pre-publish review gate for a UGC video render. Transcribes the finished render's AUDIO with Whisper and word-diffs it against the approved spoken script, then gates set_final_render — blocking a render whose generated audio mis-voices a word (e.g. the approved \"human-vetted\" spoken as \"human witted\"), drops an approved phrase, or comes back silent. Runnable, gating counterpart to content-goose's review-transcript-integrity atom. Every ugc-video-formats recipe runs this after render and BEFORE set_final_render.",
+          "description": "Mandatory pre-publish review gate for a UGC video render. Transcribes the finished render's AUDIO with Whisper and word-diffs it against the approved spoken script, then gates pinning the final render (video_project_upsert patch.final_render_id) — blocking a render whose generated audio mis-voices a word (e.g. the approved \"human-vetted\" spoken as \"human witted\"), says a different number or brand name, flips a negation, drops an approved phrase, or comes back silent. Correct speech written differently (\"5mg\" said \"five milligrams\", \"30%\" said \"thirty percent\", a spoken URL, \"don't\" said \"do not\", \"braxleybands\" said \"braxley bands\", a confirmed pronunciation like \"AG1\" said \"A G one\") passes. Runnable, gating counterpart to content-goose's review-transcript-integrity atom. Every ugc-video-formats recipe runs this after render and BEFORE pinning the final render.",
           "path": "skills/ads/packs/ugc-video-formats/review-ugc-render",
           "files": [
             "skills/ads/packs/ugc-video-formats/review-ugc-render/SKILL.md",
@@ -10119,13 +10297,14 @@
         {
           "slug": "stitch-videos-ffmpeg",
           "name": "stitch-videos-ffmpeg",
-          "description": "stitch video segments with ffmpeg concat, xfade, overlay, audio mux, and export settings.",
+          "description": "Stitch video segments with ffmpeg concat, xfade, overlay, audio mux, and export settings. Ships montage.py, a free montage assembler (python3 + ffmpeg, no keys). It takes a JSON EDL of clips and stills, normalizes them and hard-cuts them in order, burns captions from an SRT, a cue list or word timings, and lays a VO over a music bed that ducks under it, mastered to -14 LUFS.",
           "path": "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg",
           "files": [
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/SKILL.md",
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/composite.py",
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/composite_final.py",
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/composite_final.sh",
+            "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/montage.py",
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/normalize_clip.sh",
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/voiceless/composite.py",
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/skill.meta.json",
@@ -10133,6 +10312,7 @@
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/human-test.md",
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/sample-input.md",
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/smoke-test.md",
+            "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/test_stitch_montage.py",
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/verifier.md"
           ],
           "source": "pack"
@@ -10314,7 +10494,7 @@
         {
           "slug": "ad-angle-miner",
           "name": "ad-angle-miner",
-          "description": ">",
+          "description": "Research supported advertising promises from a specific buyer's context, current product facts, customer language and observed ads. Turn them into static, video or copy ideas; match video ideas to actual recipes and save a product-scoped angle bank for write-video-ad-script. Product-led discovery can use verified facts without reviews. Reference persistence and reach are observations, not proof of performance.",
           "stage": "analyze",
           "path": "skills/ads/composites/ad-angle-miner"
         },

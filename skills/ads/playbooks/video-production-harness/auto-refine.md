@@ -3,11 +3,17 @@ name: video-production-harness/auto-refine
 description: Bounded watch → diff → fix → re-watch loop that drives a master cut to objective polish without operator round-trips. Wraps review-video + edit-clip + edit-video. Only fires on machine-checkable issues (continuity, color/grade, audio levels, VO integrity, runtime, brand assets, pacing) — escalates subjective creative calls (story arc, concept, emotional read) to the operator.
 ---
 
-# auto-refine
+# Human version
+
+Repair verified objective defects within the existing scope and iteration limit. Keep story decisions visible, preserve earlier cuts, and distinguish a changed file from a verified improvement.
+
+---
+
+# Agent version
 
 ## Host contract
 
-Read `capabilities.md` and the selected host binding first. Artifact names are logical roles resolved by that binding. Named review tasks use the documented rubrics and actual frame/audio tools; they are not assumed installed commands. Required tooling, human approval and available budget must exist before the operation.
+Read `capabilities.md` and the selected host binding first. Artifact names are logical roles resolved by that binding. Named review tasks use the documented rubrics and actual frame/audio tools; they are not assumed installed commands. Required tooling, human approval and available budget must exist before the operation. Read [the editorial review guide](references/editorial-review.md) for source binding, stage decisions, note disposition, impact checks and saved edit history.
 
 ## Purpose
 
@@ -17,7 +23,7 @@ It does **not** make creative calls. "The video isn't telling a story" or "the m
 
 ## When to use
 
-- After `edit-video` produces the first master, before showing it to the operator. Auto-refine runs silently on objective issues, then surfaces a clean cut + a list of subjective questions for the operator's eye.
+- After `edit-video` produces the first master, before showing it to the operator. Auto-refine runs silently on objective issues, then surfaces the candidate, its stage diagnosis and any unresolved subjective questions for the operator's eye.
 - When the operator says "polish this" / "tighten this up" without specifying issues — auto-refine knows what objective polish means.
 - **Not** for "redo the third scene entirely" or "the concept isn't landing" — those are creative pivots; call `edit-clip` or restart at brainstorm.
 
@@ -47,7 +53,7 @@ It does **not** make creative calls. "The video isn't telling a story" or "the m
 │     subjective_misses = checks where machine_check=false && !pass│
 │                                                                  │
 │  4. DECIDE                                                       │
-│     if no objective_misses:  EXIT (clean) → report subjective    │
+│     if no objective_misses:  EXIT objective-clean → diagnose open story    │
 │     if iteration >= max:     EXIT (cap)   → report what's stuck  │
 │     if budget exhausted:     EXIT (cost)  → report spend         │
 │                                                                  │
@@ -99,18 +105,19 @@ Create `<video_folder>/edits/_iterations/auto-refine-log.json` if missing:
 
 1. **Watch.** Run the packaged evidence helper on the actual video, read every extracted frame, listen to the full audio, and obtain the actual transcript when speech is present.
 2. **Check.** Follow `review-video.md` and save its documented structured check list; no separate command or mode is assumed. Persist the result as `edits/_iterations/iter-N-checks.json`.
-3. **Partition** into `objective_misses`, `subjective_misses`, `passed` arrays.
+3. **Partition** into `objective_misses`, `subjective_misses`, `incomplete`, `passed` arrays. Missing required evidence is incomplete, never pass. Bind each finding/operation to its original cut and use the source/impact/disposition procedure in [the editorial review guide](references/editorial-review.md). Subjective diagnoses use the existing return route and cheap authorized alternatives; they are not silently repaired by this loop.
 4. **Exit conditions:**
-   - `objective_misses == []` → write final summary, exit clean.
-   - `iteration > max_iterations` → exit at cap, summarize what's still failing.
+   - `incomplete != []` → exit incomplete-evidence; state the required missing watch/measurement capability. No quality pass is inferred.
+   - `objective_misses == []` → exit objective-clean only; run the stage diagnosis and preserve unresolved story/creative findings. Do not promote or call the cut APPROVED while those findings or required watch evidence remain open.
+   - `iteration >= max_iterations` → exit at cap, summarize what's still failing.
    - `credits_spent + projected_cost > budget_credits` → exit on budget, summarize.
    - **Convergence check:** if the same `check.id` failed in iteration N AND iteration N-1 with the same fix path attempted, exit and escalate — the fix isn't working, don't burn another cycle.
 5. **Plan.** Sort objective_misses by `severity` (P0 > P1) then by `cost_credits` (cheap first). Group fixes that share a target asset:
-   - All audio-level issues → one `edit-video` Phase 3/4 re-mix pass.
+   - All audio-level issues → one `edit-video` Phases 3–5 re-mix pass.
    - All clips needing color-match → one `edit-video` Phase 1 LUT pass.
    - Per-scene clip re-rolls → individual `edit-clip` calls, sequential not parallel (each touches state).
 6. **Archive and execute.** Preserve the existing candidate before any mutation. Execute each resolved real repair, recheck host paid gates and budget for any submission, and log actual debits/reservations. Update `auto-refine-log.json` with the fix attempted.
-7. **Re-render.** If any clip-level fix ran, call `edit-video` to stitch a fresh master. If only audio-level fixes ran, call `edit-video` Phases 3–5 only, followed by fresh QC.
+7. **Re-render.** If any clip-level fix ran, call `edit-video` to stitch a fresh master. If only audio-level fixes ran, call `edit-video` Phases 3–5 only, followed by fresh QC. Use a new output path and preserve note-to-candidate lineage. Full rewatch verifies the intended effect; successful commands alone leave notes changed.
 8. **Archive.** Copy `<video_path>` → `edits/_iterations/master-iter-N.mp4` so the operator can A/B across iterations.
 
 ### Step 3 — Final report
@@ -121,7 +128,8 @@ After the loop exits, write `<video_folder>/edits/_iterations/auto-refine-report
 # Auto-refine report — <project name>
 
 - **Iterations:** N / <max>
-- **Exit reason:** clean | cap | budget | convergence
+- **Exit reason:** objective-clean | cap | budget | convergence | incomplete-evidence
+- **Stage verdict / open diagnosis:** <separate from objective-clean>
 - **Credits spent:** X / <budget>
 - **Wall time:** Xs
 
@@ -157,7 +165,7 @@ Save a short summary on the host review surface with iterations and open subject
 
 ## Output
 
-- `<video_folder>/edits/master-final.mp4` — refined master (overwritten in place).
+- A new labeled candidate master recorded through the binding; the selected final and source notes remain unchanged until selection.
 - `<video_folder>/edits/_iterations/master-iter-N.mp4` — one per iteration for A/B.
 - `<video_folder>/edits/_iterations/iter-N-checks.json` — pass-list result per iteration.
 - `<video_folder>/edits/_iterations/auto-refine-log.json` — running log.
@@ -177,7 +185,7 @@ Save a short summary on the host review surface with iterations and open subject
 
 - **Loop runs forever on a stuck scene.** Convergence guard (same check + same fix twice) is mandatory. Iteration cap is the second line of defense.
 - **Burns credits on a creative call disguised as objective.** If a check's disposition is unclear, treat as `escalate`. Never invent an `auto-fixable` mapping for a subjective issue.
-- **Auto-refine "fixes" a clip the operator already approved.** Honor the `<span class="pill" data-state="approved">` on each scene card — never re-roll an approved scene unless the check explicitly invalidates the approval (e.g. character continuity check that wasn't run when it was approved).
+- **Auto-refine changes an approved scene without authority.** Read the host's actual approval records. A newly found defect can invalidate dependent evidence, but does not itself grant creative or paid authorization. Preserve valid unrelated approvals and renew the affected gate when required.
 - **No archive of pre-refine master.** Always copy `master-final.mp4` → `_iterations/master-iter-0.mp4` before the first fix, so the operator can revert.
 - **Audio sub-loop drowns out an intentional creative choice** (e.g. "the breath is supposed to be loud here as the climax"). Respect any per-scene override flag in the Design-tab audio plan that says `auto-mix: skip`.
 - **Skill calls itself recursively.** Auto-refine never calls auto-refine. The orchestrator calls auto-refine; auto-refine calls only review-video + edit-clip + edit-video.

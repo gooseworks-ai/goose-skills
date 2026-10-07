@@ -33,6 +33,7 @@ import sys
 import tempfile
 
 import brandkit
+import edit_timeline
 
 
 def probe(path):
@@ -298,7 +299,8 @@ def main():
                      f" in {a.src.name}. A bed cut over a spoken line loops that line under the "
                      f"whole video: on seed 4815 the transcript came back with the interviewer's "
                      f"question three times and all three answers missing. Measure a real gap.")
-    plan = auto_plan(a.src, lead=a.lead, tail=a.tail) if a.auto else DEFAULT_PLAN
+    plan = ([tuple(float(x) for x in p.split(",")) for p in a.plan] if a.plan
+            else auto_plan(a.src, lead=a.lead, tail=a.tail) if a.auto else DEFAULT_PLAN)
     if not plan:
         # NOT a silent fallback. DEFAULT_PLAN is seed 4815's own speech positions; applying it
         # to a take whose speech is somewhere else cuts the dialogue out, which is the failure
@@ -308,9 +310,7 @@ def main():
                  f"are ANOTHER take's timings and applying them cuts the dialogue out (seed "
                  f"4814). Check the file has audio, or pass --plan explicitly, or --no-auto if "
                  f"you really mean the stored plan.")
-    if a.plan:
-        plan = [tuple(float(x) for x in p.split(",")) for p in a.plan]
-
+    ambient_window = a.ambient
     dur = probe(a.src)
     for s, e in plan:
         if not (0 <= s < e <= dur + 0.01):
@@ -355,6 +355,7 @@ def main():
         ins = []
         for q in parts:
             ins += ["-i", str(q)]
+        encoded_lengths = [probe(part) for part in parts]
         n = len(parts)
         fc = "".join("[%d:v][%d:a]" % (i, i) for i in range(n)) + "concat=n=%d:v=1:a=1[v][a]" % n
         subprocess.run(["ffmpeg", "-v", "error", "-y", *ins, "-filter_complex", fc,
@@ -428,29 +429,35 @@ def main():
     print("  a segment is not a shot. Measure the render: `measure-pace.py "
           f"{a.dst.name}`")
 
-    # -- the timeline map ------------------------------------------------------------------
-    # Which stretch of the SOURCE each finished second came from. Written because the brand
-    # layer's caption spans are measured against the take's ORIGINAL timeline: after a re-cut
-    # every one of them points at the wrong frame, and there is no way to re-derive them from
-    # the output alone. Nothing consumes this yet; build_looks.py's captions are still timed to
-    # the un-recut take. See SKILL.md, Critical knowledge.
+    # -- the common timeline map -----------------------------------------------------------
+    # Encoder frame rounding belongs in output offsets, never in source word times.
+    # Use measured segment lengths, then check against the finished output.
+    actual_duration = probe(a.dst)
+    if abs(sum(encoded_lengths) - actual_duration) > 0.1:
+        sys.exit("encoded segment durations do not match the recut; no trustworthy edit map can be written")
     out_t, segs = 0.0, []
-    for s, e in plan:
-        segs.append({"src_start": round(s, 3), "src_end": round(e, 3),
-                     "out_start": round(out_t, 3), "out_end": round(out_t + e - s, 3)})
-        out_t += e - s
+    for i, ((s, e), length) in enumerate(zip(plan, encoded_lengths)):
+        end = actual_duration if i == len(plan) - 1 else out_t + length
+        segs.append({"src_start": round(s, 6), "src_end": round(e, 6),
+                     "out_start": round(out_t, 6), "out_end": round(end, 6)})
+        out_t = end
     a.dst.with_suffix(".plan.json").write_text(json.dumps(
-        {"source": str(a.src), "source_duration": round(dur, 3),
-         "output_duration": round(out_t, 3), "shots": len(plan),
-         "median_shot": round(med, 3),
+        {"version": 1, "source": str(a.src.resolve()), "output": str(a.dst.resolve()),
+         "source_sha256": edit_timeline.file_hash(a.src),
+         "output_sha256": edit_timeline.file_hash(a.dst),
+         "source_duration": round(dur, 6), "output_duration": round(actual_duration, 6),
+         "shots": len(plan), "median_shot": round(med, 3),
          "final_shot": round(plan[-1][1] - plan[-1][0], 3),
          "reference_median_band": list(REF_BAND),
-         "_note": "median_shot/final_shot are SEGMENT lengths in the plan, not shots measured "
-                  "on the render: two contiguous segments are one shot on screen. Measure the "
-                  "render with measure-pace.py.",
+         "ambience": {"source": str(a.src.resolve()),
+                      "start": ambient_window[0] if ambient_window else None,
+                      "duration": ambient_window[1] - ambient_window[0] if ambient_window else None,
+                      "bed_applied": bool(a.ambient)},
+         "_note": "median_shot/final_shot are source SEGMENT lengths, not shots measured on the render. "
+                  "Output offsets use encoded durations. build_looks.py consumes this map; word times "
+                  "and the ambience window remain in original SOURCE seconds.",
          "segments": segs}, indent=1), encoding="utf-8")
-    print(f"  plan map  {a.dst.with_suffix('.plan.json').name}  (source spans -> output "
-          f"timeline; captions measured on the un-recut take DO NOT survive this)")
+    print(f"  edit map  {a.dst.with_suffix('.plan.json').name}  (shared source spans -> output timeline)")
 
 
 if __name__ == "__main__":

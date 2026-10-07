@@ -114,6 +114,7 @@ body.fill-viewport .stage {
   flex-direction: column;
   gap: 2px;
 }
+.message-list { display:flex; flex-direction:column; gap:2px; }
 
 /* Timestamp pill */
 .timestamp {
@@ -391,6 +392,25 @@ body.framed {
   position: relative;
 }
 
+/* Home indicator. iOS keeps a 34 pt strip under the composer for it; without
+   the strip and the bar the bottom of the phone reads as a mockup. */
+.iphone-frame .screen::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  transform: translateX(-50%);
+  width: 134px;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--text-primary);
+  z-index: 5;
+  pointer-events: none;
+}
+.framed .keyboard {
+  padding-bottom: 34px;
+}
+
 /* Side buttons (subtle) */
 .iphone-frame::before {
   /* left side: silence + volume */
@@ -422,7 +442,7 @@ body.framed {
 /* Dynamic Island */
 .dynamic-island {
   position: absolute;
-  top: 11px;
+  top: 12px;
   left: 50%;
   transform: translateX(-50%);
   width: 122px;
@@ -557,12 +577,12 @@ body.theme-dark .keyboard .input {
   display: flex;
   align-items: center;
   gap: 6px;
-  color: #FFFFFF;
+  color: var(--text-primary);
 }
 .conv-header .left .back-btn {
   width: 14px;
   height: 22px;
-  color: #FFFFFF;
+  color: var(--text-primary);
 }
 .conv-header .left .badge-pill {
   display: inline-flex;
@@ -572,8 +592,8 @@ body.theme-dark .keyboard .input {
   min-width: 46px;
   padding: 0 10px;
   border-radius: 13px;
-  background: #1C1C1E;
-  color: #FFFFFF;
+  background: var(--imsg-grey);
+  color: var(--text-primary);
   font-size: 14px;
   font-weight: 500;
 }
@@ -605,10 +625,10 @@ body.theme-dark .keyboard .input {
   gap: 3px;
   padding: 3px 10px;
   border-radius: 14px;
-  background: #1C1C1E;
+  background: var(--imsg-grey);
   font-size: 14px;
   font-weight: 500;
-  color: #FFFFFF;
+  color: var(--text-primary);
 }
 .conv-header .center .name-pill .chev {
   color: #8E8E93;
@@ -617,7 +637,7 @@ body.theme-dark .keyboard .input {
 .conv-header .right .facetime-btn {
   width: 26px;
   height: 26px;
-  color: #FFFFFF;
+  color: var(--text-primary);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -736,6 +756,7 @@ body.theme-dark .keyboard .input {
    naturally as bubbles arrive (and JS auto-scroll has new content to follow).
    Use a custom data flag the driver flips at pop time. */
 .row[data-pending="1"],
+.sender-name[data-pending="1"],
 .delivered-caption[data-pending="1"] {
   display: none !important;
 }
@@ -752,11 +773,8 @@ body.theme-dark .keyboard .input {
   to   { opacity: 1; }
 }
 
-/* For long composer text, allow it to truncate gracefully. */
-.keyboard .input { overflow: hidden; }
-.keyboard .input .composer-text {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: calc(100% - 36px);
-}
-
+/* Long messages wrap; the flex layout reserves the composer at the screen bottom. */
+.keyboard .input.has-text { height:auto; min-height:36px; padding-top:7px; padding-bottom:7px; align-items:flex-end; }
+.keyboard .input .composer-text { white-space:pre-wrap; overflow-wrap:anywhere; line-height:1.3; max-width:calc(100% - 36px); }
+img.ae { width:1.2em; height:1.2em; vertical-align:-0.22em; display:inline-block; }
+.bubble.emoji-only img.ae { width:1em; height:1em; }

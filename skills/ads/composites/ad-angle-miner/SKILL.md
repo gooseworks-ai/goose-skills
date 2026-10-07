@@ -1,32 +1,30 @@
 ---
 name: ad-angle-miner
-description: >
-  Find the ad angles worth running and turn them into ready-to-make ad ideas: static ads, video
-  ads, or just the copy. Each angle is backed by what buyers actually say (the brand's reviews,
-  competitors' bad reviews, comments on the ads and posts that work) and by what advertisers keep
-  paying to run, never by one Reddit thread. Static ideas come with a matching template from the
-  live template library; video ideas with a video format and the organic posts behind them. Every
-  reference is labelled paid or organic and links to the real post or ad. Picked ideas can be
-  handed straight to making the ads.
+description: Research supported advertising promises from a specific buyer's context, current product facts, customer language and observed ads. Turn them into static, video or copy ideas; match video ideas to actual recipes and save a product-scoped angle bank for write-video-ad-script. Product-led discovery can use verified facts without reviews. Reference persistence and reach are observations, not proof of performance.
 tags: [ads]
 ---
 
 # Ad Angle Miner
 
+**Summary.** Research advertising promises and match them to creatives the brand can make.
+Video research produces a structured bank the script writer can reuse, with stable angle ids,
+separate product facts and customer language, and template compatibility. Research scores rank
+test candidates; they do not predict conversions.
+
 An ad is **copy plus creative**. This skill finds the angles real buyers respond to and turns each
 into an ad idea the user can make:
 
 - **Static**: a headline and primary text, plus a template from the live library whose layout fits the message.
-- **Video**: a hook, plus a video format from the live catalogue and the organic posts that prove the pattern.
+- **Video**: a hook, plus a video format from the live catalogue and the observed posts that illustrate the pattern.
 - **Copy only**: the headline and primary text lines, with no creative. Same evidence as static.
 
-**Core principle:** a good angle shows up in two places at once: in what buyers say (reviews,
-comments) and in what the market keeps paying to run (long-running ads, many variants). One
-source alone is a hunch. A paid ad's reach is never proof on its own, and a single forum thread
-never is either.
+**Core principle:** combine audience relevance with a supported product promise and a feasible
+creative. Customer language, demonstrations, first-party performance and advertiser persistence
+provide different evidence. Long-running ads and variants are observations, not proof of profit.
+A product-led angle can start from verified facts without reviews; label missing evidence.
 
 **Do only the work the chosen output needs.** Copy and static never search for videos or read
-video formats. Copy never looks at templates. Video doesn't mine product reviews unless asked.
+video formats. Copy never looks at templates. Video reuses available reviews for language and insight; collect more only when the angle needs them. A video request may name a selected template or angle: preserve both.
 
 ## When to Use
 
@@ -68,12 +66,12 @@ sources, once. Never widen the scope on your own.
 | Brand context (1-0) | yes | yes | yes |
 | The brand's own ads (1A) | yes | yes | yes |
 | Competitor ads (1B) | yes, image ads first | yes, video ads first | yes, the copy |
-| Customer voice: reviews + comments (1C) | **yes** | comments on the top posts only | **yes** |
+| Customer voice: reviews + comments (1C) | **yes** | reuse reviews; comments on top posts | **yes** |
 | Organic short-form reach (1D) | no | **yes** | no |
 | Internal data (1E) | if provided | if provided | if provided |
 | Reddit and forums (1F) | only if asked | only if asked | only if asked |
 | Template library (2.5) | **yes** | no | no |
-| Video format catalogue (2.5) | no | **yes** | no |
+| Video format catalogue and full recipes (2.5) | no | **yes** | no |
 
 ### 0C: The rest of the intake
 
@@ -116,10 +114,11 @@ What the brand already runs decides what is new.
    INACTIVE for the stopped ones when the endpoint returns them). Group ads with the same primary
    text as variants of one message.
 3. **Sort them:**
-   - **Still running for 30+ days, or with 3+ variants**: the brand's own winner. A young ad
-     account has few old ads, so lean on the variant rule there. Don't skip it;
-     an idea can refresh it with a new creative. Flag fatigue if it has run for months.
-   - **Stopped**: tested and dropped. Don't propose it again unless the evidence is new.
+   - **Still running for 30+ days, or with 3+ variants**: advertiser persistence, worth investigating.
+     Only label a winner when first-party performance supports it for a stated objective and
+     measurement window. Duration alone does not establish fatigue or profitability.
+   - **Stopped**: inactive, reason unknown unless first-party records explain it. It may have been
+     seasonal, budget-limited or replaced; do not infer failure from status alone.
    - **Never run**: the white space. An angle buyers talk about that the brand has never run is
      the most valuable find.
 
@@ -150,7 +149,8 @@ What buyers say in their own words. This is what keeps angles from being guesses
    listing (web search and fetch). Keep 4-5 star reviews for outcomes and proof, and 1-3 star
    reviews for objections to answer.
 2. **Competitors' bad reviews**: 1-2 star reviews of the top 2 competitors' products, from the same
-   kinds of sources. These are the gaps the brand can claim.
+   kinds of sources. These suggest possible gaps to investigate. Claim a gap only when this product
+   independently supports the promised difference.
 3. **Comments on what's working**: most ads link to a landing page, not a post, so their comments
    usually can't be read. Read comments instead on:
    - the brand's own top posts (its accounts from the brand context; Instagram
@@ -209,14 +209,24 @@ as customer voice only when the same point also shows up in reviews or comments.
     tags the brand as a partner;
   - YouTube: isPaidPromotion from /v1/youtube/video (/v1/youtube/video/sponsors only for the
     sponsor's name; if they disagree, unknown);
-  - **boosted**: the same caption or script on several accounts, plays far above the account's
-    followers, or the same creative in the ad library.
-- **organic**: a post with none of the above.
-- **unknown**: you can't tell. Say so; never guess organic.
+  - **boosted**: platform metadata or a matching ad-library entry identifies promotion.
+    Cross-posting and high plays relative to followers alone do not establish paid distribution.
+- **organic**: the source identifies unpaid distribution. Without positive evidence, use
+  unknown with "no paid disclosure observed"; absence of a label does not prove organic reach.
+- **unknown**: you can't tell. Say so; never guess organic. Unknown references may
+  illustrate a storytelling structure, but their views do not count as verified organic evidence.
 
 Reviews and comments are **customer voice**, a third kind of evidence. Label them as such.
 
 ## Phase 2: Angle Extraction
+
+Read [buyer case and supported product role](references/buyer-and-product-role.md).
+Before naming an angle, extract a specific current consumer task or decision and
+explain why this exact product can help. Record the buyer's inputs, current approach,
+constraint and desired output, plus the supported product action and useful role.
+Keep source limits and authored scenarios explicit. Carry these as `buyer_case` and
+`product_role` in the video handoff; a generic pain label or ingredient list is not
+enough. Preserve human feedback separately from model ranking.
 
 | Category | What to look for |
 |---|---|
@@ -228,9 +238,11 @@ Reviews and comments are **customer voice**, a third kind of evidence. Label the
 | **Contrast** | Old way vs new way, them vs us |
 | **Objection** | The doubt that stops a purchase, answered |
 
-For each angle record: the one-sentence angle, 2-5 verbatim quotes with links, which kinds of
-evidence back it (customer voice, organic reach, sustained ads), whether the brand already runs it
-(1A: winner, stopped, or never run) and the competitor gap it exploits, if any.
+For each angle record: the one-sentence angle, relevant verbatim quotes with links when
+available, and the sourced product facts or observations that support it. Do not invent
+quotes to meet a quota or require a complaint for a product-led discovery angle. State
+which kinds of evidence back it (customer voice, product facts, organic reach, sustained ads), whether the brand already runs it
+(1A: measured winner, persistent, inactive, or never observed) and the competitor gap it exploits, if any.
 
 ## Phase 2.5: Turn Each Angle Into an Ad
 
@@ -267,11 +279,36 @@ The template library grows every week, so never rely on a remembered list of tem
 
 ### Video: pick from the live format catalogue
 
-`video_catalog_list` with kind formats and the brand id. Only these formats can be made; never map
-to one that isn't listed. For each angle: the format's template id, its card description quoted
-(never reworded), why it fits, and its needs checked against what the brand has. Match the product
-to the format: a creator holding a product needs a physical product; a screen-recording format
-needs an app.
+Read the live video format catalogue for the brand. Only listed formats can be made. When the
+brief already chooses a template, use it. For plausible candidates, fetch the full template
+recipe before calling the idea make-ready: a card description is not a production contract.
+
+Match the angle to the recipe's story mechanism, speakers, timing, text slots, proof device,
+permitted visuals and required assets. Keep the quoted catalogue description for display, and
+record the actual template id and compatibility reason. A physical demo needs a real product;
+a screen demo needs usable recordings; a silent reveal needs a visual payoff. Do not turn all
+angles into testimonials. An unmet essential input makes the pair provisional or incompatible.
+
+For dialogue directions, return an observed same-format reference alongside the angle.
+Reuse collected sources before retrieving more. A caption, format description or imagined
+beat map cannot establish human dialogue.
+
+**Street ads require a complete commercial interaction**, with full visual timeline and
+spoken exchange inspected. Match physical/service/digital offering and the actual
+interaction (sampling, mic-only conversation, or challenge). Preserve source, observation
+method/limits, timestamped words and actions, visible setup, participation reason, hook,
+brand connection, payoff, and unseen recruitment as explicitly unknown. Label paraphrases
+and retain full transcript evidence. Partial hooks and editorial radio excerpts cannot
+fill this gap; seed summaries are source leads until inspected in full. The selected
+[[references::render-street-interview]] guide and writer's files reference define the record.
+
+For podcasts, an appropriate editorial interview can provisionally teach turn structure,
+with commercial and delivery limitations recorded. Neither real performers nor an
+observed transcript establishes human authorship or conversion performance.
+
+Carry audience, objective, offer, CTA and exact product through this match. When the angle or
+format is fixed, do not replace it to improve a ranking. Report a conflict and suggest a
+compatible execution. Never infer that a renderer can make a scene from a generic model name.
 
 ### Copy only
 
@@ -290,18 +327,21 @@ and no more than 3 on one angle (variants of one angle count toward that 3).
 | **Fit** | 20% | The brand can claim it with its own facts, and buyers like its own customers say it |
 | **Make-ready** | 20% | The template or format fits and the brand has what it needs (copy: 100%) |
 
-Score out of 100 and rank.
+Reject unsupported product promises and impossible angle–template pairs before scoring.
+Score the remaining pairs out of 100 and rank as research priorities. These weights and caps
+are heuristics, not calibrated probabilities of performance. Keep a measured first-party
+winner separate from the research score. Do not pad the list when evidence is thin.
 
 - **Sustained ads** means still running for 30+ days, or 3+ variants of one message. A single
   short-lived ad is weak evidence.
 - **Static and copy** can have two kinds (customer voice and sustained ads; there is no organic
-  search). The brand's own winners count as sustained ads, but lower the Gap score.
+  search). The brand's own persistent ads count as sustained observations, but lower the Gap score.
 - **Caps**: an idea backed by only one kind of evidence caps at 70. One backed only by short-lived
   ads or a single thread caps at 50. In video, a paid post's views never count as evidence.
 
 ## Phase 4: Output
 
-Print one table in the chat, best first, with 10-15 ideas. Every idea needs at least one link a
+Print one table in the chat, best first, with up to 10-15 distinct, supported ideas. Every idea needs at least one link a
 tool actually returned; no link, no idea.
 
 **Static:**
@@ -325,14 +365,20 @@ running and variants).
 Under the table:
 
 - one line on which sources ran and which were skipped (and why);
-- the brand's own ads in one line: winners, stopped, and the white space found;
+- the brand's own ads in one line: measured winners, persistent or inactive ads, and white space;
 - the claims the brand must approve;
 - if the stored ad page looked wrong (1A), say so.
 
-Save the angle bank (one line per angle with its quotes) as angle-bank-[brand]-[YYYY-MM-DD].md and
-the ideas as JSON next to it (rank, headline or hook, primary text, angle, template or format id
-with its source type, why, references with url / kind / metric, needs, score), so a later session
-can pick them up without re-running the research.
+For video, read the video-handoff reference and save video-angle-bank.v1 with stable angle ids,
+brand and product scope, audience/objective/offer/CTA, sourced facts, verbatim quotes, observed
+references and compatible template ids. Save it with the workspace file tools in the brand and product's
+video-scripts area as angle-bank.json, beside customer-words.json. Also keep a copy in this run.
+If workspace writes fail, retain the run copy and pass it directly; say cross-session reuse is
+unavailable. Do not pretend a bank was persisted.
+
+A human-readable angle-bank Markdown and ideas JSON remain useful for static and copy output.
+For video they may accompany the shared bank, but do not replace it. The script writer consumes
+the bank rather than trying to reconstruct research from a chat table.
 
 Then ask: "Which ones should I make? Pick up to 5, or say 'the top 3'." (Copy: skip this.)
 
@@ -345,8 +391,11 @@ For the picked ideas, with no manual step in between:
 - **Video**: one project per idea with `video_project_upsert` (brand id, a short name from the
   hook, format set to the template id, and no brief, since a brief makes a multi-concept batch).
   Then make them one after another with `goose-video-local`; each idea is that project's brief.
-  It needs a terminal agent (Claude Code, Codex, Cursor); on a hosted connector, say the ideas are
-  ready and making them needs one of those.
+  Pass the complete selected idea and shared bank into goose-video-local, including the chosen
+  angle id, product id, template id, evidence and proof requirements. Its script step must fetch
+  write-video-ad-script and prepare a validated angle context; never pass only the hook. Keep raw
+  buyer records outside remixable review data. The local-template path needs a terminal agent;
+  hosted/server formats have their own runtime and require the same strategy contract there.
 
 Up to 5 per request; offer the rest after. Each paid step of making an ad is approved before it runs.
 
@@ -368,3 +417,7 @@ Up to 5 per request; offer the rest after. Each paid step of making an ad is app
 - "Write ad copy for [brand]"
 - "What angles should we run?"
 - "What's working in my competitors' ads?"
+
+## Related
+
+- [[references::write-video-ad-script]] — consumes the video handoff and fits it to the recipe.

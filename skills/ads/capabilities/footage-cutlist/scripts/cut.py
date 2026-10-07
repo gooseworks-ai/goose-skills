@@ -134,6 +134,26 @@ def render_screen(spec, b, idx, W, H, fps, nframes, out, enc):
         raise SystemExit("encode failed for %s" % b["id"])
 
 
+def render_photo(spec, b, W, H, fps, nframes, out, enc):
+    from PIL import Image
+    from photo import render
+    y, bh = box_for(spec, b)
+    src = Image.open(spec["_sources"][b["source"]]["path"]).convert("RGB")
+    p = subprocess.Popen(["ffmpeg", "-v", "error", "-y", "-f", "rawvideo", "-pix_fmt", "rgb24",
+                          "-s", f"{W}x{H}", "-r", str(fps), "-i", "-", "-an", "-c:v", "libx264",
+                          *enc, "-pix_fmt", "yuv420p", str(out)], stdin=subprocess.PIPE)
+    try:
+        for k in range(nframes):
+            canvas = Image.new("RGB", (W,H), (26,26,26))
+            progress = (k/fps) / (b["end"]-b["start"])
+            canvas.paste(render(src, W, bh, b, progress, b.get("bg") or spec["bg"]), (0,y))
+            p.stdin.write(canvas.tobytes())
+    finally:
+        p.stdin.close()
+    if p.wait():
+        raise RuntimeError("photo encoding failed")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--cutlist", required=True)
@@ -158,6 +178,8 @@ def main():
                        "color=c=%s:s=%dx%d:r=%d:d=%.4f" % (PLATE, W, H, fps, dur),
                        "-frames:v", str(nfr), "-c:v", "libx264", *enc, "-pix_fmt", "yuv420p", str(part)]
                 subprocess.run(cmd, check=True)
+            elif b.get("look") == "photo":
+                render_photo(spec, b, W, H, fps, nfr, part, enc)
             elif b.get("look") == "screen":
                 render_screen(spec, b, i, W, H, fps, nfr, part, enc)
             else:

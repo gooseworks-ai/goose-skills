@@ -112,3 +112,8 @@ Picking is free, so take as many rounds as the user needs. Never spend on the cr
 until the user has approved the cut list.
 
 Source paths resolve relative to the cut-list file, never the shell working directory. Use absolute source paths when preparing a run. Save explicit inspected in/out bounds; defaults are compatibility behavior, not evidence that a window was watched. Screen framing defaults to width to preserve UI text; height fitting is an explicit reviewed choice.
+## Product-photo motion and caption review
+
+A real product photo can use `look: "photo"`. This is a dedicated contain/pan/zoom treatment without a screen bezel. `photo` accepts start/end scale (0.85–1.0), start/end pan pairs (-1–1), a normalized content `box`, and normalized `protected` source rectangles. An optional crop must contain every protected product/text rectangle. The selected region remains visible throughout motion. Use `photo.box` to reserve space above/below the seam for a qualification. Review first/middle/last frames; preview and render share the photo framing function. Existing plain stills and screen looks remain supported.
+
+Before showing the cutlist, generate a footprint with caption-burn's bundled `footprint.py`, using the final style, anchor and font. Pass that JSON to preview's caption-footprint option. The amber band is the union of the actual rendered caption groups for that beat. Rebuild it after copy/timing/style changes. If it covers qualifying text, adjust photo.box, crop or layout, then inspect the final captioned video. Do not reduce or hide the qualification to make the claim fit.

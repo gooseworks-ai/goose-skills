@@ -325,9 +325,13 @@ def main():
                   if not format_spec.lint(_strip_all(up, n), **UG)]
         ok(f"all {len(format_spec.UPRIGHT_CLAUSES)} upright clauses are load-bearing (on {upr})",
            not missed, f"lint still passed without: {missed}")
+        # Checked on the NUMBERED SHOTS, which is what the message says and where an instruction
+        # lives. The opt-in hold blocks (natural_grammar / real_grammar) name the ban in the
+        # preamble ("Nobody turns it over, shakes it, tips it"), and a ban is not an instruction.
+        shot_text = " ".join(str(x) for x in format_spec.split_shots(up)).lower()
         for gone in ("looks at it", "turns it over", "reads the label", "sniffs it",
                      "examines it"):
-            ok(f"no shot tells anyone to {gone!r}", gone not in up.lower())
+            ok(f"no shot tells anyone to {gone!r}", gone not in shot_text)
         # The per-shot needles are COUNTED per shot, not found once. Falsify by holing exactly
         # one shot, which is the seed-4804 shape: the phrase is still in the prompt and the take
         # is still wrong.

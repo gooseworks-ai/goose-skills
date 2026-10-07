@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """Assemble reviewed local clips. No provider calls or automatic quality verdict."""
 import argparse
+import hashlib
+import math
+import re
 import json
 import subprocess
 import tempfile
@@ -13,6 +16,11 @@ def run(args):
 
 def probe(file):
     return json.loads(subprocess.check_output(['ffprobe', '-v', 'error', '-show_streams', '-show_format', '-of', 'json', str(file)], text=True, timeout=60))
+
+
+def file_sha256(source):
+    with source.open("rb") as handle:
+        return hashlib.file_digest(handle, "sha256").hexdigest()
 
 
 def assemble(plan, output):
@@ -33,6 +41,28 @@ def assemble(plan, output):
     duration = sum(float(clip['duration_s']) for clip in clips)
     if not 0 < duration <= 180 or any(float(clip['duration_s']) <= 0 for clip in clips):
         raise ValueError('Clip durations must be positive, totaling at most180 seconds')
+    selected = []
+    for index, clip in enumerate(clips):
+        excerpt = clip.get('source_excerpt')
+        if excerpt is None:
+            continue
+        required = {'asset_id', 'analysis_revision', 'scene_id', 'start_ms', 'end_ms', 'audio_mode'}
+        if not isinstance(excerpt, dict) or set(excerpt) != required:
+            raise ValueError('Saved footage requires exact original identity, revision, scene, bounds and audio mode')
+        if not isinstance(excerpt['asset_id'], str) or not re.fullmatch(r'[^:/\\]{1,160}', excerpt['asset_id']) or not re.fullmatch(r'[a-f0-9]{64}', str(excerpt['analysis_revision'])):
+            raise ValueError('Saved footage identity/revision is invalid')
+        if any(not isinstance(excerpt[key], int) or isinstance(excerpt[key], bool) for key in ('start_ms', 'end_ms')) or not 0 <= excerpt['start_ms'] < excerpt['end_ms']:
+            raise ValueError('Saved footage trim must use finite nonnegative integer milliseconds')
+        if excerpt['audio_mode'] not in ('original', 'muted') or (excerpt['scene_id'] is not None and (not isinstance(excerpt['scene_id'], str) or not excerpt['scene_id'])):
+            raise ValueError('Saved footage audio mode/scene is invalid')
+        if not math.isfinite(float(clip['duration_s'])) or abs(float(clip['duration_s']) - (excerpt['end_ms'] - excerpt['start_ms']) / 1000) > 0.001:
+            raise ValueError('Saved footage must keep its exact selected duration')
+        source = Path(clip['path']).resolve()
+        if file_sha256(source) != excerpt['analysis_revision']:
+            raise ValueError('Original bytes changed; refresh and review the selection before assembly')
+        selected.append((source, excerpt))
+    if plan.get('voice_path') and any(excerpt['audio_mode'] == 'original' for _, excerpt in selected):
+        raise ValueError('This assembler replaces native audio with a separate voice track. Explicitly mute the source or use a host mixer that preserves the approved original audio.')
     output = Path(output).resolve()
     output.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix='video-assembly-') as folder:
@@ -45,11 +75,13 @@ def assemble(plan, output):
                 raise ValueError(f'Clip {index + 1} has no video')
             video_stream = next(stream for stream in info['streams'] if stream['codec_type'] == 'video')
             visual_duration = float(video_stream.get('duration', 0))
-            if visual_duration + 0.05 < float(clip['duration_s']):
+            excerpt = clip.get('source_excerpt')
+            start = excerpt['start_ms'] / 1000 if excerpt else 0
+            if visual_duration + 0.001 < start + float(clip['duration_s']):
                 raise ValueError(f'Clip {index + 1} is shorter than its reviewed timeline; generate or explicitly revise it first')
             target = root / f'{index:03d}.mp4'
-            command = ['ffmpeg', '-nostdin', '-v', 'error', '-y', '-i', str(source)]
-            has_audio = any(stream['codec_type'] == 'audio' for stream in info['streams'])
+            command = ['ffmpeg', '-nostdin', '-v', 'error', '-y', '-ss', str(start), '-i', str(source)]
+            has_audio = any(stream['codec_type'] == 'audio' for stream in info['streams']) and (not excerpt or excerpt['audio_mode'] == 'original')
             if not has_audio:
                 command += ['-f', 'lavfi', '-i', 'anullsrc=r=48000:cl=stereo']
             command += ['-map', '0:v:0', '-map', '0:a:0' if has_audio else '1:a:0', '-t', str(clip['duration_s']), '-vf', f'scale={width}:{height}:force_original_aspect_ratio=increase,crop={width}:{height},setsar=1,fps={fps}', '-af', 'aresample=48000', '-c:v', 'libx264', '-preset', 'fast', '-crf', '20', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-ac', '2', '-ar', '48000', str(target)]
@@ -78,6 +110,9 @@ def assemble(plan, output):
             path = Path(captions).resolve().as_posix().replace('\\', '\\\\').replace(':', '\\:').replace("'", "\\'")
             command += ['-vf', f"ass=filename='{path}'"]
         command += ['-t', str(duration), '-c:v', 'libx264' if captions else 'copy', '-c:a', 'aac', '-ar', '48000', '-ac', '2', '-movflags', '+faststart', str(output)]
+        for source, excerpt in selected:
+            if file_sha256(source) != excerpt['analysis_revision']:
+                raise ValueError('Original bytes changed during assembly; output was not published')
         run(command)
     info = probe(output)
     actual = float(info['format']['duration'])
@@ -87,7 +122,7 @@ def assemble(plan, output):
         raise ValueError(f'Visual duration {visual_actual} differs from reviewed timeline {duration}')
     if abs(actual - duration) > max(0.15, 2 / fps):
         raise ValueError(f'Export duration {actual} differs from reviewed timeline {duration}')
-    return {'output': str(output), 'duration_s': actual, 'width': width, 'height': height, 'technical_probe': info, 'quality_status': 'requires_visual_and_audio_review'}
+    return {'source_excerpts': [excerpt for _, excerpt in selected], 'output': str(output), 'duration_s': actual, 'width': width, 'height': height, 'technical_probe': info, 'quality_status': 'requires_visual_and_audio_review'}
 
 
 def main():

@@ -411,7 +411,24 @@ def word_times(path):
 _NORM_RE = re.compile(r"[^a-z0-9']+")
 
 
+_ONES = ("zero one two three four five six seven eight nine ten eleven twelve thirteen fourteen "
+         "fifteen sixteen seventeen eighteen nineteen").split()
+_TENS = "twenty thirty forty fifty sixty seventy eighty ninety".split()
+
+
+def _number_words(n):
+    if n < 20:
+        return _ONES[n]
+    return _TENS[n // 10 - 2] + ("" if n % 10 == 0 else _ONES[n % 10])
+
+
 def _norm(w):
+    # Whisper writes spoken numbers as digits ("40" for "forty"), and a digit token has no letters
+    # to align on. Olipop episode 1, 2026-10-06: five number words, including the payoff's "four",
+    # were reported as invented speech and left uncaptioned. Spell 0-99 out before comparing.
+    digits = w.strip().strip(".,!?;:'\"")
+    if digits.isdigit() and int(digits) < 100:
+        return _number_words(int(digits))
     return _NORM_RE.sub("", w.lower())
 
 
@@ -893,6 +910,17 @@ def main():
     trimmed = []
     for tk, pl in zip(takes, plans):
         pl2, saved = trim_silent_edges(tk, pl)
+        # KEEP THE HANDOVER (opt-in, episode key `extra_head_s`). Olipop episode 1: the head trim
+        # removed the pass of the can at the top of every take, which is the beat the operator
+        # asked to see. Give back up to that many seconds of silent run-up, never past the
+        # segment's own start, so the boundary is still the take's edge or one of its cuts.
+        extra = float(ep.get("extra_head_s") or 0)
+        if extra > 0 and pl2 and pl:
+            pl2 = [list(x) for x in pl2]
+            back = max(float(pl[0][0]), float(pl2[0][0]) - extra)
+            saved -= float(pl2[0][0]) - back
+            pl2[0][0] = back
+            pl2 = [tuple(x) for x in pl2]
         if saved > 0.01:
             print(f"  {tk.name}: trimmed {saved:.2f}s of silence off the take's outer edges "
                   f"(a join, not a mid-shot splice)")

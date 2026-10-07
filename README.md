@@ -38,41 +38,41 @@ Works with [Claude Code](https://claude.ai/claude-code) &middot; [Cursor](https:
 
 
 ### AI Coding Agents (Claude Code, Cursor, Codex, etc)
-**Paste this into your coding agent** (Claude Code, Cursor, or Codex) and it'll set everything up:
+**Paste this into your coding agent** and it sets everything up:
 
 ```
-Install the Gooseworks skills:
-
-In the terminal, run `npx gooseworks install --all`.
-
-Then run `npx gooseworks login` and it'll open a browser to sign in and set up the tools, then confirm it worked.
-
-The skills can be used with /gooseworks <prompt>
+Install gooseworks: https://gooseworks.ai/install.md
 ```
+
+Your agent reads that page and follows it: it **asks you before installing anything**, installs the skills and the `gooseworks` MCP server with the right flag for your agent, opens a browser for Google sign-in, checks the install with `npx gooseworks@latest doctor`, and (after you restart the agent) offers to set up your company. The page only ever runs `npx gooseworks@latest …` and touches your agent's skills folder, its MCP config and `~/.gooseworks/credentials.json`, nothing else.
+
+Want one skill in particular? Add it to the line: `Install gooseworks: https://gooseworks.ai/install.md, including the goose-graphics skill.`
+
+After the install, use the skills with `/gooseworks <prompt>`.
 
 ### Claude Cowork
 
-Run this command in a terminal first:
+Paste the same line into Cowork while working inside a local folder on your machine:
+
 ```
-npx gooseworks install --all
+Install gooseworks: https://gooseworks.ai/install.md
 ```
 
-Then authenticate:
-```
-npx gooseworks login
-```
-
-Then make sure you're working inside a local folder on your machine, and then you can use the skills in Cowork like this:
+Then use the skills like this:
 ```
 Use /gooseworks skill to generate some ad creatives
 ```
 
+### Chat apps (claude.ai, ChatGPT)
 
-### Install manually
-Prefer to run it yourself? Use the command directly:
+Chat apps cannot run the install. Add `https://mcp.gooseworks.ai/mcp` as a custom connector in the app's settings and sign in with Google. The same line above also works: the agent will give you those instructions.
+
+### Run it yourself
+Prefer the terminal? The same thing, typed by hand (keep `--mcp`; `--all` includes it):
 
 ```bash
-npx gooseworks install --all       # All detected agents
+npx gooseworks@latest install --claude --mcp   # or --cursor --mcp, --codex --mcp
+npx gooseworks@latest install --all            # every detected agent
 ```
 
 This gives your coding agent access to the **full catalog of 200+ skills**. After installing, just ask your agent to use any skill by name.
@@ -196,7 +196,7 @@ These skills run inside your coding agent, so it's worth knowing exactly what th
 - **Scripts run locally.** Skill scripts execute on your machine and write to `/tmp/gooseworks-scripts/`, never into your project directory. Only API requests go through GooseWorks servers; review any script before letting your agent run it.
 - **Your agent stays in control.** The skills are a tool your agent reaches for when it fits the task (data at scale, sources behind auth, a specific provider) — not a replacement for its built-in web search or fetch on quick lookups. You can read or edit any installed `SKILL.md` to tune that behavior.
 - **Credentials stay local.** Auth is a Bearer token stored at `~/.gooseworks/credentials.json` (file mode `0600`). Third-party provider keys (Apify, Apollo, etc.) are held server-side — your token never touches them. All network calls are HTTPS.
-- **The MCP server is opt-in.** Registering the GooseWorks MCP server is off by default; it only happens if you explicitly run `gooseworks install --mcp`.
+- **The MCP server is part of the install.** The install registers the GooseWorks MCP server in your agent's config, because the skills call it for your account. To disconnect it, remove the `gooseworks` entry from that config (`~/.claude.json`, `~/.codex/config.toml` or `~/.cursor/mcp.json`).
 
 Found something that looks off? [Open an issue](https://github.com/gooseworks-ai/goose-skills/issues) — we'd rather fix it in public.
 
@@ -215,3 +215,7 @@ The skill files and CLI in this repository are MIT-licensed. The GooseWorks API 
 [Get Started](https://app.gooseworks.ai) &middot; [Report an Issue](https://github.com/gooseworks-ai/goose-skills/issues)
 
 </div>
+
+## Agent catalog releases
+
+Feature PRs target `dev` and update staging after CI passes. Promote tested changes to `main` for production. See [deployment setup and recovery](DEPLOYMENT.md).

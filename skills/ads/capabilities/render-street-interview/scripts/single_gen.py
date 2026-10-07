@@ -28,6 +28,7 @@ approved seed-4815 prompt BYTE FOR BYTE, so the split provably did not reword an
 paid for.
 """
 import argparse
+import hashlib
 import json
 import sys
 import urllib.request
@@ -42,6 +43,14 @@ ROOT = paths.ROOT
 # media_proxy is imported LAZILY, inside the --yes branch only. It used to be a module-level
 # import, which meant the *dry run* could not even start outside the run folder: the point of a
 # dry run is that it needs no key and no network.
+
+
+def _file_sha256(path):
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(1 << 20), b""):
+            h.update(chunk)
+    return h.hexdigest()
 
 
 def main():
@@ -124,8 +133,9 @@ def main():
                          "continent. A prompt cannot bind an object between calls; a reference "
                          "image can, which is why the can has never drifted.")
     ap.add_argument("--yes", action="store_true", help="SPENDS real money")
-    ap.add_argument("--prompt-version", type=int, choices=(1, 2), default=None,
-                    help="2 repairs articles and uses product-neutral closure wording; 1 reproduces historical prompts")
+    ap.add_argument("--prompt-version", type=int, choices=(1, 2, 3), default=None,
+                    help="3 keeps v2's repairs and keeps the street in focus (never blurred, never bokeh); "
+                         "2 repairs articles and uses product-neutral closure wording; 1 reproduces historical prompts")
     A = ap.parse_args()
 
     cfg = brandkit.load(A.brand)
@@ -153,6 +163,7 @@ def main():
     can_sealed = bool(A.can_sealed or gen.get('can_sealed_grammar') or can)
     upright = bool(A.upright or gen.get('upright_grammar'))
     one_mic = bool(A.one_mic or gen.get('one_mic_grammar'))
+    mode = cfg.get("mode", "product-guess")
     G = dict(pace=pace, guards=guards, mic=mic, plain=plain, answers_only=answers_only,
              can_size=can_size, can_sealed=can_sealed, upright=upright,
              mic_ref=mic_ref, one_mic=one_mic,
@@ -170,8 +181,11 @@ def main():
     stem = brandkit.take_name(cfg, seed)
     L = paths.layout(A.run)
 
-    print(f"{model}  seed {seed}  {dur}s {format_spec.RESOLUTION} {format_spec.ASPECT}  "
-          f"~${rate * dur:.2f}")
+    if mode == "conversation":
+        print(f"CONVERSATION PROMPT PREVIEW  seed {seed}  {dur}s; no media endpoint or price verified")
+    else:
+        print(f"{model}  seed {seed}  {dur}s {format_spec.RESOLUTION} {format_spec.ASPECT}  "
+              f"~${rate * dur:.2f}")
     print(f"brand       {cfg['brand']}  ({cfg['_path']})")
     print(f"{len(prompt.split())} words, {len(cfg['shots'])} shots, ONE location, interviewer "
           f"voice generated in-clip")
@@ -183,44 +197,36 @@ def main():
     # take. The gate re-runs the identical lint from the identical dict on the finished render.
     for advice in format_spec.prompt_warnings(prompt):
         print("PROMPT ADVISORY: " + advice)
-    problems = format_spec.lint(prompt, **G)
+    problems = format_spec.lint(prompt, mode=mode, **G)
     if problems:
         print("\nPROMPT LINT FAILED:")
         for p in problems:
             print("  - " + p)
         sys.exit("\nrefusing to go further. Fix format_spec.py or the brand config.")
-    n_req = len(format_spec.REQUIRED_CLAUSES) + sum(
-        len(d) for d, flag in ((format_spec.PACE_CLAUSES, pace),
-                               (format_spec.GUARD_CLAUSES, guards),
-                               (format_spec.MIC_CLAUSES, mic),
-                               (format_spec.PLAIN_CLAUSES, plain),
-                               (format_spec.ANSWERS_CLAUSES, answers_only),
-                               (format_spec.CAN_SIZE_CLAUSES, can_size),
-                               (format_spec.CAN_SEALED_CLAUSES, can_sealed),
-                               (format_spec.UPRIGHT_CLAUSES, upright),
-                               (format_spec.ONE_MIC_CLAUSES, one_mic),
-                               (format_spec.MIC_SCALE_CLAUSES, pace and not mic_ref),
-                               (format_spec.MIC_REF_CLAUSES, mic_ref)) if flag)
-    on = ", ".join(n for n, flag in G.items() if flag)
-    print(f"prompt lint OK: all {n_req} required clauses present, no banned vocabulary"
-          + (f"  [{on} grammar ON]" if on else ""))
+    print(f"prompt lint OK: execution {mode}")
     shots = format_spec.split_shots(prompt)
-    noun = format_spec.product_noun(prompt)
     if len(shots) != len(cfg["shots"]):
-        sys.exit(f"the scaffold wrote {len(shots)} numbered shots for {len(cfg['shots'])} "
-                 f"configured ones; the shot list cannot be read back, so check-cut.py's "
-                 f"comprehension check would silently pass")
-    if noun not in shots[0].lower() or noun not in shots[-1].lower():
-        sys.exit(f"the {noun} is not in both the opening and the payoff shot. No setup, no joke: "
-                 f"an earlier cut banned the product from every shot and became "
-                 f"incomprehensible.")
-    print(f"comprehension OK: the {noun} is in shot 1 and shot {len(shots)}")
-
-    if not ref.exists():
-        print(f"MISSING reference product photo: {ref}")
-        if ref.exists() is False and A.yes:
-            sys.exit("refusing to spend without the product reference: the referenced product is "
-                     "the only thing keeping a real label on screen")
+        sys.exit("the configured shot list cannot be read back from the prompt")
+    if mode == "product-guess":
+        noun = format_spec.product_noun(prompt)
+        if not noun or noun not in shots[0].lower() or noun not in shots[-1].lower():
+            sys.exit("the product must appear in the opening and payoff shots")
+        if not ref.exists():
+            print(f"MISSING reference product photo: {ref}")
+            if A.yes:
+                sys.exit("refusing to spend without the product reference")
+    else:
+        import conversation
+        interaction = conversation.interaction_type(cfg)
+        if interaction == "mic-only":
+            print("mic-only conversation: no product reference, handover or screen required")
+        else:
+            print(f"{interaction} conversation: text setup/action preview; no product reference "
+                  "or screen binding; sample/task media performance unverified")
+        if A.scene_ref:
+            sys.exit("conversation has no scene-reference binding; remove --scene-ref")
+        if A.yes:
+            sys.exit("conversation is preview-only until a rendered pilot is approved; no paid call sent")
     if not A.yes:
         print()
         print(prompt)
@@ -244,6 +250,25 @@ def main():
         sys.exit(f"{dest.name} exists and the recorded prompt is "
                  f"{'IDENTICAL, so the same payload+seed reproduces it' if same else 'DIFFERENT. '
                     'Bump the seed: reusing it would overwrite a take TAKES.md refers to'}.")
+    sref = Path(A.scene_ref) if A.scene_ref else None
+    if sref is not None and not sref.exists():
+        sys.exit(f"no scene reference at {sref}. Extract one from the episode's first take: "
+                 f"ffmpeg -ss <t> -i <takeA.mp4> -frames:v 1 <out.png>")
+    # The input digest names EVERY input by content: the exact payload with each uploaded
+    # image replaced by its file's sha256. media_proxy re-attaches a resumed run to the job it
+    # already paid for by this digest, and after a policy rejection it refuses the same digest
+    # for good (QA-14). It used to hash only prompt, seed, duration and the scene-ref PATH, so
+    # after one likeness rejection a run with a different, acceptable product image was
+    # refused forever.
+    settings = {"prompt": prompt, "duration": dur, "resolution": format_spec.RESOLUTION,
+                "aspect_ratio": format_spec.ASPECT, "generate_audio": True, "seed": seed}
+    image_ids = [{"sha256": _file_sha256(p)} for p in [Path(ref)] + ([sref] if sref else [])]
+    digest = media_proxy.input_digest(model, {**settings, "image_urls": image_ids})
+    try:  # an identical request the provider already refused: stop before uploading anything
+        media_proxy.refuse_if_rejected(model, input_digest=digest)
+    except media_proxy.FalPolicyRejection as e:
+        print(f"FAILED: {e}", file=sys.stderr)
+        sys.exit(media_proxy.POLICY_EXIT)
     urls = [upload_file(ref)]
     # THE SCENE REFERENCE. A prompt clause binds an object only WITHIN one generation: episodes 1
     # and 2 both carried a byte-identical microphone clause across three calls and rendered three
@@ -253,21 +278,18 @@ def main():
     # drifted. Passing a still from the episode's FIRST take as a second reference hands every
     # later take the mic, the street and the light instead of asking it to imagine them again.
     # @Image1 stays the product; the scene still is @Image2.
-    if A.scene_ref:
-        sref = Path(A.scene_ref)
-        if not sref.exists():
-            sys.exit(f"no scene reference at {sref}. Extract one from the episode's first take: "
-                     f"ffmpeg -ss <t> -i <takeA.mp4> -frames:v 1 <out.png>")
+    if sref is not None:
         urls.append(upload_file(sref))
         print(f"scene ref   {sref.name}  (@Image2: mic, street and light carried from take A)")
     try:
-        url = media_proxy.fal_generate_video(model, {
-            "prompt": prompt, "image_urls": urls, "duration": dur,
-            "resolution": format_spec.RESOLUTION, "aspect_ratio": format_spec.ASPECT,
-            "generate_audio": True, "seed": seed},
-            input_digest=media_proxy.input_digest(model, {"prompt": prompt, "seed": seed,
-                                                          "duration": dur, "scene_ref": str(A.scene_ref)}))
+        url = media_proxy.fal_generate_video(model, {**settings, "image_urls": urls},
+                                             input_digest=digest)
         res, rid = {"video": {"url": url}}, None
+    except media_proxy.FalPolicyRejection as e:
+        # Final for these inputs: surface it, do not retry. A changed image, prompt or seed is
+        # a new request.
+        print(f"FAILED: {e}", file=sys.stderr)
+        sys.exit(media_proxy.POLICY_EXIT)
     except RuntimeError as e:
         # A dropped network mid-poll has already billed you. Never resubmit: a poll timeout
         # raises FalPollTimeout carrying the request id, and media_proxy.resume_fal(id) returns
@@ -285,7 +307,7 @@ def main():
          # manifest that recorded `pace_grammar` and not `guard_grammar` would have the gate
          # lint a guarded prompt with guards=False, i.e. pass while the two clauses the
          # seed-4816 render paid for went unchecked. That is the seed-4812 failure exactly.
-         "product_noun": cfg["product"]["noun"], "pace_grammar": pace,
+         "mode": mode, "product_noun": cfg.get("product", {}).get("noun"), "pace_grammar": pace,
          "guard_grammar": guards, "mic_grammar": mic, "plain_grammar": plain,
          "answers_only": answers_only, "can_grammar": can,
          "mic_ref_grammar": mic_ref, "can_size_grammar": can_size,

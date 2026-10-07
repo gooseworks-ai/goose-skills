@@ -13,6 +13,40 @@ sheet for the checks that need eyes (font, product likeness, safe zones):
   logo         the kit logo is found on the end card (multi-scale match, colour-blind)
   palette      the end card's main colours sit near the kit palette (warn only)
 
+--format-profile silent-text is for a declared silent, text-led format (kinetic text). It
+changes three checks and nothing else:
+  hook         no audio track is needed. The first beat must arrive with motion (a still first
+               frame held > 1.5s fails) and the opening may then hold no longer than a planned
+               beat (max(1.5, --max-freeze-s)). Audible audio, or a track of only clicks
+               (typewriter keys), must start within --hook-audio-s
+  dead_air     becomes an audio-integrity check: not applicable with no audio, an inaudible
+               track (peak below -45 dB) or a track of only clicks; an audible track must not
+               drop out or stop before the picture ends (the CTA is a beat, not a silent end card)
+  black_frames judges blank frames (black, or one flat colour with no readable text) instead of
+               dark pixels: a blank beat between two text beats may last up to 1.0s, the opening
+               and the ending keep the 0.3s bound, and all blank beats together stay under 25%
+--max-freeze-s is capped at 10s (the longest text beat) in this profile. Every other check,
+and every check in the default profile, is unchanged.
+
+Robustness rules that apply to every profile:
+  - A file whose audio runs past its last video frame is judged as players show it: the last
+    frame held through the tail (pacing, dead air and the end card keep the file's timeline;
+    frames are grabbed from the picture). pacing also reports the overrun: > 0.5s warns, longer
+    than both --max-freeze-s and --endcard-s fails.
+  - A still run that ffmpeg's freeze detector reports is re-checked at 540px. It is split where
+    the picture changes to a new state that holds >= 0.3s and never goes back (thin
+    low-contrast text beats), or where it moves continuously for >= 0.3s across >= 15% of the
+    frame (a pointer gliding). A change means pixels clearly moved across rows >= 2% of the
+    width, inside 12px tiles (at 1080) whose average brightness or colour moved too. Identical
+    frames, a thin progress bar, a blinking caret, a pulsing icon, a small spinner and a still
+    that an encoder short of bits keeps sharpening (edges and colours refine frame by frame,
+    tile averages stay put) stay frozen.
+  - Speech expected (no --no-speech, default profile): a stretch with only isolated clicks or
+    ticks (no sound lasting 40ms or more, fewer than 6 a second) counts as silence for hook
+    and dead_air.
+  - Every audio reader takes ffmpeg's default audio track (the default-flagged one, else the
+    one with most channels): the track players play.
+
 Exit codes: 0 PASS, 2 FAIL (a machine check failed), 3 ERROR (could not run).
 Needs ffmpeg/ffprobe on PATH and Python packages numpy + pillow.
 """
@@ -51,6 +85,46 @@ LOGO_THRESHOLDS = {"mark": (0.85, 0.75), "image": (0.85, 0.70)}
 MIN_LOGO_LONG_SIDE = 256
 MIN_LOGO_AREA = 40_000
 PALETTE_WARN_DELTA_E = 25.0
+
+# --format-profile silent-text. Fixed bounds, not flags, so the profile can never become a
+# blanket skip. A "blank" frame is black or one flat colour with no text on it.
+DEFAULT_PROFILE, SILENT_TEXT = "default", "silent-text"
+FORMAT_PROFILES = (DEFAULT_PROFILE, SILENT_TEXT)
+BLANK_INTERIOR_MAX_S = 1.0   # one intentional blank beat between two text beats
+BLANK_EDGE_MAX_S = 0.3       # a blank opening or ending keeps the default black-frame bound
+BLANK_MAX_SHARE = 0.25       # all blank beats together, as a share of the video
+BLANK_FPS = 10               # blank-frame sampling rate
+BLANK_WORK_WIDTH = 270       # frames are area-averaged to this width (light grain does not read as text)
+BLANK_PIXEL_DELTA = 48       # a pixel this far (max RGB channel) from the dominant colour is content
+BLANK_MIN_CONTENT_ROWS = 0.015  # a frame with text has content on >= 1.5% of its rows
+SILENT_PEAK_DB = -45.0       # a track whose peak stays below this is inaudible (silencedetect's floor)
+OPENING_ARRIVAL_S = 0.1      # a still run starting this early means the opening never moved
+SILENT_TEXT_MAX_FREEZE_S = 10.0  # the longest text beat; --max-freeze-s may not exceed it here
+
+# Audio past the last video frame: up to this much is encoder padding and is not judged.
+OVERRUN_JUDGE_S = 0.5
+# Freeze confirmation: ffmpeg's freezedetect works on a 270px copy and a whole-frame mean, so
+# thin low-contrast text changing can read as "frozen". A reported still run is re-read here.
+FREEZE_CONFIRM_WIDTH = 540   # work width for the re-read (area-averaged)
+FREEZE_CONFIRM_FPS = 10
+FREEZE_CHANGE_DELTA = 24     # a pixel this far (max RGB channel) from the run's first frame changed
+FREEZE_CHANGE_ROWS = 0.02    # a real change spans rows >= 2% of the width (a thin progress bar does not)
+FREEZE_MIN_RUN_S = 1.0       # still sub-runs shorter than freezedetect's own duration are dropped
+FREEZE_HOLD_S = 0.3          # a new picture must hold this long to count (a blink or flash does not)
+FREEZE_MOTION_SPAN = 0.15    # continuous motion counts when it covers 15% of the width or height
+# A changed pixel only counts inside a tile whose average moved: an encoder short of bits keeps
+# sharpening a still frame by frame, which moves single pixels (edges, colour fringes) but leaves
+# the tile averages nearly where they were; new text, a pointer or a shape moves them.
+FREEZE_TILE = 6              # tile size at the work width (12px at 1080), tiles overlap by half
+FREEZE_TILE_LUMA = 8.0       # a tile's average brightness moved more than this (0-255 levels), or
+FREEZE_TILE_COLOUR = 16.0    # one colour channel's average moved more than this (chroma is coded coarser)
+FREEZE_MAX_STATES = 32       # still pictures kept for the no-return match (the least recently seen go)
+# Sound events: 10ms peak windows above the silence floor, grouped when < 50ms apart. An event
+# lasting >= 40ms is sound; a shorter one is an isolated click or tick.
+SOUND_WINDOW_S = 0.01
+SOUND_EVENT_GAP_WINDOWS = 5      # audible windows fewer than 5 apart (50ms) are one event
+SOUND_SUSTAINED_WINDOWS = 4      # an event of 4+ windows (40ms) is sound, shorter is a click
+SOUND_DENSE_PER_S = 6.0          # 6+ clicks a second is a texture or a rhythm (hi-hats), not isolated clicks
 
 
 @dataclass
@@ -139,15 +213,460 @@ def spans(log: str, key: str, duration: float) -> list[tuple[float, float]]:
     return out
 
 
-def grab(video: str, t: float, dest: Path) -> Path:
-    """One frame at t. The container can run longer than the picture (an audio tail past the
-    last frame), so a grab near the end steps back until a frame exists."""
+def probe_audio(video: str) -> dict:
+    """The audio track's peak level (dB, -inf for digital silence), where it starts relative to
+    the picture (s) and its length (s). The track is ffmpeg's default choice, the one the
+    silence and click readers use and players play (the default-flagged track, else the one
+    with most channels). The length is the stream's own duration, or the decoded sample count
+    when the container does not say (WebM/MKV), so an early stop is caught in any container;
+    the start catches a track muxed with a delay."""
+    info = run(["ffprobe", "-v", "error", "-show_entries",
+                "stream=index,codec_type,start_time,duration,sample_rate,channels:format=start_time",
+                "-of", "json", video])
+    parsed = json.loads(info.stdout) if info.returncode == 0 else {}
+    streams = parsed.get("streams") or []
+    picture = next((x for x in streams if x.get("codec_type") == "video"), {})
+
+    def start_of(x: dict) -> float:
+        try:
+            return float(x["start_time"])
+        except (KeyError, TypeError, ValueError):
+            return 0.0
+    out = run(["ffmpeg", "-hide_banner", "-nostats", "-i", video, "-vn", "-sn", "-dn",
+               "-af", "volumedetect", "-f", "null", "-"])
+    if out.returncode != 0:
+        raise RuntimeError(f"ffmpeg could not decode the audio: {out.stderr.strip()[-300:]}")
+    picked = re.search(r"Stream mapping:\s*\n\s*Stream #0:(\d+)", out.stderr)
+    audio = [x for x in streams if x.get("codec_type") == "audio"]
+    stream = next((x for x in audio if picked and x.get("index") == int(picked.group(1))), audio[0] if audio else {})
+    # volumedetect can report more than once (a probe pass first); the last report is the stream.
+    peaks = re.findall(rf"max_volume:\s*(-?inf|{NUM}) dB", out.stderr)
+    samples = re.findall(r"n_samples:\s*(\d+)", out.stderr)
+    length = None
+    try:
+        length = float(stream["duration"])
+    except (KeyError, TypeError, ValueError):
+        try:
+            length = int(samples[-1]) / (int(stream["sample_rate"]) * int(stream["channels"]))
+        except (IndexError, KeyError, TypeError, ValueError, ZeroDivisionError):
+            length = None
+    peak_db = float("-inf") if not peaks or "inf" in peaks[-1] else float(peaks[-1])
+    return {"peak_db": peak_db, "length": length,
+            "start": max(0.0, start_of(stream) - start_of(picture)),
+            # ffmpeg shifts every timestamp by the container's start before filters see it, so
+            # silencedetect times are relative to that, not to the stream's raw start_time.
+            "pts_start": start_of(stream) - start_of(parsed.get("format") or {})}
+
+
+def picture_end(video: str) -> float | None:
+    """When the last video frame ends, on the file's timeline (the container can run longer:
+    an audio tail). The earlier of the stream's stated duration and its last packet's end:
+    some MKV files state the container length as the stream's."""
+    info = run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries",
+                "stream=start_time,duration,avg_frame_rate:format=start_time", "-of", "json", video])
+    if info.returncode != 0:
+        return None
+    parsed = json.loads(info.stdout)
+    stream = (parsed.get("streams") or [{}])[0]
+
+    def num(x: dict, key: str) -> float | None:
+        try:
+            v = x[key]
+            if isinstance(v, str) and "/" in v:
+                a, b = v.split("/")
+                return float(a) / float(b) if float(b) else None
+            return float(v)
+        except (KeyError, TypeError, ValueError, ZeroDivisionError):
+            return None
+
+    fmt0 = num(parsed.get("format") or {}, "start_time") or 0.0
+    candidates = []
+    length = num(stream, "duration")
+    if length is not None:
+        candidates.append((num(stream, "start_time") or 0.0) - fmt0 + length)
+    frame = 1.0 / (num(stream, "avg_frame_rate") or 30.0)
+    pk = run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries",
+              "packet=pts_time,duration_time", "-of", "csv=p=0", video])
+    ends = []
+    for line in pk.stdout.splitlines():
+        parts = line.strip().split(",")
+        try:
+            pts = float(parts[0])
+        except ValueError:
+            continue
+        try:
+            ends.append(pts + float(parts[1]))
+        except (IndexError, ValueError):
+            ends.append(pts + frame)
+    if ends:
+        candidates.append(max(ends) - fmt0)
+    return min(candidates) if candidates else None
+
+
+def file_timeline_frames(video: str, meta: dict, fps: int, width: int, until: float | None = None):
+    """Yield (t, RGB frame) at `fps`, `width` px wide (area-averaged), on the same timeline as the
+    analyse pass: the audio stays mapped (ffmpeg's default track, to a null output) so ffmpeg
+    computes the file's start time from every stream, as it does for freezedetect/silencedetect.
+    Read as they decode."""
+    h = max(2, int(round(width * meta["height"] / meta["width"] / 2)) * 2)
+    size = width * h * 3
+    limit = ["-t", f"{until:.3f}"] if until is not None else []
+    cmd = ["ffmpeg", "-hide_banner", "-loglevel", "error", "-i", video,
+           "-map", "0:v:0", "-vf", f"fps={fps},scale={width}:{h}:flags=area,format=rgb24", *limit,
+           "-f", "rawvideo", "pipe:1"]
+    if meta.get("has_audio"):
+        cmd += ["-vn", "-sn", "-dn", "-c:a", "pcm_s16le", *limit, "-f", "null", "-"]
+    with tempfile.TemporaryFile() as log:
+        proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=log)
+        assert proc.stdout is not None
+        k = 0
+        try:
+            while True:
+                buf = proc.stdout.read(size)
+                if len(buf) < size:
+                    break
+                yield k / fps, np.frombuffer(buf, dtype=np.uint8).reshape(h, width, 3)
+                k += 1
+        finally:
+            proc.stdout.close()
+            code = proc.wait()
+            log.seek(0)
+            err = log.read().decode(errors="replace")
+        if code != 0 and k == 0:
+            raise RuntimeError(f"ffmpeg could not read the frames: {err.strip()[-300:]}")
+
+
+LUMA_WEIGHTS = np.array([299, 587, 114], dtype=np.int64)  # Rec. 601 brightness, x1000
+
+
+def half_tile_sums(x: np.ndarray, st: int) -> np.ndarray:
+    """Sums over st x st squares (rows and columns already a multiple of st)."""
+    cols = sum(x[:, k::st] for k in range(st))
+    return sum(cols[k::st] for k in range(st))
+
+
+def picture_change(a: np.ndarray, b: np.ndarray, need: float, box: tuple[int, int, int, int] | None = None):
+    """Where picture b really differs from picture a, as a pixel mask, or None. A pixel changed
+    when it moved more than FREEZE_CHANGE_DELTA (any RGB channel) AND it sits in a tile
+    (FREEZE_TILE square, tiles overlapping by half) whose average moved: more than
+    FREEZE_TILE_LUMA in brightness or FREEZE_TILE_COLOUR in one channel. The changed pixels must
+    cover rows at least `need` tall. Codec refinement of a still (sharper edges, colour fringes)
+    moves pixels but not tile averages, so it is not a change. `box` (top, bottom, left, right
+    in pixels, multiples of half a tile) judges only that region: a change found there is a
+    change of the whole picture too (a region never has more changed rows than the frame)."""
+    st = FREEZE_TILE // 2
+    if box is not None:
+        a, b = a[box[0]:box[1], box[2]:box[3]], b[box[0]:box[1], box[2]:box[3]]
+    d = np.maximum(a, b)
+    d -= np.minimum(a, b)
+    mask = np.maximum(np.maximum(d[..., 0], d[..., 1]), d[..., 2]) > FREEZE_CHANGE_DELTA
+    if (np.count_nonzero(mask, axis=1) >= 2).sum() < need:
+        return None
+    # Tile averages only matter over changed pixels: read the changed area plus half a tile all
+    # round, so every tile that covers a changed pixel is whole (the same tiles as the frame's).
+    h, w = mask.shape
+    rows, cols = np.nonzero(mask.any(axis=1))[0], np.nonzero(mask.any(axis=0))[0]
+    y0, y1 = max(0, (int(rows[0]) // st - 1) * st), min(h, (int(rows[-1]) // st + 2) * st)
+    x0, x1 = max(0, (int(cols[0]) // st - 1) * st), min(w, (int(cols[-1]) // st + 2) * st)
+    diff = a[y0:y1, x0:x1].astype(np.int32) - b[y0:y1, x0:x1]
+    hh, ww = -(-(y1 - y0) // st) * st, -(-(x1 - x0) // st) * st
+    if (hh, ww) != diff.shape[:2]:
+        diff = np.pad(diff, ((0, hh - diff.shape[0]), (0, ww - diff.shape[1]), (0, 0)))
+    part = half_tile_sums(diff, st)
+    if min(part.shape[:2]) < 2:
+        return None
+    tile = part[:-1, :-1] + part[1:, :-1] + part[:-1, 1:] + part[1:, 1:]
+    n = FREEZE_TILE * FREEZE_TILE
+    hot = (np.abs(tile @ LUMA_WEIGHTS) > FREEZE_TILE_LUMA * n * 1000) | (np.abs(tile).max(axis=2) > FREEZE_TILE_COLOUR * n)
+    if not hot.any():
+        return None
+    near = np.zeros(part.shape[:2], dtype=bool)  # half-tiles inside a moved tile
+    near[:-1, :-1] |= hot
+    near[1:, :-1] |= hot
+    near[:-1, 1:] |= hot
+    near[1:, 1:] |= hot
+    keep = np.zeros_like(mask)
+    keep[y0:y1, x0:x1] = np.repeat(np.repeat(near, st, axis=0), st, axis=1)[:y1 - y0, :x1 - x0]
+    mask &= keep
+    return mask if (np.count_nonzero(mask, axis=1) >= 2).sum() >= need else None
+
+
+def change_points(video: str, meta: dict, runs) -> list[list[float]]:
+    """For each still run (start, end), the times inside it where the picture really changes
+    (see picture_change: a thin bar, about 1% of the width, or a still an encoder keeps
+    sharpening, never does). Inside a run the picture is followed two ways:
+      - stable states, each held >= FREEZE_HOLD_S: a state counts as a change only if it is new
+        and the run never goes back to an earlier state afterwards (thin text beats count; a
+        blinking caret or a pulsing icon alternates and does not);
+      - continuous motion, every sample differing from the one before for >= FREEZE_HOLD_S,
+        over an area that travels or spans >= FREEZE_MOTION_SPAN of the frame (a pointer
+        gliding, shapes moving); a spinner or a sticker animating in place does not.
+    A moving stretch cuts the run at its start and end. The no-return match keeps the
+    FREEZE_MAX_STATES most recently seen states, and compares the region where the new state
+    differs from the current one first, so a long run of states costs a cheap check each."""
+    w = FREEZE_CONFIRM_WIDTH
+    h = max(2, int(round(w * meta["height"] / meta["width"] / 2)) * 2)
+    need = FREEZE_CHANGE_ROWS * w
+    hold = max(1, round(FREEZE_HOLD_S * FREEZE_CONFIRM_FPS))
+    st = FREEZE_TILE // 2
+
+    def region(mask: np.ndarray) -> tuple[int, int, int, int]:
+        """Where a new state differs from the current one, plus a tile all round, in whole half-tiles."""
+        rows, cols = np.nonzero(mask.any(axis=1))[0], np.nonzero(mask.any(axis=0))[0]
+        return (max(0, (int(rows[0]) // st - 2) * st), min(h, (int(rows[-1]) // st + 3) * st),
+                max(0, (int(cols[0]) // st - 2) * st), min(w, (int(cols[-1]) // st + 3) * st))
+
+    def same(x: np.ndarray, y: np.ndarray, box) -> bool:
+        if picture_change(x, y, need, box) is not None:
+            return False  # differs inside the region alone: no need to compare whole frames
+        return picture_change(x, y, need) is None
+
+    tracks = [{"states": {}, "next": 1, "seq": [], "cur": None, "cand": None, "prev": None, "streak": None,
+               "motion": []} for _ in runs]
+
+    def close_streak(tr: dict) -> None:
+        sk = tr["streak"]
+        if sk and sk["n"] >= hold and ((sk["r1"] - sk["r0"]) >= FREEZE_MOTION_SPAN * h
+                                       or (sk["c1"] - sk["c0"]) >= FREEZE_MOTION_SPAN * w):
+            tr["motion"] += [sk["t0"], sk["t1"]]
+        tr["streak"] = None
+
+    until = max((b for _, b in runs), default=0.0) + 0.2
+    for t, frame in file_timeline_frames(video, meta, FREEZE_CONFIRM_FPS, w, until):
+        for i, (a, b) in enumerate(runs):
+            if not a <= t <= b:
+                continue
+            tr = tracks[i]
+            # continuous motion: compare with the previous sample
+            if tr["prev"] is not None:
+                mask = picture_change(frame, tr["prev"], need)
+                if mask is not None:
+                    rows, cols = np.nonzero(mask.any(axis=1))[0], np.nonzero(mask.any(axis=0))[0]
+                    sk = tr["streak"] or {"t0": t - 1.0 / FREEZE_CONFIRM_FPS, "n": 0, "r0": h, "r1": 0, "c0": w, "c1": 0}
+                    sk.update(t1=t, n=sk["n"] + 1, r0=min(sk["r0"], int(rows[0])), r1=max(sk["r1"], int(rows[-1])),
+                              c0=min(sk["c0"], int(cols[0])), c1=max(sk["c1"], int(cols[-1])))
+                    tr["streak"] = sk
+                else:
+                    close_streak(tr)
+            tr["prev"] = frame
+            # stable states
+            states = tr["states"]
+            if tr["cur"] is None:
+                states[0] = frame
+                tr["seq"].append((t, 0))
+                tr["cur"] = 0
+                continue
+            cand = tr["cand"]
+            if cand is not None:
+                if picture_change(frame, cand[1], need) is None:
+                    cand[2] += 1
+                    if cand[2] >= hold:  # the new picture held: record it as a state
+                        sid = next((k for k in sorted(states) if same(cand[1], states[k], cand[3])), None)
+                        if sid is None:
+                            sid = tr["next"]
+                            tr["next"] += 1
+                            states[sid] = cand[1]
+                            if len(states) > FREEZE_MAX_STATES:
+                                del states[next(iter(states))]  # the least recently seen state
+                        else:
+                            states[sid] = states.pop(sid)  # now the most recently seen
+                        tr["seq"].append((cand[0], sid))
+                        tr["cur"], tr["cand"] = sid, None
+                    continue
+                tr["cand"] = None
+            mask = picture_change(frame, states[tr["cur"]], need)
+            if mask is not None:
+                tr["cand"] = [t, frame, 1, region(mask)]
+    found: list[list[float]] = []
+    for tr in tracks:
+        close_streak(tr)
+        seq, out = tr["seq"], list(tr["motion"])
+        for i in range(1, len(seq)):
+            earlier = {sid for _, sid in seq[:i]}
+            if seq[i][1] not in earlier and all(sid not in earlier for _, sid in seq[i + 1:]):
+                out.append(seq[i][0])
+        found.append(sorted(set(out)))
+    return found
+
+
+def confirm_freezes(video: str, meta: dict, freezes, min_len: float, body_end: float,
+                    max_freeze_s: float) -> list[tuple[float, float]]:
+    """Split each still run that could fail a check (an opening still longer than min_len, or
+    a body freeze longer than --max-freeze-s before the end card) at the real changes inside
+    it. Runs only ever shrink: a run with no real change, or one no check could fail on, is
+    returned exactly as reported."""
+    judged = [(s, e) for s, e in freezes
+              if (s <= 0.3 and e - s > min_len) or (min(e, body_end) - s > max_freeze_s)]
+    cuts = dict(zip(judged, change_points(video, meta, judged))) if judged else {}
+    out: list[tuple[float, float]] = []
+    for s, e in freezes:
+        inner = [c for c in cuts.get((s, e), []) if s < c < e]
+        if not inner:
+            out.append((s, e))
+            continue
+        bounds = [s] + inner + [e]
+        out += [(a, b) for a, b in zip(bounds, bounds[1:]) if b - a >= FREEZE_MIN_RUN_S]
+    return out
+
+
+def sound_windows(video: str) -> list[tuple[float, float]] | None:
+    """(time, peak dBFS) for every 10ms of audio, on silencedetect's timeline: the same default
+    stream choice as the analyse pass (the "best" audio track) with the video kept in (copied),
+    so the start time matches. None when it cannot be measured (old ffmpeg, odd stream): the
+    caller then judges as before, from silencedetect alone."""
+    try:
+        out = run(["ffmpeg", "-hide_banner", "-nostats", "-i", video, "-c:v", "copy", "-sn", "-dn", "-af",
+                   f"aresample=16000,asetnsamples=n={int(round(16000 * SOUND_WINDOW_S))}:p=0,"
+                   "astats=metadata=1:reset=1:measure_overall=Peak_level:measure_perchannel=none,"
+                   "ametadata=mode=print:key=lavfi.astats.Overall.Peak_level", "-f", "null", "-"])
+    except OSError:
+        return None
+    if out.returncode != 0:
+        return None
+    windows, t = [], None
+    for line in out.stderr.splitlines():
+        m = re.search(rf"pts_time:({NUM})", line)
+        if m:
+            t = float(m.group(1))
+            continue
+        m = re.search(rf"Peak_level=(-?inf|{NUM})", line)
+        if m and t is not None:
+            windows.append((t, float("-inf") if "inf" in m.group(1) else float(m.group(1))))
+            t = None
+    return windows or None
+
+
+def sound_events(windows) -> list[tuple[float, float, int]]:
+    """Audible 10ms windows (peak above the silence floor) grouped when fewer than 5 windows
+    apart: (start, end, windows spanned). Counted in whole windows, not float seconds."""
+    events: list[list] = []
+    for t, peak in windows:
+        if peak <= SILENT_PEAK_DB:
+            continue
+        idx = int(round(t / SOUND_WINDOW_S))
+        if events and idx - events[-1][3] < SOUND_EVENT_GAP_WINDOWS:
+            events[-1][1], events[-1][3] = t + SOUND_WINDOW_S, idx
+        else:
+            events.append([t, t + SOUND_WINDOW_S, idx, idx])
+    return [(a, b, last - first + 1) for a, b, first, last in events]
+
+
+def click_only_spans(windows, min_len: float) -> list[tuple[float, float]]:
+    """Stretches with sound in them but none that lasts >= 40ms, only isolated clicks or ticks
+    (fewer than 6 a second; denser ticking is a rhythm or texture), at least min_len long.
+    Pure silence is left to silencedetect."""
+    if not windows:
+        return []
+    events = sound_events(windows)
+    begin, finish = windows[0][0], windows[-1][0] + SOUND_WINDOW_S
+    sustained = [(a, b) for a, b, n in events if n >= SOUND_SUSTAINED_WINDOWS]
+    edges = [begin] + [x for a, b in sustained for x in (a, b)] + [finish]
+    out = []
+    for a, b in zip(edges[0::2], edges[1::2]):
+        clicks = [1 for ea, eb, n in events if n < SOUND_SUSTAINED_WINDOWS and a <= ea and eb <= b]
+        if clicks and b - a >= min_len and len(clicks) / (b - a) < SOUND_DENSE_PER_S:
+            out.append((a, b))
+    return out
+
+
+def merge_spans(*groups, slack: float = 0.0) -> list[tuple[float, float]]:
+    out: list[list[float]] = []
+    for s, e in sorted(x for g in groups for x in g):
+        if out and s <= out[-1][1] + slack:
+            out[-1][1] = max(out[-1][1], e)
+        else:
+            out.append([s, e])
+    return [(a, b) for a, b in out]
+
+
+def judge_overrun(pacing: Check, overrun: float, end: float, max_freeze_s: float, endcard_s: float,
+                  has_audio: bool = True) -> Check:
+    """Audio running past the last video frame: players hold that frame (the end card) while it
+    plays out. Up to the end card's own length, or the freeze limit if longer, that is a longer
+    end card (warn); beyond it the picture has stopped (fail)."""
+    data = {**pacing.data, "picture_end_s": round(end, 2), "audio_overrun_s": round(overrun, 2)}
+    msg = (f"the audio runs {overrun:.1f}s past the last video frame, which holds while it plays out" if has_audio
+           else f"the file runs {overrun:.1f}s past its last video frame (a cut-short or damaged picture)")
+    if overrun > max(max_freeze_s, endcard_s):
+        fix = ": trim the audio or extend the picture" if has_audio else ": re-export the video"
+        note = (pacing.note + "; " if pacing.status == FAIL else "") + msg + fix
+        return Check(FAIL, note, data)
+    if pacing.status == FAIL:
+        return Check(FAIL, f"{pacing.note}; {msg}", data)
+    return Check(WARN, f"{pacing.note}; {msg}: check the ending", data)
+
+
+def content_share(rgb: np.ndarray) -> float:
+    """Share of a frame's rows that hold content: pixels clearly off the frame's dominant colour.
+    A text line covers several percent of the rows; a thin progress bar or codec noise does not."""
+    q = rgb.astype(np.int32) >> 4
+    keys = (q[..., 0] << 8) | (q[..., 1] << 4) | q[..., 2]
+    dominant = int(np.bincount(keys.ravel(), minlength=4096).argmax())
+    bg = rgb[keys == dominant].astype(np.float64).mean(axis=0)
+    off = np.abs(rgb.astype(np.float64) - bg).max(axis=2) > BLANK_PIXEL_DELTA
+    return float((off.sum(axis=1) >= 2).sum()) / rgb.shape[0]
+
+
+def blank_spans(video: str, meta: dict, fps: int = BLANK_FPS) -> tuple[list[tuple[float, float]], int]:
+    """Blank stretches (black, or one flat colour with no text), as (start, end) seconds on the
+    file's timeline, and the number of frames sampled. One extra decode, only for the
+    silent-text profile."""
+    blank = [content_share(frame) < BLANK_MIN_CONTENT_ROWS
+             for _, frame in file_timeline_frames(video, meta, fps, BLANK_WORK_WIDTH)]
+    if not blank:
+        raise RuntimeError("ffmpeg could not sample frames for the blank check")
+    out: list[tuple[float, float]] = []
+    start = None
+    for i, b in enumerate(blank + [False]):
+        if b and start is None:
+            start = i
+        elif not b and start is not None:
+            out.append((start / fps, i / fps))
+            start = None
+    return out, len(blank)
+
+
+def fast_grab(video: str, t: float, dest: Path) -> bool:
+    """One frame at t by a fast seek. The container can run longer than the picture (an audio
+    tail past the last frame), so a grab near the end steps back until a frame exists."""
     for back in (0.0, 0.3, 0.8, 1.5, 3.0):
         run(["ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-ss", f"{max(t - back, 0):.3f}",
              "-i", video, "-frames:v", "1", str(dest)])
         if dest.exists():
-            return dest
+            return True
+    return False
+
+
+def grab(video: str, t: float, dest: Path) -> Path:
+    if fast_grab(video, t, dest):
+        return dest
     raise RuntimeError(f"could not grab a frame at {t:.2f}s")
+
+
+def grab_frames(video: str, meta: dict, times: list[float], dest_dir: Path, tag: str) -> list[Image.Image]:
+    """Frames at `times`. A fast seek per frame; a file that cannot be seeked fast (MPEG-TS with
+    a single keyframe) is read once from the start instead, keeping the frame at or just before
+    each time (one decode, not one per frame)."""
+    out: list[Image.Image] = []
+    for i, t in enumerate(times):
+        dest = dest_dir / f"{tag}{i:02d}.png"
+        if fast_grab(video, t, dest):
+            out.append(Image.open(dest).convert("RGB"))
+            continue
+        rest, picked = sorted(set(times[i:])), {}
+        last = None
+        for ft, frame in file_timeline_frames(video, meta, 10, meta["width"], max(rest) + 0.2):
+            for want in rest:
+                if want not in picked and ft > want + 1e-6 and last is not None:
+                    picked[want] = last
+            last = frame
+        for want in rest:
+            if want not in picked and last is not None:
+                picked[want] = last
+        if len(picked) < len(rest):
+            raise RuntimeError(f"could not grab a frame at {t:.2f}s")
+        return out + [Image.fromarray(np.ascontiguousarray(picked[w])) for w in times[i:]]
+    return out
 
 
 # ---------------------------------------------------------------- image helpers
@@ -384,6 +903,118 @@ def check_black(blacks) -> Check:
     return Check(PASS, "no black frames")
 
 
+def audio_state(meta: dict, audio: dict | None, windows=None) -> str:
+    """none (no audio stream), silent (inaudible throughout: peak below -45 dB), clicks (only
+    isolated clicks or ticks, no sound lasting 40ms or more) or audible."""
+    if not meta["has_audio"] or audio is None:
+        return "none"
+    if audio["peak_db"] < SILENT_PEAK_DB:
+        return "silent"
+    if windows:
+        events = sound_events(windows)
+        span = max(windows[-1][0] - windows[0][0], SOUND_WINDOW_S)
+        if not any(n >= SOUND_SUSTAINED_WINDOWS for _, _, n in events) and len(events) / span < SOUND_DENSE_PER_S:
+            return "clicks"
+    return "audible"
+
+
+def check_hook_silent_text(silences, freezes, hook_audio_s: float, audio: str, max_freeze_s: float,
+                           track: dict | None = None) -> Check:
+    """A text-led opening is the first beat ARRIVING (punch, rise, typewriter), then a reading
+    hold. It fails when nothing arrives (the picture is still from the first frames for > 1.5s)
+    or when the opening then holds longer than a planned beat (max(1.5, --max-freeze-s)),
+    measured over the whole still run, end card included. Any track a viewer hears, music or
+    only clicks (typewriter keys), must start with the opening."""
+    problems = []
+    # Silence timestamps are the audio stream's own; a track muxed with a delay starts late too.
+    track_start, pts0 = (track or {}).get("start", 0.0), (track or {}).get("pts_start", 0.0)
+    lead = track_start + max((e - pts0 for s, e in silences if s - pts0 <= 0.3), default=0.0)
+    heard = audio in ("audible", "clicks")
+    if heard and lead > hook_audio_s:
+        problems.append(f"no sound for the first {lead:.1f}s of the audio track")
+    first = next(((s, e) for s, e in freezes if s <= 0.3), None)
+    hold_limit = max(1.5, max_freeze_s)
+    if first and first[0] < OPENING_ARRIVAL_S and first[1] - first[0] > 1.5:
+        problems.append(f"opening frame is still for {first[1] - first[0]:.1f}s (nothing arrives)")
+    elif first and first[1] - first[0] > hold_limit:
+        problems.append(f"the opening holds still for {first[1] - first[0]:.1f}s, longer than a planned beat "
+                        f"({hold_limit:.1f}s; set --max-freeze-s to the longest beat)")
+    data = {"lead_silence_s": lead, "audio": audio}
+    if problems:
+        return Check(FAIL, "; ".join(problems) + ": the opening must move, and any audio must start with it", data)
+    if audio == "audible":
+        return Check(PASS, f"silent-text: sound at {lead:.1f}s, opening moves", data)
+    if audio == "clicks":
+        return Check(PASS, f"silent-text: clicks from {lead:.1f}s, opening moves", data)
+    return Check(PASS, "silent-text: no audio needed, opening moves", data)
+
+
+def check_audio_silent_text(meta: dict, silences, audio: str, track: dict | None,
+                            max_silence_s: float, picture_end: float | None = None) -> Check:
+    """Silent-text formats need no audio, so there is no speech to judge. An audible track
+    (a supplied or approved music bed) must still play through to the end of the picture: the
+    CTA is a beat, not a silent end card, so --endcard-s does not excuse a drop-out here."""
+    if audio == "none":
+        return Check(NA, "silent-text: no audio track, none needed", {"audio": "none"})
+    if audio == "silent":
+        return Check(NA, "silent-text: the audio track is inaudible throughout, the same as no audio",
+                     {"audio": "silent"})
+    if audio == "clicks":
+        return Check(NA, "silent-text: the audio track has only isolated clicks or ticks, no meaningful "
+                         "audio (listen: they must be intended sound effects)", {"audio": "clicks"})
+    # The end of the PICTURE (a music bed padded past the last frame is not a drop-out).
+    body_end = picture_end if picture_end else meta["duration"]
+    track = track or {}
+    shift = track.get("start", 0.0) - track.get("pts_start", 0.0)  # audio pts -> picture time
+    timeline = [(s + shift, e + shift) for s, e in silences]
+    # The opening silence belongs to `hook`; any silence that starts after sound is a drop-out.
+    gaps = [(s, e) for s, e in timeline
+            if s > track.get("start", 0.0) + 0.05 and s < body_end and (min(e, body_end) - s) > max_silence_s]
+    end = track["start"] + track["length"] if track.get("length") is not None else None
+    data = {"audio": "audible", "gaps": [[round(a, 2), round(b, 2)] for a, b in gaps],
+            "audio_start_s": round(track.get("start", 0.0), 2),
+            "audio_end_s": round(end, 2) if end is not None else None}
+    problems = []
+    if gaps:
+        s, e = gaps[0]
+        problems.append(f"the audio drops out {s:.1f}-{min(e, body_end):.1f}s")
+    if end is not None and end < body_end - max_silence_s:
+        problems.append(f"the audio stops at {end:.1f}s, {body_end - end:.1f}s before the picture ends")
+    if problems:
+        return Check(FAIL, "; ".join(problems) + ": the audio track is broken. Fix the mix, or leave the "
+                           "ad silent if no audio was asked for", data)
+    return Check(PASS, "silent-text: the audio track plays through", data)
+
+
+def check_blank_silent_text(blanks, n_samples: int, blacks, fps: int = BLANK_FPS) -> Check:
+    """Short blank beats between text beats are allowed; a blank opening or ending, a long
+    blank beat, too much blank time or a blank video is not."""
+    problems = []
+    for s, e in blanks:
+        first, last = round(s * fps) == 0, round(e * fps) >= n_samples
+        limit = BLANK_EDGE_MAX_S if (first or last) else BLANK_INTERIOR_MAX_S
+        where = "at the opening" if first else ("at the ending" if last else "between text beats")
+        if e - s > limit + 1e-6:
+            problems.append(f"blank {s:.1f}-{e:.1f}s ({e - s:.1f}s {where}, limit {limit:.1f}s)")
+    total = sum(e - s for s, e in blanks)
+    picture = n_samples / fps  # the sampled picture; the container can run longer (audio tail)
+    data = {"blank_spans": [[round(s, 2), round(e, 2)] for s, e in blanks],
+            "blank_total_s": round(total, 2),
+            "dark_spans": [[round(s, 2), round(e, 2)] for s, e in blacks],
+            "limits": {"between_beats_s": BLANK_INTERIOR_MAX_S, "opening_or_ending_s": BLANK_EDGE_MAX_S,
+                       "share": BLANK_MAX_SHARE}}
+    if n_samples and round(total * fps) >= n_samples:
+        return Check(FAIL, "the whole video is blank (black or one flat colour, no readable text)", data)
+    if picture > 0 and total > BLANK_MAX_SHARE * picture:
+        problems.append(f"blank for {total:.1f}s of {picture:.1f}s (limit {BLANK_MAX_SHARE:.0%})")
+    if problems:
+        return Check(FAIL, "; ".join(problems) + ": missing or unreadably faint text, or a dead stretch; "
+                           "shorten the blank beat or put the text back", data)
+    if blanks:
+        return Check(PASS, f"silent-text: {len(blanks)} short blank beat(s), {total:.1f}s in all", data)
+    return Check(PASS, "silent-text: no blank frames", data)
+
+
 def check_logo_asset(logo: Image.Image | None) -> Check:
     if logo is None:
         return Check(NA, "no logo given")
@@ -490,28 +1121,58 @@ def build_sheet(frames: list[tuple[float, Image.Image]], refs: list[tuple[str, I
 
 # ---------------------------------------------------------------- main
 
+def sample_times(duration: float, cuts: list[float], endcard_s: float, cap: int = 17) -> list[float]:
+    """Cover the body throughout time, then add shot samples within the existing cap."""
+    body = max(0.0, duration - min(max(0.0, endcard_s), duration))
+    if body <= 0.05 or cap <= 0:
+        return []
+    edge = min(0.1, body / 4)
+    count = min(cap, max(1, min(6, int(body / 0.25))))
+    required = [round(edge + (body - 2 * edge) * i / max(1, count - 1), 3)
+                for i in range(count)]
+    bounds = [0.0] + sorted({c for c in cuts if 0 < c < body}) + [body]
+    shots = [(a + b) / 2 for a, b in zip(bounds, bounds[1:]) if b - a > 0.2]
+    candidates = [t for t in shots if all(abs(t - s) >= 0.15 for s in required)]
+    remaining = cap - len(required)
+    if len(candidates) > remaining:
+        candidates = [candidates[round(i * (len(candidates) - 1) / max(1, remaining - 1))]
+                      for i in range(remaining)]
+    return sorted(set(required + candidates))
+
+
 def review(args: argparse.Namespace) -> dict:
     meta = probe(args.video)
     dur = meta["duration"]
     expect = tuple(int(v) for v in args.expect_size.lower().split("x"))
+    # Audio past the last frame (it used to crash): the checks keep the file's timeline, with the
+    # last frame held through the tail (that is what players show); frames are grabbed from the
+    # picture; pacing reports the overrun.
+    end = picture_end(args.video)
+    overrun = dur - end if end is not None else 0.0
+    pic = end if overrun > OVERRUN_JUDGE_S else dur
     log = analyse(args.video, meta["has_audio"], args.max_silence_s / 2)
     silences = spans(log, "silence", dur)
     freezes = spans(log, "freeze", dur)
     blacks = spans(log, "black", dur)
     cuts = [float(m) for m in re.findall(rf"pts_time:({NUM})", log)]
+    freezes = confirm_freezes(args.video, meta, freezes, min(1.5, args.max_freeze_s), dur - args.endcard_s,
+                              args.max_freeze_s)
+    if overrun > OVERRUN_JUDGE_S:
+        freezes = merge_spans(freezes, [(pic, dur)], slack=0.05)
+    silent_text = args.format_profile == SILENT_TEXT
+    windows = sound_windows(args.video) if meta["has_audio"] and (silent_text or args.speech) else None
+    if windows is not None and not silent_text:
+        # Speech expected: a stretch with only isolated clicks or ticks is silence too.
+        silences = merge_spans(silences, click_only_spans(windows, args.max_silence_s / 2))
 
     logo = load_image(args.logo) if args.logo else None
     tmp = Path(tempfile.mkdtemp(prefix="rfa-"))
-    # One frame per shot (mid-shot) + the end card.
-    bounds = [0.0] + cuts + [dur]
-    shot_times = [(a + b) / 2 for a, b in zip(bounds, bounds[1:]) if b - a > 0.2][:17]
-    end_times = [max(0.0, dur - s) for s in (1.6, 0.9, 0.3)]
-    frames = [(t, Image.open(grab(args.video, t, tmp / f"f{i:02d}.png")).convert("RGB"))
-              for i, t in enumerate(shot_times)]
-    end_frames = [(t, Image.open(grab(args.video, t, tmp / f"e{i}.png")).convert("RGB"))
-                  for i, t in enumerate(end_times)]
-    extra = [(t, Image.open(grab(args.video, t, tmp / f"x{i}.png")).convert("RGB"))
-             for i, t in enumerate(args.logo_at or [])]
+    # Time coverage prevents a continuous chat from producing only one body frame.
+    shot_times = sample_times(pic, cuts, args.endcard_s)
+    end_times = [max(0.0, pic - s) for s in (1.6, 0.9, 0.3)]
+    frames = list(zip(shot_times, grab_frames(args.video, meta, shot_times, tmp, "f")))
+    end_frames = list(zip(end_times, grab_frames(args.video, meta, end_times, tmp, "e")))
+    extra = list(zip(args.logo_at or [], grab_frames(args.video, meta, list(args.logo_at or []), tmp, "x")))
 
     checks = {
         "ratio": check_ratio(meta, expect),  # type: ignore[arg-type]
@@ -523,7 +1184,21 @@ def review(args: argparse.Namespace) -> dict:
         "logo": check_logo(end_frames + extra, logo),
         "palette": check_palette(end_frames, [p for p in (args.palette or "").split(",") if p.strip()]),
     }
-    if args.speech is False:
+    if overrun > OVERRUN_JUDGE_S:
+        checks["pacing"] = judge_overrun(checks["pacing"], overrun, pic, args.max_freeze_s, args.endcard_s,
+                                         meta["has_audio"])
+    if silent_text:
+        # Declared silent, text-led format: replaces three checks in place (same keys, same
+        # order). --no-speech is implied and does not switch off the audio-integrity check.
+        track = probe_audio(args.video) if meta["has_audio"] else None
+        audio = audio_state(meta, track, windows)
+        blanks, n_samples = blank_spans(args.video, meta)
+        checks["hook"] = check_hook_silent_text(silences, freezes, args.hook_audio_s, audio, args.max_freeze_s,
+                                                track)
+        checks["dead_air"] = check_audio_silent_text(meta, silences, audio, track, args.max_silence_s,
+                                                     picture_end=n_samples / BLANK_FPS)
+        checks["black_frames"] = check_blank_silent_text(blanks, n_samples, blacks)
+    elif args.speech is False:
         checks["dead_air"] = Check(NA, "--no-speech: music-only format")
 
     refs: list[tuple[str, Image.Image]] = []
@@ -547,7 +1222,10 @@ def review(args: argparse.Namespace) -> dict:
     return {
         "verdict": "FAIL" if failed else "PASS",
         "failed": failed,
-        "video": {**meta, "cuts": [round(c, 2) for c in cuts]},
+        "format_profile": args.format_profile,
+        "video": {**meta, "cuts": [round(c, 2) for c in cuts],
+                  "sheet_samples": shot_times + end_times[-1:],
+                  **({"picture_duration": round(pic, 3)} if overrun > OVERRUN_JUDGE_S else {})},
         "checks": {k: asdict(c) for k, c in checks.items()},
         "sheet": str(sheet),
         "judge_on_sheet": [
@@ -557,7 +1235,15 @@ def review(args: argparse.Namespace) -> dict:
             "product_consistency: the product looks the same in every scene",
             "logo_unaltered: the logo is not warped, recoloured, cropped or redrawn "
             "(with no --logo, e.g. a text wordmark: the brand name is set in the brand font)",
-        ],
+        ] + ([
+            "text_beats: every text beat is complete, spelled as approved, held long enough to read "
+            "and not cut off at the edges; any blank beat is intentional",
+        ] if silent_text else []) + ([
+            "audio: the audible track is the user's supplied or approved one (silent-text formats are silent by default)",
+        ] if silent_text and checks["dead_air"].data.get("audio") == "audible" else []) + ([
+            "audio: the track has only isolated clicks or ticks; listen and confirm they are intended "
+            "sound effects (e.g. typewriter keys), not glitches",
+        ] if silent_text and checks["dead_air"].data.get("audio") == "clicks" else []),
     }
 
 
@@ -579,10 +1265,18 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--endcard-s", type=float, default=3.0)
     ap.add_argument("--no-speech", dest="speech", action="store_false",
                     help="format has no VO/dialogue (skip the dead-air check)")
+    ap.add_argument("--format-profile", choices=FORMAT_PROFILES, default=DEFAULT_PROFILE,
+                    help="silent-text: a declared silent, text-led format (kinetic text). No audio "
+                         "track needed, an audible track must play through, and short blank beats "
+                         "between text beats are allowed within fixed bounds. Default: every check as-is")
     args = ap.parse_args(argv)
 
     if not Path(args.video).exists():
         print(f"ERROR: video not found: {args.video}", file=sys.stderr)
+        return 3
+    if args.format_profile == SILENT_TEXT and args.max_freeze_s > SILENT_TEXT_MAX_FREEZE_S:
+        print(f"ERROR: --max-freeze-s {args.max_freeze_s:g} is longer than a text beat can hold "
+              f"({SILENT_TEXT_MAX_FREEZE_S:g}s) in the silent-text profile", file=sys.stderr)
         return 3
     try:
         result = review(args)
@@ -591,7 +1285,8 @@ def main(argv: list[str] | None = None) -> int:
         return 3
     Path(args.json).parent.mkdir(parents=True, exist_ok=True)
     Path(args.json).write_text(json.dumps(result, indent=2))
-    print(f"{result['verdict']}  failed={result['failed']}  sheet={result['sheet']}")
+    profile = "" if result["format_profile"] == DEFAULT_PROFILE else f"  profile={result['format_profile']}"
+    print(f"{result['verdict']}  failed={result['failed']}  sheet={result['sheet']}{profile}")
     for k, c in result["checks"].items():
         print(f"  {k:13s} {c['status']:15s} {c['note']}")
     return 2 if result["failed"] else 0

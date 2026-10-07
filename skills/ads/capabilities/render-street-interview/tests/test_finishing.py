@@ -54,6 +54,29 @@ class FinishingTests(unittest.TestCase):
         self.assertEqual(command[0], sys.executable)
         self.assertEqual(command[command.index("--run") + 1], str(self.run.resolve()))
 
+    def test_approved_endcard_keeps_original_pixels_and_86px_spacing(self):
+        layer = {"logo": None, "end_card": ["MURDER YOUR THIRST.", "DRINK LIQUID DEATH."]}
+        build_looks.configure_brand_layer(layer)
+        expected = Image.new("RGB", (1080, 1920), build_looks.INK).convert("RGBA")
+        for i, row in enumerate(layer["end_card"]):
+            text = build_looks.heavy(row, 66, build_looks.CREAM if i == 0 else build_looks.GOLD,
+                                     italic=False, outline=5)
+            expected.alpha_composite(text, ((1080 - text.width) // 2, 650 + i * 86))
+        out = self.run / "approved-end.png"
+        build_looks.end_card(out, layer)
+        with Image.open(out) as actual:
+            self.assertIsNone(ImageChops.difference(actual, expected.convert("RGB")).getbbox())
+
+    def test_only_the_overlong_endcard_line_shrinks(self):
+        layer = {"logo": None, "end_card": ["A LONG APPROVED END CARD LINE THAT NEEDS TO FIT", "SHORT LINE"]}
+        build_looks.configure_brand_layer(layer)
+        out = self.run / "mixed-end.png"
+        with patch.object(build_looks, "heavy", wraps=build_looks.heavy) as draw:
+            build_looks.end_card(out, layer)
+        sizes = [(call.args[0], call.args[1]) for call in draw.call_args_list]
+        self.assertTrue(any(row == layer["end_card"][0] and size < 66 for row, size in sizes))
+        self.assertEqual([size for row, size in sizes if row == "SHORT LINE"], [66])
+
     def test_supplied_fonts_work_without_system_fallbacks(self):
         shutil.copyfile(build_looks.resolve_font("black"), self.run / "custom.ttf")
         spec = importlib.util.spec_from_file_location("looks_without_defaults", SCRIPTS / "build_looks.py")
@@ -110,7 +133,38 @@ class FinishingTests(unittest.TestCase):
              patch("build_episode.duration", return_value=2), contextlib.redirect_stdout(output):
             result = gate.falsify(self.run / "render.mp4", self.run / "control.mp4", {})
         self.assertEqual(result, 1)
-        self.assertIn("4 of 4 falsifications", output.getvalue())
+        # A single take has no episode plan, so S is not applicable: F, R and T are counted.
+        self.assertIn("3 of 3 falsifications", output.getvalue())
+        self.assertIn("S not applicable", output.getvalue())
+
+    def test_single_take_falsify_passes_when_every_applicable_check_trips(self):
+        spec = importlib.util.spec_from_file_location("check_cut", SCRIPTS / "check-cut.py")
+        gate = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(gate)
+        output = io.StringIO()
+        with patch.object(gate.subprocess, "run"), \
+             patch.object(gate, "graphics_span", return_value=(1690.0, 1800.0)), \
+             patch.object(gate, "check_realism", return_value=(["R over-detailed. planted"], [], [])), \
+             patch.object(gate, "cuts", return_value=[1.0]), \
+             patch("build_episode.duration", return_value=4), contextlib.redirect_stdout(output):
+            result = gate.falsify(self.run / "render.mp4", self.run / "control.mp4", {})
+        self.assertEqual(result, 0, output.getvalue())
+        self.assertIn("S not applicable", output.getvalue())
+        self.assertIn("FALSIFIED", output.getvalue())
+
+    def test_episode_without_plan_still_fails_s(self):
+        spec = importlib.util.spec_from_file_location("check_cut", SCRIPTS / "check-cut.py")
+        gate = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(gate)
+        output = io.StringIO()
+        with patch.object(gate.subprocess, "run"), \
+             patch.object(gate, "graphics_span", return_value=(1690.0, 1800.0)), \
+             patch.object(gate, "check_realism", return_value=(["R over-detailed. planted"], [], [])), \
+             patch.object(gate, "cuts", return_value=[1.0]), \
+             patch("build_episode.duration", return_value=4), contextlib.redirect_stdout(output):
+            result = gate.falsify(self.run / "render.mp4", self.run / "control.mp4", {}, ep={"plan": None})
+        self.assertEqual(result, 1)
+        self.assertIn("1 of 4 falsifications", output.getvalue())
 
     def test_zero_strength_grade_and_brand_bar_through_caption_gaps(self):
         # Entirely synthetic input; no model call, real customer or wallet involved.

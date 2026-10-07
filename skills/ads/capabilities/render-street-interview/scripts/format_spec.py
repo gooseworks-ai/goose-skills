@@ -63,13 +63,24 @@ def _shot(n, s, cfg, can=False, prev_kind=None, upright=False, one_mic=False, pr
     # one word ("sealed"). With the upright grammar it is the orientation and the label, because
     # those are what seed 4827 lost: upright and label-forward at 1.0s, horizontal and
     # lid-to-lens from 5.0s on.
-    held = (f"{prod} UPRIGHT, label to the lens" if upright
+    # NATURAL HOLD (opt-in, generation.natural_grammar). Olipop seeds 6101/6102, 2026-10-05: the
+    # operator's note was that the can is not handed over naturally and people do not hold it
+    # naturally. "UPRIGHT, label to the lens" in every shot is what makes them present it.
+    natural = bool(cfg.get("generation", {}).get("natural_grammar"))
+    # REAL HOLD (opt-in, generation.real_grammar). Olipop episode 1, 2026-10-06: the can came back
+    # open with its lid to the lens in four of seven people and one woman presented it. The can
+    # goes back to sealed and the hold is described as where the hand rests, not as a pose.
+    real = bool(cfg.get("generation", {}).get("real_grammar"))
+    held = (f"sealed {prod} low at the chest in one relaxed hand, upright, label to the lens"
+            if (upright and natural and real)
+            else f"{prod} loosely in one hand, upright, label to the lens" if (upright and natural)
+            else f"{prod} UPRIGHT, label to the lens" if upright
             else f"sealed {prod}" if can else prod)
     # `only` is the per-shot half of NO_SUBJECT_MIC: their hands hold the product and nothing
     # else, so there is no room in the shot for a second microphone. One word per shot.
     if one_mic:
         held = f"only the {held}"
-    holding = f"holding {held}" if one_mic and prompt_version == 2 else f"holding the {held}"
+    holding = f"holding {held}" if one_mic and prompt_version >= 2 else f"holding the {held}"
     # In a handover the object is being passed, so it reads better as a verb phrase than as a
     # noun phrase. Same three facts.
     # THE HANDOVER IS NOW ONLY THE HANDOVER. Episode 3 removed "takes it and looks at it"
@@ -89,11 +100,52 @@ def _shot(n, s, cfg, can=False, prev_kind=None, upright=False, one_mic=False, pr
     # eyeline clause still governs the delivery. If a take comes back eyes-down, this is the
     # first thing to suspect.
     glance = ("glances down and back up, " if (upright and one_mic) else "")
+    # LEVEL CAMERA (opt-in, generation.level_camera). Olipop episodes 1 and 2, 2026-10-06: the can
+    # was tipped lid-to-lens on 4 then 5 of 7 people across two rewrites of the hold. The shared
+    # cause is a high phone camera looking DOWN plus a glance down in every speaking shot. With
+    # the flag on the glance goes and the camera comes down to the can's height.
+    level = bool(cfg.get("generation", {}).get("level_camera"))
+    if level:
+        glance = ""
     # In a handover the object is still in the interviewer's hand, so the orientation rule rides
     # on `took` and the noun stays bare. Without the upright grammar it keeps whatever the
     # sealed grammar put on it, so a rebuilt 4824/4827 prompt still matches its own manifest.
     offered = prod if upright else held
-    offering = offered if prompt_version == 2 and offered.startswith("only the ") else f"the {offered}"
+    offering = offered if prompt_version >= 2 and offered.startswith("only the ") else f"the {offered}"
+    # VISIBLE HANDOVER (opt-in, generation.handover_grammar). Olipop seed 6101, 2026-10-05: every
+    # person was already holding the can on their first frame, and the operator's note was "he
+    # should hand it over to them". The older wording asks for a handover in the shot and forbids
+    # it in the product clause ("never the interviewer's"), and the clause won. With the flag on,
+    # the shot OPENS on the pass and the product clause below allows it. Off by default, so every
+    # historical prompt and its hash are unchanged.
+    handover_on = bool(cfg.get("generation", {}).get("handover_grammar"))
+    if handover_on and kind in ("handover_cold", "handover_first", "handover"):
+        if natural and real:
+            passed = (f"{n}. THE SHOT OPENS ON THE HANDOVER: the interviewer's left hand, in the same "
+                      f"plain black sleeve, is already holding the sealed {prod} out at chest "
+                      f"height; {s['subject']} takes it with one hand in a single easy "
+                      f"movement, the way anyone takes a cold drink a friend passes them, and the "
+                      f"interviewer's hand drops out of frame. {s['pronoun'].capitalize()} brings it in "
+                      f"to the chest and keeps only the sealed {prod} there in one relaxed hand, "
+                      f"upright, label to the lens, on that same corner. ")
+        elif natural:
+            passed = (f"{n}. THE SHOT OPENS ON THE HANDOVER: the interviewer casually passes the {prod} "
+                      f"across with the left hand, the way you hand a friend a drink, to "
+                      f"{s['subject']}; {s['pronoun']} takes it in one hand without ceremony and the "
+                      f"interviewer's hand drops out of frame. Then {s['pronoun']} holds only the "
+                      f"{prod} loosely in one hand, upright, label to the lens, on that same corner. ")
+        else:
+            passed = (f"{n}. THE SHOT OPENS ON THE HANDOVER: the interviewer's left hand reaches in from "
+                      f"the edge of frame holding the {prod} out to {s['subject']}, whose nearest hand is free; "
+                      f"{s['pronoun']} reaches out, takes it from the interviewer's hand, and the "
+                      f"interviewer's empty hand withdraws. Then {s['pronoun']} holds only the {prod} "
+                      f"UPRIGHT, label to the lens, on that same corner. ")
+        if kind == "handover_cold":
+            return passed + "Nobody speaks in this shot and no question is asked. "
+        if kind == "handover_first":
+            return (passed + f"The interviewer asks from off camera, unseen: \"{cfg['question']}\" "
+                    f"The {s['noun']} in frame does not say this line. ")
+        return passed + "Silent. "
     if kind == "handover_cold":
         # `handover_first` WITHOUT the interviewer's question. Paid for by episode 1: the
         # interviewer's question was generated inside all three takes, so the finished episode
@@ -157,6 +209,16 @@ def _shot(n, s, cfg, can=False, prev_kind=None, upright=False, one_mic=False, pr
         # costs nothing dramatically: the format's own premise is that the strangers guess wrong
         # and THE LAST ONE GETS IT RIGHT, so the payoff is a correct answer, not a discovery by
         # tasting. Episode 2 only tasted because the can was already open.
+        if upright and s.get("reads"):
+            # She reads the side that faces HER, so the front label keeps facing the lens and
+            # nothing is turned. On 6101 the reader tipped the can base-first toward the camera.
+            said = f" {s['manner']}" if s.get("manner") else ""
+            pro = s.get("pronoun", "she")
+            poss = {"he": "his", "she": "her"}.get(pro, "their")
+            return (f"{n}. The same {s['noun']} on that same corner, {holding}, keeps it still and "
+                    f"lowers only {poss} eyes to the {'side of the upright ' if level else ''}{prod}{' that faces ' + {'he':'him','she':'her'}.get(pro,'them') if level else ''}, reading it for a "
+                    f"moment while its front label still faces the camera, then looks up at the "
+                    f"interviewer, {s['reaction']} and says{said}: \"{s['line']}\" ")
         if upright:
             # Same shape as `speak`, so the payoff reads as one of the answers rather than as a
             # different kind of shot. `payoff` stays a distinct kind because brandkit and
@@ -165,7 +227,7 @@ def _shot(n, s, cfg, can=False, prev_kind=None, upright=False, one_mic=False, pr
             return (f"{n}. The same {s['noun']} on that same corner, {holding}, "
                     f"{glance}looks at the interviewer, {s['reaction']} and says{said}: "
                     f"\"{s['line']}\" ")
-        lowering = held if one_mic and prompt_version == 2 else f"the {held}"
+        lowering = held if one_mic and prompt_version >= 2 else f"the {held}"
         return (f"{n}. The same {s['noun']} on that same corner lowers {lowering} and says to "
                 f"the interviewer{manner}: \"{s['line']}\" ")
     raise ValueError(f"unknown shot kind {kind!r}. Known: {', '.join(SHOT_KINDS)}")
@@ -315,6 +377,23 @@ _FRAME_WIDER = (
     "head and their waist in frame, the street open behind them, and detail falls away behind "
     "the subject so the background is softer than the person. No close-ups, never chest-up, "
     "nobody's face fills the frame. ")
+# PROMPT VERSION 3 (opt-in; v1/v2 keep the two constants above byte-identical, so every
+# approved take's hash still reproduces). The operator rejects blurred backgrounds, and
+# "softer than the person" reads to the model as permission to blur. v3 keeps the measured
+# falloff needle ("detail falls away behind the subject") but bounds it: only slightly, the
+# street stays in focus, never blurred and never bokeh. It does NOT go back to the plain
+# "deep depth of field" clause, which produced detail 15.92 against 4.76-9.60 for real footage
+# (see the "detail falls away behind the subject" lint note below). v3 is draft until a 720p take measures inside that band.
+_FRAME_DEFAULT_V3 = (
+    "Every shot is WIDE: each person seen from head to hips or below, with the street open behind "
+    "them, and detail falls away behind the subject only slightly: the street stays in focus and "
+    "readable as a real place, never blurred and never bokeh. "
+    "No close-ups, nobody's face fills the frame. ")
+_FRAME_WIDER_V3 = (
+    "Every shot is WIDE: each person seen from head to hips or below, with space above their "
+    "head and their waist in frame, the street open behind them, and detail falls away behind "
+    "the subject only slightly: the street stays in focus and readable as a real place, never "
+    "blurred and never bokeh. No close-ups, never chest-up, nobody's face fills the frame. ")
 
 GUARD_CLAUSES = {
     "front label is turned toward the lens": "the label's FACING. Seed 4816 turned the can "
@@ -692,15 +771,49 @@ def build_prompt(cfg: dict, pace: bool = False, guards: bool = False, mic: bool 
                  plain: bool = False, answers_only: bool = False, can: bool = False,
                  mic_ref: bool = False, can_size: bool = False, can_sealed: bool = False,
                  upright: bool = False, one_mic: bool = False, prompt_version: int = 1) -> str:
-    if prompt_version not in (1, 2):
-        raise ValueError("prompt_version must be 1 or 2")
+    if prompt_version not in (1, 2, 3):
+        raise ValueError("prompt_version must be 1, 2 or 3")
+    if cfg.get("mode") == "conversation":
+        import conversation
+        if any((guards, answers_only, can, mic_ref, can_size, can_sealed, upright)):
+            raise ValueError("product/episode grammars cannot be applied to conversation")
+        return conversation.build_prompt(cfg)
     # `can` is the pre-split name and means BOTH halves, so seeds 4824 and 4827 reproduce.
     can_size, can_sealed = can_size or can, can_sealed or can
     p = cfg["product"]
     prod, phrase = p["noun"], p["phrase"]
     upright_block = UPRIGHT
-    if prompt_version == 2 and prod != "can":
-        upright_block = UPRIGHT.replace("THE LID IS NEVER SHOWN", "THE TOP EDGE IS NEVER SHOWN")
+    if cfg.get("generation", {}).get("natural_grammar"):
+        # Same three linted needles as UPRIGHT ("upright and vertical", "the lid is never shown",
+        # "never by handling"), without the product-shot posture.
+        upright_block = (
+            "THE {PROD} IS HELD THE WAY A PERSON HOLDS A DRINK THEY WERE JUST HANDED: loosely in ONE "
+            "hand, relaxed wrist, elbow bent, between waist and chest and close to the body. It is "
+            "never held out toward the camera and never presented like a product. It stays roughly "
+            "UPRIGHT AND VERTICAL, base down. Its front label is turned toward the lens, not away from it. Nobody "
+            "turns it over, shakes it or brings it near the lens, and THE LID IS NEVER SHOWN. They "
+            "react with their face, never by handling the {prod} for the camera. ")
+        if cfg.get("generation", {}).get("real_grammar"):
+            upright_block = (
+                "THE {PROD} IS HELD THE WAY ANYONE HOLDS A COLD DRINK THEY HAVE NOT OPENED YET: "
+                "fingers wrapped around the middle of it, in ONE hand, wrist relaxed, elbow bent, "
+                "resting at chest height close to the body. It is never lifted toward the camera, "
+                "never tilted and never shown off like a product. It stays UPRIGHT AND VERTICAL, "
+                "base down, top up. Its front label is turned toward the lens, not away from it. "
+                + ("THE CAMERA IS LOW, AT CHEST HEIGHT, LEVEL WITH THE {PROD}, pointing straight "
+                   "ahead and never tilted down: the {prod} is seen from the side, its top is only "
+                   "a thin edge, and THE LID " if cfg.get("generation", {}).get("level_camera") else
+                   "The camera is at eye level, so the top of the {prod} is seen edge-on and THE LID ") +
+                "IS NEVER SHOWN. Nobody turns it over, shakes it, tips it or drinks from it. They "
+                "react with their face, never by handling the {prod} for the camera. ")
+    if prompt_version >= 2 and prod != "can":
+        # A non-can product keeps whichever hold block the config chose (natural / real), with the
+        # lid sentence reworded. Before 2026-10-06 this line threw the natural block away.
+        upright_block = upright_block.replace("THE LID IS NEVER SHOWN", "THE TOP EDGE IS NEVER SHOWN")
+        # A bottle's cap is part of the product and must be seen: only the view from ABOVE is banned.
+        upright_block = upright_block.replace(
+            "its top is only a thin edge, and THE TOP EDGE IS NEVER SHOWN.",
+            "its cap stays on top, and THE TOP EDGE IS NEVER SHOWN from above.")
     shots = cfg["shots"]
     n_shots = word(len(shots))
     # `handover_cold` counts as a handover here. Leaving it out made the cast size fall by one
@@ -712,8 +825,9 @@ def build_prompt(cfg: dict, pace: bool = False, guards: bool = False, mic: bool 
     prompt = (
         # capture grammar. "cinematic" and "shallow depth of field" are BANNED_VOCAB below: both
         # pull a commercial grade, which is the first thing that reads as AI here.
-        "Raw unedited phone footage of a street interview, filmed vertically, handheld, flat grey "
-        "overcast daylight, 30 frames per second. Fast hard jump cuts. "
+        "Raw unedited phone footage of a street interview, filmed vertically, handheld, "
+        f"{cfg['location'].get('light', 'flat grey overcast daylight')}, "
+        "30 frames per second. Fast hard jump cuts. "
 
         # The pace block sits HIGH on purpose: whatever leads the prompt wins (Critical knowledge
         # 2), it is about cutting so it belongs with the capture grammar, and on seed 4809 -- the
@@ -731,8 +845,13 @@ def build_prompt(cfg: dict, pace: bool = False, guards: bool = False, mic: bool 
         "person is turned three quarters toward that interviewer. "
 
         # live street: 4802's corner was empty, which read as a set
-        "The street is busy: other passers-by walk through the background of every shot, blurred by "
-        "their own movement, and traffic moves along the road. This corner is never empty. "
+        # v3 drops "blurred by their own movement": next to the v3 framing sentence's "never
+        # blurred", the word reads as a contradiction the model could settle by blurring the street.
+        + ("The street is busy: other passers-by walk through the background of every shot in "
+           "their own natural motion, and traffic moves along the road. This corner is never empty. "
+           if prompt_version >= 3 else
+           "The street is busy: other passers-by walk through the background of every shot, blurred by "
+           "their own movement, and traffic moves along the road. This corner is never empty. ") +
 
         # one object per hand: asking for two in the interviewer's hands caused every object
         # failure up to seed 4803, and asking for one merged them on 4801
@@ -790,8 +909,15 @@ def build_prompt(cfg: dict, pace: bool = False, guards: bool = False, mic: bool 
 
         # the product: pinned in frame (so it does not jump on a cut), never opened on camera
         # (seed 4806's tab-pull was unrenderable), never drifting in colour or size
-        f"The {phrase} from @Image1 is in the hand of the person being interviewed, never the "
-        f"interviewer's. It appears exactly as the reference: {p['appearance']}, "
+        ((f"The {phrase} from @Image1 is PASSED ON CAMERA at the start of each person's first "
+            f"shot: it begins in the interviewer's left hand and ends in the hand of the person "
+            f"being interviewed, and the pass is seen completing. After the pass it stays in that "
+            f"person's hand for the rest of their two shots and the interviewer's left hand is "
+            f"empty and out of frame. ")
+           if cfg.get("generation", {}).get("handover_grammar") else
+           (f"The {phrase} from @Image1 is in the hand of the person being interviewed, never the "
+            f"interviewer's. "))
+        + f"It appears exactly as the reference: {p['appearance']}, "
         # CAN_SIZE REPLACES the size phrase rather than adding to it. See the can grammar above.
         + (CAN_SIZE.format(size=p["size"]) if can_size else _SIZE_DEFAULT + ". ")
         # UPRIGHT REPLACES this whole sentence. See its comment: the position was never the
@@ -829,7 +955,9 @@ def build_prompt(cfg: dict, pace: bool = False, guards: bool = False, mic: bool 
         # framing, wide: 4802 was a tight close-up, which also forced every pore to render.
         # _FRAME_WIDER is a REPLACEMENT, not an addition: seed 4816 came back chest-up with
         # _FRAME_DEFAULT in the prompt, and two framing sentences would contradict each other.
-        (_FRAME_WIDER if guards else _FRAME_DEFAULT)
+        # v3 swaps in the deep-focus pair (see _FRAME_DEFAULT_V3); v1/v2 keep the legacy pair.
+        ((_FRAME_WIDER_V3 if guards else _FRAME_DEFAULT_V3) if prompt_version >= 3
+         else (_FRAME_WIDER if guards else _FRAME_DEFAULT))
         + (_PIN_PACE if pace else _PIN_DEFAULT) +
         f"{n_cast.capitalize()} "
         # _CAST_ADULTS REPLACES this sentence. One statement about who these people are, not two:
@@ -842,8 +970,27 @@ def build_prompt(cfg: dict, pace: bool = False, guards: bool = False, mic: bool 
         # NO_LETTERING is a SECOND rule about a DIFFERENT surface and does not replace this one:
         # this clause is about the background, and every word episode 1 garbled was in the
         # foreground, on a person, sharp and central.
-        "Street signs and shopfronts are present far behind the subject but small, distant and out of "
-        "focus, never sharp and never legible. "
+        + ("THE INTERVIEWER IS ONE PERSON AND LOOKS THE SAME IN EVERY SHOT: both forearms are in "
+           "the same plain black long sleeve, with bare hands, no watch, no rings and no "
+           "bracelet. The microphone always enters from the LOWER RIGHT edge of frame and never "
+           "changes hand or side. The left hand enters from the LOWER LEFT, only for a handover. "
+           "EACH PERSON STANDS IN THE UPPER TWO THIRDS OF THE FRAME: their head is near the top, "
+           "their hands and the " + prod + " are at chest height in the middle of the frame, and "
+           "the bottom third shows only their legs and the pavement. "
+           "Nobody carries a newspaper, a book, a phone, a cup or anything printed, and no bag "
+           "has a tag or a label. "
+           if cfg.get("generation", {}).get("real_grammar") else "")
+        + ("THERE ARE NO SHOPS, NO SHOP SIGNS, NO STREET NAME SIGNS, NO POSTERS, NO BANNERS AND NO "
+           "LETTERING OF ANY KIND IN THE BACKGROUND: only trees, railings, a plain brick wall, "
+           "pavement and parked cars. Anything distant is soft, never sharp and never legible. "
+           if cfg.get("generation", {}).get("no_signage") else
+        # v3 keeps the street in focus, so "out of focus" would contradict its framing sentence;
+        # distance alone keeps the signs unreadable. Lint needle: "never legible" for v3.
+           "Street signs and shopfronts are present far behind the subject but small and too "
+           "distant to read, never legible. "
+           if prompt_version >= 3 else
+           "Street signs and shopfronts are present far behind the subject but small, distant and out of "
+           "focus, never sharp and never legible. ")
         + (NO_LETTERING.format(prod=prod) if plain else "") +
 
         # invented speech: 4808 filled 4.5 unscripted seconds with gibberish
@@ -960,7 +1107,7 @@ REQUIRED_PER_SHOT = {
 def lint(prompt: str, pace: bool = False, guards: bool = False, mic: bool = False,
          plain: bool = False, answers_only: bool = False, can: bool = False,
          mic_ref: bool = False, can_size: bool = False, can_sealed: bool = False,
-         upright: bool = False, one_mic: bool = False, prompt_version: int = 1):
+         upright: bool = False, one_mic: bool = False, prompt_version: int = 1, mode: str = "product-guess"):
     """The prompt lint, as a function, so `check-cut.py` and `single_gen.py --dry-run` apply the
     SAME rule to the same text. Returns structural failure strings. Length is advisory
     and lives in prompt_warnings(), so a complete prompt is never refused for its count.
@@ -975,6 +1122,15 @@ def lint(prompt: str, pace: bool = False, guards: bool = False, mic: bool = Fals
     `guard_grammar` out of the manifest for exactly this reason -- linting a pace prompt with
     `pace=False` would report a PASS while the four clauses the pace grammar paid for went
     unchecked, which is how the pace block was deleted at seed 4812 and nothing noticed."""
+    if mode == "conversation":
+        import conversation
+        if any((guards, answers_only, can, mic_ref, can_size, can_sealed, upright)):
+            return ["product/episode grammars cannot be applied to conversation"]
+        return conversation.lint(prompt, split_shots)
+    if mode != "product-guess":
+        return ["unknown street execution mode"]
+    if prompt_version not in (1, 2, 3):
+        return ["prompt_version must be 1, 2 or 3"]
     can_size, can_sealed = can_size or can, can_sealed or can
     if mic and mic_ref:
         return ["`mic` and `mic_ref` are two different answers to the same question and the "
@@ -992,7 +1148,12 @@ def lint(prompt: str, pace: bool = False, guards: bool = False, mic: bool = Fals
                 **(CAN_SEALED_CLAUSES if can_sealed else {}),
                 **(UPRIGHT_CLAUSES if upright else {}),
                 **(ONE_MIC_CLAUSES if one_mic else {}))
-    if prompt_version == 2 and upright and "the top edge is never shown" in pr:
+    if prompt_version >= 3:
+        need["never legible"] = need.pop("never sharp and never legible")
+        need["never blurred and never bokeh"] = ("the v3 deep-focus bound. The operator rejects "
+                                                 "blurred backgrounds; v3 keeps the falloff needle "
+                                                 "but the street stays in focus")
+    if prompt_version >= 2 and upright and "the top edge is never shown" in pr:
         need["the top edge is never shown"] = need.pop("the lid is never shown")
     out = [f'the prompt is missing "{n}" -- {why}' for n, why in need.items()
            if n not in pr]

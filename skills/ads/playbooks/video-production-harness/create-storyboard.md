@@ -3,7 +3,15 @@ name: video-production-harness/create-storyboard
 description: Produce a host-visible storyboard that previews every scene as a 9:16 frame with timing, captions, VO, SFX, and tool notes — before any expensive generation runs.
 ---
 
-# create-storyboard
+# Human version
+
+**Summary.** Preview the actual story with inspected assets, exact words and useful
+timing before production spend. The review shows why each shot fits, what is still
+missing and whether the viewer has time to see the proof and read the text.
+
+---
+
+# Agent version
 
 ## Host contract
 
@@ -28,11 +36,34 @@ Use the binding's storyboard surface and the available local composition tools; 
 
 1. Read design_brief and pull the scene table.
 2. Copy hero/mascot assets into `<video_folder>/raw-materials/` if not already there.
-3. Save scene cards in approved order with aspect ratio, numeric timing, dominant action, spoken/on-screen copy, references, SFX and planned model/tool. Include unresolved decisions and visual hard rules.
+3. Save scene cards in approved order with aspect ratio, numeric timing, dominant action, spoken/on-screen copy, references, SFX and planned model/tool. Include unresolved decisions and visual hard rules. Reuse the current scene IDs and timeline/EDL; do not introduce a second timing authority.
+   - Carry viewer takeaway, asset job, framing/performance and the reason for the next cut.
+   - Show the actual selected image/range and the existing source binding unchanged,
+     including analysis revision when present. Link the inspection evidence and reasons
+     for selecting it over rejected candidates. Mark pending analysis and unavailable originals.
+   - Separate usable production media from product truth/style references and mockups.
+     Respect user-locked sources; conflicts remain visible in the existing review.
+   - Mark claim-to-proof overlap, action completion, reading/recognition hold and
+     speech window. State whether timing is estimated or measured from selected audio.
+   - List needed entrance/exit handles, alternates and bridge shots only where a
+     specific edit risk warrants them, and note world/product continuity at the join.
 4. Use deterministic mockups for text/layout and actual hero/product/logo assets. Mark pending generated ingredients; do not call a mockup a finished preview.
 5. Use the current brand typography/palette, checking font/renderer availability before choosing that approach.
 6. Present through the host's supported review surface, never an assumed ad-hoc HTML page.
 7. Verify: every scene from design-brief appears in order, captions match, no broken asset paths.
+
+For uncertain sequences, build a cheap timed proof from these same scene cards and
+inspected sources. Review the complete sequence at intended viewing size: does the
+visual support the words at that moment, does text remain stable long enough, and
+does the action complete before the cut? A still grid alone cannot answer these.
+Do not require a new render when the timing is already established by the approved
+recipe and usable material. Keep scratch/estimated audio explicitly unverified.
+
+Before assembly, replace pending cards with actual selected takes and recheck the
+same criteria. Record missing proof or continuity defects by scene/range. Repair the
+smallest affected part or remove an unnecessary beat before paid regeneration. A
+local timing change preserves unaffected approved sources and reconforms affected
+audio/captions/transitions. Review that join and then the complete revised cut.
 
 ### Step 7.5 — Transition layer (optional, opt-in)
 
@@ -57,44 +88,44 @@ If `voiceovers/manifest.json` exists (i.e. the script-lock stage split a long-fo
 
 This caught the example brand scene-07 "higher → stakes situations" truncation only at v3-review-time. Surfacing it visually in the storyboard catches it at gate 2 instead.
 
-### Step 7.65 — UGC discipline metrics (UGC family only)
+### Step 7.65 — Pacing and shot-mix diagnostics
 
-If `design_brief` `concept_format` is in `ugc-diary | testimonial | founder-led | before-after`, the storyboard MUST compute and display two metrics, persist them into `scene_contract`, and fail the gate if either misses target.
-
-**A. cuts_per_10s (cut density).**
-
-```
-cuts_per_10s = number_of_scenes / total_runtime_seconds * 10
-```
-
-Display in the storyboard footer AND write to `scene_contract` top-level `metrics.cuts_per_10s`:
+Measure the actual planned cuts, not the number of scene cards. A card may contain
+several shots; a continuous shot across two beats contains no cut. Count boundaries
+inside the cut, excluding time zero and the final end. Do not count a graphic overlay
+as a picture cut. Write `metrics.cuts_per_10s` in the existing scene contract:
 
 ```
-Cuts: 12 in 24s → 5.0 cuts/10s  (target ≥ 4.0 — the reference cut reference: 5.0)  ✅
+cuts_per_10s = actual_picture_cut_count / total_runtime_seconds * 10
 ```
 
-If below target, render as **❌ BELOW UGC TARGET** and surface in the gate text. Operator override is recorded in implementation-brief decision log AND `approvals`.
+For example, five contiguous shots in 20 seconds have four cuts: **2.0 cuts/10s**.
+Also show individual shot lengths and the proof/readability holds; the average can
+hide one rushed demonstration and one redundant hold.
 
-**B. face_share_planned (direct-face ratio).**
-
-Every scene card has a `shot_type:` field (persisted as `scene_contract[scenes][N].shot_type`):
-
-- `face_direct` | `face_extreme_cu` | `profile` | `pov` | `over_shoulder` | `hands_only` | `broll`
-
-```
-face_share_planned = count(face_direct) / total_scenes
-```
-
-Display in the footer AND persist to `metrics.face_share_planned`:
+Retain each scene/shot's `shot_type` (`face_direct`, `face_extreme_cu`, `profile`,
+`pov`, `over_shoulder`, `hands_only` or `broll`). For a face-share diagnostic, measure
+non-overlapping **visible direct-face seconds**, including direct-facing close-ups:
 
 ```
-Shot mix: face_direct 3 | face_cu 1 | pov 2 | over_shoulder 2 | hands 2 | broll 2
-face_share_planned: 3/12 = 0.25  (target ≤ 0.40 — the reference cut reference: 0.25)  ✅
+face_share_planned = direct_face_visible_seconds / total_runtime_seconds
 ```
 
-If above target, render as **❌ ABOVE UGC TARGET** and require operator override with reason. The fix is to re-storyboard direct-face scenes as POV / over-shoulder / hands alternates (the same VO beat from a different angle), not to extend runtime.
+Record the time-based definition with the metric. Older count-based values are not
+comparable; recompute them from the saved timeline before a new comparison. Do not
+use scene counts when one face shot holds much longer than the inserts.
 
-**Why these matter (v3 a prior production review diagnostic):** v3 scored 2.3 cuts/10s and 0.90 face_share. the reference cut scored 5.0 cuts/10s and 0.25 face_share. Fast cuts give the viewer's eye no time to find AI drift; low face_share minimizes the surface where AI fails most.
+Targets come from this brief and an inspected relevant reference, if one exists;
+retain its ID, timestamp range and observed limitations in `pacing_basis`. Without
+one, label the targets provisional or leave them null. The old single-reference
+floors (4 cuts/10s, at most 40% face) are not universal UGC acceptance rules. A
+founder explanation, product demo and reflective testimonial can need different
+rhythms. Explain a deviation when it affects the story and preserve explicit user
+direction; do not add cuts to conceal artificial shots or rush a readable proof.
+
+The gate concerns supported proof, intelligibility, readable text, continuity and
+the approved recipe. Numeric diagnostics help locate defects; they cannot certify
+natural performance or substitute for viewing the complete sequence.
 
 ### Step 7.7 — B-roll % preview (podcast-clip projects only)
 
@@ -114,6 +145,9 @@ Tammer face: 10.7s (37%)  |  B-roll: 17.1s (59%)  |  End card: 1.1s (4%)
 ## Quality Checks
 
 - Every scene from design_brief appears in storyboard in order with timing.
+- Actual selected ranges support the intended claim at the intended time; a metadata description is insufficient.
+- Reading/action holds and source handles survive the actual crop and cut. Estimates remain labelled until measured.
+- Local changes retain unaffected source identities and approvals; changed joins and the full cut are reviewed.
 - 9:16 frames render as vertical, not horizontal.
 - Caption text in the storyboard exactly matches the design-brief on-screen text.
 - VO fields exactly match the design-brief VO line.

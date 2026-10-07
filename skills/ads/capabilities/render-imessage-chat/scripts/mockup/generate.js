@@ -42,7 +42,7 @@ function isEmojiOnly(text) {
   const stripped = text.trim();
   if (!stripped) return false;
   const emojiRe = /^(\p{Extended_Pictographic}|\p{Emoji_Presentation}|️|‍|\s)+$/u;
-  return emojiRe.test(stripped) && [...stripped.replace(/\s/g, '')].length <= 6;
+  return emojiRe.test(stripped) && [...new Intl.Segmenter('en', {granularity:'grapheme'}).segment(stripped.replace(/\s/g, ''))].length <= 3;
 }
 
 // ---------------------------------------------------------------------------
@@ -87,10 +87,10 @@ function renderDMHeader(thread) {
 
 function renderConversationHeader(thread) {
   const h = thread.header || {};
-  const badge = h.unread != null ? String(h.unread) : '';
+  const badge = h.unread > 0 ? String(h.unread) : '';
   const peer = (thread.participants || []).find(p => !p.self) || {};
   const avatarColor = peer.color || '#6E6E73';
-  const avatarInitials = peer.initials || (peer.name || '?').trim().slice(0, 2).toUpperCase();
+  const avatarInitials = peer.initials || (peer.name || '?').trim().slice(0, 1).toUpperCase();
   const peerName = peer.name || 'Contact';
 
   return `
@@ -128,10 +128,10 @@ function renderGroupHeader(thread, participantMap) {
 }
 
 // Status bar (only shown when framed)
-function renderStatusBar() {
+function renderStatusBar(thread) {
   return `
     <div class="status-bar">
-      <div class="time">9:41</div>
+      <div class="time">${escapeHTML(thread.clock || '9:41')}</div>
       <div class="right-cluster">
         ${ICONS.signal}
         ${ICONS.wifi}
@@ -183,7 +183,7 @@ function renderTextBubble(msg, participant, opts) {
   let html = '';
 
   if (!isSent && showSenderName && isFirstOfRun) {
-    html += `<div class="sender-name">${escapeHTML(participant.name)}</div>`;
+    html += `<div class="sender-name" data-label-id="${escapeHTML(msg.id || '')}"${pendingAttr}>${escapeHTML(participant.name)}</div>`;
   }
 
   html += `<div class="${rowClass}"${dataAnim}${pendingAttr}>`;
@@ -218,8 +218,10 @@ function renderAttachment(msg, participant, opts) {
   const src = msg.src || '';
   const title = msg.title || '';
   const subtitle = msg.subtitle || '';
+  const label = !isSent && opts.showSenderName && opts.isFirstOfRun
+    ? `<div class="sender-name" data-label-id="${escapeHTML(msg.id || '')}"${pendingAttr}>${escapeHTML(participant.name)}</div>` : '';
   return `
-    <div class="row attachment ${sideClass} ${animClass}"${dataAnim}${pendingAttr}>
+    ${label}<div class="row attachment ${sideClass} ${animClass} ${msg.presentation === 'photo' ? 'photo' : 'rich-link'}"${dataAnim}${pendingAttr}>
       <div class="attachment-card">
         ${src ? `<img src="${escapeHTML(src)}" alt="">` : ''}
       </div>
@@ -252,14 +254,15 @@ function renderConversation(thread, participantMap, mode) {
   const isGroup = thread.mode === 'group';
   const messages = thread.messages || [];
 
-  // Pre-compute "last of run" by walking forward.
-  // A "run" is a contiguous sequence of text/typing messages from the same sender.
+  // Typing does not begin a sender run. The first real message owns its label.
+  const realMessages = messages.filter(m => m.type === 'text' || m.type === 'attachment');
   const runFlags = messages.map((m, i) => {
-    if (m.type !== 'text' && m.type !== 'typing') return { isFirstOfRun: false, isLastOfRun: false };
-    const prev = messages[i - 1];
-    const next = messages[i + 1];
-    const samePrev = prev && (prev.type === 'text' || prev.type === 'typing') && prev.from === m.from;
-    const sameNext = next && (next.type === 'text' || next.type === 'typing') && next.from === m.from;
+    const index = realMessages.indexOf(m);
+    if (index < 0) return { isFirstOfRun: false, isLastOfRun: false };
+    const prev = realMessages[index - 1];
+    const next = realMessages[index + 1];
+    const samePrev = prev && prev.from === m.from;
+    const sameNext = next && next.from === m.from;
     return { isFirstOfRun: !samePrev, isLastOfRun: !sameNext };
   });
 
@@ -284,10 +287,10 @@ function renderConversation(thread, participantMap, mode) {
       }));
     } else if (m.type === 'attachment') {
       const participant = participantMap.get(m.from);
-      out.push(renderAttachment(m, participant, { mode }));
+      out.push(renderAttachment(m, participant, { mode, ...runFlags[i], showSenderName: isGroup }));
     }
   }
-  return `<div class="conversation">${out.join('\n')}</div>`;
+  return `<div class="conversation"><div class="message-list">${out.join('\n')}</div></div>`;
 }
 
 // ---------------------------------------------------------------------------
@@ -349,10 +352,10 @@ function renderHTML(thread, options = {}) {
 <html${htmlClass}><head><meta charset="utf-8"><style>${css}</style></head>
 <body class="${bodyClass}">
   <div class="iphone-frame">
-    <div class="dynamic-island"></div>
     <div class="screen">
+      ${thread.dynamic_island === false ? '' : '<div class="dynamic-island"></div>'}
       <div class="stage">
-        ${renderStatusBar()}
+        ${renderStatusBar(thread)}
         ${headerHTML}
         ${conversationHTML}
         ${keyboard}

@@ -3,7 +3,7 @@ name: CI
 on:
   pull_request:
   push:
-    branches: [main]
+    branches: [dev, main]
 
 jobs:
   validate:
@@ -14,6 +14,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+
+      - name: Test catalog deployment
+        run: node --test scripts/__tests__/deploy-catalog.test.mjs
 
       - name: Validate skill metadata
         run: node scripts/validate-skills.js
@@ -27,7 +30,101 @@ jobs:
       - name: Test CLI
         run: npm test
 
+      - name: Verify packaged writer handoff
+        run: python3 skills/ads/capabilities/write-video-ad-script/scripts/verify_handoff.py
+
+      - name: Test review-ugc-render speech gate
+        # Pure stdlib Python: no ffmpeg, pytest or network (transcription is stubbed).
+        run: python3 skills/ads/packs/ugc-video-formats/review-ugc-render/tests/test_review_render.py
+
       - name: Test street-interview prompt preflight
         run: |
           python3 skills/ads/capabilities/render-street-interview/scripts/selftest.py
           python3 -m unittest discover -s skills/ads/capabilities/render-street-interview/tests -p 'test_prompt_budget.py' -v
+
+  imessage-chat-browser-tests:
+    # Headless-Chromium tests for render-imessage-chat, including the QA-60
+    # platform safe-area layout. Installs only Playwright's Chromium (no other
+    # browsers); local fixtures, no media downloads or provider calls.
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: skills/ads/capabilities/render-imessage-chat
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Playwright and Chromium
+        run: |
+          npm ci --prefix scripts
+          cd scripts && npx playwright install --with-deps chromium
+
+      - name: Test chat renderer and safe-area layout
+        run: node --test --test-concurrency=1 tests/test_safe_area.js tests/test_chat.js
+
+  media-tests:
+    # The media helpers are pinned to macOS system fonts (render-imessage-cascade), so these
+    # run on macOS. Local ffmpeg fixtures only; no provider calls.
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install ffmpeg and test deps
+        run: |
+          brew install ffmpeg
+          python -m pip install pytest pillow numpy requests
+
+      - name: Test video media helpers
+        run: >
+          python -m pytest -q
+          test/recipe-media-fixes
+          skills/ads/capabilities/review-finished-ad/tests
+          skills/ads/capabilities/create-vo-elevenlabs/tests
+          skills/ads/capabilities/create-creator-takes-h3/tests
+          skills/ads/capabilities/media-proxy/tests
+          skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests
+          skills/ads/capabilities/render-street-interview/tests/test_single_gen_rejection.py
+          skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests
+
+  deploy-catalog:
+    if: github.event_name == 'push'
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    environment: ${{ github.ref_name == 'dev' && 'staging' || 'production' }}
+    concurrency:
+      group: skills-catalog-${{ github.ref_name }}
+      cancel-in-progress: false
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Publish agent catalog and wait for completion
+        env:
+          TRIGGER_SECRET_KEY: ${{ secrets.TRIGGER_SECRET_KEY }}
+          SOURCE_REF: ${{ github.ref_name }}
+          SOURCE_REVISION: ${{ github.sha }}
+        run: node scripts/deploy-catalog.mjs
+
+  dispatch-public-sync:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: deploy-catalog
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update production CMS and docs
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.GOOSEWORKS_APP_REPO_TOKEN }}
+          repository: ${{ secrets.GOOSEWORKS_APP_REPO }}
+          event-type: goose_skills_updated
+          client-payload: '{"source":"goose-skills","ref":"${{ github.ref }}","sha":"${{ github.sha }}"}'

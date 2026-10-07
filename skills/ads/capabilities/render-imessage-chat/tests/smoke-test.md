@@ -1,63 +1,35 @@
-# Smoke test — render-imessage-chat
+# Smoke test — iMessage reference repair
 
-Verifies the free assembly end-to-end from the bundled example config. No paid
-calls. Needs: Node, `npm install` (Playwright Chromium), and ffmpeg/ffprobe.
-
-## Setup
+Run the fictional example without external images, network generation or paid
+calls. Then change its contact name and theme and confirm the output follows.
 
 ```bash
 cd scripts
-npm install
-npx playwright install chromium
-# The example config references assets/product-cover.jpg + assets/flat-lay-bg.jpg —
-# drop any two JPEGs there, or remove `background_image` and swap the attachment
-# `src` for a local image to run fully offline.
-mkdir -p /tmp/imsg-chat-smoke
+npm ci
+# Check this script's own Chromium before starting.
+node record-chat.js --config config.example.json --out-dir /tmp/imsg-preview --preview-only
+bash render.sh --config config.example.json --out /tmp/imsg-smoke/master-final.mp4
 ```
 
-## Run
+Expect a proportional phone, inset island, Maya in the header, natural texts,
+original receive/send sounds and Sample Goods on the end card. Stars are absent.
+The final message remains visible before the end card. Output is 1080×1920.
+The newest message sits above the bottom 400 px and left of the right 140 px
+(`master-chat.safe-area.json`; check-render prints the measured range).
+Change participant name to Akhil and theme to light; check the header/initial,
+visible black header controls, hardware inset and frame margins again.
+
+Repeat from a copied package without `assets/`: the embedded original sounds
+must work. Never repair it with substitute audio. The runnable example is
+fictional; these creative values are never customer defaults.
+
+From the capability root:
 
 ```bash
-node record-chat.js    --config config.json --out-dir /tmp/imsg-chat-smoke
-node render-end-card.js --config config.json --out-dir /tmp/imsg-chat-smoke
-bash stitch.sh \
-  --chat /tmp/imsg-chat-smoke/master-chat.mp4 \
-  --end  /tmp/imsg-chat-smoke/scene-end-endcard.mp4 \
-  --sfx  /tmp/imsg-chat-smoke/master-chat.sfx.json \
-  --out  /tmp/imsg-chat-smoke/master-final.mp4 \
-  --also-1x1
+node --test tests/test_chat.js
+node --test tests/test_safe_area.js
+python3 -m pytest tests/test_stitch.py
 ```
 
-## Expect
-
-- `master-chat.mp4` — 1080×1920, ~22–24s, one continuous take of the thread
-  animating in. The attachment reads as a URL-preview rich link (image flush on a
-  gray meta card with the title + domain + chevron), NOT a caption below a bare
-  image. No bubble text bleeds outside its bubble.
-- `scene-end-endcard.mp4` — 1080×1920, ~2.5s designed end card (wordmark + ⭐
-  proof row + trust trio + CTA pill).
-- `master-final.mp4` — chat crossfades into the end card; audio has send/receive
-  pops on each bubble (and the ducked bed if `--music` was passed). `-1x1` variant
-  is 1080×1080.
-- `ffprobe` confirms dimensions/duration; run the `watch` skill on the master to
-  confirm beat order, the rich link, and the end card.
-- No clipping: `ffmpeg -i master-final.mp4 -af ebur128=peak=true -f null -` reports
-  a true peak below -1 dBTP (it lands at about -2), even where chimes overlap.
-
-## Automated checks
-
-`python3 -m pytest tests/` (ffmpeg + bash, no network, ~15s) renders synthetic
-clips through `stitch.sh` and checks: a catalog-fetched copy (no `assets/`) still
-gets the real SFX from `scripts/sfx-embedded.json`; stacked chimes and the music
-bed stay below -1 dBTP; and a missing or damaged SFX source fails with a clear
-message.
-
-## Fail signals
-
-- Attachment caption centered/floating below the image → the injected rich-link
-  style didn't apply (check `record-chat.js` `injectedStyle`).
-- Text overflowing a bubble → the thread has an over-long line; split it into
-  multiple bubbles (authoring rule).
-- `Cannot find module 'playwright'` → run `npm install` in `scripts/`.
-- `stitch.sh: no iMessage SFX` → the fetched copy lost `scripts/sfx-embedded.json`
-  (or saved it altered). Re-fetch the capability; don't fake the pops.
+Review the actual finished MP4, including its audio. Technical metadata and a
+still frame do not establish creative acceptance. No 1:1 crop in this recipe.

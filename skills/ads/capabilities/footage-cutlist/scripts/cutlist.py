@@ -92,8 +92,23 @@ def resolve(path):
             errs.append("%s: needs a known `source` (one of %s)" % (bid, list(srcs)))
             continue
         b["source"] = next(k for k, v in srcs.items() if v is s)
-        if b.get("look") not in (None, "plain", "screen"):
-            errs.append("%s: look must be plain or screen" % bid)
+        if b.get("look") not in (None, "plain", "screen", "photo"):
+            errs.append("%s: look must be plain, screen or photo" % bid)
+        b.setdefault("fit", "width")
+        if b["fit"] not in FITS:
+            errs.append("%s: invalid fit" % bid)
+        if b["fit"] == "crop":
+            c = b.get("crop")
+            if not (isinstance(c, list) and len(c) == 4 and 0 <= c[0] < c[2] <= 1 and 0 <= c[1] < c[3] <= 1):
+                errs.append("%s: invalid crop rectangle" % bid)
+        if b.get("look") == "photo":
+            from photo import validate
+            if not s.get("still"):
+                errs.append("%s: photo look requires a still image" % bid)
+            try:
+                validate(b)
+            except ValueError as e:
+                errs.append("%s: %s" % (bid, e))
         if s.get("still"):
             b["in"], b["out"], b["speed"] = 0.0, slot, 1.0
             b.setdefault("fit", "width")

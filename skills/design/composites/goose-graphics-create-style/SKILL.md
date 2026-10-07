@@ -33,13 +33,11 @@ it via the regular `goose-graphics` flow.
 
 - The `goose-graphics` skill must be installed in the same workspace —
   this skill uses its `screenshot/screenshot.js` to render examples.
-  Install via:
-  ```bash
-  npx gooseworks install --claude --with goose-graphics
+  Install it by pasting this into your agent:
   ```
-  (Swap `--claude` for `--cursor` or `--codex` as needed.) See the install
-  page on the hub for the canonical command:
-  https://skills.gooseworks.ai/skills/goose-graphics
+  Install gooseworks: https://gooseworks.ai/install.md including the goose-graphics skill
+  ```
+  Or run it yourself: `npx gooseworks@latest install --all --mcp --with goose-graphics`.
 - The screenshot tool's dependencies must be installed
   (`goose-graphics/screenshot/node_modules/` must exist). If not:
   ```bash

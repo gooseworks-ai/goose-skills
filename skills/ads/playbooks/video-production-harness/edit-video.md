@@ -3,11 +3,17 @@ name: video-production-harness/edit-video
 description: Stitch per-scene clips into a final master MP4. Reorder, retime, layer VO + music + SFX, add transitions, and burn captions. Step 6 of the pipeline.
 ---
 
-# edit-video
+# Human version
+
+Build a candidate from the accepted story and editable sources. Mix for the chosen audio strategy, carry timing changes through dependent elements, and check every delivered output.
+
+---
+
+# Agent version
 
 ## Host contract
 
-Read `capabilities.md` and the selected host binding first. Artifact names are logical roles resolved by that binding. Named review tasks use the documented rubrics and actual frame/audio tools; they are not assumed installed commands. Required tooling, human approval and available budget must exist before the operation.
+Read `capabilities.md` and the selected host binding first. Artifact names are logical roles resolved by that binding. Named review tasks use the documented rubrics and actual frame/audio tools; they are not assumed installed commands. Required tooling, human approval and available budget must exist before the operation. Read [the editorial review guide](references/editorial-review.md) for source binding, stage decisions, note disposition, impact checks and saved edit history.
 
 ## Purpose
 
@@ -42,49 +48,29 @@ The mix protocol below assumes `audio_strategy: vo-narrator`. Branch on the desi
 
 | audio_strategy | Mix branch |
 |---|---|
-| `vo-narrator` | Canonical sidechain-duck chain (below). VO is the lead, music is bed. |
-| `song-as-script` | **Skip sidechain duck entirely.** The song IS the audio — there's no VO to duck under. Apply only the song-tail `afade=t=out:st=<endcard_start>:d=0.5` so the music tails out cleanly on the end-card. Captions sync to vocal onsets via `sync-captions-to-music`. See the selected binding's actual supported capability State 7. |
-| `hybrid` | Duck only during the VO segments. Music plays unducked under the lyric segments. Construct two separate sidechain filter graphs with time-gated `enable=between(t,X,Y)` clauses. |
+| `vo-narrator` | Voice is the lead. Use an approved bed only if planned; tune gain automation or sidechain from actual masking. |
+| `song-as-script` | **Skip sidechain duck entirely.** The song IS the audio — there's no VO to duck under. Honor the approved fade, sustained ending or loop; do not impose a fade that cuts a lyric. Captions sync to vocal onsets via `sync-captions-to-music`. See the selected binding's actual supported capability State 7. |
+| `hybrid` | Duck only during the VO segments. Music plays unducked under the lyric segments. Segment the actual VO/lyric windows and recombine the processed audio. Verify the selected FFmpeg filters support any timeline option before using it. |
 | `silent` | Mux silent audio track (or none). Captions burned from the design-brief itself, not from VO/lyric timestamps. |
 
-## Narration mix starting point and measured final gate
+## Narration mix and measured final gate
 
-This protocol is the v03 LEARNINGS distilled into one chain. The chain is applied unless the operator overrides individual flags OR `audio_strategy` selects a different branch above. Treat the gains as a starting point, measure the actual output and avoid clipping. The required outcome is intelligible approved speech, controlled peaks and music beneath it; host/project overrides remain explicit.
+Start from the approved audio strategy and measured stems. A narration-led ad can use gain automation, a quieter bed or sidechain ducking; voice-only, intended silence, song-led and native dialogue need their own treatment. Do not apply one mandatory gain multiplier or compressor preset to every format.
 
-```
-# Per-VO-clip: loudnorm to social target, then 3.0× boost
-[N:a]loudnorm=I=-16:TP=-1.5:LRA=11,adelay=<scene_in_ms>|<scene_in_ms>,volume=3.0[voN];
+1. Measure speech, bed and SFX in the actual dialogue windows. Set speech for intelligibility and preserve the approved performance dynamics; choose any loudness target from the actual delivery plan.
+2. Reduce/move the competing cue before excessive voice boosting. Where sidechain helps, split the actual VO bus into listen and detector branches and tune threshold, attack/release and ratio against the material. Record the chosen values; ratio 20 is an FFmpeg limit, not a target.
+3. Mix planned stems with explicit gain and normalization behavior. Do not duplicate native dialogue under a separate voice track. Check scene boundaries and intended room tone/silence.
+4. Measure the **finished mix** for loudness, true peaks and clipping. Listen at normal speed and low playback level to every line, final consonant, effect and tail. Transcription corroborates word integrity; it cannot prove natural delivery or absence of masking/pumping.
 
-# Climax line (read from implementation_brief `climax_line:`): extra +20%
-[CLIMAX:a]loudnorm=I=-16:TP=-1.5:LRA=11,adelay=<t>|<t>,volume=3.6[vo_climax];
+For long filter graphs use a saved FFmpeg filter script, preserve it with the editable sources and probe its actual output. Do not multiply an already normalized VO by 3× and its bus by 2× as an inherited rule: downstream gain can undo normalization and clip the mix.
 
-# Mix all VO clips into one bus with another 2.0× pad
-[vo1][vo2]...[voN][vo_climax]amix=inputs=N+1:duration=longest,volume=2.0[vo_pre];
-[vo_pre]asplit=2[vo_final][vo_sc];
-
-# Music: pad with 2s of silence at end + fade out over last 1.5s, base 0.13
-[M:a]apad=pad_dur=2.0,atrim=0:<TOTAL>,afade=t=out:st=<TOTAL-1.5>:d=1.5,volume=0.13[music_base];
-
-# Sidechain compress music against VO bus: ratio 20:1 @ 0.01 threshold
-[music_base][vo_sc]sidechaincompress=threshold=0.01:ratio=20:attack=20:release=600[music_ducked];
-
-# Final mix: ducked music + VO + SFX
-[vo_final][music_ducked][sfx_bus]amix=inputs=3:duration=longest[a_out]
-```
-
-**Required filter-script invocation** (long chains hit command-line length limits):
-
-```bash
-ffmpeg ... -filter_complex_script /tmp/mix_chain.txt -map "[a_out]" ...
-```
-
-**Hard sync rule:** the final video duration MUST equal the final music duration. Pad video (loop final scene) OR shorten music (afade earlier) — never let video run past music with SFX-only. v03 round 12 was this exact bug.
+**Timeline rule:** planned audio cues must match the approved timeline. Prevent accidental truncation or an unintended empty tail; preserve deliberate silence, a clean loop or a voiced CTA after the bed ends. Never extend the story merely to make music and picture durations equal.
 
 ## Multi-clip AI concat color drift
 
-Any concat of AI-generated clips will have visible grade jumps at boundaries — even when every clip was generated with the same "cool fluorescent" or "warm dusk" prompt. The models don't enforce a consistent LUT across generations; each clip interprets the grade subjectively.
+A concat of AI-generated clips can have visible grade jumps at boundaries — even when every clip was generated with the same "cool fluorescent" or "warm dusk" prompt. The models don't enforce a consistent LUT across generations; each clip interprets the grade subjectively.
 
-Apply a **harmonization pass** to the concatenated video before the final mux. The pass isn't a specific look — it's whatever single grade you want all clips to share. Starting point that works for most projects:
+Inspect neighboring shots and apply a **harmonization pass** only where the approved look requires correction before the final mux. The pass isn't a specific look — it's whatever single grade you want all clips to share. Starting point that works for most projects:
 
 ```
 eq=contrast=1.05:saturation=0.95, colorbalance=bs=0.05:bm=-0.02
@@ -96,7 +82,7 @@ Tune the values based on the concept:
 - **Higher contrast / commercial** → `contrast=1.10` + `saturation=1.05`
 - **Muted / documentary** → `contrast=1.02` + `saturation=0.85`
 
-The values are dial-able. The *practice* of applying a harmonization pass is the rule, not the specific filter. See available model behavior guidance for why this drift happens.
+The values are dial-able. Consistent intentional treatment is the goal; matching shots require no extra grade. See available model behavior guidance for why this drift happens.
 
 ## Music-drop alignment
 
@@ -117,6 +103,9 @@ This is wrapped as a deterministic atom at `align-music-drop-to-climax` for repe
 ## Workflow
 
 ### Phase 1 — Reorder + retime + interleave transitions
+
+Resolve the source cut and its editable timeline from the original note/version. Record the intended effect, candidate path and impact on timings, captions, music/SFX, approvals and derivatives using [the editorial review guide](references/editorial-review.md). Preserve unrelated sources and current accepted bytes.
+
 1. Build a list of input clips in target order. **If `<video_folder>/transition_pairs.json` exists**, interleave transition clips at the right boundaries:
    - For each `ai_interpolation` pair, find the matching `transition-<from>-<to>.mp4` in `clips/` (or `…-push-in.mp4` + `…-pull-out.mp4` for split-clip pairs). Insert between scene N and scene N+1.
    - For each `in_edit_*` pair, record the FFmpeg filter spec for use in transition step 4 below; no clip insertion needed.
@@ -135,26 +124,26 @@ This is wrapped as a deterministic atom at `align-music-drop-to-climax` for repe
 2. Use `python3 scripts/assemble.py PLAN.json OUTPUT.mp4` for a conventional supported clip sequence; use a real FFmpeg filter script for transitions/custom timing beyond that helper. Concat the approved clips into `edits/master-video-only.mp4`. Standardize to the approved ratio/dimensions (normally 1080×1920), 30 fps, yuv420p, libx264 and the approved quality target (CRF 18 is a starting point).
 3. Verify total duration is within the design-brief target ± 1s.
 4. Probe music duration (from Phase 3 plan if known) and **resolve duration against the approved timeline** — trim or loop/pad the music, or extend a permitted final video hold with tpad/loop if the brief allows it. apad extends audio, not video. Do not silently change scene/story timing to fit an arbitrary music length. Save the target `TOTAL` for the mix chain.
-5. **Speedup pass (podcast-clip / repurposed-long-form projects only).** Conversational audio runs ~30% slow for short-form social. Apply the locked speed to picture with FFmpeg setpts=PTS/RATE and to retained speech with atempo=RATE (normally RATE=1.30 when approved). Verify duration and word/caption timestamps after the change. Speed is fixed at lock-script time; do not adjust here unless the operator overrides via the polish stage. Skip entirely for original-VO or music-video projects.
+5. **Speedup pass (podcast-clip / repurposed-long-form projects only).** Apply only the explicitly approved speed to picture with FFmpeg setpts=PTS/RATE and to retained speech with atempo=RATE (use exactly the recorded RATE). Verify duration and word/caption timestamps after the change. Speed is fixed only when explicitly approved at script lock; otherwise retain native timing. Preserve raw speech and listen to raw versus edited output, then recheck sync. Do not add speed-up because of format alone. Skip entirely for original-VO or music-video projects.
 
 ### Phase 3 — Music bed
 1. Use the owned/licensed approved music track. Otherwise resolve a real available catalog/search or music-generation capability through the binding using the design-brief query and current price/approval. Missing music access blocks that planned route or requires an approved revised audio plan.
-2. Trim/loop the bed to match `TOTAL`. **Always** append `apad=pad_dur=2.0` + `afade=out` over the last 1.5s — never let music end abruptly.
-3. Base music volume is `0.13` (or 0.10 for VO-dense scripts). Honor music cue switches from design-brief (e.g. silence drop at hero hold, crossfade to launch-bed at end card). Music can swell to `0.21` under brand overlay / end-card hold.
+2. Trim/loop the bed to its planned cue windows. Fade, sustain or stop according to the audio plan; pad only to prevent unintended truncation. A deliberate silent ending is valid.
+3. Measure the actual stems and choose bed gain against speech and the intended dynamics. Honor cue switches, silence drops and end-card swells; listen to the final mix instead of treating a fixed gain as proof.
 
 ### Phase 4 — Layer VO
 1. Read VO text from `locked_script` (single source of truth from State 2.5). Confirm `audio/vo-scene-NN.mp3` files match.
-2. Read the climax line marker from `implementation_brief` — that specific clip gets `volume=3.6` (+20% over the base 3.0).
-3. Apply `loudnorm=I=-16:TP=-1.5:LRA=11` per VO clip BEFORE the volume multiplier. The two-stage approach (per-clip loudnorm + per-clip 3.0× + 2.0× mix pad) is the protocol — single-stage loudnorm + alimiter chain produced the v03 "Whisper can't transcribe" failures.
-4. Mix VO above music using the sidechain in Phase 5 (mandatory, not optional).
+2. Read the approved delivery/climax intent. Preserve take dynamics; use only a measured, justified gain adjustment if emphasis needs support.
+3. Match scene levels where needed and save actual filters/settings. Measure again after bus mixing because later gain changes invalidate per-clip peak/loudness evidence.
+4. Keep narration intelligible against every concurrent sound; use Phase 5 when the plan includes those stems.
 5. Use actual word timings and FFmpeg adelay/atrim to align VO with cartoon mouth-flaps where the approved plan permits. For true lipsync, use a supported approved lipsync capability; audio shifting cannot synthesize missing mouth motion.
 
 ### Phase 5 — Sidechain + SFX layer
-1. **Sidechain compress music against VO** with `sidechaincompress=threshold=0.01:ratio=20:attack=20:release=600`. Ratio 20:1 is the cap (FFmpeg "Result too large" if you try 30). This is non-negotiable — without it, Whisper can't transcribe the final mix.
+1. Where music masks narration, choose a quieter cue, timed gain automation or tuned sidechain compression. Verify supported filter ranges (FFmpeg sidechain ratio maximum is 20) and listen for pumping. Sidechain is optional; intelligible intentional sound is required.
 2. Use actual owned/licensed SFX or an approved supported SFX generator, then place the implementation-brief shot list with FFmpeg adelay/volume/amix. Save the exact cue times and sources.
 3. Place SFX on individual hits: anvil thuds, magic poofs, scale slams, etc.
 4. **Hard rule:** honor the actual brief's SFX exclusions; a no-screens/foley-only constraint applies only when approved in this project.
-5. Mix SFX 4–6 dB above music. Sub-1s synthetic tones (monitor beep, button click) — synthesize via FFmpeg sine filter; ElevenLabs sound-gen produces mush at short durations.
+5. Set each SFX level for its intended role without masking speech; no universal offset above music applies. Sub-1s synthetic tones (monitor beep, button click) — synthesize via FFmpeg sine filter; ElevenLabs sound-gen produces mush at short durations.
 
 ### Phase 6 — End card
 1. If the end-card clip from `create-clips` is acceptable, leave it.
@@ -169,7 +158,7 @@ This is wrapped as a deterministic atom at `align-music-drop-to-climax` for repe
 ### Phase 8 — Export + variants
 1. Encode the actual master with FFmpeg at the approved platform ratio, bitrate and codec. Probe it and save checksum/provenance; a descriptive export label is not a command.
 2. At delivery, use a real supported export/FFmpeg reframe route to emit Reels (9:16), TikTok (9:16), YouTube Shorts (9:16), and a 1:1 Meta feed cutdown if needed.
-3. Register required variants with their ratio/duration/provenance; re-export from the actual captioned final at delivery.
+3. Treat each variant as an edit: reframe/re-time from clean editable picture/audio sources, adapt captions for its own dimensions/language, then burn once. Register its ratio/duration/provenance and independent full-watch/QC evidence. Cropping an already captioned master can cut text and never inherits parent approval.
 
 ## Output
 
@@ -180,27 +169,33 @@ This is wrapped as a deterministic atom at `align-music-drop-to-climax` for repe
 
 ## Quality Checks
 
-- Total video duration equals total music duration (within 100ms). Video must NOT outrun music.
-- Music has `apad` + `afade=out` on the tail (no abrupt cuts).
-- Sidechain compress applied at ratio 20:1, threshold 0.01.
-- VO loudnorm applied per-clip BEFORE volume boost.
-- Climax line received the +20% boost (verify by reading the filter chain).
-- VO is always audible above music; music ducks under VO.
+- Actual cue durations match the approved sound plan, including intended silence/loops. No accidental speech truncation or unplanned empty tail.
+- Final mix levels/peaks are measured after all gain changes. Every line is intelligible at normal speed and low listening level; no pumping or discontinuity.
+- Delivery intent is preserved without a mandatory boost, bed or ducking preset.
 - Every approved SFX restriction is honored.
 - Caption text matches `locked_script` and design-brief burned-in text (not auto-transcribed from VO).
 - Caption planning is complete; actual rendering/frame verification is required after State 10 burn.
 - Whisper line is captioned and audible at low volume.
 - End card matches current brand visual rules.
 - Hook lands in the first 2 seconds (test by watching first 2s muted).
-- Every required platform variant is planned and will be exported from the checked captioned final.
+- Each required ratio, cutdown or language is planned as an edit and checked on its own actual final bytes. Inspect crop, product visibility, text collisions/read time, proof, CTA and full ending at destination size.
+- Rewatch every changed output; bind its QC evidence to its checksum and mark original notes verified only when their intended effect passes. Audio/voice/shot/timing changes refresh all affected downstream checks.
 
 ## Failure Modes
 
 - atempo'd VO sounds cartoonish — re-render at native speed instead.
-- Music is mastered louder than VO — sidechain is the fix, not lowering music alone (without sidechain, VO peaks fight music peaks).
+- Music masks speech — diagnose actual competing windows, change the cue/gain or tune sidechain, then listen to the mixed result. Transcription alone cannot clear masking.
 - Caption text is auto-generated and contradicts the burned on-screen text from the design-brief.
 - Final master drifts from the design-brief timing because retimes weren't logged.
 - Forgetting to bake captions and exporting the no-captions master to delivery.
-- Music ends abruptly while video runs — symptom of skipping `apad` + `afade`. Always pad music.
+- An unintended abrupt music tail needs repair; an approved silent/loop ending must be preserved. Do not impose padding or a black fade on every format.
 - Captions "rendered" per sub-agent but frame extraction shows nothing — the `fade=alpha=1` PNG bug. Use `overlay=enable='between(...)'`.
 - Sidechain ratio set to 30 — FFmpeg returns "Result too large". Cap is 20.
+
+## Use stored original footage
+
+When the customer asks to reuse footage, ask the host to search the current owned media and inspect actual frames plus timed transcript. An analysis description or thumbnail URL alone is not a visual review. Known user-selected trims remain usable when optional semantic analysis is unavailable; record that limitation instead of requesting a duplicate upload.
+
+Freeze `{asset_id, analysis_revision, scene_id, start_ms, end_ms, audio_mode}` in each selected scene and ingredient. `analysis_revision` is the verified SHA-256 of original bytes, `scene_id` may be null for a known trim, bounds are integer milliseconds, and audio is `original` or `muted`. Attach the canonical original through the host, preserve the requested format and user locks, then obtain the usual script and ingredient approvals. Research links and competitor ads never grant production rights.
+
+Before consumption and publication, the host rechecks current ownership, product/project scope, permission and revision. Download the verified original, trim that exact window at normal speed, and preserve the chosen audio. The portable assembler accepts `source_excerpt` beside a clip's path/duration, validates its SHA and range and returns the lineage. It refuses a separate voice track that would replace approved original audio. Only newly generated or replaced ingredients may consume the approved generation budget.

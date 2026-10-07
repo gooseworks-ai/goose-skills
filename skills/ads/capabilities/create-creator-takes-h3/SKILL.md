@@ -2,6 +2,8 @@
 name: create-creator-takes-h3
 description: Generate an AI creator talking to camera, saying an approved script, as one continuous track — H3 Max reference-to-video through the GooseWorks fal-proxy (bills the Ads agent). Plans takes on line boundaries under H3's 15s cap, dry-runs a cost estimate, generates the first take alone so its voice can be locked and passed to every later take, joins takes with measured 0.10s dissolves, and moves each line's timing onto the words actually spoken. Use for any format with a generated creator speaking a script (split-screen, screen inserts, talking-head ads).
 status: active
+version: 2
+updated: 2026-10-06
 ---
 
 # create-creator-takes-h3
@@ -22,16 +24,23 @@ hand.** `make_character.py` fills every slot and calls `create-image-fal`, becau
 hand-filled prompt left slots blank and produced the composite face the formula warns about,
 and different runs filled it differently.
 
+`make_character.py` is the shared builder for any generated person still in a custom video, not
+only for H3 takes. Fetch create-image-fal with it; the script calls its `gen_image.py`. Before
+the paid call, quote the exact `--payload-out` body through the host's free quote:
+`--dry-run --payload-out work/character/payload.json` writes `{"model", "body"}`, the exact
+request `gen_image.py` will send, and generates nothing.
+
 ## Run
 
 ```bash
 # the user's person, one command, one still. --dry-run prints the prompt and spends nothing.
-python make_character.py --age 34 --gender woman --ethnicity "South Asian"     --hair "shoulder-length black hair, slightly frizzy at the crown, one side tucked back"     --wardrobe "plain charcoal crew-neck t-shirt, slightly creased"     --scene "a lived-in home office, a bookshelf softly out of focus behind her"     --out work/character        # writes character.png AND character.json
+python make_character.py --age 34 --gender woman --ethnicity "South Asian"     --hair "shoulder-length black hair, slightly frizzy at the crown, one side tucked back"     --wardrobe "plain charcoal crew-neck t-shirt, slightly creased"     --scene "a lived-in home office, a full bookshelf behind her, in focus"     --out work/character        # writes character.png AND character.json
 python plan_takes.py --beats cutlist.json --character character.json --out work/takes
 python run_takes.py --spec work/takes/takes.json                  # dry run: plan + estimate
 python run_takes.py --spec work/takes/takes.json --only t1 --go   # after the user approves
 python run_takes.py --spec work/takes/takes.json --go             # the rest, voice chained
-python join_takes.py --spec work/takes/takes.json --end <reel length> --out work/creator.mp4
+# Transcribe and inspect EACH take into its planned tN.words.json BEFORE joining.
+python join_takes.py --require-words --spec work/takes/takes.json --end <reel length> --out work/creator.mp4
 # caption-burn: transcribe.py --media work/creator.mp4 --out work/creator.words.json
 python align_beats.py --beats cutlist.json --words work/creator.words.json \
     --out cutlist.aligned.json --max-end <creator.mp4 length>
@@ -103,6 +112,8 @@ These are the user's calls (the recipe's `choices`), never defaults of this atom
     use another brand's creator footage.
 11. **Seeds are pinned.** Re-running an unchanged take repays for the same clip. Existing
     take files are skipped.
+12. **A policy rejection stops the run (exit 3).** See "Rejection, physical constraints and
+    cast planning" below.
 
 ## Failure modes
 
@@ -122,3 +133,36 @@ These are the user's calls (the recipe's `choices`), never defaults of this atom
 ## Free planning before the still exists
 
 `make_character.py --dry-run` saves the prompt and character.json without generating an image. Run `plan_takes.py --plan-only` with that metadata, then `run_takes.py` without --go to inspect durations. These are planning estimates, not a current provider quote. After the approved still exists and has been reviewed, rerun plan_takes without --plan-only. Generation refuses planning-only specs. Never generate a placeholder just to price takes.
+## Measured join acceptance
+
+Per-take word timing is required in recipes before joining. Confirm every line is complete in each source take; timing cannot recover a word the model never spoke. The join normalizes frame rate and time base, adds silent lead before an early incoming word, and moves a transition after a late outgoing word. It writes the actual mapping and duration in `creator.mp4.timeline.json`, and prints the same summary line as before, e.g. `[join] 2 takes, joins at 4.70, 9.50s -> creator.mp4  (measured 9.50s)` (one take: `[join] one take, trimmed to 6.00s -> creator.mp4`). Each `joins at` value is the reel time where the dissolve into that take begins, the same as `takes[k].start` in the timeline; the printed length is the actual reel length. A lone estimated take is trimmed to `--end` (never padded); a missing take file stops with `take missing: <path> (run run_takes.py)`. Re-align the cut list to the final audio and extend the layer to that measured duration; do not clamp it back to the planned end. Estimated joins remain available for legacy callers and print a warning: `--take` without `--words`, or `--spec` when none of the take set's planned word files exist (recipes written before measured joins). Some-but-not-all word files is an error, and `--require-words` turns any estimated join into an error.
+
+Use ordinary skin texture and subtle asymmetry for realism. An eyebrow scar is no longer a random default: scars or other distinctive marks require the user's explicit choice. Inspect the still before approving takes.
+
+## Rejection, physical constraints and cast planning
+
+`run_takes.py` enforces the stop. When the provider refuses a take on policy grounds
+(likeness of a real person, `content_policy_violation`, `partner_validation_failed`, NSFW):
+
+- The run **exits 3** at the end: surface, do not retry. A **still** rejection (likeness, or
+  `partner_validation_failed`, which is the provider refusing the photoreal face) stops the
+  run at that take, because every take in a spec uses the same character still. Any other
+  rejection (about that take's own prompt) skips only that take; the rest still render.
+- It prints the reason, type, request id, charge state and the ledger record path, and keeps
+  them in `manifest.json` under `"rejected"` (cleared when that take later renders).
+- Each take is submitted with an `input_digest` over the **content** of its inputs: prompt,
+  settings, seed, and the sha256 of the character still, mannerism clip and t1 voice
+  source. Upload URLs change every run, so this digest is what lets media-proxy's
+  rejected-request ledger recognise the same take again.
+- **Re-running the unchanged take is refused before anything is sent for it** (exit 3
+  again, "already rejected"). If it was a still rejection, the other takes are held back
+  too while the still is unchanged: nothing is uploaded or sent, instead of one refused
+  submit per re-run. If it was about that take's prompt, only that take is refused and the
+  others still render. The dry run marks it `REJECTED BEFORE: <reason>`.
+- A new still, a changed prompt or `--reseed` makes it a new request, which is sent.
+
+A provider likeness/policy rejection stops the attempt. Preserve the provider's reason, request id and charged/uncharged/unknown state. Do not resubmit an identical rejected payload. Offer a permitted original character, user-cleared reference, or a supported non-likeness route only when allowed by that provider. A different model is not a policy bypass. Review changed inputs and extra spend through the normal approval flow.
+
+Before generation, write a scene checklist from the brief: each wearable's exact count and body location; which hand holds each object; allowed gestures; object contacts and movement; cast identities and reference ownership. Keep unnecessary hands still, use one simple action per shot, and review the whole generated take against the checklist. A prompt is prevention, not proof: reject extra/missing products, impossible contacts or identity drift.
+
+For multiple characters, compare a shared scene with pinned references, fewer people per shot, and separately generated/composed plates. The first preserves interaction but risks identity drift; separate plates improve control but add composition work and may weaken interaction. Lock an approved reference per person and map who speaks each line. No six-character/two-attempt guarantee is supported. A future paid benchmark must state cast size, attempts, budget, model/settings and pass criteria (identity, speaker, counts, gestures and complete dialogue) and retain every failure.
