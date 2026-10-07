@@ -150,6 +150,22 @@ def test_the_renderer_like_dark_background_is_not_blank(tmp_path):
     assert r["checks"]["black_frames"]["data"]["blank_spans"] == []
 
 
+@needs_ffmpeg
+def test_a_long_first_beat_is_a_reading_hold_judged_by_pacing(tmp_path):
+    """The first beat arrives in 0.2s and holds 2.8s to be read (the renderer allows 1.5-10s).
+    Default: the opening counts as still. silent-text: the arrival is the hook, and the hold
+    passes pacing only when the caller declares the longest beat with --max-freeze-s."""
+    beats = [("Ship faster with fewer meetings.", 3.0), ("Keep it readable.", 1.8), ("Try Acme today.", 3.0)]
+    v = kinetic(tmp_path, "longbeat", beats=beats, gaps=0.5, rise_s=0.2)
+    code, r = run(tmp_path, v, "--no-speech", "--endcard-s", "3")
+    assert r["checks"]["hook"]["status"] == "fail" and "still" in r["checks"]["hook"]["note"]
+    code, r = run(tmp_path, v, *SILENT)
+    assert r["checks"]["hook"]["status"] == "pass", r["checks"]["hook"]
+    assert r["checks"]["pacing"]["status"] == "fail"  # 2.8s hold > the default 2.5s
+    code, r = run(tmp_path, v, *SILENT, "--max-freeze-s", "3")
+    assert code == 0, r["checks"]
+
+
 # ---------------------------------------------------------------- real problems still fail
 
 @needs_ffmpeg

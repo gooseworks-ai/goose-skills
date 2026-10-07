@@ -15,8 +15,9 @@ sheet for the checks that need eyes (font, product likeness, safe zones):
 
 --format-profile silent-text is for a declared silent, text-led format (kinetic text). It
 changes three checks and nothing else:
-  hook         no audio track is needed; the opening must still move, and audible audio,
-               when present, must start within --hook-audio-s
+  hook         no audio track is needed; the first beat must arrive with motion (a still
+               first frame fails; the reading hold after an arrival is left to pacing), and
+               audible audio, when present, must start within --hook-audio-s
   dead_air     becomes an audio-integrity check: not applicable with no audio (or an all-silent
                track); an audible track must not drop out mid-video or stop early
   black_frames judges blank frames (black, or one flat colour with no text) instead of dark
@@ -75,6 +76,7 @@ BLANK_WORK_WIDTH = 270       # frames are area-averaged to this width (grain doe
 BLANK_PIXEL_DELTA = 48       # a pixel this far (max RGB channel) from the dominant colour is content
 BLANK_MIN_CONTENT_ROWS = 0.015  # a frame with text has content on >= 1.5% of its rows
 SILENT_TRACK_SLACK_S = 0.25  # an audio track this close to all-silent counts as silent
+OPENING_ARRIVAL_S = 0.1      # a still run starting this early means the opening never moved
 
 
 @dataclass
@@ -480,13 +482,16 @@ def audio_state(meta: dict, silences, audio_len: float | None) -> str:
 
 
 def check_hook_silent_text(silences, freezes, hook_audio_s: float, audio: str) -> Check:
+    """A text-led opening is the first beat ARRIVING (punch, rise, typewriter), then a reading
+    hold. So the opening fails when the picture is already still at the first frames (nothing
+    arrives); the hold that follows an arrival is judged by `pacing` (--max-freeze-s)."""
     problems = []
     lead = max((e for s, e in silences if s <= 0.3), default=0.0)
     if audio == "audible" and lead > hook_audio_s:
         problems.append(f"the audio track is silent for the first {lead:.1f}s")
-    still = next((e - s for s, e in freezes if s <= 0.3), 0.0)
+    still = next((e - s for s, e in freezes if s < OPENING_ARRIVAL_S), 0.0)
     if still > 1.5:
-        problems.append(f"opening frame is still for {still:.1f}s")
+        problems.append(f"opening frame is still for {still:.1f}s (nothing arrives)")
     data = {"lead_silence_s": lead, "audio": audio}
     if problems:
         return Check(FAIL, "; ".join(problems) + ": the opening must move, and any audio must start with it", data)

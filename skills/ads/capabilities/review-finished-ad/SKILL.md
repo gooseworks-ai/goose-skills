@@ -67,12 +67,12 @@ fixed bounds and no option to widen them:
 
 | Check | Default profile | `--format-profile silent-text` |
 |---|---|---|
-| `hook` | sound in the first 1.0s, and an opening that moves | no audio track needed; the opening must still move; an audible track must start in the first 1.0s |
+| `hook` | sound in the first 1.0s, and an opening that moves | no audio track needed; the first beat must arrive with motion (a still first frame held > 1.5s fails, the reading hold after an arrival is left to `pacing`); an audible track must start in the first 1.0s |
 | `dead_air` | silence > 1.0s mid-video fails | not applicable with no audio or an all-silent track. An audible track (a supplied music bed) fails if it drops out > 1.0s mid-video or stops before the picture ends, even with `--no-speech` |
 | `black_frames` | a dark stretch > 0.3s fails | judges **blank** frames (black, or one flat colour with no text): a blank beat between two text beats may last up to 1.0s; a blank opening or ending keeps the 0.3s limit; all blank beats together stay under 25% of the video; a fully blank video fails |
 
 `pacing` is unchanged, so a frozen picture still fails. A text beat held longer than
-2.5s needs `--max-freeze-s` set to the longest planned beat. Missing text fails as blank
+2.5s needs `--max-freeze-s` set to the longest planned beat, in seconds (never more). Missing text fails as blank
 frames on any background colour. The sheet adds one eye check: every text beat is
 complete, spelled as approved and readable. Speech checks (review-ugc-render) do not apply.
 
