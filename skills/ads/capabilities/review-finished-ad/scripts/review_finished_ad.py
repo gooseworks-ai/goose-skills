@@ -13,6 +13,17 @@ sheet for the checks that need eyes (font, product likeness, safe zones):
   logo         the kit logo is found on the end card (multi-scale match, colour-blind)
   palette      the end card's main colours sit near the kit palette (warn only)
 
+--format-profile silent-text is for a declared silent, text-led format (kinetic text). It
+changes three checks and nothing else:
+  hook         no audio track is needed; the opening must still move, and audible audio,
+               when present, must start within --hook-audio-s
+  dead_air     becomes an audio-integrity check: not applicable with no audio (or an all-silent
+               track); an audible track must not drop out mid-video or stop early
+  black_frames judges blank frames (black, or one flat colour with no text) instead of dark
+               pixels: a blank beat between two text beats may last up to 1.0s, the opening and
+               the ending keep the 0.3s bound, and all blank beats together stay under 25%
+Every other check, and every check in the default profile, is unchanged.
+
 Exit codes: 0 PASS, 2 FAIL (a machine check failed), 3 ERROR (could not run).
 Needs ffmpeg/ffprobe on PATH and Python packages numpy + pillow.
 """
@@ -51,6 +62,19 @@ LOGO_THRESHOLDS = {"mark": (0.85, 0.75), "image": (0.85, 0.70)}
 MIN_LOGO_LONG_SIDE = 256
 MIN_LOGO_AREA = 40_000
 PALETTE_WARN_DELTA_E = 25.0
+
+# --format-profile silent-text. Fixed bounds, not flags, so the profile can never become a
+# blanket skip. A "blank" frame is black or one flat colour with no text on it.
+DEFAULT_PROFILE, SILENT_TEXT = "default", "silent-text"
+FORMAT_PROFILES = (DEFAULT_PROFILE, SILENT_TEXT)
+BLANK_INTERIOR_MAX_S = 1.0   # one intentional blank beat between two text beats
+BLANK_EDGE_MAX_S = 0.3       # a blank opening or ending keeps the default black-frame bound
+BLANK_MAX_SHARE = 0.25       # all blank beats together, as a share of the video
+BLANK_FPS = 10               # blank-frame sampling rate
+BLANK_WORK_WIDTH = 270       # frames are area-averaged to this width (grain does not read as text)
+BLANK_PIXEL_DELTA = 48       # a pixel this far (max RGB channel) from the dominant colour is content
+BLANK_MIN_CONTENT_ROWS = 0.015  # a frame with text has content on >= 1.5% of its rows
+SILENT_TRACK_SLACK_S = 0.25  # an audio track this close to all-silent counts as silent
 
 
 @dataclass
@@ -137,6 +161,68 @@ def spans(log: str, key: str, duration: float) -> list[tuple[float, float]]:
     if start is not None:
         out.append((start, duration))
     return out
+
+
+def probe_audio_duration(video: str) -> float | None:
+    """Length of the first audio stream, or None when the container does not say."""
+    out = run(["ffprobe", "-v", "error", "-select_streams", "a:0", "-show_entries",
+               "stream=duration", "-of", "json", video])
+    if out.returncode != 0:
+        return None
+    try:
+        streams = json.loads(out.stdout).get("streams") or []
+        return float(streams[0]["duration"]) if streams else None
+    except (KeyError, TypeError, ValueError):
+        return None
+
+
+def content_share(rgb: np.ndarray) -> float:
+    """Share of a frame's rows that hold content: pixels clearly off the frame's dominant colour.
+    A text line covers several percent of the rows; a thin progress bar or codec noise does not."""
+    q = rgb.astype(np.int32) >> 4
+    keys = (q[..., 0] << 8) | (q[..., 1] << 4) | q[..., 2]
+    dominant = int(np.bincount(keys.ravel(), minlength=4096).argmax())
+    bg = rgb[keys == dominant].astype(np.float64).mean(axis=0)
+    off = np.abs(rgb.astype(np.float64) - bg).max(axis=2) > BLANK_PIXEL_DELTA
+    return float((off.sum(axis=1) >= 2).sum()) / rgb.shape[0]
+
+
+def blank_spans(video: str, meta: dict, fps: int = BLANK_FPS) -> tuple[list[tuple[float, float]], int]:
+    """Blank stretches (black, or one flat colour with no text), as (start, end) seconds, and
+    the number of frames sampled. One extra decode, only for the silent-text profile."""
+    w = BLANK_WORK_WIDTH
+    h = max(2, int(round(w * meta["height"] / meta["width"] / 2)) * 2)
+    size = w * h * 3
+    blank: list[bool] = []
+    # Frames are read as they decode (a long video never sits in memory); stderr goes to a
+    # file so a chatty decoder cannot fill a pipe and stall the read.
+    with tempfile.TemporaryFile() as log:
+        proc = subprocess.Popen(
+            ["ffmpeg", "-hide_banner", "-loglevel", "error", "-i", video, "-an",
+             "-vf", f"fps={fps},scale={w}:{h}:flags=area,format=rgb24", "-f", "rawvideo", "-"],
+            stdout=subprocess.PIPE, stderr=log)
+        assert proc.stdout is not None
+        while True:
+            buf = proc.stdout.read(size)
+            if len(buf) < size:
+                break
+            frame = np.frombuffer(buf, dtype=np.uint8).reshape(h, w, 3)
+            blank.append(content_share(frame) < BLANK_MIN_CONTENT_ROWS)
+        proc.stdout.close()
+        code = proc.wait()
+        log.seek(0)
+        err = log.read().decode(errors="replace")
+    if code != 0 or not blank:
+        raise RuntimeError(f"ffmpeg could not sample frames for the blank check: {err.strip()[-300:]}")
+    out: list[tuple[float, float]] = []
+    start = None
+    for i, b in enumerate(blank + [False]):
+        if b and start is None:
+            start = i
+        elif not b and start is not None:
+            out.append((start / fps, i / fps))
+            start = None
+    return out, len(blank)
 
 
 def grab(video: str, t: float, dest: Path) -> Path:
@@ -384,6 +470,85 @@ def check_black(blacks) -> Check:
     return Check(PASS, "no black frames")
 
 
+def audio_state(meta: dict, silences, audio_len: float | None) -> str:
+    """none (no audio stream), silent (a track that is silent throughout) or audible."""
+    if not meta["has_audio"]:
+        return "none"
+    length = audio_len if audio_len is not None else meta["duration"]
+    covered = sum(max(0.0, min(e, length) - max(s, 0.0)) for s, e in silences)
+    return "silent" if covered >= length - SILENT_TRACK_SLACK_S else "audible"
+
+
+def check_hook_silent_text(silences, freezes, hook_audio_s: float, audio: str) -> Check:
+    problems = []
+    lead = max((e for s, e in silences if s <= 0.3), default=0.0)
+    if audio == "audible" and lead > hook_audio_s:
+        problems.append(f"the audio track is silent for the first {lead:.1f}s")
+    still = next((e - s for s, e in freezes if s <= 0.3), 0.0)
+    if still > 1.5:
+        problems.append(f"opening frame is still for {still:.1f}s")
+    data = {"lead_silence_s": lead, "audio": audio}
+    if problems:
+        return Check(FAIL, "; ".join(problems) + ": the opening must move, and any audio must start with it", data)
+    if audio == "audible":
+        return Check(PASS, f"silent-text: sound at {lead:.1f}s, opening moves", data)
+    return Check(PASS, "silent-text: no audio needed, opening moves", data)
+
+
+def check_audio_silent_text(meta: dict, silences, audio: str, audio_len: float | None,
+                            max_silence_s: float, endcard_s: float) -> Check:
+    """Silent-text formats need no audio, so there is no speech to judge. An audible track
+    (a supplied or approved music bed) must still play through: no drop-out, no early stop."""
+    if audio == "none":
+        return Check(NA, "silent-text: no audio track, none needed", {"audio": "none"})
+    if audio == "silent":
+        return Check(NA, "silent-text: the audio track is silent throughout, the same as no audio",
+                     {"audio": "silent"})
+    body_end = meta["duration"] - endcard_s
+    gaps = [(s, e) for s, e in silences if s > 0.3 and s < body_end and (min(e, body_end) - s) > max_silence_s]
+    data = {"audio": "audible", "gaps": [[round(a, 2), round(b, 2)] for a, b in gaps],
+            "audio_duration_s": round(audio_len, 2) if audio_len is not None else None}
+    problems = []
+    if gaps:
+        s, e = gaps[0]
+        problems.append(f"the audio drops out {s:.1f}-{e:.1f}s")
+    if audio_len is not None and audio_len < body_end - max_silence_s:
+        problems.append(f"the audio stops at {audio_len:.1f}s, {meta['duration'] - audio_len:.1f}s before the picture ends")
+    if problems:
+        return Check(FAIL, "; ".join(problems) + ": the audio track is broken. Fix the mix, or leave the "
+                           "ad silent if no audio was asked for", data)
+    return Check(PASS, "silent-text: the audio track plays through", data)
+
+
+def check_blank_silent_text(blanks, n_samples: int, blacks, fps: int = BLANK_FPS) -> Check:
+    """Short blank beats between text beats are allowed; a blank opening or ending, a long
+    blank beat, too much blank time or a blank video is not."""
+    problems = []
+    for s, e in blanks:
+        first, last = round(s * fps) == 0, round(e * fps) >= n_samples
+        limit = BLANK_EDGE_MAX_S if (first or last) else BLANK_INTERIOR_MAX_S
+        where = "at the opening" if first else ("at the ending" if last else "between text beats")
+        if e - s > limit + 1e-6:
+            problems.append(f"blank {s:.1f}-{e:.1f}s ({e - s:.1f}s {where}, limit {limit:.1f}s)")
+    total = sum(e - s for s, e in blanks)
+    picture = n_samples / fps  # the sampled picture; the container can run longer (audio tail)
+    data = {"blank_spans": [[round(s, 2), round(e, 2)] for s, e in blanks],
+            "blank_total_s": round(total, 2),
+            "dark_spans": [[round(s, 2), round(e, 2)] for s, e in blacks],
+            "limits": {"between_beats_s": BLANK_INTERIOR_MAX_S, "opening_or_ending_s": BLANK_EDGE_MAX_S,
+                       "share": BLANK_MAX_SHARE}}
+    if n_samples and round(total * fps) >= n_samples:
+        return Check(FAIL, "the whole video is blank (black or one flat colour, no text)", data)
+    if picture > 0 and total > BLANK_MAX_SHARE * picture:
+        problems.append(f"blank for {total:.1f}s of {picture:.1f}s (limit {BLANK_MAX_SHARE:.0%})")
+    if problems:
+        return Check(FAIL, "; ".join(problems) + ": missing text or a dead stretch; shorten the blank "
+                           "beat or put the text back", data)
+    if blanks:
+        return Check(PASS, f"silent-text: {len(blanks)} short blank beat(s), {total:.1f}s in all", data)
+    return Check(PASS, "silent-text: no blank frames", data)
+
+
 def check_logo_asset(logo: Image.Image | None) -> Check:
     if logo is None:
         return Check(NA, "no logo given")
@@ -541,7 +706,18 @@ def review(args: argparse.Namespace) -> dict:
         "logo": check_logo(end_frames + extra, logo),
         "palette": check_palette(end_frames, [p for p in (args.palette or "").split(",") if p.strip()]),
     }
-    if args.speech is False:
+    silent_text = args.format_profile == SILENT_TEXT
+    if silent_text:
+        # Declared silent, text-led format: replaces three checks in place (same keys, same
+        # order). --no-speech is implied and does not switch off the audio-integrity check.
+        audio_len = probe_audio_duration(args.video) if meta["has_audio"] else None
+        audio = audio_state(meta, silences, audio_len)
+        blanks, n_samples = blank_spans(args.video, meta)
+        checks["hook"] = check_hook_silent_text(silences, freezes, args.hook_audio_s, audio)
+        checks["dead_air"] = check_audio_silent_text(meta, silences, audio, audio_len,
+                                                     args.max_silence_s, args.endcard_s)
+        checks["black_frames"] = check_blank_silent_text(blanks, n_samples, blacks)
+    elif args.speech is False:
         checks["dead_air"] = Check(NA, "--no-speech: music-only format")
 
     refs: list[tuple[str, Image.Image]] = []
@@ -565,6 +741,7 @@ def review(args: argparse.Namespace) -> dict:
     return {
         "verdict": "FAIL" if failed else "PASS",
         "failed": failed,
+        "format_profile": args.format_profile,
         "video": {**meta, "cuts": [round(c, 2) for c in cuts],
                   "sheet_samples": shot_times + end_times[-1:]},
         "checks": {k: asdict(c) for k, c in checks.items()},
@@ -576,7 +753,12 @@ def review(args: argparse.Namespace) -> dict:
             "product_consistency: the product looks the same in every scene",
             "logo_unaltered: the logo is not warped, recoloured, cropped or redrawn "
             "(with no --logo, e.g. a text wordmark: the brand name is set in the brand font)",
-        ],
+        ] + ([
+            "text_beats: every text beat is complete, spelled as approved, held long enough to read "
+            "and not cut off at the edges; any blank beat is intentional",
+        ] if silent_text else []) + ([
+            "audio: the audible track is the user's supplied or approved one (silent-text formats are silent by default)",
+        ] if silent_text and checks["dead_air"].data.get("audio") == "audible" else []),
     }
 
 
@@ -598,6 +780,10 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--endcard-s", type=float, default=3.0)
     ap.add_argument("--no-speech", dest="speech", action="store_false",
                     help="format has no VO/dialogue (skip the dead-air check)")
+    ap.add_argument("--format-profile", choices=FORMAT_PROFILES, default=DEFAULT_PROFILE,
+                    help="silent-text: a declared silent, text-led format (kinetic text). No audio "
+                         "track needed, an audible track must play through, and short blank beats "
+                         "between text beats are allowed within fixed bounds. Default: every check as-is")
     args = ap.parse_args(argv)
 
     if not Path(args.video).exists():
@@ -610,7 +796,8 @@ def main(argv: list[str] | None = None) -> int:
         return 3
     Path(args.json).parent.mkdir(parents=True, exist_ok=True)
     Path(args.json).write_text(json.dumps(result, indent=2))
-    print(f"{result['verdict']}  failed={result['failed']}  sheet={result['sheet']}")
+    profile = "" if result["format_profile"] == DEFAULT_PROFILE else f"  profile={result['format_profile']}"
+    print(f"{result['verdict']}  failed={result['failed']}  sheet={result['sheet']}{profile}")
     for k, c in result["checks"].items():
         print(f"  {k:13s} {c['status']:15s} {c['note']}")
     return 2 if result["failed"] else 0
