@@ -392,6 +392,25 @@ body.framed {
   position: relative;
 }
 
+/* Home indicator. iOS keeps a 34 pt strip under the composer for it; without
+   the strip and the bar the bottom of the phone reads as a mockup. */
+.iphone-frame .screen::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  transform: translateX(-50%);
+  width: 134px;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--text-primary);
+  z-index: 5;
+  pointer-events: none;
+}
+.framed .keyboard {
+  padding-bottom: 34px;
+}
+
 /* Side buttons (subtle) */
 .iphone-frame::before {
   /* left side: silence + volume */
