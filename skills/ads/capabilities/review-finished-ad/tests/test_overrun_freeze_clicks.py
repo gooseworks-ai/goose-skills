@@ -105,6 +105,20 @@ def test_encoder_padding_is_not_judged(tmp_path):
 
 
 @needs_ffmpeg
+def test_a_cut_short_file_without_audio_is_judged_not_an_error(tmp_path):
+    """A file whose container claims more than its picture holds (cut off mid-write), no audio."""
+    v = tmp_path / "full.mp4"
+    ff("-f", "lavfi", "-i", "testsrc2=s=1080x1920:r=30:d=10", "-c:v", "libx264", "-preset", "ultrafast",
+       "-pix_fmt", "yuv420p", "-movflags", "+faststart", v)
+    cut = tmp_path / "cut.mp4"
+    cut.write_bytes(v.read_bytes()[: v.stat().st_size // 2])  # header intact, half the frames
+    code, r = run(tmp_path, cut)
+    assert code == 2 and r is not None, "must not ERROR"
+    note = r["checks"]["pacing"]["note"]
+    assert r["checks"]["pacing"]["status"] == "fail" and "past its last video frame" in note and "audio" not in note
+
+
+@needs_ffmpeg
 def test_audio_tail_in_mpeg_ts_is_judged_not_an_error(tmp_path):
     mp4 = moving(tmp_path, "tsrc", 7.0, audio_s=11.0)
     ts = tmp_path / "tail.ts"

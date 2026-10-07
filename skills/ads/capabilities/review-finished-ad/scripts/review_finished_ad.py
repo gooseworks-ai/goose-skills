@@ -490,14 +490,17 @@ def merge_spans(*groups, slack: float = 0.0) -> list[tuple[float, float]]:
     return [(a, b) for a, b in out]
 
 
-def judge_overrun(pacing: Check, overrun: float, end: float, max_freeze_s: float, endcard_s: float) -> Check:
+def judge_overrun(pacing: Check, overrun: float, end: float, max_freeze_s: float, endcard_s: float,
+                  has_audio: bool = True) -> Check:
     """Audio running past the last video frame: players hold that frame (the end card) while it
     plays out. Up to the end card's own length, or the freeze limit if longer, that is a longer
     end card (warn); beyond it the picture has stopped (fail)."""
     data = {**pacing.data, "picture_end_s": round(end, 2), "audio_overrun_s": round(overrun, 2)}
-    msg = f"the audio runs {overrun:.1f}s past the last video frame, which holds while it plays out"
+    msg = (f"the audio runs {overrun:.1f}s past the last video frame, which holds while it plays out" if has_audio
+           else f"the file runs {overrun:.1f}s past its last video frame (a cut-short or damaged picture)")
     if overrun > max(max_freeze_s, endcard_s):
-        note = (pacing.note + "; " if pacing.status == FAIL else "") + msg + ": trim the audio or extend the picture"
+        fix = ": trim the audio or extend the picture" if has_audio else ": re-export the video"
+        note = (pacing.note + "; " if pacing.status == FAIL else "") + msg + fix
         return Check(FAIL, note, data)
     if pacing.status == FAIL:
         return Check(FAIL, f"{pacing.note}; {msg}", data)
@@ -1089,7 +1092,8 @@ def review(args: argparse.Namespace) -> dict:
         "palette": check_palette(end_frames, [p for p in (args.palette or "").split(",") if p.strip()]),
     }
     if overrun > OVERRUN_JUDGE_S:
-        checks["pacing"] = judge_overrun(checks["pacing"], overrun, pic, args.max_freeze_s, args.endcard_s)
+        checks["pacing"] = judge_overrun(checks["pacing"], overrun, pic, args.max_freeze_s, args.endcard_s,
+                                         meta["has_audio"])
     if silent_text:
         # Declared silent, text-led format: replaces three checks in place (same keys, same
         # order). --no-speech is implied and does not switch off the audio-integrity check.
