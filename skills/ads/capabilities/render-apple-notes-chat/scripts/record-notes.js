@@ -6,9 +6,9 @@
 //
 // usage: node record-notes.js --config config.json --out-dir <work> [--still-only]
 //   config.note = { title, lines:[{ text, type_seconds, pre_pause_seconds }],
-//                   post_hold_seconds, status_bar, keyboard_state }
+//                   post_hold_seconds, finish_hold_seconds, status_bar, keyboard_state }
 // writes: <work>/notes.mp4 (+ frames/, frames.txt, base.html)
-//         --still-only: <work>/note-hook.png + <work>/note-still.png (free review stills)
+//         --still-only: <work>/note-hook.png + note-still.png + note-finish.png (free review stills)
 
 const fs = require('fs');
 const path = require('path');
@@ -127,6 +127,19 @@ async function main() {
       return cur ? cur.getBoundingClientRect().bottom : 0;
     };
     window.__scroll = y => { document.querySelector('.note').style.transform = `translateY(${-y}px)`; };
+    // Done: the keyboard drops away (k = 0 up, 1 gone) and the Done button goes with it.
+    window.__dismiss = k => {
+      const kbd = document.querySelector('.kbd');
+      kbd.style.transform = `translateY(${k * (kbd.getBoundingClientRect().height + 80)}px)`;
+      const done = document.querySelector('.toolbar-done');
+      if (done) done.style.opacity = String(1 - k);
+    };
+    // How far the note must stay scrolled for its last line to clear the screen bottom.
+    window.__restScroll = (screenH) => {
+      const last = document.querySelector('.note-body').lastElementChild;
+      const y = parseFloat((document.querySelector('.note').style.transform.match(/-?[\d.]+/) || [0])[0]) || 0;
+      return Math.max(0, (last ? last.getBoundingClientRect().bottom : 0) + y - (screenH - 160));
+    };
   });
 
   const timeline = []; // { file, dur }
@@ -162,19 +175,44 @@ async function main() {
     }
   };
 
+  // Finish on the whole list. With the keyboard up there is room for the title and
+  // about three lines, so by the last line the title and the first lines have
+  // scrolled away and the viewer never sees the list in one piece. The writer
+  // taps Done: the keyboard drops, the note settles back and holds.
+  const finishHold = spec.finish_hold_seconds ?? 2.0;   // 0 keeps the old ending
+  const finish = async (paras, record) => {
+    if (!(finishHold > 0)) return;
+    await render(paras, false, null, false);            // no caret once editing ends
+    const rest = await page.evaluate(h => window.__restScroll(h), H);
+    const from = scroll, steps = 10;
+    for (let s = record ? 1 : steps; s <= steps; s++) {
+      const t = s / steps, e = 1 - Math.pow(1 - t, 3);
+      scroll = from + (rest - from) * e;
+      await page.evaluate(([y, k]) => { window.__scroll(y); window.__dismiss(k); }, [scroll, e]);
+      if (record) await shot(1 / 30);
+    }
+    if (record) await shot(finishHold);
+  };
+
   if (stillOnly) {
     const all = spec.lines.map(l => l.text);
     const b = await render(all, true, null, false);
     const over = b - VISIBLE_BOTTOM;
-    if (over > 0) await page.evaluate(y => window.__scroll(y), over + 40);
+    if (over > 0) { scroll = over + 40; await page.evaluate(y => window.__scroll(y), scroll); }
     await render(all, true, null, false);
     await page.screenshot({ path: path.join(outDir, 'note-still.png') });
+    if (finishHold > 0) {
+      await finish(all, false);
+      await page.screenshot({ path: path.join(outDir, 'note-finish.png') });
+      await page.evaluate(() => window.__dismiss(0));
+    }
     await page.evaluate(() => window.__scroll(0));
     await render([''], true, null, false);
     await page.screenshot({ path: path.join(outDir, 'note-hook.png') });
     await browser.close();
     fs.rmSync(framesDir, { recursive: true, force: true });
-    console.log(JSON.stringify({ hook: path.join(outDir, 'note-hook.png'), still: path.join(outDir, 'note-still.png') }));
+    console.log(JSON.stringify({ hook: path.join(outDir, 'note-hook.png'), still: path.join(outDir, 'note-still.png'),
+      finish: finishHold > 0 ? path.join(outDir, 'note-finish.png') : null }));
     return;
   }
 
@@ -207,6 +245,7 @@ async function main() {
   }
   await render(paras, true, null, false);
   await hold(paras, spec.post_hold_seconds ?? 1.4);
+  await finish(paras, true);
   await browser.close();
 
   const list = timeline.map(t => `file '${t.file}'\nduration ${t.dur.toFixed(4)}`).join('\n')
