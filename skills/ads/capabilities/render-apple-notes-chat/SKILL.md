@@ -41,7 +41,12 @@ Brand facts (logo, colours, fonts, product photos, CTA, claims) come from the br
      punctuation);
    - between lines: return key, then `pre_pause_seconds` of blinking "thinking";
    - the note eases up so the caret never goes under the keyboard;
-   - it ends on `post_hold_seconds` of the finished list.
+   - after `post_hold_seconds` the writer taps Done: the keyboard drops, the note
+     settles back to the top and the whole list holds for `finish_hold_seconds`
+     (default 2). With the keyboard up there is room for the title and about three
+     lines, so without this the title and first lines have scrolled away by the
+     end and the viewer never sees the list in one piece. `finish_hold_seconds: 0`
+     keeps the old ending.
 2. **The end card** (`render-end-card.js`) — a paper card slides and tilts in over the
    brand colour; the heading has a hand-drawn underline; each row's check draws in turn.
    Real product cut-outs sit above the rows; the logo (or a wordmark) and CTA pill sit below.
@@ -60,8 +65,9 @@ bash stitch.sh --notes <work>/notes.mp4 --end <work>/endcard.mp4 \
      --out <work>/master.mp4 [--music <work>/music-bed.mp3]
 ```
 
-`--still-only` writes `note-hook.png` (the opening frame) and `note-still.png` (the
-finished list) for the review, without recording the video.
+`--still-only` writes `note-hook.png` (the opening frame), `note-still.png` (the last
+typed frame) and `note-finish.png` (the whole list after Done) for the review, without
+recording the video.
 
 ## Config
 
@@ -69,7 +75,7 @@ See `scripts/config.example.json`. Two blocks:
 
 | Block | Fields |
 |---|---|
-| `note` | `title`, `lines[]` (`text`, `type_seconds`, `pre_pause_seconds`), `post_hold_seconds`, `status_bar` (`time`, `battery_pct`), `keyboard_state` |
+| `note` | `title`, `lines[]` (`text`, `type_seconds`, `pre_pause_seconds`), `post_hold_seconds`, `finish_hold_seconds`, `status_bar` (`time`, `battery_pct`), `keyboard_state` |
 | `end_card` | `head1`, `head2`, `underline` (a word in `head2`), `rows[]` (`label`, `value`; max 4), `products[]` (`src`, `h` = height %, `wide`), `logo` (file) or `wordmark`, `cta`, `fine_print`, `theme` (`bg`, `bg2`, `paper`, `ink`, `accent`, `label`), `fonts` (`heading`, `label` — Google Fonts family names), `seconds` |
 
 Image paths are resolved relative to the config file. Pacing that reads well: ~1.6–2.8 s
