@@ -54,9 +54,16 @@ export async function run(inputs, ctx) {
         entry.start_s = entry.words[0].start_s;
         entry.end_s = Math.max(entry.words.at(-1).end_s, entry.start_s);
       } else {
-        entry.start_s = share.length ? share[0].start : span0;
-        entry.end_s = share.length ? share.at(-1).end : span0;
-        ctx.log.warn('a line could not be placed on what was heard', { scene_id: l.scene_id });
+        // A line the transcript does not match keeps word timings, spread evenly across what was heard for
+        // it (or a short slot where nothing was), so the captions layer never has to buy a transcript again.
+        const start = share.length ? share[0].start : span0;
+        const end = share.length ? Math.max(share.at(-1).end, start) : Math.min(duration, start + 0.4 * l.text.split(/\s+/).length);
+        const written = l.text.split(/\s+/).filter(Boolean);
+        const step = (end - start) / written.length;
+        entry.words = written.map((text, i) => ({ text, start_s: +(start + step * i).toFixed(3), end_s: +(start + step * (i + 1)).toFixed(3) }));
+        entry.start_s = start;
+        entry.end_s = end;
+        ctx.log.warn('a line could not be placed on what was heard; its words are spread evenly', { scene_id: l.scene_id });
       }
       entry.start_s = +Math.min(entry.start_s, duration).toFixed(3);
       entry.end_s = +Math.min(Math.max(entry.end_s, entry.start_s), duration).toFixed(3);
