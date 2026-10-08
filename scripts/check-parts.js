@@ -16,7 +16,11 @@
  *   - parts/withdrawn.json is not a list of { id, version, reason } naming
  *     indexed versions;
  *   - parts/layers.json names a slot other than brand, captions, sound or
- *     check, or a version that is not indexed or is withdrawn.
+ *     check, or a version that is not indexed or is withdrawn;
+ *   - part.no_billing_helper: any file of a part (source or published) is,
+ *     imports or contains the billing helper (media_proxy, its proxy routes,
+ *     its token or credentials file). A part orders paid pieces only through
+ *     ctx.line.order, over the private line; it never carries its own billing.
  */
 
 const fs = require('fs');
@@ -26,6 +30,58 @@ const { buildIndex, render, SEMVER } = require('./build-parts-index');
 
 const { ROOT } = lib;
 const SLOTS = new Set(['brand', 'captions', 'sound', 'check']);
+const PART_ID = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
+const SKIP_DIRS = new Set(['node_modules', '.git', '__pycache__']);
+
+// The billing helper by name, by import, or by what only it knows: the
+// GooseWorks media proxy routes, its sandbox token and the CLI credentials.
+const BILLING_FILE = /^media[_-]proxy(?:\.|$)/i;
+const BILLING_TEXT = [
+  /\bfrom\s+media_proxy\s+import\b/,
+  /\bimport\s+media_proxy\b/,
+  /\b(?:require|import)\s*\(\s*['"`][^'"`]*media[_-]proxy[^'"`]*['"`]\s*\)/,
+  /\bfrom\s+['"`][^'"`]*media[_-]proxy[^'"`]*['"`]/,
+  /\/api\/internal\/(?:fal|fal-storage|elevenlabs|openai)-proxy\b/,
+  /\bGW_MEDIA_PROXY_TOKEN\b/,
+  /\.gooseworks\/credentials\.json/,
+];
+
+/** part.no_billing_helper findings for every file under parts/<id>/. */
+function billingHelperFindings(root) {
+  const findings = [];
+  const partsDir = path.join(root, 'parts');
+  if (!fs.existsSync(partsDir)) return findings;
+  const walk = (rel) => {
+    for (const entry of fs.readdirSync(path.join(root, rel), { withFileTypes: true })) {
+      const childRel = `${rel}/${entry.name}`;
+      if (entry.isDirectory()) {
+        if (!SKIP_DIRS.has(entry.name)) walk(childRel);
+        continue;
+      }
+      if (!entry.isFile()) continue;
+      if (BILLING_FILE.test(entry.name)) {
+        findings.push(`part.no_billing_helper: ${childRel} is a copy of the billing helper; a part orders paid pieces only through ctx.line.order`);
+        continue;
+      }
+      const bytes = fs.readFileSync(path.join(root, childRel));
+      if (bytes.subarray(0, 8000).includes(0)) continue; // binary asset
+      bytes
+        .toString('utf8')
+        .split(/\r?\n/)
+        .forEach((line, i) => {
+          if (BILLING_TEXT.some((re) => re.test(line))) {
+            findings.push(
+              `part.no_billing_helper: ${childRel}:${i + 1} uses the billing helper; a part orders paid pieces only through ctx.line.order`,
+            );
+          }
+        });
+    }
+  };
+  for (const id of fs.readdirSync(partsDir).sort()) {
+    if (PART_ID.test(id) && fs.statSync(path.join(partsDir, id)).isDirectory()) walk(`parts/${id}`);
+  }
+  return findings;
+}
 
 function readJson(rel, fallback) {
   const abs = path.join(ROOT, rel);
@@ -60,6 +116,7 @@ function run(argv) {
     errors.push('parts/index.json is out of date; run node scripts/build-parts-index.js and commit it');
   }
   const indexed = new Set(entries.map((e) => `${e.id}@${e.version}`));
+  errors.push(...billingHelperFindings(ROOT));
 
   const withdrawn = readJson('parts/withdrawn.json', []);
   const withdrawnKeys = new Set();

@@ -82,3 +82,22 @@ test('a stale index or a withdrawn version that was never published fails', () =
   assert.equal(unknown.code, 1, unknown.out);
   assert.match(unknown.out, /clip-join@9\.0\.0 is not a published version/);
 });
+
+test('a part that imports or carries the billing helper fails', () => {
+  const { root, base } = makePartsRepo();
+  const src = path.join(root, 'parts', 'clip-join', 'src', 'join.mjs');
+  fs.writeFileSync(src, "import { falGenerate } from '../../../skills/ads/capabilities/media-proxy/media_proxy.mjs';\n");
+  writePart(root, 'clip-join', '1.1.0');
+  run('build-parts-index.js', root, []);
+  commitAll(root);
+  const imported = run('check-parts.js', root, ['--base', base]);
+  assert.equal(imported.code, 1, imported.out);
+  assert.match(imported.out, /part\.no_billing_helper: parts\/clip-join\/src\/join\.mjs:1 uses the billing helper/);
+
+  fs.writeFileSync(src, '// v2\n');
+  fs.writeFileSync(path.join(root, 'parts', 'clip-join', 'src', 'media_proxy.py'), 'def fal_generate(): pass\n');
+  const copied = run('check-parts.js', root, []);
+  assert.equal(copied.code, 1, copied.out);
+  assert.match(copied.out, /part\.no_billing_helper: parts\/clip-join\/src\/media_proxy\.py is a copy/);
+});
+
