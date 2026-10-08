@@ -314,6 +314,43 @@
       ]
     },
     {
+      "id": "sound-layer",
+      "version": "1.0.0",
+      "interface": 1,
+      "kind": "mix",
+      "layer": "sound",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "loudnorm",
+            "ebur128",
+            "volume",
+            "alimiter",
+            "aresample"
+          ],
+          "encoders": [
+            "aac"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 300
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/sound-layer/1.0.0",
+      "files": {
+        "README.md": "3a993ad97783666ed708b6430b158136d827924cbe1226a04ae875aeae24517a",
+        "part.json": "2fd84fcb9971628b92ab589f332303ca04c9febad6d38b37bee2330b2b18eb06",
+        "part.mjs": "560358522508209842914d5ba7a028ca0a14671287b39388f6486cfcd06ce631"
+      },
+      "models": []
+    },
+    {
       "id": "voice-elevenlabs",
       "version": "1.0.0",
       "interface": 1,
