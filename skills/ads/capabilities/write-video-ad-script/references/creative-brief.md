@@ -28,7 +28,7 @@ reference's `verify_handoff.py` smoke tests the actual saved package before rele
 including a missing-brief rejection and legacy compatibility. A source merge alone
 does not establish that a connection serves those scripts.
 
-Load [buyer perspective and product explanation](references/buyer-and-mechanism.md).
+Load [buyer perspective and product explanation](buyer-and-mechanism.md).
 Use the current campaign's consumer role and a concrete task or decision. Map what
 the buyer supplies or does, what the offering does, what they receive and why it
 helps here. That connection must survive in the actual words or feasible actions;

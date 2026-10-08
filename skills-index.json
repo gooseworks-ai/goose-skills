@@ -9931,7 +9931,7 @@
       "description": "Write a short-form video ad from an evidence-backed angle and the selected template's actual recipe. Reuses or fetches ad-angle-miner, preserves the chosen angle, plans words and visuals together, checks product claims and production fit, and delivers the strongest script with useful alternatives. Use before video production and for script rewrites. Customer language is one input alongside audience, promise, product proof, offer and format.",
       "tags": "ads, content",
       "path": "skills/ads/capabilities/write-video-ad-script",
-      "version": "1.0.2",
+      "version": "1.0.3",
       "files": [
         "skills/ads/capabilities/write-video-ad-script/SKILL.md",
         "skills/ads/capabilities/write-video-ad-script/references/angle-research.md",
@@ -9962,7 +9962,7 @@
         "slug": "write-video-ad-script",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.0.2",
+        "version": "1.0.3",
         "tags": [
           "ads",
           "content"
