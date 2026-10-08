@@ -1,6 +1,6 @@
 {
   "version": "1.3.0",
-  "generated": "2026-10-07",
+  "generated": "2026-10-08",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -7621,6 +7621,9 @@
       "path": "skills/ads/capabilities/render-whiteboard-explainer",
       "files": [
         "skills/ads/capabilities/render-whiteboard-explainer/SKILL.md",
+        "skills/ads/capabilities/render-whiteboard-explainer/assets/fonts/NOTICE.md",
+        "skills/ads/capabilities/render-whiteboard-explainer/assets/fonts/PermanentMarker-Regular.ttf",
+        "skills/ads/capabilities/render-whiteboard-explainer/assets/fonts/TitanOne-Regular.ttf",
         "skills/ads/capabilities/render-whiteboard-explainer/scripts/anchors.py",
         "skills/ads/capabilities/render-whiteboard-explainer/scripts/beats.example.json",
         "skills/ads/capabilities/render-whiteboard-explainer/scripts/gen-art.py",
@@ -7634,7 +7637,8 @@
         "skills/ads/capabilities/render-whiteboard-explainer/scripts/render.py",
         "skills/ads/capabilities/render-whiteboard-explainer/scripts/solve-layout.py",
         "skills/ads/capabilities/render-whiteboard-explainer/scripts/trace.py",
-        "skills/ads/capabilities/render-whiteboard-explainer/skill.meta.json"
+        "skills/ads/capabilities/render-whiteboard-explainer/skill.meta.json",
+        "skills/ads/capabilities/render-whiteboard-explainer/tests/test_whiteboard_portable.py"
       ],
       "metadata": {
         "slug": "render-whiteboard-explainer",

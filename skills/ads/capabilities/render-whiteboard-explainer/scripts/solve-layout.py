@@ -92,7 +92,8 @@ def main():
     # Where the caption pill starts, in board units. Nothing may be drawn below it: the pill
     # sits over the board, so a row or drawing that ran to the board's bottom edge ended up
     # underneath the words.
-    cap_top = int((EP["caption_y"] - (q[0][1] + q[1][1]) / 2) * DH / qh) - 12
+    # At the old caption_y of 1520 this changes nothing, so a solved project keeps its layout.
+    cap_top = int((EP["caption_y"] - (q[0][1] + q[1][1]) / 2) * DH / qh)
 
     words = load_words(P)
     at = resolver(words)
@@ -144,7 +145,9 @@ def main():
 
         top = 330 if first else 120          # the first board carries the title block
         bot = DH - (300 if last else 90)     # the last board leaves room for the payoff
-        bot = min(bot, cap_top - (210 if last else 0))
+        lim = cap_top - (210 if last else 0)
+        if lim < bot:                        # the pill is higher than the board's own margin
+            bot = lim - 14                   # so stop short of it, with a little air
         if first:
             t0, w0 = at(B.get("title_say", B["beats"][0]["say"]), B.get("title_n"))
             items.append({"kind": "title", "anchor": B.get("title_say", B["beats"][0]["say"]),
