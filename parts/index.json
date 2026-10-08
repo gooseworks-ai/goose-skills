@@ -2,6 +2,63 @@
   "interface": 1,
   "parts": [
     {
+      "id": "image-nano-banana",
+      "version": "1.0.0",
+      "interface": 1,
+      "kind": "generate_image",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "encoders": [
+            "png"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "fal-ai/nano-banana"
+          },
+          {
+            "provider": "fal",
+            "model": "fal-ai/nano-banana/edit"
+          }
+        ],
+        "disk_mb": 50
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "image",
+        "measure": {
+          "from": "/images/*",
+          "as": "count"
+        },
+        "rates_usd": {
+          "fal-ai/nano-banana": 0.039,
+          "fal-ai/nano-banana/edit": 0.039
+        },
+        "model_from": "/model"
+      },
+      "determinism": "provider",
+      "path": "parts/image-nano-banana/1.0.0",
+      "files": {
+        "README.md": "c12b691d7633ac89964ba72ba9b6115d9fcc593f110c0888d4958d9b2cb58ff9",
+        "part.json": "332c611b38dcf5aafd9e1ab578dd4a54cbcc130b2d823dc75cc59a2ccef417e9",
+        "part.mjs": "879b2441031db3ece6bac41e428aa79c33a08df592a470c86f43a44adf3ae42b"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "fal-ai/nano-banana"
+        },
+        {
+          "provider": "fal",
+          "model": "fal-ai/nano-banana/edit"
+        }
+      ]
+    },
+    {
       "id": "music-elevenlabs",
       "version": "1.0.0",
       "interface": 1,
