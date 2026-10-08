@@ -1,0 +1,139 @@
+{
+  "$schema": "../../_contract/part-manifest.schema.json",
+  "interface": 1,
+  "id": "voice-elevenlabs",
+  "version": "1.0.0",
+  "kind": "generate_voice",
+  "title": "Voice (ElevenLabs)",
+  "summary": "Speaks each scene's line with one ElevenLabs voice, keeps character timings as word timings, and joins the lines into one voice track.",
+  "runtime": "node",
+  "entry": "part.mjs",
+  "files": ["README.md", "part.mjs"],
+  "kit": ">=1.0.0 <2.0.0",
+  "needs": {
+    "browser": false,
+    "ffmpeg": { "filters": ["aresample", "aformat", "atrim", "asetpts", "apad", "concat"], "encoders": ["aac"] },
+    "network": true,
+    "models": [{ "provider": "elevenlabs", "model": "eleven_v3" }],
+    "disk_mb": 50
+  },
+  "inputs": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["scenes", "voice_id"],
+    "properties": {
+      "scenes": {
+        "description": "The plan's scenes in order; each non-empty line is spoken. Other scene fields are ignored.",
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 40,
+        "items": {
+          "type": "object",
+          "required": ["line"],
+          "properties": {
+            "id": { "type": ["string", "integer"] },
+            "line": { "type": "string", "maxLength": 1000 }
+          }
+        }
+      },
+      "voice_id": { "type": "string", "pattern": "^[A-Za-z0-9]{1,64}$" },
+      "pronunciations": {
+        "description": "The brand's confirmed pronunciations: each term is spoken as say_as; captions keep the written term.",
+        "type": "array",
+        "maxItems": 50,
+        "items": {
+          "type": "object",
+          "required": ["term", "say_as"],
+          "properties": {
+            "term": { "type": "string", "minLength": 1, "maxLength": 100 },
+            "say_as": { "type": "string", "minLength": 1, "maxLength": 200 }
+          }
+        }
+      },
+      "voice_settings": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "stability": { "type": "number", "minimum": 0, "maximum": 1 },
+          "similarity_boost": { "type": "number", "minimum": 0, "maximum": 1 },
+          "style": { "type": "number", "minimum": 0, "maximum": 1 },
+          "use_speaker_boost": { "type": "boolean" },
+          "speed": { "type": "number", "minimum": 0.7, "maximum": 1.2 }
+        }
+      },
+      "gap_s": { "description": "Silence between lines. Default 0.25.", "type": "number", "minimum": 0, "maximum": 2 }
+    }
+  },
+  "outputs": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["audio", "seconds", "speech", "scenes", "lines"],
+    "properties": {
+      "audio": { "type": "object", "x-kit-file": { "media": "audio" } },
+      "seconds": { "type": "number", "exclusiveMinimum": 0 },
+      "speech": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["text", "start_s", "end_s"],
+          "properties": {
+            "scene_id": { "type": "string" },
+            "text": { "type": "string" },
+            "spoken": { "type": "string" },
+            "start_s": { "type": "number", "minimum": 0 },
+            "end_s": { "type": "number", "minimum": 0 },
+            "words": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["text", "start_s", "end_s"],
+                "properties": {
+                  "text": { "type": "string" },
+                  "start_s": { "type": "number", "minimum": 0 },
+                  "end_s": { "type": "number", "minimum": 0 }
+                }
+              }
+            }
+          }
+        }
+      },
+      "scenes": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "start_s", "end_s"],
+          "properties": {
+            "id": { "type": "string" },
+            "start_s": { "type": "number", "minimum": 0 },
+            "end_s": { "type": "number", "minimum": 0 }
+          }
+        }
+      },
+      "lines": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["scene_id", "audio"],
+          "properties": {
+            "scene_id": { "type": "string" },
+            "audio": { "type": "object", "x-kit-file": { "media": "audio" } }
+          }
+        }
+      }
+    }
+  },
+  "cost": {
+    "basis": "per_unit",
+    "unit": "1k_chars",
+    "measure": { "from": "/scenes/*/line", "as": "length" },
+    "rates_usd": { "eleven_v3": 0.1 }
+  },
+  "determinism": "provider",
+  "timing": { "typical_s": 30, "timeout_s": 900 },
+  "retry": { "transient": 1 },
+  "replaces": ["create-vo-elevenlabs"]
+}

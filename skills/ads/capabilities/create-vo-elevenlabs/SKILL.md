@@ -1,8 +1,11 @@
 ---
 name: create-vo-elevenlabs
 description: Generate a voiceover (VO) clip via ElevenLabs text-to-speech, ROUTED THROUGH THE elevenlabs-proxy so it bills the Ads agent. Voice id + script text come from the template recipe. Use for the spoken narration of VO-driven video-ad formats (cgi-app-sizzle, flat-vector-explainer, hypermotion). Never call ElevenLabs directly — the proxy attribution is required.
-status: active
+status: superseded
+superseded_by: voice-elevenlabs@1.0.0
 ---
+
+> **Superseded:** the video kit now does this with the voice-elevenlabs part, version 1.0.0, in the parts folder of this repository. It speaks every scene's line through the private line, keeps character timings as word timings and swaps in confirmed pronunciations the same way. This atom stays, unchanged in behaviour, for skills outside the kit until they move; its scripts still run.
 
 # create-vo-elevenlabs
 

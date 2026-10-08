@@ -1,4 +1,561 @@
 {
   "interface": 1,
-  "parts": []
+  "parts": [
+    {
+      "id": "assemble",
+      "version": "1.0.0",
+      "interface": 1,
+      "kind": "compose",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "fps",
+            "scale",
+            "crop",
+            "pad",
+            "setsar",
+            "tpad",
+            "trim",
+            "setpts",
+            "format",
+            "concat",
+            "aresample",
+            "aformat",
+            "apad",
+            "atrim",
+            "anullsrc"
+          ],
+          "encoders": [
+            "libx264",
+            "aac"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 500
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/assemble/1.0.0",
+      "files": {
+        "README.md": "6c9537dcd53cd6ed191b89e95f7e7f1df04b55f6e55e55fc974b867c54781423",
+        "part.json": "e3aedef3d87830b6e2d1b083b4a736efbb0b9c7496ede9dd6e60d6dd03cf7794",
+        "part.mjs": "2870f27fc2de604147663074d6701e08f0bfe53dcd33592918fba4e3cdbdd650"
+      },
+      "models": []
+    },
+    {
+      "id": "audio-mix",
+      "version": "1.0.0",
+      "interface": 1,
+      "kind": "mix",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "ebur128",
+            "sidechaincompress",
+            "amix",
+            "alimiter",
+            "adelay",
+            "afade",
+            "apad",
+            "atrim",
+            "aresample",
+            "aformat",
+            "asplit"
+          ],
+          "encoders": [
+            "aac"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 200
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/audio-mix/1.0.0",
+      "files": {
+        "README.md": "15ddbebe706678065cf373a7440e2a3e56ef08b58492d4d6ca4cf816ffb0478f",
+        "part.json": "0a3216a2abb1c48044ba2673a73c2cf92de7d5da2f098bee298324fdc57c9e36",
+        "part.mjs": "96880fbced7ff7bc9dcc51ff86f51b2e61a8b29035c2a1cc8e7f4112f478c448"
+      },
+      "models": []
+    },
+    {
+      "id": "brand-layer",
+      "version": "1.0.0",
+      "interface": 1,
+      "kind": "compose",
+      "layer": "brand",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": true,
+        "ffmpeg": {
+          "filters": [
+            "xfade",
+            "fps",
+            "settb",
+            "setsar",
+            "format",
+            "afade",
+            "apad",
+            "atrim",
+            "anullsrc"
+          ],
+          "encoders": [
+            "libx264",
+            "aac"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 300
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/brand-layer/1.0.0",
+      "files": {
+        "README.md": "672bb5db4c7044d49c1fc3b7c06c13cbe9dd929fa3385f24f16895d96f56cf61",
+        "assets/fonts/Montserrat-Bold.ttf": "bc6e854971cea46b463be6f9eef4d9cd52f51cfc1fc0dd90c9d3e6483dc0ec61",
+        "part.json": "fc61bcc4f9610636df652278a74f9bc0bb8faf95b14cbe512dcb9ff1b22a0e7a",
+        "part.mjs": "783ff3b583ae13f2d8af778696601596cb7f858d097a19381e61fd9bd8b9536d"
+      },
+      "models": []
+    },
+    {
+      "id": "captions-layer",
+      "version": "1.0.0",
+      "interface": 1,
+      "kind": "caption",
+      "layer": "captions",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": true,
+        "ffmpeg": {
+          "filters": [
+            "fps",
+            "format",
+            "overlay"
+          ],
+          "encoders": [
+            "libx264",
+            "aac"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "fal-ai/whisper"
+          }
+        ],
+        "disk_mb": 400
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "second",
+        "measure": {
+          "from": "/timeline/duration_s",
+          "as": "value"
+        },
+        "rates_usd": {
+          "fal-ai/whisper": 0.001
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/captions-layer/1.0.0",
+      "files": {
+        "README.md": "899b4ec4ab9f3dfaa76cac4cd884daa200683ba32799b3dea01baa3a8bd110d4",
+        "assets/fonts/Montserrat-Bold.ttf": "bc6e854971cea46b463be6f9eef4d9cd52f51cfc1fc0dd90c9d3e6483dc0ec61",
+        "part.json": "d635e6818c76cf32511491acf8d5c6f7eae14672904553cc1d594187d3f31b09",
+        "part.mjs": "5c40149b802824ffa16d68c1a42d9ac30ab6d825694520ca0b58330d214034ad"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "fal-ai/whisper"
+        }
+      ]
+    },
+    {
+      "id": "check-layer",
+      "version": "1.0.0",
+      "interface": 1,
+      "kind": "check",
+      "layer": "check",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "ebur128",
+            "freezedetect",
+            "blackdetect",
+            "scale"
+          ],
+          "encoders": [
+            "aac"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "fal-ai/whisper"
+          }
+        ],
+        "disk_mb": 100
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "second",
+        "measure": {
+          "from": "/timeline/duration_s",
+          "as": "value"
+        },
+        "rates_usd": {
+          "fal-ai/whisper": 0.001
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/check-layer/1.0.0",
+      "files": {
+        "README.md": "4f74bf0e452d7c3dc71b3399f8ebcdb96b195b19b1e4dd8632d4f37f86f969d6",
+        "part.json": "5010e352efad5a7048ce1f7d933cb06fb796c421a660dac3d02ca6ed20458ee7",
+        "part.mjs": "67b0db41865a9686929aa40673f77eec3334cd68f27d927cfebacc6b97ba7c81"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "fal-ai/whisper"
+        }
+      ]
+    },
+    {
+      "id": "end-card",
+      "version": "1.0.0",
+      "interface": 1,
+      "kind": "end_card",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": true,
+        "ffmpeg": {
+          "filters": [
+            "scale",
+            "setsar",
+            "format",
+            "anullsrc"
+          ],
+          "encoders": [
+            "libx264",
+            "aac"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 50
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/end-card/1.0.0",
+      "files": {
+        "README.md": "15f6805829de39e1d387b44b877b7fee3adda580e31c713d18e78bbe378bc645",
+        "assets/fonts/Montserrat-Bold.ttf": "bc6e854971cea46b463be6f9eef4d9cd52f51cfc1fc0dd90c9d3e6483dc0ec61",
+        "part.json": "79a17b86329e7cddc094dc3887f12df82bcf5a68866073bac43af5ca6c55ea91",
+        "part.mjs": "11c3bc241929a495ec3eceb9d5ad2ef5f39b7323aa34132e5fe35c825ef2b484"
+      },
+      "models": []
+    },
+    {
+      "id": "html-frames",
+      "version": "1.0.0",
+      "interface": 1,
+      "kind": "render_html",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": true,
+        "ffmpeg": {
+          "encoders": [
+            "libx264"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 1024
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/html-frames/1.0.0",
+      "files": {
+        "part.json": "44e668c9e2b460e1942c0dd4a13eb7d2665b03bb8307db9347cd33f499c4112a",
+        "part.mjs": "7b4ab7e9bccb9d152136272e21fe09edf301cf414fb064b0b36bd626f998ea35"
+      },
+      "models": []
+    },
+    {
+      "id": "image-nano-banana",
+      "version": "1.0.0",
+      "interface": 1,
+      "kind": "generate_image",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "encoders": [
+            "png"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "fal-ai/nano-banana"
+          },
+          {
+            "provider": "fal",
+            "model": "fal-ai/nano-banana/edit"
+          }
+        ],
+        "disk_mb": 50
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "image",
+        "measure": {
+          "from": "/images/*",
+          "as": "count"
+        },
+        "rates_usd": {
+          "fal-ai/nano-banana": 0.039,
+          "fal-ai/nano-banana/edit": 0.039
+        },
+        "model_from": "/model"
+      },
+      "determinism": "provider",
+      "path": "parts/image-nano-banana/1.0.0",
+      "files": {
+        "README.md": "c12b691d7633ac89964ba72ba9b6115d9fcc593f110c0888d4958d9b2cb58ff9",
+        "part.json": "332c611b38dcf5aafd9e1ab578dd4a54cbcc130b2d823dc75cc59a2ccef417e9",
+        "part.mjs": "879b2441031db3ece6bac41e428aa79c33a08df592a470c86f43a44adf3ae42b"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "fal-ai/nano-banana"
+        },
+        {
+          "provider": "fal",
+          "model": "fal-ai/nano-banana/edit"
+        }
+      ]
+    },
+    {
+      "id": "music-elevenlabs",
+      "version": "1.0.0",
+      "interface": 1,
+      "kind": "generate_music",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "loudnorm",
+            "afade"
+          ],
+          "encoders": [
+            "aac"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "elevenlabs",
+            "model": "music_v1"
+          }
+        ],
+        "disk_mb": 30
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "second",
+        "measure": {
+          "from": "/max_seconds",
+          "as": "value"
+        },
+        "rates_usd": {
+          "music_v1": 0.0025
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/music-elevenlabs/1.0.0",
+      "files": {
+        "README.md": "2b87ea6d1091cf132de0e1aafa2324c588118d5d892d4bdc70be5030bd26305d",
+        "part.json": "4b86b2e592fd961a15154d7e9f04268cdb66f2c5401998892f731d0090ac2721",
+        "part.mjs": "167d3ec20bd8f7e9bb4c3b8341363bd0ab1ec11d19956a1ec783bc27c55fefd2"
+      },
+      "models": [
+        {
+          "provider": "elevenlabs",
+          "model": "music_v1"
+        }
+      ]
+    },
+    {
+      "id": "sfx-elevenlabs",
+      "version": "1.0.0",
+      "interface": 1,
+      "kind": "generate_sfx",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "afade"
+          ],
+          "encoders": [
+            "aac"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "elevenlabs",
+            "model": "eleven_text_to_sound_v2"
+          }
+        ],
+        "disk_mb": 20
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "second",
+        "measure": {
+          "from": "/effects/*/seconds",
+          "as": "sum"
+        },
+        "rates_usd": {
+          "eleven_text_to_sound_v2": 0.01
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/sfx-elevenlabs/1.0.0",
+      "files": {
+        "README.md": "5653c263fd99f080dd4f66835d59cdeef381456199ae41f71c51fdd2acbb745c",
+        "part.json": "ee43b13cfdbb294c627a387ae2bd406830eb63481bfc05a97234910fce1ac006",
+        "part.mjs": "c87b934c668fb23efcec8f2b1636d4697a8bbe1c467bd871d5b0941741ce6971"
+      },
+      "models": [
+        {
+          "provider": "elevenlabs",
+          "model": "eleven_text_to_sound_v2"
+        }
+      ]
+    },
+    {
+      "id": "sound-layer",
+      "version": "1.0.0",
+      "interface": 1,
+      "kind": "mix",
+      "layer": "sound",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "loudnorm",
+            "ebur128",
+            "volume",
+            "alimiter",
+            "aresample"
+          ],
+          "encoders": [
+            "aac"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 300
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/sound-layer/1.0.0",
+      "files": {
+        "README.md": "3a993ad97783666ed708b6430b158136d827924cbe1226a04ae875aeae24517a",
+        "part.json": "2fd84fcb9971628b92ab589f332303ca04c9febad6d38b37bee2330b2b18eb06",
+        "part.mjs": "560358522508209842914d5ba7a028ca0a14671287b39388f6486cfcd06ce631"
+      },
+      "models": []
+    },
+    {
+      "id": "voice-elevenlabs",
+      "version": "1.0.0",
+      "interface": 1,
+      "kind": "generate_voice",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "aresample",
+            "aformat",
+            "atrim",
+            "asetpts",
+            "apad",
+            "concat"
+          ],
+          "encoders": [
+            "aac"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "elevenlabs",
+            "model": "eleven_v3"
+          }
+        ],
+        "disk_mb": 50
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "1k_chars",
+        "measure": {
+          "from": "/scenes/*/line",
+          "as": "length"
+        },
+        "rates_usd": {
+          "eleven_v3": 0.1
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/voice-elevenlabs/1.0.0",
+      "files": {
+        "README.md": "2d97a2934c5a97f87936990cb9af955eb8531ff6041acca5e76c479731caadbf",
+        "part.json": "b17395463902a680d1d1e5391322a80d6db09d8d4d40e74cacbfec2e0e1a4914",
+        "part.mjs": "b64bf59448eb24e8b2f3d5dacc16a89f3bc2348c8727097b84edae52e03fec00"
+      },
+      "models": [
+        {
+          "provider": "elevenlabs",
+          "model": "eleven_v3"
+        }
+      ]
+    }
+  ]
 }

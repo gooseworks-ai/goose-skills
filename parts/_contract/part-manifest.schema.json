@@ -1,0 +1,417 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gooseworks.ai/schemas/kit/part-manifest-1.schema.json",
+  "title": "GooseWorks video kit part manifest (part.json), interface 1",
+  "description": "Contract: goose-lab plan/2026-10-08-goose-video-merged/contracts/part-interface.md. Owner C1 with S2. Types: part-interface.d.ts. Aligned with style-file.md (A8/T1) and private-line.md (A7). Rules a schema cannot express (rates keys match needs.models, measure pointers exist in inputs, files exist and match the lock's sha256) are checked by the goose-skills part lint and the kit loader.",
+  "type": "object",
+  "additionalProperties": false,
+  "patternProperties": {"^x-": {}},
+  "required": [
+    "interface",
+    "id",
+    "version",
+    "kind",
+    "title",
+    "summary",
+    "runtime",
+    "entry",
+    "files",
+    "kit",
+    "needs",
+    "inputs",
+    "outputs",
+    "cost",
+    "determinism",
+    "timing"
+  ],
+  "properties": {
+    "$schema": {"type": "string"},
+    "interface": {"description": "Part interface version. A kit lists the versions it can run.", "const": 1},
+    "id": {
+      "description": "Lowercase kebab id starting with a letter: voice-elevenlabs, html-frames, sound-layer. A subset of the style file's part_ref id.",
+      "type": "string",
+      "maxLength": 64,
+      "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$"
+    },
+    "version": {"$ref": "#/$defs/semver"},
+    "kind": {
+      "enum": [
+        "generate_voice",
+        "generate_image",
+        "generate_video",
+        "generate_music",
+        "generate_sfx",
+        "render_html",
+        "compose",
+        "caption",
+        "mix",
+        "check",
+        "end_card"
+      ]
+    },
+    "layer": {
+      "description": "Set only on layer parts. brand needs kind compose, captions caption, sound mix, check check.",
+      "enum": ["brand", "captions", "sound", "check"]
+    },
+    "title": {
+      "description": "Internal name. Never shown to customers.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 60
+    },
+    "summary": {
+      "description": "One internal line on what the part does. No prices, no customer copy.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 240
+    },
+    "runtime": {
+      "description": "Interface 1 has one runtime: a bundled ES module run by the kit's Node.",
+      "const": "node"
+    },
+    "entry": {"const": "part.mjs"},
+    "files": {
+      "description": "Every file in the published version folder, relative, including part.mjs. part.json is implied.",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 200,
+      "uniqueItems": true,
+      "contains": {"const": "part.mjs"},
+      "items": {
+        "type": "string",
+        "maxLength": 200,
+        "pattern": "^(?!/)(?!.*(^|/)\\.\\.(/|$))[A-Za-z0-9._-]+(/[A-Za-z0-9._-]+)*$"
+      }
+    },
+    "kit": {
+      "description": "Kit versions that can run this part: \">=1.0.0\" or \">=1.0.0 <2.0.0\".",
+      "type": "string",
+      "pattern": "^>=(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)( <(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*))?$"
+    },
+    "needs": {"$ref": "#/$defs/needs"},
+    "inputs": {"$ref": "#/$defs/objectSchema"},
+    "outputs": {"$ref": "#/$defs/objectSchema"},
+    "cost": {"$ref": "#/$defs/cost"},
+    "determinism": {
+      "description": "pure: same inputs + version + toolchain give the same bytes. seeded: same, randomness only from the seed. provider: paid model output; never ordered twice for the same piece.",
+      "enum": ["pure", "seeded", "provider"]
+    },
+    "timing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["typical_s", "timeout_s"],
+      "properties": {
+        "typical_s": {"type": "number", "exclusiveMinimum": 0, "maximum": 3600},
+        "timeout_s": {"type": "number", "exclusiveMinimum": 0, "maximum": 3600}
+      }
+    },
+    "retry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["transient"],
+      "properties": {"transient": {"enum": [0, 1]}}
+    },
+    "replaces": {
+      "description": "Today's goose-skills atom slugs this part replaces.",
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*(/[a-z0-9][a-z0-9-]*)?$"}
+    }
+  },
+  "allOf": [
+    {
+      "description": "Generate kinds order paid pieces: they need the line, at least one model, and are provider-determined.",
+      "if": {
+        "required": ["kind"],
+        "properties": {
+          "kind": {"enum": ["generate_voice", "generate_image", "generate_video", "generate_music", "generate_sfx"]}
+        },
+        "type": "object"
+      },
+      "then": {
+        "properties": {
+          "needs": {
+            "properties": {"network": {"const": true}, "models": {"minItems": 1, "type": "array"}},
+            "type": "object"
+          },
+          "determinism": {"const": "provider"}
+        },
+        "type": "object"
+      }
+    },
+    {
+      "description": "network is true exactly when models is not empty.",
+      "if": {
+        "required": ["needs"],
+        "properties": {"needs": {"required": ["network"], "properties": {"network": {"const": false}}, "type": "object"}},
+        "type": "object"
+      },
+      "then": {
+        "properties": {"needs": {"properties": {"models": {"maxItems": 0, "type": "array"}}, "type": "object"}},
+        "type": "object"
+      },
+      "else": {
+        "properties": {"needs": {"properties": {"models": {"minItems": 1, "type": "array"}}, "type": "object"}},
+        "type": "object"
+      }
+    },
+    {
+      "description": "A part that charges must name the models it charges for.",
+      "if": {
+        "required": ["cost"],
+        "properties": {"cost": {"required": ["basis"], "properties": {"basis": {"const": "per_unit"}}, "type": "object"}},
+        "type": "object"
+      },
+      "then": {
+        "properties": {"needs": {"properties": {"models": {"minItems": 1, "type": "array"}}, "type": "object"}},
+        "type": "object"
+      }
+    },
+    {
+      "description": "render_html needs the bundled browser.",
+      "if": {"required": ["kind"], "properties": {"kind": {"const": "render_html"}}, "type": "object"},
+      "then": {
+        "properties": {"needs": {"properties": {"browser": {"const": true}}, "type": "object"}},
+        "type": "object"
+      }
+    },
+    {
+      "description": "A check part never changes the video: it outputs a verdict.",
+      "if": {"required": ["kind"], "properties": {"kind": {"const": "check"}}, "type": "object"},
+      "then": {
+        "properties": {
+          "outputs": {"properties": {"required": {"contains": {"const": "verdict"}, "type": "array"}}, "type": "object"}
+        },
+        "type": "object"
+      }
+    },
+    {
+      "if": {"required": ["layer"], "properties": {"layer": {"const": "brand"}}, "type": "object"},
+      "then": {"properties": {"kind": {"const": "compose"}}, "type": "object"}
+    },
+    {
+      "if": {"required": ["layer"], "properties": {"layer": {"const": "captions"}}, "type": "object"},
+      "then": {"properties": {"kind": {"const": "caption"}}, "type": "object"}
+    },
+    {
+      "if": {"required": ["layer"], "properties": {"layer": {"const": "sound"}}, "type": "object"},
+      "then": {"properties": {"kind": {"const": "mix"}}, "type": "object"}
+    },
+    {
+      "if": {"required": ["layer"], "properties": {"layer": {"const": "check"}}, "type": "object"},
+      "then": {"properties": {"kind": {"const": "check"}}, "type": "object"}
+    },
+    {
+      "description": "Every layer takes the fixed layer inputs: video, timeline, brand, expect, and words once the captions layer has run.",
+      "if": {"type": "object", "required": ["layer"]},
+      "then": {
+        "type": "object",
+        "properties": {
+          "inputs": {
+            "type": "object",
+            "properties": {
+              "required": {
+                "type": "array",
+                "allOf": [{"contains": {"const": "video"}}, {"contains": {"const": "timeline"}}]
+              },
+              "properties": {"type": "object", "required": ["video", "timeline", "brand", "expect", "words"]}
+            }
+          }
+        }
+      }
+    },
+    {
+      "description": "brand, captions and sound layers return the new cut and the timeline.",
+      "if": {
+        "type": "object",
+        "required": ["layer"],
+        "properties": {"layer": {"enum": ["brand", "captions", "sound"]}}
+      },
+      "then": {
+        "type": "object",
+        "properties": {
+          "outputs": {
+            "type": "object",
+            "properties": {
+              "required": {
+                "type": "array",
+                "allOf": [{"contains": {"const": "video"}}, {"contains": {"const": "timeline"}}]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "description": "The captions layer also returns a WebVTT of what it drew, sent with the upload as captions_vtt.",
+      "if": {"type": "object", "required": ["layer"], "properties": {"layer": {"const": "captions"}}},
+      "then": {
+        "type": "object",
+        "properties": {
+          "outputs": {"type": "object", "properties": {"required": {"type": "array", "contains": {"const": "captions"}}}}
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "semver": {
+      "description": "Exact semver, no ranges, no prerelease, no build metadata (same rule as the style file).",
+      "type": "string",
+      "maxLength": 32,
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+    },
+    "needs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["browser", "ffmpeg", "network", "models"],
+      "properties": {
+        "browser": {"type": "boolean"},
+        "ffmpeg": {
+          "oneOf": [
+            {"type": "boolean"},
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "minProperties": 1,
+              "properties": {
+                "filters": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z0-9_]+$"}},
+                "encoders": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z0-9_]+$"}}
+              }
+            }
+          ]
+        },
+        "network": {"type": "boolean"},
+        "models": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 20,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["provider", "model"],
+            "properties": {
+              "provider": {
+                "description": "Providers the private line accepts (private-line.md, call.provider).",
+                "enum": ["fal", "elevenlabs", "higgsfield", "openai", "whisper"]
+              },
+              "model": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200,
+                "pattern": "^[A-Za-z0-9._:/-]+$",
+                "description": "The model id the call uses and the price is looked up by."
+              }
+            }
+          }
+        },
+        "disk_mb": {"type": "integer", "minimum": 0, "maximum": 100000}
+      }
+    },
+    "objectSchema": {
+      "description": "A JSON Schema (draft 2020-12) for an object. Unknown fields are refused, so additionalProperties must be false. Names are lower_snake_case (the style file's input name rule). A property that holds a file carries x-kit-file.",
+      "type": "object",
+      "required": ["type", "properties", "additionalProperties"],
+      "properties": {
+        "type": {"const": "object"},
+        "additionalProperties": {"const": false},
+        "required": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "properties": {
+          "type": "object",
+          "propertyNames": {"pattern": "^[a-z][a-z0-9_]*$", "maxLength": 40},
+          "additionalProperties": {"$ref": "#/$defs/propertySchema"}
+        }
+      }
+    },
+    "propertySchema": {
+      "description": "Any JSON Schema. x-kit-file marks a FileRef value (or, on items, an array of FileRefs).",
+      "type": "object",
+      "properties": {"x-kit-file": {"$ref": "#/$defs/kitFile"}, "items": {"$ref": "#/$defs/propertySchema"}}
+    },
+    "kitFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["media"],
+      "properties": {
+        "media": {"$ref": "#/$defs/mediaKind"},
+        "mime": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^[a-z]+/[a-z0-9.+-]+$"}
+        }
+      }
+    },
+    "mediaKind": {"enum": ["video", "audio", "image", "json", "text", "subtitles", "font", "html"]},
+    "fileRef": {
+      "description": "The runtime value of a file input or output. Made only by the core or ctx.file(). Digests use only media and sha256.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "path", "sha256", "bytes", "media", "mime"],
+      "properties": {
+        "kind": {"const": "file"},
+        "path": {"type": "string", "pattern": "^/"},
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "bytes": {"type": "integer", "minimum": 1},
+        "media": {"$ref": "#/$defs/mediaKind"},
+        "mime": {"type": "string"},
+        "duration_s": {"type": "number", "minimum": 0},
+        "width": {"type": "integer", "minimum": 1},
+        "height": {"type": "integer", "minimum": 1},
+        "fps": {"type": "number", "exclusiveMinimum": 0}
+      }
+    },
+    "pointer": {
+      "description": "JSON pointer into the part's inputs. A * segment means every element of a list.",
+      "type": "string",
+      "pattern": "^(/[^/]+)+$"
+    },
+    "cost": {
+      "description": "Provider list price in USD (upper bound, no markup) for the price helper. Credits are never in a part.",
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["basis"],
+          "properties": {"basis": {"const": "free"}}
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["basis", "unit", "rates_usd"],
+          "properties": {
+            "basis": {"const": "per_unit"},
+            "unit": {"enum": ["call", "second", "1k_chars", "image"]},
+            "measure": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["from", "as"],
+              "properties": {
+                "from": {"$ref": "#/$defs/pointer"},
+                "as": {
+                  "description": "value: the number; sum: add the numbers; length: add string lengths (divided by 1000 for 1k_chars); count: count the matches.",
+                  "enum": ["value", "sum", "length", "count"]
+                }
+              },
+              "description": "How many units one run uses, from the bound inputs. The pointer may use * for every element of a list."
+            },
+            "rates_usd": {
+              "description": "Keyed by model id from needs.models.",
+              "type": "object",
+              "minProperties": 1,
+              "additionalProperties": {"type": "number", "minimum": 0, "maximum": 100}
+            },
+            "model_from": {"$ref": "#/$defs/pointer"},
+            "only_if": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["from", "equals"],
+              "properties": {
+                "from": {"$ref": "#/$defs/pointer"},
+                "equals": {"oneOf": [{"type": "string"}, {"type": "number"}, {"type": "boolean"}, {"type": "null"}]}
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
