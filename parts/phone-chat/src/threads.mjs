@@ -36,8 +36,12 @@ function chatTruthy(v) {
   return v === true || /^(true|yes|on|1)$/i.test(String(v == null ? '' : v).trim());
 }
 
-/** The product photo a scene's picture asks for: the scene's own image file, or a chosen product's first photo. */
+/**
+ * The photo a scene shows: the picture the customer uploaded for it (scene.image),
+ * else its picture file, else the chosen product its picture names.
+ */
 function chatPicture(scene, products) {
+  if (scene.image && typeof scene.image === 'object' && scene.image.kind === 'file') return scene.image;
   const p = scene.picture;
   if (p && typeof p === 'object' && p.kind === 'file') return p;
   if (typeof p !== 'string' || !p.trim()) return null;

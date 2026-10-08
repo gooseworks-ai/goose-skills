@@ -1,5 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { browserProviderOrNull, countColor, fileRef, framePixels, hasFfmpeg, levelDb, loadPart, makeCtx, makeVideo, probe } from '../../_tools/kit-harness.mjs';
 import { chatThreadFor } from '../src/threads.mjs';
@@ -21,6 +22,19 @@ test('the plan\'s "Name: text" scenes become the thread: Me is the owner, typing
   assert.deepEqual(thread.participants.map((p) => [p.id, !!p.self]), [['me', true], ['maya', false]]);
   assert.deepEqual(thread.messages.map((m) => `${m.type}:${m.from}`), ['typing:maya', 'text:maya', 'text:me', 'typing:maya', 'text:maya']);
   assert.equal(thread.clock, '10:24');
+});
+
+test("a scene's uploaded image is the photo it shows, before its picture", () => {
+  const image = { kind: 'file', path: '/plan/upload.png', sha256: 'b'.repeat(64), bytes: 9, media: 'image', mime: 'image/png' };
+  const productPhoto = { kind: 'file', path: '/plan/product.png', sha256: 'c'.repeat(64), bytes: 9, media: 'image', mime: 'image/png' };
+  const { thread, images } = chatThreadFor('imessage', {
+    scenes: [{ id: 'a', on_screen: 'Maya: look at this', image, picture: 'Tote' }],
+    products: [{ id: 'p1', name: 'Tote', images: [productPhoto] }],
+  });
+  assert.deepEqual(images.map((i) => i.file.path), ['/plan/upload.png']);
+  assert.ok(thread.messages.some((m) => m.type === 'attachment'));
+  const onlyPicture = chatThreadFor('imessage', { scenes: [{ id: 'a', on_screen: 'Maya: look', picture: 'Tote' }], products: [{ id: 'p1', name: 'Tote', images: [productPhoto] }] });
+  assert.deepEqual(onlyPicture.images.map((i) => i.file.path), ['/plan/product.png']);
 });
 
 test('refuses a message with no sender, a group with no name, and a picture no chosen product matches', () => {
@@ -56,6 +70,17 @@ test('draws the chat with its message sounds and crossfades into the end card', 
   for (const s of out.timeline.scenes.slice(0, 3)) assert.ok((await levelDb(out.video.path, s.start_s + 0.03, s.start_s + 0.2)) > -45, `a sound at ${s.start_s}s`);
   assert.equal(await levelDb(out.video.path, card.start_s + 0.6, card.end_s - 0.1), -Infinity);
   assert.ok(countColor(await framePixels(out.video.path, card.end_s - 0.5), [255, 0, 0], 40) > 100000, 'the end card clip shows at the end');
+});
+
+test('refuses a character the bundled font cannot draw, instead of falling back to a system font', async () => {
+  const { ctx } = makeCtx({ partDir: dir, browser: null });
+  const scenes = [{ id: 'a', on_screen: 'Maya: love it \u{1F60D}' }, { id: 'b', on_screen: 'Me: me too' }];
+  await assert.rejects(mod.run({ skin: 'imessage', scenes }, ctx), (e) => e.code === 'bad_input' && /cannot draw/.test(e.message) && e.message.includes('\u{1F60D}'));
+  const { pcFontCoverage, pcFontMissing } = await import('../src/fonts.mjs');
+  const inter = pcFontCoverage(readFileSync(join(dir, 'assets', 'fonts', 'InterVariable.ttf')));
+  assert.deepEqual(pcFontMissing(['flat white \u{2192} Barista Blend', 'caf\u{E9} \u{2014} na\u{EF}ve \u{2764}'], [inter]), [], 'Latin, arrows, dashes and a text-style heart are drawn by Inter');
+  assert.deepEqual(pcFontMissing(['\u{2764}\u{FE0F}', 'ok \u{1F44D}\u{1F3FD}'], [inter]), ['\u{2764}\u{FE0F}', '\u{1F44D}\u{1F3FD}'], 'emoji need an emoji font');
+  assert.deepEqual(pcFontMissing(['\u{2764}\u{FE0F}'], [inter], [[[0x2764, 0x2764]]]), [], 'an emoji font that covers it draws it');
 });
 
 test('refuses a plan whose scenes are all the end card\'s', async () => {

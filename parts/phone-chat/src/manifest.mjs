@@ -46,6 +46,7 @@ export const manifest = {
             line: text(2000),
             on_screen: text(2000),
             picture: { anyOf: [{ type: 'null' }, { type: 'string', maxLength: 2000 }, file('image')] },
+            image: { description: 'A picture the customer uploaded for this scene; shown before picture.', anyOf: [{ type: 'null' }, file('image')] },
           },
         },
       },
@@ -72,7 +73,7 @@ export const manifest = {
       fps: { description: 'Default 30.', type: 'integer', minimum: 10, maximum: 60 },
       aspect: { description: 'Default 9:16. The screen is drawn at 1080 on the short side.', enum: ['9:16', '1:1', '4:5', '16:9'] },
       fonts: {
-        description: 'Optional: the UI face (default the bundled Inter) and an emoji face.',
+        description: 'Optional: the UI face (default the bundled Inter) and an emoji face (TTF, OTF or WOFF). A character no font draws is refused.',
         type: 'object',
         additionalProperties: false,
         properties: { text: file('font'), emoji: file('font') },

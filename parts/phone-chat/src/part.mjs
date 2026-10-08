@@ -13,7 +13,8 @@ import { imessageBuild } from './skins/imessage.mjs';
 import { chatgptBuild } from './skins/chatgpt.mjs';
 import { notesBuild } from './skins/apple-notes.mjs';
 import { ncBuild } from './skins/notification-cascade.mjs';
-import { chatThreadFor } from './threads.mjs';
+import { chatSceneText, chatThreadFor } from './threads.mjs';
+import { pcFontCoverage, pcFontMissing } from './fonts.mjs';
 
 const BUILD = { imessage: imessageBuild, chatgpt: chatgptBuild, 'apple-notes': notesBuild, 'notification-cascade': ncBuild };
 const SIZE = { '9:16': [1080, 1920], '1:1': [1080, 1080], '4:5': [1080, 1350], '16:9': [1920, 1080] };
@@ -153,6 +154,22 @@ export async function run(inputs, ctx) {
   const text = fonts.text || { path: join(ctx.part.dir, 'assets', 'fonts', 'InterVariable.ttf'), mime: 'font/ttf' };
   let fontCss = `@font-face{font-family:KitText;src:url(${await dataUri(text, 'font/ttf')}) format('${fontFormat(text.path)}');font-weight:100 900;font-display:block;}`;
   if (fonts.emoji) fontCss += `@font-face{font-family:KitEmoji;src:url(${await dataUri(fonts.emoji, 'font/ttf')}) format('${fontFormat(fonts.emoji.path)}');font-display:block;}`;
+  // Every character the plan puts on screen must be drawn by the bundled or given fonts: a missing
+  // glyph would fall back to whatever font the computer has, and the video would differ between computers.
+  let textCoverage;
+  let emojiCoverage = [];
+  try {
+    textCoverage = [pcFontCoverage(await readFile(text.path))];
+    if (fonts.emoji) emojiCoverage = [pcFontCoverage(await readFile(fonts.emoji.path))];
+  } catch (e) {
+    throw ctx.error('bad_input', e.message);
+  }
+  const a = inputs.answers || {};
+  const shown = [...chatScenes.map(chatSceneText), inputs.brand_name, a.group, a.clock].filter((t) => typeof t === 'string');
+  const missing = pcFontMissing(shown, textCoverage, emojiCoverage);
+  if (missing.length) {
+    throw ctx.error('bad_input', `the chat uses ${missing.slice(0, 5).join(' ')}, which the fonts cannot draw; leave ${missing.length > 1 ? 'them' : 'it'} out or give an emoji font`);
+  }
   const skinDir = join(ctx.part.dir, 'assets', 'skins', inputs.skin);
   const env = {
     width,
