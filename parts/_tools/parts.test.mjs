@@ -75,7 +75,11 @@ test('the newest version of every part is the build of its source', () => {
 test('index.json lists every published version with its file hashes and models', () => {
   const index = JSON.parse(readFileSync(join(PARTS_ROOT, 'index.json'), 'utf8'));
   assert.deepEqual(index, buildIndex());
-  for (const e of index.parts) assert.deepEqual(Object.keys(e), ['id', 'version', 'kind', 'kit', 'files', 'models']);
+  assert.deepEqual(Object.keys(index), ['interface', 'parts']);
+  for (const e of index.parts) {
+    for (const key of ['id', 'version', 'kind', 'kit', 'files', 'models']) assert.ok(key in e, `${e.id}@${e.version} has ${key}`);
+    assert.deepEqual(e.models, JSON.parse(readFileSync(join(PARTS_ROOT, e.id, e.version, 'part.json'), 'utf8')).needs.models);
+  }
 });
 
 test('the lint catches a part that calls fetch(), a child process, the environment or the clock', () => {

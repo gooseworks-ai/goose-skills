@@ -37,19 +37,30 @@ function sha256File(path) {
   return createHash('sha256').update(readFileSync(path)).digest('hex');
 }
 
-/** The index entry for one version folder, from its part.json. */
+/**
+ * The index entry for one version folder, from its part.json: what the kit,
+ * the style validator and the server's lock read (kind, layer slot, kit range,
+ * needs, cost, determinism, the models the line may let it order) and a
+ * sha256 for every file in the folder, part.json included.
+ */
 export function indexEntry(folder) {
   const manifest = JSON.parse(readFileSync(join(folder.dir, 'part.json'), 'utf8'));
   const files = {};
-  for (const rel of ['part.json', ...[...(manifest.files || [])].sort()]) {
+  for (const rel of ['part.json', ...(manifest.files || [])].sort()) {
     const abs = join(folder.dir, rel);
     files[rel] = existsSync(abs) ? sha256File(abs) : null;
   }
   return {
     id: manifest.id,
     version: manifest.version,
+    interface: manifest.interface,
     kind: manifest.kind,
+    ...(manifest.layer !== undefined ? { layer: manifest.layer } : {}),
     kit: manifest.kit,
+    needs: manifest.needs,
+    cost: manifest.cost,
+    determinism: manifest.determinism,
+    path: `parts/${folder.id}/${folder.version}`,
     files,
     models: (manifest.needs && manifest.needs.models) || [],
   };
