@@ -102,3 +102,25 @@ test('a base that does not resolve stops the check instead of passing it', () =>
   const res = run('atom-lint.js', root, ['--base', 'origin/no-such-branch']);
   assert.equal(res.code, 2, res.out);
 });
+
+const POINTER = '> **Superseded:** the kit now does this with the clip part. This atom still runs outside the kit.\n\n';
+
+test('a superseded atom is skipped by the text rules, apart from its pointer', () => {
+  const old = `---\nname: clip-maker\nstatus: superseded\n---\n\n${POINTER}# clip-maker\n\nEach take costs $3.\n`;
+  const { root, base } = makeRepo({ 'clip-maker': { skill: old } });
+  fs.appendFileSync(path.join(root, SKILL), 'A retake costs $3. Run npm install first.\n');
+  commitAll(root);
+  const res = run('atom-lint.js', root, ['--base', base]);
+  assert.equal(res.code, 0, res.out);
+  assert.match(res.out, /1 superseded, pointer checked only/);
+});
+
+test('a superseded status needs the pointer paragraph, and a pointer needs the status', () => {
+  const noPointer = `---\nname: clip-maker\nstatus: superseded\n---\n\n# clip-maker\n`;
+  const noStatus = `---\nname: other-maker\nstatus: active\n---\n\n${POINTER}# other-maker\n`;
+  const { root } = makeRepo({ 'clip-maker': { skill: noPointer }, 'other-maker': { skill: noStatus } });
+  const res = run('atom-lint.js', root, []);
+  assert.equal(res.code, 1, res.out);
+  assert.match(res.out, /error atom\.superseded_pointer: .*clip-maker\/SKILL\.md:1 "status: superseded with no pointer paragraph"/);
+  assert.match(res.out, /error atom\.superseded_pointer: .*other-maker\/SKILL\.md:1 "pointer paragraph without status: superseded"/);
+});
