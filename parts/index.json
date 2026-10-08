@@ -84,9 +84,9 @@
       "determinism": "pure",
       "path": "parts/audio-mix/1.0.0",
       "files": {
-        "README.md": "15ddbebe706678065cf373a7440e2a3e56ef08b58492d4d6ca4cf816ffb0478f",
-        "part.json": "0a3216a2abb1c48044ba2673a73c2cf92de7d5da2f098bee298324fdc57c9e36",
-        "part.mjs": "96880fbced7ff7bc9dcc51ff86f51b2e61a8b29035c2a1cc8e7f4112f478c448"
+        "README.md": "31cde9a114a0ab1dbcc1e41de18071b16a54eabc80d51e2f9ea6250ad82c3f1e",
+        "part.json": "93f8684c97577219abd2a19206ef9540077942c582cb047e50022a7b455df344",
+        "part.mjs": "f3886116c2a6670ecc30ffc61fc8c5454e6cd12b70cdc2622cdfe052835f0bbe"
       },
       "models": []
     },
@@ -394,7 +394,7 @@
         "basis": "per_unit",
         "unit": "second",
         "measure": {
-          "from": "/max_seconds",
+          "from": "/seconds",
           "as": "value"
         },
         "rates_usd": {
@@ -404,9 +404,9 @@
       "determinism": "provider",
       "path": "parts/music-elevenlabs/1.0.0",
       "files": {
-        "README.md": "2b87ea6d1091cf132de0e1aafa2324c588118d5d892d4bdc70be5030bd26305d",
-        "part.json": "4b86b2e592fd961a15154d7e9f04268cdb66f2c5401998892f731d0090ac2721",
-        "part.mjs": "167d3ec20bd8f7e9bb4c3b8341363bd0ab1ec11d19956a1ec783bc27c55fefd2"
+        "README.md": "463ff18cae1971a9fc3ec411f686fcafabb03c82c3ecdd2e2f3484ef31c9054d",
+        "part.json": "849f1e47efbdeea768b292250166d7df556ae8b1da8729481fec84eb9fdf0f1d",
+        "part.mjs": "a05ebb112506a0d47a8c5946bec6bed0e6b5a8c99e951425a6ca893dce6126f1"
       },
       "models": [
         {

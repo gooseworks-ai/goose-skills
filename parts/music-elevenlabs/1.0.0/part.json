@@ -5,53 +5,115 @@
   "version": "1.0.0",
   "kind": "generate_music",
   "title": "Music bed (ElevenLabs)",
-  "summary": "Makes one instrumental music bed with ElevenLabs Music, skips any sparse intro, levels it and fades its tail, cut to the requested length.",
+  "summary": "Makes one instrumental music bed with ElevenLabs Music from the style's brief and the plan's mood, skips any sparse intro, levels it and fades its tail.",
   "runtime": "node",
   "entry": "part.mjs",
-  "files": ["README.md", "part.mjs"],
+  "files": [
+    "README.md",
+    "part.mjs"
+  ],
   "kit": ">=1.0.0 <2.0.0",
   "needs": {
     "browser": false,
-    "ffmpeg": { "filters": ["loudnorm", "afade"], "encoders": ["aac"] },
+    "ffmpeg": {
+      "filters": [
+        "loudnorm",
+        "afade"
+      ],
+      "encoders": [
+        "aac"
+      ]
+    },
     "network": true,
-    "models": [{ "provider": "elevenlabs", "model": "music_v1" }],
+    "models": [
+      {
+        "provider": "elevenlabs",
+        "model": "music_v1"
+      }
+    ],
     "disk_mb": 30
   },
   "inputs": {
     "type": "object",
     "additionalProperties": false,
-    "required": ["prompt", "seconds", "max_seconds"],
+    "required": [
+      "brief",
+      "seconds"
+    ],
     "properties": {
-      "prompt": { "description": "What the music sounds like (the style's choice).", "type": "string", "minLength": 1, "maxLength": 2000 },
-      "seconds": { "description": "Length of the bed, usually the picture's length.", "type": "number", "exclusiveMinimum": 0, "maximum": 300 },
-      "max_seconds": {
-        "description": "The most music this step may order, set by the style (its longest video plus a second). The price is read from it before anything runs.",
+      "mood": {
+        "description": "plan.music: the mood the customer picked. Null or empty means no bed: nothing is ordered and no audio comes out.",
+        "type": [
+          "string",
+          "null"
+        ],
+        "maxLength": 200
+      },
+      "brief": {
+        "description": "The style's fixed music notes (instrumental, energy, ending).",
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 1500
+      },
+      "seconds": {
+        "description": "Length of the bed to order, a plain number in the style (its longest video), so the price is known before anything runs. audio-mix cuts it to the picture.",
         "type": "number",
         "exclusiveMinimum": 0,
         "maximum": 300
       },
-      "trim_intro_s": { "description": "Seconds of sparse intro to skip. Default 0.", "type": "number", "minimum": 0, "maximum": 10 },
-      "force_instrumental": { "type": "boolean" },
-      "loudnorm_i": { "description": "Integrated loudness of the bed. Default -16 LUFS.", "type": "number", "minimum": -30, "maximum": -8 }
+      "trim_intro_s": {
+        "description": "Seconds of sparse intro to skip. Default 0.",
+        "type": "number",
+        "minimum": 0,
+        "maximum": 10
+      },
+      "force_instrumental": {
+        "type": "boolean"
+      },
+      "loudnorm_i": {
+        "description": "Integrated loudness of the bed. Default -16 LUFS.",
+        "type": "number",
+        "minimum": -30,
+        "maximum": -8
+      }
     }
   },
   "outputs": {
     "type": "object",
     "additionalProperties": false,
-    "required": ["audio", "seconds"],
     "properties": {
-      "audio": { "type": "object", "x-kit-file": { "media": "audio" } },
-      "seconds": { "type": "number", "exclusiveMinimum": 0 }
+      "audio": {
+        "type": "object",
+        "x-kit-file": {
+          "media": "audio"
+        }
+      },
+      "seconds": {
+        "type": "number",
+        "exclusiveMinimum": 0
+      }
     }
   },
   "cost": {
     "basis": "per_unit",
     "unit": "second",
-    "measure": { "from": "/max_seconds", "as": "value" },
-    "rates_usd": { "music_v1": 0.0025 }
+    "measure": {
+      "from": "/seconds",
+      "as": "value"
+    },
+    "rates_usd": {
+      "music_v1": 0.0025
+    }
   },
   "determinism": "provider",
-  "timing": { "typical_s": 40, "timeout_s": 600 },
-  "retry": { "transient": 1 },
-  "replaces": ["create-music-elevenlabs"]
+  "timing": {
+    "typical_s": 40,
+    "timeout_s": 600
+  },
+  "retry": {
+    "transient": 1
+  },
+  "replaces": [
+    "create-music-elevenlabs"
+  ]
 }
