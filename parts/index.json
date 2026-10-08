@@ -134,6 +134,49 @@
       "models": []
     },
     {
+      "id": "brand-layer",
+      "version": "1.0.1",
+      "interface": 1,
+      "kind": "compose",
+      "layer": "brand",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": true,
+        "ffmpeg": {
+          "filters": [
+            "xfade",
+            "fps",
+            "settb",
+            "setsar",
+            "format",
+            "afade",
+            "apad",
+            "atrim",
+            "anullsrc"
+          ],
+          "encoders": [
+            "libx264",
+            "aac"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 300
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/brand-layer/1.0.1",
+      "files": {
+        "README.md": "cf6f8c2add27a812626ed162e3bf176809499037dc10aa9ccce4b39cffcc48f5",
+        "assets/fonts/Montserrat-Bold.ttf": "bc6e854971cea46b463be6f9eef4d9cd52f51cfc1fc0dd90c9d3e6483dc0ec61",
+        "part.json": "7236cc960cfe4554cd238a3999bc8cb2f31aa15b76fe91f3d054e4464673d6cc",
+        "part.mjs": "8c63c7a8ac3285717a09bd0a61bb2b5727b0606f3758287a26aa238831518792"
+      },
+      "models": []
+    },
+    {
       "id": "captions-layer",
       "version": "1.0.0",
       "interface": 1,
@@ -477,6 +520,43 @@
         "assets/fonts/Montserrat-Bold.ttf": "bc6e854971cea46b463be6f9eef4d9cd52f51cfc1fc0dd90c9d3e6483dc0ec61",
         "part.json": "79a17b86329e7cddc094dc3887f12df82bcf5a68866073bac43af5ca6c55ea91",
         "part.mjs": "6fd0976cc24b2de2ad8484fdc0964b793f41f594c215b3aa2f501aee79642e8a"
+      },
+      "models": []
+    },
+    {
+      "id": "end-card",
+      "version": "1.0.1",
+      "interface": 1,
+      "kind": "end_card",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": true,
+        "ffmpeg": {
+          "filters": [
+            "scale",
+            "setsar",
+            "format",
+            "anullsrc"
+          ],
+          "encoders": [
+            "libx264",
+            "aac"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 50
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/end-card/1.0.1",
+      "files": {
+        "README.md": "16f0b7ca52b9d925e1d07c77354be0b3e635f7bd06d809f9ea8894b0e730d22b",
+        "assets/fonts/Montserrat-Bold.ttf": "bc6e854971cea46b463be6f9eef4d9cd52f51cfc1fc0dd90c9d3e6483dc0ec61",
+        "part.json": "77ff4d441ace63e3e51cdab57fe7d554932fabe62332cc868d57fc0f73e07ce9",
+        "part.mjs": "3aaf6754af01eaacafe03bcf03c4679a73a7c47ba334162b9affd81f610ab49c"
       },
       "models": []
     },

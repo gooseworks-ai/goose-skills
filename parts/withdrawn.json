@@ -2,6 +2,16 @@
   "interface": 1,
   "withdrawn": [
     {
+      "id": "end-card",
+      "version": "1.0.0",
+      "reason": "Replaced by 1.0.1 before publishing: Shared library fixes: piece names stay unique when an id and a fallback collide, and the loudness meter no longer logs every frame."
+    },
+    {
+      "id": "brand-layer",
+      "version": "1.0.0",
+      "reason": "Replaced by 1.0.1 before publishing: The appended end card is drawn in scratch, so only the declared output is left."
+    },
+    {
       "id": "captions-layer",
       "version": "1.0.0",
       "reason": "Replaced by 1.1.0 before publishing: The caption font is loaded before captions are measured and wide captions are resized, never overflowing the band; the price is per call."
