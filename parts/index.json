@@ -243,6 +243,43 @@
       ]
     },
     {
+      "id": "check-layer",
+      "version": "1.1.0",
+      "interface": 1,
+      "kind": "check",
+      "layer": "check",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "ebur128",
+            "freezedetect",
+            "blackdetect",
+            "scale",
+            "format"
+          ],
+          "encoders": [
+            "pcm_s16le"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 100
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/check-layer/1.1.0",
+      "files": {
+        "README.md": "fc6c24fb107623a5bab4bf5d6c8627a2fba603f069a69d25d1bd3e90dbb3c2fd",
+        "part.json": "9916e1ccf88a74a7fda00120ecb422a6159cb6bc267957ff2e29295a3adc1934",
+        "part.mjs": "f9da0dfb2e866dbc203f06659a4ed5f01cbe77753bece71be169aec2205f80b4"
+      },
+      "models": []
+    },
+    {
       "id": "creator-h3",
       "version": "1.0.0",
       "interface": 1,
