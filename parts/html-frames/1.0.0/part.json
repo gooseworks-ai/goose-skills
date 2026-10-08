@@ -1,0 +1,178 @@
+{
+  "interface": 1,
+  "id": "html-frames",
+  "version": "1.0.0",
+  "kind": "render_html",
+  "title": "HTML frames",
+  "summary": "Lays out a style's frame page with the plan's scenes, products and brand in the kit's Chromium, steps a virtual clock frame by frame and encodes the frames to H.264.",
+  "runtime": "node",
+  "entry": "part.mjs",
+  "files": ["part.mjs"],
+  "kit": ">=1.0.0 <2.0.0",
+  "needs": {
+    "browser": true,
+    "ffmpeg": { "encoders": ["libx264"] },
+    "network": false,
+    "models": [],
+    "disk_mb": 1024
+  },
+  "inputs": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["template", "scenes", "aspect", "max_words"],
+    "oneOf": [{ "required": ["duration_s"] }, { "required": ["scene_s"] }],
+    "properties": {
+      "template": {
+        "description": "The style's frame page. The maker puts the kit runtime first in its head; the page reads window.kit and draws each frame from kit.render(fn), renderAt(t), seek(ms), or CSS and Web Animations.",
+        "type": "object",
+        "x-kit-file": { "media": "html" }
+      },
+      "frames": {
+        "description": "Every other file the page uses (css, js, json, svg, png, jpg, webp), kept at the same places relative to the template. The page can load nothing else.",
+        "type": "array",
+        "maxItems": 200,
+        "items": {
+          "anyOf": [
+            { "type": "object", "x-kit-file": { "media": "html" } },
+            { "type": "object", "x-kit-file": { "media": "text" } },
+            { "type": "object", "x-kit-file": { "media": "json" } },
+            { "type": "object", "x-kit-file": { "media": "image" } }
+          ]
+        }
+      },
+      "fonts": {
+        "description": "The style's fonts (ttf, otf, woff, woff2). CSS uses each by its file name without the extension.",
+        "type": "array",
+        "maxItems": 20,
+        "items": { "type": "object", "x-kit-file": { "media": "font" } }
+      },
+      "scenes": {
+        "description": "plan.scenes, in order. The scenes share the video evenly; kit.scenes carries each one's start_s and end_s.",
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 30,
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": { "type": ["string", "null"], "maxLength": 64 },
+            "line": { "type": ["string", "null"], "maxLength": 2000 },
+            "on_screen": { "type": ["string", "null"], "maxLength": 2000 },
+            "picture": {
+              "anyOf": [
+                { "type": "null" },
+                { "type": "string", "maxLength": 2000 },
+                { "type": "object", "x-kit-file": { "media": "image" } }
+              ]
+            }
+          }
+        }
+      },
+      "max_words": {
+        "description": "The style's scenes.max_words. A scene whose line or on-screen text has more words is refused.",
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 200
+      },
+      "products": {
+        "description": "plan.products, in the customer's order.",
+        "type": "array",
+        "maxItems": 12,
+        "items": {
+          "type": "object",
+          "required": ["id"],
+          "properties": {
+            "id": { "type": "string", "minLength": 1 },
+            "name": { "type": ["string", "null"], "maxLength": 2000 },
+            "images": {
+              "type": "array",
+              "maxItems": 20,
+              "items": { "type": "object", "x-kit-file": { "media": "image" } }
+            }
+          }
+        }
+      },
+      "brand": {
+        "description": "The brand frozen at the yes ({\"from\": \"brand\"}): name, logo, colors, fonts (heading, body), cta. Colours become CSS variables (--brand-primary, ...); fonts are brand-heading and brand-body.",
+        "type": ["object", "null"],
+        "properties": {
+          "name": { "type": ["string", "null"], "maxLength": 2000 },
+          "logo": { "anyOf": [{ "type": "null" }, { "type": "object", "x-kit-file": { "media": "image" } }] },
+          "colors": { "type": ["object", "null"] },
+          "fonts": {
+            "type": ["object", "null"],
+            "properties": {
+              "heading": { "anyOf": [{ "type": "null" }, { "type": "object", "x-kit-file": { "media": "font" } }] },
+              "body": { "anyOf": [{ "type": "null" }, { "type": "object", "x-kit-file": { "media": "font" } }] }
+            }
+          },
+          "cta": { "type": ["object", "null"] }
+        }
+      },
+      "aspect": { "enum": ["9:16", "1:1", "4:5", "16:9"] },
+      "duration_s": {
+        "description": "Length of the whole video, in seconds. Give this or scene_s.",
+        "type": "number",
+        "minimum": 0.5,
+        "maximum": 180
+      },
+      "scene_s": {
+        "description": "Seconds per scene; the video is this times the number of scenes. Give this or duration_s.",
+        "type": "number",
+        "exclusiveMinimum": 0,
+        "maximum": 60
+      },
+      "fps": { "type": "integer", "minimum": 1, "maximum": 60, "default": 30 },
+      "short_side": {
+        "description": "Pixels on the short side of the video. The page is always laid out at 1080 and scaled.",
+        "enum": [720, 1080],
+        "default": 1080
+      },
+      "values": {
+        "description": "The style's own plain values for its page (labels, look choices), as kit.values.",
+        "type": "object"
+      }
+    }
+  },
+  "outputs": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["video", "seconds", "timeline"],
+    "properties": {
+      "video": {
+        "description": "H.264 in yuv420p, BT.709, no sound, at the aspect's size.",
+        "type": "object",
+        "x-kit-file": { "media": "video", "mime": ["video/mp4"] }
+      },
+      "seconds": { "type": "number", "exclusiveMinimum": 0 },
+      "timeline": {
+        "description": "duration_s, width, height, fps, scenes [{id, start_s, end_s}] and an empty speech list.",
+        "type": "object",
+        "required": ["duration_s", "width", "height", "fps", "scenes", "speech"],
+        "properties": {
+          "duration_s": { "type": "number" },
+          "width": { "type": "integer" },
+          "height": { "type": "integer" },
+          "fps": { "type": "number" },
+          "scenes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["id", "start_s", "end_s"],
+              "properties": {
+                "id": { "type": "string" },
+                "start_s": { "type": "number" },
+                "end_s": { "type": "number" }
+              }
+            }
+          },
+          "speech": { "type": "array", "maxItems": 0 }
+        }
+      }
+    }
+  },
+  "cost": { "basis": "free" },
+  "determinism": "pure",
+  "timing": { "typical_s": 90, "timeout_s": 1200 },
+  "retry": { "transient": 1 },
+  "replaces": ["render-html-frames", "render-search-grid", "render-photo-grid-card", "render-logo-equation-card", "create-kinetic-typography"]
+}

@@ -1,0 +1,842 @@
+// html-frames 1.0.0: built by scripts/build-kit-parts.ts from src/kit/maker. Do not edit by hand.
+
+// src/kit/maker/make.ts
+import { createHash as createHash2 } from "node:crypto";
+import { mkdir as mkdir2, readFile as readFile2, rm, writeFile as writeFile2 } from "node:fs/promises";
+import * as path2 from "node:path";
+import { pathToFileURL } from "node:url";
+
+// src/kit/maker/encode.ts
+var SEGMENT_FRAMES = 60;
+var FRAME_PATTERN = "f%06d.png";
+function frameName(index) {
+  return `f${String(index).padStart(6, "0")}.png`;
+}
+function segmentArgs(opts) {
+  return [
+    "-hide_banner",
+    "-nostdin",
+    "-loglevel",
+    "error",
+    "-y",
+    "-framerate",
+    String(opts.fps),
+    "-start_number",
+    String(opts.start),
+    "-i",
+    `${opts.framesDir}/${FRAME_PATTERN}`,
+    "-frames:v",
+    String(opts.count),
+    "-vf",
+    "scale=out_color_matrix=bt709:out_range=tv,format=yuv420p",
+    ...opts.tools.encodeArgs("h264-master"),
+    "-c:v",
+    "libx264",
+    "-pix_fmt",
+    "yuv420p",
+    "-colorspace",
+    "bt709",
+    "-color_primaries",
+    "bt709",
+    "-color_trc",
+    "bt709",
+    "-color_range",
+    "tv",
+    "-an",
+    "-r",
+    String(opts.fps),
+    opts.out
+  ];
+}
+function concatList(segments) {
+  return segments.map((file) => `file '${file.replace(/'/g, `'\\''`)}'
+`).join("");
+}
+function concatArgs(listFile, out) {
+  return [
+    "-hide_banner",
+    "-nostdin",
+    "-loglevel",
+    "error",
+    "-y",
+    "-f",
+    "concat",
+    "-safe",
+    "0",
+    "-i",
+    listFile,
+    "-c",
+    "copy",
+    "-movflags",
+    "+faststart",
+    "-fflags",
+    "+bitexact",
+    "-map_metadata",
+    "-1",
+    out
+  ];
+}
+function pngSize(data) {
+  if (data.length < 24 || data[0] !== 137 || data[1] !== 80 || data[2] !== 78 || data[3] !== 71) return null;
+  const view = new DataView(data.buffer, data.byteOffset, data.byteLength);
+  return { width: view.getUint32(16), height: view.getUint32(20) };
+}
+
+// src/kit/maker/inputs.ts
+var DESIGN_SIZE = {
+  "9:16": { width: 1080, height: 1920 },
+  "1:1": { width: 1080, height: 1080 },
+  "4:5": { width: 1080, height: 1350 },
+  "16:9": { width: 1920, height: 1080 }
+};
+var SHORT_SIDES = [720, 1080];
+var LIMITS = {
+  scenes: 30,
+  products: 12,
+  frames: 200,
+  fonts: 20,
+  minSeconds: 0.5,
+  maxSeconds: 180,
+  maxFps: 60,
+  maxWords: 200,
+  textChars: 2e3
+};
+function isObject(value) {
+  return !!value && typeof value === "object" && !Array.isArray(value);
+}
+function isFileRef(value) {
+  return isObject(value) && value.kind === "file" && typeof value.path === "string" && value.path.startsWith("/") && typeof value.sha256 === "string" && /^[a-f0-9]{64}$/.test(value.sha256) && typeof value.media === "string" && typeof value.mime === "string";
+}
+function fileOf(value, at, media, fail) {
+  if (!isFileRef(value)) fail(`${at} should be a file`);
+  if (!media.includes(value.media)) fail(`${at} should be ${media.join(" or ")}, not ${value.media}`);
+  return value;
+}
+function optionalText(value, at, fail) {
+  if (value === void 0 || value === null) return null;
+  if (typeof value !== "string") fail(`${at} should be text`);
+  if (value.length > LIMITS.textChars) fail(`${at} is longer than ${LIMITS.textChars} characters`);
+  return value;
+}
+function countWords(text) {
+  if (!text) return 0;
+  return text.split(/\s+/u).filter((token) => /[\p{L}\p{N}]/u.test(token)).length;
+}
+function scenesOf(value, maxWords, fail) {
+  if (!Array.isArray(value) || value.length === 0) fail("scenes should list at least one scene");
+  if (value.length > LIMITS.scenes) fail(`scenes lists ${value.length} scenes; at most ${LIMITS.scenes} are allowed`);
+  const ids = /* @__PURE__ */ new Set();
+  return value.map((raw, index) => {
+    const at = `scenes[${index}]`;
+    if (!isObject(raw)) fail(`${at} should be an object`);
+    const id = raw.id === void 0 || raw.id === null ? `scene-${index + 1}` : raw.id;
+    if (typeof id !== "string" || id.length === 0 || id.length > 64) fail(`${at}.id should be text of 1 to 64 characters`);
+    if (ids.has(id)) fail(`${at}.id "${id}" is used twice`);
+    ids.add(id);
+    const line = optionalText(raw.line, `${at}.line`, fail);
+    const onScreen = optionalText(raw.on_screen, `${at}.on_screen`, fail);
+    for (const [field, text] of [["line", line], ["on_screen", onScreen]]) {
+      const words = countWords(text);
+      if (words > maxWords) {
+        fail(`scene ${index + 1} (${id}) has ${words} words in ${field}; this style allows ${maxWords} per scene`);
+      }
+    }
+    let picture = null;
+    if (isFileRef(raw.picture)) picture = fileOf(raw.picture, `${at}.picture`, ["image"], fail);
+    else picture = optionalText(raw.picture, `${at}.picture`, fail);
+    return { id, index, line, on_screen: onScreen, picture };
+  });
+}
+function productsOf(value, fail) {
+  if (value === void 0 || value === null) return [];
+  if (!Array.isArray(value)) fail("products should be a list");
+  if (value.length > LIMITS.products) fail(`products lists ${value.length}; at most ${LIMITS.products} are allowed`);
+  return value.map((raw, i) => {
+    const at = `products[${i}]`;
+    if (!isObject(raw)) fail(`${at} should be an object`);
+    if (typeof raw.id !== "string" || !raw.id) fail(`${at}.id should be text`);
+    const name = optionalText(raw.name, `${at}.name`, fail) ?? "";
+    const images = raw.images === void 0 || raw.images === null ? [] : raw.images;
+    if (!Array.isArray(images) || images.length > 20) fail(`${at}.images should be a list of up to 20 images`);
+    return { id: raw.id, name, images: images.map((img, j) => fileOf(img, `${at}.images[${j}]`, ["image"], fail)) };
+  });
+}
+function brandOf(value, fail) {
+  if (value === void 0 || value === null) return null;
+  if (!isObject(value)) fail("brand should be an object");
+  const name = optionalText(value.name, "brand.name", fail) ?? "";
+  const logo = value.logo === void 0 || value.logo === null ? null : fileOf(value.logo, "brand.logo", ["image"], fail);
+  const colors = {};
+  if (value.colors !== void 0 && value.colors !== null) {
+    if (!isObject(value.colors)) fail("brand.colors should be an object");
+    for (const [key, color] of Object.entries(value.colors)) {
+      if (color === null || color === void 0) continue;
+      if (typeof color === "string" && color.length <= 64) colors[key] = color;
+      else if (Array.isArray(color) && color.length <= 16 && color.every((c) => typeof c === "string" && c.length <= 64)) colors[key] = color;
+      else fail(`brand.colors.${key} should be a colour or a list of colours`);
+    }
+  }
+  const fonts = { heading: null, body: null };
+  if (value.fonts !== void 0 && value.fonts !== null) {
+    if (!isObject(value.fonts)) fail("brand.fonts should be an object");
+    for (const slot of ["heading", "body"]) {
+      const font = value.fonts[slot];
+      if (font !== void 0 && font !== null) fonts[slot] = fileOf(font, `brand.fonts.${slot}`, ["font"], fail);
+    }
+  }
+  let cta = null;
+  if (value.cta !== void 0 && value.cta !== null) {
+    if (!isObject(value.cta)) fail("brand.cta should be an object");
+    const text = optionalText(value.cta.text, "brand.cta.text", fail);
+    if (text) cta = { text, url: optionalText(value.cta.url, "brand.cta.url", fail) };
+  }
+  return { name, logo, colors, fonts, cta };
+}
+function readInputs(raw, ctx) {
+  const fail = (detail) => {
+    throw ctx.error("bad_input", detail);
+  };
+  if (!isObject(raw)) fail("inputs should be an object");
+  const template = fileOf(raw.template, "template", ["html"], fail);
+  const framesRaw = raw.frames ?? [];
+  if (!Array.isArray(framesRaw) || framesRaw.length > LIMITS.frames) fail(`frames should be a list of up to ${LIMITS.frames} files`);
+  const frames = framesRaw.map((f, i) => fileOf(f, `frames[${i}]`, ["html", "text", "json", "image"], fail));
+  const fontsRaw = raw.fonts ?? [];
+  if (!Array.isArray(fontsRaw) || fontsRaw.length > LIMITS.fonts) fail(`fonts should be a list of up to ${LIMITS.fonts} files`);
+  const fonts = fontsRaw.map((f, i) => fileOf(f, `fonts[${i}]`, ["font"], fail));
+  const maxWords = raw.max_words;
+  if (typeof maxWords !== "number" || !Number.isInteger(maxWords) || maxWords < 1 || maxWords > LIMITS.maxWords) {
+    fail(`max_words should be a whole number from 1 to ${LIMITS.maxWords}`);
+  }
+  const scenes = scenesOf(raw.scenes, maxWords, fail);
+  const aspect = raw.aspect;
+  if (typeof aspect !== "string" || !(aspect in DESIGN_SIZE)) fail(`aspect should be one of ${Object.keys(DESIGN_SIZE).join(", ")}`);
+  const design = DESIGN_SIZE[aspect];
+  const fps = raw.fps ?? 30;
+  if (typeof fps !== "number" || !Number.isInteger(fps) || fps < 1 || fps > LIMITS.maxFps) fail(`fps should be a whole number from 1 to ${LIMITS.maxFps}`);
+  const shortSide = raw.short_side ?? 1080;
+  if (!SHORT_SIDES.includes(shortSide)) fail(`short_side should be ${SHORT_SIDES.join(" or ")}`);
+  const scale = shortSide / 1080;
+  const output = { width: Math.round(design.width * scale), height: Math.round(design.height * scale) };
+  const hasTotal = raw.duration_s !== void 0 && raw.duration_s !== null;
+  const hasPerScene = raw.scene_s !== void 0 && raw.scene_s !== null;
+  if (hasTotal === hasPerScene) fail("give exactly one of duration_s (the whole video) or scene_s (each scene)");
+  const seconds = hasTotal ? raw.duration_s : raw.scene_s * scenes.length;
+  if (typeof seconds !== "number" || !Number.isFinite(seconds) || seconds < LIMITS.minSeconds || seconds > LIMITS.maxSeconds) {
+    fail(`the video would be ${String(seconds)} seconds; it must be ${LIMITS.minSeconds} to ${LIMITS.maxSeconds}`);
+  }
+  const frameCount = Math.round(seconds * fps);
+  if (frameCount < scenes.length) fail(`${scenes.length} scenes need at least ${scenes.length} frames; the video has ${frameCount}`);
+  const sceneFrames = scenes.map((_, i) => Math.round(i * frameCount / scenes.length));
+  sceneFrames.push(frameCount);
+  const values = raw.values ?? {};
+  if (!isObject(values)) fail("values should be an object");
+  if (JSON.stringify(values).length > 64 * 1024) fail("values is larger than 64 KB");
+  return {
+    template,
+    frames,
+    fonts,
+    scenes,
+    products: productsOf(raw.products, fail),
+    brand: brandOf(raw.brand, fail),
+    aspect,
+    fps,
+    frameCount,
+    sceneFrames,
+    design,
+    output,
+    scale,
+    values
+  };
+}
+
+// src/kit/maker/page.ts
+import { createHash } from "node:crypto";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import * as path from "node:path";
+
+// src/kit/maker/runtime.ts
+var PAGE_EPOCH_MS = 17672256e5;
+var RUNTIME = String.raw`(function () {
+  'use strict';
+  var DATA = __KIT_DATA__;
+  var EPOCH = __KIT_EPOCH__;
+  var now = 0;
+  var problems = [];
+  var said = Object.create(null);
+  function report(message) {
+    message = String(message).slice(0, 400);
+    if (said[message] || problems.length >= 40) return;
+    said[message] = 1;
+    problems.push(message);
+  }
+  function isLocal(url) {
+    return /^(file|data|blob|about):/i.test(String(url));
+  }
+  function reach(url, how) {
+    report('The frame page tries to reach ' + String(url).slice(0, 200) + ' (' + how + '). Frame pages may load only their own files.');
+  }
+
+  // Randomness: one fixed seed, so a page that shuffles shuffles the same way every run.
+  var seed = 0x2f6b3a1d;
+  function random() {
+    seed = (seed + 0x6d2b79f5) >>> 0;
+    var t = seed;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  }
+  Math.random = random;
+  try {
+    Object.defineProperty(window.crypto, 'getRandomValues', { value: function (array) {
+      var bytes = new Uint8Array(array.buffer, array.byteOffset, array.byteLength);
+      for (var i = 0; i < bytes.length; i++) bytes[i] = Math.floor(random() * 256);
+      return array;
+    } });
+    Object.defineProperty(window.crypto, 'randomUUID', { value: function () {
+      var hex = '';
+      for (var i = 0; i < 32; i++) hex += Math.floor(random() * 16).toString(16);
+      return hex.slice(0, 8) + '-' + hex.slice(8, 12) + '-4' + hex.slice(13, 16) + '-' + '89ab'.charAt(Math.floor(random() * 4)) + hex.slice(17, 20) + '-' + hex.slice(20, 32);
+    } });
+  } catch (e) {}
+
+  // Clocks.
+  var RealDate = Date;
+  class KitDate extends RealDate {
+    constructor() {
+      if (arguments.length === 0) super(EPOCH + now);
+      else super(...arguments);
+    }
+    static now() { return EPOCH + now; }
+  }
+  window.Date = new Proxy(KitDate, { apply: function () { return new RealDate(EPOCH + now).toString(); } });
+  try { Object.defineProperty(performance, 'now', { value: function () { return now; } }); } catch (e) {}
+  try { Object.defineProperty(performance, 'timeOrigin', { get: function () { return EPOCH; } }); } catch (e) {}
+  try { Object.defineProperty(Event.prototype, 'timeStamp', { get: function () { return now; } }); } catch (e) {}
+  try { Object.defineProperty(document.timeline, 'currentTime', { get: function () { return now; } }); } catch (e) {}
+  try { performance.setResourceTimingBufferSize(100000); } catch (e) {}
+
+  // Timers and frame callbacks run only when the maker moves the clock.
+  var timers = new Map();
+  var frameCallbacks = new Map();
+  var nextId = 1;
+  function addTimer(fn, ms, args, repeat) {
+    if (typeof fn !== 'function') {
+      report('The frame page gives a timer code as text; give it a function.');
+      return 0;
+    }
+    var delay = Number(ms) || 0;
+    if (delay < 0) delay = 0;
+    var id = nextId++;
+    timers.set(id, { id: id, at: now + delay, fn: fn, args: args, every: repeat ? Math.max(1, delay) : 0 });
+    return id;
+  }
+  window.setTimeout = function (fn, ms) { return addTimer(fn, ms, Array.prototype.slice.call(arguments, 2), false); };
+  window.setInterval = function (fn, ms) { return addTimer(fn, ms, Array.prototype.slice.call(arguments, 2), true); };
+  window.clearTimeout = function (id) { timers.delete(id); };
+  window.clearInterval = function (id) { timers.delete(id); };
+  window.requestAnimationFrame = function (fn) { var id = nextId++; frameCallbacks.set(id, fn); return id; };
+  window.cancelAnimationFrame = function (id) { frameCallbacks.delete(id); };
+  window.requestIdleCallback = function (fn) {
+    return addTimer(function () { fn({ didTimeout: false, timeRemaining: function () { return 0; } }); }, 0, [], false);
+  };
+  window.cancelIdleCallback = function (id) { timers.delete(id); };
+
+  // What a frame page must not do. The kit's browser blocks the network as well;
+  // this only says what the page tried, so the maker can refuse it plainly.
+  ['WebSocket', 'EventSource'].forEach(function (name) {
+    var Real = window[name];
+    if (typeof Real !== 'function') return;
+    window[name] = function (url) { reach(url, name); return new Real(url); };
+  });
+  ['Worker', 'SharedWorker'].forEach(function (name) {
+    window[name] = function () { report('The frame page starts a ' + name + '. Frame pages run on the page alone.'); throw new Error(name + ' is not available'); };
+  });
+  window.addEventListener('error', function (event) {
+    var target = event.target;
+    if (target && target !== window && target.tagName) {
+      var url = target.currentSrc || target.src || target.href || '';
+      if (url && !isLocal(url)) reach(url, target.tagName.toLowerCase());
+      else report('The frame page could not load ' + String(url || target.tagName).slice(0, 200) + '. List every file the page uses in its frames.');
+      return;
+    }
+    report('The frame page threw an error: ' + String(event.message || 'unknown').slice(0, 300));
+  }, true);
+  window.addEventListener('unhandledrejection', function (event) {
+    var reason = event.reason;
+    report('The frame page threw an error: ' + String(reason && reason.message ? reason.message : reason).slice(0, 300));
+  });
+  var resourcesSeen = 0;
+  function scanResources() {
+    var list = performance.getEntriesByType('resource');
+    for (; resourcesSeen < list.length; resourcesSeen++) {
+      var name = list[resourcesSeen].name;
+      if (!isLocal(name)) reach(name, list[resourcesSeen].initiatorType || 'request');
+    }
+  }
+
+  // Animations: every CSS or Web Animation is paused when it appears and set
+  // to its age on the virtual clock. SVG animations follow the same clock.
+  var born = new WeakMap();
+  function syncAnimations() {
+    var list = document.getAnimations ? document.getAnimations() : [];
+    for (var i = 0; i < list.length; i++) {
+      var animation = list[i];
+      if (!born.has(animation)) {
+        born.set(animation, now);
+        try { animation.pause(); } catch (e) {}
+      }
+      try { animation.currentTime = Math.max(0, now - born.get(animation)); } catch (e) {}
+    }
+    var svgs = document.getElementsByTagName('svg');
+    for (var j = 0; j < svgs.length; j++) {
+      var svg = svgs[j];
+      if (svg.ownerSVGElement || typeof svg.pauseAnimations !== 'function') continue;
+      try { svg.pauseAnimations(); svg.setCurrentTime(now / 1000); } catch (e) {}
+    }
+  }
+
+  function call(fn, args, what) {
+    try { return fn.apply(window, args); } catch (e) {
+      report('The frame page threw an error in ' + what + ': ' + String(e && e.message ? e.message : e).slice(0, 300));
+      return undefined;
+    }
+  }
+
+  function runTimers(until) {
+    var runs = 0;
+    for (;;) {
+      var next = null;
+      timers.forEach(function (timer) {
+        if (timer.at <= until && (!next || timer.at < next.at || (timer.at === next.at && timer.id < next.id))) next = timer;
+      });
+      if (!next) return;
+      if (++runs > 20000) {
+        report('The frame page sets timers without end.');
+        timers.clear();
+        return;
+      }
+      if (next.at > now) now = next.at;
+      if (next.every) next.at += next.every;
+      else timers.delete(next.id);
+      call(next.fn, next.args, 'a timer');
+      syncAnimations();
+    }
+  }
+
+  // Frame data for the page.
+  var renderers = [];
+  var waits = [];
+  function sceneAt(t) {
+    var scenes = DATA.scenes;
+    for (var i = scenes.length - 1; i >= 0; i--) {
+      if (t >= scenes[i].start_s) {
+        var length = scenes[i].end_s - scenes[i].start_s;
+        return { index: i, scene: scenes[i], progress: length > 0 ? Math.min(1, (t - scenes[i].start_s) / length) : 1 };
+      }
+    }
+    return { index: 0, scene: scenes[0], progress: 0 };
+  }
+  function freeze(value) {
+    if (value && typeof value === 'object') {
+      Object.keys(value).forEach(function (key) { freeze(value[key]); });
+      Object.freeze(value);
+    }
+    return value;
+  }
+  var kit = freeze({
+    version: 1,
+    aspect: DATA.aspect,
+    width: DATA.width,
+    height: DATA.height,
+    fps: DATA.fps,
+    frames: DATA.frames,
+    duration_s: DATA.duration_s,
+    scenes: DATA.scenes,
+    products: DATA.products,
+    brand: DATA.brand,
+    fonts: DATA.fonts,
+    values: DATA.values,
+    sceneAt: sceneAt,
+    render: function (fn) { if (typeof fn === 'function') renderers.push(fn); },
+    ready: function (promise) { waits.push(Promise.resolve(promise)); }
+  });
+  window.kit = kit;
+
+  async function settle() {
+    // Reading the layout makes the browser start any font the new frame needs.
+    if (document.body) void document.body.offsetHeight;
+    try { await document.fonts.ready; } catch (e) {}
+    var pending = [];
+    var images = document.images;
+    for (var i = 0; i < images.length; i++) {
+      if (!images[i].complete) pending.push(images[i].decode().catch(function () {}));
+    }
+    if (pending.length) await Promise.all(pending);
+  }
+
+  function take() {
+    scanResources();
+    var out = problems.slice();
+    problems.length = 0;
+    return out;
+  }
+
+  var driver = {
+    start: async function () {
+      if (document.readyState !== 'complete') {
+        await new Promise(function (resolve) { window.addEventListener('load', resolve, { once: true }); });
+      }
+      try { await Promise.all(waits); } catch (e) { report('The frame page did not get ready: ' + String(e && e.message ? e.message : e).slice(0, 300)); }
+      // Load every font and picture up front, so no frame is drawn while one is still loading.
+      var faces = [];
+      document.fonts.forEach(function (face) { faces.push(face); });
+      await Promise.all(faces.map(function (face) { return face.load().catch(function () {}); }));
+      faces.forEach(function (face) {
+        if (face.status === 'error') report('The font "' + face.family + '" could not be read.');
+      });
+      await Promise.all(DATA.preload.map(function (url) {
+        var image = new Image();
+        image.src = url;
+        return image.decode().catch(function () { report('The picture ' + url + ' could not be read.'); });
+      }));
+      if (document.querySelector('video, audio')) report('The frame page plays video or sound. Frame pages show pictures and text only.');
+      syncAnimations();
+      await settle();
+      return take();
+    },
+    frame: async function (index) {
+      var target = (index * 1000) / DATA.fps;
+      runTimers(target);
+      now = target;
+      var callbacks = Array.from(frameCallbacks.values());
+      frameCallbacks.clear();
+      for (var i = 0; i < callbacks.length; i++) call(callbacks[i], [now], 'a frame callback');
+      syncAnimations();
+      var t = target / 1000;
+      try {
+        if (renderers.length) {
+          for (var r = 0; r < renderers.length; r++) await renderers[r](t, { index: index, scene: sceneAt(t) });
+        } else if (typeof window.renderAt === 'function') {
+          await window.renderAt(t);
+        } else if (typeof window.__renderAt === 'function') {
+          await window.__renderAt(t);
+        } else if (typeof window.seek === 'function') {
+          await window.seek(target);
+        }
+      } catch (e) {
+        report('The frame page threw an error while drawing: ' + String(e && e.message ? e.message : e).slice(0, 300));
+      }
+      syncAnimations();
+      await settle();
+      return take();
+    }
+  };
+  Object.defineProperty(window, '__kitDriver', { value: Object.freeze(driver), writable: false, configurable: false });
+})();`;
+function scriptJson(value) {
+  return JSON.stringify(value).replace(/</g, "\\u003c").replace(/>/g, "\\u003e").split(String.fromCharCode(8232)).join("\\u2028").split(String.fromCharCode(8233)).join("\\u2029");
+}
+function runtimeScript(data) {
+  return RUNTIME.replace("__KIT_DATA__", () => scriptJson(data)).replace("__KIT_EPOCH__", String(PAGE_EPOCH_MS));
+}
+
+// src/kit/maker/page.ts
+var KIT_FOLDER = "_kit";
+var IMAGE_EXT = {
+  "image/png": "png",
+  "image/jpeg": "jpg",
+  "image/webp": "webp",
+  "image/gif": "gif",
+  "image/avif": "avif",
+  "image/svg+xml": "svg"
+};
+var FONT_FORMAT = {
+  ttf: { ext: "ttf", format: "truetype" },
+  otf: { ext: "otf", format: "opentype" },
+  woff: { ext: "woff", format: "woff" },
+  woff2: { ext: "woff2", format: "woff2" }
+};
+var COLOR = /^(#[0-9a-fA-F]{3,8}|(rgb|rgba|hsl|hsla)\([0-9.,%\s/]+\))$/;
+async function readChecked(ref, fail) {
+  let data;
+  try {
+    data = await readFile(ref.path);
+  } catch {
+    return fail(`the file ${path.basename(ref.path)} could not be read`);
+  }
+  const sha = createHash("sha256").update(data).digest("hex");
+  if (sha !== ref.sha256) fail(`the file ${path.basename(ref.path)} changed after it was checked`);
+  return data;
+}
+function commonFolder(files) {
+  let common = path.dirname(files[0]);
+  for (const file of files.slice(1)) {
+    while (path.relative(common, file).startsWith("..")) {
+      const up = path.dirname(common);
+      if (up === common) break;
+      common = up;
+    }
+  }
+  return common;
+}
+function fontOf(ref, fail) {
+  const fromMime = ref.mime.startsWith("font/") ? ref.mime.slice(5) : "";
+  const fromName = path.extname(ref.path).slice(1).toLowerCase();
+  const kind = FONT_FORMAT[fromMime] ?? FONT_FORMAT[fromName];
+  if (!kind) fail(`the font ${path.basename(ref.path)} is not ttf, otf, woff or woff2`);
+  return kind;
+}
+function familyOf(ref) {
+  return path.basename(ref.path, path.extname(ref.path)).replace(/[^A-Za-z0-9 _-]/g, "-");
+}
+function injectHead(html, head) {
+  const text = html.replace(/^\uFEFF/, "");
+  const headTag = /<head\b[^>]*>/i.exec(text);
+  if (headTag) return text.slice(0, headTag.index + headTag[0].length) + head + text.slice(headTag.index + headTag[0].length);
+  const htmlTag = /<html\b[^>]*>/i.exec(text);
+  if (htmlTag) return text.slice(0, htmlTag.index + htmlTag[0].length) + "<head>" + head + "</head>" + text.slice(htmlTag.index + htmlTag[0].length);
+  return "<!doctype html><head>" + head + "</head>" + text;
+}
+function cssString(value) {
+  return JSON.stringify(value);
+}
+async function buildPage(spec, dir, ctx) {
+  const fail = (detail) => {
+    throw ctx.error("bad_input", detail);
+  };
+  await mkdir(path.join(dir, KIT_FOLDER, "fonts"), { recursive: true });
+  await mkdir(path.join(dir, KIT_FOLDER, "media"), { recursive: true });
+  const pageFiles = [spec.template, ...spec.frames];
+  const base = commonFolder(pageFiles.map((f) => f.path));
+  const entry = path.join(dir, path.relative(base, spec.template.path));
+  const url = (relFromDir) => path.relative(path.dirname(entry), path.join(dir, ...relFromDir.split("/"))).split(path.sep).join("/");
+  const placed = /* @__PURE__ */ new Map();
+  const preload = [];
+  for (const ref of pageFiles) {
+    const rel = path.relative(base, ref.path).split(path.sep).join("/");
+    if (rel.split("/")[0] === KIT_FOLDER) fail(`the frame ${rel} uses the folder name ${KIT_FOLDER}, which the kit keeps for itself`);
+    const known = placed.get(rel);
+    if (known !== void 0) {
+      if (known !== ref.sha256) fail(`two different frames are both called ${rel}`);
+      continue;
+    }
+    placed.set(rel, ref.sha256);
+    const data2 = await readChecked(ref, fail);
+    const target = path.join(dir, ...rel.split("/"));
+    await mkdir(path.dirname(target), { recursive: true });
+    if (ref === spec.template) continue;
+    await writeFile(target, data2);
+    if (ref.media === "image") preload.push(url(rel));
+  }
+  const faces = [];
+  const families = [];
+  const addFont = async (ref, family) => {
+    if (families.includes(family)) fail(`two fonts are both called ${family}`);
+    const kind = fontOf(ref, fail);
+    const name = `${ref.sha256.slice(0, 16)}.${kind.ext}`;
+    await writeFile(path.join(dir, KIT_FOLDER, "fonts", name), await readChecked(ref, fail));
+    faces.push(`@font-face{font-family:${cssString(family)};src:url(${cssString(url(`${KIT_FOLDER}/fonts/${name}`))}) format(${cssString(kind.format)});font-display:block;}`);
+    families.push(family);
+  };
+  for (const font of spec.fonts) await addFont(font, familyOf(font));
+  if (spec.brand?.fonts.heading) await addFont(spec.brand.fonts.heading, "brand-heading");
+  if (spec.brand?.fonts.body) await addFont(spec.brand.fonts.body, "brand-body");
+  const media = async (ref) => {
+    const ext = IMAGE_EXT[ref.mime];
+    if (!ext) fail(`the picture ${path.basename(ref.path)} is not png, jpg, webp, gif, avif or svg`);
+    const rel = `${KIT_FOLDER}/media/${ref.sha256.slice(0, 16)}.${ext}`;
+    if (!preload.includes(url(rel))) {
+      await writeFile(path.join(dir, ...rel.split("/")), await readChecked(ref, fail));
+      preload.push(url(rel));
+    }
+    return url(rel);
+  };
+  const products = [];
+  for (const product of spec.products) {
+    const images = [];
+    for (const image of product.images) images.push(await media(image));
+    products.push({ id: product.id, name: product.name, images });
+  }
+  const scenes = [];
+  for (const scene of spec.scenes) {
+    const picture = scene.picture && typeof scene.picture === "object" ? await media(scene.picture) : scene.picture;
+    scenes.push({
+      id: scene.id,
+      index: scene.index,
+      line: scene.line,
+      on_screen: scene.on_screen,
+      picture,
+      start_s: spec.sceneFrames[scene.index] / spec.fps,
+      end_s: spec.sceneFrames[scene.index + 1] / spec.fps
+    });
+  }
+  const brand = spec.brand ? {
+    name: spec.brand.name,
+    colors: spec.brand.colors,
+    logo: spec.brand.logo ? await media(spec.brand.logo) : null,
+    fonts: { heading: spec.brand.fonts.heading ? "brand-heading" : null, body: spec.brand.fonts.body ? "brand-body" : null },
+    cta: spec.brand.cta
+  } : null;
+  const variables = [`--kit-width:${spec.design.width}px`, `--kit-height:${spec.design.height}px`];
+  for (const [key, value] of Object.entries(spec.brand?.colors ?? {})) {
+    if (typeof value === "string" && /^[a-z0-9_]+$/i.test(key) && COLOR.test(value.trim())) {
+      variables.push(`--brand-${key.replace(/_/g, "-")}:${value.trim()}`);
+    }
+  }
+  const data = {
+    aspect: spec.aspect,
+    width: spec.design.width,
+    height: spec.design.height,
+    fps: spec.fps,
+    frames: spec.frameCount,
+    duration_s: spec.frameCount / spec.fps,
+    scenes,
+    products,
+    brand,
+    fonts: families,
+    values: spec.values,
+    preload
+  };
+  const head = `<meta charset="utf-8"><style id="kit-fonts">${faces.join("")}:root{${variables.join(";")}}</style><script>${runtimeScript(data)}</script>`;
+  const template = (await readChecked(spec.template, fail)).toString("utf8");
+  await writeFile(entry, injectHead(template, head));
+  return { entry, families };
+}
+
+// src/kit/maker/make.ts
+var FRAME_TIMEOUT_MS = 6e4;
+function timelineOf(spec) {
+  return {
+    duration_s: spec.frameCount / spec.fps,
+    width: spec.output.width,
+    height: spec.output.height,
+    fps: spec.fps,
+    scenes: spec.scenes.map((scene) => ({
+      id: scene.id,
+      start_s: spec.sceneFrames[scene.index] / spec.fps,
+      end_s: spec.sceneFrames[scene.index + 1] / spec.fps
+    })),
+    speech: []
+  };
+}
+async function withTimeout(work, ms, onTimeout) {
+  let timer;
+  try {
+    return await Promise.race([
+      work,
+      new Promise((_, reject) => {
+        timer = setTimeout(() => reject(onTimeout()), ms);
+      })
+    ]);
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
+}
+function problemsOf(value) {
+  return Array.isArray(value) ? value.filter((v) => typeof v === "string") : [];
+}
+async function makeVideo(rawInputs, ctx) {
+  const spec = readInputs(rawInputs, ctx);
+  if (!ctx.browser) throw ctx.error("needs_missing", "the kit browser");
+  const stopIfAsked = () => {
+    if (ctx.signal.aborted) throw ctx.error("stopped");
+  };
+  stopIfAsked();
+  const pageDir = path2.join(ctx.tmpDir, "page");
+  const framesDir = path2.join(ctx.tmpDir, "frames");
+  const segmentsDir = path2.join(ctx.tmpDir, "segments");
+  for (const dir of [pageDir, framesDir, segmentsDir]) {
+    await rm(dir, { recursive: true, force: true });
+    await mkdir2(dir, { recursive: true });
+  }
+  const built = await buildPage(spec, pageDir, ctx);
+  const total = spec.frameCount;
+  const frameHashes = [];
+  const segments = [];
+  const refusePage = (problems) => {
+    throw ctx.error("bad_input", problems.slice(0, 3).join(" "));
+  };
+  const encodeSegment = async (start, count) => {
+    const out2 = path2.join(segmentsDir, `seg-${String(segments.length + 1).padStart(5, "0")}.mp4`);
+    await ctx.tools.exec("ffmpeg", segmentArgs({ tools: ctx.tools, framesDir, start, count, fps: spec.fps, out: out2 }));
+    segments.push(out2);
+    for (let i = start; i < start + count; i++) await rm(path2.join(framesDir, frameName(i)), { force: true });
+  };
+  const browser = await ctx.browser.launch();
+  try {
+    const page = await browser.newPage({ viewport: spec.design, deviceScaleFactor: spec.scale });
+    await page.goto(pathToFileURL(built.entry).href);
+    const started = await withTimeout(
+      page.evaluate("window.__kitDriver ? window.__kitDriver.start() : null"),
+      FRAME_TIMEOUT_MS,
+      () => ctx.error("bad_input", "the frame page did not get ready within a minute")
+    );
+    if (started === null) throw ctx.error("tool_failed", "the frame page lost the kit runtime");
+    const startProblems = problemsOf(started);
+    if (startProblems.length) refusePage(startProblems);
+    let segmentStart = 0;
+    for (let index = 0; index < total; index++) {
+      stopIfAsked();
+      const problems = problemsOf(
+        await withTimeout(
+          page.evaluate(`window.__kitDriver.frame(${index})`),
+          FRAME_TIMEOUT_MS,
+          () => ctx.error("bad_input", `the frame page took more than a minute to draw frame ${index}`)
+        )
+      );
+      if (problems.length) refusePage(problems);
+      const file = path2.join(framesDir, frameName(index));
+      await page.screenshot({ path: file, type: "png" });
+      const png = await readFile2(file);
+      if (index === 0) {
+        const size = pngSize(png);
+        if (!size || size.width !== spec.output.width || size.height !== spec.output.height) {
+          throw ctx.error("tool_failed", `the browser drew ${size ? `${size.width}x${size.height}` : "no picture"}, not ${spec.output.width}x${spec.output.height}`);
+        }
+      }
+      frameHashes.push(createHash2("sha256").update(png).digest("hex"));
+      if (index + 1 - segmentStart === SEGMENT_FRAMES || index + 1 === total) {
+        await encodeSegment(segmentStart, index + 1 - segmentStart);
+        segmentStart = index + 1;
+      }
+      if ((index + 1) % spec.fps === 0 || index + 1 === total) ctx.progress({ done: index + 1, total });
+    }
+    await page.close();
+  } catch (error) {
+    if (ctx.signal.aborted) throw ctx.error("stopped");
+    throw error;
+  } finally {
+    await browser.close().catch(() => void 0);
+  }
+  stopIfAsked();
+  const list = path2.join(segmentsDir, "segments.txt");
+  await writeFile2(list, concatList(segments));
+  const name = "video.mp4";
+  const out = path2.join(ctx.workDir, name);
+  await mkdir2(ctx.workDir, { recursive: true });
+  await ctx.tools.exec("ffmpeg", concatArgs(list, out));
+  const seconds = total / spec.fps;
+  const info = await ctx.tools.probe(out);
+  const streams = await ctx.tools.exec("ffprobe", ["-v", "error", "-select_streams", "v:0", "-show_entries", "stream=pix_fmt,nb_frames", "-of", "json", out]);
+  const stream = JSON.parse(streams.stdout).streams?.[0];
+  const wrong = [];
+  if (!info.has_video || info.video_codec !== "h264") wrong.push(`codec ${info.video_codec ?? "none"}`);
+  if (info.width !== spec.output.width || info.height !== spec.output.height) wrong.push(`size ${info.width}x${info.height}`);
+  if (info.duration_s === void 0 || Math.abs(info.duration_s - seconds) > 1.5 / spec.fps + 0.01) wrong.push(`length ${info.duration_s}s`);
+  if (stream?.pix_fmt !== "yuv420p") wrong.push(`pixels ${stream?.pix_fmt ?? "unknown"}`);
+  if (stream?.nb_frames !== void 0 && Number(stream.nb_frames) !== total) wrong.push(`${stream.nb_frames} frames`);
+  if (wrong.length) throw ctx.error("output_invalid", `the encoded video is wrong: ${wrong.join(", ")}`);
+  const video = await ctx.file(name, "video");
+  ctx.log.info("frames rendered", { frames: total, seconds, width: spec.output.width, height: spec.output.height });
+  return { video, seconds, timeline: timelineOf(spec), frameHashes };
+}
+
+// src/kit/maker/parts/html-frames/src/part.ts
+var run = async (inputs, ctx) => {
+  const made = await makeVideo(inputs, ctx);
+  return { video: made.video, seconds: made.seconds, timeline: made.timeline };
+};
+export {
+  run
+};
