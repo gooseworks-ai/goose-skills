@@ -2,7 +2,7 @@
 name: render-imessage-chat
 description: Render a configurable iMessage conversation inside a properly framed phone, then a brand end card. Uses the original send/receive sounds and a shared frame timeline for text, typing, scrolling and sound. Free local Playwright + ffmpeg assembly; optional image/music generation belongs to separate gated capabilities.
 status: superseded
-version: 2.0.1
+version: "2.1.0"
 updated: 2026-10-06
 superseded_by: phone-chat@1.1.4
 ---
@@ -120,14 +120,21 @@ also supports even preview dimensions; the phone must fit with a margin.
   single bands in output pixels; omitted keys keep the defaults. `false` restores
   the old centred full-height phone exactly.
 - With `safe_area` on, the phone is the largest proportional size whose
-  conversation viewport sits inside the zone (an 8 px inset), centred unless that
-  is unsafe, then moved only as far as needed. At 1080×1920 that is zoom about
-  1.915 with the phone 16 px from the top. Every row is clipped to that viewport,
+  conversation viewport sits inside the zone (an 8 px inset) while the phone
+  stays in the middle of the canvas. At 1080×1920 that is zoom about 1.648 with
+  258 px above and below the phone. `phone_fit: "largest"` gives the biggest
+  safe phone instead (zoom about 1.97), which has to sit 16 px from the top with
+  a wide gap under it. Every row is clipped to that viewport,
   so the newest row is safe on every frame. The composer, home bar and group
   avatars may sit in the bands; typed text reappears as the newest row.
 - An explicit `zoom` is a ceiling while `safe_area` is on: kept when safe,
   otherwise lowered to the safe maximum with a log line (the recipe seed
-  `zoom: 2.1` becomes about 1.915). Set `safe_area:false` to keep it exactly.
+  `zoom: 2.1` becomes about 1.648). Set `safe_area:false` to keep it exactly.
+- The framed phone draws the home indicator, with the 34 px strip iOS keeps
+  under the composer for it.
+- `timing.tail_hold` (default 2 s) is how long the finished thread holds before
+  the end card. With the gap that follows the last message, the last line is on
+  screen about 2.7 s; at 1 s a nine-word punchline had 1.7 s.
 
 ## Original sound contract
 

@@ -6,7 +6,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'creator-h3',
-  version: '1.0.1',
+  version: '1.0.2',
   kind: 'generate_video',
   title: 'Talking creator (H3)',
   summary: 'An AI creator saying the approved lines to camera as one track: H3 takes split between lines, the first take\'s voice passed to the rest, joined with short dissolves.',

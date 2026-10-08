@@ -285,7 +285,7 @@ Quote each actual transition operation from current host pricing before approvin
 
 ### State 10 — Deliver
 
-1. Burn approved captions on the polished picture/mix as the final visual post-production step. Choose the real host caption capability or packaged local ASS path with verified libass/font support. The style comes from the current brand brief; no private house preset or stale price table is assumed.
+1. Burn approved captions on the polished picture/mix as the final visual post-production step. Choose the real host caption capability (caption-burn uses Pillow and FFmpeg overlay without libass), or the packaged local ASS path with verified libass/font support. Missing libass blocks only the ASS route; fetch the available caption specialist before declaring captions unavailable. The style comes from the current brand brief; no private house preset or stale price table is assumed.
 2. Check caption spelling, word timing, safe areas, suppressed cues on text-heavy scenes, and end-card/offer/logo collisions. Reposition or omit the overlapping approved cue explicitly.
 3. Extract each cue start+0.3s and transition frame, then watch the whole actual captioned cut with audio/transcript comparison. Probe final duration, dimensions, streams and codec. All shared QC and current clip coverage must pass.
 4. Build each required ratio/cutdown/language from editable sources, adapt its own caption layout/timing and burn once. Run separate final review at destination size on each actual output/checksum, including full ending, proof/CTA and complete playback/listening. Parent-master QC does not clear a derivative. Register real owned uploads and immutable evidence through the binding.

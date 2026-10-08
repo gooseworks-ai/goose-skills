@@ -128,6 +128,11 @@ has_music = music != "NONE"
 CUE_GAIN = 0.81
 SOFT_GAIN = 0.47
 MUSIC_GAIN = 0.26
+# The receive chime rings for 1.4 s against the send swoosh's 0.46 s, so at one
+# gain it is the louder of the two to the ear: 3.2 LU above the send in the mix
+# (loudest 400 ms: -7.3 against -10.5 LUFS). On a phone the two play at one
+# volume. This trim brings the receive level with the send.
+NAME_TRIM = {'receive': 0.69, 'send': 1.0}
 # Base: a silent stereo bed of the full length so amix always has an anchor.
 inputs = ["-f", "lavfi", "-t", str(total), "-i", "anullsrc=r=44100:cl=stereo"]
 filter_parts = []
@@ -146,7 +151,7 @@ for n, c in enumerate(cues):
     sfx_file = f"{sfx_dir}/imessage-{c['name']}.mp3"
     inputs += ["-i", sfx_file]
     delay = int(c['t'] * 1000)
-    vol = SOFT_GAIN if c.get('soft') else CUE_GAIN
+    vol = (SOFT_GAIN if c.get('soft') else CUE_GAIN) * NAME_TRIM[c['name']]
     # Strip only the leading silence. Audible onset follows the visible movie frame.
     cut = ''
     if n + 1 < len(cues):
