@@ -817,7 +817,7 @@
       "description": "Burned-in captions for a finished vertical video, three kinds. transcribe.py gets word timings from the video's own audio through the GooseWorks proxy (fal Whisper, bills the Ads agent, cents); captions.py burns one to three words at a time with Pillow + ffmpeg (no libass needed), either pinned to a split-screen seam (plate 25% above / 75% below) or at a fixed height, in a plate, outline or one-word serif style, with an optional red hook card; plates.py burns per-beat caption blocks (black, one union silhouette, placed in the emptiest band) for formats with no voice. The last caption (the CTA) holds to the final frame. Use as the last step of any video ad.",
       "tags": "ads, content",
       "path": "skills/ads/capabilities/caption-burn",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "files": [
         "skills/ads/capabilities/caption-burn/SKILL.md",
         "skills/ads/capabilities/caption-burn/scripts/_fonts.py",
@@ -833,7 +833,7 @@
         "slug": "caption-burn",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.0.1",
+        "version": "1.0.2",
         "tags": [
           "ads",
           "content"
@@ -1863,7 +1863,7 @@
       "description": "Generate an AI creator talking to camera, saying an approved script, as one continuous track — H3 Max reference-to-video through the GooseWorks fal-proxy (bills the Ads agent). Plans takes on line boundaries under H3's 15s cap, dry-runs a cost estimate, generates the first take alone so its voice can be locked and passed to every later take, joins takes with measured 0.10s dissolves, and moves each line's timing onto the words actually spoken. Use for any format with a generated creator speaking a script (split-screen, screen inserts, talking-head ads).",
       "tags": "ads, content",
       "path": "skills/ads/capabilities/create-creator-takes-h3",
-      "version": "2.0.1",
+      "version": "2.1.0",
       "files": [
         "skills/ads/capabilities/create-creator-takes-h3/SKILL.md",
         "skills/ads/capabilities/create-creator-takes-h3/scripts/align_beats.py",
@@ -1882,7 +1882,7 @@
         "slug": "create-creator-takes-h3",
         "category": "capabilities",
         "domain": "ads",
-        "version": "2.0.1",
+        "version": "2.1.0",
         "tags": [
           "ads",
           "content"
@@ -2003,7 +2003,7 @@
       "description": "Generate or edit an image via any FAL image model (nano-banana edit, gpt-image, flux, ...), ROUTED THROUGH THE fal-proxy so it bills the Ads agent. image_urls must be public URLs; --image puts a local file on the fal CDN first. The recipe names the model + prompt. Use for keyframes, flat-cover transforms, product hero edits. (For the OpenAI gpt-image family specifically, create-image-gpt-image-fal also exists.)",
       "tags": "ads",
       "path": "skills/ads/capabilities/create-image-fal",
-      "version": "1.2.0",
+      "version": "1.2.1",
       "files": [
         "skills/ads/capabilities/create-image-fal/SKILL.md",
         "skills/ads/capabilities/create-image-fal/references/avatar-generation.md",
@@ -2016,7 +2016,7 @@
         "slug": "create-image-fal",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.2.0",
+        "version": "1.2.1",
         "tags": [
           "ads"
         ],
@@ -2041,7 +2041,7 @@
       "description": "Generate a single photoreal or designed image with OpenAI gpt-image via fal.ai. Supports gpt-image-1 (default, fixed sizes — the FAL fallback for Higgsfield's `gpt_image_2`) and gpt-image-2 (`openai/gpt-image-2`, custom output sizes up to 3840px). Routes to text-to-image or the edit variant depending on whether a reference image is provided. Use for photoreal character anchors, scene keyframes, and designed sheets (e.g. storyboards) where precise layout and legible text matter.",
       "tags": "ads, design",
       "path": "skills/ads/capabilities/create-image-gpt-image-fal",
-      "version": "1.1.0",
+      "version": "1.1.1",
       "files": [
         "skills/ads/capabilities/create-image-gpt-image-fal/SKILL.md",
         "skills/ads/capabilities/create-image-gpt-image-fal/scripts/fal_helpers.py",
@@ -2058,7 +2058,7 @@
         "slug": "create-image-gpt-image-fal",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.1.0",
+        "version": "1.1.1",
         "tags": [
           "ads",
           "design"
@@ -2197,7 +2197,7 @@
       "description": "Generate an instrumental music bed via ElevenLabs Music, ROUTED THROUGH THE elevenlabs-proxy so it bills the Ads agent. Trims any sparse intro, loudnorm, fades the tail. Prompt + length from the template recipe. Use for the music layer of any video-ad format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/create-music-elevenlabs",
-      "version": "1.1.2",
+      "version": "1.1.3",
       "files": [
         "skills/ads/capabilities/create-music-elevenlabs/SKILL.md",
         "skills/ads/capabilities/create-music-elevenlabs/scripts/gen_music.py",
@@ -2209,7 +2209,7 @@
         "slug": "create-music-elevenlabs",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.1.2",
+        "version": "1.1.3",
         "tags": [
           "ads"
         ],
@@ -2234,7 +2234,7 @@
       "description": "Image-to-video (or text-to-video) via any FAL video model (Kling, Seedance, Veo), ROUTED THROUGH THE GooseWorks fal-proxy so the call bills the Ads agent. The template recipe names the model + params; image_url inputs must be public URLs (the orchestrator hosts local frames with the MCP media_upload). Returns the result video URL and downloads it. Use for the generative base clip of any video-ad format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/create-video-fal",
-      "version": "1.1.0",
+      "version": "1.1.1",
       "files": [
         "skills/ads/capabilities/create-video-fal/SKILL.md",
         "skills/ads/capabilities/create-video-fal/scripts/gen_video.py",
@@ -2246,7 +2246,7 @@
         "slug": "create-video-fal",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.1.0",
+        "version": "1.1.1",
         "tags": [
           "ads"
         ],
@@ -2266,7 +2266,7 @@
     {
       "slug": "create-video-seedance-2-fal",
       "name": "create-video-seedance-2-fal",
-      "version": "2.0.2",
+      "version": "2.0.3",
       "category": "capabilities",
       "domain": "ads",
       "description": "Generate a single 4-15s vertical video clip with ByteDance Seedance 2.0 reference-to-video via fal.ai. Multi-image reference (avatar + product + setting), native lip-synced VO + ambient audio (generate-audio on by default), internal multi-cut handling within one render. Routes through the GooseWorks FAL proxy (bills the Ads agent). The default clip atom for AI-creator UGC ads built on the NB2 + Seedance architecture. Validated on beauty-by-earth/video-01.",
@@ -2288,7 +2288,7 @@
         "slug": "create-video-seedance-2-fal",
         "category": "capabilities",
         "pack": "ugc-video-formats",
-        "version": "2.0.2",
+        "version": "2.0.3",
         "tags": [
           "ads"
         ],
@@ -2310,7 +2310,7 @@
       "description": "Generate a voiceover (VO) clip via ElevenLabs text-to-speech, ROUTED THROUGH THE elevenlabs-proxy so it bills the Ads agent. Voice id + script text come from the template recipe. Use for the spoken narration of VO-driven video-ad formats (cgi-app-sizzle, flat-vector-explainer, hypermotion). Never call ElevenLabs directly — the proxy attribution is required.",
       "tags": "ads",
       "path": "skills/ads/capabilities/create-vo-elevenlabs",
-      "version": "1.1.2",
+      "version": "1.1.3",
       "files": [
         "skills/ads/capabilities/create-vo-elevenlabs/SKILL.md",
         "skills/ads/capabilities/create-vo-elevenlabs/scripts/gen_vo.py",
@@ -2325,7 +2325,7 @@
         "slug": "create-vo-elevenlabs",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.1.2",
+        "version": "1.1.3",
         "tags": [
           "ads"
         ],
@@ -3081,7 +3081,7 @@
       "description": "Watch a brand's own product footage (screen recording, product film), pick the moment that proves each line with the user, and render those picks as a product layer — free, local. survey.py turns footage into timestamped contact sheets + scene cuts + motion so the agent can actually look at it; the agent writes a cut list (beat → source window + framing); preview.py draws it as a review sheet the user corrects round by round; cut.py renders the approved list into a silent 1080x1920 layer with the creator's area left as a plate. Also frames footage as a filmed screen (keystone, bezel, handheld drift) with dissolves between beats, and takes still screenshots as sources. Use for any format that shows real product footage beside, between or instead of a creator (split-screen, screen inserts, walkthroughs).",
       "tags": "ads, content",
       "path": "skills/ads/capabilities/footage-cutlist",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "files": [
         "skills/ads/capabilities/footage-cutlist/SKILL.md",
         "skills/ads/capabilities/footage-cutlist/scripts/_common.py",
@@ -3098,7 +3098,7 @@
         "slug": "footage-cutlist",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "tags": [
           "ads",
           "content"
@@ -6118,7 +6118,7 @@
       "description": "Assemble an Apple Notes list video ad from a note + end-card JSON — a frame-accurate fake iPhone screen recording of a short list being typed into Apple Notes (character by character, key pops, blinking caret, the note scrolling up as it fills) crossfaded into a checklist end card (the note's picks as ticked rows, real product photos, logo, CTA, in the brand's colours and fonts), with an optional music bed. FREE assembly (Playwright + ffmpeg); the recipe supplies the per-brand note + end card and gates the paid music call to its own capability. The Apple Notes sibling of render-imessage-chat and render-chatgpt-chat. Use for the apple-notes format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-apple-notes-chat",
-      "version": "1.0.1",
+      "version": "1.1.0",
       "files": [
         "skills/ads/capabilities/render-apple-notes-chat/SKILL.md",
         "skills/ads/capabilities/render-apple-notes-chat/scripts/config.example.json",
@@ -6138,7 +6138,7 @@
         "slug": "render-apple-notes-chat",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.0.1",
+        "version": "1.1.0",
         "tags": [
           "ads"
         ],
@@ -6796,7 +6796,7 @@
       "description": "Render a configurable iMessage conversation inside a properly framed phone, then a brand end card. Uses the original send/receive sounds and a shared frame timeline for text, typing, scrolling and sound. Free local Playwright + ffmpeg assembly; optional image/music generation belongs to separate gated capabilities.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-imessage-chat",
-      "version": "2.0.1",
+      "version": "2.1.0",
       "files": [
         "skills/ads/capabilities/render-imessage-chat/SKILL.md",
         "skills/ads/capabilities/render-imessage-chat/assets/sfx/imessage-receive.mp3",
@@ -6827,7 +6827,7 @@
         "slug": "render-imessage-chat",
         "category": "capabilities",
         "domain": "ads",
-        "version": "2.0.1",
+        "version": "2.1.0",
         "tags": [
           "ads"
         ],
@@ -7489,7 +7489,7 @@
       "description": "Write a street-interview ad from a complete inspected commercial interaction and current brand facts. Render product guessing, or prepare mic-only, prepared-sample or visible-task conversation script/prompt previews. Premise, actions and ad connection vary; capture rules stay fixed. Conversation media delivery is unverified.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-street-interview",
-      "version": "2.0.1",
+      "version": "2.0.2",
       "files": [
         "skills/ads/capabilities/render-street-interview/READINESS.md",
         "skills/ads/capabilities/render-street-interview/REFERENCE.md",
@@ -7571,7 +7571,7 @@
         "slug": "render-street-interview",
         "category": "capabilities",
         "domain": "ads",
-        "version": "2.0.1",
+        "version": "2.0.2",
         "tags": [
           "ads"
         ],
@@ -7732,7 +7732,7 @@
       "description": "Assemble a whiteboard explainer video ad from a beats file — a narrator explains one idea while a real whiteboard fills up in black marker, with a hand-lettered title, bulleted rows down the left, a drawing filling the right, and a payoff that letters the closing line and rings the claim. The board is a PHOTOGRAPH and the ink is multiplied onto it, so the surface sheen and window light come through the strokes; the drawings are generated as line art and traced to ordered strokes, then revealed in drawing order on the word they belong to. The layout is SOLVED from the beats, never hand-placed. FREE assembly (Pillow plus ffmpeg) apart from one board photo and one drawing per subject, both one-time per brand. Use for the whiteboard format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-whiteboard-explainer",
-      "version": "1.0.1",
+      "version": "1.1.0",
       "files": [
         "skills/ads/capabilities/render-whiteboard-explainer/SKILL.md",
         "skills/ads/capabilities/render-whiteboard-explainer/assets/fonts/NOTICE.md",
@@ -7758,7 +7758,7 @@
         "slug": "render-whiteboard-explainer",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.0.1",
+        "version": "1.1.0",
         "tags": [
           "ads"
         ],
@@ -7815,7 +7815,7 @@
       "description": "Final QC gate for a rendered 9:16 video ad, run before it is published. One script checks what a machine can decide — exact 1080x1920 size, a hook that moves and speaks in the first second, no frozen stretches, no dead air, no black frames, the brand's real logo on the end card (never a favicon, never a redrawn or wrong logo), end-card colours near the brand palette — and builds one contact sheet (frames with the TikTok/Reels UI safe zones shaded, beside the logo, product images and a font specimen) for the checks that need eyes — font, product likeness, product consistency across scenes, safe zones. A declared silent-text profile covers silent, text-led formats such as kinetic text (no audio track needed, short blank beats between text beats allowed within fixed bounds). Exit 0 PASS / 2 FAIL / 3 ERROR. Use on every finished video master before pinning it.",
       "tags": "ads, brand",
       "path": "skills/ads/capabilities/review-finished-ad",
-      "version": "1.0.1",
+      "version": "1.1.0",
       "files": [
         "skills/ads/capabilities/review-finished-ad/SKILL.md",
         "skills/ads/capabilities/review-finished-ad/scripts/review_finished_ad.py",
@@ -7829,7 +7829,7 @@
         "slug": "review-finished-ad",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.0.1",
+        "version": "1.1.0",
         "tags": [
           "ads",
           "brand"
@@ -7936,7 +7936,7 @@
     {
       "slug": "review-ugc-render",
       "name": "review-ugc-render",
-      "version": "2.0.1",
+      "version": "2.0.2",
       "category": "capabilities",
       "domain": "ads",
       "description": "Mandatory pre-publish review gate for a UGC video render. Transcribes the finished render's AUDIO with Whisper and word-diffs it against the approved spoken script, then gates pinning the final render (video_project_upsert patch.final_render_id) — blocking a render whose generated audio mis-voices a word (e.g. the approved \"human-vetted\" spoken as \"human witted\"), says a different number or brand name, flips a negation, drops an approved phrase, or comes back silent. Correct speech written differently (\"5mg\" said \"five milligrams\", \"30%\" said \"thirty percent\", a spoken URL, \"don't\" said \"do not\", \"braxleybands\" said \"braxley bands\", a confirmed pronunciation like \"AG1\" said \"A G one\") passes. Runnable, gating counterpart to content-goose's review-transcript-integrity atom. Every ugc-video-formats recipe runs this after render and BEFORE pinning the final render.",
@@ -7952,7 +7952,7 @@
         "slug": "review-ugc-render",
         "category": "capabilities",
         "pack": "ugc-video-formats",
-        "version": "2.0.1",
+        "version": "2.0.2",
         "tags": [
           "ads"
         ],
@@ -10253,7 +10253,7 @@
           "name": "create-video-seedance-2-fal",
           "description": "Generate a single 4-15s vertical video clip with ByteDance Seedance 2.0 reference-to-video via fal.ai. Multi-image reference (avatar + product + setting), native lip-synced VO + ambient audio (generate-audio on by default), internal multi-cut handling within one render. Routes through the GooseWorks FAL proxy (bills the Ads agent). The default clip atom for AI-creator UGC ads built on the NB2 + Seedance architecture. Validated on beauty-by-earth/video-01.",
           "path": "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal",
-          "version": "2.0.2",
+          "version": "2.0.3",
           "files": [
             "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/SKILL.md",
             "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/scripts/generate.py",
@@ -10273,7 +10273,7 @@
           "name": "review-ugc-render",
           "description": "Mandatory pre-publish review gate for a UGC video render. Transcribes the finished render's AUDIO with Whisper and word-diffs it against the approved spoken script, then gates pinning the final render (video_project_upsert patch.final_render_id) — blocking a render whose generated audio mis-voices a word (e.g. the approved \"human-vetted\" spoken as \"human witted\"), says a different number or brand name, flips a negation, drops an approved phrase, or comes back silent. Correct speech written differently (\"5mg\" said \"five milligrams\", \"30%\" said \"thirty percent\", a spoken URL, \"don't\" said \"do not\", \"braxleybands\" said \"braxley bands\", a confirmed pronunciation like \"AG1\" said \"A G one\") passes. Runnable, gating counterpart to content-goose's review-transcript-integrity atom. Every ugc-video-formats recipe runs this after render and BEFORE pinning the final render.",
           "path": "skills/ads/packs/ugc-video-formats/review-ugc-render",
-          "version": "2.0.1",
+          "version": "2.0.2",
           "files": [
             "skills/ads/packs/ugc-video-formats/review-ugc-render/SKILL.md",
             "skills/ads/packs/ugc-video-formats/review-ugc-render/scripts/review_render.py",
