@@ -174,5 +174,6 @@
   "determinism": "pure",
   "timing": { "typical_s": 90, "timeout_s": 1200 },
   "retry": { "transient": 1 },
-  "replaces": ["render-html-frames", "render-search-grid", "render-photo-grid-card", "render-logo-equation-card", "create-kinetic-typography"]
+  "replaces": ["render-html-frames", "render-search-grid", "render-photo-grid-card", "render-logo-equation-card", "create-kinetic-typography"],
+  "x-determinism-scope": "pure within one render environment: the same inputs give the same bytes on the same operating system, Chromium build and fonts. The kit's toolchain id carries the browser's render fingerprint (version, platform and a hash of a probe page drawn with the system's fonts), so a cached step is never reused on a computer that would draw it differently."
 }
