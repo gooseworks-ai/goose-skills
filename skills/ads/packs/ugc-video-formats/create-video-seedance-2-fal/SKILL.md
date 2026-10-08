@@ -3,7 +3,7 @@ name: create-video-seedance-2-fal
 description: Generate a single 4-15s vertical video clip with ByteDance Seedance 2.0 reference-to-video via fal.ai. Multi-image reference (avatar + product + setting), native lip-synced VO + ambient audio (generate-audio on by default), internal multi-cut handling within one render. Routes through the GooseWorks FAL proxy (bills the Ads agent). The default clip atom for AI-creator UGC ads built on the NB2 + Seedance architecture. Validated on beauty-by-earth/video-01.
 owner: team
 status: superseded
-version: "2.0.1"
+version: "2.0.2"
 created: 2026-05-26
 updated: 2026-10-06
 superseded_by: video-seedance-2@1.0.1
