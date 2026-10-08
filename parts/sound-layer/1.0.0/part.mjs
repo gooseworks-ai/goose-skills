@@ -305,7 +305,8 @@ async function kitDuration(ctx, file) {
 // target for every video). Two-pass loudnorm in linear mode from a measured
 // first pass, then an EBU R128 check of the result; one gain-and-limit
 // correction if the first try lands outside the tolerance, else the step
-// fails rather than hand on a cut the server's check would refuse.
+// fails rather than hand on a cut the server's check would refuse. A silent
+// cut has nothing to level and passes through untouched.
 
 const TARGET_LUFS = -14;
 const TOLERANCE_LU = 1;
@@ -349,10 +350,11 @@ async function encode(ctx, video, filter, out) {
 export async function run(inputs, ctx) {
   const manifest = await kitCheckInputs(ctx, inputs);
   const info = await ctx.tools.probe(inputs.video.path);
-  if (!info.has_audio) throw ctx.error('bad_input', 'the cut has no sound to level');
-  const first = await kitLoudness(ctx, inputs.video.path);
+  const first = info.has_audio ? await kitLoudness(ctx, inputs.video.path) : { lufs: null };
   if (first.lufs === null || !Number.isFinite(first.lufs) || first.lufs <= -70) {
-    throw ctx.error('bad_input', 'the cut is silent; there is no sound to level');
+    // A silent cut (no music chosen, no voice) has nothing to level: it passes through untouched.
+    ctx.log.info('sound layer passes a silent cut through', { has_audio: info.has_audio });
+    return kitCheckOutputs(ctx, manifest, { video: inputs.video, timeline: inputs.timeline });
   }
   // Pass 1: measure for loudnorm. A target range at least the input's keeps it linear (a pure gain).
   const { stderr } = await kitFfmpeg(ctx, ['-i', inputs.video.path, '-map', '0:a:0', '-af', `loudnorm=I=${TARGET_LUFS}:TP=${TARGET_TP}:LRA=11:print_format=json`, '-f', 'null', '-']);

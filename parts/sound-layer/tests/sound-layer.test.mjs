@@ -32,9 +32,15 @@ for (const [name, volume] of [['a quiet', 0.02], ['a loud', 1.0]]) {
   });
 }
 
-test('refuses a cut with no sound to level', { skip }, async () => {
+test('a silent cut, or one with no sound track, passes through untouched', { skip }, async () => {
   const { ctx } = makeCtx({ partDir: dir });
-  const mp4 = join(ctx.workDir, 'mute.mp4');
-  await run('ffmpeg', ['-hide_banner', '-nostdin', '-y', '-f', 'lavfi', '-i', 'testsrc2=size=360x640:rate=30:duration=2', '-c:v', 'libx264', '-preset', 'ultrafast', '-pix_fmt', 'yuv420p', mp4]);
-  await assert.rejects(mod.run(await layerInputsFor(await fileRef(mp4, 'video')), ctx), (e) => e.code === 'bad_input');
+  const mute = join(ctx.workDir, 'mute.mp4');
+  await run('ffmpeg', ['-hide_banner', '-nostdin', '-y', '-f', 'lavfi', '-i', 'testsrc2=size=360x640:rate=30:duration=2', '-c:v', 'libx264', '-preset', 'ultrafast', '-pix_fmt', 'yuv420p', mute]);
+  const silent = join(ctx.workDir, 'silent.mp4');
+  await run('ffmpeg', ['-hide_banner', '-nostdin', '-y', '-i', mute, '-f', 'lavfi', '-t', '2', '-i', 'anullsrc=channel_layout=stereo:sample_rate=48000', '-c:v', 'copy', '-c:a', 'aac', '-shortest', silent]);
+  for (const path of [mute, silent]) {
+    const video = await fileRef(path, 'video');
+    const out = await mod.run(await layerInputsFor(video), ctx);
+    assert.equal(out.video, video, `${path} is handed on as it is`);
+  }
 });

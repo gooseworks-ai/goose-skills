@@ -8,7 +8,8 @@ The sound layer (slot 3 of 4): levels every finished cut to **-14 LUFS integrate
 - The result is measured with ffmpeg's EBU R128 meter (`ebur128=peak=true`). Outside -14 +/-1 LUFS or above
   -0.8 dBTP, one correction pass applies the missing gain through an oversampled limiter; still outside, the
   step fails (`output_invalid`) instead of handing on a cut the server's check (-14 +/-2) would refuse.
-- A cut with no sound, or only silence, is refused (`bad_input`): a style with the sound layer on must make sound.
+- A cut with no sound track, or only silence (a style whose music is optional, with none chosen), has nothing
+  to level and passes through untouched.
 - Layer inputs and outputs are the fixed ones (`video`, `timeline`, `brand`, `expect`, `words` in; `video`,
   `timeline` out); the timeline passes through unchanged.
 
