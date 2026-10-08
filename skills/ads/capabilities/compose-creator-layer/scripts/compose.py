@@ -3,7 +3,8 @@
 frame on creator beats, hidden on product beats. The creator's voice is the audio. Free.
 
     compose.py --layer layer.mp4 --beats cutlist.aligned.json --creator creator.mp4 \
-        --out reel.mp4 [--music bed.mp3 --music-db -20] [--head 0.30]
+        --out reel.mp4 [--music bed.mp3 --music-db -20] [--head 0.30] \
+        [--zoom 1.15] [--divider '#3366FF' --divider-px 4]
 
 --layer is footage-cutlist cut.py output, rendered from the SAME (aligned) cut list as
 --beats, so the two timelines agree. --creator is create-creator-takes-h3 join_takes.py
@@ -13,6 +14,10 @@ The creator is scaled to COVER each area and cropped, with the head kept near th
 third (--head is where the crop sits vertically: 0 = keep the top, 0.5 = centre). The crop
 is computed from the take's real size; a hard-coded input height once cropped the top half
 of an upscaled take and blew it up.
+
+Split screen (the split-screen creator look): --zoom pushes in on the creator inside their
+zone so a webcam-distance take reads head-to-shoulders (1.15 to 1.2; tune by eye, it is a free
+re-run), and --divider draws a brand-colour bar across the seam on split beats only.
 
 NO GRADE. Matching the take's saturation or warmth to a number was tried twice on the
 reference build and both looked wrong; the take goes in as generated.
@@ -30,6 +35,7 @@ its own `creator` beats.
 import argparse
 import json
 import pathlib
+import re
 import subprocess
 
 
@@ -41,9 +47,21 @@ def zone(spec):
     return 0, seam
 
 
-def cover(label, out, w, h, head):
+def even(n):
+    return max(2, int(round(n / 2.0)) * 2)
+
+
+def cover(label, out, w, h, head, zoom=1.0):
+    """Scale to cover a w x h area (times zoom, to push in) and crop it, the crop's top at head."""
+    sw, sh = even(w * zoom), even(h * zoom)
     return ("%s scale=%d:%d:force_original_aspect_ratio=increase:flags=lanczos,"
-            "crop=%d:%d:(iw-%d)/2:(ih-%d)*%.3f,setsar=1%s" % (label, w, h, w, h, w, h, head, out))
+            "crop=%d:%d:(iw-%d)/2:(ih-%d)*%.3f,setsar=1%s" % (label, sw, sh, w, h, w, h, head, out))
+
+
+def divider(seam, px, color, wins):
+    """A colour bar centred on the seam, drawn only while the split beats show."""
+    return "drawbox=x=0:y=%d:w=iw:h=%d:color=%s@1:t=fill:enable='%s'" % (
+        seam - px // 2, px, color, enable(wins))
 
 
 def windows(beats, state):
@@ -64,7 +82,17 @@ def main():
     ap.add_argument("--music-db", type=float, default=-20.0)
     ap.add_argument("--head", type=float, default=0.30)
     ap.add_argument("--audio", choices=["creator", "music", "none"], default="creator")
+    ap.add_argument("--zoom", type=float, default=1.0,
+                    help="push in on the creator inside the split zone (1.0 = cover only)")
+    ap.add_argument("--divider", help="brand colour of the seam bar on split beats, #RRGGBB")
+    ap.add_argument("--divider-px", type=int, default=4, help="seam bar height in px (even)")
     a = ap.parse_args()
+    if not 1.0 <= a.zoom <= 2.0:
+        raise SystemExit("--zoom must be between 1.0 and 2.0")
+    if a.divider is not None and not re.fullmatch(r"#[0-9A-Fa-f]{6}", a.divider):
+        raise SystemExit("--divider must be a #RRGGBB colour")
+    if a.divider_px < 2 or a.divider_px % 2:
+        raise SystemExit("--divider-px must be an even number of pixels, 2 or more")
     spec = json.loads(pathlib.Path(a.beats).read_text(encoding="utf-8"))
     lj = pathlib.Path(a.layer).with_suffix(".json")
     if lj.exists() and json.loads(lj.read_text()).get("draft"):
@@ -75,11 +103,13 @@ def main():
     zy, zh = zone(spec)
     split_w, full_w = windows(spec["beats"], "split"), windows(spec["beats"], "creator")
     fc = ["[1:v]trim=0:%.3f,setpts=PTS-STARTPTS,fps=%d,split=2[ca][cb]" % (total, fps),
-          cover("[ca]", "[cz]", W, zh, a.head),
+          cover("[ca]", "[cz]", W, zh, a.head, a.zoom),
           cover("[cb]", "[cf]", W, H, a.head),
           "[0:v]trim=0:%.3f,setpts=PTS-STARTPTS,setsar=1[bg]" % total,
           "[bg][cz]overlay=0:%d:enable='%s'[v1]" % (zy, enable(split_w)),
-          "[v1][cf]overlay=0:0:enable='%s',format=yuv420p[v]" % enable(full_w),
+          "[v1][cf]overlay=0:0:enable='%s'%s,format=yuv420p[v]" % (
+              enable(full_w),
+              "," + divider(spec.get("seam") or H // 2, a.divider_px, a.divider, split_w) if a.divider else ""),
           ]
     inputs = ["-i", a.layer, "-i", a.creator]
     amap = ["-map", "[a]"]

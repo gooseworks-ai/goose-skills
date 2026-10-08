@@ -123,6 +123,7 @@ jobs:
           skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests
           skills/ads/capabilities/render-street-interview/tests/test_single_gen_rejection.py
           skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests
+          skills/ads/capabilities/compose-creator-layer/tests
 
   deploy-catalog:
     # Ships only after every check passes, and only from dev or main.

@@ -1487,21 +1487,22 @@
       "name": "compose-creator-layer",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Composite a generated creator track into a product layer, per beat — in the creator's zone on split beats (either side of a seam), full frame on creator beats, hidden on product beats — with the creator's voice as the audio (loudness -14 LUFS) and an optional ducked music bed, or a music-only or silent master for voiceless formats. Free, local ffmpeg. Pairs with footage-cutlist (the layer) and create-creator-takes-h3 (the creator). Use for split-screen, screen-insert and any creator-over-product format.",
+      "description": "Composite a generated creator track into a product layer, per beat — in the creator's zone on split beats (either side of a seam), full frame on creator beats, hidden on product beats — with the creator's voice as the audio (loudness -14 LUFS) and an optional ducked music bed, or a music-only or silent master for voiceless formats. Free, local ffmpeg. Pairs with footage-cutlist (the layer) and create-creator-takes-h3 (the creator). Use for split-screen (with an optional zoom and brand-colour seam bar), screen-insert and any creator-over-product format.",
       "tags": "ads, content",
       "path": "skills/ads/capabilities/compose-creator-layer",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "files": [
         "skills/ads/capabilities/compose-creator-layer/SKILL.md",
         "skills/ads/capabilities/compose-creator-layer/scripts/compose.py",
         "skills/ads/capabilities/compose-creator-layer/skill.meta.json",
-        "skills/ads/capabilities/compose-creator-layer/tests/smoke-test.md"
+        "skills/ads/capabilities/compose-creator-layer/tests/smoke-test.md",
+        "skills/ads/capabilities/compose-creator-layer/tests/test_compose_split.py"
       ],
       "metadata": {
         "slug": "compose-creator-layer",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.0.0",
+        "version": "1.1.0",
         "tags": [
           "ads",
           "content"
