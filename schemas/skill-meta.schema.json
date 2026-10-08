@@ -45,6 +45,21 @@
       "type": "array",
       "items": { "type": "string" },
       "uniqueItems": true
+    },
+    "lint_allow": {
+      "description": "Atom lint findings that are creative content, not instructions (scripts/atom-lint.js).",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["rule", "match", "reason"],
+        "properties": {
+          "rule": { "type": "string", "minLength": 1 },
+          "match": { "type": "string", "minLength": 1 },
+          "file": { "type": "string", "minLength": 1 },
+          "reason": { "type": "string", "minLength": 1 }
+        },
+        "additionalProperties": false
+      }
     }
   },
   "additionalProperties": true
