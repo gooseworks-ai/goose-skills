@@ -1728,13 +1728,12 @@ export async function run(inputs, ctx) {
   else if (held) add('frozen_frames', 'fail', { message: `The picture is frozen from ${held[0].toFixed(1)} to ${held[1].toFixed(1)} seconds.`, expected: `no held picture over ${HELD_PICTURE_MAX_S} s before the end card`, found: +(Math.min(held[1], bodyEnd) - held[0]).toFixed(2) });
   else add('frozen_frames', 'pass');
 
-  if (!expect.end_card) add('end_card', 'not_applicable');
-  else {
-    const card = timeline.end_card;
-    const ok = card && card.end_s - card.start_s >= 0.5 && Math.abs(card.end_s - d) <= 0.2;
-    if (ok) add('end_card', 'pass');
-    else add('end_card', 'fail', { message: 'The video does not end on the brand end card.', expected: 'an end card of at least 0.5 s at the end', found: card ? `${card.start_s}-${card.end_s} s` : 'none', fix: { slot: 'brand' } });
-  }
+  // The brand layer and the end-card and phone-chat parts mark the card they add; a frame page that
+  // draws its own ending does not, and then there is nothing to measure here.
+  const card = timeline.end_card;
+  if (!expect.end_card || !card) add('end_card', 'not_applicable', card ? undefined : { found: expect.end_card ? 'not marked by any step' : undefined });
+  else if (card.end_s - card.start_s >= 0.5 && Math.abs(card.end_s - d) <= 0.2) add('end_card', 'pass');
+  else add('end_card', 'fail', { message: 'The video does not end on the brand end card.', expected: 'an end card of at least 0.5 s at the end', found: `${card.start_s}-${card.end_s} s`, fix: { slot: 'brand' } });
 
   const script = (expect.script || []).map((s) => String(s).trim()).filter(Boolean);
   if (!script.length || expect.speech === 'none') add('speech_matches_script', 'not_applicable');

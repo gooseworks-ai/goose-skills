@@ -47,15 +47,17 @@ test("fails the server's checks with the server's reasons shape and a fix for th
   assert.deepEqual(out.verdict.checks.find((c) => c.code === 'sound').fix, { slot: 'sound' });
 });
 
-test('catches black frames, a still opening and a missing end card', { skip }, async () => {
+test('catches black frames, a still opening and an end card that does not end the video', { skip }, async () => {
   const { ctx } = makeCtx({ partDir: dir });
   const video = await levelledCut(ctx.workDir, 'black', 4, { pattern: 'color=c=black' });
-  const out = await mod.run(await layerInputsFor(video, { expect: { end_card: true } }), ctx);
+  const out = await mod.run(await layerInputsFor(video, { expect: { end_card: true }, timeline: { end_card: { start_s: 1, end_s: 2 } } }), ctx);
   const s = status(out);
   assert.equal(s.black_frames, 'fail');
   assert.equal(s.frozen_frames, 'fail');
   assert.equal(s.end_card, 'fail');
   assert.deepEqual(out.verdict.checks.find((c) => c.code === 'end_card').fix, { slot: 'brand' });
+  const unmarked = await mod.run(await layerInputsFor(video, { expect: { end_card: true } }), ctx);
+  assert.equal(status(unmarked).end_card, 'not_applicable', 'a card a frame page draws itself is not marked, so not measured');
 });
 
 test('on-camera speech is transcribed and a changed number fails against the script', { skip }, async () => {

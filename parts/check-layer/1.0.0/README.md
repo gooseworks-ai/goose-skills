@@ -15,7 +15,7 @@ for every video, from review-finished-ad and review-ugc-render.
 
 **Local checks**: `black_frames` (a black stretch over 0.3 s), `frozen_frames` (an opening still over 1.5 s,
 or a held picture over 4 s before the end card; review-finished-ad's 2.5 s would fail a phone chat's 3.6 s
-picture hold), `end_card` (when the style ends on one: at least 0.5 s, at the end), `speech_matches_script`
+picture hold), `end_card` (when the style ends on one and a step marked it in the timeline: at least 0.5 s, at the end; a card a frame page draws itself is not marked and not measured), `speech_matches_script`
 (`expect.script` against what is said: a voiceover's spoken lines from the timeline; on-camera speech
 transcribed with fal Whisper as one paid piece; the review-ugc-render rules: numbers, units, negations and
 brand names must match, confirmed pronunciations are aliases, similarity at least 0.90).
