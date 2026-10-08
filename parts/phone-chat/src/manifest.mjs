@@ -3,7 +3,7 @@ import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { file, timeline } from '../../_tools/schemas.mjs';
 
-const VERSION = '1.1.1';
+const VERSION = '1.1.2';
 const folder = join(dirname(fileURLToPath(import.meta.url)), '..', VERSION);
 const walk = (dir) => readdirSync(dir).flatMap((n) => (statSync(join(dir, n)).isDirectory() ? walk(join(dir, n)) : [relative(folder, join(dir, n))]));
 const files = walk(folder).filter((f) => f !== 'part.json' && !f.endsWith('.DS_Store')).sort();
@@ -77,7 +77,7 @@ export const manifest = {
       },
       aspect: { description: 'Default 9:16. The screen is drawn at 1080 on the short side.', enum: ['9:16', '1:1', '4:5', '16:9'] },
       fonts: {
-        description: 'Optional: the UI face (default the bundled Inter) and an emoji face (TTF, OTF or WOFF). A character no font draws is refused.',
+        description: 'Optional: the UI face (default the bundled Inter) and an emoji face (TTF, OTF or WOFF; default the bundled Noto Color Emoji). A character no font draws is refused.',
         type: 'object',
         additionalProperties: false,
         properties: { text: file('font'), emoji: file('font') },

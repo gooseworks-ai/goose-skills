@@ -153,15 +153,17 @@ export async function run(inputs, ctx) {
   for (const img of plan.images) images[img.key] = await dataUri(img.file);
   const fonts = inputs.fonts || {};
   const text = fonts.text || { path: join(ctx.part.dir, 'assets', 'fonts', 'InterVariable.ttf'), mime: 'font/ttf' };
+  // Emoji come from the style's emoji font, else the bundled Noto Color Emoji (SIL Open Font License).
+  const emoji = fonts.emoji || { path: join(ctx.part.dir, 'assets', 'fonts', 'NotoColorEmoji.ttf'), mime: 'font/ttf' };
   let fontCss = `@font-face{font-family:KitText;src:url(${await dataUri(text, 'font/ttf')}) format('${fontFormat(text.path)}');font-weight:100 900;font-display:block;}`;
-  if (fonts.emoji) fontCss += `@font-face{font-family:KitEmoji;src:url(${await dataUri(fonts.emoji, 'font/ttf')}) format('${fontFormat(fonts.emoji.path)}');font-display:block;}`;
+  fontCss += `@font-face{font-family:KitEmoji;src:url(${await dataUri(emoji, 'font/ttf')}) format('${fontFormat(emoji.path)}');font-display:block;}`;
   // Every character the plan puts on screen must be drawn by the bundled or given fonts: a missing
   // glyph would fall back to whatever font the computer has, and the video would differ between computers.
   let textCoverage;
   let emojiCoverage = [];
   try {
     textCoverage = [pcFontCoverage(await readFile(text.path))];
-    if (fonts.emoji) emojiCoverage = [pcFontCoverage(await readFile(fonts.emoji.path))];
+    emojiCoverage = [pcFontCoverage(await readFile(emoji.path))];
   } catch (e) {
     throw ctx.error('bad_input', e.message);
   }

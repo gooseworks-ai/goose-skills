@@ -1,5 +1,9 @@
 # phone-chat
 
+## 1.1.2
+
+- Emoji draw by default with the bundled Noto Color Emoji 2.047 (SIL Open Font License); `fonts.emoji` still overrides it.
+
 ## 1.1.1
 
 - Crossfades in whole frames (under one frame is a straight cut, so the end card is never dropped); a typing rate of zero and any endless chat are refused; scenes start at their first reveal; the Notes emoji key is drawn as an SVG.
