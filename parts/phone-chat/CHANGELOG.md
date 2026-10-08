@@ -1,5 +1,9 @@
 # phone-chat
 
+## 1.1.4
+
+- Inter's SIL Open Font License now ships beside it (`assets/fonts/InterVariable-OFL.txt`). Same code as 1.1.3.
+
 ## 1.1.3
 
 - A crossfade asked for under one frame is a straight cut instead of rounding up to a frame.
