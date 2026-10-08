@@ -14,5 +14,12 @@
       "codex"
     ]
   },
-  "requires_skills": []
+  "requires_skills": [],
+  "lint_allow": [
+    {
+      "rule": "author.size_limits",
+      "match": "limit 16384",
+      "reason": "Superseded by the video-seedance-2 part and kept for skills outside the kit; the one-paragraph pointer adds to an over-limit file that predates the limit."
+    }
+  ]
 }
