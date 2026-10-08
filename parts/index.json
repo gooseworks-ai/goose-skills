@@ -416,7 +416,7 @@
       "path": "parts/html-frames/1.0.0",
       "files": {
         "part.json": "1c0021327e64633f658e4c3f557a8b544959ed0ac630adc98528f177da390215",
-        "part.mjs": "9ff03e0eca5aba4f7b60d4b947b86e82f8f6e11f383727a8e2947dca0eb31167"
+        "part.mjs": "58d5478d51feeb1a178d70f3576d0529d181e2f6bb95941d817be7f53e4707e0"
       },
       "models": []
     },
@@ -746,6 +746,49 @@
         "part.mjs": "ffc57b33b30026ffde3d3935f1680e9fb401bb1e5a970e304651ce8046b45a41"
       },
       "models": []
+    },
+    {
+      "id": "transcribe-whisper",
+      "version": "1.0.0",
+      "interface": 1,
+      "kind": "caption",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "encoders": [
+            "aac"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "fal-ai/whisper"
+          }
+        ],
+        "disk_mb": 50
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "call",
+        "rates_usd": {
+          "fal-ai/whisper": 0.02
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/transcribe-whisper/1.0.0",
+      "files": {
+        "README.md": "471540fd7fd3a3cb0fdcf50590287057441afc648c65797035828126942897a5",
+        "part.json": "9181aa82dbe9e0dc55ab5cfc8b0f79863aa6f64c32323f2819ab502318dff1bc",
+        "part.mjs": "f961b9769607a08f4fc4fe59acb596d24ac3d163ff8d7edb05bd2afd8be05b19"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "fal-ai/whisper"
+        }
+      ]
     },
     {
       "id": "video-seedance-2",
