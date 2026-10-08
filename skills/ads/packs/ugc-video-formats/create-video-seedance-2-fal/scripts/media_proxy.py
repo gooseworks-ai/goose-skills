@@ -29,14 +29,14 @@ paying twice (GOOSE-3729).
 
 FAL inputs that are local files (a product image, an audio track) must be a PUBLIC
 URL — `fal_upload(path)` puts a local file on the fal CDN through the fal-storage-proxy
-(free) and returns that URL; the MCP `get_upload_url` → `get_download_url` presigned URL
-also works.
+(free) and returns that URL; uploading it with the MCP `media_upload` and passing the
+returned url also works.
 
 MCP RELAY (no credentials at all). A session that only has the GooseWorks MCP connector
 (no GW_MEDIA_PROXY_TOKEN and no ~/.gooseworks/credentials.json) cannot call the proxies
 over HTTP. Then (or when GW_MEDIA_VIA=mcp) every paid call is RELAYED through the agent:
 the script writes the exact MCP tool call to working/mcp-requests/<kind>-<hash>.json and
-exits with code 3; the agent makes it (data_post_provider [+ job_get] for fal/ElevenLabs,
+exits with code 3; the agent makes it (data_post [+ job_get] for fal/ElevenLabs,
 media_upload for a local file), saves the result JSON where the request says, and
 re-runs the same command. Same server proxy, same price, billed to GW_PROJECT_ID.
 GW_MEDIA_VIA=proxy forces the HTTP path.
@@ -835,10 +835,10 @@ def _fal_run_once(model_path, payload, timeout_s, poll_s, new_take, input_digest
         args = {"provider": "fal", "path": model_path, "body": payload}
         if input_digest:
             args["idempotency_key"] = input_digest
-        return _relay("fal", "data_post_provider", args,
+        return _relay("fal", "data_post", args,
                       "poll job_get { job_id } from the reply until status is complete; the result is "
                       "job_get's result.output (fal's JSON with the media URLs). If "
-                      "data_post_provider returns a provider_validation_failed error, save that "
+                      "data_post returns a provider_validation_failed error, save that "
                       "error JSON instead; if job_get returns status failed, save that whole "
                       "job_get reply instead. The script reports either and stops",
                       check=lambda out: _raise_if_fal_error(out, model_path, stage="relay"))
@@ -963,8 +963,8 @@ def fal_whisper(audio_url, language="en", **kw):
     """fal-ai/whisper (word-level) through the proxy → [{text, start, end}, ...].
 
     `audio_url` MUST be a PUBLIC url (this module does not upload) — the orchestrator
-    hosts the local VO via MCP `get_upload_url` → `get_download_url` and passes that
-    presigned url in. Proxy-routed, so it bills the Ads agent (never a raw FAL_KEY)."""
+    hosts the local VO with `fal_upload` (or the MCP `media_upload`) and passes that
+    url in. Proxy-routed, so it bills the Ads agent (never a raw FAL_KEY)."""
     r = _fal_run("fal-ai/whisper", {"audio_url": audio_url, "task": "transcribe",
                                     "language": language, "chunk_level": "word"}, **kw)
     words = []
@@ -977,7 +977,7 @@ def fal_whisper(audio_url, language="en", **kw):
 def eleven_music(prompt, music_length_ms, out_path, force_instrumental=True, timeout_s=180):
     """ElevenLabs Music through the proxy → writes the mp3 to out_path, returns it."""
     if relay_mode():
-        r = _relay("elevenlabs", "data_post_provider",
+        r = _relay("elevenlabs", "data_post",
                    {"provider": "elevenlabs", "path": "/v1/music", "body": {"prompt": prompt, "music_length_ms": int(music_length_ms), "force_instrumental": force_instrumental}},
                    "the result is the tool's JSON reply (it carries download_url)")
         return download(r["download_url"], out_path)
@@ -1016,7 +1016,8 @@ def fal_upload(path, content_type=None):
                     "scope_id": os.environ.get("GW_PROJECT_ID", "<project_id>"), "kind": kind,
                     "source": {"type": "bytes", "filename": p.name, "content_base64": "<base64 of local_file>"}},
                    "the result is {\"url\": <the uploaded media's url>} (an https url fal can fetch). Over ~8 MB, "
-                   "use source {type: file, filename} + PUT the bytes + media_confirm instead",
+                   "use source {type: file, filename} and PUT the bytes to the upload link it returns "
+                   "(media_upload confirms the upload itself)",
                    extra={"local_file": str(p), "bytes": p.stat().st_size, "mime": mime})
         return r["url"]
     import mimetypes
@@ -1048,7 +1049,7 @@ def download(url, out_path):
 def eleven_tts(text, voice_id, out_path, model_id="eleven_v3", timeout_s=180):
     """ElevenLabs text-to-speech (VO) through the proxy → writes mp3 to out_path."""
     if relay_mode():
-        r = _relay("elevenlabs", "data_post_provider",
+        r = _relay("elevenlabs", "data_post",
                    {"provider": "elevenlabs", "path": "/v1/text-to-speech/%s" % voice_id, "body": {"text": text, "model_id": model_id}},
                    "the result is the tool's JSON reply (it carries download_url)")
         return download(r["download_url"], out_path)

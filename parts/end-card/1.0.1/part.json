@@ -1,0 +1,471 @@
+{
+  "$schema": "../../_contract/part-manifest.schema.json",
+  "interface": 1,
+  "id": "end-card",
+  "version": "1.0.1",
+  "kind": "end_card",
+  "title": "Brand end card",
+  "summary": "Draws the brand end card (logo as-is, brand colours and fonts, proof, benefits, call to action) as a clip of the style's size.",
+  "runtime": "node",
+  "entry": "part.mjs",
+  "files": [
+    "README.md",
+    "assets/fonts/Montserrat-Bold.ttf",
+    "part.mjs"
+  ],
+  "kit": ">=1.0.0 <2.0.0",
+  "needs": {
+    "browser": true,
+    "ffmpeg": {
+      "filters": [
+        "scale",
+        "setsar",
+        "format",
+        "anullsrc"
+      ],
+      "encoders": [
+        "libx264",
+        "aac"
+      ]
+    },
+    "network": false,
+    "models": [],
+    "disk_mb": 50
+  },
+  "inputs": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "brand",
+      "width",
+      "height"
+    ],
+    "properties": {
+      "brand": {
+        "type": "object",
+        "required": [
+          "name",
+          "colors",
+          "fonts",
+          "pronunciations"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "logo": {
+            "type": "object",
+            "x-kit-file": {
+              "media": "image"
+            }
+          },
+          "colors": {
+            "type": "object",
+            "properties": {
+              "primary": {
+                "type": "string",
+                "maxLength": 64
+              },
+              "secondary": {
+                "type": "string",
+                "maxLength": 64
+              },
+              "background": {
+                "type": "string",
+                "maxLength": 64
+              },
+              "text": {
+                "type": "string",
+                "maxLength": 64
+              },
+              "palette": {
+                "type": "array",
+                "maxItems": 12,
+                "items": {
+                  "type": "string",
+                  "maxLength": 64
+                }
+              }
+            }
+          },
+          "fonts": {
+            "type": "object",
+            "properties": {
+              "heading": {
+                "type": "object",
+                "x-kit-file": {
+                  "media": "font"
+                }
+              },
+              "body": {
+                "type": "object",
+                "x-kit-file": {
+                  "media": "font"
+                }
+              }
+            }
+          },
+          "pronunciations": {
+            "type": "array",
+            "maxItems": 50,
+            "items": {
+              "type": "object",
+              "required": [
+                "term",
+                "say_as"
+              ],
+              "properties": {
+                "term": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 100
+                },
+                "say_as": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                }
+              }
+            }
+          },
+          "cta": {
+            "type": "object",
+            "required": [
+              "text"
+            ],
+            "properties": {
+              "text": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 80
+              },
+              "url": {
+                "type": "string",
+                "maxLength": 200
+              }
+            }
+          }
+        }
+      },
+      "width": {
+        "type": "integer",
+        "minimum": 320,
+        "maximum": 4096
+      },
+      "height": {
+        "type": "integer",
+        "minimum": 320,
+        "maximum": 4096
+      },
+      "fps": {
+        "description": "Default 30.",
+        "type": "integer",
+        "minimum": 10,
+        "maximum": 60
+      },
+      "seconds": {
+        "description": "How long the card holds. Default 2.5.",
+        "type": "number",
+        "minimum": 0.5,
+        "maximum": 10
+      },
+      "background": {
+        "description": "Card background. Default: brand background, else white.",
+        "type": "string",
+        "pattern": "^#[0-9A-Fa-f]{6}$"
+      },
+      "foreground": {
+        "description": "Text colour. Default: brand text colour, else black or white for contrast.",
+        "type": "string",
+        "pattern": "^#[0-9A-Fa-f]{6}$"
+      },
+      "cta_background": {
+        "description": "Call-to-action pill. Default: brand primary colour.",
+        "type": "string",
+        "pattern": "^#[0-9A-Fa-f]{6}$"
+      },
+      "cta_text": {
+        "description": "Approved call to action. Default: the brand's.",
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 60
+      },
+      "url_text": {
+        "description": "Default: the brand's URL; empty hides it.",
+        "type": "string",
+        "maxLength": 80
+      },
+      "headline": {
+        "description": "Approved headline above the proof row.",
+        "type": "string",
+        "maxLength": 80
+      },
+      "proof": {
+        "description": "Stars need approved proof text; 0 stars hides the row.",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "stars",
+          "text"
+        ],
+        "properties": {
+          "stars": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 5
+          },
+          "text": {
+            "type": "string",
+            "maxLength": 80
+          }
+        }
+      },
+      "benefits": {
+        "type": "array",
+        "maxItems": 3,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "label"
+          ],
+          "properties": {
+            "label": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 40
+            },
+            "icon": {
+              "enum": [
+                "pencil",
+                "heart",
+                "star",
+                "check",
+                "gift",
+                "bolt",
+                "shield"
+              ]
+            }
+          }
+        }
+      },
+      "footnote": {
+        "description": "Legal line, kept inside the feed-crop safe zone.",
+        "type": "string",
+        "maxLength": 200
+      },
+      "image": {
+        "description": "Approved complete end-card artwork; replaces the drawn card.",
+        "type": "object",
+        "x-kit-file": {
+          "media": "image",
+          "mime": [
+            "image/png",
+            "image/jpeg",
+            "image/webp"
+          ]
+        }
+      }
+    }
+  },
+  "outputs": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "video",
+      "seconds",
+      "timeline"
+    ],
+    "properties": {
+      "video": {
+        "type": "object",
+        "x-kit-file": {
+          "media": "video"
+        }
+      },
+      "seconds": {
+        "type": "number",
+        "exclusiveMinimum": 0
+      },
+      "timeline": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "duration_s",
+          "width",
+          "height",
+          "fps",
+          "scenes",
+          "speech"
+        ],
+        "properties": {
+          "duration_s": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "fps": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "scenes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "start_s",
+                "end_s"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "start_s": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "end_s": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              }
+            }
+          },
+          "speech": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "text",
+                "start_s",
+                "end_s"
+              ],
+              "properties": {
+                "scene_id": {
+                  "type": "string"
+                },
+                "text": {
+                  "type": "string"
+                },
+                "spoken": {
+                  "type": "string"
+                },
+                "start_s": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "end_s": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "words": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "text",
+                      "start_s",
+                      "end_s"
+                    ],
+                    "properties": {
+                      "text": {
+                        "type": "string"
+                      },
+                      "start_s": {
+                        "type": "number",
+                        "minimum": 0
+                      },
+                      "end_s": {
+                        "type": "number",
+                        "minimum": 0
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "end_card": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "start_s",
+              "end_s"
+            ],
+            "properties": {
+              "start_s": {
+                "type": "number",
+                "minimum": 0
+              },
+              "end_s": {
+                "type": "number",
+                "minimum": 0
+              }
+            }
+          },
+          "safe_zones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "use",
+                "x",
+                "y",
+                "w",
+                "h"
+              ],
+              "properties": {
+                "use": {
+                  "enum": [
+                    "captions",
+                    "logo"
+                  ]
+                },
+                "x": {
+                  "type": "number"
+                },
+                "y": {
+                  "type": "number"
+                },
+                "w": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "h": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "cost": {
+    "basis": "free"
+  },
+  "determinism": "pure",
+  "timing": {
+    "typical_s": 8,
+    "timeout_s": 180
+  },
+  "retry": {
+    "transient": 1
+  },
+  "replaces": []
+}

@@ -2,6 +2,7 @@
   "slug": "render-vignette",
   "category": "capabilities",
   "domain": "ads",
+  "version": "1.0.0",
   "tags": [
     "ads"
   ],

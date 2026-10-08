@@ -1,0 +1,220 @@
+{
+  "$schema": "../../_contract/part-manifest.schema.json",
+  "interface": 1,
+  "id": "cut-footage",
+  "version": "1.0.1",
+  "kind": "compose",
+  "title": "Cut footage into a band",
+  "summary": "Lays a window of the brand's own footage into a band of a video, cover-fitted and sped so the window fills the video, within the style's speed limits.",
+  "runtime": "node",
+  "entry": "part.mjs",
+  "files": [
+    "README.md",
+    "part.mjs"
+  ],
+  "kit": ">=1.0.0 <2.0.0",
+  "needs": {
+    "browser": false,
+    "ffmpeg": {
+      "filters": [
+        "setpts",
+        "fps",
+        "scale",
+        "crop",
+        "pad",
+        "setsar",
+        "tpad",
+        "trim",
+        "overlay",
+        "format",
+        "atempo",
+        "atrim"
+      ],
+      "encoders": [
+        "libx264",
+        "aac"
+      ]
+    },
+    "network": false,
+    "models": [],
+    "disk_mb": 300
+  },
+  "inputs": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "video",
+      "footage",
+      "band"
+    ],
+    "properties": {
+      "video": {
+        "description": "The picture the footage goes under (an html-frames card that leaves the band free).",
+        "type": "object",
+        "x-kit-file": {
+          "media": "video"
+        }
+      },
+      "footage": {
+        "description": "plan.footage: the first entry is used. Each carries its clip as file (video is accepted too); start_ms and end_ms are the window (default: the whole clip).",
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 10,
+        "items": {
+          "type": "object",
+          "anyOf": [
+            {
+              "required": [
+                "file"
+              ]
+            },
+            {
+              "required": [
+                "video"
+              ]
+            }
+          ],
+          "properties": {
+            "file": {
+              "type": "object",
+              "x-kit-file": {
+                "media": "video"
+              }
+            },
+            "video": {
+              "type": "object",
+              "x-kit-file": {
+                "media": "video"
+              }
+            },
+            "asset_id": {
+              "type": "string"
+            },
+            "start_ms": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "end_ms": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 1
+            },
+            "audio": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            }
+          }
+        }
+      },
+      "band": {
+        "description": "Where the footage goes, in the video's pixels.",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "x",
+          "y",
+          "width",
+          "height"
+        ],
+        "properties": {
+          "x": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "y": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 2
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 2
+          }
+        }
+      },
+      "fit": {
+        "description": "cover (default) fills the band; width fits the footage by width with black above and below.",
+        "enum": [
+          "cover",
+          "width"
+        ]
+      },
+      "speed": {
+        "description": "\"fill\" (default): the window fills the video exactly; or a fixed playback speed.",
+        "anyOf": [
+          {
+            "const": "fill"
+          },
+          {
+            "type": "number",
+            "minimum": 0.25,
+            "maximum": 16
+          }
+        ]
+      },
+      "min_speed": {
+        "description": "With fill, the slowest allowed speed. Default 1.",
+        "type": "number",
+        "minimum": 0.25,
+        "maximum": 16
+      },
+      "max_speed": {
+        "description": "With fill, the fastest allowed speed. Default 8.",
+        "type": "number",
+        "minimum": 0.25,
+        "maximum": 16
+      },
+      "audio": {
+        "description": "Keep the footage's own sound (sped up to at most 2x). Default false: the video's own sound is kept.",
+        "type": "boolean"
+      }
+    }
+  },
+  "outputs": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "video",
+      "seconds",
+      "speed"
+    ],
+    "properties": {
+      "video": {
+        "type": "object",
+        "x-kit-file": {
+          "media": "video"
+        }
+      },
+      "seconds": {
+        "type": "number",
+        "exclusiveMinimum": 0
+      },
+      "speed": {
+        "type": "number",
+        "exclusiveMinimum": 0
+      }
+    }
+  },
+  "cost": {
+    "basis": "free"
+  },
+  "determinism": "pure",
+  "timing": {
+    "typical_s": 15,
+    "timeout_s": 600
+  },
+  "retry": {
+    "transient": 1
+  },
+  "replaces": []
+}

@@ -1,7 +1,7 @@
 ---
 name: stitch-videos-ffmpeg
-description: Stitch video segments with ffmpeg concat, xfade, overlay, audio mux, and export settings. Ships montage.py, a free montage assembler (python3 + ffmpeg, no keys). It takes a JSON EDL of clips and stills, normalizes them and hard-cuts them in order, burns captions from an SRT, a cue list or word timings, and lays a VO over a music bed that ducks under it, mastered to -14 LUFS.
-version: "1.1.0"
+description: Stitch video segments with ffmpeg concat, xfade, overlay, audio mux, and export settings, and trim a source into named clips at exact windows (trim_clips.py). Ships montage.py, a free montage assembler (python3 + ffmpeg, no keys). It takes a JSON EDL of clips and stills, normalizes them and hard-cuts them in order, burns captions from an SRT, a cue list or word timings, and lays a VO over a music bed that ducks under it, mastered to -14 LUFS.
+version: "1.3.0"
 updated: 2026-10-06
 ---
 
@@ -119,8 +119,8 @@ clip's own sound and fills silence under stills and silent clips.
   0.72) and `max_width` (default 0.86 of the width).
 - **Renderers:** `auto` uses Pillow when it is installed, so captions look the same on
   every machine. Otherwise it uses libass, which needs an ffmpeg with the `ass` filter.
-  Homebrew's default `ffmpeg` has no libass and no `drawtext`, so on a Mac run
-  `python3 -m pip install pillow`. With neither, the step exits 3 and says so.
+  Some ffmpeg builds (Homebrew's default) have no libass and no `drawtext`, so Pillow is
+  the dependable renderer. With neither, the step exits 3 and says so.
 
 ### Mix defaults (all overridable)
 
@@ -157,6 +157,56 @@ python3 -m pytest -q skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/test
 - `mix-master` remains the multi-clip VO + SFX mix. A `montage.py` master is already at
   -14 LUFS, so a later -14 LUFS finishing pass barely changes it.
 - `caption-burn` remains the place for plate, seam and hook-card caption styles.
+
+## Trim mode: `scripts/trim_clips.py`
+
+Cuts one source video into named clips at exact windows (this replaces the studio's
+trim-video-clips). Each clip is re-encoded with libx264, so cuts land on the requested frames and
+drop cleanly into an edit. Deciding which windows to cut is the caller's job.
+
+```bash
+python3 scripts/trim_clips.py --source source.mp4 --clips clips.json --output-dir clips/ [--crf 18] [--overwrite]
+```
+
+`clips.json` is a list of `{name, start, end}` or `{name, start, duration}`; times are seconds or
+`SS`, `MM:SS`, `HH:MM:SS` with optional `.ms`:
+
+```json
+[
+  {"name": "hook-laptop-close", "start": 0, "end": 2.6},
+  {"name": "mac-mini-glow", "start": "00:03", "duration": 5}
+]
+```
+
+- One `<slug>.mp4` per clip, and `manifest.json` with each clip's window, real duration and status.
+- A bad spec (no end or duration, a window that ends before it starts) is skipped and listed in
+  `errors`; the other clips still cut. A window that runs past the end of the source gives a
+  shorter clip and a warning with both lengths.
+- Re-runs skip clips that already exist unless `--overwrite`. A source with no audio gives clips
+  with no audio.
+
+## FFmpeg notes
+
+Measured traps when joining and finishing. Each lives here once.
+
+- **Joined generated clips drift in colour** at every cut, even from one prompt. Apply one
+  harmonising grade over the whole joined video; `eq=contrast=1.05:saturation=0.95,colorbalance=bs=0.05:bm=-0.02`
+  is a starting point.
+- **A still PNG overlay with a fade does nothing** unless the input is looped:
+  `-loop 1 -framerate 30 -t <length>` before that `-i`. The build reports no error.
+- **ffmpeg 9 removed `-vsync`.** The old flag fails the whole command; use `-fps_mode`, or drop it
+  (`-update 1` alone overwrites frame by frame).
+- **`-ss` before `-i` can land on a keyframe** (always with stream copy). A re-encoded cut is
+  exact; a measurement a decision depends on puts `-ss` after `-i` or decodes the range.
+- **`crop` rounds offsets to whole pixels,** so a gentle sine move becomes a still with one-pixel
+  snaps. Scale up 4x, crop, scale back. Judge motion on the median, not the p90.
+- **`select` then `tile` takes consecutive frames.** Seek with `-ss` before the input, then
+  `fps=N`, then `tile`.
+- **A trailing comma in `filter_complex` fails the build silently** behind a captured subprocess,
+  and an older render on disk then passes the checks. Strip trailing commas and read the build's
+  own exit status.
+- **Generated video is already sharp.** A finishing sharpen adds the artefact it means to hide;
+  keep unsharp near 0.12 with no grain, and measure before assuming footage is soft.
 
 ## Inputs
 

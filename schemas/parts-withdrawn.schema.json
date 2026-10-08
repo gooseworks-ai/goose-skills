@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gooseworks.ai/schemas/parts-withdrawn.schema.json",
+  "title": "parts/withdrawn.json",
+  "description": "Published part versions that must not run. A style that pins one is hidden until it moves to a new version, and the private line refuses to hand over a video that would run one. Checked by scripts/check-parts.js.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["interface", "withdrawn"],
+  "properties": {
+    "interface": { "const": 1 },
+    "withdrawn": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "version", "reason"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$" },
+          "version": { "type": "string", "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$" },
+          "reason": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}

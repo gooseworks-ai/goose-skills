@@ -1,0 +1,540 @@
+#!/usr/bin/env node
+'use strict';
+
+/**
+ * Atom lint: what a video atom may say.
+ *
+ *   node scripts/atom-lint.js [--base <ref>] [--direct] [--strict] [--quiet]
+ *
+ * Atoms hold craft (how to drive a model or a tool, and how to check the
+ * piece). Prices, approvals, setup, keys and which AI app runs them belong
+ * to GooseWorks, so an atom never states them. Each finding names the rule
+ * it breaks; ids with a dot before the name come from the rulebook
+ * (money.credits_only, money.one_price, setup.no_install, keys.never_ask,
+ * action.real_names_only, author.size_limits, author.no_rule_copies), the
+ * rest are atom rules (atom.no_client_names, atom.one_billing_helper,
+ * model.current_ids).
+ *
+ * Old debt warns; new debt fails. With --base, a finding fails when the
+ * branch adds it: it is in an atom the branch changed and was not there on
+ * the base. Atoms listed in atom-lint/config.json strict_atoms fail on any
+ * finding, so a cleaned atom stays clean. --strict fails on every finding
+ * (the final switch, GV-73). Without --base nothing is compared, so only
+ * strict atoms can fail. --direct compares with <ref> itself instead of its
+ * merge base with HEAD (CI). An atom moved between capabilities/ and packs/
+ * is compared with its old folder.
+ *
+ * Atoms with status: superseded are skipped, apart from their pointer
+ * (atom.superseded_pointer).
+ *
+ * A true finding that is creative content (a phone mockup that draws the
+ * ChatGPT app, say) is allowed in the atom's skill.meta.json:
+ *   "lint_allow": [{ "rule": "...", "match": "...", "reason": "..." }]
+ */
+
+const fs = require('fs');
+const path = require('path');
+const lib = require('./lib/atoms');
+const yaml = require('js-yaml');
+const ACTION_NAMES = require('./atom-lint/action-names.json');
+
+const { ROOT, CONFIG } = lib;
+
+const PROSE_EXT = new Set(['.md', '.markdown', '.txt']);
+const JSON_EXT = new Set(['.json']);
+const CODE_EXT = new Set(['.py', '.js', '.mjs', '.cjs', '.ts', '.sh', '.bash']);
+// Test folders are fixtures for the atom's own tests, never read by the AI.
+const SKIP_SEGMENTS = new Set(['tests', 'test', '__tests__', 'fixtures']);
+// Lock files and manifests are tooling, not text anyone reads.
+const SKIP_FILES = new Set(['package.json', 'package-lock.json']);
+// JSON keys whose string values are notes a person or the AI reads.
+const JSON_TEXT_KEYS = new Set(['description', 'example_prompt', 'note', 'notes']);
+
+function wordList(names) {
+  return new RegExp(`\\b(?:${names.map((n) => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})\\b`, 'g');
+}
+
+const LIVE_ACTIONS = new Set(ACTION_NAMES.live);
+
+/**
+ * Text rules. `scope` says which file kinds a rule reads: prose (markdown),
+ * json (comment and description strings) and code (scripts). Money, setup,
+ * keys, approvals and app names are about text the AI reads, so code is out
+ * of scope for them; old action names and model ids break code too.
+ */
+const TEXT_RULES = [
+  {
+    id: 'money.credits_only',
+    what: 'a dollar amount; atoms never state a price',
+    scope: ['prose', 'json'],
+    patterns: [
+      /(?<![\w$\\])\$\s?\d[\d,]*(?:\.\d+)?(?:\s?[kKmM]\b)?/g,
+      /\b\d[\d,]*(?:\.\d+)?\s?(?:USD|dollars?|cents?)\b/g,
+      /\b\d[\d,]*(?:\.\d+)?¢/g,
+      /\bUSD\s?\d[\d,]*(?:\.\d+)?/g,
+    ],
+  },
+  {
+    id: 'money.one_price',
+    what: 'a credit amount; every price comes from GooseWorks',
+    scope: ['prose', 'json'],
+    patterns: [/\b\d[\d,]*(?:\.\d+)?(?:\s?[-–]\s?\d[\d,]*(?:\.\d+)?)?\s?(?:k\s)?credits?\b/gi],
+  },
+  {
+    id: 'author.no_rule_copies',
+    what: 'approval or spend-gate text; the customer says yes once, on the card, never per call',
+    scope: ['prose', 'json'],
+    patterns: [
+      /\b(?:ask|wait)\s+for\s+(?:the\s+)?(?:user'?s?\s+|customer'?s?\s+|operator'?s?\s+|their\s+|explicit\s+|written\s+)*(?:approval|confirmation|go-?ahead|sign-?off|permission|okay|ok|yes)\b/gi,
+      /\b(?:get|obtain|request|requires?|needs?)\s+(?:the\s+)?(?:user'?s?|customer'?s?|operator'?s?|their|explicit|written)\s+(?:explicit\s+)?(?:approval|confirmation|go-?ahead|sign-?off|permission|okay|ok|yes)\b/gi,
+      /\bconfirm\s+with\s+the\s+(?:user|customer|operator)\b/gi,
+      /\bafter\s+(?:the\s+)?(?:user'?s?\s+|customer'?s?\s+|operator'?s?\s+|explicit\s+|written\s+)*(?:approval|confirmation|sign-?off|go-?ahead)\b/gi,
+      /\bafter\s+the\s+(?:user|customer|operator)\s+(?:approves|confirms|says\s+yes|signs\s+off)\b/gi,
+      /\bapprov\w*\s+(?:each|every)\s+(?:paid\s+|billable\s+)?(?:step|call|generation|render|clip|piece)\b/gi,
+      /\b(?:approval|paid[- ]step|spend|cost|budget)\s+gate\b/gi,
+      /\bCHOICES FIRST\b/g,
+      /\(y\/n\)/gi,
+    ],
+  },
+  {
+    id: 'setup.no_install',
+    what: 'an install or login line; the kit sets up the computer',
+    scope: ['prose', 'json'],
+    patterns: [
+      /\b(?:npm|pnpm|yarn|bun)\s+(?:install|i|ci|add)\b/gi,
+      /\b(?:pip3?|pipx|uv\s+pip)\s+install\b/gi,
+      /\bpython3?\s+-m\s+pip\s+install\b/gi,
+      /\b(?:brew|apt-get|apt|winget|choco|port)\s+install\b/gi,
+      /\b(?:npx\s+(?:-y\s+)?)?playwright\s+install\b/gi,
+      /\bnpx\s+(?:-y\s+)?(?:goose-skills|gooseworks)\b/gi,
+      /\bgooseworks\s+(?:login|install|setup|doctor|update)\b/gi,
+      /\bcurl\b[^\n|]*\|\s*(?:ba|z)?sh\b/gi,
+      /\binstall\s+(?:claude code|codex|cursor|node(?:\.js)?|ffmpeg|ffprobe|python|chromium|playwright|homebrew)\b/gi,
+      /\b(?:log|sign)\s?in\s+(?:to|with)\s+(?:gooseworks|fal|elevenlabs|higgsfield)\b/gi,
+    ],
+  },
+  {
+    id: 'keys.never_ask',
+    what: 'asks for or sets a provider key; GooseWorks holds every key',
+    scope: ['prose', 'json'],
+    patterns: [
+      /\bexport\s+[A-Z][A-Z0-9_]*_(?:KEY|TOKEN|SECRET)\b/g,
+      /\b[A-Z][A-Z0-9_]*_(?:KEY|TOKEN|SECRET)=\S/g,
+      /\bset\s+(?:your\s+)?[A-Z][A-Z0-9_]*_(?:KEY|TOKEN|SECRET)\b/g,
+      /\b(?:ask|prompt)\s+(?:the\s+)?(?:user|customer|operator|them)\s+(?:for|to\s+(?:paste|provide|enter|share))\s+(?:an?\s+|their\s+|the\s+|your\s+)?(?:[\w-]+\s+){0,2}(?:key|token|password|secret)\b/gi,
+      /\b(?:get|create|grab|obtain)\s+(?:an?\s+|your\s+)?(?:[\w-]+\s+)?api\s+key\b/gi,
+    ],
+  },
+  {
+    id: 'atom.no_client_names',
+    what: 'names an AI app; an atom works the same in every app',
+    scope: ['prose', 'json'],
+    patterns: [/\b(?:Claude(?:\s+(?:Code|Desktop))?|claude\.ai|ChatGPT|Codex|Cursor)\b/g],
+  },
+  {
+    id: 'action.real_names_only',
+    what: 'names a removed action; name only actions that exist today',
+    scope: ['prose', 'json', 'code'],
+    patterns: [wordList(ACTION_NAMES.removed)],
+    // mcp__<gooseworks server>__<action> must also be a live action. Other
+    // servers' tools are not ours to check.
+    extra: (line) => {
+      const hits = [];
+      for (const m of line.matchAll(/\bmcp__([a-z0-9-]*goose[a-z0-9-]*)__([a-z][a-z0-9_]*)\b/g)) {
+        if (!LIVE_ACTIONS.has(m[2])) hits.push({ match: m[0], index: m.index });
+      }
+      return hits;
+    },
+  },
+  {
+    id: 'model.current_ids',
+    what: 'a model id the proxy refuses or that is retired',
+    scope: ['prose', 'json', 'code'],
+    patterns: [/\bfal-ai\/nano-banana-2\b/g, /\bkling-video\/v2\.1\b/gi, /\bKling\s?v?2\.1\b/g],
+  },
+];
+
+const RULE_IDS = new Set([
+  ...TEXT_RULES.map((r) => r.id),
+  'atom.one_billing_helper',
+  'author.size_limits',
+]);
+
+const WHAT = Object.fromEntries(TEXT_RULES.map((r) => [r.id, r.what]));
+WHAT['atom.one_billing_helper'] = `a full copy of the billing helper; keep the one copy in ${CONFIG.billing_helper.home}`;
+WHAT['author.size_limits'] = 'over the size limit';
+WHAT['atom.lint_allow'] = 'a lint_allow entry needs a known rule, a match and a reason';
+WHAT['atom.superseded_pointer'] =
+  'a superseded atom needs status: superseded, superseded_by naming its published replacement parts (id@x.y.z), and a one-paragraph "> **Superseded" pointer opening the body that names them';
+WHAT['atom.frontmatter'] = 'SKILL.md frontmatter must be valid YAML';
+
+const SEMVER_REF = /^([a-z][a-z0-9]*(?:-[a-z0-9]+)*)@((?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*))$/;
+
+/** Published part versions ("id@x.y.z") that are not withdrawn, from the parts registry. */
+function liveParts() {
+  const read = (rel, key) => {
+    try {
+      const value = JSON.parse(fs.readFileSync(path.join(ROOT, 'parts', rel), 'utf8'))[key];
+      return Array.isArray(value) ? value : [];
+    } catch {
+      return [];
+    }
+  };
+  const withdrawn = new Set(read('withdrawn.json', 'withdrawn').map((w) => `${w.id}@${w.version}`));
+  return new Set(read('index.json', 'parts').map((p) => `${p.id}@${p.version}`).filter((k) => !withdrawn.has(k)));
+}
+
+/**
+ * A superseded atom (frontmatter status: superseded) is replaced by parts
+ * and stays only for skills outside the kit until the batches retire it, so
+ * the text rules skip it. What is checked instead is its pointer, and an
+ * atom is exempt only when all of it holds:
+ *   - the frontmatter parses as YAML and status is the string "superseded";
+ *   - superseded_by names each replacement as id@x.y.z (a list, or one
+ *     comma-separated string), each a published part that is not withdrawn;
+ *   - the body opens with a one-paragraph "> **Superseded" note that names
+ *     each replacement's id and version.
+ * A note without the status is an error too. Returns { superseded, problems }.
+ */
+function supersededState(atom, live) {
+  const text = fs.readFileSync(path.join(ROOT, atom.dir, 'SKILL.md'), 'utf8');
+  const fm = text.match(/^---\r?\n([\s\S]*?)\r?\n---[ \t]*(?:\r?\n|$)/);
+  let data = {};
+  if (fm) {
+    try {
+      data = yaml.load(fm[1]) || {};
+    } catch (err) {
+      return { superseded: false, frontmatterError: err.reason || err.message, problems: [] };
+    }
+  }
+  const superseded = typeof data === 'object' && data.status === 'superseded';
+
+  const lines = (fm ? text.slice(fm[0].length) : text).split(/\r?\n/);
+  const start = lines.findIndex((l) => l.trim());
+  let note = null;
+  if (start >= 0 && /^> \*\*Superseded\b/.test(lines[start])) {
+    // One paragraph: the quoted lines, then a blank line or the end.
+    let end = start;
+    while (end + 1 < lines.length && lines[end + 1].startsWith('>')) end++;
+    if (end + 1 >= lines.length || !lines[end + 1].trim()) note = lines.slice(start, end + 1).join(' ');
+  }
+
+  const problems = [];
+  if (!superseded) {
+    if (note) problems.push('pointer paragraph without status: superseded');
+    return { superseded: false, problems };
+  }
+  if (!note) problems.push('status: superseded with no pointer paragraph');
+  const raw = data.superseded_by;
+  const refs = (Array.isArray(raw) ? raw : typeof raw === 'string' ? raw.split(',') : [])
+    .map((r) => (typeof r === 'string' ? r.trim() : r));
+  if (!refs.length || refs.some((r) => typeof r !== 'string' || !SEMVER_REF.test(r))) {
+    problems.push('superseded_by must name the replacement parts as id@x.y.z');
+  } else {
+    for (const ref of refs) {
+      const [, id, version] = ref.match(SEMVER_REF);
+      if (!live.has(ref)) problems.push(`superseded_by names ${ref}, which is not a published part`);
+      if (note && !(note.includes(id) && note.includes(version))) problems.push(`the pointer does not name ${id} and ${version}`);
+    }
+  }
+  return { superseded: problems.length === 0, problems };
+}
+
+function fileKind(relInAtom) {
+  const parts = relInAtom.split('/');
+  if (parts.slice(0, -1).some((p) => SKIP_SEGMENTS.has(p))) return null;
+  const base = parts[parts.length - 1];
+  if (SKIP_FILES.has(base)) return null;
+  const ext = path.extname(base).toLowerCase();
+  if (PROSE_EXT.has(ext)) return 'prose';
+  if (JSON_EXT.has(ext)) return 'json';
+  if (CODE_EXT.has(ext)) return 'code';
+  return null;
+}
+
+function scanLines(text, rules, kind, file, out) {
+  const lines = text.split(/\r?\n/);
+  for (const rule of rules) {
+    if (!rule.scope.includes(kind)) continue;
+    lines.forEach((line, i) => {
+      const hits = [];
+      for (const re of rule.patterns) {
+        re.lastIndex = 0;
+        for (const m of line.matchAll(re)) hits.push({ match: m[0], index: m.index });
+      }
+      if (rule.extra) hits.push(...rule.extra(line));
+      // One finding per stretch of text: when two patterns of a rule overlap
+      // ("python3 -m pip install" and "pip install"), keep the longer one.
+      hits.sort((a, b) => a.index - b.index || b.match.length - a.match.length);
+      let end = -1;
+      for (const hit of hits) {
+        if (hit.index < end) continue;
+        end = hit.index + hit.match.length;
+        out.push({ rule: rule.id, file, line: i + 1, match: hit.match.trim() });
+      }
+    });
+  }
+}
+
+/** Strings a person or the AI reads inside a JSON file, with their line. */
+function jsonTexts(raw) {
+  let data;
+  try {
+    data = JSON.parse(raw);
+  } catch {
+    return [];
+  }
+  const texts = [];
+  const visit = (value, key) => {
+    if (typeof value === 'string') {
+      if (key && (key.startsWith('_') || JSON_TEXT_KEYS.has(key))) texts.push(value);
+    } else if (Array.isArray(value)) {
+      for (const v of value) visit(v, key);
+    } else if (value && typeof value === 'object') {
+      for (const [k, v] of Object.entries(value)) visit(v, k);
+    }
+  };
+  visit(data, null);
+  return texts.map((text) => {
+    const probe = JSON.stringify(text).slice(1, 41);
+    const at = raw.indexOf(probe);
+    const line = at < 0 ? 1 : raw.slice(0, at).split('\n').length;
+    return { text, line };
+  });
+}
+
+/**
+ * Findings for one atom. `files` is [{ path, bytes: Buffer }] with repo paths.
+ */
+function lintAtom(atom, files) {
+  const findings = [];
+  for (const { path: file, bytes } of files) {
+    const rel = file.slice(atom.dir.length + 1);
+    const base = path.posix.basename(rel);
+
+    if (base === CONFIG.billing_helper.file && atom.slug !== CONFIG.billing_helper.home) {
+      if (bytes.length > CONFIG.billing_helper.shim_max_bytes) {
+        findings.push({ rule: 'atom.one_billing_helper', file, line: 1, match: `${base} copy` });
+      }
+    }
+
+    const kind = fileKind(rel);
+    if (!kind) continue;
+    const text = bytes.toString('utf8');
+
+    if (kind === 'prose' && path.extname(base).toLowerCase() !== '.txt') {
+      const limit = rel === 'SKILL.md' ? CONFIG.limits.skill_md_bytes : CONFIG.limits.other_md_bytes;
+      if (bytes.length > limit) {
+        findings.push({
+          rule: 'author.size_limits',
+          file,
+          line: 1,
+          match: `${bytes.length} bytes, limit ${limit}`,
+          bytes: bytes.length,
+        });
+      }
+    }
+
+    if (kind === 'json') {
+      for (const { text: t, line } of jsonTexts(text)) {
+        const local = [];
+        scanLines(t, TEXT_RULES, 'json', file, local);
+        for (const f of local) findings.push({ ...f, line: line + f.line - 1 });
+      }
+    } else {
+      scanLines(text, TEXT_RULES, kind, file, findings);
+    }
+  }
+  return findings;
+}
+
+function headFiles(atom) {
+  return lib.listFiles(ROOT, atom.dir).map((p) => ({ path: p, bytes: fs.readFileSync(path.join(ROOT, p)) }));
+}
+
+/** The atom's files on the base, from `dir` (its old folder), named as if in its folder now. */
+function baseFiles(base, atom, dir) {
+  return lib
+    .listFilesAt(ROOT, base, dir)
+    .map((p) => ({ path: `${atom.dir}${p.slice(dir.length)}`, bytes: lib.readAt(ROOT, base, p) }))
+    .filter((f) => f.bytes !== null);
+}
+
+/** Validates lint_allow and returns [allows, problems]. */
+function readAllows(atom, meta) {
+  const allows = [];
+  const problems = [];
+  const list = meta ? meta.lint_allow : undefined;
+  if (list === undefined) return [allows, problems];
+  if (!Array.isArray(list)) {
+    problems.push({ rule: 'atom.lint_allow', file: `${atom.dir}/skill.meta.json`, line: 1, match: 'lint_allow must be a list' });
+    return [allows, problems];
+  }
+  for (const entry of list) {
+    const ok =
+      entry &&
+      RULE_IDS.has(entry.rule) &&
+      typeof entry.match === 'string' &&
+      entry.match.trim() &&
+      typeof entry.reason === 'string' &&
+      entry.reason.trim();
+    if (ok) allows.push(entry);
+    else problems.push({ rule: 'atom.lint_allow', file: `${atom.dir}/skill.meta.json`, line: 1, match: JSON.stringify(entry) });
+  }
+  return [allows, problems];
+}
+
+function isAllowed(finding, allows) {
+  return allows.some(
+    (a) =>
+      a.rule === finding.rule &&
+      finding.match.includes(a.match) &&
+      (!a.file || finding.file.endsWith(`/${a.file}`)),
+  );
+}
+
+/** Marks each head finding new when the base did not have it. */
+function markNew(head, base) {
+  const counts = new Map();
+  const sizeOnBase = new Map();
+  for (const f of base) {
+    if (f.rule === 'author.size_limits') {
+      sizeOnBase.set(f.file, f.bytes);
+      continue;
+    }
+    const key = `${f.rule}\0${f.file}\0${f.match}`;
+    counts.set(key, (counts.get(key) || 0) + 1);
+  }
+  for (const f of head) {
+    if (f.rule === 'author.size_limits') {
+      // A file already over the limit may shrink, never grow.
+      f.isNew = !sizeOnBase.has(f.file) || f.bytes > sizeOnBase.get(f.file);
+      continue;
+    }
+    const key = `${f.rule}\0${f.file}\0${f.match}`;
+    const left = counts.get(key) || 0;
+    if (left > 0) {
+      counts.set(key, left - 1);
+      f.isNew = false;
+    } else {
+      f.isNew = true;
+    }
+  }
+}
+
+function parseArgs(argv) {
+  const args = { base: null, direct: false, strict: false, quiet: false };
+  for (let i = 0; i < argv.length; i++) {
+    const a = argv[i];
+    if (a === '--direct') args.direct = true;
+    else if (a === '--base') args.base = argv[++i];
+    else if (a.startsWith('--base=')) args.base = a.slice(7);
+    else if (a === '--strict') args.strict = true;
+    else if (a === '--quiet') args.quiet = true;
+    else throw new Error(`unknown argument ${a}`);
+  }
+  return args;
+}
+
+function run(argv) {
+  const args = parseArgs(argv);
+  const base = lib.resolveBase(ROOT, args.base, { direct: args.direct });
+  const changed = base ? lib.changedFiles(ROOT, base) : new Set();
+  const atoms = lib.listAtoms(ROOT);
+  const strictAtoms = new Set(CONFIG.strict_atoms);
+
+  const results = [];
+  let allowed = 0;
+  let superseded = 0;
+  const live = liveParts();
+  for (const atom of atoms) {
+    const state = supersededState(atom, live);
+    if (state.frontmatterError) {
+      results.push({ rule: 'atom.frontmatter', file: `${atom.dir}/SKILL.md`, line: 1, match: state.frontmatterError, atom: atom.slug, severity: 'error' });
+    }
+    for (const problem of state.problems) {
+      results.push({ rule: 'atom.superseded_pointer', file: `${atom.dir}/SKILL.md`, line: 1, match: problem, atom: atom.slug, severity: 'error' });
+    }
+    if (state.superseded) {
+      superseded++;
+      continue;
+    }
+    const meta = lib.readMeta(ROOT, atom.dir);
+    const [allows, problems] = readAllows(atom, meta);
+    const head = lintAtom(atom, headFiles(atom)).filter((f) => {
+      if (isAllowed(f, allows)) {
+        allowed++;
+        return false;
+      }
+      return true;
+    });
+    if (base) {
+      const baseDir = lib.baseAtomDir(ROOT, base, atom);
+      const touched =
+        baseDir === atom.dir
+          ? [...changed].some((p) => p.startsWith(`${atom.dir}/`))
+          : !baseDir || !lib.sameFiles(ROOT, base, baseDir, atom);
+      if (touched) markNew(head, baseDir ? lintAtom(atom, baseFiles(base, atom, baseDir)) : []);
+    }
+    for (const f of [...problems, ...head]) {
+      const fails = args.strict || strictAtoms.has(atom.slug) || f.rule === 'atom.lint_allow' || f.isNew === true;
+      results.push({ ...f, atom: atom.slug, severity: fails ? 'error' : 'warning' });
+    }
+  }
+  return { results, allowed, atoms, base, superseded };
+}
+
+function report({ results, allowed, atoms, base, superseded }, quiet) {
+  const errors = results.filter((r) => r.severity === 'error');
+  const warnings = results.filter((r) => r.severity === 'warning');
+  const line = (r) => `${r.severity} ${r.rule}: ${WHAT[r.rule]} ${r.file}:${r.line} "${r.match}"`;
+
+  for (const r of errors) {
+    console.error(line(r));
+    if (process.env.GITHUB_ACTIONS) {
+      console.log(`::error file=${r.file},line=${r.line}::${r.rule}: ${WHAT[r.rule]} ("${r.match}")`);
+    }
+  }
+  if (!quiet) for (const r of warnings) console.log(line(r));
+
+  const byRule = new Map();
+  for (const r of results) {
+    const row = byRule.get(r.rule) || { error: 0, warning: 0 };
+    row[r.severity]++;
+    byRule.set(r.rule, row);
+  }
+  const shared = new Set(CONFIG.shared_atoms);
+  const sharedCounts = new Map();
+  for (const r of results) if (shared.has(r.atom)) sharedCounts.set(r.atom, (sharedCounts.get(r.atom) || 0) + 1);
+
+  const summary = [
+    `Atom lint: ${atoms.length} atoms (${superseded} superseded, pointer checked only), ${errors.length} errors, ${warnings.length} warnings, ${allowed} allowed${base ? `, compared with ${base.slice(0, 9)}` : ', no base (old debt only warns)'}.`,
+    '',
+    '| Rule | Errors | Warnings |',
+    '|---|---:|---:|',
+    ...[...byRule.entries()].sort().map(([rule, c]) => `| ${rule} | ${c.error} | ${c.warning} |`),
+    '',
+    `Shared atoms with findings: ${
+      [...sharedCounts.entries()].sort().map(([slug, n]) => `${slug} ${n}`).join(', ') || 'none'
+    }.`,
+  ].join('\n');
+  console.log(`\n${summary}`);
+  if (process.env.GITHUB_STEP_SUMMARY) {
+    fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, `${summary}\n\n`);
+  }
+  return errors.length;
+}
+
+if (require.main === module) {
+  let errorCount;
+  try {
+    const args = parseArgs(process.argv.slice(2));
+    errorCount = report(run(process.argv.slice(2)), args.quiet);
+  } catch (err) {
+    console.error(`atom-lint: ${err.message}`);
+    process.exit(2);
+  }
+  process.exit(errorCount > 0 ? 1 : 0);
+}
+
+module.exports = { lintAtom, markNew, TEXT_RULES };

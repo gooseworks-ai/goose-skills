@@ -1,0 +1,27 @@
+{
+  "interface": 1,
+  "order": [
+    "brand",
+    "captions",
+    "sound",
+    "check"
+  ],
+  "layers": {
+    "brand": {
+      "id": "brand-layer",
+      "version": "1.0.1"
+    },
+    "captions": {
+      "id": "captions-layer",
+      "version": "1.1.0"
+    },
+    "sound": {
+      "id": "sound-layer",
+      "version": "1.0.1"
+    },
+    "check": {
+      "id": "check-layer",
+      "version": "1.1.1"
+    }
+  }
+}

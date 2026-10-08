@@ -1,0 +1,157 @@
+'use strict';
+
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const { makeRepo, commitAll, run } = require('./atom-checks.helpers');
+
+const SKILL = path.join('skills', 'ads', 'capabilities', 'clip-maker', 'SKILL.md');
+const clean = '# clip-maker\n\nWrite the prompt as one shot with one camera move.\n';
+
+function branchAdds(text) {
+  const { root, base } = makeRepo({ 'clip-maker': { skill: clean } });
+  fs.appendFileSync(path.join(root, SKILL), text);
+  commitAll(root);
+  return run('atom-lint.js', root, ['--base', base]);
+}
+
+test('a clean change to an atom passes', () => {
+  const res = branchAdds('Keep the subject centred.\n');
+  assert.equal(res.code, 0, res.out);
+});
+
+test('fails when a touched atom gains a dollar amount', () => {
+  const res = branchAdds('Each clip costs about $3.\n');
+  assert.equal(res.code, 1, res.out);
+  assert.match(res.out, /error money\.credits_only: .*SKILL\.md:4 "\$3"/);
+});
+
+test('fails when a touched atom names a removed action', () => {
+  const res = branchAdds('When the clip is done, call submit_render with its link.\n');
+  assert.equal(res.code, 1, res.out);
+  assert.match(res.out, /error action\.real_names_only: .*"submit_render"/);
+});
+
+test('fails when a removed action shows up in an atom script', () => {
+  const { root, base } = makeRepo({ 'clip-maker': { skill: clean } });
+  fs.writeFileSync(path.join(root, path.dirname(SKILL), 'relay.py'), 'TOOL = "data_post_provider"\n');
+  commitAll(root);
+  const res = run('atom-lint.js', root, ['--base', base]);
+  assert.equal(res.code, 1, res.out);
+  assert.match(res.out, /error action\.real_names_only: .*relay\.py:1 "data_post_provider"/);
+});
+
+test('fails when a touched atom gains an install line', () => {
+  const res = branchAdds('First run npm install in the scripts folder.\n');
+  assert.equal(res.code, 1, res.out);
+  assert.match(res.out, /error setup\.no_install: .*"npm install"/);
+});
+
+test('old debt in an untouched atom only warns', () => {
+  const { root, base } = makeRepo({
+    'clip-maker': { skill: clean },
+    'old-atom': { skill: '# old-atom\n\nEach take costs $3. Run npm install first.\n' },
+  });
+  fs.appendFileSync(path.join(root, SKILL), 'Keep the subject centred.\n');
+  commitAll(root);
+  const res = run('atom-lint.js', root, ['--base', base]);
+  assert.equal(res.code, 0, res.out);
+  assert.match(res.out, /warning money\.credits_only: .*old-atom\/SKILL\.md:3 "\$3"/);
+  assert.match(res.out, /warning setup\.no_install: .*old-atom\/SKILL\.md:3 "npm install"/);
+});
+
+test('old debt in a touched atom warns, while debt the branch adds fails', () => {
+  const { root, base } = makeRepo({ 'clip-maker': { skill: `${clean}Each take costs $3.\n` } });
+  fs.appendFileSync(path.join(root, SKILL), 'Keep the subject centred.\n');
+  commitAll(root);
+  const kept = run('atom-lint.js', root, ['--base', base]);
+  assert.equal(kept.code, 0, kept.out);
+  assert.match(kept.out, /warning money\.credits_only: .*"\$3"/);
+
+  fs.appendFileSync(path.join(root, SKILL), 'A retake costs $3.\n');
+  commitAll(root);
+  const added = run('atom-lint.js', root, ['--base', base]);
+  assert.equal(added.code, 1, added.out);
+});
+
+test('--strict fails on old debt too', () => {
+  const { root } = makeRepo({ 'old-atom': { skill: '# old-atom\n\nEach take costs $3.\n' } });
+  const res = run('atom-lint.js', root, ['--strict']);
+  assert.equal(res.code, 1, res.out);
+});
+
+test('lint_allow keeps a reviewed creative line', () => {
+  const { root, base } = makeRepo({ 'clip-maker': { skill: clean } });
+  fs.appendFileSync(path.join(root, SKILL), 'The mockup shows the reply bubble from ChatGPT.\n');
+  fs.writeFileSync(
+    path.join(root, path.dirname(SKILL), 'skill.meta.json'),
+    JSON.stringify({
+      slug: 'clip-maker',
+      version: '1.0.0',
+      lint_allow: [{ rule: 'atom.no_client_names', match: 'ChatGPT', reason: 'the mockup draws that app' }],
+    }),
+  );
+  commitAll(root);
+  const res = run('atom-lint.js', root, ['--base', base]);
+  assert.equal(res.code, 0, res.out);
+});
+
+test('a base that does not resolve stops the check instead of passing it', () => {
+  const { root } = makeRepo({ 'clip-maker': { skill: clean } });
+  const res = run('atom-lint.js', root, ['--base', 'origin/no-such-branch']);
+  assert.equal(res.code, 2, res.out);
+});
+
+const POINTER = '> **Superseded:** the kit now does this with the clip-part part, version 1.0.0. This atom still runs outside the kit.\n\n';
+
+/** A published clip-part@1.0.0 in the fixture repo's parts index. */
+function publishPart(root) {
+  fs.mkdirSync(path.join(root, 'parts'), { recursive: true });
+  fs.writeFileSync(
+    path.join(root, 'parts', 'index.json'),
+    JSON.stringify({ interface: 1, parts: [{ id: 'clip-part', version: '1.0.0', files: {} }] }),
+  );
+  fs.writeFileSync(path.join(root, 'parts', 'withdrawn.json'), JSON.stringify({ interface: 1, withdrawn: [] }));
+}
+
+const superseded = (fields, note = POINTER) => `---\nname: clip-maker\n${fields}\n---\n\n${note}# clip-maker\n\nEach take costs $3.\n`;
+
+test('a superseded atom naming its published replacement is skipped by the text rules', () => {
+  const { root, base } = makeRepo({ 'clip-maker': { skill: superseded('status: superseded\nsuperseded_by: clip-part@1.0.0') } });
+  publishPart(root);
+  fs.appendFileSync(path.join(root, SKILL), 'A retake costs $3. Run npm install first.\n');
+  commitAll(root);
+  const res = run('atom-lint.js', root, ['--base', base]);
+  assert.equal(res.code, 0, res.out);
+  assert.match(res.out, /1 superseded, pointer checked only/);
+});
+
+test('a superseded atom is exempt only when it names a published replacement in its frontmatter and note', () => {
+  const cases = [
+    ['status: superseded', POINTER, /superseded_by must name the replacement parts as id@x\.y\.z/],
+    ['status: superseded\nsuperseded_by: clip-part@2.0.0', POINTER, /superseded_by names clip-part@2\.0\.0, which is not a published part/],
+    ['status: superseded\nsuperseded_by: clip-part@1.0.0', '> **Superseded**\n\n', /the pointer does not name clip-part and 1\.0\.0/],
+    ['status: superseded\nsuperseded_by: clip-part@1.0.0', '', /status: superseded with no pointer paragraph/],
+  ];
+  for (const [fields, note, expected] of cases) {
+    const { root } = makeRepo({ 'clip-maker': { skill: superseded(fields, note) } });
+    publishPart(root);
+    const res = run('atom-lint.js', root, []);
+    assert.equal(res.code, 1, `${fields}\n${res.out}`);
+    assert.match(res.out, expected);
+    assert.match(res.out, /0 superseded/);
+  }
+});
+
+test('the status is read as YAML: a malformed or non-string status exempts nothing', () => {
+  const malformed = superseded(`status: "superseded'\nsuperseded_by: clip-part@1.0.0`);
+  const notString = superseded('status: [superseded]\nsuperseded_by: clip-part@1.0.0');
+  const { root } = makeRepo({ 'clip-maker': { skill: malformed }, 'other-maker': { skill: notString.replace(/clip-maker/g, 'other-maker') } });
+  publishPart(root);
+  const res = run('atom-lint.js', root, []);
+  assert.equal(res.code, 1, res.out);
+  assert.match(res.out, /error atom\.frontmatter: .*clip-maker\/SKILL\.md:1/);
+  assert.match(res.out, /error atom\.superseded_pointer: .*other-maker\/SKILL\.md:1 "pointer paragraph without status: superseded"/);
+  assert.match(res.out, /0 superseded/);
+});
