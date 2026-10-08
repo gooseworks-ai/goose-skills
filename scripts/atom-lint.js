@@ -130,11 +130,12 @@ const TEXT_RULES = [
     what: 'names a removed action; name only actions that exist today',
     scope: ['prose', 'json', 'code'],
     patterns: [wordList(ACTION_NAMES.removed)],
-    // mcp__<server>__<action> must also be a live action.
+    // mcp__<gooseworks server>__<action> must also be a live action. Other
+    // servers' tools are not ours to check.
     extra: (line) => {
       const hits = [];
-      for (const m of line.matchAll(/\bmcp__[a-z0-9-]+__([a-z][a-z0-9_]*)\b/g)) {
-        if (!LIVE_ACTIONS.has(m[1])) hits.push({ match: m[0], index: m.index });
+      for (const m of line.matchAll(/\bmcp__([a-z0-9-]*goose[a-z0-9-]*)__([a-z][a-z0-9_]*)\b/g)) {
+        if (!LIVE_ACTIONS.has(m[2])) hits.push({ match: m[0], index: m.index });
       }
       return hits;
     },
