@@ -47,7 +47,13 @@ const SOURCE_RULES = [
   ['modules', BANNED_MODULES, 'code'],
   ['modules', /\brequire\s*\(/, 'code'],
   ['modules', /\bimport\s*\(/, 'code'],
-  ['environment', /\bprocess\s*\./, 'code'],
+  // process, globalThis and global in any form (destructured, computed, aliased), and every way to
+  // reach a built-in at run time: getBuiltinModule, or a forbidden module named in any string.
+  ['environment', /(?<![\w$.'"`])process(?![\w$'"`])/, 'code'],
+  ['environment', /\bglobalThis\b/, 'code'],
+  ['environment', /(?<![\w$.'"`])global\s*[.[]/, 'code'],
+  ['modules', /\bgetBuiltinModule\b/, 'code'],
+  ['modules', /(['"`])(?:node:)?(?:child_process|worker_threads|cluster|https?|http2|net|tls|dns|dgram|vm|inspector|module|os|repl|process)(?:\/[^'"`]*)?\1/, 'code'],
   ['environment', /\bhomedir\b/, 'code'],
   ['clock', /\bDate\s*\.\s*now\s*\(/, 'code'],
   ['clock', /\bnew\s+Date\s*\(/, 'code'],
@@ -55,7 +61,7 @@ const SOURCE_RULES = [
   ['random', /\bMath\s*\.\s*random\s*\(/, 'code'],
   ['random', /(?<!function\s+)\b(?:randomUUID|randomBytes|randomInt|getRandomValues)\s*\(/, 'code'],
   ['eval', /\beval\s*\(/, 'code'],
-  ['eval', /\bnew\s+Function\s*\(/, 'code'],
+  ['eval', /(?<![\w$.])Function\s*\(/, 'code'],
   ['system-fonts', /\/System\/Library\/Fonts|\/Library\/Fonts|\/usr\/share\/fonts|Windows[\\/]+Fonts/i, 'code'],
   ['system-fonts', /\bsrc\s*:\s*local\s*\(/, 'code'],
   ['system-fonts', /-apple-system|BlinkMacSystemFont|\bsystem-ui\b|SF Pro|Segoe UI|Helvetica|\bArial\b/, 'entry'],
@@ -97,6 +103,123 @@ function pointerSchema(schema, pointer) {
     node = seg === '*' ? node.items : node.properties && node.properties[seg];
   }
   return node || null;
+}
+
+/** The text of the balanced (...) or {...} starting at `open`. */
+function balanced(text, open) {
+  const pairs = { '(': ')', '{': '}', '[': ']' };
+  const stack = [];
+  let quote = null;
+  for (let i = open; i < text.length; i++) {
+    const c = text[i];
+    if (quote) {
+      if (c === '\\') i++;
+      else if (c === quote) quote = null;
+      continue;
+    }
+    if (c === "'" || c === '"' || c === '`') quote = c;
+    else if (pairs[c]) stack.push(pairs[c]);
+    else if (c === stack.at(-1)) {
+      stack.pop();
+      if (!stack.length) return text.slice(open, i + 1);
+    }
+  }
+  return null;
+}
+
+/** The value of `key:` inside an object literal's text, up to the next top-level comma. */
+function propertyExpr(objectText, key) {
+  const m = new RegExp(`[{,\\s]${key}\\s*:`).exec(objectText);
+  if (!m) return null;
+  let i = m.index + m[0].length;
+  let depth = 0;
+  let quote = null;
+  const start = i;
+  for (; i < objectText.length; i++) {
+    const c = objectText[i];
+    if (quote) {
+      if (c === '\\') i++;
+      else if (c === quote) quote = null;
+      continue;
+    }
+    if (c === "'" || c === '"' || c === '`') quote = c;
+    else if ('([{'.includes(c)) depth++;
+    else if (')]}'.includes(c)) {
+      if (!depth) break;
+      depth--;
+    } else if (c === ',' && !depth) break;
+  }
+  return objectText.slice(start, i).trim();
+}
+
+/** The string values an expression can take: literals, constants, and both branches of a ?: (null when unknown). */
+function expressionValues(expr, text) {
+  const branches = expr.includes('?') ? expr.slice(expr.indexOf('?') + 1).split(':') : [expr];
+  const out = [];
+  for (const raw of branches) {
+    const b = raw.trim();
+    const lit = /^(['"])([^'"`\\]*)\1$/.exec(b);
+    if (lit) {
+      out.push(lit[2]);
+      continue;
+    }
+    if (/^[A-Za-z_$][\w$]*$/.test(b)) {
+      const decl = new RegExp(`\\bconst\\s+${b.replace(/\$/g, '\\$')}\\s*=\\s*(['"])([^'"\`\\\\]*)\\1\\s*;`).exec(text);
+      if (decl) {
+        out.push(decl[2]);
+        continue;
+      }
+    }
+    return null;
+  }
+  return out;
+}
+
+/**
+ * Every paid call a part.mjs makes must name a model its needs.models lists,
+ * verbatim: fal's model is the call's path, ElevenLabs' is the body's model_id.
+ * Read from the source, so a path built at run time is refused.
+ */
+export function paidCallFindings(text, manifest) {
+  const out = [];
+  const models = (manifest.needs && manifest.needs.models) || [];
+  const listed = new Set(models.map((m) => `${m.provider} ${m.model}`));
+  for (const m of models) if (m.model.startsWith('/')) out.push({ rule: 'models', message: `needs.models lists ${m.model} with a leading slash` });
+  const body = stripComments(text);
+  const used = new Set();
+  let calls = 0;
+  for (const m of body.matchAll(/\bline\s*\.\s*order\s*\(/g)) {
+    calls++;
+    const brace = body.indexOf('{', m.index + m[0].length - 1);
+    const call = brace >= 0 ? balanced(body, brace) : null;
+    if (!call) {
+      out.push({ rule: 'models', message: 'a paid call that is not an object literal' });
+      continue;
+    }
+    const provider = /provider\s*:\s*'([a-z]+)'/.exec(call);
+    if (!provider) {
+      out.push({ rule: 'models', message: 'a paid call that names no provider literally' });
+      continue;
+    }
+    let values;
+    if (provider[1] === 'fal') {
+      const expr = propertyExpr(call, 'path');
+      values = expr && expressionValues(expr, body);
+      if (!values) out.push({ rule: 'models', message: `a fal call whose path is not a listed model constant (${expr})` });
+    } else {
+      const ids = [...body.matchAll(/\bmodel_id\s*:\s*([^,}\n]+)/g)].map((x) => expressionValues(x[1].trim(), body));
+      values = ids.length && ids.every(Boolean) ? ids.flat() : null;
+      if (!values) out.push({ rule: 'models', message: `a ${provider[1]} call whose body model_id is not a listed model constant` });
+    }
+    for (const v of values || []) {
+      used.add(`${provider[1]} ${v}`);
+      if (!listed.has(`${provider[1]} ${v}`)) out.push({ rule: 'models', message: `a ${provider[1]} call sends ${v}, which needs.models does not list verbatim` });
+    }
+  }
+  if (models.length && !calls) out.push({ rule: 'models', message: 'needs.models lists models but part.mjs makes no paid call' });
+  if (!models.length && calls) out.push({ rule: 'models', message: 'part.mjs makes paid calls but needs.models lists none' });
+  for (const m of models) if (calls && !used.has(`${m.provider} ${m.model}`)) out.push({ rule: 'models', message: `needs.models lists ${m.model}, which no call sends` });
+  return out;
 }
 
 /** Rules part.json needs beyond its JSON schema. */
@@ -184,6 +307,7 @@ export function lintParts(partsRoot = PARTS) {
     const entry = join(folder.dir, 'part.mjs');
     if (existsSync(entry) && statSync(entry).size > MAX_ENTRY) add(entry, 'size', 'part.mjs is over 2 MB');
     if (total > MAX_FOLDER) add(folder.dir, 'size', 'the version folder is over 20 MB');
+    if (existsSync(entry)) for (const f of paidCallFindings(readFileSync(entry, 'utf8'), manifest)) add(entry, f.rule, f.message);
     if (existsSync(entry) && !/^export\s+(?:async\s+function\s+run\s*\(|(?:const|let|var)\s+run\b|\{[^}]*\brun\b[^}]*\})/m.test(readFileSync(entry, 'utf8'))) {
       add(entry, 'entry', 'part.mjs must export run(inputs, ctx)');
     }

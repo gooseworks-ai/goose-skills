@@ -105,6 +105,11 @@ test('the lint catches a part that calls fetch(), a child process, the environme
       ['network', 'const r = await fetch("https://api.example.com/x");'],
       ['modules', "import { spawn } from 'node:child_process';"],
       ['environment', 'const key = process.env.FAL_KEY;'],
+      ['environment', 'const { env } = process;'],
+      ['environment', "const p = globalThis['proc' + 'ess'];"],
+      ['modules', "const cp = getBuiltinModule('node:child_process');"],
+      ['modules', "const name = 'node:os';"],
+      ['eval', "const g = Function('return this')();"],
       ['clock', 'const t = Date.now();'],
       ['random', 'const n = Math.random();'],
       ['system-fonts', 'const f = "/System/Library/Fonts/Helvetica.ttc";'],
@@ -115,6 +120,18 @@ test('the lint catches a part that calls fetch(), a child process, the environme
       assert.ok(rules.includes(rule), `${rule} is caught for: ${line}`);
     }
     writeFileSync(entry, original);
+    // A paid part whose fal path is not the listed model, verbatim.
+    const paid = folders.find((f) => f.id === 'creator-h3');
+    cpSync(paid.dir, join(root, paid.id, paid.version), { recursive: true });
+    writeFileSync(join(root, 'index.json'), JSON.stringify(buildIndex(root)));
+    assert.deepEqual(lintParts(root).filter((x) => x.rule === 'models'), [], 'the real paid part is clean');
+    const paidEntry = join(root, paid.id, paid.version, 'part.mjs');
+    const paidSource = readFileSync(paidEntry, 'utf8');
+    writeFileSync(paidEntry, paidSource.replace("path: MODEL", "path: `/${MODEL}`"));
+    assert.ok(lintParts(root).some((x) => x.rule === 'models'), 'a path built with a leading slash is caught');
+    writeFileSync(paidEntry, paidSource.replace("const MODEL = 'minimax/h3-max/reference-to-video';", "const MODEL = 'minimax/h3-max-turbo/reference-to-video';"));
+    assert.ok(lintParts(root).some((x) => x.rule === 'models' && /does not list verbatim/.test(x.message)), 'an unlisted model is caught');
+    writeFileSync(paidEntry, paidSource);
     writeFileSync(join(root, src.id, src.version, 'helper.py'), 'print(1)\n');
     assert.ok(lintParts(root).some((x) => x.rule === 'javascript-only'), 'a Python file is caught');
     assert.ok(lintParts(root).some((x) => x.rule === 'files'), 'a file missing from part.json files is caught');
