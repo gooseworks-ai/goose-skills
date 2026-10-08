@@ -1,7 +1,11 @@
 ---
 name: create-apple-notes-mockup
 description: Render pixel-accurate Apple Notes (iPhone, light mode) screenshot mockups from a JSON note spec. Outputs HTML + PNG at the iPhone 16/15 Pro native 1180×2556. Supports paragraphs, images, checklists, dividers, autocorrect underline, smart quotes, and an optional iOS keyboard chrome overlay used by the parent video-ad molecule.
+status: superseded
+superseded_by: phone-chat@1.1.4
 ---
+
+> **Superseded:** the video kit now does this with the phone-chat part, version 1.1.4, in the parts folder of this repository. Every phone-chat style is a style file that draws the same screen frame by frame from the plan's scenes, with the original sounds, in the kit's browser. This atom stays, unchanged in behaviour, for skills outside the kit until they move; its scripts still run.
 
 # create-apple-notes-mockup
 
@@ -55,7 +59,7 @@ The skill is deterministic — it does not embed an LLM. The orchestrating agent
 - `title` — string. Bold display headline, single line.
 - `body[]` — block list. Supported block types:
   - `paragraph` — `{ "text": "..." }`. Smart punctuation is auto-applied (`'` → `'`, `"` → `"`, `...` → `…`, `--` → `–`, `---` → `—`).
-  - `image` — `{ "src": "<path|url>", "caption": "optional" }`. Relative paths are resolved against the spec file's directory and inlined as data URIs.
+  - `image` — `{ "src": "<path|url>", "caption": "optional" }`. Relative paths are resolved against the spec file's directory and inlined as data URIs. `examples/with-image.json` uses a placeholder `src`; point it at an image of your own before rendering.
   - `checklist` — `{ "items": [{ "text": "...", "checked": true|false }] }`. Checked items get yellow filled circles with strikethrough; unchecked get gray-outlined circles.
   - `divider` — horizontal rule.
 - `cursor` — `"title" | "end" | null`. `"title"` places the yellow caret at the end of the title; `"end"` places it at the end of the last paragraph; `null` hides it.
@@ -125,7 +129,6 @@ A symlink to `create-imessage-mockup/node_modules` ships with the repo, so on a 
 | `screenshot.js` | HTML → PNG via Playwright (chromium headless) at 1180×2556, DPR 2 |
 | `templates/note.css` | All visual styling (status bar, toolbar, body, checklist, image, keyboard) |
 | `templates/icons.js` | Inline SVG icons (back chevron, undo, share, more, done check, signal, wifi, battery, format toolbar icons, keyboard glyphs) |
-| `assets/samples/sample-landscape.jpg` | Sample image used by `examples/with-image.json` |
 | `examples/*.json` | 6 reference notes covering every variation (title-only, mid-typing, long multi-paragraph, with checklist, with image, frame-1 lowercase-keyboard) |
 | `tests/run-all.sh` | Render every example into `tests/output/` for visual review |
 | `apple-notes-skill-build.html` | Side-by-side review board comparing reference video frames to generated PNGs |

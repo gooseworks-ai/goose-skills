@@ -1,8 +1,8 @@
 # Smoke test — render-absurdist-explainer
 
 Verifies the free PIL + ffmpeg assembly end-to-end. No paid calls. Needs: Python 3 with
-Pillow, ffmpeg/ffprobe, and a sans-serif TrueType font (DejaVu ships with Pillow on most
-Linux; macOS uses Arial). You supply per-scene clips + VO mp3s + a music bed + a real
+Pillow, ffmpeg/ffprobe, and a sans-serif TrueType font (DejaVu on most Linux, Arial on
+macOS, Arial or Segoe UI on Windows). You supply per-scene clips + VO mp3s + a music bed + a real
 product photo (any 1080×1920 mp4s and a ≥1000px product jpg work for a smoke run).
 
 ## Setup
@@ -16,6 +16,7 @@ mkdir -p /tmp/absurdist-smoke
 #   - scenes[].vo    : the per-scene VO mp3s (target_sec = ffprobe of each)
 #   - end_card.product_image : a real retail product photo (>=1000px)
 #   - music_bed      : an instrumental bed (or set to null to run VO-only)
+#   - end_card.vo    : the end card's spoken line (or remove the key for a silent card)
 #   - captions + end_card copy + brand_palette : your brand's (the example's are a
 #     worked example, not defaults)
 cp config.example.json /tmp/absurdist-smoke/config.json
@@ -47,12 +48,16 @@ python3 compose.py --config /tmp/absurdist-smoke/config.json \
   bottle; NO smeared/AI-rendered text.
 - `make_captions.py` writes `captions.ass` — one cue per scene with a caption, the end card
   suppressed, `start = scene_start + 0.08s`.
-- `compose.py` prints per-scene retime lines, the total runtime, and a final
-  `WROTE ... (expected ~Xs, delta ±...)`. `master.mp4` is 1080×1920, 30fps; its duration is
-  within ±0.1s of `sum(scenes[].target_sec) + end_card.dwell_sec`.
+- `compose.py` prints per-scene retime lines, the total runtime, a `loudness:` line, and
+  a final `WROTE ... (expected ~Xs, delta ...)`. `master.mp4` is 1080x1920, 30fps; its
+  duration is within 0.1s of `sum(scenes[].target_sec)` + the end-card dwell.
+- The `loudness:` line reads between -14.5 and -13.5 LUFS, with a true peak <= -1.5 dBFS.
+- With `end_card.vo` set, the line is heard over the end card. If the line + 0.5s is
+  longer than `dwell_sec`, compose prints the stretched dwell.
+- The caption burn works with an absolute `captions_ass` path, on Windows too.
 - Run the `watch` skill on `master.mp4`: every character's look holds across scenes,
   the single narrator voice (whoever the recipe's `choices.narrator` picked) carries the
-  whole spot, the motif word lands ≥3×, no AI brand text
+  whole spot, no AI brand text
   leaked into a cartoon background, captions don't collide with on-screen text, and the end
   card is the real product with legible copy.
 
@@ -61,11 +66,14 @@ python3 compose.py --config /tmp/absurdist-smoke/config.json \
 - Concat drops frames / audio desyncs → a segment wasn't re-encoded to 30fps (all segments
   MUST be `libx264 -r 30` before the concat demuxer). compose.py always re-encodes, so this
   means a source clip fed the wrong stream — check the ffprobe output.
-- Master loudness is off (not ~-14 LUFS) → the mix busses were bypassed; confirm both
-  `loudnorm` filters ran and `amix normalize=0`.
+- compose.py warns that the master is outside the loudness target -> the master pass
+  could not converge. Check the VO and music files are not silent or clipped.
 - End card shows a cartoon/AI bottle or smeared text → `end_card.product_image` points at
-  an AI render, or a font failed to load (build_endcard falls back to DejaVu → Arial →
-  Pillow default; a Pillow-default fallback looks bitmapped — install DejaVu/Arial).
+  an AI render, or a font failed to load (build_endcard tries DejaVu, Arial, Segoe UI,
+  then Pillow's built-in font and prints a warning - install DejaVu or Arial).
+- End-card text is a different colour from the palette -> the brand colour was too close
+  to the background. build_endcard printed a contrast warning; set `end_card.background`
+  or change the palette.
 - Caption flashes a frame before a cut → the +0.08s offset was removed from make_captions.
 - Duration far off the summed windows → a `target_sec` wasn't the measured VO duration
   (ffprobe each VO mp3; don't use planned word counts).

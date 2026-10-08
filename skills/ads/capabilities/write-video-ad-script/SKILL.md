@@ -2,6 +2,7 @@
 name: write-video-ad-script
 description: Write a short-form video ad from an evidence-backed angle and the selected template's actual recipe. Reuses or fetches ad-angle-miner, preserves the chosen angle, plans words and visuals together, checks product claims and production fit, and delivers the strongest script with useful alternatives. Use before video production and for script rewrites. Customer language is one input alongside audience, promise, product proof, offer and format.
 status: active
+version: "1.0.4"
 ---
 
 # Human version
@@ -23,8 +24,7 @@ still plan its visual promise and payoff; skip spoken copy, not creative strateg
 
 When the user supplied exact lines, keep them verbatim. Check them in report-only mode and
 raise material timing, claim or format conflicts. Rewrite only with their authorization.
-The runtime owns research-spend permissions and production approval. Follow its existing
-review round; this skill adds no approval round of its own.
+This skill adds no review round of its own; the script goes into the run's existing review.
 
 ## Inputs and precedence
 
@@ -45,45 +45,14 @@ A reference provides a storytelling structure; the product's facts provide claim
 
 ## Step 0. Load the angle research, explicitly
 
-**Fetch ad-angle-miner through the skill catalogue if its instructions and handoff reference
-are not already loaded.** It is a declared dependency. Fetching it does not run research.
-
-With the GooseWorks MCP, use `catalog_fetch {type: "skill", slug: "ad-angle-miner"}`;
-with the CLI, use `gooseworks fetch ad-angle-miner`. Read the returned instructions and
-handoff files. If an explicitly supplied draft/local copy is under test, load that
-copy and record the override rather than claiming the published skill includes it.
-Record how the dependency was loaded, which bank/pointer was read, and whether research
-was reused or run. Naming the miner in a plan is not loading or executing it.
-
-Check, in order:
-
-1. An angle bank or selected idea already present in this run.
-2. The brief's research pointer and selected angle id.
-3. The brand and product's saved video-scripts workspace: angle-bank.json, beside
-   customer-words.json. Check a legacy brand-level bank only if its product scope matches.
-4. Legacy angle-bank Markdown and ideas JSON from a previous miner run. Read their actual
-   sources and normalize them into the shared handoff; never manufacture missing evidence.
-
-The shared handoff is video-angle-bank.v1, defined in ad-angle-miner's video-handoff reference.
-Use the preparation script to check brand, product, source ids and template compatibility,
-and write angle-context.json. Preserve selected ids and the original angle. Keep facts,
-quotes and observed ad structures separate. Refresh changing prices, offers and claims
-against current product sources; research age alone does not invalidate every insight.
-
-Retain each angle's `buyer_case` and `product_role`. For a legacy bank missing them,
-enrich the selected angle from its actual sources before Step 2, keeping its id and
-promise. Record an unsupported connection as a gap, not an invented mechanism. These
-fields travel across recipes; their dialogue, narrative role and visible proof do not.
-
-**If no usable bank exists, run ad-angle-miner in video mode**, limited to this audience,
-product and selected template. Reuse existing evidence. Its output is an angle bank, not a
-second script-writing workflow. Paid research follows the runtime's permissions. If access
-is missing or paid research is declined, build a smaller, explicitly provisional bank from
-verified product facts and available references. Do not require 20 reviews or invent quotes.
-
-If the user has already chosen an angle, research supports that direction; it does not
-reopen the choice. If the selected angle cannot be supported, name the missing proof and
-propose a supported version. Never pretend to have run the miner when it could not run.
+Load ad-angle-miner with `catalog_fetch {type: "skill", slug: "ad-angle-miner"}` unless its
+instructions and handoff reference are already loaded; fetching it does not run research.
+Reuse an existing angle bank (this run, the brief's pointer, the product's saved
+angle-bank.json, then legacy miner output), normalize it to video-angle-bank.v1 with the
+preparation script, and keep the selected angle. With no usable bank, run the miner in
+video mode for this audience, product and template. Follow
+[angle research](references/angle-research.md) for the order, the checks and what to
+record; never claim the miner ran when it did not.
 
 ## Step 1. Bind the template before writing
 
@@ -127,63 +96,14 @@ demonstration is not verified proof; never generate a fake UI to fill the gap.
 
 ## Step 2. Form the creative brief
 
-Read current product/variant evidence from the connected Brain/brand tools and the
-project's saved history **before drafting**, using their existing scopes and IDs. The
-angle bank supplies research; it does not silently override a newer user direction,
-offer or variant. Read the actual source behind each material field and retain its
-pointer/revision. Reuse answered questions. Surface only unresolved conflicts that
-change the promise, execution or spend at the existing review boundary.
-
-Save the concise current-run `creative-brief.json` described in the files reference.
-Keep approved product facts separate from customer language and authored direction.
-Record the exact variant, buyer situation, supported mechanism, objective, offer,
-CTA, constraints, relevant previous decisions, locked words and delivery intent.
-An absent offer is explicitly “no offer supplied”; an unknown claim or variant is
-a gap, not a default. Retrieve prior rejected wording with its reason and scope;
-carry project-specific taste only when it applies to this run. Do not turn it into a
-standing brand rule. The existing history file remains the durable record.
-
-Pass this brief to `prepare_angle_context.py --brief …`; it travels inside the
-existing angle-context to lint, the critic and production. New custom and template
-runs set `requires_creative_brief: true` in their shape. Older saved contexts remain
-readable; enrich them before a new production run instead of inventing provenance.
-If a fetched preparation rejects `--brief`, stop and refresh the writer through the
-existing release flow; do not drop the argument or its strict requirement. The files
-reference's `verify_handoff.py` smoke tests the actual saved package before release,
-including a missing-brief rejection and legacy compatibility. A source merge alone
-does not establish that a connection serves those scripts.
-
-Load [buyer perspective and product explanation](references/buyer-and-mechanism.md).
-Use the current campaign's consumer role and a concrete task or decision. Map what
-the buyer supplies or does, what the offering does, what they receive and why it
-helps here. That connection must survive in the actual words or feasible actions;
-neither a private brief nor a benefit label can explain it for the viewer.
-
-For each eligible angle, write a compact brief:
-
-- One audience in a recognizable situation, and its awareness or buying context.
-- One promise that matters, and why this product can credibly deliver it.
-- The mechanism or differentiator, supported facts and one feasible proof device.
-- The desire, identity, tension or objection the story uses. Pain is optional.
-- The offer, CTA, visual opening and payoff, within the selected format.
-
-Establish this message **before selecting the reference or locking a street interaction
-subtype**. State what the viewer should understand and why that matters to the objective.
-A supported preparation detail is not automatically a reason to choose the product. Do
-not reshape the audience or buying concern to fit an available example. If an internally
-generated angle has no useful brand message, return to the angle research; if the user
-selected it, preserve that choice and flag the concrete weakness rather than silently
-changing it.
-
-Buyer language improves relevance and voice. It is not a mandatory plot and does not
-substantiate the brand's claims. Competitor complaints suggest a research question; they
-do not establish that this product fixes it. Quotes may be attributed as real quotes when
-appropriate, never recast as an invented narrator's own purchase or result. Fictional
-scenes must not masquerade as genuine interviews, reviews or customer experience.
-
-Reuse collected quotes and history before collecting more. Store verbatim quotes with real
-sources and their product/competitor scope. A product-led demo or launch may have no quotes;
-verified facts and a strong feasible demonstration are valid foundations.
+Before drafting, read current product evidence and the project's saved history, then save
+`creative-brief.json` (files reference): variant, buyer situation, supported mechanism,
+objective, offer (or "no offer supplied"), CTA, constraints, prior decisions with exact
+rejected wording, locked words and delivery intent. Pass it to `prepare_angle_context.py
+--brief`. Establish the message before choosing a reference. Buyer language sets voice;
+it never substantiates a claim, and fiction never poses as a real review. Follow
+[the creative brief](references/creative-brief.md) and
+[buyer perspective and product explanation](references/buyer-and-mechanism.md).
 
 ## Step 3. Learn the reference's persuasion
 
@@ -291,68 +211,20 @@ Create candidates.json with angle ids, evidence ids, claims, hooks, beats and vi
 
 ## Step 6. Validate, critique, repair
 
-Run the rule check in strict mode with shape, brand rules, customer words and angle context.
-Pass references.json too. Generated dialogue must cite an observed conversation record;
-street ads require the complete commercial interaction above. A claim-only research bank
-or partial source cannot satisfy this requirement.
-It checks research scope, angle preservation, source ids, template identity, required slots
-(including repeated speakers), text limits, speakers and available assets. Strict mode also
-enforces profiled speech budgets and explicit word limits exactly. Fix errors and
-resolve material warnings. The machine cannot prove that a cited fact entails a claim.
-
-Before full-context critique, run the scene-and-hook guide's brief-blind opening review.
-Give a fresh reviewer only the exact first picture/action, audible words and rendered
-text. Require an evidence-based account of what is happening and what comes next; do not
-let the brief or ending rescue missing context. Repair a confusing opening before scoring
-the full ad. Keep this diagnostic separate from frozen evaluation rubrics.
-
-Then run the independent critic with the same context and references. Set its writer-family
-to the actual writer and select a critic from a different family; a blanket ban on Claude
-does not make an OpenAI critic independent of a Codex writer. It sees the campaign
-brief, recipe, visual plans and evidence, not just the lines. It checks strategic fit,
-template fit, feasible visual proof, claim support, hook payoff, clarity and voice. Never
-let a strong style score compensate for an unsupported claim or an impossible execution.
-Apply supported edits, then recheck. The final chosen hook must also pass with the body.
-Inspect `pass_rankings`, `needs_review` and `kill_reasons`. A split fatal-defect judgment
-needs resolution; an order-sensitive top choice remains a shortlist. Do not treat a
-merged average or Borda ranking as agreement between critic passes.
-For podcast/street dialogue, each critic pass must reach at least 8/10 on spoken and
-template_fit, with supported claims and no unresolved defects. This is the proposed
-4/5 quality floor for those criteria, not a calibrated guarantee of human preference.
-For a street ad also review situational credibility and the brand's useful role against
-the words **and** visible actions. Ordinary vocabulary alone cannot clear either check.
-Street `strategic_fit` must also reach 8/10 in every critic pass. A relevant reason to
-consider this offering must appear in the actual encounter; a name, bedtime label or
-incidental preparation detail cannot substitute for it. The merger treats a low or missing
-street strategic score as unresolved even when speech, template fit and factual support
-score highly. Diagnose a failed premise before proposing line edits.
-If dialogue_ready is false, repair the exchange and recheck. After two supported repair
-passes, retain a failed result as a draft and report the remaining defect; do not relax
-the rubric or loop until the judge returns a desired number.
-
-The files reference explains the critic's relay and failure exits. If it is unavailable,
-do an explicit agent review against the same rubric and record that limitation; never
-record a failed critic call as a pass. If every candidate fails, repair or regenerate
-within the supported angle and recipe before review. Do not automatically choose the
-highest-ranked rejected candidate.
-
-**The second opinion.** Run the critique script with the same files and the brief. A
-model from a different family (never Claude) judges every concept twice, once in each
-order, because judges favour whatever they read first. It scores hook, specificity, how
-spoken it sounds, proof, payoff and freshness, and gives a best hook, line edits and a
-ranking. This is a paid operation: use the current managed quote and host approval, never a fixed credit claim. For a custom project whose spend gate refuses a pre-approval critic, perform the same rubric locally before review, save the scores and edits, and label the reviewer honestly. Do not submit a paid critic or retry a 409 before approval. A different-model critic is required only where the host supports it in the current phase and approved budget; never claim it ran when it did not.
-**Optional Jev screen.** Jev may cheaply judge narrow text questions about relevance,
-supported claims, format fit and hook payoff. Use separate criteria, keep probabilities,
-include an insufficient-context route and compare with labelled examples before enabling
-an automatic gate. Jev does not write repairs or inspect video. Keep the generative critic
-for diagnosis and edits. The judge-contract reference defines the evaluation and proxy
-integration boundary; Jev is not a required production provider.
+Run the rule check in strict mode (shape, brand rules, customer words, angle context,
+references), fix errors and material warnings, then run the brief-blind opening review and
+the independent critic from a different model family. Podcast and street dialogue need at
+least 8/10 on spoken and template_fit in every pass (street also on strategic_fit), with
+supported claims. Repair at most twice, then report the remaining defect; never relax the
+rubric or pick the best rejected candidate. Follow
+[validate, critique, repair](references/validate-and-repair.md) for the exact checks,
+critic exits and the optional Jev screen.
 
 ## Step 7. Deliver the review
 
 Take the strongest eligible concept and validated hook into the recipe's native script
 shape, with its visual plan. Show up to two viable alternatives in the same review when
-the angle was open. Do not add a separate pause. Existing runtime approval still applies.
+the angle was open. Do not add a separate pause.
 
 Explain briefly why this promise suits this audience and what the video will show. When
 research is provisional or essential proof is missing, say so plainly. Keep private quote

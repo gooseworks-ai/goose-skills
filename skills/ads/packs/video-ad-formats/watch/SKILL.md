@@ -11,6 +11,8 @@ Look at a rendered video and report what is actually on screen and in the audio.
 
 This is the observation primitive that `watch-and-refine` calls before deciding what to fix. Other review and editing skills can call it directly.
 
+Watch every assembled generated video at up to 2 fps. Real-time playback smooths over what frames show plainly: a half-second face flash, a wardrobe pop at a cut, a frozen scene, an invented background element.
+
 ## Inputs
 
 - `video` — path to a local video file. Required.

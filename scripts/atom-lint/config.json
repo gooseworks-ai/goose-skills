@@ -1,0 +1,53 @@
+{
+  "_comment": "Settings for scripts/atom-lint.js and scripts/check-atom-versions.js. not_video: skills under skills/ads that are not video atoms, so neither check reads them. shared_atoms: the shared atoms that recipes and styles reuse (reported on their own line). strict_atoms: atoms with no findings left; any finding in them fails, so they stay clean. limits are bytes.",
+  "not_video": [
+    "answer-ads-questions",
+    "google-ad-scraper",
+    "meta-ad-scraper",
+    "newsletter-sponsorship-finder"
+  ],
+  "shared_atoms": [
+    "caption-burn",
+    "compose-creator-layer",
+    "create-creator-takes-h3",
+    "create-image-fal",
+    "create-image-gpt-image-fal",
+    "create-kinetic-typography",
+    "create-music-elevenlabs",
+    "create-video-fal",
+    "create-video-seedance-2-fal",
+    "create-vo-elevenlabs",
+    "footage-cutlist",
+    "media-proxy",
+    "mix-master",
+    "render-hook-replacement",
+    "render-ios-keyboard",
+    "review-finished-ad",
+    "review-ugc-render",
+    "stitch-videos-ffmpeg",
+    "ugc-fixloop",
+    "verify-product-image",
+    "watch",
+    "write-video-ad-script"
+  ],
+  "strict_atoms": [
+    "compose-creator-layer",
+    "create-kinetic-typography",
+    "footage-cutlist",
+    "media-proxy",
+    "render-hook-replacement",
+    "stitch-videos-ffmpeg",
+    "ugc-fixloop",
+    "verify-product-image",
+    "watch"
+  ],
+  "limits": {
+    "skill_md_bytes": 16384,
+    "other_md_bytes": 20480
+  },
+  "billing_helper": {
+    "home": "media-proxy",
+    "file": "media_proxy.py",
+    "shim_max_bytes": 4096
+  }
+}

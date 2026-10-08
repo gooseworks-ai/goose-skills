@@ -19,7 +19,7 @@
     "create-video-fal",
     "watch"
   ],
-  "version": 2,
+  "version": "2.0.0",
   "features": [
     "Two-host dialogue rendering",
     "Measured audio timeline",

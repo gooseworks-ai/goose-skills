@@ -46,7 +46,7 @@ def timestamped_tts(text, voice, out, model, settings=None, proxy=None):
         body["voice_settings"] = settings
     endpoint = f"/v1/text-to-speech/{voice}/with-timestamps"
     if proxy.relay_mode():
-        result = proxy._relay("elevenlabs", "data_post_provider",
+        result = proxy._relay("elevenlabs", "data_post",
                               {"provider": "elevenlabs", "path": endpoint, "body": body},
                               "the tool's JSON reply must include alignment and download_url")
     else:

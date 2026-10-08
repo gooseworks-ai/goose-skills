@@ -2,6 +2,7 @@
   "slug": "create-image-fal",
   "category": "capabilities",
   "domain": "ads",
+  "version": "1.2.1",
   "tags": [
     "ads"
   ],

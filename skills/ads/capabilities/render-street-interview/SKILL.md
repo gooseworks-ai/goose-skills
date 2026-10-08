@@ -2,7 +2,7 @@
 name: render-street-interview
 description: Write a street-interview ad from a complete inspected commercial interaction and current brand facts. Render product guessing, or prepare mic-only, prepared-sample or visible-task conversation script/prompt previews. Premise, actions and ad connection vary; capture rules stay fixed. Conversation media delivery is unverified.
 status: draft
-version: 2
+version: "2.0.2"
 updated: 2026-10-06
 ---
 

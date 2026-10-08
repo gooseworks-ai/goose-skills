@@ -142,6 +142,9 @@ function scanCategory(category) {
         description: metaFromFrontmatter.description || '',
         tags: Array.isArray(meta.tags) ? meta.tags.join(', ') : '',
         path: `skills/${domain}/${category}/${slug}`,
+        // Atom version (GV-29): recipes and styles pin it, so it is a top-level
+        // field. Only skills that declare one carry it.
+        ...(meta.version !== undefined ? { version: meta.version } : {}),
         files: allFiles,
         metadata: meta,
       });
@@ -189,12 +192,17 @@ function scanPacks(registrySkills) {
         const content = fs.readFileSync(skillMd, 'utf8');
         const frontmatter = parseFrontmatter(content);
         const allFiles = collectFiles(skillDir).map((f) => relFromRoot(f));
+        const subMetaPath = path.join(skillDir, 'skill.meta.json');
+        const subMeta = fs.existsSync(subMetaPath)
+          ? JSON.parse(fs.readFileSync(subMetaPath, 'utf8'))
+          : {};
 
         subSkills.push({
           slug: skillSlug,
           name: frontmatter.name || skillSlug,
           description: frontmatter.description || '',
           path: `skills/${domain}/packs/${slug}/${skillSlug}`,
+          ...(subMeta.version !== undefined ? { version: subMeta.version } : {}),
           files: allFiles,
           source: 'pack',
         });
@@ -349,6 +357,7 @@ for (const pack of packs) {
     promotedFromPacks.push({
       slug: sub.slug,
       name: sub.name,
+      ...(sub.version !== undefined ? { version: sub.version } : {}),
       // Treat pack sub-skills as capabilities for catalog purposes.
       // The backend's PredefinedSkillsSyncService gates is_active by category;
       // anything outside ACTIVE_REPO_CATEGORIES gets retired immediately.
@@ -362,6 +371,7 @@ for (const pack of packs) {
         slug: sub.slug,
         category: 'capabilities',
         pack: pack.slug,
+        ...(sub.version !== undefined ? { version: sub.version } : {}),
         tags: Array.isArray(pack.metadata && pack.metadata.tags) ? pack.metadata.tags : [],
         // Pack sub-skills aren't installable standalone — install the parent pack.
         installation: {
@@ -417,7 +427,7 @@ if (fs.existsSync(OUTPUT)) {
 }
 
 const index = {
-  version: '1.3.0',
+  version: '1.4.0',
   generated: generatedDate,
   skills,
   packs,

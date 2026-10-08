@@ -126,7 +126,7 @@ Jev score cannot override a human rejection or establish that a reference fits t
 The later human review called the fuller buyer-and-product-explanation scripts “much
 better”, while the frozen Jev rubric still classified all six as needing a rewrite.
 Keep both observations. That disagreement is evidence against using this uncalibrated
-rubric as an automatic creative approval gate. The human accepted the direction and
+rubric as an automatic creative pass/fail screen. The human accepted the direction and
 requested podcast and UGC tests before approving shared changes.
 
 When testing another format, preserve common speech, buyer relevance and claim checks,

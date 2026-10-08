@@ -2,6 +2,7 @@
   "slug": "create-creator-takes-h3",
   "category": "capabilities",
   "domain": "ads",
+  "version": "2.1.0",
   "tags": [
     "ads",
     "content"

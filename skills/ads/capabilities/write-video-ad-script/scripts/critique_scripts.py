@@ -20,7 +20,7 @@ Run it from the folder that holds working/:
 
 Credentials and billing are media_proxy's: the sandbox token, else the CLI login, else
 MCP RELAY. In relay mode both passes are written at once under working/mcp-requests/ and
-the script exits 3: make each call (data_post_provider, then job_get until complete), save
+the script exits 3: make each call (data_post, then job_get until complete), save
 each result where its request says, and run this same command again. GW_PROJECT_ID must be
 set (every call is billed to that video project).
 
