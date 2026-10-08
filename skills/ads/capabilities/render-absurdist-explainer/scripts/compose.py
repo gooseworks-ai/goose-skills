@@ -109,7 +109,7 @@ def master_audio(mix, out):
                      f"alimiter=limit={10 ** (ceiling / 20):.4f}:level=disabled,"
                      f"aresample=44100"),
              "-ar", "44100", "-ac", "2", "-c:a", "aac", "-b:a", "192k", out])
-        lufs, peak = measure(out)
+        lufs, peak = measure(out) or (-70.0, -70.0)
         i_ok, tp_ok = I_MIN <= lufs <= I_MAX, peak <= TP_MAX
         if i_ok and tp_ok:
             break
@@ -131,7 +131,7 @@ def main():
     ap.add_argument("--out", required=True, help="output master mp4 path")
     a = ap.parse_args()
 
-    with open(a.config, encoding="utf-8") as f:
+    with open(a.config, encoding="utf-8-sig") as f:   # UTF-8, with or without a BOM
         cfg = json.load(f)
     work = os.path.abspath(a.work_dir)
     out = os.path.abspath(a.out)
@@ -293,7 +293,7 @@ def main():
         # filtergraph). Copy the file into the work dir and run ffmpeg there, so the
         # filter sees a bare relative name.
         local_ass = os.path.join(seg_dir, "captions.ass")
-        if os.path.abspath(captions_ass) != local_ass:
+        if not (os.path.exists(local_ass) and os.path.samefile(captions_ass, local_ass)):
             shutil.copyfile(captions_ass, local_ass)
         run(["ffmpeg", "-y", "-loglevel", "error", "-i", video, "-i", audio,
              "-vf", "ass=captions.ass",

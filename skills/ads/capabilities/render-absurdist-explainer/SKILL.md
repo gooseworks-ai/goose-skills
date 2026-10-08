@@ -101,7 +101,8 @@ read slow), `captions_ass`, and `caption_style`. See `config.example.json`.
   line's duration + 0.5s. Leave it out for a silent end card (music only).
   `end_card.atempo` overrides the global `atempo` for this line.
 - **Paths** may be absolute, including Windows paths (`C:/...`), `captions_ass` too.
-- **The config is read as UTF-8.** Save it as UTF-8 if any text has non-ASCII characters.
+- **The config is read as UTF-8** (with or without a BOM). Save it as UTF-8 if any text
+  has non-ASCII characters.
 - **Fonts.** The end card uses DejaVu (Linux), Arial (macOS), or Arial / Segoe UI
   (Windows). If none is found it falls back to Pillow's built-in font at the right size.
 
@@ -126,6 +127,10 @@ read slow), `captions_ass`, and `caption_style`. See `config.example.json`.
 - **Captions are one cue per scene.** The whole sentence is on screen from the start of
   the scene, before most of it has been spoken. Captions are not timed to the words.
   This is not fixed yet.
+- **A caption can show for one frame after its cut.** Scene lengths are not whole frames,
+  so the video cut can land a few milliseconds before the caption's end time. On the
+  Brightkettle run the last scene's caption shows for one frame over the end card. This
+  was there before the Windows fixes and is not fixed yet.
 
 ## Requires
 

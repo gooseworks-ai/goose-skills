@@ -123,7 +123,7 @@ def main():
     ap.add_argument("--out", help="output PNG path (defaults to config.end_card.image)")
     a = ap.parse_args()
 
-    with open(a.config, encoding="utf-8") as f:
+    with open(a.config, encoding="utf-8-sig") as f:   # UTF-8, with or without a BOM
         cfg = json.load(f)
     ec = cfg["end_card"]
     palette = cfg.get("brand_palette", {})
