@@ -9,7 +9,9 @@ it renders the master mp4:
 
   1. Per-scene retime  — each clip is retimed to its MEASURED VO window:
        scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,fps=30,setsar=1
-       then tpad=stop_mode=clone (if the VO is longer than the clip) else -t (trim).
+       then tpad=stop_mode=clone (if the VO is longer than the clip) and a trim.
+     Each window is first snapped to a whole number of frames (see snap()), so the
+     video cuts, the VO windows and the caption cues all share the same cut times.
      Every segment is RE-ENCODED to identical libx264/crf18/yuv420p/30fps so the concat
      demuxer never silently drops frames on a framerate mismatch.
   2. End card         — the pre-built endcard.png (real product composite, see
@@ -57,6 +59,16 @@ LIMIT_DB = -2.0               # first limiter ceiling; AAC encoding adds a littl
 MASTER_PASSES = 4
 
 END_CARD_VO_TAIL = 0.5        # the end card holds at least this long after its spoken line
+
+
+def snap(sec):
+    """Snap a duration to whole frames. Return (frames, seconds).
+
+    make_captions.py uses the SAME rule. Keep the two in step, or a caption will
+    outlive its cut by a frame.
+    """
+    frames = int(float(sec) * FPS + 0.5)
+    return frames, frames / FPS
 
 
 def run(cmd, quiet=True, cwd=None):
@@ -160,6 +172,7 @@ def main():
             print(f"  end-card dwell {ec_dwell:.2f}s -> {need:.2f}s "
                   f"(spoken line {ec_vo_dur:.2f}s + {END_CARD_VO_TAIL}s)")
             ec_dwell = need
+    ec_frames, ec_dwell = snap(ec_dwell)
 
     # -------------------------------------------------------------------
     # 1. per-scene video segments (retime -> identical 30fps encode)
@@ -169,15 +182,16 @@ def main():
         for s in scenes:
             n = s["id"]
             clip = s["clip"]
-            tgt = float(s["target_sec"])
+            frames, tgt = snap(s["target_sec"])
             seg = os.path.join(seg_dir, f"seg-{n}.mp4")
             src_dur = ffprobe_dur(clip)
             vf = "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,fps=30,setsar=1"
-            pad = tgt - src_dur
-            if pad > 0.05:
-                vf += f",tpad=stop_mode=clone:stop_duration={pad:.3f}"
+            # hold the last frame past the target, then cut at an exact frame count, so
+            # the segment is never a frame short
+            pad = max(tgt - src_dur, 0.0) + 2.0 / FPS
+            vf += f",tpad=stop_mode=clone:stop_duration={pad:.3f}"
             run(["ffmpeg", "-y", "-loglevel", "error", "-i", clip,
-                 "-vf", vf, "-t", f"{tgt:.3f}",
+                 "-vf", vf, "-frames:v", str(frames),
                  "-c:v", "libx264", "-preset", PRESET, "-crf", str(CRF_SEG),
                  "-pix_fmt", "yuv420p", "-r", str(FPS), "-an", seg])
             cf.write(f"file 'seg-{n}.mp4'\n")
@@ -186,7 +200,7 @@ def main():
         # end card: Ken-Burns the real-product PIL composite (never AI)
         ec_img = endcard["image"]
         zoom_to = float(endcard.get("zoom_to", 1.04))
-        frames = int(round(ec_dwell * FPS))
+        frames = ec_frames
         ec_seg = os.path.join(seg_dir, "seg-endcard.mp4")
         # slow continuous 1.00 -> zoom_to over the dwell. Feed a SINGLE image frame
         # (-loop 1 -frames:v 1 into the graph via zoompan d=<frames>) so zoompan emits
@@ -217,7 +231,7 @@ def main():
     with open(voconcat, "w") as vf:
         for s in scenes:
             n = s["id"]
-            tgt = float(s["target_sec"])
+            tgt = snap(s["target_sec"])[1]
             vo = s.get("vo")
             wav = os.path.join(seg_dir, f"vo-{n}.wav")
             atempo = s.get("atempo", global_atempo)
@@ -238,7 +252,7 @@ def main():
 
         # end-card window: the spoken line (end_card.vo) at the start of the window, padded
         # with silence to the dwell; or silence alone when there is no line. The audio must
-        # span the full video, or -shortest would truncate the master and drop the end card.
+        # span the full video.
         ec_wav = os.path.join(seg_dir, "vo-endcard.wav")
         if ec_vo:
             af = [f"atempo={ec_atempo}"] if ec_atempo else []
@@ -292,6 +306,8 @@ def main():
         # The ass= filter cannot take an absolute Windows path (the drive colon breaks the
         # filtergraph). Copy the file into the work dir and run ffmpeg there, so the
         # filter sees a bare relative name.
+        # No -shortest: the audio and the video are the same length by construction, and
+        # -shortest would drop the last few video frames when the audio ends a hair early.
         local_ass = os.path.join(seg_dir, "captions.ass")
         if not (os.path.exists(local_ass) and os.path.samefile(captions_ass, local_ass)):
             shutil.copyfile(captions_ass, local_ass)
@@ -300,14 +316,14 @@ def main():
              "-map", "0:v", "-map", "1:a",
              "-c:v", "libx264", "-preset", PRESET, "-crf", str(CRF_MASTER),
              "-pix_fmt", "yuv420p", "-r", str(FPS),
-             "-c:a", "copy", "-shortest", out], cwd=seg_dir)
+             "-c:a", "copy", out], cwd=seg_dir)
     else:
         run(["ffmpeg", "-y", "-loglevel", "error", "-i", video, "-i", audio,
              "-map", "0:v", "-map", "1:a",
-             "-c:v", "copy", "-c:a", "copy", "-shortest", out])
+             "-c:v", "copy", "-c:a", "copy", out])
 
     md = ffprobe_dur(out)
-    expected = sum(float(s["target_sec"]) for s in scenes) + ec_dwell
+    expected = sum(snap(s["target_sec"])[1] for s in scenes) + ec_dwell
     print(f"WROTE {out}  {md:.2f}s (expected ~{expected:.2f}s, "
           f"delta {md-expected:+.2f}s)")
 

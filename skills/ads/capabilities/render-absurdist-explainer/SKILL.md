@@ -47,7 +47,10 @@ story shape, a cast, a look, a narrator or a music style.
 
 1. **Per-scene retime.** Each i2v clip is retimed to its **measured** VO window
    (`scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,fps=30,setsar=1`,
-   then `tpad=stop_mode=clone` if the VO is longer than the clip, else `-t` trim).
+   then `tpad=stop_mode=clone` if the VO is longer than the clip, else a trim). Each
+   window is snapped to a whole number of frames first. `compose.py` and
+   `make_captions.py` use the same rule, so video cuts, VO windows and caption cues share
+   the same cut times and a caption never outlives its cut.
 2. **Identical re-encode.** Every segment is re-encoded `libx264 -crf 18 -pix_fmt yuv420p
    -r 30` even if already correct — a framerate mismatch makes the concat demuxer silently
    drop frames.
@@ -127,10 +130,6 @@ read slow), `captions_ass`, and `caption_style`. See `config.example.json`.
 - **Captions are one cue per scene.** The whole sentence is on screen from the start of
   the scene, before most of it has been spoken. Captions are not timed to the words.
   This is not fixed yet.
-- **A caption can show for one frame after its cut.** Scene lengths are not whole frames,
-  so the video cut can land a few milliseconds before the caption's end time. On the
-  Brightkettle run the last scene's caption shows for one frame over the end card. This
-  was there before the Windows fixes and is not fixed yet.
 
 ## Requires
 
