@@ -616,6 +616,49 @@
       "models": []
     },
     {
+      "id": "video-seedance-2",
+      "version": "1.0.0",
+      "interface": 1,
+      "kind": "generate_video",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": true,
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "bytedance/seedance-2.0/reference-to-video"
+          }
+        ],
+        "disk_mb": 500
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "second",
+        "measure": {
+          "from": "/clips/*/seconds",
+          "as": "sum"
+        },
+        "rates_usd": {
+          "bytedance/seedance-2.0/reference-to-video": 0.68
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/video-seedance-2/1.0.0",
+      "files": {
+        "README.md": "c9dd30a073e11f8c52dcee5a0f3058be9d760dfe178c25764ffb991739245c12",
+        "part.json": "866fabd5cf550038d7e0eaa7370111d673ae84a7bc57f7fddf07040d91b1b887",
+        "part.mjs": "c6859715bcd15c39528b6c050c148fa0f4a9ab4cb92277adb6e819c01d943932"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "bytedance/seedance-2.0/reference-to-video"
+        }
+      ]
+    },
+    {
       "id": "voice-elevenlabs",
       "version": "1.0.0",
       "interface": 1,

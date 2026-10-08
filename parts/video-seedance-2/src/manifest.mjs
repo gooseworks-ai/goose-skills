@@ -1,0 +1,72 @@
+import { file } from '../../_tools/schemas.mjs';
+
+const MODEL = 'bytedance/seedance-2.0/reference-to-video';
+
+export const manifest = {
+  $schema: '../../_contract/part-manifest.schema.json',
+  interface: 1,
+  id: 'video-seedance-2',
+  version: '1.0.0',
+  kind: 'generate_video',
+  title: 'Clips with native audio (Seedance 2)',
+  summary: 'Short reference-to-video clips from Seedance 2.0 on fal, with native lip-synced voice and room sound, one piece per clip.',
+  runtime: 'node',
+  entry: 'part.mjs',
+  files: ['README.md', 'part.mjs'],
+  kit: '>=1.0.0 <2.0.0',
+  needs: { browser: false, ffmpeg: true, network: true, models: [{ provider: 'fal', model: MODEL }], disk_mb: 500 },
+  inputs: {
+    type: 'object',
+    additionalProperties: false,
+    required: ['clips'],
+    properties: {
+      clips: {
+        type: 'array',
+        minItems: 1,
+        maxItems: 12,
+        items: {
+          type: 'object',
+          additionalProperties: false,
+          required: ['prompt', 'references', 'seconds'],
+          properties: {
+            id: { type: 'string', pattern: '^[a-z0-9][a-z0-9_-]{0,39}$' },
+            prompt: { description: 'The structured scene prompt (the atom\'s template: framing, action, dialogue). A branded product needs its real photo among the references.', type: 'string', minLength: 1, maxLength: 8000 },
+            references: {
+              description: 'Reference images in order (the first is @Image1): the person, the product, the setting. Never AI-generated video.',
+              type: 'array',
+              minItems: 1,
+              maxItems: 9,
+              items: file('image', ['image/png', 'image/jpeg', 'image/webp']),
+            },
+            seconds: { description: 'Whole seconds, 4 to 15.', type: 'integer', minimum: 4, maximum: 15 },
+            generate_audio: { type: 'boolean' },
+          },
+        },
+      },
+      resolution: { description: 'Default 1080p (better product labels).', enum: ['480p', '720p', '1080p'] },
+      aspect_ratio: { description: 'Default 9:16.', enum: ['9:16', '16:9', '1:1', '4:3', '3:4', '21:9'] },
+      generate_audio: { description: 'Native lip-synced voice and room sound. Default true.', type: 'boolean' },
+    },
+  },
+  outputs: {
+    type: 'object',
+    additionalProperties: false,
+    required: ['clips'],
+    properties: {
+      clips: {
+        type: 'array',
+        items: {
+          type: 'object',
+          additionalProperties: false,
+          required: ['id', 'video', 'seconds'],
+          properties: { id: { type: 'string' }, video: file('video'), seconds: { type: 'integer', minimum: 4, maximum: 15 } },
+        },
+      },
+    },
+  },
+  cost: { basis: 'per_unit', unit: 'second', measure: { from: '/clips/*/seconds', as: 'sum' }, rates_usd: { [MODEL]: 0.68 } },
+  determinism: 'provider',
+  timing: { typical_s: 240, timeout_s: 1800 },
+  retry: { transient: 1 },
+  replaces: ['create-video-seedance-2-fal'],
+};
