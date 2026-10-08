@@ -243,6 +243,50 @@
       ]
     },
     {
+      "id": "cut-footage",
+      "version": "1.0.0",
+      "interface": 1,
+      "kind": "compose",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "setpts",
+            "fps",
+            "scale",
+            "crop",
+            "pad",
+            "setsar",
+            "tpad",
+            "trim",
+            "overlay",
+            "format",
+            "atempo",
+            "atrim"
+          ],
+          "encoders": [
+            "libx264",
+            "aac"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 300
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/cut-footage/1.0.0",
+      "files": {
+        "README.md": "ec301467c84da6f621ae28a8d13902eada7196ae96b704a0360655568ba39f50",
+        "part.json": "869f976e636f9dd9ea72c14db0158acb10baeb4600036785c420d64faac98e2c",
+        "part.mjs": "135dde8b8ee34943c0b5af74d744af60a08060a6bd1fde12584e631d6060ef65"
+      },
+      "models": []
+    },
+    {
       "id": "end-card",
       "version": "1.0.0",
       "interface": 1,
