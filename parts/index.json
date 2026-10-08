@@ -349,9 +349,9 @@
       "determinism": "pure",
       "path": "parts/cut-footage/1.0.0",
       "files": {
-        "README.md": "ec301467c84da6f621ae28a8d13902eada7196ae96b704a0360655568ba39f50",
-        "part.json": "869f976e636f9dd9ea72c14db0158acb10baeb4600036785c420d64faac98e2c",
-        "part.mjs": "135dde8b8ee34943c0b5af74d744af60a08060a6bd1fde12584e631d6060ef65"
+        "README.md": "e81ecc950360f82da9abb6c4604251b09297c08211ddf4a6dfcc5ce9b40b2832",
+        "part.json": "88c3721142b84f5563c5b4dd740f1a4d3750206cf9e66d54e92e910889092443",
+        "part.mjs": "41d0068253535905e6d4989ffd5ec2b6fdda5a4d14b6043662293b5af355508e"
       },
       "models": []
     },

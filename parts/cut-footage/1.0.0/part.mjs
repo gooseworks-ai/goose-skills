@@ -310,7 +310,8 @@ async function kitDuration(ctx, file) {
 
 export async function run(inputs, ctx) {
   const manifest = await kitCheckInputs(ctx, inputs);
-  const clip = inputs.footage[0];
+  const first = inputs.footage[0];
+  const clip = { ...first, video: first.file || first.video };
   const info = await ctx.tools.probe(inputs.video.path);
   const W = info.width;
   const H = info.height;

@@ -16,7 +16,7 @@ async function fixture(ctx) {
 test('fills the band with the footage window sped to fit, and leaves the rest of the card alone', { skip }, async () => {
   const { ctx } = makeCtx({ partDir: dir });
   const f = await fixture(ctx);
-  const out = await mod.run({ video: f.card, footage: [{ video: f.footage, start_ms: 0, end_ms: 28000 }], band: { x: 0, y: 336, width: 540, height: 537 }, speed: 'fill', min_speed: 3, max_speed: 8 }, ctx);
+  const out = await mod.run({ video: f.card, footage: [{ file: f.footage, asset_id: 'a1', start_ms: 0, end_ms: 28000, audio: false }], band: { x: 0, y: 336, width: 540, height: 537 }, speed: 'fill', min_speed: 3, max_speed: 8 }, ctx);
   assert.equal(out.speed, 4, '28 s of footage fills a 7 s card at 4x');
   const info = await probe(out.video.path);
   assert.ok(Math.abs(info.duration_s - 7) < 0.1);
@@ -34,4 +34,10 @@ test('refuses a window that would play slower or faster than the style allows', 
   const base = { video: f.card, band: { x: 0, y: 336, width: 540, height: 536 }, speed: 'fill', min_speed: 3, max_speed: 8 };
   await assert.rejects(mod.run({ ...base, footage: [{ video: f.footage, start_ms: 0, end_ms: 14000 }] }, ctx), (e) => e.code === 'bad_input' && /2x, outside 3x to 8x/.test(e.message));
   await assert.rejects(mod.run({ ...base, footage: [{ video: f.footage, start_ms: 0, end_ms: 40000 }] }, ctx), (e) => e.code === 'bad_input' && /not inside/.test(e.message));
+});
+
+test('refuses a footage entry with no clip file', { skip }, async () => {
+  const { ctx } = makeCtx({ partDir: dir });
+  const f = await fixture(ctx);
+  await assert.rejects(mod.run({ video: f.card, footage: [{ asset_id: 'a1', start_ms: 0, end_ms: 28000 }], band: { x: 0, y: 336, width: 540, height: 536 } }, ctx), (e) => e.code === 'bad_input');
 });

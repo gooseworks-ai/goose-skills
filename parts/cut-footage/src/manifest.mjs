@@ -20,14 +20,15 @@ export const manifest = {
     properties: {
       video: { description: 'The picture the footage goes under (an html-frames card that leaves the band free).', ...file('video') },
       footage: {
-        description: 'plan.footage: the first entry is used. Each needs its clip as a file; start_ms and end_ms are the window (default: the whole clip).',
+        description: 'plan.footage: the first entry is used. Each carries its clip as file (video is accepted too); start_ms and end_ms are the window (default: the whole clip).',
         type: 'array',
         minItems: 1,
         maxItems: 10,
         items: {
           type: 'object',
-          required: ['video'],
+          anyOf: [{ required: ['file'] }, { required: ['video'] }],
           properties: {
+            file: file('video'),
             video: file('video'),
             asset_id: { type: 'string' },
             start_ms: { type: ['integer', 'null'], minimum: 0 },
