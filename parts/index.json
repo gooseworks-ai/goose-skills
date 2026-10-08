@@ -2,6 +2,48 @@
   "interface": 1,
   "parts": [
     {
+      "id": "audio-mix",
+      "version": "1.0.0",
+      "interface": 1,
+      "kind": "mix",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "ebur128",
+            "sidechaincompress",
+            "amix",
+            "alimiter",
+            "adelay",
+            "afade",
+            "apad",
+            "atrim",
+            "aresample",
+            "aformat",
+            "asplit"
+          ],
+          "encoders": [
+            "aac"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 200
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/audio-mix/1.0.0",
+      "files": {
+        "README.md": "15ddbebe706678065cf373a7440e2a3e56ef08b58492d4d6ca4cf816ffb0478f",
+        "part.json": "0a3216a2abb1c48044ba2673a73c2cf92de7d5da2f098bee298324fdc57c9e36",
+        "part.mjs": "96880fbced7ff7bc9dcc51ff86f51b2e61a8b29035c2a1cc8e7f4112f478c448"
+      },
+      "models": []
+    },
+    {
       "id": "image-nano-banana",
       "version": "1.0.0",
       "interface": 1,
