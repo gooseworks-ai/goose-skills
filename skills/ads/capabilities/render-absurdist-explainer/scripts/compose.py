@@ -14,21 +14,26 @@ it renders the master mp4:
      demuxer never silently drops frames on a framerate mismatch.
   2. End card         — the pre-built endcard.png (real product composite, see
      build_endcard.py) is Ken-Burnsed (slow 1.00 -> 1.04 zoom) over its dwell window and
-     appended as the final scene.
+     appended as the final scene. If the config sets end_card.vo, that spoken line is
+     laid at the start of the end-card window and the dwell is stretched to at least the
+     line's duration + 0.5s.
   3. Concat           — all segments concatenated via the concat demuxer (-c copy).
   4. VO track         — each VO cue is (optionally) atempo-compressed, padded, clamped to
      its window, and concatenated into one wav.
   5. Music bed        — fit to the total runtime with a fade in/out tail.
   6. Mix              — VO bus loudnorm I=-14 TP=-1.5, music bus loudnorm I=-26 TP=-3 then
-     volume (default 0.62), amix inputs=2 duration=first normalize=0. This lands the
-     master at -14.5..-13.5 LUFS with the music ducked under the VO.
-  7. Caption burn     — the libass .ass is burned LAST so captions sit on top of the
-     video, then muxed with the mix into the master mp4.
+     volume (default 0.62), amix inputs=2 duration=first normalize=0, so the music is
+     ducked under the VO.
+  7. Master pass      - the mix is measured, gained to -14 LUFS and run through a limiter,
+     then encoded to AAC and measured again. The pass repeats until the encoded audio is
+     at -14.5..-13.5 LUFS with a true peak <= -1.5 dBFS. The result is printed.
+  8. Caption burn     - the libass .ass is burned LAST so captions sit on top of the
+     video, then muxed with the mastered audio into the master mp4.
 
 This capability makes NO paid calls. All inputs come via --config + the work dir; the
 recipe (the paid orchestration: keyframes / clips / VO / music) hands them off.
 """
-import argparse, json, os, subprocess, sys, tempfile
+import argparse, json, math, os, re, shutil, subprocess, sys
 
 # ---- canvas / encode constants (validated on both reference runs) ----
 W, H = 1080, 1920
@@ -44,9 +49,19 @@ MUSIC_VOLUME_DEFAULT = 0.62   # validated range 0.62-0.70 across the reference r
 FADE_OUT_TAIL = 1.4           # music out-fade length
 FADE_IN = 0.6                 # music in-fade length
 
+# ---- master loudness target (measured on the encoded audio, not assumed) ----
+TARGET_I = -14.0              # aim for the middle of the window
+I_MIN, I_MAX = -14.5, -13.5   # integrated LUFS window
+TP_MAX = -1.5                 # true-peak ceiling, dBFS
+LIMIT_DB = -2.0               # first limiter ceiling; AAC encoding adds a little overshoot
+MASTER_PASSES = 4
 
-def run(cmd, quiet=True):
-    r = subprocess.run(cmd, capture_output=True, text=True)
+END_CARD_VO_TAIL = 0.5        # the end card holds at least this long after its spoken line
+
+
+def run(cmd, quiet=True, cwd=None):
+    r = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8",
+                       errors="replace", cwd=cwd)
     if r.returncode:
         sys.stderr.write((r.stderr or "")[-2000:] + "\n")
         sys.exit(f"FAILED: {' '.join(str(c) for c in cmd[:6])} ...")
@@ -61,6 +76,54 @@ def ffprobe_dur(path):
     return float(r.stdout.strip())
 
 
+def measure(path):
+    """Return (integrated LUFS, true peak dBFS) of an audio file, or None if it is silent."""
+    r = subprocess.run(
+        ["ffmpeg", "-nostdin", "-hide_banner", "-i", path,
+         "-af", "ebur128=peak=true", "-f", "null", "-"],
+        capture_output=True, text=True, encoding="utf-8", errors="replace")
+    tail = r.stderr[r.stderr.rfind("Summary:"):]
+    i = re.search(r"I:\s*(-?\d+(?:\.\d+)?) LUFS", tail)
+    p = re.search(r"Peak:\s*(-?\d+(?:\.\d+)?) dBFS", tail)
+    if not i or not p or float(i.group(1)) <= -69.0:
+        return None
+    return float(i.group(1)), float(p.group(1))
+
+
+def master_audio(mix, out):
+    """Gain + limit the mix to the loudness target, encode it to AAC, and print the result.
+
+    The check runs on the ENCODED audio, because AAC moves the peaks. Each pass corrects
+    the gain by the measured loudness error and lowers the limiter by the peak overshoot.
+    """
+    first = measure(mix)
+    if first is None:
+        run(["ffmpeg", "-y", "-loglevel", "error", "-i", mix, "-c:a", "aac", "-b:a", "192k", out])
+        print("  loudness: the mix is silent, nothing to master")
+        return
+    gain, ceiling = TARGET_I - first[0], LIMIT_DB
+    for _ in range(MASTER_PASSES):
+        # limit at 192 kHz so peaks between samples are caught too
+        run(["ffmpeg", "-y", "-loglevel", "error", "-i", mix,
+             "-af", (f"volume={gain:.2f}dB,aresample=192000,"
+                     f"alimiter=limit={10 ** (ceiling / 20):.4f}:level=disabled,"
+                     f"aresample=44100"),
+             "-ar", "44100", "-ac", "2", "-c:a", "aac", "-b:a", "192k", out])
+        lufs, peak = measure(out)
+        i_ok, tp_ok = I_MIN <= lufs <= I_MAX, peak <= TP_MAX
+        if i_ok and tp_ok:
+            break
+        if not i_ok:
+            gain += TARGET_I - lufs
+        if not tp_ok:
+            ceiling -= (peak - TP_MAX) + 0.2
+    print(f"  loudness: {lufs:.1f} LUFS integrated, true peak {peak:.1f} dBFS "
+          f"(target {I_MIN}..{I_MAX} LUFS, true peak <= {TP_MAX} dBFS)")
+    if not (i_ok and tp_ok):
+        sys.stderr.write(f"WARNING: master is outside the loudness target after "
+                         f"{MASTER_PASSES} passes.\n")
+
+
 def main():
     ap = argparse.ArgumentParser(description="Compose the absurdist-explainer master.")
     ap.add_argument("--config", required=True, help="path to config.json (see config.example.json)")
@@ -68,17 +131,35 @@ def main():
     ap.add_argument("--out", required=True, help="output master mp4 path")
     a = ap.parse_args()
 
-    cfg = json.load(open(a.config))
-    work = a.work_dir
+    with open(a.config, encoding="utf-8") as f:
+        cfg = json.load(f)
+    work = os.path.abspath(a.work_dir)
+    out = os.path.abspath(a.out)
     seg_dir = os.path.join(work, "_work")
     os.makedirs(seg_dir, exist_ok=True)
+    os.makedirs(os.path.dirname(out), exist_ok=True)
 
     scenes = cfg["scenes"]                       # [{id, clip, target_sec, vo, atempo?}, ...]
-    endcard = cfg["end_card"]                    # {image, dwell_sec, zoom_to?}
+    endcard = cfg["end_card"]                    # {image, dwell_sec, zoom_to?, vo?, atempo?}
     music_bed = cfg.get("music_bed")             # path or None
     music_volume = float(cfg.get("music_volume", MUSIC_VOLUME_DEFAULT))
     captions_ass = cfg.get("captions_ass")       # path to pre-built .ass, or None
     global_atempo = cfg.get("atempo")            # default compose-stage atempo for all VO cues
+
+    # end card: an optional spoken line (end_card.vo) sets a floor on the dwell
+    ec_dwell = float(endcard.get("dwell_sec", 4.0))
+    ec_vo = endcard.get("vo")
+    ec_atempo = endcard.get("atempo", global_atempo)
+    if ec_vo and not os.path.exists(ec_vo):
+        sys.stderr.write(f"WARNING: end_card.vo not found ({ec_vo}) - the end card will be silent.\n")
+        ec_vo = None
+    if ec_vo:
+        ec_vo_dur = ffprobe_dur(ec_vo) / float(ec_atempo or 1.0)
+        need = math.ceil((ec_vo_dur + END_CARD_VO_TAIL) * FPS) / FPS
+        if need > ec_dwell:
+            print(f"  end-card dwell {ec_dwell:.2f}s -> {need:.2f}s "
+                  f"(spoken line {ec_vo_dur:.2f}s + {END_CARD_VO_TAIL}s)")
+            ec_dwell = need
 
     # -------------------------------------------------------------------
     # 1. per-scene video segments (retime -> identical 30fps encode)
@@ -104,7 +185,6 @@ def main():
 
         # end card: Ken-Burns the real-product PIL composite (never AI)
         ec_img = endcard["image"]
-        ec_dwell = float(endcard.get("dwell_sec", 4.0))
         zoom_to = float(endcard.get("zoom_to", 1.04))
         frames = int(round(ec_dwell * FPS))
         ec_seg = os.path.join(seg_dir, "seg-endcard.mp4")
@@ -156,12 +236,20 @@ def main():
                      "-t", f"{tgt:.3f}", wav])
             vf.write(f"file 'vo-{n}.wav'\n")
 
-        # end-card window: silence so the audio spans the full video (the end card has no
-        # VO). Without this, -shortest would truncate the master and drop the end card.
+        # end-card window: the spoken line (end_card.vo) at the start of the window, padded
+        # with silence to the dwell; or silence alone when there is no line. The audio must
+        # span the full video, or -shortest would truncate the master and drop the end card.
         ec_wav = os.path.join(seg_dir, "vo-endcard.wav")
-        run(["ffmpeg", "-y", "-loglevel", "error", "-f", "lavfi",
-             "-i", "anullsrc=channel_layout=stereo:sample_rate=44100",
-             "-t", f"{float(endcard.get('dwell_sec', 4.0)):.3f}", ec_wav])
+        if ec_vo:
+            af = [f"atempo={ec_atempo}"] if ec_atempo else []
+            af.append("apad")
+            run(["ffmpeg", "-y", "-loglevel", "error", "-i", ec_vo,
+                 "-af", ",".join(af), "-t", f"{ec_dwell:.3f}",
+                 "-ar", "44100", "-ac", "2", ec_wav])
+        else:
+            run(["ffmpeg", "-y", "-loglevel", "error", "-f", "lavfi",
+                 "-i", "anullsrc=channel_layout=stereo:sample_rate=44100",
+                 "-t", f"{ec_dwell:.3f}", ec_wav])
         vf.write("file 'vo-endcard.wav'\n")
 
     vo_track = os.path.join(seg_dir, "vo-track.wav")
@@ -187,36 +275,41 @@ def main():
              f"[vo][mus]amix=inputs=2:duration=first:dropout_transition=0:normalize=0[a]",
              "-map", "[a]", "-ar", "44100", "-ac", "2", mix])
     else:
-        # VO only — still loudnorm to the -14 LUFS target
+        # VO only - still loudnorm to the -14 LUFS target
         run(["ffmpeg", "-y", "-loglevel", "error", "-i", vo_track,
              "-af", VO_LOUDNORM, "-ar", "44100", "-ac", "2", mix])
 
     # -------------------------------------------------------------------
-    # 6. burn captions LAST + mux -> master
+    # 6. master pass: hit the loudness target on the encoded audio
     # -------------------------------------------------------------------
-    burn_in = video
+    audio = os.path.join(seg_dir, "master-audio.m4a")
+    master_audio(mix, audio)
+
+    # -------------------------------------------------------------------
+    # 7. burn captions LAST + mux -> master
+    # -------------------------------------------------------------------
     if captions_ass and os.path.exists(captions_ass):
-        # ass= filter needs an escaped path; use a work-relative copy to dodge colons/spaces
-        run(["ffmpeg", "-y", "-loglevel", "error", "-i", video, "-i", mix,
-             "-vf", f"ass={_ass_escape(captions_ass)}",
+        # The ass= filter cannot take an absolute Windows path (the drive colon breaks the
+        # filtergraph). Copy the file into the work dir and run ffmpeg there, so the
+        # filter sees a bare relative name.
+        local_ass = os.path.join(seg_dir, "captions.ass")
+        if os.path.abspath(captions_ass) != local_ass:
+            shutil.copyfile(captions_ass, local_ass)
+        run(["ffmpeg", "-y", "-loglevel", "error", "-i", video, "-i", audio,
+             "-vf", "ass=captions.ass",
              "-map", "0:v", "-map", "1:a",
              "-c:v", "libx264", "-preset", PRESET, "-crf", str(CRF_MASTER),
              "-pix_fmt", "yuv420p", "-r", str(FPS),
-             "-c:a", "aac", "-b:a", "192k", "-shortest", a.out])
+             "-c:a", "copy", "-shortest", out], cwd=seg_dir)
     else:
-        run(["ffmpeg", "-y", "-loglevel", "error", "-i", burn_in, "-i", mix,
+        run(["ffmpeg", "-y", "-loglevel", "error", "-i", video, "-i", audio,
              "-map", "0:v", "-map", "1:a",
-             "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-shortest", a.out])
+             "-c:v", "copy", "-c:a", "copy", "-shortest", out])
 
-    md = ffprobe_dur(a.out)
-    expected = sum(float(s["target_sec"]) for s in scenes) + float(endcard.get("dwell_sec", 4.0))
-    print(f"WROTE {a.out}  {md:.2f}s (expected ~{expected:.2f}s, "
+    md = ffprobe_dur(out)
+    expected = sum(float(s["target_sec"]) for s in scenes) + ec_dwell
+    print(f"WROTE {out}  {md:.2f}s (expected ~{expected:.2f}s, "
           f"delta {md-expected:+.2f}s)")
-
-
-def _ass_escape(path):
-    # ffmpeg filtergraph escaping for a filename inside ass=...
-    return path.replace("\\", "\\\\").replace(":", "\\:").replace("'", "\\'")
 
 
 if __name__ == "__main__":
