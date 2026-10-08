@@ -15,6 +15,9 @@ Layout (top -> bottom):
   - claim rows (small, grey).
   - a CTA pill (rounded-rect in the brand accent colour, white text).
 
+Every text colour is checked against the colour behind it. If the contrast is too low
+to read, that text is drawn in white or near-black instead and a warning is printed.
+
 Reads a config.json; writes endcard.png into --out (or the config's end_card.image).
 """
 import argparse, json, os, sys
@@ -28,29 +31,78 @@ NEUTRAL_PRIMARY = (34, 34, 34)
 NEUTRAL_ACCENT = (34, 34, 34)
 NEUTRAL_GREY = (107, 107, 107)
 
-# Portable font fallback chain: DejaVu (ships with Pillow / most Linux), then macOS
-# Arial, then Pillow's built-in. Bold + regular variants each.
+# Text on the end card must reach this contrast ratio (WCAG) against what is behind it.
+# 3.0 is the WCAG floor for large text; every line here is 35px or bigger.
+MIN_CONTRAST = 3.0
+# The CTA is white on the accent pill. White on a mid-tone brand colour is a normal
+# button look, so only step in when it is close to unreadable.
+MIN_CTA_CONTRAST = 2.0
+WHITE = (255, 255, 255)
+NEAR_BLACK = (20, 20, 20)
+
+# Portable font fallback chain: DejaVu (most Linux), then macOS Arial, then Windows
+# Arial and Segoe UI, then a DejaVu on the font path, then Pillow's built-in.
+# Bold + regular variants each.
+_WIN_FONTS = os.path.join(os.environ.get("WINDIR", "C:/Windows"), "Fonts")
 _BOLD_CANDS = [
     "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
     "/System/Library/Fonts/Supplemental/Arial Bold.ttf",
     "/Library/Fonts/Arial Bold.ttf",
+    os.path.join(_WIN_FONTS, "arialbd.ttf"),
+    os.path.join(_WIN_FONTS, "segoeuib.ttf"),
     "DejaVuSans-Bold.ttf",
 ]
 _REG_CANDS = [
     "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
     "/System/Library/Fonts/Supplemental/Arial.ttf",
     "/Library/Fonts/Arial.ttf",
+    os.path.join(_WIN_FONTS, "arial.ttf"),
+    os.path.join(_WIN_FONTS, "segoeui.ttf"),
     "DejaVuSans.ttf",
 ]
+_warned_default_font = False
 
 
 def font(bold, size):
+    global _warned_default_font
     for c in (_BOLD_CANDS if bold else _REG_CANDS):
         try:
             return ImageFont.truetype(c, size)
         except OSError:
             continue
-    return ImageFont.load_default()
+    if not _warned_default_font:
+        sys.stderr.write("WARNING: no TrueType font found - using Pillow's built-in font. "
+                         "Install DejaVu or Arial for a clean end card.\n")
+        _warned_default_font = True
+    try:
+        return ImageFont.load_default(size=size)   # Pillow >= 10.1 honours the size
+    except TypeError:
+        return ImageFont.load_default()
+
+
+def _luminance(rgb):
+    def chan(v):
+        v = v / 255.0
+        return v / 12.92 if v <= 0.03928 else ((v + 0.055) / 1.055) ** 2.4
+    r, g, b = (chan(v) for v in rgb[:3])
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b
+
+
+def contrast(a, b):
+    la, lb = _luminance(a), _luminance(b)
+    return (max(la, lb) + 0.05) / (min(la, lb) + 0.05)
+
+
+def readable(label, colour, behind, floor=MIN_CONTRAST):
+    """Return colour, or white / near-black when colour is too close to what is behind it."""
+    ratio = contrast(colour, behind)
+    if ratio >= floor:
+        return colour
+    swap = max((WHITE, NEAR_BLACK), key=lambda c: contrast(c, behind))
+    sys.stderr.write(f"WARNING: {label} colour #{'%02x%02x%02x' % tuple(colour[:3])} has contrast "
+                     f"{ratio:.1f}:1 on #{'%02x%02x%02x' % tuple(behind[:3])} (need {floor}:1) - "
+                     f"drawing it in #{'%02x%02x%02x' % swap} instead.\n")
+    return swap
 
 
 def _hex(s, default=(0, 0, 0)):
@@ -71,19 +123,19 @@ def main():
     ap.add_argument("--out", help="output PNG path (defaults to config.end_card.image)")
     a = ap.parse_args()
 
-    cfg = json.load(open(a.config))
+    with open(a.config, encoding="utf-8-sig") as f:   # UTF-8, with or without a BOM
+        cfg = json.load(f)
     ec = cfg["end_card"]
     palette = cfg.get("brand_palette", {})
 
     missing = [k for k in ("primary", "accent") if not palette.get(k)]
     if missing:
-        sys.stderr.write(f"WARNING: brand_palette missing {missing} — using neutral greys. "
+        sys.stderr.write(f"WARNING: brand_palette missing {missing} - using neutral greys. "
                          "Pass the brand's own hex colours.\n")
     primary = _hex(palette.get("primary"), NEUTRAL_PRIMARY)
     primary_lite = _hex(palette.get("primary_lite") or palette.get("primary"), primary)
     accent = _hex(palette.get("accent"), NEUTRAL_ACCENT)
     grey = _hex(palette.get("grey"), NEUTRAL_GREY)
-    white = (255, 255, 255)
 
     prod = Image.open(ec["product_image"]).convert("RGB")
 
@@ -92,6 +144,12 @@ def main():
         bg = _hex(ec["background"], (255, 255, 255))
     else:
         bg = prod.getpixel((6, 6))
+
+    # a brand colour can sit too close to the background (dark on a dark photo)
+    primary = readable("wordmark", primary, bg)
+    primary_lite = readable("product line", primary_lite, bg)
+    grey = readable("claims", grey, bg)
+    cta_text = readable("CTA text", WHITE, accent, MIN_CTA_CONTRAST)
 
     img = Image.new("RGB", (W, H), bg)
     d = ImageDraw.Draw(img)
@@ -123,7 +181,7 @@ def main():
         pw2, ph2 = cw + 2 * padx, chh + 2 * pady
         px = (W - pw2) // 2
         d.rounded_rectangle([px, y, px + pw2, y + ph2], radius=ph2 // 2, fill=accent)
-        d.text((W // 2, y + ph2 // 2), cta, font=cf, fill=white, anchor="mm")
+        d.text((W // 2, y + ph2 // 2), cta, font=cf, fill=cta_text, anchor="mm")
 
     out = a.out or ec["image"]
     os.makedirs(os.path.dirname(os.path.abspath(out)), exist_ok=True)
