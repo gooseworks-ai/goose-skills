@@ -6,10 +6,10 @@ status: superseded
 version: "2.0.1"
 created: 2026-05-26
 updated: 2026-10-06
-superseded_by: video-seedance-2@1.0.0
+superseded_by: video-seedance-2@1.0.1
 ---
 
-> **Superseded** in the video kit by the video-seedance-2 part (1.0.0; scripted lines use creator-h3). This atom still runs, unchanged, for skills outside the kit.
+> **Superseded** in the video kit by the video-seedance-2 part (1.0.1; scripted lines use creator-h3). This atom still runs, unchanged, for skills outside the kit.
 
 # create-video-seedance-2-fal
 

@@ -2,10 +2,10 @@
 name: create-apple-notes-mockup
 description: Render pixel-accurate Apple Notes (iPhone, light mode) screenshot mockups from a JSON note spec. Outputs HTML + PNG at the iPhone 16/15 Pro native 1180×2556. Supports paragraphs, images, checklists, dividers, autocorrect underline, smart quotes, and an optional iOS keyboard chrome overlay used by the parent video-ad molecule.
 status: superseded
-superseded_by: phone-chat@1.0.0
+superseded_by: phone-chat@1.1.1
 ---
 
-> **Superseded:** the video kit now does this with the phone-chat part, version 1.0.0, in the parts folder of this repository. Every phone-chat style is a style file that draws the same screen frame by frame from the plan's scenes, with the original sounds, in the kit's browser. This atom stays, unchanged in behaviour, for skills outside the kit until they move; its scripts still run.
+> **Superseded:** the video kit now does this with the phone-chat part, version 1.1.1, in the parts folder of this repository. Every phone-chat style is a style file that draws the same screen frame by frame from the plan's scenes, with the original sounds, in the kit's browser. This atom stays, unchanged in behaviour, for skills outside the kit until they move; its scripts still run.
 
 # create-apple-notes-mockup
 

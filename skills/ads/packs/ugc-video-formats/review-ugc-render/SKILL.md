@@ -6,10 +6,10 @@ status: superseded
 version: 2.0.0
 created: 2026-07-04
 updated: 2026-10-06
-superseded_by: check-layer@1.0.0
+superseded_by: check-layer@1.1.0
 ---
 
-> **Superseded:** the video kit now does this with the check-layer part, version 1.0.0, in the parts folder of this repository. It runs the same speech-against-script rules on every video with speech: numbers, units, negations and brand names must match, and confirmed pronunciations count as the written name. This atom stays, unchanged in behaviour, for skills outside the kit until they move; its scripts still run.
+> **Superseded:** the video kit now does this with the check-layer part, version 1.1.0, in the parts folder of this repository. It runs the same speech-against-script rules on every video with speech: numbers, units, negations and brand names must match, and confirmed pronunciations count as the written name. This atom stays, unchanged in behaviour, for skills outside the kit until they move; its scripts still run.
 
 # review-ugc-render
 

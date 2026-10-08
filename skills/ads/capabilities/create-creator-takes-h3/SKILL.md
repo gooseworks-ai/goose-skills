@@ -4,10 +4,10 @@ description: Generate an AI creator talking to camera, saying an approved script
 status: superseded
 version: 2.0.0
 updated: 2026-10-06
-superseded_by: creator-h3@1.0.0
+superseded_by: creator-h3@1.0.1
 ---
 
-> **Superseded:** the video kit now does this with the creator-h3 part, version 1.0.0, in the parts folder of this repository. It plans the takes between lines, sends the same prompt and payload, chains the first take's voice to the rest and joins them; its quality check is the check layer's speech-against-script rule. This atom stays, unchanged in behaviour, for skills outside the kit until they move; its scripts still run.
+> **Superseded:** the video kit now does this with the creator-h3 part, version 1.0.1, in the parts folder of this repository. It plans the takes between lines, sends the same prompt and payload, chains the first take's voice to the rest and joins them; its quality check is the check layer's speech-against-script rule. This atom stays, unchanged in behaviour, for skills outside the kit until they move; its scripts still run.
 
 # create-creator-takes-h3
 

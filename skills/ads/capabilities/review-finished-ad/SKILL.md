@@ -2,10 +2,10 @@
 name: review-finished-ad
 description: Final QC gate for a rendered 9:16 video ad, run before it is published. One script checks what a machine can decide — exact 1080x1920 size, a hook that moves and speaks in the first second, no frozen stretches, no dead air, no black frames, the brand's real logo on the end card (never a favicon, never a redrawn or wrong logo), end-card colours near the brand palette — and builds one contact sheet (frames with the TikTok/Reels UI safe zones shaded, beside the logo, product images and a font specimen) for the checks that need eyes — font, product likeness, product consistency across scenes, safe zones. A declared silent-text profile covers silent, text-led formats such as kinetic text (no audio track needed, short blank beats between text beats allowed within fixed bounds). Exit 0 PASS / 2 FAIL / 3 ERROR. Use on every finished video master before pinning it.
 status: superseded
-superseded_by: check-layer@1.0.0
+superseded_by: check-layer@1.1.0
 ---
 
-> **Superseded:** the video kit now does this with the check-layer part, version 1.0.0, in the parts folder of this repository. It runs the machine checks every finished video gets: it plays, length, size, sound level, captions, black and frozen frames and the end card. This atom stays, unchanged in behaviour, for skills outside the kit until they move; its scripts still run.
+> **Superseded:** the video kit now does this with the check-layer part, version 1.1.0, in the parts folder of this repository. It runs the machine checks every finished video gets: it plays, length, size, sound level, captions, black and frozen frames and the end card. This atom stays, unchanged in behaviour, for skills outside the kit until they move; its scripts still run.
 
 # review-finished-ad
 
