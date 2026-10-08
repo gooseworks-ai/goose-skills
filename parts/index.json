@@ -1,4 +1,60 @@
 {
   "interface": 1,
-  "parts": []
+  "parts": [
+    {
+      "id": "voice-elevenlabs",
+      "version": "1.0.0",
+      "interface": 1,
+      "kind": "generate_voice",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "aresample",
+            "aformat",
+            "atrim",
+            "asetpts",
+            "apad",
+            "concat"
+          ],
+          "encoders": [
+            "aac"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "elevenlabs",
+            "model": "eleven_v3"
+          }
+        ],
+        "disk_mb": 50
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "1k_chars",
+        "measure": {
+          "from": "/scenes/*/line",
+          "as": "length"
+        },
+        "rates_usd": {
+          "eleven_v3": 0.1
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/voice-elevenlabs/1.0.0",
+      "files": {
+        "README.md": "2d97a2934c5a97f87936990cb9af955eb8531ff6041acca5e76c479731caadbf",
+        "part.json": "b17395463902a680d1d1e5391322a80d6db09d8d4d40e74cacbfec2e0e1a4914",
+        "part.mjs": "b64bf59448eb24e8b2f3d5dacc16a89f3bc2348c8727097b84edae52e03fec00"
+      },
+      "models": [
+        {
+          "provider": "elevenlabs",
+          "model": "eleven_v3"
+        }
+      ]
+    }
+  ]
 }
