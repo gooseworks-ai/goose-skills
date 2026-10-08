@@ -2,6 +2,57 @@
   "interface": 1,
   "parts": [
     {
+      "id": "music-elevenlabs",
+      "version": "1.0.0",
+      "interface": 1,
+      "kind": "generate_music",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "loudnorm",
+            "afade"
+          ],
+          "encoders": [
+            "aac"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "elevenlabs",
+            "model": "music_v1"
+          }
+        ],
+        "disk_mb": 30
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "second",
+        "measure": {
+          "from": "/max_seconds",
+          "as": "value"
+        },
+        "rates_usd": {
+          "music_v1": 0.0025
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/music-elevenlabs/1.0.0",
+      "files": {
+        "README.md": "2b87ea6d1091cf132de0e1aafa2324c588118d5d892d4bdc70be5030bd26305d",
+        "part.json": "4b86b2e592fd961a15154d7e9f04268cdb66f2c5401998892f731d0090ac2721",
+        "part.mjs": "167d3ec20bd8f7e9bb4c3b8341363bd0ab1ec11d19956a1ec783bc27c55fefd2"
+      },
+      "models": [
+        {
+          "provider": "elevenlabs",
+          "model": "music_v1"
+        }
+      ]
+    },
+    {
       "id": "voice-elevenlabs",
       "version": "1.0.0",
       "interface": 1,

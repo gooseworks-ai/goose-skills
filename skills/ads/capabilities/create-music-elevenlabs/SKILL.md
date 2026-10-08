@@ -1,8 +1,11 @@
 ---
 name: create-music-elevenlabs
 description: Generate an instrumental music bed via ElevenLabs Music, ROUTED THROUGH THE elevenlabs-proxy so it bills the Ads agent. Trims any sparse intro, loudnorm, fades the tail. Prompt + length from the template recipe. Use for the music layer of any video-ad format.
-status: active
+status: superseded
+superseded_by: music-elevenlabs@1.0.0
 ---
+
+> **Superseded:** the video kit now does this with the music-elevenlabs part, version 1.0.0, in the parts folder of this repository. It orders the bed through the private line and levels and fades it the same way. This atom stays, unchanged in behaviour, for skills outside the kit until they move; its scripts still run.
 
 # create-music-elevenlabs
 
