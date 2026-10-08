@@ -305,3 +305,50 @@ export function fakeAlignment(text, seconds) {
     character_end_times_seconds: chars.map((_, i) => +((i + 1) * step).toFixed(3)),
   };
 }
+
+/** RMS level in dB of `path`'s audio between from_s and to_s, optionally band-passed at `freq` Hz. Tests only. */
+export async function levelDb(path, fromS, toS, freq) {
+  const band = freq ? `bandpass=f=${freq}:width_type=h:w=${Math.max(20, freq * 0.1)},` : '';
+  const { stderr } = await run('ffmpeg', [
+    '-hide_banner', '-nostdin', '-ss', String(fromS), '-t', String(toS - fromS), '-i', path, '-vn',
+    '-af', `${band}astats=metadata=0:reset=0`, '-f', 'null', '-',
+  ]);
+  const m = /Overall[\s\S]*?RMS level dB:\s*(-?inf|-?\d+(?:\.\d+)?)/.exec(stderr);
+  if (!m) throw new Error('astats printed no RMS level');
+  return m[1].includes('inf') ? -Infinity : Number(m[1]);
+}
+
+/** The RGB pixels of one frame at `atS`, scaled to w x h: { width, height, data }. Tests only. */
+export async function framePixels(path, atS, w = 270, h = 480) {
+  return new Promise((resolvePromise, reject) => {
+    execFile('ffmpeg', ['-hide_banner', '-nostdin', '-ss', String(atS), '-i', path, '-frames:v', '1', '-vf', `scale=${w}:${h}:flags=neighbor`, '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-'],
+      { encoding: 'buffer', maxBuffer: 64 * 1024 * 1024 }, (err, stdout) => (err ? reject(err) : resolvePromise({ width: w, height: h, data: stdout })));
+  });
+}
+
+/** How many pixels are within `tol` of rgb [r, g, b]. Tests only. */
+export function countColor(pixels, [r, g, b], tol = 12) {
+  let n = 0;
+  const d = pixels.data;
+  for (let i = 0; i < d.length; i += 3) if (Math.abs(d[i] - r) <= tol && Math.abs(d[i + 1] - g) <= tol && Math.abs(d[i + 2] - b) <= tol) n++;
+  return n;
+}
+
+/** A solid-colour PNG logo with a transparent border. Tests only. */
+export async function makeLogo(path, color, w = 400, h = 160) {
+  await run('ffmpeg', ['-hide_banner', '-nostdin', '-y', '-f', 'lavfi', '-i', `color=c=${color}:s=${w}x${h}:d=1`, '-vf', `format=rgba,pad=${w + 40}:${h + 40}:20:20:color=0x00000000`, '-frames:v', '1', path]);
+  return path;
+}
+
+/** A brand kit for tests: a logo file and the bundled font as heading. Tests only. */
+export async function sampleBrand(workDir, { logoColor = '#e01020', background = '#ffffff' } = {}) {
+  const logo = await fileRef(await makeLogo(join(workDir, 'logo.png'), logoColor), 'image');
+  return {
+    name: 'Sample Goods',
+    logo,
+    colors: { primary: '#1a1a1d', background, text: '#1a1a1d' },
+    fonts: {},
+    pronunciations: [],
+    cta: { text: 'Shop the collection', url: 'samplegoods.example' },
+  };
+}

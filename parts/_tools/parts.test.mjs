@@ -12,6 +12,7 @@ import { bundlePart, newestVersions } from './bundle.mjs';
 import { buildIndex, versionFolders } from './index.mjs';
 import { hasFfmpeg, makeCtx, orderedModel, PARTS_ROOT } from './kit-harness.mjs';
 import { lintParts, scanSource } from './lint.mjs';
+import { manifestText } from './manifest.mjs';
 
 const schema = JSON.parse(readFileSync(join(PARTS_ROOT, '_contract', 'part-manifest.schema.json'), 'utf8'));
 const folders = versionFolders();
@@ -70,6 +71,13 @@ test('the part lint finds nothing in parts/', () => {
 
 test('the newest version of every part is the build of its source', () => {
   for (const p of newestVersions()) assert.equal(readFileSync(p.out, 'utf8'), bundlePart(p.entry), `${p.id}@${p.version}`);
+});
+
+test('a part with src/manifest.mjs publishes exactly that manifest in its newest version', async () => {
+  for (const p of newestVersions()) {
+    const want = await manifestText(p.id);
+    if (want) assert.equal(readFileSync(join(PARTS_ROOT, p.id, p.version, 'part.json'), 'utf8'), want, `${p.id}@${p.version}`);
+  }
 });
 
 test('index.json lists every published version with its file hashes and models', () => {

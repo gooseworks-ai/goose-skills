@@ -147,7 +147,7 @@ export function lintParts(partsRoot = PARTS) {
     if (manifest.id !== folder.id) add(partJson, 'manifest', `id ${manifest.id} is not its folder ${folder.id}`);
     if (manifest.version !== folder.version) add(partJson, 'manifest', `version ${manifest.version} is not its folder ${folder.version}`);
 
-    const present = walk(folder.dir).map((p) => relative(folder.dir, p));
+    const present = walk(folder.dir).map((p) => relative(folder.dir, p) + (p.endsWith('/') ? '/' : ''));
     const listed = new Set(manifest.files || []);
     let total = 0;
     for (const rel of present) {

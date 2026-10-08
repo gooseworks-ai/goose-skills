@@ -20,7 +20,7 @@
     "build:index": "node scripts/build-index.js",
     "validate:skills": "node scripts/validate-skills.js",
     "ci": "npm run validate:skills && npm run build:index && npm test",
-    "test:parts": "node --test parts/_tools/*.test.mjs parts/*/tests/*.test.mjs"
+    "test:parts": "node --test parts/_tools/*.test.mjs parts/_lib/*.test.mjs parts/*/tests/*.test.mjs"
   },
   "keywords": [
     "claude-code",
