@@ -94,6 +94,9 @@ jobs:
       - name: Parts index and frozen versions
         run: node scripts/check-parts.js --base "$BASE" --direct
 
+      - name: Part lint (no network, processes, clock or money in parts)
+        run: node parts/_tools/lint.mjs
+
   imessage-chat-browser-tests:
     # Headless-Chromium tests for render-imessage-chat, including the QA-60
     # platform safe-area layout. Installs only Playwright's Chromium (no other
