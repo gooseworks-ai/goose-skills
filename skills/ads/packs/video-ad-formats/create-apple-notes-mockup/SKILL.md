@@ -59,7 +59,7 @@ The skill is deterministic — it does not embed an LLM. The orchestrating agent
 - `title` — string. Bold display headline, single line.
 - `body[]` — block list. Supported block types:
   - `paragraph` — `{ "text": "..." }`. Smart punctuation is auto-applied (`'` → `'`, `"` → `"`, `...` → `…`, `--` → `–`, `---` → `—`).
-  - `image` — `{ "src": "<path|url>", "caption": "optional" }`. Relative paths are resolved against the spec file's directory and inlined as data URIs.
+  - `image` — `{ "src": "<path|url>", "caption": "optional" }`. Relative paths are resolved against the spec file's directory and inlined as data URIs. `examples/with-image.json` uses a placeholder `src`; point it at an image of your own before rendering.
   - `checklist` — `{ "items": [{ "text": "...", "checked": true|false }] }`. Checked items get yellow filled circles with strikethrough; unchecked get gray-outlined circles.
   - `divider` — horizontal rule.
 - `cursor` — `"title" | "end" | null`. `"title"` places the yellow caret at the end of the title; `"end"` places it at the end of the last paragraph; `null` hides it.
@@ -129,7 +129,6 @@ A symlink to `create-imessage-mockup/node_modules` ships with the repo, so on a 
 | `screenshot.js` | HTML → PNG via Playwright (chromium headless) at 1180×2556, DPR 2 |
 | `templates/note.css` | All visual styling (status bar, toolbar, body, checklist, image, keyboard) |
 | `templates/icons.js` | Inline SVG icons (back chevron, undo, share, more, done check, signal, wifi, battery, format toolbar icons, keyboard glyphs) |
-| `assets/samples/sample-landscape.jpg` | Sample image used by `examples/with-image.json` |
 | `examples/*.json` | 6 reference notes covering every variation (title-only, mid-typing, long multi-paragraph, with checklist, with image, frame-1 lowercase-keyboard) |
 | `tests/run-all.sh` | Render every example into `tests/output/` for visual review |
 | `apple-notes-skill-build.html` | Side-by-side review board comparing reference video frames to generated PNGs |
