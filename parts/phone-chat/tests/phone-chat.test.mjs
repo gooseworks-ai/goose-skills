@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { browserProviderOrNull, countColor, fileRef, framePixels, hasFfmpeg, levelDb, loadPart, makeCtx, makeVideo, probe } from '../../_tools/kit-harness.mjs';
 import { chatThreadFor } from '../src/threads.mjs';
 
-const { dir, mod } = await loadPart('phone-chat', '1.0.0');
+const { dir, mod } = await loadPart('phone-chat', '1.1.0');
 const ready = (await hasFfmpeg()) && browserProviderOrNull();
 const skip = !ready && 'ffmpeg or the browser is not installed';
 
@@ -86,4 +86,63 @@ test('refuses a character the bundled font cannot draw, instead of falling back 
 test('refuses a plan whose scenes are all the end card\'s', async () => {
   const { ctx } = makeCtx({ partDir: dir, browser: null });
   await assert.rejects(mod.run({ skin: 'imessage', scenes: [{ id: 'e', on_screen: 'Shop now' }], ending_scenes: 1 }, ctx), (e) => e.code === 'bad_input');
+});
+
+// An edge-case plan: a scene photo, bold markup around punctuation, and accents written as a letter
+// plus a combining mark (one grapheme, two code points), which the composer types as one key.
+async function edgePlan(work) {
+  const { run } = await import('../../_tools/kit-harness.mjs');
+  const png = join(work, 'upload.png');
+  await run('ffmpeg', ['-hide_banner', '-nostdin', '-y', '-f', 'lavfi', '-i', 'testsrc2=size=400x300:duration=1', '-frames:v', '1', png]);
+  const image = await fileRef(png, 'image');
+  return {
+    imessage: [
+      { id: 's1', on_screen: 'Maya: did you see **this!?**', image },
+      { id: 's2', on_screen: 'Me: cafe\u{301} run? **now!**' },
+      { id: 's3', on_screen: 'Maya: **yes!!** ok' },
+      { id: 'end', on_screen: 'Shop the tote' },
+    ],
+    chatgpt: [
+      { id: 'q', on_screen: 'is cafe\u{301} coffee **bitter?**' },
+      { id: 'a', on_screen: '**Over-extraction!** Water too hot, so na\u{EF}ve brews taste harsh.\n\n- grind *finer*?\n- brew **less**, not longer.' },
+      { id: 'end', on_screen: 'Brew it right' },
+    ],
+  };
+}
+
+test('measure_only gives the chat length and counts from the plan, drawing, writing and ordering nothing', async () => {
+  const { ctx, orders } = makeCtx({ partDir: dir, browser: null });
+  const plans = await edgePlan(ctx.workDir);
+  const m = await mod.run({ skin: 'imessage', scenes: plans.imessage, ending_scenes: 1, measure_only: true }, ctx);
+  assert.deepEqual(Object.keys(m).sort(), ['messages', 'photos', 'seconds', 'words']);
+  assert.deepEqual([m.messages, m.photos, m.words], [4, 1, 9], 'three texts and the photo; words as a reader counts them');
+  assert.ok(Math.abs(m.seconds * 30 - Math.round(m.seconds * 30)) < 1e-6, 'on a frame');
+  assert.equal(orders.length, 0);
+  // ChatGPT counts only the answer's streamed words: the question's words never change the count.
+  const cg = await mod.run({ skin: 'chatgpt', scenes: plans.chatgpt, ending_scenes: 1, measure_only: true }, ctx);
+  const longer = plans.chatgpt.map((s, i) => (i === 0 ? { ...s, on_screen: `${s.on_screen} and why is it so harsh at home` } : s));
+  const cg2 = await mod.run({ skin: 'chatgpt', scenes: longer, ending_scenes: 1, measure_only: true }, ctx);
+  assert.equal(cg.words, cg2.words);
+  assert.ok(cg.words >= 13, `answer words ${cg.words}`);
+  assert.deepEqual([cg.messages, cg.photos], [2, 0]);
+  const { readdirSync } = await import('node:fs');
+  assert.deepEqual(readdirSync(ctx.workDir).filter((f) => !['tmp', 'upload.png'].includes(f)), [], 'nothing is written');
+  assert.deepEqual(readdirSync(ctx.tmpDir), []);
+});
+
+test('measured seconds equal the rendered chat length, for photos, bold punctuation and combining accents', { skip }, async () => {
+  for (const [skin, crossfade] of [['imessage', 300], ['chatgpt', null]]) {
+    const { ctx } = makeCtx({ partDir: dir });
+    const scenes = (await edgePlan(ctx.workDir))[skin];
+    const measure = await mod.run({ skin, scenes, ending_scenes: 1, measure_only: true }, ctx);
+    const inputs = { skin, scenes, ending_scenes: 1 };
+    if (crossfade !== null) {
+      inputs.ending = await fileRef(await makeVideo(join(ctx.workDir, 'end.mp4'), 2.5, { width: 1080, height: 1920, tone: 0, pattern: 'color=c=0x2244aa' }), 'video');
+      inputs.crossfade_ms = crossfade;
+    }
+    const render = await mod.run(inputs, ctx);
+    const chat = render.timeline.end_card ? render.timeline.end_card.start_s + crossfade / 1000 : render.timeline.duration_s;
+    assert.ok(Math.abs(measure.seconds - chat) < 0.002, `${skin}: measured ${measure.seconds}s, rendered chat ${chat}s`);
+    if (!render.timeline.end_card) assert.ok(Math.abs((await probe(render.video.path)).duration_s - measure.seconds) < 0.05);
+  }
 });

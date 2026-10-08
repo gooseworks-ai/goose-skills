@@ -3,7 +3,7 @@ import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { file, timeline } from '../../_tools/schemas.mjs';
 
-const VERSION = '1.0.0';
+const VERSION = '1.1.0';
 const folder = join(dirname(fileURLToPath(import.meta.url)), '..', VERSION);
 const walk = (dir) => readdirSync(dir).flatMap((n) => (statSync(join(dir, n)).isDirectory() ? walk(join(dir, n)) : [relative(folder, join(dir, n))]));
 const files = walk(folder).filter((f) => f !== 'part.json' && !f.endsWith('.DS_Store')).sort();
@@ -71,6 +71,10 @@ export const manifest = {
       ending_scenes: { description: 'How many of the last scenes are the end card\'s. Default 0.', type: 'integer', minimum: 0, maximum: 3 },
       crossfade_ms: { description: 'Crossfade into the end card. Default 300.', type: 'integer', minimum: 0, maximum: 2000 },
       fps: { description: 'Default 30.', type: 'integer', minimum: 10, maximum: 60 },
+      measure_only: {
+        description: "Measure the plan without drawing it: the chat's length and counts from the same code the render uses. Nothing is drawn, written or ordered. Default false.",
+        type: 'boolean',
+      },
       aspect: { description: 'Default 9:16. The screen is drawn at 1080 on the short side.', enum: ['9:16', '1:1', '4:5', '16:9'] },
       fonts: {
         description: 'Optional: the UI face (default the bundled Inter) and an emoji face (TTF, OTF or WOFF). A character no font draws is refused.',
@@ -83,8 +87,23 @@ export const manifest = {
   outputs: {
     type: 'object',
     additionalProperties: false,
-    required: ['video', 'seconds', 'timeline'],
-    properties: { video: { description: 'H.264 with the chat\'s own sounds.', ...file('video') }, seconds: { type: 'number', exclusiveMinimum: 0 }, timeline },
+    required: ['seconds'],
+    properties: {
+      video: { description: 'H.264 with the chat\'s own sounds.', ...file('video') },
+      seconds: { description: "The rendered video's length; with measure_only, the chat's length before the end card (the render's end_card.start_s plus the crossfade, or its whole length with no ending).", type: 'number', exclusiveMinimum: 0 },
+      timeline,
+      messages: { description: 'measure_only: the messages, notifications or list lines the chat shows.', type: 'integer', minimum: 0 },
+      words: {
+        description: "measure_only: ChatGPT, the answers' words exactly as the page streams them (Markdown marks removed, each list bullet streams as one word; the question is not counted, it is timed by its characters); iMessage, the text messages' words; Apple Notes, the title's and lines' words; the cascade, the banner bodies' words. For the other skins words are whitespace-separated tokens.",
+        type: 'integer',
+        minimum: 0,
+      },
+      photos: { description: 'measure_only: the photos the chat shows.', type: 'integer', minimum: 0 },
+    },
+    oneOf: [
+      { description: 'A render.', required: ['video', 'timeline'] },
+      { description: 'A measure.', required: ['messages', 'words', 'photos'] },
+    ],
   },
   cost: { basis: 'free' },
   determinism: 'pure',

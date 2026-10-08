@@ -102,6 +102,11 @@ function imGraphemes(text) {
   return [...new Intl.Segmenter(undefined, { granularity: 'grapheme' }).segment(text)].map((s) => s.segment);
 }
 
+/** Words as a reader counts them: whitespace-separated tokens. */
+function imWords(text) {
+  return String(text || '').trim().split(/\s+/u).filter(Boolean).length;
+}
+
 function imEsc(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
@@ -504,5 +509,11 @@ ${IM_DRIVER}</script>
     }
     return cue;
   });
-  return { html, events: events.map((e) => ({ t: e.t, kind: e.kind, ...(e.id ? { id: e.id } : {}), ...(e.kind === 'composer' ? { text: e.text, dur: e.dur } : {}) })), total_s: total, cues };
+  const shown = thread.messages.filter((m) => m.type === 'text' || m.type === 'attachment');
+  const stats = {
+    messages: shown.length,
+    words: shown.reduce((n, m) => n + (m.type === 'text' ? imWords(m.text) : 0), 0),
+    photos: shown.filter((m) => m.type === 'attachment').length,
+  };
+  return { html, events: events.map((e) => ({ t: e.t, kind: e.kind, ...(e.id ? { id: e.id } : {}), ...(e.kind === 'composer' ? { text: e.text, dur: e.dur } : {}) })), total_s: total, cues, stats };
 }

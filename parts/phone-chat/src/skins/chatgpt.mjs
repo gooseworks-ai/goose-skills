@@ -927,6 +927,13 @@ export function chatgptBuild(thread, env) {
   });
   events.sort((x, y) => x.t - y.t);
   const total_s = snap(events[events.length - 1].t + T.tail_hold);
+  const stats = {
+    messages: msgs.filter((m) => m.type === 'user-text' || m.type === 'user-image' || m.type === 'assistant').length,
+    // The answers' words as the page streams them (they set the answer's time). The question is not
+    // counted: it is typed by its characters.
+    words: msgs.reduce((n, m) => n + (m.type === 'assistant' ? words[m.id].words : 0), 0),
+    photos: msgs.filter((m) => m.type === 'user-image').length,
+  };
   if (total_s > CG_MAX_TOTAL_S) {
     throw new Error(`The chat runs ${total_s.toFixed(1)} s; keep it under ${CG_MAX_TOTAL_S} s by shortening the answers or raising timing.stream_wps.`);
   }
@@ -980,5 +987,5 @@ ${String(cgTypedCount)}
 </script>
 </body></html>
 `;
-  return { html, events, total_s, cues };
+  return { html, events, total_s, cues, stats };
 }
