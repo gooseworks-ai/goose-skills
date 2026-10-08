@@ -2,12 +2,12 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { browserProviderOrNull, countColor, fileRef, framePixels, hasFfmpeg, layerInputsFor, loadPart, makeCtx, makeVideo, probe } from '../../_tools/kit-harness.mjs';
+import { loadNewest, browserMissing, browserProviderOrNull, countColor, fileRef, framePixels, hasFfmpeg, layerInputsFor, loadPart, makeCtx, makeVideo, probe } from '../../_tools/kit-harness.mjs';
 import { sample } from './fixture.mjs';
 
-const { dir, mod } = await loadPart('captions-layer', '1.0.0');
+const { dir, mod } = await loadNewest('captions-layer');
 const ready = (await hasFfmpeg()) && browserProviderOrNull();
-const skip = !ready && 'ffmpeg or the browser is not installed';
+const skip = !ready && (browserMissing() || 'ffmpeg is not installed');
 
 function cuesOf(vtt) {
   return vtt.split(/\n\n+/).filter((b) => b.includes('-->')).map((b) => {
@@ -50,4 +50,28 @@ test('with no word timings it transcribes the cut and keeps the written words', 
   assert.deepEqual(cues.map((c) => c.text).join(' '), 'Meet two hundred happy customers');
   const record = JSON.parse(readFileSync(out.words.path, 'utf8'));
   assert.equal(record.cues.length, cues.length);
+});
+
+test('a caption wider than the safe band shrinks inside it, never overflowing the band', { skip }, async () => {
+  const { ctx } = makeCtx({ partDir: dir });
+  const video = await fileRef(await makeVideo(join(ctx.workDir, 'cut.mp4'), 3, { width: 540, height: 960, tone: 440, pattern: 'color=c=0x2060c0' }), 'video');
+  const long = [['Supercalifragilisticexpialidocious', 0.2, 1.2], ['Antidisestablishmentarianism', 1.3, 2.5]].map(([text, s, e]) => ({ text, start_s: s, end_s: e }));
+  const inputs = await layerInputsFor(video, {
+    expect: { speech: 'voiceover', captions: true },
+    timeline: { speech: [{ text: long.map((w) => w.text).join(' '), start_s: 0.2, end_s: 2.5, words: long }] },
+  });
+  const out = await mod.run(inputs, ctx);
+  const record = JSON.parse(readFileSync(out.words.path, 'utf8'));
+  const zone = out.timeline.safe_zones.find((z) => z.use === 'captions');
+  for (const c of record.cues) assert.ok(c.box.x >= zone.x - 0.5 && c.box.x + c.box.w <= zone.x + zone.w + 0.5, `${c.text} box ${JSON.stringify(c.box)} in ${JSON.stringify(zone)}`);
+  // No white text outside the band: the drawn glyphs stay where the box says.
+  const px = await framePixels(out.video.path, 1.0, 540, 960);
+  let outside = 0;
+  for (let y = 0; y < 960; y++) {
+    for (const x of [...Array(Math.floor(zone.x)).keys(), ...Array.from({ length: 540 - Math.ceil(zone.x + zone.w) }, (_, i) => Math.ceil(zone.x + zone.w) + i)]) {
+      const i = (y * 540 + x) * 3;
+      if (px.data[i] > 200 && px.data[i + 1] > 200 && px.data[i + 2] > 200) outside++;
+    }
+  }
+  assert.equal(outside, 0, `${outside} white pixels outside the caption band`);
 });

@@ -5,7 +5,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'end-card',
-  version: '1.0.0',
+  version: '1.0.1',
   kind: 'end_card',
   title: 'Brand end card',
   summary: "Draws the brand end card (logo as-is, brand colours and fonts, proof, benefits, call to action) as a clip of the style's size.",

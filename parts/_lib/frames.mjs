@@ -45,7 +45,7 @@ function kitResize(src, sw, sh, dw, dh) {
   return out;
 }
 
-/** The best absolute normalised correlation of `tpl` (tw x th) anywhere in `img` (iw x ih). */
+/** The best absolute normalised correlation of `tpl` (tw x th) anywhere in `img` (iw x ih), and where. */
 function kitBestNcc(img, iw, ih, tpl, tw, th) {
   const n = tw * th;
   let tMean = 0;
@@ -57,7 +57,7 @@ function kitBestNcc(img, iw, ih, tpl, tw, th) {
     t[i] = tpl[i] - tMean;
     tNorm += t[i] * t[i];
   }
-  if (tNorm < 1e-6) return 0;
+  if (tNorm < 1e-6) return { score: 0, x: 0, y: 0 };
   // Integral images of the frame and its square for each window's mean and spread.
   const W = iw + 1;
   const s1 = new Float64Array(W * (ih + 1));
@@ -73,7 +73,7 @@ function kitBestNcc(img, iw, ih, tpl, tw, th) {
       s2[(y + 1) * W + x + 1] = s2[y * W + x + 1] + r2;
     }
   }
-  let best = 0;
+  let best = { score: 0, x: 0, y: 0 };
   for (let y = 0; y + th <= ih; y++) {
     for (let x = 0; x + tw <= iw; x++) {
       const a = y * W + x;
@@ -91,7 +91,7 @@ function kitBestNcc(img, iw, ih, tpl, tw, th) {
         for (let tx = 0; tx < tw; tx++) cross += img[row + tx] * t[trow + tx];
       }
       const score = Math.abs(cross) / Math.sqrt(varI * tNorm);
-      if (score > best) best = score;
+      if (score > best.score) best = { score, x, y };
     }
   }
   return best;
@@ -101,13 +101,14 @@ function kitBestNcc(img, iw, ih, tpl, tw, th) {
  * How well the brand's logo file is found in the frames at `times`: the best
  * |NCC| over a size search (15 % to 60 % of the frame width). A logo with
  * transparency is matched by its shape (alpha), so a white mark on a dark card
- * counts; an opaque logo by its whole image.
+ * counts; an opaque logo by its whole image. `box` is where the best match
+ * sits, in the video's pixels.
  */
 export async function kitLogoScore(ctx, video, logo, times, frameW, frameH) {
   const lw = 160;
   const rgba = await kitRaw(ctx, ['-i', logo.path, '-frames:v', '1', '-vf', `scale=${lw}:-2:flags=area,format=rgba`, '-pix_fmt', 'rgba'], 'logo.raw');
   const lh = Math.floor(rgba.length / 4 / lw);
-  if (lh < 2) return { score: 0, mode: 'image' };
+  if (lh < 2) return { score: 0, mode: 'image', box: null };
   let transparent = 0;
   const gray = new Float64Array(lw * lh);
   const alpha = new Float64Array(lw * lh);
@@ -121,7 +122,8 @@ export async function kitLogoScore(ctx, video, logo, times, frameW, frameH) {
   const tplSrc = mode === 'mark' ? alpha : gray;
   const iw = KIT_LOGO_FRAME_W;
   const ih = Math.max(2, Math.round((iw * frameH) / frameW / 2) * 2);
-  let best = 0;
+  let best = { score: 0, box: null };
+  const k = frameW / iw;
   for (const t of times) {
     const f = await kitGrayFrame(ctx, video, t, iw, ih);
     const img = Float64Array.from(f.data);
@@ -130,10 +132,11 @@ export async function kitLogoScore(ctx, video, logo, times, frameW, frameH) {
       const th = Math.max(4, Math.round((tw * lh) / lw));
       if (th >= ih) continue;
       const tpl = kitResize(tplSrc, lw, lh, tw, th);
-      best = Math.max(best, kitBestNcc(img, iw, ih, tpl, tw, th));
+      const m = kitBestNcc(img, iw, ih, tpl, tw, th);
+      if (m.score > best.score) best = { score: m.score, t, box: { x: Math.round(m.x * k), y: Math.round(m.y * k), w: Math.round(tw * k), h: Math.round(th * k) } };
     }
   }
-  return { score: +best.toFixed(3), mode };
+  return { score: +best.score.toFixed(3), mode, box: best.box, t: best.t };
 }
 
 /**

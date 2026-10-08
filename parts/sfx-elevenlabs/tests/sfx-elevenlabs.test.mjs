@@ -1,9 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { hasFfmpeg, loadPart, makeCtx, probe } from '../../_tools/kit-harness.mjs';
+import { loadNewest, hasFfmpeg, loadPart, makeCtx, probe } from '../../_tools/kit-harness.mjs';
 import { sample } from './fixture.mjs';
 
-const { dir, mod } = await loadPart('sfx-elevenlabs', '1.0.0');
+const { dir, mod } = await loadNewest('sfx-elevenlabs');
 const ffmpeg = await hasFfmpeg();
 
 test('orders one effect per entry at its fixed length and cuts each to it', { skip: !ffmpeg && 'ffmpeg is not installed' }, async () => {

@@ -147,11 +147,61 @@ function isAnimatedImage(data) {
   if (data.length >= 8 && data[0] === 137 && text(data, 1, 3) === "PNG") return pngIsAnimated(data);
   if (data.length >= 12 && text(data, 0, 4) === "RIFF" && text(data, 8, 4) === "WEBP") return webpIsAnimated(data);
   if (data.length >= 12 && text(data, 4, 4) === "ftyp") return /avis|msf1/.test(text(data, 8, Math.min(56, data.length - 8)));
-  const head = svgText(data.subarray(0, 4096)).replace(/^\uFEFF/, "");
-  if (/^\s*(<\?xml|<!--|<!doctype svg|<svg|<[A-Za-z_][\w.-]*:svg)/i.test(head) || /<([A-Za-z_][\w.-]*:)?svg[\s>]/i.test(head)) {
-    return SVG_MOTION.test(svgText(data));
+  const bom = data[0] === 239 && data[1] === 187 && data[2] === 191 || data[0] === 255 && data[1] === 254 || data[0] === 254 && data[1] === 255;
+  if (!bom && data[0] !== 60 && !/\s/.test(String.fromCharCode(data[0] ?? 0))) return false;
+  const svg = svgText(data);
+  return isSvgDocument(svg) && SVG_MOTION.test(svg);
+}
+function isSvgDocument(textOf) {
+  let at = textOf.charCodeAt(0) === 65279 ? 1 : 0;
+  for (; ; ) {
+    while (at < textOf.length && /\s/.test(textOf[at])) at++;
+    if (textOf.startsWith("<!--", at)) {
+      const end = textOf.indexOf("-->", at + 4);
+      if (end < 0) return false;
+      at = end + 3;
+    } else if (textOf.startsWith("<?", at)) {
+      const end = textOf.indexOf("?>", at + 2);
+      if (end < 0) return false;
+      at = end + 2;
+    } else if (/^<!doctype/i.test(textOf.slice(at, at + 9))) {
+      const bracket = textOf.indexOf("[", at);
+      const close = textOf.indexOf(">", at);
+      if (close < 0) return false;
+      at = bracket >= 0 && bracket < close ? textOf.indexOf("]>", bracket) + 2 : close + 1;
+      if (at < 2) return false;
+    } else break;
   }
-  return false;
+  return /^<([A-Za-z_][\w.-]*:)?svg[\s>/]/i.test(textOf.slice(at, at + 80));
+}
+function dataUrlBytes(url) {
+  const match = /^data:([^,]*),([\s\S]*)$/i.exec(url.trim());
+  if (!match) return null;
+  const head = match[1];
+  const body = match[2];
+  const mime = (head.split(";")[0] || "text/plain").trim().toLowerCase();
+  if (/;\s*base64\s*$/i.test(head)) return { mime, bytes: Buffer.from(body.replace(/\s+/g, ""), "base64") };
+  const out = [];
+  for (let i = 0; i < body.length; i++) {
+    if (body[i] === "%" && /^[0-9a-f]{2}$/i.test(body.slice(i + 1, i + 3))) {
+      out.push(parseInt(body.slice(i + 1, i + 3), 16));
+      i += 2;
+    } else out.push(...Buffer.from(body[i], "utf8"));
+  }
+  return { mime, bytes: Buffer.from(out) };
+}
+function cssDataUrls(css, depth = 0) {
+  const found = [];
+  const token = /url\(\s*(['"]?)(data:[^'")]*)\1\s*\)|@import\s+(['"])(data:[^'"]*)\3/gi;
+  let match;
+  while (match = token.exec(css)) {
+    const url = match[2] ?? match[4];
+    const decoded = dataUrlBytes(url);
+    if (!decoded) continue;
+    found.push({ url, ...decoded });
+    if (decoded.mime === "text/css" && depth < 4) found.push(...cssDataUrls(decoded.bytes.toString("utf8"), depth + 1));
+  }
+  return found;
 }
 
 // src/kit/core/canonical.ts
@@ -788,6 +838,12 @@ var RUNTIME = String.raw`(function () {
     report('The frame page fetches ' + String(url).slice(0, 200) + '. Frame pages get their data from the kit and load only their own files.');
     throw new DOMException('XMLHttpRequest is not available in frame pages', 'NotSupportedError');
   });
+  ['open', 'write', 'writeln'].forEach(function (name) {
+    define(Document.prototype, name, function () {
+      report('The frame page rewrites its document (document.' + name + '). Frame pages change the page they are on.');
+      throw new DOMException('document.' + name + ' is not available in frame pages', 'NotSupportedError');
+    });
+  });
   define(Navigator.prototype, 'sendBeacon', function sendBeacon(url) { reach(url, 'beacon'); return false; });
   if (window.EventSource) define(window, 'EventSource', function EventSource(url) { reach(url, 'EventSource'); throw new DOMException('EventSource is not available', 'SecurityError'); });
   function noMedia() { report('The frame page plays video or sound. Frame pages show pictures and text only.'); }
@@ -989,15 +1045,24 @@ var RUNTIME = String.raw`(function () {
     };
     for (var r = 0; r < roots.length; r++) {
       var root = roots[r];
-      root.querySelectorAll('img, source, input[type=image]').forEach(function (el) { add(el.currentSrc || el.src); (el.srcset || '').split(',').forEach(function (part) { add(part.trim().split(/\s+/)[0]); }); });
+      // The picture each element really shows (its currentSrc), never the candidates in srcset.
+      root.querySelectorAll('img, input[type=image]').forEach(function (el) { add(el.currentSrc || el.src); });
       root.querySelectorAll('image, feImage, use').forEach(function (el) { add(el.getAttribute('href') || el.getAttribute('xlink:href')); });
       root.querySelectorAll('[style]').forEach(function (el) { css(el.getAttribute('style') || ''); });
       var sheets = Array.prototype.slice.call(root.styleSheets || []).concat(Array.prototype.slice.call(root.adoptedStyleSheets || []));
-      sheets.forEach(function (sheet) {
+      var read = [];
+      var walk = function (sheet) {
+        if (!sheet || read.indexOf(sheet) >= 0) return;
+        read.push(sheet);
         var rules;
         try { rules = sheet.cssRules; } catch (e) { return; }
-        for (var i = 0; i < rules.length; i++) css(rules[i].cssText);
-      });
+        for (var i = 0; i < rules.length; i++) {
+          // An @import rule's text is only its own line; its rules live in its sheet.
+          if (rules[i].styleSheet) walk(rules[i].styleSheet);
+          else css(rules[i].cssText);
+        }
+      };
+      sheets.forEach(walk);
     }
     return found;
   }
@@ -1008,13 +1073,10 @@ var RUNTIME = String.raw`(function () {
   }
   async function readSource(url) {
     try {
-      if (/^blob:/i.test(url)) return toBase64(new Uint8Array(await (await nativeFetch(url)).arrayBuffer()));
-      var comma = url.indexOf(',');
-      if (comma < 0) throw new Error('no data');
-      var head = url.slice(5, comma);
-      var body = url.slice(comma + 1);
-      if (/;base64$/i.test(head)) return body.replace(/\s+/g, '');
-      return toBase64(new TextEncoder().encode(decodeURIComponent(body)));
+      // The browser decodes the URL as it would to draw it (base64 or percent-encoded bytes).
+      var response = await nativeFetch(url);
+      if (!response.ok) throw new Error('not readable');
+      return toBase64(new Uint8Array(await response.arrayBuffer()));
     } catch (e) {
       report('The picture ' + url.slice(0, 80) + ' could not be read.');
       return null;
@@ -1198,6 +1260,11 @@ async function buildPage(spec, dir, ctx, reserve = () => void 0) {
     placed.set(rel, ref.sha256);
     const data2 = await readChecked(ref, fail);
     if (ref.media === "html") openTrees(ref, data2);
+    if (ref.mime === "text/css" || /\.css$/i.test(ref.path)) {
+      for (const inline of cssDataUrls(data2.toString("utf8"))) {
+        if (isAnimatedImage(inline.bytes)) fail(`the stylesheet ${rel} names a picture that moves on its own; frame pages take still pictures and draw any motion themselves`);
+      }
+    }
     const target = path.join(dir, ...rel.split("/"));
     await mkdir(path.dirname(target), { recursive: true });
     if (ref === spec.template) continue;

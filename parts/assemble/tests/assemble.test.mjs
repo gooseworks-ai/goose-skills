@@ -1,9 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { join } from 'node:path';
-import { fileRef, hasFfmpeg, levelDb, loadPart, makeCtx, makeVideo, probe, run } from '../../_tools/kit-harness.mjs';
+import { loadNewest, fileRef, hasFfmpeg, levelDb, loadPart, makeCtx, makeVideo, probe, run } from '../../_tools/kit-harness.mjs';
 
-const { dir, mod } = await loadPart('assemble', '1.0.0');
+const { dir, mod } = await loadNewest('assemble');
 const ffmpeg = await hasFfmpeg();
 
 test('joins clips and a still at one size and frame rate, to the exact frame', { skip: !ffmpeg && 'ffmpeg is not installed' }, async () => {

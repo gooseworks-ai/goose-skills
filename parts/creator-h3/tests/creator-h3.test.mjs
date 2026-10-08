@@ -2,10 +2,10 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { hasFfmpeg, loadPart, makeCtx, probe, PARTS_ROOT } from '../../_tools/kit-harness.mjs';
+import { loadNewest, hasFfmpeg, loadPart, makeCtx, probe, PARTS_ROOT } from '../../_tools/kit-harness.mjs';
 import { sample, still } from './fixture.mjs';
 
-const { dir, mod } = await loadPart('creator-h3', '1.0.0');
+const { dir, mod } = await loadNewest('creator-h3');
 const ffmpeg = await hasFfmpeg();
 const skip = !ffmpeg && 'ffmpeg is not installed';
 

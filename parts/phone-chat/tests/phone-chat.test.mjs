@@ -2,12 +2,13 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { browserProviderOrNull, countColor, fileRef, framePixels, hasFfmpeg, levelDb, loadPart, makeCtx, makeVideo, probe } from '../../_tools/kit-harness.mjs';
-import { chatThreadFor } from '../src/threads.mjs';
+import { browserMissing, browserProviderOrNull, loadNewest, countColor, fileRef, framePixels, hasFfmpeg, levelDb, loadPart, makeCtx, makeVideo, probe } from '../../_tools/kit-harness.mjs';
+import { chatJoin, chatSceneTimes, chatThreadFor } from '../src/threads.mjs';
 
-const { dir, mod } = await loadPart('phone-chat', '1.1.0');
+const { dir, mod } = await loadNewest('phone-chat');
+const pcFontCoverageOf = async (path) => (await import('../src/fonts.mjs')).pcFontCoverage(readFileSync(path));
 const ready = (await hasFfmpeg()) && browserProviderOrNull();
-const skip = !ready && 'ffmpeg or the browser is not installed';
+const skip = !ready && (browserMissing() || 'ffmpeg is not installed');
 
 const imessageScenes = () => [
   { id: 's1', line: null, on_screen: 'Maya: where did you find that tote?', picture: null },
@@ -72,10 +73,15 @@ test('draws the chat with its message sounds and crossfades into the end card', 
   assert.ok(countColor(await framePixels(out.video.path, card.end_s - 0.5), [255, 0, 0], 40) > 100000, 'the end card clip shows at the end');
 });
 
-test('refuses a character the bundled font cannot draw, instead of falling back to a system font', async () => {
+test('refuses a character neither bundled font can draw, instead of falling back to a system font', async () => {
   const { ctx } = makeCtx({ partDir: dir, browser: null });
-  const scenes = [{ id: 'a', on_screen: 'Maya: love it \u{1F60D}' }, { id: 'b', on_screen: 'Me: me too' }];
-  await assert.rejects(mod.run({ skin: 'imessage', scenes }, ctx), (e) => e.code === 'bad_input' && /cannot draw/.test(e.message) && e.message.includes('\u{1F60D}'));
+  // Emoji draw with the bundled Noto Color Emoji; a Tibetan syllable is in neither font.
+  const ok = await mod.run({ skin: 'imessage', scenes: [{ id: 'a', on_screen: 'Maya: love it \u{1F60D}' }, { id: 'b', on_screen: 'Me: me too \u{1F44D}\u{1F3FD}' }], measure_only: true }, ctx);
+  assert.equal(ok.messages, 2);
+  const scenes = [{ id: 'a', on_screen: 'Maya: love it \u{0F00}' }, { id: 'b', on_screen: 'Me: me too' }];
+  await assert.rejects(mod.run({ skin: 'imessage', scenes }, ctx), (e) => e.code === 'bad_input' && /cannot draw/.test(e.message) && e.message.includes('\u{0F00}'));
+  const noto = pcFontCoverageOf(join(dir, 'assets', 'fonts', 'NotoColorEmoji.ttf'));
+  assert.ok((await noto).some(([a, b]) => a <= 0x1f60d && 0x1f60d <= b), 'the bundled emoji font covers the emoji');
   const { pcFontCoverage, pcFontMissing } = await import('../src/fonts.mjs');
   const inter = pcFontCoverage(readFileSync(join(dir, 'assets', 'fonts', 'InterVariable.ttf')));
   assert.deepEqual(pcFontMissing(['flat white \u{2192} Barista Blend', 'caf\u{E9} \u{2014} na\u{EF}ve \u{2764}'], [inter]), [], 'Latin, arrows, dashes and a text-style heart are drawn by Inter');
@@ -145,4 +151,80 @@ test('measured seconds equal the rendered chat length, for photos, bold punctuat
     assert.ok(Math.abs(measure.seconds - chat) < 0.002, `${skin}: measured ${measure.seconds}s, rendered chat ${chat}s`);
     if (!render.timeline.end_card) assert.ok(Math.abs((await probe(render.video.path)).duration_s - measure.seconds) < 0.05);
   }
+});
+
+test('a crossfade under one frame is a straight cut; longer ones are whole frames', () => {
+  assert.deepEqual(chatJoin(10, 2.5, 10, 30), { frames: 0, overlap: 0, total: 12.5, ending: { start_s: 10, end_s: 12.5 } });
+  assert.equal(chatJoin(10, 2.5, 20, 30).frames, 0, '20 ms at 30 fps is under a frame: a straight cut, not one frame');
+  assert.equal(chatJoin(10, 2.5, 34, 30).frames, 1);
+  const j = chatJoin(10, 2.5, 310, 30);
+  assert.equal(j.frames, 9);
+  assert.ok(Math.abs(j.overlap - 0.3) < 1e-9 && Math.abs(j.total - 12.2) < 1e-9);
+  assert.throws(() => chatJoin(10, 0.2, 300, 30), /shorter than the crossfade/);
+});
+
+test("a scene starts at its message's first reveal, never at a later event of the same id", () => {
+  const events = [{ t: 0.5, kind: 'pop', id: 'q' }, { t: 2.0, kind: 'pop', id: 'a' }, { t: 2.1, kind: 'stream-start', id: 'a' }, { t: 6.4, kind: 'stream-done', id: 'a' }];
+  const scenes = chatSceneTimes([{ id: 'q' }, { id: 'a' }], [{ scene: 'q', event: 'q' }, { scene: 'a', event: 'a' }], events, 8, 8);
+  assert.deepEqual(scenes, [{ id: 'q', start_s: 0.5, end_s: 2 }, { id: 'a', start_s: 2, end_s: 8 }]);
+});
+
+test('refuses a typing rate of zero, and pacing that is not finite, before anything is drawn', async () => {
+  const notes = [{ on_screen: 'list' }, { on_screen: 'flat white' }];
+  assert.throws(() => chatThreadFor('apple-notes', { scenes: notes, pacing: { chars_per_second: 0 } }), /above 0/);
+  const { ctx } = makeCtx({ partDir: dir, browser: null });
+  await assert.rejects(mod.run({ skin: 'apple-notes', scenes: notes, pacing: { chars_per_second: 0 }, measure_only: true }, ctx), (e) => e.code === 'bad_input');
+  await assert.rejects(mod.run({ skin: 'apple-notes', scenes: notes, pacing: { chars_per_second: 0 } }, ctx), (e) => e.code === 'bad_input');
+});
+
+test('every character a skin draws itself (keyboard, header, status bar) is in the bundled font', async () => {
+  const { pcFontCoverage, pcFontMissing } = await import('../src/fonts.mjs');
+  const inter = pcFontCoverage(readFileSync(join(dir, 'assets', 'fonts', 'InterVariable.ttf')));
+  const { readdirSync } = await import('node:fs');
+  const plans = {
+    imessage: [{ id: 'a', on_screen: 'Maya: hi' }, { id: 'b', on_screen: 'Me: hello' }],
+    chatgpt: [{ id: 'q', on_screen: 'why?' }, { id: 'a', on_screen: 'Because.\n\n- one\n- two' }],
+    'apple-notes': [{ on_screen: 'list' }, { on_screen: 'flat white' }],
+  };
+  for (const [skin, scenes] of Object.entries(plans)) {
+    const build = (await import(`../src/skins/${skin}.mjs`))[{ imessage: 'imessageBuild', chatgpt: 'chatgptBuild', 'apple-notes': 'notesBuild' }[skin]];
+    const assetDir = join(dir, 'assets', 'skins', skin);
+    const assets = Object.fromEntries(readdirSync(assetDir).filter((n) => /\.(css|js)$/.test(n)).map((n) => [n, readFileSync(join(assetDir, n), 'utf8')]));
+    const { thread } = chatThreadFor(skin, { scenes });
+    const { html } = build(thread, { width: 1080, height: 1920, fps: 30, theme: 'dark', safe_area: null, assets, font_css: '', images: {} });
+    const text = html
+      .replace(/<script[\s\S]*?<\/script>/g, ' ')
+      .replace(/<style[\s\S]*?<\/style>/g, ' ')
+      .replace(/<svg[\s\S]*?<\/svg>/g, ' ')
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/&[a-z]+;|&#\d+;/g, ' ');
+    assert.deepEqual(pcFontMissing([text], [inter]), [], `${skin} draws characters Inter does not have`);
+  }
+});
+
+test('with a crossfade under one frame the end card still plays, straight after the chat', { skip }, async () => {
+  const { ctx } = makeCtx({ partDir: dir });
+  const ending = await fileRef(await makeVideo(join(ctx.workDir, 'end.mp4'), 2, { width: 1080, height: 1920, tone: 0, pattern: 'color=c=0xff0000' }), 'video');
+  const out = await mod.run({ skin: 'apple-notes', scenes: [{ on_screen: 'list' }, { on_screen: 'oat milk' }, { on_screen: 'Shop now' }], ending, ending_scenes: 1, crossfade_ms: 10 }, ctx);
+  const card = out.timeline.end_card;
+  assert.ok(Math.abs(card.end_s - card.start_s - 2) < 0.01, JSON.stringify(card));
+  const info = await probe(out.video.path);
+  assert.ok(Math.abs(info.duration_s - out.seconds) < 0.05, `video ${info.duration_s}s, timeline ${out.seconds}s`);
+  assert.ok(countColor(await framePixels(out.video.path, card.end_s - 0.3), [255, 0, 0], 40) > 100000, 'the end card is there at the end');
+});
+
+test('an emoji line draws a coloured glyph from the bundled emoji font, and a plain line does not', { skip }, async () => {
+  const yellow = (px) => {
+    let n = 0;
+    for (let i = 0; i < px.data.length; i += 3) if (px.data[i] > 200 && px.data[i + 1] > 140 && px.data[i + 1] < 220 && px.data[i + 2] < 90) n++;
+    return n;
+  };
+  const counts = [];
+  for (const line of ['Maya: love it \u{1F60D}\u{1F60D}\u{1F60D}', 'Maya: love it a lot']) {
+    const { ctx } = makeCtx({ partDir: dir });
+    const out = await mod.run({ skin: 'imessage', scenes: [{ id: 'a', on_screen: line }, { id: 'b', on_screen: 'Me: same' }] }, ctx);
+    counts.push(yellow(await framePixels(out.video.path, out.seconds - 0.2, 540, 960)));
+  }
+  assert.ok(counts[0] > 300, `the emoji line has ${counts[0]} emoji-yellow pixels`);
+  assert.ok(counts[1] < 20, `the plain line has ${counts[1]}`);
 });

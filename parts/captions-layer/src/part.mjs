@@ -12,6 +12,7 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitDuration, kitFfmpeg, kitNum } from '../../_lib/part.mjs';
+import { kitHeardPlace, kitHeardWords } from '../../_lib/heard.mjs';
 
 const PER = 2;
 const CAP = 0.019;
@@ -19,10 +20,6 @@ const Y = 0.62;
 const SAFE_TOP = 285 / 1920;
 const SAFE_BOTTOM = 1635 / 1920;
 const PLATE = 'rgba(58,58,60,0.839)';
-
-function bare(w) {
-  return String(w).replace(/[^\p{L}\p{N}']/gu, '').toLowerCase();
-}
 
 function syllables(w) {
   const s = String(w).toLowerCase().replace(/[^a-z]/g, '');
@@ -40,40 +37,6 @@ function groupWords(words, span) {
     groups[groups.length - 1] = groups.at(-1).concat(tail);
   }
   return groups;
-}
-
-/** Written words with times for one line, from heard words (today's caption-burn matching), or null. */
-function placeHeard(text, start, end, heard, from) {
-  const words = text.split(/\s+/).filter(Boolean);
-  let j = from;
-  const spans = words.map((w) => {
-    const k = bare(w);
-    let hit = null;
-    for (let x = j; x < Math.min(j + 5, heard.length); x++) {
-      if (heard[x].key === k) {
-        hit = x;
-        break;
-      }
-    }
-    if (hit === null) return null;
-    j = hit + 1;
-    return { start: heard[hit].start, end: heard[hit].end };
-  });
-  const known = spans.map((s, i) => (s ? i : -1)).filter((i) => i >= 0);
-  if (known.length < Math.max(1, Math.floor((words.length * 2) / 3))) return null;
-  for (let i = 0; i < spans.length; i++) {
-    if (spans[i]) continue;
-    const lo = Math.max(-1, ...known.filter((k) => k < i));
-    const upList = known.filter((k) => k > i);
-    const up = upList.length ? Math.min(...upList) : null;
-    const t0 = lo >= 0 ? spans[lo].end : start;
-    const t1 = up !== null ? spans[up].start : end;
-    const gap = (up !== null ? up : words.length) - lo - 1;
-    const step = (t1 - t0) / Math.max(gap, 1);
-    const pos = i - lo;
-    spans[i] = { start: t0 + step * (pos - 1), end: t0 + step * pos };
-  }
-  return { words: words.map((w, i) => ({ text: w, start_s: spans[i].start, end_s: spans[i].end })), next: j };
 }
 
 /** Times from syllables inside the line, for a line the transcript could not place. */
@@ -109,11 +72,7 @@ async function transcribe(ctx, video) {
     body: { audio_url: audio, task: 'transcribe', language: 'en', chunk_level: 'word' },
     results: [],
   });
-  const chunks = (result.json && result.json.chunks) || [];
-  return chunks
-    .map((c) => ({ text: String(c.text || '').trim(), start: c.timestamp && c.timestamp[0], end: c.timestamp && c.timestamp[1] }))
-    .filter((w) => w.text && Number.isFinite(w.start) && Number.isFinite(w.end))
-    .map((w) => ({ ...w, key: bare(w.text) }));
+  return kitHeardWords(result.json);
 }
 
 /** Every caption cue [{words, start_s, end_s}] for the cut, last one held to the end. */
@@ -127,7 +86,7 @@ async function buildCues(ctx, inputs, duration) {
     if (speech.length) {
       let from = 0;
       lines = speech.map((s) => {
-        const placed = (s.words || []).length ? { words: s.words, next: from } : placeHeard(s.text, s.start_s, s.end_s, heard, from);
+        const placed = (s.words || []).length ? { words: s.words, next: from } : kitHeardPlace(s.text, s.start_s, s.end_s, heard, from);
         if (placed) {
           from = placed.next;
           return { start: s.start_s, end: s.end_s, words: placed.words };
@@ -202,11 +161,10 @@ export async function run(inputs, ctx) {
   const fonts = inputs.brand.fonts || {};
   const font = fonts.body || fonts.heading || { path: join(ctx.part.dir, 'assets', 'fonts', 'Montserrat-Bold.ttf') };
   const fontUri = `data:font/ttf;base64,${(await readFile(font.path)).toString('base64')}`;
-  const maxWidth = zone.right - zone.left;
   const page = `<!doctype html><html><head><meta charset="utf-8"><style>
 @font-face{font-family:KitCaption;src:url(${fontUri}) format('${fontFormat(font.path)}');font-display:block;}
 html,body{margin:0;width:${W}px;height:${H}px;background:transparent;overflow:hidden;}
-#cap{position:absolute;left:0;top:0;display:inline-block;white-space:nowrap;font-family:KitCaption;font-weight:700;font-size:${px}px;line-height:1.15;color:#fff;background:${PLATE};padding:${Math.round(px * 0.22)}px ${Math.round(px * 0.46)}px;border-radius:${Math.round(px * 0.3)}px;max-width:${Math.round(maxWidth)}px;}
+#cap{position:absolute;left:0;top:0;display:inline-block;width:max-content;white-space:nowrap;font-family:KitCaption;font-weight:700;font-size:${px}px;line-height:1.15;color:#fff;background:${PLATE};padding:${Math.round(px * 0.22)}px ${Math.round(px * 0.46)}px;border-radius:${Math.round(px * 0.3)}px;}
 #cap.off{display:none;}
 </style></head><body><div id="cap" class="off"></div></body></html>`;
 
@@ -216,32 +174,47 @@ html,body{margin:0;width:${W}px;height:${H}px;background:transparent;overflow:hi
   try {
     const p = await browser.newPage({ viewport: { width: W, height: H }, deviceScaleFactor: 1 });
     await p.setContent(page);
-    await p.evaluate(async () => {
+    // Fonts load only when text uses them, so load the caption face before anything is measured.
+    const loaded = await p.evaluate(async (size) => {
+      const faces = await document.fonts.load(`700 ${size}px KitCaption`);
       await document.fonts.ready;
-    });
+      return faces.length;
+    }, px);
+    if (!loaded) throw ctx.error('tool_failed', 'the caption font did not load');
     await p.screenshot({ path: blank, type: 'png', omitBackground: true });
     for (const c of cues) {
       const text = c.words.join(' ');
       if (drawn.has(text)) continue;
       const placed = await p.evaluate(
-        ({ text, W, top, bottom, y, left, right }) => {
+        async ({ text, px, top, bottom, y, left, right }) => {
           const el = document.getElementById('cap');
+          await document.fonts.load(`700 ${px}px KitCaption`, text);
           el.textContent = text;
           el.classList.remove('off');
-          // A caption wider than the band shrinks to fit rather than wrapping or leaving the frame.
-          el.style.transform = '';
-          const r = el.getBoundingClientRect();
+          // A caption wider than the band is set smaller to fit rather than wrapping or leaving the frame.
+          // Its natural one-line width is measured (width: max-content, never clamped), and it is resized,
+          // not transformed, so the drawn plate is exactly the measured box.
+          el.style.fontSize = '';
+          el.style.padding = '';
+          el.style.borderRadius = '';
+          let r = el.getBoundingClientRect();
           const room = right - left;
-          const scale = r.width > room ? room / r.width : 1;
-          const w = r.width * scale;
-          const h = r.height * scale;
+          if (r.width > room) {
+            const k = Math.floor((room / r.width) * 1000) / 1000;
+            el.style.fontSize = `${px * k}px`;
+            el.style.padding = `${Math.round(px * 0.22 * k)}px ${Math.round(px * 0.46 * k)}px`;
+            el.style.borderRadius = `${Math.round(px * 0.3 * k)}px`;
+            r = el.getBoundingClientRect();
+          }
+          const w = r.width;
+          const h = r.height;
           const t = Math.min(Math.max(y - h / 2, top), bottom - h);
           const l = left + (right - left - w) / 2;
-          el.style.transformOrigin = '0 0';
-          el.style.transform = `translate(${l}px, ${t}px) scale(${scale})`;
+          el.style.left = `${l}px`;
+          el.style.top = `${t}px`;
           return { x: l, y: t, w, h };
         },
-        { text, W, top: zone.top, bottom: zone.bottom, y: Y * H, left: zone.left, right: zone.right },
+        { text, px, top: zone.top, bottom: zone.bottom, y: Y * H, left: zone.left, right: zone.right },
       );
       const file = join(ctx.tmpDir, `cap-${drawn.size}.png`);
       await p.screenshot({ path: file, type: 'png', omitBackground: true });

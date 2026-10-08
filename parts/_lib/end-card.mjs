@@ -127,10 +127,11 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
 }
 
 /**
- * Renders the card to `<name>.png` and a `seconds`-long clip `<name>.mp4`
- * (H.264, silent stereo track) in workDir. Returns the clip's FileRef.
+ * Renders the card to a `seconds`-long clip `<name>.mp4` (H.264, silent stereo
+ * track). As a step's output it goes in workDir and the FileRef comes back;
+ * with `scratch` it goes in tmpDir and only its path comes back.
  */
-export async function kitRenderEndCard(ctx, { brand, card, width, height, fps, seconds, name = 'end-card' }) {
+export async function kitRenderEndCard(ctx, { brand, card, width, height, fps, seconds, name = 'end-card', scratch = false }) {
   if (!ctx.browser) throw ctx.error('needs_missing', 'the end card needs the kit browser');
   const fontCss = await kitCardFontCss(brand, join(ctx.part.dir, 'assets', 'fonts', 'Montserrat-Bold.ttf'));
   let html;
@@ -220,7 +221,7 @@ export async function kitRenderEndCard(ctx, { brand, card, width, height, fps, s
     String(fps),
     '-t',
     kitNum(seconds),
-    join(ctx.workDir, `${name}.mp4`),
+    join(scratch ? ctx.tmpDir : ctx.workDir, `${name}.mp4`),
   ]);
-  return ctx.file(`${name}.mp4`, 'video');
+  return scratch ? { path: join(ctx.tmpDir, `${name}.mp4`) } : ctx.file(`${name}.mp4`, 'video');
 }

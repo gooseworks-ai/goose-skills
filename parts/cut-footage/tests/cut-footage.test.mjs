@@ -1,9 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { join } from 'node:path';
-import { countColor, fileRef, framePixels, hasFfmpeg, loadPart, makeCtx, makeVideo, probe } from '../../_tools/kit-harness.mjs';
+import { loadNewest, countColor, fileRef, framePixels, hasFfmpeg, loadPart, makeCtx, makeVideo, probe } from '../../_tools/kit-harness.mjs';
 
-const { dir, mod } = await loadPart('cut-footage', '1.0.0');
+const { dir, mod } = await loadNewest('cut-footage');
 const ffmpeg = await hasFfmpeg();
 const skip = !ffmpeg && 'ffmpeg is not installed';
 

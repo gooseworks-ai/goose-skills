@@ -1,0 +1,402 @@
+/* Apple Notes (iPhone, light mode) — pixel-accurate mockup.
+ *
+ * Reference: 1180×2556 screen capture from iPhone 16/15 Pro running iOS Notes.
+ * All sizes in px assume the 1180×2556 viewport. Cropping for 9:16 (1080×1920)
+ * is the caller's responsibility (the screenshotter accepts a viewport flag).
+ *
+ * Font stack relies on the host having SF Pro installed. On macOS Chromium
+ * this resolves correctly. On Linux CI it falls back to system-ui sans-serif,
+ * which is visually close but not pixel-identical.
+ */
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 1180px;
+  height: 2556px;
+  background: #ffffff;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
+               "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #1c1c1e;
+}
+
+.screen {
+  position: relative;
+  width: 1180px;
+  height: 2556px;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+/* ---------- Status bar (top 120px) ---------- */
+
+.status-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 124px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 70px 0 70px;
+  z-index: 5;
+  background: #ffffff;
+}
+
+.status-time {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+  font-weight: 600;
+  font-size: 42px;
+  letter-spacing: -0.5px;
+  color: #000;
+  padding-top: 24px;
+}
+
+.status-time .focus-glyph svg { display: block; }
+
+.status-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 28px;
+}
+
+.status-right svg { display: block; }
+
+/* ---------- Top toolbar (floating pills below status bar) ---------- */
+
+.toolbar {
+  position: absolute;
+  top: 124px;
+  left: 0;
+  right: 0;
+  height: 174px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 38px;
+  z-index: 4;
+  background: #ffffff;
+}
+
+.toolbar-pill {
+  background: #ffffff;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06),
+              0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.toolbar-back {
+  width: 124px;
+  height: 124px;
+  border-radius: 50%;
+}
+
+.toolbar-back svg { width: 28px; height: 46px; }
+
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.toolbar-actions {
+  height: 124px;
+  padding: 0 50px;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  gap: 72px;
+  background: #ffffff;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06),
+              0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.toolbar-actions svg { display: block; }
+
+.toolbar-done {
+  width: 124px;
+  height: 124px;
+  border-radius: 50%;
+  background: #FFCC00;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 20px rgba(255, 204, 0, 0.35),
+              0 1px 2px rgba(0, 0, 0, 0.10);
+}
+
+.toolbar-done svg { width: 60px; height: 44px; }
+
+/* ---------- Note body ---------- */
+
+.note {
+  position: absolute;
+  top: 360px;
+  left: 66px;
+  right: 66px;
+  bottom: 0;
+  z-index: 1;
+}
+
+.note-title {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+  font-weight: 700;
+  font-size: 104px;
+  line-height: 1.05;
+  letter-spacing: -0.022em;
+  color: #1c1c1e;
+  margin-bottom: 22px;
+  display: flex;
+  align-items: baseline;
+  position: relative;
+}
+
+.note-body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  font-weight: 400;
+  font-size: 58px;
+  line-height: 1.38;
+  letter-spacing: -0.005em;
+  color: #1c1c1e;
+}
+
+.note-paragraph {
+  margin: 0 0 84px 0; /* one empty visual line between paragraphs */
+  position: relative;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.note-paragraph:last-child { margin-bottom: 0; }
+
+/* Autocorrect / spelling underline — short yellow line beneath flagged tokens. */
+.spell {
+  position: relative;
+  display: inline;
+}
+
+.spell::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -6px;
+  height: 4px;
+  background: #FFC107;
+  border-radius: 2px;
+}
+
+/* Yellow text-insertion cursor, sits inline at end of last paragraph or
+ * inside the title. Uses CSS animation only on screen; for screenshots we
+ * keep it visible (full opacity). */
+.cursor {
+  display: inline-block;
+  width: 5px;
+  height: 1.05em;
+  background: #FFCC00;
+  margin-left: 2px;
+  vertical-align: -0.18em;
+  border-radius: 1.5px;
+}
+
+.cursor--title {
+  width: 6px;
+  height: 0.95em;
+  vertical-align: -0.10em;
+  margin-left: 4px;
+  background: #FFCC00;
+}
+
+/* Image block inside the body. */
+.note-image {
+  display: block;
+  width: 100%;
+  max-width: 1000px;
+  border-radius: 18px;
+  margin: 12px 0 18px 0;
+  object-fit: cover;
+}
+
+.note-image-caption {
+  font-size: 38px;
+  line-height: 1.3;
+  color: #8a8a8e;
+  margin: 0 0 84px 0;
+}
+
+/* Checklist block. */
+.note-checklist { margin: 0 0 84px 0; }
+
+.note-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 28px;
+  margin-bottom: 28px;
+}
+
+.note-check-box {
+  flex: 0 0 auto;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 4px solid #c7c7cc;
+  background: #ffffff;
+  margin-top: 14px;
+  position: relative;
+}
+
+.note-check-box--checked {
+  background: #FFC300;
+  border-color: #FFC300;
+}
+
+.note-check-box--checked::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'><path d='M5 12 L10 17 L19 7'/></svg>") center center / 60% no-repeat;
+}
+
+.note-check-text { flex: 1 1 auto; }
+.note-check-text--done { color: #8a8a8e; text-decoration: line-through; text-decoration-color: #c7c7cc; text-decoration-thickness: 3px; }
+
+/* Divider block. */
+.note-divider {
+  height: 2px;
+  background: #e5e5ea;
+  border: none;
+  margin: 0 0 84px 0;
+}
+
+/* ---------- Keyboard chrome (optional) ---------- */
+
+.kbd {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1100px;
+  z-index: 8;
+  pointer-events: none;
+}
+
+/* Formatting toolbar pill above keyboard. */
+.kbd-format {
+  position: absolute;
+  top: -40px;
+  left: 30px;
+  right: 30px;
+  height: 124px;
+  background: #ffffff;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  padding: 0 50px;
+  justify-content: space-between;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06),
+              0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.kbd-format > * { display: flex; align-items: center; }
+
+/* Keyboard base. */
+.kbd-base {
+  position: absolute;
+  top: 130px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #d1d4da;
+  padding: 18px 12px 0 12px;
+}
+
+.kbd-suggestions {
+  height: 90px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  font-size: 40px;
+  color: #1c1c1e;
+}
+
+.kbd-suggestion {
+  text-align: center;
+  border-right: 1px solid rgba(60, 60, 67, 0.18);
+  padding: 8px 0;
+}
+.kbd-suggestion:last-child { border-right: none; }
+
+.kbd-row {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+  gap: 18px;
+  padding: 0 6px;
+}
+
+.kbd-key {
+  flex: 1 1 0;
+  height: 118px;
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.28);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+               "Helvetica Neue", sans-serif;
+  font-size: 62px;
+  font-weight: 400;
+  color: #1c1c1e;
+}
+
+.kbd-key--wide { flex: 1.6 1 0; background: #abafb8; color: #1c1c1e; }
+
+.kbd-row--abc { padding: 0 64px; }
+.kbd-row--zxc { padding: 0 6px; }
+
+.kbd-bottom {
+  display: flex;
+  gap: 18px;
+  padding: 0 6px;
+  align-items: center;
+}
+
+.kbd-bottom .kbd-key { font-size: 48px; }
+.kbd-bottom .kbd-key--space { flex: 4.5 1 0; }
+.kbd-bottom .kbd-key--num { flex: 1.1 1 0; background: #abafb8; }
+.kbd-bottom .kbd-key--emoji { flex: 1.0 1 0; }
+.kbd-bottom .kbd-key--return { flex: 1.4 1 0; background: #abafb8; }
+
+.kbd-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 60px 0 60px;
+  height: 110px;
+}
+
+.kbd-footer svg { display: block; }
+
+/* ---------- iPhone hardware frame (optional) ---------- */
+
+.iphone-frame {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: 188px;
+  box-shadow: inset 0 0 0 18px #1d1d1f;
+  z-index: 20;
+}

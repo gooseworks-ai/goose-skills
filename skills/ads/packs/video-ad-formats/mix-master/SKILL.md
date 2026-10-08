@@ -2,10 +2,10 @@
 name: mix-master
 description: Canonical short-form-ad audio mix in one FFmpeg pass. VO loudnorm + 3.0× per-clip + 2.0× mix, music 0.13 base + apad+afade, sidechain compress 20:1 @ 0.01, climax line +20%, optional video-to-music duration sync. Replaces the reactive multi-round tuning that cost v03 6+ passes.
 status: superseded
-superseded_by: audio-mix@1.0.0, sound-layer@1.0.0
+superseded_by: audio-mix@1.0.1, sound-layer@1.0.1
 ---
 
-> **Superseded:** the video kit now does this with the audio-mix part, version 1.0.0 and the sound-layer part, version 1.0.0, in the parts folder of this repository. Its mix mode is the audio-mix step (voice, a ducked bed and timed effects) and its finish mode is the sound layer, which levels every video to -14 LUFS with the true peak at or below -1 dBTP. This atom stays, unchanged in behaviour, for skills outside the kit until they move; its scripts still run.
+> **Superseded:** the video kit now does this with the audio-mix part, version 1.0.1 and the sound-layer part, version 1.0.1, in the parts folder of this repository. Its mix mode is the audio-mix step (voice, a ducked bed and timed effects) and its finish mode is the sound layer, which levels every video to -14 LUFS with the true peak at or below -1 dBTP. This atom stays, unchanged in behaviour, for skills outside the kit until they move; its scripts still run.
 
 # mix-master
 

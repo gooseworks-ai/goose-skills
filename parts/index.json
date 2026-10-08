@@ -49,6 +49,53 @@
       "models": []
     },
     {
+      "id": "assemble",
+      "version": "1.0.1",
+      "interface": 1,
+      "kind": "compose",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "fps",
+            "scale",
+            "crop",
+            "pad",
+            "setsar",
+            "tpad",
+            "trim",
+            "setpts",
+            "format",
+            "concat",
+            "aresample",
+            "aformat",
+            "apad",
+            "atrim",
+            "anullsrc"
+          ],
+          "encoders": [
+            "libx264",
+            "aac"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 500
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/assemble/1.0.1",
+      "files": {
+        "README.md": "e91e49abab04f6f3eab65d44f61a4148b827468462d4eb0cded8f7159ad24d92",
+        "part.json": "060e84d3d11b56b6840fc83b67d1225c106fbf393c22fa612c2cd425cb40b292",
+        "part.mjs": "8df6fde84fa14dbe4640cf4c2b03b959f1d6ace0b5bc9d52c904f819191a771b"
+      },
+      "models": []
+    },
+    {
       "id": "audio-mix",
       "version": "1.0.0",
       "interface": 1,
@@ -87,6 +134,48 @@
         "README.md": "e0fa1a0bb8498d61591829f5fde1838292039071f9157ef851e9e0d47b7b20b7",
         "part.json": "93f8684c97577219abd2a19206ef9540077942c582cb047e50022a7b455df344",
         "part.mjs": "2504d7677f6bc06b580ba71cf0cdf34a6a7ce8b06a0205577d24a79ac7a0518f"
+      },
+      "models": []
+    },
+    {
+      "id": "audio-mix",
+      "version": "1.0.1",
+      "interface": 1,
+      "kind": "mix",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "ebur128",
+            "sidechaincompress",
+            "amix",
+            "alimiter",
+            "adelay",
+            "afade",
+            "apad",
+            "atrim",
+            "aresample",
+            "aformat",
+            "asplit"
+          ],
+          "encoders": [
+            "aac"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 200
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/audio-mix/1.0.1",
+      "files": {
+        "README.md": "bc78784924c89ed1949cfc605968b0524841831203e45f79a2bc531de5b02aaa",
+        "part.json": "89c5e0fce0c7db6ef48f011f9e551b6a6b8aabd5213c2f34773a3e23602889bd",
+        "part.mjs": "e7813ebee0224f7711fac14ca27a78984c2d7f654fa67fa99f3f6b423e252418"
       },
       "models": []
     },
@@ -130,6 +219,49 @@
         "assets/fonts/Montserrat-Bold.ttf": "bc6e854971cea46b463be6f9eef4d9cd52f51cfc1fc0dd90c9d3e6483dc0ec61",
         "part.json": "0aaa1daddca63eca83e4fa3604d5847d52c5ee1a8cc719a807091b145148d33f",
         "part.mjs": "e0489bd55cc4b064d2be78a63d2f843ec881808eaba47b17d21149d8e5f72926"
+      },
+      "models": []
+    },
+    {
+      "id": "brand-layer",
+      "version": "1.0.1",
+      "interface": 1,
+      "kind": "compose",
+      "layer": "brand",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": true,
+        "ffmpeg": {
+          "filters": [
+            "xfade",
+            "fps",
+            "settb",
+            "setsar",
+            "format",
+            "afade",
+            "apad",
+            "atrim",
+            "anullsrc"
+          ],
+          "encoders": [
+            "libx264",
+            "aac"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 300
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/brand-layer/1.0.1",
+      "files": {
+        "README.md": "cf6f8c2add27a812626ed162e3bf176809499037dc10aa9ccce4b39cffcc48f5",
+        "assets/fonts/Montserrat-Bold.ttf": "bc6e854971cea46b463be6f9eef4d9cd52f51cfc1fc0dd90c9d3e6483dc0ec61",
+        "part.json": "7236cc960cfe4554cd238a3999bc8cb2f31aa15b76fe91f3d054e4464673d6cc",
+        "part.mjs": "8c63c7a8ac3285717a09bd0a61bb2b5727b0606f3758287a26aa238831518792"
       },
       "models": []
     },
@@ -180,6 +312,57 @@
         "assets/fonts/Montserrat-Bold.ttf": "bc6e854971cea46b463be6f9eef4d9cd52f51cfc1fc0dd90c9d3e6483dc0ec61",
         "part.json": "dce6a3037b7432259e08a0485ce2f7ee952693c844cf28eeb025a4778647e949",
         "part.mjs": "59d4cf4aa5f576450313f820d2514e8ccc7a8e88f46857293048a76c0177a4af"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "fal-ai/whisper"
+        }
+      ]
+    },
+    {
+      "id": "captions-layer",
+      "version": "1.1.0",
+      "interface": 1,
+      "kind": "caption",
+      "layer": "captions",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": true,
+        "ffmpeg": {
+          "filters": [
+            "fps",
+            "format",
+            "overlay"
+          ],
+          "encoders": [
+            "libx264",
+            "aac"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "fal-ai/whisper"
+          }
+        ],
+        "disk_mb": 400
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "call",
+        "rates_usd": {
+          "fal-ai/whisper": 0.02
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/captions-layer/1.1.0",
+      "files": {
+        "README.md": "00a3f84c3654f8525bb0d175f37dd5e85751eea27b8f5ba8ff865c044b28000c",
+        "assets/fonts/Montserrat-Bold.ttf": "bc6e854971cea46b463be6f9eef4d9cd52f51cfc1fc0dd90c9d3e6483dc0ec61",
+        "part.json": "e88322c16eac589d0baf2f4a94ce3c231e93e6f16fc1b2abb0628a12f42b6926",
+        "part.mjs": "512f7b059ad34c821321ff994120ac009d8a1f3428ae4b75208e6a02e02877b7"
       },
       "models": [
         {
@@ -241,6 +424,80 @@
           "model": "fal-ai/whisper"
         }
       ]
+    },
+    {
+      "id": "check-layer",
+      "version": "1.1.0",
+      "interface": 1,
+      "kind": "check",
+      "layer": "check",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "ebur128",
+            "freezedetect",
+            "blackdetect",
+            "scale",
+            "format"
+          ],
+          "encoders": [
+            "pcm_s16le"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 100
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/check-layer/1.1.0",
+      "files": {
+        "README.md": "fc6c24fb107623a5bab4bf5d6c8627a2fba603f069a69d25d1bd3e90dbb3c2fd",
+        "part.json": "9916e1ccf88a74a7fda00120ecb422a6159cb6bc267957ff2e29295a3adc1934",
+        "part.mjs": "f9da0dfb2e866dbc203f06659a4ed5f01cbe77753bece71be169aec2205f80b4"
+      },
+      "models": []
+    },
+    {
+      "id": "check-layer",
+      "version": "1.1.1",
+      "interface": 1,
+      "kind": "check",
+      "layer": "check",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "ebur128",
+            "freezedetect",
+            "blackdetect",
+            "scale",
+            "format"
+          ],
+          "encoders": [
+            "pcm_s16le"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 100
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/check-layer/1.1.1",
+      "files": {
+        "README.md": "a769070247d12a50a54e37f29f05ca3fdafd8e924ca06439338041311c8a892f",
+        "part.json": "00ca3a7d8aa83b4c34f682e30d6d62410ba4ff6ebcb02f026421072d91d25bed",
+        "part.mjs": "ddfd0f9de726a6be8f2bc71841b3f23fb1f3bc68dc2ecd3053021e7c3207a1ef"
+      },
+      "models": []
     },
     {
       "id": "creator-h3",
@@ -312,6 +569,75 @@
       ]
     },
     {
+      "id": "creator-h3",
+      "version": "1.0.1",
+      "interface": 1,
+      "kind": "generate_video",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "silencedetect",
+            "tpad",
+            "trim",
+            "setpts",
+            "fps",
+            "settb",
+            "setsar",
+            "format",
+            "xfade",
+            "concat",
+            "aresample",
+            "pan",
+            "aformat",
+            "adelay",
+            "apad",
+            "atrim",
+            "asetpts",
+            "acrossfade"
+          ],
+          "encoders": [
+            "libx264",
+            "aac",
+            "pcm_s16le"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "minimax/h3-max/reference-to-video"
+          }
+        ],
+        "disk_mb": 1500
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "second",
+        "measure": {
+          "from": "/max_seconds",
+          "as": "value"
+        },
+        "rates_usd": {
+          "minimax/h3-max/reference-to-video": 0.4
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/creator-h3/1.0.1",
+      "files": {
+        "README.md": "a6d7ed9564def8d2d582941868b9498f9a6759ce88268e5dfdcb9120d0942aa7",
+        "part.json": "89246f903c89ca5c083484343dab2aede8fabd24e217b06b71b2d42d938bc7b1",
+        "part.mjs": "104d515c1b34a7dd087d8991abc58ab0ba5cfb703b547cead3271e80eb5c442d"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "minimax/h3-max/reference-to-video"
+        }
+      ]
+    },
+    {
       "id": "cut-footage",
       "version": "1.0.0",
       "interface": 1,
@@ -356,6 +682,50 @@
       "models": []
     },
     {
+      "id": "cut-footage",
+      "version": "1.0.1",
+      "interface": 1,
+      "kind": "compose",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "setpts",
+            "fps",
+            "scale",
+            "crop",
+            "pad",
+            "setsar",
+            "tpad",
+            "trim",
+            "overlay",
+            "format",
+            "atempo",
+            "atrim"
+          ],
+          "encoders": [
+            "libx264",
+            "aac"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 300
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/cut-footage/1.0.1",
+      "files": {
+        "README.md": "fd685dbf4f55f34aa10d8f0f55f489796965d08a47199b217aacb070bc730084",
+        "part.json": "7e3e9e2404b7e2ce5fd4865ccf1b212e87ede4e22390ed738393363fe7a2e485",
+        "part.mjs": "09784b33d52f64cb01cbd6d25108175ceeef46bd0e98abb20e73cea8bd1acbed"
+      },
+      "models": []
+    },
+    {
       "id": "end-card",
       "version": "1.0.0",
       "interface": 1,
@@ -393,6 +763,43 @@
       "models": []
     },
     {
+      "id": "end-card",
+      "version": "1.0.1",
+      "interface": 1,
+      "kind": "end_card",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": true,
+        "ffmpeg": {
+          "filters": [
+            "scale",
+            "setsar",
+            "format",
+            "anullsrc"
+          ],
+          "encoders": [
+            "libx264",
+            "aac"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 50
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/end-card/1.0.1",
+      "files": {
+        "README.md": "16f0b7ca52b9d925e1d07c77354be0b3e635f7bd06d809f9ea8894b0e730d22b",
+        "assets/fonts/Montserrat-Bold.ttf": "bc6e854971cea46b463be6f9eef4d9cd52f51cfc1fc0dd90c9d3e6483dc0ec61",
+        "part.json": "77ff4d441ace63e3e51cdab57fe7d554932fabe62332cc868d57fc0f73e07ce9",
+        "part.mjs": "3aaf6754af01eaacafe03bcf03c4679a73a7c47ba334162b9affd81f610ab49c"
+      },
+      "models": []
+    },
+    {
       "id": "html-frames",
       "version": "1.0.0",
       "interface": 1,
@@ -416,7 +823,7 @@
       "path": "parts/html-frames/1.0.0",
       "files": {
         "part.json": "1c0021327e64633f658e4c3f557a8b544959ed0ac630adc98528f177da390215",
-        "part.mjs": "9ff03e0eca5aba4f7b60d4b947b86e82f8f6e11f383727a8e2947dca0eb31167"
+        "part.mjs": "58d5478d51feeb1a178d70f3576d0529d181e2f6bb95941d817be7f53e4707e0"
       },
       "models": []
     },
@@ -478,6 +885,63 @@
       ]
     },
     {
+      "id": "image-nano-banana",
+      "version": "1.0.1",
+      "interface": 1,
+      "kind": "generate_image",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "encoders": [
+            "png"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "fal-ai/nano-banana"
+          },
+          {
+            "provider": "fal",
+            "model": "fal-ai/nano-banana/edit"
+          }
+        ],
+        "disk_mb": 50
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "image",
+        "measure": {
+          "from": "/images/*",
+          "as": "count"
+        },
+        "rates_usd": {
+          "fal-ai/nano-banana": 0.039,
+          "fal-ai/nano-banana/edit": 0.039
+        },
+        "model_from": "/model"
+      },
+      "determinism": "provider",
+      "path": "parts/image-nano-banana/1.0.1",
+      "files": {
+        "README.md": "9b694be3d93a7afa24b45fe12e61fc4279726aac0b74172478a6aca23abc2519",
+        "part.json": "dd3489c9b3c8ec240b74999cec7a72dd3dd3121f36afc0858647b959a957abb0",
+        "part.mjs": "c109aefed69b284d2176007156f81123b9ec7c84101f61dcbc8e203248fb9190"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "fal-ai/nano-banana"
+        },
+        {
+          "provider": "fal",
+          "model": "fal-ai/nano-banana/edit"
+        }
+      ]
+    },
+    {
       "id": "music-elevenlabs",
       "version": "1.0.0",
       "interface": 1,
@@ -520,6 +984,57 @@
         "README.md": "463ff18cae1971a9fc3ec411f686fcafabb03c82c3ecdd2e2f3484ef31c9054d",
         "part.json": "1afae785c16da1296ce74ed656332445aa793da56f2b7a4c0d60725d5e6acd2c",
         "part.mjs": "7c883d6f0b015d18ac0323cf36c8e39272bf7acd3ace7f82f68af10212d5c5b2"
+      },
+      "models": [
+        {
+          "provider": "elevenlabs",
+          "model": "music_v1"
+        }
+      ]
+    },
+    {
+      "id": "music-elevenlabs",
+      "version": "1.0.1",
+      "interface": 1,
+      "kind": "generate_music",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "loudnorm",
+            "afade"
+          ],
+          "encoders": [
+            "aac"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "elevenlabs",
+            "model": "music_v1"
+          }
+        ],
+        "disk_mb": 30
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "second",
+        "measure": {
+          "from": "/seconds",
+          "as": "value"
+        },
+        "rates_usd": {
+          "music_v1": 0.0025
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/music-elevenlabs/1.0.1",
+      "files": {
+        "README.md": "4ecde3030ba13421774bf72f826733f1989ede58ae26fe5e1a95af01dd9df915",
+        "part.json": "3d2357782aaa2e39d8d0731953e0bf03702be878c0f5a0fc27635fb9712b7c4d",
+        "part.mjs": "028c5dee8800b72bb197a93ecc2c09898fc173e7dc6e6a39a9baa9afdc755152"
       },
       "models": [
         {
@@ -661,6 +1176,277 @@
       "models": []
     },
     {
+      "id": "phone-chat",
+      "version": "1.1.1",
+      "interface": 1,
+      "kind": "render_html",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": true,
+        "ffmpeg": {
+          "filters": [
+            "volumedetect",
+            "silenceremove",
+            "adelay",
+            "amix",
+            "alimiter",
+            "atrim",
+            "afade",
+            "apad",
+            "aresample",
+            "aformat",
+            "anullsrc",
+            "xfade",
+            "fps",
+            "settb",
+            "setsar",
+            "scale",
+            "crop",
+            "format"
+          ],
+          "encoders": [
+            "libx264",
+            "aac",
+            "pcm_s16le"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 800
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/phone-chat/1.1.1",
+      "files": {
+        "README.md": "a881ed4dc40730fcd1c80f25b804d8b661e785f785172dc006d4b9706c9d74ec",
+        "assets/fonts/InterVariable.ttf": "4989b125924991b90d05b2d16e0e388c48f7d5bb8b30539bbf9c755278d0ccaf",
+        "assets/skins/apple-notes/icons.js": "735c82b08a4536ec18d5ee1516698eafd9a5a34585e44280dad2a36c42c4a325",
+        "assets/skins/apple-notes/note.css": "d2bf52464b673678aabab18c2fc421c2107b87ac092b4a3c42815da77c532a55",
+        "assets/skins/chatgpt/chat.css": "63ae024d5d4c23f209be7e5c22cc2251ac0a3c3fc23159db3de4a7e6d8cb0495",
+        "assets/skins/chatgpt/icons.js": "2a86ce1451e2c2c73a2ce616205c4d77c45ba45944c278ef032a434e1ffb3a86",
+        "assets/skins/chatgpt/sfx/key-tap.wav": "0e23b4fc3c118b0b8b87f288e475e165e056788c2ce2844b846b9c4488a5e7ac",
+        "assets/skins/chatgpt/sfx/response-done.wav": "8afee86b8181c9ffe09d1819e53d6c6093a86d8efa79543b91689e58eab8c02c",
+        "assets/skins/chatgpt/sfx/send-tap.wav": "b311b6c8a41044f267504c3875fa02859ca130147a8b2ac61cabdcaf19d68eec",
+        "assets/skins/chatgpt/sfx/stream-tick.wav": "87c1cc174abf213aaf758962c54d5cdc65b7837eb2e71622a89c2bf4d114de07",
+        "assets/skins/imessage/chat.css": "d8783938f65f1520aa91fa0c076b9383497416f25b86316330d52af3aa755147",
+        "assets/skins/imessage/icons.js": "b3b9b655084d74267da20f013e8691fe472de4174750609a939dcc0d25f22e86",
+        "assets/skins/imessage/sfx/imessage-receive.mp3": "d8018578447e698ddac6080b1737c0666520a0d91ccbd556ca735aeb5ccd6945",
+        "assets/skins/imessage/sfx/imessage-send.mp3": "67a51c884a10e16efb64dd3cdf0bfe7123b08205daafe490e92601e38f86a7b2",
+        "assets/skins/notification-cascade/sfx/pop.wav": "fc8424810217c84489722813779bb39a46ff15011b00cce9ce8cd2f0e40dd54a",
+        "assets/skins/notification-cascade/sfx/swoosh.wav": "753b05dc56e21b4f6e33ffcc0c631e8a63b0e1d385f74d7743672b57dd1e62f4",
+        "part.json": "68a874a43a9bd16a686518636144c0a3b44eb4d95d66fe5aae330920c0561e08",
+        "part.mjs": "75781b6f995ee1a3f6f1b7854f5a0d56e9bb807d1d16f73d79a03034f7534f5c"
+      },
+      "models": []
+    },
+    {
+      "id": "phone-chat",
+      "version": "1.1.2",
+      "interface": 1,
+      "kind": "render_html",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": true,
+        "ffmpeg": {
+          "filters": [
+            "volumedetect",
+            "silenceremove",
+            "adelay",
+            "amix",
+            "alimiter",
+            "atrim",
+            "afade",
+            "apad",
+            "aresample",
+            "aformat",
+            "anullsrc",
+            "xfade",
+            "fps",
+            "settb",
+            "setsar",
+            "scale",
+            "crop",
+            "format"
+          ],
+          "encoders": [
+            "libx264",
+            "aac",
+            "pcm_s16le"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 800
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/phone-chat/1.1.2",
+      "files": {
+        "README.md": "f5b347f0331fd9942d9169f34c1621592de232f32d02283c1779d66619b0d315",
+        "assets/fonts/InterVariable.ttf": "4989b125924991b90d05b2d16e0e388c48f7d5bb8b30539bbf9c755278d0ccaf",
+        "assets/fonts/NotoColorEmoji-OFL.txt": "500bb1ccf43df7bbb522112f9133a52b16e1c35e809632f5d8609b179152de5b",
+        "assets/fonts/NotoColorEmoji.ttf": "39ee3c587e10e89669b9ff32703261d10d5f9c4dd5ad147b6b5a1c5200591817",
+        "assets/skins/apple-notes/icons.js": "735c82b08a4536ec18d5ee1516698eafd9a5a34585e44280dad2a36c42c4a325",
+        "assets/skins/apple-notes/note.css": "d2bf52464b673678aabab18c2fc421c2107b87ac092b4a3c42815da77c532a55",
+        "assets/skins/chatgpt/chat.css": "63ae024d5d4c23f209be7e5c22cc2251ac0a3c3fc23159db3de4a7e6d8cb0495",
+        "assets/skins/chatgpt/icons.js": "2a86ce1451e2c2c73a2ce616205c4d77c45ba45944c278ef032a434e1ffb3a86",
+        "assets/skins/chatgpt/sfx/key-tap.wav": "0e23b4fc3c118b0b8b87f288e475e165e056788c2ce2844b846b9c4488a5e7ac",
+        "assets/skins/chatgpt/sfx/response-done.wav": "8afee86b8181c9ffe09d1819e53d6c6093a86d8efa79543b91689e58eab8c02c",
+        "assets/skins/chatgpt/sfx/send-tap.wav": "b311b6c8a41044f267504c3875fa02859ca130147a8b2ac61cabdcaf19d68eec",
+        "assets/skins/chatgpt/sfx/stream-tick.wav": "87c1cc174abf213aaf758962c54d5cdc65b7837eb2e71622a89c2bf4d114de07",
+        "assets/skins/imessage/chat.css": "d8783938f65f1520aa91fa0c076b9383497416f25b86316330d52af3aa755147",
+        "assets/skins/imessage/icons.js": "b3b9b655084d74267da20f013e8691fe472de4174750609a939dcc0d25f22e86",
+        "assets/skins/imessage/sfx/imessage-receive.mp3": "d8018578447e698ddac6080b1737c0666520a0d91ccbd556ca735aeb5ccd6945",
+        "assets/skins/imessage/sfx/imessage-send.mp3": "67a51c884a10e16efb64dd3cdf0bfe7123b08205daafe490e92601e38f86a7b2",
+        "assets/skins/notification-cascade/sfx/pop.wav": "fc8424810217c84489722813779bb39a46ff15011b00cce9ce8cd2f0e40dd54a",
+        "assets/skins/notification-cascade/sfx/swoosh.wav": "753b05dc56e21b4f6e33ffcc0c631e8a63b0e1d385f74d7743672b57dd1e62f4",
+        "part.json": "0f01a2f2c8d76bcb071dd3615d4812ee8b6f5af7de925342f9b4afbc680ef2e5",
+        "part.mjs": "edaf3cb8df26b75dee2e57c7e0a1a93e9eacd412845e9619271f5f991fdaf9a6"
+      },
+      "models": []
+    },
+    {
+      "id": "phone-chat",
+      "version": "1.1.3",
+      "interface": 1,
+      "kind": "render_html",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": true,
+        "ffmpeg": {
+          "filters": [
+            "volumedetect",
+            "silenceremove",
+            "adelay",
+            "amix",
+            "alimiter",
+            "atrim",
+            "afade",
+            "apad",
+            "aresample",
+            "aformat",
+            "anullsrc",
+            "xfade",
+            "fps",
+            "settb",
+            "setsar",
+            "scale",
+            "crop",
+            "format"
+          ],
+          "encoders": [
+            "libx264",
+            "aac",
+            "pcm_s16le"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 800
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/phone-chat/1.1.3",
+      "files": {
+        "README.md": "6cf05cd9de45c933ac5b21d79ae45a034638e97e0836493eda7dc331a0d53997",
+        "assets/fonts/InterVariable.ttf": "4989b125924991b90d05b2d16e0e388c48f7d5bb8b30539bbf9c755278d0ccaf",
+        "assets/fonts/NotoColorEmoji-OFL.txt": "500bb1ccf43df7bbb522112f9133a52b16e1c35e809632f5d8609b179152de5b",
+        "assets/fonts/NotoColorEmoji.ttf": "39ee3c587e10e89669b9ff32703261d10d5f9c4dd5ad147b6b5a1c5200591817",
+        "assets/skins/apple-notes/icons.js": "735c82b08a4536ec18d5ee1516698eafd9a5a34585e44280dad2a36c42c4a325",
+        "assets/skins/apple-notes/note.css": "d2bf52464b673678aabab18c2fc421c2107b87ac092b4a3c42815da77c532a55",
+        "assets/skins/chatgpt/chat.css": "63ae024d5d4c23f209be7e5c22cc2251ac0a3c3fc23159db3de4a7e6d8cb0495",
+        "assets/skins/chatgpt/icons.js": "2a86ce1451e2c2c73a2ce616205c4d77c45ba45944c278ef032a434e1ffb3a86",
+        "assets/skins/chatgpt/sfx/key-tap.wav": "0e23b4fc3c118b0b8b87f288e475e165e056788c2ce2844b846b9c4488a5e7ac",
+        "assets/skins/chatgpt/sfx/response-done.wav": "8afee86b8181c9ffe09d1819e53d6c6093a86d8efa79543b91689e58eab8c02c",
+        "assets/skins/chatgpt/sfx/send-tap.wav": "b311b6c8a41044f267504c3875fa02859ca130147a8b2ac61cabdcaf19d68eec",
+        "assets/skins/chatgpt/sfx/stream-tick.wav": "87c1cc174abf213aaf758962c54d5cdc65b7837eb2e71622a89c2bf4d114de07",
+        "assets/skins/imessage/chat.css": "d8783938f65f1520aa91fa0c076b9383497416f25b86316330d52af3aa755147",
+        "assets/skins/imessage/icons.js": "b3b9b655084d74267da20f013e8691fe472de4174750609a939dcc0d25f22e86",
+        "assets/skins/imessage/sfx/imessage-receive.mp3": "d8018578447e698ddac6080b1737c0666520a0d91ccbd556ca735aeb5ccd6945",
+        "assets/skins/imessage/sfx/imessage-send.mp3": "67a51c884a10e16efb64dd3cdf0bfe7123b08205daafe490e92601e38f86a7b2",
+        "assets/skins/notification-cascade/sfx/pop.wav": "fc8424810217c84489722813779bb39a46ff15011b00cce9ce8cd2f0e40dd54a",
+        "assets/skins/notification-cascade/sfx/swoosh.wav": "753b05dc56e21b4f6e33ffcc0c631e8a63b0e1d385f74d7743672b57dd1e62f4",
+        "part.json": "3d1543c2f4e7284a363828431b4976e26cc696c2736ace44887b4f020383d8ab",
+        "part.mjs": "04e9acee719a092fa8b628275c121d080470516d5d7e0d866c61364c547cbaaf"
+      },
+      "models": []
+    },
+    {
+      "id": "phone-chat",
+      "version": "1.1.4",
+      "interface": 1,
+      "kind": "render_html",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": true,
+        "ffmpeg": {
+          "filters": [
+            "volumedetect",
+            "silenceremove",
+            "adelay",
+            "amix",
+            "alimiter",
+            "atrim",
+            "afade",
+            "apad",
+            "aresample",
+            "aformat",
+            "anullsrc",
+            "xfade",
+            "fps",
+            "settb",
+            "setsar",
+            "scale",
+            "crop",
+            "format"
+          ],
+          "encoders": [
+            "libx264",
+            "aac",
+            "pcm_s16le"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 800
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/phone-chat/1.1.4",
+      "files": {
+        "README.md": "e717f68daa2864c4158d653372c62ed2a7d138f2d8702d326fcc3d251ee459b6",
+        "assets/fonts/InterVariable-OFL.txt": "262481e844521b326f5ecd053e59b98c8b2da78c8ee1bdbb6e8174305e54935a",
+        "assets/fonts/InterVariable.ttf": "4989b125924991b90d05b2d16e0e388c48f7d5bb8b30539bbf9c755278d0ccaf",
+        "assets/fonts/NotoColorEmoji-OFL.txt": "500bb1ccf43df7bbb522112f9133a52b16e1c35e809632f5d8609b179152de5b",
+        "assets/fonts/NotoColorEmoji.ttf": "39ee3c587e10e89669b9ff32703261d10d5f9c4dd5ad147b6b5a1c5200591817",
+        "assets/skins/apple-notes/icons.js": "735c82b08a4536ec18d5ee1516698eafd9a5a34585e44280dad2a36c42c4a325",
+        "assets/skins/apple-notes/note.css": "d2bf52464b673678aabab18c2fc421c2107b87ac092b4a3c42815da77c532a55",
+        "assets/skins/chatgpt/chat.css": "63ae024d5d4c23f209be7e5c22cc2251ac0a3c3fc23159db3de4a7e6d8cb0495",
+        "assets/skins/chatgpt/icons.js": "2a86ce1451e2c2c73a2ce616205c4d77c45ba45944c278ef032a434e1ffb3a86",
+        "assets/skins/chatgpt/sfx/key-tap.wav": "0e23b4fc3c118b0b8b87f288e475e165e056788c2ce2844b846b9c4488a5e7ac",
+        "assets/skins/chatgpt/sfx/response-done.wav": "8afee86b8181c9ffe09d1819e53d6c6093a86d8efa79543b91689e58eab8c02c",
+        "assets/skins/chatgpt/sfx/send-tap.wav": "b311b6c8a41044f267504c3875fa02859ca130147a8b2ac61cabdcaf19d68eec",
+        "assets/skins/chatgpt/sfx/stream-tick.wav": "87c1cc174abf213aaf758962c54d5cdc65b7837eb2e71622a89c2bf4d114de07",
+        "assets/skins/imessage/chat.css": "d8783938f65f1520aa91fa0c076b9383497416f25b86316330d52af3aa755147",
+        "assets/skins/imessage/icons.js": "b3b9b655084d74267da20f013e8691fe472de4174750609a939dcc0d25f22e86",
+        "assets/skins/imessage/sfx/imessage-receive.mp3": "d8018578447e698ddac6080b1737c0666520a0d91ccbd556ca735aeb5ccd6945",
+        "assets/skins/imessage/sfx/imessage-send.mp3": "67a51c884a10e16efb64dd3cdf0bfe7123b08205daafe490e92601e38f86a7b2",
+        "assets/skins/notification-cascade/sfx/pop.wav": "fc8424810217c84489722813779bb39a46ff15011b00cce9ce8cd2f0e40dd54a",
+        "assets/skins/notification-cascade/sfx/swoosh.wav": "753b05dc56e21b4f6e33ffcc0c631e8a63b0e1d385f74d7743672b57dd1e62f4",
+        "part.json": "d32dbcf52ffe615152a3f648b8e71760a034e17cff489c1a9abfafcf29f9d3b8",
+        "part.mjs": "04e9acee719a092fa8b628275c121d080470516d5d7e0d866c61364c547cbaaf"
+      },
+      "models": []
+    },
+    {
       "id": "sfx-elevenlabs",
       "version": "1.0.0",
       "interface": 1,
@@ -711,6 +1497,56 @@
       ]
     },
     {
+      "id": "sfx-elevenlabs",
+      "version": "1.0.1",
+      "interface": 1,
+      "kind": "generate_sfx",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "afade"
+          ],
+          "encoders": [
+            "aac"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "elevenlabs",
+            "model": "eleven_text_to_sound_v2"
+          }
+        ],
+        "disk_mb": 20
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "second",
+        "measure": {
+          "from": "/effects/*/seconds",
+          "as": "sum"
+        },
+        "rates_usd": {
+          "eleven_text_to_sound_v2": 0.01
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/sfx-elevenlabs/1.0.1",
+      "files": {
+        "README.md": "7a0021e6a852492aa2723a782f23a47d8414c97bdad87bc6d9a3d3b003e1701a",
+        "part.json": "a4415a3b4c5c8a421738599fff4493bb9106496b634f0ca1de114a25462b80f9",
+        "part.mjs": "77f3a6b71d1beca09c2f0d767428e8fc07e2ac3bc4b5e22504ea359d913bfa6b"
+      },
+      "models": [
+        {
+          "provider": "elevenlabs",
+          "model": "eleven_text_to_sound_v2"
+        }
+      ]
+    },
+    {
       "id": "sound-layer",
       "version": "1.0.0",
       "interface": 1,
@@ -748,6 +1584,129 @@
       "models": []
     },
     {
+      "id": "sound-layer",
+      "version": "1.0.1",
+      "interface": 1,
+      "kind": "mix",
+      "layer": "sound",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "loudnorm",
+            "ebur128",
+            "volume",
+            "alimiter",
+            "aresample"
+          ],
+          "encoders": [
+            "aac"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 300
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/sound-layer/1.0.1",
+      "files": {
+        "README.md": "61dec5e5789847a864eb374c2f1979538c2c7236f8ec295433652cdc5e46444a",
+        "part.json": "fb61d50401ac8395931624f84be37a832583eb6a728889aaeaad21ddc96f6ab5",
+        "part.mjs": "30ee6a1232f9bd89f92ec1b48aea04440240bd490c9f4f60c167f57f09aea189"
+      },
+      "models": []
+    },
+    {
+      "id": "transcribe-whisper",
+      "version": "1.0.0",
+      "interface": 1,
+      "kind": "caption",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "encoders": [
+            "aac"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "fal-ai/whisper"
+          }
+        ],
+        "disk_mb": 50
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "call",
+        "rates_usd": {
+          "fal-ai/whisper": 0.02
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/transcribe-whisper/1.0.0",
+      "files": {
+        "README.md": "471540fd7fd3a3cb0fdcf50590287057441afc648c65797035828126942897a5",
+        "part.json": "9181aa82dbe9e0dc55ab5cfc8b0f79863aa6f64c32323f2819ab502318dff1bc",
+        "part.mjs": "f961b9769607a08f4fc4fe59acb596d24ac3d163ff8d7edb05bd2afd8be05b19"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "fal-ai/whisper"
+        }
+      ]
+    },
+    {
+      "id": "transcribe-whisper",
+      "version": "1.0.1",
+      "interface": 1,
+      "kind": "caption",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "encoders": [
+            "aac"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "fal-ai/whisper"
+          }
+        ],
+        "disk_mb": 50
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "call",
+        "rates_usd": {
+          "fal-ai/whisper": 0.02
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/transcribe-whisper/1.0.1",
+      "files": {
+        "README.md": "612cde28e3f3a81b5d50d4669967556a51a4186dcd1572673885b1e4844ec5d6",
+        "part.json": "dbb61f442f235a8070179df9441d303aa75605e817c69068950aedf596f58bba",
+        "part.mjs": "3f246fa5f8e1acb0af4de2442b3dd41c652b4a254df6e134b2544a5d3b1bd33b"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "fal-ai/whisper"
+        }
+      ]
+    },
+    {
       "id": "video-seedance-2",
       "version": "1.0.0",
       "interface": 1,
@@ -782,6 +1741,49 @@
         "README.md": "c9dd30a073e11f8c52dcee5a0f3058be9d760dfe178c25764ffb991739245c12",
         "part.json": "866fabd5cf550038d7e0eaa7370111d673ae84a7bc57f7fddf07040d91b1b887",
         "part.mjs": "cd2c0cc7fd3413d0fba0bfb14198eefdb60dc51bef7d736a2997fd7779c9e24f"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "bytedance/seedance-2.0/reference-to-video"
+        }
+      ]
+    },
+    {
+      "id": "video-seedance-2",
+      "version": "1.0.1",
+      "interface": 1,
+      "kind": "generate_video",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": true,
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "bytedance/seedance-2.0/reference-to-video"
+          }
+        ],
+        "disk_mb": 500
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "second",
+        "measure": {
+          "from": "/clips/*/seconds",
+          "as": "sum"
+        },
+        "rates_usd": {
+          "bytedance/seedance-2.0/reference-to-video": 0.68
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/video-seedance-2/1.0.1",
+      "files": {
+        "README.md": "80d4697c1c9f0ee17abf1e4bade9cc3c452202b76d54403f0b97d2de334e82e6",
+        "part.json": "8deaef32f0cba272eb759e49bb4e71ea66b973b4e3f949dc231df80324eed767",
+        "part.mjs": "bea5a478b4b2a442a3c0183f009208272adb902cb252d933d5df655a14c5e727"
       },
       "models": [
         {
@@ -837,6 +1839,61 @@
         "README.md": "2d97a2934c5a97f87936990cb9af955eb8531ff6041acca5e76c479731caadbf",
         "part.json": "b17395463902a680d1d1e5391322a80d6db09d8d4d40e74cacbfec2e0e1a4914",
         "part.mjs": "0c0522cf41af96068114229f4ab6b7887586f1b8777f79c62a516f301706db40"
+      },
+      "models": [
+        {
+          "provider": "elevenlabs",
+          "model": "eleven_v3"
+        }
+      ]
+    },
+    {
+      "id": "voice-elevenlabs",
+      "version": "1.0.1",
+      "interface": 1,
+      "kind": "generate_voice",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "aresample",
+            "aformat",
+            "atrim",
+            "asetpts",
+            "apad",
+            "concat"
+          ],
+          "encoders": [
+            "aac"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "elevenlabs",
+            "model": "eleven_v3"
+          }
+        ],
+        "disk_mb": 50
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "1k_chars",
+        "measure": {
+          "from": "/scenes/*/line",
+          "as": "length"
+        },
+        "rates_usd": {
+          "eleven_v3": 0.1
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/voice-elevenlabs/1.0.1",
+      "files": {
+        "README.md": "f8e693497934c014d77406815d8415ab5f73b5257a148101192958840213d941",
+        "part.json": "eae90aa7f2fafaf583c247015c5adf99c69a99af2b593dd48573d334ef4b10a1",
+        "part.mjs": "819b4b396d02c0a5dfed96ce3b05da49f158ab362b75f1ca296992c2f13870e2"
       },
       "models": [
         {

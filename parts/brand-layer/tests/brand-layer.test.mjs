@@ -1,11 +1,11 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { join } from 'node:path';
-import { browserProviderOrNull, countColor, fileRef, framePixels, hasFfmpeg, layerInputsFor, levelDb, loadPart, makeCtx, makeVideo, probe, sampleBrand } from '../../_tools/kit-harness.mjs';
+import { loadNewest, browserMissing, browserProviderOrNull, countColor, fileRef, framePixels, hasFfmpeg, layerInputsFor, levelDb, loadPart, makeCtx, makeVideo, probe, sampleBrand } from '../../_tools/kit-harness.mjs';
 
-const { dir, mod } = await loadPart('brand-layer', '1.0.0');
+const { dir, mod } = await loadNewest('brand-layer');
 const ready = (await hasFfmpeg()) && browserProviderOrNull();
-const skip = !ready && 'ffmpeg or the browser is not installed';
+const skip = !ready && (browserMissing() || 'ffmpeg is not installed');
 
 test('appends the brand card when the style ends on one and no step drew it', { skip }, async () => {
   const { ctx } = makeCtx({ partDir: dir });
@@ -18,6 +18,8 @@ test('appends the brand card when the style ends on one and no step drew it', { 
   assert.ok(countColor(await framePixels(out.video.path, 4.5), [224, 16, 32], 24) > 200, 'the logo is on the card');
   assert.ok((await levelDb(out.video.path, 1.0, 2.0)) > -30, 'the cut keeps its sound');
   assert.equal(await levelDb(out.video.path, 3.5, 5.0), -Infinity, 'the card holds in silence');
+  const { readdirSync } = await import('node:fs');
+  assert.deepEqual(readdirSync(ctx.workDir).filter((f) => f !== 'tmp' && !f.startsWith('cut') && !f.startsWith('logo')).sort(), ['branded.mp4'], 'only the declared output is left beside it');
 });
 
 test('passes the cut through untouched when a step drew the card or the style has none', { skip }, async () => {

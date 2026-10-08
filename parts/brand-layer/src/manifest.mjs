@@ -4,7 +4,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'brand-layer',
-  version: '1.0.0',
+  version: '1.0.1',
   kind: 'compose',
   layer: 'brand',
   title: 'Brand layer',

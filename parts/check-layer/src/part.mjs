@@ -8,8 +8,8 @@
 // text inside the video). Then the local ones: black frames (over 0.3 s),
 // frozen frames (an opening still over 1.5 s, or a held picture over 4 s
 // before the end card), the end card the style ends on, and speech that
-// matches the approved script (the cut's audio transcribed by fal Whisper
-// for on-camera speech, the spoken lines compared for a voiceover).
+// matches the approved script (as the timeline's speech carries it: a transcribe step's heard words for
+// on-camera speech, the voice's spoken lines for a voiceover). It orders nothing.
 // It returns the server's reasons shape too, for the one local fix.
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -37,6 +37,8 @@ const MIN_LOGO_AREA = 40000;
 // logo-equation-card's measure_motion gate, and the rise a message's sound makes over the moment before it.
 const FOOTAGE_MIN_MOTION = 1.5;
 const SOUND_RISE_DB = 4;
+// A logo match may sit this many pixels past its declared zone (the match grid is coarse).
+const LOGO_ZONE_SLACK = 12;
 const NUM = '-?\\d+(?:\\.\\d+)?(?:e-?\\d+)?';
 
 function ratioOf(aspect) {
@@ -91,7 +93,7 @@ async function measure(ctx, path) {
 
 async function loudness(ctx, path) {
   try {
-    const { stderr } = await ctx.tools.exec('ffmpeg', ['-hide_banner', '-nostats', '-nostdin', '-i', path, '-map', '0:a:0', '-af', 'ebur128', '-f', 'null', '-']);
+    const { stderr } = await ctx.tools.exec('ffmpeg', ['-hide_banner', '-nostats', '-nostdin', '-i', path, '-map', '0:a:0', '-af', 'ebur128=framelog=verbose', '-f', 'null', '-']);
     const m = /I:\s*(-?\d+(?:\.\d+)?)\s*LUFS/.exec(stderr.slice(stderr.lastIndexOf('Summary:')));
     return m ? Number(m[1]) : null;
   } catch {
@@ -146,22 +148,6 @@ function usableAliases(ctx, pronunciations) {
     }
   }
   return out;
-}
-
-async function heardSpeech(ctx, video) {
-  if (!ctx.line) throw ctx.error('needs_missing', 'the speech check needs the private line');
-  await kitFfmpeg(ctx, ['-i', video.path, '-map', '0:a:0', '-ac', '1', ...ctx.tools.encodeArgs('aac'), join(ctx.tmpDir, 'speech.m4a')]);
-  const audio = await ctx.file(`${ctx.tmpDir.slice(ctx.workDir.length + 1)}/speech.m4a`, 'audio');
-  const result = await ctx.line.order({
-    piece: 'transcribe',
-    provider: 'fal',
-    path: 'fal-ai/whisper',
-    body: { audio_url: audio, task: 'transcribe', language: 'en', chunk_level: 'word' },
-    results: [],
-  });
-  const json = result.json || {};
-  if (typeof json.text === 'string' && json.text.trim()) return json.text;
-  return (json.chunks || []).map((c) => String(c.text || '').trim()).filter(Boolean).join(' ');
 }
 
 export async function run(inputs, ctx) {
@@ -246,8 +232,11 @@ export async function run(inputs, ctx) {
   // The brand layer and the end-card and phone-chat parts mark the card they add; a frame page that
   // draws its own ending does not, and then there is nothing to measure here.
   const card = timeline.end_card;
-  if (!expect.end_card || !card) add('end_card', 'not_applicable', card ? undefined : { found: expect.end_card ? 'not marked by any step' : undefined });
-  else if (card.end_s - card.start_s >= 0.5 && Math.abs(card.end_s - d) <= 0.2) add('end_card', 'pass');
+  if (!expect.end_card) add('end_card', 'not_applicable');
+  else if (!card) {
+    // The style ends on an end card, but no step marked one in the timeline: it cannot be shown to be there.
+    add('end_card', 'fail', { message: 'The video does not end on the brand end card.', expected: 'an end card marked in the timeline', found: 'not marked by any step', fix: { slot: 'brand' } });
+  } else if (card.end_s - card.start_s >= 0.5 && Math.abs(card.end_s - d) <= 0.2) add('end_card', 'pass');
   else add('end_card', 'fail', { message: 'The video does not end on the brand end card.', expected: 'an end card of at least 0.5 s at the end', found: `${card.start_s}-${card.end_s} s`, fix: { slot: 'brand' } });
 
   // Captions inside the caption safe zone and clear of the platform controls (TikTok/Reels bands).
@@ -261,32 +250,47 @@ export async function run(inputs, ctx) {
     else add('captions_safe_zone', 'pass');
   }
 
-  // The brand's real logo file on the end card (review-finished-ad's logo and favicon checks).
-  let logoStatus = 'not_applicable';
+  // The brand's real logo file (review-finished-ad's logo and favicon checks), measured two ways that never
+  // share an answer: `logo` on the end card when the style ends on one, and `flag:logo_visible` anywhere in
+  // the video (the card included) when the style asks for it. A declared logo safe zone bounds the match.
+  const wantsLogo = (expect.qc_flags || []).includes('logo_visible');
   const logo = inputs.brand.logo;
-  if (!logo || !expect.end_card) add('logo', 'not_applicable');
-  else {
-    const size = logo.width && logo.height ? logo : await ctx.tools.probe(logo.path);
-    const long = Math.max(size.width || 0, size.height || 0);
-    if (long < MIN_LOGO_LONG_SIDE || (size.width || 0) * (size.height || 0) < MIN_LOGO_AREA) {
-      logoStatus = 'fail';
-      add('logo', 'fail', { message: 'The logo file is favicon-sized and will be blurry.', expected: `at least ${MIN_LOGO_LONG_SIDE} px on the long side`, found: `${size.width}x${size.height}` });
-    } else {
-      const card = timeline.end_card;
-      const times = card ? [card.start_s + (card.end_s - card.start_s) * 0.5, card.end_s - 0.2] : [d - 1.2, d - 0.6, d - 0.2];
-      const { score, mode } = await kitLogoScore(ctx, video.path, logo, times.filter((t) => t > 0 && t < d), m.width, m.height);
-      const floor = mode === 'mark' ? LOGO_MARK_MIN : LOGO_IMAGE_MIN;
-      logoStatus = score >= floor ? 'pass' : 'fail';
-      if (logoStatus === 'pass') add('logo', 'pass', { found: score });
-      else add('logo', 'fail', { message: "The brand's logo is not found on the end card.", expected: `a match of at least ${floor}`, found: score, fix: { slot: 'brand' } });
+  let logoSize = null;
+  const logoCheck = async (times) => {
+    if (!logo) return { status: 'fail', message: 'The style asks for the logo, but the brand has no logo file.', expected: 'a logo file', found: 'none' };
+    logoSize = logoSize || (logo.width && logo.height ? logo : await ctx.tools.probe(logo.path));
+    const long = Math.max(logoSize.width || 0, logoSize.height || 0);
+    if (long < MIN_LOGO_LONG_SIDE || (logoSize.width || 0) * (logoSize.height || 0) < MIN_LOGO_AREA) {
+      return { status: 'fail', message: 'The logo file is favicon-sized and will be blurry.', expected: `at least ${MIN_LOGO_LONG_SIDE} px on the long side`, found: `${logoSize.width}x${logoSize.height}` };
     }
-  }
+    const match = await kitLogoScore(ctx, video.path, logo, times.filter((t) => t > 0 && t < d), m.width, m.height);
+    const floor = match.mode === 'mark' ? LOGO_MARK_MIN : LOGO_IMAGE_MIN;
+    const zone = (timeline.safe_zones || []).find((z) => z.use === 'logo');
+    const b = match.box;
+    if (match.score < floor) return { status: 'fail', message: "The brand's logo is not found.", expected: `a match of at least ${floor}`, found: match.score };
+    if (zone && b && (b.x < zone.x - LOGO_ZONE_SLACK || b.y < zone.y - LOGO_ZONE_SLACK || b.x + b.w > zone.x + zone.w + LOGO_ZONE_SLACK || b.y + b.h > zone.y + zone.h + LOGO_ZONE_SLACK)) {
+      return { status: 'fail', message: 'The logo sits outside its safe zone.', expected: `inside x ${zone.x}-${zone.x + zone.w}, y ${zone.y}-${zone.y + zone.h}`, found: `${b.x},${b.y} ${b.w}x${b.h}` };
+    }
+    return { status: 'pass', found: match.score };
+  };
+  const logoAdd = (code, result) => {
+    const { status, ...rest } = result;
+    return add(code, status, status === 'fail' ? { ...rest, fix: { slot: 'brand' } } : { found: rest.found });
+  };
+  if (expect.end_card && logo) {
+    const card = timeline.end_card;
+    logoAdd('logo', await logoCheck(card ? [card.start_s + (card.end_s - card.start_s) * 0.5, card.end_s - 0.2] : [d - 1.2, d - 0.6, d - 0.2]));
+  } else add('logo', 'not_applicable');
+  // Spread over the whole video, and the end card's middle when there is one.
+  const visibleTimes = [0.05, 0.15, 0.3, 0.45, 0.6, 0.75, 0.9, 0.98].map((f) => f * d);
+  if (timeline.end_card) visibleTimes.push((timeline.end_card.start_s + timeline.end_card.end_s) / 2);
+  const logoVisible = wantsLogo ? await logoCheck(visibleTimes) : null;
 
   // The style's own checks (qc_flags). The ones a machine can measure are measured and count toward the
   // verdict; the rest (text legible, products visible) need eyes and are reported as not checked here.
   for (const flag of expect.qc_flags || []) {
     const code = `flag:${flag}`;
-    if (flag === 'logo_visible') add(code, logoStatus, logoStatus === 'fail' ? { message: "The brand's logo is not visible.", expected: 'the logo on the end card', found: 'not found', fix: { slot: 'brand' } } : {});
+    if (flag === 'logo_visible') logoAdd(code, logoVisible);
     else if (flag === 'footage_moves') {
       const motion = await kitMotion(ctx, video.path, timeline.end_card ? timeline.end_card.start_s : d);
       if (motion === null) add(code, 'fail', { message: 'The footage could not be measured.', expected: `motion of at least ${FOOTAGE_MIN_MOTION}`, found: 'no frames' });
@@ -306,9 +310,16 @@ export async function run(inputs, ctx) {
   }
 
   const script = (expect.script || []).map((s) => String(s).trim()).filter(Boolean);
+  // What was said: each speech entry's `spoken` (a transcribe step's heard words, or the voice's spoken
+  // form), else its text for a voice that said exactly its line. On-camera speech must have been
+  // transcribed by a step before the layers: this layer orders nothing.
+  const speech = timeline.speech || [];
+  const untranscribed = expect.speech === 'on_camera' && (!speech.length || speech.some((s) => typeof s.spoken !== 'string'));
   if (!script.length || expect.speech === 'none') add('speech_matches_script', 'not_applicable');
-  else {
-    const heard = expect.speech === 'on_camera' ? await heardSpeech(ctx, video) : (timeline.speech || []).map((s) => s.text).join(' ');
+  else if (untranscribed) {
+    add('speech_matches_script', 'fail', { message: 'The on-camera speech was not transcribed, so it cannot be checked against the script.', expected: 'a transcribe step before the layers', found: 'no transcript' });
+  } else {
+    const heard = speech.map((s) => (typeof s.spoken === 'string' ? s.spoken : s.text)).join(' ');
     const verdict = speechReview(script.join(' '), heard, { aliases: usableAliases(ctx, inputs.brand.pronunciations) });
     const worst = verdict.issues.find((i) => i.severity === 'high') || verdict.issues.find((i) => i.severity !== 'low');
     if (verdict.passed) add('speech_matches_script', 'pass', { found: +verdict.ratio.toFixed(3) });

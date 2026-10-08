@@ -24,7 +24,7 @@ export async function run(inputs, ctx) {
   const fps = info.fps || timeline.fps || 30;
   const dur = await kitDuration(ctx, video);
   if (dur <= XFADE_S) throw ctx.error('bad_input', 'the cut is too short to end on a card');
-  const card = await kitRenderEndCard(ctx, { brand: inputs.brand, card: {}, width: info.width, height: info.height, fps, seconds: CARD_S });
+  const card = await kitRenderEndCard(ctx, { brand: inputs.brand, card: {}, width: info.width, height: info.height, fps, seconds: CARD_S, scratch: true });
   const offset = dur - XFADE_S;
   const total = dur + CARD_S - XFADE_S;
   const audio = info.has_audio

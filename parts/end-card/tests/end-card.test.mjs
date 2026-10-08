@@ -1,10 +1,10 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { browserProviderOrNull, countColor, framePixels, hasFfmpeg, loadPart, makeCtx, probe, sampleBrand } from '../../_tools/kit-harness.mjs';
+import { loadNewest, browserMissing, browserProviderOrNull, countColor, framePixels, hasFfmpeg, loadPart, makeCtx, probe, sampleBrand } from '../../_tools/kit-harness.mjs';
 
-const { dir, mod } = await loadPart('end-card', '1.0.0');
+const { dir, mod } = await loadNewest('end-card');
 const ready = (await hasFfmpeg()) && browserProviderOrNull();
-const skip = !ready && 'ffmpeg or the browser is not installed';
+const skip = !ready && (browserMissing() || 'ffmpeg is not installed');
 
 test('draws the card at the size asked, with the logo file unchanged and a silent track', { skip }, async () => {
   const { ctx } = makeCtx({ partDir: dir });

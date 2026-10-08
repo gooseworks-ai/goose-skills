@@ -32,6 +32,10 @@ const notesTypeSeconds = { type: 'number', minimum: 0.05, maximum: 20 };
 const notesPauseSeconds = { type: 'number', minimum: 0, maximum: 10 };
 const notesLettersRow = { type: 'string', pattern: '^[a-z]{1,12}$' };
 
+// The keyboard's emoji key, drawn as an inline SVG (a smiley glyph would need an emoji font).
+const NOTES_EMOJI_KEY =
+  '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="9.2"/><circle cx="9" cy="10" r="1.1" fill="currentColor" stroke="none"/><circle cx="15" cy="10" r="1.1" fill="currentColor" stroke="none"/><path d="M8 14.2c1.1 1.5 2.4 2.2 4 2.2s2.9-.7 4-2.2"/></svg>';
+
 export const NOTES_THREAD_SCHEMA = {
   type: 'object',
   additionalProperties: false,
@@ -450,7 +454,7 @@ function notesKeyboard(kb, icons) {
         </div>
         <div class="kbd-bottom">
           <div class="kbd-key kbd-key--num">123</div>
-          <div class="kbd-key kbd-key--emoji">☻</div>
+          <div class="kbd-key kbd-key--emoji">${NOTES_EMOJI_KEY}</div>
           <div class="kbd-key kbd-key--space">space</div>
           <div class="kbd-key kbd-key--return">${icons.returnArrow}</div>
         </div>
