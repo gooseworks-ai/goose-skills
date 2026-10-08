@@ -111,19 +111,26 @@ function git(root, args) {
 }
 
 /**
- * The commit to compare against: the merge base of `ref` and HEAD. No ref, or
- * an all-zero sha (a push that created the branch), means "no base": the
- * checks then only warn. A ref that does not resolve is an error, so a broken
- * CI setup can never pass the gate silently.
+ * The commit to compare against. By default the merge base of `ref` and HEAD,
+ * which suits a local branch whose base has moved on. With `direct`, `ref`
+ * itself: CI compares a pull request with its base branch's tip and a push
+ * with the exact tip it replaced, so a force push cannot hide a change behind
+ * an older merge base. No ref means "no base" (the checks then only warn). A
+ * ref that does not resolve, an all-zero sha included, is an error, so a
+ * broken CI setup can never pass the gate silently.
  */
-function resolveBase(root, ref) {
-  if (!ref || /^0+$/.test(ref)) return null;
+function resolveBase(root, ref, { direct = false } = {}) {
+  if (!ref) return null;
+  if (/^0+$/.test(ref)) {
+    throw new Error('the base is an all-zero sha (a new branch has no previous tip to compare with)');
+  }
   let sha;
   try {
     sha = git(root, ['rev-parse', '--verify', '--quiet', `${ref}^{commit}`]).trim();
   } catch {
     throw new Error(`base ref "${ref}" does not resolve to a commit (fetch it, or check out with fetch-depth: 0)`);
   }
+  if (direct) return sha;
   try {
     return git(root, ['merge-base', sha, 'HEAD']).trim();
   } catch {
@@ -160,6 +167,34 @@ function readAt(root, base, filePath) {
   }
 }
 
+/**
+ * Where an atom lived on the base commit: its own folder when that held a
+ * SKILL.md, else the folder of the same slug anywhere under capabilities/ or
+ * packs/<pack>/ (an atom moved between the two trees). Null for a new atom.
+ */
+function baseAtomDir(root, base, atom) {
+  const out = git(root, ['ls-tree', '-r', '-z', '--name-only', base, '--', CAPABILITIES_DIR, PACKS_DIR]);
+  const dirs = new Set();
+  for (const p of out.split('\0')) {
+    const m = p.match(/^(skills\/ads\/capabilities\/[^/]+|skills\/ads\/packs\/[^/]+\/[^/]+)\/SKILL\.md$/);
+    if (m) dirs.add(m[1]);
+  }
+  if (dirs.has(atom.dir)) return atom.dir;
+  const moved = [...dirs].filter((d) => d.split('/').pop() === atom.slug);
+  return moved.length === 1 ? moved[0] : null;
+}
+
+/** True when `dir` on the base holds exactly the same files (relative paths and bytes) as `atom.dir` now. */
+function sameFiles(root, base, dir, atom) {
+  const before = listFilesAt(root, base, dir).map((p) => p.slice(dir.length + 1));
+  const now = listFiles(root, atom.dir).map((p) => p.slice(atom.dir.length + 1));
+  if (before.length !== now.length || before.some((p, i) => p !== now[i])) return false;
+  return before.every((rel) => {
+    const old = readAt(root, base, `${dir}/${rel}`);
+    return old !== null && old.equals(fs.readFileSync(path.join(root, atom.dir, rel)));
+  });
+}
+
 // ── semver ────────────────────────────────────────────────────────────────
 
 const SEMVER = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/;
@@ -188,6 +223,8 @@ module.exports = {
   listFiles,
   readMeta,
   resolveBase,
+  baseAtomDir,
+  sameFiles,
   changedFiles,
   listFilesAt,
   readAt,

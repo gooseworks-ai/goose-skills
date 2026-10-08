@@ -60,9 +60,10 @@ jobs:
           node-version: '20'
 
       - name: Pick the base to compare with
-        # A pull request compares with its base branch, which must resolve. A push
-        # compares with the commit before it; a new branch or a force push whose
-        # old tip is gone has no base, and then old debt only warns.
+        # A pull request compares with its base branch's tip. A push compares with
+        # the exact tip it replaced, fetched by sha, so a force push cannot hide a
+        # change behind an older merge base. A base that cannot be fetched fails
+        # the job rather than skipping the checks.
         env:
           EVENT: ${{ github.event_name }}
           BASE_REF: ${{ github.base_ref }}
@@ -70,23 +71,28 @@ jobs:
         run: |
           if [ "$EVENT" = "pull_request" ]; then
             echo "BASE=origin/$BASE_REF" >> "$GITHUB_ENV"
-          elif [ -n "$BEFORE" ] && git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
-            echo "BASE=$BEFORE" >> "$GITHUB_ENV"
-          else
-            echo "BASE=" >> "$GITHUB_ENV"
+            exit 0
           fi
+          if [ -z "$BEFORE" ] || [ -z "${BEFORE//0/}" ]; then
+            echo "::error::This push has no previous tip to compare with."
+            exit 1
+          fi
+          if ! git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+            git fetch --no-tags origin "$BEFORE" || { echo "::error::Could not fetch the replaced tip $BEFORE."; exit 1; }
+          fi
+          echo "BASE=$BEFORE" >> "$GITHUB_ENV"
 
       - name: Test the atom and part checks
         run: node --test scripts/__tests__/atom-lint.test.js scripts/__tests__/check-atom-versions.test.js scripts/__tests__/check-parts.test.js
 
       - name: Atom lint
-        run: node scripts/atom-lint.js --base "$BASE"
+        run: node scripts/atom-lint.js --base "$BASE" --direct
 
       - name: Atom version bumps
-        run: node scripts/check-atom-versions.js --base "$BASE"
+        run: node scripts/check-atom-versions.js --base "$BASE" --direct
 
       - name: Parts index and frozen versions
-        run: node scripts/check-parts.js --base "$BASE"
+        run: node scripts/check-parts.js --base "$BASE" --direct
 
   imessage-chat-browser-tests:
     # Headless-Chromium tests for render-imessage-chat, including the QA-60
