@@ -192,7 +192,9 @@ export function chatSceneTimes(chatScenes, sceneIds, events, chatDur, endAt) {
  * no overlap), the total length and where the card starts.
  */
 export function chatJoin(chatDur, endLen, crossfadeMs, fps) {
-  const frames = Math.round(((crossfadeMs ?? 300) / 1000) * fps);
+  // A request under one frame is a straight cut (it would otherwise round up to a whole frame).
+  const asked = ((crossfadeMs ?? 300) / 1000) * fps;
+  const frames = asked < 1 ? 0 : Math.round(asked);
   const overlap = frames / fps;
   if (!(endLen > overlap)) throw new Error('the end card clip is shorter than the crossfade');
   if (!(chatDur > overlap)) throw new Error('the chat is shorter than the crossfade');

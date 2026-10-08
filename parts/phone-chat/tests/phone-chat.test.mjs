@@ -155,6 +155,8 @@ test('measured seconds equal the rendered chat length, for photos, bold punctuat
 
 test('a crossfade under one frame is a straight cut; longer ones are whole frames', () => {
   assert.deepEqual(chatJoin(10, 2.5, 10, 30), { frames: 0, overlap: 0, total: 12.5, ending: { start_s: 10, end_s: 12.5 } });
+  assert.equal(chatJoin(10, 2.5, 20, 30).frames, 0, '20 ms at 30 fps is under a frame: a straight cut, not one frame');
+  assert.equal(chatJoin(10, 2.5, 34, 30).frames, 1);
   const j = chatJoin(10, 2.5, 310, 30);
   assert.equal(j.frames, 9);
   assert.ok(Math.abs(j.overlap - 0.3) < 1e-9 && Math.abs(j.total - 12.2) < 1e-9);

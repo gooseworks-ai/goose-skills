@@ -1,5 +1,9 @@
 # phone-chat
 
+## 1.1.3
+
+- A crossfade asked for under one frame is a straight cut instead of rounding up to a frame.
+
 ## 1.1.2
 
 - Emoji draw by default with the bundled Noto Color Emoji 2.047 (SIL Open Font License); `fonts.emoji` still overrides it.

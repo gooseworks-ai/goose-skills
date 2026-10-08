@@ -2,10 +2,10 @@
 name: create-imessage-mockup
 description: Render pixel-accurate iMessage screenshot mockups (DM or group) from a thread JSON. Supports minimal, with-keyboard, and full iPhone 15 Pro frame variants. Outputs HTML + PNG.
 status: superseded
-superseded_by: phone-chat@1.1.1
+superseded_by: phone-chat@1.1.3
 ---
 
-> **Superseded:** the video kit now does this with the phone-chat part, version 1.1.1, in the parts folder of this repository. Every phone-chat style is a style file that draws the same screen frame by frame from the plan's scenes, with the original sounds, in the kit's browser. This atom stays, unchanged in behaviour, for skills outside the kit until they move; its scripts still run.
+> **Superseded:** the video kit now does this with the phone-chat part, version 1.1.3, in the parts folder of this repository. Every phone-chat style is a style file that draws the same screen frame by frame from the plan's scenes, with the original sounds, in the kit's browser. This atom stays, unchanged in behaviour, for skills outside the kit until they move; its scripts still run.
 
 # create-imessage-mockup
 
