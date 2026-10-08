@@ -50,8 +50,6 @@ jobs:
     # What video atoms may say, their version bumps, and the parts index.
     # Old debt warns; debt a branch adds fails (scripts/atom-lint.js).
     runs-on: ubuntu-latest
-    env:
-      BASE: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.base_ref) || github.event.before }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -60,6 +58,23 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+
+      - name: Pick the base to compare with
+        # A pull request compares with its base branch, which must resolve. A push
+        # compares with the commit before it; a new branch or a force push whose
+        # old tip is gone has no base, and then old debt only warns.
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE_REF: ${{ github.base_ref }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          if [ "$EVENT" = "pull_request" ]; then
+            echo "BASE=origin/$BASE_REF" >> "$GITHUB_ENV"
+          elif [ -n "$BEFORE" ] && git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+            echo "BASE=$BEFORE" >> "$GITHUB_ENV"
+          else
+            echo "BASE=" >> "$GITHUB_ENV"
+          fi
 
       - name: Test the atom and part checks
         run: node --test scripts/__tests__/atom-lint.test.js scripts/__tests__/check-atom-versions.test.js scripts/__tests__/check-parts.test.js
@@ -194,3 +209,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
