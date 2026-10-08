@@ -518,7 +518,7 @@
       "path": "parts/music-elevenlabs/1.0.0",
       "files": {
         "README.md": "463ff18cae1971a9fc3ec411f686fcafabb03c82c3ecdd2e2f3484ef31c9054d",
-        "part.json": "849f1e47efbdeea768b292250166d7df556ae8b1da8729481fec84eb9fdf0f1d",
+        "part.json": "1afae785c16da1296ce74ed656332445aa793da56f2b7a4c0d60725d5e6acd2c",
         "part.mjs": "a05ebb112506a0d47a8c5946bec6bed0e6b5a8c99e951425a6ca893dce6126f1"
       },
       "models": [

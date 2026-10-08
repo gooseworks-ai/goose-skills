@@ -155,4 +155,88 @@ function validate(schema, value, root = schema, at = '$') {
   return errors;
 }
 
-module.exports = { validate };
+// ── checking a schema itself (draft 2020-12 metaschema, the keywords part
+// input and output schemas can use) ─────────────────────────────────────
+
+const TYPES = new Set(['null', 'boolean', 'object', 'array', 'number', 'integer', 'string']);
+const SCHEMA_KEYS = new Set(['additionalProperties', 'items', 'contains', 'not', 'if', 'then', 'else', 'propertyNames', 'unevaluatedItems', 'unevaluatedProperties']);
+const SCHEMA_MAPS = new Set(['properties', 'patternProperties', '$defs', 'dependentSchemas']);
+const SCHEMA_LISTS = new Set(['allOf', 'anyOf', 'oneOf', 'prefixItems']);
+const COUNTS = new Set(['minLength', 'maxLength', 'minItems', 'maxItems', 'minProperties', 'maxProperties', 'minContains', 'maxContains']);
+const NUMBERS = new Set(['minimum', 'maximum', 'exclusiveMinimum', 'exclusiveMaximum']);
+const STRINGS = new Set(['title', 'description', '$comment', '$id', '$schema', '$anchor', '$ref', '$dynamicRef', '$dynamicAnchor', 'format', 'contentEncoding', 'contentMediaType']);
+const BOOLEANS = new Set(['uniqueItems', 'readOnly', 'writeOnly', 'deprecated']);
+const ANY = new Set(['const', 'default', 'examples', 'enum', 'required', 'dependentRequired', 'multipleOf', 'pattern', 'contentSchema', '$vocabulary']);
+
+function isCount(v) {
+  return Number.isInteger(v) && v >= 0;
+}
+
+function validRegex(source) {
+  try {
+    new RegExp(source, 'u');
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Problems with a schema as a declaration, as "<path>: <what>": a type that
+ * is not a JSON type, an enum that is not a list, a pattern that does not
+ * compile, a sub-schema that is neither an object nor a boolean, a keyword
+ * nobody defines. x-* keywords are extensions and are left alone.
+ */
+function schemaProblems(schema, at = '$') {
+  const problems = [];
+  if (typeof schema === 'boolean') return problems;
+  if (!schema || typeof schema !== 'object' || Array.isArray(schema)) return [`${at}: a schema must be an object or a boolean`];
+  for (const [key, v] of Object.entries(schema)) {
+    const here = `${at}.${key}`;
+    if (key.startsWith('x-')) continue;
+    if (key === 'type') {
+      const list = Array.isArray(v) ? v : [v];
+      if (!list.length || list.some((t) => !TYPES.has(t)) || new Set(list).size !== list.length) {
+        problems.push(`${here}: must be a JSON type or a list of distinct JSON types`);
+      }
+    } else if (SCHEMA_KEYS.has(key) || key === 'contentSchema') {
+      problems.push(...schemaProblems(v, here));
+    } else if (SCHEMA_MAPS.has(key)) {
+      if (!v || typeof v !== 'object' || Array.isArray(v)) problems.push(`${here}: must be an object of schemas`);
+      else {
+        for (const [name, sub] of Object.entries(v)) {
+          if (key === 'patternProperties' && !validRegex(name)) problems.push(`${here}: "${name}" is not a valid pattern`);
+          problems.push(...schemaProblems(sub, `${here}.${name}`));
+        }
+      }
+    } else if (SCHEMA_LISTS.has(key)) {
+      if (!Array.isArray(v) || !v.length) problems.push(`${here}: must be a non-empty list of schemas`);
+      else v.forEach((sub, i) => problems.push(...schemaProblems(sub, `${here}[${i}]`)));
+    } else if (COUNTS.has(key)) {
+      if (!isCount(v)) problems.push(`${here}: must be a whole number, 0 or more`);
+    } else if (NUMBERS.has(key)) {
+      if (typeof v !== 'number') problems.push(`${here}: must be a number`);
+    } else if (STRINGS.has(key)) {
+      if (typeof v !== 'string') problems.push(`${here}: must be a string`);
+    } else if (BOOLEANS.has(key)) {
+      if (typeof v !== 'boolean') problems.push(`${here}: must be true or false`);
+    } else if (ANY.has(key)) {
+      if (key === 'enum' && !Array.isArray(v)) problems.push(`${here}: must be a list`);
+      if (key === 'examples' && !Array.isArray(v)) problems.push(`${here}: must be a list`);
+      if (key === 'required' && (!Array.isArray(v) || v.some((n) => typeof n !== 'string') || new Set(v).size !== v.length)) {
+        problems.push(`${here}: must be a list of distinct field names`);
+      }
+      if (key === 'dependentRequired' && (!v || typeof v !== 'object' || Array.isArray(v) || Object.values(v).some((l) => !Array.isArray(l) || l.some((n) => typeof n !== 'string')))) {
+        problems.push(`${here}: must map field names to lists of field names`);
+      }
+      if (key === 'multipleOf' && !(typeof v === 'number' && v > 0)) problems.push(`${here}: must be a number above 0`);
+      if (key === 'pattern' && (typeof v !== 'string' || !validRegex(v))) problems.push(`${here}: must be a valid pattern`);
+      if (key === '$vocabulary' && (!v || typeof v !== 'object')) problems.push(`${here}: must be an object`);
+    } else {
+      problems.push(`${here}: "${key}" is not a JSON Schema keyword (extensions start with x-)`);
+    }
+  }
+  return problems;
+}
+
+module.exports = { validate, schemaProblems };

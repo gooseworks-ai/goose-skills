@@ -81,6 +81,7 @@
   "outputs": {
     "type": "object",
     "additionalProperties": false,
+    "required": [],
     "properties": {
       "audio": {
         "type": "object",

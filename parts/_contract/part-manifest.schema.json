@@ -308,9 +308,9 @@
       }
     },
     "objectSchema": {
-      "description": "A JSON Schema (draft 2020-12) for an object. Unknown fields are refused, so additionalProperties must be false. Names are lower_snake_case (the style file's input name rule). A property that holds a file carries x-kit-file.",
+      "description": "A JSON Schema (draft 2020-12) for an object. Unknown fields are refused, so additionalProperties must be false. required is always stated (an empty list when nothing is required), so the layer and check rules can read it. Names are lower_snake_case (the style file's input name rule). A property that holds a file carries x-kit-file.",
       "type": "object",
-      "required": ["type", "properties", "additionalProperties"],
+      "required": ["type", "properties", "additionalProperties", "required"],
       "properties": {
         "type": {"const": "object"},
         "additionalProperties": {"const": false},

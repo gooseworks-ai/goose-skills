@@ -15,8 +15,10 @@
  * sha256 for every file in the folder, part.json included.
  *
  * Refused, so nothing unpublishable reaches the index:
- *   - a part.json that does not fit the part manifest schema, or whose id and
- *     version are not its folder's;
+ *   - a part.json that does not fit the part manifest schema
+ *     (parts/_contract/part-manifest.schema.json), whose inputs or outputs are
+ *     not valid JSON Schemas themselves, or whose id and version are not its
+ *     folder's;
  *   - a folder whose files differ from part.json's `files` (part.mjs always
  *     among them);
  *   - a symlink anywhere in a published version (the folder itself, or a file
@@ -30,7 +32,7 @@
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
-const { validate } = require('./lib/json-schema');
+const { validate, schemaProblems } = require('./lib/json-schema');
 
 const ROOT = process.env.GOOSE_SKILLS_ROOT
   ? path.resolve(process.env.GOOSE_SKILLS_ROOT)
@@ -43,11 +45,11 @@ function readSchema(name) {
   return JSON.parse(fs.readFileSync(path.join(SCHEMAS, name), 'utf8'));
 }
 
-/** The manifest schema: the parts contract copy when the repo has one, else ours. */
+/** The part manifest schema: the parts contract copy, the one source the part lint reads too. */
 function manifestSchema(root) {
   const contract = path.join(root, 'parts', '_contract', 'part-manifest.schema.json');
-  if (fs.existsSync(contract)) return JSON.parse(fs.readFileSync(contract, 'utf8'));
-  return readSchema('part-manifest.schema.json');
+  if (!fs.existsSync(contract)) throw new Error('parts/_contract/part-manifest.schema.json is missing');
+  return JSON.parse(fs.readFileSync(contract, 'utf8'));
 }
 
 function lstat(p) {
@@ -105,9 +107,10 @@ function listVersions(root = ROOT) {
 
 /** The index entries, or throws on the first version that cannot be published. */
 function buildEntries(root = ROOT) {
-  const schema = manifestSchema(root);
+  const versions = listVersions(root);
+  const schema = versions.length ? manifestSchema(root) : null;
   const entries = [];
-  for (const { id, version, dir } of listVersions(root)) {
+  for (const { id, version, dir } of versions) {
     const abs = path.join(root, dir);
     const onDisk = filesIn(abs, dir);
     if (!onDisk.includes('part.json')) throw new Error(`${dir} has no part.json`);
@@ -120,6 +123,12 @@ function buildEntries(root = ROOT) {
     const problems = validate(schema, manifest);
     if (problems.length) {
       throw new Error(`${dir}/part.json does not fit the part manifest schema: ${problems.slice(0, 5).join('; ')}`);
+    }
+    for (const side of ['inputs', 'outputs']) {
+      const declared = schemaProblems(manifest[side], side);
+      if (declared.length) {
+        throw new Error(`${dir}/part.json ${side} is not a valid JSON Schema: ${declared.slice(0, 5).join('; ')}`);
+      }
     }
     if (manifest.id !== id || manifest.version !== version) {
       throw new Error(`${dir}/part.json says ${manifest.id}@${manifest.version}; the folder says ${id}@${version}`);
