@@ -8,7 +8,8 @@
 //   - no network but ctx.line, no processes but ctx.tools.exec, no
 //     environment, home folder, wall clock, unseeded randomness, eval or
 //     system fonts (timers are allowed: a watchdog never reaches an output,
-//     and the frame renderer runs a page's timers on its own virtual clock);
+//     and the frame renderer runs a page's timers on its own virtual clock; a
+//     guard that defines a function named fetch to refuse it is not a use);
 //   - size limits (part.mjs 2 MB, a version folder 20 MB);
 //   - index.json, layers.json and withdrawn.json agree with the folders.
 //
@@ -31,12 +32,12 @@ const BANNED_MODULES =
 
 // [rule, pattern, applies to: 'code' (every scanned file) or 'entry' (part.mjs and part sources)]
 const SOURCE_RULES = [
-  ['network', /\bfetch\s*\(/, 'code'],
+  ['network', /(?<!function\s+)\bfetch\s*\(/, 'code'],
   ['network', /\bnew\s+XMLHttpRequest\s*\(/, 'code'],
   ['network', /\bnew\s+WebSocket\s*\(/, 'code'],
   ['network', /\bnew\s+EventSource\s*\(/, 'code'],
-  ['network', /\bsendBeacon\b/, 'code'],
-  ['network', /\bimportScripts\s*\(/, 'code'],
+  ['network', /(?<!function\s+)\bsendBeacon\s*\(/, 'code'],
+  ['network', /(?<!function\s+)\bimportScripts\s*\(/, 'code'],
   ['modules', BANNED_MODULES, 'code'],
   ['modules', /\brequire\s*\(/, 'code'],
   ['modules', /\bimport\s*\(/, 'code'],
@@ -46,7 +47,7 @@ const SOURCE_RULES = [
   ['clock', /\bnew\s+Date\s*\(/, 'code'],
   ['clock', /\bperformance\s*\.\s*now\s*\(/, 'code'],
   ['random', /\bMath\s*\.\s*random\s*\(/, 'code'],
-  ['random', /\b(?:randomUUID|randomBytes|randomInt|getRandomValues)\s*\(/, 'code'],
+  ['random', /(?<!function\s+)\b(?:randomUUID|randomBytes|randomInt|getRandomValues)\s*\(/, 'code'],
   ['eval', /\beval\s*\(/, 'code'],
   ['eval', /\bnew\s+Function\s*\(/, 'code'],
   ['system-fonts', /\/System\/Library\/Fonts|\/Library\/Fonts|\/usr\/share\/fonts|Windows[\\/]+Fonts/i, 'code'],

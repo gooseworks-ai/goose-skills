@@ -126,4 +126,5 @@ test('the lint catches a part that calls fetch(), a child process, the environme
 test('the source scan ignores rules that are only described in comments', () => {
   assert.deepEqual(scanSource('// never call fetch( here\n/* process.env */\nconst a = 1;\n'), []);
   assert.equal(scanSource('const a = fetch(url);').length, 1);
+  assert.deepEqual(scanSource("define(window, 'fetch', function fetch(input) { return Promise.reject(new TypeError('no')); });"), [], 'a guard that refuses fetch is not a fetch');
 });
