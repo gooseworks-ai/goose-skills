@@ -2,6 +2,7 @@
   "slug": "render-editorial-motion-podcast",
   "category": "capabilities",
   "domain": "ads",
+  "version": "1.0.0",
   "tags": [
     "ads"
   ],

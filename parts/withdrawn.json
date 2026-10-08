@@ -1,0 +1,105 @@
+{
+  "interface": 1,
+  "withdrawn": [
+    {
+      "id": "voice-elevenlabs",
+      "version": "1.0.0",
+      "reason": "Replaced by 1.0.1 before publishing: Shared library fixes: piece names stay unique when an id and a fallback collide, and the loudness meter no longer logs every frame."
+    },
+    {
+      "id": "music-elevenlabs",
+      "version": "1.0.0",
+      "reason": "Replaced by 1.0.1 before publishing: Shared library fixes: piece names stay unique when an id and a fallback collide, and the loudness meter no longer logs every frame."
+    },
+    {
+      "id": "sfx-elevenlabs",
+      "version": "1.0.0",
+      "reason": "Replaced by 1.0.1 before publishing: Shared library fixes: piece names stay unique when an id and a fallback collide, and the loudness meter no longer logs every frame."
+    },
+    {
+      "id": "image-nano-banana",
+      "version": "1.0.0",
+      "reason": "Replaced by 1.0.1 before publishing: Shared library fixes: piece names stay unique when an id and a fallback collide, and the loudness meter no longer logs every frame."
+    },
+    {
+      "id": "creator-h3",
+      "version": "1.0.0",
+      "reason": "Replaced by 1.0.1 before publishing: Shared library fixes: piece names stay unique when an id and a fallback collide, and the loudness meter no longer logs every frame."
+    },
+    {
+      "id": "video-seedance-2",
+      "version": "1.0.0",
+      "reason": "Replaced by 1.0.1 before publishing: Shared library fixes: piece names stay unique when an id and a fallback collide, and the loudness meter no longer logs every frame."
+    },
+    {
+      "id": "audio-mix",
+      "version": "1.0.0",
+      "reason": "Replaced by 1.0.1 before publishing: Shared library fixes: piece names stay unique when an id and a fallback collide, and the loudness meter no longer logs every frame."
+    },
+    {
+      "id": "assemble",
+      "version": "1.0.0",
+      "reason": "Replaced by 1.0.1 before publishing: Shared library fixes: piece names stay unique when an id and a fallback collide, and the loudness meter no longer logs every frame."
+    },
+    {
+      "id": "cut-footage",
+      "version": "1.0.0",
+      "reason": "Replaced by 1.0.1 before publishing: Shared library fixes: piece names stay unique when an id and a fallback collide, and the loudness meter no longer logs every frame."
+    },
+    {
+      "id": "end-card",
+      "version": "1.0.0",
+      "reason": "Replaced by 1.0.1 before publishing: Shared library fixes: piece names stay unique when an id and a fallback collide, and the loudness meter no longer logs every frame."
+    },
+    {
+      "id": "phone-chat",
+      "version": "1.0.0",
+      "reason": "Replaced by 1.1.1 before publishing: Crossfades in whole frames (under one frame is a straight cut, so the end card is never dropped); a typing rate of zero and any endless chat are refused; scenes start at their first reveal; the Notes emoji key is drawn as an SVG."
+    },
+    {
+      "id": "phone-chat",
+      "version": "1.1.0",
+      "reason": "Replaced by 1.1.1 before publishing: Crossfades in whole frames (under one frame is a straight cut, so the end card is never dropped); a typing rate of zero and any endless chat are refused; scenes start at their first reveal; the Notes emoji key is drawn as an SVG."
+    },
+    {
+      "id": "brand-layer",
+      "version": "1.0.0",
+      "reason": "Replaced by 1.0.1 before publishing: The appended end card is drawn in scratch, so only the declared output is left."
+    },
+    {
+      "id": "captions-layer",
+      "version": "1.0.0",
+      "reason": "Replaced by 1.1.0 before publishing: The caption font is loaded before captions are measured and wide captions are resized, never overflowing the band; the price is per call."
+    },
+    {
+      "id": "sound-layer",
+      "version": "1.0.0",
+      "reason": "Replaced by 1.0.1 before publishing: Correction passes stay in scratch; only the chosen pass becomes the output."
+    },
+    {
+      "id": "check-layer",
+      "version": "1.0.0",
+      "reason": "Replaced by 1.1.0 before publishing: Free: on-camera speech is checked from the transcript a transcribe step puts in the timeline; an unmarked end card the style needs fails; logo_visible is checked on its own; a declared logo zone bounds the match."
+    },
+    {
+      "id": "check-layer",
+      "version": "1.1.0",
+      "reason": "Replaced by 1.1.1 before publishing: logo_visible is checked across the whole video (the end card included), apart from the end-card logo check."
+    },
+    {
+      "id": "phone-chat",
+      "version": "1.1.1",
+      "reason": "Replaced by 1.1.3 before publishing: A crossfade asked for under one frame is a straight cut instead of rounding up to a frame."
+    },
+    {
+      "id": "phone-chat",
+      "version": "1.1.2",
+      "reason": "Replaced by 1.1.3 before publishing: A crossfade asked for under one frame is a straight cut instead of rounding up to a frame."
+    },
+    {
+      "id": "transcribe-whisper",
+      "version": "1.0.0",
+      "reason": "Replaced by 1.0.1 before publishing: A line the transcript does not match keeps evenly spread word timings, so captions never transcribe again."
+    }
+  ]
+}

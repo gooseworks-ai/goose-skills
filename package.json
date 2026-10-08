@@ -7,7 +7,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/athina-ai/goose-skills"
+    "url": "https://github.com/gooseworks-ai/goose-skills"
   },
   "scripts": {
     "test": "node --test test/brand-growth-collection.test.js test/brand-growth-routes.test.js test/goose-skills-targets.test.js test/goose-skills-packs.test.js test/launch-meta-ad-campaign.test.js test/meta-ad-harness.test.js scripts/__tests__/build-index.test.js scripts/__tests__/validate-skills.test.js test/shared-video-harness.test.js test/podcast-package.test.js",
@@ -19,7 +19,8 @@
     "eval:report": "node test/report.js",
     "build:index": "node scripts/build-index.js",
     "validate:skills": "node scripts/validate-skills.js",
-    "ci": "npm run validate:skills && npm run build:index && npm test"
+    "ci": "npm run validate:skills && npm run build:index && npm test",
+    "test:parts": "node --test parts/_tools/*.test.mjs parts/_lib/*.test.mjs parts/*/tests/*.test.mjs"
   },
   "keywords": [
     "claude-code",
@@ -32,6 +33,7 @@
   "author": "Athina AI",
   "license": "MIT",
   "devDependencies": {
-    "@changesets/cli": "^2.29.6"
+    "@changesets/cli": "^2.29.6",
+    "js-yaml": "^4.1.1"
   }
 }

@@ -1,0 +1,445 @@
+{
+  "$schema": "../../_contract/part-manifest.schema.json",
+  "interface": 1,
+  "id": "transcribe-whisper",
+  "version": "1.0.1",
+  "kind": "caption",
+  "title": "Transcribe speech (Whisper)",
+  "summary": "Transcribes a cut's speech with fal Whisper word timings and places each approved line on what was heard, for captions and the check layer.",
+  "runtime": "node",
+  "entry": "part.mjs",
+  "files": [
+    "README.md",
+    "part.mjs"
+  ],
+  "kit": ">=1.0.0 <2.0.0",
+  "needs": {
+    "browser": false,
+    "ffmpeg": {
+      "encoders": [
+        "aac"
+      ]
+    },
+    "network": true,
+    "models": [
+      {
+        "provider": "fal",
+        "model": "fal-ai/whisper"
+      }
+    ],
+    "disk_mb": 50
+  },
+  "inputs": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "video"
+    ],
+    "properties": {
+      "video": {
+        "description": "The cut whose speech to transcribe (it passes through unchanged).",
+        "type": "object",
+        "x-kit-file": {
+          "media": "video"
+        }
+      },
+      "scenes": {
+        "description": "plan.scenes: each non-empty line is placed on the heard words.",
+        "type": "array",
+        "maxItems": 40,
+        "items": {
+          "type": "object",
+          "required": [],
+          "properties": {
+            "id": {
+              "type": [
+                "string",
+                "integer",
+                "null"
+              ]
+            },
+            "line": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "maxLength": 2000
+            }
+          }
+        }
+      },
+      "timeline": {
+        "description": "The cut's timeline from an earlier step; its scenes, end card and safe zones are kept.",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "duration_s",
+          "width",
+          "height",
+          "fps",
+          "scenes",
+          "speech"
+        ],
+        "properties": {
+          "duration_s": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "fps": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "scenes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "start_s",
+                "end_s"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "start_s": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "end_s": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              }
+            }
+          },
+          "speech": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "text",
+                "start_s",
+                "end_s"
+              ],
+              "properties": {
+                "scene_id": {
+                  "type": "string"
+                },
+                "text": {
+                  "type": "string"
+                },
+                "spoken": {
+                  "type": "string"
+                },
+                "start_s": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "end_s": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "words": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "text",
+                      "start_s",
+                      "end_s"
+                    ],
+                    "properties": {
+                      "text": {
+                        "type": "string"
+                      },
+                      "start_s": {
+                        "type": "number",
+                        "minimum": 0
+                      },
+                      "end_s": {
+                        "type": "number",
+                        "minimum": 0
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "end_card": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "start_s",
+              "end_s"
+            ],
+            "properties": {
+              "start_s": {
+                "type": "number",
+                "minimum": 0
+              },
+              "end_s": {
+                "type": "number",
+                "minimum": 0
+              }
+            }
+          },
+          "safe_zones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "use",
+                "x",
+                "y",
+                "w",
+                "h"
+              ],
+              "properties": {
+                "use": {
+                  "enum": [
+                    "captions",
+                    "logo"
+                  ]
+                },
+                "x": {
+                  "type": "number"
+                },
+                "y": {
+                  "type": "number"
+                },
+                "w": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "h": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              }
+            }
+          }
+        }
+      },
+      "language": {
+        "description": "Default en.",
+        "type": "string",
+        "pattern": "^[a-z]{2}$"
+      }
+    }
+  },
+  "outputs": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "video",
+      "timeline",
+      "transcript"
+    ],
+    "properties": {
+      "video": {
+        "type": "object",
+        "x-kit-file": {
+          "media": "video"
+        }
+      },
+      "timeline": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "duration_s",
+          "width",
+          "height",
+          "fps",
+          "scenes",
+          "speech"
+        ],
+        "properties": {
+          "duration_s": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "fps": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "scenes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "start_s",
+                "end_s"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "start_s": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "end_s": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              }
+            }
+          },
+          "speech": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "text",
+                "start_s",
+                "end_s"
+              ],
+              "properties": {
+                "scene_id": {
+                  "type": "string"
+                },
+                "text": {
+                  "type": "string"
+                },
+                "spoken": {
+                  "type": "string"
+                },
+                "start_s": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "end_s": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "words": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "text",
+                      "start_s",
+                      "end_s"
+                    ],
+                    "properties": {
+                      "text": {
+                        "type": "string"
+                      },
+                      "start_s": {
+                        "type": "number",
+                        "minimum": 0
+                      },
+                      "end_s": {
+                        "type": "number",
+                        "minimum": 0
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "end_card": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "start_s",
+              "end_s"
+            ],
+            "properties": {
+              "start_s": {
+                "type": "number",
+                "minimum": 0
+              },
+              "end_s": {
+                "type": "number",
+                "minimum": 0
+              }
+            }
+          },
+          "safe_zones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "use",
+                "x",
+                "y",
+                "w",
+                "h"
+              ],
+              "properties": {
+                "use": {
+                  "enum": [
+                    "captions",
+                    "logo"
+                  ]
+                },
+                "x": {
+                  "type": "number"
+                },
+                "y": {
+                  "type": "number"
+                },
+                "w": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "h": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              }
+            }
+          }
+        }
+      },
+      "transcript": {
+        "type": "string"
+      }
+    }
+  },
+  "cost": {
+    "basis": "per_unit",
+    "unit": "call",
+    "rates_usd": {
+      "fal-ai/whisper": 0.02
+    }
+  },
+  "determinism": "provider",
+  "timing": {
+    "typical_s": 20,
+    "timeout_s": 600
+  },
+  "retry": {
+    "transient": 1
+  },
+  "replaces": []
+}

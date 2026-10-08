@@ -1,10 +1,13 @@
 ---
 name: render-imessage-chat
 description: Render a configurable iMessage conversation inside a properly framed phone, then a brand end card. Uses the original send/receive sounds and a shared frame timeline for text, typing, scrolling and sound. Free local Playwright + ffmpeg assembly; optional image/music generation belongs to separate gated capabilities.
-status: active
-version: 2
+status: superseded
+version: "2.0.1"
 updated: 2026-10-06
+superseded_by: phone-chat@1.1.4
 ---
+
+> **Superseded:** the video kit now does this with the phone-chat part, version 1.1.4, in the parts folder of this repository. Every phone-chat style is a style file that draws the same screen frame by frame from the plan's scenes, with the original sounds, in the kit's browser. This atom stays, unchanged in behaviour, for skills outside the kit until they move; its scripts still run.
 
 # Human version
 

@@ -12,10 +12,15 @@ Caption style (validated on both reference runs):
 Rules:
   - Dialogue start = scene_start + 0.08s (avoids the caption flashing a frame before the
     cut — see the molecule's Failure Modes).
+  - Each scene window is snapped to whole frames with the same rule compose.py uses, and
+    the cue end is rounded DOWN to the .ass time step (0.01s). So a caption never
+    outlives its cut by a frame.
   - A scene with no `caption` (e.g. the end card) is suppressed — its own typeset copy
     carries the message, and two text layers at the same spot are both unreadable.
 """
-import argparse, json, os
+import argparse, json, math, os
+
+FPS = 30   # must match compose.py
 
 HEADER = """[Script Info]
 ScriptType: v4.00+
@@ -40,13 +45,19 @@ def ts(s):
     return f"{h}:{m:02d}:{sec:05.2f}"
 
 
+def snap(sec):
+    """Snap a duration to whole frames, in seconds. The SAME rule as compose.py snap()."""
+    return int(float(sec) * FPS + 0.5) / FPS
+
+
 def main():
     ap = argparse.ArgumentParser(description="Emit the per-scene caption .ass.")
     ap.add_argument("--config", required=True)
     ap.add_argument("--out", help="output .ass path (defaults to config.captions_ass)")
     a = ap.parse_args()
 
-    cfg = json.load(open(a.config))
+    with open(a.config, encoding="utf-8-sig") as f:   # UTF-8, with or without a BOM
+        cfg = json.load(f)
     scenes = cfg["scenes"]
     cap_cfg = cfg.get("caption_style", {})
     header = HEADER.format(
@@ -59,10 +70,11 @@ def main():
 
     lines, t = [], 0.0
     for s in scenes:
-        dur = float(s["target_sec"])
+        dur = snap(s["target_sec"])
         cap = s.get("caption")
         if cap:
-            lines.append(f"Dialogue: 0,{ts(t + 0.08)},{ts(t + dur)},Cap,,0,0,0,,{cap}")
+            end = math.floor((t + dur) * 100 + 1e-6) / 100   # never past the cut
+            lines.append(f"Dialogue: 0,{ts(t + 0.08)},{ts(end)},Cap,,0,0,0,,{cap}")
         t += dur
     # end card window has no caption (its typeset copy carries it)
 
@@ -70,9 +82,9 @@ def main():
     if not out:
         raise SystemExit("no --out and no config.captions_ass set")
     os.makedirs(os.path.dirname(os.path.abspath(out)), exist_ok=True)
-    with open(out, "w") as f:
+    with open(out, "w", encoding="utf-8") as f:
         f.write(header + "\n".join(lines) + "\n")
-    print(f"captions.ass written — {len(lines)} cues, total {t:.2f}s -> {out}")
+    print(f"captions.ass written - {len(lines)} cues, total {t:.2f}s -> {out}")
 
 
 if __name__ == "__main__":

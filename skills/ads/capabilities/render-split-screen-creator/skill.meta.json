@@ -2,6 +2,7 @@
   "slug": "render-split-screen-creator",
   "category": "capabilities",
   "domain": "ads",
+  "version": "1.0.0",
   "tags": [
     "ads"
   ],

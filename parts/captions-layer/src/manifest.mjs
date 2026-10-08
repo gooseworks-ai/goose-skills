@@ -1,0 +1,30 @@
+import { file, layerInputs, layerOutputs } from '../../_tools/schemas.mjs';
+
+export const manifest = {
+  $schema: '../../_contract/part-manifest.schema.json',
+  interface: 1,
+  id: 'captions-layer',
+  version: '1.1.0',
+  kind: 'caption',
+  layer: 'captions',
+  title: 'Captions layer',
+  summary: 'Burns word-timed captions (one caption rule) onto the cut, the last one held to the end, and returns a WebVTT of what it drew.',
+  runtime: 'node',
+  entry: 'part.mjs',
+  files: ['README.md', 'assets/fonts/Montserrat-Bold.ttf', 'part.mjs'],
+  kit: '>=1.0.0 <2.0.0',
+  needs: {
+    browser: true,
+    ffmpeg: { filters: ['fps', 'format', 'overlay'], encoders: ['libx264', 'aac'] },
+    network: true,
+    models: [{ provider: 'fal', model: 'fal-ai/whisper' }],
+    disk_mb: 400,
+  },
+  inputs: layerInputs,
+  outputs: layerOutputs({ captions: file('subtitles'), words: file('json') }, ['captions', 'words']),
+  cost: { basis: 'per_unit', unit: 'call', rates_usd: { 'fal-ai/whisper': 0.02 } },
+  determinism: 'provider',
+  timing: { typical_s: 30, timeout_s: 900 },
+  retry: { transient: 1 },
+  replaces: ['caption-burn'],
+};

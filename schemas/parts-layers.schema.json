@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gooseworks.ai/schemas/parts-layers.schema.json",
+  "title": "parts/layers.json",
+  "description": "The current layer set: the part that fills each layer slot, run in this fixed order after a style's timeline. A video pins the set at the yes. Slots fill in as layer parts are published. Checked by scripts/check-parts.js.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["interface", "order", "layers"],
+  "properties": {
+    "interface": { "const": 1 },
+    "order": { "const": ["brand", "captions", "sound", "check"] },
+    "layers": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "brand": { "$ref": "#/$defs/ref" },
+        "captions": { "$ref": "#/$defs/ref" },
+        "sound": { "$ref": "#/$defs/ref" },
+        "check": { "$ref": "#/$defs/ref" }
+      }
+    }
+  },
+  "$defs": {
+    "ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$" },
+        "version": { "type": "string", "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$" }
+      }
+    }
+  }
+}
