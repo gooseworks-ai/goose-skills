@@ -35,7 +35,8 @@ jobs:
         run: node --test scripts/__tests__/check-lfs-pointers.test.js
 
       - name: No unresolved Git LFS pointers
-        # A file whose LFS object was never pushed is a 130-byte text stub; the catalog release refuses it.
+        # A file whose LFS object was never pushed is a short text stub; the catalog release refuses it.
+        # Reads the indexed blobs through git, so the working tree cannot hide one.
         run: node scripts/check-lfs-pointers.js
 
       - name: Test CLI
