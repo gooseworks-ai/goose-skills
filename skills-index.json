@@ -7920,6 +7920,7 @@
       "files": [
         "skills/ads/packs/ugc-video-formats/review-ugc-render/SKILL.md",
         "skills/ads/packs/ugc-video-formats/review-ugc-render/scripts/review_render.py",
+        "skills/ads/packs/ugc-video-formats/review-ugc-render/skill.meta.json",
         "skills/ads/packs/ugc-video-formats/review-ugc-render/tests/test_review_render.py"
       ],
       "metadata": {
@@ -10250,6 +10251,7 @@
           "files": [
             "skills/ads/packs/ugc-video-formats/review-ugc-render/SKILL.md",
             "skills/ads/packs/ugc-video-formats/review-ugc-render/scripts/review_render.py",
+            "skills/ads/packs/ugc-video-formats/review-ugc-render/skill.meta.json",
             "skills/ads/packs/ugc-video-formats/review-ugc-render/tests/test_review_render.py"
           ],
           "source": "pack"

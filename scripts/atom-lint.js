@@ -4,7 +4,7 @@
 /**
  * Atom lint: what a video atom may say.
  *
- *   node scripts/atom-lint.js [--base <ref>] [--strict] [--quiet]
+ *   node scripts/atom-lint.js [--base <ref>] [--direct] [--strict] [--quiet]
  *
  * Atoms hold craft (how to drive a model or a tool, and how to check the
  * piece). Prices, approvals, setup, keys and which AI app runs them belong
@@ -20,7 +20,9 @@
  * the base. Atoms listed in atom-lint/config.json strict_atoms fail on any
  * finding, so a cleaned atom stays clean. --strict fails on every finding
  * (the final switch, GV-73). Without --base nothing is compared, so only
- * strict atoms can fail.
+ * strict atoms can fail. --direct compares with <ref> itself instead of its
+ * merge base with HEAD (CI). An atom moved between capabilities/ and packs/
+ * is compared with its old folder.
  *
  * A true finding that is creative content (a phone mockup that draws the
  * ChatGPT app, say) is allowed in the atom's skill.meta.json:
@@ -271,10 +273,11 @@ function headFiles(atom) {
   return lib.listFiles(ROOT, atom.dir).map((p) => ({ path: p, bytes: fs.readFileSync(path.join(ROOT, p)) }));
 }
 
-function baseFiles(base, atom) {
+/** The atom's files on the base, from `dir` (its old folder), named as if in its folder now. */
+function baseFiles(base, atom, dir) {
   return lib
-    .listFilesAt(ROOT, base, atom.dir)
-    .map((p) => ({ path: p, bytes: lib.readAt(ROOT, base, p) }))
+    .listFilesAt(ROOT, base, dir)
+    .map((p) => ({ path: `${atom.dir}${p.slice(dir.length)}`, bytes: lib.readAt(ROOT, base, p) }))
     .filter((f) => f.bytes !== null);
 }
 
@@ -341,10 +344,11 @@ function markNew(head, base) {
 }
 
 function parseArgs(argv) {
-  const args = { base: null, strict: false, quiet: false };
+  const args = { base: null, direct: false, strict: false, quiet: false };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
-    if (a === '--base') args.base = argv[++i];
+    if (a === '--direct') args.direct = true;
+    else if (a === '--base') args.base = argv[++i];
     else if (a.startsWith('--base=')) args.base = a.slice(7);
     else if (a === '--strict') args.strict = true;
     else if (a === '--quiet') args.quiet = true;
@@ -355,7 +359,7 @@ function parseArgs(argv) {
 
 function run(argv) {
   const args = parseArgs(argv);
-  const base = lib.resolveBase(ROOT, args.base);
+  const base = lib.resolveBase(ROOT, args.base, { direct: args.direct });
   const changed = base ? lib.changedFiles(ROOT, base) : new Set();
   const atoms = lib.listAtoms(ROOT);
   const strictAtoms = new Set(CONFIG.strict_atoms);
@@ -372,8 +376,14 @@ function run(argv) {
       }
       return true;
     });
-    const touched = base && [...changed].some((p) => p.startsWith(`${atom.dir}/`));
-    if (touched) markNew(head, lintAtom(atom, baseFiles(base, atom)));
+    if (base) {
+      const baseDir = lib.baseAtomDir(ROOT, base, atom);
+      const touched =
+        baseDir === atom.dir
+          ? [...changed].some((p) => p.startsWith(`${atom.dir}/`))
+          : !baseDir || !lib.sameFiles(ROOT, base, baseDir, atom);
+      if (touched) markNew(head, baseDir ? lintAtom(atom, baseFiles(base, atom, baseDir)) : []);
+    }
     for (const f of [...problems, ...head]) {
       const fails = args.strict || strictAtoms.has(atom.slug) || f.rule === 'atom.lint_allow' || f.isNew === true;
       results.push({ ...f, atom: atom.slug, severity: fails ? 'error' : 'warning' });

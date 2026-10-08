@@ -228,7 +228,9 @@ export function lintParts(partsRoot = PARTS) {
   if (!existsSync(withdrawnPath)) add(withdrawnPath, 'withdrawn', 'missing');
   else {
     const w = JSON.parse(readFileSync(withdrawnPath, 'utf8'));
-    if (!w || !Array.isArray(w.withdrawn) || Object.keys(w).length !== 1) add(withdrawnPath, 'withdrawn', 'must be {"withdrawn": [...]}');
+    if (!w || w.interface !== 1 || !Array.isArray(w.withdrawn) || Object.keys(w).length !== 2) {
+      add(withdrawnPath, 'withdrawn', 'must be {"interface": 1, "withdrawn": [...]}');
+    }
     for (const item of (w && w.withdrawn) || []) {
       if (!item || !item.id || !item.version || !item.reason || Object.keys(item).length !== 3) {
         add(withdrawnPath, 'withdrawn', 'each entry is {id, version, reason}');

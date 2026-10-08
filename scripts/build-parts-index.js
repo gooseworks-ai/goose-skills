@@ -6,42 +6,73 @@
  *
  *   node scripts/build-parts-index.js
  *
- * A published part version is a folder parts/<id>/<x.y.z>/ holding its
- * part.json, part.mjs and assets (part interface, section 6). The index
- * lists every one with what the kit, the style validator and the server's
- * lock need: kind, layer slot, kit range, needs, cost, determinism and a
- * sha256 for every file in the folder (part.json included). CI rebuilds it
- * and fails when the committed file differs (scripts/check-parts.js).
+ * A published part version is a real folder parts/<id>/<x.y.z>/ holding its
+ * part.json, part.mjs and assets (part interface, section 6). The index is
+ *   { "interface": 1, "parts": [ entry, ... ] }
+ * with one entry per version: what the kit loader, the studio sync and the
+ * server's lock builder read (kind, layer slot, kit range, needs, cost,
+ * determinism, the folder, the models the line may let it order) and a
+ * sha256 for every file in the folder, part.json included.
+ *
+ * Refused, so nothing unpublishable reaches the index:
+ *   - a part.json that does not fit the part manifest schema, or whose id and
+ *     version are not its folder's;
+ *   - a folder whose files differ from part.json's `files` (part.mjs always
+ *     among them);
+ *   - a symlink anywhere in a published version (the folder itself, or a file
+ *     or folder inside it): a frozen version must be real files, or its bytes
+ *     could change without its folder changing.
+ * The written index is checked against schemas/parts-index.schema.json.
+ * CI rebuilds it and fails when the committed file differs
+ * (scripts/check-parts.js).
  */
 
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
+const { validate } = require('./lib/json-schema');
 
 const ROOT = process.env.GOOSE_SKILLS_ROOT
   ? path.resolve(process.env.GOOSE_SKILLS_ROOT)
   : path.resolve(__dirname, '..');
-const PARTS = path.join(ROOT, 'parts');
+const SCHEMAS = path.resolve(__dirname, '..', 'schemas');
 const SEMVER = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/;
 const PART_ID = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
 
-function isDir(p) {
+function readSchema(name) {
+  return JSON.parse(fs.readFileSync(path.join(SCHEMAS, name), 'utf8'));
+}
+
+/** The manifest schema: the parts contract copy when the repo has one, else ours. */
+function manifestSchema(root) {
+  const contract = path.join(root, 'parts', '_contract', 'part-manifest.schema.json');
+  if (fs.existsSync(contract)) return JSON.parse(fs.readFileSync(contract, 'utf8'));
+  return readSchema('part-manifest.schema.json');
+}
+
+function lstat(p) {
   try {
-    return fs.statSync(p).isDirectory();
+    return fs.lstatSync(p);
   } catch {
-    return false;
+    return null;
   }
 }
 
-function semverKey(v) {
-  return v.split('.').map(Number);
+function compareVersions(a, b) {
+  const pa = a.split('.').map(Number);
+  const pb = b.split('.').map(Number);
+  return pa[0] - pb[0] || pa[1] - pb[1] || pa[2] - pb[2];
 }
 
-function filesIn(dir) {
+/** Files in a published version folder, relative and sorted; throws on a symlink. */
+function filesIn(dir, label) {
   const out = [];
   const walk = (rel) => {
     for (const entry of fs.readdirSync(path.join(dir, rel), { withFileTypes: true })) {
       const childRel = rel ? `${rel}/${entry.name}` : entry.name;
+      if (entry.isSymbolicLink()) {
+        throw new Error(`${label}/${childRel} is a symlink; a published version holds real files only`);
+      }
       if (entry.isDirectory()) walk(childRel);
       else if (entry.isFile() && entry.name !== '.DS_Store') out.push(childRel);
     }
@@ -50,46 +81,60 @@ function filesIn(dir) {
   return out.sort();
 }
 
-/** [{ id, version, dir }] for every published version folder. */
+/** [{ id, version, dir }] for every published version folder; throws on a symlinked one. */
 function listVersions(root = ROOT) {
   const partsDir = path.join(root, 'parts');
-  if (!isDir(partsDir)) return [];
+  const top = lstat(partsDir);
+  if (!top || !top.isDirectory()) return [];
   const versions = [];
   for (const id of fs.readdirSync(partsDir).sort()) {
-    if (!PART_ID.test(id) || !isDir(path.join(partsDir, id))) continue;
-    for (const version of fs.readdirSync(path.join(partsDir, id))) {
-      if (SEMVER.test(version) && isDir(path.join(partsDir, id, version))) {
-        versions.push({ id, version, dir: `parts/${id}/${version}` });
-      }
+    if (!PART_ID.test(id)) continue;
+    const idStat = lstat(path.join(partsDir, id));
+    if (idStat.isSymbolicLink()) throw new Error(`parts/${id} is a symlink; a part is a real folder`);
+    if (!idStat.isDirectory()) continue;
+    const names = fs.readdirSync(path.join(partsDir, id)).filter((v) => SEMVER.test(v)).sort(compareVersions);
+    for (const version of names) {
+      const dir = `parts/${id}/${version}`;
+      const st = lstat(path.join(root, dir));
+      if (st.isSymbolicLink()) throw new Error(`${dir} is a symlink; a published version is a real folder`);
+      if (st.isDirectory()) versions.push({ id, version, dir });
     }
   }
   return versions;
 }
 
-/** The index entries, or throws on a folder whose part.json does not match it. */
-function buildIndex(root = ROOT) {
+/** The index entries, or throws on the first version that cannot be published. */
+function buildEntries(root = ROOT) {
+  const schema = manifestSchema(root);
   const entries = [];
   for (const { id, version, dir } of listVersions(root)) {
     const abs = path.join(root, dir);
-    const manifestPath = path.join(abs, 'part.json');
-    if (!fs.existsSync(manifestPath)) throw new Error(`${dir} has no part.json`);
-    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    const onDisk = filesIn(abs, dir);
+    if (!onDisk.includes('part.json')) throw new Error(`${dir} has no part.json`);
+    let manifest;
+    try {
+      manifest = JSON.parse(fs.readFileSync(path.join(abs, 'part.json'), 'utf8'));
+    } catch (err) {
+      throw new Error(`${dir}/part.json is not valid JSON: ${err.message}`);
+    }
+    const problems = validate(schema, manifest);
+    if (problems.length) {
+      throw new Error(`${dir}/part.json does not fit the part manifest schema: ${problems.slice(0, 5).join('; ')}`);
+    }
     if (manifest.id !== id || manifest.version !== version) {
       throw new Error(`${dir}/part.json says ${manifest.id}@${manifest.version}; the folder says ${id}@${version}`);
     }
-    const files = {};
-    for (const rel of filesIn(abs)) {
-      files[rel] = crypto.createHash('sha256').update(fs.readFileSync(path.join(abs, rel))).digest('hex');
+    const listed = [...new Set(['part.json', ...manifest.files])].sort();
+    const missing = listed.filter((f) => !onDisk.includes(f));
+    const extra = onDisk.filter((f) => !listed.includes(f));
+    if (missing.length || extra.length) {
+      throw new Error(
+        `${dir}: part.json files must match the folder (missing: ${missing.join(', ') || 'none'}; not listed: ${extra.join(', ') || 'none'})`,
+      );
     }
-    const listed = Array.isArray(manifest.files) ? [...manifest.files, 'part.json'] : null;
-    if (listed) {
-      const missing = listed.filter((f) => !(f in files));
-      const extra = Object.keys(files).filter((f) => !listed.includes(f));
-      if (missing.length || extra.length) {
-        throw new Error(
-          `${dir}: part.json files must match the folder (missing: ${missing.join(', ') || 'none'}; not listed: ${extra.join(', ') || 'none'})`,
-        );
-      }
+    const files = {};
+    for (const rel of listed) {
+      files[rel] = crypto.createHash('sha256').update(fs.readFileSync(path.join(abs, rel))).digest('hex');
     }
     entries.push({
       id,
@@ -103,31 +148,34 @@ function buildIndex(root = ROOT) {
       determinism: manifest.determinism,
       path: dir,
       files,
+      models: manifest.needs.models,
     });
   }
-  return entries.sort((a, b) => {
-    if (a.id !== b.id) return a.id < b.id ? -1 : 1;
-    const ka = semverKey(a.version);
-    const kb = semverKey(b.version);
-    for (let i = 0; i < 3; i++) if (ka[i] !== kb[i]) return ka[i] - kb[i];
-    return 0;
-  });
+  return entries;
 }
 
-function render(entries) {
-  return `${JSON.stringify(entries, null, 2)}\n`;
+/** The whole index object, checked against its schema. */
+function buildIndex(root = ROOT) {
+  const index = { interface: 1, parts: buildEntries(root) };
+  const problems = validate(readSchema('parts-index.schema.json'), index);
+  if (problems.length) throw new Error(`the built index does not fit its schema: ${problems.slice(0, 5).join('; ')}`);
+  return index;
+}
+
+function render(index) {
+  return `${JSON.stringify(index, null, 2)}\n`;
 }
 
 if (require.main === module) {
   try {
-    const entries = buildIndex();
-    fs.mkdirSync(PARTS, { recursive: true });
-    fs.writeFileSync(path.join(PARTS, 'index.json'), render(entries));
-    console.log(`Wrote parts/index.json with ${entries.length} part versions.`);
+    const index = buildIndex();
+    fs.mkdirSync(path.join(ROOT, 'parts'), { recursive: true });
+    fs.writeFileSync(path.join(ROOT, 'parts', 'index.json'), render(index));
+    console.log(`Wrote parts/index.json with ${index.parts.length} part versions.`);
   } catch (err) {
     console.error(`build-parts-index: ${err.message}`);
     process.exit(1);
   }
 }
 
-module.exports = { buildIndex, listVersions, render, SEMVER };
+module.exports = { buildIndex, listVersions, render, readSchema, SEMVER };

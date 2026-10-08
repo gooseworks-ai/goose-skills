@@ -5,7 +5,12 @@
  * Atom versions (GV-29): every video atom carries a semver `version` in its
  * skill.meta.json, and a branch that changes an atom raises it.
  *
- *   node scripts/check-atom-versions.js [--base <ref>]
+ *   node scripts/check-atom-versions.js [--base <ref>] [--direct]
+ *
+ * --base compares with the merge base of <ref> and HEAD; with --direct, with
+ * <ref> itself (CI: a pull request's base tip, or the tip a push replaced).
+ * An atom moved between capabilities/ and packs/ is compared with its old
+ * folder, so a move cannot reset its version.
  *
  * Errors:
  *   - a version that is not plain semver (x.y.z);
@@ -37,6 +42,7 @@ function frontmatterVersion(text) {
 }
 
 function metaVersionAt(base, dir) {
+  if (!dir) return { exists: false, version: undefined };
   const raw = lib.readAt(ROOT, base, `${dir}/skill.meta.json`);
   if (raw === null) return { exists: lib.listFilesAt(ROOT, base, dir).length > 0, version: undefined };
   try {
@@ -47,10 +53,11 @@ function metaVersionAt(base, dir) {
 }
 
 function parseArgs(argv) {
-  const args = { base: null };
+  const args = { base: null, direct: false };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
-    if (a === '--base') args.base = argv[++i];
+    if (a === '--direct') args.direct = true;
+    else if (a === '--base') args.base = argv[++i];
     else if (a.startsWith('--base=')) args.base = a.slice(7);
     else throw new Error(`unknown argument ${a}`);
   }
@@ -59,7 +66,7 @@ function parseArgs(argv) {
 
 function run(argv) {
   const args = parseArgs(argv);
-  const base = lib.resolveBase(ROOT, args.base);
+  const base = lib.resolveBase(ROOT, args.base, { direct: args.direct });
   const changed = base ? lib.changedFiles(ROOT, base) : new Set();
   const errors = [];
   const warnings = [];
@@ -74,7 +81,11 @@ function run(argv) {
       continue;
     }
     const version = meta ? meta.version : undefined;
-    const touched = base !== null && [...changed].some((p) => p.startsWith(`${atom.dir}/`));
+    const baseDir = base ? lib.baseAtomDir(ROOT, base, atom) : null;
+    let touched = false;
+    if (base && baseDir === atom.dir) touched = [...changed].some((p) => p.startsWith(`${atom.dir}/`));
+    else if (base && baseDir) touched = !lib.sameFiles(ROOT, base, baseDir, atom);
+    else if (base) touched = true; // a new atom
 
     if (version !== undefined && !lib.parseSemver(version)) {
       errors.push(`${where}: version ${JSON.stringify(version)} is not semver (x.y.z)`);
@@ -98,7 +109,7 @@ function run(argv) {
       errors.push(`${where}: changed on this branch but has no version; add "version": "x.y.z" to skill.meta.json`);
       continue;
     }
-    const before = metaVersionAt(base, atom.dir);
+    const before = metaVersionAt(base, baseDir);
     if (!before.exists || before.version === undefined || !lib.parseSemver(before.version)) continue;
     if (lib.compareSemver(version, before.version) <= 0) {
       errors.push(

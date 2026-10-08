@@ -2,32 +2,48 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://gooseworks.ai/schemas/parts-index.schema.json",
   "title": "parts/index.json",
-  "description": "Every published part version. Written by scripts/build-parts-index.js from parts/<id>/<x.y.z>/, checked by scripts/check-parts.js. The server builds each video's parts lock from it.",
-  "type": "array",
-  "items": {
-    "type": "object",
-    "required": ["id", "version", "interface", "kind", "kit", "needs", "cost", "determinism", "path", "files"],
-    "properties": {
-      "id": { "type": "string", "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$", "maxLength": 64 },
-      "version": { "type": "string", "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$" },
-      "interface": { "type": "integer", "minimum": 1 },
-      "kind": {
-        "type": "string",
-        "enum": ["generate_voice", "generate_image", "generate_video", "generate_music", "generate_sfx", "render_html", "compose", "caption", "mix", "check", "end_card"]
-      },
-      "layer": { "type": "string", "enum": ["brand", "captions", "sound", "check"] },
-      "kit": { "type": "string" },
-      "needs": { "type": "object" },
-      "cost": { "type": "object" },
-      "determinism": { "type": "string", "enum": ["pure", "seeded", "provider"] },
-      "path": { "type": "string", "pattern": "^parts/[a-z][a-z0-9-]*/(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$" },
-      "files": {
-        "description": "sha256 (hex) of every file in the version folder, part.json included, keyed by path relative to the folder.",
+  "description": "Every published part version, as the kit loader, the studio sync and the server's lock builder read it. Written by scripts/build-parts-index.js from parts/<id>/<x.y.z>/, checked by scripts/check-parts.js.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["interface", "parts"],
+  "properties": {
+    "interface": { "const": 1 },
+    "parts": {
+      "type": "array",
+      "items": {
         "type": "object",
-        "additionalProperties": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
-        "required": ["part.json"]
+        "additionalProperties": false,
+        "required": ["id", "version", "interface", "kind", "kit", "needs", "cost", "determinism", "path", "files", "models"],
+        "properties": {
+          "id": { "type": "string", "maxLength": 64, "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$" },
+          "version": { "type": "string", "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$" },
+          "interface": { "const": 1 },
+          "kind": {
+            "enum": ["generate_voice", "generate_image", "generate_video", "generate_music", "generate_sfx", "render_html", "compose", "caption", "mix", "check", "end_card"]
+          },
+          "layer": { "enum": ["brand", "captions", "sound", "check"] },
+          "kit": { "type": "string", "minLength": 1 },
+          "needs": { "type": "object" },
+          "cost": { "type": "object" },
+          "determinism": { "enum": ["pure", "seeded", "provider"] },
+          "path": { "type": "string", "pattern": "^parts/[a-z][a-z0-9-]*/(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$" },
+          "files": {
+            "description": "sha256 (hex) of every file in the version folder, part.json and part.mjs included, keyed by path relative to the folder.",
+            "type": "object",
+            "required": ["part.json", "part.mjs"],
+            "additionalProperties": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+          },
+          "models": {
+            "description": "The models the line may let this part order (needs.models).",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["provider", "model"],
+              "properties": { "provider": { "type": "string" }, "model": { "type": "string" } }
+            }
+          }
+        }
       }
-    },
-    "additionalProperties": false
+    }
   }
 }
