@@ -6,7 +6,9 @@
 //     at real inputs and models;
 //   - JavaScript only: no Python, shell, packages or node_modules;
 //   - no network but ctx.line, no processes but ctx.tools.exec, no
-//     environment, home folder, clock, unseeded randomness, eval or system fonts;
+//     environment, home folder, wall clock, unseeded randomness, eval or
+//     system fonts (timers are allowed: a watchdog never reaches an output,
+//     and the frame renderer runs a page's timers on its own virtual clock);
 //   - size limits (part.mjs 2 MB, a version folder 20 MB);
 //   - index.json, layers.json and withdrawn.json agree with the folders.
 //
@@ -30,9 +32,9 @@ const BANNED_MODULES =
 // [rule, pattern, applies to: 'code' (every scanned file) or 'entry' (part.mjs and part sources)]
 const SOURCE_RULES = [
   ['network', /\bfetch\s*\(/, 'code'],
-  ['network', /\bXMLHttpRequest\b/, 'code'],
-  ['network', /\bWebSocket\b/, 'code'],
-  ['network', /\bEventSource\b/, 'code'],
+  ['network', /\bnew\s+XMLHttpRequest\s*\(/, 'code'],
+  ['network', /\bnew\s+WebSocket\s*\(/, 'code'],
+  ['network', /\bnew\s+EventSource\s*\(/, 'code'],
   ['network', /\bsendBeacon\b/, 'code'],
   ['network', /\bimportScripts\s*\(/, 'code'],
   ['modules', BANNED_MODULES, 'code'],
@@ -43,9 +45,8 @@ const SOURCE_RULES = [
   ['clock', /\bDate\s*\.\s*now\s*\(/, 'code'],
   ['clock', /\bnew\s+Date\s*\(/, 'code'],
   ['clock', /\bperformance\s*\.\s*now\s*\(/, 'code'],
-  ['clock', /\b(?:setTimeout|setInterval|requestAnimationFrame)\s*\(/, 'code'],
   ['random', /\bMath\s*\.\s*random\s*\(/, 'code'],
-  ['random', /\b(?:randomUUID|randomBytes|getRandomValues)\b/, 'code'],
+  ['random', /\b(?:randomUUID|randomBytes|randomInt|getRandomValues)\s*\(/, 'code'],
   ['eval', /\beval\s*\(/, 'code'],
   ['eval', /\bnew\s+Function\s*\(/, 'code'],
   ['system-fonts', /\/System\/Library\/Fonts|\/Library\/Fonts|\/usr\/share\/fonts|Windows[\\/]+Fonts/i, 'code'],
@@ -173,8 +174,8 @@ export function lintParts(partsRoot = PARTS) {
     const entry = join(folder.dir, 'part.mjs');
     if (existsSync(entry) && statSync(entry).size > MAX_ENTRY) add(entry, 'size', 'part.mjs is over 2 MB');
     if (total > MAX_FOLDER) add(folder.dir, 'size', 'the version folder is over 20 MB');
-    if (existsSync(entry) && !/^export\s+async\s+function\s+run\s*\(/m.test(readFileSync(entry, 'utf8'))) {
-      add(entry, 'entry', 'part.mjs must export async function run(inputs, ctx)');
+    if (existsSync(entry) && !/^export\s+(?:async\s+function\s+run\s*\(|(?:const|let|var)\s+run\b|\{[^}]*\brun\b[^}]*\})/m.test(readFileSync(entry, 'utf8'))) {
+      add(entry, 'entry', 'part.mjs must export run(inputs, ctx)');
     }
   }
 

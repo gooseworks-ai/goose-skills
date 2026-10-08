@@ -286,7 +286,7 @@ export async function makeTone(path, seconds, { freq = 440, codec = [], volume =
 
 /** Writes a test video: a moving test pattern, optional tone. Tests only. */
 export async function makeVideo(path, seconds, { width = 1080, height = 1920, fps = 30, tone = 440, pattern = 'testsrc2' } = {}) {
-  const args = ['-hide_banner', '-nostdin', '-y', '-f', 'lavfi', '-i', `${pattern}=size=${width}x${height}:rate=${fps}:duration=${seconds}`];
+  const args = ['-hide_banner', '-nostdin', '-y', '-f', 'lavfi', '-i', `${pattern}${pattern.includes('=') ? ':' : '='}size=${width}x${height}:rate=${fps}:duration=${seconds}`];
   if (tone) args.push('-f', 'lavfi', '-i', `sine=frequency=${tone}:duration=${seconds}:sample_rate=48000`);
   args.push('-c:v', 'libx264', '-preset', 'ultrafast', '-pix_fmt', 'yuv420p');
   if (tone) args.push('-c:a', 'aac', '-shortest');
@@ -350,5 +350,28 @@ export async function sampleBrand(workDir, { logoColor = '#e01020', background =
     fonts: {},
     pronunciations: [],
     cta: { text: 'Shop the collection', url: 'samplegoods.example' },
+  };
+}
+
+/** Integrated loudness (LUFS) and true peak (dBTP) by ffmpeg's EBU R128 meter, measured independently of any part. Tests only. */
+export async function measureR128(path) {
+  const { stderr } = await run('ffmpeg', ['-hide_banner', '-nostdin', '-nostats', '-i', path, '-map', '0:a:0', '-af', 'ebur128=peak=true', '-f', 'null', '-']);
+  const summary = stderr.slice(stderr.lastIndexOf('Summary:'));
+  const i = /I:\s*(-?\d+(?:\.\d+)?)\s*LUFS/.exec(summary);
+  const tp = /True peak:\s*Peak:\s*(-?\d+(?:\.\d+)?|-inf)\s*dBFS/.exec(summary);
+  return { lufs: i ? Number(i[1]) : null, true_peak_db: tp ? (tp[1] === '-inf' ? -Infinity : Number(tp[1])) : null };
+}
+
+/** The layer inputs the core hands a layer for `video`: a bare timeline from the file, a brand and an expectation. Tests only. */
+export async function layerInputsFor(video, { brand, expect = {}, timeline = {} } = {}) {
+  const info = await probe(video.path);
+  return {
+    video,
+    timeline: { duration_s: info.duration_s, width: info.width, height: info.height, fps: info.fps || 30, scenes: [], speech: [], ...timeline },
+    brand: brand || { name: 'Sample Goods', colors: {}, fonts: {}, pronunciations: [], cta: { text: 'Shop now' } },
+    expect: {
+      aspect: '9:16', width: info.width, height: info.height, duration_s: { min: 1, max: 60 },
+      speech: 'none', captions: false, end_card: false, qc_flags: [], ...expect,
+    },
   };
 }
