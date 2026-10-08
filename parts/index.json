@@ -91,6 +91,49 @@
       "models": []
     },
     {
+      "id": "brand-layer",
+      "version": "1.0.0",
+      "interface": 1,
+      "kind": "compose",
+      "layer": "brand",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": true,
+        "ffmpeg": {
+          "filters": [
+            "xfade",
+            "fps",
+            "settb",
+            "setsar",
+            "format",
+            "afade",
+            "apad",
+            "atrim",
+            "anullsrc"
+          ],
+          "encoders": [
+            "libx264",
+            "aac"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 300
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/brand-layer/1.0.0",
+      "files": {
+        "README.md": "672bb5db4c7044d49c1fc3b7c06c13cbe9dd929fa3385f24f16895d96f56cf61",
+        "assets/fonts/Montserrat-Bold.ttf": "bc6e854971cea46b463be6f9eef4d9cd52f51cfc1fc0dd90c9d3e6483dc0ec61",
+        "part.json": "fc61bcc4f9610636df652278a74f9bc0bb8faf95b14cbe512dcb9ff1b22a0e7a",
+        "part.mjs": "783ff3b583ae13f2d8af778696601596cb7f858d097a19381e61fd9bd8b9536d"
+      },
+      "models": []
+    },
+    {
       "id": "captions-layer",
       "version": "1.0.0",
       "interface": 1,
