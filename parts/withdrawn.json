@@ -2,6 +2,51 @@
   "interface": 1,
   "withdrawn": [
     {
+      "id": "voice-elevenlabs",
+      "version": "1.0.0",
+      "reason": "Replaced by 1.0.1 before publishing: Shared library fixes: piece names stay unique when an id and a fallback collide, and the loudness meter no longer logs every frame."
+    },
+    {
+      "id": "music-elevenlabs",
+      "version": "1.0.0",
+      "reason": "Replaced by 1.0.1 before publishing: Shared library fixes: piece names stay unique when an id and a fallback collide, and the loudness meter no longer logs every frame."
+    },
+    {
+      "id": "sfx-elevenlabs",
+      "version": "1.0.0",
+      "reason": "Replaced by 1.0.1 before publishing: Shared library fixes: piece names stay unique when an id and a fallback collide, and the loudness meter no longer logs every frame."
+    },
+    {
+      "id": "image-nano-banana",
+      "version": "1.0.0",
+      "reason": "Replaced by 1.0.1 before publishing: Shared library fixes: piece names stay unique when an id and a fallback collide, and the loudness meter no longer logs every frame."
+    },
+    {
+      "id": "creator-h3",
+      "version": "1.0.0",
+      "reason": "Replaced by 1.0.1 before publishing: Shared library fixes: piece names stay unique when an id and a fallback collide, and the loudness meter no longer logs every frame."
+    },
+    {
+      "id": "video-seedance-2",
+      "version": "1.0.0",
+      "reason": "Replaced by 1.0.1 before publishing: Shared library fixes: piece names stay unique when an id and a fallback collide, and the loudness meter no longer logs every frame."
+    },
+    {
+      "id": "audio-mix",
+      "version": "1.0.0",
+      "reason": "Replaced by 1.0.1 before publishing: Shared library fixes: piece names stay unique when an id and a fallback collide, and the loudness meter no longer logs every frame."
+    },
+    {
+      "id": "assemble",
+      "version": "1.0.0",
+      "reason": "Replaced by 1.0.1 before publishing: Shared library fixes: piece names stay unique when an id and a fallback collide, and the loudness meter no longer logs every frame."
+    },
+    {
+      "id": "cut-footage",
+      "version": "1.0.0",
+      "reason": "Replaced by 1.0.1 before publishing: Shared library fixes: piece names stay unique when an id and a fallback collide, and the loudness meter no longer logs every frame."
+    },
+    {
       "id": "end-card",
       "version": "1.0.0",
       "reason": "Replaced by 1.0.1 before publishing: Shared library fixes: piece names stay unique when an id and a fallback collide, and the loudness meter no longer logs every frame."

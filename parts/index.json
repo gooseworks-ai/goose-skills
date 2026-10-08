@@ -49,6 +49,53 @@
       "models": []
     },
     {
+      "id": "assemble",
+      "version": "1.0.1",
+      "interface": 1,
+      "kind": "compose",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "fps",
+            "scale",
+            "crop",
+            "pad",
+            "setsar",
+            "tpad",
+            "trim",
+            "setpts",
+            "format",
+            "concat",
+            "aresample",
+            "aformat",
+            "apad",
+            "atrim",
+            "anullsrc"
+          ],
+          "encoders": [
+            "libx264",
+            "aac"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 500
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/assemble/1.0.1",
+      "files": {
+        "README.md": "e91e49abab04f6f3eab65d44f61a4148b827468462d4eb0cded8f7159ad24d92",
+        "part.json": "060e84d3d11b56b6840fc83b67d1225c106fbf393c22fa612c2cd425cb40b292",
+        "part.mjs": "8df6fde84fa14dbe4640cf4c2b03b959f1d6ace0b5bc9d52c904f819191a771b"
+      },
+      "models": []
+    },
+    {
       "id": "audio-mix",
       "version": "1.0.0",
       "interface": 1,
@@ -87,6 +134,48 @@
         "README.md": "e0fa1a0bb8498d61591829f5fde1838292039071f9157ef851e9e0d47b7b20b7",
         "part.json": "93f8684c97577219abd2a19206ef9540077942c582cb047e50022a7b455df344",
         "part.mjs": "2504d7677f6bc06b580ba71cf0cdf34a6a7ce8b06a0205577d24a79ac7a0518f"
+      },
+      "models": []
+    },
+    {
+      "id": "audio-mix",
+      "version": "1.0.1",
+      "interface": 1,
+      "kind": "mix",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "ebur128",
+            "sidechaincompress",
+            "amix",
+            "alimiter",
+            "adelay",
+            "afade",
+            "apad",
+            "atrim",
+            "aresample",
+            "aformat",
+            "asplit"
+          ],
+          "encoders": [
+            "aac"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 200
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/audio-mix/1.0.1",
+      "files": {
+        "README.md": "bc78784924c89ed1949cfc605968b0524841831203e45f79a2bc531de5b02aaa",
+        "part.json": "89c5e0fce0c7db6ef48f011f9e551b6a6b8aabd5213c2f34773a3e23602889bd",
+        "part.mjs": "e7813ebee0224f7711fac14ca27a78984c2d7f654fa67fa99f3f6b423e252418"
       },
       "models": []
     },
@@ -443,6 +532,75 @@
       ]
     },
     {
+      "id": "creator-h3",
+      "version": "1.0.1",
+      "interface": 1,
+      "kind": "generate_video",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "silencedetect",
+            "tpad",
+            "trim",
+            "setpts",
+            "fps",
+            "settb",
+            "setsar",
+            "format",
+            "xfade",
+            "concat",
+            "aresample",
+            "pan",
+            "aformat",
+            "adelay",
+            "apad",
+            "atrim",
+            "asetpts",
+            "acrossfade"
+          ],
+          "encoders": [
+            "libx264",
+            "aac",
+            "pcm_s16le"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "minimax/h3-max/reference-to-video"
+          }
+        ],
+        "disk_mb": 1500
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "second",
+        "measure": {
+          "from": "/max_seconds",
+          "as": "value"
+        },
+        "rates_usd": {
+          "minimax/h3-max/reference-to-video": 0.4
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/creator-h3/1.0.1",
+      "files": {
+        "README.md": "a6d7ed9564def8d2d582941868b9498f9a6759ce88268e5dfdcb9120d0942aa7",
+        "part.json": "89246f903c89ca5c083484343dab2aede8fabd24e217b06b71b2d42d938bc7b1",
+        "part.mjs": "104d515c1b34a7dd087d8991abc58ab0ba5cfb703b547cead3271e80eb5c442d"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "minimax/h3-max/reference-to-video"
+        }
+      ]
+    },
+    {
       "id": "cut-footage",
       "version": "1.0.0",
       "interface": 1,
@@ -483,6 +641,50 @@
         "README.md": "e81ecc950360f82da9abb6c4604251b09297c08211ddf4a6dfcc5ce9b40b2832",
         "part.json": "88c3721142b84f5563c5b4dd740f1a4d3750206cf9e66d54e92e910889092443",
         "part.mjs": "f5be77e9ffffa4bbac1908cb77cba34277388c8e3882fa01ca65c685b449cb67"
+      },
+      "models": []
+    },
+    {
+      "id": "cut-footage",
+      "version": "1.0.1",
+      "interface": 1,
+      "kind": "compose",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "setpts",
+            "fps",
+            "scale",
+            "crop",
+            "pad",
+            "setsar",
+            "tpad",
+            "trim",
+            "overlay",
+            "format",
+            "atempo",
+            "atrim"
+          ],
+          "encoders": [
+            "libx264",
+            "aac"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 300
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/cut-footage/1.0.1",
+      "files": {
+        "README.md": "fd685dbf4f55f34aa10d8f0f55f489796965d08a47199b217aacb070bc730084",
+        "part.json": "7e3e9e2404b7e2ce5fd4865ccf1b212e87ede4e22390ed738393363fe7a2e485",
+        "part.mjs": "09784b33d52f64cb01cbd6d25108175ceeef46bd0e98abb20e73cea8bd1acbed"
       },
       "models": []
     },
@@ -646,6 +848,63 @@
       ]
     },
     {
+      "id": "image-nano-banana",
+      "version": "1.0.1",
+      "interface": 1,
+      "kind": "generate_image",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "encoders": [
+            "png"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "fal-ai/nano-banana"
+          },
+          {
+            "provider": "fal",
+            "model": "fal-ai/nano-banana/edit"
+          }
+        ],
+        "disk_mb": 50
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "image",
+        "measure": {
+          "from": "/images/*",
+          "as": "count"
+        },
+        "rates_usd": {
+          "fal-ai/nano-banana": 0.039,
+          "fal-ai/nano-banana/edit": 0.039
+        },
+        "model_from": "/model"
+      },
+      "determinism": "provider",
+      "path": "parts/image-nano-banana/1.0.1",
+      "files": {
+        "README.md": "9b694be3d93a7afa24b45fe12e61fc4279726aac0b74172478a6aca23abc2519",
+        "part.json": "dd3489c9b3c8ec240b74999cec7a72dd3dd3121f36afc0858647b959a957abb0",
+        "part.mjs": "c109aefed69b284d2176007156f81123b9ec7c84101f61dcbc8e203248fb9190"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "fal-ai/nano-banana"
+        },
+        {
+          "provider": "fal",
+          "model": "fal-ai/nano-banana/edit"
+        }
+      ]
+    },
+    {
       "id": "music-elevenlabs",
       "version": "1.0.0",
       "interface": 1,
@@ -688,6 +947,57 @@
         "README.md": "463ff18cae1971a9fc3ec411f686fcafabb03c82c3ecdd2e2f3484ef31c9054d",
         "part.json": "1afae785c16da1296ce74ed656332445aa793da56f2b7a4c0d60725d5e6acd2c",
         "part.mjs": "7c883d6f0b015d18ac0323cf36c8e39272bf7acd3ace7f82f68af10212d5c5b2"
+      },
+      "models": [
+        {
+          "provider": "elevenlabs",
+          "model": "music_v1"
+        }
+      ]
+    },
+    {
+      "id": "music-elevenlabs",
+      "version": "1.0.1",
+      "interface": 1,
+      "kind": "generate_music",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "loudnorm",
+            "afade"
+          ],
+          "encoders": [
+            "aac"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "elevenlabs",
+            "model": "music_v1"
+          }
+        ],
+        "disk_mb": 30
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "second",
+        "measure": {
+          "from": "/seconds",
+          "as": "value"
+        },
+        "rates_usd": {
+          "music_v1": 0.0025
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/music-elevenlabs/1.0.1",
+      "files": {
+        "README.md": "4ecde3030ba13421774bf72f826733f1989ede58ae26fe5e1a95af01dd9df915",
+        "part.json": "3d2357782aaa2e39d8d0731953e0bf03702be878c0f5a0fc27635fb9712b7c4d",
+        "part.mjs": "028c5dee8800b72bb197a93ecc2c09898fc173e7dc6e6a39a9baa9afdc755152"
       },
       "models": [
         {
@@ -945,6 +1255,56 @@
       ]
     },
     {
+      "id": "sfx-elevenlabs",
+      "version": "1.0.1",
+      "interface": 1,
+      "kind": "generate_sfx",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "afade"
+          ],
+          "encoders": [
+            "aac"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "elevenlabs",
+            "model": "eleven_text_to_sound_v2"
+          }
+        ],
+        "disk_mb": 20
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "second",
+        "measure": {
+          "from": "/effects/*/seconds",
+          "as": "sum"
+        },
+        "rates_usd": {
+          "eleven_text_to_sound_v2": 0.01
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/sfx-elevenlabs/1.0.1",
+      "files": {
+        "README.md": "7a0021e6a852492aa2723a782f23a47d8414c97bdad87bc6d9a3d3b003e1701a",
+        "part.json": "a4415a3b4c5c8a421738599fff4493bb9106496b634f0ca1de114a25462b80f9",
+        "part.mjs": "77f3a6b71d1beca09c2f0d767428e8fc07e2ac3bc4b5e22504ea359d913bfa6b"
+      },
+      "models": [
+        {
+          "provider": "elevenlabs",
+          "model": "eleven_text_to_sound_v2"
+        }
+      ]
+    },
+    {
       "id": "sound-layer",
       "version": "1.0.0",
       "interface": 1,
@@ -1105,6 +1465,49 @@
       ]
     },
     {
+      "id": "video-seedance-2",
+      "version": "1.0.1",
+      "interface": 1,
+      "kind": "generate_video",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": true,
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "bytedance/seedance-2.0/reference-to-video"
+          }
+        ],
+        "disk_mb": 500
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "second",
+        "measure": {
+          "from": "/clips/*/seconds",
+          "as": "sum"
+        },
+        "rates_usd": {
+          "bytedance/seedance-2.0/reference-to-video": 0.68
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/video-seedance-2/1.0.1",
+      "files": {
+        "README.md": "80d4697c1c9f0ee17abf1e4bade9cc3c452202b76d54403f0b97d2de334e82e6",
+        "part.json": "8deaef32f0cba272eb759e49bb4e71ea66b973b4e3f949dc231df80324eed767",
+        "part.mjs": "bea5a478b4b2a442a3c0183f009208272adb902cb252d933d5df655a14c5e727"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "bytedance/seedance-2.0/reference-to-video"
+        }
+      ]
+    },
+    {
       "id": "voice-elevenlabs",
       "version": "1.0.0",
       "interface": 1,
@@ -1151,6 +1554,61 @@
         "README.md": "2d97a2934c5a97f87936990cb9af955eb8531ff6041acca5e76c479731caadbf",
         "part.json": "b17395463902a680d1d1e5391322a80d6db09d8d4d40e74cacbfec2e0e1a4914",
         "part.mjs": "0c0522cf41af96068114229f4ab6b7887586f1b8777f79c62a516f301706db40"
+      },
+      "models": [
+        {
+          "provider": "elevenlabs",
+          "model": "eleven_v3"
+        }
+      ]
+    },
+    {
+      "id": "voice-elevenlabs",
+      "version": "1.0.1",
+      "interface": 1,
+      "kind": "generate_voice",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "aresample",
+            "aformat",
+            "atrim",
+            "asetpts",
+            "apad",
+            "concat"
+          ],
+          "encoders": [
+            "aac"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "elevenlabs",
+            "model": "eleven_v3"
+          }
+        ],
+        "disk_mb": 50
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "1k_chars",
+        "measure": {
+          "from": "/scenes/*/line",
+          "as": "length"
+        },
+        "rates_usd": {
+          "eleven_v3": 0.1
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/voice-elevenlabs/1.0.1",
+      "files": {
+        "README.md": "f8e693497934c014d77406815d8415ab5f73b5257a148101192958840213d941",
+        "part.json": "eae90aa7f2fafaf583c247015c5adf99c69a99af2b593dd48573d334ef4b10a1",
+        "part.mjs": "819b4b396d02c0a5dfed96ce3b05da49f158ab362b75f1ca296992c2f13870e2"
       },
       "models": [
         {

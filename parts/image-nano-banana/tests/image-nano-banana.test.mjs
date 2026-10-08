@@ -3,10 +3,10 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { hasFfmpeg, loadPart, makeCtx } from '../../_tools/kit-harness.mjs';
+import { loadNewest, hasFfmpeg, loadPart, makeCtx } from '../../_tools/kit-harness.mjs';
 import { sample } from './fixture.mjs';
 
-const { dir, mod } = await loadPart('image-nano-banana', '1.0.0');
+const { dir, mod } = await loadNewest('image-nano-banana');
 const ffmpeg = await hasFfmpeg();
 const PNG = '89504e470d0a1a0a';
 

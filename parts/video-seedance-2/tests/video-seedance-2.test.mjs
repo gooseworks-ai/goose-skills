@@ -1,9 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { hasFfmpeg, loadPart, makeCtx } from '../../_tools/kit-harness.mjs';
+import { loadNewest, hasFfmpeg, loadPart, makeCtx } from '../../_tools/kit-harness.mjs';
 import { sample } from './fixture.mjs';
 
-const { dir, mod } = await loadPart('video-seedance-2', '1.0.0');
+const { dir, mod } = await loadNewest('video-seedance-2');
 const ffmpeg = await hasFfmpeg();
 
 test("sends the atom's payload with an integer duration and the references as files", { skip: !ffmpeg && 'ffmpeg is not installed' }, async () => {

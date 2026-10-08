@@ -1,9 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { join } from 'node:path';
-import { fileRef, hasFfmpeg, levelDb, loadPart, makeCtx, makeTone, makeVideo, probe } from '../../_tools/kit-harness.mjs';
+import { loadNewest, fileRef, hasFfmpeg, levelDb, loadPart, makeCtx, makeTone, makeVideo, probe } from '../../_tools/kit-harness.mjs';
 
-const { dir, mod } = await loadPart('audio-mix', '1.0.0');
+const { dir, mod } = await loadNewest('audio-mix');
 const ffmpeg = await hasFfmpeg();
 
 async function fixture(ctx) {

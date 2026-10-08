@@ -1,9 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { hasFfmpeg, loadPart, makeCtx } from '../../_tools/kit-harness.mjs';
+import { loadNewest, hasFfmpeg, loadPart, makeCtx } from '../../_tools/kit-harness.mjs';
 import { sample } from './fixture.mjs';
 
-const { dir, mod } = await loadPart('voice-elevenlabs', '1.0.0');
+const { dir, mod } = await loadNewest('voice-elevenlabs');
 const ffmpeg = await hasFfmpeg();
 
 test('orders one timestamped line per spoken scene, with the brand pronunciation swapped in', { skip: !ffmpeg && 'ffmpeg is not installed' }, async () => {
