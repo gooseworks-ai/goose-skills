@@ -7,6 +7,8 @@ const os = require('node:os');
 const path = require('node:path');
 const { git, commitAll, run } = require('./atom-checks.helpers');
 
+const CONTRACT = path.resolve(__dirname, '..', '..', 'parts', '_contract', 'part-manifest.schema.json');
+
 function manifestFor(id, version) {
   return {
     interface: 1,
@@ -42,6 +44,8 @@ function makePartsRepo() {
   git(root, 'config', 'user.email', 'fixture@example.com');
   git(root, 'config', 'user.name', 'Fixture');
   git(root, 'config', 'commit.gpgsign', 'false');
+  fs.mkdirSync(path.join(root, 'parts', '_contract'), { recursive: true });
+  fs.copyFileSync(CONTRACT, path.join(root, 'parts', '_contract', 'part-manifest.schema.json'));
   writePart(root, 'clip-join', '1.0.0');
   fs.mkdirSync(path.join(root, 'parts', 'clip-join', 'src'), { recursive: true });
   fs.writeFileSync(path.join(root, 'parts', 'clip-join', 'src', 'join.mjs'), '// v1\n');
@@ -152,5 +156,46 @@ test('registry files must keep their published shape', () => {
   const res = run('check-parts.js', root, []);
   assert.equal(res.code, 1, res.out);
   assert.match(res.out, /parts\/withdrawn\.json does not fit parts-withdrawn\.schema\.json/);
+});
+
+test('a check part must state its required outputs, so the verdict rule cannot be skipped', () => {
+  const { root } = makePartsRepo();
+  const check = {
+    ...manifestFor('clip-check', '1.0.0'),
+    kind: 'check',
+    outputs: { type: 'object', additionalProperties: false, properties: { verdict: { type: 'object' } } },
+  };
+  writePart(root, 'clip-check', '1.0.0', undefined, check);
+  run('build-parts-index.js', root, []);
+  const unstated = run('check-parts.js', root, []);
+  assert.equal(unstated.code, 1, unstated.out);
+  assert.match(unstated.out, /clip-check\/1\.0\.0\/part\.json does not fit the part manifest schema: \$\.outputs: required is required/);
+
+  writePart(root, 'clip-check', '1.0.0', undefined, { ...check, outputs: { ...check.outputs, required: ['verdict'] } });
+  assert.equal(run('build-parts-index.js', root, []).code, 0);
+  const stated = run('check-parts.js', root, []);
+  assert.equal(stated.code, 0, stated.out);
+});
+
+test('input and output schemas must be valid JSON Schemas themselves', () => {
+  const { root } = makePartsRepo();
+  const withInput = (prop) => ({
+    ...manifestFor('clip-join', '1.1.0'),
+    inputs: { type: 'object', additionalProperties: false, required: [], properties: { mood: prop } },
+  });
+  writePart(root, 'clip-join', '1.1.0', undefined, withInput({ type: 'invalid' }));
+  const badType = run('check-parts.js', root, []);
+  assert.equal(badType.code, 1, badType.out);
+  assert.match(badType.out, /inputs is not a valid JSON Schema: inputs\.properties\.mood\.type: must be a JSON type/);
+
+  writePart(root, 'clip-join', '1.1.0', undefined, withInput({ enum: false }));
+  const badEnum = run('check-parts.js', root, []);
+  assert.equal(badEnum.code, 1, badEnum.out);
+  assert.match(badEnum.out, /inputs\.properties\.mood\.enum: must be a list/);
+
+  writePart(root, 'clip-join', '1.1.0', undefined, withInput({ enum: ['calm', 'bright'] }));
+  assert.equal(run('build-parts-index.js', root, []).code, 0);
+  const fixed = run('check-parts.js', root, []);
+  assert.equal(fixed.code, 0, fixed.out);
 });
 

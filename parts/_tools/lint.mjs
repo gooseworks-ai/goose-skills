@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // The part lint (part-interface.md section 4, "Rules for parts"). It checks
 // every published version folder under parts/ and every part source:
-//   - part.json fits parts/_contract/part-manifest.schema.json, names its own
+//   - part.json fits parts/_contract/part-manifest.schema.json (its inputs and
+//     outputs are valid JSON Schemas themselves), names its own
 //     folder, lists exactly the files in the folder, and its cost basis points
 //     at real inputs and models;
 //   - JavaScript only: no Python, shell, packages or node_modules;
@@ -17,8 +18,13 @@
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { dirname, extname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
 import { kitSchemaErrors } from '../_lib/schema.mjs';
 import { buildIndex, versionFolders } from './index.mjs';
+
+// The input and output schemas must themselves be valid JSON Schemas (draft
+// 2020-12): the same declaration check scripts/build-parts-index.js runs.
+const { schemaProblems } = createRequire(import.meta.url)('../../scripts/lib/json-schema.js');
 
 const PARTS = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const LAYER_ORDER = ['brand', 'captions', 'sound', 'check'];
@@ -145,6 +151,9 @@ export function lintParts(partsRoot = PARTS) {
     }
     manifests.set(`${folder.id}@${folder.version}`, manifest);
     for (const e of kitSchemaErrors(schema, manifest, 'part.json')) add(partJson, 'manifest', e);
+    for (const side of ['inputs', 'outputs']) {
+      for (const e of schemaProblems(manifest[side], side)) add(partJson, 'manifest', `not a valid JSON Schema: ${e}`);
+    }
     for (const f of manifestRules(manifest)) add(partJson, f.rule, f.message);
     if (manifest.id !== folder.id) add(partJson, 'manifest', `id ${manifest.id} is not its folder ${folder.id}`);
     if (manifest.version !== folder.version) add(partJson, 'manifest', `version ${manifest.version} is not its folder ${folder.version}`);
