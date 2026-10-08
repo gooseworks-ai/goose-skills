@@ -189,6 +189,60 @@
       ]
     },
     {
+      "id": "check-layer",
+      "version": "1.0.0",
+      "interface": 1,
+      "kind": "check",
+      "layer": "check",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "ebur128",
+            "freezedetect",
+            "blackdetect",
+            "scale"
+          ],
+          "encoders": [
+            "aac"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "fal-ai/whisper"
+          }
+        ],
+        "disk_mb": 100
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "second",
+        "measure": {
+          "from": "/timeline/duration_s",
+          "as": "value"
+        },
+        "rates_usd": {
+          "fal-ai/whisper": 0.001
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/check-layer/1.0.0",
+      "files": {
+        "README.md": "4f74bf0e452d7c3dc71b3399f8ebcdb96b195b19b1e4dd8632d4f37f86f969d6",
+        "part.json": "5010e352efad5a7048ce1f7d933cb06fb796c421a660dac3d02ca6ed20458ee7",
+        "part.mjs": "67b0db41865a9686929aa40673f77eec3334cd68f27d927cfebacc6b97ba7c81"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "fal-ai/whisper"
+        }
+      ]
+    },
+    {
       "id": "end-card",
       "version": "1.0.0",
       "interface": 1,
