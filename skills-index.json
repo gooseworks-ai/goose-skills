@@ -1994,7 +1994,7 @@
       "description": "Generate or edit an image via any FAL image model (nano-banana edit, gpt-image, flux, ...), ROUTED THROUGH THE fal-proxy so it bills the Ads agent. image_urls must be public URLs (orchestrator hosts local product refs via MCP upload->presign). The recipe names the model + prompt. Use for keyframes, flat-cover transforms, product hero edits. (For the OpenAI gpt-image family specifically, create-image-gpt-image-fal also exists.)",
       "tags": "ads",
       "path": "skills/ads/capabilities/create-image-fal",
-      "version": "1.0.1",
+      "version": "1.1.0",
       "files": [
         "skills/ads/capabilities/create-image-fal/SKILL.md",
         "skills/ads/capabilities/create-image-fal/references/avatar-generation.md",
@@ -2007,7 +2007,7 @@
         "slug": "create-image-fal",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.0.1",
+        "version": "1.1.0",
         "tags": [
           "ads"
         ],
@@ -2032,7 +2032,7 @@
       "description": "Generate a single photoreal or designed image with OpenAI gpt-image via fal.ai. Supports gpt-image-1 (default, fixed sizes — the FAL fallback for Higgsfield's `gpt_image_2`) and gpt-image-2 (`openai/gpt-image-2`, custom output sizes up to 3840px). Routes to text-to-image or the edit variant depending on whether a reference image is provided. Use for photoreal character anchors, scene keyframes, and designed sheets (e.g. storyboards) where precise layout and legible text matter.",
       "tags": "ads, design",
       "path": "skills/ads/capabilities/create-image-gpt-image-fal",
-      "version": "1.0.2",
+      "version": "1.1.0",
       "files": [
         "skills/ads/capabilities/create-image-gpt-image-fal/SKILL.md",
         "skills/ads/capabilities/create-image-gpt-image-fal/scripts/fal_helpers.py",
@@ -2049,7 +2049,7 @@
         "slug": "create-image-gpt-image-fal",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.0.2",
+        "version": "1.1.0",
         "tags": [
           "ads",
           "design"
@@ -2186,7 +2186,7 @@
       "description": "Generate an instrumental music bed via ElevenLabs Music, ROUTED THROUGH THE elevenlabs-proxy so it bills the Ads agent. Trims any sparse intro, loudnorm, fades the tail. Prompt + length from the template recipe. Use for the music layer of any video-ad format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/create-music-elevenlabs",
-      "version": "1.0.1",
+      "version": "1.1.0",
       "files": [
         "skills/ads/capabilities/create-music-elevenlabs/SKILL.md",
         "skills/ads/capabilities/create-music-elevenlabs/scripts/gen_music.py",
@@ -2198,7 +2198,7 @@
         "slug": "create-music-elevenlabs",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.0.1",
+        "version": "1.1.0",
         "tags": [
           "ads"
         ],
@@ -2223,7 +2223,7 @@
       "description": "Image-to-video (or text-to-video) via any FAL video model (Kling, Seedance, Veo), ROUTED THROUGH THE GooseWorks fal-proxy so the call bills the Ads agent. The template recipe names the model + params; image_url inputs must be public URLs (the orchestrator hosts local frames with the MCP media_upload). Returns the result video URL and downloads it. Use for the generative base clip of any video-ad format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/create-video-fal",
-      "version": "1.0.1",
+      "version": "1.1.0",
       "files": [
         "skills/ads/capabilities/create-video-fal/SKILL.md",
         "skills/ads/capabilities/create-video-fal/scripts/gen_video.py",
@@ -2235,7 +2235,7 @@
         "slug": "create-video-fal",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.0.1",
+        "version": "1.1.0",
         "tags": [
           "ads"
         ],
@@ -2297,7 +2297,7 @@
       "description": "Generate a voiceover (VO) clip via ElevenLabs text-to-speech, ROUTED THROUGH THE elevenlabs-proxy so it bills the Ads agent. Voice id + script text come from the template recipe. Use for the spoken narration of VO-driven video-ad formats (cgi-app-sizzle, flat-vector-explainer, hypermotion). Never call ElevenLabs directly — the proxy attribution is required.",
       "tags": "ads",
       "path": "skills/ads/capabilities/create-vo-elevenlabs",
-      "version": "1.0.1",
+      "version": "1.1.0",
       "files": [
         "skills/ads/capabilities/create-vo-elevenlabs/SKILL.md",
         "skills/ads/capabilities/create-vo-elevenlabs/scripts/gen_vo.py",
@@ -2312,7 +2312,7 @@
         "slug": "create-vo-elevenlabs",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.0.1",
+        "version": "1.1.0",
         "tags": [
           "ads"
         ],
@@ -8625,7 +8625,7 @@
     {
       "slug": "stitch-videos-ffmpeg",
       "name": "stitch-videos-ffmpeg",
-      "version": "1.1.1",
+      "version": "1.2.0",
       "category": "capabilities",
       "domain": "ads",
       "description": "Stitch video segments with ffmpeg concat, xfade, overlay, audio mux, and export settings. Ships montage.py, a free montage assembler (python3 + ffmpeg, no keys). It takes a JSON EDL of clips and stills, normalizes them and hard-cuts them in order, burns captions from an SRT, a cue list or word timings, and lays a VO over a music bed that ducks under it, mastered to -14 LUFS.",
@@ -8651,7 +8651,7 @@
         "slug": "stitch-videos-ffmpeg",
         "category": "capabilities",
         "pack": "video-ad-formats",
-        "version": "1.1.1",
+        "version": "1.2.0",
         "tags": [
           "ads"
         ],
@@ -9480,7 +9480,7 @@
     {
       "slug": "watch",
       "name": "watch",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "category": "capabilities",
       "domain": "ads",
       "description": "Watch a rendered video (whole file or specific ranges) at a chosen fidelity and emit a timestamp-keyed observation report. Observation only — no edits, no verdicts.",
@@ -9500,7 +9500,7 @@
         "slug": "watch",
         "category": "capabilities",
         "pack": "video-ad-formats",
-        "version": "1.0.0",
+        "version": "1.1.0",
         "tags": [
           "ads"
         ],
@@ -9931,7 +9931,9 @@
       "version": "1.0.2",
       "files": [
         "skills/ads/capabilities/write-video-ad-script/SKILL.md",
+        "skills/ads/capabilities/write-video-ad-script/references/angle-research.md",
         "skills/ads/capabilities/write-video-ad-script/references/buyer-and-mechanism.md",
+        "skills/ads/capabilities/write-video-ad-script/references/creative-brief.md",
         "skills/ads/capabilities/write-video-ad-script/references/dialogue-writing.md",
         "skills/ads/capabilities/write-video-ad-script/references/files.md",
         "skills/ads/capabilities/write-video-ad-script/references/hook-families.md",
@@ -9939,6 +9941,7 @@
         "skills/ads/capabilities/write-video-ad-script/references/judge-contract.md",
         "skills/ads/capabilities/write-video-ad-script/references/pacing.md",
         "skills/ads/capabilities/write-video-ad-script/references/scene-and-hook.md",
+        "skills/ads/capabilities/write-video-ad-script/references/validate-and-repair.md",
         "skills/ads/capabilities/write-video-ad-script/scripts/critique_scripts.py",
         "skills/ads/capabilities/write-video-ad-script/scripts/lint_scripts.py",
         "skills/ads/capabilities/write-video-ad-script/scripts/media_proxy.py",
@@ -10398,7 +10401,7 @@
           "name": "stitch-videos-ffmpeg",
           "description": "Stitch video segments with ffmpeg concat, xfade, overlay, audio mux, and export settings. Ships montage.py, a free montage assembler (python3 + ffmpeg, no keys). It takes a JSON EDL of clips and stills, normalizes them and hard-cuts them in order, burns captions from an SRT, a cue list or word timings, and lays a VO over a music bed that ducks under it, mastered to -14 LUFS.",
           "path": "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg",
-          "version": "1.1.1",
+          "version": "1.2.0",
           "files": [
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/SKILL.md",
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/composite.py",
@@ -10434,7 +10437,7 @@
           "name": "watch",
           "description": "Watch a rendered video (whole file or specific ranges) at a chosen fidelity and emit a timestamp-keyed observation report. Observation only — no edits, no verdicts.",
           "path": "skills/ads/packs/video-ad-formats/watch",
-          "version": "1.0.0",
+          "version": "1.1.0",
           "files": [
             "skills/ads/packs/video-ad-formats/watch/SKILL.md",
             "skills/ads/packs/video-ad-formats/watch/references/parameters.md",

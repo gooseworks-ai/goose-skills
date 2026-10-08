@@ -23,3 +23,37 @@ A provider likeness/policy rejection stops the attempt. Preserve the provider's 
 Before generation, write a scene checklist from the brief: each wearable's exact count and body location; which hand holds each object; allowed gestures; object contacts and movement; cast identities and reference ownership. Keep unnecessary hands still, use one simple action per shot, and review the whole generated take against the checklist. A prompt is prevention, not proof: reject extra/missing products, impossible contacts or identity drift.
 
 For multiple characters, compare a shared scene with pinned references, fewer people per shot, and separately generated/composed plates. The first preserves interaction but risks identity drift; separate plates improve control but add composition work and may weaken interaction. Lock an approved reference per person and map who speaks each line. No six-character/two-attempt guarantee is supported. A future paid benchmark must state cast size, attempts, budget, model/settings and pass criteria (identity, speaker, counts, gestures and complete dialogue) and retain every failure.
+
+## Model notes
+
+How the video models behave, measured on shipped projects. Each note lives here once; recipes
+point here instead of repeating it. Seedance and the talking-creator models keep their notes in
+their own atoms.
+
+- **Veo 3.1 reads states as stills.** "Legs in jeans on a wet curb" gives a near-static clip. Name
+  actions with verbs (steps off, pivots, taps) when the clip has to move.
+- **Veo 3.1 keeps the start image's composition** (angle, distance, what is cropped) for the whole
+  clip. The start image is the framing, not just a reference.
+- **Veo 3.1 takes 4, 6 or 8 seconds only.** It paces speech to fill the length, so ask for about 6
+  rather than 8 and keep the tail short; defects live in the tail. Handheld motion and a music bed
+  are luck per seed, so plan several seeds for a shot that needs them.
+- **Veo 3.1 Fast ad-libs words** and, from about 4 seconds, the eyes can widen and stare. Ask for 4
+  seconds for a one-line clip.
+- **Kling v3 for flat 2D or editorial illustration:** at `cfg_scale` 0.5 or lower, with motion-only
+  prompts, it adds on-style motion where Seedance and Veo invent photoreal middle states.
+- **Kling v3 holds one state per clip.** Staged "first, then, finally" prompts change only in the
+  last half-second, and a neutral face drifts to a smile and then to mouthing words. Ask for one
+  state per clip and build the arc in the edit.
+- **Kling v3 standard returns 2:3** (784x1176) when asked for 9:16. Check the returned size and give
+  the start image side margin when Kling is the engine.
+- **Hard constraints need saying three ways** (image and video). A single "no face" holds about
+  half the time. State it as a positive rule near the top, a negation in the middle and a scope
+  rule at the end.
+- **Failures:** an NSFW false positive needs the visual trigger words removed; a timeout with no
+  detail gets one unchanged retry, then a simpler prompt; a rate limit means wait. A policy
+  refusal is final (above).
+- **Realism comes from real pixels.** Prompted "grainy, shot on a phone" still reads as generated.
+  When a shot must look filmed, restyle real footage, and narrow what the model invents: a blank
+  glowing screen generates well, a legible interface does not, so composite the real UI in.
+- **Change over a long period cannot be generated.** A shot defined by change longer than one clip
+  (screens changing through a work session) needs real footage; the model renders one moment.

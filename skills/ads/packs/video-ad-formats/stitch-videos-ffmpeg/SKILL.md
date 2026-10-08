@@ -1,7 +1,7 @@
 ---
 name: stitch-videos-ffmpeg
 description: Stitch video segments with ffmpeg concat, xfade, overlay, audio mux, and export settings. Ships montage.py, a free montage assembler (python3 + ffmpeg, no keys). It takes a JSON EDL of clips and stills, normalizes them and hard-cuts them in order, burns captions from an SRT, a cue list or word timings, and lays a VO over a music bed that ducks under it, mastered to -14 LUFS.
-version: "1.1.1"
+version: "1.2.0"
 updated: 2026-10-06
 ---
 
@@ -157,6 +157,29 @@ python3 -m pytest -q skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/test
 - `mix-master` remains the multi-clip VO + SFX mix. A `montage.py` master is already at
   -14 LUFS, so a later -14 LUFS finishing pass barely changes it.
 - `caption-burn` remains the place for plate, seam and hook-card caption styles.
+
+## FFmpeg notes
+
+Measured traps when joining and finishing. Each lives here once.
+
+- **Joined generated clips drift in colour** at every cut, even from one prompt. Apply one
+  harmonising grade over the whole joined video; `eq=contrast=1.05:saturation=0.95,colorbalance=bs=0.05:bm=-0.02`
+  is a starting point.
+- **A still PNG overlay with a fade does nothing** unless the input is looped:
+  `-loop 1 -framerate 30 -t <length>` before that `-i`. The build reports no error.
+- **ffmpeg 9 removed `-vsync`.** The old flag fails the whole command; use `-fps_mode`, or drop it
+  (`-update 1` alone overwrites frame by frame).
+- **`-ss` before `-i` seeks to a keyframe.** Any measurement a decision depends on puts `-ss` after
+  `-i` or decodes the range.
+- **`crop` rounds offsets to whole pixels,** so a gentle sine move becomes a still with one-pixel
+  snaps. Scale up 4x, crop, scale back. Judge motion on the median, not the p90.
+- **`select` then `tile` takes consecutive frames.** Seek with `-ss` before the input, then
+  `fps=N`, then `tile`.
+- **A trailing comma in `filter_complex` fails the build silently** behind a captured subprocess,
+  and an older render on disk then passes the checks. Strip trailing commas and read the build's
+  own exit status.
+- **Generated video is already sharp.** A finishing sharpen adds the artefact it means to hide;
+  keep unsharp near 0.12 with no grain, and measure before assuming footage is soft.
 
 ## Inputs
 

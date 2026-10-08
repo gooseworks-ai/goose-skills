@@ -102,6 +102,18 @@ The script:
 | Anchor reference ignored | `/text-to-image` variant doesn't accept refs | Pass `--ref-image` to force the `/edit` variant. |
 | Skin / face looks "AI-stock" | gpt-image's failure mode | Add anti-AI cues to the prompt: "natural skin texture with pores, slight asymmetry, no perfect teeth". |
 
+## Model notes
+
+- **Product lettering.** `openai/gpt-image-2/edit` off a real product photo keeps proportions and exact
+  lettering far better than nano-banana, so use it for product-hero frames. Cheaper and pixel-exact:
+  cut the real photo out and composite it instead of redrawing the product.
+- **`/edit` can ignore the aspect ratio** and return a 1024x1024 square; center-cropping that to 9:16
+  chops the subject. Pass `--image-size` (gpt-image-2) or verify the returned size before using it.
+- **No contact shadow under a soft key on a bright seamless floor.** That is physically right for the
+  lighting, so re-prompting cannot fix it: ask for a harder key from a steeper angle, a floor several
+  stops darker than the wall, or composite the shadow afterwards.
+- **Safe zones:** see create-image-fal; it holds the notes that apply to every image model.
+
 ## Cross-provider parity note
 
 When this atom generates a character anchor (lock-character Phase 0), the anchor approved here MUST be pinned for all downstream angle gens, and the **same `--model`** must be used for those angle gens. Mixing model families (or mixing FAL-gpt-image with Higgsfield-gpt_image_2) introduces aesthetic drift. The orchestrator's `generate_with_fallback.py` inherits `gateway`/`model_family` from the anchor's `.meta.json` for subsequent calls.
