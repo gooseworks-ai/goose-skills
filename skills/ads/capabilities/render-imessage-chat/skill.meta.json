@@ -2,6 +2,7 @@
   "slug": "render-imessage-chat",
   "category": "capabilities",
   "domain": "ads",
+  "version": "2.0.0",
   "tags": [
     "ads"
   ],

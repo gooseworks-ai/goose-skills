@@ -1,8 +1,11 @@
 ---
 name: render-imessage-cascade
 description: Assemble an iMessage notification-cascade video ad (≈14s, 9:16) from a plate of a phone lying face-up (setting chosen by the user) + 3–5 messages — authentic Apple Messages banners composited in PIL (SF Pro text, green Messages icon, warm translucent-greige fill, soft shadow) spring in one-by-one at the BOTTOM and push the stack UP, a right-aligned Show-less/X pill rides above, the X clears the stack, then a serif end card resolves. FREE assembly (PIL + ffmpeg); the recipe supplies the per-brand plate, notifications, and end-card config and gates the paid plate-clean/music calls to their own capabilities. Use for the imessage-notification-cascade format.
-status: active
+status: superseded
+superseded_by: phone-chat@1.0.0
 ---
+
+> **Superseded:** the video kit now does this with the phone-chat part, version 1.0.0, in the parts folder of this repository. Every phone-chat style is a style file that draws the same screen frame by frame from the plan's scenes, with the original sounds, in the kit's browser. This atom stays, unchanged in behaviour, for skills outside the kit until they move; its scripts still run.
 
 # render-imessage-cascade
 
