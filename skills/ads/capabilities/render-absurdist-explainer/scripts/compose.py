@@ -16,9 +16,9 @@ it renders the master mp4:
      demuxer never silently drops frames on a framerate mismatch.
   2. End card         — the pre-built endcard.png (real product composite, see
      build_endcard.py) is held STATIC over its dwell window and appended as the final
-     scene. (Set end_card.zoom_to above 1.0 for a slow zoom instead; the default is none.) If the config sets end_card.vo, that spoken line is
-     laid at the start of the end-card window and the dwell is stretched to at least the
-     line's duration + 0.5s.
+     scene. Set end_card.zoom_to above 1.0 for a slow zoom instead; the default is none.
+     If the config sets end_card.vo, that spoken line is laid at the start of the
+     end-card window and the dwell is stretched to at least the line's duration + 0.5s.
   3. Concat           — all segments concatenated via the concat demuxer (-c copy).
   4. VO track         — each VO cue is (optionally) atempo-compressed, padded, clamped to
      its window, and concatenated into one wav.
