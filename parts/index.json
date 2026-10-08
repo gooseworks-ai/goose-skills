@@ -415,8 +415,8 @@
       "determinism": "pure",
       "path": "parts/html-frames/1.0.0",
       "files": {
-        "part.json": "74a805d54808c92d0c7973b601f3b0c2c8fce0a355d20702e8288ab3583aa284",
-        "part.mjs": "6fdce7e8ec92dd6d36ea33d907153db71662b5e457366570dc49ba39809d89c3"
+        "part.json": "1c0021327e64633f658e4c3f557a8b544959ed0ac630adc98528f177da390215",
+        "part.mjs": "ef1fed836682aa9247817cb4e2ff53e2196593639f42a2b5ac0919514067f073"
       },
       "models": []
     },

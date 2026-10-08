@@ -47,7 +47,7 @@
         "items": { "type": "object", "x-kit-file": { "media": "font" } }
       },
       "scenes": {
-        "description": "plan.scenes, in order. The scenes share the video evenly; kit.scenes carries each one's start_s and end_s.",
+        "description": "plan.scenes, in order. The scenes share the video evenly; kit.scenes carries each one's start_s and end_s, and picture and image as URLs when they are files.",
         "type": "array",
         "minItems": 1,
         "maxItems": 30,
@@ -63,6 +63,10 @@
                 { "type": "string", "maxLength": 2000 },
                 { "type": "object", "x-kit-file": { "media": "image" } }
               ]
+            },
+            "image": {
+              "description": "A picture the customer uploaded for this scene, as kit.scenes[i].image (a URL the page can load).",
+              "anyOf": [{ "type": "null" }, { "type": "object", "x-kit-file": { "media": "image" } }]
             }
           }
         }

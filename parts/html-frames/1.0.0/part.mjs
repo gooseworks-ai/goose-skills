@@ -144,7 +144,8 @@ function scenesOf(value, maxWords, fail) {
     let picture = null;
     if (isFileRef(raw.picture)) picture = fileOf(raw.picture, `${at}.picture`, ["image"], fail);
     else picture = optionalText(raw.picture, `${at}.picture`, fail);
-    return { id, index, line, on_screen: onScreen, picture };
+    const image = raw.image === void 0 || raw.image === null ? null : fileOf(raw.image, `${at}.image`, ["image"], fail);
+    return { id, index, line, on_screen: onScreen, picture, image };
   });
 }
 function productsOf(value, fail) {
@@ -881,12 +882,14 @@ async function buildPage(spec, dir, ctx) {
   const scenes = [];
   for (const scene of spec.scenes) {
     const picture = scene.picture && typeof scene.picture === "object" ? await media(scene.picture) : scene.picture;
+    const image = scene.image ? await media(scene.image) : null;
     scenes.push({
       id: scene.id,
       index: scene.index,
       line: scene.line,
       on_screen: scene.on_screen,
       picture,
+      image,
       start_s: spec.sceneFrames[scene.index] / spec.fps,
       end_s: spec.sceneFrames[scene.index + 1] / spec.fps
     });
