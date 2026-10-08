@@ -2,6 +2,11 @@
   "interface": 1,
   "withdrawn": [
     {
+      "id": "captions-layer",
+      "version": "1.0.0",
+      "reason": "Replaced by 1.1.0 before publishing: The caption font is loaded before captions are measured and wide captions are resized, never overflowing the band; the price is per call."
+    },
+    {
       "id": "check-layer",
       "version": "1.0.0",
       "reason": "Replaced by 1.1.0 before publishing: Free: on-camera speech is checked from the transcript a transcribe step puts in the timeline; an unmarked end card the style needs fails; logo_visible is checked on its own; a declared logo zone bounds the match."

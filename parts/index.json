@@ -189,6 +189,57 @@
       ]
     },
     {
+      "id": "captions-layer",
+      "version": "1.1.0",
+      "interface": 1,
+      "kind": "caption",
+      "layer": "captions",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": true,
+        "ffmpeg": {
+          "filters": [
+            "fps",
+            "format",
+            "overlay"
+          ],
+          "encoders": [
+            "libx264",
+            "aac"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "fal-ai/whisper"
+          }
+        ],
+        "disk_mb": 400
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "call",
+        "rates_usd": {
+          "fal-ai/whisper": 0.02
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/captions-layer/1.1.0",
+      "files": {
+        "README.md": "00a3f84c3654f8525bb0d175f37dd5e85751eea27b8f5ba8ff865c044b28000c",
+        "assets/fonts/Montserrat-Bold.ttf": "bc6e854971cea46b463be6f9eef4d9cd52f51cfc1fc0dd90c9d3e6483dc0ec61",
+        "part.json": "e88322c16eac589d0baf2f4a94ce3c231e93e6f16fc1b2abb0628a12f42b6926",
+        "part.mjs": "512f7b059ad34c821321ff994120ac009d8a1f3428ae4b75208e6a02e02877b7"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "fal-ai/whisper"
+        }
+      ]
+    },
+    {
       "id": "check-layer",
       "version": "1.0.0",
       "interface": 1,
