@@ -14,7 +14,7 @@ test('orders the first take alone, hands its voice to the rest, and joins them i
   const out = await mod.run(await sample.inputs(ctx.workDir), ctx);
   assert.ok(orders.length >= 2, `${orders.length} takes`);
   for (const o of orders) {
-    assert.equal(o.path, '/minimax/h3-max/reference-to-video');
+    assert.equal(o.path, 'minimax/h3-max/reference-to-video', 'the path is the listed model, verbatim');
     assert.equal(o.body.prompt_expansion_mode, 'disabled', 'dialogue stays verbatim');
     assert.equal(o.body.reference_image_urls[0].kind, 'file', 'the still goes to the core as a file');
     assert.ok(o.body.duration >= 5 && o.body.duration <= 15);

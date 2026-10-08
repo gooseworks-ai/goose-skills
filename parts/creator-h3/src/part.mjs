@@ -165,7 +165,7 @@ export async function run(inputs, ctx) {
     };
     if (inputs.mannerism) body.reference_video_urls = [inputs.mannerism];
     if (voice) body.reference_audio_urls = [voice];
-    const result = await ctx.line.order({ piece, provider: 'fal', path: `/${MODEL}`, body, results: [{ pointer: '/json/video/url', name: `${t.id}.mp4`, media: 'video' }] });
+    const result = await ctx.line.order({ piece, provider: 'fal', path: MODEL, body, results: [{ pointer: '/json/video/url', name: `${t.id}.mp4`, media: 'video' }] });
     const file = result.files[`${t.id}.mp4`];
     if (!file) throw ctx.error('provider_failed', `no video for ${piece}`);
     const info = await ctx.tools.probe(file.path);

@@ -35,7 +35,7 @@ export async function run(inputs, ctx) {
     const result = await ctx.line.order({
       piece,
       provider: 'fal',
-      path: `/${model}`,
+      path: model === EDIT ? EDIT : TEXT,
       body,
       results: [{ pointer: '/json/images/0/url', name: `${piece}-raw.png`, media: 'image' }],
     });

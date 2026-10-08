@@ -18,7 +18,7 @@ test('edits each still from its reference files and always hands back PNG', { sk
   assert.equal(orders.length, 2);
   for (const o of orders) {
     assert.equal(o.provider, 'fal');
-    assert.equal(o.path, '/fal-ai/nano-banana/edit');
+    assert.equal(o.path, 'fal-ai/nano-banana/edit');
     assert.equal(o.body.image_urls[0].kind, 'file', 'references go to the core as files, never links');
     assert.equal(o.body.aspect_ratio, '9:16');
   }

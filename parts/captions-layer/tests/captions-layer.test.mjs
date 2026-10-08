@@ -44,7 +44,7 @@ test('with no word timings it transcribes the cut and keeps the written words', 
   const { ctx, orders } = makeCtx({ partDir: dir, line: sample.line });
   const out = await mod.run(await sample.inputs(ctx.workDir), ctx);
   assert.equal(orders.length, 1);
-  assert.equal(orders[0].path, '/fal-ai/whisper');
+  assert.equal(orders[0].path, 'fal-ai/whisper');
   assert.equal(orders[0].body.audio_url.kind, 'file', 'the audio goes to the core as a file');
   const cues = cuesOf(readFileSync(out.captions.path, 'utf8'));
   assert.deepEqual(cues.map((c) => c.text).join(' '), 'Meet two hundred happy customers');

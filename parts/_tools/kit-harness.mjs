@@ -271,7 +271,7 @@ export async function loadPart(id, version) {
 
 /** The model a piece order names: the fal model path, or ElevenLabs' body.model_id. */
 export function orderedModel(order) {
-  if (order.provider === 'fal') return order.path.replace(/^\/+/, '');
+  if (order.provider === 'fal') return order.path;
   if (order.provider === 'elevenlabs') return order.body && order.body.model_id;
   return undefined;
 }

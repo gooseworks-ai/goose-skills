@@ -27,7 +27,7 @@ export async function run(inputs, ctx) {
       generate_audio: clip.generate_audio ?? inputs.generate_audio ?? true,
       seed: ctx.seed(piece) % 2147483647,
     };
-    const result = await ctx.line.order({ piece, provider: 'fal', path: `/${MODEL}`, body, results: [{ pointer: '/json/video/url', name: `${piece}.mp4`, media: 'video' }] });
+    const result = await ctx.line.order({ piece, provider: 'fal', path: MODEL, body, results: [{ pointer: '/json/video/url', name: `${piece}.mp4`, media: 'video' }] });
     const file = result.files[`${piece}.mp4`];
     if (!file) throw ctx.error('provider_failed', `no video for ${piece}`);
     if (body.generate_audio) {

@@ -11,7 +11,7 @@ test("sends the atom's payload with an integer duration and the references as fi
   const out = await mod.run(await sample.inputs(ctx.workDir), ctx);
   assert.equal(orders.length, 1);
   const { path, body } = orders[0];
-  assert.equal(path, '/bytedance/seedance-2.0/reference-to-video');
+  assert.equal(path, 'bytedance/seedance-2.0/reference-to-video');
   assert.deepEqual(Object.keys(body).sort(), ['aspect_ratio', 'duration', 'generate_audio', 'image_urls', 'prompt', 'resolution', 'seed']);
   assert.equal(body.duration, 5);
   assert.ok(Number.isInteger(body.duration), 'a string duration is refused by the model');
