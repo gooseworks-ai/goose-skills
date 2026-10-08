@@ -1,12 +1,12 @@
 ---
 name: create-image-fal
-description: Generate or edit an image via any FAL image model (nano-banana edit, gpt-image, flux, ...), ROUTED THROUGH THE fal-proxy so it bills the Ads agent. image_urls must be public URLs (orchestrator hosts local product refs via MCP upload->presign). The recipe names the model + prompt. Use for keyframes, flat-cover transforms, product hero edits. (For the OpenAI gpt-image family specifically, create-image-gpt-image-fal also exists.)
+description: Generate or edit an image via any FAL image model (nano-banana edit, gpt-image, flux, ...), ROUTED THROUGH THE fal-proxy so it bills the Ads agent. image_urls must be public URLs; --image puts a local file on the fal CDN first. The recipe names the model + prompt. Use for keyframes, flat-cover transforms, product hero edits. (For the OpenAI gpt-image family specifically, create-image-gpt-image-fal also exists.)
 status: active
 ---
 
 # create-image-fal
 
-Generate or edit an image via any FAL image model (nano-banana edit, gpt-image, flux, ...), ROUTED THROUGH THE fal-proxy so it bills the Ads agent. image_urls must be public URLs (orchestrator hosts local product refs via MCP upload->presign). The recipe names the model + prompt. Use for keyframes, flat-cover transforms, product hero edits. (For the OpenAI gpt-image family specifically, create-image-gpt-image-fal also exists.)
+Generate or edit an image via any FAL image model (nano-banana edit, gpt-image, flux, ...), ROUTED THROUGH THE fal-proxy so it bills the Ads agent. image_urls must be public URLs; --image puts a local file on the fal CDN first. The recipe names the model + prompt. Use for keyframes, flat-cover transforms, product hero edits. (For the OpenAI gpt-image family specifically, create-image-gpt-image-fal also exists.)
 
 ## Run
 gen_image.py --model fal-ai/nano-banana/edit --payload '{...}' --out keyframe.png — bills the agent; returns the *.fal.media URL.
@@ -15,6 +15,31 @@ gen_image.py --model fal-ai/nano-banana/edit --payload '{...}' --out keyframe.pn
 - Paid calls route through the GooseWorks proxies (bills the Ads agent) via the
   bundled `media_proxy.py` — never a provider SDK's default host.
 - The template recipe (DB) supplies the model + params; this capability is generic.
+
+## Edit an image (Nano Banana edit)
+
+`fal-ai/nano-banana/edit` is the default editor for a prompt-driven edit: a restage or scene swap,
+a subject swap in the same pose, a product placed into a scene. It keeps subject geometry, the room
+and the light. Use create-image-gpt-image-fal instead when lettering is the point of the edit
+(logos, wordmarks, signage) or for a transparent cutout. Small text inside the source can come back
+mangled with either model; check it.
+
+```bash
+gen_image.py --model fal-ai/nano-banana/edit --image product.png --image https://.../scene.jpg \
+    --payload '{"prompt": "Put the bottle on the counter; keep everything else unchanged", "aspect_ratio": "9:16"}' \
+    --out edit.png
+```
+
+- `--image` is repeatable and keeps its order; a public url passes through, a local file is put on
+  the fal CDN through the GooseWorks storage proxy (free). Urls already in the payload's
+  `image_urls` come first.
+- Payload: `prompt` (required); `aspect_ratio` `auto` (the input's), `21:9`, `16:9`, `3:2`, `4:3`,
+  `5:4`, `1:1`, `4:5`, `3:4`, `2:3` or `9:16`; `output_format` `png`, `jpeg` or `webp`; `seed`. The
+  script saves the first image, so leave `num_images` at 1.
+- There is no mask. For a region-locked edit, say "keep everything else unchanged" in the prompt.
+- Keep the long edge of each input at about 2048 px or less.
+- Check the result: it decodes, its size matches the asked aspect, and no watermark, garbled text
+  or extra fingers appear.
 
 ## Creator references
 

@@ -1991,10 +1991,10 @@
       "name": "create-image-fal",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Generate or edit an image via any FAL image model (nano-banana edit, gpt-image, flux, ...), ROUTED THROUGH THE fal-proxy so it bills the Ads agent. image_urls must be public URLs (orchestrator hosts local product refs via MCP upload->presign). The recipe names the model + prompt. Use for keyframes, flat-cover transforms, product hero edits. (For the OpenAI gpt-image family specifically, create-image-gpt-image-fal also exists.)",
+      "description": "Generate or edit an image via any FAL image model (nano-banana edit, gpt-image, flux, ...), ROUTED THROUGH THE fal-proxy so it bills the Ads agent. image_urls must be public URLs; --image puts a local file on the fal CDN first. The recipe names the model + prompt. Use for keyframes, flat-cover transforms, product hero edits. (For the OpenAI gpt-image family specifically, create-image-gpt-image-fal also exists.)",
       "tags": "ads",
       "path": "skills/ads/capabilities/create-image-fal",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "files": [
         "skills/ads/capabilities/create-image-fal/SKILL.md",
         "skills/ads/capabilities/create-image-fal/references/avatar-generation.md",
@@ -2007,7 +2007,7 @@
         "slug": "create-image-fal",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.1.0",
+        "version": "1.2.0",
         "tags": [
           "ads"
         ],
@@ -8638,6 +8638,7 @@
         "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/composite_final.sh",
         "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/montage.py",
         "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/normalize_clip.sh",
+        "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/trim_clips.py",
         "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/voiceless/composite.py",
         "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/skill.meta.json",
         "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/expected-output.md",
@@ -8645,6 +8646,7 @@
         "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/sample-input.md",
         "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/smoke-test.md",
         "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/test_stitch_montage.py",
+        "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/test_trim_clips.py",
         "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/verifier.md"
       ],
       "metadata": {
@@ -10409,6 +10411,7 @@
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/composite_final.sh",
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/montage.py",
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/normalize_clip.sh",
+            "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/trim_clips.py",
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/voiceless/composite.py",
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/skill.meta.json",
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/expected-output.md",
@@ -10416,6 +10419,7 @@
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/sample-input.md",
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/smoke-test.md",
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/test_stitch_montage.py",
+            "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/test_trim_clips.py",
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/verifier.md"
           ],
           "source": "pack"
