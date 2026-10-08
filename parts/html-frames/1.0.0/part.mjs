@@ -82,6 +82,267 @@ function pngSize(data) {
   return { width: view.getUint32(16), height: view.getUint32(20) };
 }
 
+// src/kit/core/canonical.ts
+function isFileRef(value) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return false;
+  const v = value;
+  return v.kind === "file" && typeof v.sha256 === "string" && typeof v.media === "string" && typeof v.path === "string";
+}
+
+// src/kit/core/schema.ts
+var NOTES = /* @__PURE__ */ new Set(["$schema", "$id", "$comment", "title", "description", "default", "examples", "deprecated", "readOnly", "writeOnly", "format", "$defs", "definitions", "contentMediaType"]);
+var CHECKED = /* @__PURE__ */ new Set([
+  "type",
+  "enum",
+  "const",
+  "properties",
+  "required",
+  "additionalProperties",
+  "items",
+  "minItems",
+  "maxItems",
+  "uniqueItems",
+  "minLength",
+  "maxLength",
+  "pattern",
+  "minimum",
+  "maximum",
+  "exclusiveMinimum",
+  "exclusiveMaximum",
+  "multipleOf",
+  "anyOf",
+  "oneOf",
+  "allOf",
+  "not",
+  "$ref",
+  "minProperties",
+  "maxProperties",
+  "x-kit-file"
+]);
+function typeOf(value) {
+  if (value === null) return "null";
+  if (Array.isArray(value)) return "array";
+  if (typeof value === "number") return Number.isInteger(value) ? "integer" : "number";
+  return typeof value;
+}
+function typeMatches(value, type) {
+  const actual = typeOf(value);
+  return actual === type || type === "number" && actual === "integer";
+}
+function equal(a, b) {
+  return JSON.stringify(a) === JSON.stringify(b);
+}
+function resolveRef(root, ref) {
+  if (!ref.startsWith("#/")) throw new Error(`a schema $ref outside the part (${ref})`);
+  let node = root;
+  for (const raw of ref.slice(2).split("/")) {
+    const key = raw.replace(/~1/g, "/").replace(/~0/g, "~");
+    node = node && typeof node === "object" ? node[key] : void 0;
+  }
+  if (!node || typeof node !== "object") throw new Error(`a schema $ref that points nowhere (${ref})`);
+  return node;
+}
+function check(root, schema, value, at, errors, depth) {
+  if (depth > 64) throw new Error("a schema nested too deeply");
+  if (schema === true || schema === void 0) return;
+  if (schema === false) {
+    errors.push(`${at} is not allowed`);
+    return;
+  }
+  if (!schema || typeof schema !== "object") throw new Error(`a schema at ${at} that is not an object`);
+  const s = schema;
+  for (const key of Object.keys(s)) {
+    if (!CHECKED.has(key) && !NOTES.has(key) && !key.startsWith("x-")) throw new Error(`the schema keyword "${key}" at ${at}, which this kit can't check`);
+  }
+  if (typeof s.$ref === "string") check(root, resolveRef(root, s.$ref), value, at, errors, depth + 1);
+  if (s.type !== void 0) {
+    const types = Array.isArray(s.type) ? s.type : [s.type];
+    if (!types.some((t) => typeMatches(value, t))) {
+      errors.push(`${at} should be ${types.join(" or ")}`);
+      return;
+    }
+  }
+  if (s.enum !== void 0 && !s.enum.some((v) => equal(v, value))) errors.push(`${at} is not one of the allowed values`);
+  if (s.const !== void 0 && !equal(s.const, value)) errors.push(`${at} is not the required value`);
+  const file = s["x-kit-file"];
+  if (file) {
+    if (!isFileRef(value)) errors.push(`${at} should be a file`);
+    else {
+      if (file.media && value.media !== file.media) errors.push(`${at} should be ${file.media}, not ${value.media}`);
+      if (file.mime && !file.mime.includes(value.mime)) errors.push(`${at} has the wrong file type (${value.mime})`);
+    }
+  }
+  if (typeof value === "string") {
+    if (typeof s.minLength === "number" && [...value].length < s.minLength) errors.push(`${at} is too short`);
+    if (typeof s.maxLength === "number" && [...value].length > s.maxLength) errors.push(`${at} is too long`);
+    if (typeof s.pattern === "string" && !new RegExp(s.pattern, "u").test(value)) errors.push(`${at} does not match its pattern`);
+  }
+  if (typeof value === "number") {
+    if (typeof s.minimum === "number" && value < s.minimum) errors.push(`${at} is below ${s.minimum}`);
+    if (typeof s.maximum === "number" && value > s.maximum) errors.push(`${at} is above ${s.maximum}`);
+    if (typeof s.exclusiveMinimum === "number" && value <= s.exclusiveMinimum) errors.push(`${at} must be above ${s.exclusiveMinimum}`);
+    if (typeof s.exclusiveMaximum === "number" && value >= s.exclusiveMaximum) errors.push(`${at} must be below ${s.exclusiveMaximum}`);
+    if (typeof s.multipleOf === "number" && Math.abs(value / s.multipleOf - Math.round(value / s.multipleOf)) > 1e-9) errors.push(`${at} is not a multiple of ${s.multipleOf}`);
+  }
+  if (Array.isArray(value)) {
+    if (typeof s.minItems === "number" && value.length < s.minItems) errors.push(`${at} has too few items`);
+    if (typeof s.maxItems === "number" && value.length > s.maxItems) errors.push(`${at} has too many items`);
+    if (s.uniqueItems === true && new Set(value.map((v) => JSON.stringify(v))).size !== value.length) errors.push(`${at} lists an item twice`);
+    if (s.items !== void 0) value.forEach((item, i) => check(root, s.items, item, `${at}[${i}]`, errors, depth + 1));
+  }
+  if (value && typeof value === "object" && !Array.isArray(value)) {
+    const obj = value;
+    const keys = Object.keys(obj);
+    if (typeof s.minProperties === "number" && keys.length < s.minProperties) errors.push(`${at} has too few fields`);
+    if (typeof s.maxProperties === "number" && keys.length > s.maxProperties) errors.push(`${at} has too many fields`);
+    const props = s.properties ?? {};
+    for (const name of s.required ?? []) if (obj[name] === void 0) errors.push(`${at}.${name} is missing`);
+    for (const key of keys) {
+      if (obj[key] === void 0) continue;
+      if (key in props) check(root, props[key], obj[key], `${at}.${key}`, errors, depth + 1);
+      else if (s.additionalProperties === false) errors.push(`${at}.${key} is not a known field`);
+      else if (s.additionalProperties !== void 0) check(root, s.additionalProperties, obj[key], `${at}.${key}`, errors, depth + 1);
+    }
+  }
+  const branch = (option) => {
+    const inner = [];
+    check(root, option, value, at, inner, depth + 1);
+    return inner.length === 0;
+  };
+  if (Array.isArray(s.allOf)) for (const option of s.allOf) check(root, option, value, at, errors, depth + 1);
+  if (Array.isArray(s.anyOf) && !s.anyOf.some(branch)) errors.push(`${at} matches none of its allowed shapes`);
+  if (Array.isArray(s.oneOf) && s.oneOf.filter(branch).length !== 1) errors.push(`${at} must match exactly one allowed shape`);
+  if (s.not !== void 0 && branch(s.not)) errors.push(`${at} is a shape that is not allowed`);
+}
+function schemaErrors(schema, value, at = "inputs") {
+  const errors = [];
+  check(schema, schema, value, at, errors, 0);
+  return errors.slice(0, 20);
+}
+
+// src/kit/maker/parts/html-frames/1.0.0/part.json
+var inputs = {
+  type: "object",
+  additionalProperties: false,
+  required: ["template", "scenes", "aspect", "max_words"],
+  oneOf: [{ required: ["duration_s"] }, { required: ["scene_s"] }],
+  properties: {
+    template: {
+      description: "The style's frame page. The maker puts the kit runtime first in its head; the page reads window.kit and draws each frame from kit.render(fn), renderAt(t), seek(ms), or CSS and Web Animations.",
+      type: "object",
+      "x-kit-file": { media: "html" }
+    },
+    frames: {
+      description: "Every other file the page uses (css, js, json, svg, png, jpg, webp), kept at the same places relative to the template. The page can load nothing else.",
+      type: "array",
+      maxItems: 200,
+      items: {
+        anyOf: [
+          { type: "object", "x-kit-file": { media: "html" } },
+          { type: "object", "x-kit-file": { media: "text" } },
+          { type: "object", "x-kit-file": { media: "json" } },
+          { type: "object", "x-kit-file": { media: "image" } }
+        ]
+      }
+    },
+    fonts: {
+      description: "The style's fonts (ttf, otf, woff, woff2). CSS uses each by its file name without the extension.",
+      type: "array",
+      maxItems: 20,
+      items: { type: "object", "x-kit-file": { media: "font" } }
+    },
+    scenes: {
+      description: "plan.scenes, in order. The scenes share the video evenly; kit.scenes carries each one's start_s and end_s, and picture and image as URLs when they are files.",
+      type: "array",
+      minItems: 1,
+      maxItems: 30,
+      items: {
+        type: "object",
+        properties: {
+          id: { type: ["string", "null"], maxLength: 64 },
+          line: { type: ["string", "null"], maxLength: 2e3 },
+          on_screen: { type: ["string", "null"], maxLength: 2e3 },
+          picture: {
+            anyOf: [
+              { type: "null" },
+              { type: "string", maxLength: 2e3 },
+              { type: "object", "x-kit-file": { media: "image" } }
+            ]
+          },
+          image: {
+            description: "A picture the customer uploaded for this scene, as kit.scenes[i].image (a URL the page can load).",
+            anyOf: [{ type: "null" }, { type: "object", "x-kit-file": { media: "image" } }]
+          }
+        }
+      }
+    },
+    max_words: {
+      description: "The style's scenes.max_words. A scene whose line or on-screen text has more words is refused.",
+      type: "integer",
+      minimum: 1,
+      maximum: 200
+    },
+    products: {
+      description: "plan.products, in the customer's order.",
+      type: "array",
+      maxItems: 12,
+      items: {
+        type: "object",
+        required: ["id"],
+        properties: {
+          id: { type: "string", minLength: 1 },
+          name: { type: ["string", "null"], maxLength: 2e3 },
+          images: {
+            type: "array",
+            maxItems: 20,
+            items: { type: "object", "x-kit-file": { media: "image" } }
+          }
+        }
+      }
+    },
+    brand: {
+      description: 'The brand frozen at the yes ({"from": "brand"}): name, logo, colors, fonts (heading, body), cta. Colours become CSS variables (--brand-primary, ...); fonts are brand-heading and brand-body.',
+      type: ["object", "null"],
+      properties: {
+        name: { type: ["string", "null"], maxLength: 2e3 },
+        logo: { anyOf: [{ type: "null" }, { type: "object", "x-kit-file": { media: "image" } }] },
+        colors: { type: ["object", "null"] },
+        fonts: {
+          type: ["object", "null"],
+          properties: {
+            heading: { anyOf: [{ type: "null" }, { type: "object", "x-kit-file": { media: "font" } }] },
+            body: { anyOf: [{ type: "null" }, { type: "object", "x-kit-file": { media: "font" } }] }
+          }
+        },
+        cta: { type: ["object", "null"] }
+      }
+    },
+    aspect: { enum: ["9:16", "1:1", "4:5", "16:9"] },
+    duration_s: {
+      description: "Length of the whole video, in seconds. Give this or scene_s.",
+      type: "number",
+      minimum: 0.5,
+      maximum: 180
+    },
+    scene_s: {
+      description: "Seconds per scene; the video is this times the number of scenes. Give this or duration_s.",
+      type: "number",
+      exclusiveMinimum: 0,
+      maximum: 60
+    },
+    fps: { type: "integer", minimum: 1, maximum: 60, default: 30 },
+    short_side: {
+      description: "Pixels on the short side of the video. The page is always laid out at 1080 and scaled.",
+      enum: [720, 1080],
+      default: 1080
+    },
+    values: {
+      description: "The style's own plain values for its page (labels, look choices), as kit.values.",
+      type: "object"
+    }
+  }
+};
+
 // src/kit/maker/inputs.ts
 var DESIGN_SIZE = {
   "9:16": { width: 1080, height: 1920 },
@@ -104,11 +365,11 @@ var LIMITS = {
 function isObject(value) {
   return !!value && typeof value === "object" && !Array.isArray(value);
 }
-function isFileRef(value) {
+function isFileRef2(value) {
   return isObject(value) && value.kind === "file" && typeof value.path === "string" && value.path.startsWith("/") && typeof value.sha256 === "string" && /^[a-f0-9]{64}$/.test(value.sha256) && typeof value.media === "string" && typeof value.mime === "string";
 }
 function fileOf(value, at, media, fail) {
-  if (!isFileRef(value)) fail(`${at} should be a file`);
+  if (!isFileRef2(value)) fail(`${at} should be a file`);
   if (!media.includes(value.media)) fail(`${at} should be ${media.join(" or ")}, not ${value.media}`);
   return value;
 }
@@ -142,7 +403,7 @@ function scenesOf(value, maxWords, fail) {
       }
     }
     let picture = null;
-    if (isFileRef(raw.picture)) picture = fileOf(raw.picture, `${at}.picture`, ["image"], fail);
+    if (isFileRef2(raw.picture)) picture = fileOf(raw.picture, `${at}.picture`, ["image"], fail);
     else picture = optionalText(raw.picture, `${at}.picture`, fail);
     const image = raw.image === void 0 || raw.image === null ? null : fileOf(raw.image, `${at}.image`, ["image"], fail);
     return { id, index, line, on_screen: onScreen, picture, image };
@@ -198,6 +459,8 @@ function readInputs(raw, ctx) {
     throw ctx.error("bad_input", detail);
   };
   if (!isObject(raw)) fail("inputs should be an object");
+  const schemaProblems = schemaErrors(inputs, raw);
+  if (schemaProblems.length) fail(schemaProblems.slice(0, 3).join("; "));
   const template = fileOf(raw.template, "template", ["html"], fail);
   const framesRaw = raw.frames ?? [];
   if (!Array.isArray(framesRaw) || framesRaw.length > LIMITS.frames) fail(`frames should be a list of up to ${LIMITS.frames} files`);
@@ -1090,8 +1353,8 @@ async function makeVideo(rawInputs, ctx, options = {}) {
 }
 
 // src/kit/maker/parts/html-frames/src/part.ts
-var run = async (inputs, ctx) => {
-  const made = await makeVideo(inputs, ctx);
+var run = async (inputs2, ctx) => {
+  const made = await makeVideo(inputs2, ctx);
   return { video: made.video, seconds: made.seconds, timeline: made.timeline };
 };
 export {

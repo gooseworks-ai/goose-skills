@@ -1,6 +1,7 @@
 // Built from phone-chat/src/part.mjs by parts/_tools/bundle.mjs. Do not edit: change the source and publish a new version.
 import { readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { inflateSync } from 'node:zlib';
 
 // ---- _lib/schema.mjs ----
 // A small JSON Schema (draft 2020-12) checker for part inputs, outputs and
@@ -41,7 +42,7 @@ function kitSchemaResolve(root, ref) {
   let node = root;
   for (const raw of ref.slice(2).split('/')) {
     const key = raw.replace(/~1/g, '/').replace(/~0/g, '~');
-    if (node == null || typeof node !== 'object' || !(key in node)) throw new Error(`Unresolved $ref ${ref}`);
+    if (node == null || typeof node !== 'object' || !Object.hasOwn(node, key)) throw new Error(`Unresolved $ref ${ref}`);
     node = node[key];
   }
   return node;
@@ -126,7 +127,7 @@ function kitSchemaCheck(root, schema, value, at, errors) {
     if (schema.minProperties !== undefined && keys.length < schema.minProperties) errors.push(`${at}: fewer than ${schema.minProperties} fields`);
     if (schema.maxProperties !== undefined && keys.length > schema.maxProperties) errors.push(`${at}: more than ${schema.maxProperties} fields`);
     for (const key of schema.required || []) {
-      if (!(key in value)) errors.push(`${at}.${key}: required`);
+      if (!Object.hasOwn(value, key)) errors.push(`${at}.${key}: required`);
     }
     const props = schema.properties || {};
     const patterns = Object.entries(schema.patternProperties || {}).map(([p, s]) => [new RegExp(p, 'u'), s]);
@@ -137,7 +138,7 @@ function kitSchemaCheck(root, schema, value, at, errors) {
         if (inner.length) errors.push(`${at}.${key}: field name not allowed`);
       }
       let matched = false;
-      if (key in props) {
+      if (Object.hasOwn(props, key)) {
         matched = true;
         kitSchemaCheck(root, props[key], value[key], `${at}.${key}`, errors);
       }
@@ -3093,8 +3094,12 @@ function chatTruthy(v) {
   return v === true || /^(true|yes|on|1)$/i.test(String(v == null ? '' : v).trim());
 }
 
-/** The product photo a scene's picture asks for: the scene's own image file, or a chosen product's first photo. */
+/**
+ * The photo a scene shows: the picture the customer uploaded for it (scene.image),
+ * else its picture file, else the chosen product its picture names.
+ */
 function chatPicture(scene, products) {
+  if (scene.image && typeof scene.image === 'object' && scene.image.kind === 'file') return scene.image;
   const p = scene.picture;
   if (p && typeof p === 'object' && p.kind === 'file') return p;
   if (typeof p !== 'string' || !p.trim()) return null;
@@ -3213,6 +3218,128 @@ function chatThreadFor(skin, { scenes, products, answers, brand_name, plate, pac
     return { thread, images: [{ key: 'plate', file: plate }], scene_ids: sceneIds };
   }
   throw new Error(`Unknown skin ${skin}.`);
+}
+
+// ---- phone-chat/src/fonts.mjs ----
+// Which characters a font file draws, from its cmap table, so a chat never
+// falls back to a system font: text the bundled and given fonts cannot draw
+// is refused instead. Reads TrueType/OpenType (sfnt) and WOFF files.
+// Every top-level name starts with `pcFont`.
+
+function pcFontTables(buf) {
+  const tag = buf.toString('latin1', 0, 4);
+  const tables = new Map();
+  if (tag === 'wOFF') {
+    const count = buf.readUInt16BE(12);
+    for (let i = 0; i < count; i++) {
+      const at = 44 + i * 20;
+      const name = buf.toString('latin1', at, at + 4);
+      const offset = buf.readUInt32BE(at + 4);
+      const compLength = buf.readUInt32BE(at + 8);
+      const origLength = buf.readUInt32BE(at + 12);
+      const raw = buf.subarray(offset, offset + compLength);
+      tables.set(name, compLength < origLength ? inflateSync(raw) : raw);
+    }
+    return tables;
+  }
+  if (tag === 'wOF2') throw new Error('give the font as TTF, OTF or WOFF (a WOFF2 file cannot be checked for the characters it draws)');
+  const version = buf.readUInt32BE(0);
+  if (version !== 0x00010000 && tag !== 'OTTO' && tag !== 'true') throw new Error('the font file is not a TrueType or OpenType font');
+  const count = buf.readUInt16BE(4);
+  for (let i = 0; i < count; i++) {
+    const at = 12 + i * 16;
+    tables.set(buf.toString('latin1', at, at + 4), buf.subarray(buf.readUInt32BE(at + 8), buf.readUInt32BE(at + 8) + buf.readUInt32BE(at + 12)));
+  }
+  return tables;
+}
+
+/** The code point ranges [[from, to], ...] a font's best Unicode cmap subtable maps to a glyph. */
+function pcFontCoverage(buf) {
+  const cmap = pcFontTables(buf).get('cmap');
+  if (!cmap) throw new Error('the font has no character map');
+  const n = cmap.readUInt16BE(2);
+  let best = null;
+  for (let i = 0; i < n; i++) {
+    const platform = cmap.readUInt16BE(4 + i * 8);
+    const encoding = cmap.readUInt16BE(6 + i * 8);
+    const offset = cmap.readUInt32BE(8 + i * 8);
+    const format = cmap.readUInt16BE(offset);
+    const unicode = platform === 0 || (platform === 3 && (encoding === 1 || encoding === 10));
+    if (!unicode || (format !== 4 && format !== 12)) continue;
+    if (!best || (format === 12 && best.format !== 12)) best = { format, offset };
+  }
+  if (!best) throw new Error('the font has no Unicode character map');
+  const ranges = [];
+  const t = cmap.subarray(best.offset);
+  if (best.format === 12) {
+    const groups = t.readUInt32BE(12);
+    for (let g = 0; g < groups; g++) ranges.push([t.readUInt32BE(16 + g * 12), t.readUInt32BE(20 + g * 12)]);
+  } else {
+    const segX2 = t.readUInt16BE(6);
+    const segs = segX2 / 2;
+    const ends = 14;
+    const starts = ends + segX2 + 2;
+    const deltas = starts + segX2;
+    const rangeOffsets = deltas + segX2;
+    for (let s = 0; s < segs; s++) {
+      const end = t.readUInt16BE(ends + s * 2);
+      const start = t.readUInt16BE(starts + s * 2);
+      const delta = t.readUInt16BE(deltas + s * 2);
+      const ro = t.readUInt16BE(rangeOffsets + s * 2);
+      if (start === 0xffff) continue;
+      // A code point maps to a glyph unless it lands on glyph 0 (.notdef).
+      let runStart = null;
+      for (let c = start; c <= end; c++) {
+        let glyph;
+        if (ro === 0) glyph = (c + delta) & 0xffff;
+        else {
+          const at = rangeOffsets + s * 2 + ro + (c - start) * 2;
+          glyph = at + 1 < t.length ? t.readUInt16BE(at) : 0;
+          if (glyph) glyph = (glyph + delta) & 0xffff;
+        }
+        if (glyph && runStart === null) runStart = c;
+        if (!glyph && runStart !== null) {
+          ranges.push([runStart, c - 1]);
+          runStart = null;
+        }
+      }
+      if (runStart !== null) ranges.push([runStart, end]);
+    }
+  }
+  return ranges;
+}
+
+// Characters that draw nothing themselves: spaces, joiners, variation selectors, keycap and tag marks.
+const pcFontInvisible = /^[\s\u{200B}-\u{200F}\u{2060}\u{FE00}-\u{FE0F}\u{20E3}\u{E0020}-\u{E007F}]$/u;
+// A grapheme the browser draws as an emoji: default emoji presentation, an emoji variation selector, or a joined sequence.
+const pcFontEmojiLike = /\p{Emoji_Presentation}|\u{FE0F}|\u{200D}/u;
+
+function pcFontCovered(cp, coverages) {
+  return coverages.some((ranges) => ranges.some(([a, b]) => cp >= a && cp <= b));
+}
+
+/**
+ * The distinct graphemes in `texts` the fonts cannot draw. Plain text may come from
+ * any font; an emoji (which the browser would draw from a colour emoji font) only
+ * from the emoji font, so with none given every emoji is missing.
+ */
+function pcFontMissing(texts, textCoverages, emojiCoverages = []) {
+  const missing = new Set();
+  const seg = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
+  for (const text of texts) {
+    for (const { segment } of seg.segment(String(text || ''))) {
+      const emoji = pcFontEmojiLike.test(segment);
+      const pool = emoji ? emojiCoverages : [...textCoverages, ...emojiCoverages];
+      for (const ch of segment) {
+        if (pcFontInvisible.test(ch)) continue;
+        if (!pcFontCovered(ch.codePointAt(0), pool)) {
+          missing.add(segment);
+          break;
+        }
+      }
+    }
+  }
+  return [...missing];
 }
 
 // ---- phone-chat/src/part.mjs ----
@@ -3363,6 +3490,22 @@ export async function run(inputs, ctx) {
   const text = fonts.text || { path: join(ctx.part.dir, 'assets', 'fonts', 'InterVariable.ttf'), mime: 'font/ttf' };
   let fontCss = `@font-face{font-family:KitText;src:url(${await dataUri(text, 'font/ttf')}) format('${fontFormat(text.path)}');font-weight:100 900;font-display:block;}`;
   if (fonts.emoji) fontCss += `@font-face{font-family:KitEmoji;src:url(${await dataUri(fonts.emoji, 'font/ttf')}) format('${fontFormat(fonts.emoji.path)}');font-display:block;}`;
+  // Every character the plan puts on screen must be drawn by the bundled or given fonts: a missing
+  // glyph would fall back to whatever font the computer has, and the video would differ between computers.
+  let textCoverage;
+  let emojiCoverage = [];
+  try {
+    textCoverage = [pcFontCoverage(await readFile(text.path))];
+    if (fonts.emoji) emojiCoverage = [pcFontCoverage(await readFile(fonts.emoji.path))];
+  } catch (e) {
+    throw ctx.error('bad_input', e.message);
+  }
+  const a = inputs.answers || {};
+  const shown = [...chatScenes.map(chatSceneText), inputs.brand_name, a.group, a.clock].filter((t) => typeof t === 'string');
+  const missing = pcFontMissing(shown, textCoverage, emojiCoverage);
+  if (missing.length) {
+    throw ctx.error('bad_input', `the chat uses ${missing.slice(0, 5).join(' ')}, which the fonts cannot draw; leave ${missing.length > 1 ? 'them' : 'it'} out or give an emoji font`);
+  }
   const skinDir = join(ctx.part.dir, 'assets', 'skins', inputs.skin);
   const env = {
     width,

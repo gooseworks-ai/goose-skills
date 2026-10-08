@@ -41,7 +41,7 @@ function kitSchemaResolve(root, ref) {
   let node = root;
   for (const raw of ref.slice(2).split('/')) {
     const key = raw.replace(/~1/g, '/').replace(/~0/g, '~');
-    if (node == null || typeof node !== 'object' || !(key in node)) throw new Error(`Unresolved $ref ${ref}`);
+    if (node == null || typeof node !== 'object' || !Object.hasOwn(node, key)) throw new Error(`Unresolved $ref ${ref}`);
     node = node[key];
   }
   return node;
@@ -126,7 +126,7 @@ function kitSchemaCheck(root, schema, value, at, errors) {
     if (schema.minProperties !== undefined && keys.length < schema.minProperties) errors.push(`${at}: fewer than ${schema.minProperties} fields`);
     if (schema.maxProperties !== undefined && keys.length > schema.maxProperties) errors.push(`${at}: more than ${schema.maxProperties} fields`);
     for (const key of schema.required || []) {
-      if (!(key in value)) errors.push(`${at}.${key}: required`);
+      if (!Object.hasOwn(value, key)) errors.push(`${at}.${key}: required`);
     }
     const props = schema.properties || {};
     const patterns = Object.entries(schema.patternProperties || {}).map(([p, s]) => [new RegExp(p, 'u'), s]);
@@ -137,7 +137,7 @@ function kitSchemaCheck(root, schema, value, at, errors) {
         if (inner.length) errors.push(`${at}.${key}: field name not allowed`);
       }
       let matched = false;
-      if (key in props) {
+      if (Object.hasOwn(props, key)) {
         matched = true;
         kitSchemaCheck(root, props[key], value[key], `${at}.${key}`, errors);
       }
@@ -1514,6 +1514,182 @@ function speechPronunciationPairs(json) {
   return pairs;
 }
 
+// ---- _lib/frames.mjs ----
+// Pixel and sample measures on the finished cut for the check layer: the
+// brand logo found on the end card by grayscale normalised correlation over a
+// size search (review-finished-ad's logo check), picture motion (the
+// logo-equation-card b-roll gate), and the sound rising where a message
+// appears. ffmpeg decodes to raw files in tmpDir; the maths is plain JS.
+// Every top-level name starts with `kit`.
+
+const KIT_LOGO_FRAME_W = 120;
+
+async function kitRaw(ctx, args, name, format = 'rawvideo') {
+  const path = join(ctx.tmpDir, name);
+  await kitFfmpeg(ctx, [...args, '-f', format, path]);
+  return readFile(path);
+}
+
+/** One frame at `t` as 8-bit gray, `w` wide. */
+async function kitGrayFrame(ctx, video, t, w, h) {
+  const data = await kitRaw(ctx, ['-ss', kitNum(t), '-i', video, '-frames:v', '1', '-vf', `scale=${w}:${h}:flags=area,format=gray`, '-pix_fmt', 'gray'], `frame-${Math.round(t * 1000)}.raw`);
+  return { w, h, data };
+}
+
+function kitResize(src, sw, sh, dw, dh) {
+  const out = new Float64Array(dw * dh);
+  for (let y = 0; y < dh; y++) {
+    for (let x = 0; x < dw; x++) {
+      // Area average of the source box this pixel covers.
+      const x0 = (x * sw) / dw;
+      const x1 = ((x + 1) * sw) / dw;
+      const y0 = (y * sh) / dh;
+      const y1 = ((y + 1) * sh) / dh;
+      let sum = 0;
+      let n = 0;
+      for (let yy = Math.floor(y0); yy < Math.ceil(y1); yy++) {
+        for (let xx = Math.floor(x0); xx < Math.ceil(x1); xx++) {
+          sum += src[yy * sw + xx];
+          n++;
+        }
+      }
+      out[y * dw + x] = n ? sum / n : 0;
+    }
+  }
+  return out;
+}
+
+/** The best absolute normalised correlation of `tpl` (tw x th) anywhere in `img` (iw x ih). */
+function kitBestNcc(img, iw, ih, tpl, tw, th) {
+  const n = tw * th;
+  let tMean = 0;
+  for (let i = 0; i < n; i++) tMean += tpl[i];
+  tMean /= n;
+  const t = new Float64Array(n);
+  let tNorm = 0;
+  for (let i = 0; i < n; i++) {
+    t[i] = tpl[i] - tMean;
+    tNorm += t[i] * t[i];
+  }
+  if (tNorm < 1e-6) return 0;
+  // Integral images of the frame and its square for each window's mean and spread.
+  const W = iw + 1;
+  const s1 = new Float64Array(W * (ih + 1));
+  const s2 = new Float64Array(W * (ih + 1));
+  for (let y = 0; y < ih; y++) {
+    let r1 = 0;
+    let r2 = 0;
+    for (let x = 0; x < iw; x++) {
+      const v = img[y * iw + x];
+      r1 += v;
+      r2 += v * v;
+      s1[(y + 1) * W + x + 1] = s1[y * W + x + 1] + r1;
+      s2[(y + 1) * W + x + 1] = s2[y * W + x + 1] + r2;
+    }
+  }
+  let best = 0;
+  for (let y = 0; y + th <= ih; y++) {
+    for (let x = 0; x + tw <= iw; x++) {
+      const a = y * W + x;
+      const b = y * W + x + tw;
+      const c = (y + th) * W + x;
+      const d = (y + th) * W + x + tw;
+      const sum = s1[d] - s1[b] - s1[c] + s1[a];
+      const sq = s2[d] - s2[b] - s2[c] + s2[a];
+      const varI = sq - (sum * sum) / n;
+      if (varI < 1e-6) continue;
+      let cross = 0;
+      for (let ty = 0; ty < th; ty++) {
+        const row = (y + ty) * iw + x;
+        const trow = ty * tw;
+        for (let tx = 0; tx < tw; tx++) cross += img[row + tx] * t[trow + tx];
+      }
+      const score = Math.abs(cross) / Math.sqrt(varI * tNorm);
+      if (score > best) best = score;
+    }
+  }
+  return best;
+}
+
+/**
+ * How well the brand's logo file is found in the frames at `times`: the best
+ * |NCC| over a size search (15 % to 60 % of the frame width). A logo with
+ * transparency is matched by its shape (alpha), so a white mark on a dark card
+ * counts; an opaque logo by its whole image.
+ */
+async function kitLogoScore(ctx, video, logo, times, frameW, frameH) {
+  const lw = 160;
+  const rgba = await kitRaw(ctx, ['-i', logo.path, '-frames:v', '1', '-vf', `scale=${lw}:-2:flags=area,format=rgba`, '-pix_fmt', 'rgba'], 'logo.raw');
+  const lh = Math.floor(rgba.length / 4 / lw);
+  if (lh < 2) return { score: 0, mode: 'image' };
+  let transparent = 0;
+  const gray = new Float64Array(lw * lh);
+  const alpha = new Float64Array(lw * lh);
+  for (let i = 0; i < lw * lh; i++) {
+    const [r, g, b, a] = [rgba[i * 4], rgba[i * 4 + 1], rgba[i * 4 + 2], rgba[i * 4 + 3]];
+    alpha[i] = a;
+    gray[i] = 0.299 * r + 0.587 * g + 0.114 * b;
+    if (a < 250) transparent++;
+  }
+  const mode = transparent > lw * lh * 0.05 ? 'mark' : 'image';
+  const tplSrc = mode === 'mark' ? alpha : gray;
+  const iw = KIT_LOGO_FRAME_W;
+  const ih = Math.max(2, Math.round((iw * frameH) / frameW / 2) * 2);
+  let best = 0;
+  for (const t of times) {
+    const f = await kitGrayFrame(ctx, video, t, iw, ih);
+    const img = Float64Array.from(f.data);
+    for (let frac = 0.15; frac <= 0.6001; frac += 0.05) {
+      const tw = Math.max(6, Math.round(frac * iw));
+      const th = Math.max(4, Math.round((tw * lh) / lw));
+      if (th >= ih) continue;
+      const tpl = kitResize(tplSrc, lw, lh, tw, th);
+      best = Math.max(best, kitBestNcc(img, iw, ih, tpl, tw, th));
+    }
+  }
+  return { score: +best.toFixed(3), mode };
+}
+
+/**
+ * Picture motion from 0 to `untilS`: the mean absolute frame-to-frame
+ * difference on a 160 x 160 grayscale copy, over the half of the rows that
+ * move most (so a still card above a moving band does not dilute the band).
+ */
+async function kitMotion(ctx, video, untilS) {
+  const size = 160;
+  const raw = await kitRaw(ctx, ['-i', video, '-t', kitNum(untilS), '-an', '-vf', `scale=${size}:${size}:flags=area,format=gray`, '-pix_fmt', 'gray'], 'motion.raw');
+  const px = size * size;
+  const frames = Math.floor(raw.length / px);
+  if (frames < 2) return null;
+  const rowTotals = new Float64Array(size);
+  for (let f = 1; f < frames; f++) {
+    for (let y = 0; y < size; y++) {
+      let s = 0;
+      for (let x = 0; x < size; x++) s += Math.abs(raw[f * px + y * size + x] - raw[(f - 1) * px + y * size + x]);
+      rowTotals[y] += s;
+    }
+  }
+  const sorted = [...rowTotals].sort((a, b) => b - a).slice(0, size / 2);
+  const total = sorted.reduce((a, b) => a + b, 0);
+  return +(total / ((size / 2) * size * (frames - 1))).toFixed(3);
+}
+
+/** RMS level (dB full scale) of the cut's sound in each [from, to] window. */
+async function kitWindowLevels(ctx, video, windows) {
+  const rate = 8000;
+  const raw = await kitRaw(ctx, ['-i', video, '-vn', '-ac', '1', '-ar', String(rate), '-c:a', 'pcm_s16le'], 'sound.raw', 's16le').catch(() => null);
+  const samples = raw ? new Int16Array(raw.buffer, raw.byteOffset, Math.floor(raw.length / 2)) : new Int16Array(0);
+  return windows.map(([from, to]) => {
+    const a = Math.max(0, Math.floor(from * rate));
+    const b = Math.min(samples.length, Math.ceil(to * rate));
+    if (b <= a) return -Infinity;
+    let sum = 0;
+    for (let i = a; i < b; i++) sum += (samples[i] / 32768) ** 2;
+    const rms = Math.sqrt(sum / (b - a));
+    return rms > 0 ? 20 * Math.log10(rms) : -Infinity;
+  });
+}
+
 // ---- check-layer/src/part.mjs ----
 // check-layer: checks the finished cut and never changes it. One quality
 // path for every video (review-finished-ad and review-ugc-render in
@@ -1538,6 +1714,17 @@ const BLACK_MAX_S = 0.3;
 const OPENING_STILL_MAX_S = 1.5;
 const HELD_PICTURE_MAX_S = 4.0;
 const SERVER = new Set(['plays', 'length', 'size', 'sound', 'captions']);
+// review-finished-ad: the platform bands at 1080x1920, the logo match floors and the favicon guard.
+const PLATFORM_TOP = 220;
+const PLATFORM_BOTTOM = 400;
+const PLATFORM_RIGHT = 140;
+const LOGO_MARK_MIN = 0.75;
+const LOGO_IMAGE_MIN = 0.7;
+const MIN_LOGO_LONG_SIDE = 256;
+const MIN_LOGO_AREA = 40000;
+// logo-equation-card's measure_motion gate, and the rise a message's sound makes over the moment before it.
+const FOOTAGE_MIN_MOTION = 1.5;
+const SOUND_RISE_DB = 4;
 const NUM = '-?\\d+(?:\\.\\d+)?(?:e-?\\d+)?';
 
 function ratioOf(aspect) {
@@ -1606,14 +1793,31 @@ async function analyse(ctx, path, duration) {
   return { freezes: spans(stderr, 'freeze', duration), blacks: spans(stderr, 'black', duration) };
 }
 
-async function cueCount(ctx, words, duration) {
-  if (!words) return 0;
-  let record;
+async function wordsRecord(words) {
+  if (!words) return null;
   try {
-    record = JSON.parse(await readFile(words.path, 'utf8'));
+    return JSON.parse(await readFile(words.path, 'utf8'));
   } catch {
-    return 0;
+    return null;
   }
+}
+
+/** Where captions may be: the timeline's caption zone, clear of the platform bands (scaled from 1080x1920). */
+function safeZone(timeline, W, H) {
+  const zone = { left: 0, top: (PLATFORM_TOP * H) / 1920, right: W - (PLATFORM_RIGHT * W) / 1080, bottom: H - (PLATFORM_BOTTOM * H) / 1920 };
+  const c = (timeline.safe_zones || []).find((z) => z.use === 'captions');
+  if (c) {
+    zone.left = Math.max(zone.left, c.x);
+    zone.top = Math.max(zone.top, c.y);
+    zone.right = Math.min(zone.right, c.x + c.w);
+    zone.bottom = Math.min(zone.bottom, c.y + c.h);
+  }
+  return zone;
+}
+
+async function cueCount(ctx, words, duration) {
+  const record = await wordsRecord(words);
+  if (!record) return 0;
   return (record.cues || []).filter(
     (c) => String(c.text || '').trim() && Number.isFinite(c.start_s) && Number.isFinite(c.end_s) && c.end_s > c.start_s && c.start_s < duration && c.end_s > 0,
   ).length;
@@ -1639,7 +1843,7 @@ async function heardSpeech(ctx, video) {
   const result = await ctx.line.order({
     piece: 'transcribe',
     provider: 'fal',
-    path: '/fal-ai/whisper',
+    path: 'fal-ai/whisper',
     body: { audio_url: audio, task: 'transcribe', language: 'en', chunk_level: 'word' },
     results: [],
   });
@@ -1694,22 +1898,21 @@ export async function run(inputs, ctx) {
     });
   } else add('size', 'pass', { found: `${m.width}x${m.height}` });
 
-  // Sound: required when the style levels sound (expect.sound), else when the cut has a track or speech.
-  const needSound = expect.sound !== undefined ? expect.sound : m.has_audio || expect.speech !== 'none';
-  if (!needSound) add('sound', 'not_applicable');
-  else {
-    const lufs = m.has_audio ? await loudness(ctx, video.path) : null;
-    if (lufs === null || lufs <= -70) {
-      add('sound', 'fail', { message: 'The video has no sound.', expected: `${TARGET_LUFS} LUFS`, found: 'no sound', fix: { slot: 'sound' } });
-    } else if (Math.abs(lufs - TARGET_LUFS) > LUFS_TOLERANCE) {
-      add('sound', 'fail', {
-        message: lufs < TARGET_LUFS ? 'The sound is too quiet.' : 'The sound is too loud.',
-        expected: `${TARGET_LUFS} LUFS`,
-        found: `${lufs.toFixed(1)} LUFS`,
-        fix: { slot: 'sound' },
-      });
-    } else add('sound', 'pass', { found: `${lufs.toFixed(1)} LUFS` });
-  }
+  // Sound: a cut with speech must have it at -14 LUFS within 2. A silent cut with no speech planned is a
+  // style whose music is optional with none chosen (audio-mix gives it a silent track): nothing to measure.
+  const lufs = m.has_audio ? await loudness(ctx, video.path) : null;
+  const silent = lufs === null || lufs <= -70;
+  if (silent && expect.speech === 'none') add('sound', 'not_applicable', { found: m.has_audio ? 'silent' : 'no sound track' });
+  else if (silent) {
+    add('sound', 'fail', { message: 'The video has no sound.', expected: `${TARGET_LUFS} LUFS`, found: 'no sound', fix: { slot: 'sound' } });
+  } else if (Math.abs(lufs - TARGET_LUFS) > LUFS_TOLERANCE) {
+    add('sound', 'fail', {
+      message: lufs < TARGET_LUFS ? 'The sound is too quiet.' : 'The sound is too loud.',
+      expected: `${TARGET_LUFS} LUFS`,
+      found: `${lufs.toFixed(1)} LUFS`,
+      fix: { slot: 'sound' },
+    });
+  } else add('sound', 'pass', { found: `${lufs.toFixed(1)} LUFS` });
 
   if (!expect.captions) add('captions', 'not_applicable');
   else if ((await cueCount(ctx, inputs.words, d)) === 0) {
@@ -1734,6 +1937,61 @@ export async function run(inputs, ctx) {
   if (!expect.end_card || !card) add('end_card', 'not_applicable', card ? undefined : { found: expect.end_card ? 'not marked by any step' : undefined });
   else if (card.end_s - card.start_s >= 0.5 && Math.abs(card.end_s - d) <= 0.2) add('end_card', 'pass');
   else add('end_card', 'fail', { message: 'The video does not end on the brand end card.', expected: 'an end card of at least 0.5 s at the end', found: `${card.start_s}-${card.end_s} s`, fix: { slot: 'brand' } });
+
+  // Captions inside the caption safe zone and clear of the platform controls (TikTok/Reels bands).
+  const record = await wordsRecord(inputs.words);
+  const boxes = record ? (record.cues || []).filter((c) => c.box) : [];
+  if (!boxes.length) add('captions_safe_zone', 'not_applicable');
+  else {
+    const zone = safeZone(timeline, m.width, m.height);
+    const out = boxes.find((c) => c.box.x < zone.left - 0.5 || c.box.y < zone.top - 0.5 || c.box.x + c.box.w > zone.right + 0.5 || c.box.y + c.box.h > zone.bottom + 0.5);
+    if (out) add('captions_safe_zone', 'fail', { message: `The caption "${out.text}" leaves the safe zone.`, expected: `inside x ${Math.round(zone.left)}-${Math.round(zone.right)}, y ${Math.round(zone.top)}-${Math.round(zone.bottom)}`, found: `${Math.round(out.box.x)},${Math.round(out.box.y)} ${Math.round(out.box.w)}x${Math.round(out.box.h)}`, fix: { slot: 'captions' } });
+    else add('captions_safe_zone', 'pass');
+  }
+
+  // The brand's real logo file on the end card (review-finished-ad's logo and favicon checks).
+  let logoStatus = 'not_applicable';
+  const logo = inputs.brand.logo;
+  if (!logo || !expect.end_card) add('logo', 'not_applicable');
+  else {
+    const size = logo.width && logo.height ? logo : await ctx.tools.probe(logo.path);
+    const long = Math.max(size.width || 0, size.height || 0);
+    if (long < MIN_LOGO_LONG_SIDE || (size.width || 0) * (size.height || 0) < MIN_LOGO_AREA) {
+      logoStatus = 'fail';
+      add('logo', 'fail', { message: 'The logo file is favicon-sized and will be blurry.', expected: `at least ${MIN_LOGO_LONG_SIDE} px on the long side`, found: `${size.width}x${size.height}` });
+    } else {
+      const card = timeline.end_card;
+      const times = card ? [card.start_s + (card.end_s - card.start_s) * 0.5, card.end_s - 0.2] : [d - 1.2, d - 0.6, d - 0.2];
+      const { score, mode } = await kitLogoScore(ctx, video.path, logo, times.filter((t) => t > 0 && t < d), m.width, m.height);
+      const floor = mode === 'mark' ? LOGO_MARK_MIN : LOGO_IMAGE_MIN;
+      logoStatus = score >= floor ? 'pass' : 'fail';
+      if (logoStatus === 'pass') add('logo', 'pass', { found: score });
+      else add('logo', 'fail', { message: "The brand's logo is not found on the end card.", expected: `a match of at least ${floor}`, found: score, fix: { slot: 'brand' } });
+    }
+  }
+
+  // The style's own checks (qc_flags). The ones a machine can measure are measured and count toward the
+  // verdict; the rest (text legible, products visible) need eyes and are reported as not checked here.
+  for (const flag of expect.qc_flags || []) {
+    const code = `flag:${flag}`;
+    if (flag === 'logo_visible') add(code, logoStatus, logoStatus === 'fail' ? { message: "The brand's logo is not visible.", expected: 'the logo on the end card', found: 'not found', fix: { slot: 'brand' } } : {});
+    else if (flag === 'footage_moves') {
+      const motion = await kitMotion(ctx, video.path, timeline.end_card ? timeline.end_card.start_s : d);
+      if (motion === null) add(code, 'fail', { message: 'The footage could not be measured.', expected: `motion of at least ${FOOTAGE_MIN_MOTION}`, found: 'no frames' });
+      else if (motion >= FOOTAGE_MIN_MOTION) add(code, 'pass', { found: motion });
+      else add(code, 'fail', { message: 'The footage reads as a still photo.', expected: `motion of at least ${FOOTAGE_MIN_MOTION}`, found: motion });
+    } else if (flag === 'sounds_match_messages') {
+      const cardStart = timeline.end_card ? timeline.end_card.start_s : Infinity;
+      const starts = (timeline.scenes || []).map((sc) => sc.start_s).filter((t) => t > 0.4 && t < cardStart - 0.1);
+      if (!starts.length) add(code, 'not_applicable');
+      else {
+        const levels = await kitWindowLevels(ctx, video.path, starts.flatMap((t) => [[t, t + 0.25], [t - 0.35, t - 0.05]]));
+        const silentAt = starts.find((t, i) => !(levels[2 * i] > -50 && levels[2 * i] - levels[2 * i + 1] >= SOUND_RISE_DB));
+        if (silentAt === undefined) add(code, 'pass', { found: starts.length });
+        else add(code, 'fail', { message: `No sound when the message at ${silentAt.toFixed(2)} s appears.`, expected: 'a sound with every message', found: `${silentAt.toFixed(2)} s` });
+      }
+    } else add(code, 'not_applicable', { found: 'needs eyes; not checked by machine' });
+  }
 
   const script = (expect.script || []).map((s) => String(s).trim()).filter(Boolean);
   if (!script.length || expect.speech === 'none') add('speech_matches_script', 'not_applicable');

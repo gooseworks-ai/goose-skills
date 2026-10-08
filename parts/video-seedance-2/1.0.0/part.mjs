@@ -41,7 +41,7 @@ function kitSchemaResolve(root, ref) {
   let node = root;
   for (const raw of ref.slice(2).split('/')) {
     const key = raw.replace(/~1/g, '/').replace(/~0/g, '~');
-    if (node == null || typeof node !== 'object' || !(key in node)) throw new Error(`Unresolved $ref ${ref}`);
+    if (node == null || typeof node !== 'object' || !Object.hasOwn(node, key)) throw new Error(`Unresolved $ref ${ref}`);
     node = node[key];
   }
   return node;
@@ -126,7 +126,7 @@ function kitSchemaCheck(root, schema, value, at, errors) {
     if (schema.minProperties !== undefined && keys.length < schema.minProperties) errors.push(`${at}: fewer than ${schema.minProperties} fields`);
     if (schema.maxProperties !== undefined && keys.length > schema.maxProperties) errors.push(`${at}: more than ${schema.maxProperties} fields`);
     for (const key of schema.required || []) {
-      if (!(key in value)) errors.push(`${at}.${key}: required`);
+      if (!Object.hasOwn(value, key)) errors.push(`${at}.${key}: required`);
     }
     const props = schema.properties || {};
     const patterns = Object.entries(schema.patternProperties || {}).map(([p, s]) => [new RegExp(p, 'u'), s]);
@@ -137,7 +137,7 @@ function kitSchemaCheck(root, schema, value, at, errors) {
         if (inner.length) errors.push(`${at}.${key}: field name not allowed`);
       }
       let matched = false;
-      if (key in props) {
+      if (Object.hasOwn(props, key)) {
         matched = true;
         kitSchemaCheck(root, props[key], value[key], `${at}.${key}`, errors);
       }
@@ -328,7 +328,7 @@ export async function run(inputs, ctx) {
       generate_audio: clip.generate_audio ?? inputs.generate_audio ?? true,
       seed: ctx.seed(piece) % 2147483647,
     };
-    const result = await ctx.line.order({ piece, provider: 'fal', path: `/${MODEL}`, body, results: [{ pointer: '/json/video/url', name: `${piece}.mp4`, media: 'video' }] });
+    const result = await ctx.line.order({ piece, provider: 'fal', path: MODEL, body, results: [{ pointer: '/json/video/url', name: `${piece}.mp4`, media: 'video' }] });
     const file = result.files[`${piece}.mp4`];
     if (!file) throw ctx.error('provider_failed', `no video for ${piece}`);
     if (body.generate_audio) {

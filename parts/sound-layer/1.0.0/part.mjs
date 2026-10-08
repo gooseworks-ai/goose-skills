@@ -41,7 +41,7 @@ function kitSchemaResolve(root, ref) {
   let node = root;
   for (const raw of ref.slice(2).split('/')) {
     const key = raw.replace(/~1/g, '/').replace(/~0/g, '~');
-    if (node == null || typeof node !== 'object' || !(key in node)) throw new Error(`Unresolved $ref ${ref}`);
+    if (node == null || typeof node !== 'object' || !Object.hasOwn(node, key)) throw new Error(`Unresolved $ref ${ref}`);
     node = node[key];
   }
   return node;
@@ -126,7 +126,7 @@ function kitSchemaCheck(root, schema, value, at, errors) {
     if (schema.minProperties !== undefined && keys.length < schema.minProperties) errors.push(`${at}: fewer than ${schema.minProperties} fields`);
     if (schema.maxProperties !== undefined && keys.length > schema.maxProperties) errors.push(`${at}: more than ${schema.maxProperties} fields`);
     for (const key of schema.required || []) {
-      if (!(key in value)) errors.push(`${at}.${key}: required`);
+      if (!Object.hasOwn(value, key)) errors.push(`${at}.${key}: required`);
     }
     const props = schema.properties || {};
     const patterns = Object.entries(schema.patternProperties || {}).map(([p, s]) => [new RegExp(p, 'u'), s]);
@@ -137,7 +137,7 @@ function kitSchemaCheck(root, schema, value, at, errors) {
         if (inner.length) errors.push(`${at}.${key}: field name not allowed`);
       }
       let matched = false;
-      if (key in props) {
+      if (Object.hasOwn(props, key)) {
         matched = true;
         kitSchemaCheck(root, props[key], value[key], `${at}.${key}`, errors);
       }
@@ -311,7 +311,8 @@ async function kitDuration(ctx, file) {
 const TARGET_LUFS = -14;
 const TOLERANCE_LU = 1;
 const TARGET_TP = -1;
-const TP_SLACK = 0.2;
+// loudnorm aims below the ceiling: the AAC encode after it can add a few tenths of a dB of peak.
+const LOUDNORM_TP = -1.5;
 
 function loudnormJson(stderr) {
   const blocks = stderr.match(/\{[^{}]*\}/g);
@@ -324,7 +325,7 @@ function loudnormJson(stderr) {
 }
 
 function within(m) {
-  return m.lufs !== null && Math.abs(m.lufs - TARGET_LUFS) <= TOLERANCE_LU && (m.true_peak_db === null || m.true_peak_db <= TARGET_TP + TP_SLACK);
+  return m.lufs !== null && Math.abs(m.lufs - TARGET_LUFS) <= TOLERANCE_LU && m.true_peak_db !== null && m.true_peak_db <= TARGET_TP;
 }
 
 async function encode(ctx, video, filter, out) {
@@ -357,24 +358,26 @@ export async function run(inputs, ctx) {
     return kitCheckOutputs(ctx, manifest, { video: inputs.video, timeline: inputs.timeline });
   }
   // Pass 1: measure for loudnorm. A target range at least the input's keeps it linear (a pure gain).
-  const { stderr } = await kitFfmpeg(ctx, ['-i', inputs.video.path, '-map', '0:a:0', '-af', `loudnorm=I=${TARGET_LUFS}:TP=${TARGET_TP}:LRA=11:print_format=json`, '-f', 'null', '-']);
+  const { stderr } = await kitFfmpeg(ctx, ['-i', inputs.video.path, '-map', '0:a:0', '-af', `loudnorm=I=${TARGET_LUFS}:TP=${LOUDNORM_TP}:LRA=11:print_format=json`, '-f', 'null', '-']);
   const m = loudnormJson(stderr);
   if (!m) throw ctx.error('tool_failed', 'loudnorm printed no measurement');
   const lra = Math.min(50, Math.max(11, Math.ceil(Number(m.input_lra) + 1)));
   const pass2 =
-    `loudnorm=I=${TARGET_LUFS}:TP=${TARGET_TP}:LRA=${lra}:measured_I=${m.input_i}:measured_TP=${m.input_tp}:` +
+    `loudnorm=I=${TARGET_LUFS}:TP=${LOUDNORM_TP}:LRA=${lra}:measured_I=${m.input_i}:measured_TP=${m.input_tp}:` +
     `measured_LRA=${m.input_lra}:measured_thresh=${m.input_thresh}:offset=${m.target_offset}:linear=true,aresample=48000`;
   let path = await encode(ctx, inputs.video.path, pass2, 'levelled.mp4');
   let after = await kitLoudness(ctx, path);
-  if (!within(after)) {
-    // One correction: the gain still missing, then a true-peak limiter at -1.5 dBFS (oversampled).
-    const gain = TARGET_LUFS - after.lufs;
-    ctx.log.info('sound layer correction pass', { lufs: after.lufs, true_peak_db: after.true_peak_db, gain_db: +gain.toFixed(2) });
-    path = await encode(ctx, path, `volume=${kitNum(gain, 3)}dB,aresample=192000,alimiter=limit=0.841:level=0,aresample=48000`, 'levelled-2.mp4');
+  // Corrections: the gain still missing, through a peak limiter at -2 dBFS run oversampled so it holds
+  // inter-sample peaks. Content with sharp peaks (a chat's pops) loses a little loudness to the limiter on
+  // each pass, so up to three passes close the gap; still outside, the step fails.
+  for (let pass = 1; !within(after) && pass <= 3; pass++) {
+    const gain = after.lufs === null ? 0 : TARGET_LUFS - after.lufs;
+    ctx.log.info('sound layer correction pass', { pass, lufs: after.lufs, true_peak_db: after.true_peak_db, gain_db: +gain.toFixed(2) });
+    path = await encode(ctx, path, `volume=${kitNum(gain, 3)}dB,aresample=192000,alimiter=limit=0.794:level=0:attack=1:release=50,aresample=48000`, `levelled-${pass + 1}.mp4`);
     after = await kitLoudness(ctx, path);
-    if (!within(after)) {
-      throw ctx.error('output_invalid', `levelled to ${after.lufs} LUFS, true peak ${after.true_peak_db} dBTP; the target is ${TARGET_LUFS} +/-${TOLERANCE_LU} LUFS at or below ${TARGET_TP} dBTP`);
-    }
+  }
+  if (!within(after)) {
+    throw ctx.error('output_invalid', `levelled to ${after.lufs} LUFS, true peak ${after.true_peak_db} dBTP; the target is ${TARGET_LUFS} +/-${TOLERANCE_LU} LUFS at or below ${TARGET_TP} dBTP`);
   }
   ctx.log.info('sound layer levelled', { lufs_before: first.lufs, lufs_after: after.lufs, true_peak_db: after.true_peak_db });
   const video = await ctx.file(path.slice(ctx.workDir.length + 1), 'video');

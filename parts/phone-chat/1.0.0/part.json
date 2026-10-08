@@ -122,6 +122,20 @@
                   }
                 }
               ]
+            },
+            "image": {
+              "description": "A picture the customer uploaded for this scene; shown before picture.",
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "object",
+                  "x-kit-file": {
+                    "media": "image"
+                  }
+                }
+              ]
             }
           }
         }
@@ -230,7 +244,7 @@
         ]
       },
       "fonts": {
-        "description": "Optional: the UI face (default the bundled Inter) and an emoji face.",
+        "description": "Optional: the UI face (default the bundled Inter) and an emoji face (TTF, OTF or WOFF). A character no font draws is refused.",
         "type": "object",
         "additionalProperties": false,
         "properties": {
