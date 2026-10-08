@@ -15,8 +15,8 @@ it renders the master mp4:
      Every segment is RE-ENCODED to identical libx264/crf18/yuv420p/30fps so the concat
      demuxer never silently drops frames on a framerate mismatch.
   2. End card         — the pre-built endcard.png (real product composite, see
-     build_endcard.py) is Ken-Burnsed (slow 1.00 -> 1.04 zoom) over its dwell window and
-     appended as the final scene. If the config sets end_card.vo, that spoken line is
+     build_endcard.py) is held STATIC over its dwell window and appended as the final
+     scene. (Set end_card.zoom_to above 1.0 for a slow zoom instead; the default is none.) If the config sets end_card.vo, that spoken line is
      laid at the start of the end-card window and the dwell is stretched to at least the
      line's duration + 0.5s.
   3. Concat           — all segments concatenated via the concat demuxer (-c copy).
@@ -197,25 +197,24 @@ def main():
             cf.write(f"file 'seg-{n}.mp4'\n")
             print(f"  scene-{n}  clip {src_dur:.2f}s -> {tgt:.2f}s")
 
-        # end card: Ken-Burns the real-product PIL composite (never AI)
+        # end card: the real-product PIL composite (never AI), held static by default
         ec_img = endcard["image"]
-        zoom_to = float(endcard.get("zoom_to", 1.04))
+        zoom_to = float(endcard.get("zoom_to") or 1.0)
         frames = ec_frames
         ec_seg = os.path.join(seg_dir, "seg-endcard.mp4")
-        # slow continuous 1.00 -> zoom_to over the dwell. Feed a SINGLE image frame
-        # (-loop 1 -frames:v 1 into the graph via zoompan d=<frames>) so zoompan emits
-        # exactly `frames` output frames — the whole-clip Ken-Burns. -t clamps the output.
-        zstep = (zoom_to - 1.0) / max(frames, 1)
+        ec_vf = "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,setsar=1"
+        if zoom_to > 1.0:
+            # opt-in slow zoom, 1.00 -> zoom_to over the dwell
+            zstep = (zoom_to - 1.0) / max(frames, 1)
+            ec_vf += (f",zoompan=z='min(zoom+{zstep:.6f}\\,{zoom_to})':d={frames}:"
+                      f"x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s={W}x{H}:fps={FPS}")
         run(["ffmpeg", "-y", "-loglevel", "error",
-             "-loop", "1", "-i", ec_img,
-             "-vf", (f"scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,setsar=1,"
-                     f"zoompan=z='min(zoom+{zstep:.6f}\\,{zoom_to})':d={frames}:"
-                     f"x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s={W}x{H}:fps={FPS}"),
-             "-t", f"{ec_dwell:.3f}",
+             "-loop", "1", "-framerate", str(FPS), "-i", ec_img,
+             "-vf", ec_vf, "-frames:v", str(frames),
              "-c:v", "libx264", "-preset", PRESET, "-crf", str(CRF_SEG),
              "-pix_fmt", "yuv420p", "-r", str(FPS), "-an", ec_seg])
         cf.write("file 'seg-endcard.mp4'\n")
-        print(f"  end-card  {ec_dwell:.2f}s  zoom->{zoom_to}")
+        print(f"  end-card  {ec_dwell:.2f}s  " + (f"zoom->{zoom_to}" if zoom_to > 1.0 else "static"))
 
     # -------------------------------------------------------------------
     # 2. concat video (all segments are 30fps -> no silent frame drops)

@@ -1,6 +1,6 @@
 ---
 name: render-absurdist-explainer
-description: Assemble an absurdist animated-explainer video ad (~38s, 9:16) from per-scene i2v clips + their measured VO windows — retime each clip to its VO, re-encode every segment to identical 30fps/libx264/yuv420p so the concat demuxer never drops frames, concat, build a REAL-product PIL end card (never AI) with a slow Ken-Burns, mix VO (loudnorm I=-14) under music (loudnorm I=-26, volume 0.62, amix normalize=0), and burn libass captions last. FREE deterministic assembly (bash-free, Python + ffmpeg + PIL); the recipe supplies the clips, VO, music, product photo, palette, and caption table and gates the paid keyframe/clip/VO/music calls to their own capabilities. Use for the absurdist-explainer format.
+description: Assemble an absurdist animated-explainer video ad (~38s, 9:16) from per-scene i2v clips + their measured VO windows — retime each clip to its VO, re-encode every segment to identical 30fps/libx264/yuv420p so the concat demuxer never drops frames, concat, build a REAL-product PIL end card (never AI) held static, mix VO (loudnorm I=-14) under music (loudnorm I=-26, volume 0.62, amix normalize=0), and burn libass captions last. FREE deterministic assembly (bash-free, Python + ffmpeg + PIL); the recipe supplies the clips, VO, music, product photo, palette, and caption table and gates the paid keyframe/clip/VO/music calls to their own capabilities. Use for the absurdist-explainer format.
 status: active
 ---
 
@@ -58,7 +58,8 @@ story shape, a cast, a look, a narrator or a music style.
 4. **Real-product end card.** `build_endcard.py` composites the REAL retail product photo
    over the brand palette (flat, or sampled from the photo's own edge pixel) with a typeset
    wordmark + claim rows + CTA pill in PIL `ImageDraw.text` — **never an AI cartoon bottle,
-   never AI-rendered brand text**. `compose.py` Ken-Burnses it 1.00 -> 1.04 over the dwell.
+   never AI-rendered brand text**. `compose.py` holds it static over the dwell. Set
+   `end_card.zoom_to` above 1.0 (for example 1.04) only if you want a slow zoom.
    Text that would be hard to read on its background (a dark brand colour on a dark
    photo) is drawn in white or near-black instead, with a warning. If `end_card.vo` is
    set, that spoken line plays from the start of the end-card window, and the dwell is
@@ -82,7 +83,7 @@ story shape, a cast, a look, a narrator or a music style.
   compose reads, so caption windows stay in lockstep with the cut. Run before `compose.py`
   (or point `config.captions_ass` at nothing to skip captions).
 - `scripts/compose.py` — the assembler: per-scene retime + identical 30fps re-encode →
-  concat -> Ken-Burns end card (voiced if `end_card.vo` is set) -> VO/music loudnorm mix
+  concat -> static end card (voiced if `end_card.vo` is set) -> VO/music loudnorm mix
   -> master loudness pass -> burn captions -> master mp4.
 - `scripts/config.example.json` — the shape of the `config` the recipe binds. Its values
   are a labelled worked example (the demo build: a villain-arc eczema story, placeholder
@@ -94,7 +95,7 @@ story shape, a cast, a look, a narrator or a music style.
 
 `config.json` carries: `scenes[]` (each `{id, clip, target_sec, vo, caption, atempo?}`
 where `target_sec` is the **measured** VO window), `end_card{product_image, image,
-dwell_sec, zoom_to, wordmark, product_line, claims[], cta, background?, vo?}`, `brand_palette
+dwell_sec, zoom_to?, wordmark, product_line, claims[], cta, background?, vo?}`, `brand_palette
 {primary, primary_lite, accent, grey}`, `music_bed`, `music_volume` (default 0.62),
 `atempo` (compose-stage VO speed-up, default off; the reference runs used 1.3 when the VO
 read slow), `captions_ass`, and `caption_style`. See `config.example.json`.
