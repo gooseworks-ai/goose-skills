@@ -1,9 +1,13 @@
 name: CI
 
 on:
+  # Every pull request is checked, whatever its base: dev, main, the
+  # video-merged integration branch and video/** lane branches included.
   pull_request:
+  # Pushes run the same checks. Only dev and main deploy or publish (see the
+  # jobs' if: lines); video-merged is checked after each merge.
   push:
-    branches: [dev, main]
+    branches: [dev, main, video-merged]
 
 jobs:
   validate:
@@ -41,6 +45,33 @@ jobs:
         run: |
           python3 skills/ads/capabilities/render-street-interview/scripts/selftest.py
           python3 -m unittest discover -s skills/ads/capabilities/render-street-interview/tests -p 'test_prompt_budget.py' -v
+
+  atom-checks:
+    # What video atoms may say, their version bumps, and the parts index.
+    # Old debt warns; debt a branch adds fails (scripts/atom-lint.js).
+    runs-on: ubuntu-latest
+    env:
+      BASE: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.base_ref) || github.event.before }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Test the atom and part checks
+        run: node --test scripts/__tests__/atom-lint.test.js scripts/__tests__/check-atom-versions.test.js scripts/__tests__/check-parts.test.js
+
+      - name: Atom lint
+        run: node scripts/atom-lint.js --base "$BASE"
+
+      - name: Atom version bumps
+        run: node scripts/check-atom-versions.js --base "$BASE"
+
+      - name: Parts index and frozen versions
+        run: node scripts/check-parts.js --base "$BASE"
 
   imessage-chat-browser-tests:
     # Headless-Chromium tests for render-imessage-chat, including the QA-60
@@ -94,8 +125,9 @@ jobs:
           skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests
 
   deploy-catalog:
-    if: github.event_name == 'push'
-    needs: validate
+    # Ships only after every check passes, and only from dev or main.
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main')
+    needs: [validate, atom-checks, imessage-chat-browser-tests, media-tests]
     runs-on: ubuntu-latest
     timeout-minutes: 75
     environment: ${{ github.ref_name == 'dev' && 'staging' || 'production' }}
@@ -128,3 +160,36 @@ jobs:
           repository: ${{ secrets.GOOSEWORKS_APP_REPO }}
           event-type: goose_skills_updated
           client-payload: '{"source":"goose-skills","ref":"${{ github.ref }}","sha":"${{ github.sha }}"}'
+
+  npm-release:
+    # The npm package publishes from main only, after every check passes.
+    # The npm-release environment holds NPM_TOKEN and is limited to main in
+    # the repository settings. On other changes it opens or updates the
+    # release pull request.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [validate, atom-checks, imessage-chat-browser-tests, media-tests]
+    runs-on: ubuntu-latest
+    environment: npm-release
+    concurrency:
+      group: npm-release
+      cancel-in-progress: false
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - run: npm ci
+
+      - name: Create release pull request or publish
+        uses: changesets/action@v1
+        with:
+          publish: npm publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
