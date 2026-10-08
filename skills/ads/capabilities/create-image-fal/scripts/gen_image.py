@@ -6,13 +6,19 @@ ROUTED THROUGH THE PROXY (bills the Ads agent). image_urls entries must be PUBLI
       --payload '{"prompt":"...","image_urls":["https://..."],"aspect_ratio":"9:16"}' \
       --out keyframe.png
 
+  # an edit of local files: each --image is a public url, or a local file that is put
+  # on the fal CDN first (free, through the GooseWorks storage proxy)
+  gen_image.py --model fal-ai/nano-banana/edit --image product.png --image scene.jpg \
+      --payload '{"prompt":"Place the product on the counter; keep everything else unchanged"}' \
+      --out edit.png
+
 The FAL result codec is NOT guaranteed to match the requested extension (Seedream, for
 one, returns a JPEG). We sniff the downloaded bytes and, if they disagree with the
 extension, transcode to match — so `--out foo.png` is always really a PNG and a strict
 downstream consumer (or a file-type check) never trips.
 """
 import argparse, json, os
-from media_proxy import fal_generate, download
+from media_proxy import fal_generate, fal_upload, download
 
 _MAGIC = [
     (b"\x89PNG\r\n\x1a\n", "png"),
@@ -55,12 +61,29 @@ def _reconcile_extension(path):
         return f"WARNING: bytes are {actual} but extension is .{requested} (transcode unavailable: {e})"
 
 
+def resolve_images(images, upload):
+    """Public urls pass through; a local file is uploaded with `upload` and its url used."""
+    urls = []
+    for item in images:
+        if item.startswith(("https://", "http://", "data:")):
+            urls.append(item)
+        elif os.path.isfile(item):
+            urls.append(upload(item))
+        else:
+            raise SystemExit(f"--image {item!r} is neither a url nor a file")
+    return urls
+
+
 ap = argparse.ArgumentParser()
 ap.add_argument("--model", required=True)
 ap.add_argument("--payload", required=True, help="JSON string, or @path to a JSON file")
+ap.add_argument("--image", action="append", default=[],
+                help="Input image for an edit: a public url or a local file (repeatable, in order)")
 ap.add_argument("--out", required=True)
 a = ap.parse_args()
 payload = json.load(open(a.payload[1:])) if a.payload.startswith("@") else json.loads(a.payload)
+if a.image:
+    payload["image_urls"] = list(payload.get("image_urls") or []) + resolve_images(a.image, fal_upload)
 url = fal_generate(a.model, payload)
 download(url, a.out)
 note = _reconcile_extension(a.out)

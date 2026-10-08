@@ -2,6 +2,7 @@
   "slug": "media-proxy",
   "category": "capabilities",
   "domain": "ads",
+  "version": "2.0.2",
   "tags": [
     "ads"
   ],

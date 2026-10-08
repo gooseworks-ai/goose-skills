@@ -36,13 +36,13 @@ join, ask for a frame-aligned boundary; do not silently alter the user's boundar
 
 ## Choose only the needed route
 
-| Treatment | Required new work | Cost/approval |
+| Treatment | Required new work | Paid generation |
 |---|---|---|
-| Supplied finished clip | Normalize hook dimensions/fps and assemble locally | $0 media generation |
-| Existing footage | Select/trim approved footage, then bind a finished hook | $0 media generation unless a separate paid service is chosen |
-| Kinetic text | Approved short copy + licensed font; local fade/slide | $0 media generation; optional Pillow dependency |
-| Voice over footage/text | New opening voice track using the chosen voice capability; local mux | Estimate only new VO and approve it first |
-| Generated creator/video | New opening via chosen generation capability and usable references | Estimate only required new opening calls; approve before submitting |
+| Supplied finished clip | Normalize hook dimensions/fps and assemble locally | None |
+| Existing footage | Select/trim approved footage, then bind a finished hook | None, unless a separate paid service is chosen |
+| Kinetic text | Approved short copy + licensed font; local fade/slide | None; Pillow draws the text |
+| Voice over footage/text | New opening voice track using the chosen voice capability; local mux | Only the new voice track |
+| Generated creator/video | New opening via chosen generation capability and usable references | Only the new opening calls |
 
 Use published `create-vo-elevenlabs` for new narration and
 `create-video-seedance-2-fal` for requested generated video after reading their

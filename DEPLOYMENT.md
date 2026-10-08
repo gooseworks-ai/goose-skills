@@ -13,8 +13,9 @@
 2. Create GitHub environments `staging` and `production`. Set `TRIGGER_SECRET_KEY` in each environment to its corresponding Trigger project/environment secret key. Do not use the personal deploy access token, local development key, or render-project key.
 3. Restrict staging deployment to dev and production deployment to main. Require validation on PRs to both branches.
 4. Keep `GOOSEWORKS_APP_REPO_TOKEN` and `GOOSEWORKS_APP_REPO` configured for the production CMS/docs dispatch.
-5. Merge the workflow change into main, then propagate it to dev. The initial main merge republishes the existing production catalog.
-6. Retire old daily catalog schedules in Trigger.dev. The updated worker keeps the legacy task ID as a no-op until schedules are removed.
+5. Create the GitHub environment `npm-release`, limit its deployment branches to main, and move `NPM_TOKEN` into it. Make the check jobs (validate, atom-checks, imessage-chat-browser-tests, media-tests) required on dev, main and video-merged, so a red check blocks the merge.
+6. Merge the workflow change into main, then propagate it to dev. The initial main merge republishes the existing production catalog.
+7. Retire old daily catalog schedules in Trigger.dev. The updated worker keeps the legacy task ID as a no-op until schedules are removed.
 
 ## Testing and recovery
 
@@ -22,4 +23,4 @@ Inspect the CI deployment job and Trigger run. A release is successful only when
 
 Superseded merge jobs fail before they start a sync. Deploy the newest successful CI run instead. If a full sync fails, it may have applied some per-skill writes; CI marks it failed. Fix the source or credentials and rerun the intended release. A revert must be merged to the affected branch to publish restored content.
 
-The npm package release workflow is separate from agent catalog publication. This workflow does not publish the GooseWorks CLI or switch its entry skills.
+The npm package release is the `npm-release` job in the same CI workflow. Like the catalog deploy, it runs only after every check passes, and only on main. It is separate from agent catalog publication and does not publish the GooseWorks CLI or switch its entry skills.
