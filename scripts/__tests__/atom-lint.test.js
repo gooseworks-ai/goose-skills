@@ -103,11 +103,23 @@ test('a base that does not resolve stops the check instead of passing it', () =>
   assert.equal(res.code, 2, res.out);
 });
 
-const POINTER = '> **Superseded:** the kit now does this with the clip part. This atom still runs outside the kit.\n\n';
+const POINTER = '> **Superseded:** the kit now does this with the clip-part part, version 1.0.0. This atom still runs outside the kit.\n\n';
 
-test('a superseded atom is skipped by the text rules, apart from its pointer', () => {
-  const old = `---\nname: clip-maker\nstatus: superseded\n---\n\n${POINTER}# clip-maker\n\nEach take costs $3.\n`;
-  const { root, base } = makeRepo({ 'clip-maker': { skill: old } });
+/** A published clip-part@1.0.0 in the fixture repo's parts index. */
+function publishPart(root) {
+  fs.mkdirSync(path.join(root, 'parts'), { recursive: true });
+  fs.writeFileSync(
+    path.join(root, 'parts', 'index.json'),
+    JSON.stringify({ interface: 1, parts: [{ id: 'clip-part', version: '1.0.0', files: {} }] }),
+  );
+  fs.writeFileSync(path.join(root, 'parts', 'withdrawn.json'), JSON.stringify({ interface: 1, withdrawn: [] }));
+}
+
+const superseded = (fields, note = POINTER) => `---\nname: clip-maker\n${fields}\n---\n\n${note}# clip-maker\n\nEach take costs $3.\n`;
+
+test('a superseded atom naming its published replacement is skipped by the text rules', () => {
+  const { root, base } = makeRepo({ 'clip-maker': { skill: superseded('status: superseded\nsuperseded_by: clip-part@1.0.0') } });
+  publishPart(root);
   fs.appendFileSync(path.join(root, SKILL), 'A retake costs $3. Run npm install first.\n');
   commitAll(root);
   const res = run('atom-lint.js', root, ['--base', base]);
@@ -115,12 +127,31 @@ test('a superseded atom is skipped by the text rules, apart from its pointer', (
   assert.match(res.out, /1 superseded, pointer checked only/);
 });
 
-test('a superseded status needs the pointer paragraph, and a pointer needs the status', () => {
-  const noPointer = `---\nname: clip-maker\nstatus: superseded\n---\n\n# clip-maker\n`;
-  const noStatus = `---\nname: other-maker\nstatus: active\n---\n\n${POINTER}# other-maker\n`;
-  const { root } = makeRepo({ 'clip-maker': { skill: noPointer }, 'other-maker': { skill: noStatus } });
+test('a superseded atom is exempt only when it names a published replacement in its frontmatter and note', () => {
+  const cases = [
+    ['status: superseded', POINTER, /superseded_by must name the replacement parts as id@x\.y\.z/],
+    ['status: superseded\nsuperseded_by: clip-part@2.0.0', POINTER, /superseded_by names clip-part@2\.0\.0, which is not a published part/],
+    ['status: superseded\nsuperseded_by: clip-part@1.0.0', '> **Superseded**\n\n', /the pointer does not name clip-part and 1\.0\.0/],
+    ['status: superseded\nsuperseded_by: clip-part@1.0.0', '', /status: superseded with no pointer paragraph/],
+  ];
+  for (const [fields, note, expected] of cases) {
+    const { root } = makeRepo({ 'clip-maker': { skill: superseded(fields, note) } });
+    publishPart(root);
+    const res = run('atom-lint.js', root, []);
+    assert.equal(res.code, 1, `${fields}\n${res.out}`);
+    assert.match(res.out, expected);
+    assert.match(res.out, /0 superseded/);
+  }
+});
+
+test('the status is read as YAML: a malformed or non-string status exempts nothing', () => {
+  const malformed = superseded(`status: "superseded'\nsuperseded_by: clip-part@1.0.0`);
+  const notString = superseded('status: [superseded]\nsuperseded_by: clip-part@1.0.0');
+  const { root } = makeRepo({ 'clip-maker': { skill: malformed }, 'other-maker': { skill: notString.replace(/clip-maker/g, 'other-maker') } });
+  publishPart(root);
   const res = run('atom-lint.js', root, []);
   assert.equal(res.code, 1, res.out);
-  assert.match(res.out, /error atom\.superseded_pointer: .*clip-maker\/SKILL\.md:1 "status: superseded with no pointer paragraph"/);
+  assert.match(res.out, /error atom\.frontmatter: .*clip-maker\/SKILL\.md:1/);
   assert.match(res.out, /error atom\.superseded_pointer: .*other-maker\/SKILL\.md:1 "pointer paragraph without status: superseded"/);
+  assert.match(res.out, /0 superseded/);
 });

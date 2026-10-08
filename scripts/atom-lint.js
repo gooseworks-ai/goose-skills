@@ -35,6 +35,7 @@
 const fs = require('fs');
 const path = require('path');
 const lib = require('./lib/atoms');
+const yaml = require('js-yaml');
 const ACTION_NAMES = require('./atom-lint/action-names.json');
 
 const { ROOT, CONFIG } = lib;
@@ -164,29 +165,79 @@ WHAT['atom.one_billing_helper'] = `a full copy of the billing helper; keep the o
 WHAT['author.size_limits'] = 'over the size limit';
 WHAT['atom.lint_allow'] = 'a lint_allow entry needs a known rule, a match and a reason';
 WHAT['atom.superseded_pointer'] =
-  'a superseded atom needs status: superseded in its frontmatter and a one-paragraph "> **Superseded" pointer as the first thing in its body';
+  'a superseded atom needs status: superseded, superseded_by naming its published replacement parts (id@x.y.z), and a one-paragraph "> **Superseded" pointer opening the body that names them';
+WHAT['atom.frontmatter'] = 'SKILL.md frontmatter must be valid YAML';
+
+const SEMVER_REF = /^([a-z][a-z0-9]*(?:-[a-z0-9]+)*)@((?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*))$/;
+
+/** Published part versions ("id@x.y.z") that are not withdrawn, from the parts registry. */
+function liveParts() {
+  const read = (rel, key) => {
+    try {
+      const value = JSON.parse(fs.readFileSync(path.join(ROOT, 'parts', rel), 'utf8'))[key];
+      return Array.isArray(value) ? value : [];
+    } catch {
+      return [];
+    }
+  };
+  const withdrawn = new Set(read('withdrawn.json', 'withdrawn').map((w) => `${w.id}@${w.version}`));
+  return new Set(read('index.json', 'parts').map((p) => `${p.id}@${p.version}`).filter((k) => !withdrawn.has(k)));
+}
 
 /**
- * A superseded atom (frontmatter status: superseded) is replaced by a part
+ * A superseded atom (frontmatter status: superseded) is replaced by parts
  * and stays only for skills outside the kit until the batches retire it, so
- * the text rules skip it. What is still checked is the pointer: the status
- * line and a one-paragraph "> **Superseded" note opening the body, each
- * needing the other.
+ * the text rules skip it. What is checked instead is its pointer, and an
+ * atom is exempt only when all of it holds:
+ *   - the frontmatter parses as YAML and status is the string "superseded";
+ *   - superseded_by names each replacement as id@x.y.z (a list, or one
+ *     comma-separated string), each a published part that is not withdrawn;
+ *   - the body opens with a one-paragraph "> **Superseded" note that names
+ *     each replacement's id and version.
+ * A note without the status is an error too. Returns { superseded, problems }.
  */
-function supersededState(atom) {
+function supersededState(atom, live) {
   const text = fs.readFileSync(path.join(ROOT, atom.dir, 'SKILL.md'), 'utf8');
   const fm = text.match(/^---\r?\n([\s\S]*?)\r?\n---[ \t]*(?:\r?\n|$)/);
-  const status = fm && (fm[1].match(/^status:[ \t]*['"]?([A-Za-z_-]+)['"]?[ \t]*$/m) || [])[1];
+  let data = {};
+  if (fm) {
+    try {
+      data = yaml.load(fm[1]) || {};
+    } catch (err) {
+      return { superseded: false, frontmatterError: err.reason || err.message, problems: [] };
+    }
+  }
+  const superseded = typeof data === 'object' && data.status === 'superseded';
+
   const lines = (fm ? text.slice(fm[0].length) : text).split(/\r?\n/);
   const start = lines.findIndex((l) => l.trim());
-  let pointer = false;
+  let note = null;
   if (start >= 0 && /^> \*\*Superseded\b/.test(lines[start])) {
     // One paragraph: the quoted lines, then a blank line or the end.
     let end = start;
     while (end + 1 < lines.length && lines[end + 1].startsWith('>')) end++;
-    pointer = end + 1 >= lines.length || !lines[end + 1].trim();
+    if (end + 1 >= lines.length || !lines[end + 1].trim()) note = lines.slice(start, end + 1).join(' ');
   }
-  return { superseded: status === 'superseded', pointer };
+
+  const problems = [];
+  if (!superseded) {
+    if (note) problems.push('pointer paragraph without status: superseded');
+    return { superseded: false, problems };
+  }
+  if (!note) problems.push('status: superseded with no pointer paragraph');
+  const raw = data.superseded_by;
+  const refs = (Array.isArray(raw) ? raw : typeof raw === 'string' ? raw.split(',') : [])
+    .map((r) => (typeof r === 'string' ? r.trim() : r));
+  if (!refs.length || refs.some((r) => typeof r !== 'string' || !SEMVER_REF.test(r))) {
+    problems.push('superseded_by must name the replacement parts as id@x.y.z');
+  } else {
+    for (const ref of refs) {
+      const [, id, version] = ref.match(SEMVER_REF);
+      if (!live.has(ref)) problems.push(`superseded_by names ${ref}, which is not a published part`);
+      if (note && !(note.includes(id) && note.includes(version))) problems.push(`the pointer does not name ${id} and ${version}`);
+    }
+  }
+  return { superseded: problems.length === 0, problems };
 }
 
 function fileKind(relInAtom) {
@@ -395,17 +446,14 @@ function run(argv) {
   const results = [];
   let allowed = 0;
   let superseded = 0;
+  const live = liveParts();
   for (const atom of atoms) {
-    const state = supersededState(atom);
-    if (state.superseded !== state.pointer) {
-      results.push({
-        rule: 'atom.superseded_pointer',
-        file: `${atom.dir}/SKILL.md`,
-        line: 1,
-        match: state.superseded ? 'status: superseded with no pointer paragraph' : 'pointer paragraph without status: superseded',
-        atom: atom.slug,
-        severity: 'error',
-      });
+    const state = supersededState(atom, live);
+    if (state.frontmatterError) {
+      results.push({ rule: 'atom.frontmatter', file: `${atom.dir}/SKILL.md`, line: 1, match: state.frontmatterError, atom: atom.slug, severity: 'error' });
+    }
+    for (const problem of state.problems) {
+      results.push({ rule: 'atom.superseded_pointer', file: `${atom.dir}/SKILL.md`, line: 1, match: problem, atom: atom.slug, severity: 'error' });
     }
     if (state.superseded) {
       superseded++;

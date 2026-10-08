@@ -68,6 +68,9 @@ jobs:
           base="$(node scripts/pick-base.js)"
           echo "BASE=$base" >> "$GITHUB_ENV"
 
+      - name: Install dependencies
+        run: npm ci --ignore-scripts --no-audit --no-fund
+
       - name: Test the atom and part checks
         run: node --test scripts/__tests__/atom-lint.test.js scripts/__tests__/check-atom-versions.test.js scripts/__tests__/check-parts.test.js scripts/__tests__/pick-base.test.js
 
@@ -83,13 +86,30 @@ jobs:
       - name: Part lint (no network, processes, clock or money in parts)
         run: node parts/_tools/lint.mjs
 
-      - name: Install ffmpeg for the part tests
-        # The media part tests skip without ffmpeg; browser-drawn parts still
-        # skip here, as this job has no Chromium.
-        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+  part-tests:
+    # The parts' own tests with the kit's tools: ffmpeg and a Chromium driven by
+    # playwright-core, installed for this job only, outside the repo. macOS, like
+    # the media tests, so ffmpeg matches the machines the parts were built on.
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
 
-      - name: Part tests
-        run: npm run test:parts
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install ffmpeg and Chromium
+        run: |
+          brew install ffmpeg
+          npm install --no-save --no-package-lock --prefix "$RUNNER_TEMP/pw" playwright-core@1.58.2
+          node "$RUNNER_TEMP/pw/node_modules/playwright-core/cli.js" install chromium
+          echo "PLAYWRIGHT_CORE_PATH=$RUNNER_TEMP/pw/node_modules/playwright-core" >> "$GITHUB_ENV"
+
+      - name: Part tests (every one must run; a skip fails the job)
+        shell: bash
+        run: |
+          npm run test:parts 2>&1 | tee "$RUNNER_TEMP/part-tests.log"
+          node scripts/require-all-tests-ran.js "$RUNNER_TEMP/part-tests.log"
 
   imessage-chat-browser-tests:
     # Headless-Chromium tests for render-imessage-chat, including the QA-60
@@ -146,7 +166,7 @@ jobs:
   deploy-catalog:
     # Ships only after every check passes, and only from dev or main.
     if: github.event_name == 'push' && (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main')
-    needs: [validate, atom-checks, imessage-chat-browser-tests, media-tests]
+    needs: [validate, atom-checks, part-tests, imessage-chat-browser-tests, media-tests]
     runs-on: ubuntu-latest
     timeout-minutes: 75
     environment: ${{ github.ref_name == 'dev' && 'staging' || 'production' }}
@@ -186,7 +206,7 @@ jobs:
     # the repository settings. On other changes it opens or updates the
     # release pull request.
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: [validate, atom-checks, imessage-chat-browser-tests, media-tests]
+    needs: [validate, atom-checks, part-tests, imessage-chat-browser-tests, media-tests]
     runs-on: ubuntu-latest
     environment: npm-release
     concurrency:

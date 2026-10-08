@@ -33,6 +33,7 @@
   "author": "Athina AI",
   "license": "MIT",
   "devDependencies": {
-    "@changesets/cli": "^2.29.6"
+    "@changesets/cli": "^2.29.6",
+    "js-yaml": "^4.1.1"
   }
 }
