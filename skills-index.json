@@ -8625,10 +8625,10 @@
     {
       "slug": "stitch-videos-ffmpeg",
       "name": "stitch-videos-ffmpeg",
-      "version": "1.2.0",
+      "version": "1.3.0",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Stitch video segments with ffmpeg concat, xfade, overlay, audio mux, and export settings. Ships montage.py, a free montage assembler (python3 + ffmpeg, no keys). It takes a JSON EDL of clips and stills, normalizes them and hard-cuts them in order, burns captions from an SRT, a cue list or word timings, and lays a VO over a music bed that ducks under it, mastered to -14 LUFS.",
+      "description": "Stitch video segments with ffmpeg concat, xfade, overlay, audio mux, and export settings, and trim a source into named clips at exact windows (trim_clips.py). Ships montage.py, a free montage assembler (python3 + ffmpeg, no keys). It takes a JSON EDL of clips and stills, normalizes them and hard-cuts them in order, burns captions from an SRT, a cue list or word timings, and lays a VO over a music bed that ducks under it, mastered to -14 LUFS.",
       "tags": "ads",
       "path": "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg",
       "files": [
@@ -8651,7 +8651,7 @@
         "slug": "stitch-videos-ffmpeg",
         "category": "capabilities",
         "pack": "video-ad-formats",
-        "version": "1.2.0",
+        "version": "1.3.0",
         "tags": [
           "ads"
         ],
@@ -10399,9 +10399,9 @@
         {
           "slug": "stitch-videos-ffmpeg",
           "name": "stitch-videos-ffmpeg",
-          "description": "Stitch video segments with ffmpeg concat, xfade, overlay, audio mux, and export settings. Ships montage.py, a free montage assembler (python3 + ffmpeg, no keys). It takes a JSON EDL of clips and stills, normalizes them and hard-cuts them in order, burns captions from an SRT, a cue list or word timings, and lays a VO over a music bed that ducks under it, mastered to -14 LUFS.",
+          "description": "Stitch video segments with ffmpeg concat, xfade, overlay, audio mux, and export settings, and trim a source into named clips at exact windows (trim_clips.py). Ships montage.py, a free montage assembler (python3 + ffmpeg, no keys). It takes a JSON EDL of clips and stills, normalizes them and hard-cuts them in order, burns captions from an SRT, a cue list or word timings, and lays a VO over a music bed that ducks under it, mastered to -14 LUFS.",
           "path": "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg",
-          "version": "1.2.0",
+          "version": "1.3.0",
           "files": [
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/SKILL.md",
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/composite.py",

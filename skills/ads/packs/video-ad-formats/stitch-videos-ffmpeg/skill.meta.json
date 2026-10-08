@@ -3,7 +3,7 @@
   "category": "packs/video-ad-formats",
   "domain": "ads",
   "tags": ["ads"],
-  "version": "1.2.0",
+  "version": "1.3.0",
   "installation": {
     "base_command": "npx goose-skills install video-ad-formats/stitch-videos-ffmpeg",
     "supports": ["claude", "cursor", "codex"]
