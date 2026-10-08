@@ -24,6 +24,9 @@
  * merge base with HEAD (CI). An atom moved between capabilities/ and packs/
  * is compared with its old folder.
  *
+ * Atoms with status: superseded are skipped, apart from their pointer
+ * (atom.superseded_pointer).
+ *
  * A true finding that is creative content (a phone mockup that draws the
  * ChatGPT app, say) is allowed in the atom's skill.meta.json:
  *   "lint_allow": [{ "rule": "...", "match": "...", "reason": "..." }]
@@ -160,6 +163,31 @@ const WHAT = Object.fromEntries(TEXT_RULES.map((r) => [r.id, r.what]));
 WHAT['atom.one_billing_helper'] = `a full copy of the billing helper; keep the one copy in ${CONFIG.billing_helper.home}`;
 WHAT['author.size_limits'] = 'over the size limit';
 WHAT['atom.lint_allow'] = 'a lint_allow entry needs a known rule, a match and a reason';
+WHAT['atom.superseded_pointer'] =
+  'a superseded atom needs status: superseded in its frontmatter and a one-paragraph "> **Superseded" pointer as the first thing in its body';
+
+/**
+ * A superseded atom (frontmatter status: superseded) is replaced by a part
+ * and stays only for skills outside the kit until the batches retire it, so
+ * the text rules skip it. What is still checked is the pointer: the status
+ * line and a one-paragraph "> **Superseded" note opening the body, each
+ * needing the other.
+ */
+function supersededState(atom) {
+  const text = fs.readFileSync(path.join(ROOT, atom.dir, 'SKILL.md'), 'utf8');
+  const fm = text.match(/^---\r?\n([\s\S]*?)\r?\n---[ \t]*(?:\r?\n|$)/);
+  const status = fm && (fm[1].match(/^status:[ \t]*['"]?([A-Za-z_-]+)['"]?[ \t]*$/m) || [])[1];
+  const lines = (fm ? text.slice(fm[0].length) : text).split(/\r?\n/);
+  const start = lines.findIndex((l) => l.trim());
+  let pointer = false;
+  if (start >= 0 && /^> \*\*Superseded\b/.test(lines[start])) {
+    // One paragraph: the quoted lines, then a blank line or the end.
+    let end = start;
+    while (end + 1 < lines.length && lines[end + 1].startsWith('>')) end++;
+    pointer = end + 1 >= lines.length || !lines[end + 1].trim();
+  }
+  return { superseded: status === 'superseded', pointer };
+}
 
 function fileKind(relInAtom) {
   const parts = relInAtom.split('/');
@@ -366,7 +394,23 @@ function run(argv) {
 
   const results = [];
   let allowed = 0;
+  let superseded = 0;
   for (const atom of atoms) {
+    const state = supersededState(atom);
+    if (state.superseded !== state.pointer) {
+      results.push({
+        rule: 'atom.superseded_pointer',
+        file: `${atom.dir}/SKILL.md`,
+        line: 1,
+        match: state.superseded ? 'status: superseded with no pointer paragraph' : 'pointer paragraph without status: superseded',
+        atom: atom.slug,
+        severity: 'error',
+      });
+    }
+    if (state.superseded) {
+      superseded++;
+      continue;
+    }
     const meta = lib.readMeta(ROOT, atom.dir);
     const [allows, problems] = readAllows(atom, meta);
     const head = lintAtom(atom, headFiles(atom)).filter((f) => {
@@ -389,10 +433,10 @@ function run(argv) {
       results.push({ ...f, atom: atom.slug, severity: fails ? 'error' : 'warning' });
     }
   }
-  return { results, allowed, atoms, base };
+  return { results, allowed, atoms, base, superseded };
 }
 
-function report({ results, allowed, atoms, base }, quiet) {
+function report({ results, allowed, atoms, base, superseded }, quiet) {
   const errors = results.filter((r) => r.severity === 'error');
   const warnings = results.filter((r) => r.severity === 'warning');
   const line = (r) => `${r.severity} ${r.rule}: ${WHAT[r.rule]} ${r.file}:${r.line} "${r.match}"`;
@@ -416,7 +460,7 @@ function report({ results, allowed, atoms, base }, quiet) {
   for (const r of results) if (shared.has(r.atom)) sharedCounts.set(r.atom, (sharedCounts.get(r.atom) || 0) + 1);
 
   const summary = [
-    `Atom lint: ${atoms.length} atoms, ${errors.length} errors, ${warnings.length} warnings, ${allowed} allowed${base ? `, compared with ${base.slice(0, 9)}` : ', no base (old debt only warns)'}.`,
+    `Atom lint: ${atoms.length} atoms (${superseded} superseded, pointer checked only), ${errors.length} errors, ${warnings.length} warnings, ${allowed} allowed${base ? `, compared with ${base.slice(0, 9)}` : ', no base (old debt only warns)'}.`,
     '',
     '| Rule | Errors | Warnings |',
     '|---|---:|---:|',
