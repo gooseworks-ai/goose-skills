@@ -67,7 +67,7 @@ export async function kitLoudness(ctx, path) {
     '-map',
     '0:a:0',
     '-af',
-    'ebur128=peak=true',
+    'ebur128=peak=true:framelog=verbose',
     '-f',
     'null',
     '-',
@@ -92,8 +92,11 @@ export function kitPieceName(prefix, id, index, used) {
     .replace(/[^a-z0-9_-]+/g, '-')
     .replace(/^[-_]+|[-_]+$/g, '')
     .slice(0, 40);
+  const ok = (n) => /^[a-z0-9][a-z0-9_-]{0,47}$/.test(n) && !(used && used.has(n));
   let name = base ? `${prefix}-${base}` : `${prefix}-${index + 1}`;
-  if (!/^[a-z0-9][a-z0-9_-]{0,47}$/.test(name) || (used && used.has(name))) name = `${prefix}-${index + 1}`;
+  if (!ok(name)) name = `${prefix}-${index + 1}`;
+  // The fallback can collide too (ids "2" and none both give line-2): add a counter until it is unique.
+  for (let n = 2; !ok(name); n++) name = `${prefix}-${index + 1}-${n}`;
   if (used) used.add(name);
   return name;
 }

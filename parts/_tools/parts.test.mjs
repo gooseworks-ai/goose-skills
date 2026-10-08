@@ -10,13 +10,14 @@ import { pathToFileURL } from 'node:url';
 import { kitSchemaErrors } from '../_lib/schema.mjs';
 import { bundlePart, newestVersions } from './bundle.mjs';
 import { buildIndex, versionFolders } from './index.mjs';
-import { hasFfmpeg, makeCtx, orderedModel, PARTS_ROOT } from './kit-harness.mjs';
+import { browserMissing, hasFfmpeg, makeCtx, orderedModel, PARTS_ROOT } from './kit-harness.mjs';
 import { lintParts, scanSource } from './lint.mjs';
 import { manifestText } from './manifest.mjs';
 
 const schema = JSON.parse(readFileSync(join(PARTS_ROOT, '_contract', 'part-manifest.schema.json'), 'utf8'));
 const folders = versionFolders();
 const manifestOf = (f) => JSON.parse(readFileSync(join(f.dir, 'part.json'), 'utf8'));
+const withdrawnSet = new Set(JSON.parse(readFileSync(join(PARTS_ROOT, 'withdrawn.json'), 'utf8')).withdrawn.map((w) => `${w.id}@${w.version}`));
 
 test('there are published parts to check', () => {
   assert.ok(folders.length > 0);
@@ -38,7 +39,8 @@ for (const f of folders) {
     assert.equal(orders.length, 0);
   });
 
-  test(`${f.id}@${f.version}: free parts list no models; paid parts list each model they order`, async () => {
+  // A withdrawn version never runs, so only its manifest and lint are checked.
+  if (!withdrawnSet.has(`${f.id}@${f.version}`)) test(`${f.id}@${f.version}: free parts list no models; paid parts list each model they order`, async (t) => {
     const models = manifest.needs.models;
     if (!models.length) {
       assert.equal(manifest.needs.network, false);
@@ -47,7 +49,8 @@ for (const f of folders) {
     }
     const fixture = join(PARTS_ROOT, f.id, 'tests', 'fixture.mjs');
     assert.ok(existsSync(fixture), `${f.id} needs tests/fixture.mjs with a sample run`);
-    if (!(await hasFfmpeg())) return;
+    if (!(await hasFfmpeg())) return t.skip('ffmpeg is not installed');
+    if (manifest.needs.browser && browserMissing()) return t.skip(browserMissing());
     const { sample } = await import(pathToFileURL(fixture).href);
     const { ctx, orders } = makeCtx({ partDir: f.dir, line: sample.line });
     await mod_run(f, await sample.inputs(ctx.workDir), ctx);

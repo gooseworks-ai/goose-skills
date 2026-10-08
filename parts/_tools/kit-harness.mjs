@@ -2,7 +2,7 @@
 // (parts/_contract/part-interface.d.ts), backed by the local ffmpeg and,
 // when present, a local playwright-core. Tests only; parts never import it.
 import { createHash } from 'node:crypto';
-import { execFile } from 'node:child_process';
+import { spawn } from 'node:child_process';
 import { mkdirSync, mkdtempSync, readFileSync, statSync, existsSync, readdirSync } from 'node:fs';
 import { tmpdir, homedir } from 'node:os';
 import { createRequire } from 'node:module';
@@ -42,13 +42,40 @@ export function sha256(buf) {
   return createHash('sha256').update(buf).digest('hex');
 }
 
+const STDERR_TAIL = 16 * 1024 * 1024;
+
+/**
+ * Runs ffmpeg or ffprobe. stdout is kept whole (ffprobe JSON, raw frames); stderr is streamed and only
+ * its last 16 MB kept, so a chatty ffmpeg build (Ubuntu's ffmpeg 6 warns per packet) can never overflow a
+ * buffer, while the summaries parts read at the end (EBU R128, detect filters) are still there.
+ */
 export function run(bin, args, { timeoutMs = 300000, signal } = {}) {
   return new Promise((resolvePromise, reject) => {
-    execFile(bin, args, { maxBuffer: 256 * 1024 * 1024, timeout: timeoutMs, signal }, (err, stdout, stderr) => {
-      if (err) {
-        err.stderr = stderr;
-        reject(err);
-      } else resolvePromise({ stdout, stderr });
+    const child = spawn(bin, args, { stdio: ['ignore', 'pipe', 'pipe'], signal });
+    const out = [];
+    let err = '';
+    child.stdout.on('data', (b) => out.push(b));
+    child.stderr.setEncoding('utf8');
+    child.stderr.on('data', (t) => {
+      err += t;
+      if (err.length > STDERR_TAIL * 2) err = err.slice(-STDERR_TAIL);
+    });
+    const timer = setTimeout(() => child.kill('SIGKILL'), timeoutMs);
+    child.on('error', (e) => {
+      clearTimeout(timer);
+      reject(e);
+    });
+    child.on('close', (code, sig) => {
+      clearTimeout(timer);
+      const stdout = Buffer.concat(out);
+      const stderr = err.slice(-STDERR_TAIL);
+      if (code === 0) resolvePromise({ stdout: stdout.toString('utf8'), stdoutBuffer: stdout, stderr });
+      else {
+        const e = new Error(`${bin} exited with ${sig || code}: ${stderr.slice(-2000)}`);
+        e.stderr = stderr;
+        e.code = code;
+        reject(e);
+      }
     });
   });
 }
@@ -125,25 +152,26 @@ const ENCODE = {
   aac: ['-c:a', 'aac', '-b:a', '192k', '-ar', '48000'],
 };
 
+/**
+ * playwright-core for the browser tests: PLAYWRIGHT_CORE_PATH (a package folder), else one this repo can
+ * require. Null when neither exists, and the browser tests then skip and say why.
+ */
 function findPlaywright() {
-  const candidates = [
-    process.env.PLAYWRIGHT_CORE_PATH,
-    '/Volumes/main/Code/gooseworks-app/node_modules/.pnpm/playwright-core@1.58.2/node_modules/playwright-core',
-  ].filter(Boolean);
-  for (const c of candidates) {
-    if (existsSync(join(c, 'package.json'))) {
-      try {
-        return createRequire(join(c, 'package.json'))(c);
-      } catch {
-        // try the next one
-      }
-    }
+  const dir = process.env.PLAYWRIGHT_CORE_PATH;
+  if (dir) {
+    if (!existsSync(join(dir, 'package.json'))) throw new Error(`PLAYWRIGHT_CORE_PATH is ${dir}, which is not a playwright-core package folder`);
+    return createRequire(join(dir, 'package.json'))(dir);
   }
   try {
     return createRequire(import.meta.url)('playwright-core');
   } catch {
     return null;
   }
+}
+
+/** Why browser tests skip on this machine, or null when they run. */
+export function browserMissing() {
+  return browserProviderOrNull() ? null : 'no browser here: set PLAYWRIGHT_CORE_PATH to a playwright-core folder (and KIT_CHROMIUM or a cached Playwright Chromium)';
 }
 
 function findChromium() {
@@ -261,6 +289,16 @@ export function makeCtx({ partDir, manifest, workDir, stepId = 'step', line, bro
   return { ctx, orders, logs, progress, abort: () => controller.abort() };
 }
 
+/** The newest published version of a part, imported (tests follow the version the source builds). */
+export async function loadNewest(id) {
+  const versions = readdirSync(join(PARTS_ROOT, id)).filter((v) => /^\d+\.\d+\.\d+$/.test(v));
+  versions.sort((a, b) => {
+    const [x, y] = [a, b].map((v) => v.split('.').map(Number));
+    return x[0] - y[0] || x[1] - y[1] || x[2] - y[2];
+  });
+  return loadPart(id, versions.at(-1));
+}
+
 /** Imports a published part.mjs and its manifest. */
 export async function loadPart(id, version) {
   const dir = join(PARTS_ROOT, id, version);
@@ -279,14 +317,14 @@ export function orderedModel(order) {
 /** Writes a test tone (or silence when freq is 0) with the local ffmpeg. Tests only. */
 export async function makeTone(path, seconds, { freq = 440, codec = [], volume = 1 } = {}) {
   const src = freq ? `sine=frequency=${freq}:duration=${seconds}:sample_rate=48000` : `anullsrc=r=48000:cl=mono`;
-  const args = ['-hide_banner', '-nostdin', '-y', '-f', 'lavfi', '-i', src, '-t', String(seconds), '-af', `volume=${volume}`, ...codec, path];
+  const args = ['-hide_banner', '-nostdin', '-loglevel', 'error', '-y', '-f', 'lavfi', '-i', src, '-t', String(seconds), '-af', `volume=${volume}`, ...codec, path];
   await run('ffmpeg', args);
   return path;
 }
 
 /** Writes a test video: a moving test pattern, optional tone. Tests only. */
 export async function makeVideo(path, seconds, { width = 1080, height = 1920, fps = 30, tone = 440, pattern = 'testsrc2' } = {}) {
-  const args = ['-hide_banner', '-nostdin', '-y', '-f', 'lavfi', '-i', `${pattern}${pattern.includes('=') ? ':' : '='}size=${width}x${height}:rate=${fps}:duration=${seconds}`];
+  const args = ['-hide_banner', '-nostdin', '-loglevel', 'error', '-y', '-f', 'lavfi', '-i', `${pattern}${pattern.includes('=') ? ':' : '='}size=${width}x${height}:rate=${fps}:duration=${seconds}`];
   if (tone) args.push('-f', 'lavfi', '-i', `sine=frequency=${tone}:duration=${seconds}:sample_rate=48000`);
   args.push('-c:v', 'libx264', '-preset', 'ultrafast', '-pix_fmt', 'yuv420p');
   if (tone) args.push('-c:a', 'aac', '-shortest');
@@ -320,10 +358,8 @@ export async function levelDb(path, fromS, toS, freq) {
 
 /** The RGB pixels of one frame at `atS`, scaled to w x h: { width, height, data }. Tests only. */
 export async function framePixels(path, atS, w = 270, h = 480) {
-  return new Promise((resolvePromise, reject) => {
-    execFile('ffmpeg', ['-hide_banner', '-nostdin', '-ss', String(atS), '-i', path, '-frames:v', '1', '-vf', `scale=${w}:${h}:flags=neighbor`, '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-'],
-      { encoding: 'buffer', maxBuffer: 64 * 1024 * 1024 }, (err, stdout) => (err ? reject(err) : resolvePromise({ width: w, height: h, data: stdout })));
-  });
+  const { stdoutBuffer } = await run('ffmpeg', ['-hide_banner', '-nostdin', '-loglevel', 'error', '-ss', String(atS), '-i', path, '-frames:v', '1', '-vf', `scale=${w}:${h}:flags=neighbor`, '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-']);
+  return { width: w, height: h, data: stdoutBuffer };
 }
 
 /** How many pixels are within `tol` of rgb [r, g, b]. Tests only. */
@@ -336,7 +372,7 @@ export function countColor(pixels, [r, g, b], tol = 12) {
 
 /** A solid-colour PNG logo with a transparent border. Tests only. */
 export async function makeLogo(path, color, w = 400, h = 160) {
-  await run('ffmpeg', ['-hide_banner', '-nostdin', '-y', '-f', 'lavfi', '-i', `color=c=${color}:s=${w}x${h}:d=1`, '-vf', `format=rgba,pad=${w + 40}:${h + 40}:20:20:color=0x00000000`, '-frames:v', '1', path]);
+  await run('ffmpeg', ['-hide_banner', '-nostdin', '-loglevel', 'error', '-y', '-f', 'lavfi', '-i', `color=c=${color}:s=${w}x${h}:d=1`, '-vf', `format=rgba,pad=${w + 40}:${h + 40}:20:20:color=0x00000000`, '-frames:v', '1', path]);
   return path;
 }
 
@@ -355,7 +391,7 @@ export async function sampleBrand(workDir, { logoColor = '#e01020', background =
 
 /** Integrated loudness (LUFS) and true peak (dBTP) by ffmpeg's EBU R128 meter, measured independently of any part. Tests only. */
 export async function measureR128(path) {
-  const { stderr } = await run('ffmpeg', ['-hide_banner', '-nostdin', '-nostats', '-i', path, '-map', '0:a:0', '-af', 'ebur128=peak=true', '-f', 'null', '-']);
+  const { stderr } = await run('ffmpeg', ['-hide_banner', '-nostdin', '-nostats', '-i', path, '-map', '0:a:0', '-af', 'ebur128=peak=true:framelog=verbose', '-f', 'null', '-']);
   const summary = stderr.slice(stderr.lastIndexOf('Summary:'));
   const i = /I:\s*(-?\d+(?:\.\d+)?)\s*LUFS/.exec(summary);
   const tp = /True peak:\s*Peak:\s*(-?\d+(?:\.\d+)?|-inf)\s*dBFS/.exec(summary);
