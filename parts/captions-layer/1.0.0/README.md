@@ -13,8 +13,9 @@ what it drew (the core sends it as the upload's `captions_vtt`). caption-burn's 
   the one before; small gaps close (up to 0.5 s) so captions do not flicker; **the last caption holds to the
   final frame** (it is the call to action).
 - **Look**: white bold type on a dark grey rounded plate, cap height 1.9 % of the frame, plate centred at
-  0.62 of the height, never outside the 4:5 feed crop (y 0.148 to 0.852) or the timeline's caption safe zone;
-  a caption too wide for the band shrinks to fit. Drawn in the kit's Chromium with the brand's body (else
+  0.62 of the height, never outside the 4:5 feed crop, the TikTok/Reels bands (top 220, bottom 400, right 140
+  px at 1080x1920, kept symmetric so captions stay centred) or the timeline's caption safe zone; a caption too
+  wide for the band shrinks to fit. Drawn in the kit's Chromium with the brand's body (else
   heading) font, else the bundled Montserrat Bold (SIL Open Font License); never a system font; no libass.
 - **Outputs**: `video`, `timeline` (with the caption safe zone it used), `captions` (WebVTT), `words` (JSON:
   the word timings and every drawn cue with its box, which the check layer reads).

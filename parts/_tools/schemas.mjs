@@ -131,7 +131,6 @@ export const expect = {
     captions: { type: 'boolean' },
     end_card: { type: 'boolean' },
     qc_flags: { type: 'array', items: { type: 'string', maxLength: 60 } },
-    sound: { description: "The style's layers.sound: the cut must have sound levelled to -14 LUFS. Optional.", type: 'boolean' },
     script: { type: 'array', items: { type: 'string', maxLength: 2000 } },
   },
 };

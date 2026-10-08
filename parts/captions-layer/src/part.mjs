@@ -105,7 +105,7 @@ async function transcribe(ctx, video) {
   const result = await ctx.line.order({
     piece: 'transcribe',
     provider: 'fal',
-    path: '/fal-ai/whisper',
+    path: 'fal-ai/whisper',
     body: { audio_url: audio, task: 'transcribe', language: 'en', chunk_level: 'word' },
     results: [],
   });
@@ -166,16 +166,25 @@ function fontFormat(path) {
   return { ttf: 'truetype', otf: 'opentype', woff: 'woff', woff2: 'woff2' }[(m ? m[1] : 'ttf').toLowerCase()];
 }
 
-/** The caption band: inside the feed crop and, when the timeline names one, the caption safe zone. */
-function band(timeline, H) {
-  let top = SAFE_TOP * H;
-  let bottom = SAFE_BOTTOM * H;
+/**
+ * The caption band: inside the feed crop, clear of the TikTok/Reels controls (top 220, bottom 400 and
+ * right 140 px at 1080x1920, kept symmetric so captions stay centred) and, when the timeline names one,
+ * inside the caption safe zone.
+ */
+function band(timeline, W, H) {
+  const side = (140 * W) / 1080;
+  let top = Math.max(SAFE_TOP, 220 / 1920) * H;
+  let bottom = Math.min(SAFE_BOTTOM, (1920 - 400) / 1920) * H;
+  let left = side;
+  let right = W - side;
   const zone = (timeline.safe_zones || []).find((z) => z.use === 'captions');
   if (zone) {
     top = Math.max(top, zone.y);
     bottom = Math.min(bottom, zone.y + zone.h);
+    left = Math.max(left, zone.x);
+    right = Math.min(right, zone.x + zone.w);
   }
-  return { top, bottom, left: zone ? zone.x : 0, right: zone ? zone.x + zone.w : null };
+  return { top, bottom, left, right };
 }
 
 export async function run(inputs, ctx) {
@@ -188,12 +197,12 @@ export async function run(inputs, ctx) {
   const duration = await kitDuration(ctx, inputs.video);
   const { cues, words } = await buildCues(ctx, inputs, duration);
   const px = Math.round(CAP * H * 1.38);
-  const zone = band(inputs.timeline, H);
+  const zone = band(inputs.timeline, W, H);
   if (zone.bottom - zone.top < px * 1.5) throw ctx.error('bad_input', 'the caption safe zone is too small for a caption');
   const fonts = inputs.brand.fonts || {};
   const font = fonts.body || fonts.heading || { path: join(ctx.part.dir, 'assets', 'fonts', 'Montserrat-Bold.ttf') };
   const fontUri = `data:font/ttf;base64,${(await readFile(font.path)).toString('base64')}`;
-  const maxWidth = (zone.right === null ? W : zone.right - zone.left) * 0.9;
+  const maxWidth = zone.right - zone.left;
   const page = `<!doctype html><html><head><meta charset="utf-8"><style>
 @font-face{font-family:KitCaption;src:url(${fontUri}) format('${fontFormat(font.path)}');font-display:block;}
 html,body{margin:0;width:${W}px;height:${H}px;background:transparent;overflow:hidden;}
@@ -222,12 +231,12 @@ html,body{margin:0;width:${W}px;height:${H}px;background:transparent;overflow:hi
           // A caption wider than the band shrinks to fit rather than wrapping or leaving the frame.
           el.style.transform = '';
           const r = el.getBoundingClientRect();
-          const room = (right === null ? W : right - left) * 0.9;
+          const room = right - left;
           const scale = r.width > room ? room / r.width : 1;
           const w = r.width * scale;
           const h = r.height * scale;
           const t = Math.min(Math.max(y - h / 2, top), bottom - h);
-          const l = (right === null ? (W - w) / 2 : left + (right - left - w) / 2);
+          const l = left + (right - left - w) / 2;
           el.style.transformOrigin = '0 0';
           el.style.transform = `translate(${l}px, ${t}px) scale(${scale})`;
           return { x: l, y: t, w, h };
@@ -286,7 +295,7 @@ html,body{margin:0;width:${W}px;height:${H}px;background:transparent;overflow:hi
   await writeFile(join(ctx.workDir, 'words.json'), `${JSON.stringify(record, null, 1)}\n`);
   const timeline = { ...inputs.timeline };
   if (!(timeline.safe_zones || []).some((z) => z.use === 'captions')) {
-    timeline.safe_zones = [...(timeline.safe_zones || []), { use: 'captions', x: 0, y: Math.round(zone.top), w: W, h: Math.round(zone.bottom - zone.top) }];
+    timeline.safe_zones = [...(timeline.safe_zones || []), { use: 'captions', x: Math.round(zone.left), y: Math.round(zone.top), w: Math.round(zone.right - zone.left), h: Math.round(zone.bottom - zone.top) }];
   }
   return kitCheckOutputs(ctx, manifest, {
     video: await ctx.file('captioned.mp4', 'video'),

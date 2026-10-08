@@ -10,7 +10,7 @@ for every video, from review-finished-ad and review-ugc-render.
 | `plays` | ffprobe finds no picture, or a full decode reports an error |
 | `length` | outside `expect.duration_s` by more than 0.5 s |
 | `size` | not the plan's aspect within 2 %, or under 720 px on the short side |
-| `sound` | no sound, or integrated loudness outside -14 +/-2 LUFS (when `expect.sound` is true; without it, when the cut has a track or speech) |
+| `sound` | integrated loudness outside -14 +/-2 LUFS, or no sound when speech is planned; a silent cut with no speech planned (a style whose music is optional, with none chosen) is not applicable |
 | `captions` | `expect.captions` and no timed caption with text inside the video (from the captions layer's `words`) |
 
 **Local checks**: `black_frames` (a black stretch over 0.3 s), `frozen_frames` (an opening still over 1.5 s,
@@ -24,8 +24,15 @@ brand names must match, confirmed pronunciations are aliases, similarity at leas
 expected?, found?}]}`: `reasons` is the server's shape for every failed check; `fix` names the layer to re-run
 (sound, captions or brand). Messages are for logs; the customer's words come from the rulebook.
 
-Not in 1.0.0: the logo match on the end card, the palette warning and the style's `qc_flags` (they need
-image matching or eyes); captions in the safe zone is ensured by the captions layer, which draws inside it.
+**Brand and style checks**: `logo` (the brand's logo file found on the end card, or the last 1.6 s when no step
+marked one, by grayscale normalised correlation over a size search: a mark by its shape, so a white mark on a
+dark card counts, at least 0.75; an opaque logo at least 0.70; a favicon-sized file fails),
+`captions_safe_zone` (every drawn caption inside the timeline's caption zone and clear of the TikTok/Reels
+bands: top 220, bottom 400, right 140 px at 1080x1920), and the style's `qc_flags`: `logo_visible` (the logo
+check), `footage_moves` (mean frame-to-frame change of at least 1.5 on a 160 x 160 grayscale copy, over the
+half of the rows that move most, logo-equation-card's gate) and `sounds_match_messages` (the sound rises at
+least 4 dB when each chat scene appears) are measured and count toward the verdict; a flag that needs eyes
+(`text_legible`, `products_visible`) is reported as `not_applicable` with `found: "needs eyes"`.
 
 **Cost basis**: fal Whisper, an upper bound of USD 0.001 per second of the cut; charged only for on-camera speech.
 
