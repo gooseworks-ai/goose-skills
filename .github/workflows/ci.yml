@@ -83,6 +83,14 @@ jobs:
       - name: Part lint (no network, processes, clock or money in parts)
         run: node parts/_tools/lint.mjs
 
+      - name: Install ffmpeg for the part tests
+        # The media part tests skip without ffmpeg; browser-drawn parts still
+        # skip here, as this job has no Chromium.
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+
+      - name: Part tests
+        run: npm run test:parts
+
   imessage-chat-browser-tests:
     # Headless-Chromium tests for render-imessage-chat, including the QA-60
     # platform safe-area layout. Installs only Playwright's Chromium (no other
