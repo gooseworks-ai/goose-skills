@@ -60,30 +60,16 @@ jobs:
           node-version: '20'
 
       - name: Pick the base to compare with
-        # A pull request compares with its base branch's tip. A push compares with
-        # the exact tip it replaced, fetched by sha, so a force push cannot hide a
-        # change behind an older merge base. A base that cannot be fetched fails
-        # the job rather than skipping the checks.
-        env:
-          EVENT: ${{ github.event_name }}
-          BASE_REF: ${{ github.base_ref }}
-          BEFORE: ${{ github.event.before }}
+        # A pull request compares with the base sha its merge commit was made on
+        # (not the base branch, which can move after); a push with the exact tip
+        # it replaced. A sha missing from the clone is fetched by sha; a run with
+        # no usable base fails rather than skipping the checks.
         run: |
-          if [ "$EVENT" = "pull_request" ]; then
-            echo "BASE=origin/$BASE_REF" >> "$GITHUB_ENV"
-            exit 0
-          fi
-          if [ -z "$BEFORE" ] || [ -z "${BEFORE//0/}" ]; then
-            echo "::error::This push has no previous tip to compare with."
-            exit 1
-          fi
-          if ! git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
-            git fetch --no-tags origin "$BEFORE" || { echo "::error::Could not fetch the replaced tip $BEFORE."; exit 1; }
-          fi
-          echo "BASE=$BEFORE" >> "$GITHUB_ENV"
+          base="$(node scripts/pick-base.js)"
+          echo "BASE=$base" >> "$GITHUB_ENV"
 
       - name: Test the atom and part checks
-        run: node --test scripts/__tests__/atom-lint.test.js scripts/__tests__/check-atom-versions.test.js scripts/__tests__/check-parts.test.js
+        run: node --test scripts/__tests__/atom-lint.test.js scripts/__tests__/check-atom-versions.test.js scripts/__tests__/check-parts.test.js scripts/__tests__/pick-base.test.js
 
       - name: Atom lint
         run: node scripts/atom-lint.js --base "$BASE" --direct
