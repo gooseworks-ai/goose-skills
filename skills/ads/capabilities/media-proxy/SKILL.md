@@ -207,13 +207,25 @@ through the same server proxy code, so price and project attribution are identic
 ## Large request bodies without prompt copying
 
 The relay writes a `.body.json` file for request bodies over 8 KB and adds `body_file` plus
-`compact_call` to its request record. When `data_post` advertises `body_asset_id`, upload
-that file with `media_upload` (scope `video_project`, scope_id `GW_PROJECT_ID`, path
-`working/mcp-requests/<filename>.body.json`, kind `reference`, source
-`{type: file, filename: <filename>, content_type: application/json}`), then send the
-compact call with the returned `media.id` as `body_asset_id` and omit `body`. The backend
-loads that exact file and applies the same secret, approval and billing checks. Do not
-paste its prompt into chat.
+`compact_call` to its request record. When `data_post` advertises `body_asset_id`, hand that
+file over instead of its contents:
+
+1. `media_upload` with scope `video_project`, scope_id `GW_PROJECT_ID`, path
+   `working/mcp-requests/<filename>.body.json`, kind `reference` and source
+   `{type: file, filename: <filename>, content_type: application/json}`. It returns the
+   `media` row and an `upload` block.
+2. PUT the file to `upload.url` with `upload.method` and `upload.required_headers`
+   (`curl -X PUT -T <file> "<upload.url>"`).
+3. Finish the upload. With the current actions `media_upload` finishes it itself once the
+   PUT lands; a connector that still exposes a separate confirm action needs that call
+   after the PUT, and `media.status` stays `pending` until then. Only a finished upload's
+   `media.id` is accepted.
+4. Send the compact call with that `media.id` as `body_asset_id` and omit `body`.
+
+A connector whose `media_upload` takes source `bytes` (base64 inline, up to about 8 MB)
+finishes in step 1 with no PUT; use it when the body file fits. The backend loads that
+exact file and applies the same secret, approval and billing checks. Do not paste its
+prompt into chat.
 
 Older connectors without `body_asset_id` use the original args record. Read the exact JSON
 into the host's tool runner; never retype prompts or reconstruct them from memory.
