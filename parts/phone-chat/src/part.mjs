@@ -189,6 +189,10 @@ export async function run(inputs, ctx) {
     throw ctx.error('bad_input', e.message);
   }
   const chatDur = built.total_s;
+  if (inputs.measure_only) {
+    // The plan measured by the same code that renders it: nothing drawn, written or ordered.
+    return kitCheckOutputs(ctx, manifest, { seconds: chatDur, ...built.stats });
+  }
   const silent = await renderPage(ctx, built.html, { width, height, fps, total: chatDur, skin: inputs.skin, events: built.events });
   const sounds = built.cues.length ? await effectsTrack(ctx, join(skinDir, 'sfx'), built.cues, chatDur) : null;
 
@@ -196,7 +200,7 @@ export async function run(inputs, ctx) {
   let total = chatDur;
   const args = ['-i', silent];
   const graph = [];
-  let vLabel = '[0:v]';
+  let vLabel = '0:v:0';
   let ending = null;
   if (inputs.ending) {
     const endLen = (await ctx.tools.probe(inputs.ending.path)).duration_s;

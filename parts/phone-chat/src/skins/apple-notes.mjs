@@ -728,5 +728,12 @@ ${notesBodyHtml(plan.blocks, images, sizes)}
 </body>
 </html>
 `;
-  return { html, events, total_s: total, cues: [] };
+  const tokens = (t) => String(t || '').trim().split(/\s+/u).filter(Boolean).length;
+  const typed = thread.lines.filter((l) => notesIsText(l));
+  const stats = {
+    messages: typed.length,
+    words: tokens(thread.title) + typed.reduce((n, l) => n + tokens(l.text), 0),
+    photos: thread.lines.filter((l) => notesKind(l) === 'image').length,
+  };
+  return { html, events, total_s: total, cues: [], stats };
 }

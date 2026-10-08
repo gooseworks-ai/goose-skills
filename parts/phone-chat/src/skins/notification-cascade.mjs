@@ -519,5 +519,11 @@ ${NC_DRIVER}</script>
   const cues = events.map((e) =>
     e.kind === 'clear' ? { t: onFrame(e.t), sound: NC_SWOOSH, gain: NC_SWOOSH_GAIN } : { t: onFrame(e.t), sound: NC_POP, gain: NC_POP_GAIN },
   );
-  return { html, events, total_s: total, cues };
+  const banners = [...thread.notifications, ...(thread.resolution ? [thread.resolution] : [])];
+  const stats = {
+    messages: banners.length,
+    words: banners.reduce((n, b) => n + String(b.body || '').trim().split(/\s+/u).filter(Boolean).length, 0),
+    photos: 0,
+  };
+  return { html, events, total_s: total, cues, stats };
 }

@@ -405,6 +405,11 @@ function imGraphemes(text) {
   return [...new Intl.Segmenter(undefined, { granularity: 'grapheme' }).segment(text)].map((s) => s.segment);
 }
 
+/** Words as a reader counts them: whitespace-separated tokens. */
+function imWords(text) {
+  return String(text || '').trim().split(/\s+/u).filter(Boolean).length;
+}
+
 function imEsc(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
@@ -807,7 +812,13 @@ ${IM_DRIVER}</script>
     }
     return cue;
   });
-  return { html, events: events.map((e) => ({ t: e.t, kind: e.kind, ...(e.id ? { id: e.id } : {}), ...(e.kind === 'composer' ? { text: e.text, dur: e.dur } : {}) })), total_s: total, cues };
+  const shown = thread.messages.filter((m) => m.type === 'text' || m.type === 'attachment');
+  const stats = {
+    messages: shown.length,
+    words: shown.reduce((n, m) => n + (m.type === 'text' ? imWords(m.text) : 0), 0),
+    photos: shown.filter((m) => m.type === 'attachment').length,
+  };
+  return { html, events: events.map((e) => ({ t: e.t, kind: e.kind, ...(e.id ? { id: e.id } : {}), ...(e.kind === 'composer' ? { text: e.text, dur: e.dur } : {}) })), total_s: total, cues, stats };
 }
 
 // ---- phone-chat/src/skins/chatgpt.mjs ----
@@ -1740,6 +1751,13 @@ function chatgptBuild(thread, env) {
   });
   events.sort((x, y) => x.t - y.t);
   const total_s = snap(events[events.length - 1].t + T.tail_hold);
+  const stats = {
+    messages: msgs.filter((m) => m.type === 'user-text' || m.type === 'user-image' || m.type === 'assistant').length,
+    // The answers' words as the page streams them (they set the answer's time). The question is not
+    // counted: it is typed by its characters.
+    words: msgs.reduce((n, m) => n + (m.type === 'assistant' ? words[m.id].words : 0), 0),
+    photos: msgs.filter((m) => m.type === 'user-image').length,
+  };
   if (total_s > CG_MAX_TOTAL_S) {
     throw new Error(`The chat runs ${total_s.toFixed(1)} s; keep it under ${CG_MAX_TOTAL_S} s by shortening the answers or raising timing.stream_wps.`);
   }
@@ -1793,7 +1811,7 @@ ${String(cgTypedCount)}
 </script>
 </body></html>
 `;
-  return { html, events, total_s, cues };
+  return { html, events, total_s, cues, stats };
 }
 
 // ---- phone-chat/src/skins/apple-notes.mjs ----
@@ -2527,7 +2545,14 @@ ${notesBodyHtml(plan.blocks, images, sizes)}
 </body>
 </html>
 `;
-  return { html, events, total_s: total, cues: [] };
+  const tokens = (t) => String(t || '').trim().split(/\s+/u).filter(Boolean).length;
+  const typed = thread.lines.filter((l) => notesIsText(l));
+  const stats = {
+    messages: typed.length,
+    words: tokens(thread.title) + typed.reduce((n, l) => n + tokens(l.text), 0),
+    photos: thread.lines.filter((l) => notesKind(l) === 'image').length,
+  };
+  return { html, events, total_s: total, cues: [], stats };
 }
 
 // ---- phone-chat/src/skins/notification-cascade.mjs ----
@@ -3052,7 +3077,13 @@ ${NC_DRIVER}</script>
   const cues = events.map((e) =>
     e.kind === 'clear' ? { t: onFrame(e.t), sound: NC_SWOOSH, gain: NC_SWOOSH_GAIN } : { t: onFrame(e.t), sound: NC_POP, gain: NC_POP_GAIN },
   );
-  return { html, events, total_s: total, cues };
+  const banners = [...thread.notifications, ...(thread.resolution ? [thread.resolution] : [])];
+  const stats = {
+    messages: banners.length,
+    words: banners.reduce((n, b) => n + String(b.body || '').trim().split(/\s+/u).filter(Boolean).length, 0),
+    photos: 0,
+  };
+  return { html, events, total_s: total, cues, stats };
 }
 
 // ---- phone-chat/src/threads.mjs ----
@@ -3525,6 +3556,10 @@ export async function run(inputs, ctx) {
     throw ctx.error('bad_input', e.message);
   }
   const chatDur = built.total_s;
+  if (inputs.measure_only) {
+    // The plan measured by the same code that renders it: nothing drawn, written or ordered.
+    return kitCheckOutputs(ctx, manifest, { seconds: chatDur, ...built.stats });
+  }
   const silent = await renderPage(ctx, built.html, { width, height, fps, total: chatDur, skin: inputs.skin, events: built.events });
   const sounds = built.cues.length ? await effectsTrack(ctx, join(skinDir, 'sfx'), built.cues, chatDur) : null;
 

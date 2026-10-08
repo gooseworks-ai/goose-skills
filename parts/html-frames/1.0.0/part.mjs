@@ -82,6 +82,78 @@ function pngSize(data) {
   return { width: view.getUint32(16), height: view.getUint32(20) };
 }
 
+// src/kit/maker/images.ts
+function gifFrames(data) {
+  if (data.length < 13) return 0;
+  let at = 13;
+  if (data[10] & 128) at += 3 * (1 << (data[10] & 7) + 1);
+  let frames = 0;
+  const skipBlocks = () => {
+    while (at < data.length && data[at] !== 0) at += data[at] + 1;
+    at++;
+  };
+  while (at < data.length) {
+    const block = data[at];
+    if (block === 59) break;
+    if (block === 33) {
+      at += 2;
+      skipBlocks();
+    } else if (block === 44) {
+      frames++;
+      if (frames > 1) return frames;
+      const packed = data[at + 9];
+      at += 10;
+      if (packed & 128) at += 3 * (1 << (packed & 7) + 1);
+      at++;
+      skipBlocks();
+    } else break;
+  }
+  return frames;
+}
+function pngIsAnimated(data) {
+  const view = new DataView(data.buffer, data.byteOffset, data.byteLength);
+  let at = 8;
+  while (at + 8 <= data.length) {
+    const length = view.getUint32(at);
+    const type = String.fromCharCode(data[at + 4], data[at + 5], data[at + 6], data[at + 7]);
+    if (type === "acTL") return at + 12 <= data.length && view.getUint32(at + 8) > 1;
+    if (type === "IDAT" || type === "IEND") return false;
+    at += 12 + length;
+  }
+  return false;
+}
+function text(data, start, n) {
+  return String.fromCharCode(...data.subarray(start, start + n));
+}
+function webpIsAnimated(data) {
+  let at = 12;
+  while (at + 8 <= data.length) {
+    const type = text(data, at, 4);
+    const size = data[at + 4] | data[at + 5] << 8 | data[at + 6] << 16 | data[at + 7] << 24;
+    if (type === "VP8X" && data[at + 8] & 2) return true;
+    if (type === "ANIM" || type === "ANMF") return true;
+    at += 8 + size + (size & 1);
+  }
+  return false;
+}
+function svgText(data) {
+  if (data[0] === 255 && data[1] === 254) return new TextDecoder("utf-16le").decode(data);
+  if (data[0] === 254 && data[1] === 255) return new TextDecoder("utf-16be").decode(data);
+  return new TextDecoder("utf-8").decode(data);
+}
+var SVG_MOTION = /<([A-Za-z_][\w.-]*:)?(animate|animateTransform|animateMotion|animateColor|set)\b|@keyframes|\banimation(-name)?\s*:/i;
+function isAnimatedImage(data) {
+  if (data.length >= 6 && /^GIF8[79]a$/.test(text(data, 0, 6))) return gifFrames(data) > 1;
+  if (data.length >= 8 && data[0] === 137 && text(data, 1, 3) === "PNG") return pngIsAnimated(data);
+  if (data.length >= 12 && text(data, 0, 4) === "RIFF" && text(data, 8, 4) === "WEBP") return webpIsAnimated(data);
+  if (data.length >= 12 && text(data, 4, 4) === "ftyp") return /avis|msf1/.test(text(data, 8, Math.min(56, data.length - 8)));
+  const head = svgText(data.subarray(0, 4096)).replace(/^\uFEFF/, "");
+  if (/^\s*(<\?xml|<!--|<!doctype svg|<svg|<[A-Za-z_][\w.-]*:svg)/i.test(head) || /<([A-Za-z_][\w.-]*:)?svg[\s>]/i.test(head)) {
+    return SVG_MOTION.test(svgText(data));
+  }
+  return false;
+}
+
 // src/kit/core/canonical.ts
 function isFileRef(value) {
   if (!value || typeof value !== "object" || Array.isArray(value)) return false;
@@ -379,9 +451,9 @@ function optionalText(value, at, fail) {
   if (value.length > LIMITS.textChars) fail(`${at} is longer than ${LIMITS.textChars} characters`);
   return value;
 }
-function countWords(text) {
-  if (!text) return 0;
-  return text.split(/\s+/u).filter((token) => /[\p{L}\p{N}]/u.test(token)).length;
+function countWords(text2) {
+  if (!text2) return 0;
+  return text2.split(/\s+/u).filter((token) => /[\p{L}\p{N}]/u.test(token)).length;
 }
 function scenesOf(value, maxWords, fail) {
   if (!Array.isArray(value) || value.length === 0) fail("scenes should list at least one scene");
@@ -396,8 +468,8 @@ function scenesOf(value, maxWords, fail) {
     ids.add(id);
     const line = optionalText(raw.line, `${at}.line`, fail);
     const onScreen = optionalText(raw.on_screen, `${at}.on_screen`, fail);
-    for (const [field, text] of [["line", line], ["on_screen", onScreen]]) {
-      const words = countWords(text);
+    for (const [field, text2] of [["line", line], ["on_screen", onScreen]]) {
+      const words = countWords(text2);
       if (words > maxWords) {
         fail(`scene ${index + 1} (${id}) has ${words} words in ${field}; this style allows ${maxWords} per scene`);
       }
@@ -449,8 +521,8 @@ function brandOf(value, fail) {
   let cta = null;
   if (value.cta !== void 0 && value.cta !== null) {
     if (!isObject(value.cta)) fail("brand.cta should be an object");
-    const text = optionalText(value.cta.text, "brand.cta.text", fail);
-    if (text) cta = { text, url: optionalText(value.cta.url, "brand.cta.url", fail) };
+    const text2 = optionalText(value.cta.text, "brand.cta.text", fail);
+    if (text2) cta = { text: text2, url: optionalText(value.cta.url, "brand.cta.url", fail) };
   }
   return { name, logo, colors, fonts, cta };
 }
@@ -519,82 +591,6 @@ import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import * as path from "node:path";
 
-// src/kit/maker/images.ts
-function gifFrames(data) {
-  if (data.length < 13) return 0;
-  let at = 13;
-  if (data[10] & 128) at += 3 * (1 << (data[10] & 7) + 1);
-  let frames = 0;
-  const skipBlocks = () => {
-    while (at < data.length && data[at] !== 0) at += data[at] + 1;
-    at++;
-  };
-  while (at < data.length) {
-    const block = data[at];
-    if (block === 59) break;
-    if (block === 33) {
-      at += 2;
-      skipBlocks();
-    } else if (block === 44) {
-      frames++;
-      if (frames > 1) return frames;
-      const packed = data[at + 9];
-      at += 10;
-      if (packed & 128) at += 3 * (1 << (packed & 7) + 1);
-      at++;
-      skipBlocks();
-    } else break;
-  }
-  return frames;
-}
-function pngIsAnimated(data) {
-  const view = new DataView(data.buffer, data.byteOffset, data.byteLength);
-  let at = 8;
-  while (at + 8 <= data.length) {
-    const length = view.getUint32(at);
-    const type = String.fromCharCode(data[at + 4], data[at + 5], data[at + 6], data[at + 7]);
-    if (type === "acTL") return at + 12 <= data.length && view.getUint32(at + 8) > 1;
-    if (type === "IDAT" || type === "IEND") return false;
-    at += 12 + length;
-  }
-  return false;
-}
-function webpIsAnimated(data) {
-  const text = (start, n) => String.fromCharCode(...data.subarray(start, start + n));
-  if (text(0, 4) !== "RIFF" || text(8, 4) !== "WEBP") return false;
-  let at = 12;
-  while (at + 8 <= data.length) {
-    const type = text(at, 4);
-    const size = data[at + 4] | data[at + 5] << 8 | data[at + 6] << 16 | data[at + 7] << 24;
-    if (type === "VP8X" && data[at + 8] & 2) return true;
-    if (type === "ANIM" || type === "ANMF") return true;
-    at += 8 + size + (size & 1);
-  }
-  return false;
-}
-function avifIsSequence(data) {
-  const head = String.fromCharCode(...data.subarray(4, Math.min(data.length, 64)));
-  return head.startsWith("ftyp") && /avis|msf1/.test(head);
-}
-var SVG_MOTION = /<(animate|animateTransform|animateMotion|set)\b|@keyframes|\banimation(-name)?\s*:/i;
-function isAnimatedImage(data, mime) {
-  switch (mime) {
-    case "image/gif":
-      return gifFrames(data) > 1;
-    case "image/png":
-    case "image/apng":
-      return pngIsAnimated(data);
-    case "image/webp":
-      return webpIsAnimated(data);
-    case "image/avif":
-      return avifIsSequence(data);
-    case "image/svg+xml":
-      return SVG_MOTION.test(new TextDecoder().decode(data));
-    default:
-      return false;
-  }
-}
-
 // src/kit/maker/runtime.ts
 var PAGE_EPOCH_MS = 17672256e5;
 var RUNTIME = String.raw`(function () {
@@ -627,6 +623,8 @@ var RUNTIME = String.raw`(function () {
   var nativeRaf = window.requestAnimationFrame.bind(window);
   var nativeSetTimeout = window.setTimeout.bind(window);
   var NativeChannel = window.MessageChannel;
+  var nativeFetch = window.fetch.bind(window);
+  var nativeAttachShadow = Element.prototype.attachShadow;
   var nativeEntries = Performance.prototype.getEntriesByType;
   var nativeMark = Performance.prototype.mark;
   var nativeMeasure = Performance.prototype.measure;
@@ -797,10 +795,16 @@ var RUNTIME = String.raw`(function () {
     noMedia();
     return Promise.reject(new DOMException('Media is not available in frame pages', 'NotAllowedError'));
   });
+  ['ScrollTimeline', 'ViewTimeline'].forEach(function (name) {
+    if (window[name]) define(window, name, function () { report('The frame page uses a scroll timeline. Frame pages move with time only.'); throw new DOMException('Scroll timelines are not available in frame pages', 'NotSupportedError'); });
+  });
   ['AudioContext', 'webkitAudioContext', 'OfflineAudioContext'].forEach(function (name) {
     if (window[name]) define(window, name, function () { noMedia(); throw new DOMException(name + ' is not available', 'NotSupportedError'); });
   });
-  new MutationObserver(function (records) {
+  // Every tree the page draws in: the document and each shadow root, open,
+  // closed (recorded when made) or declarative (found by walking).
+  var roots = [document];
+  var mediaWatch = new MutationObserver(function (records) {
     for (var i = 0; i < records.length; i++) {
       var added = records[i].addedNodes;
       for (var j = 0; j < added.length; j++) {
@@ -809,7 +813,25 @@ var RUNTIME = String.raw`(function () {
         if (/^(VIDEO|AUDIO)$/.test(node.tagName) || node.querySelector('video, audio')) noMedia();
       }
     }
-  }).observe(document, { childList: true, subtree: true });
+  });
+  function addRoot(root) {
+    if (roots.indexOf(root) >= 0) return;
+    roots.push(root);
+    mediaWatch.observe(root, { childList: true, subtree: true });
+  }
+  mediaWatch.observe(document, { childList: true, subtree: true });
+  define(Element.prototype, 'attachShadow', function attachShadow(init) {
+    var root = nativeAttachShadow.call(this, init);
+    addRoot(root);
+    return root;
+  });
+  function findRoots() {
+    for (var r = 0; r < roots.length; r++) {
+      var all = roots[r].querySelectorAll('*');
+      for (var i = 0; i < all.length; i++) if (all[i].shadowRoot) addRoot(all[i].shadowRoot);
+    }
+    for (var k = 0; k < roots.length; k++) if (roots[k].querySelector('video, audio')) noMedia();
+  }
   window.addEventListener('error', function (event) {
     var target = event.target;
     if (target && target !== window && target.tagName) {
@@ -837,20 +859,25 @@ var RUNTIME = String.raw`(function () {
   // to its age on the virtual clock. SVG animations follow the same clock.
   var born = new WeakMap();
   function syncAnimations() {
-    var list = document.getAnimations ? document.getAnimations() : [];
-    for (var i = 0; i < list.length; i++) {
-      var animation = list[i];
-      if (!born.has(animation)) {
-        born.set(animation, now);
-        try { animation.pause(); } catch (e) {}
+    var seen = new Set();
+    for (var r = 0; r < roots.length; r++) {
+      var list = roots[r].getAnimations ? roots[r].getAnimations() : [];
+      for (var i = 0; i < list.length; i++) {
+        var animation = list[i];
+        if (seen.has(animation)) continue;
+        seen.add(animation);
+        if (animation.timeline && animation.timeline !== document.timeline) report('The frame page uses a scroll timeline. Frame pages move with time only.');
+        if (!born.has(animation)) born.set(animation, now);
+        // Paused every time: a page that calls play() never gets a moment on the computer's clock.
+        try { if (animation.playState !== 'paused') animation.pause(); } catch (e) {}
+        try { animation.currentTime = Math.max(0, now - born.get(animation)); } catch (e) {}
       }
-      try { animation.currentTime = Math.max(0, now - born.get(animation)); } catch (e) {}
-    }
-    var svgs = document.getElementsByTagName('svg');
-    for (var j = 0; j < svgs.length; j++) {
-      var svg = svgs[j];
-      if (svg.ownerSVGElement || typeof svg.pauseAnimations !== 'function') continue;
-      try { svg.pauseAnimations(); svg.setCurrentTime(now / 1000); } catch (e) {}
+      var svgs = roots[r].querySelectorAll('svg');
+      for (var j = 0; j < svgs.length; j++) {
+        var svg = svgs[j];
+        if (svg.ownerSVGElement || typeof svg.pauseAnimations !== 'function') continue;
+        try { svg.pauseAnimations(); svg.setCurrentTime(now / 1000); } catch (e) {}
+      }
     }
   }
 
@@ -946,11 +973,64 @@ var RUNTIME = String.raw`(function () {
     await task();
   }
 
-  function take() {
+  // Pictures the page makes from data: and blob: URLs, in HTML, SVG or CSS.
+  // Each is read once and handed to the maker, which refuses one that moves.
+  var sourcesSeen = Object.create(null);
+  var URL_IN_CSS = /url\(\s*(['"]?)((?:data|blob):[^'")]*)\1\s*\)/gi;
+  function inlineSources() {
+    var found = [];
+    var add = function (url) {
+      if (url && /^(data|blob):/i.test(url) && !sourcesSeen[url]) { sourcesSeen[url] = 1; found.push(url); }
+    };
+    var css = function (text) {
+      var match;
+      URL_IN_CSS.lastIndex = 0;
+      while ((match = URL_IN_CSS.exec(text))) add(match[2]);
+    };
+    for (var r = 0; r < roots.length; r++) {
+      var root = roots[r];
+      root.querySelectorAll('img, source, input[type=image]').forEach(function (el) { add(el.currentSrc || el.src); (el.srcset || '').split(',').forEach(function (part) { add(part.trim().split(/\s+/)[0]); }); });
+      root.querySelectorAll('image, feImage, use').forEach(function (el) { add(el.getAttribute('href') || el.getAttribute('xlink:href')); });
+      root.querySelectorAll('[style]').forEach(function (el) { css(el.getAttribute('style') || ''); });
+      var sheets = Array.prototype.slice.call(root.styleSheets || []).concat(Array.prototype.slice.call(root.adoptedStyleSheets || []));
+      sheets.forEach(function (sheet) {
+        var rules;
+        try { rules = sheet.cssRules; } catch (e) { return; }
+        for (var i = 0; i < rules.length; i++) css(rules[i].cssText);
+      });
+    }
+    return found;
+  }
+  function toBase64(bytes) {
+    var text = '';
+    for (var i = 0; i < bytes.length; i += 0x8000) text += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+    return btoa(text);
+  }
+  async function readSource(url) {
+    try {
+      if (/^blob:/i.test(url)) return toBase64(new Uint8Array(await (await nativeFetch(url)).arrayBuffer()));
+      var comma = url.indexOf(',');
+      if (comma < 0) throw new Error('no data');
+      var head = url.slice(5, comma);
+      var body = url.slice(comma + 1);
+      if (/;base64$/i.test(head)) return body.replace(/\s+/g, '');
+      return toBase64(new TextEncoder().encode(decodeURIComponent(body)));
+    } catch (e) {
+      report('The picture ' + url.slice(0, 80) + ' could not be read.');
+      return null;
+    }
+  }
+  async function take() {
     scanResources();
+    var sources = [];
+    var urls = inlineSources();
+    for (var i = 0; i < urls.length; i++) {
+      var data = await readSource(urls[i]);
+      if (data !== null) sources.push({ url: urls[i].slice(0, 120), data: data });
+    }
     var out = problems.slice();
     problems.length = 0;
-    return out;
+    return { problems: out, sources: sources };
   }
 
   var driver = {
@@ -971,12 +1051,14 @@ var RUNTIME = String.raw`(function () {
         image.src = url;
         return image.decode().catch(function () { report('The picture ' + url + ' could not be read.'); });
       }));
-      if (document.querySelector('video, audio')) noMedia();
+      findRoots();
       syncAnimations();
       await settle();
+      syncAnimations();
       return take();
     },
     frame: async function (index) {
+      findRoots();
       var target = (index * 1000) / DATA.fps;
       runTimers(target);
       now = target;
@@ -998,12 +1080,16 @@ var RUNTIME = String.raw`(function () {
       } catch (e) {
         report('The frame page threw an error while drawing: ' + String(e && e.message ? e.message : e).slice(0, 300));
       }
+      findRoots();
       syncAnimations();
       await settle();
+      // Anything the page did while the browser settled is set back to the frame's time.
+      syncAnimations();
       return take();
     },
     finish: async function () {
       await settle();
+      findRoots();
       return take();
     }
   };
@@ -1066,15 +1152,15 @@ function familyOf(ref) {
   return path.basename(ref.path, path.extname(ref.path)).replace(/[^A-Za-z0-9 _-]/g, "-");
 }
 function injectFirst(html, head) {
-  const text = html.replace(/^\uFEFF/, "");
-  const doctype = /^\s*<!doctype[^>]*>/i.exec(text);
-  if (doctype) return doctype[0] + head + text.slice(doctype[0].length);
-  return "<!doctype html>" + head + text;
+  const text2 = html.replace(/^\uFEFF/, "");
+  const doctype = /^\s*<!doctype[^>]*>/i.exec(text2);
+  if (doctype) return doctype[0] + head + text2.slice(doctype[0].length);
+  return "<!doctype html>" + head + text2;
 }
 function cssString(value) {
   return JSON.stringify(value);
 }
-async function buildPage(spec, dir, ctx) {
+async function buildPage(spec, dir, ctx, reserve = () => void 0) {
   const fail = (detail) => {
     throw ctx.error("bad_input", detail);
   };
@@ -1082,11 +1168,18 @@ async function buildPage(spec, dir, ctx) {
   await mkdir(path.join(dir, KIT_FOLDER, "media"), { recursive: true });
   let bytes = 0;
   const put = async (target, data2) => {
+    const size = Buffer.byteLength(data2);
+    reserve(size);
     await writeFile(target, data2);
-    bytes += Buffer.byteLength(data2);
+    bytes += size;
   };
   const still = (ref, data2) => {
-    if (isAnimatedImage(data2, ref.mime)) fail(`the picture ${path.basename(ref.path)} moves on its own; frame pages take still pictures and draw any motion themselves`);
+    if (isAnimatedImage(data2)) fail(`the picture ${path.basename(ref.path)} moves on its own; frame pages take still pictures and draw any motion themselves`);
+  };
+  const openTrees = (ref, data2) => {
+    if (/\bshadowroot(mode)?\s*=\s*["']?closed/i.test(data2.toString("utf8"))) {
+      fail(`the frame ${path.basename(ref.path)} declares a closed shadow root; use an open one`);
+    }
   };
   const pageFiles = [spec.template, ...spec.frames];
   const base = commonFolder(pageFiles.map((f) => f.path));
@@ -1104,6 +1197,7 @@ async function buildPage(spec, dir, ctx) {
     }
     placed.set(rel, ref.sha256);
     const data2 = await readChecked(ref, fail);
+    if (ref.media === "html") openTrees(ref, data2);
     const target = path.join(dir, ...rel.split("/"));
     await mkdir(path.dirname(target), { recursive: true });
     if (ref === spec.template) continue;
@@ -1219,9 +1313,17 @@ async function withTimeout(work, ms, onTimeout) {
     if (timer) clearTimeout(timer);
   }
 }
-function problemsOf(value) {
-  return Array.isArray(value) ? value.filter((v) => typeof v === "string") : [];
+function reportOf(value) {
+  const raw = value ?? {};
+  const problems = Array.isArray(raw.problems) ? raw.problems.filter((v) => typeof v === "string") : [];
+  const sources = Array.isArray(raw.sources) ? raw.sources.filter((v) => !!v && typeof v.url === "string" && typeof v.data === "string") : [];
+  return { problems, sources };
 }
+function pngBound(width, height) {
+  const raw = (width * 4 + 1) * height;
+  return raw + Math.ceil(raw / 16e3) * 5 + 64 * 1024;
+}
+var FS_MARGIN = 4 * 1024 * 1024;
 var DISK_LIMIT_MB = 1024;
 function pageError(error) {
   const shape = error;
@@ -1237,11 +1339,21 @@ async function makeVideo(rawInputs, ctx, options = {}) {
   stopIfAsked();
   const limit = options.diskLimitBytes ?? DISK_LIMIT_MB * 1024 * 1024;
   let used = 0;
-  const useDisk = (bytes) => {
+  const overLimit = () => ctx.error("bad_input", `the video needs more than ${Math.round(limit / (1024 * 1024))} MB of working space; make it shorter or simpler`);
+  const reserve = (bytes) => {
+    if (used + bytes > limit) throw overLimit();
     used += bytes;
-    if (used > limit) {
-      throw ctx.error("bad_input", `the video needs more than ${Math.round(limit / (1024 * 1024))} MB of working space; make it shorter or simpler`);
-    }
+  };
+  const release = (bytes) => {
+    used = Math.max(0, used - bytes);
+  };
+  const encodeInto = async (args, file) => {
+    const room = limit - used - FS_MARGIN;
+    if (room <= 0) throw overLimit();
+    await ctx.tools.exec("ffmpeg", [...args.slice(0, -1), "-fs", String(room), args[args.length - 1]]);
+    const size = (await stat(file)).size;
+    if (size >= room) throw overLimit();
+    reserve(size);
   };
   const pageDir = path2.join(ctx.tmpDir, "page");
   const framesDir = path2.join(ctx.tmpDir, "frames");
@@ -1258,19 +1370,27 @@ async function makeVideo(rawInputs, ctx, options = {}) {
       await rm(dir, { recursive: true, force: true });
       await mkdir2(dir, { recursive: true });
     }
-    const built = await buildPage(spec, pageDir, ctx);
-    useDisk(built.bytes);
+    const built = await buildPage(spec, pageDir, ctx, reserve);
     const refusePage = (problems) => {
       throw ctx.error("bad_input", problems.slice(0, 3).join(" "));
     };
     const encodeSegment = async (start, count, frameBytes) => {
       const segment = path2.join(segmentsDir, `seg-${String(segments.length + 1).padStart(5, "0")}.mp4`);
-      await ctx.tools.exec("ffmpeg", segmentArgs({ tools: ctx.tools, framesDir, start, count, fps: spec.fps, out: segment }));
+      await encodeInto(segmentArgs({ tools: ctx.tools, framesDir, start, count, fps: spec.fps, out: segment }), segment);
       segments.push(segment);
-      useDisk((await stat(segment)).size);
       for (let i = start; i < start + count; i++) await rm(path2.join(framesDir, frameName(i)), { force: true });
-      used -= frameBytes;
+      release(frameBytes);
     };
+    const checked = (value) => {
+      const report = reportOf(value);
+      if (report.problems.length) refusePage(report.problems);
+      for (const source of report.sources) {
+        if (isAnimatedImage(Buffer.from(source.data, "base64"))) {
+          refusePage([`The picture ${source.url} moves on its own; frame pages take still pictures and draw any motion themselves.`]);
+        }
+      }
+    };
+    const frameBound = pngBound(spec.output.width, spec.output.height);
     const browser = await ctx.browser.launch();
     try {
       const page = await browser.newPage({ viewport: spec.design, deviceScaleFactor: spec.scale });
@@ -1281,24 +1401,24 @@ async function makeVideo(rawInputs, ctx, options = {}) {
         () => ctx.error("bad_input", "the frame page did not get ready within a minute")
       );
       if (started === null) throw ctx.error("tool_failed", "the frame page lost the kit runtime");
-      const startProblems = problemsOf(started);
-      if (startProblems.length) refusePage(startProblems);
+      checked(started);
       let segmentStart = 0;
       let segmentBytes = 0;
       for (let index = 0; index < total; index++) {
         stopIfAsked();
-        const problems = problemsOf(
+        checked(
           await withTimeout(
             page.evaluate(`window.__kitDriver.frame(${index})`),
             FRAME_TIMEOUT_MS,
             () => ctx.error("bad_input", `the frame page took more than a minute to draw frame ${index}`)
           )
         );
-        if (problems.length) refusePage(problems);
         const file = path2.join(framesDir, frameName(index));
+        reserve(frameBound);
         await page.screenshot({ path: file, type: "png" });
         const png = await readFile2(file);
-        useDisk(png.length);
+        release(frameBound - Math.min(frameBound, png.length));
+        if (png.length > frameBound) reserve(png.length - frameBound);
         segmentBytes += png.length;
         if (index === 0) {
           const size = pngSize(png);
@@ -1314,8 +1434,7 @@ async function makeVideo(rawInputs, ctx, options = {}) {
         }
         if ((index + 1) % spec.fps === 0 || index + 1 === total) ctx.progress({ done: index + 1, total });
       }
-      const last = problemsOf(await page.evaluate("window.__kitDriver.finish()"));
-      if (last.length) refusePage(last);
+      checked(await page.evaluate("window.__kitDriver.finish()"));
       await page.close();
     } catch (error) {
       if (ctx.signal.aborted) throw ctx.error("stopped");
@@ -1327,10 +1446,11 @@ async function makeVideo(rawInputs, ctx, options = {}) {
     }
     stopIfAsked();
     const list = path2.join(segmentsDir, "segments.txt");
-    await writeFile2(list, concatList(segments));
+    const listText = concatList(segments);
+    reserve(Buffer.byteLength(listText));
+    await writeFile2(list, listText);
     await mkdir2(ctx.workDir, { recursive: true });
-    await ctx.tools.exec("ffmpeg", concatArgs(list, out));
-    useDisk((await stat(out)).size);
+    await encodeInto(concatArgs(list, out), out);
     const seconds = total / spec.fps;
     const info = await ctx.tools.probe(out);
     const streams = await ctx.tools.exec("ffprobe", ["-v", "error", "-select_streams", "v:0", "-show_entries", "stream=pix_fmt,nb_frames", "-of", "json", out]);
