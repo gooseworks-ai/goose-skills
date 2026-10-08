@@ -53,6 +53,56 @@
       ]
     },
     {
+      "id": "sfx-elevenlabs",
+      "version": "1.0.0",
+      "interface": 1,
+      "kind": "generate_sfx",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "afade"
+          ],
+          "encoders": [
+            "aac"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "elevenlabs",
+            "model": "eleven_text_to_sound_v2"
+          }
+        ],
+        "disk_mb": 20
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "second",
+        "measure": {
+          "from": "/effects/*/seconds",
+          "as": "sum"
+        },
+        "rates_usd": {
+          "eleven_text_to_sound_v2": 0.01
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/sfx-elevenlabs/1.0.0",
+      "files": {
+        "README.md": "5653c263fd99f080dd4f66835d59cdeef381456199ae41f71c51fdd2acbb745c",
+        "part.json": "ee43b13cfdbb294c627a387ae2bd406830eb63481bfc05a97234910fce1ac006",
+        "part.mjs": "c87b934c668fb23efcec8f2b1636d4697a8bbe1c467bd871d5b0941741ce6971"
+      },
+      "models": [
+        {
+          "provider": "elevenlabs",
+          "model": "eleven_text_to_sound_v2"
+        }
+      ]
+    },
+    {
       "id": "voice-elevenlabs",
       "version": "1.0.0",
       "interface": 1,
