@@ -5,9 +5,11 @@ The sound layer (slot 3 of 4): levels every finished cut to **-14 LUFS integrate
 
 - Pass 1 measures the cut with `loudnorm` (print_format=json); pass 2 applies it in linear mode (a pure gain;
   the target loudness range is widened to the input's so loudnorm stays linear). The picture is copied.
-- The result is measured with ffmpeg's EBU R128 meter (`ebur128=peak=true`). Outside -14 +/-1 LUFS or above
-  -0.8 dBTP, one correction pass applies the missing gain through an oversampled limiter; still outside, the
-  step fails (`output_invalid`) instead of handing on a cut the server's check (-14 +/-2) would refuse.
+- loudnorm aims at -1.5 dBTP, leaving room for the AAC encode after it. The result is measured with ffmpeg's
+  EBU R128 meter (`ebur128=peak=true`): outside -14 +/-1 LUFS or above -1 dBTP (no slack), up to three
+  correction passes apply the missing gain through an oversampled limiter at -2 dBFS (content with sharp peaks,
+  like a chat's pops, loses a little loudness to the limiter each pass); still outside, the step fails
+  (`output_invalid`) instead of handing on a cut over the ceiling.
 - A cut with no sound track, or only silence (a style whose music is optional, with none chosen), has nothing
   to level and passes through untouched.
 - Layer inputs and outputs are the fixed ones (`video`, `timeline`, `brand`, `expect`, `words` in; `video`,

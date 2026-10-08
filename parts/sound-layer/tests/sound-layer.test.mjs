@@ -27,7 +27,7 @@ for (const [name, volume] of [['a quiet', 0.02], ['a loud', 1.0]]) {
     const out = await mod.run(inputs, ctx);
     const after = await measureR128(out.video.path);
     assert.ok(Math.abs(after.lufs + 14) <= 1, `levelled to ${after.lufs} LUFS`);
-    assert.ok(after.true_peak_db <= -0.8, `true peak ${after.true_peak_db} dBTP`);
+    assert.ok(after.true_peak_db <= -1, `true peak ${after.true_peak_db} dBTP, the ceiling is -1 dBTP`);
     assert.deepEqual(out.timeline, inputs.timeline);
   });
 }
@@ -43,4 +43,16 @@ test('a silent cut, or one with no sound track, passes through untouched', { ski
     const out = await mod.run(await layerInputsFor(video), ctx);
     assert.equal(out.video, video, `${path} is handed on as it is`);
   }
+});
+
+test('a cut with sharp peaks (a chat\'s pops over a quiet bed) reaches -14 LUFS with its true peak held at -1 dBTP', { skip }, async () => {
+  const { ctx } = makeCtx({ partDir: dir });
+  const wav = join(ctx.workDir, 'clicks.wav');
+  await run('ffmpeg', ['-hide_banner', '-nostdin', '-y', '-f', 'lavfi', '-i', "aevalsrc='0.02*sin(2*PI*220*t)+0.9*exp(-mod(t,0.25)*400)*sin(2*PI*3000*t)':s=48000:d=6", wav]);
+  const mp4 = join(ctx.workDir, 'clicks.mp4');
+  await run('ffmpeg', ['-hide_banner', '-nostdin', '-y', '-f', 'lavfi', '-i', 'testsrc2=size=360x640:rate=30:duration=6', '-i', wav, '-c:v', 'libx264', '-preset', 'ultrafast', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-shortest', mp4]);
+  const out = await mod.run(await layerInputsFor(await fileRef(mp4, 'video')), ctx);
+  const after = await measureR128(out.video.path);
+  assert.ok(Math.abs(after.lufs + 14) <= 1, `levelled to ${after.lufs} LUFS`);
+  assert.ok(after.true_peak_db <= -1, `true peak ${after.true_peak_db} dBTP`);
 });
