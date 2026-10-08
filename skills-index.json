@@ -817,6 +817,7 @@
       "description": "Burned-in captions for a finished vertical video, three kinds. transcribe.py gets word timings from the video's own audio through the GooseWorks proxy (fal Whisper, bills the Ads agent, cents); captions.py burns one to three words at a time with Pillow + ffmpeg (no libass needed), either pinned to a split-screen seam (plate 25% above / 75% below) or at a fixed height, in a plate, outline or one-word serif style, with an optional red hook card; plates.py burns per-beat caption blocks (black, one union silhouette, placed in the emptiest band) for formats with no voice. The last caption (the CTA) holds to the final frame. Use as the last step of any video ad.",
       "tags": "ads, content",
       "path": "skills/ads/capabilities/caption-burn",
+      "version": "1.0.0",
       "files": [
         "skills/ads/capabilities/caption-burn/SKILL.md",
         "skills/ads/capabilities/caption-burn/scripts/_fonts.py",
@@ -832,6 +833,7 @@
         "slug": "caption-burn",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.0",
         "tags": [
           "ads",
           "content"
@@ -2187,7 +2189,7 @@
       "description": "Generate an instrumental music bed via ElevenLabs Music, ROUTED THROUGH THE elevenlabs-proxy so it bills the Ads agent. Trims any sparse intro, loudnorm, fades the tail. Prompt + length from the template recipe. Use for the music layer of any video-ad format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/create-music-elevenlabs",
-      "version": "1.1.0",
+      "version": "1.1.1",
       "files": [
         "skills/ads/capabilities/create-music-elevenlabs/SKILL.md",
         "skills/ads/capabilities/create-music-elevenlabs/scripts/gen_music.py",
@@ -2199,7 +2201,7 @@
         "slug": "create-music-elevenlabs",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.1.0",
+        "version": "1.1.1",
         "tags": [
           "ads"
         ],
@@ -2298,7 +2300,7 @@
       "description": "Generate a voiceover (VO) clip via ElevenLabs text-to-speech, ROUTED THROUGH THE elevenlabs-proxy so it bills the Ads agent. Voice id + script text come from the template recipe. Use for the spoken narration of VO-driven video-ad formats (cgi-app-sizzle, flat-vector-explainer, hypermotion). Never call ElevenLabs directly — the proxy attribution is required.",
       "tags": "ads",
       "path": "skills/ads/capabilities/create-vo-elevenlabs",
-      "version": "1.1.0",
+      "version": "1.1.1",
       "files": [
         "skills/ads/capabilities/create-vo-elevenlabs/SKILL.md",
         "skills/ads/capabilities/create-vo-elevenlabs/scripts/gen_vo.py",
@@ -2313,7 +2315,7 @@
         "slug": "create-vo-elevenlabs",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.1.0",
+        "version": "1.1.1",
         "tags": [
           "ads"
         ],
@@ -5106,6 +5108,7 @@
     {
       "slug": "mix-master",
       "name": "mix-master",
+      "version": "1.0.0",
       "category": "capabilities",
       "domain": "ads",
       "description": "Canonical short-form-ad audio mix in one FFmpeg pass. VO loudnorm + 3.0× per-clip + 2.0× mix, music 0.13 base + apad+afade, sidechain compress 20:1 @ 0.01, climax line +20%, optional video-to-music duration sync. Replaces the reactive multi-round tuning that cost v03 6+ passes.",
@@ -5120,6 +5123,7 @@
         "slug": "mix-master",
         "category": "capabilities",
         "pack": "video-ad-formats",
+        "version": "1.0.0",
         "tags": [
           "ads"
         ],
@@ -7787,6 +7791,7 @@
       "description": "Final QC gate for a rendered 9:16 video ad, run before it is published. One script checks what a machine can decide — exact 1080x1920 size, a hook that moves and speaks in the first second, no frozen stretches, no dead air, no black frames, the brand's real logo on the end card (never a favicon, never a redrawn or wrong logo), end-card colours near the brand palette — and builds one contact sheet (frames with the TikTok/Reels UI safe zones shaded, beside the logo, product images and a font specimen) for the checks that need eyes — font, product likeness, product consistency across scenes, safe zones. A declared silent-text profile covers silent, text-led formats such as kinetic text (no audio track needed, short blank beats between text beats allowed within fixed bounds). Exit 0 PASS / 2 FAIL / 3 ERROR. Use on every finished video master before pinning it.",
       "tags": "ads, brand",
       "path": "skills/ads/capabilities/review-finished-ad",
+      "version": "1.0.0",
       "files": [
         "skills/ads/capabilities/review-finished-ad/SKILL.md",
         "skills/ads/capabilities/review-finished-ad/scripts/review_finished_ad.py",
@@ -7799,6 +7804,7 @@
         "slug": "review-finished-ad",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.0",
         "tags": [
           "ads",
           "brand"
@@ -7905,6 +7911,7 @@
     {
       "slug": "review-ugc-render",
       "name": "review-ugc-render",
+      "version": "2.0.0",
       "category": "capabilities",
       "domain": "ads",
       "description": "Mandatory pre-publish review gate for a UGC video render. Transcribes the finished render's AUDIO with Whisper and word-diffs it against the approved spoken script, then gates pinning the final render (video_project_upsert patch.final_render_id) — blocking a render whose generated audio mis-voices a word (e.g. the approved \"human-vetted\" spoken as \"human witted\"), says a different number or brand name, flips a negation, drops an approved phrase, or comes back silent. Correct speech written differently (\"5mg\" said \"five milligrams\", \"30%\" said \"thirty percent\", a spoken URL, \"don't\" said \"do not\", \"braxleybands\" said \"braxley bands\", a confirmed pronunciation like \"AG1\" said \"A G one\") passes. Runnable, gating counterpart to content-goose's review-transcript-integrity atom. Every ugc-video-formats recipe runs this after render and BEFORE pinning the final render.",
@@ -7919,6 +7926,7 @@
         "slug": "review-ugc-render",
         "category": "capabilities",
         "pack": "ugc-video-formats",
+        "version": "2.0.0",
         "tags": [
           "ads"
         ],
@@ -10238,6 +10246,7 @@
           "name": "review-ugc-render",
           "description": "Mandatory pre-publish review gate for a UGC video render. Transcribes the finished render's AUDIO with Whisper and word-diffs it against the approved spoken script, then gates pinning the final render (video_project_upsert patch.final_render_id) — blocking a render whose generated audio mis-voices a word (e.g. the approved \"human-vetted\" spoken as \"human witted\"), says a different number or brand name, flips a negation, drops an approved phrase, or comes back silent. Correct speech written differently (\"5mg\" said \"five milligrams\", \"30%\" said \"thirty percent\", a spoken URL, \"don't\" said \"do not\", \"braxleybands\" said \"braxley bands\", a confirmed pronunciation like \"AG1\" said \"A G one\") passes. Runnable, gating counterpart to content-goose's review-transcript-integrity atom. Every ugc-video-formats recipe runs this after render and BEFORE pinning the final render.",
           "path": "skills/ads/packs/ugc-video-formats/review-ugc-render",
+          "version": "2.0.0",
           "files": [
             "skills/ads/packs/ugc-video-formats/review-ugc-render/SKILL.md",
             "skills/ads/packs/ugc-video-formats/review-ugc-render/scripts/review_render.py",
@@ -10430,6 +10439,7 @@
           "name": "mix-master",
           "description": "Canonical short-form-ad audio mix in one FFmpeg pass. VO loudnorm + 3.0× per-clip + 2.0× mix, music 0.13 base + apad+afade, sidechain compress 20:1 @ 0.01, climax line +20%, optional video-to-music duration sync. Replaces the reactive multi-round tuning that cost v03 6+ passes.",
           "path": "skills/ads/packs/video-ad-formats/mix-master",
+          "version": "1.0.0",
           "files": [
             "skills/ads/packs/video-ad-formats/mix-master/SKILL.md",
             "skills/ads/packs/video-ad-formats/mix-master/scripts/mix.sh",
