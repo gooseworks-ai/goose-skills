@@ -91,6 +91,43 @@
       "models": []
     },
     {
+      "id": "end-card",
+      "version": "1.0.0",
+      "interface": 1,
+      "kind": "end_card",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": true,
+        "ffmpeg": {
+          "filters": [
+            "scale",
+            "setsar",
+            "format",
+            "anullsrc"
+          ],
+          "encoders": [
+            "libx264",
+            "aac"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 50
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/end-card/1.0.0",
+      "files": {
+        "README.md": "15f6805829de39e1d387b44b877b7fee3adda580e31c713d18e78bbe378bc645",
+        "assets/fonts/Montserrat-Bold.ttf": "bc6e854971cea46b463be6f9eef4d9cd52f51cfc1fc0dd90c9d3e6483dc0ec61",
+        "part.json": "79a17b86329e7cddc094dc3887f12df82bcf5a68866073bac43af5ca6c55ea91",
+        "part.mjs": "11c3bc241929a495ec3eceb9d5ad2ef5f39b7323aa34132e5fe35c825ef2b484"
+      },
+      "models": []
+    },
+    {
       "id": "image-nano-banana",
       "version": "1.0.0",
       "interface": 1,
