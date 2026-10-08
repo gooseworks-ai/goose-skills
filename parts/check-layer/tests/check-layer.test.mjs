@@ -133,6 +133,12 @@ test("the brand's own logo is found on the end card and another is not; the styl
   assert.equal(status(noCard).logo, 'not_applicable');
   const elsewhere = await mod.run(await layerInputsFor(video, { brand: { ...brand, logo: other }, expect: { end_card: false, qc_flags: ['logo_visible'] } }), ctx);
   assert.equal(status(elsewhere)['flag:logo_visible'], 'fail');
+  // logo_visible looks across the whole video, not only a marked end card: a logo shown earlier in its zone counts.
+  const early = join(w, 'early.mp4');
+  await run('ffmpeg', ['-hide_banner', '-nostdin', '-loglevel', 'error', '-y', '-i', card.video.path, '-i', body, '-filter_complex', '[0:v][0:a][1:v][1:a]concat=n=2:v=1:a=1[v][a]', '-map', '[v]', '-map', '[a]', '-c:v', 'libx264', '-preset', 'ultrafast', '-pix_fmt', 'yuv420p', '-c:a', 'aac', early]);
+  const earlyCut = await fileRef(early, 'video');
+  const markedLater = await mod.run(await layerInputsFor(earlyCut, { brand, expect: { end_card: false, qc_flags: ['logo_visible'] }, timeline: { end_card: { start_s: 4, end_s: 5 } } }), ctx);
+  assert.equal(status(markedLater)['flag:logo_visible'], 'pass', 'the logo shown at the start is visible');
   // A declared logo zone bounds where the match may sit.
   const top = { use: 'logo', x: 0, y: 0, w: 720, h: 200 };
   const middle = { use: 'logo', x: 0, y: 200, w: 720, h: 700 };

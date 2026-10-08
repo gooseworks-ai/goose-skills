@@ -82,6 +82,11 @@
       "reason": "Replaced by 1.1.0 before publishing: Free: on-camera speech is checked from the transcript a transcribe step puts in the timeline; an unmarked end card the style needs fails; logo_visible is checked on its own; a declared logo zone bounds the match."
     },
     {
+      "id": "check-layer",
+      "version": "1.1.0",
+      "reason": "Replaced by 1.1.1 before publishing: logo_visible is checked across the whole video (the end card included), apart from the end-card logo check."
+    },
+    {
       "id": "transcribe-whisper",
       "version": "1.0.0",
       "reason": "Replaced by 1.0.1 before publishing: A line the transcript does not match keeps evenly spread word timings, so captions never transcribe again."

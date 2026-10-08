@@ -250,49 +250,47 @@ export async function run(inputs, ctx) {
     else add('captions_safe_zone', 'pass');
   }
 
-  // The brand's real logo file (review-finished-ad's logo and favicon checks): on the end card when the
-  // style ends on one, and wherever the video shows it when the style asks for logo_visible. A declared logo
-  // safe zone bounds where it may sit.
+  // The brand's real logo file (review-finished-ad's logo and favicon checks), measured two ways that never
+  // share an answer: `logo` on the end card when the style ends on one, and `flag:logo_visible` anywhere in
+  // the video (the card included) when the style asks for it. A declared logo safe zone bounds the match.
   const wantsLogo = (expect.qc_flags || []).includes('logo_visible');
-  let logoResult = null;
   const logo = inputs.brand.logo;
-  if (logo && (expect.end_card || wantsLogo)) {
-    const size = logo.width && logo.height ? logo : await ctx.tools.probe(logo.path);
-    const long = Math.max(size.width || 0, size.height || 0);
-    if (long < MIN_LOGO_LONG_SIDE || (size.width || 0) * (size.height || 0) < MIN_LOGO_AREA) {
-      logoResult = { status: 'fail', message: 'The logo file is favicon-sized and will be blurry.', expected: `at least ${MIN_LOGO_LONG_SIDE} px on the long side`, found: `${size.width}x${size.height}` };
-    } else {
-      const marked = timeline.end_card;
-      const times = marked
-        ? [marked.start_s + (marked.end_s - marked.start_s) * 0.5, marked.end_s - 0.2]
-        : expect.end_card
-          ? [d - 1.2, d - 0.6, d - 0.2]
-          : [0.1, 0.3, 0.5, 0.7, 0.9].map((f) => f * d);
-      const match = await kitLogoScore(ctx, video.path, logo, times.filter((t) => t > 0 && t < d), m.width, m.height);
-      const floor = match.mode === 'mark' ? LOGO_MARK_MIN : LOGO_IMAGE_MIN;
-      const zone = (timeline.safe_zones || []).find((z) => z.use === 'logo');
-      const b = match.box;
-      if (match.score < floor) logoResult = { status: 'fail', message: "The brand's logo is not found.", expected: `a match of at least ${floor}`, found: match.score };
-      else if (zone && b && (b.x < zone.x - LOGO_ZONE_SLACK || b.y < zone.y - LOGO_ZONE_SLACK || b.x + b.w > zone.x + zone.w + LOGO_ZONE_SLACK || b.y + b.h > zone.y + zone.h + LOGO_ZONE_SLACK)) {
-        logoResult = { status: 'fail', message: 'The logo sits outside its safe zone.', expected: `inside x ${zone.x}-${zone.x + zone.w}, y ${zone.y}-${zone.y + zone.h}`, found: `${b.x},${b.y} ${b.w}x${b.h}` };
-      } else logoResult = { status: 'pass', found: match.score };
+  let logoSize = null;
+  const logoCheck = async (times) => {
+    if (!logo) return { status: 'fail', message: 'The style asks for the logo, but the brand has no logo file.', expected: 'a logo file', found: 'none' };
+    logoSize = logoSize || (logo.width && logo.height ? logo : await ctx.tools.probe(logo.path));
+    const long = Math.max(logoSize.width || 0, logoSize.height || 0);
+    if (long < MIN_LOGO_LONG_SIDE || (logoSize.width || 0) * (logoSize.height || 0) < MIN_LOGO_AREA) {
+      return { status: 'fail', message: 'The logo file is favicon-sized and will be blurry.', expected: `at least ${MIN_LOGO_LONG_SIDE} px on the long side`, found: `${logoSize.width}x${logoSize.height}` };
     }
-  } else if (!logo && wantsLogo) {
-    logoResult = { status: 'fail', message: 'The style asks for the logo, but the brand has no logo file.', expected: 'a logo file', found: 'none' };
-  }
-  const logoAdd = (code) => {
-    if (!logoResult) return add(code, 'not_applicable');
-    const { status, ...rest } = logoResult;
+    const match = await kitLogoScore(ctx, video.path, logo, times.filter((t) => t > 0 && t < d), m.width, m.height);
+    const floor = match.mode === 'mark' ? LOGO_MARK_MIN : LOGO_IMAGE_MIN;
+    const zone = (timeline.safe_zones || []).find((z) => z.use === 'logo');
+    const b = match.box;
+    if (match.score < floor) return { status: 'fail', message: "The brand's logo is not found.", expected: `a match of at least ${floor}`, found: match.score };
+    if (zone && b && (b.x < zone.x - LOGO_ZONE_SLACK || b.y < zone.y - LOGO_ZONE_SLACK || b.x + b.w > zone.x + zone.w + LOGO_ZONE_SLACK || b.y + b.h > zone.y + zone.h + LOGO_ZONE_SLACK)) {
+      return { status: 'fail', message: 'The logo sits outside its safe zone.', expected: `inside x ${zone.x}-${zone.x + zone.w}, y ${zone.y}-${zone.y + zone.h}`, found: `${b.x},${b.y} ${b.w}x${b.h}` };
+    }
+    return { status: 'pass', found: match.score };
+  };
+  const logoAdd = (code, result) => {
+    const { status, ...rest } = result;
     return add(code, status, status === 'fail' ? { ...rest, fix: { slot: 'brand' } } : { found: rest.found });
   };
-  if (expect.end_card) logoAdd('logo');
-  else add('logo', 'not_applicable');
+  if (expect.end_card && logo) {
+    const card = timeline.end_card;
+    logoAdd('logo', await logoCheck(card ? [card.start_s + (card.end_s - card.start_s) * 0.5, card.end_s - 0.2] : [d - 1.2, d - 0.6, d - 0.2]));
+  } else add('logo', 'not_applicable');
+  // Spread over the whole video, and the end card's middle when there is one.
+  const visibleTimes = [0.05, 0.15, 0.3, 0.45, 0.6, 0.75, 0.9, 0.98].map((f) => f * d);
+  if (timeline.end_card) visibleTimes.push((timeline.end_card.start_s + timeline.end_card.end_s) / 2);
+  const logoVisible = wantsLogo ? await logoCheck(visibleTimes) : null;
 
   // The style's own checks (qc_flags). The ones a machine can measure are measured and count toward the
   // verdict; the rest (text legible, products visible) need eyes and are reported as not checked here.
   for (const flag of expect.qc_flags || []) {
     const code = `flag:${flag}`;
-    if (flag === 'logo_visible') logoAdd(code);
+    if (flag === 'logo_visible') logoAdd(code, logoVisible);
     else if (flag === 'footage_moves') {
       const motion = await kitMotion(ctx, video.path, timeline.end_card ? timeline.end_card.start_s : d);
       if (motion === null) add(code, 'fail', { message: 'The footage could not be measured.', expected: `motion of at least ${FOOTAGE_MIN_MOTION}`, found: 'no frames' });
