@@ -41,3 +41,20 @@ test('refuses a mix with nothing to lay under the picture', { skip: !ffmpeg && '
   const f = await fixture(ctx);
   await assert.rejects(mod.run({ video: f.video }, ctx), (e) => e.code === 'bad_input');
 });
+
+test("with no voice the bed ducks under the picture's own sound, which is kept", { skip: !ffmpeg && 'ffmpeg is not installed' }, async () => {
+  const { ctx } = makeCtx({ partDir: dir });
+  const w = ctx.workDir;
+  const ui = await fileRef(await makeVideo(join(w, 'chat.mp4'), 4, { width: 320, height: 568, tone: 0 }), 'video');
+  // A picture whose own sound is a 1000 Hz pop from 1.0 to 2.0 s.
+  const withPop = join(w, 'chat-pop.mp4');
+  await makeTone(join(w, 'pop.wav'), 1, { freq: 1000 });
+  const { run } = await import('../../_tools/kit-harness.mjs');
+  await run('ffmpeg', ['-hide_banner', '-nostdin', '-y', '-i', ui.path, '-i', join(w, 'pop.wav'), '-filter_complex', '[1:a]adelay=1000:all=1,apad[a]', '-map', '0:v', '-map', '[a]', '-c:v', 'copy', '-c:a', 'aac', '-t', '4', withPop]);
+  const f = await fixture(ctx);
+  const out = await mod.run({ video: await fileRef(withPop, 'video'), music: f.music, duck: true, fade_out_seconds: 0.8 }, ctx);
+  assert.ok((await levelDb(out.video.path, 1.3, 1.8, 1000)) > -30, 'the picture keeps its own sound');
+  const under = await levelDb(out.video.path, 1.3, 1.8, 220);
+  const clear = await levelDb(out.video.path, 2.6, 2.9, 220);
+  assert.ok(clear - under > 6, `bed under the picture's sound ${under.toFixed(1)} dB, clear ${clear.toFixed(1)} dB`);
+});

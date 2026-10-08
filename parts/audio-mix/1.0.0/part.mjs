@@ -319,10 +319,16 @@ async function gainTo(ctx, file, target) {
 
 export async function run(inputs, ctx) {
   const manifest = await kitCheckInputs(ctx, inputs);
-  if (!inputs.voice && !inputs.music && !(inputs.sfx || []).length && !inputs.keep_video_audio) {
-    throw ctx.error('bad_input', 'nothing to mix: give voice, music, sfx or keep_video_audio');
-  }
   const dur = await kitDuration(ctx, inputs.video);
+  const picture = await ctx.tools.probe(inputs.video.path);
+  // The picture's own sound (phone-chat's UI sounds, clips kept with their sound) is kept unless dropped.
+  const keepOwn = inputs.keep_video_audio ?? picture.has_audio;
+  if (inputs.keep_video_audio && !picture.has_audio) throw ctx.error('bad_input', 'keep_video_audio is set but the video has no sound');
+  if (!inputs.voice && !inputs.music && !(inputs.sfx || []).length && !inputs.effects && !keepOwn) {
+    throw ctx.error('bad_input', 'nothing to mix: give voice, music, sfx or effects, or a picture with its own sound');
+  }
+  const duck = inputs.duck === undefined ? !!inputs.voice : inputs.duck !== false;
+  const duckBy = inputs.voice ? 'voice' : keepOwn ? 'picture' : null;
   const args = ['-i', inputs.video.path];
   const graph = [];
   const labels = [];
@@ -335,7 +341,7 @@ export async function run(inputs, ctx) {
     args.push('-i', inputs.voice.path);
     graph.push(
       `[${n}:a]${FMT},volume=${db}dB,adelay=${Math.round(start * 1000)}:all=1,apad,atrim=0:${kitNum(dur)},asetpts=PTS-STARTPTS` +
-        (inputs.music ? ',asplit=2[vo][key]' : '[vo]'),
+        (inputs.music && duck ? ',asplit=2[vo][key]' : '[vo]'),
     );
     labels.push('[vo]');
     n++;
@@ -353,22 +359,24 @@ export async function run(inputs, ctx) {
     const fadeIn = inputs.music_fade_in_s ?? 0;
     if (fadeIn > 0) chain += `,afade=t=in:d=${kitNum(fadeIn, 3)}`;
     chain += `,adelay=${Math.round(start * 1000)}:all=1,apad,atrim=0:${kitNum(dur)}`;
-    const fadeOut = Math.min(inputs.music_fade_out_s ?? 1, dur);
+    const fadeOut = Math.min(inputs.fade_out_seconds ?? 1, dur);
     if (fadeOut > 0) chain += `,afade=t=out:st=${kitNum(dur - fadeOut)}:d=${kitNum(fadeOut, 3)}`;
     graph.push(`${chain}[bed]`);
-    if (inputs.voice) {
-      const duck = inputs.duck || {};
+    if (duck && duckBy) {
+      const d = typeof inputs.duck === 'object' ? inputs.duck : {};
       graph.push(
-        `[bed][key]sidechaincompress=threshold=${duck.threshold ?? 0.02}:ratio=${Math.min(duck.ratio ?? 20, 20)}:` +
-          `attack=${duck.attack_ms ?? 20}:release=${duck.release_ms ?? 400}[music]`,
+        `[bed][key]sidechaincompress=threshold=${d.threshold ?? 0.02}:ratio=${Math.min(d.ratio ?? 20, 20)}:` +
+          `attack=${d.attack_ms ?? 20}:release=${d.release_ms ?? 400}[music]`,
       );
     } else graph.push('[bed]anull[music]');
     labels.push('[music]');
     n++;
   }
 
-  for (const [i, fx] of (inputs.sfx || []).entries()) {
-    if (fx.at_s >= dur) throw ctx.error('bad_input', `sfx[${i}] starts at ${fx.at_s}s, past the end of the video`);
+  // A whole effects track from 0 (phone-chat's sfx) is one cue at 0 with its own gain.
+  const cues = [...(inputs.effects ? [{ audio: inputs.effects, at_s: 0, gain: inputs.effects_gain ?? 1 }] : []), ...(inputs.sfx || [])];
+  for (const [i, fx] of cues.entries()) {
+    if (fx.at_s >= dur) throw ctx.error('bad_input', `a sound effect starts at ${fx.at_s}s, past the end of the video`);
     args.push('-i', fx.audio.path);
     const cut = fx.max_s ? `atrim=0:${kitNum(fx.max_s)},afade=t=out:st=${kitNum(Math.max(0, fx.max_s - 0.06))}:d=0.06,` : '';
     const ms = Math.round(fx.at_s * 1000);
@@ -377,10 +385,9 @@ export async function run(inputs, ctx) {
     n++;
   }
 
-  if (inputs.keep_video_audio) {
-    const info = await ctx.tools.probe(inputs.video.path);
-    if (!info.has_audio) throw ctx.error('bad_input', 'keep_video_audio is set but the video has no sound');
-    graph.push(`[0:a]${FMT},volume=${inputs.video_audio_db ?? 0}dB,apad,atrim=0:${kitNum(dur)}[orig]`);
+  if (keepOwn) {
+    const key = inputs.music && duck && duckBy === 'picture';
+    graph.push(`[0:a]${FMT},volume=${inputs.video_audio_db ?? 0}dB,apad,atrim=0:${kitNum(dur)}${key ? ',asplit=2[orig][key]' : '[orig]'}`);
     labels.push('[orig]');
   }
 

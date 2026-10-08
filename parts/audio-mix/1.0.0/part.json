@@ -89,37 +89,45 @@
         "minimum": 0,
         "maximum": 10
       },
-      "music_fade_out_s": {
-        "description": "Default 1 s.",
+      "fade_out_seconds": {
+        "description": "Fade at the bed's tail. Default 1 s.",
         "type": "number",
         "minimum": 0,
         "maximum": 10
       },
       "duck": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "threshold": {
-            "type": "number",
-            "exclusiveMinimum": 0,
-            "maximum": 1
+        "description": "The bed ducks under the voice, or with no voice under the picture's own sound. Default: on when there is a voice. true for the default ducking, false for none, or the settings.",
+        "anyOf": [
+          {
+            "type": "boolean"
           },
-          "ratio": {
-            "type": "number",
-            "minimum": 1,
-            "maximum": 20
-          },
-          "attack_ms": {
-            "type": "number",
-            "minimum": 0.01,
-            "maximum": 2000
-          },
-          "release_ms": {
-            "type": "number",
-            "minimum": 0.01,
-            "maximum": 9000
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "threshold": {
+                "type": "number",
+                "exclusiveMinimum": 0,
+                "maximum": 1
+              },
+              "ratio": {
+                "type": "number",
+                "minimum": 1,
+                "maximum": 20
+              },
+              "attack_ms": {
+                "type": "number",
+                "minimum": 0.01,
+                "maximum": 2000
+              },
+              "release_ms": {
+                "type": "number",
+                "minimum": 0.01,
+                "maximum": 9000
+              }
+            }
           }
-        }
+        ]
       },
       "sfx": {
         "description": "Sound effects placed on the timeline. gain is linear (default 1); max_s cuts a cue so it cannot mask the next.",
@@ -157,8 +165,21 @@
           }
         }
       },
+      "effects": {
+        "description": "A whole effects track laid from 0, not ducked (for example phone-chat's sfx).",
+        "type": "object",
+        "x-kit-file": {
+          "media": "audio"
+        }
+      },
+      "effects_gain": {
+        "description": "Linear gain of the effects track. Default 1.",
+        "type": "number",
+        "minimum": 0,
+        "maximum": 4
+      },
       "keep_video_audio": {
-        "description": "Mix the picture's own sound in too (not ducked).",
+        "description": "Keep the picture's own sound (never ducked). Default: kept when the picture has sound.",
         "type": "boolean"
       },
       "video_audio_db": {
