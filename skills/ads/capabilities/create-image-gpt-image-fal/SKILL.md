@@ -17,13 +17,6 @@ Generate one image via fal.ai's OpenAI gpt-image endpoints. Two model families a
 
 The default stays `gpt-image-1` so existing callers and the lock-character anchor-parity contract are unaffected. Opt into the newer model with `--model gpt-image-2`.
 
-## Pricing (approximate, as of 2026-05)
-
-- **gpt-image-1** — $0.04 (low), $0.08 (medium), $0.20 (high) per image. Source: [fal.ai/models/fal-ai/gpt-image-1](https://fal.ai/models/fal-ai/gpt-image-1).
-- **gpt-image-2** — token-priced; rough per-image estimate $0.02 (low), $0.07 (medium), $0.19 (high). Source: [fal.ai/models/openai/gpt-image-2](https://fal.ai/models/openai/gpt-image-2).
-
-The script defaults to `medium`; pass `--quality high` for finals.
-
 ## Inputs
 
 Required:
@@ -34,21 +27,19 @@ Optional:
 - `--model` — `gpt-image-1` (default) or `gpt-image-2`.
 - `--aspect-ratio` — `9:16` (default), `16:9`, `1:1`, `2:3`, `3:2`. gpt-image-2 also accepts `3:4`, `4:3`, `4:5`. Used when `--image-size` is not given.
 - `--image-size` — explicit `WIDTHxHEIGHT` (e.g. `1728x2304`). **gpt-image-2 only** — values are rounded to multiples of 16 and capped at 3840px. On `gpt-image-1` a custom size is ignored with a warning and the aspect-ratio mapping is used instead.
-- `--quality` — `low | medium | high` (default `medium`).
+- `--quality` — `low | medium | high` (default `medium`; use `high` for finals).
 - `--ref-image` / `--ref-url` — a **PUBLIC image URL** for the `/edit` variant. **Repeatable** — pass it twice to send multiple refs (e.g. identity + style). The proxy does **not** upload local files, so a **local path is rejected** — host the image first (the MCP `media_upload`, or any public URL) and pass that URL. When present, routes to the model's `/edit` variant so the model can match the references. Order matters: pass identity (character) first, then style refs.
 - `--with-logs` — stream fal queue logs.
 
 Credentials (proxy-routed — NOT a raw FAL key):
-- The bundled `scripts/media_proxy.py` routes every call through the GooseWorks **fal-proxy**, which **bills the Ads agent**. It reads `~/.gooseworks/credentials.json` (`api_base`, `api_key`, `agent_id`) — written by `gooseworks login`. Do **not** set `FAL_API_KEY`: an agent (`cal_`) token is not a FAL key and 401s against fal directly.
+- The bundled `scripts/media_proxy.py` routes every call through the GooseWorks **fal-proxy**, which **bills the Ads agent**. It reads `~/.gooseworks/credentials.json` (`api_base`, `api_key`, `agent_id`), written by the GooseWorks CLI. Do **not** set `FAL_API_KEY`: an agent (`cal_`) token is not a FAL key and 401s against fal directly.
 - Set `GW_PROJECT_ID=<ad project id>` in the env so the generation's spend attributes to that ad project (per-project cost shows in the app).
 
-## Preflight
+## Credentials at run time
 
-```bash
-# Cloud sandbox: GW_MEDIA_PROXY_TOKEN is injected. Local: the CLI writes credentials.json.
-[ -n "$GW_MEDIA_PROXY_TOKEN" ] || test -f ~/.gooseworks/credentials.json || { echo "Missing credentials — run: gooseworks login"; exit 1; }
-python3 -c "import requests" || pip3 install requests
-```
+A cloud sandbox injects `GW_MEDIA_PROXY_TOKEN`; a terminal uses the CLI's credentials file. With
+neither, the bundled helper relays each paid call through the agent instead (see media-proxy), so
+the script never asks for a key or a sign-in.
 
 ## Workflow
 
@@ -102,7 +93,7 @@ The script:
 
 | Symptom | Likely cause | Fix |
 |---|---|---|
-| `401 Unauthorized` from fal | Calling fal directly with an agent token, or polling `queue.fal.run` instead of the proxy | This atom is **proxy-routed** — it uses the `~/.gooseworks/credentials.json` agent token via `media_proxy.py`, never a raw `FAL_API_KEY`. Run `gooseworks login` if the credentials file is missing. |
+| `401 Unauthorized` from fal | Calling fal directly with an agent token, or polling `queue.fal.run` instead of the proxy | This atom is **proxy-routed** — it uses the `~/.gooseworks/credentials.json` agent token via `media_proxy.py`, never a raw `FAL_API_KEY`. Without that file the helper relays the call instead. |
 | `ERROR: ref images must be PUBLIC URLs` | Passed a **local path** to `--ref-image` / `--ref-url` | The proxy does not upload local files. Host it (the MCP `media_upload`) and pass the resulting public URL. |
 | `429 Too Many Requests` | RPS limit | Drop concurrency to 2-3. |
 | Custom size ignored | `--image-size` passed with `--model gpt-image-1` | gpt-image-1 only supports fixed sizes; use `--model gpt-image-2` for custom sizes. |

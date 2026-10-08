@@ -2032,7 +2032,7 @@
       "description": "Generate a single photoreal or designed image with OpenAI gpt-image via fal.ai. Supports gpt-image-1 (default, fixed sizes — the FAL fallback for Higgsfield's `gpt_image_2`) and gpt-image-2 (`openai/gpt-image-2`, custom output sizes up to 3840px). Routes to text-to-image or the edit variant depending on whether a reference image is provided. Use for photoreal character anchors, scene keyframes, and designed sheets (e.g. storyboards) where precise layout and legible text matter.",
       "tags": "ads, design",
       "path": "skills/ads/capabilities/create-image-gpt-image-fal",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "files": [
         "skills/ads/capabilities/create-image-gpt-image-fal/SKILL.md",
         "skills/ads/capabilities/create-image-gpt-image-fal/scripts/fal_helpers.py",
@@ -2049,7 +2049,7 @@
         "slug": "create-image-gpt-image-fal",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.0.1",
+        "version": "1.0.2",
         "tags": [
           "ads",
           "design"
@@ -4843,7 +4843,7 @@
       "description": "Shared helper that routes ALL paid media generation (FAL image/video, ElevenLabs music) through the GooseWorks proxies so every call bills the Ads agent — never a provider SDK's default host. Host-swaps the FAL queue URLs, loads the agent token from the sandbox env (GW_MEDIA_PROXY_TOKEN) or ~/.gooseworks/credentials.json, and returns the result CDN URL. Every video-ad media capability imports this; templates never call a provider directly.",
       "tags": "ads",
       "path": "skills/ads/capabilities/media-proxy",
-      "version": "2.0.1",
+      "version": "2.0.2",
       "files": [
         "skills/ads/capabilities/media-proxy/SKILL.md",
         "skills/ads/capabilities/media-proxy/scripts/media_proxy.py",
@@ -4856,7 +4856,7 @@
         "slug": "media-proxy",
         "category": "capabilities",
         "domain": "ads",
-        "version": "2.0.1",
+        "version": "2.0.2",
         "tags": [
           "ads"
         ],
@@ -6616,7 +6616,7 @@
       "description": "Replace an existing video's opening with a supplied clip or free kinetic text hook while retaining and verifying every original body frame, audio, captions and ending. Use for surgical hook tests rather than regenerating the complete ad.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-hook-replacement",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "files": [
         "skills/ads/capabilities/render-hook-replacement/SKILL.md",
         "skills/ads/capabilities/render-hook-replacement/config.example.json",
@@ -6632,7 +6632,7 @@
         "slug": "render-hook-replacement",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "tags": [
           "ads"
         ],
@@ -8625,7 +8625,7 @@
     {
       "slug": "stitch-videos-ffmpeg",
       "name": "stitch-videos-ffmpeg",
-      "version": "1.1.0",
+      "version": "1.1.1",
       "category": "capabilities",
       "domain": "ads",
       "description": "Stitch video segments with ffmpeg concat, xfade, overlay, audio mux, and export settings. Ships montage.py, a free montage assembler (python3 + ffmpeg, no keys). It takes a JSON EDL of clips and stills, normalizes them and hard-cuts them in order, burns captions from an SRT, a cue list or word timings, and lays a VO over a music bed that ducks under it, mastered to -14 LUFS.",
@@ -8651,7 +8651,7 @@
         "slug": "stitch-videos-ffmpeg",
         "category": "capabilities",
         "pack": "video-ad-formats",
-        "version": "1.1.0",
+        "version": "1.1.1",
         "tags": [
           "ads"
         ],
@@ -9145,7 +9145,7 @@
       "description": "the UGC fix-loop toolkit — surgically re-render a bad window/beat of a single-take UGC master (stitch_replacement.py, pure FFmpeg) and GPT cross-model review a Seedance prompt before render (vet_seedance_prompt.py, routed through the openai-proxy). Fetch it into a one-shot UGC recipe so both scripts resolve on any machine and the vet call bills the Ads agent.",
       "tags": "ads",
       "path": "skills/ads/capabilities/ugc-fixloop",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "files": [
         "skills/ads/capabilities/ugc-fixloop/SKILL.md",
         "skills/ads/capabilities/ugc-fixloop/scripts/stitch_replacement.py",
@@ -9157,7 +9157,7 @@
         "slug": "ugc-fixloop",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "tags": [
           "ads"
         ],
@@ -9928,7 +9928,7 @@
       "description": "Write a short-form video ad from an evidence-backed angle and the selected template's actual recipe. Reuses or fetches ad-angle-miner, preserves the chosen angle, plans words and visuals together, checks product claims and production fit, and delivers the strongest script with useful alternatives. Use before video production and for script rewrites. Customer language is one input alongside audience, promise, product proof, offer and format.",
       "tags": "ads, content",
       "path": "skills/ads/capabilities/write-video-ad-script",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "files": [
         "skills/ads/capabilities/write-video-ad-script/SKILL.md",
         "skills/ads/capabilities/write-video-ad-script/references/buyer-and-mechanism.md",
@@ -9956,7 +9956,7 @@
         "slug": "write-video-ad-script",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.0.1",
+        "version": "1.0.2",
         "tags": [
           "ads",
           "content"
@@ -10398,7 +10398,7 @@
           "name": "stitch-videos-ffmpeg",
           "description": "Stitch video segments with ffmpeg concat, xfade, overlay, audio mux, and export settings. Ships montage.py, a free montage assembler (python3 + ffmpeg, no keys). It takes a JSON EDL of clips and stills, normalizes them and hard-cuts them in order, burns captions from an SRT, a cue list or word timings, and lays a VO over a music bed that ducks under it, mastered to -14 LUFS.",
           "path": "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg",
-          "version": "1.1.0",
+          "version": "1.1.1",
           "files": [
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/SKILL.md",
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/composite.py",

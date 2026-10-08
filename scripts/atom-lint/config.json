@@ -30,7 +30,17 @@
     "watch",
     "write-video-ad-script"
   ],
-  "strict_atoms": [],
+  "strict_atoms": [
+    "compose-creator-layer",
+    "create-kinetic-typography",
+    "footage-cutlist",
+    "media-proxy",
+    "render-hook-replacement",
+    "stitch-videos-ffmpeg",
+    "ugc-fixloop",
+    "verify-product-image",
+    "watch"
+  ],
   "limits": {
     "skill_md_bytes": 16384,
     "other_md_bytes": 20480

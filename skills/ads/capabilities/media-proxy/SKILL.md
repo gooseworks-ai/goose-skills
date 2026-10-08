@@ -2,7 +2,7 @@
 name: media-proxy
 description: Shared helper that routes ALL paid media generation (FAL image/video, ElevenLabs music) through the GooseWorks proxies so every call bills the Ads agent — never a provider SDK's default host. Host-swaps the FAL queue URLs, loads the agent token from the sandbox env (GW_MEDIA_PROXY_TOKEN) or ~/.gooseworks/credentials.json, and returns the result CDN URL. Every video-ad media capability imports this; templates never call a provider directly.
 status: active
-version: "2.0.1"
+version: "2.0.2"
 updated: 2026-10-06
 ---
 
@@ -158,7 +158,7 @@ for that input's own ingredient_key + digest first, or the digest never matches.
 ## Contracts (load-bearing)
 
 - **Bills the Ads agent** — `?token=&agent_id=` from `~/.gooseworks/credentials.json`
-  (the CLI writes it; run `gooseworks login` if missing). In a GooseWorks cloud sandbox
+  (written by the GooseWorks CLI). In a GooseWorks cloud sandbox
   (coworker chat) the env wins instead: `GW_MEDIA_PROXY_TOKEN` (a per-session token that
   already binds agent/org/user) + `GW_API_BASE`; `GW_PROJECT_ID` attributes spend.
 - **Host-swap the FAL queue URLs** — submit returns `status_url`/`response_url` on
@@ -173,8 +173,8 @@ for that input's own ingredient_key + digest first, or the digest never matches.
 
 ## No credentials at all? The MCP relay
 
-A session that only has the GooseWorks MCP connector (the Claude desktop app, a Codex
-session without `gooseworks login`) has neither `GW_MEDIA_PROXY_TOKEN` (the cloud sandbox's)
+A session that only has the GooseWorks MCP connector (a chat app, or a terminal where
+the GooseWorks CLI is not signed in) has neither `GW_MEDIA_PROXY_TOKEN` (the cloud sandbox's)
 nor `~/.gooseworks/credentials.json`, so scripts cannot reach the proxies over HTTP. Then every paid call is **relayed through the agent**:
 
 1. The script writes the exact MCP tool call to `working/mcp-requests/<kind>-<hash>.json`

@@ -1,7 +1,7 @@
 ---
 name: stitch-videos-ffmpeg
 description: Stitch video segments with ffmpeg concat, xfade, overlay, audio mux, and export settings. Ships montage.py, a free montage assembler (python3 + ffmpeg, no keys). It takes a JSON EDL of clips and stills, normalizes them and hard-cuts them in order, burns captions from an SRT, a cue list or word timings, and lays a VO over a music bed that ducks under it, mastered to -14 LUFS.
-version: "1.1.0"
+version: "1.1.1"
 updated: 2026-10-06
 ---
 
@@ -119,8 +119,8 @@ clip's own sound and fills silence under stills and silent clips.
   0.72) and `max_width` (default 0.86 of the width).
 - **Renderers:** `auto` uses Pillow when it is installed, so captions look the same on
   every machine. Otherwise it uses libass, which needs an ffmpeg with the `ass` filter.
-  Homebrew's default `ffmpeg` has no libass and no `drawtext`, so on a Mac run
-  `python3 -m pip install pillow`. With neither, the step exits 3 and says so.
+  Some ffmpeg builds (Homebrew's default) have no libass and no `drawtext`, so Pillow is
+  the dependable renderer. With neither, the step exits 3 and says so.
 
 ### Mix defaults (all overridable)
 

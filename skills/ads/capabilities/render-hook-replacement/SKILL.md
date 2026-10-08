@@ -3,7 +3,7 @@ name: render-hook-replacement
 description: Replace an existing video's opening with a supplied clip or free kinetic text hook while retaining and verifying every original body frame, audio, captions and ending. Use for surgical hook tests rather than regenerating the complete ad.
 owner: team
 status: active
-version: "1.0.0"
+version: "1.0.1"
 created: 2026-10-05
 updated: 2026-10-05
 level: atom
@@ -47,7 +47,7 @@ automatic final selection. Read [the editing guide](references/hook-replacement.
   choose a measured word/silence boundary. No silent correction of that boundary.
 - `hook.path`: supplied video, any dimensions/frame rate, normalized to the original.
   Or `hook.text`, `duration_sec`, `font_path` and optional `#RRGGBB` colors. Text needs
-  Pillow (`python3 -m pip install Pillow`) and an explicitly supplied licensed font.
+  Pillow (part of the video toolchain) and an explicitly supplied licensed font.
 - Optional `words:[{start,end,word}]` measured on this source, or `word_times` JSON
   containing `source_sha256` and `words`. A cut through a measured word fails.
 - Optional `captions:{path,output_path}`: original separate SRT or timed JSON cues.

@@ -350,6 +350,6 @@ buyer-quote checks.
   yourself.
 
 Set `--writer-family` to the actual writer (anthropic, openai, google or other), and
-`--model` to an available OpenRouter model from a different family. A Codex/OpenAI
+`--model` to an available OpenRouter model from a different family. An OpenAI-family
 writer must not use the default OpenAI critic. Legacy calls default writer-family to
 anthropic. With one concept it runs one pass; with more, two passes in opposite orders.

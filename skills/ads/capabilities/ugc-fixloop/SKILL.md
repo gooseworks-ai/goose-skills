@@ -19,8 +19,8 @@ machine (fetched into `/tmp/gooseworks-scripts/ugc-fixloop/`).
 - **`vet_seedance_prompt.py`** — routes through the GooseWorks **openai-proxy** (`<api_base>/api/internal/openai-proxy/v1/chat/completions`), reading creds from `~/.gooseworks/credentials.json` — **no direct OpenAI call, no local key**; the call **bills the Ads agent**. Exits 3 if the proxy/creds are unavailable so the recipe can fall back to an inline self-review (the vet is advisory, not a gate).
 
 ## Run — vet_seedance_prompt.py (GPT cross-model prompt review)
-A deliberately NON-Claude second opinion on the Seedance prompt before you spend the render
-(Claude reviewing its own prompt is a weaker signal). Takes the prompt as an argument:
+A second opinion from a different model family on the Seedance prompt before you spend the
+render (a model reviewing its own prompt is a weaker signal). Takes the prompt as an argument:
 ```
 vet_seedance_prompt.py --prompt-file working/seedance-prompt.txt \
     [--brief "one-line intent"] [--refs "@Image1=avatar; @Image2=product; @Image3=env"] \
