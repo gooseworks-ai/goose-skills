@@ -325,7 +325,32 @@ export async function run(inputs, ctx) {
   const keepOwn = inputs.keep_video_audio ?? picture.has_audio;
   if (inputs.keep_video_audio && !picture.has_audio) throw ctx.error('bad_input', 'keep_video_audio is set but the video has no sound');
   if (!inputs.voice && !inputs.music && !(inputs.sfx || []).length && !inputs.effects && !keepOwn) {
-    throw ctx.error('bad_input', 'nothing to mix: give voice, music, sfx or effects, or a picture with its own sound');
+    // Nothing to lay under the picture (a style whose music is optional, with none chosen): a silent track
+    // of the picture's length, so every later step and layer gets a cut with sound to read.
+    ctx.log.info('nothing to mix: a silent track');
+    await kitFfmpeg(ctx, [
+      '-i',
+      inputs.video.path,
+      '-f',
+      'lavfi',
+      '-t',
+      kitNum(dur),
+      '-i',
+      'anullsrc=channel_layout=stereo:sample_rate=48000',
+      '-map',
+      '0:v:0',
+      '-map',
+      '1:a:0',
+      '-c:v',
+      'copy',
+      ...ctx.tools.encodeArgs('aac'),
+      '-t',
+      kitNum(dur),
+      '-movflags',
+      '+faststart',
+      join(ctx.workDir, 'mixed.mp4'),
+    ]);
+    return kitCheckOutputs(ctx, manifest, { video: await ctx.file('mixed.mp4', 'video'), seconds: +dur.toFixed(3) });
   }
   const duck = inputs.duck === undefined ? !!inputs.voice : inputs.duck !== false;
   const duckBy = inputs.voice ? 'voice' : keepOwn ? 'picture' : null;

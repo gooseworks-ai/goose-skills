@@ -12,6 +12,8 @@ Lays voice, a ducked music bed and timed sound effects under the picture, in one
 - **Sum**: no amix normalising (so one input never dims the others), then an oversampled peak limiter at
   -1 dBFS. The final level of the whole video is the sound layer's (-14 LUFS); this step only balances tracks.
 - **Picture** is copied, never re-encoded. Its own sound is kept (not ducked) unless `keep_video_audio` is false.
+- **Nothing to mix** (a style whose music is optional, with none chosen, over a silent picture): the cut gets a
+  silent stereo track of its length, so the layers always read a cut with sound.
 - **Outputs**: `video` (the mixed cut), `seconds`.
 
 Source: `parts/audio-mix/src/part.mjs` and `src/manifest.mjs`; build with

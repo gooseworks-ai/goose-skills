@@ -36,10 +36,14 @@ test('a sound effect lands at its time and not before', { skip: !ffmpeg && 'ffmp
   assert.ok(at - before > 30, `effect at 3s ${at.toFixed(1)} dB, before ${before.toFixed(1)} dB`);
 });
 
-test('refuses a mix with nothing to lay under the picture', { skip: !ffmpeg && 'ffmpeg is not installed' }, async () => {
+test('with nothing to mix (no music chosen) the cut gets a silent track of its length', { skip: !ffmpeg && 'ffmpeg is not installed' }, async () => {
   const { ctx } = makeCtx({ partDir: dir });
   const f = await fixture(ctx);
-  await assert.rejects(mod.run({ video: f.video }, ctx), (e) => e.code === 'bad_input');
+  const out = await mod.run({ video: f.video }, ctx);
+  const info = await probe(out.video.path);
+  assert.equal(info.has_audio, true);
+  assert.ok(Math.abs(info.duration_s - 4) < 0.1, `cut is ${info.duration_s}s`);
+  assert.equal(await levelDb(out.video.path, 0, 3.9), -Infinity, 'the track is silent');
 });
 
 test("with no voice the bed ducks under the picture's own sound, which is kept", { skip: !ffmpeg && 'ffmpeg is not installed' }, async () => {
