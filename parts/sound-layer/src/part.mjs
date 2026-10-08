@@ -5,6 +5,7 @@
 // correction if the first try lands outside the tolerance, else the step
 // fails rather than hand on a cut the server's check would refuse. A silent
 // cut has nothing to level and passes through untouched.
+import { rename } from 'node:fs/promises';
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitFfmpeg, kitLoudness, kitNum } from '../../_lib/part.mjs';
 
@@ -43,9 +44,9 @@ async function encode(ctx, video, filter, out) {
     ...ctx.tools.encodeArgs('aac'),
     '-movflags',
     '+faststart',
-    join(ctx.workDir, out),
+    join(ctx.tmpDir, out),
   ]);
-  return join(ctx.workDir, out);
+  return join(ctx.tmpDir, out);
 }
 
 export async function run(inputs, ctx) {
@@ -80,6 +81,8 @@ export async function run(inputs, ctx) {
     throw ctx.error('output_invalid', `levelled to ${after.lufs} LUFS, true peak ${after.true_peak_db} dBTP; the target is ${TARGET_LUFS} +/-${TOLERANCE_LU} LUFS at or below ${TARGET_TP} dBTP`);
   }
   ctx.log.info('sound layer levelled', { lufs_before: first.lufs, lufs_after: after.lufs, true_peak_db: after.true_peak_db });
-  const video = await ctx.file(path.slice(ctx.workDir.length + 1), 'video');
+  // Only the chosen pass leaves scratch, as the step's one output.
+  await rename(path, join(ctx.workDir, 'levelled.mp4'));
+  const video = await ctx.file('levelled.mp4', 'video');
   return kitCheckOutputs(ctx, manifest, { video, timeline: inputs.timeline });
 }

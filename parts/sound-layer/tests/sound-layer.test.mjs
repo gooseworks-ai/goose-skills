@@ -1,9 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { join } from 'node:path';
-import { fileRef, hasFfmpeg, layerInputsFor, loadPart, makeCtx, makeTone, measureR128, run } from '../../_tools/kit-harness.mjs';
+import { loadNewest, fileRef, hasFfmpeg, layerInputsFor, loadPart, makeCtx, makeTone, measureR128, run } from '../../_tools/kit-harness.mjs';
 
-const { dir, mod } = await loadPart('sound-layer', '1.0.0');
+const { dir, mod } = await loadNewest('sound-layer');
 const ffmpeg = await hasFfmpeg();
 const skip = !ffmpeg && 'ffmpeg is not installed, so loudness cannot be measured';
 
@@ -55,4 +55,6 @@ test('a cut with sharp peaks (a chat\'s pops over a quiet bed) reaches -14 LUFS 
   const after = await measureR128(out.video.path);
   assert.ok(Math.abs(after.lufs + 14) <= 1, `levelled to ${after.lufs} LUFS`);
   assert.ok(after.true_peak_db <= -1, `true peak ${after.true_peak_db} dBTP`);
+  const { readdirSync } = await import('node:fs');
+  assert.deepEqual(readdirSync(ctx.workDir).filter((f) => f.startsWith('levelled')), ['levelled.mp4'], 'the correction passes stay in scratch');
 });

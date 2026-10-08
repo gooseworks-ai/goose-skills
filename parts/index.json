@@ -916,6 +916,43 @@
       "models": []
     },
     {
+      "id": "sound-layer",
+      "version": "1.0.1",
+      "interface": 1,
+      "kind": "mix",
+      "layer": "sound",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "loudnorm",
+            "ebur128",
+            "volume",
+            "alimiter",
+            "aresample"
+          ],
+          "encoders": [
+            "aac"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 300
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/sound-layer/1.0.1",
+      "files": {
+        "README.md": "61dec5e5789847a864eb374c2f1979538c2c7236f8ec295433652cdc5e46444a",
+        "part.json": "fb61d50401ac8395931624f84be37a832583eb6a728889aaeaad21ddc96f6ab5",
+        "part.mjs": "30ee6a1232f9bd89f92ec1b48aea04440240bd490c9f4f60c167f57f09aea189"
+      },
+      "models": []
+    },
+    {
       "id": "transcribe-whisper",
       "version": "1.0.0",
       "interface": 1,
