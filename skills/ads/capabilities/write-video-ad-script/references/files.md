@@ -179,7 +179,7 @@ native script and production direction. They are estimates, not generated-audio 
 - `tag` is one of `pain`, `desire`, `objection`, `outcome`, `moment` or `switching`.
 - `text` is verbatim and `source` is the real link.
 
-Save a copy to the GooseWorks workspace with the MCP file tools (file_write), at
+Save a copy to the GooseWorks workspace with the MCP file tools (file_save), at
 video-scripts, then the brand id, then the product id, then customer-words.json, so the next video for this
 brand reuses it. If the file tools refuse, skip it; never write it into the user's own
 folders.
@@ -338,7 +338,7 @@ buyer-quote checks.
 - **0**: the critique is saved to critique.json.
 - **3**: relay mode (no GooseWorks credentials on this machine). It wrote one request
   per pass at once under working/mcp-requests/. For each one:
-  1. Make the call with data_post_provider.
+  1. Make the call with data_post.
   2. Poll job_get until it is complete.
   3. Save job_get's result.output where the request says. The whole job_get reply is
      also accepted.
@@ -350,6 +350,6 @@ buyer-quote checks.
   yourself.
 
 Set `--writer-family` to the actual writer (anthropic, openai, google or other), and
-`--model` to an available OpenRouter model from a different family. A Codex/OpenAI
+`--model` to an available OpenRouter model from a different family. An OpenAI-family
 writer must not use the default OpenAI critic. Legacy calls default writer-family to
 anthropic. With one concept it runs one pass; with more, two passes in opposite orders.

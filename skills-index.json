@@ -1,6 +1,6 @@
 {
-  "version": "1.3.0",
-  "generated": "2026-10-07",
+  "version": "1.4.0",
+  "generated": "2026-10-08",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -817,6 +817,7 @@
       "description": "Burned-in captions for a finished vertical video, three kinds. transcribe.py gets word timings from the video's own audio through the GooseWorks proxy (fal Whisper, bills the Ads agent, cents); captions.py burns one to three words at a time with Pillow + ffmpeg (no libass needed), either pinned to a split-screen seam (plate 25% above / 75% below) or at a fixed height, in a plate, outline or one-word serif style, with an optional red hook card; plates.py burns per-beat caption blocks (black, one union silhouette, placed in the emptiest band) for formats with no voice. The last caption (the CTA) holds to the final frame. Use as the last step of any video ad.",
       "tags": "ads, content",
       "path": "skills/ads/capabilities/caption-burn",
+      "version": "1.0.0",
       "files": [
         "skills/ads/capabilities/caption-burn/SKILL.md",
         "skills/ads/capabilities/caption-burn/scripts/_fonts.py",
@@ -832,6 +833,7 @@
         "slug": "caption-burn",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.0",
         "tags": [
           "ads",
           "content"
@@ -1487,19 +1489,22 @@
       "name": "compose-creator-layer",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Composite a generated creator track into a product layer, per beat — in the creator's zone on split beats (either side of a seam), full frame on creator beats, hidden on product beats — with the creator's voice as the audio (loudness -14 LUFS) and an optional ducked music bed, or a music-only or silent master for voiceless formats. Free, local ffmpeg. Pairs with footage-cutlist (the layer) and create-creator-takes-h3 (the creator). Use for split-screen, screen-insert and any creator-over-product format.",
+      "description": "Composite a generated creator track into a product layer, per beat — in the creator's zone on split beats (either side of a seam), full frame on creator beats, hidden on product beats — with the creator's voice as the audio (loudness -14 LUFS) and an optional ducked music bed, or a music-only or silent master for voiceless formats. Free, local ffmpeg. Pairs with footage-cutlist (the layer) and create-creator-takes-h3 (the creator). Use for split-screen (with an optional zoom and brand-colour seam bar), screen-insert and any creator-over-product format.",
       "tags": "ads, content",
       "path": "skills/ads/capabilities/compose-creator-layer",
+      "version": "1.1.0",
       "files": [
         "skills/ads/capabilities/compose-creator-layer/SKILL.md",
         "skills/ads/capabilities/compose-creator-layer/scripts/compose.py",
         "skills/ads/capabilities/compose-creator-layer/skill.meta.json",
-        "skills/ads/capabilities/compose-creator-layer/tests/smoke-test.md"
+        "skills/ads/capabilities/compose-creator-layer/tests/smoke-test.md",
+        "skills/ads/capabilities/compose-creator-layer/tests/test_compose_split.py"
       ],
       "metadata": {
         "slug": "compose-creator-layer",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.1.0",
         "tags": [
           "ads",
           "content"
@@ -1741,6 +1746,7 @@
     {
       "slug": "create-apple-notes-mockup",
       "name": "create-apple-notes-mockup",
+      "version": "1.0.0",
       "category": "capabilities",
       "domain": "ads",
       "description": "Render pixel-accurate Apple Notes (iPhone, light mode) screenshot mockups from a JSON note spec. Outputs HTML + PNG at the iPhone 16/15 Pro native 1180×2556. Supports paragraphs, images, checklists, dividers, autocorrect underline, smart quotes, and an optional iOS keyboard chrome overlay used by the parent video-ad molecule.",
@@ -1777,6 +1783,7 @@
         "slug": "create-apple-notes-mockup",
         "category": "capabilities",
         "pack": "video-ad-formats",
+        "version": "1.0.0",
         "tags": [
           "ads"
         ],
@@ -1793,6 +1800,7 @@
     {
       "slug": "create-chatgpt-mockup",
       "name": "create-chatgpt-mockup",
+      "version": "1.0.0",
       "category": "capabilities",
       "domain": "ads",
       "description": "Render pixel-accurate ChatGPT mobile (iOS) screen mockups in light mode from a thread JSON. Supports user text bubbles, user image attachments, assistant markdown prose, citation chips, the OpenAI spiral logo, the Apps-SDK GPT chip in the composer, and three header styles (model-tag, plain title, \"Get Plus\"). Fixed 9:16 viewport. Outputs HTML + PNG.",
@@ -1833,6 +1841,7 @@
         "slug": "create-chatgpt-mockup",
         "category": "capabilities",
         "pack": "video-ad-formats",
+        "version": "1.0.0",
         "tags": [
           "ads"
         ],
@@ -1854,6 +1863,7 @@
       "description": "Generate an AI creator talking to camera, saying an approved script, as one continuous track — H3 Max reference-to-video through the GooseWorks fal-proxy (bills the Ads agent). Plans takes on line boundaries under H3's 15s cap, dry-runs a cost estimate, generates the first take alone so its voice can be locked and passed to every later take, joins takes with measured 0.10s dissolves, and moves each line's timing onto the words actually spoken. Use for any format with a generated creator speaking a script (split-screen, screen inserts, talking-head ads).",
       "tags": "ads, content",
       "path": "skills/ads/capabilities/create-creator-takes-h3",
+      "version": "2.0.0",
       "files": [
         "skills/ads/capabilities/create-creator-takes-h3/SKILL.md",
         "skills/ads/capabilities/create-creator-takes-h3/scripts/align_beats.py",
@@ -1872,6 +1882,7 @@
         "slug": "create-creator-takes-h3",
         "category": "capabilities",
         "domain": "ads",
+        "version": "2.0.0",
         "tags": [
           "ads",
           "content"
@@ -1989,9 +2000,10 @@
       "name": "create-image-fal",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Generate or edit an image via any FAL image model (nano-banana edit, gpt-image, flux, ...), ROUTED THROUGH THE fal-proxy so it bills the Ads agent. image_urls must be public URLs (orchestrator hosts local product refs via MCP upload->presign). The recipe names the model + prompt. Use for keyframes, flat-cover transforms, product hero edits. (For the OpenAI gpt-image family specifically, create-image-gpt-image-fal also exists.)",
+      "description": "Generate or edit an image via any FAL image model (nano-banana edit, gpt-image, flux, ...), ROUTED THROUGH THE fal-proxy so it bills the Ads agent. image_urls must be public URLs; --image puts a local file on the fal CDN first. The recipe names the model + prompt. Use for keyframes, flat-cover transforms, product hero edits. (For the OpenAI gpt-image family specifically, create-image-gpt-image-fal also exists.)",
       "tags": "ads",
       "path": "skills/ads/capabilities/create-image-fal",
+      "version": "1.2.0",
       "files": [
         "skills/ads/capabilities/create-image-fal/SKILL.md",
         "skills/ads/capabilities/create-image-fal/references/avatar-generation.md",
@@ -2004,6 +2016,7 @@
         "slug": "create-image-fal",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.2.0",
         "tags": [
           "ads"
         ],
@@ -2028,6 +2041,7 @@
       "description": "Generate a single photoreal or designed image with OpenAI gpt-image via fal.ai. Supports gpt-image-1 (default, fixed sizes — the FAL fallback for Higgsfield's `gpt_image_2`) and gpt-image-2 (`openai/gpt-image-2`, custom output sizes up to 3840px). Routes to text-to-image or the edit variant depending on whether a reference image is provided. Use for photoreal character anchors, scene keyframes, and designed sheets (e.g. storyboards) where precise layout and legible text matter.",
       "tags": "ads, design",
       "path": "skills/ads/capabilities/create-image-gpt-image-fal",
+      "version": "1.1.0",
       "files": [
         "skills/ads/capabilities/create-image-gpt-image-fal/SKILL.md",
         "skills/ads/capabilities/create-image-gpt-image-fal/scripts/fal_helpers.py",
@@ -2044,6 +2058,7 @@
         "slug": "create-image-gpt-image-fal",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.1.0",
         "tags": [
           "ads",
           "design"
@@ -2061,6 +2076,7 @@
     {
       "slug": "create-imessage-mockup",
       "name": "create-imessage-mockup",
+      "version": "1.0.0",
       "category": "capabilities",
       "domain": "ads",
       "description": "Render pixel-accurate iMessage screenshot mockups (DM or group) from a thread JSON. Supports minimal, with-keyboard, and full iPhone 15 Pro frame variants. Outputs HTML + PNG.",
@@ -2094,6 +2110,7 @@
         "slug": "create-imessage-mockup",
         "category": "capabilities",
         "pack": "video-ad-formats",
+        "version": "1.0.0",
         "tags": [
           "ads"
         ],
@@ -2115,6 +2132,7 @@
       "description": "Render a deterministic text-only video ad from approved copy, font, colors, timing and CTA. Use when a brand needs an animated message without product photography or a creator.",
       "tags": "ads",
       "path": "skills/ads/capabilities/create-kinetic-typography",
+      "version": "1.0.0",
       "files": [
         "skills/ads/capabilities/create-kinetic-typography/SKILL.md",
         "skills/ads/capabilities/create-kinetic-typography/scripts/config.example.json",
@@ -2125,6 +2143,7 @@
         "slug": "create-kinetic-typography",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.0",
         "tags": [
           "ads"
         ],
@@ -2178,6 +2197,7 @@
       "description": "Generate an instrumental music bed via ElevenLabs Music, ROUTED THROUGH THE elevenlabs-proxy so it bills the Ads agent. Trims any sparse intro, loudnorm, fades the tail. Prompt + length from the template recipe. Use for the music layer of any video-ad format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/create-music-elevenlabs",
+      "version": "1.1.1",
       "files": [
         "skills/ads/capabilities/create-music-elevenlabs/SKILL.md",
         "skills/ads/capabilities/create-music-elevenlabs/scripts/gen_music.py",
@@ -2189,6 +2209,7 @@
         "slug": "create-music-elevenlabs",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.1.1",
         "tags": [
           "ads"
         ],
@@ -2210,9 +2231,10 @@
       "name": "create-video-fal",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Image-to-video (or text-to-video) via any FAL video model (Kling, Seedance, Veo), ROUTED THROUGH THE GooseWorks fal-proxy so the call bills the Ads agent. The template recipe names the model + params; image_url inputs must be public URLs (the orchestrator hosts local frames via MCP get_upload_url -> get_download_url). Returns the result video URL and downloads it. Use for the generative base clip of any video-ad format.",
+      "description": "Image-to-video (or text-to-video) via any FAL video model (Kling, Seedance, Veo), ROUTED THROUGH THE GooseWorks fal-proxy so the call bills the Ads agent. The template recipe names the model + params; image_url inputs must be public URLs (the orchestrator hosts local frames with the MCP media_upload). Returns the result video URL and downloads it. Use for the generative base clip of any video-ad format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/create-video-fal",
+      "version": "1.1.0",
       "files": [
         "skills/ads/capabilities/create-video-fal/SKILL.md",
         "skills/ads/capabilities/create-video-fal/scripts/gen_video.py",
@@ -2224,6 +2246,7 @@
         "slug": "create-video-fal",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.1.0",
         "tags": [
           "ads"
         ],
@@ -2243,6 +2266,7 @@
     {
       "slug": "create-video-seedance-2-fal",
       "name": "create-video-seedance-2-fal",
+      "version": "2.0.1",
       "category": "capabilities",
       "domain": "ads",
       "description": "Generate a single 4-15s vertical video clip with ByteDance Seedance 2.0 reference-to-video via fal.ai. Multi-image reference (avatar + product + setting), native lip-synced VO + ambient audio (generate-audio on by default), internal multi-cut handling within one render. Routes through the GooseWorks FAL proxy (bills the Ads agent). The default clip atom for AI-creator UGC ads built on the NB2 + Seedance architecture. Validated on beauty-by-earth/video-01.",
@@ -2264,6 +2288,7 @@
         "slug": "create-video-seedance-2-fal",
         "category": "capabilities",
         "pack": "ugc-video-formats",
+        "version": "2.0.1",
         "tags": [
           "ads"
         ],
@@ -2285,6 +2310,7 @@
       "description": "Generate a voiceover (VO) clip via ElevenLabs text-to-speech, ROUTED THROUGH THE elevenlabs-proxy so it bills the Ads agent. Voice id + script text come from the template recipe. Use for the spoken narration of VO-driven video-ad formats (cgi-app-sizzle, flat-vector-explainer, hypermotion). Never call ElevenLabs directly — the proxy attribution is required.",
       "tags": "ads",
       "path": "skills/ads/capabilities/create-vo-elevenlabs",
+      "version": "1.1.1",
       "files": [
         "skills/ads/capabilities/create-vo-elevenlabs/SKILL.md",
         "skills/ads/capabilities/create-vo-elevenlabs/scripts/gen_vo.py",
@@ -2299,6 +2325,7 @@
         "slug": "create-vo-elevenlabs",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.1.1",
         "tags": [
           "ads"
         ],
@@ -3054,6 +3081,7 @@
       "description": "Watch a brand's own product footage (screen recording, product film), pick the moment that proves each line with the user, and render those picks as a product layer — free, local. survey.py turns footage into timestamped contact sheets + scene cuts + motion so the agent can actually look at it; the agent writes a cut list (beat → source window + framing); preview.py draws it as a review sheet the user corrects round by round; cut.py renders the approved list into a silent 1080x1920 layer with the creator's area left as a plate. Also frames footage as a filmed screen (keystone, bezel, handheld drift) with dissolves between beats, and takes still screenshots as sources. Use for any format that shows real product footage beside, between or instead of a creator (split-screen, screen inserts, walkthroughs).",
       "tags": "ads, content",
       "path": "skills/ads/capabilities/footage-cutlist",
+      "version": "1.0.0",
       "files": [
         "skills/ads/capabilities/footage-cutlist/SKILL.md",
         "skills/ads/capabilities/footage-cutlist/scripts/_common.py",
@@ -3070,6 +3098,7 @@
         "slug": "footage-cutlist",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.0",
         "tags": [
           "ads",
           "content"
@@ -4827,6 +4856,7 @@
       "description": "Shared helper that routes ALL paid media generation (FAL image/video, ElevenLabs music) through the GooseWorks proxies so every call bills the Ads agent — never a provider SDK's default host. Host-swaps the FAL queue URLs, loads the agent token from the sandbox env (GW_MEDIA_PROXY_TOKEN) or ~/.gooseworks/credentials.json, and returns the result CDN URL. Every video-ad media capability imports this; templates never call a provider directly.",
       "tags": "ads",
       "path": "skills/ads/capabilities/media-proxy",
+      "version": "2.0.2",
       "files": [
         "skills/ads/capabilities/media-proxy/SKILL.md",
         "skills/ads/capabilities/media-proxy/scripts/media_proxy.py",
@@ -4839,6 +4869,7 @@
         "slug": "media-proxy",
         "category": "capabilities",
         "domain": "ads",
+        "version": "2.0.2",
         "tags": [
           "ads"
         ],
@@ -5087,6 +5118,7 @@
     {
       "slug": "mix-master",
       "name": "mix-master",
+      "version": "1.0.0",
       "category": "capabilities",
       "domain": "ads",
       "description": "Canonical short-form-ad audio mix in one FFmpeg pass. VO loudnorm + 3.0× per-clip + 2.0× mix, music 0.13 base + apad+afade, sidechain compress 20:1 @ 0.01, climax line +20%, optional video-to-music duration sync. Replaces the reactive multi-round tuning that cost v03 6+ passes.",
@@ -5101,6 +5133,7 @@
         "slug": "mix-master",
         "category": "capabilities",
         "pack": "video-ad-formats",
+        "version": "1.0.0",
         "tags": [
           "ads"
         ],
@@ -5928,6 +5961,7 @@
       "description": "Assemble an animated character-explainer video ad (any art style — Pixar-style 3D, claymation, anime, paper-cut, felt) (~77s, 9:16) built on an \"N types of X\" listicle spine — a recurring human protagonist plus a locked cast of N persona characters, one per list item. Given the per-scene i2v clips + a per-scene target-duration table + a narration track, it trims each clip to its scene window, re-encodes every segment to identical 1080x1920/30fps/libx264/yuv420p (decrease+pad, never crop) so the concat demuxer never drops frames, concats, and muxes audio — in RESTYLE mode the source ad's VO+music mix is reused verbatim, in ORIGINAL mode fresh per-scene VO (loudnorm I=-14) is mixed under an optional music bed (loudnorm I=-26). A static-still fallback loops a scene's keyframe when its clip is missing/failed, so the master always assembles; libass captions are burned last. FREE deterministic assembly (Python + ffmpeg, no bash, no paid calls); the recipe supplies the clips, keyframes, VO or source audio, and caption table and gates the paid cast-anchor/keyframe/Kling-i2v/VO/music calls to their own capabilities. Use for the 3d-character-explainer listicle format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-3d-character-explainer",
+      "version": "1.0.0",
       "files": [
         "skills/ads/capabilities/render-3d-character-explainer/SKILL.md",
         "skills/ads/capabilities/render-3d-character-explainer/scripts/compose.py",
@@ -5940,6 +5974,7 @@
         "slug": "render-3d-character-explainer",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.0",
         "tags": [
           "ads"
         ],
@@ -5964,6 +5999,7 @@
       "description": "Assemble a premium 3D product-showcase ad from a config — four beat clips (an orbiting hero rotation, a macro push-in, a physics reveal, a typographic close) normalized to the chosen backdrop colour, hard-concatenated in order, closed on a deterministic Playwright brand end card, and mixed under one instrumental bed at loudnorm I=-16 (music-only, no VO). Ships the runnable build_endcard.py + build_masters.py; the rotation/macro clips are create-video-fal i2v seeded on a create-image-fal styled hero, the reveal is Veo3 i2v, and the bed is create-music-elevenlabs. Use for the 3d-product-showcase format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-3d-product-showcase",
+      "version": "1.0.1",
       "files": [
         "skills/ads/capabilities/render-3d-product-showcase/SKILL.md",
         "skills/ads/capabilities/render-3d-product-showcase/scripts/PIPELINE.md",
@@ -5979,6 +6015,7 @@
         "slug": "render-3d-product-showcase",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.1",
         "tags": [
           "ads"
         ],
@@ -6003,6 +6040,7 @@
       "description": "Assemble an absurdist animated-explainer video ad (~38s, 9:16) from per-scene i2v clips + their measured VO windows — retime each clip to its VO, re-encode every segment to identical 30fps/libx264/yuv420p so the concat demuxer never drops frames, concat, build a REAL-product PIL end card (never AI) with a slow Ken-Burns, mix VO (loudnorm I=-14) under music (loudnorm I=-26, volume 0.62, amix normalize=0), and burn libass captions last. FREE deterministic assembly (bash-free, Python + ffmpeg + PIL); the recipe supplies the clips, VO, music, product photo, palette, and caption table and gates the paid keyframe/clip/VO/music calls to their own capabilities. Use for the absurdist-explainer format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-absurdist-explainer",
+      "version": "1.0.0",
       "files": [
         "skills/ads/capabilities/render-absurdist-explainer/SKILL.md",
         "skills/ads/capabilities/render-absurdist-explainer/scripts/build_endcard.py",
@@ -6016,6 +6054,7 @@
         "slug": "render-absurdist-explainer",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.0",
         "tags": [
           "ads"
         ],
@@ -6040,6 +6079,7 @@
       "description": "Assemble a viral iOS \"AirDrop\" notification-carousel video ad (≈6–8s, 9:16) from a brand line plus 6–16 real product photos — a native AirDrop share-sheet card (\"Brand would like to share a ___ · Decline / Accept\") springs up and its preview window CYCLES through the products, landing on a range/lineup payoff with an Accept tap; a chime + soft per-swap ticks track the swaps. DETERMINISTIC assembly — an HTML card (real DOM text) rendered to PNG via headless Chrome, chroma-keyed, its magenta window refilled per-product in PIL, then animated + audio-synthed with FFmpeg. FREE (no paid model calls); the recipe supplies the brand line, product images, and payoff and gates the only optional paid step (a hero shot when the brand has NO usable photo → create-image-fal). Use for the airdrop-notification-carousel format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-airdrop-carousel",
+      "version": "1.0.0",
       "files": [
         "skills/ads/capabilities/render-airdrop-carousel/SKILL.md",
         "skills/ads/capabilities/render-airdrop-carousel/scripts/build_card.py",
@@ -6053,6 +6093,7 @@
         "slug": "render-airdrop-carousel",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.0",
         "tags": [
           "ads"
         ],
@@ -6077,6 +6118,7 @@
       "description": "Assemble an Apple Notes list video ad from a note + end-card JSON — a frame-accurate fake iPhone screen recording of a short list being typed into Apple Notes (character by character, key pops, blinking caret, the note scrolling up as it fills) crossfaded into a checklist end card (the note's picks as ticked rows, real product photos, logo, CTA, in the brand's colours and fonts), with an optional music bed. FREE assembly (Playwright + ffmpeg); the recipe supplies the per-brand note + end card and gates the paid music call to its own capability. The Apple Notes sibling of render-imessage-chat and render-chatgpt-chat. Use for the apple-notes format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-apple-notes-chat",
+      "version": "1.0.0",
       "files": [
         "skills/ads/capabilities/render-apple-notes-chat/SKILL.md",
         "skills/ads/capabilities/render-apple-notes-chat/scripts/config.example.json",
@@ -6096,6 +6138,7 @@
         "slug": "render-apple-notes-chat",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.0",
         "tags": [
           "ads"
         ],
@@ -6120,6 +6163,7 @@
       "description": "Render a 'brand identity reveal' video from a config — a single poster frame in a real, softly-lit space (real wall, soft-focus plant in the corner, dappled leaf shadow, illuminated poster) whose artwork HARD-CUTS through ~10 on-brand poster mockups (hero product, IG post, hanging banners, sticker sheet, logo lockup, poster, two lifestyle stills, packaging, big icon) then holds on a brand end card. The environment plate is one create-image-fal generation; the mockups are real-DOM HTML frame-stepped via Playwright, perspective-composited into the detected frame quad with the plate's real leaf-shadow multiplied back onto each poster (reads as behind glass), sequenced by FFmpeg. Deterministic assembly, FREE (the plate comes from create-image-fal, the bed from create-music-elevenlabs), music bed only and approved brand copy only. Use for the brand-identity-reveal format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-brand-identity-reveal",
+      "version": "1.0.0",
       "files": [
         "skills/ads/capabilities/render-brand-identity-reveal/SKILL.md",
         "skills/ads/capabilities/render-brand-identity-reveal/scripts/PIPELINE.md",
@@ -6137,6 +6181,7 @@
         "slug": "render-brand-identity-reveal",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.0",
         "tags": [
           "ads"
         ],
@@ -6161,6 +6206,7 @@
       "description": "Assemble a cartoon / animated / hand-crafted music-video ad from a config — a sung song carries the whole narrative while N per-bar i2v clips (one recurring animated character, one look pack) are each cut to their BAR window from librosa beat-tracking and hard-concatenated on the bar, VEED-whisper white bold-sans captions in the BOTTOM third (Alignment 2, above the logo bug, no pill) burned from the song's word timings re-spelled against the locked lyrics, a persistent brand logo bug held over the body (suppressed on the end card), and closed on a solid-brand-color PIL end card with the song still playing under it — never AI-rendered text. This is the FREE deterministic assembly stage (cut-to-bar + hard concat + logo bug + captions + end card + song mux); the song, character, keyframes, and clips come from create-music-elevenlabs / create-image-fal / create-video-fal. Use for the cartoon-music-video format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-cartoon-music-video",
+      "version": "1.0.2",
       "files": [
         "skills/ads/capabilities/render-cartoon-music-video/SKILL.md",
         "skills/ads/capabilities/render-cartoon-music-video/scripts/PIPELINE.md",
@@ -6173,6 +6219,7 @@
         "slug": "render-cartoon-music-video",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.2",
         "tags": [
           "ads"
         ],
@@ -6197,6 +6244,7 @@
       "description": "Assemble a 3D-CGI app sizzle — nano-banana CGI plates (blank-glow floating phone + a CGI studio with rim-light + placeholder burst shapes; studio look and phone finish come from the recipe choices) plus PIL compositing of the REAL App Store screenshots onto the bezel + burst-out overlays, driven by Kling 3.0 i2v steady-float per beat with a per-beat Ken-Burns FFmpeg push-in fallback when Kling garbles the UI, then VO/music mix (sidechain duck, loudnorm) + 1.15x speed + anti-AI grain finalize. The on-screen UI, any faces in it, and the wordmark are ALWAYS real assets composited via PIL — never AI-rendered. The paid steps (plates, i2v clips, VO, music) are separate capabilities; this ships the config + PIPELINE + FREE assembly and the recipe orchestrates the spend. Use for the cgi-app-sizzle video format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-cgi-sizzle",
+      "version": "1.0.0",
       "files": [
         "skills/ads/capabilities/render-cgi-sizzle/SKILL.md",
         "skills/ads/capabilities/render-cgi-sizzle/scripts/PIPELINE.md",
@@ -6209,6 +6257,7 @@
         "slug": "render-cgi-sizzle",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.0",
         "tags": [
           "ads"
         ],
@@ -6233,6 +6282,7 @@
       "description": "Assemble a ChatGPT chat-reveal video ad from a thread + timeline JSON — one continuous Playwright recording of a ChatGPT mobile chat (user types with the iOS keyboard up → taps send → keyboard slides down + header cluster swaps in one beat → one gray loading dot → the assistant answer streams in word-by-word) crossfaded into a designed end card, with subliminal ChatGPT SFX and an optional ducked music bed. FREE assembly (Playwright + ffmpeg); the recipe supplies the per-brand thread + timeline + end-card config and gates the paid music call to its own capability. The ChatGPT sibling of render-imessage-chat. Use for the chatgpt-chat format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-chatgpt-chat",
+      "version": "1.0.0",
       "files": [
         "skills/ads/capabilities/render-chatgpt-chat/SKILL.md",
         "skills/ads/capabilities/render-chatgpt-chat/assets/sfx/key-tap.wav",
@@ -6255,6 +6305,7 @@
         "slug": "render-chatgpt-chat",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.0",
         "tags": [
           "ads"
         ],
@@ -6279,6 +6330,7 @@
       "description": "Assemble a cinematic live-action-style music-video ad from a config — an original sung anthem carries the whole narrative while N 35mm-film-look i2v clips are each cut to their lyric window and hard-concatenated on the beat as a 3-act arc, the anthem muxed at loudnorm I=-14, cinematic lower-third serif captions built from the song's OWN word timings (never Whisper) with the hook line landing on the chorus drop, and closed on a brand end card composited from the real asset — never AI-rendered text. This is the FREE deterministic assembly stage (cut-to-window + hard concat + anthem mux + captions + end card); the anthem, keyframes, and clips come from create-music-elevenlabs / create-image-gpt-image-fal / create-video-fal. Use for the cinematic-music-video format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-cinematic-music-video",
+      "version": "1.0.0",
       "files": [
         "skills/ads/capabilities/render-cinematic-music-video/SKILL.md",
         "skills/ads/capabilities/render-cinematic-music-video/scripts/PIPELINE.md",
@@ -6291,6 +6343,7 @@
         "slug": "render-cinematic-music-video",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.0",
         "tags": [
           "ads"
         ],
@@ -6315,6 +6368,7 @@
       "description": "Assemble a cosmic-mythology-voiceover reel from a config — one spoken voiceover carries the whole narrative while N curated stills in one chosen look are weighted beat-synced across the delivered VO duration (cut_dur = VO_dur times weight over the weight sum, so emotional beats hold longer), Ken-Burns-zoomed per still (scale 2x, center crop, zoompan, fade-in first and fade-out last), ffmpeg-concatenated, the VO composited under the picture (libx264 crf18 plus aac), the ONE on-screen hook line faded on over the open with a drawtext alpha window, and Whisper/VEED captions burned along the bottom — never in-world text on a still. This is the FREE deterministic assembly stage (weighted sequence plus Ken-Burns plus concat plus VO composite plus hook overlay plus caption burn); the VO and the stills come from create-vo-elevenlabs and create-image-fal. Use for the cosmic-mythology-voiceover format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-cosmic-mythology-voiceover",
+      "version": "1.0.0",
       "files": [
         "skills/ads/capabilities/render-cosmic-mythology-voiceover/SKILL.md",
         "skills/ads/capabilities/render-cosmic-mythology-voiceover/scripts/PIPELINE.md",
@@ -6328,6 +6382,7 @@
         "slug": "render-cosmic-mythology-voiceover",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.0",
         "tags": [
           "ads"
         ],
@@ -6352,6 +6407,7 @@
       "description": "Assemble a creator picture-in-picture product-listicle ad from a config — the creator stays FULL-FRAME the whole beat (voice plus lips generated together per beat, no separate VO, no cut to a full-frame product shot), and on each product beat three persistent overlays ride on top for the WHOLE beat — a title pill top-center, the DEMO in a rounded PiP window top-right (the brand's real UGC clip MUTED, or for a no-UGC brand the product's own autocropped UI still / screen-recording sized to fill the window), and a bottom product card (rounded thumbnail plus 'N · CATEGORY' small-caps plus product NAME in a serif face). Hook plus CTA beats are the creator full-frame with the title pill only. Assembly builds ONE full-1080x1920 transparent overlay PNG per beat, overlays it on the creator clip (cover-scaled to 1080x1920) for the whole beat keeping the native audio, concats all beats, then burns captions LAST as timed PIL PNG overlays (this ffmpeg has no libass) timed deterministically from the known per-beat script. This is the FREE deterministic assembly stage (overlay-PNG build plus cover-scale composite plus concat plus PIL-PNG caption burn); the creator anchor and the N native talking clips come from create-image-fal (Seedream v5 Pro) and create-video-fal (Seedance 2.0). Use for the creator-pip-listicle format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-creator-pip-listicle",
+      "version": "1.0.0",
       "files": [
         "skills/ads/capabilities/render-creator-pip-listicle/SKILL.md",
         "skills/ads/capabilities/render-creator-pip-listicle/scripts/PIPELINE.md",
@@ -6364,6 +6420,7 @@
         "slug": "render-creator-pip-listicle",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.0",
         "tags": [
           "ads"
         ],
@@ -6388,6 +6445,7 @@
       "description": "Assemble an editorial-motion podcast-clip ad from a config — a real clipped podcast MP3 carries the narrative while N flat limited-palette editorial-illustration keyframes (one look pack) are animated NOT by generative i2v but by DETERMINISTIC ffmpeg ken-burns (zoompan) + hard cuts (no crossfades, which expose geometric drift), each beat snapped to its spoken line, the real audio muxed, Whisper-driven captions burned only mid-sentence, and closed on a PIL brand end card — never AI-rendered text. This is the FREE deterministic assembly stage (ffmpeg ken-burns + hard concat + audio mux + captions + end card); the real audio is clipped from source and the keyframes come from create-image-fal. Use for the editorial-motion-podcast format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-editorial-motion-podcast",
+      "version": "1.0.0",
       "files": [
         "skills/ads/capabilities/render-editorial-motion-podcast/SKILL.md",
         "skills/ads/capabilities/render-editorial-motion-podcast/scripts/PIPELINE.md",
@@ -6400,6 +6458,7 @@
         "slug": "render-editorial-motion-podcast",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.0",
         "tags": [
           "ads"
         ],
@@ -6424,6 +6483,7 @@
       "description": "Assemble the FREE steps of the flat-vector-explainer video format — a flat-illustration host character (who, where, tone, voice and music come from the recipe choices) walks a countable N-step product routine, one step per beat, and Remotion composites every chip/numeral/tagline/slate/CTA as an animated DOM overlay ON TOP of the Kling i2v character clips (text is NEVER baked into a keyframe — i2v warps type), the closing 'N products' grid is a PIL composite of the REAL product photos (not AI), full-sentence VO drives word-by-word burned captions over a VO-forward music bed, and the ~50s animated silent master is re-cut to a 30s deliverable FROM the animated master (never a static intermediate). Documentation-grade — ships config.example.json + PIPELINE.md + a README of the free assembly; the paid gen steps (keyframes, Kling i2v, VO, music) are separate capabilities the recipe orchestrates. Use for the flat-vector-explainer format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-flat-vector-explainer",
+      "version": "1.0.0",
       "files": [
         "skills/ads/capabilities/render-flat-vector-explainer/SKILL.md",
         "skills/ads/capabilities/render-flat-vector-explainer/scripts/PIPELINE.md",
@@ -6436,6 +6496,7 @@
         "slug": "render-flat-vector-explainer",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.0",
         "tags": [
           "ads"
         ],
@@ -6460,6 +6521,7 @@
       "description": "Assemble a wordless macro-tabletop food-product sizzle ad from a config — normalize fps and SAR across ~4 photorealistic macro clips (hands tearing, flat lay, bite, box hero), concat them, apply a global anti-AI grain pass (eq plus hqdn3d plus noise), composite the audio (a non-diegetic instrumental music bed plus a couple of short diegetic SFX like a snap and a tear placed at measured cue points, loudnorm), composite a STATIC end card entirely in PIL (real logo PNG plus real product PNG plus a serif heritage headline plus a CTA — never AI-rendered text), and burn optional serif stat-callout pills at beats. This is the FREE deterministic assembly stage (normalized concat plus grain plus music and SFX mix plus PIL end card plus callouts); the macro keyframes, i2v clips, and music bed come from create-image-fal, create-video-fal, and create-music-elevenlabs. Use for the food-product-sizzle format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-food-product-sizzle",
+      "version": "1.0.0",
       "files": [
         "skills/ads/capabilities/render-food-product-sizzle/SKILL.md",
         "skills/ads/capabilities/render-food-product-sizzle/scripts/PIPELINE.md",
@@ -6472,6 +6534,7 @@
         "slug": "render-food-product-sizzle",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.0",
         "tags": [
           "ads"
         ],
@@ -6496,6 +6559,7 @@
       "description": "Assemble a multi-scene GRWM beauty-demo ad from a config — a locked-identity creator applies ~5 products step by step while a SEPARATE ElevenLabs voiceover narrates and every scene cut is snapped to the VO's product-name word-starts (Whisper word-level timestamps), then ~5 Playwright product overlay cards (real PDP-verified taglines) are composited onto the master each on its product-NAME word-start, the SEPARATE VO is mixed on top of a ducked music bed at loudnorm I=-14, clean-white 3-words/cue captions are burned, and the video closes on a flat-lay end card. This is the FREE deterministic assembly stage (re-cut to the VO word-starts, hard-concat, Playwright card render + card composite, VO plus music mix, caption burn, flat-lay end card); the VO, scene clips, product cutouts, and music come from create-music-elevenlabs / create-image-gpt-image-fal / create-video-fal. Use for the glassy-matte-grwm format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-glassy-matte-grwm",
+      "version": "1.0.0",
       "files": [
         "skills/ads/capabilities/render-glassy-matte-grwm/SKILL.md",
         "skills/ads/capabilities/render-glassy-matte-grwm/scripts/PIPELINE.md",
@@ -6508,6 +6572,7 @@
         "slug": "render-glassy-matte-grwm",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.0",
         "tags": [
           "ads"
         ],
@@ -6532,6 +6597,7 @@
       "description": "Render a 'hand-swipe flavor listicle' video from a config — the brand's REAL product cutouts each float on a flat flavor-matched color field under a persistent title and slide RIGHT-TO-LEFT one to the next like a phone-feed scroll, while a green-screen hand clip (back of hand toward camera, index finger up) is trimmed to its clean finger-up window, looped once per flavor, keyed with a green-dominance alpha key, scaled down and anchored at the bottom, with an optional end card and an optional instrumental music bed — deterministic PIL plus FFmpeg assembly, FREE (the hand clip comes from create-video-fal and the bed from create-music-elevenlabs), so labels stay pixel-crisp. Use for the hand-swipe-flavor-listicle format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-hand-swipe-flavor-listicle",
+      "version": "1.0.0",
       "files": [
         "skills/ads/capabilities/render-hand-swipe-flavor-listicle/SKILL.md",
         "skills/ads/capabilities/render-hand-swipe-flavor-listicle/scripts/build_hand_swipe_listicle.py",
@@ -6544,6 +6610,7 @@
         "slug": "render-hand-swipe-flavor-listicle",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.0",
         "tags": [
           "ads"
         ],
@@ -6568,6 +6635,7 @@
       "description": "Replace an existing video's opening with a supplied clip or free kinetic text hook while retaining and verifying every original body frame, audio, captions and ending. Use for surgical hook tests rather than regenerating the complete ad.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-hook-replacement",
+      "version": "1.0.1",
       "files": [
         "skills/ads/capabilities/render-hook-replacement/SKILL.md",
         "skills/ads/capabilities/render-hook-replacement/config.example.json",
@@ -6583,6 +6651,7 @@
         "slug": "render-hook-replacement",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.1",
         "tags": [
           "ads"
         ],
@@ -6613,6 +6682,7 @@
       "description": "Assemble the FREE steps of the product-hypermotion + kinetic-typography video format — dice ONE Seedance 2.0 hypermotion clip into 5-6 segments and intercut them with PIL kinetic-typography spec/CTA cards (italic skew, 1.08x outline echo, 3D extrusion, slam-with-shake, inversion flash) plus a real-logo PIL end card (base64-decoded from the brand SVG), center-crop 1:1 to 9:16, and explicit-map mux a music bed. Deterministic, FREE (PIL + FFmpeg), no paid calls, the real logo and spec typography stay pixel-crisp. The paid steps (the ONE Seedance i2v, the music) are separate capabilities; the recipe orchestrates them. Use for the product-hypermotion format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-hypermotion",
+      "version": "1.0.0",
       "files": [
         "skills/ads/capabilities/render-hypermotion/SKILL.md",
         "skills/ads/capabilities/render-hypermotion/scripts/PIPELINE.md",
@@ -6625,6 +6695,7 @@
         "slug": "render-hypermotion",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.0",
         "tags": [
           "ads"
         ],
@@ -6649,6 +6720,7 @@
       "description": "Render an 'Instagram-Live social-proof gallery' video from a config — ~5 real brand product stills each framed as an Instagram-LIVE card (IG gradient-ring avatar, username, verified check, red LIVE badge, viewer count, close X, a short claim-free live-comment feed, an empty 'Add a comment…' bar, and reaction hearts floating up the right edge), with a brand-approved benefit sentence building one phrase per slide and a clean logo endcard, rendered deterministically with PIL frames plus FFmpeg — FREE (the music bed comes from create-music-elevenlabs), products and wordmark stay crisp. Use for the ig-live-gallery format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-ig-live-gallery",
+      "version": "1.0.0",
       "files": [
         "skills/ads/capabilities/render-ig-live-gallery/SKILL.md",
         "skills/ads/capabilities/render-ig-live-gallery/scripts/build.py",
@@ -6660,6 +6732,7 @@
         "slug": "render-ig-live-gallery",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.0",
         "tags": [
           "ads"
         ],
@@ -6684,6 +6757,7 @@
       "description": "Assemble an iMessage notification-cascade video ad (≈14s, 9:16) from a plate of a phone lying face-up (setting chosen by the user) + 3–5 messages — authentic Apple Messages banners composited in PIL (SF Pro text, green Messages icon, warm translucent-greige fill, soft shadow) spring in one-by-one at the BOTTOM and push the stack UP, a right-aligned Show-less/X pill rides above, the X clears the stack, then a serif end card resolves. FREE assembly (PIL + ffmpeg); the recipe supplies the per-brand plate, notifications, and end-card config and gates the paid plate-clean/music calls to their own capabilities. Use for the imessage-notification-cascade format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-imessage-cascade",
+      "version": "1.0.0",
       "files": [
         "skills/ads/capabilities/render-imessage-cascade/SKILL.md",
         "skills/ads/capabilities/render-imessage-cascade/scripts/build_assets.py",
@@ -6697,6 +6771,7 @@
         "slug": "render-imessage-cascade",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.0",
         "tags": [
           "ads"
         ],
@@ -6721,6 +6796,7 @@
       "description": "Render a configurable iMessage conversation inside a properly framed phone, then a brand end card. Uses the original send/receive sounds and a shared frame timeline for text, typing, scrolling and sound. Free local Playwright + ffmpeg assembly; optional image/music generation belongs to separate gated capabilities.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-imessage-chat",
+      "version": "2.0.0",
       "files": [
         "skills/ads/capabilities/render-imessage-chat/SKILL.md",
         "skills/ads/capabilities/render-imessage-chat/assets/sfx/imessage-receive.mp3",
@@ -6751,6 +6827,7 @@
         "slug": "render-imessage-chat",
         "category": "capabilities",
         "domain": "ads",
+        "version": "2.0.0",
         "tags": [
           "ads"
         ],
@@ -6770,6 +6847,7 @@
     {
       "slug": "render-ios-keyboard",
       "name": "render-ios-keyboard",
+      "version": "1.0.0",
       "category": "capabilities",
       "domain": "ads",
       "description": "Render a static iOS QWERTY keyboard as inline HTML+CSS sized for the 750-wide 9:16 stage. Includes the 3-suggestion bar, alpha keys, shift/backspace, 123/emoji/space/return row, and the bottom globe+mic strip. No animation logic — slide up/down is the molecule's job (CSS transform on the .keyboard root).",
@@ -6791,6 +6869,7 @@
         "slug": "render-ios-keyboard",
         "category": "capabilities",
         "pack": "video-ad-formats",
+        "version": "1.0.0",
         "tags": [
           "ads"
         ],
@@ -6812,6 +6891,7 @@
       "description": "Render the logo-equation card ad (7s, 9:16) — partner icon + brand icon joined by a plus sign as an equation, a two-line \"= outcome\" headline, four numbered steps, and a CTA that hard-cuts in at 2s, on a static black card over timelapse b-roll, no voice. render_card.py draws the two card plates with measured geometry and hard guardrails (the user must confirm the integration is real, no partnership/endorsement/ranking words, no comment-bait CTA, no dashes); compose.py lays the card over the b-roll sped up to read as a timelapse, with an optional bed; measure_motion.py gates the b-roll (a real-time shot reads as a photo). Free, local.",
       "tags": "ads, content",
       "path": "skills/ads/capabilities/render-logo-equation-card",
+      "version": "1.0.0",
       "files": [
         "skills/ads/capabilities/render-logo-equation-card/SKILL.md",
         "skills/ads/capabilities/render-logo-equation-card/scripts/_fonts.py",
@@ -6825,6 +6905,7 @@
         "slug": "render-logo-equation-card",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.0",
         "tags": [
           "ads",
           "content"
@@ -6847,6 +6928,7 @@
       "description": "Render a 'model comparison grid' video from a config — a fal-style \"same prompt, N contenders\" showcase — a dark real-DOM stage where per beat a monospace prompt fades in centered, docks to a small top strip, then a labeled 2-4 panel grid (static images OR muted video clips, mixable per cell) staggers in and holds for comparison, plus a minimal end card — frame-stepped via Playwright (video cells are frame-seeked deterministically) and encoded with FFmpeg. Deterministic assembly, FREE (cell media comes from create-image-fal / create-video-fal, music from create-music-elevenlabs), text stays pixel-crisp. Use for the model-comparison-grid format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-model-comparison-grid",
+      "version": "1.0.0",
       "files": [
         "skills/ads/capabilities/render-model-comparison-grid/SKILL.md",
         "skills/ads/capabilities/render-model-comparison-grid/scripts/build_composition.py",
@@ -6859,6 +6941,7 @@
         "slug": "render-model-comparison-grid",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.0",
         "tags": [
           "ads"
         ],
@@ -6883,6 +6966,7 @@
       "description": "Render a 'mosaic-grid-reveal' video from a config — a real-DOM FULL-BLEED N×N mosaic of real product tiles that pops in one tile at a time (scatter order, ease-out-back overshoot), the grid clears, then the brand wordmark builds line-by-line followed by a sub-label, tagline, and CTA; frame-stepped via Playwright and encoded with FFmpeg — deterministic assembly, FREE (the music bed comes from create-music-elevenlabs), so the wordmark, tile captions, and CTA stay pixel-crisp. Use for the mosaic-grid-reveal format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-mosaic-grid-reveal",
+      "version": "1.0.0",
       "files": [
         "skills/ads/capabilities/render-mosaic-grid-reveal/SKILL.md",
         "skills/ads/capabilities/render-mosaic-grid-reveal/scripts/_shared.js",
@@ -6896,6 +6980,7 @@
         "slug": "render-mosaic-grid-reveal",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.0",
         "tags": [
           "ads"
         ],
@@ -6920,6 +7005,7 @@
       "description": "Assemble a silent, music-led 3-world product-tour ad — trim and hard-cut-concat the per-world WIDE-arrival + top-down-macro clips, composite the HTML/Playwright brand end card (approved headline + handwritten product labels + arrows) over an AI flat-lay background, and mux one music bed into a 720x1280 web master. FREE, deterministic assembly (Playwright + PIL/HTML + FFmpeg); the recipe supplies the config and gates the paid clip/background/music calls. Use for the multiworld-product-tour format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-multiworld",
+      "version": "1.0.0",
       "files": [
         "skills/ads/capabilities/render-multiworld/SKILL.md",
         "skills/ads/capabilities/render-multiworld/scripts/PIPELINE.md",
@@ -6932,6 +7018,7 @@
         "slug": "render-multiworld",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.0",
         "tags": [
           "ads"
         ],
@@ -6956,6 +7043,7 @@
       "description": "Assemble a myth-vs-fact kinetic-typography explainer video ad (≈29.5s, 9:16) from N myth/fact pairs + hook / turn / punch copy + palette + a brand end-card PNG + a VO track — a hook, 3 red-strike MYTH cards that flip to teal-check FACT cards (per-line strikethrough that crosses EVERY wrapped line), a \"what actually works\" turn, an optional proof reveal, a punch line, and a static end card. DETERMINISTIC assembly with ZERO AI-gen visuals — HTML hyperframes rendered frame-exact via Playwright (`window.renderAt(t)`, animation a pure function of beat-local time), Whisper beat-snap to VO word onsets, concat at a uniform fps, karaoke `.ass` captions burned last (suppressed on the proof + end-card beats), and a VO + optional music mix (music −20 dB, `amix normalize=0`, tail fade). FREE (Python + Playwright + ffmpeg); the recipe supplies the copy / palette / end-card / VO and gates the paid VO / music / Whisper calls to their own capabilities. Use for the myth-vs-fact format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-myth-vs-fact",
+      "version": "1.0.1",
       "files": [
         "skills/ads/capabilities/render-myth-vs-fact/SKILL.md",
         "skills/ads/capabilities/render-myth-vs-fact/scripts/beat_snap.py",
@@ -6977,6 +7065,7 @@
         "slug": "render-myth-vs-fact",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.1",
         "tags": [
           "ads"
         ],
@@ -7001,6 +7090,7 @@
       "description": "Assemble a narrated-UGC \"stitch reply\" ad from a config — a single spoken VO carries a verbatim testimonial while ~30 per-cut i2v clips (one creator across ~5 wardrobes in ~3 worlds, plus product B-roll) are each trimmed to their EDL window built from the VO's Whisper word boundaries and hard-concatenated via filter_complex concat (never the demuxer, which drops audio on a duration mismatch), the VO mixed over an optional sidechain-ducked instrumental bed (−20dB, 20 to 1) so the VO stays on top, karaoke-pop captions burned on every word throughout (VEED Whisper preset, re-spelled against the locked script), a landing-page scroll rendered as FFmpeg zoompan over a Playwright PNG (not i2v), and closed on the brand's real end-card PNG — never AI-rendered text. This is the FREE deterministic assembly stage (trim-to-EDL + filter_complex concat + VO and music mix + karaoke captions + landing-page zoompan + end-card append), run with the shared stitch-videos-ffmpeg montage.py helper that installs with this package; the VO, creator, start-frames, and clips come from create-vo-elevenlabs / create-image-gpt-image-fal / create-image-fal / create-video-fal. Use for the narrated-ugc-wardrobe-stitch format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-narrated-ugc-wardrobe-stitch",
+      "version": "1.0.1",
       "files": [
         "skills/ads/capabilities/render-narrated-ugc-wardrobe-stitch/SKILL.md",
         "skills/ads/capabilities/render-narrated-ugc-wardrobe-stitch/scripts/PIPELINE.md",
@@ -7039,6 +7129,7 @@
       "description": "Render a punchy ~12s vertical (9:16) music-only direct-response OFFER ad as a 4-beat kinetic-typography film — HEADLINE slam → real PRODUCT drop → CLAIM/proof → CTA pill — from one config of copy slots, a real product photo, a brand palette, fonts, bpm, and beat split. DETERMINISTIC + FREE (a bundled Remotion project; springs + interpolate, no AI-gen for visuals). Backgrounds are engine gradient divs off the palette, props are inline SVG, the ONLY composited bitmap is the REAL product photo (objectFit:contain, never stretched), and ALL headline/claim/CTA/URL/wordmark text is typeset in the engine — never AI-rendered (the format's credibility guard). A driver binds the config to Remotion input props, renders the 9:16 master, and derives a 1:1 center-crop with ffmpeg. Two gating checks run before render (claim verbs must match the product's physical format; the claim beat needs an edge-entry mechanism prop). Use for the motion-graphics-offer-ad format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-offer-ad",
+      "version": "1.0.0",
       "files": [
         "skills/ads/capabilities/render-offer-ad/SKILL.md",
         "skills/ads/capabilities/render-offer-ad/project/.gitignore",
@@ -7065,6 +7156,7 @@
         "slug": "render-offer-ad",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.0",
         "tags": [
           "ads"
         ],
@@ -7089,6 +7181,7 @@
       "description": "Render a 'photo-grid promo card' video from a config — a real-DOM card with a FIXED header/footer and a CONTINUOUSLY SCROLLING 2-row grid of MIXED tiles (video clips, product/lifestyle stills, big-serif %-OFF, dark promo-code or CTA) + feature chips, frame-stepped via Playwright with real-time <video> playback and encoded with FFmpeg — deterministic assembly, FREE (the clips + music come from create-video-fal + create-music-elevenlabs), text stays pixel-crisp. Use for the photo-grid-promo-card format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-photo-grid-card",
+      "version": "1.0.0",
       "files": [
         "skills/ads/capabilities/render-photo-grid-card/SKILL.md",
         "skills/ads/capabilities/render-photo-grid-card/scripts/_shared.js",
@@ -7101,6 +7194,7 @@
         "slug": "render-photo-grid-card",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.0",
         "tags": [
           "ads"
         ],
@@ -7125,6 +7219,7 @@
       "description": "Render a two-host podcast ad from a brand config and dialogue script. Includes the working planner, full-frame and split-screen assembly, captions from measured character timings, brand end card, approved paid-step adapters, and 65 quality-check falsification cases. Use for short conversational ads with two stable hosts in one room.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-podcast-skit",
+      "version": "2.0.0",
       "files": [
         "skills/ads/capabilities/render-podcast-skit/SKILL.md",
         "skills/ads/capabilities/render-podcast-skit/recipe.json",
@@ -7177,7 +7272,7 @@
           "create-video-fal",
           "watch"
         ],
-        "version": 2,
+        "version": "2.0.0",
         "features": [
           "Two-host dialogue rendering",
           "Measured audio timeline",
@@ -7198,6 +7293,7 @@
       "description": "Build the deterministic PIL pill overlays for a 'perfect-score + proof-points' UGC video ad (white 10/10 score header with a medal + orange sub with a finger-down + 3-4 green-check proof pills) and composite them onto a base clip in a diagonal L->R->L->R cascade, then mux the music bed into master-final.mp4. Config-driven (config.json), 1080x1920 9:16, FREE and deterministic (no paid calls, text stays pixel-crisp). Use for the overlay-proof-points format; the base clip + music come from separate paid capabilities.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-proof-points-overlay",
+      "version": "1.0.0",
       "files": [
         "skills/ads/capabilities/render-proof-points-overlay/SKILL.md",
         "skills/ads/capabilities/render-proof-points-overlay/references/music.md",
@@ -7214,6 +7310,7 @@
         "slug": "render-proof-points-overlay",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.0",
         "tags": [
           "ads"
         ],
@@ -7238,6 +7335,7 @@
       "description": "Render a 'search-grid' (Pinterest search-moodboard) video from a config — a real-DOM page with four continuous beats (masonry search grid + typing hook with counter-drift columns → 3 cards slide in from the right and stack → the top card box-grows to fullscreen then swipe-left ×2 through captioned feature shots → end card), frame-stepped via Chromium and encoded with FFmpeg — deterministic assembly, FREE (real brand photos + logo; the optional music bed comes from create-music-elevenlabs), so type/logo/photos stay pixel-crisp. Use for the search-grid format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-search-grid",
+      "version": "1.0.0",
       "files": [
         "skills/ads/capabilities/render-search-grid/SKILL.md",
         "skills/ads/capabilities/render-search-grid/scripts/build_html.py",
@@ -7252,6 +7350,7 @@
         "slug": "render-search-grid",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.0",
         "tags": [
           "ads"
         ],
@@ -7276,6 +7375,7 @@
       "description": "Assemble a song-driven music-video ad from a config — a generated sung track carries the whole narration across N tableaux (one keyframe -> one i2v clip per lyric beat) with NO separate voiceover, captions synced to the song's OWN word timings (script-window, never Whisper) and the hook word landing on the chorus drop, closed on a PIL brand end card. This is the FREE deterministic assembly stage (clip cut-to-timeline + captions + end card + FFmpeg composite); the song, keyframes, and clips come from create-music-elevenlabs / create-image-fal / create-video-fal. Use for the song-driven-music-video format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-song-mv",
+      "version": "1.0.0",
       "files": [
         "skills/ads/capabilities/render-song-mv/SKILL.md",
         "skills/ads/capabilities/render-song-mv/scripts/PIPELINE.md",
@@ -7288,6 +7388,7 @@
         "slug": "render-song-mv",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.0",
         "tags": [
           "ads"
         ],
@@ -7312,6 +7413,7 @@
       "description": "Assemble a split-screen creator ad from a config — a two-zone vertical composite where a supplied AI-creator lip-sync take fills the BOTTOM ~48% while real 16:9 product/demo clips run uncropped in the TOP ~52%, each top clip contain-fit with a darkened blurred cover-scale fill of the same clip (never black bars), a 3px brand-color divider between the zones, the creator slice cover-fit per the per-scene VO timing, scenes hard-concatenated with the body audio being the concatenated creator VO slices, an end card held on the last sharp frame ~3s, then the ASSEMBLED cut transcribed with local Whisper (not the raw VO — concat drops inter-scene silence) and word-level captions burned in the chosen style. This is the FREE deterministic assembly + caption stage (two-zone composite + blurred fill + divider + hard-concat + end card + captions); the VO comes from create-vo-elevenlabs, the anchor from create-image-gpt-image-fal, and the whole-VO lip-sync from a paid VEED Fabric 1.0 take (a no-atom upstream input). Use for the split-screen-creator format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-split-screen-creator",
+      "version": "1.0.0",
       "files": [
         "skills/ads/capabilities/render-split-screen-creator/SKILL.md",
         "skills/ads/capabilities/render-split-screen-creator/scripts/PIPELINE.md",
@@ -7324,6 +7426,7 @@
         "slug": "render-split-screen-creator",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.0",
         "tags": [
           "ads"
         ],
@@ -7348,6 +7451,7 @@
       "description": "Assemble a stop-motion hand-swatch-cycle product-demo ad from a config — a sequence of still PLATES (one hand swiping a single-barrel product across a test surface, the barrel + swatch changing per plate while the hand, background, crop, and lighting stay locked) is PNG→mp4 loop-encoded at each plate's own stop-motion hold (fast motion frames 150–250ms, per-shade ~380ms, hero beats 1100–1800ms), concat-demuxed with HARD cuts into a silent master, closed on a Playwright HTML-rendered branded end card (serif tagline + sans subtitle + real logo SVG over a hero BG, never AI-rendered text), and muxed with a pre-sourced music track playing under the end card with a fade tail (no VO). This is the FREE deterministic assembly stage (loop-encode + concat-demux + end-card render + music mux); the master-anchor plate, shade plates, and end-card BG come from create-image-gpt-image-fal and the track from create-music-elevenlabs. Use for the stopmotion-hand-swatch-cycle format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-stopmotion-hand-swatch-cycle",
+      "version": "1.0.0",
       "files": [
         "skills/ads/capabilities/render-stopmotion-hand-swatch-cycle/SKILL.md",
         "skills/ads/capabilities/render-stopmotion-hand-swatch-cycle/scripts/PIPELINE.md",
@@ -7360,6 +7464,7 @@
         "slug": "render-stopmotion-hand-swatch-cycle",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.0",
         "tags": [
           "ads"
         ],
@@ -7384,6 +7489,7 @@
       "description": "Write a street-interview ad from a complete inspected commercial interaction and current brand facts. Render product guessing, or prepare mic-only, prepared-sample or visible-task conversation script/prompt previews. Premise, actions and ad connection vary; capture rules stay fixed. Conversation media delivery is unverified.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-street-interview",
+      "version": "2.0.1",
       "files": [
         "skills/ads/capabilities/render-street-interview/READINESS.md",
         "skills/ads/capabilities/render-street-interview/REFERENCE.md",
@@ -7465,6 +7571,7 @@
         "slug": "render-street-interview",
         "category": "capabilities",
         "domain": "ads",
+        "version": "2.0.1",
         "tags": [
           "ads"
         ],
@@ -7492,6 +7599,7 @@
       "description": "Render a designed 'value prop' video from a config — 3-5 noun-phrase benefit claims (<=4 words each) revealed sequentially over per-SKU product visuals, one crisp editorial frame per claim (hook sticker -> N claim beats -> brand end card). Deterministic PIL/HTML beat renderer frame-stepped via Playwright and encoded with FFmpeg, sound-off legible, hard cuts, uniform pacing. FREE (no paid calls); music is added separately (create-music-elevenlabs). Use for the value-prop format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-value-prop",
+      "version": "1.0.0",
       "files": [
         "skills/ads/capabilities/render-value-prop/SKILL.md",
         "skills/ads/capabilities/render-value-prop/scripts/build_storyboard_preview.py",
@@ -7522,6 +7630,7 @@
         "slug": "render-value-prop",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.0",
         "tags": [
           "ads"
         ],
@@ -7546,6 +7655,7 @@
       "description": "Assemble a short-form 'vignette' ad from clean product cutouts composited over a kinetic background video — birefnet cutout, then a cold-open text card + product carousel + annotated specimen-sheet end card, plus loudnorm + separate-pass music mux. FREE assembly (PIL + rsvg + FFmpeg); the recipe supplies the config and gates the paid BG/cutout/music calls to their own capabilities. Use for the vignette format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-vignette",
+      "version": "1.0.0",
       "files": [
         "skills/ads/capabilities/render-vignette/SKILL.md",
         "skills/ads/capabilities/render-vignette/scripts/composite_variants.py",
@@ -7559,6 +7669,7 @@
         "slug": "render-vignette",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.0",
         "tags": [
           "ads"
         ],
@@ -7583,6 +7694,7 @@
       "description": "Assemble a narrated motion-graphic LISTICLE video ad from a config — a spoken voiceover (cloned or cast, in the chosen tone) carries a numbered listicle while N web-animated hyperframe beats (HTML plus the Web Animations API, one branded design system of alternating tiles, big hero numerals, and callouts in the chosen visual style) are rendered frame-by-frame via Playwright and anchored to the VO's word-level timestamps, optional color-graded breather windows (brand clip, AI clip, or motion-graphic) give visual breath, and captions burn ONLY inside those B-roll windows (2-word chunks, ASS Format header carrying a Name field so none drop) with the VO mixed under a low music bed. This is the FREE deterministic assembly stage (Playwright beat render plus ffmpeg concat plus window-masked caption burn plus VO-and-music mix plus final composite) — the VO, the music bed, and any AI breather clips come from create-vo-elevenlabs, create-music-elevenlabs, and create-video-fal. Use for the vo-anchored-motion-listicle format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-vo-anchored-motion-listicle",
+      "version": "1.0.0",
       "files": [
         "skills/ads/capabilities/render-vo-anchored-motion-listicle/SKILL.md",
         "skills/ads/capabilities/render-vo-anchored-motion-listicle/scripts/PIPELINE.md",
@@ -7595,6 +7707,7 @@
         "slug": "render-vo-anchored-motion-listicle",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.0",
         "tags": [
           "ads"
         ],
@@ -7619,6 +7732,7 @@
       "description": "Assemble a whiteboard explainer video ad from a beats file — a narrator explains one idea while a real whiteboard fills up in black marker, with a hand-lettered title, bulleted rows down the left, a drawing filling the right, and a payoff that letters the closing line and rings the claim. The board is a PHOTOGRAPH and the ink is multiplied onto it, so the surface sheen and window light come through the strokes; the drawings are generated as line art and traced to ordered strokes, then revealed in drawing order on the word they belong to. The layout is SOLVED from the beats, never hand-placed. FREE assembly (Pillow plus ffmpeg) apart from one board photo and one drawing per subject, both one-time per brand. Use for the whiteboard format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-whiteboard-explainer",
+      "version": "1.0.1",
       "files": [
         "skills/ads/capabilities/render-whiteboard-explainer/SKILL.md",
         "skills/ads/capabilities/render-whiteboard-explainer/scripts/anchors.py",
@@ -7640,6 +7754,7 @@
         "slug": "render-whiteboard-explainer",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.1",
         "tags": [
           "ads"
         ],
@@ -7696,6 +7811,7 @@
       "description": "Final QC gate for a rendered 9:16 video ad, run before it is published. One script checks what a machine can decide — exact 1080x1920 size, a hook that moves and speaks in the first second, no frozen stretches, no dead air, no black frames, the brand's real logo on the end card (never a favicon, never a redrawn or wrong logo), end-card colours near the brand palette — and builds one contact sheet (frames with the TikTok/Reels UI safe zones shaded, beside the logo, product images and a font specimen) for the checks that need eyes — font, product likeness, product consistency across scenes, safe zones. A declared silent-text profile covers silent, text-led formats such as kinetic text (no audio track needed, short blank beats between text beats allowed within fixed bounds). Exit 0 PASS / 2 FAIL / 3 ERROR. Use on every finished video master before pinning it.",
       "tags": "ads, brand",
       "path": "skills/ads/capabilities/review-finished-ad",
+      "version": "1.0.0",
       "files": [
         "skills/ads/capabilities/review-finished-ad/SKILL.md",
         "skills/ads/capabilities/review-finished-ad/scripts/review_finished_ad.py",
@@ -7708,6 +7824,7 @@
         "slug": "review-finished-ad",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.0",
         "tags": [
           "ads",
           "brand"
@@ -7814,6 +7931,7 @@
     {
       "slug": "review-ugc-render",
       "name": "review-ugc-render",
+      "version": "2.0.0",
       "category": "capabilities",
       "domain": "ads",
       "description": "Mandatory pre-publish review gate for a UGC video render. Transcribes the finished render's AUDIO with Whisper and word-diffs it against the approved spoken script, then gates pinning the final render (video_project_upsert patch.final_render_id) — blocking a render whose generated audio mis-voices a word (e.g. the approved \"human-vetted\" spoken as \"human witted\"), says a different number or brand name, flips a negation, drops an approved phrase, or comes back silent. Correct speech written differently (\"5mg\" said \"five milligrams\", \"30%\" said \"thirty percent\", a spoken URL, \"don't\" said \"do not\", \"braxleybands\" said \"braxley bands\", a confirmed pronunciation like \"AG1\" said \"A G one\") passes. Runnable, gating counterpart to content-goose's review-transcript-integrity atom. Every ugc-video-formats recipe runs this after render and BEFORE pinning the final render.",
@@ -7822,12 +7940,14 @@
       "files": [
         "skills/ads/packs/ugc-video-formats/review-ugc-render/SKILL.md",
         "skills/ads/packs/ugc-video-formats/review-ugc-render/scripts/review_render.py",
+        "skills/ads/packs/ugc-video-formats/review-ugc-render/skill.meta.json",
         "skills/ads/packs/ugc-video-formats/review-ugc-render/tests/test_review_render.py"
       ],
       "metadata": {
         "slug": "review-ugc-render",
         "category": "capabilities",
         "pack": "ugc-video-formats",
+        "version": "2.0.0",
         "tags": [
           "ads"
         ],
@@ -8535,9 +8655,10 @@
     {
       "slug": "stitch-videos-ffmpeg",
       "name": "stitch-videos-ffmpeg",
+      "version": "1.3.0",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Stitch video segments with ffmpeg concat, xfade, overlay, audio mux, and export settings. Ships montage.py, a free montage assembler (python3 + ffmpeg, no keys). It takes a JSON EDL of clips and stills, normalizes them and hard-cuts them in order, burns captions from an SRT, a cue list or word timings, and lays a VO over a music bed that ducks under it, mastered to -14 LUFS.",
+      "description": "Stitch video segments with ffmpeg concat, xfade, overlay, audio mux, and export settings, and trim a source into named clips at exact windows (trim_clips.py). Ships montage.py, a free montage assembler (python3 + ffmpeg, no keys). It takes a JSON EDL of clips and stills, normalizes them and hard-cuts them in order, burns captions from an SRT, a cue list or word timings, and lays a VO over a music bed that ducks under it, mastered to -14 LUFS.",
       "tags": "ads",
       "path": "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg",
       "files": [
@@ -8547,6 +8668,7 @@
         "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/composite_final.sh",
         "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/montage.py",
         "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/normalize_clip.sh",
+        "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/trim_clips.py",
         "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/voiceless/composite.py",
         "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/skill.meta.json",
         "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/expected-output.md",
@@ -8554,12 +8676,14 @@
         "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/sample-input.md",
         "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/smoke-test.md",
         "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/test_stitch_montage.py",
+        "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/test_trim_clips.py",
         "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/verifier.md"
       ],
       "metadata": {
         "slug": "stitch-videos-ffmpeg",
         "category": "capabilities",
         "pack": "video-ad-formats",
+        "version": "1.3.0",
         "tags": [
           "ads"
         ],
@@ -9053,6 +9177,7 @@
       "description": "the UGC fix-loop toolkit — surgically re-render a bad window/beat of a single-take UGC master (stitch_replacement.py, pure FFmpeg) and GPT cross-model review a Seedance prompt before render (vet_seedance_prompt.py, routed through the openai-proxy). Fetch it into a one-shot UGC recipe so both scripts resolve on any machine and the vet call bills the Ads agent.",
       "tags": "ads",
       "path": "skills/ads/capabilities/ugc-fixloop",
+      "version": "1.0.1",
       "files": [
         "skills/ads/capabilities/ugc-fixloop/SKILL.md",
         "skills/ads/capabilities/ugc-fixloop/scripts/stitch_replacement.py",
@@ -9064,6 +9189,7 @@
         "slug": "ugc-fixloop",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.1",
         "tags": [
           "ads"
         ],
@@ -9176,6 +9302,7 @@
       "description": "QC gate for a generated static ad image — verify the file opens, matches the requested dimensions, shows the correct product/subject (right shape, colour, label, logo), and has no garbled text or severe artifacts. Records pass/fail/needs-human in verification.md. Used as the final check in the static ad remix flow before shipping.",
       "tags": "ads, design",
       "path": "skills/ads/capabilities/verify-product-image",
+      "version": "1.0.0",
       "files": [
         "skills/ads/capabilities/verify-product-image/SKILL.md",
         "skills/ads/capabilities/verify-product-image/skill.meta.json"
@@ -9184,6 +9311,7 @@
         "slug": "verify-product-image",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.0",
         "tags": [
           "ads",
           "design"
@@ -9384,6 +9512,7 @@
     {
       "slug": "watch",
       "name": "watch",
+      "version": "1.1.0",
       "category": "capabilities",
       "domain": "ads",
       "description": "Watch a rendered video (whole file or specific ranges) at a chosen fidelity and emit a timestamp-keyed observation report. Observation only — no edits, no verdicts.",
@@ -9403,6 +9532,7 @@
         "slug": "watch",
         "category": "capabilities",
         "pack": "video-ad-formats",
+        "version": "1.1.0",
         "tags": [
           "ads"
         ],
@@ -9830,9 +9960,12 @@
       "description": "Write a short-form video ad from an evidence-backed angle and the selected template's actual recipe. Reuses or fetches ad-angle-miner, preserves the chosen angle, plans words and visuals together, checks product claims and production fit, and delivers the strongest script with useful alternatives. Use before video production and for script rewrites. Customer language is one input alongside audience, promise, product proof, offer and format.",
       "tags": "ads, content",
       "path": "skills/ads/capabilities/write-video-ad-script",
+      "version": "1.0.3",
       "files": [
         "skills/ads/capabilities/write-video-ad-script/SKILL.md",
+        "skills/ads/capabilities/write-video-ad-script/references/angle-research.md",
         "skills/ads/capabilities/write-video-ad-script/references/buyer-and-mechanism.md",
+        "skills/ads/capabilities/write-video-ad-script/references/creative-brief.md",
         "skills/ads/capabilities/write-video-ad-script/references/dialogue-writing.md",
         "skills/ads/capabilities/write-video-ad-script/references/files.md",
         "skills/ads/capabilities/write-video-ad-script/references/hook-families.md",
@@ -9840,6 +9973,7 @@
         "skills/ads/capabilities/write-video-ad-script/references/judge-contract.md",
         "skills/ads/capabilities/write-video-ad-script/references/pacing.md",
         "skills/ads/capabilities/write-video-ad-script/references/scene-and-hook.md",
+        "skills/ads/capabilities/write-video-ad-script/references/validate-and-repair.md",
         "skills/ads/capabilities/write-video-ad-script/scripts/critique_scripts.py",
         "skills/ads/capabilities/write-video-ad-script/scripts/lint_scripts.py",
         "skills/ads/capabilities/write-video-ad-script/scripts/media_proxy.py",
@@ -9857,6 +9991,7 @@
         "slug": "write-video-ad-script",
         "category": "capabilities",
         "domain": "ads",
+        "version": "1.0.3",
         "tags": [
           "ads",
           "content"
@@ -10113,6 +10248,7 @@
           "name": "create-video-seedance-2-fal",
           "description": "Generate a single 4-15s vertical video clip with ByteDance Seedance 2.0 reference-to-video via fal.ai. Multi-image reference (avatar + product + setting), native lip-synced VO + ambient audio (generate-audio on by default), internal multi-cut handling within one render. Routes through the GooseWorks FAL proxy (bills the Ads agent). The default clip atom for AI-creator UGC ads built on the NB2 + Seedance architecture. Validated on beauty-by-earth/video-01.",
           "path": "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal",
+          "version": "2.0.1",
           "files": [
             "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/SKILL.md",
             "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/scripts/generate.py",
@@ -10132,9 +10268,11 @@
           "name": "review-ugc-render",
           "description": "Mandatory pre-publish review gate for a UGC video render. Transcribes the finished render's AUDIO with Whisper and word-diffs it against the approved spoken script, then gates pinning the final render (video_project_upsert patch.final_render_id) — blocking a render whose generated audio mis-voices a word (e.g. the approved \"human-vetted\" spoken as \"human witted\"), says a different number or brand name, flips a negation, drops an approved phrase, or comes back silent. Correct speech written differently (\"5mg\" said \"five milligrams\", \"30%\" said \"thirty percent\", a spoken URL, \"don't\" said \"do not\", \"braxleybands\" said \"braxley bands\", a confirmed pronunciation like \"AG1\" said \"A G one\") passes. Runnable, gating counterpart to content-goose's review-transcript-integrity atom. Every ugc-video-formats recipe runs this after render and BEFORE pinning the final render.",
           "path": "skills/ads/packs/ugc-video-formats/review-ugc-render",
+          "version": "2.0.0",
           "files": [
             "skills/ads/packs/ugc-video-formats/review-ugc-render/SKILL.md",
             "skills/ads/packs/ugc-video-formats/review-ugc-render/scripts/review_render.py",
+            "skills/ads/packs/ugc-video-formats/review-ugc-render/skill.meta.json",
             "skills/ads/packs/ugc-video-formats/review-ugc-render/tests/test_review_render.py"
           ],
           "source": "pack"
@@ -10176,6 +10314,7 @@
           "name": "create-imessage-mockup",
           "description": "Render pixel-accurate iMessage screenshot mockups (DM or group) from a thread JSON. Supports minimal, with-keyboard, and full iPhone 15 Pro frame variants. Outputs HTML + PNG.",
           "path": "skills/ads/packs/video-ad-formats/create-imessage-mockup",
+          "version": "1.0.0",
           "files": [
             "skills/ads/packs/video-ad-formats/create-imessage-mockup/.gitignore",
             "skills/ads/packs/video-ad-formats/create-imessage-mockup/SKILL.md",
@@ -10207,6 +10346,7 @@
           "name": "create-chatgpt-mockup",
           "description": "Render pixel-accurate ChatGPT mobile (iOS) screen mockups in light mode from a thread JSON. Supports user text bubbles, user image attachments, assistant markdown prose, citation chips, the OpenAI spiral logo, the Apps-SDK GPT chip in the composer, and three header styles (model-tag, plain title, \"Get Plus\"). Fixed 9:16 viewport. Outputs HTML + PNG.",
           "path": "skills/ads/packs/video-ad-formats/create-chatgpt-mockup",
+          "version": "1.0.0",
           "files": [
             "skills/ads/packs/video-ad-formats/create-chatgpt-mockup/SKILL.md",
             "skills/ads/packs/video-ad-formats/create-chatgpt-mockup/build-review.html",
@@ -10245,6 +10385,7 @@
           "name": "create-apple-notes-mockup",
           "description": "Render pixel-accurate Apple Notes (iPhone, light mode) screenshot mockups from a JSON note spec. Outputs HTML + PNG at the iPhone 16/15 Pro native 1180×2556. Supports paragraphs, images, checklists, dividers, autocorrect underline, smart quotes, and an optional iOS keyboard chrome overlay used by the parent video-ad molecule.",
           "path": "skills/ads/packs/video-ad-formats/create-apple-notes-mockup",
+          "version": "1.0.0",
           "files": [
             "skills/ads/packs/video-ad-formats/create-apple-notes-mockup/SKILL.md",
             "skills/ads/packs/video-ad-formats/create-apple-notes-mockup/apple-notes-skill-build.html",
@@ -10279,6 +10420,7 @@
           "name": "render-ios-keyboard",
           "description": "Render a static iOS QWERTY keyboard as inline HTML+CSS sized for the 750-wide 9:16 stage. Includes the 3-suggestion bar, alpha keys, shift/backspace, 123/emoji/space/return row, and the bottom globe+mic strip. No animation logic — slide up/down is the molecule's job (CSS transform on the .keyboard root).",
           "path": "skills/ads/packs/video-ad-formats/render-ios-keyboard",
+          "version": "1.0.0",
           "files": [
             "skills/ads/packs/video-ad-formats/render-ios-keyboard/SKILL.md",
             "skills/ads/packs/video-ad-formats/render-ios-keyboard/generate.js",
@@ -10296,8 +10438,9 @@
         {
           "slug": "stitch-videos-ffmpeg",
           "name": "stitch-videos-ffmpeg",
-          "description": "Stitch video segments with ffmpeg concat, xfade, overlay, audio mux, and export settings. Ships montage.py, a free montage assembler (python3 + ffmpeg, no keys). It takes a JSON EDL of clips and stills, normalizes them and hard-cuts them in order, burns captions from an SRT, a cue list or word timings, and lays a VO over a music bed that ducks under it, mastered to -14 LUFS.",
+          "description": "Stitch video segments with ffmpeg concat, xfade, overlay, audio mux, and export settings, and trim a source into named clips at exact windows (trim_clips.py). Ships montage.py, a free montage assembler (python3 + ffmpeg, no keys). It takes a JSON EDL of clips and stills, normalizes them and hard-cuts them in order, burns captions from an SRT, a cue list or word timings, and lays a VO over a music bed that ducks under it, mastered to -14 LUFS.",
           "path": "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg",
+          "version": "1.3.0",
           "files": [
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/SKILL.md",
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/composite.py",
@@ -10305,6 +10448,7 @@
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/composite_final.sh",
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/montage.py",
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/normalize_clip.sh",
+            "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/trim_clips.py",
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/scripts/voiceless/composite.py",
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/skill.meta.json",
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/expected-output.md",
@@ -10312,6 +10456,7 @@
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/sample-input.md",
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/smoke-test.md",
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/test_stitch_montage.py",
+            "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/test_trim_clips.py",
             "skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests/verifier.md"
           ],
           "source": "pack"
@@ -10321,6 +10466,7 @@
           "name": "mix-master",
           "description": "Canonical short-form-ad audio mix in one FFmpeg pass. VO loudnorm + 3.0× per-clip + 2.0× mix, music 0.13 base + apad+afade, sidechain compress 20:1 @ 0.01, climax line +20%, optional video-to-music duration sync. Replaces the reactive multi-round tuning that cost v03 6+ passes.",
           "path": "skills/ads/packs/video-ad-formats/mix-master",
+          "version": "1.0.0",
           "files": [
             "skills/ads/packs/video-ad-formats/mix-master/SKILL.md",
             "skills/ads/packs/video-ad-formats/mix-master/scripts/mix.sh",
@@ -10333,6 +10479,7 @@
           "name": "watch",
           "description": "Watch a rendered video (whole file or specific ranges) at a chosen fidelity and emit a timestamp-keyed observation report. Observation only — no edits, no verdicts.",
           "path": "skills/ads/packs/video-ad-formats/watch",
+          "version": "1.1.0",
           "files": [
             "skills/ads/packs/video-ad-formats/watch/SKILL.md",
             "skills/ads/packs/video-ad-formats/watch/references/parameters.md",

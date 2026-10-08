@@ -11,7 +11,7 @@ Writes <project>/voice/vo.mp3 and <project>/voice/words.json (the clock every an
 Why it exists: the whiteboard pins every mark to a word, so it needs word-level timings with the
 audio. `create-vo-elevenlabs` returns audio only, and calling the speech provider directly skips
 the proxy's billing and attribution. This calls the proxy's `/with-timestamps` route instead
-(the MCP `data_post_provider` route in relay mode, which returns `alignment` too).
+(the MCP `data_post` route in relay mode, which returns `alignment` too).
 
 DO NOT REGENERATE IT once the layout is solved: a new read silently moves every mark. The seed is
 pinned and recorded, and an identical payload is refused rather than paid for twice.
@@ -69,7 +69,7 @@ if not A.yes:
 path = "/v1/text-to-speech/%s/with-timestamps" % V["id"]
 if media_proxy.relay_mode():
     # The MCP tool saves the audio in the project and returns a download url plus `alignment`.
-    r = media_proxy._relay("elevenlabs", "data_post_provider",
+    r = media_proxy._relay("elevenlabs", "data_post",
                            {"provider": "elevenlabs", "path": path, "body": body},
                            "the result is the tool's JSON reply (download_url + alignment)")
     media_proxy.download(r["download_url"], str(OUT / "vo.mp3"))

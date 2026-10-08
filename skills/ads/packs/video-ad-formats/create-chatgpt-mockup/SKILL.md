@@ -1,7 +1,11 @@
 ---
 name: create-chatgpt-mockup
 description: Render pixel-accurate ChatGPT mobile (iOS) screen mockups in light mode from a thread JSON. Supports user text bubbles, user image attachments, assistant markdown prose, citation chips, the OpenAI spiral logo, the Apps-SDK GPT chip in the composer, and three header styles (model-tag, plain title, "Get Plus"). Fixed 9:16 viewport. Outputs HTML + PNG.
+status: superseded
+superseded_by: phone-chat@1.0.0
 ---
+
+> **Superseded:** the video kit now does this with the phone-chat part, version 1.0.0, in the parts folder of this repository. Every phone-chat style is a style file that draws the same screen frame by frame from the plan's scenes, with the original sounds, in the kit's browser. This atom stays, unchanged in behaviour, for skills outside the kit until they move; its scripts still run.
 
 # create-chatgpt-mockup
 

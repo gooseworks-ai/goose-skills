@@ -2,6 +2,7 @@
   "slug": "render-myth-vs-fact",
   "category": "capabilities",
   "domain": "ads",
+  "version": "1.0.1",
   "tags": [
     "ads"
   ],

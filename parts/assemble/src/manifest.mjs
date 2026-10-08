@@ -1,0 +1,62 @@
+import { file, timeline } from '../../_tools/schemas.mjs';
+
+export const manifest = {
+  $schema: '../../_contract/part-manifest.schema.json',
+  interface: 1,
+  id: 'assemble',
+  version: '1.0.0',
+  kind: 'compose',
+  title: 'Assemble scenes',
+  summary: 'Joins scene clips and stills in order into one cut of one size and frame rate, with exact frame counts and hard cuts.',
+  runtime: 'node',
+  entry: 'part.mjs',
+  files: ['README.md', 'part.mjs'],
+  kit: '>=1.0.0 <2.0.0',
+  needs: {
+    browser: false,
+    ffmpeg: { filters: ['fps', 'scale', 'crop', 'pad', 'setsar', 'tpad', 'trim', 'setpts', 'format', 'concat', 'aresample', 'aformat', 'apad', 'atrim', 'anullsrc'], encoders: ['libx264', 'aac'] },
+    network: false,
+    models: [],
+    disk_mb: 500,
+  },
+  inputs: {
+    type: 'object',
+    additionalProperties: false,
+    required: ['clips', 'width', 'height'],
+    properties: {
+      clips: {
+        type: 'array',
+        minItems: 1,
+        maxItems: 60,
+        items: {
+          type: 'object',
+          additionalProperties: false,
+          properties: {
+            id: { type: 'string', maxLength: 40 },
+            video: file('video'),
+            image: file('image'),
+            in_s: { description: 'Where the cut starts in its clip. Default 0.', type: 'number', minimum: 0 },
+            seconds: { description: 'Length of the cut. Default: the rest of the clip. Required for a still.', type: 'number', exclusiveMinimum: 0, maximum: 300 },
+          },
+        },
+      },
+      width: { type: 'integer', minimum: 16, maximum: 4096 },
+      height: { type: 'integer', minimum: 16, maximum: 4096 },
+      fps: { description: 'Default 30.', type: 'integer', minimum: 10, maximum: 60 },
+      fit: { description: 'cover crops to fill (default); contain pads.', enum: ['cover', 'contain'] },
+      background: { description: 'Pad colour for contain. Default black.', type: 'string', pattern: '^(#[0-9A-Fa-f]{6}|black|white)$' },
+      clip_audio: { description: "drop (default) or keep each clip's own sound, with silence under stills.", enum: ['drop', 'keep'] },
+    },
+  },
+  outputs: {
+    type: 'object',
+    additionalProperties: false,
+    required: ['video', 'seconds', 'timeline'],
+    properties: { video: file('video'), seconds: { type: 'number', exclusiveMinimum: 0 }, timeline },
+  },
+  cost: { basis: 'free' },
+  determinism: 'pure',
+  timing: { typical_s: 30, timeout_s: 1200 },
+  retry: { transient: 1 },
+  replaces: ['stitch-videos-ffmpeg'],
+};

@@ -126,6 +126,12 @@ for (const domain of domains) {
           );
         }
       }
+      if (
+        meta.version !== undefined &&
+        (typeof meta.version !== 'string' || !/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/.test(meta.version))
+      ) {
+        errors.push(`version must be a semver string (x.y.z) in ${where}: ${JSON.stringify(meta.version)}`);
+      }
       if (!meta.installation || typeof meta.installation.base_command !== 'string' || !meta.installation.base_command.trim()) {
         errors.push(`installation.base_command required in ${where}`);
       }

@@ -43,7 +43,7 @@
       "engine": "fal_i2v",
       "provider": "fal",
       "model": "fal-ai/bytedance/seedance/v1/lite/image-to-video",
-      "_model_note": "create-video-fal i2v seeded on hero_styled.png. Seedance Lite is the cheap default; swap to seedance/v1/pro or kling-video/v2.1/standard for higher fidelity. All bill the Ads agent via the fal-proxy.",
+      "_model_note": "create-video-fal i2v seeded on hero_styled.png. Seedance Lite is the cheap default; swap to seedance/v1/pro or kling-video/v3/pro/image-to-video for higher fidelity. All bill the Ads agent via the fal-proxy.",
       "start_image": "hero_styled.png",
       "duration_sec": 4,
       "_duration_note": "i2v takes are ~5s; build_masters trims to 4s. A single i2v yields a partial arc (~60-120°), NOT a literal 360 — do not promise a full turn.",

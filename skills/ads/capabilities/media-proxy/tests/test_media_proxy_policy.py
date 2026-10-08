@@ -18,7 +18,7 @@ MODEL = "bytedance/seedance-2.0/reference-to-video"
 LIKENESS = "The images may contain likenesses of real people"
 
 # The three fal 422 bodies from the QA-14 audit, plus the GooseWorks MCP wrapper
-# (data_post_provider maps a provider 422 to provider_validation_failed and keeps the body).
+# (data_post maps a provider 422 to provider_validation_failed and keeps the body).
 MSG_AND_TYPE = {"detail": [{"loc": ["body", "image_urls"], "msg": LIKENESS,
                             "type": "content_policy_violation"}]}
 SHAPES = {
