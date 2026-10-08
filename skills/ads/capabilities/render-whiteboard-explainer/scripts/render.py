@@ -55,6 +55,9 @@ I = _load("illos", "illos.py")
 
 W, H = 1080, 1920
 SAFE_T, SAFE_B = 285, 1635
+# The caption pill is 60px tall. review-finished-ad flags the bottom 400px (y >= 1520), so the
+# pill has to END above 1520; the old default put its top there and every video failed that check.
+CAPTION_Y = 1440
 
 
 def perspective_coeffs(src, dst):
@@ -303,9 +306,9 @@ def main():
             # next two words on screen before they were said, so the caption was
             # reading out ahead of the voiceover.
             phrase = " ".join(x["w"] for x in words[max(0, i - 4):i + 1])
-            fs = ImageFont.truetype("C:/Windows/Fonts/segoescb.ttf", 36)
+            fs = ImageFont.truetype(L.CAPTION, 36)
             tw = d.textlength(phrase, font=fs)
-            cy = EP.get('caption_y', SAFE_B - 150)
+            cy = EP.get('caption_y', CAPTION_Y)
             d.rounded_rectangle([(W - tw) / 2 - 20, cy, (W + tw) / 2 + 20, cy + 60],
                                 radius=12, fill=(12, 12, 14))
             d.text(((W - tw) / 2, cy + 8), phrase, font=fs, fill=(250, 250, 250))

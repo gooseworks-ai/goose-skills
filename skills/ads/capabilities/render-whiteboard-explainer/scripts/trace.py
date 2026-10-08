@@ -20,6 +20,7 @@ the big shapes, then the detail inside them.
 """
 import argparse
 import json
+import sys
 from pathlib import Path
 
 import cv2
@@ -131,9 +132,14 @@ def to_paths(png, grid=100.0, min_len=14, eps=1.1, dot_area=26, dot_size=7):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--project", required=True, type=Path)
+    ap.add_argument("--dir", type=Path,
+                    help="folder holding the drawings; paths.json is written beside them. "
+                         "Default: <project>/art")
     ap.add_argument("--min-len", type=int, default=14)
     A = ap.parse_args()
-    art = A.project.resolve() / "art"
+    art = A.dir.resolve() if A.dir else A.project.resolve() / "art"
+    if not art.is_dir():
+        sys.exit(f"no drawings folder at {art}")
     paths = {}
     # hand*.png is a photograph, not line art, and tracing it produced 72 nonsense "strokes"
     # that would have shown up as a selectable vignette.

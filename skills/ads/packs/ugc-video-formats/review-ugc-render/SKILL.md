@@ -63,7 +63,10 @@ no such file: a missing file is an ERROR (exit 3).
 
 Transcription backend (in priority order): the GooseWorks whisper-proxy (CLI
 credentials or the sandbox token) → `OPENAI_API_KEY` (honors `OPENAI_BASE_URL`) →
-local `whisper` CLI. `ffmpeg` must be on PATH.
+local `whisper` CLI. `ffmpeg` must be on PATH. With `GW_MEDIA_VIA=mcp` the CLI credentials are
+never used: that login can be a different account from the one the agent is connected to, and
+the paid transcript would bill it. In that mode the check uses `OPENAI_API_KEY` or the local
+`whisper` CLI, or stops and says so.
 
 ## What counts as the same speech
 

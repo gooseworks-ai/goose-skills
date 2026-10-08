@@ -82,13 +82,18 @@ def main():
     for k, v in (("ink", [26, 26, 28]), ("ink_strength", 0.8), ("hold_s", 2.4),
                  ("draw_frac", 0.85), ("text_s", 0.85), ("art_s", 1.2), ("wipe_s", 0.35),
                  ("handheld", 2.2), ("handheld_rot", 0.09), ("caption_from", 0.45),
-                 ("caption_y", 1520)):
+                 ("caption_y", 1440)):   # pill is 60px tall and must end above y=1520
         EP.setdefault(k, v)
 
     q = EP["quad"]
     qw = (q[1][0] - q[0][0] + q[2][0] - q[3][0]) / 2
     qh = (q[3][1] - q[0][1] + q[2][1] - q[1][1]) / 2
     DH = int(round(DW * qh / qw))
+    # Where the caption pill starts, in board units. Nothing may be drawn below it: the pill
+    # sits over the board, so a row or drawing that ran to the board's bottom edge ended up
+    # underneath the words.
+    # At the old caption_y of 1520 this changes nothing, so a solved project keeps its layout.
+    cap_top = int((EP["caption_y"] - (q[0][1] + q[1][1]) / 2) * DH / qh)
 
     words = load_words(P)
     at = resolver(words)
@@ -108,7 +113,13 @@ def main():
     # come out balanced AND the wipes still land in a break in the talking.
     n = len(beats)
     cuts = []
-    if A.boards > 1 and n >= A.boards:
+    # A beat marked "new_board": true starts a board. Any such mark turns the automatic split
+    # off: the balanced split once put the brand name on the problem board, and only the
+    # writer knows which beat opens the answer.
+    manual = [i for i, b in enumerate(beats) if b.get("new_board") and i > 0]
+    if manual:
+        cuts = [i - 1 for i in manual]
+    elif A.boards > 1 and n >= A.boards:
         win = max(1, n // (2 * A.boards))
         for k in range(1, A.boards):
             ideal = round(n * k / A.boards)
@@ -134,6 +145,9 @@ def main():
 
         top = 330 if first else 120          # the first board carries the title block
         bot = DH - (300 if last else 90)     # the last board leaves room for the payoff
+        lim = cap_top - (210 if last else 0)
+        if lim < bot:                        # the pill is higher than the board's own margin
+            bot = lim - 14                   # so stop short of it, with a little air
         if first:
             t0, w0 = at(B.get("title_say", B["beats"][0]["say"]), B.get("title_n"))
             items.append({"kind": "title", "anchor": B.get("title_say", B["beats"][0]["say"]),
@@ -188,7 +202,7 @@ def main():
             if B.get("payoff"):
                 items.append({"kind": "title", "anchor": B.get("payoff_say", "In"),
                               **({"anchor_n": B["payoff_n"]} if B.get("payoff_n") else {}),
-                              "text": B["payoff"], "at": [DW // 2, DH - 230], "size": 74})
+                              "text": B["payoff"], "at": [DW // 2, min(DH - 230, cap_top - 100)], "size": 74})
         acts.append({"items": items})
 
     EP["acts"] = acts

@@ -862,7 +862,12 @@ def mean_volume_db(audio: str) -> float:
 def _gw_creds():
     """(api_base, token, agent_id) or None. Cloud sandbox: the per-session
     GW_MEDIA_PROXY_TOKEN (already binds the billing agent → agent_id None) +
-    GW_API_BASE (or derived from GW_FAL_PROXY_URL). Else the CLI credentials."""
+    GW_API_BASE (or derived from GW_FAL_PROXY_URL). Else the CLI credentials.
+
+    GW_MEDIA_VIA=mcp means paid calls go through the agent's MCP tools, on the account the
+    agent is connected to. The CLI login can be a different account (it was production while
+    the run was on staging), so in that mode it is never used: this returns None and the
+    transcript falls through to a free local backend or stops with a clear message."""
     env_tok = os.environ.get("GW_MEDIA_PROXY_TOKEN")
     if env_tok:
         base = os.environ.get("GW_API_BASE")
@@ -872,6 +877,8 @@ def _gw_creds():
             base = fal[:i] if i > 0 else None
         if base:
             return base.rstrip("/"), env_tok, None
+    if os.environ.get("GW_MEDIA_VIA", "").strip().lower() == "mcp":
+        return None
     p = os.path.expanduser("~/.gooseworks/credentials.json")
     if not os.path.exists(p):
         return None
@@ -950,7 +957,8 @@ def transcribe(audio: str) -> str:
         "no transcription backend available: sign in with the gooseworks CLI (writes "
         "~/.gooseworks/credentials.json → whisper-proxy is used automatically), or set "
         "OPENAI_API_KEY (optionally OPENAI_BASE_URL + OPENAI_PROXY_QUERY), or install the "
-        "`whisper` CLI"
+        "`whisper` CLI. With GW_MEDIA_VIA=mcp the CLI login is not used, so that it cannot "
+        "bill a different account: install the `whisper` CLI (free, local) or set OPENAI_API_KEY"
     )
 
 
