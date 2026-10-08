@@ -3,7 +3,7 @@ import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { file, timeline } from '../../_tools/schemas.mjs';
 
-const VERSION = '1.1.0';
+const VERSION = '1.1.1';
 const folder = join(dirname(fileURLToPath(import.meta.url)), '..', VERSION);
 const walk = (dir) => readdirSync(dir).flatMap((n) => (statSync(join(dir, n)).isDirectory() ? walk(join(dir, n)) : [relative(folder, join(dir, n))]));
 const files = walk(folder).filter((f) => f !== 'part.json' && !f.endsWith('.DS_Store')).sort();
@@ -69,7 +69,7 @@ export const manifest = {
       pacing: { description: "The skin's named pacing (Apple Notes: chars_per_second, min_type_seconds, first_pause_seconds, between_pause_seconds, last_pause_seconds, hold_seconds; the cascade: first_arrival_seconds, arrival_every_seconds, clear_after_seconds, resolution_hold_seconds, ending_after_seconds).", type: 'object', additionalProperties: { type: 'number', minimum: 0 } },
       ending: { description: 'The end card clip (an html-frames step) the chat crossfades into.', ...file('video') },
       ending_scenes: { description: 'How many of the last scenes are the end card\'s. Default 0.', type: 'integer', minimum: 0, maximum: 3 },
-      crossfade_ms: { description: 'Crossfade into the end card. Default 300.', type: 'integer', minimum: 0, maximum: 2000 },
+      crossfade_ms: { description: 'Crossfade into the end card, rounded to whole frames; under one frame is a straight cut. Default 300.', type: 'integer', minimum: 0, maximum: 2000 },
       fps: { description: 'Default 30.', type: 'integer', minimum: 10, maximum: 60 },
       measure_only: {
         description: "Measure the plan without drawing it: the chat's length and counts from the same code the render uses. Nothing is drawn, written or ordered. Default false.",
@@ -90,7 +90,7 @@ export const manifest = {
     required: ['seconds'],
     properties: {
       video: { description: 'H.264 with the chat\'s own sounds.', ...file('video') },
-      seconds: { description: "The rendered video's length; with measure_only, the chat's length before the end card (the render's end_card.start_s plus the crossfade, or its whole length with no ending).", type: 'number', exclusiveMinimum: 0 },
+      seconds: { description: "The rendered video's length; with measure_only, the chat's length before the end card (the render's end_card.start_s plus the crossfade in whole frames, none under one frame; or its whole length with no ending).", type: 'number', exclusiveMinimum: 0 },
       timeline,
       messages: { description: 'measure_only: the messages, notifications or list lines the chat shows.', type: 'integer', minimum: 0 },
       words: {

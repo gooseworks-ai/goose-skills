@@ -13,7 +13,7 @@ import { imessageBuild } from './skins/imessage.mjs';
 import { chatgptBuild } from './skins/chatgpt.mjs';
 import { notesBuild } from './skins/apple-notes.mjs';
 import { ncBuild } from './skins/notification-cascade.mjs';
-import { chatSceneText, chatThreadFor } from './threads.mjs';
+import { chatJoin, chatSceneId, chatSceneText, chatSceneTimes, chatThreadFor } from './threads.mjs';
 import { pcFontCoverage, pcFontMissing } from './fonts.mjs';
 
 const BUILD = { imessage: imessageBuild, chatgpt: chatgptBuild, 'apple-notes': notesBuild, 'notification-cascade': ncBuild };
@@ -21,6 +21,8 @@ const SIZE = { '9:16': [1080, 1920], '1:1': [1080, 1080], '4:5': [1080, 1350], '
 // The TikTok/Reels bands at 1080x1920 (review-finished-ad's), scaled to the canvas.
 const SAFE_BANDS = { top: 220, bottom: 400, right: 140, left: 0 };
 const CHUNK_FRAMES = 150;
+// The longest chat any skin may run, so a plan or pacing that makes it endless is refused, never rendered.
+const MAX_CHAT_S = 300;
 
 function safeArea(width, height) {
   if (width * 16 !== height * 9) return null;
@@ -136,7 +138,6 @@ export async function run(inputs, ctx) {
   const manifest = await kitCheckInputs(ctx, inputs);
   const [width, height] = SIZE[inputs.aspect ?? '9:16'];
   const fps = inputs.fps ?? 30;
-  const xfade = (inputs.crossfade_ms ?? 300) / 1000;
   const endingScenes = inputs.ending_scenes ?? 0;
   if (endingScenes >= inputs.scenes.length) throw ctx.error('bad_input', 'every scene is the end card\'s; the chat has none');
   const chatScenes = inputs.scenes.slice(0, inputs.scenes.length - endingScenes);
@@ -189,6 +190,9 @@ export async function run(inputs, ctx) {
     throw ctx.error('bad_input', e.message);
   }
   const chatDur = built.total_s;
+  if (!Number.isFinite(chatDur) || chatDur <= 0 || chatDur > MAX_CHAT_S) {
+    throw ctx.error('bad_input', `the chat would run ${chatDur} s; it must be a finite length up to ${MAX_CHAT_S} s`);
+  }
   if (inputs.measure_only) {
     // The plan measured by the same code that renders it: nothing drawn, written or ordered.
     return kitCheckOutputs(ctx, manifest, { seconds: chatDur, ...built.stats });
@@ -204,16 +208,20 @@ export async function run(inputs, ctx) {
   let ending = null;
   if (inputs.ending) {
     const endLen = (await ctx.tools.probe(inputs.ending.path)).duration_s;
-    if (!(endLen > xfade)) throw ctx.error('bad_input', 'the end card clip is shorter than the crossfade');
-    if (!(chatDur > xfade)) throw ctx.error('bad_input', 'the chat is shorter than the crossfade');
+    let joinPlan;
+    try {
+      joinPlan = chatJoin(chatDur, endLen, inputs.crossfade_ms, fps);
+    } catch (e) {
+      throw ctx.error('bad_input', e.message);
+    }
     args.push('-i', inputs.ending.path);
-    graph.push(
-      `[0:v]fps=${fps},settb=AVTB,setsar=1,format=yuv420p[c];[1:v]fps=${fps},scale=${width}:${height}:force_original_aspect_ratio=increase,crop=${width}:${height},settb=AVTB,setsar=1,format=yuv420p[e];` +
-        `[c][e]xfade=transition=fade:duration=${kitNum(xfade, 3)}:offset=${kitNum(chatDur - xfade)}[v]`,
-    );
+    const prep =
+      `[0:v]fps=${fps},settb=AVTB,setsar=1,format=yuv420p[c];[1:v]fps=${fps},scale=${width}:${height}:force_original_aspect_ratio=increase,crop=${width}:${height},settb=AVTB,setsar=1,format=yuv420p[e];`;
+    // A crossfade in whole frames; under one frame is a straight cut, so the card is never dropped.
+    graph.push(joinPlan.frames ? `${prep}[c][e]xfade=transition=fade:duration=${kitNum(joinPlan.overlap)}:offset=${kitNum(chatDur - joinPlan.overlap)}[v]` : `${prep}[c][e]concat=n=2:v=1:a=0[v]`);
     vLabel = '[v]';
-    total = chatDur + endLen - xfade;
-    ending = { start_s: +(chatDur - xfade).toFixed(3), end_s: +total.toFixed(3) };
+    total = joinPlan.total;
+    ending = joinPlan.ending;
   }
   if (sounds) args.push('-i', sounds);
   else args.push('-f', 'lavfi', '-t', kitNum(total), '-i', 'anullsrc=r=48000:cl=stereo');
@@ -223,15 +231,8 @@ export async function run(inputs, ctx) {
   const video = await ctx.file('chat.mp4', 'video');
 
   // Scenes: each chat scene from the moment it shows; the end card scenes over the card.
-  const reveal = new Map(built.events.filter((e) => e.id).map((e) => [String(e.id), e.t]));
-  const starts = chatScenes.map((s, i) => {
-    const id = s.id == null ? `s${i + 1}` : String(s.id);
-    const hit = plan.scene_ids.find((x) => x.scene === id);
-    return { id, start_s: hit && reveal.has(hit.event) ? reveal.get(hit.event) : (chatDur * i) / chatScenes.length };
-  });
-  starts.sort((a, b) => a.start_s - b.start_s);
-  const scenes = starts.map((s, i) => ({ id: s.id, start_s: +s.start_s.toFixed(3), end_s: +(i + 1 < starts.length ? starts[i + 1].start_s : ending ? ending.start_s : chatDur).toFixed(3) }));
-  if (ending) for (const s of endScenes) scenes.push({ id: s.id == null ? 'end-card' : String(s.id), start_s: ending.start_s, end_s: ending.end_s });
+  const scenes = chatSceneTimes(chatScenes, plan.scene_ids, built.events, chatDur, ending ? ending.start_s : chatDur);
+  if (ending) endScenes.forEach((s, i) => scenes.push({ id: s.id == null ? 'end-card' : chatSceneId(s, chatScenes.length + i), start_s: ending.start_s, end_s: ending.end_s }));
   const timeline = { duration_s: +total.toFixed(3), width, height, fps, scenes, speech: [] };
   if (ending) timeline.end_card = ending;
   return kitCheckOutputs(ctx, manifest, { video, seconds: +total.toFixed(3), timeline });

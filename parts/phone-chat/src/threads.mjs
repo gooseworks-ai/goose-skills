@@ -22,7 +22,7 @@ function chatSlug(s, used) {
   return id;
 }
 
-function chatSceneId(scene, i) {
+export function chatSceneId(scene, i) {
   const raw = scene.id == null ? '' : String(scene.id);
   return /^[A-Za-z0-9_-]{1,40}$/.test(raw) ? raw : `s${i + 1}`;
 }
@@ -128,6 +128,8 @@ export function chatThreadFor(skin, { scenes, products, answers, brand_name, pla
     const p = pacing || {};
     const cps = p.chars_per_second ?? 18;
     const minType = p.min_type_seconds ?? 1.4;
+    if (!(Number.isFinite(cps) && cps > 0)) throw new Error('pacing chars_per_second must be a number above 0.');
+    for (const [k, v] of Object.entries(p)) if (!Number.isFinite(v)) throw new Error(`pacing ${k} must be a finite number.`);
     const [first, ...rest] = scenes;
     const title = chatSceneText(first);
     if (!title) throw new Error('Scene 1 is the note\'s title and has no words.');
@@ -160,4 +162,40 @@ export function chatThreadFor(skin, { scenes, products, answers, brand_name, pla
     return { thread, images: [{ key: 'plate', file: plate }], scene_ids: sceneIds };
   }
   throw new Error(`Unknown skin ${skin}.`);
+}
+
+// The events that show a scene's message: the first of these for an id is when its scene starts.
+const chatRevealKinds = new Set(['pop', 'typing-swap', 'arrive', 'resolve', 'type', 'insert']);
+
+/**
+ * Where each chat scene starts: the first reveal event of the message it maps to (never a later event of
+ * the same id, like an answer's stream-done), else an even share of the chat.
+ */
+export function chatSceneTimes(chatScenes, sceneIds, events, chatDur, endAt) {
+  const reveal = new Map();
+  for (const e of events) {
+    if (!e.id || !chatRevealKinds.has(e.kind)) continue;
+    const id = String(e.id);
+    if (!reveal.has(id) || e.t < reveal.get(id)) reveal.set(id, e.t);
+  }
+  const starts = chatScenes.map((s, i) => {
+    const id = chatSceneId(s, i);
+    const hit = sceneIds.find((x) => x.scene === id);
+    return { id, start_s: hit && reveal.has(hit.event) ? reveal.get(hit.event) : (chatDur * i) / chatScenes.length };
+  });
+  starts.sort((a, b) => a.start_s - b.start_s);
+  return starts.map((s, i) => ({ id: s.id, start_s: +s.start_s.toFixed(3), end_s: +(i + 1 < starts.length ? starts[i + 1].start_s : endAt).toFixed(3) }));
+}
+
+/**
+ * How the chat joins its end card: the crossfade in whole frames (under one frame is a straight cut,
+ * no overlap), the total length and where the card starts.
+ */
+export function chatJoin(chatDur, endLen, crossfadeMs, fps) {
+  const frames = Math.round(((crossfadeMs ?? 300) / 1000) * fps);
+  const overlap = frames / fps;
+  if (!(endLen > overlap)) throw new Error('the end card clip is shorter than the crossfade');
+  if (!(chatDur > overlap)) throw new Error('the chat is shorter than the crossfade');
+  const total = chatDur + endLen - overlap;
+  return { frames, overlap, total, ending: { start_s: +(chatDur - overlap).toFixed(3), end_s: +total.toFixed(3) } };
 }
