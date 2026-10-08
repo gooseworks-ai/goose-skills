@@ -76,4 +76,4 @@ Render tier affects product detail. Follow the recipe's approved resolution and 
 
 Fal documents [Seedream v4](https://fal.ai/models/fal-ai/bytedance/seedream/v4/text-to-image/api) as `fal-ai/bytedance/seedream/v4/text-to-image` and [Seedream v5 Pro](https://fal.ai/models/bytedance/seedream/v5/pro/text-to-image/api) as `bytedance/seedream/v5/pro/text-to-image`. Keep the exact provider ID selected by the recipe; do not add a `fal-ai/` prefix to the bare v5 ID. A documented endpoint is not proof of a fresh GooseWorks proxy call or likeness-policy acceptance.
 
-The old automatic fallback, [Kling v2.1 standard image-to-video](https://fal.ai/models/fal-ai/kling-video/v2.1/standard/image-to-video/api), is marked deprecated and no longer supported. Do not use that historical recovery instruction. Engine alternatives require a current availability check and approval, including any loss of native audio.
+There is no automatic fallback engine: an older recovery note named a Kling model fal has since retired. Switching engines needs a current availability check and the recipe's own engine choice, including any loss of native audio.

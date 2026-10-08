@@ -90,8 +90,8 @@ def main() -> int:
     ap.add_argument("--quality", default="medium", choices=["low", "medium", "high"])
     ap.add_argument("--ref-url", "--ref-image", action="append", dest="ref_urls", default=[],
                     help="PUBLIC reference image URL for the edit variant (repeatable). The proxy "
-                         "does not upload local files — host them via MCP get_upload_url -> "
-                         "get_download_url and pass the URL. Identity ref first, then style refs.")
+                         "does not upload local files — host them with the MCP media_upload "
+                         "and pass the returned URL. Identity ref first, then style refs.")
     args = ap.parse_args()
 
     cfg = MODELS[args.model]
@@ -129,7 +129,7 @@ def main() -> int:
         local = [u for u in args.ref_urls if not (u.startswith("http://") or u.startswith("https://"))]
         if local:
             sys.exit("ERROR: ref images must be PUBLIC URLs (the proxy does not upload local files). "
-                     "Host each via MCP get_upload_url -> get_download_url and pass the URL. "
+                     "Host each with the MCP media_upload and pass the returned URL. "
                      f"Got local path(s): {local}")
         payload["image_urls"] = args.ref_urls
         model = cfg["edit"]

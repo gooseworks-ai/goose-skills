@@ -1994,7 +1994,7 @@
       "description": "Generate or edit an image via any FAL image model (nano-banana edit, gpt-image, flux, ...), ROUTED THROUGH THE fal-proxy so it bills the Ads agent. image_urls must be public URLs (orchestrator hosts local product refs via MCP upload->presign). The recipe names the model + prompt. Use for keyframes, flat-cover transforms, product hero edits. (For the OpenAI gpt-image family specifically, create-image-gpt-image-fal also exists.)",
       "tags": "ads",
       "path": "skills/ads/capabilities/create-image-fal",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "files": [
         "skills/ads/capabilities/create-image-fal/SKILL.md",
         "skills/ads/capabilities/create-image-fal/references/avatar-generation.md",
@@ -2007,7 +2007,7 @@
         "slug": "create-image-fal",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "tags": [
           "ads"
         ],
@@ -2032,7 +2032,7 @@
       "description": "Generate a single photoreal or designed image with OpenAI gpt-image via fal.ai. Supports gpt-image-1 (default, fixed sizes — the FAL fallback for Higgsfield's `gpt_image_2`) and gpt-image-2 (`openai/gpt-image-2`, custom output sizes up to 3840px). Routes to text-to-image or the edit variant depending on whether a reference image is provided. Use for photoreal character anchors, scene keyframes, and designed sheets (e.g. storyboards) where precise layout and legible text matter.",
       "tags": "ads, design",
       "path": "skills/ads/capabilities/create-image-gpt-image-fal",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "files": [
         "skills/ads/capabilities/create-image-gpt-image-fal/SKILL.md",
         "skills/ads/capabilities/create-image-gpt-image-fal/scripts/fal_helpers.py",
@@ -2049,7 +2049,7 @@
         "slug": "create-image-gpt-image-fal",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "tags": [
           "ads",
           "design"
@@ -2186,7 +2186,7 @@
       "description": "Generate an instrumental music bed via ElevenLabs Music, ROUTED THROUGH THE elevenlabs-proxy so it bills the Ads agent. Trims any sparse intro, loudnorm, fades the tail. Prompt + length from the template recipe. Use for the music layer of any video-ad format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/create-music-elevenlabs",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "files": [
         "skills/ads/capabilities/create-music-elevenlabs/SKILL.md",
         "skills/ads/capabilities/create-music-elevenlabs/scripts/gen_music.py",
@@ -2198,7 +2198,7 @@
         "slug": "create-music-elevenlabs",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "tags": [
           "ads"
         ],
@@ -2220,10 +2220,10 @@
       "name": "create-video-fal",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Image-to-video (or text-to-video) via any FAL video model (Kling, Seedance, Veo), ROUTED THROUGH THE GooseWorks fal-proxy so the call bills the Ads agent. The template recipe names the model + params; image_url inputs must be public URLs (the orchestrator hosts local frames via MCP get_upload_url -> get_download_url). Returns the result video URL and downloads it. Use for the generative base clip of any video-ad format.",
+      "description": "Image-to-video (or text-to-video) via any FAL video model (Kling, Seedance, Veo), ROUTED THROUGH THE GooseWorks fal-proxy so the call bills the Ads agent. The template recipe names the model + params; image_url inputs must be public URLs (the orchestrator hosts local frames with the MCP media_upload). Returns the result video URL and downloads it. Use for the generative base clip of any video-ad format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/create-video-fal",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "files": [
         "skills/ads/capabilities/create-video-fal/SKILL.md",
         "skills/ads/capabilities/create-video-fal/scripts/gen_video.py",
@@ -2235,7 +2235,7 @@
         "slug": "create-video-fal",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "tags": [
           "ads"
         ],
@@ -2297,7 +2297,7 @@
       "description": "Generate a voiceover (VO) clip via ElevenLabs text-to-speech, ROUTED THROUGH THE elevenlabs-proxy so it bills the Ads agent. Voice id + script text come from the template recipe. Use for the spoken narration of VO-driven video-ad formats (cgi-app-sizzle, flat-vector-explainer, hypermotion). Never call ElevenLabs directly — the proxy attribution is required.",
       "tags": "ads",
       "path": "skills/ads/capabilities/create-vo-elevenlabs",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "files": [
         "skills/ads/capabilities/create-vo-elevenlabs/SKILL.md",
         "skills/ads/capabilities/create-vo-elevenlabs/scripts/gen_vo.py",
@@ -2312,7 +2312,7 @@
         "slug": "create-vo-elevenlabs",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "tags": [
           "ads"
         ],
@@ -4843,7 +4843,7 @@
       "description": "Shared helper that routes ALL paid media generation (FAL image/video, ElevenLabs music) through the GooseWorks proxies so every call bills the Ads agent — never a provider SDK's default host. Host-swaps the FAL queue URLs, loads the agent token from the sandbox env (GW_MEDIA_PROXY_TOKEN) or ~/.gooseworks/credentials.json, and returns the result CDN URL. Every video-ad media capability imports this; templates never call a provider directly.",
       "tags": "ads",
       "path": "skills/ads/capabilities/media-proxy",
-      "version": "2.0.0",
+      "version": "2.0.1",
       "files": [
         "skills/ads/capabilities/media-proxy/SKILL.md",
         "skills/ads/capabilities/media-proxy/scripts/media_proxy.py",
@@ -4856,7 +4856,7 @@
         "slug": "media-proxy",
         "category": "capabilities",
         "domain": "ads",
-        "version": "2.0.0",
+        "version": "2.0.1",
         "tags": [
           "ads"
         ],
@@ -5984,7 +5984,7 @@
       "description": "Assemble a premium 3D product-showcase ad from a config — four beat clips (an orbiting hero rotation, a macro push-in, a physics reveal, a typographic close) normalized to the chosen backdrop colour, hard-concatenated in order, closed on a deterministic Playwright brand end card, and mixed under one instrumental bed at loudnorm I=-16 (music-only, no VO). Ships the runnable build_endcard.py + build_masters.py; the rotation/macro clips are create-video-fal i2v seeded on a create-image-fal styled hero, the reveal is Veo3 i2v, and the bed is create-music-elevenlabs. Use for the 3d-product-showcase format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-3d-product-showcase",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "files": [
         "skills/ads/capabilities/render-3d-product-showcase/SKILL.md",
         "skills/ads/capabilities/render-3d-product-showcase/scripts/PIPELINE.md",
@@ -6000,7 +6000,7 @@
         "slug": "render-3d-product-showcase",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "tags": [
           "ads"
         ],
@@ -6189,7 +6189,7 @@
       "description": "Assemble a cartoon / animated / hand-crafted music-video ad from a config — a sung song carries the whole narrative while N per-bar i2v clips (one recurring animated character, one look pack) are each cut to their BAR window from librosa beat-tracking and hard-concatenated on the bar, VEED-whisper white bold-sans captions in the BOTTOM third (Alignment 2, above the logo bug, no pill) burned from the song's word timings re-spelled against the locked lyrics, a persistent brand logo bug held over the body (suppressed on the end card), and closed on a solid-brand-color PIL end card with the song still playing under it — never AI-rendered text. This is the FREE deterministic assembly stage (cut-to-bar + hard concat + logo bug + captions + end card + song mux); the song, character, keyframes, and clips come from create-music-elevenlabs / create-image-fal / create-video-fal. Use for the cartoon-music-video format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-cartoon-music-video",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "files": [
         "skills/ads/capabilities/render-cartoon-music-video/SKILL.md",
         "skills/ads/capabilities/render-cartoon-music-video/scripts/PIPELINE.md",
@@ -6202,7 +6202,7 @@
         "slug": "render-cartoon-music-video",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "tags": [
           "ads"
         ],
@@ -7018,7 +7018,7 @@
       "description": "Assemble a myth-vs-fact kinetic-typography explainer video ad (≈29.5s, 9:16) from N myth/fact pairs + hook / turn / punch copy + palette + a brand end-card PNG + a VO track — a hook, 3 red-strike MYTH cards that flip to teal-check FACT cards (per-line strikethrough that crosses EVERY wrapped line), a \"what actually works\" turn, an optional proof reveal, a punch line, and a static end card. DETERMINISTIC assembly with ZERO AI-gen visuals — HTML hyperframes rendered frame-exact via Playwright (`window.renderAt(t)`, animation a pure function of beat-local time), Whisper beat-snap to VO word onsets, concat at a uniform fps, karaoke `.ass` captions burned last (suppressed on the proof + end-card beats), and a VO + optional music mix (music −20 dB, `amix normalize=0`, tail fade). FREE (Python + Playwright + ffmpeg); the recipe supplies the copy / palette / end-card / VO and gates the paid VO / music / Whisper calls to their own capabilities. Use for the myth-vs-fact format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-myth-vs-fact",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "files": [
         "skills/ads/capabilities/render-myth-vs-fact/SKILL.md",
         "skills/ads/capabilities/render-myth-vs-fact/scripts/beat_snap.py",
@@ -7040,7 +7040,7 @@
         "slug": "render-myth-vs-fact",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "tags": [
           "ads"
         ],
@@ -7464,7 +7464,7 @@
       "description": "Write a street-interview ad from a complete inspected commercial interaction and current brand facts. Render product guessing, or prepare mic-only, prepared-sample or visible-task conversation script/prompt previews. Premise, actions and ad connection vary; capture rules stay fixed. Conversation media delivery is unverified.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-street-interview",
-      "version": "2.0.0",
+      "version": "2.0.1",
       "files": [
         "skills/ads/capabilities/render-street-interview/READINESS.md",
         "skills/ads/capabilities/render-street-interview/REFERENCE.md",
@@ -7546,7 +7546,7 @@
         "slug": "render-street-interview",
         "category": "capabilities",
         "domain": "ads",
-        "version": "2.0.0",
+        "version": "2.0.1",
         "tags": [
           "ads"
         ],
@@ -7707,7 +7707,7 @@
       "description": "Assemble a whiteboard explainer video ad from a beats file — a narrator explains one idea while a real whiteboard fills up in black marker, with a hand-lettered title, bulleted rows down the left, a drawing filling the right, and a payoff that letters the closing line and rings the claim. The board is a PHOTOGRAPH and the ink is multiplied onto it, so the surface sheen and window light come through the strokes; the drawings are generated as line art and traced to ordered strokes, then revealed in drawing order on the word they belong to. The layout is SOLVED from the beats, never hand-placed. FREE assembly (Pillow plus ffmpeg) apart from one board photo and one drawing per subject, both one-time per brand. Use for the whiteboard format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-whiteboard-explainer",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "files": [
         "skills/ads/capabilities/render-whiteboard-explainer/SKILL.md",
         "skills/ads/capabilities/render-whiteboard-explainer/scripts/anchors.py",
@@ -7729,7 +7729,7 @@
         "slug": "render-whiteboard-explainer",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "tags": [
           "ads"
         ],
@@ -9928,7 +9928,7 @@
       "description": "Write a short-form video ad from an evidence-backed angle and the selected template's actual recipe. Reuses or fetches ad-angle-miner, preserves the chosen angle, plans words and visuals together, checks product claims and production fit, and delivers the strongest script with useful alternatives. Use before video production and for script rewrites. Customer language is one input alongside audience, promise, product proof, offer and format.",
       "tags": "ads, content",
       "path": "skills/ads/capabilities/write-video-ad-script",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "files": [
         "skills/ads/capabilities/write-video-ad-script/SKILL.md",
         "skills/ads/capabilities/write-video-ad-script/references/buyer-and-mechanism.md",
@@ -9956,7 +9956,7 @@
         "slug": "write-video-ad-script",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "tags": [
           "ads",
           "content"

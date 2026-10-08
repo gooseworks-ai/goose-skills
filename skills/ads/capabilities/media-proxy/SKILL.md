@@ -2,7 +2,7 @@
 name: media-proxy
 description: Shared helper that routes ALL paid media generation (FAL image/video, ElevenLabs music) through the GooseWorks proxies so every call bills the Ads agent — never a provider SDK's default host. Host-swaps the FAL queue URLs, loads the agent token from the sandbox env (GW_MEDIA_PROXY_TOKEN) or ~/.gooseworks/credentials.json, and returns the result CDN URL. Every video-ad media capability imports this; templates never call a provider directly.
 status: active
-version: "2.0.0"
+version: "2.0.1"
 updated: 2026-10-06
 ---
 
@@ -125,7 +125,7 @@ from media_proxy import fal_generate, fal_generate_video, eleven_music, download
 img = fal_generate("fal-ai/nano-banana/edit",
                    {"prompt": p, "image_urls": [product_url], "aspect_ratio": "9:16"})
 # video i2v (kling / seedance / veo)
-vid = fal_generate_video("fal-ai/kling-video/v2.1/standard/image-to-video",
+vid = fal_generate_video("fal-ai/kling-video/v3/pro/image-to-video",
                          {"prompt": p, "image_url": keyframe_url, "duration": "10"})
 # music bed
 eleven_music(prompt, 10500, "music.mp3", force_instrumental=True)
@@ -165,7 +165,7 @@ for that input's own ingredient_key + digest first, or the digest never matches.
   `queue.fal.run`; the helper rewrites them to the proxy base (keeps the path). Never
   poll `queue.fal.run` directly (401 + burns credits).
 - **FAL inputs that are local files must be PUBLIC urls.** The orchestrator hosts a
-  local image/audio via the MCP `get_upload_url` → `get_download_url` presigned URL and
+  local image/audio with the MCP `media_upload` (its returned url) and
   passes THAT url in, or call `fal_upload(path)`, which puts the file on the fal CDN
   through the fal-storage-proxy (free, verified 2026-09-28) and returns its public url.
 - **Only the final `*.fal.media` url is a real public URL** — everything else is behind
@@ -180,15 +180,15 @@ nor `~/.gooseworks/credentials.json`, so scripts cannot reach the proxies over H
 1. The script writes the exact MCP tool call to `working/mcp-requests/<kind>-<hash>.json`
    and exits with code **3**, printing what to do.
 2. The agent makes that call through the connector:
-   - fal → `data_post_provider { provider: "fal", path: <model>, body, project_id }`, then
+   - fal → `data_post { provider: "fal", path: <model>, body, project_id }`, then
      `job_get { job_id }` until `complete`; save `result.output` (fal's JSON).
-   - ElevenLabs → `data_post_provider { provider: "elevenlabs", ... }`; save the reply
+   - ElevenLabs → `data_post { provider: "elevenlabs", ... }`; save the reply
      (it carries `download_url`).
    - A local file → `media_upload { scope: "video_project", ... }` with the bytes of
      `local_file`; save `{ "url": <its url> }`.
 3. It saves that JSON to `save_result_to` and **re-runs the same command**. The script finds
    the result and continues; the next paid call relays the same way.
-4. If `data_post_provider` returns a `provider_validation_failed` error, or `job_get`
+4. If `data_post` returns a `provider_validation_failed` error, or `job_get`
    returns `status: failed`, the agent saves that error JSON (the whole `job_get` reply) as
    the result instead. The script then reports it: a policy rejection raises
    `FalPolicyRejection` and is recorded, like the HTTP path. Any saved error is moved aside

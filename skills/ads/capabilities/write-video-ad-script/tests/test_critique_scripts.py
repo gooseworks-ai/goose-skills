@@ -197,7 +197,7 @@ def test_relay_round_trip_writes_both_passes_at_once_then_finishes(tmp_path):
     assert len(reqs) == 2                                   # both passes in one round
     for p in reqs:
         req = json.loads(p.read_text())
-        assert req["tool"] == "data_post_provider"
+        assert req["tool"] == "data_post"
         assert req["args"]["provider"] == "fal" and req["args"]["path"] == "openrouter/router"
         assert req["args"]["project_id"] == "proj-test"
         assert not req["args"]["body"]["model"].startswith("anthropic/")
