@@ -5,18 +5,24 @@
  * Part versions and the parts index (GV-29 for parts; part interface,
  * section 6).
  *
- *   node scripts/check-parts.js [--base <ref>]
+ *   node scripts/check-parts.js [--base <ref>] [--direct]
+ *
+ * --direct compares with <ref> itself instead of its merge base with HEAD
+ * (CI: a pull request's base tip, or the tip a push replaced).
  *
  * Errors:
- *   - parts/index.json differs from what build-parts-index.js writes;
+ *   - a part version build-parts-index.js refuses (manifest schema, files,
+ *     symlinks), or parts/index.json differs from what it writes;
  *   - a branch edits or deletes a file in a version folder that is already
  *     published on the base (a published version never changes);
  *   - a branch changes parts/<id>/src/ without adding a new version folder
  *     for that part;
- *   - parts/withdrawn.json is not a list of { id, version, reason } naming
- *     indexed versions;
- *   - parts/layers.json names a slot other than brand, captions, sound or
- *     check, or a version that is not indexed or is withdrawn;
+ *   - parts/index.json, withdrawn.json or layers.json is missing or does not
+ *     fit its schema ({interface: 1, parts}, {interface: 1, withdrawn},
+ *     {interface: 1, order, layers});
+ *   - withdrawn.json names a version that was never published;
+ *   - layers.json fills a slot with a version that is not published, is
+ *     withdrawn, or is not a layer part for that slot;
  *   - part.no_billing_helper: any file of a part (source or published) is,
  *     imports or contains the billing helper (media_proxy, its proxy routes,
  *     its token or credentials file). A part orders paid pieces only through
@@ -26,10 +32,10 @@
 const fs = require('fs');
 const path = require('path');
 const lib = require('./lib/atoms');
-const { buildIndex, render, SEMVER } = require('./build-parts-index');
+const { buildIndex, render, readSchema, SEMVER } = require('./build-parts-index');
+const { validate } = require('./lib/json-schema');
 
 const { ROOT } = lib;
-const SLOTS = new Set(['brand', 'captions', 'sound', 'check']);
 const PART_ID = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
 const SKIP_DIRS = new Set(['node_modules', '.git', '__pycache__']);
 
@@ -83,84 +89,103 @@ function billingHelperFindings(root) {
   return findings;
 }
 
-function readJson(rel, fallback) {
+function readJson(rel) {
   const abs = path.join(ROOT, rel);
-  if (!fs.existsSync(abs)) return fallback;
-  return JSON.parse(fs.readFileSync(abs, 'utf8'));
+  if (!fs.existsSync(abs)) return { missing: true };
+  try {
+    return { value: JSON.parse(fs.readFileSync(abs, 'utf8')) };
+  } catch (err) {
+    return { error: `${rel} is not valid JSON: ${err.message}` };
+  }
+}
+
+/** A registry file checked against its schema; null when it is missing or broken (errors pushed). */
+function registryFile(rel, schemaName, errors) {
+  const read = readJson(rel);
+  if (read.missing) {
+    errors.push(`${rel} is missing`);
+    return null;
+  }
+  if (read.error) {
+    errors.push(read.error);
+    return null;
+  }
+  const problems = validate(readSchema(schemaName), read.value);
+  if (problems.length) {
+    errors.push(`${rel} does not fit ${schemaName}: ${problems.slice(0, 5).join('; ')}`);
+    return null;
+  }
+  return read.value;
 }
 
 function parseArgs(argv) {
-  const args = { base: null };
+  const args = { base: null, direct: false };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
-    if (a === '--base') args.base = argv[++i];
+    if (a === '--direct') args.direct = true;
+    else if (a === '--base') args.base = argv[++i];
     else if (a.startsWith('--base=')) args.base = a.slice(7);
     else throw new Error(`unknown argument ${a}`);
   }
   return args;
 }
 
+// parts/<id>/<folder>, with or without a path below it: a symlinked version
+// folder is one blob at parts/<id>/<x.y.z> in git.
+const PART_PATH = /^parts\/([^/]+)\/([^/]+)(?:\/|$)/;
+
 function run(argv) {
   const args = parseArgs(argv);
   const errors = [];
 
-  let entries = [];
+  let index = { interface: 1, parts: [] };
+  let built = false;
   try {
-    entries = buildIndex(ROOT);
+    index = buildIndex(ROOT);
+    built = true;
   } catch (err) {
     errors.push(err.message);
   }
-  const committed = path.join(ROOT, 'parts', 'index.json');
-  const current = fs.existsSync(committed) ? fs.readFileSync(committed, 'utf8') : null;
-  if (!errors.length && current !== render(entries)) {
-    errors.push('parts/index.json is out of date; run node scripts/build-parts-index.js and commit it');
+  const entries = index.parts;
+  const committed = registryFile('parts/index.json', 'parts-index.schema.json', errors);
+  if (built && committed !== null) {
+    const current = fs.readFileSync(path.join(ROOT, 'parts', 'index.json'), 'utf8');
+    if (current !== render(index)) {
+      errors.push('parts/index.json is out of date; run node scripts/build-parts-index.js and commit it');
+    }
   }
-  const indexed = new Set(entries.map((e) => `${e.id}@${e.version}`));
+  const byKey = new Map(entries.map((e) => [`${e.id}@${e.version}`, e]));
   errors.push(...billingHelperFindings(ROOT));
 
-  const withdrawn = readJson('parts/withdrawn.json', []);
   const withdrawnKeys = new Set();
-  if (!Array.isArray(withdrawn)) {
-    errors.push('parts/withdrawn.json must be a list');
-  } else {
-    for (const w of withdrawn) {
-      const ok = w && typeof w.id === 'string' && typeof w.version === 'string' && typeof w.reason === 'string' && w.reason.trim();
-      if (!ok) {
-        errors.push(`parts/withdrawn.json: each entry needs id, version and a reason (${JSON.stringify(w)})`);
-        continue;
-      }
-      if (!indexed.has(`${w.id}@${w.version}`)) errors.push(`parts/withdrawn.json: ${w.id}@${w.version} is not a published version`);
-      withdrawnKeys.add(`${w.id}@${w.version}`);
-    }
+  const withdrawn = registryFile('parts/withdrawn.json', 'parts-withdrawn.schema.json', errors);
+  for (const w of withdrawn ? withdrawn.withdrawn : []) {
+    const key = `${w.id}@${w.version}`;
+    if (!byKey.has(key)) errors.push(`parts/withdrawn.json: ${key} is not a published version`);
+    withdrawnKeys.add(key);
   }
 
-  const layers = readJson('parts/layers.json', null);
-  if (layers !== null) {
-    for (const [slot, ref] of Object.entries(layers)) {
-      if (!SLOTS.has(slot)) {
-        errors.push(`parts/layers.json: unknown slot ${slot}`);
-        continue;
-      }
-      const key = ref && `${ref.id}@${ref.version}`;
-      if (!ref || !indexed.has(key)) errors.push(`parts/layers.json: ${slot} names ${key || 'nothing'}, which is not a published version`);
-      else if (withdrawnKeys.has(key)) errors.push(`parts/layers.json: ${slot} names withdrawn ${key}`);
-    }
+  const layers = registryFile('parts/layers.json', 'parts-layers.schema.json', errors);
+  for (const [slot, ref] of Object.entries(layers ? layers.layers : {})) {
+    const key = `${ref.id}@${ref.version}`;
+    const entry = byKey.get(key);
+    if (!entry) errors.push(`parts/layers.json: ${slot} names ${key}, which is not a published version`);
+    else if (withdrawnKeys.has(key)) errors.push(`parts/layers.json: ${slot} names withdrawn ${key}`);
+    else if (entry.layer !== slot) errors.push(`parts/layers.json: ${slot} names ${key}, whose part.json layer is ${entry.layer || 'not set'}`);
   }
 
-  const base = lib.resolveBase(ROOT, args.base);
+  const base = lib.resolveBase(ROOT, args.base, { direct: args.direct });
   if (base) {
     const changed = [...lib.changedFiles(ROOT, base)].filter((p) => p.startsWith('parts/'));
     const baseVersions = new Set();
     for (const p of lib.listFilesAt(ROOT, base, 'parts')) {
-      const m = p.match(/^parts\/([^/]+)\/([^/]+)\//);
+      const m = p.match(PART_PATH);
       if (m && SEMVER.test(m[2])) baseVersions.add(`${m[1]}@${m[2]}`);
     }
-    const added = new Set(
-      entries.map((e) => `${e.id}@${e.version}`).filter((key) => !baseVersions.has(key)),
-    );
+    const added = [...byKey.keys()].filter((key) => !baseVersions.has(key));
     const srcChanged = new Set();
     for (const p of changed) {
-      const m = p.match(/^parts\/([^/]+)\/([^/]+)\//);
+      const m = p.match(PART_PATH);
       if (!m) continue;
       const [, id, folder] = m;
       if (SEMVER.test(folder) && baseVersions.has(`${id}@${folder}`)) {
@@ -169,7 +194,7 @@ function run(argv) {
       if (folder === 'src') srcChanged.add(id);
     }
     for (const id of srcChanged) {
-      if (![...added].some((key) => key.startsWith(`${id}@`))) {
+      if (!added.some((key) => key.startsWith(`${id}@`))) {
         errors.push(`parts/${id}/src changed without a new version folder for ${id}`);
       }
     }

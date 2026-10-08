@@ -1,0 +1,10 @@
+{
+  "interface": 1,
+  "order": [
+    "brand",
+    "captions",
+    "sound",
+    "check"
+  ],
+  "layers": {}
+}
