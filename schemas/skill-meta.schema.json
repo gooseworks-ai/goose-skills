@@ -46,6 +46,11 @@
       "items": { "type": "string" },
       "uniqueItems": true
     },
+    "version": {
+      "description": "Semver of the skill. Every video atom has one; a change to the atom raises it (scripts/check-atom-versions.js).",
+      "type": "string",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$"
+    },
     "lint_allow": {
       "description": "Atom lint findings that are creative content, not instructions (scripts/atom-lint.js).",
       "type": "array",

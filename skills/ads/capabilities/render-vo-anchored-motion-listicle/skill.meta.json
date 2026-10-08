@@ -2,6 +2,7 @@
   "slug": "render-vo-anchored-motion-listicle",
   "category": "capabilities",
   "domain": "ads",
+  "version": "1.0.0",
   "tags": [
     "ads"
   ],

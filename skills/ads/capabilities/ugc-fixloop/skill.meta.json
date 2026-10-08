@@ -2,6 +2,7 @@
   "slug": "ugc-fixloop",
   "category": "capabilities",
   "domain": "ads",
+  "version": "1.0.0",
   "tags": ["ads"],
   "installation": {
     "base_command": "npx goose-skills install ugc-fixloop",
