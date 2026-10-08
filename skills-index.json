@@ -817,7 +817,7 @@
       "description": "Burned-in captions for a finished vertical video, three kinds. transcribe.py gets word timings from the video's own audio through the GooseWorks proxy (fal Whisper, bills the Ads agent, cents); captions.py burns one to three words at a time with Pillow + ffmpeg (no libass needed), either pinned to a split-screen seam (plate 25% above / 75% below) or at a fixed height, in a plate, outline or one-word serif style, with an optional red hook card; plates.py burns per-beat caption blocks (black, one union silhouette, placed in the emptiest band) for formats with no voice. The last caption (the CTA) holds to the final frame. Use as the last step of any video ad.",
       "tags": "ads, content",
       "path": "skills/ads/capabilities/caption-burn",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "files": [
         "skills/ads/capabilities/caption-burn/SKILL.md",
         "skills/ads/capabilities/caption-burn/scripts/_fonts.py",
@@ -833,7 +833,7 @@
         "slug": "caption-burn",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "tags": [
           "ads",
           "content"
@@ -1746,7 +1746,7 @@
     {
       "slug": "create-apple-notes-mockup",
       "name": "create-apple-notes-mockup",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "category": "capabilities",
       "domain": "ads",
       "description": "Render pixel-accurate Apple Notes (iPhone, light mode) screenshot mockups from a JSON note spec. Outputs HTML + PNG at the iPhone 16/15 Pro native 1180×2556. Supports paragraphs, images, checklists, dividers, autocorrect underline, smart quotes, and an optional iOS keyboard chrome overlay used by the parent video-ad molecule.",
@@ -1783,7 +1783,7 @@
         "slug": "create-apple-notes-mockup",
         "category": "capabilities",
         "pack": "video-ad-formats",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "tags": [
           "ads"
         ],
@@ -1800,7 +1800,7 @@
     {
       "slug": "create-chatgpt-mockup",
       "name": "create-chatgpt-mockup",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "category": "capabilities",
       "domain": "ads",
       "description": "Render pixel-accurate ChatGPT mobile (iOS) screen mockups in light mode from a thread JSON. Supports user text bubbles, user image attachments, assistant markdown prose, citation chips, the OpenAI spiral logo, the Apps-SDK GPT chip in the composer, and three header styles (model-tag, plain title, \"Get Plus\"). Fixed 9:16 viewport. Outputs HTML + PNG.",
@@ -1841,7 +1841,7 @@
         "slug": "create-chatgpt-mockup",
         "category": "capabilities",
         "pack": "video-ad-formats",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "tags": [
           "ads"
         ],
@@ -1863,7 +1863,7 @@
       "description": "Generate an AI creator talking to camera, saying an approved script, as one continuous track — H3 Max reference-to-video through the GooseWorks fal-proxy (bills the Ads agent). Plans takes on line boundaries under H3's 15s cap, dry-runs a cost estimate, generates the first take alone so its voice can be locked and passed to every later take, joins takes with measured 0.10s dissolves, and moves each line's timing onto the words actually spoken. Use for any format with a generated creator speaking a script (split-screen, screen inserts, talking-head ads).",
       "tags": "ads, content",
       "path": "skills/ads/capabilities/create-creator-takes-h3",
-      "version": "2.0.0",
+      "version": "2.0.1",
       "files": [
         "skills/ads/capabilities/create-creator-takes-h3/SKILL.md",
         "skills/ads/capabilities/create-creator-takes-h3/scripts/align_beats.py",
@@ -1882,7 +1882,7 @@
         "slug": "create-creator-takes-h3",
         "category": "capabilities",
         "domain": "ads",
-        "version": "2.0.0",
+        "version": "2.0.1",
         "tags": [
           "ads",
           "content"
@@ -2076,7 +2076,7 @@
     {
       "slug": "create-imessage-mockup",
       "name": "create-imessage-mockup",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "category": "capabilities",
       "domain": "ads",
       "description": "Render pixel-accurate iMessage screenshot mockups (DM or group) from a thread JSON. Supports minimal, with-keyboard, and full iPhone 15 Pro frame variants. Outputs HTML + PNG.",
@@ -2110,7 +2110,7 @@
         "slug": "create-imessage-mockup",
         "category": "capabilities",
         "pack": "video-ad-formats",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "tags": [
           "ads"
         ],
@@ -2197,7 +2197,7 @@
       "description": "Generate an instrumental music bed via ElevenLabs Music, ROUTED THROUGH THE elevenlabs-proxy so it bills the Ads agent. Trims any sparse intro, loudnorm, fades the tail. Prompt + length from the template recipe. Use for the music layer of any video-ad format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/create-music-elevenlabs",
-      "version": "1.1.1",
+      "version": "1.1.2",
       "files": [
         "skills/ads/capabilities/create-music-elevenlabs/SKILL.md",
         "skills/ads/capabilities/create-music-elevenlabs/scripts/gen_music.py",
@@ -2209,7 +2209,7 @@
         "slug": "create-music-elevenlabs",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.1.1",
+        "version": "1.1.2",
         "tags": [
           "ads"
         ],
@@ -2266,7 +2266,7 @@
     {
       "slug": "create-video-seedance-2-fal",
       "name": "create-video-seedance-2-fal",
-      "version": "2.0.1",
+      "version": "2.0.2",
       "category": "capabilities",
       "domain": "ads",
       "description": "Generate a single 4-15s vertical video clip with ByteDance Seedance 2.0 reference-to-video via fal.ai. Multi-image reference (avatar + product + setting), native lip-synced VO + ambient audio (generate-audio on by default), internal multi-cut handling within one render. Routes through the GooseWorks FAL proxy (bills the Ads agent). The default clip atom for AI-creator UGC ads built on the NB2 + Seedance architecture. Validated on beauty-by-earth/video-01.",
@@ -2288,7 +2288,7 @@
         "slug": "create-video-seedance-2-fal",
         "category": "capabilities",
         "pack": "ugc-video-formats",
-        "version": "2.0.1",
+        "version": "2.0.2",
         "tags": [
           "ads"
         ],
@@ -2310,7 +2310,7 @@
       "description": "Generate a voiceover (VO) clip via ElevenLabs text-to-speech, ROUTED THROUGH THE elevenlabs-proxy so it bills the Ads agent. Voice id + script text come from the template recipe. Use for the spoken narration of VO-driven video-ad formats (cgi-app-sizzle, flat-vector-explainer, hypermotion). Never call ElevenLabs directly — the proxy attribution is required.",
       "tags": "ads",
       "path": "skills/ads/capabilities/create-vo-elevenlabs",
-      "version": "1.1.1",
+      "version": "1.1.2",
       "files": [
         "skills/ads/capabilities/create-vo-elevenlabs/SKILL.md",
         "skills/ads/capabilities/create-vo-elevenlabs/scripts/gen_vo.py",
@@ -2325,7 +2325,7 @@
         "slug": "create-vo-elevenlabs",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.1.1",
+        "version": "1.1.2",
         "tags": [
           "ads"
         ],
@@ -5118,7 +5118,7 @@
     {
       "slug": "mix-master",
       "name": "mix-master",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "category": "capabilities",
       "domain": "ads",
       "description": "Canonical short-form-ad audio mix in one FFmpeg pass. VO loudnorm + 3.0× per-clip + 2.0× mix, music 0.13 base + apad+afade, sidechain compress 20:1 @ 0.01, climax line +20%, optional video-to-music duration sync. Replaces the reactive multi-round tuning that cost v03 6+ passes.",
@@ -5133,7 +5133,7 @@
         "slug": "mix-master",
         "category": "capabilities",
         "pack": "video-ad-formats",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "tags": [
           "ads"
         ],
@@ -6118,7 +6118,7 @@
       "description": "Assemble an Apple Notes list video ad from a note + end-card JSON — a frame-accurate fake iPhone screen recording of a short list being typed into Apple Notes (character by character, key pops, blinking caret, the note scrolling up as it fills) crossfaded into a checklist end card (the note's picks as ticked rows, real product photos, logo, CTA, in the brand's colours and fonts), with an optional music bed. FREE assembly (Playwright + ffmpeg); the recipe supplies the per-brand note + end card and gates the paid music call to its own capability. The Apple Notes sibling of render-imessage-chat and render-chatgpt-chat. Use for the apple-notes format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-apple-notes-chat",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "files": [
         "skills/ads/capabilities/render-apple-notes-chat/SKILL.md",
         "skills/ads/capabilities/render-apple-notes-chat/scripts/config.example.json",
@@ -6138,7 +6138,7 @@
         "slug": "render-apple-notes-chat",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "tags": [
           "ads"
         ],
@@ -6282,7 +6282,7 @@
       "description": "Assemble a ChatGPT chat-reveal video ad from a thread + timeline JSON — one continuous Playwright recording of a ChatGPT mobile chat (user types with the iOS keyboard up → taps send → keyboard slides down + header cluster swaps in one beat → one gray loading dot → the assistant answer streams in word-by-word) crossfaded into a designed end card, with subliminal ChatGPT SFX and an optional ducked music bed. FREE assembly (Playwright + ffmpeg); the recipe supplies the per-brand thread + timeline + end-card config and gates the paid music call to its own capability. The ChatGPT sibling of render-imessage-chat. Use for the chatgpt-chat format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-chatgpt-chat",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "files": [
         "skills/ads/capabilities/render-chatgpt-chat/SKILL.md",
         "skills/ads/capabilities/render-chatgpt-chat/assets/sfx/key-tap.wav",
@@ -6305,7 +6305,7 @@
         "slug": "render-chatgpt-chat",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "tags": [
           "ads"
         ],
@@ -6757,7 +6757,7 @@
       "description": "Assemble an iMessage notification-cascade video ad (≈14s, 9:16) from a plate of a phone lying face-up (setting chosen by the user) + 3–5 messages — authentic Apple Messages banners composited in PIL (SF Pro text, green Messages icon, warm translucent-greige fill, soft shadow) spring in one-by-one at the BOTTOM and push the stack UP, a right-aligned Show-less/X pill rides above, the X clears the stack, then a serif end card resolves. FREE assembly (PIL + ffmpeg); the recipe supplies the per-brand plate, notifications, and end-card config and gates the paid plate-clean/music calls to their own capabilities. Use for the imessage-notification-cascade format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-imessage-cascade",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "files": [
         "skills/ads/capabilities/render-imessage-cascade/SKILL.md",
         "skills/ads/capabilities/render-imessage-cascade/scripts/build_assets.py",
@@ -6771,7 +6771,7 @@
         "slug": "render-imessage-cascade",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "tags": [
           "ads"
         ],
@@ -6796,7 +6796,7 @@
       "description": "Render a configurable iMessage conversation inside a properly framed phone, then a brand end card. Uses the original send/receive sounds and a shared frame timeline for text, typing, scrolling and sound. Free local Playwright + ffmpeg assembly; optional image/music generation belongs to separate gated capabilities.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-imessage-chat",
-      "version": "2.0.0",
+      "version": "2.0.1",
       "files": [
         "skills/ads/capabilities/render-imessage-chat/SKILL.md",
         "skills/ads/capabilities/render-imessage-chat/assets/sfx/imessage-receive.mp3",
@@ -6827,7 +6827,7 @@
         "slug": "render-imessage-chat",
         "category": "capabilities",
         "domain": "ads",
-        "version": "2.0.0",
+        "version": "2.0.1",
         "tags": [
           "ads"
         ],
@@ -6847,7 +6847,7 @@
     {
       "slug": "render-ios-keyboard",
       "name": "render-ios-keyboard",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "category": "capabilities",
       "domain": "ads",
       "description": "Render a static iOS QWERTY keyboard as inline HTML+CSS sized for the 750-wide 9:16 stage. Includes the 3-suggestion bar, alpha keys, shift/backspace, 123/emoji/space/return row, and the bottom globe+mic strip. No animation logic — slide up/down is the molecule's job (CSS transform on the .keyboard root).",
@@ -6869,7 +6869,7 @@
         "slug": "render-ios-keyboard",
         "category": "capabilities",
         "pack": "video-ad-formats",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "tags": [
           "ads"
         ],
@@ -7811,7 +7811,7 @@
       "description": "Final QC gate for a rendered 9:16 video ad, run before it is published. One script checks what a machine can decide — exact 1080x1920 size, a hook that moves and speaks in the first second, no frozen stretches, no dead air, no black frames, the brand's real logo on the end card (never a favicon, never a redrawn or wrong logo), end-card colours near the brand palette — and builds one contact sheet (frames with the TikTok/Reels UI safe zones shaded, beside the logo, product images and a font specimen) for the checks that need eyes — font, product likeness, product consistency across scenes, safe zones. A declared silent-text profile covers silent, text-led formats such as kinetic text (no audio track needed, short blank beats between text beats allowed within fixed bounds). Exit 0 PASS / 2 FAIL / 3 ERROR. Use on every finished video master before pinning it.",
       "tags": "ads, brand",
       "path": "skills/ads/capabilities/review-finished-ad",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "files": [
         "skills/ads/capabilities/review-finished-ad/SKILL.md",
         "skills/ads/capabilities/review-finished-ad/scripts/review_finished_ad.py",
@@ -7824,7 +7824,7 @@
         "slug": "review-finished-ad",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "tags": [
           "ads",
           "brand"
@@ -7931,7 +7931,7 @@
     {
       "slug": "review-ugc-render",
       "name": "review-ugc-render",
-      "version": "2.0.0",
+      "version": "2.0.1",
       "category": "capabilities",
       "domain": "ads",
       "description": "Mandatory pre-publish review gate for a UGC video render. Transcribes the finished render's AUDIO with Whisper and word-diffs it against the approved spoken script, then gates pinning the final render (video_project_upsert patch.final_render_id) — blocking a render whose generated audio mis-voices a word (e.g. the approved \"human-vetted\" spoken as \"human witted\"), says a different number or brand name, flips a negation, drops an approved phrase, or comes back silent. Correct speech written differently (\"5mg\" said \"five milligrams\", \"30%\" said \"thirty percent\", a spoken URL, \"don't\" said \"do not\", \"braxleybands\" said \"braxley bands\", a confirmed pronunciation like \"AG1\" said \"A G one\") passes. Runnable, gating counterpart to content-goose's review-transcript-integrity atom. Every ugc-video-formats recipe runs this after render and BEFORE pinning the final render.",
@@ -7947,7 +7947,7 @@
         "slug": "review-ugc-render",
         "category": "capabilities",
         "pack": "ugc-video-formats",
-        "version": "2.0.0",
+        "version": "2.0.1",
         "tags": [
           "ads"
         ],
@@ -10248,7 +10248,7 @@
           "name": "create-video-seedance-2-fal",
           "description": "Generate a single 4-15s vertical video clip with ByteDance Seedance 2.0 reference-to-video via fal.ai. Multi-image reference (avatar + product + setting), native lip-synced VO + ambient audio (generate-audio on by default), internal multi-cut handling within one render. Routes through the GooseWorks FAL proxy (bills the Ads agent). The default clip atom for AI-creator UGC ads built on the NB2 + Seedance architecture. Validated on beauty-by-earth/video-01.",
           "path": "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal",
-          "version": "2.0.1",
+          "version": "2.0.2",
           "files": [
             "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/SKILL.md",
             "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/scripts/generate.py",
@@ -10268,7 +10268,7 @@
           "name": "review-ugc-render",
           "description": "Mandatory pre-publish review gate for a UGC video render. Transcribes the finished render's AUDIO with Whisper and word-diffs it against the approved spoken script, then gates pinning the final render (video_project_upsert patch.final_render_id) — blocking a render whose generated audio mis-voices a word (e.g. the approved \"human-vetted\" spoken as \"human witted\"), says a different number or brand name, flips a negation, drops an approved phrase, or comes back silent. Correct speech written differently (\"5mg\" said \"five milligrams\", \"30%\" said \"thirty percent\", a spoken URL, \"don't\" said \"do not\", \"braxleybands\" said \"braxley bands\", a confirmed pronunciation like \"AG1\" said \"A G one\") passes. Runnable, gating counterpart to content-goose's review-transcript-integrity atom. Every ugc-video-formats recipe runs this after render and BEFORE pinning the final render.",
           "path": "skills/ads/packs/ugc-video-formats/review-ugc-render",
-          "version": "2.0.0",
+          "version": "2.0.1",
           "files": [
             "skills/ads/packs/ugc-video-formats/review-ugc-render/SKILL.md",
             "skills/ads/packs/ugc-video-formats/review-ugc-render/scripts/review_render.py",
@@ -10314,7 +10314,7 @@
           "name": "create-imessage-mockup",
           "description": "Render pixel-accurate iMessage screenshot mockups (DM or group) from a thread JSON. Supports minimal, with-keyboard, and full iPhone 15 Pro frame variants. Outputs HTML + PNG.",
           "path": "skills/ads/packs/video-ad-formats/create-imessage-mockup",
-          "version": "1.0.0",
+          "version": "1.0.1",
           "files": [
             "skills/ads/packs/video-ad-formats/create-imessage-mockup/.gitignore",
             "skills/ads/packs/video-ad-formats/create-imessage-mockup/SKILL.md",
@@ -10346,7 +10346,7 @@
           "name": "create-chatgpt-mockup",
           "description": "Render pixel-accurate ChatGPT mobile (iOS) screen mockups in light mode from a thread JSON. Supports user text bubbles, user image attachments, assistant markdown prose, citation chips, the OpenAI spiral logo, the Apps-SDK GPT chip in the composer, and three header styles (model-tag, plain title, \"Get Plus\"). Fixed 9:16 viewport. Outputs HTML + PNG.",
           "path": "skills/ads/packs/video-ad-formats/create-chatgpt-mockup",
-          "version": "1.0.0",
+          "version": "1.0.1",
           "files": [
             "skills/ads/packs/video-ad-formats/create-chatgpt-mockup/SKILL.md",
             "skills/ads/packs/video-ad-formats/create-chatgpt-mockup/build-review.html",
@@ -10385,7 +10385,7 @@
           "name": "create-apple-notes-mockup",
           "description": "Render pixel-accurate Apple Notes (iPhone, light mode) screenshot mockups from a JSON note spec. Outputs HTML + PNG at the iPhone 16/15 Pro native 1180×2556. Supports paragraphs, images, checklists, dividers, autocorrect underline, smart quotes, and an optional iOS keyboard chrome overlay used by the parent video-ad molecule.",
           "path": "skills/ads/packs/video-ad-formats/create-apple-notes-mockup",
-          "version": "1.0.0",
+          "version": "1.0.1",
           "files": [
             "skills/ads/packs/video-ad-formats/create-apple-notes-mockup/SKILL.md",
             "skills/ads/packs/video-ad-formats/create-apple-notes-mockup/apple-notes-skill-build.html",
@@ -10420,7 +10420,7 @@
           "name": "render-ios-keyboard",
           "description": "Render a static iOS QWERTY keyboard as inline HTML+CSS sized for the 750-wide 9:16 stage. Includes the 3-suggestion bar, alpha keys, shift/backspace, 123/emoji/space/return row, and the bottom globe+mic strip. No animation logic — slide up/down is the molecule's job (CSS transform on the .keyboard root).",
           "path": "skills/ads/packs/video-ad-formats/render-ios-keyboard",
-          "version": "1.0.0",
+          "version": "1.0.1",
           "files": [
             "skills/ads/packs/video-ad-formats/render-ios-keyboard/SKILL.md",
             "skills/ads/packs/video-ad-formats/render-ios-keyboard/generate.js",
@@ -10466,7 +10466,7 @@
           "name": "mix-master",
           "description": "Canonical short-form-ad audio mix in one FFmpeg pass. VO loudnorm + 3.0× per-clip + 2.0× mix, music 0.13 base + apad+afade, sidechain compress 20:1 @ 0.01, climax line +20%, optional video-to-music duration sync. Replaces the reactive multi-round tuning that cost v03 6+ passes.",
           "path": "skills/ads/packs/video-ad-formats/mix-master",
-          "version": "1.0.0",
+          "version": "1.0.1",
           "files": [
             "skills/ads/packs/video-ad-formats/mix-master/SKILL.md",
             "skills/ads/packs/video-ad-formats/mix-master/scripts/mix.sh",
