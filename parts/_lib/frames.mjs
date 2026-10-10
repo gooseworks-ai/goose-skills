@@ -45,6 +45,49 @@ function kitResize(src, sw, sh, dw, dh) {
   return out;
 }
 
+/**
+ * kitBestNcc over only the template pixels where `mask` is set: a badge's artwork is compared, not the
+ * outline it shares with every other badge of its shape.
+ */
+function kitBestMaskedNcc(img, iw, ih, tpl, mask, tw, th) {
+  const idx = [];
+  for (let i = 0; i < tw * th; i++) if (mask[i] >= 128) idx.push(i);
+  const n = idx.length;
+  if (n < 16) return { score: 0, x: 0, y: 0 };
+  let tMean = 0;
+  for (const i of idx) tMean += tpl[i];
+  tMean /= n;
+  const t = new Float64Array(n);
+  const off = new Int32Array(n);
+  let tNorm = 0;
+  idx.forEach((i, j) => {
+    t[j] = tpl[i] - tMean;
+    tNorm += t[j] * t[j];
+    off[j] = Math.floor(i / tw) * iw + (i % tw);
+  });
+  if (tNorm < 1e-6) return { score: 0, x: 0, y: 0 };
+  let best = { score: 0, x: 0, y: 0 };
+  for (let y = 0; y + th <= ih; y++) {
+    for (let x = 0; x + tw <= iw; x++) {
+      const base = y * iw + x;
+      let sum = 0;
+      let sq = 0;
+      let cross = 0;
+      for (let j = 0; j < n; j++) {
+        const v = img[base + off[j]];
+        sum += v;
+        sq += v * v;
+        cross += v * t[j];
+      }
+      const varI = sq - (sum * sum) / n;
+      if (varI < 1e-6) continue;
+      const score = Math.abs(cross) / Math.sqrt(varI * tNorm);
+      if (score > best.score) best = { score, x, y };
+    }
+  }
+  return best;
+}
+
 /** The best absolute normalised correlation of `tpl` (tw x th) anywhere in `img` (iw x ih), and where. */
 function kitBestNcc(img, iw, ih, tpl, tw, th) {
   const n = tw * th;
@@ -121,11 +164,23 @@ async function kitLogoTemplate(ctx, logo, lw) {
   }
   const mode = transparent > lw * lh * 0.05 ? 'mark' : 'image';
   // A logo with transparency is matched by its shape, and then by its picture laid on white and on black:
-  // a shape alone misses a logo whose own drawing (a letter on a tile) is what shows. A logo that is mostly
-  // opaque (a tile with round corners) has no telling shape, so only its picture counts.
-  const shaped = transparent > lw * lh * 0.25;
-  const sources = mode === 'image' ? [gray] : shaped ? [alpha, onWhite, onBlack] : [onWhite, onBlack];
-  return { mode, src: sources[0], sources, lw, lh };
+  // a shape alone misses a logo whose own drawing (a letter on a tile) is what shows. Whether the shape tells
+  // is judged inside the drawn part, past any clear padding: a badge or a tile with round corners is mostly
+  // opaque there, has no telling shape, and only its picture counts.
+  let [bx0, by0, bx1, by1] = [lw, lh, -1, -1];
+  for (let y = 0; y < lh; y++) {
+    for (let x = 0; x < lw; x++) {
+      if (alpha[y * lw + x] < 16) continue;
+      [bx0, by0, bx1, by1] = [Math.min(bx0, x), Math.min(by0, y), Math.max(bx1, x), Math.max(by1, y)];
+    }
+  }
+  let clear = 0;
+  for (let y = by0; y <= by1; y++) for (let x = bx0; x <= bx1; x++) if (alpha[y * lw + x] < 250) clear++;
+  const drawn = Math.max(1, (bx1 - bx0 + 1) * (by1 - by0 + 1));
+  const shaped = bx1 >= bx0 && clear > drawn * 0.25;
+  // A mostly opaque logo (a badge, a tile) is matched on its artwork inside its own outline.
+  const sources = mode === 'image' ? [{ tpl: gray }] : shaped ? [{ tpl: alpha }, { tpl: onWhite }, { tpl: onBlack }] : [{ tpl: gray, mask: alpha }];
+  return { mode, src: sources[0].mask ? onWhite : sources[0].tpl, sources, lw, lh };
 }
 
 /**
@@ -223,19 +278,23 @@ export async function kitLogoScoreInBox(ctx, video, logo, times, frameW, frameH,
     frames.push({ t, img: Float64Array.from(raw) });
   }
   let best = { score: 0, box: null };
-  for (const tplSrc of sources) {
-    // A turned template's corners take the template's own edge (nothing, for a shape).
+  for (const { tpl: tplSrc, mask: maskSrc } of sources) {
+    // A turned template's corners take the template's own edge (nothing, for a shape), and no mask.
     let fill = 0;
     for (let x = 0; x < lw; x++) fill += tplSrc[x] + tplSrc[(lh - 1) * lw + x];
     fill /= 2 * lw;
     const templates = new Map();
     const tplAt = (tw, th, deg) => {
       const key = `${tw}x${th}@${deg}`;
-      if (!templates.has(key)) templates.set(key, kitRotate(kitResize(tplSrc, lw, lh, tw, th), tw, th, deg, fill));
+      if (!templates.has(key)) {
+        const tpl = kitRotate(kitResize(tplSrc, lw, lh, tw, th), tw, th, deg, fill);
+        templates.set(key, { tpl, mask: maskSrc ? kitRotate(kitResize(maskSrc, lw, lh, tw, th), tw, th, deg, 0) : null });
+      }
       return templates.get(key);
     };
     const at = (img, t, tw, th, deg) => {
-      const m = kitBestNcc(img, iw, ih, tplAt(tw, th, deg), tw, th);
+      const { tpl, mask } = tplAt(tw, th, deg);
+      const m = mask ? kitBestMaskedNcc(img, iw, ih, tpl, mask, tw, th) : kitBestNcc(img, iw, ih, tpl, tw, th);
       if (m.score > best.score) {
         best = { score: m.score, t, angle: deg, box: { x: Math.round(x0 + m.x / k), y: Math.round(y0 + m.y / k), w: Math.round(tw / k), h: Math.round(th / k) } };
       }
