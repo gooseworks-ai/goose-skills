@@ -68,6 +68,10 @@ export const manifest = {
       plate: { description: 'The notification cascade\'s desk photo.', ...file('image', ['image/png', 'image/jpeg', 'image/webp']) },
       pacing: { description: "The skin's named pacing (Apple Notes: chars_per_second, min_type_seconds, first_pause_seconds, between_pause_seconds, last_pause_seconds, hold_seconds; the cascade: first_arrival_seconds, arrival_every_seconds, clear_after_seconds, resolution_hold_seconds, ending_after_seconds).", type: 'object', additionalProperties: { type: 'number', minimum: 0 } },
       ending: { description: 'The end card clip (an html-frames step) the chat crossfades into.', ...file('video') },
+      ending_timeline: {
+        description: "The end card step's timeline. Its logo box (safe_zones use logo) is carried onto the chat's timeline, placed as the card is joined, so the final check looks for the logo where the card draws it.",
+        ...timeline,
+      },
       ending_scenes: { description: 'How many of the last scenes are the end card\'s. Default 0.', type: 'integer', minimum: 0, maximum: 3 },
       crossfade_ms: { description: 'Crossfade into the end card, rounded to whole frames; under one frame is a straight cut. Default 300.', type: 'integer', minimum: 0, maximum: 2000 },
       fps: { description: 'Default 30.', type: 'integer', minimum: 10, maximum: 60 },

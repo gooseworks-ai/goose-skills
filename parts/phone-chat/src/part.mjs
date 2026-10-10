@@ -5,7 +5,8 @@
 // the screen at any movie time; the part steps it frame by frame in the kit's
 // Chromium (fixed output frames, so browser start-up or machine speed never
 // changes a frame), lays the skin's original sounds on their reveal frames,
-// and crossfades into the style's end card clip.
+// and crossfades into the style's end card clip, keeping the logo box the
+// card's step declared.
 import { readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitFfmpeg, kitNum, kitStopIfAborted } from '../../_lib/part.mjs';
@@ -134,6 +135,23 @@ async function renderPage(ctx, html, { width, height, fps, total, skin, events }
   return silent;
 }
 
+/**
+ * The logo box the end card's step declared, moved onto the chat's picture the way the join scales and
+ * crops the card (cover, centred), so the final check looks for the logo where the card draws it.
+ */
+function endingLogoZone(endTimeline, width, height) {
+  const z = endTimeline && (endTimeline.safe_zones || []).find((zone) => zone.use === 'logo');
+  const [ew, eh] = endTimeline ? [endTimeline.width, endTimeline.height] : [0, 0];
+  if (!z || !(ew > 0 && eh > 0)) return null;
+  const k = Math.max(width / ew, height / eh);
+  const [ox, oy] = [(ew * k - width) / 2, (eh * k - height) / 2];
+  const x0 = Math.max(0, Math.floor(z.x * k - ox));
+  const y0 = Math.max(0, Math.floor(z.y * k - oy));
+  const x1 = Math.min(width, Math.ceil((z.x + z.w) * k - ox));
+  const y1 = Math.min(height, Math.ceil((z.y + z.h) * k - oy));
+  return x1 - x0 >= 4 && y1 - y0 >= 4 ? { use: 'logo', x: x0, y: y0, w: x1 - x0, h: y1 - y0 } : null;
+}
+
 export async function run(inputs, ctx) {
   const manifest = await kitCheckInputs(ctx, inputs);
   const [width, height] = SIZE[inputs.aspect ?? '9:16'];
@@ -237,5 +255,7 @@ export async function run(inputs, ctx) {
   if (ending) endScenes.forEach((s, i) => scenes.push({ id: s.id == null ? 'end-card' : chatSceneId(s, chatScenes.length + i), start_s: ending.start_s, end_s: ending.end_s }));
   const timeline = { duration_s: +total.toFixed(3), width, height, fps, scenes, speech: [] };
   if (ending) timeline.end_card = ending;
+  const logoZone = ending ? endingLogoZone(inputs.ending_timeline, width, height) : null;
+  if (logoZone) timeline.safe_zones = [logoZone];
   return kitCheckOutputs(ctx, manifest, { video, seconds: +total.toFixed(3), timeline });
 }
