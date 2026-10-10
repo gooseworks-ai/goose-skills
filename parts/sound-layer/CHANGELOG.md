@@ -1,5 +1,9 @@
 # sound-layer
 
+## 1.0.3
+
+- Holds -1 dBTP on every bed: every chain fades the first 20 ms in (a cut starting at full level made the AAC encoder's first frame overshoot by up to 4 dB), corrections re-level the source instead of re-encoding their own AAC, their limiter ceiling starts at -2 dBFS and drops by any measured overshoot, the gain follows the measured loudness slope, and a last gain cut holds the ceiling within the check's +/-2 LU instead of failing.
+
 ## 1.0.2
 
 - Sets a stereo channel layout after loudnorm and the limiter, so ffmpeg 6.0 can encode the levelled sound.
