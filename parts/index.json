@@ -1813,7 +1813,7 @@
       "determinism": "pure",
       "path": "parts/phone-chat/1.2.0",
       "files": {
-        "README.md": "6ddd22b5a018cd99dbbf68a17b03f1cc4b16d4f9dd0b6b509e313ed87a384bc1",
+        "README.md": "a594d836e6e85a3c54015ddbf822dd2902db345965844d5ac443ce9c1a9388ff",
         "assets/fonts/InterVariable-OFL.txt": "262481e844521b326f5ecd053e59b98c8b2da78c8ee1bdbb6e8174305e54935a",
         "assets/fonts/InterVariable.ttf": "4989b125924991b90d05b2d16e0e388c48f7d5bb8b30539bbf9c755278d0ccaf",
         "assets/fonts/NotoColorEmoji-OFL.txt": "500bb1ccf43df7bbb522112f9133a52b16e1c35e809632f5d8609b179152de5b",
@@ -1832,8 +1832,8 @@
         "assets/skins/imessage/sfx/imessage-send.mp3": "67a51c884a10e16efb64dd3cdf0bfe7123b08205daafe490e92601e38f86a7b2",
         "assets/skins/notification-cascade/sfx/pop.wav": "fc8424810217c84489722813779bb39a46ff15011b00cce9ce8cd2f0e40dd54a",
         "assets/skins/notification-cascade/sfx/swoosh.wav": "753b05dc56e21b4f6e33ffcc0c631e8a63b0e1d385f74d7743672b57dd1e62f4",
-        "part.json": "f3ac37024992d6ad0f2bc243552aac82cde164d2706bd7d1e39c71625d3d9b93",
-        "part.mjs": "db1f8efff3c512698cf078e8666aad00d0e44f348b596da40ca802664de6c9bf"
+        "part.json": "771278068399e0a6d0a9f67297bc3346e80d0e5aca4fb59f4c1539fb9f920bb1",
+        "part.mjs": "a9a72abd2d87a957809c595bdd1eaa5943c01cd10d1629bf99a42f46a8223011"
       },
       "models": []
     },

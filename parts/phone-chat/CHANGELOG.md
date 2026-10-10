@@ -3,6 +3,8 @@
 ## 1.2.0
 
 - The end card step's logo box comes through: with `ending_timeline` (the card step's timeline) the logo box it declared is placed on the chat's timeline as the card is joined, so the final check looks for the logo where the card draws it.
+- A scene's picture text is a photo only when it names a chosen product (its id or name, or two of its name's words) or asks for a photo or picture of the product with one chosen product; any other text describes the shot and draws nothing (it put a photo on every message before).
+- iMessage: a chat that opens on the owner typing starts typing at once and sends the first message by 1.2 s (`first_send_by`), so the opening is never still for the final check's 1.5 s.
 - The notification cascade's pop is heard over a music bed: it is driven into a -7 dBFS limit, which turns the click (its peak 16 dB over its first quarter second) into a dense pop that survives the sound layer, and the swoosh peaks near -8 dBFS. The picture and the other skins are unchanged.
 
 ## 1.1.5

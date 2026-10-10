@@ -16,6 +16,9 @@ const IM_TIMING = {
   send_hold: 0.1,
   attach_dwell: 3.6,
   tail_hold: 1,
+  // When the chat opens on the owner typing, the first message is sent by then: typing in the composer
+  // barely moves the picture, and the final check fails an opening still for over 1.5 s.
+  first_send_by: 1.2,
   char_per_sec: 15,
   min_type: 0.5,
   max_type: 2,
@@ -190,10 +193,13 @@ function imTimeline(thread, overrides, fps) {
       continue;
     }
     const sent = m.from === self;
+    const opening = !events.length;
     if (sent && m.type === 'text') {
-      t += T.self_pre;
+      // The opening message starts typing at once and types fast enough to be sent by first_send_by.
+      t = opening ? Math.min(t, 0.1) : t + T.self_pre;
       const chars = imGraphemes(m.text).length;
-      const dur = Math.min(T.max_type, Math.max(T.min_type, chars / T.char_per_sec));
+      const paced = Math.min(T.max_type, Math.max(T.min_type, chars / T.char_per_sec));
+      const dur = opening && T.first_send_by ? Math.min(paced, Math.max(T.min_type, T.first_send_by - t - T.send_hold)) : paced;
       add(t, { kind: 'composer', text: m.text, dur });
       t += dur + T.send_hold;
     }
