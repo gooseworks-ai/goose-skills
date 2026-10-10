@@ -1044,6 +1044,59 @@
       ]
     },
     {
+      "id": "music-elevenlabs",
+      "version": "1.0.2",
+      "interface": 1,
+      "kind": "generate_music",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "loudnorm",
+            "aresample",
+            "aformat",
+            "afade"
+          ],
+          "encoders": [
+            "aac"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "elevenlabs",
+            "model": "music_v1"
+          }
+        ],
+        "disk_mb": 30
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "second",
+        "measure": {
+          "from": "/seconds",
+          "as": "value"
+        },
+        "rates_usd": {
+          "music_v1": 0.0025
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/music-elevenlabs/1.0.2",
+      "files": {
+        "README.md": "eab90ee709f096e63704f78a912255d0bd17a3218c4f2df218198e6afc8ab6b5",
+        "part.json": "b4c9e715d0509494e4a3f58b1fbed92a6fcf1d799e2e8601fe0214251c1a89e8",
+        "part.mjs": "db6c66e7678adc65b099ce44244211bb1724f7fa67796fc40be4b4ac166ca83a"
+      },
+      "models": [
+        {
+          "provider": "elevenlabs",
+          "model": "music_v1"
+        }
+      ]
+    },
+    {
       "id": "phone-chat",
       "version": "1.0.0",
       "interface": 1,

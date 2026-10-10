@@ -2,7 +2,7 @@
 // create-music-elevenlabs atom: the same request (POST /v1/music with prompt,
 // music_length_ms and force_instrumental, plus the model_id the line checks),
 // the same finish (skip any sparse intro, loudnorm to -16 LUFS / -1.5 dBTP, a
-// 0.5 s fade at the tail), ordered through ctx.line. The prompt is the style's
+// 0.5 s fade at the tail, saved as 48 kHz stereo), ordered through ctx.line. The prompt is the style's
 // fixed music brief plus the plan's mood; a plan with no mood gets no bed and
 // orders nothing.
 import { join } from 'node:path';
@@ -39,7 +39,8 @@ export async function run(inputs, ctx) {
     '-i',
     raw.path,
     '-af',
-    `loudnorm=I=${target}:TP=-1.5:LRA=11,afade=t=out:st=${kitNum(Math.max(0, length - 0.5))}:d=0.5`,
+    // loudnorm resamples to 192 kHz; without a resample the bed was saved at 96 kHz with no named layout.
+    `loudnorm=I=${target}:TP=-1.5:LRA=11,aresample=48000,aformat=channel_layouts=stereo,afade=t=out:st=${kitNum(Math.max(0, length - 0.5))}:d=0.5`,
     '-t',
     kitNum(length),
     ...ctx.tools.encodeArgs('aac'),
