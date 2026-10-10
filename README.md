@@ -161,7 +161,10 @@ cd goose-skills
 node scripts/validate-skills.js  # Validate SKILL.md + skill.meta.json contract
 node scripts/build-index.js      # Generate skills-index.json
 node bin/goose-skills.js list    # Test locally
+npm run test:parts               # Part tests (needs ffmpeg; browser tests need playwright-core)
 ```
+
+The part tests run on the GooseWorks kit's own ffmpeg build when it is installed (`~/.gooseworks/kit/bin/ffmpeg-b<version>`), else the one on your PATH; set `KIT_FFMPEG` to a binary path (or `ffmpeg` for the PATH one, with `KIT_FFPROBE` if ffprobe is elsewhere) to choose. Every run prints the ffmpeg it used. The browser tests take `PLAYWRIGHT_CORE_PATH` (a playwright-core folder) and `KIT_CHROMIUM` (a Chromium binary). CI sets `KIT_FFMPEG=ffmpeg`.
 
 ---
 

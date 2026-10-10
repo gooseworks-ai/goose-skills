@@ -25,6 +25,11 @@ const MIN_SHORT_SIDE_PX = 720;
 const BLACK_MAX_S = 0.3;
 const OPENING_STILL_MAX_S = 1.5;
 const HELD_PICTURE_MAX_S = 4.0;
+// A held picture inside one scene is that scene's own still; one that runs this far past a scene start
+// means the next scene never showed.
+const SCENE_EDGE_S = 0.2;
+// sound-layer's line: at or below this a cut is silent (it passes such a cut through unlevelled).
+const SILENT_LUFS = -50;
 const SERVER = new Set(['plays', 'length', 'size', 'sound', 'captions']);
 // review-finished-ad: the platform bands at 1080x1920, the logo match floors and the favicon guard.
 const PLATFORM_TOP = 220;
@@ -199,7 +204,7 @@ export async function run(inputs, ctx) {
   // Sound: a cut with speech must have it at -14 LUFS within 2. A silent cut with no speech planned is a
   // style whose music is optional with none chosen (audio-mix gives it a silent track): nothing to measure.
   const lufs = m.has_audio ? await loudness(ctx, video.path) : null;
-  const silent = lufs === null || lufs <= -70;
+  const silent = lufs === null || !Number.isFinite(lufs) || lufs <= SILENT_LUFS;
   if (silent && expect.speech === 'none') add('sound', 'not_applicable', { found: m.has_audio ? 'silent' : 'no sound track' });
   else if (silent) {
     add('sound', 'fail', { message: 'The video has no sound.', expected: `${TARGET_LUFS} LUFS`, found: 'no sound', fix: { slot: 'sound' } });
@@ -224,7 +229,15 @@ export async function run(inputs, ctx) {
 
   const bodyEnd = timeline.end_card ? timeline.end_card.start_s : d;
   const opening = freezes.find(([s, e]) => s <= 0.3 && e - s > OPENING_STILL_MAX_S);
-  const held = freezes.find(([s, e]) => s < bodyEnd && Math.min(e, bodyEnd) - s > HELD_PICTURE_MAX_S);
+  // A still scene may hold as long as it lasts, unless the style asks for moving footage or the timeline
+  // names no scenes: then any hold over the limit fails, as does one that runs on past a scene start.
+  const strictHold = (expect.qc_flags || []).includes('footage_moves') || !(timeline.scenes || []).length;
+  const sceneStarts = (timeline.scenes || []).map((sc) => sc.start_s);
+  const held = freezes.find(([s, e]) => {
+    const end = Math.min(e, bodyEnd);
+    if (!(s < bodyEnd && end - s > HELD_PICTURE_MAX_S)) return false;
+    return strictHold || sceneStarts.some((t) => s < t - SCENE_EDGE_S && end > t + SCENE_EDGE_S);
+  });
   if (opening) add('frozen_frames', 'fail', { message: `The opening picture is still for ${(opening[1] - opening[0]).toFixed(1)} seconds.`, expected: `the opening moves within ${OPENING_STILL_MAX_S} s`, found: +(opening[1] - opening[0]).toFixed(2) });
   else if (held) add('frozen_frames', 'fail', { message: `The picture is frozen from ${held[0].toFixed(1)} to ${held[1].toFixed(1)} seconds.`, expected: `no held picture over ${HELD_PICTURE_MAX_S} s before the end card`, found: +(Math.min(held[1], bodyEnd) - held[0]).toFixed(2) });
   else add('frozen_frames', 'pass');

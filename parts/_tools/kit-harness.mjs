@@ -1,6 +1,12 @@
 // Test harness: a PartContext as the kit core hands it to a part
 // (parts/_contract/part-interface.d.ts), backed by the local ffmpeg and,
 // when present, a local playwright-core. Tests only; parts never import it.
+//
+// Which ffmpeg: KIT_FFMPEG (a binary path, or `ffmpeg` for the one on PATH; ffprobe beside it, or
+// KIT_FFPROBE), else the kit's own build at ~/.gooseworks/kit/bin/ffmpeg-b<version> (newest), else PATH.
+// CI sets KIT_FFMPEG=ffmpeg (Homebrew's build); on a machine with the kit installed the tests meet the
+// kit's ffmpeg 6.0 by default. _tools/kit-tools.test.mjs prints the choice in every run's output.
+// Browser: PLAYWRIGHT_CORE_PATH and KIT_CHROMIUM (see findPlaywright and findChromium).
 import { createHash } from 'node:crypto';
 import { spawn } from 'node:child_process';
 import { mkdirSync, mkdtempSync, readFileSync, statSync, existsSync, readdirSync } from 'node:fs';
@@ -44,14 +50,52 @@ export function sha256(buf) {
 
 const STDERR_TAIL = 16 * 1024 * 1024;
 
+const KIT_BIN = join(homedir(), '.gooseworks', 'kit', 'bin');
+
+/**
+ * The ffmpeg the tests run: KIT_FFMPEG (a binary path, or `ffmpeg` for the one on PATH, with ffprobe
+ * beside it or KIT_FFPROBE), else the kit's own build (~/.gooseworks/kit/bin/ffmpeg-b<version>, newest
+ * first), else PATH. The kit's build is what customers run, so the tests should meet its quirks first.
+ */
+export function kitTools() {
+  const env = process.env.KIT_FFMPEG;
+  if (env) {
+    const probeBin = process.env.KIT_FFPROBE || (env.includes('/') ? join(dirname(env), 'ffprobe') : 'ffprobe');
+    return { ffmpeg: env, ffprobe: probeBin, source: 'KIT_FFMPEG' };
+  }
+  if (existsSync(KIT_BIN)) {
+    const builds = readdirSync(KIT_BIN)
+      .map((d) => ({ d, v: /^ffmpeg-b(\d+)\.(\d+)\.(\d+)$/.exec(d) }))
+      .filter((x) => x.v && existsSync(join(KIT_BIN, x.d, 'ffmpeg')) && existsSync(join(KIT_BIN, x.d, 'ffprobe')))
+      .sort((a, b) => b.v[1] - a.v[1] || b.v[2] - a.v[2] || b.v[3] - a.v[3]);
+    if (builds.length) return { ffmpeg: join(KIT_BIN, builds[0].d, 'ffmpeg'), ffprobe: join(KIT_BIN, builds[0].d, 'ffprobe'), source: 'kit' };
+  }
+  return { ffmpeg: 'ffmpeg', ffprobe: 'ffprobe', source: 'PATH' };
+}
+
+const TOOLS = kitTools();
+
+/** The selected ffmpeg and ffprobe, where they came from and ffmpeg's version (null when it cannot run). */
+export async function kitToolsReport() {
+  let version = null;
+  try {
+    const { stdout } = await run('ffmpeg', ['-version']);
+    version = (/ffmpeg version (\S+)/.exec(stdout) || [])[1] || null;
+  } catch {
+    // Reported as null: the media tests skip and say why.
+  }
+  return { ...TOOLS, version };
+}
+
 /**
  * Runs ffmpeg or ffprobe. stdout is kept whole (ffprobe JSON, raw frames); stderr is streamed and only
  * its last 16 MB kept, so a chatty ffmpeg build (Ubuntu's ffmpeg 6 warns per packet) can never overflow a
  * buffer, while the summaries parts read at the end (EBU R128, detect filters) are still there.
  */
 export function run(bin, args, { timeoutMs = 300000, signal } = {}) {
+  const exe = bin === 'ffmpeg' || bin === 'ffprobe' ? TOOLS[bin] : bin;
   return new Promise((resolvePromise, reject) => {
-    const child = spawn(bin, args, { stdio: ['ignore', 'pipe', 'pipe'], signal });
+    const child = spawn(exe, args, { stdio: ['ignore', 'pipe', 'pipe'], signal });
     const out = [];
     let err = '';
     child.stdout.on('data', (b) => out.push(b));
@@ -238,9 +282,9 @@ export function makeCtx({ partDir, manifest, workDir, stepId = 'step', line, bro
       return digest.readUInt32BE(0);
     },
     tools: {
-      ffmpeg: 'ffmpeg',
-      ffprobe: 'ffprobe',
-      toolchain: 'test-local',
+      ffmpeg: TOOLS.ffmpeg,
+      ffprobe: TOOLS.ffprobe,
+      toolchain: `test-${TOOLS.source}`,
       exec: (bin, args, options = {}) => {
         if (bin !== 'ffmpeg' && bin !== 'ffprobe') throw new Error(`exec refuses ${bin}`);
         return run(bin, args, { timeoutMs: options.timeoutMs, signal: controller.signal });

@@ -117,6 +117,9 @@ jobs:
 
       - name: Part tests (every one must run; a skip fails the job)
         shell: bash
+        # Homebrew's ffmpeg on PATH, named so the harness never looks for a kit build here.
+        env:
+          KIT_FFMPEG: ffmpeg
         run: |
           npm run test:parts 2>&1 | tee "$RUNNER_TEMP/part-tests.log"
           node scripts/require-all-tests-ran.js "$RUNNER_TEMP/part-tests.log"
