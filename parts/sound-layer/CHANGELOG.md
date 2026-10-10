@@ -1,5 +1,9 @@
 # sound-layer
 
+## 1.0.4
+
+- loudnorm is never let go dynamic: when the first pass shows linear mode is not possible (the gain to -14 LUFS would push the true peak past -1.5 dBTP), or the second pass reports anything but linear, the cut is levelled by a plain gain into the oversampled limiter instead. Dynamic loudnorm rode the gain down around each loud sound and flattened a chat's message sounds into the bed: on a ChatGPT cut over a synthetic bed the send rose 3.1 dB after 1.0.3 and 4.8 dB after 1.0.4 (the final check needs 4). The limiter still pulls down any peak over its ceiling, so a sound with a very sharp click needs to be dense at its source.
+
 ## 1.0.3
 
 - Holds -1 dBTP on every bed: every chain fades the first 20 ms in (a cut starting at full level made the AAC encoder's first frame overshoot by up to 4 dB), corrections re-level the source instead of re-encoding their own AAC, and the limiter's ceiling starts at -2 dBFS and drops by any overshoot measured after the encode.
