@@ -1,5 +1,10 @@
 # check-layer
 
+## 1.2.0
+
+- The logo is looked for where it is drawn: when the timeline declares a logo box (`safe_zones` use logo), the box plus a margin is cut from the full-resolution frame and matched over sizes up to the box and small turns, so a logo drawn small, in a badge or on a tilted card is measured. With no box declared, a logo the whole-frame search misses is a warning (`warn`), not a failure, unless the brand layer is on (`expect.layers.brand`), the one fix the failure could name.
+- Every failed or warned check carries its own `message` in plain words, beside `reasons`.
+
 ## 1.1.2
 
 - A cut at or below -50 LUFS counts as silent, the sound layer's line: a speech-free style with no music is not failed for sound.

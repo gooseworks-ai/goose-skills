@@ -124,22 +124,27 @@ test("the brand's own logo is found on the end card and another is not; the styl
   assert.equal(status(right)['flag:footage_moves'], 'pass');
   assert.equal(status(right)['flag:text_legible'], 'not_applicable', 'a flag that needs eyes is reported as not checked');
   const other = await fileRef(await makeLogo(join(w, 'other.png'), '#20a040', 300, 300), 'image');
+  // With no box declared for the logo, a miss is a warning unless the brand layer could fix it.
   const wrong = await mod.run(await layerInputsFor(video, { brand: { ...brand, logo: other }, expect, timeline }), ctx);
-  assert.equal(status(wrong).logo, 'fail');
-  assert.equal(wrong.verdict.pass, false);
+  assert.equal(status(wrong).logo, 'warn');
+  assert.ok(!wrong.verdict.reasons.some((r) => r.check === 'logo'), 'a warning is not a failure');
+  const wrongWithBrand = await mod.run(await layerInputsFor(video, { brand: { ...brand, logo: other }, expect: { ...expect, layers: { brand: true } }, timeline }), ctx);
+  assert.equal(status(wrongWithBrand).logo, 'fail');
+  assert.ok(wrongWithBrand.verdict.reasons.some((r) => r.check === 'logo'));
+  assert.ok(wrongWithBrand.verdict.checks.find((c) => c.code === 'logo').message, 'a failed check carries its words');
   // logo_visible is checked on its own flag, even when the style does not end on a card.
   const noCard = await mod.run(await layerInputsFor(video, { brand, expect: { end_card: false, qc_flags: ['logo_visible'] } }), ctx);
   assert.equal(status(noCard)['flag:logo_visible'], 'pass');
   assert.equal(status(noCard).logo, 'not_applicable');
   const elsewhere = await mod.run(await layerInputsFor(video, { brand: { ...brand, logo: other }, expect: { end_card: false, qc_flags: ['logo_visible'] } }), ctx);
-  assert.equal(status(elsewhere)['flag:logo_visible'], 'fail');
+  assert.equal(status(elsewhere)['flag:logo_visible'], 'warn');
   // logo_visible looks across the whole video, not only a marked end card: a logo shown earlier in its zone counts.
   const early = join(w, 'early.mp4');
   await run('ffmpeg', ['-hide_banner', '-nostdin', '-loglevel', 'error', '-y', '-i', card.video.path, '-i', body, '-filter_complex', '[0:v][0:a][1:v][1:a]concat=n=2:v=1:a=1[v][a]', '-map', '[v]', '-map', '[a]', '-c:v', 'libx264', '-preset', 'ultrafast', '-pix_fmt', 'yuv420p', '-c:a', 'aac', early]);
   const earlyCut = await fileRef(early, 'video');
   const markedLater = await mod.run(await layerInputsFor(earlyCut, { brand, expect: { end_card: false, qc_flags: ['logo_visible'] }, timeline: { end_card: { start_s: 4, end_s: 5 } } }), ctx);
   assert.equal(status(markedLater)['flag:logo_visible'], 'pass', 'the logo shown at the start is visible');
-  // A declared logo zone bounds where the match may sit.
+  // A declared logo box is where the match runs: not there, it fails.
   const top = { use: 'logo', x: 0, y: 0, w: 720, h: 200 };
   const middle = { use: 'logo', x: 0, y: 200, w: 720, h: 700 };
   const outOfZone = await mod.run(await layerInputsFor(video, { brand, expect, timeline: { ...timeline, safe_zones: [top] } }), ctx);
