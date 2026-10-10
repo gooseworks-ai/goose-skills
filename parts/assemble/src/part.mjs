@@ -7,6 +7,7 @@
 // are the layers' jobs, not this step's.
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitDuration, kitFfmpeg, kitNum } from '../../_lib/part.mjs';
+import { kitMediaLength } from '../../_lib/length.mjs';
 
 const SHORT_TOLERANCE_S = 0.1;
 
@@ -39,7 +40,7 @@ export async function run(inputs, ctx) {
       if (!clip.seconds) throw ctx.error('bad_input', `clips[${k}] is a still and needs seconds`);
       seconds = clip.seconds;
     } else {
-      const length = await kitDuration(ctx, media);
+      const length = await kitMediaLength(ctx, media);
       seconds = clip.seconds ?? length - start;
       if (start + seconds > length + SHORT_TOLERANCE_S) {
         throw ctx.error('bad_input', `clips[${k}] needs ${kitNum(start + seconds, 2)}s of a ${kitNum(length, 2)}s clip`);

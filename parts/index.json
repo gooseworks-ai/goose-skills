@@ -96,6 +96,53 @@
       "models": []
     },
     {
+      "id": "assemble",
+      "version": "1.0.2",
+      "interface": 1,
+      "kind": "compose",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "fps",
+            "scale",
+            "crop",
+            "pad",
+            "setsar",
+            "tpad",
+            "trim",
+            "setpts",
+            "format",
+            "concat",
+            "aresample",
+            "aformat",
+            "apad",
+            "atrim",
+            "anullsrc"
+          ],
+          "encoders": [
+            "libx264",
+            "aac"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 500
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/assemble/1.0.2",
+      "files": {
+        "README.md": "4676d6da1818f552cf6a2cf642c5ca2429715e5f16c04a1852ae1406a06ecf81",
+        "part.json": "d8fb7090a640488824fbc82df3df2ff9359855b406f0214c10b20dfd05acb972",
+        "part.mjs": "e002a81e23b7a43f6857a63ea39910faafbca12cbb142078d3056420f4d4013c"
+      },
+      "models": []
+    },
+    {
       "id": "audio-mix",
       "version": "1.0.0",
       "interface": 1,
