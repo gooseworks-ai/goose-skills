@@ -3,13 +3,13 @@ name: review-ugc-render
 description: Mandatory pre-publish review gate for a UGC video render. Transcribes the finished render's AUDIO with Whisper and word-diffs it against the approved spoken script, then gates pinning the final render (video_project_upsert patch.final_render_id) — blocking a render whose generated audio mis-voices a word (e.g. the approved "human-vetted" spoken as "human witted"), says a different number or brand name, flips a negation, drops an approved phrase, or comes back silent. Correct speech written differently ("5mg" said "five milligrams", "30%" said "thirty percent", a spoken URL, "don't" said "do not", "braxleybands" said "braxley bands", a confirmed pronunciation like "AG1" said "A G one") passes. Runnable, gating counterpart to content-goose's review-transcript-integrity atom. Every ugc-video-formats recipe runs this after render and BEFORE pinning the final render.
 owner: akhil
 status: superseded
-version: 2.0.2
+version: 2.0.3
 created: 2026-07-04
 updated: 2026-10-06
-superseded_by: check-layer@1.1.2
+superseded_by: check-layer@1.2.0
 ---
 
-> **Superseded:** the video kit now does this with the check-layer part, version 1.1.2, in the parts folder of this repository. It runs the same speech-against-script rules on every video with speech: numbers, units, negations and brand names must match, and confirmed pronunciations count as the written name. This atom stays, unchanged in behaviour, for skills outside the kit until they move; its scripts still run.
+> **Superseded:** the video kit now does this with the check-layer part, version 1.2.0, in the parts folder of this repository. It runs the same speech-against-script rules on every video with speech: numbers, units, negations and brand names must match, and confirmed pronunciations count as the written name. This atom stays, unchanged in behaviour, for skills outside the kit until they move; its scripts still run.
 
 # review-ugc-render
 

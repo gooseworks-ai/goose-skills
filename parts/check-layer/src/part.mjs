@@ -15,7 +15,7 @@ import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitFfmpeg } from '../../_lib/part.mjs';
 import { speechBuildAliases, speechReview } from '../../_lib/speech.mjs';
-import { kitLogoScore, kitMotion, kitWindowLevels } from '../../_lib/frames.mjs';
+import { kitLogoScore, kitLogoScoreInBox, kitMotion, kitWindowLevels } from '../../_lib/frames.mjs';
 
 const TARGET_LUFS = -14;
 const LUFS_TOLERANCE = 2;
@@ -42,8 +42,6 @@ const MIN_LOGO_AREA = 40000;
 // logo-equation-card's measure_motion gate, and the rise a message's sound makes over the moment before it.
 const FOOTAGE_MIN_MOTION = 1.5;
 const SOUND_RISE_DB = 4;
-// A logo match may sit this many pixels past its declared zone (the match grid is coarse).
-const LOGO_ZONE_SLACK = 12;
 const NUM = '-?\\d+(?:\\.\\d+)?(?:e-?\\d+)?';
 
 function ratioOf(aspect) {
@@ -162,6 +160,8 @@ export async function run(inputs, ctx) {
   const reasons = [];
   const add = (code, status, { message, expected, found, fix } = {}) => {
     const c = { code, status };
+    // A failed or warned check carries its own plain words: the kit reports the first failed check's message.
+    if (status === 'fail' || status === 'warn') c.message = message || 'The video did not pass one of the final checks.';
     if (found !== undefined) c.found = found;
     if (expected !== undefined) c.expected = expected;
     if (fix) c.fix = fix;
@@ -265,9 +265,14 @@ export async function run(inputs, ctx) {
 
   // The brand's real logo file (review-finished-ad's logo and favicon checks), measured two ways that never
   // share an answer: `logo` on the end card when the style ends on one, and `flag:logo_visible` anywhere in
-  // the video (the card included) when the style asks for it. A declared logo safe zone bounds the match.
+  // the video (the card included) when the style asks for it. When a step declared the box it drew the logo
+  // in, the match runs in that box at full resolution. Without one the whole frame is searched at low
+  // resolution, which misses a small, badged or tilted logo: then a miss is a warning unless the brand layer,
+  // the one fix it could name, is on (the kit does not say yet, so expect.layers is read when it comes).
   const wantsLogo = (expect.qc_flags || []).includes('logo_visible');
   const logo = inputs.brand.logo;
+  const logoZone = (timeline.safe_zones || []).find((z) => z.use === 'logo' && z.w > 0 && z.h > 0);
+  const brandSlotOn = !!(expect.layers && typeof expect.layers === 'object' && expect.layers.brand === true);
   let logoSize = null;
   const logoCheck = async (times) => {
     if (!logo) return { status: 'fail', message: 'The style asks for the logo, but the brand has no logo file.', expected: 'a logo file', found: 'none' };
@@ -276,19 +281,28 @@ export async function run(inputs, ctx) {
     if (long < MIN_LOGO_LONG_SIDE || (logoSize.width || 0) * (logoSize.height || 0) < MIN_LOGO_AREA) {
       return { status: 'fail', message: 'The logo file is favicon-sized and will be blurry.', expected: `at least ${MIN_LOGO_LONG_SIDE} px on the long side`, found: `${logoSize.width}x${logoSize.height}` };
     }
-    const match = await kitLogoScore(ctx, video.path, logo, times.filter((t) => t > 0 && t < d), m.width, m.height);
+    const at = times.filter((t) => t > 0 && t < d);
+    if (logoZone) {
+      const z = logoZone;
+      const match = await kitLogoScoreInBox(ctx, video.path, logo, at, m.width, m.height, z);
+      const floor = match.mode === 'mark' ? LOGO_MARK_MIN : LOGO_IMAGE_MIN;
+      if (match.score < floor) {
+        return { status: 'fail', message: "The brand's logo is not clear where the video draws it.", expected: `a match of at least ${floor} inside x ${z.x}-${z.x + z.w}, y ${z.y}-${z.y + z.h}`, found: match.score };
+      }
+      return { status: 'pass', found: match.score };
+    }
+    const match = await kitLogoScore(ctx, video.path, logo, at, m.width, m.height);
     const floor = match.mode === 'mark' ? LOGO_MARK_MIN : LOGO_IMAGE_MIN;
-    const zone = (timeline.safe_zones || []).find((z) => z.use === 'logo');
-    const b = match.box;
-    if (match.score < floor) return { status: 'fail', message: "The brand's logo is not found.", expected: `a match of at least ${floor}`, found: match.score };
-    if (zone && b && (b.x < zone.x - LOGO_ZONE_SLACK || b.y < zone.y - LOGO_ZONE_SLACK || b.x + b.w > zone.x + zone.w + LOGO_ZONE_SLACK || b.y + b.h > zone.y + zone.h + LOGO_ZONE_SLACK)) {
-      return { status: 'fail', message: 'The logo sits outside its safe zone.', expected: `inside x ${zone.x}-${zone.x + zone.w}, y ${zone.y}-${zone.y + zone.h}`, found: `${b.x},${b.y} ${b.w}x${b.h}` };
+    if (match.score < floor) {
+      return { status: brandSlotOn ? 'fail' : 'warn', message: "The brand's logo is not found.", expected: `a match of at least ${floor}`, found: match.score };
     }
     return { status: 'pass', found: match.score };
   };
   const logoAdd = (code, result) => {
     const { status, ...rest } = result;
-    return add(code, status, status === 'fail' ? { ...rest, fix: { slot: 'brand' } } : { found: rest.found });
+    if (status === 'fail') return add(code, status, { ...rest, fix: { slot: 'brand' } });
+    if (status === 'warn') return add(code, status, rest);
+    return add(code, status, { found: rest.found });
   };
   if (expect.end_card && logo) {
     const card = timeline.end_card;
@@ -346,6 +360,11 @@ export async function run(inputs, ctx) {
   }
 
   const pass = checks.every((c) => c.status !== 'fail');
-  ctx.log.info('check layer verdict', { pass, failed: checks.filter((c) => c.status === 'fail').map((c) => c.code), server_failed: reasons.filter((r) => SERVER.has(r.check)).length });
+  ctx.log.info('check layer verdict', {
+    pass,
+    failed: checks.filter((c) => c.status === 'fail').map((c) => c.code),
+    warned: checks.filter((c) => c.status === 'warn').map((c) => c.code),
+    server_failed: reasons.filter((r) => SERVER.has(r.check)).length,
+  });
   return kitCheckOutputs(ctx, manifest, { verdict: { pass, checks, reasons } });
 }

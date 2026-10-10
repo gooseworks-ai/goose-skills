@@ -4,7 +4,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'sound-layer',
-  version: '1.0.3',
+  version: '1.0.4',
   kind: 'mix',
   layer: 'sound',
   title: 'Sound layer',

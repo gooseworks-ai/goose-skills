@@ -3,7 +3,7 @@ import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { file, timeline } from '../../_tools/schemas.mjs';
 
-const VERSION = '1.1.5';
+const VERSION = '1.2.0';
 const folder = join(dirname(fileURLToPath(import.meta.url)), '..', VERSION);
 const walk = (dir) => readdirSync(dir).flatMap((n) => (statSync(join(dir, n)).isDirectory() ? walk(join(dir, n)) : [relative(folder, join(dir, n))]));
 const files = walk(folder).filter((f) => f !== 'part.json' && !f.endsWith('.DS_Store')).sort();
@@ -45,13 +45,13 @@ export const manifest = {
             id: { type: ['string', 'integer', 'null'] },
             line: text(2000),
             on_screen: text(2000),
-            picture: { anyOf: [{ type: 'null' }, { type: 'string', maxLength: 2000 }, file('image')] },
+            picture: { description: 'A file, or text: a photo only when the text names a chosen product or asks for its photo (see products, which also says what is refused); a description of the shot draws nothing.', anyOf: [{ type: 'null' }, { type: 'string', maxLength: 2000 }, file('image')] },
             image: { description: 'A picture the customer uploaded for this scene; shown before picture.', anyOf: [{ type: 'null' }, file('image')] },
           },
         },
       },
       products: {
-        description: "plan.products: a scene's picture names one by id or name (or, with one chosen product, any picture means its photo).",
+        description: "plan.products: a scene's picture shows a product's first photo when it names that product (its id, its name, or two of its name's words, all of a one-word name; short names count), or asks for a photo and points at nothing else (\"Show its photo\") with exactly one chosen product that has photos. A picture that names a product with no photo, or asks for a photo while several chosen products have photos, is refused. Any other picture text describes the shot and draws nothing.",
         type: 'array',
         maxItems: 12,
         items: {
@@ -68,6 +68,16 @@ export const manifest = {
       plate: { description: 'The notification cascade\'s desk photo.', ...file('image', ['image/png', 'image/jpeg', 'image/webp']) },
       pacing: { description: "The skin's named pacing (Apple Notes: chars_per_second, min_type_seconds, first_pause_seconds, between_pause_seconds, last_pause_seconds, hold_seconds; the cascade: first_arrival_seconds, arrival_every_seconds, clear_after_seconds, resolution_hold_seconds, ending_after_seconds).", type: 'object', additionalProperties: { type: 'number', minimum: 0 } },
       ending: { description: 'The end card clip (an html-frames step) the chat crossfades into.', ...file('video') },
+      ending_timeline: {
+        description: "The end card step's timeline. Its logo box (safe_zones use logo) is carried onto the chat's timeline, placed as the card is joined, so the final check looks for the logo where the card draws it.",
+        ...timeline,
+      },
+      min_seconds: {
+        description: "The least the chat lasts before the end card (what measure_only reports as seconds): a shorter chat holds its last screen until it is this long. Default 0.",
+        type: 'number',
+        minimum: 0,
+        maximum: 120,
+      },
       ending_scenes: { description: 'How many of the last scenes are the end card\'s. Default 0.', type: 'integer', minimum: 0, maximum: 3 },
       crossfade_ms: { description: 'Crossfade into the end card, rounded to whole frames; under one frame is a straight cut. Default 300.', type: 'integer', minimum: 0, maximum: 2000 },
       fps: { description: 'Default 30.', type: 'integer', minimum: 10, maximum: 60 },
