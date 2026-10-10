@@ -2,7 +2,7 @@
 
 ## 1.0.2
 
-- A streaming WebM or Matroska clip with no container length is measured from its streams or packets instead of being refused.
+- A streaming WebM or Matroska clip with no container length is measured from its streams or packets instead of being refused; one ffprobe reports as cut off or damaged is refused, never measured short.
 
 ## 1.0.1
 

@@ -3,7 +3,7 @@
 ## 1.0.2
 
 - `audio: true` keeps the footage's sound in step above 2x: atempo steps are chained so their product is the speed (1.0.1 capped it at 2x, so 4x footage played its sound at half speed). The sound is named stereo for the AAC encode.
-- A streaming WebM or Matroska clip with no container length is measured from its streams or packets instead of being refused.
+- A streaming WebM or Matroska clip with no container length is measured from its streams or packets instead of being refused; one ffprobe reports as cut off or damaged is refused, never measured short.
 
 ## 1.0.1
 

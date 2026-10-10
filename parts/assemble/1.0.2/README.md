@@ -6,7 +6,8 @@ Joins scene clips and stills, in order, into one cut. Free. The assembler from s
   `fps` (default 30), square pixels, yuv420p.
 - A clip's cut is `in_s` plus `seconds` (default: the rest of the clip). A clip up to 0.1 s short holds its last
   frame; more than that is refused. A still needs `seconds`. A streaming WebM or Matroska clip with no container length
-  is measured from its streams or packets.
+  is measured from its streams or packets. One ffprobe reports as cut off or damaged is
+  refused.
 - Each cut gets an exact frame count, so the cut's length is the sum of the cuts to the frame; hard cuts go
   through the concat filter, never the concat demuxer (which drops audio and adds black frames at joins).
 - `clip_audio: keep` keeps each clip's own sound, with silence under stills and silent clips.

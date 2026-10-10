@@ -14,6 +14,7 @@ compose (the b-roll under the card) and footage-cutlist's render.
   factor as the picture (chained 2x steps above 2x), as 48 kHz stereo.
 - **Outputs**: `video`, `seconds`, `speed`.
 - **From the plan**: each `plan.footage` entry carries its clip as `file` (a file the kit downloads and checks).
-  A streaming WebM or Matroska recording with no container length is measured from its streams or packets.
+  A streaming WebM or Matroska recording with no container length is measured from its streams or packets. One ffprobe reports as cut off or
+  damaged is refused.
 
 Source: `parts/cut-footage/src/part.mjs` and `src/manifest.mjs`.
