@@ -17,7 +17,7 @@
     },
     "sound": {
       "id": "sound-layer",
-      "version": "1.0.1"
+      "version": "1.0.2"
     },
     "check": {
       "id": "check-layer",
