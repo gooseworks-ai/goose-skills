@@ -200,7 +200,7 @@ test('cues sit on their events, at their gains, and use only shipped sounds', ()
   const thread = sample();
   const out = chatgptBuild(thread, env());
   const files = new Set(fs.readdirSync(path.join(ASSETS, 'sfx')));
-  const rule = { key: ['key-tap.wav', 1.33], send: ['send-tap.wav', 5], 'answer-show': ['response-done.wav', 4.5], 'stream-tick': ['stream-tick.wav', 1.6], 'stream-done': ['response-done.wav', 1.4] };
+  const rule = { key: ['key-tap.wav', 1.33], send: ['send-tap.wav', 5], 'answer-show': ['response-done.wav', 4.5], 'stream-tick': ['stream-tick.wav', 0.4], 'stream-done': ['response-done.wav', 1.4] };
   for (let i = 1; i < out.cues.length; i++) assert.ok(out.cues[i].t >= out.cues[i - 1].t, 'sorted');
   for (const c of out.cues) {
     assert.ok(files.has(c.sound), `${c.sound} is not in assets/skins/chatgpt/sfx`);

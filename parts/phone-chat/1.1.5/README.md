@@ -21,9 +21,10 @@ bundle). Free; needs the kit's browser.
   checking for iMessage that typed text equals sent text and the newest row stays in the safe zone.
 - **Sound**: the skin's original sounds (iMessage send and receive, ChatGPT key and send taps, the cascade's
   pop and swoosh) on their reveal frames, leading silence stripped, a quick follow-up cue cut so it cannot mask
-  the next, peak-limited. Apple Notes is silent. ChatGPT's keys, stream ticks and finish peak near -20 dBFS,
-  and its send and the moment the answer appears (new in 1.1.5) near -7 dBFS, so every message is heard over a
-  music bed. The music bed comes later, in audio-mix (`duck: true` ducks it under these sounds).
+  the next, peak-limited. Apple Notes is silent. ChatGPT's keys and finish peak near -20 dBFS and its send and
+  the moment the answer appears (new in 1.1.5) near -7 dBFS, so every message is heard over a music bed; its
+  stream ticks stay near -32 dBFS, under audio-mix's default duck threshold, so the bed does not pump while the
+  answer streams. The music bed comes later, in audio-mix (`duck: true` ducks it under these sounds).
 - **Ending**: crossfades (`crossfade_ms`, default 300, in whole frames; a request under one frame is a straight cut) into the `ending` clip (the style's html-frames end
   card), which holds in silence; the timeline marks it as `end_card`.
 - **Outputs**: `video` (H.264 with the chat's sounds), `seconds`, `timeline` (each scene from the moment it

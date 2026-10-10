@@ -877,13 +877,14 @@ const CG_TIMING = {
 };
 
 // deriveSFX cue rules, plus a sound when the answer replaces the dot; never one when the dot shows. The
-// files peak at -20 to -24 dBFS: keys, ticks and the finish sit near -20 dBFS, the send and the answer near
-// -7 dBFS, so each message is heard over a -24 LUFS bed and the bed's ducking triggers.
+// files peak at -20 to -24 dBFS: keys and the finish sit near -20 dBFS and the send and the answer near
+// -7 dBFS, so each message is heard over a -24 LUFS bed and keys the bed's ducking. Stream ticks stay near
+// -32 dBFS, under the duck's threshold, so the bed does not pump while the answer streams.
 const CG_CUES = {
   key: ['key-tap.wav', 1.33],
   send: ['send-tap.wav', 5],
   'answer-show': ['response-done.wav', 4.5],
-  'stream-tick': ['stream-tick.wav', 1.6],
+  'stream-tick': ['stream-tick.wav', 0.4],
   'stream-done': ['response-done.wav', 1.4],
 };
 

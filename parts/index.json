@@ -1674,7 +1674,7 @@
       "determinism": "pure",
       "path": "parts/phone-chat/1.1.5",
       "files": {
-        "README.md": "b5e1a072d89e687661eb836578552e37b1c97cc7e88eddd002e757dca6efd54d",
+        "README.md": "783b0a5763d118d5fa907182b897be25ec663a742b8df18153c7a4a39f0262ea",
         "assets/fonts/InterVariable-OFL.txt": "262481e844521b326f5ecd053e59b98c8b2da78c8ee1bdbb6e8174305e54935a",
         "assets/fonts/InterVariable.ttf": "4989b125924991b90d05b2d16e0e388c48f7d5bb8b30539bbf9c755278d0ccaf",
         "assets/fonts/NotoColorEmoji-OFL.txt": "500bb1ccf43df7bbb522112f9133a52b16e1c35e809632f5d8609b179152de5b",
@@ -1694,7 +1694,7 @@
         "assets/skins/notification-cascade/sfx/pop.wav": "fc8424810217c84489722813779bb39a46ff15011b00cce9ce8cd2f0e40dd54a",
         "assets/skins/notification-cascade/sfx/swoosh.wav": "753b05dc56e21b4f6e33ffcc0c631e8a63b0e1d385f74d7743672b57dd1e62f4",
         "part.json": "b003fc44ccd0d1f3a5c9f0401557559cb427bd5284206979390fe30713fab3a8",
-        "part.mjs": "fd0621bc5afbc20424f4065767bebc588d1272bb483ee88e5141cec801790e87"
+        "part.mjs": "268f34d29e6e48c8cc1087950edaddd92d4be620bd127da31764c3576944fe6a"
       },
       "models": []
     },

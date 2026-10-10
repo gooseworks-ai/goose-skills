@@ -2,7 +2,7 @@
 
 ## 1.1.5
 
-- ChatGPT's sounds are heard over a music bed: keys, stream ticks and the finish now peak near -20 dBFS (they sat near -50), and the send near -7 dBFS. A new sound plays when the answer appears, so every message comes with a sound and the bed's ducking under the chat's sounds triggers.
+- ChatGPT's sounds are heard over a music bed: keys and the finish now peak near -20 dBFS (they sat near -50), and the send near -7 dBFS. A new sound plays when the answer appears, so every message comes with a sound and the bed's ducking under the chat's sounds triggers. Stream ticks peak near -32 dBFS, under the duck threshold, so the bed does not pump while the answer streams.
 
 ## 1.1.4
 
