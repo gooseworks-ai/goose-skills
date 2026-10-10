@@ -173,6 +173,10 @@ function imTimeline(thread, overrides, fps) {
   if (!T.char_per_sec || !T.scroll_ms || T.max_type < T.min_type || T.tail_hold < 0.5) {
     throw new Error('Typing and scroll speeds must be positive and the ending hold at least 0.5 s.');
   }
+  // The opening message types from 0.1 s and is sent by first_send_by (0 turns the deadline off).
+  if (T.first_send_by && (T.first_send_by > 1.4 || T.first_send_by - 0.1 - T.send_hold < 0.3)) {
+    throw new Error('first_send_by must leave the opening message at least 0.3 s of typing and be at most 1.4 s, so the opening never holds still.');
+  }
   const snap = (t) => Math.ceil((t - 1e-8) * fps) / fps;
   const self = thread.participants.find((p) => p.self).id;
   const events = [];
@@ -199,7 +203,8 @@ function imTimeline(thread, overrides, fps) {
       t = opening ? Math.min(t, 0.1) : t + T.self_pre;
       const chars = imGraphemes(m.text).length;
       const paced = Math.min(T.max_type, Math.max(T.min_type, chars / T.char_per_sec));
-      const dur = opening && T.first_send_by ? Math.min(paced, Math.max(T.min_type, T.first_send_by - t - T.send_hold)) : paced;
+      // The deadline wins over min_type: the opening still must stay under the final check's 1.5 s.
+      const dur = opening && T.first_send_by ? Math.min(paced, T.first_send_by - t - T.send_hold) : paced;
       add(t, { kind: 'composer', text: m.text, dur });
       t += dur + T.send_hold;
     }
