@@ -995,6 +995,34 @@
       "models": []
     },
     {
+      "id": "html-frames",
+      "version": "1.1.0",
+      "interface": 1,
+      "kind": "render_html",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": true,
+        "ffmpeg": {
+          "encoders": [
+            "libx264"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 1024
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/html-frames/1.1.0",
+      "files": {
+        "part.json": "8e1eadd380016228ab52e43c8cf10959b173c94f1b23ea8564023745a615dc16",
+        "part.mjs": "e13e52c0c2592a4508db348e473fa4231b0f8575c00b58fd1083ab45b491fa7f"
+      },
+      "models": []
+    },
+    {
       "id": "image-nano-banana",
       "version": "1.0.0",
       "interface": 1,
