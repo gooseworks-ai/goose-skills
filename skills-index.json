@@ -3491,6 +3491,49 @@
       }
     },
     {
+      "slug": "goose-pages",
+      "name": "goose-pages",
+      "category": "composites",
+      "domain": "ads",
+      "description": "Build, preview, edit and publish the page your ad lands on, with one page per angle, brand-grounded copy and hosted lead forms; also check ad-to-page message match.",
+      "tags": "ads, content",
+      "path": "skills/ads/composites/goose-pages",
+      "version": "1.0.0",
+      "files": [
+        "skills/ads/composites/goose-pages/SKILL.md",
+        "skills/ads/composites/goose-pages/eval/eval.json",
+        "skills/ads/composites/goose-pages/references/rubric.md",
+        "skills/ads/composites/goose-pages/skill.meta.json",
+        "skills/ads/composites/goose-pages/tests/packaging.test.cjs",
+        "skills/ads/composites/goose-pages/tests/requests.json",
+        "skills/ads/composites/goose-pages/tests/staging-run.md"
+      ],
+      "metadata": {
+        "slug": "goose-pages",
+        "version": "1.0.0",
+        "category": "composites",
+        "domain": "ads",
+        "tags": [
+          "ads",
+          "content"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install goose-pages",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [],
+        "example_prompt": "Build the page this ad lands on. Show me a preview before publishing.",
+        "collections": [
+          "brand-growth"
+        ],
+        "collection_stage": "create"
+      }
+    },
+    {
       "slug": "gtm-enrichment-deep",
       "name": "gtm-enrichment-deep",
       "category": "capabilities",
@@ -10691,6 +10734,13 @@
           "description": "Portable visual skill pack for the Agent Skills ecosystem (Claude Code, Claude Desktop, Claude Cowork, Claude Design, Goose, Cursor, Codex). Discovers community-published styles + formats via the gooseworks CLI, runs an extract-style workflow on reference images, and exports rendered PNGs via Playwright.",
           "stage": "create",
           "path": "skills/design/composites/goose-graphics"
+        },
+        {
+          "slug": "goose-pages",
+          "name": "goose-pages",
+          "description": "Build, preview, edit and publish the page your ad lands on, with one page per angle, brand-grounded copy and hosted lead forms; also check ad-to-page message match.",
+          "stage": "create",
+          "path": "skills/ads/composites/goose-pages"
         },
         {
           "slug": "influencer-prospecting",
