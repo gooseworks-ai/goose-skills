@@ -54,7 +54,8 @@ async function peakDb(ctx, path) {
 /**
  * The skin's sounds as one track the length of the chat: every cue at its time
  * and gain, its leading silence stripped (the audible onset lands on the reveal
- * frame), cut to max_s with a short fade, summed without normalising, limited.
+ * frame), cut to max_s with a short fade, a cue with limit_db held to that peak
+ * by a fast limiter (a click made dense), summed without normalising, limited.
  */
 async function effectsTrack(ctx, soundDir, cues, total) {
   const peaks = new Map();
@@ -76,7 +77,7 @@ async function effectsTrack(ctx, soundDir, cues, total) {
     const ms = Math.round(c.t * 1000);
     graph.push(
       `[${i + 1}:a]aresample=48000,aformat=channel_layouts=stereo,silenceremove=start_periods=1:start_threshold=${threshold}dB:start_mode=any,asetpts=PTS-STARTPTS,` +
-        `${cut}adelay=${ms}|${ms},volume=${c.gain}[s${i}]`,
+        `${cut}adelay=${ms}|${ms},volume=${c.gain}${c.limit_db === undefined ? '' : `,aresample=192000,alimiter=limit=${kitNum(10 ** (c.limit_db / 20), 4)}:level=0:attack=0.1:release=5,aresample=48000`}[s${i}]`,
     );
     labels.push(`[s${i}]`);
   });
