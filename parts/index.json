@@ -1004,7 +1004,12 @@
         "browser": true,
         "ffmpeg": {
           "filters": [
-            "scale"
+            "scale",
+            "setsar",
+            "format",
+            "transpose",
+            "hflip",
+            "vflip"
           ],
           "encoders": [
             "libx264",
@@ -1022,8 +1027,8 @@
       "determinism": "pure",
       "path": "parts/html-frames/1.1.0",
       "files": {
-        "part.json": "058d55257aa76fccec1ff058f48a7d042e8046d860984cff0d1a95011c48607d",
-        "part.mjs": "175e33d0e3961dfb90aa9a0a69eb1dc475ada563f8c8e01b79ce1c82b6021777"
+        "part.json": "b2dff534e0f59bf92bbf91d2259819a0e5f71ac0bcd3bd9345552afb40cff8e4",
+        "part.mjs": "bb10e6a34cd6784650efe028fdcc2b297e4147bd76462cab045c10892f4db240"
       },
       "models": []
     },

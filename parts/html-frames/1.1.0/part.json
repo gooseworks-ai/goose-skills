@@ -11,7 +11,7 @@
   "kit": ">=1.0.0 <2.0.0",
   "needs": {
     "browser": true,
-    "ffmpeg": { "filters": ["scale"], "encoders": ["libx264", "png", "mjpeg"] },
+    "ffmpeg": { "filters": ["scale", "setsar", "format", "transpose", "hflip", "vflip"], "encoders": ["libx264", "png", "mjpeg"] },
     "network": false,
     "models": [],
     "disk_mb": 1024
@@ -78,7 +78,7 @@
         "maximum": 200
       },
       "products": {
-        "description": "plan.products, in the customer's order. A PNG, JPEG or WebP photo over 2048 px on its long side reaches the page scaled down to 2048 px (a PNG or WebP as PNG).",
+        "description": "plan.products, in the customer's order. A PNG, JPEG or WebP photo over 2048 px on its long side, as shown after its EXIF orientation, reaches the page turned upright and scaled down to 2048 px (a PNG or WebP as PNG, keeping its transparency).",
         "type": "array",
         "maxItems": 12,
         "items": {

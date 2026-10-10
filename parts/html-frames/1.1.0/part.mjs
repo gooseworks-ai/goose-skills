@@ -2,7 +2,7 @@
 
 // src/kit/maker/make.ts
 import { createHash as createHash2 } from "node:crypto";
-import { mkdir as mkdir2, readFile as readFile2, rm, stat, writeFile as writeFile2 } from "node:fs/promises";
+import { mkdir as mkdir2, readFile as readFile2, rm, stat as stat2, writeFile as writeFile2 } from "node:fs/promises";
 import * as path2 from "node:path";
 import { pathToFileURL } from "node:url";
 
@@ -202,6 +202,96 @@ function cssDataUrls(css, depth = 0) {
     if (decoded.mime === "text/css" && depth < 4) found.push(...cssDataUrls(decoded.bytes.toString("utf8"), depth + 1));
   }
   return found;
+}
+function tiffOrientation(tiff) {
+  if (tiff.length < 8) return 1;
+  const little = tiff[0] === 73 && tiff[1] === 73;
+  if (!little && !(tiff[0] === 77 && tiff[1] === 77)) return 1;
+  const view = new DataView(tiff.buffer, tiff.byteOffset, tiff.byteLength);
+  const u16 = (at) => view.getUint16(at, little);
+  if (u16(2) !== 42) return 1;
+  const ifd = view.getUint32(4, little);
+  if (ifd + 2 > tiff.length) return 1;
+  const count = u16(ifd);
+  for (let i = 0; i < count; i++) {
+    const entry = ifd + 2 + i * 12;
+    if (entry + 12 > tiff.length) break;
+    if (u16(entry) === 274 && u16(entry + 2) === 3) {
+      const value = u16(entry + 8);
+      return value >= 1 && value <= 8 ? value : 1;
+    }
+  }
+  return 1;
+}
+function jpegGeometry(data) {
+  let at = 2;
+  let orientation = 1;
+  let exifSeen = false;
+  while (at + 4 <= data.length) {
+    if (data[at] !== 255) return null;
+    const marker = data[at + 1];
+    if (marker === 255) {
+      at++;
+      continue;
+    }
+    if (marker === 1 || marker >= 208 && marker <= 215) {
+      at += 2;
+      continue;
+    }
+    if (marker === 217 || marker === 218) return null;
+    const length = data[at + 2] << 8 | data[at + 3];
+    if (length < 2) return null;
+    const body = at + 4;
+    if (marker === 225 && !exifSeen && text(data, body, 6) === "Exif\0\0") {
+      exifSeen = true;
+      orientation = tiffOrientation(data.subarray(body + 6, at + 2 + length));
+    }
+    const sof = marker >= 192 && marker <= 207 && marker !== 196 && marker !== 200 && marker !== 204;
+    if (sof && body + 5 <= data.length) {
+      const height = data[body + 1] << 8 | data[body + 2];
+      const width = data[body + 3] << 8 | data[body + 4];
+      return width && height ? { format: "jpeg", width, height, orientation } : null;
+    }
+    at += 2 + length;
+  }
+  return null;
+}
+function webpGeometry(data) {
+  if (data.length < 30) return null;
+  const chunk = text(data, 12, 4);
+  const p = 20;
+  const u24 = (at) => data[at] | data[at + 1] << 8 | data[at + 2] << 16;
+  if (chunk === "VP8X") return { format: "webp", width: 1 + u24(p + 4), height: 1 + u24(p + 7), orientation: 1 };
+  if (chunk === "VP8 " && data[p + 3] === 157 && data[p + 4] === 1 && data[p + 5] === 42) {
+    return { format: "webp", width: (data[p + 6] | data[p + 7] << 8) & 16383, height: (data[p + 8] | data[p + 9] << 8) & 16383, orientation: 1 };
+  }
+  if (chunk === "VP8L" && data[p] === 47) {
+    const [b1, b2, b3, b4] = [data[p + 1], data[p + 2], data[p + 3], data[p + 4]];
+    return { format: "webp", width: 1 + (b1 | (b2 & 63) << 8), height: 1 + (b2 >> 6 | b3 << 2 | (b4 & 15) << 10), orientation: 1 };
+  }
+  return null;
+}
+function pictureGeometry(data) {
+  if (data.length >= 24 && data[0] === 137 && text(data, 1, 3) === "PNG" && text(data, 12, 4) === "IHDR") {
+    const view = new DataView(data.buffer, data.byteOffset, data.byteLength);
+    const width = view.getUint32(16);
+    const height = view.getUint32(20);
+    let orientation = 1;
+    for (let at = 8; at + 12 <= data.length; ) {
+      const length = view.getUint32(at);
+      const type = text(data, at + 4, 4);
+      if (type === "IEND") break;
+      if (type === "eXIf") {
+        orientation = tiffOrientation(data.subarray(at + 8, at + 8 + length));
+        break;
+      }
+      at += 12 + length;
+    }
+    return width && height ? { format: "png", width, height, orientation } : null;
+  }
+  if (data.length >= 4 && data[0] === 255 && data[1] === 216) return jpegGeometry(data);
+  if (data.length >= 12 && text(data, 0, 4) === "RIFF" && text(data, 8, 4) === "WEBP") return webpGeometry(data);
+  return null;
 }
 
 // src/kit/core/canonical.ts
@@ -405,7 +495,7 @@ var inputs = {
       maximum: 200
     },
     products: {
-      description: "plan.products, in the customer's order. A PNG, JPEG or WebP photo over 2048 px on its long side reaches the page scaled down to 2048 px (a PNG or WebP as PNG).",
+      description: "plan.products, in the customer's order. A PNG, JPEG or WebP photo over 2048 px on its long side, as shown after its EXIF orientation, reaches the page turned upright and scaled down to 2048 px (a PNG or WebP as PNG, keeping its transparency).",
       type: "array",
       maxItems: 12,
       items: {
@@ -638,7 +728,7 @@ function readInputs(raw, ctx) {
 
 // src/kit/maker/page.ts
 import { createHash } from "node:crypto";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
 import * as path from "node:path";
 
 // src/kit/maker/runtime.ts
@@ -1083,7 +1173,7 @@ var RUNTIME = String.raw`(function () {
     }
   }
   // Where the brand's logo shows, in the page's CSS pixels: the largest visible picture of it, as drawn
-  // inside its element (object-fit), so the final check can look for the logo where it is.
+  // inside its element (object-fit) and cut by whatever clips it, so the final check can look for the logo where it is.
   var LOGO = DATA.brand && DATA.brand.logo ? new URL(DATA.brand.logo, document.baseURI).href : null;
   function shownOpacity(el) {
     var opacity = 1;
@@ -1102,6 +1192,70 @@ var RUNTIME = String.raw`(function () {
     if (!isFinite(number)) return free / 2;
     return /%$/.test(text) ? (number / 100) * free : number;
   }
+  function length(value) {
+    var number = parseFloat(value);
+    return isFinite(number) ? number : 0;
+  }
+  // The element's box in viewport pixels, inside its borders and, with padding, inside its padding too.
+  // A transform scales the insets with the element; a rotated one leaves the box as its bounding rect.
+  function innerBox(el, style, padding) {
+    var rect = el.getBoundingClientRect();
+    var kx = el.offsetWidth > 0 ? rect.width / el.offsetWidth : 1;
+    var ky = el.offsetHeight > 0 ? rect.height / el.offsetHeight : 1;
+    var p = padding ? 1 : 0;
+    return {
+      x0: rect.left + (length(style.borderLeftWidth) + p * length(style.paddingLeft)) * kx,
+      y0: rect.top + (length(style.borderTopWidth) + p * length(style.paddingTop)) * ky,
+      x1: rect.right - (length(style.borderRightWidth) + p * length(style.paddingRight)) * kx,
+      y1: rect.bottom - (length(style.borderBottomWidth) + p * length(style.paddingBottom)) * ky,
+      kx: kx,
+      ky: ky
+    };
+  }
+  function cut(box, clip, x, y) {
+    if (x) { box.x0 = Math.max(box.x0, clip.x0); box.x1 = Math.min(box.x1, clip.x1); }
+    if (y) { box.y0 = Math.max(box.y0, clip.y0); box.y1 = Math.min(box.y1, clip.y1); }
+  }
+  function area(box) {
+    return Math.max(0, box.x1 - box.x0) * Math.max(0, box.y1 - box.y0);
+  }
+  function clips(value) {
+    return value !== 'visible';
+  }
+  // An element a fixed-position box is laid out in rather than the viewport.
+  function holdsFixed(style) {
+    return style.transform !== 'none' || style.perspective !== 'none' || style.filter !== 'none' ||
+      (style.backdropFilter && style.backdropFilter !== 'none') || /paint|layout|strict|content/.test(style.contain || '') ||
+      /transform|perspective|filter/.test(style.willChange || '');
+  }
+  function flatParent(node) {
+    if (node.assignedSlot) return node.assignedSlot;
+    var parent = node.parentNode;
+    return parent && parent.nodeType === 11 ? parent.host || null : parent;
+  }
+  // Cuts the box by every ancestor that clips its overflow (border-radius ignored). An absolutely or fixed
+  // positioned box escapes the clips of ancestors outside its containing block, so those are skipped.
+  function cutByAncestors(el, box) {
+    var html = document.documentElement;
+    var body = document.body;
+    // The root's (or else body's) overflow belongs to the viewport, which cuts the box anyway.
+    var bodyPropagates = !clips(getComputedStyle(html).overflowX) && !clips(getComputedStyle(html).overflowY);
+    var escape = getComputedStyle(el).position;
+    for (var node = flatParent(el); node; node = flatParent(node)) {
+      if (node.nodeType !== 1) continue;
+      var style = getComputedStyle(node);
+      if (escape === 'absolute' || escape === 'fixed') {
+        var holds = escape === 'fixed' ? holdsFixed(style) : style.position !== 'static' || holdsFixed(style);
+        if (!holds) continue;
+      }
+      escape = style.position;
+      if (node === html || (node === body && bodyPropagates) || style.display === 'contents') continue;
+      var x = clips(style.overflowX);
+      var y = clips(style.overflowY);
+      if (/paint|strict|content/.test(style.contain || '')) x = y = true;
+      if (x || y) cut(box, innerBox(node, style, false), x, y);
+    }
+  }
   function logoBox() {
     if (!LOGO) return null;
     var best = null;
@@ -1110,30 +1264,35 @@ var RUNTIME = String.raw`(function () {
       for (var i = 0; i < images.length; i++) {
         var img = images[i];
         if ((img.currentSrc || img.src) !== LOGO || shownOpacity(img) < 0.5) continue;
-        var rect = img.getBoundingClientRect();
-        var w = img.offsetWidth;
-        var h = img.offsetHeight;
-        if (!(rect.width > 0 && rect.height > 0 && w > 0 && h > 0)) continue;
-        var box = { x: rect.left, y: rect.top, w: rect.width, h: rect.height };
+        var style = getComputedStyle(img);
+        var content = innerBox(img, style, true);
+        // The content box in the element's own pixels, where object-fit places the picture.
+        var w = (content.x1 - content.x0) / content.kx;
+        var h = (content.y1 - content.y0) / content.ky;
+        if (!(w > 0 && h > 0)) continue;
+        var drawn = { x0: content.x0, y0: content.y0, x1: content.x1, y1: content.y1 };
         var nw = img.naturalWidth;
         var nh = img.naturalHeight;
-        var style = getComputedStyle(img);
         var fit = style.objectFit;
         if (nw > 0 && nh > 0 && fit && fit !== 'fill') {
           var s = fit === 'contain' ? Math.min(w / nw, h / nh) : fit === 'cover' ? Math.max(w / nw, h / nh) : fit === 'none' ? 1 : Math.min(1, w / nw, h / nh);
           var position = String(style.objectPosition || '50% 50%').split(/\s+/);
-          var kx = rect.width / w;
-          var ky = rect.height / h;
-          box = { x: rect.left + fitOffset(position[0], w - nw * s) * kx, y: rect.top + fitOffset(position[1], h - nh * s) * ky, w: nw * s * kx, h: nh * s * ky };
+          drawn.x0 = content.x0 + fitOffset(position[0], w - nw * s) * content.kx;
+          drawn.y0 = content.y0 + fitOffset(position[1], h - nh * s) * content.ky;
+          drawn.x1 = drawn.x0 + nw * s * content.kx;
+          drawn.y1 = drawn.y0 + nh * s * content.ky;
         }
-        // Only the part on the page counts, and only a picture at least half on it.
-        var x0 = Math.max(0, box.x);
-        var y0 = Math.max(0, box.y);
-        var x1 = Math.min(innerWidth, box.x + box.w);
-        var y1 = Math.min(innerHeight, box.y + box.h);
-        var area = Math.max(0, x1 - x0) * Math.max(0, y1 - y0);
-        if (area < box.w * box.h * 0.5 || (best && area <= best.area)) continue;
-        best = { area: area, x: x0, y: y0, w: x1 - x0, h: y1 - y0 };
+        // A picture is cut to its content box (cover crops it there) unless the page lets it overflow.
+        cut(drawn, content, clips(style.overflowX), clips(style.overflowY));
+        var whole = area(drawn);
+        if (!(whole > 0)) continue;
+        var seen = { x0: drawn.x0, y0: drawn.y0, x1: drawn.x1, y1: drawn.y1 };
+        cutByAncestors(img, seen);
+        cut(seen, { x0: 0, y0: 0, x1: innerWidth, y1: innerHeight }, true, true);
+        // Only a picture at least half visible counts.
+        var shown = area(seen);
+        if (shown < whole * 0.5 || (best && shown <= best.area)) continue;
+        best = { area: shown, x: seen.x0, y: seen.y0, w: seen.x1 - seen.x0, h: seen.y1 - seen.y0 };
       }
     }
     return best ? { x: best.x, y: best.y, w: best.w, h: best.h } : null;
@@ -1223,7 +1382,17 @@ function runtimeScript(data) {
 // src/kit/maker/page.ts
 var KIT_FOLDER = "_kit";
 var MAX_PICTURE_PX = 2048;
-var RESIZABLE = { "image/png": "png", "image/webp": "png", "image/jpeg": "jpg" };
+var RESIZABLE = /* @__PURE__ */ new Set(["image/png", "image/webp", "image/jpeg"]);
+var ORIENT = {
+  1: [],
+  2: ["hflip"],
+  3: ["hflip", "vflip"],
+  4: ["vflip"],
+  5: ["transpose=0"],
+  6: ["transpose=1"],
+  7: ["transpose=3"],
+  8: ["transpose=2"]
+};
 var IMAGE_EXT = {
   "image/png": "png",
   "image/jpeg": "jpg",
@@ -1344,23 +1513,35 @@ async function buildPage(spec, dir, ctx, reserve = () => void 0) {
   for (const font of spec.fonts) await addFont(font, familyOf(font));
   if (spec.brand?.fonts.heading) await addFont(spec.brand.fonts.heading, "brand-heading");
   if (spec.brand?.fonts.body) await addFont(spec.brand.fonts.body, "brand-body");
-  const smaller = async (ref) => {
-    const to = RESIZABLE[ref.mime];
-    if (!to || !ctx.tools) return null;
-    let { width, height } = ref;
-    if (!width || !height) ({ width, height } = await ctx.tools.probe(ref.path).catch(() => ({ width: void 0, height: void 0 })));
-    if (!width || !height || Math.max(width, height) <= MAX_PICTURE_PX) return null;
+  const smaller = async (ref, data2) => {
+    const shape = pictureGeometry(data2);
+    if (!shape || !ctx.tools) return null;
+    const turned = shape.orientation >= 5;
+    const [width, height] = turned ? [shape.height, shape.width] : [shape.width, shape.height];
+    if (Math.max(width, height) <= MAX_PICTURE_PX) return null;
     const k = MAX_PICTURE_PX / Math.max(width, height);
     const [w, h] = [Math.max(1, Math.round(width * k)), Math.max(1, Math.round(height * k))];
+    const to = shape.format === "jpeg" ? "jpg" : "png";
     const rel = `${KIT_FOLDER}/media/${ref.sha256.slice(0, 16)}-${MAX_PICTURE_PX}.${to}`;
     const target = path.join(dir, ...rel.split("/"));
+    const filters = [...ORIENT[shape.orientation], `scale=${w}:${h}:flags=lanczos`, "setsar=1", ...to === "png" ? ["format=rgba"] : []];
     const quality = to === "jpg" ? ["-q:v", "2"] : [];
+    const exact = ["-fflags", "+bitexact", "-flags", "+bitexact", "-map_metadata", "-1", "-threads", "1"];
     try {
-      await ctx.tools.exec("ffmpeg", ["-hide_banner", "-nostdin", "-y", "-loglevel", "error", "-i", ref.path, "-frames:v", "1", "-vf", `scale=${w}:${h}:flags=lanczos`, ...quality, target]);
-    } catch {
-      return fail(`the picture ${path.basename(ref.path)} is too large to show (${width}x${height}); use one at most ${MAX_PICTURE_PX} px on its long side`);
+      await ctx.tools.exec(
+        "ffmpeg",
+        ["-hide_banner", "-y", "-loglevel", "error", "-noautorotate", "-f", `${shape.format}_pipe`, "-i", "pipe:0", "-frames:v", "1", "-vf", filters.join(","), ...quality, ...exact, target],
+        { stdin: data2 }
+      );
+    } catch (error) {
+      ctx.log.warn("a picture could not be scaled down for the page", {
+        file: path.basename(ref.path),
+        size: `${width}x${height}`,
+        error: String(error?.stderr ?? error?.message ?? error).slice(-300)
+      });
+      return fail(`a ${width}x${height} picture could not be made smaller for the video; use a PNG or JPEG at most ${MAX_PICTURE_PX} px on its long side`);
     }
-    return { ext: to, target };
+    return rel;
   };
   const media = async (ref) => {
     const ext = IMAGE_EXT[ref.mime];
@@ -1370,10 +1551,10 @@ async function buildPage(spec, dir, ctx, reserve = () => void 0) {
     if (staged) return staged;
     const data2 = await readChecked(ref, fail);
     still(ref, data2);
-    const resized = await smaller(ref);
+    const resized = RESIZABLE.has(ref.mime) ? await smaller(ref, data2) : null;
     if (resized) {
-      rel = path.relative(dir, resized.target).split(path.sep).join("/");
-      const size = (await readFile(resized.target)).length;
+      rel = resized;
+      const size = (await stat(path.join(dir, ...rel.split("/")))).size;
       reserve(size);
       bytes += size;
     } else await put(path.join(dir, ...rel.split("/")), data2);
@@ -1513,7 +1694,7 @@ async function makeVideo(rawInputs, ctx, options = {}) {
     const room = limit - used - FS_MARGIN;
     if (room <= 0) throw overLimit();
     await ctx.tools.exec("ffmpeg", [...args.slice(0, -1), "-fs", String(room), args[args.length - 1]]);
-    const size = (await stat(file)).size;
+    const size = (await stat2(file)).size;
     if (size >= room) throw overLimit();
     reserve(size);
   };
