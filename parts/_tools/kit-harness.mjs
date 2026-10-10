@@ -1,6 +1,12 @@
 // Test harness: a PartContext as the kit core hands it to a part
 // (parts/_contract/part-interface.d.ts), backed by the local ffmpeg and,
 // when present, a local playwright-core. Tests only; parts never import it.
+//
+// Which ffmpeg: KIT_FFMPEG (a binary path, or `ffmpeg` for the one on PATH; ffprobe beside it, or
+// KIT_FFPROBE), else the kit's own build at ~/.gooseworks/kit/bin/ffmpeg-b<version> (newest), else PATH.
+// CI sets KIT_FFMPEG=ffmpeg (Homebrew's build); on a machine with the kit installed the tests meet the
+// kit's ffmpeg 6.0 by default. _tools/kit-tools.test.mjs prints the choice in every run's output.
+// Browser: PLAYWRIGHT_CORE_PATH and KIT_CHROMIUM (see findPlaywright and findChromium).
 import { createHash } from 'node:crypto';
 import { spawn } from 'node:child_process';
 import { mkdirSync, mkdtempSync, readFileSync, statSync, existsSync, readdirSync } from 'node:fs';
@@ -68,6 +74,18 @@ export function kitTools() {
 }
 
 const TOOLS = kitTools();
+
+/** The selected ffmpeg and ffprobe, where they came from and ffmpeg's version (null when it cannot run). */
+export async function kitToolsReport() {
+  let version = null;
+  try {
+    const { stdout } = await run('ffmpeg', ['-version']);
+    version = (/ffmpeg version (\S+)/.exec(stdout) || [])[1] || null;
+  } catch {
+    // Reported as null: the media tests skip and say why.
+  }
+  return { ...TOOLS, version };
+}
 
 /**
  * Runs ffmpeg or ffprobe. stdout is kept whole (ffprobe JSON, raw frames); stderr is streamed and only
