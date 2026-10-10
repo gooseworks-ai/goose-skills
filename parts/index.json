@@ -763,6 +763,52 @@
       "models": []
     },
     {
+      "id": "cut-footage",
+      "version": "1.0.2",
+      "interface": 1,
+      "kind": "compose",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "setpts",
+            "fps",
+            "scale",
+            "crop",
+            "pad",
+            "setsar",
+            "tpad",
+            "trim",
+            "overlay",
+            "format",
+            "atempo",
+            "atrim",
+            "aresample",
+            "aformat"
+          ],
+          "encoders": [
+            "libx264",
+            "aac"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 300
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/cut-footage/1.0.2",
+      "files": {
+        "README.md": "9b8c362846b8859943b970cdf6e9209adb458b6a781f25844a3210eb4be17a75",
+        "part.json": "71ccf5a4168692e3beebe76df5550aedf63bdb8cc748576d288f785effea5338",
+        "part.mjs": "e6a35cb9468c75cb16a0970c410e849bee22457db52ec575ae0feffccecb4079"
+      },
+      "models": []
+    },
+    {
       "id": "end-card",
       "version": "1.0.0",
       "interface": 1,
