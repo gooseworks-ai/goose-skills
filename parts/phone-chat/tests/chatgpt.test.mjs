@@ -196,23 +196,28 @@ test('the send tap is one beat: bubble, keyboard down and header swap share its 
   assert.equal(chatgptBuild(plain, env()).events.filter((e) => e.kind === 'header-swap').length, 0);
 });
 
-test('cues sit on their events, follow the atom gains and use only shipped sounds', () => {
+test('cues sit on their events, at their gains, and use only shipped sounds', () => {
   const thread = sample();
   const out = chatgptBuild(thread, env());
   const files = new Set(fs.readdirSync(path.join(ASSETS, 'sfx')));
-  const rule = { 'key-tap.wav': ['key', 0.04], 'send-tap.wav': ['send', 0.1], 'stream-tick.wav': ['stream-tick', 0.025], 'response-done.wav': ['stream-done', 0.079] };
+  const rule = { key: ['key-tap.wav', 1.33], send: ['send-tap.wav', 5], 'answer-show': ['response-done.wav', 4.5], 'stream-tick': ['stream-tick.wav', 1.6], 'stream-done': ['response-done.wav', 1.4] };
   for (let i = 1; i < out.cues.length; i++) assert.ok(out.cues[i].t >= out.cues[i - 1].t, 'sorted');
   for (const c of out.cues) {
     assert.ok(files.has(c.sound), `${c.sound} is not in assets/skins/chatgpt/sfx`);
-    assert.ok(rule[c.sound], `${c.sound} has no cue rule`);
-    assert.equal(c.gain, rule[c.sound][1]);
-    assert.ok(out.events.some((e) => e.kind === rule[c.sound][0] && e.t === c.t), `${c.sound} at ${c.t} has no ${rule[c.sound][0]} event`);
+    const kinds = Object.keys(rule).filter((k) => rule[k][0] === c.sound && rule[k][1] === c.gain);
+    assert.ok(kinds.length, `${c.sound} at gain ${c.gain} has no cue rule`);
+    assert.ok(out.events.some((e) => kinds.includes(e.kind) && e.t === c.t), `${c.sound} at ${c.t} has no ${kinds.join(' or ')} event`);
+  }
+  const answers = thread.messages.filter((m) => m.type === 'assistant');
+  for (const a of answers) {
+    const pop = out.events.find((e) => e.kind === 'pop' && e.id === a.id);
+    assert.ok(out.cues.some((c) => c.t === pop.t && c.sound === 'response-done.wav' && c.gain === 4.5), `no sound when the answer ${a.id} appears`);
   }
   const words = thread.messages.filter((m) => m.type === 'user-text').reduce((n, m) => n + m.text.split(/\s+/).filter(Boolean).length, 0);
   assert.equal(out.cues.filter((c) => c.sound === 'key-tap.wav').length, words, 'one key-tap per typed word');
   assert.equal(out.cues.filter((c) => c.sound === 'send-tap.wav').length, 2);
-  const dotTimes = out.events.filter((e) => e.kind.startsWith('dot-')).map((e) => e.t);
-  assert.ok(!out.cues.some((c) => dotTimes.includes(c.t)), 'never a cue on the loading dot');
+  const dotTimes = out.events.filter((e) => e.kind === 'dot-show').map((e) => e.t);
+  assert.ok(!out.cues.some((c) => dotTimes.includes(c.t)), 'never a cue when the loading dot shows');
   assert.deepEqual(chatgptBuild({ ...thread, sfx: false }, env()).cues, []);
 });
 

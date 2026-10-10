@@ -1447,6 +1447,75 @@
       "models": []
     },
     {
+      "id": "phone-chat",
+      "version": "1.1.5",
+      "interface": 1,
+      "kind": "render_html",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": true,
+        "ffmpeg": {
+          "filters": [
+            "volumedetect",
+            "silenceremove",
+            "adelay",
+            "amix",
+            "alimiter",
+            "atrim",
+            "afade",
+            "apad",
+            "aresample",
+            "aformat",
+            "anullsrc",
+            "xfade",
+            "fps",
+            "settb",
+            "setsar",
+            "scale",
+            "crop",
+            "format"
+          ],
+          "encoders": [
+            "libx264",
+            "aac",
+            "pcm_s16le"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 800
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/phone-chat/1.1.5",
+      "files": {
+        "README.md": "b5e1a072d89e687661eb836578552e37b1c97cc7e88eddd002e757dca6efd54d",
+        "assets/fonts/InterVariable-OFL.txt": "262481e844521b326f5ecd053e59b98c8b2da78c8ee1bdbb6e8174305e54935a",
+        "assets/fonts/InterVariable.ttf": "4989b125924991b90d05b2d16e0e388c48f7d5bb8b30539bbf9c755278d0ccaf",
+        "assets/fonts/NotoColorEmoji-OFL.txt": "500bb1ccf43df7bbb522112f9133a52b16e1c35e809632f5d8609b179152de5b",
+        "assets/fonts/NotoColorEmoji.ttf": "39ee3c587e10e89669b9ff32703261d10d5f9c4dd5ad147b6b5a1c5200591817",
+        "assets/skins/apple-notes/icons.js": "735c82b08a4536ec18d5ee1516698eafd9a5a34585e44280dad2a36c42c4a325",
+        "assets/skins/apple-notes/note.css": "d2bf52464b673678aabab18c2fc421c2107b87ac092b4a3c42815da77c532a55",
+        "assets/skins/chatgpt/chat.css": "63ae024d5d4c23f209be7e5c22cc2251ac0a3c3fc23159db3de4a7e6d8cb0495",
+        "assets/skins/chatgpt/icons.js": "2a86ce1451e2c2c73a2ce616205c4d77c45ba45944c278ef032a434e1ffb3a86",
+        "assets/skins/chatgpt/sfx/key-tap.wav": "0e23b4fc3c118b0b8b87f288e475e165e056788c2ce2844b846b9c4488a5e7ac",
+        "assets/skins/chatgpt/sfx/response-done.wav": "8afee86b8181c9ffe09d1819e53d6c6093a86d8efa79543b91689e58eab8c02c",
+        "assets/skins/chatgpt/sfx/send-tap.wav": "b311b6c8a41044f267504c3875fa02859ca130147a8b2ac61cabdcaf19d68eec",
+        "assets/skins/chatgpt/sfx/stream-tick.wav": "87c1cc174abf213aaf758962c54d5cdc65b7837eb2e71622a89c2bf4d114de07",
+        "assets/skins/imessage/chat.css": "d8783938f65f1520aa91fa0c076b9383497416f25b86316330d52af3aa755147",
+        "assets/skins/imessage/icons.js": "b3b9b655084d74267da20f013e8691fe472de4174750609a939dcc0d25f22e86",
+        "assets/skins/imessage/sfx/imessage-receive.mp3": "d8018578447e698ddac6080b1737c0666520a0d91ccbd556ca735aeb5ccd6945",
+        "assets/skins/imessage/sfx/imessage-send.mp3": "67a51c884a10e16efb64dd3cdf0bfe7123b08205daafe490e92601e38f86a7b2",
+        "assets/skins/notification-cascade/sfx/pop.wav": "fc8424810217c84489722813779bb39a46ff15011b00cce9ce8cd2f0e40dd54a",
+        "assets/skins/notification-cascade/sfx/swoosh.wav": "753b05dc56e21b4f6e33ffcc0c631e8a63b0e1d385f74d7743672b57dd1e62f4",
+        "part.json": "b003fc44ccd0d1f3a5c9f0401557559cb427bd5284206979390fe30713fab3a8",
+        "part.mjs": "fd0621bc5afbc20424f4065767bebc588d1272bb483ee88e5141cec801790e87"
+      },
+      "models": []
+    },
+    {
       "id": "sfx-elevenlabs",
       "version": "1.0.0",
       "interface": 1,
