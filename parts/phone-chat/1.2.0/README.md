@@ -7,8 +7,10 @@ bundle). Free; needs the kit's browser.
 - **From the plan** (`scenes`, `products`, `answers`, `brand_name`): iMessage and the cascade take one message
   per scene as "Name: text" (Me is the phone's owner; one contact is a DM, more need the answer `group`; a
   scene's `picture` shows a chosen product's photo only when its text names that product (its id or name, or
-  two of its name's words) or asks for a photo or picture of the product with one chosen product; any other
-  picture text describes the shot and draws nothing, new in 1.2.0); ChatGPT takes the question, then the answer; Apple Notes
+  two of its name's words, short names included) or asks for a photo and points at nothing else ("Show its
+  photo") with exactly one chosen product that has photos; a picture naming a product with no photo, or asking for
+  a photo while several chosen products have photos, is refused; any other picture text ("a photo of the beach")
+  describes the shot and draws nothing, new in 1.2.0); ChatGPT takes the question, then the answer; Apple Notes
   takes the title, then one list line per scene. The last `ending_scenes` scenes are the end card's. Answers:
   `theme` (iMessage dark or light), `clock` (the phone's time), `group`, `resolution` (the cascade's success
   message, the scene before the end card). `pacing` is the skin's named timing (Apple Notes and the cascade).
@@ -22,8 +24,9 @@ bundle). Free; needs the kit's browser.
   by frame in the kit's Chromium (fixed output frames: start-up or machine speed never changes a frame),
   checking for iMessage that typed text equals sent text and the newest row stays in the safe zone. An iMessage
   chat that opens on the owner typing starts typing at once and sends the first message by 1.2 s
-  (`first_send_by`, new in 1.2.0): typing alone barely moves the picture, and the final check fails an opening
-  that is still for over 1.5 s.
+  (`first_send_by`, new in 1.2.0, ahead of `min_type`; at most 1.4 s): typing alone barely moves the picture, and
+  the final check fails an opening that is still for over 1.5 s. With `min_seconds` (new in 1.2.0) a shorter chat
+  holds its last screen until it is that long, so a plan the slower 1.1 opening made long enough still is.
 - **Sound**: the skin's original sounds (iMessage send and receive, ChatGPT key and send taps, the cascade's
   pop and swoosh) on their reveal frames, leading silence stripped, a quick follow-up cue cut so it cannot mask
   the next, peak-limited. Apple Notes is silent. ChatGPT's keys and finish peak near -20 dBFS and its send and

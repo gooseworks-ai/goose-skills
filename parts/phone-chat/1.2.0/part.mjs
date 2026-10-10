@@ -479,6 +479,10 @@ function imTimeline(thread, overrides, fps) {
   if (!T.char_per_sec || !T.scroll_ms || T.max_type < T.min_type || T.tail_hold < 0.5) {
     throw new Error('Typing and scroll speeds must be positive and the ending hold at least 0.5 s.');
   }
+  // The opening message types from 0.1 s and is sent by first_send_by (0 turns the deadline off).
+  if (T.first_send_by && (T.first_send_by > 1.4 || T.first_send_by - 0.1 - T.send_hold < 0.3)) {
+    throw new Error('first_send_by must leave the opening message at least 0.3 s of typing and be at most 1.4 s, so the opening never holds still.');
+  }
   const snap = (t) => Math.ceil((t - 1e-8) * fps) / fps;
   const self = thread.participants.find((p) => p.self).id;
   const events = [];
@@ -505,7 +509,8 @@ function imTimeline(thread, overrides, fps) {
       t = opening ? Math.min(t, 0.1) : t + T.self_pre;
       const chars = imGraphemes(m.text).length;
       const paced = Math.min(T.max_type, Math.max(T.min_type, chars / T.char_per_sec));
-      const dur = opening && T.first_send_by ? Math.min(paced, Math.max(T.min_type, T.first_send_by - t - T.send_hold)) : paced;
+      // The deadline wins over min_type: the opening still must stay under the final check's 1.5 s.
+      const dur = opening && T.first_send_by ? Math.min(paced, T.first_send_by - t - T.send_hold) : paced;
       add(t, { kind: 'composer', text: m.text, dur });
       t += dur + T.send_hold;
     }
@@ -3148,25 +3153,31 @@ function chatTruthy(v) {
 }
 
 // A scene's picture text is a product photo when it names a chosen product (its id or name, or at least two
-// of its name's words, all of a one-word name), or asks for a photo or picture of the product with one chosen
-// product that has photos. Anything else describes the shot and draws nothing.
+// of its name's words, all of a one-word name), or asks for a photo and points at nothing else ("Show its
+// photo", "a picture of the product") with one chosen product that has photos. Anything else describes the
+// shot ("a photo of the beach") and draws nothing.
 const CHAT_PHOTO_WORD = /\b(photos?|pictures?|pics?|images?|shots?|snaps?)\b/i;
-const CHAT_PRODUCT_WORD = /\bproducts?\b/i;
-const chatWords = (text) => (String(text || '').toLowerCase().match(/[\p{L}\p{N}]+/gu) || []).filter((w) => w.length >= 4);
+// Words a photo request uses without naming anything else.
+const CHAT_PLAIN = new Set(['a', 'an', 'the', 'of', 'its', 'it', 'this', 'that', 'these', 'those', 'them', 'one', 'my', 'our', 'your', 'their', 'his', 'her', 'show', 'shows', 'showing', 'send', 'sends', 'here', 'look', 'see', 'new', 'product', 'products', 'item', 'photo', 'photos', 'picture', 'pictures', 'pic', 'pics', 'image', 'images', 'shot', 'shots', 'snap', 'snaps', 'and', 'with', 'in', 'on', 'at', 'is']);
+const chatTokens = (text) => String(text || '').toLowerCase().match(/[\p{L}\p{N}]+/gu) || [];
+// A word matches another exactly, or as a stem when both are at least four letters (shorts, Short).
+const chatSameWord = (a, b) => a === b || (a.length >= 4 && b.length >= 4 && (a.startsWith(b) || b.startsWith(a)));
 
-/** How well `text` names `product`: 0, or the count of its name's words the text uses (a stem counts: shorts, Short). */
+/** How well `text` names `product`: 0, or the count of its name's (or id's) words the text uses. */
 function chatNames(text, product) {
   const want = text.toLowerCase();
-  if (String(product.id).toLowerCase() === want || String(product.name || '').toLowerCase() === want) return Infinity;
-  const name = chatWords(product.name);
-  const said = chatWords(want);
-  const used = name.filter((w) => said.some((t) => t.startsWith(w) || w.startsWith(t))).length;
+  const id = String(product.id).toLowerCase();
+  if (id === want || String(product.name || '').toLowerCase() === want) return Infinity;
+  const said = chatTokens(want);
+  if (said.includes(id)) return Infinity;
+  const name = chatTokens(product.name).filter((w) => !CHAT_PLAIN.has(w) && (w.length >= 3 || /\d/.test(w)));
+  const used = name.filter((w) => said.some((t) => chatSameWord(t, w))).length;
   return name.length && used >= Math.min(2, name.length) ? used : 0;
 }
 
 /**
  * The photo a scene shows: the picture the customer uploaded for it (scene.image),
- * else its picture file, else the chosen product its picture text names.
+ * else its picture file, else the chosen product its picture text names or asks a photo of.
  */
 function chatPicture(scene, products) {
   if (scene.image && typeof scene.image === 'object' && scene.image.kind === 'file') return scene.image;
@@ -3176,7 +3187,7 @@ function chatPicture(scene, products) {
   const text = p.trim();
   const all = products || [];
   const named = all.map((x) => ({ x, n: chatNames(text, x) })).filter((m) => m.n > 0).sort((a, b) => b.n - a.n).map((m) => m.x);
-  const asksPhoto = CHAT_PHOTO_WORD.test(text) && CHAT_PRODUCT_WORD.test(text);
+  const asksPhoto = CHAT_PHOTO_WORD.test(text) && chatTokens(text).every((w) => CHAT_PLAIN.has(w));
   if (!named.length && !asksPhoto) return null;
   const withPhoto = (named.length ? named : all).filter((x) => (x.images || []).length);
   const product = named.length ? withPhoto[0] : withPhoto.length === 1 ? withPhoto[0] : null;
@@ -3659,7 +3670,9 @@ export async function run(inputs, ctx) {
   } catch (e) {
     throw ctx.error('bad_input', e.message);
   }
-  const chatDur = built.total_s;
+  // A chat shorter than min_seconds holds its last screen until it is that long, so a plan an earlier,
+  // slower pace accepted is still long enough for the style.
+  const chatDur = Math.max(built.total_s, Math.ceil((inputs.min_seconds ?? 0) * fps - 1e-6) / fps);
   if (!Number.isFinite(chatDur) || chatDur <= 0 || chatDur > MAX_CHAT_S) {
     throw ctx.error('bad_input', `the chat would run ${chatDur} s; it must be a finite length up to ${MAX_CHAT_S} s`);
   }

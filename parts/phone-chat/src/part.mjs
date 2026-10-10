@@ -210,7 +210,9 @@ export async function run(inputs, ctx) {
   } catch (e) {
     throw ctx.error('bad_input', e.message);
   }
-  const chatDur = built.total_s;
+  // A chat shorter than min_seconds holds its last screen until it is that long, so a plan an earlier,
+  // slower pace accepted is still long enough for the style.
+  const chatDur = Math.max(built.total_s, Math.ceil((inputs.min_seconds ?? 0) * fps - 1e-6) / fps);
   if (!Number.isFinite(chatDur) || chatDur <= 0 || chatDur > MAX_CHAT_S) {
     throw ctx.error('bad_input', `the chat would run ${chatDur} s; it must be a finite length up to ${MAX_CHAT_S} s`);
   }

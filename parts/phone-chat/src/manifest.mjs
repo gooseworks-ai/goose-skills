@@ -72,6 +72,12 @@ export const manifest = {
         description: "The end card step's timeline. Its logo box (safe_zones use logo) is carried onto the chat's timeline, placed as the card is joined, so the final check looks for the logo where the card draws it.",
         ...timeline,
       },
+      min_seconds: {
+        description: "The least the chat lasts before the end card (what measure_only reports as seconds): a shorter chat holds its last screen until it is this long. Default 0.",
+        type: 'number',
+        minimum: 0,
+        maximum: 120,
+      },
       ending_scenes: { description: 'How many of the last scenes are the end card\'s. Default 0.', type: 'integer', minimum: 0, maximum: 3 },
       crossfade_ms: { description: 'Crossfade into the end card, rounded to whole frames; under one frame is a straight cut. Default 300.', type: 'integer', minimum: 0, maximum: 2000 },
       fps: { description: 'Default 30.', type: 'integer', minimum: 10, maximum: 60 },
