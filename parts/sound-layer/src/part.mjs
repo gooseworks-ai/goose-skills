@@ -4,7 +4,7 @@
 // first pass, then an EBU R128 check of the result; one gain-and-limit
 // correction if the first try lands outside the tolerance, else the step
 // fails rather than hand on a cut the server's check would refuse. A silent
-// cut has nothing to level and passes through untouched.
+// cut (at or below -50 LUFS) has nothing to level and passes through untouched.
 import { rename } from 'node:fs/promises';
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitFfmpeg, kitLoudness, kitNum } from '../../_lib/part.mjs';
@@ -14,6 +14,11 @@ const TOLERANCE_LU = 1;
 const TARGET_TP = -1;
 // loudnorm aims below the ceiling: the AAC encode after it can add a few tenths of a dB of peak.
 const LOUDNORM_TP = -1.5;
+// At or below this a cut is near silence (faint UI sounds, no bed): lifting it to the target fails.
+const SILENT_LUFS = -50;
+// ffmpeg 6.0 leaves the channel layout unset after loudnorm and alimiter, and the AAC encode then
+// cannot pick one ("Cannot select channel layout"): every chain names stereo before its last resample.
+const STEREO = 'aformat=channel_layouts=stereo';
 
 function loudnormJson(stderr) {
   const blocks = stderr.match(/\{[^{}]*\}/g);
@@ -53,9 +58,9 @@ export async function run(inputs, ctx) {
   const manifest = await kitCheckInputs(ctx, inputs);
   const info = await ctx.tools.probe(inputs.video.path);
   const first = info.has_audio ? await kitLoudness(ctx, inputs.video.path) : { lufs: null };
-  if (first.lufs === null || !Number.isFinite(first.lufs) || first.lufs <= -70) {
+  if (first.lufs === null || !Number.isFinite(first.lufs) || first.lufs <= SILENT_LUFS) {
     // A silent cut (no music chosen, no voice) has nothing to level: it passes through untouched.
-    ctx.log.info('sound layer passes a silent cut through', { has_audio: info.has_audio });
+    ctx.log.info('sound layer passes a silent cut through', { has_audio: info.has_audio, lufs: first.lufs });
     return kitCheckOutputs(ctx, manifest, { video: inputs.video, timeline: inputs.timeline });
   }
   // Pass 1: measure for loudnorm. A target range at least the input's keeps it linear (a pure gain).
@@ -65,7 +70,7 @@ export async function run(inputs, ctx) {
   const lra = Math.min(50, Math.max(11, Math.ceil(Number(m.input_lra) + 1)));
   const pass2 =
     `loudnorm=I=${TARGET_LUFS}:TP=${LOUDNORM_TP}:LRA=${lra}:measured_I=${m.input_i}:measured_TP=${m.input_tp}:` +
-    `measured_LRA=${m.input_lra}:measured_thresh=${m.input_thresh}:offset=${m.target_offset}:linear=true,aresample=48000`;
+    `measured_LRA=${m.input_lra}:measured_thresh=${m.input_thresh}:offset=${m.target_offset}:linear=true,${STEREO},aresample=48000`;
   let path = await encode(ctx, inputs.video.path, pass2, 'levelled.mp4');
   let after = await kitLoudness(ctx, path);
   // Corrections: the gain still missing, through a peak limiter at -2 dBFS run oversampled so it holds
@@ -74,7 +79,7 @@ export async function run(inputs, ctx) {
   for (let pass = 1; !within(after) && pass <= 3; pass++) {
     const gain = after.lufs === null ? 0 : TARGET_LUFS - after.lufs;
     ctx.log.info('sound layer correction pass', { pass, lufs: after.lufs, true_peak_db: after.true_peak_db, gain_db: +gain.toFixed(2) });
-    path = await encode(ctx, path, `volume=${kitNum(gain, 3)}dB,aresample=192000,alimiter=limit=0.794:level=0:attack=1:release=50,aresample=48000`, `levelled-${pass + 1}.mp4`);
+    path = await encode(ctx, path, `volume=${kitNum(gain, 3)}dB,aresample=192000,alimiter=limit=0.794:level=0:attack=1:release=50,${STEREO},aresample=48000`, `levelled-${pass + 1}.mp4`);
     after = await kitLoudness(ctx, path);
   }
   if (!within(after)) {

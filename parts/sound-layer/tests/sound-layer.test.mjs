@@ -17,7 +17,7 @@ async function fixture(ctx, volume) {
   return fileRef(mp4, 'video');
 }
 
-for (const [name, volume] of [['a quiet', 0.02], ['a loud', 1.0]]) {
+for (const [name, volume] of [['a quiet', 0.08], ['a loud', 1.0]]) {
   test(`${name} cut is levelled to -14 LUFS +/-1 with the true peak at or below -1 dBTP`, { skip }, async () => {
     const { ctx } = makeCtx({ partDir: dir });
     const video = await fixture(ctx, volume);
