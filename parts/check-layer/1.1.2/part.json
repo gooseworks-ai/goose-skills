@@ -1,0 +1,526 @@
+{
+  "$schema": "../../_contract/part-manifest.schema.json",
+  "interface": 1,
+  "id": "check-layer",
+  "version": "1.1.2",
+  "kind": "check",
+  "layer": "check",
+  "title": "Check layer",
+  "summary": "Checks the finished cut without changing it: the server's five checks with its limits, then black and frozen frames, the end card and speech against the script.",
+  "runtime": "node",
+  "entry": "part.mjs",
+  "files": [
+    "README.md",
+    "part.mjs"
+  ],
+  "kit": ">=1.0.0 <2.0.0",
+  "needs": {
+    "browser": false,
+    "ffmpeg": {
+      "filters": [
+        "ebur128",
+        "freezedetect",
+        "blackdetect",
+        "scale",
+        "format"
+      ],
+      "encoders": [
+        "pcm_s16le"
+      ]
+    },
+    "network": false,
+    "models": [],
+    "disk_mb": 100
+  },
+  "inputs": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "video",
+      "timeline",
+      "brand",
+      "expect"
+    ],
+    "properties": {
+      "video": {
+        "type": "object",
+        "x-kit-file": {
+          "media": "video"
+        }
+      },
+      "timeline": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "duration_s",
+          "width",
+          "height",
+          "fps",
+          "scenes",
+          "speech"
+        ],
+        "properties": {
+          "duration_s": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "fps": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "scenes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "start_s",
+                "end_s"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "start_s": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "end_s": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              }
+            }
+          },
+          "speech": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "text",
+                "start_s",
+                "end_s"
+              ],
+              "properties": {
+                "scene_id": {
+                  "type": "string"
+                },
+                "text": {
+                  "type": "string"
+                },
+                "spoken": {
+                  "type": "string"
+                },
+                "start_s": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "end_s": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "words": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "text",
+                      "start_s",
+                      "end_s"
+                    ],
+                    "properties": {
+                      "text": {
+                        "type": "string"
+                      },
+                      "start_s": {
+                        "type": "number",
+                        "minimum": 0
+                      },
+                      "end_s": {
+                        "type": "number",
+                        "minimum": 0
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "end_card": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "start_s",
+              "end_s"
+            ],
+            "properties": {
+              "start_s": {
+                "type": "number",
+                "minimum": 0
+              },
+              "end_s": {
+                "type": "number",
+                "minimum": 0
+              }
+            }
+          },
+          "safe_zones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "use",
+                "x",
+                "y",
+                "w",
+                "h"
+              ],
+              "properties": {
+                "use": {
+                  "enum": [
+                    "captions",
+                    "logo"
+                  ]
+                },
+                "x": {
+                  "type": "number"
+                },
+                "y": {
+                  "type": "number"
+                },
+                "w": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "h": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              }
+            }
+          }
+        }
+      },
+      "brand": {
+        "type": "object",
+        "required": [
+          "name",
+          "colors",
+          "fonts",
+          "pronunciations"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "logo": {
+            "type": "object",
+            "x-kit-file": {
+              "media": "image"
+            }
+          },
+          "colors": {
+            "type": "object",
+            "properties": {
+              "primary": {
+                "type": "string",
+                "maxLength": 64
+              },
+              "secondary": {
+                "type": "string",
+                "maxLength": 64
+              },
+              "background": {
+                "type": "string",
+                "maxLength": 64
+              },
+              "text": {
+                "type": "string",
+                "maxLength": 64
+              },
+              "palette": {
+                "type": "array",
+                "maxItems": 12,
+                "items": {
+                  "type": "string",
+                  "maxLength": 64
+                }
+              }
+            }
+          },
+          "fonts": {
+            "type": "object",
+            "properties": {
+              "heading": {
+                "type": "object",
+                "x-kit-file": {
+                  "media": "font"
+                }
+              },
+              "body": {
+                "type": "object",
+                "x-kit-file": {
+                  "media": "font"
+                }
+              }
+            }
+          },
+          "pronunciations": {
+            "type": "array",
+            "maxItems": 50,
+            "items": {
+              "type": "object",
+              "required": [
+                "term",
+                "say_as"
+              ],
+              "properties": {
+                "term": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 100
+                },
+                "say_as": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                }
+              }
+            }
+          },
+          "cta": {
+            "type": "object",
+            "required": [
+              "text"
+            ],
+            "properties": {
+              "text": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 80
+              },
+              "url": {
+                "type": "string",
+                "maxLength": 200
+              }
+            }
+          }
+        }
+      },
+      "expect": {
+        "type": "object",
+        "required": [
+          "aspect",
+          "width",
+          "height",
+          "duration_s",
+          "speech",
+          "captions",
+          "end_card",
+          "qc_flags"
+        ],
+        "properties": {
+          "aspect": {
+            "enum": [
+              "9:16",
+              "1:1",
+              "4:5",
+              "16:9"
+            ]
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "duration_s": {
+            "type": "object",
+            "required": [
+              "min",
+              "max"
+            ],
+            "properties": {
+              "min": {
+                "type": "number",
+                "minimum": 0
+              },
+              "max": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              }
+            }
+          },
+          "speech": {
+            "enum": [
+              "none",
+              "voiceover",
+              "on_camera"
+            ]
+          },
+          "captions": {
+            "type": "boolean"
+          },
+          "end_card": {
+            "type": "boolean"
+          },
+          "qc_flags": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 60
+            }
+          },
+          "script": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2000
+            }
+          }
+        }
+      },
+      "words": {
+        "type": "object",
+        "x-kit-file": {
+          "media": "json"
+        }
+      }
+    }
+  },
+  "outputs": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "verdict"
+    ],
+    "properties": {
+      "verdict": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "pass",
+          "checks",
+          "reasons"
+        ],
+        "properties": {
+          "pass": {
+            "type": "boolean"
+          },
+          "checks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "code",
+                "status"
+              ],
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "pattern": "^(plays|length|size|sound|captions|black_frames|frozen_frames|captions_safe_zone|speech_matches_script|end_card|logo|flag:[a-z0-9_]+)$"
+                },
+                "status": {
+                  "enum": [
+                    "pass",
+                    "fail",
+                    "not_applicable"
+                  ]
+                },
+                "found": {
+                  "type": [
+                    "string",
+                    "number",
+                    "boolean",
+                    "null"
+                  ]
+                },
+                "expected": {
+                  "type": "string"
+                },
+                "fix": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "slot": {
+                      "enum": [
+                        "brand",
+                        "captions",
+                        "sound",
+                        "check"
+                      ]
+                    },
+                    "step": {
+                      "type": "string"
+                    },
+                    "inputs": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "reasons": {
+            "description": "Failed checks in the server's reasons shape ({check, message, expected?, found?}). Messages are for logs; the customer's words come from the rulebook.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "check",
+                "message"
+              ],
+              "properties": {
+                "check": {
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "expected": {
+                  "type": "string"
+                },
+                "found": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "cost": {
+    "basis": "free"
+  },
+  "determinism": "pure",
+  "timing": {
+    "typical_s": 20,
+    "timeout_s": 900
+  },
+  "retry": {
+    "transient": 1
+  },
+  "replaces": [
+    "review-finished-ad",
+    "review-ugc-render"
+  ]
+}

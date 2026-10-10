@@ -7,7 +7,7 @@
     },
     {
       "type": "image",
-      "src": "../assets/samples/sample-landscape.jpg",
+      "src": "/path/to/your-image.jpg",
       "caption": "On-set reference from the last shoot"
     },
     {

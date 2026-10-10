@@ -32,7 +32,7 @@ test("fails the server's checks with the server's reasons shape and a fix for th
   const quiet = join(ctx.workDir, 'quiet.mp4');
   await makeVideo(quiet, 3, { width: 640, height: 640, tone: 440 });
   const q = join(ctx.workDir, 'quieter.mp4');
-  await run('ffmpeg', ['-hide_banner', '-nostdin', '-loglevel', 'error', '-y', '-i', quiet, '-c:v', 'copy', '-af', 'volume=-30dB', '-c:a', 'aac', q]);
+  await run('ffmpeg', ['-hide_banner', '-nostdin', '-loglevel', 'error', '-y', '-i', quiet, '-c:v', 'copy', '-af', 'volume=-20dB', '-c:a', 'aac', q]);
   const inputs = await layerInputsFor(await fileRef(q, 'video'), { expect: { duration_s: { min: 6, max: 10 }, captions: true } });
   const out = await mod.run(inputs, ctx);
   assert.equal(out.verdict.pass, false);

@@ -31,6 +31,14 @@ jobs:
       - name: Verify generated index is committed
         run: git diff --exit-code skills-index.json
 
+      - name: Test the Git LFS pointer check
+        run: node --test scripts/__tests__/check-lfs-pointers.test.js
+
+      - name: No unresolved Git LFS pointers
+        # A file whose LFS object was never pushed is a short text stub; the catalog release refuses it.
+        # Reads the indexed blobs through git, so the working tree cannot hide one.
+        run: node scripts/check-lfs-pointers.js
+
       - name: Test CLI
         run: npm test
 
@@ -109,6 +117,9 @@ jobs:
 
       - name: Part tests (every one must run; a skip fails the job)
         shell: bash
+        # Homebrew's ffmpeg on PATH, named so the harness never looks for a kit build here.
+        env:
+          KIT_FFMPEG: ffmpeg
         run: |
           npm run test:parts 2>&1 | tee "$RUNNER_TEMP/part-tests.log"
           node scripts/require-all-tests-ran.js "$RUNNER_TEMP/part-tests.log"

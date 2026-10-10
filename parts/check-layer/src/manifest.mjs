@@ -10,7 +10,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'check-layer',
-  version: '1.1.1',
+  version: '1.1.2',
   kind: 'check',
   layer: 'check',
   title: 'Check layer',

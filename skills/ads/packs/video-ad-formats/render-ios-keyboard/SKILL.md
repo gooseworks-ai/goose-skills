@@ -2,10 +2,10 @@
 name: render-ios-keyboard
 description: Render a static iOS QWERTY keyboard as inline HTML+CSS sized for the 750-wide 9:16 stage. Includes the 3-suggestion bar, alpha keys, shift/backspace, 123/emoji/space/return row, and the bottom globe+mic strip. No animation logic — slide up/down is the molecule's job (CSS transform on the .keyboard root).
 status: superseded
-superseded_by: phone-chat@1.1.4
+superseded_by: phone-chat@1.1.5
 ---
 
-> **Superseded:** the video kit now does this with the phone-chat part, version 1.1.4, in the parts folder of this repository. Every phone-chat style is a style file that draws the same screen frame by frame from the plan's scenes, with the original sounds, in the kit's browser. This atom stays, unchanged in behaviour, for skills outside the kit until they move; its scripts still run.
+> **Superseded:** the video kit now does this with the phone-chat part, version 1.1.5, in the parts folder of this repository. Every phone-chat style is a style file that draws the same screen frame by frame from the plan's scenes, with the original sounds, in the kit's browser. This atom stays, unchanged in behaviour, for skills outside the kit until they move; its scripts still run.
 
 # render-ios-keyboard
 

@@ -96,6 +96,53 @@
       "models": []
     },
     {
+      "id": "assemble",
+      "version": "1.0.2",
+      "interface": 1,
+      "kind": "compose",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "fps",
+            "scale",
+            "crop",
+            "pad",
+            "setsar",
+            "tpad",
+            "trim",
+            "setpts",
+            "format",
+            "concat",
+            "aresample",
+            "aformat",
+            "apad",
+            "atrim",
+            "anullsrc"
+          ],
+          "encoders": [
+            "libx264",
+            "aac"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 500
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/assemble/1.0.2",
+      "files": {
+        "README.md": "f226fbc77482da01fdd7d53c41c17e05b43c1acc823eb9ffb395b89a601a6e9b",
+        "part.json": "d8fb7090a640488824fbc82df3df2ff9359855b406f0214c10b20dfd05acb972",
+        "part.mjs": "dd9686cf0ed60ac241624ff95b33dd576d91eeb37ecb61480e0394834192481f"
+      },
+      "models": []
+    },
+    {
       "id": "audio-mix",
       "version": "1.0.0",
       "interface": 1,
@@ -500,6 +547,43 @@
       "models": []
     },
     {
+      "id": "check-layer",
+      "version": "1.1.2",
+      "interface": 1,
+      "kind": "check",
+      "layer": "check",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "ebur128",
+            "freezedetect",
+            "blackdetect",
+            "scale",
+            "format"
+          ],
+          "encoders": [
+            "pcm_s16le"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 100
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/check-layer/1.1.2",
+      "files": {
+        "README.md": "793f97f32f52c0bb2d48db585ba49fe1b576e03dd2176c1c927a8836fcdb52cc",
+        "part.json": "e1fe0e2995192c16e5c728f52fd7954b0ddb19072d3e5b460c7973b7ec57d446",
+        "part.mjs": "f17ca8259ed9becca8ec04c8120c10999ee0b16f7b0b4a271b480a38d0deaf71"
+      },
+      "models": []
+    },
+    {
       "id": "creator-h3",
       "version": "1.0.0",
       "interface": 1,
@@ -722,6 +806,52 @@
         "README.md": "fd685dbf4f55f34aa10d8f0f55f489796965d08a47199b217aacb070bc730084",
         "part.json": "7e3e9e2404b7e2ce5fd4865ccf1b212e87ede4e22390ed738393363fe7a2e485",
         "part.mjs": "09784b33d52f64cb01cbd6d25108175ceeef46bd0e98abb20e73cea8bd1acbed"
+      },
+      "models": []
+    },
+    {
+      "id": "cut-footage",
+      "version": "1.0.2",
+      "interface": 1,
+      "kind": "compose",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "setpts",
+            "fps",
+            "scale",
+            "crop",
+            "pad",
+            "setsar",
+            "tpad",
+            "trim",
+            "overlay",
+            "format",
+            "atempo",
+            "atrim",
+            "aresample",
+            "aformat"
+          ],
+          "encoders": [
+            "libx264",
+            "aac"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 300
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/cut-footage/1.0.2",
+      "files": {
+        "README.md": "88348fc397a48e511766ad96d477d4490144a3da28302b67c178e7bf860ad218",
+        "part.json": "71ccf5a4168692e3beebe76df5550aedf63bdb8cc748576d288f785effea5338",
+        "part.mjs": "dc418f23f8734360539a5883cc7774114ec07c42cd67d5ae798839c1487d6685"
       },
       "models": []
     },
@@ -1035,6 +1165,59 @@
         "README.md": "4ecde3030ba13421774bf72f826733f1989ede58ae26fe5e1a95af01dd9df915",
         "part.json": "3d2357782aaa2e39d8d0731953e0bf03702be878c0f5a0fc27635fb9712b7c4d",
         "part.mjs": "028c5dee8800b72bb197a93ecc2c09898fc173e7dc6e6a39a9baa9afdc755152"
+      },
+      "models": [
+        {
+          "provider": "elevenlabs",
+          "model": "music_v1"
+        }
+      ]
+    },
+    {
+      "id": "music-elevenlabs",
+      "version": "1.0.2",
+      "interface": 1,
+      "kind": "generate_music",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "loudnorm",
+            "aresample",
+            "aformat",
+            "afade"
+          ],
+          "encoders": [
+            "aac"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "elevenlabs",
+            "model": "music_v1"
+          }
+        ],
+        "disk_mb": 30
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "second",
+        "measure": {
+          "from": "/seconds",
+          "as": "value"
+        },
+        "rates_usd": {
+          "music_v1": 0.0025
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/music-elevenlabs/1.0.2",
+      "files": {
+        "README.md": "eab90ee709f096e63704f78a912255d0bd17a3218c4f2df218198e6afc8ab6b5",
+        "part.json": "b4c9e715d0509494e4a3f58b1fbed92a6fcf1d799e2e8601fe0214251c1a89e8",
+        "part.mjs": "db6c66e7678adc65b099ce44244211bb1724f7fa67796fc40be4b4ac166ca83a"
       },
       "models": [
         {
@@ -1447,6 +1630,75 @@
       "models": []
     },
     {
+      "id": "phone-chat",
+      "version": "1.1.5",
+      "interface": 1,
+      "kind": "render_html",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": true,
+        "ffmpeg": {
+          "filters": [
+            "volumedetect",
+            "silenceremove",
+            "adelay",
+            "amix",
+            "alimiter",
+            "atrim",
+            "afade",
+            "apad",
+            "aresample",
+            "aformat",
+            "anullsrc",
+            "xfade",
+            "fps",
+            "settb",
+            "setsar",
+            "scale",
+            "crop",
+            "format"
+          ],
+          "encoders": [
+            "libx264",
+            "aac",
+            "pcm_s16le"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 800
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/phone-chat/1.1.5",
+      "files": {
+        "README.md": "783b0a5763d118d5fa907182b897be25ec663a742b8df18153c7a4a39f0262ea",
+        "assets/fonts/InterVariable-OFL.txt": "262481e844521b326f5ecd053e59b98c8b2da78c8ee1bdbb6e8174305e54935a",
+        "assets/fonts/InterVariable.ttf": "4989b125924991b90d05b2d16e0e388c48f7d5bb8b30539bbf9c755278d0ccaf",
+        "assets/fonts/NotoColorEmoji-OFL.txt": "500bb1ccf43df7bbb522112f9133a52b16e1c35e809632f5d8609b179152de5b",
+        "assets/fonts/NotoColorEmoji.ttf": "39ee3c587e10e89669b9ff32703261d10d5f9c4dd5ad147b6b5a1c5200591817",
+        "assets/skins/apple-notes/icons.js": "735c82b08a4536ec18d5ee1516698eafd9a5a34585e44280dad2a36c42c4a325",
+        "assets/skins/apple-notes/note.css": "d2bf52464b673678aabab18c2fc421c2107b87ac092b4a3c42815da77c532a55",
+        "assets/skins/chatgpt/chat.css": "63ae024d5d4c23f209be7e5c22cc2251ac0a3c3fc23159db3de4a7e6d8cb0495",
+        "assets/skins/chatgpt/icons.js": "2a86ce1451e2c2c73a2ce616205c4d77c45ba45944c278ef032a434e1ffb3a86",
+        "assets/skins/chatgpt/sfx/key-tap.wav": "0e23b4fc3c118b0b8b87f288e475e165e056788c2ce2844b846b9c4488a5e7ac",
+        "assets/skins/chatgpt/sfx/response-done.wav": "8afee86b8181c9ffe09d1819e53d6c6093a86d8efa79543b91689e58eab8c02c",
+        "assets/skins/chatgpt/sfx/send-tap.wav": "b311b6c8a41044f267504c3875fa02859ca130147a8b2ac61cabdcaf19d68eec",
+        "assets/skins/chatgpt/sfx/stream-tick.wav": "87c1cc174abf213aaf758962c54d5cdc65b7837eb2e71622a89c2bf4d114de07",
+        "assets/skins/imessage/chat.css": "d8783938f65f1520aa91fa0c076b9383497416f25b86316330d52af3aa755147",
+        "assets/skins/imessage/icons.js": "b3b9b655084d74267da20f013e8691fe472de4174750609a939dcc0d25f22e86",
+        "assets/skins/imessage/sfx/imessage-receive.mp3": "d8018578447e698ddac6080b1737c0666520a0d91ccbd556ca735aeb5ccd6945",
+        "assets/skins/imessage/sfx/imessage-send.mp3": "67a51c884a10e16efb64dd3cdf0bfe7123b08205daafe490e92601e38f86a7b2",
+        "assets/skins/notification-cascade/sfx/pop.wav": "fc8424810217c84489722813779bb39a46ff15011b00cce9ce8cd2f0e40dd54a",
+        "assets/skins/notification-cascade/sfx/swoosh.wav": "753b05dc56e21b4f6e33ffcc0c631e8a63b0e1d385f74d7743672b57dd1e62f4",
+        "part.json": "b003fc44ccd0d1f3a5c9f0401557559cb427bd5284206979390fe30713fab3a8",
+        "part.mjs": "268f34d29e6e48c8cc1087950edaddd92d4be620bd127da31764c3576944fe6a"
+      },
+      "models": []
+    },
+    {
       "id": "sfx-elevenlabs",
       "version": "1.0.0",
       "interface": 1,
@@ -1617,6 +1869,83 @@
         "README.md": "61dec5e5789847a864eb374c2f1979538c2c7236f8ec295433652cdc5e46444a",
         "part.json": "fb61d50401ac8395931624f84be37a832583eb6a728889aaeaad21ddc96f6ab5",
         "part.mjs": "30ee6a1232f9bd89f92ec1b48aea04440240bd490c9f4f60c167f57f09aea189"
+      },
+      "models": []
+    },
+    {
+      "id": "sound-layer",
+      "version": "1.0.2",
+      "interface": 1,
+      "kind": "mix",
+      "layer": "sound",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "loudnorm",
+            "ebur128",
+            "volume",
+            "alimiter",
+            "aformat",
+            "aresample"
+          ],
+          "encoders": [
+            "aac"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 300
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/sound-layer/1.0.2",
+      "files": {
+        "README.md": "79c3c4d7e3577bb48e20384ddb38a01b70fa014e7da7a738d99293f085a90f87",
+        "part.json": "554409c79d0d10bec3a623c49f8cdf196f5044851ffcd55dd8ef1a1290ce340d",
+        "part.mjs": "a8afdd7848b49da4c50d37fbe9c325af5996adb2e9054d1001b380846dcef6fc"
+      },
+      "models": []
+    },
+    {
+      "id": "sound-layer",
+      "version": "1.0.3",
+      "interface": 1,
+      "kind": "mix",
+      "layer": "sound",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "loudnorm",
+            "ebur128",
+            "volume",
+            "alimiter",
+            "aformat",
+            "aresample",
+            "afade"
+          ],
+          "encoders": [
+            "aac"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 300
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/sound-layer/1.0.3",
+      "files": {
+        "README.md": "94850a459c090b84e5239c13be8bd533d8d9a32a09795b51396b63c3810e5304",
+        "part.json": "ebfd9ca55a23eba00d7502dabe601472ea252692a2accdd73b9928bbfb9d766a",
+        "part.mjs": "e5f5f2138dea23ea949b37ba0b928aa3972627f35e038ca543cc546907d10b80"
       },
       "models": []
     },
