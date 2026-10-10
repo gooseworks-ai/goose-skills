@@ -58,3 +58,18 @@ test('a cut with sharp peaks (a chat\'s pops over a quiet bed) reaches -14 LUFS 
   const { readdirSync } = await import('node:fs');
   assert.deepEqual(readdirSync(ctx.workDir).filter((f) => f.startsWith('levelled')), ['levelled.mp4'], 'the correction passes stay in scratch');
 });
+
+// Peaky cuts where the limiter eats most of each gain step, so a plain step-by-shortfall swings under and over.
+for (const [name, bed, decay] of [['a faint bed under hard 10 kHz clicks', 0.002, 1200], ['a quiet bed under slow 10 kHz clicks', 0.01, 100]]) {
+  test(`${name} is searched to -14 LUFS +/-1 with the true peak at or below -1 dBTP`, { skip }, async () => {
+    const { ctx } = makeCtx({ partDir: dir });
+    const wav = join(ctx.workDir, 'peaky.wav');
+    await run('ffmpeg', ['-hide_banner', '-nostdin', '-y', '-f', 'lavfi', '-i', `aevalsrc='${bed}*sin(2*PI*220*t)+0.9*exp(-mod(t,1)*${decay})*sin(2*PI*10000*t)':s=48000:d=6`, wav]);
+    const mp4 = join(ctx.workDir, 'peaky.mp4');
+    await run('ffmpeg', ['-hide_banner', '-nostdin', '-y', '-f', 'lavfi', '-i', 'testsrc2=size=360x640:rate=30:duration=6', '-i', wav, '-c:v', 'libx264', '-preset', 'ultrafast', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-shortest', mp4]);
+    const out = await mod.run(await layerInputsFor(await fileRef(mp4, 'video')), ctx);
+    const after = await measureR128(out.video.path);
+    assert.ok(Math.abs(after.lufs + 14) <= 1, `levelled to ${after.lufs} LUFS`);
+    assert.ok(after.true_peak_db <= -1, `true peak ${after.true_peak_db} dBTP`);
+  });
+}

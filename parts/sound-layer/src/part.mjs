@@ -2,18 +2,18 @@
 // peak at or below -1 dBTP (D16: mix-master's finish mode, one loudness
 // target for every video). Two-pass loudnorm in linear mode from a measured
 // first pass, then an EBU R128 check of the encoded result. Outside the target,
-// up to three corrections re-level the source through an oversampled limiter
-// whose ceiling drops by whatever the AAC encode added; a last pass cuts the
-// gain to hold the ceiling at some loudness (within the check's +/-2 LU), else
-// the step fails. A silent cut (at or below -50 LUFS) passes through untouched.
+// corrections re-level the source through an oversampled limiter, searching
+// the gain inside a bracket and lowering the limiter's ceiling by whatever the
+// AAC encode added; still outside after them, the step fails. A silent cut (at
+// or below -50 LUFS) passes through untouched.
 import { rename } from 'node:fs/promises';
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitFfmpeg, kitLoudness, kitNum } from '../../_lib/part.mjs';
 
 const TARGET_LUFS = -14;
 const TOLERANCE_LU = 1;
-// The check layer's loudness tolerance: the last-resort pass may land anywhere inside it.
-const FALLBACK_TOLERANCE_LU = 2;
+// Corrections are an audio-only encode and a meter pass each: cheap enough to search with.
+const MAX_CORRECTIONS = 8;
 const TARGET_TP = -1;
 // loudnorm aims below the ceiling: the AAC encode after it can add a few tenths of a dB of peak.
 const LOUDNORM_TP = -1.5;
@@ -41,8 +41,8 @@ function loudnormJson(stderr) {
   }
 }
 
-function within(m, tolerance = TOLERANCE_LU) {
-  return m.lufs !== null && Math.abs(m.lufs - TARGET_LUFS) <= tolerance && m.true_peak_db !== null && m.true_peak_db <= TARGET_TP;
+function within(m) {
+  return m.lufs !== null && Math.abs(m.lufs - TARGET_LUFS) <= TOLERANCE_LU && m.true_peak_db !== null && m.true_peak_db <= TARGET_TP;
 }
 
 /** Gain, then a peak limiter at `limitDb` run at 192 kHz (it holds inter-sample peaks), back to 48 kHz stereo. */
@@ -50,6 +50,19 @@ function limited(gainDb, limitDb) {
   // alimiter takes a ceiling from 0.0625 (-24 dBFS) to 1.
   const ceiling = Math.min(1, Math.max(0.0625, 10 ** (limitDb / 20)));
   return `volume=${kitNum(gainDb, 3)}dB,aresample=192000,alimiter=limit=${kitNum(ceiling, 4)}:level=0:attack=1:release=50,${STEREO},aresample=48000,${FADE_IN}`;
+}
+
+/** The next gain to try: inside the bracket when there is one, else a step from the nearest side. */
+function nextGain(under, over) {
+  if (under && over) {
+    const span = over.gain - under.gain;
+    const t = (TARGET_LUFS - under.lufs) / (over.lufs - under.lufs || 1);
+    // Interpolate, but never into the outer tenths of the bracket, where it stalls: halve instead.
+    return under.gain + span * (t > 0.1 && t < 0.9 ? t : 0.5);
+  }
+  // One side only: at least the whole shortfall (loudness never rises faster than gain), at most twice it.
+  if (under) return under.gain + 2 * (TARGET_LUFS - under.lufs);
+  return over.gain - 2 * (over.lufs - TARGET_LUFS);
 }
 
 async function encode(ctx, video, filter, out) {
@@ -91,47 +104,34 @@ export async function run(inputs, ctx) {
     `measured_LRA=${m.input_lra}:measured_thresh=${m.input_thresh}:offset=${m.target_offset}:linear=true,${STEREO},aresample=48000,${FADE_IN}`;
   let path = await encode(ctx, inputs.video.path, pass2, 'levelled.mp4');
   let after = await kitLoudness(ctx, path);
-  const tries = [{ path, ...after }];
-  // Corrections re-level the source (never a pass's own AAC, so encodes do not stack) with the gain still
-  // missing, through a limiter run oversampled so it holds inter-sample peaks. The AAC encode after it can
-  // add peak again, so each pass lowers the ceiling by what the last one went over.
-  // The limiter eats loudness from peaky content (a chat's pops), so the next gain follows the slope of
-  // loudness over gain measured on the last two tries (the source at no gain being the first).
-  let gain = TARGET_LUFS - first.lufs;
+  // Corrections re-level the source (never a pass's own AAC, so encodes do not stack) through a limiter run
+  // oversampled so it holds inter-sample peaks. Loudness rises with gain but not linearly (the limiter eats
+  // more of a peaky cut the harder it is driven), so the gain is searched inside a bracket: the highest gain
+  // that came out too quiet and the lowest that came out too loud, by interpolation, else halving. The AAC
+  // encode can add peak again, so a pass over the ceiling lowers the limiter's ceiling and restarts the
+  // bracket. Only a pass inside both targets is used.
   let limit = LIMIT_DB;
-  let prev = { gain: 0, lufs: first.lufs };
-  for (let pass = 1; !within(after) && pass <= 3; pass++) {
-    if (pass > 1 && after.lufs !== null) {
-      const slope = Math.min(1, Math.max(0.1, (after.lufs - prev.lufs) / (gain - prev.gain || 1)));
-      prev = { gain, lufs: after.lufs };
-      // At most twice the shortfall: the slope steepens once the limiter lets go.
-      gain += Math.sign(TARGET_LUFS - after.lufs) * Math.min(Math.abs(TARGET_LUFS - after.lufs) / slope, 2 * Math.abs(TARGET_LUFS - after.lufs));
-    }
-    if (pass > 1 && after.true_peak_db !== null && after.true_peak_db > TARGET_TP) limit -= after.true_peak_db - TARGET_TP + PEAK_MARGIN_DB;
+  let under = first.lufs < TARGET_LUFS ? { gain: 0, lufs: first.lufs } : null;
+  let over = first.lufs > TARGET_LUFS ? { gain: 0, lufs: first.lufs } : null;
+  let gain = TARGET_LUFS - first.lufs;
+  for (let pass = 1; !within(after) && pass <= MAX_CORRECTIONS; pass++) {
     ctx.log.info('sound layer correction pass', { pass, lufs: after.lufs, true_peak_db: after.true_peak_db, gain_db: +gain.toFixed(2), limit_db: +limit.toFixed(2) });
     path = await encode(ctx, inputs.video.path, limited(gain, limit), `levelled-${pass + 1}.mp4`);
     after = await kitLoudness(ctx, path);
-    tries.push({ path, ...after });
+    if (after.lufs === null || after.true_peak_db === null) break;
+    if (after.true_peak_db > TARGET_TP) {
+      limit -= after.true_peak_db - TARGET_TP + PEAK_MARGIN_DB;
+      under = null;
+      over = null;
+      continue;
+    }
+    if (after.lufs < TARGET_LUFS) under = { gain, lufs: after.lufs };
+    else over = { gain, lufs: after.lufs };
+    gain = nextGain(under, over);
   }
-  // Last resort: a plain gain cut after the same chain holds the ceiling, at some loudness (twice at most).
-  for (let cut = 0, n = 0; n < 2 && !tries.some((t) => within(t)); n++) {
-    const last = tries[tries.length - 1];
-    if (last.true_peak_db === null || last.true_peak_db <= TARGET_TP || last.lufs === null) break;
-    cut += last.true_peak_db - TARGET_TP + PEAK_MARGIN_DB;
-    ctx.log.info('sound layer peak fallback', { lufs: last.lufs, true_peak_db: last.true_peak_db, cut_db: +cut.toFixed(2) });
-    path = await encode(ctx, inputs.video.path, `${limited(gain, limit)},volume=${kitNum(-cut, 3)}dB`, `levelled-fallback-${n + 1}.mp4`);
-    tries.push({ path, ...(await kitLoudness(ctx, path)) });
+  if (!within(after)) {
+    throw ctx.error('output_invalid', `levelled to ${after.lufs} LUFS, true peak ${after.true_peak_db} dBTP; the target is ${TARGET_LUFS} +/-${TOLERANCE_LU} LUFS at or below ${TARGET_TP} dBTP`);
   }
-  // The first try on target; else the closest one under the ceiling and inside the check's tolerance.
-  const chosen =
-    tries.find((t) => within(t)) ||
-    tries.filter((t) => within(t, FALLBACK_TOLERANCE_LU)).sort((a, b) => Math.abs(a.lufs - TARGET_LUFS) - Math.abs(b.lufs - TARGET_LUFS))[0];
-  if (!chosen) {
-    const last = tries[tries.length - 1];
-    throw ctx.error('output_invalid', `levelled to ${last.lufs} LUFS, true peak ${last.true_peak_db} dBTP; the target is ${TARGET_LUFS} +/-${TOLERANCE_LU} LUFS at or below ${TARGET_TP} dBTP`);
-  }
-  after = chosen;
-  path = chosen.path;
   ctx.log.info('sound layer levelled', { lufs_before: first.lufs, lufs_after: after.lufs, true_peak_db: after.true_peak_db });
   // Only the chosen pass leaves scratch, as the step's one output.
   await rename(path, join(ctx.workDir, 'levelled.mp4'));

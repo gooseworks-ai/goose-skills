@@ -2,7 +2,8 @@
 
 ## 1.0.3
 
-- Holds -1 dBTP on every bed: every chain fades the first 20 ms in (a cut starting at full level made the AAC encoder's first frame overshoot by up to 4 dB), corrections re-level the source instead of re-encoding their own AAC, their limiter ceiling starts at -2 dBFS and drops by any measured overshoot, the gain follows the measured loudness slope, and a last gain cut holds the ceiling within the check's +/-2 LU instead of failing.
+- Holds -1 dBTP on every bed: every chain fades the first 20 ms in (a cut starting at full level made the AAC encoder's first frame overshoot by up to 4 dB), corrections re-level the source instead of re-encoding their own AAC, and the limiter's ceiling starts at -2 dBFS and drops by any overshoot measured after the encode.
+- The correction gain is searched inside a bracket of too-quiet and too-loud tries (up to eight), so a peaky cut where the limiter eats most of each step no longer swings under and over until the passes run out. The output must hold -14 +/-1 LUFS and -1 dBTP.
 
 ## 1.0.2
 

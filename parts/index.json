@@ -1943,9 +1943,9 @@
       "determinism": "pure",
       "path": "parts/sound-layer/1.0.3",
       "files": {
-        "README.md": "dd0cfe61baa4e4bbf7805eed82d9feac7b1691b7b62c31d74874dbd781420ae6",
+        "README.md": "94850a459c090b84e5239c13be8bd533d8d9a32a09795b51396b63c3810e5304",
         "part.json": "ebfd9ca55a23eba00d7502dabe601472ea252692a2accdd73b9928bbfb9d766a",
-        "part.mjs": "bdad9a7cfa5435ab63c9c0075f0e9a41fb59d086abc0b221983e6dd6eb9c8ce9"
+        "part.mjs": "e5f5f2138dea23ea949b37ba0b928aa3972627f35e038ca543cc546907d10b80"
       },
       "models": []
     },
