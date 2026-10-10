@@ -1003,8 +1003,13 @@
       "needs": {
         "browser": true,
         "ffmpeg": {
+          "filters": [
+            "scale"
+          ],
           "encoders": [
-            "libx264"
+            "libx264",
+            "png",
+            "mjpeg"
           ]
         },
         "network": false,
@@ -1017,8 +1022,8 @@
       "determinism": "pure",
       "path": "parts/html-frames/1.1.0",
       "files": {
-        "part.json": "8e1eadd380016228ab52e43c8cf10959b173c94f1b23ea8564023745a615dc16",
-        "part.mjs": "e13e52c0c2592a4508db348e473fa4231b0f8575c00b58fd1083ab45b491fa7f"
+        "part.json": "058d55257aa76fccec1ff058f48a7d042e8046d860984cff0d1a95011c48607d",
+        "part.mjs": "175e33d0e3961dfb90aa9a0a69eb1dc475ada563f8c8e01b79ce1c82b6021777"
       },
       "models": []
     },

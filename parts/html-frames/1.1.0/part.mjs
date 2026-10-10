@@ -405,7 +405,7 @@ var inputs = {
       maximum: 200
     },
     products: {
-      description: "plan.products, in the customer's order.",
+      description: "plan.products, in the customer's order. A PNG, JPEG or WebP photo over 2048 px on its long side reaches the page scaled down to 2048 px (a PNG or WebP as PNG).",
       type: "array",
       maxItems: 12,
       items: {
@@ -1222,6 +1222,8 @@ function runtimeScript(data) {
 
 // src/kit/maker/page.ts
 var KIT_FOLDER = "_kit";
+var MAX_PICTURE_PX = 2048;
+var RESIZABLE = { "image/png": "png", "image/webp": "png", "image/jpeg": "jpg" };
 var IMAGE_EXT = {
   "image/png": "png",
   "image/jpeg": "jpg",
@@ -1305,6 +1307,7 @@ async function buildPage(spec, dir, ctx, reserve = () => void 0) {
   const url = (relFromDir) => path.relative(path.dirname(entry), path.join(dir, ...relFromDir.split("/"))).split(path.sep).join("/");
   const placed = /* @__PURE__ */ new Map();
   const preload = [];
+  const staging = /* @__PURE__ */ new Map();
   for (const ref of pageFiles) {
     const rel = path.relative(base, ref.path).split(path.sep).join("/");
     if (rel.split("/")[0] === KIT_FOLDER) fail(`the frame ${rel} uses the folder name ${KIT_FOLDER}, which the kit keeps for itself`);
@@ -1341,16 +1344,41 @@ async function buildPage(spec, dir, ctx, reserve = () => void 0) {
   for (const font of spec.fonts) await addFont(font, familyOf(font));
   if (spec.brand?.fonts.heading) await addFont(spec.brand.fonts.heading, "brand-heading");
   if (spec.brand?.fonts.body) await addFont(spec.brand.fonts.body, "brand-body");
+  const smaller = async (ref) => {
+    const to = RESIZABLE[ref.mime];
+    if (!to || !ctx.tools) return null;
+    let { width, height } = ref;
+    if (!width || !height) ({ width, height } = await ctx.tools.probe(ref.path).catch(() => ({ width: void 0, height: void 0 })));
+    if (!width || !height || Math.max(width, height) <= MAX_PICTURE_PX) return null;
+    const k = MAX_PICTURE_PX / Math.max(width, height);
+    const [w, h] = [Math.max(1, Math.round(width * k)), Math.max(1, Math.round(height * k))];
+    const rel = `${KIT_FOLDER}/media/${ref.sha256.slice(0, 16)}-${MAX_PICTURE_PX}.${to}`;
+    const target = path.join(dir, ...rel.split("/"));
+    const quality = to === "jpg" ? ["-q:v", "2"] : [];
+    try {
+      await ctx.tools.exec("ffmpeg", ["-hide_banner", "-nostdin", "-y", "-loglevel", "error", "-i", ref.path, "-frames:v", "1", "-vf", `scale=${w}:${h}:flags=lanczos`, ...quality, target]);
+    } catch {
+      return fail(`the picture ${path.basename(ref.path)} is too large to show (${width}x${height}); use one at most ${MAX_PICTURE_PX} px on its long side`);
+    }
+    return { ext: to, target };
+  };
   const media = async (ref) => {
     const ext = IMAGE_EXT[ref.mime];
     if (!ext) fail(`the picture ${path.basename(ref.path)} is not png, jpg, webp, gif, avif or svg`);
-    const rel = `${KIT_FOLDER}/media/${ref.sha256.slice(0, 16)}.${ext}`;
-    if (!preload.includes(url(rel))) {
-      const data2 = await readChecked(ref, fail);
-      still(ref, data2);
-      await put(path.join(dir, ...rel.split("/")), data2);
-      preload.push(url(rel));
-    }
+    let rel = `${KIT_FOLDER}/media/${ref.sha256.slice(0, 16)}.${ext}`;
+    const staged = staging.get(ref.sha256);
+    if (staged) return staged;
+    const data2 = await readChecked(ref, fail);
+    still(ref, data2);
+    const resized = await smaller(ref);
+    if (resized) {
+      rel = path.relative(dir, resized.target).split(path.sep).join("/");
+      const size = (await readFile(resized.target)).length;
+      reserve(size);
+      bytes += size;
+    } else await put(path.join(dir, ...rel.split("/")), data2);
+    preload.push(url(rel));
+    staging.set(ref.sha256, url(rel));
     return url(rel);
   };
   const products = [];
