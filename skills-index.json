@@ -5107,7 +5107,7 @@
     {
       "slug": "mix-master",
       "name": "mix-master",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "category": "capabilities",
       "domain": "ads",
       "description": "Canonical short-form-ad audio mix in one FFmpeg pass. VO loudnorm + 3.0× per-clip + 2.0× mix, music 0.13 base + apad+afade, sidechain compress 20:1 @ 0.01, climax line +20%, optional video-to-music duration sync. Replaces the reactive multi-round tuning that cost v03 6+ passes.",
@@ -5122,7 +5122,7 @@
         "slug": "mix-master",
         "category": "capabilities",
         "pack": "video-ad-formats",
-        "version": "1.0.1",
+        "version": "1.0.2",
         "tags": [
           "ads"
         ],
@@ -10444,7 +10444,7 @@
           "name": "mix-master",
           "description": "Canonical short-form-ad audio mix in one FFmpeg pass. VO loudnorm + 3.0× per-clip + 2.0× mix, music 0.13 base + apad+afade, sidechain compress 20:1 @ 0.01, climax line +20%, optional video-to-music duration sync. Replaces the reactive multi-round tuning that cost v03 6+ passes.",
           "path": "skills/ads/packs/video-ad-formats/mix-master",
-          "version": "1.0.1",
+          "version": "1.0.2",
           "files": [
             "skills/ads/packs/video-ad-formats/mix-master/SKILL.md",
             "skills/ads/packs/video-ad-formats/mix-master/scripts/mix.sh",
