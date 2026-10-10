@@ -162,6 +162,8 @@ export async function run(inputs, ctx) {
   const reasons = [];
   const add = (code, status, { message, expected, found, fix } = {}) => {
     const c = { code, status };
+    // A failed or warned check carries its own plain words: the kit reports the first failed check's message.
+    if (status === 'fail' || status === 'warn') c.message = message || 'The video did not pass one of the final checks.';
     if (found !== undefined) c.found = found;
     if (expected !== undefined) c.expected = expected;
     if (fix) c.fix = fix;
