@@ -36,19 +36,39 @@ function chatTruthy(v) {
   return v === true || /^(true|yes|on|1)$/i.test(String(v == null ? '' : v).trim());
 }
 
+// A scene's picture text is a product photo when it names a chosen product (its id or name, or at least two
+// of its name's words, all of a one-word name), or asks for a photo or picture of the product with one chosen
+// product that has photos. Anything else describes the shot and draws nothing.
+const CHAT_PHOTO_WORD = /\b(photos?|pictures?|pics?|images?|shots?|snaps?)\b/i;
+const CHAT_PRODUCT_WORD = /\bproducts?\b/i;
+const chatWords = (text) => (String(text || '').toLowerCase().match(/[\p{L}\p{N}]+/gu) || []).filter((w) => w.length >= 4);
+
+/** How well `text` names `product`: 0, or the count of its name's words the text uses (a stem counts: shorts, Short). */
+function chatNames(text, product) {
+  const want = text.toLowerCase();
+  if (String(product.id).toLowerCase() === want || String(product.name || '').toLowerCase() === want) return Infinity;
+  const name = chatWords(product.name);
+  const said = chatWords(want);
+  const used = name.filter((w) => said.some((t) => t.startsWith(w) || w.startsWith(t))).length;
+  return name.length && used >= Math.min(2, name.length) ? used : 0;
+}
+
 /**
  * The photo a scene shows: the picture the customer uploaded for it (scene.image),
- * else its picture file, else the chosen product its picture names.
+ * else its picture file, else the chosen product its picture text names.
  */
 function chatPicture(scene, products) {
   if (scene.image && typeof scene.image === 'object' && scene.image.kind === 'file') return scene.image;
   const p = scene.picture;
   if (p && typeof p === 'object' && p.kind === 'file') return p;
   if (typeof p !== 'string' || !p.trim()) return null;
-  const want = p.trim().toLowerCase();
-  const withPhoto = (products || []).filter((x) => (x.images || []).length);
-  const match = withPhoto.find((x) => String(x.id).toLowerCase() === want || String(x.name || '').toLowerCase() === want);
-  const product = match || (withPhoto.length === 1 ? withPhoto[0] : null);
+  const text = p.trim();
+  const all = products || [];
+  const named = all.map((x) => ({ x, n: chatNames(text, x) })).filter((m) => m.n > 0).sort((a, b) => b.n - a.n).map((m) => m.x);
+  const asksPhoto = CHAT_PHOTO_WORD.test(text) && CHAT_PRODUCT_WORD.test(text);
+  if (!named.length && !asksPhoto) return null;
+  const withPhoto = (named.length ? named : all).filter((x) => (x.images || []).length);
+  const product = named.length ? withPhoto[0] : withPhoto.length === 1 ? withPhoto[0] : null;
   if (!product) throw new Error(`A scene asks for the photo "${p}", but no chosen product with a photo matches it.`);
   return product.images[0];
 }

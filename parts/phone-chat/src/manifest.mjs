@@ -45,13 +45,13 @@ export const manifest = {
             id: { type: ['string', 'integer', 'null'] },
             line: text(2000),
             on_screen: text(2000),
-            picture: { anyOf: [{ type: 'null' }, { type: 'string', maxLength: 2000 }, file('image')] },
+            picture: { description: 'A file, or text: a photo only when the text names a chosen product or asks for its photo (see products); a description of the shot draws nothing.', anyOf: [{ type: 'null' }, { type: 'string', maxLength: 2000 }, file('image')] },
             image: { description: 'A picture the customer uploaded for this scene; shown before picture.', anyOf: [{ type: 'null' }, file('image')] },
           },
         },
       },
       products: {
-        description: "plan.products: a scene's picture names one by id or name (or, with one chosen product, any picture means its photo).",
+        description: "plan.products: a scene's picture shows a product's first photo when it names that product (its id or name, or two of its name's words, all of a one-word name), or asks for a photo or picture of the product with one chosen product that has photos. Any other picture text describes the shot and draws nothing.",
         type: 'array',
         maxItems: 12,
         items: {
