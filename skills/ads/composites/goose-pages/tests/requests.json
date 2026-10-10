@@ -1,0 +1,306 @@
+[
+  {
+    "name": "new DTC angle",
+    "schema": "pageWriteActionSchema",
+    "input": {
+      "action": "create",
+      "brand_id": "brand-1",
+      "angle": {
+        "label": "Compact travel",
+        "product_id": "product-1"
+      },
+      "spec": {
+        "format": "showcase",
+        "style": "clean",
+        "segment": "dtc",
+        "goal": "buy",
+        "seo": {
+          "title": "Travel bottle",
+          "description": "A compact bottle for travel."
+        },
+        "hero": {
+          "headline": "A compact bottle for travel",
+          "image": {
+            "type": "asset",
+            "value": "asset-1"
+          },
+          "cta": {
+            "kind": "link",
+            "label": "Shop now",
+            "href": "https://shop.example.com/item"
+          }
+        },
+        "sections": [],
+        "products": [
+          {
+            "product_id": "product-1",
+            "image_ids": [
+              "asset-1"
+            ],
+            "pdp_url": "https://shop.example.com/item"
+          }
+        ]
+      }
+    },
+    "valid": true
+  },
+  {
+    "name": "known angle identity",
+    "schema": "pageWriteActionSchema",
+    "input": {
+      "action": "create",
+      "brand_id": "brand-1",
+      "angle": {
+        "id": "angle-1"
+      },
+      "spec": {
+        "format": "capture",
+        "style": "clean",
+        "segment": "leadgen",
+        "goal": "signup",
+        "seo": {
+          "title": "Travel bottle",
+          "description": "A compact bottle for travel."
+        },
+        "hero": {
+          "headline": "A compact bottle for travel",
+          "image": {
+            "type": "asset",
+            "value": "asset-1"
+          },
+          "cta": {
+            "kind": "form",
+            "label": "Join the waitlist",
+            "form_id": "form-1"
+          }
+        },
+        "sections": [],
+        "products": [],
+        "form_id": "form-1"
+      }
+    },
+    "valid": true
+  },
+  {
+    "name": "email-only form",
+    "schema": "formWriteActionSchema",
+    "input": {
+      "action": "create",
+      "brand_id": "brand-1",
+      "name": "Waitlist",
+      "fields": [
+        {
+          "key": "email",
+          "type": "email",
+          "label": "Email",
+          "required": true
+        }
+      ],
+      "consent_text": "I agree to be contacted about the waitlist.",
+      "thank_you": {
+        "mode": "message",
+        "message": "Thank you for joining."
+      },
+      "notify_emails": []
+    },
+    "valid": true
+  },
+  {
+    "name": "standalone form",
+    "schema": "pageWriteActionSchema",
+    "input": {
+      "action": "create",
+      "brand_id": "brand-1",
+      "angle": {
+        "label": "Waitlist"
+      },
+      "spec": {
+        "format": "form",
+        "style": "clean",
+        "segment": "leadgen",
+        "goal": "signup",
+        "seo": {
+          "title": "Waitlist",
+          "description": "Join the waitlist."
+        },
+        "sections": [],
+        "products": [],
+        "form_id": "form-1"
+      }
+    },
+    "valid": true
+  },
+  {
+    "name": "annotation patch",
+    "schema": "pageWriteActionSchema",
+    "input": {
+      "action": "update",
+      "page_id": "page-1",
+      "spec_patch": {
+        "hero": {
+          "subheadline": "Pack it for your next trip."
+        }
+      },
+      "resolves": [
+        "note-1"
+      ]
+    },
+    "valid": true
+  },
+  {
+    "name": "exact revision publish",
+    "schema": "pageWriteActionSchema",
+    "input": {
+      "action": "publish",
+      "page_id": "page-1",
+      "revision_id": "r7"
+    },
+    "valid": true
+  },
+  {
+    "name": "publish cannot omit revision",
+    "schema": "pageWriteActionSchema",
+    "input": {
+      "action": "publish",
+      "page_id": "page-1"
+    },
+    "valid": false
+  },
+  {
+    "name": "compare styles",
+    "schema": "pageReadActionSchema",
+    "input": {
+      "action": "compare",
+      "page_id": "page-1",
+      "styles": [
+        "clean",
+        "bold",
+        "editorial"
+      ]
+    },
+    "valid": true
+  },
+  {
+    "name": "duplicate styles refused",
+    "schema": "pageReadActionSchema",
+    "input": {
+      "action": "compare",
+      "page_id": "page-1",
+      "styles": [
+        "clean",
+        "clean"
+      ]
+    },
+    "valid": false
+  },
+  {
+    "name": "unpublish defaults to replace",
+    "schema": "pageWriteActionSchema",
+    "input": {
+      "action": "unpublish",
+      "page_id": "page-1"
+    },
+    "valid": true
+  },
+  {
+    "name": "redirect confirmed",
+    "schema": "pageWriteActionSchema",
+    "input": {
+      "action": "unpublish",
+      "page_id": "page-1",
+      "mode": "redirect",
+      "fallback_url": "https://brand.example.com",
+      "confirm_no_google_ads": true
+    },
+    "valid": true
+  },
+  {
+    "name": "redirect needs confirmation",
+    "schema": "pageWriteActionSchema",
+    "input": {
+      "action": "unpublish",
+      "page_id": "page-1",
+      "mode": "redirect",
+      "fallback_url": "https://brand.example.com"
+    },
+    "valid": false
+  },
+  {
+    "name": "asset ingestion",
+    "schema": "adIngestActionSchema",
+    "input": {
+      "action": "brief",
+      "brand_id": "brand-1",
+      "source": {
+        "type": "asset",
+        "value": "asset-1"
+      }
+    },
+    "valid": true
+  },
+  {
+    "name": "paid audit",
+    "schema": "adIngestActionSchema",
+    "input": {
+      "action": "audit",
+      "brand_id": "brand-1",
+      "ad_library_url": "https://www.facebook.com/ads/library/?id=123",
+      "confirm_credits": 12
+    },
+    "valid": true
+  },
+  {
+    "name": "brief cannot confirm paid work",
+    "schema": "adIngestActionSchema",
+    "input": {
+      "action": "brief",
+      "brand_id": "brand-1",
+      "source": {
+        "type": "url",
+        "value": "https://www.facebook.com/ads/library/?id=123"
+      },
+      "confirm_credits": 12
+    },
+    "valid": false
+  },
+  {
+    "name": "tracking re-render",
+    "schema": "pageWriteActionSchema",
+    "input": {
+      "action": "rerender_confirm",
+      "site_id": "site-1",
+      "reason": "tracking"
+    },
+    "valid": true
+  },
+  {
+    "name": "pixel confirmation",
+    "schema": "siteWriteActionSchema",
+    "input": {
+      "action": "tracking_confirm",
+      "brand_id": "brand-1",
+      "confirmed": true
+    },
+    "valid": true
+  },
+  {
+    "name": "pixel cannot claim false confirmation",
+    "schema": "siteWriteActionSchema",
+    "input": {
+      "action": "tracking_confirm",
+      "brand_id": "brand-1",
+      "confirmed": false
+    },
+    "valid": false
+  },
+  {
+    "name": "attribution",
+    "schema": "siteWriteActionSchema",
+    "input": {
+      "action": "ad_url",
+      "page_id": "page-1",
+      "platform": "meta"
+    },
+    "valid": true
+  }
+]
