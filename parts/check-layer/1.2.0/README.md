@@ -33,9 +33,10 @@ against the video.
 last 1.6 s when no step marked one, by grayscale normalised correlation: a mark by its shape, so a white mark on a
 dark card counts, at least 0.75; an opaque logo at least 0.70; a favicon-sized file fails. When the timeline
 declares the box a step drew the logo in (`safe_zones` use `logo`; html-frames 1.1.0 and phone-chat 1.2.0 do), the
-box plus a margin is cut from the full-resolution frame and the logo is matched there over sizes up to the box
-and turns of up to 5 degrees, so a logo drawn small, in a badge or on a tilted card is measured; not found there,
-it fails. With no box, the whole frame is searched on a 120 px wide copy over 15 to 60 % of its width, which
+box plus a margin is cut from the full-resolution frame and the logo is matched there at sizes from 40 % of the
+box's long side up to the box and turns of up to 5 degrees, a transparent logo by its shape and by its picture
+laid on white and on black (a mostly opaque one by its picture only), so a logo drawn small, in a badge or on a
+tilted card is measured and a different logo is not; not found there, it fails. With no box, the whole frame is searched on a 120 px wide copy over 15 to 60 % of its width, which
 misses small logos: a miss is then a `warn`, not a failure, unless the brand layer is on (`expect.layers.brand`,
 which the kit does not pass yet), the one fix the failure could name),
 `captions_safe_zone` (every drawn caption inside the timeline's caption zone and clear of the TikTok/Reels

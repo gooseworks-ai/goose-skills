@@ -109,14 +109,23 @@ async function kitLogoTemplate(ctx, logo, lw) {
   let transparent = 0;
   const gray = new Float64Array(lw * lh);
   const alpha = new Float64Array(lw * lh);
+  const onWhite = new Float64Array(lw * lh);
+  const onBlack = new Float64Array(lw * lh);
   for (let i = 0; i < lw * lh; i++) {
     const [r, g, b, a] = [rgba[i * 4], rgba[i * 4 + 1], rgba[i * 4 + 2], rgba[i * 4 + 3]];
     alpha[i] = a;
     gray[i] = 0.299 * r + 0.587 * g + 0.114 * b;
+    onBlack[i] = (gray[i] * a) / 255;
+    onWhite[i] = onBlack[i] + 255 - a;
     if (a < 250) transparent++;
   }
   const mode = transparent > lw * lh * 0.05 ? 'mark' : 'image';
-  return { mode, src: mode === 'mark' ? alpha : gray, lw, lh };
+  // A logo with transparency is matched by its shape, and then by its picture laid on white and on black:
+  // a shape alone misses a logo whose own drawing (a letter on a tile) is what shows. A logo that is mostly
+  // opaque (a tile with round corners) has no telling shape, so only its picture counts.
+  const shaped = transparent > lw * lh * 0.25;
+  const sources = mode === 'image' ? [gray] : shaped ? [alpha, onWhite, onBlack] : [onWhite, onBlack];
+  return { mode, src: sources[0], sources, lw, lh };
 }
 
 /**
@@ -177,7 +186,11 @@ function kitRotate(src, w, h, deg, fill) {
 const KIT_LOGO_BOX_LONG = 200;
 // Template sizes against the logo fitted to the box, and the turns tried at the closest few
 // (a card drawn at a slight angle carries its logo with it).
-const KIT_LOGO_BOX_SCALES = [1.06, 1, 0.94, 0.88, 0.82, 0.76, 0.7, 0.62, 0.55, 0.48, 0.4, 0.33, 0.27, 0.22, 0.17];
+// The box is where a step drew the logo, so the logo spans most of it: at least 40 % of the box's long side.
+// A smaller template (a few pixels) correlates with any corner of the picture, the wrong logo's included.
+const KIT_LOGO_BOX_SCALES = [1.06, 1, 0.94, 0.88, 0.82, 0.76, 0.7, 0.62, 0.55, 0.48, 0.4, 0.33];
+const KIT_LOGO_BOX_MIN_SPAN = 0.4;
+const KIT_LOGO_BOX_MIN_PX = 12;
 const KIT_LOGO_BOX_ANGLES = [-1.5, 1.5, -3, 3, -5, 5];
 const KIT_LOGO_GOOD = 0.92;
 
@@ -191,7 +204,7 @@ const KIT_LOGO_GOOD = 0.92;
 export async function kitLogoScoreInBox(ctx, video, logo, times, frameW, frameH, zone) {
   const template = await kitLogoTemplate(ctx, logo, 480);
   if (!template) return { score: 0, mode: 'image', box: null };
-  const { mode, src: tplSrc, lw, lh } = template;
+  const { mode, sources, lw, lh } = template;
   const margin = Math.max(6, Math.round(0.08 * Math.max(zone.w, zone.h)));
   const x0 = Math.max(0, Math.floor(zone.x - margin));
   const y0 = Math.max(0, Math.floor(zone.y - margin));
@@ -203,34 +216,38 @@ export async function kitLogoScoreInBox(ctx, video, logo, times, frameW, frameH,
   const ih = Math.max(8, Math.round((y1 - y0) * k));
   // The logo fitted inside the box (as object-fit: contain draws it), in the copy's pixels.
   const fit = Math.min(zone.w / lw, zone.h / lh) * k;
-  // A turned template's corners: no shape for a mark, the logo's own edge for an opaque logo.
-  let fill = 0;
-  if (mode === 'image') {
-    for (let x = 0; x < lw; x++) fill += tplSrc[x] + tplSrc[(lh - 1) * lw + x];
-    fill /= 2 * lw;
-  }
-  const sizes = KIT_LOGO_BOX_SCALES.map((f) => [Math.round(lw * fit * f), Math.round(lh * fit * f)]).filter(([tw, th]) => tw >= 6 && th >= 4 && tw <= iw && th <= ih);
-  const templates = new Map();
-  const tplAt = (tw, th, deg) => {
-    const key = `${tw}x${th}@${deg}`;
-    if (!templates.has(key)) templates.set(key, kitRotate(kitResize(tplSrc, lw, lh, tw, th), tw, th, deg, fill));
-    return templates.get(key);
-  };
-  let best = { score: 0, box: null };
-  const at = (img, t, tw, th, deg) => {
-    const m = kitBestNcc(img, iw, ih, tplAt(tw, th, deg), tw, th);
-    if (m.score > best.score) {
-      best = { score: m.score, t, angle: deg, box: { x: Math.round(x0 + m.x / k), y: Math.round(y0 + m.y / k), w: Math.round(tw / k), h: Math.round(th / k) } };
-    }
-    return m.score;
-  };
+  const sizes = KIT_LOGO_BOX_SCALES.map((f) => [Math.round(lw * fit * f), Math.round(lh * fit * f)]).filter(([tw, th]) => Math.min(tw, th) >= KIT_LOGO_BOX_MIN_PX && Math.max(tw, th) >= KIT_LOGO_BOX_MIN_SPAN * Math.max(zone.w, zone.h) * k && tw <= iw && th <= ih);
+  const frames = [];
   for (const t of times) {
     const raw = await kitRaw(ctx, ['-ss', kitNum(t), '-i', video, '-frames:v', '1', '-vf', `crop=${x1 - x0}:${y1 - y0}:${x0}:${y0},scale=${iw}:${ih}:flags=area,format=gray`, '-pix_fmt', 'gray'], `zone-${Math.round(t * 1000)}.raw`);
-    const img = Float64Array.from(raw);
-    const scored = sizes.map(([tw, th]) => ({ tw, th, score: at(img, t, tw, th, 0) }));
-    if (best.score >= KIT_LOGO_GOOD) break;
-    // Small turns at the three sizes that came closest.
-    for (const { tw, th } of scored.sort((a, b) => b.score - a.score).slice(0, 3)) for (const deg of KIT_LOGO_BOX_ANGLES) at(img, t, tw, th, deg);
+    frames.push({ t, img: Float64Array.from(raw) });
+  }
+  let best = { score: 0, box: null };
+  for (const tplSrc of sources) {
+    // A turned template's corners take the template's own edge (nothing, for a shape).
+    let fill = 0;
+    for (let x = 0; x < lw; x++) fill += tplSrc[x] + tplSrc[(lh - 1) * lw + x];
+    fill /= 2 * lw;
+    const templates = new Map();
+    const tplAt = (tw, th, deg) => {
+      const key = `${tw}x${th}@${deg}`;
+      if (!templates.has(key)) templates.set(key, kitRotate(kitResize(tplSrc, lw, lh, tw, th), tw, th, deg, fill));
+      return templates.get(key);
+    };
+    const at = (img, t, tw, th, deg) => {
+      const m = kitBestNcc(img, iw, ih, tplAt(tw, th, deg), tw, th);
+      if (m.score > best.score) {
+        best = { score: m.score, t, angle: deg, box: { x: Math.round(x0 + m.x / k), y: Math.round(y0 + m.y / k), w: Math.round(tw / k), h: Math.round(th / k) } };
+      }
+      return m.score;
+    };
+    for (const { t, img } of frames) {
+      const scored = sizes.map(([tw, th]) => ({ tw, th, score: at(img, t, tw, th, 0) }));
+      if (best.score >= KIT_LOGO_GOOD) break;
+      // Small turns at the three sizes that came closest.
+      for (const { tw, th } of scored.sort((a, b) => b.score - a.score).slice(0, 3)) for (const deg of KIT_LOGO_BOX_ANGLES) at(img, t, tw, th, deg);
+      if (best.score >= KIT_LOGO_GOOD) break;
+    }
     if (best.score >= KIT_LOGO_GOOD) break;
   }
   return { score: +best.score.toFixed(3), mode, box: best.box, t: best.t, angle: best.angle };
