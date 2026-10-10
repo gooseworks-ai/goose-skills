@@ -1,11 +1,14 @@
 // sound-layer: levels the finished cut to -14 LUFS integrated with the true
 // peak at or below -1 dBTP (D16: mix-master's finish mode, one loudness
 // target for every video). Two-pass loudnorm in linear mode from a measured
-// first pass, then an EBU R128 check of the encoded result. Outside the target,
-// corrections re-level the source through an oversampled limiter, searching
-// the gain inside a bracket and lowering the limiter's ceiling by whatever the
-// AAC encode added; still outside after them, the step fails. A silent cut (at
-// or below -50 LUFS) passes through untouched.
+// first pass, then an EBU R128 check of the encoded result. loudnorm is used
+// only when the first pass shows linear mode is possible (it otherwise falls
+// back to dynamic mode on its own, which squashes a chat's message sounds into
+// the bed); else, and outside the target, the source is levelled by a plain
+// gain through an oversampled limiter, searching the gain inside a bracket and
+// lowering the limiter's ceiling by whatever the AAC encode added; still
+// outside after them, the step fails. A silent cut (at or below -50 LUFS)
+// passes through untouched.
 import { rename } from 'node:fs/promises';
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitFfmpeg, kitLoudness, kitNum } from '../../_lib/part.mjs';
@@ -99,11 +102,23 @@ export async function run(inputs, ctx) {
   const m = loudnormJson(stderr);
   if (!m) throw ctx.error('tool_failed', 'loudnorm printed no measurement');
   const lra = Math.min(50, Math.max(11, Math.ceil(Number(m.input_lra) + 1)));
-  const pass2 =
-    `loudnorm=I=${TARGET_LUFS}:TP=${LOUDNORM_TP}:LRA=${lra}:measured_I=${m.input_i}:measured_TP=${m.input_tp}:` +
-    `measured_LRA=${m.input_lra}:measured_thresh=${m.input_thresh}:offset=${m.target_offset}:linear=true,${STEREO},aresample=48000,${FADE_IN}`;
-  let path = await encode(ctx, inputs.video.path, pass2, 'levelled.mp4');
-  let after = await kitLoudness(ctx, path);
+  // loudnorm stays linear (a pure gain) only when the gain to the target keeps the measured peak under its
+  // ceiling and the range fits; past that it silently goes dynamic. Then the limiter chain does it instead.
+  const linear = Number(m.input_tp) + (TARGET_LUFS - Number(m.input_i)) <= LOUDNORM_TP && Number(m.input_lra) <= lra;
+  let path = null;
+  let after = { lufs: null, true_peak_db: null };
+  if (linear) {
+    const pass2 =
+      `loudnorm=I=${TARGET_LUFS}:TP=${LOUDNORM_TP}:LRA=${lra}:measured_I=${m.input_i}:measured_TP=${m.input_tp}:` +
+      `measured_LRA=${m.input_lra}:measured_thresh=${m.input_thresh}:offset=${m.target_offset}:linear=true:print_format=json,${STEREO},aresample=48000,${FADE_IN}`;
+    path = join(ctx.tmpDir, 'levelled.mp4');
+    const { stderr: said } = await kitFfmpeg(ctx, ['-i', inputs.video.path, '-map', '0:v:0', '-map', '0:a:0', '-c:v', 'copy', '-af', pass2, ...ctx.tools.encodeArgs('aac'), '-movflags', '+faststart', path]);
+    const type = loudnormJson(said)?.normalization_type;
+    if (type === 'linear') after = await kitLoudness(ctx, path);
+    else ctx.log.info('loudnorm left linear mode; the limiter chain levels the cut', { normalization_type: type ?? null });
+  } else {
+    ctx.log.info('loudnorm cannot stay linear on this cut; the limiter chain levels it', { input_i: m.input_i, input_tp: m.input_tp, input_lra: m.input_lra });
+  }
   // Corrections re-level the source (never a pass's own AAC, so encodes do not stack) through a limiter run
   // oversampled so it holds inter-sample peaks. Loudness rises with gain but not linearly (the limiter eats
   // more of a peaky cut the harder it is driven), so the gain is searched inside a bracket: the highest gain
@@ -129,7 +144,7 @@ export async function run(inputs, ctx) {
     else over = { gain, lufs: after.lufs };
     gain = nextGain(under, over);
   }
-  if (!within(after)) {
+  if (!path || !within(after)) {
     throw ctx.error('output_invalid', `levelled to ${after.lufs} LUFS, true peak ${after.true_peak_db} dBTP; the target is ${TARGET_LUFS} +/-${TOLERANCE_LU} LUFS at or below ${TARGET_TP} dBTP`);
   }
   ctx.log.info('sound layer levelled', { lufs_before: first.lufs, lufs_after: after.lufs, true_peak_db: after.true_peak_db });
