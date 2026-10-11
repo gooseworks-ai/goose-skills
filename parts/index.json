@@ -2202,6 +2202,55 @@
       "models": []
     },
     {
+      "id": "splice",
+      "version": "1.0.0",
+      "interface": 1,
+      "kind": "compose",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "fps",
+            "scale",
+            "pad",
+            "setsar",
+            "setparams",
+            "format",
+            "tpad",
+            "trim",
+            "setpts",
+            "concat",
+            "psnr",
+            "aresample",
+            "aformat",
+            "asetpts",
+            "apad",
+            "atrim",
+            "anullsrc"
+          ],
+          "encoders": [
+            "libx264",
+            "aac"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 1500
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/splice/1.0.0",
+      "files": {
+        "README.md": "ed63faefce9936c7a710e6b6e47d3cc6c991504f1159e0df4e3edcb36bb728b5",
+        "part.json": "7d5881769e2fd3be3d8c3d27798278a2847a14541419c35c32b1587732cb9df7",
+        "part.mjs": "c82817c5a56c9929ffae709f25964c7f23bb8593f4d985e4fbbefb7deb9e0aa4"
+      },
+      "models": []
+    },
+    {
       "id": "transcribe-whisper",
       "version": "1.0.0",
       "interface": 1,
