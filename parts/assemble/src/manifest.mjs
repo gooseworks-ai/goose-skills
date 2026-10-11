@@ -1,23 +1,26 @@
-import { file, timeline } from '../../_tools/schemas.mjs';
+import { file, sceneSpan, speechEntry, timeline } from '../../_tools/schemas.mjs';
 
 export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'assemble',
-  version: '1.0.2',
+  version: '1.1.0',
   kind: 'compose',
   title: 'Assemble scenes',
-  summary: 'Joins scene clips and stills in order into one cut of one size and frame rate, with exact frame counts and hard cuts.',
+  summary: 'Joins scene clips and stills in order into one cut of one size and frame rate, with exact frame counts and hard cuts; can time each picture to a voice or song, join an end card, push stills slowly in and add a grain look.',
   runtime: 'node',
   entry: 'part.mjs',
   files: ['README.md', 'part.mjs'],
   kit: '>=1.0.0 <2.0.0',
   needs: {
     browser: false,
-    ffmpeg: { filters: ['fps', 'scale', 'crop', 'pad', 'setsar', 'tpad', 'trim', 'setpts', 'format', 'concat', 'aresample', 'aformat', 'apad', 'atrim', 'anullsrc'], encoders: ['libx264', 'aac'] },
+    ffmpeg: {
+      filters: ['fps', 'scale', 'crop', 'pad', 'setsar', 'tpad', 'trim', 'setpts', 'format', 'concat', 'aresample', 'aformat', 'apad', 'atrim', 'anullsrc', 'zoompan', 'eq', 'hqdn3d', 'noise'],
+      encoders: ['libx264', 'aac'],
+    },
     network: false,
     models: [],
-    disk_mb: 500,
+    disk_mb: 800,
   },
   inputs: {
     type: 'object',
@@ -45,7 +48,50 @@ export const manifest = {
       fps: { description: 'Default 30.', type: 'integer', minimum: 10, maximum: 60 },
       fit: { description: 'cover crops to fill (default); contain pads.', enum: ['cover', 'contain'] },
       background: { description: 'Pad colour for contain. Default black.', type: 'string', pattern: '^(#[0-9A-Fa-f]{6}|black|white)$' },
-      clip_audio: { description: "drop (default) or keep each clip's own sound, with silence under stills.", enum: ['drop', 'keep'] },
+      clip_audio: { description: "drop (default) or keep each clip's own sound, with silence under stills and the end card.", enum: ['drop', 'keep'] },
+      spans: {
+        description:
+          "Where each scene's line is in the voice or song (step.<voice>.scenes), matched to clips by id. Each clip then starts on its span's start (the first at 0) and runs to the next one; the last runs to its span's end plus tail_s. A clip's seconds is not used.",
+        type: 'array',
+        minItems: 1,
+        maxItems: 60,
+        items: sceneSpan,
+      },
+      silent: {
+        description:
+          'With spans: what a clip with no span (a scene with no line) gets. share_previous (default) splits the voiced clip before it evenly; fixed gives it seconds (default 1) of that clip.',
+        type: 'object',
+        additionalProperties: false,
+        required: ['mode'],
+        properties: {
+          mode: { enum: ['share_previous', 'fixed'] },
+          seconds: { type: 'number', exclusiveMinimum: 0, maximum: 10 },
+        },
+      },
+      speech: { description: "Copied into the output timeline (held to its length), so captions need no transcription.", type: 'array', items: speechEntry },
+      timeline: {
+        ...timeline,
+        description:
+          "The clips' own timeline. Without spans the clips are already cut: its scenes, speech and safe zones are kept (scenes and zones moved onto the cut). With spans only its speech is used, when speech is not given.",
+      },
+      ending: { ...file('video'), description: 'The end card, joined with a hard cut and marked as timeline.end_card. Never graded.' },
+      ending_timeline: { ...timeline, description: "The end card's timeline: its logo safe zone is moved onto the cut and kept." },
+      ending_fills: {
+        description: "after (default): the card follows the last cut. last_span (needs spans): the card takes the last span's place, from its start to its end plus tail_s, never shorter than the card.",
+        enum: ['last_span', 'after'],
+      },
+      tail_s: { description: 'With spans: how long the last picture holds after its span ends. Default 0.25.', type: 'number', minimum: 0, maximum: 5 },
+      motion: {
+        description: "stills: ken_burns pushes every still slowly in, centred, from 1.0 to `to` (default 1.05) over its cut. Clips and the end card never move.",
+        type: 'object',
+        additionalProperties: false,
+        required: [],
+        properties: { stills: { enum: ['none', 'ken_burns'] }, to: { type: 'number', minimum: 1, maximum: 1.5 } },
+      },
+      grade: {
+        description: "A finish on every body cut (never the end card). phone-grain: slight contrast, less colour, fine moving grain. phonecam: a 720p phone softness with grain. Grain looks cap the encode at 8 Mbps.",
+        enum: ['none', 'phone-grain', 'phonecam'],
+      },
     },
   },
   outputs: {
