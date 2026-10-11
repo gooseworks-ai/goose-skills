@@ -418,3 +418,83 @@ export function recutPlan({ duration, fps, speech, scenes, timeline_scenes: time
   const cuts = merged.map((r) => ({ at_s: t3(r.start), removed_s: +(r.end - r.start).toFixed(3), kind: r.kind }));
   return { removals: merged, keep, speech: outSpeech, scenes: outScenes, cuts, seconds, warnings };
 }
+
+// ---------------------------------------------------------------------------------------------
+// Room tone (W1-15b). A re-cut puts stretches of the street from different moments end to end, so
+// the background steps at every join (recut.py measured 2.2 to 6.4 dB). One bed of the take's own
+// room tone, looped under the whole edit, bridges those steps. The bed is cut from the ORIGINAL
+// take's quietest speech-free window, even when the cut drops that window, and never from a
+// stretch that holds speech: a bed cut over a line loops that line under the video (recut.py,
+// seed 4815, where Whisper then heard the question three times).
+
+/** The analysis frame for room-tone levels, in seconds (800 samples at 16 kHz). */
+export const RECUT_LEVEL_STEP_S = 0.05;
+/** The analysis sample rate (mono, s16le) for room-tone levels. */
+export const RECUT_LEVEL_RATE = 16000;
+/** A frame quieter than this is digital silence or a fade, not room tone. */
+export const RECUT_SILENCE_DB = -80;
+/** Speech is kept this far clear of a room-tone window (Whisper's word edges drift). */
+export const RECUT_ROOM_PAD_S = 0.12;
+/** Window lengths tried for the bed, longest first: a longer loop repeats less often. */
+export const RECUT_ROOM_LENGTHS = [1.0, 0.8, 0.6, 0.4];
+
+/** dB per RECUT_LEVEL_STEP_S frame of mono s16le PCM at RECUT_LEVEL_RATE. -Infinity for a silent frame. */
+export function recutLevels(pcm) {
+  const step = Math.round(RECUT_LEVEL_STEP_S * RECUT_LEVEL_RATE);
+  const n = Math.floor(pcm.length / 2);
+  const out = [];
+  for (let f = 0; (f + 1) * step <= n; f++) {
+    let sum = 0;
+    for (let i = f * step; i < (f + 1) * step; i++) {
+      const v = pcm.readInt16LE(i * 2) / 32768;
+      sum += v * v;
+    }
+    const rms = Math.sqrt(sum / step);
+    out.push(rms > 0 ? 20 * Math.log10(rms) : -Infinity);
+  }
+  return out;
+}
+
+/** The stretches of the take that hold speech, padded: every heard word and every line's span. */
+export function recutSpeechBusy(speech, pad = RECUT_ROOM_PAD_S) {
+  const busy = [];
+  for (const e of speech || []) {
+    const words = (e.words || []).filter((w) => Number.isFinite(w.start_s) && Number.isFinite(w.end_s));
+    for (const w of words) busy.push({ start: w.start_s - pad, end: Math.max(w.start_s, w.end_s) + pad });
+    if (words.length) busy.push({ start: Math.min(...words.map((w) => w.start_s)) - pad, end: Math.max(...words.map((w) => w.end_s)) + pad });
+    if (Number.isFinite(e.start_s) && Number.isFinite(e.end_s) && e.end_s > e.start_s) busy.push({ start: e.start_s - pad, end: e.end_s + pad });
+  }
+  return recutMerge(busy.map((b) => ({ ...b, kind: 'speech' }))).map(({ start, end }) => ({ start, end }));
+}
+
+/**
+ * The quietest window of the take to loop as room tone. For each of RECUT_ROOM_LENGTHS, the
+ * speech-free window whose loudest frame is quietest (so a footstep or a word onset never lands in
+ * the bed), ties broken by the mean level then the earlier start. Across lengths the longest wins
+ * (a longer loop repeats less often) unless a shorter one is more than 1 dB quieter at its peak.
+ * Frames of digital silence (under RECUT_SILENCE_DB) disqualify a window: a fade is not room tone.
+ *   levels  dB per `step_s` frame of the take (recutLevels); busy speech stretches (recutSpeechBusy)
+ * Returns {start_s, end_s, level_db, peak_db}, or null when no window of min_s fits.
+ */
+export function recutQuietWindow({ levels, step_s: step = RECUT_LEVEL_STEP_S, busy = [], duration, lengths = RECUT_ROOM_LENGTHS }) {
+  const total = Number.isFinite(duration) ? Math.min(duration, levels.length * step) : levels.length * step;
+  let pick = null;
+  for (const len of [...lengths].sort((a, b) => b - a)) {
+    const frames = Math.round(len / step);
+    let best = null;
+    for (let f = 0; (f + frames) * step <= total + RECUT_EPS; f++) {
+      const start = f * step;
+      const end = start + frames * step;
+      if (busy.some((b) => b.start < end && b.end > start)) continue;
+      const win = levels.slice(f, f + frames);
+      if (win.length < frames || win.some((v) => !(v >= RECUT_SILENCE_DB))) continue;
+      const peak = Math.max(...win);
+      const mean = 10 * Math.log10(win.reduce((s, v) => s + 10 ** (v / 10), 0) / win.length);
+      if (!best || peak < best.peak_db - 1e-9 || (Math.abs(peak - best.peak_db) <= 1e-9 && mean < best.level_db - 1e-9)) {
+        best = { start_s: +start.toFixed(3), end_s: +end.toFixed(3), level_db: +mean.toFixed(2), peak_db: peak };
+      }
+    }
+    if (best && (!pick || best.peak_db < pick.peak_db - 1)) pick = best;
+  }
+  return pick && { ...pick, peak_db: +pick.peak_db.toFixed(2) };
+}

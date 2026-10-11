@@ -7,7 +7,7 @@ export const manifest = {
   version: '1.0.0',
   kind: 'compose',
   title: 'Re-cut on-camera speech',
-  summary: 'Re-cuts one take of on-camera speech: dead air cut down on its own picture cuts, repeats and stutters dropped inside a line, no shot under the minimum, at 30 fps.',
+  summary: 'Re-cuts one take of on-camera speech: dead air cut on its own picture cuts, repeats dropped inside a line, a minimum shot, 30 fps; optional room tone from its quietest window and a light street grade.',
   runtime: 'node',
   entry: 'part.mjs',
   files: ['README.md', 'part.mjs'],
@@ -15,8 +15,8 @@ export const manifest = {
   needs: {
     browser: false,
     ffmpeg: {
-      filters: ['scale', 'select', 'showinfo', 'trim', 'setpts', 'tpad', 'atrim', 'asetpts', 'aresample', 'aformat', 'apad', 'afade', 'pan', 'concat', 'fps', 'setsar', 'format'],
-      encoders: ['libx264', 'aac'],
+      filters: ['scale', 'select', 'showinfo', 'trim', 'setpts', 'tpad', 'atrim', 'asetpts', 'aresample', 'aformat', 'apad', 'afade', 'pan', 'concat', 'fps', 'setsar', 'format', 'asplit', 'areverse', 'volume', 'amix', 'curves', 'unsharp'],
+      encoders: ['libx264', 'aac', 'pcm_s16le'],
     },
     network: false,
     models: [],
@@ -55,14 +55,14 @@ export const manifest = {
       max_gap_s: { description: 'Silences longer than this are cut down to it, on a picture cut where one falls in the silence. Default 0.25.', type: 'number', minimum: 0.12, maximum: 2 },
       drop: { description: "repeats (default): drop repeated words and stutters inside a line, never a whole line. none: cut only dead air.", enum: ['repeats', 'none'] },
       room_tone: {
-        description: 'Loop the quietest window of at least 0.4 s under every cut. Null for none.',
+        description: "Loop the take's quietest speech-free window (0.4 to 1 s, measured on the original take) under the whole edit, so the background does not step at the joins. gain_db is the bed's level against that window (default -6). Null or left out for none.",
         type: ['object', 'null'],
         additionalProperties: false,
         required: ['from'],
         properties: { from: { enum: ['quiet_window'] }, gain_db: { type: 'number', minimum: -40, maximum: 12 } },
       },
       fps: { description: 'Output frame rate. Default 30.', type: 'integer', minimum: 24, maximum: 60 },
-      grade: { description: 'none (default) or street-light.', enum: ['none', 'street-light'] },
+      grade: { description: 'none (default) or street-light: a 0.03 black lift and a 0.12 unsharp halo, no grain (the street-interview phone look).', enum: ['none', 'street-light'] },
     },
   },
   outputs: {

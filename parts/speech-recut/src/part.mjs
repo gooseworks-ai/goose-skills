@@ -9,15 +9,82 @@
 // stutters inside a line (never a whole line); shots under min_shot_s that
 // hold no speech. Output at `fps` (30 by default; Seedance returns 24).
 //
-// Not built yet (W1-15b): the room-tone loop, the street-light grade and the
-// output size cap. The schema already names them so the interface is fixed.
+// Finishing: `room_tone` loops the take's quietest speech-free window under
+// the whole edit, so the street does not step at every join; `grade:
+// street-light` is recut.py's phone_look_video.py default (a 0.03 black lift
+// into the real-footage band, a 0.12 unsharp halo, no grain). The final encode
+// caps its bitrate and an output over 180 MB is refused (size rule, critic #38).
+import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitDuration, kitFfmpeg, kitNum } from '../../_lib/part.mjs';
-import { RecutRefusal, recutPlan } from './recut.mjs';
+import { RECUT_LEVEL_RATE, RECUT_LEVEL_STEP_S, RecutRefusal, recutLevels, recutPlan, recutQuietWindow, recutSpeechBusy } from './recut.mjs';
 
 /** ffmpeg's scene score above which a frame starts a new shot (recut.py measured at 0.30). */
 export const RECUT_SCENE_THRESHOLD = 0.3;
 const RECUT_FADE_S = 0.006;
+/** A finished video over this is refused before upload (the server takes 200 MB; critic #38). */
+export const RECUT_MAX_BYTES = 180 * 1024 * 1024;
+/** The bitrate cap on the final encode (size rule §4.12; street-light has no grain). */
+export const RECUT_RATE_CAP = ['-maxrate', '16M', '-bufsize', '32M'];
+/** The room-tone bed's level against the window it is cut from, when room_tone gives no gain_db. */
+export const RECUT_ROOM_GAIN_DB = -6;
+
+/**
+ * The video filters a grade adds after the frame rate and size, or '' for none. street-light is
+ * phone_look_video.py at its shipped defaults: crushed generated blacks lifted 0.03 into the
+ * real-footage band (measured 3.1 -> 9.7 on the 1st percentile), highlights eased to 0.98, a 0.12
+ * unsharp halo (0.4 over-sharpened into an AI tell), no grain, no colour match (strength 0).
+ */
+export function recutGradeChain(grade) {
+  if (grade === 'street-light') return 'curves=all=0/0.03 0.5/0.5 1/0.98,unsharp=5:5:0.12:5:5:0.0';
+  return '';
+}
+
+/** Throws output_invalid for a finished video over `max` bytes, before it is handed on. */
+export function recutCheckSize(ctx, video, max = RECUT_MAX_BYTES) {
+  if (Number.isFinite(video.bytes) && video.bytes > max) {
+    const mb = (b) => (b / 1024 / 1024).toFixed(1);
+    throw ctx.error('output_invalid', `the re-cut is ${mb(video.bytes)} MB, over the ${mb(max)} MB a finished video may be; use a shorter take`);
+  }
+  return video;
+}
+
+/**
+ * The take's quietest speech-free window, measured on its sound: {start_s, end_s, level_db, peak_db},
+ * or null when no window of at least 0.4 s is free of speech and of digital silence.
+ */
+export async function recutFindRoomTone(ctx, video, speech, duration) {
+  const raw = join(ctx.workDir, 'levels.raw');
+  await kitFfmpeg(ctx, ['-i', video.path, '-map', '0:a:0', '-vn', '-ac', '1', '-ar', String(RECUT_LEVEL_RATE), '-c:a', 'pcm_s16le', '-f', 's16le', raw]);
+  const levels = recutLevels(readFileSync(raw));
+  return recutQuietWindow({ levels, step_s: RECUT_LEVEL_STEP_S, busy: recutSpeechBusy(speech), duration });
+}
+
+/**
+ * The bed's loop: the window, then the window reversed, as a stereo 48 kHz wav. Played on a loop the
+ * palindrome has no seam (each end meets the same sample), so no click repeats under the edit.
+ */
+export async function recutRoomLoop(ctx, video, win, mono) {
+  const out = join(ctx.workDir, 'room.wav');
+  const len = win.end_s - win.start_s;
+  await kitFfmpeg(ctx, [
+    '-ss',
+    kitNum(win.start_s),
+    '-t',
+    kitNum(len),
+    '-i',
+    video.path,
+    '-filter_complex',
+    `[0:a]aresample=48000,${mono ? 'pan=stereo|c0=c0|c1=c0,' : ''}aformat=sample_fmts=fltp:sample_rates=48000:channel_layouts=stereo,` +
+      `atrim=0:${kitNum(len)},asetpts=PTS-STARTPTS,asplit[f][r];[r]areverse[b];[f][b]concat=n=2:v=0:a=1[room]`,
+    '-map',
+    '[room]',
+    '-c:a',
+    'pcm_s16le',
+    out,
+  ]);
+  return out;
+}
 
 /** The take's own shot changes, in seconds: ffmpeg scene detection on a small copy of the picture. */
 export async function recutPictureCuts(ctx, video) {
@@ -52,8 +119,6 @@ export async function recutChannels(ctx, video) {
 
 export async function run(inputs, ctx) {
   const manifest = await kitCheckInputs(ctx, inputs);
-  if (inputs.room_tone != null) throw ctx.error('bad_input', 'room_tone is not available in this build of speech-recut yet; leave it out');
-  if ((inputs.grade ?? 'none') !== 'none') throw ctx.error('bad_input', `grade ${inputs.grade} is not available in this build of speech-recut yet; use none`);
   const info = await ctx.tools.probe(inputs.video.path);
   if (!info.has_audio) throw ctx.error('bad_input', 'the take has no sound; speech-recut cuts picture and speech together');
   if (!info.width || !info.height) throw ctx.error('bad_input', 'the take has no picture');
@@ -62,6 +127,7 @@ export async function run(inputs, ctx) {
   const fps = inputs.fps ?? 30;
   const pictureCuts = await recutPictureCuts(ctx, inputs.video);
   const mono = (await recutChannels(ctx, inputs.video)) === 1;
+  const grade = inputs.grade ?? 'none';
   ctx.progress({ done: 1, total: 3 });
 
   let plan;
@@ -83,6 +149,18 @@ export async function run(inputs, ctx) {
   }
   for (const w of plan.warnings) ctx.log.warn(w);
   ctx.log.info('speech-recut plan', { picture_cuts: pictureCuts.length, removals: plan.removals.length, from_s: +duration.toFixed(3), to_s: plan.seconds });
+
+  // Room tone: measured on the ORIGINAL take, before the cut, so a window the cut drops still serves.
+  let room = null;
+  if (inputs.room_tone) {
+    const win = await recutFindRoomTone(ctx, inputs.video, inputs.speech, duration);
+    if (!win) ctx.log.warn('speech-recut found no speech-free window of 0.4 s or more with room tone in it; the edit has no room-tone bed');
+    else {
+      const gain = inputs.room_tone.gain_db ?? RECUT_ROOM_GAIN_DB;
+      room = { ...win, gain_db: gain, path: await recutRoomLoop(ctx, inputs.video, win, mono) };
+      ctx.log.info('speech-recut room tone', { start_s: win.start_s, end_s: win.end_s, level_db: win.level_db, gain_db: gain });
+    }
+  }
 
   // One input per kept stretch, seeked a second early and trimmed exactly, so no stretch of the take is
   // buffered in memory while another is read. Each stretch's sound fades in and out over 6 ms: no clicks.
@@ -110,8 +188,15 @@ export async function run(inputs, ctx) {
     );
   }
   const n = plan.keep.length;
-  graph.push(`${plan.keep.map((_, k) => `[v${k}][a${k}]`).join('')}concat=n=${n}:v=1:a=1[cv][aout]`);
-  graph.push(`[cv]fps=${fps},scale=${w}:${h},setsar=1,format=yuv420p[vout]`);
+  graph.push(`${plan.keep.map((_, k) => `[v${k}][a${k}]`).join('')}concat=n=${n}:v=1:a=1[cv][${room ? 'cut' : 'aout'}]`);
+  if (room) {
+    // The bed under the whole edit, at gain_db against its window; the speech is untouched.
+    args.push('-stream_loop', '-1', '-i', room.path);
+    graph.push(`[${n}:a]volume=${kitNum(room.gain_db, 3)}dB,atrim=0:${kitNum(plan.seconds)},asetpts=PTS-STARTPTS[bed]`);
+    graph.push('[cut][bed]amix=inputs=2:duration=first:dropout_transition=0:normalize=0[aout]');
+  }
+  const gradeChain = recutGradeChain(grade);
+  graph.push(`[cv]fps=${fps},scale=${w}:${h}${gradeChain ? `,${gradeChain}` : ''},setsar=1,format=yuv420p[vout]`);
   ctx.progress({ done: 2, total: 3 });
   await kitFfmpeg(ctx, [
     ...args,
@@ -123,11 +208,12 @@ export async function run(inputs, ctx) {
     '[aout]',
     ...ctx.tools.encodeArgs('aac'),
     ...ctx.tools.encodeArgs('h264-master'),
+    ...RECUT_RATE_CAP,
     '-r',
     String(fps),
     join(ctx.workDir, 'recut.mp4'),
   ]);
-  const video = await ctx.file('recut.mp4', 'video');
+  const video = recutCheckSize(ctx, await ctx.file('recut.mp4', 'video'));
   const got = await ctx.tools.probe(video.path);
   if (!Number.isFinite(got.duration_s) || Math.abs(got.duration_s - plan.seconds) > 2 / fps + 0.05) {
     throw ctx.error('output_invalid', `the re-cut is ${got.duration_s}s, expected ${kitNum(plan.seconds, 3)}s`);

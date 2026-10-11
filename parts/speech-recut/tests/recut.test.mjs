@@ -3,7 +3,7 @@
 // and the refusals. No ffmpeg; speech-recut.test.mjs renders.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { RECUT_EDGE_S, RecutRefusal, recutAlign, recutFragments, recutIsRepeat, recutMapper, recutPlan } from '../src/recut.mjs';
+import { RECUT_EDGE_S, RECUT_LEVEL_RATE, RECUT_LEVEL_STEP_S, RecutRefusal, recutAlign, recutFragments, recutIsRepeat, recutLevels, recutMapper, recutPlan, recutQuietWindow, recutSpeechBusy } from '../src/recut.mjs';
 
 const FPS = 24;
 const w = (text, start, end) => ({ text, start_s: start, end_s: end });
@@ -287,4 +287,75 @@ test('the same take always gives the same plan', () => {
   const a = recutPlan({ ...twoLines(), picture_cuts: [1.3, 2.4] });
   const b = recutPlan({ ...twoLines(), picture_cuts: [1.3, 2.4] });
   assert.deepEqual(a, b);
+});
+
+// ---- room tone (W1-15b) ----
+
+/** dB levels per 50 ms frame for `seconds`, at `floor` dB, with `at(t)` overriding a frame. */
+function levelsFor(seconds, floor, at = () => null) {
+  const n = Math.round(seconds / RECUT_LEVEL_STEP_S);
+  return Array.from({ length: n }, (_, f) => at(+(f * RECUT_LEVEL_STEP_S).toFixed(3)) ?? floor);
+}
+
+test('levels: dB per 50 ms frame of 16 kHz s16le; a silent frame is -Infinity', () => {
+  const step = RECUT_LEVEL_STEP_S * RECUT_LEVEL_RATE;
+  const pcm = Buffer.alloc(step * 2 * 2 + 10);
+  for (let i = 0; i < step; i++) pcm.writeInt16LE(i % 2 ? 16384 : -16384, i * 2);
+  const out = recutLevels(pcm);
+  assert.equal(out.length, 2, 'the part frame at the end is not measured');
+  near(out[0], 20 * Math.log10(0.5), 'a half-scale square wave', 1e-6);
+  assert.equal(out[1], -Infinity);
+});
+
+test('speech busy: every word and line span, padded and merged', () => {
+  const take = twoLines();
+  const busy = recutSpeechBusy(take.speech, 0.1);
+  assert.equal(busy.length, 2);
+  near(busy[0].start, 0.4, 'first line start');
+  near(busy[0].end, 1.1, 'first line end');
+  near(busy[1].start, 2.9, 'second line start');
+  near(busy[1].end, 3.6, 'second line end');
+});
+
+test('room tone: the quietest speech-free window, never over speech, longest first', () => {
+  const take = twoLines();
+  const busy = recutSpeechBusy(take.speech);
+  // A -40 dB street with a -55 dB lull at 1.6-2.8 s, and louder "speech" frames where the lines are.
+  const levels = levelsFor(4.5, -40, (t) => (t >= 1.6 && t < 2.8 ? -55 : t >= 0.5 && t < 1.0 ? -12 : t >= 3.0 && t < 3.5 ? -12 : null));
+  const win = recutQuietWindow({ levels, busy, duration: 4.5 });
+  assert.ok(win, 'a window is found');
+  near(win.end_s - win.start_s, 1.0, 'the longest window that fits');
+  assert.ok(win.start_s >= 1.6 - 1e-9 && win.end_s <= 2.8 + 1e-9, `inside the lull: ${JSON.stringify(win)}`);
+  near(win.peak_db, -55, 'its loudest frame', 1e-6);
+  for (const b of busy) assert.ok(win.end_s <= b.start || win.start_s >= b.end, `clear of speech ${JSON.stringify(b)}`);
+});
+
+test('room tone: a click in the lull moves the window; a shorter window wins when it is quieter', () => {
+  const take = twoLines();
+  const busy = recutSpeechBusy(take.speech);
+  const levels = levelsFor(4.5, -40, (t) => (t >= 2.05 && t < 2.1 ? -20 : t >= 1.5 && t < 2.6 ? -55 : null));
+  const win = recutQuietWindow({ levels, busy, duration: 4.5 });
+  // No 1.0, 0.8 or 0.6 s window of the lull avoids the click; a 0.4 s one does, 15 dB quieter.
+  near(win.end_s - win.start_s, 0.4, 'the shorter, quieter window');
+  assert.ok(win.start_s >= 1.5 - 1e-9 && win.end_s <= 2.6 + 1e-9, JSON.stringify(win));
+  assert.ok(win.end_s <= 2.05 + 1e-9 || win.start_s >= 2.1 - 1e-9, `clear of the click: ${JSON.stringify(win)}`);
+  near(win.peak_db, -55, 'clear of the click', 1e-6);
+});
+
+test('room tone: digital silence and speech leave no window; the result is null, not a guess', () => {
+  const take = twoLines();
+  const busy = recutSpeechBusy(take.speech);
+  assert.equal(recutQuietWindow({ levels: levelsFor(4.5, -Infinity), busy, duration: 4.5 }), null);
+  assert.equal(recutQuietWindow({ levels: levelsFor(4.5, -40), busy: [{ start: 0, end: 4.5 }], duration: 4.5 }), null);
+  // A fade to silence disqualifies only the windows it touches.
+  const levels = levelsFor(4.5, -45, (t) => (t < 0.3 ? -Infinity : null));
+  const win = recutQuietWindow({ levels, busy: [], duration: 4.5, lengths: [0.4] });
+  assert.ok(win.start_s >= 0.3 - 1e-9, JSON.stringify(win));
+});
+
+test('room tone: the same levels always give the same window', () => {
+  const take = twoLines();
+  const levels = levelsFor(4.5, -40, (t) => (t >= 1.6 && t < 2.8 ? -50 : null));
+  const busy = recutSpeechBusy(take.speech);
+  assert.deepEqual(recutQuietWindow({ levels, busy, duration: 4.5 }), recutQuietWindow({ levels, busy, duration: 4.5 }));
 });
