@@ -14,13 +14,19 @@ What is actually said in a cut, as a timeline step that runs before the layers. 
   skipped.
 - **`retime_scenes: true`** (new in 1.1.0; the old `align_beats.py`): the output timeline's `scenes` are set
   from the heard words, one span per input scene, in plan order, tiling 0 to the end of the cut.
-  - Between two spoken scenes the boundary goes midway between the last word of one and the first word of the
-    next. The last scene runs to the end of the cut.
+  - Between two spoken scenes the boundary goes midway between the last heard word of one and the first heard
+    word of the next. The last scene runs to the end of the cut.
+  - The heard words come from one alignment of the whole script on the whole transcript, after both are
+    spelled the same way: numbers as words ("200" and "two hundred"), contractions opened ("don't" and "do
+    not"), `%` `$` `&` as words, hyphens split, punctuation dropped. A line's span uses only its heard words,
+    never a guessed time for a word that was not heard; an unmatched heard word between two lines goes to the
+    line with an unheard word at that edge. A line with no heard word shares its gap like a silent scene.
   - Scenes without a line share the gap they sit in: k silent scenes in a gap cut it into k + 2 equal slots
     (the spoken scene before holds one, each silent scene gets one, the next spoken scene leads in for one).
     Silent scenes at the start split the time before the first word; silent scenes at the end follow a hold of
     at most 0.45 s after the last word.
-  - **Refused** before anything is ordered when no scene has a line. **Refused** after the transcription when
+  - **Refused** before anything is ordered when no scene has a line, or when two scenes share an id (a scene
+    with no id is named by its position). **Refused** after the transcription when
     under 70% of the script's words are heard in order (the cut does not say the script); the transcription
     piece is reused on a retry.
   - Without `retime_scenes` the given timeline's scenes are kept, as in 1.0.1.

@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileRef, hasFfmpeg, loadPart, makeCtx, makeVideo } from '../../_tools/kit-harness.mjs';
-import { retimeCloseChunks, retimeHeardShare, retimeSceneSpans } from '../src/retime.mjs';
+import { retimeAlign, retimeCloseChunks, retimeHeardShare, retimeKeys, retimeSceneSpans } from '../src/retime.mjs';
 import { kitHeardWords } from '../../_lib/heard.mjs';
 import { recordedWhisper } from './recorded-reply.mjs';
 
@@ -124,6 +124,68 @@ test('retimeHeardShare matches in order, so one dropped word does not shift the 
   const heard = kitHeardWords({ chunks: 'one two four five'.split(' ').map((t, i) => ({ text: t, timestamp: [i, i + 1] })) });
   assert.equal(retimeHeardShare([{ text: 'One, two' }, { text: 'three four five.' }], heard), 0.8);
   assert.equal(retimeHeardShare([{ text: 'five four' }], heard), 0.5);
+});
+
+test('retimeKeys spells the script and Whisper the same way: numbers, contractions, hyphens, symbols', () => {
+  assert.deepEqual(retimeKeys('$200'), ['two', 'hundred', 'dollars']);
+  assert.deepEqual(retimeKeys("Don't"), ['do', 'not']);
+  assert.deepEqual(retimeKeys('can\u2019t'), ['can', 'not']);
+  assert.deepEqual(retimeKeys('cannot'), ['can', 'not']);
+  assert.deepEqual(retimeKeys('1,500'), ['one', 'thousand', 'five', 'hundred']);
+  assert.deepEqual(retimeKeys('50%'), ['fifty', 'percent']);
+  assert.deepEqual(retimeKeys('2.5'), ['two', 'point', 'five']);
+  assert.deepEqual(retimeKeys('all-in-one'), ['all', 'in', 'one']);
+  assert.deepEqual(retimeKeys('pocket.'), ['pocket']);
+  assert.deepEqual(retimeKeys('\u2014'), []);
+});
+
+test('retimeHeardShare: a number or contraction spelled differently still counts as heard', () => {
+  const said = (text) => kitHeardWords({ chunks: text.split(' ').map((t, i) => ({ text: t, timestamp: [i, i + 1] })) });
+  assert.equal(retimeHeardShare([{ text: 'Save 200 dollars' }], said('Save two hundred dollars')), 1);
+  assert.equal(retimeHeardShare([{ text: 'Save two hundred dollars' }], said('Save 200 dollars')), 1);
+  assert.equal(retimeHeardShare([{ text: "I don't overpay" }], said('I do not overpay')), 1);
+  assert.equal(retimeHeardShare([{ text: 'An all-in-one kit' }], said('An all in one kit')), 1);
+});
+
+test('retimeAlign anchors a line on its heard words, never on a guessed time for an unheard word', () => {
+  // "missing" is never heard: line a still ends on "hello", so the boundary is midway to "second".
+  const heard = kitHeardWords({ chunks: [
+    { text: 'hello', timestamp: [0, 0.5] },
+    { text: 'second', timestamp: [1.0, 1.3] },
+    { text: 'line', timestamp: [1.3, 1.6] },
+    { text: 'words', timestamp: [1.6, 3.0] },
+  ] });
+  const lines = [{ scene_id: 'a', text: 'hello missing' }, { scene_id: 'b', text: 'second line words' }];
+  const { share, anchors } = retimeAlign(lines, heard);
+  assert.equal(share, 0.8);
+  assert.deepEqual(anchors, [{ scene_id: 'a', start_s: 0, end_s: 0.5 }, { scene_id: 'b', start_s: 1, end_s: 3 }]);
+  assert.deepEqual(retimeSceneSpans(['a', 'b'], anchors, 3.2), [{ id: 'a', start_s: 0, end_s: 0.75 }, { id: 'b', start_s: 0.75, end_s: 3.2 }]);
+});
+
+test('retimeAlign gives an unmatched heard word to the line with an unheard word at that edge', () => {
+  // "thirteen" was heard as "30": that heard word belongs to line a, whose last written word went unheard.
+  const heard = kitHeardWords({ chunks: [
+    { text: 'I', timestamp: [0, 0.2] },
+    { text: 'paid', timestamp: [0.2, 0.5] },
+    { text: '30', timestamp: [0.5, 0.9] },
+    { text: 'dollars', timestamp: [1.2, 1.6] },
+    { text: 'only.', timestamp: [1.6, 2.0] },
+  ] });
+  const { anchors } = retimeAlign([{ scene_id: 'a', text: 'I paid thirteen' }, { scene_id: 'b', text: 'dollars only.' }], heard);
+  assert.deepEqual(anchors, [{ scene_id: 'a', start_s: 0, end_s: 0.9 }, { scene_id: 'b', start_s: 1.2, end_s: 2 }]);
+  // A line with no heard word has no anchor and shares its gap like a silent scene.
+  const none = retimeAlign([{ scene_id: 'a', text: 'I paid' }, { scene_id: 'x', text: 'zebra' }, { scene_id: 'b', text: 'dollars only.' }], heard);
+  assert.deepEqual(none.anchors.map((a) => a.scene_id), ['a', 'b']);
+});
+
+test('refused before anything is ordered: retime_scenes with two scenes under one id', async () => {
+  const { ctx, orders } = makeCtx({ partDir: dir, line: () => assert.fail('nothing may be ordered for a refused input') });
+  writeFileSync(join(ctx.workDir, 'none.mp4'), 'not a cut');
+  const video = await fileRef(join(ctx.workDir, 'none.mp4'), 'video');
+  // The first scene has no id, so it is named "1" by its position, the same as the second.
+  await assert.rejects(mod.run({ video, retime_scenes: true, scenes: [{ line: null }, { id: '1', line: 'Hi there' }] }, ctx), (e) => e.code === 'bad_input' && /repeated: 1/.test(e.message + (e.detail || '')));
+  await assert.rejects(mod.run({ video, retime_scenes: true, scenes: [{ id: 'a', line: 'Hi' }, { id: 'a', line: 'there' }] }, ctx), (e) => e.code === 'bad_input' && /repeated: a/.test(e.message + (e.detail || '')));
+  assert.equal(orders.length, 0);
 });
 
 test('retimeSceneSpans: midway boundaries; silent scenes share their gap; leading and trailing silence', () => {
