@@ -113,9 +113,10 @@ test('a Whisper chunk with a null end time still counts as heard', { skip }, asy
   assert.ok(out.timeline.speech[0].words.at(-1).start_s >= 1.98 - 1e-9);
 });
 
-test('retimeCloseChunks closes a null end at the next start or the end of the cut', () => {
+test('retimeCloseChunks closes a null end at the next start or the end of the cut, at most 0.8 s after the word starts', () => {
   const out = retimeCloseChunks({ chunks: [{ text: 'a', timestamp: [0, null] }, { text: 'b', timestamp: [0.5, 0.9] }, { text: 'c', timestamp: [1.0, null] }, null] }, 3);
-  assert.deepEqual(out.chunks.slice(0, 3).map((c) => c.timestamp), [[0, 0.5], [0.5, 0.9], [1.0, 3]]);
+  assert.deepEqual(out.chunks.slice(0, 3).map((c) => c.timestamp), [[0, 0.5], [0.5, 0.9], [1.0, 1.8]]);
+  assert.deepEqual(retimeCloseChunks({ chunks: [{ text: 'a', timestamp: [2.8, null] }] }, 3).chunks[0].timestamp, [2.8, 3]);
   assert.deepEqual(kitHeardWords(out).map((w) => w.text), ['a', 'b', 'c']);
   assert.deepEqual(retimeCloseChunks({ chunks: null }, 3).chunks, []);
 });
@@ -145,6 +146,28 @@ test('retimeHeardShare: a number or contraction spelled differently still counts
   assert.equal(retimeHeardShare([{ text: 'Save two hundred dollars' }], said('Save 200 dollars')), 1);
   assert.equal(retimeHeardShare([{ text: "I don't overpay" }], said('I do not overpay')), 1);
   assert.equal(retimeHeardShare([{ text: 'An all-in-one kit' }], said('An all in one kit')), 1);
+});
+
+test('a final word with a null end time does not swallow the silent scenes after it', { skip }, async () => {
+  const json = structuredClone(recordedWhisper.json);
+  json.chunks.at(-1).timestamp[1] = null; // "pocket." starts at 1.98 in a 4 s cut
+  const { ctx } = makeCtx({ partDir: dir, line: reply(json) });
+  const video = await cut(ctx.workDir);
+  const out = await mod.run({ video, retime_scenes: true, scenes: [{ id: 'a', line: 'Meet the jacket that packs into its own pocket.' }, { id: 'b', line: null }, { id: 'c', line: null }] }, ctx);
+  const [a, b, c] = out.timeline.scenes;
+  // "pocket." is closed 0.8 s after it starts (2.78), not at the end of the cut; a short hold follows it.
+  assert.ok(a.end_s > 2.78 && a.end_s <= 2.78 + 0.45 + 1e-9, `${a.end_s}`);
+  assert.ok(b.end_s > b.start_s && c.end_s > c.start_s, JSON.stringify(out.timeline.scenes));
+  assertTiles(out.timeline.scenes, out.timeline.duration_s);
+});
+
+test('retimeKeys opens contractions Whisper writes without the apostrophe, and leaves real words alone', () => {
+  assert.deepEqual(retimeKeys('dont'), ['do', 'not']);
+  assert.deepEqual(retimeKeys('Youre'), ['you', 'are']);
+  assert.deepEqual(retimeKeys('its'), ['its']);
+  assert.deepEqual(retimeKeys('were'), ['were']);
+  const said = (text) => kitHeardWords({ chunks: text.split(' ').map((t, i) => ({ text: t, timestamp: [i, i + 1] })) });
+  assert.equal(retimeHeardShare([{ text: "I don't overpay" }], said('I dont overpay')), 1);
 });
 
 test('retimeAlign anchors a line on its heard words, never on a guessed time for an unheard word', () => {

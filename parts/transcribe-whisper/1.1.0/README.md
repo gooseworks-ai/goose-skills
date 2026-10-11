@@ -5,7 +5,8 @@ What is actually said in a cut, as a timeline step that runs before the layers. 
 - **Paid piece** `transcribe`, through the private line only: fal `fal-ai/whisper` with `{audio_url, task:
   "transcribe", language, chunk_level: "word"}` (caption-burn's transcription). The cut's sound goes to the
   core as a file. A word chunk whose end time Whisper leaves null ends at the next chunk's start (or the end
-  of the cut), so it still counts as heard.
+  of the cut), at most 0.8 s after it starts, so it still counts as heard and a last word does not swallow the
+  silence after it.
 - **Lines on what was heard** (caption-burn's matching): each approved `scenes[].line` is placed on the heard
   words. Its speech entry keeps the written line as `text` (captions show the approved words), carries what was
   heard for it as `spoken` (every heard word belongs to exactly one line, in order), and its written words timed

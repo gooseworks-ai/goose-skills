@@ -409,6 +409,18 @@ function retimeNumberWords(n) {
   return [String(n)];
 }
 
+/** Contractions Whisper may write without the apostrophe, opened the same way (never ones that are words: its, were, ill, lets, shell, wed). */
+const RETIME_BARE = new Map(
+  Object.entries({
+    dont: 'do not', doesnt: 'does not', didnt: 'did not', cant: 'can not', wont: 'will not', isnt: 'is not', arent: 'are not',
+    wasnt: 'was not', werent: 'were not', havent: 'have not', hasnt: 'has not', hadnt: 'had not', wouldnt: 'would not',
+    shouldnt: 'should not', couldnt: 'could not', mustnt: 'must not', aint: 'ai not', im: 'i am', youre: 'you are',
+    theyre: 'they are', ive: 'i have', youve: 'you have', weve: 'we have', theyve: 'they have', youll: 'you will',
+    theyll: 'they will', itll: 'it will', thats: 'that is', whats: 'what is', theres: 'there is', heres: 'here is',
+    hes: 'he is', shes: 'she is', youd: 'you would', theyd: 'they would', id: 'i would',
+  }).map(([k, v]) => [k, v.split(' ')]),
+);
+
 const RETIME_OPEN = [
   [/^won't$/, ['will', 'not']],
   [/^can't$/, ['can', 'not']],
@@ -446,7 +458,7 @@ function retimeKeys(word) {
       continue;
     }
     const open = RETIME_OPEN.map(([re, to]) => [re.exec(t), to]).find(([m]) => m);
-    const parts = open ? (typeof open[1] === 'function' ? open[1](open[0]) : open[1]) : [t];
+    const parts = open ? (typeof open[1] === 'function' ? open[1](open[0]) : open[1]) : RETIME_BARE.get(t) || [t];
     for (const p of parts) {
       const k = p.replace(/[^\p{L}\p{N}]/gu, '');
       if (k) out.push(k);
@@ -455,10 +467,15 @@ function retimeKeys(word) {
   return out;
 }
 
+/** The longest a word whose end time Whisper left out is taken to last. */
+const RETIME_OPEN_WORD_S = 0.8;
+
 /**
  * fal Whisper's chunks with a missing end time closed at the next chunk's
- * start (or the end of the cut), so a word whose end Whisper left null is
- * still heard. Returns a json with the same shape for kitHeardWords.
+ * start (or the end of the cut), but never more than RETIME_OPEN_WORD_S after
+ * the word starts, so a word whose end Whisper left null is still heard and a
+ * final word does not swallow the silence after it. Returns a json with the
+ * same shape for kitHeardWords.
  */
 function retimeCloseChunks(json, duration) {
   const chunks = (json && Array.isArray(json.chunks) && json.chunks) || [];
@@ -468,7 +485,7 @@ function retimeCloseChunks(json, duration) {
     let end = ts[1];
     if (Number.isFinite(start) && !Number.isFinite(end)) {
       const next = chunks.slice(i + 1).find((n) => n && n.timestamp && Number.isFinite(n.timestamp[0]));
-      end = Math.max(start, next ? next.timestamp[0] : duration);
+      end = Math.max(start, Math.min(next ? next.timestamp[0] : duration, start + RETIME_OPEN_WORD_S));
     }
     return { ...c, timestamp: [start, end] };
   });
