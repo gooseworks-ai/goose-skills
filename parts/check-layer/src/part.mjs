@@ -15,12 +15,16 @@
 // ones), read_rate, cuts_between_words, cut_rate and retained_body (the
 // content checks run only inside the first scene, a new opening spliced onto
 // a kept body; the rest is not checked).
+// 1.4.0 adds per-shot flags (a shot runs from one scene start to the next):
+// captions_cross_cuts, min_shot, ambience_floor, cut_contrast and
+// distinct_adjacent_shots.
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitFfmpeg } from '../../_lib/part.mjs';
 import { speechBuildAliases, speechReview } from '../../_lib/speech.mjs';
 import { kitLogoScore, kitLogoScoreInBox, kitMotion, kitWindowLevels } from '../../_lib/frames.mjs';
 import { CHK_BLANK_MAX_SHARE, CHK_CUT_MAX_RATE, CHK_CUT_MIN_RATE, CHK_READ_MAX_WPS, CHK_READ_MIN_WPS, chkBlankFrames, chkBlankSpans, chkClipSpans, chkCutInsideWord, chkCuts, chkJudgeBlank, chkReadRate, chkSpeechBefore } from './flags.mjs';
+import { CHK_CONTRAST_MIN, CHK_CONTRAST_OFFSET_S, CHK_CONTRAST_WARN, CHK_CUE_GUARD_S, CHK_DISTINCT_MIN, CHK_FLOOR_MAX_DB, CHK_FLOOR_MIN_DB, CHK_FLOOR_SPEECH_GAP_DB, CHK_MIN_SHOT_S, chkAdjacentDiffs, chkCueAcrossCut, chkCutContrast, chkFloorWindows, chkJudgeAmbience, chkSceneOpenings, chkShortShot, chkShotSound, chkShots, chkSpeechSpans } from './shots.mjs';
 
 const TARGET_LUFS = -14;
 const LUFS_TOLERANCE = 2;
@@ -50,7 +54,7 @@ const SOUND_RISE_DB = 4;
 const NUM = '-?\\d+(?:\\.\\d+)?(?:e-?\\d+)?';
 // Flags a machine measures here; any other flag is reported not_applicable (one that needs eyes, or one a
 // later check layer measures: a style may declare a flag before its layer version is pinned).
-const MEASURED_FLAGS = new Set(['logo_visible', 'footage_moves', 'sounds_match_messages', 'text_led', 'read_rate', 'cuts_between_words', 'cut_rate', 'retained_body']);
+const MEASURED_FLAGS = new Set(['logo_visible', 'footage_moves', 'sounds_match_messages', 'text_led', 'read_rate', 'cuts_between_words', 'cut_rate', 'retained_body', 'captions_cross_cuts', 'min_shot', 'ambience_floor', 'cut_contrast', 'distinct_adjacent_shots']);
 const EYES_FLAGS = new Set(['text_legible', 'products_visible']);
 // retained_body: the new opening starts the video (within this) and leaves at least this much kept body.
 const RETAINED_START_MAX_S = 0.05;
@@ -442,6 +446,88 @@ export async function run(inputs, ctx) {
         add(code, 'fail', { message: 'The new opening is not marked, so it cannot be told from the kept video.', expected: 'the new opening as the first scene, starting the video and followed by the kept video', found });
       }
       else add(code, 'pass', { found: `checked 0-${contentEnd.toFixed(2)} s; ${contentEnd.toFixed(2)}-${d.toFixed(2)} s kept, not checked` });
+    } else if (flag === 'captions_cross_cuts') {
+      // A cue may run 0.15 s past a cut either side; one that runs further on both sides spans the cut. The
+      // end card's start counts as a cut (no caption runs on into the card), and for retained_body so does
+      // the join between the new opening and the kept video.
+      const cues = record ? (record.cues || []).filter((c) => String(c.text || '').trim() && Number.isFinite(c.start_s) && Number.isFinite(c.end_s) && c.end_s > c.start_s && c.start_s < contentEnd) : [];
+      const cuts = chkCuts(timeline.scenes, d).filter((t) => t <= contentEnd + 1e-6);
+      const joins = [timeline.end_card && timeline.end_card.start_s > 0 && timeline.end_card.start_s < contentEnd ? timeline.end_card.start_s : null, retained && contentEnd < d ? contentEnd : null];
+      for (const u of joins) if (u !== null && !cuts.some((t) => Math.abs(t - u) < 1e-3)) cuts.push(u);
+      if (!cues.length) add(code, 'not_applicable', { found: 'no captions' });
+      else if (!cuts.length) add(code, 'not_applicable', { found: 'no cuts' });
+      else {
+        const across = chkCueAcrossCut(cues, cuts);
+        if (across) add(code, 'fail', { message: `The caption "${across.cue.text}" runs on across the cut at ${across.t.toFixed(2)} seconds.`, expected: `every caption inside one shot (${CHK_CUE_GUARD_S} s allowed either side of a cut)`, found: `${across.cue.start_s.toFixed(2)}-${across.cue.end_s.toFixed(2)} s` });
+        else add(code, 'pass', { found: cues.length });
+      }
+    } else if (flag === 'min_shot') {
+      const shots = chkShots(timeline.scenes, bodyEnd);
+      if (!(timeline.scenes || []).length) add(code, 'not_applicable', { found: 'no scenes in the timeline' });
+      else if (!shots.length) add(code, 'not_applicable', { found: 'no body before the end card' });
+      else {
+        const short = chkShortShot(shots);
+        if (short) add(code, 'fail', { message: `A shot from ${short.start_s.toFixed(2)} to ${short.end_s.toFixed(2)} seconds is too short to read.`, expected: `every shot at least ${CHK_MIN_SHOT_S} s`, found: +short.seconds.toFixed(3) });
+        else add(code, 'pass', { found: +Math.min(...shots.map(([a, b]) => b - a)).toFixed(3) });
+      }
+    } else if (flag === 'ambience_floor') {
+      // The room tone under each shot (its quietest windows) sits in the band, and the speech over it stays
+      // clear of it. No scenes: the body is one shot.
+      const shots = chkShots(timeline.scenes, bodyEnd);
+      const windows = shots.map(chkFloorWindows);
+      if (!windows.some((w) => w.length)) add(code, 'not_applicable', { found: 'no shot long enough to measure' });
+      else {
+        const levels = m.has_audio ? await kitWindowLevels(ctx, video.path, windows.flat()) : windows.flat().map(() => -Infinity);
+        const spoken = chkSpeechSpans(speech);
+        let k = 0;
+        const sounds = windows.map((w) => {
+          const own = levels.slice(k, k + w.length);
+          k += w.length;
+          return w.length ? chkShotSound(w, own, spoken) : { floor: null, speech: null };
+        });
+        const bad = chkJudgeAmbience(shots, sounds);
+        const band = `room tone from ${CHK_FLOOR_MIN_DB} to ${CHK_FLOOR_MAX_DB} dB under every shot, speech at least ${CHK_FLOOR_SPEECH_GAP_DB} dB above it`;
+        const where = bad ? `from ${bad.shot[0].toFixed(1)} to ${bad.shot[1].toFixed(1)} seconds` : '';
+        if (!bad) add(code, 'pass', { found: +Math.min(...sounds.filter((x) => x.floor !== null).map((x) => x.floor)).toFixed(1) });
+        else if (bad.problem === 'silent') add(code, 'fail', { message: `There is no room tone ${where}: the sound drops to silence.`, expected: band, found: 'silent' });
+        else if (bad.problem === 'low') add(code, 'fail', { message: `The room tone is too quiet ${where}.`, expected: band, found: +bad.floor.toFixed(1) });
+        else if (bad.problem === 'high') add(code, 'fail', { message: `The background noise is too loud ${where}.`, expected: band, found: +bad.floor.toFixed(1) });
+        else add(code, 'fail', { message: `The speech does not stand out from the background noise ${where}.`, expected: band, found: +(bad.speech - bad.floor).toFixed(1) });
+      }
+    } else if (flag === 'cut_contrast') {
+      // Each cut must read as a cut: the frames 80 ms either side differ enough (a reframe of the same
+      // shot, or two dark shots, reads as a jump). The end card's start is not judged.
+      const cuts = chkCuts(timeline.scenes, bodyEnd);
+      if (!cuts.length) add(code, 'not_applicable', { found: 'no cuts' });
+      else {
+        const all = await chkCutContrast(ctx, video.path, cuts, m.width, m.height, d);
+        const measured = all.filter((c) => c.diff !== null);
+        const unread = all.find((c) => c.diff === null);
+        const worst = measured.reduce((a, c) => (!a || c.diff < a.diff ? c : a), null);
+        const expected = `a frame difference of at least ${CHK_CONTRAST_MIN} (${CHK_CONTRAST_WARN} to be safe) ${CHK_CONTRAST_OFFSET_S} s either side of every cut`;
+        if (!worst) add(code, 'fail', { message: 'The frames either side of the cuts could not be read.', expected, found: 'no frames' });
+        else if (worst.diff < CHK_CONTRAST_MIN - 1e-9) add(code, 'fail', { message: `The cut at ${worst.t.toFixed(2)} seconds barely changes the picture, so it reads as a jump.`, expected, found: +worst.diff.toFixed(2) });
+        else if (worst.diff < CHK_CONTRAST_WARN - 1e-9) add(code, 'warn', { message: `The cut at ${worst.t.toFixed(2)} seconds changes the picture only a little.`, expected, found: +worst.diff.toFixed(2) });
+        // Every cut must be judged before the flag passes; a cut whose frames could not be read is a warning.
+        else if (unread) add(code, 'warn', { message: `The frames either side of the cut at ${unread.t.toFixed(2)} seconds could not be read, so it was not checked.`, expected, found: `${measured.length} of ${all.length} cuts checked` });
+        else add(code, 'pass', { found: +worst.diff.toFixed(2) });
+      }
+    } else if (flag === 'distinct_adjacent_shots') {
+      // Two scenes in a row must not open on the same picture (the same clip shown twice).
+      const openings = chkSceneOpenings(timeline.scenes, bodyEnd);
+      if (openings.length < 2) add(code, 'not_applicable', { found: 'fewer than two scenes' });
+      else {
+        const all = await chkAdjacentDiffs(ctx, video.path, openings, m.width, m.height);
+        const diffs = all.filter((p) => p.diff !== null);
+        const unread = all.find((p) => p.diff === null);
+        const same = diffs.find((p) => p.diff < CHK_DISTINCT_MIN - 1e-9);
+        const expected = `the opening frames of two scenes in a row differ by at least ${CHK_DISTINCT_MIN}`;
+        if (!diffs.length) add(code, 'fail', { message: 'The opening frames of the scenes could not be read.', expected, found: 'no frames' });
+        else if (same) add(code, 'fail', { message: `Scenes ${same.a} and ${same.b} open on the same picture.`, expected, found: +same.diff.toFixed(2) });
+        // Every pair must be judged before the flag passes; a pair whose frames could not be read is a warning.
+        else if (unread) add(code, 'warn', { message: `The opening frames of scenes ${unread.a} and ${unread.b} could not be read, so they were not compared.`, expected, found: `${diffs.length} of ${all.length} pairs checked` });
+        else add(code, 'pass', { found: +Math.min(...diffs.map((p) => p.diff)).toFixed(2) });
+      }
     }
   }
 

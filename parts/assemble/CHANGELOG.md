@@ -1,5 +1,12 @@
 # assemble
 
+## 1.2.0
+
+- Shot recipes per scene tag: `shots` (still, clip, video, montage, freeze; seconds, fill, zoom, speed limits, `skip_first`), drawn from `sources` and matched to `scenes` and `products`. `clips` is no longer required.
+- `marks` output: where a shot with `mark` starts, for sounds in audio-mix.
+- `snap`: cuts that land inside a word move to the nearer gap, within `max_shift_s` and keeping `min_shot_s`.
+- `card_from` (`{tag}` or `{scene_id}`): the card span (`timeline.end_card`, no captions, no grade) starts at that scene, so a grid + offer card and the end card read as one card.
+
 ## 1.1.0
 
 - Pictures timed to a voice or song: `spans` matched to clips by id, cuts on the frame at or before each line, `tail_s`, and `silent` (`share_previous` or `fixed`) for scenes with no line.

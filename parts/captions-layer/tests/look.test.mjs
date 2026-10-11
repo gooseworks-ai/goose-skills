@@ -1,4 +1,4 @@
-// captions-layer 1.2.0: the end-card stop, the caption look (plate, stroke, karaoke), the fallback for a
+// captions-layer (since 1.2.0): the end-card stop, the caption look (plate, stroke, karaoke), the fallback for a
 // look this version does not know, the bitrate cap and the size refusal.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -126,7 +126,7 @@ test('karaoke: the spoken word takes the highlight colour and moves along the gr
 });
 
 test('an unknown preset falls back to plate with a warning, and bad look values are dropped, never refused', { skip }, async () => {
-  for (const look of [{ preset: 'pill' }, { preset: 'neon-glow', max_words: 20, y: 2, highlight_color: 'red', case: 'shout', font: 'comic' }]) {
+  for (const look of [{ preset: 'sparkle' }, { preset: 'neon-glow', max_words: 20, y: 2, highlight_color: 'red', case: 'shout', font: 'comic' }]) {
     const { ctx, logs } = makeCtx({ partDir: dir });
     const video = await cut(ctx, 3);
     const words = timed([['Try', 0.2, 0.5], ['it', 0.6, 0.9], ['today', 1.0, 1.6]]);

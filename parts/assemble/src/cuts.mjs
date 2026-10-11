@@ -95,7 +95,7 @@ export function assembleIsCutProblem(e) {
   return e instanceof AssembleCutProblem;
 }
 
-function assembleNo(message) {
+export function assembleNo(message) {
   return new AssembleCutProblem(message);
 }
 

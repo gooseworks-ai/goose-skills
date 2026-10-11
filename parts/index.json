@@ -194,6 +194,61 @@
       "models": []
     },
     {
+      "id": "assemble",
+      "version": "1.2.0",
+      "interface": 1,
+      "kind": "compose",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "fps",
+            "scale",
+            "crop",
+            "pad",
+            "setsar",
+            "tpad",
+            "trim",
+            "setpts",
+            "format",
+            "concat",
+            "aresample",
+            "aformat",
+            "apad",
+            "atrim",
+            "anullsrc",
+            "zoompan",
+            "eq",
+            "hqdn3d",
+            "noise",
+            "xfade",
+            "settb",
+            "null",
+            "atempo"
+          ],
+          "encoders": [
+            "libx264",
+            "aac"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 800
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/assemble/1.2.0",
+      "files": {
+        "README.md": "d350340bc2496273489d71bba91768fc444347a4afaa37f199f5ae9d47de9179",
+        "part.json": "fdb29ca61489b18c93c3099f2b9f9f07bd8eb60030a97401989c556febe57215",
+        "part.mjs": "c38e43f185f90ac9a23a61340fe6a7ba5c00979561fa9213b1529300ca0aa74d"
+      },
+      "models": []
+    },
+    {
       "id": "audio-mix",
       "version": "1.0.0",
       "interface": 1,
@@ -570,6 +625,120 @@
       ]
     },
     {
+      "id": "captions-layer",
+      "version": "1.3.0",
+      "interface": 1,
+      "kind": "caption",
+      "layer": "captions",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": true,
+        "ffmpeg": {
+          "filters": [
+            "fps",
+            "format",
+            "overlay"
+          ],
+          "encoders": [
+            "libx264",
+            "aac"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "fal-ai/whisper"
+          }
+        ],
+        "disk_mb": 400
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "call",
+        "rates_usd": {
+          "fal-ai/whisper": 0.02
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/captions-layer/1.3.0",
+      "files": {
+        "README.md": "6fcd437583c67400d5daa101d77b833a8a0f2a89271bf2a44bf08aff60102bda",
+        "assets/fonts/Montserrat-Bold.ttf": "bc6e854971cea46b463be6f9eef4d9cd52f51cfc1fc0dd90c9d3e6483dc0ec61",
+        "assets/fonts/Montserrat-OFL.txt": "ea6b176076abe6950aa25de2fcd199c56fa8409946e883370e10bec68596573c",
+        "assets/fonts/PTSerif-Bold.ttf": "038ba7336bd7ea14f12ad155bed51a4345cac5153275d521dec3ba04021c526e",
+        "assets/fonts/PTSerif-OFL.txt": "ddf311c28ddf5a5ad9747649837346b67bed9d356789c3072bb27dbce49e514d",
+        "assets/fonts/TitanOne-OFL.txt": "2abc52c3268db4de42e3b625d604d062f2410c620b0a88d29e1b007116df253e",
+        "assets/fonts/TitanOne-Regular.ttf": "bcac194b2c80941682789e854d0515855a41dfa0d3f209fbf1725b15cd9fd063",
+        "part.json": "4ffcbdd56c5567613642368f59e092724b7f64c60dddda5d4a8e3d42e72e2559",
+        "part.mjs": "a1f4a907df0201445c4045ec5acd0d00d01115cf8860e1a921f82da30af493a6"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "fal-ai/whisper"
+        }
+      ]
+    },
+    {
+      "id": "cast-plate",
+      "version": "1.0.0",
+      "interface": 1,
+      "kind": "generate_image",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "crop",
+            "scale",
+            "setsar"
+          ],
+          "encoders": [
+            "png"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "openai/gpt-image-2"
+          },
+          {
+            "provider": "fal",
+            "model": "openai/gpt-image-2/edit"
+          }
+        ],
+        "disk_mb": 100
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "call",
+        "rates_usd": {
+          "openai/gpt-image-2": 0.19,
+          "openai/gpt-image-2/edit": 0.19
+        },
+        "model_from": "/model"
+      },
+      "determinism": "provider",
+      "path": "parts/cast-plate/1.0.0",
+      "files": {
+        "README.md": "5ac0866d71bf6a4023351de2f40b0836d8828c76c9f5e92a2c616ca1005770da",
+        "part.json": "48ec3787cc2d7e361ff535a8ef5ae461d26d28633c203115852cd8f6da6cca49",
+        "part.mjs": "6f14daf4de419da4c847cdf0577ea4b558e21639d39a1c455adcd31e0cee4bfa"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "openai/gpt-image-2"
+        },
+        {
+          "provider": "fal",
+          "model": "openai/gpt-image-2/edit"
+        }
+      ]
+    },
+    {
       "id": "check-layer",
       "version": "1.0.0",
       "interface": 1,
@@ -810,6 +979,44 @@
       "models": []
     },
     {
+      "id": "check-layer",
+      "version": "1.4.0",
+      "interface": 1,
+      "kind": "check",
+      "layer": "check",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "ebur128",
+            "freezedetect",
+            "blackdetect",
+            "scale",
+            "format",
+            "fps"
+          ],
+          "encoders": [
+            "pcm_s16le"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 100
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/check-layer/1.4.0",
+      "files": {
+        "README.md": "491f0296d7ee16f80c4b181a6321006aa0039329b5ad012d66d669c4552dc2ae",
+        "part.json": "c13fcacc0cad477c24620bc0d4634c0bea8f07c47fee7e60998898b3ae2fe9fc",
+        "part.mjs": "dad5672fa89fd5e9cbe7abcfef63e685a23b1a0eeb3968e3f9a22b86c894372a"
+      },
+      "models": []
+    },
+    {
       "id": "creator-h3",
       "version": "1.0.0",
       "interface": 1,
@@ -1017,6 +1224,75 @@
       ]
     },
     {
+      "id": "creator-h3",
+      "version": "1.1.0",
+      "interface": 1,
+      "kind": "generate_video",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "silencedetect",
+            "tpad",
+            "trim",
+            "setpts",
+            "fps",
+            "settb",
+            "setsar",
+            "format",
+            "xfade",
+            "concat",
+            "aresample",
+            "pan",
+            "aformat",
+            "adelay",
+            "apad",
+            "atrim",
+            "asetpts",
+            "acrossfade"
+          ],
+          "encoders": [
+            "libx264",
+            "aac",
+            "pcm_s16le"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "minimax/h3-max/reference-to-video"
+          }
+        ],
+        "disk_mb": 1500
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "second",
+        "measure": {
+          "from": "/max_seconds",
+          "as": "value"
+        },
+        "rates_usd": {
+          "minimax/h3-max/reference-to-video": 0.4
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/creator-h3/1.1.0",
+      "files": {
+        "README.md": "d8e595ca62ae879603a8ff08e7f048b88cca24154ded43e886a189f6575311f0",
+        "part.json": "f2e2d7a9d224fda719cfd567968c715e875a81510e7542fb37906135ecb523e2",
+        "part.mjs": "dccfa924f854cf2438526d181d244ce8dd6a60fb7c1489c59b996692ce3e5846"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "minimax/h3-max/reference-to-video"
+        }
+      ]
+    },
+    {
       "id": "cut-footage",
       "version": "1.0.0",
       "interface": 1,
@@ -1147,6 +1423,63 @@
         "README.md": "88348fc397a48e511766ad96d477d4490144a3da28302b67c178e7bf860ad218",
         "part.json": "71ccf5a4168692e3beebe76df5550aedf63bdb8cc748576d288f785effea5338",
         "part.mjs": "dc418f23f8734360539a5883cc7774114ec07c42cd67d5ae798839c1487d6685"
+      },
+      "models": []
+    },
+    {
+      "id": "dialogue-cut",
+      "version": "1.0.0",
+      "interface": 1,
+      "kind": "compose",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "setpts",
+            "fps",
+            "tpad",
+            "trim",
+            "settb",
+            "format",
+            "setsar",
+            "scale",
+            "crop",
+            "pad",
+            "vstack",
+            "concat",
+            "null",
+            "anull",
+            "curves",
+            "eq",
+            "noise",
+            "select",
+            "metadata",
+            "aresample",
+            "aformat",
+            "apad",
+            "atrim",
+            "asetpts",
+            "anullsrc"
+          ],
+          "encoders": [
+            "libx264",
+            "aac"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 800
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/dialogue-cut/1.0.0",
+      "files": {
+        "README.md": "5571cb8304a8847ce2ea1f1580495425632219e9b31c4c1357d45bb1c6b00917",
+        "part.json": "4af9ba2b8ac097328bb989a227001cb570fc2ee0140fdaa5bd5362af38d6b743",
+        "part.mjs": "5b6e96de7393b8d5292aaa8b9d5812df792621390b47fe1bb3c51dfd7a4ca5d0"
       },
       "models": []
     },
@@ -2579,6 +2912,59 @@
       ]
     },
     {
+      "id": "song-elevenlabs",
+      "version": "1.0.0",
+      "interface": 1,
+      "kind": "generate_music",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "adelay",
+            "aresample",
+            "aformat",
+            "apad"
+          ],
+          "encoders": [
+            "aac"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "elevenlabs",
+            "model": "music_v1"
+          }
+        ],
+        "disk_mb": 40
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "second",
+        "measure": {
+          "from": "/sections/*/seconds",
+          "as": "sum"
+        },
+        "rates_usd": {
+          "music_v1": 0.0025
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/song-elevenlabs/1.0.0",
+      "files": {
+        "README.md": "be9f8932af79ba6eee791a8161b7750ec2b3f57c3eaf5e7dbe52f22cb7629c88",
+        "part.json": "4daade1235351ebc2357fefe65979be56c77ecc313fc748c822202fbfab1883e",
+        "part.mjs": "6914ec182ce871beb57244b6a310fbd97676977736aa91f7af88212c0517b114"
+      },
+      "models": [
+        {
+          "provider": "elevenlabs",
+          "model": "music_v1"
+        }
+      ]
+    },
+    {
       "id": "sound-layer",
       "version": "1.0.0",
       "interface": 1,
@@ -2898,6 +3284,49 @@
       ]
     },
     {
+      "id": "transcribe-whisper",
+      "version": "1.1.1",
+      "interface": 1,
+      "kind": "caption",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "encoders": [
+            "pcm_s16le"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "fal-ai/whisper"
+          }
+        ],
+        "disk_mb": 50
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "call",
+        "rates_usd": {
+          "fal-ai/whisper": 0.02
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/transcribe-whisper/1.1.1",
+      "files": {
+        "README.md": "23033707732d750b78266db217c59aa23885f93f773505c657770775a9170518",
+        "part.json": "2ec01f609e78d3458b88fc42a837860be6137698c93ba0603907608830971a37",
+        "part.mjs": "5aaf9937be5bd486a0ff5c40c27b200e0be3dce204f6b9462fe640e669a61233"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "fal-ai/whisper"
+        }
+      ]
+    },
+    {
       "id": "video-kling",
       "version": "1.0.0",
       "interface": 1,
@@ -3091,6 +3520,73 @@
         {
           "provider": "fal",
           "model": "bytedance/seedance-2.0/image-to-video"
+        }
+      ]
+    },
+    {
+      "id": "video-veo-3",
+      "version": "1.0.0",
+      "interface": 1,
+      "kind": "generate_video",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": true,
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "fal-ai/veo3.1/image-to-video"
+          },
+          {
+            "provider": "fal",
+            "model": "fal-ai/veo3.1/fast/image-to-video"
+          },
+          {
+            "provider": "fal",
+            "model": "fal-ai/veo3/image-to-video"
+          },
+          {
+            "provider": "fal",
+            "model": "fal-ai/veo3/fast/image-to-video"
+          }
+        ],
+        "disk_mb": 1200
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "second",
+        "rates_usd": {
+          "fal-ai/veo3.1/image-to-video": 0.4,
+          "fal-ai/veo3.1/fast/image-to-video": 0.15,
+          "fal-ai/veo3/image-to-video": 0.4,
+          "fal-ai/veo3/fast/image-to-video": 0.15
+        },
+        "model_from": "/model"
+      },
+      "determinism": "provider",
+      "path": "parts/video-veo-3/1.0.0",
+      "files": {
+        "README.md": "1c1b7aed0d34d80d79adfa16adec224198f4cfd7fd77725fd1fa4375479cde4c",
+        "part.json": "554f3a7b519e77bd2d3e3cf283ed0a40c81677273103c331ae0435a24111195b",
+        "part.mjs": "cb3d8d3ad0b726c278503443523ea758caa4650c1832a50e89fde19eab7820d8"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "fal-ai/veo3.1/image-to-video"
+        },
+        {
+          "provider": "fal",
+          "model": "fal-ai/veo3.1/fast/image-to-video"
+        },
+        {
+          "provider": "fal",
+          "model": "fal-ai/veo3/image-to-video"
+        },
+        {
+          "provider": "fal",
+          "model": "fal-ai/veo3/fast/image-to-video"
         }
       ]
     },
