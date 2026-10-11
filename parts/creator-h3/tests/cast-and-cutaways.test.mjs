@@ -176,3 +176,23 @@ test('a join right after a one-word first take: the cutaway scene still starts a
     if (i) assert.equal(s.start_s, all[i - 1].end_s);
   });
 });
+
+test('a late onset that would put the join at the reel start: the join is floored, both takes join, and the cutaway still covers it (3.9 words a second)', { skip }, async () => {
+  const { ctx } = makeCtx({ partDir: dir, line: lateLine({ 'take-t2': 0.6 }) });
+  const base = await cutawayInputs(ctx.workDir, { split_before: 'cutaways', words_per_second: 3.9 });
+  const scenes = [
+    { id: 's1', line: 'Honestly.', speaker: 'maya', extra: { shot: 'creator' } },
+    { ...base.scenes[1], line: words(54, 'then') },
+    base.scenes.at(-1),
+  ];
+  const out = await mod.run({ ...base, scenes, footage: [] }, ctx);
+  assert.deepEqual(out.takes.map((t) => t.scene_ids), [['s1'], ['s2']]);
+  const join = out.takes[1].joins_s;
+  assert.ok(join >= 0.2, `the join at ${join}s is floored past the reel start`);
+  const s2 = out.timeline.scenes.find((s) => s.id === 's2');
+  assert.ok(s2.start_s <= join, `s2 starts at ${s2.start_s}s, at or before the join at ${join}s`);
+  out.timeline.scenes.forEach((s, i, all) => {
+    assert.ok(s.start_s >= 0 && s.end_s > s.start_s, `${s.id} has a positive span`);
+    if (i) assert.equal(s.start_s, all[i - 1].end_s);
+  });
+});

@@ -159,11 +159,19 @@ async function onset(ctx, path) {
 /** join_takes.py's estimated schedule: each take placed at its planned start, joined with 0.10 s dissolves. */
 function schedule(takes, end, fps) {
   const xf = Math.round(XF * fps) / fps;
+  let before = 0;
+  let prev = 0;
   const out = takes.map((t, k) => {
     const first = t.onset || LEAD;
     const pad = k ? Math.max(0, xf + PAD - first) : 0;
-    const desired = k ? Math.max(0, t.start - first - pad) : 0;
-    return { ...t, start: Math.ceil((desired - 1e-8) * fps) / fps, head_pad: pad };
+    // A late speech onset can pull a join back to the reel start. Keep every join at least two
+    // dissolves after the previous take's start and MIN_SPAN per earlier line from the reel start,
+    // so the previous take has a body and every earlier scene keeps a span before the join.
+    const floor = k ? Math.max(prev + 2 * xf, MIN_SPAN * before + COVER_LEAD) : 0;
+    const desired = k ? Math.max(floor, t.start - first - pad) : 0;
+    before += t.lines ? t.lines.length : 0;
+    prev = Math.ceil((desired - 1e-8) * fps) / fps;
+    return { ...t, start: prev, head_pad: pad };
   });
   // With no requested end, the reel runs to the end of the last take.
   const lastTake = out.at(-1);
@@ -306,8 +314,8 @@ export async function run(inputs, ctx) {
       if (at <= 0) continue;
       // Never later than the line itself or the join. Earlier scenes give way (each keeps MIN_SPAN) so the
       // spans stay positive and in order; an earlier line's estimated end may then run past its scene's
-      // end, which the heard timing retimes. Only a join closer to the reel start than MIN_SPAN per scene
-      // can leave the cutaway starting after it.
+      // end, which the heard timing retimes. schedule() keeps every join at least MIN_SPAN per earlier
+      // line plus COVER_LEAD from the reel start, so the floor here never passes the join.
       starts[at] = +Math.max(MIN_SPAN * at, Math.min(starts[at], t.start - COVER_LEAD)).toFixed(3);
       for (let i = at - 1; i >= 0 && starts[i] > starts[i + 1] - MIN_SPAN; i--) starts[i] = +Math.max(MIN_SPAN * i, starts[i + 1] - MIN_SPAN).toFixed(3);
     }
