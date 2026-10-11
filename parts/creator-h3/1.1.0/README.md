@@ -25,10 +25,11 @@ take join under a cutaway. Every 1.0.2 input still works the same way.
 - **Joins under cutaways** (`split_before: cutaways`, new; default `none`): a take may start only at a
   cutaway, so the join can hide under it. A scene is a cutaway when its `extra.shot` is set and is not
   `creator`, when a `footage` entry (`plan.footage`) names it by `scene_id`, or when it has a scene `image`.
-  A silent cutaway counts for the next spoken line. The lines from one cutaway to the next are an on-camera
-  run that must fit one take; a longer run is refused before anything is ordered ("add a cutaway scene
-  between them or cut words"). In this mode the timeline starts the scene a later take begins on 0.15 s
-  before its join, so an insert on that scene covers the dissolve.
+  Only a spoken cutaway counts: a silent scene has no span on the timeline, so it cannot cover a join. The
+  lines from one cutaway to the next are an on-camera run that must fit one take; a longer run is refused
+  before anything is ordered ("make a spoken scene between them a cutaway or cut words"). In this mode the
+  timeline starts the scene a later take begins on 0.15 s before its join (earlier scenes give way, each
+  keeping at least 0.05 s), so an insert on that scene covers the dissolve.
 - **Paid pieces**, one per take, through the private line only: fal `minimax/h3-max/reference-to-video` with
   the atom's payload: `{prompt, duration, resolution, aspect_ratio, seed, prompt_expansion_mode: "disabled",
   reference_image_urls: [still], reference_video_urls?: [mannerism], reference_audio_urls?: [t1 voice]}`. The

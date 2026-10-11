@@ -2,7 +2,8 @@
 // split_before cutaways and joins_s, against the recorded H3 reply.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { loadPart, hasFfmpeg, makeCtx } from '../../_tools/kit-harness.mjs';
+import { join } from 'node:path';
+import { loadPart, hasFfmpeg, makeCtx, fileRef, run } from '../../_tools/kit-harness.mjs';
 import { H3_REPLY, castInputs, recordedLine, still, words } from './fixture.mjs';
 
 const { dir, mod } = await loadPart('creator-h3', '1.1.0');
@@ -129,6 +130,9 @@ test('refusals before any order: a long on-camera run, an unknown or second spea
   // A footage entry alone makes s2 a cutaway again.
   const viaFootage = { ...base, scenes: noCut, footage: [...base.footage, { asset_id: 'fx-b', start_ms: 0, end_ms: 2000, audio: false, scene_id: 's2' }], max_seconds: 5 };
   await assert.rejects(mod.run(viaFootage, ctx), (e) => e.code === 'bad_input' && /max_seconds/.test(e.message), 'past the split check, stopped only by the price');
+  // A silent cutaway does not count: it has no span on the timeline to cover a join on the creator scene after it.
+  const silentCut = [noCut[0], { id: 'b', line: null, image: base.scenes[1].image, extra: { shot: 'still' } }, ...noCut.slice(1)];
+  await assert.rejects(mod.run({ ...base, scenes: silentCut }, ctx), (e) => e.code === 'bad_input' && /s1 to s3 are one on-camera run/.test(e.message));
 
   const cast = await castInputs(ctx.workDir);
   const speaker = (k) => cast.scenes.map((s, i) => (i === 1 ? { ...s, speaker: k } : s));
@@ -141,4 +145,34 @@ test('refusals before any order: a long on-camera run, an unknown or second spea
   const ageless = cast.cast.map((m) => (m.key === 'maya' ? { ...m, age: null } : m));
   await assert.rejects(mod.run({ ...cast, cast: ageless }, ctx), (e) => e.code === 'bad_input' && /cast member maya identity states no age/.test(e.message));
   assert.equal(orders.length, 0, 'nothing was ordered');
+});
+
+// The fake line with a chosen speech onset per take (sample.line starts every voice at 0.2 s).
+const lateLine = (onsets) => async (order, ctx) => {
+  const name = order.results[0].name;
+  const path = join(ctx.workDir, name);
+  const d = order.body.duration;
+  const ms = Math.round((onsets[order.piece] ?? 0.2) * 1000);
+  await run('ffmpeg', ['-hide_banner', '-nostdin', '-y', '-f', 'lavfi', '-i', `testsrc2=size=360x640:rate=24:duration=${d}`, '-f', 'lavfi', '-i', `sine=frequency=300:duration=${d - 1}:sample_rate=48000`, '-filter_complex', `[1:a]adelay=${ms}:all=1,apad[a]`, '-map', '0:v', '-map', '[a]', '-c:v', 'libx264', '-preset', 'ultrafast', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-ac', '1', '-t', String(d), path]);
+  return { json: structuredClone(H3_REPLY.answer.json), files: { [name]: await fileRef(path, 'video') }, reused: false };
+};
+
+test('a join right after a one-word first take: the cutaway scene still starts at or before it, and spans stay in order', { skip }, async () => {
+  const { ctx } = makeCtx({ partDir: dir, line: lateLine({ 'take-t2': 0.6 }) });
+  const base = await cutawayInputs(ctx.workDir, { split_before: 'cutaways' });
+  const scenes = [
+    { id: 's1', line: 'Honestly.', speaker: 'maya', extra: { shot: 'creator' } },
+    { ...base.scenes[1] },
+    { id: 's3', line: words(27, 'honestly'), speaker: 'maya', extra: { shot: 'creator' } },
+    base.scenes.at(-1),
+  ];
+  const out = await mod.run({ ...base, scenes, footage: [] }, ctx);
+  assert.deepEqual(out.takes.map((t) => t.scene_ids), [['s1'], ['s2', 's3']]);
+  const join = out.takes[1].joins_s;
+  const s2 = out.timeline.scenes.find((s) => s.id === 's2');
+  assert.ok(s2.start_s <= join, `s2 starts at ${s2.start_s}s, at or before the join at ${join}s`);
+  out.timeline.scenes.forEach((s, i, all) => {
+    assert.ok(s.start_s >= 0 && s.end_s > s.start_s, `${s.id} has a positive span`);
+    if (i) assert.equal(s.start_s, all[i - 1].end_s);
+  });
 });

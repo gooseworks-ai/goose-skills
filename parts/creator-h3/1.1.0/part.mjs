@@ -448,6 +448,7 @@ const LEAD = 0.11;
 const PAD = 0.03;
 const VOICE_CLIP = ['-vn', '-t', '12', '-ac', '1', '-ar', '24000'];
 const COVER_LEAD = 0.15;
+const MIN_SPAN = 0.05;
 const GENDER_WORD = { female: 'woman', male: 'man', nonbinary: 'non-binary person' };
 
 /** The atom's identity guards: a person nobody was asked about reads as an AI composite. */
@@ -535,7 +536,7 @@ function planTakes(lines, wps) {
     if (span <= MAX_SPEECH) continue;
     if (r.length === 1) return { problem: `scene ${r[0].scene_id} alone runs past one take; shorten it` };
     return {
-      problem: `scenes ${r[0].scene_id} to ${r.at(-1).scene_id} are one on-camera run of about ${span.toFixed(1)}s with no cutaway to hide a take join (one take holds ${MAX_SPEECH}s); add a cutaway scene between them or cut words`,
+      problem: `scenes ${r[0].scene_id} to ${r.at(-1).scene_id} are one on-camera run of about ${span.toFixed(1)}s with no cutaway to hide a take join (one take holds ${MAX_SPEECH}s); make a spoken scene between them a cutaway or cut words`,
     };
   }
   const takes = [];
@@ -634,16 +635,14 @@ export async function run(inputs, ctx) {
   const footageScenes = new Set((inputs.footage || []).map((f) => (f && f.scene_id != null ? String(f.scene_id) : null)).filter(Boolean));
   const cutaways = inputs.split_before === 'cutaways';
   const lines = [];
-  let cutawaySince = false;
   for (const [i, s] of inputs.scenes.entries()) {
     const scene_id = s.id == null ? String(i + 1) : String(s.id);
-    // A take may start at this line when a cutaway sits between the last spoken line and here (this scene included).
-    cutawaySince = cutawaySince || isCutaway(s, scene_id, footageScenes);
     const written = cleanText(s.line);
     if (!written) continue;
     const spoken = cleanText(kitApplySayAs(written, inputs.pronunciations).spoken);
-    lines.push({ scene_id, text: written, spoken, speaker: cleanText(s.speaker), split: !cutaways || cutawaySince });
-    cutawaySince = false;
+    // A take may start only at a spoken cutaway: a silent scene has no span on the timeline, so nothing
+    // placed by scene could cover a join on the creator scene after it.
+    lines.push({ scene_id, text: written, spoken, speaker: cleanText(s.speaker), split: !cutaways || isCutaway(s, scene_id, footageScenes) });
   }
   if (!lines.length) throw ctx.error('bad_input', 'no scene has a line to say');
   for (const l of lines) if (/\[[^\]]*\]/.test(l.spoken)) throw ctx.error('bad_input', `scene ${l.scene_id} has square brackets, which H3 speaks aloud`);
@@ -651,7 +650,8 @@ export async function run(inputs, ctx) {
   if (creator.problem) throw ctx.error('bad_input', creator.problem);
   const problem = checkCharacter(creator.character, creator.who);
   if (problem) throw ctx.error('bad_input', problem);
-  const delivery = cleanText(inputs.delivery) || cleanText(creator.character.delivery) || H3_DEFAULT_DELIVERY.trim();
+  // The character's own delivery is trimmed only, as 1.0.2 did; a cast member's was cleaned in pickCreator.
+  const delivery = cleanText(inputs.delivery) || String(creator.character.delivery || '').trim() || H3_DEFAULT_DELIVERY.trim();
   const takes = planTakes(lines, inputs.words_per_second ?? 2.6);
   if (takes.problem) throw ctx.error('bad_input', takes.problem);
   const seconds = takes.reduce((a, t) => a + t.dur, 0);
@@ -720,9 +720,12 @@ export async function run(inputs, ctx) {
     for (const t of plan.takes.slice(1)) {
       at = speech.findIndex((s, i) => i >= at && s.scene_id === t.lines[0].scene_id);
       if (at <= 0) continue;
-      // Never later than the line itself or the join, never back over the previous scene's start. The
-      // previous line's estimated end may run past the join; the join wins (the heard timing retimes it).
-      starts[at] = +Math.min(starts[at], Math.max(starts[at - 1] + 0.05, t.start - COVER_LEAD)).toFixed(3);
+      // Never later than the line itself or the join. Earlier scenes give way (each keeps MIN_SPAN) so the
+      // spans stay positive and in order; an earlier line's estimated end may then run past its scene's
+      // end, which the heard timing retimes. Only a join closer to the reel start than MIN_SPAN per scene
+      // can leave the cutaway starting after it.
+      starts[at] = +Math.max(MIN_SPAN * at, Math.min(starts[at], t.start - COVER_LEAD)).toFixed(3);
+      for (let i = at - 1; i >= 0 && starts[i] > starts[i + 1] - MIN_SPAN; i--) starts[i] = +Math.max(MIN_SPAN * i, starts[i + 1] - MIN_SPAN).toFixed(3);
     }
   }
   const timeline = {

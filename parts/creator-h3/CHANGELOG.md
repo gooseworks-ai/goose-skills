@@ -4,7 +4,7 @@
 
 - `cast`: the creator from the plan cast (the speaker's member, else the first with a picture), with the identity written from age, gender and look. `character` is optional when `cast` is given.
 - `delivery` (wins over the member's or character's own), and `pronunciations` swapped into the spoken dialogue only.
-- `split_before: cutaways`: a take starts only at a cutaway (`extra.shot` not `creator`, a `footage` entry's `scene_id`, or a scene `image`); an on-camera run longer than one take is refused before ordering.
+- `split_before: cutaways`: a take starts only at a spoken cutaway (`extra.shot` not `creator`, a `footage` entry's `scene_id`, or a scene `image`), whose timeline scene starts at or before the join; an on-camera run longer than one take is refused before ordering.
 - `takes[].joins_s` on every take after the first. Scene lines may be null.
 
 ## 1.0.2
