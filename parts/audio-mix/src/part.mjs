@@ -6,10 +6,64 @@
 // 1 s fade at the bed's tail, effects at their own gains, summed without
 // amix's normalising, then a true-peak limiter. The final level of the whole
 // cut is the sound layer's (-14 LUFS); this step only balances the tracks.
+// 1.1.0 adds a synthesized room tone (podcast skit's brown noise, 90-2600 Hz
+// at -27 dB), sounds laid at the cut's marks (a snap click on every snap
+// shot), and an outdoor mic chain with a street ambience bed (ugc-product's
+// "outdoor mic realism"). No audio asset ships with the part: every bed is
+// anoisesrc with a fixed seed, so a mix is the same on every run.
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitDuration, kitFfmpeg, kitLoudness, kitNum } from '../../_lib/part.mjs';
 
 const FMT = 'aresample=48000,aformat=sample_fmts=fltp:sample_rates=48000:channel_layouts=stereo';
+// ugc-product's outdoor mic: a phone mic's band, a little presence, less boxiness, a gentle 3:1 compressor.
+const OUTDOOR_VOICE =
+  'highpass=f=110,lowpass=f=7400,equalizer=f=2600:t=q:w=1:g=2.5,equalizer=f=300:t=q:w=1:g=-1.5,' +
+  'acompressor=threshold=0.125:ratio=3:attack=10:release=200:makeup=1';
+const STREET = { color: 'brown', gain_db: -27, highpass_hz: 40, lowpass_hz: 1500 };
+const NOISE_SEED = 4201;
+
+/** A seeded, band-limited noise bed of the picture's length, at an absolute level. */
+function noiseBed(tone, dur, label, { moving = false } = {}) {
+  const color = tone.color ?? 'brown';
+  const hp = tone.highpass_hz ?? 90;
+  const lp = tone.lowpass_hz ?? 2600;
+  // Traffic and wind swell slowly; a room does not.
+  const swell = moving ? ',tremolo=f=0.15:d=0.35' : '';
+  return (
+    `anoisesrc=d=${kitNum(dur)}:c=${color}:r=48000:a=1:s=${NOISE_SEED},highpass=f=${kitNum(hp, 1)},lowpass=f=${kitNum(lp, 1)}` +
+    `${swell},volume=${kitNum(tone.gain_db, 2)}dB,${FMT},atrim=0:${kitNum(dur)}[${label}]`
+  );
+}
+
+/** The marks that have a sound and land inside the picture: [{ sound, at_s }]. */
+function markCues(ctx, inputs, dur) {
+  const marks = inputs.marks || [];
+  const sounds = inputs.mark_sounds || [];
+  if (!marks.length) return [];
+  if (!sounds.length) throw ctx.error('bad_input', 'marks are set but mark_sounds is empty: give a sound for at least one mark kind');
+  const byId = new Map();
+  for (const s of sounds) {
+    if (byId.has(s.id)) throw ctx.error('bad_input', `mark_sounds names "${s.id}" twice`);
+    byId.set(s.id, s);
+  }
+  const offset = inputs.mark_offset_s ?? 0;
+  const cues = [];
+  let dropped = 0;
+  for (const m of marks) {
+    const sound = byId.get(m.kind);
+    if (!sound) continue;
+    const at = Math.max(0, m.at_s + offset);
+    if (at >= dur - 0.02) {
+      dropped++;
+      continue;
+    }
+    cues.push({ sound, at_s: +at.toFixed(3) });
+  }
+  if (!cues.length && !marks.some((m) => byId.has(m.kind)))
+    throw ctx.error('bad_input', `no mark kind (${[...new Set(marks.map((m) => m.kind))].join(', ')}) has a sound in mark_sounds (${[...byId.keys()].join(', ')})`);
+  if (dropped) ctx.log.info(`${dropped} mark sound(s) would start past the end of the video and were dropped`);
+  return cues;
+}
 
 async function gainTo(ctx, file, target) {
   const { lufs } = await kitLoudness(ctx, file.path);
@@ -24,7 +78,10 @@ export async function run(inputs, ctx) {
   // The picture's own sound (phone-chat's UI sounds, clips kept with their sound) is kept unless dropped.
   const keepOwn = inputs.keep_video_audio ?? picture.has_audio;
   if (inputs.keep_video_audio && !picture.has_audio) throw ctx.error('bad_input', 'keep_video_audio is set but the video has no sound');
-  if (!inputs.voice && !inputs.music && !(inputs.sfx || []).length && !inputs.effects && !keepOwn) {
+  const outdoor = inputs.outdoor === true;
+  if (outdoor && !inputs.voice && !keepOwn) throw ctx.error('bad_input', "outdoor needs speech to treat: a voice, or a picture whose own sound is kept");
+  const marked = markCues(ctx, inputs, dur);
+  if (!inputs.voice && !inputs.music && !(inputs.sfx || []).length && !inputs.effects && !keepOwn && !inputs.room_tone && !marked.length) {
     // Nothing to lay under the picture (a style whose music is optional, with none chosen): a silent track
     // of the picture's length, so every later step and layer gets a cut with sound to read.
     ctx.log.info('nothing to mix: a silent track');
@@ -65,7 +122,7 @@ export async function run(inputs, ctx) {
     const db = await gainTo(ctx, inputs.voice, inputs.voice_lufs ?? -16);
     args.push('-i', inputs.voice.path);
     graph.push(
-      `[${n}:a]${FMT},volume=${db}dB,adelay=${Math.round(start * 1000)}:all=1,apad,atrim=0:${kitNum(dur)},asetpts=PTS-STARTPTS` +
+      `[${n}:a]${FMT},volume=${db}dB,${outdoor ? `${OUTDOOR_VOICE},` : ''}adelay=${Math.round(start * 1000)}:all=1,apad,atrim=0:${kitNum(dur)},asetpts=PTS-STARTPTS` +
         (inputs.music && duck ? ',asplit=2[vo][key]' : '[vo]'),
     );
     labels.push('[vo]');
@@ -110,10 +167,41 @@ export async function run(inputs, ctx) {
     n++;
   }
 
+  // Sounds at the cut's marks: one input per sound, split to every mark that uses it.
+  const bySound = new Map();
+  for (const c of marked) bySound.set(c.sound, [...(bySound.get(c.sound) || []), c.at_s]);
+  const markGain = inputs.mark_gain ?? 1;
+  const markCut = inputs.mark_max_s
+    ? `atrim=0:${kitNum(inputs.mark_max_s)},afade=t=out:st=${kitNum(Math.max(0, inputs.mark_max_s - 0.06))}:d=0.06,`
+    : '';
+  for (const [k, [sound, times]] of [...bySound.entries()].entries()) {
+    args.push('-i', sound.audio.path);
+    const head = `[${n}:a]${FMT},${markCut}volume=${markGain}`;
+    if (times.length === 1) {
+      graph.push(`${head},adelay=${Math.round(times[0] * 1000)}:all=1,apad,atrim=0:${kitNum(dur)}[mk${k}]`);
+    } else {
+      graph.push(`${head},asplit=${times.length}${times.map((_, j) => `[mk${k}s${j}]`).join('')}`);
+      for (const [j, t] of times.entries()) graph.push(`[mk${k}s${j}]adelay=${Math.round(t * 1000)}:all=1,apad,atrim=0:${kitNum(dur)}[mk${k}d${j}]`);
+      graph.push(`${times.map((_, j) => `[mk${k}d${j}]`).join('')}amix=inputs=${times.length}:duration=first:normalize=0[mk${k}]`);
+    }
+    labels.push(`[mk${k}]`);
+    n++;
+  }
+
   if (keepOwn) {
     const key = inputs.music && duck && duckBy === 'picture';
-    graph.push(`[0:a]${FMT},volume=${inputs.video_audio_db ?? 0}dB,apad,atrim=0:${kitNum(dur)}${key ? ',asplit=2[orig][key]' : '[orig]'}`);
+    const treat = outdoor && !inputs.voice ? `,${OUTDOOR_VOICE}` : '';
+    graph.push(`[0:a]${FMT},volume=${inputs.video_audio_db ?? 0}dB${treat},apad,atrim=0:${kitNum(dur)}${key ? ',asplit=2[orig][key]' : '[orig]'}`);
     labels.push('[orig]');
+  }
+
+  // Beds at an absolute level, laid after the voice is levelled and never ducked.
+  if (outdoor) {
+    graph.push(noiseBed(inputs.room_tone ? { ...STREET, ...inputs.room_tone } : STREET, dur, 'street', { moving: true }));
+    labels.push('[street]');
+  } else if (inputs.room_tone) {
+    graph.push(noiseBed(inputs.room_tone, dur, 'room'));
+    labels.push('[room]');
   }
 
   const sum = labels.length > 1 ? `${labels.join('')}amix=inputs=${labels.length}:duration=first:normalize=0` : `${labels[0]}anull`;
