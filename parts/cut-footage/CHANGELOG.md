@@ -6,12 +6,12 @@
 - `grid {layout: "2x2", still_zoom}` (inserts): a scene tagged `extra.shot: "grid"` plays its four footage entries as a 2x2 grid; clips at 1x or slowed to fill, pictures pushed in; cells join the reuse and order checks.
 - `push_in {min_hold_s, amount}` (inserts, split): a slow push-in on every full-frame creator stretch of at least `min_hold_s`.
 - `first_scene_look: blur | card | none` (inserts, split) with `card_color`: the hook treatment on the first scene.
-- Without any of these, inserts render as 1.1.0 and the other modes are unchanged.
+- Without any of these, inserts render as 1.1.0 and the other modes are unchanged. Inserts (and grid inserts) carry 1.1.0's take-join rule, including the early start: an insert starting up to 1 s after a join starts 0.15 s before it.
 
 ## 1.1.0
 
 - `mode: "scenes"`: one full-frame beat per plan scene. A scene plays its footage entry (matched by `scene_id`), else its image or image footage held still, else (scene 1 only) the `lead` clip. Windows are sped to fit `scene_seconds` within `min_speed` to `max_speed` (0.5x to 2x by default); `transition.dissolve_frames` dissolves between beats with the total length kept. Outputs `timeline` with the plan's scene ids and `windows`.
-- `mode: "inserts"`: full-frame inserts over a talking track at its scenes' times, its sound kept. `joins` (a creator step's takes): every take join must sit under an insert; an insert ending up to 1 s before one is stretched to end 0.15 s after it, else the plan is refused before any work.
+- `mode: "inserts"`: full-frame inserts over a talking track at its scenes' times, its sound kept. `joins` (a creator step's takes): every take join must sit under an insert; an insert ending up to 1 s before one is stretched to end 0.15 s after it; else an insert starting up to 1 s after one (a timeline retimed from heard words) starts 0.15 s before it, never before 0 s or into the previous insert, its window slowed inside the speed band or reaching earlier in the recording; else the plan is refused before any work.
 - `look: "screen"`: the filmed-screen look from `_lib/screen-look.mjs` (rotation, keystone, fill, fit, drift, bezel, room). Footage entries take `crop`, `mask` boxes (blurred in the source) and their own `fit`.
 - `footage` takes up to 20 entries, and image files for `kind: "image"` (critic #15). Windows must move forward through a recording and never reuse a part of it (`order`).
 - Every final encode caps its bitrate at 16 Mb/s; a cut that could pass 180 MB is refused before the work, and a finished file over 180 MB fails as `output_invalid` (§4.12).

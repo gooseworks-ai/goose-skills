@@ -2,6 +2,7 @@
 // and 1.0.2's band behaviour kept. Small frames keep the renders fast.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileRef, framePixels, hasFfmpeg, loadNewest, loadPart, makeCtx, makeVideo, probe, run } from '../../_tools/kit-harness.mjs';
 
@@ -156,6 +157,42 @@ test('inserts mode: inserts at scene times over the talking track, stretched ove
   );
   assert.deepEqual(two.windows.map((x) => x.scene_id), ['s2', 's3'], 'a scene image is an insert too');
   assert.ok(near(await rgbAt(two.video.path, 4), [0, 0, 255], 20), 'the screenshot insert, plain look, covers the frame');
+});
+
+test('inserts mode on a retimed timeline: a cutaway starting 0.4 s after a take join starts early over it; 1.2 s after is refused before any render', { skip }, async () => {
+  const { ctx } = makeCtx({ partDir: dir });
+  const talk = await solid(ctx, 'talk.mp4', 6, '000000', { width: 270, height: 480, tone: 440 });
+  const rec = await solid(ctx, 'rec.mp4', 8, 'ff0000');
+  // creator-h3 starts take 2 (and scene s2) at 2.0 s; heard words moved s2's start to 2.4 s.
+  const timeline = (s2Start) => ({
+    duration_s: 6,
+    width: 270,
+    height: 480,
+    fps: 30,
+    scenes: [
+      { id: 's1', start_s: 0, end_s: s2Start },
+      { id: 's2', start_s: s2Start, end_s: 4 },
+      { id: 's3', start_s: 4, end_s: 6 },
+    ],
+    speech: [],
+  });
+  const scenes = [{ id: 's1', line: 'a' }, { id: 's2', line: 'b' }, { id: 's3', line: 'c' }];
+  const footage = [{ file: rec, asset_id: 'rec', start_ms: 1000, end_ms: 2600, scene_id: 's2' }];
+  const joins = [{ id: 't1', start_s: 0 }, { id: 't2', start_s: 2 }];
+  const out = await mod.run({ video: talk, timeline: timeline(2.4), scenes, footage, joins }, ctx);
+  const w = out.windows.find((x) => x.scene_id === 's2');
+  assert.ok(w.start_s <= 1.85 + 1e-6 && w.start_s > 1.8, `the insert starts 0.15 s before the join (${w.start_s})`);
+  assert.ok(Math.abs(w.end_s - 4) < 0.02, 'and still ends with its scene');
+  assert.ok(w.speed >= 0.5 && w.speed < 1, `the window slows inside the band (${w.speed})`);
+  for (const t of [1.9, 2.0, 2.1]) assert.ok(near(await rgbAt(out.video.path, t), [255, 0, 0], 70), `the insert covers the join at ${t}s`);
+  assert.ok(near(await rgbAt(out.video.path, 1.5), [0, 0, 0], 20), 'before the insert, the creator');
+  assert.ok(near(await rgbAt(out.video.path, 5), [0, 0, 0], 20), 'after the insert, the creator again');
+  assert.deepEqual(out.timeline, timeline(2.4), 'the talking timeline is passed through');
+
+  const late = makeCtx({ partDir: dir });
+  await assert.rejects(mod.run({ video: talk, timeline: timeline(3.2), scenes, footage, joins }, late.ctx), (e) => e.code === 'bad_input' && /cut between takes at 2s would show: no insert covers it/.test(e.message));
+  const rendered = readdirSync(late.ctx.workDir, { recursive: true }).filter((f) => /\.(mp4|mov|png)$/.test(String(f)));
+  assert.deepEqual(rendered, [], 'nothing was rendered before the refusal');
 });
 
 test('band mode keeps the 1.0.2 behaviour when no scenes are given', { skip }, async () => {

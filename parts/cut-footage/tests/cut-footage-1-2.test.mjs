@@ -4,6 +4,7 @@
 // these is asked for. Small frames keep the renders fast.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileRef, framePixels, hasFfmpeg, loadNewest, loadPart, makeCtx, makeVideo, probe, run } from '../../_tools/kit-harness.mjs';
 
@@ -188,6 +189,53 @@ test('inserts mode with none of the 1.2.0 options renders as 1.1.0 did', { skip 
   assert.deepEqual(now.windows, old.windows);
   assert.deepEqual(now.timeline, old.timeline);
   for (const t of [0.5, 2, 3.5]) for (const [x, y] of [[13, 240], [135, 240]]) assert.ok(near(await rgbAt(now.video.path, t, x, y), await rgbAt(old.video.path, t, x, y), 6), `frame ${t}s at ${x},${y} matches 1.1.0`);
+});
+
+test('inserts mode on a retimed timeline: a window insert and a grid starting just after their take joins start early over them, as in 1.1.0; a push-in stops at the early start', { skip }, async () => {
+  const { ctx } = makeCtx({ partDir: dir });
+  const talk = await striped(ctx, 'talk.mp4', 8);
+  const red = await solid(ctx, 'red.mp4', 8, 'ff0000');
+  const green = await solid(ctx, 'green.mp4', 4, '00ff00');
+  const blue = await still(ctx, 'blue.png', '0000ff');
+  const yellow = await still(ctx, 'yellow.png', 'ffff00', 200, 300);
+  // creator-h3 starts takes 2 and 3 at 2.0 s and 5.0 s; heard words moved s2 to 2.4 s and the grid to 5.3 s.
+  // s2 ends 1.2 s before the second join, too far to stretch over it, so the grid must start early.
+  const timeline = talkTimeline([['s1', 0, 2.4], ['s2', 2.4, 3.8], ['s3', 3.8, 5.3], ['grid', 5.3, 7], ['s5', 7, 8]], 8);
+  const scenes = [{ id: 's1', line: 'a' }, { id: 's2', line: 'b' }, { id: 's3', line: null }, { id: 'grid', line: 'd', extra: { shot: 'grid' } }, { id: 's5', line: 'e' }];
+  const joins = [{ id: 't1', start_s: 0 }, { id: 't2', start_s: 2 }, { id: 't3', start_s: 5 }];
+  const s2 = { file: red, asset_id: 'red', start_ms: 1000, end_ms: 2600, scene_id: 's2' };
+  const cells = [
+    { file: red, asset_id: 'red', start_ms: 4000, end_ms: 7000, scene_id: 'grid' },
+    { file: green, asset_id: 'green', start_ms: 0, end_ms: 3000, scene_id: 'grid' },
+    { file: blue, asset_id: 'blue', kind: 'image', scene_id: 'grid' },
+    { file: yellow, asset_id: 'yellow', kind: 'image', scene_id: 'grid' },
+  ];
+  const out = await mod.run({ video: talk, timeline, scenes, footage: [s2, ...cells], joins, grid: { layout: '2x2' }, push_in: { min_hold_s: 1.5, amount: 0.15 } }, ctx);
+  const w = out.windows.find((x) => x.scene_id === 's2');
+  assert.ok(w.start_s <= 1.85 + 1e-6 && w.start_s > 1.8, `the insert starts 0.15 s before the join (${w.start_s})`);
+  assert.ok(w.speed >= 0.5 && w.speed < 1, `its window slows inside the band (${w.speed})`);
+  const g = out.windows.find((x) => x.scene_id === 'grid');
+  assert.ok(g.start_s <= 4.85 + 1e-6 && g.start_s > 4.8, `the grid starts 0.15 s before its join (${g.start_s})`);
+  assert.ok(Math.abs(g.end_s - 7) < 0.02, 'and still ends with its scene');
+  for (const t of [1.9, 2.0, 2.1]) assert.ok(near(await rgbAt(out.video.path, t, 135, 240), [255, 0, 0], 70), `the insert covers the join at ${t}s`);
+  for (const t of [4.9, 5.0, 5.1]) assert.ok(near(await rgbAt(out.video.path, t, 200, 100), [0, 255, 0], 70), `the grid covers the join at ${t}s`);
+  assert.ok(near(await rgbAt(out.video.path, 0.1, 20, 240), [255, 255, 255], 40), 'the first creator stretch starts unzoomed');
+  assert.ok(near(await rgbAt(out.video.path, 1.75, 20, 240), [0, 0, 0], 40), 'and is pushed in by the insert\'s early start');
+  assert.deepEqual(out.timeline, timeline, 'the talking timeline is passed through');
+
+  const plainInputs = { video: talk, timeline, scenes: scenes.map((s) => ({ id: s.id, line: s.line })), footage: [s2], joins: joins.slice(0, 2) };
+  const now = await mod.run(plainInputs, makeCtx({ partDir: dir }).ctx);
+  const old = await (await loadPart('cut-footage', '1.1.0')).mod.run(plainInputs, makeCtx({ partDir: join(dir, '..', '1.1.0') }).ctx);
+  assert.deepEqual(now.windows, old.windows, 'without 1.2.0 options the early start matches 1.1.0');
+
+  const late = makeCtx({ partDir: dir });
+  const lateTimeline = talkTimeline([['s1', 0, 2.4], ['s2', 2.4, 3.8], ['s3', 3.8, 6.2], ['grid', 6.2, 7], ['s5', 7, 8]], 8);
+  await assert.rejects(
+    mod.run({ video: talk, timeline: lateTimeline, scenes, footage: [s2, ...cells], joins, grid: { layout: '2x2' } }, late.ctx),
+    (e) => e.code === 'bad_input' && /cut between takes at 5s would show: no insert covers it/.test(e.message),
+  );
+  const rendered = readdirSync(late.ctx.workDir, { recursive: true }).filter((f) => /\.(mp4|mov|png)$/.test(String(f)));
+  assert.deepEqual(rendered, [], 'nothing was rendered before the refusal');
 });
 
 test('refuses, in plain words and before any render: a short grid, a seam outside the frame, inputs split does not use, a grid cell too short, a bad card colour', { skip }, async () => {

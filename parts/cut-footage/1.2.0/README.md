@@ -18,8 +18,11 @@ compose-creator-layer's split and render-logo-equation-card's compose. Four mode
 - **inserts**: `video` is a talking track with its `timeline`. Each scene with a footage entry or an image becomes a
   full-frame insert at that scene's time; the track's sound runs under it. `joins` (a creator step's `takes`): every
   take start after the first must sit under an insert; an insert that ends up to 1 s before a join is stretched to end
-  0.15 s after it, and a join no insert reaches is refused before any work. The timeline is passed through, with
-  `windows`. **Grid**: with `grid {layout: "2x2", still_zoom}`, a scene tagged `extra.shot: "grid"` plays its four
+  0.15 s after it. Else an insert that starts up to 1 s after a join (a timeline retimed from heard words often moves a
+  new take's scene past its join) starts 0.15 s before it, never before 0 s or into the previous insert; its window
+  plays slower inside the speed band, or reaches earlier in the recording when that would be too slow (still forward
+  only). A join no insert reaches is refused before any work. The timeline is passed through, with `windows`.
+  **Grid**: with `grid {layout: "2x2", still_zoom}`, a scene tagged `extra.shot: "grid"` plays its four
   footage entries (that `scene_id`, plan order) as a 2x2 grid: each cell cover-cropped after its `crop` and `mask`; a
   clip from its window start at 1x, or slowed to fill the beat (not below `min_speed`); a picture pushed in by
   `still_zoom` (default 0.04). Grid cells are always plain. Without `grid`, one entry per scene as in 1.1.0.

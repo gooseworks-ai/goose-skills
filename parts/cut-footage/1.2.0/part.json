@@ -506,7 +506,7 @@
         }
       },
       "joins": {
-        "description": "inserts: step.<creator>.takes. Every take start after the first must sit under an insert; an insert ending up to 1 s before one is stretched to end 0.15 s after it, and a join no insert reaches is refused.",
+        "description": "inserts: step.<creator>.takes. Every take start after the first must sit under an insert; an insert ending up to 1 s before one is stretched to end 0.15 s after it, else an insert starting up to 1 s after one starts 0.15 s before it (never before 0 or into the previous insert), and a join no insert reaches is refused.",
         "type": "array",
         "maxItems": 40,
         "items": {

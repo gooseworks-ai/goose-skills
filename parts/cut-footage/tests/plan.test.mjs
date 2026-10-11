@@ -1,7 +1,7 @@
 // cut-footage's planner (src/plan.mjs): pure, no ffmpeg.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { CutRefusal, cutCheckMode, cutCheckOrder, cutCheckProjectedSize, cutModeOf, cutPlaceInserts, cutPlanScenes, cutSceneSources, cutSpeedFor } from '../src/plan.mjs';
+import { CutRefusal, cutCheckMode, cutCheckOrder, cutCheckProjectedSize, cutInsertRange, cutModeOf, cutPlaceInserts, cutPlanScenes, cutSceneSources, cutSpeedFor } from '../src/plan.mjs';
 
 const vid = (sha = 'a'.repeat(64)) => ({ kind: 'file', path: '/x.mp4', sha256: sha, bytes: 1, mime: 'video/mp4', media: 'video' });
 const img = { kind: 'file', path: '/x.png', sha256: 'b'.repeat(64), bytes: 1, mime: 'image/png', media: 'image' };
@@ -62,12 +62,66 @@ test('inserts cover every take join: an insert ending up to 1 s before a join is
   assert.ok(Math.abs(slots[0].stretched_s - 0.35) < 1e-9);
   assert.equal(slots[1].end_s, 7, 'a join well inside an insert needs nothing');
   assert.throws(() => cutPlaceInserts([src('a')], spans, { joins: [4.6], duration: 10, fps: 30 }), refused(/cut between takes at 4.6s would show/));
-  assert.throws(() => cutPlaceInserts([src('a')], spans, { joins: [1.9], duration: 10, fps: 30 }), refused(/would show/));
+  assert.throws(() => cutPlaceInserts([src('a')], spans, { joins: [0.8], duration: 10, fps: 30 }), refused(/would show/));
   const tight = new Map([['a', { start_s: 2, end_s: 3.4 }], ['b', { start_s: 3.5, end_s: 5 }]]);
   assert.throws(() => cutPlaceInserts([src('a'), src('b')], tight, { joins: [3.45], duration: 10, fps: 30 }), refused(/cannot stretch over the cut between takes at 3.45s: it would run past the next insert/));
   assert.throws(() => cutPlaceInserts([src('zz')], spans, { duration: 10, fps: 30 }), refused(/no time in the talking track's timeline/));
   const overlap = new Map([['a', { start_s: 2, end_s: 4 }], ['b', { start_s: 3, end_s: 5 }]]);
   assert.throws(() => cutPlaceInserts([src('a'), src('b')], overlap, { duration: 10, fps: 30 }), refused(/overlap in time/));
+});
+
+test('an insert that starts up to 1 s after a take join starts 0.15 s before it (a timeline retimed from heard words)', () => {
+  const src = (id) => ({ scene: { id }, kind: 'window', entry: { file: vid() } });
+  // creator-h3 starts take 2 on scene b at 4.0 s; retimed, b starts 0.4 s later.
+  const spans = new Map([['a', { start_s: 1, end_s: 2 }], ['b', { start_s: 4.4, end_s: 6 }]]);
+  const [a, b] = cutPlaceInserts([src('a'), src('b')], spans, { joins: [4], duration: 10, fps: 30 });
+  assert.equal(a.early_s, 0);
+  assert.ok(Math.abs(b.start_s - 3.8333) < 1e-3, `starts at a frame at or before 3.85 (${b.start_s})`);
+  assert.ok(b.start_s <= 4 - 0.15 + 1e-9 && b.end_s === 6, 'the join sits under the insert, 0.15 s in');
+  assert.ok(Math.abs(b.early_s - 0.55) < 1e-9);
+  assert.equal(b.stretched_s, 0);
+  // 1.2 s after the join is too far.
+  const far = new Map([['b', { start_s: 5.2, end_s: 6 }]]);
+  assert.throws(() => cutPlaceInserts([src('b')], far, { joins: [4], duration: 10, fps: 30 }), refused(/cut between takes at 4s would show: no insert covers it/));
+  // A start inside the first 0.15 s after the join is padded too; never before 0.
+  const close = cutPlaceInserts([src('b')], new Map([['b', { start_s: 4.05, end_s: 6 }]]), { joins: [4], duration: 10, fps: 30 });
+  assert.ok(close[0].start_s <= 3.85 + 1e-9);
+  const zero = cutPlaceInserts([src('b')], new Map([['b', { start_s: 0.5, end_s: 2 }]]), { joins: [0.1], duration: 10, fps: 30 });
+  assert.equal(zero[0].start_s, 0);
+  // Never into the previous insert.
+  const tight = new Map([['a', { start_s: 1, end_s: 4.1 }], ['b', { start_s: 4.3, end_s: 6 }]]);
+  assert.throws(() => cutPlaceInserts([src('a'), src('b')], tight, { joins: [4.2], duration: 10, fps: 30 }), refused(/insert for scene "a" cannot stretch over the cut between takes at 4.2s/));
+  assert.throws(() => cutPlaceInserts([src('b')], new Map([['b', { start_s: 4.3, end_s: 6 }]]), { joins: [4.2], duration: 4.31, fps: 30 }), refused(/lasts under one frame/));
+  const intoPrev = new Map([['a', { start_s: 1, end_s: 4.1 }], ['b', { start_s: 4.15, end_s: 6 }]]);
+  assert.throws(() => cutPlaceInserts([src('a'), src('b')], intoPrev, { joins: [4.12], duration: 10, fps: 30 }), refused(/insert for scene "a" cannot stretch/));
+  const startOnly = new Map([['b', { start_s: 4.4, end_s: 6 }], ['a', { start_s: 3.8, end_s: 4.3 }]]);
+  assert.throws(() => cutPlaceInserts([src('a'), src('b')], startOnly, { joins: [4.42], duration: 10, fps: 30 }), refused(/insert for scene "b" cannot start early over the cut between takes at 4.42s: it would run into the previous insert/));
+  // An insert ending just before the join is still stretched first (1.0.x-style behaviour kept).
+  const both = cutPlaceInserts([src('a'), src('b')], new Map([['a', { start_s: 1, end_s: 3.9 }], ['b', { start_s: 4.4, end_s: 6 }]]), { joins: [4], duration: 10, fps: 30 });
+  assert.ok(both[0].stretched_s > 0 && both[1].early_s === 0);
+  // When the stretch would hit the next insert, the next one starts early instead.
+  const swap = cutPlaceInserts([src('a'), src('b')], new Map([['a', { start_s: 1, end_s: 3.5 }], ['b', { start_s: 4.1, end_s: 6 }]]), { joins: [4], duration: 10, fps: 30 });
+  assert.ok(swap[0].stretched_s === 0 && swap[1].early_s > 0 && swap[1].start_s <= 3.85 + 1e-9);
+});
+
+test('an insert started early slows within the speed band, else plays earlier footage; still refused outside the band', () => {
+  const opts = { speed: 'fill', min_speed: 0.5, max_speed: 2 };
+  // 2 s window, slot grew 1.6 -> 2.15 s: 0.93x, inside the band, window unchanged.
+  const slow = cutInsertRange({ early_s: 0.55 }, { from: 3, to: 5 }, 2.15, opts, 'x');
+  assert.equal(slow.from, 3);
+  assert.equal(slow.extended_s, 0);
+  assert.ok(Math.abs(slow.speed - 2 / 2.15) < 1e-9);
+  // 1 s window in a 2.6 s slot (2 s before the early start): 0.38x is too slow, so the
+  // window reaches 0.3 s earlier in the recording (0.6 s at its 0.5x) and plays at 0.5x.
+  const ext = cutInsertRange({ early_s: 0.6 }, { from: 3, to: 4 }, 2.6, opts, 'x');
+  assert.ok(Math.abs(ext.from - 2.7) < 1e-9 && Math.abs(ext.extended_s - 0.3) < 1e-9);
+  assert.ok(ext.speed >= 0.5 - 0.01 && ext.speed <= 2);
+  // At a fixed speed a window too short for the longer slot reaches earlier, never before 0.
+  const fixed = cutInsertRange({ early_s: 0.5 }, { from: 0.3, to: 2.5 }, 2.5, { speed: 1, min_speed: 0.5, max_speed: 2 }, 'x');
+  assert.equal(fixed.from, 0);
+  assert.throws(() => cutInsertRange({ early_s: 0.5 }, { from: 0.1, to: 2.1 }, 2.5, { speed: 1 }, 'x'), refused(/at 1x the 2.1s window lasts 2.1s, less than the 2.5s/));
+  // No early start: refused as before.
+  assert.throws(() => cutInsertRange({ early_s: 0 }, { from: 3, to: 4 }, 2.6, opts, 'x'), refused(/needs 0.38x, outside 0.5x to 2x/));
 });
 
 test('a fixed speed refuses a window too short for its slot; the size projection refuses a long cut', () => {

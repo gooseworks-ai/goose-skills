@@ -13,7 +13,8 @@
 //   inserts  a talking track (video + timeline) with full-frame inserts at the
 //            times of the scenes that have footage or an image; the track's
 //            sound runs under them. Every take join (joins) must sit under an
-//            insert; an insert that ends just before one is stretched over it.
+//            insert; an insert that ends just before one is stretched over it,
+//            else one that starts just after it starts early over it.
 //            A scene tagged extra.shot "grid" (with `grid`) plays four entries
 //            as a 2x2 grid.
 //   split    the talking track with, per scene, its footage window (or its
@@ -34,7 +35,7 @@ import { kitCheckInputs, kitCheckOutputs, kitDuration, kitFfmpeg, kitNum } from 
 import { kitMediaLength } from '../../_lib/length.mjs';
 import { kitScreenBoxProblems, kitScreenGraph, kitScreenProblems } from '../../_lib/screen-look.mjs';
 import { kitPanelCover, kitPanelDivider, kitPanelFit, kitPanelSeamRows, kitPanelVstack } from '../../_lib/panels.mjs';
-import { CUT_MAX_BYTES, CutRefusal, cutCheckMode, cutCheckOrder, cutCheckProjectedSize, cutCreatorRuns, cutEntryFile, cutEntryIsStill, cutGridCellSpeed, cutModeOf, cutPlaceInserts, cutPlanScenes, cutSceneSources, cutSplitSlots, cutSpeedFor, cutWindow } from './plan.mjs';
+import { CUT_MAX_BYTES, CutRefusal, cutCheckMode, cutCheckOrder, cutCheckProjectedSize, cutCreatorRuns, cutEntryFile, cutEntryIsStill, cutGridCellSpeed, cutInsertRange, cutModeOf, cutPlaceInserts, cutPlanScenes, cutSceneSources, cutSplitSlots, cutWindow } from './plan.mjs';
 
 /** atempo steps whose product is `speed`: ffmpeg 6.0's atempo takes 0.5 to 2 at a time. */
 function cutTempoChain(speed) {
@@ -351,9 +352,8 @@ async function cutInserts(inputs, ctx, manifest) {
     if (s.kind === 'grid') beats.push({ ...s, seconds, speed: 1, cells: await cutGridCells(ctx, s, seconds, opts.min_speed) });
     else if (s.kind !== 'window') beats.push({ ...s, seconds, speed: 1 });
     else {
-      const { from, to } = cutWindow(s.entry, lengths.get(s.index));
-      const speed = cutSpeedFor(to - from, seconds, opts, `the insert for scene "${s.scene.id}"`);
-      beats.push({ ...s, seconds, speed, from, to: from + seconds * speed });
+      const range = cutInsertRange(s, cutWindow(s.entry, lengths.get(s.index)), seconds, opts, `the insert for scene "${s.scene.id}"`);
+      beats.push({ ...s, seconds, ...range });
     }
   }
   cutCheckOrder(cutOrderBeats(beats), inputs.order ?? 'forward');
@@ -363,6 +363,7 @@ async function cutInserts(inputs, ctx, manifest) {
     if (b.kind === 'grid') paths.push(await cutRenderGrid(ctx, b, { W, H, fps, still_zoom: inputs.grid.still_zoom ?? 0.04, name }));
     else paths.push(await cutRenderBeat(ctx, b, { W, H, fps, look: inputs.look ?? 'plain', screen: inputs.screen, fit: inputs.fit, lookIndex: i, seconds: b.seconds, extraS: 0, name }));
     if (b.stretched_s > 0) ctx.log.info('insert stretched over a take join', { scene_id: b.scene.id, stretched_s: +b.stretched_s.toFixed(3) });
+    if (b.early_s > 0) ctx.log.info('insert started early over a take join', { scene_id: b.scene.id, early_s: +b.early_s.toFixed(3), window_extended_s: +(b.extended_s || 0).toFixed(3) });
     ctx.progress({ done: i + 1, total: beats.length + 1 });
   }
   const video = await cutOverlayCompose(ctx, inputs, { info, W, H, fps, dur, beats, paths, name: 'inserts.mp4' });
@@ -524,9 +525,8 @@ async function cutSplit(inputs, ctx, manifest) {
   const beats = slots.map((s) => {
     const seconds = s.end_s - s.start_s;
     if (s.kind !== 'window') return { ...s, seconds, speed: 1 };
-    const { from, to } = cutWindow(s.entry, lengths.get(s.index));
-    const speed = cutSpeedFor(to - from, seconds, opts, `the footage for scene "${s.scene.id}"`);
-    return { ...s, seconds, speed, from, to: from + seconds * speed };
+    const range = cutInsertRange(s, cutWindow(s.entry, lengths.get(s.index)), seconds, opts, `the footage for scene "${s.scene.id}"`);
+    return { ...s, seconds, ...range };
   });
   cutCheckOrder(beats, inputs.order ?? 'forward');
   const paths = [];
