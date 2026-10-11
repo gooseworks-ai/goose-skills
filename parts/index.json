@@ -278,6 +278,54 @@
       "models": []
     },
     {
+      "id": "audio-mix",
+      "version": "1.1.0",
+      "interface": 1,
+      "kind": "mix",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "ebur128",
+            "sidechaincompress",
+            "amix",
+            "alimiter",
+            "adelay",
+            "afade",
+            "apad",
+            "atrim",
+            "aresample",
+            "aformat",
+            "asplit",
+            "anoisesrc",
+            "highpass",
+            "lowpass",
+            "equalizer",
+            "acompressor",
+            "tremolo"
+          ],
+          "encoders": [
+            "aac"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 200
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/audio-mix/1.1.0",
+      "files": {
+        "README.md": "4261535c72fa826a074e0535bbaf24490abbd55e89d9df285d00a3b4b2b5ffec",
+        "part.json": "3d02f20dcf2b6e7eb54bda73eb658c7df29b41d77ff9f240f9f50b8e4c45b2c0",
+        "part.mjs": "501c9c61b58903c538ff2321bc18cf8ae0dfac3007127582f24812cea122f9b8"
+      },
+      "models": []
+    },
+    {
       "id": "brand-layer",
       "version": "1.0.0",
       "interface": 1,
