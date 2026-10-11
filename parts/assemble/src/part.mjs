@@ -407,7 +407,8 @@ export async function run(inputs, ctx) {
         `trim=end_frame=${p.frames},setpts=PTS-STARTPTS${finish},format=yuv420p[v${k}]`,
     );
     if (keepAudio) {
-      const info = p.kind === 'video' ? await ctx.tools.probe(p.media.path) : { has_audio: false };
+      // The end card is always silent (music and room tone are the mix layer's), even when its file has sound.
+      const info = p.body && p.kind === 'video' ? await ctx.tools.probe(p.media.path) : { has_audio: false };
       const tempo = p.kind === 'video' && (p.speed ?? 1) !== 1 ? `,atempo=${kitNum(p.speed, 4)}` : '';
       graph.push(
         info.has_audio

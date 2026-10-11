@@ -88,7 +88,8 @@ test('the end card takes the last span, with its logo box moved onto the cut; a 
 test('passes a finished timeline through and appends the card after it, keeping the clip sound (street interview)', { skip }, async () => {
   const { ctx } = makeCtx({ partDir: dir });
   const body = await fileRef(await makeVideo(join(ctx.workDir, 'body.mp4'), 1.5, { width: W, height: H, fps: 30, tone: 440 }), 'video');
-  const card = await solid(ctx, 'card.mp4', 'yellow', 0.6);
+  // The card file has its own sound: the cut must still be silent under it.
+  const card = await fileRef(await makeVideo(join(ctx.workDir, 'card.mp4'), 0.6, { width: W, height: H, fps: 30, tone: 660, pattern: 'color=c=yellow' }), 'video');
   const timeline = {
     duration_s: 1.5, width: W, height: H, fps: 30,
     scenes: [{ id: 'q1', start_s: 0, end_s: 0.7 }, { id: 'a1', start_s: 0.7, end_s: 1.5 }],
@@ -174,4 +175,10 @@ test('grain grades cap the final encode at 8 Mbps; others at 16 Mbps', { skip },
   const camInfo = await probe(cam.video.path);
   assert.deepEqual([camInfo.width, camInfo.height], [900, 1600]);
   console.log(`# phone-grain cut: ${(bps / 1e6).toFixed(2)} Mbps over ${out.seconds} s (bound ${((8e6 + 16e6 / out.seconds) / 1e6).toFixed(2)})`);
+});
+
+test('clip ids take the 64-character scene ids the image and clip parts emit', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const pj = JSON.parse(await readFile(join(dir, 'part.json'), 'utf8'));
+  assert.equal(pj.inputs.properties.clips.items.properties.id.maxLength, 64);
 });

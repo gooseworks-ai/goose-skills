@@ -65,7 +65,7 @@
           "properties": {
             "id": {
               "type": "string",
-              "maxLength": 40
+              "maxLength": 64
             },
             "video": {
               "type": "object",

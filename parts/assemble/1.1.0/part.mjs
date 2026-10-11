@@ -693,7 +693,8 @@ export async function run(inputs, ctx) {
         `trim=end_frame=${p.frames},setpts=PTS-STARTPTS${finish},format=yuv420p[v${k}]`,
     );
     if (keepAudio) {
-      const info = p.clip.video ? await ctx.tools.probe(media.path) : { has_audio: false };
+      // The end card is always silent (music and room tone are the mix layer's), even when its file has sound.
+      const info = p.body && p.clip.video ? await ctx.tools.probe(media.path) : { has_audio: false };
       graph.push(
         info.has_audio
           ? `[${k}:a]aresample=48000:async=1:first_pts=0,aformat=sample_fmts=fltp:sample_rates=48000:channel_layouts=stereo,apad,atrim=0:${kitNum(exact)},asetpts=PTS-STARTPTS[a${k}]`

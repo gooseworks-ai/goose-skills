@@ -6,7 +6,6 @@
 - `marks` output: where a shot with `mark` starts, for sounds in audio-mix.
 - `snap`: cuts that land inside a word move to the nearer gap, within `max_shift_s` and keeping `min_shot_s`.
 - `card_from` (`{tag}` or `{scene_id}`): the card span (`timeline.end_card`, no captions, no grade) starts at that scene, so a grid + offer card and the end card read as one card.
-- A clip id may be 64 characters (plan scene ids are).
 
 ## 1.1.0
 
