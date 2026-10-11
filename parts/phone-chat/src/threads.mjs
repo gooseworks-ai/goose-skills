@@ -36,19 +36,45 @@ function chatTruthy(v) {
   return v === true || /^(true|yes|on|1)$/i.test(String(v == null ? '' : v).trim());
 }
 
+// A scene's picture text is a product photo when it names a chosen product (its id or name, or at least two
+// of its name's words, all of a one-word name), or asks for a photo and points at nothing else ("Show its
+// photo", "a picture of the product") with one chosen product that has photos. Anything else describes the
+// shot ("a photo of the beach") and draws nothing.
+const CHAT_PHOTO_WORD = /\b(photos?|pictures?|pics?|images?|shots?|snaps?)\b/i;
+// Words a photo request uses without naming anything else.
+const CHAT_PLAIN = new Set(['a', 'an', 'the', 'of', 'its', 'it', 'this', 'that', 'these', 'those', 'them', 'one', 'my', 'our', 'your', 'their', 'his', 'her', 'show', 'shows', 'showing', 'send', 'sends', 'here', 'look', 'see', 'new', 'product', 'products', 'item', 'photo', 'photos', 'picture', 'pictures', 'pic', 'pics', 'image', 'images', 'shot', 'shots', 'snap', 'snaps', 'and', 'with', 'in', 'on', 'at', 'is']);
+const chatTokens = (text) => String(text || '').toLowerCase().match(/[\p{L}\p{N}]+/gu) || [];
+// A word matches another exactly, or as a stem when both are at least four letters (shorts, Short).
+const chatSameWord = (a, b) => a === b || (a.length >= 4 && b.length >= 4 && (a.startsWith(b) || b.startsWith(a)));
+
+/** How well `text` names `product`: 0, or the count of its name's (or id's) words the text uses. */
+function chatNames(text, product) {
+  const want = text.toLowerCase();
+  const id = String(product.id).toLowerCase();
+  if (id === want || String(product.name || '').toLowerCase() === want) return Infinity;
+  const said = chatTokens(want);
+  if (said.includes(id)) return Infinity;
+  const name = chatTokens(product.name).filter((w) => !CHAT_PLAIN.has(w) && (w.length >= 3 || /\d/.test(w)));
+  const used = name.filter((w) => said.some((t) => chatSameWord(t, w))).length;
+  return name.length && used >= Math.min(2, name.length) ? used : 0;
+}
+
 /**
  * The photo a scene shows: the picture the customer uploaded for it (scene.image),
- * else its picture file, else the chosen product its picture names.
+ * else its picture file, else the chosen product its picture text names or asks a photo of.
  */
 function chatPicture(scene, products) {
   if (scene.image && typeof scene.image === 'object' && scene.image.kind === 'file') return scene.image;
   const p = scene.picture;
   if (p && typeof p === 'object' && p.kind === 'file') return p;
   if (typeof p !== 'string' || !p.trim()) return null;
-  const want = p.trim().toLowerCase();
-  const withPhoto = (products || []).filter((x) => (x.images || []).length);
-  const match = withPhoto.find((x) => String(x.id).toLowerCase() === want || String(x.name || '').toLowerCase() === want);
-  const product = match || (withPhoto.length === 1 ? withPhoto[0] : null);
+  const text = p.trim();
+  const all = products || [];
+  const named = all.map((x) => ({ x, n: chatNames(text, x) })).filter((m) => m.n > 0).sort((a, b) => b.n - a.n).map((m) => m.x);
+  const asksPhoto = CHAT_PHOTO_WORD.test(text) && chatTokens(text).every((w) => CHAT_PLAIN.has(w));
+  if (!named.length && !asksPhoto) return null;
+  const withPhoto = (named.length ? named : all).filter((x) => (x.images || []).length);
+  const product = named.length ? withPhoto[0] : withPhoto.length === 1 ? withPhoto[0] : null;
   if (!product) throw new Error(`A scene asks for the photo "${p}", but no chosen product with a photo matches it.`);
   return product.images[0];
 }

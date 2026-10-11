@@ -5,7 +5,8 @@
 // the screen at any movie time; the part steps it frame by frame in the kit's
 // Chromium (fixed output frames, so browser start-up or machine speed never
 // changes a frame), lays the skin's original sounds on their reveal frames,
-// and crossfades into the style's end card clip.
+// and crossfades into the style's end card clip, keeping the logo box the
+// card's step declared.
 import { readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitFfmpeg, kitNum, kitStopIfAborted } from '../../_lib/part.mjs';
@@ -53,7 +54,8 @@ async function peakDb(ctx, path) {
 /**
  * The skin's sounds as one track the length of the chat: every cue at its time
  * and gain, its leading silence stripped (the audible onset lands on the reveal
- * frame), cut to max_s with a short fade, summed without normalising, limited.
+ * frame), cut to max_s with a short fade, a cue with limit_db held to that peak
+ * by a fast limiter (a click made dense), summed without normalising, limited.
  */
 async function effectsTrack(ctx, soundDir, cues, total) {
   const peaks = new Map();
@@ -75,7 +77,7 @@ async function effectsTrack(ctx, soundDir, cues, total) {
     const ms = Math.round(c.t * 1000);
     graph.push(
       `[${i + 1}:a]aresample=48000,aformat=channel_layouts=stereo,silenceremove=start_periods=1:start_threshold=${threshold}dB:start_mode=any,asetpts=PTS-STARTPTS,` +
-        `${cut}adelay=${ms}|${ms},volume=${c.gain}[s${i}]`,
+        `${cut}adelay=${ms}|${ms},volume=${c.gain}${c.limit_db === undefined ? '' : `,aresample=192000,alimiter=limit=${kitNum(10 ** (c.limit_db / 20), 4)}:level=0:attack=0.1:release=5,aresample=48000`}[s${i}]`,
     );
     labels.push(`[s${i}]`);
   });
@@ -132,6 +134,23 @@ async function renderPage(ctx, html, { width, height, fps, total, skin, events }
   const silent = join(ctx.tmpDir, 'chat.mp4');
   await kitFfmpeg(ctx, ['-f', 'concat', '-safe', '0', '-i', list, '-c', 'copy', silent]);
   return silent;
+}
+
+/**
+ * The logo box the end card's step declared, moved onto the chat's picture the way the join scales and
+ * crops the card (cover, centred), so the final check looks for the logo where the card draws it.
+ */
+function endingLogoZone(endTimeline, width, height) {
+  const z = endTimeline && (endTimeline.safe_zones || []).find((zone) => zone.use === 'logo');
+  const [ew, eh] = endTimeline ? [endTimeline.width, endTimeline.height] : [0, 0];
+  if (!z || !(ew > 0 && eh > 0)) return null;
+  const k = Math.max(width / ew, height / eh);
+  const [ox, oy] = [(ew * k - width) / 2, (eh * k - height) / 2];
+  const x0 = Math.max(0, Math.floor(z.x * k - ox));
+  const y0 = Math.max(0, Math.floor(z.y * k - oy));
+  const x1 = Math.min(width, Math.ceil((z.x + z.w) * k - ox));
+  const y1 = Math.min(height, Math.ceil((z.y + z.h) * k - oy));
+  return x1 - x0 >= 4 && y1 - y0 >= 4 ? { use: 'logo', x: x0, y: y0, w: x1 - x0, h: y1 - y0 } : null;
 }
 
 export async function run(inputs, ctx) {
@@ -191,7 +210,9 @@ export async function run(inputs, ctx) {
   } catch (e) {
     throw ctx.error('bad_input', e.message);
   }
-  const chatDur = built.total_s;
+  // A chat shorter than min_seconds holds its last screen until it is that long, so a plan an earlier,
+  // slower pace accepted is still long enough for the style.
+  const chatDur = Math.max(built.total_s, Math.ceil((inputs.min_seconds ?? 0) * fps - 1e-6) / fps);
   if (!Number.isFinite(chatDur) || chatDur <= 0 || chatDur > MAX_CHAT_S) {
     throw ctx.error('bad_input', `the chat would run ${chatDur} s; it must be a finite length up to ${MAX_CHAT_S} s`);
   }
@@ -237,5 +258,7 @@ export async function run(inputs, ctx) {
   if (ending) endScenes.forEach((s, i) => scenes.push({ id: s.id == null ? 'end-card' : chatSceneId(s, chatScenes.length + i), start_s: ending.start_s, end_s: ending.end_s }));
   const timeline = { duration_s: +total.toFixed(3), width, height, fps, scenes, speech: [] };
   if (ending) timeline.end_card = ending;
+  const logoZone = ending ? endingLogoZone(inputs.ending_timeline, width, height) : null;
+  if (logoZone) timeline.safe_zones = [logoZone];
   return kitCheckOutputs(ctx, manifest, { video, seconds: +total.toFixed(3), timeline });
 }

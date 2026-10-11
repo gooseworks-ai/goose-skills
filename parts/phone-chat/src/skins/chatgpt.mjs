@@ -49,12 +49,16 @@ const CG_TIMING = {
   tail_hold: 1.5, // the last state holds this long (at least 0.5)
 };
 
-// deriveSFX cue rules and stitch.sh gains (subliminal by design; never a cue on the dot).
+// deriveSFX cue rules, plus a sound when the answer replaces the dot; never one when the dot shows. The
+// files peak at -20 to -24 dBFS: keys and the finish sit near -20 dBFS and the send and the answer near
+// -7 dBFS, so each message is heard over a -24 LUFS bed and keys the bed's ducking. Stream ticks stay near
+// -32 dBFS, under the duck's threshold, so the bed does not pump while the answer streams.
 const CG_CUES = {
-  key: ['key-tap.wav', 0.04],
-  send: ['send-tap.wav', 0.1],
-  'stream-tick': ['stream-tick.wav', 0.025],
-  'stream-done': ['response-done.wav', 0.079],
+  key: ['key-tap.wav', 1.33],
+  send: ['send-tap.wav', 5],
+  'answer-show': ['response-done.wav', 4.5],
+  'stream-tick': ['stream-tick.wav', 0.4],
+  'stream-done': ['response-done.wav', 1.4],
 };
 
 // ---------------------------------------------------------------------------
@@ -915,6 +919,7 @@ export function chatgptBuild(thread, env) {
       items.push({ k: 'answer', t: popAt, id: m.id, stream: a.stream, s, wps: T.stream_wps, n: a.words, done });
       lastSend.busy = a.stream ? done : popAt;
       ev(popAt, 'pop', m.id);
+      ev(popAt, 'answer-show', m.id);
       if (a.stream) {
         ev(s, 'stream-start', m.id);
         for (let w = CG_TICK_EVERY; w < a.words; w += CG_TICK_EVERY) ev(snap(s + w / T.stream_wps), 'stream-tick', m.id);
