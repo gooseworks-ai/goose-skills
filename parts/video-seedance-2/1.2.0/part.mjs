@@ -1007,6 +1007,12 @@ function sdTakeJoinText(parts) {
   return out;
 }
 
+/** A scene's line as it will be said (whitespace tidied, brand respellings applied), else null. */
+function sdTakeSpokenLine(scene, pairs) {
+  const line = typeof scene.line === 'string' && scene.line.trim() ? scene.line.replace(/\s+/g, ' ').trim() : null;
+  return line ? kitApplySayAs(line, pairs).spoken : null;
+}
+
 function sdTakeSec(x) {
   return String(Number(x.toFixed(2)));
 }
@@ -1129,7 +1135,8 @@ function sdTakeRefFiles(tpl, refs, max) {
  */
 function sdTakePrompt(tpl, base, { id, index, beats, head, seconds, wps, pairs, offScreen }) {
   const who = `take ${id}`;
-  const windows = sdTakeWindows(beats.map((b) => sdTakeWords(b.scene.line)), seconds, wps, who);
+  // Windows and word limits count the words as said, after the respellings (a term can say as several words).
+  const windows = sdTakeWindows(beats.map((b) => sdTakeWords(sdTakeSpokenLine(b.scene, pairs))), seconds, wps, who);
   const beatTpl = { ...tpl, prefix: undefined, suffix: undefined, negative: undefined };
   const refs = { cast: [], products: [], scenes: [] };
   const negatives = [];
@@ -1148,7 +1155,7 @@ function sdTakePrompt(tpl, base, { id, index, beats, head, seconds, wps, pairs, 
         voiceover = true;
       }
     }
-    const spoken = line ? kitApplySayAs(line, pairs).spoken : null;
+    const spoken = sdTakeSpokenLine(scene, pairs);
     const said = { ...scene, line: spoken };
     const pick = sdTakeBeatText(tpl, scene);
     const out = kitScenePrompt(beatTpl, { ...base, scene: said, index: at }, { use: pick.use });
@@ -1236,7 +1243,7 @@ function sdTakeJobs(inputs, tpl) {
   for (const [k, beats] of groups.entries()) {
     const id = `t${k + 1}`;
     if (beats.length > limit) throw new Error(`take ${id} has ${beats.length} scenes; a take holds at most ${limit} beats`);
-    const words = beats.reduce((a, b) => a + sdTakeWords(b.scene.line), 0);
+    const words = beats.reduce((a, b) => a + sdTakeWords(sdTakeSpokenLine(b.scene, pairs)), 0);
     if (words > maxWords) throw new Error(`take ${id} has ${words} spoken words, more than ${maxWords} for ${seconds} s`);
     const job = sdTakePrompt(tpl, base, { id, index: beats[0].index, beats, head: k === 0 ? first : later, seconds, wps, pairs, offScreen });
     if (!job.refs.length) throw new Error(`take ${id} has no reference image: give cast pictures, product photos or scene pictures the template's refs can use`);

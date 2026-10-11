@@ -66,8 +66,8 @@ test('fixture: ugc-product take mode orders one 15 s take with timed beats, dial
   assert.equal(body.resolution, '720p');
   assert.equal(body.generate_audio, true);
   const p = body.prompt;
-  assert.match(p, /^Vertical 9:16 selfie-style UGC review of Glowpop, shot on a phone in a sunny kitchen, warm tone\. Use @Image1 as the exact creator identity and @Image2 as the exact single Glowpop\. Beat 1 \(0-5\.5s\): Selfie: Maya holds the can beside her face\. Maya says: "Okay, Glow pop just arrived and I love it\."/);
-  assert.match(p, /Beat 2 \(5\.5-7\.5s\): Rear camera, face off-screen: she turns the can toward the lens\. Beat 3 \(7\.5-11\.5s\)/, 'the silent beat (a null line) has no dialogue');
+  assert.match(p, /^Vertical 9:16 selfie-style UGC review of Glowpop, shot on a phone in a sunny kitchen, warm tone\. Use @Image1 as the exact creator identity and @Image2 as the exact single Glowpop\. Beat 1 \(0-6s\): Selfie: Maya holds the can beside her face\. Maya says: "Okay, Glow pop just arrived and I love it\."/);
+  assert.match(p, /Beat 2 \(6-8s\): Rear camera, face off-screen: she turns the can toward the lens\. Beat 3 \(8-11\.5s\)/, 'the silent beat (a null line) has no dialogue');
   assert.match(p, /Beat 4 \(11\.5-15s\): Selfie: the can held up beside her face\. Maya says: "Yeah, this is the one\."/);
   assert.match(p, /no morph\. Avoid: invented text, product redesign$/);
   assert.doesNotMatch(p, /Try Glowpop|[{}]/, 'the end card scene is skipped and no placeholder is left');
@@ -76,7 +76,7 @@ test('fixture: ugc-product take mode orders one 15 s take with timed beats, dial
   assert.deepEqual(out.clips, out.takes);
   assert.equal(out.timeline.speech.length, 0, 'speech is left to one transcription');
   assert.deepEqual(out.timeline.scenes.map((s) => s.id), ['s1', 's2', 's3', 's4']);
-  assert.deepEqual(out.timeline.scenes.map((s) => [s.start_s, s.end_s]), [[0, 5.5], [5.5, 7.5], [7.5, 11.5], [11.5, 15]]);
+  assert.deepEqual(out.timeline.scenes.map((s) => [s.start_s, s.end_s]), [[0, 6], [6, 8], [8, 11.5], [11.5, 15]]);
   assert.equal(out.timeline.duration_s, 15);
   assert.equal(out.seconds, 15);
   assert.equal(out.timeline.width, 192);
@@ -87,8 +87,10 @@ test('take mode refuses before ordering: too many beats, too many words, a line 
   const scenes = ugcScenes();
   const cases = [
     [{ skip_last: 0, scenes: scenes.map((s) => ({ ...s, picture: s.picture || 'the can on the counter' })) }, /take t1 has 5 scenes; a take holds at most 4 beats/],
-    [{ max_words: 10 }, /take t1 has 18 spoken words, more than 10 for 15 s/],
-    [{ seconds: 6, max_words: 40 }, /take t1's beats need 10\.2 s .* more than its 6 s/],
+    [{ max_words: 10 }, /take t1 has 19 spoken words, more than 10 for 15 s/],
+    // Counted as said: the respelling turns one written word into six spoken ones.
+    [{ max_words: 20, pronunciations: [{ term: 'Glowpop', say_as: 'glow pop the fizzy fruit drink' }] }, /take t1 has 23 spoken words, more than 20 for 15 s/],
+    [{ seconds: 6, max_words: 40 }, /take t1's beats need 10\.6 s .* more than its 6 s/],
     [{ scenes: scenes.map((s) => (s.id === 's2' ? { ...s, line: 'Look at that colour.' } : s)) }, /scene s2 has a line, but its picture keeps the face off screen/],
     [{ scenes: scenes.map((s) => (s.id === 's3' ? { ...s, picture: 'she says it all in one continuous breath' } : s)) }, /scene s3 uses the banned phrase "one continuous breath"/],
     [{ answers: { setting: 'a kitchen' } }, /take t1 needs \{answers\.tone\}/],
@@ -130,7 +132,7 @@ test('off_screen_lines voiceover writes the off-screen line as voice-over; a tem
   run = ctxFor(inputs);
   await mod.run(inputs, run.ctx);
   const p = run.orders[0].body.prompt;
-  assert.match(p, /Beat 1 \(0-5\.5s\): Selfie: Maya holds the can beside her face, saying "Okay, Glow pop just arrived and I love it\."/);
+  assert.match(p, /Beat 1 \(0-6s\): Selfie: Maya holds the can beside her face, saying "Okay, Glow pop just arrived and I love it\."/);
   assert.doesNotMatch(p, /Maya says:/);
 });
 
