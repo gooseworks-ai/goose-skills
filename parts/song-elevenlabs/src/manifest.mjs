@@ -1,0 +1,137 @@
+import { file, pronunciations, sceneSpan, speechEntry, word } from '../../_tools/schemas.mjs';
+
+const MODEL = 'music_v1';
+const textOrNull = (max) => ({ type: ['string', 'null'], maxLength: max });
+const phrases = { type: 'array', maxItems: 50, items: { type: 'string', maxLength: 200 } };
+const seconds = (max) => ({ type: 'number', minimum: 0, maximum: max });
+
+// A plan scene (PlanScene). Nothing but id is required: a scene with no line is a
+// silent picture. Other plan fields pass through.
+const scene = {
+  type: 'object',
+  required: ['id'],
+  properties: {
+    id: { type: 'string', minLength: 1, maxLength: 64 },
+    line: { description: 'The words sung while this picture holds. Null, missing or blank: a silent picture.', ...textOrNull(2000) },
+    on_screen: textOrNull(2000),
+    picture: { anyOf: [{ type: 'null' }, { type: 'string', maxLength: 2000 }, file('image')] },
+    extra: { description: 'extra.group: pictures on one camera set-up; with windows.shot_lead_s a group\'s first picture shows just before its first sung word.', type: ['object', 'null'] },
+  },
+};
+
+export const manifest = {
+  $schema: '../../_contract/part-manifest.schema.json',
+  interface: 1,
+  id: 'song-elevenlabs',
+  version: '1.0.0',
+  kind: 'generate_music',
+  title: 'Sung song (ElevenLabs Music)',
+  summary: "Sings the plan's scene lines as one song with ElevenLabs Music (a composition plan with word timings), then times every scene's picture and caption to the sung words.",
+  runtime: 'node',
+  entry: 'part.mjs',
+  files: ['README.md', 'part.mjs'],
+  kit: '>=1.0.0 <2.0.0',
+  needs: {
+    browser: false,
+    ffmpeg: { filters: ['adelay', 'aresample', 'aformat', 'apad'], encoders: ['aac'] },
+    network: true,
+    models: [{ provider: 'elevenlabs', model: MODEL }],
+    disk_mb: 40,
+  },
+  inputs: {
+    type: 'object',
+    additionalProperties: false,
+    required: ['scenes'],
+    properties: {
+      scenes: {
+        description: "plan.scenes. Each scene's line is sung in order; the lines together are the lyric.",
+        type: 'array',
+        minItems: 1,
+        maxItems: 60,
+        items: scene,
+      },
+      mood: { description: 'plan.music: genre, singer and mood, as global styles of the song.', ...textOrNull(600) },
+      singer: { description: 'The voice (plan.answers.singer), a global style.', ...textOrNull(300) },
+      brief: { description: "The style's fixed notes for the song, a global style. Commas, semicolons and new lines split it into phrases.", type: 'string', maxLength: 1500 },
+      avoid: { description: 'Global styles the song must not have.', ...phrases },
+      sections: {
+        description: 'The song form, in order. scenes [from, to] (scene numbers from 1) are the scenes the section sings; a section with no scenes is instrumental. Give sections or form.',
+        type: 'array',
+        minItems: 1,
+        maxItems: 30,
+        items: {
+          type: 'object',
+          additionalProperties: false,
+          required: ['name', 'seconds'],
+          properties: {
+            name: { type: 'string', minLength: 1, maxLength: 100 },
+            seconds: { type: 'number', minimum: 3, maximum: 120 },
+            scenes: { type: 'array', minItems: 2, maxItems: 2, items: { type: 'integer', minimum: 1, maximum: 60 } },
+            styles: phrases,
+            avoid: phrases,
+          },
+        },
+      },
+      form: {
+        description: "The song laid out from the lyric: an instrumental intro and outro around `groups` sections of whole sentences, each words x ms_per_word + 0.5 s long (at least min_section_s). Give sections or form.",
+        type: 'object',
+        additionalProperties: false,
+        properties: {
+          intro_s: seconds(120),
+          outro_s: seconds(120),
+          groups: { type: 'integer', minimum: 1, maximum: 28 },
+          ms_per_word: { type: 'number', minimum: 100, maximum: 3000 },
+          min_section_s: { type: 'number', minimum: 3, maximum: 120 },
+        },
+      },
+      hook: { description: 'plan.answers.hook: the words hook_scene must start with.', ...textOrNull(100) },
+      hook_scene: { description: 'The scene (number from 1) whose first sung word must land on the start of its section, within 0.35 s. A song that misses is made once more with a new seed, then the step fails.', type: 'integer', minimum: 1, maximum: 60 },
+      ending_scenes: { description: 'Scenes at the end that sit under the end card: sung, not captioned. Default 0.', type: 'integer', minimum: 0, maximum: 59 },
+      pronunciations: { description: 'brand.pronunciations: a term is sung as its say_as spelling and captioned as written.', ...pronunciations },
+      seed: { description: 'ElevenLabs seed for the song. Default: none (the provider picks).', type: 'integer', minimum: 0, maximum: 2147483647 },
+      max_seconds: { description: 'Refuse, before anything is ordered, a song planned longer than this.', type: 'number', minimum: 3, maximum: 300 },
+      windows: {
+        description: 'How pictures are timed to the singing. Without windows: sung scenes start on their first word, silent ones share the time between.',
+        type: 'object',
+        additionalProperties: false,
+        properties: {
+          first_word_s: {
+            description: '[a, b]: trim or pad the head of the track so the first sung word lands at a seconds when singing starts by the second scene, else at b.',
+            type: 'array',
+            minItems: 2,
+            maxItems: 2,
+            items: seconds(10),
+          },
+          shot_lead_s: { description: "A group's first picture shows this long before the group's first sung word.", ...seconds(5) },
+          snap_s: { description: 'A silent picture moves onto a sung word that starts this close to its place.', ...seconds(5) },
+          min_hold_s: { description: 'Every picture holds at least this long where the words allow it.', ...seconds(5) },
+          card_after_s: { description: 'With no ending_scenes: the end card comes in this long after the last sung word.', ...seconds(10) },
+        },
+      },
+    },
+  },
+  outputs: {
+    type: 'object',
+    additionalProperties: false,
+    required: ['audio', 'seconds', 'words', 'scenes', 'speech', 'ending_seconds'],
+    properties: {
+      audio: { description: 'The song, trimmed or padded at the head per windows.first_word_s, 48 kHz stereo.', ...file('audio') },
+      seconds: { type: 'number', exclusiveMinimum: 0 },
+      words: { description: 'Every written word with its sung time.', type: 'array', items: word },
+      scenes: { description: 'Every scene, back to back from 0: sung scenes start on their first sung word.', type: 'array', items: sceneSpan },
+      speech: { description: 'Captions: the sung scenes before the ending scenes, timed by the song (Timeline speech shape).', type: 'array', items: speechEntry },
+      ending_seconds: { description: 'From the end card\'s start (the first ending scene, or the last word + card_after_s) to the end of the song. 0 without either.', type: 'number', minimum: 0 },
+      hook_s: { description: 'When the hook word is sung (only with hook_scene).', type: 'number', minimum: 0 },
+    },
+  },
+  cost: {
+    basis: 'per_unit',
+    unit: 'second',
+    measure: { from: '/sections/*/seconds', as: 'sum' },
+    rates_usd: { [MODEL]: 0.0025 },
+  },
+  determinism: 'provider',
+  timing: { typical_s: 60, timeout_s: 900 },
+  retry: { transient: 1 },
+  replaces: [],
+};

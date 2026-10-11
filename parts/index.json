@@ -2012,6 +2012,59 @@
       ]
     },
     {
+      "id": "song-elevenlabs",
+      "version": "1.0.0",
+      "interface": 1,
+      "kind": "generate_music",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "adelay",
+            "aresample",
+            "aformat",
+            "apad"
+          ],
+          "encoders": [
+            "aac"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "elevenlabs",
+            "model": "music_v1"
+          }
+        ],
+        "disk_mb": 40
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "second",
+        "measure": {
+          "from": "/sections/*/seconds",
+          "as": "sum"
+        },
+        "rates_usd": {
+          "music_v1": 0.0025
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/song-elevenlabs/1.0.0",
+      "files": {
+        "README.md": "0857250c082894890bbe2a479e79a6a0bc283ca81a9075806f3737e9f645b928",
+        "part.json": "75eb8b5db931d2ec4f67779f6971130a3eb7084839dfb6b0630a0ea8ffdb2256",
+        "part.mjs": "0e6e77978c8b89f591b6763d6fe5a8244c24a4aa9c02f2422b40a3483bc5ee27"
+      },
+      "models": [
+        {
+          "provider": "elevenlabs",
+          "model": "music_v1"
+        }
+      ]
+    },
+    {
       "id": "sound-layer",
       "version": "1.0.0",
       "interface": 1,
