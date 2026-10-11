@@ -161,16 +161,21 @@ function schedule(takes, end, fps) {
   const xf = Math.round(XF * fps) / fps;
   let before = 0;
   let prev = 0;
+  let spoken = 0;
   const out = takes.map((t, k) => {
     const first = t.onset || LEAD;
     const pad = k ? Math.max(0, xf + PAD - first) : 0;
-    // A late speech onset can pull a join back to the reel start. Keep every join at least two
-    // dissolves after the previous take's start and MIN_SPAN per earlier line from the reel start,
-    // so the previous take has a body and every earlier scene keeps a span before the join.
-    const floor = k ? Math.max(prev + 2 * xf, MIN_SPAN * before + COVER_LEAD) : 0;
+    // A late speech onset can pull a join back to the reel start or into the previous take's words.
+    // Keep every join at least two dissolves after the previous take's start, MIN_SPAN per earlier line
+    // from the reel start (every earlier scene keeps a span before the join), and late enough that the
+    // previous take's estimated speech ends by the end of the dissolve (its audio is cut there).
+    const floor = k ? Math.max(prev + 2 * xf, MIN_SPAN * before + COVER_LEAD, spoken - xf) : 0;
     const desired = k ? Math.max(floor, t.start - first - pad) : 0;
     before += t.lines ? t.lines.length : 0;
     prev = Math.ceil((desired - 1e-8) * fps) / fps;
+    // This take's estimated last word on the reel (the speech entries' shift), never past its own footage.
+    const words = t.covers ? t.covers[1] - t.covers[0] : 0;
+    spoken = prev + pad + Math.min(first + words, t.duration);
     return { ...t, start: prev, head_pad: pad };
   });
   // With no requested end, the reel runs to the end of the last take.

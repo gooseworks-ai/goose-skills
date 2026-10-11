@@ -189,6 +189,9 @@ test('a late onset that would put the join at the reel start: the join is floore
   assert.deepEqual(out.takes.map((t) => t.scene_ids), [['s1'], ['s2']]);
   const join = out.takes[1].joins_s;
   assert.ok(join >= 0.2, `the join at ${join}s is floored past the reel start`);
+  // The first take's audio is cut at the end of the dissolve: its word must be said by then.
+  const s1Speech = out.timeline.speech.find((s) => s.scene_id === 's1');
+  assert.ok(s1Speech.end_s <= join + 0.1 + 1e-6, `s1's word ends at ${s1Speech.end_s}s, by the dissolve end at ${join + 0.1}s`);
   const s2 = out.timeline.scenes.find((s) => s.id === 's2');
   assert.ok(s2.start_s <= join, `s2 starts at ${s2.start_s}s, at or before the join at ${join}s`);
   out.timeline.scenes.forEach((s, i, all) => {
