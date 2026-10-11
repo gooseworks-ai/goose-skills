@@ -1225,6 +1225,43 @@
       "models": []
     },
     {
+      "id": "end-card",
+      "version": "1.1.0",
+      "interface": 1,
+      "kind": "end_card",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": true,
+        "ffmpeg": {
+          "filters": [
+            "scale",
+            "setsar",
+            "format",
+            "anullsrc"
+          ],
+          "encoders": [
+            "libx264",
+            "aac"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 50
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/end-card/1.1.0",
+      "files": {
+        "README.md": "99757deea653b8a2f930ffc1546944a1a1576058dd7203e0d0888a40b02a738e",
+        "assets/fonts/Montserrat-Bold.ttf": "bc6e854971cea46b463be6f9eef4d9cd52f51cfc1fc0dd90c9d3e6483dc0ec61",
+        "part.json": "f8fbcf4751106a466a4cb2d899af53c40f287e6ad352cc991f4d0686a8883ed5",
+        "part.mjs": "45d35c801a272e64ae08ebc5b212d5e909da89951dc3717d8214c13253e86a41"
+      },
+      "models": []
+    },
+    {
       "id": "html-frames",
       "version": "1.0.0",
       "interface": 1,
