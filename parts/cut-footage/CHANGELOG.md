@@ -1,5 +1,13 @@
 # cut-footage
 
+## 1.2.0
+
+- `mode: "split"` (the default with a `layout`): the talking track with each scene's footage window, or its image pushed in by `layout.photo_zoom`, in one zone and the creator cover-cropped (`head`, `zoom`) into the other, via `_lib/panels.mjs`; a scene with neither shows the creator full frame. `layout {side, seam, bg: auto | blur | #hex, head, zoom, divider, divider_px, photo_zoom}`. Split beats tile to the next scene's start. The output timeline's `safe_zones[captions]` is the creator zone.
+- `grid {layout: "2x2", still_zoom}` (inserts): a scene tagged `extra.shot: "grid"` plays its four footage entries as a 2x2 grid; clips at 1x or slowed to fill, pictures pushed in; cells join the reuse and order checks.
+- `push_in {min_hold_s, amount}` (inserts, split): a slow push-in on every full-frame creator stretch of at least `min_hold_s`.
+- `first_scene_look: blur | card | none` (inserts, split) with `card_color`: the hook treatment on the first scene.
+- Without any of these, inserts render as 1.1.0 and the other modes are unchanged.
+
 ## 1.1.0
 
 - `mode: "scenes"`: one full-frame beat per plan scene. A scene plays its footage entry (matched by `scene_id`), else its image or image footage held still, else (scene 1 only) the `lead` clip. Windows are sped to fit `scene_seconds` within `min_speed` to `max_speed` (0.5x to 2x by default); `transition.dissolve_frames` dissolves between beats with the total length kept. Outputs `timeline` with the plan's scene ids and `windows`.

@@ -1209,6 +1209,71 @@
       "models": []
     },
     {
+      "id": "cut-footage",
+      "version": "1.2.0",
+      "interface": 1,
+      "kind": "compose",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "setpts",
+            "fps",
+            "scale",
+            "crop",
+            "pad",
+            "setsar",
+            "tpad",
+            "trim",
+            "overlay",
+            "format",
+            "atempo",
+            "atrim",
+            "aresample",
+            "aformat",
+            "settb",
+            "xfade",
+            "concat",
+            "null",
+            "split",
+            "gblur",
+            "perspective",
+            "color",
+            "geq",
+            "loop",
+            "blend",
+            "noise",
+            "vstack",
+            "xstack",
+            "zoompan",
+            "drawbox",
+            "boxblur",
+            "eq",
+            "fade"
+          ],
+          "encoders": [
+            "libx264",
+            "aac"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 800
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/cut-footage/1.2.0",
+      "files": {
+        "README.md": "240f439d3c51b5f33fe928b3a4f80e6c7f715041ddf3dc4162c0b72e02e53238",
+        "part.json": "c651e1db58c4a2ac4c4664aab64dc23604f02199863c5ac5c63d787707bb2585",
+        "part.mjs": "621bbf356318009420e4afe851e91603f6e96d15fc3ba3b7548b8035169d410e"
+      },
+      "models": []
+    },
+    {
       "id": "end-card",
       "version": "1.0.0",
       "interface": 1,
