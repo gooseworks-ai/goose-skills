@@ -147,6 +147,23 @@ test('a scene with a null line shares its time with the voiced scene before it',
   assert.ok(await colorAt(out.video.path, 0.75, BLUE));
 });
 
+test('a picture in a clip list is cut, then shown by a later montage and freeze', { skip }, async () => {
+  const { ctx } = makeCtx({ partDir: dir });
+  const out = await mod.run({
+    scenes: [{ id: 'a', picture: 'Moment: one' }, { id: 'b', picture: 'Moment: two' }, { id: 'p', picture: 'Payoff: all' }],
+    sources: { clips: [{ id: 'a', video: await solid(ctx, 'red.mp4', 'red', 2) }, { id: 'b', image: await still(ctx, 'blue.png', 'blue') }] },
+    shots: { Moment: [{ kind: 'clip', source: 'clips' }], Payoff: [{ kind: 'montage', source: 'clips', seconds: 0.5 }, { kind: 'freeze', source: 'clips', fill: true }] },
+    spans: spans([['a', 0, 1.0], ['b', 1.0, 2.0], ['p', 2.0, 4.0]]),
+    tail_s: 0,
+    width: W, height: H,
+  }, ctx);
+  assert.deepEqual(scenesOf(out.timeline), [['a', 0, 1], ['b', 1, 2], ['p', 2, 4]]);
+  assert.ok(await colorAt(out.video.path, 1.5, BLUE), 'the picture plays as its clip');
+  assert.ok(await colorAt(out.video.path, 2.25, RED), 'the montage shows the clip first');
+  assert.ok(await colorAt(out.video.path, 2.75, BLUE), 'then the picture');
+  assert.ok(await colorAt(out.video.path, 3.5, BLUE), 'the freeze holds the last one used: the picture');
+});
+
 test('refuses shots it cannot cut, before any encode', { skip }, async () => {
   const { ctx } = makeCtx({ partDir: dir });
   const inputs = await dayInTheLife(ctx);

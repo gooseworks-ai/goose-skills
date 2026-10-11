@@ -190,7 +190,7 @@ async function shotPieces(inputs, ctx, fps, { ending, endingFrames, fills, tail,
         const item = items.find((it) => String(it.id) === slot.id);
         if (!item || !(item.video || item.image)) throw ctx.error('bad_input', `${where}: source "${spec.source}" has no clip for this scene`);
         shot.make = item.video ? { kind: 'video', media: item.video, in_s: spec.in_s ?? 0 } : { kind: 'image', media: item.image };
-        if (item.video) shot.uses = spec.source;
+        shot.uses = spec.source; // a picture in a clip list counts as used too: a montage or freeze can show it
       } else if (spec.kind === 'video') {
         const v = sources[spec.source];
         if (v === undefined) throw ctx.error('bad_input', `${where} uses source "${spec.source}", which sources does not have`);
@@ -199,7 +199,7 @@ async function shotPieces(inputs, ctx, fps, { ending, endingFrames, fills, tail,
         if (!shot.fixed && !shot.fill) shot.fixed = Math.max(1, Math.round((await lengthOf(v) - (spec.in_s ?? 0)) * fps));
       } else if (spec.kind === 'montage') {
         let picks = [...new Set((used.get(spec.source) || []).map((p) => p.media.path))].map((path) => (used.get(spec.source) || []).find((p) => p.media.path === path));
-        if (!picks.length) picks = items.filter((it) => it.video).map((it) => ({ media: it.video, in_s: 0, whole: true }));
+        if (!picks.length) picks = items.filter((it) => it.video || it.image).map((it) => ({ media: it.video || it.image, in_s: 0, whole: true }));
         if (spec.max) picks = picks.slice(0, spec.max);
         if (!picks.length) throw ctx.error('bad_input', `${where}: source "${spec.source}" has no clips to take frames from`);
         const per = Math.max(1, Math.round((spec.seconds ?? 0.75) * fps));
@@ -213,14 +213,14 @@ async function shotPieces(inputs, ctx, fps, { ending, endingFrames, fills, tail,
         const pick = spec.pick ?? 'last';
         let from = null;
         if (pick === 'scene') {
-          const item = items.find((it) => String(it.id) === slot.id && it.video);
-          from = item ? { media: item.video, in_s: 0, whole: true } : null;
+          const item = items.find((it) => String(it.id) === slot.id && (it.video || it.image));
+          from = item ? { media: item.video || item.image, in_s: 0, whole: true } : null;
         } else if (mine.length) from = pick === 'first' ? mine[0] : mine[mine.length - 1];
         else {
           // No clip from this source is cut yet: the source's own first or last clip, as a montage does.
-          const all = items.filter((it) => it.video);
+          const all = items.filter((it) => it.video || it.image);
           const item = pick === 'first' ? all[0] : all[all.length - 1];
-          from = item ? { media: item.video, in_s: 0, whole: true } : null;
+          from = item ? { media: item.video || item.image, in_s: 0, whole: true } : null;
           if (item) ctx.log.warn('freeze: no clip from the source is used yet, so it freezes the source\'s own clip', { scene: slot.id, clip: item.id });
         }
         if (!from) throw ctx.error('bad_input', `${where}: source "${spec.source}" has no clip to freeze`);
@@ -253,6 +253,7 @@ async function shotPieces(inputs, ctx, fps, { ending, endingFrames, fills, tail,
 async function finishPieces(ctx, pieces, fps) {
   const lengthOf = async (ref) => kitMediaLength(ctx, ref);
   const frameAt = async (src, at) => {
+    if (src.media.media === 'image') return 0; // a picture has one frame
     const length = await lengthOf(src.media);
     const window = src.whole ? length - (src.in_s ?? 0) : (src.frames / fps) * (src.speed ?? 1);
     const t = (src.in_s ?? 0) + at * Math.max(0, window);

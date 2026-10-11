@@ -29,7 +29,8 @@ or `shots` with `sources` and `scenes`.
   - `clip`: the scene's clip from a list. `speed` fixes the speed; else `min_speed` and `max_speed` (default 1;
     one given alone past 1 sets both) bound the speed that makes the clip fill its time; min above max is refused. Short clips hold their last frame. `in_s` sets the start.
   - `video`: one video source (a card), from `in_s`; without `seconds` or `fill` it runs its own length.
-  - `montage`: one frame of each clip used so far from the source (else every clip in it), `seconds` each, at
+  - `montage`: one frame of each clip used so far from the source (else every clip in it; a picture in a clip list
+    counts as a clip), `seconds` each, at
     `at` (default 0.5) of each clip's used part, joined by `transition` (`cut`, `fade` or `hlslice`,
     `transition_s` default 0.1). `max` caps the frames.
   - `freeze`: one frame of a clip held: `pick: last` (default) or `first` clip used so far (the
