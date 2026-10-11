@@ -3,7 +3,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readdirSync } from 'node:fs';
 import { browserMissing, browserProviderOrNull, countColor, framePixels, hasFfmpeg, loadNewest, makeCtx, probe, sampleBrand } from '../../_tools/kit-harness.mjs';
-import { cardContrast, cardLayoutColors, cardLayoutCopy, cardLayoutHtml, cardRows } from '../src/layouts.mjs';
+import { cardBestText, cardContrast, cardLayoutColors, cardLayoutCopy, cardLayoutHtml, cardRows, cardSafeBrand, cardSafeMime } from '../src/layouts.mjs';
 
 const { dir, mod } = await loadNewest('end-card');
 const ready = (await hasFfmpeg()) && browserProviderOrNull();
@@ -26,6 +26,27 @@ test('the 1.1.0 colours never use a brand text colour that does not read on the 
   assert.equal(cardLayoutColors(plainBrand, { background: '#141414', foreground: '#f3ead3', accent: '#e8b547' }).accent, '#e8b547');
 });
 
+test('fallback text colours meet 4.5:1 on mid-grey cards (picked by the actual ratio)', () => {
+  for (const bg of ['#999999', '#777777', '#8a8a8a', '#ff0000', '#0000ff']) {
+    assert.ok(cardContrast(cardBestText(bg), bg) >= 4.5, bg);
+    const col = cardLayoutColors({ name: 'x', colors: {} }, { background: bg });
+    assert.ok(cardContrast(col.fg, bg) >= 4.5, `fg on ${bg}`);
+    assert.ok(cardContrast(col.accent, bg) >= 3, `accent on ${bg}`);
+  }
+  const cta = cardLayoutColors({ name: 'x', colors: { primary: '#999999' } }, {});
+  assert.ok(cardContrast(cta.ctaFg, cta.ctaBg) >= 4.5, 'CTA text reads on a mid-grey pill');
+});
+
+test('file MIME types are reduced to a plain type/subtype before they reach the page', () => {
+  assert.equal(cardSafeMime('image/png'), 'image/png');
+  assert.equal(cardSafeMime('image/svg+xml'), 'image/svg+xml');
+  assert.equal(cardSafeMime('image/png"><script>x</script>'), 'application/octet-stream');
+  assert.equal(cardSafeMime(undefined), 'application/octet-stream');
+  const safe = cardSafeBrand({ name: 'x', logo: { path: '/l.png', mime: 'x" onerror="y' }, fonts: { heading: { path: '/h.ttf', mime: "font/ttf') }body{" } } });
+  assert.equal(safe.logo.mime, 'application/octet-stream');
+  assert.equal(safe.fonts.heading.mime, 'application/octet-stream');
+});
+
 test('editorial and statement need no call to action; classic-only copy is refused elsewhere', () => {
   const noCta = { ...plainBrand, cta: undefined };
   assert.equal(cardLayoutCopy('editorial', noCta, { headline: 'Made slowly.' }).cta, '');
@@ -37,6 +58,7 @@ test('editorial and statement need no call to action; classic-only copy is refus
   assert.match(cardLayoutCopy('statement', plainBrand, {}).message, /needs 1 to 3 rows/);
   assert.match(cardLayoutCopy('statement', plainBrand, { rows: ['a'], headline: 'b' }).message, /headline as the first row/);
   assert.deepEqual(cardLayoutCopy('statement', plainBrand, { headline: 'Only line.' }).rows, ['Only line.']);
+  assert.match(cardLayoutCopy('statement', plainBrand, { headline: 'x'.repeat(61) }).message, /longer than 60/, 'a headline used as the row obeys the row limit');
   assert.equal(cardLayoutCopy('statement', plainBrand, { rows: ['a'] }).url, '', 'statement shows no URL unless asked');
 });
 
@@ -76,6 +98,7 @@ test('refuses an unknown layout, copy a layout does not draw, too many rows and 
   await refused({ layout: 'statement', rows: 'a | b | c | d' });
   await refused({ layout: 'statement', rows: ['x'.repeat(61)] });
   await refused({ layout: 'statement' });
+  await refused({ layout: 'statement', headline: 'x'.repeat(61) });
   await refused({ layout: 'brandkit', brand: { ...plainBrand, cta: undefined } });
 });
 
@@ -109,4 +132,13 @@ test('statement: a logo that does not contrast with the dark card sits on a plat
   const px = await framePixels(out.video.path, 0.5);
   assert.ok(countColor(px, [255, 255, 255], 6) > 500, 'a light plate is drawn behind the dark logo');
   assert.ok(countColor(px, [32, 32, 32], 4) > 200, 'the logo keeps its own dark colour');
+});
+
+test('statement: a mid-grey logo on a mid-grey card gets the plate with the higher contrast (dark), never recoloured', { skip }, async () => {
+  const { ctx } = makeCtx({ partDir: dir });
+  const brand = await sampleBrand(ctx.workDir, { logoColor: '#999999' });
+  const out = await mod.run({ brand, width: 540, height: 960, seconds: 1, layout: 'statement', rows: ['One line.'], background: '#a0a0a0' }, ctx);
+  const px = await framePixels(out.video.path, 0.5);
+  assert.ok(countColor(px, [17, 17, 17], 6) > 500, 'a dark plate is drawn behind the mid-grey logo');
+  assert.ok(countColor(px, [153, 153, 153], 4) > 200, 'the logo keeps its own colour');
 });

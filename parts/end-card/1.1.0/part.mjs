@@ -568,6 +568,40 @@ function cardHex(value) {
 }
 
 /**
+ * Near-black or white, whichever has the higher contrast on `hex` (by the
+ * actual ratio). On the few mid-greys where neither reaches 4.5:1, pure black
+ * is tried too (#777777: white 4.48, #111111 4.2, black 4.69).
+ */
+function cardBestText(hex) {
+  const pick = cardContrast('#111111', hex) >= cardContrast('#ffffff', hex) ? '#111111' : '#ffffff';
+  if (cardContrast(pick, hex) >= 4.5) return pick;
+  return cardContrast('#000000', hex) > cardContrast(pick, hex) ? '#000000' : pick;
+}
+
+const cardMimeRe = /^[a-z0-9][a-z0-9.+-]*\/[a-z0-9][a-z0-9.+-]*$/i;
+
+/** A file's MIME type when it is a plain type/subtype, else application/octet-stream (it ends up in markup). */
+function cardSafeMime(mime) {
+  return typeof mime === 'string' && cardMimeRe.test(mime) ? mime : 'application/octet-stream';
+}
+
+function cardSafeFile(file) {
+  return file && typeof file === 'object' && file.mime !== undefined ? { ...file, mime: cardSafeMime(file.mime) } : file;
+}
+
+/**
+ * The brand with every file MIME type reduced to a plain type/subtype, so no
+ * brand value can break out of a data: URI in the page (logo src, @font-face).
+ * Used for every layout, classic included.
+ */
+function cardSafeBrand(brand) {
+  const out = { ...brand };
+  if (brand.logo) out.logo = cardSafeFile(brand.logo);
+  if (brand.fonts) out.fonts = Object.fromEntries(Object.entries(brand.fonts).map(([k, f]) => [k, cardSafeFile(f)]));
+  return out;
+}
+
+/**
  * Colours for the 1.1.0 layouts. An explicit step colour always wins. A brand
  * colour is used only when it reads on the card (text 4.5:1, accent 3:1), so a
  * dark statement card never gets the brand's dark text colour.
@@ -576,10 +610,10 @@ function cardLayoutColors(brand, card = {}) {
   const c = brand.colors || {};
   const bg = cardHex(card.background) || cardHex(c.background) || '#ffffff';
   const reads = (hex, min) => (hex && cardContrast(hex, bg) >= min ? hex : null);
-  const fg = cardHex(card.foreground) || reads(cardHex(c.text), 4.5) || kitCardContrastText(bg);
+  const fg = cardHex(card.foreground) || reads(cardHex(c.text), 4.5) || cardBestText(bg);
   const accent = cardHex(card.accent) || reads(cardHex(c.primary), 3) || reads(cardHex(c.secondary), 3) || fg;
   const ctaBg = cardHex(card.cta_background) || cardHex(c.primary) || fg;
-  return { bg, fg, accent, ctaBg, ctaFg: kitCardContrastText(ctaBg) };
+  return { bg, fg, accent, ctaBg, ctaFg: cardBestText(ctaBg) };
 }
 
 /** Rows from a list or a ' | '-joined answer: trimmed, empty ones dropped. */
@@ -605,8 +639,6 @@ function cardLayoutCopy(layout, brand, card = {}) {
   const rows = cardRows(card.rows);
   if (card.rows !== undefined && layout === 'stack') ignored.push('rows');
   if (ignored.length) return new Error(`layout ${layout} does not draw ${ignored.join(', ')}`);
-  if (rows.length > 3) return new Error(`at most 3 rows, got ${rows.length}`);
-  for (const r of rows) if ([...r].length > 60) return new Error(`a row is longer than 60 characters: "${r.slice(0, 20)}…"`);
   const brandCta = brand.cta && brand.cta.text;
   const brandUrl = (brand.cta && brand.cta.url) || '';
   const copy = { headline: card.headline || '', rows, footnote: card.footnote || '' };
@@ -630,6 +662,9 @@ function cardLayoutCopy(layout, brand, card = {}) {
   } else {
     return new Error(`unknown layout ${layout}`);
   }
+  // Checked on the rows the card draws, so a statement's headline-as-row obeys the same limits.
+  if (copy.rows.length > 3) return new Error(`at most 3 rows, got ${copy.rows.length}`);
+  for (const r of copy.rows) if ([...r].length > 60) return new Error(`a row is longer than 60 characters: "${r.slice(0, 20)}…"`);
   return copy;
 }
 
@@ -706,7 +741,7 @@ ${css}
 
 async function cardDataUri(file) {
   const bytes = await readFile(file.path);
-  return `data:${file.mime || 'application/octet-stream'};base64,${bytes.toString('base64')}`;
+  return `data:${cardSafeMime(file.mime)};base64,${bytes.toString('base64')}`;
 }
 
 /** Renders a 1.1.0 layout to `<name>.mp4` in workDir (H.264, silent stereo track), as 1.0.1 does for its card. */
@@ -755,10 +790,13 @@ async function cardRenderLayout(ctx, { layout, brand, card, width, height, fps, 
       }
       if (!count) return null;
       const logo = sum / count;
-      const ratio = (Math.max(logo, bg) + 0.05) / (Math.min(logo, bg) + 0.05);
+      const contrast = (a, b) => (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+      const ratio = contrast(logo, bg);
       if (ratio >= 3) return null;
       const box = document.getElementById('wordmark');
-      box.style.setProperty('--plate', logo > 0.5 ? '#111111' : '#ffffff');
+      // The plate colour with the higher actual contrast against the logo.
+      const dark = lum(17, 17, 17);
+      box.style.setProperty('--plate', contrast(logo, dark) >= contrast(logo, 1) ? '#111111' : '#ffffff');
       box.classList.add('plate');
       return +ratio.toFixed(2);
     });
@@ -814,14 +852,16 @@ export async function run(inputs, ctx) {
     proof: inputs.proof,
     benefits: inputs.benefits,
     footnote: inputs.footnote,
-    image: inputs.image,
+    image: cardSafeFile(inputs.image),
     rows: inputs.rows,
     accent: inputs.accent,
   };
+  // File MIME types reach the page inside data: URIs; keep them to a plain type/subtype for every layout.
+  const brand = cardSafeBrand(inputs.brand);
   const video =
     layout === 'classic'
-      ? await kitRenderEndCard(ctx, { brand: inputs.brand, card, width, height, fps, seconds })
-      : await cardRenderLayout(ctx, { layout, brand: inputs.brand, card, width, height, fps, seconds });
+      ? await kitRenderEndCard(ctx, { brand, card, width, height, fps, seconds })
+      : await cardRenderLayout(ctx, { layout, brand, card, width, height, fps, seconds });
   ctx.progress({ done: 1, total: 1 });
   const timeline = { duration_s: seconds, width, height, fps, scenes: [{ id: 'end-card', start_s: 0, end_s: seconds }], speech: [], end_card: { start_s: 0, end_s: seconds } };
   return kitCheckOutputs(ctx, manifest, { video, seconds, timeline });

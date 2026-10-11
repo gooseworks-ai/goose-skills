@@ -13,7 +13,7 @@ step drew one. Free; needs the kit's browser.
 | `editorial` | Type only, left aligned: brand name, rule, tagline, `rows`, URL. No logo. | optional; shown as text only when `cta_text` is given |
 | `stack` | Logo (or the brand name) over the URL. | none |
 | `statement` | Logo over 1 to 3 `rows` (or the `headline` as one row): the first row in the text colour, the rest in the accent. URL only when `url_text` is given. | optional; shown only when `cta_text` is given |
-| `none` | Nothing. **The step returns no outputs**, so every input bound to them is left out (a style's "no card" answer). | - |
+| `none` | Nothing. **The step returns no outputs**, so every input bound to them is left out (a style's "no card" answer). The brand layer still appends its classic card when the style sets `traits.end_card: true`, so a style that offers `none` must leave that trait off. | - |
 
 - **Rows**: up to 3 approved lines, up to 60 characters each, as a list or one `' | '`-joined text answer
   (`"Don't be scared. | It's just water."`).
