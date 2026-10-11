@@ -13,10 +13,11 @@
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitFfmpeg, kitStopIfAborted } from '../../_lib/part.mjs';
 import { kitLoadTemplate } from '../../_lib/prompt.mjs';
-import { PLATE_DEFAULT_SIZE, PLATE_SEATS, plateCastProblem, plateCrops, platePrompt, plateSize } from './plate.mjs';
+import { PLATE_DEFAULT_SIZE, PLATE_SEATS, plateCastProblem, plateCropProblem, plateCrops, platePrompt, plateSize } from './plate.mjs';
 
 const TEXT = 'openai/gpt-image-2';
 const EDIT = 'openai/gpt-image-2/edit';
+const PLATE_REF_MIME = ['image/png', 'image/jpeg', 'image/webp'];
 
 export async function run(inputs, ctx) {
   const manifest = await kitCheckInputs(ctx, inputs);
@@ -27,11 +28,13 @@ export async function run(inputs, ctx) {
   if (!String(inputs.room).trim()) throw ctx.error('bad_input', 'room is empty: the plate needs the room the cast sits in');
   const size = plateSize(inputs.size ?? PLATE_DEFAULT_SIZE);
   if (size.problem) throw ctx.error('bad_input', size.problem);
+  const cropProblem = plateCropProblem(size.width, size.height, layout);
+  if (cropProblem) throw ctx.error('bad_input', cropProblem);
 
-  const refs = cast.filter((m) => m.image).map((m) => m.image);
-  const model = inputs.model ?? (refs.length ? EDIT : TEXT);
-  if (model === TEXT && refs.length) throw ctx.error('bad_input', `${TEXT} cannot take the cast's images; use ${EDIT}`);
-  if (model === EDIT && !refs.length) throw ctx.error('bad_input', `${EDIT} needs at least one cast member with an image`);
+  const given = cast.filter((m) => m.image).map((m) => m.image);
+  const model = inputs.model ?? (given.length ? EDIT : TEXT);
+  if (model === TEXT && given.length) throw ctx.error('bad_input', `${TEXT} cannot take the cast's images; use ${EDIT}`);
+  if (model === EDIT && !given.length) throw ctx.error('bad_input', `${EDIT} needs at least one cast member with an image`);
 
   let template = null;
   if (inputs.template) {
@@ -51,6 +54,10 @@ export async function run(inputs, ctx) {
   if (prompt.length > 32000) throw ctx.error('bad_input', `the plate prompt is ${prompt.length} characters; the model takes 32,000`);
 
   kitStopIfAborted(ctx);
+  // gpt-image-2/edit reads PNG, JPEG and WebP; any other picture (AVIF, HEIC,
+  // GIF from a brand library) is turned into a PNG first, for free.
+  const refs = [];
+  for (const [i, ref] of given.entries()) refs.push(PLATE_REF_MIME.includes(ref.mime) ? ref : await plateRefAsPng(ctx, ref, i));
   const piece = 'plate';
   const body = {
     prompt,
@@ -101,6 +108,13 @@ export async function run(inputs, ctx) {
     layout,
     prompt,
   });
+}
+
+/** A cast picture the model cannot read, as a PNG (first frame only). */
+async function plateRefAsPng(ctx, file, i) {
+  const name = `ref-${i + 1}.png`;
+  await kitFfmpeg(ctx, ['-i', file.path, '-frames:v', '1', '-c:v', 'png', join(ctx.workDir, name)]);
+  return ctx.file(name, 'image');
 }
 
 /** The plate at exactly the asked size: as returned when it matches, else scaled to cover and centre-cropped. */

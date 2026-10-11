@@ -15,13 +15,16 @@ per person puts each person in a different room; one plate is the only way the s
 - **Paid piece**, one per plate, through the private line only: fal `openai/gpt-image-2` with
   `{prompt, image_size: {width, height}, quality, num_images: 1, output_format: "png"}`, or
   `openai/gpt-image-2/edit` with `image_urls` = the cast images in seat order when any member has one. The
-  model takes no seed: a re-roll is a new cast, and the kit's piece reuse is what keeps a plate.
+  model takes no seed: a re-roll is a new cast, and the kit's piece reuse is what keeps a plate. A cast
+  picture other than PNG, JPEG or WebP (AVIF, HEIC, GIF) is turned into a PNG first, for free.
 - **Prompt**: the recipe's plate rules (phone-shot, chest up, headphones and boom mics, mouths closed, every
   object unbranded, skin realism). A style may ship a template (`frames/<name>.prompt.json`, version 1):
   `templates.plate` replaces the body, `{cast_looks}` is the seating text and `{answers.room}` the room;
   `prefix`, `suffix`, `negative` (sent as an "Avoid:" sentence) and `banned` apply. A missing placeholder
   value or a banned phrase refuses the step before anything is ordered.
-- **Size** (`size`, default `2304x1296`): landscape, both sides multiples of 16, gpt-image-2's limits. A plate
+- **Size** (`size`, default `2304x1296`): landscape, both sides multiples of 16, gpt-image-2's limits.
+  `three_shot` needs a plate at least 1.40625 times as wide as it is high, so each slice stays on its seat;
+  a narrower size is refused before anything is ordered. A plate
   that comes back at another size is scaled to cover and centre-cropped.
 - **Singles**: full-height 9:16 slices (728x1296 at the default size) centred on each seat and kept inside
   the picture. Two identical singles fail the step (`output_invalid`).

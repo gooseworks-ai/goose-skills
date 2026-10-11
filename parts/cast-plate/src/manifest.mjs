@@ -2,7 +2,6 @@ import { file } from '../../_tools/schemas.mjs';
 
 const TEXT = 'openai/gpt-image-2';
 const EDIT = 'openai/gpt-image-2/edit';
-const PICTURE = ['image/png', 'image/jpeg', 'image/webp'];
 
 // A plan cast member (CastMember). Other plan fields pass through and are ignored.
 const member = {
@@ -12,7 +11,7 @@ const member = {
     key: { type: 'string', pattern: '^[a-z][a-z0-9_]{0,23}$' },
     name: { type: ['string', 'null'], maxLength: 40 },
     look: { description: 'Age, gender, build, hair, clothes. Needed when the member has no image; two drawn members may not share a look.', type: ['string', 'null'], maxLength: 600 },
-    image: { description: 'The member\'s picture: sent to /edit as a reference so the plate keeps this face.', anyOf: [{ type: 'null' }, file('image', PICTURE)] },
+    image: { description: 'The member\'s picture: sent to /edit as a reference so the plate keeps this face (a picture other than PNG, JPEG or WebP is turned into a PNG first).', anyOf: [{ type: 'null' }, file('image')] },
   },
 };
 

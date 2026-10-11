@@ -52,6 +52,23 @@ export function plateCrops(width, height, layout) {
   });
 }
 
+/**
+ * The problem with cutting `layout`'s singles from a width x height plate, or
+ * null. Every slice must fit around its seat without moving: three_shot needs
+ * a plate at least 1.40625 times as wide as it is high (a 9:16 slice centred
+ * at 20% would otherwise be pushed off its seat).
+ */
+export function plateCropProblem(width, height, layout) {
+  const crops = plateCrops(width, height, layout);
+  for (const [i, seat] of PLATE_SEATS[layout].entries()) {
+    const c = crops[i];
+    if (Math.abs(c.x + c.w / 2 - seat.at * width) > 1) {
+      return `size ${width}x${height} is too narrow for ${layout}: the ${seat.side} single cannot be centred on its seat at ${Math.round(seat.at * 100)}%`;
+    }
+  }
+  return null;
+}
+
 function plateText(v) {
   return typeof v === 'string' ? v.trim() : '';
 }

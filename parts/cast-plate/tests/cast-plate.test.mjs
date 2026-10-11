@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { countColor, fileRef, framePixels, hasFfmpeg, loadNewest, makeCtx, probe } from '../../_tools/kit-harness.mjs';
-import { plateCrops, plateSize } from '../src/plate.mjs';
+import { plateCropProblem, plateCrops, plateSize } from '../src/plate.mjs';
 import { fakeLine, personStill, RECORDED_ANSWER, RECORDED_POINTER, sample } from './fixture.mjs';
 
 const { dir, mod } = await loadNewest('cast-plate');
@@ -85,6 +85,21 @@ test('a cast image makes it an /edit piece with the images in seat order', { ski
   assert.match(orders[0].body.prompt, /RIGHT[^.]*: Theo, the person in reference image 1, with the same face, hair and clothes, man, 41/);
 });
 
+test('a cast picture the model cannot read (GIF) is turned into a PNG before it is sent', { skip }, async () => {
+  const { orders } = await runWith(async (ctx) => {
+    const base = await sample.inputs();
+    const still = await personStill(ctx.workDir, 'person.gif');
+    base.cast[0].image = { ...still, mime: 'image/gif' };
+    base.cast[1].image = await personStill(ctx.workDir);
+    return base;
+  });
+  const [first, second] = orders[0].body.image_urls;
+  assert.equal(first.mime, 'image/png');
+  assert.match(first.path, /ref-1\.png$/);
+  assert.equal(second.mime, 'image/png');
+  assert.match(second.path, /person\.png$/, 'a PNG is sent as given');
+});
+
 test('three_shot seats three people at 20%, 50% and 80%', { skip }, async () => {
   const { orders, out } = await runWith(async () => {
     const base = await sample.inputs();
@@ -146,6 +161,7 @@ test('refusals: nothing is ordered for a cast, size, model or template the plate
   await refused({ ...base, size: '1296x2304' }, /landscape/);
   await refused({ ...base, size: '2300x1296' }, /multiples of 16/);
   await refused({ ...base, size: '3840x1024' }, /3:1/);
+  await refused({ ...base, cast: [...base.cast, { key: 'c', name: 'Ines', look: 'woman, 58, silver bob' }], layout: 'three_shot', size: '1280x1024' }, /too narrow for three_shot/);
   await refused({ ...base, model: EDIT }, /needs at least one cast member with an image/);
   await refused(async (ctx) => ({ ...base, model: TEXT, cast: [{ ...base.cast[0], image: await personStill(ctx.workDir) }, base.cast[1]] }), /cannot take the cast's images/);
   const tplFile = async (ctx, tpl) => {
@@ -162,6 +178,10 @@ test('plateSize and plateCrops keep gpt-image-2 limits and keep every slice insi
   assert.deepEqual(plateSize('2304x1296'), { width: 2304, height: 1296 });
   assert.ok(plateSize('1024x1024').problem);
   assert.ok(plateSize('640x512').problem, 'under 655,360 pixels');
+  assert.equal(plateCropProblem(2304, 1296, 'three_shot'), null);
+  assert.equal(plateCropProblem(1536, 1024, 'three_shot'), null);
+  assert.match(plateCropProblem(1280, 1024, 'three_shot'), /too narrow/);
+  assert.equal(plateCropProblem(1280, 1024, 'two_shot'), null);
   for (const layout of ['two_shot', 'three_shot']) {
     for (const [w, h] of [[2304, 1296], [1536, 1024], [1280, 1024]]) {
       for (const c of plateCrops(w, h, layout)) {

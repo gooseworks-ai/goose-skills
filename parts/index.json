@@ -612,9 +612,9 @@
       "determinism": "provider",
       "path": "parts/cast-plate/1.0.0",
       "files": {
-        "README.md": "ec4bb97379018f8f5f6999de594d26e5f5303e226b64d1a3812689b556d4ac11",
-        "part.json": "68106ef1fd1619d3fe7d549e5c3e6fdba0a18bcb03ee8d4e58c41a8f4e4e7521",
-        "part.mjs": "a7a2edccf2f2ffca53c607e84c372fc97caf3e468da051073929c3c8ea8e9258"
+        "README.md": "5ac0866d71bf6a4023351de2f40b0836d8828c76c9f5e92a2c616ca1005770da",
+        "part.json": "48ec3787cc2d7e361ff535a8ef5ae461d26d28633c203115852cd8f6da6cca49",
+        "part.mjs": "6f14daf4de419da4c847cdf0577ea4b558e21639d39a1c455adcd31e0cee4bfa"
       },
       "models": [
         {

@@ -77,7 +77,7 @@
               "maxLength": 600
             },
             "image": {
-              "description": "The member's picture: sent to /edit as a reference so the plate keeps this face.",
+              "description": "The member's picture: sent to /edit as a reference so the plate keeps this face (a picture other than PNG, JPEG or WebP is turned into a PNG first).",
               "anyOf": [
                 {
                   "type": "null"
@@ -85,12 +85,7 @@
                 {
                   "type": "object",
                   "x-kit-file": {
-                    "media": "image",
-                    "mime": [
-                      "image/png",
-                      "image/jpeg",
-                      "image/webp"
-                    ]
+                    "media": "image"
                   }
                 }
               ]
