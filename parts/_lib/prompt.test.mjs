@@ -144,6 +144,8 @@ test('a missing value refuses the scene with its id; looks must be known', () =>
   const tpl = { version: 1, scene: '{picture} in the {answers.room}, {answers.mood}' };
   assert.throws(() => kitScenePrompt(tpl, { ...base, scene: { id: 's7', picture: 'the jar' } }), (e) => e instanceof KitPromptGap && e.message === 'scene s7 needs {answers.mood}');
   assert.throws(() => kitScenePrompt(TEMPLATE, { ...base, scene: { id: 's1', picture: null } }), /scene s1 needs \{picture\}/);
+  // A tag with nothing after it is an empty picture, not the word "Product".
+  assert.throws(() => kitScenePrompt(TEMPLATE, { ...base, scene: { id: 's6', picture: 'Product:' } }), /scene s6 needs \{picture\}/);
   assert.throws(() => kitScenePrompt(TEMPLATE, { ...base, look: 'anime', scene: { id: 's1', picture: 'x' } }), (e) => e.kind === 'look' && /scene s1 needs \{look\}: "anime" is not one of pixar-3d, claymation/.test(e.message));
   // No looks table: the answer text is the look. A scene without an id is named by its place.
   const plain = kitScenePrompt({ version: 1, scene: '{look}: {picture}' }, { look: 'watercolour', scene: { picture: 'a jar' }, index: 4 });
