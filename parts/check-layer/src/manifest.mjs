@@ -10,16 +10,16 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'check-layer',
-  version: '1.2.0',
+  version: '1.3.0',
   kind: 'check',
   layer: 'check',
   title: 'Check layer',
-  summary: "Checks the finished cut without changing it: the server's five checks with its limits, then black and frozen frames, the end card, the logo where a step drew it and speech against the script.",
+  summary: "Checks the finished cut without changing it: the server's five checks, black and frozen frames, the end card, the logo, speech against the script and style flags (text-led blank frames, read rate, cuts between words, cut rate, a kept body).",
   runtime: 'node',
   entry: 'part.mjs',
   files: ['README.md', 'part.mjs'],
   kit: '>=1.0.0 <2.0.0',
-  needs: { browser: false, ffmpeg: { filters: ['ebur128', 'freezedetect', 'blackdetect', 'scale', 'format'], encoders: ['pcm_s16le'] }, network: false, models: [], disk_mb: 100 },
+  needs: { browser: false, ffmpeg: { filters: ['ebur128', 'freezedetect', 'blackdetect', 'scale', 'format', 'fps'], encoders: ['pcm_s16le'] }, network: false, models: [], disk_mb: 100 },
   inputs: layerInputs,
   outputs: {
     type: 'object',
@@ -39,7 +39,7 @@ export const manifest = {
               additionalProperties: false,
               required: ['code', 'status'],
               properties: {
-                code: { type: 'string', pattern: '^(plays|length|size|sound|captions|black_frames|frozen_frames|captions_safe_zone|speech_matches_script|end_card|logo|flag:[a-z0-9_]+)$' },
+                code: { type: 'string', pattern: '^(plays|length|size|sound|captions|black_frames|frozen_frames|captions_safe_zone|speech_matches_script|end_card|logo|flag:[\\s\\S]*)$', description: 'flag:<name> for each style qc_flag, any name the input allows (a flag this version does not know is reported not_applicable).' },
                 status: {
                   description: 'warn: measured short, but not counted against the video (a logo looked for on the whole frame, with no box declared for it and no brand layer to fix it).',
                   enum: ['pass', 'fail', 'warn', 'not_applicable'],
