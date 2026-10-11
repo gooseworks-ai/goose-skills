@@ -1371,6 +1371,44 @@
       ]
     },
     {
+      "id": "overlay",
+      "version": "1.0.0",
+      "interface": 1,
+      "kind": "compose",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "fps",
+            "format",
+            "split",
+            "scale",
+            "fade",
+            "colorchannelmixer",
+            "overlay"
+          ],
+          "encoders": [
+            "libx264"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 500
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/overlay/1.0.0",
+      "files": {
+        "README.md": "c9b9b3c0d0ecef352a58b17ac1fb06dae7860c31e6be713219f1301544b590de",
+        "part.json": "a2cecd34c2af41705f3ebe8a94374fac7f442b9d35efbc6b746b8c3450617903",
+        "part.mjs": "57a1d92b442db728300ffa228839661f574c993bbbe0633d80940d5e967f8547"
+      },
+      "models": []
+    },
+    {
       "id": "phone-chat",
       "version": "1.0.0",
       "interface": 1,
