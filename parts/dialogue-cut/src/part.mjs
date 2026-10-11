@@ -197,7 +197,10 @@ export async function run(inputs, ctx) {
     start_s: +job.times.starts[firstCut.get(b.id)].toFixed(3),
     end_s: i + 1 < beats.length ? +job.times.starts[firstCut.get(beats[i + 1].id)].toFixed(3) : dlg,
   }));
-  const timeline = { duration_s: seconds, width, height, fps, scenes: sceneRows, speech: dcutClampSpeech(inputs.speech, dlg) };
+  // Speech of a scene that was skipped (no line) has no picture and no place in the timeline.
+  const spokenIds = new Set(beats.map((b) => b.id));
+  const speech = (inputs.speech || []).filter((e) => e.scene_id == null || spokenIds.has(String(e.scene_id)));
+  const timeline = { duration_s: seconds, width, height, fps, scenes: sceneRows, speech: dcutClampSpeech(speech, dlg) };
   if (ending) {
     timeline.end_card = { start_s: dlg, end_s: seconds };
     const et = inputs.ending_timeline;

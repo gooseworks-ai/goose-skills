@@ -170,7 +170,7 @@ export function dialogueSettings(mode, overrides = {}) {
  * timing producer's spans [{id, start_s, end_s}]. A beat runs from its line's
  * start to the next line's start, so the gap after a line belongs to it and the
  * beats tile the audio from 0 to `seconds` (the voice length; default: the last
- * span's end). A scene with no line and no span is skipped (critic #9); a line
+ * span's end). A scene with no line is skipped, span or not (critic #9); a line
  * with no span, a speaker outside `hosts`, or overlapping spans are refused.
  * `scene.extra.split` asks for a split on that line; `scene.extra.payoff`
  * marks the payoff line.
@@ -185,11 +185,13 @@ export function dialogueBeats(scenes, spans, hosts, { seconds } = {}) {
   for (const scene of scenes || []) {
     const span = byId.get(scene.id);
     const spoken = typeof scene.line === 'string' && scene.line.trim() !== '';
-    if (!span) {
-      if (spoken) throw dialogueBadInput(`dialogue-cut: scene ${scene.id} has a line but no span in the voice timing`);
+    // nothing spoken, nothing to lipsync: skipped even when a timing producer gave it a span
+    // (that time joins the line before it, since a line runs to the next line's start)
+    if (!spoken) {
       skipped.push(scene.id);
       continue;
     }
+    if (!span) throw dialogueBadInput(`dialogue-cut: scene ${scene.id} has a line but no span in the voice timing`);
     if (!hosts.includes(scene.speaker)) {
       throw dialogueBadInput(`dialogue-cut: scene ${scene.id} speaker ${JSON.stringify(scene.speaker ?? null)} is not one of the hosts ${hosts.join(', ')}`);
     }

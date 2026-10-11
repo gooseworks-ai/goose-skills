@@ -93,6 +93,10 @@ test('split: speaker over the idle listener, a full-frame payoff, the end card w
   const d = await dialogue(ctx, [['s1', 'a', 1.3], ['s2', 'b', 1.1], ['s3', 'a', 1.2], ['s4', 'b', 1.0], ['s5', 'a', 1.2], ['s6', 'b', 1.3]], { idle: true });
   // A beat with no line (critic #9): no span, no clip, no picture of its own.
   d.scenes.splice(3, 0, { id: 'pause', line: null, speaker: null, on_screen: null, picture: null });
+  // A span and a speech entry for it (from some other timing producer) still give it no picture and no caption.
+  d.spans.push({ id: 'pause', start_s: d.spans[2].end_s - 0.05, end_s: d.spans[2].end_s - 0.01 });
+  d.spans.sort((x, y) => x.start_s - y.start_s);
+  d.speech.push({ scene_id: 'pause', text: 'ghost', start_s: 0.1, end_s: 0.2 });
   const card = await solid(ctx, 'card.mp4', 'yellow', 1, '720x1280');
   const out = await mod.run({
     ...d,
@@ -103,6 +107,7 @@ test('split: speaker over the idle listener, a full-frame payoff, the end card w
     height: H,
   }, ctx);
   assert.ok(!out.timeline.scenes.some((s) => s.id === 'pause'), 'the silent scene has no picture');
+  assert.ok(!out.timeline.speech.some((e) => e.scene_id === 'pause'), 'the silent scene has no speech');
   const splits = out.cuts.filter((c) => c.mode === 'split');
   assert.ok(splits.length >= 4, `${splits.length} splits`);
   for (const c of splits) {

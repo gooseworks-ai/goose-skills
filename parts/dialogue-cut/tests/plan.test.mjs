@@ -281,3 +281,16 @@ test('split mode shares a line over its 6 s ceiling; plain mode keeps one pictur
   assert.equal(pl.cuts.length, lens.length);
   assert.deepEqual(dialoguePlanProblems(pl, beats, HOSTS, plain, { products: 0 }), []);
 });
+
+test('dialogueBeats skips a scene with no line even when the timing gives it a span', () => {
+  const scenes = [
+    { id: 'open', line: 'So we gave the planner a week.', speaker: 'a' },
+    { id: 'beat', line: null, speaker: null },
+    { id: 'hush', line: '  ', speaker: 'b' },
+    { id: 'reply', line: 'One week.', speaker: 'b' },
+  ];
+  const spans = [{ id: 'open', start_s: 0, end_s: 2.1 }, { id: 'beat', start_s: 2.1, end_s: 2.6 }, { id: 'hush', start_s: 2.6, end_s: 2.8 }, { id: 'reply', start_s: 2.9, end_s: 3.6 }];
+  const { beats, skipped } = dialogueBeats(scenes, spans, ['a', 'b'], { seconds: 3.7 });
+  assert.deepEqual(skipped, ['beat', 'hush']);
+  assert.deepEqual(beats.map((b) => [b.id, b.start_s, b.end_s]), [['open', 0, 2.9], ['reply', 2.9, 3.7]]);
+});
