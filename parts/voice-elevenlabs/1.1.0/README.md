@@ -20,7 +20,7 @@ or a cast where each member speaks with their own voice.
   1,000 characters.
 - **Audio tags** (new): `[whispers]`-style tags (square brackets, up to 40 characters) in a line.
   `tags: keep` (the default on `eleven_v3`) sends them; `tags: strip` takes them out before sending (the default on
-  `eleven_multilingual_v2`, which reads tags aloud, so `keep` with a tagged line on v2 is refused). Either way the
+  `eleven_multilingual_v2`, which reads tags aloud, so `keep` with a tagged line on v2 is refused; `keep` with untagged lines sends nothing v2 would misread and is allowed). Either way the
   written `text` and word timings, which captions and the script check read, never contain tags.
 - **Join** (new): `join: line` (default) sends one request per spoken line, as in 1.0.x. `join: sentence` sends
   consecutive lines as one request until a line's written text ends in `.`, `!` or `?`, so one sentence can run

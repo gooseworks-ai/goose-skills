@@ -437,3 +437,23 @@ test('join: one treats the same voice settings in another key order as one voice
   );
   assert.deepEqual(orders.map((o) => o.body.text), ['So I stopped.']);
 });
+
+test('a joined reply of the right length but other characters fails the piece instead of being sliced', { skip: !ffmpeg && 'ffmpeg is not installed' }, async () => {
+  const { ctx } = makeCtx({
+    partDir: dir,
+    line: async (order, c) => {
+      const r = await sample.line(order, c);
+      // Same length as "One two." but the space moved, so fixed offsets would misplace the cut.
+      const shifted = fakeAlignment('On etwo.', 1);
+      assert.equal(shifted.characters.length, [...order.body.text].length);
+      return { ...r, json: { alignment: shifted, normalized_alignment: shifted } };
+    },
+  });
+  await assert.rejects(mod.run({ scenes: [{ id: 's1', line: 'One' }, { id: 's2', line: 'two.' }], voice_id: A, join: 'sentence' }, ctx), (e) => e.code === 'provider_failed');
+});
+
+test('eleven_multilingual_v2 with tags: keep and no tagged line is allowed (nothing to misread)', { skip: !ffmpeg && 'ffmpeg is not installed' }, async () => {
+  const { ctx, orders } = makeCtx({ partDir: dir, line: sample.line });
+  await mod.run({ scenes: [{ id: 's1', line: 'Hello there.' }], voice_id: A, model: 'eleven_multilingual_v2', tags: 'keep' }, ctx);
+  assert.deepEqual(orders.map((o) => [o.body.model_id, o.body.text]), [['eleven_multilingual_v2', 'Hello there.']]);
+});

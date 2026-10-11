@@ -607,12 +607,16 @@ function plannedCalls(lines, joinMode, model, ctx) {
   return calls;
 }
 
-/** The character timings of a joined request, one per character of `text`; null when neither alignment lines up. */
+/**
+ * The character timings of a joined request, one per character of `text`: the first alignment whose characters
+ * spell `text` exactly. Null when neither does, since slicing a mismatched alignment by fixed offsets would hand
+ * one scene's timings to another.
+ */
 function joinedAlignment(json, text) {
   const n = [...text].length;
   for (const a of [json && json.alignment, json && json.normalized_alignment]) {
     const usable = usableAlignment(a ? { alignment: a } : null);
-    if (usable && usable.characters.length === n) return usable;
+    if (usable && usable.characters.length === n && usable.characters.join('') === text) return usable;
   }
   return null;
 }

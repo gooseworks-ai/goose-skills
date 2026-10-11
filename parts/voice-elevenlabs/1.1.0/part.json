@@ -165,7 +165,7 @@
         ]
       },
       "tags": {
-        "description": "[tag] audio tags in lines: keep sends them to eleven_v3 (the default there); strip takes them out (the default for eleven_multilingual_v2, which refuses keep). Captions never show tags.",
+        "description": "[tag] audio tags in lines: keep sends them to eleven_v3 (the default there); strip takes them out (the default for eleven_multilingual_v2, which reads tags aloud, so a tagged line with keep on v2 is refused before anything is ordered; keep with untagged lines is harmless). Captions never show tags.",
         "enum": [
           "strip",
           "keep"
