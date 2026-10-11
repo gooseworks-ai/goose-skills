@@ -115,6 +115,8 @@ export async function run(inputs, ctx) {
       file = result && result.files && result.files[`${job.piece}.mp4`];
       if (!file) throw ctx.error('provider_failed', `no video for ${job.piece}`);
     } catch (err) {
+      // A stop is never masked by a still, whatever the provider's error says.
+      kitStopIfAborted(ctx);
       if (fallback !== 'still' || !kitClipMayFallBack(err, { last_attempt: lastAttempt })) throw err;
       const seconds = inputs.keep ? inputs.keep.seconds : job.seconds;
       ctx.log.warn(`${job.piece} became its still: ${err.code}`, { piece: job.piece, code: err.code });

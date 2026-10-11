@@ -17,8 +17,9 @@
 //
 // Clip length (scenes mode with spans, from a voice or a song): each clip is on
 // screen the way assemble 1.1.0 cuts it. A scene with a span runs from its
-// span's start (the first from 0) to the next spanned scene's start (the last
-// to its span's end plus KIT_CLIP_TAIL_S); a scene with no span (no line)
+// span's start (the first from 0, unless a span this part does not make comes
+// before it) to the next spanned scene's start (the last to its span's end
+// plus KIT_CLIP_TAIL_S); a scene with no span (no line)
 // shares the spanned scene before it evenly (share_previous; scenes before the
 // first spanned one share with it). The clip is then ceil(on screen + 0.2) s,
 // rounded up to the model's allowed lengths and kept inside min_s..max_s. A
@@ -125,7 +126,10 @@ export function kitClipSlots(jobs, spans, { tail_s = KIT_CLIP_TAIL_S } = {}) {
   const starts = [...byId.values()].map((s) => s.start_s).sort((a, b) => a - b);
   const out = new Map();
   groups.forEach((g, gi) => {
-    const start = gi === 0 ? 0 : g.span.start_s;
+    // The first group starts at 0 only when it is the cut's first: a span this
+    // part does not make (a hook made by another step, left out with
+    // skip_first) runs before it, and the group then starts at its own span.
+    const start = gi === 0 && !starts.some((t) => t < g.span.start_s) ? 0 : g.span.start_s;
     let end;
     if (gi + 1 < groups.length) end = groups[gi + 1].span.start_s;
     else {

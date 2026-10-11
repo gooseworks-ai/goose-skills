@@ -187,6 +187,24 @@ test('fallback still: a refused clip becomes its still; a plain failure only on 
   await assert.rejects(mod.run(inputs, quote.ctx), (e) => e.code === 'over_quote', 'an over-quote never falls back');
 });
 
+test('fallback still never masks a stop: a refusal that lands after the abort fails the step as stopped', { skip }, async () => {
+  const w = work();
+  const inputs = await scenesInputs(w, { fallback: 'still' });
+  let made;
+  made = makeCtx({
+    partDir: dir,
+    workDir: join(w, 'step'),
+    attempt: 2,
+    line: (order, ctx) => {
+      if (order.piece !== 'clip-s1') return clipLine(order, ctx);
+      made.abort();
+      return Promise.reject(failWith('provider_rejected'));
+    },
+  });
+  await assert.rejects(mod.run(inputs, made.ctx), (e) => e.code === 'stopped');
+  assert.ok(!made.logs.some(([level, m]) => level === 'warn' && /became its still/.test(m)), 'no clip fell back to its still');
+});
+
 test('a reply with no video file fails the piece', { skip }, async () => {
   const w = work();
   const inputs = await scenesInputs(w);

@@ -24,6 +24,15 @@ test('slots: the last made scene runs to a later span it does not make (the end 
   assert.deepEqual([...slots.values()], [2.4, 4.6]);
 });
 
+test('slots: the first made scene starts at its own span when an earlier span is made elsewhere (skip_first)', () => {
+  const slots = kitClipSlots(jobs('s2', 's3'), [
+    { id: 'hook', start_s: 0, end_s: 3 },
+    { id: 's2', start_s: 3.2, end_s: 5 },
+    { id: 's3', start_s: 5.5, end_s: 7 },
+  ]);
+  assert.deepEqual([...slots.values()].map((v) => Number(v.toFixed(3))), [2.3, 1.75]);
+});
+
 test('slots refuse spans named twice, spans that end before they start, and spans that name no scene', () => {
   assert.throws(() => kitClipSlots(jobs('a'), [{ id: 'a', start_s: 0, end_s: 1 }, { id: 'a', start_s: 1, end_s: 2 }]), /twice/);
   assert.throws(() => kitClipSlots(jobs('a'), [{ id: 'a', start_s: 2, end_s: 1 }]), /ends before it starts/);
