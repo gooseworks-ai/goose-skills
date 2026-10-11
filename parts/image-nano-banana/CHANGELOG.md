@@ -1,5 +1,10 @@
 # image-nano-banana
 
+## 1.2.0
+
+- Products mode: one edit of each product's first photo per kind, `kinds` `snap` (a plain textured surface) and `angled` (a three-quarter view over warm white). Outputs `images` keyed `<product id>-<kind>`. Needs `/edit`; the template's `Snap` and `Angled` rules replace the built-in texts.
+- `kinds` is refused in images and scenes mode. Images and scenes mode are unchanged.
+
 ## 1.1.0
 
 - Scenes mode: one still per picked plan scene, the prompt filled from the style's template (`parts/_lib/prompt.mjs`), references picked from the plan (`parts/_lib/scene-stills.mjs`).
