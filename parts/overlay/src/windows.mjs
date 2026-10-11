@@ -113,8 +113,9 @@ export function ovlWindows({ items, duration_s, timeline, scenes, products }) {
     if (item.scenes && (item.from_s != null || item.to_s != null)) throw ovlRefuse(`${who}: give either scenes or from_s/to_s, not both`);
     const windows = [];
     if (item.scenes === 'naming_product') {
-      if (!Array.isArray(scenes) || !scenes.length) throw ovlRefuse(`${who}: scenes "naming_product" needs the plan's scenes`);
-      if (!Array.isArray(products) || !products.length) throw ovlRefuse(`${who}: scenes "naming_product" needs the plan's products`);
+      // A missing list is a wiring mistake; an empty one is a plan with nothing to name, so nothing is drawn.
+      if (!Array.isArray(scenes)) throw ovlRefuse(`${who}: scenes "naming_product" needs the plan's scenes`);
+      if (!Array.isArray(products)) throw ovlRefuse(`${who}: scenes "naming_product" needs the plan's products`);
       scenes.forEach((scene, i) => {
         const product = ovlSceneProduct(scene, products);
         if (!product) return;

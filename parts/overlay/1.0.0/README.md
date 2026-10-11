@@ -21,8 +21,11 @@ Lays pictures over a video at time windows. Free. Built for GOOSE-4015: the podc
   exactly one product. Scenes with a `null` line, on_screen or picture are fine.
 - **Refused** (`bad_input`): `product_of_scene` without `scenes: "naming_product"`; `scenes` together with
   `from_s`/`to_s`; `naming_product` without the plan's scenes or products; a named product with no photo; a
-  window that ends before it starts or starts past the video's end; a picture that is not PNG, JPEG or WebP;
+  window that ends before it starts or starts past the video's end;
   more than 60 windows in all.
+- **A picture ffmpeg cannot draw** (an SVG logo, a file that is not PNG, JPEG or WebP, or one that cannot be
+  read) is skipped with a warning, because overlay runs after the paid steps. Empty `scenes` or `products`
+  lists draw nothing; a missing one with `naming_product` is refused as a wiring mistake.
 - **An item with no picture** (a `brand.logo` binding for a brand with no logo, which the kit drops) is skipped
   with a warning, not refused.
 - **Nothing to draw** (no scene names a product, or no item has a picture): the cut passes through unchanged,

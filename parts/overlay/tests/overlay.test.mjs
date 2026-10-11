@@ -109,6 +109,30 @@ test('an item whose picture binding resolved to nothing (a brand with no logo) i
   assert.equal(nulled.video, video);
 });
 
+test('a picture ffmpeg cannot draw (an SVG logo) is skipped with a warning, and the others still draw', { skip }, async () => {
+  const { ctx, logs } = makeCtx({ partDir: dir });
+  const video = await blueCut(ctx, 1);
+  const logo = await fileRef(await makeLogo(join(ctx.workDir, 'logo.png'), '#e01020'), 'image');
+  const svg = { ...logo, sha256: 'f'.repeat(64), mime: 'image/svg+xml' };
+  const timeline = timelineOf(1);
+  const only = await mod.run({ video, timeline, items: [{ image: svg, corner: 'top_right' }] }, ctx);
+  assert.equal(only.video, video);
+  assert.ok(logs.some(([level, m]) => level === 'warn' && /image\/svg\+xml; overlay draws PNG, JPEG or WebP/.test(m)));
+  const both = await mod.run({ video, timeline, items: [{ image: svg, corner: 'top_left' }, { image: logo, corner: 'top_right', width_px: 165 }] }, ctx);
+  assert.notEqual(both.video, video);
+  assert.ok((await countIn(both.video.path, 0.5, 540, 960, { x0: 437, y0: 20, x1: 520, y1: 62 }, red)) > 1500, 'the PNG logo is drawn');
+  assert.equal(await countIn(both.video.path, 0.5, 540, 960, { x0: 0, y0: 0, x1: 120, y1: 120 }, red), 0, 'the SVG is not');
+});
+
+test('empty scenes or products lists draw nothing instead of refusing', { skip }, async () => {
+  const { ctx } = makeCtx({ partDir: dir });
+  const video = await blueCut(ctx, 1);
+  const timeline = timelineOf(1);
+  const items = [{ image: 'product_of_scene', scenes: 'naming_product' }];
+  assert.equal((await mod.run({ video, timeline, scenes: [], products: [], items }, ctx)).video, video);
+  assert.equal((await mod.run({ video, timeline, scenes: [{ id: 's1', picture: 'the Glow Serum' }], products: [], items }, ctx)).video, video);
+});
+
 test('a pass-through over 180 MB is refused too', { skip }, async () => {
   const { ctx } = makeCtx({ partDir: dir });
   const video = { ...(await blueCut(ctx, 1)), bytes: 181 * 1024 * 1024 };
@@ -127,8 +151,6 @@ test('refuses what it cannot draw, before any encode', { skip }, async () => {
   await bad({ items: [{ image: logo, from_s: 1.5, to_s: 1 }] }, /before it starts/);
   await bad({ items: [{ image: logo, corner: 'middle' }] }, /corner/);
   await bad({ items: [] }, /items/);
-  const svg = { ...logo, mime: 'image/svg+xml' };
-  await bad({ items: [{ image: svg }] }, /PNG, JPEG or WebP/);
 });
 
 test('refuses an output over 180 MB', { skip }, async () => {

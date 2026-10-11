@@ -27,32 +27,44 @@ export async function run(inputs, ctx) {
     throw err;
   }
   for (const note of planned.notes) ctx.log.warn(note);
-  if (!planned.windows.length) {
+
+  // One ffmpeg input per distinct picture, sized once. A picture ffmpeg cannot draw (an SVG logo, a
+  // file that is not an image) is skipped with a warning: overlay runs after the paid steps, and a
+  // missing corner mark is better than losing the whole video (check-layer's logo flag still sees it).
+  const pictures = new Map();
+  const skipped = new Set();
+  for (const w of planned.windows) {
+    const key = w.image.sha256;
+    if (pictures.has(key) || skipped.has(key)) continue;
+    const name = String(w.image.path || '').split('/').pop();
+    let why = null;
+    if (w.image.mime && !OVL_READABLE.has(w.image.mime)) why = `is ${w.image.mime}; overlay draws PNG, JPEG or WebP files`;
+    let size = null;
+    if (!why) {
+      size = w.image.width > 0 && w.image.height > 0 ? w.image : null;
+      if (!size) {
+        try {
+          size = await ctx.tools.probe(w.image.path);
+        } catch {
+          size = null;
+        }
+      }
+      if (!size || !(size.width > 0 && size.height > 0)) why = 'cannot be read as an image';
+    }
+    if (why) {
+      ctx.log.warn(`the picture ${name} ${why}, so it is not drawn`);
+      skipped.add(key);
+      continue;
+    }
+    pictures.set(key, { input: pictures.size + 1, file: w.image, size });
+  }
+  const drawn = planned.windows.filter((w) => pictures.has(w.image.sha256));
+  if (!drawn.length) {
     ctx.log.info('overlay draws nothing, so the cut passes through');
     ovlCheckSize(ctx, video);
     return kitCheckOutputs(ctx, manifest, { video, timeline });
   }
-
-  // One ffmpeg input per distinct picture, sized once.
-  const pictures = new Map();
-  for (const w of planned.windows) {
-    const key = w.image.sha256;
-    if (pictures.has(key)) continue;
-    if (w.image.mime && !OVL_READABLE.has(w.image.mime)) {
-      throw ctx.error('bad_input', `the picture ${w.image.path.split('/').pop()} is ${w.image.mime}; overlay draws PNG, JPEG or WebP files`);
-    }
-    let size = w.image.width > 0 && w.image.height > 0 ? w.image : null;
-    if (!size) {
-      try {
-        size = await ctx.tools.probe(w.image.path);
-      } catch {
-        size = null;
-      }
-    }
-    if (!size || !(size.width > 0 && size.height > 0)) throw ctx.error('bad_input', `the picture ${w.image.path.split('/').pop()} cannot be read as an image`);
-    pictures.set(key, { input: pictures.size + 1, file: w.image, size });
-  }
-  const windows = planned.windows.map((w) => {
+  const windows = drawn.map((w) => {
     const item = items[w.item];
     const pic = pictures.get(w.image.sha256);
     let box;
