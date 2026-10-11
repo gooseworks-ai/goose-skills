@@ -381,3 +381,59 @@ test('max_seconds is checked on the paced read', { skip: !ffmpeg && 'ffmpeg is n
   const out = await mod.run({ scenes, voice_id: A, max_seconds: 4, pace: { tempo: 1.2 } }, makeCtx({ partDir: dir, line: sample.line }).ctx);
   assert.ok(out.seconds <= 4 && near(out.seconds, 4.25 / 1.2));
 });
+
+// Review fixes: off-screen speakers, a single over-long line, settings compared by value.
+
+test('an off-screen speaker with no cast entry reads with the default voice_id', { skip: !ffmpeg && 'ffmpeg is not installed' }, async () => {
+  const { ctx, orders } = makeCtx({ partDir: dir, line: sample.line });
+  const out = await mod.run(
+    {
+      scenes: [
+        { id: 'q1', line: 'What do you think this is?', speaker: 'interviewer' },
+        { id: 'a1', line: 'A lamp?', speaker: 'a' },
+      ],
+      cast,
+      off_screen: ['interviewer'],
+      voice_id: 'narrator1',
+    },
+    ctx,
+  );
+  assert.deepEqual(orders.map((o) => o.path), ['/v1/text-to-speech/narrator1/with-timestamps', `/v1/text-to-speech/${A}/with-timestamps`]);
+  assert.deepEqual(out.scenes.map((s) => s.id), ['q1', 'a1']);
+});
+
+test('off-screen and over-long refusals happen before any piece is ordered', async () => {
+  const cases = [
+    ['an off-screen speaker with no default voice', { scenes: [{ id: 'q1', line: 'Hi?', speaker: 'interviewer' }], cast, off_screen: ['interviewer'] }],
+    ['an off-screen key that is also a cast key', { scenes: [{ id: 's1', line: 'Hi.', speaker: 'a' }], cast, off_screen: ['a'], voice_id: A }],
+    ['a speaker in neither the cast nor off_screen', { scenes: [{ id: 's1', line: 'Hi.', speaker: 'zed' }], cast, off_screen: ['interviewer'], voice_id: A }],
+    [
+      'one line that pronunciations push past the eleven_v3 limit',
+      { scenes: [{ id: 's1', line: 'GW '.repeat(300).trim() }], voice_id: A, pronunciations: [{ term: 'GW', say_as: 'goose works goose works' }] },
+    ],
+    [
+      'one line past the limit in join: line mode, after the first request',
+      { scenes: [{ id: 's1', line: 'Hi.' }, { id: 's2', line: 'GW '.repeat(300).trim() }], voice_id: A, pronunciations: [{ term: 'GW', say_as: 'goose works goose works' }] },
+    ],
+  ];
+  for (const [what, inputs] of cases) {
+    const { ctx, orders } = makeCtx({ partDir: dir, line: sample.line });
+    await assert.rejects(mod.run(inputs, ctx), (e) => e.code === 'bad_input', what);
+    assert.equal(orders.length, 0, what);
+  }
+});
+
+test('join: one treats the same voice settings in another key order as one voice', { skip: !ffmpeg && 'ffmpeg is not installed' }, async () => {
+  const { ctx, orders } = makeCtx({ partDir: dir, line: sample.line });
+  await mod.run(
+    {
+      scenes: [{ id: 's1', line: 'So I', speaker: 'x' }, { id: 's2', line: 'stopped.' }],
+      cast: [{ key: 'x', voice_id: A, voice_settings: { similarity_boost: 0.8, stability: 0.3 } }],
+      voice_id: A,
+      voice_settings: { stability: 0.3, similarity_boost: 0.8 },
+      join: 'one',
+    },
+    ctx,
+  );
+  assert.deepEqual(orders.map((o) => o.body.text), ['So I stopped.']);
+});

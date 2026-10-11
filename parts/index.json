@@ -2536,9 +2536,9 @@
       "determinism": "provider",
       "path": "parts/voice-elevenlabs/1.1.0",
       "files": {
-        "README.md": "d7891da47fe916af4543682209a35a7c7ea78ecc789d666c8dd2302515cd05ba",
-        "part.json": "d364310529cce8cc39ca4fc172a578c4aa0de34683d5fc60eda445d46803fd98",
-        "part.mjs": "3e370c589b9512fa01c57e08a63ee359fefabde32852a168b9b09b5756331f2a"
+        "README.md": "2d0c20227dad3053d15241d194f101149d3fc119a7984128ef7d66a9c69c3e94",
+        "part.json": "9b769f6b727dfa7bcc9bb802ca6c4ab9323332f0bdb0d31f0b7324db8cef34df",
+        "part.mjs": "4c79f4f0039b85540f7fa932648f8b67158c679c0944b74a6e1f8898145bb79a"
       },
       "models": [
         {

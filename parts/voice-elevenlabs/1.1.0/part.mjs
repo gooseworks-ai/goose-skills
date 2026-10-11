@@ -415,7 +415,9 @@ function kitWordsFromAlignment(text, sayAs, alignment, offsetS = 0) {
 //
 // 1.1.0: a scene whose line is null or empty is skipped and leaves no span.
 // With a `cast`, each scene's `speaker` picks that member's voice; a speaker
-// the cast does not hold is refused. `model` picks eleven_v3 (default) or
+// the cast does not hold is refused, unless the style lists it in
+// `off_screen` (its scenes.speaker.off_screen keys), which reads with the
+// default voice_id. `model` picks eleven_v3 (default) or
 // eleven_multilingual_v2. `[tag]` audio tags are sent to eleven_v3 (`tags:
 // keep`) or taken out (`tags: strip`); captions never show them, and v2 never
 // receives them. `max_seconds` refuses a read that runs too long before any
@@ -511,6 +513,11 @@ function plannedLines(inputs, ctx, model, tags) {
       cast.set(member.key, member);
     }
   }
+  const offScreen = new Set(Array.isArray(inputs.off_screen) ? inputs.off_screen : []);
+  for (const key of offScreen) {
+    if (cast && cast.has(key)) throw ctx.error('bad_input', `"${key}" is both a cast key and an off-screen speaker`);
+  }
+  const limit = CALL_MAX_CHARS[model];
   const out = [];
   inputs.scenes.forEach((scene, index) => {
     const line = typeof scene.line === 'string' ? scene.line.trim() : '';
@@ -525,7 +532,7 @@ function plannedLines(inputs, ctx, model, tags) {
     let voiceId = inputs.voice_id || null;
     let settings = inputs.voice_settings || null;
     const speaker = typeof scene.speaker === 'string' && scene.speaker ? scene.speaker : null;
-    if (cast && speaker) {
+    if (cast && speaker && !offScreen.has(speaker)) {
       const member = cast.get(speaker);
       if (!member) throw ctx.error('bad_input', `scene ${id} is spoken by "${speaker}", who is not in the cast`);
       if (member.voice_id) voiceId = member.voice_id;
@@ -533,6 +540,11 @@ function plannedLines(inputs, ctx, model, tags) {
       if (member.voice_settings) settings = { ...(settings || {}), ...member.voice_settings };
     }
     if (!voiceId) throw ctx.error('bad_input', `scene ${id} has no speaker with a voice and there is no default voice_id`);
+    const sayAs = sayAsFor(sent, sent === line && tagged.tags ? tagged : null, inputs.pronunciations);
+    const chars = [...sayAs.spoken].length;
+    if (chars > limit) {
+      throw ctx.error('bad_input', `scene ${id} sends ${chars} characters (after pronunciations), more than ${model} takes in one request (${limit}); shorten the line`);
+    }
     out.push({
       scene,
       index,
@@ -541,15 +553,22 @@ function plannedLines(inputs, ctx, model, tags) {
       sent,
       voiceId,
       settings,
-      sayAs: sayAsFor(sent, sent === line && tagged.tags ? tagged : null, inputs.pronunciations),
+      sayAs,
+      chars,
     });
   });
   return out;
 }
 
+/** The voice settings as a string that does not depend on key order; '' for none. */
+function settingsKey(settings) {
+  if (!settings) return '';
+  return JSON.stringify(Object.keys(settings).sort().filter((k) => settings[k] !== undefined).map((k) => [k, settings[k]]));
+}
+
 /** Two lines can share one request only when they have the same voice and the same settings. */
 function sameVoice(a, b) {
-  return a.voiceId === b.voiceId && JSON.stringify(a.settings || null) === JSON.stringify(b.settings || null);
+  return a.voiceId === b.voiceId && settingsKey(a.settings) === settingsKey(b.settings);
 }
 
 /**
@@ -564,7 +583,7 @@ function plannedCalls(lines, joinMode, model, ctx) {
   for (const l of lines) {
     if (cur) {
       const voiceChanges = !sameVoice(cur.lines[0], l);
-      const tooLong = cur.chars + 1 + l.sayAs.spoken.length > limit;
+      const tooLong = cur.chars + 1 + l.chars > limit;
       if (joinMode === 'one' && voiceChanges) {
         throw ctx.error('bad_input', `join: one reads every line in one request, so every line needs the same voice; scene ${l.id} has another voice (use join: sentence or line)`);
       }
@@ -577,7 +596,7 @@ function plannedCalls(lines, joinMode, model, ctx) {
       }
     }
     if (!cur) cur = { lines: [], chars: -1 };
-    cur.chars += 1 + l.sayAs.spoken.length;
+    cur.chars += 1 + l.chars;
     cur.lines.push(l);
     if (joinMode === 'sentence' && SENTENCE_END_RE.test(l.written)) {
       calls.push(cur);

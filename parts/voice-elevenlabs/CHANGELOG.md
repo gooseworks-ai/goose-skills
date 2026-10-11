@@ -4,7 +4,10 @@
 
 - A scene whose line is null or empty is skipped: no piece, no span (critic #9). `line` is no longer required.
 - `cast` and `scenes[].speaker`: each member speaks with their own `voice_id` and `voice_settings`; a speaker the
-  cast does not hold is refused. `voice_id` is optional when the cast covers every spoken scene.
+  cast does not hold is refused, unless listed in `off_screen` (the style's off-screen speaker keys, read with the
+  default `voice_id`). `voice_id` is optional when the cast covers every spoken scene.
+- A line longer than the model's per-request limit after pronunciations (v3 3,000, v2 10,000 characters) is refused
+  before anything is ordered.
 - `model`: `eleven_v3` (default) or `eleven_multilingual_v2`.
 - `tags: keep | strip` for `[tag]` audio tags; captions never show tags; tags are never sent to v2.
 - `join: line | sentence | one`: send a sentence, or the whole read, as one request; the character timings are

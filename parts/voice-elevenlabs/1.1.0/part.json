@@ -84,7 +84,7 @@
         }
       },
       "cast": {
-        "description": "The plan's cast. A scene whose speaker is a member's key is spoken with that member's voice_id (else the default voice_id) and voice_settings (laid over the default ones). A speaker the cast does not hold is refused. Other member fields are ignored.",
+        "description": "The plan's cast. A scene whose speaker is a member's key is spoken with that member's voice_id (else the default voice_id) and voice_settings (laid over the default ones). A speaker the cast does not hold is refused, unless it is listed in off_screen. Other member fields are ignored.",
         "type": "array",
         "maxItems": 10,
         "items": {
@@ -137,6 +137,16 @@
               }
             }
           }
+        }
+      },
+      "off_screen": {
+        "description": "The style's scenes.speaker.off_screen keys: speakers with no cast entry (an unseen interviewer, say). A scene spoken by one reads with the default voice_id and voice_settings. A key may not also be a cast key.",
+        "type": "array",
+        "maxItems": 3,
+        "uniqueItems": true,
+        "items": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{0,23}$"
         }
       },
       "voice_id": {

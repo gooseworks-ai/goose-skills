@@ -11,7 +11,9 @@ or a cast where each member speaks with their own voice.
   gets no span in `scenes` or `speech`; holding the picture on a silent scene is the compose step's job.
 - **Cast** (new): pass `plan.cast`. A scene's `speaker` names a member's `key`; that scene is spoken with the
   member's `voice_id` (else the default `voice_id`) and the member's `voice_settings` laid over the default
-  `voice_settings`. A speaker the cast does not hold is refused, before anything is ordered. Without a `cast`,
+  `voice_settings`. A speaker the cast does not hold is refused, before anything is ordered, unless it is listed
+  in `off_screen` (bind the style's `scenes.speaker.off_screen` keys, such as `interviewer`): such a scene reads
+  with the default `voice_id` and `voice_settings`. A key in both the cast and `off_screen` is refused. Without a `cast`,
   `speaker` is ignored and every line uses `voice_id`, as in 1.0.x. `voice_id` is optional when the cast gives
   every spoken scene a voice; a spoken scene left with no voice is refused.
 - **Model** (new): `eleven_v3` (default) or `eleven_multilingual_v2`. Both are list-priced at USD 0.10 per
@@ -25,7 +27,9 @@ or a cast where each member speaks with their own voice.
   over several shots with no pause in the middle. `join: one` sends the whole read as one request (every line
   must have the same voice, and the text must fit the model's per-request limit: 3,000 characters for
   `eleven_v3`, 10,000 for `eleven_multilingual_v2`; otherwise it is refused before anything is ordered). A request
-  also ends where the voice changes. A joined request is named after its first scene (`line-<scene id>`).
+  also ends where the voice changes (voice settings are compared by value, not key order). A single line that,
+  after pronunciations, passes the per-request limit is refused before anything is ordered, in every join mode.
+  A joined request is named after its first scene (`line-<scene id>`).
 - **Splitting a joined read**: the reply's character timings must match the sent text character for character
   (else `provider_failed`). Each scene's span runs from the start of its first word to the start of the next
   scene's first word; the last scene in a request runs to the end of the request. Cuts therefore always fall
