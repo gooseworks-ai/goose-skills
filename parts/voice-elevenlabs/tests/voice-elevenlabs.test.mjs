@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { loadNewest, hasFfmpeg, loadPart, makeCtx } from '../../_tools/kit-harness.mjs';
-import { sample } from './fixture.mjs';
+import { fakeAlignment, loadNewest, hasFfmpeg, loadPart, makeCtx } from '../../_tools/kit-harness.mjs';
+import { recordedReply, sample } from './fixture.mjs';
 
 const { dir, mod } = await loadNewest('voice-elevenlabs');
 const ffmpeg = await hasFfmpeg();
@@ -186,4 +186,198 @@ test('max_seconds refuses a read that runs too long', { skip: !ffmpeg && 'ffmpeg
   const ok = makeCtx({ partDir: dir, line: sample.line });
   const out = await mod.run({ scenes, voice_id: A, max_seconds: 10 }, ok.ctx);
   assert.ok(out.seconds > 3 && out.seconds <= 10);
+});
+
+// 1.1.0 part 2: join (line | sentence | one) and pace.
+
+const near = (a, b, tol = 0.01) => Math.abs(a - b) <= tol;
+
+test('fixture: the recorded with-timestamps reply, joined as one sentence, is split back per scene between words', { skip: !ffmpeg && 'ffmpeg is not installed' }, async () => {
+  const { ctx, orders } = makeCtx({ partDir: dir, line: recordedReply.line });
+  const out = await mod.run({ scenes: [{ id: 's1', line: 'Hi' }, { id: 's2', line: 'there.' }], voice_id: A, join: 'sentence' }, ctx);
+  assert.equal(orders.length, 1, 'one request for the sentence');
+  assert.equal(orders[0].body.text, recordedReply.text);
+  assert.equal(orders[0].piece, 'line-s1');
+  assert.deepEqual(out.scenes, [
+    { id: 's1', start_s: 0, end_s: 0.21 },
+    { id: 's2', start_s: 0.21, end_s: 0.8 },
+  ]);
+  assert.deepEqual(out.speech.map((s) => [s.scene_id, s.start_s, s.end_s]), [['s1', 0, 0.15], ['s2', 0.21, 0.8]]);
+  assert.deepEqual(out.speech.flatMap((s) => s.words), [
+    { text: 'Hi', start_s: 0, end_s: 0.15 },
+    { text: 'there.', start_s: 0.21, end_s: 0.7 },
+  ]);
+  assert.equal(out.tempo, 1);
+  assert.equal(out.words_per_second, +(2 / (0.15 + 0.59)).toFixed(2));
+  // Each scene gets its own WAV cut from the joined read, so a lip-sync step can take one line.
+  assert.deepEqual(out.lines.map((l) => l.scene_id), ['s1', 's2']);
+  for (const [i, l] of out.lines.entries()) {
+    assert.match(l.audio.path, /\.wav$/);
+    const want = out.speech[i].end_s - out.speech[i].start_s;
+    assert.ok(near(l.audio.duration_s, want, 0.03), `line ${i} runs ${l.audio.duration_s}, want ${want}`);
+  }
+});
+
+test('join: sentence sends one request per sentence, skips null lines, and tiles the scenes with no gap inside a sentence', { skip: !ffmpeg && 'ffmpeg is not installed' }, async () => {
+  const { ctx, orders } = makeCtx({ partDir: dir, line: sample.line });
+  const out = await mod.run(
+    {
+      scenes: [
+        { id: 's1', line: 'Do not' },
+        { id: 's2', line: 'buy this.' },
+        { id: 's3', line: 'Ever!' },
+        { id: 's4', line: null, on_screen: 'beat' },
+        { id: 's5', line: 'Fine' },
+        { id: 's6', line: 'then.' },
+      ],
+      voice_id: A,
+      join: 'sentence',
+      gap_s: 0.2,
+    },
+    ctx,
+  );
+  assert.deepEqual(orders.map((o) => [o.piece, o.body.text]), [
+    ['line-s1', 'Do not buy this.'],
+    ['line-s3', 'Ever!'],
+    ['line-s5', 'Fine then.'],
+  ]);
+  assert.deepEqual(out.scenes.map((s) => s.id), ['s1', 's2', 's3', 's5', 's6']);
+  // Scenes tile: each one ends where the next starts.
+  for (let i = 1; i < out.scenes.length; i++) assert.equal(out.scenes[i].start_s, out.scenes[i - 1].end_s);
+  assert.equal(out.scenes.at(-1).end_s, out.seconds);
+  // Inside a sentence the next scene starts on its first word; the gap goes only between requests.
+  const words = Object.fromEntries(out.speech.map((s) => [s.scene_id, s.words]));
+  assert.equal(out.scenes[1].start_s, words.s2[0].start_s);
+  assert.ok(words.s2[0].start_s - words.s1.at(-1).end_s < 0.1, 'no gap inside the sentence');
+  const firstRequest = 'Do not buy this.'.length * 0.05;
+  assert.ok(near(out.scenes[2].start_s, firstRequest + 0.2), `the second request starts after the gap (${out.scenes[2].start_s})`);
+  // No cut inside a word.
+  const all = out.speech.flatMap((s) => s.words);
+  for (const sc of out.scenes) assert.ok(!all.some((w) => w.start_s < sc.start_s && sc.start_s < w.end_s), `cut ${sc.start_s} inside a word`);
+  assert.deepEqual(out.speech.map((s) => s.text), ['Do not', 'buy this.', 'Ever!', 'Fine', 'then.']);
+  // A line read alone keeps the provider file; joined lines are cut to WAV.
+  assert.deepEqual(out.lines.map((l) => l.audio.path.split('.').pop()), ['wav', 'wav', 'mp3', 'wav', 'wav']);
+});
+
+test('join: sentence starts a new request where the speaker changes', { skip: !ffmpeg && 'ffmpeg is not installed' }, async () => {
+  const { ctx, orders } = makeCtx({ partDir: dir, line: sample.line });
+  await mod.run(
+    { scenes: [{ id: 's1', line: 'So I', speaker: 'a' }, { id: 's2', line: 'wait', speaker: 'b' }, { id: 's3', line: 'what?', speaker: 'b' }], cast, join: 'sentence' },
+    ctx,
+  );
+  assert.deepEqual(orders.map((o) => [o.path, o.body.text]), [
+    [`/v1/text-to-speech/${A}/with-timestamps`, 'So I'],
+    [`/v1/text-to-speech/${B}/with-timestamps`, 'wait what?'],
+  ]);
+});
+
+test('join: one sends the whole read once, with tags and pronunciations, and captions keep the written words', { skip: !ffmpeg && 'ffmpeg is not installed' }, async () => {
+  const { ctx, orders } = makeCtx({ partDir: dir, line: sample.line });
+  const out = await mod.run(
+    {
+      scenes: [
+        { id: 'a', line: '[soft] Meet Drinkag1.' },
+        { id: 'b', line: null },
+        { id: 'c', line: 'It tastes great.' },
+      ],
+      voice_id: A,
+      join: 'one',
+      pronunciations: [{ term: 'Drinkag1', say_as: 'drink A G one' }],
+    },
+    ctx,
+  );
+  assert.equal(orders.length, 1);
+  assert.equal(orders[0].body.text, '[soft] Meet drink A G one. It tastes great.');
+  assert.deepEqual(out.speech.map((s) => s.text), ['Meet Drinkag1.', 'It tastes great.']);
+  assert.deepEqual(out.speech[0].words.map((w) => w.text), ['Meet', 'Drinkag1.']);
+  assert.ok(out.speech[0].words[0].start_s > 0, 'the tag is not timed as the first word');
+  assert.deepEqual(out.scenes.map((s) => s.id), ['a', 'c']);
+  assert.equal(out.scenes[1].start_s, out.speech[1].words[0].start_s);
+});
+
+test('a joined reply whose timings do not line up with the text fails the piece', { skip: !ffmpeg && 'ffmpeg is not installed' }, async () => {
+  const { ctx } = makeCtx({
+    partDir: dir,
+    line: async (order, c) => {
+      const r = await sample.line(order, c);
+      const short = fakeAlignment(order.body.text.slice(0, -3), 1);
+      return { ...r, json: { alignment: short, normalized_alignment: short } };
+    },
+  });
+  await assert.rejects(mod.run({ scenes: [{ id: 's1', line: 'One' }, { id: 's2', line: 'two.' }], voice_id: A, join: 'sentence' }, ctx), (e) => e.code === 'provider_failed');
+});
+
+test('join and pace refusals happen before any piece is ordered', async () => {
+  const cases = [
+    ['join one with two voices', { scenes: [{ id: 's1', line: 'Hi.', speaker: 'a' }, { id: 's2', line: 'Yo.', speaker: 'b' }], cast, join: 'one' }],
+    ['join one past the eleven_v3 request limit', { scenes: Array.from({ length: 4 }, (_, i) => ({ id: `s${i}`, line: 'x'.repeat(1000) })), voice_id: A, join: 'one' }],
+    ['an unknown join', { scenes: [{ id: 's1', line: 'Hi.' }], voice_id: A, join: 'paragraph' }],
+    ['a tempo above max_tempo', { scenes: [{ id: 's1', line: 'Hi.' }], voice_id: A, pace: { tempo: 1.3, max_tempo: 1.2 } }],
+    ['min_wps above max_wps', { scenes: [{ id: 's1', line: 'Hi.' }], voice_id: A, pace: { min_wps: 3, max_wps: 2 } }],
+    ['a tempo past 1.3', { scenes: [{ id: 's1', line: 'Hi.' }], voice_id: A, pace: { tempo: 1.5 } }],
+    ['a max_tempo past 1.3', { scenes: [{ id: 's1', line: 'Hi.' }], voice_id: A, pace: { max_tempo: 1.4 } }],
+  ];
+  for (const [what, inputs] of cases) {
+    const { ctx, orders } = makeCtx({ partDir: dir, line: sample.line });
+    await assert.rejects(mod.run(inputs, ctx), (e) => e.code === 'bad_input', what);
+    assert.equal(orders.length, 0, what);
+  }
+});
+
+test('line mode reports tempo 1 and the read rate, and keeps each provider file as the line audio', { skip: !ffmpeg && 'ffmpeg is not installed' }, async () => {
+  const { ctx } = makeCtx({ partDir: dir, line: sample.line });
+  const out = await mod.run(sample.inputs(), ctx);
+  assert.equal(out.tempo, 1);
+  const spokenS = out.speech.reduce((t, s) => t + s.end_s - s.start_s, 0);
+  assert.ok(near(out.words_per_second, 6 / spokenS, 0.01), `${out.words_per_second}`);
+  assert.ok(out.lines.every((l) => l.audio.path.endsWith('.mp3')));
+});
+
+test('pace.tempo plays the read faster and scales every timing, the track and the line files', { skip: !ffmpeg && 'ffmpeg is not installed' }, async () => {
+  const inputs = { scenes: [{ id: 's1', line: 'Do not' }, { id: 's2', line: 'buy this.' }, { id: 's3', line: 'Ever!' }], voice_id: A, join: 'sentence' };
+  const plain = await mod.run(inputs, makeCtx({ partDir: dir, line: sample.line }).ctx);
+  const { ctx } = makeCtx({ partDir: dir, line: sample.line });
+  const out = await mod.run({ ...inputs, pace: { tempo: 1.25 } }, ctx);
+  assert.equal(out.tempo, 1.25);
+  assert.ok(near(out.seconds, plain.seconds / 1.25), `${out.seconds} vs ${plain.seconds}`);
+  assert.ok(near(out.audio.duration_s, out.seconds, 0.06), `the track runs ${out.audio.duration_s}, timings say ${out.seconds}`);
+  out.scenes.forEach((sc, i) => assert.ok(near(sc.start_s, plain.scenes[i].start_s / 1.25) && near(sc.end_s, plain.scenes[i].end_s / 1.25)));
+  const w0 = out.speech.flatMap((s) => s.words);
+  plain.speech.flatMap((s) => s.words).forEach((w, i) => assert.ok(near(w0[i].start_s, w.start_s / 1.25), `word ${i}`));
+  assert.ok(near(out.words_per_second, plain.words_per_second * 1.25, 0.02));
+  // Every line, even one read alone, is cut from the paced track.
+  assert.ok(out.lines.every((l) => l.audio.path.endsWith('.wav')));
+  const s3 = out.speech[2];
+  assert.ok(near(out.lines[2].audio.duration_s, s3.end_s - s3.start_s, 0.03));
+});
+
+test('pace.min_wps speeds a slow read up to the band, no faster than max_tempo', { skip: !ffmpeg && 'ffmpeg is not installed' }, async () => {
+  // The fake voice reads 0.05 s per character: "aaaa bbbb cccc." is 3 words in 0.75 s, 4 words per second.
+  const scenes = [{ id: 's1', line: 'aaaa bbbb cccc.' }];
+  const { ctx } = makeCtx({ partDir: dir, line: sample.line });
+  const out = await mod.run({ scenes, voice_id: A, pace: { min_wps: 4.6, max_wps: 6 } }, ctx);
+  assert.ok(out.tempo > 1.14 && out.tempo <= 1.16, `tempo ${out.tempo}`);
+  assert.ok(out.words_per_second >= 4.6, `${out.words_per_second} words per second`);
+  const slow = makeCtx({ partDir: dir, line: sample.line });
+  const kept = await mod.run({ scenes, voice_id: A, pace: { min_wps: 3, max_wps: 5 } }, slow.ctx);
+  assert.equal(kept.tempo, 1, 'a read inside the band is left alone');
+  const fast = makeCtx({ partDir: dir, line: sample.line });
+  const slowed = await mod.run({ scenes, voice_id: A, pace: { max_wps: 3.5 } }, fast.ctx);
+  assert.ok(slowed.tempo < 1 && slowed.words_per_second <= 3.5, `tempo ${slowed.tempo}, ${slowed.words_per_second} wps`);
+});
+
+test('a read still outside the pace band after the tempo fit is refused', { skip: !ffmpeg && 'ffmpeg is not installed' }, async () => {
+  const { ctx } = makeCtx({ partDir: dir, line: sample.line });
+  await assert.rejects(
+    mod.run({ scenes: [{ id: 's1', line: 'aaaa bbbb cccc.' }], voice_id: A, pace: { min_wps: 6, max_tempo: 1.2 } }, ctx),
+    (e) => e.code === 'bad_input' && /min_wps/.test(e.message),
+  );
+});
+
+test('max_seconds is checked on the paced read', { skip: !ffmpeg && 'ffmpeg is not installed' }, async () => {
+  // Two 40-character lines and a gap run about 4.25 s before pace, about 3.54 s at tempo 1.2.
+  const scenes = [{ id: 's1', line: 'x'.repeat(40) }, { id: 's2', line: 'y'.repeat(40) }];
+  await assert.rejects(mod.run({ scenes, voice_id: A, max_seconds: 4 }, makeCtx({ partDir: dir, line: sample.line }).ctx), (e) => e.code === 'bad_input');
+  const out = await mod.run({ scenes, voice_id: A, max_seconds: 4, pace: { tempo: 1.2 } }, makeCtx({ partDir: dir, line: sample.line }).ctx);
+  assert.ok(out.seconds <= 4 && near(out.seconds, 4.25 / 1.2));
 });

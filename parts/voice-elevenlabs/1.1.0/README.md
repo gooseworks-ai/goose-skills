@@ -20,14 +20,37 @@ or a cast where each member speaks with their own voice.
   `tags: keep` (the default on `eleven_v3`) sends them; `tags: strip` takes them out before sending (the default on
   `eleven_multilingual_v2`, which reads tags aloud, so `keep` with a tagged line on v2 is refused). Either way the
   written `text` and word timings, which captions and the script check read, never contain tags.
-- **Length cap** (new): `max_seconds` refuses a joined read longer than this (`bad_input`), before the track is
-  joined and before any later step is paid for.
+- **Join** (new): `join: line` (default) sends one request per spoken line, as in 1.0.x. `join: sentence` sends
+  consecutive lines as one request until a line's written text ends in `.`, `!` or `?`, so one sentence can run
+  over several shots with no pause in the middle. `join: one` sends the whole read as one request (every line
+  must have the same voice, and the text must fit the model's per-request limit: 3,000 characters for
+  `eleven_v3`, 10,000 for `eleven_multilingual_v2`; otherwise it is refused before anything is ordered). A request
+  also ends where the voice changes. A joined request is named after its first scene (`line-<scene id>`).
+- **Splitting a joined read**: the reply's character timings must match the sent text character for character
+  (else `provider_failed`). Each scene's span runs from the start of its first word to the start of the next
+  scene's first word; the last scene in a request runs to the end of the request. Cuts therefore always fall
+  between words, and `gap_s` goes only between requests.
+- **Pace** (new): `pace` plays the joined read faster or slower with ffmpeg `atempo` and scales every timing
+  (speech, words, scene spans, `seconds`) by the same factor. `eleven_v3` ignores `voice_settings.speed`, so this
+  is its only speed control. `pace.tempo` (0.8 to 1.3) fixes the factor. Otherwise a read slower than `min_wps`
+  is sped up just to `min_wps`, no faster than `max_tempo` (default 1.25, at most 1.3), and one faster than
+  `max_wps` is slowed just to `max_wps`, no slower than 0.8. A read still outside `min_wps..max_wps` is refused
+  (`bad_input`) before any later step is paid for. A `tempo` above `max_tempo`, or `min_wps` above `max_wps`, is
+  refused before anything is ordered.
+- **Read rate**: words per second = each scene's written words over its spoken span (`speech[].end_s -
+  start_s`), the same measure as check-layer's `read_rate`.
+- **Length cap** (new): `max_seconds` refuses a read, after pace, longer than this (`bad_input`), before the track
+  is joined and before any later step is paid for.
 - **Pronunciations**: each brand term is sent as its `say_as` spelling (one pass, whole words, longest term first).
   Captions keep the written term: word timings map the spoken characters back to the written words.
 - **No guessed timings**: a reply without a usable character alignment fails the piece (`provider_failed`).
-- **Track**: every line trimmed to its measured length, `gap_s` (default 0.25 s) of silence between lines, AAC.
+- **Track**: every request trimmed to its measured length, `gap_s` (default 0.25 s) of silence between requests,
+  then `atempo` when paced, AAC.
 - **Outputs**: `audio`, `seconds`, `speech` (text, spoken, start/end, words; the Timeline speech shape),
-  `scenes` (each voiced scene's span), `lines` (each voiced scene's own MP3).
+  `scenes` (each voiced scene's span), `lines` (`[{scene_id, audio}]`, each voiced scene's own audio: the
+  provider's MP3 for a line read alone at tempo 1, else a 48 kHz WAV cut from the finished track over the scene's
+  speech span, so a lip-sync step can still take one line), `words_per_second` (after pace) and `tempo` (1 when
+  not paced).
 - **Cost**: ElevenLabs list price, USD 0.10 per 1,000 characters of `scenes[].line` for either model (the rate our
   server prices TTS at). A pronunciation swap can make the spoken text a little longer than the written one.
 

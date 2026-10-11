@@ -2498,10 +2498,13 @@
             "atrim",
             "asetpts",
             "apad",
-            "concat"
+            "concat",
+            "atempo",
+            "asplit"
           ],
           "encoders": [
-            "aac"
+            "aac",
+            "pcm_s16le"
           ]
         },
         "network": true,
@@ -2533,9 +2536,9 @@
       "determinism": "provider",
       "path": "parts/voice-elevenlabs/1.1.0",
       "files": {
-        "README.md": "f6ba328e48df4af21e4b5fb54dc8c18bd1c7600ff92b34ad08b30b19976cdc09",
-        "part.json": "7326026c15cb776081146a66d5444fdecc49170679206af386f480b4bcb21e3b",
-        "part.mjs": "a871a3e6749a03354c67b274230d2fd876a11705a3b78db7290d1a795580436a"
+        "README.md": "d7891da47fe916af4543682209a35a7c7ea78ecc789d666c8dd2302515cd05ba",
+        "part.json": "d364310529cce8cc39ca4fc172a578c4aa0de34683d5fc60eda445d46803fd98",
+        "part.mjs": "3e370c589b9512fa01c57e08a63ee359fefabde32852a168b9b09b5756331f2a"
       },
       "models": [
         {

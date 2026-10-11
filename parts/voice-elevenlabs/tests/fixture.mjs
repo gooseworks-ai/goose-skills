@@ -25,3 +25,29 @@ export const sample = {
     };
   },
 };
+
+// The line's recorded answer for POST /v1/text-to-speech/{voice_id}/with-timestamps (GOOSE-4015 contract
+// replies, elevenlabs-tts-with-timestamps.json): the line drops audio_base64, keeps both alignments as
+// `json` and stores the mp3 as a line file (`file_url`). Its text is "Hi there.".
+export const recordedReply = {
+  text: 'Hi there.',
+  seconds: 0.8,
+  json: {
+    alignment: {
+      characters: ['H', 'i', ' ', 't', 'h', 'e', 'r', 'e', '.'],
+      character_start_times_seconds: [0.0, 0.07, 0.15, 0.21, 0.28, 0.35, 0.41, 0.48, 0.55],
+      character_end_times_seconds: [0.07, 0.15, 0.21, 0.28, 0.35, 0.41, 0.48, 0.55, 0.7],
+    },
+    normalized_alignment: {
+      characters: ['H', 'i', ' ', 't', 'h', 'e', 'r', 'e', '.'],
+      character_start_times_seconds: [0.0, 0.07, 0.15, 0.21, 0.28, 0.35, 0.41, 0.48, 0.55],
+      character_end_times_seconds: [0.07, 0.15, 0.21, 0.28, 0.35, 0.41, 0.48, 0.55, 0.7],
+    },
+  },
+  async line(order, ctx) {
+    const name = order.results[0].name;
+    const path = join(ctx.workDir, name);
+    await makeTone(path, recordedReply.seconds, { codec: ['-c:a', 'libmp3lame'] });
+    return { json: structuredClone(recordedReply.json), files: { [name]: await fileRef(path, 'audio') }, reused: false };
+  },
+};

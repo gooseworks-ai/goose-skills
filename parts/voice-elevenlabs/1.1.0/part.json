@@ -5,7 +5,7 @@
   "version": "1.1.0",
   "kind": "generate_voice",
   "title": "Voice (ElevenLabs)",
-  "summary": "Speaks each scene's line with an ElevenLabs voice (one narrator, or each cast member's own voice), keeps character timings as word timings, and joins the lines into one voice track.",
+  "summary": "Speaks each scene's line with an ElevenLabs voice (a narrator or each cast member's own), per line, per sentence or in one request, keeps word timings, paces the read with atempo, and joins it into one voice track.",
   "runtime": "node",
   "entry": "part.mjs",
   "files": [
@@ -22,10 +22,13 @@
         "atrim",
         "asetpts",
         "apad",
-        "concat"
+        "concat",
+        "atempo",
+        "asplit"
       ],
       "encoders": [
-        "aac"
+        "aac",
+        "pcm_s16le"
       ]
     },
     "network": true,
@@ -158,6 +161,41 @@
           "keep"
         ]
       },
+      "join": {
+        "description": "How lines are sent. line (default): one request per spoken line, gap_s between lines. sentence: consecutive lines go in one request until a line ends in . ! or ? (or the voice changes). one: the whole read in one request (every line needs the same voice). A joined request is split back per scene at word boundaries; gap_s goes only between requests.",
+        "enum": [
+          "line",
+          "sentence",
+          "one"
+        ]
+      },
+      "pace": {
+        "description": "Plays the joined read faster or slower with atempo and scales every timing by the same factor (eleven_v3 ignores voice_settings.speed). tempo fixes the factor; otherwise a read slower than min_wps is sped up (at most max_tempo, default 1.25) and one faster than max_wps is slowed down (at least 0.8). Words per second count each scene's words over its spoken span. A read still outside min_wps..max_wps is refused.",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "tempo": {
+            "type": "number",
+            "minimum": 0.8,
+            "maximum": 1.3
+          },
+          "min_wps": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "maximum": 8
+          },
+          "max_wps": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "maximum": 8
+          },
+          "max_tempo": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 1.3
+          }
+        }
+      },
       "pronunciations": {
         "description": "The brand's confirmed pronunciations: each term is spoken as say_as; captions keep the written term.",
         "type": "array",
@@ -212,13 +250,13 @@
         }
       },
       "gap_s": {
-        "description": "Silence between lines. Default 0.25.",
+        "description": "Silence between requests (between lines with join: line). Default 0.25.",
         "type": "number",
         "minimum": 0,
         "maximum": 2
       },
       "max_seconds": {
-        "description": "Refuse the read when the joined voice track runs longer than this.",
+        "description": "Refuse the read when the joined voice track, after pace, runs longer than this.",
         "type": "number",
         "exclusiveMinimum": 0,
         "maximum": 600
@@ -233,7 +271,9 @@
       "seconds",
       "speech",
       "scenes",
-      "lines"
+      "lines",
+      "words_per_second",
+      "tempo"
     ],
     "properties": {
       "audio": {
@@ -348,6 +388,17 @@
             }
           }
         }
+      },
+      "words_per_second": {
+        "description": "Spoken words per second after pace: each scene's written words over its spoken span (check-layer's read_rate measure).",
+        "type": "number",
+        "minimum": 0
+      },
+      "tempo": {
+        "description": "The atempo factor the read was played at; 1 when there is no pace.",
+        "type": "number",
+        "minimum": 0.8,
+        "maximum": 1.3
       }
     }
   },

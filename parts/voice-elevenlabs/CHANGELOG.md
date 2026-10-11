@@ -7,7 +7,13 @@
   cast does not hold is refused. `voice_id` is optional when the cast covers every spoken scene.
 - `model`: `eleven_v3` (default) or `eleven_multilingual_v2`.
 - `tags: keep | strip` for `[tag]` audio tags; captions never show tags; tags are never sent to v2.
-- `max_seconds` refuses a read that runs too long.
+- `join: line | sentence | one`: send a sentence, or the whole read, as one request; the character timings are
+  split back per scene at word boundaries, and `gap_s` goes only between requests.
+- `pace {tempo, min_wps, max_wps, max_tempo}`: atempo on the joined read (0.8 to 1.3), with every timing scaled; a
+  read still outside the band is refused.
+- New outputs `words_per_second` and `tempo`. `lines` keeps its shape; a line cut from a joined or paced read is a
+  WAV.
+- `max_seconds` refuses a read that runs too long, measured after pace.
 
 ## 1.0.1
 
