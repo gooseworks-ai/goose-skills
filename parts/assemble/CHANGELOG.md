@@ -1,5 +1,14 @@
 # assemble
 
+## 1.1.0
+
+- Pictures timed to a voice or song: `spans` matched to clips by id, cuts on the frame at or before each line, `tail_s`, and `silent` (`share_previous` or `fixed`) for scenes with no line.
+- `speech` and a whole `timeline` passed through, so captions skip transcription and a cut that was already timed keeps its scenes and safe zones.
+- An end card: `ending`, `ending_timeline` (its logo box kept) and `ending_fills` (`after` or `last_span`); the output marks `timeline.end_card`.
+- `motion: {stills: ken_burns, to}`: a slow centred push on stills.
+- `grade: phone-grain | phonecam` on the body cuts.
+- Size rule: the final encode is capped at 16 Mbps (8 Mbps with grain), and a cut over 180 MB is refused.
+
 ## 1.0.2
 
 - A streaming WebM or Matroska clip with no container length is measured from its streams or packets instead of being refused; one ffprobe reports as cut off or damaged is refused, never measured short.

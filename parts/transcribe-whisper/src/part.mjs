@@ -5,15 +5,29 @@
 // approved words), carries what was heard for it as `spoken`, and its written
 // words timed by the heard ones. The check layer compares `spoken` with the
 // approved script; the captions layer uses the timings and never transcribes
-// again. The cut passes through unchanged.
+// again. The cut passes through unchanged. With `retime_scenes`, the
+// timeline's scene spans are set from each line's heard words as well (see
+// retime.mjs), so a later cut lands on what was said.
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitDuration, kitFfmpeg } from '../../_lib/part.mjs';
 import { kitHeardPlace, kitHeardWords } from '../../_lib/heard.mjs';
+import { RETIME_MIN_HEARD, retimeAlign, retimeCloseChunks, retimeSceneSpans } from './retime.mjs';
 
 const MODEL = 'fal-ai/whisper';
 
 export async function run(inputs, ctx) {
   const manifest = await kitCheckInputs(ctx, inputs);
+  const sceneIds = (inputs.scenes || []).map((s, i) => (s.id == null ? String(i + 1) : String(s.id)));
+  const lines = (inputs.scenes || [])
+    .map((s, i) => ({ scene_id: sceneIds[i], text: String(s.line || '').replace(/\s+/g, ' ').trim() }))
+    .filter((l) => l.text);
+  if (inputs.retime_scenes && !lines.length) throw ctx.error('bad_input', 'retime_scenes needs scenes with at least one line to place');
+  if (inputs.retime_scenes) {
+    // Later steps key the re-timed spans by scene id, so two scenes may not share one (a scene with no id
+    // is named by its position, which may collide with another scene's id).
+    const twice = sceneIds.filter((id, i) => sceneIds.indexOf(id) !== i);
+    if (twice.length) throw ctx.error('bad_input', `retime_scenes needs a different id for every scene; repeated: ${[...new Set(twice)].join(', ')}`);
+  }
   const info = await ctx.tools.probe(inputs.video.path);
   if (!info.has_audio) throw ctx.error('bad_input', 'the cut has no sound to transcribe');
   const duration = await kitDuration(ctx, inputs.video);
@@ -26,12 +40,9 @@ export async function run(inputs, ctx) {
     body: { audio_url: audio, task: 'transcribe', language: inputs.language ?? 'en', chunk_level: 'word' },
     results: [],
   });
-  const heard = kitHeardWords(result.json);
+  const heard = kitHeardWords(retimeCloseChunks(result.json, duration));
   ctx.progress({ done: 1, total: 1 });
   const transcript = heard.map((w) => w.text).join(' ');
-  const lines = (inputs.scenes || [])
-    .map((s, i) => ({ scene_id: s.id == null ? String(i + 1) : String(s.id), text: String(s.line || '').replace(/\s+/g, ' ').trim() }))
-    .filter((l) => l.text);
 
   // Every heard word belongs to exactly one line, in order: a line's share runs from where the last
   // placed line ended to where this one ends; words before the first or after the last go to the edges.
@@ -73,5 +84,18 @@ export async function run(inputs, ctx) {
   }
   const base = inputs.timeline || { duration_s: duration, width: info.width, height: info.height, fps: info.fps || 30, scenes: [] };
   const timeline = { ...base, duration_s: +duration.toFixed(3), speech };
+  if (inputs.retime_scenes) {
+    // Scene spans only move onto heard words when the cut says the script; otherwise a later cut would
+    // land on the wrong words, so stop here (the transcription is reused on a retry).
+    // The anchors are each line's first and last heard words, never a guessed time for an unheard word.
+    const { share, anchors } = retimeAlign(lines, heard);
+    ctx.log.info('script words heard', { share: +share.toFixed(3) });
+    if (share < RETIME_MIN_HEARD) {
+      throw ctx.error('bad_input', `only ${Math.round(share * 100)}% of the script was heard (at least ${RETIME_MIN_HEARD * 100}% needed): the cut does not say the script`);
+    }
+    timeline.scenes = retimeSceneSpans(sceneIds, anchors, timeline.duration_s);
+    const empty = timeline.scenes.filter((s) => s.end_s <= s.start_s).map((s) => s.id);
+    if (empty.length) ctx.log.warn('scenes left with no time between the heard words', { scene_ids: empty });
+  }
   return kitCheckOutputs(ctx, manifest, { video: inputs.video, timeline, transcript });
 }
