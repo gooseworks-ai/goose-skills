@@ -215,13 +215,24 @@ test('graph: crop, masks, bezel, room, lens and grain appear only when asked', (
   const g = kitScreenGraph(base({ crop: [0.1, 0, 0.6, 1], masks: [[0, 0, 0.2, 0.3], [0.5, 0.5, 0.6, 0.6]], screen: { room: '#101112' } }));
   assert.match(g.graph, /^\[in\]format=yuva444p,split=2\[out_m0a\]\[out_m0b\];\[out_m0b\]crop=256:216:0:0,gblur=sigma=14\[out_m0c\];/);
   assert.match(g.graph, /\[out_m1b\]crop=128:72:640:360,gblur=sigma=14\[out_m1c\]/);
-  assert.match(g.graph, /\[out_m1a\]\[out_m1c\]overlay=640:360,crop=640:720:128:0,scale=/);
+  assert.match(g.graph, /\[out_m1a\]\[out_m1c\]overlay=640:360:format=yuv444,crop=640:720:128:0,scale=/);
+  assert.match(g.graph, /\]overlay=0:0:format=yuv444,split=2\[out_m1a\]/, 'every mask overlay keeps 4:4:4');
   assert.match(g.graph, /pad=\d+:\d+:\d+:\d+:color=0x0E0E11,pad=1080:1920:/);
   assert.match(g.graph, /color=c=0x101112:s=1080x1920:r=30/);
   assert.match(g.graph, /blend=c0_mode=multiply:shortest=1,noise=c0s=4:c0f=t:c1s=2:c1f=t:c2s=2:c2f=t:all_seed=\d+,setsar=1\[out\]$/);
   const plain = kitScreenGraph(base({ screen: { bezel: 0, moire: 0, vignette: 0, grain: 0, drift: 0 }, id: 's3' }));
   assert.doesNotMatch(plain.graph, /split=|crop=|color=0x0E0E11|blend=|noise=|geq=|sin\(/);
   assert.match(plain.graph, /\[s3_room\]\[s3_page\]overlay=0:0:shortest=1:format=yuv444,setsar=1\[out\]$/);
+});
+
+test('graph: any whole seed, negative or huge, gives a noise seed ffmpeg accepts (0 to INT_MAX)', () => {
+  for (const seed of [-1, -5, 0, 3, 2147483647, Number.MAX_SAFE_INTEGER, -Number.MAX_SAFE_INTEGER]) {
+    const g = kitScreenGraph(base({ seed }));
+    const m = /all_seed=(-?\d+)/.exec(g.graph);
+    assert.ok(m, g.graph);
+    const v = Number(m[1]);
+    assert.ok(Number.isSafeInteger(v) && v >= 0 && v <= 2147483647, `seed ${seed} gave all_seed ${m[1]}`);
+  }
 });
 
 test('graph: a fit-height page wider than the box gets a wider canvas and a centre crop back to the box', () => {
