@@ -29,7 +29,8 @@ Inputs: `scenes` (plan.scenes, max 40), `template` (a style's `frames/<name>.pro
 - **A scene's line may be null** (an end card, a silent beat); `line`, `on_screen` and `picture` are all optional.
 - **References per scene**, at most 10, in this order: the named members' anchors, the first photo of each named
   product, the scene's own picture, the first scene's still (`anchor: first_scene`), then `style_refs`. The
-  template's `refs` (and `by_tag`) choose the first three. With `/edit`, a scene with no reference is drawn by
+  template's `refs` (and `by_tag`) choose the first three and its `max_refs` caps those three only; the first
+  scene's still and `style_refs` are step inputs and always fit. With `/edit`, a scene with no reference is drawn by
   the prompt-only model.
 - **multi_ref** (`strip` by default): a scene that names more than one member gets one strip of all their
   anchors side by side (up to 10), and the prompt says which reference it is and asks for one seamless scene
@@ -40,9 +41,9 @@ Inputs: `scenes` (plan.scenes, max 40), `template` (a style's `frames/<name>.pro
   default 1:1), or `first_scene` (the first still is a reference for every later one). Both need `/edit`.
 - **Pieces**: `anchor-<member key>` and `image-<scene id>`, so a fix can reuse the scenes it did not change.
   Up to 4 pieces run at once; after a failure no new piece starts.
-- **Outputs**: `images [{id: scene id, image}]`, `scenes` (every input scene, `image` = its still), and with a
-  cast: `cast` (every member, `image` filled; members with an image pass through free) and
-  `anchors [{id: key, image}]`.
+- **Outputs**: `images [{id: scene id, image}]`, `scenes` (every input scene, `image` = its still), `cast`
+  (every member, `image` filled; members with an image pass through free) and `anchors [{id: key, image}]`.
+  Scenes mode always returns all four; `cast` and `anchors` are empty lists without a cast.
 
 ## Cost
 

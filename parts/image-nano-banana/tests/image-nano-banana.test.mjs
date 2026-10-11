@@ -113,6 +113,7 @@ test('null line: a scene with no line, no on_screen and only a picture gets a st
   assert.deepEqual(orders.map((o) => [o.piece, o.path, o.body.prompt]), [['image-quiet', 'fal-ai/nano-banana', 'an empty kitchen at dawn']]);
   assert.deepEqual(out.images.map((i) => i.id), ['quiet']);
   assert.equal(out.scenes[1].image, undefined, 'the scene without a picture is left as it was');
+  assert.deepEqual([out.cast, out.anchors], [[], []], 'without a cast, cast and anchors are still there, empty, so a style can bind them');
   void work;
 });
 

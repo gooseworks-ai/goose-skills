@@ -178,12 +178,8 @@ async function nbScenes(inputs, ctx, manifest) {
   await nbEach(rest, (job) => drawJob(job, first));
 
   const out = kitStillOutputs({ scenes: inputs.scenes, cast, jobs, stills, anchors });
-  const result = { images: out.images, scenes: out.scenes };
-  if (inputs.cast) {
-    result.cast = out.cast;
-    result.anchors = out.anchors;
-  }
-  return kitCheckOutputs(ctx, manifest, result);
+  // All four outputs every time (empty lists without a cast), so a style can bind step.<id>.cast or .anchors.
+  return kitCheckOutputs(ctx, manifest, { images: out.images, scenes: out.scenes, cast: out.cast, anchors: out.anchors });
 }
 
 export async function run(inputs, ctx) {

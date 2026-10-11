@@ -134,8 +134,8 @@ export const manifest = {
         items: { type: 'object', additionalProperties: false, required: ['id', 'image'], properties: { id: { type: 'string' }, image: file('image') } },
       },
       scenes: { description: 'scenes mode: every input scene, image = its still when it got one.', type: 'array', items: { type: 'object', required: ['id'], properties: { id: { type: 'string' }, image: imageOrNull } } },
-      cast: { description: 'scenes mode with cast: every member, image = its anchor or its own image.', type: 'array', items: { type: 'object', required: ['key'], properties: { key: { type: 'string' }, image: imageOrNull } } },
-      anchors: { description: 'scenes mode with cast: the members some scene sent, id = the member key.', type: 'array', items: { type: 'object', additionalProperties: false, required: ['id', 'image'], properties: { id: { type: 'string' }, image: file('image') } } },
+      cast: { description: 'scenes mode: every cast member, image = its anchor or its own image (empty without a cast).', type: 'array', items: { type: 'object', required: ['key'], properties: { key: { type: 'string' }, image: imageOrNull } } },
+      anchors: { description: 'scenes mode: the members some scene sent, id = the member key (empty without a cast).', type: 'array', items: { type: 'object', additionalProperties: false, required: ['id', 'image'], properties: { id: { type: 'string' }, image: file('image') } } },
     },
   },
   cost: {

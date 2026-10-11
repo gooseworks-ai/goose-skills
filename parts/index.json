@@ -1263,9 +1263,9 @@
       "determinism": "provider",
       "path": "parts/image-nano-banana/1.1.0",
       "files": {
-        "README.md": "b3341012e18f8f927766df32721da899f8b1e77edd3a3cd0b3eba1916b3feb0b",
-        "part.json": "deb484487a6d597ce2cc3a78c930355c9573cd2a61f9bbe8b8a3089d1f159640",
-        "part.mjs": "6d36a0d6154f02661420792f4688f791ea3c5f10cff3c73ef20800426ae09ee2"
+        "README.md": "a5d77fdc61743359b1be40e5769a1c0139a00650c789ad990e7f02f48017713c",
+        "part.json": "652ccd883bce4d411c1a46f993e54aeabeb908a754b7174daa72751a601088dc",
+        "part.mjs": "ff3c5f901af3db976c647928b560d0a5a63bd54601c64a3557837a08abbefb0f"
       },
       "models": [
         {

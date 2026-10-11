@@ -455,7 +455,7 @@
         }
       },
       "cast": {
-        "description": "scenes mode with cast: every member, image = its anchor or its own image.",
+        "description": "scenes mode: every cast member, image = its anchor or its own image (empty without a cast).",
         "type": "array",
         "items": {
           "type": "object",
@@ -483,7 +483,7 @@
         }
       },
       "anchors": {
-        "description": "scenes mode with cast: the members some scene sent, id = the member key.",
+        "description": "scenes mode: the members some scene sent, id = the member key (empty without a cast).",
         "type": "array",
         "items": {
           "type": "object",

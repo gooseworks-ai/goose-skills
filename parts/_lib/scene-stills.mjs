@@ -25,7 +25,9 @@
 //   4. the first scene's still (anchor: 'first_scene');
 //   5. the style's reference pictures (style_refs).
 // Which of 1-3 a scene sends follows the template's refs (and its by_tag
-// rule); when the list is too long, 1-3 give way so 4 and 5 always fit.
+// rule), and the template's max_refs caps 1-3 only: 4 and 5 are the step's
+// own inputs, not the plan's. When the list is too long, 1-3 give way so 4
+// and 5 always fit.
 //
 // Bundled into parts; every top-level name starts with `kitStill` or `KIT_STILL`.
 import { join } from 'node:path';
