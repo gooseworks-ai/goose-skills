@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { hasFfmpeg, loadNewest, makeCtx, probe } from '../../_tools/kit-harness.mjs';
+import { fileRef, hasFfmpeg, loadNewest, makeCtx, probe, run } from '../../_tools/kit-harness.mjs';
 import { clipLine, makeStill, scenesInputs, template, writeTemplate } from './fixture.mjs';
 
 const { dir, mod } = await loadNewest('video-kling');
@@ -210,6 +210,23 @@ test('a reply with no video file fails the piece', { skip }, async () => {
   const inputs = await scenesInputs(w);
   const { ctx } = makeCtx({ partDir: dir, workDir: join(w, 'step'), line: async () => ({ json: {}, files: {}, reused: false }) });
   await assert.rejects(mod.run(inputs, ctx), (e) => e.code === 'provider_failed');
+});
+
+test('a reply with sound but no picture fails the piece, or becomes its still on the last attempt', { skip }, async () => {
+  const w = work();
+  const inputs = await scenesInputs(w, { fallback: 'still' });
+  const soundOnly = async (order, ctx) => {
+    if (order.piece !== 'clip-s2') return clipLine(order, ctx);
+    const name = order.results[0].name;
+    const path = join(ctx.workDir, name);
+    await run('ffmpeg', ['-hide_banner', '-nostdin', '-y', '-f', 'lavfi', '-i', 'anullsrc=r=44100:cl=mono', '-t', '1', '-c:a', 'aac', path]);
+    return { json: {}, files: { [name]: await fileRef(path, 'video') }, reused: false };
+  };
+  const first = makeCtx({ partDir: dir, workDir: join(w, 'a'), line: soundOnly, attempt: 1 });
+  await assert.rejects(mod.run(inputs, first.ctx), (e) => e.code === 'provider_failed' && /no picture/.test(e.message));
+  const last = makeCtx({ partDir: dir, workDir: join(w, 'b'), line: soundOnly, attempt: 2 });
+  const out = await mod.run(inputs, last.ctx);
+  assert.ok(out.clips[1].image && !out.clips[1].video);
 });
 
 test('the template fixture is a valid version 1 template', async () => {

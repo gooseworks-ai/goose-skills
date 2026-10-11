@@ -114,6 +114,8 @@ export async function run(inputs, ctx) {
       const result = await klOrder(ctx, model, { piece: job.piece, body, results: [{ pointer: '/json/video/url', name: `${job.piece}.mp4`, media: 'video' }] });
       file = result && result.files && result.files[`${job.piece}.mp4`];
       if (!file) throw ctx.error('provider_failed', `no video for ${job.piece}`);
+      const info = await ctx.tools.probe(file.path);
+      if (!info.has_video) throw ctx.error('provider_failed', `${job.piece} came back with no picture`);
     } catch (err) {
       // A stop is never masked by a still, whatever the provider's error says.
       kitStopIfAborted(ctx);
@@ -123,8 +125,6 @@ export async function run(inputs, ctx) {
       ctx.progress({ done: ++done, total: jobs.length });
       return { id: job.id, image: job.still, seconds };
     }
-    const info = await ctx.tools.probe(file.path);
-    if (!info.has_video) throw ctx.error('provider_failed', `${job.piece} came back with no picture`);
     const length = await kitDuration(ctx, file);
     let clip = { id: job.id, video: file, seconds: Number(length.toFixed(3)) };
     if (inputs.keep) {

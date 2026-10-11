@@ -851,8 +851,8 @@ function kitAnchorPrompt(tpl, member, ctx = {}) {
 // Clip length (scenes mode with spans, from a voice or a song): each clip is on
 // screen the way assemble 1.1.0 cuts it. A scene with a span runs from its
 // span's start (the first from 0, unless a span this part does not make comes
-// before it) to the next spanned scene's start (the last to its span's end
-// plus KIT_CLIP_TAIL_S); a scene with no span (no line)
+// before it) to the next span's start, made here or not (the last to its
+// span's end plus KIT_CLIP_TAIL_S); a scene with no span (no line)
 // shares the spanned scene before it evenly (share_previous; scenes before the
 // first spanned one share with it). The clip is then ceil(on screen + 0.2) s,
 // rounded up to the model's allowed lengths and kept inside min_s..max_s. A
@@ -959,13 +959,10 @@ function kitClipSlots(jobs, spans, { tail_s = KIT_CLIP_TAIL_S } = {}) {
     // part does not make (a hook made by another step, left out with
     // skip_first) runs before it, and the group then starts at its own span.
     const start = gi === 0 && !starts.some((t) => t < g.span.start_s) ? 0 : g.span.start_s;
-    let end;
-    if (gi + 1 < groups.length) end = groups[gi + 1].span.start_s;
-    else {
-      // The last spanned scene runs to the next span (an end card scene this part does not make), else to its own end plus the tail.
-      const next = starts.find((t) => t > g.span.start_s);
-      end = next != null ? next : g.span.end_s + tail_s;
-    }
+    // A group runs to the next span, whether this part makes that scene or not
+    // (one left out by pick, an end card scene), else to its own end plus the tail.
+    const next = starts.find((t) => t > g.span.start_s);
+    const end = next != null ? next : g.span.end_s + tail_s;
     const each = Math.max(0, end - start) / g.members.length;
     for (const id of g.members) out.set(id, each);
   });
@@ -1162,6 +1159,8 @@ export async function run(inputs, ctx) {
       const result = await klOrder(ctx, model, { piece: job.piece, body, results: [{ pointer: '/json/video/url', name: `${job.piece}.mp4`, media: 'video' }] });
       file = result && result.files && result.files[`${job.piece}.mp4`];
       if (!file) throw ctx.error('provider_failed', `no video for ${job.piece}`);
+      const info = await ctx.tools.probe(file.path);
+      if (!info.has_video) throw ctx.error('provider_failed', `${job.piece} came back with no picture`);
     } catch (err) {
       // A stop is never masked by a still, whatever the provider's error says.
       kitStopIfAborted(ctx);
@@ -1171,8 +1170,6 @@ export async function run(inputs, ctx) {
       ctx.progress({ done: ++done, total: jobs.length });
       return { id: job.id, image: job.still, seconds };
     }
-    const info = await ctx.tools.probe(file.path);
-    if (!info.has_video) throw ctx.error('provider_failed', `${job.piece} came back with no picture`);
     const length = await kitDuration(ctx, file);
     let clip = { id: job.id, video: file, seconds: Number(length.toFixed(3)) };
     if (inputs.keep) {
