@@ -341,7 +341,12 @@ function planLines(inputs) {
     if (audio.has(l.scene_id)) return { problem: `two lines are for scene ${l.scene_id}` };
     audio.set(l.scene_id, l.audio);
   }
-  const known = new Set(inputs.scenes.map((scene, index) => sceneId(scene, index)));
+  const known = new Set();
+  for (const [index, scene] of inputs.scenes.entries()) {
+    const id = sceneId(scene, index);
+    if (known.has(id)) return { problem: `two scenes have the id ${id}` };
+    known.add(id);
+  }
   for (const id of audio.keys()) {
     if (!known.has(id)) return { problem: `lines has audio for scene ${id}, which is not in scenes` };
   }
