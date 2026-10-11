@@ -26,10 +26,11 @@ take join under a cutaway. 1.2.0 joins takes on their measured speech and adds a
 - **Joins under cutaways** (`split_before: cutaways`, new; default `none`): a take may start only at a
   cutaway, so the join can hide under it. A scene is a cutaway when its `extra.shot` is set and is not
   `creator`, when a `footage` entry (`plan.footage`) names it by `scene_id`, or when it has a scene `image`.
-  A silent cutaway counts for the next spoken line. The lines from one cutaway to the next are an on-camera
-  run that must fit one take; a longer run is refused before anything is ordered ("add a cutaway scene
-  between them or cut words"). In this mode the timeline starts the scene a later take begins on 0.15 s
-  before its join, so an insert on that scene covers the dissolve.
+  Only a spoken cutaway counts: a silent scene has no span on the timeline, so it cannot cover a join. The
+  lines from one cutaway to the next are an on-camera run that must fit one take; a longer run is refused
+  before anything is ordered ("make a spoken scene between them a cutaway or cut words"). In this mode the
+  timeline starts the scene a later take begins on 0.15 s before its join (earlier scenes give way, each
+  keeping at least 0.05 s), so an insert on that scene covers the dissolve.
 - **Paid pieces**, one per take, through the private line only: fal `minimax/h3-max/reference-to-video` with
   the atom's payload: `{prompt, duration, resolution, aspect_ratio, seed, prompt_expansion_mode: "disabled",
   reference_image_urls: [still], reference_video_urls?: [mannerism], reference_audio_urls?: [t1 voice]}`. The
@@ -43,8 +44,12 @@ take join under a cutaway. 1.2.0 joins takes on their measured speech and adds a
   take is placed so its first word comes 0.25 s after the previous take's last word (the dissolve never
   starts before 0.03 s after that word), and the reel ends 0.6 s after the last word (never past the last
   take). A take whose voice runs to its very end holds its last frame up to 0.5 s to reach its join. A take
-  with no speech heard fails as `provider_failed`. `planned` keeps 1.1.0's schedule: each take at its
-  estimated start, speech onset measured. Either way: 0.10 s dissolves, one filter graph (never the concat
+  with no speech heard fails as `provider_failed`. `planned` keeps 1.1.0's schedule exactly: each take at its
+  estimated start, speech onset read from the take's first 3 s, and the join never sooner than the previous
+  take's estimated last word minus the dissolve. Either way every join is floored: at least two dissolves
+  after the previous take's start, and at least 0.05 s per earlier line plus 0.15 s from the reel start (so
+  each earlier scene keeps a span and the cutaway scene can start before the join). Either way: 0.10 s
+  dissolves, one filter graph (never the concat
   demuxer). Line spans in the timeline are estimates (measured: spread over each take's measured speech,
   first word to last word): the captions layer and the check layer transcribe the real speech (the one
   quality path, check-layer).

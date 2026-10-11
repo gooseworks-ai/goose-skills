@@ -106,7 +106,7 @@ export const manifest = {
       delivery: { description: 'How they speak (plan.answers.delivery). Wins over the member\'s and the character\'s own delivery.', ...textOrNull(600) },
       pronunciations: { description: 'brand.pronunciations: each term is said as its say_as. The timeline keeps the written words.', ...pronunciations },
       split_before: {
-        description: 'none (default): takes split between any two lines. cutaways: a take may start only at a cutaway scene (extra.shot not "creator", a footage entry for the scene, or a scene image), so the join can hide under it; an on-camera run longer than one take is refused.',
+        description: 'none (default): takes split between any two lines. cutaways: a take may start only at a spoken cutaway scene (extra.shot not "creator", a footage entry for the scene, or a scene image), so the join can hide under it; an on-camera run longer than one take is refused.',
         enum: ['none', 'cutaways'],
       },
       footage: { description: 'plan.footage: an entry\'s scene_id makes that scene a cutaway.', type: 'array', maxItems: 20, items: footageEntry },

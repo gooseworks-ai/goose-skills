@@ -289,7 +289,7 @@
         }
       },
       "split_before": {
-        "description": "none (default): takes split between any two lines. cutaways: a take may start only at a cutaway scene (extra.shot not \"creator\", a footage entry for the scene, or a scene image), so the join can hide under it; an on-camera run longer than one take is refused.",
+        "description": "none (default): takes split between any two lines. cutaways: a take may start only at a spoken cutaway scene (extra.shot not \"creator\", a footage entry for the scene, or a scene image), so the join can hide under it; an on-camera run longer than one take is refused.",
         "enum": [
           "none",
           "cutaways"

@@ -996,6 +996,7 @@ const LEAD = 0.11;
 const PAD = 0.03;
 const VOICE_CLIP = ['-vn', '-t', '12', '-ac', '1', '-ar', '24000'];
 const COVER_LEAD = 0.15;
+const MIN_SPAN = 0.05;
 const GENDER_WORD = { female: 'woman', male: 'man', nonbinary: 'non-binary person' };
 // Measured joins: the silence from one take's last word to the next take's first,
 // and the most a take's last frame may be held to reach its join (a take whose voice
@@ -1095,7 +1096,7 @@ function planTakes(lines, wps) {
     if (span <= MAX_SPEECH) continue;
     if (r.length === 1) return { problem: `scene ${r[0].scene_id} alone runs past one take; shorten it` };
     return {
-      problem: `scenes ${r[0].scene_id} to ${r.at(-1).scene_id} are one on-camera run of about ${span.toFixed(1)}s with no cutaway to hide a take join (one take holds ${MAX_SPEECH}s); add a cutaway scene between them or cut words`,
+      problem: `scenes ${r[0].scene_id} to ${r.at(-1).scene_id} are one on-camera run of about ${span.toFixed(1)}s with no cutaway to hide a take join (one take holds ${MAX_SPEECH}s); make a spoken scene between them a cutaway or cut words`,
     };
   }
   const takes = [];
@@ -1139,6 +1140,13 @@ function speechBounds(stderr, duration) {
   return end > onset + 0.05 ? { onset, end } : null;
 }
 
+/** planned: where speech starts in a take, read from its first 3 s exactly as 1.1.0 did (so the schedule is 1.1.0's). */
+async function plannedOnset(ctx, path) {
+  const { stderr } = await kitFfmpeg(ctx, ['-v', 'info', '-t', '3', '-i', path, '-af', 'silencedetect=noise=-35dB:d=0.03', '-f', 'null', '-']);
+  const m = /silence_start: (-?[0-9.]+)[\s\S]*?silence_end: ([0-9.]+)/.exec(stderr);
+  return m && Number(m[1]) <= 0.02 ? Number(m[2]) : 0;
+}
+
 async function measureSpeech(ctx, path, duration) {
   const { stderr } = await kitFfmpeg(ctx, ['-v', 'info', '-i', path, '-af', 'silencedetect=noise=-35dB:d=0.03', '-f', 'null', '-']);
   return speechBounds(String(stderr), duration);
@@ -1154,16 +1162,32 @@ async function measureSpeech(ctx, path, duration) {
 function schedule(takes, fps, measured) {
   const xf = Math.round(XF * fps) / fps;
   const snap = (s) => Math.ceil((s - 1e-8) * fps) / fps;
+  let before = 0;
+  let spoken = 0;
   const out = [];
   for (const [k, t] of takes.entries()) {
     const first = measured ? t.onset : t.onset || LEAD;
     const pad = k ? Math.max(0, xf + PAD - first) : 0;
     let start = 0;
-    if (k && measured) {
+    if (k) {
       const prev = out[k - 1];
-      const said = prev.start + prev.head_pad + prev.speech_end;
-      start = snap(Math.max(said + PAD, said + GAP - first - pad));
-    } else if (k) start = snap(Math.max(0, t.start - first - pad));
+      // A late speech onset can pull a join back to the reel start or into the previous take's words.
+      // Keep every join at least two dissolves after the previous take's start, MIN_SPAN per earlier line
+      // from the reel start (every earlier scene keeps a span before the join), and (planned) late enough
+      // that the previous take's estimated speech ends by the end of the dissolve (its audio is cut there).
+      // measured places the join from the previous take's heard last word instead.
+      const floor = Math.max(prev.start + 2 * xf, MIN_SPAN * before + COVER_LEAD, measured ? 0 : spoken - xf);
+      let desired = t.start - first - pad;
+      if (measured) {
+        const said = prev.start + prev.head_pad + prev.speech_end;
+        desired = Math.max(said + PAD, said + GAP - first - pad);
+      }
+      start = snap(Math.max(floor, desired));
+    }
+    before += t.lines ? t.lines.length : 0;
+    // planned: this take's estimated last word on the reel (the speech entries' shift), never past its own footage.
+    const words = t.covers ? t.covers[1] - t.covers[0] : 0;
+    spoken = start + pad + Math.min(first + words, t.duration);
     out.push({ ...t, start, head_pad: pad });
   }
   // The reel runs to the end of the last take (measured: TAIL after its last word, within the take).
@@ -1225,16 +1249,14 @@ export async function run(inputs, ctx) {
   const footageScenes = new Set((inputs.footage || []).map((f) => (f && f.scene_id != null ? String(f.scene_id) : null)).filter(Boolean));
   const cutaways = inputs.split_before === 'cutaways';
   const lines = [];
-  let cutawaySince = false;
   for (const [i, s] of inputs.scenes.entries()) {
     const scene_id = s.id == null ? String(i + 1) : String(s.id);
-    // A take may start at this line when a cutaway sits between the last spoken line and here (this scene included).
-    cutawaySince = cutawaySince || isCutaway(s, scene_id, footageScenes);
     const written = cleanText(s.line);
     if (!written) continue;
     const spoken = cleanText(kitApplySayAs(written, inputs.pronunciations).spoken);
-    lines.push({ scene_id, text: written, spoken, speaker: cleanText(s.speaker), split: !cutaways || cutawaySince });
-    cutawaySince = false;
+    // A take may start only at a spoken cutaway: a silent scene has no span on the timeline, so nothing
+    // placed by scene could cover a join on the creator scene after it.
+    lines.push({ scene_id, text: written, spoken, speaker: cleanText(s.speaker), split: !cutaways || isCutaway(s, scene_id, footageScenes) });
   }
   if (!lines.length) throw ctx.error('bad_input', 'no scene has a line to say');
   for (const l of lines) if (/\[[^\]]*\]/.test(l.spoken)) throw ctx.error('bad_input', `scene ${l.scene_id} has square brackets, which H3 speaks aloud`);
@@ -1242,7 +1264,9 @@ export async function run(inputs, ctx) {
   if (creator.problem) throw ctx.error('bad_input', creator.problem);
   const problem = checkCharacter(creator.character, creator.who);
   if (problem) throw ctx.error('bad_input', problem);
-  const delivery = cleanText(inputs.delivery) || cleanText(creator.character.delivery) || H3_DEFAULT_DELIVERY.trim();
+  // The character's own delivery is trimmed only, as 1.0.2 did; a cast member's was cleaned in pickCreator.
+  // A whitespace-only legacy delivery stays empty, exactly as 1.0.2 built the prompt.
+  const delivery = cleanText(inputs.delivery) || String(creator.character.delivery || H3_DEFAULT_DELIVERY).trim();
   const takes = planTakes(lines, inputs.words_per_second ?? 2.6);
   if (takes.problem) throw ctx.error('bad_input', takes.problem);
   const seconds = takes.reduce((a, t) => a + t.dur, 0);
@@ -1273,9 +1297,13 @@ export async function run(inputs, ctx) {
     const info = await ctx.tools.probe(file.path);
     if (!info.has_audio) throw ctx.error('provider_failed', `${piece} came back without its voice`);
     const duration = await kitDuration(ctx, file);
-    const heard = await measureSpeech(ctx, file.path, duration);
-    if (!heard && measured) throw ctx.error('provider_failed', `${piece} came back with no speech to hear`);
-    made.push({ ...t, file, path: file.path, duration, start: t.covers[0], onset: heard ? heard.onset : 0, speech_end: heard ? heard.end : duration });
+    if (measured) {
+      const heard = await measureSpeech(ctx, file.path, duration);
+      if (!heard) throw ctx.error('provider_failed', `${piece} came back with no speech to hear`);
+      made.push({ ...t, file, path: file.path, duration, start: t.covers[0], onset: heard.onset, speech_end: heard.end });
+    } else {
+      made.push({ ...t, file, path: file.path, duration, start: t.covers[0], onset: await plannedOnset(ctx, file.path), speech_end: duration });
+    }
     if (k === 0 && takes.length > 1) {
       // The first take's own voice, handed to every later take (our generated voice, never a real person's).
       await kitFfmpeg(ctx, ['-i', file.path, ...VOICE_CLIP, join(ctx.tmpDir, 't1-voice.wav')]);
@@ -1312,16 +1340,19 @@ export async function run(inputs, ctx) {
     }
   }
   // Scene spans tile the reel from each line's start. With split_before cutaways, the scene a later
-  // take starts on begins COVER_LEAD before its join, so an insert on that scene covers the dissolve.
+  // take starts on begins COVER_LEAD before its join, so an insert on that scene covers the whole dissolve.
   const starts = speech.map((s) => s.start_s);
   if (cutaways) {
     let at = 0;
     for (const t of plan.takes.slice(1)) {
       at = speech.findIndex((s, i) => i >= at && s.scene_id === t.lines[0].scene_id);
       if (at <= 0) continue;
-      const floor = Math.max(starts[at - 1] + 0.05, speech[at - 1].end_s);
-      // Never later than the line itself, never back over the previous line.
-      starts[at] = +Math.min(starts[at], Math.max(floor, t.start - COVER_LEAD)).toFixed(3);
+      // Never later than the line itself or the join. Earlier scenes give way (each keeps MIN_SPAN) so the
+      // spans stay positive and in order; an earlier line's estimated end may then run past its scene's
+      // end, which the heard timing retimes. schedule() keeps every join at least MIN_SPAN per earlier
+      // line plus COVER_LEAD from the reel start, so the floor here never passes the join.
+      starts[at] = +Math.max(MIN_SPAN * at, Math.min(starts[at], t.start - COVER_LEAD)).toFixed(3);
+      for (let i = at - 1; i >= 0 && starts[i] > starts[i + 1] - MIN_SPAN; i--) starts[i] = +Math.max(MIN_SPAN * i, starts[i + 1] - MIN_SPAN).toFixed(3);
     }
   }
   const timeline = {

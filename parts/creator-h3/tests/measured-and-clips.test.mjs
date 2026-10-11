@@ -21,12 +21,13 @@ const near = (a, b, tol, what) => assert.ok(Math.abs(a - b) <= tol, `${what}: ${
  * asked for, with a tone for the voice from `lead` for `voice(d)` seconds (no
  * tone at all when voice is 0), mono like H3.
  */
-function toneLine({ lead = 0.2, voice = () => 1.5, extra = 0 } = {}) {
+function toneLine({ lead: leadDefault = 0.2, voice = () => 1.5, extra = 0, leads = {} } = {}) {
   return async (order, ctx) => {
     const name = order.results[0].name;
     const path = join(ctx.workDir, name);
     const d = order.body.duration + extra;
     const v = voice(d);
+    const lead = leads[order.piece] ?? leadDefault;
     const audio = v > 0 ? ['-f', 'lavfi', '-i', `sine=frequency=300:duration=${v}:sample_rate=48000`, '-filter_complex', `[1:a]adelay=${Math.round(lead * 1000)}:all=1,apad[a]`] : ['-f', 'lavfi', '-i', 'anullsrc=r=48000:cl=mono', '-filter_complex', '[1:a]anull[a]'];
     await run('ffmpeg', ['-hide_banner', '-nostdin', '-y', '-f', 'lavfi', '-i', `testsrc2=size=360x640:rate=24:duration=${d}`, ...audio, '-map', '0:v', '-map', '[a]', '-c:v', 'libx264', '-preset', 'ultrafast', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-ac', '1', '-t', String(d), path]);
     return { json: structuredClone(H3_REPLY.answer.json), files: { [name]: await fileRef(path, 'video') }, reused: false };
@@ -129,6 +130,63 @@ test('measured join with split_before cutaways: takes start at cutaways, and the
     if (i) assert.equal(s.start_s, all[i - 1].end_s);
   });
 });
+
+// W0-21's review scenarios (a one-word first take, then a late speech onset in the next take), which
+// 1.1.0's join floors fixed. A take's voice runs to 1 s before its end, so the voice fills the take.
+async function floorInputs(workDir, { wps = 2.6, longLine = false } = {}) {
+  const base = await castInputs(workDir);
+  const shot = await still(workDir);
+  const scenes = longLine
+    ? [
+        { id: 's1', line: 'Honestly.', speaker: 'maya', extra: { shot: 'creator' } },
+        { id: 's2', line: words(54, 'then'), speaker: 'maya', image: shot, extra: { shot: 'still' } },
+        { id: 'cta', line: null, speaker: null, extra: { shot: 'card' } },
+      ]
+    : [
+        { id: 's1', line: 'Honestly.', speaker: 'maya', extra: { shot: 'creator' } },
+        { id: 's2', line: words(8, 'then'), speaker: 'maya', image: shot, extra: { shot: 'still' } },
+        { id: 's3', line: words(27, 'honestly'), speaker: 'maya', extra: { shot: 'creator' } },
+        { id: 'cta', line: null, speaker: null, extra: { shot: 'card' } },
+      ];
+  return { ...base, pronunciations: [], scenes, footage: [], split_before: 'cutaways', words_per_second: wps };
+}
+const lateTone = () => toneLine({ voice: (d) => d - 1, leads: { 'take-t2': 0.6 } });
+
+function assertCovered(out) {
+  for (const t of out.takes.slice(1)) {
+    const scene = out.timeline.scenes.find((s) => s.id === t.scene_ids[0]);
+    assert.ok(scene.start_s <= t.joins_s, `${scene.id} starts at ${scene.start_s}s, at or before the join at ${t.joins_s}s`);
+    assert.ok(t.joins_s >= 0.2, `the join at ${t.joins_s}s is floored past the reel start`);
+  }
+  out.timeline.scenes.forEach((s, i, all) => {
+    assert.ok(s.start_s >= 0 && s.end_s > s.start_s, `${s.id} has a positive span`);
+    if (i) assert.equal(s.start_s, all[i - 1].end_s);
+  });
+}
+
+for (const opts of [{}, { wps: 3.9, longLine: true }]) {
+  const what = opts.longLine ? 'a late onset at 3.9 words a second' : 'a one-word first take';
+  test(`join planned equals 1.1.0 after ${what} (the join floors)`, { skip }, async () => {
+    const a = makeCtx({ partDir: dir, line: lateTone() });
+    const planned = await mod.run({ ...(await floorInputs(a.ctx.workDir, opts)), join: 'planned' }, a.ctx);
+    const b = makeCtx({ partDir: old.dir, line: lateTone() });
+    const before = await old.mod.run(await floorInputs(b.ctx.workDir, opts), b.ctx);
+    assert.deepEqual(planned.takes.map((t) => [t.start_s, t.joins_s, t.scene_ids]), before.takes.map((t) => [t.start_s, t.joins_s, t.scene_ids]));
+    assert.equal(planned.seconds, before.seconds);
+    assert.deepEqual(planned.timeline, before.timeline);
+    assertCovered(planned);
+  });
+
+  test(`measured join after ${what}: the cutaway still covers every join, and spans stay in order`, { skip }, async () => {
+    const { ctx } = makeCtx({ partDir: dir, line: lateTone() });
+    const out = await mod.run(await floorInputs(ctx.workDir, opts), ctx);
+    assert.equal(out.takes.length, 2);
+    assertCovered(out);
+    // The first take's last word is said before the dissolve into the second take ends.
+    const s1 = out.timeline.speech.find((s) => s.scene_id === 's1');
+    assert.ok(s1.end_s <= out.takes[1].joins_s + 0.1 + 1e-6, `s1 ends at ${s1.end_s}s, by the dissolve end`);
+  });
+}
 
 // Day in the life: a spoken hook, three Moment scenes with no line, and an end card.
 async function clipInputs(workDir, extra = {}) {
