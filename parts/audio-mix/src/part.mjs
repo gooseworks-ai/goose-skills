@@ -35,8 +35,12 @@ function noiseBed(tone, dur, label, { moving = false } = {}) {
   );
 }
 
-/** The marks that have a sound and land inside the picture: [{ sound, at_s }]. */
-function markCues(ctx, inputs, dur) {
+/**
+ * The marks that have a sound and land inside the picture: [{ sound, at_s, skip_s }].
+ * A negative offset can put a sound's start before 0: it then plays from skip_s into the sound at 0,
+ * so it stays in time; a sound that would end before 0 is dropped.
+ */
+async function markCues(ctx, inputs, dur) {
   const marks = inputs.marks || [];
   const sounds = inputs.mark_sounds || [];
   if (!marks.length) return [];
@@ -47,21 +51,33 @@ function markCues(ctx, inputs, dur) {
     byId.set(s.id, s);
   }
   const offset = inputs.mark_offset_s ?? 0;
+  const lengths = new Map();
   const cues = [];
-  let dropped = 0;
+  let late = 0;
+  let early = 0;
   for (const m of marks) {
     const sound = byId.get(m.kind);
     if (!sound) continue;
-    const at = Math.max(0, m.at_s + offset);
-    if (at >= dur - 0.02) {
-      dropped++;
+    const start = m.at_s + offset;
+    if (start >= dur - 0.02) {
+      late++;
       continue;
     }
-    cues.push({ sound, at_s: +at.toFixed(3) });
+    const skip = start < 0 ? -start : 0;
+    if (skip > 0) {
+      if (!lengths.has(sound)) lengths.set(sound, await kitDuration(ctx, sound.audio));
+      const heard = inputs.mark_max_s ? Math.min(lengths.get(sound), inputs.mark_max_s) : lengths.get(sound);
+      if (skip >= heard - 0.02) {
+        early++;
+        continue;
+      }
+    }
+    cues.push({ sound, at_s: +Math.max(0, start).toFixed(3), skip_s: +skip.toFixed(3) });
   }
   if (!cues.length && !marks.some((m) => byId.has(m.kind)))
     throw ctx.error('bad_input', `no mark kind (${[...new Set(marks.map((m) => m.kind))].join(', ')}) has a sound in mark_sounds (${[...byId.keys()].join(', ')})`);
-  if (dropped) ctx.log.info(`${dropped} mark sound(s) would start past the end of the video and were dropped`);
+  if (late) ctx.log.info(`${late} mark sound(s) would start past the end of the video and were dropped`);
+  if (early) ctx.log.info(`${early} mark sound(s) would end before the video starts and were dropped`);
   return cues;
 }
 
@@ -80,7 +96,7 @@ export async function run(inputs, ctx) {
   if (inputs.keep_video_audio && !picture.has_audio) throw ctx.error('bad_input', 'keep_video_audio is set but the video has no sound');
   const outdoor = inputs.outdoor === true;
   if (outdoor && !inputs.voice && !keepOwn) throw ctx.error('bad_input', "outdoor needs speech to treat: a voice, or a picture whose own sound is kept");
-  const marked = markCues(ctx, inputs, dur);
+  const marked = await markCues(ctx, inputs, dur);
   if (!inputs.voice && !inputs.music && !(inputs.sfx || []).length && !inputs.effects && !keepOwn && !inputs.room_tone && !marked.length) {
     // Nothing to lay under the picture (a style whose music is optional, with none chosen): a silent track
     // of the picture's length, so every later step and layer gets a cut with sound to read.
@@ -169,20 +185,23 @@ export async function run(inputs, ctx) {
 
   // Sounds at the cut's marks: one input per sound, split to every mark that uses it.
   const bySound = new Map();
-  for (const c of marked) bySound.set(c.sound, [...(bySound.get(c.sound) || []), c.at_s]);
+  for (const c of marked) bySound.set(c.sound, [...(bySound.get(c.sound) || []), c]);
   const markGain = inputs.mark_gain ?? 1;
   const markCut = inputs.mark_max_s
     ? `atrim=0:${kitNum(inputs.mark_max_s)},afade=t=out:st=${kitNum(Math.max(0, inputs.mark_max_s - 0.06))}:d=0.06,`
     : '';
-  for (const [k, [sound, times]] of [...bySound.entries()].entries()) {
+  // A cue whose sound starts before 0 skips that much of the sound, then plays from 0.
+  const place = (c) =>
+    `${c.skip_s > 0 ? `atrim=start=${kitNum(c.skip_s)},asetpts=PTS-STARTPTS,` : ''}adelay=${Math.round(c.at_s * 1000)}:all=1,apad,atrim=0:${kitNum(dur)}`;
+  for (const [k, [sound, cues]] of [...bySound.entries()].entries()) {
     args.push('-i', sound.audio.path);
     const head = `[${n}:a]${FMT},${markCut}volume=${markGain}`;
-    if (times.length === 1) {
-      graph.push(`${head},adelay=${Math.round(times[0] * 1000)}:all=1,apad,atrim=0:${kitNum(dur)}[mk${k}]`);
+    if (cues.length === 1) {
+      graph.push(`${head},${place(cues[0])}[mk${k}]`);
     } else {
-      graph.push(`${head},asplit=${times.length}${times.map((_, j) => `[mk${k}s${j}]`).join('')}`);
-      for (const [j, t] of times.entries()) graph.push(`[mk${k}s${j}]adelay=${Math.round(t * 1000)}:all=1,apad,atrim=0:${kitNum(dur)}[mk${k}d${j}]`);
-      graph.push(`${times.map((_, j) => `[mk${k}d${j}]`).join('')}amix=inputs=${times.length}:duration=first:normalize=0[mk${k}]`);
+      graph.push(`${head},asplit=${cues.length}${cues.map((_, j) => `[mk${k}s${j}]`).join('')}`);
+      for (const [j, c] of cues.entries()) graph.push(`[mk${k}s${j}]${place(c)}[mk${k}d${j}]`);
+      graph.push(`${cues.map((_, j) => `[mk${k}d${j}]`).join('')}amix=inputs=${cues.length}:duration=first:normalize=0[mk${k}]`);
     }
     labels.push(`[mk${k}]`);
     n++;

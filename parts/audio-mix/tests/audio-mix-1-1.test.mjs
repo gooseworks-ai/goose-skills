@@ -100,6 +100,31 @@ test('a mark sound plays at each mark of its kind, offset, and nowhere else', { 
   assert.ok(Math.abs(info.duration_s - 4) < 0.1, `cut is ${info.duration_s}s`);
 });
 
+test('a negative offset that starts a sound before 0 plays it from that point, still in time', { skip }, async () => {
+  // The sound is 0.75 s of 3 kHz then 0.75 s of 5 kHz. A mark at 0.25 s with offset -1 s starts it at -0.75 s:
+  // the video opens 0.75 s into the sound (5 kHz), never on its 3 kHz head.
+  const { ctx } = makeCtx({ partDir: dir });
+  const w = ctx.workDir;
+  const video = await silentPicture(ctx);
+  const a = await makeTone(join(w, 'head.wav'), 0.75, { freq: 3000 });
+  const b = await makeTone(join(w, 'tail.wav'), 0.75, { freq: 5000 });
+  const both = join(w, 'two-part.m4a');
+  await run('ffmpeg', ['-hide_banner', '-nostdin', '-loglevel', 'error', '-y', '-i', a, '-i', b, '-filter_complex', '[0:a][1:a]concat=n=2:v=0:a=1[a]', '-map', '[a]', '-c:a', 'aac', both]);
+  const sound = await fileRef(both, 'audio');
+  const marks = [{ kind: 'snap', at_s: 0.25 }, { kind: 'snap', at_s: 3.0 }];
+  const out = await mod.run({ video, marks, mark_sounds: [{ id: 'snap', audio: sound }], mark_offset_s: -1 }, ctx);
+  const tail = await levelDb(out.video.path, 0.1, 0.6, 5000);
+  const head = await levelDb(out.video.path, 0.1, 0.6, 3000);
+  assert.ok(tail > -40 && tail - head > 20, `0-0.6 s plays the sound's tail (${tail.toFixed(1)} dB at 5 kHz), not its head (${head.toFixed(1)} dB at 3 kHz)`);
+  // The second mark is not pulled before 0: it plays whole from 2.0 s, head first.
+  assert.ok((await levelDb(out.video.path, 2.1, 2.6, 3000)) > -40, 'the in-range mark plays from its head');
+  // With mark_max_s 0.5 the early cue would end before 0: it is dropped, not played from 0.
+  const { ctx: ctx2 } = makeCtx({ partDir: dir });
+  const cut = await mod.run({ video: await silentPicture(ctx2), marks, mark_sounds: [{ id: 'snap', audio: sound }], mark_offset_s: -1, mark_max_s: 0.5 }, ctx2);
+  assert.ok((await levelDb(cut.video.path, 0.05, 0.9)) < -60, 'a cue that ends before 0 is dropped');
+  assert.ok((await levelDb(cut.video.path, 2.05, 2.4, 3000)) > -40, 'the other cue still plays');
+});
+
 test('refuses marks it cannot sound, outdoor with no speech, and bad settings', { skip }, async () => {
   const { ctx } = makeCtx({ partDir: dir });
   const video = await silentPicture(ctx);

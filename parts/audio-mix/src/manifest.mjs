@@ -109,7 +109,7 @@ export const manifest = {
           },
         },
       },
-      mark_offset_s: { description: 'Shift from each mark to its sound. Default 0.', type: 'number', minimum: -2, maximum: 2 },
+      mark_offset_s: { description: 'Shift from each mark to its sound. Default 0. A sound pulled before 0 plays from that point into it; one that would end before 0 is dropped.', type: 'number', minimum: -2, maximum: 2 },
       mark_gain: { description: 'Linear gain of every mark sound. Default 1.', type: 'number', minimum: 0, maximum: 4 },
       mark_max_s: { description: 'Cuts each mark sound (with a 60 ms fade) so it cannot mask the next.', type: 'number', exclusiveMinimum: 0, maximum: 10 },
       outdoor: {

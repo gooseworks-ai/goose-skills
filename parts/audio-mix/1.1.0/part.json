@@ -278,7 +278,7 @@
         }
       },
       "mark_offset_s": {
-        "description": "Shift from each mark to its sound. Default 0.",
+        "description": "Shift from each mark to its sound. Default 0. A sound pulled before 0 plays from that point into it; one that would end before 0 is dropped.",
         "type": "number",
         "minimum": -2,
         "maximum": 2
