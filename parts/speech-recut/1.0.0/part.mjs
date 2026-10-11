@@ -934,7 +934,7 @@ export function recutCheckSize(ctx, video, max = RECUT_MAX_BYTES) {
  * stretches that hold speech with no timed words (recutPlan's `heard`); they are never used.
  */
 export async function recutFindRoomTone(ctx, video, speech, duration, heard = []) {
-  const raw = join(ctx.workDir, 'levels.raw');
+  const raw = join(ctx.tmpDir, 'levels.raw');
   await kitFfmpeg(ctx, ['-i', video.path, '-map', '0:a:0', '-vn', '-ac', '1', '-ar', String(RECUT_LEVEL_RATE), '-c:a', 'pcm_s16le', '-f', 's16le', raw]);
   const levels = recutLevels(readFileSync(raw));
   return recutQuietWindow({ levels, step_s: RECUT_LEVEL_STEP_S, busy: recutSpeechBusy(speech, RECUT_ROOM_PAD_S, heard), duration });
@@ -945,7 +945,7 @@ export async function recutFindRoomTone(ctx, video, speech, duration, heard = []
  * palindrome has no seam (each end meets the same sample), so no click repeats under the edit.
  */
 export async function recutRoomLoop(ctx, video, win, mono) {
-  const out = join(ctx.workDir, 'room.wav');
+  const out = join(ctx.tmpDir, 'room.wav');
   const len = win.end_s - win.start_s;
   await kitFfmpeg(ctx, [
     '-ss',
@@ -1078,15 +1078,23 @@ export async function run(inputs, ctx) {
     );
   }
   const n = plan.keep.length;
-  graph.push(`${plan.keep.map((_, k) => `[v${k}][a${k}]`).join('')}concat=n=${n}:v=1:a=1[cv][${room ? 'cut' : 'aout'}]`);
+  // The output is a whole number of output frames: picture and sound are both cut to it, and the
+  // timeline and `seconds` carry the same length, so a downstream layer sees the file's true length.
+  const outFrames = Math.max(1, Math.round(plan.seconds * fps));
+  const seconds = outFrames / fps;
+  graph.push(`${plan.keep.map((_, k) => `[v${k}][a${k}]`).join('')}concat=n=${n}:v=1:a=1[cv][${room ? 'cut' : 'speech'}]`);
   if (room) {
     // The bed under the whole edit, at gain_db against its window; the speech is untouched.
     args.push('-stream_loop', '-1', '-i', room.path);
-    graph.push(`[${n}:a]volume=${kitNum(room.gain_db, 3)}dB,atrim=0:${kitNum(plan.seconds)},asetpts=PTS-STARTPTS[bed]`);
-    graph.push('[cut][bed]amix=inputs=2:duration=first:dropout_transition=0:normalize=0[aout]');
+    graph.push(`[${n}:a]volume=${kitNum(room.gain_db, 3)}dB,atrim=0:${kitNum(seconds)},asetpts=PTS-STARTPTS[bed]`);
+    graph.push('[cut][bed]amix=inputs=2:duration=first:dropout_transition=0:normalize=0[speech]');
   }
+  graph.push(`[speech]apad,atrim=0:${kitNum(seconds)},asetpts=PTS-STARTPTS[aout]`);
   const gradeChain = recutGradeChain(grade);
-  graph.push(`[cv]fps=${fps},scale=${w}:${h}${gradeChain ? `,${gradeChain}` : ''},setsar=1,format=yuv420p[vout]`);
+  graph.push(
+    `[cv]fps=${fps},tpad=stop_mode=clone:stop_duration=${kitNum(2 / fps, 4)},trim=end_frame=${outFrames},setpts=PTS-STARTPTS,` +
+      `scale=${w}:${h}${gradeChain ? `,${gradeChain}` : ''},setsar=1,format=yuv420p[vout]`,
+  );
   ctx.progress({ done: 2, total: 3 });
   await kitFfmpeg(ctx, [
     ...args,
@@ -1105,12 +1113,24 @@ export async function run(inputs, ctx) {
   ]);
   const video = recutCheckSize(ctx, await ctx.file('recut.mp4', 'video'));
   const got = await ctx.tools.probe(video.path);
-  if (!Number.isFinite(got.duration_s) || Math.abs(got.duration_s - plan.seconds) > 2 / fps + 0.05) {
-    throw ctx.error('output_invalid', `the re-cut is ${got.duration_s}s, expected ${kitNum(plan.seconds, 3)}s`);
+  if (!Number.isFinite(got.duration_s) || Math.abs(got.duration_s - seconds) > 1 / fps + 0.05) {
+    throw ctx.error('output_invalid', `the re-cut is ${got.duration_s}s, expected ${kitNum(seconds, 3)}s`);
   }
   ctx.progress({ done: 3, total: 3 });
 
-  const timeline = { duration_s: plan.seconds, width: w, height: h, fps, scenes: plan.scenes, speech: plan.speech };
+  // Scenes that ran to the plan's end run to the file's end (it differs by under one output frame).
+  const outSeconds = +seconds.toFixed(3);
+  const scenes = plan.scenes
+    .map((sc) => ({ ...sc, end_s: sc.end_s >= plan.seconds - 1e-3 ? outSeconds : Math.min(sc.end_s, outSeconds) }))
+    .filter((sc) => sc.end_s - sc.start_s > 1e-3);
+  const cap = (t) => Math.min(t, outSeconds);
+  const speech = plan.speech.map((e) => ({
+    ...e,
+    start_s: cap(e.start_s),
+    end_s: cap(e.end_s),
+    ...(e.words ? { words: e.words.map((wd) => ({ ...wd, start_s: cap(wd.start_s), end_s: cap(wd.end_s) })) } : {}),
+  }));
+  const timeline = { duration_s: outSeconds, width: w, height: h, fps, scenes, speech };
   if (inputs.timeline.safe_zones) timeline.safe_zones = inputs.timeline.safe_zones;
-  return kitCheckOutputs(ctx, manifest, { video, seconds: plan.seconds, timeline, cuts: plan.cuts });
+  return kitCheckOutputs(ctx, manifest, { video, seconds: outSeconds, timeline, cuts: plan.cuts });
 }

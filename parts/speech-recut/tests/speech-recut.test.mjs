@@ -4,7 +4,7 @@
 // scratch folder as part.json the way a version folder holds it.
 import { test, before } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileRef, framePixels, hasFfmpeg, levelDb, makeCtx, probe, run as runTool } from '../../_tools/kit-harness.mjs';
@@ -97,6 +97,11 @@ test('re-cuts the take: dead air out, words kept, 30 fps, timeline re-timed', as
   assert.ok(Math.abs(info.fps - 30) < 0.01, `fps ${info.fps}`);
   assert.equal(info.width, 360);
   assert.ok(Math.abs(info.duration_s - out.seconds) <= 0.1, `file ${info.duration_s}s vs plan ${out.seconds}s`);
+  // A whole number of 30 fps frames, and the timeline says the same length as `seconds`.
+  assert.ok(Math.abs(out.seconds * 30 - Math.round(out.seconds * 30)) < 0.05, `${out.seconds}s is whole frames`);
+  assert.equal(out.timeline.duration_s, out.seconds);
+  assert.equal(out.timeline.scenes.at(-1).end_s, out.seconds);
+  for (const e of out.timeline.speech) for (const wd of e.words) assert.ok(wd.end_s <= out.seconds);
   assert.ok(out.seconds > 1.9 && out.seconds < 2.2, `about 2.0 s left of 4.5 s, got ${out.seconds}`);
   assert.equal(out.timeline.fps, 30);
   assert.deepEqual(out.timeline.scenes.map((s) => s.id), ['q', 'a']);
@@ -150,6 +155,8 @@ test('room tone: the bed is cut from the take\'s quietest speech-free window and
   assert.ok(win.end_s - win.start_s >= 0.4 - 1e-9);
   assert.ok(win.level_db < -50, `the lull is quiet: ${win.level_db} dB`);
   assert.equal(out.seconds, plain.seconds, 'the bed changes no timing');
+  // Its scratch files (levels, the loop) are in tmpDir, not left beside the published file.
+  assert.ok(!existsSync(join(ctx.workDir, 'levels.raw')) && !existsSync(join(ctx.workDir, 'room.wav')), 'no scratch in workDir');
   assert.deepEqual(out.timeline, plain.timeline);
   // The bed raises the air in the kept pause (about +2 dB at +12 dB on a lull 14 dB under the street)...
   const q = out.timeline.speech[0];
