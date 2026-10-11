@@ -2658,6 +2658,64 @@
       ]
     },
     {
+      "id": "video-kling",
+      "version": "1.0.0",
+      "interface": 1,
+      "kind": "generate_video",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": true,
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "fal-ai/kling-video/v2.1/standard/image-to-video"
+          },
+          {
+            "provider": "fal",
+            "model": "fal-ai/kling-video/v2.5-turbo/pro/image-to-video"
+          },
+          {
+            "provider": "fal",
+            "model": "fal-ai/kling-video/v3/standard/image-to-video"
+          }
+        ],
+        "disk_mb": 800
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "second",
+        "rates_usd": {
+          "fal-ai/kling-video/v2.1/standard/image-to-video": 0.056,
+          "fal-ai/kling-video/v2.5-turbo/pro/image-to-video": 0.07,
+          "fal-ai/kling-video/v3/standard/image-to-video": 0.14
+        },
+        "model_from": "/model"
+      },
+      "determinism": "provider",
+      "path": "parts/video-kling/1.0.0",
+      "files": {
+        "README.md": "6592355d0e0dafe00bb223e6b3f8dc23f4d85fc74d2e48eef3100be0dc6c3aad",
+        "part.json": "bbfb34ebceddd2749aa1fd744598e855f3b73221ce7ad3778a418093fee93628",
+        "part.mjs": "4dfb3a6670dfb22b652be57f8dba4992cc7f9993da383adcadfa18ac60ca8c85"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "fal-ai/kling-video/v2.1/standard/image-to-video"
+        },
+        {
+          "provider": "fal",
+          "model": "fal-ai/kling-video/v2.5-turbo/pro/image-to-video"
+        },
+        {
+          "provider": "fal",
+          "model": "fal-ai/kling-video/v3/standard/image-to-video"
+        }
+      ]
+    },
+    {
       "id": "video-seedance-2",
       "version": "1.0.0",
       "interface": 1,
