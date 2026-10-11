@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { hasFfmpeg, loadNewest, makeCtx, probe } from '../../_tools/kit-harness.mjs';
+import { fileRef, hasFfmpeg, loadNewest, makeCtx, probe, run } from '../../_tools/kit-harness.mjs';
 import { clipLine, falReply, makeStill, scenesInputs, template, writeTemplate } from './fixture.mjs';
 
 const { dir, mod } = await loadNewest('video-veo-3');
@@ -190,6 +190,14 @@ test('refusals: every problem is bad_input before any piece is ordered', { skip 
     ['spans and seconds together', async () => ({ ...(await scenesInputs(w)), seconds: 4 }), /spans or seconds, not both/],
     ['scenes mode without scenes', async () => ({ ...one, mode: 'scenes' }), /scenes mode needs scenes/],
     ['two stills with one id', async () => ({ ...one, stills: [{ id: 'a', image: still }, { id: 'a', image: still }] }), /two stills have the id a/],
+    ['spanned scenes out of the spans\' order', async () => {
+      const i = await scenesInputs(w);
+      return { ...i, spans: [{ id: 's1', start_s: 0, end_s: 1.1 }, { id: 's3', start_s: 2.6, end_s: 3 }, { id: 's4', start_s: 1.3, end_s: 2.4 }] };
+    }, /scene s4 starts at or before scene s3/],
+    ['two picked scenes with one id', async () => {
+      const i = await scenesInputs(w);
+      return { ...i, scenes: [i.scenes[0], { ...i.scenes[2], id: 's1' }, i.scenes[4]], spans: [{ id: 's1', start_s: 0, end_s: 1 }] };
+    }, /two scenes have the id s1/],
     ['spans that name no picked scene', async () => ({ ...(await scenesInputs(w)), spans: [{ id: 'zz', start_s: 0, end_s: 1 }] }), /no picked scene has a span/],
     ['clips longer together than max_total_s', async () => ({ ...(await scenesInputs(w)), max_total_s: 16 }), /the 4 clips come to 20 s, over max_total_s 16/],
     ['an unknown template text', async () => ({ ...one, template: await writeTemplate(w), use: 'later' }), /no "later" text/],
@@ -228,6 +236,63 @@ test('fallback still: a refused clip becomes its still; a plain failure only on 
   await assert.rejects(mod.run({ ...inputs, fallback: 'fail' }, plain.ctx), (e) => e.code === 'provider_rejected', 'fallback fail keeps the refusal');
   const quote = makeCtx({ partDir: dir, workDir: join(w, 'e'), line: () => Promise.reject(failWith('over_quote')), attempt: 2 });
   await assert.rejects(mod.run(inputs, quote.ctx), (e) => e.code === 'over_quote', 'an over-quote never falls back');
+});
+
+test('fallback still never masks a stop: a refusal that lands after the abort fails the step as stopped', { skip }, async () => {
+  const w = work();
+  const inputs = await scenesInputs(w, { fallback: 'still' });
+  let made;
+  made = makeCtx({
+    partDir: dir,
+    workDir: join(w, 'step'),
+    attempt: 2,
+    line: (order, ctx) => {
+      if (order.piece !== 'clip-s1') return clipLine(order, ctx);
+      made.abort();
+      return Promise.reject(failWith('provider_rejected'));
+    },
+  });
+  await assert.rejects(mod.run(inputs, made.ctx), (e) => e.code === 'stopped');
+  assert.ok(!made.logs.some(([level, m]) => level === 'warn' && /became its still/.test(m)), 'no clip fell back to its still');
+});
+
+test('a reply with sound but no picture fails the piece, or becomes its still on the last attempt', { skip }, async () => {
+  const w = work();
+  const inputs = await scenesInputs(w, { fallback: 'still' });
+  const soundOnly = async (order, ctx) => {
+    if (order.piece !== 'clip-s2') return clipLine(order, ctx);
+    const name = order.results[0].name;
+    const path = join(ctx.workDir, name);
+    await run('ffmpeg', ['-hide_banner', '-nostdin', '-y', '-f', 'lavfi', '-i', 'anullsrc=r=44100:cl=mono', '-t', '1', '-c:a', 'aac', path]);
+    return { json: {}, files: { [name]: await fileRef(path, 'video') }, reused: false };
+  };
+  const first = makeCtx({ partDir: dir, workDir: join(w, 'a'), line: soundOnly, attempt: 1 });
+  await assert.rejects(mod.run(inputs, first.ctx), (e) => e.code === 'provider_failed' && /no picture/.test(e.message));
+  const last = makeCtx({ partDir: dir, workDir: join(w, 'b'), line: soundOnly, attempt: 2 });
+  const out = await mod.run(inputs, last.ctx);
+  assert.ok(out.clips[1].image && !out.clips[1].video);
+});
+
+test('clip timing: a scene runs only to the next span, even one pick leaves out', { skip }, async () => {
+  const w = work();
+  const base = await scenesInputs(w);
+  // s3 has no picture, so with_picture leaves it out; s1 + s2 must stop at s3's span (1.3 s), not run to s4's (12.2 s).
+  const scenes = base.scenes.map((sc) => (sc.id === 's3' ? { ...sc, picture: null } : sc));
+  const spans = [{ id: 's1', start_s: 0, end_s: 1 }, { id: 's3', start_s: 1.3, end_s: 12 }, { id: 's4', start_s: 12.2, end_s: 13 }, { id: 's5', start_s: 13.5, end_s: 15 }];
+  const { ctx, orders } = makeCtx({ partDir: dir, workDir: join(w, 'step'), line: clipLine });
+  await mod.run({ ...base, scenes, spans, pick: 'with_picture' }, ctx);
+  // s1 + s2 share 0..1.3: 0.65 + 0.2 -> 1 -> 4 s (was 0..12.2 -> 8 s). s4 12.2..13.5 -> 4 s.
+  assert.deepEqual(orders.map((x) => [x.piece, x.body.duration]).sort(), [['clip-s1', '4s'], ['clip-s2', '4s'], ['clip-s4', '4s']]);
+});
+
+test('clip timing: after a hook made elsewhere (skip_first), the first made scene starts at its own span', { skip }, async () => {
+  const w = work();
+  const base = await scenesInputs(w);
+  const spans = [{ id: 's1', start_s: 0, end_s: 8 }, { id: 's3', start_s: 8.2, end_s: 9 }, { id: 's4', start_s: 9.2, end_s: 10 }, { id: 's5', start_s: 10.5, end_s: 11 }];
+  const { ctx, orders } = makeCtx({ partDir: dir, workDir: join(w, 'step'), line: clipLine });
+  await mod.run({ ...base, spans, skip_first: 1 }, ctx);
+  // s2 (no line) shares the hook's 0..8.2 with it: 4.1 + 0.2 -> 5 -> 6 s. s3 8.2..9.2 -> 4 s (was 0..9.2 shared with s2 -> 6 s). s4 9.2..10.5 -> 4 s.
+  assert.deepEqual(orders.map((x) => [x.piece, x.body.duration]).sort(), [['clip-s2', '6s'], ['clip-s3', '4s'], ['clip-s4', '4s']]);
 });
 
 test('a reply with no video file fails the piece', { skip }, async () => {
