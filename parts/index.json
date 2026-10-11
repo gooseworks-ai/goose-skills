@@ -188,7 +188,7 @@
       "path": "parts/assemble/1.1.0",
       "files": {
         "README.md": "d63009cd7869160f1254c379f0dc1e843e2c695071ae0c6935f8c47c977950c7",
-        "part.json": "97d4f98612bc4f6fb619d333f1e2ea9cb1ffb8a8d51b0dcde75964a52fbb3d61",
+        "part.json": "217797bf6b586f33989db028c365320bb4707628fb85a646d464a170dd8a652b",
         "part.mjs": "911069594a6a2f707f237c5210d9e57e3a2a338216b8184e9868d5c0947838ff"
       },
       "models": []

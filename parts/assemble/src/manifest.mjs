@@ -35,7 +35,7 @@ export const manifest = {
           type: 'object',
           additionalProperties: false,
           properties: {
-            id: { type: 'string', maxLength: 40 },
+            id: { type: 'string', maxLength: 64 },
             video: file('video'),
             image: file('image'),
             in_s: { description: 'Where the cut starts in its clip. Default 0.', type: 'number', minimum: 0 },

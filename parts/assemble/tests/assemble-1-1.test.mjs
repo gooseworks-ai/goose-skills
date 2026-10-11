@@ -175,3 +175,9 @@ test('grain grades cap the final encode at 8 Mbps; others at 16 Mbps', { skip },
   assert.deepEqual([camInfo.width, camInfo.height], [900, 1600]);
   console.log(`# phone-grain cut: ${(bps / 1e6).toFixed(2)} Mbps over ${out.seconds} s (bound ${((8e6 + 16e6 / out.seconds) / 1e6).toFixed(2)})`);
 });
+
+test('clip ids take the 64-character scene ids the image and clip parts emit', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const pj = JSON.parse(await readFile(join(dir, 'part.json'), 'utf8'));
+  assert.equal(pj.inputs.properties.clips.items.properties.id.maxLength, 64);
+});
