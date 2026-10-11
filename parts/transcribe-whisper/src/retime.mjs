@@ -75,7 +75,7 @@ const RETIME_OPEN = [
  * `%`, `$` and `&` as words, hyphens and slashes split, other punctuation
  * dropped. "$200" → ['two', 'hundred', 'dollars']; "Don't" → ['do', 'not'].
  */
-export function retimeKeys(word) {
+export function retimeKeys(word, { bare = false } = {}) {
   let w = String(word).toLowerCase().replace(/[‘’ʼ`]/g, "'");
   w = w.replace(/&/g, ' and ').replace(/%/g, ' percent ').replace(/\$(\d[\d,]*(?:\.\d+)?)/g, '$1 dollars ');
   const out = [];
@@ -92,8 +92,10 @@ export function retimeKeys(word) {
       out.push(...retimeNumberWords(Number(dec[1])), 'point', ...dec[2].split('').map((d) => RETIME_ONES[Number(d)]));
       continue;
     }
-    const open = RETIME_OPEN.map(([re, to]) => [re.exec(t), to]).find(([m]) => m);
-    const parts = open ? (typeof open[1] === 'function' ? open[1](open[0]) : open[1]) : RETIME_BARE.get(t) || [t];
+    // `bare`: contractions keep one key with the apostrophe dropped ("we're" → "were"), for a Whisper that
+    // writes them without it where the bare form is also a word (were, ill, its, lets, well).
+    const open = bare ? null : RETIME_OPEN.map(([re, to]) => [re.exec(t), to]).find(([m]) => m);
+    const parts = bare ? [t] : open ? (typeof open[1] === 'function' ? open[1](open[0]) : open[1]) : RETIME_BARE.get(t) || [t];
     for (const p of parts) {
       const k = p.replace(/[^\p{L}\p{N}]/gu, '');
       if (k) out.push(k);
@@ -138,13 +140,22 @@ export function retimeCloseChunks(json, duration) {
  * written words at that edge, in proportion.
  */
 export function retimeAlign(lines, heard) {
+  // Contractions are compared opened ("don't" = "do not" = "dont") and, when that hears less, bare ("we're" =
+  // "were"); the reading that hears more of the script wins.
+  const opened = retimeAlignBy(lines, heard, false);
+  if (opened.share >= 1) return opened;
+  const bare = retimeAlignBy(lines, heard, true);
+  return bare.share > opened.share ? bare : opened;
+}
+
+function retimeAlignBy(lines, heard, bare) {
   const written = []; // [{line, key}]
   lines.forEach((l, li) => {
-    for (const w of String(l.text).split(/\s+/)) for (const key of retimeKeys(w)) written.push({ line: li, key });
+    for (const w of String(l.text).split(/\s+/)) for (const key of retimeKeys(w, { bare })) written.push({ line: li, key });
   });
   const said = []; // [{word, key}]
   heard.forEach((h, hi) => {
-    for (const key of retimeKeys(h.text)) said.push({ word: hi, key });
+    for (const key of retimeKeys(h.text, { bare })) said.push({ word: hi, key });
   });
   if (!written.length) return { share: 1, anchors: [] };
   const n = written.length;

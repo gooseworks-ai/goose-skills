@@ -18,8 +18,8 @@ What is actually said in a cut, as a timeline step that runs before the layers. 
   - Between two spoken scenes the boundary goes midway between the last heard word of one and the first heard
     word of the next. The last scene runs to the end of the cut.
   - The heard words come from one alignment of the whole script on the whole transcript, after both are
-    spelled the same way: numbers as words ("200" and "two hundred"), contractions opened ("don't" and "do
-    not"), `%` `$` `&` as words, hyphens split, punctuation dropped. A line's span uses only its heard words,
+    spelled the same way: numbers as words ("200" and "two hundred"), contractions opened ("don't", "dont" and
+    "do not"; when that hears less, compared bare: "we're" and "were"), `%` `$` `&` as words, hyphens split, punctuation dropped. A line's span uses only its heard words,
     never a guessed time for a word that was not heard; an unmatched heard word between two lines goes to the
     line with an unheard word at that edge. A line with no heard word shares its gap like a silent scene.
   - Scenes without a line share the gap they sit in: k silent scenes in a gap cut it into k + 2 equal slots

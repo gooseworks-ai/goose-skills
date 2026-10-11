@@ -168,6 +168,13 @@ test('retimeKeys opens contractions Whisper writes without the apostrophe, and l
   assert.deepEqual(retimeKeys('were'), ['were']);
   const said = (text) => kitHeardWords({ chunks: text.split(' ').map((t, i) => ({ text: t, timestamp: [i, i + 1] })) });
   assert.equal(retimeHeardShare([{ text: "I don't overpay" }], said('I dont overpay')), 1);
+  // Bare forms that are also words: compared with the apostrophe dropped on both sides.
+  assert.deepEqual(retimeKeys("We're", { bare: true }), ['were']);
+  assert.equal(retimeHeardShare([{ text: "We're ready" }], said('Were ready')), 1);
+  assert.equal(retimeHeardShare([{ text: "I'll go" }], said('Ill go')), 1);
+  assert.equal(retimeHeardShare([{ text: "It's here, and we'll ship it" }], said('Its here and well ship it')), 1);
+  // ...while an opened contraction still matches.
+  assert.equal(retimeHeardShare([{ text: "We're ready" }], said('We are ready')), 1);
 });
 
 test('retimeAlign anchors a line on its heard words, never on a guessed time for an unheard word', () => {
