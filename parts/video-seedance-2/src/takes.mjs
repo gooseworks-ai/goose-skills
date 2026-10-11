@@ -234,6 +234,9 @@ export function sdTakePrompt(tpl, base, { id, index, beats, head, seconds, wps, 
     let dialogue = '';
     if (spoken && !/\{line\??\}/.test(pick.text)) {
       dialogue = voiceover ? `Voice-over from ${sdTakeWho(scene, base.cast)}, lips not on screen: "${spoken}"` : `${sdTakeWho(scene, base.cast)} says: "${spoken}"`;
+    } else if (spoken && voiceover) {
+      // The template placed the words itself; still say they are voice-over, so no mouth is faked on this beat.
+      dialogue = `The line is voice-over from ${sdTakeWho(scene, base.cast)}, lips not on screen`;
     }
     const w = windows[n];
     texts.push(`Beat ${n + 1} (${sdTakeSec(w.start)}-${sdTakeSec(w.end)}s): ${sdTakeJoinText([out.prompt, dialogue])}`);

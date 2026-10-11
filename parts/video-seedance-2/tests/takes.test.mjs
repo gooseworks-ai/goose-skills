@@ -134,6 +134,12 @@ test('off_screen_lines voiceover writes the off-screen line as voice-over; a tem
   const p = run.orders[0].body.prompt;
   assert.match(p, /Beat 1 \(0-6s\): Selfie: Maya holds the can beside her face, saying "Okay, Glow pop just arrived and I love it\."/);
   assert.doesNotMatch(p, /Maya says:/);
+
+  // {line} placed by the template on an off-screen beat with voiceover: the words stay where the template put them, marked as voice-over.
+  inputs = await ugcInputs(w, { scenes, off_screen_lines: 'voiceover', template: await writeTemplate(w, tpl, 'line-vo.prompt.json') });
+  run = ctxFor(inputs);
+  await mod.run(inputs, run.ctx);
+  assert.match(run.orders[0].body.prompt, /toward the lens, saying "Look at that colour\." The line is voice-over from Maya, lips not on screen\. Beat 3/);
 });
 
 test('fixture: street-interview takes mode orders three chained takes in order and joins them into one video and timeline', { skip }, async () => {
