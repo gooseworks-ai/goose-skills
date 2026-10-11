@@ -6,10 +6,10 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'transcribe-whisper',
-  version: '1.0.1',
+  version: '1.1.0',
   kind: 'caption',
   title: 'Transcribe speech (Whisper)',
-  summary: "Transcribes a cut's speech with fal Whisper word timings and places each approved line on what was heard, for captions and the check layer.",
+  summary: "Transcribes a cut's speech with fal Whisper word timings and places each approved line on what was heard, for captions and the check layer; can also set each scene's span from its heard words.",
   runtime: 'node',
   entry: 'part.mjs',
   files: ['README.md', 'part.mjs'],
@@ -29,6 +29,11 @@ export const manifest = {
       },
       timeline: { description: "The cut's timeline from an earlier step; its scenes, end card and safe zones are kept.", ...timeline },
       language: { description: 'Default en.', type: 'string', pattern: '^[a-z]{2}$' },
+      retime_scenes: {
+        description:
+          "Set the timeline's scene spans from each line's heard words: boundaries midway between one line's last word and the next line's first, tiling 0 to the end of the cut. Needs scenes with at least one line; refused when under 70% of the script is heard. Default false (the given spans are kept).",
+        type: 'boolean',
+      },
     },
   },
   outputs: {
