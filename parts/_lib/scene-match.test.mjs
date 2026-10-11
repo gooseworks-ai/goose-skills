@@ -18,6 +18,8 @@ test('a scene tag comes from extra.shot first, then a leading "Tag:" in the pict
   assert.equal(kitSceneTag({ picture: '10:30 on the clock' }), null);
   assert.equal(kitSceneTag({ picture: 'https://example.com/a' }), null);
   assert.equal(kitSceneTag({ picture: 'Ratio:3' }), null);
+  assert.equal(kitSceneTag({ picture: 'Product:' }), 'Product');
+  assert.equal(kitSceneTag({ picture: 'Product:   ' }), 'Product');
   assert.equal(kitSceneTag({ picture: { kind: 'file', path: '/x.png' } }), null);
   assert.equal(kitSceneTag({ picture: 'Product: x', extra: { shot: 3 } }), 'Product', 'a non-text shot is ignored');
   assert.equal(kitSceneTag(null), null);
@@ -29,6 +31,7 @@ test('tags compare without case or spacing; a picture loses its tag only when th
   assert.equal(kitPictureWithoutTag({ picture: 'Product: the jar on oak' }, ['product']), 'the jar on oak');
   assert.equal(kitPictureWithoutTag({ picture: 'Maya: holds the jar' }, ['Product']), 'Maya: holds the jar');
   assert.equal(kitPictureWithoutTag({ picture: null }, ['Product']), '');
+  assert.equal(kitPictureWithoutTag({ picture: 'Product:  ' }, ['Product']), '');
 });
 
 test('names match as whole words, ignoring case', () => {

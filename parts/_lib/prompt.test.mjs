@@ -47,6 +47,13 @@ test('the plan template is valid; unknown keys, versions and placeholders are re
   assert.throws(() => kitTemplateFrom({ version: 1, scene: 3 }, 'frames/x.prompt.json'), /frames\/x\.prompt\.json: scene must be text/);
   // Braces that are not placeholders are plain text.
   assert.deepEqual(kitTemplateProblems({ version: 1, scene: 'a { b } {1,2} {Upper}' }), []);
+  // Placeholder typos are refused at load, so no unfilled token reaches a paid prompt.
+  assert.deepEqual(kitTemplateProblems({ version: 1, scene: '{answers.foo.bar} {answers.Mood?} {brand.}', by_tag: { X: { motion: '{product.name.x}' } } }), [
+    'scene: malformed placeholder {answers.foo.bar}',
+    'scene: malformed placeholder {answers.Mood?}',
+    'scene: malformed placeholder {brand.}',
+    'by_tag.X.motion: malformed placeholder {product.name.x}',
+  ]);
 });
 
 test('a template file loads from a FileRef or a path, and a bad one names the file', async () => {
@@ -144,11 +151,23 @@ test('a missing value refuses the scene with its id; looks must be known', () =>
   const tpl = { version: 1, scene: '{picture} in the {answers.room}, {answers.mood}' };
   assert.throws(() => kitScenePrompt(tpl, { ...base, scene: { id: 's7', picture: 'the jar' } }), (e) => e instanceof KitPromptGap && e.message === 'scene s7 needs {answers.mood}');
   assert.throws(() => kitScenePrompt(TEMPLATE, { ...base, scene: { id: 's1', picture: null } }), /scene s1 needs \{picture\}/);
+  // A tag with nothing after it is an empty picture, not the word "Product".
+  assert.throws(() => kitScenePrompt(TEMPLATE, { ...base, scene: { id: 's6', picture: 'Product:' } }), /scene s6 needs \{picture\}/);
   assert.throws(() => kitScenePrompt(TEMPLATE, { ...base, look: 'anime', scene: { id: 's1', picture: 'x' } }), (e) => e.kind === 'look' && /scene s1 needs \{look\}: "anime" is not one of pixar-3d, claymation/.test(e.message));
   // No looks table: the answer text is the look. A scene without an id is named by its place.
   const plain = kitScenePrompt({ version: 1, scene: '{look}: {picture}' }, { look: 'watercolour', scene: { picture: 'a jar' }, index: 4 });
   assert.equal(plain.prompt, 'watercolour: a jar');
   assert.throws(() => kitScenePrompt({ version: 1, scene: '{line}' }, { scene: { line: null }, index: 4 }), /scene #5 needs \{line\}/);
+});
+
+test('a scene with a null line, on_screen or picture fills optional placeholders empty and never crashes', () => {
+  const tpl = { version: 1, scene: '{picture?}. Says: {line?}. Caption: {on_screen?}', motion: '{picture?} {line?}' };
+  const scene = { id: 's4', picture: null, line: null, on_screen: null };
+  assert.equal(kitScenePrompt(tpl, { ...base, scene }).prompt, 'Says: Caption');
+  assert.equal(kitScenePrompt(tpl, { ...base, scene }, { use: 'motion' }).prompt, '');
+  const out = kitScenePrompts(tpl, kitPickScenes([scene, { id: 's5', picture: 'a jar', line: null }]), base);
+  assert.deepEqual(out.map((p) => p.prompt), ['Says: Caption', 'a jar. Says: Caption']);
+  assert.throws(() => kitScenePrompt({ version: 1, scene: '{on_screen}' }, { scene }), (e) => e instanceof KitPromptGap && e.scene_id === 's4' && e.placeholder === '{on_screen}');
 });
 
 test('speaker, product and brand placeholders', () => {

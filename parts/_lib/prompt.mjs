@@ -14,7 +14,7 @@
 //   templates              {key: text}: more named texts a part may use ("hook", "take1", "later")
 //   by_tag                 {Tag: {scene?, motion?, negative?, prefix?, suffix?, refs?}}: per-tag overrides
 //   refs                   which references a scene sends, in order: "anchor" | "product" | "scene_image"
-//   max_refs               the most references per scene (1-10, default 10)
+//   max_refs               the most references per scene (0-10, default 10)
 //   banned                 phrases a filled prompt may not contain (case-insensitive, whole words)
 //
 // Placeholders: {picture} {line} {on_screen} {look} {style} {cast_looks}
@@ -35,6 +35,9 @@ const KIT_MAX_REFS = 10;
 const KIT_MAX_ANCHOR_REFS = 3;
 // {name}, {name?}, {a.b}, {answers.some_key?}: a placeholder. Other braces ("{ }", "{1,2}") are plain text.
 const KIT_PLACEHOLDER_RE = /\{([a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)?)(\?)?\}/g;
+// Anything that starts like a placeholder but is not one ({answers.a.b}, {answers.Mood}, {brand.}) is a typo the check refuses.
+const KIT_PLACEHOLDER_LIKE_RE = /\{([a-z][A-Za-z0-9_.-]*)\??\}/g;
+const KIT_PLACEHOLDER_NAME_RE = /^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)?$/;
 const KIT_SIMPLE_PLACEHOLDERS = new Set(['picture', 'line', 'on_screen', 'look', 'style', 'cast_looks', 'name']);
 const KIT_DOTTED_PLACEHOLDERS = new Set(['product.name', 'speaker.name', 'speaker.look']);
 
@@ -66,6 +69,9 @@ function kitPlaceholderProblems(text, where, inAnchor) {
     else if (KIT_SIMPLE_PLACEHOLDERS.has(key) || KIT_DOTTED_PLACEHOLDERS.has(key)) continue;
     else if (/^(answers|brand)\.[a-z][a-z0-9_]*$/.test(key)) continue;
     else out.push(`${where}: unknown placeholder {${key}${m[2] || ''}}`);
+  }
+  for (const m of String(text).matchAll(KIT_PLACEHOLDER_LIKE_RE)) {
+    if (!KIT_PLACEHOLDER_NAME_RE.test(m[1])) out.push(`${where}: malformed placeholder ${m[0]}`);
   }
   return out;
 }

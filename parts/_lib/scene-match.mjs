@@ -3,9 +3,10 @@
 // names. Pure functions over plan scenes, cast and products. Bundled into
 // parts; every top-level name starts with `kit` (parts/_tools/bundle.mjs).
 
-// A leading tag in a picture: one or two words, a colon, then a space ("Product: the jar on a table").
-// "10:30" and "https://" are not tags (a tag starts with a letter and the colon is followed by a space).
-const KIT_TAG_RE = /^\s*([A-Za-z][A-Za-z0-9_-]*(?: [A-Za-z0-9_-]+)?)\s*:\s+(?=\S)/;
+// A leading tag in a picture: one or two words, a colon, then a space ("Product: the jar on a table"),
+// or the tag alone ("Product:", whose picture is then empty and refuses a required {picture}).
+// "10:30" and "https://" are not tags (a tag starts with a letter and the colon is followed by a space or the end).
+const KIT_TAG_RE = /^\s*([A-Za-z][A-Za-z0-9_-]*(?: [A-Za-z0-9_-]+)?)\s*:(?:\s+(?=\S)|\s*$)/;
 
 /** The picture text of a scene, or '' when the picture is a file or empty. */
 function kitScenePictureText(scene) {
