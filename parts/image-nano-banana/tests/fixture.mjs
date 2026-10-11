@@ -90,3 +90,40 @@ export async function scenesInputs(workDir, extra = {}) {
     ...extra,
   };
 }
+
+// ---- 1.2.0 products mode ----
+
+// The request fields and the result pointer recorded for fal-ai/nano-banana/edit
+// (fal OpenAPI NanoBananaEditInput, fetched 2026-10-12; GOOSE-4015 contracts/replies).
+export const EDIT_FIELDS = ['limit_generations', 'safety_tolerance', 'seed', 'prompt', 'sync_mode', 'num_images', 'aspect_ratio', 'output_format', 'image_urls'];
+export const EDIT_REQUIRED = ['prompt', 'image_urls'];
+export const EDIT_POINTER = '/json/images/0/url';
+
+/** A day-in-the-life style's frames/product-stills.prompt.json. */
+export const productsTemplate = {
+  version: 1,
+  suffix: 'vertical 9:16, no text, no logos added',
+  negative: 'hands, extra products, changed label',
+  by_tag: {
+    Snap: { scene: 'The {product.name} exactly as in the reference photo, one complete product on {answers.snap_surface}, soft key light from the upper left' },
+    Angled: { scene: 'The {product.name} exactly as in the reference photo, turned 15-20 degrees to a three-quarter view, floating over warm white', negative: 'hands, a second product' },
+  },
+};
+
+/** Three variants of one product line, each with its own photo, as plan.products gives them. */
+export async function productsInputs(workDir, extra = {}) {
+  const products = [];
+  for (const [id, name] of [['mist', 'Morning Mist Green Tea'], ['hearth', 'Hearth Breakfast Black Tea'], ['garden', 'Night Garden Chamomile']]) {
+    products.push({ id, name, images: [await fileRef(await makeImage(join(workDir, `${id}.png`)), 'image')] });
+  }
+  return {
+    model: 'fal-ai/nano-banana/edit',
+    mode: 'products',
+    kinds: ['snap', 'angled'],
+    aspect_ratio: '9:16',
+    template: await writeTemplate(workDir, productsTemplate, 'product-stills.prompt.json'),
+    answers: { snap_surface: 'a pale oak shelf', range_reveal: 'one_by_one' },
+    products,
+    ...extra,
+  };
+}
