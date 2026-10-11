@@ -457,3 +457,16 @@ test('eleven_multilingual_v2 with tags: keep and no tagged line is allowed (noth
   await mod.run({ scenes: [{ id: 's1', line: 'Hello there.' }], voice_id: A, model: 'eleven_multilingual_v2', tags: 'keep' }, ctx);
   assert.deepEqual(orders.map((o) => [o.body.model_id, o.body.text]), [['eleven_multilingual_v2', 'Hello there.']]);
 });
+
+test('a tempo fitted to min_wps is not refused when the reported rate rounds below it', { skip: !ffmpeg && 'ffmpeg is not installed' }, async () => {
+  const scenes = [{ id: 's1', line: 'aaaa bbbb cccc.' }];
+  const plain = makeCtx({ partDir: dir, line: sample.line });
+  const base = await mod.run({ scenes, voice_id: A }, plain.ctx);
+  const raw = 3 / base.speech.reduce((t, s) => t + (s.end_s - s.start_s), 0);
+  // A band edge with a third decimal of 1: the paced rate lands in [m, m + 0.004], which rounds to 2 decimals below m.
+  const m = Math.floor(raw * 1.15 * 100) / 100 + 0.001;
+  const { ctx } = makeCtx({ partDir: dir, line: sample.line });
+  const out = await mod.run({ scenes, voice_id: A, pace: { min_wps: m } }, ctx);
+  assert.ok(out.tempo > 1 && out.tempo <= 1.25, `tempo ${out.tempo}`);
+  assert.ok(Math.abs(out.words_per_second - m) < 0.01, `${out.words_per_second} words per second, band edge ${m}`);
+});

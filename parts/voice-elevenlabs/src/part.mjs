@@ -395,16 +395,20 @@ export async function run(inputs, ctx) {
   }
   const total = at / tempo;
   const wps = words ? +(words / (speakingSeconds(speech) || 1)).toFixed(2) : 0;
+  // The band is checked on the exact paced rate (every span divided by tempo), not the rounded report, so a
+  // tempo fitted to the band is never refused for a rounding step after the voice was paid for.
+  const pacedWps = rawWps * tempo;
+  const EPS = 1e-9;
 
   // Checked on the finished, paced read, before the track is joined and before any later step is paid for.
   if (inputs.max_seconds !== undefined && total > inputs.max_seconds) {
     throw ctx.error('bad_input', `the read runs ${total.toFixed(2)} s, longer than max_seconds ${inputs.max_seconds}; shorten the lines`);
   }
   const pace = inputs.pace || {};
-  if (words && pace.min_wps !== undefined && wps < pace.min_wps) {
+  if (words && pace.min_wps !== undefined && pacedWps < pace.min_wps - EPS) {
     throw ctx.error('bad_input', `the read runs ${wps} words per second at tempo ${tempo}, slower than pace.min_wps ${pace.min_wps}; add words or allow a higher max_tempo`);
   }
-  if (words && pace.max_wps !== undefined && wps > pace.max_wps) {
+  if (words && pace.max_wps !== undefined && pacedWps > pace.max_wps + EPS) {
     throw ctx.error('bad_input', `the read runs ${wps} words per second at tempo ${tempo}, faster than pace.max_wps ${pace.max_wps}; cut words`);
   }
 
