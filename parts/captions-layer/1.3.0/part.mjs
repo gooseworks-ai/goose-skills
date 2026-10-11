@@ -398,6 +398,8 @@ const SAFE_BOTTOM = 1635 / 1920;
 const PLATE = 'rgba(58,58,60,0.839)';
 const MAX_BYTES = 180 * 1000 * 1000;
 const PRESETS = new Set(['plate', 'stroke', 'karaoke', 'pill', 'serif-word', 'sentence']);
+// The presets new in 1.3.0 (plate, stroke and karaoke group words exactly as in 1.2.0).
+const NEW_PRESETS = new Set(['pill', 'serif-word', 'sentence']);
 // A sentence caption longer than this (with no max_words in the look) is split into near-equal parts.
 const DEFAULT_WORDS = { plate: 2, stroke: 5, karaoke: 5, pill: 3, 'serif-word': 1, sentence: 12 };
 // Caption centre as a share of the height; for `sentence` it is the centre of the last line.
@@ -571,6 +573,37 @@ function sentenceGroups(words, per) {
   return groups;
 }
 
+const DASH = /^[-\u2013\u2014]+$/;
+const OPENING = /^[\u201c\u2018([{]+$/;
+
+/**
+ * The 1.3.0 presets' words with no letter or digit (a dash, a lone quote or full stop) folded into the word
+ * before them, so no caption or word state is only punctuation; an opening quote or bracket (a straight quote
+ * when the quotes so far are balanced) and marks before the first word go on the word after. Empty words are
+ * dropped.
+ */
+function foldMarks(words) {
+  const out = [];
+  let lead = null;
+  let quotes = 0;
+  for (const w of words) {
+    const text = String(w.text || '').trim();
+    if (!text) continue;
+    const opens = OPENING.test(text) || (/^["']+$/.test(text) && quotes % 2 === 0);
+    quotes += (text.match(/"/g) || []).length;
+    if (/[\p{L}\p{N}]/u.test(text)) {
+      const word = { ...w, text: lead ? `${lead.text}${DASH.test(lead.text) ? ' ' : ''}${text}` : text, start_s: lead ? Math.min(lead.start_s, w.start_s) : w.start_s };
+      lead = null;
+      out.push(word);
+    } else if (out.length && !opens) {
+      const prev = out.at(-1);
+      prev.text = DASH.test(text) ? `${prev.text} ${text}` : `${prev.text}${text}`;
+      prev.end_s = Math.max(prev.end_s, w.end_s);
+    } else lead = { text: lead ? `${lead.text}${text}` : text, start_s: lead ? lead.start_s : w.start_s };
+  }
+  return out;
+}
+
 /** Serif-word groups: one word each, except that the words of one brand name or highlight stay together. */
 function serifGroups(words) {
   const groups = [];
@@ -716,8 +749,10 @@ async function buildCues(ctx, inputs, duration, look) {
   const brandName = inputs.brand.name ? [inputs.brand.name.split(/\s+/).map(matchKey).join('')].filter(Boolean) : [];
   const cues = [];
   const kept = [];
+  const sentenceLines = [];
   for (const line of lines) {
-    const words = line.words.filter((w) => !inCard(w.start_s)).map((w) => ({ text: w.text, start_s: w.start_s, end_s: w.end_s, hi: false }));
+    let words = line.words.filter((w) => !inCard(w.start_s)).map((w) => ({ text: w.text, start_s: w.start_s, end_s: w.end_s, hi: false }));
+    if (NEW_PRESETS.has(look.preset)) words = foldMarks(words);
     if (!words.length) continue;
     markPhrases(words, phrases, (w, at) => {
       w.hi = true;
@@ -729,7 +764,10 @@ async function buildCues(ctx, inputs, duration, look) {
       });
     }
     kept.push(...words);
-    if (look.preset === 'sentence') continue;
+    if (look.preset === 'sentence') {
+      sentenceLines.push({ start: words[0].start_s, words });
+      continue;
+    }
     let groups;
     if (look.preset === 'plate') groups = plateGroups(words, line.end - line.start, look.max_words, look.max_words_set);
     else if (look.preset === 'serif-word') groups = serifGroups(words);
@@ -737,7 +775,8 @@ async function buildCues(ctx, inputs, duration, look) {
     for (const g of groups) cues.push({ words: g, start_s: g[0].start_s, end_s: g.at(-1).end_s });
   }
   if (look.preset === 'sentence') {
-    const ordered = [...kept].sort((a, b) => a.start_s - b.start_s);
+    // Lines in time order, each line's words in its own order: lines that overlap are never interleaved.
+    const ordered = sentenceLines.sort((a, b) => a.start - b.start).flatMap((l) => l.words);
     for (const g of sentenceGroups(ordered, look.max_words)) cues.push({ words: g, start_s: g[0].start_s, end_s: g.at(-1).end_s });
   }
   if (!cues.length) {
@@ -830,11 +869,11 @@ function caseOf(text, look) {
 }
 
 /**
- * The words of a cue as drawn (and written to the WebVTT): in the look's case, except that a pill keeps the
- * brand name as written; a serif-word caption that is all highlight is quoted.
+ * The words of a cue as drawn (and written to the WebVTT): in the look's case, except that a lower-case pill
+ * keeps the brand name as written; a serif-word caption that is all highlight is quoted.
  */
 function cueTexts(c, look) {
-  const texts = c.words.map((w) => (look.preset === 'pill' && w.brand !== undefined ? w.text : caseOf(w.text, look)));
+  const texts = c.words.map((w) => (look.preset === 'pill' && look.case === 'lower' && w.brand !== undefined ? w.text : caseOf(w.text, look)));
   if (look.preset === 'serif-word' && c.words.every((w) => w.hi)) {
     texts[0] = `\u201c${texts[0].replace(/^["'\u201c\u2018(]+/, '')}`;
     const last = texts.length - 1;

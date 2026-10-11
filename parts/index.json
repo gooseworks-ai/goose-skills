@@ -608,7 +608,7 @@
       "determinism": "provider",
       "path": "parts/captions-layer/1.3.0",
       "files": {
-        "README.md": "9bc351ea22d11fdc489c0d6c27de0cf72f59bd4589258dd9fd9d9d76e95aa88f",
+        "README.md": "f07a6de7b7facc840064eb2308b604f69a744391762228dd2c955e6d0a22f082",
         "assets/fonts/Montserrat-Bold.ttf": "bc6e854971cea46b463be6f9eef4d9cd52f51cfc1fc0dd90c9d3e6483dc0ec61",
         "assets/fonts/Montserrat-OFL.txt": "ea6b176076abe6950aa25de2fcd199c56fa8409946e883370e10bec68596573c",
         "assets/fonts/PTSerif-Bold.ttf": "038ba7336bd7ea14f12ad155bed51a4345cac5153275d521dec3ba04021c526e",
@@ -616,7 +616,7 @@
         "assets/fonts/TitanOne-OFL.txt": "2abc52c3268db4de42e3b625d604d062f2410c620b0a88d29e1b007116df253e",
         "assets/fonts/TitanOne-Regular.ttf": "bcac194b2c80941682789e854d0515855a41dfa0d3f209fbf1725b15cd9fd063",
         "part.json": "4ffcbdd56c5567613642368f59e092724b7f64c60dddda5d4a8e3d42e72e2559",
-        "part.mjs": "e7a1a775b6a3f17b7d4e8a4a762bcd9a61aa7a3e64df7173be7ce2b9a109924f"
+        "part.mjs": "099bc4ba84fdc08a9f9f3e3cf98a5d870898e9973b19c822949537b1c392a18e"
       },
       "models": [
         {

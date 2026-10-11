@@ -174,3 +174,46 @@ test('refusal: a caption zone too small for a sentence caption is refused', { sk
   });
   await assert.rejects(mod.run(inputs, ctx), (e) => e.code === 'bad_input' && /too small/.test(e.message));
 });
+
+test('pill with case upper upper-cases the brand name too', { skip }, async () => {
+  const { ctx } = makeCtx({ partDir: dir });
+  const video = await cut(ctx, 2);
+  const words = timed([['Try', 0.2, 0.4], ['Sample', 0.5, 0.7], ['Goods', 0.75, 0.95]]);
+  const inputs = await layerInputsFor(video, {
+    expect: { speech: 'voiceover', captions: true, caption_look: { preset: 'pill', case: 'upper' } },
+    timeline: { speech: [{ text: 'Try Sample Goods', start_s: 0.2, end_s: 0.95, words }] },
+  });
+  const out = await mod.run(inputs, ctx);
+  assert.deepEqual(vttTexts(out.captions.path), ['TRY SAMPLE GOODS']);
+});
+
+test('serif-word and sentence never show a caption or word that is only punctuation', { skip }, async () => {
+  const words = timed([['Wait', 0.2, 0.5], ['—', 0.5, 0.55], ['really', 0.6, 0.9], ['', 0.9, 0.9], ['?', 0.9, 0.95], ['"', 1.0, 1.0], ['Yes."', 1.0, 1.4]]);
+  const runs = { 'serif-word': ['Wait —', 'really?', '"Yes."'], sentence: ['Wait — really?', '"Yes."'] };
+  for (const [preset, want] of Object.entries(runs)) {
+    const { ctx } = makeCtx({ partDir: dir });
+    const video = await cut(ctx, 2);
+    const inputs = await layerInputsFor(video, {
+      expect: { speech: 'voiceover', captions: true, caption_look: { preset } },
+      timeline: { speech: [{ text: 'Wait — really? "Yes."', start_s: 0.2, end_s: 1.4, words }] },
+    });
+    const out = await mod.run(inputs, ctx);
+    assert.deepEqual(vttTexts(out.captions.path), want, preset);
+  }
+});
+
+test('sentence: overlapping lines are kept in line order, never interleaved word by word', { skip }, async () => {
+  const { ctx } = makeCtx({ partDir: dir });
+  const video = await cut(ctx, 3);
+  const inputs = await layerInputsFor(video, {
+    expect: { speech: 'voiceover', captions: true, caption_look: { preset: 'sentence' } },
+    timeline: {
+      speech: [
+        { text: 'Pack it tonight.', start_s: 0.2, end_s: 1.2, words: timed([['Pack', 0.2, 0.5], ['it', 0.6, 0.8], ['tonight.', 0.9, 1.2]]) },
+        { text: 'Sure thing.', start_s: 0.55, end_s: 1.5, words: timed([['Sure', 0.55, 0.85], ['thing.', 1.25, 1.5]]) },
+      ],
+    },
+  });
+  const out = await mod.run(inputs, ctx);
+  assert.deepEqual(vttTexts(out.captions.path), ['Pack it tonight.', 'Sure thing.']);
+});

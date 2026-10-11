@@ -24,14 +24,17 @@ end-card stop.)
       lines, then shrinks to fit.
     - `karaoke`: grouped like `stroke`, and the word being spoken takes the highlight colour.
     - `pill` (new): about 3 words (grouped like `stroke`, at most 5) on one line on a cream rounded pill with
-      a soft shadow, in the bundled rounded face (Titan One). Lower case by default, but the brand name keeps
-      its written case. The words said so far are near-black and the ones still to come grey; a highlighted word,
+      a soft shadow, in the bundled rounded face (Titan One). Lower case by default, and then the brand name keeps
+      its written case (`case: "upper"` upper-cases it too). The words said so far are near-black and the ones still to come grey; a highlighted word,
       once said, takes the highlight colour. Default centre 0.70 of the height.
     - `serif-word` (new): one word at a time, on one line, in the bundled heavy serif (PT Serif Bold), white
       with a black outline 0.0047 of the height, cap height about 0.037 of the height. The words of the brand
       name always stay in one caption (never half a brand name). A caption that is all highlight (the brand
       with `highlight: ["brand"]`) is quoted and drawn in the highlight colour. Default centre 0.75 of the
       height, which puts the baseline near 0.77.
+    - In `pill`, `serif-word` and `sentence`, a word with no letter or digit (a lone dash, quote or full
+      stop) joins the word before it (an opening quote or bracket, the word after), so no caption is only
+      punctuation; lines that overlap in time are read one after the other, never interleaved.
     - `sentence` (new): one sentence per caption, in the bundled serif, near-white with a dark outline, 62 px
       at 1920 high. A sentence is read across lines: it ends at `.`, `!` or `?`, so a sentence sung over
       several scenes is one caption; one longer than `max_words` (default 12) is split into near-equal parts.
