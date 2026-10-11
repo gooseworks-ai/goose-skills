@@ -1,5 +1,11 @@
 # captions-layer
 
+## 1.2.0
+
+- Reads the style's caption look (`expect.caption_look`): presets `plate`, `stroke` and `karaoke`, with words per caption, height, case, brand and call-to-action highlights and skipping the first scene. An unknown preset is drawn as `plate` with a warning; the look is never refused.
+- Never captions inside the timeline's end card; the last caption holds to the end card's start.
+- The final encode is capped at 16 Mbit/s, and a result over 180 MB is refused before upload.
+
 ## 1.1.0
 
 - The caption font is loaded before captions are measured and wide captions are resized, never overflowing the band; the price is per call.
