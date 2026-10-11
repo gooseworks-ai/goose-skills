@@ -324,3 +324,106 @@ export async function giPlateRestore(ctx, plate, state, name) {
   await kitFfmpeg(ctx, ['-f', 'rawvideo', '-pix_fmt', 'rgb24', '-video_size', `${w}x${h}`, '-i', outRaw, '-frames:v', '1', '-c:v', 'png', join(ctx.workDir, name)]);
   return { file: await ctx.file(name, 'image'), kept: kept / mask.length, same: same / mask.length };
 }
+
+// ---- relight (a port of the stop-motion recipe's relight.py) ----
+//
+// The closing shot of a stop-motion film is the first place again, at night.
+// A generated night plate never lines up with the day one, so it is used only
+// for its light: the night picture divided by the day plate, both blurred very
+// wide (sigma 90, so no detail crosses over), split into a brightness and a
+// colour tint that cannot run away. Every day frame is multiplied by that
+// field, so the geometry cannot drift and the product is the same pixels. It
+// dims and tints; it cannot add a lamp that casts new shadows.
+//
+// The arithmetic follows numpy's float32 in relight.py step by step (each
+// operation rounded to float32, the channel mean as numpy sums three values,
+// round half to even), so the result matches the script byte for byte.
+
+export const GI_RELIGHT = { blur: 90, min: 0.05, max: 2.0, tint_min: 0.8, tint_max: 1.3 };
+
+/** numpy's rint: round half to even. */
+export function giRint(v) {
+  const r = Math.round(v);
+  return r - v === 0.5 && r % 2 !== 0 ? r - 1 : r;
+}
+
+/**
+ * The light field (relight.py's F) from the blurred light picture `Lb` and the
+ * blurred day plate `Db` (raw RGB bytes of one size): a Float32Array with one
+ * factor per byte.
+ */
+export function giRelightField(Lb, Db, opts = GI_RELIGHT) {
+  const o = { ...GI_RELIGHT, ...opts };
+  const f = Math.fround;
+  const lo = f(o.min);
+  const hi = f(o.max);
+  const tlo = f(o.tint_min);
+  const thi = f(o.tint_max);
+  const eps = f(1e-3);
+  const F = new Float32Array(Lb.length);
+  for (let i = 0; i < Lb.length; i += 3) {
+    const r = f(Lb[i] / Math.max(Db[i], 1));
+    const g = f(Lb[i + 1] / Math.max(Db[i + 1], 1));
+    const b = f(Lb[i + 2] / Math.max(Db[i + 2], 1));
+    const mean = f(f(f(r + g) + b) / 3);
+    const bright = Math.min(Math.max(mean, lo), hi);
+    const den = Math.max(mean, eps);
+    F[i] = f(bright * Math.min(Math.max(f(r / den), tlo), thi));
+    F[i + 1] = f(bright * Math.min(Math.max(f(g / den), tlo), thi));
+    F[i + 2] = f(bright * Math.min(Math.max(f(b / den), tlo), thi));
+  }
+  return F;
+}
+
+/** A day frame (raw RGB bytes) times the field, rounded half to even and clipped: new bytes. */
+export function giRelightApply(S, F) {
+  const out = new Uint8Array(S.length);
+  for (let i = 0; i < S.length; i++) {
+    const v = giRint(Math.fround(S[i] * F[i]));
+    out[i] = v < 0 ? 0 : v > 255 ? 255 : v;
+  }
+  return out;
+}
+
+/** Mean of raw bytes (relight.py's "mean brightness" of the RGB result). */
+function giRelightMean(bytes) {
+  let sum = 0;
+  for (let i = 0; i < bytes.length; i++) sum += bytes[i];
+  return bytes.length ? sum / bytes.length : 0;
+}
+
+/**
+ * The light field for a relit shot: `light` (the generated light picture) and
+ * `day` (the source shot's plate) are FileRefs, decoded at `w`x`h` (scaled when
+ * a picture is another size) and blurred. Returns a Float32Array.
+ */
+export async function giRelightFieldFor(ctx, { light, day, w, h, tag, blur = GI_RELIGHT.blur }) {
+  const dir = ctx.tmpDir || ctx.workDir;
+  const decode = async (file, name) => {
+    const size = await giPlateSize(ctx, file);
+    const scale = size.w === w && size.h === h ? [] : [`scale=${w}:${h}:flags=bicubic`];
+    const out = join(dir, `${tag}-${name}-${w}x${h}.rgb`);
+    await kitFfmpeg(ctx, ['-i', file.path, '-frames:v', '1', '-vf', [...scale, 'format=rgb24'].join(','), '-f', 'rawvideo', '-pix_fmt', 'rgb24', out]);
+    const px = new Uint8Array(await readFile(out));
+    if (px.length !== w * h * 3) throw ctx.error('tool_failed', `the ${name} picture decoded to ${px.length} bytes, not ${w}x${h} RGB`);
+    return giPlateBlur(px, w, h, 3, blur);
+  };
+  return giRelightField(await decode(light, 'light'), await decode(day, 'day'));
+}
+
+/**
+ * One day frame (`frame`, a FileRef) re-lit by `fieldFor(w, h)` and written as
+ * ctx.workDir/`name`. Returns {file, mean, day_mean}.
+ */
+export async function giRelightFrame(ctx, frame, fieldFor, name) {
+  const dir = ctx.tmpDir || ctx.workDir;
+  const { w, h } = await giPlateSize(ctx, frame);
+  const base = name.replace(/\.png$/, '');
+  const S = await giPlateRgb(ctx, frame.path, join(dir, `${base}-day.rgb`));
+  if (S.length !== w * h * 3) throw ctx.error('tool_failed', `${name} decoded to ${S.length} bytes, not ${w}x${h} RGB`);
+  const out = giRelightApply(S, await fieldFor(w, h));
+  const outRaw = join(dir, `${base}-out.rgb`);
+  await writeFile(outRaw, out);
+  await kitFfmpeg(ctx, ['-f', 'rawvideo', '-pix_fmt', 'rgb24', '-video_size', `${w}x${h}`, '-i', outRaw, '-frames:v', '1', '-c:v', 'png', join(ctx.workDir, name)]);
+  return { file: await ctx.file(name, 'image'), mean: giRelightMean(out), day_mean: giRelightMean(S) };
+}

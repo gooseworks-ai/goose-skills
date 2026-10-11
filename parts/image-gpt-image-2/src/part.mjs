@@ -17,14 +17,16 @@
 //           [plate, previous frame, product photos], then the plate's own
 //           pixels are put back wherever a frame did not change (restore,
 //           src/plate.mjs). A scene with extra.repeat_of reuses an earlier
-//           scene's finished frame, free.
+//           scene's finished frame, free; with relight, a shot made only of
+//           repeats is the first place again in another light: one paid light
+//           picture, multiplied into the source frames (src/plate.mjs).
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitFfmpeg, kitPieceName, kitStopIfAborted } from '../../_lib/part.mjs';
 import { KitPromptGap, kitLoadTemplate, kitPromptJoin, kitScenePrompt } from '../../_lib/prompt.mjs';
 import { kitNamedProducts, kitPickScenes } from '../../_lib/scene-match.mjs';
 import { kitStillAnchorMembers, kitStillAnchorPrompt, kitStillCastFiles, kitStillJobs, kitStillOutputs, kitStillPrompt, kitStillRefs, kitStillStrip, kitStillTemplate, kitStillWantsStrip } from '../../_lib/scene-stills.mjs';
-import { giPlatePixels, giPlateRestore } from './plate.mjs';
+import { giPlatePixels, giPlateRestore, giRelightFieldFor, giRelightFrame } from './plate.mjs';
 
 const EDIT = 'openai/gpt-image-2/edit';
 const TEXT = 'openai/gpt-image-2';
@@ -33,10 +35,12 @@ const GI_STRIP_NOTE_MAX = 600;
 const GI_AT_ONCE = 4;
 const GI_DEFAULT_SIZE = '1088x1920';
 const GI_DEFAULT_QUALITY = 'high';
-const GI_SCENE_ONLY = ['scenes', 'products', 'pick', 'skip_first', 'skip_last', 'anchor', 'multi_ref', 'restore'];
+const GI_SCENE_ONLY = ['scenes', 'products', 'pick', 'skip_first', 'skip_last', 'anchor', 'multi_ref', 'restore', 'relight'];
 const GI_NOT_IN_SHOTS = ['images', 'cast', 'cast_size', 'anchor', 'multi_ref'];
 const GI_MAX_REFS = 10;
 const GI_NOT_IN_IMAGES = [...GI_SCENE_ONLY, 'template', 'look', 'answers', 'brand', 'cast', 'cast_size', 'style_refs'];
+/** The light picture's text when the template has no templates.light: the shot's empty plate, only the light changed. */
+const GI_DEFAULT_LIGHT = 'This is the same empty place, shot by the same locked camera, everything in exactly the same place. One thing has changed: {picture}. It is completely empty. A real photograph, fine film grain, true to life colour. No objects, no hands, no people, no text, no watermark';
 /** The anchor text when the style's template has none: a plain photo of a real person, nothing that bakes into every scene. */
 const GI_DEFAULT_ANCHOR = 'A real photo of one person: {look}. Chest up, looking into the lens, in front of a plain light wall, soft even daylight, hands empty, natural skin texture, shot on a phone, no text, no props';
 
@@ -184,6 +188,7 @@ async function giScenes(inputs, ctx, manifest, opts) {
   if (inputs.images) throw ctx.error('bad_input', 'scenes mode makes its own images: give scenes or images, not both');
   if (!inputs.scenes) throw ctx.error('bad_input', 'scenes mode needs scenes');
   if (inputs.restore !== undefined) throw ctx.error('bad_input', 'restore works only in shots mode');
+  if (inputs.relight !== undefined) throw ctx.error('bad_input', 'relight works only in shots mode');
   if (model === TEXT && anchor !== 'none') throw ctx.error('bad_input', `anchor ${anchor} needs ${EDIT}, which takes reference images`);
   if (model === TEXT && inputs.style_refs && inputs.style_refs.length) throw ctx.error('bad_input', `style_refs need ${EDIT}, which takes reference images`);
   const cast = inputs.cast || [];
@@ -268,10 +273,12 @@ function giSceneId(scene, index) {
 
 /**
  * Groups the picked scenes into shots, before anything is ordered. Returns
- * {groups: [{name, entries}], repeats: Map(scene id -> drawn scene id)}; an
- * entry is {id, index, scene}. A scene with extra.repeat_of is drawn by no
- * shot: it names an earlier picked scene, whose finished frame it reuses. A
- * scene with no extra.group is a shot of its own, named by its id.
+ * {groups: [{key, name, entries}], repeats: Map(scene id -> drawn scene id),
+ * repeatList: [{id, index, scene, of, root, group}] in plan order}; an entry is
+ * {id, index, scene}. A scene with extra.repeat_of is drawn by no shot: it
+ * names an earlier picked scene (`of`), whose finished frame it reuses; `root`
+ * is the drawn scene a chain of repeats ends on. A scene with no extra.group
+ * is a shot of its own, named by its id.
  */
 function giShotPlan(ctx, picked) {
   const at = new Map();
@@ -282,6 +289,7 @@ function giShotPlan(ctx, picked) {
   }
   const groups = new Map();
   const repeats = new Map();
+  const repeatList = [];
   const loose = new Set();
   for (const [k, { scene, index }] of picked.entries()) {
     const id = giSceneId(scene, index);
@@ -290,7 +298,10 @@ function giShotPlan(ctx, picked) {
       if (typeof of !== 'string') throw ctx.error('bad_input', `scene ${id}: extra.repeat_of must be a scene id`);
       if (!at.has(of)) throw ctx.error('bad_input', `scene ${id} repeats ${of}, which is not a picked scene`);
       if (at.get(of) >= k) throw ctx.error('bad_input', `scene ${id} repeats ${of}, which does not come before it`);
+      const group = giExtra(scene, 'group');
+      if (group != null && typeof group !== 'string') throw ctx.error('bad_input', `scene ${id}: extra.group must be text`);
       repeats.set(id, repeats.get(of) || of);
+      repeatList.push({ id, index, scene, of, root: repeats.get(id), group: typeof group === 'string' && group.trim() ? group.trim() : null });
       continue;
     }
     const group = giExtra(scene, 'group');
@@ -298,13 +309,52 @@ function giShotPlan(ctx, picked) {
     const name = typeof group === 'string' && group.trim() ? group.trim() : null;
     if (!name) loose.add(id);
     const key = name ? `g:${name}` : `s:${id}`;
-    if (!groups.has(key)) groups.set(key, { name: name || id, entries: [] });
+    if (!groups.has(key)) groups.set(key, { key, name: name || id, entries: [] });
     groups.get(key).entries.push({ id, index, scene });
   }
   for (const id of loose) {
     if (groups.has(`g:${id}`)) throw ctx.error('bad_input', `scene ${id} has no group, and a group is also called ${id}`);
   }
-  return { groups: [...groups.values()], repeats };
+  return { groups: [...groups.values()], repeats, repeatList };
+}
+
+/**
+ * The shots relight re-lights, before anything is ordered. A shot made only of
+ * repeats (its scenes share an extra.group that no drawn scene has, or a
+ * repeat with no group, alone) is the first place again in another light: its
+ * first scene's picture text says the light. A repeat inside a drawn shot (a
+ * callback) and a repeat shot whose first picture has no words stay plain
+ * repeats. Every scene of a relit shot repeats frames of ONE drawn shot, whose
+ * plate the light is measured against. Returns [{name, entries, source, first}].
+ */
+function giRelitShots(ctx, plan) {
+  const drawnAt = new Map();
+  for (const g of plan.groups) for (const e of g.entries) drawnAt.set(e.id, g);
+  const named = new Set(plan.groups.filter((g) => g.key.startsWith('g:')).map((g) => g.name));
+  const loose = new Set(plan.groups.filter((g) => g.key.startsWith('s:')).map((g) => g.name));
+  const shots = new Map();
+  for (const r of plan.repeatList) {
+    if (r.group && named.has(r.group)) continue;
+    if (r.group && loose.has(r.group)) throw ctx.error('bad_input', `scene ${r.group} has no group, and a group is also called ${r.group}`);
+    const key = r.group ? `g:${r.group}` : `s:${r.id}`;
+    if (!shots.has(key)) shots.set(key, { name: r.group || r.id, entries: [] });
+    shots.get(key).entries.push(r);
+  }
+  const out = [];
+  for (const shot of shots.values()) {
+    const first = shot.entries[0];
+    const words = typeof first.scene.picture === 'string' ? first.scene.picture.trim() : '';
+    if (!words) {
+      ctx.log.info(`shot ${shot.name} has no picture words for its light, so its scenes repeat their frames as they are`);
+      continue;
+    }
+    const sources = [...new Set(shot.entries.map((e) => drawnAt.get(e.root)))];
+    if (sources.length > 1) {
+      throw ctx.error('bad_input', `shot ${shot.name} repeats frames of ${sources.length} shots (${sources.map((g) => g.name).join(', ')}); a re-lit shot repeats one shot, whose plate its light is measured against`);
+    }
+    out.push({ name: shot.name, entries: shot.entries, source: sources[0], first });
+  }
+  return out;
 }
 
 /** "1", "2 and 3", "3, 4 and 5": reference numbers in words. */
@@ -322,6 +372,7 @@ function giShotNote(roles) {
   };
   say('plate', "is this shot's first picture, from a locked camera: keep its camera, framing, surface and light exactly", '');
   say('previous', 'is the picture just before this one: everything in it stays exactly where it is unless this text changes it', '');
+  say('day', 'is this same place in its first light, from the same locked camera: keep its camera, framing, surface and everything in it exactly; change only the light', '');
   say('product', 'shows the product: keep it exactly as in the photo, mark and colour unchanged', 'show the product: keep it exactly as in the photos, mark and colour unchanged');
   say('scene_image', "is this scene's own picture", "are this scene's own pictures");
   say('style', 'shows the style only', 'show the style only');
@@ -353,6 +404,7 @@ async function giShots(inputs, ctx, manifest, opts) {
   for (const key of GI_NOT_IN_SHOTS) if (inputs[key] !== undefined) throw ctx.error('bad_input', `${key} does not work in shots mode`);
   if (opts.model === TEXT) throw ctx.error('bad_input', `shots mode edits every frame on its plate, so it needs ${EDIT}`);
   const restore = inputs.restore !== false;
+  const relight = inputs.relight === true;
   const products = inputs.products || [];
   const styleRefs = inputs.style_refs || [];
 
@@ -367,7 +419,10 @@ async function giShots(inputs, ctx, manifest, opts) {
     giRefuseGap(ctx, err);
   }
   if (!picked.length) throw ctx.error('bad_input', 'no scene is picked for a still');
-  const { groups, repeats } = giShotPlan(ctx, picked);
+  const plan = giShotPlan(ctx, picked);
+  const { groups } = plan;
+  const relit = relight ? giRelitShots(ctx, plan) : [];
+  if (relight && !relit.length) ctx.log.info('relight: no shot is made only of repeats with words for its light, so nothing is re-lit');
   const named = (key) => Boolean(tpl.templates && typeof tpl.templates[key] === 'string');
   const used = new Set();
   try {
@@ -384,12 +439,21 @@ async function giShots(inputs, ctx, manifest, opts) {
         e.scene_image = giIsFile(filled.refs.scene_image) ? filled.refs.scene_image : null;
       }
     }
+    // A relit shot's light picture: templates.light, else the default text; {picture} = its first scene's words.
+    for (const rg of relit) {
+      const at = { ...base, scene: rg.first.scene, index: rg.first.index };
+      const filled = named('light') ? kitScenePrompt(tpl, at, { use: 'light' }) : kitScenePrompt({ version: 1, scene: GI_DEFAULT_LIGHT }, at);
+      rg.prompt = filled.prompt;
+      rg.negative = filled.negative;
+    }
   } catch (err) {
     giRefuseGap(ctx, err);
   }
   const drawn = groups.flatMap((g) => g.entries);
-  giCheckLength(ctx, drawn.map((e) => kitPromptJoin([e.prompt, e.negative ? `Avoid: ${e.negative}` : ''])));
+  giCheckLength(ctx, [...drawn, ...relit].map((e) => kitPromptJoin([e.prompt, e.negative ? `Avoid: ${e.negative}` : ''])));
   for (const e of drawn) e.piece = kitPieceName('image', e.id, e.index, used);
+  for (const rg of relit) rg.piece = kitPieceName('light', rg.first.id, rg.first.index, used);
+  const total = drawn.length + relit.length;
 
   // Shots run side by side (up to 4); the frames of one shot are made in order,
   // each on the plate and the frame before it (as drawn, before restore).
@@ -406,7 +470,7 @@ async function giShots(inputs, ctx, manifest, opts) {
         : giShotRefs({ plate: raws[0], previous: k > 1 ? raws[k - 1] : null, products: e.photos, scene_image: e.scene_image, style_refs: styleRefs });
       const prompt = kitPromptJoin([e.prompt, refs.files.length ? giShotNote(refs.roles) : '', e.negative ? `Avoid: ${e.negative}` : '']);
       raws.push(await giDraw(ctx, { piece: e.piece, refs: refs.files, prompt, size: opts.size, quality: opts.quality }));
-      ctx.progress({ done: ++done, total: drawn.length });
+      ctx.progress({ done: ++done, total });
     }
     finals.set(g.entries[0].id, raws[0]);
     plates.push({ group: g.name, image: raws[0] });
@@ -435,7 +499,34 @@ async function giShots(inputs, ctx, manifest, opts) {
       throw err;
     }
   });
-  for (const [id, of] of repeats) finals.set(id, finals.get(of));
+
+  // Relight: one paid light picture per relit shot (an edit on its source
+  // shot's plate), used only for its light; every scene of the shot is its
+  // source frame (as finished) times the light field (src/plate.mjs).
+  const dayPlates = new Map(plates.map((p) => [p.group, p.image]));
+  const relitFrames = new Map();
+  const names = new Set();
+  await giEach(relit, async (rg) => {
+    const day = dayPlates.get(rg.source.name);
+    const roles = ['day'];
+    const prompt = kitPromptJoin([rg.prompt, giShotNote(roles), rg.negative ? `Avoid: ${rg.negative}` : '']);
+    const light = await giDraw(ctx, { piece: rg.piece, refs: [day], prompt, size: opts.size, quality: opts.quality });
+    ctx.progress({ done: ++done, total });
+    const fields = new Map();
+    const fieldFor = (w, h) => {
+      const key = `${w}x${h}`;
+      if (!fields.has(key)) fields.set(key, giRelightFieldFor(ctx, { light, day, w, h, tag: rg.piece }));
+      return fields.get(key);
+    };
+    for (const e of rg.entries) {
+      const lit = await giRelightFrame(ctx, finals.get(e.root), fieldFor, `${kitPieceName('relit', e.id, e.index, names)}.png`);
+      relitFrames.set(e.id, lit.file);
+      ctx.log.info(`scene ${e.id}: ${e.root} re-lit for shot ${rg.name}, mean brightness ${Math.round(lit.mean)} (day frame ${Math.round(lit.day_mean)})`);
+    }
+  });
+  // Repeats in plan order: a relit scene takes its relit frame, any other the
+  // finished frame of the scene it names (itself perhaps relit).
+  for (const r of plan.repeatList) finals.set(r.id, relitFrames.get(r.id) || finals.get(r.of));
 
   const order = new Map(groups.map((g, i) => [g.name, i]));
   plates.sort((a, b) => order.get(a.group) - order.get(b.group));

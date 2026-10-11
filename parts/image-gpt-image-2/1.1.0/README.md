@@ -3,7 +3,8 @@
 Photoreal stills from OpenAI GPT Image 2 on fal, one paid piece per image. Use it for **realistic people**: an AI
 creator, a spokesperson, a keyframe of a person holding the real product. It shares its scenes mode with
 image-nano-banana 1.1.0 (`parts/_lib/scene-stills.mjs`). Its shots mode (1.1.0) makes locked-camera stop-motion
-frames: one plate per shot, every later frame an edit on it, the plate's own pixels put back.
+frames: one plate per shot, every later frame an edit on it, the plate's own pixels put back, and a closing shot
+re-lit from one light picture.
 
 - **Paid piece** per still, through the private line only: fal `openai/gpt-image-2` (prompt alone) or
   `openai/gpt-image-2/edit` (with references), body `{prompt, image_urls?, image_size: {width, height}, quality,
@@ -16,7 +17,7 @@ frames: one plate per shot, every later frame an edit on it, the plate's own pix
   `cast_size` sets the anchors' size (default: `size`).
 - **`quality`**: `low`, `medium` or `high` (default). It changes fal's price; see Cost.
 - **No `seed`**: GPT Image 2 takes none, so the part refuses one.
-- **`restore`** works only in shots mode; scenes, images and cast modes refuse it.
+- **`restore`** and **`relight`** work only in shots mode; scenes, images and cast modes refuse them.
 - **PNG out**: a result whose bytes are not PNG is re-encoded to PNG.
 
 ## images mode
@@ -60,7 +61,7 @@ The same rules as image-nano-banana 1.1.0. Inputs: `scenes` (plan.scenes, max 40
 
 `mode: "shots"` (only when asked for): locked-camera shots, for a film where the same place changes one thing per
 cut. Inputs: `scenes` (plan.scenes), `template`, `look`, `answers`, `brand`, `products`, `pick`, `skip_first`,
-`skip_last`, `style_refs`, `restore`, plus `size` and `quality`.
+`skip_last`, `style_refs`, `restore`, `relight`, plus `size` and `quality`.
 
 - **Shots come from `scene.extra.group`.** Scenes with the same group share one locked camera, whether or not they
   sit next to each other in the plan. A scene with no group is a shot of its own, named by its scene id.
@@ -80,17 +81,35 @@ cut. Inputs: `scenes` (plan.scenes), `template`, `look`, `answers`, `brand`, `pr
   under 0.15 % of the frame dropped, holes filled, grown 36 px, feathered (sigma 18), blended. The surface is then
   the same pixels in every frame of the shot. A full-size run matched the Python script on every pixel. A frame
   whose size is not the plate's is left as drawn, with a warning. Only for a locked camera and an empty plate.
+- **`relight`** (default `false`): a shot made only of repeats is the first place again in another light (the
+  stop-motion film's closing night shot). A port of the recipe's `relight.py` (`src/plate.mjs`):
+  - **Which shots.** Repeat scenes sharing an `extra.group` that no drawn scene has (or one repeat with no group,
+    alone) make a relit shot. A repeat inside a drawn shot (a callback) stays a plain repeat. A relit shot whose
+    first scene has no picture words also stays plain, with a log line.
+  - **The light picture** (one paid piece per relit shot, `light-<first scene id>`): an edit on the source shot's
+    plate, from `templates.light` (with the template's prefix, suffix and negative) or a default text, where
+    `{picture}` is the first scene's words ("the same hob at night, one warm lamp from the left"). It is never shown.
+  - **The multiply** (free): the light picture over the source plate, both blurred very wide (Pillow sigma 90),
+    split into a brightness (clamped 0.05 to 2) and a colour tint (clamped 0.8 to 1.3). Each relit scene is its
+    source's finished frame (restored) times that field, so the geometry cannot drift and the product is the same
+    pixels. It dims and tints; it cannot add a lamp that casts new shadows. A light picture of another size is
+    scaled first. The arithmetic follows numpy's float32 step by step; full-size runs matched `relight.py` on
+    every byte.
+  - Every scene of a relit shot must repeat frames of **one** drawn shot (the plate the light is measured against).
 - **Refused before anything is ordered**: `model: openai/gpt-image-2` (every later frame is an edit), `images`,
   `cast`, `cast_size`, `anchor`, `multi_ref`, a `repeat_of` that is not an earlier picked scene, a group that is
-  not text, a scene id that equals another shot's group name, and a frame the template cannot fill.
-- **Pieces**: `image-<scene id>` for every drawn scene (plate or frame), so a fix can reuse what it did not change.
+  not text, a scene id that equals another shot's group name, a frame or light picture the template cannot fill,
+  and a relit shot that repeats frames of more than one shot.
+- **Pieces**: `image-<scene id>` for every drawn scene (plate or frame) and `light-<scene id>` for each relit
+  shot's light picture, so a fix can reuse what it did not change.
 - **Outputs**: `images [{id: scene id, image}]` in plan order (restored frames; a repeat carries its source's
-  frame), `plates [{group, image}]` and `scenes` (every input scene, `image` = its frame).
+  frame, re-lit when its shot is), `plates [{group, image}]` (drawn shots only) and `scenes` (every input scene, `image` = its frame).
 
 ## Cost
 
 fal meters GPT Image 2 in token "units" (1 USD per unit), so the price depends on size, quality and the reference
-pictures. A high-quality 1088x1920 still is about USD 0.19. The `cost` block is documentation only; the style's own
+pictures. A high-quality 1088x1920 still is about USD 0.19. In shots mode a film costs one still per drawn scene
+plus one light picture per relit shot; repeats, restore and the multiply are free. The `cost` block is documentation only; the style's own
 `cost` block is the quote.
 
 Source: `parts/image-gpt-image-2/src/part.mjs` and `parts/_lib/scene-stills.mjs`, built with

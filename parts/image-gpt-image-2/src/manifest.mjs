@@ -23,7 +23,7 @@ const scene = {
     picture: { description: 'What the still shows. A leading "Tag:" (or extra.shot) picks the template\'s by_tag rule.', anyOf: [{ type: 'null' }, { type: 'string', maxLength: 2000 }, file('image')] },
     image: { description: 'A picture the customer gave for this scene: sent as a reference when the template\'s refs ask for scene_image.', ...imageOrNull },
     speaker: { type: ['string', 'null'], maxLength: 24 },
-    extra: { description: 'Style fields. shots mode reads extra.group (scenes sharing one locked camera) and extra.repeat_of (an earlier scene id whose finished frame this scene reuses).', type: ['object', 'null'] },
+    extra: { description: 'Style fields. shots mode reads extra.group (scenes sharing one locked camera) and extra.repeat_of (an earlier scene id whose finished frame this scene reuses; with relight, a shot made only of repeats is re-lit by its first picture\'s words).', type: ['object', 'null'] },
   },
 };
 
@@ -56,7 +56,7 @@ export const manifest = {
   version: '1.1.0',
   kind: 'generate_image',
   title: 'Stills (GPT Image 2)',
-  summary: 'Photoreal stills with OpenAI GPT Image 2 on fal, one piece per image: a hand-built list, one still per plan scene, the cast portraits, or locked-camera shots (each frame an edit on its plate, plate pixels put back).',
+  summary: 'Photoreal stills with OpenAI GPT Image 2 on fal, one piece per image: a hand-built list, one still per plan scene, the cast portraits, or locked-camera shots (each frame an edit on its plate, plate pixels put back, a closing shot re-lit).',
   runtime: 'node',
   entry: 'part.mjs',
   files: ['README.md', 'part.mjs'],
@@ -104,7 +104,7 @@ export const manifest = {
         },
       },
       scenes: { description: 'scenes and shots modes: plan.scenes. Outputs are keyed by scene id.', type: 'array', minItems: 1, maxItems: 40, items: scene },
-      template: { description: 'The style\'s prompt template (frames/<name>.prompt.json, version 1; see parts/_lib/prompt.mjs). Without one a scene\'s prompt is its picture text and an anchor is a plain photo portrait. In shots mode templates.plate fills a shot\'s first scene and templates.state every later one (each falls back to scene).', ...file('json') },
+      template: { description: 'The style\'s prompt template (frames/<name>.prompt.json, version 1; see parts/_lib/prompt.mjs). Without one a scene\'s prompt is its picture text and an anchor is a plain photo portrait. In shots mode templates.plate fills a shot\'s first scene and templates.state every later one (each falls back to scene), and templates.light a relit shot\'s light picture.', ...file('json') },
       look: { description: 'The art style: a key of the template\'s looks (a declared plan answer), filling {look}.', type: ['string', 'null'], maxLength: 200 },
       answers: { description: 'plan.answers, for {answers.KEY} placeholders.', type: ['object', 'null'] },
       brand: { description: 'The brand, for {brand.FIELD} placeholders.', type: ['object', 'null'] },
@@ -128,6 +128,10 @@ export const manifest = {
         description: 'shots mode: put the plate\'s own pixels back wherever a frame did not change, so the surface is identical in every frame of a shot (free). Default true.',
         type: 'boolean',
       },
+      relight: {
+        description: 'shots mode: a shot made only of repeat_of scenes (the first place again) is re-lit. Its first scene\'s picture words say the light ("the same hob at night, one warm lamp"); one paid light picture (an edit on the source shot\'s plate, templates.light else a default text) is used only for its light, and every scene of the shot is its source frame times that light. A repeat inside a drawn shot stays a plain repeat. Default false.',
+        type: 'boolean',
+      },
       multi_ref: {
         description: 'How a scene that names several members sends their anchors: strip (default) tiles all of them into one picture; list sends up to 3 separate pictures.',
         enum: ['list', 'strip'],
@@ -140,7 +144,7 @@ export const manifest = {
     required: ['images'],
     properties: {
       images: {
-        description: 'One still per entry (images mode) or per picked scene, id = the scene id (scenes and shots modes; in shots mode the restored frame, and a repeat_of scene\'s is its source\'s). Empty in cast mode.',
+        description: 'One still per entry (images mode) or per picked scene, id = the scene id (scenes and shots modes; in shots mode the restored frame, a repeat_of scene\'s is its source\'s, re-lit when its shot is). Empty in cast mode.',
         type: 'array',
         items: { type: 'object', additionalProperties: false, required: ['id', 'image'], properties: { id: { type: 'string' }, image: file('image') } },
       },

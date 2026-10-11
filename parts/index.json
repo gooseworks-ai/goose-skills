@@ -1213,9 +1213,9 @@
       "determinism": "provider",
       "path": "parts/image-gpt-image-2/1.1.0",
       "files": {
-        "README.md": "35f506f44b002405dbaee20a780a6aa183f3c93b32f08a094b6572c437d962a2",
-        "part.json": "682b04a19e00d10494319c36a59229d0664cbb7cf1d7f2b9f147b80400fbc5d2",
-        "part.mjs": "0754b7701474ce11730cc7b5cb752ac1ef75f4d1fbae824953fc07c94e887f04"
+        "README.md": "7fdb01b75ad2ef2af9bda7b834c937882e9778c74a40966f1f7afd2aab14d5c0",
+        "part.json": "09f827cb68ef0f9b16dd3085b33c370de426def5aea28c673ab310d678f2aa8d",
+        "part.mjs": "a85a05cd15a1aea174753f077cf22dda3c5f7e1c07e125f562f18e0c067841d1"
       },
       "models": [
         {

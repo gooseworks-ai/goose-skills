@@ -1,13 +1,14 @@
 // shots mode (1.1.0): locked-camera shots grouped by extra.group, every later
 // frame an edit on [plate, previous frame, product photos], then the plate's own
-// pixels put back (src/plate.mjs, a port of restore_plate.py).
+// pixels put back (src/plate.mjs, a port of restore_plate.py), and a shot made
+// only of repeats re-lit from one light picture (a port of relight.py).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { copyFileSync, mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileRef, framePixels, hasFfmpeg, loadNewest, makeCtx, run } from '../../_tools/kit-harness.mjs';
-import { giPlateBlend, giPlateBlur, giPlateFillHoles, giPlateGain, giPlateGrow, giPlateKeepLarge, giPlateMask, giPlateMedian, giPlateOpen } from '../src/plate.mjs';
+import { giPlateBlend, giPlateBlur, giPlateFillHoles, giPlateGain, giPlateGrow, giPlateKeepLarge, giPlateMask, giPlateMedian, giPlateOpen, giRelightApply, giRelightField, giRint } from '../src/plate.mjs';
 import { QUALITY, REQUEST_FIELDS, REQUIRED, falAnswer, makeImage, sizeProblems, writeTemplate } from './fixture.mjs';
 
 const { dir, mod } = await loadNewest('image-gpt-image-2');
@@ -282,7 +283,7 @@ test('refuses before ordering: bad repeats and groups, inputs shots mode does no
     [{ mode: 'shots' }, /shots mode needs scenes/],
     [{ ...base, mode: 'scenes', restore: true, anchor: 'none' }, /restore works only in shots mode/],
     [{ cast: [{ key: 'a', name: 'Maya', look: 'x' }], restore: true }, /restore does not work in cast mode/],
-    [{ ...base, relight: true }, /relight/],
+    [{ ...base, relight: 'yes' }, /relight/],
   ];
   for (const [inputs, why] of cases) {
     const { ctx, orders } = makeCtx({ partDir: dir, line: shotLine({}) });
@@ -315,4 +316,152 @@ test('a provider failure inside a shot stops its later frames and new shots', { 
   const { ctx, orders } = makeCtx({ partDir: dir, line: shotLine(images, { fail: 'image-a1' }) });
   await assert.rejects(mod.run(await shotsInputs(d), ctx), (e) => e.code === 'provider_failed');
   assert.ok(!orders.some((o) => o.piece === 'image-a2'), 'the frame after the failed one is never ordered');
+});
+
+// ---- relight (relight.py) ----
+
+test('relight steps: the light field and the multiply match relight.py byte for byte', () => {
+  // numpy 2.2.5 + Pillow 11.1: relight.py's lines on these 9x7 pictures with GaussianBlur(2) in place of 90.
+  const L = [0, 0, 0, 185, 251, 31, 108, 241, 181, 41, 163, 225, 204, 92, 230, 130, 195, 142, 192, 240, 132, 27, 235, 249, 54, 172, 100, 248, 110, 171, 255, 255, 255, 19, 26, 116, 251, 171, 123, 155, 6, 61, 123, 72, 191, 108, 97, 96, 123, 9, 129, 160, 194, 101, 73, 205, 4, 16, 182, 148, 250, 10, 10, 44, 145, 217, 12, 173, 68, 125, 35, 223, 20, 70, 59, 56, 95, 190, 63, 139, 62, 122, 148, 86, 69, 145, 247, 230, 181, 12, 128, 15, 188, 187, 38, 122, 22, 168, 198, 229, 9, 1, 53, 110, 143, 164, 178, 35, 126, 105, 248, 201, 153, 167, 230, 246, 116, 115, 241, 251, 221, 62, 11, 238, 123, 89, 166, 94, 233, 81, 144, 187, 9, 252, 11, 248, 233, 82, 208, 146, 96, 172, 212, 237, 28, 227, 225, 150, 228, 66, 125, 45, 53, 73, 204, 118, 22, 179, 221, 155, 55, 103, 206, 77, 22, 4, 114, 180, 84, 39, 131, 104, 248, 148, 91, 241, 74, 226, 46, 53, 68, 134, 104, 170, 143, 177, 25, 23, 103];
+  const D = [0, 0, 0, 133, 62, 64, 116, 127, 181, 87, 155, 127, 147, 222, 93, 126, 152, 113, 6, 219, 211, 210, 14, 128, 98, 193, 55, 93, 17, 166, 2, 2, 2, 176, 68, 226, 87, 127, 149, 89, 239, 33, 107, 51, 221, 16, 73, 57, 183, 113, 51, 42, 104, 126, 167, 133, 141, 24, 110, 147, 40, 200, 40, 164, 246, 175, 39, 230, 225, 81, 105, 240, 123, 12, 201, 136, 205, 252, 254, 148, 86, 232, 68, 20, 164, 186, 144, 68, 217, 106, 27, 255, 228, 182, 5, 238, 55, 136, 225, 6, 80, 181, 225, 125, 225, 99, 125, 127, 21, 73, 1, 173, 50, 215, 133, 29, 160, 175, 221, 121, 1, 152, 32, 94, 197, 0, 140, 55, 160, 70, 78, 207, 62, 23, 75, 177, 83, 41, 2, 46, 18, 10, 72, 197, 111, 192, 195, 137, 246, 131, 215, 48, 86, 160, 84, 169, 73, 14, 189, 117, 29, 135, 158, 122, 105, 233, 159, 92, 146, 189, 70, 249, 14, 243, 180, 43, 56, 199, 244, 254, 155, 128, 170, 56, 33, 43, 238, 205, 189];
+  const S = [252, 211, 184, 32, 33, 113, 92, 226, 214, 163, 225, 8, 139, 224, 221, 97, 213, 194, 53, 136, 83, 30, 78, 189, 124, 17, 190, 43, 211, 106, 190, 10, 40, 159, 187, 75, 81, 48, 65, 234, 129, 176, 60, 84, 102, 7, 132, 137, 151, 49, 66, 18, 30, 18, 253, 209, 162, 61, 40, 245, 191, 227, 163, 70, 120, 60, 213, 217, 116, 166, 73, 96, 50, 156, 245, 77, 166, 100, 25, 89, 150, 213, 39, 39, 90, 206, 241, 248, 251, 138, 221, 24, 56, 21, 241, 109, 2, 166, 47, 162, 10, 221, 235, 127, 166, 210, 114, 24, 0, 9, 187, 244, 132, 67, 159, 219, 121, 211, 55, 231, 59, 208, 191, 36, 167, 104, 31, 101, 171, 254, 29, 103, 53, 2, 175, 78, 115, 222, 24, 1, 140, 177, 154, 206, 83, 50, 217, 188, 19, 66, 131, 27, 87, 152, 69, 46, 30, 126, 102, 100, 153, 183, 29, 233, 117, 247, 93, 224, 43, 50, 243, 32, 1, 157, 234, 234, 71, 83, 61, 75, 202, 25, 197, 59, 181, 234, 189, 250, 247];
+  const OUT = [255, 255, 204, 44, 48, 124, 121, 255, 232, 210, 234, 9, 171, 218, 232, 111, 208, 201, 54, 141, 85, 27, 88, 193, 105, 20, 195, 57, 255, 118, 255, 14, 44, 209, 219, 80, 106, 49, 67, 255, 122, 176, 69, 81, 99, 7, 136, 130, 138, 55, 62, 15, 36, 17, 255, 255, 186, 79, 53, 255, 248, 255, 172, 90, 122, 60, 255, 206, 110, 188, 70, 86, 50, 162, 213, 69, 190, 86, 21, 109, 127, 255, 56, 47, 112, 255, 255, 255, 255, 145, 255, 25, 54, 25, 236, 98, 2, 163, 40, 158, 11, 179, 207, 148, 132, 170, 140, 19, 0, 12, 233, 255, 169, 79, 182, 255, 127, 235, 61, 221, 63, 219, 167, 36, 177, 86, 28, 112, 135, 211, 34, 79, 41, 2, 133, 86, 151, 255, 26, 1, 163, 185, 188, 218, 84, 58, 207, 182, 22, 57, 121, 30, 71, 130, 78, 36, 24, 148, 78, 73, 179, 141, 31, 255, 147, 254, 118, 255, 42, 63, 255, 30, 1, 149, 209, 255, 61, 71, 71, 61, 163, 29, 153, 44, 207, 181, 133, 255, 193];
+  const F = giRelightField(giPlateBlur(Uint8Array.from(L), 9, 7, 3, 2), giPlateBlur(Uint8Array.from(D), 9, 7, 3, 2));
+  assert.deepEqual([...giRelightApply(Uint8Array.from(S), F)], OUT);
+  // numpy rounds half to even.
+  assert.deepEqual([0.5, 1.5, 2.5, 3.49, 254.5].map(giRint), [0, 2, 2, 3, 254]);
+  // Full-size runs (1024x1792, 200x360 and 64x96, where the blur is wider than the picture) matched relight.py on every byte on 2026-10-12.
+});
+
+/** The night light: the plate darkened and tinted blue, re-grained (a generated night plate never lines up). */
+async function makeNight(d, plate) {
+  const path = join(d, 'night.png');
+  await ff(['-i', plate, '-vf', "noise=alls=10:allf=u:all_seed=4,lutrgb=r='val*0.35':g='val*0.4':b='val*0.55'", '-frames:v', '1', path]);
+  return path;
+}
+
+function nightScenes(base, extra = []) {
+  return [
+    ...base.scenes.slice(0, 4),
+    { id: 'c', line: null, picture: 'the pot again', extra: { group: 'hob', repeat_of: 'a1' } },
+    { id: 'n0', line: 'And at night it waits.', picture: 'the same hob at night, one warm lamp from the left', extra: { group: 'night', repeat_of: 'a0' } },
+    { id: 'n1', line: null, picture: 'Le Pot back on the front burner at night', extra: { group: 'night', repeat_of: 'a2' } },
+    ...extra,
+  ];
+}
+
+test('fixture: relight draws one light picture on the source plate and multiplies it into a shot made only of repeats', { skip }, async () => {
+  const d = work();
+  const images = await makeShotImages(d);
+  images['light-n0'] = await makeNight(d, images['image-a0']);
+  const base = await shotsInputs(d);
+  const inputs = { ...base, relight: true, scenes: nightScenes(base) };
+  const { ctx, orders, logs } = makeCtx({ partDir: dir, workDir: join(d, 'step'), line: shotLine(images) });
+  const out = await mod.run(inputs, ctx);
+  for (const o of orders) assertFitsContract(o);
+  const pieces = orders.map((o) => o.piece);
+  assert.deepEqual([...pieces].sort(), ['image-a0', 'image-a1', 'image-a2', 'image-x', 'light-n0'], 'one light picture for the night shot; repeats are free');
+  assert.equal(pieces.at(-1), 'light-n0', 'the light picture comes after the shots');
+  const light = orders.at(-1);
+  assert.equal(light.path, 'openai/gpt-image-2/edit');
+  assert.deepEqual(light.body.image_urls.map((r) => r.sha256), [await fileRefSha(images['image-a0'])], 'an edit on the source shot\'s plate only');
+  assert.deepEqual(light.body.image_size, { width: 1024, height: 1792 });
+  assert.equal(light.body.prompt, 'This is the same empty place, shot by the same locked camera, everything in exactly the same place. One thing has changed: the same hob at night, one warm lamp from the left. It is completely empty. A real photograph, fine film grain, true to life colour. No objects, no hands, no people, no text, no watermark. Reference image 1 is this same place in its first light, from the same locked camera: keep its camera, framing, surface and everything in it exactly; change only the light');
+
+  assert.deepEqual(out.images.map((i) => i.id), ['a0', 'a1', 'a2', 'x', 'c', 'n0', 'n1']);
+  const img = Object.fromEntries(out.images.map((i) => [i.id, i.image]));
+  assert.equal(img.c.sha256, img.a1.sha256, 'a repeat inside a drawn shot is a plain repeat');
+  assert.deepEqual(out.plates.map((p) => p.group), ['hob', 'x'], 'a relit shot draws no plate');
+  assert.equal(out.scenes[5].image.sha256, img.n0.sha256);
+
+  // Each relit frame is its source's FINISHED frame (restored) times the field from the light and the raw plate.
+  const px = async (path) => (await framePixels(path, 0, W, H)).data;
+  const F = giRelightField(giPlateBlur(await px(images['light-n0']), W, H, 3, 90), giPlateBlur(await px(images['image-a0']), W, H, 3, 90));
+  assert.deepEqual([...(await px(img.n0.path))], [...giRelightApply(await px(img.a0.path), F)]);
+  assert.deepEqual([...(await px(img.n1.path))], [...giRelightApply(await px(img.a2.path), F)]);
+  const mean = (b) => b.reduce((a, v) => a + v, 0) / b.length;
+  const [day, night] = [mean(await px(img.a2.path)), mean(await px(img.n1.path))];
+  assert.ok(night < day * 0.6, `night ${night.toFixed(0)} is darker than day ${day.toFixed(0)}`);
+  const said = logs.filter(([level]) => level === 'info').map(([, m]) => m).join('\n');
+  assert.match(said, /scene n1: a2 re-lit for shot night, mean brightness \d+ \(day frame \d+\)/);
+});
+
+test('relight: templates.light fills the light picture; a chained repeat is lit once from its root', { skip }, async () => {
+  const d = work();
+  const images = await makeShotImages(d);
+  images['light-n0'] = await makeNight(d, images['image-a0']);
+  const base = await shotsInputs(d);
+  const tpl = { ...shotsTemplate, templates: { ...shotsTemplate.templates, light: 'The empty place again, now {picture}, {answers.camera?}' } };
+  const scenes = nightScenes(base, [{ id: 'n2', line: null, picture: null, extra: { group: 'night', repeat_of: 'n1' } }]);
+  const { ctx, orders } = makeCtx({ partDir: dir, line: shotLine(images) });
+  const out = await mod.run({ ...base, relight: true, scenes, template: await writeTemplate(d, tpl, 'light.prompt.json') }, ctx);
+  const light = orders.find((o) => o.piece === 'light-n0');
+  assert.match(light.body.prompt, /^A real photograph\. The empty place again, now the same hob at night, one warm lamp from the left, seen from straight overhead\. locked camera, no hands, no text\. Reference image 1 is this same place in its first light/);
+  assert.match(light.body.prompt, /Avoid: people, watermark$/);
+  assert.equal(orders.filter((o) => o.piece.startsWith('light-')).length, 1);
+  const img = Object.fromEntries(out.images.map((i) => [i.id, i.image]));
+  assert.equal(img.n2.sha256, img.n1.sha256, 'n2 repeats n1: the same relit frame, not lit twice');
+});
+
+test('relight leaves plain repeats alone: off by default, and a repeat shot with no light words', { skip }, async () => {
+  const d = work();
+  const images = await makeShotImages(d);
+  const base = await shotsInputs(d);
+  for (const [inputs, why] of [
+    [{ ...base, scenes: nightScenes(base) }, 'relight is off'],
+    [{ ...base, relight: true, scenes: nightScenes(base).map((s) => (s.id === 'n0' ? { ...s, picture: null } : s)) }, 'n0 has no picture words'],
+  ]) {
+    const { ctx, orders, logs } = makeCtx({ partDir: dir, line: shotLine(images) });
+    const out = await mod.run(inputs, ctx);
+    assert.ok(!orders.some((o) => o.piece.startsWith('light-')), why);
+    const img = Object.fromEntries(out.images.map((i) => [i.id, i.image]));
+    assert.equal(img.n0.sha256, img.a0.sha256, why);
+    assert.equal(img.n1.sha256, img.a2.sha256, why);
+    if (inputs.relight) assert.ok(logs.some(([, m]) => /shot night has no picture words for its light/.test(m)));
+  }
+});
+
+test('relight refuses before ordering: a shot repeating two shots, a light the template cannot fill, other modes', { skip }, async () => {
+  const d = work();
+  const base = await shotsInputs(d);
+  const night = { ...base, relight: true, scenes: nightScenes(base) };
+  const cases = [
+    [{ ...night, scenes: nightScenes(base, [{ id: 'n3', line: null, picture: 'the table at night', extra: { group: 'night', repeat_of: 'x' } }]) }, /shot night repeats frames of 2 shots \(hob, x\)/],
+    [{ ...night, template: await writeTemplate(d, { ...shotsTemplate, templates: { ...shotsTemplate.templates, light: '{picture}, {answers.moon}' } }, 'moon.prompt.json') }, /scene n0 needs \{answers\.moon\}/],
+    [{ ...night, scenes: nightScenes(base).map((s) => (s.id === 'n1' ? { ...s, extra: { group: 5, repeat_of: 'a2' } } : s)) }, /scene n1: extra\.group must be text/],
+    [{ ...night, scenes: nightScenes(base).map((s) => (s.id === 'n1' ? { ...s, extra: { group: 'x', repeat_of: 'a2' } } : s)) }, /scene x has no group, and a group is also called x/],
+    [{ ...base, mode: 'scenes', relight: true, anchor: 'none' }, /relight works only in shots mode/],
+    [{ cast: [{ key: 'a', name: 'Maya', look: 'x' }], relight: false }, /relight does not work in cast mode/],
+    [{ images: [{ prompt: 'an empty desk' }], relight: true }, /relight does not work in images mode/],
+  ];
+  for (const [inputs, why] of cases) {
+    const { ctx, orders } = makeCtx({ partDir: dir, line: shotLine({}) });
+    await assert.rejects(mod.run(inputs, ctx), (e) => e.code === 'bad_input' && why.test(e.message), String(why));
+    assert.equal(orders.length, 0, `nothing is ordered for ${why}`);
+  }
+});
+
+test('relight: a failed light picture fails the step', { skip }, async () => {
+  const d = work();
+  const images = await makeShotImages(d);
+  const base = await shotsInputs(d);
+  const { ctx } = makeCtx({ partDir: dir, line: shotLine(images, { fail: 'light-n0' }) });
+  await assert.rejects(mod.run({ ...base, relight: true, scenes: nightScenes(base) }, ctx), (e) => e.code === 'provider_failed');
+});
+
+test('relight: a light picture of another size is scaled to the frame before its light is taken', { skip }, async () => {
+  const d = work();
+  const images = await makeShotImages(d);
+  const small = join(d, 'night-small.png');
+  await ff(['-i', await makeNight(d, images['image-a0']), '-vf', 'scale=128:224', '-frames:v', '1', small]);
+  images['light-n0'] = small;
+  const base = await shotsInputs(d);
+  const { ctx } = makeCtx({ partDir: dir, line: shotLine(images) });
+  const out = await mod.run({ ...base, relight: true, scenes: nightScenes(base) }, ctx);
+  const n1 = out.images.find((i) => i.id === 'n1').image;
+  const { stdout } = await run('ffprobe', ['-v', 'error', '-select_streams', 'v:0', '-show_entries', 'stream=width,height', '-of', 'csv=p=0', n1.path]);
+  assert.equal(String(stdout).trim(), `${W},${H}`, 'the relit frame keeps the frame\'s size');
+  const lit = await framePixels(n1.path, 0, W, H);
+  const mean = (b) => b.reduce((a, v) => a + v, 0) / b.length;
+  assert.ok(mean(lit.data) < mean((await framePixels(images['image-a2'], 0, W, H)).data) * 0.6);
 });
