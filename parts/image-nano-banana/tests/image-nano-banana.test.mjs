@@ -4,7 +4,7 @@ import { mkdtempSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileRef, loadNewest, hasFfmpeg, loadPart, makeCtx, probe } from '../../_tools/kit-harness.mjs';
-import { falReply, makeImage, pngLine, sample, scenesInputs, template, writeTemplate } from './fixture.mjs';
+import { EDIT_FIELDS, EDIT_POINTER, EDIT_REQUIRED, falReply, makeImage, pngLine, productsInputs, productsTemplate, sample, scenesInputs, template, writeTemplate } from './fixture.mjs';
 
 const { dir, mod } = await loadNewest('image-nano-banana');
 const ffmpeg = await hasFfmpeg();
@@ -39,8 +39,8 @@ test('refuses references on the prompt-only model and none on the edit model, be
 const skip = !ffmpeg && 'ffmpeg is not installed';
 const byPiece = (orders) => Object.fromEntries(orders.map((o) => [o.piece, o]));
 
-test('images mode is still the 1.0.1 behaviour in 1.0.1 and 1.1.0', { skip }, async () => {
-  for (const version of ['1.0.1', '1.1.0']) {
+test('images mode is still the 1.0.1 behaviour in 1.0.1, 1.1.0 and 1.2.0', { skip }, async () => {
+  for (const version of ['1.0.1', '1.1.0', '1.2.0']) {
     const part = await loadPart('image-nano-banana', version);
     const work = mkdtempSync(join(tmpdir(), 'nb-'));
     const { ctx, orders } = makeCtx({ partDir: part.dir, line: sample.line });
@@ -200,4 +200,105 @@ test('a provider failure stops new pieces', { skip }, async () => {
 
 test('falReply has the shape the line reads the picture from', () => {
   assert.equal(falReply('x.png').images[0].url.endsWith('x.png'), true);
+});
+
+// ---- 1.2.0 products mode ----
+
+test('fixture: products mode edits each product photo once per kind, keyed <product>-<kind>', { skip }, async () => {
+  const work = mkdtempSync(join(tmpdir(), 'nb-'));
+  const inputs = await productsInputs(work);
+  const { ctx, orders } = makeCtx({ partDir: dir, workDir: join(work, 'step'), line: pngLine });
+  const out = await mod.run(inputs, ctx);
+  const o = byPiece(orders);
+  assert.deepEqual(Object.keys(o).sort(), ['angled-garden', 'angled-hearth', 'angled-mist', 'snap-garden', 'snap-hearth', 'snap-mist']);
+
+  for (const [i, p] of inputs.products.entries()) {
+    for (const kind of ['snap', 'angled']) {
+      const order = o[`${kind}-${p.id}`];
+      assert.equal(order.provider, 'fal');
+      assert.equal(order.path, 'fal-ai/nano-banana/edit');
+      assert.deepEqual(order.body.image_urls.map((r) => [r.kind, r.sha256]), [['file', p.images[0].sha256]], `${kind}-${p.id} sends only its own photo, as a file`);
+      assert.equal(order.body.aspect_ratio, '9:16');
+      // The body is the recorded NanoBananaEditInput shape, and the line reads the recorded result pointer.
+      for (const key of Object.keys(order.body)) assert.ok(EDIT_FIELDS.includes(key), `${key} is a NanoBananaEditInput field`);
+      for (const key of EDIT_REQUIRED) assert.ok(order.body[key] != null, `${key} is sent`);
+      assert.equal(order.results[0].pointer, EDIT_POINTER);
+      assert.match(order.body.prompt, new RegExp(`^The ${inputs.products[i].name} exactly as in the reference photo`));
+      assert.match(order.body.prompt, /vertical 9:16, no text, no logos added/, 'the top-level suffix applies to every kind');
+    }
+  }
+  assert.match(o['snap-mist'].body.prompt, /one complete product on a pale oak shelf, soft key light/);
+  assert.match(o['snap-mist'].body.prompt, /Avoid: hands, extra products, changed label$/);
+  assert.match(o['angled-mist'].body.prompt, /three-quarter view, floating over warm white/);
+  assert.match(o['angled-mist'].body.prompt, /Avoid: hands, a second product$/, 'a by_tag negative replaces the top-level one');
+
+  assert.deepEqual(Object.keys(out), ['images'], 'products mode returns images only');
+  assert.deepEqual(out.images.map((i) => i.id), ['mist-snap', 'mist-angled', 'hearth-snap', 'hearth-angled', 'garden-snap', 'garden-angled']);
+  for (const img of out.images) assert.equal(readFileSync(img.image.path).subarray(0, 8).toString('hex'), PNG);
+});
+
+test('products mode without a template: snap only by default, the built-in texts and negative', { skip }, async () => {
+  const work = mkdtempSync(join(tmpdir(), 'nb-'));
+  const base = await productsInputs(work);
+  {
+    const { ctx, orders } = makeCtx({ partDir: dir, line: pngLine });
+    const out = await mod.run({ model: base.model, mode: 'products', products: base.products, seed: 7 }, ctx);
+    assert.deepEqual(orders.map((x) => x.piece), ['snap-mist', 'snap-hearth', 'snap-garden']);
+    assert.deepEqual(out.images.map((i) => i.id), ['mist-snap', 'hearth-snap', 'garden-snap']);
+    assert.match(orders[0].body.prompt, /^The Morning Mist Green Tea exactly as in the reference photo: the same shape, colours, pattern and label\. One complete product resting on a neutral textured surface/);
+    assert.match(orders[0].body.prompt, /Avoid: text, captions, hands/);
+    assert.equal(orders[0].body.seed, 7);
+    assert.equal(orders[0].body.aspect_ratio, undefined, 'no aspect ratio unless one is given');
+  }
+  {
+    // A template with only a lower-case snap rule: angled falls back to the built-in text; the scene text is not used.
+    const tpl = await writeTemplate(work, { version: 1, scene: 'NOT USED {picture}', by_tag: { snap: { scene: 'Snap of {picture} on {answers.snap_surface}' } } }, 'snap-only.prompt.json');
+    const { ctx, orders } = makeCtx({ partDir: dir, line: pngLine });
+    await mod.run({ ...base, template: tpl, products: base.products.slice(0, 1) }, ctx);
+    const o = byPiece(orders);
+    assert.equal(o['snap-mist'].body.prompt, 'Snap of Morning Mist Green Tea on a pale oak shelf');
+    assert.match(o['angled-mist'].body.prompt, /^The Morning Mist Green Tea exactly as in the reference photo: .*three-quarter view, floating over a warm white background/);
+    assert.doesNotMatch(o['angled-mist'].body.prompt, /NOT USED|Avoid:/, 'a template without a negative adds none');
+  }
+});
+
+test('products mode refuses before ordering: the prompt-only model, a product with no photo or name, a gap, scenes inputs, kinds elsewhere', { skip }, async () => {
+  const work = mkdtempSync(join(tmpdir(), 'nb-'));
+  const base = await productsInputs(work);
+  const [mist, hearth] = base.products;
+  const cases = [
+    [{ ...base, model: 'fal-ai/nano-banana' }, /products mode edits each product's photo, so it needs fal-ai\/nano-banana\/edit/],
+    [{ ...base, products: [mist, { ...hearth, images: [] }] }, /product hearth has no photo to edit/],
+    [{ ...base, products: [mist, { ...hearth, name: null }] }, /product hearth has no name/],
+    [{ ...base, products: [mist, { ...hearth, id: 'mist' }] }, /two products have the id mist/],
+    [{ ...base, answers: { range_reveal: 'one_by_one' } }, /the snap still of product mist needs \{answers\.snap_surface\}/],
+    [{ ...base, template: await writeTemplate(work, { ...productsTemplate, by_tag: { Angled: { scene: '{line}' } } }, 'line.prompt.json') }, /the angled still of product mist needs \{line\}/],
+    [{ ...base, products: [] }, /products mode needs products/],
+    [{ ...base, scenes: [{ id: 's1', picture: 'x' }] }, /scenes does not work in products mode/],
+    [{ ...base, anchor: 'cast' }, /anchor does not work in products mode/],
+    [{ ...base, kinds: ['snap', 'snap'] }, /kinds/],
+    [{ ...base, kinds: ['zoom'] }, /kinds/],
+    [{ ...(await scenesInputs(work)), kinds: ['snap'] }, /kinds works only in products mode/],
+    [{ ...(await sample.inputs(work)), kinds: ['snap'] }, /kinds works only in products mode/],
+  ];
+  for (const [inputs, why] of cases) {
+    const { ctx, orders } = makeCtx({ partDir: dir, line: pngLine });
+    await assert.rejects(mod.run(inputs, ctx), (e) => e.code === 'bad_input' && why.test(e.message), String(why));
+    assert.equal(orders.length, 0, `nothing is ordered for ${why}`);
+  }
+});
+
+test('products mode: a provider failure stops new pieces', { skip }, async () => {
+  const work = mkdtempSync(join(tmpdir(), 'nb-'));
+  const base = await productsInputs(work);
+  const products = Array.from({ length: 6 }, (_, i) => ({ ...base.products[0], id: `p${i + 1}`, name: `Variant ${i + 1}` }));
+  let calls = 0;
+  const line = async (order, ctx) => {
+    calls++;
+    if (order.piece === 'snap-p1') throw ctx.error('provider_failed', 'boom');
+    return pngLine(order, ctx);
+  };
+  const { ctx } = makeCtx({ partDir: dir, line });
+  await assert.rejects(mod.run({ ...base, products }, ctx), (e) => e.code === 'provider_failed');
+  assert.ok(calls <= 4, `only the pieces already running finish (${calls})`);
 });
