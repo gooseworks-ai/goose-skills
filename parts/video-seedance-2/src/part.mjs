@@ -25,9 +25,14 @@
 //           from the style's template (motion, else scene).
 // Every prompt is filled, and every reference and start frame found, before the
 // first piece is ordered, so a missing answer refuses the step for free.
+//
+// Two more modes (1.2.0, src/takes.mjs): take (one prompt of up to 4 scenes
+// as time-windowed beats) and takes (count takes, optionally chained to a
+// face-free still of the first), joined into one video with a timeline.
 import { kitCheckInputs, kitCheckOutputs, kitPieceName, kitStopIfAborted } from '../../_lib/part.mjs';
 import { KitPromptGap, kitLoadTemplate, kitPromptJoin, kitScenePrompt } from '../../_lib/prompt.mjs';
 import { kitPickScenes } from '../../_lib/scene-match.mjs';
+import { sdRunTakes, sdTakeJobs } from './takes.mjs';
 
 const REF = 'bytedance/seedance-2.0/reference-to-video';
 const I2V = 'bytedance/seedance-2.0/image-to-video';
@@ -36,6 +41,16 @@ const SD_MAX_REFS = 9;
 const SD_MAX_CLIPS = 12;
 const SD_DEFAULT_SECONDS = 5;
 const SD_SCENE_ONLY = ['pick', 'skip_first', 'skip_last', 'seconds'];
+// Inputs that only the take modes read, and the modes each one needs.
+const SD_TAKE_ONLY = {
+  takes: ['takes'],
+  chain: ['takes'],
+  off_screen_lines: ['take'],
+  off_screen_tags: ['take'],
+  words_per_second: ['take', 'takes'],
+  max_words: ['take', 'takes'],
+  pronunciations: ['take', 'takes'],
+};
 // The template key a clip's own prompt is filled under; templates keys are words, so it never collides.
 const SD_OWN = ' clip prompt';
 // Anything left that looks like a placeholder after filling ({Answers.x}, {answers.a.b}) is a typo.
@@ -141,9 +156,29 @@ function sdJobs(inputs, tpl, i2v) {
   return jobs;
 }
 
+/** Mode take or takes: every take's prompt written before the first piece, then the takes in order. */
+async function sdRunTakeMode(inputs, ctx, manifest) {
+  if (inputs.clips) throw ctx.error('bad_input', `mode ${inputs.mode} writes its own prompt from scenes; clips are for modes reference and image_to_video`);
+  if (!inputs.scenes) throw ctx.error('bad_input', `mode ${inputs.mode} needs scenes`);
+  let jobs;
+  try {
+    const tpl = inputs.template ? await kitLoadTemplate(inputs.template) : { version: 1 };
+    jobs = sdTakeJobs(inputs, tpl);
+  } catch (err) {
+    if (ctx.signal && ctx.signal.aborted) throw ctx.error('stopped', 'the step was stopped');
+    throw ctx.error('bad_input', String((err && err.message) || err));
+  }
+  return kitCheckOutputs(ctx, manifest, await sdRunTakes(inputs, ctx, jobs));
+}
+
 export async function run(inputs, ctx) {
   const manifest = await kitCheckInputs(ctx, inputs);
-  const i2v = inputs.mode === 'image_to_video';
+  const mode = inputs.mode ?? 'reference';
+  for (const [key, modes] of Object.entries(SD_TAKE_ONLY)) {
+    if (inputs[key] !== undefined && !modes.includes(mode)) throw ctx.error('bad_input', `${key} works only in mode ${modes.join(' or ')}`);
+  }
+  if (mode === 'take' || mode === 'takes') return sdRunTakeMode(inputs, ctx, manifest);
+  const i2v = mode === 'image_to_video';
   if (!inputs.clips && !inputs.scenes) throw ctx.error('bad_input', 'give clips, or scenes for one clip per scene');
   if (inputs.clips) {
     for (const key of SD_SCENE_ONLY) if (inputs[key] !== undefined) throw ctx.error('bad_input', `${key} works only without clips (one clip per scene)`);

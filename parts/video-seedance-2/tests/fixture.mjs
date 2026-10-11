@@ -84,3 +84,85 @@ export async function heroInputs(workDir, extra = {}) {
     ...extra,
   };
 }
+
+// ---- 1.2.0 ----
+// Recorded from fal's OpenAPI (W0-62, 2026-10-12): the reference-to-video request fields. The answer has the
+// same shape as image-to-video's (falAnswer), with the video URL at /json/video/url.
+export const REF_FIELDS = ['prompt', 'image_urls', 'video_urls', 'audio_urls', 'duration', 'resolution', 'aspect_ratio', 'generate_audio', 'codec', 'bitrate_mode', 'end_user_id'];
+
+/** A ugc-product-like take template: the selfie look, beats from {picture}, the identity and product lines around them. */
+export const ugcTemplate = {
+  version: 1,
+  prefix: 'Vertical 9:16 selfie-style UGC review of {product.name}, shot on a phone in {answers.setting}, {answers.tone} tone.',
+  templates: { take: 'Use @Image1 as the exact creator identity and @Image2 as the exact single {product.name}.' },
+  scene: '{picture}',
+  suffix: 'Native spoken audio with lip-sync on the front-camera beats. Across all jump cuts: same creator, same single product, no morph.',
+  negative: 'invented text, product redesign',
+  refs: ['anchor', 'product'],
+  banned: ['one continuous breath'],
+};
+
+/** A street-interview-like takes template: take 1 asks the question, later takes answer only. */
+export const streetTemplate = {
+  version: 1,
+  prefix: 'Raw vertical street-interview footage on one corner: {answers.corner}. Only the interviewer holds the microphone.',
+  templates: {
+    first: 'The interviewer hands {product.name} over and asks the question once, off camera.',
+    later: 'ANSWERS ONLY: nobody asks the question again. Same microphone as @Image2.',
+  },
+  scene: 'Same street corner. {picture}',
+  suffix: 'Close voices and one street ambience, no music.',
+  refs: ['product'],
+};
+
+export function ugcScenes() {
+  return [
+    { id: 's1', line: 'Okay, Glowpop just arrived and I love it.', on_screen: null, picture: 'Selfie: Maya holds the can beside her face', speaker: 'maya' },
+    { id: 's2', line: null, on_screen: null, picture: 'Rear camera, face off-screen: she turns the can toward the lens' },
+    { id: 's3', line: 'It tastes like real fruit.', picture: 'Selfie: she sips and smiles', speaker: 'maya' },
+    { id: 's4', line: 'Yeah, this is the one.', picture: 'Selfie: the can held up beside her face', speaker: 'maya' },
+    { id: 'end', line: null, on_screen: 'Try Glowpop', picture: null },
+  ];
+}
+
+/** The ugc-product take step: one 15 s take of four beats, the end card scene left out. */
+export async function ugcInputs(workDir, extra = {}) {
+  return {
+    mode: 'take',
+    template: await writeTemplate(workDir, ugcTemplate, 'ugc-take.prompt.json'),
+    scenes: ugcScenes(),
+    skip_last: 1,
+    cast: [{ key: 'maya', name: 'Maya', look: 'late-20s woman, curly hair', image: await photo(workDir, 'maya.png') }],
+    products: [{ id: 'glow', name: 'Glowpop', images: [await photo(workDir, 'glow.png')] }],
+    answers: { setting: 'a sunny kitchen', tone: 'warm' },
+    pronunciations: [{ term: 'Glowpop', say_as: 'Glow pop' }],
+    seconds: 15,
+    max_words: 28,
+    resolution: '720p',
+    generate_audio: true,
+    ...extra,
+  };
+}
+
+/** The street-interview step: takes with scenes split by extra.take. */
+export async function streetInputs(workDir, extra = {}) {
+  return {
+    mode: 'takes',
+    takes: { count: 3, first: 'first', later: 'later' },
+    chain: { crop: 'bottom_45' },
+    template: await writeTemplate(workDir, streetTemplate, 'street.prompt.json'),
+    scenes: [
+      { id: 'q', line: 'What do you think this is?', picture: 'Handover: a man in a grey coat takes the can', speaker: 'interviewer', extra: { take: 1 } },
+      { id: 'a1', line: 'Some kind of paint?', picture: 'He turns it over, puzzled', speaker: 'man', extra: { take: 1 } },
+      { id: 'a2', line: 'Is it a candle?', picture: 'A woman with a gym bag squints at it', speaker: 'woman', extra: { take: 2 } },
+      { id: 'a3', line: null, picture: 'She shrugs and hands it back', extra: { take: 2 } },
+      { id: 'a4', line: 'Oh, it is sparkling water.', picture: 'An older man reads the side and laughs', speaker: 'older_man', extra: { take: 3 } },
+    ],
+    products: [{ id: 'can', name: 'the can', images: [await photo(workDir, 'can.png')] }],
+    answers: { corner: 'a busy corner in Lower Manhattan' },
+    seconds: 5,
+    resolution: '720p',
+    generate_audio: true,
+    ...extra,
+  };
+}

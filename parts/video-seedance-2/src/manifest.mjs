@@ -1,4 +1,4 @@
-import { file } from '../../_tools/schemas.mjs';
+import { file, pronunciations, timeline } from '../../_tools/schemas.mjs';
 
 const REF = 'bytedance/seedance-2.0/reference-to-video';
 const I2V = 'bytedance/seedance-2.0/image-to-video';
@@ -49,10 +49,10 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'video-seedance-2',
-  version: '1.1.0',
+  version: '1.2.0',
   kind: 'generate_video',
   title: 'Clips with native audio (Seedance 2)',
-  summary: 'Short Seedance 2.0 clips on fal, one piece per clip: from reference images (native voice and room sound) or from a start frame such as the product photo, prompts filled from a template.',
+  summary: 'Seedance 2.0 clips on fal with native voice: from reference images or a start frame, prompts from a template; or whole takes written from plan scenes as timed beats, joined into one video with a timeline.',
   runtime: 'node',
   entry: 'part.mjs',
   files: ['README.md', 'part.mjs'],
@@ -65,7 +65,7 @@ export const manifest = {
       { provider: 'fal', model: REF },
       { provider: 'fal', model: I2V },
     ],
-    disk_mb: 500,
+    disk_mb: 1500,
   },
   inputs: {
     type: 'object',
@@ -73,8 +73,8 @@ export const manifest = {
     required: [],
     properties: {
       mode: {
-        description: `reference (default): ${REF}, each clip from up to 9 reference images. image_to_video: ${I2V}, each clip from a start frame (and an optional end frame).`,
-        enum: ['reference', 'image_to_video'],
+        description: `reference (default): ${REF}, each clip from up to 9 reference images. image_to_video: ${I2V}, each clip from a start frame (and an optional end frame). take: one ${REF} take whose prompt holds up to 4 picked scenes as time-windowed beats. takes: takes.count takes of up to 8 scenes each, joined into one video.`,
+        enum: ['reference', 'image_to_video', 'take', 'takes'],
       },
       clips: {
         description: 'The hand-built clip list (the 1.0.1 behaviour). Without it, give scenes: one clip per picked scene.',
@@ -113,7 +113,7 @@ export const manifest = {
           },
         },
       },
-      seconds: { description: 'scenes mode: every clip\'s length in whole seconds, 4 to 15. Default 5.', type: 'integer', minimum: 4, maximum: 15 },
+      seconds: { description: 'scenes mode: every clip\'s length in whole seconds, 4 to 15. Default 5. Modes take and takes: every take\'s length. Default 15.', type: 'integer', minimum: 4, maximum: 15 },
       resolution: { description: 'Default 1080p (better product labels).', enum: ['480p', '720p', '1080p'] },
       aspect_ratio: { description: 'Default 9:16.', enum: ['9:16', '16:9', '1:1', '4:3', '3:4', '21:9'] },
       generate_audio: { description: 'Native lip-synced voice and room sound. Default true.', type: 'boolean' },
@@ -134,6 +134,28 @@ export const manifest = {
       },
       skip_first: { description: 'scenes mode: scenes left out at the start of the plan.', type: 'integer', minimum: 0, maximum: 40 },
       skip_last: { description: 'scenes mode: scenes left out at the end of the plan (an end card scene).', type: 'integer', minimum: 0, maximum: 40 },
+      takes: {
+        description: 'mode takes: how many takes (scenes split by scene.extra.take, else evenly in order) and the template keys for the text of take 1 (first, default "first") and of later takes (later, default "later", else first\'s).',
+        type: 'object',
+        additionalProperties: false,
+        properties: {
+          count: { type: 'integer', minimum: 1, maximum: 4 },
+          first: { type: 'string', pattern: '^[a-z][a-z0-9_]{0,39}$' },
+          later: { type: 'string', pattern: '^[a-z][a-z0-9_]{0,39}$' },
+        },
+      },
+      chain: {
+        description: 'mode takes: a still of take 1 (one frame at at_s, default 0.5, cropped to the bottom 45% so no face is in it) is added after the plan references of every later take; takes then run in order.',
+        type: 'object',
+        additionalProperties: false,
+        required: ['crop'],
+        properties: { crop: { enum: ['bottom_45'] }, at_s: { type: 'number', minimum: 0, maximum: 15 } },
+      },
+      words_per_second: { description: 'Modes take and takes: the speaking rate a beat\'s window is sized from. Default 2.5.', type: 'number', minimum: 1, maximum: 4 },
+      max_words: { description: 'Modes take and takes: the most spoken words in one take. Default seconds x words_per_second.', type: 'integer', minimum: 1, maximum: 80 },
+      pronunciations: { description: 'Modes take and takes: brand terms written as their spoken form in the dialogue (brand.pronunciations). Default the brand\'s.', ...pronunciations },
+      off_screen_lines: { description: 'mode take: a line on a beat that keeps the face off screen (a rear-camera, macro or hands shot) is refused (default) or written as voice-over.', enum: ['refuse', 'voiceover'] },
+      off_screen_tags: { description: 'mode take: the scene tags (extra.shot or a leading "Tag:") that keep the face off screen. Default rear, rear-camera, rear-cam, back-camera, macro, hands, off-screen, cutaway, b-roll, broll; a picture that says "face off-screen", "rear camera" or "no face" counts too.', type: 'array', maxItems: 20, items: { type: 'string', minLength: 1, maxLength: 40 } },
     },
   },
   outputs: {
@@ -142,7 +164,7 @@ export const manifest = {
     required: ['clips', 'video'],
     properties: {
       clips: {
-        description: 'One clip per entry (clips) or per picked scene, id = the scene id (scenes).',
+        description: 'One clip per entry (clips) or per picked scene, id = the scene id (scenes); in modes take and takes, one per take (the same as takes).',
         type: 'array',
         items: {
           type: 'object',
@@ -151,12 +173,25 @@ export const manifest = {
           properties: { id: { type: 'string' }, video: file('video'), seconds: { type: 'integer', minimum: 4, maximum: 15 } },
         },
       },
-      video: { description: 'The first clip\'s video, for one-clip styles (step.<id>.video).', ...file('video') },
+      video: { description: 'The first clip\'s video, for one-clip styles (step.<id>.video). Modes take and takes: every take joined in order with hard cuts.', ...file('video') },
+      takes: {
+        description: 'Modes take and takes: one per take in order, id t1, t2, ...',
+        type: 'array',
+        items: {
+          type: 'object',
+          additionalProperties: false,
+          required: ['id', 'video', 'seconds'],
+          properties: { id: { type: 'string' }, video: file('video'), seconds: { type: 'integer', minimum: 4, maximum: 15 } },
+        },
+      },
+      seconds: { description: 'Modes take and takes: the joined video\'s length.', type: 'number', exclusiveMinimum: 0 },
+      timeline: { description: 'Modes take and takes: the joined video\'s timeline. scenes are the plan scene ids at their beat windows (estimated); speech is empty, so transcribe the video once.', ...timeline },
     },
   },
   // Documentation only (critic #17): the quote is the style's own cost block. Both models are
   // metered in tokens (width x height x fps x seconds / 1024 at USD 0.014 per 1000); 0.68/s is
-  // the 1080p 9:16 figure. model_from points at mode: reference -> REF, image_to_video -> I2V.
+  // the 1080p 9:16 figure. model_from points at mode: reference, take, takes -> REF; image_to_video -> I2V.
+  // Modes take and takes bill seconds x the number of takes (no clips input to sum).
   cost: {
     basis: 'per_unit',
     unit: 'second',
@@ -165,7 +200,7 @@ export const manifest = {
     model_from: '/mode',
   },
   determinism: 'provider',
-  timing: { typical_s: 240, timeout_s: 1800 },
+  timing: { typical_s: 240, timeout_s: 3600 },
   retry: { transient: 1 },
   replaces: ['create-video-seedance-2-fal'],
 };
