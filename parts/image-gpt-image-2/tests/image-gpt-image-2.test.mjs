@@ -181,6 +181,31 @@ test('refuses before ordering: a scene the template cannot fill, an anchor witho
   }
 });
 
+test('refuses a prompt fal would reject before ordering: under 2 characters, or over 32,000 once the strip note is added', { skip }, async () => {
+  const w = work();
+  const base = await scenesInputs(w);
+  // Without a template a scene's prompt is its picture text alone.
+  const short = { mode: 'scenes', scenes: [{ id: 's1', picture: 'x' }] };
+  // The template alone fits, but the scene naming both members gets a strip note that would pass 32,000.
+  const scene = base.scenes[1];
+  const filled = (await import('../../_lib/prompt.mjs')).kitPromptJoin([`${template.prefix}`, `${scene.picture}. Maya: ${base.cast[0].look}; Theo: ${base.cast[1].look}`, template.suffix, `Avoid: ${template.negative}`]);
+  // Template fields stop at 8,000 characters each, so the padding is shared by four of them.
+  const pad = Math.floor((32000 - filled.length - 120) / 4) - 1;
+  const fill = (text) => `${'p'.repeat(pad)} ${text}`;
+  const long = { ...template, prefix: fill(template.prefix), scene: fill(template.scene), suffix: fill(template.suffix), negative: fill(template.negative) };
+  const strip = { ...base, anchor: 'none', scenes: [scene], skip_last: 0, template: await writeTemplate(w, long, 'long.prompt.json') };
+  for (const [inputs, why] of [[short, /under 2 characters/], [strip, /over 32000 characters/]]) {
+    const { ctx, orders } = makeCtx({ partDir: dir, line: pngLine });
+    await assert.rejects(mod.run(inputs, ctx), (e) => e.code === 'bad_input' && why.test(e.message), String(why));
+    assert.equal(orders.length, 0, `nothing is ordered for ${why}`);
+  }
+  // The same scene sent as a list (no strip note) fits and is drawn.
+  const { ctx, orders } = makeCtx({ partDir: dir, line: pngLine });
+  await mod.run({ ...strip, multi_ref: 'list' }, ctx);
+  assert.equal(orders.length, 1);
+  assert.ok(orders[0].body.prompt.length <= 32000);
+});
+
 test('a provider failure stops new pieces', { skip }, async () => {
   const scenes = Array.from({ length: 12 }, (_, i) => ({ id: `s${i + 1}`, picture: `shot ${i + 1}` }));
   let calls = 0;

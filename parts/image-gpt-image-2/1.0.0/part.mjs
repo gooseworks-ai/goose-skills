@@ -1063,8 +1063,8 @@ function kitStillOutputs({ scenes = [], cast = [], jobs = [], stills, anchors })
 
 const EDIT = 'openai/gpt-image-2/edit';
 const TEXT = 'openai/gpt-image-2';
+const GI_PROMPT_MIN = 2;
 const GI_PROMPT_MAX = 32000;
-const GI_STRIP_NOTE_MAX = 600;
 const GI_AT_ONCE = 4;
 const GI_DEFAULT_SIZE = '1088x1920';
 const GI_DEFAULT_QUALITY = 'high';
@@ -1145,10 +1145,28 @@ function giRefuseGap(ctx, err) {
   throw ctx.error('bad_input', err instanceof KitPromptGap ? err.message : String((err && err.message) || err));
 }
 
+/** fal takes 2 to 32,000 characters: every prompt is checked at its longest before the first piece is ordered. */
 function giCheckLength(ctx, texts) {
   for (const text of texts) {
-    if (text.length > GI_PROMPT_MAX - GI_STRIP_NOTE_MAX) throw ctx.error('bad_input', `a prompt is over ${GI_PROMPT_MAX - GI_STRIP_NOTE_MAX} characters`);
+    if (text.length < GI_PROMPT_MIN) throw ctx.error('bad_input', `a prompt is under ${GI_PROMPT_MIN} characters`);
+    if (text.length > GI_PROMPT_MAX) throw ctx.error('bad_input', `a prompt is over ${GI_PROMPT_MAX} characters`);
   }
+}
+
+/** A cast member's name as a strip note lists it (kitStillName in _lib/scene-stills.mjs). */
+function giMemberName(m) {
+  const name = m && typeof m.name === 'string' ? m.name.trim() : '';
+  return name || String((m && m.key) || 'one character');
+}
+
+/**
+ * The longest prompt a job can send: a strip job's note is counted with every
+ * member it may tile (only members with a picture are tiled, a subset) and the
+ * last reference place, so the real prompt is never longer.
+ */
+function giLongestPrompt(job) {
+  if (!job.strip) return kitStillPrompt(job, {});
+  return kitStillPrompt(job, { strip_at: 10, names: job.cast.map(giMemberName) });
 }
 
 function giRefuseOutside(ctx, inputs, keys, mode) {
@@ -1235,7 +1253,7 @@ async function giScenes(inputs, ctx, manifest, opts) {
     giRefuseGap(ctx, err);
   }
   if (!jobs.length) throw ctx.error('bad_input', 'no scene is picked for a still');
-  giCheckLength(ctx, [...jobs.map((j) => kitStillPrompt(j, {})), ...anchorJobs.map((a) => a.prompt)]);
+  giCheckLength(ctx, [...jobs.map(giLongestPrompt), ...anchorJobs.map((a) => a.prompt)]);
 
   const used = new Set();
   for (const a of anchorJobs) a.piece = kitPieceName('anchor', a.member.key, cast.indexOf(a.member), used);
