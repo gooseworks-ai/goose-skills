@@ -152,3 +152,17 @@ test('review fixes (round 2): an insert never stretches more than 1 s past its s
   const [one] = cutPlaceInserts([src('a')], new Map([['a', { start_s: 1, end_s: 2 }]]), { joins: [2.4, 2.8], duration: 10, fps: 30 });
   assert.ok(Math.abs(one.stretched_s - 0.95) < 1e-9);
 });
+
+test('review fixes (round 3): a join where two inserts touch is covered by both, with no stretch', () => {
+  const src = (id) => ({ scene: { id }, kind: 'window', entry: { file: vid() } });
+  const spans = new Map([['a', { start_s: 2, end_s: 4 }], ['b', { start_s: 4, end_s: 6 }]]);
+  for (const j of [4, 4.05, 3.95]) {
+    const [a, b] = cutPlaceInserts([src('a'), src('b')], spans, { joins: [j], duration: 10, fps: 30 });
+    assert.equal(a.end_s, 4);
+    assert.equal(b.start_s, 4);
+    assert.equal(a.stretched_s + b.early_s, 0, `join at ${j}`);
+  }
+  // Near the far edge of the run, the last insert still stretches.
+  const [, b] = cutPlaceInserts([src('a'), src('b')], spans, { joins: [5.95], duration: 10, fps: 30 });
+  assert.ok(b.end_s >= 6.1 - 1e-9);
+});

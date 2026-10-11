@@ -1012,7 +1012,19 @@ function cutPlaceInserts(inserts, spans, { joins = [], duration, fps }) {
     slot.start_s = want;
     return null;
   };
+  // True when inserts that touch end to end cover the join with CUT_JOIN_AFTER_S on each side.
+  const coveredByRun = (j) => {
+    let runStart = null;
+    let runEnd = -Infinity;
+    for (const s of slots) {
+      if (runStart === null || s.start_s > runEnd + CUT_EPS) runStart = s.start_s;
+      runEnd = Math.max(runEnd, s.end_s);
+      if (runStart <= j - CUT_JOIN_AFTER_S + CUT_EPS && runEnd >= j + CUT_JOIN_AFTER_S - CUT_EPS) return true;
+    }
+    return false;
+  };
   for (const j of [...joins].sort((a, b) => a - b)) {
+    if (coveredByRun(j)) continue;
     // An insert the join is inside: pad whichever side is too close.
     const inside = slots.find((s) => s.start_s <= j + CUT_EPS && j <= s.end_s + CUT_EPS);
     if (inside) {
