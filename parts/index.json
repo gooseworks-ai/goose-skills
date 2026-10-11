@@ -1391,6 +1391,70 @@
       ]
     },
     {
+      "id": "image-gpt-image-2",
+      "version": "1.1.0",
+      "interface": 1,
+      "kind": "generate_image",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "scale",
+            "setsar",
+            "format",
+            "hstack"
+          ],
+          "encoders": [
+            "png",
+            "rawvideo"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "openai/gpt-image-2"
+          },
+          {
+            "provider": "fal",
+            "model": "openai/gpt-image-2/edit"
+          }
+        ],
+        "disk_mb": 300
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "image",
+        "measure": {
+          "from": "/images/*",
+          "as": "count"
+        },
+        "rates_usd": {
+          "openai/gpt-image-2": 0.19,
+          "openai/gpt-image-2/edit": 0.19
+        },
+        "model_from": "/model"
+      },
+      "determinism": "provider",
+      "path": "parts/image-gpt-image-2/1.1.0",
+      "files": {
+        "README.md": "7fdb01b75ad2ef2af9bda7b834c937882e9778c74a40966f1f7afd2aab14d5c0",
+        "part.json": "09f827cb68ef0f9b16dd3085b33c370de426def5aea28c673ab310d678f2aa8d",
+        "part.mjs": "a85a05cd15a1aea174753f077cf22dda3c5f7e1c07e125f562f18e0c067841d1"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "openai/gpt-image-2"
+        },
+        {
+          "provider": "fal",
+          "model": "openai/gpt-image-2/edit"
+        }
+      ]
+    },
+    {
       "id": "image-nano-banana",
       "version": "1.0.0",
       "interface": 1,
