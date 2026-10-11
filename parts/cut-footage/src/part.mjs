@@ -7,6 +7,23 @@
 // is the video's own (an html-frames card that leaves the band free).
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitDuration, kitFfmpeg, kitNum } from '../../_lib/part.mjs';
+import { kitMediaLength } from '../../_lib/length.mjs';
+
+/** atempo steps whose product is `speed`: ffmpeg 6.0's atempo takes 0.5 to 2 at a time. */
+function cutTempoChain(speed) {
+  const steps = [];
+  let left = speed;
+  while (left > 2) {
+    steps.push(2);
+    left /= 2;
+  }
+  while (left < 0.5) {
+    steps.push(0.5);
+    left /= 0.5;
+  }
+  steps.push(left);
+  return steps.map((f) => `atempo=${kitNum(f, 6)}`).join(',');
+}
 
 export async function run(inputs, ctx) {
   const manifest = await kitCheckInputs(ctx, inputs);
@@ -19,7 +36,7 @@ export async function run(inputs, ctx) {
   const dur = await kitDuration(ctx, inputs.video);
   const band = inputs.band;
   if (band.x + band.width > W || band.y + band.height > H) throw ctx.error('bad_input', `the band ${band.width}x${band.height} at ${band.x},${band.y} is outside the ${W}x${H} video`);
-  const length = await kitDuration(ctx, clip.video);
+  const length = await kitMediaLength(ctx, clip.video);
   const from = (clip.start_ms ?? 0) / 1000;
   const to = clip.end_ms == null ? length : clip.end_ms / 1000;
   if (!(to > from) || to > length + 0.05) throw ctx.error('bad_input', `the footage window ${kitNum(from, 2)}-${kitNum(to, 2)}s is not inside the ${kitNum(length, 2)}s clip`);
@@ -48,7 +65,7 @@ export async function run(inputs, ctx) {
   if (inputs.audio) {
     const fInfo = await ctx.tools.probe(clip.video.path);
     if (!fInfo.has_audio) throw ctx.error('bad_input', 'audio is on but the footage has no sound');
-    graph.push(`[1:a]atempo=${kitNum(Math.min(2, speed), 4)},atrim=0:${kitNum(dur)},asetpts=PTS-STARTPTS,aresample=48000[a]`);
+    graph.push(`[1:a]${cutTempoChain(speed)},atrim=0:${kitNum(dur)},asetpts=PTS-STARTPTS,aresample=48000,aformat=channel_layouts=stereo[a]`);
     map.push('-map', '[a]', ...ctx.tools.encodeArgs('aac'));
   } else if (info.has_audio) map.push('-map', '0:a', '-c:a', 'copy');
   await kitFfmpeg(ctx, [

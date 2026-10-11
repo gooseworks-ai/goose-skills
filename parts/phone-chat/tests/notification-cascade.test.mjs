@@ -123,7 +123,7 @@ test('a pop on each banner\'s first visible frame, a swoosh on the clear, the sh
     assert.ok(c.t < total_s);
     assert.ok(existsSync(join(ASSETS, 'sfx', c.sound)), `${c.sound} is shipped`);
   });
-  assert.deepEqual(cues.map((c) => `${c.sound}@${c.gain}`), ['pop.wav@0.8', 'pop.wav@0.8', 'pop.wav@0.8', 'pop.wav@0.8', 'swoosh.wav@0.5', 'pop.wav@0.8']);
+  assert.deepEqual(cues.map((c) => `${c.sound}@${c.gain}`), ['pop.wav@4', 'pop.wav@4', 'pop.wav@4', 'pop.wav@4', 'swoosh.wav@0.8', 'pop.wav@4']);
   assert.deepEqual(readdirSync(join(ASSETS, 'sfx')).sort(), ['pop.wav', 'swoosh.wav']);
 });
 

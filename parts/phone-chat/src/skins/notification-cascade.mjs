@@ -87,8 +87,12 @@ const NC_MOTION = {
 };
 const NC_POP = 'pop.wav';
 const NC_SWOOSH = 'swoosh.wav';
-const NC_POP_GAIN = 0.8;
-const NC_SWOOSH_GAIN = 0.5;
+// The pop is a short click (its peak 16 dB over its first quarter second), so at 0.8 it sat under any bed
+// and levelling the cut cut it down further. It is driven into a -7 dBFS limit, which shaves the click to a
+// dense pop heard over the bed; the swoosh is raised to about -8 dBFS.
+const NC_POP_GAIN = 4;
+const NC_POP_LIMIT_DB = -7;
+const NC_SWOOSH_GAIN = 0.8;
 
 const NC_ID = { type: 'string', pattern: '^[A-Za-z0-9_-]{1,40}$' };
 const NC_BANNER = {
@@ -517,7 +521,7 @@ ${NC_DRIVER}</script>
   // the banner; one swoosh on the first frame of the clear (compose.py's cues).
   const onFrame = (t) => Math.ceil((t + 1 / env.fps - 1e-8) * env.fps) / env.fps;
   const cues = events.map((e) =>
-    e.kind === 'clear' ? { t: onFrame(e.t), sound: NC_SWOOSH, gain: NC_SWOOSH_GAIN } : { t: onFrame(e.t), sound: NC_POP, gain: NC_POP_GAIN },
+    e.kind === 'clear' ? { t: onFrame(e.t), sound: NC_SWOOSH, gain: NC_SWOOSH_GAIN } : { t: onFrame(e.t), sound: NC_POP, gain: NC_POP_GAIN, limit_db: NC_POP_LIMIT_DB },
   );
   const banners = [...thread.notifications, ...(thread.resolution ? [thread.resolution] : [])];
   const stats = {

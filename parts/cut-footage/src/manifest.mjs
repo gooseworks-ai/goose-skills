@@ -4,7 +4,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'cut-footage',
-  version: '1.0.1',
+  version: '1.0.2',
   kind: 'compose',
   title: 'Cut footage into a band',
   summary: "Lays a window of the brand's own footage into a band of a video, cover-fitted and sped so the window fills the video, within the style's speed limits.",
@@ -12,7 +12,7 @@ export const manifest = {
   entry: 'part.mjs',
   files: ['README.md', 'part.mjs'],
   kit: '>=1.0.0 <2.0.0',
-  needs: { browser: false, ffmpeg: { filters: ['setpts', 'fps', 'scale', 'crop', 'pad', 'setsar', 'tpad', 'trim', 'overlay', 'format', 'atempo', 'atrim'], encoders: ['libx264', 'aac'] }, network: false, models: [], disk_mb: 300 },
+  needs: { browser: false, ffmpeg: { filters: ['setpts', 'fps', 'scale', 'crop', 'pad', 'setsar', 'tpad', 'trim', 'overlay', 'format', 'atempo', 'atrim', 'aresample', 'aformat'], encoders: ['libx264', 'aac'] }, network: false, models: [], disk_mb: 300 },
   inputs: {
     type: 'object',
     additionalProperties: false,

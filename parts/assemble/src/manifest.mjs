@@ -4,7 +4,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'assemble',
-  version: '1.0.1',
+  version: '1.0.2',
   kind: 'compose',
   title: 'Assemble scenes',
   summary: 'Joins scene clips and stills in order into one cut of one size and frame rate, with exact frame counts and hard cuts.',
