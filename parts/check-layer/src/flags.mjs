@@ -130,20 +130,52 @@ function chkCountWords(text) {
 /**
  * Spoken words per second over the timeline's speech entries that start before `until`: each entry's
  * word timings when it has them, else the words of what was said (`spoken`, else `text`), over the time
- * the entries span. Null when there is no speech to measure.
+ * the entries cover (overlapping entries counted once). Null when there is no speech to measure.
  */
 export function chkReadRate(speech, until = Infinity) {
   let words = 0;
-  let seconds = 0;
+  const spans = [];
   for (const s of speech || []) {
     if (!(s.start_s < until) || !(s.end_s > s.start_s)) continue;
     const n = (s.words || []).length || chkCountWords(typeof s.spoken === 'string' ? s.spoken : s.text);
     if (!n) continue;
     words += n;
-    seconds += Math.min(s.end_s, until) - s.start_s;
+    spans.push([s.start_s, Math.min(s.end_s, until)]);
   }
+  spans.sort((a, b) => a[0] - b[0]);
+  let seconds = 0;
+  let cur = null;
+  for (const [a, b] of spans) {
+    if (cur && a <= cur[1]) cur[1] = Math.max(cur[1], b);
+    else {
+      if (cur) seconds += cur[1] - cur[0];
+      cur = [a, b];
+    }
+  }
+  if (cur) seconds += cur[1] - cur[0];
   if (!words || !(seconds > 0)) return null;
   return { words, seconds, wps: words / seconds };
+}
+
+/**
+ * The speech said before `until`: entries that end by then as they are; an entry running past it cut to
+ * its timed words before `until` (what was said rebuilt from them). An entry running past it with no word
+ * timings cannot be split: it is left out and `crossing` is set.
+ */
+export function chkSpeechBefore(speech, until) {
+  const out = [];
+  let crossing = false;
+  for (const s of speech || []) {
+    if (!(s.start_s < until)) continue;
+    if (!(s.end_s > until)) out.push(s);
+    else if ((s.words || []).length) {
+      const words = s.words.filter((w) => w.start_s < until);
+      if (!words.length) continue;
+      const said = words.map((w) => w.text).join(' ');
+      out.push({ ...s, text: said, spoken: said, end_s: until, words });
+    } else crossing = true;
+  }
+  return { speech: out, crossing };
 }
 
 /** The scene cuts inside the body: every scene start after 0 and before `bodyEnd`, once each. */

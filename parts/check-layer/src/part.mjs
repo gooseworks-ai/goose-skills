@@ -20,7 +20,7 @@ import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitFfmpeg } from '../../_lib/part.mjs';
 import { speechBuildAliases, speechReview } from '../../_lib/speech.mjs';
 import { kitLogoScore, kitLogoScoreInBox, kitMotion, kitWindowLevels } from '../../_lib/frames.mjs';
-import { CHK_BLANK_MAX_SHARE, CHK_CUT_MAX_RATE, CHK_CUT_MIN_RATE, CHK_READ_MAX_WPS, CHK_READ_MIN_WPS, chkBlankFrames, chkBlankSpans, chkClipSpans, chkCutInsideWord, chkCuts, chkJudgeBlank, chkReadRate } from './flags.mjs';
+import { CHK_BLANK_MAX_SHARE, CHK_CUT_MAX_RATE, CHK_CUT_MIN_RATE, CHK_READ_MAX_WPS, CHK_READ_MIN_WPS, chkBlankFrames, chkBlankSpans, chkClipSpans, chkCutInsideWord, chkCuts, chkJudgeBlank, chkReadRate, chkSpeechBefore } from './flags.mjs';
 
 const TARGET_LUFS = -14;
 const LUFS_TOLERANCE = 2;
@@ -359,8 +359,13 @@ export async function run(inputs, ctx) {
   if (timeline.end_card) visibleTimes.push((timeline.end_card.start_s + timeline.end_card.end_s) / 2);
   const logoVisible = wantsLogo ? await logoCheck(visibleTimes) : null;
 
-  // The speech the content checks see: every entry, or for retained_body those that start in the opening.
-  const speech = (timeline.speech || []).filter((s) => !retained || s.start_s < contentEnd);
+  // The speech the content checks see: every entry, or for retained_body what was said inside the opening
+  // (an entry running on into the kept body is cut to its timed words; one with no word timings cannot be
+  // cut, so the speech checks are not run).
+  const hookSpeech = retained ? chkSpeechBefore(timeline.speech, contentEnd) : null;
+  const speech = hookSpeech ? hookSpeech.speech : timeline.speech || [];
+  const speechCrosses = !!hookSpeech && hookSpeech.crossing;
+  const crossNote = 'speech runs on past the new opening with no word timings';
 
   // The style's own checks (qc_flags). The ones a machine can measure are measured and count toward the
   // verdict; the rest (text legible, products visible, or a flag a later check layer measures) are reported
@@ -398,7 +403,8 @@ export async function run(inputs, ctx) {
     } else if (flag === 'read_rate') {
       const rate = chkReadRate(speech, contentEnd);
       const expected = `${CHK_READ_MIN_WPS} to ${CHK_READ_MAX_WPS} words a second`;
-      if (!rate) add(code, 'not_applicable', { found: 'no speech' });
+      if (speechCrosses) add(code, 'not_applicable', { found: crossNote });
+      else if (!rate) add(code, 'not_applicable', { found: 'no speech' });
       else if (rate.wps < CHK_READ_MIN_WPS - 1e-9) add(code, 'fail', { message: `The voice reads too slowly: ${rate.wps.toFixed(2)} words a second.`, expected, found: +rate.wps.toFixed(3) });
       else if (rate.wps > CHK_READ_MAX_WPS + 1e-9) add(code, 'fail', { message: `The voice reads too fast: ${rate.wps.toFixed(2)} words a second.`, expected, found: +rate.wps.toFixed(3) });
       else add(code, 'pass', { found: +rate.wps.toFixed(3) });
@@ -409,7 +415,7 @@ export async function run(inputs, ctx) {
       const spoken = speech.filter((s) => (s.words || []).length || /[\p{L}\p{N}]/u.test(typeof s.spoken === 'string' ? s.spoken : s.text || ''));
       const fromSpeech = spoken.flatMap((s) => s.words || []);
       const fromCaptions = record && Array.isArray(record.words) ? record.words.filter((w) => w && Number.isFinite(w.start_s) && Number.isFinite(w.end_s) && (!retained || w.start_s < contentEnd)) : [];
-      const words = spoken.every((s) => (s.words || []).length) && fromSpeech.length ? fromSpeech : fromCaptions.length ? fromCaptions : fromSpeech;
+      const words = !speechCrosses && spoken.every((s) => (s.words || []).length) && fromSpeech.length ? fromSpeech : fromCaptions.length ? fromCaptions : fromSpeech;
       const cuts = chkCuts(timeline.scenes, contentEnd);
       if (timeline.end_card && timeline.end_card.start_s < contentEnd && !cuts.some((t) => Math.abs(t - timeline.end_card.start_s) < 1e-3)) cuts.push(timeline.end_card.start_s);
       if (!words.length) add(code, 'not_applicable', { found: 'no word timings' });
@@ -445,6 +451,7 @@ export async function run(inputs, ctx) {
   // transcribed by a step before the layers: this layer orders nothing.
   const untranscribed = expect.speech === 'on_camera' && (!speech.length || speech.some((s) => typeof s.spoken !== 'string'));
   if (!script.length || expect.speech === 'none') add('speech_matches_script', 'not_applicable');
+  else if (speechCrosses) add('speech_matches_script', 'not_applicable', { found: crossNote });
   else if (retained && !speech.length) add('speech_matches_script', 'not_applicable', { found: notChecked });
   else if (untranscribed) {
     add('speech_matches_script', 'fail', { message: 'The on-camera speech was not transcribed, so it cannot be checked against the script.', expected: 'a transcribe step before the layers', found: 'no transcript' });
