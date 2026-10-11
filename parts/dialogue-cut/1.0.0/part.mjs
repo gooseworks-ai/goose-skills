@@ -601,15 +601,61 @@ function dialogueNearestClip(beats, i, who) {
 
 /**
  * One full-frame single on the payoff beat. A beat longer than the ceiling
- * becomes two speaker cuts with the single as the second, so the emphasis
- * still lands at the end of the line. null when the beat cannot carry it.
+ * becomes speaker cuts with the single as the last, so the emphasis still
+ * lands at the end of the line. The head before the single is one speaker cut
+ * when it fits under the ceiling (the recipe's P2), else it is shared evenly
+ * across as many speaker cuts as the ceiling needs (P3, P4, ...). null when the
+ * beat cannot carry it.
  */
 function dialoguePayoffPattern(dur, s) {
   if (dur <= s.max_cut_s + 1e-9) return { id: 'P', segments: ['speaker'], weights: [1.0], payoff_idx: 1 };
   const tail = Math.min(s.max_cut_s, dur - s.min_cut_s);
   if (tail < s.min_cut_s - 1e-9) return null;
   const head = dur - tail;
-  return { id: 'P2', segments: ['speaker', 'speaker'], weights: [dialogueRound(head / dur, 9), dialogueRound(tail / dur, 9)], payoff_idx: 2 };
+  const n = Math.max(1, Math.ceil(head / s.max_cut_s - 1e-9));
+  if (head / n < s.min_cut_s - 1e-9) return null;
+  const heads = Array.from({ length: n }, () => dialogueRound(head / n / dur, 9));
+  return { id: `P${n + 1}`, segments: Array(n + 1).fill('speaker'), weights: [...heads, dialogueRound(tail / dur, 9)], payoff_idx: n + 1 };
+}
+
+/**
+ * The longest beat some pattern can lay out with every cut under the ceiling:
+ * the ceiling itself when a line is one cut (plain and split), else the ceiling
+ * over the smallest biggest-weight of the patterns that need no split window.
+ */
+function dialogueBeatCapacity(s) {
+  let cap = s.max_cut_s;
+  if (!s.multicut) return cap;
+  for (const p of s.patterns) {
+    if (p.segments.includes('split') || p.segments.includes('insert')) continue;
+    cap = Math.max(cap, s.max_cut_s / Math.max(...p.weights));
+  }
+  return cap;
+}
+
+/**
+ * The recipe cut a long line into several beats before the lipsync
+ * (plan_beats.py, max_beat_sec), so its planner never saw a beat no pattern
+ * could carry. Here a line is one lipsync clip, so a beat longer than the
+ * capacity is shared into equal pieces the planner treats as beats. Each piece
+ * keeps the scene id and its offset into the scene (`off_s`), so every cut
+ * still reads its own scene's clip at the right point. Only the last piece of
+ * a payoff line carries the payoff. Beats that fit are passed through as they
+ * are, so a plan the recipe could make is unchanged.
+ */
+function dialogueExpandBeats(beats, s) {
+  const cap = dialogueBeatCapacity(s);
+  if (!beats.some((b) => b.dur_s > cap + 1e-9)) return beats.map((b) => ({ ...b, off_s: 0 }));
+  const out = [];
+  for (const b of beats) {
+    const k = b.dur_s > cap + 1e-9 ? Math.ceil(b.dur_s / cap - 1e-9) : 1;
+    for (let j = 0; j < k; j++) {
+      const start = dialogueRound(b.start_s + (b.dur_s * j) / k);
+      const end = j + 1 < k ? dialogueRound(b.start_s + (b.dur_s * (j + 1)) / k) : b.end_s;
+      out.push({ ...b, n: out.length + 1, start_s: start, end_s: end, dur_s: end - start, off_s: start - b.start_s, payoff: b.payoff && j + 1 === k });
+    }
+  }
+  return out;
 }
 
 /** Every framing a cut may take, in a fixed order. Two options share a label only when they look the same. */
@@ -722,8 +768,9 @@ function dialogueFramingStats(cuts, totalS) {
  * and src_end_s are its window inside the clip of scene `clip_scene`, measured
  * from that beat's start.
  */
-function dialoguePlan(beats, hosts, settings, { products = 0, end_card_s = 0 } = {}) {
+function dialoguePlan(lines, hosts, settings, { products = 0, end_card_s = 0 } = {}) {
   const s = settings;
+  const beats = s.multicut || s.split.enabled ? dialogueExpandBeats(lines, s) : lines.map((b) => ({ ...b, off_s: 0 }));
   const pats = s.patterns;
   const seed = s.seed;
   let cursor = seed % pats.length;
@@ -802,8 +849,8 @@ function dialoguePlan(beats, hosts, settings, { products = 0, end_card_s = 0 } =
         start_s: dialogueRound(b.start_s + off),
         end_s: dialogueRound(b.start_s + off + seglen),
         speaker: who,
-        src_start_s: dialogueRound(off),
-        src_end_s: dialogueRound(off + seglen),
+        src_start_s: dialogueRound(b.off_s + off),
+        src_end_s: dialogueRound(b.off_s + off + seglen),
       };
       if (payIdx === k + 1) cut.payoff = true;
       if (kind === 'speaker') {
@@ -816,7 +863,7 @@ function dialoguePlan(beats, hosts, settings, { products = 0, end_card_s = 0 } =
           // a seeded point inside the listener's clip, kept off its edges
           const pick = ((seed + b.n * 7 + k) % 5) / 6.0 + 0.08;
           const ls = dialogueRound(Math.min(Math.max(0, lb.dur_s - seglen), pick * lb.dur_s));
-          Object.assign(cut, { mode: 'reaction', source: 'clip_muted', show: other, clip_scene: lb.id, src_start_s: ls, src_end_s: dialogueRound(ls + seglen) });
+          Object.assign(cut, { mode: 'reaction', source: 'clip_muted', show: other, clip_scene: lb.id, src_start_s: dialogueRound(lb.off_s + ls), src_end_s: dialogueRound(lb.off_s + ls + seglen) });
         }
       } else if (kind === 'split') {
         Object.assign(cut, { mode: 'split', source: 'clip', show: who, clip_scene: b.id, listener: other, listener_clip_scene: lst === null ? null : beats[lst].id, layout: 'vstack' });
@@ -854,7 +901,7 @@ function dialoguePlan(beats, hosts, settings, { products = 0, end_card_s = 0 } =
     seed,
     dialogue_s: dialogueRound(dialogue_s, 3),
     end_card_s,
-    n_beats: beats.length,
+    n_beats: lines.length,
     n_cuts: cuts.length,
     avg_cut_s: dialogueRound(dialogue_s / Math.max(1, cuts.length), 3),
     pattern_use: used,
@@ -1777,8 +1824,9 @@ export async function run(inputs, ctx) {
     },
     { width, height, fps, head, grade },
   );
+  // The rate cap bounds the file, but CRF usually lands far under it: only the encoded size decides (below).
   if (dcutProjectedBytes(job.total_s, grade) > DCUT_MAX_BYTES) {
-    throw ctx.error('bad_input', `a ${kitNum(job.total_s, 1)} s cut could reach ${dcutMb(dcutProjectedBytes(job.total_s, grade))} MB, over the ${dcutMb(DCUT_MAX_BYTES)} MB a finished video may be; shorten the dialogue`);
+    ctx.log.warn('at the rate cap this cut could pass the size limit; the encoded file is checked', { seconds: kitNum(job.total_s, 1), cap_mb: dcutMb(dcutProjectedBytes(job.total_s, grade)), limit_mb: dcutMb(DCUT_MAX_BYTES) });
   }
 
   await kitFfmpeg(ctx, [

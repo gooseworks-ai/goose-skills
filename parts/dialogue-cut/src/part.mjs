@@ -147,8 +147,9 @@ export async function run(inputs, ctx) {
     },
     { width, height, fps, head, grade },
   );
+  // The rate cap bounds the file, but CRF usually lands far under it: only the encoded size decides (below).
   if (dcutProjectedBytes(job.total_s, grade) > DCUT_MAX_BYTES) {
-    throw ctx.error('bad_input', `a ${kitNum(job.total_s, 1)} s cut could reach ${dcutMb(dcutProjectedBytes(job.total_s, grade))} MB, over the ${dcutMb(DCUT_MAX_BYTES)} MB a finished video may be; shorten the dialogue`);
+    ctx.log.warn('at the rate cap this cut could pass the size limit; the encoded file is checked', { seconds: kitNum(job.total_s, 1), cap_mb: dcutMb(dcutProjectedBytes(job.total_s, grade)), limit_mb: dcutMb(DCUT_MAX_BYTES) });
   }
 
   await kitFfmpeg(ctx, [

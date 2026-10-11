@@ -229,3 +229,55 @@ test('plain mode skips the dynamic-edit checks: a whole line on one shot is the 
   assert.ok(plan.cuts.some((c) => c.end_s - c.start_s > 1.9), 'the fixture has a long line');
   assert.deepEqual(dialoguePlanProblems(plan, beats, HOSTS, settings), []);
 });
+
+/** Beats for line lengths, speakers alternating A, B, B, A, B, B, ... */
+function beatsForLengths(lens) {
+  return beatsOf(lens.map((d, i) => ({ n: i + 1, who: i % 3 === 0 ? 'A' : 'B', dur_sec: d, split: false, payoff: false })));
+}
+
+test('a line longer than any pattern can carry is shared into pieces, so dynamic keeps the 1.9 s ceiling', () => {
+  // The recipe split such a line into several beats before the lipsync (plan_beats.py, max_beat_sec);
+  // here one line is one clip, so the planner shares it out and every cut still reads its own clip.
+  const beats = beatsForLengths([3, 2.5, 3.2, 5.6, 2.8, 3, 2.6, 3.1, 2.9, 6.0]);
+  const settings = dialogueSettings('dynamic', { seed: 4201 });
+  const plan = dialoguePlan(beats, HOSTS, settings, { products: 1, end_card_s: 3.5 });
+  assert.deepEqual(dialoguePlanProblems(plan, beats, HOSTS, settings, { products: 1 }), []);
+  assert.equal(plan.n_beats, beats.length);
+  for (const c of plan.cuts) assert.ok(c.end_s - c.start_s <= 1.9 + 1e-6, `${c.scene_id}.${c.idx} runs ${c.end_s - c.start_s} s`);
+  const byId = new Map(beats.map((b) => [b.id, b]));
+  for (const c of plan.cuts) {
+    // speaker cuts read their clip where the cut sits in the line; a reaction reads inside the listener's clip
+    if (c.mode === 'single' || c.mode === 'split') near(c.src_start_s, c.start_s - byId.get(c.scene_id).start_s, `${c.scene_id}.${c.idx} source window`);
+    if (c.mode === 'reaction' && c.clip_scene) {
+      const lb = byId.get(c.clip_scene);
+      assert.ok(c.src_start_s >= -1e-6 && c.src_end_s <= lb.dur_s + 1e-6, `${c.scene_id}.${c.idx} reads ${c.src_start_s}-${c.src_end_s} of a ${lb.dur_s} s clip`);
+    }
+  }
+  assert.equal(plan.cuts.filter((c) => c.payoff).length, 1, 'one payoff single');
+  assert.equal(plan.cuts.find((c) => c.payoff).scene_id, 's10', 'the payoff is on the last line');
+  assert.equal(plan.cuts.at(-1).payoff, true, 'the payoff single ends the line');
+});
+
+test('a payoff line whose head is over the ceiling becomes several speaker cuts, not one long one', () => {
+  const beats = beatsForLengths([3, 2.5, 3.2, 2.6, 2.8, 3, 2.6, 3.1, 2.9, 3.9]);
+  const settings = dialogueSettings('dynamic', { seed: 4201 });
+  const plan = dialoguePlan(beats, HOSTS, settings, { products: 1, end_card_s: 3.5 });
+  assert.deepEqual(dialoguePlanProblems(plan, beats, HOSTS, settings, { products: 1 }), []);
+  const last = plan.cuts.filter((c) => c.scene_id === 's10');
+  assert.ok(last.length >= 3, `the payoff line has ${last.length} cuts`);
+  assert.ok(last.every((c) => c.mode === 'single' && c.show === 'A'));
+  assert.equal(last.at(-1).payoff, true);
+});
+
+test('split mode shares a line over its 6 s ceiling; plain mode keeps one picture per line', () => {
+  const lens = [3, 2.5, 3.2, 2.6, 2.8, 6.6, 2.6, 3.1, 2.9, 3];
+  const beats = beatsForLengths(lens);
+  const split = dialogueSettings('split', { seed: 4201 });
+  const sp = dialoguePlan(beats, HOSTS, split, { products: 0, end_card_s: 3.5 });
+  assert.deepEqual(dialoguePlanProblems(sp, beats, HOSTS, split, { products: 0 }), []);
+  assert.equal(sp.cuts.filter((c) => c.scene_id === 's6').length, 2);
+  const plain = dialogueSettings('plain', { seed: 4201 });
+  const pl = dialoguePlan(beats, HOSTS, plain, { products: 0, end_card_s: 3.5 });
+  assert.equal(pl.cuts.length, lens.length);
+  assert.deepEqual(dialoguePlanProblems(pl, beats, HOSTS, plain, { products: 0 }), []);
+});

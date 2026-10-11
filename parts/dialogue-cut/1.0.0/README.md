@@ -18,6 +18,9 @@ re-cut costs nothing. From the podcast recipe's `plan_cuts.py` (the planner, `sr
   - `dynamic`: cut patterns inside each line (speaker, listener reaction, split), five reframes per host
     (`crops`), splits on a cadence with seams 0.62 / 0.37 / 0.5, the listener or a product's first photo below,
     and the payoff single.
+- **Long lines**: outside plain, a line longer than any cut pattern can lay out under the ceiling (about 4.5 s in
+  dynamic, 6 s in split) is shared into equal pieces that are planned like lines, each still read from that line's
+  own clip. A payoff line whose head is over the ceiling gets several speaker cuts before the single.
 - **Seeded**: `seed` (default 4201) picks the edit; the same seed and lines give the same edit. If a plan misses a
   cut check, the next seeds are tried in turn (up to 12), and the seed used is an output.
 - **Self-checks before anything is drawn**: the picture tiles every line and the whole timeline; no cut under
@@ -29,8 +32,8 @@ re-cut costs nothing. From the podcast recipe's `plan_cuts.py` (the planner, `sr
   detector sees must land within 0.10 s of the plan.
 - **Look**: `grade: warm-lift-grain` (the recipe's look) on the dialogue only, never on the end card. `head` sets
   where a cover crop sits (default 0.25, a head in frame).
-- **Size rule**: the final encode is capped at 16 Mbps (8 Mbps with the grain look); a cut that could pass 180 MB
-  is refused before encoding, and one that does is refused before upload.
+- **Size rule**: the final encode is capped at 16 Mbps (8 Mbps with the grain look); an encoded cut over 180 MB
+  fails `output_invalid` before upload.
 - **Outputs**: `video`, `seconds`, `timeline` (one scene per spoken line on its real cut times, the speech,
   `end_card` and the card's logo box when there is a card), `cuts` (each cut's times, mode, who it shows and its
   framing) and `seed`.
