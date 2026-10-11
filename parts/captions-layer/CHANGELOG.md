@@ -1,5 +1,10 @@
 # captions-layer
 
+## 1.3.0
+
+- Three new caption looks: `pill` (about 3 lower-case words on a cream rounded pill, said words dark and upcoming words grey, the brand name keeps its case), `serif-word` (one word at a time in a heavy serif with a black outline; a brand name is never split, and a highlighted one is quoted) and `sentence` (one sentence per caption across lines, each word appearing as it is said and staying, bottom-anchored and growing upward).
+- The `serif` (PT Serif Bold) and `rounded` (Titan One) fonts are bundled, each with its SIL Open Font License text. `plate`, `stroke` and `karaoke` draw exactly as in 1.2.0 unless the look names one of the new fonts (1.2.0 dropped them with a warning).
+
 ## 1.2.0
 
 - Reads the style's caption look (`expect.caption_look`): presets `plate`, `stroke` and `karaoke`, with words per caption, height, case, brand and call-to-action highlights and skipping the first scene. An unknown preset is drawn as `plate` with a warning; the look is never refused.

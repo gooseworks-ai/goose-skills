@@ -5,7 +5,14 @@
 //            (the default, and what an unknown preset falls back to);
 //   stroke   white bold type with a black outline, no plate, up to 5 words;
 //   karaoke  groups of up to 5 outlined words, the spoken word in the
-//            highlight colour.
+//            highlight colour;
+//   pill     about 3 lower-case words on a cream rounded pill in a bold rounded
+//            face, the words said so far dark and the ones still to come grey;
+//   serif-word  one word at a time in a heavy serif, white with a black
+//            outline, a brand name kept whole and, when highlighted, quoted;
+//   sentence one sentence per caption in a serif, each word appearing as it
+//            is said and staying, the last line on a fixed low baseline and a
+//            longer sentence growing upward.
 // A look is never refused: an unknown preset (one a later version draws) or a
 // bad parameter is dropped with a warning and the rest is drawn. Captions
 // stop where the timeline's end card starts and are never drawn inside it;
@@ -25,16 +32,31 @@ import { kitCheckInputs, kitCheckOutputs, kitDuration, kitFfmpeg, kitNum } from 
 import { kitHeardPlace, kitHeardWords } from '../../_lib/heard.mjs';
 
 const CAP = 0.019;
-const Y = 0.62;
 const SAFE_TOP = 285 / 1920;
 const SAFE_BOTTOM = 1635 / 1920;
 const PLATE = 'rgba(58,58,60,0.839)';
 const MAX_BYTES = 180 * 1000 * 1000;
-const PRESETS = new Set(['plate', 'stroke', 'karaoke']);
-const LATER_PRESETS = new Set(['pill', 'serif-word', 'sentence']);
-const DEFAULT_WORDS = { plate: 2, stroke: 5, karaoke: 5 };
-// Outlined presets show at most five words at a time; a larger max_words is cut to five.
+const PRESETS = new Set(['plate', 'stroke', 'karaoke', 'pill', 'serif-word', 'sentence']);
+// A sentence caption longer than this (with no max_words in the look) is split into near-equal parts.
+const DEFAULT_WORDS = { plate: 2, stroke: 5, karaoke: 5, pill: 3, 'serif-word': 1, sentence: 12 };
+// Caption centre as a share of the height; for `sentence` it is the centre of the last line.
+const DEFAULT_Y = { plate: 0.62, stroke: 0.62, karaoke: 0.62, pill: 0.7, 'serif-word': 0.75, sentence: 0.77 };
+// Stroke, karaoke and pill show at most five words at a time; a larger max_words is cut to five.
 const MAX_OUTLINED = 5;
+const CAPPED = new Set(['stroke', 'karaoke', 'pill']);
+// Presets that draw one image per spoken word.
+const WORD_STATES = new Set(['karaoke', 'pill', 'sentence']);
+// Font size as a share of the height for the 1.3.0 presets (serif-word: cap 0.0367 H, measured off the
+// reference; sentence: 62 px at 1920).
+const SIZE = { pill: 0.0297, 'serif-word': 0.0506, sentence: 0.0323 };
+// The bundled faces (all SIL Open Font License; the license texts ship beside them).
+const FACES = { sans_bold: 'Montserrat-Bold.ttf', serif: 'PTSerif-Bold.ttf', rounded: 'TitanOne-Regular.ttf' };
+const PRESET_FACE = { pill: 'rounded', 'serif-word': 'serif', sentence: 'serif' };
+const PILL = '#FBF3E2';
+const PILL_INK = '#1C1A17';
+const PILL_UPCOMING = '#A39D92';
+const SENTENCE_INK = 'rgb(255,253,248)';
+const SENTENCE_STROKE = 'rgb(18,14,10)';
 const HEX = /^#[0-9a-fA-F]{6}$/;
 
 /**
@@ -42,7 +64,7 @@ const HEX = /^#[0-9a-fA-F]{6}$/;
  * value this version cannot use is dropped with a warning.
  */
 function readLook(raw, brand, log) {
-  const look = { preset: 'plate', max_words: null, max_words_set: false, y: Y, font: null, highlight: [], highlight_color: null, case: 'as_written', skip_first_scene: false };
+  const look = { preset: 'plate', max_words: null, max_words_set: false, y: null, font: null, highlight: [], highlight_color: null, case: null, skip_first_scene: false };
   if (raw === undefined || raw === null) return finishLook(look, brand, log);
   if (typeof raw !== 'object' || Array.isArray(raw)) {
     log.warn('caption look is not an object; drawing plate captions', { caption_look: raw });
@@ -51,7 +73,6 @@ function readLook(raw, brand, log) {
   const drop = (key, why) => log.warn(`caption look ${key} ignored: ${why}`, { [key]: raw[key] });
   if (raw.preset !== undefined) {
     if (PRESETS.has(raw.preset)) look.preset = raw.preset;
-    else if (LATER_PRESETS.has(raw.preset)) log.warn(`caption look preset ${raw.preset} needs a later captions layer; drawing plate captions`, { preset: raw.preset });
     else log.warn(`unknown caption look preset ${JSON.stringify(raw.preset)}; drawing plate captions`, { preset: raw.preset });
   }
   if (raw.max_words !== undefined) {
@@ -68,8 +89,7 @@ function readLook(raw, brand, log) {
     } else drop('y', 'not a number');
   }
   if (raw.font !== undefined) {
-    if (raw.font === 'sans_bold' || raw.font === 'brand') look.font = raw.font;
-    else if (raw.font === 'serif' || raw.font === 'rounded') drop('font', `${raw.font} is bundled in a later captions layer; using the default font`);
+    if (['sans_bold', 'serif', 'rounded', 'brand'].includes(raw.font)) look.font = raw.font;
     else drop('font', 'not sans_bold, serif, rounded or brand');
   }
   if (raw.highlight !== undefined) {
@@ -96,8 +116,14 @@ function readLook(raw, brand, log) {
 }
 
 function finishLook(look, brand, log) {
+  if (look.y === null) look.y = DEFAULT_Y[look.preset];
+  if (look.case === null) look.case = look.preset === 'pill' ? 'lower' : 'as_written';
+  if (look.preset === 'serif-word' && look.max_words_set && look.max_words !== 1) {
+    if (log) log.warn('caption look max_words ignored: serif-word shows one word at a time', { max_words: look.max_words });
+    look.max_words = 1;
+  }
   if (!look.max_words) look.max_words = DEFAULT_WORDS[look.preset];
-  if (look.preset !== 'plate' && look.max_words > MAX_OUTLINED) {
+  if (CAPPED.has(look.preset) && look.max_words > MAX_OUTLINED) {
     if (log) log.warn(`caption look max_words cut to ${MAX_OUTLINED} for ${look.preset} captions`, { max_words: look.max_words });
     look.max_words = MAX_OUTLINED;
   }
@@ -156,6 +182,46 @@ function phraseGroups(words, per) {
   return groups;
 }
 
+/**
+ * Sentence groups: the words of every line in time order, cut after each word that ends a sentence
+ * (. ! ?), so a sentence sung across several lines is one caption; a sentence longer than `per` words is
+ * cut into the fewest near-equal parts.
+ */
+function sentenceGroups(words, per) {
+  const sentences = [];
+  let cur = [];
+  words.forEach((w, i) => {
+    cur.push(w);
+    if (i === words.length - 1 || /[.!?]["'’”)\]]*$/.test(w.text)) {
+      sentences.push(cur);
+      cur = [];
+    }
+  });
+  const groups = [];
+  for (const p of sentences) {
+    const n = Math.ceil(p.length / per);
+    let at = 0;
+    for (let g = 0; g < n; g++) {
+      const size = Math.ceil((p.length - at) / (n - g));
+      groups.push(p.slice(at, at + size));
+      at += size;
+    }
+  }
+  return groups;
+}
+
+/** Serif-word groups: one word each, except that the words of one brand name or highlight stay together. */
+function serifGroups(words) {
+  const groups = [];
+  words.forEach((w, i) => {
+    const prev = words[i - 1];
+    const same = prev && ((w.run !== undefined && w.run === prev.run) || (w.brand !== undefined && w.brand === prev.brand));
+    if (same) groups.at(-1).push(w);
+    else groups.push([w]);
+  });
+  return groups;
+}
+
 /** Times from syllables inside the line, for a line the transcript could not place. */
 function estimateWords(text, start, end) {
   const words = text.split(/\s+/).filter(Boolean);
@@ -208,8 +274,11 @@ function highlightPhrases(look, brand) {
   return out.map((p) => p.split(/\s+/).map(matchKey).join('')).filter(Boolean);
 }
 
-/** Marks words (in order) that spell a highlight phrase, however many words it takes ("Drink AG1" or "DrinkAG1"). */
-function markHighlights(words, phrases) {
+/**
+ * Marks words (in order) that spell one of `phrases`, however many words it takes ("Drink AG1" or
+ * "DrinkAG1"): `mark(word, index of the run's first word)`.
+ */
+function markPhrases(words, phrases, mark) {
   if (!phrases.length) return;
   const keys = words.map((w) => matchKey(w.text));
   for (let i = 0; i < words.length; i++) {
@@ -217,7 +286,7 @@ function markHighlights(words, phrases) {
     let joined = '';
     for (let j = i; j < words.length; j++) {
       joined += keys[j];
-      if (phrases.includes(joined)) for (let k = i; k <= j; k++) words[k].hi = true;
+      if (phrases.includes(joined)) for (let k = i; k <= j; k++) mark(words[k], i);
       if (!phrases.some((p) => p.startsWith(joined))) break;
     }
   }
@@ -283,15 +352,32 @@ async function buildCues(ctx, inputs, duration, look) {
   // The caption track stops for good where the end card starts: nothing is captioned from there on.
   const inCard = (t) => endCard && t >= endCard.start_s - 1e-6;
   const phrases = highlightPhrases(look, inputs.brand);
+  const brandName = inputs.brand.name ? [inputs.brand.name.split(/\s+/).map(matchKey).join('')].filter(Boolean) : [];
   const cues = [];
   const kept = [];
   for (const line of lines) {
     const words = line.words.filter((w) => !inCard(w.start_s)).map((w) => ({ text: w.text, start_s: w.start_s, end_s: w.end_s, hi: false }));
     if (!words.length) continue;
-    markHighlights(words, phrases);
+    markPhrases(words, phrases, (w, at) => {
+      w.hi = true;
+      w.run = at;
+    });
+    if (look.preset === 'pill' || look.preset === 'serif-word') {
+      markPhrases(words, brandName, (w, at) => {
+        w.brand = at;
+      });
+    }
     kept.push(...words);
-    const groups = look.preset === 'plate' ? plateGroups(words, line.end - line.start, look.max_words, look.max_words_set) : phraseGroups(words, look.max_words);
+    if (look.preset === 'sentence') continue;
+    let groups;
+    if (look.preset === 'plate') groups = plateGroups(words, line.end - line.start, look.max_words, look.max_words_set);
+    else if (look.preset === 'serif-word') groups = serifGroups(words);
+    else groups = phraseGroups(words, look.max_words);
     for (const g of groups) cues.push({ words: g, start_s: g[0].start_s, end_s: g.at(-1).end_s });
+  }
+  if (look.preset === 'sentence') {
+    const ordered = [...kept].sort((a, b) => a.start_s - b.start_s);
+    for (const g of sentenceGroups(ordered, look.max_words)) cues.push({ words: g, start_s: g[0].start_s, end_s: g.at(-1).end_s });
   }
   if (!cues.length) {
     if (!said) throw ctx.error('bad_input', 'nothing was said to caption');
@@ -301,6 +387,11 @@ async function buildCues(ctx, inputs, duration, look) {
   }
   cues.sort((a, b) => a.start_s - b.start_s);
   for (let i = 0; i < cues.length - 1; i++) {
+    // A sentence stays up until the next one starts.
+    if (look.preset === 'sentence') {
+      cues[i].end_s = Math.max(cues[i].start_s, cues[i + 1].start_s);
+      continue;
+    }
     // Close small gaps so captions do not flicker off, never overlapping the next.
     cues[i].end_s = Math.max(cues[i].end_s, Math.min(cues[i + 1].start_s, cues[i].end_s + 0.5));
     cues[i].end_s = Math.min(cues[i].end_s, cues[i + 1].start_s);
@@ -314,7 +405,7 @@ async function buildCues(ctx, inputs, duration, look) {
   }
   const live = cues.filter((c) => c.end_s - c.start_s > 1e-3);
   for (const c of live) {
-    if (look.preset !== 'karaoke') {
+    if (!WORD_STATES.has(look.preset)) {
       c.states = [{ start_s: c.start_s, end_s: c.end_s, active: -1 }];
       continue;
     }
@@ -334,13 +425,19 @@ function fontFormat(path) {
   return { ttf: 'truetype', otf: 'opentype', woff: 'woff', woff2: 'woff2' }[(m ? m[1] : 'ttf').toLowerCase()];
 }
 
-/** The font file to draw with: `sans_bold` is the bundled face; otherwise the brand's body or heading face, else the bundled one. */
+/**
+ * The font file to draw with. `sans_bold`, `serif` and `rounded` are the bundled faces; `brand` is the brand's
+ * body or heading face. With no font named, pill, serif-word and sentence use their own bundled face, and the
+ * other presets the brand's face, else the bundled sans.
+ */
 function fontFile(look, brand, partDir, log) {
-  const bundled = { path: join(partDir, 'assets', 'fonts', 'Montserrat-Bold.ttf') };
-  if (look.font === 'sans_bold') return bundled;
+  const face = (name) => ({ path: join(partDir, 'assets', 'fonts', FACES[name]) });
+  if (FACES[look.font]) return face(look.font);
+  const bundled = face(PRESET_FACE[look.preset] || 'sans_bold');
   const fonts = brand.fonts || {};
   const own = fonts.body || fonts.heading;
   if (!own && look.font === 'brand') log.warn('caption look asks for the brand font but the brand has none; using the bundled font');
+  if (look.font !== 'brand' && PRESET_FACE[look.preset]) return bundled;
   return own || bundled;
 }
 
@@ -371,19 +468,57 @@ function caseOf(text, look) {
   return text;
 }
 
-/** The caption page: one #cap box of word spans; .hi words and the .on (spoken) word take the highlight colour. */
-function pageHtml(W, H, px, look, fontUri, fontPath) {
+/**
+ * The words of a cue as drawn (and written to the WebVTT): in the look's case, except that a pill keeps the
+ * brand name as written; a serif-word caption that is all highlight is quoted.
+ */
+function cueTexts(c, look) {
+  const texts = c.words.map((w) => (look.preset === 'pill' && w.brand !== undefined ? w.text : caseOf(w.text, look)));
+  if (look.preset === 'serif-word' && c.words.every((w) => w.hi)) {
+    texts[0] = `\u201c${texts[0].replace(/^["'\u201c\u2018(]+/, '')}`;
+    const last = texts.length - 1;
+    texts[last] = `${texts[last].replace(/[.,!?;:"'\u201d\u2019)]+$/, '')}\u201d`;
+  }
+  return texts;
+}
+
+/** The box style of each preset's caption. */
+function boxCss(W, H, px, look) {
+  if (look.preset === 'plate') {
+    return `white-space:nowrap;width:max-content;background:${PLATE};padding:${Math.round(px * 0.22)}px ${Math.round(px * 0.46)}px;border-radius:${Math.round(px * 0.3)}px;`;
+  }
+  if (look.preset === 'pill') {
+    return `white-space:nowrap;width:max-content;color:${PILL_INK};background:${PILL};padding:${Math.round(px * 0.24)}px ${Math.round(px * 0.6)}px;border-radius:${px * 2}px;box-shadow:0 ${Math.round(px * 0.08)}px ${Math.round(px * 0.35)}px rgba(0,0,0,0.28);font-synthesis:none;`;
+  }
+  if (look.preset === 'serif-word') {
+    // A black outline 0.0047 of the height outside the letters (measured off the reference).
+    const o = Math.max(2, Math.round(0.0047 * H));
+    return `white-space:nowrap;width:max-content;padding:${o}px ${o}px;-webkit-text-stroke:${o * 2}px #000;paint-order:stroke fill;font-synthesis:none;`;
+  }
+  if (look.preset === 'sentence') {
+    // A 5 px dark outline at 1920 high.
+    const o = Math.max(2, Math.round(0.0026 * H));
+    return `white-space:normal;width:max-content;text-align:center;text-wrap:balance;line-height:1.3;color:${SENTENCE_INK};padding:${o}px ${o * 2}px;-webkit-text-stroke:${o * 2}px ${SENTENCE_STROKE};paint-order:stroke fill;font-synthesis:none;`;
+  }
   const outline = Math.max(2, Math.round(px * 0.12));
-  const box =
-    look.preset === 'plate'
-      ? `white-space:nowrap;width:max-content;background:${PLATE};padding:${Math.round(px * 0.22)}px ${Math.round(px * 0.46)}px;border-radius:${Math.round(px * 0.3)}px;`
-      : `white-space:normal;width:max-content;text-align:center;text-wrap:balance;padding:${outline}px ${outline * 2}px;-webkit-text-stroke:${outline * 2}px #000;paint-order:stroke fill;`;
+  return `white-space:normal;width:max-content;text-align:center;text-wrap:balance;padding:${outline}px ${outline * 2}px;-webkit-text-stroke:${outline * 2}px #000;paint-order:stroke fill;`;
+}
+
+/**
+ * The caption page: one #cap box of word spans. .hi words and the .on (spoken karaoke) word take the
+ * highlight colour; .up (a pill word still to come) is grey; .hide (a sentence word not yet said) keeps its
+ * place but is not drawn.
+ */
+function pageHtml(W, H, px, look, fontUri, fontPath) {
+  const box = boxCss(W, H, px, look);
   return `<!doctype html><html><head><meta charset="utf-8"><style>
 @font-face{font-family:KitCaption;src:url(${fontUri}) format('${fontFormat(fontPath)}');font-display:block;}
 html,body{margin:0;width:${W}px;height:${H}px;background:transparent;overflow:hidden;}
 #cap{position:absolute;left:0;top:0;display:inline-block;box-sizing:border-box;font-family:KitCaption;font-weight:700;font-size:${px}px;line-height:1.15;color:#fff;${box}}
 #cap.off{display:none;}
 #cap .hi,#cap .on{color:${look.highlight_color};}
+#cap .up{color:${PILL_UPCOMING};}
+#cap .hide{visibility:hidden;}
 </style></head><body><div id="cap" class="off"></div></body></html>`;
 }
 
@@ -397,8 +532,13 @@ export async function run(inputs, ctx) {
   const fps = info.fps || inputs.timeline.fps || 30;
   const duration = await kitDuration(ctx, inputs.video);
   const { cues, words } = await buildCues(ctx, inputs, duration, look);
-  // Outlined captions have no plate to carry them, so they are set 15 % larger.
-  const px = Math.round(CAP * H * 1.38 * (look.preset === 'plate' ? 1 : 1.15));
+  // Outlined captions have no plate to carry them, so they are set 15 % larger; the 1.3.0 presets have their own sizes.
+  const px = SIZE[look.preset] ? Math.round(SIZE[look.preset] * H) : Math.round(CAP * H * 1.38 * (look.preset === 'plate' ? 1 : 1.15));
+  // How a caption is set: plate as in 1.1.0; pill and serif-word on one line; stroke and karaoke on up to two
+  // lines; sentence on up to three, its last line centred on y and growing upward.
+  const fit = look.preset === 'plate' ? 'plate' : look.preset === 'pill' || look.preset === 'serif-word' ? 'line' : 'wrap';
+  const lines = look.preset === 'sentence' ? 3 : 2;
+  const lh = look.preset === 'sentence' ? 1.3 : 1.15;
   const zone = band(inputs.timeline, W, H);
   if (zone.bottom - zone.top < px * 1.5) throw ctx.error('bad_input', 'the caption safe zone is too small for a caption');
   const font = fontFile(look, inputs.brand, ctx.part.dir, ctx.log);
@@ -408,7 +548,7 @@ export async function run(inputs, ctx) {
   const browser = await ctx.browser.launch();
   const drawn = new Map();
   const blank = join(ctx.tmpDir, 'blank.png');
-  const keyOf = (c, active) => JSON.stringify([c.words.map((w) => [w.text, w.hi]), active]);
+  const keyOf = (c, active) => JSON.stringify([cueTexts(c, look), c.words.map((w) => w.hi), active]);
   try {
     const p = await browser.newPage({ viewport: { width: W, height: H }, deviceScaleFactor: 1 });
     await p.setContent(page);
@@ -423,7 +563,7 @@ export async function run(inputs, ctx) {
     for (const c of cues) {
       if (c.states.every((s) => drawn.has(keyOf(c, s.active)))) continue;
       const placed = await p.evaluate(
-        async ({ words, plate, px, top, bottom, y, left, right }) => {
+        async ({ words, fit, lines, lh, bottomAnchor, px, top, bottom, y, left, right }) => {
           const el = document.getElementById('cap');
           await document.fonts.load(`700 ${px}px KitCaption`, words.map((w) => w.text).join(' '));
           el.replaceChildren();
@@ -446,7 +586,7 @@ export async function run(inputs, ctx) {
           const stroke = parseFloat(getComputedStyle(el).webkitTextStrokeWidth) || 0;
           const radius = parseFloat(getComputedStyle(el).borderTopLeftRadius) || 0;
           let r = el.getBoundingClientRect();
-          if (plate) {
+          if (fit === 'plate') {
             // A plate caption is one line; one wider than the band is set smaller to fit rather than
             // wrapping or leaving the frame. Its natural width is measured and it is resized, not
             // transformed, so the drawn plate is exactly the measured box.
@@ -457,15 +597,26 @@ export async function run(inputs, ctx) {
               el.style.borderRadius = `${Math.round(radius * k)}px`;
               r = el.getBoundingClientRect();
             }
+          } else if (fit === 'line') {
+            // Pill and serif-word captions are one line; a caption wider than the band is set smaller, its
+            // padding, corners and outline with it.
+            if (r.width > room) {
+              const k = Math.floor((room / r.width) * 1000) / 1000;
+              el.style.fontSize = `${px * k}px`;
+              el.style.padding = `${Math.round(padY * k)}px ${Math.round(pad * k)}px`;
+              el.style.borderRadius = `${Math.round(radius * k)}px`;
+              if (stroke) el.style.webkitTextStrokeWidth = `${Math.max(1, stroke * k)}px`;
+              r = el.getBoundingClientRect();
+            }
           } else {
-            // Outlined captions wrap to at most two lines inside the band, then shrink until they fit.
+            // Outlined captions wrap to at most `lines` lines inside the band, then shrink until they fit.
             el.style.maxWidth = `${room}px`;
             let size = px;
             const fits = () => {
-              const lineH = size * 1.15;
+              const lineH = size * lh;
               const h = el.getBoundingClientRect().height;
-              // At most two lines, and never taller than the band (a short band shrinks the words further).
-              return el.scrollWidth <= room + 0.5 && h <= lineH * 2 + padY * 2 + 1 && h <= bottom - top + 0.5;
+              // At most `lines` lines, and never taller than the band (a short band shrinks the words further).
+              return el.scrollWidth <= room + 0.5 && h <= lineH * lines + padY * 2 + 1 && h <= bottom - top + 0.5;
             };
             for (let i = 0; i < 40 && !fits(); i++) {
               size *= 0.94;
@@ -478,15 +629,24 @@ export async function run(inputs, ctx) {
           }
           const w = r.width;
           const h = r.height;
-          const t = Math.min(Math.max(y - h / 2, top), bottom - h);
+          let t = Math.min(Math.max(y - h / 2, top), bottom - h);
+          if (bottomAnchor) {
+            // The last line's centre sits on y; a longer caption grows upward.
+            const cs = getComputedStyle(el);
+            const last = parseFloat(cs.fontSize) * lh;
+            t = Math.min(Math.max(y + last / 2 + (parseFloat(cs.paddingBottom) || 0) - h, top), bottom - h);
+          }
           const l = left + (right - left - w) / 2;
           el.style.left = `${l}px`;
           el.style.top = `${t}px`;
           return { x: l, y: t, w, h };
         },
         {
-          words: c.words.map((w) => ({ text: caseOf(w.text, look), hi: w.hi })),
-          plate: look.preset === 'plate',
+          words: cueTexts(c, look).map((text, i) => ({ text, hi: c.words[i].hi })),
+          fit,
+          lines,
+          lh,
+          bottomAnchor: look.preset === 'sentence',
           px,
           top: zone.top,
           bottom: zone.bottom,
@@ -499,9 +659,16 @@ export async function run(inputs, ctx) {
       for (const s of c.states) {
         const key = keyOf(c, s.active);
         if (drawn.has(key)) continue;
-        await p.evaluate((active) => {
-          [...document.querySelectorAll('#cap span')].forEach((el, i) => el.classList.toggle('on', i === active));
-        }, s.active);
+        await p.evaluate(
+          ({ active, preset }) => {
+            [...document.querySelectorAll('#cap span')].forEach((el, i) => {
+              el.classList.toggle('on', preset === 'karaoke' && i === active);
+              el.classList.toggle('up', preset === 'pill' && i > active);
+              el.classList.toggle('hide', preset === 'sentence' && i > active);
+            });
+          },
+          { active: s.active, preset: look.preset },
+        );
         const file = join(ctx.tmpDir, `cap-${drawn.size}.png`);
         await p.screenshot({ path: file, type: 'png', omitBackground: true });
         drawn.set(key, { file, box: placed });
@@ -556,7 +723,7 @@ export async function run(inputs, ctx) {
     throw ctx.error('output_invalid', `the captioned video is ${Math.round(bytes / 1e6)} MB, over the 180 MB limit for an upload`);
   }
 
-  const shown = (c) => c.words.map((w) => caseOf(w.text, look)).join(' ');
+  const shown = (c) => cueTexts(c, look).join(' ');
   const vtt = ['WEBVTT', ''];
   cues.forEach((c, i) => vtt.push(String(i + 1), `${vttTime(c.start_s)} --> ${vttTime(c.end_s)}`, shown(c), ''));
   await writeFile(join(ctx.workDir, 'captions.vtt'), vtt.join('\n'));

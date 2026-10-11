@@ -568,6 +568,7 @@ export interface CaptionLook {
   max_words?: number;
   /** Caption centre, 0.40-0.82 of the height, clamped into the safe band. */
   y?: number;
+  /** `serif` (PT Serif Bold) and `rounded` (Titan One) are bundled from captions-layer 1.3.0. */
   font?: 'sans_bold' | 'serif' | 'rounded' | 'brand';
   /** Words that spell the brand name or the call to action take the highlight colour. */
   highlight?: Array<'brand' | 'cta'>;

@@ -1,0 +1,74 @@
+# captions-layer 1.3.0
+
+The captions layer (slot 2 of 4): burns word-timed captions onto the cut and returns a WebVTT of exactly
+what it drew (the core sends it as the upload's `captions_vtt`). New in 1.3.0: the `pill`, `serif-word` and
+`sentence` looks, and the `serif` and `rounded` fonts, bundled. (1.2.0 brought the caption look and the
+end-card stop.)
+
+- **Timings**: the timeline's `speech[].words` (voice-elevenlabs writes them, with the written brand names).
+  Only when a line has no word timings is the cut's own audio transcribed: one paid piece, fal
+  `fal-ai/whisper` with `{audio_url, task: "transcribe", language: "en", chunk_level: "word"}`, the audio
+  passed as a file the core hosts. Heard words are placed on the written line; a word the transcript writes
+  differently ("200" for "two hundred") sits between its neighbours; a line it cannot place is timed by
+  syllables and logged.
+- **End card**: when the timeline has `end_card {start_s, end_s}`, the caption track stops for good at
+  its start: no word that starts at or after it is captioned, and no caption runs into it. The last caption
+  before it holds to its start. With no end card
+  the last caption holds to the final frame (it is the call to action).
+- **Caption look** (`expect.caption_look`, from the style's `traits.caption_look`; the kit copies it):
+  - `preset`:
+    - `plate` (the default): one or two words, white bold type on a dark grey rounded plate, by the line's
+      pace (caption-burn's rule); a lone last word joins the one before.
+    - `stroke`: white bold type with a black outline, no plate, up to 5 words a caption. A caption ends at
+      punctuation or a pause over 0.6 s and is split into near-equal groups. It may wrap to two balanced
+      lines, then shrinks to fit.
+    - `karaoke`: grouped like `stroke`, and the word being spoken takes the highlight colour.
+    - `pill` (new): about 3 words (grouped like `stroke`, at most 5) on one line on a cream rounded pill with
+      a soft shadow, in the bundled rounded face (Titan One). Lower case by default, but the brand name keeps
+      its written case. The words said so far are near-black and the ones still to come grey; a highlighted word,
+      once said, takes the highlight colour. Default centre 0.70 of the height.
+    - `serif-word` (new): one word at a time, on one line, in the bundled heavy serif (PT Serif Bold), white
+      with a black outline 0.0047 of the height, cap height about 0.037 of the height. The words of the brand
+      name always stay in one caption (never half a brand name). A caption that is all highlight (the brand
+      with `highlight: ["brand"]`) is quoted and drawn in the highlight colour. Default centre 0.75 of the
+      height, which puts the baseline near 0.77.
+    - `sentence` (new): one sentence per caption, in the bundled serif, near-white with a dark outline, 62 px
+      at 1920 high. A sentence is read across lines: it ends at `.`, `!` or `?`, so a sentence sung over
+      several scenes is one caption; one longer than `max_words` (default 12) is split into near-equal parts.
+      Each word appears as it is said and stays (the sentence is laid out in full first, so nothing moves).
+      `y` is the centre of the **last** line (default 0.77); a longer sentence wraps to up to three balanced
+      lines and grows upward, never below the band. A sentence stays up until the next one starts (or the
+      end card).
+  - `max_words` (1 to 8; `stroke`, `karaoke` and `pill` use at most 5; `serif-word` always 1), `y` (caption
+    centre, 0.40 to 0.82 of the height; default 0.62 for `plate`, `stroke` and `karaoke`),
+    `case` (`as_written`, `lower`, `upper`; the WebVTT shows the same case), `skip_first_scene` (no captions
+    on the timeline's first scene: lines tagged with its id and words mostly inside its span; no caption starts before it ends).
+  - `highlight` (`brand`, `cta`): words that spell the brand name or the call to action are drawn in
+    `highlight_color` (`#RRGGBB`; default the brand's primary colour, else `#FFD400`). Karaoke uses the same
+    colour for the spoken word.
+  - `font`: `sans_bold` (the bundled Montserrat Bold), `serif` (the bundled PT Serif Bold), `rounded` (the
+    bundled Titan One) or `brand` (the brand's body, else heading font; else the preset's bundled face).
+    With no font named, `pill`, `serif-word` and `sentence` use their own bundled face; the other presets use
+    the brand's font, else Montserrat, as in 1.1.0.
+  - **A look is never refused.** An unknown preset is drawn as `plate` with a warning in the log. Any other
+    value it cannot use (an unknown font, a bad colour, an out-of-range number) is dropped with a warning
+    and the rest of the look is drawn. `y` outside its range is clamped.
+- **Placement**: every caption stays inside the 4:5 feed crop, the TikTok/Reels bands (top 220, bottom 400,
+  right 140 px at 1080x1920, kept symmetric so captions stay centred) and the timeline's caption safe zone.
+  `stroke` and `karaoke` are set 15 % larger than the plate. The face is loaded before anything is measured, so the
+  drawn box is exactly the measured box. Drawn in the kit's Chromium; never a system font; no libass.
+- **Size**: the final encode is the kit's `h264-master` with `-maxrate 16M -bufsize 32M`. A result over
+  180 MB fails with `output_invalid` before it is uploaded.
+- **Outputs**: `video`, `timeline` (with the caption safe zone it used), `captions` (WebVTT), `words` (JSON:
+  the look it drew, the word timings, and every drawn cue with its box, which the check layer reads).
+- **Cost basis**: fal Whisper, USD 0.02 per call (an upper bound); charged only when a transcription is
+  ordered. A cut whose timeline carries word timings orders nothing here.
+
+Source: `parts/captions-layer/src/part.mjs` and `src/manifest.mjs`. The bundled fonts are all under the SIL
+Open Font License 1.1 and ship unmodified, each with its license text:
+
+| File | Font | Used by | License text |
+|---|---|---|---|
+| `assets/fonts/Montserrat-Bold.ttf` | Montserrat Bold | `sans_bold`; plate, stroke, karaoke when the brand has no font | `Montserrat-OFL.txt` |
+| `assets/fonts/PTSerif-Bold.ttf` | PT Serif Bold (ParaType) | `serif`; serif-word, sentence | `PTSerif-OFL.txt` |
+| `assets/fonts/TitanOne-Regular.ttf` | Titan One (Rodrigo Fuenzalida) | `rounded`; pill | `TitanOne-OFL.txt` |
