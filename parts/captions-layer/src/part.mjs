@@ -218,28 +218,38 @@ const OPENING = /^[\u201c\u2018([{]+$/;
 /**
  * The 1.3.0 presets' words with no letter or digit (a dash, a lone quote or full stop) folded into the word
  * before them, so no caption or word state is only punctuation; an opening quote or bracket (a straight quote
- * when the quotes so far are balanced) and marks before the first word go on the word after. Empty words are
- * dropped.
+ * when its quotes so far are balanced) and marks before the first word go on the word after. Marks after the
+ * last word stay on it, so no character is lost. Empty words are dropped.
  */
 function foldMarks(words) {
   const out = [];
   let lead = null;
-  let quotes = 0;
+  let doubles = 0;
+  let single = false;
+  const back = (text, end_s) => {
+    const prev = out.at(-1);
+    prev.text = DASH.test(text) ? `${prev.text} ${text}` : `${prev.text}${text}`;
+    prev.end_s = Math.max(prev.end_s, end_s);
+  };
   for (const w of words) {
     const text = String(w.text || '').trim();
     if (!text) continue;
-    const opens = OPENING.test(text) || (/^["']+$/.test(text) && quotes % 2 === 0);
-    quotes += (text.match(/"/g) || []).length;
     if (/[\p{L}\p{N}]/u.test(text)) {
       const word = { ...w, text: lead ? `${lead.text}${DASH.test(lead.text) ? ' ' : ''}${text}` : text, start_s: lead ? Math.min(lead.start_s, w.start_s) : w.start_s };
       lead = null;
+      doubles += (text.match(/"/g) || []).length;
+      if (/^['\u2018]/.test(word.text) && !/['\u2019]$/.test(word.text)) single = true;
+      else if (/['\u2019]$/.test(word.text)) single = false;
       out.push(word);
-    } else if (out.length && !opens) {
-      const prev = out.at(-1);
-      prev.text = DASH.test(text) ? `${prev.text} ${text}` : `${prev.text}${text}`;
-      prev.end_s = Math.max(prev.end_s, w.end_s);
-    } else lead = { text: lead ? `${lead.text}${text}` : text, start_s: lead ? lead.start_s : w.start_s };
+      continue;
+    }
+    const opens = OPENING.test(text) || (text === '"' && doubles % 2 === 0) || (text === "'" && !single);
+    doubles += (text.match(/"/g) || []).length;
+    if (text === "'") single = opens;
+    if (out.length && !opens) back(text, w.end_s);
+    else lead = { text: lead ? `${lead.text}${text}` : text, start_s: lead ? lead.start_s : w.start_s };
   }
+  if (lead && out.length) back(lead.text, out.at(-1).end_s);
   return out;
 }
 

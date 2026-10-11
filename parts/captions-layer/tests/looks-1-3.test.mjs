@@ -217,3 +217,15 @@ test('sentence: overlapping lines are kept in line order, never interleaved word
   const out = await mod.run(inputs, ctx);
   assert.deepEqual(vttTexts(out.captions.path), ['Pack it tonight.', 'Sure thing.']);
 });
+
+test('serif-word: a closing single quote or a mark after the last word stays on the word before it, never lost', { skip }, async () => {
+  const { ctx } = makeCtx({ partDir: dir });
+  const video = await cut(ctx, 2);
+  const words = timed([["'Hello", 0.2, 0.5], ["'", 0.5, 0.5], ['there', 0.6, 0.9], ['(', 0.9, 0.9]]);
+  const inputs = await layerInputsFor(video, {
+    expect: { speech: 'voiceover', captions: true, caption_look: { preset: 'serif-word' } },
+    timeline: { speech: [{ text: "'Hello ' there (", start_s: 0.2, end_s: 0.9, words }] },
+  });
+  const out = await mod.run(inputs, ctx);
+  assert.deepEqual(vttTexts(out.captions.path), ["'Hello'", 'there(']);
+});
