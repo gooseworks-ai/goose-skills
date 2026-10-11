@@ -8,8 +8,8 @@
 // stays shut and the head and eyes keep their own motion, which is the
 // "listening" clip a split screen loops under the other speaker. Everything
 // is checked and priced before the first piece is ordered: a spoken scene
-// with no face or no audio is refused, and so is more lipsync than
-// max_seconds.
+// with no face or no audio is refused, and so is a line for a scene that
+// is not in scenes (stale voice output) or more lipsync than max_seconds.
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitDuration, kitFfmpeg, kitNum, kitPieceName, kitStopIfAborted } from '../../_lib/part.mjs';
 
@@ -37,6 +37,10 @@ function planLines(inputs) {
   for (const l of inputs.lines) {
     if (audio.has(l.scene_id)) return { problem: `two lines are for scene ${l.scene_id}` };
     audio.set(l.scene_id, l.audio);
+  }
+  const known = new Set(inputs.scenes.map((scene, index) => sceneId(scene, index)));
+  for (const id of audio.keys()) {
+    if (!known.has(id)) return { problem: `lines has audio for scene ${id}, which is not in scenes` };
   }
   const only = inputs.faces.length === 1 ? inputs.faces[0] : null;
   const spoken = [];
