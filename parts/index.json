@@ -1427,6 +1427,64 @@
       "models": []
     },
     {
+      "id": "cut-footage",
+      "version": "1.1.0",
+      "interface": 1,
+      "kind": "compose",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "setpts",
+            "fps",
+            "scale",
+            "crop",
+            "pad",
+            "setsar",
+            "tpad",
+            "trim",
+            "overlay",
+            "format",
+            "atempo",
+            "atrim",
+            "aresample",
+            "aformat",
+            "settb",
+            "xfade",
+            "concat",
+            "null",
+            "split",
+            "gblur",
+            "perspective",
+            "color",
+            "geq",
+            "loop",
+            "blend",
+            "noise"
+          ],
+          "encoders": [
+            "libx264",
+            "aac"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 800
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/cut-footage/1.1.0",
+      "files": {
+        "README.md": "817379311d3aeba340e70f0b0216199619918a9ffa7d8040ed7e88ff7c778266",
+        "part.json": "c4f648656cbfbcc0e105ae23c29868a840392ce1514bc115c5350cd85555916b",
+        "part.mjs": "9c2135efa7d9962f0b642f0a1d2d2ea845cc7782e5d311d1444faea9e0302c80"
+      },
+      "models": []
+    },
+    {
       "id": "dialogue-cut",
       "version": "1.0.0",
       "interface": 1,

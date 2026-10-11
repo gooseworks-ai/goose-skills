@@ -1,13 +1,30 @@
-// cut-footage: lays a clip of the brand's own footage into a band of a video,
-// the cut from footage-cutlist's render and render-logo-equation-card's
-// compose: the plan's window of the footage, cover-fitted (or fitted by
-// width) into the band, sped so the window fills the video (speed "fill",
-// refused outside min_speed to max_speed) or played at a fixed speed, under
-// the video everywhere outside the band. The picture above and below the band
-// is the video's own (an html-frames card that leaves the band free).
+// cut-footage: lays the brand's own footage into a video, the cut from
+// footage-cutlist's render (cut.py, filmed.py) and render-logo-equation-card's
+// compose. Three modes:
+//   band     (the 1.0.2 behaviour, the default without scenes): the plan's first
+//            footage window, cover-fitted (or fitted by width) into one band of
+//            the video, sped so the window fills it (speed "fill", refused
+//            outside min_speed to max_speed) or played at a fixed speed.
+//   scenes   one beat per plan scene, full frame: the scene's footage window
+//            (footage entries matched by scene_id), else its image or image
+//            footage held still, else (scene 1 only) the lead clip. Each window
+//            is sped to fit scene_seconds; beats join with dissolves; output
+//            timeline scenes carry the plan's scene ids at their real times.
+//   inserts  a talking track (video + timeline) with full-frame inserts at the
+//            times of the scenes that have footage or an image; the track's
+//            sound runs under them. Every take join (joins) must sit under an
+//            insert; an insert that ends just before one is stretched over it,
+//            else one that starts just after it starts early over it.
+// look "screen" frames every footage beat as a screen filmed by a phone
+// (_lib/screen-look.mjs); "plain" fits it (cover, width or height). Crop and
+// mask boxes from the footage entry apply in the source before the look.
+// Every final encode caps its bitrate and a file over 180 MB is refused (§4.12).
+import { statSync } from 'node:fs';
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitDuration, kitFfmpeg, kitNum } from '../../_lib/part.mjs';
 import { kitMediaLength } from '../../_lib/length.mjs';
+import { kitScreenBoxProblems, kitScreenGraph, kitScreenProblems } from '../../_lib/screen-look.mjs';
+import { CUT_MAX_BYTES, CutRefusal, cutCheckMode, cutCheckOrder, cutEntryFile, cutInsertRange, cutModeOf, cutPlaceInserts, cutPlanScenes, cutSceneSources, cutWindow } from './plan.mjs';
 
 /** atempo steps whose product is `speed`: ffmpeg 6.0's atempo takes 0.5 to 2 at a time. */
 function cutTempoChain(speed) {
@@ -25,10 +42,42 @@ function cutTempoChain(speed) {
   return steps.map((f) => `atempo=${kitNum(f, 6)}`).join(',');
 }
 
+/** The final encode: the kit's master preset with the §4.12 bitrate cap. */
+function cutMasterArgs(ctx) {
+  return [...ctx.tools.encodeArgs('h264-master'), '-maxrate', '16M', '-bufsize', '32M'];
+}
+
+/** Refuses a finished file over the size limit, before it is registered or uploaded. */
+function cutCheckSize(ctx, path) {
+  const bytes = statSync(path).size;
+  if (bytes > CUT_MAX_BYTES) throw ctx.error('output_invalid', `the cut is ${Math.round(bytes / 1048576)} MB, over the ${CUT_MAX_BYTES / 1048576} MB limit`);
+}
+
 export async function run(inputs, ctx) {
   const manifest = await kitCheckInputs(ctx, inputs);
+  try {
+    const mode = cutModeOf(inputs);
+    cutCheckMode(mode, inputs);
+    if (inputs.screen != null) {
+      const problems = kitScreenProblems(inputs.screen);
+      if (problems.length) throw new CutRefusal(`the screen look is refused: ${problems.join('; ')}`);
+    }
+    if (mode === 'band') return await cutBand(inputs, ctx, manifest);
+    if (mode === 'scenes') return await cutScenes(inputs, ctx, manifest);
+    return await cutInserts(inputs, ctx, manifest);
+  } catch (err) {
+    if (err instanceof CutRefusal || (err && err.name === 'KitScreenRefusal')) throw ctx.error('bad_input', err.message);
+    throw err;
+  }
+}
+
+// ---- band (1.0.2) ----
+
+async function cutBand(inputs, ctx, manifest) {
   const first = inputs.footage[0];
-  const clip = { ...first, video: first.file || first.video };
+  const clip = { ...first, video: cutEntryFile(first) };
+  if (!clip.video) throw ctx.error('bad_input', 'the first footage entry has no clip file');
+  if (clip.video.media !== 'video') throw ctx.error('bad_input', 'band mode lays a video clip; the first footage entry is a still');
   const info = await ctx.tools.probe(inputs.video.path);
   const W = info.width;
   const H = info.height;
@@ -36,6 +85,7 @@ export async function run(inputs, ctx) {
   const dur = await kitDuration(ctx, inputs.video);
   const band = inputs.band;
   if (band.x + band.width > W || band.y + band.height > H) throw ctx.error('bad_input', `the band ${band.width}x${band.height} at ${band.x},${band.y} is outside the ${W}x${H} video`);
+  if (inputs.fit === 'height') throw ctx.error('bad_input', 'band mode fits cover or width');
   const length = await kitMediaLength(ctx, clip.video);
   const from = (clip.start_ms ?? 0) / 1000;
   const to = clip.end_ms == null ? length : clip.end_ms / 1000;
@@ -68,6 +118,7 @@ export async function run(inputs, ctx) {
     graph.push(`[1:a]${cutTempoChain(speed)},atrim=0:${kitNum(dur)},asetpts=PTS-STARTPTS,aresample=48000,aformat=channel_layouts=stereo[a]`);
     map.push('-map', '[a]', ...ctx.tools.encodeArgs('aac'));
   } else if (info.has_audio) map.push('-map', '0:a', '-c:a', 'copy');
+  const out = join(ctx.workDir, 'footage.mp4');
   await kitFfmpeg(ctx, [
     '-i',
     inputs.video.path,
@@ -80,12 +131,231 @@ export async function run(inputs, ctx) {
     '-filter_complex',
     graph.join(';'),
     ...map,
-    ...ctx.tools.encodeArgs('h264-master'),
+    ...cutMasterArgs(ctx),
     '-t',
     kitNum(dur),
-    join(ctx.workDir, 'footage.mp4'),
+    out,
   ]);
+  cutCheckSize(ctx, out);
   const video = await ctx.file('footage.mp4', 'video');
   ctx.log.info('footage laid into the band', { speed: +speed.toFixed(3), window_s: +(to - from).toFixed(3) });
   return kitCheckOutputs(ctx, manifest, { video, seconds: +dur.toFixed(3), speed: +speed.toFixed(4) });
+}
+
+// ---- one beat, rendered full frame ----
+
+/** The plain look's fit of a w x h page into W x H: cover, width (black above and below) or height (black at the sides). */
+function cutPlainFit(fit, W, H) {
+  if (fit === 'width') return `scale=${W}:-2:flags=lanczos,crop=${W}:min(ih\\,${H}):0:(ih-min(ih\\,${H}))/2,pad=${W}:${H}:0:(oh-ih)/2:color=black`;
+  if (fit === 'height') return `scale=-2:${H}:flags=lanczos,crop=min(iw\\,${W}):${H}:(iw-min(iw\\,${W}))/2:0,pad=${W}:${H}:(ow-iw)/2:0:color=black`;
+  return `scale=${W}:${H}:force_original_aspect_ratio=increase:flags=lanczos,crop=${W}:${H}`;
+}
+
+/** Masks blurred in the source, then the crop: the plain look's head, in source pixels. */
+function cutPlainHead(input, sw, sh, crop, masks) {
+  const chains = [];
+  let head = `[${input}]format=yuv420p`;
+  masks.forEach((m, i) => {
+    const x = Math.floor(sw * m[0]);
+    const y = Math.floor(sh * m[1]);
+    const w = Math.max(2, Math.floor(sw * m[2]) - x);
+    const h = Math.max(2, Math.floor(sh * m[3]) - y);
+    chains.push(`${head},split=2[pm${i}a][pm${i}b]`);
+    chains.push(`[pm${i}b]crop=${w}:${h}:${x}:${y},gblur=sigma=14[pm${i}c]`);
+    head = `[pm${i}a][pm${i}c]overlay=${x}:${y}`;
+  });
+  if (crop) {
+    const cx = Math.floor(sw * crop[0]);
+    const cy = Math.floor(sh * crop[1]);
+    head += `,crop=${Math.max(2, Math.floor(sw * crop[2]) - cx)}:${Math.max(2, Math.floor(sh * crop[3]) - cy)}:${cx}:${cy}`;
+  }
+  return { chains, head };
+}
+
+/**
+ * Renders one beat to an intermediate W x H clip `seconds` long (plus `extraS`
+ * for the dissolve into the next beat). `beat.kind` is window, still or lead.
+ */
+async function cutRenderBeat(ctx, beat, { W, H, fps, look, screen, fit, lookIndex, seconds, extraS, name, lead }) {
+  const len = seconds + extraS;
+  const args = [];
+  let pre;
+  let sourceFile;
+  if (beat.kind === 'lead') {
+    args.push('-i', lead.path);
+    const graph = `[0:v]setpts=PTS-STARTPTS,fps=${fps},${cutPlainFit('cover', W, H)},setsar=1,tpad=stop_mode=clone:stop_duration=${kitNum(len + 0.2)},trim=duration=${kitNum(len)},format=yuv420p[v]`;
+    return cutEncodeBeat(ctx, args, graph, name);
+  }
+  const entry = beat.entry || {};
+  if (beat.kind === 'window') {
+    sourceFile = cutEntryFile(entry);
+    args.push('-ss', kitNum(beat.from), '-t', kitNum(len * beat.speed + 0.5), '-i', sourceFile.path);
+    pre = `[0:v]setpts=(PTS-STARTPTS)/${kitNum(beat.speed, 6)},fps=${fps},tpad=stop_mode=clone:stop_duration=${kitNum(len + 0.2)}[src]`;
+  } else {
+    sourceFile = beat.image || cutEntryFile(entry);
+    args.push('-loop', '1', '-framerate', String(fps), '-t', kitNum(len + 0.2), '-i', sourceFile.path);
+    pre = `[0:v]setpts=PTS-STARTPTS,fps=${fps}[src]`;
+  }
+  const info = await ctx.tools.probe(sourceFile.path);
+  const sw = info.width;
+  const sh = info.height;
+  if (!Number.isInteger(sw) || !Number.isInteger(sh)) throw ctx.error('bad_input', `scene "${beat.scene.id}": the footage has no picture size`);
+  const crop = entry.crop || null;
+  const masks = entry.mask || [];
+  const boxProblems = [...(crop ? kitScreenBoxProblems(crop, 'crop') : []), ...masks.flatMap((m, i) => kitScreenBoxProblems(m, `mask[${i}]`))];
+  if (boxProblems.length) throw ctx.error('bad_input', `scene "${beat.scene.id}": ${boxProblems.join('; ')}`);
+  const entryFit = entry.fit || fit;
+  let body;
+  if (look === 'screen') {
+    const settings = { ...(screen || {}) };
+    if (entryFit === 'width' || entryFit === 'height') settings.fit = entryFit;
+    const g = kitScreenGraph({ input: 'src', output: 'look', id: 'sl', box: { width: W, height: H, fps }, source: { width: sw, height: sh }, screen: settings, crop, masks, index: lookIndex, seed: lookIndex });
+    body = `${g.graph};[look]trim=duration=${kitNum(len)},setpts=PTS-STARTPTS,format=yuv420p,setsar=1[v]`;
+  } else {
+    const { chains, head } = cutPlainHead('src', sw, sh, crop, masks);
+    body = [...chains, `${head},${cutPlainFit(entryFit || 'cover', W, H)},setsar=1,trim=duration=${kitNum(len)},setpts=PTS-STARTPTS,format=yuv420p[v]`].join(';');
+  }
+  return cutEncodeBeat(ctx, args, `${pre};${body}`, name);
+}
+
+async function cutEncodeBeat(ctx, args, graph, name) {
+  const path = join(ctx.tmpDir, `${name}.mp4`);
+  await kitFfmpeg(ctx, [...args, '-filter_complex', graph, '-map', '[v]', '-an', ...ctx.tools.encodeArgs('h264-intermediate'), path]);
+  return path;
+}
+
+/** The clip lengths of every window beat, by scene index. */
+async function cutWindowLengths(ctx, sources) {
+  const lengths = new Map();
+  for (const s of sources) if (s.kind === 'window') lengths.set(s.index, await kitMediaLength(ctx, cutEntryFile(s.entry)));
+  return lengths;
+}
+
+function cutWindowsOut(beats) {
+  return beats
+    .filter((b) => b.kind === 'window' || b.kind === 'still')
+    .map((b) => ({ scene_id: b.scene.id, start_s: +b.start_s.toFixed(3), end_s: +b.end_s.toFixed(3), speed: +b.speed.toFixed(4) }));
+}
+
+// ---- scenes ----
+
+async function cutScenes(inputs, ctx, manifest) {
+  const W = inputs.width ?? 1080;
+  const H = inputs.height ?? 1920;
+  const fps = inputs.fps ?? 30;
+  if (W % 2 || H % 2) throw ctx.error('bad_input', `the frame ${W}x${H} must have even sides`);
+  if (inputs.audio) throw ctx.error('bad_input', 'scenes mode makes a silent cut');
+  const lead = inputs.lead ? inputs.lead.video : null;
+  const sources = cutSceneSources(inputs.scenes, inputs.footage, { lead, need: 'all' });
+  if (lead && !sources.some((s) => s.kind === 'lead')) ctx.log.warn('the lead clip is not used: the first scene has its own footage or image');
+  const dissolve = inputs.transition?.dissolve_frames ?? 0;
+  const { beats, seconds } = cutPlanScenes(sources, {
+    lengths: await cutWindowLengths(ctx, sources),
+    leadS: lead ? await kitDuration(ctx, lead) : 0,
+    fps,
+    scene_seconds: inputs.scene_seconds,
+    still_seconds: inputs.still_seconds,
+    speed: inputs.speed ?? 'fill',
+    min_speed: inputs.min_speed ?? 0.5,
+    max_speed: inputs.max_speed ?? 2,
+    dissolve_frames: dissolve,
+  });
+  cutCheckOrder(beats, inputs.order ?? 'forward');
+  const extraS = dissolve / fps;
+  const paths = [];
+  let lookIndex = 0;
+  for (const [i, b] of beats.entries()) {
+    const usesLook = b.kind !== 'lead';
+    paths.push(
+      await cutRenderBeat(ctx, b, {
+        W,
+        H,
+        fps,
+        look: inputs.look ?? 'plain',
+        screen: inputs.screen,
+        fit: inputs.fit,
+        lookIndex: usesLook ? lookIndex : 0,
+        seconds: b.seconds,
+        extraS: i + 1 < beats.length ? extraS : 0,
+        name: `beat-${i + 1}`,
+        lead,
+      }),
+    );
+    if (usesLook) lookIndex++;
+    ctx.progress({ done: i + 1, total: beats.length + 1 });
+  }
+  const args = paths.flatMap((p) => ['-i', p]);
+  const norm = paths.map((_, i) => `[${i}:v]fps=${fps},settb=AVTB,setsar=1,format=yuv420p[n${i}]`);
+  let graph;
+  if (paths.length === 1) graph = [...norm, `[n0]null[v]`];
+  else if (dissolve > 0) {
+    graph = [...norm];
+    let prev = 'n0';
+    for (let i = 1; i < paths.length; i++) {
+      const outLabel = i + 1 < paths.length ? `x${i}` : 'v';
+      graph.push(`[${prev}][n${i}]xfade=transition=fade:duration=${kitNum(extraS)}:offset=${kitNum(beats[i].start_s)}[${outLabel}]`);
+      prev = outLabel;
+    }
+  } else graph = [...norm, `${paths.map((_, i) => `[n${i}]`).join('')}concat=n=${paths.length}:v=1:a=0[v]`];
+  const out = join(ctx.workDir, 'scenes.mp4');
+  await kitFfmpeg(ctx, [...args, '-filter_complex', graph.join(';'), '-map', '[v]', '-an', ...cutMasterArgs(ctx), '-t', kitNum(seconds), out]);
+  cutCheckSize(ctx, out);
+  const video = await ctx.file('scenes.mp4', 'video');
+  const timeline = {
+    duration_s: +seconds.toFixed(3),
+    width: W,
+    height: H,
+    fps,
+    scenes: beats.map((b) => ({ id: String(b.scene.id), start_s: +b.start_s.toFixed(3), end_s: +b.end_s.toFixed(3) })),
+    speech: [],
+  };
+  ctx.log.info('scenes cut', { beats: beats.length, seconds: +seconds.toFixed(3), dissolve_frames: dissolve });
+  return kitCheckOutputs(ctx, manifest, { video, seconds: +seconds.toFixed(3), timeline, windows: cutWindowsOut(beats) });
+}
+
+// ---- inserts ----
+
+async function cutInserts(inputs, ctx, manifest) {
+  const info = await ctx.tools.probe(inputs.video.path);
+  const W = info.width;
+  const H = info.height;
+  const fps = info.fps || inputs.timeline.fps || 30;
+  if (W % 2 || H % 2) throw ctx.error('bad_input', `the talking track ${W}x${H} must have even sides`);
+  const dur = await kitDuration(ctx, inputs.video);
+  const sources = cutSceneSources(inputs.scenes, inputs.footage, { need: 'any' }).filter((s) => s.kind === 'window' || s.kind === 'still');
+  if (!sources.length) throw ctx.error('bad_input', 'no scene has footage or an image to insert');
+  const spans = new Map(inputs.timeline.scenes.map((s) => [String(s.id), s]));
+  const joins = (inputs.joins || []).map((t) => t.start_s).filter((s) => s > 0.05);
+  const slots = cutPlaceInserts(sources, spans, { joins, duration: dur, fps });
+  const lengths = await cutWindowLengths(ctx, slots);
+  const opts = { speed: inputs.speed ?? 'fill', min_speed: inputs.min_speed ?? 0.5, max_speed: inputs.max_speed ?? 2 };
+  const beats = slots.map((s) => {
+    const seconds = s.end_s - s.start_s;
+    if (s.kind !== 'window') return { ...s, seconds, speed: 1 };
+    const range = cutInsertRange(s, cutWindow(s.entry, lengths.get(s.index)), seconds, opts, `the insert for scene "${s.scene.id}"`);
+    return { ...s, seconds, ...range };
+  });
+  cutCheckOrder(beats, inputs.order ?? 'forward');
+  const paths = [];
+  for (const [i, b] of beats.entries()) {
+    paths.push(await cutRenderBeat(ctx, b, { W, H, fps, look: inputs.look ?? 'plain', screen: inputs.screen, fit: inputs.fit, lookIndex: i, seconds: b.seconds, extraS: 0, name: `insert-${i + 1}` }));
+    if (b.stretched_s > 0) ctx.log.info('insert stretched over a take join', { scene_id: b.scene.id, stretched_s: +b.stretched_s.toFixed(3) });
+    if (b.early_s > 0) ctx.log.info('insert started early over a take join', { scene_id: b.scene.id, early_s: +b.early_s.toFixed(3), window_extended_s: +(b.extended_s || 0).toFixed(3) });
+  }
+  const args = ['-i', inputs.video.path, ...paths.flatMap((p) => ['-i', p])];
+  const graph = [`[0:v]fps=${fps},setsar=1,format=yuv420p[b0]`];
+  beats.forEach((b, i) => {
+    graph.push(`[${i + 1}:v]fps=${fps},setsar=1,format=yuv420p,setpts=PTS-STARTPTS+${kitNum(b.start_s)}/TB[i${i}]`);
+    const outLabel = i + 1 < beats.length ? `b${i + 1}` : 'v';
+    graph.push(`[b${i}][i${i}]overlay=0:0:eof_action=pass:enable='between(t,${kitNum(b.start_s)},${kitNum(b.end_s - 0.5 / fps)})'[${outLabel}]`);
+  });
+  const map = ['-map', '[v]'];
+  if (info.has_audio) map.push('-map', '0:a', '-c:a', 'copy');
+  const out = join(ctx.workDir, 'inserts.mp4');
+  await kitFfmpeg(ctx, [...args, '-filter_complex', graph.join(';'), ...map, ...cutMasterArgs(ctx), '-t', kitNum(dur), out]);
+  cutCheckSize(ctx, out);
+  const video = await ctx.file('inserts.mp4', 'video');
+  const timeline = { ...inputs.timeline };
+  ctx.log.info('inserts laid over the talking track', { inserts: beats.length, joins: joins.length });
+  return kitCheckOutputs(ctx, manifest, { video, seconds: +dur.toFixed(3), timeline, windows: cutWindowsOut(beats) });
 }
