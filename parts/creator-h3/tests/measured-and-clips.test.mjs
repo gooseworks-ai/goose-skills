@@ -269,6 +269,17 @@ test('clips mode: a silent 5 s clip per picked Moment, opening on its keyframe, 
   assert.equal(out.takes, undefined);
 });
 
+test('clips mode: a clip H3 returns short is held on its last frame to the seconds asked for', { skip }, async () => {
+  const { ctx } = makeCtx({ partDir: dir, line: toneLine({ extra: -0.6 }) });
+  const out = await mod.run(await clipInputs(ctx.workDir), ctx);
+  for (const c of out.clips) {
+    const info = await probe(c.video.path);
+    assert.equal(info.has_audio, false, `${c.id} is silent`);
+    near(info.duration_s, 5, 0.1, `${c.id} file is held to 5 s`);
+    near(c.seconds, 5, 0.1, `${c.id} reports 5 s`);
+  }
+});
+
 test('clips mode: the style template fills the prompt, and its refs add the named product after the keyframe', { skip }, async () => {
   const { ctx, orders } = makeCtx({ partDir: dir, line: toneLine() });
   const tplPath = join(ctx.workDir, 'moment.prompt.json');

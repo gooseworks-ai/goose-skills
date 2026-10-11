@@ -1479,9 +1479,14 @@ async function runClips(inputs, ctx, manifest) {
     if (!file) throw ctx.error('provider_failed', `no video for ${job.piece}`);
     const info = await ctx.tools.probe(file.path);
     if (!info.has_video) throw ctx.error('provider_failed', `${job.piece} came back with no picture`);
-    // The sound is dropped, and the clip is cut to the seconds asked for (H3 may run up to 0.7 s over).
+    // The sound is dropped, and the clip is made exactly the seconds asked for: cut when H3 runs
+    // over (it may run up to 0.7 s over), its last frame held when it comes back short.
     const name = `${job.piece}-silent.mp4`;
-    await kitFfmpeg(ctx, ['-i', file.path, '-map', '0:v:0', '-an', '-t', kitNum(seconds, 3), '-c:v', 'copy', join(ctx.workDir, name)]);
+    const got = await kitDuration(ctx, file);
+    const fit = got < seconds - 0.01
+      ? ['-vf', `tpad=stop_mode=clone:stop_duration=${kitNum(seconds - got + 0.1, 3)}`, ...ctx.tools.encodeArgs('h264-intermediate')]
+      : ['-c:v', 'copy'];
+    await kitFfmpeg(ctx, ['-i', file.path, '-map', '0:v:0', '-an', '-t', kitNum(seconds, 3), ...fit, join(ctx.workDir, name)]);
     const video = await ctx.file(name, 'video');
     const length = await kitDuration(ctx, video);
     ctx.progress({ done: ++done, total: jobs.length });
