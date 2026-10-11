@@ -131,3 +131,18 @@ test('a fixed speed refuses a window too short for its slot; the size projection
   cutCheckProjectedSize(60);
   assert.throws(() => cutCheckProjectedSize(100), refused(/over the 180 MB limit/));
 });
+
+test('review fixes: snapped inserts never overlap, a fixed speed obeys the limits, a single beat needs no dissolve length', () => {
+  const src = (id) => ({ scene: { id }, kind: 'window', entry: { file: vid() } });
+  // a ends at 3.84; b starts early to 3.85 over the join at 4. Frame snapping would give a 3.8667 end and a 3.8333 start.
+  const [a, b] = cutPlaceInserts([src('a'), src('b')], new Map([['a', { start_s: 1, end_s: 3.84 }], ['b', { start_s: 4.1, end_s: 6 }]]), { joins: [4], duration: 10, fps: 30 });
+  assert.ok(a.end_s <= b.start_s + 1e-9, `no overlap (${a.end_s} > ${b.start_s})`);
+  assert.ok(b.start_s <= 4 - 0.15 + 1e-9);
+  assert.throws(() => cutSpeedFor(10, 2, { speed: 4, min_speed: 0.5, max_speed: 2 }, 'scene "x"'), refused(/fixed speed 4x is outside 0.5x to 2x/));
+  assert.equal(cutSpeedFor(4, 2, { speed: 2, min_speed: 0.5, max_speed: 2 }, 'scene "x"'), 2);
+  const one = cutSceneSources([{ id: 'only', image: img }], []);
+  const { beats } = cutPlanScenes(one, { lengths: new Map(), leadS: 0, fps: 30, still_seconds: 0.2, dissolve_frames: 30 });
+  assert.equal(beats.length, 1);
+  const two = cutSceneSources([{ id: 'p', image: img }, { id: 'q', image: img }], []);
+  cutPlanScenes(two, { lengths: new Map(), leadS: 0, fps: 30, still_seconds: 2, dissolve_frames: 7 });
+});

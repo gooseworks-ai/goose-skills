@@ -122,11 +122,14 @@ function cutSnap(seconds, fps) {
 export function cutSpeedFor(windowS, slotS, { speed = 'fill', min_speed, max_speed }, what) {
   if (speed === 'fill') {
     const s = windowS / slotS;
+    // 0.01 absorbs the frame snap of the slot. The exact ratio is kept so the window ends where the
+    // plan says (no reuse of the next window); picture-only setpts plays any speed.
     if (s < min_speed - 0.01 || s > max_speed + 0.01) {
       throw new CutRefusal(`${what}: ${cutFmt(slotS)}s from a ${cutFmt(windowS)}s window needs ${cutFmt(s)}x, outside ${min_speed}x to ${max_speed}x`);
     }
     return s;
   }
+  if (speed < min_speed - CUT_EPS || speed > max_speed + CUT_EPS) throw new CutRefusal(`${what}: the fixed speed ${speed}x is outside ${min_speed}x to ${max_speed}x`);
   if (windowS / speed + 0.05 < slotS) {
     throw new CutRefusal(`${what}: at ${speed}x the ${cutFmt(windowS)}s window lasts ${cutFmt(windowS / speed)}s, less than the ${cutFmt(slotS)}s it must fill`);
   }
@@ -148,7 +151,7 @@ export function cutPlanScenes(sources, { lengths, leadS, fps, scene_seconds, sti
   const stillS = still_seconds ?? (Number.isFinite(hi) ? hi : 2.5);
   const dissolveS = dissolve_frames / fps;
   let t = 0;
-  const beats = sources.map((src) => {
+  const beats = sources.map((src, i) => {
     const what = `scene "${src.scene.id}"`;
     let seconds;
     let sp = 1;
@@ -167,7 +170,8 @@ export function cutPlanScenes(sources, { lengths, leadS, fps, scene_seconds, sti
     } else {
       throw new CutRefusal(`${what} has no footage window, image or lead clip to show`);
     }
-    if (dissolveS > 0 && seconds < dissolveS - CUT_EPS) throw new CutRefusal(`${what} lasts ${cutFmt(seconds)}s, shorter than the ${dissolve_frames}-frame dissolve`);
+    // Every beat after the first fades in over the dissolve; a single beat has none.
+    if (dissolveS > 0 && i > 0 && seconds < dissolveS - CUT_EPS) throw new CutRefusal(`${what} lasts ${cutFmt(seconds)}s, shorter than the ${dissolve_frames}-frame dissolve`);
     const beat = { ...src, ...range, seconds, speed: sp, start_s: t, end_s: t + seconds };
     t += seconds;
     return beat;
@@ -277,6 +281,17 @@ export function cutPlaceInserts(inserts, spans, { joins = [], duration, fps }) {
     s.start_s = s.early_s > 0 ? Math.max(0, Math.floor(s.start_s * fps + 1e-6) / fps) : Math.round(s.start_s * fps) / fps;
     s.end_s = Math.max(s.start_s + 1 / fps, Math.round(s.end_s * fps + 0.499) / fps);
     s.end_s = Math.min(s.end_s, Math.floor(duration * fps + 1e-6) / fps);
+  }
+  // Snapping can push an end a frame past the next insert's (early) start. The
+  // earlier insert ends where the next begins: the two meet with no gap, so a
+  // join either one covered stays under an insert.
+  for (let i = 1; i < slots.length; i++) {
+    const prev = slots[i - 1];
+    const cur = slots[i];
+    if (prev.end_s > cur.start_s + CUT_EPS) {
+      prev.end_s = cur.start_s;
+      if (!(prev.end_s - prev.start_s > 1 / fps - CUT_EPS)) throw new CutRefusal(`the inserts for scenes "${prev.scene.id}" and "${cur.scene.id}" leave the first under one frame once moved over the cuts between takes`);
+    }
   }
   return slots;
 }
