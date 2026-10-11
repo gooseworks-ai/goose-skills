@@ -25,12 +25,12 @@ export const manifest = {
   inputs: {
     type: 'object',
     additionalProperties: false,
-    required: ['video', 'timeline', 'speech', 'scenes'],
+    required: ['video', 'timeline', 'scenes'],
     properties: {
       video: { description: "One take, or video-seedance-2's joined takes. Its sound is the speech.", ...file('video') },
       timeline: { description: "That video's timeline (scenes = plan scene ids). Its scenes are re-timed by id and its safe zones passed on.", ...timeline },
       speech: {
-        description: 'Timeline.speech with words, from transcribe-whisper on that video.',
+        description: "Timeline.speech with words, from transcribe-whisper on that video. Left out: the timeline's own speech is used (bind timeline to transcribe-whisper's timeline). Either way it needs timed words.",
         type: 'array',
         maxItems: 200,
         items: speechEntry,
@@ -55,11 +55,11 @@ export const manifest = {
       max_gap_s: { description: 'Silences longer than this are cut down to it, on a picture cut where one falls in the silence. Default 0.25.', type: 'number', minimum: 0.12, maximum: 2 },
       drop: { description: "repeats (default): drop repeated words and stutters inside a line, never a whole line. none: cut only dead air.", enum: ['repeats', 'none'] },
       room_tone: {
-        description: "Loop the take's quietest speech-free window (0.4 to 1 s, measured on the original take) under the whole edit, so the background does not step at the joins. gain_db is the bed's level against that window (default -6). Null or left out for none.",
+        description: "Loop the take's quietest speech-free window (0.4 to 1 s, measured on the original take) under the whole edit, so the background does not step at the joins. gain_db is the bed's level against that window (default -6). Null or left out for none. The key is `source`, not `from`: a style reads any object with a `from` key as a reference.",
         type: ['object', 'null'],
         additionalProperties: false,
-        required: ['from'],
-        properties: { from: { enum: ['quiet_window'] }, gain_db: { type: 'number', minimum: -40, maximum: 12 } },
+        required: ['source'],
+        properties: { source: { enum: ['quiet_window'] }, gain_db: { type: 'number', minimum: -40, maximum: 12 } },
       },
       fps: { description: 'Output frame rate. Default 30.', type: 'integer', minimum: 24, maximum: 60 },
       grade: { description: 'none (default) or street-light: a 0.03 black lift and a 0.12 unsharp halo, no grain (the street-interview phone look).', enum: ['none', 'street-light'] },

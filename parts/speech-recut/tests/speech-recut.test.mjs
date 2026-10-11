@@ -141,7 +141,7 @@ test('room tone: the bed is cut from the take\'s quietest speech-free window and
   if (skip) return t.skip('no ffmpeg');
   const plain = await run(inputsFor({ video: street }), ctxFor().ctx);
   const { ctx, logs } = ctxFor();
-  const out = await run(inputsFor({ video: street, room_tone: { from: 'quiet_window', gain_db: 12 } }), ctx);
+  const out = await run(inputsFor({ video: street, room_tone: { source: 'quiet_window', gain_db: 12 } }), ctx);
   const found = logs.find(([lvl, msg]) => lvl === 'info' && msg === 'speech-recut room tone');
   assert.ok(found, 'the room-tone window is logged');
   const win = found[2];
@@ -168,7 +168,7 @@ test('room tone: the bed is cut from the take\'s quietest speech-free window and
 test('room tone: a take with no air between its lines gets no bed and a warning, never a guessed window', async (t) => {
   if (skip) return t.skip('no ffmpeg');
   const { ctx, logs } = ctxFor();
-  const out = await run(inputsFor({ room_tone: { from: 'quiet_window' } }), ctx);
+  const out = await run(inputsFor({ room_tone: { source: 'quiet_window' } }), ctx);
   assert.ok(out.seconds > 0);
   assert.ok(logs.some(([lvl, msg]) => lvl === 'warn' && /no room-tone bed/.test(msg)));
   assert.ok(!logs.some(([, msg]) => msg === 'speech-recut room tone'));
@@ -223,7 +223,57 @@ test('refuses: a line with no heard words, no sound, no timed words, a bad room 
   await refuse(inputsFor({ speech: [SPEECH[0]] }), /scene a's line has no heard words/);
   await refuse(inputsFor({ video: mute }), /no sound/);
   await refuse(inputsFor({ speech: SPEECH.map(({ words, ...e }) => e) }), /no timed words/);
-  await refuse(inputsFor({ room_tone: { from: 'loudest_window' } }), /room_tone/);
+  await refuse(inputsFor({ room_tone: { source: 'loudest_window' } }), /room_tone/);
   await refuse(inputsFor({ grade: 'cinematic' }), /grade/);
   await refuse(inputsFor({ max_gap_s: 0.01 }), /max_gap_s/);
+});
+
+test('speech left out: the timeline\'s own speech is used, with the same edit', async (t) => {
+  if (skip) return t.skip('no ffmpeg');
+  const given = await run(inputsFor(), ctxFor().ctx);
+  const { speech, ...rest } = inputsFor({ timeline: { ...TIMELINE, speech: SPEECH } });
+  assert.equal(speech, SPEECH);
+  const out = await run(rest, ctxFor().ctx);
+  assert.equal(out.seconds, given.seconds);
+  assert.deepEqual(out.cuts, given.cuts);
+  assert.deepEqual(out.timeline.scenes, given.timeline.scenes);
+  assert.deepEqual(out.timeline.speech, given.timeline.speech);
+  // A given `speech` wins over the timeline's.
+  const both = await run(inputsFor({ timeline: { ...TIMELINE, speech: [SPEECH[0]] } }), ctxFor().ctx);
+  assert.equal(both.seconds, given.seconds);
+});
+
+test('speech left out: the refusals apply to the timeline\'s speech', async (t) => {
+  if (skip) return t.skip('no ffmpeg');
+  const refuse = async (timeline, re) => {
+    const { speech, ...inputs } = inputsFor({ timeline });
+    await assert.rejects(run(inputs, ctxFor().ctx), (e) => e.code === 'bad_input' && re.test(e.message));
+  };
+  await refuse(TIMELINE, /no timed words/); // TIMELINE.speech is []
+  await refuse({ ...TIMELINE, speech: SPEECH.map(({ words, ...e }) => e) }, /no timed words/);
+  await refuse({ ...TIMELINE, speech: [SPEECH[0]] }, /scene a's line has no heard words/);
+});
+
+test('room_tone takes `source`; the old `from` key is refused before any work', async (t) => {
+  if (skip) return t.skip('no ffmpeg');
+  const { ctx } = ctxFor();
+  let work = 0;
+  const { exec, probe: probeTool } = ctx.tools;
+  ctx.tools.exec = (...args) => {
+    work += 1;
+    return exec(...args);
+  };
+  ctx.tools.probe = (...args) => {
+    work += 1;
+    return probeTool(...args);
+  };
+  await assert.rejects(run(inputsFor({ room_tone: { from: 'quiet_window' } }), ctx), (e) => e.code === 'bad_input' && /room_tone/.test(e.message));
+  await assert.rejects(run(inputsFor({ room_tone: { source: 'quiet_window', from: 'quiet_window' } }), ctx), (e) => e.code === 'bad_input' && /room_tone/.test(e.message));
+  await assert.rejects(run(inputsFor({ room_tone: { gain_db: -6 } }), ctx), (e) => e.code === 'bad_input' && /room_tone/.test(e.message));
+  assert.equal(work, 0, 'no probe or ffmpeg call before the refusal');
+  // The manifest: `source` is required inside room_tone, `from` is not a key, `speech` is optional.
+  const rt = manifest.inputs.properties.room_tone;
+  assert.deepEqual(rt.required, ['source']);
+  assert.deepEqual(Object.keys(rt.properties).sort(), ['gain_db', 'source']);
+  assert.ok(!manifest.inputs.required.includes('speech'));
 });

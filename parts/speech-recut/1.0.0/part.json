@@ -57,7 +57,6 @@
     "required": [
       "video",
       "timeline",
-      "speech",
       "scenes"
     ],
     "properties": {
@@ -235,7 +234,7 @@
         }
       },
       "speech": {
-        "description": "Timeline.speech with words, from transcribe-whisper on that video.",
+        "description": "Timeline.speech with words, from transcribe-whisper on that video. Left out: the timeline's own speech is used (bind timeline to transcribe-whisper's timeline). Either way it needs timed words.",
         "type": "array",
         "maxItems": 200,
         "items": {
@@ -357,17 +356,17 @@
         ]
       },
       "room_tone": {
-        "description": "Loop the take's quietest speech-free window (0.4 to 1 s, measured on the original take) under the whole edit, so the background does not step at the joins. gain_db is the bed's level against that window (default -6). Null or left out for none.",
+        "description": "Loop the take's quietest speech-free window (0.4 to 1 s, measured on the original take) under the whole edit, so the background does not step at the joins. gain_db is the bed's level against that window (default -6). Null or left out for none. The key is `source`, not `from`: a style reads any object with a `from` key as a reference.",
         "type": [
           "object",
           "null"
         ],
         "additionalProperties": false,
         "required": [
-          "from"
+          "source"
         ],
         "properties": {
-          "from": {
+          "source": {
             "enum": [
               "quiet_window"
             ]

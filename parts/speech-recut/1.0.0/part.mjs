@@ -982,6 +982,9 @@ export async function recutChannels(ctx, video) {
 
 export async function run(inputs, ctx) {
   const manifest = await kitCheckInputs(ctx, inputs);
+  // `speech` is optional: a style can only bind step.<id>.<output>, one level, so the street-interview
+  // chain passes transcribe-whisper's timeline and its speech is used. The refusals below still apply.
+  if (inputs.speech == null) inputs = { ...inputs, speech: inputs.timeline.speech };
   const info = await ctx.tools.probe(inputs.video.path);
   if (!info.has_audio) throw ctx.error('bad_input', 'the take has no sound; speech-recut cuts picture and speech together');
   if (!info.width || !info.height) throw ctx.error('bad_input', 'the take has no picture');
