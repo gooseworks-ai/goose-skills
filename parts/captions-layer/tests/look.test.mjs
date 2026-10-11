@@ -254,3 +254,51 @@ test('skip_first_scene also drops untagged words inside the first scene and neve
   assert.ok(!cues.some((c) => /Stop|Wait/.test(c.text)), JSON.stringify(cues));
   assert.ok(cues.length && cues.every((c) => c.start >= 1.2 - 1e-3), `no caption starts inside the first scene: ${JSON.stringify(cues)}`);
 });
+
+test('when every word falls on the end card or the skipped first scene, the cut comes back uncaptioned, not refused', { skip }, async () => {
+  const { ctx, logs } = makeCtx({ partDir: dir });
+  const video = await cut(ctx, 3);
+  const inputs = await layerInputsFor(video, {
+    expect: { speech: 'voiceover', captions: true, end_card: true, caption_look: { skip_first_scene: true } },
+    timeline: {
+      scenes: [{ id: 'hook', start_s: 0, end_s: 1.2 }, { id: 'card', start_s: 1.2, end_s: 3 }],
+      speech: [
+        { scene_id: 'hook', text: 'Stop', start_s: 0.2, end_s: 0.5, words: timed([['Stop', 0.2, 0.5]]) },
+        { scene_id: 'card', text: 'Shop now', start_s: 1.5, end_s: 2.0, words: timed([['Shop', 1.5, 1.7], ['now', 1.7, 2.0]]) },
+      ],
+      end_card: { start_s: 1.2, end_s: 3.0 },
+    },
+  });
+  const out = await mod.run(inputs, ctx);
+  assert.deepEqual(cuesOf(readFileSync(out.captions.path, 'utf8')), []);
+  assert.deepEqual(JSON.parse(readFileSync(out.words.path, 'utf8')).cues, []);
+  assert.equal(countColor(await framePixels(out.video.path, 0.4), PLATE, 30), 0);
+  assert.ok(logs.some((l) => l[0] === 'warn' && String(l[1]).includes('no captions drawn')));
+});
+
+test('a plate max_words the look sets is a hard limit; a long brand name is still highlighted', { skip }, async () => {
+  {
+    const { ctx } = makeCtx({ partDir: dir });
+    const video = await cut(ctx, 3);
+    const inputs = await layerInputsFor(video, {
+      expect: { speech: 'voiceover', captions: true, caption_look: { preset: 'plate', max_words: 1 } },
+      timeline: { speech: [{ text: 'Try it today', start_s: 0.2, end_s: 0.8, words: timed([['Try', 0.2, 0.4], ['it', 0.4, 0.6], ['today', 0.6, 0.8]]) }] },
+    });
+    const out = await mod.run(inputs, ctx);
+    const record = JSON.parse(readFileSync(out.words.path, 'utf8'));
+    assert.deepEqual(record.cues.map((c) => c.text), ['Try', 'it', 'today']);
+  }
+  {
+    const { ctx } = makeCtx({ partDir: dir });
+    const video = await cut(ctx, 3);
+    const name = 'The Very Long Name Of This Brand Company';
+    const list = name.split(' ').map((t, i) => [t, 0.2 + i * 0.25, 0.4 + i * 0.25]);
+    const inputs = await layerInputsFor(video, {
+      brand: { name, colors: {}, fonts: {}, pronunciations: [] },
+      expect: { speech: 'voiceover', captions: true, caption_look: { preset: 'stroke', highlight: ['brand'] } },
+      timeline: { speech: [{ text: name, start_s: 0.2, end_s: 2.15, words: timed(list) }] },
+    });
+    const out = await mod.run(inputs, ctx);
+    assert.ok(countColor(await framePixels(out.video.path, 1.9, 540, 960), YELLOW, 40) > 30, 'an eight-word brand name takes the highlight colour');
+  }
+});

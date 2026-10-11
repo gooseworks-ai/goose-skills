@@ -403,7 +403,7 @@ const HEX = /^#[0-9a-fA-F]{6}$/;
  * value this version cannot use is dropped with a warning.
  */
 function readLook(raw, brand, log) {
-  const look = { preset: 'plate', max_words: null, y: Y, font: null, highlight: [], highlight_color: null, case: 'as_written', skip_first_scene: false };
+  const look = { preset: 'plate', max_words: null, max_words_set: false, y: Y, font: null, highlight: [], highlight_color: null, case: 'as_written', skip_first_scene: false };
   if (raw === undefined || raw === null) return finishLook(look, brand, log);
   if (typeof raw !== 'object' || Array.isArray(raw)) {
     log.warn('caption look is not an object; drawing plate captions', { caption_look: raw });
@@ -416,7 +416,10 @@ function readLook(raw, brand, log) {
     else log.warn(`unknown caption look preset ${JSON.stringify(raw.preset)}; drawing plate captions`, { preset: raw.preset });
   }
   if (raw.max_words !== undefined) {
-    if (Number.isInteger(raw.max_words) && raw.max_words >= 1 && raw.max_words <= 8) look.max_words = raw.max_words;
+    if (Number.isInteger(raw.max_words) && raw.max_words >= 1 && raw.max_words <= 8) {
+      look.max_words = raw.max_words;
+      look.max_words_set = true;
+    }
     else drop('max_words', 'not a whole number from 1 to 8');
   }
   if (raw.y !== undefined) {
@@ -473,11 +476,13 @@ function syllables(w) {
 }
 
 /** Plate groups of 1 to `per` words, the way caption-burn groups them for a line spanning `span` seconds. */
-function plateGroups(words, span, per) {
+function plateGroups(words, span, per, strict) {
   const n = Math.max(1, Math.min(per, Math.round(words.length / Math.max(1, span / 0.6))));
   const groups = [];
   for (let i = 0; i < words.length; i += n) groups.push(words.slice(i, i + n));
-  if (groups.length > 1 && groups.at(-1).length === 1 && groups.at(-2).length < per + 1) {
+  // A lone last word joins the group before it (caption-burn's rule); with a max_words the look set, only
+  // while that group stays within it.
+  if (groups.length > 1 && groups.at(-1).length === 1 && groups.at(-2).length < (strict ? per : per + 1)) {
     const tail = groups.pop();
     groups[groups.length - 1] = groups.at(-1).concat(tail);
   }
@@ -564,14 +569,14 @@ function highlightPhrases(look, brand) {
   return out.map((p) => p.split(/\s+/).map(matchKey).join('')).filter(Boolean);
 }
 
-/** Marks words (in order) that spell a highlight phrase, across up to 6 words ("Drink AG1" or "DrinkAG1"). */
+/** Marks words (in order) that spell a highlight phrase, however many words it takes ("Drink AG1" or "DrinkAG1"). */
 function markHighlights(words, phrases) {
   if (!phrases.length) return;
   const keys = words.map((w) => matchKey(w.text));
   for (let i = 0; i < words.length; i++) {
     if (!keys[i]) continue;
     let joined = '';
-    for (let j = i; j < Math.min(words.length, i + 6); j++) {
+    for (let j = i; j < words.length; j++) {
       joined += keys[j];
       if (phrases.includes(joined)) for (let k = i; k <= j; k++) words[k].hi = true;
       if (!phrases.some((p) => p.startsWith(joined))) break;
@@ -633,6 +638,7 @@ function skipFirstScene(lines, timeline) {
 async function buildCues(ctx, inputs, duration, look) {
   let lines = await timedLines(ctx, inputs);
   const endCard = endCardOf(inputs.timeline, duration);
+  const said = lines.some((l) => l.words.length);
   let floor = 0;
   if (look.skip_first_scene) ({ lines, floor } = skipFirstScene(lines, inputs.timeline));
   // The caption track stops for good where the end card starts: nothing is captioned from there on.
@@ -645,11 +651,14 @@ async function buildCues(ctx, inputs, duration, look) {
     if (!words.length) continue;
     markHighlights(words, phrases);
     kept.push(...words);
-    const groups = look.preset === 'plate' ? plateGroups(words, line.end - line.start, look.max_words) : phraseGroups(words, look.max_words);
+    const groups = look.preset === 'plate' ? plateGroups(words, line.end - line.start, look.max_words, look.max_words_set) : phraseGroups(words, look.max_words);
     for (const g of groups) cues.push({ words: g, start_s: g[0].start_s, end_s: g.at(-1).end_s });
   }
   if (!cues.length) {
-    throw ctx.error('bad_input', endCard || look.skip_first_scene ? 'nothing was said to caption outside the end card and skipped scene' : 'nothing was said to caption');
+    if (!said) throw ctx.error('bad_input', 'nothing was said to caption');
+    // Every word fell on the end card or the skipped first scene: the cut is returned with no captions.
+    ctx.log.warn('nothing to caption outside the end card and the skipped first scene; no captions drawn');
+    return { cues: [], words: kept };
   }
   cues.sort((a, b) => a.start_s - b.start_s);
   for (let i = 0; i < cues.length - 1; i++) {
