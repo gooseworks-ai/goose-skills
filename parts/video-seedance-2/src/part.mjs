@@ -36,6 +36,8 @@ const SD_MAX_REFS = 9;
 const SD_MAX_CLIPS = 12;
 const SD_DEFAULT_SECONDS = 5;
 const SD_SCENE_ONLY = ['pick', 'skip_first', 'skip_last', 'seconds'];
+// The 1.1.0 inputs that turn on placeholder filling in a clip's own prompt (with template).
+const SD_FILL_INPUTS = ['look', 'answers', 'brand', 'cast', 'products', 'scenes'];
 // The template key a clip's own prompt is filled under; templates keys are words, so it never collides.
 const SD_OWN = ' clip prompt';
 // Anything left that looks like a placeholder after filling ({Answers.x}, {answers.a.b}) is a typo.
@@ -88,6 +90,7 @@ function sdJobs(inputs, tpl, i2v) {
   const products = inputs.products || [];
   const base = { look: inputs.look ?? null, answers: inputs.answers ?? null, brand: inputs.brand ?? null, cast: inputs.cast || [], products };
   const fill = Boolean(inputs.template);
+  const context = SD_FILL_INPUTS.some((key) => inputs[key] != null);
   const jobs = [];
   if (inputs.clips) {
     const byId = new Map((inputs.scenes || []).map((s) => [s.id, s]));
@@ -99,8 +102,9 @@ function sdJobs(inputs, tpl, i2v) {
       if (own == null && !fill) throw new Error(`${who} needs a prompt (or give a template)`);
       if (i2v && clip.references) throw new Error(`${who}: references are for mode reference; image_to_video takes start_image`);
       if (!i2v && (clip.start_image !== undefined || clip.end_image !== undefined)) throw new Error(`${who}: start_image and end_image need mode image_to_video`);
-      // A plain 1.0.1 prompt (no template, no placeholder) goes as written, so its piece is unchanged.
-      const filled = fill || SD_PLACEHOLDER_LIKE.test(own)
+      // A 1.0.1 call (no template and none of the fill inputs) sends its prompt as written, braces and
+      // all, so its piece is unchanged; placeholders are filled only once the caller gives a fill input.
+      const filled = fill || (context && SD_PLACEHOLDER_LIKE.test(own))
         ? sdPrompt(tpl, base, { scene, index: i, own, use: sdUse(tpl, id), who })
         : { prompt: own, refs: null };
       jobs.push({ id, index: i, who, prompt: filled.prompt, planRefs: filled.refs, seconds: clip.seconds, audio: clip.generate_audio, clip });

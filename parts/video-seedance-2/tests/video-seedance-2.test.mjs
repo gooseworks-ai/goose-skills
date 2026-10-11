@@ -40,6 +40,8 @@ const refused = (e) => e.code === 'bad_input';
 test('a 1.0.1 clip list orders the same pieces with the same bodies in 1.0.1 and 1.1.0', { skip }, async () => {
   const w = work();
   const inputs = await sample.inputs(w);
+  // Braces in a 1.0.1 prompt are text, not placeholders: with no fill input they go as written.
+  inputs.clips[0].prompt += ' A {camera} shot.';
   const seen = [];
   for (const version of ['1.0.1', '1.1.0']) {
     const part = await loadPart('video-seedance-2', version);

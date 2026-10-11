@@ -38,7 +38,8 @@ from the plan, a **`seed`** input, **one clip per plan scene**, and a top-level 
   "Avoid: ..." (Seedance has no negative prompt). Filled text has its whitespace tidied.
 - **Every prompt is filled before the first piece is ordered.** A missing `{answers.KEY}`, an unknown look, a
   banned phrase, an unknown placeholder or a prompt over 12,000 characters refuses the step with `bad_input`.
-- A prompt with no template and no placeholder goes as written (the 1.0.1 behaviour).
+- A 1.0.1 call (no `template` and none of `look`, `answers`, `brand`, `cast`, `products`, `scenes`) sends
+  every prompt as written, braces included (the 1.0.1 behaviour). With a fill input, placeholders are filled.
 - `{product.name}` is the product the scene's picture names, else the plan's only product; with several
   products and no scene naming one, a prompt that uses it is refused.
 - In `reference` mode, a clip without `references` gets the template's refs from the plan: the named cast
