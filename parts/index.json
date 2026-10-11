@@ -2432,6 +2432,73 @@
       ]
     },
     {
+      "id": "video-veo-3",
+      "version": "1.0.0",
+      "interface": 1,
+      "kind": "generate_video",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": true,
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "fal-ai/veo3.1/image-to-video"
+          },
+          {
+            "provider": "fal",
+            "model": "fal-ai/veo3.1/fast/image-to-video"
+          },
+          {
+            "provider": "fal",
+            "model": "fal-ai/veo3/image-to-video"
+          },
+          {
+            "provider": "fal",
+            "model": "fal-ai/veo3/fast/image-to-video"
+          }
+        ],
+        "disk_mb": 1200
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "second",
+        "rates_usd": {
+          "fal-ai/veo3.1/image-to-video": 0.4,
+          "fal-ai/veo3.1/fast/image-to-video": 0.15,
+          "fal-ai/veo3/image-to-video": 0.4,
+          "fal-ai/veo3/fast/image-to-video": 0.15
+        },
+        "model_from": "/model"
+      },
+      "determinism": "provider",
+      "path": "parts/video-veo-3/1.0.0",
+      "files": {
+        "README.md": "1c1b7aed0d34d80d79adfa16adec224198f4cfd7fd77725fd1fa4375479cde4c",
+        "part.json": "554f3a7b519e77bd2d3e3cf283ed0a40c81677273103c331ae0435a24111195b",
+        "part.mjs": "f9996d4826c53b5135a2e07f4932222e10600a1948cc235f15564765a9daf5b3"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "fal-ai/veo3.1/image-to-video"
+        },
+        {
+          "provider": "fal",
+          "model": "fal-ai/veo3.1/fast/image-to-video"
+        },
+        {
+          "provider": "fal",
+          "model": "fal-ai/veo3/image-to-video"
+        },
+        {
+          "provider": "fal",
+          "model": "fal-ai/veo3/fast/image-to-video"
+        }
+      ]
+    },
+    {
       "id": "voice-elevenlabs",
       "version": "1.0.0",
       "interface": 1,
