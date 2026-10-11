@@ -1371,6 +1371,63 @@
       "models": []
     },
     {
+      "id": "dialogue-cut",
+      "version": "1.0.0",
+      "interface": 1,
+      "kind": "compose",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "setpts",
+            "fps",
+            "tpad",
+            "trim",
+            "settb",
+            "format",
+            "setsar",
+            "scale",
+            "crop",
+            "pad",
+            "vstack",
+            "concat",
+            "null",
+            "anull",
+            "curves",
+            "eq",
+            "noise",
+            "select",
+            "metadata",
+            "aresample",
+            "aformat",
+            "apad",
+            "atrim",
+            "asetpts",
+            "anullsrc"
+          ],
+          "encoders": [
+            "libx264",
+            "aac"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 800
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/dialogue-cut/1.0.0",
+      "files": {
+        "README.md": "5571cb8304a8847ce2ea1f1580495425632219e9b31c4c1357d45bb1c6b00917",
+        "part.json": "4af9ba2b8ac097328bb989a227001cb570fc2ee0140fdaa5bd5362af38d6b743",
+        "part.mjs": "5b6e96de7393b8d5292aaa8b9d5812df792621390b47fe1bb3c51dfd7a4ca5d0"
+      },
+      "models": []
+    },
+    {
       "id": "end-card",
       "version": "1.0.0",
       "interface": 1,
