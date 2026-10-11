@@ -31,8 +31,10 @@ export async function run(inputs, ctx) {
   const info = await ctx.tools.probe(inputs.video.path);
   if (!info.has_audio) throw ctx.error('bad_input', 'the cut has no sound to transcribe');
   const duration = await kitDuration(ctx, inputs.video);
-  await kitFfmpeg(ctx, ['-i', inputs.video.path, '-map', '0:a:0', '-ac', '1', ...ctx.tools.encodeArgs('aac'), join(ctx.tmpDir, 'speech.m4a')]);
-  const audio = await ctx.file(`${ctx.tmpDir.slice(ctx.workDir.length + 1)}/speech.m4a`, 'audio');
+  // The speech goes out as 16 kHz mono 16-bit WAV (audio/wav): a type the kit and the server host for the
+  // line (audio/mp4 is not), at the rate Whisper listens at.
+  await kitFfmpeg(ctx, ['-i', inputs.video.path, '-map', '0:a:0', '-ac', '1', '-ar', '16000', '-c:a', 'pcm_s16le', join(ctx.tmpDir, 'speech.wav')]);
+  const audio = await ctx.file(`${ctx.tmpDir.slice(ctx.workDir.length + 1)}/speech.wav`, 'audio');
   const result = await ctx.line.order({
     piece: 'transcribe',
     provider: 'fal',
