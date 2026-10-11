@@ -2482,6 +2482,71 @@
           "model": "eleven_v3"
         }
       ]
+    },
+    {
+      "id": "voice-elevenlabs",
+      "version": "1.1.0",
+      "interface": 1,
+      "kind": "generate_voice",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "aresample",
+            "aformat",
+            "atrim",
+            "asetpts",
+            "apad",
+            "concat"
+          ],
+          "encoders": [
+            "aac"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "elevenlabs",
+            "model": "eleven_v3"
+          },
+          {
+            "provider": "elevenlabs",
+            "model": "eleven_multilingual_v2"
+          }
+        ],
+        "disk_mb": 50
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "1k_chars",
+        "measure": {
+          "from": "/scenes/*/line",
+          "as": "length"
+        },
+        "rates_usd": {
+          "eleven_v3": 0.1,
+          "eleven_multilingual_v2": 0.1
+        },
+        "model_from": "/model"
+      },
+      "determinism": "provider",
+      "path": "parts/voice-elevenlabs/1.1.0",
+      "files": {
+        "README.md": "f6ba328e48df4af21e4b5fb54dc8c18bd1c7600ff92b34ad08b30b19976cdc09",
+        "part.json": "7326026c15cb776081146a66d5444fdecc49170679206af386f480b4bcb21e3b",
+        "part.mjs": "a871a3e6749a03354c67b274230d2fd876a11705a3b78db7290d1a795580436a"
+      },
+      "models": [
+        {
+          "provider": "elevenlabs",
+          "model": "eleven_v3"
+        },
+        {
+          "provider": "elevenlabs",
+          "model": "eleven_multilingual_v2"
+        }
+      ]
     }
   ]
 }

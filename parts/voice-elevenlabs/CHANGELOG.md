@@ -1,5 +1,14 @@
 # voice-elevenlabs
 
+## 1.1.0
+
+- A scene whose line is null or empty is skipped: no piece, no span (critic #9). `line` is no longer required.
+- `cast` and `scenes[].speaker`: each member speaks with their own `voice_id` and `voice_settings`; a speaker the
+  cast does not hold is refused. `voice_id` is optional when the cast covers every spoken scene.
+- `model`: `eleven_v3` (default) or `eleven_multilingual_v2`.
+- `tags: keep | strip` for `[tag]` audio tags; captions never show tags; tags are never sent to v2.
+- `max_seconds` refuses a read that runs too long.
+
 ## 1.0.1
 
 - Shared library fixes: piece names stay unique when an id and a fallback collide, and the loudness meter no longer logs every frame.
