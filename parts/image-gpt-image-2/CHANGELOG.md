@@ -5,6 +5,7 @@
 - `mode: shots`: locked-camera shots grouped by `scene.extra.group`. A shot's first scene is its plate; every later scene is an edit on `[plate, previous frame, named product photos]`, made in order. `scene.extra.repeat_of` reuses an earlier scene's finished frame, free. Template texts `templates.plate` and `templates.state` (each falls back to `scene`).
 - `restore` (default `true` in shots mode): the plate's own pixels go back wherever a frame did not change. A JS port of the stop-motion recipe's `restore_plate.py` (`src/plate.mjs`), matching it pixel for pixel.
 - `relight` (default `false`, shots mode): a shot made only of `repeat_of` scenes is the first place again in another light. One paid light picture per relit shot (`light-<scene id>`, an edit on the source shot's plate, `templates.light` else a default text with the first scene's words) is used only for its light; every relit scene is its source's finished frame times the light field. A JS port of the stop-motion recipe's `relight.py` (`src/plate.mjs`), matching it byte for byte.
+- Carries the 1.0.0 prompt-length check: every prompt must be 2 to 32,000 characters, a strip note counted at its longest, checked before the first piece is ordered (shots prompts stop at 32,000, not 31,400).
 - New output `plates [{group, image}]`. Older modes are unchanged; `restore` and `relight` are refused outside shots mode.
 
 ## 1.0.0
