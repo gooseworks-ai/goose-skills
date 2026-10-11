@@ -394,6 +394,8 @@ const MAX_BYTES = 180 * 1000 * 1000;
 const PRESETS = new Set(['plate', 'stroke', 'karaoke']);
 const LATER_PRESETS = new Set(['pill', 'serif-word', 'sentence']);
 const DEFAULT_WORDS = { plate: 2, stroke: 5, karaoke: 5 };
+// Outlined presets show at most five words at a time; a larger max_words is cut to five.
+const MAX_OUTLINED = 5;
 const HEX = /^#[0-9a-fA-F]{6}$/;
 
 /**
@@ -402,10 +404,10 @@ const HEX = /^#[0-9a-fA-F]{6}$/;
  */
 function readLook(raw, brand, log) {
   const look = { preset: 'plate', max_words: null, y: Y, font: null, highlight: [], highlight_color: null, case: 'as_written', skip_first_scene: false };
-  if (raw === undefined || raw === null) return finishLook(look, brand);
+  if (raw === undefined || raw === null) return finishLook(look, brand, log);
   if (typeof raw !== 'object' || Array.isArray(raw)) {
     log.warn('caption look is not an object; drawing plate captions', { caption_look: raw });
-    return finishLook(look, brand);
+    return finishLook(look, brand, log);
   }
   const drop = (key, why) => log.warn(`caption look ${key} ignored: ${why}`, { [key]: raw[key] });
   if (raw.preset !== undefined) {
@@ -448,11 +450,15 @@ function readLook(raw, brand, log) {
     if (typeof raw.skip_first_scene === 'boolean') look.skip_first_scene = raw.skip_first_scene;
     else drop('skip_first_scene', 'not true or false');
   }
-  return finishLook(look, brand);
+  return finishLook(look, brand, log);
 }
 
-function finishLook(look, brand) {
+function finishLook(look, brand, log) {
   if (!look.max_words) look.max_words = DEFAULT_WORDS[look.preset];
+  if (look.preset !== 'plate' && look.max_words > MAX_OUTLINED) {
+    if (log) log.warn(`caption look max_words cut to ${MAX_OUTLINED} for ${look.preset} captions`, { max_words: look.max_words });
+    look.max_words = MAX_OUTLINED;
+  }
   if (!look.highlight_color) {
     const primary = brand && brand.colors && brand.colors.primary;
     look.highlight_color = typeof primary === 'string' && HEX.test(primary) ? primary : '#FFD400';
@@ -603,16 +609,20 @@ async function timedLines(ctx, inputs) {
   return [{ start: heard[0].start, end: heard.at(-1).end, words: heard.map((w) => ({ text: w.text, start_s: w.start, end_s: w.end })) }];
 }
 
-/** Drops the first scene's words when the look asks: by scene id, else by the first scene's span, else the first line. */
+/**
+ * Drops the first scene's words when the look asks: every line tagged with the first scene's id and, when the
+ * scene has an end time, every word mostly inside it. Returns the lines left and the time no caption may start
+ * before (the first scene's end, else 0).
+ */
 function skipFirstScene(lines, timeline) {
   const first = (timeline.scenes || [])[0];
-  if (first && lines.some((l) => l.scene_id === first.id)) return lines.filter((l) => l.scene_id !== first.id);
-  if (first) {
-    return lines
-      .map((l) => ({ ...l, words: l.words.filter((w) => (w.start_s + w.end_s) / 2 >= first.end_s) }))
-      .filter((l) => l.words.length);
+  if (!first) return { lines: lines.slice(1), floor: 0 };
+  let left = lines.filter((l) => l.scene_id === undefined || l.scene_id === null || l.scene_id !== first.id);
+  const end = Number.isFinite(first.end_s) ? first.end_s : null;
+  if (end !== null) {
+    left = left.map((l) => ({ ...l, words: l.words.filter((w) => (w.start_s + w.end_s) / 2 >= end) })).filter((l) => l.words.length);
   }
-  return lines.slice(1);
+  return { lines: left, floor: end || 0 };
 }
 
 /**
@@ -623,8 +633,10 @@ function skipFirstScene(lines, timeline) {
 async function buildCues(ctx, inputs, duration, look) {
   let lines = await timedLines(ctx, inputs);
   const endCard = endCardOf(inputs.timeline, duration);
-  if (look.skip_first_scene) lines = skipFirstScene(lines, inputs.timeline);
-  const inCard = (t) => endCard && t >= endCard.start_s - 1e-6 && t < endCard.end_s;
+  let floor = 0;
+  if (look.skip_first_scene) ({ lines, floor } = skipFirstScene(lines, inputs.timeline));
+  // The caption track stops for good where the end card starts: nothing is captioned from there on.
+  const inCard = (t) => endCard && t >= endCard.start_s - 1e-6;
   const phrases = highlightPhrases(look, inputs.brand);
   const cues = [];
   const kept = [];
@@ -647,10 +659,10 @@ async function buildCues(ctx, inputs, duration, look) {
   }
   cues.at(-1).end_s = Math.max(cues.at(-1).end_s, duration);
   for (const c of cues) {
-    c.start_s = Math.max(0, Math.min(c.start_s, duration));
+    c.start_s = Math.max(0, floor, Math.min(c.start_s, duration));
     c.end_s = Math.max(c.start_s, Math.min(c.end_s, duration));
     // The held caption (or any cue running on) stops where the end card starts.
-    if (endCard && c.start_s < endCard.start_s) c.end_s = Math.min(c.end_s, endCard.start_s);
+    if (endCard) c.end_s = Math.max(c.start_s, Math.min(c.end_s, endCard.start_s));
   }
   const live = cues.filter((c) => c.end_s - c.start_s > 1e-3);
   for (const c of live) {

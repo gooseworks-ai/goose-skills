@@ -12,6 +12,7 @@
   "files": [
     "README.md",
     "assets/fonts/Montserrat-Bold.ttf",
+    "assets/fonts/Montserrat-OFL.txt",
     "part.mjs"
   ],
   "kit": ">=1.0.0 <2.0.0",

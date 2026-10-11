@@ -11,7 +11,7 @@ export const manifest = {
   summary: 'Burns word-timed captions onto the cut in the style\'s caption look (plate, stroke or karaoke), never over the end card, and returns a WebVTT of what it drew.',
   runtime: 'node',
   entry: 'part.mjs',
-  files: ['README.md', 'assets/fonts/Montserrat-Bold.ttf', 'part.mjs'],
+  files: ['README.md', 'assets/fonts/Montserrat-Bold.ttf', 'assets/fonts/Montserrat-OFL.txt', 'part.mjs'],
   kit: '>=1.0.0 <2.0.0',
   needs: {
     browser: true,

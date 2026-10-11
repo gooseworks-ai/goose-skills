@@ -457,10 +457,11 @@
       "determinism": "provider",
       "path": "parts/captions-layer/1.2.0",
       "files": {
-        "README.md": "25608e3ba7ae5858a8456eda65cf06725453486cb2b6e32b1476914afc2342a3",
+        "README.md": "0138d18a89855d75ca12621888fd65618130473bea4cc8c1e64fb6668bc3acc4",
         "assets/fonts/Montserrat-Bold.ttf": "bc6e854971cea46b463be6f9eef4d9cd52f51cfc1fc0dd90c9d3e6483dc0ec61",
-        "part.json": "1bb8b5695b8e4e62aae4ba04dc5f2600043af05fd465a084ceda69f14f93a01a",
-        "part.mjs": "bd66b27762dbd2ae27d343c95c71e518a3fecfb77d9cbc922b10cc86661c2882"
+        "assets/fonts/Montserrat-OFL.txt": "ea6b176076abe6950aa25de2fcd199c56fa8409946e883370e10bec68596573c",
+        "part.json": "d5850a0ecba675316f042c6ec910e0d4162831c99d83ea0e921681b78bd14b43",
+        "part.mjs": "119d7b92c95617f7db2c8cdf68cf6b5acc9efed8eeb757a780d084f85396c976"
       },
       "models": [
         {

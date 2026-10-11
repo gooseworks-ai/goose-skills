@@ -197,3 +197,60 @@ test('refusals: a caption zone too small for a caption, and a result over 180 MB
     assert.deepEqual(encode.slice(at, at + 4), ['-maxrate', '16M', '-bufsize', '32M']);
   }
 });
+
+test('the caption track stops for good at the end card: words spoken after the card are not captioned', { skip }, async () => {
+  const { ctx } = makeCtx({ partDir: dir });
+  const video = await cut(ctx, 4);
+  const inputs = await layerInputsFor(video, {
+    expect: { speech: 'voiceover', captions: true, end_card: true },
+    timeline: {
+      speech: [
+        { scene_id: 's1', text: 'Try it today', start_s: 0.2, end_s: 1.6, words: timed([['Try', 0.2, 0.5], ['it', 0.6, 0.9], ['today', 1.0, 1.6]]) },
+        { scene_id: 's2', text: 'Bye now', start_s: 3.3, end_s: 3.8, words: timed([['Bye', 3.3, 3.5], ['now', 3.5, 3.8]]) },
+      ],
+      end_card: { start_s: 2.5, end_s: 3.1 },
+    },
+  });
+  const out = await mod.run(inputs, ctx);
+  const cues = cuesOf(readFileSync(out.captions.path, 'utf8'));
+  assert.ok(!cues.some((c) => /Bye|now/.test(c.text)), `no words after the end card in ${JSON.stringify(cues)}`);
+  assert.ok(cues.every((c) => c.end <= 2.5 + 1e-3), `every caption ends by the card: ${JSON.stringify(cues)}`);
+  assert.equal(countColor(await framePixels(out.video.path, 3.6), PLATE, 30), 0, 'nothing drawn after the end card');
+});
+
+test('outlined presets show at most five words even when max_words asks for more', { skip }, async () => {
+  for (const preset of ['stroke', 'karaoke']) {
+    const { ctx, logs } = makeCtx({ partDir: dir });
+    const video = await cut(ctx, 3);
+    const list = ['one', 'two', 'three', 'four', 'five', 'six', 'seven'].map((t, i) => [t, 0.2 + i * 0.3, 0.45 + i * 0.3]);
+    const inputs = await layerInputsFor(video, {
+      expect: { speech: 'voiceover', captions: true, caption_look: { preset, max_words: 8 } },
+      timeline: { speech: [{ text: list.map((w) => w[0]).join(' '), start_s: 0.2, end_s: 2.25, words: timed(list) }] },
+    });
+    const out = await mod.run(inputs, ctx);
+    const record = JSON.parse(readFileSync(out.words.path, 'utf8'));
+    assert.equal(record.look.max_words, 5);
+    assert.ok(record.cues.every((c) => c.text.split(' ').length <= 5), `${preset}: ${JSON.stringify(record.cues.map((c) => c.text))}`);
+    assert.ok(logs.some((l) => l[0] === 'warn' && String(l[1]).includes('max_words')), 'the cut is logged');
+  }
+});
+
+test('skip_first_scene also drops untagged words inside the first scene and never starts a caption before it ends', { skip }, async () => {
+  const { ctx } = makeCtx({ partDir: dir });
+  const video = await cut(ctx, 3);
+  const inputs = await layerInputsFor(video, {
+    expect: { speech: 'voiceover', captions: true, caption_look: { skip_first_scene: true } },
+    timeline: {
+      scenes: [{ id: 'hook', start_s: 0, end_s: 1.2 }, { id: 'body', start_s: 1.2, end_s: 3 }],
+      speech: [
+        { scene_id: 'hook', text: 'Stop', start_s: 0.2, end_s: 0.5, words: timed([['Stop', 0.2, 0.5]]) },
+        { text: 'Wait', start_s: 0.6, end_s: 0.9, words: timed([['Wait', 0.6, 0.9]]) },
+        { scene_id: 'body', text: 'Buy it', start_s: 1.1, end_s: 2.0, words: timed([['Buy', 1.1, 1.5], ['it', 1.6, 2.0]]) },
+      ],
+    },
+  });
+  const out = await mod.run(inputs, ctx);
+  const cues = cuesOf(readFileSync(out.captions.path, 'utf8'));
+  assert.ok(!cues.some((c) => /Stop|Wait/.test(c.text)), JSON.stringify(cues));
+  assert.ok(cues.length && cues.every((c) => c.start >= 1.2 - 1e-3), `no caption starts inside the first scene: ${JSON.stringify(cues)}`);
+});
