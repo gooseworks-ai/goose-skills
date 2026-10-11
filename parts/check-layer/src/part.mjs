@@ -11,11 +11,16 @@
 // matches the approved script (as the timeline's speech carries it: a transcribe step's heard words for
 // on-camera speech, the voice's spoken lines for a voiceover). It orders nothing.
 // It returns the server's reasons shape too, for the one local fix.
+// 1.3.0 adds the style flags text_led (blank frames judged instead of dark
+// ones), read_rate, cuts_between_words, cut_rate and retained_body (the
+// content checks run only inside the first scene, a new opening spliced onto
+// a kept body; the rest is not checked).
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitFfmpeg } from '../../_lib/part.mjs';
 import { speechBuildAliases, speechReview } from '../../_lib/speech.mjs';
 import { kitLogoScore, kitLogoScoreInBox, kitMotion, kitWindowLevels } from '../../_lib/frames.mjs';
+import { CHK_BLANK_MAX_SHARE, CHK_CUT_MAX_RATE, CHK_CUT_MIN_RATE, CHK_READ_MAX_WPS, CHK_READ_MIN_WPS, chkBlankFrames, chkBlankSpans, chkClipSpans, chkCutInsideWord, chkCuts, chkJudgeBlank, chkReadRate, chkSpeechBefore } from './flags.mjs';
 
 const TARGET_LUFS = -14;
 const LUFS_TOLERANCE = 2;
@@ -43,6 +48,13 @@ const MIN_LOGO_AREA = 40000;
 const FOOTAGE_MIN_MOTION = 1.5;
 const SOUND_RISE_DB = 4;
 const NUM = '-?\\d+(?:\\.\\d+)?(?:e-?\\d+)?';
+// Flags a machine measures here; any other flag is reported not_applicable (one that needs eyes, or one a
+// later check layer measures: a style may declare a flag before its layer version is pinned).
+const MEASURED_FLAGS = new Set(['logo_visible', 'footage_moves', 'sounds_match_messages', 'text_led', 'read_rate', 'cuts_between_words', 'cut_rate', 'retained_body']);
+const EYES_FLAGS = new Set(['text_legible', 'products_visible']);
+// retained_body: the new opening starts the video (within this) and leaves at least this much kept body.
+const RETAINED_START_MAX_S = 0.05;
+const RETAINED_BODY_MIN_S = 0.05;
 
 function ratioOf(aspect) {
   const [w, h] = aspect.split(':').map(Number);
@@ -222,23 +234,54 @@ export async function run(inputs, ctx) {
     add('captions', 'fail', { message: 'The captions are missing.', expected: 'captions for the spoken lines', found: 'none', fix: { slot: 'captions' } });
   } else add('captions', 'pass');
 
-  const { freezes, blacks } = await analyse(ctx, video.path, d);
-  const black = blacks.find(([s, e]) => e - s > BLACK_MAX_S);
-  if (black) add('black_frames', 'fail', { message: `Black frames from ${black[0].toFixed(1)} to ${black[1].toFixed(1)} seconds.`, expected: `no black stretch over ${BLACK_MAX_S} s`, found: +(black[1] - black[0]).toFixed(2) });
-  else add('black_frames', 'pass');
+  const flags = expect.qc_flags || [];
+  // retained_body: a new opening (the first scene) spliced onto a body kept as it was. The content checks
+  // (black and frozen frames, captions placement, logo, speech against the script, the measured flags) run
+  // only inside the opening; the kept body is not judged. With no first scene marked, nothing is checked
+  // and the flag fails: the opening cannot be told from the body.
+  // The opening counts as marked only when the first scene starts the video and ends inside it, with a
+  // kept body after it; anything else (no scene, one that starts later or covers the whole cut) fails the flag.
+  const retained = flags.includes('retained_body');
+  const hook = retained ? (timeline.scenes || [])[0] : null;
+  const hookMarked = !!hook && hook.start_s <= RETAINED_START_MAX_S && hook.end_s > hook.start_s && hook.end_s < d - RETAINED_BODY_MIN_S;
+  const contentEnd = !retained ? d : hookMarked ? hook.end_s : 0;
+  const notChecked = 'kept body; only the new opening is checked';
 
-  const bodyEnd = timeline.end_card ? timeline.end_card.start_s : d;
+  const { freezes: allFreezes, blacks: allBlacks } = await analyse(ctx, video.path, d);
+  const freezes = retained ? chkClipSpans(allFreezes, contentEnd) : allFreezes;
+  const blacks = retained ? chkClipSpans(allBlacks, contentEnd) : allBlacks;
+  // text_led: a text-on-colour style (kinetic text) judges blank frames (black or one flat colour, no
+  // text) instead of dark ones, so a dark beat with a little text on it is not black.
+  const textLed = flags.includes('text_led');
+  let blank = null;
+  if (textLed && contentEnd > 0) {
+    const samples = await chkBlankFrames(ctx, video.path, m.width, m.height, contentEnd);
+    blank = { samples: samples.length, ...chkJudgeBlank(chkBlankSpans(samples), samples.length) };
+  }
+  if (retained && contentEnd <= 0) add('black_frames', 'not_applicable', { found: notChecked });
+  else if (blank) {
+    const s = blank.span;
+    if (s) add('black_frames', 'fail', { message: `Blank frames from ${s.start_s.toFixed(1)} to ${s.end_s.toFixed(1)} seconds ${s.where}.`, expected: `no blank stretch over ${s.limit} s ${s.where}`, found: +(s.end_s - s.start_s).toFixed(2) });
+    else add('black_frames', 'pass', { found: +blank.total_s.toFixed(2) });
+  } else {
+    const black = blacks.find(([s, e]) => e - s > BLACK_MAX_S);
+    if (black) add('black_frames', 'fail', { message: `Black frames from ${black[0].toFixed(1)} to ${black[1].toFixed(1)} seconds.`, expected: `no black stretch over ${BLACK_MAX_S} s`, found: +(black[1] - black[0]).toFixed(2) });
+    else add('black_frames', 'pass');
+  }
+
+  const bodyEnd = Math.min(timeline.end_card ? timeline.end_card.start_s : d, contentEnd);
   const opening = freezes.find(([s, e]) => s <= 0.3 && e - s > OPENING_STILL_MAX_S);
   // A still scene may hold as long as it lasts, unless the style asks for moving footage or the timeline
   // names no scenes: then any hold over the limit fails, as does one that runs on past a scene start.
-  const strictHold = (expect.qc_flags || []).includes('footage_moves') || !(timeline.scenes || []).length;
-  const sceneStarts = (timeline.scenes || []).map((sc) => sc.start_s);
+  const strictHold = flags.includes('footage_moves') || !(timeline.scenes || []).length;
+  const sceneStarts = (timeline.scenes || []).map((sc) => sc.start_s).filter((t) => t < contentEnd);
   const held = freezes.find(([s, e]) => {
     const end = Math.min(e, bodyEnd);
     if (!(s < bodyEnd && end - s > HELD_PICTURE_MAX_S)) return false;
     return strictHold || sceneStarts.some((t) => s < t - SCENE_EDGE_S && end > t + SCENE_EDGE_S);
   });
-  if (opening) add('frozen_frames', 'fail', { message: `The opening picture is still for ${(opening[1] - opening[0]).toFixed(1)} seconds.`, expected: `the opening moves within ${OPENING_STILL_MAX_S} s`, found: +(opening[1] - opening[0]).toFixed(2) });
+  if (retained && contentEnd <= 0) add('frozen_frames', 'not_applicable', { found: notChecked });
+  else if (opening) add('frozen_frames', 'fail', { message: `The opening picture is still for ${(opening[1] - opening[0]).toFixed(1)} seconds.`, expected: `the opening moves within ${OPENING_STILL_MAX_S} s`, found: +(opening[1] - opening[0]).toFixed(2) });
   else if (held) add('frozen_frames', 'fail', { message: `The picture is frozen from ${held[0].toFixed(1)} to ${held[1].toFixed(1)} seconds.`, expected: `no held picture over ${HELD_PICTURE_MAX_S} s before the end card`, found: +(Math.min(held[1], bodyEnd) - held[0]).toFixed(2) });
   else add('frozen_frames', 'pass');
 
@@ -254,7 +297,7 @@ export async function run(inputs, ctx) {
 
   // Captions inside the caption safe zone and clear of the platform controls (TikTok/Reels bands).
   const record = await wordsRecord(inputs.words);
-  const boxes = record ? (record.cues || []).filter((c) => c.box) : [];
+  const boxes = record ? (record.cues || []).filter((c) => c.box && (!retained || c.start_s < contentEnd)) : [];
   if (!boxes.length) add('captions_safe_zone', 'not_applicable');
   else {
     const zone = safeZone(timeline, m.width, m.height);
@@ -269,19 +312,21 @@ export async function run(inputs, ctx) {
   // in, the match runs in that box at full resolution. Without one the whole frame is searched at low
   // resolution, which misses a small, badged or tilted logo: then a miss is a warning unless the brand layer,
   // the one fix it could name, is on (the kit does not say yet, so expect.layers is read when it comes).
-  const wantsLogo = (expect.qc_flags || []).includes('logo_visible');
+  const wantsLogo = flags.includes('logo_visible');
   const logo = inputs.brand.logo;
   const logoZone = (timeline.safe_zones || []).find((z) => z.use === 'logo' && z.w > 0 && z.h > 0);
   const brandSlotOn = !!(expect.layers && typeof expect.layers === 'object' && expect.layers.brand === true);
   let logoSize = null;
   const logoCheck = async (times) => {
+    const at = times.filter((t) => t > 0 && t < d && (!retained || t < contentEnd));
+    // retained_body: the logo is looked for only inside the new opening.
+    if (retained && !at.length) return { status: 'not_applicable', found: notChecked };
     if (!logo) return { status: 'fail', message: 'The style asks for the logo, but the brand has no logo file.', expected: 'a logo file', found: 'none' };
     logoSize = logoSize || (logo.width && logo.height ? logo : await ctx.tools.probe(logo.path));
     const long = Math.max(logoSize.width || 0, logoSize.height || 0);
     if (long < MIN_LOGO_LONG_SIDE || (logoSize.width || 0) * (logoSize.height || 0) < MIN_LOGO_AREA) {
       return { status: 'fail', message: 'The logo file is favicon-sized and will be blurry.', expected: `at least ${MIN_LOGO_LONG_SIDE} px on the long side`, found: `${logoSize.width}x${logoSize.height}` };
     }
-    const at = times.filter((t) => t > 0 && t < d);
     if (logoZone) {
       const z = logoZone;
       const match = await kitLogoScoreInBox(ctx, video.path, logo, at, m.width, m.height, z);
@@ -308,24 +353,36 @@ export async function run(inputs, ctx) {
     const card = timeline.end_card;
     logoAdd('logo', await logoCheck(card ? [card.start_s + (card.end_s - card.start_s) * 0.5, card.end_s - 0.2] : [d - 1.2, d - 0.6, d - 0.2]));
   } else add('logo', 'not_applicable');
-  // Spread over the whole video, and the end card's middle when there is one.
-  const visibleTimes = [0.05, 0.15, 0.3, 0.45, 0.6, 0.75, 0.9, 0.98].map((f) => f * d);
+  // Spread over the whole video (the new opening only, for retained_body), and the end card's middle when
+  // there is one.
+  const visibleTimes = [0.05, 0.15, 0.3, 0.45, 0.6, 0.75, 0.9, 0.98].map((f) => f * contentEnd);
   if (timeline.end_card) visibleTimes.push((timeline.end_card.start_s + timeline.end_card.end_s) / 2);
   const logoVisible = wantsLogo ? await logoCheck(visibleTimes) : null;
 
+  // The speech the content checks see: every entry, or for retained_body what was said inside the opening
+  // (an entry running on into the kept body is cut to its timed words; one with no word timings cannot be
+  // cut, so the speech checks are not run).
+  const hookSpeech = retained ? chkSpeechBefore(timeline.speech, contentEnd) : null;
+  const speech = hookSpeech ? hookSpeech.speech : timeline.speech || [];
+  const speechCrosses = !!hookSpeech && hookSpeech.crossing;
+  const crossNote = 'speech runs on past the new opening with no word timings';
+
   // The style's own checks (qc_flags). The ones a machine can measure are measured and count toward the
-  // verdict; the rest (text legible, products visible) need eyes and are reported as not checked here.
-  for (const flag of expect.qc_flags || []) {
+  // verdict; the rest (text legible, products visible, or a flag a later check layer measures) are reported
+  // as not checked here.
+  for (const flag of flags) {
     const code = `flag:${flag}`;
-    if (flag === 'logo_visible') logoAdd(code, logoVisible);
+    if (!MEASURED_FLAGS.has(flag)) add(code, 'not_applicable', { found: EYES_FLAGS.has(flag) ? 'needs eyes; not checked by machine' : 'not measured by this check layer' });
+    else if (flag === 'logo_visible') logoAdd(code, logoVisible);
+    else if (retained && contentEnd <= 0 && flag !== 'retained_body') add(code, 'not_applicable', { found: notChecked });
     else if (flag === 'footage_moves') {
-      const motion = await kitMotion(ctx, video.path, timeline.end_card ? timeline.end_card.start_s : d);
+      const motion = await kitMotion(ctx, video.path, bodyEnd);
       if (motion === null) add(code, 'fail', { message: 'The footage could not be measured.', expected: `motion of at least ${FOOTAGE_MIN_MOTION}`, found: 'no frames' });
       else if (motion >= FOOTAGE_MIN_MOTION) add(code, 'pass', { found: motion });
       else add(code, 'fail', { message: 'The footage reads as a still photo.', expected: `motion of at least ${FOOTAGE_MIN_MOTION}`, found: motion });
     } else if (flag === 'sounds_match_messages') {
       const cardStart = timeline.end_card ? timeline.end_card.start_s : Infinity;
-      const starts = (timeline.scenes || []).map((sc) => sc.start_s).filter((t) => t > 0.4 && t < cardStart - 0.1);
+      const starts = (timeline.scenes || []).map((sc) => sc.start_s).filter((t) => t > 0.4 && t < cardStart - 0.1 && (!retained || t < contentEnd - 0.1));
       if (!starts.length) add(code, 'not_applicable');
       else {
         const levels = await kitWindowLevels(ctx, video.path, starts.flatMap((t) => [[t, t + 0.25], [t - 0.35, t - 0.05]]));
@@ -333,21 +390,75 @@ export async function run(inputs, ctx) {
         if (silentAt === undefined) add(code, 'pass', { found: starts.length });
         else add(code, 'fail', { message: `No sound when the message at ${silentAt.toFixed(2)} s appears.`, expected: 'a sound with every message', found: `${silentAt.toFixed(2)} s` });
       }
-    } else add(code, 'not_applicable', { found: 'needs eyes; not checked by machine' });
+    } else if (flag === 'text_led') {
+      // The blank stretches themselves are judged in black_frames; here, how much of the video is blank.
+      if (!blank) {
+        add(code, 'not_applicable', { found: 'no picture to sample' });
+        continue;
+      }
+      const share = `under ${Math.round(CHK_BLANK_MAX_SHARE * 100)} % of the video blank, with text on screen`;
+      if (blank.whole) add(code, 'fail', { message: 'The whole video is blank: no text on screen.', expected: share, found: 1 });
+      else if (blank.share >= CHK_BLANK_MAX_SHARE - 1e-9) add(code, 'fail', { message: `The video is blank for ${blank.total_s.toFixed(1)} of ${blank.picture_s.toFixed(1)} seconds.`, expected: share, found: +blank.share.toFixed(3) });
+      else add(code, 'pass', { found: +blank.share.toFixed(3) });
+    } else if (flag === 'read_rate') {
+      const rate = chkReadRate(speech, contentEnd);
+      const expected = `${CHK_READ_MIN_WPS} to ${CHK_READ_MAX_WPS} words a second`;
+      if (speechCrosses) add(code, 'not_applicable', { found: crossNote });
+      else if (!rate) add(code, 'not_applicable', { found: 'no speech' });
+      else if (rate.wps < CHK_READ_MIN_WPS - 1e-9) add(code, 'fail', { message: `The voice reads too slowly: ${rate.wps.toFixed(2)} words a second.`, expected, found: +rate.wps.toFixed(3) });
+      else if (rate.wps > CHK_READ_MAX_WPS + 1e-9) add(code, 'fail', { message: `The voice reads too fast: ${rate.wps.toFixed(2)} words a second.`, expected, found: +rate.wps.toFixed(3) });
+      else add(code, 'pass', { found: +rate.wps.toFixed(3) });
+    } else if (flag === 'cuts_between_words') {
+      // Word timings from the speech entries, else the captions layer's words.
+      // Word timings from the speech entries when every entry has them, else the captions layer's words
+      // (a full record of what was said), else whatever partial timings the speech carries.
+      const spoken = speech.filter((s) => (s.words || []).length || /[\p{L}\p{N}]/u.test(typeof s.spoken === 'string' ? s.spoken : s.text || ''));
+      const fromSpeech = spoken.flatMap((s) => s.words || []);
+      const fromCaptions = record && Array.isArray(record.words) ? record.words.filter((w) => w && Number.isFinite(w.start_s) && Number.isFinite(w.end_s) && (!retained || w.start_s < contentEnd)) : [];
+      const words = !speechCrosses && spoken.every((s) => (s.words || []).length) && fromSpeech.length ? fromSpeech : fromCaptions.length ? fromCaptions : fromSpeech;
+      const cuts = chkCuts(timeline.scenes, contentEnd);
+      if (timeline.end_card && timeline.end_card.start_s < contentEnd && !cuts.some((t) => Math.abs(t - timeline.end_card.start_s) < 1e-3)) cuts.push(timeline.end_card.start_s);
+      if (!words.length) add(code, 'not_applicable', { found: 'no word timings' });
+      else if (!cuts.length) add(code, 'not_applicable', { found: 'no cuts' });
+      else {
+        const inside = chkCutInsideWord(cuts, words);
+        if (inside) add(code, 'fail', { message: `A cut at ${inside.t.toFixed(2)} seconds falls inside the word "${inside.word.text}".`, expected: 'every cut between two words', found: `${inside.t.toFixed(2)} s` });
+        else add(code, 'pass', { found: cuts.length });
+      }
+    } else if (flag === 'cut_rate') {
+      // Cuts per second of the body: the end card is not counted.
+      const expected = `${CHK_CUT_MIN_RATE} to ${CHK_CUT_MAX_RATE} cuts a second, the end card not counted`;
+      if (!(timeline.scenes || []).length) add(code, 'not_applicable', { found: 'no scenes in the timeline' });
+      else if (!(bodyEnd > 0)) add(code, 'not_applicable', { found: 'no body before the end card' });
+      else {
+        const rate = chkCuts(timeline.scenes, bodyEnd).length / bodyEnd;
+        if (rate < CHK_CUT_MIN_RATE - 1e-9) add(code, 'fail', { message: `The cuts come too slowly: ${rate.toFixed(2)} a second.`, expected, found: +rate.toFixed(3) });
+        else if (rate > CHK_CUT_MAX_RATE + 1e-9) add(code, 'fail', { message: `The cuts come too fast: ${rate.toFixed(2)} a second.`, expected, found: +rate.toFixed(3) });
+        else add(code, 'pass', { found: +rate.toFixed(3) });
+      }
+    } else if (flag === 'retained_body') {
+      if (contentEnd <= 0) {
+        const found = !hook ? 'no first scene' : `first scene ${hook.start_s.toFixed(2)}-${hook.end_s.toFixed(2)} s in a ${d.toFixed(2)} s video`;
+        add(code, 'fail', { message: 'The new opening is not marked, so it cannot be told from the kept video.', expected: 'the new opening as the first scene, starting the video and followed by the kept video', found });
+      }
+      else add(code, 'pass', { found: `checked 0-${contentEnd.toFixed(2)} s; ${contentEnd.toFixed(2)}-${d.toFixed(2)} s kept, not checked` });
+    }
   }
 
   const script = (expect.script || []).map((s) => String(s).trim()).filter(Boolean);
   // What was said: each speech entry's `spoken` (a transcribe step's heard words, or the voice's spoken
   // form), else its text for a voice that said exactly its line. On-camera speech must have been
   // transcribed by a step before the layers: this layer orders nothing.
-  const speech = timeline.speech || [];
   const untranscribed = expect.speech === 'on_camera' && (!speech.length || speech.some((s) => typeof s.spoken !== 'string'));
   if (!script.length || expect.speech === 'none') add('speech_matches_script', 'not_applicable');
+  else if (speechCrosses) add('speech_matches_script', 'not_applicable', { found: crossNote });
+  else if (retained && !speech.length) add('speech_matches_script', 'not_applicable', { found: notChecked });
   else if (untranscribed) {
     add('speech_matches_script', 'fail', { message: 'The on-camera speech was not transcribed, so it cannot be checked against the script.', expected: 'a transcribe step before the layers', found: 'no transcript' });
   } else {
     const heard = speech.map((s) => (typeof s.spoken === 'string' ? s.spoken : s.text)).join(' ');
-    const verdict = speechReview(script.join(' '), heard, { aliases: usableAliases(ctx, inputs.brand.pronunciations) });
+    // retained_body: only the opening is heard here, so only its line (the plan's first) is compared.
+    const verdict = speechReview((retained ? script.slice(0, 1) : script).join(' '), heard, { aliases: usableAliases(ctx, inputs.brand.pronunciations) });
     const worst = verdict.issues.find((i) => i.severity === 'high') || verdict.issues.find((i) => i.severity !== 'low');
     if (verdict.passed) add('speech_matches_script', 'pass', { found: +verdict.ratio.toFixed(3) });
     else {
