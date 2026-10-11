@@ -17,7 +17,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitDuration, kitFfmpeg, kitNum } from '../../_lib/part.mjs';
-import { RECUT_LEVEL_RATE, RECUT_LEVEL_STEP_S, RecutRefusal, recutLevels, recutPlan, recutQuietWindow, recutSpeechBusy } from './recut.mjs';
+import { RECUT_LEVEL_RATE, RECUT_LEVEL_STEP_S, RECUT_ROOM_PAD_S, RecutRefusal, recutCheckSpeech, recutLevels, recutPlan, recutQuietWindow, recutSpeechBusy } from './recut.mjs';
 
 /** ffmpeg's scene score above which a frame starts a new shot (recut.py measured at 0.30). */
 export const RECUT_SCENE_THRESHOLD = 0.3;
@@ -51,13 +51,14 @@ export function recutCheckSize(ctx, video, max = RECUT_MAX_BYTES) {
 
 /**
  * The take's quietest speech-free window, measured on its sound: {start_s, end_s, level_db, peak_db},
- * or null when no window of at least 0.4 s is free of speech and of digital silence.
+ * or null when no window of at least 0.4 s is free of speech and of digital silence. `heard` are
+ * stretches that hold speech with no timed words (recutPlan's `heard`); they are never used.
  */
-export async function recutFindRoomTone(ctx, video, speech, duration) {
+export async function recutFindRoomTone(ctx, video, speech, duration, heard = []) {
   const raw = join(ctx.workDir, 'levels.raw');
   await kitFfmpeg(ctx, ['-i', video.path, '-map', '0:a:0', '-vn', '-ac', '1', '-ar', String(RECUT_LEVEL_RATE), '-c:a', 'pcm_s16le', '-f', 's16le', raw]);
   const levels = recutLevels(readFileSync(raw));
-  return recutQuietWindow({ levels, step_s: RECUT_LEVEL_STEP_S, busy: recutSpeechBusy(speech), duration });
+  return recutQuietWindow({ levels, step_s: RECUT_LEVEL_STEP_S, busy: recutSpeechBusy(speech, RECUT_ROOM_PAD_S, heard), duration });
 }
 
 /**
@@ -122,6 +123,13 @@ export async function run(inputs, ctx) {
   // `speech` is optional: a style can only bind step.<id>.<output>, one level, so the street-interview
   // chain passes transcribe-whisper's timeline and its speech is used. The refusals below still apply.
   if (inputs.speech == null) inputs = { ...inputs, speech: inputs.timeline.speech };
+  // The refusals that need no measuring run before any probe or ffmpeg work.
+  try {
+    recutCheckSpeech(inputs.speech, inputs.scenes);
+  } catch (err) {
+    if (err instanceof RecutRefusal) throw ctx.error('bad_input', err.message);
+    throw err;
+  }
   const info = await ctx.tools.probe(inputs.video.path);
   if (!info.has_audio) throw ctx.error('bad_input', 'the take has no sound; speech-recut cuts picture and speech together');
   if (!info.width || !info.height) throw ctx.error('bad_input', 'the take has no picture');
@@ -156,7 +164,7 @@ export async function run(inputs, ctx) {
   // Room tone: measured on the ORIGINAL take, before the cut, so a window the cut drops still serves.
   let room = null;
   if (inputs.room_tone) {
-    const win = await recutFindRoomTone(ctx, inputs.video, inputs.speech, duration);
+    const win = await recutFindRoomTone(ctx, inputs.video, inputs.speech, duration, plan.heard);
     if (!win) ctx.log.warn('speech-recut found no speech-free window of 0.4 s or more with room tone in it; the edit has no room-tone bed');
     else {
       const gain = inputs.room_tone.gain_db ?? RECUT_ROOM_GAIN_DB;

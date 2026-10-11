@@ -2251,9 +2251,9 @@
       "determinism": "pure",
       "path": "parts/speech-recut/1.0.0",
       "files": {
-        "README.md": "c7d37d05aab9d88f953d4e3cf883fab4a035901c21443dffb684a0f5b48b04b0",
+        "README.md": "b8398b889dcbb5287d8c7d58be794745692b5d49a2e326ea232d35e70bb60191",
         "part.json": "ca8214954ebcbdbdff0786136af1a556a1a37a8703defaf5aa7a2f9a9eaef1b3",
-        "part.mjs": "5e4f62dc058ead248a32990d2925a98695bc9cddf554fe6c6c30c945bf9597a1"
+        "part.mjs": "4c35fd32f5239464bd2c3624f59b1533b1071bebdbc4af2ced418b38256f05e8"
       },
       "models": []
     },

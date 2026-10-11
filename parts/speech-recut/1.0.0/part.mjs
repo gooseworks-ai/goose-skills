@@ -621,18 +621,15 @@ function recutEntryRepeats(entry, words, drop) {
  *   picture_cuts the take's own shot changes (s)
  *   min_shot_s, max_gap_s, drop ('repeats' | 'none')
  * Returns {removals [{start, end, kind}], keep [{start, end}], speech (re-timed), scenes (re-timed),
- * cuts [{at_s, removed_s, kind}], seconds, warnings}. Throws RecutRefusal for a take the cut cannot fix.
+ * cuts [{at_s, removed_s, kind}], seconds, warnings, heard [{start, end}] (source stretches holding
+ * speech with no timed words)}. Throws RecutRefusal for a take the cut cannot fix.
  */
-function recutPlan({ duration, fps, speech, scenes, timeline_scenes: timelineScenes = [], picture_cuts: pictureCuts = [], min_shot_s: minShot = 0.4, max_gap_s: maxGap = 0.25, drop = 'repeats' }) {
-  if (!(duration > 0)) throw new RecutRefusal('the take has no length');
-  const clamp = (t) => Math.min(Math.max(Number(t) || 0, 0), duration);
-  const entries = (speech || []).map((e) => ({
-    entry: e,
-    words: (e.words || []).map((w) => {
-      const start = clamp(w.start_s);
-      return { text: String(w.text), start, end: Math.max(start, clamp(w.end_s)) };
-    }),
-  }));
+/**
+ * The refusals that need no measuring: speech with no timed words, or a scene line with no heard words.
+ * Pure, so the part runs it before any probe or ffmpeg work. Throws RecutRefusal.
+ */
+function recutCheckSpeech(speech, scenes) {
+  const entries = (speech || []).map((e) => ({ entry: e, words: e.words || [] }));
   if (!entries.some((e) => e.words.length)) throw new RecutRefusal('the speech has no timed words: transcribe the take with word timings first');
   for (const [i, s] of (scenes || []).entries()) {
     const line = String((s && s.line) || '').trim();
@@ -642,6 +639,19 @@ function recutPlan({ duration, fps, speech, scenes, timeline_scenes: timelineSce
     const unheard = !hit || !hit.words.length || (typeof hit.entry.spoken === 'string' && !recutTokens(hit.entry.spoken).some((t) => t.key));
     if (unheard) throw new RecutRefusal(`scene ${id}'s line has no heard words in the take; the take needs a re-roll, the cut cannot add a line`);
   }
+}
+
+function recutPlan({ duration, fps, speech, scenes, timeline_scenes: timelineScenes = [], picture_cuts: pictureCuts = [], min_shot_s: minShot = 0.4, max_gap_s: maxGap = 0.25, drop = 'repeats' }) {
+  if (!(duration > 0)) throw new RecutRefusal('the take has no length');
+  const clamp = (t) => Math.min(Math.max(Number(t) || 0, 0), duration);
+  recutCheckSpeech(speech, scenes);
+  const entries = (speech || []).map((e) => ({
+    entry: e,
+    words: (e.words || []).map((w) => {
+      const start = clamp(w.start_s);
+      return { text: String(w.text), start, end: Math.max(start, clamp(w.end_s)) };
+    }),
+  }));
 
   // What may never be cut: kept words, gaps holding speech the line lacks, and silent beats.
   const fixed = [];
@@ -781,7 +791,10 @@ function recutPlan({ duration, fps, speech, scenes, timeline_scenes: timelineSce
     else warnings.push(`scene ${s.id} had only dead air and is gone from the timeline`);
   }
   const cuts = merged.map((r) => ({ at_s: t3(r.start), removed_s: +(r.end - r.start).toFixed(3), kind: r.kind }));
-  return { removals: merged, keep, speech: outSpeech, scenes: outScenes, cuts, seconds, warnings };
+  // Source stretches that hold heard speech with no timed words (untimed leading or trailing extras,
+  // gaps inside a line the line lacks): never a room-tone window, or the bed would loop that speech.
+  const heard = [...heldGaps, ...occupied.filter((o) => o.kind === 'held')].map((g) => ({ start: g.start, end: g.end }));
+  return { removals: merged, keep, speech: outSpeech, scenes: outScenes, cuts, seconds, warnings, heard };
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -820,9 +833,12 @@ function recutLevels(pcm) {
   return out;
 }
 
-/** The stretches of the take that hold speech, padded: every heard word and every line's span. */
-function recutSpeechBusy(speech, pad = RECUT_ROOM_PAD_S) {
-  const busy = [];
+/**
+ * The stretches of the take that hold speech, padded: every heard word, every line's span, and the
+ * planner's `heard` stretches (speech with no timed words, recutPlan's `heard`).
+ */
+function recutSpeechBusy(speech, pad = RECUT_ROOM_PAD_S, heard = []) {
+  const busy = heard.filter((h) => Number.isFinite(h.start) && Number.isFinite(h.end)).map((h) => ({ start: h.start - pad, end: h.end + pad }));
   for (const e of speech || []) {
     const words = (e.words || []).filter((w) => Number.isFinite(w.start_s) && Number.isFinite(w.end_s));
     for (const w of words) busy.push({ start: w.start_s - pad, end: Math.max(w.start_s, w.end_s) + pad });
@@ -914,13 +930,14 @@ export function recutCheckSize(ctx, video, max = RECUT_MAX_BYTES) {
 
 /**
  * The take's quietest speech-free window, measured on its sound: {start_s, end_s, level_db, peak_db},
- * or null when no window of at least 0.4 s is free of speech and of digital silence.
+ * or null when no window of at least 0.4 s is free of speech and of digital silence. `heard` are
+ * stretches that hold speech with no timed words (recutPlan's `heard`); they are never used.
  */
-export async function recutFindRoomTone(ctx, video, speech, duration) {
+export async function recutFindRoomTone(ctx, video, speech, duration, heard = []) {
   const raw = join(ctx.workDir, 'levels.raw');
   await kitFfmpeg(ctx, ['-i', video.path, '-map', '0:a:0', '-vn', '-ac', '1', '-ar', String(RECUT_LEVEL_RATE), '-c:a', 'pcm_s16le', '-f', 's16le', raw]);
   const levels = recutLevels(readFileSync(raw));
-  return recutQuietWindow({ levels, step_s: RECUT_LEVEL_STEP_S, busy: recutSpeechBusy(speech), duration });
+  return recutQuietWindow({ levels, step_s: RECUT_LEVEL_STEP_S, busy: recutSpeechBusy(speech, RECUT_ROOM_PAD_S, heard), duration });
 }
 
 /**
@@ -985,6 +1002,13 @@ export async function run(inputs, ctx) {
   // `speech` is optional: a style can only bind step.<id>.<output>, one level, so the street-interview
   // chain passes transcribe-whisper's timeline and its speech is used. The refusals below still apply.
   if (inputs.speech == null) inputs = { ...inputs, speech: inputs.timeline.speech };
+  // The refusals that need no measuring run before any probe or ffmpeg work.
+  try {
+    recutCheckSpeech(inputs.speech, inputs.scenes);
+  } catch (err) {
+    if (err instanceof RecutRefusal) throw ctx.error('bad_input', err.message);
+    throw err;
+  }
   const info = await ctx.tools.probe(inputs.video.path);
   if (!info.has_audio) throw ctx.error('bad_input', 'the take has no sound; speech-recut cuts picture and speech together');
   if (!info.width || !info.height) throw ctx.error('bad_input', 'the take has no picture');
@@ -1019,7 +1043,7 @@ export async function run(inputs, ctx) {
   // Room tone: measured on the ORIGINAL take, before the cut, so a window the cut drops still serves.
   let room = null;
   if (inputs.room_tone) {
-    const win = await recutFindRoomTone(ctx, inputs.video, inputs.speech, duration);
+    const win = await recutFindRoomTone(ctx, inputs.video, inputs.speech, duration, plan.heard);
     if (!win) ctx.log.warn('speech-recut found no speech-free window of 0.4 s or more with room tone in it; the edit has no room-tone bed');
     else {
       const gain = inputs.room_tone.gain_db ?? RECUT_ROOM_GAIN_DB;

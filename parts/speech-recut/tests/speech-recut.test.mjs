@@ -277,3 +277,23 @@ test('room_tone takes `source`; the old `from` key is refused before any work', 
   assert.deepEqual(Object.keys(rt.properties).sort(), ['gain_db', 'source']);
   assert.ok(!manifest.inputs.required.includes('speech'));
 });
+
+test('the speech refusals (no timed words, a line with no heard words) come before any probe or ffmpeg work', async (t) => {
+  if (skip) return t.skip('no ffmpeg');
+  const { ctx } = ctxFor();
+  let work = 0;
+  const { exec, probe: probeTool } = ctx.tools;
+  ctx.tools.exec = (...args) => {
+    work += 1;
+    return exec(...args);
+  };
+  ctx.tools.probe = (...args) => {
+    work += 1;
+    return probeTool(...args);
+  };
+  await assert.rejects(run(inputsFor({ speech: SPEECH.map(({ words, ...e }) => e) }), ctx), (e) => e.code === 'bad_input' && /no timed words/.test(e.message));
+  await assert.rejects(run(inputsFor({ speech: [SPEECH[0]] }), ctx), (e) => e.code === 'bad_input' && /scene a's line has no heard words/.test(e.message));
+  const { speech: _left, ...noSpeech } = inputsFor(); // speech left out: TIMELINE.speech is []
+  await assert.rejects(run(noSpeech, ctx), (e) => e.code === 'bad_input' && /no timed words/.test(e.message));
+  assert.equal(work, 0, 'no probe or ffmpeg call before the refusal');
+});

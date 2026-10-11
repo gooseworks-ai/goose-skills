@@ -20,7 +20,8 @@ Re-cuts one take of on-camera speech into a tighter edit. Free and local: the st
 - **Room tone** (`room_tone: {source: quiet_window, gain_db?}`): the take's quietest speech-free window, 0.4 to
   1 s long, is measured on the **original** take (even if the cut drops it), looped forward then reversed (no
   seam) and laid under the whole edit at `gain_db` (default -6) against that window. It masks the step in the
-  street's background at every join. Windows touching a heard word or digital silence are never used; with
+  street's background at every join. Windows touching a heard word, a gap that holds heard speech with no timings (a repeated line
+  the transcript gave to the next line) or digital silence are never used; with
   none left, the edit has no bed and a warning is logged. The key is `source`, not `from`: a style reads any
   object with a `from` key as a reference, so `{from: ...}` is refused.
 - **Grade** `street-light`: a 0.03 black lift, highlights eased to 0.98 and a 0.12 unsharp halo, no grain (the
@@ -29,6 +30,7 @@ Re-cuts one take of on-camera speech into a tighter edit. Free and local: the st
   is refused as `output_invalid`. `video`, `seconds`, `timeline` (scenes re-timed by id, speech re-timed with
   dropped repeats removed, safe zones passed on) and `cuts` (`at_s`, `removed_s`, `kind`).
 - **Refuses** (`bad_input`): speech with no timed words, a scene line with no heard words (the take needs a
-  re-roll; the cut cannot add a line), a take with no sound.
+  re-roll; the cut cannot add a line), a take with no sound. The speech refusals come before any probe or
+  ffmpeg work.
 
 Source: `parts/speech-recut/src/part.mjs` and `src/recut.mjs`, with `src/manifest.mjs`.

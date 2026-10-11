@@ -3,7 +3,7 @@
 // and the refusals. No ffmpeg; speech-recut.test.mjs renders.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { RECUT_EDGE_S, RECUT_LEVEL_RATE, RECUT_LEVEL_STEP_S, RecutRefusal, recutAlign, recutFragments, recutIsRepeat, recutLevels, recutMapper, recutPlan, recutQuietWindow, recutSpeechBusy } from '../src/recut.mjs';
+import { RECUT_EDGE_S, RECUT_LEVEL_RATE, RECUT_LEVEL_STEP_S, RecutRefusal, recutAlign, recutCheckSpeech, recutFragments, recutIsRepeat, recutLevels, recutMapper, recutPlan, recutQuietWindow, recutSpeechBusy } from '../src/recut.mjs';
 
 const FPS = 24;
 const w = (text, start, end) => ({ text, start_s: start, end_s: end });
@@ -358,4 +358,42 @@ test('room tone: the same levels always give the same window', () => {
   const levels = levelsFor(4.5, -40, (t) => (t >= 1.6 && t < 2.8 ? -50 : null));
   const busy = recutSpeechBusy(take.speech);
   assert.deepEqual(recutQuietWindow({ levels, busy, duration: 4.5 }), recutQuietWindow({ levels, busy, duration: 4.5 }));
+});
+
+test('room tone: untimed heard speech (a repeated line before the next line) is never a room-tone window', () => {
+  // The man says his line twice; the second copy is only in the next line's `spoken`, with no timings,
+  // so it sits in the 0.9-2.6 s gap. The planner holds that gap; the room-tone search must too.
+  const take = {
+    duration: 4.0,
+    fps: FPS,
+    scenes: [
+      { id: 'a', line: 'Beer obviously' },
+      { id: 'b', line: 'Wait that is water' },
+    ],
+    speech: [
+      line('a', 'Beer obviously', [w('Beer', 0.3, 0.5), w('obviously', 0.55, 0.9)], 'Beer obviously'),
+      line('b', 'Wait that is water', [w('Wait', 2.6, 2.8), w('that', 2.85, 3.0), w('is', 3.05, 3.15), w('water', 3.2, 3.5)], 'Beer obviously Wait that is water'),
+    ],
+    timeline_scenes: [
+      { id: 'a', start_s: 0, end_s: 1.5 },
+      { id: 'b', start_s: 1.5, end_s: 4.0 },
+    ],
+    picture_cuts: [],
+  };
+  const plan = recutPlan(take);
+  assert.ok(plan.heard.some((g) => g.start <= 0.9 + 1e-9 && g.end >= 2.6 - 1e-9), `the gap is heard: ${JSON.stringify(plan.heard)}`);
+  // The quietest stretch of the take is that gap (the repeat is said softly); the rest is a -40 dB street.
+  const levels = levelsFor(4.0, -40, (t) => (t >= 1.0 && t < 2.5 ? -50 : null));
+  const withHeard = recutQuietWindow({ levels, busy: recutSpeechBusy(take.speech, undefined, plan.heard), duration: 4.0 });
+  if (withHeard) assert.ok(withHeard.end_s <= 0.9 || withHeard.start_s >= 2.6, `the bed is clear of the repeat: ${JSON.stringify(withHeard)}`);
+  // Without it, the search would have picked the repeat (the bug this guards against).
+  const without = recutQuietWindow({ levels, busy: recutSpeechBusy(take.speech), duration: 4.0 });
+  assert.ok(without && without.start_s >= 0.9 && without.end_s <= 2.6, `control: ${JSON.stringify(without)}`);
+});
+
+test('recutCheckSpeech: the pure refusals, the same as the plan\'s', () => {
+  const take = twoLines();
+  assert.throws(() => recutCheckSpeech([], take.scenes), /no timed words/);
+  assert.throws(() => recutCheckSpeech([take.speech[0]], take.scenes), /scene a's line has no heard words/);
+  assert.doesNotThrow(() => recutCheckSpeech(take.speech, [...take.scenes, { id: 'c', line: null }]));
 });
