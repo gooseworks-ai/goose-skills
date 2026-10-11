@@ -955,10 +955,19 @@ function cutCheckOrder(beats, order = 'forward') {
  * Inserts mode: each insert's slot on the talking track. `inserts` are the
  * sources with a window or still; `spans` maps scene id -> {start_s, end_s}
  * from the talking track's timeline; `joins` are the take starts after the
- * first. Every join must sit under an insert, at least CUT_JOIN_AFTER_S before
- * its end; an insert that ends at most CUT_JOIN_STRETCH_S before a join (or
- * too close after it) is stretched to end CUT_JOIN_AFTER_S after the join.
- * Returns [{...source, start_s, end_s, stretched_s}] in time order.
+ * first. Every join must sit under an insert, at least CUT_JOIN_AFTER_S after
+ * its start and before its end:
+ *   - an insert that ends at most CUT_JOIN_STRETCH_S before a join (or too
+ *     close after it) is stretched to end CUT_JOIN_AFTER_S after the join,
+ *     never into the next insert or past the end of the video;
+ *   - else an insert that starts at most CUT_JOIN_STRETCH_S after a join (or
+ *     too close before it) starts CUT_JOIN_AFTER_S before the join, never
+ *     before 0 or into the previous insert. A creator step starts a new take's
+ *     scene just before the join, but a timeline retimed from heard words
+ *     often moves that scene's start after it.
+ * Anything else is refused. Returns [{...source, start_s, end_s, stretched_s,
+ * early_s}] in time order; stretched_s and early_s are the seconds added at
+ * the end and at the start.
  */
 function cutPlaceInserts(inserts, spans, { joins = [], duration, fps }) {
   const slots = inserts.map((src) => {
@@ -967,31 +976,89 @@ function cutPlaceInserts(inserts, spans, { joins = [], duration, fps }) {
     const start = Math.max(0, span.start_s);
     const end = Math.min(duration, span.end_s);
     if (!(end - start > 1 / fps)) throw new CutRefusal(`scene "${src.scene.id}" lasts under one frame in the talking track, too short for an insert`);
-    return { ...src, start_s: start, end_s: end, stretched_s: 0 };
+    return { ...src, start_s: start, end_s: end, stretched_s: 0, early_s: 0 };
   });
   slots.sort((a, b) => a.start_s - b.start_s);
   for (let i = 1; i < slots.length; i++) {
     if (slots[i].start_s < slots[i - 1].end_s - CUT_EPS) throw new CutRefusal(`the inserts for scenes "${slots[i - 1].scene.id}" and "${slots[i].scene.id}" overlap in time`);
   }
-  for (const j of [...joins].sort((a, b) => a - b)) {
-    const under = slots.find((s) => s.start_s <= j + CUT_EPS && j <= s.end_s + CUT_JOIN_STRETCH_S + CUT_EPS);
-    if (!under) {
-      throw new CutRefusal(`a cut between takes at ${cutFmt(j)}s would show: no insert covers it (give the scene before it footage, or let an insert end within ${CUT_JOIN_STRETCH_S}s before it)`);
-    }
+  // Each returns null when the slot covers the join after the move, else why it cannot.
+  const stretchEnd = (slot, j) => {
     const want = j + CUT_JOIN_AFTER_S;
-    if (under.end_s >= want - CUT_EPS) continue;
-    const next = slots[slots.indexOf(under) + 1];
+    if (slot.end_s >= want - CUT_EPS) return null;
+    const next = slots[slots.indexOf(slot) + 1];
     const limit = Math.min(duration, next ? next.start_s : Infinity);
-    if (want > limit + CUT_EPS) throw new CutRefusal(`the insert for scene "${under.scene.id}" cannot stretch over the cut between takes at ${cutFmt(j)}s: it would run past ${next ? `the next insert` : 'the end of the video'}`);
-    under.stretched_s += want - under.end_s;
-    under.end_s = want;
+    if (want > limit + CUT_EPS) return `the insert for scene "${slot.scene.id}" cannot stretch over the cut between takes at ${cutFmt(j)}s: it would run past ${next ? 'the next insert' : 'the end of the video'}`;
+    slot.stretched_s += want - slot.end_s;
+    slot.end_s = want;
+    return null;
+  };
+  const startEarly = (slot, j) => {
+    const want = Math.max(0, j - CUT_JOIN_AFTER_S);
+    if (slot.start_s <= want + CUT_EPS) return null;
+    const prev = slots[slots.indexOf(slot) - 1];
+    if (prev && want < prev.end_s - CUT_EPS) return `the insert for scene "${slot.scene.id}" cannot start early over the cut between takes at ${cutFmt(j)}s: it would run into the previous insert`;
+    slot.early_s += slot.start_s - want;
+    slot.start_s = want;
+    return null;
+  };
+  for (const j of [...joins].sort((a, b) => a - b)) {
+    // An insert the join is inside: pad whichever side is too close.
+    const inside = slots.find((s) => s.start_s <= j + CUT_EPS && j <= s.end_s + CUT_EPS);
+    if (inside) {
+      const why = stretchEnd(inside, j) || startEarly(inside, j);
+      if (why) throw new CutRefusal(why);
+      continue;
+    }
+    // Else stretch the insert just before it, or start the one just after it early.
+    const before = slots.filter((s) => s.end_s < j && j - s.end_s <= CUT_JOIN_STRETCH_S + CUT_EPS).pop();
+    const after = slots.find((s) => s.start_s > j && s.start_s - j <= CUT_JOIN_STRETCH_S + CUT_EPS);
+    if (!before && !after) {
+      throw new CutRefusal(`a cut between takes at ${cutFmt(j)}s would show: no insert covers it (give the scene before it footage, or let an insert end or start within ${CUT_JOIN_STRETCH_S}s of it)`);
+    }
+    const whyBefore = before ? stretchEnd(before, j) : 'no insert ends just before it';
+    if (!whyBefore) continue;
+    const whyAfter = after ? startEarly(after, j) : null;
+    if (after && !whyAfter) continue;
+    throw new CutRefusal(before ? whyBefore : whyAfter);
   }
   for (const s of slots) {
-    s.start_s = Math.round(s.start_s * fps) / fps;
+    // A start moved early rounds down to a frame, as a stretched end rounds up, so the 0.15 s stays.
+    s.start_s = s.early_s > 0 ? Math.max(0, Math.floor(s.start_s * fps + 1e-6) / fps) : Math.round(s.start_s * fps) / fps;
     s.end_s = Math.max(s.start_s + 1 / fps, Math.round(s.end_s * fps + 0.499) / fps);
     s.end_s = Math.min(s.end_s, Math.floor(duration * fps + 1e-6) / fps);
   }
   return slots;
+}
+
+/**
+ * Inserts mode: the source range and speed of a window insert lasting `seconds`.
+ * The window [from, to] plays at the speed that fills the slot (or the fixed
+ * speed). When an insert that starts early over a take join would play too
+ * slowly (or, at a fixed speed, run out of footage), its window is extended
+ * earlier in the recording by what the early start added, at the speed it had
+ * before, never before 0 s; the speed must still be inside min to max.
+ * Returns {from, to, speed, extended_s}.
+ */
+function cutInsertRange(slot, { from, to }, seconds, opts, what) {
+  let first;
+  try {
+    const speed = cutSpeedFor(to - from, seconds, opts, what);
+    return { from, to: from + seconds * speed, speed, extended_s: 0 };
+  } catch (e) {
+    if (!(e instanceof CutRefusal) || !(slot.early_s > 0) || !(from > 0)) throw e;
+    first = e;
+  }
+  let before;
+  try {
+    before = cutSpeedFor(to - from, Math.max(1e-3, seconds - slot.early_s), opts, what);
+  } catch {
+    throw first;
+  }
+  const extended = Math.min(from, slot.early_s * before);
+  const start = from - extended;
+  const speed = cutSpeedFor(to - start, seconds, opts, what);
+  return { from: start, to: start + seconds * speed, speed, extended_s: extended };
 }
 
 /** Refuses an encode whose capped bitrate could pass the size limit (§4.12), before any work. */
@@ -1016,7 +1083,8 @@ function cutCheckProjectedSize(seconds, maxrateBps = CUT_MAXRATE_BPS) {
 //   inserts  a talking track (video + timeline) with full-frame inserts at the
 //            times of the scenes that have footage or an image; the track's
 //            sound runs under them. Every take join (joins) must sit under an
-//            insert; an insert that ends just before one is stretched over it.
+//            insert; an insert that ends just before one is stretched over it,
+//            else one that starts just after it starts early over it.
 // look "screen" frames every footage beat as a screen filmed by a phone
 // (_lib/screen-look.mjs); "plain" fits it (cover, width or height). Crop and
 // mask boxes from the footage entry apply in the source before the look.
@@ -1331,15 +1399,15 @@ async function cutInserts(inputs, ctx, manifest) {
   const beats = slots.map((s) => {
     const seconds = s.end_s - s.start_s;
     if (s.kind !== 'window') return { ...s, seconds, speed: 1 };
-    const { from, to } = cutWindow(s.entry, lengths.get(s.index));
-    const speed = cutSpeedFor(to - from, seconds, opts, `the insert for scene "${s.scene.id}"`);
-    return { ...s, seconds, speed, from, to: from + seconds * speed };
+    const range = cutInsertRange(s, cutWindow(s.entry, lengths.get(s.index)), seconds, opts, `the insert for scene "${s.scene.id}"`);
+    return { ...s, seconds, ...range };
   });
   cutCheckOrder(beats, inputs.order ?? 'forward');
   const paths = [];
   for (const [i, b] of beats.entries()) {
     paths.push(await cutRenderBeat(ctx, b, { W, H, fps, look: inputs.look ?? 'plain', screen: inputs.screen, fit: inputs.fit, lookIndex: i, seconds: b.seconds, extraS: 0, name: `insert-${i + 1}` }));
     if (b.stretched_s > 0) ctx.log.info('insert stretched over a take join', { scene_id: b.scene.id, stretched_s: +b.stretched_s.toFixed(3) });
+    if (b.early_s > 0) ctx.log.info('insert started early over a take join', { scene_id: b.scene.id, early_s: +b.early_s.toFixed(3), window_extended_s: +(b.extended_s || 0).toFixed(3) });
   }
   const args = ['-i', inputs.video.path, ...paths.flatMap((p) => ['-i', p])];
   const graph = [`[0:v]fps=${fps},setsar=1,format=yuv420p[b0]`];

@@ -13,7 +13,8 @@
 //   inserts  a talking track (video + timeline) with full-frame inserts at the
 //            times of the scenes that have footage or an image; the track's
 //            sound runs under them. Every take join (joins) must sit under an
-//            insert; an insert that ends just before one is stretched over it.
+//            insert; an insert that ends just before one is stretched over it,
+//            else one that starts just after it starts early over it.
 // look "screen" frames every footage beat as a screen filmed by a phone
 // (_lib/screen-look.mjs); "plain" fits it (cover, width or height). Crop and
 // mask boxes from the footage entry apply in the source before the look.
@@ -23,7 +24,7 @@ import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitDuration, kitFfmpeg, kitNum } from '../../_lib/part.mjs';
 import { kitMediaLength } from '../../_lib/length.mjs';
 import { kitScreenBoxProblems, kitScreenGraph, kitScreenProblems } from '../../_lib/screen-look.mjs';
-import { CUT_MAX_BYTES, CutRefusal, cutCheckMode, cutCheckOrder, cutCheckProjectedSize, cutEntryFile, cutModeOf, cutPlaceInserts, cutPlanScenes, cutSceneSources, cutSpeedFor, cutWindow } from './plan.mjs';
+import { CUT_MAX_BYTES, CutRefusal, cutCheckMode, cutCheckOrder, cutCheckProjectedSize, cutEntryFile, cutInsertRange, cutModeOf, cutPlaceInserts, cutPlanScenes, cutSceneSources, cutWindow } from './plan.mjs';
 
 /** atempo steps whose product is `speed`: ffmpeg 6.0's atempo takes 0.5 to 2 at a time. */
 function cutTempoChain(speed) {
@@ -334,15 +335,15 @@ async function cutInserts(inputs, ctx, manifest) {
   const beats = slots.map((s) => {
     const seconds = s.end_s - s.start_s;
     if (s.kind !== 'window') return { ...s, seconds, speed: 1 };
-    const { from, to } = cutWindow(s.entry, lengths.get(s.index));
-    const speed = cutSpeedFor(to - from, seconds, opts, `the insert for scene "${s.scene.id}"`);
-    return { ...s, seconds, speed, from, to: from + seconds * speed };
+    const range = cutInsertRange(s, cutWindow(s.entry, lengths.get(s.index)), seconds, opts, `the insert for scene "${s.scene.id}"`);
+    return { ...s, seconds, ...range };
   });
   cutCheckOrder(beats, inputs.order ?? 'forward');
   const paths = [];
   for (const [i, b] of beats.entries()) {
     paths.push(await cutRenderBeat(ctx, b, { W, H, fps, look: inputs.look ?? 'plain', screen: inputs.screen, fit: inputs.fit, lookIndex: i, seconds: b.seconds, extraS: 0, name: `insert-${i + 1}` }));
     if (b.stretched_s > 0) ctx.log.info('insert stretched over a take join', { scene_id: b.scene.id, stretched_s: +b.stretched_s.toFixed(3) });
+    if (b.early_s > 0) ctx.log.info('insert started early over a take join', { scene_id: b.scene.id, early_s: +b.early_s.toFixed(3), window_extended_s: +(b.extended_s || 0).toFixed(3) });
   }
   const args = ['-i', inputs.video.path, ...paths.flatMap((p) => ['-i', p])];
   const graph = [`[0:v]fps=${fps},setsar=1,format=yuv420p[b0]`];

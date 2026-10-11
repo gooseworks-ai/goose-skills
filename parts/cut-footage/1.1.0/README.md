@@ -17,8 +17,10 @@ render-logo-equation-card's compose. Three modes; the default without `scenes` i
 - **inserts**: `video` is a talking track with its `timeline`. Each scene with a footage entry or an image becomes a
   full-frame insert at that scene's time; the track's sound runs under it. `joins` (a creator step's `takes`): every
   take start after the first must sit under an insert; an insert that ends up to 1 s before a join is stretched to end
-  0.15 s after it, and a join no insert reaches is refused before any work. The timeline is passed through, with
-  `windows`.
+  0.15 s after it. Else an insert that starts up to 1 s after a join (a timeline retimed from heard words often moves a
+  new take's scene past its join) starts 0.15 s before it, never before 0 s or into the previous insert; its window
+  plays slower inside the speed band, or reaches earlier in the recording when that would be too slow (still forward
+  only). A join no insert reaches is refused before any work. The timeline is passed through, with `windows`.
 - **Look** (scenes, inserts): `plain` fits the footage (`cover`, `width` or `height`); `screen` frames it as a screen
   filmed by a phone (`screen {rot, alternate_rot, keystone, fill, fit, drift, bezel, room, moire, vignette, grain}`,
   parts/_lib/screen-look.mjs). `alternate_rot` turns odd footage beats the other way. A footage entry's `crop` picks
