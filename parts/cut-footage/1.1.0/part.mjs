@@ -679,7 +679,8 @@ function kitScreenGraph(options) {
     const h = Math.max(2, Math.floor(sh * m[3]) - y);
     chains.push(`${head},split=2[${id}_m${i}a][${id}_m${i}b]`);
     chains.push(`[${id}_m${i}b]crop=${w}:${h}:${x}:${y},gblur=sigma=14[${id}_m${i}c]`);
-    head = `[${id}_m${i}a][${id}_m${i}c]overlay=${x}:${y}`;
+    // format=yuv444 keeps the page 4:4:4 (overlay's default is 4:2:0), so the crop below is exact.
+    head = `[${id}_m${i}a][${id}_m${i}c]overlay=${x}:${y}:format=yuv444`;
   });
   const [x0, y0, x1, y1] = crop || [0, 0, 1, 1];
   const cx = Math.floor(sw * x0);
@@ -741,7 +742,9 @@ function kitScreenGraph(options) {
   if (params.grain > 0) {
     const g = Math.round(params.grain);
     const c = Math.round(params.grain / 2);
-    lit += `,noise=c0s=${g}:c0f=t:c1s=${c}:c1f=t:c2s=${c}:c2f=t:all_seed=${(seed * 7919 + 17) % 2147483647}`;
+    // noise's all_seed takes 0 to INT_MAX: fold any whole seed (negative or huge) into that range.
+    const noiseSeed = ((Math.abs(seed) % 2147483647) * 7919 + 17) % 2147483647;
+    lit += `,noise=c0s=${g}:c0f=t:c1s=${c}:c1f=t:c2s=${c}:c2f=t:all_seed=${noiseSeed}`;
   }
   chains.push(`${lit},setsar=1[${output}]`);
   return { graph: chains.join(';'), page, canvas: { width: CW, height: CH }, quad, rot, drift };

@@ -103,7 +103,7 @@ export const manifest = {
       },
       timeline: { description: 'inserts: the talking track\'s timeline; scenes are placed at its scene times, and it is passed through.', ...timeline },
       joins: {
-        description: 'inserts: step.<creator>.takes. Every take start after the first must sit under an insert; an insert ending up to 1 s before one is stretched to end 0.15 s after it, and a join no insert reaches is refused.',
+        description: 'inserts: step.<creator>.takes. Every take start after the first must sit under an insert; an insert ending up to 1 s before one is stretched to end 0.15 s after it, else an insert starting up to 1 s after one starts 0.15 s before it (never before 0 or into the previous insert), and a join no insert reaches is refused.',
         type: 'array',
         maxItems: 40,
         items: { type: 'object', required: ['start_s'], properties: { id: { type: 'string' }, start_s: { type: 'number', minimum: 0 }, scene_ids: { type: 'array', items: { type: 'string' } } } },
