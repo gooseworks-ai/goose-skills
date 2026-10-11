@@ -151,6 +151,16 @@ test('a missing value refuses the scene with its id; looks must be known', () =>
   assert.throws(() => kitScenePrompt({ version: 1, scene: '{line}' }, { scene: { line: null }, index: 4 }), /scene #5 needs \{line\}/);
 });
 
+test('a scene with a null line, on_screen or picture fills optional placeholders empty and never crashes', () => {
+  const tpl = { version: 1, scene: '{picture?}. Says: {line?}. Caption: {on_screen?}', motion: '{picture?} {line?}' };
+  const scene = { id: 's4', picture: null, line: null, on_screen: null };
+  assert.equal(kitScenePrompt(tpl, { ...base, scene }).prompt, 'Says: Caption');
+  assert.equal(kitScenePrompt(tpl, { ...base, scene }, { use: 'motion' }).prompt, '');
+  const out = kitScenePrompts(tpl, kitPickScenes([scene, { id: 's5', picture: 'a jar', line: null }]), base);
+  assert.deepEqual(out.map((p) => p.prompt), ['Says: Caption', 'a jar. Says: Caption']);
+  assert.throws(() => kitScenePrompt({ version: 1, scene: '{on_screen}' }, { scene }), (e) => e instanceof KitPromptGap && e.scene_id === 's4' && e.placeholder === '{on_screen}');
+});
+
 test('speaker, product and brand placeholders', () => {
   const tpl = { version: 1, scene: '{speaker.name} ({speaker.look}) holds {product.name} for {brand.name}' };
   const out = kitScenePrompt(tpl, { ...base, scene: { id: 's1', speaker: 'b', picture: 'close' } });

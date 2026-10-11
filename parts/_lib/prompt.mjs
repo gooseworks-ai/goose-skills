@@ -14,7 +14,7 @@
 //   templates              {key: text}: more named texts a part may use ("hook", "take1", "later")
 //   by_tag                 {Tag: {scene?, motion?, negative?, prefix?, suffix?, refs?}}: per-tag overrides
 //   refs                   which references a scene sends, in order: "anchor" | "product" | "scene_image"
-//   max_refs               the most references per scene (1-10, default 10)
+//   max_refs               the most references per scene (0-10, default 10)
 //   banned                 phrases a filled prompt may not contain (case-insensitive, whole words)
 //
 // Placeholders: {picture} {line} {on_screen} {look} {style} {cast_looks}
