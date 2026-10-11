@@ -27,6 +27,11 @@ import { join } from 'node:path';
 import { statSync } from 'node:fs';
 
 const SD_TAKE_REF = 'bytedance/seedance-2.0/reference-to-video';
+// fal's schema for the reference model takes duration as a STRING enum ('auto', '4'..'15'); fal
+// called directly answers 422 to an integer. The take modes send the string (the app line's fal
+// proxy reads String(body.duration), so it is safe there too); modes reference and image_to_video
+// keep their 1.0.1 and 1.1.0 bodies byte for byte.
+const SD_TAKE_DURATIONS = ['4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15'];
 const SD_TAKE_PROMPT_MAX = 12000;
 const SD_TAKE_MAX_REFS = 9;
 const SD_TAKE_MAX_BEATS = 4;
@@ -261,6 +266,13 @@ export function sdTakePrompt(tpl, base, { id, index, beats, head, seconds, wps, 
   return { id, prompt, refs: files, windows, scene_ids: beats.map((b) => String(b.scene.id)) };
 }
 
+/** A take's whole seconds as fal's duration enum value ('4'..'15'); anything else is refused. */
+export function sdTakeDuration(seconds) {
+  const value = Number.isInteger(seconds) ? String(seconds) : '';
+  if (!SD_TAKE_DURATIONS.includes(value)) throw new Error(`a take lasts ${seconds} s; Seedance takes whole seconds from 4 to 15`);
+  return value;
+}
+
 /** Every take job for mode take or takes, refused here before any piece is ordered. */
 export function sdTakeJobs(inputs, tpl) {
   const many = inputs.mode === 'takes';
@@ -271,6 +283,7 @@ export function sdTakeJobs(inputs, tpl) {
   const groups = many ? sdTakeGroups(picked, count) : [picked];
   const limit = many ? SD_TAKES_MAX_BEATS : SD_TAKE_MAX_BEATS;
   const seconds = inputs.seconds ?? SD_TAKE_DEFAULT_SECONDS;
+  const duration = sdTakeDuration(seconds);
   const wps = inputs.words_per_second ?? SD_TAKE_DEFAULT_WPS;
   const maxWords = inputs.max_words ?? Math.floor(seconds * wps);
   const named = (key) => tpl.templates && typeof tpl.templates[key] === 'string';
@@ -297,7 +310,7 @@ export function sdTakeJobs(inputs, tpl) {
     const job = sdTakePrompt(tpl, base, { id, index: beats[0].index, beats, head: k === 0 ? first : later, seconds, wps, pairs, offScreen });
     if (!job.refs.length) throw new Error(`take ${id} has no reference image: give cast pictures, product photos or scene pictures the template's refs can use`);
     if (inputs.chain && k > 0 && job.refs.length >= SD_TAKE_MAX_REFS) throw new Error(`take ${id} already has ${SD_TAKE_MAX_REFS} references; the chain still needs one more`);
-    jobs.push({ ...job, index: k, seconds });
+    jobs.push({ ...job, index: k, seconds, duration });
   }
   return jobs;
 }
@@ -367,7 +380,7 @@ export async function sdRunTakes(inputs, ctx, jobs) {
       prompt: j.prompt,
       image_urls: refs,
       resolution: inputs.resolution ?? '1080p',
-      duration: j.seconds,
+      duration: j.duration,
       aspect_ratio: inputs.aspect_ratio ?? '9:16',
       generate_audio: audio,
       seed: ctx.seed(piece) % 2147483647,

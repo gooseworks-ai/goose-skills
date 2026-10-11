@@ -6,6 +6,8 @@
 - `mode: takes`: `takes {count, first, later}` (template keys), scenes split by `extra.take` or evenly; `chain {crop: "bottom_45"}` hands a face-free still of take 1 to every later take.
 - `pronunciations`, `words_per_second`, `max_words`, `off_screen_tags`.
 - Outputs `takes`, `seconds` and `timeline`; `video` is the takes joined in order (one transcription, critic #23). 1.1.0 inputs order the same pieces.
+- Take bodies send `duration` as fal's string enum (`"4"`..`"15"`); reference and image_to_video bodies are unchanged.
+- Carries 1.1.0's review fixes: `mode` defaults to `reference`; a 1.0.1-shaped call sends braces as written, any 1.1.0-shaped call fills or refuses its placeholders; `start_image: "product"` starts on the product the scene names.
 
 ## 1.1.0
 

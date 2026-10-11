@@ -5,8 +5,8 @@ import { mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { hasFfmpeg, loadNewest, loadPart, makeCtx, probe } from '../../_tools/kit-harness.mjs';
-import { sdTakeFaceOffScreen, sdTakeGroups, sdTakeWindows, sdTakeWords, SD_OFF_SCREEN_TAGS } from '../src/takes.mjs';
-import { REF_FIELDS, falLine, heroInputs, photo, sample, streetInputs, ugcInputs, ugcScenes, writeTemplate, ugcTemplate } from './fixture.mjs';
+import { sdTakeDuration, sdTakeFaceOffScreen, sdTakeGroups, sdTakeWindows, sdTakeWords, SD_OFF_SCREEN_TAGS } from '../src/takes.mjs';
+import { REF_DURATIONS, REF_FIELDS, falLine, heroInputs, photo, sample, streetInputs, ugcInputs, ugcScenes, writeTemplate, ugcTemplate } from './fixture.mjs';
 
 const { dir, mod, manifest } = await loadNewest('video-seedance-2');
 const ffmpeg = await hasFfmpeg();
@@ -62,7 +62,7 @@ test('fixture: ugc-product take mode orders one 15 s take with timed beats, dial
   assert.equal(results[0].pointer, '/json/video/url');
   for (const key of Object.keys(body)) assert.ok(REF_FIELDS.includes(key) || key === 'seed', `${key} is a field of the recorded reference-to-video request`);
   assert.deepEqual(body.image_urls, [inputs.cast[0].image, inputs.products[0].images[0]], '@Image1 the creator, @Image2 the product');
-  assert.equal(body.duration, 15);
+  assert.equal(body.duration, '15', 'fal\'s string enum, not an integer');
   assert.equal(body.resolution, '720p');
   assert.equal(body.generate_audio, true);
   const p = body.prompt;
@@ -151,7 +151,7 @@ test('fixture: street-interview takes mode orders three chained takes in order a
   assert.match(orders[0].body.prompt, /^Raw vertical street-interview footage on one corner: a busy corner in Lower Manhattan\. Only the interviewer holds the microphone\. The interviewer hands the can over and asks the question once, off camera\. Beat 1 \(0-3s\): Same street corner\. Handover: a man in a grey coat takes the can\. The interviewer says: "What do you think this is\?" Beat 2 \(3-5s\)/);
   assert.match(orders[1].body.prompt, /ANSWERS ONLY: nobody asks the question again\. Same microphone as @Image2\. Beat 1 \(0-3s\): .*The woman says: "Is it a candle\?" Beat 2 \(3-5s\): Same street corner\. She shrugs and hands it back\. Close voices/);
   assert.match(orders[2].body.prompt, /ANSWERS ONLY.*The older man says: "Oh, it is sparkling water\."/);
-  for (const o of orders) assert.equal(o.body.duration, 5);
+  for (const o of orders) assert.equal(o.body.duration, '5');
   assert.deepEqual(out.takes.map((t) => [t.id, t.seconds]), [['t1', 5], ['t2', 5], ['t3', 5]]);
   assert.notEqual(out.video.path, out.takes[0].video.path, 'the takes are joined into a new video');
   const joined = await probe(out.video.path);
@@ -234,4 +234,25 @@ test('1.1.0 inputs order the same pieces with the same bodies in 1.2.0', { skip 
     }
     assert.equal(seen[0], seen[1]);
   }
+});
+
+test('take and takes bodies carry duration as a string from fal\'s reference-to-video enum', { skip }, async () => {
+  const w = work();
+  const runs = [
+    ...[12, 15].map((seconds) => () => ugcInputs(w, { seconds, words_per_second: 4 })),
+    ...[5, 9, 15].map((seconds) => () => streetInputs(w, { seconds })),
+  ];
+  for (const make of runs) {
+    const inputs = await make();
+    const { ctx, orders } = ctxFor(inputs);
+    await mod.run(inputs, ctx);
+    assert.ok(orders.length >= 1);
+    for (const o of orders) {
+      assert.equal(typeof o.body.duration, 'string', `${inputs.mode} ${inputs.seconds} s`);
+      assert.ok(REF_DURATIONS.includes(o.body.duration), `${o.body.duration} is in fal's enum`);
+      assert.equal(o.body.duration, String(inputs.seconds));
+    }
+  }
+  for (const seconds of [4, 10, 15]) assert.ok(REF_DURATIONS.includes(sdTakeDuration(seconds)));
+  for (const bad of [3, 4.5, 16, '5', null]) assert.throws(() => sdTakeDuration(bad), /whole seconds from 4 to 15/, String(bad));
 });

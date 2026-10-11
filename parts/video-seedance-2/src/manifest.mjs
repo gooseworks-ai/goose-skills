@@ -75,6 +75,7 @@ export const manifest = {
       mode: {
         description: `reference (default): ${REF}, each clip from up to 9 reference images. image_to_video: ${I2V}, each clip from a start frame (and an optional end frame). take: one ${REF} take whose prompt holds up to 4 picked scenes as time-windowed beats. takes: takes.count takes of up to 8 scenes each, joined into one video.`,
         enum: ['reference', 'image_to_video', 'take', 'takes'],
+        default: 'reference',
       },
       clips: {
         description: 'The hand-built clip list (the 1.0.1 behaviour). Without it, give scenes: one clip per picked scene.',

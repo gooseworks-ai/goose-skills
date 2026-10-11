@@ -89,6 +89,9 @@ export async function heroInputs(workDir, extra = {}) {
 // Recorded from fal's OpenAPI (W0-62, 2026-10-12): the reference-to-video request fields. The answer has the
 // same shape as image-to-video's (falAnswer), with the video URL at /json/video/url.
 export const REF_FIELDS = ['prompt', 'image_urls', 'video_urls', 'audio_urls', 'duration', 'resolution', 'aspect_ratio', 'generate_audio', 'codec', 'bitrate_mode', 'end_user_id'];
+// Its duration is a STRING enum too (scratchpad contracts/fal-schemas/bytedance--seedance-2.0--reference-to-video.json):
+// fal called directly answers 422 to an integer, so the take modes send one of these.
+export const REF_DURATIONS = ['auto', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15'];
 
 /** A ugc-product-like take template: the selfie look, beats from {picture}, the identity and product lines around them. */
 export const ugcTemplate = {

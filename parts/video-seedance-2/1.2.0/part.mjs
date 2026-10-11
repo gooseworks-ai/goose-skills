@@ -958,6 +958,11 @@ function kitWordsFromAlignment(text, sayAs, alignment, offsetS = 0) {
 // is written, and every limit checked, before the first piece is ordered.
 
 const SD_TAKE_REF = 'bytedance/seedance-2.0/reference-to-video';
+// fal's schema for the reference model takes duration as a STRING enum ('auto', '4'..'15'); fal
+// called directly answers 422 to an integer. The take modes send the string (the app line's fal
+// proxy reads String(body.duration), so it is safe there too); modes reference and image_to_video
+// keep their 1.0.1 and 1.1.0 bodies byte for byte.
+const SD_TAKE_DURATIONS = ['4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15'];
 const SD_TAKE_PROMPT_MAX = 12000;
 const SD_TAKE_MAX_REFS = 9;
 const SD_TAKE_MAX_BEATS = 4;
@@ -1192,6 +1197,13 @@ function sdTakePrompt(tpl, base, { id, index, beats, head, seconds, wps, pairs, 
   return { id, prompt, refs: files, windows, scene_ids: beats.map((b) => String(b.scene.id)) };
 }
 
+/** A take's whole seconds as fal's duration enum value ('4'..'15'); anything else is refused. */
+function sdTakeDuration(seconds) {
+  const value = Number.isInteger(seconds) ? String(seconds) : '';
+  if (!SD_TAKE_DURATIONS.includes(value)) throw new Error(`a take lasts ${seconds} s; Seedance takes whole seconds from 4 to 15`);
+  return value;
+}
+
 /** Every take job for mode take or takes, refused here before any piece is ordered. */
 function sdTakeJobs(inputs, tpl) {
   const many = inputs.mode === 'takes';
@@ -1202,6 +1214,7 @@ function sdTakeJobs(inputs, tpl) {
   const groups = many ? sdTakeGroups(picked, count) : [picked];
   const limit = many ? SD_TAKES_MAX_BEATS : SD_TAKE_MAX_BEATS;
   const seconds = inputs.seconds ?? SD_TAKE_DEFAULT_SECONDS;
+  const duration = sdTakeDuration(seconds);
   const wps = inputs.words_per_second ?? SD_TAKE_DEFAULT_WPS;
   const maxWords = inputs.max_words ?? Math.floor(seconds * wps);
   const named = (key) => tpl.templates && typeof tpl.templates[key] === 'string';
@@ -1228,7 +1241,7 @@ function sdTakeJobs(inputs, tpl) {
     const job = sdTakePrompt(tpl, base, { id, index: beats[0].index, beats, head: k === 0 ? first : later, seconds, wps, pairs, offScreen });
     if (!job.refs.length) throw new Error(`take ${id} has no reference image: give cast pictures, product photos or scene pictures the template's refs can use`);
     if (inputs.chain && k > 0 && job.refs.length >= SD_TAKE_MAX_REFS) throw new Error(`take ${id} already has ${SD_TAKE_MAX_REFS} references; the chain still needs one more`);
-    jobs.push({ ...job, index: k, seconds });
+    jobs.push({ ...job, index: k, seconds, duration });
   }
   return jobs;
 }
@@ -1298,7 +1311,7 @@ async function sdRunTakes(inputs, ctx, jobs) {
       prompt: j.prompt,
       image_urls: refs,
       resolution: inputs.resolution ?? '1080p',
-      duration: j.seconds,
+      duration: j.duration,
       aspect_ratio: inputs.aspect_ratio ?? '9:16',
       generate_audio: audio,
       seed: ctx.seed(piece) % 2147483647,
@@ -1383,6 +1396,9 @@ const SD_TAKE_ONLY = {
   max_words: ['take', 'takes'],
   pronunciations: ['take', 'takes'],
 };
+// Any 1.1.0-only input makes a 1.1.0 call, whose clip prompts have their placeholders filled (or refused).
+// Only the exact 1.0.1 shape (clips, resolution, aspect_ratio, generate_audio) sends braces as written.
+const SD_NEW_INPUTS = ['mode', 'seed', 'template', 'look', 'answers', 'brand', 'cast', 'products', 'scenes'];
 // The template key a clip's own prompt is filled under; templates keys are words, so it never collides.
 const SD_OWN = ' clip prompt';
 // Anything left that looks like a placeholder after filling ({Answers.x}, {answers.a.b}) is a typo.
@@ -1435,6 +1451,8 @@ function sdJobs(inputs, tpl, i2v) {
   const products = inputs.products || [];
   const base = { look: inputs.look ?? null, answers: inputs.answers ?? null, brand: inputs.brand ?? null, cast: inputs.cast || [], products };
   const fill = Boolean(inputs.template);
+  const context = SD_NEW_INPUTS.some((key) => inputs[key] != null)
+    || (inputs.clips || []).some((c) => c.start_image !== undefined || c.end_image !== undefined);
   const jobs = [];
   if (inputs.clips) {
     const byId = new Map((inputs.scenes || []).map((s) => [s.id, s]));
@@ -1446,11 +1464,11 @@ function sdJobs(inputs, tpl, i2v) {
       if (own == null && !fill) throw new Error(`${who} needs a prompt (or give a template)`);
       if (i2v && clip.references) throw new Error(`${who}: references are for mode reference; image_to_video takes start_image`);
       if (!i2v && (clip.start_image !== undefined || clip.end_image !== undefined)) throw new Error(`${who}: start_image and end_image need mode image_to_video`);
-      // A plain 1.0.1 prompt (no template, no placeholder) goes as written, so its piece is unchanged.
-      const filled = fill || SD_PLACEHOLDER_LIKE.test(own)
+      // A 1.0.1-shaped call sends its prompt as written, braces and all, so its piece is unchanged.
+      const filled = fill || (context && SD_PLACEHOLDER_LIKE.test(own))
         ? sdPrompt(tpl, base, { scene, index: i, own, use: sdUse(tpl, id), who })
         : { prompt: own, refs: null };
-      jobs.push({ id, index: i, who, prompt: filled.prompt, planRefs: filled.refs, seconds: clip.seconds, audio: clip.generate_audio, clip });
+      jobs.push({ id, index: i, who, scene, prompt: filled.prompt, planRefs: filled.refs, seconds: clip.seconds, audio: clip.generate_audio, clip });
     }
   } else {
     const picked = kitPickScenes(inputs.scenes, inputs.pick, { skip_first: inputs.skip_first, skip_last: inputs.skip_last });
@@ -1460,7 +1478,7 @@ function sdJobs(inputs, tpl, i2v) {
     for (const { scene, index } of picked) {
       const who = `scene ${scene.id}`;
       const filled = sdPrompt(tpl, base, { scene, index, own: null, use, who });
-      jobs.push({ id: scene.id, index, who, prompt: filled.prompt, planRefs: filled.refs, seconds: inputs.seconds ?? SD_DEFAULT_SECONDS, audio: undefined, clip: {} });
+      jobs.push({ id: scene.id, index, who, scene, prompt: filled.prompt, planRefs: filled.refs, seconds: inputs.seconds ?? SD_DEFAULT_SECONDS, audio: undefined, clip: {} });
     }
   }
   for (const j of jobs) {
@@ -1469,7 +1487,8 @@ function sdJobs(inputs, tpl, i2v) {
     if (i2v) {
       const want = j.clip.start_image;
       if (want === 'product') {
-        j.start = (j.planRefs && sdFirstPhoto(j.planRefs.products)) || sdFirstPhoto(products);
+        // The product the scene names (whatever the template's refs pick), else the first with a photo.
+        j.start = sdFirstPhoto(kitNamedProducts(j.scene, products)) || sdFirstPhoto(products);
         if (!j.start) throw new Error(`${j.who} starts on the product, but no product has a photo`);
       } else if (sdIsFile(want)) {
         j.start = want;

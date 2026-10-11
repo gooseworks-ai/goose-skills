@@ -37,11 +37,13 @@ const work = () => mkdtempSync(join(tmpdir(), 'sd-'));
 const ctxFor = (inputs, line = falLine, extra = {}) => makeCtx({ partDir: dir, line, seed: inputs.seed ?? null, ...extra });
 const refused = (e) => e.code === 'bad_input';
 
-test('a 1.0.1 clip list orders the same pieces with the same bodies in 1.0.1 and 1.1.0', { skip }, async () => {
+test('a 1.0.1 clip list orders the same pieces with the same bodies in 1.0.1, 1.1.0 and 1.2.0', { skip }, async () => {
   const w = work();
   const inputs = await sample.inputs(w);
+  // Braces in a 1.0.1 prompt are text, not placeholders: with no fill input they go as written.
+  inputs.clips[0].prompt += ' A {camera} shot.';
   const seen = [];
-  for (const version of ['1.0.1', '1.1.0']) {
+  for (const version of ['1.0.1', '1.1.0', '1.2.0']) {
     const part = await loadPart('video-seedance-2', version);
     const { ctx, orders } = makeCtx({ partDir: part.dir, line: sample.line, workDir: join(w, version) });
     const out = await part.mod.run(structuredClone(inputs), ctx);
@@ -49,6 +51,7 @@ test('a 1.0.1 clip list orders the same pieces with the same bodies in 1.0.1 and
     assert.equal(out.clips[0].id, 'hook', version);
   }
   assert.equal(seen[0], seen[1], 'same pieces, so a saved 1.0.1 clip is reused, never billed again');
+  assert.equal(seen[0], seen[2], '1.2.0 too: the integer duration and the braces go as written');
 });
 
 test('fixture: product-hypermotion runs one image-to-video clip from the product photo and fills the template', { skip }, async () => {
@@ -170,4 +173,37 @@ test('a hand-built clip with no prompt takes templates.<id>, and a clip named af
   await mod.run(inputs, ctx);
   assert.match(orders[0].body.prompt, /STYLE ANCHOR: hypermotion product film\. the pouch lands on moss, Morning Mist Green Tea hero\./);
   assert.equal(orders[0].body.end_image_url, undefined, 'no end frame unless asked');
+});
+
+test('start_image product: the product the scene names, even when the template refs leave products out', { skip }, async () => {
+  const w = work();
+  const tea = await photo(w, 'tea.png');
+  const jar = await photo(w, 'jar2.png');
+  const inputs = {
+    mode: 'image_to_video',
+    template: await writeTemplate(w, { version: 1, motion: '{picture}, slow orbit', refs: ['scene_image'] }, 'named.prompt.json'),
+    products: [{ id: 'tea', name: 'Morning Mist Green Tea', images: [tea] }, { id: 'jar', name: 'Garden Jar', images: [jar] }],
+    scenes: [{ id: 'jar-shot', picture: 'The Garden Jar spins on a marble plinth' }],
+    clips: [{ id: 'jar-shot', seconds: 5, start_image: 'product' }],
+    generate_audio: false,
+  };
+  const { ctx, orders } = ctxFor(inputs);
+  await mod.run(inputs, ctx);
+  assert.deepEqual(orders[0].body.image_url, jar, 'the named product, not the first one');
+});
+
+test('a 1.1.0 call with no template still fills its prompt: a missing answer refuses before ordering', { skip }, async () => {
+  const w = work();
+  const start = await photo(w, 'start.png');
+  const ref = await photo(w, 'ref.png');
+  const cases = [
+    { mode: 'image_to_video', clips: [{ id: 'a', prompt: 'Use {answers.missing}', seconds: 5, start_image: start }] },
+    { clips: [{ id: 'a', prompt: 'Use {answers.missing}', seconds: 5, references: [ref] }], seed: 3 },
+    { mode: 'reference', clips: [{ id: 'a', prompt: 'Use {answers.missing}', seconds: 5, references: [ref] }] },
+  ];
+  for (const inputs of cases) {
+    const { ctx, orders } = ctxFor(inputs);
+    await assert.rejects(mod.run(inputs, ctx), (e) => refused(e) && /answers\.missing/.test(e.message), JSON.stringify(inputs.mode ?? inputs.seed));
+    assert.equal(orders.length, 0);
+  }
 });

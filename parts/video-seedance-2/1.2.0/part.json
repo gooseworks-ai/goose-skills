@@ -41,7 +41,8 @@
           "image_to_video",
           "take",
           "takes"
-        ]
+        ],
+        "default": "reference"
       },
       "clips": {
         "description": "The hand-built clip list (the 1.0.1 behaviour). Without it, give scenes: one clip per picked scene.",

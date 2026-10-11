@@ -3,6 +3,7 @@
 // inside the brand layer, which appends the card when no step drew one.
 import { kitCheckInputs, kitCheckOutputs } from '../../_lib/part.mjs';
 import { kitRenderEndCard } from '../../_lib/end-card.mjs';
+import { cardRenderLayout, cardSafeBrand, cardSafeFile } from './layouts.mjs';
 
 export async function run(inputs, ctx) {
   const manifest = await kitCheckInputs(ctx, inputs);
@@ -10,6 +11,18 @@ export async function run(inputs, ctx) {
   const fps = inputs.fps ?? 30;
   const seconds = inputs.seconds ?? 2.5;
   if (width % 2 || height % 2) throw ctx.error('bad_input', 'width and height must be even');
+  const layout = inputs.layout ?? 'classic';
+  // layout none (a style's "no card" answer): no card and no outputs, so the
+  // kit leaves out every step input bound to them (the skip-blank pattern).
+  if (layout === 'none') {
+    ctx.log.info('layout none: no end card');
+    ctx.progress({ done: 1, total: 1 });
+    return kitCheckOutputs(ctx, manifest, {});
+  }
+  if (layout === 'classic') {
+    const extra = ['rows', 'accent'].filter((k) => inputs[k] !== undefined);
+    if (extra.length) throw ctx.error('bad_input', `layout classic does not draw ${extra.join(', ')}`);
+  }
   const card = {
     background: inputs.background,
     foreground: inputs.foreground,
@@ -20,9 +33,16 @@ export async function run(inputs, ctx) {
     proof: inputs.proof,
     benefits: inputs.benefits,
     footnote: inputs.footnote,
-    image: inputs.image,
+    image: cardSafeFile(inputs.image),
+    rows: inputs.rows,
+    accent: inputs.accent,
   };
-  const video = await kitRenderEndCard(ctx, { brand: inputs.brand, card, width, height, fps, seconds });
+  // File MIME types reach the page inside data: URIs; keep them to a plain type/subtype for every layout.
+  const brand = cardSafeBrand(inputs.brand);
+  const video =
+    layout === 'classic'
+      ? await kitRenderEndCard(ctx, { brand, card, width, height, fps, seconds })
+      : await cardRenderLayout(ctx, { layout, brand, card, width, height, fps, seconds });
   ctx.progress({ done: 1, total: 1 });
   const timeline = { duration_s: seconds, width, height, fps, scenes: [{ id: 'end-card', start_s: 0, end_s: seconds }], speech: [], end_card: { start_s: 0, end_s: seconds } };
   return kitCheckOutputs(ctx, manifest, { video, seconds, timeline });
