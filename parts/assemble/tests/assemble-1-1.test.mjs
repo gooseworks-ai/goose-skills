@@ -88,7 +88,8 @@ test('the end card takes the last span, with its logo box moved onto the cut; a 
 test('passes a finished timeline through and appends the card after it, keeping the clip sound (street interview)', { skip }, async () => {
   const { ctx } = makeCtx({ partDir: dir });
   const body = await fileRef(await makeVideo(join(ctx.workDir, 'body.mp4'), 1.5, { width: W, height: H, fps: 30, tone: 440 }), 'video');
-  const card = await solid(ctx, 'card.mp4', 'yellow', 0.6);
+  // The card file has its own sound: the cut must still be silent under it.
+  const card = await fileRef(await makeVideo(join(ctx.workDir, 'card.mp4'), 0.6, { width: W, height: H, fps: 30, tone: 660, pattern: 'color=c=yellow' }), 'video');
   const timeline = {
     duration_s: 1.5, width: W, height: H, fps: 30,
     scenes: [{ id: 'q1', start_s: 0, end_s: 0.7 }, { id: 'a1', start_s: 0.7, end_s: 1.5 }],
