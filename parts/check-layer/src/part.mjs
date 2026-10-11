@@ -52,6 +52,9 @@ const NUM = '-?\\d+(?:\\.\\d+)?(?:e-?\\d+)?';
 // later check layer measures: a style may declare a flag before its layer version is pinned).
 const MEASURED_FLAGS = new Set(['logo_visible', 'footage_moves', 'sounds_match_messages', 'text_led', 'read_rate', 'cuts_between_words', 'cut_rate', 'retained_body']);
 const EYES_FLAGS = new Set(['text_legible', 'products_visible']);
+// retained_body: the new opening starts the video (within this) and leaves at least this much kept body.
+const RETAINED_START_MAX_S = 0.05;
+const RETAINED_BODY_MIN_S = 0.05;
 
 function ratioOf(aspect) {
   const [w, h] = aspect.split(':').map(Number);
@@ -236,9 +239,12 @@ export async function run(inputs, ctx) {
   // (black and frozen frames, captions placement, logo, speech against the script, the measured flags) run
   // only inside the opening; the kept body is not judged. With no first scene marked, nothing is checked
   // and the flag fails: the opening cannot be told from the body.
+  // The opening counts as marked only when the first scene starts the video and ends inside it, with a
+  // kept body after it; anything else (no scene, one that starts later or covers the whole cut) fails the flag.
   const retained = flags.includes('retained_body');
   const hook = retained ? (timeline.scenes || [])[0] : null;
-  const contentEnd = !retained ? d : hook && hook.end_s > hook.start_s ? Math.min(hook.end_s, d) : 0;
+  const hookMarked = !!hook && hook.start_s <= RETAINED_START_MAX_S && hook.end_s > hook.start_s && hook.end_s < d - RETAINED_BODY_MIN_S;
+  const contentEnd = !retained ? d : hookMarked ? hook.end_s : 0;
   const notChecked = 'kept body; only the new opening is checked';
 
   const { freezes: allFreezes, blacks: allBlacks } = await analyse(ctx, video.path, d);
@@ -387,7 +393,7 @@ export async function run(inputs, ctx) {
       }
       const share = `under ${Math.round(CHK_BLANK_MAX_SHARE * 100)} % of the video blank, with text on screen`;
       if (blank.whole) add(code, 'fail', { message: 'The whole video is blank: no text on screen.', expected: share, found: 1 });
-      else if (blank.share > CHK_BLANK_MAX_SHARE + 1e-9) add(code, 'fail', { message: `The video is blank for ${blank.total_s.toFixed(1)} of ${blank.picture_s.toFixed(1)} seconds.`, expected: share, found: +blank.share.toFixed(3) });
+      else if (blank.share >= CHK_BLANK_MAX_SHARE - 1e-9) add(code, 'fail', { message: `The video is blank for ${blank.total_s.toFixed(1)} of ${blank.picture_s.toFixed(1)} seconds.`, expected: share, found: +blank.share.toFixed(3) });
       else add(code, 'pass', { found: +blank.share.toFixed(3) });
     } else if (flag === 'read_rate') {
       const rate = chkReadRate(speech, contentEnd);
@@ -398,8 +404,12 @@ export async function run(inputs, ctx) {
       else add(code, 'pass', { found: +rate.wps.toFixed(3) });
     } else if (flag === 'cuts_between_words') {
       // Word timings from the speech entries, else the captions layer's words.
-      let words = speech.flatMap((s) => s.words || []);
-      if (!words.length && record && Array.isArray(record.words)) words = record.words.filter((w) => w && Number.isFinite(w.start_s) && Number.isFinite(w.end_s) && (!retained || w.start_s < contentEnd));
+      // Word timings from the speech entries when every entry has them, else the captions layer's words
+      // (a full record of what was said), else whatever partial timings the speech carries.
+      const spoken = speech.filter((s) => (s.words || []).length || /[\p{L}\p{N}]/u.test(typeof s.spoken === 'string' ? s.spoken : s.text || ''));
+      const fromSpeech = spoken.flatMap((s) => s.words || []);
+      const fromCaptions = record && Array.isArray(record.words) ? record.words.filter((w) => w && Number.isFinite(w.start_s) && Number.isFinite(w.end_s) && (!retained || w.start_s < contentEnd)) : [];
+      const words = spoken.every((s) => (s.words || []).length) && fromSpeech.length ? fromSpeech : fromCaptions.length ? fromCaptions : fromSpeech;
       const cuts = chkCuts(timeline.scenes, contentEnd);
       if (timeline.end_card && timeline.end_card.start_s < contentEnd && !cuts.some((t) => Math.abs(t - timeline.end_card.start_s) < 1e-3)) cuts.push(timeline.end_card.start_s);
       if (!words.length) add(code, 'not_applicable', { found: 'no word timings' });
@@ -421,7 +431,10 @@ export async function run(inputs, ctx) {
         else add(code, 'pass', { found: +rate.toFixed(3) });
       }
     } else if (flag === 'retained_body') {
-      if (contentEnd <= 0) add(code, 'fail', { message: 'The new opening is not marked, so it cannot be told from the kept video.', expected: 'the new opening as the first scene in the timeline', found: 'no first scene' });
+      if (contentEnd <= 0) {
+        const found = !hook ? 'no first scene' : `first scene ${hook.start_s.toFixed(2)}-${hook.end_s.toFixed(2)} s in a ${d.toFixed(2)} s video`;
+        add(code, 'fail', { message: 'The new opening is not marked, so it cannot be told from the kept video.', expected: 'the new opening as the first scene, starting the video and followed by the kept video', found });
+      }
       else add(code, 'pass', { found: `checked 0-${contentEnd.toFixed(2)} s; ${contentEnd.toFixed(2)}-${d.toFixed(2)} s kept, not checked` });
     }
   }
@@ -437,7 +450,8 @@ export async function run(inputs, ctx) {
     add('speech_matches_script', 'fail', { message: 'The on-camera speech was not transcribed, so it cannot be checked against the script.', expected: 'a transcribe step before the layers', found: 'no transcript' });
   } else {
     const heard = speech.map((s) => (typeof s.spoken === 'string' ? s.spoken : s.text)).join(' ');
-    const verdict = speechReview(script.join(' '), heard, { aliases: usableAliases(ctx, inputs.brand.pronunciations) });
+    // retained_body: only the opening is heard here, so only its line (the plan's first) is compared.
+    const verdict = speechReview((retained ? script.slice(0, 1) : script).join(' '), heard, { aliases: usableAliases(ctx, inputs.brand.pronunciations) });
     const worst = verdict.issues.find((i) => i.severity === 'high') || verdict.issues.find((i) => i.severity !== 'low');
     if (verdict.passed) add('speech_matches_script', 'pass', { found: +verdict.ratio.toFixed(3) });
     else {

@@ -39,7 +39,7 @@ export const manifest = {
               additionalProperties: false,
               required: ['code', 'status'],
               properties: {
-                code: { type: 'string', pattern: '^(plays|length|size|sound|captions|black_frames|frozen_frames|captions_safe_zone|speech_matches_script|end_card|logo|flag:[a-z0-9_]+)$' },
+                code: { type: 'string', pattern: '^(plays|length|size|sound|captions|black_frames|frozen_frames|captions_safe_zone|speech_matches_script|end_card|logo|flag:.+)$', description: 'flag:<name> for each style qc_flag, any name the input allows (a flag this version does not know is reported not_applicable).' },
                 status: {
                   description: 'warn: measured short, but not counted against the video (a logo looked for on the whole frame, with no box declared for it and no brand layer to fix it).',
                   enum: ['pass', 'fail', 'warn', 'not_applicable'],

@@ -140,14 +140,25 @@ test('read_rate, cuts_between_words and cut_rate are measured from the timeline'
   inputs.words = await fileRef(record, 'json');
   const fromCaptions = await mod.run(inputs, ctx);
   assert.equal(status(fromCaptions)['flag:cuts_between_words'], 'fail');
+  // Mixed timings: one entry has words, the other only its text. The captions layer's words cover both,
+  // so the cut at 6 s inside "mess" is still caught.
+  const { words: _dropped, ...noWords } = speech[1];
+  const mixed = [speech[0], noWords];
+  const mixedInputs = await layerInputsFor(video, { expect: { speech: 'voiceover', qc_flags: ['cuts_between_words'] }, timeline: { scenes, speech: mixed } });
+  const allWords = join(ctx.workDir, 'all-words.json');
+  writeFileSync(allWords, JSON.stringify({ cues: [], words: [...speech[0].words, ...speech[1].words] }));
+  mixedInputs.words = await fileRef(allWords, 'json');
+  const mixedOut = await mod.run(mixedInputs, ctx);
+  assert.equal(status(mixedOut)['flag:cuts_between_words'], 'fail', JSON.stringify(check(mixedOut, 'flag:cuts_between_words')));
+  assert.match(check(mixedOut, 'flag:cuts_between_words').message, /"mess"/);
 });
 
 test('flags this version does not measure stay not_applicable and never fail the video', { skip }, async () => {
   const { ctx } = makeCtx({ partDir: dir });
   const video = await levelledCut(ctx.workDir, 'later', 4);
-  const out = await mod.run(await layerInputsFor(video, { expect: { speech: 'voiceover', qc_flags: ['captions_cross_cuts', 'min_shot', 'text_legible', 'cut_rate'] } }), ctx);
+  const out = await mod.run(await layerInputsFor(video, { expect: { speech: 'voiceover', qc_flags: ['captions_cross_cuts', 'min_shot', 'text_legible', 'cut_rate', 'future-flag', 'Some Flag'] } }), ctx);
   const s = status(out);
-  for (const f of ['captions_cross_cuts', 'min_shot', 'text_legible']) assert.equal(s[`flag:${f}`], 'not_applicable', f);
+  for (const f of ['captions_cross_cuts', 'min_shot', 'text_legible', 'future-flag', 'Some Flag']) assert.equal(s[`flag:${f}`], 'not_applicable', f);
   assert.equal(check(out, 'flag:text_legible').found, 'needs eyes; not checked by machine');
   assert.equal(check(out, 'flag:min_shot').found, 'not measured by this check layer');
   assert.equal(s['flag:cut_rate'], 'not_applicable', 'no scenes in the timeline');
@@ -189,4 +200,14 @@ test('retained_body: content checks run only inside the new opening; the kept bo
   assert.equal(status(unmarked)['flag:retained_body'], 'fail');
   assert.equal(status(unmarked).black_frames, 'not_applicable');
   assert.equal(unmarked.verdict.pass, false);
+  // A first scene that does not start the video, or that covers the whole cut, is not a marked opening.
+  for (const first of [{ start_s: 3, end_s: 4 }, { start_s: 9, end_s: 10 }, { start_s: 0, end_s: 30 }]) {
+    const bad = await mod.run(await layerInputsFor(video, { expect: { ...expect, qc_flags: ['retained_body'] }, timeline: { ...timeline, scenes: [{ id: 'hook', ...first }, { id: 'body', start_s: 4, end_s: 8 }] } }), ctx);
+    assert.equal(status(bad)['flag:retained_body'], 'fail', JSON.stringify(first));
+    assert.equal(status(bad).black_frames, 'not_applicable', JSON.stringify(first));
+  }
+  // Speech in the opening is compared with the opening's line only, not the whole script.
+  const hookSpeech = { scenes, speech: [{ text: 'A brand new line', start_s: 0.2, end_s: 1.8 }, timeline.speech[0]] };
+  const spoken = await mod.run(await layerInputsFor(video, { expect: { ...expect, script: ['A brand new line', 'The old body line'], qc_flags: ['retained_body'] }, timeline: hookSpeech }), ctx);
+  assert.equal(status(spoken).speech_matches_script, 'pass', JSON.stringify(check(spoken, 'speech_matches_script')));
 });
