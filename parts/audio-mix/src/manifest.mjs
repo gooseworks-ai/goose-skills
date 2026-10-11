@@ -59,7 +59,7 @@ export const manifest = {
           required: ['audio', 'at_s'],
           properties: {
             audio: file('audio'),
-            at_s: { type: 'number', minimum: 0, maximum: 300 },
+            at_s: { type: 'number', minimum: 0 },
             gain: { type: 'number', minimum: 0, maximum: 4 },
             max_s: { type: 'number', exclusiveMinimum: 0, maximum: 60 },
           },
@@ -86,13 +86,14 @@ export const manifest = {
         description:
           "Moments the cut marked (an edit step's marks output, bound whole). Each mark whose kind names a mark_sounds id plays that sound at at_s + mark_offset_s; other kinds are ignored, and a mark past the end is dropped.",
         type: 'array',
-        maxItems: 200,
+        // assemble 1.2.0 can mark every shot: 60 scenes x 6 shots.
+        maxItems: 400,
         items: {
           type: 'object',
           required: ['kind', 'at_s'],
           properties: {
             kind: { type: 'string', minLength: 1, maxLength: 40 },
-            at_s: { type: 'number', minimum: 0, maximum: 300 },
+            at_s: { type: 'number', minimum: 0 },
           },
         },
       },

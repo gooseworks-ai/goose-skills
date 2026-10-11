@@ -155,8 +155,7 @@
             },
             "at_s": {
               "type": "number",
-              "minimum": 0,
-              "maximum": 300
+              "minimum": 0
             },
             "gain": {
               "type": "number",
@@ -231,7 +230,7 @@
       "marks": {
         "description": "Moments the cut marked (an edit step's marks output, bound whole). Each mark whose kind names a mark_sounds id plays that sound at at_s + mark_offset_s; other kinds are ignored, and a mark past the end is dropped.",
         "type": "array",
-        "maxItems": 200,
+        "maxItems": 400,
         "items": {
           "type": "object",
           "required": [
@@ -246,8 +245,7 @@
             },
             "at_s": {
               "type": "number",
-              "minimum": 0,
-              "maximum": 300
+              "minimum": 0
             }
           }
         }

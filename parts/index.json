@@ -269,7 +269,7 @@
       "path": "parts/audio-mix/1.1.0",
       "files": {
         "README.md": "4261535c72fa826a074e0535bbaf24490abbd55e89d9df285d00a3b4b2b5ffec",
-        "part.json": "669fb5c045e3c9a296063ef63ebdc237ccd575cdbe03652458027d7ba5bdf579",
+        "part.json": "3d02f20dcf2b6e7eb54bda73eb658c7df29b41d77ff9f240f9f50b8e4c45b2c0",
         "part.mjs": "501c9c61b58903c538ff2321bc18cf8ae0dfac3007127582f24812cea122f9b8"
       },
       "models": []
