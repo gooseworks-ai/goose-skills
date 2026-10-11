@@ -9,8 +9,9 @@
 //    respect_sections_durations: true} (and `seed` when the style gives one).
 //    The line answers {json, file_url}: the reply's JSON part verbatim and the
 //    audio. Words are read from json.words_timestamps ([{word, start_ms, end_ms}]).
-// 3. The piece fails (provider_failed) on empty word timings or a sung-word
-//    count that differs from the lyric: captions are never timed from guesses.
+// 3. The piece fails (provider_failed) on empty word timings, a word with no
+//    numeric times, a sung-word count that differs from the lyric, or a word
+//    that starts after the track ends: captions are never timed from guesses.
 // 4. Hook gate: with hook_scene, its first sung word must land within 0.35 s of
 //    its section's start. A miss orders one more song (`song-reroll`, a new
 //    seed); a second miss fails the step (output_invalid).
@@ -54,14 +55,15 @@ async function songOrder(ctx, plan, piece, seed) {
   });
   const file = result.files[`${piece}.mp3`];
   if (!file) throw ctx.error('provider_failed', `no audio for ${piece}`);
+  const duration_s = await kitDuration(ctx, file);
   let aligned;
   try {
-    aligned = songAlignWords(plan.words, songReplyWords(result.json));
+    aligned = songAlignWords(plan.words, songReplyWords(result.json), duration_s);
   } catch (e) {
     throw songCtxError(ctx, e);
   }
   for (const m of aligned.mismatches) ctx.log.warn(`${piece}: sung word ${m.index + 1} reads "${m.sung}", the lyric says "${m.lyric}"`);
-  return { piece, file, aligned, duration_s: await kitDuration(ctx, file) };
+  return { piece, file, aligned, duration_s };
 }
 
 export async function run(inputs, ctx) {
@@ -78,7 +80,7 @@ export async function run(inputs, ctx) {
   for (const w of plan.warnings) ctx.log.warn(w);
 
   const timeOf = (sung) =>
-    songTimeline({ scenes: inputs.scenes, plan, aligned: sung.aligned, duration_s: sung.duration_s, windows: inputs.windows });
+    songTimeline({ scenes: inputs.scenes, plan, aligned: sung.aligned, duration_s: sung.duration_s, windows: inputs.windows, max_ending_s: inputs.max_ending_s });
   const total = plan.hook ? 2 : 1;
   let sung = await songOrder(ctx, plan, 'song', inputs.seed);
   let timeline = timeOf(sung);

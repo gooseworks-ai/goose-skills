@@ -20,8 +20,9 @@ the sung words. The song is the script and sets the timeline: no voiceover, no s
   `seed` when the style gives one. Never `music_length_ms` or other prompt-only fields. The line answers
   `{json, file_url}`: the reply's JSON part verbatim, and the audio (pointer `/file_url`). Words are read from
   `json.words_timestamps` (`[{word, start_ms, end_ms}]`, milliseconds).
-- **The piece fails** (`provider_failed`, which the core retries once) when the reply has no word timings or a
-  sung-word count that differs from the lyric. A word that reads differently ("jacket," for "jacket") is matched
+- **The piece fails** (`provider_failed`, which the core retries once) when the reply has no word timings, a word
+  without numeric `start_ms`/`end_ms`, a sung-word count that differs from the lyric, or a word that starts after
+  the track ends. A word that reads differently ("jacket," for "jacket") is matched
   without case or punctuation; a real difference is logged, not failed.
 - **Hook gate**: with `hook_scene`, its first sung word must land within 0.35 s of its section's start. A miss
   orders one more song, piece `song-reroll`, with a new seed (the style's `seed` + 1, else one from the step). A
@@ -30,7 +31,9 @@ the sung words. The song is the script and sets the timeline: no voiceover, no s
   their neighbours, snap to a word within `snap_s`, hold at least `min_hold_s`; a group's first picture
   (`scene.extra.group`) shows `shot_lead_s` before the group's first word; `first_word_s: [a, b]` trims or pads
   the head of the track so the first word lands at `a` s (singing by the second scene) or `b` s; with no
-  `ending_scenes`, the end card comes in `card_after_s` after the last word.
+  `ending_scenes`, the end card comes in `card_after_s` after the last word. `max_ending_s` (for a card step of
+  fixed length) caps the card: one that would start earlier starts at the song's end minus `max_ending_s`, and
+  the picture before it holds longer.
 - **Outputs**: `audio` (AAC, 48 kHz stereo, trimmed or padded to match), `seconds`, `words` (every written word),
   `scenes` (every scene, back to back from 0), `speech` (captions for the sung scenes before the ending scenes),
   `ending_seconds` (from the end card's start to the end of the song), `hook_s` (with `hook_scene`).

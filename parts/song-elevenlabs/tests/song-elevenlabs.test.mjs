@@ -98,6 +98,18 @@ test('fails the piece when the sung word count differs from the lyric', { skip }
   assert.equal(orders.length, 1);
 });
 
+test('fails the piece when the reply times a word after the track ends, or a time is null', { skip }, async () => {
+  const late = recorded();
+  late.words_timestamps[9] = { ...late.words_timestamps[9], start_ms: 17000, end_ms: 17400 };
+  const missing = recorded();
+  missing.words_timestamps[0].start_ms = null;
+  for (const [json, pattern] of [[late, /starts at 17 s, but the track ends at/], [missing, /sung word 1 has no start or end time/]]) {
+    const { ctx, orders } = makeCtx({ partDir: dir, line: songLine(() => json) });
+    await assert.rejects(mod.run(recordedInputs(), ctx), (e) => e.code === 'provider_failed' && pattern.test(e.message), String(pattern));
+    assert.equal(orders.length, 1);
+  }
+});
+
 test('a word sung differently is logged, not failed', { skip }, async () => {
   const json = recorded();
   json.words_timestamps[2].word = 'smile';

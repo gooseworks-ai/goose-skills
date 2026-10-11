@@ -2053,9 +2053,9 @@
       "determinism": "provider",
       "path": "parts/song-elevenlabs/1.0.0",
       "files": {
-        "README.md": "0857250c082894890bbe2a479e79a6a0bc283ca81a9075806f3737e9f645b928",
-        "part.json": "75eb8b5db931d2ec4f67779f6971130a3eb7084839dfb6b0630a0ea8ffdb2256",
-        "part.mjs": "0e6e77978c8b89f591b6763d6fe5a8244c24a4aa9c02f2422b40a3483bc5ee27"
+        "README.md": "be9f8932af79ba6eee791a8161b7750ec2b3f57c3eaf5e7dbe52f22cb7629c88",
+        "part.json": "4daade1235351ebc2357fefe65979be56c77ecc313fc748c822202fbfab1883e",
+        "part.mjs": "f45203789b6429ec9f04f1c38d58e0ee71798cbd4c903174ead721dcda8438c1"
       },
       "models": [
         {

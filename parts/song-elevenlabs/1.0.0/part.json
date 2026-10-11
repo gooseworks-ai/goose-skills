@@ -264,6 +264,12 @@
         "minimum": 0,
         "maximum": 2147483647
       },
+      "max_ending_s": {
+        "description": "The end card's longest length, for a card step of fixed length: a card that would start earlier (the first ending scene sung early, or a long tail after card_after_s) starts at the song's end minus this instead.",
+        "type": "number",
+        "exclusiveMinimum": 0,
+        "maximum": 30
+      },
       "max_seconds": {
         "description": "Refuse, before anything is ordered, a song planned longer than this.",
         "type": "number",

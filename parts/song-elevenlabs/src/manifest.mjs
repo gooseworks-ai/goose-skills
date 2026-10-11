@@ -89,6 +89,7 @@ export const manifest = {
       ending_scenes: { description: 'Scenes at the end that sit under the end card: sung, not captioned. Default 0.', type: 'integer', minimum: 0, maximum: 59 },
       pronunciations: { description: 'brand.pronunciations: a term is sung as its say_as spelling and captioned as written.', ...pronunciations },
       seed: { description: 'ElevenLabs seed for the song. Default: none (the provider picks).', type: 'integer', minimum: 0, maximum: 2147483647 },
+      max_ending_s: { description: "The end card's longest length, for a card step of fixed length: a card that would start earlier (the first ending scene sung early, or a long tail after card_after_s) starts at the song's end minus this instead.", type: 'number', exclusiveMinimum: 0, maximum: 30 },
       max_seconds: { description: 'Refuse, before anything is ordered, a song planned longer than this.', type: 'number', minimum: 3, maximum: 300 },
       windows: {
         description: 'How pictures are timed to the singing. Without windows: sung scenes start on their first word, silent ones share the time between.',

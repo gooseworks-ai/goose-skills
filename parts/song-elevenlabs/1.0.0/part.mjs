@@ -779,13 +779,14 @@ function songRound(s) {
  * The reply's word timings (`words_timestamps: [{word, start_ms, end_ms}]`)
  * matched to the lyric's words, one for one and in order.
  *
- * Throws provider_failed when the reply has no timings or a different number
- * of words than the lyric. Returns {sent: [{start_s, end_s}], written:
+ * Throws provider_failed when the reply has no timings, a word without numeric
+ * start_ms/end_ms, a different number of words than the lyric, or (with
+ * `duration_s`, the track's length) a word that starts after the track ends. Returns {sent: [{start_s, end_s}], written:
  * [{text, scene_index, start_s, end_s}], mismatches: [{index, sung, lyric}]}
  * in the track's own time. A written word spans every sent word that stands for
  * it, so a brand name sung as three words is captioned once, as written.
  */
-function songAlignWords(wordPlan, words) {
+function songAlignWords(wordPlan, words, duration_s) {
   if (!Array.isArray(words) || !words.length) throw songFail('provider_failed', 'the song came back with no word timings');
   if (words.length !== wordPlan.sent.length) {
     throw songFail('provider_failed', `the song has ${words.length} sung words and the lyric has ${wordPlan.sent.length}; it was not sung as written`);
@@ -794,8 +795,9 @@ function songAlignWords(wordPlan, words) {
   const mismatches = [];
   let floor = 0;
   words.forEach((w, i) => {
-    const start = Number(w && w.start_ms);
-    const end = Number(w && w.end_ms);
+    // Only real numbers: Number(null) would read a missing time as 0.
+    const start = w && typeof w.start_ms === 'number' ? w.start_ms : NaN;
+    const end = w && typeof w.end_ms === 'number' ? w.end_ms : NaN;
     if (!Number.isFinite(start) || !Number.isFinite(end)) throw songFail('provider_failed', `sung word ${i + 1} has no start or end time`);
     const s = Math.max(start, floor) / 1000;
     const e = Math.max(end / 1000, s);
@@ -803,6 +805,11 @@ function songAlignWords(wordPlan, words) {
     floor = Math.max(start, floor);
     if (songNorm(w.word) !== songNorm(wordPlan.sent[i].text)) mismatches.push({ index: i, sung: String(w.word), lyric: wordPlan.sent[i].text });
   });
+  // Starts never go down (the floor above), so the last word is the latest. A word that starts after the
+  // audio ends is a timing the track cannot hold: no scene may start past the end of the song.
+  if (duration_s != null && sent.at(-1).start_s >= duration_s) {
+    throw songFail('provider_failed', `sung word ${sent.length} starts at ${sent.at(-1).start_s} s, but the track ends at ${songRound(duration_s)} s`);
+  }
   let prevEnd = 0;
   const written = wordPlan.written.map((w) => {
     if (!w.sent.length) return { text: w.text, scene_index: w.scene_index, start_s: prevEnd, end_s: prevEnd };
@@ -837,7 +844,9 @@ function songClamp(times, ta, tb, hold) {
  *
  * `args`: {scenes, plan (songCompositionPlan's result), aligned (songAlignWords'
  * result), duration_s (the track's length before any trim), windows?:
- * {first_word_s: [a, b], shot_lead_s, snap_s, min_hold_s, card_after_s}}.
+ * {first_word_s: [a, b], shot_lead_s, snap_s, min_hold_s, card_after_s},
+ * max_ending_s?: the end card's longest length; a card that would start earlier
+ * starts at the track's end minus this instead}.
  *
  * Returns {trim_s, pad_s, seconds, scenes: [{id, start_s, end_s}] (every scene,
  * back to back from 0), speech (the Timeline speech shape: sung scenes outside
@@ -877,6 +886,13 @@ function songTimeline(args) {
     cardAt = songRound(Math.min(seconds, lastBodyEnd + cardAfter));
     rightEdge = cardAt;
   }
+  // The latest the card may start so it lasts at most max_ending_s (a fixed-length card step).
+  const latestCard = args.max_ending_s == null ? null : songRound(Math.max(0, seconds - args.max_ending_s));
+  if (cardAt != null && latestCard != null && cardAt < latestCard) {
+    warnings.push(`the end card would last ${songRound(seconds - cardAt)} s; it starts at ${latestCard} s so it lasts ${args.max_ending_s} s`);
+    cardAt = latestCard;
+    rightEdge = cardAt;
+  }
 
   // ---- fixed starts and soft targets ----
   const fixed = new Array(n).fill(null); // a sung scene's first word (scene 0 at 0)
@@ -901,6 +917,15 @@ function songTimeline(args) {
     }
   }
   if (k > 0 && fixed[endIdx] == null && cardAfter != null && lastBodyEnd != null) soft[endIdx] = lastBodyEnd + cardAfter;
+  if (k > 0 && latestCard != null) {
+    // The first ending scene starts no earlier than latestCard; a sung one keeps its words under the picture before.
+    const was = fixed[endIdx] != null ? fixed[endIdx] : soft[endIdx];
+    if (was == null || was < latestCard) {
+      if (was != null) warnings.push(`the end card would start at ${was} s; it starts at ${latestCard} s so it lasts at most ${args.max_ending_s} s`);
+      if (fixed[endIdx] != null) fixed[endIdx] = latestCard;
+      else soft[endIdx] = latestCard;
+    }
+  }
 
   // ---- place the movable scenes between each pair of fixed starts ----
   const hold = Math.max(windows.min_hold_s || 0, songFrameS);
@@ -979,6 +1004,9 @@ function songTimeline(args) {
   }));
   if (k > 0) cardAt = spans[endIdx].start_s;
   const endingSeconds = cardAt == null ? 0 : songRound(Math.max(0, seconds - cardAt));
+  if (args.max_ending_s != null && endingSeconds > args.max_ending_s + 0.001) {
+    warnings.push(`the end card lasts ${endingSeconds} s, over max_ending_s ${args.max_ending_s}: too few frames before it to move it later`);
+  }
 
   // ---- captions: every sung scene outside the ending ----
   const speech = bodySung.map((s) => {
@@ -1039,8 +1067,9 @@ function songTimeline(args) {
 //    respect_sections_durations: true} (and `seed` when the style gives one).
 //    The line answers {json, file_url}: the reply's JSON part verbatim and the
 //    audio. Words are read from json.words_timestamps ([{word, start_ms, end_ms}]).
-// 3. The piece fails (provider_failed) on empty word timings or a sung-word
-//    count that differs from the lyric: captions are never timed from guesses.
+// 3. The piece fails (provider_failed) on empty word timings, a word with no
+//    numeric times, a sung-word count that differs from the lyric, or a word
+//    that starts after the track ends: captions are never timed from guesses.
 // 4. Hook gate: with hook_scene, its first sung word must land within 0.35 s of
 //    its section's start. A miss orders one more song (`song-reroll`, a new
 //    seed); a second miss fails the step (output_invalid).
@@ -1080,14 +1109,15 @@ async function songOrder(ctx, plan, piece, seed) {
   });
   const file = result.files[`${piece}.mp3`];
   if (!file) throw ctx.error('provider_failed', `no audio for ${piece}`);
+  const duration_s = await kitDuration(ctx, file);
   let aligned;
   try {
-    aligned = songAlignWords(plan.words, songReplyWords(result.json));
+    aligned = songAlignWords(plan.words, songReplyWords(result.json), duration_s);
   } catch (e) {
     throw songCtxError(ctx, e);
   }
   for (const m of aligned.mismatches) ctx.log.warn(`${piece}: sung word ${m.index + 1} reads "${m.sung}", the lyric says "${m.lyric}"`);
-  return { piece, file, aligned, duration_s: await kitDuration(ctx, file) };
+  return { piece, file, aligned, duration_s };
 }
 
 export async function run(inputs, ctx) {
@@ -1104,7 +1134,7 @@ export async function run(inputs, ctx) {
   for (const w of plan.warnings) ctx.log.warn(w);
 
   const timeOf = (sung) =>
-    songTimeline({ scenes: inputs.scenes, plan, aligned: sung.aligned, duration_s: sung.duration_s, windows: inputs.windows });
+    songTimeline({ scenes: inputs.scenes, plan, aligned: sung.aligned, duration_s: sung.duration_s, windows: inputs.windows, max_ending_s: inputs.max_ending_s });
   const total = plan.hook ? 2 : 1;
   let sung = await songOrder(ctx, plan, 'song', inputs.seed);
   let timeline = timeOf(sung);

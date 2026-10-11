@@ -219,3 +219,49 @@ test('a free picture never snaps past the next plate', () => {
   const tl = songTimeline({ scenes, plan: p, aligned: a, duration_s: 5, windows: { snap_s: 1, min_hold_s: 0.3, shot_lead_s: 0.45 } });
   assert.deepEqual(tl.scenes.map((s) => [s.id, s.start_s]), [['a', 0], ['b1', 0.8], ['b2', 2.367], ['c', 3.55], ['d', 4]]);
 });
+
+test('fails the piece on a word with no numeric time, never reading null as 0', () => {
+  const p = songCompositionPlan(storybookInputs());
+  for (const bad of [{ start_ms: null }, { end_ms: null }, { start_ms: '100' }, null]) {
+    const words = sungBySection(p);
+    words[2] = bad === null ? null : { ...words[2], ...bad };
+    assert.throws(() => songAlignWords(p.words, words), (e) => e.code === 'provider_failed' && /sung word 3 has no start or end time/.test(e.message), JSON.stringify(bad));
+  }
+});
+
+test('fails the piece when a word starts after the track ends', () => {
+  const p = songCompositionPlan(storybookInputs());
+  const words = sungBySection(p);
+  assert.ok(songAlignWords(p.words, words, 28.2), 'every word inside the track');
+  assert.throws(() => songAlignWords(p.words, words, 20), (e) => e.code === 'provider_failed' && /starts at .* but the track ends at 20 s/.test(e.message));
+});
+
+test('max_ending_s: a sung ending scene that starts early is moved so the card lasts at most that long', () => {
+  const inputs = storybookInputs();
+  const p = songCompositionPlan(inputs);
+  const a = songAlignWords(p.words, sungBySection(p));
+  const free = songTimeline({ scenes: inputs.scenes, plan: p, aligned: a, duration_s: 28.2 });
+  assert.equal(free.ending_seconds, 2.7);
+  const tl = songTimeline({ scenes: inputs.scenes, plan: p, aligned: a, duration_s: 28.2, max_ending_s: 2 });
+  assert.equal(tl.ending_seconds, 2);
+  assert.equal(tl.scenes[13].start_s, 26.2);
+  assert.equal(tl.scenes[12].end_s, 26.2, 'the scene before holds until the card');
+  assert.equal(tl.card_at_s, 26.2);
+  assert.deepEqual(tl.speech, free.speech, 'captions unchanged');
+  assert.ok(tl.warnings.some((w) => /starts at 26.2 s so it lasts at most 2 s/.test(w)), JSON.stringify(tl.warnings));
+  // A looser limit changes nothing.
+  const loose = songTimeline({ scenes: inputs.scenes, plan: p, aligned: a, duration_s: 28.2, max_ending_s: 10 });
+  assert.deepEqual(loose.scenes, free.scenes);
+  assert.deepEqual(loose.warnings, []);
+});
+
+test('max_ending_s with card_after_s: a long tail after the last word moves the card later', () => {
+  const p = songCompositionPlan({ scenes: stopScenes, form: { groups: 2 } });
+  const a = songAlignWords(p.words, sungSentences(p, 3200));
+  const free = songTimeline({ scenes: stopScenes, plan: p, aligned: a, duration_s: 15, windows: stopWindows });
+  const tl = songTimeline({ scenes: stopScenes, plan: p, aligned: a, duration_s: 15, windows: stopWindows, max_ending_s: 1 });
+  assert.ok(free.ending_seconds > 1, String(free.ending_seconds));
+  assert.equal(tl.ending_seconds, 1);
+  assert.equal(tl.card_at_s, tl.seconds - 1);
+  assert.equal(tl.scenes.at(-1).end_s, tl.card_at_s, 'the last picture holds until the card');
+});
