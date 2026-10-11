@@ -24,7 +24,7 @@ import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitDuration, kitFfmpeg, kitNum } from '../../_lib/part.mjs';
 import { kitMediaLength } from '../../_lib/length.mjs';
 import { kitScreenBoxProblems, kitScreenGraph, kitScreenProblems } from '../../_lib/screen-look.mjs';
-import { CUT_MAX_BYTES, CutRefusal, cutCheckMode, cutCheckOrder, cutCheckProjectedSize, cutEntryFile, cutInsertRange, cutModeOf, cutPlaceInserts, cutPlanScenes, cutSceneSources, cutWindow } from './plan.mjs';
+import { CUT_MAX_BYTES, CutRefusal, cutCheckMode, cutCheckOrder, cutEntryFile, cutInsertRange, cutModeOf, cutPlaceInserts, cutPlanScenes, cutSceneSources, cutWindow } from './plan.mjs';
 
 /** atempo steps whose product is `speed`: ffmpeg 6.0's atempo takes 0.5 to 2 at a time. */
 function cutTempoChain(speed) {
@@ -86,7 +86,6 @@ async function cutBand(inputs, ctx, manifest) {
   const band = inputs.band;
   if (band.x + band.width > W || band.y + band.height > H) throw ctx.error('bad_input', `the band ${band.width}x${band.height} at ${band.x},${band.y} is outside the ${W}x${H} video`);
   if (inputs.fit === 'height') throw ctx.error('bad_input', 'band mode fits cover or width');
-  cutCheckProjectedSize(dur);
   const length = await kitMediaLength(ctx, clip.video);
   const from = (clip.start_ms ?? 0) / 1000;
   const to = clip.end_ms == null ? length : clip.end_ms / 1000;
@@ -262,7 +261,6 @@ async function cutScenes(inputs, ctx, manifest) {
     dissolve_frames: dissolve,
   });
   cutCheckOrder(beats, inputs.order ?? 'forward');
-  cutCheckProjectedSize(seconds);
   const extraS = dissolve / fps;
   const paths = [];
   let lookIndex = 0;
@@ -324,7 +322,6 @@ async function cutInserts(inputs, ctx, manifest) {
   const fps = info.fps || inputs.timeline.fps || 30;
   if (W % 2 || H % 2) throw ctx.error('bad_input', `the talking track ${W}x${H} must have even sides`);
   const dur = await kitDuration(ctx, inputs.video);
-  cutCheckProjectedSize(dur);
   const sources = cutSceneSources(inputs.scenes, inputs.footage, { need: 'any' }).filter((s) => s.kind === 'window' || s.kind === 'still');
   if (!sources.length) throw ctx.error('bad_input', 'no scene has footage or an image to insert');
   const spans = new Map(inputs.timeline.scenes.map((s) => [String(s.id), s]));

@@ -770,8 +770,6 @@ class CutRefusal extends Error {
 
 /** The largest finished video the part writes: the server refuses uploads over 200 MB (§4.12). */
 const CUT_MAX_BYTES = 180 * 1024 * 1024;
-/** The final encode's video bitrate cap, in bits per second (`-maxrate 16M`). */
-const CUT_MAXRATE_BPS = 16e6;
 /** An insert may stretch at most this far to cover a take join, and ends this long after it. */
 const CUT_JOIN_STRETCH_S = 1.0;
 const CUT_JOIN_AFTER_S = 0.15;
@@ -990,9 +988,13 @@ function cutPlaceInserts(inserts, spans, { joins = [], duration, fps }) {
     if (slots[i].start_s < slots[i - 1].end_s - CUT_EPS) throw new CutRefusal(`the inserts for scenes "${slots[i - 1].scene.id}" and "${slots[i].scene.id}" overlap in time`);
   }
   // Each returns null when the slot covers the join after the move, else why it cannot.
+  // Over every join an insert covers, its end moves at most CUT_JOIN_STRETCH_S + CUT_JOIN_AFTER_S
+  // past where its scene ends, and its start at most that far before where it starts.
+  const reach = CUT_JOIN_STRETCH_S + CUT_JOIN_AFTER_S + CUT_EPS;
   const stretchEnd = (slot, j) => {
     const want = j + CUT_JOIN_AFTER_S;
     if (slot.end_s >= want - CUT_EPS) return null;
+    if (slot.stretched_s + (want - slot.end_s) > reach) return `the insert for scene "${slot.scene.id}" cannot stretch over the cut between takes at ${cutFmt(j)}s: it would run more than ${CUT_JOIN_STRETCH_S}s past its scene`;
     const next = slots[slots.indexOf(slot) + 1];
     const limit = Math.min(duration, next ? next.start_s : Infinity);
     if (want > limit + CUT_EPS) return `the insert for scene "${slot.scene.id}" cannot stretch over the cut between takes at ${cutFmt(j)}s: it would run past ${next ? 'the next insert' : 'the end of the video'}`;
@@ -1003,6 +1005,7 @@ function cutPlaceInserts(inserts, spans, { joins = [], duration, fps }) {
   const startEarly = (slot, j) => {
     const want = Math.max(0, j - CUT_JOIN_AFTER_S);
     if (slot.start_s <= want + CUT_EPS) return null;
+    if (slot.early_s + (slot.start_s - want) > reach) return `the insert for scene "${slot.scene.id}" cannot start early over the cut between takes at ${cutFmt(j)}s: it would start more than ${CUT_JOIN_STRETCH_S}s before its scene`;
     const prev = slots[slots.indexOf(slot) - 1];
     if (prev && want < prev.end_s - CUT_EPS) return `the insert for scene "${slot.scene.id}" cannot start early over the cut between takes at ${cutFmt(j)}s: it would run into the previous insert`;
     slot.early_s += slot.start_s - want;
@@ -1077,12 +1080,6 @@ function cutInsertRange(slot, { from, to }, seconds, opts, what) {
   const start = from - extended;
   const speed = cutSpeedFor(to - start, seconds, opts, what);
   return { from: start, to: start + seconds * speed, speed, extended_s: extended };
-}
-
-/** Refuses an encode whose capped bitrate could pass the size limit (§4.12), before any work. */
-function cutCheckProjectedSize(seconds, maxrateBps = CUT_MAXRATE_BPS) {
-  const projected = (seconds * (maxrateBps + 256e3)) / 8;
-  if (projected > CUT_MAX_BYTES) throw new CutRefusal(`a ${cutFmt(seconds, 1)}s video could reach ${Math.round(projected / 1048576)} MB, over the ${CUT_MAX_BYTES / 1048576} MB limit`);
 }
 
 // ---- cut-footage/src/part.mjs ----
@@ -1168,7 +1165,6 @@ async function cutBand(inputs, ctx, manifest) {
   const band = inputs.band;
   if (band.x + band.width > W || band.y + band.height > H) throw ctx.error('bad_input', `the band ${band.width}x${band.height} at ${band.x},${band.y} is outside the ${W}x${H} video`);
   if (inputs.fit === 'height') throw ctx.error('bad_input', 'band mode fits cover or width');
-  cutCheckProjectedSize(dur);
   const length = await kitMediaLength(ctx, clip.video);
   const from = (clip.start_ms ?? 0) / 1000;
   const to = clip.end_ms == null ? length : clip.end_ms / 1000;
@@ -1344,7 +1340,6 @@ async function cutScenes(inputs, ctx, manifest) {
     dissolve_frames: dissolve,
   });
   cutCheckOrder(beats, inputs.order ?? 'forward');
-  cutCheckProjectedSize(seconds);
   const extraS = dissolve / fps;
   const paths = [];
   let lookIndex = 0;
@@ -1406,7 +1401,6 @@ async function cutInserts(inputs, ctx, manifest) {
   const fps = info.fps || inputs.timeline.fps || 30;
   if (W % 2 || H % 2) throw ctx.error('bad_input', `the talking track ${W}x${H} must have even sides`);
   const dur = await kitDuration(ctx, inputs.video);
-  cutCheckProjectedSize(dur);
   const sources = cutSceneSources(inputs.scenes, inputs.footage, { need: 'any' }).filter((s) => s.kind === 'window' || s.kind === 'still');
   if (!sources.length) throw ctx.error('bad_input', 'no scene has footage or an image to insert');
   const spans = new Map(inputs.timeline.scenes.map((s) => [String(s.id), s]));

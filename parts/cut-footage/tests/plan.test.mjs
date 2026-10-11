@@ -1,7 +1,7 @@
 // cut-footage's planner (src/plan.mjs): pure, no ffmpeg.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { CutRefusal, cutCheckMode, cutCheckOrder, cutCheckProjectedSize, cutInsertRange, cutModeOf, cutPlaceInserts, cutPlanScenes, cutSceneSources, cutSpeedFor } from '../src/plan.mjs';
+import { CutRefusal, cutCheckMode, cutCheckOrder, cutInsertRange, cutModeOf, cutPlaceInserts, cutPlanScenes, cutSceneSources, cutSpeedFor } from '../src/plan.mjs';
 
 const vid = (sha = 'a'.repeat(64)) => ({ kind: 'file', path: '/x.mp4', sha256: sha, bytes: 1, mime: 'video/mp4', media: 'video' });
 const img = { kind: 'file', path: '/x.png', sha256: 'b'.repeat(64), bytes: 1, mime: 'image/png', media: 'image' };
@@ -124,12 +124,10 @@ test('an insert started early slows within the speed band, else plays earlier fo
   assert.throws(() => cutInsertRange({ early_s: 0 }, { from: 3, to: 4 }, 2.6, opts, 'x'), refused(/needs 0.38x, outside 0.5x to 2x/));
 });
 
-test('a fixed speed refuses a window too short for its slot; the size projection refuses a long cut', () => {
+test('a fixed speed refuses a window too short for its slot', () => {
   assert.equal(cutSpeedFor(4, 2, { speed: 'fill', min_speed: 0.5, max_speed: 2 }, 'x'), 2);
   assert.equal(cutSpeedFor(4, 2, { speed: 1, min_speed: 0.5, max_speed: 2 }, 'x'), 1);
   assert.throws(() => cutSpeedFor(1, 2, { speed: 1 }, 'x'), refused(/at 1x the 1s window lasts 1s, less than the 2s/));
-  cutCheckProjectedSize(60);
-  assert.throws(() => cutCheckProjectedSize(100), refused(/over the 180 MB limit/));
 });
 
 test('review fixes: snapped inserts never overlap, a fixed speed obeys the limits, a single beat needs no dissolve length', () => {
@@ -145,4 +143,12 @@ test('review fixes: snapped inserts never overlap, a fixed speed obeys the limit
   assert.equal(beats.length, 1);
   const two = cutSceneSources([{ id: 'p', image: img }, { id: 'q', image: img }], []);
   cutPlanScenes(two, { lengths: new Map(), leadS: 0, fps: 30, still_seconds: 2, dissolve_frames: 7 });
+});
+
+test('review fixes (round 2): an insert never stretches more than 1 s past its scene over several joins', () => {
+  const src = (id) => ({ scene: { id }, kind: 'window', entry: { file: vid() } });
+  // a ends at 2.0; joins at 2.8 and 3.7 would stretch it 1.85 s in two steps.
+  assert.throws(() => cutPlaceInserts([src('a')], new Map([['a', { start_s: 1, end_s: 2 }]]), { joins: [2.8, 3.7], duration: 10, fps: 30 }), refused(/cannot stretch over the cut between takes at 3.7s: it would run more than 1s past its scene/));
+  const [one] = cutPlaceInserts([src('a')], new Map([['a', { start_s: 1, end_s: 2 }]]), { joins: [2.4, 2.8], duration: 10, fps: 30 });
+  assert.ok(Math.abs(one.stretched_s - 0.95) < 1e-9);
 });
