@@ -4,7 +4,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { join } from 'node:path';
 import { loadPart, hasFfmpeg, makeCtx, fileRef, run } from '../../_tools/kit-harness.mjs';
-import { H3_REPLY, castInputs, recordedLine, still, words } from './fixture.mjs';
+import { H3_REPLY, castInputs, recordedLine, sample, still, words } from './fixture.mjs';
 
 const { dir, mod } = await loadPart('creator-h3', '1.1.0');
 const ffmpeg = await hasFfmpeg();
@@ -198,4 +198,20 @@ test('a late onset that would put the join at the reel start: the join is floore
     assert.ok(s.start_s >= 0 && s.end_s > s.start_s, `${s.id} has a positive span`);
     if (i) assert.equal(s.start_s, all[i - 1].end_s);
   });
+});
+
+test('legacy character inputs build the same first-take prompt, seed and duration as 1.0.2, whatever the delivery', async () => {
+  const old = await loadPart('creator-h3', '1.0.2');
+  const firstOrder = async (part, partDir, delivery) => {
+    let seen = null;
+    const { ctx } = makeCtx({ partDir, line: async (order) => { seen = order; throw new Error('stop after the first order'); } });
+    const inputs = await sample.inputs(ctx.workDir);
+    if (delivery !== undefined) inputs.character = { ...inputs.character, delivery };
+    await assert.rejects(part.run(inputs, ctx));
+    assert.ok(seen, 'a take was ordered');
+    return { piece: seen.piece, prompt: seen.body.prompt, seed: seen.body.seed, duration: seen.body.duration };
+  };
+  for (const delivery of [undefined, '', '   ', '  calm,\n  warm and slow  ']) {
+    assert.deepEqual(await firstOrder(mod, dir, delivery), await firstOrder(old.mod, old.dir, delivery), `delivery ${JSON.stringify(delivery)}`);
+  }
 });

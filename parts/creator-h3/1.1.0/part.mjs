@@ -664,7 +664,8 @@ export async function run(inputs, ctx) {
   const problem = checkCharacter(creator.character, creator.who);
   if (problem) throw ctx.error('bad_input', problem);
   // The character's own delivery is trimmed only, as 1.0.2 did; a cast member's was cleaned in pickCreator.
-  const delivery = cleanText(inputs.delivery) || String(creator.character.delivery || '').trim() || H3_DEFAULT_DELIVERY.trim();
+  // A whitespace-only legacy delivery stays empty, exactly as 1.0.2 built the prompt.
+  const delivery = cleanText(inputs.delivery) || String(creator.character.delivery || H3_DEFAULT_DELIVERY).trim();
   const takes = planTakes(lines, inputs.words_per_second ?? 2.6);
   if (takes.problem) throw ctx.error('bad_input', takes.problem);
   const seconds = takes.reduce((a, t) => a + t.dur, 0);
