@@ -23,7 +23,7 @@ const scene = {
     picture: { description: 'What the still shows. A leading "Tag:" (or extra.shot) picks the template\'s by_tag rule.', anyOf: [{ type: 'null' }, { type: 'string', maxLength: 2000 }, file('image')] },
     image: { description: 'A picture the customer gave for this scene: sent as a reference when the template\'s refs ask for scene_image.', ...imageOrNull },
     speaker: { type: ['string', 'null'], maxLength: 24 },
-    extra: { type: ['object', 'null'] },
+    extra: { description: 'Style fields. shots mode reads extra.group (scenes sharing one locked camera) and extra.repeat_of (an earlier scene id whose finished frame this scene reuses).', type: ['object', 'null'] },
   },
 };
 
@@ -53,17 +53,17 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'image-gpt-image-2',
-  version: '1.0.0',
+  version: '1.1.0',
   kind: 'generate_image',
   title: 'Stills (GPT Image 2)',
-  summary: 'Makes or edits photoreal stills with OpenAI GPT Image 2 on fal, one piece per image: a hand-built list, one still per plan scene from a prompt template with cast anchors and product photos, or just the cast portraits.',
+  summary: 'Photoreal stills with OpenAI GPT Image 2 on fal, one piece per image: a hand-built list, one still per plan scene, the cast portraits, or locked-camera shots (each frame an edit on its plate, plate pixels put back).',
   runtime: 'node',
   entry: 'part.mjs',
   files: ['README.md', 'part.mjs'],
   kit: '>=1.0.0 <2.0.0',
   needs: {
     browser: false,
-    ffmpeg: { filters: ['scale', 'setsar', 'format', 'hstack'], encoders: ['png'] },
+    ffmpeg: { filters: ['scale', 'setsar', 'format', 'hstack'], encoders: ['png', 'rawvideo'] },
     network: true,
     models: [
       { provider: 'fal', model: TEXT },
@@ -81,8 +81,8 @@ export const manifest = {
         enum: [TEXT, EDIT],
       },
       mode: {
-        description: 'images: the hand-built images list. scenes: one still per picked scene. cast: only the cast portraits (anchors). Default: scenes when scenes is given, else images when images is given, else cast.',
-        enum: ['images', 'scenes', 'cast'],
+        description: 'images: the hand-built images list. scenes: one still per picked scene. cast: only the cast portraits (anchors). shots: locked-camera shots grouped by extra.group (only when asked for). Default: scenes when scenes is given, else images when images is given, else cast.',
+        enum: ['images', 'scenes', 'cast', 'shots'],
       },
       size: { description: 'Every still\'s size in pixels, width x height. Default 1088x1920 (vertical 9:16).', enum: SIZES },
       cast_size: { description: 'The anchors\' size. Default: size.', enum: SIZES },
@@ -103,8 +103,8 @@ export const manifest = {
           },
         },
       },
-      scenes: { description: 'scenes mode: plan.scenes. Outputs are keyed by scene id.', type: 'array', minItems: 1, maxItems: 40, items: scene },
-      template: { description: 'The style\'s prompt template (frames/<name>.prompt.json, version 1; see parts/_lib/prompt.mjs). Without one a scene\'s prompt is its picture text and an anchor is a plain photo portrait.', ...file('json') },
+      scenes: { description: 'scenes and shots modes: plan.scenes. Outputs are keyed by scene id.', type: 'array', minItems: 1, maxItems: 40, items: scene },
+      template: { description: 'The style\'s prompt template (frames/<name>.prompt.json, version 1; see parts/_lib/prompt.mjs). Without one a scene\'s prompt is its picture text and an anchor is a plain photo portrait. In shots mode templates.plate fills a shot\'s first scene and templates.state every later one (each falls back to scene).', ...file('json') },
       look: { description: 'The art style: a key of the template\'s looks (a declared plan answer), filling {look}.', type: ['string', 'null'], maxLength: 200 },
       answers: { description: 'plan.answers, for {answers.KEY} placeholders.', type: ['object', 'null'] },
       brand: { description: 'The brand, for {brand.FIELD} placeholders.', type: ['object', 'null'] },
@@ -124,6 +124,10 @@ export const manifest = {
         enum: ['none', 'cast', 'first_scene'],
       },
       style_refs: { description: 'The style\'s own reference pictures, sent last with every scene and anchor. Needs /edit.', type: 'array', maxItems: 4, items: file('image', PICTURE) },
+      restore: {
+        description: 'shots mode: put the plate\'s own pixels back wherever a frame did not change, so the surface is identical in every frame of a shot (free). Default true.',
+        type: 'boolean',
+      },
       multi_ref: {
         description: 'How a scene that names several members sends their anchors: strip (default) tiles all of them into one picture; list sends up to 3 separate pictures.',
         enum: ['list', 'strip'],
@@ -136,13 +140,14 @@ export const manifest = {
     required: ['images'],
     properties: {
       images: {
-        description: 'One still per entry (images mode) or per picked scene, id = the scene id (scenes mode). Empty in cast mode.',
+        description: 'One still per entry (images mode) or per picked scene, id = the scene id (scenes and shots modes; in shots mode the restored frame, and a repeat_of scene\'s is its source\'s). Empty in cast mode.',
         type: 'array',
         items: { type: 'object', additionalProperties: false, required: ['id', 'image'], properties: { id: { type: 'string' }, image: file('image') } },
       },
-      scenes: { description: 'scenes mode: every input scene, image = its still when it got one.', type: 'array', items: { type: 'object', required: ['id'], properties: { id: { type: 'string' }, image: imageOrNull } } },
+      scenes: { description: 'scenes and shots modes: every input scene, image = its still when it got one.', type: 'array', items: { type: 'object', required: ['id'], properties: { id: { type: 'string' }, image: imageOrNull } } },
       cast: { description: 'scenes and cast modes: every cast member, image = its anchor or its own image (empty without a cast).', type: 'array', items: { type: 'object', required: ['key'], properties: { key: { type: 'string' }, image: imageOrNull } } },
       anchors: { description: 'scenes mode: the members some scene sent; cast mode: every member with a picture. id = the member key.', type: 'array', items: { type: 'object', additionalProperties: false, required: ['id', 'image'], properties: { id: { type: 'string' }, image: file('image') } } },
+      plates: { description: 'shots mode: each shot\'s plate (its first scene\'s still), group = extra.group, or the scene id for a scene with no group.', type: 'array', items: { type: 'object', additionalProperties: false, required: ['group', 'image'], properties: { group: { type: 'string' }, image: file('image') } } },
     },
   },
   cost: {

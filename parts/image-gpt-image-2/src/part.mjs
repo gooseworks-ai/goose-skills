@@ -5,18 +5,26 @@
 // image_size {width, height} from `size` (the text model's own default is
 // landscape) and `quality`. A result whose bytes are not PNG is re-encoded.
 //
-// Three modes (1.0.0):
+// Four modes:
 //   images  a hand-built list [{id, prompt, references}];
 //   scenes  one still per picked plan scene, its prompt filled from the style's
 //           template and its references picked from the plan (_lib/scene-stills.mjs,
 //           shared with image-nano-banana 1.1.0);
 //   cast    only the cast portraits ("anchors"): a member with an image passes
-//           through free, a member without one is drawn from its look.
+//           through free, a member without one is drawn from its look;
+//   shots   (1.1.0) locked-camera shots: scenes are grouped by extra.group; a
+//           group's first scene is its plate, every later scene is an edit on
+//           [plate, previous frame, product photos], then the plate's own
+//           pixels are put back wherever a frame did not change (restore,
+//           src/plate.mjs). A scene with extra.repeat_of reuses an earlier
+//           scene's finished frame, free.
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitFfmpeg, kitPieceName, kitStopIfAborted } from '../../_lib/part.mjs';
-import { KitPromptGap, kitLoadTemplate } from '../../_lib/prompt.mjs';
+import { KitPromptGap, kitLoadTemplate, kitPromptJoin, kitScenePrompt } from '../../_lib/prompt.mjs';
+import { kitNamedProducts, kitPickScenes } from '../../_lib/scene-match.mjs';
 import { kitStillAnchorMembers, kitStillAnchorPrompt, kitStillCastFiles, kitStillJobs, kitStillOutputs, kitStillPrompt, kitStillRefs, kitStillStrip, kitStillTemplate, kitStillWantsStrip } from '../../_lib/scene-stills.mjs';
+import { giPlatePixels, giPlateRestore } from './plate.mjs';
 
 const EDIT = 'openai/gpt-image-2/edit';
 const TEXT = 'openai/gpt-image-2';
@@ -25,7 +33,9 @@ const GI_STRIP_NOTE_MAX = 600;
 const GI_AT_ONCE = 4;
 const GI_DEFAULT_SIZE = '1088x1920';
 const GI_DEFAULT_QUALITY = 'high';
-const GI_SCENE_ONLY = ['scenes', 'products', 'pick', 'skip_first', 'skip_last', 'anchor', 'multi_ref'];
+const GI_SCENE_ONLY = ['scenes', 'products', 'pick', 'skip_first', 'skip_last', 'anchor', 'multi_ref', 'restore'];
+const GI_NOT_IN_SHOTS = ['images', 'cast', 'cast_size', 'anchor', 'multi_ref'];
+const GI_MAX_REFS = 10;
 const GI_NOT_IN_IMAGES = [...GI_SCENE_ONLY, 'template', 'look', 'answers', 'brand', 'cast', 'cast_size', 'style_refs'];
 /** The anchor text when the style's template has none: a plain photo of a real person, nothing that bakes into every scene. */
 const GI_DEFAULT_ANCHOR = 'A real photo of one person: {look}. Chest up, looking into the lens, in front of a plain light wall, soft even daylight, hands empty, natural skin texture, shot on a phone, no text, no props';
@@ -173,6 +183,7 @@ async function giScenes(inputs, ctx, manifest, opts) {
   const anchor = inputs.anchor || 'none';
   if (inputs.images) throw ctx.error('bad_input', 'scenes mode makes its own images: give scenes or images, not both');
   if (!inputs.scenes) throw ctx.error('bad_input', 'scenes mode needs scenes');
+  if (inputs.restore !== undefined) throw ctx.error('bad_input', 'restore works only in shots mode');
   if (model === TEXT && anchor !== 'none') throw ctx.error('bad_input', `anchor ${anchor} needs ${EDIT}, which takes reference images`);
   if (model === TEXT && inputs.style_refs && inputs.style_refs.length) throw ctx.error('bad_input', `style_refs need ${EDIT}, which takes reference images`);
   const cast = inputs.cast || [];
@@ -246,11 +257,200 @@ async function giScenes(inputs, ctx, manifest, opts) {
   return kitCheckOutputs(ctx, manifest, { images: out.images, scenes: out.scenes, cast: out.cast, anchors: out.anchors });
 }
 
+function giExtra(scene, key) {
+  const extra = scene && scene.extra;
+  return extra && typeof extra === 'object' ? extra[key] : undefined;
+}
+
+function giSceneId(scene, index) {
+  return scene && scene.id != null && scene.id !== '' ? String(scene.id) : `#${index + 1}`;
+}
+
+/**
+ * Groups the picked scenes into shots, before anything is ordered. Returns
+ * {groups: [{name, entries}], repeats: Map(scene id -> drawn scene id)}; an
+ * entry is {id, index, scene}. A scene with extra.repeat_of is drawn by no
+ * shot: it names an earlier picked scene, whose finished frame it reuses. A
+ * scene with no extra.group is a shot of its own, named by its id.
+ */
+function giShotPlan(ctx, picked) {
+  const at = new Map();
+  for (const [k, { scene, index }] of picked.entries()) {
+    const id = giSceneId(scene, index);
+    if (at.has(id)) throw ctx.error('bad_input', `two scenes have the id ${id}`);
+    at.set(id, k);
+  }
+  const groups = new Map();
+  const repeats = new Map();
+  const loose = new Set();
+  for (const [k, { scene, index }] of picked.entries()) {
+    const id = giSceneId(scene, index);
+    const of = giExtra(scene, 'repeat_of');
+    if (of != null && of !== '') {
+      if (typeof of !== 'string') throw ctx.error('bad_input', `scene ${id}: extra.repeat_of must be a scene id`);
+      if (!at.has(of)) throw ctx.error('bad_input', `scene ${id} repeats ${of}, which is not a picked scene`);
+      if (at.get(of) >= k) throw ctx.error('bad_input', `scene ${id} repeats ${of}, which does not come before it`);
+      repeats.set(id, repeats.get(of) || of);
+      continue;
+    }
+    const group = giExtra(scene, 'group');
+    if (group != null && typeof group !== 'string') throw ctx.error('bad_input', `scene ${id}: extra.group must be text`);
+    const name = typeof group === 'string' && group.trim() ? group.trim() : null;
+    if (!name) loose.add(id);
+    const key = name ? `g:${name}` : `s:${id}`;
+    if (!groups.has(key)) groups.set(key, { name: name || id, entries: [] });
+    groups.get(key).entries.push({ id, index, scene });
+  }
+  for (const id of loose) {
+    if (groups.has(`g:${id}`)) throw ctx.error('bad_input', `scene ${id} has no group, and a group is also called ${id}`);
+  }
+  return { groups: [...groups.values()], repeats };
+}
+
+/** "1", "2 and 3", "3, 4 and 5": reference numbers in words. */
+function giNumbers(list) {
+  return list.length < 2 ? String(list[0]) : `${list.slice(0, -1).join(', ')} and ${list.at(-1)}`;
+}
+
+/** What each reference of a shots piece is, said in the prompt. */
+function giShotNote(roles) {
+  const at = (role) => roles.map((r, i) => (r === role ? i + 1 : 0)).filter(Boolean);
+  const out = [];
+  const say = (role, one, many) => {
+    const n = at(role);
+    if (n.length) out.push(`${n.length > 1 ? 'Reference images' : 'Reference image'} ${giNumbers(n)} ${n.length > 1 ? many : one}`);
+  };
+  say('plate', "is this shot's first picture, from a locked camera: keep its camera, framing, surface and light exactly", '');
+  say('previous', 'is the picture just before this one: everything in it stays exactly where it is unless this text changes it', '');
+  say('product', 'shows the product: keep it exactly as in the photo, mark and colour unchanged', 'show the product: keep it exactly as in the photos, mark and colour unchanged');
+  say('scene_image', "is this scene's own picture", "are this scene's own pictures");
+  say('style', 'shows the style only', 'show the style only');
+  return out.join('. ');
+}
+
+/**
+ * One shots piece's references, at most 10: the plate and the previous frame
+ * always fit, style_refs next, then product photos and the scene's own picture
+ * as room allows. Returns {files, roles}.
+ */
+function giShotRefs({ plate = null, previous = null, products = [], scene_image = null, style_refs = [] }) {
+  const lead = [];
+  if (plate) lead.push([plate, 'plate']);
+  if (previous) lead.push([previous, 'previous']);
+  const tail = style_refs.map((f) => [f, 'style']);
+  const middle = [...products.map((f) => [f, 'product']), ...(scene_image ? [[scene_image, 'scene_image']] : [])];
+  const room = Math.max(0, GI_MAX_REFS - lead.length - tail.length);
+  const all = [...lead, ...middle.slice(0, room), ...tail].slice(0, GI_MAX_REFS);
+  return { files: all.map(([f]) => f), roles: all.map(([, r]) => r) };
+}
+
+function giIsFile(v) {
+  return v != null && typeof v === 'object' && v.kind === 'file';
+}
+
+async function giShots(inputs, ctx, manifest, opts) {
+  if (!inputs.scenes) throw ctx.error('bad_input', 'shots mode needs scenes');
+  for (const key of GI_NOT_IN_SHOTS) if (inputs[key] !== undefined) throw ctx.error('bad_input', `${key} does not work in shots mode`);
+  if (opts.model === TEXT) throw ctx.error('bad_input', `shots mode edits every frame on its plate, so it needs ${EDIT}`);
+  const restore = inputs.restore !== false;
+  const products = inputs.products || [];
+  const styleRefs = inputs.style_refs || [];
+
+  // Everything that can refuse happens before the first piece is ordered.
+  const base = { look: inputs.look ?? null, answers: inputs.answers ?? null, brand: inputs.brand ?? null, cast: [], products };
+  let picked;
+  let tpl;
+  try {
+    tpl = await giTemplate(inputs);
+    picked = kitPickScenes(inputs.scenes, inputs.pick, { skip_first: inputs.skip_first, skip_last: inputs.skip_last });
+  } catch (err) {
+    giRefuseGap(ctx, err);
+  }
+  if (!picked.length) throw ctx.error('bad_input', 'no scene is picked for a still');
+  const { groups, repeats } = giShotPlan(ctx, picked);
+  const named = (key) => Boolean(tpl.templates && typeof tpl.templates[key] === 'string');
+  const used = new Set();
+  try {
+    for (const g of groups) {
+      for (const [k, e] of g.entries.entries()) {
+        const role = k === 0 ? 'plate' : 'state';
+        const filled = kitScenePrompt(tpl, { ...base, scene: e.scene, index: e.index }, { use: named(role) ? role : 'scene' });
+        let photos = filled.refs.products;
+        // A plate is the empty place: it sends a product photo only when its own words name the product.
+        if (role === 'plate') photos = photos.filter((p) => kitNamedProducts(e.scene, products).includes(p));
+        e.prompt = filled.prompt;
+        e.negative = filled.negative;
+        e.photos = photos.map((p) => p.images[0]).filter(giIsFile);
+        e.scene_image = giIsFile(filled.refs.scene_image) ? filled.refs.scene_image : null;
+      }
+    }
+  } catch (err) {
+    giRefuseGap(ctx, err);
+  }
+  const drawn = groups.flatMap((g) => g.entries);
+  giCheckLength(ctx, drawn.map((e) => kitPromptJoin([e.prompt, e.negative ? `Avoid: ${e.negative}` : ''])));
+  for (const e of drawn) e.piece = kitPieceName('image', e.id, e.index, used);
+
+  // Shots run side by side (up to 4); the frames of one shot are made in order,
+  // each on the plate and the frame before it (as drawn, before restore).
+  const finals = new Map();
+  const plates = [];
+  let done = 0;
+  let halted = false;
+  const drawShot = async (g) => {
+    const raws = [];
+    for (const [k, e] of g.entries.entries()) {
+      if (halted) return;
+      const refs = k === 0
+        ? giShotRefs({ products: e.photos, scene_image: e.scene_image, style_refs: styleRefs })
+        : giShotRefs({ plate: raws[0], previous: k > 1 ? raws[k - 1] : null, products: e.photos, scene_image: e.scene_image, style_refs: styleRefs });
+      const prompt = kitPromptJoin([e.prompt, refs.files.length ? giShotNote(refs.roles) : '', e.negative ? `Avoid: ${e.negative}` : '']);
+      raws.push(await giDraw(ctx, { piece: e.piece, refs: refs.files, prompt, size: opts.size, quality: opts.quality }));
+      ctx.progress({ done: ++done, total: drawn.length });
+    }
+    finals.set(g.entries[0].id, raws[0]);
+    plates.push({ group: g.name, image: raws[0] });
+    if (!restore || g.entries.length < 2) {
+      for (const [k, e] of g.entries.entries()) finals.set(e.id, raws[k]);
+      return;
+    }
+    const pixels = await giPlatePixels(ctx, raws[0], g.entries[0].piece);
+    for (const [k, e] of g.entries.entries()) {
+      if (k === 0) continue;
+      const fixed = await giPlateRestore(ctx, pixels, raws[k], `${e.piece}-restored.png`);
+      if (!fixed) {
+        ctx.log.warn(`scene ${e.id} is not the size of its plate, so it is left as drawn`);
+        finals.set(e.id, raws[k]);
+        continue;
+      }
+      ctx.log.info(`scene ${e.id}: ${(fixed.kept * 100).toFixed(1)}% kept from the edit, ${(fixed.same * 100).toFixed(1)}% is the plate's own pixels`);
+      finals.set(e.id, fixed.file);
+    }
+  };
+  await giEach(groups, async (g) => {
+    try {
+      await drawShot(g);
+    } catch (err) {
+      halted = true;
+      throw err;
+    }
+  });
+  for (const [id, of] of repeats) finals.set(id, finals.get(of));
+
+  const order = new Map(groups.map((g, i) => [g.name, i]));
+  plates.sort((a, b) => order.get(a.group) - order.get(b.group));
+  const pickedAt = new Map(picked.map(({ scene, index }) => [index, giSceneId(scene, index)]));
+  const images = picked.map(({ scene, index }) => giSceneId(scene, index)).filter((id) => finals.has(id)).map((id) => ({ id, image: finals.get(id) }));
+  const scenes = inputs.scenes.map((s, i) => (pickedAt.has(i) && finals.has(pickedAt.get(i)) ? { ...s, image: finals.get(pickedAt.get(i)) } : { ...s }));
+  return kitCheckOutputs(ctx, manifest, { images, plates, scenes });
+}
+
 export async function run(inputs, ctx) {
   const manifest = await kitCheckInputs(ctx, inputs);
   const mode = inputs.mode || (inputs.scenes ? 'scenes' : inputs.images ? 'images' : inputs.cast ? 'cast' : 'images');
   const size = inputs.size || GI_DEFAULT_SIZE;
   const opts = { model: inputs.model || EDIT, size, cast_size: inputs.cast_size || size, quality: inputs.quality || GI_DEFAULT_QUALITY };
+  if (mode === 'shots') return giShots(inputs, ctx, manifest, opts);
   if (mode === 'scenes') return giScenes(inputs, ctx, manifest, opts);
   if (mode === 'cast') return giCast(inputs, ctx, manifest, opts);
   return giImages(inputs, ctx, manifest, opts);
