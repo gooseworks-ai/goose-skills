@@ -21,6 +21,10 @@ re-cut costs nothing. From the podcast recipe's `plan_cuts.py` (the planner, `sr
 - **Long lines**: outside plain, a line longer than any cut pattern can lay out under the ceiling (about 4.5 s in
   dynamic, 6 s in split) is shared into equal pieces that are planned like lines, each still read from that line's
   own clip. A payoff line whose head is over the ceiling gets several speaker cuts before the single.
+- **Short lines**: a line under 0.5 s with its gap ("Yes.") is shown a beat early, from the line before (the
+  replier listening on their clip's first frame), or else runs on into the next line. The voice never moves.
+- **Lower panels**: a split's lower panel is only a source in `bottom_sources`; when none of them has a picture
+  the plan is refused `bad_input`. A listener from their idle clip needs no line of their own.
 - **Seeded**: `seed` (default 4201) picks the edit; the same seed and lines give the same edit. If a plan misses a
   cut check, the next seeds are tried in turn (up to 12), and the seed used is an output.
 - **Self-checks before anything is drawn**: the picture tiles every line and the whole timeline; no cut under
@@ -28,6 +32,8 @@ re-cut costs nothing. From the podcast recipe's `plan_cuts.py` (the planner, `sr
   listener; a split shows two hosts and balances who is on top; dynamic stays in the framing band (2.9 to 7.1
   framings per 10 s, none over 17%). A plan no seed fixes fails `output_invalid`; a missing picture (an idle clip
   for a split listener, a product photo) is refused `bad_input`.
+- **Frames**: cut bounds are checked on the plan. At 30 fps (the default) 0.5 s and 1.9 s are whole frames, so
+  rendered cuts keep the band exactly; at a rate where they are not (25, 24), a cut can be one frame outside it.
 - **After the render**: the file must be as long as the plan (within 0.10 s), and every speaker change the scene
   detector sees must land within 0.10 s of the plan.
 - **Look**: `grade: warm-lift-grain` (the recipe's look) on the dialogue only, never on the end card. `head` sets

@@ -249,3 +249,15 @@ test('dcutMapZone moves a logo box onto a smaller or cropped frame', () => {
   assert.deepEqual(dcutMapZone({ use: 'logo', x: 200, y: 500, w: 320, h: 120 }, 720, 1280, 360, 640), { use: 'logo', x: 100, y: 250, w: 160, h: 60 });
   assert.equal(dcutMapZone({ use: 'logo', x: 0, y: 0, w: 10, h: 10 }, 1920, 1080, 1080, 1920), null, 'a box cropped away is dropped');
 });
+
+test('a line under the cut floor ("Yes.") is shown a beat early, on its own clip, and still lands on the voice', { skip }, async () => {
+  const { ctx } = makeCtx({ partDir: dir });
+  const d = await dialogue(ctx, [['s1', 'a', 1.2], ['s2', 'b', 0.3], ['s3', 'a', 1.0]]);
+  const out = await mod.run({ ...d, mode: 'plain', width: W, height: H }, ctx);
+  assert.deepEqual(out.cuts.map((c) => [c.scene_id, c.show]), [['s1', 'a'], ['s2', 'b'], ['s3', 'a']]);
+  const s2 = out.cuts[1];
+  assert.ok(s2.end_s - s2.start_s >= 0.5 - 1e-6, `the short line's cut runs ${s2.end_s - s2.start_s} s`);
+  assert.ok(s2.start_s < d.spans[1].start_s, 'it starts before its line');
+  assert.ok((await share(out.video.path, mid(s2), COLOURS.b[1])) > 0.9, 's2 shows b');
+  assert.ok((await share(out.video.path, s2.start_s + 0.02, COLOURS.b[1])) > 0.9, 'b is on screen from the cut, on their first frame');
+});

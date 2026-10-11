@@ -175,7 +175,7 @@ export function dialogueSettings(mode, overrides = {}) {
  * `scene.extra.split` asks for a split on that line; `scene.extra.payoff`
  * marks the payoff line.
  */
-export function dialogueBeats(scenes, spans, hosts, { seconds } = {}) {
+export function dialogueBeats(scenes, spans, hosts, { seconds, min_s = 0.5 } = {}) {
   if (!Array.isArray(hosts) || hosts.length !== 2 || hosts[0] === hosts[1]) {
     throw dialogueBadInput(`dialogue-cut: needs exactly two hosts, got ${JSON.stringify(hosts)}`);
   }
@@ -210,6 +210,27 @@ export function dialogueBeats(scenes, spans, hosts, { seconds } = {}) {
     const b = beats[i];
     b.start_s = i === 0 ? 0 : beats[i - 1].end_s;
     b.end_s = i + 1 < beats.length ? beats[i + 1].span_start_s : end;
+    b.dur_s = b.end_s - b.start_s;
+  }
+  // A line shorter than the cut floor ("No.") would be a flicker every seed refuses. Its picture starts
+  // earlier, inside the line before (the replier is seen listening, on their clip's first frame, a beat
+  // before they speak), or, when that line cannot spare it, runs on into the next line on its last frame.
+  // Lines are never moved: only where the picture changes.
+  for (let i = 0; i < beats.length; i++) {
+    const b = beats[i];
+    if (!(b.dur_s < min_s - 1e-9)) continue;
+    const need = min_s - b.dur_s;
+    const prev = beats[i - 1];
+    const next = beats[i + 1];
+    if (prev && prev.dur_s - need >= min_s - 1e-9) {
+      prev.end_s = dialogueRound(prev.end_s - need);
+      prev.dur_s = prev.end_s - prev.start_s;
+      b.start_s = prev.end_s;
+    } else if (next && next.dur_s - need >= min_s - 1e-9) {
+      b.end_s = dialogueRound(b.end_s + need);
+      next.start_s = b.end_s;
+      next.dur_s = next.end_s - next.start_s;
+    } else continue;
     b.dur_s = b.end_s - b.start_s;
   }
   return { beats, skipped };
@@ -318,7 +339,8 @@ function dialogueFramingOptions(cut, s, hasProduct) {
     const opts = [];
     for (const seam of s.split.seams) {
       for (const bottom of s.split.bottom_sources) {
-        if (bottom === 'listener' && cut.listener_clip_scene === null) continue;
+        // a listener from their own clip needs a line of theirs; from the idle clip it does not
+        if (bottom === 'listener' && cut.listener_clip_scene === null && s.split.listener_source !== 'idle') continue;
         if (bottom === 'product' && !hasProduct) continue;
         opts.push({ framing: `split:${spk}:${seam.toFixed(2)}:${bottom}`, seam, bottom, crop: { ...s.crops.wide } });
       }
@@ -617,6 +639,9 @@ export function dialoguePlanProblems(plan, beats, hosts, settings, { products = 
       fail('split_two_distinct_hosts', `scene ${c.scene_id}: the lower panel is ${c.bottom} but the cut still names listener ${c.listener}`);
     }
     if (c.bottom === 'product' && !(products > 0)) fail('split_bottom_assets', `scene ${c.scene_id}: the lower panel is a product and there is no product still`);
+    if (!s.split.bottom_sources.includes(c.bottom || 'listener')) {
+      fail('split_bottom_assets', `scene ${c.scene_id}: none of the lower panels asked for (${s.split.bottom_sources.join(', ')}) has a picture, and ${c.bottom || 'listener'} was not asked for`);
+    }
     if ((c.bottom || 'listener') === 'listener' && s.split.listener_source === 'clip' && !c.listener_clip_scene) {
       fail('split_bottom_assets', `scene ${c.scene_id}: the lower panel is ${c.listener} from their own clip, and ${c.listener} speaks no line`);
     }

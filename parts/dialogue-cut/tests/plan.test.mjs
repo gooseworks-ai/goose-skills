@@ -294,3 +294,46 @@ test('dialogueBeats skips a scene with no line even when the timing gives it a s
   assert.deepEqual(skipped, ['beat', 'hush']);
   assert.deepEqual(beats.map((b) => [b.id, b.start_s, b.end_s]), [['open', 0, 2.9], ['reply', 2.9, 3.7]]);
 });
+
+test('dialogueBeats gives a line under the cut floor its picture early, from the line before, else from the next', () => {
+  const scenes = [
+    { id: 'q', line: 'Did it work?', speaker: 'a' },
+    { id: 'yes', line: 'Yes.', speaker: 'b' },
+    { id: 'how', line: 'How long did it take you?', speaker: 'a' },
+  ];
+  // "Yes." runs 0.3 s plus a 0.12 s gap: 0.42 s, under 0.5 s
+  const spans = [{ id: 'q', start_s: 0, end_s: 1.32 }, { id: 'yes', start_s: 1.32, end_s: 1.74 }, { id: 'how', start_s: 1.74, end_s: 3.5 }];
+  const { beats } = dialogueBeats(scenes, spans, ['a', 'b'], { seconds: 3.5 });
+  assert.deepEqual(beats.map((b) => [b.id, +b.start_s.toFixed(6), +b.end_s.toFixed(6)]), [['q', 0, 1.24], ['yes', 1.24, 1.74], ['how', 1.74, 3.5]]);
+  for (const mode of ['plain', 'split', 'dynamic']) {
+    const settings = dialogueSettings(mode);
+    const plan = dialoguePlan(beats, ['a', 'b'], settings, { products: 1, end_card_s: 3.5 });
+    assert.deepEqual(ids(dialoguePlanProblems(plan, beats, ['a', 'b'], settings, { products: 1 })).filter((p) => !p.startsWith('framing_') && p !== 'split_balance'), [], mode);
+  }
+  // a short first line takes its time from the line after it
+  const first = dialogueBeats(
+    [{ id: 'hi', line: 'Hi.', speaker: 'a' }, { id: 'hey', line: 'Hey, good to be here.', speaker: 'b' }],
+    [{ id: 'hi', start_s: 0, end_s: 0.4 }, { id: 'hey', start_s: 0.4, end_s: 2 }],
+    ['a', 'b'],
+    { seconds: 2 },
+  ).beats;
+  assert.deepEqual(first.map((b) => [b.id, +b.start_s.toFixed(6), +b.end_s.toFixed(6)]), [['hi', 0, 0.5], ['hey', 0.5, 2]]);
+});
+
+test('a split lower panel is only ever a source the style asked for; an idle listener needs no line of their own', () => {
+  const beats = beatsForLengths([3, 2.5, 3.2, 2.6, 2.8, 3, 2.6, 3.1, 2.9, 3]);
+  const productOnly = dialogueSettings('dynamic', { seed: 4201, bottom_sources: ['product'] });
+  const plan = dialoguePlan(beats, HOSTS, productOnly, { products: 0, end_card_s: 3.5 });
+  assert.ok(ids(dialoguePlanProblems(plan, beats, HOSTS, productOnly, { products: 0 })).includes('split_bottom_assets'));
+  // B speaks every line: A is only ever the listener, shown from the idle clip at the split preset's seam
+  const silentA = beatsOf([1, 2, 3, 4, 5, 6].map((n) => ({ n, who: 'B', dur_sec: 2.4, split: false, payoff: false })));
+  const split = dialogueSettings('split', { seed: 4201 });
+  const sp = dialoguePlan(silentA, HOSTS, split, { products: 0, end_card_s: 3.5 });
+  const splits = sp.cuts.filter((c) => c.mode === 'split');
+  assert.ok(splits.length > 0);
+  for (const c of splits) {
+    assert.equal(c.seam, 0.5);
+    assert.equal(c.listener, 'A');
+    assert.equal(c.listener_source, 'idle');
+  }
+});
