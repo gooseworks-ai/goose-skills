@@ -18,8 +18,6 @@ export class CutRefusal extends Error {
 
 /** The largest finished video the part writes: the server refuses uploads over 200 MB (§4.12). */
 export const CUT_MAX_BYTES = 180 * 1024 * 1024;
-/** The final encode's video bitrate cap, in bits per second (`-maxrate 16M`). */
-export const CUT_MAXRATE_BPS = 16e6;
 /** An insert may stretch at most this far to cover a take join, and ends this long after it. */
 export const CUT_JOIN_STRETCH_S = 1.0;
 export const CUT_JOIN_AFTER_S = 0.15;
@@ -83,8 +81,9 @@ export function cutIsGridScene(scene) {
 export const CUT_GRID_CELLS = { '2x2': 4 };
 
 /**
- * Each scene's source, in plan order: its footage entry (matched by
- * scene_id), else its image, else (the first scene only) the lead clip.
+ * Each scene's source, in plan order: its footage window (matched by
+ * scene_id), else (the first scene only) the lead clip, else its image
+ * footage or scene image.
  * Returns [{scene, index, kind: 'window' | 'still' | 'lead' | 'grid' | 'none', entry?, entries?, image?}].
  * `need` = 'all' refuses a scene with no source (scenes mode); 'any' leaves it as 'none' (inserts mode).
  * `grid` (a layout such as '2x2', inserts mode): a scene tagged `extra.shot: "grid"` takes exactly
@@ -121,9 +120,13 @@ export function cutSceneSources(scenes, footage, { lead = null, need = 'all', gr
       return { scene, index, kind: 'grid', entries };
     }
     const entry = byScene.get(scene.id);
-    if (entry) return { scene, index, kind: cutEntryIsStill(entry) ? 'still' : 'window', entry };
-    if (scene.image) return { scene, index, kind: 'still', image: scene.image };
+    const still = entry ? cutEntryIsStill(entry) : false;
+    if (entry && !still) return { scene, index, kind: 'window', entry };
+    // The lead plays as the first scene whenever that scene has no footage window (§4.5): a scene
+    // image or image footage there does not hide the creator hook.
     if (index === 0 && lead) return { scene, index, kind: 'lead' };
+    if (entry) return { scene, index, kind: 'still', entry };
+    if (scene.image) return { scene, index, kind: 'still', image: scene.image };
     if (need === 'all') throw new CutRefusal(`scene "${scene.id}" has no footage window, image or lead clip to show`);
     return { scene, index, kind: 'none' };
   });
@@ -150,11 +153,14 @@ function cutSnap(seconds, fps) {
 export function cutSpeedFor(windowS, slotS, { speed = 'fill', min_speed, max_speed }, what) {
   if (speed === 'fill') {
     const s = windowS / slotS;
+    // 0.01 absorbs the frame snap of the slot. The exact ratio is kept so the window ends where the
+    // plan says (no reuse of the next window); picture-only setpts plays any speed.
     if (s < min_speed - 0.01 || s > max_speed + 0.01) {
       throw new CutRefusal(`${what}: ${cutFmt(slotS)}s from a ${cutFmt(windowS)}s window needs ${cutFmt(s)}x, outside ${min_speed}x to ${max_speed}x`);
     }
     return s;
   }
+  if (speed < min_speed - CUT_EPS || speed > max_speed + CUT_EPS) throw new CutRefusal(`${what}: the fixed speed ${speed}x is outside ${min_speed}x to ${max_speed}x`);
   if (windowS / speed + 0.05 < slotS) {
     throw new CutRefusal(`${what}: at ${speed}x the ${cutFmt(windowS)}s window lasts ${cutFmt(windowS / speed)}s, less than the ${cutFmt(slotS)}s it must fill`);
   }
@@ -176,7 +182,7 @@ export function cutPlanScenes(sources, { lengths, leadS, fps, scene_seconds, sti
   const stillS = still_seconds ?? (Number.isFinite(hi) ? hi : 2.5);
   const dissolveS = dissolve_frames / fps;
   let t = 0;
-  const beats = sources.map((src) => {
+  const beats = sources.map((src, i) => {
     const what = `scene "${src.scene.id}"`;
     let seconds;
     let sp = 1;
@@ -195,7 +201,8 @@ export function cutPlanScenes(sources, { lengths, leadS, fps, scene_seconds, sti
     } else {
       throw new CutRefusal(`${what} has no footage window, image or lead clip to show`);
     }
-    if (dissolveS > 0 && seconds < dissolveS - CUT_EPS) throw new CutRefusal(`${what} lasts ${cutFmt(seconds)}s, shorter than the ${dissolve_frames}-frame dissolve`);
+    // Every beat after the first fades in over the dissolve; a single beat has none.
+    if (dissolveS > 0 && i > 0 && seconds < dissolveS - CUT_EPS) throw new CutRefusal(`${what} lasts ${cutFmt(seconds)}s, shorter than the ${dissolve_frames}-frame dissolve`);
     const beat = { ...src, ...range, seconds, speed: sp, start_s: t, end_s: t + seconds };
     t += seconds;
     return beat;
@@ -261,9 +268,13 @@ export function cutPlaceInserts(inserts, spans, { joins = [], duration, fps }) {
     if (slots[i].start_s < slots[i - 1].end_s - CUT_EPS) throw new CutRefusal(`the inserts for scenes "${slots[i - 1].scene.id}" and "${slots[i].scene.id}" overlap in time`);
   }
   // Each returns null when the slot covers the join after the move, else why it cannot.
+  // Over every join an insert covers, its end moves at most CUT_JOIN_STRETCH_S + CUT_JOIN_AFTER_S
+  // past where its scene ends, and its start at most that far before where it starts.
+  const reach = CUT_JOIN_STRETCH_S + CUT_JOIN_AFTER_S + CUT_EPS;
   const stretchEnd = (slot, j) => {
     const want = j + CUT_JOIN_AFTER_S;
     if (slot.end_s >= want - CUT_EPS) return null;
+    if (slot.stretched_s + (want - slot.end_s) > reach) return `the insert for scene "${slot.scene.id}" cannot stretch over the cut between takes at ${cutFmt(j)}s: it would run more than ${CUT_JOIN_STRETCH_S}s past its scene`;
     const next = slots[slots.indexOf(slot) + 1];
     const limit = Math.min(duration, next ? next.start_s : Infinity);
     if (want > limit + CUT_EPS) return `the insert for scene "${slot.scene.id}" cannot stretch over the cut between takes at ${cutFmt(j)}s: it would run past ${next ? 'the next insert' : 'the end of the video'}`;
@@ -274,13 +285,26 @@ export function cutPlaceInserts(inserts, spans, { joins = [], duration, fps }) {
   const startEarly = (slot, j) => {
     const want = Math.max(0, j - CUT_JOIN_AFTER_S);
     if (slot.start_s <= want + CUT_EPS) return null;
+    if (slot.early_s + (slot.start_s - want) > reach) return `the insert for scene "${slot.scene.id}" cannot start early over the cut between takes at ${cutFmt(j)}s: it would start more than ${CUT_JOIN_STRETCH_S}s before its scene`;
     const prev = slots[slots.indexOf(slot) - 1];
     if (prev && want < prev.end_s - CUT_EPS) return `the insert for scene "${slot.scene.id}" cannot start early over the cut between takes at ${cutFmt(j)}s: it would run into the previous insert`;
     slot.early_s += slot.start_s - want;
     slot.start_s = want;
     return null;
   };
+  // True when inserts that touch end to end cover the join with CUT_JOIN_AFTER_S on each side.
+  const coveredByRun = (j) => {
+    let runStart = null;
+    let runEnd = -Infinity;
+    for (const s of slots) {
+      if (runStart === null || s.start_s > runEnd + CUT_EPS) runStart = s.start_s;
+      runEnd = Math.max(runEnd, s.end_s);
+      if (runStart <= j - CUT_JOIN_AFTER_S + CUT_EPS && runEnd >= j + CUT_JOIN_AFTER_S - CUT_EPS) return true;
+    }
+    return false;
+  };
   for (const j of [...joins].sort((a, b) => a - b)) {
+    if (coveredByRun(j)) continue;
     // An insert the join is inside: pad whichever side is too close.
     const inside = slots.find((s) => s.start_s <= j + CUT_EPS && j <= s.end_s + CUT_EPS);
     if (inside) {
@@ -305,6 +329,17 @@ export function cutPlaceInserts(inserts, spans, { joins = [], duration, fps }) {
     s.start_s = s.early_s > 0 ? Math.max(0, Math.floor(s.start_s * fps + 1e-6) / fps) : Math.round(s.start_s * fps) / fps;
     s.end_s = Math.max(s.start_s + 1 / fps, Math.round(s.end_s * fps + 0.499) / fps);
     s.end_s = Math.min(s.end_s, Math.floor(duration * fps + 1e-6) / fps);
+  }
+  // Snapping can push an end a frame past the next insert's (early) start. The
+  // earlier insert ends where the next begins: the two meet with no gap, so a
+  // join either one covered stays under an insert.
+  for (let i = 1; i < slots.length; i++) {
+    const prev = slots[i - 1];
+    const cur = slots[i];
+    if (prev.end_s > cur.start_s + CUT_EPS) {
+      prev.end_s = cur.start_s;
+      if (!(prev.end_s - prev.start_s > 1 / fps - CUT_EPS)) throw new CutRefusal(`the inserts for scenes "${prev.scene.id}" and "${cur.scene.id}" leave the first under one frame once moved over the cuts between takes`);
+    }
   }
   return slots;
 }
@@ -337,12 +372,6 @@ export function cutInsertRange(slot, { from, to }, seconds, opts, what) {
   const start = from - extended;
   const speed = cutSpeedFor(to - start, seconds, opts, what);
   return { from: start, to: start + seconds * speed, speed, extended_s: extended };
-}
-
-/** Refuses an encode whose capped bitrate could pass the size limit (§4.12), before any work. */
-export function cutCheckProjectedSize(seconds, maxrateBps = CUT_MAXRATE_BPS) {
-  const projected = (seconds * (maxrateBps + 256e3)) / 8;
-  if (projected > CUT_MAX_BYTES) throw new CutRefusal(`a ${cutFmt(seconds, 1)}s video could reach ${Math.round(projected / 1048576)} MB, over the ${CUT_MAX_BYTES / 1048576} MB limit`);
 }
 
 /**

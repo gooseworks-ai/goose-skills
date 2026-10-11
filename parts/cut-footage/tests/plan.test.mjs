@@ -1,7 +1,7 @@
 // cut-footage's planner (src/plan.mjs): pure, no ffmpeg.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { CutRefusal, cutCheckMode, cutCheckOrder, cutCheckProjectedSize, cutInsertRange, cutModeOf, cutPlaceInserts, cutPlanScenes, cutSceneSources, cutSpeedFor } from '../src/plan.mjs';
+import { CutRefusal, cutCheckMode, cutCheckOrder, cutInsertRange, cutModeOf, cutPlaceInserts, cutPlanScenes, cutSceneSources, cutSpeedFor } from '../src/plan.mjs';
 
 const vid = (sha = 'a'.repeat(64)) => ({ kind: 'file', path: '/x.mp4', sha256: sha, bytes: 1, mime: 'video/mp4', media: 'video' });
 const img = { kind: 'file', path: '/x.png', sha256: 'b'.repeat(64), bytes: 1, mime: 'image/png', media: 'image' };
@@ -27,6 +27,13 @@ test('each scene plays its own footage entry, else its image, else (scene 1) the
   assert.throws(() => cutSceneSources(scenes, [...footage, { file: vid(), scene_id: 'b' }]), refused(/more than one footage entry/));
   assert.throws(() => cutSceneSources(scenes, [{ file: vid(), scene_id: 'zz' }]), refused(/names scene "zz", which is not in the plan/));
   assert.throws(() => cutSceneSources(scenes, [{ file: vid(), kind: 'image', scene_id: 'b' }], { need: 'any' }), refused(/kind image but its file is a video/));
+  // The lead plays as the first scene whenever it has no footage window: a scene image or image footage
+  // there does not hide it (§4.5); a window does.
+  const lead = vid();
+  assert.deepEqual(cutSceneSources([{ id: 'a', image: img }, { id: 'b', image: img }], [], { lead }).map((s) => s.kind), ['lead', 'still']);
+  assert.deepEqual(cutSceneSources([{ id: 'a' }, { id: 'b', image: img }], [{ file: img, kind: 'image', scene_id: 'a' }], { lead }).map((s) => s.kind), ['lead', 'still']);
+  assert.deepEqual(cutSceneSources([{ id: 'a', image: img }, { id: 'b', image: img }], [{ file: vid(), scene_id: 'a' }], { lead }).map((s) => s.kind), ['window', 'still']);
+  assert.deepEqual(cutSceneSources([{ id: 'a', image: img }], [{ file: img, kind: 'image', scene_id: 'a' }]).map((s) => s.kind), ['still']);
 });
 
 test('scene beats: windows clamped to scene_seconds within the speed limits, stills held, frame-exact times', () => {
@@ -124,10 +131,45 @@ test('an insert started early slows within the speed band, else plays earlier fo
   assert.throws(() => cutInsertRange({ early_s: 0 }, { from: 3, to: 4 }, 2.6, opts, 'x'), refused(/needs 0.38x, outside 0.5x to 2x/));
 });
 
-test('a fixed speed refuses a window too short for its slot; the size projection refuses a long cut', () => {
+test('a fixed speed refuses a window too short for its slot', () => {
   assert.equal(cutSpeedFor(4, 2, { speed: 'fill', min_speed: 0.5, max_speed: 2 }, 'x'), 2);
   assert.equal(cutSpeedFor(4, 2, { speed: 1, min_speed: 0.5, max_speed: 2 }, 'x'), 1);
   assert.throws(() => cutSpeedFor(1, 2, { speed: 1 }, 'x'), refused(/at 1x the 1s window lasts 1s, less than the 2s/));
-  cutCheckProjectedSize(60);
-  assert.throws(() => cutCheckProjectedSize(100), refused(/over the 180 MB limit/));
+});
+
+test('review fixes: snapped inserts never overlap, a fixed speed obeys the limits, a single beat needs no dissolve length', () => {
+  const src = (id) => ({ scene: { id }, kind: 'window', entry: { file: vid() } });
+  // a ends at 3.84; b starts early to 3.85 over the join at 4. Frame snapping would give a 3.8667 end and a 3.8333 start.
+  const [a, b] = cutPlaceInserts([src('a'), src('b')], new Map([['a', { start_s: 1, end_s: 3.84 }], ['b', { start_s: 4.1, end_s: 6 }]]), { joins: [4], duration: 10, fps: 30 });
+  assert.ok(a.end_s <= b.start_s + 1e-9, `no overlap (${a.end_s} > ${b.start_s})`);
+  assert.ok(b.start_s <= 4 - 0.15 + 1e-9);
+  assert.throws(() => cutSpeedFor(10, 2, { speed: 4, min_speed: 0.5, max_speed: 2 }, 'scene "x"'), refused(/fixed speed 4x is outside 0.5x to 2x/));
+  assert.equal(cutSpeedFor(4, 2, { speed: 2, min_speed: 0.5, max_speed: 2 }, 'scene "x"'), 2);
+  const one = cutSceneSources([{ id: 'only', image: img }], []);
+  const { beats } = cutPlanScenes(one, { lengths: new Map(), leadS: 0, fps: 30, still_seconds: 0.2, dissolve_frames: 30 });
+  assert.equal(beats.length, 1);
+  const two = cutSceneSources([{ id: 'p', image: img }, { id: 'q', image: img }], []);
+  cutPlanScenes(two, { lengths: new Map(), leadS: 0, fps: 30, still_seconds: 2, dissolve_frames: 7 });
+});
+
+test('review fixes (round 2): an insert never stretches more than 1 s past its scene over several joins', () => {
+  const src = (id) => ({ scene: { id }, kind: 'window', entry: { file: vid() } });
+  // a ends at 2.0; joins at 2.8 and 3.7 would stretch it 1.85 s in two steps.
+  assert.throws(() => cutPlaceInserts([src('a')], new Map([['a', { start_s: 1, end_s: 2 }]]), { joins: [2.8, 3.7], duration: 10, fps: 30 }), refused(/cannot stretch over the cut between takes at 3.7s: it would run more than 1s past its scene/));
+  const [one] = cutPlaceInserts([src('a')], new Map([['a', { start_s: 1, end_s: 2 }]]), { joins: [2.4, 2.8], duration: 10, fps: 30 });
+  assert.ok(Math.abs(one.stretched_s - 0.95) < 1e-9);
+});
+
+test('review fixes (round 3): a join where two inserts touch is covered by both, with no stretch', () => {
+  const src = (id) => ({ scene: { id }, kind: 'window', entry: { file: vid() } });
+  const spans = new Map([['a', { start_s: 2, end_s: 4 }], ['b', { start_s: 4, end_s: 6 }]]);
+  for (const j of [4, 4.05, 3.95]) {
+    const [a, b] = cutPlaceInserts([src('a'), src('b')], spans, { joins: [j], duration: 10, fps: 30 });
+    assert.equal(a.end_s, 4);
+    assert.equal(b.start_s, 4);
+    assert.equal(a.stretched_s + b.early_s, 0, `join at ${j}`);
+  }
+  // Near the far edge of the run, the last insert still stretches.
+  const [, b] = cutPlaceInserts([src('a'), src('b')], spans, { joins: [5.95], duration: 10, fps: 30 });
+  assert.ok(b.end_s >= 6.1 - 1e-9);
 });

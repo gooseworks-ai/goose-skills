@@ -77,9 +77,9 @@ export const manifest = {
       },
       video: { description: 'band: the picture the footage goes under (an html-frames card that leaves the band free). inserts and split: the talking track; its sound is kept.', ...file('video') },
       footage: {
-        description: 'plan.footage. band: the first entry is used. scenes, inserts and split: entries are matched to scenes by scene_id (one per scene; four for a grid scene). Each carries its clip as file (video is accepted too); start_ms and end_ms are the window (default: the whole clip). An image file (kind "image") is held still.',
+        description: 'plan.footage (may be empty when every scene has an image or a lead, or in split where a scene with neither shows the creator). band: the first entry is used. scenes, inserts and split: entries are matched to scenes by scene_id (one per scene; four for a grid scene). Each carries its clip as file (video is accepted too); start_ms and end_ms are the window (default: the whole clip). An image file (kind "image") is held still.',
         type: 'array',
-        minItems: 1,
+        minItems: 0,
         maxItems: 20,
         items: footageEntry,
       },
@@ -97,7 +97,7 @@ export const manifest = {
       },
       scenes: { description: 'scenes, inserts and split: plan.scenes, in order.', type: 'array', minItems: 1, maxItems: 40, items: scene },
       lead: {
-        description: 'scenes: a clip that plays as the first scene when that scene has no footage or image (a creator hook, a cold open), at its own length.',
+        description: 'scenes: a clip that plays as the first scene whenever that scene has no footage window (a creator hook, a cold open), at its own length; a scene image or image footage there does not replace it.',
         type: 'object',
         additionalProperties: false,
         required: ['video'],

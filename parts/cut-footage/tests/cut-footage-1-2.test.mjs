@@ -275,5 +275,20 @@ test('refuses, in plain words and before any render: a short grid, a seam outsid
   await assert.rejects(
     mod.run({ mode: 'scenes', scenes: plain, footage: [cell(0, 2000)], push_in: { amount: 0.05 } }, ctx),
     (e) => e.code === 'bad_input' && /scenes mode does not use push_in/.test(e.message),
+  );  // An empty plan.footage passes the schema (split and scenes can run without it); band refuses it in plain words.
+  await assert.rejects(
+    mod.run({ video: talk, footage: [], band: { x: 0, y: 0, width: 100, height: 100 } }, ctx),
+    (e) => e.code === 'bad_input' && /band mode needs a footage entry/.test(e.message),
   );
+});
+
+test('split mode with an empty plan.footage shows the creator full frame and still names the caption zone', { skip }, async () => {
+  const { ctx } = makeCtx({ partDir: dir });
+  const talk = await striped(ctx, 'talk.mp4', 2);
+  const timeline = talkTimeline([['a', 0, 1], ['b', 1, 2]], 2);
+  const out = await mod.run({ video: talk, timeline, scenes: [{ id: 'a', line: 'a' }, { id: 'b', line: 'b' }], footage: [], layout: { seam: 0.4 } }, ctx);
+  assert.deepEqual(out.windows, []);
+  assert.ok(near(await rgbAt(out.video.path, 0.5, 5, 50), [255, 255, 255]), 'the creator stripe shows full frame');
+  const zone = out.timeline.safe_zones.find((z) => z.use === 'captions');
+  assert.ok(zone && zone.y > 0 && zone.y + zone.h === 480, 'the caption zone is the creator zone (bottom)');
 });

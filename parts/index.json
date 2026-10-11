@@ -1202,9 +1202,9 @@
       "determinism": "pure",
       "path": "parts/cut-footage/1.1.0",
       "files": {
-        "README.md": "817379311d3aeba340e70f0b0216199619918a9ffa7d8040ed7e88ff7c778266",
-        "part.json": "c4f648656cbfbcc0e105ae23c29868a840392ce1514bc115c5350cd85555916b",
-        "part.mjs": "e02236f480f57288276c59b24f2958fbdeca0114866cbd37e366798cae83e981"
+        "README.md": "b57ddea66ae2c5004da54c96243581b5c08be6789d9c62847b97d18ec67ab5bc",
+        "part.json": "46e917bb31972064dfd8c05bff22c932b003f825a11a145b9ba99e2befff4030",
+        "part.mjs": "ff33f04daec029d7bd55dc2ef7050f12ca0f467b234d6d599bf54a1979e14689"
       },
       "models": []
     },
@@ -1267,9 +1267,9 @@
       "determinism": "pure",
       "path": "parts/cut-footage/1.2.0",
       "files": {
-        "README.md": "ff59944808e0ac29b62a62d14854c13b5dfd5406c4f49415689a501ba15a9c19",
-        "part.json": "7425ad46c0132c4498d8b14cb267b50ba66f9b8165710d46ebaf801e71cada23",
-        "part.mjs": "1119f4c7aa3f39a279c657111dd34d8763f17dfafe33c90422a0482189c8b225"
+        "README.md": "9d28c3b368e3676b85f3ee985fc87a3ca52999d10e0df436f5bac79ae9781ead",
+        "part.json": "dd12e072f88f894f3b2319996e98e73e8776569de4c792a05e848814ac67217c",
+        "part.mjs": "1c649e0017b74851903115f27943550db2c0a4b9e683db685590595831cb4dbb"
       },
       "models": []
     },

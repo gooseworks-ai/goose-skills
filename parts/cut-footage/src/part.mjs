@@ -35,7 +35,7 @@ import { kitCheckInputs, kitCheckOutputs, kitDuration, kitFfmpeg, kitNum } from 
 import { kitMediaLength } from '../../_lib/length.mjs';
 import { kitScreenBoxProblems, kitScreenGraph, kitScreenProblems } from '../../_lib/screen-look.mjs';
 import { kitPanelCover, kitPanelDivider, kitPanelFit, kitPanelSeamRows, kitPanelVstack } from '../../_lib/panels.mjs';
-import { CUT_MAX_BYTES, CutRefusal, cutCheckMode, cutCheckOrder, cutCheckProjectedSize, cutCreatorRuns, cutEntryFile, cutEntryIsStill, cutGridCellSpeed, cutInsertRange, cutModeOf, cutPlaceInserts, cutPlanScenes, cutSceneSources, cutSplitSlots, cutWindow } from './plan.mjs';
+import { CUT_MAX_BYTES, CutRefusal, cutCheckMode, cutCheckOrder, cutCreatorRuns, cutEntryFile, cutEntryIsStill, cutGridCellSpeed, cutInsertRange, cutModeOf, cutPlaceInserts, cutPlanScenes, cutSceneSources, cutSplitSlots, cutWindow } from './plan.mjs';
 
 /** atempo steps whose product is `speed`: ffmpeg 6.0's atempo takes 0.5 to 2 at a time. */
 function cutTempoChain(speed) {
@@ -87,6 +87,7 @@ export async function run(inputs, ctx) {
 
 async function cutBand(inputs, ctx, manifest) {
   const first = inputs.footage[0];
+  if (!first) throw ctx.error('bad_input', 'band mode needs a footage entry to lay into the band');
   const clip = { ...first, video: cutEntryFile(first) };
   if (!clip.video) throw ctx.error('bad_input', 'the first footage entry has no clip file');
   if (clip.video.media !== 'video') throw ctx.error('bad_input', 'band mode lays a video clip; the first footage entry is a still');
@@ -98,7 +99,6 @@ async function cutBand(inputs, ctx, manifest) {
   const band = inputs.band;
   if (band.x + band.width > W || band.y + band.height > H) throw ctx.error('bad_input', `the band ${band.width}x${band.height} at ${band.x},${band.y} is outside the ${W}x${H} video`);
   if (inputs.fit === 'height') throw ctx.error('bad_input', 'band mode fits cover or width');
-  cutCheckProjectedSize(dur);
   const length = await kitMediaLength(ctx, clip.video);
   const from = (clip.start_ms ?? 0) / 1000;
   const to = clip.end_ms == null ? length : clip.end_ms / 1000;
@@ -260,7 +260,7 @@ async function cutScenes(inputs, ctx, manifest) {
   if (inputs.audio) throw ctx.error('bad_input', 'scenes mode makes a silent cut');
   const lead = inputs.lead ? inputs.lead.video : null;
   const sources = cutSceneSources(inputs.scenes, inputs.footage, { lead, need: 'all' });
-  if (lead && !sources.some((s) => s.kind === 'lead')) ctx.log.warn('the lead clip is not used: the first scene has its own footage or image');
+  if (lead && !sources.some((s) => s.kind === 'lead')) ctx.log.warn('the lead clip is not used: the first scene has its own footage window');
   const dissolve = inputs.transition?.dissolve_frames ?? 0;
   const { beats, seconds } = cutPlanScenes(sources, {
     lengths: await cutWindowLengths(ctx, sources),
@@ -274,7 +274,6 @@ async function cutScenes(inputs, ctx, manifest) {
     dissolve_frames: dissolve,
   });
   cutCheckOrder(beats, inputs.order ?? 'forward');
-  cutCheckProjectedSize(seconds);
   const extraS = dissolve / fps;
   const paths = [];
   let lookIndex = 0;
@@ -336,7 +335,6 @@ async function cutInserts(inputs, ctx, manifest) {
   const fps = info.fps || inputs.timeline.fps || 30;
   if (W % 2 || H % 2) throw ctx.error('bad_input', `the talking track ${W}x${H} must have even sides`);
   const dur = await kitDuration(ctx, inputs.video);
-  cutCheckProjectedSize(dur);
   const gridLayout = inputs.grid ? inputs.grid.layout ?? '2x2' : null;
   const sources = cutSceneSources(inputs.scenes, inputs.footage, { need: 'any', grid: gridLayout }).filter((s) => s.kind === 'window' || s.kind === 'still' || s.kind === 'grid');
   if (!sources.length) throw ctx.error('bad_input', 'no scene has footage or an image to insert');
@@ -513,7 +511,6 @@ async function cutSplit(inputs, ctx, manifest) {
   const fps = info.fps || inputs.timeline.fps || 30;
   if (W % 2 || H % 2) throw ctx.error('bad_input', `the talking track ${W}x${H} must have even sides`);
   const dur = await kitDuration(ctx, inputs.video);
-  cutCheckProjectedSize(dur);
   const layout = inputs.layout || {};
   const side = layout.side ?? 'bottom';
   const rows = kitPanelSeamRows(H, layout.seam ?? 0.4);

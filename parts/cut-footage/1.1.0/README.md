@@ -8,8 +8,8 @@ render-logo-equation-card's compose. Three modes; the default without `scenes` i
   `max_speed` (defaults 1x to 8x); a number plays at that speed. `fit` is `cover` (default) or `width`. The video's own
   sound is kept; `audio: true` uses the footage's, sped by the same factor.
 - **scenes**: one full-frame beat per plan scene (`width` x `height` at `fps`, default 1080x1920 at 30). A scene plays
-  its footage entry (matched by `scene_id`, one per scene), else its `image` (or image footage, `kind: "image"`) held
-  for `still_seconds`, else, for the first scene only, the `lead` clip at its own length. A window's beat length is its
+  its footage window (matched by `scene_id`, one per scene), else, for the first scene only, the `lead` clip at its own
+  length, else its image footage (`kind: "image"`) or `image`, held for `still_seconds`. A window's beat length is its
   own length clamped to `scene_seconds {min, max}`, and the speed that fits it must stay inside `min_speed` to
   `max_speed` (defaults 0.5x to 2x). `transition {dissolve_frames}` dissolves between beats; each beat but the last
   plays that much longer, so the total holds. The cut is silent. Outputs `timeline` (the plan's scene ids at their real
@@ -29,7 +29,7 @@ render-logo-equation-card's compose. Three modes; the default without `scenes` i
   a beat that goes back in its recording (`order: "forward"`, the default; image footage is never checked), a scene with
   no source (scenes), a footage entry naming a scene not in the plan or a second entry for one scene, overlapping
   inserts, a take join no insert covers, and inputs the chosen mode does not use.
-- **Size**: every final encode caps its bitrate at 16 Mb/s; a video that could pass 180 MB is refused before the work,
-  and a finished file over 180 MB fails as `output_invalid` before upload.
+- **Size**: every final encode caps its bitrate at 16 Mb/s, and a finished file over 180 MB fails as `output_invalid`
+  before upload.
 
 Source: `parts/cut-footage/src/part.mjs`, `src/plan.mjs` and `src/manifest.mjs`.
