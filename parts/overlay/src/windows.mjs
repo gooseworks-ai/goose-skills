@@ -101,6 +101,12 @@ export function ovlWindows({ items, duration_s, timeline, scenes, products }) {
   const spans = new Map(((timeline && timeline.scenes) || []).map((s) => [String(s.id), s]));
   items.forEach((item, k) => {
     const who = `items[${k}]`;
+    // A binding to an optional file (brand.logo for a brand with no logo) resolves to nothing; the kit
+    // drops the field, so the item is skipped rather than refusing the whole video.
+    if (item.image == null) {
+      notes.push(`${who} has no picture (the brand may have no logo), so it is skipped`);
+      return;
+    }
     const stop = item.until === 'end_card' && cardStart != null ? Math.min(cardStart, end) : end;
     const fromProduct = item.image === 'product_of_scene';
     if (fromProduct && item.scenes !== 'naming_product') throw ovlRefuse(`${who}: image "product_of_scene" needs scenes "naming_product", so each window knows its product`);

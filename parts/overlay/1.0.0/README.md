@@ -23,7 +23,10 @@ Lays pictures over a video at time windows. Free. Built for GOOSE-4015: the podc
   `from_s`/`to_s`; `naming_product` without the plan's scenes or products; a named product with no photo; a
   window that ends before it starts or starts past the video's end; a picture that is not PNG, JPEG or WebP;
   more than 60 windows in all.
-- **Nothing to draw** (no scene names a product): the cut passes through unchanged, with a warning.
+- **An item with no picture** (a `brand.logo` binding for a brand with no logo, which the kit drops) is skipped
+  with a warning, not refused.
+- **Nothing to draw** (no scene names a product, or no item has a picture): the cut passes through unchanged,
+  with a warning. The 180 MB limit still applies to it.
 - **Size rule**: one re-encode with the kit's `h264-master` preset plus `-maxrate 16M -bufsize 32M`; an output
   over 180 MB is refused (`output_invalid`). The sound is copied unchanged.
 - **Outputs**: `video`, `timeline` (passed through unchanged).

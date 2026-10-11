@@ -311,12 +311,9 @@
         "items": {
           "type": "object",
           "additionalProperties": false,
-          "required": [
-            "image"
-          ],
           "properties": {
             "image": {
-              "description": "A picture file (PNG, JPEG or WebP; PNG transparency is kept), or \"product_of_scene\": the first photo of the product each window's scene names.",
+              "description": "A picture file (PNG, JPEG or WebP; PNG transparency is kept), or \"product_of_scene\": the first photo of the product each window's scene names. An item with no picture (a brand.logo binding for a brand with no logo) is skipped with a warning.",
               "anyOf": [
                 {
                   "const": "product_of_scene"
@@ -326,6 +323,9 @@
                   "x-kit-file": {
                     "media": "image"
                   }
+                },
+                {
+                  "type": "null"
                 }
               ]
             },

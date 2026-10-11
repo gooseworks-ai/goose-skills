@@ -61,11 +61,10 @@ export const manifest = {
         items: {
           type: 'object',
           additionalProperties: false,
-          required: ['image'],
           properties: {
             image: {
-              description: 'A picture file (PNG, JPEG or WebP; PNG transparency is kept), or "product_of_scene": the first photo of the product each window\'s scene names.',
-              anyOf: [{ const: 'product_of_scene' }, file('image')],
+              description: 'A picture file (PNG, JPEG or WebP; PNG transparency is kept), or "product_of_scene": the first photo of the product each window\'s scene names. An item with no picture (a brand.logo binding for a brand with no logo) is skipped with a warning.',
+              anyOf: [{ const: 'product_of_scene' }, file('image'), { type: 'null' }],
             },
             corner: { description: 'Where the picture sits. Default center.', enum: ['top_left', 'top_right', 'bottom_left', 'bottom_right', 'center'] },
             width_px: { description: 'Width at a 1080-pixel short side (scaled to the video). Default 60% of the width in the centre (no taller than half the height), 15% in a corner. Never larger than the video less its margins.', type: 'number', exclusiveMinimum: 0, maximum: 4096 },

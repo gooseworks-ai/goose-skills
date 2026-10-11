@@ -29,6 +29,7 @@ export async function run(inputs, ctx) {
   for (const note of planned.notes) ctx.log.warn(note);
   if (!planned.windows.length) {
     ctx.log.info('overlay draws nothing, so the cut passes through');
+    ovlCheckSize(ctx, video);
     return kitCheckOutputs(ctx, manifest, { video, timeline });
   }
 
@@ -86,9 +87,13 @@ export async function run(inputs, ctx) {
   );
   await kitFfmpeg(ctx, args);
   const result = await ctx.file('overlaid.mp4', 'video');
-  if (result.bytes > OVL_MAX_BYTES) {
-    const mb = (n) => (n / (1024 * 1024)).toFixed(1);
-    throw ctx.error('output_invalid', `the video is ${mb(result.bytes)} MB, over the ${mb(OVL_MAX_BYTES)} MB a finished video may be; make it shorter`);
-  }
+  ovlCheckSize(ctx, result);
   return kitCheckOutputs(ctx, manifest, { video: result, timeline });
+}
+
+// The size rule (critic #38): no output over 180 MB, whether overlay encoded it or passed it through.
+function ovlCheckSize(ctx, file) {
+  if (!(file && file.bytes > OVL_MAX_BYTES)) return;
+  const mb = (n) => (n / (1024 * 1024)).toFixed(1);
+  throw ctx.error('output_invalid', `the video is ${mb(file.bytes)} MB, over the ${mb(OVL_MAX_BYTES)} MB a finished video may be; make it shorter`);
 }

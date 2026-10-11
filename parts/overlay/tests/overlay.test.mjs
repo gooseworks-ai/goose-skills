@@ -97,6 +97,24 @@ test('nothing to draw passes the cut through with a warning', { skip }, async ()
   assert.ok(logs.some(([level, m]) => level === 'warn' && /no scene names a product/.test(m)));
 });
 
+test('an item whose picture binding resolved to nothing (a brand with no logo) is skipped, not refused', { skip }, async () => {
+  const { ctx, logs } = makeCtx({ partDir: dir });
+  const video = await blueCut(ctx, 1);
+  const timeline = timelineOf(1, { scenes: [{ id: 's1', start_s: 0, end_s: 1 }] });
+  const out = await mod.run({ video, timeline, items: [{ corner: 'top_right', width_px: 165, margin_px: 40, opacity: 0.9, until: 'end_card' }] }, ctx);
+  assert.equal(out.video, video);
+  assert.deepEqual(out.timeline, timeline);
+  assert.ok(logs.some(([level, m]) => level === 'warn' && /no picture/.test(m)));
+  const nulled = await mod.run({ video, timeline, items: [{ image: null, corner: 'top_right' }] }, ctx);
+  assert.equal(nulled.video, video);
+});
+
+test('a pass-through over 180 MB is refused too', { skip }, async () => {
+  const { ctx } = makeCtx({ partDir: dir });
+  const video = { ...(await blueCut(ctx, 1)), bytes: 181 * 1024 * 1024 };
+  await assert.rejects(mod.run({ video, timeline: timelineOf(1), items: [{ corner: 'top_right' }] }, ctx), (e) => e.code === 'output_invalid' && /180/.test(e.message));
+});
+
 test('refuses what it cannot draw, before any encode', { skip }, async () => {
   const { ctx } = makeCtx({ partDir: dir });
   const video = await blueCut(ctx, 2);
