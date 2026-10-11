@@ -47,6 +47,13 @@ test('the plan template is valid; unknown keys, versions and placeholders are re
   assert.throws(() => kitTemplateFrom({ version: 1, scene: 3 }, 'frames/x.prompt.json'), /frames\/x\.prompt\.json: scene must be text/);
   // Braces that are not placeholders are plain text.
   assert.deepEqual(kitTemplateProblems({ version: 1, scene: 'a { b } {1,2} {Upper}' }), []);
+  // Placeholder typos are refused at load, so no unfilled token reaches a paid prompt.
+  assert.deepEqual(kitTemplateProblems({ version: 1, scene: '{answers.foo.bar} {answers.Mood?} {brand.}', by_tag: { X: { motion: '{product.name.x}' } } }), [
+    'scene: malformed placeholder {answers.foo.bar}',
+    'scene: malformed placeholder {answers.Mood?}',
+    'scene: malformed placeholder {brand.}',
+    'by_tag.X.motion: malformed placeholder {product.name.x}',
+  ]);
 });
 
 test('a template file loads from a FileRef or a path, and a bad one names the file', async () => {
