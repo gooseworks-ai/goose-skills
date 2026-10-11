@@ -452,7 +452,8 @@ export async function run(inputs, ctx) {
       // the join between the new opening and the kept video.
       const cues = record ? (record.cues || []).filter((c) => String(c.text || '').trim() && Number.isFinite(c.start_s) && Number.isFinite(c.end_s) && c.end_s > c.start_s && c.start_s < contentEnd) : [];
       const cuts = chkCuts(timeline.scenes, d).filter((t) => t <= contentEnd + 1e-6);
-      if (timeline.end_card && timeline.end_card.start_s > 0 && timeline.end_card.start_s < contentEnd && !cuts.some((t) => Math.abs(t - timeline.end_card.start_s) < 1e-3)) cuts.push(timeline.end_card.start_s);
+      const joins = [timeline.end_card && timeline.end_card.start_s > 0 && timeline.end_card.start_s < contentEnd ? timeline.end_card.start_s : null, retained && contentEnd < d ? contentEnd : null];
+      for (const u of joins) if (u !== null && !cuts.some((t) => Math.abs(t - u) < 1e-3)) cuts.push(u);
       if (!cues.length) add(code, 'not_applicable', { found: 'no captions' });
       else if (!cuts.length) add(code, 'not_applicable', { found: 'no cuts' });
       else {
@@ -499,12 +500,16 @@ export async function run(inputs, ctx) {
       const cuts = chkCuts(timeline.scenes, bodyEnd);
       if (!cuts.length) add(code, 'not_applicable', { found: 'no cuts' });
       else {
-        const measured = (await chkCutContrast(ctx, video.path, cuts, m.width, m.height, d)).filter((c) => c.diff !== null);
+        const all = await chkCutContrast(ctx, video.path, cuts, m.width, m.height, d);
+        const measured = all.filter((c) => c.diff !== null);
+        const unread = all.find((c) => c.diff === null);
         const worst = measured.reduce((a, c) => (!a || c.diff < a.diff ? c : a), null);
         const expected = `a frame difference of at least ${CHK_CONTRAST_MIN} (${CHK_CONTRAST_WARN} to be safe) ${CHK_CONTRAST_OFFSET_S} s either side of every cut`;
         if (!worst) add(code, 'fail', { message: 'The frames either side of the cuts could not be read.', expected, found: 'no frames' });
         else if (worst.diff < CHK_CONTRAST_MIN - 1e-9) add(code, 'fail', { message: `The cut at ${worst.t.toFixed(2)} seconds barely changes the picture, so it reads as a jump.`, expected, found: +worst.diff.toFixed(2) });
         else if (worst.diff < CHK_CONTRAST_WARN - 1e-9) add(code, 'warn', { message: `The cut at ${worst.t.toFixed(2)} seconds changes the picture only a little.`, expected, found: +worst.diff.toFixed(2) });
+        // Every cut must be judged before the flag passes; a cut whose frames could not be read is a warning.
+        else if (unread) add(code, 'warn', { message: `The frames either side of the cut at ${unread.t.toFixed(2)} seconds could not be read, so it was not checked.`, expected, found: `${measured.length} of ${all.length} cuts checked` });
         else add(code, 'pass', { found: +worst.diff.toFixed(2) });
       }
     } else if (flag === 'distinct_adjacent_shots') {
@@ -512,11 +517,15 @@ export async function run(inputs, ctx) {
       const openings = chkSceneOpenings(timeline.scenes, bodyEnd);
       if (openings.length < 2) add(code, 'not_applicable', { found: 'fewer than two scenes' });
       else {
-        const diffs = (await chkAdjacentDiffs(ctx, video.path, openings, m.width, m.height)).filter((p) => p.diff !== null);
+        const all = await chkAdjacentDiffs(ctx, video.path, openings, m.width, m.height);
+        const diffs = all.filter((p) => p.diff !== null);
+        const unread = all.find((p) => p.diff === null);
         const same = diffs.find((p) => p.diff < CHK_DISTINCT_MIN - 1e-9);
         const expected = `the opening frames of two scenes in a row differ by at least ${CHK_DISTINCT_MIN}`;
         if (!diffs.length) add(code, 'fail', { message: 'The opening frames of the scenes could not be read.', expected, found: 'no frames' });
         else if (same) add(code, 'fail', { message: `Scenes ${same.a} and ${same.b} open on the same picture.`, expected, found: +same.diff.toFixed(2) });
+        // Every pair must be judged before the flag passes; a pair whose frames could not be read is a warning.
+        else if (unread) add(code, 'warn', { message: `The opening frames of scenes ${unread.a} and ${unread.b} could not be read, so they were not compared.`, expected, found: `${diffs.length} of ${all.length} pairs checked` });
         else add(code, 'pass', { found: +Math.min(...diffs.map((p) => p.diff)).toFixed(2) });
       }
     }

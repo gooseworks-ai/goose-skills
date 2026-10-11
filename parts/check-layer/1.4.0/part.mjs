@@ -2102,11 +2102,19 @@ const CHK_CONTRAST_WIDTH = 160;
 const CHK_DISTINCT_WIDTH = 64;
 // A scene that starts this close to the end of the body opens no shot (as in flags.mjs chkCuts).
 const CHK_SHOT_EDGE_S = 0.05;
+// min_shot and ambience_floor: a scene start within this of the body's start or end is that edge (frame
+// rounding); any later one opens a shot, however short (a one-frame flash before the end card is a shot).
+const CHK_SHOT_ROUND_S = 0.02;
 
-/** The shots of the body: [start, end] between consecutive cuts, from 0 to `bodyEnd`. */
+/** The shots of the body: [start, end] between consecutive scene starts, from 0 to `bodyEnd`. */
 function chkShots(scenes, bodyEnd) {
   if (!(bodyEnd > 0)) return [];
-  const edges = [0, ...chkCuts(scenes, bodyEnd), bodyEnd];
+  const starts = [];
+  for (const sc of scenes || []) {
+    const t = sc.start_s;
+    if (Number.isFinite(t) && t > CHK_SHOT_ROUND_S && t < bodyEnd - CHK_SHOT_ROUND_S && !starts.some((u) => Math.abs(u - t) < 1e-3)) starts.push(t);
+  }
+  const edges = [0, ...starts.sort((a, b) => a - b), bodyEnd];
   const out = [];
   for (let i = 1; i < edges.length; i++) out.push([edges[i - 1], edges[i]]);
   return out;
@@ -2141,8 +2149,15 @@ function chkMeanDb(levels) {
   return power > 0 ? 10 * Math.log10(power) : -Infinity;
 }
 
-/** The 50 ms windows inside a shot, away from its edges: [[from, to]]. A shot too short for one gets none. */
+/** A shot too short for one 50 ms window away from its edges (it is measured whole, and only for silence). */
+function chkShortForFloor([start, end]) {
+  return end - start < 2 * CHK_FLOOR_EDGE_S + CHK_FLOOR_WINDOW_S - 1e-9;
+}
+
+/** The 50 ms windows inside a shot, away from its edges: [[from, to]]. A shot too short for one is one window. */
 function chkFloorWindows([start, end]) {
+  if (!(end > start)) return [];
+  if (chkShortForFloor([start, end])) return [[start, end]];
   const out = [];
   for (let t = start + CHK_FLOOR_EDGE_S; t + CHK_FLOOR_WINDOW_S <= end - CHK_FLOOR_EDGE_S + 1e-9; t += CHK_FLOOR_WINDOW_S) out.push([t, t + CHK_FLOOR_WINDOW_S]);
   return out;
@@ -2176,7 +2191,8 @@ function chkShotSound(windows, levels, spoken) {
 /**
  * The first shot whose room tone is out of the band or too close to its speech, as {shot, floor, speech,
  * problem: 'silent' | 'low' | 'high' | 'speech'}; null when every measured shot is in. `sounds` are
- * chkShotSound results in shot order (a shot with no windows has floor null and is skipped).
+ * chkShotSound results in shot order (a shot with no windows has floor null and is skipped). A shot too
+ * short to read its room tone apart from its speech (chkShortForFloor) is judged only for silence.
  */
 function chkJudgeAmbience(shots, sounds) {
   for (let i = 0; i < shots.length; i++) {
@@ -2184,6 +2200,7 @@ function chkJudgeAmbience(shots, sounds) {
     if (floor === null) continue;
     const shot = shots[i];
     if (!Number.isFinite(floor)) return { shot, floor, speech, problem: 'silent' };
+    if (chkShortForFloor(shot)) continue;
     if (floor < CHK_FLOOR_MIN_DB - 1e-9) return { shot, floor, speech, problem: 'low' };
     if (floor > CHK_FLOOR_MAX_DB + 1e-9) return { shot, floor, speech, problem: 'high' };
     if (speech !== null && speech - floor < CHK_FLOOR_SPEECH_GAP_DB - 1e-9) return { shot, floor, speech, problem: 'speech' };
@@ -2690,7 +2707,8 @@ export async function run(inputs, ctx) {
       // the join between the new opening and the kept video.
       const cues = record ? (record.cues || []).filter((c) => String(c.text || '').trim() && Number.isFinite(c.start_s) && Number.isFinite(c.end_s) && c.end_s > c.start_s && c.start_s < contentEnd) : [];
       const cuts = chkCuts(timeline.scenes, d).filter((t) => t <= contentEnd + 1e-6);
-      if (timeline.end_card && timeline.end_card.start_s > 0 && timeline.end_card.start_s < contentEnd && !cuts.some((t) => Math.abs(t - timeline.end_card.start_s) < 1e-3)) cuts.push(timeline.end_card.start_s);
+      const joins = [timeline.end_card && timeline.end_card.start_s > 0 && timeline.end_card.start_s < contentEnd ? timeline.end_card.start_s : null, retained && contentEnd < d ? contentEnd : null];
+      for (const u of joins) if (u !== null && !cuts.some((t) => Math.abs(t - u) < 1e-3)) cuts.push(u);
       if (!cues.length) add(code, 'not_applicable', { found: 'no captions' });
       else if (!cuts.length) add(code, 'not_applicable', { found: 'no cuts' });
       else {
@@ -2737,12 +2755,16 @@ export async function run(inputs, ctx) {
       const cuts = chkCuts(timeline.scenes, bodyEnd);
       if (!cuts.length) add(code, 'not_applicable', { found: 'no cuts' });
       else {
-        const measured = (await chkCutContrast(ctx, video.path, cuts, m.width, m.height, d)).filter((c) => c.diff !== null);
+        const all = await chkCutContrast(ctx, video.path, cuts, m.width, m.height, d);
+        const measured = all.filter((c) => c.diff !== null);
+        const unread = all.find((c) => c.diff === null);
         const worst = measured.reduce((a, c) => (!a || c.diff < a.diff ? c : a), null);
         const expected = `a frame difference of at least ${CHK_CONTRAST_MIN} (${CHK_CONTRAST_WARN} to be safe) ${CHK_CONTRAST_OFFSET_S} s either side of every cut`;
         if (!worst) add(code, 'fail', { message: 'The frames either side of the cuts could not be read.', expected, found: 'no frames' });
         else if (worst.diff < CHK_CONTRAST_MIN - 1e-9) add(code, 'fail', { message: `The cut at ${worst.t.toFixed(2)} seconds barely changes the picture, so it reads as a jump.`, expected, found: +worst.diff.toFixed(2) });
         else if (worst.diff < CHK_CONTRAST_WARN - 1e-9) add(code, 'warn', { message: `The cut at ${worst.t.toFixed(2)} seconds changes the picture only a little.`, expected, found: +worst.diff.toFixed(2) });
+        // Every cut must be judged before the flag passes; a cut whose frames could not be read is a warning.
+        else if (unread) add(code, 'warn', { message: `The frames either side of the cut at ${unread.t.toFixed(2)} seconds could not be read, so it was not checked.`, expected, found: `${measured.length} of ${all.length} cuts checked` });
         else add(code, 'pass', { found: +worst.diff.toFixed(2) });
       }
     } else if (flag === 'distinct_adjacent_shots') {
@@ -2750,11 +2772,15 @@ export async function run(inputs, ctx) {
       const openings = chkSceneOpenings(timeline.scenes, bodyEnd);
       if (openings.length < 2) add(code, 'not_applicable', { found: 'fewer than two scenes' });
       else {
-        const diffs = (await chkAdjacentDiffs(ctx, video.path, openings, m.width, m.height)).filter((p) => p.diff !== null);
+        const all = await chkAdjacentDiffs(ctx, video.path, openings, m.width, m.height);
+        const diffs = all.filter((p) => p.diff !== null);
+        const unread = all.find((p) => p.diff === null);
         const same = diffs.find((p) => p.diff < CHK_DISTINCT_MIN - 1e-9);
         const expected = `the opening frames of two scenes in a row differ by at least ${CHK_DISTINCT_MIN}`;
         if (!diffs.length) add(code, 'fail', { message: 'The opening frames of the scenes could not be read.', expected, found: 'no frames' });
         else if (same) add(code, 'fail', { message: `Scenes ${same.a} and ${same.b} open on the same picture.`, expected, found: +same.diff.toFixed(2) });
+        // Every pair must be judged before the flag passes; a pair whose frames could not be read is a warning.
+        else if (unread) add(code, 'warn', { message: `The opening frames of scenes ${unread.a} and ${unread.b} could not be read, so they were not compared.`, expected, found: `${diffs.length} of ${all.length} pairs checked` });
         else add(code, 'pass', { found: +Math.min(...diffs.map((p) => p.diff)).toFixed(2) });
       }
     }

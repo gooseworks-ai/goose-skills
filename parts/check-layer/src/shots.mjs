@@ -7,7 +7,6 @@
 import { readFile, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { kitFfmpeg, kitNum } from '../../_lib/part.mjs';
-import { chkCuts } from './flags.mjs';
 
 // captions_cross_cuts: a cue may run this far past a cut on either side (cue timings are not frame exact).
 export const CHK_CUE_GUARD_S = 0.15;
@@ -37,11 +36,19 @@ const CHK_CONTRAST_WIDTH = 160;
 const CHK_DISTINCT_WIDTH = 64;
 // A scene that starts this close to the end of the body opens no shot (as in flags.mjs chkCuts).
 const CHK_SHOT_EDGE_S = 0.05;
+// min_shot and ambience_floor: a scene start within this of the body's start or end is that edge (frame
+// rounding); any later one opens a shot, however short (a one-frame flash before the end card is a shot).
+const CHK_SHOT_ROUND_S = 0.02;
 
-/** The shots of the body: [start, end] between consecutive cuts, from 0 to `bodyEnd`. */
+/** The shots of the body: [start, end] between consecutive scene starts, from 0 to `bodyEnd`. */
 export function chkShots(scenes, bodyEnd) {
   if (!(bodyEnd > 0)) return [];
-  const edges = [0, ...chkCuts(scenes, bodyEnd), bodyEnd];
+  const starts = [];
+  for (const sc of scenes || []) {
+    const t = sc.start_s;
+    if (Number.isFinite(t) && t > CHK_SHOT_ROUND_S && t < bodyEnd - CHK_SHOT_ROUND_S && !starts.some((u) => Math.abs(u - t) < 1e-3)) starts.push(t);
+  }
+  const edges = [0, ...starts.sort((a, b) => a - b), bodyEnd];
   const out = [];
   for (let i = 1; i < edges.length; i++) out.push([edges[i - 1], edges[i]]);
   return out;
@@ -76,8 +83,15 @@ export function chkMeanDb(levels) {
   return power > 0 ? 10 * Math.log10(power) : -Infinity;
 }
 
-/** The 50 ms windows inside a shot, away from its edges: [[from, to]]. A shot too short for one gets none. */
+/** A shot too short for one 50 ms window away from its edges (it is measured whole, and only for silence). */
+export function chkShortForFloor([start, end]) {
+  return end - start < 2 * CHK_FLOOR_EDGE_S + CHK_FLOOR_WINDOW_S - 1e-9;
+}
+
+/** The 50 ms windows inside a shot, away from its edges: [[from, to]]. A shot too short for one is one window. */
 export function chkFloorWindows([start, end]) {
+  if (!(end > start)) return [];
+  if (chkShortForFloor([start, end])) return [[start, end]];
   const out = [];
   for (let t = start + CHK_FLOOR_EDGE_S; t + CHK_FLOOR_WINDOW_S <= end - CHK_FLOOR_EDGE_S + 1e-9; t += CHK_FLOOR_WINDOW_S) out.push([t, t + CHK_FLOOR_WINDOW_S]);
   return out;
@@ -111,7 +125,8 @@ export function chkShotSound(windows, levels, spoken) {
 /**
  * The first shot whose room tone is out of the band or too close to its speech, as {shot, floor, speech,
  * problem: 'silent' | 'low' | 'high' | 'speech'}; null when every measured shot is in. `sounds` are
- * chkShotSound results in shot order (a shot with no windows has floor null and is skipped).
+ * chkShotSound results in shot order (a shot with no windows has floor null and is skipped). A shot too
+ * short to read its room tone apart from its speech (chkShortForFloor) is judged only for silence.
  */
 export function chkJudgeAmbience(shots, sounds) {
   for (let i = 0; i < shots.length; i++) {
@@ -119,6 +134,7 @@ export function chkJudgeAmbience(shots, sounds) {
     if (floor === null) continue;
     const shot = shots[i];
     if (!Number.isFinite(floor)) return { shot, floor, speech, problem: 'silent' };
+    if (chkShortForFloor(shot)) continue;
     if (floor < CHK_FLOOR_MIN_DB - 1e-9) return { shot, floor, speech, problem: 'low' };
     if (floor > CHK_FLOOR_MAX_DB + 1e-9) return { shot, floor, speech, problem: 'high' };
     if (speech !== null && speech - floor < CHK_FLOOR_SPEECH_GAP_DB - 1e-9) return { shot, floor, speech, problem: 'speech' };

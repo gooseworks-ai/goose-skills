@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileRef, hasFfmpeg, layerInputsFor, loadNewest, makeCtx, run } from '../../_tools/kit-harness.mjs';
-import { chkCueAcrossCut, chkFloorWindows, chkJudgeAmbience, chkMeanDb, chkPercentile, chkSceneOpenings, chkShortShot, chkShotSound, chkShots, chkSpeechSpans } from '../src/shots.mjs';
+import { chkCueAcrossCut, chkFloorWindows, chkShortForFloor, chkJudgeAmbience, chkMeanDb, chkPercentile, chkSceneOpenings, chkShortShot, chkShotSound, chkShots, chkSpeechSpans } from '../src/shots.mjs';
 import { levelledCut } from './fixture.mjs';
 
 const { dir, mod, manifest } = await loadNewest('check-layer');
@@ -79,6 +79,9 @@ test('the shot maths: shots, the shortest shot, cues across cuts, room tone per 
   assert.deepEqual(chkShortShot(chkShots(scenes, 5)), { start_s: 2, end_s: 2.3, seconds: 2.3 - 2 });
   assert.equal(chkShortShot([[0, 0.4], [0.4, 1]]), null, 'exactly 0.4 s is long enough');
   assert.equal(chkShortShot([[0, 2], [2, 2.2]]).end_s, 2.2, 'a short last shot before the end card counts');
+  assert.deepEqual(chkShots([{ id: 'a', start_s: 0, end_s: 3.97 }, { id: 'b', start_s: 3.97, end_s: 4 }], 4), [[0, 3.97], [3.97, 4]], 'a one-frame flash at the end of the body is a shot');
+  assert.equal(chkShortShot(chkShots([{ id: 'a', start_s: 0.03, end_s: 4 }], 4)).seconds, 0.03, 'and so is one at its start');
+  assert.deepEqual(chkShots([{ id: 'a', start_s: 0.01, end_s: 3.99 }, { id: 'b', start_s: 3.99, end_s: 4 }], 4), [[0, 4]], 'a start within 0.02 s of an edge is frame rounding');
 
   const cue = (start_s, end_s) => ({ text: 'x', start_s, end_s });
   assert.equal(chkCueAcrossCut([cue(0.5, 2.1), cue(1.9, 4)], [2]), null, '0.15 s past a cut either side is allowed');
@@ -92,7 +95,9 @@ test('the shot maths: shots, the shortest shot, cues across cuts, room tone per 
   assert.ok(Math.abs(chkMeanDb([-20, -Infinity]) + 20 + 10 * Math.log10(2)) < 1e-9, 'silence adds no power');
   assert.equal(chkMeanDb([-Infinity]), -Infinity);
 
-  assert.equal(chkFloorWindows([0, 0.12]).length, 0, 'a shot too short for one window away from its edges');
+  assert.deepEqual(chkFloorWindows([0, 0.12]), [[0, 0.12]], 'a shot too short for one window away from its edges is one window');
+  assert.ok(chkShortForFloor([0, 0.12]) && !chkShortForFloor([0, 0.15]));
+  assert.deepEqual(chkFloorWindows([1, 1]), []);
   assert.equal(chkFloorWindows([1, 2]).length, 18);
   assert.deepEqual(chkSpeechSpans([{ text: 'a b', start_s: 0, end_s: 2, words: [{ text: 'a', start_s: 0.2, end_s: 0.5 }, { text: 'b', start_s: 1, end_s: 1.5 }] }, { text: 'c', start_s: 3, end_s: 4 }]), [[0.2, 0.5], [1, 1.5], [3, 4]]);
   // Quiet windows at -45, speech windows at -20: the floor is read from the quiet ones.
@@ -113,6 +118,9 @@ test('the shot maths: shots, the shortest shot, cues across cuts, room tone per 
   assert.equal(chkJudgeAmbience(shot, [{ floor: -40, speech: -36 }]).problem, 'speech');
   assert.equal(chkJudgeAmbience(shot, [{ floor: -40, speech: null }]), null, 'a shot nobody speaks in is judged on the band only');
   assert.equal(chkJudgeAmbience(shot, [{ floor: null, speech: null }]), null, 'a shot with no windows is not judged');
+  const short = [[0, 1], [1, 1.1]];
+  assert.equal(chkJudgeAmbience(short, [{ floor: -42, speech: null }, { floor: -Infinity, speech: null }]).problem, 'silent', 'a short shot that drops to silence fails');
+  assert.equal(chkJudgeAmbience(short, [{ floor: -42, speech: null }, { floor: -20, speech: -20 }]), null, 'a short shot under speech is judged only for silence');
 
   assert.deepEqual(chkSceneOpenings([{ id: 'b', start_s: 2, end_s: 4 }, { id: 'a', start_s: 0, end_s: 2 }, { id: 'card', start_s: 4, end_s: 5 }], 4), [{ id: 'a', at: 0.05 }, { id: 'b', at: 2.05 }]);
   assert.deepEqual(chkSceneOpenings([{ id: 'a', start_s: 0, end_s: 0.06 }], 4), [{ id: 'a', at: 0.03 }], 'a very short scene is read in its middle');
@@ -133,6 +141,14 @@ test('captions_cross_cuts: a caption cue that runs across a cut, or on into the 
   assert.equal(status(intoCard)['flag:captions_cross_cuts'], 'fail', 'the end card starts a new shot');
   const none = await mod.run(base, ctx);
   assert.equal(status(none)['flag:captions_cross_cuts'], 'not_applicable', 'no captions to judge');
+  // retained_body: the join between the new opening and the kept video is a cut even when no scene starts there.
+  const gap = { scenes: [{ id: 'hook', start_s: 0, end_s: 2 }, { id: 'kept', start_s: 2.4, end_s: 5 }] };
+  const hooked = await layerInputsFor(video, { expect: { captions: true, speech: 'voiceover', qc_flags: ['retained_body', 'captions_cross_cuts'] }, timeline: gap });
+  const overJoin = await mod.run(await withCues(ctx, hooked, [{ text: 'and more', start_s: 1.5, end_s: 2.5 }]), ctx);
+  assert.equal(status(overJoin)['flag:captions_cross_cuts'], 'fail', JSON.stringify(check(overJoin, 'flag:captions_cross_cuts')));
+  assert.match(check(overJoin, 'flag:captions_cross_cuts').message, /2\.00/);
+  const beforeJoin = await mod.run(await withCues(ctx, hooked, [{ text: 'and more', start_s: 0.5, end_s: 1.9 }]), ctx);
+  assert.equal(status(beforeJoin)['flag:captions_cross_cuts'], 'pass', JSON.stringify(check(beforeJoin, 'flag:captions_cross_cuts')));
 });
 
 test('min_shot: a shot under 0.4 s fails; the shortest shot is reported', { skip }, async () => {
