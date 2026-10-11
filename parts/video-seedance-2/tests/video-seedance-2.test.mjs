@@ -173,3 +173,20 @@ test('a hand-built clip with no prompt takes templates.<id>, and a clip named af
   assert.match(orders[0].body.prompt, /STYLE ANCHOR: hypermotion product film\. the pouch lands on moss, Morning Mist Green Tea hero\./);
   assert.equal(orders[0].body.end_image_url, undefined, 'no end frame unless asked');
 });
+
+test('start_image product: the product the scene names, even when the template refs leave products out', { skip }, async () => {
+  const w = work();
+  const tea = await photo(w, 'tea.png');
+  const jar = await photo(w, 'jar2.png');
+  const inputs = {
+    mode: 'image_to_video',
+    template: await writeTemplate(w, { version: 1, motion: '{picture}, slow orbit', refs: ['scene_image'] }, 'named.prompt.json'),
+    products: [{ id: 'tea', name: 'Morning Mist Green Tea', images: [tea] }, { id: 'jar', name: 'Garden Jar', images: [jar] }],
+    scenes: [{ id: 'jar-shot', picture: 'The Garden Jar spins on a marble plinth' }],
+    clips: [{ id: 'jar-shot', seconds: 5, start_image: 'product' }],
+    generate_audio: false,
+  };
+  const { ctx, orders } = ctxFor(inputs);
+  await mod.run(inputs, ctx);
+  assert.deepEqual(orders[0].body.image_url, jar, 'the named product, not the first one');
+});

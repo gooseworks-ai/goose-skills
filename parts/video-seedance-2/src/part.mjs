@@ -27,7 +27,7 @@
 // first piece is ordered, so a missing answer refuses the step for free.
 import { kitCheckInputs, kitCheckOutputs, kitPieceName, kitStopIfAborted } from '../../_lib/part.mjs';
 import { KitPromptGap, kitLoadTemplate, kitPromptJoin, kitScenePrompt } from '../../_lib/prompt.mjs';
-import { kitPickScenes } from '../../_lib/scene-match.mjs';
+import { kitNamedProducts, kitPickScenes } from '../../_lib/scene-match.mjs';
 
 const REF = 'bytedance/seedance-2.0/reference-to-video';
 const I2V = 'bytedance/seedance-2.0/image-to-video';
@@ -107,7 +107,7 @@ function sdJobs(inputs, tpl, i2v) {
       const filled = fill || (context && SD_PLACEHOLDER_LIKE.test(own))
         ? sdPrompt(tpl, base, { scene, index: i, own, use: sdUse(tpl, id), who })
         : { prompt: own, refs: null };
-      jobs.push({ id, index: i, who, prompt: filled.prompt, planRefs: filled.refs, seconds: clip.seconds, audio: clip.generate_audio, clip });
+      jobs.push({ id, index: i, who, scene, prompt: filled.prompt, planRefs: filled.refs, seconds: clip.seconds, audio: clip.generate_audio, clip });
     }
   } else {
     const picked = kitPickScenes(inputs.scenes, inputs.pick, { skip_first: inputs.skip_first, skip_last: inputs.skip_last });
@@ -117,7 +117,7 @@ function sdJobs(inputs, tpl, i2v) {
     for (const { scene, index } of picked) {
       const who = `scene ${scene.id}`;
       const filled = sdPrompt(tpl, base, { scene, index, own: null, use, who });
-      jobs.push({ id: scene.id, index, who, prompt: filled.prompt, planRefs: filled.refs, seconds: inputs.seconds ?? SD_DEFAULT_SECONDS, audio: undefined, clip: {} });
+      jobs.push({ id: scene.id, index, who, scene, prompt: filled.prompt, planRefs: filled.refs, seconds: inputs.seconds ?? SD_DEFAULT_SECONDS, audio: undefined, clip: {} });
     }
   }
   for (const j of jobs) {
@@ -126,7 +126,8 @@ function sdJobs(inputs, tpl, i2v) {
     if (i2v) {
       const want = j.clip.start_image;
       if (want === 'product') {
-        j.start = (j.planRefs && sdFirstPhoto(j.planRefs.products)) || sdFirstPhoto(products);
+        // The product the scene names (whatever the template's refs pick), else the first with a photo.
+        j.start = sdFirstPhoto(kitNamedProducts(j.scene, products)) || sdFirstPhoto(products);
         if (!j.start) throw new Error(`${j.who} starts on the product, but no product has a photo`);
       } else if (sdIsFile(want)) {
         j.start = want;
