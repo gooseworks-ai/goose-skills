@@ -2658,6 +2658,49 @@
       ]
     },
     {
+      "id": "transcribe-whisper",
+      "version": "1.1.1",
+      "interface": 1,
+      "kind": "caption",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "encoders": [
+            "pcm_s16le"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "fal-ai/whisper"
+          }
+        ],
+        "disk_mb": 50
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "call",
+        "rates_usd": {
+          "fal-ai/whisper": 0.02
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/transcribe-whisper/1.1.1",
+      "files": {
+        "README.md": "23033707732d750b78266db217c59aa23885f93f773505c657770775a9170518",
+        "part.json": "2ec01f609e78d3458b88fc42a837860be6137698c93ba0603907608830971a37",
+        "part.mjs": "5aaf9937be5bd486a0ff5c40c27b200e0be3dce204f6b9462fe640e669a61233"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "fal-ai/whisper"
+        }
+      ]
+    },
+    {
       "id": "video-seedance-2",
       "version": "1.0.0",
       "interface": 1,

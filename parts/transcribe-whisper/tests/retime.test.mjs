@@ -1,4 +1,4 @@
-// transcribe-whisper 1.1.0: `retime_scenes` sets the timeline's scene spans
+// transcribe-whisper 1.1.0+ (run against 1.1.1): `retime_scenes` sets the timeline's scene spans
 // from each line's heard words (the old align_beats.py).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -9,7 +9,7 @@ import { retimeAlign, retimeCloseChunks, retimeHeardShare, retimeKeys, retimeSce
 import { kitHeardWords } from '../../_lib/heard.mjs';
 import { recordedWhisper } from './recorded-reply.mjs';
 
-const { dir, mod } = await loadPart('transcribe-whisper', '1.1.0');
+const { dir, mod } = await loadPart('transcribe-whisper', '1.1.1');
 const ffmpeg = await hasFfmpeg();
 const skip = !ffmpeg && 'ffmpeg is not installed';
 const reply = (json) => async () => ({ json, files: {}, reused: false });
