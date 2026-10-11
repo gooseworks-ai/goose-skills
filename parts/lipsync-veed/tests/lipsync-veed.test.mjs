@@ -83,14 +83,15 @@ test('with one face, scenes need no speaker; a scene with no id is its position;
 test('refuses a missing face or audio, a line for an unknown scene, an unnamed speaker among several faces, duplicate keys, nothing to do, and more than max_seconds, before ordering anything', { skip }, async () => {
   const { ctx, orders } = makeCtx({ partDir: dir, line: sample.line });
   const base = await sample.inputs(ctx.workDir);
+  const only = (id) => base.lines.filter((l) => l.scene_id === id);
   const refused = (inputs, re) => assert.rejects(mod.run(inputs, ctx), (e) => e.code === 'bad_input' && re.test(e.message), String(re));
-  await refused({ ...base, scenes: [{ id: 's1', line: 'Hi.', speaker: 'c' }] }, /spoken by "c", who has no face/);
-  await refused({ ...base, scenes: [{ id: 's1', line: 'Hi.' }] }, /no speaker, and there is more than one face/);
-  await refused({ ...base, scenes: [{ id: 'zz', line: 'Hi.', speaker: 'a' }] }, /scene zz has a line but no audio/);
+  await refused({ ...base, scenes: [{ id: 's1', line: 'Hi.', speaker: 'c' }], lines: only('s1') }, /spoken by "c", who has no face/);
+  await refused({ ...base, scenes: [{ id: 's1', line: 'Hi.' }], lines: only('s1') }, /no speaker, and there is more than one face/);
+  await refused({ ...base, scenes: [{ id: 'zz', line: 'Hi.', speaker: 'a' }], lines: [] }, /scene zz has a line but no audio/);
   await refused({ ...base, faces: [base.faces[0], { ...base.faces[1], key: 'a' }] }, /two faces have the key "a"/);
   await refused({ ...base, lines: [...base.lines, base.lines[0]] }, /two lines are for scene s1/);
   await refused({ ...base, scenes: base.scenes.filter((s) => s.id !== 's4') }, /lines has audio for scene s4, which is not in scenes/);
-  await refused({ ...base, scenes: [{ id: 'x', line: null }], idle_seconds: 0 }, /nothing|no scene has a line/);
+  await refused({ ...base, scenes: [{ id: 'x', line: null }], lines: [], idle_seconds: 0 }, /nothing|no scene has a line/);
   // 1.6 + 0.9 + 1.8 = 4.3 s of lines plus 2 faces x 2 s idle = 8.3 s.
   await refused({ ...base, max_seconds: 8 }, /need 8\.\d+s of lipsync, more than max_seconds 8/);
   await refused({ ...base, resolution: '1080p' }, /resolution/);
