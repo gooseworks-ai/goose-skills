@@ -201,7 +201,10 @@ export async function run(inputs, ctx) {
   const n = plan.keep.length;
   // The output is a whole number of output frames: picture and sound are both cut to it, and the
   // timeline and `seconds` carry the same length, so a downstream layer sees the file's true length.
-  const outFrames = Math.max(1, Math.round(plan.seconds * fps));
+  // Rounded UP from the exact kept length (not the plan's 3-decimal `seconds`), so the last kept frame of
+  // sound is never trimmed; the pad is under one frame (the last picture held, silence under it).
+  const kept = plan.keep.reduce((sum, k) => sum + (k.end - k.start), 0);
+  const outFrames = Math.max(1, Math.ceil(kept * fps - 1e-6));
   const seconds = outFrames / fps;
   graph.push(`${plan.keep.map((_, k) => `[v${k}][a${k}]`).join('')}concat=n=${n}:v=1:a=1[cv][${room ? 'cut' : 'speech'}]`);
   if (room) {

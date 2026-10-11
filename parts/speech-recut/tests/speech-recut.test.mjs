@@ -304,3 +304,17 @@ test('the speech refusals (no timed words, a line with no heard words) come befo
   await assert.rejects(run(noSpeech, ctx), (e) => e.code === 'bad_input' && /no timed words/.test(e.message));
   assert.equal(work, 0, 'no probe or ffmpeg call before the refusal');
 });
+
+test('a word that runs to the end of the take is never trimmed: the output rounds UP to whole frames', async (t) => {
+  if (skip) return t.skip('no ffmpeg');
+  // max_gap_s 0.28 keeps 61 frames of the 24 fps take (2.5417 s) = 76.25 frames at 30 fps. Rounding to
+  // the nearest frame would cut 8 ms off "obviously"; the output must be 77 frames.
+  const speech = [SPEECH[0], { ...SPEECH[1], end_s: 4.5, words: [SPEECH[1].words[0], w('obviously', 3.25, 4.5)] }];
+  const out = await run(inputsFor({ speech, max_gap_s: 0.28 }), ctxFor().ctx);
+  const last = out.timeline.speech[1].words.at(-1);
+  assert.ok(Math.abs(last.end_s - 2.542) < 1e-3, `the last word ends at ${last.end_s}`);
+  assert.ok(out.seconds >= last.end_s, `${out.seconds}s holds the last word to ${last.end_s}s`);
+  assert.ok(Math.abs(out.seconds - 77 / 30) < 1e-3, `77 frames, got ${out.seconds}s`);
+  const info = await probe(out.video.path);
+  assert.ok(info.duration_s >= last.end_s - 1e-3, `the file is ${info.duration_s}s`);
+});
