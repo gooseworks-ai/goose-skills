@@ -280,6 +280,9 @@ test('refuses, in plain words and before any render: a short grid, a seam outsid
     mod.run({ video: talk, footage: [], band: { x: 0, y: 0, width: 100, height: 100 } }, ctx),
     (e) => e.code === 'bad_input' && /band mode needs a footage entry/.test(e.message),
   );
+  // The screen block is checked by the schema with screen-look's own keys and ranges.
+  await assert.rejects(mod.run({ mode: 'scenes', scenes: plain, footage: [cell(0, 2000)], look: 'screen', screen: { tilt: 1 } }, ctx), (e) => e.code === 'bad_input' && /screen/.test(e.message));
+  await assert.rejects(mod.run({ mode: 'scenes', scenes: plain, footage: [cell(0, 2000)], look: 'screen', screen: { keystone: 0.2 } }, ctx), (e) => e.code === 'bad_input' && /screen\.keystone/.test(e.message));
 });
 
 test('split mode with an empty plan.footage shows the creator full frame and still names the caption zone', { skip }, async () => {

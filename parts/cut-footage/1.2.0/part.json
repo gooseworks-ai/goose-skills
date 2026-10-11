@@ -539,8 +539,80 @@
         ]
       },
       "screen": {
-        "description": "look \"screen\": the style's constants (parts/_lib/screen-look.mjs): rot, alternate_rot (odd footage beats), keystone, fill, fit (width | height), drift, bezel, room, moire, vignette, grain.",
-        "type": "object"
+        "description": "look \"screen\": the style's constants (parts/_lib/screen-look.mjs): rot, alternate_rot (odd footage beats), keystone, fill, fit (width | height), drift, bezel, room, moire, vignette, grain. The ranges are screen-look's own, so a bad style constant is refused when the style is checked.",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "rot": {
+            "type": "number",
+            "minimum": -1.5,
+            "maximum": 1.5
+          },
+          "alternate_rot": {
+            "type": "number",
+            "minimum": -1.5,
+            "maximum": 1.5
+          },
+          "keystone": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 0.04
+          },
+          "fill": {
+            "type": "number",
+            "minimum": 0.3,
+            "maximum": 1
+          },
+          "drift": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "bezel": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 0.05
+          },
+          "moire": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 0.05
+          },
+          "vignette": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 0.5
+          },
+          "grain": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 20
+          },
+          "fit": {
+            "enum": [
+              "width",
+              "height"
+            ]
+          },
+          "room": {
+            "anyOf": [
+              {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 3,
+                "items": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 255
+                }
+              },
+              {
+                "type": "string",
+                "pattern": "^#[0-9a-fA-F]{6}$"
+              }
+            ]
+          }
+        }
       },
       "fit": {
         "description": "band: cover (default) or width. scenes and inserts, plain look: cover (default), width or height; split, plain look: width (default) or height show the whole picture on layout.bg, cover fills the zone; screen look: width or height (over screen.fit). A footage entry's own fit wins.",

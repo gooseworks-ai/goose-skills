@@ -3,6 +3,8 @@ import { file, timeline } from '../../_tools/schemas.mjs';
 const textOrNull = (max) => ({ type: ['string', 'null'], maxLength: max });
 const box = { type: 'array', minItems: 4, maxItems: 4, items: { type: 'number', minimum: 0, maximum: 1 } };
 const hex = { type: 'string', pattern: '^#[0-9A-Fa-f]{6}$' };
+// A screen-look number, with parts/_lib/screen-look.mjs's KIT_SCREEN_RANGES (that file is frozen).
+const screenNum = (minimum, maximum) => ({ type: 'number', minimum, maximum });
 const speedLimit = (dflt) => ({ description: `The slowest or fastest allowed speed. Default ${dflt}.`, type: 'number', minimum: 0.25, maximum: 16 });
 
 // A plan scene (PlanScene). Nothing but id is required: a scene with no line
@@ -112,8 +114,22 @@ export const manifest = {
       },
       look: { description: 'scenes, inserts and split: plain (default) fits the footage; screen frames it as a screen filmed by a phone. Grid cells are always plain.', enum: ['plain', 'screen'] },
       screen: {
-        description: 'look "screen": the style\'s constants (parts/_lib/screen-look.mjs): rot, alternate_rot (odd footage beats), keystone, fill, fit (width | height), drift, bezel, room, moire, vignette, grain.',
+        description: 'look "screen": the style\'s constants (parts/_lib/screen-look.mjs): rot, alternate_rot (odd footage beats), keystone, fill, fit (width | height), drift, bezel, room, moire, vignette, grain. The ranges are screen-look\'s own, so a bad style constant is refused when the style is checked.',
         type: 'object',
+        additionalProperties: false,
+        properties: {
+          rot: screenNum(-1.5, 1.5),
+          alternate_rot: screenNum(-1.5, 1.5),
+          keystone: screenNum(0, 0.04),
+          fill: screenNum(0.3, 1),
+          drift: screenNum(0, 3),
+          bezel: screenNum(0, 0.05),
+          moire: screenNum(0, 0.05),
+          vignette: screenNum(0, 0.5),
+          grain: screenNum(0, 20),
+          fit: { enum: ['width', 'height'] },
+          room: { anyOf: [{ type: 'array', minItems: 3, maxItems: 3, items: { type: 'integer', minimum: 0, maximum: 255 } }, { type: 'string', pattern: '^#[0-9a-fA-F]{6}$' }] },
+        },
       },
       fit: { description: 'band: cover (default) or width. scenes and inserts, plain look: cover (default), width or height; split, plain look: width (default) or height show the whole picture on layout.bg, cover fills the zone; screen look: width or height (over screen.fit). A footage entry\'s own fit wins.', enum: ['cover', 'width', 'height'] },
       layout: {

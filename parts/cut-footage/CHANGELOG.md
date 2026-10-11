@@ -6,6 +6,7 @@
 - `grid {layout: "2x2", still_zoom}` (inserts): a scene tagged `extra.shot: "grid"` plays its four footage entries as a 2x2 grid; clips at 1x or slowed to fill, pictures pushed in; cells join the reuse and order checks.
 - `push_in {min_hold_s, amount}` (inserts, split): a slow push-in on every full-frame creator stretch of at least `min_hold_s`.
 - `first_scene_look: blur | card | none` (inserts, split) with `card_color`: the hook treatment on the first scene.
+- `screen` declares screen-look's keys and ranges in the schema, so a bad style constant is refused when the style is checked, not at run time.
 - `footage` may be an empty list (split and scenes can run without it); band mode refuses an empty list in plain words.
 - Without any of these, inserts render as 1.1.0 and the other modes are unchanged. Inserts (and grid inserts) carry 1.1.0's take-join rule, including the early start: an insert starting up to 1 s after a join starts 0.15 s before it.
 
