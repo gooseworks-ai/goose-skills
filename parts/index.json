@@ -625,6 +625,62 @@
       ]
     },
     {
+      "id": "captions-layer",
+      "version": "1.3.0",
+      "interface": 1,
+      "kind": "caption",
+      "layer": "captions",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": true,
+        "ffmpeg": {
+          "filters": [
+            "fps",
+            "format",
+            "overlay"
+          ],
+          "encoders": [
+            "libx264",
+            "aac"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "fal-ai/whisper"
+          }
+        ],
+        "disk_mb": 400
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "call",
+        "rates_usd": {
+          "fal-ai/whisper": 0.02
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/captions-layer/1.3.0",
+      "files": {
+        "README.md": "6fcd437583c67400d5daa101d77b833a8a0f2a89271bf2a44bf08aff60102bda",
+        "assets/fonts/Montserrat-Bold.ttf": "bc6e854971cea46b463be6f9eef4d9cd52f51cfc1fc0dd90c9d3e6483dc0ec61",
+        "assets/fonts/Montserrat-OFL.txt": "ea6b176076abe6950aa25de2fcd199c56fa8409946e883370e10bec68596573c",
+        "assets/fonts/PTSerif-Bold.ttf": "038ba7336bd7ea14f12ad155bed51a4345cac5153275d521dec3ba04021c526e",
+        "assets/fonts/PTSerif-OFL.txt": "ddf311c28ddf5a5ad9747649837346b67bed9d356789c3072bb27dbce49e514d",
+        "assets/fonts/TitanOne-OFL.txt": "2abc52c3268db4de42e3b625d604d062f2410c620b0a88d29e1b007116df253e",
+        "assets/fonts/TitanOne-Regular.ttf": "bcac194b2c80941682789e854d0515855a41dfa0d3f209fbf1725b15cd9fd063",
+        "part.json": "4ffcbdd56c5567613642368f59e092724b7f64c60dddda5d4a8e3d42e72e2559",
+        "part.mjs": "a1f4a907df0201445c4045ec5acd0d00d01115cf8860e1a921f82da30af493a6"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "fal-ai/whisper"
+        }
+      ]
+    },
+    {
       "id": "cast-plate",
       "version": "1.0.0",
       "interface": 1,
