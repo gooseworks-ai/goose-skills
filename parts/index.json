@@ -419,6 +419,64 @@
       ]
     },
     {
+      "id": "cast-plate",
+      "version": "1.0.0",
+      "interface": 1,
+      "kind": "generate_image",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "crop",
+            "scale",
+            "setsar"
+          ],
+          "encoders": [
+            "png"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "openai/gpt-image-2"
+          },
+          {
+            "provider": "fal",
+            "model": "openai/gpt-image-2/edit"
+          }
+        ],
+        "disk_mb": 100
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "call",
+        "rates_usd": {
+          "openai/gpt-image-2": 0.19,
+          "openai/gpt-image-2/edit": 0.19
+        },
+        "model_from": "/model"
+      },
+      "determinism": "provider",
+      "path": "parts/cast-plate/1.0.0",
+      "files": {
+        "README.md": "ec4bb97379018f8f5f6999de594d26e5f5303e226b64d1a3812689b556d4ac11",
+        "part.json": "68106ef1fd1619d3fe7d549e5c3e6fdba0a18bcb03ee8d4e58c41a8f4e4e7521",
+        "part.mjs": "a7a2edccf2f2ffca53c607e84c372fc97caf3e468da051073929c3c8ea8e9258"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "openai/gpt-image-2"
+        },
+        {
+          "provider": "fal",
+          "model": "openai/gpt-image-2/edit"
+        }
+      ]
+    },
+    {
       "id": "check-layer",
       "version": "1.0.0",
       "interface": 1,
