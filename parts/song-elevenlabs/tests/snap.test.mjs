@@ -265,3 +265,23 @@ test('max_ending_s with card_after_s: a long tail after the last word moves the 
   assert.equal(tl.card_at_s, tl.seconds - 1);
   assert.equal(tl.scenes.at(-1).end_s, tl.card_at_s, 'the last picture holds until the card');
 });
+
+test('two sung scenes less than a frame apart: the second moves one frame later', () => {
+  const scenes = [{ id: 'z', line: null }, { id: 'a', line: 'Go.' }, { id: 'b', line: 'Now.' }];
+  const p = songCompositionPlan({ scenes, form: { intro_s: 0, outro_s: 0, groups: 1 } });
+  const a = songAlignWords(p.words, [{ word: 'Go.', start_ms: 700, end_ms: 710 }, { word: 'Now.', start_ms: 720, end_ms: 1500 }]);
+  const tl = songTimeline({ scenes, plan: p, aligned: a, duration_s: 3 });
+  assert.deepEqual(tl.scenes.map((s) => [s.start_s, s.end_s]), [[0, 0.7], [0.7, 0.742], [0.742, 3]]);
+  assert.ok(tl.warnings.some((w) => /scene 3 starts less than a frame after scene 2/.test(w)), JSON.stringify(tl.warnings));
+  // Every start lands on its own 30 fps frame (assemble floors starts to frames).
+  const frames = tl.scenes.map((s) => Math.floor(s.start_s * 30 + 1e-6));
+  assert.equal(new Set(frames).size, frames.length);
+});
+
+test('fails the piece when the word times leave a picture less than a frame', () => {
+  // Five silent pictures between two words 0.1 s apart: under a frame each.
+  const scenes = [{ id: 'z', line: null }, { id: 'a', line: 'Go.' }, ...['b', 'c', 'd', 'e', 'f'].map((id) => ({ id, line: null })), { id: 'g', line: 'Now.' }];
+  const p = songCompositionPlan({ scenes, form: { intro_s: 0, outro_s: 0, groups: 1 } });
+  const a = songAlignWords(p.words, [{ word: 'Go.', start_ms: 700, end_ms: 750 }, { word: 'Now.', start_ms: 800, end_ms: 1500 }]);
+  assert.throws(() => songTimeline({ scenes, plan: p, aligned: a, duration_s: 3 }), (e) => e.code === 'provider_failed' && /would hold less than a frame/.test(e.message));
+});

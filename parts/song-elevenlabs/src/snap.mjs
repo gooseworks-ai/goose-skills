@@ -18,8 +18,11 @@
 import { songFail, songNorm } from './lyric.mjs';
 
 export const SONG_HOOK_TOLERANCE_S = 0.35;
-// A picture never holds for less than one frame at 30 fps, even with no min_hold_s.
-const songFrameS = 0.034;
+// A picture never holds for less than one frame, even with no min_hold_s: one frame at 24 fps, so that
+// starts rounded to the ms still land on different frames at 24 fps and up.
+const songFrameS = 0.042;
+// The shortest gap between two picture starts the cut accepts (assemble floors starts to 30 fps frames).
+const songMinGapS = 1 / 30;
 // Pace warnings (the stop-motion recipe's): too short to read, a freeze, too slow overall.
 const songShortHoldS = 0.2;
 const songLongHoldS = 2.5;
@@ -105,7 +108,8 @@ function songClamp(times, ta, tb, hold) {
  * Returns {trim_s, pad_s, seconds, scenes: [{id, start_s, end_s}] (every scene,
  * back to back from 0), speech (the Timeline speech shape: sung scenes outside
  * the ending), words (every written word), ending_seconds, card_at_s, hook_s,
- * hook: {target_s, off_s, ok} | null, warnings}.
+ * hook: {target_s, off_s, ok} | null, warnings}. Throws provider_failed when the
+ * word times leave a scene less than a frame.
  */
 export function songTimeline(args) {
   const { scenes, plan, aligned } = args;
@@ -193,11 +197,12 @@ export function songTimeline(args) {
     let ib = anchors[a + 1];
     const ta = starts[ia];
     let tb = ib === n ? rightEdge : fixed[ib];
-    if (tb <= ta) {
-      // Two sung scenes start on the same instant (or a word lands at 0): keep the order, one frame apart.
-      tb = ta + songFrameS;
+    if (tb < ta + songFrameS - 1e-9) {
+      // Two sung scenes start on the same instant, or less than a frame apart (or a word lands at 0): keep the
+      // order, one frame apart.
+      tb = songRound(ta + songFrameS);
       if (ib < n) {
-        warnings.push(`scene ${ib + 1} starts on the same word time as scene ${ia + 1}; moved one frame later`);
+        warnings.push(`scene ${ib + 1} starts less than a frame after scene ${ia + 1}; moved one frame later`);
         fixed[ib] = tb;
         starts[ib] = tb;
       }
@@ -256,6 +261,15 @@ export function songTimeline(args) {
     start_s: songRound(starts[i]),
     end_s: songRound(i < n - 1 ? starts[i + 1] : k > 0 ? seconds : rightEdge),
   }));
+  // Every picture holds at least a frame and the last one ends after it starts, or the cut cannot use the spans.
+  // Only word times crowded past saving get here (many silent scenes between two words a frame apart, or
+  // words packed at the very end of the track): fail the piece rather than hand assemble spans it refuses.
+  for (let i = 0; i < n; i++) {
+    const next = i < n - 1 ? spans[i + 1].start_s : spans[i].end_s;
+    if (next - spans[i].start_s < songMinGapS - 1e-9) {
+      throw songFail('provider_failed', `scene ${i + 1} (${spans[i].id}) would hold less than a frame: the sung word times leave no room for it`);
+    }
+  }
   if (k > 0) cardAt = spans[endIdx].start_s;
   const endingSeconds = cardAt == null ? 0 : songRound(Math.max(0, seconds - cardAt));
   if (args.max_ending_s != null && endingSeconds > args.max_ending_s + 0.001) {

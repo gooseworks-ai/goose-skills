@@ -79,8 +79,13 @@ export async function run(inputs, ctx) {
   }
   for (const w of plan.warnings) ctx.log.warn(w);
 
-  const timeOf = (sung) =>
-    songTimeline({ scenes: inputs.scenes, plan, aligned: sung.aligned, duration_s: sung.duration_s, windows: inputs.windows, max_ending_s: inputs.max_ending_s });
+  const timeOf = (sung) => {
+    try {
+      return songTimeline({ scenes: inputs.scenes, plan, aligned: sung.aligned, duration_s: sung.duration_s, windows: inputs.windows, max_ending_s: inputs.max_ending_s });
+    } catch (e) {
+      throw songCtxError(ctx, e);
+    }
+  };
   const total = plan.hook ? 2 : 1;
   let sung = await songOrder(ctx, plan, 'song', inputs.seed);
   let timeline = timeOf(sung);
