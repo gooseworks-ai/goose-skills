@@ -45,16 +45,21 @@ export function kitPictureWithoutTag(scene, tags) {
   return keys.has(kitTagKey(m[1])) ? text.slice(m[0].length).trim() : text.trim();
 }
 
-function kitEscapeRe(text) {
-  return String(text).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+/**
+ * A case-insensitive pattern for `phrase` as whole words (any run of spaces
+ * between its words), or null for an empty phrase.
+ */
+export function kitWholeWordsRe(phrase) {
+  const want = String(phrase == null ? '' : phrase).trim();
+  if (!want) return null;
+  const words = want.split(/\s+/).map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('\\s+');
+  return new RegExp(`(?<![\\p{L}\\p{N}])${words}(?![\\p{L}\\p{N}])`, 'iu');
 }
 
 /** True when `name` appears in `text` as whole words, ignoring case ("Maya's" names Maya; "Mayan" does not). */
 export function kitNamesWord(text, name) {
-  const want = String(name == null ? '' : name).trim();
-  if (!want || !text) return false;
-  const words = want.split(/\s+/).map(kitEscapeRe).join('\\s+');
-  return new RegExp(`(?<![\\p{L}\\p{N}])${words}(?![\\p{L}\\p{N}])`, 'iu').test(String(text));
+  const re = kitWholeWordsRe(name);
+  return Boolean(re && text && re.test(String(text)));
 }
 
 /**
