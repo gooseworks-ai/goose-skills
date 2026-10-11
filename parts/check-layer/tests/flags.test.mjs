@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileRef, hasFfmpeg, layerInputsFor, loadNewest, makeCtx, run } from '../../_tools/kit-harness.mjs';
-import { chkBlankSpans, chkCutInsideWord, chkCuts, chkJudgeBlank, chkReadRate } from '../src/flags.mjs';
+import { chkBlankSpans, chkCutInsideWord, chkCuts, chkJudgeBlank, chkReadRate, chkSpeechBefore } from '../src/flags.mjs';
 import { levelledCut } from './fixture.mjs';
 
 const { dir, mod, manifest } = await loadNewest('check-layer');
@@ -72,6 +72,19 @@ test('the flag maths: read rate, cuts, cuts inside words, blank spans', () => {
   assert.equal(longBeat.span.where, 'between text beats');
   assert.equal(longBeat.span.limit, 1);
   assert.equal(chkJudgeBlank(chkBlankSpans(flags('#'.repeat(20))), 20).whole, true);
+});
+
+test('read rate counts overlapping speech once; speech before a time is cut to its timed words', () => {
+  const six = 'one two three four five six';
+  assert.equal(chkReadRate([{ text: six, start_s: 0, end_s: 2 }, { text: six, start_s: 0, end_s: 2 }]).wps, 6);
+  assert.equal(chkReadRate([{ text: six, start_s: 0, end_s: 2 }, { text: six, start_s: 3, end_s: 5 }]).wps, 3);
+  const w = (text, start_s, end_s) => ({ text, start_s, end_s });
+  const timed = { text: 'new line old body', start_s: 0.5, end_s: 3.5, words: [w('new', 0.5, 0.8), w('line', 0.9, 1.4), w('old', 2.2, 2.5), w('body', 2.6, 3.5)] };
+  const cut = chkSpeechBefore([timed, { text: 'later', start_s: 4, end_s: 5 }], 2);
+  assert.equal(cut.crossing, false);
+  assert.deepEqual(cut.speech.map((s) => [s.spoken, s.end_s, s.words.length]), [['new line', 2, 2]]);
+  const untimed = chkSpeechBefore([{ text: 'runs on past the opening', start_s: 1, end_s: 3 }], 2);
+  assert.deepEqual([untimed.crossing, untimed.speech.length], [true, 0]);
 });
 
 test('text_led: a dark beat with text on it is not black; blank stretches and blank share are bounded', { skip }, async () => {
@@ -156,9 +169,9 @@ test('read_rate, cuts_between_words and cut_rate are measured from the timeline'
 test('flags this version does not measure stay not_applicable and never fail the video', { skip }, async () => {
   const { ctx } = makeCtx({ partDir: dir });
   const video = await levelledCut(ctx.workDir, 'later', 4);
-  const out = await mod.run(await layerInputsFor(video, { expect: { speech: 'voiceover', qc_flags: ['faces_read_real', 'later_flag', 'text_legible', 'cut_rate', 'future-flag', 'Some Flag'] } }), ctx);
+  const out = await mod.run(await layerInputsFor(video, { expect: { speech: 'voiceover', qc_flags: ['faces_read_real', 'later_flag', 'text_legible', 'cut_rate', 'future-flag', 'Some Flag', ''] } }), ctx);
   const s = status(out);
-  for (const f of ['faces_read_real', 'later_flag', 'text_legible', 'future-flag', 'Some Flag']) assert.equal(s[`flag:${f}`], 'not_applicable', f);
+  for (const f of ['faces_read_real', 'later_flag', 'text_legible', 'future-flag', 'Some Flag', '']) assert.equal(s[`flag:${f}`], 'not_applicable', f);
   assert.equal(check(out, 'flag:text_legible').found, 'needs eyes; not checked by machine');
   assert.equal(check(out, 'flag:later_flag').found, 'not measured by this check layer');
   assert.equal(s['flag:cut_rate'], 'not_applicable', 'no scenes in the timeline');
@@ -210,4 +223,9 @@ test('retained_body: content checks run only inside the new opening; the kept bo
   const hookSpeech = { scenes, speech: [{ text: 'A brand new line', start_s: 0.2, end_s: 1.8 }, timeline.speech[0]] };
   const spoken = await mod.run(await layerInputsFor(video, { expect: { ...expect, script: ['A brand new line', 'The old body line'], qc_flags: ['retained_body'] }, timeline: hookSpeech }), ctx);
   assert.equal(status(spoken).speech_matches_script, 'pass', JSON.stringify(check(spoken, 'speech_matches_script')));
+  // An untimed entry that runs on from the opening into the kept body cannot be split: not checked.
+  const crossing = { scenes, speech: [{ text: 'A brand new line and then the old body talks', start_s: 0.2, end_s: 4 }] };
+  const crossed = await mod.run(await layerInputsFor(video, { expect: { ...expect, qc_flags: ['retained_body', 'read_rate'] }, timeline: crossing }), ctx);
+  assert.equal(status(crossed).speech_matches_script, 'not_applicable');
+  assert.equal(status(crossed)['flag:read_rate'], 'not_applicable');
 });

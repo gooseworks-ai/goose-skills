@@ -11,6 +11,7 @@
 - A flag this version does not measure stays `not_applicable`; only `text_legible` and `products_visible` say they need eyes.
 - `retained_body` counts the opening as marked only when the first scene starts the video and leaves a kept body after it; the speech check then compares the opening's speech with the plan's first line only.
 - A flag check code is `flag:<name>` for any flag name the input allows, so a flag with a name this version has never seen is reported, not refused.
+- `read_rate` counts overlapping speech time once. With `retained_body`, speech running on past the opening is cut to its timed words; an untimed entry that runs on cannot be cut, so `read_rate` and the speech check report `not_applicable`.
 
 ## 1.2.0
 

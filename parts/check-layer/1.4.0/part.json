@@ -436,7 +436,7 @@
               "properties": {
                 "code": {
                   "type": "string",
-                  "pattern": "^(plays|length|size|sound|captions|black_frames|frozen_frames|captions_safe_zone|speech_matches_script|end_card|logo|flag:.+)$",
+                  "pattern": "^(plays|length|size|sound|captions|black_frames|frozen_frames|captions_safe_zone|speech_matches_script|end_card|logo|flag:[\\s\\S]*)$",
                   "description": "flag:<name> for each style qc_flag, any name the input allows (a flag this version does not know is reported not_applicable)."
                 },
                 "status": {
