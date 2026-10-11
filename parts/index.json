@@ -1505,6 +1505,56 @@
       ]
     },
     {
+      "id": "lipsync-veed",
+      "version": "1.0.0",
+      "interface": 1,
+      "kind": "generate_video",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "anullsrc"
+          ],
+          "encoders": [
+            "pcm_s16le"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "veed/fabric-1.0"
+          }
+        ],
+        "disk_mb": 800
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "second",
+        "measure": {
+          "from": "/max_seconds",
+          "as": "value"
+        },
+        "rates_usd": {
+          "veed/fabric-1.0": 0.15
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/lipsync-veed/1.0.0",
+      "files": {
+        "README.md": "06682d81eb6c18889a7a3787eddfd8aa3d47b0931d1a34a628b3245c248ff316",
+        "part.json": "7dcdd1b44fb584e77da3aac44710bf74cc93e1ee480a9f500b67c71112d87e25",
+        "part.mjs": "0bf8bc9f6a9c722dbabe8a39946920295f2cf8280fbe76eecbffc583ecd2a83c"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "veed/fabric-1.0"
+        }
+      ]
+    },
+    {
       "id": "music-elevenlabs",
       "version": "1.0.0",
       "interface": 1,
