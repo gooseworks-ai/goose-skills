@@ -302,3 +302,17 @@ test('a plate max_words the look sets is a hard limit; a long brand name is stil
     assert.ok(countColor(await framePixels(out.video.path, 1.9, 540, 960), YELLOW, 40) > 30, 'an eight-word brand name takes the highlight colour');
   }
 });
+
+test('an outlined caption that wraps in a short caption band shrinks to stay inside it', { skip }, async () => {
+  const { ctx } = makeCtx({ partDir: dir });
+  const video = await cut(ctx, 3);
+  const list = ['Absolutely', 'everyone', 'deserves', 'wonderful', 'coffee'].map((t, i) => [t, 0.2 + i * 0.3, 0.45 + i * 0.3]);
+  const inputs = await layerInputsFor(video, {
+    expect: { speech: 'voiceover', captions: true, caption_look: { preset: 'stroke' } },
+    timeline: { speech: [{ text: list.map((w) => w[0]).join(' '), start_s: 0.2, end_s: 1.65, words: timed(list) }], safe_zones: [{ use: 'captions', x: 120, y: 600, w: 300, h: 50 }] },
+  });
+  const out = await mod.run(inputs, ctx);
+  const record = JSON.parse(readFileSync(out.words.path, 'utf8'));
+  const zone = out.timeline.safe_zones.find((z) => z.use === 'captions');
+  for (const c of record.cues) assert.ok(c.box.y >= zone.y - 0.5 && c.box.y + c.box.h <= zone.y + zone.h + 0.5, `${c.text} ${JSON.stringify(c.box)} inside ${JSON.stringify(zone)}`);
+});

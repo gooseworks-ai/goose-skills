@@ -463,7 +463,9 @@ export async function run(inputs, ctx) {
             let size = px;
             const fits = () => {
               const lineH = size * 1.15;
-              return el.scrollWidth <= room + 0.5 && el.getBoundingClientRect().height <= lineH * 2 + padY * 2 + 1;
+              const h = el.getBoundingClientRect().height;
+              // At most two lines, and never taller than the band (a short band shrinks the words further).
+              return el.scrollWidth <= room + 0.5 && h <= lineH * 2 + padY * 2 + 1 && h <= bottom - top + 0.5;
             };
             for (let i = 0; i < 40 && !fits(); i++) {
               size *= 0.94;
