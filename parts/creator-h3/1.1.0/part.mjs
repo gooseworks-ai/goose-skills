@@ -713,16 +713,16 @@ export async function run(inputs, ctx) {
     }
   }
   // Scene spans tile the reel from each line's start. With split_before cutaways, the scene a later
-  // take starts on begins COVER_LEAD before its join, so an insert on that scene covers the dissolve.
+  // take starts on begins COVER_LEAD before its join, so an insert on that scene covers the whole dissolve.
   const starts = speech.map((s) => s.start_s);
   if (cutaways) {
     let at = 0;
     for (const t of plan.takes.slice(1)) {
       at = speech.findIndex((s, i) => i >= at && s.scene_id === t.lines[0].scene_id);
       if (at <= 0) continue;
-      const floor = Math.max(starts[at - 1] + 0.05, speech[at - 1].end_s);
-      // Never later than the line itself, never back over the previous line.
-      starts[at] = +Math.min(starts[at], Math.max(floor, t.start - COVER_LEAD)).toFixed(3);
+      // Never later than the line itself or the join, never back over the previous scene's start. The
+      // previous line's estimated end may run past the join; the join wins (the heard timing retimes it).
+      starts[at] = +Math.min(starts[at], Math.max(starts[at - 1] + 0.05, t.start - COVER_LEAD)).toFixed(3);
     }
   }
   const timeline = {

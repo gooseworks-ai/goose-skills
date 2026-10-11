@@ -111,6 +111,7 @@ test('split_before none keeps 1.0.2 splitting; cutaways starts every later take 
     const scene = out.timeline.scenes.find((s) => s.id === t.scene_ids[0]);
     const line = out.timeline.speech.find((s) => s.scene_id === t.scene_ids[0]);
     assert.ok(scene.start_s < line.start_s, `${scene.id} starts before its line`);
+    assert.ok(scene.start_s <= t.joins_s, `${scene.id} starts at or before the join at ${t.joins_s}s, so its insert covers the dissolve`);
   }
   // Scenes still tile in order.
   out.timeline.scenes.forEach((s, i, all) => {
