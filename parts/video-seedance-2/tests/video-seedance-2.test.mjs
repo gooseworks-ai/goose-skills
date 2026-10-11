@@ -190,3 +190,19 @@ test('start_image product: the product the scene names, even when the template r
   await mod.run(inputs, ctx);
   assert.deepEqual(orders[0].body.image_url, jar, 'the named product, not the first one');
 });
+
+test('a 1.1.0 call with no template still fills its prompt: a missing answer refuses before ordering', { skip }, async () => {
+  const w = work();
+  const start = await photo(w, 'start.png');
+  const ref = await photo(w, 'ref.png');
+  const cases = [
+    { mode: 'image_to_video', clips: [{ id: 'a', prompt: 'Use {answers.missing}', seconds: 5, start_image: start }] },
+    { clips: [{ id: 'a', prompt: 'Use {answers.missing}', seconds: 5, references: [ref] }], seed: 3 },
+    { mode: 'reference', clips: [{ id: 'a', prompt: 'Use {answers.missing}', seconds: 5, references: [ref] }] },
+  ];
+  for (const inputs of cases) {
+    const { ctx, orders } = ctxFor(inputs);
+    await assert.rejects(mod.run(inputs, ctx), (e) => refused(e) && /answers\.missing/.test(e.message), JSON.stringify(inputs.mode ?? inputs.seed));
+    assert.equal(orders.length, 0);
+  }
+});
