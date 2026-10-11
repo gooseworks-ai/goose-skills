@@ -229,3 +229,18 @@ test('serif-word: a closing single quote or a mark after the last word stays on 
   const out = await mod.run(inputs, ctx);
   assert.deepEqual(vttTexts(out.captions.path), ["'Hello'", 'there(']);
 });
+
+test('serif-word: a highlighted call to action stays one word at a time, highlighted and unquoted', { skip }, async () => {
+  const { ctx } = makeCtx({ partDir: dir });
+  const video = await cut(ctx, 3);
+  const words = timed([['Shop', 0.2, 0.5], ['now', 0.6, 0.9], ['today', 1.0, 1.5]]);
+  const inputs = await layerInputsFor(video, {
+    brand: { name: 'Drink AG1', colors: {}, fonts: {}, pronunciations: [], cta: { text: 'Shop now' } },
+    expect: { speech: 'voiceover', captions: true, caption_look: { preset: 'serif-word', highlight: ['cta'] } },
+    timeline: { speech: [{ text: 'Shop now today', start_s: 0.2, end_s: 1.5, words }] },
+  });
+  const out = await mod.run(inputs, ctx);
+  assert.deepEqual(vttTexts(out.captions.path), ['Shop', 'now', 'today']);
+  assert.ok(countColor(await frame(out, 0.3), YELLOW, 40) > 30, 'the call to action is highlighted');
+  assert.equal(countColor(await frame(out, 1.2), YELLOW, 40), 0, 'a plain word is not');
+});

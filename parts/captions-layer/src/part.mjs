@@ -253,12 +253,12 @@ function foldMarks(words) {
   return out;
 }
 
-/** Serif-word groups: one word each, except that the words of one brand name or highlight stay together. */
+/** Serif-word groups: one word each, except that the words of one brand name stay together. */
 function serifGroups(words) {
   const groups = [];
   words.forEach((w, i) => {
     const prev = words[i - 1];
-    const same = prev && ((w.run !== undefined && w.run === prev.run) || (w.brand !== undefined && w.brand === prev.brand));
+    const same = prev && w.brand !== undefined && w.brand === prev.brand;
     if (same) groups.at(-1).push(w);
     else groups.push([w]);
   });
@@ -403,9 +403,8 @@ async function buildCues(ctx, inputs, duration, look) {
     let words = line.words.filter((w) => !inCard(w.start_s)).map((w) => ({ text: w.text, start_s: w.start_s, end_s: w.end_s, hi: false }));
     if (NEW_PRESETS.has(look.preset)) words = foldMarks(words);
     if (!words.length) continue;
-    markPhrases(words, phrases, (w, at) => {
+    markPhrases(words, phrases, (w) => {
       w.hi = true;
-      w.run = at;
     });
     if (look.preset === 'pill' || look.preset === 'serif-word') {
       markPhrases(words, brandName, (w, at) => {
@@ -519,11 +518,11 @@ function caseOf(text, look) {
 
 /**
  * The words of a cue as drawn (and written to the WebVTT): in the look's case, except that a lower-case pill
- * keeps the brand name as written; a serif-word caption that is all highlight is quoted.
+ * keeps the brand name as written; a serif-word caption that is a highlighted brand name is quoted.
  */
 function cueTexts(c, look) {
   const texts = c.words.map((w) => (look.preset === 'pill' && look.case === 'lower' && w.brand !== undefined ? w.text : caseOf(w.text, look)));
-  if (look.preset === 'serif-word' && c.words.every((w) => w.hi)) {
+  if (look.preset === 'serif-word' && c.words.every((w) => w.hi && w.brand !== undefined)) {
     texts[0] = `\u201c${texts[0].replace(/^["'\u201c\u2018(]+/, '')}`;
     const last = texts.length - 1;
     texts[last] = `${texts[last].replace(/[.,!?;:"'\u201d\u2019)]+$/, '')}\u201d`;

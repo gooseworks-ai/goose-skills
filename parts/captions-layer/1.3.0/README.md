@@ -29,8 +29,9 @@ end-card stop.)
       once said, takes the highlight colour. Default centre 0.70 of the height.
     - `serif-word` (new): one word at a time, on one line, in the bundled heavy serif (PT Serif Bold), white
       with a black outline 0.0047 of the height, cap height about 0.037 of the height. The words of the brand
-      name always stay in one caption (never half a brand name). A caption that is all highlight (the brand
-      with `highlight: ["brand"]`) is quoted and drawn in the highlight colour. Default centre 0.75 of the
+      name always stay in one caption (never half a brand name). A highlighted brand name (`highlight:
+      ["brand"]`) is quoted and drawn in the highlight colour; a highlighted call to action stays one word
+      at a time, in the highlight colour, unquoted. Default centre 0.75 of the
       height, which puts the baseline near 0.77.
     - In `pill`, `serif-word` and `sentence`, a word with no letter or digit (a lone dash, quote or full
       stop) joins the word before it (an opening quote or bracket, the word after), so no caption is only
