@@ -17,8 +17,9 @@
 //
 // Clip length (scenes mode with spans, from a voice or a song): each clip is on
 // screen the way assemble 1.1.0 cuts it. A scene with a span runs from its
-// span's start (the first from 0) to the next spanned scene's start (the last
-// to its span's end plus KIT_CLIP_TAIL_S); a scene with no span (no line)
+// span's start (the first from 0, unless a span this part does not make comes
+// before it) to the next span's start, made here or not (the last to its
+// span's end plus KIT_CLIP_TAIL_S); a scene with no span (no line)
 // shares the spanned scene before it evenly (share_previous; scenes before the
 // first spanned one share with it). The clip is then ceil(on screen + 0.2) s,
 // rounded up to the model's allowed lengths and kept inside min_s..max_s. A
@@ -85,8 +86,11 @@ export function kitClipJobs(tpl, options = {}) {
     });
   } else {
     picked = kitPickScenes(scenes, options.pick, { skip_first: options.skip_first, skip_last: options.skip_last });
+    const seen = new Set();
     for (const { scene, index } of picked) {
       const id = scene && scene.id != null ? String(scene.id) : `#${index + 1}`;
+      if (seen.has(id)) throw new Error(`two scenes have the id ${id}: each clip is named and matched by its scene id`);
+      seen.add(id);
       if (!byId.has(id)) {
         throw new Error(`scene ${id} has no still: the stills must be keyed by scene id and cover every picked scene (match pick, skip_first and skip_last with the stills step)`);
       }
@@ -103,7 +107,8 @@ export function kitClipJobs(tpl, options = {}) {
  * How long each job's scene is on screen, from the voice's or song's spans
  * ([{id, start_s, end_s}]), the way assemble 1.1.0 cuts it (see the header).
  * Returns a Map of job id -> seconds. Throws when a span is named twice or ends
- * before it starts, or when no job has a span.
+ * before it starts, when the spanned jobs are not in the spans' order (assemble
+ * would refuse the cut), or when no job has a span.
  */
 export function kitClipSlots(jobs, spans, { tail_s = KIT_CLIP_TAIL_S } = {}) {
   const byId = new Map();
@@ -117,22 +122,37 @@ export function kitClipSlots(jobs, spans, { tail_s = KIT_CLIP_TAIL_S } = {}) {
   const lead = [];
   for (const j of jobs) {
     const span = byId.get(j.id);
-    if (span) groups.push({ span, members: groups.length ? [j.id] : [...lead, j.id] });
-    else if (groups.length) groups[groups.length - 1].members.push(j.id);
+    if (span) {
+      const before = groups[groups.length - 1];
+      if (before && !(span.start_s > before.span.start_s)) {
+        throw new Error(`scene ${j.id} starts at or before scene ${before.id}: the scenes must be in the spans' order`);
+      }
+      groups.push({ id: j.id, span, members: [j.id] });
+    } else if (groups.length) groups[groups.length - 1].members.push(j.id);
     else lead.push(j.id);
   }
   if (!groups.length) throw new Error('no picked scene has a span: the spans must name the scene ids');
   const starts = [...byId.values()].map((s) => s.start_s).sort((a, b) => a - b);
   const out = new Map();
+  // Scenes with no span before the first spanned one: in the cut they share the
+  // span before them. That is the first spanned scene's own, unless a span this
+  // part does not make (a hook made by another step, left out with skip_first)
+  // comes first: then they share that one's time with it.
+  const first = groups[0];
+  const earlier = starts.filter((t) => t < first.span.start_s);
+  if (!earlier.length) first.members.unshift(...lead);
+  else if (lead.length) {
+    const each = (first.span.start_s - earlier[earlier.length - 1]) / (lead.length + 1);
+    for (const id of lead) out.set(id, each);
+  }
   groups.forEach((g, gi) => {
-    const start = gi === 0 ? 0 : g.span.start_s;
-    let end;
-    if (gi + 1 < groups.length) end = groups[gi + 1].span.start_s;
-    else {
-      // The last spanned scene runs to the next span (an end card scene this part does not make), else to its own end plus the tail.
-      const next = starts.find((t) => t > g.span.start_s);
-      end = next != null ? next : g.span.end_s + tail_s;
-    }
+    // The first group starts at 0 only when it is the cut's first; after a span
+    // this part does not make, it starts at its own span.
+    const start = gi === 0 && !earlier.length ? 0 : g.span.start_s;
+    // A group runs to the next span, whether this part makes that scene or not
+    // (one left out by pick, an end card scene), else to its own end plus the tail.
+    const next = starts.find((t) => t > g.span.start_s);
+    const end = next != null ? next : g.span.end_s + tail_s;
     const each = Math.max(0, end - start) / g.members.length;
     for (const id of g.members) out.set(id, each);
   });
