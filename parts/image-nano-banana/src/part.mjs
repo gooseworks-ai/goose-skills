@@ -11,10 +11,17 @@
 //           template and its references picked from the plan (_lib/scene-stills.mjs):
 //           cast anchors (drawn here when anchor is 'cast'), product photos, the
 //           scene's own picture, the first scene's still, the style's references.
+//
+// 1.2.0 adds a third mode:
+//   products one edit of each product's first photo per kind ("snap": the whole
+//            product on a plain textured surface; "angled": a three-quarter view
+//            floating over warm white), for range and grid cards. The photo is
+//            the only reference: a product still is never drawn from text.
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitFfmpeg, kitPieceName, kitStopIfAborted } from '../../_lib/part.mjs';
-import { KitPromptGap, kitLoadTemplate } from '../../_lib/prompt.mjs';
+import { KitPromptGap, kitLoadTemplate, kitPromptJoin, kitScenePrompt } from '../../_lib/prompt.mjs';
+import { kitTagKey } from '../../_lib/scene-match.mjs';
 import { kitStillAnchorMembers, kitStillAnchorPrompt, kitStillCastFiles, kitStillJobs, kitStillOutputs, kitStillPrompt, kitStillRefs, kitStillStrip, kitStillTemplate, kitStillWantsStrip } from '../../_lib/scene-stills.mjs';
 
 const EDIT = 'fal-ai/nano-banana/edit';
@@ -22,6 +29,16 @@ const TEXT = 'fal-ai/nano-banana';
 const NB_PROMPT_MAX = 12000;
 const NB_AT_ONCE = 4;
 const NB_SCENE_ONLY = ['scenes', 'template', 'look', 'answers', 'cast', 'products', 'brand', 'pick', 'skip_first', 'skip_last', 'anchor', 'cast_aspect_ratio', 'style_refs', 'multi_ref'];
+// Inputs products mode refuses (they pick or draw scenes and cast).
+const NB_NOT_PRODUCTS = ['images', 'scenes', 'cast', 'pick', 'skip_first', 'skip_last', 'anchor', 'cast_aspect_ratio', 'style_refs', 'multi_ref'];
+// products mode: the built-in text per kind, used when the template has no by_tag rule for it
+// (the day-in-the-life recipe's snap and 3D-angled stills, 2026-10).
+const NB_KIND_TEXT = {
+  snap: 'The {product.name} exactly as in the reference photo: the same shape, colours, pattern and label. One complete product resting on a neutral textured surface, soft key light from the upper left, the product slightly above centre, photoreal close-up product photo',
+  angled: 'The {product.name} exactly as in the reference photo: the same shape, colours, pattern and label. The whole product turned 15 to 20 degrees to a three-quarter view, floating over a warm white background, a soft cast shadow to the lower right, photoreal studio product photo',
+};
+// The negative used when there is no template at all.
+const NB_KIND_NEGATIVE = 'text, captions, hands, extra products, a changed label, a changed colour or pattern';
 
 async function nbIsPng(path) {
   const head = (await readFile(path)).subarray(0, 8);
@@ -77,6 +94,7 @@ async function nbImages(inputs, ctx, manifest) {
   for (const key of NB_SCENE_ONLY) {
     if (inputs[key] !== undefined) throw ctx.error('bad_input', `${key} works only in scenes mode`);
   }
+  if (inputs.kinds !== undefined) throw ctx.error('bad_input', 'kinds works only in products mode');
   for (const [i, img] of inputs.images.entries()) {
     const refs = img.references || [];
     if (model === EDIT && !refs.length) throw ctx.error('bad_input', `images[${i}] has no reference image for ${EDIT}`);
@@ -97,6 +115,7 @@ async function nbScenes(inputs, ctx, manifest) {
   const model = inputs.model;
   const anchor = inputs.anchor || 'none';
   if (inputs.images) throw ctx.error('bad_input', 'scenes mode makes its own images: give scenes or images, not both');
+  if (inputs.kinds !== undefined) throw ctx.error('bad_input', 'kinds works only in products mode');
   if (!inputs.scenes) throw ctx.error('bad_input', 'scenes mode needs scenes');
   if (model === TEXT && anchor !== 'none') throw ctx.error('bad_input', `anchor ${anchor} needs ${EDIT}, which takes reference images`);
   if (model === TEXT && inputs.style_refs && inputs.style_refs.length) throw ctx.error('bad_input', `style_refs need ${EDIT}, which takes reference images`);
@@ -182,8 +201,79 @@ async function nbScenes(inputs, ctx, manifest) {
   return kitCheckOutputs(ctx, manifest, { images: out.images, scenes: out.scenes, cast: out.cast, anchors: out.anchors });
 }
 
+/**
+ * products mode: the template a kind is filled from. The style's by_tag rule
+ * for the kind (matched as tags are: Snap, snap) keeps its texts; without a
+ * scene text it gets the built-in one. The template's top-level scene text is
+ * for scenes and is not used here. With no template the built-in negative is added.
+ */
+function nbKindTemplate(tpl, kind) {
+  const base = tpl || { version: 1, negative: NB_KIND_NEGATIVE };
+  const by = base.by_tag && typeof base.by_tag === 'object' ? base.by_tag : {};
+  const key = Object.keys(by).find((k) => kitTagKey(k) === kitTagKey(kind));
+  const rule = key == null ? {} : by[key];
+  return { ...base, by_tag: { [kind]: { ...rule, scene: typeof rule.scene === 'string' ? rule.scene : NB_KIND_TEXT[kind] } } };
+}
+
+async function nbProducts(inputs, ctx, manifest) {
+  if (inputs.model !== EDIT) throw ctx.error('bad_input', `products mode edits each product's photo, so it needs ${EDIT}`);
+  for (const key of NB_NOT_PRODUCTS) {
+    if (inputs[key] !== undefined) throw ctx.error('bad_input', `${key} does not work in products mode`);
+  }
+  const products = inputs.products || [];
+  if (!products.length) throw ctx.error('bad_input', 'products mode needs products');
+  const kinds = inputs.kinds || ['snap'];
+  const ids = new Set();
+  for (const p of products) {
+    if (ids.has(p.id)) throw ctx.error('bad_input', `two products have the id ${p.id}`);
+    ids.add(p.id);
+    if (!Array.isArray(p.images) || !p.images.length) throw ctx.error('bad_input', `product ${p.id} has no photo to edit`);
+    if (typeof p.name !== 'string' || !p.name.trim()) throw ctx.error('bad_input', `product ${p.id} has no name`);
+  }
+
+  // Every prompt is filled before the first piece is ordered.
+  const jobs = [];
+  try {
+    const tpl = inputs.template ? await kitLoadTemplate(inputs.template) : null;
+    const base = { look: inputs.look ?? null, answers: inputs.answers ?? null, brand: inputs.brand ?? null };
+    for (const product of products) {
+      for (const kind of kinds) {
+        const id = `${product.id}-${kind}`;
+        const scene = { id, line: null, on_screen: null, picture: product.name, extra: { shot: kind } };
+        let filled;
+        try {
+          filled = kitScenePrompt(nbKindTemplate(tpl, kind), { ...base, scene, index: jobs.length, products: [product] });
+        } catch (err) {
+          // "scene mist-snap needs {answers.snap_surface}" reads as "the snap still of product mist needs ...".
+          if (err instanceof KitPromptGap) throw new KitPromptGap(err.message.replace(`scene ${id}`, `the ${kind} still of product ${product.id}`), err);
+          throw err;
+        }
+        const prompt = kitPromptJoin([filled.prompt, filled.negative ? `Avoid: ${filled.negative}` : '']);
+        jobs.push({ id, kind, product, prompt });
+      }
+    }
+  } catch (err) {
+    if (ctx.signal && ctx.signal.aborted) throw ctx.error('stopped', 'the step was stopped');
+    throw ctx.error('bad_input', err instanceof KitPromptGap ? err.message : String((err && err.message) || err));
+  }
+  for (const j of jobs) {
+    if (j.prompt.length > NB_PROMPT_MAX) throw ctx.error('bad_input', `the ${j.kind} prompt for product ${j.product.id} is over ${NB_PROMPT_MAX} characters`);
+  }
+
+  const used = new Set();
+  for (const [i, j] of jobs.entries()) j.piece = kitPieceName(j.kind, j.product.id, i, used);
+  let done = 0;
+  const files = await nbEach(jobs, async (j) => {
+    const file = await nbDraw(ctx, { piece: j.piece, refs: [j.product.images[0]], prompt: j.prompt, aspect: inputs.aspect_ratio, seed: inputs.seed });
+    ctx.progress({ done: ++done, total: jobs.length });
+    return file;
+  });
+  return kitCheckOutputs(ctx, manifest, { images: jobs.map((j, i) => ({ id: j.id, image: files[i] })) });
+}
+
 export async function run(inputs, ctx) {
   const manifest = await kitCheckInputs(ctx, inputs);
   const mode = inputs.mode || (inputs.scenes ? 'scenes' : 'images');
+  if (mode === 'products') return nbProducts(inputs, ctx, manifest);
   return mode === 'scenes' ? nbScenes(inputs, ctx, manifest) : nbImages(inputs, ctx, manifest);
 }
