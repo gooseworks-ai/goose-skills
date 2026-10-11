@@ -76,7 +76,7 @@ test('a day-in-the-life cut from shot recipes: snap stills, sped clips, a montag
   // card_from Grid: the card span (no captions) starts at the grid card, not at the end card.
   assert.deepEqual(out.timeline.end_card, { start_s: 7.5, end_s: 9.167 });
   // The hook still marks a snap; the first Moment skips its still (the hook was its snap); the second marks one.
-  assert.deepEqual(out.marks, [{ kind: 'snap', at_s: 0, scene_id: 'h' }, { kind: 'snap', at_s: 3, scene_id: 'm2' }]);
+  assert.deepEqual(out.marks, [{ kind: 'snap', at_s: 0 }, { kind: 'snap', at_s: 3 }]);
   const info = await probe(out.video.path);
   assert.ok(Math.abs(info.duration_s - 275 / 30) < 1.5 / 30, `cut is ${info.duration_s}s`);
   const p = out.video.path;
@@ -163,5 +163,8 @@ test('refuses shots it cannot cut, before any encode', { skip }, async () => {
   await bad({ card_from: { scene_id: 'nope' } }, /card_from names scene "nope", which is not in the plan/);
   await bad({ shots: { ...recipes, Hook: [{ kind: 'tilt', source: 'stills' }] } }, /kind/);
   await assert.rejects(mod.run({ width: W, height: H }, ctx), (e) => e.code === 'bad_input' && /give clips, or shots with sources/.test(e.message));
+  await bad({ shots: { ...recipes, Grid: [{ kind: 'video', source: 'grid', fill: true, min_speed: 1.5, max_speed: 1.2 }] } }, /scene "grid" shot 1 \(video\): min_speed 1.5 is above max_speed 1.2/);
+  const passed = { clips: [{ id: 'a', video: inputs.sources.grid }, { id: 'b', video: inputs.sources.grid }], timeline: { duration_s: 1, width: W, height: H, fps: 30, scenes: [], speech: [] }, snap: {}, width: W, height: H };
+  await assert.rejects(mod.run(passed, ctx), (e) => e.code === 'bad_input' && /snap needs spans or shots/.test(e.message));
   assert.throws(() => statSync(join(ctx.workDir, 'assembled.mp4')), 'nothing was encoded');
 });

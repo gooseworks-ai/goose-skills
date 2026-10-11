@@ -26,24 +26,26 @@ or `shots` with `sources` and `scenes`.
   - `still`: a picture. `of: scene` (the default without `variant`) takes the item with the scene's id; `of: named_product` takes the
     product the scene's picture names (the default with `variant`; else its line, else the product at the scene's place among scenes with its
     tag) and the item `<product id>-<variant>`; `of: first` takes the first item.
-  - `clip`: the scene's clip from a list. `speed` fixes the speed; else `min_speed` and `max_speed` (default 1)
-    bound the speed that makes the clip fill its time. Short clips hold their last frame. `in_s` sets the start.
+  - `clip`: the scene's clip from a list. `speed` fixes the speed; else `min_speed` and `max_speed` (default 1;
+    one given alone past 1 sets both) bound the speed that makes the clip fill its time; min above max is refused. Short clips hold their last frame. `in_s` sets the start.
   - `video`: one video source (a card), from `in_s`; without `seconds` or `fill` it runs its own length.
   - `montage`: one frame of each clip used so far from the source (else every clip in it), `seconds` each, at
     `at` (default 0.5) of each clip's used part, joined by `transition` (`cut`, `fade` or `hlslice`,
     `transition_s` default 0.1). `max` caps the frames.
-  - `freeze`: one frame of a clip held: `pick: last` (default) or `first` clip used so far, or the scene's own.
+  - `freeze`: one frame of a clip held: `pick: last` (default) or `first` clip used so far (the
+    source's own last or first clip when none is used yet), or the scene's own.
   - `zoom: [from, to]` pushes or pulls a still, a freeze or montage frames, centred. Without it,
     `motion: {stills: ken_burns}` still pushes `still` shots.
   - **Timing.** Shots with `seconds` run that long; the one with `fill` (else the last) takes the rest. When the
     others leave it under 0.5 s (or `snap.min_shot_s`), they are squeezed by the same factor. `skip_first` leaves a
     shot out of the first scene with its tag (its snap was the hook).
-- **Marks.** A shot with `mark: <kind>` adds `{kind, at_s, scene_id}` to the `marks` output at its start, for
+- **Marks.** A shot with `mark: <kind>` adds `{kind, at_s}` to the `marks` output at its start, for
   audio-mix's `marks` and `mark_sounds` (a click on every snap still). `marks` is always present, empty when no
   shot has one.
 - **Cuts between words.** `snap: {max_shift_s: 0.4, min_shot_s: 0.55}` moves a cut that lands inside a word of
   `speech` to the frame before the word starts or after it ends, whichever is nearer, when that is within
-  `max_shift_s` and both shots keep `min_shot_s` (or what they had). Speech without word timings moves nothing.
+  `max_shift_s` and both shots keep `min_shot_s` (or what they had). Speech without word timings moves nothing. Needs `spans` or `shots`: with a `timeline` passed through and no
+  `spans`, snap is refused, since those scenes are kept as they are.
 - **card_from.** `{tag: 'Grid'}` (the first scene with that tag; needs `scenes`) or `{scene_id}` starts
   `timeline.end_card` at that scene, so a grid + offer card and the end card form one card span with no captions.
   The card span is never graded. A tag no scene has leaves the card span as it was; an unknown scene id is refused.

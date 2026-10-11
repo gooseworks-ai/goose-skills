@@ -2,7 +2,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { assembleIsCutProblem } from '../src/cuts.mjs';
-import { assembleCardScene, assembleMontageLengths, assembleRecipeFor, assembleSceneProduct, assembleShotLengths, assembleSnapCuts, assembleWords, assembleZoom } from '../src/shots.mjs';
+import { assembleCardScene, assembleMontageLengths, assembleSpeedBounds, assembleRecipeFor, assembleSceneProduct, assembleShotLengths, assembleSnapCuts, assembleWords, assembleZoom } from '../src/shots.mjs';
 
 const fps = 30;
 const refused = (fn, re) => assert.throws(fn, (e) => assembleIsCutProblem(e) && re.test(e.message));
@@ -75,4 +75,12 @@ test("a scene's product: named in its picture, else its line, else by its place 
   assert.deepEqual(assembleSceneProduct({ picture: 'Moment: beach', line: 'Ocean frames for the sea.' }, products, 0), { product: products[1], how: 'line' });
   assert.deepEqual(assembleSceneProduct({ picture: 'Moment: a desk', line: null }, products, 1), { product: products[1], how: 'order' });
   assert.equal(assembleSceneProduct({ picture: 'Moment: a desk' }, products, 5), null);
+});
+
+test('speed limits: a missing one is 1, unless the given one is on its side of 1', () => {
+  assert.deepEqual(assembleSpeedBounds({ min_speed: 1.2 }), [1.2, 1.2]);
+  assert.deepEqual(assembleSpeedBounds({ max_speed: 1.5 }), [1, 1.5]);
+  assert.deepEqual(assembleSpeedBounds({ max_speed: 0.8 }), [0.8, 0.8]);
+  assert.deepEqual(assembleSpeedBounds({ min_speed: 0.7 }), [0.7, 1]);
+  assert.deepEqual(assembleSpeedBounds({ min_speed: 1.2, max_speed: 1.5 }), [1.2, 1.5]);
 });

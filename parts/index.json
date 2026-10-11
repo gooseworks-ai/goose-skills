@@ -242,9 +242,9 @@
       "determinism": "pure",
       "path": "parts/assemble/1.2.0",
       "files": {
-        "README.md": "b94d8e4203368e262f8015707b598d2baae6471b71222019572db6d635ae3a66",
-        "part.json": "51a53d313d4a5bf56cd6d4dae71aac658c5451f0820eb78281879f4056b8ea8f",
-        "part.mjs": "7277330dec692f1e160fadaaa1a62556289e9fca62fb99ad10103fd091870e10"
+        "README.md": "313d0ac6353bb2a95ffc11b6a8dcfd9f8efc25ef938ec1af0b7e4778a5137baf",
+        "part.json": "fdb29ca61489b18c93c3099f2b9f9f07bd8eb60030a97401989c556febe57215",
+        "part.mjs": "54617cf4eab39ec7b4424287d159b0f1c875a4b196b187d3317e5c6d2badaa8f"
       },
       "models": []
     },

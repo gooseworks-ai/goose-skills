@@ -27,7 +27,7 @@ const assembleProduct = {
 const assembleSourceItem = {
   type: 'object',
   required: ['id'],
-  properties: { id: { type: 'string', minLength: 1, maxLength: 80 }, image: file('image'), video: file('video'), seconds: { type: 'number', minimum: 0 } },
+  properties: { id: { type: 'string', minLength: 1 }, image: file('image'), video: file('video'), seconds: { type: 'number', minimum: 0 } },
 };
 
 const speed = { type: 'number', minimum: 0.5, maximum: 2 };
@@ -53,9 +53,9 @@ const assembleShot = {
     skip_first: { description: 'Leave this shot out of the first scene with this tag (its still was the hook).', type: 'boolean' },
     in_s: { description: 'clip and video: where in the clip the shot starts. Default 0.', type: 'number', minimum: 0 },
     speed: { ...speed, description: 'clip and video: a fixed speed (sound follows with clip_audio keep).' },
-    min_speed: { ...speed, description: 'clip and video without speed: the slowest it may play to fill its time (default 1); shorter still, it holds its last frame.' },
-    max_speed: { ...speed, description: 'clip and video without speed: the fastest it may play to fit its time (default 1); longer still, it is cut.' },
-    pick: { description: 'freeze: last (default) or first clip used so far from the source, or this scene\'s clip.', enum: ['last', 'first', 'scene'] },
+    min_speed: { ...speed, description: 'clip and video without speed: the slowest it may play to fill its time (default 1, or max_speed when that is below 1); shorter still, it holds its last frame.' },
+    max_speed: { ...speed, description: 'clip and video without speed: the fastest it may play to fit its time (default 1, or min_speed when that is above 1); longer still, it is cut. Refused below min_speed.' },
+    pick: { description: 'freeze: last (default) or first clip used so far from the source (the source\'s own last or first clip when none is used yet), or this scene\'s clip.', enum: ['last', 'first', 'scene'] },
     at: { description: 'montage and freeze: where in each clip\'s used part the frame is, 0 to 1. Default 0.5.', type: 'number', minimum: 0, maximum: 1 },
     max: { description: 'montage: at most this many frames.', type: 'integer', minimum: 1, maximum: 12 },
     transition: { description: 'montage: cut (default), fade or hlslice between frames.', enum: ['cut', 'fade', 'hlslice'] },
@@ -213,7 +213,7 @@ export const manifest = {
           type: 'object',
           additionalProperties: false,
           required: ['kind', 'at_s'],
-          properties: { kind: { type: 'string', minLength: 1, maxLength: 40 }, at_s: { type: 'number', minimum: 0 }, scene_id: { type: 'string' } },
+          properties: { kind: { type: 'string', minLength: 1, maxLength: 40 }, at_s: { type: 'number', minimum: 0 } },
         },
       },
     },

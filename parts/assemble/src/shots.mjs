@@ -79,6 +79,17 @@ export function assembleMontageLengths(total, n, t) {
   return { lengths, overlap };
 }
 
+/**
+ * A clip shot's speed limits [slowest, fastest]. A missing limit is 1, unless the given one is on its
+ * side of 1: min_speed 1.2 alone is [1.2, 1.2], max_speed 0.8 alone is [0.8, 0.8]. The caller refuses
+ * slowest > fastest.
+ */
+export function assembleSpeedBounds(spec) {
+  const lo = spec.min_speed ?? Math.min(1, spec.max_speed ?? 1);
+  const hi = spec.max_speed ?? Math.max(1, lo);
+  return [lo, hi];
+}
+
 /** Every word of the speech, in time order: `{start_s, end_s}`. Entries without words are skipped. */
 export function assembleWords(speech) {
   const out = [];

@@ -21,7 +21,7 @@ import { kitCheckInputs, kitCheckOutputs, kitFfmpeg, kitNum } from '../../_lib/p
 import { kitMediaLength } from '../../_lib/length.mjs';
 import { kitSceneTag, kitTagKey } from '../../_lib/scene-match.mjs';
 import { ASSEMBLE_MAX_BYTES, assembleClampScenes, assembleClampSpeech, assembleFit, assembleGradeChain, assembleIsCutProblem, assembleKenBurns, assembleMapZone, assembleRateCap, assembleSpanCuts } from './cuts.mjs';
-import { ASSEMBLE_MIN_FILL_S, assembleCardScene, assembleMontageLengths, assembleRecipeFor, assembleSceneProduct, assembleShotLengths, assembleSnapCuts, assembleWords, assembleZoom } from './shots.mjs';
+import { ASSEMBLE_MIN_FILL_S, assembleCardScene, assembleSpeedBounds, assembleMontageLengths, assembleRecipeFor, assembleSceneProduct, assembleShotLengths, assembleSnapCuts, assembleWords, assembleZoom } from './shots.mjs';
 
 const SHORT_TOLERANCE_S = 0.1;
 
@@ -167,6 +167,10 @@ async function shotPieces(inputs, ctx, fps, { ending, endingFrames, fills, tail,
     for (const [i, spec] of specs.entries()) {
       const where = `scene "${slot.id}" shot ${i + 1} (${spec.kind})`;
       const shot = { spec, fixed: spec.seconds ? Math.max(1, Math.round(spec.seconds * fps)) : null, fill: !!spec.fill };
+      if (!spec.speed && (spec.min_speed || spec.max_speed)) {
+        const [lo, hi] = assembleSpeedBounds(spec);
+        if (lo > hi) throw ctx.error('bad_input', `${where}: min_speed ${kitNum(lo, 2)} is above max_speed ${kitNum(hi, 2)}`);
+      }
       const items = spec.kind === 'video' ? null : sourceList(spec.source, where);
       if (spec.kind === 'still') {
         let item;
@@ -213,9 +217,11 @@ async function shotPieces(inputs, ctx, fps, { ending, endingFrames, fills, tail,
           from = item ? { media: item.video, in_s: 0, whole: true } : null;
         } else if (mine.length) from = pick === 'first' ? mine[0] : mine[mine.length - 1];
         else {
+          // No clip from this source is cut yet: the source's own first or last clip, as a montage does.
           const all = items.filter((it) => it.video);
           const item = pick === 'first' ? all[0] : all[all.length - 1];
           from = item ? { media: item.video, in_s: 0, whole: true } : null;
+          if (item) ctx.log.warn('freeze: no clip from the source is used yet, so it freezes the source\'s own clip', { scene: slot.id, clip: item.id });
         }
         if (!from) throw ctx.error('bad_input', `${where}: source "${spec.source}" has no clip to freeze`);
         shot.from = from;
@@ -262,7 +268,10 @@ async function finishPieces(ctx, pieces, fps) {
     const need = p.frames / fps;
     let speed = 1;
     if (spec.speed) speed = spec.speed;
-    else if (spec.min_speed || spec.max_speed) speed = Math.min(spec.max_speed ?? 1, Math.max(spec.min_speed ?? 1, avail / need));
+    else if (spec.min_speed || spec.max_speed) {
+      const [lo, hi] = assembleSpeedBounds(spec);
+      speed = Math.min(hi, Math.max(lo, avail / need));
+    }
     p.speed = +speed.toFixed(4);
     p.hold_s = Math.max(0, need - avail / p.speed);
   }
@@ -312,6 +321,7 @@ export async function run(inputs, ctx) {
   const bodyEnd_f = plan.card ? plan.card.start_f : plan.total_f;
 
   // Cuts moved out of words.
+  if (inputs.snap && !inputs.spans && inputs.timeline) throw ctx.error('bad_input', 'snap needs spans or shots: a timeline passed through keeps its scenes, so its cuts cannot move');
   if (inputs.snap && pieces.length > 1) {
     const words = assembleWords(inputs.speech ?? (inputs.timeline ? inputs.timeline.speech : []));
     if (!words.length) ctx.log.warn('snap: the speech has no word timings, so no cut moved');
@@ -461,6 +471,6 @@ export async function run(inputs, ctx) {
     if (moved) zones = [...zones.filter((z) => z.use !== 'logo'), moved];
   }
   if (zones.length) timeline.safe_zones = zones;
-  const marks = pieces.filter((p) => p.mark).map((p) => ({ kind: p.mark, at_s: t3(p.start_f, fps), scene_id: p.scene_id }));
+  const marks = pieces.filter((p) => p.mark).map((p) => ({ kind: p.mark, at_s: t3(p.start_f, fps) }));
   return kitCheckOutputs(ctx, manifest, { video, seconds, timeline, marks });
 }

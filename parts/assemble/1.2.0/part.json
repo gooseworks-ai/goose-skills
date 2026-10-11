@@ -714,8 +714,7 @@
                 "properties": {
                   "id": {
                     "type": "string",
-                    "minLength": 1,
-                    "maxLength": 80
+                    "minLength": 1
                   },
                   "image": {
                     "type": "object",
@@ -841,16 +840,16 @@
                 "type": "number",
                 "minimum": 0.5,
                 "maximum": 2,
-                "description": "clip and video without speed: the slowest it may play to fill its time (default 1); shorter still, it holds its last frame."
+                "description": "clip and video without speed: the slowest it may play to fill its time (default 1, or max_speed when that is below 1); shorter still, it holds its last frame."
               },
               "max_speed": {
                 "type": "number",
                 "minimum": 0.5,
                 "maximum": 2,
-                "description": "clip and video without speed: the fastest it may play to fit its time (default 1); longer still, it is cut."
+                "description": "clip and video without speed: the fastest it may play to fit its time (default 1, or min_speed when that is above 1); longer still, it is cut. Refused below min_speed."
               },
               "pick": {
-                "description": "freeze: last (default) or first clip used so far from the source, or this scene's clip.",
+                "description": "freeze: last (default) or first clip used so far from the source (the source's own last or first clip when none is used yet), or this scene's clip.",
                 "enum": [
                   "last",
                   "first",
@@ -1150,9 +1149,6 @@
             "at_s": {
               "type": "number",
               "minimum": 0
-            },
-            "scene_id": {
-              "type": "string"
             }
           }
         }
