@@ -42,15 +42,15 @@ export class KitPanelError extends Error {
   }
 }
 
-const KIT_PANEL_LABEL_RE = /^[A-Za-z0-9_:.]+$/;
-const KIT_PANEL_HEX_RE = /^#[0-9A-Fa-f]{6}$/;
+const kitPanelLabelRe = /^[A-Za-z0-9_:.]+$/;
+const kitPanelHexRe = /^#[0-9A-Fa-f]{6}$/;
 
 function kitPanelRefuse(message) {
   throw new KitPanelError(message);
 }
 
 function kitPanelLabel(name, what) {
-  if (typeof name !== 'string' || !KIT_PANEL_LABEL_RE.test(name)) kitPanelRefuse(`${what}: "${name}" is not a pad label (letters, digits, _ : .)`);
+  if (typeof name !== 'string' || !kitPanelLabelRe.test(name)) kitPanelRefuse(`${what}: "${name}" is not a pad label (letters, digits, _ : .)`);
   return `[${name}]`;
 }
 
@@ -72,7 +72,7 @@ function kitPanelNum(value, digits = 6) {
 
 /** `#RRGGBB` as ffmpeg's 0xRRGGBB, or a refusal. */
 function kitPanelColor(hex, what) {
-  if (typeof hex !== 'string' || !KIT_PANEL_HEX_RE.test(hex)) kitPanelRefuse(`${what} must be a #RRGGBB colour (got ${JSON.stringify(hex)})`);
+  if (typeof hex !== 'string' || !kitPanelHexRe.test(hex)) kitPanelRefuse(`${what} must be a #RRGGBB colour (got ${JSON.stringify(hex)})`);
   return `0x${hex.slice(1).toUpperCase()}`;
 }
 
@@ -85,9 +85,10 @@ export function kitPanelEven(n) {
 /**
  * The rows of a two-panel stack. `seam` is a ratio of the usable height
  * (0 < seam < 1: 0.62 makes a big top panel) or a pixel row (an integer of 2
- * or more: 768 puts the seam 768 px from the top). The gap is drawn under the
- * top panel, so the seam is exact: top_h + gap_px + bottom_h = height.
- * seam_y is the middle of the gap (where a divider bar centres).
+ * or more: 768 puts the seam 768 px from the top). A pixel seam is honoured
+ * exactly or refused: the gap centres on that row, so seam - gap_px/2 (the top
+ * panel's height) must be even. Rows always add up: top_h + gap_px + bottom_h
+ * = height. seam_y is the middle of the gap (where a divider bar centres).
  */
 export function kitPanelSeamRows(height, seam, { gap_px = 0 } = {}) {
   kitPanelSize(height, 'height');
@@ -100,7 +101,10 @@ export function kitPanelSeamRows(height, seam, { gap_px = 0 } = {}) {
   else {
     if (!Number.isInteger(seam)) kitPanelRefuse(`a pixel seam must be a whole number (got ${seam})`);
     if (seam >= height) kitPanelRefuse(`seam row ${seam} is outside the ${height} px frame`);
-    top = Math.round((seam - gap_px / 2) / 2) * 2;
+    // Honoured exactly or refused: the gap centres on the seam row, so the top
+    // panel is seam - gap/2 tall, and that height must be even (yuv420p).
+    top = seam - gap_px / 2;
+    if (top % 2) kitPanelRefuse(`seam row ${seam} with gap_px ${gap_px} makes an odd top panel (${top} px); use an even seam - gap_px/2`);
   }
   if (top < 2 || top > usable - 2) kitPanelRefuse(`seam ${seam} leaves a panel under 2 px (height ${height}, gap ${gap_px})`);
   return { top_h: top, gap_px, bottom_h: usable - top, seam_y: top + gap_px / 2 };
@@ -320,8 +324,8 @@ export function kitPanelJoinLengths(spans, { fps = 30, transition = 'cut', disso
 }
 
 /**
- * Join segments in order. Each input is trimmed to its frame-exact length
- * (kitPanelJoinLengths) and normalised (fps, timebase, yuv420p), so inputs
+ * Join segments in order. Each input is set to `fps`, then trimmed to its
+ * frame count (kitPanelJoinLengths) and normalised (timebase, yuv420p), so inputs
  * must run at least that long; they must share one frame size. 'cut' is one
  * concat; 'dissolve' is a chain of xfade, each starting on its span edge.
  * Video only: the audio of a compose follows its own timeline.
@@ -333,7 +337,10 @@ export function kitPanelJoin({ inputs, out, spans, fps = 30, transition = 'cut',
   const base = String(out).replace(/[^A-Za-z0-9_]/g, '_');
   const outL = kitPanelLabel(out, 'out');
   const filters = inputs.map(
-    (name, i) => `${kitPanelLabel(name, `inputs[${i}]`)}trim=duration=${kitPanelNum(plan.lengths[i])},setpts=PTS-STARTPTS,fps=${fps},settb=AVTB,format=yuv420p,setsar=1[${base}_j${i}]`,
+    // fps first, then trim by frame count: trimming by seconds before the fps
+    // conversion is a frame long or short whenever the source runs at another rate.
+    (name, i) =>
+      `${kitPanelLabel(name, `inputs[${i}]`)}setpts=PTS-STARTPTS,fps=${fps},trim=end_frame=${Math.round(plan.lengths[i] * fps)},setpts=PTS-STARTPTS,settb=AVTB,format=yuv420p,setsar=1[${base}_j${i}]`,
   );
   if (inputs.length === 1) filters.push(`[${base}_j0]null${outL}`);
   else if (transition === 'cut' || plan.dissolve_s === 0) {

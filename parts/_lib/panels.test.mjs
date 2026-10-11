@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync } from 'node:fs';
+import { mkdtempSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import {
@@ -24,9 +24,14 @@ import { framePixels, hasFfmpeg, probe, run } from '../_tools/kit-harness.mjs';
 const refused = (fn, re) =>
   assert.throws(fn, (e) => e instanceof KitPanelError && e.code === 'bad_input' && (!re || re.test(e.message)));
 
-test('every export is kit-prefixed, so bundled parts never clash', async () => {
+test('every top-level name is kitPanel-prefixed, so bundled parts never clash', async () => {
   const mod = await import('./panels.mjs');
-  for (const name of Object.keys(mod)) assert.match(name, /^(kit|Kit|KIT_)/, name);
+  for (const name of Object.keys(mod)) assert.match(name, /^(kitPanel|KitPanel)/, name);
+  // bundle.mjs inlines _lib files into one scope: private top-level names count too.
+  const src = readFileSync(new URL('./panels.mjs', import.meta.url), 'utf8');
+  const names = [...src.matchAll(/^(?:export\s+)?(?:async\s+)?(?:function|const|let|var|class)\s+([A-Za-z_$][\w$]*)/gm)].map((m) => m[1]);
+  assert.ok(names.length > 20, `found ${names.length} top-level names`);
+  for (const name of names) assert.match(name, /^(kitPanel|KitPanel)/, name);
 });
 
 test('even sizes round to the nearest even number and never go below 2', () => {
@@ -49,6 +54,14 @@ test('a ratio seam splits the usable height; the gap sits under the top panel', 
 test('a pixel seam puts the seam on that row (split-screen seam 768)', () => {
   assert.deepEqual(kitPanelSeamRows(1920, 768), { top_h: 768, gap_px: 0, bottom_h: 1152, seam_y: 768 });
   assert.deepEqual(kitPanelSeamRows(1920, 768, { gap_px: 4 }), { top_h: 766, gap_px: 4, bottom_h: 1150, seam_y: 768 });
+  assert.deepEqual(kitPanelSeamRows(1920, 769, { gap_px: 2 }), { top_h: 768, gap_px: 2, bottom_h: 1150, seam_y: 769 });
+});
+
+test('a pixel seam is honoured exactly or refused, never moved to a nearby row', () => {
+  refused(() => kitPanelSeamRows(1920, 769), /odd top panel/);
+  refused(() => kitPanelSeamRows(1920, 768, { gap_px: 2 }), /odd top panel/);
+  refused(() => kitPanelSeamRows(1920, 1), /odd top panel/);
+  refused(() => kitPanelSeamRows(1920, 2, { gap_px: 4 }), /under 2 px/);
 });
 
 test('a seam that leaves no panel, a fractional pixel seam or an odd gap is refused', () => {
@@ -184,10 +197,10 @@ test('a join is refused with no spans, a span under one frame or a dissolve long
 test('a hard cut is one concat; a dissolve is an xfade chain starting on each span edge', () => {
   const cut = kitPanelJoin({ inputs: ['v0', 'v1', 'v2'], out: 'vcat', spans: [1, 2, 1.5], fps: 30 });
   assert.equal(cut.filters.length, 4);
-  assert.equal(cut.filters[0], '[v0]trim=duration=1,setpts=PTS-STARTPTS,fps=30,settb=AVTB,format=yuv420p,setsar=1[vcat_j0]');
+  assert.equal(cut.filters[0], '[v0]setpts=PTS-STARTPTS,fps=30,trim=end_frame=30,setpts=PTS-STARTPTS,settb=AVTB,format=yuv420p,setsar=1[vcat_j0]');
   assert.equal(cut.filters[3], '[vcat_j0][vcat_j1][vcat_j2]concat=n=3:v=1:a=0[vcat]');
   const dis = kitPanelJoin({ inputs: ['v0', 'v1', 'v2'], out: 'vcat', spans: [1, 2, 1.5], fps: 30, transition: 'dissolve', dissolve_s: 0.1 });
-  assert.equal(dis.filters[0], '[v0]trim=duration=1.1,setpts=PTS-STARTPTS,fps=30,settb=AVTB,format=yuv420p,setsar=1[vcat_j0]');
+  assert.equal(dis.filters[0], '[v0]setpts=PTS-STARTPTS,fps=30,trim=end_frame=33,setpts=PTS-STARTPTS,settb=AVTB,format=yuv420p,setsar=1[vcat_j0]');
   assert.equal(dis.filters[3], '[vcat_j0][vcat_j1]xfade=transition=fade:duration=0.1:offset=1[vcat_x1]');
   assert.equal(dis.filters[4], '[vcat_x1][vcat_j2]xfade=transition=fade:duration=0.1:offset=3[vcat]');
   assert.equal(dis.total_s, 4.5);
@@ -242,4 +255,21 @@ test('a dissolve join keeps the hard-cut length and lands each cut on its span e
   assert.ok(near(await at(2.5), [0, 0, 255]), 'segment 3 after its dissolve');
   const mid = await at(1.1);
   assert.ok(mid[0] > 60 && mid[1] > 60, `mid-dissolve mixes both: ${mid}`);
+});
+
+test('a join is frame exact even when the sources run at another rate', { skip }, async () => {
+  const dir = mkdtempSync(join(tmpdir(), 'kit-panels-'));
+  const spans = [0.7, 1.3, 0.45, 2.1];
+  for (const [rate, transition] of [
+    [25, 'cut'],
+    [25, 'dissolve'],
+    [24, 'dissolve'],
+  ]) {
+    const out = join(dir, `join-${rate}-${transition}.mp4`);
+    const { filters, total_s } = kitPanelJoin({ inputs: spans.map((_, i) => `${i}:v`), out: 'v', spans, fps: 30, transition, dissolve_s: 0.2 });
+    const inputs = spans.flatMap(() => ['-f', 'lavfi', '-i', `testsrc2=s=160x284:r=${rate}:d=3`]);
+    await run('ffmpeg', ['-hide_banner', '-nostdin', '-loglevel', 'error', '-y', ...inputs, '-filter_complex', filters.join(';'), '-map', '[v]', '-c:v', 'libx264', '-pix_fmt', 'yuv420p', out]);
+    const { stdout } = await run('ffprobe', ['-v', 'error', '-count_frames', '-select_streams', 'v:0', '-show_entries', 'stream=nb_read_frames', '-of', 'csv=p=0', out]);
+    assert.equal(Number(String(stdout).trim()), Math.round(total_s * 30), `${rate} fps ${transition}`);
+  }
 });
