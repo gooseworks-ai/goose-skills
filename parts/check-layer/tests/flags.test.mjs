@@ -21,8 +21,8 @@ async function textOnBlack(workDir, name, seconds, enable) {
   return fileRef(out, 'video');
 }
 
-test('1.3.0 is the newest check layer and stays free with no network', () => {
-  assert.equal(manifest.version, '1.3.0');
+test('the newest check layer (1.3.0 or later) stays free with no network', () => {
+  assert.ok(manifest.version.localeCompare('1.3.0', 'en', { numeric: true }) >= 0, manifest.version);
   assert.deepEqual([manifest.needs.network, manifest.needs.models, manifest.cost.basis], [false, [], 'free']);
 });
 
@@ -156,11 +156,11 @@ test('read_rate, cuts_between_words and cut_rate are measured from the timeline'
 test('flags this version does not measure stay not_applicable and never fail the video', { skip }, async () => {
   const { ctx } = makeCtx({ partDir: dir });
   const video = await levelledCut(ctx.workDir, 'later', 4);
-  const out = await mod.run(await layerInputsFor(video, { expect: { speech: 'voiceover', qc_flags: ['captions_cross_cuts', 'min_shot', 'text_legible', 'cut_rate', 'future-flag', 'Some Flag'] } }), ctx);
+  const out = await mod.run(await layerInputsFor(video, { expect: { speech: 'voiceover', qc_flags: ['faces_read_real', 'later_flag', 'text_legible', 'cut_rate', 'future-flag', 'Some Flag'] } }), ctx);
   const s = status(out);
-  for (const f of ['captions_cross_cuts', 'min_shot', 'text_legible', 'future-flag', 'Some Flag']) assert.equal(s[`flag:${f}`], 'not_applicable', f);
+  for (const f of ['faces_read_real', 'later_flag', 'text_legible', 'future-flag', 'Some Flag']) assert.equal(s[`flag:${f}`], 'not_applicable', f);
   assert.equal(check(out, 'flag:text_legible').found, 'needs eyes; not checked by machine');
-  assert.equal(check(out, 'flag:min_shot').found, 'not measured by this check layer');
+  assert.equal(check(out, 'flag:later_flag').found, 'not measured by this check layer');
   assert.equal(s['flag:cut_rate'], 'not_applicable', 'no scenes in the timeline');
   assert.equal(out.verdict.pass, true, JSON.stringify(out.verdict.reasons));
 });
