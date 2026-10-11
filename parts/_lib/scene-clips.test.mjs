@@ -42,6 +42,24 @@ test('slots: a scene runs only to the next span, even one pick leaves out', () =
   assert.deepEqual([...slots.values()], [2, 1.25]);
 });
 
+test('slots: scenes with no span after a span made elsewhere share that span, not the next one', () => {
+  const slots = kitClipSlots(jobs('silent', 'next'), [
+    { id: 'hook', start_s: 0, end_s: 9 },
+    { id: 'next', start_s: 10, end_s: 12 },
+  ]);
+  assert.deepEqual([...slots.entries()], [['silent', 5], ['next', 2.25]]);
+});
+
+test('slots refuse spanned scenes out of the spans\' order, before anything is bought', () => {
+  assert.throws(() => kitClipSlots(jobs('later', 'earlier'), [{ id: 'later', start_s: 5, end_s: 6 }, { id: 'earlier', start_s: 1, end_s: 2 }]), /starts at or before scene later/);
+  assert.throws(() => kitClipSlots(jobs('a', 'b'), [{ id: 'a', start_s: 1, end_s: 2 }, { id: 'b', start_s: 1, end_s: 3 }]), /starts at or before/);
+});
+
+test('jobs refuse two picked scenes with one id', () => {
+  const tpl = kitClipTemplate(null);
+  assert.throws(() => kitClipJobs(tpl, { stills: [{ id: 'a', image: img('a') }], scenes: [{ id: 'a', picture: 'x' }, { id: 'a', picture: 'y' }] }), /two scenes have the id a/);
+});
+
 test('slots refuse spans named twice, spans that end before they start, and spans that name no scene', () => {
   assert.throws(() => kitClipSlots(jobs('a'), [{ id: 'a', start_s: 0, end_s: 1 }, { id: 'a', start_s: 1, end_s: 2 }]), /twice/);
   assert.throws(() => kitClipSlots(jobs('a'), [{ id: 'a', start_s: 2, end_s: 1 }]), /ends before it starts/);
