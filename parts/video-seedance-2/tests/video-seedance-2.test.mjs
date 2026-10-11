@@ -37,13 +37,13 @@ const work = () => mkdtempSync(join(tmpdir(), 'sd-'));
 const ctxFor = (inputs, line = falLine, extra = {}) => makeCtx({ partDir: dir, line, seed: inputs.seed ?? null, ...extra });
 const refused = (e) => e.code === 'bad_input';
 
-test('a 1.0.1 clip list orders the same pieces with the same bodies in 1.0.1 and 1.1.0', { skip }, async () => {
+test('a 1.0.1 clip list orders the same pieces with the same bodies in 1.0.1, 1.1.0 and 1.2.0', { skip }, async () => {
   const w = work();
   const inputs = await sample.inputs(w);
   // Braces in a 1.0.1 prompt are text, not placeholders: with no fill input they go as written.
   inputs.clips[0].prompt += ' A {camera} shot.';
   const seen = [];
-  for (const version of ['1.0.1', '1.1.0']) {
+  for (const version of ['1.0.1', '1.1.0', '1.2.0']) {
     const part = await loadPart('video-seedance-2', version);
     const { ctx, orders } = makeCtx({ partDir: part.dir, line: sample.line, workDir: join(w, version) });
     const out = await part.mod.run(structuredClone(inputs), ctx);
@@ -51,6 +51,7 @@ test('a 1.0.1 clip list orders the same pieces with the same bodies in 1.0.1 and
     assert.equal(out.clips[0].id, 'hook', version);
   }
   assert.equal(seen[0], seen[1], 'same pieces, so a saved 1.0.1 clip is reused, never billed again');
+  assert.equal(seen[0], seen[2], '1.2.0 too: the integer duration and the braces go as written');
 });
 
 test('fixture: product-hypermotion runs one image-to-video clip from the product photo and fills the template', { skip }, async () => {
