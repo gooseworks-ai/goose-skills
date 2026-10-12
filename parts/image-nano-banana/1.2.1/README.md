@@ -3,7 +3,10 @@
 Stills from Nano Banana on fal, one paid piece per image. 1.1.0 added **scenes mode**: one still per plan scene,
 with the prompt filled from the style's template and the references picked from the plan. 1.2.0 adds **products
 mode**: edits of each product's own photo (a snap still, a three-quarter angled still) for range and grid cards.
-1.2.1 adds **locked scene images** in scenes mode: a picture already approved is the final still, not redrawn.
+1.2.1 names a refused still in the log: which piece, what it was for (a cast member's picture, a scene's still,
+a product still), the model, the reference count, the reason (the provider's words when the server passes them on)
+and the start of the prompt, with links cut to their origin and path and secret-looking values blanked. The step
+still fails as before.
 
 - **Paid piece** per still, through the private line only: fal `fal-ai/nano-banana` (prompt alone) or
   `fal-ai/nano-banana/edit` (with references), body `{prompt, image_urls?, aspect_ratio?, seed?, num_images: 1,
@@ -46,21 +49,6 @@ Inputs: `scenes` (plan.scenes, max 40), `template` (a style's `frames/<name>.pro
 - **Outputs**: `images [{id: scene id, image}]`, `scenes` (every input scene, `image` = its still), `cast`
   (every member, `image` filled; members with an image pass through free) and `anchors [{id: key, image}]`.
   Scenes mode always returns all four; `cast` and `anchors` are empty lists without a cast.
-
-### Locked scene images (1.2.1)
-
-- A scene with `image_locked: true` and an `image` file keeps that image as its still, as is: nothing is ordered
-  for it and its prompt is never filled, so it cannot refuse the step. A PNG, JPEG or WebP is passed through
-  untouched; any other picture (AVIF, HEIC, GIF) becomes a PNG of its first frame, free. It is used to reuse a preview the customer saw before
-  the yes (the key scene of a style), so the server sets both fields; the AI never does.
-- It must be a scene the step picks (`pick`, `skip_first`, `skip_last`); a locked scene the step does not pick is
-  only logged. `image_locked` without an `image` refuses the step before anything is ordered.
-- With `anchor: first_scene`, a locked first scene is the reference for every later still.
-- With `anchor: cast`, a member named only by locked scenes gets no anchor drawn. Members other scenes name are
-  drawn as before unless they have an image; to keep the people in later scenes the same as in the locked
-  picture, give those members the portrait the picture was drawn from as their `image`.
-- The image should already be at the step's `aspect_ratio`; it is not cropped or scaled.
-- Outputs are unchanged: the locked scene's entry in `images` and `scenes` is its own image.
 
 ## products mode (1.2.0)
 

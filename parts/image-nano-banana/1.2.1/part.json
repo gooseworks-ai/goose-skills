@@ -195,10 +195,6 @@
                 }
               ]
             },
-            "image_locked": {
-              "description": "scenes mode: true makes image this scene's final still, used as is with nothing ordered (a preview already approved). Needs image.",
-              "type": "boolean"
-            },
             "speaker": {
               "type": [
                 "string",

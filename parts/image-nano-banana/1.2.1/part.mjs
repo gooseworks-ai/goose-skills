@@ -1065,15 +1065,11 @@ function kitStillOutputs({ scenes = [], cast = [], jobs = [], stills, anchors })
 //            product on a plain textured surface; "angled": a three-quarter view
 //            floating over warm white), for range and grid cards. The photo is
 //            the only reference: a product still is never drawn from text.
-//
-// 1.2.1: in scenes mode a scene with image_locked: true keeps its own image as
-// its still, ordering nothing (a preview the customer already approved).
 
 const EDIT = 'fal-ai/nano-banana/edit';
 const TEXT = 'fal-ai/nano-banana';
 const NB_PROMPT_MAX = 12000;
 const NB_AT_ONCE = 4;
-const NB_LOCKED_MIME = ['image/png', 'image/jpeg', 'image/webp'];
 const NB_SCENE_ONLY = ['scenes', 'template', 'look', 'answers', 'cast', 'products', 'brand', 'pick', 'skip_first', 'skip_last', 'anchor', 'cast_aspect_ratio', 'style_refs', 'multi_ref'];
 // Inputs products mode refuses (they pick or draw scenes and cast).
 const NB_NOT_PRODUCTS = ['images', 'scenes', 'cast', 'pick', 'skip_first', 'skip_last', 'anchor', 'cast_aspect_ratio', 'style_refs', 'multi_ref'];
@@ -1091,21 +1087,89 @@ async function nbIsPng(path) {
   return head.equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]));
 }
 
-/** One paid still: `refs` go to /edit; without refs the prompt-only model draws it. */
-async function nbDraw(ctx, { piece, refs, prompt, aspect, seed }) {
+// The kit's log redactor misses structured secrets and signed links, so a refusal's logged values pass here first.
+const NB_SECRET_NAME = /key|token|secret|signature|authori[sz]ation|password|passwd|credential|cookie/i;
+const NB_LINK = /\b[a-z][a-z0-9+.-]*:\/\/[^\s"'<>`]+/gi;
+const NB_LOG_TEXT_MAX = 600;
+
+/** Text for the run log: links keep only their origin and path; auth headers, bearer tokens and name=secret pairs are blanked. */
+function nbSafeText(text) {
+  return String(text)
+    .replace(NB_LINK, (link) => {
+      try {
+        const u = new URL(link);
+        return `${u.protocol}//${u.host}${u.pathname}`;
+      } catch {
+        return '[link]';
+      }
+    })
+    .replace(/\b((?:proxy-)?authori[sz]ation["']?\s*[:=]\s*["']?)(?:(?:Bearer|Basic|Key|Token)\s+)?[^\s"',;}]+/gi, '$1[redacted]')
+    .replace(/\bBearer\s+[A-Za-z0-9._~+/=-]{16,}/g, 'Bearer [redacted]')
+    .replace(/\b([A-Za-z0-9_-]*?(?:key|token|secret|signature|password|passwd|credentials?)(?:[_-][A-Za-z0-9]+)*["']?\s*[:=]\s*["']?)[^\s"'&,;}]+/gi, '$1[redacted]')
+    .slice(0, NB_LOG_TEXT_MAX);
+}
+
+/** A JSON value for the run log: secret-named fields blanked, every string through nbSafeText, size bounded. */
+function nbSafeValue(value, depth = 0) {
+  if (typeof value === 'string') return nbSafeText(value);
+  if (typeof value === 'number' || typeof value === 'boolean') return value;
+  if (value === null || typeof value !== 'object') return null;
+  if (depth >= 4) return '[nested]';
+  if (Array.isArray(value)) return value.slice(0, 20).map((v) => nbSafeValue(v, depth + 1));
+  const out = {};
+  for (const [name, v] of Object.entries(value).slice(0, 20)) out[name] = NB_SECRET_NAME.test(name) ? '[redacted]' : nbSafeValue(v, depth + 1);
+  return out;
+}
+
+/**
+ * Logs a refused still: what it was for, the piece, the model, the reference count, the reason and the
+ * prompt's start. The reason is the line's own words (the provider's, when the line passes them on), else
+ * the error's detail or message, else null. Never throws, so the refusal itself is what the step fails with.
+ */
+function nbLogRefusal(ctx, err, { piece, about, model, refs, prompt }) {
+  try {
+    const line = err.line && typeof err.line === 'object' ? err.line : {};
+    const message = err.message !== err.code ? err.message : null;
+    const said = [line.error, err.detail, message].find((s) => typeof s === 'string' && s.trim());
+    const fields = {
+      piece,
+      model,
+      references: Array.isArray(refs) ? refs.length : 0,
+      reason: said ? nbSafeText(said.trim()) : null,
+      prompt: nbSafeText(prompt ?? ''),
+    };
+    if (line.details && typeof line.details === 'object' && !Array.isArray(line.details)) fields.details = nbSafeValue(line.details);
+    ctx.log.warn(`the image maker refused ${about || piece}`, fields);
+  } catch {
+    // A log that can't be written must not hide the refusal.
+  }
+}
+
+/**
+ * One paid still: `refs` go to /edit; without refs the prompt-only model draws it. `about` says in plain
+ * words what the still is for (a cast member, a scene, a product); a refused still is logged with it, so
+ * the log names the piece the plan has to change.
+ */
+async function nbDraw(ctx, { piece, refs, prompt, aspect, seed, about }) {
   kitStopIfAborted(ctx);
   const model = refs && refs.length ? EDIT : TEXT;
   const body = { prompt, num_images: 1, output_format: 'png' };
   if (model === EDIT) body.image_urls = refs;
   if (aspect) body.aspect_ratio = aspect;
   if (Number.isInteger(seed)) body.seed = seed;
-  const result = await ctx.line.order({
-    piece,
-    provider: 'fal',
-    path: model === EDIT ? EDIT : TEXT,
-    body,
-    results: [{ pointer: '/json/images/0/url', name: `${piece}-raw.png`, media: 'image' }],
-  });
+  let result;
+  try {
+    result = await ctx.line.order({
+      piece,
+      provider: 'fal',
+      path: model === EDIT ? EDIT : TEXT,
+      body,
+      results: [{ pointer: '/json/images/0/url', name: `${piece}-raw.png`, media: 'image' }],
+    });
+  } catch (err) {
+    if (err && err.code === 'provider_rejected') nbLogRefusal(ctx, err, { piece, about, model, refs, prompt });
+    throw err;
+  }
   const raw = result && result.files && result.files[`${piece}-raw.png`];
   if (!raw) throw ctx.error('provider_failed', `no image for ${piece}`);
   if (await nbIsPng(raw.path)) return raw;
@@ -1150,7 +1214,7 @@ async function nbImages(inputs, ctx, manifest) {
   const images = [];
   for (const [i, img] of inputs.images.entries()) {
     const piece = kitPieceName('image', img.id, i, used);
-    const file = await nbDraw(ctx, { piece, refs: model === EDIT ? img.references : null, prompt: img.prompt, aspect: inputs.aspect_ratio, seed: inputs.seed });
+    const file = await nbDraw(ctx, { piece, refs: model === EDIT ? img.references : null, prompt: img.prompt, aspect: inputs.aspect_ratio, seed: inputs.seed, about: `image ${img.id ?? i + 1}` });
     images.push({ id: String(img.id ?? i + 1), image: file });
     ctx.progress({ done: i + 1, total: inputs.images.length });
   }
@@ -1171,10 +1235,6 @@ async function nbScenes(inputs, ctx, manifest) {
     if (keys.has(m.key)) throw ctx.error('bad_input', `two cast members have the key ${m.key}`);
     keys.add(m.key);
   }
-  for (const s of inputs.scenes) {
-    if (s.image_locked === true && !s.image) throw ctx.error('bad_input', `scene ${s.id} is marked image_locked but has no image`);
-  }
-  const locked = (job) => job.scene.image_locked === true;
 
   // Everything that can refuse happens before the first piece is ordered.
   let tpl;
@@ -1183,33 +1243,17 @@ async function nbScenes(inputs, ctx, manifest) {
   const anchorJobs = [];
   try {
     tpl = kitStillTemplate(inputs.template ? await kitLoadTemplate(inputs.template) : null);
-    // A locked scene is never redrawn, so only the other picked scenes get a prompt (and can refuse).
-    const picked = kitPickScenes(inputs.scenes, inputs.pick, { skip_first: inputs.skip_first, skip_last: inputs.skip_last });
-    const open = picked.filter((p) => p.scene.image_locked !== true);
-    const filled = kitStillJobs(tpl, open.map((p) => p.scene), { ...base, cast, products: inputs.products || [], multi_ref: inputs.multi_ref });
-    filled.forEach((j, i) => {
-      j.index = open[i].index;
-    });
-    const byIndex = new Map(filled.map((j) => [j.index, j]));
-    jobs = picked.map((p) => byIndex.get(p.index) || { id: String(p.scene.id), index: p.index, scene: p.scene, prompt: '', negative: '', tag: null, cast: [], strip: false, products: [], scene_image: null });
-    const ids = new Set();
-    for (const j of jobs) {
-      if (ids.has(j.id)) throw new Error(`two scenes have the id ${j.id}`);
-      ids.add(j.id);
-    }
+    jobs = kitStillJobs(tpl, inputs.scenes, { ...base, pick: inputs.pick, skip_first: inputs.skip_first, skip_last: inputs.skip_last, cast, products: inputs.products || [], multi_ref: inputs.multi_ref });
     if (model === EDIT && anchor === 'cast') {
-      for (const m of kitStillAnchorMembers(jobs.filter((j) => !locked(j)))) if (!m.image) anchorJobs.push({ member: m, prompt: kitStillAnchorPrompt(tpl, m, base) });
+      for (const m of kitStillAnchorMembers(jobs)) if (!m.image) anchorJobs.push({ member: m, prompt: kitStillAnchorPrompt(tpl, m, base) });
     }
   } catch (err) {
     if (ctx.signal && ctx.signal.aborted) throw ctx.error('stopped', 'the step was stopped');
     throw ctx.error('bad_input', err instanceof KitPromptGap ? err.message : String((err && err.message) || err));
   }
   if (!jobs.length) throw ctx.error('bad_input', 'no scene is picked for a still');
-  for (const s of inputs.scenes) {
-    if (s.image_locked === true && !jobs.some((j) => j.id === s.id)) ctx.log.warn(`scene ${s.id} is image_locked but this step does not pick it`);
-  }
   // The strip note added later is under 600 characters.
-  for (const text of [...jobs.filter((j) => !locked(j)).map((j) => kitStillPrompt(j, {})), ...anchorJobs.map((a) => a.prompt)]) {
+  for (const text of [...jobs.map((j) => kitStillPrompt(j, {})), ...anchorJobs.map((a) => a.prompt)]) {
     if (text.length > NB_PROMPT_MAX - 600) throw ctx.error('bad_input', `a prompt is over ${NB_PROMPT_MAX - 600} characters`);
   }
 
@@ -1228,7 +1272,7 @@ async function nbScenes(inputs, ctx, manifest) {
   for (const m of cast) if (m.image) anchors.set(m.key, m.image);
   const styleRefs = model === EDIT ? inputs.style_refs || [] : [];
   await nbEach(anchorJobs, async (a) => {
-    const file = await nbDraw(ctx, { piece: a.piece, refs: styleRefs, prompt: a.prompt, aspect: inputs.cast_aspect_ratio || '1:1', seed: inputs.seed });
+    const file = await nbDraw(ctx, { piece: a.piece, refs: styleRefs, prompt: a.prompt, aspect: inputs.cast_aspect_ratio || '1:1', seed: inputs.seed, about: `the character picture of ${a.member.name || a.member.key} (cast)` });
     anchors.set(a.member.key, file);
     tick();
   });
@@ -1243,25 +1287,13 @@ async function nbScenes(inputs, ctx, manifest) {
   };
   const stills = new Map();
   const drawJob = async (job, first) => {
-    if (locked(job)) {
-      kitStopIfAborted(ctx);
-      // Kept pixel for pixel; a picture the motion parts cannot read (AVIF, HEIC, GIF) becomes a PNG, free.
-      let file = job.scene.image;
-      if (!NB_LOCKED_MIME.includes(file.mime)) {
-        await kitFfmpeg(ctx, ['-i', file.path, '-frames:v', '1', '-c:v', 'png', join(ctx.workDir, `${job.piece}.png`)]);
-        file = await ctx.file(`${job.piece}.png`, 'image');
-      }
-      stills.set(job.id, file);
-      tick();
-      return;
-    }
     let refs = { files: [], strip_at: null, names: null };
     if (model === EDIT) {
       const castFiles = kitStillCastFiles(job, anchors);
       const castRefs = kitStillWantsStrip(job, castFiles) ? [await stripFor(castFiles)] : castFiles.slice(0, 3);
       refs = kitStillRefs(job, { cast: castRefs, first, style_refs: styleRefs });
     }
-    const file = await nbDraw(ctx, { piece: job.piece, refs: refs.files, prompt: kitStillPrompt(job, refs), aspect: inputs.aspect_ratio, seed: inputs.seed });
+    const file = await nbDraw(ctx, { piece: job.piece, refs: refs.files, prompt: kitStillPrompt(job, refs), aspect: inputs.aspect_ratio, seed: inputs.seed, about: `the still for scene ${job.id}` });
     stills.set(job.id, file);
     tick();
   };
@@ -1342,7 +1374,7 @@ async function nbProducts(inputs, ctx, manifest) {
   for (const [i, j] of jobs.entries()) j.piece = kitPieceName(j.kind, j.product.id, i, used);
   let done = 0;
   const files = await nbEach(jobs, async (j) => {
-    const file = await nbDraw(ctx, { piece: j.piece, refs: [j.product.images[0]], prompt: j.prompt, aspect: inputs.aspect_ratio, seed: inputs.seed });
+    const file = await nbDraw(ctx, { piece: j.piece, refs: [j.product.images[0]], prompt: j.prompt, aspect: inputs.aspect_ratio, seed: inputs.seed, about: `the ${j.kind} still of ${j.product.name}` });
     ctx.progress({ done: ++done, total: jobs.length });
     return file;
   });
