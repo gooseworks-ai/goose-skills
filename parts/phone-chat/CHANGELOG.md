@@ -1,5 +1,12 @@
 # phone-chat
 
+## 1.3.0
+
+- The notification cascade fits the plan instead of refusing it. Each banner is as tall as its own body (up to four lines, iOS's limit), not the tallest one's; when the pile would reach the top band, the oldest banners fold into an iOS-style stack behind the newer ones as the next arrives (up to two slivers peek above, the pill rides above them), so 3 to 5 notifications of up to two lines and a success message always fit. Five two-line notifications were refused before. Every message still arrives open at the bottom with its pop.
+- A word wider than a cascade banner breaks between its characters, and a sender or brand name too long for its line is cut with an ellipsis, as iOS does; both were refused before. A cascade is refused only when even the folded stack cannot fit, or a body needs more than four lines, and the message says what to shorten and by how much.
+- ChatGPT: a question longer than the composer shows scrolls inside it as it is typed (it was refused).
+- `measure_only` returns `warnings` when a skin fitted something, in plain words naming the scene.
+
 ## 1.2.0
 
 - The end card step's logo box comes through: with `ending_timeline` (the card step's timeline) the logo box it declared is placed on the chat's timeline as the card is joined, so the final check looks for the logo where the card draws it.
