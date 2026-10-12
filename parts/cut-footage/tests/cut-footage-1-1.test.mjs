@@ -221,7 +221,7 @@ test('refuses, in plain words and before any render: a join no insert covers, a 
   await assert.rejects(mod.run({ video: talk, timeline, scenes, footage, joins: [{ start_s: 0 }, { start_s: 5 }] }, ctx), (e) => e.code === 'bad_input' && /cut between takes at 5s would show/.test(e.message));
   await assert.rejects(mod.run({ mode: 'scenes', scenes, footage }, ctx), (e) => e.code === 'bad_input' && /scene "s1" has no footage window, image or lead/.test(e.message));
   await assert.rejects(mod.run({ video: talk, footage, band: { x: 0, y: 0, width: 100, height: 100 }, lead: { video: talk } }, ctx), (e) => e.code === 'bad_input' && /band mode does not use lead/.test(e.message));
-  await assert.rejects(mod.run({ mode: 'scenes', scenes: [{ id: 's2' }], footage, look: 'screen', screen: { rot: 5 } }, ctx), (e) => e.code === 'bad_input' && /screen.rot 5 is outside/.test(e.message));
+  await assert.rejects(mod.run({ mode: 'scenes', scenes: [{ id: 's2' }], footage, look: 'screen', screen: { rot: 5 } }, ctx), (e) => e.code === 'bad_input' && /screen\.rot(: above 1\.5| 5 is outside)/.test(e.message));
   await assert.rejects(
     mod.run({ mode: 'scenes', scenes: [{ id: 'a' }, { id: 'b' }], footage: [{ file: rec, asset_id: 'rec', start_ms: 4000, end_ms: 6000, scene_id: 'a' }, { file: rec, asset_id: 'rec', start_ms: 0, end_ms: 2000, scene_id: 'b' }] }, ctx),
     (e) => e.code === 'bad_input' && /goes back in the recording/.test(e.message),

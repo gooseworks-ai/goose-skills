@@ -1,6 +1,7 @@
 // cut-footage's planning: which source each plan scene plays, how long each
-// beat lasts and at what speed, which source ranges the beats use, and where
-// the inserts sit over a talking track. Pure functions over plain objects:
+// beat lasts and at what speed, which source ranges the beats use, where the
+// inserts (or split beats) sit over a talking track, and which stretches of
+// that track show the creator full frame. Pure functions over plain objects:
 // they never run ffmpeg or read files. A problem is a CutRefusal (code
 // 'bad_input') with a plain message; part.mjs turns it into ctx.error.
 //
@@ -27,9 +28,10 @@ function cutFmt(v, digits = 2) {
   return Number(v).toFixed(digits).replace(/\.?0+$/, '') || '0';
 }
 
-/** The mode a call runs in: the explicit `mode`, else band without scenes, inserts with scenes and a talking video, else scenes. */
+/** The mode a call runs in: the explicit `mode`, else split with a layout, band without scenes, inserts with scenes and a talking video, else scenes. */
 export function cutModeOf(inputs) {
   if (inputs.mode) return inputs.mode;
+  if (inputs.layout) return 'split';
   if (!inputs.scenes) return 'band';
   return inputs.video ? 'inserts' : 'scenes';
 }
@@ -39,9 +41,10 @@ export function cutModeOf(inputs) {
 const CUT_MODE_INPUTS = {
   band: ['mode', 'video', 'footage', 'band', 'fit', 'speed', 'min_speed', 'max_speed', 'audio'],
   scenes: ['mode', 'scenes', 'footage', 'lead', 'look', 'screen', 'fit', 'transition', 'scene_seconds', 'still_seconds', 'speed', 'min_speed', 'max_speed', 'order', 'width', 'height', 'fps'],
-  inserts: ['mode', 'video', 'timeline', 'scenes', 'footage', 'joins', 'look', 'screen', 'fit', 'speed', 'min_speed', 'max_speed', 'order'],
+  inserts: ['mode', 'video', 'timeline', 'scenes', 'footage', 'joins', 'look', 'screen', 'fit', 'speed', 'min_speed', 'max_speed', 'order', 'grid', 'push_in', 'first_scene_look', 'card_color'],
+  split: ['mode', 'video', 'timeline', 'scenes', 'footage', 'layout', 'look', 'screen', 'fit', 'speed', 'min_speed', 'max_speed', 'order', 'push_in', 'first_scene_look', 'card_color'],
 };
-const CUT_MODE_NEEDS = { band: ['video', 'band'], scenes: ['scenes'], inserts: ['video', 'timeline', 'scenes'] };
+const CUT_MODE_NEEDS = { band: ['video', 'band'], scenes: ['scenes'], inserts: ['video', 'timeline', 'scenes'], split: ['video', 'timeline', 'scenes'] };
 
 /** Refuses inputs the mode does not read and missing inputs it needs. */
 export function cutCheckMode(mode, inputs) {
@@ -69,31 +72,61 @@ function cutEntryName(entry) {
   return entry.asset_id ? `"${entry.asset_id}"` : entry.scene_id ? `for scene "${entry.scene_id}"` : '(no asset id)';
 }
 
+/** True when a plan scene is tagged as a grid beat (`extra.shot: "grid"`). */
+export function cutIsGridScene(scene) {
+  return !!scene && !!scene.extra && typeof scene.extra === 'object' && scene.extra.shot === 'grid';
+}
+
+/** How many cells a grid layout has. */
+export const CUT_GRID_CELLS = { '2x2': 4 };
+
 /**
- * Each scene's source, in plan order: its footage entry (matched by
- * scene_id), else its image, else (the first scene only) the lead clip.
- * Returns [{scene, index, kind: 'window' | 'still' | 'lead' | 'none', entry?, image?}].
+ * Each scene's source, in plan order: its footage window (matched by
+ * scene_id), else (the first scene only) the lead clip, else its image
+ * footage or scene image.
+ * Returns [{scene, index, kind: 'window' | 'still' | 'lead' | 'grid' | 'none', entry?, entries?, image?}].
  * `need` = 'all' refuses a scene with no source (scenes mode); 'any' leaves it as 'none' (inserts mode).
+ * `grid` (a layout such as '2x2', inserts mode): a scene tagged `extra.shot: "grid"` takes exactly
+ * that many footage entries, in plan order, as one grid beat. Without it, one entry per scene.
  */
-export function cutSceneSources(scenes, footage, { lead = null, need = 'all' } = {}) {
+export function cutSceneSources(scenes, footage, { lead = null, need = 'all', grid = null } = {}) {
   const ids = new Set();
+  const gridIds = new Set();
   for (const s of scenes) {
     if (ids.has(s.id)) throw new CutRefusal(`scene "${s.id}" appears twice in the plan`);
     ids.add(s.id);
+    if (grid && cutIsGridScene(s)) gridIds.add(s.id);
   }
   const byScene = new Map();
+  const cells = new Map();
   for (const entry of footage || []) {
     if (!cutEntryFile(entry)) throw new CutRefusal(`footage ${cutEntryName(entry)} has no clip file`);
     if (entry.scene_id == null) continue;
     if (!ids.has(entry.scene_id)) throw new CutRefusal(`footage ${cutEntryName(entry)} names scene "${entry.scene_id}", which is not in the plan`);
-    if (byScene.has(entry.scene_id)) throw new CutRefusal(`scene "${entry.scene_id}" has more than one footage entry; this version plays one per scene`);
+    if (gridIds.has(entry.scene_id)) {
+      cells.set(entry.scene_id, [...(cells.get(entry.scene_id) || []), entry]);
+      continue;
+    }
+    if (byScene.has(entry.scene_id)) throw new CutRefusal(`scene "${entry.scene_id}" has more than one footage entry; this version plays one per scene (or tag it extra.shot "grid" and give grid)`);
     byScene.set(entry.scene_id, entry);
   }
+  const want = grid ? CUT_GRID_CELLS[grid] : 0;
+  if (grid && !want) throw new CutRefusal(`grid layout "${grid}" is not one this version draws (2x2)`);
   return scenes.map((scene, index) => {
+    if (gridIds.has(scene.id)) {
+      const entries = cells.get(scene.id) || [];
+      if (entries.length !== want) throw new CutRefusal(`grid scene "${scene.id}" has ${entries.length} footage entries; a ${grid} grid needs exactly ${want}`);
+      entries.forEach((e) => cutEntryIsStill(e));
+      return { scene, index, kind: 'grid', entries };
+    }
     const entry = byScene.get(scene.id);
-    if (entry) return { scene, index, kind: cutEntryIsStill(entry) ? 'still' : 'window', entry };
-    if (scene.image) return { scene, index, kind: 'still', image: scene.image };
+    const still = entry ? cutEntryIsStill(entry) : false;
+    if (entry && !still) return { scene, index, kind: 'window', entry };
+    // The lead plays as the first scene whenever that scene has no footage window (§4.5): a scene
+    // image or image footage there does not hide the creator hook.
     if (index === 0 && lead) return { scene, index, kind: 'lead' };
+    if (entry) return { scene, index, kind: 'still', entry };
+    if (scene.image) return { scene, index, kind: 'still', image: scene.image };
     if (need === 'all') throw new CutRefusal(`scene "${scene.id}" has no footage window, image or lead clip to show`);
     return { scene, index, kind: 'none' };
   });
@@ -339,4 +372,61 @@ export function cutInsertRange(slot, { from, to }, seconds, opts, what) {
   const start = from - extended;
   const speed = cutSpeedFor(to - start, seconds, opts, what);
   return { from: start, to: start + seconds * speed, speed, extended_s: extended };
+}
+
+/**
+ * Split mode: each split beat's slot on the talking track. `beats` are the
+ * sources with a window or still; `timelineScenes` the track's timeline scenes.
+ * Beats tile with the scenes around them: a beat starts at its scene's start
+ * (0 for the earliest scene) and runs to the next scene's start (the end of
+ * the track for the last), so no frame of full-frame creator flashes between
+ * two split beats. Times are whole frames. Returns [{...source, start_s, end_s}].
+ */
+export function cutSplitSlots(beats, timelineScenes, { duration, fps }) {
+  const order = [...timelineScenes].map((s, i) => ({ ...s, i })).sort((a, b) => a.start_s - b.start_s || a.i - b.i);
+  const last = Math.floor(duration * fps + 1e-6) / fps;
+  const frame = (t) => Math.round(t * fps) / fps;
+  const slots = beats.map((src) => {
+    const k = order.findIndex((s) => String(s.id) === String(src.scene.id));
+    if (k < 0) throw new CutRefusal(`scene "${src.scene.id}" has footage but no time in the talking track's timeline`);
+    const start = k === 0 ? 0 : Math.max(0, order[k].start_s);
+    const end = Math.min(duration, k + 1 < order.length ? order[k + 1].start_s : duration);
+    const s = frame(start);
+    const e = Math.min(frame(end), last);
+    if (!(e - s >= 1 / fps - CUT_EPS)) throw new CutRefusal(`scene "${src.scene.id}" lasts under one frame in the talking track, too short for a split beat`);
+    return { ...src, start_s: s, end_s: e };
+  });
+  slots.sort((a, b) => a.start_s - b.start_s);
+  for (let i = 1; i < slots.length; i++) {
+    if (slots[i].start_s < slots[i - 1].end_s - CUT_EPS) throw new CutRefusal(`the split beats for scenes "${slots[i - 1].scene.id}" and "${slots[i].scene.id}" overlap in time`);
+  }
+  return slots;
+}
+
+/**
+ * The stretches of a talking track that show the creator full frame: the
+ * gaps between covering beats (inserts or split beats), each at least one
+ * frame long. Returns [{start_s, end_s}] in time order.
+ */
+export function cutCreatorRuns(covers, duration, fps = 30) {
+  const sorted = [...covers].sort((a, b) => a.start_s - b.start_s);
+  const runs = [];
+  let t = 0;
+  for (const c of sorted) {
+    if (c.start_s - t >= 1 / fps - CUT_EPS) runs.push({ start_s: t, end_s: c.start_s });
+    t = Math.max(t, c.end_s);
+  }
+  if (duration - t >= 1 / fps - CUT_EPS) runs.push({ start_s: t, end_s: duration });
+  return runs;
+}
+
+/**
+ * A grid cell's playback speed: 1x when its window is at least the slot
+ * long, else slowed so it fills the slot, refused below `min_speed`.
+ */
+export function cutGridCellSpeed(windowS, slotS, min_speed, what) {
+  if (windowS >= slotS - CUT_EPS) return 1;
+  const s = windowS / slotS;
+  if (s < min_speed - 0.01) throw new CutRefusal(`${what}: a ${cutFmt(windowS)}s window fills the ${cutFmt(slotS)}s grid only at ${cutFmt(s)}x, below ${min_speed}x`);
+  return s;
 }

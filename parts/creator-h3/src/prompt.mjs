@@ -8,3 +8,12 @@ export const H3_TEMPLATE = "A single continuous locked-off medium shot of <Subje
 export const H3_MANNERISM = "\n<Video 1> is a filmed reference person recorded the same way. Take from it ONLY the rhythm of natural speech, where the pauses fall and where the pace speeds up, and the small involuntary movement while talking: the head settling, the blink rate, the eyebrow lifts, the hands coming up and dropping back. Do NOT take the face, hair, clothes, room, lighting, framing or eyeline. The person is <Subject 1> from <Picture 1> and nobody else.\n";
 
 export const H3_DEFAULT_DELIVERY = "natural and conversational, speaking directly to one viewer. Not presenting, not announcing, not reading. Sentences run together with almost no gap. Pitch falls on the last word of each sentence. Consonants relaxed, volume varying word to word.";
+
+// 1.2.0 clips mode: the motion text used when the style gives no template. The
+// keyframe is the first frame (image_url) and Image 1; nothing is said, and the
+// clip's sound is dropped anyway.
+export const H3_CLIP_TEMPLATE = {
+  version: 1,
+  motion: 'The video opens exactly on its first frame and stays true to Image 1: the same person, wardrobe, place, light and framing. {picture}. One continuous shot with small, natural, real movement; the camera holds steady with a light handheld feel. Nobody talks: the mouth stays relaxed, no voice, no music, no captions or text on screen.',
+  refs: [],
+};

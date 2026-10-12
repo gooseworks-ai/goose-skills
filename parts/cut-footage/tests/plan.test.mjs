@@ -27,6 +27,13 @@ test('each scene plays its own footage entry, else its image, else (scene 1) the
   assert.throws(() => cutSceneSources(scenes, [...footage, { file: vid(), scene_id: 'b' }]), refused(/more than one footage entry/));
   assert.throws(() => cutSceneSources(scenes, [{ file: vid(), scene_id: 'zz' }]), refused(/names scene "zz", which is not in the plan/));
   assert.throws(() => cutSceneSources(scenes, [{ file: vid(), kind: 'image', scene_id: 'b' }], { need: 'any' }), refused(/kind image but its file is a video/));
+  // The lead plays as the first scene whenever it has no footage window: a scene image or image footage
+  // there does not hide it (§4.5); a window does.
+  const lead = vid();
+  assert.deepEqual(cutSceneSources([{ id: 'a', image: img }, { id: 'b', image: img }], [], { lead }).map((s) => s.kind), ['lead', 'still']);
+  assert.deepEqual(cutSceneSources([{ id: 'a' }, { id: 'b', image: img }], [{ file: img, kind: 'image', scene_id: 'a' }], { lead }).map((s) => s.kind), ['lead', 'still']);
+  assert.deepEqual(cutSceneSources([{ id: 'a', image: img }, { id: 'b', image: img }], [{ file: vid(), scene_id: 'a' }], { lead }).map((s) => s.kind), ['window', 'still']);
+  assert.deepEqual(cutSceneSources([{ id: 'a', image: img }], [{ file: img, kind: 'image', scene_id: 'a' }]).map((s) => s.kind), ['still']);
 });
 
 test('scene beats: windows clamped to scene_seconds within the speed limits, stills held, frame-exact times', () => {

@@ -1293,6 +1293,75 @@
       ]
     },
     {
+      "id": "creator-h3",
+      "version": "1.2.0",
+      "interface": 1,
+      "kind": "generate_video",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "silencedetect",
+            "tpad",
+            "trim",
+            "setpts",
+            "fps",
+            "settb",
+            "setsar",
+            "format",
+            "xfade",
+            "concat",
+            "aresample",
+            "pan",
+            "aformat",
+            "adelay",
+            "apad",
+            "atrim",
+            "asetpts",
+            "acrossfade"
+          ],
+          "encoders": [
+            "libx264",
+            "aac",
+            "pcm_s16le"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "minimax/h3-max/reference-to-video"
+          }
+        ],
+        "disk_mb": 1500
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "second",
+        "measure": {
+          "from": "/max_seconds",
+          "as": "value"
+        },
+        "rates_usd": {
+          "minimax/h3-max/reference-to-video": 0.4
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/creator-h3/1.2.0",
+      "files": {
+        "README.md": "24f0d9e104f6b01ecabfa191b2953d89d1075c3a6a0402859d4a16be8afdba1d",
+        "part.json": "acdb850fb2a2e5f59de18860b9aaabab54142e8d65dd01322c5999e53f920715",
+        "part.mjs": "1f85c8e009e32047f4c5d6de6027b53bfb47e979d1662387932498cd9a942711"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "minimax/h3-max/reference-to-video"
+        }
+      ]
+    },
+    {
       "id": "cut-footage",
       "version": "1.0.0",
       "interface": 1,
@@ -1481,6 +1550,71 @@
         "README.md": "817379311d3aeba340e70f0b0216199619918a9ffa7d8040ed7e88ff7c778266",
         "part.json": "c4f648656cbfbcc0e105ae23c29868a840392ce1514bc115c5350cd85555916b",
         "part.mjs": "9c2135efa7d9962f0b642f0a1d2d2ea845cc7782e5d311d1444faea9e0302c80"
+      },
+      "models": []
+    },
+    {
+      "id": "cut-footage",
+      "version": "1.2.0",
+      "interface": 1,
+      "kind": "compose",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "setpts",
+            "fps",
+            "scale",
+            "crop",
+            "pad",
+            "setsar",
+            "tpad",
+            "trim",
+            "overlay",
+            "format",
+            "atempo",
+            "atrim",
+            "aresample",
+            "aformat",
+            "settb",
+            "xfade",
+            "concat",
+            "null",
+            "split",
+            "gblur",
+            "perspective",
+            "color",
+            "geq",
+            "loop",
+            "blend",
+            "noise",
+            "vstack",
+            "xstack",
+            "zoompan",
+            "drawbox",
+            "boxblur",
+            "eq",
+            "fade"
+          ],
+          "encoders": [
+            "libx264",
+            "aac"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 800
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/cut-footage/1.2.0",
+      "files": {
+        "README.md": "9d28c3b368e3676b85f3ee985fc87a3ca52999d10e0df436f5bac79ae9781ead",
+        "part.json": "d47b83435ec6485ad4c13106145838d933c72beae458e193a33d4431b2c3258e",
+        "part.mjs": "b973dd1e7a0b87974d4f1a1488ab874d2fee2f66f4ad6e1bb01fcb156cca8d14"
       },
       "models": []
     },
@@ -1715,6 +1849,64 @@
       "files": {
         "part.json": "b2dff534e0f59bf92bbf91d2259819a0e5f71ac0bcd3bd9345552afb40cff8e4",
         "part.mjs": "bb10e6a34cd6784650efe028fdcc2b297e4147bd76462cab045c10892f4db240"
+      },
+      "models": []
+    },
+    {
+      "id": "html-frames",
+      "version": "1.2.0",
+      "interface": 1,
+      "kind": "render_html",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": true,
+        "ffmpeg": {
+          "filters": [
+            "scale",
+            "setsar",
+            "format",
+            "transpose",
+            "hflip",
+            "vflip",
+            "overlay",
+            "crop",
+            "fps",
+            "setpts",
+            "adelay",
+            "amix",
+            "volume",
+            "apad",
+            "atrim"
+          ],
+          "encoders": [
+            "libx264",
+            "png",
+            "mjpeg",
+            "aac",
+            "rawvideo",
+            "pcm_s16le"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 1024
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/html-frames/1.2.0",
+      "files": {
+        "assets/sfx/chime.wav": "62bbaf69b7b23cbeb5a8fcbbb10800e041bc5e7470e9f1009f8b58565d7e8e3c",
+        "assets/sfx/click.wav": "793fd624d57e450e192cc95a3a50d06ee8334924e19bbf29719db3713a67da40",
+        "assets/sfx/notify.wav": "311f1211afcaeecdfd2639ed157617a36a604e4aafa95afacb6658f3ef71bd76",
+        "assets/sfx/pop.wav": "00ad5c821502345799d7d4ee1b2f1b9399bd533ed2c348e6f8eaa269438db34f",
+        "assets/sfx/swoosh.wav": "7151a319923224da770c89e111b41ea09b31cb91e8d3a357cddf3559e479a85c",
+        "assets/sfx/tap.wav": "c688916e1e6c344fb2e9b543fd9f013323e3b9c879ffd4a1a50927e90da2de59",
+        "assets/sfx/tick.wav": "7b6312f1eb75e9bb911dd184e33ba70d8b920f400700a248e40a2e007533c17d",
+        "assets/sfx/whoosh.wav": "37e14f3b89261ee32ba46cc6b91ae73281efbf5f68e322ca24e51af2f1a44e9a",
+        "part.json": "156462649097a12c14792ce0167a459f1968a2d48eb60284f8abebbe46595492",
+        "part.mjs": "fa3d1bcbb4df6c9a12a2c7b476398ec60890702e8e9e73c7ed62e819acd22946"
       },
       "models": []
     },
