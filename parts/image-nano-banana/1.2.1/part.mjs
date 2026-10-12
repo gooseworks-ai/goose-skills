@@ -1087,6 +1087,40 @@ async function nbIsPng(path) {
   return head.equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]));
 }
 
+// The kit's log redactor misses structured secrets and signed links, so a refusal's logged values pass here first.
+const NB_SECRET_NAME = /key|token|secret|signature|authori[sz]ation|password|passwd|credential|cookie/i;
+const NB_LINK = /\b[a-z][a-z0-9+.-]*:\/\/[^\s"'<>`]+/gi;
+const NB_LOG_TEXT_MAX = 600;
+
+/** Text for the run log: links keep only their origin and path; auth headers, bearer tokens and name=secret pairs are blanked. */
+function nbSafeText(text) {
+  return String(text)
+    .replace(NB_LINK, (link) => {
+      try {
+        const u = new URL(link);
+        return `${u.protocol}//${u.host}${u.pathname}`;
+      } catch {
+        return '[link]';
+      }
+    })
+    .replace(/\b((?:proxy-)?authori[sz]ation["']?\s*[:=]\s*["']?)(?:(?:Bearer|Basic|Key|Token)\s+)?[^\s"',;}]+/gi, '$1[redacted]')
+    .replace(/\bBearer\s+[A-Za-z0-9._~+/=-]{16,}/g, 'Bearer [redacted]')
+    .replace(/\b([A-Za-z0-9_-]*?(?:key|token|secret|signature|password|passwd|credentials?)(?:[_-][A-Za-z0-9]+)*["']?\s*[:=]\s*["']?)[^\s"'&,;}]+/gi, '$1[redacted]')
+    .slice(0, NB_LOG_TEXT_MAX);
+}
+
+/** A JSON value for the run log: secret-named fields blanked, every string through nbSafeText, size bounded. */
+function nbSafeValue(value, depth = 0) {
+  if (typeof value === 'string') return nbSafeText(value);
+  if (typeof value === 'number' || typeof value === 'boolean') return value;
+  if (value === null || typeof value !== 'object') return null;
+  if (depth >= 4) return '[nested]';
+  if (Array.isArray(value)) return value.slice(0, 20).map((v) => nbSafeValue(v, depth + 1));
+  const out = {};
+  for (const [name, v] of Object.entries(value).slice(0, 20)) out[name] = NB_SECRET_NAME.test(name) ? '[redacted]' : nbSafeValue(v, depth + 1);
+  return out;
+}
+
 /**
  * Logs a refused still: what it was for, the piece, the model, the reference count, the reason and the
  * prompt's start. The reason is the line's own words (the provider's, when the line passes them on), else
@@ -1101,10 +1135,10 @@ function nbLogRefusal(ctx, err, { piece, about, model, refs, prompt }) {
       piece,
       model,
       references: Array.isArray(refs) ? refs.length : 0,
-      reason: said ? said.trim().slice(0, 600) : null,
-      prompt: String(prompt ?? '').slice(0, 600),
+      reason: said ? nbSafeText(said.trim()) : null,
+      prompt: nbSafeText(prompt ?? ''),
     };
-    if (line.details && typeof line.details === 'object' && !Array.isArray(line.details)) fields.details = line.details;
+    if (line.details && typeof line.details === 'object' && !Array.isArray(line.details)) fields.details = nbSafeValue(line.details);
     ctx.log.warn(`the image maker refused ${about || piece}`, fields);
   } catch {
     // A log that can't be written must not hide the refusal.

@@ -5,7 +5,8 @@ with the prompt filled from the style's template and the references picked from 
 mode**: edits of each product's own photo (a snap still, a three-quarter angled still) for range and grid cards.
 1.2.1 names a refused still in the log: which piece, what it was for (a cast member's picture, a scene's still,
 a product still), the model, the reference count, the reason (the provider's words when the server passes them on)
-and the start of the prompt. The step still fails as before.
+and the start of the prompt, with links cut to their origin and path and secret-looking values blanked. The step
+still fails as before.
 
 - **Paid piece** per still, through the private line only: fal `fal-ai/nano-banana` (prompt alone) or
   `fal-ai/nano-banana/edit` (with references), body `{prompt, image_urls?, aspect_ratio?, seed?, num_images: 1,
