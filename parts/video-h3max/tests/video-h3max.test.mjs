@@ -6,6 +6,7 @@ import { join } from 'node:path';
 import { fileRef, hasFfmpeg, loadNewest, makeCtx, probe, run } from '../../_tools/kit-harness.mjs';
 import { kitSchemaErrors } from '../../_lib/schema.mjs';
 import { h3SceneProviderPrompt } from '../src/provider.mjs';
+import { h3SceneReferenceCanvas } from '../src/frames.mjs';
 import { h3SceneTakeDuration, h3SceneTakeGroups, h3SceneTakeWindows } from '../src/takes.mjs';
 import { nativeLine, photo, sample, streetInputs, template, ugcInputs } from './fixture.mjs';
 
@@ -44,6 +45,34 @@ test('provider prompt translates only image tokens, checks their files, and reje
   for (const text of ['Use @Image0.', 'Use @Image3.', 'Use Image 3.']) assert.throws(() => h3SceneProviderPrompt(text, 2, 'clip a'), /clip a names Image/);
   for (const text of ['Use @ImageX.', 'Use @Image1-x.', 'Use @Image.']) assert.throws(() => h3SceneProviderPrompt(text, 2, 'clip a'), /unknown image reference/);
   for (const text of ['Use @Video1.', 'Use Audio 1.']) assert.throws(() => h3SceneProviderPrompt(text, 2, 'clip a'), /accepts image references only/);
+});
+
+test('reference canvases use only published price aspects and never crop original pixels', () => {
+  const aspects = [[1, 1], [4, 3], [3, 4], [16, 9], [9, 16], [5, 2], [2, 5]];
+  for (const source of [{ width: 300, height: 200 }, { width: 200, height: 300 }, { width: 281, height: 88 }, { width: 300, height: 300 }, { width: 1080, height: 1920 }, { width: 1, height: 23 }]) {
+    const canvas = h3SceneReferenceCanvas(source);
+    assert.ok(canvas.width >= source.width && canvas.height >= source.height);
+    assert.ok(aspects.some(([w, h]) => canvas.width * h === canvas.height * w));
+  }
+  assert.deepEqual(h3SceneReferenceCanvas({ width: 300, height: 200 }), { width: 300, height: 225 });
+});
+
+test('the submitted three-by-two reference is padded to a priceable aspect and repeated refs share the same file', { skip }, async () => {
+  const w = work();
+  const path = join(w, 'three-by-two.png');
+  await run('ffmpeg', ['-hide_banner', '-nostdin', '-y', '-f', 'lavfi', '-i', 'color=c=red:size=300x200:duration=1', '-vf', 'drawbox=x=0:y=0:w=20:h=ih:color=white:t=fill,drawbox=x=280:y=0:w=20:h=ih:color=white:t=fill', '-frames:v', '1', path]);
+  const original = await fileRef(path, 'image');
+  const inputs = { clips: [{ prompt: 'Image 1 and Image 2 are the same exact product.', references: [original, original], seconds: 4 }] };
+  const { ctx, orders } = ctxFor(inputs);
+  await mod.run(inputs, ctx);
+  const [first, repeated] = orders[0].body.reference_image_urls;
+  assert.deepEqual(first, repeated);
+  assert.deepEqual([first.width, first.height], [300, 225], 'provider dimensions match a documented 4:3 token aspect');
+  const { stdoutBuffer } = await run('ffmpeg', ['-hide_banner', '-nostdin', '-i', first.path, '-frames:v', '1', '-pix_fmt', 'rgb24', '-f', 'rawvideo', '-']);
+  const pixel = (x, y) => [...stdoutBuffer.subarray((y * 300 + x) * 3, (y * 300 + x) * 3 + 3)];
+  assert.ok(pixel(150, 0).every((v) => v < 10), 'added top padding');
+  assert.ok(pixel(5, 110).every((v) => v > 220), 'left original edge remains');
+  assert.ok(pixel(295, 110).every((v) => v > 220), 'right original edge remains');
 });
 
 test('reference clip keeps native audio and sends numeric duration with H3 references', { skip }, async () => {
@@ -159,7 +188,8 @@ test('wide reference photos are padded into H3 limits and a wide chain crop stay
   await mod.run(street, chained.ctx);
   const still = chained.orders[1].body.reference_image_urls[1];
   assert.ok(still.width / still.height <= 2.5 && still.width / still.height >= 0.4, 'cropped chain still is also a supported reference shape');
-  assert.equal(still.width, 336, 'the crop is padded, never cropped again');
+  assert.ok(still.width >= 336, 'the crop is padded, never cropped again');
+  assert.equal(still.width * 2, still.height * 5, 'chain uses a documented price aspect');
   const productRef = chained.orders[0].body.reference_image_urls[0];
   assert.notEqual(still.path, productRef.path, 'chain fitting cannot overwrite a prepared product reference');
   assert.equal((await fileRef(productRef.path, 'image')).sha256, productRef.sha256);
@@ -289,7 +319,7 @@ test('street takes chain a cropped still, ask once, keep both voices, and join a
   assert.deepEqual(orders[1].body.reference_image_urls, [product, still]);
   assert.deepEqual(orders[2].body.reference_image_urls, [product, still]);
   const info = await probe(still.path);
-  assert.deepEqual([info.width, info.height], [192, 86]);
+  assert.deepEqual([info.width, info.height], [215, 86], '192x86 crop contained on the nearest documented 5:2 price aspect');
   assert.match(orders[0].body.prompt, /The interviewer says: "What do you think this is\?"/);
   assert.match(orders[0].body.prompt, /The man says: "Some kind of paint\?"/);
   assert.match(orders[1].body.prompt, /ANSWERS ONLY.*Same microphone as Image 2/);

@@ -1000,7 +1000,18 @@ function h3SceneFrameKey(file, width, height) {
   return `${file.sha256}:${file.path}:${width}x${height}`;
 }
 
-/** Keep reference images within H3's 2:5..5:2 range without cropping their content. */
+const H3SCENE_PRICED_ASPECTS = [[1, 1], [4, 3], [3, 4], [16, 9], [9, 16], [5, 2], [2, 5]];
+
+/** Use the nearest published image-token aspect, containing every original pixel. */
+function h3SceneReferenceCanvas({ width, height }) {
+  const ratio = width / height;
+  const [w, h] = H3SCENE_PRICED_ASPECTS.reduce((nearest, aspect) =>
+    Math.abs(Math.log(ratio / (aspect[0] / aspect[1]))) < Math.abs(Math.log(ratio / (nearest[0] / nearest[1]))) ? aspect : nearest);
+  const scale = Math.ceil(Math.max(width / w, height / h));
+  return { width: w * scale, height: h * scale };
+}
+
+/** Fit reference images to documented token aspects without cropping or scaling their content. */
 async function h3ScenePrepareReferences(ctx, jobs) {
   const prepared = new Map();
   for (const job of jobs) {
@@ -1013,11 +1024,9 @@ async function h3ScenePrepareReferences(ctx, jobs) {
         if (!Number.isInteger(info.width) || !Number.isInteger(info.height) || info.width < 1 || info.height < 1) {
           throw ctx.error('bad_input', `${job.who ?? job.id} has a reference without readable image dimensions`);
         }
-        const ratio = info.width / info.height;
-        if (ratio >= 0.4 && ratio <= 2.5) prepared.set(key, image);
+        const { width, height } = h3SceneReferenceCanvas(info);
+        if (width === info.width && height === info.height) prepared.set(key, image);
         else {
-          const width = ratio < 0.4 ? Math.ceil(info.height * 0.4) : info.width;
-          const height = ratio > 2.5 ? Math.ceil(info.width / 2.5) : info.height;
           const name = `reference-${image.sha256}.png`;
           await kitFfmpeg(ctx, ['-i', image.path, '-frames:v', '1', '-vf', `pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1`, join(ctx.workDir, name)]);
           prepared.set(key, await ctx.file(name, 'image'));

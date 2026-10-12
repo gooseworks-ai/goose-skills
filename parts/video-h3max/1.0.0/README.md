@@ -64,8 +64,10 @@ by the mocked transport tests is in `tests/h3max-input.schema.json`.
 
 - In reference mode, explicit `clips[].references` are used in order. Otherwise the template chooses cast
   pictures, product photos, and scene pictures in its `refs` order, including a `by_tag` override.
-  Overly wide or tall references are padded into H3's supported 2:5 to 5:2 shape range, keeping every
-  original pixel. All reference preparation happens before the first order.
+  Reference images are padded to the nearest published token aspect: square, 4:3, 3:4, 16:9, 9:16,
+  5:2 or 2:5. Padding keeps every original pixel, without scaling or cropping. This lets the line price
+  the image allowance from checked dimensions rather than guess a tariff for an undocumented shape.
+  All reference preparation happens before the first order.
 - In frame mode, explicit `start_image` may be a FileRef or `product`. The latter selects the named
   product's first photo, else the first product with a photo. Without it, the template can supply a scene
   picture, product photo, or cast picture. Explicit ratios contain and pad both frames at the requested
@@ -103,10 +105,16 @@ prefix, the take template, numbered timed beats, speaker names and dialogue, a s
 ## Cost and verification
 
 The part's documented base rate is USD 0.16 per requested second at 1080P. The official fal page lists
-0.05 at 480P and 0.08 at 768P, with extra reference charges above a shared 4,096-token allowance. The
-single manifest rate is the highest output rate and excludes those extra reference charges; each
-style's cost block supplies its actual quote measure for clips or takes. Silent copies do not imply a
-cheaper generation mode. Pricing was checked on 2026-10-12 on the
+0.05 at 480P and 0.08 at 768P. Reference images share a 4,096-token allowance per request; square images
+use 1,024 tokens, 4:3/3:4 use 1,376, 16:9/9:16 use 1,824, and 5:2/2:5 use 2,560. The excess costs
+USD 0.02 per 1,000 tokens, prorated. The line measures its own hosted files and counts supplied
+first/end/reference fields independently, because fal documents no duplicate discount. Those reference
+estimates are conservative, not a verified invoice; settlement uses the provider meter when present.
+An unknown unmeasured shape or a timed reference has no exact fallback price and can be refused before
+ordering. First-frame modes retain the requested canvas; use a documented aspect for a priceable
+multi-field request. The single manifest rate is the highest output rate and excludes those extra
+reference charges; each style's cost block supplies its actual quote measure for clips or takes.
+Silent copies do not imply a cheaper generation mode. Pricing was checked on 2026-10-12 on the
 [official H3 Max page](https://fal.ai/models/minimax/h3-max/reference-to-video). No paid provider calls
 were used to publish or test this part.
 
