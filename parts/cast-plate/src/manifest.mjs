@@ -15,11 +15,19 @@ const member = {
   },
 };
 
+// Where one single sits on the plate, in 0..1 of it (the crops output's items).
+const crop = {
+  type: 'object',
+  additionalProperties: false,
+  required: ['key', 'x', 'y', 'w', 'h'],
+  properties: { key: { type: 'string' }, x: { type: 'number', minimum: 0, maximum: 1 }, y: { type: 'number', minimum: 0, maximum: 1 }, w: { type: 'number', minimum: 0, maximum: 1 }, h: { type: 'number', minimum: 0, maximum: 1 } },
+};
+
 export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'cast-plate',
-  version: '1.0.0',
+  version: '1.1.0',
   kind: 'generate_image',
   title: 'Cast plate (GPT Image 2)',
   summary: 'One wide picture of two or three cast members in one room from GPT Image 2 on fal, plus one full-height single per person cut from it at a fixed seat, so every shot shares one set.',
@@ -51,6 +59,8 @@ export const manifest = {
       template: { description: 'A style prompt template (frames/<name>.prompt.json, version 1; parts/_lib/prompt.mjs). templates.plate replaces the built-in plate text; {cast_looks} is the seating, {answers.room} the room.', ...file('json') },
       answers: { description: 'plan.answers, for {answers.KEY} placeholders in the template.', type: ['object', 'null'] },
       brand: { description: 'The brand, for {brand.FIELD} placeholders in the template.', type: ['object', 'null'] },
+      plate: { description: 'A plate already made (a preview approved before the yes): used as is and nothing is ordered, so room, size, quality, model and template are not used. Its singles are cut at crops, else at the layout\'s seats (then it must be landscape).', anyOf: [{ type: 'null' }, file('image')] },
+      crops: { description: 'With plate only: where each single sits, in 0..1 of the plate, one per cast member in seat order, keys matching (the crops output). Given back as is.', anyOf: [{ type: 'null' }, { type: 'array', minItems: 2, maxItems: 3, items: crop }] },
     },
   },
   outputs: {
@@ -67,15 +77,10 @@ export const manifest = {
       crops: {
         description: 'Where each single sits on the plate, in 0..1 of the plate.',
         type: 'array',
-        items: {
-          type: 'object',
-          additionalProperties: false,
-          required: ['key', 'x', 'y', 'w', 'h'],
-          properties: { key: { type: 'string' }, x: { type: 'number', minimum: 0, maximum: 1 }, y: { type: 'number', minimum: 0, maximum: 1 }, w: { type: 'number', minimum: 0, maximum: 1 }, h: { type: 'number', minimum: 0, maximum: 1 } },
-        },
+        items: crop,
       },
       layout: { enum: ['two_shot', 'three_shot'] },
-      prompt: { description: 'The prompt sent, for review.', type: 'string' },
+      prompt: { description: 'The prompt sent, for review; empty when the plate was given.', type: 'string' },
     },
   },
   cost: { basis: 'per_unit', unit: 'call', rates_usd: { [TEXT]: 0.19, [EDIT]: 0.19 }, model_from: '/model' },
