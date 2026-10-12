@@ -17,6 +17,7 @@ prompt asked for something the model could not render.
 import argparse
 import json
 import os
+import re
 from pathlib import Path
 
 import format_spec
@@ -209,6 +210,71 @@ def validate(cfg: dict):
         raise SystemExit("no shot has a spoken `line`: nobody says anything")
 
 
+# WHO IS ON THE CORNER. Measured 2026-10-13 on 21 takes across three brands: the same five
+# faces came back again and again (a young woman with long brown hair, a grey-haired man in
+# his fifties, an old man in a flat cap...), and every one of them was white, against real
+# street footage that is not. The cause is the config, not the seed: a person written as "a
+# man in his thirties, grey hoodie, with a plain rucksack" leaves hair, build and skin tone to
+# the model, and the model fills each gap with its default face for that slot. The realism
+# formula says the same thing about stills: without an explicit identity, models drift to an
+# ambiguous composite face. See references/cast-writing.md.
+_HAIR = ("hair", "haired", "bald", "balding", "shaved", "curls", "curly", "afro",
+         "braid", "braids", "locs", "plait", "ponytail", "bun", "bob", "fringe", "beard", "stubble",
+         "moustache", "redhead", "hijab", "headscarf", "turban", "buzz cut", "quiff")
+_BUILD = ("tall", "stocky", "slim", "slight", "heavyset", "broad", "wiry", "thin", "round",
+          "lean", "petite", "burly", "broad-shouldered", "round-shouldered", "lanky", "solid")
+_TONE = ("skin", "black", "brown", "white", "pale", "olive", "tanned", "freckled", "freckles",
+         "south asian", "east asian", "asian", "african", "caribbean", "latina", "latino",
+         "hispanic", "arab", "middle eastern", "mediterranean", "indian", "chinese", "korean",
+         "nigerian", "irish", "mixed")
+
+
+def _says(text, words):
+    """Whole words only: "thin" must not match "thing", nor "tan" a "tan coat"."""
+    return any(re.search(r"(?<![a-z])" + re.escape(w) + r"(?![a-z])", text) for w in words)
+
+def cast_advice(cfg, other_subjects=()):
+    """Non-blocking notes on a thin or copied cast. Returns a list of strings, empty when fine.
+    Advice only: a recorded take keeps the cast it was made with, and validate() never calls
+    this."""
+    if cfg.get("mode", "product-guess") != "product-guess":
+        return []
+    notes, seen = [], {}
+    others = {o.strip().lower() for o in other_subjects}
+    subjects = [(i + 1, s["subject"]) for i, s in enumerate(cfg["shots"]) if s.get("subject")]
+    for n, subj in subjects:
+        low = subj.lower()
+        missing = [name for name, words in (("hair", _HAIR), ("build", _BUILD), ("skin tone or background", _TONE))
+                   if not _says(low, words)]
+        if missing:
+            notes.append(f"shot {n} ({subj!r}) does not say {', '.join(missing)}: the model picks, "
+                         f"and it picks the same face every time")
+        if low in others:
+            notes.append(f"shot {n} ({subj!r}) is word for word a person from another brand's "
+                         f"config, so it will be the same face")
+        if low in seen:
+            notes.append(f"shot {n} repeats shot {seen[low]}'s person word for word")
+        seen.setdefault(low, n)
+    if len(subjects) >= 2 and all(not _says(subj.lower(), _TONE) for _, subj in subjects):
+        notes.append("nobody's skin tone or background is stated: every take measured so far cast "
+                     "an all-white corner when this was left out")
+    return notes
+
+
+def other_subjects(cfg):
+    """Every person described in the OTHER bundled configs, for the copied-cast note."""
+    out = []
+    for f in sorted(BRANDS.glob("*.json")):
+        try:
+            other = json.loads(f.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        if other.get("brand") == cfg.get("brand"):
+            continue
+        out += [s["subject"] for s in other.get("shots", []) if s.get("subject")]
+    return out
+
+
 def spoken_lines(cfg):
     """Every scripted line, in order. What check-cut.py's Whisper check listens for, and the
     reason that check no longer carries one brand's dialogue in a module constant."""
@@ -245,3 +311,8 @@ if __name__ == "__main__":
     print(f"  shots      {len(cfg['shots'])}: {', '.join(s['kind'] for s in cfg['shots'])}")
     print(f"  lines      {spoken_lines(cfg)}")
     print(f"  take       {take_name(cfg)}.mp4")
+    advice = cast_advice(cfg, other_subjects(cfg))
+    for note in advice:
+        print(f"  CAST ADVISORY: {note}")
+    if advice:
+        print("  Advisory only. See references/cast-writing.md before buying a take.")

@@ -65,6 +65,10 @@ performance remain unverified. The existing product-guess render path is preserv
 All conversation subtypes refuse product/scene reference bindings and phone, screen or UI
 demonstrations. Dry-run success is not a performed sample, challenge or finished video.
 
+Write the cast in full before any take: read [cast writing](references/cast-writing.md). A person
+described as an age, a garment and a prop comes back as the model's default face, and the same
+five faces then appear in every brand's video.
+
 Read the bundled [model notes](references/model-behaviors.md) before generation.
 If a required guide cannot be fetched or opened, stop before spending and name it.
 `REFERENCE.md` holds the format's historical **Critical knowledge** entries and
