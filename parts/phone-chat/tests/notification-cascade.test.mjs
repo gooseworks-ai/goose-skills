@@ -54,13 +54,13 @@ for (const [name, change] of [
   });
 }
 
+const fiveLines = 'We loved the demo and want to roll it out across all of our sales teams next quarter, so can you send the pricing for fifty seats and the onboarding plan by Friday afternoon?';
 for (const [name, change, pattern, extra] of [
   ['a repeated id', (t) => { t.resolution.id = 'n2'; }, /unique id; n2/],
   ['a plate that was not supplied', (t) => { t.plate = 'kitchen'; }, /plate image kitchen was not supplied/],
-  ['a body that needs three lines', (t) => { t.notifications[2].body = 'We loved the demo and want to roll it out across all of our sales teams next quarter'; }, /body of n3 needs 3 lines/],
-  ['a word wider than the banner', (t) => { t.notifications[0].body = 'Supercalifragilisticexpialidociously'; }, /wider than the banner/],
-  ['a title too long for one line', (t) => { t.notifications[1].title = 'Your new inbound lead from the website'; }, /title of n2 does not fit/],
-  ['a stack too tall for the safe area', (t) => { t.notifications.push({ id: 'n5', title: 'New lead', body: 'hi' }, { id: 'n6', title: 'New lead', body: 'hi' }); }, /6 notifications .* do not fit/],
+  ['a body longer than four lines, saying how much to cut', (t) => { t.notifications[2].body = fiveLines; }, /body of n3 needs [5-9] lines; a banner shows at most 4\. Cut about \d+ characters/],
+  ['a stack that cannot fit even folded, saying what to shorten', (t) => { t.notifications[3].body = 'We loved the demo and want to roll it out across all of our sales teams next quarter'; }, /body of n4 takes 3 lines, .* even with the older banners folded into a stack; shorten it to 2 lines/, { safe_area: { ...SAFE, top: 1042 } }],
+  ['a canvas with no room for any banner', () => {}, /No notification banner fits above the phone below the safe area's top band/, { safe_area: { ...SAFE, top: 1300 } }],
   ['pacing given through env.timing', () => {}, /leave env\.timing empty/, { timing: { start: 1 } }],
 ]) {
   test(`refuses ${name}`, () => {
@@ -70,15 +70,53 @@ for (const [name, change, pattern, extra] of [
   });
 }
 
-test('the stack-height and env.timing refusals depend on what they check', () => {
-  const six = thread();
-  six.notifications.push({ id: 'n5', title: 'New lead', body: 'hi' }, { id: 'n6', title: 'New lead', body: 'hi' });
-  assert.doesNotThrow(() => ncBuild(six, env({ safe_area: null })), 'six one-line banners fit without the platform bands');
-  const twoLine = thread();
-  twoLine.notifications[0].body = 'We loved the demo and want to roll it out next quarter';
-  assert.throws(() => ncBuild({ ...twoLine, notifications: [...twoLine.notifications, { id: 'n5', title: 'New lead', body: 'hi' }] }, env()), /two-line bodies do not fit/);
-  assert.doesNotThrow(() => ncBuild(twoLine, env()), 'four two-line banners fit');
+const page = (built) => JSON.parse(/const NC_PAGE=(.*);\n/.exec(built.html)[1]);
+const twoLines = (i) => `Message ${i}: we loved the demo and want to roll it out next quarter`;
+
+test('three to five notifications with two-line bodies and a success message always render, the oldest folding when the pile is full', () => {
+  for (let n = 3; n <= 5; n++) {
+    const t = { ...thread(), notifications: Array.from({ length: n }, (_, i) => ({ id: `n${i + 1}`, title: 'New lead', body: twoLines(i + 1) })) };
+    const built = ncBuild(t, env({ font_css: interCss() }));
+    const rows = page(built).rows;
+    assert.ok(rows.every((r) => close(r.h, 220)), 'each banner is two lines tall');
+    const folds = rows.filter((r) => r.s !== null);
+    if (n < 5) assert.deepEqual([folds.length, built.warnings], [0, []], `${n} two-line banners fit open`);
+    else {
+      assert.deepEqual(rows.map((r) => r.s), [rows[4].a, null, null, null, null], 'the oldest folds as the fifth arrives, with its push');
+      assert.deepEqual(built.warnings, ['When n5 arrives, n1 folds into a stack behind the newer banners, so the pile fits above the phone.']);
+    }
+  }
+  const six = { ...thread(), notifications: Array.from({ length: 6 }, (_, i) => ({ id: `n${i + 1}`, title: 'New lead', body: twoLines(i + 1) })) };
+  assert.deepEqual(page(ncBuild(six, env({ font_css: interCss() }))).rows.map((r) => r.s !== null), [true, true, false, false, false, false], 'one more folds for each banner past five');
+  const ones = { ...thread(), notifications: Array.from({ length: 6 }, (_, i) => ({ id: `n${i + 1}`, title: 'New lead', body: 'hi' })) };
+  assert.deepEqual(ncBuild(ones, env({ safe_area: null })).warnings, [], 'six one-line banners fit open without the platform bands');
+  assert.equal(ncBuild(ones, env()).warnings.length, 1, 'and fold one under them');
   assert.doesNotThrow(() => ncBuild(thread(), env({ timing: {} })));
+});
+
+test('each banner is as tall as its own body; the stack and the pill follow the arrivals', () => {
+  const t = thread();
+  t.notifications[1].body = 'We loved the demo and want to roll it out across all of our sales teams next quarter';
+  const built = ncBuild(t, env({ font_css: interCss() }));
+  const p = page(built);
+  assert.deepEqual(p.rows.map((r) => Math.round(r.h)), [176, 264, 176, 176], 'one, three, one and one lines');
+  assert.equal(p.res_h, 176);
+  assert.match(built.warnings[0], /body of n2 wraps to 3 lines/);
+  assert.equal((built.html.match(/data-nc="n2" style="height:264px"/g) || []).length, 1);
+});
+
+test('a word wider than the banner breaks between its characters, and a long name or brand is cut with an ellipsis', () => {
+  const t = thread();
+  t.notifications[0].body = 'Pneumonoultramicroscopicsilicovolcanoconiosis good';
+  t.notifications[1].title = 'Your new inbound lead from the website';
+  t.handle = 'WWWWWWWWWWWWWWWWWWWWWWWWWWWWWW';
+  const built = ncBuild(t, env({ font_css: interCss() }));
+  assert.deepEqual(built.warnings.slice(0, 3).map((w) => w.split(' ').slice(0, 4).join(' ')), ['The brand name on', 'The word "Pneumonoultramicroscopic…" in', 'The name on n2']);
+  const banner = /data-nc="n1"[\s\S]*?<\/div><\/div><\/div>/.exec(built.html)[0];
+  const lines = [...banner.matchAll(/nc-line"[^>]*>([^<]*)</g)].map((m) => m[1]);
+  assert.ok(lines.length === 2 && lines.join('').replace(/ /g, '') === 'Pneumonoultramicroscopicsilicovolcanoconiosisgood', lines.join('|'));
+  assert.match(built.html, /nc-title">Your new inbound lead[^<]*…</);
+  assert.match(built.html, /nc-handle">W+…</);
 });
 
 test('the banners stay clear of the right-hand platform band, and refuse bands that leave no room', () => {
@@ -91,11 +129,12 @@ test('the banners stay clear of the right-hand platform band, and refuse bands t
 test('copy is measured with the supplied KitText font', () => {
   // Wraps to three lines with the fallback widths (the widest faces) but fits two in Inter.
   const t = thread();
+  const lines = (e) => Math.round(page(ncBuild(t, e)).rows[0].h);
   t.notifications[0].body = 'Saw your post and loved it. Do you have time for a call this week?';
-  assert.throws(() => ncBuild(t, env()), /needs 3 lines/);
-  assert.doesNotThrow(() => ncBuild(t, env({ font_css: interCss() })));
+  assert.equal(lines(env()), 264);
+  assert.equal(lines(env({ font_css: interCss() })), 220);
   t.notifications[0].body = 'Saw the post, loved it. Do you have time for a quick call with our whole team this week?';
-  assert.throws(() => ncBuild(t, env({ font_css: interCss() })), /needs 3 lines/);
+  assert.equal(lines(env({ font_css: interCss() })), 264);
 });
 
 test('events run forward on frame boundaries with the atom\'s default pacing', () => {

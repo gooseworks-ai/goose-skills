@@ -7,11 +7,16 @@
 // above the stack; the X clears it (swipe up and fade); an optional resolution
 // banner then holds. The end card is another part.
 // Geometry is the atom's contract at 1080x1920 (banner 810 wide at SIDE 135,
-// 176 tall for one body line, row pitch 214, the newest banner's bottom at
-// 1436), scaled uniformly to the canvas. Bodies wrap to two lines at most,
-// measured with the supplied KitText font; copy that cannot fit is refused,
-// never shrunk. Movie time drives every pixel: seek(ms) draws the state at that
-// time from one event timeline.
+// 176 tall for one body line and 44 more per line, rows 38 apart, the newest
+// banner's bottom at 1436), scaled uniformly to the canvas. Each banner is as
+// tall as its own body, which wraps to four lines at most, measured with the
+// supplied KitText font (a word wider than the banner breaks between its
+// characters; a name too long for its line is cut with an ellipsis, as iOS
+// does). When the pile would reach the top band, the oldest banners fold into a
+// stack behind the newer ones (iOS's stacked look: slivers peeking above), so
+// every message arrives readable at the bottom. Copy is refused only when even
+// that cannot fit, saying what to shorten; the type never shrinks. Movie time
+// drives every pixel: seek(ms) draws the state at that time from one event timeline.
 // Pure: no imports; every top-level name starts with `nc`/`NC_`.
 
 const NC_PACING = {
@@ -47,6 +52,7 @@ const NC_GEO = {
   BODY_W: 810,
   BANNER_H: 176, // one body line; each extra line adds LINE_STEP
   LINE_STEP: 44,
+  MAX_LINES: 4, // iOS shows at most four body lines in a banner
   ROW_GAP: 38, // pitch = banner height + 38 (214 for one line)
   BOTTOM: 1436, // the newest banner's bottom edge, just above the phone
   RADIUS: 40,
@@ -68,6 +74,11 @@ const NC_GEO = {
   X_SIZE: 72,
   X_GAP: 18,
   TOP_ROOM: 34, // the pill's top stays this far below the top band (layout.py: 220 + 34)
+  SLIVER: 18, // a folded banner peeks this far above the one in front of it
+  SLIVERS: 2, // folded banners deeper than this hide behind the second sliver
+  SLIVER_SCALE: 0.06, // each sliver is this much narrower than the banner in front
+  SLIVER_DIM: 0.12, // and this much fainter
+  TUCK: 4, // a sliver is cut this far below the front banner's top edge, under its rounded corners
 };
 // compose.py's motion: push = 1 - e^(-7 dt), spring = 60 e^(-9 dt), clear = 560 (1 - e^(-12 dt)),
 // fades 0.35 s in and 0.4 s out (0.3 s for the resolution), the plate's 0.5 s fade from
@@ -270,21 +281,49 @@ function ncMeasurer(fontCss) {
   };
 }
 
-/** layout.py's wrap: whole words, at most maxLines lines, a plain Error when the copy cannot fit. */
-function ncWrap(text, width, maxLines, measure, what) {
-  const words = String(text).trim().split(/\s+/);
+function ncGraphemes(text) {
+  return [...new Intl.Segmenter(undefined, { granularity: 'grapheme' }).segment(String(text))].map((s) => s.segment);
+}
+
+/** Copy quoted in a warning or refusal, cut short. */
+function ncQuote(text, max = 24) {
+  const g = ncGraphemes(text);
+  return g.length > max ? `${g.slice(0, max).join('')}…` : String(text);
+}
+
+/**
+ * layout.py's wrap, whole words per line; a word wider than the banner breaks between its characters
+ * (starting a line of its own), as iOS breaks it. Returns { lines, broken }: broken lists those words.
+ */
+function ncWrap(text, width, measure) {
   const lines = [''];
-  for (const word of words) {
-    if (measure(word) > width) throw new Error(`${what}: the word "${word}" is wider than the banner; shorten it (the type never shrinks).`);
+  const broken = [];
+  for (const word of String(text).trim().split(/\s+/)) {
     const last = lines[lines.length - 1];
-    const candidate = last ? `${last} ${word}` : word;
-    if (measure(candidate) <= width) lines[lines.length - 1] = candidate;
-    else lines.push(word);
+    if (measure(word) <= width) {
+      const candidate = last ? `${last} ${word}` : word;
+      if (measure(candidate) <= width) lines[lines.length - 1] = candidate;
+      else lines.push(word);
+      continue;
+    }
+    broken.push(word);
+    if (last) lines.push('');
+    for (const ch of ncGraphemes(word)) {
+      const cur = lines[lines.length - 1];
+      if (cur && measure(cur + ch) > width) lines.push(ch);
+      else lines[lines.length - 1] = cur + ch;
+    }
   }
-  if (lines.length > maxLines) {
-    throw new Error(`${what} needs ${lines.length} lines; ${maxLines === 1 ? 'it must fit on one line' : `the most is ${maxLines}`}. Shorten the copy (the type never shrinks).`);
-  }
-  return lines;
+  return { lines, broken };
+}
+
+/** One line of copy: whole when it fits, else cut with an ellipsis as iOS cuts a long name. */
+function ncFitLine(text, width, measure) {
+  if (measure(text) <= width) return { text, cut: false };
+  const g = ncGraphemes(text);
+  let n = g.length - 1;
+  while (n > 1 && measure(`${g.slice(0, n).join('').trimEnd()}…`) > width) n--;
+  return { text: `${g.slice(0, n).join('').trimEnd()}…`, cut: true };
 }
 
 function ncValidate(thread, env) {
@@ -332,27 +371,39 @@ function ncTimeline(thread, P, fps) {
   return { events, arrivals, clear, resolution, total: snap(last + P.ending_after_seconds) };
 }
 
-/** The banners' measured lines and the stack's place on the canvas (layout.py's geometry). */
+function ncList(ids) {
+  return ids.length === 1 ? ids[0] : `${ids.slice(0, -1).join(', ')} and ${ids[ids.length - 1]}`;
+}
+
+/**
+ * The banners' measured lines and heights, the stack's place on the canvas (layout.py's geometry) and
+ * folded[m]: how many of the oldest banners are folded into the stack once notification m has arrived
+ * (the fewest that let the pile and its pill fit below the top band). warnings say what was fitted.
+ */
 function ncLayout(thread, env) {
   const G = NC_GEO;
   const { width: W, height: H } = env;
   const u = Math.min(W / G.W, H / G.H);
   const measure = ncMeasurer(env.font_css);
   const column = G.BODY_W - G.TEXT_X - G.TEXT_RIGHT;
-  if (measure(thread.handle.trim(), G.META_PX, 400) > column) throw new Error('The handle does not fit on one line of the banner; shorten it.');
+  const warnings = [];
+  const handle = ncFitLine(thread.handle.trim(), column, (s) => measure(s, G.META_PX, 400));
+  if (handle.cut) warnings.push(`The brand name on the banners is cut to "${handle.text}" to fit.`);
+  const heightOf = (lines) => (G.BANNER_H + G.LINE_STEP * (lines - 1)) * u;
   const all = [...thread.notifications, ...(thread.resolution ? [thread.resolution] : [])];
   const banners = all.map((n) => {
-    const title = n.title.trim();
-    if (measure(title, G.TITLE_PX, 600) > column - G.NOW_ROOM) {
-      throw new Error(`The title of ${n.id} does not fit on one line beside "now"; shorten it (the type never shrinks).`);
+    const title = ncFitLine(n.title.trim(), column - G.NOW_ROOM, (s) => measure(s, G.TITLE_PX, 600));
+    if (title.cut) warnings.push(`The name on ${n.id} is cut to "${title.text}" to fit beside "now".`);
+    const { lines, broken } = ncWrap(n.body, column, (s) => measure(s, G.BODY_PX, 400));
+    if (lines.length > G.MAX_LINES) {
+      const over = ncGraphemes(lines.slice(G.MAX_LINES).join(' ')).length + 1;
+      throw new Error(`The body of ${n.id} needs ${lines.length} lines; a banner shows at most ${G.MAX_LINES}. Cut about ${over} characters from it.`);
     }
-    return { id: n.id, title, lines: ncWrap(n.body, column, 2, (s) => measure(s, G.BODY_PX, 400), `The body of ${n.id}`) };
+    for (const word of broken) warnings.push(`The word "${ncQuote(word)}" in ${n.id} is wider than the banner, so it breaks across lines.`);
+    if (lines.length > 2) warnings.push(`The body of ${n.id} wraps to ${lines.length} lines, so its banner is taller.`);
+    return { id: n.id, title: title.text, lines, h: heightOf(lines.length) };
   });
-  const lines = Math.max(...banners.map((b) => b.lines.length));
-  const bannerH = G.BANNER_H + G.LINE_STEP * (lines - 1);
-  const pitch = bannerH + G.ROW_GAP;
   const bottom = (H * G.BOTTOM) / G.H;
-  const yb = bottom - bannerH * u;
   let left = W / 2 - (G.BODY_W / 2) * u;
   const safe = env.safe_area || null;
   if (safe) {
@@ -361,14 +412,37 @@ function ncLayout(thread, env) {
     if (left < (safe.left || 0)) throw new Error('The banners do not fit between the safe area\'s side bands.');
     if (bottom > H - (safe.bottom || 0)) throw new Error('The newest banner would sit in the safe area\'s bottom band.');
   }
-  const n = thread.notifications.length;
-  const pillTop = yb - pitch * u * (n - 1) - (G.PILL_ABOVE + G.PILL_H) * u;
-  if (pillTop < ((safe && safe.top) || 0) + G.TOP_ROOM * u) {
-    throw new Error(
-      `${n} notification${n === 1 ? '' : 's'} with ${lines === 1 ? 'one-line' : 'two-line'} bodies do not fit above the phone${safe ? ' below the safe area\'s top band' : ''}; use fewer notifications or one-line copy.`,
-    );
+  const limit = ((safe && safe.top) || 0) + G.TOP_ROOM * u - 1e-6;
+  const pill = (G.PILL_ABOVE + G.PILL_H) * u;
+  const stack = banners.slice(0, thread.notifications.length);
+  // The pill's top once notification m is in, with the c oldest folded to slivers behind banner c.
+  const pillTop = (m, c) => {
+    let h = Math.min(c, G.SLIVERS) * G.SLIVER * u + (m - c) * G.ROW_GAP * u;
+    for (let j = c; j <= m; j++) h += stack[j].h;
+    return bottom - h - pill;
+  };
+  const where = safe ? ' below the safe area\'s top band' : '';
+  const folded = [];
+  let c = 0;
+  for (let m = 0; m < stack.length; m++) {
+    while (c < m && pillTop(m, c) < limit) c++;
+    if (pillTop(m, c) < limit) {
+      const b = stack[m];
+      const slivers = Math.min(m, G.SLIVERS) * G.SLIVER * u;
+      let fits = b.lines.length - 1;
+      while (fits >= 1 && bottom - heightOf(fits) - slivers - pill < limit) fits--;
+      if (fits < 1) throw new Error(`No notification banner fits above the phone${where} on this canvas.`);
+      throw new Error(
+        `The body of ${b.id} takes ${b.lines.length} lines, which do not fit above the phone${where} even with the older banners folded into a stack; shorten it to ${fits} line${fits === 1 ? '' : 's'}.`,
+      );
+    }
+    if (c > (folded[m - 1] || 0)) {
+      const ids = stack.slice(folded[m - 1] || 0, c).map((x) => x.id);
+      warnings.push(`When ${stack[m].id} arrives, ${ncList(ids)} fold${ids.length === 1 ? 's' : ''} into a stack behind the newer banners, so the pile fits above the phone.`);
+    }
+    folded.push(c);
   }
-  return { u, left, yb, pitch: pitch * u, bannerH: bannerH * u, banners };
+  return { u, left, bottom, gap: G.ROW_GAP * u, banners, handle: handle.text, folded, warnings };
 }
 
 function ncIcon(id) {
@@ -384,8 +458,8 @@ function ncBannerHtml(b, i, handle, L, cls) {
   const G = NC_GEO;
   const lines = b.lines.map((line, k) => `<div class="nc-t nc-line" style="top:${ncPx((G.BODY_Y + G.LINE_STEP * k + 0.1 * G.BODY_PX) * L.u)}">${ncEsc(line)}</div>`).join('');
   return (
-    `<div class="nc-row ${cls}" data-nc="${ncEsc(b.id)}"><i class="nc-sh"></i><i class="nc-fill"></i>${ncIcon(`nc-g${i}`)}` +
-    `<div class="nc-t nc-title">${ncEsc(b.title)}</div><div class="nc-t nc-now">now</div>${lines}<div class="nc-t nc-handle">${ncEsc(handle)}</div></div>`
+    `<div class="nc-row ${cls}" data-nc="${ncEsc(b.id)}" style="height:${ncPx(b.h)}"><i class="nc-sh"></i><i class="nc-fill"></i><div class="nc-in">${ncIcon(`nc-g${i}`)}` +
+    `<div class="nc-t nc-title">${ncEsc(b.title)}</div><div class="nc-t nc-now">now</div>${lines}<div class="nc-t nc-handle">${ncEsc(handle)}</div></div></div>`
   );
 }
 
@@ -404,17 +478,18 @@ body { position: relative; font-family: KitText, KitEmoji, sans-serif; font-opti
 i { font-style: normal; }
 .nc-plate { position: absolute; left: 0; top: 0; width: ${W}px; height: ${H}px; object-fit: cover; object-position: 50% 50%; transform-origin: 50% 50%; opacity: 0; }
 .nc-row, .nc-pill-row { position: absolute; left: ${ncPx(L.left)}; top: 0; width: ${s(G.BODY_W)}; visibility: hidden; opacity: 0; }
-.nc-row { height: ${ncPx(L.bannerH)}; }
+.nc-row { transform-origin: 50% 0; }
+.nc-in { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
 .nc-sh { position: absolute; display: block; }
 .nc-fill { position: absolute; display: block; left: 0; top: 0; width: 100%; height: 100%; }
-.nc-row > .nc-sh { left: ${s(-4)}; top: ${s(-2)}; width: ${s(G.BODY_W + 8)}; height: ${ncPx(L.bannerH + 12 * L.u)}; border-radius: ${s(G.RADIUS + 4)}; background: ${shadow}; filter: blur(${s(26)}); }
+.nc-row > .nc-sh { left: ${s(-4)}; top: ${s(-2)}; width: ${s(G.BODY_W + 8)}; height: calc(100% + ${s(12)}); border-radius: ${s(G.RADIUS + 4)}; background: ${shadow}; filter: blur(${s(26)}); }
 .nc-row > .nc-fill { border-radius: ${s(G.RADIUS)}; background: rgba(246,228,219,0.804); }
-.nc-icon { position: absolute; display: block; left: ${s(G.ICON_INSET)}; top: ${ncPx((L.bannerH - G.ICON * L.u) / 2)}; width: ${s(G.ICON)}; height: ${s(G.ICON)}; }
+.nc-icon { position: absolute; display: block; left: ${s(G.ICON_INSET)}; top: calc(50% - ${s(G.ICON / 2)}); width: ${s(G.ICON)}; height: ${s(G.ICON)}; }
 .nc-t { position: absolute; white-space: nowrap; line-height: 1; }
 .nc-title { left: ${s(G.TEXT_X)}; top: ${s(G.TITLE_Y + 0.1 * G.TITLE_PX)}; font-size: ${s(G.TITLE_PX)}; font-weight: 600; color: rgb(20,20,22); }
 .nc-now { right: ${s(G.TEXT_RIGHT)}; top: ${s(G.NOW_Y + 0.1 * G.META_PX)}; font-size: ${s(G.META_PX)}; color: rgb(140,138,140); }
 .nc-line { left: ${s(G.TEXT_X)}; font-size: ${s(G.BODY_PX)}; color: rgb(70,68,72); }
-.nc-handle { right: ${s(G.TEXT_RIGHT)}; top: ${ncPx(L.bannerH - (G.HANDLE_UP - 0.1 * G.META_PX) * L.u)}; font-size: ${s(G.META_PX)}; font-style: italic; color: rgb(150,146,146); }
+.nc-handle { right: ${s(G.TEXT_RIGHT)}; top: calc(100% - ${s(G.HANDLE_UP - 0.1 * G.META_PX)}); font-size: ${s(G.META_PX)}; font-style: italic; color: rgb(150,146,146); }
 .nc-pill-row { height: ${s(G.PILL_H)}; display: flex; justify-content: flex-end; gap: ${s(G.X_GAP)}; }
 .nc-pill, .nc-x { position: relative; flex: none; height: ${s(G.PILL_H)}; }
 .nc-pill { box-sizing: border-box; padding: 0 ${s(56)} 0 ${s(52)}; display: flex; align-items: center; }
@@ -430,53 +505,69 @@ i { font-style: normal; }
 `;
 }
 
-// The in-page driver: compose.py's overlay expressions, evaluated at seek time.
+// The in-page driver: compose.py's overlay expressions, evaluated at seek time. Tops are worked out from
+// the newest banner up: each banner sits one gap above the next (pushed up as that one arrives), or, once
+// folded, a sliver above it, narrower, fainter, its words faded and cut under the banner in front.
 const NC_DRIVER = String.raw`(() => {
   const D = NC_PAGE;
   const M = D.motion;
+  const R = D.rows;
   const plate = document.querySelector('.nc-plate');
   const rows = [...document.querySelectorAll('.nc-row.nc-stack')];
+  const inner = rows.map((row) => row.querySelector('.nc-in'));
   const res = document.querySelector('.nc-row.nc-resolution');
   const pill = document.querySelector('.nc-pill-row');
   const xbtn = document.querySelector('.nc-x');
   const press = document.querySelector('.nc-press');
   const clamp = (v) => Math.max(0, Math.min(1, v));
-  const push = (t, a) => 1 - Math.exp(-M.push_rate * Math.max(0, t - a));
+  const push = (t, a) => (a === null ? 0 : 1 - Math.exp(-M.push_rate * Math.max(0, t - a)));
   const spring = (t, a) => M.spring_px * Math.exp(-M.spring_rate * Math.max(0, t - a));
   const lift = (t) => M.clear_px * (1 - Math.exp(-M.clear_rate * Math.max(0, t - D.clear)));
   const fadeIn = (t, a, d) => (t < a ? 0 : clamp((t - a) / d));
-  const place = (el, y, alpha) => {
+  const place = (el, y, alpha, scale) => {
     el.style.visibility = alpha > 0 ? 'visible' : 'hidden';
     el.style.opacity = String(alpha);
-    el.style.transform = 'translate3d(0,' + y.toFixed(3) + 'px,0)';
+    el.style.transform = 'translate3d(0,' + y.toFixed(3) + 'px,0)' + (scale === undefined ? '' : ' scale(' + scale.toFixed(5) + ')');
   };
+  const fold = (t, k) => (k < R.length ? push(t, R[k].s) : 0);
   const draw = (t) => {
-    const a = D.arrivals;
     plate.style.opacity = String(clamp(t / M.plate_fade));
     plate.style.transform = 'scale(' + Math.min(1 + M.zoom_per_s * t, M.zoom_max).toFixed(6) + ')';
     const out = t < D.clear ? 1 : 1 - clamp((t - D.clear) / M.fade_out);
     const up = lift(t) * D.u;
+    const n = R.length;
+    const top = new Array(n);
+    top[n - 1] = D.bottom - R[n - 1].h;
+    for (let k = n - 2; k >= 0; k--) {
+      const next = R[k + 1];
+      const open = top[k + 1] + next.h - (next.h + D.gap) * push(t, next.a) - R[k].h;
+      const tucked = top[k + 1] - D.sliver * (1 - fold(t, k + 2));
+      top[k] = open + (tucked - open) * fold(t, k);
+    }
+    const shown = top.map((y, k) => y + spring(t, R[k].a) * D.u);
     rows.forEach((row, k) => {
-      let pushed = 0;
-      for (let j = k + 1; j < a.length; j++) pushed += push(t, a[j]);
-      place(row, D.yb - D.pitch * pushed + spring(t, a[k]) * D.u - up, fadeIn(t, a[k], M.fade_in) * out);
+      const e = fold(t, k);
+      const depth = e + fold(t, k + 1);
+      const scale = 1 - D.sliver_scale * depth;
+      place(row, shown[k] - up, fadeIn(t, R[k].a, M.fade_in) * out * (1 - fold(t, k + 2)) * (1 - D.sliver_dim * depth), e > 0 ? scale : undefined);
+      inner[k].style.opacity = String(1 - e);
+      const cut = e > 0 && k + 1 < n ? R[k].h - (shown[k + 1] + D.tuck - shown[k]) / scale : -1;
+      row.style.clipPath = cut > 0 ? 'inset(-400px -400px ' + cut.toFixed(3) + 'px -400px)' : 'none';
     });
-    let above = 0;
-    for (let j = 1; j < a.length; j++) above += push(t, a[j]);
-    place(pill, D.yb - D.pitch * above - D.pill_gap - up, fadeIn(t, a[0], M.fade_in) * out);
+    place(pill, top[0] - D.pill_gap - up, fadeIn(t, R[0].a, M.fade_in) * out);
     // The X is pressed just before the stack swipes away.
     const p = clamp((t - (D.clear - 0.2)) / 0.3);
     const bump = p > 0 && p < 1 ? Math.sin(Math.PI * p) : 0;
     xbtn.style.transform = 'scale(' + (1 - 0.08 * bump).toFixed(4) + ')';
     press.style.opacity = bump.toFixed(4);
-    if (res) place(res, D.yb + spring(t, D.resolution) * D.u, fadeIn(t, D.resolution, M.res_fade));
+    if (res) place(res, D.bottom - D.res_h + spring(t, D.resolution) * D.u, fadeIn(t, D.resolution, M.res_fade));
   };
   window.seek = (ms) => draw(ms / 1000);
   draw(0);
 })();`;
 
 /**
- * The notification-cascade page for `thread`: { html, events, total_s, cues }.
+ * The notification-cascade page for `thread`: { html, events, total_s, cues, stats, warnings }.
  * `env` = { width, height, fps, theme, safe_area, assets, font_css, images, timing }.
  */
 export function ncBuild(thread, env) {
@@ -486,21 +577,30 @@ export function ncBuild(thread, env) {
   const { events, arrivals, clear, resolution, total } = ncTimeline(thread, P, env.fps);
   const G = NC_GEO;
   const n = thread.notifications.length;
-  const handle = thread.handle.trim();
-  const stack = L.banners.slice(0, n).map((b, i) => ncBannerHtml(b, i, handle, L, 'nc-stack')).join('\n');
-  const res = thread.resolution ? ncBannerHtml(L.banners[n], n, handle, L, 'nc-resolution') : '';
+  const stack = L.banners.slice(0, n).map((b, i) => ncBannerHtml(b, i, L.handle, L, 'nc-stack')).join('\n');
+  const res = thread.resolution ? ncBannerHtml(L.banners[n], n, L.handle, L, 'nc-resolution') : '';
   const pill =
     '<div class="nc-pill-row"><div class="nc-pill"><i class="nc-sh"></i><i class="nc-fill"></i>' +
     '<svg class="nc-chev" viewBox="-14 -9 28 18" aria-hidden="true"><polyline points="-11,-6 0,6 11,-6" fill="none" stroke="rgb(90,88,90)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
     '<span class="nc-label">Show less</span></div>' +
     '<div class="nc-x"><i class="nc-sh"></i><i class="nc-fill"></i><i class="nc-press"></i>' +
     '<svg class="nc-xmark" viewBox="0 0 72 72" aria-hidden="true"><path d="M20 20L52 52M20 52L52 20" stroke="rgb(90,88,90)" stroke-width="6" stroke-linecap="round"/></svg></div></div>';
+  // A banner folds as the notification that needs its room arrives, with that one's push.
+  const foldAt = L.banners.slice(0, n).map((_, k) => {
+    const m = L.folded.findIndex((c) => c > k);
+    return m < 0 ? null : arrivals[m];
+  });
   const page = {
     u: L.u,
-    yb: L.yb,
-    pitch: L.pitch,
+    bottom: L.bottom,
+    gap: L.gap,
+    rows: L.banners.slice(0, n).map((b, k) => ({ h: b.h, a: arrivals[k], s: foldAt[k] })),
+    res_h: thread.resolution ? L.banners[n].h : 0,
+    sliver: G.SLIVER * L.u,
+    sliver_scale: G.SLIVER_SCALE,
+    sliver_dim: G.SLIVER_DIM,
+    tuck: G.TUCK * L.u,
     pill_gap: (G.PILL_ABOVE + G.PILL_H) * L.u,
-    arrivals,
     clear,
     resolution,
     motion: NC_MOTION,
@@ -529,5 +629,5 @@ ${NC_DRIVER}</script>
     words: banners.reduce((n, b) => n + String(b.body || '').trim().split(/\s+/u).filter(Boolean).length, 0),
     photos: 0,
   };
-  return { html, events, total_s: total, cues, stats };
+  return { html, events, total_s: total, cues, stats, warnings: L.warnings };
 }
