@@ -13,7 +13,7 @@
     },
     "captions": {
       "id": "captions-layer",
-      "version": "1.1.0"
+      "version": "1.3.1"
     },
     "sound": {
       "id": "sound-layer",
@@ -21,7 +21,7 @@
     },
     "check": {
       "id": "check-layer",
-      "version": "1.2.0"
+      "version": "1.4.2"
     }
   }
 }

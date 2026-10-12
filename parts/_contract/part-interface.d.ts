@@ -553,6 +553,30 @@ export interface OutputExpectation {
   qc_flags: string[];
   /** Approved lines from plan.scenes[].line, for speech_matches_script. */
   script?: string[];
+  /**
+   * style traits.caption_look, copied by the kit when it is an object. The captions layer reads it
+   * (captions-layer >= 1.2.0). It is never refused: a preset the layer version does not draw is drawn as
+   * `plate` with a warning, and any value it cannot use is dropped with a warning.
+   */
+  caption_look?: CaptionLook;
+}
+
+/** How the captions layer draws captions. `pill`, `serif-word` and `sentence` need captions-layer 1.3.0. */
+export interface CaptionLook {
+  preset: 'plate' | 'stroke' | 'karaoke' | 'pill' | 'serif-word' | 'sentence';
+  /** Words per caption, 1-8. */
+  max_words?: number;
+  /** Caption centre, 0.40-0.82 of the height, clamped into the safe band. */
+  y?: number;
+  /** `serif` (PT Serif Bold) and `rounded` (Titan One) are bundled from captions-layer 1.3.0. */
+  font?: 'sans_bold' | 'serif' | 'rounded' | 'brand';
+  /** Words that spell the brand name or the call to action take the highlight colour. */
+  highlight?: Array<'brand' | 'cta'>;
+  /** #RRGGBB; default brand.colors.primary, else #FFD400. */
+  highlight_color?: string;
+  case?: 'as_written' | 'lower' | 'upper';
+  /** No captions on the timeline's first scene. */
+  skip_first_scene?: boolean;
 }
 
 /**

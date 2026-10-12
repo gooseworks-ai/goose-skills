@@ -618,6 +618,30 @@ def test_thousands_with_decimal_keep_the_decimal():
     assert not v.passed and any(i.severity == "high" for i in v.issues)
 
 
+def test_mcp_mode_never_uses_the_cli_login():
+    """GW_MEDIA_VIA=mcp bills the account the agent is connected to. The CLI login can be a
+    different account, so the paid transcript must not fall back to it in that mode."""
+    keep = {k: os.environ.get(k) for k in
+            ("HOME", "USERPROFILE", "GW_MEDIA_VIA", "GW_MEDIA_PROXY_TOKEN")}
+    with tempfile.TemporaryDirectory() as home:
+        os.makedirs(os.path.join(home, ".gooseworks"))
+        with open(os.path.join(home, ".gooseworks", "credentials.json"), "w") as fh:
+            json.dump({"api_base": "https://example.invalid", "api_key": "k", "agent_id": "a"}, fh)
+        try:
+            os.environ["HOME"] = os.environ["USERPROFILE"] = home
+            os.environ.pop("GW_MEDIA_PROXY_TOKEN", None)
+            os.environ.pop("GW_MEDIA_VIA", None)
+            assert review_render._gw_creds() == ("https://example.invalid", "k", "a")
+            os.environ["GW_MEDIA_VIA"] = "mcp"
+            assert review_render._gw_creds() is None
+        finally:
+            for k, v in keep.items():
+                if v is None:
+                    os.environ.pop(k, None)
+                else:
+                    os.environ[k] = v
+
+
 if __name__ == "__main__":
     fns = [v for k, v in sorted(globals().items()) if k.startswith("test_") and callable(v)]
     failed = 0

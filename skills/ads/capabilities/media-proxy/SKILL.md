@@ -2,7 +2,7 @@
 name: media-proxy
 description: Shared helper that routes ALL paid media generation (FAL image/video, ElevenLabs music) through the GooseWorks proxies so every call bills the Ads agent — never a provider SDK's default host. Host-swaps the FAL queue URLs, loads the agent token from the sandbox env (GW_MEDIA_PROXY_TOKEN) or ~/.gooseworks/credentials.json, and returns the result CDN URL. Every video-ad media capability imports this; templates never call a provider directly.
 status: active
-version: "2.0.2"
+version: "2.0.3"
 updated: 2026-10-06
 ---
 
@@ -175,7 +175,10 @@ for that input's own ingredient_key + digest first, or the digest never matches.
 
 A session that only has the GooseWorks MCP connector (a chat app, or a terminal where
 the GooseWorks CLI is not signed in) has neither `GW_MEDIA_PROXY_TOKEN` (the cloud sandbox's)
-nor `~/.gooseworks/credentials.json`, so scripts cannot reach the proxies over HTTP. Then every paid call is **relayed through the agent**:
+nor `~/.gooseworks/credentials.json`, so scripts cannot reach the proxies over HTTP. A
+connected terminal session can also hold CLI credentials for a different environment; set
+`GW_MEDIA_VIA=mcp` before running its media helpers so the selected connector stays
+authoritative. Either way every paid call is **relayed through the agent**:
 
 1. The script writes the exact MCP tool call to `working/mcp-requests/<kind>-<hash>.json`
    and exits with code **3**, printing what to do.
@@ -200,6 +203,37 @@ attribution the HTTP proxy records) and `GW_BRAND_ID` (for uploads). The MCP too
 through the same server proxy code, so price and project attribution are identical.
 `GW_MEDIA_VIA=mcp` forces the relay (e.g. the CLI login points at another environment);
 `GW_MEDIA_VIA=proxy` forces HTTP.
+
+## Large request bodies without prompt copying
+
+The relay writes a `.body.json` file for request bodies over 8 KB and adds `body_file` plus
+`compact_call` to its request record. When `data_post` advertises `body_asset_id`, hand that
+file over instead of its contents:
+
+1. `media_upload` with scope `video_project`, scope_id `GW_PROJECT_ID`, path
+   `working/mcp-requests/<filename>.body.json`, kind `reference` and source
+   `{type: file, filename: <filename>, content_type: application/json}`. It returns the
+   `media` row and an `upload` block.
+2. PUT the file to `upload.url` with `upload.method` and `upload.required_headers`
+   (`curl -X PUT -T <file> "<upload.url>"`).
+3. Finish the upload. With the current actions `media_upload` finishes it itself once the
+   PUT lands; a connector that still exposes a separate confirm action needs that call
+   after the PUT, and `media.status` stays `pending` until then. Only a finished upload's
+   `media.id` is accepted.
+4. Send the compact call with that `media.id` as `body_asset_id` and omit `body`.
+
+A connector whose `media_upload` takes source `bytes` (base64 inline, up to about 8 MB)
+finishes in step 1 with no PUT; use it when the body file fits. The backend loads that
+exact file and applies the same secret, approval and billing checks. Do not paste its
+prompt into chat.
+
+Older connectors without `body_asset_id` use the original args record. Read the exact JSON
+into the host's tool runner; never retype prompts or reconstruct them from memory.
+
+For a connected terminal run, set `GW_MEDIA_VIA=mcp`, `GW_PROJECT_ID` and `GW_BRAND_ID`
+before running any media scripts. Record the public API origin from `account_whoami` in
+`GW_EXPECTED_API_ORIGIN`. Do not inspect CLI credential files to identify the connected
+environment. Automatic diagnostics also skip HTTP credentials while relay mode is active.
 
 ## Related
 - Used by `create-image-fal`, `create-video-fal`, `create-music-elevenlabs`.

@@ -81,6 +81,13 @@ def _base_from_proxy_url(url):
     return u[:i] if i > 0 else None
 
 
+def _checked_origin(base):
+    expected = os.environ.get("GW_EXPECTED_API_ORIGIN")
+    if expected and base.rstrip("/") != expected.rstrip("/"):
+        raise RuntimeError("Selected connection and HTTP proxy origins differ. Set GW_MEDIA_VIA=mcp; do not switch credentials or environments.")
+    return base.rstrip("/")
+
+
 def _cfg():
     """(api_base, token, agent_id).
 
@@ -94,14 +101,14 @@ def _cfg():
                 or _base_from_proxy_url(os.environ.get("GW_FAL_PROXY_URL"))
                 or _base_from_proxy_url(os.environ.get("GW_ELEVENLABS_PROXY_URL")))
         if base:
-            return base.rstrip("/"), env_tok, None
+            return _checked_origin(base), env_tok, None
     p = pathlib.Path(os.path.expanduser(_CREDS_PATH))
     if not p.exists():
         raise RuntimeError(
             "No GooseWorks credentials: set GW_MEDIA_PROXY_TOKEN + GW_API_BASE (cloud "
             f"sandbox) or log in with the GooseWorks CLI (writes {_CREDS_PATH}).")
     c = json.loads(p.read_text())
-    return c["api_base"].rstrip("/"), c["api_key"], c.get("agent_id")
+    return _checked_origin(c["api_base"]), c["api_key"], c.get("agent_id")
 
 
 RELAY_EXIT = 3
@@ -117,6 +124,8 @@ def relay_mode():
         return False
     if os.environ.get("GW_MEDIA_PROXY_TOKEN"):
         return False
+    if os.environ.get("GW_EXPECTED_API_ORIGIN"):
+        return True  # Connected origin is authoritative; do not inspect CLI credentials.
     return not pathlib.Path(os.path.expanduser(_CREDS_PATH)).exists()
 
 
@@ -147,6 +156,12 @@ def _relay(kind, tool, args, then, extra=None, check=None):
                     pass
                 raise
         return out
+    if isinstance(args.get("body"), dict) and len(json.dumps(args["body"])) > 8000:
+        body_file = d / f"{kind}-{key}.body.json"
+        body_file.write_text(json.dumps(args["body"], ensure_ascii=False))
+        extra = dict(extra or {}, body_file=str(body_file), body_file_mime="application/json",
+                     compact_call={"tool": tool, "args": {k: v for k, v in args.items() if k != "body"},
+                                   "add": {"body_asset_id": "<confirmed JSON upload media.id>"}})
     req.write_text(json.dumps({"tool": tool, "args": args, **(extra or {}), "then": then,
                                "save_result_to": str(res)}, indent=1, ensure_ascii=False))
     print("\n[mcp-relay] %s needs an MCP tool call (no GooseWorks credentials on this machine):\n"
@@ -221,7 +236,7 @@ def gw_log(message, event_type="info", level="info", *, skill=None, provider=Non
     event_type: info | step | generation | api_failure | error | blocker |
                 missing_input | confusion
     """
-    if os.environ.get("GW_CLI_LOG_DISABLED"):
+    if os.environ.get("GW_CLI_LOG_DISABLED") or relay_mode():
         return
     try:
         api_base, tok, agent = _cfg()
@@ -666,7 +681,7 @@ def forget_rejection(key):
 #      re-attach by request-id later (never re-submits).
 #   2. the poll loop RETRIES the same URL through connection-refused / timeout blips
 #      instead of crashing.
-_PENDING_DIR = pathlib.Path(os.path.expanduser("~/.gooseworks/pending-fal-jobs"))
+_PENDING_DIR = pathlib.Path(os.environ.get("GW_FAL_PENDING_DIR") or os.path.expanduser("~/.gooseworks/pending-fal-jobs"))
 _TRANSIENT = (requests.ConnectionError, requests.Timeout,
               requests.exceptions.ChunkedEncodingError)
 
@@ -796,7 +811,7 @@ def _poll_to_result(model_path, status_url, response_url, params, timeout_s, pol
 
 
 def _fal_run(model_path, payload, timeout_s=None, poll_s=3, new_take=False,
-             input_digest=None):
+             input_digest=None, on_submit=None):
     """Submit a FAL job through the proxy, poll to completion (surviving backend blips),
     return the raw result dict. `model_path` e.g. 'fal-ai/kling-video/.../image-to-video'.
 
@@ -823,14 +838,14 @@ def _fal_run(model_path, payload, timeout_s=None, poll_s=3, new_take=False,
     `python3 media_proxy.py forget <key>`."""
     refuse_if_rejected(model_path, payload, input_digest)
     try:
-        return _fal_run_once(model_path, payload, timeout_s, poll_s, new_take, input_digest)
+        return _fal_run_once(model_path, payload, timeout_s, poll_s, new_take, input_digest, on_submit)
     except FalPolicyRejection as e:
         if not e.from_ledger and e.recordable:
             _record_rejection(model_path, payload, input_digest, e)
         raise
 
 
-def _fal_run_once(model_path, payload, timeout_s, poll_s, new_take, input_digest):
+def _fal_run_once(model_path, payload, timeout_s, poll_s, new_take, input_digest, on_submit=None):
     if relay_mode():
         args = {"provider": "fal", "path": model_path, "body": payload}
         if input_digest:
@@ -872,6 +887,8 @@ def _fal_run_once(model_path, payload, timeout_s, poll_s, new_take, input_digest
         status_url, response_url = to_proxy(sub["status_url"]), to_proxy(sub["response_url"])
         request_id = sub.get("request_id") or urlparse(sub["response_url"]).path.rstrip("/").rsplit("/", 1)[-1]
         _persist_pending(model_path, request_id, status_url, response_url)
+        if on_submit is not None:
+            on_submit(request_id)
         try:
             result = _poll_to_result(model_path, status_url, response_url, params, timeout_s,
                                      poll_s, request_id=request_id)

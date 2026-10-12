@@ -16,16 +16,24 @@ so every routine here jitters per LETTER, not per line.
 """
 import math
 import random
+from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
-MARKER = "C:/Windows/Fonts/PermanentMarker.ttf"
+# Both faces ship in assets/fonts. They used to be read from C:/Windows/Fonts, so the renderer
+# only ran on a Windows machine that happened to have them installed.
+FONTS = Path(__file__).resolve().parent.parent / "assets" / "fonts"
+MARKER = str(FONTS / "PermanentMarker-Regular.ttf")
 # The TITLE has its own face, chosen by testing four against the reference. Permanent Marker's
 # letterforms are narrow and squarish and no amount of dilation rounds them; Comic Sans Black
 # is rounder but still reads as a marker font; Baloo is too light once jittered. Titan One is
 # already a fat rounded display face, so it needs almost no dilation - the roundness comes from
 # the letterform rather than from growing a narrow one, which is the whole trick.
-TITLE = "C:/Windows/Fonts/TitanOne-Regular.ttf"
+TITLE = str(FONTS / "TitanOne-Regular.ttf")
+# The caption pill was set in Segoe Script Bold, which is Microsoft's and cannot be bundled.
+# Keep it where Windows has it, so shipped videos do not change; fall back to the marker face.
+_SEGOE = Path("C:/Windows/Fonts/segoescb.ttf")
+CAPTION = str(_SEGOE) if _SEGOE.exists() else MARKER
 
 
 def _glyph(ch, font, pad=40):

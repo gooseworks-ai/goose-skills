@@ -43,16 +43,30 @@ test('safe_area defaults on for 9:16 canvases and off for other shapes', () => {
     assert.throws(() => resolveSafeArea(bad, 1080, 1920), /safe_area/);
 });
 
-test('the default 1080x1920 layout keeps the conversation inside the safe zone at the largest zoom', () => {
+test('the default 1080x1920 layout is the largest safe phone that sits in the middle of the canvas', () => {
   const doc = buildDocument(fixture(), path.dirname(FIXTURE));
   const L = doc.layout;
   assert.deepEqual(L.zone, { left: 0, top: 220, right: 940, bottom: 1520 });
-  assert.ok(L.zoom < LEGACY_ZOOM && L.zoom > 1.9, `zoom ${L.zoom}`);
+  assert.ok(L.zoom < LEGACY_ZOOM && L.zoom > 1.6 && L.zoom < 1.7, `zoom ${L.zoom}`);
+  // Brightland clean run, 2026-10-07: the largest safe phone sat 16 px from the
+  // top with 272 px under it, and read as a layout mistake.
+  const above = L.top, below = 1920 - (L.top + PHONE.height * L.zoom);
+  assert.ok(Math.abs(above - below) < 1, `phone must be vertically centred: ${above} above, ${below} below`);
+  assert.ok(Math.abs(L.left - (1080 - (L.left + PHONE.width * L.zoom))) < 1, 'phone must be horizontally centred');
   assert.ok(L.top >= 16 && L.top + PHONE.height * L.zoom <= 1920 - 16);
   assert.ok(L.left >= 16 && L.left + PHONE.width * L.zoom <= 1080 - 16);
   assert.ok(L.top + PHONE.keep.bottom * L.zoom < 1520, 'conversation bottom must sit above the bottom band');
   assert.ok(L.left + PHONE.keep.right * L.zoom < 940, 'conversation right must sit left of the right band');
   assert.ok(doc.html.includes('body.framed .iphone-frame { position:absolute'));
+});
+
+test('phone_fit "largest" keeps the bigger phone pushed up against the top margin', () => {
+  const dir = path.dirname(FIXTURE);
+  const L = buildDocument(fixture({ phone_fit: 'largest' }), dir).layout;
+  assert.ok(L.zoom > buildDocument(fixture(), dir).layout.zoom, `zoom ${L.zoom}`);
+  assert.equal(L.top, 16);
+  assert.ok(L.top + PHONE.keep.bottom * L.zoom < 1520, 'conversation bottom must sit above the bottom band');
+  assert.throws(() => buildDocument(fixture({ phone_fit: 'top' }), dir), /phone_fit/);
 });
 
 test('an explicit zoom is a ceiling with safe_area on and exact with safe_area off', () => {

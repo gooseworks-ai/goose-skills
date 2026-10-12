@@ -2,6 +2,7 @@
 name: write-video-ad-script
 description: Write a short-form video ad from an evidence-backed angle and the selected template's actual recipe. Reuses or fetches ad-angle-miner, preserves the chosen angle, plans words and visuals together, checks product claims and production fit, and delivers the strongest script with useful alternatives. Use before video production and for script rewrites. Customer language is one input alongside audience, promise, product proof, offer and format.
 status: active
+version: "1.0.4"
 ---
 
 # Human version

@@ -194,6 +194,8 @@ def main():
     if problem:
         raise SystemExit(problem)
 
+    if spec.get("planning_only"):
+        raise SystemExit("This is a planning-only spec. Generate and review the actual still, then rerun plan_takes without --plan-only before --go.")
     man_p = pathlib.Path(spec["out"]) / "manifest.json"
     manifest = json.loads(man_p.read_text()) if man_p.exists() else {"model": spec["model"], "takes": []}
     # Refuse an unchanged rejected take BEFORE uploading or sending anything. A take refused for

@@ -29,7 +29,7 @@ import math
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
 
-DEFAULTS = {"rot": -0.8, "keystone": 0.012, "fill": 0.86, "fit": "height", "bezel": 0.012,
+DEFAULTS = {"rot": -0.8, "keystone": 0.012, "fill": 0.86, "fit": "width", "bezel": 0.012,
             "drift": 1.0, "room": [7, 7, 9]}
 
 

@@ -28,8 +28,14 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[3]
-GEN = ROOT / "skills" / "atoms" / "image-generation" / "create-image-gpt-image-fal" / \
-    "scripts" / "generate.py"
+# The image tool is a separate skill. Installed, it sits beside this one; in goose-studio it is
+# under skills/atoms. Only the studio path was tried, so an installed copy never found it.
+_GEN_AT = [
+    HERE.parents[1] / "create-image-gpt-image-fal" / "scripts" / "generate.py",
+    ROOT / "skills" / "atoms" / "image-generation" / "create-image-gpt-image-fal"
+    / "scripts" / "generate.py",
+]
+GEN = next((p for p in _GEN_AT if p.exists()), _GEN_AT[0])
 
 MODEL, QUALITY = "gpt-image-2", "medium"
 COST = {"low": 0.02, "medium": 0.07, "high": 0.19}[QUALITY]
@@ -42,7 +48,8 @@ PLATE_PROMPT = (
     "the frame edges are parallel to the picture edges with no tilt. The board fills almost the "
     "whole vertical frame and is cropped by it, with only a narrow band of room down each side. "
     "The writing surface is completely empty of any text, letters or drawings. Slim aluminium "
-    "frame, black plastic corner caps, a small maker's badge in one corner. Soft daylight with "
+    "frame, black plastic corner caps. No logo, no brand name, no maker's badge and no lettering "
+    "anywhere on the board or its frame. Soft daylight with "
     "one broad window reflection across the upper board. Behind and beside the board a warm "
     "cluttered room strongly out of focus. Realistic amateur snapshot, no people, no hands."
 )
@@ -59,11 +66,29 @@ ART_STYLE = (
 )
 
 
+def public_url(dest):
+    """The web address of a drawing we just bought. The image tool takes references as PUBLIC
+    URLs only and refuses a local path, which is what this used to hand it, so drawings 2..n
+    failed. The tool records the address it downloaded from beside the file; if that is
+    missing, upload the file (free) and use that address."""
+    meta = Path(str(dest) + ".meta.json")
+    if meta.exists():
+        try:
+            url = json.loads(meta.read_text(encoding="utf-8")).get("image_url")
+            if url and url.startswith("http"):
+                return url
+        except ValueError:
+            pass
+    sys.path.insert(0, str(HERE))
+    import media_proxy
+    return media_proxy.fal_upload(str(dest))
+
+
 def run(dest, prompt, size, ref=None):
     cmd = [sys.executable, str(GEN), "--model", MODEL, "--quality", QUALITY,
            "--image-size", size, "--output", str(dest), "--prompt", prompt]
-    if ref and Path(ref).exists():
-        cmd += ["--ref-image", str(ref)]
+    if ref:
+        cmd += ["--ref-image", ref]
     r = subprocess.run(cmd, capture_output=True, text=True)
     if r.returncode:
         print((r.stderr or r.stdout)[-600:])
@@ -105,7 +130,11 @@ def main():
         print(f"  {name}: {'ok' if ok else 'FAILED'}")
         # the first drawing anchors the style for the rest, so the weight matches
         if ok and ref is None and size == "1024x1024":
-            ref = dest
+            try:
+                ref = public_url(dest)
+            except Exception as e:   # the set still gets made, just without the anchor
+                print(f"  no public address for the style reference ({e}); "
+                      "the rest are drawn without it")
     print("done")
 
 

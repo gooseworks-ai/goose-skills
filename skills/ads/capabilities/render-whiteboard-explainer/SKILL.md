@@ -42,6 +42,9 @@ The recipe asks these before any paid step; this renderer only draws what the be
 - **the payoff** — the closing line, lettered on the last board, with a ring closing around the
   claim it refers to.
 - **the boards** — how many times the board is wiped and reused. Three suits a half-minute.
+  The split is automatic. To set it by hand, put `"new_board": true` on the beat that should
+  open a board; any such mark turns the automatic split off. Use it when the split puts a
+  line on the wrong board, such as the brand name landing on the problem board.
 
 Brand facts come from the brand kit.
 
@@ -83,6 +86,17 @@ Brand facts come from the brand kit.
   judged — whether a mark is about the line it sits under, whether the payoff says the closing
   line. No automated check decides that. Then the finished cut, watched end to end with the
   `watch` skill.
+
+- **It runs on any machine.** The two board fonts ship in `assets/fonts` (see the `NOTICE.md`
+  there), and the image tool is found beside this skill. The caption pill uses Segoe Script
+  Bold where Windows has it and Permanent Marker everywhere else, so captions look slightly
+  different off Windows.
+- **The caption pill ends above y=1520.** `review-finished-ad` flags the bottom 400px, so the
+  default `caption_y` is 1440 and the layout keeps every row, drawing and the payoff above the
+  pill. An `episode.json` written before this keeps its own `caption_y`; delete the key and
+  re-solve to move it.
+- **The board photo carries no logo.** The prompt forbids a maker's badge. Look at the plate
+  anyway: a real manufacturer's name on the frame is a third party's mark in a brand's ad.
 
 ## Inputs
 

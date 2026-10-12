@@ -81,6 +81,13 @@ def _base_from_proxy_url(url):
     return u[:i] if i > 0 else None
 
 
+def _checked_origin(base):
+    expected = os.environ.get("GW_EXPECTED_API_ORIGIN")
+    if expected and base.rstrip("/") != expected.rstrip("/"):
+        raise RuntimeError("Selected connection and HTTP proxy origins differ. Set GW_MEDIA_VIA=mcp; do not switch credentials or environments.")
+    return base.rstrip("/")
+
+
 def _cfg():
     """(api_base, token, agent_id).
 
@@ -94,14 +101,14 @@ def _cfg():
                 or _base_from_proxy_url(os.environ.get("GW_FAL_PROXY_URL"))
                 or _base_from_proxy_url(os.environ.get("GW_ELEVENLABS_PROXY_URL")))
         if base:
-            return base.rstrip("/"), env_tok, None
+            return _checked_origin(base), env_tok, None
     p = pathlib.Path(os.path.expanduser(_CREDS_PATH))
     if not p.exists():
         raise RuntimeError(
             "No GooseWorks credentials: set GW_MEDIA_PROXY_TOKEN + GW_API_BASE (cloud "
             f"sandbox) or log in with the GooseWorks CLI (writes {_CREDS_PATH}).")
     c = json.loads(p.read_text())
-    return c["api_base"].rstrip("/"), c["api_key"], c.get("agent_id")
+    return _checked_origin(c["api_base"]), c["api_key"], c.get("agent_id")
 
 
 RELAY_EXIT = 3
@@ -117,6 +124,8 @@ def relay_mode():
         return False
     if os.environ.get("GW_MEDIA_PROXY_TOKEN"):
         return False
+    if os.environ.get("GW_EXPECTED_API_ORIGIN"):
+        return True  # Connected origin is authoritative; do not inspect CLI credentials.
     return not pathlib.Path(os.path.expanduser(_CREDS_PATH)).exists()
 
 
@@ -147,6 +156,12 @@ def _relay(kind, tool, args, then, extra=None, check=None):
                     pass
                 raise
         return out
+    if isinstance(args.get("body"), dict) and len(json.dumps(args["body"])) > 8000:
+        body_file = d / f"{kind}-{key}.body.json"
+        body_file.write_text(json.dumps(args["body"], ensure_ascii=False))
+        extra = dict(extra or {}, body_file=str(body_file), body_file_mime="application/json",
+                     compact_call={"tool": tool, "args": {k: v for k, v in args.items() if k != "body"},
+                                   "add": {"body_asset_id": "<confirmed JSON upload media.id>"}})
     req.write_text(json.dumps({"tool": tool, "args": args, **(extra or {}), "then": then,
                                "save_result_to": str(res)}, indent=1, ensure_ascii=False))
     print("\n[mcp-relay] %s needs an MCP tool call (no GooseWorks credentials on this machine):\n"
@@ -221,7 +236,7 @@ def gw_log(message, event_type="info", level="info", *, skill=None, provider=Non
     event_type: info | step | generation | api_failure | error | blocker |
                 missing_input | confusion
     """
-    if os.environ.get("GW_CLI_LOG_DISABLED"):
+    if os.environ.get("GW_CLI_LOG_DISABLED") or relay_mode():
         return
     try:
         api_base, tok, agent = _cfg()

@@ -105,10 +105,9 @@ def main():
     paths = P / "art" / "line" / "paths.json"
     if not paths.exists() or paths.stat().st_mtime < max(
             (P / "art" / "line" / f"{n}.png").stat().st_mtime for n in need):
-        run([HERE / "trace.py", "--project", P / "art"], "trace")
-        src = P / "art" / "art" / "paths.json"
-        if src.exists():
-            paths.write_text(src.read_text(encoding="utf-8"), encoding="utf-8")
+        # The drawings live in art/line. This used to pass --project <P>/art, which made
+        # trace.py look in art/art and crash on a clean project.
+        run([HERE / "trace.py", "--project", P, "--dir", P / "art" / "line"], "trace")
     else:
         print("trace: up to date")
 

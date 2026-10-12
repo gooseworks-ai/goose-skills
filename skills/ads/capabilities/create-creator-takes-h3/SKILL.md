@@ -2,12 +2,12 @@
 name: create-creator-takes-h3
 description: Generate an AI creator talking to camera, saying an approved script, as one continuous track — H3 Max reference-to-video through the GooseWorks fal-proxy (bills the Ads agent). Plans takes on line boundaries under H3's 15s cap, dry-runs a cost estimate, generates the first take alone so its voice can be locked and passed to every later take, joins takes with measured 0.10s dissolves, and moves each line's timing onto the words actually spoken. Use for any format with a generated creator speaking a script (split-screen, screen inserts, talking-head ads).
 status: superseded
-version: 2.0.1
+version: "2.1.0"
 updated: 2026-10-06
-superseded_by: creator-h3@1.0.1
+superseded_by: creator-h3@1.0.2
 ---
 
-> **Superseded:** the video kit now does this with the creator-h3 part, version 1.0.1, in the parts folder of this repository. It plans the takes between lines, sends the same prompt and payload, chains the first take's voice to the rest and joins them; its quality check is the check layer's speech-against-script rule. This atom stays, unchanged in behaviour, for skills outside the kit until they move; its scripts still run.
+> **Superseded:** the video kit now does this with the creator-h3 part, version 1.0.2, in the parts folder of this repository. It plans the takes between lines, sends the same prompt and payload, chains the first take's voice to the rest and joins them; its quality check is the check layer's speech-against-script rule. This atom stays, unchanged in behaviour, for skills outside the kit until they move; its scripts still run.
 
 # create-creator-takes-h3
 
@@ -133,6 +133,9 @@ These are the user's calls (the recipe's `choices`), never defaults of this atom
    different `--seed`, which reshuffles which three skin imperfections are asked for) rather than re-rolling the same brief; an unchanged payload
    with a pinned seed reproduces the same image and wastes the spend.
 
+## Free planning before the still exists
+
+`make_character.py --dry-run` saves the prompt and character.json without generating an image. Run `plan_takes.py --plan-only` with that metadata, then `run_takes.py` without --go to inspect durations. These are planning estimates, not a current provider quote. After the approved still exists and has been reviewed, rerun plan_takes without --plan-only. Generation refuses planning-only specs. Never generate a placeholder just to price takes.
 ## Measured join acceptance
 
 Per-take word timing is required in recipes before joining. Confirm every line is complete in each source take; timing cannot recover a word the model never spoke. The join normalizes frame rate and time base, adds silent lead before an early incoming word, and moves a transition after a late outgoing word. It writes the actual mapping and duration in `creator.mp4.timeline.json`, and prints the same summary line as before, e.g. `[join] 2 takes, joins at 4.70, 9.50s -> creator.mp4  (measured 9.50s)` (one take: `[join] one take, trimmed to 6.00s -> creator.mp4`). Each `joins at` value is the reel time where the dissolve into that take begins, the same as `takes[k].start` in the timeline; the printed length is the actual reel length. A lone estimated take is trimmed to `--end` (never padded); a missing take file stops with `take missing: <path> (run run_takes.py)`. Re-align the cut list to the final audio and extend the layer to that measured duration; do not clamp it back to the planned end. Estimated joins remain available for legacy callers and print a warning: `--take` without `--words`, or `--spec` when none of the take set's planned word files exist (recipes written before measured joins). Some-but-not-all word files is an error, and `--require-words` turns any estimated join into an error.
