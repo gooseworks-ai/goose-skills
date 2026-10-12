@@ -202,7 +202,11 @@ async function cutRenderBeat(ctx, beat, { W, H, fps, look, screen, fit, lookInde
   const entry = beat.entry || {};
   if (beat.kind === 'window') {
     sourceFile = cutEntryFile(entry);
-    args.push('-ss', kitNum(beat.from), '-t', kitNum(len * beat.speed + 0.5), '-i', sourceFile.path);
+    // With a dissolve, read only the planned window [from, to] and hold its last frame through the
+    // fade, so no recording past end_ms shows (and the order checks on [from, to] stay true).
+    // The read stops just before `to`: a frame stamped at `to` is past the window.
+    const readS = extraS > 0 ? Math.max(beat.speed / fps, beat.to - beat.from - 1e-3) : len * beat.speed + 0.5;
+    args.push('-ss', kitNum(beat.from), '-t', kitNum(readS), '-i', sourceFile.path);
     pre = `[0:v]setpts=(PTS-STARTPTS)/${kitNum(beat.speed, 6)},fps=${fps},tpad=stop_mode=clone:stop_duration=${kitNum(len + 0.2)}[src]`;
   } else {
     sourceFile = beat.image || cutEntryFile(entry);

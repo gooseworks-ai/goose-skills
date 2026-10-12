@@ -295,3 +295,30 @@ test('split mode with an empty plan.footage shows the creator full frame and sti
   const zone = out.timeline.safe_zones.find((z) => z.use === 'captions');
   assert.ok(zone && zone.y > 0 && zone.y + zone.h === 480, 'the caption zone is the creator zone (bottom)');
 });
+
+test('scenes mode: a beat that dissolves holds its last frame, so nothing past end_ms shows in the fade', { skip }, async () => {
+  const { ctx } = makeCtx({ partDir: dir });
+  // A recording that is red for 1 s, then blue: the window is the red second only.
+  const path = join(ctx.workDir, 'redblue.mp4');
+  await run('ffmpeg', [
+    '-hide_banner', '-nostdin', '-loglevel', 'error', '-y',
+    '-f', 'lavfi', '-i', 'color=c=red:s=320x240:r=30:d=1',
+    '-f', 'lavfi', '-i', 'color=c=blue:s=320x240:r=30:d=2',
+    '-filter_complex', '[0:v][1:v]concat=n=2:v=1:a=0[v]', '-map', '[v]',
+    '-c:v', 'libx264', '-preset', 'ultrafast', '-pix_fmt', 'yuv420p', path,
+  ]);
+  const rec = await fileRef(path, 'video');
+  const green = await still(ctx, 'green.png', '00ff00');
+  const out = await mod.run({
+    mode: 'scenes',
+    scenes: [{ id: 'a', line: null }, { id: 'b', line: null, image: green }],
+    footage: [{ file: rec, asset_id: 'rec', scene_id: 'a', start_ms: 0, end_ms: 1000 }],
+    transition: { dissolve_frames: 15 },
+    still_seconds: 1,
+    width: 270,
+    height: 480,
+  }, ctx);
+  assert.deepEqual(out.timeline.scenes.map((s) => s.id), ['a', 'b']);
+  const rgb = await rgbAt(out.video.path, 1.07, 135, 240);
+  assert.ok(rgb[0] > 140 && rgb[2] < 80, `the fade starts from the held red frame, not the blue past end_ms (got ${rgb})`);
+});
