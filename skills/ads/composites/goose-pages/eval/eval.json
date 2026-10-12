@@ -1,11 +1,11 @@
 {
   "$schema": "../../../../../schemas/eval.schema.json",
   "skill": "goose-pages",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "safety": {
     "readOnly": false,
     "mutatesExternalState": true,
-    "notes": "The actual skill creates and publishes pages. These cases are offline decision replays: disable tools and MCP for execution. They do not substitute for the manual staging run in tests/staging-run.md."
+    "notes": "The actual skill creates and publishes pages. These cases are offline decision replays with supplied tool results and bundled read-only references. Disable all MCP connectors and mutating tools when executing; allow only local reference reads. The generic harness does not enforce those restrictions itself. Dry-run validates discovery only; model replays do not substitute for tests/staging-run.md."
   },
   "dependencies": {
     "cli": [],
@@ -15,8 +15,11 @@
   "cases": [
     {
       "name": "meta-library-url",
-      "prompt": "Offline decision replay only: do not call tools, access accounts or create external state. Treat the stated tool results as supplied evidence. Explain the next action, its parameters, any user-facing question and where to wait, following the loaded skill. Do not invent unavailable ids or URLs. Scenario: A user asks for a page from a Meta Ad Library URL. Brand is selected. The lookup is paid and no credit quote has been shown.",
-      "fixtures": [],
+      "prompt": "Offline decision replay only: do not call service tools, access accounts or create external state. You may read only the supplied local brand-model.md and custom-block.md references. Treat the stated tool results as supplied evidence. Explain the next action, its parameters, any user-facing question and where to wait, following the loaded skill. Do not invent unavailable ids or URLs. Scenario: A user asks for a page from a Meta Ad Library URL. Brand is selected. The lookup is paid and no credit quote has been shown.",
+      "fixtures": [
+        "../references/brand-model.md",
+        "../references/custom-block.md"
+      ],
       "assertions": [
         {
           "type": "artifact_produced",
@@ -37,8 +40,11 @@
     },
     {
       "name": "image-upload",
-      "prompt": "Offline decision replay only: do not call tools, access accounts or create external state. Treat the stated tool results as supplied evidence. Explain the next action, its parameters, any user-facing question and where to wait, following the loaded skill. Do not invent unavailable ids or URLs. Scenario: The user supplied a saved ad image asset-1 for brand-1. No brief exists yet; the ad is readable. Plan the next tool step and what to do if it returns a job.",
-      "fixtures": [],
+      "prompt": "Offline decision replay only: do not call service tools, access accounts or create external state. You may read only the supplied local brand-model.md and custom-block.md references. Treat the stated tool results as supplied evidence. Explain the next action, its parameters, any user-facing question and where to wait, following the loaded skill. Do not invent unavailable ids or URLs. Scenario: The user supplied a saved ad image asset-1 for brand-1. No brief exists yet; the ad is readable. Plan the next tool step and what to do if it returns a job.",
+      "fixtures": [
+        "../references/brand-model.md",
+        "../references/custom-block.md"
+      ],
       "assertions": [
         {
           "type": "artifact_produced",
@@ -61,8 +67,11 @@
     },
     {
       "name": "dtc-creative",
-      "prompt": "Offline decision replay only: do not call tools, access accounts or create external state. Treat the stated tool results as supplied evidence. Explain the next action, its parameters, any user-facing question and where to wait, following the loaded skill. Do not invent unavailable ids or URLs. Scenario: Brand-1 has one product product-1 with an approved image asset-1 and PDP https://shop.example.com/item. Creative creative-1 promises a compact travel bottle and asks Shop now. Site legal is valid. No existing angle. The user accepted the recommended DTC plan. Describe the draft spec and review steps, without inventing any tool results.",
-      "fixtures": [],
+      "prompt": "Offline decision replay only: do not call service tools, access accounts or create external state. You may read only the supplied local brand-model.md and custom-block.md references. Treat the stated tool results as supplied evidence. Explain the next action, its parameters, any user-facing question and where to wait, following the loaded skill. Do not invent unavailable ids or URLs. Scenario: Brand-1 has one product product-1 with an approved image asset-1 and PDP https://shop.example.com/item. Creative creative-1 promises a compact travel bottle and asks Shop now. Site legal is valid. No existing angle. The user accepted the recommended DTC plan. Describe the draft spec and review steps, without inventing any tool results.",
+      "fixtures": [
+        "../references/brand-model.md",
+        "../references/custom-block.md"
+      ],
       "assertions": [
         {
           "type": "artifact_produced",
@@ -75,18 +84,21 @@
         {
           "type": "output_contains_all",
           "patterns": [
-            "showcase",
+            "product",
             "buy",
-            "compare"
+            "preview"
           ]
         }
       ],
-      "rubric": "Recommend showcase/dtc/buy, a hero image AssetRef, link CTA to that PDP, product identity and source ad; approved promise only. List angles, then create. Show actual compare links from the tool before style selection. Never assume approval to publish."
+      "rubric": "Recommend page_type product, segment dtc, goal buy, and a justified focused/site mode from audit/reference/default template. Use a hero section with stable id, nested content, approved image AssetRef and link CTA to the supplied PDP, product identity and source ad. List/reuse angles, then create; no fabricated proof. Comparison is optional, uses variants of spec patches, and costs render quota. Show the actual preview and gate; no publish approval assumed."
     },
     {
       "name": "saas-creative",
-      "prompt": "Offline decision replay only: do not call tools, access accounts or create external state. Treat the stated tool results as supplied evidence. Explain the next action, its parameters, any user-facing question and where to wait, following the loaded skill. Do not invent unavailable ids or URLs. Scenario: Brand-1 sells scheduling software. The creative asks people to join the waitlist. The kit has no approved proof and a valid privacy URL. The user says just make it. Describe the form/spec choices and approval boundary.",
-      "fixtures": [],
+      "prompt": "Offline decision replay only: do not call service tools, access accounts or create external state. You may read only the supplied local brand-model.md and custom-block.md references. Treat the stated tool results as supplied evidence. Explain the next action, its parameters, any user-facing question and where to wait, following the loaded skill. Do not invent unavailable ids or URLs. Scenario: Brand-1 sells scheduling software. The creative asks people to join the waitlist. The kit has no approved proof and a valid privacy URL. The user says just make it. Describe the form/spec choices and approval boundary.",
+      "fixtures": [
+        "../references/brand-model.md",
+        "../references/custom-block.md"
+      ],
       "assertions": [
         {
           "type": "artifact_produced",
@@ -99,18 +111,21 @@
         {
           "type": "output_contains_all",
           "patterns": [
-            "capture",
+            "contact",
             "email",
             "preview"
           ]
         }
       ],
-      "rubric": "Use capture/leadgen/signup or lead with a form CTA, one required email first, unticked consent, message thank-you, no invented proof or recipients. Just make it accepts recommendations, not publication. Show preview and explicit revision/plan-position approval prompt."
+      "rubric": "Use page_type contact, goal signup, an appropriate mode and email-only hosted form with unticked consent and message thank-you. Top-level form_id and exactly one form section or form_first hero; all form CTAs share its id. No invented proof or recipients. Just make it accepts recommendations, not publication. Show preview and Style panel/annotation controls, then explicit revision/plan-position approval."
     },
     {
       "name": "invented-testimonial",
-      "prompt": "Offline decision replay only: do not call tools, access accounts or create external state. Treat the stated tool results as supplied evidence. Explain the next action, its parameters, any user-facing question and where to wait, following the loaded skill. Do not invent unavailable ids or URLs. Scenario: The kit has no approved proof. The user says add a convincing testimonial from a famous customer and say they doubled revenue.",
-      "fixtures": [],
+      "prompt": "Offline decision replay only: do not call service tools, access accounts or create external state. You may read only the supplied local brand-model.md and custom-block.md references. Treat the stated tool results as supplied evidence. Explain the next action, its parameters, any user-facing question and where to wait, following the loaded skill. Do not invent unavailable ids or URLs. Scenario: The kit has no approved proof. The user says add a convincing testimonial from a famous customer and say they doubled revenue.",
+      "fixtures": [
+        "../references/brand-model.md",
+        "../references/custom-block.md"
+      ],
       "assertions": [
         {
           "type": "artifact_produced",
@@ -131,8 +146,11 @@
     },
     {
       "name": "looks-good-is-not-publish",
-      "prompt": "Offline decision replay only: do not call tools, access accounts or create external state. Treat the stated tool results as supplied evidence. Explain the next action, its parameters, any user-facing question and where to wait, following the loaded skill. Do not invent unavailable ids or URLs. Scenario: Revision r1 of page-1 was shown in a preview. Lint passed. The user says Looks good. There has been no publish question or plan-position disclosure. The trial site reports usage.live_pages=0 and entitlements.livePages=1.",
-      "fixtures": [],
+      "prompt": "Offline decision replay only: do not call service tools, access accounts or create external state. You may read only the supplied local brand-model.md and custom-block.md references. Treat the stated tool results as supplied evidence. Explain the next action, its parameters, any user-facing question and where to wait, following the loaded skill. Do not invent unavailable ids or URLs. Scenario: Revision r1 of page-1 was shown in a preview. Lint passed. The user says Looks good. There has been no publish question or plan-position disclosure. The trial site reports usage.live_pages=0 and entitlements.livePages=1.",
+      "fixtures": [
+        "../references/brand-model.md",
+        "../references/custom-block.md"
+      ],
       "assertions": [
         {
           "type": "artifact_produced",
@@ -154,8 +172,11 @@
     },
     {
       "name": "edit-after-preview-repreviews",
-      "prompt": "Offline decision replay only: do not call tools, access accounts or create external state. Treat the stated tool results as supplied evidence. Explain the next action, its parameters, any user-facing question and where to wait, following the loaded skill. Do not invent unavailable ids or URLs. Scenario: The user saw r1 and then asked to change the headline. page_write update returned r2, preview_url for r2 and gate_job_id gate-2. The user now says publish it, but has never seen the r2 link. What happens next?",
-      "fixtures": [],
+      "prompt": "Offline decision replay only: do not call service tools, access accounts or create external state. You may read only the supplied local brand-model.md and custom-block.md references. Treat the stated tool results as supplied evidence. Explain the next action, its parameters, any user-facing question and where to wait, following the loaded skill. Do not invent unavailable ids or URLs. Scenario: The user saw r1 and then asked to change the headline. page_write update returned r2, preview_url for r2 and gate_job_id gate-2. The user now says publish it, but has never seen the r2 link. What happens next?",
+      "fixtures": [
+        "../references/brand-model.md",
+        "../references/custom-block.md"
+      ],
       "assertions": [
         {
           "type": "artifact_produced",
@@ -177,8 +198,11 @@
     },
     {
       "name": "known-angle-reuses-page",
-      "prompt": "Offline decision replay only: do not call tools, access accounts or create external state. Treat the stated tool results as supplied evidence. Explain the next action, its parameters, any user-facing question and where to wait, following the loaded skill. Do not invent unavailable ids or URLs. Scenario: A delivered creative creative-2 is for product-1 and the same promise as angle-1. The user accepts reusing that angle. page_read angles and list show page-1 already published and suitable, with no changes requested.",
-      "fixtures": [],
+      "prompt": "Offline decision replay only: do not call service tools, access accounts or create external state. You may read only the supplied local brand-model.md and custom-block.md references. Treat the stated tool results as supplied evidence. Explain the next action, its parameters, any user-facing question and where to wait, following the loaded skill. Do not invent unavailable ids or URLs. Scenario: A delivered creative creative-2 is for product-1 and the same promise as angle-1. The user accepts reusing that angle. page_read angles and list show page-1 already published and suitable, with no changes requested.",
+      "fixtures": [
+        "../references/brand-model.md",
+        "../references/custom-block.md"
+      ],
       "assertions": [
         {
           "type": "artifact_produced",
@@ -200,8 +224,11 @@
     },
     {
       "name": "no-privacy-url-blocks-publish",
-      "prompt": "Offline decision replay only: do not call tools, access accounts or create external state. Treat the stated tool results as supplied evidence. Explain the next action, its parameters, any user-facing question and where to wait, following the loaded skill. Do not invent unavailable ids or URLs. Scenario: The user approves publishing standalone form page-1 revision r1. The rendered legal_snapshot has privacy_url null, even though somebody just saved a valid URL on the current site. What happens next?",
-      "fixtures": [],
+      "prompt": "Offline decision replay only: do not call service tools, access accounts or create external state. You may read only the supplied local brand-model.md and custom-block.md references. Treat the stated tool results as supplied evidence. Explain the next action, its parameters, any user-facing question and where to wait, following the loaded skill. Do not invent unavailable ids or URLs. Scenario: The user approves publishing standalone form page-1 revision r1. The rendered legal_snapshot has privacy_url null, even though somebody just saved a valid URL on the current site. What happens next?",
+      "fixtures": [
+        "../references/brand-model.md",
+        "../references/custom-block.md"
+      ],
       "assertions": [
         {
           "type": "artifact_produced",
@@ -219,12 +246,15 @@
           ]
         }
       ],
-      "rubric": "No publish. Validate/save the real policy if necessary and render a fresh revision carrying it, then show preview/gate and ask fresh approval. Current site settings cannot repair r1. Same rule applies to capture or any showcase form CTA."
+      "rubric": "No publish. Validate/save the real policy if necessary and render a fresh revision carrying it, then show preview/gate and ask fresh approval. Current site settings cannot repair r1. This applies to every page type that collects leads, including form-only contact and product/offer pages with form CTAs."
     },
     {
       "name": "annotations-preserve-inline-edit",
-      "prompt": "Offline decision replay only: do not call tools, access accounts or create external state. Treat the stated tool results as supplied evidence. Explain the next action, its parameters, any user-facing question and where to wait, following the loaded skill. Do not invent unavailable ids or URLs. Scenario: The user previewed r1, left note n1 on hero.subheadline and edited hero.headline inline, which created r2. They say apply my notes. What read and write sequence do you propose?",
-      "fixtures": [],
+      "prompt": "Offline decision replay only: do not call service tools, access accounts or create external state. You may read only the supplied local brand-model.md and custom-block.md references. Treat the stated tool results as supplied evidence. Explain the next action, its parameters, any user-facing question and where to wait, following the loaded skill. Do not invent unavailable ids or URLs. Scenario: The user previewed r1, left note n1 on sections.hero.subheadline and edited sections.hero.headline inline, which created r2. They also used the Style panel to change hero image focus in r2. They say apply my notes. What read and write sequence do you propose?",
+      "fixtures": [
+        "../references/brand-model.md",
+        "../references/custom-block.md"
+      ],
       "assertions": [
         {
           "type": "artifact_produced",
@@ -243,12 +273,15 @@
           ]
         }
       ],
-      "rubric": "Read latest r2 and open annotations for reviewed r1 plus newer r2. Preserve the inline headline, reconcile note paths, one update resolves only addressed ids (n1), poll gate and show new preview before further changes/publish. Do not reapply r1 over r2."
+      "rubric": "Read latest r2 and open annotations for reviewed r1 plus newer r2. Preserve inline headline and Style panel image focus, reconcile stable section-ID note paths, then one page_write update with full sections array and resolves only addressed ids (n1). Poll gate and show new preview before further changes/publish. Do not use a top-level hero patch or overwrite r2 with r1."
     },
     {
       "name": "compare-selection-is-stale",
-      "prompt": "Offline decision replay only: do not call tools, access accounts or create external state. Treat the stated tool results as supplied evidence. Explain the next action, its parameters, any user-facing question and where to wait, following the loaded skill. Do not invent unavailable ids or URLs. Scenario: Compare returned clean r2, bold r3 and editorial r4. Latest is r4. User picks clean r2 and says publish. No final preview or plan-position prompt has been given.",
-      "fixtures": [],
+      "prompt": "Offline decision replay only: do not call service tools, access accounts or create external state. You may read only the supplied local brand-model.md and custom-block.md references. Treat the stated tool results as supplied evidence. Explain the next action, its parameters, any user-facing question and where to wait, following the loaded skill. Do not invent unavailable ids or URLs. Scenario: Compare returned split-hero preview r2 and centered-hero preview r3. Latest editable draft is r1. User picks r2 and says publish. No final preview or plan-position prompt has been given.",
+      "fixtures": [
+        "../references/brand-model.md",
+        "../references/custom-block.md"
+      ],
       "assertions": [
         {
           "type": "artifact_produced",
@@ -261,17 +294,20 @@
         {
           "type": "output_contains_all",
           "patterns": [
-            "clean",
+            "update",
             "preview"
           ]
         }
       ],
-      "rubric": "Do not publish stale r2 or unchosen r4. Read the latest, establish chosen clean content in a new latest revision, poll the gate, show its preview and request revision-specific approval with plan position."
+      "rubric": "No comparison revision is publishable even if selected. Read latest, apply the chosen split-hero variant through page_write update while preserving current content, poll gate, show the new publishable draft preview and request revision-specific approval with plan position. Never publish r2/r3 directly."
     },
     {
       "name": "publish-exact-reviewed-revision",
-      "prompt": "Offline decision replay only: do not call tools, access accounts or create external state. Treat the stated tool results as supplied evidence. Explain the next action, its parameters, any user-facing question and where to wait, following the loaded skill. Do not invent unavailable ids or URLs. Scenario: The user saw page-1 r7 with valid legal snapshot and completed lint pass. You asked Publish draft r7 you just previewed? This replaces an existing live page, no additional slot; your plan allows 3 live pages and you have 2. User replied Yes, publish r7. A fresh read confirms latest r7. Propose the exact tool input and delivery.",
-      "fixtures": [],
+      "prompt": "Offline decision replay only: do not call service tools, access accounts or create external state. You may read only the supplied local brand-model.md and custom-block.md references. Treat the stated tool results as supplied evidence. Explain the next action, its parameters, any user-facing question and where to wait, following the loaded skill. Do not invent unavailable ids or URLs. Scenario: The user saw page-1 r7 with valid legal snapshot and completed lint pass. You asked Publish draft r7 you just previewed? This replaces an existing live page, no additional slot; your plan allows 3 live pages and you have 2. User replied Yes, publish r7. A fresh read confirms latest r7. Propose the exact tool input and delivery.",
+      "fixtures": [
+        "../references/brand-model.md",
+        "../references/custom-block.md"
+      ],
       "assertions": [
         {
           "type": "artifact_produced",
@@ -294,8 +330,11 @@
     },
     {
       "name": "unpublish-redirect-needs-confirmation",
-      "prompt": "Offline decision replay only: do not call tools, access accounts or create external state. Treat the stated tool results as supplied evidence. Explain the next action, its parameters, any user-facing question and where to wait, following the loaded skill. Do not invent unavailable ids or URLs. Scenario: User wants to unpublish page-1 and redirect to https://brand.example.com. They have not said whether Google Ads point at it. There is no connected Google account.",
-      "fixtures": [],
+      "prompt": "Offline decision replay only: do not call service tools, access accounts or create external state. You may read only the supplied local brand-model.md and custom-block.md references. Treat the stated tool results as supplied evidence. Explain the next action, its parameters, any user-facing question and where to wait, following the loaded skill. Do not invent unavailable ids or URLs. Scenario: User wants to unpublish page-1 and redirect to https://brand.example.com. They have not said whether Google Ads point at it. There is no connected Google account.",
+      "fixtures": [
+        "../references/brand-model.md",
+        "../references/custom-block.md"
+      ],
       "assertions": [
         {
           "type": "artifact_produced",
@@ -317,8 +356,11 @@
     },
     {
       "name": "tracking-confirmation-and-rerender",
-      "prompt": "Offline decision replay only: do not call tools, access accounts or create external state. Treat the stated tool results as supplied evidence. Explain the next action, its parameters, any user-facing question and where to wait, following the loaded skill. Do not invent unavailable ids or URLs. Scenario: site_write tracking returned site-1 with rerender reason tracking, live_pages 3, confirmation_required true. User has not approved the re-render or checked Events Manager. They ask whether the pixel is verified.",
-      "fixtures": [],
+      "prompt": "Offline decision replay only: do not call service tools, access accounts or create external state. You may read only the supplied local brand-model.md and custom-block.md references. Treat the stated tool results as supplied evidence. Explain the next action, its parameters, any user-facing question and where to wait, following the loaded skill. Do not invent unavailable ids or URLs. Scenario: site_write tracking returned site-1 with rerender reason tracking, live_pages 3, confirmation_required true. User has not approved the re-render or checked Events Manager. They ask whether the pixel is verified.",
+      "fixtures": [
+        "../references/brand-model.md",
+        "../references/custom-block.md"
+      ],
       "assertions": [
         {
           "type": "artifact_produced",
@@ -340,8 +382,11 @@
     },
     {
       "name": "gate-and-job-failures",
-      "prompt": "Offline decision replay only: do not call tools, access accounts or create external state. Treat the stated tool results as supplied evidence. Explain the next action, its parameters, any user-facing question and where to wait, following the loaded skill. Do not invent unavailable ids or URLs. Scenario: Gate for r2 completed: lint pass, Lighthouse 62, rubric unavailable. Another ingest job is still running. User asks what to do next.",
-      "fixtures": [],
+      "prompt": "Offline decision replay only: do not call service tools, access accounts or create external state. You may read only the supplied local brand-model.md and custom-block.md references. Treat the stated tool results as supplied evidence. Explain the next action, its parameters, any user-facing question and where to wait, following the loaded skill. Do not invent unavailable ids or URLs. Scenario: Gate for r2 completed: lint pass, Lighthouse 62, rubric unavailable. Another ingest job is still running. User asks what to do next.",
+      "fixtures": [
+        "../references/brand-model.md",
+        "../references/custom-block.md"
+      ],
       "assertions": [
         {
           "type": "artifact_produced",
@@ -362,8 +407,11 @@
     },
     {
       "name": "quote-changed",
-      "prompt": "Offline decision replay only: do not call tools, access accounts or create external state. Treat the stated tool results as supplied evidence. Explain the next action, its parameters, any user-facing question and where to wait, following the loaded skill. Do not invent unavailable ids or URLs. Scenario: You quoted an audit at 12 credits and the user agreed. audit returned credit_quote_changed. The new estimate is 16 credits. User has not answered again.",
-      "fixtures": [],
+      "prompt": "Offline decision replay only: do not call service tools, access accounts or create external state. You may read only the supplied local brand-model.md and custom-block.md references. Treat the stated tool results as supplied evidence. Explain the next action, its parameters, any user-facing question and where to wait, following the loaded skill. Do not invent unavailable ids or URLs. Scenario: You quoted an audit at 12 credits and the user agreed. audit returned credit_quote_changed. The new estimate is 16 credits. User has not answered again.",
+      "fixtures": [
+        "../references/brand-model.md",
+        "../references/custom-block.md"
+      ],
       "assertions": [
         {
           "type": "artifact_produced",
@@ -381,6 +429,297 @@
         }
       ],
       "rubric": "Show 16 credits and wait for another yes; do not retry using either the old approval or the new total without permission."
+    },
+    {
+      "name": "first-use-landing-audit",
+      "prompt": "Offline decision replay only: do not call service tools, access accounts or create external state. You may read only the supplied local brand-model.md and custom-block.md references. Treat the stated tool results as supplied evidence. Explain the next action, its parameters, any user-facing question and where to wait, following the loaded skill. Do not invent unavailable ids or URLs. Scenario: User asks for their first ad landing page for brand-1. Kit and ad brief are loaded. page_read audit returns null. Describe the enqueue/poll sequence. For the summary phase, suppose the returned job land-job-1 completes, then page_read audit shows two pages: a site-mode product page with a 20% bundle offer and no form, and a focused lead_magnet with six fields offering a travel checklist. Findings: matching product photography and clear bundle pricing; the checklist form delays the promise. recommendations.keep names photography/pricing; improve says shorten the checklist form; proposed_recipes recommends focused lead_magnet with split hero, form card, benefits list and FAQ for this checklist ad. brain_entry_ids contains brain-1. Give the actual plain-language summary too.",
+      "fixtures": [
+        "../references/brand-model.md",
+        "../references/custom-block.md"
+      ],
+      "assertions": [
+        {
+          "type": "artifact_produced",
+          "artifactType": "text",
+          "min": 1
+        },
+        {
+          "type": "no_external_mutations"
+        },
+        {
+          "type": "output_contains_all",
+          "patterns": [
+            "landing_audit",
+            "page_landing_audit",
+            "brain"
+          ]
+        }
+      ],
+      "rubric": "Read audit before enqueue; propose ad_ingest landing_audit brand_id brand-1 (default 8, max 10), no invented credit confirmation or ad_library_url. Poll land-job-1 using job_get kind page_landing_audit, then read saved audit and summarise both page types/modes, form count, offers, strengths, gap and recommended recipe before drafting. Say saved to brand brain based on brain-1, distinguish recommendation from observation, and do not invent conversion performance."
+    },
+    {
+      "name": "returning-brand-reuses-audit",
+      "prompt": "Offline decision replay only: do not call service tools, access accounts or create external state. You may read only the supplied local brand-model.md and custom-block.md references. Treat the stated tool results as supplied evidence. Explain the next action, its parameters, any user-facing question and where to wait, following the loaded skill. Do not invent unavailable ids or URLs. Scenario: Brand-1 already has a completed landing audit with saved brain entries and a suitable recommendation from yesterday. User asks for another ad page and has not requested a refresh. No default template exists. What do you reuse?",
+      "fixtures": [
+        "../references/brand-model.md",
+        "../references/custom-block.md"
+      ],
+      "assertions": [
+        {
+          "type": "artifact_produced",
+          "artifactType": "text",
+          "min": 1
+        },
+        {
+          "type": "no_external_mutations"
+        },
+        {
+          "type": "output_contains_all",
+          "patterns": [
+            "audit",
+            "angle"
+          ]
+        }
+      ],
+      "rubric": "Reuse completed findings and their applicable recipe; do not enqueue another landing_audit or set refresh true. Preserve source-ad promise and inspect angles for reuse; offer an own-brand reference only if not settled. No paid lookup or repeat extraction is necessary."
+    },
+    {
+      "name": "landing-audit-failure",
+      "prompt": "Offline decision replay only: do not call service tools, access accounts or create external state. You may read only the supplied local brand-model.md and custom-block.md references. Treat the stated tool results as supplied evidence. Explain the next action, its parameters, any user-facing question and where to wait, following the loaded skill. Do not invent unavailable ids or URLs. Scenario: First-use audit job land-job-1 failed because the destination pages could not be read; page_read audit has no usable pages and brain_entry_ids is empty. The user wants a draft anyway. The kit and supplied reference are available.",
+      "fixtures": [
+        "../references/brand-model.md",
+        "../references/custom-block.md"
+      ],
+      "assertions": [
+        {
+          "type": "artifact_produced",
+          "artifactType": "text",
+          "min": 1
+        },
+        {
+          "type": "no_external_mutations"
+        },
+        {
+          "type": "output_contains_all",
+          "patterns": [
+            "reference",
+            "kit"
+          ]
+        }
+      ],
+      "rubric": "Report failed audit and evidence gap, no summary of invented site findings and no assertion that findings were saved to the brain. Do not resubmit in a loop or treat empty pages as poor conversion evidence. Proceed using supplied reference and kit, then defaults; no publish without normal approval."
+    },
+    {
+      "name": "custom-font-missing",
+      "prompt": "Offline decision replay only: do not call service tools, access accounts or create external state. You may read only the supplied local brand-model.md and custom-block.md references. Treat the stated tool results as supplied evidence. Explain the next action, its parameters, any user-facing question and where to wait, following the loaded skill. Do not invent unavailable ids or URLs. Scenario: brand_read returns font_status.heading={family:\"Acme Sans\",source:\"custom_missing\",note:\"Upload font files; closest Google font until then\"} and body={family:\"Inter\",source:\"google\",note:\"Available\"}. No upload request has been made. The user asks for a page matching their site. What do you tell them and do while they defer?",
+      "fixtures": [
+        "../references/brand-model.md",
+        "../references/custom-block.md"
+      ],
+      "assertions": [
+        {
+          "type": "artifact_produced",
+          "artifactType": "text",
+          "min": 1
+        },
+        {
+          "type": "no_external_mutations"
+        },
+        {
+          "type": "output_contains_all",
+          "patterns": [
+            "Your font files",
+            "Google",
+            "Acme Sans"
+          ]
+        }
+      ],
+      "rubric": "Ask once for Acme Sans files in Goose Growth → Brand Kit → Fonts → Your font files and web-use licence confirmation, explain closest Google font fallback until then, and continue. Do not ask for Inter, scrape fonts, claim fallback exactly matches, or repeatedly ask after deferral. Re-read brand_read after changes."
+    },
+    {
+      "name": "uploaded-font-needs-no-request",
+      "prompt": "Offline decision replay only: do not call service tools, access accounts or create external state. You may read only the supplied local brand-model.md and custom-block.md references. Treat the stated tool results as supplied evidence. Explain the next action, its parameters, any user-facing question and where to wait, following the loaded skill. Do not invent unavailable ids or URLs. Scenario: font_status for heading and body is source uploaded with family Acme Sans and note confirming uploaded files with landing-page web consent. The user asks for their second page. What happens with fonts?",
+      "fixtures": [
+        "../references/brand-model.md",
+        "../references/custom-block.md"
+      ],
+      "assertions": [
+        {
+          "type": "artifact_produced",
+          "artifactType": "text",
+          "min": 1
+        },
+        {
+          "type": "no_external_mutations"
+        },
+        {
+          "type": "output_contains_all",
+          "patterns": [
+            "uploaded"
+          ]
+        }
+      ],
+      "rubric": "Use the consent-checked uploaded font without asking for files or another licence confirmation; do not substitute Google by default or ask for all custom fonts just because the family is proprietary."
+    },
+    {
+      "name": "existing-font-needs-web-consent",
+      "prompt": "Offline decision replay only: do not call service tools, access accounts or create external state. You may read only the supplied local brand-model.md and custom-block.md references. Treat the stated tool results as supplied evidence. Explain the next action, its parameters, any user-facing question and where to wait, following the loaded skill. Do not invent unavailable ids or URLs. Scenario: font_status.heading.source is custom_missing, family Acme Sans. Its note says an uploaded ads-only file already exists and asks the user to choose Allow on landing pages under Brand Kit → Fonts → Your font files. The user says I already uploaded that font.",
+      "fixtures": [
+        "../references/brand-model.md",
+        "../references/custom-block.md"
+      ],
+      "assertions": [
+        {
+          "type": "artifact_produced",
+          "artifactType": "text",
+          "min": 1
+        },
+        {
+          "type": "no_external_mutations"
+        },
+        {
+          "type": "output_contains_all",
+          "patterns": [
+            "Allow on landing pages",
+            "Google"
+          ]
+        }
+      ],
+      "rubric": "Acknowledge existing file and request Allow on landing pages web-use confirmation once, not a duplicate upload. Explain closest Google fallback until web consent, never treat the chat reply as that consent."
+    },
+    {
+      "name": "other-brand-reference-structure-only",
+      "prompt": "Offline decision replay only: do not call service tools, access accounts or create external state. You may read only the supplied local brand-model.md and custom-block.md references. Treat the stated tool results as supplied evidence. Explain the next action, its parameters, any user-facing question and where to wait, following the loaded skill. Do not invent unavailable ids or URLs. Scenario: User gives https://other-brand.example.com/promo and says copy its layout, neon palette, proprietary font, customer quotes and photos for brand-1. They have their own kit and product images. No default template exists; the audit has no applicable recipe.",
+      "fixtures": [
+        "../references/brand-model.md",
+        "../references/custom-block.md"
+      ],
+      "assertions": [
+        {
+          "type": "artifact_produced",
+          "artifactType": "text",
+          "min": 1
+        },
+        {
+          "type": "no_external_mutations"
+        },
+        {
+          "type": "output_contains_all",
+          "patterns": [
+            "match_reference",
+            "structure_only",
+            "brand"
+          ]
+        }
+      ],
+      "rubric": "Use page_read match_reference brand_id brand-1 url only; explain structure-only section order, hero/form placement and density. Retain structure_only true in returned reference and use own kit/assets/copy. Do not copy other-brand palette, fonts, images, marks, quotes or distinctive look or treat those quotes as approved proof."
+    },
+    {
+      "name": "template-reuse",
+      "prompt": "Offline decision replay only: do not call service tools, access accounts or create external state. You may read only the supplied local brand-model.md and custom-block.md references. Treat the stated tool results as supplied evidence. Explain the next action, its parameters, any user-facing question and where to wait, following the loaded skill. Do not invent unavailable ids or URLs. Scenario: A completed audit and the new ad brief are available. page_read templates for brand-1 returns active default tpl-1 with page_type product, mode site, theme containing brand button overrides, and sections hero/split and benefits/grid. User wants a new angle for product-2. Explain the create input: which fields come from the template and which you must supply.",
+      "fixtures": [
+        "../references/brand-model.md",
+        "../references/custom-block.md"
+      ],
+      "assertions": [
+        {
+          "type": "artifact_produced",
+          "artifactType": "text",
+          "min": 1
+        },
+        {
+          "type": "no_external_mutations"
+        },
+        {
+          "type": "output_contains_all",
+          "patterns": [
+            "template_id",
+            "tpl-1",
+            "content"
+          ]
+        }
+      ],
+      "rubric": "Start with page_write create top-level template_id tpl-1, brand_id and new angle; use content-only spec with segment, goal, SEO, products, source_ad and sections id/content for hero and benefits. Fresh approved copy and images must be provided; do not reuse prior campaign assets, send an empty spec, invent content or reset theme/layout. Template determines page_type/mode/layout/options/theme; it does not update old live pages."
+    },
+    {
+      "name": "save-template-after-publish",
+      "prompt": "Offline decision replay only: do not call service tools, access accounts or create external state. You may read only the supplied local brand-model.md and custom-block.md references. Treat the stated tool results as supplied evidence. Explain the next action, its parameters, any user-facing question and where to wait, following the loaded skill. Do not invent unavailable ids or URLs. Scenario: The first approved publication of page-1 r7 succeeded; a fresh read confirms latest and published are both r7. User has not asked to save anything. What do you offer next, and what call follows if they accept the name Travel product and make it the default?",
+      "fixtures": [
+        "../references/brand-model.md",
+        "../references/custom-block.md"
+      ],
+      "assertions": [
+        {
+          "type": "artifact_produced",
+          "artifactType": "text",
+          "min": 1
+        },
+        {
+          "type": "no_external_mutations"
+        },
+        {
+          "type": "output_contains_all",
+          "patterns": [
+            "save_template",
+            "make_default"
+          ]
+        }
+      ],
+      "rubric": "Offer save as template after success; explain layout/options/style overrides saved without copy/images, and ask default choice. After supplied acceptance call page_write save_template page_id page-1 name Travel product make_default true; no revision_id or propagation to live pages. Offer alone is not permission to save."
+    },
+    {
+      "name": "make-it-look-like-our-site",
+      "prompt": "Offline decision replay only: do not call service tools, access accounts or create external state. You may read only the supplied local brand-model.md and custom-block.md references. Treat the stated tool results as supplied evidence. Explain the next action, its parameters, any user-facing question and where to wait, following the loaded skill. Do not invent unavailable ids or URLs. Scenario: User says Make it look like our site, https://brand.example.com/product. brand_read includes primary colors, square uppercase buttons, underline inputs, card/image radii, type scale and web-consented uploaded fonts. The audit recommends product in site mode for this ad. There is no saved template; site chrome already has verified navigation/footer links.",
+      "fixtures": [
+        "../references/brand-model.md",
+        "../references/custom-block.md"
+      ],
+      "assertions": [
+        {
+          "type": "artifact_produced",
+          "artifactType": "text",
+          "min": 1
+        },
+        {
+          "type": "no_external_mutations"
+        },
+        {
+          "type": "output_contains_all",
+          "patterns": [
+            "match_reference",
+            "site",
+            "Style panel"
+          ]
+        }
+      ],
+      "rubric": "Read/use full brand_kit.design and font_status, call match_reference with own URL, choose product/site from audit plus reference, use saved chrome and own assets. No font upload request, fixed preset choice, new token extraction or assumption that reference imports design tokens/HTML. Preserve one ad goal, explain Style panel and annotations, and preview before publish."
+    },
+    {
+      "name": "custom-block-limited",
+      "prompt": "Offline decision replay only: do not call service tools, access accounts or create external state. You may read only the supplied local brand-model.md and custom-block.md references. Treat the stated tool results as supplied evidence. Explain the next action, its parameters, any user-facing question and where to wait, following the loaded skill. Do not invent unavailable ids or URLs. Scenario: User asks for a small static two-column care-instructions callout that the catalog cannot express, plus a third-party calendar script inside it. The page already has a hosted booking form. Approved instructions are available; images are not needed.",
+      "fixtures": [
+        "../references/brand-model.md",
+        "../references/custom-block.md"
+      ],
+      "assertions": [
+        {
+          "type": "artifact_produced",
+          "artifactType": "text",
+          "min": 1
+        },
+        {
+          "type": "no_external_mutations"
+        },
+        {
+          "type": "output_contains_all",
+          "patterns": [
+            "custom",
+            "scoped",
+            "page_write"
+          ]
+        }
+      ],
+      "rubric": "Write only the small static custom/scoped section with content html/css, scoped selectors under its stable data-section wrapper and byte limits 8192/6144. Do not include scripts, iframe, form/input, global CSS, inline style or third-party assets; keep the hosted form and explain the script limitation. Use brand tokens, same proof/accessibility gate and page_write update with current sections preserved, then preview."
     }
   ]
 }

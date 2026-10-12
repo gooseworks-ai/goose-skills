@@ -23,6 +23,7 @@ test('catalog distribution includes the skill and every linked reference', () =>
   const [entry] = entries;
   assert.equal(entry.description, parsed.description);
   assert.equal(entry.version, meta.version);
+  assert.equal(parsed.version, meta.version);
   assert.deepEqual(meta.installation.supports, ['claude', 'cursor', 'codex']);
   assert.deepEqual(meta.requires_skills, []);
   assert.ok(entry.files.includes(`${entry.path}/SKILL.md`));
@@ -56,6 +57,7 @@ test('eval cases are consumable by the existing harness', () => {
   const evaluation = readJson(path.join(skill, 'eval/eval.json'));
   const schema = readJson(path.resolve(skill, 'eval', evaluation.$schema));
   assert.equal(evaluation.skill, meta.slug);
+  assert.equal(evaluation.version, meta.version);
   // The skill can mutate state even though these scenarios are offline replays.
   assert.equal(evaluation.safety.mutatesExternalState, true);
   const kinds = schema.properties.cases.items.properties.assertions.items.properties.type.enum;

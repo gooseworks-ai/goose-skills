@@ -1,0 +1,14 @@
+# Small custom sections
+
+Use a library layout first. When it cannot express the user's requested element, add one small section with `type:"custom"`, `layout:"scoped"`, a stable section ID, `options`, and `content:{html,css}`. This stays inside the same structured spec, preview, revision and gate flow. Do not turn the page into custom HTML.
+
+- Maximum HTML: 8,192 UTF-8 bytes. Maximum CSS: 6,144 UTF-8 bytes. Keep well below both.
+- Allowed tags: section, div, span, p, h2, h3, h4, ul, ol, li, a, img, figure, figcaption, strong, em, small, br, hr, blockquote, dl, dt, dd.
+- Shared attributes: class, id, title, role, aria-label, aria-labelledby, aria-describedby, aria-hidden. Links also allow href, target, rel; images allow src, alt, width, height, loading, decoding.
+- No scripts, event handlers, inline style attributes, arbitrary data attributes, iframe, object, embed, SVG, form, input or other interactive form controls. No tracking, font loaders, consent, Turnstile or legal-footer replacements. Use a platform section for forms.
+- The renderer supplies the `[data-section="<id>"]` wrapper. Scope **every** CSS selector under that exact wrapper, including every selector in a comma list and inside allowed media queries. Do not add a data-section attribute to the submitted HTML. For section `offer-note`, a rule may target `[data-section="offer-note"] .note`. Never target global/root elements, escape the wrapper, use fixed positioning, `@import`, or an at-rule that escapes scope.
+- Images and CSS asset URLs must be existing HTTPS URLs on the configured GooseWorks public asset host, supplied by tools. Never guess the asset hostname, hotlink the reference's assets, use private/expiring URLs, protocol-relative URLs, data URLs or javascript URLs. If no eligible asset is available, omit it or use a library section with an AssetRef; do not invent a rehosting tool.
+- Links must be credential-free HTTPS. A new-tab link needs both `noopener` and `noreferrer`. Give images useful alt text and explicit dimensions; keep headings, contrast and mobile layout accessible. Reuse brand design tokens such as `var(--colors-text)` and `var(--radius-px-card)` where appropriate.
+- Approved-proof and ad-message rules apply to custom visible text too. Never hide unsupported claims in HTML, CSS content or an image. A server validator rejection must be fixed or the block removed, never bypassed. If custom validation/rendering is unavailable, explain the unsupported element and use a library alternative.
+
+The Style panel edits the section's supported options; annotations or chat can request changes within its markup. Apply those through `page_write update`, preserving the current sections array and resolving only addressed annotations. Show the new preview and gate result. Do not promise inline editing of arbitrary custom HTML leaves or working interactions that require scripts.

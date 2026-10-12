@@ -1,6 +1,6 @@
 {
   "version": "1.4.0",
-  "generated": "2026-10-10",
+  "generated": "2026-10-11",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -3495,13 +3495,15 @@
       "name": "goose-pages",
       "category": "composites",
       "domain": "ads",
-      "description": "Build, preview, edit and publish the page your ad lands on, with one page per angle, brand-grounded copy and hosted lead forms; also check ad-to-page message match.",
+      "description": "Build, preview, edit and publish brand-matched ad landing pages with first-use audits, reference layouts, saved templates and hosted lead forms; also check ad-to-page message match.",
       "tags": "ads, content",
       "path": "skills/ads/composites/goose-pages",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "files": [
         "skills/ads/composites/goose-pages/SKILL.md",
         "skills/ads/composites/goose-pages/eval/eval.json",
+        "skills/ads/composites/goose-pages/references/brand-model.md",
+        "skills/ads/composites/goose-pages/references/custom-block.md",
         "skills/ads/composites/goose-pages/references/rubric.md",
         "skills/ads/composites/goose-pages/skill.meta.json",
         "skills/ads/composites/goose-pages/tests/packaging.test.cjs",
@@ -3510,7 +3512,7 @@
       ],
       "metadata": {
         "slug": "goose-pages",
-        "version": "1.0.0",
+        "version": "2.0.0",
         "category": "composites",
         "domain": "ads",
         "tags": [
@@ -10738,7 +10740,7 @@
         {
           "slug": "goose-pages",
           "name": "goose-pages",
-          "description": "Build, preview, edit and publish the page your ad lands on, with one page per angle, brand-grounded copy and hosted lead forms; also check ad-to-page message match.",
+          "description": "Build, preview, edit and publish brand-matched ad landing pages with first-use audits, reference layouts, saved templates and hosted lead forms; also check ad-to-page message match.",
           "stage": "create",
           "path": "skills/ads/composites/goose-pages"
         },

@@ -10,27 +10,32 @@
         "product_id": "product-1"
       },
       "spec": {
-        "format": "showcase",
-        "style": "clean",
         "segment": "dtc",
         "goal": "buy",
         "seo": {
           "title": "Travel bottle",
           "description": "A compact bottle for travel."
         },
-        "hero": {
-          "headline": "A compact bottle for travel",
-          "image": {
-            "type": "asset",
-            "value": "asset-1"
-          },
-          "cta": {
-            "kind": "link",
-            "label": "Shop now",
-            "href": "https://shop.example.com/item"
+        "sections": [
+          {
+            "id": "hero",
+            "type": "hero",
+            "layout": "split",
+            "options": {},
+            "content": {
+              "headline": "A compact bottle for travel",
+              "image": {
+                "type": "asset",
+                "value": "asset-1"
+              },
+              "cta": {
+                "kind": "link",
+                "label": "Shop now",
+                "href": "https://shop.example.com/item"
+              }
+            }
           }
-        },
-        "sections": [],
+        ],
         "products": [
           {
             "product_id": "product-1",
@@ -39,7 +44,9 @@
             ],
             "pdp_url": "https://shop.example.com/item"
           }
-        ]
+        ],
+        "page_type": "product",
+        "mode": "focused"
       }
     },
     "valid": true
@@ -54,29 +61,45 @@
         "id": "angle-1"
       },
       "spec": {
-        "format": "capture",
-        "style": "clean",
         "segment": "leadgen",
         "goal": "signup",
         "seo": {
           "title": "Travel bottle",
           "description": "A compact bottle for travel."
         },
-        "hero": {
-          "headline": "A compact bottle for travel",
-          "image": {
-            "type": "asset",
-            "value": "asset-1"
+        "sections": [
+          {
+            "id": "hero",
+            "type": "hero",
+            "layout": "split",
+            "options": {},
+            "content": {
+              "headline": "A compact bottle for travel",
+              "image": {
+                "type": "asset",
+                "value": "asset-1"
+              },
+              "cta": {
+                "kind": "form",
+                "label": "Join the waitlist",
+                "form_id": "form-1"
+              }
+            }
           },
-          "cta": {
-            "kind": "form",
-            "label": "Join the waitlist",
-            "form_id": "form-1"
+          {
+            "id": "signup",
+            "type": "form",
+            "layout": "card",
+            "options": {},
+            "content": {
+              "heading": "Join the waitlist"
+            }
           }
-        },
-        "sections": [],
+        ],
         "products": [],
-        "form_id": "form-1"
+        "form_id": "form-1",
+        "page_type": "contact",
+        "mode": "focused"
       }
     },
     "valid": true
@@ -115,17 +138,27 @@
         "label": "Waitlist"
       },
       "spec": {
-        "format": "form",
-        "style": "clean",
         "segment": "leadgen",
         "goal": "signup",
         "seo": {
           "title": "Waitlist",
           "description": "Join the waitlist."
         },
-        "sections": [],
+        "sections": [
+          {
+            "id": "signup",
+            "type": "form",
+            "layout": "card",
+            "options": {},
+            "content": {
+              "heading": "Join the waitlist"
+            }
+          }
+        ],
         "products": [],
-        "form_id": "form-1"
+        "form_id": "form-1",
+        "page_type": "contact",
+        "mode": "focused"
       }
     },
     "valid": true
@@ -137,9 +170,27 @@
       "action": "update",
       "page_id": "page-1",
       "spec_patch": {
-        "hero": {
-          "subheadline": "Pack it for your next trip."
-        }
+        "sections": [
+          {
+            "id": "hero",
+            "type": "hero",
+            "layout": "split",
+            "options": {},
+            "content": {
+              "headline": "A compact bottle for travel",
+              "image": {
+                "type": "asset",
+                "value": "asset-1"
+              },
+              "cta": {
+                "kind": "link",
+                "label": "Shop now",
+                "href": "https://shop.example.com/item"
+              },
+              "subheadline": "Pack it for your next trip."
+            }
+          }
+        ]
       },
       "resolves": [
         "note-1"
@@ -167,28 +218,46 @@
     "valid": false
   },
   {
-    "name": "compare styles",
+    "name": "compare mode and spacing patches",
     "schema": "pageReadActionSchema",
     "input": {
       "action": "compare",
       "page_id": "page-1",
-      "styles": [
-        "clean",
-        "bold",
-        "editorial"
+      "variants": [
+        {
+          "mode": "focused"
+        },
+        {
+          "mode": "site"
+        },
+        {
+          "theme": {
+            "spacing": "compact"
+          }
+        }
       ]
     },
     "valid": true
   },
   {
-    "name": "duplicate styles refused",
+    "name": "compare rejects more than three variants",
     "schema": "pageReadActionSchema",
     "input": {
       "action": "compare",
       "page_id": "page-1",
-      "styles": [
-        "clean",
-        "clean"
+      "variants": [
+        {
+          "mode": "focused"
+        },
+        {
+          "mode": "focused"
+        },
+        {
+          "mode": "focused"
+        },
+        {
+          "mode": "focused"
+        }
       ]
     },
     "valid": false
@@ -302,5 +371,935 @@
       "platform": "meta"
     },
     "valid": true
+  },
+  {
+    "name": "first-use landing audit",
+    "schema": "adIngestActionSchema",
+    "input": {
+      "action": "landing_audit",
+      "brand_id": "brand-1"
+    },
+    "valid": true
+  },
+  {
+    "name": "landing audit refresh",
+    "schema": "adIngestActionSchema",
+    "input": {
+      "action": "landing_audit",
+      "brand_id": "brand-1",
+      "max_pages": 10,
+      "refresh": true
+    },
+    "valid": true
+  },
+  {
+    "name": "landing audit page cap",
+    "schema": "adIngestActionSchema",
+    "input": {
+      "action": "landing_audit",
+      "brand_id": "brand-1",
+      "max_pages": 11
+    },
+    "valid": false
+  },
+  {
+    "name": "landing audit has no credit-confirmation field",
+    "schema": "adIngestActionSchema",
+    "input": {
+      "action": "landing_audit",
+      "brand_id": "brand-1",
+      "confirm_credits": 12
+    },
+    "valid": false
+  },
+  {
+    "name": "read saved audit",
+    "schema": "pageReadActionSchema",
+    "input": {
+      "action": "audit",
+      "brand_id": "brand-1"
+    },
+    "valid": true
+  },
+  {
+    "name": "read brand templates",
+    "schema": "pageReadActionSchema",
+    "input": {
+      "action": "templates",
+      "brand_id": "brand-1"
+    },
+    "valid": true
+  },
+  {
+    "name": "URL reference",
+    "schema": "pageReadActionSchema",
+    "input": {
+      "action": "match_reference",
+      "brand_id": "brand-1",
+      "url": "https://brand.example.com/product"
+    },
+    "valid": true
+  },
+  {
+    "name": "screenshot reference",
+    "schema": "pageReadActionSchema",
+    "input": {
+      "action": "match_reference",
+      "brand_id": "brand-1",
+      "asset_id": "reference-1"
+    },
+    "valid": true
+  },
+  {
+    "name": "reference must have one source",
+    "schema": "pageReadActionSchema",
+    "input": {
+      "action": "match_reference",
+      "brand_id": "brand-1",
+      "url": "https://brand.example.com/product",
+      "asset_id": "reference-1"
+    },
+    "valid": false
+  },
+  {
+    "name": "reference requires source",
+    "schema": "pageReadActionSchema",
+    "input": {
+      "action": "match_reference",
+      "brand_id": "brand-1"
+    },
+    "valid": false
+  },
+  {
+    "name": "reference cannot request copying brand",
+    "schema": "pageReadActionSchema",
+    "input": {
+      "action": "match_reference",
+      "brand_id": "brand-1",
+      "asset_id": "reference-1",
+      "structure_only": false
+    },
+    "valid": false
+  },
+  {
+    "name": "retired style action is rejected",
+    "schema": "pageReadActionSchema",
+    "input": {
+      "action": "match_style",
+      "brand_id": "brand-1",
+      "asset_id": "reference-1"
+    },
+    "valid": false
+  },
+  {
+    "name": "template content-only create",
+    "schema": "pageWriteActionSchema",
+    "input": {
+      "action": "create",
+      "brand_id": "brand-1",
+      "angle": {
+        "label": "New product angle"
+      },
+      "template_id": "template-1",
+      "spec": {
+        "segment": "dtc",
+        "goal": "buy",
+        "seo": {
+          "title": "Travel bottle",
+          "description": "A compact bottle for travel."
+        },
+        "sections": [
+          {
+            "id": "hero",
+            "content": {
+              "headline": "A compact bottle for travel",
+              "image": {
+                "type": "asset",
+                "value": "asset-1"
+              },
+              "cta": {
+                "kind": "link",
+                "label": "Shop now",
+                "href": "https://shop.example.com/item"
+              }
+            }
+          }
+        ],
+        "products": [
+          {
+            "product_id": "product-1",
+            "image_ids": [
+              "asset-1"
+            ],
+            "pdp_url": "https://shop.example.com/item"
+          }
+        ]
+      }
+    },
+    "valid": true
+  },
+  {
+    "name": "content-only create requires action template id",
+    "schema": "pageWriteActionSchema",
+    "input": {
+      "action": "create",
+      "brand_id": "brand-1",
+      "angle": {
+        "label": "New product angle"
+      },
+      "spec": {
+        "segment": "dtc",
+        "goal": "buy",
+        "seo": {
+          "title": "Travel bottle",
+          "description": "A compact bottle for travel."
+        },
+        "sections": [
+          {
+            "id": "hero",
+            "content": {
+              "headline": "A compact bottle for travel",
+              "image": {
+                "type": "asset",
+                "value": "asset-1"
+              },
+              "cta": {
+                "kind": "link",
+                "label": "Shop now",
+                "href": "https://shop.example.com/item"
+              }
+            }
+          }
+        ],
+        "products": [
+          {
+            "product_id": "product-1",
+            "image_ids": [
+              "asset-1"
+            ],
+            "pdp_url": "https://shop.example.com/item"
+          }
+        ]
+      }
+    },
+    "valid": false
+  },
+  {
+    "name": "save published default template",
+    "schema": "pageWriteActionSchema",
+    "input": {
+      "action": "save_template",
+      "page_id": "page-1",
+      "name": "Travel product",
+      "make_default": true
+    },
+    "valid": true
+  },
+  {
+    "name": "save template has no revision selector",
+    "schema": "pageWriteActionSchema",
+    "input": {
+      "action": "save_template",
+      "page_id": "page-1",
+      "name": "Travel product",
+      "revision_id": "r7"
+    },
+    "valid": false
+  },
+  {
+    "name": "page-only design patch",
+    "schema": "pageWriteActionSchema",
+    "input": {
+      "action": "update",
+      "page_id": "page-1",
+      "spec_patch": {
+        "theme": {
+          "buttons": {
+            "primary": {
+              "radius_px": 0,
+              "text_transform": "uppercase"
+            }
+          },
+          "inputs": {
+            "style": "underline"
+          },
+          "spacing": "airy"
+        }
+      }
+    },
+    "valid": true
+  },
+  {
+    "name": "clear page design overrides",
+    "schema": "pageWriteActionSchema",
+    "input": {
+      "action": "update",
+      "page_id": "page-1",
+      "spec_patch": {
+        "theme": null
+      }
+    },
+    "valid": true
+  },
+  {
+    "name": "spec stores structure-only reference",
+    "schema": "pageWriteActionSchema",
+    "input": {
+      "action": "create",
+      "brand_id": "brand-1",
+      "angle": {
+        "label": "Compact travel",
+        "product_id": "product-1"
+      },
+      "spec": {
+        "segment": "dtc",
+        "goal": "buy",
+        "seo": {
+          "title": "Travel bottle",
+          "description": "A compact bottle for travel."
+        },
+        "sections": [
+          {
+            "id": "hero",
+            "type": "hero",
+            "layout": "split",
+            "options": {},
+            "content": {
+              "headline": "A compact bottle for travel",
+              "image": {
+                "type": "asset",
+                "value": "asset-1"
+              },
+              "cta": {
+                "kind": "link",
+                "label": "Shop now",
+                "href": "https://shop.example.com/item"
+              }
+            }
+          }
+        ],
+        "products": [
+          {
+            "product_id": "product-1",
+            "image_ids": [
+              "asset-1"
+            ],
+            "pdp_url": "https://shop.example.com/item"
+          }
+        ],
+        "page_type": "product",
+        "mode": "focused",
+        "reference": {
+          "kind": "url",
+          "value": "https://other-brand.example.com",
+          "structure_only": true
+        }
+      }
+    },
+    "valid": true
+  },
+  {
+    "name": "spec rejects full-brand reference copying",
+    "schema": "pageWriteActionSchema",
+    "input": {
+      "action": "create",
+      "brand_id": "brand-1",
+      "angle": {
+        "label": "Compact travel",
+        "product_id": "product-1"
+      },
+      "spec": {
+        "segment": "dtc",
+        "goal": "buy",
+        "seo": {
+          "title": "Travel bottle",
+          "description": "A compact bottle for travel."
+        },
+        "sections": [
+          {
+            "id": "hero",
+            "type": "hero",
+            "layout": "split",
+            "options": {},
+            "content": {
+              "headline": "A compact bottle for travel",
+              "image": {
+                "type": "asset",
+                "value": "asset-1"
+              },
+              "cta": {
+                "kind": "link",
+                "label": "Shop now",
+                "href": "https://shop.example.com/item"
+              }
+            }
+          }
+        ],
+        "products": [
+          {
+            "product_id": "product-1",
+            "image_ids": [
+              "asset-1"
+            ],
+            "pdp_url": "https://shop.example.com/item"
+          }
+        ],
+        "page_type": "product",
+        "mode": "focused",
+        "reference": {
+          "kind": "url",
+          "value": "https://other-brand.example.com",
+          "structure_only": false
+        }
+      }
+    },
+    "valid": false
+  },
+  {
+    "name": "form CTA needs explicit placement",
+    "schema": "pageWriteActionSchema",
+    "input": {
+      "action": "create",
+      "brand_id": "brand-1",
+      "angle": {
+        "id": "angle-1"
+      },
+      "spec": {
+        "segment": "leadgen",
+        "goal": "signup",
+        "seo": {
+          "title": "Travel bottle",
+          "description": "A compact bottle for travel."
+        },
+        "sections": [
+          {
+            "id": "hero",
+            "type": "hero",
+            "layout": "split",
+            "options": {},
+            "content": {
+              "headline": "A compact bottle for travel",
+              "image": {
+                "type": "asset",
+                "value": "asset-1"
+              },
+              "cta": {
+                "kind": "form",
+                "label": "Join the waitlist",
+                "form_id": "form-1"
+              }
+            }
+          }
+        ],
+        "products": [],
+        "form_id": "form-1",
+        "page_type": "contact",
+        "mode": "focused"
+      }
+    },
+    "valid": false
+  },
+  {
+    "name": "cannot place two platform forms",
+    "schema": "pageWriteActionSchema",
+    "input": {
+      "action": "create",
+      "brand_id": "brand-1",
+      "angle": {
+        "id": "angle-1"
+      },
+      "spec": {
+        "segment": "leadgen",
+        "goal": "signup",
+        "seo": {
+          "title": "Travel bottle",
+          "description": "A compact bottle for travel."
+        },
+        "sections": [
+          {
+            "id": "hero",
+            "type": "hero",
+            "layout": "form_first",
+            "options": {},
+            "content": {
+              "headline": "A compact bottle for travel",
+              "image": {
+                "type": "asset",
+                "value": "asset-1"
+              },
+              "cta": {
+                "kind": "form",
+                "label": "Join the waitlist",
+                "form_id": "form-1"
+              }
+            }
+          },
+          {
+            "id": "signup",
+            "type": "form",
+            "layout": "card",
+            "options": {},
+            "content": {
+              "heading": "Join the waitlist"
+            }
+          }
+        ],
+        "products": [],
+        "form_id": "form-1",
+        "page_type": "contact",
+        "mode": "focused"
+      }
+    },
+    "valid": false
+  },
+  {
+    "name": "form-first hero places the hosted form",
+    "schema": "pageWriteActionSchema",
+    "input": {
+      "action": "create",
+      "brand_id": "brand-1",
+      "angle": {
+        "id": "angle-1"
+      },
+      "spec": {
+        "segment": "leadgen",
+        "goal": "signup",
+        "seo": {
+          "title": "Travel bottle",
+          "description": "A compact bottle for travel."
+        },
+        "sections": [
+          {
+            "id": "hero",
+            "type": "hero",
+            "layout": "form_first",
+            "options": {},
+            "content": {
+              "headline": "A compact bottle for travel",
+              "image": {
+                "type": "asset",
+                "value": "asset-1"
+              },
+              "cta": {
+                "kind": "form",
+                "label": "Join the waitlist",
+                "form_id": "form-1"
+              }
+            }
+          }
+        ],
+        "products": [],
+        "form_id": "form-1",
+        "page_type": "contact",
+        "mode": "focused"
+      }
+    },
+    "valid": true
+  },
+  {
+    "name": "lead_magnet page type",
+    "schema": "pageWriteActionSchema",
+    "input": {
+      "action": "create",
+      "brand_id": "brand-1",
+      "angle": {
+        "id": "angle-1"
+      },
+      "spec": {
+        "segment": "leadgen",
+        "goal": "lead",
+        "seo": {
+          "title": "Travel bottle",
+          "description": "A compact bottle for travel."
+        },
+        "sections": [
+          {
+            "id": "hero",
+            "type": "hero",
+            "layout": "split",
+            "options": {},
+            "content": {
+              "headline": "A compact bottle for travel",
+              "image": {
+                "type": "asset",
+                "value": "asset-1"
+              },
+              "cta": {
+                "kind": "form",
+                "label": "Join the waitlist",
+                "form_id": "form-1"
+              }
+            }
+          },
+          {
+            "id": "signup",
+            "type": "form",
+            "layout": "card",
+            "options": {},
+            "content": {
+              "heading": "Join the waitlist"
+            }
+          }
+        ],
+        "products": [],
+        "form_id": "form-1",
+        "page_type": "lead_magnet",
+        "mode": "focused"
+      }
+    },
+    "valid": true
+  },
+  {
+    "name": "book page type",
+    "schema": "pageWriteActionSchema",
+    "input": {
+      "action": "create",
+      "brand_id": "brand-1",
+      "angle": {
+        "id": "angle-1"
+      },
+      "spec": {
+        "segment": "leadgen",
+        "goal": "book",
+        "seo": {
+          "title": "Travel bottle",
+          "description": "A compact bottle for travel."
+        },
+        "sections": [
+          {
+            "id": "hero",
+            "type": "hero",
+            "layout": "split",
+            "options": {},
+            "content": {
+              "headline": "A compact bottle for travel",
+              "image": {
+                "type": "asset",
+                "value": "asset-1"
+              },
+              "cta": {
+                "kind": "form",
+                "label": "Join the waitlist",
+                "form_id": "form-1"
+              }
+            }
+          },
+          {
+            "id": "signup",
+            "type": "form",
+            "layout": "card",
+            "options": {},
+            "content": {
+              "heading": "Join the waitlist"
+            }
+          }
+        ],
+        "products": [],
+        "form_id": "form-1",
+        "page_type": "book",
+        "mode": "focused"
+      }
+    },
+    "valid": true
+  },
+  {
+    "name": "offer page type",
+    "schema": "pageWriteActionSchema",
+    "input": {
+      "action": "create",
+      "brand_id": "brand-1",
+      "angle": {
+        "label": "Compact travel",
+        "product_id": "product-1"
+      },
+      "spec": {
+        "segment": "dtc",
+        "goal": "buy",
+        "seo": {
+          "title": "Travel bottle",
+          "description": "A compact bottle for travel."
+        },
+        "sections": [
+          {
+            "id": "hero",
+            "type": "hero",
+            "layout": "split",
+            "options": {},
+            "content": {
+              "headline": "A compact bottle for travel",
+              "image": {
+                "type": "asset",
+                "value": "asset-1"
+              },
+              "cta": {
+                "kind": "link",
+                "label": "Shop now",
+                "href": "https://shop.example.com/item"
+              }
+            }
+          }
+        ],
+        "products": [
+          {
+            "product_id": "product-1",
+            "image_ids": [
+              "asset-1"
+            ],
+            "pdp_url": "https://shop.example.com/item"
+          }
+        ],
+        "page_type": "offer",
+        "mode": "focused"
+      }
+    },
+    "valid": true
+  },
+  {
+    "name": "duplicate section ids rejected",
+    "schema": "pageWriteActionSchema",
+    "input": {
+      "action": "create",
+      "brand_id": "brand-1",
+      "angle": {
+        "label": "Compact travel",
+        "product_id": "product-1"
+      },
+      "spec": {
+        "segment": "dtc",
+        "goal": "buy",
+        "seo": {
+          "title": "Travel bottle",
+          "description": "A compact bottle for travel."
+        },
+        "sections": [
+          {
+            "id": "hero",
+            "type": "hero",
+            "layout": "split",
+            "options": {},
+            "content": {
+              "headline": "A compact bottle for travel",
+              "image": {
+                "type": "asset",
+                "value": "asset-1"
+              },
+              "cta": {
+                "kind": "link",
+                "label": "Shop now",
+                "href": "https://shop.example.com/item"
+              }
+            }
+          },
+          {
+            "id": "hero",
+            "type": "hero",
+            "layout": "split",
+            "options": {},
+            "content": {
+              "headline": "A compact bottle for travel",
+              "image": {
+                "type": "asset",
+                "value": "asset-1"
+              },
+              "cta": {
+                "kind": "link",
+                "label": "Shop now",
+                "href": "https://shop.example.com/item"
+              }
+            }
+          }
+        ],
+        "products": [
+          {
+            "product_id": "product-1",
+            "image_ids": [
+              "asset-1"
+            ],
+            "pdp_url": "https://shop.example.com/item"
+          }
+        ],
+        "page_type": "product",
+        "mode": "focused"
+      }
+    },
+    "valid": false
+  },
+  {
+    "name": "v1 spec fields rejected",
+    "schema": "pageWriteActionSchema",
+    "input": {
+      "action": "create",
+      "brand_id": "brand-1",
+      "angle": {
+        "label": "Compact travel",
+        "product_id": "product-1"
+      },
+      "spec": {
+        "segment": "dtc",
+        "goal": "buy",
+        "seo": {
+          "title": "Travel bottle",
+          "description": "A compact bottle for travel."
+        },
+        "sections": [
+          {
+            "id": "hero",
+            "type": "hero",
+            "layout": "split",
+            "options": {},
+            "content": {
+              "headline": "A compact bottle for travel",
+              "image": {
+                "type": "asset",
+                "value": "asset-1"
+              },
+              "cta": {
+                "kind": "link",
+                "label": "Shop now",
+                "href": "https://shop.example.com/item"
+              }
+            }
+          }
+        ],
+        "products": [
+          {
+            "product_id": "product-1",
+            "image_ids": [
+              "asset-1"
+            ],
+            "pdp_url": "https://shop.example.com/item"
+          }
+        ],
+        "page_type": "product",
+        "mode": "focused",
+        "format": "showcase",
+        "style": "clean"
+      }
+    },
+    "valid": false
+  },
+  {
+    "name": "small custom envelope before server validation",
+    "schema": "pageWriteActionSchema",
+    "input": {
+      "action": "create",
+      "brand_id": "brand-1",
+      "angle": {
+        "label": "Compact travel",
+        "product_id": "product-1"
+      },
+      "spec": {
+        "segment": "dtc",
+        "goal": "buy",
+        "seo": {
+          "title": "Travel bottle",
+          "description": "A compact bottle for travel."
+        },
+        "sections": [
+          {
+            "id": "hero",
+            "type": "hero",
+            "layout": "split",
+            "options": {},
+            "content": {
+              "headline": "A compact bottle for travel",
+              "image": {
+                "type": "asset",
+                "value": "asset-1"
+              },
+              "cta": {
+                "kind": "link",
+                "label": "Shop now",
+                "href": "https://shop.example.com/item"
+              }
+            }
+          },
+          {
+            "id": "care",
+            "type": "custom",
+            "layout": "scoped",
+            "options": {},
+            "content": {
+              "html": "<div class=\"care\"><h2>Care instructions</h2><p>Hand wash after use.</p></div>",
+              "css": "[data-section=\"care\"] .care { color: var(--colors-text); }"
+            }
+          }
+        ],
+        "products": [
+          {
+            "product_id": "product-1",
+            "image_ids": [
+              "asset-1"
+            ],
+            "pdp_url": "https://shop.example.com/item"
+          }
+        ],
+        "page_type": "product",
+        "mode": "focused"
+      }
+    },
+    "valid": true
+  },
+  {
+    "name": "custom limit counts UTF-8 bytes",
+    "schema": "pageWriteActionSchema",
+    "input": {
+      "action": "create",
+      "brand_id": "brand-1",
+      "angle": {
+        "label": "Compact travel",
+        "product_id": "product-1"
+      },
+      "spec": {
+        "segment": "dtc",
+        "goal": "buy",
+        "seo": {
+          "title": "Travel bottle",
+          "description": "A compact bottle for travel."
+        },
+        "sections": [
+          {
+            "id": "hero",
+            "type": "hero",
+            "layout": "split",
+            "options": {},
+            "content": {
+              "headline": "A compact bottle for travel",
+              "image": {
+                "type": "asset",
+                "value": "asset-1"
+              },
+              "cta": {
+                "kind": "link",
+                "label": "Shop now",
+                "href": "https://shop.example.com/item"
+              }
+            }
+          },
+          {
+            "id": "care",
+            "type": "custom",
+            "layout": "scoped",
+            "options": {},
+            "content": {
+              "html": "ééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé",
+              "css": "[data-section=\"care\"] .care { color: var(--colors-text); }"
+            }
+          }
+        ],
+        "products": [
+          {
+            "product_id": "product-1",
+            "image_ids": [
+              "asset-1"
+            ],
+            "pdp_url": "https://shop.example.com/item"
+          }
+        ],
+        "page_type": "product",
+        "mode": "focused"
+      }
+    },
+    "valid": false
   }
 ]
