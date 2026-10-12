@@ -316,7 +316,7 @@
         }
       },
       "lead": {
-        "description": "scenes: a clip that plays as the first scene when that scene has no footage or image (a creator hook, a cold open), at its own length.",
+        "description": "scenes: a clip that plays as the first scene whenever that scene has no footage window (a creator hook, a cold open), at its own length; a scene image or image footage there does not replace it.",
         "type": "object",
         "additionalProperties": false,
         "required": [

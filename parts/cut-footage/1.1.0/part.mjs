@@ -844,9 +844,13 @@ function cutSceneSources(scenes, footage, { lead = null, need = 'all' } = {}) {
   }
   return scenes.map((scene, index) => {
     const entry = byScene.get(scene.id);
-    if (entry) return { scene, index, kind: cutEntryIsStill(entry) ? 'still' : 'window', entry };
-    if (scene.image) return { scene, index, kind: 'still', image: scene.image };
+    const still = entry ? cutEntryIsStill(entry) : false;
+    if (entry && !still) return { scene, index, kind: 'window', entry };
+    // The lead plays as the first scene whenever that scene has no footage window (§4.5): a scene
+    // image or image footage there does not hide the creator hook.
     if (index === 0 && lead) return { scene, index, kind: 'lead' };
+    if (entry) return { scene, index, kind: 'still', entry };
+    if (scene.image) return { scene, index, kind: 'still', image: scene.image };
     if (need === 'all') throw new CutRefusal(`scene "${scene.id}" has no footage window, image or lead clip to show`);
     return { scene, index, kind: 'none' };
   });
@@ -1338,7 +1342,7 @@ async function cutScenes(inputs, ctx, manifest) {
   if (inputs.audio) throw ctx.error('bad_input', 'scenes mode makes a silent cut');
   const lead = inputs.lead ? inputs.lead.video : null;
   const sources = cutSceneSources(inputs.scenes, inputs.footage, { lead, need: 'all' });
-  if (lead && !sources.some((s) => s.kind === 'lead')) ctx.log.warn('the lead clip is not used: the first scene has its own footage or image');
+  if (lead && !sources.some((s) => s.kind === 'lead')) ctx.log.warn('the lead clip is not used: the first scene has its own footage window');
   const dissolve = inputs.transition?.dissolve_frames ?? 0;
   const { beats, seconds } = cutPlanScenes(sources, {
     lengths: await cutWindowLengths(ctx, sources),

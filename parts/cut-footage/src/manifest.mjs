@@ -2,6 +2,9 @@ import { file, timeline } from '../../_tools/schemas.mjs';
 
 const textOrNull = (max) => ({ type: ['string', 'null'], maxLength: max });
 const box = { type: 'array', minItems: 4, maxItems: 4, items: { type: 'number', minimum: 0, maximum: 1 } };
+const hex = { type: 'string', pattern: '^#[0-9A-Fa-f]{6}$' };
+// A screen-look number, with parts/_lib/screen-look.mjs's KIT_SCREEN_RANGES (that file is frozen).
+const screenNum = (minimum, maximum) => ({ type: 'number', minimum, maximum });
 const speedLimit = (dflt) => ({ description: `The slowest or fastest allowed speed. Default ${dflt}.`, type: 'number', minimum: 0.25, maximum: 16 });
 
 // A plan scene (PlanScene). Nothing but id is required: a scene with no line
@@ -31,7 +34,7 @@ const footageEntry = {
     start_ms: { type: ['integer', 'null'], minimum: 0 },
     end_ms: { type: ['integer', 'null'], minimum: 1 },
     audio: { type: ['boolean', 'null'] },
-    scene_id: { description: 'scenes and inserts modes: the plan scene this entry plays in.', type: ['string', 'null'], maxLength: 64 },
+    scene_id: { description: 'scenes, inserts and split modes: the plan scene this entry plays in (a grid scene takes four).', type: ['string', 'null'], maxLength: 64 },
     crop: { description: 'The source region shown: [x0, y0, x1, y1] in fractions of the source.', anyOf: [{ type: 'null' }, box] },
     mask: { description: 'Boxes blurred in the source before the crop (an email, a customer name).', anyOf: [{ type: 'null' }, { type: 'array', maxItems: 8, items: box }] },
     fit: { description: 'This entry\'s fit, over the step\'s.', enum: ['width', 'cover', 'height', null] },
@@ -43,10 +46,10 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'cut-footage',
-  version: '1.1.0',
+  version: '1.2.0',
   kind: 'compose',
   title: 'Cut footage into a video',
-  summary: "Cuts the brand's own footage into a video: a window in a band, one beat per plan scene with dissolves, or full-frame inserts over a talking track that hide its take joins; plain or as a screen filmed by a phone.",
+  summary: "Cuts the brand's own footage into a video: a band, one beat per scene, inserts or a 2x2 grid over a talking track that hide its take joins, or a split screen with the creator in one zone; push-ins and a hook look on the creator.",
   runtime: 'node',
   entry: 'part.mjs',
   files: ['README.md', 'part.mjs'],
@@ -57,6 +60,7 @@ export const manifest = {
       filters: [
         'setpts', 'fps', 'scale', 'crop', 'pad', 'setsar', 'tpad', 'trim', 'overlay', 'format', 'atempo', 'atrim', 'aresample', 'aformat',
         'settb', 'xfade', 'concat', 'null', 'split', 'gblur', 'perspective', 'color', 'geq', 'loop', 'blend', 'noise',
+        'vstack', 'xstack', 'zoompan', 'drawbox', 'boxblur', 'eq', 'fade',
       ],
       encoders: ['libx264', 'aac'],
     },
@@ -70,14 +74,14 @@ export const manifest = {
     required: ['footage'],
     properties: {
       mode: {
-        description: 'band (the 1.0.2 behaviour): one window in a band of video. scenes: one full-frame beat per plan scene. inserts: full-frame inserts over a talking track. Default: band without scenes; with scenes, inserts when video is given, else scenes.',
-        enum: ['band', 'scenes', 'inserts'],
+        description: 'band (the 1.0.2 behaviour): one window in a band of video. scenes: one full-frame beat per plan scene. inserts: full-frame inserts over a talking track. split: the talking track in one zone and each scene\'s footage in the other. Default: split with a layout; band without scenes; with scenes, inserts when video is given, else scenes.',
+        enum: ['band', 'scenes', 'inserts', 'split'],
       },
-      video: { description: 'band: the picture the footage goes under (an html-frames card that leaves the band free). inserts: the talking track; its sound is kept.', ...file('video') },
+      video: { description: 'band: the picture the footage goes under (an html-frames card that leaves the band free). inserts and split: the talking track; its sound is kept.', ...file('video') },
       footage: {
-        description: 'plan.footage. band: the first entry is used. scenes and inserts: entries are matched to scenes by scene_id (one per scene). Each carries its clip as file (video is accepted too); start_ms and end_ms are the window (default: the whole clip). An image file (kind "image") is held still.',
+        description: 'plan.footage (may be empty when every scene has an image or a lead, or in split where a scene with neither shows the creator). band: the first entry is used. scenes, inserts and split: entries are matched to scenes by scene_id (one per scene; four for a grid scene). Each carries its clip as file (video is accepted too); start_ms and end_ms are the window (default: the whole clip). An image file (kind "image") is held still.',
         type: 'array',
-        minItems: 1,
+        minItems: 0,
         maxItems: 20,
         items: footageEntry,
       },
@@ -93,27 +97,73 @@ export const manifest = {
           height: { type: 'integer', minimum: 2 },
         },
       },
-      scenes: { description: 'scenes and inserts: plan.scenes, in order.', type: 'array', minItems: 1, maxItems: 40, items: scene },
+      scenes: { description: 'scenes, inserts and split: plan.scenes, in order.', type: 'array', minItems: 1, maxItems: 40, items: scene },
       lead: {
-        description: 'scenes: a clip that plays as the first scene when that scene has no footage or image (a creator hook, a cold open), at its own length.',
+        description: 'scenes: a clip that plays as the first scene whenever that scene has no footage window (a creator hook, a cold open), at its own length; a scene image or image footage there does not replace it.',
         type: 'object',
         additionalProperties: false,
         required: ['video'],
         properties: { video: file('video') },
       },
-      timeline: { description: 'inserts: the talking track\'s timeline; scenes are placed at its scene times, and it is passed through.', ...timeline },
+      timeline: { description: 'inserts and split: the talking track\'s timeline; scenes are placed at its scene times, and it is passed through (split adds the caption zone).', ...timeline },
       joins: {
         description: 'inserts: step.<creator>.takes. Every take start after the first must sit under an insert; an insert ending up to 1 s before one is stretched to end 0.15 s after it, else an insert starting up to 1 s after one starts 0.15 s before it (never before 0 or into the previous insert), and a join no insert reaches is refused.',
         type: 'array',
         maxItems: 40,
         items: { type: 'object', required: ['start_s'], properties: { id: { type: 'string' }, start_s: { type: 'number', minimum: 0 }, scene_ids: { type: 'array', items: { type: 'string' } } } },
       },
-      look: { description: 'scenes and inserts: plain (default) fits the footage; screen frames it as a screen filmed by a phone.', enum: ['plain', 'screen'] },
+      look: { description: 'scenes, inserts and split: plain (default) fits the footage; screen frames it as a screen filmed by a phone. Grid cells are always plain.', enum: ['plain', 'screen'] },
       screen: {
-        description: 'look "screen": the style\'s constants (parts/_lib/screen-look.mjs): rot, alternate_rot (odd footage beats), keystone, fill, fit (width | height), drift, bezel, room, moire, vignette, grain.',
+        description: 'look "screen": the style\'s constants (parts/_lib/screen-look.mjs): rot, alternate_rot (odd footage beats), keystone, fill, fit (width | height), drift, bezel, room, moire, vignette, grain. The ranges are screen-look\'s own, so a bad style constant is refused when the style is checked.',
         type: 'object',
+        additionalProperties: false,
+        properties: {
+          rot: screenNum(-1.5, 1.5),
+          alternate_rot: screenNum(-1.5, 1.5),
+          keystone: screenNum(0, 0.04),
+          fill: screenNum(0.3, 1),
+          drift: screenNum(0, 3),
+          bezel: screenNum(0, 0.05),
+          moire: screenNum(0, 0.05),
+          vignette: screenNum(0, 0.5),
+          grain: screenNum(0, 20),
+          fit: { enum: ['width', 'height'] },
+          room: { anyOf: [{ type: 'array', minItems: 3, maxItems: 3, items: { type: 'integer', minimum: 0, maximum: 255 } }, { type: 'string', pattern: '^#[0-9a-fA-F]{6}$' }] },
+        },
       },
-      fit: { description: 'band: cover (default) or width. scenes and inserts, plain look: cover (default), width or height; screen look: width or height (over screen.fit). A footage entry\'s own fit wins.', enum: ['cover', 'width', 'height'] },
+      fit: { description: 'band: cover (default) or width. scenes and inserts, plain look: cover (default), width or height; split, plain look: width (default) or height show the whole picture on layout.bg, cover fills the zone; screen look: width or height (over screen.fit). A footage entry\'s own fit wins.', enum: ['cover', 'width', 'height'] },
+      layout: {
+        description: 'split: the zones. side is where the creator goes (bottom: footage above the seam). seam is the row the zones meet on, in pixels (768) or as a ratio of the height (0.4, the default). bg fills around footage shown whole: auto (the footage\'s corner colour, default), blur, or a #RRGGBB colour. head (default 0.30) keeps the creator\'s head in the upper part of the zone; zoom 1-2 pushes the creator in (default 1). divider: a #RRGGBB bar divider_px tall (default 4) on the seam during split beats. photo_zoom: a scene image\'s slow push across its beat (default 0.06, at most 0.15).',
+        type: 'object',
+        additionalProperties: false,
+        properties: {
+          side: { enum: ['top', 'bottom'] },
+          seam: { type: 'number', exclusiveMinimum: 0, maximum: 4096 },
+          bg: { anyOf: [{ enum: ['auto', 'blur'] }, hex] },
+          head: { type: 'number', minimum: 0, maximum: 1 },
+          zoom: { type: 'number', minimum: 1, maximum: 2 },
+          divider: { anyOf: [{ type: 'null' }, hex] },
+          divider_px: { type: 'integer', minimum: 2, maximum: 16, multipleOf: 2 },
+          photo_zoom: { type: 'number', minimum: 0, maximum: 0.15 },
+        },
+      },
+      grid: {
+        description: 'inserts: a scene tagged extra.shot "grid" plays its four footage entries (with that scene_id, in plan order) as a 2x2 grid, each cell cover-cropped; a clip plays from its window start (slowed to fill the beat if short, not below min_speed), a picture pushes in by still_zoom (default 0.04). Without grid, one entry per scene.',
+        type: 'object',
+        additionalProperties: false,
+        properties: { layout: { enum: ['2x2'] }, still_zoom: { type: 'number', minimum: 0, maximum: 0.15 } },
+      },
+      push_in: {
+        description: 'inserts and split: a slow push-in on every full-frame creator stretch of at least min_hold_s (default 3) seconds, from 1x to 1 + amount (default 0.05) across the stretch.',
+        type: 'object',
+        additionalProperties: false,
+        properties: { min_hold_s: { type: 'number', minimum: 0.5, maximum: 30 }, amount: { type: 'number', minimum: 0.01, maximum: 0.15 } },
+      },
+      first_scene_look: {
+        description: 'inserts and split (a declared choice answer): blur blurs and darkens the creator under the first scene, fading out over its last 0.3 s; card covers the first scene with card_color (the creator is heard, not seen); none leaves it.',
+        enum: ['blur', 'card', 'none'],
+      },
+      card_color: { description: 'first_scene_look card: the card\'s colour. Default #111111.', ...hex },
       transition: {
         description: 'scenes: dissolves between beats. Each beat but the last plays dissolve_frames longer, so the total length holds.',
         type: 'object',
@@ -145,9 +195,9 @@ export const manifest = {
       video: file('video'),
       seconds: { type: 'number', exclusiveMinimum: 0 },
       speed: { description: 'band: the footage\'s speed.', type: 'number', exclusiveMinimum: 0 },
-      timeline: { description: 'scenes: the plan\'s scene ids at their real times. inserts: the talking track\'s timeline, passed through.', ...timeline },
+      timeline: { description: 'scenes: the plan\'s scene ids at their real times. inserts: the talking track\'s timeline, passed through. split: the same, with safe_zones[captions] set to the creator zone.', ...timeline },
       windows: {
-        description: 'scenes and inserts: where each footage or still beat sits in the output, and its speed.',
+        description: 'scenes, inserts and split: where each footage, still or grid beat sits in the output, and its speed (1 for a grid).',
         type: 'array',
         items: {
           type: 'object',

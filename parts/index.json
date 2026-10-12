@@ -1547,9 +1547,74 @@
       "determinism": "pure",
       "path": "parts/cut-footage/1.1.0",
       "files": {
-        "README.md": "817379311d3aeba340e70f0b0216199619918a9ffa7d8040ed7e88ff7c778266",
-        "part.json": "c4f648656cbfbcc0e105ae23c29868a840392ce1514bc115c5350cd85555916b",
-        "part.mjs": "9c2135efa7d9962f0b642f0a1d2d2ea845cc7782e5d311d1444faea9e0302c80"
+        "README.md": "b57ddea66ae2c5004da54c96243581b5c08be6789d9c62847b97d18ec67ab5bc",
+        "part.json": "46e917bb31972064dfd8c05bff22c932b003f825a11a145b9ba99e2befff4030",
+        "part.mjs": "ff33f04daec029d7bd55dc2ef7050f12ca0f467b234d6d599bf54a1979e14689"
+      },
+      "models": []
+    },
+    {
+      "id": "cut-footage",
+      "version": "1.2.0",
+      "interface": 1,
+      "kind": "compose",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "setpts",
+            "fps",
+            "scale",
+            "crop",
+            "pad",
+            "setsar",
+            "tpad",
+            "trim",
+            "overlay",
+            "format",
+            "atempo",
+            "atrim",
+            "aresample",
+            "aformat",
+            "settb",
+            "xfade",
+            "concat",
+            "null",
+            "split",
+            "gblur",
+            "perspective",
+            "color",
+            "geq",
+            "loop",
+            "blend",
+            "noise",
+            "vstack",
+            "xstack",
+            "zoompan",
+            "drawbox",
+            "boxblur",
+            "eq",
+            "fade"
+          ],
+          "encoders": [
+            "libx264",
+            "aac"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 800
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/cut-footage/1.2.0",
+      "files": {
+        "README.md": "9d28c3b368e3676b85f3ee985fc87a3ca52999d10e0df436f5bac79ae9781ead",
+        "part.json": "d47b83435ec6485ad4c13106145838d933c72beae458e193a33d4431b2c3258e",
+        "part.mjs": "b973dd1e7a0b87974d4f1a1488ab874d2fee2f66f4ad6e1bb01fcb156cca8d14"
       },
       "models": []
     },
