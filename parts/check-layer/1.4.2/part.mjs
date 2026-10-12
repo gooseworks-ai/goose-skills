@@ -2337,8 +2337,8 @@ const HELD_PICTURE_MAX_S = 4.0;
 // A held picture inside one scene is that scene's own still; one that runs this far past a scene start
 // means the next scene never showed.
 const SCENE_EDGE_S = 0.2;
-// sound-layer's line: at or below this a cut is silent (it passes such a cut through unlevelled).
-const SILENT_LUFS = -50;
+// The server's line: at or below this a track is silence (ffmpeg reads digital silence as -70 LUFS).
+const SILENT_LUFS = -60;
 const SERVER = new Set(['plays', 'length', 'size', 'sound', 'captions']);
 // review-finished-ad: the platform bands at 1080x1920, the logo match floors and the favicon guard.
 const PLATFORM_TOP = 220;
@@ -2514,13 +2514,18 @@ export async function run(inputs, ctx) {
     });
   } else add('size', 'pass', { found: `${m.width}x${m.height}` });
 
-  // Sound: a cut with speech must have it at -14 LUFS within 2. A silent cut with no speech planned is a
-  // style whose music is optional with none chosen (audio-mix gives it a silent track): nothing to measure.
-  const lufs = m.has_audio ? await loudness(ctx, video.path) : null;
-  const silent = lufs === null || !Number.isFinite(lufs) || lufs <= SILENT_LUFS;
-  if (silent && expect.speech === 'none') add('sound', 'not_applicable', { found: m.has_audio ? 'silent' : 'no sound track' });
+  // Sound, as the server judges it: silence (no track, or one at or below -60 LUFS) passes only when nothing
+  // is planned to sound: no speech, and no music or voice in the plan (expect.music and expect.voice, read when
+  // the kit passes them). A track whose loudness cannot be read fails.
+  const soundPlanned = expect.speech !== 'none' || expect.music === true || expect.voice === true;
+  const read = m.has_audio ? await loudness(ctx, video.path) : null;
+  const lufs = read !== null && Number.isFinite(read) ? read : null;
+  const silent = !m.has_audio || (lufs !== null && lufs <= SILENT_LUFS);
+  if (silent && !soundPlanned) add('sound', 'not_applicable', { found: m.has_audio ? 'silent' : 'no sound track' });
   else if (silent) {
     add('sound', 'fail', { message: 'The video has no sound.', expected: `${TARGET_LUFS} LUFS`, found: 'no sound', fix: { slot: 'sound' } });
+  } else if (lufs === null) {
+    add('sound', 'fail', { message: "The sound's loudness could not be measured.", expected: `${TARGET_LUFS} LUFS`, found: 'no reading', fix: { slot: 'sound' } });
   } else if (Math.abs(lufs - TARGET_LUFS) > LUFS_TOLERANCE) {
     add('sound', 'warn', { message: lufs < TARGET_LUFS ? 'The sound is too quiet.' : 'The sound is too loud.', expected: `${TARGET_LUFS} LUFS`, found: `${lufs.toFixed(1)} LUFS` });
   } else add('sound', 'pass', { found: `${lufs.toFixed(1)} LUFS` });

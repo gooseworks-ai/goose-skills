@@ -91,6 +91,8 @@ test('a silent cut with no speech planned (no music chosen) is not failed for so
   assert.equal(quiet.verdict.pass, true, JSON.stringify(quiet.verdict.reasons));
   const spoken = await mod.run(await layerInputsFor(video, { expect: { speech: 'voiceover' } }), ctx);
   assert.equal(status(spoken).sound, 'fail');
+  const withMusic = await mod.run(await layerInputsFor(video, { expect: { speech: 'none', music: true } }), ctx);
+  assert.equal(status(withMusic).sound, 'fail', 'music in the plan needs sound too');
   assert.deepEqual(spoken.verdict.checks.find((c) => c.code === 'sound').fix, { slot: 'sound' });
 });
 
