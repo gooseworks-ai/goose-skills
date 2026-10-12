@@ -22,7 +22,7 @@ bundle). Free; needs the kit's browser.
 - **Fitting the copy** (new in 1.3.0): the skins fit what the plan says instead of refusing it where the screen
   physically can. A cascade banner is as tall as its own body, which wraps to four lines at most (iOS's limit);
   a word wider than the banner breaks between its characters, and a sender or brand name too long for its line
-  is cut with an ellipsis, as iOS does. When the pile would reach the top band, the oldest banners fold into a
+  is cut with an ellipsis, as iOS does; emoji, keycaps and flags are measured at the emoji font's width. When the pile would reach the top band, the oldest banners fold into a
   stack behind the newer ones as the next one arrives (the iOS stacked look: up to two narrower slivers peek
   above the oldest open banner, the pill rides above them), so 3 to 5 notifications of up to two lines, and a
   success message, always fit, and every message arrives open and readable at the bottom with its pop. A

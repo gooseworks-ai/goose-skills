@@ -154,6 +154,8 @@ const NC_EM_GROUPS = [
   ['…', 0.8],
 ];
 const NC_EMOJI_EM = 1.3;
+// Drawn from the emoji font whatever the text font holds: emoji presentation, VS16 and keycaps (1️⃣ is "1" + U+FE0F + U+20E3).
+const NC_EMOJI_RE = /\p{Emoji_Presentation}|\p{Regional_Indicator}|\u{FE0F}|\u{20E3}/u;
 const NC_BOLD_WIDEN = 1.06; // a semibold title against the font's default (regular) advances
 const NC_FIT_SLACK = 1.02;
 
@@ -272,9 +274,13 @@ function ncMeasurer(fontCss) {
     let em = 0;
     for (const { segment } of segmenter.segment(text)) {
       const cp = segment.codePointAt(0);
+      if (NC_EMOJI_RE.test(segment)) {
+        em += NC_EMOJI_EM;
+        continue;
+      }
       const own = advance && [...segment].length === 1 ? advance(cp) : null;
       if (own !== null) em += own * (weight >= 600 ? NC_BOLD_WIDEN : 1);
-      else if (/\p{Extended_Pictographic}|\p{Regional_Indicator}/u.test(segment)) em += NC_EMOJI_EM;
+      else if (/\p{Extended_Pictographic}/u.test(segment)) em += NC_EMOJI_EM;
       else em += (advance && advance(cp)) || ncFallbackEm(String.fromCodePoint(cp));
     }
     return em * px * NC_FIT_SLACK;

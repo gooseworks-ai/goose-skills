@@ -59,6 +59,7 @@ for (const [name, change, pattern, extra] of [
   ['a repeated id', (t) => { t.resolution.id = 'n2'; }, /unique id; n2/],
   ['a plate that was not supplied', (t) => { t.plate = 'kitchen'; }, /plate image kitchen was not supplied/],
   ['a body longer than four lines, saying how much to cut', (t) => { t.notifications[2].body = fiveLines; }, /body of n3 needs [5-9] lines; a banner shows at most 4\. Cut about \d+ characters/],
+  ['a body of keycaps measured at the emoji width, not the digit\'s', (t) => { t.notifications[2].body = '1️⃣'.repeat(80); }, /body of n3 needs 7 lines; a banner shows at most 4/],
   ['a stack that cannot fit even folded, saying what to shorten', (t) => { t.notifications[3].body = 'We loved the demo and want to roll it out across all of our sales teams next quarter'; }, /body of n4 takes 3 lines, .* even with the older banners folded into a stack; shorten it to 2 lines/, { safe_area: { ...SAFE, top: 1042 } }],
   ['a canvas with no room for any banner', () => {}, /No notification banner fits above the phone below the safe area's top band/, { safe_area: { ...SAFE, top: 1300 } }],
   ['pacing given through env.timing', () => {}, /leave env\.timing empty/, { timing: { start: 1 } }],
@@ -135,6 +136,8 @@ test('copy is measured with the supplied KitText font', () => {
   assert.equal(lines(env({ font_css: interCss() })), 220);
   t.notifications[0].body = 'Saw the post, loved it. Do you have time for a quick call with our whole team this week?';
   assert.equal(lines(env({ font_css: interCss() })), 264);
+  t.notifications[0].body = '1️⃣'.repeat(14);
+  assert.equal(lines(env({ font_css: interCss() })), 220, 'thirteen keycaps to a line, at the emoji width');
 });
 
 test('events run forward on frame boundaries with the atom\'s default pacing', () => {
