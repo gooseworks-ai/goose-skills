@@ -10,6 +10,9 @@
 //
 // Seats are fixed (src/plate.mjs PLATE_SEATS): the prompt asks for each face
 // at its seat and the singles are cut there, so no face detector is needed.
+//
+// 1.1.0: a given `plate` (a preview approved before the yes) is used as is and
+// nothing is ordered; its singles are cut at the given `crops`, else at the seats.
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitFfmpeg, kitStopIfAborted } from '../../_lib/part.mjs';
 import { kitLoadTemplate } from '../../_lib/prompt.mjs';
@@ -23,6 +26,8 @@ export async function run(inputs, ctx) {
   const manifest = await kitCheckInputs(ctx, inputs);
   const cast = inputs.cast;
   const layout = inputs.layout ?? (cast.length === 3 ? 'three_shot' : 'two_shot');
+  if (inputs.crops && !inputs.plate) throw ctx.error('bad_input', 'crops need the plate they were measured on');
+  if (inputs.plate) return plateGiven(inputs, ctx, manifest, layout);
   const castProblem = plateCastProblem(cast, layout);
   if (castProblem) throw ctx.error('bad_input', castProblem);
   if (!String(inputs.room).trim()) throw ctx.error('bad_input', 'room is empty: the plate needs the room the cast sits in');
@@ -80,13 +85,67 @@ export async function run(inputs, ctx) {
 
   const plate = await plateAtSize(ctx, got, size);
   const crops = plateCrops(size.width, size.height, layout);
+  const singles = await plateSingles(ctx, plate, cast, crops, layout);
+  ctx.progress({ done: 2, total: 2 });
+  return kitCheckOutputs(ctx, manifest, {
+    plate,
+    singles,
+    crops: plateSeatFractions(cast, crops, size.width),
+    layout,
+    prompt,
+  });
+}
+
+/** The given plate as is, nothing ordered: singles cut at `crops` (0..1 of the plate) when given, else at the seats. */
+async function plateGiven(inputs, ctx, manifest, layout) {
+  const cast = inputs.cast;
+  const seats = PLATE_SEATS[layout];
+  if (cast.length !== seats.length) throw ctx.error('bad_input', `${layout} seats ${seats.length} people; the cast has ${cast.length}`);
+  if (new Set(cast.map((m) => m.key)).size !== cast.length) throw ctx.error('bad_input', 'the cast names one key twice');
+  const plate = inputs.plate;
+  let { width, height } = plate;
+  if (!width || !height) ({ width, height } = await ctx.tools.probe(plate.path));
+  if (!width || !height) throw ctx.error('bad_input', 'the given plate is not a readable picture');
+  let crops;
+  if (inputs.crops) {
+    if (inputs.crops.length !== cast.length) throw ctx.error('bad_input', `crops has ${inputs.crops.length} entries; the cast has ${cast.length}`);
+    crops = inputs.crops.map((c, i) => {
+      if (c.key !== cast[i].key) throw ctx.error('bad_input', `crops[${i}] is for ${c.key}, but seat ${i + 1} is ${cast[i].key}`);
+      if (c.x + c.w > 1 + 1e-6 || c.y + c.h > 1 + 1e-6) throw ctx.error('bad_input', `the crop for ${c.key} runs off the plate`);
+      const x = Math.round(c.x * width);
+      const y = Math.round(c.y * height);
+      const w = Math.min(width - x, Math.round(c.w * width));
+      const h = Math.min(height - y, Math.round(c.h * height));
+      if (w < 16 || h < 16) throw ctx.error('bad_input', `the crop for ${c.key} is too small to cut`);
+      return { x, y, w, h };
+    });
+  } else {
+    if (width <= height) throw ctx.error('bad_input', `the given plate is ${width}x${height}; a plate is landscape, so each single is a full-height slice`);
+    const cropProblem = plateCropProblem(width, height, layout);
+    if (cropProblem) throw ctx.error('bad_input', cropProblem);
+    crops = plateCrops(width, height, layout);
+  }
+  const singles = await plateSingles(ctx, plate, cast, crops, layout);
+  ctx.progress({ done: 1, total: 1 });
+  return kitCheckOutputs(ctx, manifest, {
+    plate,
+    singles,
+    crops: inputs.crops ? inputs.crops.map((c) => ({ key: c.key, x: c.x, y: c.y, w: c.w, h: c.h })) : plateSeatFractions(cast, crops, width),
+    layout,
+    prompt: '',
+  });
+}
+
+/** One single per member, cut from the plate at its crop (pixels); two identical singles fail the step. */
+async function plateSingles(ctx, plate, cast, crops, layout) {
   const singles = [];
   const seen = new Map();
   for (const [i, member] of cast.entries()) {
     kitStopIfAborted(ctx);
     const c = crops[i];
     const name = `single-${i + 1}.png`;
-    await kitFfmpeg(ctx, ['-i', plate.path, '-vf', `crop=${c.w}:${c.h}:${c.x}:${c.y}`, '-frames:v', '1', '-c:v', 'png', join(ctx.workDir, name)]);
+    // exact=1: a subsampled picture (most JPEGs) would otherwise round the crop to its chroma grid.
+    await kitFfmpeg(ctx, ['-i', plate.path, '-vf', `crop=${c.w}:${c.h}:${c.x}:${c.y}:exact=1`, '-frames:v', '1', '-c:v', 'png', join(ctx.workDir, name)]);
     const image = await ctx.file(name, 'image');
     if (seen.has(image.sha256)) {
       throw ctx.error('output_invalid', `the ${PLATE_SEATS[layout][i].side} and ${seen.get(image.sha256)} seats of the plate are the same picture`);
@@ -94,20 +153,12 @@ export async function run(inputs, ctx) {
     seen.set(image.sha256, PLATE_SEATS[layout][i].side);
     singles.push({ key: member.key, image });
   }
-  ctx.progress({ done: 2, total: 2 });
-  return kitCheckOutputs(ctx, manifest, {
-    plate,
-    singles,
-    crops: cast.map((m, i) => ({
-      key: m.key,
-      x: crops[i].x / size.width,
-      y: 0,
-      w: crops[i].w / size.width,
-      h: 1,
-    })),
-    layout,
-    prompt,
-  });
+  return singles;
+}
+
+/** The seat crops as the `crops` output: full-height slices in 0..1 of the plate. */
+function plateSeatFractions(cast, crops, width) {
+  return cast.map((m, i) => ({ key: m.key, x: crops[i].x / width, y: 0, w: crops[i].w / width, h: 1 }));
 }
 
 /** A cast picture the model cannot read, as a PNG (first frame only). */
