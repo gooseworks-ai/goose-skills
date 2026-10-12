@@ -75,21 +75,7 @@ brand's observed successes and limitations in its own project; a seed is not a q
 
 ## Opt-in H3 Max generation
 
-Current production recipes explicitly pass `--model minimax/h3-max/reference-to-video --resolution 1080P` to `single_gen.py`, or store those exact fields under `generation` in the brand config. Existing configs without those settings keep their historical endpoint; this is not a global provider replacement.
-
-The H3 adapter preserves the raw scaffold prompt, lint, camera/grammar flags, brand, seed, scene coupling and `<take>.json` required by finishing. It translates image tags only in the provider request, uses numeric duration, supported uppercase resolution and disabled expansion, and sends `reference_image_urls`. Native audio is kept without a `generate_audio` request field. Narrow/wide product references are padded to the official range without cropping. H3 image, voice and motion quality remain unverified.
-
-```bash
-python scripts/single_gen.py --brand <slug> --model minimax/h3-max/reference-to-video --resolution 1080P
-# Only after the normal generation review:
-python scripts/single_gen.py --brand <slug> --model minimax/h3-max/reference-to-video --resolution 1080P --yes
-# After a polling interruption, same config/seed/model/run, no new order:
-python scripts/single_gen.py --brand <slug> --model minimax/h3-max/reference-to-video --resolution 1080P \
-  --recover-request-id <saved-id>
-```
-
-The request ID is written before polling. Recovery verifies the saved input digest and ID, then writes the same finishing manifest. Rejections stop; an existing request cannot be ordered again through this entry point. Output-only estimates at 1080P are 1.92 USD for one twelve-second take and 5.76 USD for three, up to 7.20 USD for three fifteen-second takes, before excess reference tokens or other paid work. Earlier Seedance costs below remain historical.
-
+Read [the H3 adapter guide](references/h3-generation.md). Pass `--model minimax/h3-max/reference-to-video --resolution 1080P`. It keeps prompt lint and the finish manifest, saves request IDs, and recovers downloads without a new order. Historical defaults below remain unchanged.
 
 ## Run (historical default endpoint)
 

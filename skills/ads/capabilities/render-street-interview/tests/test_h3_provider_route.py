@@ -34,6 +34,9 @@ class H3RouteTests(unittest.TestCase):
                 paths.append(self.path)
                 return super().do_POST()
             def do_GET(self):
+                if urlparse(self.path).path == "/out.mp4" and getattr(self.server.mock, "download_failures", 0):
+                    self.server.mock.download_failures -= 1
+                    return self.send(503, {"error": "temporary download failure"})
                 if urlparse(self.path).path.endswith("/status") and getattr(self.server.mock, "blocked", False):
                     return self.send(200, {"status": "IN_PROGRESS"})
                 return super().do_GET()
@@ -110,6 +113,41 @@ class H3RouteTests(unittest.TestCase):
         self.assertEqual(complete["prompt"], pending["prompt"])
         self.assertEqual(complete["input_digest"], pending["input_digest"])
         self.assertEqual(complete["model"], MODEL)
+
+    def test_completed_result_survives_two_download_failures_without_new_order(self):
+        self.proxy.download_failures = 2
+        first = self.invoke("--yes", "--pace", "--guards")
+        self.assertNotEqual(first.returncode, 0)
+        video = self.tmp / "run/working/takes/ld-single-seed0.mp4"
+        manifest = video.with_suffix(".json")
+        saved = json.loads(manifest.read_text())
+        self.assertEqual(saved["state"], "download_pending")
+        self.assertTrue(saved["video_url"])
+        self.assertEqual(saved["provider_payload"]["resolution"], "1080P")
+        self.assertFalse(video.exists())
+        self.assertFalse((self.tmp / "pending/ok.json").exists())
+        failed_recovery = self.invoke("--recover-request-id", "ok", "--pace", "--guards")
+        self.assertNotEqual(failed_recovery.returncode, 0)
+        self.assertFalse(video.exists())
+        recovered = self.invoke("--recover-request-id", "ok", "--pace", "--guards")
+        self.assertEqual(recovered.returncode, 0, recovered.stdout + recovered.stderr)
+        self.assertTrue(video.exists())
+        self.assertEqual((len(self.proxy.submits), self.proxy.uploads), (1, 1))
+        complete = json.loads(manifest.read_text())
+        self.assertEqual(complete["provider_payload"], saved["provider_payload"])
+        self.assertEqual(complete["state"], "complete")
+
+    def test_partial_transfer_never_looks_like_a_completed_take(self):
+        from unittest.mock import patch
+        dest = self.tmp / "partial.mp4"
+        def broken_download(url, target):
+            Path(target).write_bytes(b"PARTIAL")
+            raise OSError("connection dropped during download")
+        with patch.object(single_gen.urllib.request, "urlretrieve", side_effect=broken_download):
+            with self.assertRaises(OSError):
+                single_gen.download_take("https://example.invalid/video", dest)
+        self.assertFalse(dest.exists())
+        self.assertEqual(dest.with_name(dest.name + ".part").read_bytes(), b"PARTIAL")
 
     def test_invalid_h3_resolution_stops_before_upload(self):
         result = subprocess.run([sys.executable, str(SCRIPTS / "single_gen.py"), "--brand", "liquid-death", "--run", str(self.tmp / "run"),

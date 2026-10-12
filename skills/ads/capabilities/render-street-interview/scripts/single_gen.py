@@ -98,6 +98,30 @@ def fit_h3_reference(path, folder):
         return out
 
 
+def download_take(url, dest):
+    """A failed transfer never leaves an apparently finished MP4."""
+    partial = dest.with_name(dest.name + ".part")
+    urllib.request.urlretrieve(url, partial)
+    if not partial.is_file() or partial.stat().st_size == 0:
+        raise RuntimeError("download returned no video bytes")
+    partial.replace(dest)
+
+def save_download(url, dest, manifest, record):
+    # A completed result is durable before its first download. The proxy may
+    # already have removed its poll record, so recovery uses this URL directly.
+    record.update(video_url=url, state="download_pending")
+    manifest.write_text(json.dumps(record, indent=1))
+    try:
+        download_take(url, dest)
+    except Exception as error:
+        record.update(download_error=str(error))
+        manifest.write_text(json.dumps(record, indent=1))
+        sys.exit(f"Download failed: {error}; recover request {record.get('request_id')} without a new order")
+    record.update(state="complete")
+    record.pop("download_error", None)
+    manifest.write_text(json.dumps(record, indent=1))
+
+
 def main():
     ap = paths.add_run_arg(argparse.ArgumentParser())
     ap.add_argument("--brand", default=None,
@@ -340,12 +364,10 @@ def main():
         if prior.get("input_digest") != digest or prior.get("request_id") != A.recover_request_id:
             sys.exit("Recovery request does not match this take's saved inputs and request ID")
         record = prior
-        url = (media_proxy.resume_fal(A.recover_request_id).get("video") or {}).get("url")
+        url = prior.get("video_url") or (media_proxy.resume_fal(A.recover_request_id).get("video") or {}).get("url")
         if not url:
             sys.exit("Recovered request has no video; no new generation was sent")
-        urllib.request.urlretrieve(url, dest)
-        record.update(state="complete", video_url=url)
-        man.write_text(json.dumps(record, indent=1))
+        save_download(url, dest, man, record)
         print(f"recovered {dest.name}; no upload or new generation")
         return
     if man.exists() and json.loads(man.read_text()).get("request_id"):
@@ -377,10 +399,9 @@ def main():
         if getattr(e, "request_id", None): record["request_id"] = e.request_id
         man.write_text(json.dumps(record, indent=1))
         sys.exit(f"FAILED: {e}; resume this take with --recover-request-id {record.get('request_id')}")
-    urllib.request.urlretrieve(res["video"]["url"], dest)
+    record.update(provider_payload={**settings, ref_field: urls})
+    save_download(res["video"]["url"], dest, man, record)
     print(f"wrote {dest.name} {dest.stat().st_size // 1024} KB")
-    record.update(state="complete", video_url=res["video"]["url"], provider_payload={**settings, ref_field: urls})
-    man.write_text(json.dumps(record, indent=1))
 
 
 if __name__ == "__main__":
