@@ -30,6 +30,8 @@ paid for.
 import argparse
 import hashlib
 import json
+import math
+import re
 import sys
 import urllib.request
 from pathlib import Path
@@ -51,6 +53,49 @@ def _file_sha256(path):
         for chunk in iter(lambda: f.read(1 << 20), b""):
             h.update(chunk)
     return h.hexdigest()
+
+
+H3_MODEL = "minimax/h3-max/reference-to-video"
+H3_RATES = {"480P": 0.05, "768P": 0.08, "1080P": 0.16}
+
+def provider_settings(model, prompt, duration, seed, resolution=None):
+    """Provider-only delta; raw scaffold stays unchanged for the finish lint."""
+    if isinstance(seed, bool) or not isinstance(seed, int):
+        raise ValueError("seed must be a recorded integer")
+    if isinstance(duration, bool) or not isinstance(duration, (int, float)) or not math.isfinite(duration) or not 0.92 <= duration <= 15:
+        raise ValueError("duration must be a number from 0.92 to 15 seconds")
+    if model == H3_MODEL:
+        resolution = resolution or "1080P"
+        if resolution not in H3_RATES:
+            raise ValueError("H3 resolution must be 480P, 768P or 1080P")
+        provider_prompt = re.sub(r"@Image([1-9][0-9]*)\b", r"Image \1", prompt)
+        return ({"prompt": provider_prompt, "duration": duration, "resolution": resolution,
+                 "aspect_ratio": format_spec.ASPECT, "prompt_expansion_mode": "disabled", "seed": seed},
+                "reference_image_urls", H3_RATES[resolution])
+    if model not in (format_spec.MODEL, format_spec.MODEL_FAST):
+        raise ValueError("Unsupported street provider; use H3 Max or the historical Seedance endpoints")
+    if resolution is not None and resolution != format_spec.RESOLUTION:
+        raise ValueError("Historical Seedance requests keep their existing resolution")
+    return ({"prompt": prompt, "duration": duration, "resolution": format_spec.RESOLUTION,
+             "aspect_ratio": format_spec.ASPECT, "generate_audio": True, "seed": seed},
+            "image_urls", format_spec.RATE_FAST if model == format_spec.MODEL_FAST else format_spec.RATE)
+
+
+def fit_h3_reference(path, folder):
+    """Pad references outside fal's 2:5..5:2 range; never crop real products."""
+    from PIL import Image, ImageOps
+    with Image.open(path) as image:
+        image.load()
+        w, h = image.size
+        target = (max(w, math.ceil(h * 2 / 5)), max(h, math.ceil(w * 2 / 5)))
+        if target == (w, h):
+            return path
+        folder.mkdir(parents=True, exist_ok=True)
+        out = folder / (path.stem + "-h3-" + _file_sha256(path)[:12] + ".png")
+        pixels = Image.new("RGB", target, "black")
+        pixels.paste(image.convert("RGB"), ((target[0] - w) // 2, (target[1] - h) // 2))
+        pixels.save(out)
+        return out
 
 
 def main():
@@ -136,15 +181,17 @@ def main():
     ap.add_argument("--prompt-version", type=int, choices=(1, 2, 3), default=None,
                     help="3 keeps v2's repairs and keeps the street in focus (never blurred, never bokeh); "
                          "2 repairs articles and uses product-neutral closure wording; 1 reproduces historical prompts")
+    ap.add_argument("--model", default=None, help="opt-in generation model; production H3 recipes pass minimax/h3-max/reference-to-video")
+    ap.add_argument("--resolution", default=None, help="H3: 480P, 768P or 1080P; historical endpoint unchanged")
+    ap.add_argument("--recover-request-id", default=None, help="resume a pending take, write the same manifest; no upload or new generation")
     A = ap.parse_args()
 
     cfg = brandkit.load(A.brand)
     gen = cfg["generation"]
-    seed = A.seed or gen["seed"]
+    seed = A.seed if A.seed is not None else gen["seed"]
     dur = gen["duration"]
     fast = bool(gen.get("fast"))
-    model = format_spec.MODEL_FAST if fast else format_spec.MODEL
-    rate = format_spec.RATE_FAST if fast else format_spec.RATE
+    model = A.model or gen.get("model") or (format_spec.MODEL_FAST if fast else format_spec.MODEL)
     if dur > format_spec.GEN_CAP_S:
         sys.exit(f"{dur}s is over the {format_spec.GEN_CAP_S:.0f}s single-call cap. The idea has "
                  f"to fit inside one generation or it is a stitch, and stitching is the "
@@ -177,14 +224,18 @@ def main():
                  "one object this format keeps getting wrong would be unconstrained. Pass a "
                  "face-cropped still from a take whose mic is right.")
     prompt = format_spec.build_prompt(cfg, **G)
+    try:
+        settings, ref_field, rate = provider_settings(model, prompt, dur, seed, A.resolution or gen.get("resolution"))
+    except ValueError as error:
+        sys.exit(str(error))
     ref = brandkit.reference_image(cfg)
-    stem = brandkit.take_name(cfg, seed)
+    stem = f"{cfg['slug']}-single-seed{seed}"
     L = paths.layout(A.run)
 
     if mode == "conversation":
         print(f"CONVERSATION PROMPT PREVIEW  seed {seed}  {dur}s; no media endpoint or price verified")
     else:
-        print(f"{model}  seed {seed}  {dur}s {format_spec.RESOLUTION} {format_spec.ASPECT}  "
+        print(f"{model}  seed {seed}  {dur}s {settings['resolution']} {format_spec.ASPECT}  "
               f"~${rate * dur:.2f}")
     print(f"brand       {cfg['brand']}  ({cfg['_path']})")
     print(f"{len(prompt.split())} words, {len(cfg['shots'])} shots, ONE location, interviewer "
@@ -225,11 +276,12 @@ def main():
                   "or screen binding; sample/task media performance unverified")
         if A.scene_ref:
             sys.exit("conversation has no scene-reference binding; remove --scene-ref")
-        if A.yes:
+        if A.yes or A.recover_request_id:
             sys.exit("conversation is preview-only until a rendered pilot is approved; no paid call sent")
-    if not A.yes:
+    if not A.yes and not A.recover_request_id:
         print()
         print(prompt)
+        print("\nPROVIDER REQUEST: " + json.dumps({"model": model, "body": {**settings, ref_field: [str(ref)] + ([str(A.scene_ref)] if A.scene_ref else [])}}, sort_keys=True))
         print("\ndry run. Nothing sent.")
         return
 
@@ -246,7 +298,7 @@ def main():
     # reproduces it" about a payload that had entirely changed, and would have handed back the
     # old clip as if it were the new one.
     if dest.exists():
-        same = man.exists() and json.loads(man.read_text(encoding="utf-8")).get("prompt") == prompt
+        same = man.exists() and json.loads(man.read_text(encoding="utf-8")).get("prompt") == prompt and json.loads(man.read_text(encoding="utf-8")).get("model") == model
         sys.exit(f"{dest.name} exists and the recorded prompt is "
                  f"{'IDENTICAL, so the same payload+seed reproduces it' if same else 'DIFFERENT. '
                     'Bump the seed: reusing it would overwrite a take TAKES.md refers to'}.")
@@ -260,65 +312,75 @@ def main():
     # for good (QA-14). It used to hash only prompt, seed, duration and the scene-ref PATH, so
     # after one likeness rejection a run with a different, acceptable product image was
     # refused forever.
-    settings = {"prompt": prompt, "duration": dur, "resolution": format_spec.RESOLUTION,
-                "aspect_ratio": format_spec.ASPECT, "generate_audio": True, "seed": seed}
-    image_ids = [{"sha256": _file_sha256(p)} for p in [Path(ref)] + ([sref] if sref else [])]
-    digest = media_proxy.input_digest(model, {**settings, "image_urls": image_ids})
+    sources = [Path(ref)] + ([sref] if sref else [])
+    prepared = [fit_h3_reference(p, L["working"] / "h3-references") for p in sources] if model == H3_MODEL else sources
+    image_ids = [{"sha256": _file_sha256(p)} for p in prepared]
+    digest = media_proxy.input_digest(model, {**settings, ref_field: image_ids})
     try:  # an identical request the provider already refused: stop before uploading anything
         media_proxy.refuse_if_rejected(model, input_digest=digest)
     except media_proxy.FalPolicyRejection as e:
         print(f"FAILED: {e}", file=sys.stderr)
         sys.exit(media_proxy.POLICY_EXIT)
-    urls = [upload_file(ref)]
-    # THE SCENE REFERENCE. A prompt clause binds an object only WITHIN one generation: episodes 1
-    # and 2 both carried a byte-identical microphone clause across three calls and rendered three
-    # different microphones, and episode 2's third call rendered a different CONTINENT. Separate
-    # calls have no channel between them, so each one re-derives the mic and the street from words.
-    # The reference image IS that channel: it is why the can is the only object that has never
-    # drifted. Passing a still from the episode's FIRST take as a second reference hands every
-    # later take the mic, the street and the light instead of asking it to imagine them again.
-    # @Image1 stays the product; the scene still is @Image2.
+    record = {"model": model, "seed": seed, "duration": dur, "resolution": settings["resolution"],
+              "request_id": None, "state": "planned", "brand": cfg["brand"], "brand_config": cfg["_path"],
+              "mode": mode, "product_noun": cfg.get("product", {}).get("noun"),
+              "pace_grammar": pace, "guard_grammar": guards, "mic_grammar": mic, "plain_grammar": plain,
+              "answers_only": answers_only, "can_grammar": can, "mic_ref_grammar": mic_ref,
+              "can_size_grammar": can_size, "can_sealed_grammar": can_sealed, "upright_grammar": upright,
+              "one_mic_grammar": one_mic, "prompt_version": G["prompt_version"],
+              "scene_ref": str(A.scene_ref) if A.scene_ref else None, "episode_role": cfg.get("episode_role"),
+              "est_cost": rate * dur, "cost_basis": "estimated output seconds; reference surcharges excluded",
+              "prompt": prompt, "provider_prompt": settings["prompt"], "provider_settings": settings,
+              "input_digest": digest, "reference_sources": [str(p) for p in sources],
+              "reference_files": [str(p) for p in prepared]}
+    if A.recover_request_id:
+        if not man.exists():
+            sys.exit("No saved take manifest for recovery; do not submit a replacement")
+        prior = json.loads(man.read_text())
+        if prior.get("input_digest") != digest or prior.get("request_id") != A.recover_request_id:
+            sys.exit("Recovery request does not match this take's saved inputs and request ID")
+        record = prior
+        url = (media_proxy.resume_fal(A.recover_request_id).get("video") or {}).get("url")
+        if not url:
+            sys.exit("Recovered request has no video; no new generation was sent")
+        urllib.request.urlretrieve(url, dest)
+        record.update(state="complete", video_url=url)
+        man.write_text(json.dumps(record, indent=1))
+        print(f"recovered {dest.name}; no upload or new generation")
+        return
+    if man.exists() and json.loads(man.read_text()).get("request_id"):
+        sys.exit("A saved request already exists; use --recover-request-id instead of ordering again")
+    man.write_text(json.dumps(record, indent=1))
+    urls = [upload_file(prepared[0])]
     if sref is not None:
-        urls.append(upload_file(sref))
-        print(f"scene ref   {sref.name}  (@Image2: mic, street and light carried from take A)")
+        urls.append(upload_file(prepared[1]))
+        print(f"scene ref   {sref.name}  (Image 2: mic, street and light from take A)")
+    def submitted(request_id):
+        record.update(request_id=request_id, state="submitted")
+        man.write_text(json.dumps(record, indent=1))
     try:
-        url = media_proxy.fal_generate_video(model, {**settings, "image_urls": urls},
-                                             input_digest=digest)
-        res, rid = {"video": {"url": url}}, None
+        url = media_proxy.fal_generate_video(model, {**settings, ref_field: urls},
+                                             input_digest=digest, on_submit=submitted)
+        res = {"video": {"url": url}}
     except media_proxy.FalPolicyRejection as e:
         # Final for these inputs: surface it, do not retry. A changed image, prompt or seed is
         # a new request.
+        record.update(state="rejected", error=str(e))
+        man.write_text(json.dumps(record, indent=1))
         print(f"FAILED: {e}", file=sys.stderr)
         sys.exit(media_proxy.POLICY_EXIT)
-    except RuntimeError as e:
+    except Exception as e:
         # A dropped network mid-poll has already billed you. Never resubmit: a poll timeout
         # raises FalPollTimeout carrying the request id, and media_proxy.resume_fal(id) returns
         # the finished video at zero extra cost.
-        sys.exit(f"FAILED: {e}")
+        record.update(state="pending", error=str(e))
+        if getattr(e, "request_id", None): record["request_id"] = e.request_id
+        man.write_text(json.dumps(record, indent=1))
+        sys.exit(f"FAILED: {e}; resume this take with --recover-request-id {record.get('request_id')}")
     urllib.request.urlretrieve(res["video"]["url"], dest)
     print(f"wrote {dest.name} {dest.stat().st_size // 1024} KB")
-    man.write_text(json.dumps(
-        {"model": model, "seed": seed, "duration": dur, "request_id": rid,
-         # brand and product_noun are recorded so the gate does not have to guess either. Before
-         # they were recorded, check-cut.py had to infer the product from a brand's own copy.
-         "brand": cfg["brand"], "brand_config": cfg["_path"],
-         # BOTH grammar flags are recorded, because the gate cannot infer them and must not
-         # guess: check-cut.py lints the stored prompt with the flags stored beside it. A
-         # manifest that recorded `pace_grammar` and not `guard_grammar` would have the gate
-         # lint a guarded prompt with guards=False, i.e. pass while the two clauses the
-         # seed-4816 render paid for went unchecked. That is the seed-4812 failure exactly.
-         "mode": mode, "product_noun": cfg.get("product", {}).get("noun"), "pace_grammar": pace,
-         "guard_grammar": guards, "mic_grammar": mic, "plain_grammar": plain,
-         "answers_only": answers_only, "can_grammar": can,
-         "mic_ref_grammar": mic_ref, "can_size_grammar": can_size,
-         "can_sealed_grammar": can_sealed, "upright_grammar": upright,
-         "one_mic_grammar": one_mic, "prompt_version": G["prompt_version"],
-         # Recorded because episode 2's repair needed it and it was not there: a
-         # take coupled to another by a scene reference is coupled more tightly
-         # than by any clause, and the gate could not see that it had happened.
-         "scene_ref": (str(A.scene_ref) if A.scene_ref else None),
-         "episode_role": cfg.get("episode_role"),
-         "est_cost": rate * dur, "prompt": prompt}, indent=1))
+    record.update(state="complete", video_url=res["video"]["url"], provider_payload={**settings, ref_field: urls})
+    man.write_text(json.dumps(record, indent=1))
 
 
 if __name__ == "__main__":

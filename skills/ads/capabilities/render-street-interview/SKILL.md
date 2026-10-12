@@ -2,8 +2,8 @@
 name: render-street-interview
 description: Write a street-interview ad from a complete inspected commercial interaction and current brand facts. Render product guessing, or prepare mic-only, prepared-sample or visible-task conversation script/prompt previews. Premise, actions and ad connection vary; capture rules stay fixed. Conversation media delivery is unverified.
 status: draft
-version: "2.0.2"
-updated: 2026-10-06
+version: "2.0.3"
+updated: 2026-10-12
 ---
 
 # Human version
@@ -73,7 +73,25 @@ its older experiments do not override the current recipe or this entry.
 Use the [project take-ledger guidance](TAKES.md) before reusing a seed. Keep each
 brand's observed successes and limitations in its own project; a seed is not a quality guarantee.
 
-## Run
+## Opt-in H3 Max generation
+
+Current production recipes explicitly pass `--model minimax/h3-max/reference-to-video --resolution 1080P` to `single_gen.py`, or store those exact fields under `generation` in the brand config. Existing configs without those settings keep their historical endpoint; this is not a global provider replacement.
+
+The H3 adapter preserves the raw scaffold prompt, lint, camera/grammar flags, brand, seed, scene coupling and `<take>.json` required by finishing. It translates image tags only in the provider request, uses numeric duration, supported uppercase resolution and disabled expansion, and sends `reference_image_urls`. Native audio is kept without a `generate_audio` request field. Narrow/wide product references are padded to the official range without cropping. H3 image, voice and motion quality remain unverified.
+
+```bash
+python scripts/single_gen.py --brand <slug> --model minimax/h3-max/reference-to-video --resolution 1080P
+# Only after the normal generation review:
+python scripts/single_gen.py --brand <slug> --model minimax/h3-max/reference-to-video --resolution 1080P --yes
+# After a polling interruption, same config/seed/model/run, no new order:
+python scripts/single_gen.py --brand <slug> --model minimax/h3-max/reference-to-video --resolution 1080P \
+  --recover-request-id <saved-id>
+```
+
+The request ID is written before polling. Recovery verifies the saved input digest and ID, then writes the same finishing manifest. Rejections stop; an existing request cannot be ordered again through this entry point. Output-only estimates at 1080P are 1.92 USD for one twelve-second take and 5.76 USD for three, up to 7.20 USD for three fifteen-second takes, before excess reference tokens or other paid work. Earlier Seedance costs below remain historical.
+
+
+## Run (historical default endpoint)
 
 The paid generation and finishing commands below are for `product-guess`. Conversation
 supports `brandkit.py` validation and `single_gen.py` dry runs only.

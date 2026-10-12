@@ -681,7 +681,7 @@ def forget_rejection(key):
 #      re-attach by request-id later (never re-submits).
 #   2. the poll loop RETRIES the same URL through connection-refused / timeout blips
 #      instead of crashing.
-_PENDING_DIR = pathlib.Path(os.path.expanduser("~/.gooseworks/pending-fal-jobs"))
+_PENDING_DIR = pathlib.Path(os.environ.get("GW_FAL_PENDING_DIR") or os.path.expanduser("~/.gooseworks/pending-fal-jobs"))
 _TRANSIENT = (requests.ConnectionError, requests.Timeout,
               requests.exceptions.ChunkedEncodingError)
 
@@ -811,7 +811,7 @@ def _poll_to_result(model_path, status_url, response_url, params, timeout_s, pol
 
 
 def _fal_run(model_path, payload, timeout_s=None, poll_s=3, new_take=False,
-             input_digest=None):
+             input_digest=None, on_submit=None):
     """Submit a FAL job through the proxy, poll to completion (surviving backend blips),
     return the raw result dict. `model_path` e.g. 'fal-ai/kling-video/.../image-to-video'.
 
@@ -838,14 +838,14 @@ def _fal_run(model_path, payload, timeout_s=None, poll_s=3, new_take=False,
     `python3 media_proxy.py forget <key>`."""
     refuse_if_rejected(model_path, payload, input_digest)
     try:
-        return _fal_run_once(model_path, payload, timeout_s, poll_s, new_take, input_digest)
+        return _fal_run_once(model_path, payload, timeout_s, poll_s, new_take, input_digest, on_submit)
     except FalPolicyRejection as e:
         if not e.from_ledger and e.recordable:
             _record_rejection(model_path, payload, input_digest, e)
         raise
 
 
-def _fal_run_once(model_path, payload, timeout_s, poll_s, new_take, input_digest):
+def _fal_run_once(model_path, payload, timeout_s, poll_s, new_take, input_digest, on_submit=None):
     if relay_mode():
         args = {"provider": "fal", "path": model_path, "body": payload}
         if input_digest:
@@ -887,6 +887,8 @@ def _fal_run_once(model_path, payload, timeout_s, poll_s, new_take, input_digest
         status_url, response_url = to_proxy(sub["status_url"]), to_proxy(sub["response_url"])
         request_id = sub.get("request_id") or urlparse(sub["response_url"]).path.rstrip("/").rsplit("/", 1)[-1]
         _persist_pending(model_path, request_id, status_url, response_url)
+        if on_submit is not None:
+            on_submit(request_id)
         try:
             result = _poll_to_result(model_path, status_url, response_url, params, timeout_s,
                                      poll_s, request_id=request_id)
