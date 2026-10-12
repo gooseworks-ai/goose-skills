@@ -394,11 +394,12 @@ export async function run(inputs, ctx) {
       else if (motion >= FOOTAGE_MIN_MOTION) add(code, 'pass', { found: motion });
       else add(code, 'warn', { message: 'The footage reads as a still photo.', expected: `motion of at least ${FOOTAGE_MIN_MOTION}`, found: motion });
     } else if (flag === 'sounds_match_messages') {
-      const cardStart = timeline.end_card ? timeline.end_card.start_s : Infinity;
-      const starts = (timeline.scenes || []).map((sc) => sc.start_s).filter((t) => t > 0.4 && t < cardStart - 0.1 && (!retained || t < contentEnd - 0.1));
+      // Every message arrival before the end card (or the kept body), the opening's included.
+      const starts = [];
+      for (const t of (timeline.scenes || []).map((sc) => sc.start_s).sort((a, b) => a - b)) if (t >= 0 && t < bodyEnd - 1e-3 && !starts.some((u) => Math.abs(u - t) < 1e-3)) starts.push(t);
       if (!starts.length) add(code, 'not_applicable');
       else {
-        const windows = starts.map((t, i) => chkMessageWindows(t, i + 1 < starts.length ? starts[i + 1] : Infinity));
+        const windows = chkMessageWindows(starts, bodyEnd);
         const levels = await kitWindowLevels(ctx, video.path, windows.flatMap((w) => [...w.cue, ...w.bed]));
         let at = 0;
         const rises = windows.map((w) => chkMessageRise(levels.slice(at, (at += w.cue.length)), levels.slice(at, (at += w.bed.length))));

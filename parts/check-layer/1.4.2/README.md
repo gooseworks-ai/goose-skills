@@ -56,10 +56,14 @@ which the kit does not pass yet), the one fix the failure could name),
 bands: top 220, bottom 400, right 140 px at 1080x1920), and the style's `qc_flags`: `logo_visible` (the logo
 check's matching, run on its own: the logo anywhere in the video, the end card included, whatever the end-card check finds), `footage_moves` (mean frame-to-frame change of at least 1.5 on a 160 x 160 grayscale copy, over the
 half of the rows that move most, logo-equation-card's gate; less warns, no frames to read fails) and `sounds_match_messages` (the sound of the finished
-cut, music included, is at least 8 dB louder when each chat scene appears: the loudest 50 ms from 0.05 s before
-the scene starts to 0.3 s after, stopping where the next message's window starts so one sound never counts for
-two messages, against the median 50 ms of the 0.55 s before it, so a short pop the sound layer's limiter
-levelled still counts and typing clicks before it do not raise the bar; the layer gets only the finished cut, so
+cut, music included, is at least 8 dB louder when each chat scene appears, every scene start before the end card
+(or the kept body) counting, the opening's included: the loudest 50 ms from 0.05 s before the scene starts to
+0.3 s after, never into the next message's window (two messages under 0.1 s apart split the time between them)
+or past the end card, against the bed, the median 50 ms of the quiet in the 0.55 s before it. Quiet is time
+outside every message's own span (0.05 s before it to 0.3 s after), so an earlier message's sound never raises
+the bar; with under 0.15 s of it (the opening, or a burst of messages) the bed is the quiet from 0.3 to 0.85 s
+after the message, and with too little of that, all the quiet before the end card. A short pop the sound
+layer's limiter levelled still counts and typing clicks before it do not raise the bar; the layer gets only the finished cut, so
 a style with a music bed keeps the bed under the chat's sounds in its mix) are measured and count toward the verdict; a flag that needs eyes
 (`text_legible`, `products_visible`) is reported as `not_applicable` with `found: "needs eyes"`, and a flag this
 version does not measure (one a later check layer adds; a style may declare it first) is `not_applicable` too.

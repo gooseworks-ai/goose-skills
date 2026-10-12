@@ -1902,12 +1902,16 @@ const CHK_WORD_EDGE_S = 0.01;
 const CHK_CUT_EDGE_S = 0.05;
 
 // sounds_match_messages (1.4.2): a message's sound is its loudest 50 ms from just before the message shows
-// to 0.3 s after, set against the bed, the median 50 ms of the 0.55 s before it. A short pop over a 0.25 s
+// to 0.3 s after, set against the bed, the median 50 ms of the quiet before it. A short pop over a 0.25 s
 // mean, or a mean before it that holds typing clicks, read under 4 dB once a limiter levelled the cut.
 const CHK_MSG_SLICE_S = 0.05;
 const CHK_MSG_HOP_S = 0.01;
 const CHK_MSG_CUE = [-0.05, 0.3];
 const CHK_MSG_BED = [-0.6, -0.05];
+// The opening, or a message straight after others, has too little quiet before it: the quiet after its cue.
+const CHK_MSG_BED_AFTER = [0.3, 0.85];
+// 0.15 s of quiet: with fewer slices than this a stretch is no bed.
+const CHK_MSG_BED_MIN = 11;
 const CHK_MSG_RISE_DB = 8;
 
 function chkSlices(from, to) {
@@ -1920,13 +1924,35 @@ function chkSlices(from, to) {
   return out;
 }
 
+/** The parts of [from, to] outside every span in `cuts`. */
+function chkOutside(from, to, cuts) {
+  let spans = from < to ? [[from, to]] : [];
+  for (const [a, b] of cuts) spans = spans.flatMap(([s, e]) => (b <= s || a >= e ? [[s, e]] : [[s, Math.min(e, a)], [Math.max(s, b), e]].filter(([x, y]) => y > x)));
+  return spans;
+}
+
 /**
- * The 50 ms slices one message at `t` is judged on: its cue and the bed before it. The cue stops where the
- * next message's own cue window starts (`next`), so a sound is never credited to the message before it.
+ * The slices each message is judged on: `starts` are the message arrivals in order (distinct), `end` where
+ * the judged content stops (the end card, or the kept body). A cue runs from just before its message to 0.3 s
+ * after, but never into the next one's (two messages closer than 0.1 s split the time between them) and never
+ * past `end`; one shorter than 50 ms is one slice. The bed is the quiet before the message, outside every
+ * message's cue span (0.05 s before it to 0.3 s after), so an earlier sound never raises it; with too little
+ * of that, the quiet after the cue; with too little of either, all the quiet before `end`.
  */
-function chkMessageWindows(t, next = Infinity) {
-  const end = Math.min(t + CHK_MSG_CUE[1], next + CHK_MSG_CUE[0]);
-  return { cue: chkSlices(t + CHK_MSG_CUE[0], Math.max(end, t + CHK_MSG_CUE[0] + CHK_MSG_SLICE_S)), bed: chkSlices(t + CHK_MSG_BED[0], t + CHK_MSG_BED[1]) };
+function chkMessageWindows(starts, end) {
+  const cues = starts.map((t) => [t + CHK_MSG_CUE[0], t + CHK_MSG_CUE[1]]);
+  const quiet = (from, to) => chkOutside(Math.max(0, from), Math.min(to, end), cues).flatMap(([a, b]) => chkSlices(a, b));
+  const split = (i) => Math.max(starts[i + 1] + CHK_MSG_CUE[0], (starts[i] + starts[i + 1]) / 2);
+  let whole = null;
+  return starts.map((t, i) => {
+    const from = Math.max(0, t + CHK_MSG_CUE[0], i > 0 ? split(i - 1) : 0);
+    const to = Math.min(t + CHK_MSG_CUE[1], i + 1 < starts.length ? split(i) : Infinity, end);
+    const cue = to - from >= CHK_MSG_SLICE_S - 1e-9 ? chkSlices(from, to) : to > from ? [[from, to]] : [];
+    const before = quiet(t + CHK_MSG_BED[0], t + CHK_MSG_BED[1]);
+    const after = before.length >= CHK_MSG_BED_MIN ? null : quiet(t + CHK_MSG_BED_AFTER[0], t + CHK_MSG_BED_AFTER[1]);
+    const bed = !after ? before : after.length >= CHK_MSG_BED_MIN ? after : (whole ??= quiet(0, end));
+    return { cue, bed };
+  });
 }
 
 /** The cue's loudest slice, the bed's median slice (dBFS) and how far the cue rises over the bed. */
@@ -2686,11 +2712,12 @@ export async function run(inputs, ctx) {
       else if (motion >= FOOTAGE_MIN_MOTION) add(code, 'pass', { found: motion });
       else add(code, 'warn', { message: 'The footage reads as a still photo.', expected: `motion of at least ${FOOTAGE_MIN_MOTION}`, found: motion });
     } else if (flag === 'sounds_match_messages') {
-      const cardStart = timeline.end_card ? timeline.end_card.start_s : Infinity;
-      const starts = (timeline.scenes || []).map((sc) => sc.start_s).filter((t) => t > 0.4 && t < cardStart - 0.1 && (!retained || t < contentEnd - 0.1));
+      // Every message arrival before the end card (or the kept body), the opening's included.
+      const starts = [];
+      for (const t of (timeline.scenes || []).map((sc) => sc.start_s).sort((a, b) => a - b)) if (t >= 0 && t < bodyEnd - 1e-3 && !starts.some((u) => Math.abs(u - t) < 1e-3)) starts.push(t);
       if (!starts.length) add(code, 'not_applicable');
       else {
-        const windows = starts.map((t, i) => chkMessageWindows(t, i + 1 < starts.length ? starts[i + 1] : Infinity));
+        const windows = chkMessageWindows(starts, bodyEnd);
         const levels = await kitWindowLevels(ctx, video.path, windows.flatMap((w) => [...w.cue, ...w.bed]));
         let at = 0;
         const rises = windows.map((w) => chkMessageRise(levels.slice(at, (at += w.cue.length)), levels.slice(at, (at += w.bed.length))));
