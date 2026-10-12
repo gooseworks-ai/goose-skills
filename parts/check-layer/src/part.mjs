@@ -18,7 +18,11 @@
 // 1.4.0 adds per-shot flags (a shot runs from one scene start to the next):
 // captions_cross_cuts, min_shot, ambience_floor, cut_contrast and
 // distinct_adjacent_shots. 1.4.2 hears a message's sound by its loudest
-// 50 ms over the bed before it, so a levelled cut's short pops still count.
+// 50 ms over the bed before it, so a levelled cut's short pops still count,
+// and a measured taste check outside its range (length, loudness, pacing,
+// stills, shots, cuts, captions across cuts, room tone, motion, a sparse
+// text-led cut) warns instead of failing. What could not be measured, and
+// what is broken or missing, still fails.
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitFfmpeg } from '../../_lib/part.mjs';
@@ -198,12 +202,9 @@ export async function run(inputs, ctx) {
   const d = m.duration_s;
 
   const { min, max } = expect.duration_s;
-  if (d === null || d < min - LENGTH_SLACK_S || d > max + LENGTH_SLACK_S) {
-    add('length', 'fail', {
-      message: d !== null && d < min ? 'The video is too short.' : 'The video is too long.',
-      expected: `${min} to ${max} seconds`,
-      found: d === null ? 'unknown' : `${d.toFixed(1)} seconds`,
-    });
+  if (d === null) add('length', 'fail', { message: "The video's length could not be measured.", expected: `${min} to ${max} seconds`, found: 'unknown' });
+  else if (d < min - LENGTH_SLACK_S || d > max + LENGTH_SLACK_S) {
+    add('length', 'warn', { message: d < min ? 'The video is too short.' : 'The video is too long.', expected: `${min} to ${max} seconds`, found: `${d.toFixed(1)} seconds` });
   } else add('length', 'pass', { found: `${d.toFixed(1)} seconds` });
 
   const ratio = ratioOf(expect.aspect);
@@ -224,12 +225,7 @@ export async function run(inputs, ctx) {
   else if (silent) {
     add('sound', 'fail', { message: 'The video has no sound.', expected: `${TARGET_LUFS} LUFS`, found: 'no sound', fix: { slot: 'sound' } });
   } else if (Math.abs(lufs - TARGET_LUFS) > LUFS_TOLERANCE) {
-    add('sound', 'fail', {
-      message: lufs < TARGET_LUFS ? 'The sound is too quiet.' : 'The sound is too loud.',
-      expected: `${TARGET_LUFS} LUFS`,
-      found: `${lufs.toFixed(1)} LUFS`,
-      fix: { slot: 'sound' },
-    });
+    add('sound', 'warn', { message: lufs < TARGET_LUFS ? 'The sound is too quiet.' : 'The sound is too loud.', expected: `${TARGET_LUFS} LUFS`, found: `${lufs.toFixed(1)} LUFS` });
   } else add('sound', 'pass', { found: `${lufs.toFixed(1)} LUFS` });
 
   if (!expect.captions) add('captions', 'not_applicable');
@@ -284,8 +280,8 @@ export async function run(inputs, ctx) {
     return strictHold || sceneStarts.some((t) => s < t - SCENE_EDGE_S && end > t + SCENE_EDGE_S);
   });
   if (retained && contentEnd <= 0) add('frozen_frames', 'not_applicable', { found: notChecked });
-  else if (opening) add('frozen_frames', 'fail', { message: `The opening picture is still for ${(opening[1] - opening[0]).toFixed(1)} seconds.`, expected: `the opening moves within ${OPENING_STILL_MAX_S} s`, found: +(opening[1] - opening[0]).toFixed(2) });
-  else if (held) add('frozen_frames', 'fail', { message: `The picture is frozen from ${held[0].toFixed(1)} to ${held[1].toFixed(1)} seconds.`, expected: `no held picture over ${HELD_PICTURE_MAX_S} s before the end card`, found: +(Math.min(held[1], bodyEnd) - held[0]).toFixed(2) });
+  else if (opening) add('frozen_frames', 'warn', { message: `The opening picture is still for ${(opening[1] - opening[0]).toFixed(1)} seconds.`, expected: `the opening moves within ${OPENING_STILL_MAX_S} s`, found: +(opening[1] - opening[0]).toFixed(2) });
+  else if (held) add('frozen_frames', 'warn', { message: `The picture is frozen from ${held[0].toFixed(1)} to ${held[1].toFixed(1)} seconds.`, expected: `no held picture over ${HELD_PICTURE_MAX_S} s before the end card`, found: +(Math.min(held[1], bodyEnd) - held[0]).toFixed(2) });
   else add('frozen_frames', 'pass');
 
   // The brand layer and the end-card and phone-chat parts mark the card they add; a frame page that
@@ -386,7 +382,7 @@ export async function run(inputs, ctx) {
       const motion = await kitMotion(ctx, video.path, bodyEnd);
       if (motion === null) add(code, 'fail', { message: 'The footage could not be measured.', expected: `motion of at least ${FOOTAGE_MIN_MOTION}`, found: 'no frames' });
       else if (motion >= FOOTAGE_MIN_MOTION) add(code, 'pass', { found: motion });
-      else add(code, 'fail', { message: 'The footage reads as a still photo.', expected: `motion of at least ${FOOTAGE_MIN_MOTION}`, found: motion });
+      else add(code, 'warn', { message: 'The footage reads as a still photo.', expected: `motion of at least ${FOOTAGE_MIN_MOTION}`, found: motion });
     } else if (flag === 'sounds_match_messages') {
       const cardStart = timeline.end_card ? timeline.end_card.start_s : Infinity;
       const starts = (timeline.scenes || []).map((sc) => sc.start_s).filter((t) => t > 0.4 && t < cardStart - 0.1 && (!retained || t < contentEnd - 0.1));
@@ -408,15 +404,15 @@ export async function run(inputs, ctx) {
       }
       const share = `under ${Math.round(CHK_BLANK_MAX_SHARE * 100)} % of the video blank, with text on screen`;
       if (blank.whole) add(code, 'fail', { message: 'The whole video is blank: no text on screen.', expected: share, found: 1 });
-      else if (blank.share >= CHK_BLANK_MAX_SHARE - 1e-9) add(code, 'fail', { message: `The video is blank for ${blank.total_s.toFixed(1)} of ${blank.picture_s.toFixed(1)} seconds.`, expected: share, found: +blank.share.toFixed(3) });
+      else if (blank.share >= CHK_BLANK_MAX_SHARE - 1e-9) add(code, 'warn', { message: `The video is blank for ${blank.total_s.toFixed(1)} of ${blank.picture_s.toFixed(1)} seconds.`, expected: share, found: +blank.share.toFixed(3) });
       else add(code, 'pass', { found: +blank.share.toFixed(3) });
     } else if (flag === 'read_rate') {
       const rate = chkReadRate(speech, contentEnd);
       const expected = `${CHK_READ_MIN_WPS} to ${CHK_READ_MAX_WPS} words a second`;
       if (speechCrosses) add(code, 'not_applicable', { found: crossNote });
       else if (!rate) add(code, 'not_applicable', { found: 'no speech' });
-      else if (rate.wps < CHK_READ_MIN_WPS - 1e-9) add(code, 'fail', { message: `The voice reads too slowly: ${rate.wps.toFixed(2)} words a second.`, expected, found: +rate.wps.toFixed(3) });
-      else if (rate.wps > CHK_READ_MAX_WPS + 1e-9) add(code, 'fail', { message: `The voice reads too fast: ${rate.wps.toFixed(2)} words a second.`, expected, found: +rate.wps.toFixed(3) });
+      else if (rate.wps < CHK_READ_MIN_WPS - 1e-9) add(code, 'warn', { message: `The voice reads too slowly: ${rate.wps.toFixed(2)} words a second.`, expected, found: +rate.wps.toFixed(3) });
+      else if (rate.wps > CHK_READ_MAX_WPS + 1e-9) add(code, 'warn', { message: `The voice reads too fast: ${rate.wps.toFixed(2)} words a second.`, expected, found: +rate.wps.toFixed(3) });
       else add(code, 'pass', { found: +rate.wps.toFixed(3) });
     } else if (flag === 'cuts_between_words') {
       // Word timings from the speech entries, else the captions layer's words.
@@ -432,7 +428,7 @@ export async function run(inputs, ctx) {
       else if (!cuts.length) add(code, 'not_applicable', { found: 'no cuts' });
       else {
         const inside = chkCutInsideWord(cuts, words);
-        if (inside) add(code, 'fail', { message: `A cut at ${inside.t.toFixed(2)} seconds falls inside the word "${inside.word.text}".`, expected: 'every cut between two words', found: `${inside.t.toFixed(2)} s` });
+        if (inside) add(code, 'warn', { message: `A cut at ${inside.t.toFixed(2)} seconds falls inside the word "${inside.word.text}".`, expected: 'every cut between two words', found: `${inside.t.toFixed(2)} s` });
         else add(code, 'pass', { found: cuts.length });
       }
     } else if (flag === 'cut_rate') {
@@ -442,8 +438,8 @@ export async function run(inputs, ctx) {
       else if (!(bodyEnd > 0)) add(code, 'not_applicable', { found: 'no body before the end card' });
       else {
         const rate = chkCuts(timeline.scenes, bodyEnd).length / bodyEnd;
-        if (rate < CHK_CUT_MIN_RATE - 1e-9) add(code, 'fail', { message: `The cuts come too slowly: ${rate.toFixed(2)} a second.`, expected, found: +rate.toFixed(3) });
-        else if (rate > CHK_CUT_MAX_RATE + 1e-9) add(code, 'fail', { message: `The cuts come too fast: ${rate.toFixed(2)} a second.`, expected, found: +rate.toFixed(3) });
+        if (rate < CHK_CUT_MIN_RATE - 1e-9) add(code, 'warn', { message: `The cuts come too slowly: ${rate.toFixed(2)} a second.`, expected, found: +rate.toFixed(3) });
+        else if (rate > CHK_CUT_MAX_RATE + 1e-9) add(code, 'warn', { message: `The cuts come too fast: ${rate.toFixed(2)} a second.`, expected, found: +rate.toFixed(3) });
         else add(code, 'pass', { found: +rate.toFixed(3) });
       }
     } else if (flag === 'retained_body') {
@@ -464,7 +460,7 @@ export async function run(inputs, ctx) {
       else if (!cuts.length) add(code, 'not_applicable', { found: 'no cuts' });
       else {
         const across = chkCueAcrossCut(cues, cuts);
-        if (across) add(code, 'fail', { message: `The caption "${across.cue.text}" runs on across the cut at ${across.t.toFixed(2)} seconds.`, expected: `every caption inside one shot (${CHK_CUE_GUARD_S} s allowed either side of a cut)`, found: `${across.cue.start_s.toFixed(2)}-${across.cue.end_s.toFixed(2)} s` });
+        if (across) add(code, 'warn', { message: `The caption "${across.cue.text}" runs on across the cut at ${across.t.toFixed(2)} seconds.`, expected: `every caption inside one shot (${CHK_CUE_GUARD_S} s allowed either side of a cut)`, found: `${across.cue.start_s.toFixed(2)}-${across.cue.end_s.toFixed(2)} s` });
         else add(code, 'pass', { found: cues.length });
       }
     } else if (flag === 'min_shot') {
@@ -473,7 +469,7 @@ export async function run(inputs, ctx) {
       else if (!shots.length) add(code, 'not_applicable', { found: 'no body before the end card' });
       else {
         const short = chkShortShot(shots);
-        if (short) add(code, 'fail', { message: `A shot from ${short.start_s.toFixed(2)} to ${short.end_s.toFixed(2)} seconds is too short to read.`, expected: `every shot at least ${CHK_MIN_SHOT_S} s`, found: +short.seconds.toFixed(3) });
+        if (short) add(code, 'warn', { message: `A shot from ${short.start_s.toFixed(2)} to ${short.end_s.toFixed(2)} seconds is too short to read.`, expected: `every shot at least ${CHK_MIN_SHOT_S} s`, found: +short.seconds.toFixed(3) });
         else add(code, 'pass', { found: +Math.min(...shots.map(([a, b]) => b - a)).toFixed(3) });
       }
     } else if (flag === 'ambience_floor') {
@@ -495,10 +491,10 @@ export async function run(inputs, ctx) {
         const band = `room tone from ${CHK_FLOOR_MIN_DB} to ${CHK_FLOOR_MAX_DB} dB under every shot, speech at least ${CHK_FLOOR_SPEECH_GAP_DB} dB above it`;
         const where = bad ? `from ${bad.shot[0].toFixed(1)} to ${bad.shot[1].toFixed(1)} seconds` : '';
         if (!bad) add(code, 'pass', { found: +Math.min(...sounds.filter((x) => x.floor !== null).map((x) => x.floor)).toFixed(1) });
-        else if (bad.problem === 'silent') add(code, 'fail', { message: `There is no room tone ${where}: the sound drops to silence.`, expected: band, found: 'silent' });
-        else if (bad.problem === 'low') add(code, 'fail', { message: `The room tone is too quiet ${where}.`, expected: band, found: +bad.floor.toFixed(1) });
-        else if (bad.problem === 'high') add(code, 'fail', { message: `The background noise is too loud ${where}.`, expected: band, found: +bad.floor.toFixed(1) });
-        else add(code, 'fail', { message: `The speech does not stand out from the background noise ${where}.`, expected: band, found: +(bad.speech - bad.floor).toFixed(1) });
+        else if (bad.problem === 'silent') add(code, 'warn', { message: `There is no room tone ${where}: the sound drops to silence.`, expected: band, found: 'silent' });
+        else if (bad.problem === 'low') add(code, 'warn', { message: `The room tone is too quiet ${where}.`, expected: band, found: +bad.floor.toFixed(1) });
+        else if (bad.problem === 'high') add(code, 'warn', { message: `The background noise is too loud ${where}.`, expected: band, found: +bad.floor.toFixed(1) });
+        else add(code, 'warn', { message: `The speech does not stand out from the background noise ${where}.`, expected: band, found: +(bad.speech - bad.floor).toFixed(1) });
       }
     } else if (flag === 'cut_contrast') {
       // Each cut must read as a cut: the frames 80 ms either side differ enough (a reframe of the same
@@ -512,7 +508,7 @@ export async function run(inputs, ctx) {
         const worst = measured.reduce((a, c) => (!a || c.diff < a.diff ? c : a), null);
         const expected = `a frame difference of at least ${CHK_CONTRAST_MIN} (${CHK_CONTRAST_WARN} to be safe) ${CHK_CONTRAST_OFFSET_S} s either side of every cut`;
         if (!worst) add(code, 'fail', { message: 'The frames either side of the cuts could not be read.', expected, found: 'no frames' });
-        else if (worst.diff < CHK_CONTRAST_MIN - 1e-9) add(code, 'fail', { message: `The cut at ${worst.t.toFixed(2)} seconds barely changes the picture, so it reads as a jump.`, expected, found: +worst.diff.toFixed(2) });
+        else if (worst.diff < CHK_CONTRAST_MIN - 1e-9) add(code, 'warn', { message: `The cut at ${worst.t.toFixed(2)} seconds barely changes the picture, so it reads as a jump.`, expected, found: +worst.diff.toFixed(2) });
         else if (worst.diff < CHK_CONTRAST_WARN - 1e-9) add(code, 'warn', { message: `The cut at ${worst.t.toFixed(2)} seconds changes the picture only a little.`, expected, found: +worst.diff.toFixed(2) });
         // Every cut must be judged before the flag passes; a cut whose frames could not be read is a warning.
         else if (unread) add(code, 'warn', { message: `The frames either side of the cut at ${unread.t.toFixed(2)} seconds could not be read, so it was not checked.`, expected, found: `${measured.length} of ${all.length} cuts checked` });
@@ -529,7 +525,7 @@ export async function run(inputs, ctx) {
         const same = diffs.find((p) => p.diff < CHK_DISTINCT_MIN - 1e-9);
         const expected = `the opening frames of two scenes in a row differ by at least ${CHK_DISTINCT_MIN}`;
         if (!diffs.length) add(code, 'fail', { message: 'The opening frames of the scenes could not be read.', expected, found: 'no frames' });
-        else if (same) add(code, 'fail', { message: `Scenes ${same.a} and ${same.b} open on the same picture.`, expected, found: +same.diff.toFixed(2) });
+        else if (same) add(code, 'warn', { message: `Scenes ${same.a} and ${same.b} open on the same picture.`, expected, found: +same.diff.toFixed(2) });
         // Every pair must be judged before the flag passes; a pair whose frames could not be read is a warning.
         else if (unread) add(code, 'warn', { message: `The opening frames of scenes ${unread.a} and ${unread.b} could not be read, so they were not compared.`, expected, found: `${diffs.length} of ${all.length} pairs checked` });
         else add(code, 'pass', { found: +Math.min(...diffs.map((p) => p.diff)).toFixed(2) });

@@ -103,7 +103,7 @@ test('text_led: a dark beat with text on it is not black; blank stretches and bl
   const longGap = await mod.run(await layerInputsFor(gap, { expect: { speech: 'none', qc_flags: ['text_led'] } }), ctx);
   assert.equal(status(longGap).black_frames, 'fail');
   assert.match(check(longGap, 'black_frames').message, /between text beats/);
-  assert.equal(status(longGap)['flag:text_led'], 'fail', '1.5 s of 5 s is over a quarter blank');
+  assert.equal(status(longGap)['flag:text_led'], 'warn', '1.5 s of 5 s is over a quarter blank: sparse text warns');
   // A blank opening over 0.3 s fails, and a wholly blank video fails the flag.
   const late = await textOnBlack(w, 'late', 5, 'gte(t,0.8)');
   assert.equal(status(await mod.run(await layerInputsFor(late, { expect: { speech: 'none', qc_flags: ['text_led'] } }), ctx)).black_frames, 'fail');
@@ -130,9 +130,10 @@ test('read_rate, cuts_between_words and cut_rate are measured from the timeline'
   const s = status(out);
   assert.equal(s['flag:read_rate'], 'pass', JSON.stringify(check(out, 'flag:read_rate')));
   assert.equal(check(out, 'flag:read_rate').found, 2.4);
-  assert.equal(s['flag:cuts_between_words'], 'fail', 'the cut at 6 s falls inside "mess"');
+  assert.equal(s['flag:cuts_between_words'], 'warn', 'the cut at 6 s falls inside "mess"');
   assert.match(check(out, 'flag:cuts_between_words').message, /6\.00 seconds .*"mess"/);
-  assert.equal(s['flag:cut_rate'], 'fail', '3 cuts over an 8 s body is 0.375 a second');
+  assert.equal(s['flag:cut_rate'], 'warn', '3 cuts over an 8 s body is 0.375 a second');
+  assert.equal(out.verdict.pass, true, 'measured pacing warns and never fails the video');
   // Cuts moved to the word gaps, one more scene, and a slower read.
   const gaps = [0, 1.6, 3, 4.45, 6.8].map((t, i, all) => ({ id: `s${i}`, start_s: t, end_s: all[i + 1] || 8 }));
   const slow = [{ ...speech[0], end_s: 4.5 }];
@@ -140,7 +141,7 @@ test('read_rate, cuts_between_words and cut_rate are measured from the timeline'
   assert.equal(status(fixed)['flag:cuts_between_words'], 'pass', JSON.stringify(check(fixed, 'flag:cuts_between_words')));
   assert.equal(status(fixed)['flag:cut_rate'], 'pass', JSON.stringify(check(fixed, 'flag:cut_rate')));
   const tooSlow = await mod.run(await layerInputsFor(video, { expect: { speech: 'voiceover', qc_flags: ['read_rate'] }, timeline: { scenes: gaps, speech: slow } }), ctx);
-  assert.equal(status(tooSlow)['flag:read_rate'], 'fail');
+  assert.equal(status(tooSlow)['flag:read_rate'], 'warn');
   assert.match(check(tooSlow, 'flag:read_rate').message, /too slowly/);
   // No speech and no word timings: not applicable.
   const none = await mod.run(await layerInputsFor(video, { expect: { qc_flags: qc }, timeline: { scenes } }), ctx);
@@ -152,7 +153,7 @@ test('read_rate, cuts_between_words and cut_rate are measured from the timeline'
   const inputs = await layerInputsFor(video, { expect: { qc_flags: ['cuts_between_words'] }, timeline: { scenes } });
   inputs.words = await fileRef(record, 'json');
   const fromCaptions = await mod.run(inputs, ctx);
-  assert.equal(status(fromCaptions)['flag:cuts_between_words'], 'fail');
+  assert.equal(status(fromCaptions)['flag:cuts_between_words'], 'warn');
   // Mixed timings: one entry has words, the other only its text. The captions layer's words cover both,
   // so the cut at 6 s inside "mess" is still caught.
   const { words: _dropped, ...noWords } = speech[1];
@@ -162,7 +163,7 @@ test('read_rate, cuts_between_words and cut_rate are measured from the timeline'
   writeFileSync(allWords, JSON.stringify({ cues: [], words: [...speech[0].words, ...speech[1].words] }));
   mixedInputs.words = await fileRef(allWords, 'json');
   const mixedOut = await mod.run(mixedInputs, ctx);
-  assert.equal(status(mixedOut)['flag:cuts_between_words'], 'fail', JSON.stringify(check(mixedOut, 'flag:cuts_between_words')));
+  assert.equal(status(mixedOut)['flag:cuts_between_words'], 'warn', JSON.stringify(check(mixedOut, 'flag:cuts_between_words')));
   assert.match(check(mixedOut, 'flag:cuts_between_words').message, /"mess"/);
 });
 

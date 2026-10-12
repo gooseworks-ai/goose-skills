@@ -27,7 +27,7 @@ test('a cut that fits the style passes every check, and the check never changes 
   assert.deepEqual(Object.keys(out), ['verdict']);
 });
 
-test("fails the server's checks with the server's reasons shape and a fix for the sound", { skip }, async () => {
+test("fails the server's hard checks with the server's reasons shape; a measured length or loudness off the mark only warns", { skip }, async () => {
   const { ctx } = makeCtx({ partDir: dir });
   const quiet = join(ctx.workDir, 'quiet.mp4');
   await makeVideo(quiet, 3, { width: 640, height: 640, tone: 440 });
@@ -37,22 +37,25 @@ test("fails the server's checks with the server's reasons shape and a fix for th
   const out = await mod.run(inputs, ctx);
   assert.equal(out.verdict.pass, false);
   const byCheck = Object.fromEntries(out.verdict.reasons.map((r) => [r.check, r]));
-  assert.deepEqual(Object.keys(byCheck).sort(), ['captions', 'length', 'size', 'sound']);
-  assert.equal(byCheck.length.message, 'The video is too short.');
+  assert.deepEqual(Object.keys(byCheck).sort(), ['captions', 'size']);
   assert.equal(byCheck.size.found, '640x640');
-  assert.equal(byCheck.sound.message, 'The sound is too quiet.');
   assert.equal(byCheck.captions.message, 'The captions are missing.');
   for (const r of out.verdict.reasons) for (const k of Object.keys(r)) assert.ok(['check', 'message', 'expected', 'found'].includes(k));
-  assert.deepEqual(out.verdict.checks.find((c) => c.code === 'sound').fix, { slot: 'sound' });
+  const length = out.verdict.checks.find((c) => c.code === 'length');
+  const sound = out.verdict.checks.find((c) => c.code === 'sound');
+  assert.deepEqual([length.status, length.message, length.found], ['warn', 'The video is too short.', '3.0 seconds']);
+  assert.deepEqual([sound.status, sound.message], ['warn', 'The sound is too quiet.']);
+  assert.equal(sound.fix, undefined, 'a warning names no layer to re-run');
 });
 
-test('catches black frames, a still opening and an end card that does not end the video', { skip }, async () => {
+test('catches black frames and an end card that does not end the video; a still opening warns', { skip }, async () => {
   const { ctx } = makeCtx({ partDir: dir });
   const video = await levelledCut(ctx.workDir, 'black', 4, { pattern: 'color=c=black' });
   const out = await mod.run(await layerInputsFor(video, { expect: { end_card: true }, timeline: { end_card: { start_s: 1, end_s: 2 } } }), ctx);
   const s = status(out);
   assert.equal(s.black_frames, 'fail');
-  assert.equal(s.frozen_frames, 'fail');
+  assert.equal(s.frozen_frames, 'warn');
+  assert.ok(!out.verdict.reasons.some((r) => r.check === 'frozen_frames'), 'a warning is not a failure');
   assert.equal(s.end_card, 'fail');
   assert.deepEqual(out.verdict.checks.find((c) => c.code === 'end_card').fix, { slot: 'brand' });
   const unmarked = await mod.run(await layerInputsFor(video, { expect: { end_card: true } }), ctx);
@@ -88,6 +91,7 @@ test('a silent cut with no speech planned (no music chosen) is not failed for so
   assert.equal(quiet.verdict.pass, true, JSON.stringify(quiet.verdict.reasons));
   const spoken = await mod.run(await layerInputsFor(video, { expect: { speech: 'voiceover' } }), ctx);
   assert.equal(status(spoken).sound, 'fail');
+  assert.deepEqual(spoken.verdict.checks.find((c) => c.code === 'sound').fix, { slot: 'sound' });
 });
 
 test('captions outside the safe zone, or in the platform bands, fail', { skip }, async () => {
@@ -151,10 +155,11 @@ test("the brand's own logo is found on the end card and another is not; the styl
   assert.equal(status(outOfZone).logo, 'fail', 'the logo is not in the top zone');
   const inZone = await mod.run(await layerInputsFor(video, { brand, expect, timeline: { ...timeline, safe_zones: [middle] } }), ctx);
   assert.equal(status(inZone).logo, 'pass');
-  // A still picture fails footage_moves.
+  // A still picture is measured as still: footage_moves warns.
   const still = await levelledCut(w, 'still', 5, { pattern: 'color=c=0x808080' });
   const dead = await mod.run(await layerInputsFor(still, { expect: { qc_flags: ['footage_moves'] } }), ctx);
-  assert.equal(status(dead)['flag:footage_moves'], 'fail');
+  assert.equal(status(dead)['flag:footage_moves'], 'warn');
+  assert.ok(!dead.verdict.reasons.some((r) => r.check === 'flag:footage_moves'));
 });
 
 test('sounds_match_messages: a sound when each message appears', { skip }, async () => {
