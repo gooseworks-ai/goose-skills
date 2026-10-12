@@ -28,7 +28,7 @@ bundle). Free; needs the kit's browser.
   success message, always fit, and every message arrives open and readable at the bottom with its pop. A
   cascade is refused only when even the folded stack cannot fit, or a body needs more than four lines, and the
   refusal says what to shorten and by how much. A ChatGPT question longer than the composer shows scrolls
-  inside it as it is typed, as the app's does. The type never shrinks.
+  inside it as it is typed, as the app's does, and a word too long for a line breaks onto the next. The type never shrinks.
 - **Drawing**: each skin writes one self-contained page whose `window.seek(ms)` draws any movie time (no timers,
   clock or randomness; fonts only the bundled Inter (SIL Open Font License) or `fonts`). The part steps it frame
   by frame in the kit's Chromium (fixed output frames: start-up or machine speed never changes a frame),

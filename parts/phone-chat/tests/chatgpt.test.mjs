@@ -140,8 +140,12 @@ test('a question longer than the composer shows scrolls inside it instead of bei
   assert.deepEqual(chatgptBuild(thread, env()).warnings, [], 'fits the tall screen');
   const square = chatgptBuild(thread, env({ width: 1080, height: 1080 }));
   assert.deepEqual(square.warnings, ['The question in u is longer than the composer shows on this screen (6 lines), so it scrolls as it is typed.']);
-  assert.match(square.html, /\.composer \.input \{ max-height: 218\.4px; overflow: hidden; \}/);
+  assert.match(square.html, /\.composer \.input \{ max-height: 218\.4px; overflow: hidden; overflow-wrap: anywhere; \}/);
   assert.match(square.html, /input\.scrollTop = input\.scrollHeight;/);
+  const word = (text, e) => chatgptBuild(withMessages([{ type: 'user-text', id: 'w', text }]), e).warnings.length;
+  assert.equal(word('W'.repeat(400), env({ width: 1080, height: 1080 })), 1, 'one long word breaks into lines too');
+  assert.equal(word('W'.repeat(120), env()), 0, 'eight lines of wide letters fit the tall screen');
+  assert.equal(word('W'.repeat(400), env()), 1, 'twenty-five do not');
 });
 
 // ---------------------------------------------------------------------------

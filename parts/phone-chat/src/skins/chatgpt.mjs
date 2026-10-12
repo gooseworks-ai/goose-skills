@@ -20,6 +20,7 @@ const CG_CONV_TOP = 118; // status bar (56) + header (62): only for build-time f
 const CG_KB_LIFT = 498; // composer offset while the keyboard is up (chat.css)
 const CG_MIN_CHAT_H = 160; // chat that must stay visible above the composer while typing
 const CG_COMPOSER_LINE = 36.4; // a composer line: 28 px type at line-height 1.3 (chat.css)
+const CG_COMPOSER_W = 472; // the composer's text width with the plus, mic and send buttons
 const CG_SAFE_GAP = 8; // output px between the newest content and a platform band
 const CG_MAX_TOTAL_S = 120;
 const CG_TICK_EVERY = 12; // deriveSFX: one stream-tick every 12 streamed words
@@ -530,6 +531,39 @@ function cgLayout(env) {
   return { z, sh, left, pad, safe };
 }
 
+// Rough advances (em) for counting the composer's lines: the 0.55 average, more for wide letters, emoji and CJK.
+function cgCharEm(g) {
+  if (/\p{Emoji_Presentation}|\p{Regional_Indicator}|\u{FE0F}|\u{20E3}/u.test(g)) return 1.3;
+  if (/^[WMmw@%]$|[\u{2E80}-\u{9FFF}\u{AC00}-\u{D7AF}\u{F900}-\u{FAFF}\u{FF00}-\u{FFEF}]/u.test(g)) return 1;
+  if (/^[A-Z0-9]$/.test(g)) return 0.7;
+  return 0.55;
+}
+
+/** Lines the composer wraps a question to: whole words, a word longer than a line broken anywhere (overflow-wrap: anywhere). */
+function cgComposerLines(text) {
+  const cap = CG_COMPOSER_W / 28;
+  let lines = 0;
+  let used = cap;
+  for (const word of String(text).split(/\s+/).filter(Boolean)) {
+    const ems = cgGraphemes(word).map(cgCharEm);
+    const width = ems.reduce((a, b) => a + b, 0);
+    if (used + 0.28 + width <= cap) {
+      used += 0.28 + width;
+      continue;
+    }
+    lines += 1;
+    used = 0;
+    for (const em of ems) {
+      if (used && used + em > cap) {
+        lines += 1;
+        used = 0;
+      }
+      used += em;
+    }
+  }
+  return Math.max(1, lines);
+}
+
 function cgCheckThread(thread, env, layout) {
   const msgs = thread.messages;
   const seen = new Set();
@@ -575,14 +609,13 @@ function cgCheckThread(thread, env, layout) {
 
   // Composer: the typed question grows the pill upward over the chat while the keyboard is up, up to
   // the lines that leave some chat in view; a longer question scrolls inside it, as the app's does.
-  const perLine = 472 / (28 * 0.55);
   const chip = thread.composer && thread.composer.chip ? 46 : 0;
   const room2 = layout.sh - CG_KB_LIFT - CG_CONV_TOP - CG_MIN_CHAT_H - 44 - chip;
   const maxLines = Math.max(1, Math.floor((room2 - 30) / CG_COMPOSER_LINE));
   const warnings = [];
   for (const m of msgs) {
     if (m.type !== 'user-text') continue;
-    if (Math.ceil(cgGraphemes(m.text).length / perLine) > maxLines) {
+    if (cgComposerLines(m.text) > maxLines) {
       warnings.push(`The question in ${m.id} is longer than the composer shows on this screen (${maxLines} lines), so it scrolls as it is typed.`);
     }
   }
@@ -972,7 +1005,7 @@ body { position: relative; }
 .conversation { flex: 0 0 auto; display: block; padding: 0; gap: 0; height: 0; overflow: hidden; }
 .cg-content { display: flex; flex-direction: column; gap: 22px; padding: 10px ${layout.pad.right}px 32px ${layout.pad.left}px; }
 .composer-wrap { position: absolute; left: 0; right: 0; bottom: 0; z-index: 4; }
-.composer .input { max-height: ${fit.composerMaxH}px; overflow: hidden; }
+.composer .input { max-height: ${fit.composerMaxH}px; overflow: hidden; overflow-wrap: anywhere; }
 .kbd[data-state] { transform: none; bottom: -100%; }
 .row.assistant { position: relative; }
 .row.user .bubble, .row.assistant .assistant-body { overflow-wrap: anywhere; }
