@@ -52,7 +52,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'video-veo-3',
-  version: '1.0.0',
+  version: '1.0.1',
   kind: 'generate_video',
   title: 'Moving stills (Veo 3 image-to-video)',
   summary: 'Turns stills into short silent clips with Google Veo 3 / 3.1 image-to-video on fal, one piece per clip: one clip per plan scene timed to the voice or song, or one per still.',
@@ -77,6 +77,23 @@ export const manifest = {
     additionalProperties: false,
     required: ['model', 'stills'],
     properties: {
+      product_reference_evidence: {
+        type: 'array', maxItems: 40, items: {
+          type: 'object', additionalProperties: false,
+          required: ['version', 'scene_id', 'image_sha256', 'product_photos', 'request_image_sha256', 'model', 'piece', 'digest'],
+          properties: {
+            version: { const: 1 }, scene_id: { type: 'string', minLength: 1, maxLength: 64 },
+            image_sha256: { type: 'string', pattern: '^[0-9a-f]{64}$' },
+            product_photos: { type: 'array', maxItems: 12, items: { type: 'object', additionalProperties: false, required: ['id', 'sha256'], properties: { id: { type: 'string', minLength: 1 }, sha256: { type: 'string', pattern: '^[0-9a-f]{64}$' } } } },
+            request_image_sha256: { type: 'array', maxItems: 10, items: { type: 'string', pattern: '^[0-9a-f]{64}$' } },
+            model: { type: 'string' }, piece: { type: 'string', minLength: 1 }, digest: { type: 'string', pattern: '^[0-9a-f]{64}$' },
+          },
+        },
+      },
+
+      require_scene_tags: { description: 'Opt in to strict by_tag routing: reject missing, unknown, malformed or contradictory scene tags before any provider order. scenes mode only.', type: 'boolean' },
+      require_product_refs: { description: 'Opt in to requiring the current real product photo in each product scene’s still request and binding its request evidence to the exact motion start frame. scenes mode only.', type: 'boolean' },
+
       model: {
         description: 'The Veo image-to-video model. All four make 4, 6 or 8 s clips. veo3.1 is the default choice for people (skin and fabric hold); the fast variants cost less.',
         enum: [V31, V31_FAST, V3, V3_FAST],

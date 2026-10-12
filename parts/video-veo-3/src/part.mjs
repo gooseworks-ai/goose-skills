@@ -16,6 +16,7 @@
 import { kitCheckInputs, kitCheckOutputs, kitDuration, kitPieceName, kitStopIfAborted } from '../../_lib/part.mjs';
 import { KitPromptGap, kitLoadTemplate } from '../../_lib/prompt.mjs';
 import { kitWholeWordsRe } from '../../_lib/scene-match.mjs';
+import { kitProductScenePhotos, kitRequireProductFrame, kitRequireSceneTags } from '../../_lib/product-tag-contract.mjs';
 import { kitClipEach, kitClipJobs, kitClipMayFallBack, kitClipSeconds, kitClipSlots, kitClipTemplate, kitClipTrim, kitClipWindow } from '../../_lib/scene-clips.mjs';
 
 const VEO_31 = 'fal-ai/veo3.1/image-to-video';
@@ -27,7 +28,7 @@ const VEO_ALLOWED = [4, 6, 8];
 const VEO_DEFAULT_S = 4;
 const VEO_PROMPT_MAX = 20000;
 const VEO_NEGATIVE_MAX = 5000;
-const VEO_SCENE_ONLY = ['pick', 'skip_first', 'skip_last', 'spans'];
+const VEO_SCENE_ONLY = ['pick', 'skip_first', 'skip_last', 'spans', 'require_scene_tags', 'require_product_refs', 'product_reference_evidence'];
 /** The motion text when the template has none: verb-led, with no still-shot words. */
 const VEO_DEFAULT_MOTION = '{picture?}. The camera drifts a little handheld as the moment plays out. No text, no new objects';
 /** Words that tell Veo the shot is still (W0-62 / the wardrobe-stitch run's L4). Whole words, any case. */
@@ -76,6 +77,7 @@ export async function run(inputs, ctx) {
   try {
     const loaded = inputs.template ? await kitLoadTemplate(inputs.template) : null;
     const tpl = kitClipTemplate(loaded && typeof loaded.motion === 'string' ? loaded : { ...(loaded || { version: 1 }), motion: VEO_DEFAULT_MOTION });
+    if (inputs.require_scene_tags) kitRequireSceneTags(tpl, inputs.scenes || [], inputs);
     jobs = kitClipJobs(tpl, {
       mode,
       stills: inputs.stills,
@@ -90,6 +92,9 @@ export async function run(inputs, ctx) {
       cast: inputs.cast,
       products: inputs.products,
     });
+    if (inputs.require_product_refs) {
+      for (const job of jobs) kitRequireProductFrame(job.id, job.still, kitProductScenePhotos(tpl, job.scene, inputs.products || []), inputs.product_reference_evidence || []);
+    }
     if (!jobs.length) throw new Error('no scene is picked for a clip');
     const bounds = { min_s: inputs.min_s ?? null, max_s: inputs.max_s ?? null };
     const slots = inputs.spans ? kitClipSlots(jobs, inputs.spans) : null;
