@@ -7478,7 +7478,7 @@
       "description": "Write a street-interview ad from a complete inspected commercial interaction and current brand facts. Render product guessing, or prepare mic-only, prepared-sample or visible-task conversation script/prompt previews. Premise, actions and ad connection vary; capture rules stay fixed. Conversation media delivery is unverified.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-street-interview",
-      "version": "2.0.5",
+      "version": "2.0.6",
       "files": [
         "skills/ads/capabilities/render-street-interview/READINESS.md",
         "skills/ads/capabilities/render-street-interview/REFERENCE.md",
@@ -7562,7 +7562,7 @@
         "slug": "render-street-interview",
         "category": "capabilities",
         "domain": "ads",
-        "version": "2.0.5",
+        "version": "2.0.6",
         "tags": [
           "ads"
         ],

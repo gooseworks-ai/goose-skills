@@ -2,7 +2,7 @@
 name: render-street-interview
 description: Write a street-interview ad from a complete inspected commercial interaction and current brand facts. Render product guessing, or prepare mic-only, prepared-sample or visible-task conversation script/prompt previews. Premise, actions and ad connection vary; capture rules stay fixed. Conversation media delivery is unverified.
 status: draft
-version: "2.0.5"
+version: "2.0.6"
 updated: 2026-10-12
 ---
 
@@ -218,6 +218,14 @@ brand from `brands/olipop-ep3-a.json` (a can) or `brands/graza-ep1-a2.json` (a b
 | `level_camera` | removes the glance down from speaking shots, which is what tips the product |
 | `no_signage` | no shops, signs or lettering behind the cast (names park-corner landmarks) |
 | `can_sealed_grammar` | existing flag; holds with the keys above, so the can stays closed |
+| `skin_grammar` | DRAFT, unjudged. Adds one clause asking for ordinary unretouched skin (no makeup, no smoothing, uneven tone and shine). The wide-shot part of the realism formula; names no defect and no camera style |
+
+Two more opt-in keys describe voices, which the prompt otherwise leaves to the model: top-level
+`interviewer_voice`, and `voice` on any shot that has a `noun`. Each is a short phrase such as
+`"a low, dry voice that sounds his age"` (at most 90 characters, no quote marks). DRAFT, unjudged:
+no take has been listened to with them. Both options add words to an already long prompt
+(about 130 for a three-person cast), so judge a take for missed instructions as well as for the
+faces and voices.
 
 Episode files take `extra_head_s` (seconds of run-up kept at the head of each take, so the
 handover is not trimmed as silence) and `brand_layer.caption_centre_y`. Transcribe every take with

@@ -767,6 +767,42 @@ ONE_MIC_PER_SHOT = {
 }
 
 
+# SKIN (opt-in, generation.skin_grammar). DRAFT: no paid take has been judged with it.
+# Reported 2026-10-13: the cast reads "way too smooth, looking AI". The prompt has never said a
+# word about skin, and the wide framing was chosen partly so pores would not have to render.
+# This is the wide-shot part of the realism formula (create-creator-takes-h3
+# character-prompt.json): no makeup, no retouching, no smoothing, uneven sheen, tone that
+# varies. It deliberately leaves out the formula's macro clauses (raking light, shallow depth
+# of field, film grain, every pore a crater): those describe a studio close-up, and this
+# format already paid to learn that a camera style asked for in words comes back stylised.
+# It also names no defect. "Eye bags" and "blotchy" produced unwell-looking people and are
+# banned vocabulary; this asks for ordinary skin, not damaged skin.
+_SKIN = ("EVERY FACE HAS ORDINARY UNRETOUCHED SKIN, the way a phone camera records it at this "
+         "distance: no makeup, no retouching, no smoothing and no beauty filter. Skin tone is not "
+         "uniform across a face, there is natural shine on the nose and forehead and none in the "
+         "hollows, and each person has the fine lines and stray hairs a person of that age "
+         "has, with stubble only where a man would have it. Nobody looks airbrushed, waxy or "
+         "like a model. ")
+
+
+def _voices(cfg):
+    """VOICES (opt-in): one sentence per person who has a `voice` in the brand config, plus
+    `interviewer_voice`. DRAFT, unjudged. Until now the only words about sound were "the voices
+    close on the microphone", so the model chose every voice, and nobody had reviewed them.
+    Returns "" when no voice is configured, so every recorded prompt and its hash are unchanged."""
+    said, seen = [], set()
+    if cfg.get("interviewer_voice"):
+        said.append(f"The interviewer, off camera, has {cfg['interviewer_voice']}.")
+    for s in cfg.get("shots", []):
+        if s.get("voice") and s.get("noun") and s["noun"] not in seen:
+            seen.add(s["noun"])
+            said.append(f"The {s['noun']} has {s['voice']}.")
+    if not said:
+        return ""
+    return ("VOICES: each person sounds like themselves and nobody shares a voice. "
+            + " ".join(said) + " Ordinary unpolished speech at a natural pace, not a "
+            "voice-over and not an announcer. ")
+
 def build_prompt(cfg: dict, pace: bool = False, guards: bool = False, mic: bool = False,
                  plain: bool = False, answers_only: bool = False, can: bool = False,
                  mic_ref: bool = False, can_size: bool = False, can_sealed: bool = False,
@@ -965,6 +1001,7 @@ def build_prompt(cfg: dict, pace: bool = False, guards: bool = False, mic: bool 
         + (_CAST_ADULTS if plain else _CAST_DEFAULT) +
         f"{cfg['props']}. Their free hand is "
         "occupied or relaxed, never held up open and empty. "
+        + (_SKIN if cfg.get("generation", {}).get("skin_grammar") else "")
 
         # signage: banning ALL text was itself a tell, a real street is covered in it.
         # NO_LETTERING is a SECOND rule about a DIFFERENT surface and does not replace this one:
@@ -1009,6 +1046,7 @@ def build_prompt(cfg: dict, pace: bool = False, guards: bool = False, mic: bool 
                         prev_kind=(shots[i - 2]["kind"] if i >= 2 else None))
                   for i, s in enumerate(shots, start=1)) +
 
+        _voices(cfg) +
         "Sound: the voices close on the microphone and one continuous street ambience across the "
         "cuts, traffic, footsteps and a distant horn. No music, no score, no logo, no on-screen text, "
         "no subtitles.")

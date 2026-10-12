@@ -189,6 +189,22 @@ def validate(cfg: dict):
                              f"`pronoun`. The already-drinking wording needs it.")
     # The comprehension guard, applied to the CONFIG rather than to the finished prompt, so it
     # fails before a paid call rather than after one.
+    # Voice descriptions are written into the prompt as "The <noun> has <voice>.", so each is a
+    # short noun phrase. A quote mark would read as a spoken line, and a voice on a shot with
+    # no `noun` has nobody to belong to.
+    voices = [("interviewer_voice", cfg.get("interviewer_voice"), True)] + [
+        (f"shot {i + 1} voice", s.get("voice"), bool(s.get("noun")))
+        for i, s in enumerate(cfg["shots"])]
+    for where, v, has_owner in voices:
+        if v is None:
+            continue
+        if not isinstance(v, str) or not v.strip() or len(v) > 90 or '"' in v or v.rstrip().endswith("."):
+            raise SystemExit(f"{where} must be a short phrase such as 'a low, dry voice that "
+                             f"sounds his age': at most 90 characters, no quote marks and no "
+                             f"full stop")
+        if not has_owner:
+            raise SystemExit(f"{where} is set on a shot with no `noun`, so the prompt cannot "
+                             f"say whose voice it is")
     if not any(s.get("line") for s in cfg["shots"]):
         raise SystemExit("no shot has a spoken `line`: nobody says anything")
 
