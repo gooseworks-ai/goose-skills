@@ -50,7 +50,9 @@ test('every preset groups tokens within shots, including cross-line sentence and
     ],
   };
   for (const preset of ['plate', 'stroke', 'karaoke', 'pill', 'serif-word', 'sentence']) {
-    const { record } = await run(current, timeline, ['captions_cross_cuts'], { preset, max_words: 5, highlight: ['brand'] }, 3);
+    // Non-sentence presets regroup a single line that spans the cut; sentence must also split across lines.
+    const groupedTimeline = preset === 'sentence' ? timeline : { ...timeline, speech: [{ text: 'Try Sample Goods today.', start_s: 0.2, end_s: 2.0, words: timeline.speech.flatMap((line) => line.words) }] };
+    const { record } = await run(current, groupedTimeline, ['captions_cross_cuts'], { preset, max_words: 5, highlight: ['brand'] }, 3);
     assert.ok(record.cues.every((c) => !(c.start_s < 1.2 && c.end_s > 1.2)), preset);
     assert.ok(!record.cues.some((c) => /Sample/i.test(c.text) && /Goods/i.test(c.text)), `${preset}: a brand or sentence cannot regroup across shots`);
     assert.ok(record.cues.some((c) => /Sample/i.test(c.text)) && record.cues.some((c) => /Goods/i.test(c.text)), 'all lexical words survive');
