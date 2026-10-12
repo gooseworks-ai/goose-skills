@@ -7,8 +7,8 @@
     "raw_url": "https://raw.githubusercontent.com/gooseworks-ai/gooseworks/main/skills/routes.json"
   },
   "route_table_version": 1,
-  "captured": "2026-08-31",
-  "$comment_entry_skills": "Vendored by the CLI and installed to ~/.agents/skills/ — they are NOT members of this collection, they are the entry points into it.",
+  "captured": "2026-10-10",
+  "$comment_entry_skills": "Vendored by the CLI and installed to ~/.agents/skills/ \u2014 they are NOT members of this collection, they are the entry points into it.",
   "entry_skills": [
     "goose-ads",
     "goose-product-photos",
@@ -89,6 +89,12 @@
       ]
     },
     {
+      "job": "The page your ad lands on",
+      "skills": [
+        "goose-pages"
+      ]
+    },
+    {
       "job": "Product photos",
       "skills": [
         "goose-product-photos",
@@ -121,6 +127,7 @@
     "content-repurposing",
     "creator-profile-teardown",
     "goose-graphics",
+    "goose-pages",
     "influencer-prospecting",
     "meta-ad-policy-checker",
     "meta-ads-analyzer",

@@ -1,0 +1,24 @@
+{
+  "slug": "goose-pages",
+  "version": "1.0.0",
+  "category": "composites",
+  "domain": "ads",
+  "tags": [
+    "ads",
+    "content"
+  ],
+  "installation": {
+    "base_command": "npx goose-skills install goose-pages",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  },
+  "requires_skills": [],
+  "example_prompt": "Build the page this ad lands on. Show me a preview before publishing.",
+  "collections": [
+    "brand-growth"
+  ],
+  "collection_stage": "create"
+}
