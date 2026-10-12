@@ -86,11 +86,15 @@ So, for any take with a scene reference:
 
 Seed 6224 tested that fix: the same prompt as 6223 word for word, with the reference cropped to the microphone and the interviewer's hand. The man's holding hand then matched his face and the ring was gone.
 
-It also showed what the old reference had been carrying for free. It had shown an upright bottle and a plain grey hoodie. Without them the first person held the bottle on a diagonal, low and close to the lens, and his top became a zip jacket with a sports logo and wordmark on the chest. So do not simply crop: choose a reference that shows the product upright with no cast hand in frame, such as the handover frame where the interviewer holds it. That is untested.
+It also showed what the old reference had been carrying for free. It had shown an upright bottle and a plain grey hoodie. Without them the first person held the bottle on a diagonal, low and close to the lens, and his top became a zip jacket with a sports logo and wordmark on the chest. So do not simply crop: choose a reference that shows the product upright with no cast hand in frame.
 
-Read across the three takes: the cast description sets the face; the scene reference sets whatever it shows, hands and clothes included; a prompt sentence loses to the image.
+Seed 6225 tested that: the handover frame of an older take, cropped below the chest, where the interviewer's hand holds the bottle upright and the microphone is in view. Both people's holding hands matched their faces, and the bottle came back to near upright. This is the reference to copy: the interviewer's hand on the product, the microphone, the ground, and nobody else's hands.
 
-Printed lettering appeared on the shopping bag in all three takes despite the plain-bag rule. Neither the skin clause nor the voice descriptions has been judged by a person yet, and the audio of none of the takes has been listened to.
+It did not fix clothing. A sports brand's logo and wordmark appeared on the grey hoodie in three of the four takes, with the logo cropped out of the reference and banned in the prompt. "Grey hoodie" seems to bring sportswear with it. Untested: name a garment that is not sportswear, or say that nothing is printed on it. A real brand's mark on a person blocks shipping, so look for it on every take.
+
+Read across the four takes: the cast description sets the face; the scene reference sets whatever it shows, hands and clothes included; a prompt sentence loses to the image.
+
+Printed lettering appeared on the shopping bag in all four takes despite the plain-bag rule. Neither the skin clause nor the voice descriptions has been judged by a person yet, and the audio of none of the takes has been listened to.
 
 ## What is not proven
 
