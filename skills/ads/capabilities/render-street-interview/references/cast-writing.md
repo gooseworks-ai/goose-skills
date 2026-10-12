@@ -84,7 +84,13 @@ So, for any take with a scene reference:
 - Use a reference that shows only what must carry over: the microphone, the interviewer's hand and the street. Crop the old cast out, or take the still from a frame where nobody is holding the product.
 - A person whose skin tone differs from the reference's hand is the case that exposes it. A cast that matches the old hand hides the fault; it does not remove it.
 
-Also seen on seed 6223 and not on 6222, so treat as take-to-take variation until repeated: a sports logo on the hoodie, and the bottle held on a diagonal by the second person. Neither the skin clause nor the voice descriptions has been judged by a person yet, and the audio of neither take has been listened to.
+Seed 6224 tested that fix: the same prompt as 6223 word for word, with the reference cropped to the microphone and the interviewer's hand. The man's holding hand then matched his face and the ring was gone.
+
+It also showed what the old reference had been carrying for free. It had shown an upright bottle and a plain grey hoodie. Without them the first person held the bottle on a diagonal, low and close to the lens, and his top became a zip jacket with a sports logo and wordmark on the chest. So do not simply crop: choose a reference that shows the product upright with no cast hand in frame, such as the handover frame where the interviewer holds it. That is untested.
+
+Read across the three takes: the cast description sets the face; the scene reference sets whatever it shows, hands and clothes included; a prompt sentence loses to the image.
+
+Printed lettering appeared on the shopping bag in all three takes despite the plain-bag rule. Neither the skin clause nor the voice descriptions has been judged by a person yet, and the audio of none of the takes has been listened to.
 
 ## What is not proven
 
