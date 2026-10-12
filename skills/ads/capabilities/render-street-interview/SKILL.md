@@ -2,8 +2,8 @@
 name: render-street-interview
 description: Write a street-interview ad from a complete inspected commercial interaction and current brand facts. Render product guessing, or prepare mic-only, prepared-sample or visible-task conversation script/prompt previews. Premise, actions and ad connection vary; capture rules stay fixed. Conversation media delivery is unverified.
 status: draft
-version: "2.0.2"
-updated: 2026-10-06
+version: "2.0.3"
+updated: 2026-10-12
 ---
 
 # Human version
@@ -73,7 +73,11 @@ its older experiments do not override the current recipe or this entry.
 Use the [project take-ledger guidance](TAKES.md) before reusing a seed. Keep each
 brand's observed successes and limitations in its own project; a seed is not a quality guarantee.
 
-## Run
+## Opt-in H3 Max generation
+
+Read [the H3 adapter guide](references/h3-generation.md). Pass `--model minimax/h3-max/reference-to-video --resolution 1080P`. It keeps prompt lint and the finish manifest, saves request IDs, and recovers downloads without a new order. Historical defaults below remain unchanged.
+
+## Run (historical default endpoint)
 
 The paid generation and finishing commands below are for `product-guess`. Conversation
 supports `brandkit.py` validation and `single_gen.py` dry runs only.
