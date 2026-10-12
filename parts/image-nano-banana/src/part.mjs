@@ -18,7 +18,7 @@
 //            floating over warm white), for range and grid cards. The photo is
 //            the only reference: a product still is never drawn from text.
 //
-// 1.2.1: in scenes mode a scene with image_locked: true keeps its own image as
+// 1.2.2: in scenes mode a scene with image_locked: true keeps its own image as
 // its still, ordering nothing (a preview the customer already approved).
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';

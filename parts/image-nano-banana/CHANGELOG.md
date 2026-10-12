@@ -1,5 +1,9 @@
 # image-nano-banana
 
+## 1.2.2
+
+- Scenes mode: a scene with `image_locked: true` keeps its `image` as its final still, as is, with nothing ordered and no prompt filled (a preview approved before the yes); a picture other than PNG, JPEG or WebP becomes a PNG. A member named only by locked scenes gets no anchor drawn. `image_locked` without an `image` is refused. Without `image_locked` nothing changes. Built on 1.2.1, so a refused still is logged as in 1.2.1.
+
 ## 1.2.1
 
 - A still the provider refuses is logged as a warning before the step fails: `the image maker refused <what it was for>` (the character picture of a cast member, the still for a scene, an image id or a product still), with the piece name, the model, the number of references, the reason and the first 600 characters of the prompt. The reason is the line's own words, which are the provider's when the server passes them on; without them it is the error's own detail or message, else null, and any `details` the line sends are logged too. Every logged value is cleaned first: links keep only their origin and path (no credentials, query or fragment), secret-named fields (key, token, secret, signature, authorization, password, cookie) and auth headers, bearer tokens and name=secret pairs in text are blanked, and texts are cut to 600 characters after cleaning. The step's failure and its words are unchanged. 1.1.0 and 1.2.0 failed with the line's words alone, which never said which of a video's stills it was.
