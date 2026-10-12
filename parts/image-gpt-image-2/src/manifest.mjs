@@ -53,7 +53,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'image-gpt-image-2',
-  version: '1.1.0',
+  version: '1.1.1',
   kind: 'generate_image',
   title: 'Stills (GPT Image 2)',
   summary: 'Photoreal stills with OpenAI GPT Image 2 on fal, one piece per image: a hand-built list, one still per plan scene, the cast portraits, or locked-camera shots (each frame an edit on its plate, plate pixels put back, a closing shot re-lit).',
@@ -76,6 +76,9 @@ export const manifest = {
     additionalProperties: false,
     required: [],
     properties: {
+      require_scene_tags: { description: 'Opt in to strict by_tag routing: reject missing, unknown, malformed or contradictory scene tags before any provider order. scenes mode only.', type: 'boolean' },
+      require_product_refs: { description: 'Opt in to requiring the current real product photo in each product scene’s still request and binding its request evidence to the exact motion start frame. scenes mode only.', type: 'boolean' },
+
       model: {
         description: 'The most the step may use. openai/gpt-image-2/edit (default): a piece with reference pictures goes to /edit, a piece with none is drawn from the prompt alone. openai/gpt-image-2: prompt alone only, so references are refused (images mode) or not sent (scenes mode).',
         enum: [TEXT, EDIT],
@@ -143,6 +146,20 @@ export const manifest = {
     additionalProperties: false,
     required: ['images'],
     properties: {
+      product_reference_evidence: {
+        type: 'array', maxItems: 40, items: {
+          type: 'object', additionalProperties: false,
+          required: ['version', 'scene_id', 'image_sha256', 'product_photos', 'request_image_sha256', 'model', 'piece', 'digest'],
+          properties: {
+            version: { const: 1 }, scene_id: { type: 'string', minLength: 1, maxLength: 64 },
+            image_sha256: { type: 'string', pattern: '^[0-9a-f]{64}$' },
+            product_photos: { type: 'array', maxItems: 12, items: { type: 'object', additionalProperties: false, required: ['id', 'sha256'], properties: { id: { type: 'string', minLength: 1 }, sha256: { type: 'string', pattern: '^[0-9a-f]{64}$' } } } },
+            request_image_sha256: { type: 'array', maxItems: 10, items: { type: 'string', pattern: '^[0-9a-f]{64}$' } },
+            model: { type: 'string' }, piece: { type: 'string', minLength: 1 }, digest: { type: 'string', pattern: '^[0-9a-f]{64}$' },
+          },
+        },
+      },
+
       images: {
         description: 'One still per entry (images mode) or per picked scene, id = the scene id (scenes and shots modes; in shots mode the restored frame, a repeat_of scene\'s is its source\'s, re-lit when its shot is). Empty in cast mode.',
         type: 'array',

@@ -26,6 +26,7 @@ import { kitCheckInputs, kitCheckOutputs, kitFfmpeg, kitPieceName, kitStopIfAbor
 import { KitPromptGap, kitLoadTemplate, kitPromptJoin, kitScenePrompt } from '../../_lib/prompt.mjs';
 import { kitNamedProducts, kitPickScenes } from '../../_lib/scene-match.mjs';
 import { kitStillAnchorMembers, kitStillAnchorPrompt, kitStillCastFiles, kitStillJobs, kitStillOutputs, kitStillPrompt, kitStillRefs, kitStillStrip, kitStillTemplate, kitStillWantsStrip } from '../../_lib/scene-stills.mjs';
+import { kitProductReferenceEvidence, kitProductScenePhotos, kitRequireProductRequest, kitRequireSceneTags } from '../../_lib/product-tag-contract.mjs';
 import { giPlatePixels, giPlateRestore, giRelightFieldFor, giRelightFrame } from './plate.mjs';
 
 const EDIT = 'openai/gpt-image-2/edit';
@@ -35,8 +36,8 @@ const GI_PROMPT_MAX = 32000;
 const GI_AT_ONCE = 4;
 const GI_DEFAULT_SIZE = '1088x1920';
 const GI_DEFAULT_QUALITY = 'high';
-const GI_SCENE_ONLY = ['scenes', 'products', 'pick', 'skip_first', 'skip_last', 'anchor', 'multi_ref', 'restore', 'relight'];
-const GI_NOT_IN_SHOTS = ['images', 'cast', 'cast_size', 'anchor', 'multi_ref'];
+const GI_SCENE_ONLY = ['scenes', 'products', 'pick', 'skip_first', 'skip_last', 'anchor', 'multi_ref', 'restore', 'relight', 'require_scene_tags', 'require_product_refs'];
+const GI_NOT_IN_SHOTS = ['images', 'cast', 'cast_size', 'anchor', 'multi_ref', 'require_scene_tags', 'require_product_refs'];
 const GI_MAX_REFS = 10;
 const GI_NOT_IN_IMAGES = [...GI_SCENE_ONLY, 'template', 'look', 'answers', 'brand', 'cast', 'cast_size', 'style_refs'];
 /** The light picture's text when the template has no templates.light: the shot's empty plate, only the light changed. */
@@ -56,11 +57,12 @@ function giSize(size) {
 }
 
 /** One paid still: `refs` go to /edit; without refs the prompt-only model draws it. */
-async function giDraw(ctx, { piece, refs, prompt, size, quality }) {
+async function giDraw(ctx, { piece, refs, prompt, size, quality, product_scene = null }) {
   kitStopIfAborted(ctx);
   const model = refs && refs.length ? EDIT : TEXT;
   const body = { prompt, image_size: giSize(size), quality, num_images: 1, output_format: 'png' };
   if (model === EDIT) body.image_urls = refs;
+  if (product_scene) kitRequireProductRequest(product_scene.id, product_scene.required, body.image_urls || [], model);
   const result = await ctx.line.order({
     piece,
     provider: 'fal',
@@ -218,7 +220,21 @@ async function giScenes(inputs, ctx, manifest, opts) {
   const anchorJobs = [];
   try {
     const tpl = await giTemplate(inputs);
+    if (inputs.require_scene_tags) kitRequireSceneTags(tpl, inputs.scenes, inputs);
     jobs = kitStillJobs(tpl, inputs.scenes, { ...base, pick: inputs.pick, skip_first: inputs.skip_first, skip_last: inputs.skip_last, cast, products: inputs.products || [], multi_ref: inputs.multi_ref });
+    if (inputs.require_product_refs) {
+      for (const job of jobs) {
+        job.required_products = kitProductScenePhotos(tpl, job.scene, inputs.products || []);
+        const selected = (job.products || []).flatMap((product) => product.images || []);
+        kitRequireProductRequest(job.id, job.required_products, selected, model);
+        // Reserve the exact reference slots before buying missing cast anchors.
+        const members = job.cast.filter((member) => member.image || anchor === 'cast');
+        const castSlots = job.strip && members.length > 1 ? [{ file: null }] : members.slice(0, 3).map(() => ({ file: null }));
+        const firstSlot = anchor === 'first_scene' && job !== jobs[0] ? { kind: 'file' } : null;
+        const preview = kitStillRefs(job, { cast: castSlots, first: firstSlot, style_refs: inputs.style_refs || [] });
+        kitRequireProductRequest(job.id, job.required_products, preview.files, model);
+      }
+    }
     if (model === EDIT && anchor === 'cast') {
       for (const m of kitStillAnchorMembers(jobs)) if (!m.image) anchorJobs.push({ member: m, prompt: kitStillAnchorPrompt(tpl, m, base) });
     }
@@ -256,6 +272,7 @@ async function giScenes(inputs, ctx, manifest, opts) {
     return { key: set, file: await strips.get(set), strip: files.map((c) => c.name) };
   };
   const stills = new Map();
+  const productEvidence = [];
   const drawJob = async (job, first) => {
     let refs = { files: [], strip_at: null, names: null };
     if (model === EDIT) {
@@ -263,7 +280,10 @@ async function giScenes(inputs, ctx, manifest, opts) {
       const castRefs = kitStillWantsStrip(job, castFiles) ? [await stripFor(castFiles)] : castFiles.slice(0, 3);
       refs = kitStillRefs(job, { cast: castRefs, first, style_refs: styleRefs });
     }
-    stills.set(job.id, await giDraw(ctx, { piece: job.piece, refs: refs.files, prompt: kitStillPrompt(job, refs), size: opts.size, quality: opts.quality }));
+    const image = await giDraw(ctx, { piece: job.piece, refs: refs.files, prompt: kitStillPrompt(job, refs), size: opts.size, quality: opts.quality,
+      product_scene: inputs.require_product_refs ? { id: job.id, required: job.required_products } : null });
+    stills.set(job.id, image);
+    if (inputs.require_product_refs) productEvidence.push(kitProductReferenceEvidence(job.id, image, job.required_products, refs.files, refs.files.length ? EDIT : TEXT, job.piece));
     tick();
   };
   let rest = jobs;
@@ -277,7 +297,8 @@ async function giScenes(inputs, ctx, manifest, opts) {
 
   const out = kitStillOutputs({ scenes: inputs.scenes, cast, jobs, stills, anchors });
   // All four outputs every time (empty lists without a cast), so a style can bind step.<id>.cast or .anchors.
-  return kitCheckOutputs(ctx, manifest, { images: out.images, scenes: out.scenes, cast: out.cast, anchors: out.anchors });
+  return kitCheckOutputs(ctx, manifest, { images: out.images, scenes: out.scenes, cast: out.cast, anchors: out.anchors,
+    ...(inputs.require_product_refs ? { product_reference_evidence: productEvidence.sort((a, b) => a.scene_id.localeCompare(b.scene_id)) } : {}) });
 }
 
 function giExtra(scene, key) {

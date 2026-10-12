@@ -1,5 +1,9 @@
 # image-gpt-image-2
 
+## 1.1.1
+
+- Optional strict scene tags and product-reference request evidence prevent missing-colon fallback from generating product scenes without their real photos. Existing opted-out inputs are unchanged.
+
 ## 1.1.0
 
 - `mode: shots`: locked-camera shots grouped by `scene.extra.group`. A shot's first scene is its plate; every later scene is an edit on `[plate, previous frame, named product photos]`, made in order. `scene.extra.repeat_of` reuses an earlier scene's finished frame, free. Template texts `templates.plate` and `templates.state` (each falls back to `scene`).
