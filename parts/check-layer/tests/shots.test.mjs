@@ -53,8 +53,8 @@ async function withCues(ctx, inputs, cues) {
   return { ...inputs, words: await fileRef(path, 'json') };
 }
 
-test('1.4.1 is the newest check layer and stays free with no network', () => {
-  assert.equal(manifest.version, '1.4.1');
+test('1.4.2 is the newest check layer and stays free with no network', () => {
+  assert.equal(manifest.version, '1.4.2');
   assert.deepEqual([manifest.needs.network, manifest.needs.models, manifest.cost.basis], [false, [], 'free']);
 });
 
@@ -126,7 +126,7 @@ test('the shot maths: shots, the shortest shot, cues across cuts, room tone per 
   assert.deepEqual(chkSceneOpenings([{ id: 'a', start_s: 0, end_s: 0.06 }], 4), [{ id: 'a', at: 0.03 }], 'a very short scene is read in its middle');
 });
 
-test('captions_cross_cuts: a caption cue that runs across a cut, or on into the end card, fails', { skip }, async () => {
+test('captions_cross_cuts: a caption cue that runs across a cut, or on into the end card, warns', { skip }, async () => {
   const { ctx } = makeCtx({ partDir: dir });
   const video = await levelledCut(ctx.workDir, 'cues', 5);
   const timeline = { scenes: [{ id: 'a', start_s: 0, end_s: 2.5 }, { id: 'b', start_s: 2.5, end_s: 4 }], end_card: { start_s: 4, end_s: 5 } };
@@ -134,41 +134,42 @@ test('captions_cross_cuts: a caption cue that runs across a cut, or on into the 
   const inside = await mod.run(await withCues(ctx, base, [{ text: 'Shop the', start_s: 0.5, end_s: 2.6 }, { text: 'new range', start_s: 2.4, end_s: 3.9 }]), ctx);
   assert.equal(status(inside)['flag:captions_cross_cuts'], 'pass', JSON.stringify(check(inside, 'flag:captions_cross_cuts')));
   const across = await mod.run(await withCues(ctx, base, [{ text: 'Shop the new', start_s: 2, end_s: 3 }]), ctx);
-  assert.equal(status(across)['flag:captions_cross_cuts'], 'fail');
+  assert.equal(status(across)['flag:captions_cross_cuts'], 'warn');
   assert.match(check(across, 'flag:captions_cross_cuts').message, /"Shop the new".*2\.50/);
-  assert.equal(across.verdict.pass, false);
+  assert.ok(!across.verdict.reasons.some((r) => r.check === 'flag:captions_cross_cuts'), 'a warning is not a failure');
   const intoCard = await mod.run(await withCues(ctx, base, [{ text: 'now', start_s: 3, end_s: 4.6 }]), ctx);
-  assert.equal(status(intoCard)['flag:captions_cross_cuts'], 'fail', 'the end card starts a new shot');
+  assert.equal(status(intoCard)['flag:captions_cross_cuts'], 'warn', 'the end card starts a new shot');
   const none = await mod.run(base, ctx);
   assert.equal(status(none)['flag:captions_cross_cuts'], 'not_applicable', 'no captions to judge');
   // retained_body: the join between the new opening and the kept video is a cut even when no scene starts there.
   const gap = { scenes: [{ id: 'hook', start_s: 0, end_s: 2 }, { id: 'kept', start_s: 2.4, end_s: 5 }] };
   const hooked = await layerInputsFor(video, { expect: { captions: true, speech: 'voiceover', qc_flags: ['retained_body', 'captions_cross_cuts'] }, timeline: gap });
   const overJoin = await mod.run(await withCues(ctx, hooked, [{ text: 'and more', start_s: 1.5, end_s: 2.5 }]), ctx);
-  assert.equal(status(overJoin)['flag:captions_cross_cuts'], 'fail', JSON.stringify(check(overJoin, 'flag:captions_cross_cuts')));
+  assert.equal(status(overJoin)['flag:captions_cross_cuts'], 'warn', JSON.stringify(check(overJoin, 'flag:captions_cross_cuts')));
   assert.match(check(overJoin, 'flag:captions_cross_cuts').message, /2\.00/);
   const beforeJoin = await mod.run(await withCues(ctx, hooked, [{ text: 'and more', start_s: 0.5, end_s: 1.9 }]), ctx);
   assert.equal(status(beforeJoin)['flag:captions_cross_cuts'], 'pass', JSON.stringify(check(beforeJoin, 'flag:captions_cross_cuts')));
 });
 
-test('min_shot: a shot under 0.4 s fails; the shortest shot is reported', { skip }, async () => {
+test('min_shot: a shot under 0.4 s warns; the shortest shot is reported', { skip }, async () => {
   const { ctx } = makeCtx({ partDir: dir });
   const video = await levelledCut(ctx.workDir, 'shots', 5);
   const expect = { qc_flags: ['min_shot'] };
   const short = await mod.run(await layerInputsFor(video, { expect, timeline: { scenes: [{ id: 'a', start_s: 0, end_s: 2 }, { id: 'b', start_s: 2, end_s: 2.3 }, { id: 'c', start_s: 2.3, end_s: 5 }] } }), ctx);
-  assert.equal(status(short)['flag:min_shot'], 'fail');
+  assert.equal(status(short)['flag:min_shot'], 'warn');
   assert.equal(check(short, 'flag:min_shot').found, 0.3);
+  assert.equal(short.verdict.pass, true, JSON.stringify(short.verdict.reasons));
   const fine = await mod.run(await layerInputsFor(video, { expect, timeline: { scenes: [{ id: 'a', start_s: 0, end_s: 2 }, { id: 'b', start_s: 2, end_s: 2.5 }, { id: 'c', start_s: 2.5, end_s: 5 }] } }), ctx);
   assert.equal(status(fine)['flag:min_shot'], 'pass');
   assert.equal(check(fine, 'flag:min_shot').found, 0.5);
   // A shot cut short by the end card counts; the card itself is not a shot.
   const beforeCard = await mod.run(await layerInputsFor(video, { expect, timeline: { scenes: [{ id: 'a', start_s: 0, end_s: 3.8 }, { id: 'b', start_s: 3.8, end_s: 4 }], end_card: { start_s: 4, end_s: 5 } } }), ctx);
-  assert.equal(status(beforeCard)['flag:min_shot'], 'fail');
+  assert.equal(status(beforeCard)['flag:min_shot'], 'warn');
   const none = await mod.run(await layerInputsFor(video, { expect }), ctx);
   assert.equal(status(none)['flag:min_shot'], 'not_applicable');
 });
 
-test('ambience_floor: room tone in its band under every shot, clear of the speech', { skip }, async () => {
+test('ambience_floor: room tone in its band under every shot, clear of the speech; out of it warns', { skip }, async () => {
   const { ctx } = makeCtx({ partDir: dir });
   const w = ctx.workDir;
   const timeline = { scenes: [{ id: 'a', start_s: 0, end_s: 2 }, { id: 'b', start_s: 2, end_s: 4 }], speech: [{ text: 'hello there', start_s: 1, end_s: 2 }] };
@@ -178,20 +179,21 @@ test('ambience_floor: room tone in its band under every shot, clear of the speec
   assert.equal(status(good)['flag:ambience_floor'], 'pass', JSON.stringify(check(good, 'flag:ambience_floor')));
   assert.ok(Math.abs(check(good, 'flag:ambience_floor').found + 42) < 1.5, String(check(good, 'flag:ambience_floor').found));
   const silent = await judge('silent', null, -20);
-  assert.equal(status(silent)['flag:ambience_floor'], 'fail');
+  assert.equal(status(silent)['flag:ambience_floor'], 'warn');
   assert.equal(check(silent, 'flag:ambience_floor').found, 'silent');
   const low = await judge('low', -60, -20);
-  assert.equal(status(low)['flag:ambience_floor'], 'fail');
+  assert.equal(status(low)['flag:ambience_floor'], 'warn');
   assert.match(check(low, 'flag:ambience_floor').message, /too quiet/);
   const loud = await judge('loud', -26, -10);
-  assert.equal(status(loud)['flag:ambience_floor'], 'fail');
+  assert.equal(status(loud)['flag:ambience_floor'], 'warn');
   assert.match(check(loud, 'flag:ambience_floor').message, /too loud/);
   const close = await judge('close', -40, -37);
-  assert.equal(status(close)['flag:ambience_floor'], 'fail');
+  assert.equal(status(close)['flag:ambience_floor'], 'warn');
   assert.match(check(close, 'flag:ambience_floor').message, /does not stand out/);
+  for (const out of [silent, low, loud, close]) assert.ok(!out.verdict.reasons.some((r) => r.check === 'flag:ambience_floor'));
 });
 
-test('cut_contrast: a cut that barely changes the picture fails; a small change warns; a clear one passes', { skip }, async () => {
+test('cut_contrast: a cut that barely or only a little changes the picture warns; a clear one passes', { skip }, async () => {
   const { ctx } = makeCtx({ partDir: dir });
   const w = ctx.workDir;
   const expect = { qc_flags: ['cut_contrast'] };
@@ -199,8 +201,8 @@ test('cut_contrast: a cut that barely changes the picture fails; a small change 
   const clear = await mod.run(await layerInputsFor(await joined(w, 'clear', ['testsrc2', 'color=c=red'], 2), { expect, timeline }), ctx);
   assert.equal(status(clear)['flag:cut_contrast'], 'pass', JSON.stringify(check(clear, 'flag:cut_contrast')));
   const same = await mod.run(await layerInputsFor(await joined(w, 'same', ['color=c=0x606060', 'color=c=0x606060'], 2), { expect, timeline }), ctx);
-  assert.equal(status(same)['flag:cut_contrast'], 'fail');
-  assert.match(check(same, 'flag:cut_contrast').message, /2\.00 seconds/);
+  assert.equal(status(same)['flag:cut_contrast'], 'warn');
+  assert.match(check(same, 'flag:cut_contrast').message, /2\.00 seconds.*jump/);
   const small = await mod.run(await layerInputsFor(await joined(w, 'small', ['color=c=0x606060', 'color=c=0x7c7c7c'], 2), { expect, timeline }), ctx);
   assert.equal(status(small)['flag:cut_contrast'], 'warn', JSON.stringify(check(small, 'flag:cut_contrast')));
   // (The still colours fail frozen_frames; the warning itself is not a reason.)
@@ -210,13 +212,13 @@ test('cut_contrast: a cut that barely changes the picture fails; a small change 
   assert.equal(status(none)['flag:cut_contrast'], 'not_applicable');
 });
 
-test('distinct_adjacent_shots: two scenes in a row that open on the same picture fail', { skip }, async () => {
+test('distinct_adjacent_shots: two scenes in a row that open on the same picture warn', { skip }, async () => {
   const { ctx } = makeCtx({ partDir: dir });
   const w = ctx.workDir;
   const expect = { qc_flags: ['distinct_adjacent_shots'] };
   const timeline = { scenes: [{ id: 'look-1', start_s: 0, end_s: 2 }, { id: 'look-2', start_s: 2, end_s: 4 }] };
   const twice = await mod.run(await layerInputsFor(await joined(w, 'twice', ['testsrc2', 'testsrc2'], 2), { expect, timeline }), ctx);
-  assert.equal(status(twice)['flag:distinct_adjacent_shots'], 'fail', JSON.stringify(check(twice, 'flag:distinct_adjacent_shots')));
+  assert.equal(status(twice)['flag:distinct_adjacent_shots'], 'warn', JSON.stringify(check(twice, 'flag:distinct_adjacent_shots')));
   assert.match(check(twice, 'flag:distinct_adjacent_shots').message, /look-1 and look-2/);
   const distinct = await mod.run(await layerInputsFor(await joined(w, 'distinct', ['testsrc2', 'color=c=red'], 2), { expect, timeline }), ctx);
   assert.equal(status(distinct)['flag:distinct_adjacent_shots'], 'pass', JSON.stringify(check(distinct, 'flag:distinct_adjacent_shots')));
@@ -236,7 +238,7 @@ test('retained_body: the 1.4.0 flags judge only the new opening', { skip }, asyn
   assert.equal(s['flag:distinct_adjacent_shots'], 'not_applicable', 'one scene inside the opening');
   assert.equal(s['flag:cut_contrast'], 'not_applicable', 'no cut inside the opening');
   assert.equal(out.verdict.pass, true, JSON.stringify(out.verdict.reasons));
-  // Judged as a whole video, the same cut fails all three.
+  // Judged as a whole video, the same cut warns on them.
   const whole = await mod.run(await layerInputsFor(video, { expect: { qc_flags: ['min_shot', 'distinct_adjacent_shots', 'cut_contrast'] }, timeline }), ctx);
-  assert.deepEqual([status(whole)['flag:min_shot'], status(whole)['flag:distinct_adjacent_shots']], ['fail', 'fail']);
+  assert.deepEqual([status(whole)['flag:min_shot'], status(whole)['flag:distinct_adjacent_shots']], ['warn', 'warn']);
 });
