@@ -45,21 +45,55 @@ async function nbIsPng(path) {
   return head.equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]));
 }
 
-/** One paid still: `refs` go to /edit; without refs the prompt-only model draws it. */
-async function nbDraw(ctx, { piece, refs, prompt, aspect, seed }) {
+/**
+ * Logs a refused still: what it was for, the piece, the model, the reference count, the reason and the
+ * prompt's start. The reason is the line's own words (the provider's, when the line passes them on), else
+ * the error's detail or message, else null. Never throws, so the refusal itself is what the step fails with.
+ */
+function nbLogRefusal(ctx, err, { piece, about, model, refs, prompt }) {
+  try {
+    const line = err.line && typeof err.line === 'object' ? err.line : {};
+    const message = err.message !== err.code ? err.message : null;
+    const said = [line.error, err.detail, message].find((s) => typeof s === 'string' && s.trim());
+    const fields = {
+      piece,
+      model,
+      references: Array.isArray(refs) ? refs.length : 0,
+      reason: said ? said.trim().slice(0, 600) : null,
+      prompt: String(prompt ?? '').slice(0, 600),
+    };
+    if (line.details && typeof line.details === 'object' && !Array.isArray(line.details)) fields.details = line.details;
+    ctx.log.warn(`the image maker refused ${about || piece}`, fields);
+  } catch {
+    // A log that can't be written must not hide the refusal.
+  }
+}
+
+/**
+ * One paid still: `refs` go to /edit; without refs the prompt-only model draws it. `about` says in plain
+ * words what the still is for (a cast member, a scene, a product); a refused still is logged with it, so
+ * the log names the piece the plan has to change.
+ */
+async function nbDraw(ctx, { piece, refs, prompt, aspect, seed, about }) {
   kitStopIfAborted(ctx);
   const model = refs && refs.length ? EDIT : TEXT;
   const body = { prompt, num_images: 1, output_format: 'png' };
   if (model === EDIT) body.image_urls = refs;
   if (aspect) body.aspect_ratio = aspect;
   if (Number.isInteger(seed)) body.seed = seed;
-  const result = await ctx.line.order({
-    piece,
-    provider: 'fal',
-    path: model === EDIT ? EDIT : TEXT,
-    body,
-    results: [{ pointer: '/json/images/0/url', name: `${piece}-raw.png`, media: 'image' }],
-  });
+  let result;
+  try {
+    result = await ctx.line.order({
+      piece,
+      provider: 'fal',
+      path: model === EDIT ? EDIT : TEXT,
+      body,
+      results: [{ pointer: '/json/images/0/url', name: `${piece}-raw.png`, media: 'image' }],
+    });
+  } catch (err) {
+    if (err && err.code === 'provider_rejected') nbLogRefusal(ctx, err, { piece, about, model, refs, prompt });
+    throw err;
+  }
   const raw = result && result.files && result.files[`${piece}-raw.png`];
   if (!raw) throw ctx.error('provider_failed', `no image for ${piece}`);
   if (await nbIsPng(raw.path)) return raw;
@@ -104,7 +138,7 @@ async function nbImages(inputs, ctx, manifest) {
   const images = [];
   for (const [i, img] of inputs.images.entries()) {
     const piece = kitPieceName('image', img.id, i, used);
-    const file = await nbDraw(ctx, { piece, refs: model === EDIT ? img.references : null, prompt: img.prompt, aspect: inputs.aspect_ratio, seed: inputs.seed });
+    const file = await nbDraw(ctx, { piece, refs: model === EDIT ? img.references : null, prompt: img.prompt, aspect: inputs.aspect_ratio, seed: inputs.seed, about: `image ${img.id ?? i + 1}` });
     images.push({ id: String(img.id ?? i + 1), image: file });
     ctx.progress({ done: i + 1, total: inputs.images.length });
   }
@@ -162,7 +196,7 @@ async function nbScenes(inputs, ctx, manifest) {
   for (const m of cast) if (m.image) anchors.set(m.key, m.image);
   const styleRefs = model === EDIT ? inputs.style_refs || [] : [];
   await nbEach(anchorJobs, async (a) => {
-    const file = await nbDraw(ctx, { piece: a.piece, refs: styleRefs, prompt: a.prompt, aspect: inputs.cast_aspect_ratio || '1:1', seed: inputs.seed });
+    const file = await nbDraw(ctx, { piece: a.piece, refs: styleRefs, prompt: a.prompt, aspect: inputs.cast_aspect_ratio || '1:1', seed: inputs.seed, about: `the character picture of ${a.member.name || a.member.key} (cast)` });
     anchors.set(a.member.key, file);
     tick();
   });
@@ -183,7 +217,7 @@ async function nbScenes(inputs, ctx, manifest) {
       const castRefs = kitStillWantsStrip(job, castFiles) ? [await stripFor(castFiles)] : castFiles.slice(0, 3);
       refs = kitStillRefs(job, { cast: castRefs, first, style_refs: styleRefs });
     }
-    const file = await nbDraw(ctx, { piece: job.piece, refs: refs.files, prompt: kitStillPrompt(job, refs), aspect: inputs.aspect_ratio, seed: inputs.seed });
+    const file = await nbDraw(ctx, { piece: job.piece, refs: refs.files, prompt: kitStillPrompt(job, refs), aspect: inputs.aspect_ratio, seed: inputs.seed, about: `the still for scene ${job.id}` });
     stills.set(job.id, file);
     tick();
   };
@@ -264,7 +298,7 @@ async function nbProducts(inputs, ctx, manifest) {
   for (const [i, j] of jobs.entries()) j.piece = kitPieceName(j.kind, j.product.id, i, used);
   let done = 0;
   const files = await nbEach(jobs, async (j) => {
-    const file = await nbDraw(ctx, { piece: j.piece, refs: [j.product.images[0]], prompt: j.prompt, aspect: inputs.aspect_ratio, seed: inputs.seed });
+    const file = await nbDraw(ctx, { piece: j.piece, refs: [j.product.images[0]], prompt: j.prompt, aspect: inputs.aspect_ratio, seed: inputs.seed, about: `the ${j.kind} still of ${j.product.name}` });
     ctx.progress({ done: ++done, total: jobs.length });
     return file;
   });

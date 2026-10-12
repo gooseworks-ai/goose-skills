@@ -1,5 +1,9 @@
 # image-nano-banana
 
+## 1.2.1
+
+- A still the provider refuses is logged as a warning before the step fails: `the image maker refused <what it was for>` (the character picture of a cast member, the still for a scene, an image id or a product still), with the piece name, the model, the number of references, the reason and the first 600 characters of the prompt. The reason is the line's own words, which are the provider's when the server passes them on; without them it is the error's own detail or message, else null, and any `details` the line sends are logged too. The step's failure and its words are unchanged. 1.1.0 and 1.2.0 failed with the line's words alone, which never said which of a video's stills it was.
+
 ## 1.2.0
 
 - Products mode: one edit of each product's first photo per kind, `kinds` `snap` (a plain textured surface) and `angled` (a three-quarter view over warm white). Outputs `images` keyed `<product id>-<kind>`. Needs `/edit`; the template's `Snap` and `Angled` rules replace the built-in texts.
