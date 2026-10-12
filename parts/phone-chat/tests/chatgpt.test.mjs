@@ -113,8 +113,6 @@ const refusals = [
   ['a user message with no visible text', () => [withMessages([{ type: 'user-text', id: 'u', text: 'hi' }]), env()], () => [withMessages([{ type: 'user-text', id: 'u', text: '   ' }]), env()], /no visible text/],
   ['a header title too long for the header', () => [{ ...sample(), header: { style: 'model-tag', title: 'ChatGPT', model: '5.1', right_icons: ['personPlus', 'dottedCircle', 'more'] } }, env()],
     () => [{ ...sample(), header: { style: 'model-tag', title: 'W'.repeat(32), model: 'MMMMMMMM', right_icons: ['personPlus', 'dottedCircle', 'more'] } }, env()], /header\.title is too long/],
-  ['a question too long for the composer on this canvas', () => [withMessages([{ type: 'user-text', id: 'u', text: longText }]), env()],
-    () => [withMessages([{ type: 'user-text', id: 'u', text: longText }]), env({ width: 1080, height: 1080 })], /too long to type in the composer/],
   ['an answer with no words', () => [withMessages([{ type: 'user-text', id: 'u', text: 'hi' }, { type: 'assistant', id: 'a', text: 'Hi' }]), env()],
     () => [withMessages([{ type: 'user-text', id: 'u', text: 'hi' }, { type: 'assistant', id: 'a', text: '---' }]), env()], /no words/],
   ['a chat longer than two minutes', () => [withMessages([{ type: 'user-text', id: 'u', text: 'hi' }, { type: 'assistant', id: 'a', text: 'word '.repeat(300) }]), env()],
@@ -136,6 +134,19 @@ for (const [name, good, bad, message] of refusals) {
     assert.throws(() => chatgptBuild(badThread, badEnv), message);
   });
 }
+
+test('a question longer than the composer shows scrolls inside it instead of being refused', () => {
+  const thread = withMessages([{ type: 'user-text', id: 'u', text: longText }]);
+  assert.deepEqual(chatgptBuild(thread, env()).warnings, [], 'fits the tall screen');
+  const square = chatgptBuild(thread, env({ width: 1080, height: 1080 }));
+  assert.deepEqual(square.warnings, ['The question in u is longer than the composer shows on this screen (6 lines), so it scrolls as it is typed.']);
+  assert.match(square.html, /\.composer \.input \{ max-height: 218\.4px; overflow: hidden; overflow-wrap: anywhere; \}/);
+  assert.match(square.html, /input\.scrollTop = input\.scrollHeight;/);
+  const word = (text, e) => chatgptBuild(withMessages([{ type: 'user-text', id: 'w', text }]), e).warnings.length;
+  assert.equal(word('W'.repeat(400), env({ width: 1080, height: 1080 })), 1, 'one long word breaks into lines too');
+  assert.equal(word('W'.repeat(120), env()), 0, 'eight lines of wide letters fit the tall screen');
+  assert.equal(word('W'.repeat(400), env()), 1, 'twenty-five do not');
+});
 
 // ---------------------------------------------------------------------------
 // Timeline, typing, cues
