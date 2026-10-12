@@ -1,6 +1,6 @@
 # captions-layer 1.3.1
 
-**1.3.1 fixes captions held across final cuts.** When `expect.qc_flags` includes `captions_cross_cuts`, words are grouped within actual final timeline shots and every caption hold stops at the next scene start. Without that flag, timings, grouping and rendering keep the 1.3.0 behavior.
+**1.3.1 fixes captions held across final cuts.** When `expect.qc_flags` includes `captions_cross_cuts`, words are grouped within actual final timeline shots and every caption hold stops at the next scene start. Boundary punctuation stays attached to its neighbouring lexical word; an earlier opening mark does not move that word into the previous shot, and a later closing mark does not extend display past the cut. Without that flag, timings, grouping and rendering keep the 1.3.0 behavior.
 
 The captions layer (slot 2 of 4): burns word-timed captions onto the cut and returns a WebVTT of exactly
 what it drew (the core sends it as the upload's `captions_vtt`). New in 1.3.0: the `pill`, `serif-word` and
@@ -16,7 +16,7 @@ end-card stop.)
 - **End card**: when the timeline has `end_card {start_s, end_s}`, the caption track stops for good at
   its start: no word that starts at or after it is captioned, and no caption runs into it. The last caption
   before it holds to its start. With no end card
-  the last caption holds to the final frame (it is the call to action).
+  the last caption holds to the final frame (it is the call to action), unless `captions_cross_cuts` requires it to stop at the next final cut.
 - **Caption look** (`expect.caption_look`, from the style's `traits.caption_look`; the kit copies it):
   - `preset`:
     - `plate` (the default): one or two words, white bold type on a dark grey rounded plate, by the line's

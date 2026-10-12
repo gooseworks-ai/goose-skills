@@ -17,7 +17,7 @@
 // bad parameter is dropped with a warning and the rest is drawn. Captions
 // stop where the timeline's end card starts and are never drawn inside it;
 // the last caption otherwise holds to the final frame (it is the call to
-// action). Captions stay inside the 4:5 feed crop (y 0.148 to 0.852), the
+// action), unless captions_cross_cuts requires it to stop at the next final cut. Captions stay inside the 4:5 feed crop (y 0.148 to 0.852), the
 // TikTok/Reels bands and the timeline's caption safe zone. Timings come from
 // the timeline's speech words; only when there are none is the cut's own
 // audio transcribed (fal Whisper, the layer's one paid call), and a spoken
@@ -220,8 +220,11 @@ const OPENING = /^[\u201c\u2018([{]+$/;
  * before them, so no caption or word state is only punctuation; an opening quote or bracket (a straight quote
  * when its quotes so far are balanced) and marks before the first word go on the word after. Marks after the
  * last word stay on it, so no character is lost. Empty words are dropped.
+ * For cut-constrained captions, keepLexicalStart retains a lexical token's own start: an opening mark
+ * in an earlier shot must not pull the caption into that shot. Closing marks retain their text; cue ends
+ * are clipped separately to final cuts.
  */
-function foldMarks(words) {
+function foldMarks(words, keepLexicalStart = false) {
   const out = [];
   let lead = null;
   let doubles = 0;
@@ -235,7 +238,7 @@ function foldMarks(words) {
     const text = String(w.text || '').trim();
     if (!text) continue;
     if (/[\p{L}\p{N}]/u.test(text)) {
-      const word = { ...w, text: lead ? `${lead.text}${DASH.test(lead.text) ? ' ' : ''}${text}` : text, start_s: lead ? Math.min(lead.start_s, w.start_s) : w.start_s };
+      const word = { ...w, text: lead ? `${lead.text}${DASH.test(lead.text) ? ' ' : ''}${text}` : text, start_s: lead && !keepLexicalStart ? Math.min(lead.start_s, w.start_s) : w.start_s };
       lead = null;
       doubles += (text.match(/"/g) || []).length;
       if (/^['\u2018]/.test(word.text) && !/['\u2019]$/.test(word.text)) single = true;
@@ -425,9 +428,10 @@ async function buildCues(ctx, inputs, duration, look) {
   const sentenceLines = [];
   for (const line of lines) {
     const sourceWords = line.words.filter((w) => !inCard(w.start_s)).map((w) => ({ text: w.text, start_s: w.start_s, end_s: w.end_s, hi: false }));
-    // Split before punctuation folding, brand grouping or sentence regrouping can join shots.
-    for (let words of (cuts.length ? wordsByShot(sourceWords, cuts) : [sourceWords])) {
-      if (NEW_PRESETS.has(look.preset)) words = foldMarks(words);
+    // Keep isolated boundary punctuation with its lexical neighbour, without moving that word
+    // into the punctuation's shot. Then split before brand or sentence grouping joins spoken words.
+    const captionWords = NEW_PRESETS.has(look.preset) ? foldMarks(sourceWords, cuts.length > 0) : sourceWords;
+    for (const words of (cuts.length ? wordsByShot(captionWords, cuts) : [captionWords])) {
       if (!words.length) continue;
       markPhrases(words, phrases, (w) => {
         w.hi = true;

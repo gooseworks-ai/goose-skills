@@ -62,3 +62,19 @@ test('the last caption hold stops at a later silent shot instead of extending to
   const { record } = await run(current, { scenes: [{ id: 'a', start_s: 0, end_s: 1.5 }, { id: 'silent', start_s: 1.5, end_s: 3 }], speech: [{ text: 'Done.', start_s: 0.2, end_s: 0.5, words: timed([['Done.', 0.2, 0.5]]) }] }, ['captions_cross_cuts'], { preset: 'karaoke' }, 3);
   assert.equal(record.cues.at(-1).end_s, 1.5);
 });
+
+test('isolated closing and opening punctuation at a cut survives in all affected presets without moving lexical words across shots', { skip }, async () => {
+  const scenes = [{ id: 'a', start_s: 0, end_s: 1 }, { id: 'b', start_s: 1, end_s: 3 }];
+  for (const preset of ['pill', 'serif-word', 'sentence']) {
+    const closing = await run(current, { scenes, speech: [{ text: 'Done.', start_s: 0.2, end_s: 1.2, words: timed([['Done', 0.2, 0.5], ['.', 1.1, 1.2]]) }] }, ['captions_cross_cuts'], { preset }, 3);
+    assert.equal(closing.record.cues.length, 1, preset);
+    assert.equal(closing.record.cues[0].text.toLowerCase(), 'done.', `${preset}: closing mark preserved`);
+    assert.equal(closing.record.cues[0].start_s, 0.2);
+    assert.equal(closing.record.cues[0].end_s, 1);
+    const opening = await run(current, { scenes, speech: [{ text: '“Ready.”', start_s: 0.6, end_s: 1.7, words: timed([['“', 0.6, 0.7], ['Ready', 1.1, 1.4], ['.', 1.5, 1.55], ['”', 1.6, 1.7]]) }] }, ['captions_cross_cuts'], { preset }, 3);
+    assert.equal(opening.record.cues.length, 1, preset);
+    assert.equal(opening.record.cues[0].text.toLowerCase(), '“ready.”', `${preset}: opening and closing marks preserved`);
+    assert.equal(opening.record.cues[0].start_s, 1.1, `${preset}: opening mark never pulls the lexical word into the previous shot`);
+    assert.ok([...closing.record.cues, ...opening.record.cues].every((c) => !(c.start_s < 1 && c.end_s > 1)), preset);
+  }
+});
