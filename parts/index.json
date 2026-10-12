@@ -1547,9 +1547,9 @@
       "determinism": "pure",
       "path": "parts/cut-footage/1.1.0",
       "files": {
-        "README.md": "b57ddea66ae2c5004da54c96243581b5c08be6789d9c62847b97d18ec67ab5bc",
-        "part.json": "46e917bb31972064dfd8c05bff22c932b003f825a11a145b9ba99e2befff4030",
-        "part.mjs": "ff33f04daec029d7bd55dc2ef7050f12ca0f467b234d6d599bf54a1979e14689"
+        "README.md": "817379311d3aeba340e70f0b0216199619918a9ffa7d8040ed7e88ff7c778266",
+        "part.json": "c4f648656cbfbcc0e105ae23c29868a840392ce1514bc115c5350cd85555916b",
+        "part.mjs": "9c2135efa7d9962f0b642f0a1d2d2ea845cc7782e5d311d1444faea9e0302c80"
       },
       "models": []
     },
