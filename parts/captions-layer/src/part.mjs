@@ -17,7 +17,7 @@
 // bad parameter is dropped with a warning and the rest is drawn. Captions
 // stop where the timeline's end card starts and are never drawn inside it;
 // the last caption otherwise holds to the final frame (it is the call to
-// action). Captions stay inside the 4:5 feed crop (y 0.148 to 0.852), the
+// action), unless captions_cross_cuts requires it to stop at the next final cut. Captions stay inside the 4:5 feed crop (y 0.148 to 0.852), the
 // TikTok/Reels bands and the timeline's caption safe zone. Timings come from
 // the timeline's speech words; only when there are none is the cut's own
 // audio transcribed (fal Whisper, the layer's one paid call), and a spoken
@@ -220,8 +220,11 @@ const OPENING = /^[\u201c\u2018([{]+$/;
  * before them, so no caption or word state is only punctuation; an opening quote or bracket (a straight quote
  * when its quotes so far are balanced) and marks before the first word go on the word after. Marks after the
  * last word stay on it, so no character is lost. Empty words are dropped.
+ * For cut-constrained captions, keepLexicalStart retains a lexical token's own start: an opening mark
+ * in an earlier shot must not pull the caption into that shot. Closing marks retain their text; cue ends
+ * are clipped separately to final cuts.
  */
-function foldMarks(words) {
+function foldMarks(words, keepLexicalStart = false) {
   const out = [];
   let lead = null;
   let doubles = 0;
@@ -235,7 +238,7 @@ function foldMarks(words) {
     const text = String(w.text || '').trim();
     if (!text) continue;
     if (/[\p{L}\p{N}]/u.test(text)) {
-      const word = { ...w, text: lead ? `${lead.text}${DASH.test(lead.text) ? ' ' : ''}${text}` : text, start_s: lead ? Math.min(lead.start_s, w.start_s) : w.start_s };
+      const word = { ...w, text: lead ? `${lead.text}${DASH.test(lead.text) ? ' ' : ''}${text}` : text, start_s: lead && !keepLexicalStart ? Math.min(lead.start_s, w.start_s) : w.start_s };
       lead = null;
       doubles += (text.match(/"/g) || []).length;
       if (/^['\u2018]/.test(word.text) && !/['\u2019]$/.test(word.text)) single = true;
@@ -381,6 +384,29 @@ function skipFirstScene(lines, timeline) {
   return { lines: left, floor: end || 0 };
 }
 
+/** Actual cuts from the final timeline: scene starts, not speech-line or source-scene ends. */
+function captionCuts(timeline, duration) {
+  const cuts = [];
+  for (const scene of timeline.scenes || []) {
+    const t = scene.start_s;
+    if (Number.isFinite(t) && t > 0 && t < duration && !cuts.some((u) => Math.abs(t - u) < 1e-3)) cuts.push(t);
+  }
+  return cuts.sort((a, b) => a - b);
+}
+
+/** Preserve word/line order while keeping each batch inside one final shot. */
+function wordsByShot(words, cuts) {
+  const batches = [];
+  let previous = -1;
+  for (const word of words) {
+    const shot = cuts.filter((t) => t <= word.start_s).length;
+    if (shot !== previous) batches.push([]);
+    batches.at(-1).push(word);
+    previous = shot;
+  }
+  return batches;
+}
+
 /**
  * Every caption cue [{words, start_s, end_s, states}] for the cut. A cue's states are the images it shows:
  * one for plate and stroke, one per spoken word for karaoke. No cue reaches into the end card; the last
@@ -389,6 +415,7 @@ function skipFirstScene(lines, timeline) {
 async function buildCues(ctx, inputs, duration, look) {
   let lines = await timedLines(ctx, inputs);
   const endCard = endCardOf(inputs.timeline, duration);
+  const cuts = (inputs.expect.qc_flags || []).includes('captions_cross_cuts') ? captionCuts(inputs.timeline, duration) : [];
   const said = lines.some((l) => l.words.length);
   let floor = 0;
   if (look.skip_first_scene) ({ lines, floor } = skipFirstScene(lines, inputs.timeline));
@@ -400,32 +427,38 @@ async function buildCues(ctx, inputs, duration, look) {
   const kept = [];
   const sentenceLines = [];
   for (const line of lines) {
-    let words = line.words.filter((w) => !inCard(w.start_s)).map((w) => ({ text: w.text, start_s: w.start_s, end_s: w.end_s, hi: false }));
-    if (NEW_PRESETS.has(look.preset)) words = foldMarks(words);
-    if (!words.length) continue;
-    markPhrases(words, phrases, (w) => {
-      w.hi = true;
-    });
-    if (look.preset === 'pill' || look.preset === 'serif-word') {
-      markPhrases(words, brandName, (w, at) => {
-        w.brand = at;
+    const sourceWords = line.words.filter((w) => !inCard(w.start_s)).map((w) => ({ text: w.text, start_s: w.start_s, end_s: w.end_s, hi: false }));
+    // Keep isolated boundary punctuation with its lexical neighbour, without moving that word
+    // into the punctuation's shot. Then split before brand or sentence grouping joins spoken words.
+    const captionWords = NEW_PRESETS.has(look.preset) ? foldMarks(sourceWords, cuts.length > 0) : sourceWords;
+    for (const words of (cuts.length ? wordsByShot(captionWords, cuts) : [captionWords])) {
+      if (!words.length) continue;
+      markPhrases(words, phrases, (w) => {
+        w.hi = true;
       });
+      if (look.preset === 'pill' || look.preset === 'serif-word') {
+        markPhrases(words, brandName, (w, at) => {
+          w.brand = at;
+        });
+      }
+      kept.push(...words);
+      if (look.preset === 'sentence') {
+        sentenceLines.push({ start: words[0].start_s, words });
+        continue;
+      }
+      let groups;
+      if (look.preset === 'plate') groups = plateGroups(words, line.end - line.start, look.max_words, look.max_words_set);
+      else if (look.preset === 'serif-word') groups = serifGroups(words);
+      else groups = phraseGroups(words, look.max_words);
+      for (const g of groups) cues.push({ words: g, start_s: g[0].start_s, end_s: g.at(-1).end_s });
     }
-    kept.push(...words);
-    if (look.preset === 'sentence') {
-      sentenceLines.push({ start: words[0].start_s, words });
-      continue;
-    }
-    let groups;
-    if (look.preset === 'plate') groups = plateGroups(words, line.end - line.start, look.max_words, look.max_words_set);
-    else if (look.preset === 'serif-word') groups = serifGroups(words);
-    else groups = phraseGroups(words, look.max_words);
-    for (const g of groups) cues.push({ words: g, start_s: g[0].start_s, end_s: g.at(-1).end_s });
   }
   if (look.preset === 'sentence') {
     // Lines in time order, each line's words in its own order: lines that overlap are never interleaved.
     const ordered = sentenceLines.sort((a, b) => a.start - b.start).flatMap((l) => l.words);
-    for (const g of sentenceGroups(ordered, look.max_words)) cues.push({ words: g, start_s: g[0].start_s, end_s: g.at(-1).end_s });
+    for (const words of (cuts.length ? wordsByShot(ordered, cuts) : [ordered])) {
+      for (const g of sentenceGroups(words, look.max_words)) cues.push({ words: g, start_s: g[0].start_s, end_s: g.at(-1).end_s });
+    }
   }
   if (!cues.length) {
     if (!said) throw ctx.error('bad_input', 'nothing was said to caption');
@@ -448,6 +481,9 @@ async function buildCues(ctx, inputs, duration, look) {
   for (const c of cues) {
     c.start_s = Math.max(0, floor, Math.min(c.start_s, duration));
     c.end_s = Math.max(c.start_s, Math.min(c.end_s, duration));
+    // Clip the hold and the cue itself at the next actual final cut when the style requires it.
+    const nextCut = cuts.find((t) => t > c.start_s);
+    if (nextCut !== undefined) c.end_s = Math.min(c.end_s, nextCut);
     // The held caption (or any cue running on) stops where the end card starts.
     if (endCard) c.end_s = Math.max(c.start_s, Math.min(c.end_s, endCard.start_s));
   }
