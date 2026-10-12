@@ -2,7 +2,7 @@
 
 ## 1.2.1
 
-- Scenes mode: a scene with `image_locked: true` keeps its `image` as its final still, as is, with nothing ordered (a preview approved before the yes). A member named only by locked scenes gets no anchor drawn. `image_locked` without an `image` is refused. Without `image_locked` nothing changes.
+- Scenes mode: a scene with `image_locked: true` keeps its `image` as its final still, as is, with nothing ordered and no prompt filled (a preview approved before the yes); a picture other than PNG, JPEG or WebP becomes a PNG. A member named only by locked scenes gets no anchor drawn. `image_locked` without an `image` is refused. Without `image_locked` nothing changes.
 
 ## 1.2.0
 

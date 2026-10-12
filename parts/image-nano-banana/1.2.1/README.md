@@ -50,7 +50,8 @@ Inputs: `scenes` (plan.scenes, max 40), `template` (a style's `frames/<name>.pro
 ### Locked scene images (1.2.1)
 
 - A scene with `image_locked: true` and an `image` file keeps that image as its still, as is: nothing is ordered
-  for it, no prompt is sent and the file is not re-encoded. It is used to reuse a preview the customer saw before
+  for it and its prompt is never filled, so it cannot refuse the step. A PNG, JPEG or WebP is passed through
+  untouched; any other picture (AVIF, HEIC, GIF) becomes a PNG of its first frame, free. It is used to reuse a preview the customer saw before
   the yes (the key scene of a style), so the server sets both fields; the AI never does.
 - It must be a scene the step picks (`pick`, `skip_first`, `skip_last`); a locked scene the step does not pick is
   only logged. `image_locked` without an `image` refuses the step before anything is ordered.
