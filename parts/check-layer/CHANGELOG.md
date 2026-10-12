@@ -1,5 +1,9 @@
 # check-layer
 
+## 1.4.2
+
+- `sounds_match_messages` hears a message's sound by its loudest 50 ms (from 0.05 s before the scene starts to 0.3 s after) against the median 50 ms of the 0.55 s before it, and needs 8 dB. The cue window stops where the next message's starts, so one sound never counts for two messages. 1.4.1 compared the mean of the 0.25 s after a message with the mean of the 0.3 s before it and needed 4 dB: a 0.1 s send sound, levelled by the sound layer's limiter over a music bed with typing clicks before it, read 3.7 dB and failed a ChatGPT cut whose send sound was there (it reads 12.6 dB now). A message with no sound of its own still fails.
+
 ## 1.4.1
 
 - Remove the undocumented 40,000-pixel area requirement that rejected valid wide logos such as 281 × 88.

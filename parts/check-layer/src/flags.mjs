@@ -32,6 +32,43 @@ export const CHK_WORD_EDGE_S = 0.01;
 // Scene starts this close to 0 or to the end of the body are not cuts.
 const CHK_CUT_EDGE_S = 0.05;
 
+// sounds_match_messages (1.4.2): a message's sound is its loudest 50 ms from just before the message shows
+// to 0.3 s after, set against the bed, the median 50 ms of the 0.55 s before it. A short pop over a 0.25 s
+// mean, or a mean before it that holds typing clicks, read under 4 dB once a limiter levelled the cut.
+export const CHK_MSG_SLICE_S = 0.05;
+export const CHK_MSG_HOP_S = 0.01;
+export const CHK_MSG_CUE = [-0.05, 0.3];
+export const CHK_MSG_BED = [-0.6, -0.05];
+export const CHK_MSG_RISE_DB = 8;
+
+function chkSlices(from, to) {
+  const out = [];
+  const start = Math.max(0, from);
+  for (let i = 0; start + i * CHK_MSG_HOP_S + CHK_MSG_SLICE_S <= to + 1e-9; i++) {
+    const a = start + i * CHK_MSG_HOP_S;
+    out.push([a, a + CHK_MSG_SLICE_S]);
+  }
+  return out;
+}
+
+/**
+ * The 50 ms slices one message at `t` is judged on: its cue and the bed before it. The cue stops where the
+ * next message's own cue window starts (`next`), so a sound is never credited to the message before it.
+ */
+export function chkMessageWindows(t, next = Infinity) {
+  const end = Math.min(t + CHK_MSG_CUE[1], next + CHK_MSG_CUE[0]);
+  return { cue: chkSlices(t + CHK_MSG_CUE[0], Math.max(end, t + CHK_MSG_CUE[0] + CHK_MSG_SLICE_S)), bed: chkSlices(t + CHK_MSG_BED[0], t + CHK_MSG_BED[1]) };
+}
+
+/** The cue's loudest slice, the bed's median slice (dBFS) and how far the cue rises over the bed. */
+export function chkMessageRise(cueLevels, bedLevels) {
+  const cue = cueLevels.length ? Math.max(...cueLevels) : -Infinity;
+  const sorted = [...bedLevels].sort((a, b) => a - b);
+  const mid = sorted.length >> 1;
+  const bed = !sorted.length ? -Infinity : sorted.length % 2 ? sorted[mid] : sorted[mid - 1] === sorted[mid] ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
+  return { cue, bed, rise: bed === -Infinity ? (cue === -Infinity ? -Infinity : Infinity) : cue - bed };
+}
+
 /** Share of a frame's rows that hold content: pixels clearly off the frame's dominant colour. */
 export function chkContentShare(rgb, w, h) {
   const counts = new Uint32Array(4096);

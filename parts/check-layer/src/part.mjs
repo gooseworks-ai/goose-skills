@@ -17,13 +17,14 @@
 // a kept body; the rest is not checked).
 // 1.4.0 adds per-shot flags (a shot runs from one scene start to the next):
 // captions_cross_cuts, min_shot, ambience_floor, cut_contrast and
-// distinct_adjacent_shots.
+// distinct_adjacent_shots. 1.4.2 hears a message's sound by its loudest
+// 50 ms over the bed before it, so a levelled cut's short pops still count.
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitFfmpeg } from '../../_lib/part.mjs';
 import { speechBuildAliases, speechReview } from '../../_lib/speech.mjs';
 import { kitLogoScore, kitLogoScoreInBox, kitMotion, kitWindowLevels } from '../../_lib/frames.mjs';
-import { CHK_BLANK_MAX_SHARE, CHK_CUT_MAX_RATE, CHK_CUT_MIN_RATE, CHK_READ_MAX_WPS, CHK_READ_MIN_WPS, chkBlankFrames, chkBlankSpans, chkClipSpans, chkCutInsideWord, chkCuts, chkJudgeBlank, chkReadRate, chkSpeechBefore } from './flags.mjs';
+import { CHK_BLANK_MAX_SHARE, CHK_CUT_MAX_RATE, CHK_CUT_MIN_RATE, CHK_MSG_RISE_DB, CHK_READ_MAX_WPS, CHK_READ_MIN_WPS, chkBlankFrames, chkBlankSpans, chkClipSpans, chkCutInsideWord, chkCuts, chkJudgeBlank, chkMessageRise, chkMessageWindows, chkReadRate, chkSpeechBefore } from './flags.mjs';
 import { CHK_CONTRAST_MIN, CHK_CONTRAST_OFFSET_S, CHK_CONTRAST_WARN, CHK_CUE_GUARD_S, CHK_DISTINCT_MIN, CHK_FLOOR_MAX_DB, CHK_FLOOR_MIN_DB, CHK_FLOOR_SPEECH_GAP_DB, CHK_MIN_SHOT_S, chkAdjacentDiffs, chkCueAcrossCut, chkCutContrast, chkFloorWindows, chkJudgeAmbience, chkSceneOpenings, chkShortShot, chkShotSound, chkShots, chkSpeechSpans } from './shots.mjs';
 
 const TARGET_LUFS = -14;
@@ -47,9 +48,8 @@ const PLATFORM_RIGHT = 140;
 const LOGO_MARK_MIN = 0.75;
 const LOGO_IMAGE_MIN = 0.7;
 const MIN_LOGO_LONG_SIDE = 256;
-// logo-equation-card's measure_motion gate, and the rise a message's sound makes over the moment before it.
+// logo-equation-card's measure_motion gate.
 const FOOTAGE_MIN_MOTION = 1.5;
-const SOUND_RISE_DB = 4;
 const NUM = '-?\\d+(?:\\.\\d+)?(?:e-?\\d+)?';
 // Flags a machine measures here; any other flag is reported not_applicable (one that needs eyes, or one a
 // later check layer measures: a style may declare a flag before its layer version is pinned).
@@ -392,8 +392,11 @@ export async function run(inputs, ctx) {
       const starts = (timeline.scenes || []).map((sc) => sc.start_s).filter((t) => t > 0.4 && t < cardStart - 0.1 && (!retained || t < contentEnd - 0.1));
       if (!starts.length) add(code, 'not_applicable');
       else {
-        const levels = await kitWindowLevels(ctx, video.path, starts.flatMap((t) => [[t, t + 0.25], [t - 0.35, t - 0.05]]));
-        const silentAt = starts.find((t, i) => !(levels[2 * i] > -50 && levels[2 * i] - levels[2 * i + 1] >= SOUND_RISE_DB));
+        const windows = starts.map((t, i) => chkMessageWindows(t, i + 1 < starts.length ? starts[i + 1] : Infinity));
+        const levels = await kitWindowLevels(ctx, video.path, windows.flatMap((w) => [...w.cue, ...w.bed]));
+        let at = 0;
+        const rises = windows.map((w) => chkMessageRise(levels.slice(at, (at += w.cue.length)), levels.slice(at, (at += w.bed.length))));
+        const silentAt = starts.find((t, i) => !(rises[i].cue > -50 && rises[i].rise >= CHK_MSG_RISE_DB));
         if (silentAt === undefined) add(code, 'pass', { found: starts.length });
         else add(code, 'fail', { message: `No sound when the message at ${silentAt.toFixed(2)} s appears.`, expected: 'a sound with every message', found: `${silentAt.toFixed(2)} s` });
       }
