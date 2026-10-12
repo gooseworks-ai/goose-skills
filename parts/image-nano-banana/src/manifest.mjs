@@ -50,7 +50,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'image-nano-banana',
-  version: '1.2.0',
+  version: '1.2.1',
   kind: 'generate_image',
   title: 'Stills (Nano Banana)',
   summary: 'Makes or edits stills with Nano Banana on fal, one piece per image: a hand-built list, one still per plan scene from a prompt template, or snap and angled edits of each product\'s own photo.',
