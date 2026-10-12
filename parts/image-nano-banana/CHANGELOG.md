@@ -1,5 +1,9 @@
 # image-nano-banana
 
+## 1.2.1
+
+- Scenes mode: a scene with `image_locked: true` keeps its `image` as its final still, as is, with nothing ordered (a preview approved before the yes). A member named only by locked scenes gets no anchor drawn. `image_locked` without an `image` is refused. Without `image_locked` nothing changes.
+
 ## 1.2.0
 
 - Products mode: one edit of each product's first photo per kind, `kinds` `snap` (a plain textured surface) and `angled` (a three-quarter view over warm white). Outputs `images` keyed `<product id>-<kind>`. Needs `/edit`; the template's `Snap` and `Angled` rules replace the built-in texts.

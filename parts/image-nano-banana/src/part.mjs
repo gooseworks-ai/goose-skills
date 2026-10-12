@@ -17,6 +17,9 @@
 //            product on a plain textured surface; "angled": a three-quarter view
 //            floating over warm white), for range and grid cards. The photo is
 //            the only reference: a product still is never drawn from text.
+//
+// 1.2.1: in scenes mode a scene with image_locked: true keeps its own image as
+// its still, ordering nothing (a preview the customer already approved).
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitFfmpeg, kitPieceName, kitStopIfAborted } from '../../_lib/part.mjs';
@@ -125,6 +128,10 @@ async function nbScenes(inputs, ctx, manifest) {
     if (keys.has(m.key)) throw ctx.error('bad_input', `two cast members have the key ${m.key}`);
     keys.add(m.key);
   }
+  for (const s of inputs.scenes) {
+    if (s.image_locked === true && !s.image) throw ctx.error('bad_input', `scene ${s.id} is marked image_locked but has no image`);
+  }
+  const locked = (job) => job.scene.image_locked === true;
 
   // Everything that can refuse happens before the first piece is ordered.
   let tpl;
@@ -135,13 +142,16 @@ async function nbScenes(inputs, ctx, manifest) {
     tpl = kitStillTemplate(inputs.template ? await kitLoadTemplate(inputs.template) : null);
     jobs = kitStillJobs(tpl, inputs.scenes, { ...base, pick: inputs.pick, skip_first: inputs.skip_first, skip_last: inputs.skip_last, cast, products: inputs.products || [], multi_ref: inputs.multi_ref });
     if (model === EDIT && anchor === 'cast') {
-      for (const m of kitStillAnchorMembers(jobs)) if (!m.image) anchorJobs.push({ member: m, prompt: kitStillAnchorPrompt(tpl, m, base) });
+      for (const m of kitStillAnchorMembers(jobs.filter((j) => !locked(j)))) if (!m.image) anchorJobs.push({ member: m, prompt: kitStillAnchorPrompt(tpl, m, base) });
     }
   } catch (err) {
     if (ctx.signal && ctx.signal.aborted) throw ctx.error('stopped', 'the step was stopped');
     throw ctx.error('bad_input', err instanceof KitPromptGap ? err.message : String((err && err.message) || err));
   }
   if (!jobs.length) throw ctx.error('bad_input', 'no scene is picked for a still');
+  for (const s of inputs.scenes) {
+    if (s.image_locked === true && !jobs.some((j) => j.id === s.id)) ctx.log.warn(`scene ${s.id} is image_locked but this step does not pick it`);
+  }
   // The strip note added later is under 600 characters.
   for (const text of [...jobs.map((j) => kitStillPrompt(j, {})), ...anchorJobs.map((a) => a.prompt)]) {
     if (text.length > NB_PROMPT_MAX - 600) throw ctx.error('bad_input', `a prompt is over ${NB_PROMPT_MAX - 600} characters`);
@@ -177,6 +187,11 @@ async function nbScenes(inputs, ctx, manifest) {
   };
   const stills = new Map();
   const drawJob = async (job, first) => {
+    if (locked(job)) {
+      stills.set(job.id, job.scene.image);
+      tick();
+      return;
+    }
     let refs = { files: [], strip_at: null, names: null };
     if (model === EDIT) {
       const castFiles = kitStillCastFiles(job, anchors);
