@@ -381,6 +381,29 @@ function skipFirstScene(lines, timeline) {
   return { lines: left, floor: end || 0 };
 }
 
+/** Actual cuts from the final timeline: scene starts, not speech-line or source-scene ends. */
+function captionCuts(timeline, duration) {
+  const cuts = [];
+  for (const scene of timeline.scenes || []) {
+    const t = scene.start_s;
+    if (Number.isFinite(t) && t > 0 && t < duration && !cuts.some((u) => Math.abs(t - u) < 1e-3)) cuts.push(t);
+  }
+  return cuts.sort((a, b) => a - b);
+}
+
+/** Preserve word/line order while keeping each batch inside one final shot. */
+function wordsByShot(words, cuts) {
+  const batches = [];
+  let previous = -1;
+  for (const word of words) {
+    const shot = cuts.filter((t) => t <= word.start_s).length;
+    if (shot !== previous) batches.push([]);
+    batches.at(-1).push(word);
+    previous = shot;
+  }
+  return batches;
+}
+
 /**
  * Every caption cue [{words, start_s, end_s, states}] for the cut. A cue's states are the images it shows:
  * one for plate and stroke, one per spoken word for karaoke. No cue reaches into the end card; the last
@@ -389,6 +412,7 @@ function skipFirstScene(lines, timeline) {
 async function buildCues(ctx, inputs, duration, look) {
   let lines = await timedLines(ctx, inputs);
   const endCard = endCardOf(inputs.timeline, duration);
+  const cuts = (inputs.expect.qc_flags || []).includes('captions_cross_cuts') ? captionCuts(inputs.timeline, duration) : [];
   const said = lines.some((l) => l.words.length);
   let floor = 0;
   if (look.skip_first_scene) ({ lines, floor } = skipFirstScene(lines, inputs.timeline));
@@ -400,32 +424,37 @@ async function buildCues(ctx, inputs, duration, look) {
   const kept = [];
   const sentenceLines = [];
   for (const line of lines) {
-    let words = line.words.filter((w) => !inCard(w.start_s)).map((w) => ({ text: w.text, start_s: w.start_s, end_s: w.end_s, hi: false }));
-    if (NEW_PRESETS.has(look.preset)) words = foldMarks(words);
-    if (!words.length) continue;
-    markPhrases(words, phrases, (w) => {
-      w.hi = true;
-    });
-    if (look.preset === 'pill' || look.preset === 'serif-word') {
-      markPhrases(words, brandName, (w, at) => {
-        w.brand = at;
+    const sourceWords = line.words.filter((w) => !inCard(w.start_s)).map((w) => ({ text: w.text, start_s: w.start_s, end_s: w.end_s, hi: false }));
+    // Split before punctuation folding, brand grouping or sentence regrouping can join shots.
+    for (let words of (cuts.length ? wordsByShot(sourceWords, cuts) : [sourceWords])) {
+      if (NEW_PRESETS.has(look.preset)) words = foldMarks(words);
+      if (!words.length) continue;
+      markPhrases(words, phrases, (w) => {
+        w.hi = true;
       });
+      if (look.preset === 'pill' || look.preset === 'serif-word') {
+        markPhrases(words, brandName, (w, at) => {
+          w.brand = at;
+        });
+      }
+      kept.push(...words);
+      if (look.preset === 'sentence') {
+        sentenceLines.push({ start: words[0].start_s, words });
+        continue;
+      }
+      let groups;
+      if (look.preset === 'plate') groups = plateGroups(words, line.end - line.start, look.max_words, look.max_words_set);
+      else if (look.preset === 'serif-word') groups = serifGroups(words);
+      else groups = phraseGroups(words, look.max_words);
+      for (const g of groups) cues.push({ words: g, start_s: g[0].start_s, end_s: g.at(-1).end_s });
     }
-    kept.push(...words);
-    if (look.preset === 'sentence') {
-      sentenceLines.push({ start: words[0].start_s, words });
-      continue;
-    }
-    let groups;
-    if (look.preset === 'plate') groups = plateGroups(words, line.end - line.start, look.max_words, look.max_words_set);
-    else if (look.preset === 'serif-word') groups = serifGroups(words);
-    else groups = phraseGroups(words, look.max_words);
-    for (const g of groups) cues.push({ words: g, start_s: g[0].start_s, end_s: g.at(-1).end_s });
   }
   if (look.preset === 'sentence') {
     // Lines in time order, each line's words in its own order: lines that overlap are never interleaved.
     const ordered = sentenceLines.sort((a, b) => a.start - b.start).flatMap((l) => l.words);
-    for (const g of sentenceGroups(ordered, look.max_words)) cues.push({ words: g, start_s: g[0].start_s, end_s: g.at(-1).end_s });
+    for (const words of (cuts.length ? wordsByShot(ordered, cuts) : [ordered])) {
+      for (const g of sentenceGroups(words, look.max_words)) cues.push({ words: g, start_s: g[0].start_s, end_s: g.at(-1).end_s });
+    }
   }
   if (!cues.length) {
     if (!said) throw ctx.error('bad_input', 'nothing was said to caption');
@@ -448,6 +477,9 @@ async function buildCues(ctx, inputs, duration, look) {
   for (const c of cues) {
     c.start_s = Math.max(0, floor, Math.min(c.start_s, duration));
     c.end_s = Math.max(c.start_s, Math.min(c.end_s, duration));
+    // Clip the hold and the cue itself at the next actual final cut when the style requires it.
+    const nextCut = cuts.find((t) => t > c.start_s);
+    if (nextCut !== undefined) c.end_s = Math.min(c.end_s, nextCut);
     // The held caption (or any cue running on) stops where the end card starts.
     if (endCard) c.end_s = Math.max(c.start_s, Math.min(c.end_s, endCard.start_s));
   }
