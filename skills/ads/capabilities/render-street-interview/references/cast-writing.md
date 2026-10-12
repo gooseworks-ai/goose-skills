@@ -61,6 +61,31 @@ Full:
 
 `python scripts/brandkit.py --brand <slug>` and the `single_gen.py` dry run both print a `CAST ADVISORY` line for each person who is missing hair, build, or skin tone or background, and for each person copied from another brand's config. It is advice, not a refusal: it does not stop a take.
 
+## What one take showed
+
+Seed 6222 (2026-10-13, Graza, 8 seconds, fast endpoint) described both people in full and kept the settings, street and reference images of the older take it was compared with (seed 6214). It was shorter, 8 seconds against 15, with shorter lines, so compare faces and not timing. Both people came out as described: a stocky Black man with a shaved head and a greying beard, and a South Asian woman in her sixties with long grey hair. Neither is one of the recurring faces. All three lines were spoken as written.
+
+It also showed what a description does not cover:
+
+- **Hands.** The man's face followed the description and the hand holding the bottle did not: it was pale, and wore a ring. See "The scene reference carries a hand" below; a prompt clause did not fix it.
+- **Counts.** "A long grey plait" came back as two plaits. Say "one" when one matters.
+- **Bags.** The shopping bag carried printed lettering although the prompt asks for plain bags.
+- **Place.** The background differed between the two people.
+
+## The scene reference carries a hand
+
+Seed 6223 repeated seed 6222 with `skin_grammar` on, including its rule that each person's hands match their own face. The woman's hands matched. The man's did not: the same pale hand, with the same ring, held the bottle.
+
+The cause is the scene reference, not the wording. `--scene-ref` was a still from an older take, cropped below the face, and it shows that take's person holding the bottle: a pale hand with a ring, in a grey hoodie. The model copied the hand it was shown. An image outranks a sentence.
+
+So, for any take with a scene reference:
+
+- Open the scene reference and look at it before the take. If it shows a hand, an arm or clothing of a previous cast member, the new cast inherits them.
+- Use a reference that shows only what must carry over: the microphone, the interviewer's hand and the street. Crop the old cast out, or take the still from a frame where nobody is holding the product.
+- A person whose skin tone differs from the reference's hand is the case that exposes it. A cast that matches the old hand hides the fault; it does not remove it.
+
+Also seen on seed 6223 and not on 6222, so treat as take-to-take variation until repeated: a sports logo on the hoodie, and the bottle held on a diagonal by the second person. Neither the skin clause nor the voice descriptions has been judged by a person yet, and the audio of neither take has been listened to.
+
 ## What is not proven
 
-No paid take has been generated with a fully written cast yet. Whether it removes the repeat faces, and whether it changes how real the people look, is untested. Judge the first take by eye against an older one, and record the result in the project's take ledger.
+One take is one data point. It shows the model follows a full description; it does not show it will every time, or at fifteen seconds, or with four people. Whether these faces read as real is a human call that no check here makes. Record each new take's result in the project's take ledger.

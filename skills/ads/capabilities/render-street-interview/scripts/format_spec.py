@@ -782,7 +782,13 @@ _SKIN = ("EVERY FACE HAS ORDINARY UNRETOUCHED SKIN, the way a phone camera recor
          "uniform across a face, there is natural shine on the nose and forehead and none in the "
          "hollows, and each person has the fine lines and stray hairs a person of that age "
          "has, with stubble only where a man would have it. Nobody looks airbrushed, waxy or "
-         "like a model. ")
+         "like a model. "
+         # Seed 6222 (2026-10-13): a Black man's face over a pale hand holding the bottle. Seed
+         # 6223 carried this sentence and the man's hand was STILL pale: the scene reference
+         # showed the old cast's hand, and an image outranks a sentence. This clause helped the
+         # second person only. The fix is the reference: see references/cast-writing.md.
+         "EACH PERSON'S HANDS, WRISTS AND NECK ARE THE SAME SKIN TONE AS THEIR OWN FACE: the hand "
+         "that holds what they were given is visibly their own hand, never the interviewer's. ")
 
 
 def _voices(cfg):

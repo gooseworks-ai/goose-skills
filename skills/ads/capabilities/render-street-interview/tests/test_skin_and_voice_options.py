@@ -41,6 +41,14 @@ class SkinAndVoiceOptionTests(unittest.TestCase):
         for word in ("blotch", "eye bag", "film grain", "depth of field", "pore"):
             self.assertNotIn(word, format_spec._SKIN.lower())
 
+    def test_skin_clause_ties_the_hands_to_the_face(self):
+        # Seed 6222: the face followed the description and the hand holding the bottle did not.
+        c = cfg()
+        c["generation"]["skin_grammar"] = True
+        p = format_spec.build_prompt(c, **FLAGS)
+        self.assertIn("SAME SKIN TONE AS THEIR OWN FACE", p)
+        self.assertIn("never the interviewer's", p)
+
     def test_voices_name_each_person_once_before_the_sound_sentence(self):
         c = cfg()
         c["interviewer_voice"] = "a quick, friendly voice in his thirties"
