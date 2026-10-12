@@ -1133,7 +1133,8 @@ async function plateSingles(ctx, plate, cast, crops, layout) {
     kitStopIfAborted(ctx);
     const c = crops[i];
     const name = `single-${i + 1}.png`;
-    await kitFfmpeg(ctx, ['-i', plate.path, '-vf', `crop=${c.w}:${c.h}:${c.x}:${c.y}`, '-frames:v', '1', '-c:v', 'png', join(ctx.workDir, name)]);
+    // exact=1: a subsampled picture (most JPEGs) would otherwise round the crop to its chroma grid.
+    await kitFfmpeg(ctx, ['-i', plate.path, '-vf', `crop=${c.w}:${c.h}:${c.x}:${c.y}:exact=1`, '-frames:v', '1', '-c:v', 'png', join(ctx.workDir, name)]);
     const image = await ctx.file(name, 'image');
     if (seen.has(image.sha256)) {
       throw ctx.error('output_invalid', `the ${PLATE_SEATS[layout][i].side} and ${seen.get(image.sha256)} seats of the plate are the same picture`);
