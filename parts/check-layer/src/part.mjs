@@ -47,7 +47,6 @@ const PLATFORM_RIGHT = 140;
 const LOGO_MARK_MIN = 0.75;
 const LOGO_IMAGE_MIN = 0.7;
 const MIN_LOGO_LONG_SIDE = 256;
-const MIN_LOGO_AREA = 40000;
 // logo-equation-card's measure_motion gate, and the rise a message's sound makes over the moment before it.
 const FOOTAGE_MIN_MOTION = 1.5;
 const SOUND_RISE_DB = 4;
@@ -321,6 +320,7 @@ export async function run(inputs, ctx) {
   const logoZone = (timeline.safe_zones || []).find((z) => z.use === 'logo' && z.w > 0 && z.h > 0);
   const brandSlotOn = !!(expect.layers && typeof expect.layers === 'object' && expect.layers.brand === true);
   let logoSize = null;
+  let logoResolutionChecked = false;
   const logoCheck = async (times) => {
     const at = times.filter((t) => t > 0 && t < d && (!retained || t < contentEnd));
     // retained_body: the logo is looked for only inside the new opening.
@@ -328,9 +328,12 @@ export async function run(inputs, ctx) {
     if (!logo) return { status: 'fail', message: 'The style asks for the logo, but the brand has no logo file.', expected: 'a logo file', found: 'none' };
     logoSize = logoSize || (logo.width && logo.height ? logo : await ctx.tools.probe(logo.path));
     const long = Math.max(logoSize.width || 0, logoSize.height || 0);
-    if (long < MIN_LOGO_LONG_SIDE || (logoSize.width || 0) * (logoSize.height || 0) < MIN_LOGO_AREA) {
-      return { status: 'fail', message: 'The logo file is favicon-sized and will be blurry.', expected: `at least ${MIN_LOGO_LONG_SIDE} px on the long side`, found: `${logoSize.width}x${logoSize.height}` };
+    // Resolution is advice, never a reason to repair or block a visible logo.
+    // Wide wordmarks can have a small area while meeting the long-side recommendation.
+    if (!logoResolutionChecked && long < MIN_LOGO_LONG_SIDE) {
+      add('logo_resolution', 'warn', { message: 'The logo file is small and may look blurry.', expected: `at least ${MIN_LOGO_LONG_SIDE} px on the long side recommended`, found: `${logoSize.width}x${logoSize.height}` });
     }
+    logoResolutionChecked = true;
     if (logoZone) {
       const z = logoZone;
       const match = await kitLogoScoreInBox(ctx, video.path, logo, at, m.width, m.height, z);
