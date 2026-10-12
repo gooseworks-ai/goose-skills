@@ -1,5 +1,10 @@
 # check-layer
 
+## 1.4.1
+
+- Remove the undocumented 40,000-pixel area requirement that rejected valid wide logos such as 281 × 88.
+- A source logo below the recommended 256 px long side emits a non-blocking resolution warning without a repair instruction. Actual logo visibility and identity checks still run.
+
 ## 1.4.0
 
 - Per-shot style flags (a shot runs from one scene start to the next; the end card is not one): `captions_cross_cuts` (no caption cue runs across a cut, 0.15 s allowed either side; the end card's start counts), `min_shot` (no shot under 0.4 s), `ambience_floor` (each shot's room tone from -52 to -32 dB full scale, with its speech at least 6 dB above it), `cut_contrast` (the frames 80 ms either side of each cut differ by at least 25, a warning under 32) and `distinct_adjacent_shots` (two scenes in a row never open on the same picture).

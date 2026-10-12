@@ -10,7 +10,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'check-layer',
-  version: '1.4.0',
+  version: '1.4.1',
   kind: 'check',
   layer: 'check',
   title: 'Check layer',
@@ -39,7 +39,7 @@ export const manifest = {
               additionalProperties: false,
               required: ['code', 'status'],
               properties: {
-                code: { type: 'string', pattern: '^(plays|length|size|sound|captions|black_frames|frozen_frames|captions_safe_zone|speech_matches_script|end_card|logo|flag:[\\s\\S]*)$', description: 'flag:<name> for each style qc_flag, any name the input allows (a flag this version does not know is reported not_applicable).' },
+                code: { type: 'string', pattern: '^(plays|length|size|sound|captions|black_frames|frozen_frames|captions_safe_zone|speech_matches_script|end_card|logo|logo_resolution|flag:[\\s\\S]*)$', description: 'flag:<name> for each style qc_flag, any name the input allows (a flag this version does not know is reported not_applicable).' },
                 status: {
                   description: 'warn: measured short, but not counted against the video (a logo looked for on the whole frame, with no box declared for it and no brand layer to fix it).',
                   enum: ['pass', 'fail', 'warn', 'not_applicable'],
