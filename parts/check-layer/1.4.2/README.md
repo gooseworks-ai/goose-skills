@@ -10,7 +10,7 @@ loudness, a still opening or held picture, `footage_moves` (measured low motion)
 `ambience_floor` and a sparse `text_led` cut. These still fail: a file that does not play, a length that cannot
 be measured or is outside 1 to 600 s, the wrong size, no sound when speech, music or a voice is planned, a loudness that cannot be read, missing captions, untranscribed or mismatched
 speech, black or blank stretches, a wholly blank `text_led` cut, a missing end card, an unmarked
-`retained_body` opening, a message with no sound (`sounds_match_messages`), captions outside the safe zone, the
+`retained_body` opening, a message whose sound does not rise over the bed (`sounds_match_messages`), captions outside the safe zone, the
 logo checks as in 1.4.1, and frames that could not be read at all (`footage_moves`, `cut_contrast`,
 `distinct_adjacent_shots`). A warning names no layer to re-run.
 
@@ -63,7 +63,8 @@ or past the end card, against the bed, the median 50 ms of the quiet in the 0.55
 outside every message's own span (0.05 s before it to 0.3 s after), so an earlier message's sound never raises
 the bar; with under 0.15 s of it (the opening, or a burst of messages) the bed is the quiet from 0.3 to 0.85 s
 after the message, and with too little of that, all the quiet before the end card. A short pop the sound
-layer's limiter levelled still counts and typing clicks before it do not raise the bar; the layer gets only the finished cut, so
+layer's limiter levelled still counts and typing clicks before it do not raise the bar. It is an energy check and needs
+a steady bed: a beat in the music that lands on a message can pass it. The layer gets only the finished cut, so
 a style with a music bed keeps the bed under the chat's sounds in its mix) are measured and count toward the verdict; a flag that needs eyes
 (`text_legible`, `products_visible`) is reported as `not_applicable` with `found: "needs eyes"`, and a flag this
 version does not measure (one a later check layer adds; a style may declare it first) is `not_applicable` too.
@@ -95,7 +96,7 @@ timeline is not seen. From 1.4.2 a measured value outside these bounds warns; a 
 | `distinct_adjacent_shots` | The opening frames (0.05 s in) of every two scenes in a row differ by at least 6 (mean absolute grayscale difference on a 64 px wide copy; the same clip shown twice differs by encoder noise, about 1). Fewer than two scenes: `not_applicable`. |
 
 With `retained_body`, these flags see only the new opening: its cuts, shots and captions (a caption across the
-join into the kept video fails `captions_cross_cuts`).
+join into the kept video is a `captions_cross_cuts` warning).
 
 **Cost**: free.
 
