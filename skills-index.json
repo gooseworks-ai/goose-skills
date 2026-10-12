@@ -1,6 +1,6 @@
 {
   "version": "1.4.0",
-  "generated": "2026-10-10",
+  "generated": "2026-10-12",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -2027,12 +2027,13 @@
       "name": "create-image-gpt-image-fal",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Generate a single photoreal or designed image with OpenAI gpt-image via fal.ai. Supports gpt-image-1 (default, fixed sizes — the FAL fallback for Higgsfield's `gpt_image_2`) and gpt-image-2 (`openai/gpt-image-2`, custom output sizes up to 3840px). Routes to text-to-image or the edit variant depending on whether a reference image is provided. Use for photoreal character anchors, scene keyframes, and designed sheets (e.g. storyboards) where precise layout and legible text matter.",
+      "description": "Generate a single photoreal or designed image with OpenAI gpt-image through the GooseWorks FAL proxy or the optional Atlas Cloud provider. FAL remains the default. Supports gpt-image-1 and gpt-image-2, and routes to text-to-image or edit based on whether a reference image is provided.",
       "tags": "ads, design",
       "path": "skills/ads/capabilities/create-image-gpt-image-fal",
       "version": "1.1.0",
       "files": [
         "skills/ads/capabilities/create-image-gpt-image-fal/SKILL.md",
+        "skills/ads/capabilities/create-image-gpt-image-fal/scripts/atlas_provider.py",
         "skills/ads/capabilities/create-image-gpt-image-fal/scripts/fal_helpers.py",
         "skills/ads/capabilities/create-image-gpt-image-fal/scripts/generate.py",
         "skills/ads/capabilities/create-image-gpt-image-fal/scripts/media_proxy.py",
@@ -2041,6 +2042,7 @@
         "skills/ads/capabilities/create-image-gpt-image-fal/tests/human-test.md",
         "skills/ads/capabilities/create-image-gpt-image-fal/tests/sample-input.md",
         "skills/ads/capabilities/create-image-gpt-image-fal/tests/smoke-test.md",
+        "skills/ads/capabilities/create-image-gpt-image-fal/tests/test_atlas_provider.py",
         "skills/ads/capabilities/create-image-gpt-image-fal/tests/verifier.md"
       ],
       "metadata": {
