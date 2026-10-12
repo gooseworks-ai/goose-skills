@@ -34,6 +34,9 @@ import { CHK_CONTRAST_MIN, CHK_CONTRAST_OFFSET_S, CHK_CONTRAST_WARN, CHK_CUE_GUA
 const TARGET_LUFS = -14;
 const LUFS_TOLERANCE = 2;
 const LENGTH_SLACK_S = 0.5;
+// The server's limits for any finished video, with no slack: outside them the length fails, whatever the style.
+const ANY_MIN_S = 1;
+const ANY_MAX_S = 600;
 const ASPECT_TOLERANCE = 0.02;
 const MIN_SHORT_SIDE_PX = 720;
 const BLACK_MAX_S = 0.3;
@@ -203,7 +206,9 @@ export async function run(inputs, ctx) {
 
   const { min, max } = expect.duration_s;
   if (d === null) add('length', 'fail', { message: "The video's length could not be measured.", expected: `${min} to ${max} seconds`, found: 'unknown' });
-  else if (d < min - LENGTH_SLACK_S || d > max + LENGTH_SLACK_S) {
+  else if (d < ANY_MIN_S || d > ANY_MAX_S) {
+    add('length', 'fail', { message: d < ANY_MIN_S ? 'The video is too short.' : 'The video is too long.', expected: `${ANY_MIN_S} to ${ANY_MAX_S} seconds`, found: `${d.toFixed(1)} seconds` });
+  } else if (d < min - LENGTH_SLACK_S || d > max + LENGTH_SLACK_S) {
     add('length', 'warn', { message: d < min ? 'The video is too short.' : 'The video is too long.', expected: `${min} to ${max} seconds`, found: `${d.toFixed(1)} seconds` });
   } else add('length', 'pass', { found: `${d.toFixed(1)} seconds` });
 

@@ -8,7 +8,7 @@ is a `warn`: the video is still delivered and the warning travels with it. That 
 loudness, a still opening or held picture, `footage_moves` (measured low motion), `read_rate`, `cut_rate`,
 `min_shot`, `cuts_between_words`, `captions_cross_cuts`, `cut_contrast`, `distinct_adjacent_shots`,
 `ambience_floor` and a sparse `text_led` cut. These still fail: a file that does not play, a length that cannot
-be measured, the wrong size, no sound when speech is planned, missing captions, untranscribed or mismatched
+be measured or is outside 1 to 600 s, the wrong size, no sound when speech is planned, missing captions, untranscribed or mismatched
 speech, black or blank stretches, a wholly blank `text_led` cut, a missing end card, an unmarked
 `retained_body` opening, a message with no sound (`sounds_match_messages`), captions outside the safe zone, the
 logo checks as in 1.4.1, and frames that could not be read at all (`footage_moves`, `cut_contrast`,
@@ -19,7 +19,7 @@ logo checks as in 1.4.1, and frames that could not be read at all (`footage_move
 | Check | Fails when | Warns when |
 |---|---|---|
 | `plays` | ffprobe finds no picture, or a full decode reports an error | |
-| `length` | the length cannot be measured | outside `expect.duration_s` by more than 0.5 s |
+| `length` | the length cannot be measured, or is outside 1 to 600 s (the server's limits for any video, no slack) | outside `expect.duration_s` by more than 0.5 s |
 | `size` | not the plan's aspect within 2 %, or under 720 px on the short side | |
 | `sound` | no sound when speech is planned; a silent cut (at or below -50 LUFS, the line under which the sound layer passes a cut through unlevelled) with no speech planned (a style whose music is optional, with none chosen) is not applicable | integrated loudness outside -14 +/-2 LUFS |
 | `captions` | `expect.captions` and no timed caption with text inside the video (from the captions layer's `words`) | |
