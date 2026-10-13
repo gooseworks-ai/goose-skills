@@ -363,9 +363,13 @@ function kitCardColor(value, fallback) {
   return typeof value === 'string' && kitCardHex.test(value) ? value : fallback;
 }
 
+const kitCardMimeRe = /^[a-z0-9][a-z0-9.+-]*\/[a-z0-9][a-z0-9.+-]*$/i;
+
+/** A file as a data: URI. Its MIME type ends up in markup (img src, @font-face), so only a plain type/subtype is kept. */
 async function kitCardDataUri(file) {
   const bytes = await readFile(file.path);
-  return `data:${file.mime || 'application/octet-stream'};base64,${bytes.toString('base64')}`;
+  const mime = typeof file.mime === 'string' && kitCardMimeRe.test(file.mime) ? file.mime : 'application/octet-stream';
+  return `data:${mime};base64,${bytes.toString('base64')}`;
 }
 
 function kitCardFontFormat(file) {
