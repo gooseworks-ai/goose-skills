@@ -13,6 +13,9 @@ Kinetic type and designed cards, often over real product screenshots. Routing ro
 ## Routing rows
 Kinetic type / motion card · Presenter or UI still · UI / screen insert · Voiceover · Music · End card.
 
+## How it's made
+Agent-built path: motion with `create-kinetic-typography`, designed stills or cards with `goose-graphics`, real screenshots with FFmpeg overlay. html-frames is kit path only.
+
 ## Pacing
 - About 3 s per card (1.5-10 s); at most 10 words or 60 characters a card; 8-30 s total.
 - Voice-led: about 5 cuts per 10 s, on the phrase. Music-led: faster, on the beat. Don't mix the two.

@@ -1,12 +1,14 @@
 # Human version
 
-Pick every shot's tool from one table, so each scene uses a tested kit part and a model that part allows. Re-roll the cheapest layer that fixes the problem.
+Pick every shot's model, or its kit part on the kit path, from one table. Re-roll the cheapest layer that fixes the problem.
 
 ---
 
 # Agent version
 
-Use this table in three places: the design brief writes one routing line per scene (`scene N → <row> → <part@version or fal model id>`), create-clips makes each scene on its row, and edit-clip re-rolls on the same row. Then open the genre card for the brief:
+The two paths are defined in capabilities.md at the package root. Agent-built path (the default): use the fal model id column. Kit path only: the part column. Rows with no model, agent-built: `create-kinetic-typography` for type, `goose-graphics` for cards and stills, FFmpeg overlay for screenshots and logos.
+
+Use this table in three places: the design brief writes one routing line per scene (`scene N → <row> → <fal model id>`, plus `part@version` on the kit path), create-clips makes each scene on its row, and edit-clip re-rolls on the same row. Then open the genre card for the brief:
 
 - AI creator or UGC talking video: [ai-creator-ugc](genres/ai-creator-ugc.md)
 - Kinetic type or designed motion cards: [motion-graphics](genres/motion-graphics.md)
@@ -22,9 +24,10 @@ A shot with no row is an open decision for the operator, not a free model choice
 | Narrated creator scene montage | `video-h3max@1.1.0` (stills mode) | `minimax/h3-max/reference-to-video` | One still per scene is the first frame; write motion only; clips 4-15 s timed to the voice; drop native sound when the voice comes from another step | Animated black bars; product redrawn | $$$ | Each clip covers its scene; product matches its photo |
 | Two-person dialogue / street interview | `video-h3max@1.1.0` (take mode) | `minimax/h3-max/reference-to-video` | Native dialogue with a speaker per beat; at most 4 takes of 8 beats; a spoken beat needs words ÷ pace + 0.5 s. Never send a photoreal person still to Seedance | A line from the wrong mouth; drift at take ends | $$$ | Each line comes from the right speaker; transcript matches |
 | Seated two-person talk | `cast-plate@1.1.0` → `lipsync-veed@1.0.0` → `dialogue-cut@1.0.1` | `openai/gpt-image-2/edit`, `veed/fabric-1.0` | One plate for the room (one still per person puts them in different rooms); faces neutral, mouths closed; 2-3 people with different looks | Twins; mouth smear | $$ | Singles differ; each clip within 0.5 s of its audio |
-| Creator B-roll, no speech | `video-kling@1.0.0` | `fal-ai/kling-video/v2.5-turbo/pro/image-to-video` | Motion only, the still carries the look; one camera move; "steady locked camera, no shake"; 5 or 10 s | Morphing hands or faces; content the prompt never asked for | $$ | Watch the whole clip against its still; drop or mask invented content |
+| Creator B-roll, no speech | `video-kling@1.0.0` | `fal-ai/kling-video/v2.5-turbo/pro/image-to-video` | Motion only, the still carries the look; one camera move; "steady locked camera, no shake"; Kling makes only 5 s or 10 s clips; trim in the edit | Morphing hands or faces; content the prompt never asked for | $$ | Watch the whole clip against its still; drop or mask invented content |
 | Lipsync onto an existing take or still | `lipsync-veed@1.0.0` | `veed/fabric-1.0` | Neutral, closed-mouth, head-and-shoulders still; one approved audio line per clip; 720p | Mouth smear on hard consonants | $$ | Length within 0.5 s of the audio; watch the mouth |
 | Cast anchor portrait | `image-gpt-image-2@1.1.2` (one person); `cast-plate@1.1.0` (2-3 in one room) | `openai/gpt-image-2`, `openai/gpt-image-2/edit` | Matte natural skin, frontal gaze, plain background, deep focus; state each person's ethnicity in group shots | Waxy skin; blurred background; face under 300 px | $ | Crop the face, enlarge 2× and inspect |
+| Set / world reference still | `image-gpt-image-2@1.1.2` | `openai/gpt-image-2` | Empty set, no people; even light, deep focus; the reference for every shot there | The room changes between scenes | $ | Compare each scene's background with it |
 | Presenter or UI still | `image-gpt-image-2@1.1.2` + `overlay@1.0.0` | `openai/gpt-image-2/edit` | Leave screens blank or turned away; put the real screenshot on with overlay; no words in the prompt | Garbled labels; a border or letterbox | $ | Read every string on the frame |
 | Photoreal keyframe / product hero | `image-gpt-image-2@1.1.2` | `openai/gpt-image-2/edit` | Send the real product photo in the edit request; describe the action and set, not the product; one colourway | Product redrawn (logo, shape, colour); extra hands | $ | Product matches its photo at 2× |
 | Product photo overlay | `overlay@1.0.0` | — | Real product photo or logo (PNG, JPEG, WebP) over the scenes that name it; up to 8 items | SVG logo skipped; covers a face | free | Watch every window |

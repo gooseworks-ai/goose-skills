@@ -192,7 +192,7 @@ On rejection: leave `master-polished.mp4` in place for operator inspection; do n
 - **Watch pass returns generic feedback** — re-run with stricter prompt emphasizing "specific timecode required for every finding."
 - **Dispatcher fails on a P0 atom** — /polish surfaces the failure, leaves the original master intact, does not advance to Step 8.
 - **The polished master is actually worse on a metric** — e.g. loudnorm pumped a scene into clipping. Flag this in the applied.md, do NOT auto-swap; require human confirmation.
-- **Re-stitch via `edit-video` introduces drift** — captions or audio shift. Mitigation: prefer a single caption re-burn with `caption-burn` (superseded; agent-built path only) over a full `edit-video` re-run when only captions changed.
+- **Re-stitch via `edit-video` introduces drift** — captions or audio shift. Mitigation: prefer a single caption re-burn with `caption-burn` (superseded; agent-built path; the kit path uses captions-layer) over a full `edit-video` re-run when only captions changed.
 - **Idempotence:** running /polish twice should produce a second polish-notes file with near-empty proposal. If the second pass produces an equally heavy proposal, the first pass either didn't actually fix things or the proposer is hallucinating.
 
 ## Relationship to other skills
