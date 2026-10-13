@@ -5,7 +5,7 @@ description: Watch the explicitly selected cut with complete-video frame and aud
 
 # Human version
 
-Review the exact cut at its current stage, record what a viewer receives, and route each problem to the smallest useful revision. Required playback, listening and evidence remain explicit; technical cleanliness alone cannot approve a confused story.
+Review the exact cut at its current stage, record what a viewer receives, and route each problem to the smallest useful revision. Required frame evidence remains explicit, and GooseWorks checks the final's sound and words when you report complete; technical cleanliness alone cannot approve a confused story.
 
 ---
 
@@ -25,7 +25,7 @@ This skill never edits the video. It only writes notes. The aggregate review-not
 
 ## Review suite (parallel dispatch)
 
-Stage 8 has five phases. The names below identify review responsibilities, not executable commands. Run them sequentially or with available independent reviewers; preserve every check and its evidence. Phase 7d prevents unsupported visual claims, and Phase 7e requires a complete watch.
+Stage 8 has five phases. The names below identify review responsibilities, not executable commands. Run them sequentially or with available independent reviewers; preserve every check and its evidence. Phase 7d prevents unsupported visual claims, and Phase 7e requires reading every frame.
 
 **Phase 7a — deterministic (run in parallel):**
 - Run `python3 scripts/qc_evidence.py VIDEO.mp4 EVIDENCE_DIR` for the real probe, 2 fps frame set, decoded audio and loudness/tail diagnostics. Separately measure per-scene RMS with FFmpeg astats and compare cut timestamps against actual word timings; the helper does not claim to perform those comparisons.
@@ -47,7 +47,7 @@ Every check is defined under "Check rubrics" below. They are checks you run with
 - **Platform fit**
 - **UGC family only**:
   - **UGC shotcraft** — inspect actual shot choices, proof/reading windows and joins against approved intent. Compare actual picture cuts and time-based direct-face share (including close-ups) with the current plan; count fractions and motion diagnostics stay distinct. Use explicit agreed recipe targets only, never universal cut/face quotas. Apply this rubric with actual timeline/media tools even when no separate reviewer package is installed.
-- **All spoken formats, including real recorded/native speech:** perform the speech-performance responsibility on actual isolated takes and final mix (pronunciation, rhythm, pauses/emphasis, joins and final consonants). Use the actual fetched voice-performance reviewer when available, or the documented listening rubric with real tools; no named tool is assumed installed. A transcript/score cannot replace listening.
+- **All spoken formats, including real recorded/native speech:** perform the speech-performance responsibility on actual isolated takes before assembly (pronunciation, rhythm, pauses/emphasis, joins and final consonants). Use the actual fetched voice-performance reviewer when available, or the documented listening rubric with real tools; no named tool is assumed installed. For the final mix, GooseWorks checks sound and spoken words when you report complete (the final file check in `capabilities.md`).
 - NOTE: the hook-strength and synthetic-persona checks ran earlier in State 7.5 (scroll-test gate). Re-run here only on revision passes or if first-stitch is bypassed.
 
 **UGC gate (overrides Phase 7c status when `concept_format` is in the UGC family):** APPROVED requires ALL of:
@@ -55,7 +55,7 @@ Every check is defined under "Check rubrics" below. They are checks you run with
 - Identity verdict 10 or 7 = keep; 4 or 0 = re-roll. `continuity_break` must be false
 - World-consistency score ≥ 8.5 AND no axis < 6
 - Shotcraft review has complete temporal evidence and no unresolved proof, readability, action/continuity or agreed-recipe defect. An optional score, cut density or face share cannot approve or reject the cut by itself; preserve deliberate calm and current authorized exceptions.
-- Actual speech-performance/listening checks are complete with no required unresolved defect, including real_voice; synthetic-tell rubric applies where relevant and does not replace this gate.
+- Speech-performance checks on the isolated takes are complete with no required unresolved defect, including real_voice; synthetic-tell rubric applies where relevant and does not replace this gate.
 
 Any one of these failing sets status to NEEDS REVISION regardless of other axes. This is a prior review v3 lesson: the standard 6-axis rubric scored that cut as shippable; the UGC-specific checks would have blocked it. The aggregated gate verdict is persisted into `review_issues` and reflected in `project_state`.
 
@@ -69,7 +69,7 @@ Any one of these failing sets status to NEEDS REVISION regardless of other axes.
 
 ### Phase 7e — complete watch (required)
 
-Read the entire 2 fps frame sequence and listen to the complete actual audio; also obtain and compare the actual transcript for speech. Continuous full-speed playback is required to check motion, timing and perceived mix; if the playback/listening capability is unavailable, mark that gate incomplete rather than treating the frame sequence as equivalent. Save observations for every scene and the first-to-last playback duration. A storyboard, clip thumbnails, metadata, or only a few frames cannot clear this gate.
+Read the entire 2 fps frame sequence from `scripts/qc_evidence.py` and check it against the storyboard: every scene present and in order, with the approved product, text, captions and ending. Save observations for every scene and the measured duration. GooseWorks checks sound and spoken words when you report complete (the final file check in `capabilities.md`); if complete is refused, fix the reasons it gives. A storyboard, clip thumbnails, metadata, or only a few frames cannot clear this gate.
 
 ## Inputs
 
@@ -80,14 +80,14 @@ Read the entire 2 fps frame sequence and listen to the complete actual audio; al
 
 ## Workflow
 
-1. Branch by stage. For **concept**, read the sourced brief and available truthful proof, answer the Concept questions in the editorial guide and record “no cut yet; no received-message/playback verdict claimed”; skip cut-dependent checks until actual media exists. For **rough/fine/final**, resolve the exact candidate and preserve its source identity. Before loading its intended story, play the complete cut and save the received-message observation: offer, buyer, promise, proof, payoff, action and uncertainties with timestamps. A reviewer who already knows the brief labels this context-aware; no invented fresh-viewer testimony.
+1. Branch by stage. For **concept**, read the sourced brief and available truthful proof, answer the Concept questions in the editorial guide and record “no cut yet; no received-message/playback verdict claimed”; skip cut-dependent checks until actual media exists. For **rough/fine/final**, resolve the exact candidate and preserve its source identity. Before loading its intended story, read the complete frame sequence and save the received-message observation: offer, buyer, promise, proof, payoff, action and uncertainties with timestamps. A reviewer who already knows the brief labels this context-aware; no invented fresh-viewer testimony.
 For concept-only review, record its supported/unsupported promise and decision, then continue at strengths/issues/status below; do not run cut-dependent Steps 3–7 or claim their verdicts.
 
 2. Then read `<video_folder>/design_brief`, `<video_folder>/implementation_brief`, `<video_folder>/locked_script` and current brand evidence. Compare the received message with the intended story; save mismatches even if every technical check passes.
 3. **Run every applicable Phase 7a responsibility** — save the measured or rubric evidence in a working check list. Every visual finding includes its timecode and actual frame path.
 4. **Decide Phase 7b set** — by default run concept-landing + pacing-rhythm + brand-fit + platform-fit (hook-strength + synthetic-persona already ran in State 7.5). Apply the selected rubrics and collect their actual evidence.
 5. **Run Phase 7d** — verify each claim against the actual frame and record verified, rejected or incomplete. Exclude rejected claims; block approval on incomplete required checks.
-6. Use complete-video frame and audio review to actually watch the video file (this is the focused follow-up to the initial received-message pass). Capture:
+6. Read the complete frame sequence again (this is the focused follow-up to the initial received-message pass). Capture:
    - Total runtime
    - Per-scene observations the atoms missed
    - Overall feel / coherence
@@ -122,7 +122,7 @@ Examples of `fix:` lines:
 11. Consolidate critical findings into a diagnosis, acceptance conditions and smallest sufficient return route. Concept/script repairs return to their current gate; missing proof goes to production; correct-but-misordered material to edit; isolated defects to local repair. Save cheap alternatives and the decision owner for unresolved taste/conflicts.
 12. Determine **next-pass status**:
    - **APPROVED** — this stage's questions and required evidence are cleared; advance to the next applicable stage. An approved rough cut still needs fine/final review. Fine review may advance to State 9 polish; the actual captioned exports need fresh final QC.
-   - **INCOMPLETE** — required playback/listening, source or evidence is unavailable; save what was checked and the missing capability. Do not convert absence into approval or a speculative repair.
+   - **INCOMPLETE** — required frames, source or evidence is unavailable; save what was checked and the missing capability. Do not convert absence into approval or a speculative repair.
    - **NEEDS REVISION** — list which P0/P1 issues must be addressed before next review. Only if the diagnosis is local repair and every required NEEDS REVISION item has an authorized deterministic fix line, the orchestrator may shortcut by calling `auto-fix-from-review-notes` directly instead of looping back to State 5/6.
 13. Write `<video_folder>/review-notes/<idx>-<timestamp>.md` (e.g. a dated review record). Format below.
 
@@ -134,7 +134,7 @@ Examples of `fix:` lines:
 - **Cut reviewed:** <path, immutable render/version ID, checksum>
 - **Stage:** concept | rough | fine | final
 - **Received message:** <recorded before loading the brief, or labeled context-aware>
-- **Coverage:** <continuous playback and full audio evidence, gaps, transcript where applicable>
+- **Coverage:** <frames read, gaps, transcript where available>
 - **Diagnosis / return route:** <cause, smallest sufficient revision and decision owner>
 - **Runtime:** <s>
 - **Reviewer:** <actual reviewer and context-aware/independent status>
@@ -262,13 +262,13 @@ Run each with real frames, audio and FFmpeg. Save the evidence with timecodes.
 - The result is a hypothesis, not a measured outcome.
 
 **Voice authenticity** (all spoken formats, including real recorded voice).
-- Listen at 1.0× to the isolated takes and the final mix.
+- Listen at 1.0× to the isolated takes. GooseWorks checks the final's words when you report complete.
 - Judge intelligibility (exact words, word endings, masking), phrasing, pace and intent, emphasis, and continuity (timbre, room tone, level, breaths).
 - Check every join with the phrases on either side. Re-perform only the affected phrase.
 
 ## Quality Checks
 
-- Review actually used the complete-video evidence/watch capability (not just the storyboard).
+- Review read the complete frame evidence (not just the storyboard).
 - Per-scene notes exist for every scene.
 - Every issue has a diagnosis and explicit concept/script, production, sequence edit or local repair route; unresolved taste has alternatives and a decision owner.
 - Original source identity, received message and stage-specific decision are recorded. A technically clean incoherent cut remains NEEDS REVISION.
