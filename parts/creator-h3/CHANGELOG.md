@@ -1,5 +1,9 @@
 # creator-h3
 
+## 1.2.1
+
+- Measured line spans: inside each take, the boundary between two lines goes on a silence (0.12 s or longer) heard between its first and last word, so each scene starts on its first word and ends after its last. 1.2.0 spread the lines' estimated lengths over the take's speech, so a scene start (where a cut-footage insert lands when the transcript does not re-time scenes) could fall mid-word or early. A boundary with no silence in reach keeps the 1.2.0 estimate. Takes, joins, the reel and `join: planned` are unchanged.
+
 ## 1.2.0
 
 - Measured joins (`join: measured`, the default): each later take is placed so its first word comes 0.25 s after the previous take's last word, measured with ffmpeg's silence detector; the reel ends 0.6 s after the last word. Line spans are spread over each take's measured speech. `join: planned` keeps 1.1.0's final schedule exactly (its onset reading and join floors). Measured joins keep 1.1.0's floors too (two dissolves after the previous take's start; 0.05 s per earlier line plus 0.15 s from the reel start), and the cutaway scene still starts at or before every join.

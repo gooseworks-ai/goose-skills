@@ -57,7 +57,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'creator-h3',
-  version: '1.2.0',
+  version: '1.2.1',
   kind: 'generate_video',
   title: 'Talking creator (H3)',
   summary: 'An AI creator (plan cast or a character) saying the approved lines to camera as one track: H3 takes joined on their measured speech with short dissolves, one voice. Or silent H3 clips, one per picked scene, from its keyframe.',
@@ -110,7 +110,7 @@ export const manifest = {
         enum: ['none', 'cutaways'],
       },
       footage: { description: 'plan.footage: an entry\'s scene_id makes that scene a cutaway.', type: 'array', maxItems: 20, items: footageEntry },
-      join: { description: 'talk: measured (default) places each later take so its first word comes 0.25 s after the previous take\'s measured last word, and ends the reel 0.6 s after the last word; planned keeps 1.1.0\'s estimated schedule.', enum: ['measured', 'planned'] },
+      join: { description: 'talk: measured (default) places each later take so its first word comes 0.25 s after the previous take\'s measured last word, and ends the reel 0.6 s after the last word; each line\'s span ends on the silence heard after it inside its take, where one is in reach. planned keeps 1.1.0\'s estimated schedule.', enum: ['measured', 'planned'] },
       images: {
         description: 'clips: the keyframes by scene id (step.<keyframes>.images). Each picked scene\'s clip opens on its keyframe.',
         type: 'array',
