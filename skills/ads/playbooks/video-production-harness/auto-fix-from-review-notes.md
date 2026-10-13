@@ -54,16 +54,15 @@ These are execution parameters for the agent following this procedure; this pack
 3. **Filter** to apply-set; preserve order within priority.
 4. **Group** fixes by atom — minimize re-encode passes (multiple caption fixes → one re-burn, etc.).
 5. **Order** groups by actual dependency. Picture/timing/source or VO changes run before downstream mix, word timings and captions; rebuild affected dependents. For a local finishing-only pass with stable timing, the order is:
-   1. audit-assets-preflight (validate first; everything else assumes inputs are real bytes)
-   2. mix-master / normalize-loudness (audio first; visual stays untouched). mix-master supersedes normalize-loudness when the full protocol is needed.
-   3. whisper-test-mix (verifies audio result; loop back to mix-master if any line fails)
-   4. fix-caption-overflow / retime-captions-to-words (operate on SRT, no media yet)
-   5. grade-consistency-pass (per-clip)
-   6. extend-hold (end-card)
-   7. append-tail-fade (after everything else)
-   8. add-captions-burn (re-mux captions into final master if SRT changed)
-   9. verify-caption-render (frame-extract proof captions actually rendered)
-   10. verify-frame-claim (run over any unverified visual claims from review-notes)
+   1. Preflight check from `preflight-audit.md` (validate first; everything else assumes inputs are real bytes)
+   2. Mix and loudness (audio first; visual stays untouched): `amix` with voice ducking, then `loudnorm=I=-14:TP=-1.5:LRA=11`
+   3. Whisper test of the mix: transcribe it and confirm every line is heard; loop back to step 2 if any line fails
+   4. Caption overflow and retime to word timings (operate on the cue file, no media yet)
+   5. End-card hold: `tpad=stop_mode=clone:stop_duration=<s>`
+   6. Tail fade: `afade=t=out` and `fade=t=out` (after everything else)
+   7. Caption re-burn with `caption-burn` (superseded; agent-built path; the kit path uses captions-layer) if the cues changed
+   8. Caption render check from `review-video.md` (proof the captions actually rendered)
+   9. Frame-claim check from `review-video.md` (over any unverified visual claims in the notes)
 6. **Archive** the canonical target file before any atom that mutates it: copy `target → _archive/<name>-pre-fix-<ts>.<ext>`.
 7. **Execute** each resolved supported repair. Capture its actual inputs, output, command/capability schema, evidence and exit/job status. Never require a fabricated tool manifest.
 8. **On P0 failure** with `--abort-on-p0-failure`, stop and emit a partial applied.md.

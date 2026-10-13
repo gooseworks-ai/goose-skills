@@ -2,7 +2,7 @@
 
 A new opening must lead into the body's real proof and payoff. Keep a compatible hook test local to the opening; a new promise needs a script/body proposal. Review visual restyles too, and compare complete videos before choosing.
 
-Use the existing [[composes::render-hook-replacement]] implementation and [[composes::create-hook-variant-pack]] when actually available. This guide supplies editorial decisions; it does not duplicate their renderer or storage contract.
+Use the existing [[composes::render-hook-replacement]] implementation when actually available. This guide supplies editorial decisions; it does not duplicate their renderer or storage contract.
 
 ---
 

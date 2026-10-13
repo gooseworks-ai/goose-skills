@@ -32,7 +32,7 @@ The output is a single markdown file. No assets are generated here.
    - Beats that *tell* instead of *show* (replace with on-screen action)
    - Forgettable end-card CTAs (propose 2–3 alternatives)
    - Unnecessary characters or scenes (cut what doesn't add information)
-4. **Detect the concept type and propose scaffolding.** If the concept involves a transformation, comeback, journey, ramp-up, before/after, or skill acquisition, **default to day-tracker / number-progression scaffolding** (DAY 1 / DAY 5 / DAY 14 / NOW). The v03 LEARNINGS identified this as the strongest narrative scaffolding for short-form transformation arcs; surfaced too late, it cost 5 script revisions. Propose it explicitly in the brief and let the operator accept, modify, or opt out.
+4. **Detect the concept type and propose scaffolding.** If the concept involves a transformation, comeback, journey, ramp-up, before/after, or skill acquisition, **default to day-tracker / number-progression scaffolding** (DAY 1 / DAY 5 / DAY 14 / NOW). An earlier run identified this as the strongest narrative scaffolding for short-form transformation arcs; surfaced too late, it cost 5 script revisions. Propose it explicitly in the brief and let the operator accept, modify, or opt out.
 5. Offer 2–3 bigger swings (tonal shifts, structural changes, scope expansions) and let the user choose.
 6. Ask one clarifying question if a key creative axis is unresolved (e.g. target audience, brand voice).
 7. Write `<output_folder>/idea_brief` with:
