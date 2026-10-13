@@ -26,8 +26,8 @@ Writes a labeled scene candidate and updates `clip_review` through the binding. 
 - `<video_folder>` (required)
 - `<scene_index>` (e.g. `5` or `09`)
 - `<edit_type>` — one of:
-  - `regenerate-keyframe` — new image with revised prompt (`openai/gpt-image-2/edit` photoreal, `fal-ai/nano-banana/edit` cartoon)
-  - `re-roll-motion` — same keyframe, new `fal-ai/veo3.1/fast/image-to-video` animation prompt
+  - `regenerate-keyframe` — new image with revised prompt (the scene's row in `references/shot-routing.md`)
+  - `re-roll-motion` — same keyframe, new animation prompt on the scene's routing row
   - `swap-keyframe-and-animate` — new image AND new motion
   - `add-post-effect` — FFmpeg pass (vignette, color grade, slow-mo, speed-up, crop, sticker comp)
   - `comp-felt-mascot` — overlay the photographic mascot on top of a cartoon plate
@@ -49,7 +49,7 @@ Before execution, record the impact row from [the editorial review guide](refere
 **regenerate-keyframe**
 1. Compose a new prompt that addresses the issue (e.g. "less dark", "Tom's red shirt clearer", "wider framing"). Keep the cartoon style descriptor block.
 2. Route through the same provider as the original (read original `meta.json`):
-   - `gateway: "fal"` (default) → call the host image operation with `fal-ai/nano-banana/edit` (cartoon) or `openai/gpt-image-2/edit` (photoreal). On detected failure, reconcile the job and use only an explicitly supported approved-budget fallback (same rules as `create-clips`).
+   - `gateway: "fal"` (default) → see `references/shot-routing.md`; reuse the scene's row. On detected failure, reconcile the job and use only an explicitly supported approved-budget fallback (same rules as `create-clips`).
    - `gateway: "higgsfield"` (optional; only if the host has it) → the same model family through that host.
 3. Save → `generated/keyframes/scene-NN.png`. Then animate with the existing motion prompt (using the same provider — see re-roll-motion below).
 
@@ -57,7 +57,7 @@ Before execution, record the impact row from [the editorial review guide](refere
 1. Use the existing keyframe as the actual model's starting-image field.
 2. Compose a new motion prompt — emphasize the action that didn't land.
 3. Route through the same provider as the original:
-   - `gateway: "fal"` (default) → call the host video operation with the original model (`fal-ai/veo3.1/fast/image-to-video` etc.). On detected failure, reconcile the job and use only an explicitly supported approved-budget fallback.
+   - `gateway: "fal"` (default) → see `references/shot-routing.md`; reuse the scene's row and original model. On detected failure, reconcile the job and use only an explicitly supported approved-budget fallback.
    - `gateway: "higgsfield"` (optional; only if the host has it) → the original model through that host.
 4. Download → `clips/scene-NN.mp4`.
 

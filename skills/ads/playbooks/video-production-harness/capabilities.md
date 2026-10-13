@@ -18,8 +18,8 @@ The host may combine review surfaces while preserving decisions. Concept, design
 
 Every scene is made on one of two paths. "Agent-built path" and "kit path" in any file mean exactly this:
 
-- **Agent-built path (today's default).** You make each scene by calling catalog skills through the host: `create-image-fal`, `create-video-fal`, `create-vo-elevenlabs`, `create-music-elevenlabs`, `create-kinetic-typography`, `goose-graphics`, `caption-burn` and `stitch-videos-ffmpeg`. Pick each scene's model as the detailed steps say.
-- **Kit path.** Only when the host's entry skill offers it. The host's video kit renders each scene from published kit parts (`name@version`). If the entry skill doesn't offer it, you are on the agent-built path. Never run a template's kit yourself and call the result custom.
+- **Agent-built path (today's default).** You make each scene by calling catalog skills through the host: `create-image-fal`, `create-video-fal`, `create-vo-elevenlabs`, `create-music-elevenlabs`, `create-kinetic-typography`, `goose-graphics`, `caption-burn` and `stitch-videos-ffmpeg`. Pick each scene's model from the fal model id column of [the shot-routing guide](references/shot-routing.md).
+- **Kit path.** Only when the host's entry skill offers it. The host's video kit renders each scene from the guide's part column (`part@version`). If the entry skill doesn't offer it, you are on the agent-built path. Never run a template's kit yourself and call the result custom.
 
 Backticked kebab-case skill names in these files, such as `create-image-fal`, are catalog skills: fetch each with `catalog_fetch` (type skill) when a step needs it. Option and mode values, kit part ids and file names are not skills.
 
