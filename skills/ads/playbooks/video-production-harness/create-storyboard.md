@@ -80,7 +80,11 @@ kit: {
 
 - `seed`: the style `catalog_fetch` returned for the nearest template.
 - `style`: the seed's execution fields. Change only the duration, the scenes and the timeline order, and only with published parts. `assets` may name only the seed's own fonts and frames. Catalogue fields always come from the seed.
-- `plan`: the approved scenes, cast, voice and music, written exactly as a template video's plan takes them.
+- `plan`: the approved scenes, cast, voice and music, written exactly as a template video's plan takes them. It must match the reviewed draft, or the kit refuses it (`kit_invalid`):
+  - one kit scene per storyboard scene, in the same order;
+  - each scene's `line` is that scene's `text` (the spoken words), and its `on_screen` is its `caption`;
+  - the same voice: `plan.voice` is the voice selected for `narrator`, and each speaking cast member's `voice_id` is the one selected for their cast key. Select no voice the kit won't use;
+  - reused pictures are approved ingredients, by `asset_id`, and each one's `url` is that media file's own link. A saved character's photo must also be one of the ingredients.
 - Add `asset_id` to each approved ingredient you reuse (cast still, scene still, footage), and point the plan's `*_asset_id` fields at those ids.
 - Never edit frames, fonts or prompt files. Never send server-only fields (`image`, `image_locked`, `stills`, `fix`, `takes`).
 - Price it like any render: send each scene's equivalent paid request (its routing row's fal model) with `estimate_only=1` and sum them into `render_estimate`; the kit charges the same rate. No redo allowance: the kit runs its own checks, so `render_estimate` carries no `reroll_allowance`.

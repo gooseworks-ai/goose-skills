@@ -36,9 +36,9 @@
       "sha256": "a0678732c5b8938bcb78029b655723c93688fe08dc04f4b8d2a8316250eb31b2"
     },
     "create-storyboard.md": {
-      "bytes": 12905,
-      "catalog_sha256": "aa88f14fec9beb988fe7360ee34a7d99e9bd9d8dabce0d1cf64d9e3516be8760",
-      "sha256": "aa88f14fec9beb988fe7360ee34a7d99e9bd9d8dabce0d1cf64d9e3516be8760"
+      "bytes": 13507,
+      "catalog_sha256": "10b2ec4862ab3e09eb2f3c99c77f38e01ec87ae05b7655c7fb282d74fdc284c0",
+      "sha256": "10b2ec4862ab3e09eb2f3c99c77f38e01ec87ae05b7655c7fb282d74fdc284c0"
     },
     "edit-clip.md": {
       "bytes": 8856,
@@ -162,8 +162,8 @@
     },
     "skill.meta.json": {
       "bytes": 652,
-      "catalog_sha256": "4fe7884e527e1f01853f6110bc3cd817569fa00ca36bfcc558a015ff98c3f7c0",
-      "sha256": "4fe7884e527e1f01853f6110bc3cd817569fa00ca36bfcc558a015ff98c3f7c0"
+      "catalog_sha256": "92f7fec827793e0e374b892368ae2076148c0a58a327f880e58ce59d514a3c7d",
+      "sha256": "92f7fec827793e0e374b892368ae2076148c0a58a327f880e58ce59d514a3c7d"
     },
     "wrap-session.md": {
       "bytes": 17362,
@@ -192,7 +192,7 @@
   ],
   "schema_version": 1,
   "slug": "video-production-harness",
-  "source_commit": "155a2d7575ce147896b17221baec996680a34322",
+  "source_commit": "e30aa5cced3f2be569f1d0fda33a1cd481b36e75",
   "source_files": {
     "SKILL.md": {
       "sha256": "38fc6a1d561e28ec8157b3b2506ec0a79b74dc1e3dba2b4fc9e3ad76a813c6c3",
@@ -223,7 +223,7 @@
       "source": "create-design-brief.md"
     },
     "create-storyboard.md": {
-      "sha256": "aa88f14fec9beb988fe7360ee34a7d99e9bd9d8dabce0d1cf64d9e3516be8760",
+      "sha256": "10b2ec4862ab3e09eb2f3c99c77f38e01ec87ae05b7655c7fb282d74fdc284c0",
       "source": "create-storyboard.md"
     },
     "edit-clip.md": {
@@ -327,6 +327,6 @@
       "source": "wrap-session.md"
     }
   },
-  "source_hash": "286522b89e766e55746aa58e8cad9e8afb6517ffac334a55b7b7195c44a5b7b6",
-  "source_version": "3-286522b89e76"
+  "source_hash": "a707b9b2fb642d3c48c6bd322e3b609fb1bfe691bc7e65238dbf4712c7f45591",
+  "source_version": "3-a707b9b2fb64"
 }
