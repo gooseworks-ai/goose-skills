@@ -26,14 +26,14 @@
       "sha256": "24fb7d773adb4457cfbe6ae69e9d491c36ae34b78e06e4b084672c97e9226c55"
     },
     "create-clips.md": {
-      "bytes": 24048,
-      "catalog_sha256": "ce411b2dedf44c31d47b77f496aaf3f3132241960c4ecb5dd8c894b487f2f208",
-      "sha256": "ce411b2dedf44c31d47b77f496aaf3f3132241960c4ecb5dd8c894b487f2f208"
+      "bytes": 24674,
+      "catalog_sha256": "f7504cc3dd423604a84f71aa251566fdd317757bfe6502d20c39ba58674eacf8",
+      "sha256": "f7504cc3dd423604a84f71aa251566fdd317757bfe6502d20c39ba58674eacf8"
     },
     "create-design-brief.md": {
-      "bytes": 15909,
-      "catalog_sha256": "c5e60a65e455504d01462ddaad4454bcc9675527aa4670ddd3dc14e96af85d15",
-      "sha256": "c5e60a65e455504d01462ddaad4454bcc9675527aa4670ddd3dc14e96af85d15"
+      "bytes": 16356,
+      "catalog_sha256": "f6f55d886afb94d810325f15972874bff73da6d0a974da4fe916af22e973a1fb",
+      "sha256": "f6f55d886afb94d810325f15972874bff73da6d0a974da4fe916af22e973a1fb"
     },
     "create-storyboard.md": {
       "bytes": 10786,
@@ -162,8 +162,8 @@
     },
     "skill.meta.json": {
       "bytes": 652,
-      "catalog_sha256": "2b7a3ea5c4fadf1f095eaca0aa1678792da8f4e9c2f47894c6a381eda301769d",
-      "sha256": "2b7a3ea5c4fadf1f095eaca0aa1678792da8f4e9c2f47894c6a381eda301769d"
+      "catalog_sha256": "c367024752da7aea891c6ee4d493730f3f389784d1bc453fb34503907684db09",
+      "sha256": "c367024752da7aea891c6ee4d493730f3f389784d1bc453fb34503907684db09"
     },
     "wrap-session.md": {
       "bytes": 17362,
@@ -192,7 +192,7 @@
   ],
   "schema_version": 1,
   "slug": "video-production-harness",
-  "source_commit": "3dcf7268d5d8330ac106b066f5000c94c103cee6",
+  "source_commit": "f9bfca5efe82df18ad1453b646104e49360af554",
   "source_files": {
     "SKILL.md": {
       "sha256": "38fc6a1d561e28ec8157b3b2506ec0a79b74dc1e3dba2b4fc9e3ad76a813c6c3",
@@ -215,11 +215,11 @@
       "source": "capabilities.md"
     },
     "create-clips.md": {
-      "sha256": "ce411b2dedf44c31d47b77f496aaf3f3132241960c4ecb5dd8c894b487f2f208",
+      "sha256": "f7504cc3dd423604a84f71aa251566fdd317757bfe6502d20c39ba58674eacf8",
       "source": "create-clips.md"
     },
     "create-design-brief.md": {
-      "sha256": "c5e60a65e455504d01462ddaad4454bcc9675527aa4670ddd3dc14e96af85d15",
+      "sha256": "f6f55d886afb94d810325f15972874bff73da6d0a974da4fe916af22e973a1fb",
       "source": "create-design-brief.md"
     },
     "create-storyboard.md": {
@@ -327,6 +327,6 @@
       "source": "wrap-session.md"
     }
   },
-  "source_hash": "f772f2351ff894619416f7eae0f9510b66d4e3ee2ba208d612cfa8c842d0eb34",
-  "source_version": "3-f772f2351ff8"
+  "source_hash": "95e6bc319ed4ab47c07260853203955332d64054f445c0fabd69d91f28785b82",
+  "source_version": "3-95e6bc319ed4"
 }
