@@ -3396,6 +3396,71 @@
       ]
     },
     {
+      "id": "image-nano-banana",
+      "version": "1.3.0",
+      "interface": 1,
+      "kind": "generate_image",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "scale",
+            "setsar",
+            "format",
+            "hstack",
+            "crop"
+          ],
+          "encoders": [
+            "png",
+            "rawvideo"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "fal-ai/nano-banana"
+          },
+          {
+            "provider": "fal",
+            "model": "fal-ai/nano-banana/edit"
+          }
+        ],
+        "disk_mb": 200
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "image",
+        "measure": {
+          "from": "/images/*",
+          "as": "count"
+        },
+        "rates_usd": {
+          "fal-ai/nano-banana": 0.039,
+          "fal-ai/nano-banana/edit": 0.039
+        },
+        "model_from": "/model"
+      },
+      "determinism": "provider",
+      "path": "parts/image-nano-banana/1.3.0",
+      "files": {
+        "README.md": "a975796adba36edd537633b2ea50893c2adbbb8f3935cf41a87a32523a815320",
+        "part.json": "1641faa2587b8c5bb67822e9ef18745fa89945336665853384042f758adfc628",
+        "part.mjs": "aa421a05526ebba28cbe4addafeba31ac6f8e68bbd10d0d708c026afd2b97fd4"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "fal-ai/nano-banana"
+        },
+        {
+          "provider": "fal",
+          "model": "fal-ai/nano-banana/edit"
+        }
+      ]
+    },
+    {
       "id": "lipsync-veed",
       "version": "1.0.0",
       "interface": 1,

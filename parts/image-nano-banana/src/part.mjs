@@ -26,6 +26,12 @@
 // came back letterboxed, padded or framed is cropped, or fails the step, never
 // drawn again (_lib/scene-stills.mjs kitStillWithoutBorders). borders: 'keep'
 // turns both off.
+//
+// 1.3.0 adds a fourth mode:
+//   cast    only the cast portraits ("anchors"): a member with an image passes
+//           through free, a member without one is drawn from its look, with the
+//           template's anchor text, by the prompt-only model (by /edit only when
+//           style_refs are sent). No scene still is drawn.
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitFfmpeg, kitPieceName, kitStopIfAborted } from '../../_lib/part.mjs';
@@ -39,6 +45,8 @@ const NB_PROMPT_MAX = 12000;
 const NB_AT_ONCE = 4;
 const NB_LOCKED_MIME = ['image/png', 'image/jpeg', 'image/webp'];
 const NB_SCENE_ONLY = ['scenes', 'template', 'look', 'answers', 'cast', 'products', 'brand', 'pick', 'skip_first', 'skip_last', 'anchor', 'cast_aspect_ratio', 'style_refs', 'multi_ref'];
+// Inputs cast mode refuses (they pick, draw or frame scenes and products).
+const NB_NOT_CAST = ['scenes', 'products', 'pick', 'skip_first', 'skip_last', 'anchor', 'multi_ref', 'aspect_ratio'];
 // Inputs products mode refuses (they pick or draw scenes and cast).
 const NB_NOT_PRODUCTS = ['images', 'scenes', 'cast', 'pick', 'skip_first', 'skip_last', 'anchor', 'cast_aspect_ratio', 'style_refs', 'multi_ref'];
 // products mode: the built-in text per kind, used when the template has no by_tag rule for it
@@ -168,7 +176,7 @@ async function nbEach(items, work) {
 
 async function nbImages(inputs, ctx, manifest) {
   const model = inputs.model;
-  if (!inputs.images) throw ctx.error('bad_input', 'images mode needs images (or give scenes for scenes mode)');
+  if (!inputs.images) throw ctx.error('bad_input', 'images mode needs images (or give scenes for scenes mode, or cast for cast mode)');
   for (const key of NB_SCENE_ONLY) {
     if (inputs[key] !== undefined) throw ctx.error('bad_input', `${key} works only in scenes mode`);
   }
@@ -188,6 +196,55 @@ async function nbImages(inputs, ctx, manifest) {
     ctx.progress({ done: i + 1, total: inputs.images.length });
   }
   return kitCheckOutputs(ctx, manifest, { images });
+}
+
+async function nbCast(inputs, ctx, manifest) {
+  const model = inputs.model;
+  if (inputs.images) throw ctx.error('bad_input', 'cast mode draws only the cast: give cast or images, not both');
+  for (const key of NB_NOT_CAST) {
+    if (inputs[key] !== undefined) throw ctx.error('bad_input', `${key} does not work in cast mode`);
+  }
+  if (inputs.kinds !== undefined) throw ctx.error('bad_input', 'kinds works only in products mode');
+  if (inputs.borders !== undefined) throw ctx.error('bad_input', 'borders works only in scenes and products mode');
+  const cast = inputs.cast || [];
+  if (!cast.length) throw ctx.error('bad_input', 'cast mode needs cast');
+  const keys = new Set();
+  for (const m of cast) {
+    if (keys.has(m.key)) throw ctx.error('bad_input', `two cast members have the key ${m.key}`);
+    keys.add(m.key);
+  }
+  const styleRefs = inputs.style_refs || [];
+  if (model === TEXT && styleRefs.length) throw ctx.error('bad_input', `style_refs need ${EDIT}, which takes reference images`);
+
+  // Every prompt is filled before the first piece is ordered.
+  const base = { look: inputs.look ?? null, answers: inputs.answers ?? null, brand: inputs.brand ?? null };
+  const jobs = [];
+  try {
+    const tpl = kitStillTemplate(inputs.template ? await kitLoadTemplate(inputs.template) : null);
+    for (const m of cast) if (!m.image) jobs.push({ member: m, prompt: kitStillAnchorPrompt(tpl, m, base) });
+  } catch (err) {
+    if (ctx.signal && ctx.signal.aborted) throw ctx.error('stopped', 'the step was stopped');
+    throw ctx.error('bad_input', err instanceof KitPromptGap ? err.message : String((err && err.message) || err));
+  }
+  for (const j of jobs) {
+    if (j.prompt.length > NB_PROMPT_MAX) throw ctx.error('bad_input', `the prompt for cast ${j.member.key} is over ${NB_PROMPT_MAX} characters`);
+  }
+  const used = new Set();
+  for (const j of jobs) j.piece = kitPieceName('anchor', j.member.key, cast.indexOf(j.member), used);
+  if (!jobs.length) ctx.log.info('every cast member has a picture, so nothing is drawn');
+
+  // Members with an image pass through free; the rest are drawn, by the prompt-only model unless style_refs are sent.
+  const anchors = new Map();
+  for (const m of cast) if (m.image) anchors.set(m.key, m.image);
+  let done = 0;
+  await nbEach(jobs, async (j) => {
+    const file = await nbDraw(ctx, { piece: j.piece, refs: styleRefs, prompt: j.prompt, aspect: inputs.cast_aspect_ratio || '1:1', seed: inputs.seed, about: `the character picture of ${j.member.name || j.member.key} (cast)` });
+    anchors.set(j.member.key, file);
+    ctx.progress({ done: ++done, total: jobs.length });
+  });
+  const outCast = cast.map((m) => (anchors.has(m.key) ? { ...m, image: anchors.get(m.key) } : { ...m }));
+  const outAnchors = cast.filter((m) => anchors.has(m.key)).map((m) => ({ id: m.key, image: anchors.get(m.key) }));
+  return kitCheckOutputs(ctx, manifest, { images: [], cast: outCast, anchors: outAnchors });
 }
 
 async function nbScenes(inputs, ctx, manifest) {
@@ -400,7 +457,8 @@ async function nbProducts(inputs, ctx, manifest) {
 
 export async function run(inputs, ctx) {
   const manifest = await kitCheckInputs(ctx, inputs);
-  const mode = inputs.mode || (inputs.scenes ? 'scenes' : 'images');
+  const mode = inputs.mode || (inputs.scenes ? 'scenes' : inputs.images ? 'images' : inputs.cast ? 'cast' : 'images');
   if (mode === 'products') return nbProducts(inputs, ctx, manifest);
+  if (mode === 'cast') return nbCast(inputs, ctx, manifest);
   return mode === 'scenes' ? nbScenes(inputs, ctx, manifest) : nbImages(inputs, ctx, manifest);
 }

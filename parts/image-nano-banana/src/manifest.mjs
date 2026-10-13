@@ -51,10 +51,10 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'image-nano-banana',
-  version: '1.2.3',
+  version: '1.3.0',
   kind: 'generate_image',
   title: 'Stills (Nano Banana)',
-  summary: 'Makes or edits stills with Nano Banana on fal, one piece per image: a hand-built list, one still per plan scene from a prompt template, or snap and angled edits of each product\'s own photo.',
+  summary: 'Makes or edits stills with Nano Banana on fal, one piece per image: a hand-built list, one still per plan scene from a prompt template, snap and angled edits of each product\'s own photo, or only the cast portraits.',
   runtime: 'node',
   entry: 'part.mjs',
   files: ['README.md', 'part.mjs'],
@@ -75,10 +75,10 @@ export const manifest = {
     required: ['model'],
     properties: {
       model: {
-        description: 'fal-ai/nano-banana for a prompt alone, fal-ai/nano-banana/edit with reference images. In scenes mode, /edit sends each scene\'s references and a scene with none is drawn by the prompt-only model.',
+        description: 'fal-ai/nano-banana for a prompt alone, fal-ai/nano-banana/edit with reference images. In scenes mode, /edit sends each scene\'s references and a scene with none is drawn by the prompt-only model. In cast mode a portrait is drawn by the prompt-only model with either value; /edit is used only when style_refs are sent.',
         enum: [TEXT, EDIT],
       },
-      mode: { description: 'images: the hand-built images list (the 1.0.1 behaviour). scenes: one still per picked scene. products: one edit of each product\'s first photo per kind (needs /edit). Default: scenes when scenes is given, else images.', enum: ['images', 'scenes', 'products'] },
+      mode: { description: 'images: the hand-built images list (the 1.0.1 behaviour). scenes: one still per picked scene. products: one edit of each product\'s first photo per kind (needs /edit). cast: only the cast portraits (anchors), no scene stills. Default: scenes when scenes is given, else images when images is given, else cast when cast is given.', enum: ['images', 'scenes', 'products', 'cast'] },
       kinds: {
         description: 'products mode: the stills made for every product, in order. snap: the whole product on a plain textured surface, soft key light from the upper left. angled: the product turned 15-20 degrees to a three-quarter view, floating over warm white with a soft shadow. Default [snap]. The template\'s by_tag rule of the same name (Snap, Angled) replaces the built-in text.',
         type: 'array',
@@ -114,7 +114,7 @@ export const manifest = {
       look: { description: 'The art style: a key of the template\'s looks (a declared plan answer), filling {look}.', type: ['string', 'null'], maxLength: 200 },
       answers: { description: 'plan.answers, for {answers.KEY} placeholders.', type: ['object', 'null'] },
       brand: { description: 'The brand, for {brand.FIELD} placeholders.', type: ['object', 'null'] },
-      cast: { description: 'plan.cast. A scene names a member by speaker or by name in its picture or line.', type: 'array', maxItems: 10, items: member },
+      cast: { description: 'plan.cast. A scene names a member by speaker or by name in its picture or line. In cast mode every member without an image gets a portrait.', type: 'array', maxItems: 10, items: member },
       products: { description: 'plan.products. scenes mode: a scene names a product as phone-chat does; its first photo is a reference. products mode: every product gets one still per kind, edited from its first photo (the only reference).', type: 'array', maxItems: 12, items: product },
       pick: {
         description: 'Which scenes get a still: all (default), first, with_picture, or {tags: [...]}.',
@@ -129,7 +129,7 @@ export const manifest = {
         description: 'none (default): members with an image are still sent. cast: draw a portrait (an anchor) for every named member without an image, first, and send it with each scene that names them. first_scene: the first still is a reference for every later one. cast and first_scene need /edit.',
         enum: ['none', 'cast', 'first_scene'],
       },
-      cast_aspect_ratio: { description: 'The anchors\' aspect. Default 1:1.', enum: ASPECTS },
+      cast_aspect_ratio: { description: 'scenes and cast mode: the anchors\' aspect. Default 1:1.', enum: ASPECTS },
       style_refs: { description: 'The style\'s own reference pictures (a line-art sample), sent last with every scene and anchor. Needs /edit.', type: 'array', maxItems: 4, items: file('image', PICTURE) },
       multi_ref: {
         description: 'How a scene that names several members sends their anchors: strip (default) tiles all of them into one picture, which keeps each silhouette; list sends up to 3 separate pictures.',
@@ -143,13 +143,13 @@ export const manifest = {
     required: ['images'],
     properties: {
       images: {
-        description: 'One still per entry (images mode), per picked scene with id = the scene id (scenes mode), or per product and kind with id = "<product id>-<kind>" (products mode), products in order, kinds in order within each.',
+        description: 'One still per entry (images mode), per picked scene with id = the scene id (scenes mode), or per product and kind with id = "<product id>-<kind>" (products mode), products in order, kinds in order within each. Empty in cast mode.',
         type: 'array',
         items: { type: 'object', additionalProperties: false, required: ['id', 'image'], properties: { id: { type: 'string' }, image: file('image') } },
       },
       scenes: { description: 'scenes mode: every input scene, image = its still when it got one.', type: 'array', items: { type: 'object', required: ['id'], properties: { id: { type: 'string' }, image: imageOrNull } } },
-      cast: { description: 'scenes mode: every cast member, image = its anchor or its own image (empty without a cast).', type: 'array', items: { type: 'object', required: ['key'], properties: { key: { type: 'string' }, image: imageOrNull } } },
-      anchors: { description: 'scenes mode: the members some scene sent, id = the member key (empty without a cast).', type: 'array', items: { type: 'object', additionalProperties: false, required: ['id', 'image'], properties: { id: { type: 'string' }, image: file('image') } } },
+      cast: { description: 'scenes and cast mode: every cast member, image = its anchor or its own image (empty without a cast).', type: 'array', items: { type: 'object', required: ['key'], properties: { key: { type: 'string' }, image: imageOrNull } } },
+      anchors: { description: 'scenes mode: the members some scene sent (empty without a cast). cast mode: every member with a picture. id = the member key.', type: 'array', items: { type: 'object', additionalProperties: false, required: ['id', 'image'], properties: { id: { type: 'string' }, image: file('image') } } },
     },
   },
   cost: {

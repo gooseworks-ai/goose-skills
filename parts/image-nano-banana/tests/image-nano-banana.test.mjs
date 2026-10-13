@@ -302,3 +302,124 @@ test('products mode: a provider failure stops new pieces', { skip }, async () =>
   await assert.rejects(mod.run({ ...base, products }, ctx), (e) => e.code === 'provider_failed');
   assert.ok(calls <= 4, `only the pieces already running finish (${calls})`);
 });
+
+// ---- 1.3.0 cast mode ----
+
+/** The cast of scenesInputs (Maya has a picture, Theo has none) as a style binds it for cast mode. */
+async function castInputs(workDir, extra = {}) {
+  const base = await scenesInputs(workDir);
+  return { model: 'fal-ai/nano-banana', mode: 'cast', cast: base.cast, template: base.template, look: base.look, answers: base.answers, ...extra };
+}
+
+test('fixture: cast mode draws one portrait per member without a picture and no scene still', { skip }, async () => {
+  const work = mkdtempSync(join(tmpdir(), 'nb-'));
+  const inputs = await castInputs(work, { cast_aspect_ratio: '9:16', seed: 11 });
+  const maya = inputs.cast[0].image;
+  const { ctx, orders, progress } = makeCtx({ partDir: dir, workDir: join(work, 'step'), line: pngLine });
+  const out = await mod.run(inputs, ctx);
+
+  // Only Theo is drawn: the prompt-only model, the template's anchor text with his look, at cast_aspect_ratio.
+  assert.deepEqual(orders.map((o) => [o.piece, o.provider, o.path]), [['anchor-b', 'fal', 'fal-ai/nano-banana']]);
+  const body = orders[0].body;
+  assert.equal(body.image_urls, undefined, 'a portrait with no reference sends no pictures');
+  assert.equal(body.aspect_ratio, '9:16');
+  assert.equal(body.seed, 11);
+  assert.match(body.prompt, /^stylised 3D, soft light\. portrait of Theo: man, 41, grey beard, navy crewneck, plain background, chest up\. vertical 9:16, no text, no logos\. Avoid: text, watermark, extra fingers$/);
+  assert.equal(orders[0].results[0].pointer, EDIT_POINTER);
+  assert.deepEqual(progress.at(-1), { done: 1, total: 1 });
+
+  // The outputs a style binds: step.<id>.cast (every member, image filled) and step.<id>.anchors.
+  assert.deepEqual(Object.keys(out), ['images', 'cast', 'anchors']);
+  assert.deepEqual(out.images, [], 'cast mode draws no scene still');
+  assert.deepEqual(out.cast.map((m) => m.key), ['a', 'b']);
+  assert.deepEqual(out.cast[0], inputs.cast[0], 'a member with a picture passes through as it came');
+  assert.equal(out.cast[1].image.kind, 'file', 'the drawn portrait fills the member');
+  assert.equal(readFileSync(out.cast[1].image.path).subarray(0, 8).toString('hex'), PNG);
+  assert.equal(out.cast[1].voice_id, 'TxGEqnHWrfWFTfGW9XjX', 'other member fields pass through');
+  assert.equal(out.cast[1].look, inputs.cast[1].look);
+  assert.deepEqual(out.anchors, [{ id: 'a', image: maya }, { id: 'b', image: out.cast[1].image }]);
+});
+
+test('cast mode is inferred from cast alone; defaults are 1:1 and the built-in anchor text; a full cast buys nothing', { skip }, async () => {
+  const work = mkdtempSync(join(tmpdir(), 'nb-'));
+  const base = await castInputs(work);
+  const [maya, theo] = base.cast;
+  {
+    // No mode, no template: square, the kit's default anchor text. The /edit model without style_refs still draws from the prompt alone.
+    const { ctx, orders } = makeCtx({ partDir: dir, line: pngLine });
+    const out = await mod.run({ model: 'fal-ai/nano-banana/edit', cast: [theo] }, ctx);
+    assert.deepEqual(orders.map((o) => [o.piece, o.path]), [['anchor-b', 'fal-ai/nano-banana']]);
+    assert.equal(orders[0].body.aspect_ratio, '1:1');
+    assert.equal(orders[0].body.seed, undefined);
+    assert.match(orders[0].body.prompt, /^man, 41, grey beard, navy crewneck\. One character alone, chest up, facing the camera/);
+    assert.deepEqual(out.anchors.map((a) => a.id), ['b']);
+  }
+  {
+    const { ctx, orders, logs } = makeCtx({ partDir: dir, line: pngLine });
+    const out = await mod.run({ model: 'fal-ai/nano-banana', cast: [maya] }, ctx);
+    assert.equal(orders.length, 0, 'every member has a picture: nothing is bought');
+    assert.deepEqual(out, { images: [], cast: [maya], anchors: [{ id: 'a', image: maya.image }] });
+    assert.ok(logs.some(([level, text]) => level === 'info' && /nothing is drawn/.test(text)));
+  }
+  {
+    // style_refs go with every portrait, so those pieces are edits.
+    const style = await fileRef(await makeImage(join(work, 'line-style.png')), 'image');
+    const { ctx, orders } = makeCtx({ partDir: dir, line: pngLine });
+    await mod.run({ ...base, model: 'fal-ai/nano-banana/edit', style_refs: [style] }, ctx);
+    assert.deepEqual(orders.map((o) => [o.piece, o.path, o.body.image_urls.map((r) => r.sha256)]), [['anchor-b', 'fal-ai/nano-banana/edit', [style.sha256]]]);
+  }
+  {
+    // Existing inputs resolve as before: images with a cast is still images mode, scenes with a cast still scenes mode.
+    const { ctx, orders } = makeCtx({ partDir: dir, line: pngLine });
+    await assert.rejects(mod.run({ model: 'fal-ai/nano-banana', images: [{ prompt: 'x' }], cast: [theo] }, ctx), (e) => e.code === 'bad_input' && /cast works only in scenes mode/.test(e.message));
+    const out = await mod.run({ model: 'fal-ai/nano-banana', scenes: [{ id: 's1', picture: 'an empty kitchen' }], cast: [maya] }, ctx);
+    assert.deepEqual(orders.map((o) => o.piece), ['image-s1']);
+    assert.deepEqual(Object.keys(out), ['images', 'scenes', 'cast', 'anchors']);
+  }
+});
+
+test('cast mode refuses before ordering: an empty cast, scenes-only inputs, a member with no look, two members with one key', { skip }, async () => {
+  const work = mkdtempSync(join(tmpdir(), 'nb-'));
+  const base = await castInputs(work);
+  const [maya, theo] = base.cast;
+  const scenes = (await scenesInputs(work)).scenes;
+  const photo = (await scenesInputs(work)).products[0];
+  const cases = [
+    [{ model: base.model, mode: 'cast' }, /cast mode needs cast/],
+    [{ ...base, cast: [] }, /cast mode needs cast/],
+    [{ ...base, scenes }, /scenes does not work in cast mode/],
+    [{ ...base, products: [photo] }, /products does not work in cast mode/],
+    [{ ...base, pick: 'first' }, /pick does not work in cast mode/],
+    [{ ...base, skip_last: 1 }, /skip_last does not work in cast mode/],
+    [{ ...base, anchor: 'cast' }, /anchor does not work in cast mode/],
+    [{ ...base, multi_ref: 'list' }, /multi_ref does not work in cast mode/],
+    [{ ...base, aspect_ratio: '9:16' }, /aspect_ratio does not work in cast mode/],
+    [{ ...base, kinds: ['snap'] }, /kinds works only in products mode/],
+    [{ ...base, borders: 'keep' }, /borders works only in scenes and products mode/],
+    [{ ...base, images: [{ prompt: 'x' }] }, /give cast or images, not both/],
+    [{ ...base, style_refs: [maya.image] }, /style_refs need fal-ai\/nano-banana\/edit/],
+    [{ ...base, cast: [maya, { key: 'b', name: 'Theo', look: '' }] }, /cast b needs \{look\}/],
+    [{ ...base, cast: [theo, { ...theo }] }, /two cast members have the key b/],
+    [{ ...base, look: 'anime' }, /"anime" is not one of/],
+    [{ ...base, cast_aspect_ratio: '7:3' }, /cast_aspect_ratio/],
+    [{ mode: 'cast', cast: base.cast }, /model/],
+  ];
+  for (const [inputs, why] of cases) {
+    const { ctx, orders } = makeCtx({ partDir: dir, line: pngLine });
+    await assert.rejects(mod.run(inputs, ctx), (e) => e.code === 'bad_input' && why.test(e.message), String(why));
+    assert.equal(orders.length, 0, `nothing is ordered for ${why}`);
+  }
+});
+
+test('cast mode: a provider failure stops new pieces', { skip }, async () => {
+  const cast = Array.from({ length: 10 }, (_, i) => ({ key: `m${i + 1}`, name: `Member ${i + 1}`, look: `look ${i + 1}` }));
+  let calls = 0;
+  const line = async (order, ctx) => {
+    calls++;
+    if (order.piece === 'anchor-m1') throw ctx.error('provider_failed', 'boom');
+    return pngLine(order, ctx);
+  };
+  const { ctx } = makeCtx({ partDir: dir, line });
+  await assert.rejects(mod.run({ model: 'fal-ai/nano-banana', mode: 'cast', cast }, ctx), (e) => e.code === 'provider_failed');
+  assert.ok(calls <= 4, `only the pieces already running finish (${calls})`);
+});

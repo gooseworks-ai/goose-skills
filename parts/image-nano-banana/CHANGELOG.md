@@ -1,5 +1,11 @@
 # image-nano-banana
 
+## 1.3.0
+
+- `mode: cast`: only the cast portraits (anchors) and no scene still, as image-gpt-image-2's cast mode. Every member without an `image` gets one piece `anchor-<member key>`, the prompt from the template's `anchor` text (the same prompt scenes mode builds with `anchor: cast`), at `cast_aspect_ratio` (default `1:1`); a member with an `image` passes through free. A portrait is drawn by the prompt-only `fal-ai/nano-banana`, and by `/edit` only when `style_refs` are sent. Outputs `images` (empty), `cast` (every member, `image` filled) and `anchors`.
+- `mode` is `cast` when `cast` is given with no `scenes` and no `images`. Inputs that resolved to images, scenes or products mode before still do.
+- Cast mode refuses `images`, `scenes`, `products`, `pick`, `skip_first`, `skip_last`, `anchor`, `multi_ref`, `aspect_ratio`, `kinds` and `borders`, an empty cast, and `style_refs` with the prompt-only model, before anything is ordered. Images, scenes and products mode are unchanged. Built on 1.2.3.
+
 ## 1.2.3
 
 - Borders (scenes and products mode, `borders: fix` by default): each product photo's flat or transparent margins are trimmed before it is sent, and a still that comes back letterboxed, padded or framed is cropped to the still's own shape (scaled back to its size) when that keeps 75 %, else the step fails in plain words; a lone white or black strip that cannot be cropped is kept with a warning. A still is never drawn a second time (no unquoted paid piece). `borders: keep` keeps the 1.2.2 behaviour. Images mode is unchanged and refuses `borders`. Built on 1.2.2.
