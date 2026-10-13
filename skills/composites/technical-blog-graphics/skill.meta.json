@@ -1,0 +1,27 @@
+{
+  "slug": "technical-blog-graphics",
+  "category": "composites",
+  "tags": [
+    "content",
+    "design"
+  ],
+  "installation": {
+    "base_command": "npx goose-skills install technical-blog-graphics",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  },
+  "requires_skills": [
+    "goose-graphics",
+    "create-workflow-diagram"
+  ],
+  "features": [
+    "Turns blog drafts, URLs, and section briefs into accurate technical diagrams and graphics",
+    "Routes sequential flows to create-workflow-diagram and polished static visuals to goose-graphics",
+    "Chooses between workflows, comparisons, funnels, architecture diagrams, and protocol visuals",
+    "Includes a mandatory accuracy review before rendering",
+    "Delivers captions, alt text, and suggested section placement for each graphic"
+  ]
+}
