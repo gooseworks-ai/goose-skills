@@ -3,12 +3,15 @@
 // every paid piece uses H3 Max's own request contract. All prompts, references,
 // modes, and limits are checked before the first order. Generic scenes may
 // include multiple speakers; creator-h3 remains the single-creator talk part.
+// Mode stills (stills.mjs) moves a picture step's scene stills, timed to the
+// voice, the way video-veo-3 and video-kling do.
 import { kitCheckInputs, kitCheckOutputs, kitPieceName, kitStopIfAborted } from '../../_lib/part.mjs';
 import { KitPromptGap, kitLoadTemplate, kitPromptJoin, kitScenePrompt } from '../../_lib/prompt.mjs';
 import { kitNamedProducts, kitPickScenes, kitTagKey } from '../../_lib/scene-match.mjs';
 import { h3SceneRunTakes, h3SceneTakeJobs } from './takes.mjs';
 import { H3SCENE_MODEL, h3SceneProviderBody, h3SceneProviderPrompt, h3SceneProviderVideo } from './provider.mjs';
 import { h3ScenePrepareFrames, h3ScenePrepareReferences } from './frames.mjs';
+import { H3STILLS_ONLY, h3StillsRun } from './stills.mjs';
 
 const H3SCENE_PROMPT_MAX = 12000;
 const H3SCENE_MAX_REFS = 9;
@@ -169,6 +172,10 @@ export async function run(inputs, ctx) {
   for (const [key, modes] of Object.entries(H3SCENE_TAKE_ONLY)) {
     if (inputs[key] !== undefined && !modes.includes(mode)) throw ctx.error('bad_input', `${key} works only in mode ${modes.join(' or ')}`);
   }
+  if (mode !== 'stills') {
+    for (const key of H3STILLS_ONLY) if (inputs[key] !== undefined) throw ctx.error('bad_input', `${key} works only in mode stills`);
+  }
+  if (mode === 'stills') return h3StillsRun(inputs, ctx, manifest);
   if (mode === 'take' || mode === 'takes') return h3SceneRunTakeMode(inputs, ctx, manifest);
   const i2v = mode === 'image_to_video';
   if (!inputs.clips && !inputs.scenes) throw ctx.error('bad_input', 'give clips, or scenes for one clip per scene');

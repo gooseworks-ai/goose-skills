@@ -4920,6 +4920,49 @@
       ]
     },
     {
+      "id": "video-h3max",
+      "version": "1.1.0",
+      "interface": 1,
+      "kind": "generate_video",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": true,
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "minimax/h3-max/reference-to-video"
+          }
+        ],
+        "disk_mb": 1500
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "second",
+        "measure": {
+          "from": "/clips/*/seconds",
+          "as": "sum"
+        },
+        "rates_usd": {
+          "minimax/h3-max/reference-to-video": 0.16
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/video-h3max/1.1.0",
+      "files": {
+        "README.md": "7232d6d2cfbe2be8926ea147e8fb1260e6ecae1997f9740dbd788f7d6646d8ac",
+        "part.json": "faa0c378c20bbdfaaf16a12be85154d5793b0225f278c82b63678c5fa61b19fb",
+        "part.mjs": "9ca5862e29bc524c12e6240bcd013da6f3b286c7e685cfb683e5ff631e47fb8a"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "minimax/h3-max/reference-to-video"
+        }
+      ]
+    },
+    {
       "id": "video-kling",
       "version": "1.0.0",
       "interface": 1,
