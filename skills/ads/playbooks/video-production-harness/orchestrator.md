@@ -36,6 +36,12 @@ After every state:
 
 Consume saved timestamped feedback and review passes on the exact watched version. Follow [the editorial review guide](references/editorial-review.md): changed is distinct from verified, source notes never move with final selection, and affected approvals/evidence are refreshed while valid unrelated decisions remain. Resolve comments only after their intended effect and the full output are verified; keep their history. The final write of every turn records current state and the remaining blocker/gate.
 
+## Progress and resume
+
+- **Report progress.** While making the video, report `running` with a short `progress_note` (for example "clip 3 of 6"; `progress_percent` 0-100 is optional) after every paid piece and at least every 15 minutes. GooseWorks calls a run quiet after 20 minutes with no report and stops it after 120. A report with no note doesn't count; a new paid booking does.
+- **Log paid requests.** Append each paid request to `working/paid-requests.jsonl`: its endpoint and exact body (plus any input-digest header).
+- **Resume.** On restart, re-send each logged request unchanged. The same request gets the same booking, which returns the saved result with no new charge. Don't edit the draft or re-approve mid-run: that changes the booking and pays again.
+
 ## When to use
 
 - Producing a new ad from scratch (`<input> = <fresh concept paragraph>`)
@@ -350,8 +356,8 @@ Open `references/shot-routing.md` and the brief's genre card at State 2 (design 
 - **Review loop bounds.** 3 iterations max before escalating. Don't quietly burn credits chasing tiny issues.
 - **Human gates are real.** Never auto-advance past BRAINSTORM, SCRIPT-LOCK, STORYBOARD, CHARACTER-ANCHOR, POLISH, or DELIVER gates without explicit user OK, even if `<auto>` is true.
 - **Trust but verify on visual claims.** Phase 7d frame-extraction verification is mandatory before APPROVED can be set. Sub-agents have a track record of false-positive visual reports.
-- **Brand text rendering.** Never let an AI image model render readable brand text (wordmark, tagline, URL, CTA copy). Compose text-bearing layers via PIL / ffmpeg `drawtext` / After Effects. AI text rendering is unreliable even for short well-known strings — a prior review got "therapits" instead of "therapists" from Nano Banana on the first end-card attempt. Image gen for *visual* elements (background, mascot, illustration); deterministic compositing for *text* elements.
-- **Brand asset library first.** Before generating any brand-anchored visual (logo, wordmark, end card, mascot), look up the canonical asset through brand_assets. Don't ask Nano Banana to "draw the example brand wordmark" — the real one already exists in the host brand asset library. Generating fake brand assets is forbidden when a real one is on disk.
+- **Brand text rendering.** Never let an AI image model render readable brand text (wordmark, tagline, URL, CTA copy). Compose text-bearing layers via PIL / ffmpeg `drawtext` / After Effects. Image gen for *visual* elements (background, mascot, illustration); deterministic compositing for *text* elements.
+- **Brand asset library first.** Before generating any brand-anchored visual (logo, wordmark, end card, mascot), look up the canonical asset through brand_assets. Never generate a fake brand asset when a real one exists.
 - **Editorial illustration → ffmpeg motion only.** If `motion_strategy: ffmpeg_motion` is set by State 3.4, Seedance/Veo3/Kling MUST NOT be invoked. The orchestrator refuses paid generative-video calls on the `ffmpeg_motion` route. A `hybrid_remotion` plan may use only its explicitly approved generative segments; it never overrides the editorial-illustration ban. These models hallucinate photoreal middle states that break editorial-illustration aesthetics.
 - **No crossfades between AI-generated stills.** Use hard cuts. Crossfades expose geometric drift across independently-generated keyframes (different bar counts, dropper positions, cage shapes). Hard cuts read as "next panel"; crossfades read as "the cage is morphing weirdly."
 - **Provider fallback.** The selected binding declares available primary/fallback providers. A fallback is never assumed available or free. Logic:

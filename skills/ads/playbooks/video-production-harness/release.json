@@ -61,9 +61,9 @@
       "sha256": "fe014c484148a3afd92ec928524d79403c91297cd25c843dea0abe056f0ed81a"
     },
     "orchestrator.md": {
-      "bytes": 49701,
-      "catalog_sha256": "6f15794c69e8d092e4ce0538cd0c79e17751b5d0783fc7cb5c01c082e4f03768",
-      "sha256": "6f15794c69e8d092e4ce0538cd0c79e17751b5d0783fc7cb5c01c082e4f03768"
+      "bytes": 50162,
+      "catalog_sha256": "7dd0fb11dd6d099bcf8acfdebe70585a54b3717edf50cc54f985f223e5e95f7f",
+      "sha256": "7dd0fb11dd6d099bcf8acfdebe70585a54b3717edf50cc54f985f223e5e95f7f"
     },
     "polish.md": {
       "bytes": 16178,
@@ -162,8 +162,8 @@
     },
     "skill.meta.json": {
       "bytes": 652,
-      "catalog_sha256": "d67bc5e34db28c4d76b63c7c4ff8848d9d83a8d4d6249f4220908e0cd4cef610",
-      "sha256": "d67bc5e34db28c4d76b63c7c4ff8848d9d83a8d4d6249f4220908e0cd4cef610"
+      "catalog_sha256": "2b7a3ea5c4fadf1f095eaca0aa1678792da8f4e9c2f47894c6a381eda301769d",
+      "sha256": "2b7a3ea5c4fadf1f095eaca0aa1678792da8f4e9c2f47894c6a381eda301769d"
     },
     "wrap-session.md": {
       "bytes": 17362,
@@ -192,7 +192,7 @@
   ],
   "schema_version": 1,
   "slug": "video-production-harness",
-  "source_commit": "384c9cb66faad708aeece193f35157486b51a970",
+  "source_commit": "3dcf7268d5d8330ac106b066f5000c94c103cee6",
   "source_files": {
     "SKILL.md": {
       "sha256": "38fc6a1d561e28ec8157b3b2506ec0a79b74dc1e3dba2b4fc9e3ad76a813c6c3",
@@ -243,7 +243,7 @@
       "source": "lock-script.md"
     },
     "orchestrator.md": {
-      "sha256": "6f15794c69e8d092e4ce0538cd0c79e17751b5d0783fc7cb5c01c082e4f03768",
+      "sha256": "7dd0fb11dd6d099bcf8acfdebe70585a54b3717edf50cc54f985f223e5e95f7f",
       "source": "orchestrator.md"
     },
     "polish.md": {
@@ -327,6 +327,6 @@
       "source": "wrap-session.md"
     }
   },
-  "source_hash": "81007c1ef529d9eef4e06ce52424d23c93021a0e0e1fbf7d8f728a6503020fa5",
-  "source_version": "3-81007c1ef529"
+  "source_hash": "f772f2351ff894619416f7eae0f9510b66d4e3ee2ba208d612cfa8c842d0eb34",
+  "source_version": "3-f772f2351ff8"
 }
