@@ -74,7 +74,8 @@ kit: {
   seed:  { style_id, version },        // the nearest template's style
   style: { duration, aspects, scenes, timeline, layers,
            traits?, products?, cast?, answers?, footage?, assets? },
-  plan:  { aspect, scenes, voice?, music?, cast?, answers?, footage?, product_ids? }
+  plan:  { aspect, scenes, voice?, music?, cast?, answers?, footage?, product_ids? },
+  timing: { duration_sec, scenes }     // what the plan was made for
 }
 ```
 
@@ -85,6 +86,8 @@ kit: {
   - each scene's `line` is that scene's `text` (the spoken words), and its `on_screen` is its `caption`;
   - the same voice: `plan.voice` is the voice selected for `narrator`, and each speaking cast member's `voice_id` is the one selected for their cast key. Select no voice the kit won't use;
   - reused pictures are approved ingredients, by `asset_id`, and each one's `url` is that media file's own link. A saved character's photo must also be one of the ingredients.
+  - `plan.aspect` is the draft's `aspect_ratio`, and one the seed's style makes.
+- `timing`: `duration_sec` is the draft's `duration_target_sec`, and `scenes` lists each draft scene's `time`, in order. If the length or a scene time changes later, save the kit block again with the new timing.
 - Add `asset_id` to each approved ingredient you reuse (cast still, scene still, footage), and point the plan's `*_asset_id` fields at those ids.
 - Never edit frames, fonts or prompt files. Never send server-only fields (`image`, `image_locked`, `stills`, `fix`, `takes`).
 - Price it like any render: send each scene's equivalent paid request (its routing row's fal model) with `estimate_only=1` and sum them into `render_estimate`; the kit charges the same rate. No redo allowance: the kit runs its own checks, so `render_estimate` carries no `reroll_allowance`.
