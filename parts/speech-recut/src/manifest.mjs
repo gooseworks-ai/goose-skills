@@ -15,7 +15,7 @@ export const manifest = {
   needs: {
     browser: false,
     ffmpeg: {
-      filters: ['scale', 'select', 'showinfo', 'trim', 'setpts', 'tpad', 'atrim', 'asetpts', 'aresample', 'aformat', 'apad', 'afade', 'pan', 'concat', 'split', 'fps', 'setsar', 'format', 'asplit', 'areverse', 'volume', 'amix', 'curves', 'unsharp'],
+      filters: ['scale', 'select', 'showinfo', 'trim', 'setpts', 'tpad', 'atrim', 'asetpts', 'aresample', 'aformat', 'apad', 'afade', 'pan', 'concat', 'split', 'fps', 'setsar', 'format', 'asplit', 'areverse', 'volume', 'aloop', 'amix', 'curves', 'unsharp'],
       encoders: ['libx264', 'aac', 'pcm_s16le'],
     },
     network: false,

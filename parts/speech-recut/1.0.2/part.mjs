@@ -1277,8 +1277,13 @@ export async function run(inputs, ctx) {
   if (covers.length) graph.push(...recutCoverGraph('joined', covers, joined, 'cv'));
   if (room) {
     // The bed under the whole edit, at gain_db against its window; the speech is untouched.
-    args.push('-stream_loop', '-1', '-i', room.path);
-    graph.push(`[${n}:a]volume=${kitNum(room.gain_db, 3)}dB,atrim=0:${kitNum(seconds)},asetpts=PTS-STARTPTS[bed]`);
+    // The loop is the aloop filter on one read of the file, not -stream_loop on the input: with
+    // -stream_loop (any count) the kit's ffmpeg 6.1 writes the whole edit and then never exits, so the
+    // step timed out on every take with a room-tone window. ffmpeg 7 and later finish either way. The
+    // bed file is the window forward then reversed at 48 kHz (recutRoomLoop), twice the window long.
+    const loopSamples = Math.ceil(2 * (room.end_s - room.start_s) * 48000);
+    args.push('-i', room.path);
+    graph.push(`[${n}:a]aloop=loop=-1:size=${loopSamples},volume=${kitNum(room.gain_db, 3)}dB,atrim=0:${kitNum(seconds)},asetpts=PTS-STARTPTS[bed]`);
     graph.push('[cut][bed]amix=inputs=2:duration=first:dropout_transition=0:normalize=0[speech]');
   }
   graph.push(`[speech]apad,atrim=0:${kitNum(seconds)},asetpts=PTS-STARTPTS[aout]`);

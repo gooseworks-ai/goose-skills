@@ -31,7 +31,7 @@ Re-cuts one take of on-camera speech into a tighter edit. Free and local: the st
 - **Silent beats**: a scene with a null line that the timeline places keeps its whole span.
 - **Room tone** (`room_tone: {source: quiet_window, gain_db?}`): the take's quietest speech-free window, 0.4 to
   1 s long, is measured on the **original** take (even if the cut drops it), looped forward then reversed (no
-  seam) and laid under the whole edit at `gain_db` (default -6) against that window. It masks the step in the
+  seam; new in 1.0.2, the loop is the `aloop` filter, since the kit's ffmpeg 6.1 never exits with `-stream_loop`) and laid under the whole edit at `gain_db` (default -6) against that window. It masks the step in the
   street's background at every join. Windows touching a heard word, a gap that holds heard speech with no timings (a repeated line
   the transcript gave to the next line) or digital silence are never used; with
   none left, the edit has no bed and a warning is logged. The key is `source`, not `from`: a style reads any

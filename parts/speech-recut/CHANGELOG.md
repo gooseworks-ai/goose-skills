@@ -3,6 +3,7 @@
 ## 1.0.2
 
 - Heard speech in no line (transcribe-whisper 1.1.2's speech entries with no `scene_id` and empty `text`: a repeated line, a filler) is cut out with `drop: repeats`, with the silence around it down to `max_gap_s` (the join on a picture cut when one is in reach; at the head or tail with the trim; inside a silent beat only the words). New cut kind `extra`. 1.0.1 kept such words, and with 1.1.1's placement a repeated question made later lines look unheard, so the take was refused as needing a re-roll (staging, 13 Oct 2026).
+- The room-tone bed loops with the `aloop` filter on one read of its file instead of `-stream_loop` on the input. With `-stream_loop` the kit's ffmpeg 6.1 wrote the whole edit and then never exited, so every take with a room-tone window timed out at this step (ffmpeg 7 and later finish either way).
 
 ## 1.0.1
 

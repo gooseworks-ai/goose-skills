@@ -38,6 +38,7 @@
         "asplit",
         "areverse",
         "volume",
+        "aloop",
         "amix",
         "curves",
         "unsharp"

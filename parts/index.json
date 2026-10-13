@@ -4735,6 +4735,7 @@
             "asplit",
             "areverse",
             "volume",
+            "aloop",
             "amix",
             "curves",
             "unsharp"
@@ -4755,9 +4756,9 @@
       "determinism": "pure",
       "path": "parts/speech-recut/1.0.2",
       "files": {
-        "README.md": "184c86ef52cf0ea1d3f5e184eceb053477a4a100df864bf65cbf5db31498bff0",
-        "part.json": "f9bb1fc069f193ed00ca4e22378ee5238940ff144ce90be90d66e711fa8de363",
-        "part.mjs": "7e058f9852b5b251847019f49ec5ceaeed7beff1b131a23a00fa1a8538b01c0e"
+        "README.md": "e3dfdeabefc848f4bf762eeedbbc948f7ad3c4dd706c129b0d217dabf09f071b",
+        "part.json": "9642b3f0874dbc81167319b07e0a8f2ff2eec3f48f04c4d9cb87b8db9e2ac323",
+        "part.mjs": "2a1175d54f86e1ff58995e8790619b8de592532cdc6fd7ac925cabe948567e62"
       },
       "models": []
     },
