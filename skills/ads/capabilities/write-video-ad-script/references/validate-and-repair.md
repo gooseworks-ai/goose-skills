@@ -48,10 +48,12 @@ within the supported angle and recipe before review. Do not automatically choose
 highest-ranked rejected candidate.
 
 **The required rule pass.** Rerun the rule check after every repair. Before any script
-goes to review, its hook and sameness codes must be clear: fix E_SAME_ANGLE and
-E_DEAD_OPENER, and fix W_TIRED_OF_LIST, W_FEATURE_STACK, W_BEAT1_NO_TEXT,
-W_PICTURE_HOOK_MISMATCH, W_ON_SCREEN_LONG and W_BRAND_FIRST, or state in one line of
-the review why the format needs that choice. The rule check is free and needs no network.
+goes to review, fix every error (E_ codes, including E_SAME_ANGLE and E_DEAD_OPENER).
+Also fix W_BRAND_FIRST, W_TIRED_OF_LIST and W_ON_SCREEN_LONG, or state in one line of the
+review why the format needs that choice. The heuristic warnings (W_FEATURE_STACK,
+W_PICTURE_HOOK_MISMATCH, W_BEAT1_NO_TEXT, W_SIMILAR_OPENING, W_TRICOLON) are advice:
+weigh each one, and change the script only when it is right. The rule check is free and
+needs no network.
 
 **The second opinion.** Run the critique script with the same files and the brief. A
 model from a different family than the writer judges every concept twice, once in each

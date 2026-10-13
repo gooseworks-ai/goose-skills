@@ -304,8 +304,10 @@ selected angle is an error, not permission to invent a replacement.
 - The first beat's text is the recommended hook.
 - Write 4-5 concepts (see the skill's Step 4). `angle_type` is one of: story, curiosity,
   identity, desire, problem_fix, demo, how_it_works, old_vs_new, proof, offer, objection,
-  news. Each concept uses a different one, and no two concepts open with 3 of the same
-  first 5 content words (both are E_SAME_ANGLE, under `set_errors`).
+  news. With an open angle every concept takes a different one; executions of a selected
+  angle all keep the angle's one type. A mix (some shared, some not) is E_SAME_ANGLE
+  under `set_errors` (a warning in report-only mode). Two openings that share three
+  content words in order, after brand, product and angle words, warn W_SIMILAR_OPENING.
 - `on_screen` (optional per beat) is the text over the picture: 13 words or fewer, 8 or
   fewer in beat 1. A spoken beat 1 without it warns W_BEAT1_NO_TEXT. Beat 1's
   `visual.description` should share a word with its line or on-screen words

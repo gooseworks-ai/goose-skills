@@ -8,13 +8,14 @@ attention on taste:
                    the format's order, something spoken after the CTA, a dead opener
                    ("Introducing…", "Have you ever…"), a phrase the brand quoted as
                    banned, no customer quote behind a concept, a quote id that is not
-                   in the bank, two concepts with the same angle type or opening
-                   (E_SAME_ANGLE, a set error)
+                   in the bank, a set where some concepts share an angle type and
+                   others do not (E_SAME_ANGLE, a set error)
   warnings         a line that looks like a banned brand claim (a human decides), AI
                    tells ("it's not X, it's Y", "game-changer", dash habits), stiff
                    spoken lines, long sentences, numbers no fact or quote backs, the
                    brand name in the first line, a concept that never uses its buyers'
-                   words, softer openers, duplicate hooks / families, a "Tired of A, B
+                   words, softer openers, duplicate hooks / families, two concepts that
+                   open with the same three words (W_SIMILAR_OPENING), a "Tired of A, B
                    and C" opener, a body that stacks features, a spoken opening with no
                    on-screen words, an opening picture that shares nothing with its hook,
                    on-screen words too long to read, an angle type not on the list
@@ -183,23 +184,39 @@ def list_items(text):
     return best
 
 
-def features_named(text, fact_texts):
-    """Distinct product facts the text names: two of a fact's content words (or its only one)."""
-    have = stems(text)
+def features_named(text, fact_texts, names=()):
+    """Distinct product facts the text names: two of a fact's content words (or its only one).
+    Brand and product names are not features: a fact matched only by them does not count."""
+    drop = set().union(*(stems(n) for n in names)) if names else set()
+    have = stems(text) - drop
     count = 0
     for fact in fact_texts:
-        want = stems(fact)
+        want = stems(fact) - drop
         if want and len(want & have) >= min(2, len(want)):
             count += 1
     return count
 
 
-def opening_words(concept):
-    """The first 5 content words of the opening beat's line and on-screen words."""
+TOKEN_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9'-]*")  # "wake-ups" stays one token
+
+
+def tokens(text):
+    return [t.strip("-") for t in TOKEN_RE.findall(CUE_RE.sub(" ", plain(text)).lower())]
+
+
+def opening_tokens(concept, ignore):
+    """The opening beat's content words in order: its line (or its on-screen words when it
+    has no line), without stopwords and without the ignored brand, product and angle words."""
     beats = [b for b in concept.get("beats") or [] if isinstance(b, dict)]
     if not beats:
         return []
-    return content_words(text_of(beats[0]) + " " + on_screen_of(beats[0]))[:5]
+    line = text_of(beats[0]) or on_screen_of(beats[0])
+    return [t for t in tokens(line) if t and t not in STOPWORDS and t not in ignore]
+
+
+def shared_run(a, b, n=3):
+    """True when two word lists share a run of n words in the same order."""
+    return bool(ngrams(a, n) & ngrams(b, n))
 
 
 def load_json(path, required=False):
@@ -696,7 +713,8 @@ def lint(cands, shape=None, rules=None, bank=None, report_only=False, context=No
             if (hook_kind == "spoken" and text_of(opening).strip() and not on_screen_of(opening).strip()
                     and shape.get("words_on_screen") != "none"):
                 warn("W_BEAT1_NO_TEXT", "the opening is spoken but has no on-screen words: most people watch muted; add 8 or fewer words that say the hook", oid)
-            picture = (opening.get("visual") or {}).get("description") if isinstance(opening.get("visual"), dict) else ""
+            picture = opening["visual"].get("description") if isinstance(opening.get("visual"), dict) else ""
+            picture = picture if isinstance(picture, str) else ""
             hook_stems = stems(text_of(opening) + " " + on_screen_of(opening))
             if picture and hook_stems and stems(picture) and not (stems(picture) & hook_stems):
                 warn("W_PICTURE_HOOK_MISMATCH", "the first picture shares nothing with the hook: open on what the line says", oid)
@@ -706,7 +724,8 @@ def lint(cands, shape=None, rules=None, bank=None, report_only=False, context=No
             fact_texts = [str(f) for p in (rules or {}).get("products", []) or [] for f in p.get("facts", []) or []]
             fact_texts += [str(f.get("text", "")) for f in facts.values()]
             body = [text_of(b) + " " + on_screen_of(b) for b in beats[1:-1]]
-            stack = max([features_named(" ".join(body), list(dict.fromkeys(fact_texts)))] + [list_items(t) for t in body])
+            names = [brand] + [str(p.get("name", "")) for p in (rules or {}).get("products", []) or [] if isinstance(p, dict)]
+            stack = max([features_named(" ".join(body), list(dict.fromkeys(fact_texts)), names)] + [list_items(t) for t in body])
             if stack >= FEATURE_STACK_MIN:
                 warn("W_FEATURE_STACK", f"the body lists {stack} features: show one proof or demo and keep two at most, each turned into what it does for the viewer")
 
@@ -780,17 +799,34 @@ def lint(cands, shape=None, rules=None, bank=None, report_only=False, context=No
         if errs:
             report["ok"] = False
 
-    # Across the set: concepts that are really the same angle (E_SAME_ANGLE, next to
-    # W_SAME_FAMILY for hooks): a shared angle type, or openings that share 3 of their
-    # first 5 content words.
+    # Across the set (next to W_SAME_FAMILY for hooks). An open angle gives every concept
+    # its own angle type; a selected angle keeps one type for every execution. Only a mix
+    # (some shared, some not) is E_SAME_ANGLE. A user's own variants are only reported.
+    types = [c.get("angle_type") for c in concepts_seen if isinstance(c.get("angle_type"), str) and c.get("angle_type")]
+    repeated = sorted({t for t in types if types.count(t) > 1})
+    if repeated and len(set(types)) > 1:
+        ids = [c.get("id", "?") for c in concepts_seen if c.get("angle_type") in repeated]
+        finding = {"code": "E_SAME_ANGLE" if not report_only else "W_SAME_ANGLE",
+                   "msg": f"concepts {', '.join(map(str, ids))} repeat the angle type {', '.join(repeated)} while others differ: "
+                          "give every concept its own type, or keep one type for executions of a selected angle"}
+        report["set_warnings" if report_only else "set_errors"].append(finding)
+    # Openings that share three content words in order, after the brand, product and
+    # angle words every execution may reuse are set aside: advice, not an error.
+    ignore = set(tokens(brand))
+    for p in (rules or {}).get("products", []) or []:
+        if isinstance(p, dict):
+            ignore |= set(tokens(str(p.get("name", ""))))
+    for c in concepts_seen:
+        ignore |= set(tokens(str(c.get("angle") or "")))
+        selected = angles.get(c.get("angle_id")) if isinstance(c.get("angle_id"), str) else None
+        ignore |= set(tokens(str((selected or {}).get("angle") or "")))
     for i in range(len(concepts_seen)):
         for j in range(i + 1, len(concepts_seen)):
             a, b = concepts_seen[i], concepts_seen[j]
-            pair = f"concepts {a.get('id', '?')} and {b.get('id', '?')}"
-            if a.get("angle_type") and a.get("angle_type") == b.get("angle_type"):
-                report["set_errors"].append({"code": "E_SAME_ANGLE", "msg": f"{pair} share the angle type {a['angle_type']}: give each its own promise and opening"})
-            elif len(set(opening_words(a)) & set(opening_words(b))) >= 3:
-                report["set_errors"].append({"code": "E_SAME_ANGLE", "msg": f"{pair} open the same way: give each its own promise and opening"})
+            if shared_run(opening_tokens(a, ignore), opening_tokens(b, ignore)):
+                report["set_warnings"].append({
+                    "code": "W_SIMILAR_OPENING",
+                    "msg": f"concepts {a.get('id', '?')} and {b.get('id', '?')} open with the same words: give each its own opening"})
     if report["set_errors"]:
         report["ok"] = False
 

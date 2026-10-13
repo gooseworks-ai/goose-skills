@@ -147,12 +147,12 @@ a proven winner.
 ## Step 4. Choose distinct angle–execution pairs
 
 When the angle is open, work from up to 10 researched candidates. Filter unsupported
-promises and incompatible executions first, then write 4-5 concepts with genuinely
-different promises and openings. When the angle is selected, keep its id and promise and
-write 4-5 executions inside it. Give each concept a different angle type (angle_type, from
-the fixed list in the files reference), chosen by what the viewer already knows; see
-[hook families](references/hook-families.md). Batch assignments should differ where the
-brief permits; use the bank once per brand and product.
+promises and incompatible executions first, then write 4-5 concepts with different
+promises and openings, each a different angle type (angle_type, listed in the files
+reference) chosen by what the viewer already knows; see
+[hook families](references/hook-families.md). When the angle is selected, keep its id,
+promise and angle type, and write 4-5 executions that differ in hook family and opening.
+Batch assignments differ where the brief permits; use the bank once per brand and product.
 
 Rank relevance, product credibility, template fit, feasible proof and hook payoff before
 freshness. Prefer clear, well-supported familiar angles over obscure weak ones. If the
@@ -214,7 +214,7 @@ Create candidates.json (files reference) with every concept, hook, beat and visu
 ## Step 6. Validate, critique, repair
 
 Run the rule check in strict mode (shape, brand rules, customer words, angle context,
-references), fix errors and material warnings (its hook and sameness codes are required
+references), fix errors and material warnings (the exact hook rules too,
 before review), then run the brief-blind opening review and the independent critic from
 a different model family. Podcast and street dialogue need at
 least 8/10 on spoken and template_fit in every pass (street also on strategic_fit), with
