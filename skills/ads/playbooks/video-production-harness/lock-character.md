@@ -63,7 +63,7 @@ The prompt/identity policies below apply to every supported provider. Resolve up
 ### Phase 0 — Anchor portrait (Mode A · cold-start)
 
 1. Compose ONE prompt using `<character_descriptors>` with every field rendered as a verbatim string (NOT as a paraphrase). Add anti-AI cues: "natural skin texture with pores, slight asymmetry in features, no perfect teeth, photographic not stylized."
-2. **Provider routing.** Generate one anchor candidate per approved variant through the real host image capability. Prefer GPT Image 2 for photorealism when supported; discover the actual model ID, reference schema, ratio and resolution. The preview quote covers the real 2–3 candidates, not a fictional single-image cost. On detected failure (see `create-clips.md` failure-detection rules), invoke the fallback router:
+2. **Provider routing.** Generate one anchor candidate per approved variant through the real host image capability. Use the cast anchor row in `references/shot-routing.md`; discover the actual model ID, reference schema, ratio and resolution. The preview quote covers the real 2–3 candidates, not a fictional single-image cost. On detected failure (see `create-clips.md` failure-detection rules), invoke the fallback router:
 Resolve this operation through the selected host binding and the real implementation in `capabilities.md`. Preserve its approved inputs, provenance and cost; stop if the capability is unavailable.
 
    The default gateway is `create-image-fal` with `openai/gpt-image-2` (optional Higgsfield only if the host has it). The anchor's `.meta.json` records the `gateway` — this is the source of truth for every subsequent character-scene call.
@@ -134,7 +134,7 @@ Once the anchor is approved:
    Reference photo: anchor-portrait.png — match exactly: hair shape, shirt color (#3A3A3D), facial features, age.
    ```
 2. **Inherit the anchor's gateway.** Read `anchor-portrait.png.meta.json` and use the same `gateway` for every angle:
-   - `gateway: "fal"` (default) → `create-image-fal` with `openai/gpt-image-2/edit` + anchor in its actual supported image-reference field:
+   - `gateway: "fal"` (default) → the cast anchor row in `references/shot-routing.md`, anchor in its actual supported image-reference field:
 Resolve this operation through the selected host binding and the real implementation in `capabilities.md`. Preserve its approved inputs, provenance and cost; stop if the capability is unavailable.
 
    Mixing providers across the anchor + angles introduces aesthetic drift in skin tone, lighting, and feature softness. Stay on one provider for the whole character.

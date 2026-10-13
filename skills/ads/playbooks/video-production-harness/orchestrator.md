@@ -172,9 +172,9 @@ For podcast-style skit ads, use an actual available specialist through the bindi
 ### State 3.4 — Motion strategy classifier
 1. **Reads** `design_brief` `visual_style:` field (and the storyboard's aesthetic notes if explicit).
 2. **Decides** `motion_strategy` and writes it into `project_state`:
-   - `generative_video` — photoreal, real performance, products-in-use, cinematic. Routes State 5 to Seedance/Veo3/Kling per `provider_override`.
-   - `ffmpeg_motion` — editorial illustration, 2D, halftone, paper-and-ink, New Yorker / Niemann / Steinberg / spot-illustration. Routes State 5 to FFmpeg zoompan over each approved still + hard-cut concat. **Seedance/Veo3/Kling MUST NOT be called for these aesthetics** — they hallucinate photoreal middle states. Specifically: Seedance produced a photoreal human hand mid-clip on a "pen draws on" prompt, and added cartoon-cloud middle states on a rats-decline crossfade. Cost in a prior review: ~$1.62 burned before retiring the path.
-   - `hybrid_remotion` — kinetic typography, motion graphics, data viz, infographics. Routes State 5 to browser-rendered motion graphics (kinetic type and designed cards).
+   - `generative_video` — photoreal, real performance, products-in-use, cinematic. Each shot uses its row in `references/shot-routing.md`.
+   - `ffmpeg_motion` — editorial illustration, 2D, halftone, paper-and-ink, spot illustration. FFmpeg zoompan over each approved still + hard-cut concat. **No generative video for these looks** — it invents photoreal middle states (a real hand mid-drawing).
+   - `hybrid_remotion` — kinetic typography, motion graphics, data viz: the browser-rendered rows of `references/shot-routing.md`.
 3. **No human gate required** if `visual_style` is unambiguous. If the brief is ambiguous (e.g. lists multiple styles), surface a choice via `the host human-decision surface`.
 4. **Downstream effect:** State 5 (create-clips) and State 5.8 (transition layer) both read `motion_strategy`. `ffmpeg_motion` skips the entire generative-video pipeline and uses FFmpeg zoompan over each approved still for per-still motion + hard-cut concat (NO crossfades — they expose AI-generated keyframe drift).
 5. **Hint:** editorial-illustration trigger terms above determine this route even if no optional model-notes document is installed. If any apply to the design-brief or prompts, record `ffmpeg_motion`.
@@ -337,7 +337,7 @@ Use the host's actual pricing/credit schema and current supported model catalog;
 
 ## Model behavior reference
 
-When writing or reviewing prompts in any state, consult actual model capability/schema documentation supplied by the host. It documents cross-cutting gotchas about how Veo, Seedance, and Nano Banana actually behave (back-loaded interpolation, vocabulary-driven rendering modes, multi-clip color drift, constraint-redundancy compliance rates, etc.). These are descriptions, not creative rules — knowing them helps you prompt for whatever look you want.
+Open `references/shot-routing.md` and the brief's genre card at State 2 (design brief), State 5 (clips) and State 6 (re-rolls). They hold each shot's part, model, prompt rules and known tells. Confirm the model's schema with the host before submitting.
 
 ## Decision-making policies
 

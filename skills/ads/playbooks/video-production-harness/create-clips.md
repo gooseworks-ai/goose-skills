@@ -119,7 +119,7 @@ Run only for scenes assigned generic image-to-video or an explicitly approved ge
 1. For each scene:
    - **Scenes with the locked character** — generate the keyframe with the locked anchor (or the optional soul_id, only if the host has Higgsfield) as a confirmed reference in that model's actual supported image-reference field. Prompt template threads the verbatim `<character_descriptors>` block from `design_brief` plus the scene-specific action.
    - **Scenes without the character** — use the cartoon style anchor as a style ref (mapped to the actual supported image-reference field), or no ref for non-cartoon scenes.
-2. Use the approved aspect ratio (normally 9:16) and supported resolution. Prefer Nano Banana 2 for cartoon and GPT Image 2 for photorealistic work when the binding actually supports those models; resolve real model IDs and request schemas before submitting.
+2. Use the approved aspect ratio (normally 9:16) and supported resolution. Use the scene's row in `references/shot-routing.md`; resolve real model IDs and request schemas before submitting.
 3. **Never put brand or UI text in the prompt.** "Phone screen shows Slack" → render a neutral screen; the Slack UI is composited in post. "Box labeled Example Brand" → render an unlabeled box; the wordmark goes on in post via PIL.
 4. **Provider routing.** Default path is `the host image-generation operation` for each keyframe (run in parallel; fal supports concurrent jobs). On detected failure per the 6 failure-detection rules in "Hard rules", invoke the fallback router:
 Resolve this operation through the selected host binding and the real implementation in `capabilities.md`. Preserve its approved inputs, provenance and cost; stop if the capability is unavailable.
@@ -132,7 +132,7 @@ Resolve this operation through the selected host binding and the real implementa
 ### Phase 2 — Animate clips
 
 Run only for missing/invalid generative animation explicitly assigned by the capability plan. Native specialist clips, retrieved footage and deterministic motion bypass this phase.
-1. **Provider routing.** Use the host's supported video-generation operation and current approved scene plan. Veo 3.1 Lite is a preference when available; alternatives such as Veo, Kling, Seedance or Grok require real catalog model IDs, schemas and priced units. Resolve the approved ratio/duration and starting-image input from the actual confirmed keyframe/result, never an assumed job ID. Use a tight motion-only prompt. On detected failure per the 6 failure-detection rules, invoke the fallback router:
+1. **Provider routing.** Use the host's supported video-generation operation and current approved scene plan. Use the scene's row in `references/shot-routing.md` with its real catalog model ID, schema and priced unit. Resolve the approved ratio/duration and starting-image input from the actual confirmed keyframe/result, never an assumed job ID. Use a tight motion-only prompt. On detected failure per the 6 failure-detection rules, invoke the fallback router:
 Resolve this operation through the selected host binding and the real implementation in `capabilities.md`. Preserve its approved inputs, provenance and cost; stop if the capability is unavailable.
 
    If the requested family has no supported equivalent in the binding, record `fallback_unavailable` and surface the limitation; do not invent an alternative catalog entry.
