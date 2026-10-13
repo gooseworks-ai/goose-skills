@@ -9446,11 +9446,13 @@
             "codex"
           ]
         },
-        "requires_skills": [],
+        "requires_skills": [
+          "write-video-ad-script"
+        ],
         "slug": "video-production-harness",
-        "source_commit": "e30aa5cced3f2be569f1d0fda33a1cd481b36e75",
-        "source_hash": "a707b9b2fb642d3c48c6bd322e3b609fb1bfe691bc7e65238dbf4712c7f45591",
-        "source_version": "3-a707b9b2fb64",
+        "source_commit": "972b8b6ccfa46bb96d0429bdaedb1a1e03a85045",
+        "source_hash": "ee1304ac9e57acf7f8d82e2ce4cb81d6f620072ef4f2facbcd59a67d17f880bf",
+        "source_version": "3-ee1304ac9e57",
         "tags": [
           "ads",
           "content"
