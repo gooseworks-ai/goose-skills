@@ -1,0 +1,128 @@
+// end-card 1.1.1 (and brand-layer 1.0.2, which shares the renderer): the logo is fitted to the card.
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { join } from 'node:path';
+import { browserMissing, browserProviderOrNull, countColor, fileRef, framePixels, hasFfmpeg, loadNewest, makeCtx, makeLogo, run, sampleBrand } from '../../_tools/kit-harness.mjs';
+import { KIT_CARD_LOGO_BOXES, kitCardColorsOn, kitCardContrast, kitCardLogoBackground, kitCardLogoSize } from '../../_lib/end-card.mjs';
+import { cardLayoutColorsOn } from '../src/layouts.mjs';
+
+const { dir, mod } = await loadNewest('end-card');
+const ready = (await hasFfmpeg()) && browserProviderOrNull();
+const skip = !ready && (browserMissing() || 'ffmpeg is not installed');
+
+/** A JPEG logo: a red mark on an opaque white background, as many brand kits store it. */
+async function whiteBackedJpeg(path, w = 400, h = 160) {
+  await run('ffmpeg', ['-hide_banner', '-nostdin', '-loglevel', 'error', '-y', '-f', 'lavfi', '-i', `color=c=white:s=${w}x${h}:d=1`, '-vf', `drawbox=x=${w / 4}:y=${h / 4}:w=${w / 2}:h=${h / 2}:color=0xe01020:t=fill`, '-frames:v', '1', '-q:v', '2', path]);
+  return path;
+}
+
+/** The bounding box of the pixels near `rgb` in a frame. */
+function boxOf(px, rgb, tol = 24) {
+  let x0 = Infinity;
+  let y0 = Infinity;
+  let x1 = -1;
+  let y1 = -1;
+  for (let i = 0, p = 0; i < px.data.length; i += 3, p++) {
+    if (Math.abs(px.data[i] - rgb[0]) <= tol && Math.abs(px.data[i + 1] - rgb[1]) <= tol && Math.abs(px.data[i + 2] - rgb[2]) <= tol) {
+      const x = p % px.width;
+      const y = (p - x) / px.width;
+      x0 = Math.min(x0, x);
+      x1 = Math.max(x1, x);
+      y0 = Math.min(y0, y);
+      y1 = Math.max(y1, y);
+    }
+  }
+  return x1 < 0 ? null : { w: x1 - x0 + 1, h: y1 - y0 + 1 };
+}
+
+test('logo size: a wide mark fills min(640 px, 0.58 W), any other min(320 px, 0.17 H), scaled up or down', () => {
+  assert.deepEqual(kitCardLogoSize(130, 53, 1080, 1920), { w: 626, h: 255 }, 'a 130x53 wordmark is drawn 626 px wide');
+  assert.deepEqual(kitCardLogoSize(4000, 1000, 1080, 1920), { w: 626, h: 157 }, 'a big file is scaled down to the same box');
+  assert.deepEqual(kitCardLogoSize(100, 100, 1080, 1920), { w: 320, h: 320 }, 'a square mark is 320 px tall');
+  assert.deepEqual(kitCardLogoSize(100, 100, 540, 960), { w: 160, h: 160 }, 'the box scales with the card');
+  assert.deepEqual(kitCardLogoSize(190, 100, 1080, 1920), { w: 608, h: 320 }, 'a mark just under 2:1 stays inside the wide box');
+  const stack = kitCardLogoSize(400, 100, 1080, 1920, KIT_CARD_LOGO_BOXES.stack);
+  assert.ok(stack.w >= 0.4 * 1080 && stack.w <= Math.round(0.66 * 1080));
+});
+
+test('card colour: only a logo that does not read changes the card, to the colour that reads best', () => {
+  const ink = { white: 1, red: 0.181, nearWhite: 0.9 };
+  assert.equal(kitCardLogoBackground(ink.red, '#ffffff', {}), null, 'a red logo reads on white');
+  assert.equal(kitCardLogoBackground(ink.white, '#ffffff', { primary: '#1a1a1d', background: '#ffffff' }), '#1a1a1d', 'the brand colour with the most contrast');
+  assert.equal(kitCardLogoBackground(ink.white, '#ffffff', { background: '#ffffff', primary: '#ffd400' }), '#111111', 'no brand colour reads: near-black');
+  assert.equal(kitCardLogoBackground(0.005, '#111111', { background: '#111111' }), '#f5f3ee', 'a dark logo on a dark card with no light brand colour: warm white');
+  assert.equal(kitCardLogoBackground(0.005, '#111111', { primary: '#ff0000' }, '#ffffff'), '#ffffff', "the logo file's own background comes first");
+});
+
+test('colours on a forced card keep only what reads on it', () => {
+  const brand = { colors: { primary: '#111111', text: '#111111', background: '#ffffff' } };
+  const c = kitCardColorsOn(brand, {}, '#111111');
+  assert.ok(kitCardContrast(c.fg, '#111111') >= 4.5, 'the text turns light');
+  assert.ok(kitCardContrast(c.ctaBg, '#111111') >= 1.5, 'the pill does not vanish into the card');
+  const l = cardLayoutColorsOn(brand, { foreground: '#111111', accent: '#111111' }, '#111111');
+  assert.ok(kitCardContrast(l.fg, '#111111') >= 4.5);
+  assert.ok(kitCardContrast(l.accent, '#111111') >= 3);
+  assert.ok(kitCardContrast(l.ctaBg, '#111111') >= 1.5);
+});
+
+test('a small 130x53 wordmark is drawn at least 560 px wide on a 1080x1920 card, and its box is on the timeline', { skip }, async () => {
+  const { ctx } = makeCtx({ partDir: dir });
+  const brand = await sampleBrand(ctx.workDir);
+  brand.logo = await fileRef(await makeLogo(join(ctx.workDir, 'small.png'), '#e01020', 130, 53), 'image');
+  const out = await mod.run({ brand, width: 1080, height: 1920, seconds: 1 }, ctx);
+  const red = boxOf(await framePixels(out.video.path, 0.5, 1080, 1920), [224, 16, 32]);
+  assert.ok(red && red.w >= 560, `the mark is ${red && red.w} px wide`);
+  const zone = out.timeline.safe_zones.find((z) => z.use === 'logo');
+  assert.ok(zone, 'the logo box is declared');
+  assert.ok(zone.w >= red.w, 'the box covers the whole file, its trimmed margins included');
+});
+
+test('a white-backed JPEG logo loses its background: no box behind it on a coloured card', { skip }, async () => {
+  const { ctx, logs } = makeCtx({ partDir: dir });
+  const brand = await sampleBrand(ctx.workDir, { background: '#f5e6c8' });
+  brand.logo = await fileRef(await whiteBackedJpeg(join(ctx.workDir, 'logo.jpg')), 'image');
+  const out = await mod.run({ brand, width: 540, height: 960, seconds: 1 }, ctx);
+  const zone = out.timeline.safe_zones.find((z) => z.use === 'logo');
+  // Only the logo's rows: the CTA pill below has white text of its own.
+  const px = await framePixels(out.video.path, 0.5, 540, 960);
+  const rows = { width: px.width, height: zone.h, data: px.data.subarray(zone.y * px.width * 3, (zone.y + zone.h) * px.width * 3) };
+  assert.ok(countColor(rows, [224, 16, 32], 30) > 2000, 'the red mark is drawn');
+  assert.ok(countColor(rows, [255, 255, 255], 6) < 40, 'no white box around it');
+  assert.ok(countColor(rows, [17, 17, 17], 6) < 40, 'no dark plate either');
+  assert.ok(logs.some(([, m]) => /background made transparent/.test(m)));
+});
+
+test('a white logo on a white card turns the card dark and keeps the logo white', { skip }, async () => {
+  const { ctx } = makeCtx({ partDir: dir });
+  const brand = await sampleBrand(ctx.workDir, { logoColor: '#ffffff', background: '#ffffff' });
+  brand.colors.primary = '#ffd400';
+  brand.colors.text = '#ffffff';
+  const out = await mod.run({ brand, width: 540, height: 960, seconds: 1 }, ctx);
+  const px = await framePixels(out.video.path, 0.5);
+  assert.ok(countColor(px, [17, 17, 17], 6) > 270 * 480 * 0.5, 'the card is near-black');
+  assert.ok(countColor(px, [255, 255, 255], 6) > 200, 'the logo keeps its own white');
+});
+
+test('layouts fit the logo too: statement draws a small mark large and says where', { skip }, async () => {
+  const { ctx } = makeCtx({ partDir: dir });
+  const brand = await sampleBrand(ctx.workDir);
+  brand.logo = await fileRef(await makeLogo(join(ctx.workDir, 'small.png'), '#e01020', 130, 53), 'image');
+  const out = await mod.run({ brand, width: 1080, height: 1920, seconds: 1, layout: 'statement', rows: ['One line.'], background: '#141414' }, ctx);
+  const red = boxOf(await framePixels(out.video.path, 0.5, 1080, 1920), [224, 16, 32]);
+  assert.ok(red && red.w >= 0.4 * 1080, `the mark is ${red && red.w} px wide`);
+  assert.ok(out.timeline.safe_zones.some((z) => z.use === 'logo'));
+});
+
+test('brand layer 1.0.2: the appended card fits the logo and declares its box', { skip }, async () => {
+  const { dir: layerDir, mod: layer } = await loadNewest('brand-layer');
+  const { layerInputsFor, makeVideo } = await import('../../_tools/kit-harness.mjs');
+  const { ctx } = makeCtx({ partDir: layerDir });
+  const video = await fileRef(await makeVideo(join(ctx.workDir, 'cut.mp4'), 2, { width: 540, height: 960 }), 'video');
+  const brand = await sampleBrand(ctx.workDir);
+  brand.logo = await fileRef(await makeLogo(join(ctx.workDir, 'small.png'), '#e01020', 130, 53), 'image');
+  const out = await layer.run(await layerInputsFor(video, { brand, expect: { end_card: true } }), ctx);
+  const zone = out.timeline.safe_zones.find((z) => z.use === 'logo');
+  assert.ok(zone && zone.w >= 0.5 * 540, 'the logo box is on the timeline, at the card size');
+  const red = boxOf(await framePixels(out.video.path, 3.5, 540, 960), [224, 16, 32]);
+  assert.ok(red && red.w >= 280, `the mark is ${red && red.w} px wide on a 540 px card`);
+});

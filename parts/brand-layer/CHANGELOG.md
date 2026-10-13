@@ -1,5 +1,9 @@
 # brand-layer
 
+## 1.0.2
+
+- The appended card fits the logo as end-card 1.1.1's classic card does (background made transparent, margins trimmed, scaled into its box, the card recoloured instead of a plate), and the timeline gets `safe_zones` use `logo` with its box.
+
 ## 1.0.1
 
 - The appended end card is drawn in scratch, so only the declared output is left.

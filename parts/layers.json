@@ -9,7 +9,7 @@
   "layers": {
     "brand": {
       "id": "brand-layer",
-      "version": "1.0.1"
+      "version": "1.0.2"
     },
     "captions": {
       "id": "captions-layer",

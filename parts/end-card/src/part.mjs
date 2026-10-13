@@ -1,6 +1,8 @@
 // end-card: the brand end card as a clip, for styles that draw the card in
 // their own timeline (so the music can run under it). The same renderer sits
 // inside the brand layer, which appends the card when no step drew one.
+// 1.1.1: the logo is fitted to the card (_lib/end-card.mjs kitCardFitLogo) in
+// every layout that draws it, and its box goes on the timeline as safe_zones logo.
 import { kitCheckInputs, kitCheckOutputs } from '../../_lib/part.mjs';
 import { kitRenderEndCard } from '../../_lib/end-card.mjs';
 import { cardRenderLayout, cardSafeBrand, cardSafeFile } from './layouts.mjs';
@@ -39,11 +41,14 @@ export async function run(inputs, ctx) {
   };
   // File MIME types reach the page inside data: URIs; keep them to a plain type/subtype for every layout.
   const brand = cardSafeBrand(inputs.brand);
-  const video =
+  const drawn =
     layout === 'classic'
       ? await kitRenderEndCard(ctx, { brand, card, width, height, fps, seconds })
       : await cardRenderLayout(ctx, { layout, brand, card, width, height, fps, seconds });
+  const video = drawn.video;
   ctx.progress({ done: 1, total: 1 });
   const timeline = { duration_s: seconds, width, height, fps, scenes: [{ id: 'end-card', start_s: 0, end_s: seconds }], speech: [], end_card: { start_s: 0, end_s: seconds } };
+  // Where the logo is, so the final check looks for it there (assemble carries it onto the cut).
+  if (drawn.logo) timeline.safe_zones = [drawn.logo];
   return kitCheckOutputs(ctx, manifest, { video, seconds, timeline });
 }
