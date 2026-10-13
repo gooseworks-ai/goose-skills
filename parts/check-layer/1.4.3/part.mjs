@@ -2141,8 +2141,20 @@ const CHK_LINE_LOST_WORDS = 2;
 // The whole script losing this many words in a row fails, whatever its ratio.
 const CHK_SCRIPT_LOST_WORDS = 3;
 
-function chkJoined(words) {
-  return words.join('');
+/** Whether `run` sits in `words` as a contiguous run of whole tokens. */
+function chkHasRun(words, run) {
+  for (let i = 0; i + run.length <= words.length; i++) {
+    if (run.every((t, k) => words[i + k] === t)) return true;
+  }
+  return false;
+}
+
+function chkStartsWith(words, run) {
+  return run.length <= words.length && run.every((t, k) => words[k] === t);
+}
+
+function chkEndsWith(words, run) {
+  return run.length <= words.length && run.every((t, k) => words[words.length - run.length + k] === t);
 }
 
 /** The run of a review's issues that lost words: {words, text} for each, in order. */
@@ -2152,7 +2164,7 @@ function chkLostRuns(verdict, scriptWords, min) {
   const last = withScript.at(-1);
   for (const i of withScript) {
     if (i.kind === 'dropped' && i.script_words.length >= min) out.push({ words: i.script_words, text: i.script_text });
-    else if (i === last && i.kind === 'substitution' && i.script_words.length - i.heard_words.length >= min && chkJoined(scriptWords).endsWith(chkJoined(i.script_words))) {
+    else if (i === last && i.kind === 'substitution' && i.script_words.length - i.heard_words.length >= min && chkEndsWith(scriptWords, i.script_words)) {
       // The line's end was said as fewer, different words: its last words are lost.
       out.push({ words: i.script_words, text: i.script_text });
     }
@@ -2161,21 +2173,29 @@ function chkLostRuns(verdict, scriptWords, min) {
 }
 
 /**
- * The first spoken line that lost words: {index, scene_id, text} or null. A line is compared with what was
- * heard for it (`spoken`) when it names its scene and was heard; lost words heard at the edge of the line
- * before or after it were only placed with the wrong line, so they do not count.
+ * The first spoken line that lost words: {index, scene_id, line, text} or null, `index` its place among the
+ * lines that name a scene. A line is compared with what was heard for it (`spoken`) when it names its scene
+ * and words were placed with it; a line with none placed (the transcriber could not match it, so its words
+ * went to a later line) is left to the whole-script checks. A run lost from a line's start that the nearest
+ * heard line before it ends with, or from its end that the nearest heard line after it starts with, was only
+ * placed with the wrong line, so it does not count; a run lost from the middle always counts.
  */
 function chkLineLoss(speech, aliases) {
-  const lines = (speech || []).filter((s) => s && s.scene_id != null && typeof s.spoken === 'string' && String(s.text || '').trim());
-  for (const [n, e] of lines.entries()) {
+  const named = (speech || []).filter((s) => s && s.scene_id != null && String(s.text || '').trim());
+  const heard = named.map((s) => (typeof s.spoken === 'string' ? speechTokenize(s.spoken, aliases) : null));
+  const near = (n, step) => {
+    for (let k = n + step; k >= 0 && k < named.length; k += step) if (heard[k] && heard[k].length) return heard[k];
+    return [];
+  };
+  for (const [n, e] of named.entries()) {
+    if (!heard[n] || !heard[n].length) continue;
+    const words = speechTokenize(e.text, aliases);
     const verdict = speechReview(e.text, e.spoken, { aliases });
-    for (const lost of chkLostRuns(verdict, speechTokenize(e.text, aliases), CHK_LINE_LOST_WORDS)) {
+    for (const lost of chkLostRuns(verdict, words, CHK_LINE_LOST_WORDS)) {
       const reach = lost.words.length + 2;
-      const before = n > 0 ? speechTokenize(lines[n - 1].spoken, aliases).slice(-reach) : [];
-      const after = n + 1 < lines.length ? speechTokenize(lines[n + 1].spoken, aliases).slice(0, reach) : [];
-      const want = chkJoined(lost.words);
-      if (chkJoined(before).includes(want) || chkJoined(after).includes(want)) continue;
-      return { index: n, scene_id: String(e.scene_id), text: lost.text };
+      if (chkStartsWith(words, lost.words) && chkHasRun(near(n, -1).slice(-reach), lost.words)) continue;
+      if (chkEndsWith(words, lost.words) && chkHasRun(near(n, 1).slice(0, reach), lost.words)) continue;
+      return { index: n, scene_id: String(e.scene_id), line: String(e.text), text: lost.text };
     }
   }
   return null;
@@ -2943,11 +2963,16 @@ export async function run(inputs, ctx) {
     const lineLoss = chkLineLoss(speech, aliases);
     const scriptLoss = lineLoss ? null : chkScriptLoss(verdict);
     const why = 'they were cut where two recordings join, or never said.';
+    // Numbered as the approved script's lines, which the customer saw; scenes can be dropped or added by the cut.
+    const quote = (text) => {
+      const words = String(text).replace(/[.!?]+/g, '').split(/\s+/).filter(Boolean);
+      return words.length > 6 ? `${words.slice(0, 6).join(' ')}…` : words.join(' ');
+    };
     if (lineLoss) {
-      const at = (timeline.scenes || []).findIndex((sc) => String(sc.id) === lineLoss.scene_id);
-      add('speech_matches_script', 'fail', { message: `Scene ${at >= 0 ? at + 1 : lineLoss.index + 1} is missing the words "${lineLoss.text}": ${why}`, expected: 'every approved word of every line', found: +verdict.ratio.toFixed(3) });
+      const at = script.findIndex((l) => speechTokenize(l, aliases).join(' ') === speechTokenize(lineLoss.line, aliases).join(' '));
+      add('speech_matches_script', 'fail', { message: `Line ${at >= 0 ? at + 1 : lineLoss.index + 1} of the script is missing the words "${quote(lineLoss.text)}": ${why}`, expected: 'every approved word of every line', found: +verdict.ratio.toFixed(3) });
     } else if (scriptLoss) {
-      add('speech_matches_script', 'fail', { message: `The speech is missing the words "${scriptLoss.text}": ${why}`, expected: 'every approved word of every line', found: +verdict.ratio.toFixed(3) });
+      add('speech_matches_script', 'fail', { message: `The speech is missing the words "${quote(scriptLoss.text)}": ${why}`, expected: 'every approved word of every line', found: +verdict.ratio.toFixed(3) });
     } else if (verdict.passed) add('speech_matches_script', 'pass', { found: +verdict.ratio.toFixed(3) });
     else {
       add('speech_matches_script', 'fail', {

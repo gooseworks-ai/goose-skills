@@ -6,9 +6,12 @@ for every video, from review-finished-ad and review-ugc-render.
 **New in 1.4.3: the speech is checked line by line.** The whole script could clear its 0.90 similarity with
 a clause lost where two takes join (about one word in ten). Now each spoken line that names its scene and was
 heard (`spoken`) is also compared with its own written words: a line that lost 2 words in a row, or its last 2
-words, fails `speech_matches_script` with the scene named ("Scene 2 is missing the words ..."). Lost words heard
-at the edge of the line before or after it were only placed with the wrong line and do not count. The whole
-script losing 3 words in a row fails too, whatever its similarity. Everything else is as in 1.4.2.
+words, fails `speech_matches_script` naming the script line ("Line 2 of the script is missing the words ...",
+the quote cut to six words). Words lost from a line's start that the nearest heard line before it ends with, or
+from its end that the nearest heard line after it starts with, were only placed with the wrong line and do not
+count; words lost from the middle of a line always count. A line the transcriber could not place (no words heard
+for it) is left to the whole-script checks. The whole script losing 3 words in a row fails too, whatever its
+similarity. Everything else is as in 1.4.2.
 
 **From 1.4.2: taste warns, broken fails.** A check that measured the cut and found it outside a taste range
 is a `warn`: the video is still delivered and the warning travels with it. That covers the length range,

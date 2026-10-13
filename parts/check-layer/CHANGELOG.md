@@ -6,7 +6,7 @@
 
 ## 1.4.3
 
-- `speech_matches_script` checks each spoken line too (a speech entry with a `scene_id` and a heard `spoken`): a line that lost 2 words in a row, or its last 2 words, fails with the scene named, and the whole script losing 3 words in a row fails whatever its similarity. 1.4.2 judged only the whole script, so a clause lost where two takes join (about 11 words, a similarity of 0.901) passed. Words heard at the edge of the next or previous line count as said. A patch, so videos approved on 1.4.x move onto it.
+- `speech_matches_script` checks each spoken line too (a speech entry with a `scene_id` and a heard `spoken`): a line that lost 2 words in a row, or its last 2 words, fails naming the script line ("Line 2 of the script is missing the words ..."), and the whole script losing 3 words in a row fails whatever its similarity. 1.4.2 judged only the whole script, so a clause lost where two takes join (about 11 words, a similarity of 0.901) passed. Words lost from a line's start that the nearest heard line before it ends with, or from its end that the nearest heard line after it starts with, count as said (whole words, in order); words lost from a line's middle always count. A line with no heard words placed with it (the transcriber could not match it, so its words went to a later line) is left to the whole-script checks. A patch, so videos approved on 1.4.x move onto it.
 
 ## 1.4.2
 

@@ -22,7 +22,7 @@ const line = (n, spoken) => ({ scene_id: `s${n + 1}`, text: SCRIPT[n], spoken: s
 
 test('a line that lost two words in a row names its scene', () => {
   const speech = [line(0), line(1, 'it has twelve grams of protein and almost no sugar.'), line(2), line(3)];
-  assert.deepEqual(chkLineLoss(speech, []), { index: 1, scene_id: 's2', text: 'Listen up' });
+  assert.deepEqual(chkLineLoss(speech, []), { index: 1, scene_id: 's2', line: SCRIPT[1], text: 'Listen up' });
 });
 
 test('a line that lost its last two words fails, one lost word does not', () => {
@@ -39,6 +39,48 @@ test('words placed with the next or previous line are not lost', () => {
   assert.equal(chkLineLoss(late, []), null);
   const early = [line(0, 'Okay so this is the snack everybody keeps asking me about. Listen up,'), line(1, 'it has twelve grams of protein and almost no sugar.'), line(2), line(3)];
   assert.equal(chkLineLoss(early, []), null);
+});
+
+test('words lost from the middle of a line count even when the next line opens with them', () => {
+  // "a box" lost mid-line; the next line happens to open with the same two words.
+  const mid = [
+    { scene_id: 's1', text: 'I keep a box in my bag every day.', spoken: 'I keep in my bag every day.' },
+    { scene_id: 's2', text: 'A box of twelve bars for the week.', spoken: 'A box of twelve bars for the week.' },
+  ];
+  assert.equal(chkLineLoss(mid, []).text, 'a box');
+});
+
+test('the neighbour match is whole words in order, not letters across words', () => {
+  // "is it" lost from the line's end; the next line opens with "this item", which holds "isit" across words.
+  const across = [
+    { scene_id: 's1', text: 'Tell me what you think, is it', spoken: 'Tell me what you think,' },
+    { scene_id: 's2', text: 'this item changed my mornings.', spoken: 'this item changed my mornings.' },
+  ];
+  assert.equal(chkLineLoss(across, []).scene_id, 's1');
+});
+
+test('a line the transcriber could not place is left to the whole script; its words in a later line are not lost', () => {
+  // Line 2's numbers were heard in another form, so neither it nor line 3 was placed: line 4 holds them all.
+  const lines = [
+    'Okay so this is the snack everybody keeps asking me about lately.',
+    'Twenty nine ninety nine for two, 3 for 45.',
+    'I keep a bottle in my bag and one at my desk for the afternoon.',
+    'Grab yours today and tell me which scent you pick first.',
+  ];
+  const speech = [
+    { scene_id: 's1', text: lines[0], spoken: lines[0] },
+    { scene_id: 's2', text: lines[1], spoken: '' },
+    { scene_id: 's3', text: lines[2], spoken: '' },
+    { scene_id: 's4', text: lines[3], spoken: `29.99 for 2, three for forty-five. ${lines[2]} ${lines[3]}` },
+  ];
+  assert.equal(chkLineLoss(speech, []), null);
+  // The nearest heard line past an unplaced one still counts as the neighbour.
+  const late = [
+    { scene_id: 's1', text: lines[0], spoken: 'Okay so this is the snack everybody keeps asking me' },
+    { scene_id: 's2', text: lines[1], spoken: '' },
+    { scene_id: 's3', text: lines[2], spoken: `about lately. 29.99 for 2, three for forty-five. ${lines[2]}` },
+  ];
+  assert.equal(chkLineLoss(late, []), null);
 });
 
 test('lines with no scene or no heard words are not compared one by one', () => {
@@ -66,7 +108,7 @@ test('the layer fails the speech check on a line that lost a phrase, naming the 
   const out = await mod.run(await layerInputsFor(video, { expect, timeline: { scenes, speech: lost } }), ctx);
   const c = check(out, 'speech_matches_script');
   assert.equal(c.status, 'fail');
-  assert.equal(c.message, 'Scene 2 is missing the words "Listen up": they were cut where two recordings join, or never said.');
+  assert.equal(c.message, 'Line 2 of the script is missing the words "Listen up": they were cut where two recordings join, or never said.');
   assert.ok(c.found >= 0.9, 'the whole script alone would have passed');
   const whole = await mod.run(await layerInputsFor(video, { expect, timeline: { scenes, speech: SCRIPT.map((_, n) => line(n)) } }), ctx);
   assert.equal(check(whole, 'speech_matches_script').status, 'pass');

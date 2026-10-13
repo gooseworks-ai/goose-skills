@@ -32,7 +32,7 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitFfmpeg } from '../../_lib/part.mjs';
-import { speechBuildAliases, speechReview } from '../../_lib/speech.mjs';
+import { speechBuildAliases, speechReview, speechTokenize } from '../../_lib/speech.mjs';
 import { kitLogoScore, kitLogoScoreInBox, kitMotion, kitWindowLevels } from '../../_lib/frames.mjs';
 import { CHK_BLANK_MAX_SHARE, CHK_CUT_MAX_RATE, CHK_CUT_MIN_RATE, CHK_MSG_RISE_DB, CHK_READ_MAX_WPS, CHK_READ_MIN_WPS, chkBlankFrames, chkBlankSpans, chkClipSpans, chkCutInsideWord, chkCuts, chkJudgeBlank, chkMessageRise, chkMessageWindows, chkReadRate, chkSpeechBefore } from './flags.mjs';
 import { chkLineLoss, chkScriptLoss } from './lines.mjs';
@@ -587,11 +587,16 @@ export async function run(inputs, ctx) {
     const lineLoss = chkLineLoss(speech, aliases);
     const scriptLoss = lineLoss ? null : chkScriptLoss(verdict);
     const why = 'they were cut where two recordings join, or never said.';
+    // Numbered as the approved script's lines, which the customer saw; scenes can be dropped or added by the cut.
+    const quote = (text) => {
+      const words = String(text).replace(/[.!?]+/g, '').split(/\s+/).filter(Boolean);
+      return words.length > 6 ? `${words.slice(0, 6).join(' ')}…` : words.join(' ');
+    };
     if (lineLoss) {
-      const at = (timeline.scenes || []).findIndex((sc) => String(sc.id) === lineLoss.scene_id);
-      add('speech_matches_script', 'fail', { message: `Scene ${at >= 0 ? at + 1 : lineLoss.index + 1} is missing the words "${lineLoss.text}": ${why}`, expected: 'every approved word of every line', found: +verdict.ratio.toFixed(3) });
+      const at = script.findIndex((l) => speechTokenize(l, aliases).join(' ') === speechTokenize(lineLoss.line, aliases).join(' '));
+      add('speech_matches_script', 'fail', { message: `Line ${at >= 0 ? at + 1 : lineLoss.index + 1} of the script is missing the words "${quote(lineLoss.text)}": ${why}`, expected: 'every approved word of every line', found: +verdict.ratio.toFixed(3) });
     } else if (scriptLoss) {
-      add('speech_matches_script', 'fail', { message: `The speech is missing the words "${scriptLoss.text}": ${why}`, expected: 'every approved word of every line', found: +verdict.ratio.toFixed(3) });
+      add('speech_matches_script', 'fail', { message: `The speech is missing the words "${quote(scriptLoss.text)}": ${why}`, expected: 'every approved word of every line', found: +verdict.ratio.toFixed(3) });
     } else if (verdict.passed) add('speech_matches_script', 'pass', { found: +verdict.ratio.toFixed(3) });
     else {
       add('speech_matches_script', 'fail', {
