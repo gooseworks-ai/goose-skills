@@ -2372,6 +2372,70 @@
       ]
     },
     {
+      "id": "image-gpt-image-2",
+      "version": "1.1.2",
+      "interface": 1,
+      "kind": "generate_image",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "scale",
+            "setsar",
+            "format",
+            "hstack"
+          ],
+          "encoders": [
+            "png",
+            "rawvideo"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "openai/gpt-image-2"
+          },
+          {
+            "provider": "fal",
+            "model": "openai/gpt-image-2/edit"
+          }
+        ],
+        "disk_mb": 300
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "image",
+        "measure": {
+          "from": "/images/*",
+          "as": "count"
+        },
+        "rates_usd": {
+          "openai/gpt-image-2": 0.19,
+          "openai/gpt-image-2/edit": 0.19
+        },
+        "model_from": "/model"
+      },
+      "determinism": "provider",
+      "path": "parts/image-gpt-image-2/1.1.2",
+      "files": {
+        "README.md": "5e32b6368417ed2343bb3b338712394397e3c3323d175f50a486674a2b1a84c0",
+        "part.json": "8e6b6b30b348cb3ba11a22cb5a9fcf6f8e061586bdc853d0e7690044e33ec355",
+        "part.mjs": "33fd879335aeb18b52f2523448d45f2ed21c86a8a10c851110acec9faff838e7"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "openai/gpt-image-2"
+        },
+        {
+          "provider": "fal",
+          "model": "openai/gpt-image-2/edit"
+        }
+      ]
+    },
+    {
       "id": "image-nano-banana",
       "version": "1.0.0",
       "interface": 1,
@@ -2725,6 +2789,69 @@
         "README.md": "4c45a1e83f28e987b07fdbbdab09b8a7ce8ba8eddfe1cf7696a55e26b80065ef",
         "part.json": "824cc5d052a88833b5637940d077b4e267fc0b9f6cdd151ac636eca1bbaac28c",
         "part.mjs": "7dfe44ff0a311db16fce30d81a40d21ea43712247757adaa1028f8673018e499"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "fal-ai/nano-banana"
+        },
+        {
+          "provider": "fal",
+          "model": "fal-ai/nano-banana/edit"
+        }
+      ]
+    },
+    {
+      "id": "image-nano-banana",
+      "version": "1.2.3",
+      "interface": 1,
+      "kind": "generate_image",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "scale",
+            "setsar",
+            "format",
+            "hstack"
+          ],
+          "encoders": [
+            "png"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "fal-ai/nano-banana"
+          },
+          {
+            "provider": "fal",
+            "model": "fal-ai/nano-banana/edit"
+          }
+        ],
+        "disk_mb": 200
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "image",
+        "measure": {
+          "from": "/images/*",
+          "as": "count"
+        },
+        "rates_usd": {
+          "fal-ai/nano-banana": 0.039,
+          "fal-ai/nano-banana/edit": 0.039
+        },
+        "model_from": "/model"
+      },
+      "determinism": "provider",
+      "path": "parts/image-nano-banana/1.2.3",
+      "files": {
+        "README.md": "f9a6fe51d72737e0ad13f63a0019516efc8903585fa22900074ac3da1d94f207",
+        "part.json": "f1c1de10faf5257a7f2135ed26d56cb2c077cb0141f9ec5da004192b8fd4dbbd",
+        "part.mjs": "77bf2b33bdfcbf6a8c0d087798cbaccb3a84dad917b412304f81a147ff754f76"
       },
       "models": [
         {
