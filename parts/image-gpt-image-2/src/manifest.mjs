@@ -79,7 +79,7 @@ export const manifest = {
       require_scene_tags: { description: 'Opt in to strict by_tag routing: reject missing, unknown, malformed or contradictory scene tags before any provider order. scenes mode only.', type: 'boolean' },
       require_product_refs: { description: 'Opt in to requiring the current real product photo in each product scene’s still request and binding its request evidence to the exact motion start frame. scenes mode only.', type: 'boolean' },
       borders: {
-        description: "scenes mode (1.1.2). fix (default): product photos' flat margins are trimmed before they are sent (not with require_product_refs, whose evidence names the exact photo), and a still that comes back letterboxed, padded or framed is cropped (when that keeps 90 % of it) or drawn once more with full-bleed words (a second piece), then cropped when that keeps 75 %, else the step fails. keep: stills are kept as drawn.",
+        description: "scenes mode (1.1.2). fix (default): product photos' flat margins are trimmed before they are sent (not with require_product_refs, whose evidence names the exact photo), and a still that comes back letterboxed, padded or framed is cropped to the frame's shape when that keeps 75 % of it, else the step fails (a lone plain strip on one side is kept). Never a second paid picture. keep: stills are kept as drawn.",
         enum: ['fix', 'keep'],
       },
 

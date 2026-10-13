@@ -866,9 +866,11 @@ function kitAnchorPrompt(tpl, member, ctx = {}) {
 // fed a padded product photo often copies the padding, letterboxes the still
 // or draws the product as a framed card. So a product photo's flat margins are
 // trimmed before it is sent (kitStillTrimReference), and every finished still
-// is measured (kitStillBorders): a still with a flat band or a frame is cropped
-// when that keeps at least 90 % of it, else drawn once more with
-// KIT_STILL_FULL_BLEED, then cropped when that keeps 75 %, else the step fails.
+// is measured (kitStillBorders): a still with a letterbox, a pure white or
+// black band or a frame is cropped (to the frame's shape, scaled back to its
+// size) when that keeps at least 75 % of it; else a letterbox or a frame fails
+// the step, and a lone band is kept with a warning. A still is never drawn a
+// second time here: that would be a paid piece the quote does not hold.
 //
 // Bundled into parts; every top-level name starts with `kitStill` or `KIT_STILL`.
 
@@ -1053,11 +1055,7 @@ function kitStillOutputs({ scenes = [], cast = [], jobs = [], stills, anchors })
   return { images, scenes: outScenes, cast: outCast, anchors: outAnchors };
 }
 
-/** Added to a still's prompt when it is drawn again because it came back with a border. */
-const KIT_STILL_FULL_BLEED = 'Full-bleed photograph filling the whole frame edge to edge; no border, frame, card, letterbox or padding.';
-/** A border is cropped off without a second picture when the crop keeps this much of the still. */
-const KIT_STILL_FREE_CROP = 0.9;
-/** After the second picture, the least a crop may keep before the step fails instead. */
+/** The least of a still a crop may keep (its area, in the still's own shape) before the border is not cropped. */
 const KIT_STILL_MIN_CROP = 0.75;
 
 let kitStillPixelReads = 0;
@@ -1118,7 +1116,8 @@ function kitStillLineOff(px, side, i, rgb, tol = 24) {
 /**
  * A flat band on one side: the run of lines from the edge whose spread is under 3 and whose mean is within 6
  * of the edge line's, and whether it ends on a straight edge (one of the next two lines differs from the band
- * across at least 60 % of its length, which a product or a horizon touching a plain backdrop does not).
+ * across at least 90 % of its length: a picture's edge does, a product or a table edge standing on a plain
+ * backdrop leaves some of the backdrop showing).
  */
 function kitStillSide(px, side) {
   const len = side === 'top' || side === 'bottom' ? px.h : px.w;
@@ -1129,12 +1128,13 @@ function kitStillSide(px, side) {
     if (l.std >= 3 || l.mean.some((v, c) => Math.abs(v - edge.mean[c]) > 6)) break;
     n++;
   }
-  const sharp = n > 0 && n < len - 1 && [n, n + 1].some((i) => i < len && kitStillLineOff(px, side, i, edge.mean) >= 0.6);
+  const sharp = n > 0 && n < len - 1 && [n, n + 1].some((i) => i < len && kitStillLineOff(px, side, i, edge.mean) >= 0.9);
   return { share: n / len, sharp, color: edge.mean };
 }
 
-function kitStillNeutral(rgb) {
-  return Math.max(...rgb) - Math.min(...rgb) <= 16;
+/** Padding white or black (a photographed wall or backdrop is rarely this pure). */
+function kitStillPure(rgb) {
+  return rgb.every((v) => v >= 250) || rgb.every((v) => v <= 6);
 }
 
 function kitStillSameColor(a, b, tol = 12) {
@@ -1143,23 +1143,25 @@ function kitStillSameColor(a, b, tol = 12) {
 
 /**
  * Bands and frames in a still's pixels ({w, h, data} RGBA). A band is a flat strip of at least 2.5 % of the
- * side ending on a straight edge, in a neutral colour (white, grey, black) or matched by a band of the same
- * colour on the opposite side (a letterbox). A frame is a flat ring of at least 1.5 % on all four sides, one
+ * side ending on a straight edge, matched by a band of the same colour on the opposite side (a letterbox or
+ * pillarbox), or alone in pure white or black. A frame is a flat ring of at least 1.5 % on all four sides, one
  * colour, every side ending on a straight edge, around a picture that is not flat. Returns
- * {bands: {top, bottom, left, right} (shares, 0 when none), frame, flagged, box: {x, y, w, h} (shares of the
- * still that are left without them)}.
+ * {bands: {top, bottom, left, right} (shares, 0 when none), frame, lone (only unpaired bands), flagged,
+ * box: {x, y, w, h} (shares of the still that are left without them)}.
  */
 function kitStillBordersIn(px) {
   const sides = {};
   for (const side of ['top', 'bottom', 'left', 'right']) sides[side] = kitStillSide(px, side);
   const opposite = { top: 'bottom', bottom: 'top', left: 'right', right: 'left' };
   const bands = { top: 0, bottom: 0, left: 0, right: 0 };
+  let lone = true;
   for (const side of Object.keys(bands)) {
     const s = sides[side];
     if (!(s.share >= 0.025 && s.sharp)) continue;
     const o = sides[opposite[side]];
     const paired = o.share >= 0.025 && o.sharp && kitStillSameColor(o.color, s.color);
-    if (kitStillNeutral(s.color) || paired) bands[side] = s.share;
+    if (paired) lone = false;
+    if (paired || kitStillPure(s.color)) bands[side] = s.share;
   }
   const ring = Object.values(sides);
   let frame = ring.every((s) => s.share >= 0.015 && s.share < 0.4 && s.sharp) && ring.every((s) => kitStillSameColor(s.color, ring[0].color));
@@ -1187,7 +1189,20 @@ function kitStillBordersIn(px) {
   }
   const flagged = frame || Object.values(bands).some((v) => v > 0);
   const box = { x: bands.left, y: bands.top, w: Math.max(0, 1 - bands.left - bands.right), h: Math.max(0, 1 - bands.top - bands.bottom) };
-  return { bands, frame, flagged, box };
+  return { bands, frame, lone: flagged && !frame && lone, flagged, box };
+}
+
+/**
+ * The largest box of the still's own shape inside `box` (shares of a w x h still), centred on it, in shares;
+ * `kept` is its share of the still's area.
+ */
+function kitStillFillBox(box, w, h) {
+  const bw = box.w * w;
+  const bh = box.h * h;
+  const [cw, ch] = bw / bh > w / h ? [(bh * w) / h, bh] : [bw, (bw * h) / w];
+  const x = box.x * w + (bw - cw) / 2;
+  const y = box.y * h + (bh - ch) / 2;
+  return { x: x / w, y: y / h, w: cw / w, h: ch / h, kept: (cw * ch) / (w * h) };
 }
 
 /** kitStillBordersIn for a still file. */
@@ -1240,14 +1255,18 @@ function kitStillTrimBoxIn(px, tol = 16) {
   return box.w * box.h > 0.96 ? null : box;
 }
 
-/** `file` cropped to `box` (shares) as a PNG in workDir named `name`; its FileRef. Alpha is kept. */
-async function kitStillCrop(ctx, file, box, name) {
+/**
+ * `file` cropped to `box` (shares) as a PNG in workDir named `name`; its FileRef. Alpha is kept. With
+ * `rescale` the crop is scaled back to the file's own size.
+ */
+async function kitStillCrop(ctx, file, box, name, { rescale = false } = {}) {
   const { w: fw, h: fh } = await kitStillSize(ctx, file);
   const x = Math.max(0, Math.floor(box.x * fw));
   const y = Math.max(0, Math.floor(box.y * fh));
   const cw = Math.max(2, Math.min(fw - x, Math.round(box.w * fw)));
   const ch = Math.max(2, Math.min(fh - y, Math.round(box.h * fh)));
-  await kitFfmpeg(ctx, ['-i', file.path, '-frames:v', '1', '-vf', `crop=${cw}:${ch}:${x}:${y}`, '-c:v', 'png', join(ctx.workDir, name)]);
+  const vf = `crop=${cw}:${ch}:${x}:${y}${rescale ? `,scale=${fw}:${fh}:flags=lanczos,setsar=1` : ''}`;
+  await kitFfmpeg(ctx, ['-i', file.path, '-frames:v', '1', '-vf', vf, '-c:v', 'png', join(ctx.workDir, name)]);
   return ctx.file(name, 'image');
 }
 
@@ -1286,27 +1305,24 @@ function kitStillTrimJobs(jobs, trimmed) {
 }
 
 /**
- * A finished still with no border: `draw(suffix)` makes a still (suffix '' first). A still with a band or a
- * frame is cropped when that keeps KIT_STILL_FREE_CROP of it; else it is drawn once more with
- * KIT_STILL_FULL_BLEED, and that one is cropped when it keeps KIT_STILL_MIN_CROP; else the step fails with
- * `refusal` (plain words for the customer). Returns {file, redrawn, cropped}.
+ * A finished still with no border. A still with a letterbox, a pure band or a frame is cropped to the largest
+ * box of its own shape inside what is left, scaled back to its size (so the next part gets the frame shape it
+ * expects), when that keeps KIT_STILL_MIN_CROP of it. Otherwise a letterbox or a frame fails the step with
+ * `refusal` (plain words for the customer), and a lone band (perhaps a plain wall or sky) is kept with a
+ * warning. Never draws again: a second picture is a paid piece the quote does not hold. Returns {file, cropped}.
  */
-async function kitStillWithoutBorders(ctx, { draw, name, about, refusal }) {
-  let file = await draw('');
-  let b = await kitStillBorders(ctx, file);
-  if (!b.flagged) return { file, redrawn: false, cropped: false };
-  const area = (x) => x.box.w * x.box.h;
-  if (area(b) >= KIT_STILL_FREE_CROP) {
-    ctx.log.info(`${about} had a border; cropped it off`, { bands: b.bands, frame: b.frame });
-    return { file: await kitStillCrop(ctx, file, b.box, `${name}-crop.png`), redrawn: false, cropped: true };
+async function kitStillWithoutBorders(ctx, { file, name, about, refusal }) {
+  const b = await kitStillBorders(ctx, file);
+  if (!b.flagged) return { file, cropped: false };
+  const { w, h } = await kitStillSize(ctx, file);
+  const fill = kitStillFillBox(b.box, w, h);
+  if (fill.kept >= KIT_STILL_MIN_CROP) {
+    ctx.log.info(`${about} had a border; cropped it off`, { bands: b.bands, frame: b.frame, kept: +fill.kept.toFixed(3) });
+    return { file: await kitStillCrop(ctx, file, fill, `${name}-crop.png`, { rescale: true }), cropped: true };
   }
-  ctx.log.warn(`${about} came back with a border; drawing it once more`, { bands: b.bands, frame: b.frame });
-  file = await draw(KIT_STILL_FULL_BLEED);
-  b = await kitStillBorders(ctx, file);
-  if (!b.flagged) return { file, redrawn: true, cropped: false };
-  if (area(b) >= KIT_STILL_MIN_CROP) {
-    ctx.log.warn(`${about} came back with a border again; cropped it off`, { bands: b.bands, frame: b.frame });
-    return { file: await kitStillCrop(ctx, file, b.box, `${name}-crop.png`), redrawn: true, cropped: true };
+  if (b.lone) {
+    ctx.log.warn(`${about} has a wide plain strip on one side; kept as drawn`, { bands: b.bands });
+    return { file, cropped: false };
   }
   throw ctx.error('output_invalid', refusal);
 }
@@ -1337,8 +1353,9 @@ async function kitStillWithoutBorders(ctx, { draw, name, about, refusal }) {
 //
 // 1.2.3: in scenes and products mode (borders: 'fix', the default) each product
 // photo's flat margins are trimmed before it is sent, and a finished still that
-// came back letterboxed, padded or framed is cropped or drawn once more
-// (_lib/scene-stills.mjs kitStillWithoutBorders). borders: 'keep' turns both off.
+// came back letterboxed, padded or framed is cropped, or fails the step, never
+// drawn again (_lib/scene-stills.mjs kitStillWithoutBorders). borders: 'keep'
+// turns both off.
 
 const EDIT = 'fal-ai/nano-banana/edit';
 const TEXT = 'fal-ai/nano-banana';
@@ -1549,17 +1566,14 @@ async function nbScenes(inputs, ctx, manifest) {
   for (const s of inputs.scenes) {
     if (s.image_locked === true && !jobs.some((j) => j.id === s.id)) ctx.log.warn(`scene ${s.id} is image_locked but this step does not pick it`);
   }
-  // The strip note added later is under 600 characters, and a still drawn again for a border adds the full-bleed words.
-  const room = NB_PROMPT_MAX - 600 - (fix ? KIT_STILL_FULL_BLEED.length + 2 : 0);
+  // The strip note added later is under 600 characters.
   for (const text of [...jobs.filter((j) => !locked(j)).map((j) => kitStillPrompt(j, {})), ...anchorJobs.map((a) => a.prompt)]) {
-    if (text.length > room) throw ctx.error('bad_input', `a prompt is over ${room} characters`);
+    if (text.length > NB_PROMPT_MAX - 600) throw ctx.error('bad_input', `a prompt is over ${NB_PROMPT_MAX - 600} characters`);
   }
 
   const used = new Set();
   for (const a of anchorJobs) a.piece = kitPieceName('anchor', a.member.key, cast.indexOf(a.member), used);
   for (const j of jobs) j.piece = kitPieceName('image', j.id, j.index, used);
-  // A still drawn once more for a border is its own piece.
-  if (fix) for (const j of jobs) if (!locked(j)) j.redo = kitPieceName('redo', j.id, j.index, used);
   const total = anchorJobs.length + jobs.length;
   let done = 0;
   const tick = () => ctx.progress({ done: ++done, total });
@@ -1608,15 +1622,11 @@ async function nbScenes(inputs, ctx, manifest) {
       const castRefs = kitStillWantsStrip(job, castFiles) ? [await stripFor(castFiles)] : castFiles.slice(0, 3);
       refs = kitStillRefs(job, { cast: castRefs, first, style_refs: styleRefs });
     }
-    const prompt = kitStillPrompt(job, refs);
     const about = `the still for scene ${job.id}`;
-    const draw = (suffix) =>
-      suffix
-        ? nbDraw(ctx, { piece: job.redo, refs: refs.files, prompt: kitPromptJoin([prompt, suffix]), aspect: inputs.aspect_ratio, seed: Number.isInteger(inputs.seed) ? (inputs.seed + 1) % 2147483648 : inputs.seed, about })
-        : nbDraw(ctx, { piece: job.piece, refs: refs.files, prompt, aspect: inputs.aspect_ratio, seed: inputs.seed, about });
+    const drawn = await nbDraw(ctx, { piece: job.piece, refs: refs.files, prompt: kitStillPrompt(job, refs), aspect: inputs.aspect_ratio, seed: inputs.seed, about });
     const file = fix
-      ? (await kitStillWithoutBorders(ctx, { draw, name: job.piece, about, refusal: `The picture for scene ${job.index + 1} came back with a border; change the scene picture and try again.` })).file
-      : await draw('');
+      ? (await kitStillWithoutBorders(ctx, { file: drawn, name: job.piece, about, refusal: `The picture for scene ${job.index + 1} came back with a border; change the scene picture and try again.` })).file
+      : drawn;
     stills.set(job.id, file);
     tick();
   };
@@ -1690,27 +1700,22 @@ async function nbProducts(inputs, ctx, manifest) {
     throw ctx.error('bad_input', err instanceof KitPromptGap ? err.message : String((err && err.message) || err));
   }
   const fix = (inputs.borders || 'fix') === 'fix';
-  const max = NB_PROMPT_MAX - (fix ? KIT_STILL_FULL_BLEED.length + 2 : 0);
   for (const j of jobs) {
-    if (j.prompt.length > max) throw ctx.error('bad_input', `the ${j.kind} prompt for product ${j.product.id} is over ${max} characters`);
+    if (j.prompt.length > NB_PROMPT_MAX) throw ctx.error('bad_input', `the ${j.kind} prompt for product ${j.product.id} is over ${NB_PROMPT_MAX} characters`);
   }
 
   const used = new Set();
   for (const [i, j] of jobs.entries()) j.piece = kitPieceName(j.kind, j.product.id, i, used);
-  if (fix) for (const [i, j] of jobs.entries()) j.redo = kitPieceName(`redo-${j.kind}`, j.product.id, i, used);
   // Each photo loses its flat margins once before any still sends it (free).
   const trimmed = fix ? await kitStillTrimProducts(ctx, products) : new Map();
   let done = 0;
   const files = await nbEach(jobs, async (j) => {
     const photo = (trimmed.get(String(j.product.id)) || j.product).images[0];
     const about = `the ${j.kind} still of ${j.product.name}`;
-    const draw = (suffix) =>
-      suffix
-        ? nbDraw(ctx, { piece: j.redo, refs: [photo], prompt: kitPromptJoin([j.prompt, suffix]), aspect: inputs.aspect_ratio, seed: Number.isInteger(inputs.seed) ? (inputs.seed + 1) % 2147483648 : inputs.seed, about })
-        : nbDraw(ctx, { piece: j.piece, refs: [photo], prompt: j.prompt, aspect: inputs.aspect_ratio, seed: inputs.seed, about });
+    const drawn = await nbDraw(ctx, { piece: j.piece, refs: [photo], prompt: j.prompt, aspect: inputs.aspect_ratio, seed: inputs.seed, about });
     const file = fix
-      ? (await kitStillWithoutBorders(ctx, { draw, name: j.piece, about, refusal: `The picture of ${j.product.name} came back with a border; change its photo and try again.` })).file
-      : await draw('');
+      ? (await kitStillWithoutBorders(ctx, { file: drawn, name: j.piece, about, refusal: `The picture of ${j.product.name} came back with a border; change its photo and try again.` })).file
+      : drawn;
     ctx.progress({ done: ++done, total: jobs.length });
     return file;
   });

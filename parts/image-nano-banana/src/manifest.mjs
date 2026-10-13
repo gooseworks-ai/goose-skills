@@ -90,7 +90,7 @@ export const manifest = {
       aspect_ratio: { enum: ASPECTS },
       seed: { description: 'Sent with every piece; a new seed is a new piece.', type: 'integer', minimum: 0, maximum: 2147483647 },
       borders: {
-        description: "scenes and products mode (1.2.3). fix (default): each product photo's flat margins are trimmed before it is sent, and a still that comes back letterboxed, padded or framed is cropped (when that keeps 90 % of it) or drawn once more with full-bleed words (a second piece, seed + 1), then cropped when that keeps 75 %, else the step fails. keep: stills are kept as drawn (a style that wants a framed picture).",
+        description: "scenes and products mode (1.2.3). fix (default): each product photo's flat margins are trimmed before it is sent, and a still that comes back letterboxed, padded or framed is cropped to the frame's shape when that keeps 75 % of it, else the step fails (a lone plain strip on one side is kept). Never a second paid picture. keep: stills are kept as drawn (a style that wants a framed picture).",
         enum: ['fix', 'keep'],
       },
       images: {

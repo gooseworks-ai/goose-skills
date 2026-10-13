@@ -8,7 +8,7 @@ a product still), the model, the reference count, the reason (the provider's wor
 and the start of the prompt, with links cut to their origin and path and secret-looking values blanked. The step
 still fails as before. 1.2.2 adds **locked scene images** in scenes mode: a picture already approved is the
 final still, not redrawn. 1.2.3 adds **borders**: product photos are trimmed before they are sent, and a still
-that comes back letterboxed, padded or framed is cropped or drawn once more.
+that comes back letterboxed, padded or framed is cropped, or fails the step (never drawn a second time).
 
 - **Paid piece** per still, through the private line only: fal `fal-ai/nano-banana` (prompt alone) or
   `fal-ai/nano-banana/edit` (with references), body `{prompt, image_urls?, aspect_ratio?, seed?, num_images: 1,
@@ -103,17 +103,19 @@ as a framed card. With `borders: "fix"` (the default):
 - **Before sending**: each product photo's flat margins (one colour, or transparent, at least 99.5 % of a line)
   are trimmed, nothing padded back, once per photo, free. A photo with nothing to trim is sent as it is.
 - **After each still**: it is measured. A **band** is a flat strip (spread under 3, mean within 6 of the edge)
-  of at least 2.5 % of a side that ends on a straight edge, in white, grey or black, or matched by the same
-  colour on the opposite side (a letterbox). A **frame** is such a ring of at least 1.5 % on all four sides
-  around a picture that is not flat. A product on a seamless backdrop is neither: it never meets the backdrop
-  along a straight line.
-- A still with a band or frame is **cropped** to the picture inside when that keeps at least 90 % of it (free;
-  `assemble`'s cover fill refills the frame). Otherwise it is **drawn once more** as its own piece
-  (`redo-<scene id>`, `redo-<kind>-<product id>`; the seed plus one) with "Full-bleed photograph filling the
-  whole frame edge to edge; no border, frame, card, letterbox or padding." added, then cropped when that keeps
-  75 %. Otherwise the step fails (`output_invalid`): "The picture for scene N came back with a border; change
-  the scene picture and try again." At most one extra still per scene or product kind; the style's measured
-  cost covers it when it happens.
+  of at least 2.5 % of a side that ends on a straight edge (the next line differs from it across 90 % of its
+  length), matched by the same colour on the opposite side (a letterbox or pillarbox), or alone in pure white
+  or black. A **frame** is such a ring of at least 1.5 % on all four sides around a picture that is not flat.
+  A product on a seamless backdrop, a tall product on a plain studio colour and a wall above a table edge are
+  none of these.
+- A still with a band or frame is **cropped** to the largest box of the still's own shape inside the picture,
+  scaled back to the still's size (so a video step gets the frame shape it expects), when that keeps at least
+  75 % of it. Otherwise a letterbox or a frame fails the step (`output_invalid`): "The picture for scene N came
+  back with a border; change the scene picture and try again." A lone white or black strip that cannot be
+  cropped is kept as drawn, with a warning (it may be a plain wall or sky).
+- A still is **never drawn a second time** here: that would be a paid piece the quote does not hold. Remaking
+  a still for a defect our check found is the line's job, free to the customer, once the line can record a
+  free piece.
 - `borders: "keep"` turns both off (a style that wants a framed picture). Images mode is unchanged and refuses
   `borders`. Locked scenes and cast anchors are never measured.
 

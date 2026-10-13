@@ -1,62 +1,60 @@
 // image-nano-banana 1.2.3: product photos are trimmed before they are sent, and a still with a border is
-// cropped or drawn once more.
+// cropped or fails the step; it is never drawn a second time.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { fileRef, hasFfmpeg, loadNewest, makeCtx, probe, run } from '../../_tools/kit-harness.mjs';
+import { fileRef, framePixels, hasFfmpeg, loadNewest, makeCtx, probe, run } from '../../_tools/kit-harness.mjs';
 import { falReply, productsInputs, sample, scenesInputs } from './fixture.mjs';
 
 const { dir, mod } = await loadNewest('image-nano-banana');
 const skip = !(await hasFfmpeg()) && 'ffmpeg is not installed';
-const FULL_BLEED = /Full-bleed photograph filling the whole frame edge to edge/;
 
-/** A fake line whose stills come back with black bands `pad` px high top and bottom (216x384), clean for redo pieces when `cleanRedo`. */
-function bandedLine(pad, { cleanRedo = false } = {}) {
+/** Whether the picture's top row is mostly not black. */
+async function topRowLit(path) {
+  const px = await framePixels(path, 0, 216, 384);
+  let lit = 0;
+  for (let x = 0; x < 216; x++) if (Math.max(px.data[x * 3], px.data[x * 3 + 1], px.data[x * 3 + 2]) > 24) lit++;
+  return lit > 216 * 0.5;
+}
+
+/** A fake line whose stills come back with black bands `pad` px high top and bottom (216x384). */
+function bandedLine(pad) {
   return async (order, ctx) => {
     const name = order.results[0].name;
     const path = join(ctx.workDir, name);
-    const p = cleanRedo && order.piece.startsWith('redo') ? 0 : pad;
-    await run('ffmpeg', ['-hide_banner', '-nostdin', '-loglevel', 'error', '-y', '-f', 'lavfi', '-i', `testsrc2=size=216x${384 - 2 * p}:duration=1`, '-vf', p ? `pad=216:384:0:${p}:black` : 'null', '-frames:v', '1', '-c:v', 'png', path]);
+    await run('ffmpeg', ['-hide_banner', '-nostdin', '-loglevel', 'error', '-y', '-f', 'lavfi', '-i', `testsrc2=size=216x${384 - 2 * pad}:duration=1`, '-vf', pad ? `pad=216:384:0:${pad}:black` : 'null', '-frames:v', '1', '-c:v', 'png', path]);
     return { json: falReply(name), files: { [name]: await fileRef(path, 'image') }, reused: false };
   };
 }
 
-test('a still that comes back letterboxed is drawn once more with full-bleed words, then kept', { skip }, async () => {
-  const work = mkdtempSync(join(tmpdir(), 'nb-'));
-  const inputs = await scenesInputs(work, { anchor: 'none', pick: { tags: ['Product'] } });
-  const { ctx, orders } = makeCtx({ partDir: dir, workDir: join(work, 'step'), line: bandedLine(40, { cleanRedo: true }) });
-  const out = await mod.run(inputs, ctx);
-  assert.deepEqual(orders.map((o) => o.piece), ['image-s3', 'redo-s3']);
-  assert.match(orders[1].body.prompt, FULL_BLEED);
-  assert.doesNotMatch(orders[0].body.prompt, FULL_BLEED);
-  assert.equal((await probe(out.images[0].image.path)).height, 384, 'the clean second still is kept whole');
-});
-
-test('thin bands are cropped off for free; borders keep leaves the still as drawn', { skip }, async () => {
+test('thin bands are cropped off in the frame shape; borders keep leaves the still as drawn', { skip }, async () => {
   const work = mkdtempSync(join(tmpdir(), 'nb-'));
   const inputs = await scenesInputs(work, { anchor: 'none', pick: { tags: ['Product'] } });
   {
     const { ctx, orders } = makeCtx({ partDir: dir, workDir: join(work, 'a'), line: bandedLine(12) });
     const out = await mod.run(inputs, ctx);
     assert.equal(orders.length, 1, 'no second piece');
-    assert.ok(Math.abs((await probe(out.images[0].image.path)).height - 360) <= 4);
+    const info = await probe(out.images[0].image.path);
+    assert.deepEqual([info.width, info.height], [216, 384], 'cropped, then scaled back to the frame');
+    assert.ok(await topRowLit(out.images[0].image.path), 'no black band left at the top');
   }
   {
     const { ctx, orders } = makeCtx({ partDir: dir, workDir: join(work, 'b'), line: bandedLine(40) });
     const out = await mod.run({ ...inputs, borders: 'keep' }, ctx);
     assert.equal(orders.length, 1);
     assert.equal((await probe(out.images[0].image.path)).height, 384);
+    assert.equal(await topRowLit(out.images[0].image.path), false, 'the band is still there');
   }
 });
 
-test('a still that keeps its wide border after the second try fails the step in plain words', { skip }, async () => {
+test('a still whose letterbox is too wide to crop fails the step in plain words, with no second piece', { skip }, async () => {
   const work = mkdtempSync(join(tmpdir(), 'nb-'));
   const inputs = await scenesInputs(work, { anchor: 'none', pick: { tags: ['Product'] } });
-  const { ctx, orders } = makeCtx({ partDir: dir, workDir: join(work, 'step'), line: bandedLine(70) });
+  const { ctx, orders } = makeCtx({ partDir: dir, workDir: join(work, 'step'), line: bandedLine(40) });
   await assert.rejects(mod.run(inputs, ctx), (e) => e.code === 'output_invalid' && /The picture for scene 3 came back with a border/.test(e.message));
-  assert.equal(orders.length, 2, 'one second try, never more');
+  assert.equal(orders.length, 1, 'never drawn a second time');
 });
 
 test('a padded product photo is sent trimmed in products mode; borders is refused in images mode', { skip }, async () => {

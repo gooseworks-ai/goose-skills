@@ -20,7 +20,7 @@ import {
   kitStillTrimBoxIn,
   kitStillTrimReference,
   kitStillWithoutBorders,
-  KIT_STILL_FULL_BLEED,
+  kitStillFillBox,
 } from './scene-stills.mjs';
 
 const f = (name) => ({ kind: 'file', path: `/x/${name}.png`, sha256: name.padEnd(64, '0').slice(0, 64).replace(/[^a-f0-9]/g, 'a'), bytes: 1, media: 'image', mime: 'image/png' });
@@ -174,6 +174,34 @@ test('borders: a product on a seamless white sweep, a plain photo and a sky over
   assert.equal(kitStillBordersIn(sky).flagged, false, 'a coloured strip on one side is the picture, not padding');
 });
 
+test('borders: a tall product on a plain studio backdrop is not a pillarbox, with or without a soft gradient', () => {
+  const inProduct = (x, y) => x >= W * 0.35 && x < W * 0.65 && y >= H * 0.15 && y < H * 0.85;
+  const flat = pixels(W, H, (x, y) => (inProduct(x, y) ? photo(x, y) : [250, 246, 238]));
+  assert.equal(kitStillBordersIn(flat).flagged, false, JSON.stringify(kitStillBordersIn(flat).bands));
+  const graded = pixels(W, H, (x, y) => (inProduct(x, y) ? photo(x, y) : [250 - Math.floor((8 * y) / H), 246 - Math.floor((8 * y) / H), 238 - Math.floor((8 * y) / H)]));
+  assert.equal(kitStillBordersIn(graded).flagged, false);
+  const white = pixels(W, H, (x, y) => (inProduct(x, y) ? photo(x, y) : [255, 255, 255]));
+  assert.equal(kitStillBordersIn(white).flagged, false, 'pure white too: the product does not run the full height');
+});
+
+test('borders: a plain wall over a table edge is not a band; a pure white strip on one side is a lone band', () => {
+  const wall = pixels(W, H, (x, y) => (y < H * 0.45 ? [244, 244, 242] : photo(x, y)));
+  assert.equal(kitStillBordersIn(wall).flagged, false, 'a photographed wall is not pure white');
+  const strip = kitStillBordersIn(pixels(W, H, (x, y) => (y < H * 0.3 ? [255, 255, 255] : photo(x, y))));
+  assert.equal(strip.flagged, true);
+  assert.equal(strip.lone, true);
+  const box = kitStillBordersIn(pixels(W, H, (x, y) => (y < H * 0.06 || y >= H * 0.94 ? [0, 0, 0] : photo(x, y))));
+  assert.equal(box.lone, false, 'a letterbox is paired');
+});
+
+test('fill box: the largest box of the still\'s own shape inside what is left, centred', () => {
+  const f = kitStillFillBox({ x: 0, y: 0.06, w: 1, h: 0.88 }, 216, 384);
+  assert.ok(Math.abs(f.h - 0.88) < 1e-9 && Math.abs(f.w - 0.88) < 1e-9 && Math.abs(f.x - 0.06) < 1e-9, JSON.stringify(f));
+  assert.ok(Math.abs(f.kept - 0.7744) < 1e-6);
+  const g = kitStillFillBox({ x: 0.1, y: 0, w: 0.8, h: 1 }, 216, 384);
+  assert.ok(Math.abs(g.w - 0.8) < 1e-9 && Math.abs(g.h - 0.8) < 1e-9 && Math.abs(g.y - 0.1) < 1e-9, JSON.stringify(g));
+});
+
 test('trim: a product on a padded white square gives its content box; a full photo and a busy edge give none', () => {
   const padded = pixels(200, 200, (x, y) => (x >= 60 && x < 140 && y >= 40 && y < 170 ? photo(x, y) : [255, 255, 255]));
   const box = kitStillTrimBoxIn(padded);
@@ -205,37 +233,30 @@ test('a padded product photo is trimmed before it is sent; a full one is sent as
   assert.equal(await kitStillTrimReference(ctx, full, 'ref-2.png'), full);
 });
 
-test('a still with wide bands is drawn once more with the full-bleed words, then cropped; thin ones are only cropped', { skip: !ff && 'ffmpeg is not installed' }, async () => {
+test('a still with a border is cropped to its own shape, or fails, and is never drawn again', { skip: !ff && 'ffmpeg is not installed' }, async () => {
   const work = mkdtempSync(join(tmpdir(), 'border-'));
-  const { ctx } = makeCtx({ partDir: join(PARTS_ROOT, 'image-nano-banana', '1.2.2'), workDir: work });
-  const still = async (name, pad) => {
+  const { ctx, logs } = makeCtx({ partDir: join(PARTS_ROOT, 'image-nano-banana', '1.2.2'), workDir: work });
+  const still = async (name, pad, color = 'black', top = false) => {
     const p = join(work, name);
-    const vf = pad ? `pad=216:384:0:${pad}:black` : 'null';
-    await run('ffmpeg', ['-hide_banner', '-nostdin', '-loglevel', 'error', '-y', '-f', 'lavfi', '-i', `testsrc2=size=216x${384 - 2 * pad}:duration=1`, '-vf', vf, '-frames:v', '1', p]);
+    const h = top ? 384 - pad : 384 - 2 * pad;
+    const vf = pad ? `pad=216:384:0:${pad}:${color}` : 'null';
+    await run('ffmpeg', ['-hide_banner', '-nostdin', '-loglevel', 'error', '-y', '-f', 'lavfi', '-i', `testsrc2=size=216x${h}:duration=1`, '-vf', vf, '-frames:v', '1', p]);
     return fileRef(p, 'image');
   };
-  const suffixes = [];
-  const wide = await kitStillWithoutBorders(ctx, {
-    name: 'image-s1',
-    about: 'the still for scene 1',
-    refusal: 'x',
-    draw: async (suffix) => {
-      suffixes.push(suffix);
-      return still(`s1-${suffixes.length}.png`, 40);
-    },
-  });
-  assert.deepEqual(suffixes, ['', KIT_STILL_FULL_BLEED], 'drawn once more with the full-bleed words');
-  assert.equal(wide.redrawn, true);
-  assert.equal(wide.cropped, true);
-  assert.ok(Math.abs((await probe(wide.file.path)).height - 304) <= 4);
-
-  const thin = await kitStillWithoutBorders(ctx, { name: 'image-s2', about: 'the still for scene 2', refusal: 'x', draw: () => still('s2.png', 12) });
-  assert.deepEqual([thin.redrawn, thin.cropped], [false, true], 'a 3 % letterbox is cropped for free');
+  const thin = await kitStillWithoutBorders(ctx, { file: await still('s2.png', 12), name: 'image-s2', about: 'the still for scene 2', refusal: 'x' });
+  assert.equal(thin.cropped, true, 'a 3 % letterbox is cropped');
+  const info = await probe(thin.file.path);
+  assert.deepEqual([info.width, info.height], [216, 384], 'scaled back to the frame it came in');
 
   await assert.rejects(
-    kitStillWithoutBorders(ctx, { name: 'image-s3', about: 'the still for scene 3', refusal: 'The picture for scene 3 came back with a border; change the scene picture and try again.', draw: () => still('s3.png', 70) }),
+    kitStillWithoutBorders(ctx, { file: await still('s3.png', 40), name: 'image-s3', about: 'the still for scene 3', refusal: 'The picture for scene 3 came back with a border; change the scene picture and try again.' }),
     (e) => e.code === 'output_invalid' && /scene 3 came back with a border/.test(e.message || e.detail),
+    'a 10 % letterbox would keep under 75 % in the frame shape',
   );
-  const clean = await kitStillWithoutBorders(ctx, { name: 'image-s4', about: 'x', refusal: 'x', draw: () => still('s4.png', 0) });
-  assert.deepEqual([clean.redrawn, clean.cropped], [false, false]);
+  const lone = await still('s5.png', 120, 'white', true);
+  const kept = await kitStillWithoutBorders(ctx, { file: lone, name: 'image-s5', about: 'the still for scene 5', refusal: 'x' });
+  assert.deepEqual([kept.file, kept.cropped], [lone, false], 'a wide lone white strip is kept');
+  assert.ok(logs.some(([l, m]) => l === 'warn' && /plain strip/.test(m)));
+  const clean = await kitStillWithoutBorders(ctx, { file: await still('s4.png', 0), name: 'image-s4', about: 'x', refusal: 'x' });
+  assert.equal(clean.cropped, false);
 });

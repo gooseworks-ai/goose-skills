@@ -2,7 +2,7 @@
 
 ## 1.2.3
 
-- Borders (scenes and products mode, `borders: fix` by default): each product photo's flat or transparent margins are trimmed before it is sent, and a still that comes back letterboxed, padded or framed is cropped (when that keeps 90 %), else drawn once more with full-bleed words as its own `redo-` piece and cropped when that keeps 75 %, else the step fails in plain words. `borders: keep` keeps the 1.2.2 behaviour. Images mode is unchanged and refuses `borders`. Built on 1.2.2.
+- Borders (scenes and products mode, `borders: fix` by default): each product photo's flat or transparent margins are trimmed before it is sent, and a still that comes back letterboxed, padded or framed is cropped to the still's own shape (scaled back to its size) when that keeps 75 %, else the step fails in plain words; a lone white or black strip that cannot be cropped is kept with a warning. A still is never drawn a second time (no unquoted paid piece). `borders: keep` keeps the 1.2.2 behaviour. Images mode is unchanged and refuses `borders`. Built on 1.2.2.
 
 ## 1.2.2
 

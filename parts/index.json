@@ -2476,9 +2476,9 @@
       "determinism": "provider",
       "path": "parts/image-gpt-image-2/1.1.2",
       "files": {
-        "README.md": "5e32b6368417ed2343bb3b338712394397e3c3323d175f50a486674a2b1a84c0",
-        "part.json": "8e6b6b30b348cb3ba11a22cb5a9fcf6f8e061586bdc853d0e7690044e33ec355",
-        "part.mjs": "33fd879335aeb18b52f2523448d45f2ed21c86a8a10c851110acec9faff838e7"
+        "README.md": "45ebfedfe8bd818856476d73d96e10195a9882fbbc227288a4cafbe305d755f4",
+        "part.json": "8c001dc38b37b30745476a3775661942f614034e54755ee65f36a00ed75e324d",
+        "part.mjs": "4163ef87a27d53ff0ff433d95005824a5fefe67e73d26f464c29e79a523a39f5"
       },
       "models": [
         {
@@ -2905,9 +2905,9 @@
       "determinism": "provider",
       "path": "parts/image-nano-banana/1.2.3",
       "files": {
-        "README.md": "f9a6fe51d72737e0ad13f63a0019516efc8903585fa22900074ac3da1d94f207",
-        "part.json": "f1c1de10faf5257a7f2135ed26d56cb2c077cb0141f9ec5da004192b8fd4dbbd",
-        "part.mjs": "77bf2b33bdfcbf6a8c0d087798cbaccb3a84dad917b412304f81a147ff754f76"
+        "README.md": "74a3604fe33e4f1f2159e98420979a137682695806a6dc75ebad14e92e38f317",
+        "part.json": "d10a33c789ddc6af1cb7f307cdebb22c251612465a273e212facf86283cb80ac",
+        "part.mjs": "b49dfdcfb2131c2ea4d0365cb7ae4dd4224ab943dca7d3179ce73dc8a34e7ad7"
       },
       "models": [
         {

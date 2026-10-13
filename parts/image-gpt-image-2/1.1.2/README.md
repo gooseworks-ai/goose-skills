@@ -13,11 +13,11 @@ With `borders: "fix"` (the default), as image-nano-banana 1.2.3 (`parts/_lib/sce
 
 - Product photos lose their flat or transparent margins before they are sent, free, **except with
   `require_product_refs`**: its evidence names the exact photo in the request, so that photo is sent as it is.
-- A still that comes back with a band (a flat strip of 2.5 % or more on a straight edge, neutral or matched on
-  the opposite side) or a frame (a flat ring of 1.5 % or more on all four sides) is cropped when that keeps 90 %
-  of it; else drawn once more as `redo-<scene id>` with full-bleed words added, then cropped when that keeps
-  75 %; else the step fails: "The picture for scene N came back with a border; change the scene picture and try
-  again." At most one extra still per scene.
+- A still that comes back with a band (a flat strip of 2.5 % or more on a straight edge, matched on the
+  opposite side, or alone in pure white or black) or a frame (a flat ring of 1.5 % or more on all four sides) is
+  cropped to the largest box of its own shape and scaled back to its size when that keeps 75 % of it; else a
+  letterbox or frame fails the step: "The picture for scene N came back with a border; change the scene picture
+  and try again." A lone strip that cannot be cropped is kept with a warning. Never a second paid still.
 - `product_reference_evidence` is bound to the still the step hands on (cropped or not) and to the request that
-  drew it (its piece is the redo piece when the still was drawn again).
+  drew it.
 - `borders: "keep"` turns both off. Images, cast and shots mode are unchanged and refuse `borders`.

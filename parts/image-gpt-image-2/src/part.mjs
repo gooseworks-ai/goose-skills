@@ -22,7 +22,7 @@
 //           picture, multiplied into the source frames (src/plate.mjs).
 //
 // 1.1.2: in scenes mode (borders: 'fix', the default) a still that came back
-// letterboxed, padded or framed is cropped or drawn once more
+// letterboxed, padded or framed is cropped, or fails the step, never drawn again
 // (_lib/scene-stills.mjs kitStillWithoutBorders), and product photos lose their
 // flat margins before they are sent, except with require_product_refs, whose
 // evidence names the exact photo sent.
@@ -31,7 +31,7 @@ import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitFfmpeg, kitPieceName, kitStopIfAborted } from '../../_lib/part.mjs';
 import { KitPromptGap, kitLoadTemplate, kitPromptJoin, kitScenePrompt } from '../../_lib/prompt.mjs';
 import { kitNamedProducts, kitPickScenes } from '../../_lib/scene-match.mjs';
-import { KIT_STILL_FULL_BLEED, kitStillAnchorMembers, kitStillAnchorPrompt, kitStillCastFiles, kitStillJobs, kitStillOutputs, kitStillPrompt, kitStillRefs, kitStillStrip, kitStillTemplate, kitStillTrimJobs, kitStillTrimProducts, kitStillWantsStrip, kitStillWithoutBorders } from '../../_lib/scene-stills.mjs';
+import { kitStillAnchorMembers, kitStillAnchorPrompt, kitStillCastFiles, kitStillJobs, kitStillOutputs, kitStillPrompt, kitStillRefs, kitStillStrip, kitStillTemplate, kitStillTrimJobs, kitStillTrimProducts, kitStillWantsStrip, kitStillWithoutBorders } from '../../_lib/scene-stills.mjs';
 import { kitProductReferenceEvidence, kitProductScenePhotos, kitRequireProductRequest, kitRequireSceneTags } from '../../_lib/product-tag-contract.mjs';
 import { giPlatePixels, giPlateRestore, giRelightFieldFor, giRelightFrame } from './plate.mjs';
 
@@ -249,14 +249,11 @@ async function giScenes(inputs, ctx, manifest, opts) {
   }
   if (!jobs.length) throw ctx.error('bad_input', 'no scene is picked for a still');
   const fix = (inputs.borders || 'fix') === 'fix';
-  // A still drawn again for a border carries the full-bleed words too.
   giCheckLength(ctx, [...jobs.map(giLongestPrompt), ...anchorJobs.map((a) => a.prompt)]);
-  if (fix) giCheckLength(ctx, jobs.map((j) => kitPromptJoin([giLongestPrompt(j), KIT_STILL_FULL_BLEED])));
 
   const used = new Set();
   for (const a of anchorJobs) a.piece = kitPieceName('anchor', a.member.key, cast.indexOf(a.member), used);
   for (const j of jobs) j.piece = kitPieceName('image', j.id, j.index, used);
-  if (fix) for (const j of jobs) j.redo = kitPieceName('redo', j.id, j.index, used);
   // Product photos lose their flat margins before any still sends them (free); the strict evidence binds the exact photo, so it keeps it.
   if (fix && model === EDIT && !inputs.require_product_refs) kitStillTrimJobs(jobs, await kitStillTrimProducts(ctx, inputs.products || []));
   const total = anchorJobs.length + jobs.length;
@@ -292,19 +289,14 @@ async function giScenes(inputs, ctx, manifest, opts) {
       const castRefs = kitStillWantsStrip(job, castFiles) ? [await stripFor(castFiles)] : castFiles.slice(0, 3);
       refs = kitStillRefs(job, { cast: castRefs, first, style_refs: styleRefs });
     }
-    const prompt = kitStillPrompt(job, refs);
-    const productScene = inputs.require_product_refs ? { id: job.id, required: job.required_products } : null;
-    let piece = job.piece;
-    const draw = (suffix) => {
-      piece = suffix ? job.redo : job.piece;
-      return giDraw(ctx, { piece, refs: refs.files, prompt: suffix ? kitPromptJoin([prompt, suffix]) : prompt, size: opts.size, quality: opts.quality, product_scene: productScene });
-    };
+    const drawn = await giDraw(ctx, { piece: job.piece, refs: refs.files, prompt: kitStillPrompt(job, refs), size: opts.size, quality: opts.quality,
+      product_scene: inputs.require_product_refs ? { id: job.id, required: job.required_products } : null });
     const image = fix
-      ? (await kitStillWithoutBorders(ctx, { draw, name: job.piece, about: `the still for scene ${job.id}`, refusal: `The picture for scene ${job.index + 1} came back with a border; change the scene picture and try again.` })).file
-      : await draw('');
+      ? (await kitStillWithoutBorders(ctx, { file: drawn, name: job.piece, about: `the still for scene ${job.id}`, refusal: `The picture for scene ${job.index + 1} came back with a border; change the scene picture and try again.` })).file
+      : drawn;
     stills.set(job.id, image);
     // The evidence binds the still as it is handed on (cropped or not) to the request that drew it.
-    if (inputs.require_product_refs) productEvidence.push(kitProductReferenceEvidence(job.id, image, job.required_products, refs.files, refs.files.length ? EDIT : TEXT, piece));
+    if (inputs.require_product_refs) productEvidence.push(kitProductReferenceEvidence(job.id, image, job.required_products, refs.files, refs.files.length ? EDIT : TEXT, job.piece));
     tick();
   };
   let rest = jobs;
