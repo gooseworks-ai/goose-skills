@@ -2,7 +2,7 @@
 name: render-street-interview
 description: Write a street-interview ad from a complete inspected commercial interaction and current brand facts. Render product guessing, or prepare mic-only, prepared-sample or visible-task conversation script/prompt previews. Premise, actions and ad connection vary; capture rules stay fixed. Conversation media delivery is unverified.
 status: draft
-version: "2.0.5"
+version: "2.0.6"
 updated: 2026-10-12
 ---
 
@@ -65,7 +65,7 @@ performance remain unverified. The existing product-guess render path is preserv
 All conversation subtypes refuse product/scene reference bindings and phone, screen or UI
 demonstrations. Dry-run success is not a performed sample, challenge or finished video.
 
-Read the bundled [model notes](references/model-behaviors.md) before generation.
+Read [model notes](references/model-behaviors.md), [cast](references/cast-writing.md) first.
 If a required guide cannot be fetched or opened, stop before spending and name it.
 `REFERENCE.md` holds the format's historical **Critical knowledge** entries and
 the rejected takes behind them. Read it before changing the prompt scaffold or a gate;

@@ -7478,7 +7478,7 @@
       "description": "Write a street-interview ad from a complete inspected commercial interaction and current brand facts. Render product guessing, or prepare mic-only, prepared-sample or visible-task conversation script/prompt previews. Premise, actions and ad connection vary; capture rules stay fixed. Conversation media delivery is unverified.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-street-interview",
-      "version": "2.0.5",
+      "version": "2.0.6",
       "files": [
         "skills/ads/capabilities/render-street-interview/READINESS.md",
         "skills/ads/capabilities/render-street-interview/REFERENCE.md",
@@ -7521,6 +7521,7 @@
         "skills/ads/capabilities/render-street-interview/episodes/liquid-death-ep3c.json",
         "skills/ads/capabilities/render-street-interview/episodes/liquid-death-ep4.json",
         "skills/ads/capabilities/render-street-interview/episodes/olipop-ep3.json",
+        "skills/ads/capabilities/render-street-interview/references/cast-writing.md",
         "skills/ads/capabilities/render-street-interview/references/h3-generation.md",
         "skills/ads/capabilities/render-street-interview/references/model-behaviors.md",
         "skills/ads/capabilities/render-street-interview/references/street-reference-library.json",
@@ -7548,6 +7549,7 @@
         "skills/ads/capabilities/render-street-interview/skill.meta.json",
         "skills/ads/capabilities/render-street-interview/tests/fixtures/prompt-snapshots.json",
         "skills/ads/capabilities/render-street-interview/tests/smoke-test.md",
+        "skills/ads/capabilities/render-street-interview/tests/test_cast_advice.py",
         "skills/ads/capabilities/render-street-interview/tests/test_conversation.py",
         "skills/ads/capabilities/render-street-interview/tests/test_edit_timeline.py",
         "skills/ads/capabilities/render-street-interview/tests/test_finishing.py",
@@ -7556,13 +7558,14 @@
         "skills/ads/capabilities/render-street-interview/tests/test_prompt_budget.py",
         "skills/ads/capabilities/render-street-interview/tests/test_recut_media.py",
         "skills/ads/capabilities/render-street-interview/tests/test_selector_route.py",
-        "skills/ads/capabilities/render-street-interview/tests/test_single_gen_rejection.py"
+        "skills/ads/capabilities/render-street-interview/tests/test_single_gen_rejection.py",
+        "skills/ads/capabilities/render-street-interview/tests/test_skin_and_voice_options.py"
       ],
       "metadata": {
         "slug": "render-street-interview",
         "category": "capabilities",
         "domain": "ads",
-        "version": "2.0.5",
+        "version": "2.0.6",
         "tags": [
           "ads"
         ],

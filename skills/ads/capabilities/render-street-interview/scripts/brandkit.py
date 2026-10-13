@@ -17,6 +17,7 @@ prompt asked for something the model could not render.
 import argparse
 import json
 import os
+import re
 from pathlib import Path
 
 import format_spec
@@ -189,8 +190,102 @@ def validate(cfg: dict):
                              f"`pronoun`. The already-drinking wording needs it.")
     # The comprehension guard, applied to the CONFIG rather than to the finished prompt, so it
     # fails before a paid call rather than after one.
+    # Voice descriptions are written into the prompt as "The <noun> has <voice>.", so each is a
+    # short noun phrase. A quote mark would read as a spoken line, and a voice on a shot with
+    # no `noun` has nobody to belong to.
+    voices = [("interviewer_voice", cfg.get("interviewer_voice"), True)] + [
+        (f"shot {i + 1} voice", s.get("voice"), bool(s.get("noun")))
+        for i, s in enumerate(cfg["shots"])]
+    for where, v, has_owner in voices:
+        if v is None:
+            continue
+        if not isinstance(v, str) or not v.strip() or len(v) > 90 or '"' in v or v.rstrip().endswith("."):
+            raise SystemExit(f"{where} must be a short phrase such as 'a low, dry voice that "
+                             f"sounds his age': at most 90 characters, no quote marks and no "
+                             f"full stop")
+        if not has_owner:
+            raise SystemExit(f"{where} is set on a shot with no `noun`, so the prompt cannot "
+                             f"say whose voice it is")
     if not any(s.get("line") for s in cfg["shots"]):
         raise SystemExit("no shot has a spoken `line`: nobody says anything")
+
+
+# WHO IS ON THE CORNER. Measured 2026-10-13 on 21 takes across three brands: the same five
+# faces came back again and again (a young woman with long brown hair, a grey-haired man in
+# his fifties, an old man in a flat cap...), and every one of them was white, against real
+# street footage that is not. The cause is the config, not the seed: a person written as "a
+# man in his thirties, grey hoodie, with a plain rucksack" leaves hair, build and skin tone to
+# the model, and the model fills each gap with its default face for that slot. The realism
+# formula says the same thing about stills: without an explicit identity, models drift to an
+# ambiguous composite face. See references/cast-writing.md.
+_HAIR = ("hair", "haired", "bald", "balding", "shaved", "curls", "curly", "afro",
+         "braid", "braids", "locs", "plait", "ponytail", "bun", "bob", "fringe", "beard", "stubble",
+         "moustache", "redhead", "hijab", "headscarf", "turban", "buzz cut", "quiff")
+_BUILD = ("tall", "stocky", "slim", "slight", "heavyset", "broad", "wiry", "thin", "round",
+          "lean", "petite", "burly", "broad-shouldered", "round-shouldered", "lanky", "solid")
+_TONE = ("skin", "black", "brown", "white", "pale", "olive", "tanned", "freckled", "freckles",
+         "south asian", "east asian", "asian", "african", "caribbean", "latina", "latino",
+         "hispanic", "arab", "middle eastern", "mediterranean", "indian", "chinese", "korean",
+         "nigerian", "irish", "mixed")
+
+# Things that came back with a logo or lettering although the prompt bans both: a sports
+# brand's mark on a "plain grey hoodie" in three of four takes (seeds 6223-6225), printed
+# lettering on a "plain shopping bag" in all four, and episode 1's branded cap and printed
+# carrier bag. The word "plain" did not stop it. See references/cast-writing.md.
+_DRAWS_LOGO = ("hoodie", "hooded top", "tracksuit", "jersey", "cap", "baseball cap",
+               "shopping bag", "carrier bag", "tote bag")
+
+
+def _says(text, words):
+    """Whole words only: "thin" must not match "thing", nor "tan" a "tan coat"."""
+    return any(re.search(r"(?<![a-z])" + re.escape(w) + r"(?![a-z])", text) for w in words)
+
+def cast_advice(cfg, other_subjects=()):
+    """Non-blocking notes on a thin or copied cast. Returns a list of strings, empty when fine.
+    Advice only: a recorded take keeps the cast it was made with, and validate() never calls
+    this."""
+    if cfg.get("mode", "product-guess") != "product-guess":
+        return []
+    notes, seen = [], {}
+    others = {o.strip().lower() for o in other_subjects}
+    subjects = [(i + 1, s["subject"]) for i, s in enumerate(cfg["shots"]) if s.get("subject")]
+    for n, subj in subjects:
+        low = subj.lower()
+        missing = [name for name, words in (("hair", _HAIR), ("build", _BUILD), ("skin tone or background", _TONE))
+                   if not _says(low, words)]
+        if missing:
+            notes.append(f"shot {n} ({subj!r}) does not say {', '.join(missing)}: the model picks, "
+                         f"and it picks the same face every time")
+        drawn = [w for w in _DRAWS_LOGO if _says(low, (w,))]
+        if drawn:
+            notes.append(f"shot {n} ({subj!r}) names {', '.join(drawn)}: these came back with a "
+                         f"logo or lettering even when called plain, and generated lettering "
+                         f"distorts. Name something that carries no print (a jumper, a cardigan, "
+                         f"a wool coat, a shirt) and give them nothing printed to carry")
+        if low in others:
+            notes.append(f"shot {n} ({subj!r}) is word for word a person from another brand's "
+                         f"config, so it will be the same face")
+        if low in seen:
+            notes.append(f"shot {n} repeats shot {seen[low]}'s person word for word")
+        seen.setdefault(low, n)
+    if len(subjects) >= 2 and all(not _says(subj.lower(), _TONE) for _, subj in subjects):
+        notes.append("nobody's skin tone or background is stated: every take measured so far cast "
+                     "an all-white corner when this was left out")
+    return notes
+
+
+def other_subjects(cfg):
+    """Every person described in the OTHER bundled configs, for the copied-cast note."""
+    out = []
+    for f in sorted(BRANDS.glob("*.json")):
+        try:
+            other = json.loads(f.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        if other.get("brand") == cfg.get("brand"):
+            continue
+        out += [s["subject"] for s in other.get("shots", []) if s.get("subject")]
+    return out
 
 
 def spoken_lines(cfg):
@@ -229,3 +324,8 @@ if __name__ == "__main__":
     print(f"  shots      {len(cfg['shots'])}: {', '.join(s['kind'] for s in cfg['shots'])}")
     print(f"  lines      {spoken_lines(cfg)}")
     print(f"  take       {take_name(cfg)}.mp4")
+    advice = cast_advice(cfg, other_subjects(cfg))
+    for note in advice:
+        print(f"  CAST ADVISORY: {note}")
+    if advice:
+        print("  Advisory only. See references/cast-writing.md before buying a take.")
