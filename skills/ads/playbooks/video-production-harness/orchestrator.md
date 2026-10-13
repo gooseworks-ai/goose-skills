@@ -36,6 +36,12 @@ After every state:
 
 Consume saved timestamped feedback and review passes on the exact watched version. Follow [the editorial review guide](references/editorial-review.md): changed is distinct from verified, source notes never move with final selection, and affected approvals/evidence are refreshed while valid unrelated decisions remain. Resolve comments only after their intended effect and the full output are verified; keep their history. The final write of every turn records current state and the remaining blocker/gate.
 
+## Progress and resume
+
+- **Report progress.** While making the video, report `running` with a short `progress_note` (for example "clip 3 of 6"; `progress_percent` 0-100 is optional) after every paid piece and at least every 15 minutes. GooseWorks calls a run quiet after 20 minutes with no report and stops it after 120. A report with no note doesn't count; a new paid booking does.
+- **Log paid requests.** Append each paid request to `working/paid-requests.jsonl`: its endpoint and exact body (plus any input-digest header).
+- **Resume.** On restart, re-send each logged request unchanged. The same request gets the same booking, which returns the saved result with no new charge. Don't edit the draft or re-approve mid-run: that changes the booking and pays again.
+
 ## When to use
 
 - Producing a new ad from scratch (`<input> = <fresh concept paragraph>`)
@@ -180,13 +186,12 @@ For podcast-style skit ads, use an actual available specialist through the bindi
 5. **Hint:** editorial-illustration trigger terms above determine this route even if no optional model-notes document is installed. If any apply to the design-brief or prompts, record `ffmpeg_motion`.
 
 ### State 3.5 — Character lock
-1. If ad has no recurring human character (cartoon-only, product-only), continue to State 3.55 when applicable, then the preview gate and State 5.
-2. If `<video_folder>/generated/character-lock/character_locks` exists, continue to State 3.55 when applicable, then the preview gate and State 5.
-3. **Variant mode:** call `lock-character.md` in **Mode B** — pass `<style_refs>` AND the source anchor portrait paths (as the actual supported image-reference fields). The new anchor inherits the source's wardrobe/set/framing but renders in the new medium. See `lock-character.md` for the Mode B flow.
-4. Otherwise (cold-start, Mode A) call `lock-character.md` with `<character_descriptors>` from `design_brief`.
-5. **HUMAN GATE on anchor portrait.** The anchor is the single approval that locks every subsequent keyframe. Drift > 15% follows the escalation order in `lock-character.md` (optional Soul ID last, only if the host has Higgsfield); let the operator choose.
-6. After lock, `character_locks` is the contract `create-clips` reads for per-scene the actual model's reference inputs refs.
-7. **Chained-ref discipline.** `character_locks` MUST also include a `chain_strategy` field: `"anchor-only"` (every downstream call passes only the anchor as ref) or `"all-locked-frames-as-refs"` (every downstream call passes the anchor AND every previously-approved locked keyframe). The latter is mandatory for series where consistency across N frames matters (e.g. 4-panel decline arcs, ping-pong loops, before/after parallels). Resolve the actual reference-image fields from the supported model schema. Pass the approved anchor and all applicable previously approved locked frames, then record their IDs/input fingerprint. A prior review lost ~6 iteration cycles to cage geometry drift before this discipline was applied.
+1. If the ad has no recurring human character (cartoon-only, product-only) or `<video_folder>/generated/character-lock/character_locks` exists, continue to State 3.55 when applicable, then the preview gate and State 5.
+2. **Variant mode:** call `lock-character.md` in **Mode B** — pass `<style_refs>` AND the source anchor portrait paths (as the actual supported image-reference fields). The new anchor inherits the source's wardrobe/set/framing but renders in the new medium. See `lock-character.md` for the Mode B flow.
+3. Otherwise (cold-start, Mode A) call `lock-character.md` with `<character_descriptors>` from `design_brief`.
+4. **HUMAN GATE on anchor portrait.** The anchor is the single approval that locks every subsequent keyframe. Drift > 15% follows the escalation order in `lock-character.md` (optional Soul ID last, only if the host has Higgsfield); let the operator choose.
+5. After lock, `character_locks` is the contract `create-clips` reads for per-scene reference inputs.
+6. **Chained-ref discipline.** `character_locks` MUST also include a `chain_strategy` field: `"anchor-only"` (every downstream call passes only the anchor as ref) or `"all-locked-frames-as-refs"` (every downstream call passes the anchor AND every previously-approved locked keyframe). The latter is mandatory for series where consistency across N frames matters (e.g. 4-panel decline arcs, ping-pong loops, before/after parallels). Resolve the reference-image fields from the model schema and record the passed refs' IDs/input fingerprint. A prior review lost ~6 iteration cycles to cage geometry drift before this discipline was applied.
 
 ### State 3.55 — World lock (UGC family)
 
@@ -344,14 +349,14 @@ Open `references/shot-routing.md` and the brief's genre card at State 2 (design 
 - **Cost discipline.** Never re-generate something that already exists and is marked APPROVED in a review note. Always check for existing artifacts before calling a skill.
 - **Skill selection.** When edit-clip is needed, use the explicit `edit_type` from the review note rather than guessing. If the review just says "scene 5 looks weird," push back and ask for specifics before re-rolling.
 - **Voice picks.** Always pull from `the host-approved voice catalog`. If the design-brief calls for a voice not on the list, surface that as a blocker before State 5.
-- **Style locks.** Once `lock-character` produces `character_locks`, treat that as the lock for all subsequent regenerations in this video. Any re-roll must thread the anchor (or the optional soul_id, only if the host has Higgsfield).
+- **Style locks.** Once `lock-character` produces `character_locks`, treat that as the lock for all subsequent regenerations in this video. Any re-roll must thread the same anchor (or the optional soul_id).
 - **Script locks.** Once `locked_script` exists, downstream skills read VO from it. Any change to VO text invalidates `locked_script` and forces re-running State 2.5 — no silent edits.
 - **Pre-flight is non-negotiable.** P0 audit failures block the pipeline. A revised supported plan may remove a blocked dependency only through current human approval; broken inputs and required capabilities cannot be bypassed by a local flag.
 - **Review loop bounds.** 3 iterations max before escalating. Don't quietly burn credits chasing tiny issues.
 - **Human gates are real.** Never auto-advance past BRAINSTORM, SCRIPT-LOCK, STORYBOARD, CHARACTER-ANCHOR, POLISH, or DELIVER gates without explicit user OK, even if `<auto>` is true.
 - **Trust but verify on visual claims.** Phase 7d frame-extraction verification is mandatory before APPROVED can be set. Sub-agents have a track record of false-positive visual reports.
-- **Brand text rendering.** Never let an AI image model render readable brand text (wordmark, tagline, URL, CTA copy). Compose text-bearing layers via PIL / ffmpeg `drawtext` / After Effects. AI text rendering is unreliable even for short well-known strings — a prior review got "therapits" instead of "therapists" from Nano Banana on the first end-card attempt. Image gen for *visual* elements (background, mascot, illustration); deterministic compositing for *text* elements.
-- **Brand asset library first.** Before generating any brand-anchored visual (logo, wordmark, end card, mascot), look up the canonical asset through brand_assets. Don't ask Nano Banana to "draw the example brand wordmark" — the real one already exists in the host brand asset library. Generating fake brand assets is forbidden when a real one is on disk.
+- **Brand text rendering.** Never let an AI image model render readable brand text (wordmark, tagline, URL, CTA copy). Compose text-bearing layers via PIL / ffmpeg `drawtext` / After Effects. Image gen for *visual* elements (background, mascot, illustration); deterministic compositing for *text* elements.
+- **Brand asset library first.** Before generating any brand-anchored visual (logo, wordmark, end card, mascot), look up the canonical asset through brand_assets. Never generate a fake brand asset when a real one exists.
 - **Editorial illustration → ffmpeg motion only.** If `motion_strategy: ffmpeg_motion` is set by State 3.4, Seedance/Veo3/Kling MUST NOT be invoked. The orchestrator refuses paid generative-video calls on the `ffmpeg_motion` route. A `hybrid_remotion` plan may use only its explicitly approved generative segments; it never overrides the editorial-illustration ban. These models hallucinate photoreal middle states that break editorial-illustration aesthetics.
 - **No crossfades between AI-generated stills.** Use hard cuts. Crossfades expose geometric drift across independently-generated keyframes (different bar counts, dropper positions, cage shapes). Hard cuts read as "next panel"; crossfades read as "the cage is morphing weirdly."
 - **Provider fallback.** The selected binding declares available primary/fallback providers. A fallback is never assumed available or free. Logic:
