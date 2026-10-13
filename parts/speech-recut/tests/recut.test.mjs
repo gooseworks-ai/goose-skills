@@ -3,7 +3,7 @@
 // and the refusals. No ffmpeg; speech-recut.test.mjs renders.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { RECUT_EDGE_S, RECUT_LEVEL_RATE, RECUT_LEVEL_STEP_S, RecutRefusal, recutAlign, recutCheckSpeech, recutFragments, recutIsRepeat, recutLevels, recutMapper, recutPlan, recutQuietWindow, recutSpeechBusy } from '../src/recut.mjs';
+import { RECUT_EDGE_S, RECUT_LEVEL_RATE, RECUT_LEVEL_STEP_S, RecutRefusal, recutAlign, recutCheckSpeech, recutFragments, recutIsRepeat, recutLengthen, recutLevels, recutMapper, recutPlan, recutQuietWindow, recutSpeechBusy } from '../src/recut.mjs';
 
 const FPS = 24;
 const w = (text, start, end) => ({ text, start_s: start, end_s: end });
@@ -129,7 +129,7 @@ test('minimum shot: a silent sliver of a shot is dropped whole; no shot under mi
   assert.ok(loose.seconds >= plan.seconds - 1e-9);
 });
 
-test('a short shot that holds speech is kept and reported, never cut', () => {
+test('a short shot that holds speech between two of the take\'s own cuts is covered by the shot before it, never cut', () => {
   const take = {
     duration: 2.0,
     fps: FPS,
@@ -140,8 +140,83 @@ test('a short shot that holds speech is kept and reported, never cut', () => {
   };
   const plan = recutPlan(take);
   assert.equal(wordsOut(plan).length, 3);
-  assert.equal(plan.warnings.length, 1);
-  assert.match(plan.warnings[0], /holds speech/);
+  assert.deepEqual(plan.warnings, []);
+  assert.deepEqual(plan.covers, [{ start: 0.6, end: 0.8, from: 'prev' }]);
+  // The first shot of the edit has no shot before it: the one after covers it.
+  const first = recutPlan({ ...take, picture_cuts: [0.25] });
+  assert.equal(first.covers.length, 1);
+  assert.equal(first.covers[0].from, 'next');
+  assert.deepEqual(first.warnings, []);
+});
+
+test('a short shot that holds speech next to dead air takes back some of it, up to its shortfall', () => {
+  // The take's own cut at 0.75 s, inside the line, leaves 0.29 s of that shot before the dead-air join.
+  const take = {
+    duration: 3.0,
+    fps: FPS,
+    scenes: [
+      { id: 's1', line: 'one two' },
+      { id: 's2', line: 'three four' },
+    ],
+    speech: [
+      line('s1', 'one two', [w('one', 0.2, 0.5), w('two', 0.55, 0.9)], 'one two'),
+      line('s2', 'three four', [w('three', 2.0, 2.3), w('four', 2.35, 2.6)], 'three four'),
+    ],
+    timeline_scenes: [
+      { id: 's1', start_s: 0, end_s: 1.5 },
+      { id: 's2', start_s: 1.5, end_s: 3.0 },
+    ],
+    picture_cuts: [0.75],
+  };
+  const before = recutPlan({ ...take, min_shot_s: 0.1 });
+  const plan = recutPlan(take);
+  const shots = recutFragments(plan.keep, take.picture_cuts).map((f) => f.end - f.start);
+  assert.ok(shots.every((x) => x >= 0.4 - 1e-6), `shots ${shots.map((x) => x.toFixed(3))}`);
+  assert.deepEqual(plan.covers, []);
+  assert.deepEqual(plan.warnings, []);
+  const dead = plan.removals.find((r) => r.kind === 'dead_air');
+  const was = before.removals.find((r) => r.kind === 'dead_air');
+  near(dead.end, was.end, 'the removal keeps its far edge');
+  assert.ok(dead.start > was.start, 'the removal starts later: more pause after the line');
+  assert.ok(dead.start - was.start <= 0.4 - 0.29 + 1 / FPS + 1e-6, `gave back ${(dead.start - was.start).toFixed(3)} s, about the shortfall`);
+  assert.equal(wordsOut(plan).length, 4, 'no word lost');
+  assertOnFrames(plan, take.duration);
+});
+
+test('a short shot after a dead-air join on the take\'s own cut takes pause from the dead air after it', () => {
+  // The join before "hi" lands on the cut at 1.5 s, so giving that removal back would lengthen the shot before
+  // the cut, not this one: the time comes from the pause after the line instead, and no picture is held.
+  const take = {
+    duration: 4.0,
+    fps: FPS,
+    scenes: [
+      { id: 's1', line: 'one two' },
+      { id: 's2', line: 'hi' },
+      { id: 's3', line: 'three four' },
+    ],
+    speech: [
+      line('s1', 'one two', [w('one', 0.2, 0.5), w('two', 0.55, 0.8)], 'one two'),
+      line('s2', 'hi', [w('hi', 1.6, 1.7)], 'hi'),
+      line('s3', 'three four', [w('three', 3.0, 3.3), w('four', 3.35, 3.6)], 'three four'),
+    ],
+    timeline_scenes: [
+      { id: 's1', start_s: 0, end_s: 1.2 },
+      { id: 's2', start_s: 1.2, end_s: 2.5 },
+      { id: 's3', start_s: 2.5, end_s: 4.0 },
+    ],
+    picture_cuts: [1.5],
+  };
+  const plan = recutPlan(take);
+  assert.ok(plan.removals.some((r) => r.kind === 'dead_air' && Math.abs(r.end - 1.5) < 1e-6), 'the join is on the take\'s cut');
+  assert.deepEqual(plan.covers, []);
+  assert.deepEqual(plan.warnings, []);
+  const shots = recutFragments(plan.keep, take.picture_cuts).map((f) => f.end - f.start);
+  assert.ok(shots.every((x) => x >= 0.4 - 1e-6), `shots ${shots.map((x) => x.toFixed(3))}`);
+  assert.equal(wordsOut(plan).length, 5, 'no word lost');
+  assertOnFrames(plan, take.duration);
+  // The same on bare removals: the left one ends on the cut, the right one has room.
+  const list = recutLengthen([{ start: 0.6, end: 1.0, kind: 'dead_air' }, { start: 1.2, end: 1.8, kind: 'dead_air' }], 3, [1.0], 0.4, 30);
+  assert.deepEqual(list.map((r) => [r.start, r.end]), [[0.6, 1.0], [1.4, 1.8]]);
 });
 
 test('repeats and stutters inside a line are dropped; the written words and the line stay', () => {

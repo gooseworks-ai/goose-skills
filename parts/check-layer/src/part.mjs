@@ -22,13 +22,20 @@
 // and a measured taste check outside its range (length, loudness, pacing,
 // stills, shots, cuts, captions across cuts, room tone, motion, a sparse
 // text-led cut) warns instead of failing. What could not be measured, and
-// what is broken or missing, still fails.
+// what is broken or missing, still fails. 1.4.3 checks the speech line by
+// line too (src/lines.mjs): a line that lost two words in a row, or a script
+// that lost three, fails and names the scene, whatever the whole script's
+// similarity. 1.5.0 fails a measured miss that breaks an earlier part's
+// promise instead of warning: loudness off -14 LUFS on a cut the sound layer
+// levelled, and a caption across a scene cut or into the end card when the
+// captions layer stopped its captions there. A taste range still warns.
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitFfmpeg } from '../../_lib/part.mjs';
-import { speechBuildAliases, speechReview } from '../../_lib/speech.mjs';
+import { speechBuildAliases, speechReview, speechTokenize } from '../../_lib/speech.mjs';
 import { kitLogoScore, kitLogoScoreInBox, kitMotion, kitWindowLevels } from '../../_lib/frames.mjs';
 import { CHK_BLANK_MAX_SHARE, CHK_CUT_MAX_RATE, CHK_CUT_MIN_RATE, CHK_MSG_RISE_DB, CHK_READ_MAX_WPS, CHK_READ_MIN_WPS, chkBlankFrames, chkBlankSpans, chkClipSpans, chkCutInsideWord, chkCuts, chkJudgeBlank, chkMessageRise, chkMessageWindows, chkReadRate, chkSpeechBefore } from './flags.mjs';
+import { chkLineLoss, chkScriptLoss } from './lines.mjs';
 import { CHK_CONTRAST_MIN, CHK_CONTRAST_OFFSET_S, CHK_CONTRAST_WARN, CHK_CUE_GUARD_S, CHK_DISTINCT_MIN, CHK_FLOOR_MAX_DB, CHK_FLOOR_MIN_DB, CHK_FLOOR_SPEECH_GAP_DB, CHK_MIN_SHOT_S, chkAdjacentDiffs, chkCueAcrossCut, chkCutContrast, chkFloorWindows, chkJudgeAmbience, chkSceneOpenings, chkShortShot, chkShotSound, chkShots, chkSpeechSpans } from './shots.mjs';
 
 const TARGET_LUFS = -14;
@@ -47,6 +54,9 @@ const HELD_PICTURE_MAX_S = 4.0;
 const SCENE_EDGE_S = 0.2;
 // The server's line: at or below this a track is silence (ffmpeg reads digital silence as -70 LUFS).
 const SILENT_LUFS = -60;
+// The sound layer's line: above it every cut is levelled to -14 LUFS within 1 (the layer fails otherwise);
+// at or below it the cut passes through as it was.
+const LEVELLED_LUFS = -50;
 const SERVER = new Set(['plays', 'length', 'size', 'sound', 'captions']);
 // review-finished-ad: the platform bands at 1080x1920, the logo match floors and the favicon guard.
 const PLATFORM_TOP = 220;
@@ -235,7 +245,12 @@ export async function run(inputs, ctx) {
   } else if (lufs === null) {
     add('sound', 'fail', { message: "The sound's loudness could not be measured.", expected: `${TARGET_LUFS} LUFS`, found: 'no reading', fix: { slot: 'sound' } });
   } else if (Math.abs(lufs - TARGET_LUFS) > LUFS_TOLERANCE) {
-    add('sound', 'warn', { message: lufs < TARGET_LUFS ? 'The sound is too quiet.' : 'The sound is too loud.', expected: `${TARGET_LUFS} LUFS`, found: `${lufs.toFixed(1)} LUFS` });
+    // Off the mark after the sound layer levelled it (on unless the kit says it is off) is that layer's
+    // broken promise, not a taste call.
+    const levelled = !(expect.layers && typeof expect.layers === 'object' && expect.layers.sound === false) && lufs > LEVELLED_LUFS;
+    const said = { message: lufs < TARGET_LUFS ? 'The sound is too quiet.' : 'The sound is too loud.', expected: `${TARGET_LUFS} LUFS`, found: `${lufs.toFixed(1)} LUFS` };
+    if (levelled) add('sound', 'fail', { ...said, fix: { slot: 'sound' } });
+    else add('sound', 'warn', said);
   } else add('sound', 'pass', { found: `${lufs.toFixed(1)} LUFS` });
 
   if (!expect.captions) add('captions', 'not_applicable');
@@ -465,13 +480,21 @@ export async function run(inputs, ctx) {
       // the join between the new opening and the kept video.
       const cues = record ? (record.cues || []).filter((c) => String(c.text || '').trim() && Number.isFinite(c.start_s) && Number.isFinite(c.end_s) && c.end_s > c.start_s && c.start_s < contentEnd) : [];
       const cuts = chkCuts(timeline.scenes, d).filter((t) => t <= contentEnd + 1e-6);
-      const joins = [timeline.end_card && timeline.end_card.start_s > 0 && timeline.end_card.start_s < contentEnd ? timeline.end_card.start_s : null, retained && contentEnd < d ? contentEnd : null];
-      for (const u of joins) if (u !== null && !cuts.some((t) => Math.abs(t - u) < 1e-3)) cuts.push(u);
+      const card = timeline.end_card && timeline.end_card.start_s > 0 && timeline.end_card.start_s < contentEnd ? timeline.end_card.start_s : null;
+      if (card !== null && !cuts.some((t) => Math.abs(t - card) < 1e-3)) cuts.push(card);
+      // The captions layer stops every caption at a scene cut and at the end card when the style lists this
+      // flag; the join into a retained body is not a cut it knows, so a caption across it only warns.
+      const promised = [...cuts];
+      const join = retained && contentEnd < d ? contentEnd : null;
+      if (join !== null && !cuts.some((t) => Math.abs(t - join) < 1e-3)) cuts.push(join);
       if (!cues.length) add(code, 'not_applicable', { found: 'no captions' });
       else if (!cuts.length) add(code, 'not_applicable', { found: 'no cuts' });
       else {
-        const across = chkCueAcrossCut(cues, cuts);
-        if (across) add(code, 'warn', { message: `The caption "${across.cue.text}" runs on across the cut at ${across.t.toFixed(2)} seconds.`, expected: `every caption inside one shot (${CHK_CUE_GUARD_S} s allowed either side of a cut)`, found: `${across.cue.start_s.toFixed(2)}-${across.cue.end_s.toFixed(2)} s` });
+        const broken = chkCueAcrossCut(cues, promised);
+        const across = broken || chkCueAcrossCut(cues, cuts);
+        const said = across && { message: `The caption "${across.cue.text}" runs on across the cut at ${across.t.toFixed(2)} seconds.`, expected: `every caption inside one shot (${CHK_CUE_GUARD_S} s allowed either side of a cut)`, found: `${across.cue.start_s.toFixed(2)}-${across.cue.end_s.toFixed(2)} s` };
+        if (broken) add(code, 'fail', { ...said, fix: { slot: 'captions' } });
+        else if (across) add(code, 'warn', said);
         else add(code, 'pass', { found: cues.length });
       }
     } else if (flag === 'min_shot') {
@@ -556,10 +579,25 @@ export async function run(inputs, ctx) {
     add('speech_matches_script', 'fail', { message: 'The on-camera speech was not transcribed, so it cannot be checked against the script.', expected: 'a transcribe step before the layers', found: 'no transcript' });
   } else {
     const heard = speech.map((s) => (typeof s.spoken === 'string' ? s.spoken : s.text)).join(' ');
+    const aliases = usableAliases(ctx, inputs.brand.pronunciations);
     // retained_body: only the opening is heard here, so only its line (the plan's first) is compared.
-    const verdict = speechReview((retained ? script.slice(0, 1) : script).join(' '), heard, { aliases: usableAliases(ctx, inputs.brand.pronunciations) });
+    const verdict = speechReview((retained ? script.slice(0, 1) : script).join(' '), heard, { aliases });
     const worst = verdict.issues.find((i) => i.severity === 'high') || verdict.issues.find((i) => i.severity !== 'low');
-    if (verdict.passed) add('speech_matches_script', 'pass', { found: +verdict.ratio.toFixed(3) });
+    // A lost phrase fails even when the whole script clears its bar: it was cut where two takes join, or never said.
+    const lineLoss = chkLineLoss(speech, aliases);
+    const scriptLoss = lineLoss ? null : chkScriptLoss(verdict);
+    const why = 'they were cut where two recordings join, or never said.';
+    // Numbered as the approved script's lines, which the customer saw; scenes can be dropped or added by the cut.
+    const quote = (text) => {
+      const words = String(text).replace(/[.!?]+/g, '').split(/\s+/).filter(Boolean);
+      return words.length > 6 ? `${words.slice(0, 6).join(' ')}…` : words.join(' ');
+    };
+    if (lineLoss) {
+      const at = script.findIndex((l) => speechTokenize(l, aliases).join(' ') === speechTokenize(lineLoss.line, aliases).join(' '));
+      add('speech_matches_script', 'fail', { message: `Line ${at >= 0 ? at + 1 : lineLoss.index + 1} of the script is missing the words "${quote(lineLoss.text)}": ${why}`, expected: 'every approved word of every line', found: +verdict.ratio.toFixed(3) });
+    } else if (scriptLoss) {
+      add('speech_matches_script', 'fail', { message: `The speech is missing the words "${quote(scriptLoss.text)}": ${why}`, expected: 'every approved word of every line', found: +verdict.ratio.toFixed(3) });
+    } else if (verdict.passed) add('speech_matches_script', 'pass', { found: +verdict.ratio.toFixed(3) });
     else {
       add('speech_matches_script', 'fail', {
         message: worst ? `The speech differs from the approved script: ${worst.note}` : 'The speech differs from the approved script.',

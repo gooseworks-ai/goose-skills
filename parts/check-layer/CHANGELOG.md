@@ -1,5 +1,13 @@
 # check-layer
 
+## 1.5.0
+
+- A measured miss that breaks an earlier part's promise fails instead of warning, and names the layer to re-run: loudness off -14 LUFS by more than 2 on a cut above -50 LUFS when the sound layer is on (on unless `expect.layers.sound` is false; the layer levels such a cut to -14 within 1 or fails), and a caption across a scene cut or into the end card (the captions layer stops captions there when the style lists `captions_cross_cuts`). A quiet cut the sound layer passed through (at or below -50 LUFS), loudness with the sound layer off, and a caption across a retained-body join still warn, as does every taste range 1.4.2 made a warning, `min_shot` included. A minor version: only new quotes get it, through layers.json.
+
+## 1.4.3
+
+- `speech_matches_script` checks each spoken line too (a speech entry with a `scene_id` and a heard `spoken`): a line that lost 2 words in a row, or its last 2 words, fails naming the script line ("Line 2 of the script is missing the words ..."), and the whole script losing 3 words in a row fails whatever its similarity. 1.4.2 judged only the whole script, so a clause lost where two takes join (about 11 words, a similarity of 0.901) passed. Words lost from a line's start that the nearest heard line before it ends with, or from its end that the nearest heard line after it starts with, count as said (whole words, in order); words lost from a line's middle always count. A line with no heard words placed with it (the transcriber could not match it, so its words went to a later line) is left to the whole-script checks. A patch, so videos approved on 1.4.x move onto it.
+
 ## 1.4.2
 
 - `sounds_match_messages` hears a message's sound by its loudest 50 ms (from 0.05 s before the scene starts to 0.3 s after) against the median 50 ms of the quiet in the 0.55 s before it, and needs 8 dB. Every scene start before the end card or kept body is judged, the opening's included (1.4.1 skipped the first 0.4 s and the 0.1 s before the card). A cue stops where the next message's starts (two messages under 0.1 s apart split the time) and at the end card. Quiet is time outside every message's own span, so earlier messages never raise the bed; with under 0.15 s of it the bed is the quiet after the cue, then all the quiet before the card. 1.4.1 compared the mean of the 0.25 s after a message with the mean of the 0.3 s before it and needed 4 dB: a 0.1 s send sound, levelled by the sound layer's limiter over a music bed with typing clicks before it, read 3.7 dB and failed a ChatGPT cut whose send sound was there (it reads 12.6 dB now). It is an energy check and needs a steady bed: a message with no sound of its own over a steady bed fails, but a beat in the music that lands on a message can pass it.

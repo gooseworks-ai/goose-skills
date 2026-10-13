@@ -1207,6 +1207,82 @@
       "models": []
     },
     {
+      "id": "check-layer",
+      "version": "1.4.3",
+      "interface": 1,
+      "kind": "check",
+      "layer": "check",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "ebur128",
+            "freezedetect",
+            "blackdetect",
+            "scale",
+            "format",
+            "fps"
+          ],
+          "encoders": [
+            "pcm_s16le"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 100
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/check-layer/1.4.3",
+      "files": {
+        "README.md": "aa22d1151f088457462553abfb1f227123044d8ade0df0f4c698759225e09d53",
+        "part.json": "69b2258b72ee67f8c7142b663cbcb7dce3a7d1e58c36592aee64a30906cab13b",
+        "part.mjs": "b0d63b82cadf190177cf1f1b0c571157c536edc9362791d4858925e34abcd941"
+      },
+      "models": []
+    },
+    {
+      "id": "check-layer",
+      "version": "1.5.0",
+      "interface": 1,
+      "kind": "check",
+      "layer": "check",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "ebur128",
+            "freezedetect",
+            "blackdetect",
+            "scale",
+            "format",
+            "fps"
+          ],
+          "encoders": [
+            "pcm_s16le"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 100
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/check-layer/1.5.0",
+      "files": {
+        "README.md": "a386e4a2fe82f632b06f3b1f5ea2bd5d578c2a2f4cdd38acd7e11ee4572b0683",
+        "part.json": "b67b4681cecd34a7e888d40141e0d05604603ce1587b3d4a4dc6d644f4100761",
+        "part.mjs": "a103171ae70748e933dd115b1a568356bea2a07c0cbaf3d5695fe440eb060b64"
+      },
+      "models": []
+    },
+    {
       "id": "creator-h3",
       "version": "1.0.0",
       "interface": 1,
@@ -1552,6 +1628,75 @@
       ]
     },
     {
+      "id": "creator-h3",
+      "version": "1.2.1",
+      "interface": 1,
+      "kind": "generate_video",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "silencedetect",
+            "tpad",
+            "trim",
+            "setpts",
+            "fps",
+            "settb",
+            "setsar",
+            "format",
+            "xfade",
+            "concat",
+            "aresample",
+            "pan",
+            "aformat",
+            "adelay",
+            "apad",
+            "atrim",
+            "asetpts",
+            "acrossfade"
+          ],
+          "encoders": [
+            "libx264",
+            "aac",
+            "pcm_s16le"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "minimax/h3-max/reference-to-video"
+          }
+        ],
+        "disk_mb": 1500
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "second",
+        "measure": {
+          "from": "/max_seconds",
+          "as": "value"
+        },
+        "rates_usd": {
+          "minimax/h3-max/reference-to-video": 0.4
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/creator-h3/1.2.1",
+      "files": {
+        "README.md": "34928645a5172c68ee413853efbe7556c7695fb79ef7f83d4c2e7b8c5a89d7f9",
+        "part.json": "a0b0b4c454178d996bcc1487da48cb64a493a3a8870dca2999c9037b9517c72c",
+        "part.mjs": "de4fa0688fae24bf5b9e1d807f7247bb8eb7ea814c8c0e06ce54d3b3303cab15"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "minimax/h3-max/reference-to-video"
+        }
+      ]
+    },
+    {
       "id": "cut-footage",
       "version": "1.0.0",
       "interface": 1,
@@ -1862,6 +2007,63 @@
         "README.md": "5571cb8304a8847ce2ea1f1580495425632219e9b31c4c1357d45bb1c6b00917",
         "part.json": "4af9ba2b8ac097328bb989a227001cb570fc2ee0140fdaa5bd5362af38d6b743",
         "part.mjs": "5b6e96de7393b8d5292aaa8b9d5812df792621390b47fe1bb3c51dfd7a4ca5d0"
+      },
+      "models": []
+    },
+    {
+      "id": "dialogue-cut",
+      "version": "1.0.1",
+      "interface": 1,
+      "kind": "compose",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "setpts",
+            "fps",
+            "tpad",
+            "trim",
+            "settb",
+            "format",
+            "setsar",
+            "scale",
+            "crop",
+            "pad",
+            "vstack",
+            "concat",
+            "null",
+            "anull",
+            "curves",
+            "eq",
+            "noise",
+            "select",
+            "metadata",
+            "aresample",
+            "aformat",
+            "apad",
+            "atrim",
+            "asetpts",
+            "anullsrc"
+          ],
+          "encoders": [
+            "libx264",
+            "aac"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 800
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/dialogue-cut/1.0.1",
+      "files": {
+        "README.md": "91ec39e23af3ad98f2f8deb0478c9c1cb94ff27cecc093d0d0c31972a4c0bdb3",
+        "part.json": "9bd50be763bef3d363a42406848e691acc4af9de69bf0b0f89cfa7975c7101e0",
+        "part.mjs": "edd85410f81f165a1938851b636a17c1c16f9d37fa2d6194e88951b130729df3"
       },
       "models": []
     },
@@ -3906,6 +4108,63 @@
         "README.md": "b8398b889dcbb5287d8c7d58be794745692b5d49a2e326ea232d35e70bb60191",
         "part.json": "ca8214954ebcbdbdff0786136af1a556a1a37a8703defaf5aa7a2f9a9eaef1b3",
         "part.mjs": "8b80e62d152045b1709c05a4d7014f4070dcb39871c188230287e23799be2f94"
+      },
+      "models": []
+    },
+    {
+      "id": "speech-recut",
+      "version": "1.0.1",
+      "interface": 1,
+      "kind": "compose",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "scale",
+            "select",
+            "showinfo",
+            "trim",
+            "setpts",
+            "tpad",
+            "atrim",
+            "asetpts",
+            "aresample",
+            "aformat",
+            "apad",
+            "afade",
+            "pan",
+            "concat",
+            "split",
+            "fps",
+            "setsar",
+            "format",
+            "asplit",
+            "areverse",
+            "volume",
+            "amix",
+            "curves",
+            "unsharp"
+          ],
+          "encoders": [
+            "libx264",
+            "aac",
+            "pcm_s16le"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 500
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/speech-recut/1.0.1",
+      "files": {
+        "README.md": "912dd1004a662d0b3ac702b0254bad9e13169ba32163a28214473654b51f4289",
+        "part.json": "0c824b3fb83c1a70ae56da1dd0761182d7f3f854b05a2d4ea538e0fc44a8ef7d",
+        "part.mjs": "9773ef9398c5cb25a4f3adefa2ffabc3bd4094e9fd1a812631fc63eee93144d2"
       },
       "models": []
     },

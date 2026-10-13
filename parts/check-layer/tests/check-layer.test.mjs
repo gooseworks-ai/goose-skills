@@ -27,7 +27,7 @@ test('a cut that fits the style passes every check, and the check never changes 
   assert.deepEqual(Object.keys(out), ['verdict']);
 });
 
-test("fails the server's hard checks with the server's reasons shape; a measured length or loudness off the mark only warns", { skip }, async () => {
+test("fails the server's hard checks with the server's reasons shape; a length off the range warns; loudness off a levelled cut fails", { skip }, async () => {
   const { ctx } = makeCtx({ partDir: dir });
   const quiet = join(ctx.workDir, 'quiet.mp4');
   await makeVideo(quiet, 3, { width: 640, height: 640, tone: 440 });
@@ -37,15 +37,20 @@ test("fails the server's hard checks with the server's reasons shape; a measured
   const out = await mod.run(inputs, ctx);
   assert.equal(out.verdict.pass, false);
   const byCheck = Object.fromEntries(out.verdict.reasons.map((r) => [r.check, r]));
-  assert.deepEqual(Object.keys(byCheck).sort(), ['captions', 'size']);
+  assert.deepEqual(Object.keys(byCheck).sort(), ['captions', 'size', 'sound']);
   assert.equal(byCheck.size.found, '640x640');
   assert.equal(byCheck.captions.message, 'The captions are missing.');
   for (const r of out.verdict.reasons) for (const k of Object.keys(r)) assert.ok(['check', 'message', 'expected', 'found'].includes(k));
   const length = out.verdict.checks.find((c) => c.code === 'length');
   const sound = out.verdict.checks.find((c) => c.code === 'sound');
   assert.deepEqual([length.status, length.message, length.found], ['warn', 'The video is too short.', '3.0 seconds']);
-  assert.deepEqual([sound.status, sound.message], ['warn', 'The sound is too quiet.']);
-  assert.equal(sound.fix, undefined, 'a warning names no layer to re-run');
+  // The sound layer levels every cut above -50 LUFS to -14 within 1: this one is its broken promise.
+  assert.deepEqual([sound.status, sound.message, sound.fix], ['fail', 'The sound is too quiet.', { slot: 'sound' }]);
+  assert.equal(length.fix, undefined, 'a warning names no layer to re-run');
+  // With the sound layer off (when the kit says so) loudness is a taste range: it warns.
+  const unlevelled = await mod.run(await layerInputsFor(await fileRef(q, 'video'), { expect: { duration_s: { min: 6, max: 10 }, captions: true, layers: { sound: false } } }), ctx);
+  const off = unlevelled.verdict.checks.find((c) => c.code === 'sound');
+  assert.deepEqual([off.status, off.message, off.fix], ['warn', 'The sound is too quiet.', undefined]);
 });
 
 test('catches black frames and an end card that does not end the video; a still opening warns', { skip }, async () => {

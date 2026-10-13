@@ -16,6 +16,7 @@ const at = (obj, pointer) => pointer.split('/').slice(1).reduce((v, k) => (v == 
 const VARIANTS = [
   { version: '1.1.0', extra: {} },
   { version: '1.2.0', extra: { join: 'planned' } },
+  { version: '1.2.1', extra: { join: 'planned' } },
 ];
 
 for (const { version, extra } of VARIANTS) {

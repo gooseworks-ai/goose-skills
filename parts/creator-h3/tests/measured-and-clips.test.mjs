@@ -8,7 +8,8 @@ import { join } from 'node:path';
 import { loadPart, hasFfmpeg, makeCtx, fileRef, probe, run } from '../../_tools/kit-harness.mjs';
 import { H3_REPLY, castInputs, sample, still, words } from './fixture.mjs';
 
-const { dir, mod } = await loadPart('creator-h3', '1.2.0');
+// The newest version with measured joins and clips (1.2.1 changes only where lines sit inside a take).
+const { dir, mod } = await loadPart('creator-h3', '1.2.1');
 const old = await loadPart('creator-h3', '1.1.0');
 const ffmpeg = await hasFfmpeg();
 const skip = !ffmpeg && 'ffmpeg is not installed';
