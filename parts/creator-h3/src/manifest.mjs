@@ -57,7 +57,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'creator-h3',
-  version: '1.2.0',
+  version: '1.2.3',
   kind: 'generate_video',
   title: 'Talking creator (H3)',
   summary: 'An AI creator (plan cast or a character) saying the approved lines to camera as one track: H3 takes joined on their measured speech with short dissolves, one voice. Or silent H3 clips, one per picked scene, from its keyframe.',
@@ -110,7 +110,7 @@ export const manifest = {
         enum: ['none', 'cutaways'],
       },
       footage: { description: 'plan.footage: an entry\'s scene_id makes that scene a cutaway.', type: 'array', maxItems: 20, items: footageEntry },
-      join: { description: 'talk: measured (default) places each later take so its first word comes 0.25 s after the previous take\'s measured last word, and ends the reel 0.6 s after the last word; planned keeps 1.1.0\'s estimated schedule.', enum: ['measured', 'planned'] },
+      join: { description: 'talk: measured (default) places each later take so its first word comes 0.25 s after the previous take\'s measured last word, and ends the reel 0.6 s after the last word; each line\'s span ends on the silence heard after it inside its take, where one is in reach. planned keeps 1.1.0\'s estimated schedule.', enum: ['measured', 'planned'] },
       images: {
         description: 'clips: the keyframes by scene id (step.<keyframes>.images). Each picked scene\'s clip opens on its keyframe.',
         type: 'array',
@@ -142,7 +142,7 @@ export const manifest = {
       mannerism: { description: 'Optional muted motion reference (rights cleared, 2 to 15 s).', ...file('video') },
       resolution: { description: 'Default 1080P.', enum: ['480P', '768P', '1080P'] },
       aspect_ratio: { description: 'Default 9:16.', enum: ['21:9', '16:9', '4:3', '1:1', '3:4', '9:16'] },
-      words_per_second: { description: 'Speaking rate used to split lines into takes. Default 2.6.', type: 'number', minimum: 1.5, maximum: 4 },
+      words_per_second: { description: 'Speaking rate used to split lines into takes. Default 2.6; above 3.2 (the fastest H3 speaks) it plans at 3.2.', type: 'number', minimum: 1.5, maximum: 4 },
       max_seconds: { description: 'The most seconds of takes (or clips) this step may order (the price is read from it); more is refused.', type: 'number', minimum: 5, maximum: 120 },
       seed: { description: 'Reshuffles every take\'s seed (a new take is a new price).', type: 'integer', minimum: 0 },
     },
@@ -184,8 +184,11 @@ export const manifest = {
     },
   },
   cost: { basis: 'per_unit', unit: 'second', measure: { from: '/max_seconds', as: 'value' }, rates_usd: { [MODEL]: 0.4 } },
+  // No reuses_pieces_of: above 3.2 words a second the pace cap orders longer takes than 1.2.2 and older did.
   determinism: 'provider',
   timing: { typical_s: 600, timeout_s: 3600 },
   retry: { transient: 1 },
   replaces: ['create-creator-takes-h3'],
+  // What H3 was heard to say in its takes (words over measured speech), for plan limits and style notes.
+  'x-speech-rate': { words_per_second: { low: 2.3, high: 3.2 }, plans_at_most: 3.2 },
 };

@@ -28,6 +28,13 @@
 // default) that opens on that scene's keyframe from `images`, with the
 // prompt from the style's template (its motion text); the clip's sound is
 // dropped. Clip pieces are `clip-<scene id>`.
+//
+// 1.2.1: measured line spans. Inside each take, the boundary between two lines
+// is placed on a silence the detector heard between them (the pause H3 makes
+// at <pause>), so a scene starts on its first word and ends after its last;
+// 1.2.0 spread the lines' estimated lengths over the take's speech, and an
+// insert placed by scene could start mid-word. A boundary with no silence in
+// reach keeps 1.2.0's estimate.
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitDuration, kitFfmpeg, kitNum, kitPieceName, kitStopIfAborted } from '../../_lib/part.mjs';
 import { KitPromptGap, kitLoadTemplate, kitScenePrompts, kitTemplateFrom } from '../../_lib/prompt.mjs';
@@ -42,6 +49,8 @@ const MAX_SPEECH = 14.2;
 const TAIL = 0.6;
 const XF = 0.1;
 const LEAD = 0.11;
+/** H3 says about 3.2 words a second at most (measured takes); a faster plan packs takes it then rushes or cuts. */
+const H3_PLAN_WPS = 3.2;
 const PAD = 0.03;
 const VOICE_CLIP = ['-vn', '-t', '12', '-ac', '1', '-ar', '24000'];
 const COVER_LEAD = 0.15;
@@ -52,6 +61,10 @@ const GENDER_WORD = { female: 'woman', male: 'man', nonbinary: 'non-binary perso
 // runs to its very end).
 const GAP = 0.25;
 const MAX_HOLD = 0.5;
+// Measured line spans: a silence this long inside a take's speech is between words, and one is worth
+// moving a line boundary for while its length beats this share of its distance from the estimate.
+const LINE_GAP_MIN = 0.12;
+const LINE_GAP_REACH = 0.25;
 // Clips mode.
 const CLIP_SECONDS = 5;
 const CLIPS_AT_ONCE = 3;
@@ -196,9 +209,74 @@ async function plannedOnset(ctx, path) {
   return m && Number(m[1]) <= 0.02 ? Number(m[2]) : 0;
 }
 
+/** The silences inside a take's speech (between its first word and its last), at least LINE_GAP_MIN long. */
+export function speechGaps(stderr, bounds, duration) {
+  const starts = [...stderr.matchAll(/silence_start: (-?[0-9.]+)/g)].map((m) => Number(m[1]));
+  const ends = [...stderr.matchAll(/silence_end: ([0-9.]+)/g)].map((m) => Number(m[1]));
+  return starts
+    .map((start, i) => ({ start, end: i < ends.length ? ends[i] : duration }))
+    .filter((g) => g.start > bounds.onset + 0.02 && g.end < bounds.end - 0.02 && g.end - g.start >= LINE_GAP_MIN);
+}
+
 async function measureSpeech(ctx, path, duration) {
   const { stderr } = await kitFfmpeg(ctx, ['-v', 'info', '-i', path, '-af', 'silencedetect=noise=-35dB:d=0.03', '-f', 'null', '-']);
-  return speechBounds(String(stderr), duration);
+  const bounds = speechBounds(String(stderr), duration);
+  return bounds && { ...bounds, gaps: speechGaps(String(stderr), bounds, duration) };
+}
+
+/**
+ * Where each line of one take is spoken, in take seconds: [{start, end}] per line. `estimate(x)` maps a line's
+ * estimated time onto the take (1.2.0's spread); `gaps` are the silences heard inside the speech. Each boundary
+ * between two lines goes on the silence that best trades its length against its distance from the estimated
+ * boundary (in order, each silence used once); a boundary with no silence worth it keeps the estimate.
+ */
+export function lineSpans(lines, gaps, onset, end, estimate) {
+  const m = lines.length;
+  const est = [];
+  for (let i = 0; i + 1 < m; i++) est.push(estimate((lines[i].end + lines[i + 1].start) / 2));
+  const n = gaps.length;
+  // best[i][j]: the most gain placing boundaries i.. on silences j..; each boundary takes one silence or none.
+  const best = Array.from({ length: est.length + 1 }, () => new Array(n + 1).fill(0));
+  const move = Array.from({ length: est.length + 1 }, () => new Array(n + 1).fill('boundary'));
+  for (let i = est.length - 1; i >= 0; i--) {
+    for (let j = n; j >= 0; j--) {
+      let v = best[i + 1][j];
+      let how = 'boundary';
+      if (j < n && best[i][j + 1] > v + 1e-9) {
+        v = best[i][j + 1];
+        how = 'silence';
+      }
+      if (j < n) {
+        const g = gaps[j];
+        const gain = g.end - g.start - LINE_GAP_REACH * Math.abs((g.start + g.end) / 2 - est[i]);
+        if (gain > 0 && gain + best[i + 1][j + 1] > v + 1e-9) {
+          v = gain + best[i + 1][j + 1];
+          how = 'use';
+        }
+      }
+      best[i][j] = v;
+      move[i][j] = how;
+    }
+  }
+  const chosen = new Array(est.length).fill(null);
+  for (let i = 0, j = 0; i < est.length; ) {
+    const how = move[i][j];
+    if (how === 'use') chosen[i++] = gaps[j++];
+    else if (how === 'silence') j++;
+    else i++;
+  }
+  const out = lines.map((l, i) => ({
+    start: i === 0 ? onset : chosen[i - 1] ? chosen[i - 1].end : estimate(l.start),
+    end: i === m - 1 ? end : chosen[i] ? chosen[i].start : estimate(l.end),
+  }));
+  for (let i = 0; i < m; i++) {
+    if (i) out[i].start = Math.max(out[i].start, out[i - 1].end);
+    out[i].end = Math.min(end, Math.max(out[i].end, out[i].start));
+  }
+  // A heard boundary that leaves a line with next to no time (an estimate on its other side runs past it) is
+  // not trusted: the whole take keeps the estimates.
+  if (out.some((x) => x.end - x.start < MIN_SPAN)) return lines.map((l) => ({ start: estimate(l.start), end: estimate(l.end) }));
+  return out;
 }
 
 /**
@@ -316,7 +394,7 @@ export async function run(inputs, ctx) {
   // The character's own delivery is trimmed only, as 1.0.2 did; a cast member's was cleaned in pickCreator.
   // A whitespace-only legacy delivery stays empty, exactly as 1.0.2 built the prompt.
   const delivery = cleanText(inputs.delivery) || String(creator.character.delivery || H3_DEFAULT_DELIVERY).trim();
-  const takes = planTakes(lines, inputs.words_per_second ?? 2.6);
+  const takes = planTakes(lines, Math.min(inputs.words_per_second ?? 2.6, H3_PLAN_WPS));
   if (takes.problem) throw ctx.error('bad_input', takes.problem);
   const seconds = takes.reduce((a, t) => a + t.dur, 0);
   if (seconds > inputs.max_seconds) throw ctx.error('bad_input', `the lines need ${seconds}s of takes, more than max_seconds ${inputs.max_seconds}`);
@@ -349,7 +427,9 @@ export async function run(inputs, ctx) {
     if (measured) {
       const heard = await measureSpeech(ctx, file.path, duration);
       if (!heard) throw ctx.error('provider_failed', `${piece} came back with no speech to hear`);
-      made.push({ ...t, file, path: file.path, duration, start: t.covers[0], onset: heard.onset, speech_end: heard.end });
+      const said = t.lines.reduce((n, l) => n + l.spoken.split(/\s+/).filter(Boolean).length, 0);
+      ctx.log.info('take pace', { take: t.id, words: said, wps: +(said / Math.max(0.1, heard.end - heard.onset)).toFixed(2) });
+      made.push({ ...t, file, path: file.path, duration, start: t.covers[0], onset: heard.onset, speech_end: heard.end, gaps: heard.gaps });
     } else {
       made.push({ ...t, file, path: file.path, duration, start: t.covers[0], onset: await plannedOnset(ctx, file.path), speech_end: duration });
     }
@@ -374,16 +454,19 @@ export async function run(inputs, ctx) {
   const video = await ctx.file('creator.mp4', 'video');
   const info = await ctx.tools.probe(video.path);
   // Line spans on the reel (captions and the check transcribe the real speech). planned: the
-  // estimates shifted to the take's onset. measured: the estimates spread over the take's
-  // measured speech, from its first word to its last.
+  // estimates shifted to the take's onset. measured: each boundary between two lines on a silence heard
+  // between them, else the estimates spread over the take's measured speech, from its first word to its last.
   const speech = [];
   for (const t of plan.takes) {
     const base = t.start + t.head_pad;
     const [c0, c1] = t.covers;
     const scale = measured && c1 > c0 ? (t.speech_end - t.onset) / (c1 - c0) : 1;
     const at = (x) => (measured ? base + t.onset + (x - c0) * scale : x + base + (t.onset || LEAD) - c0);
-    for (const l of t.lines) {
-      const entry = { scene_id: l.scene_id, text: l.text, start_s: +Math.max(0, at(l.start)).toFixed(3), end_s: +Math.min(plan.duration, at(l.end)).toFixed(3) };
+    const spans = measured ? lineSpans(t.lines, t.gaps || [], t.onset, t.speech_end, (x) => t.onset + (x - c0) * scale) : null;
+    for (const [i, l] of t.lines.entries()) {
+      const from = spans ? base + spans[i].start : at(l.start);
+      const to = spans ? base + spans[i].end : at(l.end);
+      const entry = { scene_id: l.scene_id, text: l.text, start_s: +Math.max(0, from).toFixed(3), end_s: +Math.min(plan.duration, to).toFixed(3) };
       if (l.spoken !== l.text) entry.spoken = l.spoken;
       speech.push(entry);
     }

@@ -53,7 +53,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'image-gpt-image-2',
-  version: '1.1.1',
+  version: '1.1.2',
   kind: 'generate_image',
   title: 'Stills (GPT Image 2)',
   summary: 'Photoreal stills with OpenAI GPT Image 2 on fal, one piece per image: a hand-built list, one still per plan scene, the cast portraits, or locked-camera shots (each frame an edit on its plate, plate pixels put back, a closing shot re-lit).',
@@ -63,7 +63,7 @@ export const manifest = {
   kit: '>=1.0.0 <2.0.0',
   needs: {
     browser: false,
-    ffmpeg: { filters: ['scale', 'setsar', 'format', 'hstack'], encoders: ['png', 'rawvideo'] },
+    ffmpeg: { filters: ['scale', 'setsar', 'format', 'hstack', 'crop'], encoders: ['png', 'rawvideo'] },
     network: true,
     models: [
       { provider: 'fal', model: TEXT },
@@ -78,6 +78,10 @@ export const manifest = {
     properties: {
       require_scene_tags: { description: 'Opt in to strict by_tag routing: reject missing, unknown, malformed or contradictory scene tags before any provider order. scenes mode only.', type: 'boolean' },
       require_product_refs: { description: 'Opt in to requiring the current real product photo in each product scene’s still request and binding its request evidence to the exact motion start frame. scenes mode only.', type: 'boolean' },
+      borders: {
+        description: "scenes mode (1.1.2). fix (default): product photos' flat margins are trimmed before they are sent (not with require_product_refs, whose evidence names the exact photo), and a still that comes back letterboxed, padded or framed is cropped to the frame's shape when that keeps 75 % of it, else the step fails (a lone plain strip on one side is kept). Never a second paid picture. keep: stills are kept as drawn.",
+        enum: ['fix', 'keep'],
+      },
 
       model: {
         description: 'The most the step may use. openai/gpt-image-2/edit (default): a piece with reference pictures goes to /edit, a piece with none is drawn from the prompt alone. openai/gpt-image-2: prompt alone only, so references are refused (images mode) or not sent (scenes mode).',

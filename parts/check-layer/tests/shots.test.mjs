@@ -53,8 +53,8 @@ async function withCues(ctx, inputs, cues) {
   return { ...inputs, words: await fileRef(path, 'json') };
 }
 
-test('1.4.2 is the newest check layer and stays free with no network', () => {
-  assert.equal(manifest.version, '1.4.2');
+test('1.5.0 is the newest check layer and stays free with no network', () => {
+  assert.equal(manifest.version, '1.5.0');
   assert.deepEqual([manifest.needs.network, manifest.needs.models, manifest.cost.basis], [false, [], 'free']);
 });
 
@@ -126,7 +126,7 @@ test('the shot maths: shots, the shortest shot, cues across cuts, room tone per 
   assert.deepEqual(chkSceneOpenings([{ id: 'a', start_s: 0, end_s: 0.06 }], 4), [{ id: 'a', at: 0.03 }], 'a very short scene is read in its middle');
 });
 
-test('captions_cross_cuts: a caption cue that runs across a cut, or on into the end card, warns', { skip }, async () => {
+test('captions_cross_cuts: a caption across a scene cut or into the end card fails (the captions layer stops there); across a retained-body join it warns', { skip }, async () => {
   const { ctx } = makeCtx({ partDir: dir });
   const video = await levelledCut(ctx.workDir, 'cues', 5);
   const timeline = { scenes: [{ id: 'a', start_s: 0, end_s: 2.5 }, { id: 'b', start_s: 2.5, end_s: 4 }], end_card: { start_s: 4, end_s: 5 } };
@@ -134,11 +134,12 @@ test('captions_cross_cuts: a caption cue that runs across a cut, or on into the 
   const inside = await mod.run(await withCues(ctx, base, [{ text: 'Shop the', start_s: 0.5, end_s: 2.6 }, { text: 'new range', start_s: 2.4, end_s: 3.9 }]), ctx);
   assert.equal(status(inside)['flag:captions_cross_cuts'], 'pass', JSON.stringify(check(inside, 'flag:captions_cross_cuts')));
   const across = await mod.run(await withCues(ctx, base, [{ text: 'Shop the new', start_s: 2, end_s: 3 }]), ctx);
-  assert.equal(status(across)['flag:captions_cross_cuts'], 'warn');
+  assert.equal(status(across)['flag:captions_cross_cuts'], 'fail');
   assert.match(check(across, 'flag:captions_cross_cuts').message, /"Shop the new".*2\.50/);
-  assert.ok(!across.verdict.reasons.some((r) => r.check === 'flag:captions_cross_cuts'), 'a warning is not a failure');
+  assert.deepEqual(check(across, 'flag:captions_cross_cuts').fix, { slot: 'captions' });
+  assert.ok(across.verdict.reasons.some((r) => r.check === 'flag:captions_cross_cuts'), 'the captions layer broke its promise');
   const intoCard = await mod.run(await withCues(ctx, base, [{ text: 'now', start_s: 3, end_s: 4.6 }]), ctx);
-  assert.equal(status(intoCard)['flag:captions_cross_cuts'], 'warn', 'the end card starts a new shot');
+  assert.equal(status(intoCard)['flag:captions_cross_cuts'], 'fail', 'the end card starts a new shot');
   const none = await mod.run(base, ctx);
   assert.equal(status(none)['flag:captions_cross_cuts'], 'not_applicable', 'no captions to judge');
   // retained_body: the join between the new opening and the kept video is a cut even when no scene starts there.
@@ -146,6 +147,7 @@ test('captions_cross_cuts: a caption cue that runs across a cut, or on into the 
   const hooked = await layerInputsFor(video, { expect: { captions: true, speech: 'voiceover', qc_flags: ['retained_body', 'captions_cross_cuts'] }, timeline: gap });
   const overJoin = await mod.run(await withCues(ctx, hooked, [{ text: 'and more', start_s: 1.5, end_s: 2.5 }]), ctx);
   assert.equal(status(overJoin)['flag:captions_cross_cuts'], 'warn', JSON.stringify(check(overJoin, 'flag:captions_cross_cuts')));
+  assert.equal(check(overJoin, 'flag:captions_cross_cuts').fix, undefined, 'the captions layer does not know the join');
   assert.match(check(overJoin, 'flag:captions_cross_cuts').message, /2\.00/);
   const beforeJoin = await mod.run(await withCues(ctx, hooked, [{ text: 'and more', start_s: 0.5, end_s: 1.9 }]), ctx);
   assert.equal(status(beforeJoin)['flag:captions_cross_cuts'], 'pass', JSON.stringify(check(beforeJoin, 'flag:captions_cross_cuts')));

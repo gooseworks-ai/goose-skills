@@ -10,7 +10,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'check-layer',
-  version: '1.4.2',
+  version: '1.5.0',
   kind: 'check',
   layer: 'check',
   title: 'Check layer',
@@ -19,7 +19,7 @@ export const manifest = {
   entry: 'part.mjs',
   files: ['README.md', 'part.mjs'],
   kit: '>=1.0.0 <2.0.0',
-  needs: { browser: false, ffmpeg: { filters: ['ebur128', 'freezedetect', 'blackdetect', 'scale', 'format', 'fps'], encoders: ['pcm_s16le'] }, network: false, models: [], disk_mb: 100 },
+  needs: { browser: false, ffmpeg: { filters: ['ebur128', 'freezedetect', 'blackdetect', 'scale', 'format', 'fps', 'crop'], encoders: ['pcm_s16le', 'rawvideo'] }, network: false, models: [], disk_mb: 100 },
   inputs: layerInputs,
   outputs: {
     type: 'object',
@@ -41,7 +41,7 @@ export const manifest = {
               properties: {
                 code: { type: 'string', pattern: '^(plays|length|size|sound|captions|black_frames|frozen_frames|captions_safe_zone|speech_matches_script|end_card|logo|logo_resolution|flag:[\\s\\S]*)$', description: 'flag:<name> for each style qc_flag, any name the input allows (a flag this version does not know is reported not_applicable).' },
                 status: {
-                  description: 'warn: measured, but not counted against the video: a taste check outside its range (length, loudness, still or held pictures, motion, pacing, shots, cuts, captions across cuts, room tone, a sparse text-led cut), a small logo file, or a logo looked for on the whole frame with no box declared for it and no brand layer to fix it. What could not be measured, or is broken or missing, fails.',
+                  description: 'warn: measured, but not counted against the video: a taste check outside its range (length, still or held pictures, motion, pacing, shots, cuts, room tone, a sparse text-led cut, loudness the sound layer did not level, a caption across the join into a retained body), a small logo file, or a logo looked for on the whole frame with no box declared for it and no brand layer to fix it. What could not be measured, is broken or missing, or breaks an earlier part\'s promise (loudness off on a levelled cut, a caption across a scene cut or into the end card) fails.',
                   enum: ['pass', 'fail', 'warn', 'not_applicable'],
                 },
                 message: { description: 'Plain words for a failed or warned check, with no file paths or step names.', type: 'string' },

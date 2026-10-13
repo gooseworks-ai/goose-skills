@@ -20,12 +20,18 @@
 //           scene's finished frame, free; with relight, a shot made only of
 //           repeats is the first place again in another light: one paid light
 //           picture, multiplied into the source frames (src/plate.mjs).
+//
+// 1.1.2: in scenes mode (borders: 'fix', the default) a still that came back
+// letterboxed, padded or framed is cropped, or fails the step, never drawn again
+// (_lib/scene-stills.mjs kitStillWithoutBorders), and product photos lose their
+// flat margins before they are sent, except with require_product_refs, whose
+// evidence names the exact photo sent.
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitFfmpeg, kitPieceName, kitStopIfAborted } from '../../_lib/part.mjs';
 import { KitPromptGap, kitLoadTemplate, kitPromptJoin, kitScenePrompt } from '../../_lib/prompt.mjs';
 import { kitNamedProducts, kitPickScenes } from '../../_lib/scene-match.mjs';
-import { kitStillAnchorMembers, kitStillAnchorPrompt, kitStillCastFiles, kitStillJobs, kitStillOutputs, kitStillPrompt, kitStillRefs, kitStillStrip, kitStillTemplate, kitStillWantsStrip } from '../../_lib/scene-stills.mjs';
+import { kitStillAnchorMembers, kitStillAnchorPrompt, kitStillCastFiles, kitStillJobs, kitStillOutputs, kitStillPrompt, kitStillRefs, kitStillStrip, kitStillTemplate, kitStillTrimJobs, kitStillTrimProducts, kitStillWantsStrip, kitStillWithoutBorders } from '../../_lib/scene-stills.mjs';
 import { kitProductReferenceEvidence, kitProductScenePhotos, kitRequireProductRequest, kitRequireSceneTags } from '../../_lib/product-tag-contract.mjs';
 import { giPlatePixels, giPlateRestore, giRelightFieldFor, giRelightFrame } from './plate.mjs';
 
@@ -36,8 +42,8 @@ const GI_PROMPT_MAX = 32000;
 const GI_AT_ONCE = 4;
 const GI_DEFAULT_SIZE = '1088x1920';
 const GI_DEFAULT_QUALITY = 'high';
-const GI_SCENE_ONLY = ['scenes', 'products', 'pick', 'skip_first', 'skip_last', 'anchor', 'multi_ref', 'restore', 'relight', 'require_scene_tags', 'require_product_refs'];
-const GI_NOT_IN_SHOTS = ['images', 'cast', 'cast_size', 'anchor', 'multi_ref', 'require_scene_tags', 'require_product_refs'];
+const GI_SCENE_ONLY = ['scenes', 'products', 'pick', 'skip_first', 'skip_last', 'anchor', 'multi_ref', 'restore', 'relight', 'require_scene_tags', 'require_product_refs', 'borders'];
+const GI_NOT_IN_SHOTS = ['images', 'cast', 'cast_size', 'anchor', 'multi_ref', 'require_scene_tags', 'require_product_refs', 'borders'];
 const GI_MAX_REFS = 10;
 const GI_NOT_IN_IMAGES = [...GI_SCENE_ONLY, 'template', 'look', 'answers', 'brand', 'cast', 'cast_size', 'style_refs'];
 /** The light picture's text when the template has no templates.light: the shot's empty plate, only the light changed. */
@@ -242,11 +248,14 @@ async function giScenes(inputs, ctx, manifest, opts) {
     giRefuseGap(ctx, err);
   }
   if (!jobs.length) throw ctx.error('bad_input', 'no scene is picked for a still');
+  const fix = (inputs.borders || 'fix') === 'fix';
   giCheckLength(ctx, [...jobs.map(giLongestPrompt), ...anchorJobs.map((a) => a.prompt)]);
 
   const used = new Set();
   for (const a of anchorJobs) a.piece = kitPieceName('anchor', a.member.key, cast.indexOf(a.member), used);
   for (const j of jobs) j.piece = kitPieceName('image', j.id, j.index, used);
+  // Product photos lose their flat margins before any still sends them (free); the strict evidence binds the exact photo, so it keeps it.
+  if (fix && model === EDIT && !inputs.require_product_refs) kitStillTrimJobs(jobs, await kitStillTrimProducts(ctx, inputs.products || []));
   const total = anchorJobs.length + jobs.length;
   let done = 0;
   const tick = () => ctx.progress({ done: ++done, total });
@@ -280,9 +289,13 @@ async function giScenes(inputs, ctx, manifest, opts) {
       const castRefs = kitStillWantsStrip(job, castFiles) ? [await stripFor(castFiles)] : castFiles.slice(0, 3);
       refs = kitStillRefs(job, { cast: castRefs, first, style_refs: styleRefs });
     }
-    const image = await giDraw(ctx, { piece: job.piece, refs: refs.files, prompt: kitStillPrompt(job, refs), size: opts.size, quality: opts.quality,
+    const drawn = await giDraw(ctx, { piece: job.piece, refs: refs.files, prompt: kitStillPrompt(job, refs), size: opts.size, quality: opts.quality,
       product_scene: inputs.require_product_refs ? { id: job.id, required: job.required_products } : null });
+    const image = fix
+      ? (await kitStillWithoutBorders(ctx, { file: drawn, name: job.piece, about: `the still for scene ${job.id}`, refusal: `The picture for scene ${job.index + 1} came back with a border; change the scene picture and try again.` })).file
+      : drawn;
     stills.set(job.id, image);
+    // The evidence binds the still as it is handed on (cropped or not) to the request that drew it.
     if (inputs.require_product_refs) productEvidence.push(kitProductReferenceEvidence(job.id, image, job.required_products, refs.files, refs.files.length ? EDIT : TEXT, job.piece));
     tick();
   };

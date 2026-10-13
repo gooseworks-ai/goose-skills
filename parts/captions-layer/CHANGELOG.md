@@ -1,5 +1,13 @@
 # captions-layer
 
+## 1.4.0
+
+- Captions keep clear of the product: boxes from `timeline.keep_clear` (pixels, per time span; the input timeline now takes it) and the look's `keep_clear` (shares of the frame, for the whole cut). Each scene's captions take one height, the look's `y`, else 0.80, else 0.30, the first that clears every box shown with them by 0.02 of the height, else the least overlap with a warning. `words.json` records each cue's `y` and `overlap` and the boxes kept clear. `keep_clear` is dropped from the output timeline. Without boxes the output is 1.3.1's, byte for byte.
+
+## 1.3.1
+
+- Captions held across final cuts stop at the next scene start when the style flags `captions_cross_cuts`; boundary punctuation stays with its word.
+
 ## 1.3.0
 
 - Three new caption looks: `pill` (about 3 lower-case words on a cream rounded pill, said words dark and upcoming words grey, the brand name keeps its case), `serif-word` (one word at a time in a heavy serif with a black outline; a brand name is never split, and a highlighted one is quoted) and `sentence` (one sentence per caption across lines, each word appearing as it is said and staying, bottom-anchored and growing upward).
