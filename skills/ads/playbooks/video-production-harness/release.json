@@ -1,14 +1,14 @@
 {
   "files": {
     "SKILL.md": {
-      "bytes": 2425,
-      "catalog_sha256": "901096fe616a1945c1be73d63ff175ff578133502da4a33b2c5f19372b039504",
-      "sha256": "33d5e930a679baaf7ac819aca64e2c1dbbf8168e444d2895196adbe3e6cfad4f"
+      "bytes": 2514,
+      "catalog_sha256": "e816e3d4e4a6c0eb8784be9ff91ef3839e4ac5e227b99c928839f2c4d142f17b",
+      "sha256": "38fc6a1d561e28ec8157b3b2506ec0a79b74dc1e3dba2b4fc9e3ad76a813c6c3"
     },
     "auto-fix-from-review-notes.md": {
-      "bytes": 8979,
-      "catalog_sha256": "9b6f8db85d90634d36ea22729570f1e3c551955bbb0559b28eb31bb162895d14",
-      "sha256": "9b6f8db85d90634d36ea22729570f1e3c551955bbb0559b28eb31bb162895d14"
+      "bytes": 9008,
+      "catalog_sha256": "de317e31328c6fa0e7b9fb488ba288d44e461c14628edc89bc277f2e7cc22088",
+      "sha256": "de317e31328c6fa0e7b9fb488ba288d44e461c14628edc89bc277f2e7cc22088"
     },
     "auto-refine.md": {
       "bytes": 13611,
@@ -21,9 +21,9 @@
       "sha256": "f46afb903e74e118f24d492497f92198b94a78f52c233c0b6e7bc6a508dc62a7"
     },
     "capabilities.md": {
-      "bytes": 13574,
-      "catalog_sha256": "659a7a0a43e3830c7d7bb104df794a94f6fecb07d660b2588d440332be65c573",
-      "sha256": "659a7a0a43e3830c7d7bb104df794a94f6fecb07d660b2588d440332be65c573"
+      "bytes": 14700,
+      "catalog_sha256": "f25d4fe63709304a1d2a4bca0dd113b3e27cafdc92128e3a36206f29b63d8fc4",
+      "sha256": "f25d4fe63709304a1d2a4bca0dd113b3e27cafdc92128e3a36206f29b63d8fc4"
     },
     "create-clips.md": {
       "bytes": 24048,
@@ -31,9 +31,9 @@
       "sha256": "ce411b2dedf44c31d47b77f496aaf3f3132241960c4ecb5dd8c894b487f2f208"
     },
     "create-design-brief.md": {
-      "bytes": 15800,
-      "catalog_sha256": "3f4821e28376d57f036414df30755c6006e3e8682358d4b71e44c4e3f1fdfd9c",
-      "sha256": "3f4821e28376d57f036414df30755c6006e3e8682358d4b71e44c4e3f1fdfd9c"
+      "bytes": 15872,
+      "catalog_sha256": "04fe81c906f44360ebdf22029676451dc0af7aa6512f4363c23c491a112444a5",
+      "sha256": "04fe81c906f44360ebdf22029676451dc0af7aa6512f4363c23c491a112444a5"
     },
     "create-storyboard.md": {
       "bytes": 10786,
@@ -46,9 +46,9 @@
       "sha256": "edfae012c7713e7412ce2d4b741127daac5af967e2edb96ab3c662893386f9a5"
     },
     "edit-video.md": {
-      "bytes": 19121,
-      "catalog_sha256": "72ff5e1cd1658cf8db09a15e51bc188bd6e111cc2013e945a56ced1ef01b0963",
-      "sha256": "72ff5e1cd1658cf8db09a15e51bc188bd6e111cc2013e945a56ced1ef01b0963"
+      "bytes": 19150,
+      "catalog_sha256": "93f64f7196eba10c2572e6cb4bf94e44e57e51815d947d5061f39953b226395f",
+      "sha256": "93f64f7196eba10c2572e6cb4bf94e44e57e51815d947d5061f39953b226395f"
     },
     "lock-character.md": {
       "bytes": 19022,
@@ -61,14 +61,14 @@
       "sha256": "fe014c484148a3afd92ec928524d79403c91297cd25c843dea0abe056f0ed81a"
     },
     "orchestrator.md": {
-      "bytes": 50006,
-      "catalog_sha256": "4c4c9fc4d93522a1221ef2c112f13259adcc9b264871ae399c3c36d4ee64454a",
-      "sha256": "4c4c9fc4d93522a1221ef2c112f13259adcc9b264871ae399c3c36d4ee64454a"
+      "bytes": 49883,
+      "catalog_sha256": "7b5c591bcfdf8cdfe1011922f7131a093e55ec436a60e4a6d2c31f0c2fa1fe47",
+      "sha256": "7b5c591bcfdf8cdfe1011922f7131a093e55ec436a60e4a6d2c31f0c2fa1fe47"
     },
     "polish.md": {
-      "bytes": 16336,
-      "catalog_sha256": "ae8f22309a8eb5b2c663b961c6e3eda28d32f4375bb937f22bdfea55e6119b5b",
-      "sha256": "ae8f22309a8eb5b2c663b961c6e3eda28d32f4375bb937f22bdfea55e6119b5b"
+      "bytes": 16365,
+      "catalog_sha256": "cbc7813992bc50ca88e16591a57c0c34401f60e6358a7f213561067cfe087789",
+      "sha256": "cbc7813992bc50ca88e16591a57c0c34401f60e6358a7f213561067cfe087789"
     },
     "preflight-audit.md": {
       "bytes": 6674,
@@ -86,9 +86,9 @@
       "sha256": "1b0f906589c1b8a6ab311b04b27cbd843b48b724126fcf7bd3dd3a03a1d26d1b"
     },
     "references/genres/ai-creator-ugc.md": {
-      "bytes": 1540,
-      "catalog_sha256": "18bf1d4f849307319468394cd2ed5a0e3882d1fb59cc9969fb48e9d07531d8fd",
-      "sha256": "18bf1d4f849307319468394cd2ed5a0e3882d1fb59cc9969fb48e9d07531d8fd"
+      "bytes": 1832,
+      "catalog_sha256": "0ae717c39bcfa3a5a5a977add8bbfdbf5823cf87a904eddb0f3bbf634fd8df87",
+      "sha256": "0ae717c39bcfa3a5a5a977add8bbfdbf5823cf87a904eddb0f3bbf634fd8df87"
     },
     "references/genres/chat-ui.md": {
       "bytes": 1492,
@@ -101,9 +101,9 @@
       "sha256": "e7aa8a8fa652c53c30ba057f4c8a1479011ce1987438b8fcad01eb55402089ac"
     },
     "references/genres/motion-graphics.md": {
-      "bytes": 1386,
-      "catalog_sha256": "016828931931f632ffeb113fd91d7bb449df328683c7ce976fdcdede20b7f498",
-      "sha256": "016828931931f632ffeb113fd91d7bb449df328683c7ce976fdcdede20b7f498"
+      "bytes": 1579,
+      "catalog_sha256": "38971d6b12054218c3281ccc8a81a53320f45879dc7b88c69b5136519f925b53",
+      "sha256": "38971d6b12054218c3281ccc8a81a53320f45879dc7b88c69b5136519f925b53"
     },
     "references/genres/product-demo.md": {
       "bytes": 1614,
@@ -126,14 +126,14 @@
       "sha256": "53d8474bb4acf354db15aadde425ea4434423b9c84eda3fa5faa99a0afdd5c91"
     },
     "references/shot-routing.md": {
-      "bytes": 7897,
-      "catalog_sha256": "c97ed60b841ded0bb8b03c2d5dc15ee19d26ce14d84b4981fb44a5f408f0b3c0",
-      "sha256": "c97ed60b841ded0bb8b03c2d5dc15ee19d26ce14d84b4981fb44a5f408f0b3c0"
+      "bytes": 8487,
+      "catalog_sha256": "5eddb68dc868b6387923236dfce0fd9d112af1dacdc316a1d9c0258bb39cf615",
+      "sha256": "5eddb68dc868b6387923236dfce0fd9d112af1dacdc316a1d9c0258bb39cf615"
     },
     "references/specialist-handoff.md": {
-      "bytes": 6413,
-      "catalog_sha256": "78f38d247b2ea8c46b69a8f31145c53beb2d1d819fa6cf89ebc0d490401c5ac3",
-      "sha256": "78f38d247b2ea8c46b69a8f31145c53beb2d1d819fa6cf89ebc0d490401c5ac3"
+      "bytes": 6435,
+      "catalog_sha256": "f2f945318644afa501a54ec78df2476923c8bdc3aca1409ceaa7b463fb385801",
+      "sha256": "f2f945318644afa501a54ec78df2476923c8bdc3aca1409ceaa7b463fb385801"
     },
     "review-video.md": {
       "bytes": 21855,
@@ -162,8 +162,8 @@
     },
     "skill.meta.json": {
       "bytes": 652,
-      "catalog_sha256": "fad3c62f0f41ba20413dce897804ca3bce1d9c2f0f757909d1fb0a4fa175d7b8",
-      "sha256": "fad3c62f0f41ba20413dce897804ca3bce1d9c2f0f757909d1fb0a4fa175d7b8"
+      "catalog_sha256": "45ec0d16cfbd66699a2fb3ecff25765fead6d19b39c120543c1d012b2f793cf9",
+      "sha256": "45ec0d16cfbd66699a2fb3ecff25765fead6d19b39c120543c1d012b2f793cf9"
     },
     "wrap-session.md": {
       "bytes": 17362,
@@ -192,14 +192,14 @@
   ],
   "schema_version": 1,
   "slug": "video-production-harness",
-  "source_commit": "0606a31cd78504a8d78f7211213bc9dd9a1a630b",
+  "source_commit": "a0e62e8cfdd1461157a4cac8354efab9582cba19",
   "source_files": {
     "SKILL.md": {
-      "sha256": "33d5e930a679baaf7ac819aca64e2c1dbbf8168e444d2895196adbe3e6cfad4f",
+      "sha256": "38fc6a1d561e28ec8157b3b2506ec0a79b74dc1e3dba2b4fc9e3ad76a813c6c3",
       "source": "public-entry.md"
     },
     "auto-fix-from-review-notes.md": {
-      "sha256": "9b6f8db85d90634d36ea22729570f1e3c551955bbb0559b28eb31bb162895d14",
+      "sha256": "de317e31328c6fa0e7b9fb488ba288d44e461c14628edc89bc277f2e7cc22088",
       "source": "auto-fix-from-review-notes.md"
     },
     "auto-refine.md": {
@@ -211,7 +211,7 @@
       "source": "brainstorm.md"
     },
     "capabilities.md": {
-      "sha256": "659a7a0a43e3830c7d7bb104df794a94f6fecb07d660b2588d440332be65c573",
+      "sha256": "f25d4fe63709304a1d2a4bca0dd113b3e27cafdc92128e3a36206f29b63d8fc4",
       "source": "capabilities.md"
     },
     "create-clips.md": {
@@ -219,7 +219,7 @@
       "source": "create-clips.md"
     },
     "create-design-brief.md": {
-      "sha256": "3f4821e28376d57f036414df30755c6006e3e8682358d4b71e44c4e3f1fdfd9c",
+      "sha256": "04fe81c906f44360ebdf22029676451dc0af7aa6512f4363c23c491a112444a5",
       "source": "create-design-brief.md"
     },
     "create-storyboard.md": {
@@ -231,7 +231,7 @@
       "source": "edit-clip.md"
     },
     "edit-video.md": {
-      "sha256": "72ff5e1cd1658cf8db09a15e51bc188bd6e111cc2013e945a56ced1ef01b0963",
+      "sha256": "93f64f7196eba10c2572e6cb4bf94e44e57e51815d947d5061f39953b226395f",
       "source": "edit-video.md"
     },
     "lock-character.md": {
@@ -243,11 +243,11 @@
       "source": "lock-script.md"
     },
     "orchestrator.md": {
-      "sha256": "4c4c9fc4d93522a1221ef2c112f13259adcc9b264871ae399c3c36d4ee64454a",
+      "sha256": "7b5c591bcfdf8cdfe1011922f7131a093e55ec436a60e4a6d2c31f0c2fa1fe47",
       "source": "orchestrator.md"
     },
     "polish.md": {
-      "sha256": "ae8f22309a8eb5b2c663b961c6e3eda28d32f4375bb937f22bdfea55e6119b5b",
+      "sha256": "cbc7813992bc50ca88e16591a57c0c34401f60e6358a7f213561067cfe087789",
       "source": "polish.md"
     },
     "preflight-audit.md": {
@@ -263,7 +263,7 @@
       "source": "references/editorial-review.md"
     },
     "references/genres/ai-creator-ugc.md": {
-      "sha256": "18bf1d4f849307319468394cd2ed5a0e3882d1fb59cc9969fb48e9d07531d8fd",
+      "sha256": "0ae717c39bcfa3a5a5a977add8bbfdbf5823cf87a904eddb0f3bbf634fd8df87",
       "source": "references/genres/ai-creator-ugc.md"
     },
     "references/genres/chat-ui.md": {
@@ -275,7 +275,7 @@
       "source": "references/genres/hypermotion.md"
     },
     "references/genres/motion-graphics.md": {
-      "sha256": "016828931931f632ffeb113fd91d7bb449df328683c7ce976fdcdede20b7f498",
+      "sha256": "38971d6b12054218c3281ccc8a81a53320f45879dc7b88c69b5136519f925b53",
       "source": "references/genres/motion-graphics.md"
     },
     "references/genres/product-demo.md": {
@@ -295,11 +295,11 @@
       "source": "references/review-script-shortform.md"
     },
     "references/shot-routing.md": {
-      "sha256": "c97ed60b841ded0bb8b03c2d5dc15ee19d26ce14d84b4981fb44a5f408f0b3c0",
+      "sha256": "5eddb68dc868b6387923236dfce0fd9d112af1dacdc316a1d9c0258bb39cf615",
       "source": "references/shot-routing.md"
     },
     "references/specialist-handoff.md": {
-      "sha256": "78f38d247b2ea8c46b69a8f31145c53beb2d1d819fa6cf89ebc0d490401c5ac3",
+      "sha256": "f2f945318644afa501a54ec78df2476923c8bdc3aca1409ceaa7b463fb385801",
       "source": "references/specialist-handoff.md"
     },
     "review-video.md": {
@@ -327,6 +327,6 @@
       "source": "wrap-session.md"
     }
   },
-  "source_hash": "426cc8ca76dd49707c986ba5301e8f9ddd38b7b793035242aa7971b5b8df204a",
-  "source_version": "3-426cc8ca76dd"
+  "source_hash": "14f6b44f05f9bb2e58584063fbf616778bd409d60676c0a707348f15654f7352",
+  "source_version": "3-14f6b44f05f9"
 }
