@@ -1,7 +1,7 @@
 // end-card 1.1.1 (and brand-layer 1.0.2, which shares the renderer): the logo is fitted to the card.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { writeFileSync } from 'node:fs';
+import { copyFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { browserMissing, browserProviderOrNull, countColor, fileRef, framePixels, hasFfmpeg, loadNewest, makeCtx, makeLogo, run, sampleBrand } from '../../_tools/kit-harness.mjs';
 import { KIT_CARD_LOGO_BOXES, kitCardColorsOn, kitCardContrast, kitCardLogoBackground, kitCardLogoSize } from '../../_lib/end-card.mjs';
@@ -134,10 +134,7 @@ test('the final check finds the fitted logo in the box the card declares, and no
   const { ctx } = makeCtx({ partDir: check.dir });
   const w = ctx.workDir;
   const brand = await sampleBrand(w);
-  const font = join(dir, 'assets', 'fonts', 'Montserrat-Bold.ttf');
-  const logo = join(w, 'wordmark.png');
-  await run('ffmpeg', ['-hide_banner', '-nostdin', '-loglevel', 'error', '-y', '-f', 'lavfi', '-i', 'color=c=black@0.0:s=420x140:d=1,format=rgba', '-vf', `drawtext=fontfile=${font}:text='Sample':fontsize=96:fontcolor=0xe01020:x=(w-tw)/2:y=(h-th)/2,drawbox=x=10:y=118:w=400:h=10:color=0x1a1a1d:t=fill`, '-frames:v', '1', logo]);
-  brand.logo = await fileRef(logo, 'image');
+  brand.logo = await fileRef(fixture('wordmark.png', join(w, 'wordmark.png')), 'image');
   const card = await mod.run({ brand, width: 720, height: 1280, seconds: 2 }, makeCtx({ partDir: dir }).ctx);
   const body = join(w, 'body.mp4');
   await run('ffmpeg', ['-hide_banner', '-nostdin', '-loglevel', 'error', '-y', '-f', 'lavfi', '-i', 'testsrc2=size=720x1280:rate=30:duration=3', '-f', 'lavfi', '-i', 'sine=frequency=440:duration=3', '-c:v', 'libx264', '-preset', 'ultrafast', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-shortest', body]);
@@ -151,11 +148,9 @@ test('the final check finds the fitted logo in the box the card declares, and no
   assert.equal(await verdict({ ...brand, logo: other }), 'fail');
 });
 
-/** A JPEG logo: `text` in `color` on an opaque `bg` canvas w x h, the bundled font, `size` px. */
-async function textJpeg(path, { text, color, bg = 'white', w = 600, h = 200, size = 110, box = null }) {
-  const font = join(dir, 'assets', 'fonts', 'Montserrat-Bold.ttf');
-  const plate = box ? `drawbox=x=${box.x}:y=${box.y}:w=${box.w}:h=${box.h}:color=${box.color}:t=fill,` : '';
-  await run('ffmpeg', ['-hide_banner', '-nostdin', '-loglevel', 'error', '-y', '-f', 'lavfi', '-i', `color=c=${bg}:s=${w}x${h}:d=1`, '-vf', `${plate}drawtext=fontfile=${font}:text='${text}':fontsize=${size}:fontcolor=${color}:x=(w-tw)/2:y=(h-th)/2`, '-frames:v', '1', '-q:v', '2', path]);
+/** A committed wordmark sample (drawn once with drawtext and the bundled font; CI's Homebrew ffmpeg has no drawtext). */
+function fixture(name, path) {
+  copyFileSync(join(import.meta.dirname, 'fixtures', name), path);
   return path;
 }
 
@@ -178,7 +173,7 @@ test('the letters of a white-backed wordmark keep no white inside them on a dark
   for (const layout of ['classic', 'statement']) {
     const { ctx, logs } = makeCtx({ partDir: dir });
     const brand = await sampleBrand(ctx.workDir);
-    brand.logo = await fileRef(await textJpeg(join(ctx.workDir, 'bodega.jpg'), { text: 'Bodega', color: '0xe01020' }), 'image');
+    brand.logo = await fileRef(fixture('bodega.jpg', join(ctx.workDir, 'bodega.jpg')), 'image');
     const extra = layout === 'statement' ? { rows: ['One line.'] } : {};
     const out = await mod.run({ brand, width: 540, height: 960, seconds: 1, layout, background: '#141414', ...extra }, ctx);
     const zone = out.timeline.safe_zones.find((z) => z.use === 'logo');
@@ -192,8 +187,7 @@ test('the letters of a white-backed wordmark keep no white inside them on a dark
 test('white letters on a solid red box keep their white on a dark card: the box is the mark', { skip }, async () => {
   const { ctx } = makeCtx({ partDir: dir });
   const brand = await sampleBrand(ctx.workDir);
-  const box = { x: 40, y: 30, w: 520, h: 140, color: '0xe01020' };
-  brand.logo = await fileRef(await textJpeg(join(ctx.workDir, 'boxed.jpg'), { text: 'Bodega', color: 'white', box, size: 96 }), 'image');
+  brand.logo = await fileRef(fixture('boxed.jpg', join(ctx.workDir, 'boxed.jpg')), 'image');
   const out = await mod.run({ brand, width: 540, height: 960, seconds: 1, background: '#141414' }, ctx);
   const zone = out.timeline.safe_zones.find((z) => z.use === 'logo');
   const rows = rowsOf(await framePixels(out.video.path, 0.5, 540, 960), zone);
@@ -205,11 +199,11 @@ test('a logo file with wide margins declares no box it would not match in, and t
   const { layerInputsFor, makeVideo } = await import('../../_tools/kit-harness.mjs');
   const { dir: layerDir, mod: layer } = await loadNewest('brand-layer');
   // A 1000x1000 white JPEG with a wordmark about 500 px wide in the middle, and an og-style 1200x630 image with a small mark.
-  for (const file of [{ w: 1000, h: 1000, size: 140 }, { w: 1200, h: 630, size: 70 }]) {
+  for (const file of [{ w: 1000, h: 1000 }, { w: 1200, h: 630 }]) {
     const { ctx, logs } = makeCtx({ partDir: layerDir });
     const w = ctx.workDir;
     const brand = await sampleBrand(w);
-    brand.logo = await fileRef(await textJpeg(join(w, 'padded.jpg'), { text: 'Sample', color: '0xe01020', ...file }), 'image');
+    brand.logo = await fileRef(fixture(`padded-${file.w}x${file.h}.jpg`, join(w, 'padded.jpg')), 'image');
     const video = await fileRef(await makeVideo(join(w, 'cut.mp4'), 2, { width: 540, height: 960 }), 'video');
     const out = await layer.run(await layerInputsFor(video, { brand, expect: { end_card: true } }), ctx);
     const about = `${file.w}x${file.h}`;
