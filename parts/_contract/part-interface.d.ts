@@ -568,6 +568,11 @@ export interface OutputExpectation {
    * `plate` with a warning, and any value it cannot use is dropped with a warning.
    */
   caption_look?: CaptionLook;
+  /**
+   * The style's layer switches (its layers block), so a layer can tell what ran before it: check-layer
+   * >= 1.5.0 holds loudness to the sound layer's mark only when `sound` is true. Absent from older kits.
+   */
+  layers?: StyleLayers;
 }
 
 /** How the captions layer draws captions. `pill`, `serif-word` and `sentence` need captions-layer 1.3.0. */
@@ -720,7 +725,8 @@ export interface StepRecord {
     inputs_hash: string;
     /** "<piece_key>:<inputs_hash>:<attempt>" */
     idempotency_key: string;
-    attempt: 1 | 2;
+    /** 1, 2, then one more per later run while the provider's failures are free. */
+    attempt: number;
     reused: boolean;
     /** From the line's answer (piece_credits); our ledger is the truth. */
     credits?: number;
