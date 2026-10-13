@@ -1,5 +1,9 @@
 # check-layer
 
+## 1.5.0
+
+- A measured miss that breaks an earlier part's promise fails instead of warning, and names the layer to re-run: loudness off -14 LUFS by more than 2 on a cut above -50 LUFS when the sound layer is on (on unless `expect.layers.sound` is false; the layer levels such a cut to -14 within 1 or fails), and a caption across a scene cut or into the end card (the captions layer stops captions there when the style lists `captions_cross_cuts`). A quiet cut the sound layer passed through (at or below -50 LUFS), loudness with the sound layer off, and a caption across a retained-body join still warn, as does every taste range 1.4.2 made a warning, `min_shot` included. A minor version: only new quotes get it, through layers.json.
+
 ## 1.4.3
 
 - `speech_matches_script` checks each spoken line too (a speech entry with a `scene_id` and a heard `spoken`): a line that lost 2 words in a row, or its last 2 words, fails with the scene named, and the whole script losing 3 words in a row fails whatever its similarity. 1.4.2 judged only the whole script, so a clause lost where two takes join (about 11 words, a similarity of 0.901) passed. Words heard at the edge of the next or previous line count as said. A patch, so videos approved on 1.4.x move onto it.
