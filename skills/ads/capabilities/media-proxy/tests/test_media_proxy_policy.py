@@ -220,11 +220,17 @@ class LedgerTests(unittest.TestCase):
         (home / ".gooseworks").mkdir()
         (home / ".gooseworks" / "credentials.json").write_text(json.dumps(
             {"api_base": self.proxy.base, "api_key": "test-token", "agent_id": "agent-test"}))
-        env = {"HOME": str(home), "GW_MEDIA_VIA": "proxy", "GW_CLI_LOG_DISABLED": "1",
+        # Windows reads USERPROFILE, not HOME, for "~": set both or the real credentials load.
+        env = {"HOME": str(home), "USERPROFILE": str(home),
+               "GW_MEDIA_VIA": "proxy", "GW_CLI_LOG_DISABLED": "1",
                "GW_FAL_REJECTIONS_DIR": str(self.rej), "NO_PROXY": "127.0.0.1",
                "no_proxy": "127.0.0.1"}
         self.env = mock.patch.dict(os.environ, env)
         self.env.start()
+        if pathlib.Path(os.path.expanduser("~")).resolve() != home.resolve():
+            self.env.stop()
+            self.proxy.close()
+            self.fail("home does not resolve to the test folder: real credentials would load")
         for k in ("GW_MEDIA_PROXY_TOKEN", "GW_PROJECT_ID", "GW_FAL_POLL_TIMEOUT_S", "GW_RELAY_DIR"):
             os.environ.pop(k, None)
         self.mp._PENDING_DIR = home / "pending"
