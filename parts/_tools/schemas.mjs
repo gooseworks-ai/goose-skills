@@ -149,6 +149,39 @@ export const layerInputs = {
   },
 };
 
+/**
+ * Areas captions must stay off, in pixels, while they show (Timeline.keep_clear): a product a step knows it
+ * drew there. Only parts that read or pass it on accept it: brand-layer >= 1.0.2 passes it through and
+ * captions-layer >= 1.4.0 reads it and drops it from its own output, so the later layers never see it.
+ */
+export const keepClear = {
+  type: 'array',
+  maxItems: 200,
+  items: {
+    type: 'object',
+    additionalProperties: false,
+    required: ['start_s', 'end_s', 'use', 'box'],
+    properties: {
+      scene_id: { type: 'string' },
+      start_s: { type: 'number', minimum: 0 },
+      end_s: { type: 'number', minimum: 0 },
+      use: { enum: ['product'] },
+      box: {
+        type: 'object',
+        additionalProperties: false,
+        required: ['x', 'y', 'w', 'h'],
+        properties: { x: { type: 'number' }, y: { type: 'number' }, w: { type: 'number', minimum: 0 }, h: { type: 'number', minimum: 0 } },
+      },
+    },
+  },
+};
+
+/** The timeline with keep_clear, for the layers that take it. */
+export const timelineWithKeepClear = { ...timeline, properties: { ...timeline.properties, keep_clear: keepClear } };
+
+/** layerInputs whose timeline may carry keep_clear. */
+export const layerInputsWithKeepClear = { ...layerInputs, properties: { ...layerInputs.properties, timeline: timelineWithKeepClear } };
+
 /** What brand, captions and sound layers return (LayerOutputs). */
 export const layerOutputs = (extra = {}, required = []) => ({
   type: 'object',

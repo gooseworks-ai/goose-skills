@@ -20,12 +20,18 @@
 //
 // 1.2.2: in scenes mode a scene with image_locked: true keeps its own image as
 // its still, ordering nothing (a preview the customer already approved).
+//
+// 1.2.3: in scenes and products mode (borders: 'fix', the default) each product
+// photo's flat margins are trimmed before it is sent, and a finished still that
+// came back letterboxed, padded or framed is cropped, or fails the step, never
+// drawn again (_lib/scene-stills.mjs kitStillWithoutBorders). borders: 'keep'
+// turns both off.
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitFfmpeg, kitPieceName, kitStopIfAborted } from '../../_lib/part.mjs';
 import { KitPromptGap, kitLoadTemplate, kitPromptJoin, kitScenePrompt } from '../../_lib/prompt.mjs';
 import { kitPickScenes, kitTagKey } from '../../_lib/scene-match.mjs';
-import { kitStillAnchorMembers, kitStillAnchorPrompt, kitStillCastFiles, kitStillJobs, kitStillOutputs, kitStillPrompt, kitStillRefs, kitStillStrip, kitStillTemplate, kitStillWantsStrip } from '../../_lib/scene-stills.mjs';
+import { kitStillAnchorMembers, kitStillAnchorPrompt, kitStillCastFiles, kitStillJobs, kitStillOutputs, kitStillPrompt, kitStillRefs, kitStillStrip, kitStillTemplate, kitStillTrimJobs, kitStillTrimProducts, kitStillWantsStrip, kitStillWithoutBorders } from '../../_lib/scene-stills.mjs';
 
 const EDIT = 'fal-ai/nano-banana/edit';
 const TEXT = 'fal-ai/nano-banana';
@@ -167,6 +173,7 @@ async function nbImages(inputs, ctx, manifest) {
     if (inputs[key] !== undefined) throw ctx.error('bad_input', `${key} works only in scenes mode`);
   }
   if (inputs.kinds !== undefined) throw ctx.error('bad_input', 'kinds works only in products mode');
+  if (inputs.borders !== undefined) throw ctx.error('bad_input', 'borders works only in scenes and products mode');
   for (const [i, img] of inputs.images.entries()) {
     const refs = img.references || [];
     if (model === EDIT && !refs.length) throw ctx.error('bad_input', `images[${i}] has no reference image for ${EDIT}`);
@@ -201,6 +208,7 @@ async function nbScenes(inputs, ctx, manifest) {
     if (s.image_locked === true && !s.image) throw ctx.error('bad_input', `scene ${s.id} is marked image_locked but has no image`);
   }
   const locked = (job) => job.scene.image_locked === true;
+  const fix = (inputs.borders || 'fix') === 'fix';
 
   // Everything that can refuse happens before the first piece is ordered.
   let tpl;
@@ -249,6 +257,9 @@ async function nbScenes(inputs, ctx, manifest) {
     ctx.log.info(`${TEXT} draws from the prompt alone, so scene references are not sent`);
   }
 
+  // Product photos lose their flat margins before any still sends them (free).
+  if (fix && model === EDIT) kitStillTrimJobs(jobs, await kitStillTrimProducts(ctx, inputs.products || []));
+
   // 1. Cast anchors: members with an image pass through free.
   const anchors = new Map();
   for (const m of cast) if (m.image) anchors.set(m.key, m.image);
@@ -287,7 +298,11 @@ async function nbScenes(inputs, ctx, manifest) {
       const castRefs = kitStillWantsStrip(job, castFiles) ? [await stripFor(castFiles)] : castFiles.slice(0, 3);
       refs = kitStillRefs(job, { cast: castRefs, first, style_refs: styleRefs });
     }
-    const file = await nbDraw(ctx, { piece: job.piece, refs: refs.files, prompt: kitStillPrompt(job, refs), aspect: inputs.aspect_ratio, seed: inputs.seed, about: `the still for scene ${job.id}` });
+    const about = `the still for scene ${job.id}`;
+    const drawn = await nbDraw(ctx, { piece: job.piece, refs: refs.files, prompt: kitStillPrompt(job, refs), aspect: inputs.aspect_ratio, seed: inputs.seed, about });
+    const file = fix
+      ? (await kitStillWithoutBorders(ctx, { file: drawn, name: job.piece, about, refusal: `The picture for scene ${job.index + 1} came back with a border; change the scene picture and try again.` })).file
+      : drawn;
     stills.set(job.id, file);
     tick();
   };
@@ -360,15 +375,23 @@ async function nbProducts(inputs, ctx, manifest) {
     if (ctx.signal && ctx.signal.aborted) throw ctx.error('stopped', 'the step was stopped');
     throw ctx.error('bad_input', err instanceof KitPromptGap ? err.message : String((err && err.message) || err));
   }
+  const fix = (inputs.borders || 'fix') === 'fix';
   for (const j of jobs) {
     if (j.prompt.length > NB_PROMPT_MAX) throw ctx.error('bad_input', `the ${j.kind} prompt for product ${j.product.id} is over ${NB_PROMPT_MAX} characters`);
   }
 
   const used = new Set();
   for (const [i, j] of jobs.entries()) j.piece = kitPieceName(j.kind, j.product.id, i, used);
+  // Each photo loses its flat margins once before any still sends it (free).
+  const trimmed = fix ? await kitStillTrimProducts(ctx, products) : new Map();
   let done = 0;
   const files = await nbEach(jobs, async (j) => {
-    const file = await nbDraw(ctx, { piece: j.piece, refs: [j.product.images[0]], prompt: j.prompt, aspect: inputs.aspect_ratio, seed: inputs.seed, about: `the ${j.kind} still of ${j.product.name}` });
+    const photo = (trimmed.get(String(j.product.id)) || j.product).images[0];
+    const about = `the ${j.kind} still of ${j.product.name}`;
+    const drawn = await nbDraw(ctx, { piece: j.piece, refs: [photo], prompt: j.prompt, aspect: inputs.aspect_ratio, seed: inputs.seed, about });
+    const file = fix
+      ? (await kitStillWithoutBorders(ctx, { file: drawn, name: j.piece, about, refusal: `The picture of ${j.product.name} came back with a border; change its photo and try again.` })).file
+      : drawn;
     ctx.progress({ done: ++done, total: jobs.length });
     return file;
   });

@@ -1,5 +1,9 @@
 # image-gpt-image-2
 
+## 1.1.2
+
+- Borders in scenes mode (`borders: fix` by default), as image-nano-banana 1.2.3: product photos trimmed before sending (not with `require_product_refs`, whose evidence names the exact photo), a still with a band or frame cropped to its own shape, else the step fails in plain words (never a second paid still). The product evidence binds the still handed on and the piece that drew it. Images, cast and shots mode are unchanged.
+
 ## 1.1.1
 
 - Optional strict scene tags and product-reference request evidence prevent missing-colon fallback from generating product scenes without their real photos. Existing opted-out inputs are unchanged.

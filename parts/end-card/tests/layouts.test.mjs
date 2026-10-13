@@ -2,7 +2,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readdirSync } from 'node:fs';
-import { browserMissing, browserProviderOrNull, countColor, framePixels, hasFfmpeg, loadNewest, makeCtx, probe, sampleBrand } from '../../_tools/kit-harness.mjs';
+import { browserMissing, browserProviderOrNull, countColor, framePixels, hasFfmpeg, loadNewest, loadPart, makeCtx, probe, sampleBrand } from '../../_tools/kit-harness.mjs';
 import { cardBestText, cardContrast, cardLayoutColors, cardLayoutCopy, cardLayoutHtml, cardRows, cardSafeBrand, cardSafeMime } from '../src/layouts.mjs';
 
 const { dir, mod } = await loadNewest('end-card');
@@ -125,7 +125,8 @@ for (const [layout, card] of [
   });
 }
 
-test('statement: a logo that does not contrast with the dark card sits on a plate, never recoloured', { skip }, async () => {
+test('1.1.0 statement: a logo that does not contrast with the dark card sits on a plate, never recoloured', { skip }, async () => {
+  const { dir, mod } = await loadPart('end-card', '1.1.0');
   const { ctx } = makeCtx({ partDir: dir });
   const brand = await sampleBrand(ctx.workDir, { logoColor: '#202020' });
   const out = await mod.run({ brand, width: 540, height: 960, seconds: 1, layout: 'statement', rows: ['One line.'], background: '#141414' }, ctx);
@@ -134,7 +135,8 @@ test('statement: a logo that does not contrast with the dark card sits on a plat
   assert.ok(countColor(px, [32, 32, 32], 4) > 200, 'the logo keeps its own dark colour');
 });
 
-test('statement: a mid-grey logo on a mid-grey card gets the plate with the higher contrast (dark), never recoloured', { skip }, async () => {
+test('1.1.0 statement: a mid-grey logo on a mid-grey card gets the plate with the higher contrast (dark), never recoloured', { skip }, async () => {
+  const { dir, mod } = await loadPart('end-card', '1.1.0');
   const { ctx } = makeCtx({ partDir: dir });
   const brand = await sampleBrand(ctx.workDir, { logoColor: '#999999' });
   const out = await mod.run({ brand, width: 540, height: 960, seconds: 1, layout: 'statement', rows: ['One line.'], background: '#a0a0a0' }, ctx);

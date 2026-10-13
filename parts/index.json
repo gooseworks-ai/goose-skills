@@ -467,6 +467,49 @@
       "models": []
     },
     {
+      "id": "brand-layer",
+      "version": "1.0.2",
+      "interface": 1,
+      "kind": "compose",
+      "layer": "brand",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": true,
+        "ffmpeg": {
+          "filters": [
+            "xfade",
+            "fps",
+            "settb",
+            "setsar",
+            "format",
+            "afade",
+            "apad",
+            "atrim",
+            "anullsrc"
+          ],
+          "encoders": [
+            "libx264",
+            "aac"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 300
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/brand-layer/1.0.2",
+      "files": {
+        "README.md": "3a91b6064fef2e8563ce0209769eb6076af32074499ec41768d4d2a4c2fb80d1",
+        "assets/fonts/Montserrat-Bold.ttf": "bc6e854971cea46b463be6f9eef4d9cd52f51cfc1fc0dd90c9d3e6483dc0ec61",
+        "part.json": "f0cd5ebcb958b47fb227dace37df99c68cd73d1ce1bdaf2dbd367e6c9dd6b635",
+        "part.mjs": "51a81a871187fea00253189f7bd89fb2cbfb1d8e1498cd391c11efcdf6470e2b"
+      },
+      "models": []
+    },
+    {
       "id": "captions-layer",
       "version": "1.0.0",
       "interface": 1,
@@ -728,6 +771,62 @@
         "assets/fonts/TitanOne-Regular.ttf": "bcac194b2c80941682789e854d0515855a41dfa0d3f209fbf1725b15cd9fd063",
         "part.json": "da20f29a7dc4fb5d30cdfb83db3fd93a89d95d0efe8f027729de9c5e2940e3cf",
         "part.mjs": "8f86271a627214ff5117515b4f45e2db96b8b09d03d4d1bcaf743b874acb7a2d"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "fal-ai/whisper"
+        }
+      ]
+    },
+    {
+      "id": "captions-layer",
+      "version": "1.4.0",
+      "interface": 1,
+      "kind": "caption",
+      "layer": "captions",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": true,
+        "ffmpeg": {
+          "filters": [
+            "fps",
+            "format",
+            "overlay"
+          ],
+          "encoders": [
+            "libx264",
+            "aac"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "fal-ai/whisper"
+          }
+        ],
+        "disk_mb": 400
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "call",
+        "rates_usd": {
+          "fal-ai/whisper": 0.02
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/captions-layer/1.4.0",
+      "files": {
+        "README.md": "e24e36db2dc26c936d2c8b7da3d683d9ed88ec59a9fc79c4022a69313b9a342a",
+        "assets/fonts/Montserrat-Bold.ttf": "bc6e854971cea46b463be6f9eef4d9cd52f51cfc1fc0dd90c9d3e6483dc0ec61",
+        "assets/fonts/Montserrat-OFL.txt": "ea6b176076abe6950aa25de2fcd199c56fa8409946e883370e10bec68596573c",
+        "assets/fonts/PTSerif-Bold.ttf": "038ba7336bd7ea14f12ad155bed51a4345cac5153275d521dec3ba04021c526e",
+        "assets/fonts/PTSerif-OFL.txt": "ddf311c28ddf5a5ad9747649837346b67bed9d356789c3072bb27dbce49e514d",
+        "assets/fonts/TitanOne-OFL.txt": "2abc52c3268db4de42e3b625d604d062f2410c620b0a88d29e1b007116df253e",
+        "assets/fonts/TitanOne-Regular.ttf": "bcac194b2c80941682789e854d0515855a41dfa0d3f209fbf1725b15cd9fd063",
+        "part.json": "69acbd2c447fc39eb1131a569c00d6ec4df23d84c6fbf7160b1c646a2a887e0f",
+        "part.mjs": "04092f6abf9ddd203fce8c49b58ac9615326c4e2d0cefc234486bd65dece0e39"
       },
       "models": [
         {
@@ -2179,6 +2278,43 @@
       "models": []
     },
     {
+      "id": "end-card",
+      "version": "1.1.1",
+      "interface": 1,
+      "kind": "end_card",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": true,
+        "ffmpeg": {
+          "filters": [
+            "scale",
+            "setsar",
+            "format",
+            "anullsrc"
+          ],
+          "encoders": [
+            "libx264",
+            "aac"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 50
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/end-card/1.1.1",
+      "files": {
+        "README.md": "79f2a1489857961554389c6577e5c84ba65842f0c2aaa59a63246b37711c5dd8",
+        "assets/fonts/Montserrat-Bold.ttf": "bc6e854971cea46b463be6f9eef4d9cd52f51cfc1fc0dd90c9d3e6483dc0ec61",
+        "part.json": "001f6be5b046172eda5548c1d4604416ddf5a1377c0132533bf11c6873372707",
+        "part.mjs": "14de46b9400cd1f6b1fd44c3145bad197480827556c10fbc7f91b7649681609a"
+      },
+      "models": []
+    },
+    {
       "id": "html-frames",
       "version": "1.0.0",
       "interface": 1,
@@ -2481,6 +2617,70 @@
         "README.md": "4984e8e645b47629db5c874cca453a117e1ce59c6660372b0c65613ee3109345",
         "part.json": "b8c128cb6bbeb15bda46cb0850c8f5346d65221ac77a8d8195cdecacb2ee2b64",
         "part.mjs": "a4018d7fc80d67af944cb0cad35a514c82a21604cf0380420765c1d253c41e8e"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "openai/gpt-image-2"
+        },
+        {
+          "provider": "fal",
+          "model": "openai/gpt-image-2/edit"
+        }
+      ]
+    },
+    {
+      "id": "image-gpt-image-2",
+      "version": "1.1.2",
+      "interface": 1,
+      "kind": "generate_image",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "scale",
+            "setsar",
+            "format",
+            "hstack"
+          ],
+          "encoders": [
+            "png",
+            "rawvideo"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "openai/gpt-image-2"
+          },
+          {
+            "provider": "fal",
+            "model": "openai/gpt-image-2/edit"
+          }
+        ],
+        "disk_mb": 300
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "image",
+        "measure": {
+          "from": "/images/*",
+          "as": "count"
+        },
+        "rates_usd": {
+          "openai/gpt-image-2": 0.19,
+          "openai/gpt-image-2/edit": 0.19
+        },
+        "model_from": "/model"
+      },
+      "determinism": "provider",
+      "path": "parts/image-gpt-image-2/1.1.2",
+      "files": {
+        "README.md": "45ebfedfe8bd818856476d73d96e10195a9882fbbc227288a4cafbe305d755f4",
+        "part.json": "8c001dc38b37b30745476a3775661942f614034e54755ee65f36a00ed75e324d",
+        "part.mjs": "4163ef87a27d53ff0ff433d95005824a5fefe67e73d26f464c29e79a523a39f5"
       },
       "models": [
         {
@@ -2847,6 +3047,69 @@
         "README.md": "4c45a1e83f28e987b07fdbbdab09b8a7ce8ba8eddfe1cf7696a55e26b80065ef",
         "part.json": "824cc5d052a88833b5637940d077b4e267fc0b9f6cdd151ac636eca1bbaac28c",
         "part.mjs": "7dfe44ff0a311db16fce30d81a40d21ea43712247757adaa1028f8673018e499"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "fal-ai/nano-banana"
+        },
+        {
+          "provider": "fal",
+          "model": "fal-ai/nano-banana/edit"
+        }
+      ]
+    },
+    {
+      "id": "image-nano-banana",
+      "version": "1.2.3",
+      "interface": 1,
+      "kind": "generate_image",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "scale",
+            "setsar",
+            "format",
+            "hstack"
+          ],
+          "encoders": [
+            "png"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "fal-ai/nano-banana"
+          },
+          {
+            "provider": "fal",
+            "model": "fal-ai/nano-banana/edit"
+          }
+        ],
+        "disk_mb": 200
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "image",
+        "measure": {
+          "from": "/images/*",
+          "as": "count"
+        },
+        "rates_usd": {
+          "fal-ai/nano-banana": 0.039,
+          "fal-ai/nano-banana/edit": 0.039
+        },
+        "model_from": "/model"
+      },
+      "determinism": "provider",
+      "path": "parts/image-nano-banana/1.2.3",
+      "files": {
+        "README.md": "74a3604fe33e4f1f2159e98420979a137682695806a6dc75ebad14e92e38f317",
+        "part.json": "d10a33c789ddc6af1cb7f307cdebb22c251612465a273e212facf86283cb80ac",
+        "part.mjs": "b49dfdcfb2131c2ea4d0365cb7ae4dd4224ab943dca7d3179ce73dc8a34e7ad7"
       },
       "models": [
         {
