@@ -46,7 +46,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'cut-footage',
-  version: '1.2.0',
+  version: '1.2.1',
   kind: 'compose',
   title: 'Cut footage into a video',
   summary: "Cuts the brand's own footage into a video: a band, one beat per scene, inserts or a 2x2 grid over a talking track that hide its take joins, or a split screen with the creator in one zone; push-ins and a hook look on the creator.",

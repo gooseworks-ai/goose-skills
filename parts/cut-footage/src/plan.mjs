@@ -344,6 +344,50 @@ export function cutPlaceInserts(inserts, spans, { joins = [], duration, fps }) {
   return slots;
 }
 
+/** Shorter than this, a shot reads as a flash (check-layer's min_shot). */
+export const CUT_MIN_SHOT_S = 0.4;
+
+/**
+ * Inserts mode, after cutPlaceInserts: no shot shorter than `min_shot` where a
+ * hold can avoid it. A full-frame creator stretch under `min_shot` after an
+ * insert (before the next insert or the end of the video) is covered by
+ * holding that insert's last frame over it; an insert under `min_shot` is held
+ * into the creator stretch after it, as far as that stretch keeps `min_shot`.
+ * A hold (`held_s`, added to `end_s`) never changes an insert's speed or
+ * source window, and the talking track's sound is kept. Grid inserts are never
+ * held. Returns the short shots left, [{scene_id, shot, seconds}], to warn of.
+ */
+export function cutHoldShortShots(slots, { duration, fps, min_shot = CUT_MIN_SHOT_S }) {
+  const left = [];
+  const last = Math.floor(duration * fps + 1e-6) / fps;
+  const holdTo = (slot, end) => {
+    if (end - slot.end_s <= CUT_EPS) return;
+    slot.held_s = (slot.held_s || 0) + (end - slot.end_s);
+    slot.end_s = end;
+  };
+  if (slots.length && slots[0].start_s > CUT_EPS && slots[0].start_s < min_shot - CUT_EPS) {
+    left.push({ scene_id: String(slots[0].scene.id), shot: 'creator before', seconds: +slots[0].start_s.toFixed(3) });
+  }
+  slots.forEach((slot, i) => {
+    const limit = i + 1 < slots.length ? slots[i + 1].start_s : last;
+    const holdable = slot.kind !== 'grid';
+    const gap = limit - slot.end_s;
+    if (gap > CUT_EPS && gap < min_shot - CUT_EPS) {
+      if (holdable) holdTo(slot, limit);
+      else left.push({ scene_id: String(slot.scene.id), shot: 'creator after', seconds: +gap.toFixed(3) });
+    }
+    const short = min_shot - (slot.end_s - slot.start_s);
+    if (short > CUT_EPS && holdable) {
+      // As far as it needs, while the creator stretch after it keeps min_shot (or is used up).
+      let end = Math.min(limit, Math.round((slot.end_s + short) * fps + 0.499) / fps);
+      if (limit - end > CUT_EPS && limit - end < min_shot - CUT_EPS) end = Math.floor((limit - min_shot) * fps + 1e-6) / fps;
+      holdTo(slot, end);
+    }
+    if (slot.end_s - slot.start_s < min_shot - CUT_EPS) left.push({ scene_id: String(slot.scene.id), shot: 'insert', seconds: +(slot.end_s - slot.start_s).toFixed(3) });
+  });
+  return left;
+}
+
 /**
  * Inserts mode: the source range and speed of a window insert lasting `seconds`.
  * The window [from, to] plays at the speed that fills the slot (or the fixed

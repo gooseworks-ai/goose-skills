@@ -35,7 +35,7 @@ import { kitCheckInputs, kitCheckOutputs, kitDuration, kitFfmpeg, kitNum } from 
 import { kitMediaLength } from '../../_lib/length.mjs';
 import { kitScreenBoxProblems, kitScreenGraph, kitScreenProblems } from '../../_lib/screen-look.mjs';
 import { kitPanelCover, kitPanelDivider, kitPanelFit, kitPanelSeamRows, kitPanelVstack } from '../../_lib/panels.mjs';
-import { CUT_MAX_BYTES, CutRefusal, cutCheckMode, cutCheckOrder, cutCreatorRuns, cutEntryFile, cutEntryIsStill, cutGridCellSpeed, cutInsertRange, cutModeOf, cutPlaceInserts, cutPlanScenes, cutSceneSources, cutSplitSlots, cutWindow } from './plan.mjs';
+import { CUT_MAX_BYTES, CutRefusal, cutCheckMode, cutCheckOrder, cutCreatorRuns, cutEntryFile, cutEntryIsStill, cutGridCellSpeed, cutHoldShortShots, cutInsertRange, cutModeOf, cutPlaceInserts, cutPlanScenes, cutSceneSources, cutSplitSlots, cutWindow } from './plan.mjs';
 
 /** atempo steps whose product is `speed`: ffmpeg 6.0's atempo takes 0.5 to 2 at a time. */
 function cutTempoChain(speed) {
@@ -187,7 +187,8 @@ function cutPlainHead(input, sw, sh, crop, masks) {
 
 /**
  * Renders one beat to an intermediate W x H clip `seconds` long (plus `extraS`
- * for the dissolve into the next beat). `beat.kind` is window, still or lead.
+ * on its last frame: the dissolve into the next beat, or a hold over a short
+ * shot). `beat.kind` is window, still or lead.
  */
 async function cutRenderBeat(ctx, beat, { W, H, fps, look, screen, fit, lookIndex, seconds, extraS, name, lead }) {
   const len = seconds + extraS;
@@ -346,11 +347,13 @@ async function cutInserts(inputs, ctx, manifest) {
   const spans = new Map(inputs.timeline.scenes.map((s) => [String(s.id), s]));
   const joins = (inputs.joins || []).map((t) => t.start_s).filter((s) => s > 0.05);
   const slots = cutPlaceInserts(sources, spans, { joins, duration: dur, fps });
+  for (const shot of cutHoldShortShots(slots, { duration: dur, fps })) ctx.log.warn('a shot stays under the minimum length', shot);
   const lengths = await cutWindowLengths(ctx, slots);
   const opts = { speed: inputs.speed ?? 'fill', min_speed: inputs.min_speed ?? 0.5, max_speed: inputs.max_speed ?? 2 };
   const beats = [];
   for (const s of slots) {
-    const seconds = s.end_s - s.start_s;
+    // A hold shows the last frame longer; the window still plays over the slot it was given.
+    const seconds = s.end_s - s.start_s - (s.held_s || 0);
     if (s.kind === 'grid') beats.push({ ...s, seconds, speed: 1, cells: await cutGridCells(ctx, s, seconds, opts.min_speed) });
     else if (s.kind !== 'window') beats.push({ ...s, seconds, speed: 1 });
     else {
@@ -363,7 +366,8 @@ async function cutInserts(inputs, ctx, manifest) {
   for (const [i, b] of beats.entries()) {
     const name = `insert-${i + 1}`;
     if (b.kind === 'grid') paths.push(await cutRenderGrid(ctx, b, { W, H, fps, still_zoom: inputs.grid.still_zoom ?? 0.04, name }));
-    else paths.push(await cutRenderBeat(ctx, b, { W, H, fps, look: inputs.look ?? 'plain', screen: inputs.screen, fit: inputs.fit, lookIndex: i, seconds: b.seconds, extraS: 0, name }));
+    else paths.push(await cutRenderBeat(ctx, b, { W, H, fps, look: inputs.look ?? 'plain', screen: inputs.screen, fit: inputs.fit, lookIndex: i, seconds: b.seconds, extraS: b.held_s || 0, name }));
+    if (b.held_s > 0) ctx.log.info('insert held over a short shot', { scene_id: b.scene.id, held_s: +b.held_s.toFixed(3) });
     if (b.stretched_s > 0) ctx.log.info('insert stretched over a take join', { scene_id: b.scene.id, stretched_s: +b.stretched_s.toFixed(3) });
     if (b.early_s > 0) ctx.log.info('insert started early over a take join', { scene_id: b.scene.id, early_s: +b.early_s.toFixed(3), window_extended_s: +(b.extended_s || 0).toFixed(3) });
     ctx.progress({ done: i + 1, total: beats.length + 1 });

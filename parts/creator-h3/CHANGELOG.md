@@ -1,5 +1,9 @@
 # creator-h3
 
+## 1.2.3
+
+- Takes are never planned faster than H3 speaks: `words_per_second` above 3.2 plans at 3.2 (a style that asked for 3.9 got takes too full, so H3 rushed or cut the last words). Each measured take logs its heard pace (`take pace`: words over heard speech). part.json carries the measured band as `x-speech-rate` (2.3 to 3.2 words a second). With `words_per_second` at 3.2 or less every request is 1.2.1's; above it the takes are longer, so 1.2.3 declares no `reuses_pieces_of` (a video approved on 1.2.2 or older keeps its version).
+
 ## 1.2.2
 
 - 1.2.1's code, declaring `reuses_pieces_of: ["1.1.0", "1.2.0", "1.2.1"]`. Measured joins and line spans change only where the takes land in the reel, never the H3 request, so these versions order the same takes byte for byte (parts/_tools/reuses-pieces.test.mjs on tests/pieces.fixture.mjs). A video approved on one of them moves to 1.2.2 on its next run and reuses the takes it already bought.
