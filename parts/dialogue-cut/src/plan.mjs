@@ -214,23 +214,34 @@ export function dialogueBeats(scenes, spans, hosts, { seconds, min_s = 0.5 } = {
   }
   // A line shorter than the cut floor ("No.") would be a flicker every seed refuses. Its picture starts
   // earlier, inside the line before (the replier is seen listening, on their clip's first frame, a beat
-  // before they speak), or, when that line cannot spare it, runs on into the next line on its last frame.
-  // Lines are never moved: only where the picture changes.
+  // before they speak), or, when that line cannot spare it, runs on into the next line on its last frame;
+  // when neither can spare it alone, each gives what it can spare (1.0.1). Lines are never moved: only
+  // where the picture changes.
   for (let i = 0; i < beats.length; i++) {
     const b = beats[i];
     if (!(b.dur_s < min_s - 1e-9)) continue;
     const need = min_s - b.dur_s;
     const prev = beats[i - 1];
     const next = beats[i + 1];
-    if (prev && prev.dur_s - need >= min_s - 1e-9) {
-      prev.end_s = dialogueRound(prev.end_s - need);
+    const prevSpare = prev ? Math.max(0, prev.dur_s - min_s) : 0;
+    const nextSpare = next ? Math.max(0, next.dur_s - min_s) : 0;
+    let early = 0;
+    if (prevSpare >= need - 1e-9) early = need;
+    else if (nextSpare < need - 1e-9) {
+      if (prevSpare + nextSpare < need - 1e-9) continue;
+      early = prevSpare;
+    }
+    const late = need - early;
+    if (early > 1e-9) {
+      prev.end_s = dialogueRound(prev.end_s - early);
       prev.dur_s = prev.end_s - prev.start_s;
       b.start_s = prev.end_s;
-    } else if (next && next.dur_s - need >= min_s - 1e-9) {
-      b.end_s = dialogueRound(b.end_s + need);
+    }
+    if (late > 1e-9) {
+      b.end_s = dialogueRound(b.end_s + late);
       next.start_s = b.end_s;
       next.dur_s = next.end_s - next.start_s;
-    } else continue;
+    }
     b.dur_s = b.end_s - b.start_s;
   }
   return { beats, skipped };
