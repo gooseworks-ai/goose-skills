@@ -57,7 +57,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'creator-h3',
-  version: '1.2.1',
+  version: '1.2.2',
   kind: 'generate_video',
   title: 'Talking creator (H3)',
   summary: 'An AI creator (plan cast or a character) saying the approved lines to camera as one track: H3 takes joined on their measured speech with short dissolves, one voice. Or silent H3 clips, one per picked scene, from its keyframe.',
@@ -184,6 +184,8 @@ export const manifest = {
     },
   },
   cost: { basis: 'per_unit', unit: 'second', measure: { from: '/max_seconds', as: 'value' }, rates_usd: { [MODEL]: 0.4 } },
+  // Proven by parts/_tools/reuses-pieces.test.mjs on tests/pieces.fixture.mjs: the takes are ordered byte for byte as these versions order them.
+  reuses_pieces_of: ['1.1.0', '1.2.0', '1.2.1'],
   determinism: 'provider',
   timing: { typical_s: 600, timeout_s: 3600 },
   retry: { transient: 1 },

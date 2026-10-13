@@ -1796,6 +1796,80 @@
       ]
     },
     {
+      "id": "creator-h3",
+      "version": "1.2.2",
+      "interface": 1,
+      "kind": "generate_video",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "silencedetect",
+            "tpad",
+            "trim",
+            "setpts",
+            "fps",
+            "settb",
+            "setsar",
+            "format",
+            "xfade",
+            "concat",
+            "aresample",
+            "pan",
+            "aformat",
+            "adelay",
+            "apad",
+            "atrim",
+            "asetpts",
+            "acrossfade"
+          ],
+          "encoders": [
+            "libx264",
+            "aac",
+            "pcm_s16le"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "minimax/h3-max/reference-to-video"
+          }
+        ],
+        "disk_mb": 1500
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "second",
+        "measure": {
+          "from": "/max_seconds",
+          "as": "value"
+        },
+        "rates_usd": {
+          "minimax/h3-max/reference-to-video": 0.4
+        }
+      },
+      "determinism": "provider",
+      "reuses_pieces_of": [
+        "1.1.0",
+        "1.2.0",
+        "1.2.1"
+      ],
+      "path": "parts/creator-h3/1.2.2",
+      "files": {
+        "README.md": "9eaa3a26b0934dc463c7a5a170c219cdf85ddc8e5c3f908178f573137b4c7578",
+        "part.json": "df63f938a2f69e0539c12321498dd04277285110b962606e9f7889372d9c18e7",
+        "part.mjs": "de4fa0688fae24bf5b9e1d807f7247bb8eb7ea814c8c0e06ce54d3b3303cab15"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "minimax/h3-max/reference-to-video"
+        }
+      ]
+    },
+    {
       "id": "cut-footage",
       "version": "1.0.0",
       "interface": 1,
