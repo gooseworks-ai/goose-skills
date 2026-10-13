@@ -2173,8 +2173,8 @@ function chkLostRuns(verdict, scriptWords, min) {
 }
 
 /**
- * The first spoken line that lost words: {index, scene_id, line, text} or null, `index` its place among the
- * lines that name a scene. A line is compared with what was heard for it (`spoken`) when it names its scene
+ * The first spoken line that lost words: {index, scene_id, line, text, occurrence} or null, `index` its place
+ * among the lines that name a scene and `occurrence` how many lines before it have the same words. A line is compared with what was heard for it (`spoken`) when it names its scene
  * and words were placed with it; a line with none placed (the transcriber could not match it, so its words
  * went to a later line) is left to the whole-script checks. A run lost from a line's start that the nearest
  * heard line before it ends with, or from its end that the nearest heard line after it starts with, was only
@@ -2195,15 +2195,20 @@ function chkLineLoss(speech, aliases) {
       const reach = lost.words.length + 2;
       if (chkStartsWith(words, lost.words) && chkHasRun(near(n, -1).slice(-reach), lost.words)) continue;
       if (chkEndsWith(words, lost.words) && chkHasRun(near(n, 1).slice(0, reach), lost.words)) continue;
-      return { index: n, scene_id: String(e.scene_id), line: String(e.text), text: lost.text };
+      // Which of the lines with these same words it is, so a repeated line is numbered as the one that lost them.
+      const occurrence = named.slice(0, n).filter((o) => speechTokenize(o.text, aliases).join(' ') === words.join(' ')).length;
+      return { index: n, scene_id: String(e.scene_id), line: String(e.text), text: lost.text, occurrence };
     }
   }
   return null;
 }
 
-/** The first phrase the whole script lost (CHK_SCRIPT_LOST_WORDS words or more in a row): {text} or null. */
-function chkScriptLoss(verdict) {
-  const lost = chkLostRuns(verdict, [], CHK_SCRIPT_LOST_WORDS).find((r) => r.words.length >= CHK_SCRIPT_LOST_WORDS);
+/**
+ * The first phrase the whole script lost (CHK_SCRIPT_LOST_WORDS words or more in a row): {text} or null.
+ * `scriptWords` is the reviewed script, tokenized: its end said as fewer words counts as lost.
+ */
+function chkScriptLoss(verdict, scriptWords) {
+  const lost = chkLostRuns(verdict, scriptWords, CHK_SCRIPT_LOST_WORDS).find((r) => r.words.length >= CHK_SCRIPT_LOST_WORDS);
   return lost ? { text: lost.text } : null;
 }
 
@@ -2957,11 +2962,12 @@ export async function run(inputs, ctx) {
     const heard = speech.map((s) => (typeof s.spoken === 'string' ? s.spoken : s.text)).join(' ');
     const aliases = usableAliases(ctx, inputs.brand.pronunciations);
     // retained_body: only the opening is heard here, so only its line (the plan's first) is compared.
-    const verdict = speechReview((retained ? script.slice(0, 1) : script).join(' '), heard, { aliases });
+    const reviewed = (retained ? script.slice(0, 1) : script).join(' ');
+    const verdict = speechReview(reviewed, heard, { aliases });
     const worst = verdict.issues.find((i) => i.severity === 'high') || verdict.issues.find((i) => i.severity !== 'low');
     // A lost phrase fails even when the whole script clears its bar: it was cut where two takes join, or never said.
     const lineLoss = chkLineLoss(speech, aliases);
-    const scriptLoss = lineLoss ? null : chkScriptLoss(verdict);
+    const scriptLoss = lineLoss ? null : chkScriptLoss(verdict, speechTokenize(reviewed, aliases));
     const why = 'they were cut where two recordings join, or never said.';
     // Numbered as the approved script's lines, which the customer saw; scenes can be dropped or added by the cut.
     const quote = (text) => {
@@ -2969,7 +2975,9 @@ export async function run(inputs, ctx) {
       return words.length > 6 ? `${words.slice(0, 6).join(' ')}…` : words.join(' ');
     };
     if (lineLoss) {
-      const at = script.findIndex((l) => speechTokenize(l, aliases).join(' ') === speechTokenize(lineLoss.line, aliases).join(' '));
+      const want = speechTokenize(lineLoss.line, aliases).join(' ');
+      const same = script.flatMap((l, i) => (speechTokenize(l, aliases).join(' ') === want ? [i] : []));
+      const at = same.length ? same[Math.min(lineLoss.occurrence, same.length - 1)] : -1;
       add('speech_matches_script', 'fail', { message: `Line ${at >= 0 ? at + 1 : lineLoss.index + 1} of the script is missing the words "${quote(lineLoss.text)}": ${why}`, expected: 'every approved word of every line', found: +verdict.ratio.toFixed(3) });
     } else if (scriptLoss) {
       add('speech_matches_script', 'fail', { message: `The speech is missing the words "${quote(scriptLoss.text)}": ${why}`, expected: 'every approved word of every line', found: +verdict.ratio.toFixed(3) });

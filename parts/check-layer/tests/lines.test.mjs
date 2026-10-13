@@ -3,7 +3,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { hasFfmpeg, layerInputsFor, loadNewest, makeCtx } from '../../_tools/kit-harness.mjs';
-import { speechReview } from '../../_lib/speech.mjs';
+import { speechReview, speechTokenize } from '../../_lib/speech.mjs';
 import { chkLineLoss, chkScriptLoss } from '../src/lines.mjs';
 import { levelledCut } from './fixture.mjs';
 
@@ -22,7 +22,7 @@ const line = (n, spoken) => ({ scene_id: `s${n + 1}`, text: SCRIPT[n], spoken: s
 
 test('a line that lost two words in a row names its scene', () => {
   const speech = [line(0), line(1, 'it has twelve grams of protein and almost no sugar.'), line(2), line(3)];
-  assert.deepEqual(chkLineLoss(speech, []), { index: 1, scene_id: 's2', line: SCRIPT[1], text: 'Listen up' });
+  assert.deepEqual(chkLineLoss(speech, []), { index: 1, scene_id: 's2', line: SCRIPT[1], text: 'Listen up', occurrence: 0 });
 });
 
 test('a line that lost its last two words fails, one lost word does not', () => {
@@ -92,11 +92,32 @@ test('a phrase of three words lost from the whole script fails even when the sim
   const heard = SCRIPT.join(' ').replace('keep a box in', 'keep in');
   const v = speechReview(SCRIPT.join(' '), heard);
   assert.equal(v.passed, true, 'the whole-script verdict alone passes');
-  assert.equal(chkScriptLoss(v), null, 'two words lost from the whole script are left to the line check');
+  assert.equal(chkScriptLoss(v, speechTokenize(SCRIPT.join(" "))), null, 'two words lost from the whole script are left to the line check');
   const lost = SCRIPT.join(' ').replace('for the afternoon slump', 'for');
   const w = speechReview(SCRIPT.join(' '), lost);
   assert.equal(w.passed, true, 'about one word in ten lost still clears the bar');
-  assert.deepEqual(chkScriptLoss(w), { text: 'the afternoon slump' });
+  assert.deepEqual(chkScriptLoss(w, speechTokenize(SCRIPT.join(" "))), { text: 'the afternoon slump' });
+});
+
+test('the script’s end said as fewer, other words is lost, however long the script', () => {
+  const text = SCRIPT.join(' ');
+  const v = speechReview(text, text.replace('flavour you pick first.', 'now.'));
+  assert.deepEqual(chkScriptLoss(v, speechTokenize(text)), { text: 'flavour you pick first' });
+  // The same words swapped in the middle are not its end.
+  const mid = speechReview(text, text.replace('box in my bag', 'tin'));
+  assert.equal(chkScriptLoss(mid, speechTokenize(text)), null);
+});
+
+test('a repeated line that lost words is numbered as the one that lost them', () => {
+  const again = 'Grab yours today and tell me which flavour you pick first.';
+  const speech = [
+    { scene_id: 's1', text: again, spoken: again },
+    { scene_id: 's2', text: SCRIPT[1], spoken: SCRIPT[1] },
+    { scene_id: 's3', text: again, spoken: 'Grab yours today and tell me which flavour.' },
+  ];
+  const lost = chkLineLoss(speech, []);
+  assert.equal(lost.scene_id, 's3');
+  assert.equal(lost.occurrence, 1, 'the second line with these words');
 });
 
 test('the layer fails the speech check on a line that lost a phrase, naming the scene', { skip }, async () => {
@@ -112,4 +133,15 @@ test('the layer fails the speech check on a line that lost a phrase, naming the 
   assert.ok(c.found >= 0.9, 'the whole script alone would have passed');
   const whole = await mod.run(await layerInputsFor(video, { expect, timeline: { scenes, speech: SCRIPT.map((_, n) => line(n)) } }), ctx);
   assert.equal(check(whole, 'speech_matches_script').status, 'pass');
+});
+
+test('the layer numbers a repeated script line by the one that lost words', { skip }, async () => {
+  const { ctx } = makeCtx({ partDir: dir });
+  const video = await levelledCut(ctx.workDir, 'repeat', 4);
+  const again = SCRIPT[3];
+  const script = [again, SCRIPT[1], again];
+  const scenes = script.map((_, n) => ({ id: `s${n + 1}`, start_s: n * 1.2, end_s: (n + 1) * 1.2 }));
+  const speech = script.map((text, n) => ({ scene_id: `s${n + 1}`, text, spoken: n === 2 ? 'Grab yours today and tell me which flavour.' : text, start_s: n, end_s: n + 0.9 }));
+  const out = await mod.run(await layerInputsFor(video, { expect: { speech: 'on_camera', script, duration_s: { min: 2, max: 10 } }, timeline: { scenes, speech } }), ctx);
+  assert.match(check(out, 'speech_matches_script').message, /^Line 3 of the script/);
 });
