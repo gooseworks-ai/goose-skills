@@ -49,6 +49,8 @@ const MAX_SPEECH = 14.2;
 const TAIL = 0.6;
 const XF = 0.1;
 const LEAD = 0.11;
+/** H3 says about 3.2 words a second at most (measured takes); a faster plan packs takes it then rushes or cuts. */
+const H3_PLAN_WPS = 3.2;
 const PAD = 0.03;
 const VOICE_CLIP = ['-vn', '-t', '12', '-ac', '1', '-ar', '24000'];
 const COVER_LEAD = 0.15;
@@ -392,7 +394,7 @@ export async function run(inputs, ctx) {
   // The character's own delivery is trimmed only, as 1.0.2 did; a cast member's was cleaned in pickCreator.
   // A whitespace-only legacy delivery stays empty, exactly as 1.0.2 built the prompt.
   const delivery = cleanText(inputs.delivery) || String(creator.character.delivery || H3_DEFAULT_DELIVERY).trim();
-  const takes = planTakes(lines, inputs.words_per_second ?? 2.6);
+  const takes = planTakes(lines, Math.min(inputs.words_per_second ?? 2.6, H3_PLAN_WPS));
   if (takes.problem) throw ctx.error('bad_input', takes.problem);
   const seconds = takes.reduce((a, t) => a + t.dur, 0);
   if (seconds > inputs.max_seconds) throw ctx.error('bad_input', `the lines need ${seconds}s of takes, more than max_seconds ${inputs.max_seconds}`);
@@ -425,6 +427,8 @@ export async function run(inputs, ctx) {
     if (measured) {
       const heard = await measureSpeech(ctx, file.path, duration);
       if (!heard) throw ctx.error('provider_failed', `${piece} came back with no speech to hear`);
+      const said = t.lines.reduce((n, l) => n + l.spoken.split(/\s+/).filter(Boolean).length, 0);
+      ctx.log.info('take pace', { take: t.id, words: said, wps: +(said / Math.max(0.1, heard.end - heard.onset)).toFixed(2) });
       made.push({ ...t, file, path: file.path, duration, start: t.covers[0], onset: heard.onset, speech_end: heard.end, gaps: heard.gaps });
     } else {
       made.push({ ...t, file, path: file.path, duration, start: t.covers[0], onset: await plannedOnset(ctx, file.path), speech_end: duration });

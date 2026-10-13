@@ -1,5 +1,9 @@
 # creator-h3
 
+## 1.2.2
+
+- Takes are never planned faster than H3 speaks: `words_per_second` above 3.2 plans at 3.2 (a style that asked for 3.9 got takes too full, so H3 rushed or cut the last words). Each measured take logs its heard pace (`take pace`: words over heard speech). part.json carries the measured band as `x-speech-rate` (2.3 to 3.2 words a second). With `words_per_second` at 3.2 or less every request is 1.2.1's.
+
 ## 1.2.1
 
 - Measured line spans: inside each take, the boundary between two lines goes on a silence (0.12 s or longer) heard between its first and last word, so each scene starts on its first word and ends after its last. 1.2.0 spread the lines' estimated lengths over the take's speech, so a scene start (where a cut-footage insert lands when the transcript does not re-time scenes) could fall mid-word or early. A boundary with no silence in reach keeps the 1.2.0 estimate. Takes, joins, the reel and `join: planned` are unchanged.
