@@ -92,6 +92,14 @@
     "inputs": {"$ref": "#/$defs/objectSchema"},
     "outputs": {"$ref": "#/$defs/objectSchema"},
     "cost": {"$ref": "#/$defs/cost"},
+    "reuses_pieces_of": {
+      "description": "Older published versions of this part (same major) whose paid requests this version sends byte for byte: same pieces, providers, paths and bodies. A video approved on one of them may move to this version and keep the pieces it bought. Proven by parts/_tools/reuses-pieces.test.mjs on the part's tests/pieces.fixture.mjs.",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 20,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/semver"}
+    },
     "determinism": {
       "description": "pure: same inputs + version + toolchain give the same bytes. seeded: same, randomness only from the seed. provider: paid model output; never ordered twice for the same piece.",
       "enum": ["pure", "seeded", "provider"]

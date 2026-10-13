@@ -1,5 +1,9 @@
 # creator-h3
 
+## 1.2.2
+
+- 1.2.1's code, declaring `reuses_pieces_of: ["1.1.0", "1.2.0", "1.2.1"]`. Measured joins and line spans change only where the takes land in the reel, never the H3 request, so these versions order the same takes byte for byte (parts/_tools/reuses-pieces.test.mjs on tests/pieces.fixture.mjs). A video approved on one of them moves to 1.2.2 on its next run and reuses the takes it already bought.
+
 ## 1.2.1
 
 - Measured line spans: inside each take, the boundary between two lines goes on a silence (0.12 s or longer) heard between its first and last word, so each scene starts on its first word and ends after its last. 1.2.0 spread the lines' estimated lengths over the take's speech, so a scene start (where a cut-footage insert lands when the transcript does not re-time scenes) could fall mid-word or early. A boundary with no silence in reach keeps the 1.2.0 estimate. Takes, joins, the reel and `join: planned` are unchanged.
