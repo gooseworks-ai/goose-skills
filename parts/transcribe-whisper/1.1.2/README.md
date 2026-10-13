@@ -18,10 +18,12 @@ What is actually said in a cut, as a timeline step that runs before the layers. 
   - Each line's speech entry keeps the written line as `text` (captions show the approved words), carries what
     was heard for it as `spoken`, and its written words timed by the heard ones (a word written differently,
     "200" for "two hundred", sits between its neighbours).
-  - A line owns the heard words from its first matched word to its last, plus up to two heard words for each of
-    its written words not heard at that edge (a name Whisper writes as two words). A line with under two thirds
-    of its words heard keeps evenly spread word timings over what it owns. Scenes whose `line` is null or empty
-    are skipped.
+  - A line owns the heard words from its first matched word to its last (a written word heard as several,
+    "50%" as "50 percent", owns all of them), plus up to two heard words for each of its written words not heard
+    at that edge (a name Whisper writes as two words). A line with under two thirds of its words heard (rounded
+    up) was not said: its `spoken` is empty, it owns nothing (the words it matched stay speech in no line), and
+    its words are spread evenly over the heard words around it, so speech-recut refuses the take instead of
+    passing a missing line. Scenes whose `line` is null or empty are skipped.
   - **Speech in no line**: heard words that no line owns come out as their own `timeline.speech` entries, in
     time order, with **no `scene_id` and empty `text`**, their heard words in `spoken` and `words`. Captions skip
     them (no written text), the check layer still hears them, and speech-recut 1.0.2 cuts them out.

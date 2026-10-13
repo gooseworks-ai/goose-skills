@@ -14,13 +14,15 @@
 // common word from far away; skipping one BETWEEN lines is free. Ties go to the
 // earliest heard words.
 //
-// What each line owns: the heard words from its first matched word to its last,
+// What each line owns: the heard words from its first matched word to its last
+// (a written word heard as several, "50%" as "50 percent", owns all of them),
 // plus, at an edge where some of its written words were not heard, up to
 // PLACE_CLAIM_PER_WORD heard words per unheard written word (a name Whisper
-// writes as two words, say). Lines with no matched word claim the same way from
-// the gap they sit in. Heard words no line owns are extra: speech the script
-// does not have (a repeat, a filler, an invented line), returned as runs so a
-// cut can drop them.
+// writes as two words, say). Only a placed line owns words: one under
+// PLACE_MIN_SHARE heard was not said, so the words it matched or claimed from
+// its gap only time it and stay extra. Heard words no placed line owns are
+// extra: speech the script does not have (a repeat, a filler, an invented
+// line), returned as runs so a cut can drop them.
 //
 // Every top-level name starts with `place` (bundled modules share one namespace).
 import { retimeKeys } from './retime.mjs';
@@ -81,12 +83,15 @@ function placeBy(lines, heard, bare) {
   const said = [];
   heard.forEach((h, hi) => retimeKeys(h.text, { bare }).forEach((key) => said.push({ word: hi, key })));
   const match = placeMatch(written, said);
-  // Per written word: the heard word its first matched key landed on, or -1.
+  // Per written word: the heard words its first and last matched keys landed on, or -1.
   const hits = words.map((ws) => ws.map(() => -1));
+  const ends = words.map((ws) => ws.map(() => -1));
   written.forEach((w, k) => {
-    if (match[k] >= 0 && hits[w.line][w.word] < 0) hits[w.line][w.word] = match[k];
+    if (match[k] < 0) return;
+    if (hits[w.line][w.word] < 0) hits[w.line][w.word] = match[k];
+    ends[w.line][w.word] = match[k];
   });
-  return { words, hits, matched: match.filter((x) => x >= 0).length };
+  return { words, hits, ends, matched: match.filter((x) => x >= 0).length };
 }
 
 /** Splits `count` items among `caps` in proportion, in order; every item goes to someone when any cap is above 0. */
@@ -105,22 +110,28 @@ function placeShare(count, caps) {
   return out;
 }
 
+/** Whether a line with `found` of its `count` written words heard was said: at least PLACE_MIN_SHARE of them. */
+export function placeSaid(found, count) {
+  return count > 0 && found >= Math.max(1, Math.ceil(count * PLACE_MIN_SHARE - 1e-9));
+}
+
 /**
  * Places `lines` ([{scene_id, text}], plan order) on `heard` (kitHeardWords' [{text, start, end}]).
- * Returns { lines: [{ words: [written word], hits: [heard index | -1], own: [first, last] | null, placed }],
- * extras: [[first, last]] } where `own` is the run of heard words the line owns and `extras` are the
- * runs no line owns, in order.
+ * Returns { lines: [{ words: [written word], hits: [first heard index | -1], ends: [last heard index | -1],
+ * own: [first, last] | null, span: [first, last] | null, placed }], extras: [[first, last]] } where `span`
+ * is the run of heard words that times the line, `own` is that run when the line is placed (null when it
+ * was not said) and `extras` are the runs no placed line owns, in order.
  */
 export function placeLines(lines, heard) {
   // Contractions compared opened ("don't" = "do not") and, when that hears less, bare ("we're" = "were").
   const opened = placeBy(lines, heard, false);
   const bare = opened.matched === opened.words.reduce((a, ws) => a + ws.length, 0) ? opened : placeBy(lines, heard, true);
-  const { words, hits } = bare.matched > opened.matched ? bare : opened;
+  const { words, hits, ends } = bare.matched > opened.matched ? bare : opened;
 
   const out = words.map((ws, li) => {
     const found = hits[li].filter((h) => h >= 0);
     const first = found.length ? Math.min(...found) : -1;
-    const last = found.length ? Math.max(...found) : -1;
+    const last = found.length ? Math.max(...ends[li].filter((h) => h >= 0)) : -1;
     const firstHit = hits[li].findIndex((h) => h >= 0);
     const lastHit = hits[li].length - 1 - [...hits[li]].reverse().findIndex((h) => h >= 0);
     return {
@@ -131,7 +142,7 @@ export function placeLines(lines, heard) {
       // Written words not heard before the first heard one and after the last: what the line may claim.
       lead: found.length ? firstHit : ws.length,
       tail: found.length ? ws.length - 1 - lastHit : 0,
-      placed: ws.length > 0 && found.length >= Math.max(1, Math.floor(ws.length * PLACE_MIN_SHARE)),
+      placed: placeSaid(found.length, ws.length),
     };
   });
   // Monotonic by construction; a heard word two lines share (one heard "200" for "two" ending one line and
@@ -154,7 +165,6 @@ export function placeLines(lines, heard) {
   const ranged = out.map((l, i) => (l.first >= 0 ? i : -1)).filter((i) => i >= 0);
   const bounds = [-1, ...ranged, out.length];
   const owned = new Array(heard.length).fill(false);
-  for (const [f, t] of own.filter(Boolean)) for (let x = f; x <= t; x++) owned[x] = true;
   for (let b = 0; b + 1 < bounds.length; b++) {
     const a = bounds[b];
     const z = bounds[b + 1];
@@ -174,7 +184,6 @@ export function placeLines(lines, heard) {
     const give = (k, from, to) => {
       if (to < from) return;
       own[k] = own[k] ? [Math.min(own[k][0], from), Math.max(own[k][1], to)] : [from, to];
-      for (let x = from; x <= to; x++) owned[x] = true;
     };
     if (a >= 0) give(a, at, at + take[0] - 1);
     at += take[0];
@@ -184,22 +193,28 @@ export function placeLines(lines, heard) {
     });
     if (z < out.length) give(z, g1 - take.at(-1) + 1, g1);
   }
+  // Only a placed line owns its run; a line that was not said leaves its words extra.
+  out.forEach((l, i) => {
+    if (l.placed && own[i]) for (let x = own[i][0]; x <= own[i][1]; x++) owned[x] = true;
+  });
   const extras = [];
   for (let x = 0; x < heard.length; x++) {
     if (owned[x]) continue;
     if (extras.length && extras.at(-1)[1] === x - 1) extras.at(-1)[1] = x;
     else extras.push([x, x]);
   }
-  return { lines: out.map((l, i) => ({ words: l.words, hits: l.hits, own: own[i], placed: l.placed })), extras };
+  return { lines: out.map((l, i) => ({ words: l.words, hits: l.hits, ends: ends[i], own: l.placed ? own[i] : null, span: own[i], placed: l.placed })), extras };
 }
 
 /**
- * Times for a placed line's written words: a heard word gives its span (shared evenly by the written
- * words that landed on it); a word not heard sits evenly between its timed neighbours, or between the
- * line's own edge and its first or last timed word. Returns [{text, start_s, end_s}].
+ * Times for a placed line's written words: the heard words a written word landed on give its span
+ * (shared evenly by written words that landed on the same ones); a word not heard sits evenly between its
+ * timed neighbours, or between the line's own edge and its first or last timed word. Returns
+ * [{text, start_s, end_s}].
  */
 export function placeTimes(line, heard) {
   const { words, hits, own } = line;
+  const ends = line.ends || hits;
   const spans = words.map(() => null);
   for (let i = 0; i < words.length; ) {
     if (hits[i] < 0) {
@@ -208,9 +223,10 @@ export function placeTimes(line, heard) {
     }
     let k = i;
     while (k + 1 < words.length && hits[k + 1] === hits[i]) k++;
-    const h = heard[hits[i]];
-    const step = (h.end - h.start) / (k - i + 1);
-    for (let x = i; x <= k; x++) spans[x] = { start: h.start + step * (x - i), end: h.start + step * (x - i + 1) };
+    const h0 = heard[hits[i]].start;
+    const h1 = Math.max(heard[Math.max(...ends.slice(i, k + 1))].end, h0);
+    const step = (h1 - h0) / (k - i + 1);
+    for (let x = i; x <= k; x++) spans[x] = { start: h0 + step * (x - i), end: h0 + step * (x - i + 1) };
     i = k + 1;
   }
   const lo = own ? heard[own[0]].start : 0;

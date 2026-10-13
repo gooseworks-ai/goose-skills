@@ -4969,9 +4969,9 @@
       ],
       "path": "parts/transcribe-whisper/1.1.2",
       "files": {
-        "README.md": "14c845dcf29603b57eee463a5df4b5d5651972f1465dfc573909760b1c3f88bc",
+        "README.md": "3f8afc6b9a2f70f71f9c27972621cbdc29769319c1642e40e778554b3b50f42a",
         "part.json": "b088186cf7995a4974343bd76f6aeb7a0bf29d54f498daa97ffcaf126322a272",
-        "part.mjs": "c868f6255ac123db1f959a1c9ba185d5ee0577fed688d0269e1ed3e3b33fbe61"
+        "part.mjs": "9ed0cb78d96f676a23857e51ae74c86faf40228b14c350639f03c4b270d70705"
       },
       "models": [
         {

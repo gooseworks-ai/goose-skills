@@ -64,3 +64,45 @@ test('the staging take: every line placed on its own words, the repeat returned 
   assert.ok(!('scene_id' in out.timeline.speech[1]), 'speech in no line has no scene_id');
   assert.deepEqual(out.timeline.speech[1].words.map((w) => w.text), ['Who', 'made', 'all', 'these', 'ads?']);
 });
+
+test('a written word heard as several words owns and is timed by all of them, at the end of a line', async () => {
+  const { placeTimes } = await import('../src/place.mjs');
+  const cases = [
+    ['Use 50%.', ['Use', '50', 'percent.']],
+    ['Pay $200.', ['Pay', '200', 'dollars.']],
+    ["We don't.", ['We', 'do', 'not.']],
+    ['Fund R&D.', ['Fund', 'R', 'and', 'D.']],
+  ];
+  for (const [text, said] of cases) {
+    const heard = heardOf(said.map((w, i) => chunk(w, i * 0.5, i * 0.5 + 0.4)));
+    const placed = placeLines([{ scene_id: 'a', text }], heard);
+    assert.equal(owned(heard, placed.lines[0].own), said.join(' '), text);
+    assert.deepEqual(placed.extras, [], `${text}: nothing heard is in no line`);
+    const times = placeTimes(placed.lines[0], heard);
+    assert.equal(times.at(-1).end_s, heard.at(-1).end, `${text}: the last written word ends with its last heard word`);
+  }
+});
+
+test('a line not said owns nothing, even a filler in its gap, and is not placed', () => {
+  const eight = (w) => Array.from({ length: 8 }, (_, i) => `${w}${i}`);
+  const a = eight('alpha');
+  const c = eight('gamma');
+  const heard = heardOf([...a.map((w, i) => chunk(w, i * 0.3, i * 0.3 + 0.25)), chunk('Um', 2.6, 2.8), ...c.map((w, i) => chunk(w, 3 + i * 0.3, 3 + i * 0.3 + 0.25))]);
+  const placed = placeLines([{ scene_id: 'a', text: a.join(' ') }, { scene_id: 'b', text: 'Hi' }, { scene_id: 'c', text: c.join(' ') }], heard);
+  assert.deepEqual(placed.lines.map((l) => l.placed), [true, false, true]);
+  assert.equal(placed.lines[1].own, null);
+  assert.deepEqual(placed.extras.map(([f, t]) => owned(heard, [f, t])), ['Um'], 'the filler stays speech in no line');
+});
+
+test('two thirds of a line, rounded up, must be heard for it to be placed', () => {
+  const heard = heardOf([chunk('Hello', 0, 0.3), chunk('Bob', 0.4, 0.6)]);
+  const one = placeLines([{ scene_id: 'a', text: 'Bye' }], heard);
+  assert.equal(one.lines[0].placed, false, 'a one-word line not heard');
+  assert.equal(one.lines[0].own, null);
+  const half = placeLines([{ scene_id: 'a', text: 'Hello Alice' }], heard);
+  assert.equal(half.lines[0].placed, false, 'one of two words is under two thirds');
+  assert.equal(half.lines[0].own, null);
+  assert.deepEqual(half.extras.map(([f, t]) => owned(heard, [f, t])), ['Hello Bob'], 'its matched word stays speech in no line');
+  const both = placeLines([{ scene_id: 'a', text: 'Hello Bob' }], heard);
+  assert.equal(both.lines[0].placed, true);
+});

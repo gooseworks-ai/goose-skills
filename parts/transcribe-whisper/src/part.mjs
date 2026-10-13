@@ -69,9 +69,11 @@ export async function run(inputs, ctx) {
     let prevEnd = 0;
     placed.lines.forEach((p, k) => {
       const l = lines[k];
-      if (p.own) while (extras.length && extras[0].at < p.own[0]) speech.push(extras.shift().entry);
-      const share = p.own ? heard.slice(p.own[0], p.own[1] + 1) : [];
-      const entry = { scene_id: l.scene_id, text: l.text, spoken: share.map((w) => w.text).join(' ') };
+      if (p.span) while (extras.length && extras[0].at < p.span[0]) speech.push(extras.shift().entry);
+      const share = p.span ? heard.slice(p.span[0], p.span[1] + 1) : [];
+      // Only a placed line was said: one that was not keeps an empty `spoken` (its words, if any, stay
+      // extra), so the cut refuses the take instead of passing a line that is not in it.
+      const entry = { scene_id: l.scene_id, text: l.text, spoken: p.placed ? share.map((w) => w.text).join(' ') : '' };
       if (p.placed) {
         entry.words = placeTimes(p, heard).map((w) => ({ text: w.text, start_s: r3(w.start_s), end_s: r3(Math.max(w.end_s, w.start_s)) }));
       } else {
