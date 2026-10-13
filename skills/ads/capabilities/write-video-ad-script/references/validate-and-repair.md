@@ -47,16 +47,26 @@ record a failed critic call as a pass. If every candidate fails, repair or regen
 within the supported angle and recipe before review. Do not automatically choose the
 highest-ranked rejected candidate.
 
+**The required rule pass.** Rerun the rule check after every repair. Before any script
+goes to review, its hook and sameness codes must be clear: fix E_SAME_ANGLE and
+E_DEAD_OPENER, and fix W_TIRED_OF_LIST, W_FEATURE_STACK, W_BEAT1_NO_TEXT,
+W_PICTURE_HOOK_MISMATCH, W_ON_SCREEN_LONG and W_BRAND_FIRST, or state in one line of
+the review why the format needs that choice. The rule check is free and needs no network.
+
 **The second opinion.** Run the critique script with the same files and the brief. A
 model from a different family than the writer judges every concept twice, once in each
-order, because judges favour whatever they read first. It scores hook, specificity, how
+order, because judges favour whatever they read first. It scores hook, open loop, mid
+turn, whether the opening's picture, line and on-screen words agree, specificity, how
 spoken it sounds, proof, payoff and freshness, and gives a best hook, line edits and a
 ranking. This is a paid operation: use the current managed quote and the host's approval,
 never a fixed credit claim. For a custom project where the host refuses a critic before
 the run is approved, perform the same rubric locally before review, save the scores and
 edits, and label the reviewer honestly. Do not submit a paid critic or retry a 409 before
 approval. A different-model critic is required only where the host supports it in the
-current phase and approved budget; never claim it ran when it did not.
+current phase and approved budget; never claim it ran when it did not. When the critic is
+skipped, self-review every concept against the same rubric, including the three opening
+axes, save the scores and label the reviewer honestly. Template plans saved through the
+host's video tools are judged by the host's server automatically.
 
 **Optional Jev screen.** Jev may cheaply judge narrow text questions about relevance,
 supported claims, format fit and hook payoff. Use separate criteria, keep probabilities,
