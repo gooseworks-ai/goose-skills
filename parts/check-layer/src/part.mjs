@@ -245,9 +245,9 @@ export async function run(inputs, ctx) {
   } else if (lufs === null) {
     add('sound', 'fail', { message: "The sound's loudness could not be measured.", expected: `${TARGET_LUFS} LUFS`, found: 'no reading', fix: { slot: 'sound' } });
   } else if (Math.abs(lufs - TARGET_LUFS) > LUFS_TOLERANCE) {
-    // Off the mark after the sound layer levelled it (on unless the kit says it is off) is that layer's
-    // broken promise, not a taste call.
-    const levelled = !(expect.layers && typeof expect.layers === 'object' && expect.layers.sound === false) && lufs > LEVELLED_LUFS;
+    // Off the mark after the sound layer levelled it is that layer's broken promise, not a taste call. Only
+    // a kit that names the layer switches says the sound layer ran; without them it stays a taste warning.
+    const levelled = !!(expect.layers && typeof expect.layers === 'object' && expect.layers.sound === true) && lufs > LEVELLED_LUFS;
     const said = { message: lufs < TARGET_LUFS ? 'The sound is too quiet.' : 'The sound is too loud.', expected: `${TARGET_LUFS} LUFS`, found: `${lufs.toFixed(1)} LUFS` };
     if (levelled) add('sound', 'fail', { ...said, fix: { slot: 'sound' } });
     else add('sound', 'warn', said);

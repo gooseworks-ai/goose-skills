@@ -2,7 +2,7 @@
 
 ## 1.5.0
 
-- A measured miss that breaks an earlier part's promise fails instead of warning, and names the layer to re-run: loudness off -14 LUFS by more than 2 on a cut above -50 LUFS when the sound layer is on (on unless `expect.layers.sound` is false; the layer levels such a cut to -14 within 1 or fails), and a caption across a scene cut or into the end card (the captions layer stops captions there when the style lists `captions_cross_cuts`). A quiet cut the sound layer passed through (at or below -50 LUFS), loudness with the sound layer off, and a caption across a retained-body join still warn, as does every taste range 1.4.2 made a warning, `min_shot` included. A minor version: only new quotes get it, through layers.json.
+- A measured miss that breaks an earlier part's promise fails instead of warning, and names the layer to re-run: loudness off -14 LUFS by more than 2 on a cut above -50 LUFS when the kit says the sound layer is on (`expect.layers.sound` true; a kit that sends no switches gets a warning; the layer levels such a cut to -14 within 1 or fails), and a caption across a scene cut or into the end card (the captions layer stops captions there when the style lists `captions_cross_cuts`). A quiet cut the sound layer passed through (at or below -50 LUFS), loudness with the sound layer off, and a caption across a retained-body join still warn, as does every taste range 1.4.2 made a warning, `min_shot` included. A minor version: only new quotes get it, through layers.json.
 
 ## 1.4.3
 

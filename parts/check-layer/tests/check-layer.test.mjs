@@ -33,7 +33,7 @@ test("fails the server's hard checks with the server's reasons shape; a length o
   await makeVideo(quiet, 3, { width: 640, height: 640, tone: 440 });
   const q = join(ctx.workDir, 'quieter.mp4');
   await run('ffmpeg', ['-hide_banner', '-nostdin', '-loglevel', 'error', '-y', '-i', quiet, '-c:v', 'copy', '-af', 'volume=-20dB', '-c:a', 'aac', q]);
-  const inputs = await layerInputsFor(await fileRef(q, 'video'), { expect: { duration_s: { min: 6, max: 10 }, captions: true } });
+  const inputs = await layerInputsFor(await fileRef(q, 'video'), { expect: { duration_s: { min: 6, max: 10 }, captions: true, layers: { brand: false, captions: true, sound: true, check: true } } });
   const out = await mod.run(inputs, ctx);
   assert.equal(out.verdict.pass, false);
   const byCheck = Object.fromEntries(out.verdict.reasons.map((r) => [r.check, r]));
@@ -51,6 +51,9 @@ test("fails the server's hard checks with the server's reasons shape; a length o
   const unlevelled = await mod.run(await layerInputsFor(await fileRef(q, 'video'), { expect: { duration_s: { min: 6, max: 10 }, captions: true, layers: { sound: false } } }), ctx);
   const off = unlevelled.verdict.checks.find((c) => c.code === 'sound');
   assert.deepEqual([off.status, off.message, off.fix], ['warn', 'The sound is too quiet.', undefined]);
+  // A kit that doesn't name the switches can't say the sound layer ran: it warns too.
+  const unknown = await mod.run(await layerInputsFor(await fileRef(q, 'video'), { expect: { duration_s: { min: 6, max: 10 }, captions: true } }), ctx);
+  assert.equal(unknown.verdict.checks.find((c) => c.code === 'sound').status, 'warn');
 });
 
 test('catches black frames and an end card that does not end the video; a still opening warns', { skip }, async () => {

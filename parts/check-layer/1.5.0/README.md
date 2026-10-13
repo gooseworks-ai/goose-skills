@@ -5,8 +5,8 @@ for every video, from review-finished-ad and review-ugc-render.
 
 **New in 1.5.0: a broken promise fails.** A measured miss that an earlier part promised could not happen is
 that part's failure, not a taste call, so it fails and names the layer to re-run instead of warning:
-- `sound`: loudness off -14 LUFS by more than 2 on a cut above -50 LUFS, when the sound layer is on (it always
-  is unless the kit says `expect.layers.sound` is false). The sound layer levels every such cut to -14 within 1
+- `sound`: loudness off -14 LUFS by more than 2 on a cut above -50 LUFS, when the kit says the sound layer is on
+  (`expect.layers.sound` true; a kit that sends no layer switches gets a warning). The sound layer levels every such cut to -14 within 1
   and fails its own step otherwise. At or below -50 LUFS it passes the cut through, so a quiet cut there still
   warns, and with the sound layer off loudness warns as in 1.4.2.
 - `captions_cross_cuts`: a caption across a scene cut or on into the end card. The captions layer (1.3.1 on)
