@@ -1,5 +1,11 @@
 # transcribe-whisper
 
+## 1.1.2
+
+- Lines are placed on what was heard by one alignment of the whole script on the whole transcript, in scene order, that may skip heard words between lines (free) or inside a line (at a small cost). 1.1.1 looked for each word among the next five heard words from where the last line ended, so one repeated opening question left every later line unplaced and gave everything left to the last line (staging, 13 Oct 2026: speech-recut then refused the take as missing a line that was said).
+- Heard words no line owns (a repeated line, a filler) come out as their own speech entries with no `scene_id` and empty `text`, so speech-recut 1.0.2 can cut them and captions skip them.
+- `reuses_pieces_of: ["1.1.1"]`: the Whisper request is unchanged, so approved videos move here without paying again. `retime_scenes` is unchanged.
+
 ## 1.1.1
 
 - The cut's sound goes to Whisper as 16 kHz mono 16-bit WAV (`audio/wav`) instead of AAC in m4a (`audio/mp4`). The kit and the server host only `audio/wav` and `audio/mpeg` for the line, so 1.1.0 stopped at the transcribe piece on every real run. Inputs, outputs, the request body and all 1.1.0 behaviour are unchanged; pin `@1.1.1` with the same inputs.
