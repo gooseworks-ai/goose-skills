@@ -22,13 +22,17 @@
 // and a measured taste check outside its range (length, loudness, pacing,
 // stills, shots, cuts, captions across cuts, room tone, motion, a sparse
 // text-led cut) warns instead of failing. What could not be measured, and
-// what is broken or missing, still fails.
+// what is broken or missing, still fails. 1.4.3 checks the speech line by
+// line too (src/lines.mjs): a line that lost two words in a row, or a script
+// that lost three, fails and names the scene, whatever the whole script's
+// similarity.
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitFfmpeg } from '../../_lib/part.mjs';
 import { speechBuildAliases, speechReview } from '../../_lib/speech.mjs';
 import { kitLogoScore, kitLogoScoreInBox, kitMotion, kitWindowLevels } from '../../_lib/frames.mjs';
 import { CHK_BLANK_MAX_SHARE, CHK_CUT_MAX_RATE, CHK_CUT_MIN_RATE, CHK_MSG_RISE_DB, CHK_READ_MAX_WPS, CHK_READ_MIN_WPS, chkBlankFrames, chkBlankSpans, chkClipSpans, chkCutInsideWord, chkCuts, chkJudgeBlank, chkMessageRise, chkMessageWindows, chkReadRate, chkSpeechBefore } from './flags.mjs';
+import { chkLineLoss, chkScriptLoss } from './lines.mjs';
 import { CHK_CONTRAST_MIN, CHK_CONTRAST_OFFSET_S, CHK_CONTRAST_WARN, CHK_CUE_GUARD_S, CHK_DISTINCT_MIN, CHK_FLOOR_MAX_DB, CHK_FLOOR_MIN_DB, CHK_FLOOR_SPEECH_GAP_DB, CHK_MIN_SHOT_S, chkAdjacentDiffs, chkCueAcrossCut, chkCutContrast, chkFloorWindows, chkJudgeAmbience, chkSceneOpenings, chkShortShot, chkShotSound, chkShots, chkSpeechSpans } from './shots.mjs';
 
 const TARGET_LUFS = -14;
@@ -556,10 +560,20 @@ export async function run(inputs, ctx) {
     add('speech_matches_script', 'fail', { message: 'The on-camera speech was not transcribed, so it cannot be checked against the script.', expected: 'a transcribe step before the layers', found: 'no transcript' });
   } else {
     const heard = speech.map((s) => (typeof s.spoken === 'string' ? s.spoken : s.text)).join(' ');
+    const aliases = usableAliases(ctx, inputs.brand.pronunciations);
     // retained_body: only the opening is heard here, so only its line (the plan's first) is compared.
-    const verdict = speechReview((retained ? script.slice(0, 1) : script).join(' '), heard, { aliases: usableAliases(ctx, inputs.brand.pronunciations) });
+    const verdict = speechReview((retained ? script.slice(0, 1) : script).join(' '), heard, { aliases });
     const worst = verdict.issues.find((i) => i.severity === 'high') || verdict.issues.find((i) => i.severity !== 'low');
-    if (verdict.passed) add('speech_matches_script', 'pass', { found: +verdict.ratio.toFixed(3) });
+    // A lost phrase fails even when the whole script clears its bar: it was cut where two takes join, or never said.
+    const lineLoss = chkLineLoss(speech, aliases);
+    const scriptLoss = lineLoss ? null : chkScriptLoss(verdict);
+    const why = 'they were cut where two recordings join, or never said.';
+    if (lineLoss) {
+      const at = (timeline.scenes || []).findIndex((sc) => String(sc.id) === lineLoss.scene_id);
+      add('speech_matches_script', 'fail', { message: `Scene ${at >= 0 ? at + 1 : lineLoss.index + 1} is missing the words "${lineLoss.text}": ${why}`, expected: 'every approved word of every line', found: +verdict.ratio.toFixed(3) });
+    } else if (scriptLoss) {
+      add('speech_matches_script', 'fail', { message: `The speech is missing the words "${scriptLoss.text}": ${why}`, expected: 'every approved word of every line', found: +verdict.ratio.toFixed(3) });
+    } else if (verdict.passed) add('speech_matches_script', 'pass', { found: +verdict.ratio.toFixed(3) });
     else {
       add('speech_matches_script', 'fail', {
         message: worst ? `The speech differs from the approved script: ${worst.note}` : 'The speech differs from the approved script.',

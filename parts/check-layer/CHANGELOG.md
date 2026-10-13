@@ -1,5 +1,9 @@
 # check-layer
 
+## 1.4.3
+
+- `speech_matches_script` checks each spoken line too (a speech entry with a `scene_id` and a heard `spoken`): a line that lost 2 words in a row, or its last 2 words, fails with the scene named, and the whole script losing 3 words in a row fails whatever its similarity. 1.4.2 judged only the whole script, so a clause lost where two takes join (about 11 words, a similarity of 0.901) passed. Words heard at the edge of the next or previous line count as said. A patch, so videos approved on 1.4.x move onto it.
+
 ## 1.4.2
 
 - `sounds_match_messages` hears a message's sound by its loudest 50 ms (from 0.05 s before the scene starts to 0.3 s after) against the median 50 ms of the quiet in the 0.55 s before it, and needs 8 dB. Every scene start before the end card or kept body is judged, the opening's included (1.4.1 skipped the first 0.4 s and the 0.1 s before the card). A cue stops where the next message's starts (two messages under 0.1 s apart split the time) and at the end card. Quiet is time outside every message's own span, so earlier messages never raise the bed; with under 0.15 s of it the bed is the quiet after the cue, then all the quiet before the card. 1.4.1 compared the mean of the 0.25 s after a message with the mean of the 0.3 s before it and needed 4 dB: a 0.1 s send sound, levelled by the sound layer's limiter over a music bed with typing clicks before it, read 3.7 dB and failed a ChatGPT cut whose send sound was there (it reads 12.6 dB now). It is an energy check and needs a steady bed: a message with no sound of its own over a steady bed fails, but a beat in the music that lands on a message can pass it.
