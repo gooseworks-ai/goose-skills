@@ -61,9 +61,9 @@
       "sha256": "fe014c484148a3afd92ec928524d79403c91297cd25c843dea0abe056f0ed81a"
     },
     "orchestrator.md": {
-      "bytes": 49701,
-      "catalog_sha256": "6f15794c69e8d092e4ce0538cd0c79e17751b5d0783fc7cb5c01c082e4f03768",
-      "sha256": "6f15794c69e8d092e4ce0538cd0c79e17751b5d0783fc7cb5c01c082e4f03768"
+      "bytes": 49903,
+      "catalog_sha256": "408e03d908858739f4103acd28b62fb34d1e712572708a078b3f10bc93140d77",
+      "sha256": "408e03d908858739f4103acd28b62fb34d1e712572708a078b3f10bc93140d77"
     },
     "polish.md": {
       "bytes": 16178,
@@ -161,9 +161,9 @@
       "sha256": "36263a8c51ec8de8e068304a72cdc2d351037d012a44b00b9a8b7d34e72995b6"
     },
     "skill.meta.json": {
-      "bytes": 652,
-      "catalog_sha256": "d67bc5e34db28c4d76b63c7c4ff8848d9d83a8d4d6249f4220908e0cd4cef610",
-      "sha256": "d67bc5e34db28c4d76b63c7c4ff8848d9d83a8d4d6249f4220908e0cd4cef610"
+      "bytes": 683,
+      "catalog_sha256": "74a387365b0c551d009230f0174c96cfa104ef3bb6cbbe25e8bc6f8d929c3f58",
+      "sha256": "74a387365b0c551d009230f0174c96cfa104ef3bb6cbbe25e8bc6f8d929c3f58"
     },
     "wrap-session.md": {
       "bytes": 17362,
@@ -192,7 +192,7 @@
   ],
   "schema_version": 1,
   "slug": "video-production-harness",
-  "source_commit": "384c9cb66faad708aeece193f35157486b51a970",
+  "source_commit": "35d92ba3b35411f0e6cd118586f0b53d27b67709",
   "source_files": {
     "SKILL.md": {
       "sha256": "38fc6a1d561e28ec8157b3b2506ec0a79b74dc1e3dba2b4fc9e3ad76a813c6c3",
@@ -243,7 +243,7 @@
       "source": "lock-script.md"
     },
     "orchestrator.md": {
-      "sha256": "6f15794c69e8d092e4ce0538cd0c79e17751b5d0783fc7cb5c01c082e4f03768",
+      "sha256": "408e03d908858739f4103acd28b62fb34d1e712572708a078b3f10bc93140d77",
       "source": "orchestrator.md"
     },
     "polish.md": {
@@ -327,6 +327,6 @@
       "source": "wrap-session.md"
     }
   },
-  "source_hash": "81007c1ef529d9eef4e06ce52424d23c93021a0e0e1fbf7d8f728a6503020fa5",
-  "source_version": "3-81007c1ef529"
+  "source_hash": "c0b2dc760928b2c9aaf192ce6600d3cfcb97d97509a3bf370869ada8ae1095f3",
+  "source_version": "3-c0b2dc760928"
 }

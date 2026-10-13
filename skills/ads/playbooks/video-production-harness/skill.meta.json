@@ -15,11 +15,13 @@
       "codex"
     ]
   },
-  "requires_skills": [],
+  "requires_skills": [
+    "write-video-ad-script"
+  ],
   "slug": "video-production-harness",
-  "source_commit": "384c9cb66faad708aeece193f35157486b51a970",
-  "source_hash": "81007c1ef529d9eef4e06ce52424d23c93021a0e0e1fbf7d8f728a6503020fa5",
-  "source_version": "3-81007c1ef529",
+  "source_commit": "35d92ba3b35411f0e6cd118586f0b53d27b67709",
+  "source_hash": "c0b2dc760928b2c9aaf192ce6600d3cfcb97d97509a3bf370869ada8ae1095f3",
+  "source_version": "3-c0b2dc760928",
   "tags": [
     "ads",
     "content"
