@@ -72,7 +72,7 @@ The orchestrator advances from State 0 through State 11, including the condition
 | 2 | create-design-brief.md | Visual/audio/tool plan and open decisions. |
 | 2.5 | lock-script.md | Two-track script review, exact copy/climax and script gate. |
 | 2.6 | Voice audition below; create-clips.md | Actual auditions and human-selected voice/settings. |
-| 3 | create-storyboard.md | Timed scene plan, visual-variety/UGC metrics and ingredient gate. |
+| 3 | create-storyboard.md | Timed scene plan, visual-variety/UGC metrics and ingredient gate (kit path: then run the kit's make command). |
 | 3.4 | Motion classifier below | Generative video, FFmpeg motion or installed browser composition. |
 | 3.5, 3.55 | lock-character.md; world lock below | Approved anchors/world, consistency evidence and locked references. |
 | 4.5 | Preview below | Optional approved-budget subset with a human decision before full generation. |
