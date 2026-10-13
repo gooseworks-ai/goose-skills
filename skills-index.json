@@ -9448,9 +9448,9 @@
         },
         "requires_skills": [],
         "slug": "video-production-harness",
-        "source_commit": "a0e62e8cfdd1461157a4cac8354efab9582cba19",
-        "source_hash": "14f6b44f05f9bb2e58584063fbf616778bd409d60676c0a707348f15654f7352",
-        "source_version": "3-14f6b44f05f9",
+        "source_commit": "384c9cb66faad708aeece193f35157486b51a970",
+        "source_hash": "81007c1ef529d9eef4e06ce52424d23c93021a0e0e1fbf7d8f728a6503020fa5",
+        "source_version": "3-81007c1ef529",
         "tags": [
           "ads",
           "content"
