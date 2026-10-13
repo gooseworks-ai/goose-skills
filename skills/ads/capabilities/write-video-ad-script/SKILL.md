@@ -2,7 +2,7 @@
 name: write-video-ad-script
 description: Write a short-form video ad from an evidence-backed angle and the selected template's actual recipe. Reuses or fetches ad-angle-miner, preserves the chosen angle, plans words and visuals together, checks product claims and production fit, and delivers the strongest script with useful alternatives. Use before video production and for script rewrites. Customer language is one input alongside audience, promise, product proof, offer and format.
 status: active
-version: "1.0.4"
+version: "1.1.0"
 ---
 
 # Human version
@@ -141,35 +141,38 @@ unknown unless independently evidenced.
 
 Keep performance labels honest: running duration and variants show advertiser persistence;
 views show reach or engagement. Neither proves conversions, profitability or causal lift.
-Use measured first-party results when available and keep audience, placement, objective and
-measurement window attached. Never describe an untested reference as a proven winner.
+Prefer measured first-party results, with their context. Never call an untested reference
+a proven winner.
 
 ## Step 4. Choose distinct angle–execution pairs
 
 When the angle is open, work from up to 10 researched candidates. Filter unsupported
-promises and incompatible executions first, then shortlist up to three with genuinely
-different promises or proof devices. Do not create ten paraphrases to fill a quota.
-
-When the angle is selected, keep its id and promise. Write one concept with hook variations,
-or several executions within the same direction when useful. Batch assignments should be
-different where the brief permits, and use the bank once per brand and product.
+promises and incompatible executions first, then write 4-5 concepts with different
+promises and openings, each a different angle type (angle_type, listed in the files
+reference) chosen by what the viewer already knows; see
+[hook families](references/hook-families.md). When the angle is selected, keep its id,
+promise and angle type, and write 4-5 executions that differ in hook family and opening.
+Batch assignments differ where the brief permits; use the bank once per brand and product.
 
 Rank relevance, product credibility, template fit, feasible proof and hook payoff before
-freshness. Prefer clear, well-supported familiar angles over obscure weak ones. No arbitrary
-novelty cutoff. Fewer than three good concepts is better than padded alternatives.
+freshness. Prefer clear, well-supported familiar angles over obscure weak ones. If the
+evidence supports fewer than four distinct concepts, write fewer and say why; never pad
+with paraphrases.
 
 ## Step 5. Write words and visuals together
 
-Load [scene and hook](references/scene-and-hook.md) before writing dialogue. Plan the
+Read [hook families](references/hook-families.md) before writing hooks, and
+[scene and hook](references/scene-and-hook.md) before writing dialogue. Plan the
 encounter, the literal first 0–3 seconds and the story's development/payoff first.
 Separate the participant's filming context from the context actually given to a new
 viewer. A complete question can be the hook; a reply-first opening needs its subject
 or task established in the retained picture, words or rendered text.
 
-For every beat write the exact line, speaker, visual action, production mode and existing
-asset ids when applicable. Keep a proof plan and a claim ledger with current product fact
-ids. Every hook variant must lead into the same body's promise; repair the body when the
-promise changes.
+For every beat write the exact line, its on-screen words (13 or fewer; 8 in beat 1),
+speaker, visual action, production mode and existing asset ids when applicable. Beat 1's
+picture, line and on-screen words must say the same thing. Keep a proof plan and a claim
+ledger with current product fact ids. Every hook variant must lead into the same body's
+promise; repair the body when the promise changes.
 
 Tie each material claim to the moment its demonstration is visible. Include action
 completion, recognition and text-reading time in the existing scene plan. Inspect the
@@ -179,13 +182,12 @@ needed proof is absent, narrow the claim or specify the missing capture; do not 
 a simulated result as evidence. A useful silent format still communicates through
 exact on-screen words and visible actions, with no invented speech.
 
-- Make the first moment intelligible and worth watching through words, visuals or both.
+- Make the first moment intelligible and worth watching, with or without sound.
 - Keep one main promise and pay it off visibly.
 - Use the product's actual mechanism, differentiator or demonstration where the recipe fits.
 - Match dialogue, cards and lyrics to their medium and the brand's voice.
 - Make the offer and CTA clear. Respect the recipe's ending and permitted CTA placement.
-- Brand visibility depends on objective and format. Do not ban an early product or brand
-  simply because it is early.
+- Brand visibility depends on objective and format; early is not wrong by itself.
 - Include only supported product claims. A source id is traceability, not a semantic check.
 
 For conversational formats, write the exchange before allocating it to timed slots.
@@ -199,21 +201,22 @@ from the product page or have the participant rehearse the presenter's selling p
 Before a street exchange, write a short situation brief: who the participant is in this
 moment, why the interviewer is here, what invitation or visible task they accepted,
 what each person wants, and how this brand helps with the resulting task or question.
-Separate filming/recruitment assumptions from what the viewer sees. An edited ad may
-begin with a later reaction; its action and context must make that opening intelligible.
-Do not force greeting or consent dialogue into the cut. Write actions beside the words,
-including preparation, handover, looking and listening time. If the premise needs more
+Separate filming/recruitment assumptions from what the viewer sees. An edited ad may open
+on a later reaction when its action makes it clear. Do not force greeting
+or consent dialogue into the cut. Write actions beside the words, including preparation,
+handover, looking and listening time. If the premise needs more
 time than the recipe permits, change the premise or flag a longer production route;
 do not accelerate the speakers to hide the missing setup. A generic problem followed
 by a pasted brand card does not establish a useful ad connection.
 
-Create candidates.json with angle ids, evidence ids, claims, hooks, beats and visual plans.
+Create candidates.json (files reference) with every concept, hook, beat and visual plan.
 
 ## Step 6. Validate, critique, repair
 
 Run the rule check in strict mode (shape, brand rules, customer words, angle context,
-references), fix errors and material warnings, then run the brief-blind opening review and
-the independent critic from a different model family. Podcast and street dialogue need at
+references), fix errors and material warnings (the exact hook rules too,
+before review), then run the brief-blind opening review and the independent critic from
+a different model family. Podcast and street dialogue need at
 least 8/10 on spoken and template_fit in every pass (street also on strategic_fit), with
 supported claims. Repair at most twice, then report the remaining defect; never relax the
 rubric or pick the best rejected candidate. Follow
@@ -261,5 +264,5 @@ pronunciation, naturalness and sync before declaring delivery fixed.
 
 Carry the brief's pronunciation source, energy progression, emphasized words, pauses
 and phrases that should sound conversational into the voice-performance task. Keep
-literal user copy fixed. Written read-throughs and word budgets are provisional until
-the actual audio is heard and measured; never use a global speed-up to certify fit.
+literal user copy fixed. Word budgets stay provisional until the audio is measured;
+never use a global speed-up to certify fit.

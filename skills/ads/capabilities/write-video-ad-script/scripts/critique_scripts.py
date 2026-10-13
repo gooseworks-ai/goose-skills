@@ -43,7 +43,8 @@ from lint_scripts import dialogue_mode, lint  # noqa: E402
 
 FAL_LLM = "openrouter/router"
 DEFAULT_MODEL = "openai/gpt-6-sol"
-AXES = ("hook", "specific", "spoken", "proof", "payoff", "fresh", "template_fit", "claim_support", "strategic_fit")
+AXES = ("hook", "open_loop", "mid_turn", "channels_agree", "specific", "spoken", "proof", "payoff", "fresh",
+        "template_fit", "claim_support", "strategic_fit")
 
 DIALOGUE_RUBRIC = """\
 For this conversation, judge spoken and template_fit strictly against the observed
@@ -105,9 +106,17 @@ should sing, and silent cards should read; not every format is a talking-head ad
 
 RUBRIC = """\
 Score each concept 1-10 on:
-- hook: would a cold viewer stop in the first two seconds? Does the first line land the
-  situation, desire, question, product action or promise with no wind-up? Early product
-  or branding is useful when it serves the story; pain is not required.
+- hook: would a cold viewer stop in the first two seconds, with sound and muted? Does the
+  first line land the situation, desire, question, product action or promise with no
+  wind-up? Early product or branding is useful when it serves the story; pain is not
+  required. A generic question or statement, a greeting, the brand name as the first words
+  or a list of pains scores 5 or less.
+- open_loop: the first line opens a question or gap the viewer wants closed, and the last
+  third closes it. A gap the ending never pays off scores low.
+- mid_turn: one turn near the middle (a reveal, a surprise or a "but") renews attention
+  instead of a flat run of claims.
+- channels_agree: the first picture, the spoken line and the on-screen words say the same
+  thing, so the opening works muted. A picture unrelated to the hook scores low.
 - specific: one real person in one real situation, concrete details, a physical detail
   or real number, versus generic category talk.
 - spoken: delivery sounds natural for the format and brand. Dialogue should sound like
@@ -138,8 +147,9 @@ Finally rank all concepts best first and say in one sentence why the top one win
 Use the concept ids and hook ids exactly as written above (for example c1, c1h2).
 
 Answer with ONLY this JSON, no prose around it:
-{"concepts": [{"id": "...", "scores": {"hook": 0, "specific": 0, "spoken": 0, "proof": 0,
-"payoff": 0, "fresh": 0, "template_fit": 0, "claim_support": 0, "strategic_fit": 0}, "best_hook_id": "...", "hook_notes": "...", "edits": [{"beat":
+{"concepts": [{"id": "...", "scores": {"hook": 0, "open_loop": 0, "mid_turn": 0, "channels_agree": 0,
+"specific": 0, "spoken": 0, "proof": 0, "payoff": 0, "fresh": 0, "template_fit": 0, "claim_support": 0,
+"strategic_fit": 0}, "best_hook_id": "...", "hook_notes": "...", "edits": [{"beat":
 "...", "from": "...", "to": "...", "why": "..."}], "kill": null}], "ranking": ["..."],
 "why_top": "..."}"""
 
@@ -160,6 +170,8 @@ def concept_block(c, quotes_by_id, shape_beats):
     lines = [f"## Concept {c.get('id')}",
              f"Angle: {c.get('angle', '')}",
              f"Persona: {c.get('persona', '')}"]
+    if c.get("angle_type"):
+        lines.append(f"Angle type: {c['angle_type']}")
     lines.append("Evidence and declared claims: " + json.dumps(
         {k: c.get(k) for k in ("angle_id", "evidence_ids", "claims", "proof_plan")}, ensure_ascii=False))
     if c.get("situation_brief"):
@@ -183,6 +195,8 @@ def concept_block(c, quotes_by_id, shape_beats):
             meta.append(sb["kind"])
         tag = f" ({', '.join(meta)})" if meta else ""
         lines.append(f"- {b.get('id')}{tag}: {b.get('text') or ''}")
+        if isinstance(b.get("on_screen"), str) and b["on_screen"].strip():
+            lines.append(f"  On screen: {b['on_screen']}")
         if b.get("visual"):
             lines.append("  Visual plan: " + json.dumps(b["visual"], ensure_ascii=False))
     return "\n".join(lines)

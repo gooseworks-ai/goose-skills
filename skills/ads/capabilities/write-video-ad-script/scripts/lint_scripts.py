@@ -8,12 +8,17 @@ attention on taste:
                    the format's order, something spoken after the CTA, a dead opener
                    ("Introducing…", "Have you ever…"), a phrase the brand quoted as
                    banned, no customer quote behind a concept, a quote id that is not
-                   in the bank
+                   in the bank, a set where some concepts share an angle type and
+                   others do not (E_SAME_ANGLE, a set error)
   warnings         a line that looks like a banned brand claim (a human decides), AI
                    tells ("it's not X, it's Y", "game-changer", dash habits), stiff
                    spoken lines, long sentences, numbers no fact or quote backs, the
                    brand name in the first line, a concept that never uses its buyers'
-                   words, softer openers, duplicate hooks / families
+                   words, softer openers, duplicate hooks / families, two concepts that
+                   open with the same three words (W_SIMILAR_OPENING), a "Tired of A, B
+                   and C" opener, a body that stacks features, a spoken opening with no
+                   on-screen words, an opening picture that shares nothing with its hook,
+                   on-screen words too long to read, an angle type not on the list
 
 No network, no keys, standard library only. Run it from the folder that holds working/.
 
@@ -43,6 +48,13 @@ LONG_SENTENCE = 20         # spoken words in one sentence
 SPOKEN_KINDS = {"spoken", "bubble", "lyric"}  # said, typed or sung: read as speech
 OPENER_KINDS = {"spoken", "on_screen"}        # where an ad-style opener reads as an ad
 
+ON_SCREEN_LINE_MAX = 13    # on-screen words a viewer reads in one beat
+ON_SCREEN_HOOK_MAX = 8     # on-screen words in the opening beat
+FEATURE_STACK_MIN = 3      # distinct features in the body that make it a spec sheet
+# The same list the app uses for script candidates; each concept takes a different one.
+ANGLE_TYPES = ("story", "curiosity", "identity", "desire", "problem_fix", "demo", "how_it_works",
+               "old_vs_new", "proof", "offer", "objection", "news")
+
 WORD_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9'’]*")
 CUE_RE = re.compile(r"\[[^\]]*\]|\([^)]*\)")  # [pause] / (laughs): delivery cues, not words
 
@@ -68,6 +80,8 @@ SOFT_OPENERS = [r"did you know", r"looking for (a|an|the) ", r"struggling with",
                 r"meet\b", r"imagine\b"]
 HARD_OPENER_RE = re.compile(r"^\W*(%s)" % "|".join(HARD_OPENERS), re.I)
 SOFT_OPENER_RE = re.compile(r"^\W*(%s)" % "|".join(SOFT_OPENERS), re.I)
+# "Tired of A, B and C": a list of pains instead of one moment.
+TIRED_OF_LIST_RE = re.compile(r"^\W*tired of [^,]+, [^,]+,? and ", re.I)
 QUESTION_OPENER_RE = re.compile(r"^\W*(do|does|are|is|have|has|ever|can|what|why|how|who|want)\b", re.I)
 
 AI_TELLS = [
@@ -88,6 +102,9 @@ GENERIC_WORDS = {"really", "very", "amazing", "incredible", "literally", "simply
 STIFF_RE = re.compile(
     r"\b(do not|does not|did not|cannot|can not|will not|would not|should not|is not|are not|"
     r"was not|it is|i am|you are|we are|they are|that is|i will|you will|let us)\b", re.I)
+# A list of three or more short phrases ending in "and": "the cap, the strap and the lid".
+PHRASE = r"[A-Za-z0-9'-]+(?: [A-Za-z0-9'-]+){0,2}"
+FEATURE_LIST_RE = re.compile(r"\b(?:%s, )+%s,? (?:and|&) [A-Za-z0-9'-]+" % (PHRASE, PHRASE), re.I)
 TRICOLON_RE = re.compile(r"\b([A-Za-z'-]+), ([A-Za-z'-]+),? and ([A-Za-z'-]+)\b")
 NUMBER_RE = re.compile(r"[$£€]?\d[\d,.]*\s?(%|x\b|k\b|m\b)?", re.I)
 NEVER_LEAD_RE = re.compile(
@@ -147,6 +164,59 @@ def ngrams(ws, n=3):
 
 def text_of(x):
     return (x or {}).get("text") or "" if isinstance(x, dict) else ""
+
+
+def on_screen_of(beat):
+    value = (beat or {}).get("on_screen") if isinstance(beat, dict) else None
+    return value if isinstance(value, str) else ""
+
+
+def stems(text):
+    return {stem(w) for w in content_words(text)}
+
+
+def list_items(text):
+    """The most items in one "A, B and C" list in this text (0 when there is none)."""
+    best = 0
+    for m in FEATURE_LIST_RE.finditer(plain(text)):
+        flat = re.sub(r",\s*(?:and|&)\s", " and ", m.group(0), flags=re.I)
+        best = max(best, flat.count(",") + 2)
+    return best
+
+
+def features_named(text, fact_texts, names=()):
+    """Distinct product facts the text names: two of a fact's content words (or its only one).
+    Brand and product names are not features: a fact matched only by them does not count."""
+    drop = set().union(*(stems(n) for n in names)) if names else set()
+    have = stems(text) - drop
+    count = 0
+    for fact in fact_texts:
+        want = stems(fact) - drop
+        if want and len(want & have) >= min(2, len(want)):
+            count += 1
+    return count
+
+
+TOKEN_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9'-]*")  # "wake-ups" stays one token
+
+
+def tokens(text):
+    return [t.strip("-") for t in TOKEN_RE.findall(CUE_RE.sub(" ", plain(text)).lower())]
+
+
+def opening_tokens(concept, ignore):
+    """The opening beat's content words in order: its line (or its on-screen words when it
+    has no line), without stopwords and without the ignored brand, product and angle words."""
+    beats = [b for b in concept.get("beats") or [] if isinstance(b, dict)]
+    if not beats:
+        return []
+    line = text_of(beats[0]) or on_screen_of(beats[0])
+    return [t for t in tokens(line) if t and t not in STOPWORDS and t not in ignore]
+
+
+def shared_run(a, b, n=3):
+    """True when two word lists share a run of n words in the same order."""
+    return bool(ngrams(a, n) & ngrams(b, n))
 
 
 def load_json(path, required=False):
@@ -385,7 +455,7 @@ def lint(cands, shape=None, rules=None, bank=None, report_only=False, context=No
                    if isinstance(q, dict) and q.get("id")}
     nsay = never_say_checks(rules)
 
-    report = {"ok": True, "concepts": [], "set_warnings": [], "input_errors": []}
+    report = {"ok": True, "concepts": [], "set_errors": [], "set_warnings": [], "input_errors": []}
     if strict and not shape_beats:
         report["input_errors"].append("the selected recipe's shape is required")
     if strict and not report_only and not context:
@@ -434,7 +504,7 @@ def lint(cands, shape=None, rules=None, bank=None, report_only=False, context=No
         report["input_errors"].append(str(exc))
         report["ok"] = False
         return report
-    all_hooks = []
+    all_hooks, concepts_seen = [], []
 
     for c in cands.get("concepts", []) or []:
         if not isinstance(c, dict):
@@ -612,6 +682,9 @@ def lint(cands, shape=None, rules=None, bank=None, report_only=False, context=No
             gen = [w for w in norm_words(text) if w in GENERIC_WORDS]
             if len(gen) >= 2:
                 warn("W_GENERIC", f"filler words {sorted(set(gen))}: say the specific thing", bid)
+            limit = ON_SCREEN_HOOK_MAX if i == 0 else ON_SCREEN_LINE_MAX
+            if len(words(on_screen_of(b))) > limit:
+                warn("W_ON_SCREEN_LONG", f"{len(words(on_screen_of(b)))} on-screen words: keep it to {limit} so it can be read in time", bid)
         if spoken_budgets and all(budget is not None for budget in spoken_budgets):
             cap = sum(spoken_budgets)
             if total > cap * max(budget_tolerance(sb, shape, strict) for sb in shape_beats if sb.get("kind", "spoken") == "spoken"):
@@ -633,6 +706,34 @@ def lint(cands, shape=None, rules=None, bank=None, report_only=False, context=No
             if reserved + read_seconds > shape["total_seconds"] * tolerance + rounding:
                 err("E_TIMELINE", f"planned reads and reserved silence need about {reserved + read_seconds:.2f}s but the ad has {shape['total_seconds']:g}s; preserve the runtime and each beat's cadence")
 
+        # The opening beat: words on screen, and a picture that shows what the hook says
+        if beats:
+            opening = beats[0]
+            oid = opening.get("id") or "first beat"
+            if (hook_kind == "spoken" and text_of(opening).strip() and not on_screen_of(opening).strip()
+                    and shape.get("words_on_screen") != "none"):
+                warn("W_BEAT1_NO_TEXT", "the opening is spoken but has no on-screen words: most people watch muted; add 8 or fewer words that say the hook", oid)
+            picture = opening["visual"].get("description") if isinstance(opening.get("visual"), dict) else ""
+            picture = picture if isinstance(picture, str) else ""
+            hook_stems = stems(text_of(opening) + " " + on_screen_of(opening))
+            if picture and hook_stems and stems(picture) and not (stems(picture) & hook_stems):
+                warn("W_PICTURE_HOOK_MISMATCH", "the first picture shares nothing with the hook: open on what the line says", oid)
+
+        # The body: one demo or proof, at most two features
+        if len(beats) >= 3:
+            fact_texts = [str(f) for p in (rules or {}).get("products", []) or [] for f in p.get("facts", []) or []]
+            fact_texts += [str(f.get("text", "")) for f in facts.values()]
+            body = [text_of(b) + " " + on_screen_of(b) for b in beats[1:-1]]
+            names = [brand] + [str(p.get("name", "")) for p in (rules or {}).get("products", []) or [] if isinstance(p, dict)]
+            stack = max([features_named(" ".join(body), list(dict.fromkeys(fact_texts)), names)] + [list_items(t) for t in body])
+            if stack >= FEATURE_STACK_MIN:
+                warn("W_FEATURE_STACK", f"the body lists {stack} features: show one proof or demo and keep two at most, each turned into what it does for the viewer")
+
+        if "angle_type" in c and c.get("angle_type") not in ANGLE_TYPES:
+            warn("W_ANGLE_TYPE", f"angle_type {c.get('angle_type')!r} is not one of: {', '.join(ANGLE_TYPES)}")
+        elif strict and not report_only and "angle_type" not in c:
+            warn("W_ANGLE_TYPE", "declare the concept's angle_type so the set can be checked for sameness")
+
         # Hooks: each alternative must open cleanly and fit the first beat
         hook_budget = (spoken_timing(hook_beat, shape, references)["word_budget"] if hook_kind == "spoken"
                        else beat_budget(hook_beat, wps)[0]) if hook_beat else None
@@ -644,6 +745,8 @@ def lint(cands, shape=None, rules=None, bank=None, report_only=False, context=No
             if hook_kind in OPENER_KINDS:
                 if HARD_OPENER_RE.search(first):
                     err("E_DEAD_OPENER", f"\"{first[:60]}\" is a dead opener: open on the pain, the claim or the moment", label)
+                elif TIRED_OF_LIST_RE.search(first):
+                    warn("W_TIRED_OF_LIST", f"\"{first[:60]}\" lists pains: open on one concrete moment instead", label)
                 elif SOFT_OPENER_RE.search(first):
                     warn("W_SOFT_OPENER", f"\"{first[:60]}\" usually reads as an ad: keep it only if it is a real line", label)
                 elif first.rstrip().endswith("?") and QUESTION_OPENER_RE.search(first):
@@ -655,6 +758,7 @@ def lint(cands, shape=None, rules=None, bank=None, report_only=False, context=No
         fams = [h.get("family") for h in hooks if h.get("family")]
         if len(fams) != len(set(fams)):
             warn("W_SAME_FAMILY", "two hooks share a family: make each hook a different kind of opening")
+        concepts_seen.append(c)
         all_hooks += [(cid, h.get("id"), text_of(h)) for h in hooks]
 
         # AI tells and dash habits across everything this concept says
@@ -695,6 +799,37 @@ def lint(cands, shape=None, rules=None, bank=None, report_only=False, context=No
         if errs:
             report["ok"] = False
 
+    # Across the set (next to W_SAME_FAMILY for hooks). An open angle gives every concept
+    # its own angle type; a selected angle keeps one type for every execution. Only a mix
+    # (some shared, some not) is E_SAME_ANGLE. A user's own variants are only reported.
+    types = [c.get("angle_type") for c in concepts_seen if isinstance(c.get("angle_type"), str) and c.get("angle_type")]
+    repeated = sorted({t for t in types if types.count(t) > 1})
+    if repeated and len(set(types)) > 1:
+        ids = [c.get("id", "?") for c in concepts_seen if c.get("angle_type") in repeated]
+        finding = {"code": "E_SAME_ANGLE" if not report_only else "W_SAME_ANGLE",
+                   "msg": f"concepts {', '.join(map(str, ids))} repeat the angle type {', '.join(repeated)} while others differ: "
+                          "give every concept its own type, or keep one type for executions of a selected angle"}
+        report["set_warnings" if report_only else "set_errors"].append(finding)
+    # Openings that share three content words in order, after the brand, product and
+    # angle words every execution may reuse are set aside: advice, not an error.
+    ignore = set(tokens(brand))
+    for p in (rules or {}).get("products", []) or []:
+        if isinstance(p, dict):
+            ignore |= set(tokens(str(p.get("name", ""))))
+    for c in concepts_seen:
+        ignore |= set(tokens(str(c.get("angle") or "")))
+        selected = angles.get(c.get("angle_id")) if isinstance(c.get("angle_id"), str) else None
+        ignore |= set(tokens(str((selected or {}).get("angle") or "")))
+    for i in range(len(concepts_seen)):
+        for j in range(i + 1, len(concepts_seen)):
+            a, b = concepts_seen[i], concepts_seen[j]
+            if shared_run(opening_tokens(a, ignore), opening_tokens(b, ignore)):
+                report["set_warnings"].append({
+                    "code": "W_SIMILAR_OPENING",
+                    "msg": f"concepts {a.get('id', '?')} and {b.get('id', '?')} open with the same words: give each its own opening"})
+    if report["set_errors"]:
+        report["ok"] = False
+
     # Across the set: hooks that are really the same line
     for i in range(len(all_hooks)):
         for j in range(i + 1, len(all_hooks)):
@@ -716,6 +851,8 @@ def print_report(rep):
             print(f"  FIX  {e['code']}{' @' + e['beat'] if e.get('beat') else ''}: {e['msg']}")
         for w in c["warnings"]:
             print(f"  look {w['code']}{' @' + w['beat'] if w.get('beat') else ''}: {w['msg']}")
+    for e in rep.get("set_errors", []):
+        print(f"\n  FIX  {e['code']}: {e['msg']}")
     for w in rep["set_warnings"]:
         print(f"\n  look {w['code']}: {w['msg']}")
     print("\nPASS" if rep["ok"] else "\nFIX the errors above, then run this again")

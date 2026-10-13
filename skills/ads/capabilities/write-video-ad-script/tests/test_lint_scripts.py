@@ -271,3 +271,178 @@ def test_repeated_beat_ids_in_a_chat_shape():
     assert "E_BEAT_ORDER" not in codes(rep), rep
     c["concepts"][0]["beats"].insert(0, c["concepts"][0]["beats"].pop(4))  # CTA first
     assert "E_BEAT_ORDER" in codes(run(c, shape=shape))
+
+
+# Hook-first checks. Each new code has one fixture that fires it and one clean fixture.
+
+def opened(on_screen="3am. Again.", picture="Creator awake in bed at 3am, staring at the ceiling"):
+    c = copy.deepcopy(GOOD)
+    c["concepts"][0]["beats"][0]["on_screen"] = on_screen
+    c["concepts"][0]["beats"][0]["visual"] = {"description": picture, "mode": "text"}
+    return c
+
+
+def warns(rep, cid="c1"):
+    return codes(rep, cid, kind="warnings")
+
+
+def test_clean_opening_has_none_of_the_hook_warnings():
+    w = warns(run(opened()))
+    for code in ("W_TIRED_OF_LIST", "W_FEATURE_STACK", "W_BEAT1_NO_TEXT", "W_PICTURE_HOOK_MISMATCH",
+                 "W_ON_SCREEN_LONG", "W_ANGLE_TYPE"):
+        assert code not in w, code
+
+
+def test_tired_of_list_opener_warns():
+    c = opened()
+    c["concepts"][0]["hooks"][0]["text"] = "Tired of the noise, the light and the 3am alarms."
+    rep = run(c)
+    assert "W_TIRED_OF_LIST" in warns(rep)
+    assert "E_DEAD_OPENER" not in codes(rep)          # no question mark: a warning, not a dead opener
+    c["concepts"][0]["hooks"][0]["text"] = "Tired of waking at 3am?"
+    assert "E_DEAD_OPENER" in codes(run(c))           # the question form stays an error
+    assert "W_TIRED_OF_LIST" not in warns(run(opened()))
+
+
+def test_feature_stack_warns_on_facts_or_a_list_in_the_body():
+    c = opened()
+    c["concepts"][0]["beats"][2]["text"] = "A 30 ml bottle. Lavender and magnesium. All for $24."
+    assert "W_FEATURE_STACK" in warns(run(c))         # three product facts in the body
+    c = opened()
+    c["concepts"][0]["beats"][1]["text"] = "The cap, the strap and the lid all click shut."
+    assert "W_FEATURE_STACK" in warns(run(c))         # a list of three in one line
+    assert "W_FEATURE_STACK" not in warns(run(opened()))  # one fact, shown
+
+
+def test_spoken_opening_without_on_screen_words_warns():
+    assert "W_BEAT1_NO_TEXT" in warns(run(opened(on_screen="")))
+    assert "W_BEAT1_NO_TEXT" not in warns(run(opened()))
+    shape = dict(SHAPE, words_on_screen="none")
+    assert "W_BEAT1_NO_TEXT" not in warns(run(opened(on_screen=""), shape=shape))
+
+
+def test_picture_that_shares_nothing_with_the_hook_warns():
+    assert "W_PICTURE_HOOK_MISMATCH" in warns(run(opened(picture="A bottle on a white table, soft light")))
+    assert "W_PICTURE_HOOK_MISMATCH" not in warns(run(opened()))
+
+
+def test_on_screen_words_must_fit_read_time():
+    rep = run(opened(on_screen="Up at 3am every single night, staring at the ceiling"))
+    assert "W_ON_SCREEN_LONG" in warns(rep)           # 10 words in the opening beat
+    c = opened()
+    c["concepts"][0]["beats"][1]["on_screen"] = " ".join(["ceiling"] * 14)
+    assert "W_ON_SCREEN_LONG" in warns(run(c))        # 14 words in a later beat
+    c["concepts"][0]["beats"][1]["on_screen"] = " ".join(["ceiling"] * 13)
+    assert "W_ON_SCREEN_LONG" not in warns(run(c))
+
+
+def test_angle_type_must_be_on_the_list():
+    c = opened()
+    c["concepts"][0]["angle_type"] = "pain"
+    assert "W_ANGLE_TYPE" in warns(run(c))
+    c["concepts"][0]["angle_type"] = "problem_fix"
+    assert "W_ANGLE_TYPE" not in warns(run(c))
+
+
+FIVE_OPENINGS = [
+    ("story", "Last winter my roommate found me awake at 3am."),
+    ("curiosity", "One thing on my pillow ended the ceiling stare."),
+    ("problem_fix", "Staring at the ceiling every single night? Two sprays."),
+    ("demo", "Watch me spray this before lights out."),
+    ("proof", "Lavender and magnesium, and nothing else in the bottle."),
+]
+
+
+def five_concepts():
+    out = {"concepts": []}
+    for n, (angle_type, line) in enumerate(FIVE_OPENINGS, 1):
+        c = copy.deepcopy(opened()["concepts"][0])
+        c["id"], c["angle_type"] = f"c{n}", angle_type
+        c["hooks"] = [{"id": f"c{n}h1", "family": "confession", "text": line}]
+        c["beats"][0]["text"] = line
+        c["beats"][0]["on_screen"] = ""
+        out["concepts"].append(c)
+    return out
+
+
+def test_five_distinct_concepts_pass_the_sameness_check():
+    rep = run(five_concepts())
+    assert rep["set_errors"] == [], rep["set_errors"]
+    assert rep["ok"], rep
+
+
+def test_mixed_duplicate_angle_types_are_a_set_error():
+    c = five_concepts()
+    c["concepts"][3]["angle_type"] = "story"
+    rep = run(c)
+    assert [e["code"] for e in rep["set_errors"]] == ["E_SAME_ANGLE"]
+    assert "c1, c4" in rep["set_errors"][0]["msg"]
+    assert not rep["ok"]
+
+
+def test_selected_angle_flow_with_five_executions_of_one_type_passes():
+    c = five_concepts()
+    families = ["confession", "relatable-moment", "demo-first", "result-first", "cold-open"]
+    for concept, family in zip(c["concepts"], families):
+        concept["angle_type"] = "problem_fix"
+        concept["hooks"][0]["family"] = family
+    rep = run(c)
+    assert rep["set_errors"] == [] and rep["ok"], rep["set_errors"]
+
+
+def test_openings_that_share_the_angle_words_do_not_error():
+    lines = ["3am wake-ups ruined my sleep schedule.", "My 3am wake-ups stopped after one sleep trick.",
+             "Watch me fix 3am wake-ups.", "Proof: no 3am wake-ups in a month.", "Old me: 3am wake-ups. New me: asleep."]
+    c = five_concepts()
+    for concept, line in zip(c["concepts"], lines):
+        concept["beats"][0]["text"] = concept["hooks"][0]["text"] = line
+        concept["beats"][0]["on_screen"] = "Driftwell Sleep Mist"   # a fixed brand line on screen
+    rep = run(c)
+    assert rep["set_errors"] == [] and rep["ok"], rep["set_errors"]
+    assert not any(w["code"] == "W_SIMILAR_OPENING" for w in rep["set_warnings"]), rep["set_warnings"]
+
+
+def test_a_near_copy_opening_warns_but_does_not_fail(tmp_path):
+    c = five_concepts()
+    c["concepts"][1]["beats"][0]["text"] = "Last winter my roommate caught me awake again."
+    rep = run(c)
+    assert rep["set_errors"] == [] and rep["ok"]
+    similar = [w for w in rep["set_warnings"] if w["code"] == "W_SIMILAR_OPENING"]
+    assert len(similar) == 1 and "c1 and c2" in similar[0]["msg"]
+
+
+def test_a_users_own_variants_never_error_on_sameness():
+    c = five_concepts()
+    c["concepts"][3]["angle_type"] = "story"
+    rep = ls.lint(c, SHAPE, RULES, BANK, report_only=True)
+    assert rep["set_errors"] == []
+    assert any(w["code"] == "W_SAME_ANGLE" for w in rep["set_warnings"])
+
+
+def test_mixed_angle_types_fail_the_cli(tmp_path):
+    c = five_concepts()
+    c["concepts"][3]["angle_type"] = "story"
+    files = {}
+    for name, data in (("c.json", c), ("s.json", SHAPE), ("r.json", RULES), ("b.json", BANK)):
+        (tmp_path / name).write_text(json.dumps(data))
+        files[name] = str(tmp_path / name)
+    out = subprocess.run([sys.executable, SCRIPT, "--candidates", files["c.json"], "--shape", files["s.json"],
+                          "--rules", files["r.json"], "--customer-words", files["b.json"],
+                          "--out", str(tmp_path / "lint.json")], capture_output=True, text=True)
+    assert out.returncode == 2 and "E_SAME_ANGLE" in out.stdout
+
+
+def test_facts_that_only_share_the_product_name_are_not_a_stack():
+    rules = dict(RULES, products=[{"name": "Driftwell Sleep Mist", "facts": [
+        "Driftwell Sleep Mist is a 30 ml bottle", "Driftwell Sleep Mist contains lavender",
+        "Driftwell Sleep Mist contains magnesium", "Driftwell Sleep Mist costs 24"]}])
+    c = opened()
+    c["concepts"][0]["beats"][2]["text"] = "Two sprays of Driftwell Sleep Mist on the pillow. I sleep now."
+    assert "W_FEATURE_STACK" not in warns(run(c, rules=rules))
+
+
+def test_a_non_string_picture_does_not_crash():
+    c = opened()
+    c["concepts"][0]["beats"][0]["visual"]["description"] = ["a", "b"]
+    rep = run(c)
+    assert "W_PICTURE_HOOK_MISMATCH" not in warns(rep)

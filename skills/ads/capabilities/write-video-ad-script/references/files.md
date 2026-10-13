@@ -107,6 +107,8 @@ including JSON `null`, is an input error; it is not the legacy omitted-argument 
 - `max_words` overrides the seconds-based budget for a beat.
 - `optional` beats may be left out.
 - The first beat is the opening beat; every hook must fit its budget.
+- `words_on_screen: "none"` marks a format that shows no words over the picture; it turns
+  off the beat-1 on-screen check.
 - Ids may repeat when the format alternates (a chat thread: them, me, them, me). Each
   concept beat fills the next slot with that id, in order.
 
@@ -270,7 +272,7 @@ selected angle is an error, not permission to invent a replacement.
       "proof_plan": "show the actual product action authorized by the recipe",
       "persona": "a nurse off night shifts who can't switch off",
       "awareness": "problem-aware",
-      "angle_type": "pain",
+      "angle_type": "problem_fix",
       "quote_ids": ["q1"],
       "reference_id": "r1",
       "product_fact": "lavender and magnesium",
@@ -280,8 +282,8 @@ selected angle is an error, not permission to invent a replacement.
         {"id": "c1h2", "family": "named-enemy", "text": "…"}
       ],
       "beats": [
-        {"id": "hook", "text": "…"},
-        {"id": "pain", "text": "…"},
+        {"id": "hook", "text": "…", "on_screen": "…"},
+        {"id": "pain", "text": "…", "on_screen": "…"},
         {"id": "proof", "speaker": "creator", "text": "…",
          "visual": {"description": "show the real product action", "mode": "existing",
                     "asset_ids": ["demo-clip"]}},
@@ -300,6 +302,19 @@ selected angle is an error, not permission to invent a replacement.
   uncited claims and whether the cited fact actually supports the wording.
 - Every concept preserves angle_id and the selected angle text, and cites evidence_ids.
 - The first beat's text is the recommended hook.
+- Write 4-5 concepts (see the skill's Step 4). `angle_type` is one of: story, curiosity,
+  identity, desire, problem_fix, demo, how_it_works, old_vs_new, proof, offer, objection,
+  news. With an open angle every concept takes a different one; executions of a selected
+  angle all keep the angle's one type. A mix (some shared, some not) is E_SAME_ANGLE
+  under `set_errors` (a warning in report-only mode). Two openings that share three
+  content words in order, after brand, product and angle words, warn W_SIMILAR_OPENING.
+- `on_screen` (optional per beat) is the text over the picture: 13 words or fewer, 8 or
+  fewer in beat 1. A spoken beat 1 without it warns W_BEAT1_NO_TEXT. Beat 1's
+  `visual.description` should share a word with its line or on-screen words
+  (W_PICTURE_HOOK_MISMATCH).
+- Other hook and body warnings: W_TIRED_OF_LIST ("Tired of A, B and C" opener),
+  W_FEATURE_STACK (three or more product facts or a list of three in the middle beats),
+  W_ON_SCREEN_LONG and W_ANGLE_TYPE (missing or not on the list).
 - Delivery cues in brackets or parentheses, like [pause] or (laughs), are not counted
   as words.
 

@@ -1,51 +1,85 @@
 # Hook families
 
-A hook is the first line (and the first second of picture). Asking a model to "write a
-hook" gets the average hook. Asking for a hook from a named family, built on a buyer's
-own phrase, gets a specific one. Give every concept 3 or 4 hooks, each from a different
-family. The examples show the shape only. Never reuse them as written.
+**Summary.** The hook is the first second: the picture, the spoken line and the on-screen
+words, together. Pick the angle by what the viewer already knows, pick one family below,
+and make all three channels say the same thing. Give every concept 3 or 4 hooks from
+different families. Write from the buyer's words and the product's facts; this file has
+no example lines to copy.
 
-| Family | What it does | Shape | Works best when |
-|---|---|---|---|
-| **Confession** | The speaker admits something slightly embarrassing or extreme | "I own six of these and I hate five of them." | The buyer has tried many fixes; "authority from exhaustion" beats expert credentials |
-| **Named enemy** | Calls out the category's failure by name | "White cast. That's the whole reason I quit mineral sunscreen." | Buyers share one specific complaint about the alternatives |
-| **Call-out** | Names the viewer's exact situation so they feel seen | "If your hair is flat again by lunch, this is for you." | The pain is visible and specific; never a broad audience label |
-| **Result first** | Opens on the outcome, then explains | "Two weeks, and I stopped waking up at 3am." | A buyer quote or fact backs the result exactly |
-| **Contrarian** | Says the opposite of category wisdom | "Stop buying the expensive serum first." | There is a real reason the usual advice is wrong |
-| **Mistake / warning** | "Don't do what I did" | "I wasted four months on the wrong kind of protein." | A common mistake the product removes |
-| **Story cold open** | Starts mid-story, with no setup | "So I'm in the airport bathroom, and the zipper breaks." | A real moment from a review carries the whole ad |
-| **Overheard / social** | Someone else's reaction does the work | "My sister asked what I changed. I hadn't told anyone." | The outcome is noticeable to other people |
-| **Comparison** | Puts two options side by side | "I tried the 80-dollar one and the 12-dollar one." | The brand wins a fair comparison the facts support |
-| **Demo first** | The picture proves it in second one; the line just points | "Watch what happens when I pour coffee on it." | The product has a visible, checkable proof |
-| **List promise** | Promises a short list and delivers it | "Three things I stopped doing after I turned 40." | Listicle and talking-head formats; each item must be real |
-| **Specific question** | A question only this viewer would ask, answered within 5 seconds | "Why do I wake up at exactly 3am?" | Rarely. Only when the question is specific and the answer comes fast |
+## Pick the angle type by awareness
 
-## Dead openers (the rule check fails these)
+| The viewer… | Stage | angle_type |
+|---|---|---|
+| doesn't know they need it | Unaware | story, curiosity, identity, desire |
+| feels the problem | Problem-aware | problem_fix |
+| knows the kind of solution | Solution-aware | demo, how_it_works, old_vs_new (never a named rival) |
+| knows the product | Product-aware, most aware | proof, offer, objection |
+| hears something new | Any | news |
 
-"Introducing…", "Meet…", "In a world where…", "Imagine…", "Picture this…", "Say goodbye
-to…", "Are you tired of…", "Tired of…?", "Have you ever…", "Did you know…", "Struggling
-with…?", "Looking for…?", "What if I told you…", "Hey guys", "Stop scrolling".
+Food, fashion and lifestyle often win on desire or sensory detail, with no problem at all.
 
-Each one delays the claim or reads as an ad in the first second, and viewers scroll.
+## Families
 
-## Dead ideas (don't build a concept on these)
+T1-T5 is the recognition tier (next section). On-screen words in beat 1: 8 or fewer.
 
-- A founder talking head over generic b-roll.
-- A screen recording with bouncy captions as the whole idea.
-- The lazy before/after split screen.
-- A slow-motion pour for any drink.
-- Someone waking up refreshed and stretching by a window (sleep products).
-- An athlete sweating in slow motion (fitness).
-- A "real customer" testimonial intercut with product shots, with nothing specific said.
-- A hand reaching for the product on a shelf, with triumphant music.
-- A family laughing around a table with the product centered.
-- A logo reveal as the payoff.
+| Family | Stage | Picture (frame 1) | Spoken | On-screen | Avoid |
+|---|---|---|---|---|---|
+| Relatable moment (T1) | Unaware, problem | The viewer's own habit, mid-action | Names that habit in buyer words | The habit | A mood shot with no action |
+| Call-out (T2) | Problem | The situation the line names | Names the viewer's exact situation | Who it's for | Broad labels; a hypothetical "If you…" |
+| Number or stake (T3) | Solution, product | The thing being counted | One sourced number | The number | Any number no fact or quote backs |
+| Confession | Unaware, problem | Speaker caught in the admission | Admits something slightly embarrassing | The admission | Invented history or results |
+| Cold open / mid-action | Unaware | The event already moving | Starts mid-sentence, no setup | Where or when | Setup before anything happens |
+| Result first | Problem, product | The after state, before the setup | The outcome, then rewind | The after | A result nothing backs |
+| Demo first | Solution | The product doing the thing | Points at it | What to watch for | Talk before the proof is visible |
+| Visual-only | Any | A pattern break that needs no words | None, or one word late | Optional, 4 words | A pretty shot that says nothing |
+| Named enemy | Problem, solution | The usual option failing | The category's one shared complaint | The complaint | Naming a rival brand |
+| Contrarian / stop | Solution | What the viewer usually does | The opposite of category wisdom | The habit to stop | No real reason behind it |
+| Mistake / warning | Problem, solution | The mistake happening | "Don't do what I did", protective | The mistake | Fear, shame, scare numbers |
+| Old vs new | Solution | Old way and this way side by side | Compares the two fairly | Old / new labels | A rival's name; a rigged test |
+| Overheard / social | Product | Someone else reacting | Another person's reaction does the work | The reaction | Invented testimonials |
+| Secret / insider | Unaware | The hidden detail, half shown | Lets the viewer in | A tease, not the answer | A "secret" everyone knows |
+| Specific question | Problem | The thing the question is about | A question only this viewer asks, answered within 5 s | The question | "Have you ever…" (T5) |
+| Reveal delay | Any | The setup, answer hidden | Promises what the end shows | The promise | An end that never pays it off |
+| List or time-box | Solution | Item one already in view | A short list or a short time | The count | Padded items |
+| Bold claim | Product | The proof of the claim | One claim the body earns | The claim | Anything the facts don't back |
+| Direct ask | Most aware | An action the viewer can copy | A tiny thing to do along | The ask | An ask that is really the CTA |
+| Founder origin (T4) | Product | Founder with the original problem | Why it was made | The problem | Direct-response objectives |
+
+## Recognition ladder
+
+1. **T1.** The viewer sees themselves doing the thing.
+2. **T2.** The line names who it is for, so the right viewer stays.
+3. **T3.** A concrete, sourced number or stake.
+4. **T4.** Founder origin: slow to recognise. Fine for brand campaigns, weak for direct response.
+5. **T5.** A generic question or statement: scroll-past. Rewrite it.
+
+Prefer T1-T3. A T4 hook on a direct-response ad, or any T5 hook, is a weak hook.
 
 ## Hook rules
 
-- Each hook lands in the first sentence. No wind-up.
-- No brand name in the first line unless the format is built around the brand mark.
-- Fits the opening beat's word budget (a 3-second opening holds 8 to 10 spoken words).
-- Uses the buyer's words where it can: their nouns, their exaggerations, their numbers.
-- Different families across one concept's hooks, and across the three concepts' top
-  hooks.
+- Beat 1's picture, spoken line and on-screen words say the same thing. It works muted.
+- Spoken hook: 12 words or fewer. Beat 1 on-screen: 8 or fewer; later beats: 13 or fewer.
+- One device per hook: a call-out, a number or a question, not a stack.
+- **"If you…"** only when the same line names a concrete moment. Never a hypothetical.
+- Line 1 opens a question the last third answers. Add one turn near the middle: a reveal,
+  a surprise or a "but". Each line earns the next; cut any line a viewer could leave after.
+- The body shows one demo or one true proof. At most two features, each pushed through
+  "so what?" until it reaches what it does for the viewer.
+- Where the recipe allows, show the product in beat 1 and name it by beat 2. No brand name
+  as the first words unless the format is built on the brand mark.
+- Use the buyer's nouns, exaggerations and numbers. No invented proof, quotes, scarcity,
+  fear or competitor names.
+- Different families across one concept's hooks, and across the concepts' top hooks.
+
+## Dead openers (the rule check flags these)
+
+"Introducing…", "Meet…", a greeting, "In a world where…", "Imagine…", "Picture this…",
+"Say goodbye to…", "Are you tired of…", "Tired of A, B and C", "Have you ever…", "Did you
+know…", "Struggling with…?", "Looking for…?", "What if I told you…", "Stop scrolling".
+Each one delays the point or reads as an ad in the first second.
+
+## Dead ideas
+
+A founder over generic b-roll; a captioned screen recording as the whole idea; a lazy
+before/after split; a slow-motion pour; waking refreshed by a window; a vague testimonial
+over product shots; a family laughing around the product; a logo reveal as the payoff.
