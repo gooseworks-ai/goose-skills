@@ -67,7 +67,7 @@ This is step 2 of the video-orchestrator pipeline. Runs after `brainstorm`.
     - Phase 5 review pass
     - Phase 6 variants & delivery
     - Decision log checkboxes
-    - Cost estimate
+    - Cost estimate: price every paid operation by sending its exact request with `estimate_only=1`. It is free and returns the credits that request will book; never guess a rate. Add a redo allowance as `render_estimate.reroll_allowance` `{per_scene: [{scene, credits}], total_credits}`: one redo per generated scene at that scene's clip price, with `total_credits` the sum and counted inside the render total. No allowance on the preview estimate or on kit videos.
     - Definition of done
 
 ## Required fields in design_brief

@@ -137,8 +137,9 @@ Resolve this operation through the selected host binding and the real implementa
 
    If the requested family has no supported equivalent in the binding, record `fallback_unavailable` and surface the limitation; do not invent an alternative catalog entry.
 2. Poll the actual returned request through the selected binding's documented status/result operations, then save the confirmed output to `clips/scene-NN.mp4`.
-3. **Failure recovery:** the first 6-criterion detection triggers the fallback router. If the fallback model also fails on the same scene, that's a hard surface to the operator — the prompt is likely the issue, not the gateway. Don't silently retry; investigate the prompt or the keyframe (dark/vignette plates often fail in Veo regardless of provider).
-4. **Concurrency note:** ElevenLabs limits to ~3 concurrent requests on team plans — gate audio gen accordingly. fal has per-account RPS limits — keep concurrent fal jobs at 2-3.
+3. **Clip check.** After each generated clip, upload it into the project, confirm it, and send `video_change` custom `clip_check` `{scene, url}` with the returned `output_url`. About a minute later, read the result in `video_read` `clip_checks`. If it says to throw the clip away (`suggest_kill`), redo that clip once: send the same paid call with `reroll_scene=<scene>`, then check the new clip. If it still fails, tell the customer in one plain line and continue; never a second redo. If the redo is refused, read the fix it gives. Record every check in the manifest clip checks. A host without clip checks skips this step.
+4. **Failure recovery:** the first 6-criterion detection triggers the fallback router. If the fallback model also fails on the same scene, that's a hard surface to the operator — the prompt is likely the issue, not the gateway. Don't silently retry; investigate the prompt or the keyframe (dark/vignette plates often fail in Veo regardless of provider).
+5. **Concurrency note:** ElevenLabs limits to ~3 concurrent requests on team plans — gate audio gen accordingly. fal has per-account RPS limits — keep concurrent fal jobs at 2-3.
 
 ### Phase 3 — Static / non-AI scenes
 - **Hero hold (felt mascot push-in):** FFmpeg zoompan over the hero photo for the scene's duration.
