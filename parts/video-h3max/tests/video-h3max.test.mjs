@@ -33,9 +33,9 @@ function providerContract(body) {
 
 test('new part declares only H3 Max and preserves the scene recipe output contract', () => {
   assert.equal(manifest.id, 'video-h3max');
-  assert.equal(manifest.version, '1.0.0');
+  assert.equal(manifest.version, '1.1.0');
   assert.deepEqual(manifest.needs.models, [{ provider: 'fal', model: 'minimax/h3-max/reference-to-video' }]);
-  assert.deepEqual(manifest.inputs.properties.mode.enum, ['reference', 'image_to_video', 'take', 'takes']);
+  assert.deepEqual(manifest.inputs.properties.mode.enum, ['reference', 'image_to_video', 'take', 'takes', 'stills']);
   assert.deepEqual(manifest.inputs.properties.resolution.enum, ['480P', '768P', '1080P']);
   for (const key of ['clips', 'video', 'takes', 'seconds', 'timeline']) assert.ok(manifest.outputs.properties[key], key);
 });

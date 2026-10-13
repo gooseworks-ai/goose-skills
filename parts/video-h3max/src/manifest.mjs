@@ -1,10 +1,11 @@
-import { file, pronunciations, timeline } from '../../_tools/schemas.mjs';
+import { file, pronunciations, sceneSpan, timeline } from '../../_tools/schemas.mjs';
 
 const MODEL = 'minimax/h3-max/reference-to-video';
 const PICTURE = ['image/png', 'image/jpeg', 'image/webp'];
 const PROMPT_MAX = 12000;
 const textOrNull = (max) => ({ type: ['string', 'null'], maxLength: max });
 const imageOrNull = { anyOf: [{ type: 'null' }, file('image')] };
+const clipSeconds = { type: 'integer', minimum: 4, maximum: 15 };
 
 // A plan scene (PlanScene). Nothing but id is required: a scene with no line (an
 // end card, a silent beat) is a normal scene. Other plan fields pass through.
@@ -48,10 +49,10 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'video-h3max',
-  version: '1.0.0',
+  version: '1.1.0',
   kind: 'generate_video',
   title: 'Scene clips with native audio (H3 Max)',
-  summary: 'H3 Max scene clips with native dialogue, including multiple speakers. Reference or fitted first/last-frame clips, plan-backed templates, and timed takes with a measured timeline. Silent requests remove sound locally.',
+  summary: 'H3 Max clips: native dialogue with several speakers, reference or first/last-frame clips, timed takes, and up to 40 scene stills moved in time with the voice. Silent requests remove sound locally.',
   runtime: 'node',
   entry: 'part.mjs',
   files: ['README.md', 'part.mjs'],
@@ -71,8 +72,8 @@ export const manifest = {
     required: [],
     properties: {
       mode: {
-        description: `Every mode uses ${MODEL}. reference (default): a clip from up to 9 images. image_to_video: a clip starting on the given first frame and optionally ending on the last frame. take: up to 4 picked scenes as timed beats in one clip. takes: takes.count takes of up to 8 scenes each, joined into one video.`,
-        enum: ['reference', 'image_to_video', 'take', 'takes'],
+        description: `Every mode uses ${MODEL}. reference (default): a clip from up to 9 images. image_to_video: a clip starting on the given first frame and optionally ending on the last frame. take: up to 4 picked scenes as timed beats in one clip. takes: takes.count takes of up to 8 scenes each, joined into one video. stills: one clip per picked scene (up to 40), starting on that scene's still from a picture step and timed to the voice spans.`,
+        enum: ['reference', 'image_to_video', 'take', 'takes', 'stills'],
         default: 'reference',
       },
       clips: {
@@ -112,12 +113,12 @@ export const manifest = {
           },
         },
       },
-      seconds: { description: 'scenes mode: every clip\'s length in whole seconds, 4 to 15. Default 5. Modes take and takes: every take\'s length. Default 15.', type: 'integer', minimum: 4, maximum: 15 },
+      seconds: { description: 'scenes mode, and mode stills without spans: every clip\'s length in whole seconds, 4 to 15. Default 5. Modes take and takes: every take\'s length. Default 15.', type: 'integer', minimum: 4, maximum: 15 },
       resolution: { description: 'H3 native resolution labels. Default 1080P; 768P is the middle option.', enum: ['480P', '768P', '1080P'] },
       aspect_ratio: { description: 'Default 9:16. adaptive follows the reference canvas.', enum: ['adaptive', '9:16', '16:9', '1:1', '4:3', '3:4', '21:9'] },
       generate_audio: { description: 'Keep native lip-synced voice and room sound (default true). false strips sound locally; no unsupported generate_audio flag is sent to H3.', type: 'boolean' },
       seed: { description: 'Mixed into every clip\'s seed (a style binds plan.answers.take): a new seed is a new piece, so a fix that changes it re-rolls the clips.', type: 'integer', minimum: 0, maximum: 2147483647 },
-      scenes: { description: 'plan.scenes. Without clips: one clip per picked scene (max 12), keyed by scene id. With clips: a clip whose id is a scene id fills {picture}, {line} and {on_screen} from that scene.', type: 'array', minItems: 1, maxItems: 40, items: scene },
+      scenes: { description: 'plan.scenes. Without clips: one clip per picked scene (max 12; max 40 in mode stills), keyed by scene id. With clips: a clip whose id is a scene id fills {picture}, {line} and {on_screen} from that scene.', type: 'array', minItems: 1, maxItems: 40, items: scene },
       template: { description: 'The style\'s prompt template (frames/<name>.prompt.json, version 1; see parts/_lib/prompt.mjs). Its prefix and suffix wrap every clip prompt; its negative is added as "Avoid: ...".', ...file('json') },
       look: { description: 'A key of the template\'s looks (a declared plan answer), filling {look}.', type: ['string', 'null'], maxLength: 200 },
       answers: { description: 'plan.answers, for {answers.KEY} placeholders.', type: ['object', 'null'] },
@@ -155,24 +156,66 @@ export const manifest = {
       pronunciations: { description: 'Modes take and takes: brand terms written as their spoken form in the dialogue (brand.pronunciations). Default the brand\'s.', ...pronunciations },
       off_screen_lines: { description: 'mode take: a line on a beat that keeps the face off screen (a rear-camera, macro or hands shot) is refused (default) or written as voice-over.', enum: ['refuse', 'voiceover'] },
       off_screen_tags: { description: 'mode take: the scene tags (extra.shot or a leading "Tag:") that keep the face off screen. Default rear, rear-camera, rear-cam, back-camera, macro, hands, off-screen, cutaway, b-roll, broll; a picture that says "face off-screen", "rear camera" or "no face" counts too.', type: 'array', maxItems: 20, items: { type: 'string', minLength: 1, maxLength: 40 } },
+      stills: {
+        description: 'Mode stills: the scene pictures to move, keyed by scene id (step.<stills>.images). Each is the clip\'s first frame, fitted to the clip\'s canvas by cover (centre crop).',
+        type: 'array',
+        minItems: 1,
+        maxItems: 40,
+        items: {
+          type: 'object',
+          additionalProperties: false,
+          required: ['id', 'image'],
+          properties: { id: { type: 'string', minLength: 1, maxLength: 64 }, image: file('image', PICTURE) },
+        },
+      },
+      spans: {
+        description: "Mode stills: where each scene's line is in the voice or song (step.<voice>.scenes). Each clip is long enough for its scene's time on screen (a scene with no line shares the one before it) plus 0.2 s, rounded up to whole seconds from 4 to 15.",
+        type: 'array',
+        minItems: 1,
+        maxItems: 60,
+        items: sceneSpan,
+      },
+      min_s: { description: 'Mode stills: the shortest clip to make.', ...clipSeconds },
+      max_s: { description: 'Mode stills: the longest clip to make. A scene on screen longer than this gets the longest clip, and assemble holds its last frame.', ...clipSeconds },
+      max_total_s: { description: 'Mode stills: a price guard. Refuse the step, before anything is ordered, when all its clips together would be longer than this many seconds.', type: 'number', exclusiveMinimum: 0, maximum: 600 },
+      fallback: {
+        description: 'Mode stills: what a clip the provider refuses or fails becomes. fail (default) fails the step; still hands back its still for that scene (assemble shows it). A plain failure falls back only on the step\'s last attempt.',
+        enum: ['fail', 'still'],
+      },
+      require_scene_tags: { description: 'Mode stills: opt in to strict by_tag routing. Reject missing, unknown, malformed or contradictory scene tags before any provider order.', type: 'boolean' },
+      require_product_refs: { description: 'Mode stills: opt in to requiring the current real product photo in each product scene\'s still request, and binding its request evidence to the exact still this clip starts on.', type: 'boolean' },
+      product_reference_evidence: {
+        description: 'Mode stills: the picture step\'s product request evidence (step.<stills>.product_reference_evidence).',
+        type: 'array', maxItems: 40, items: {
+          type: 'object', additionalProperties: false,
+          required: ['version', 'scene_id', 'image_sha256', 'product_photos', 'request_image_sha256', 'model', 'piece', 'digest'],
+          properties: {
+            version: { const: 1 }, scene_id: { type: 'string', minLength: 1, maxLength: 64 },
+            image_sha256: { type: 'string', pattern: '^[0-9a-f]{64}$' },
+            product_photos: { type: 'array', maxItems: 12, items: { type: 'object', additionalProperties: false, required: ['id', 'sha256'], properties: { id: { type: 'string', minLength: 1 }, sha256: { type: 'string', pattern: '^[0-9a-f]{64}$' } } } },
+            request_image_sha256: { type: 'array', maxItems: 10, items: { type: 'string', pattern: '^[0-9a-f]{64}$' } },
+            model: { type: 'string' }, piece: { type: 'string', minLength: 1 }, digest: { type: 'string', pattern: '^[0-9a-f]{64}$' },
+          },
+        },
+      },
     },
   },
   outputs: {
     type: 'object',
     additionalProperties: false,
-    required: ['clips', 'video'],
+    required: ['clips'],
     properties: {
       clips: {
-        description: 'One clip per entry (clips) or per picked scene, id = the scene id (scenes); in modes take and takes, one per take (the same as takes).',
+        description: 'One clip per entry (clips) or per picked scene, id = the scene id (scenes, stills); in modes take and takes, one per take (the same as takes). Mode stills: seconds is the measured length, and a clip that fell back is its still (image) instead of a video.',
         type: 'array',
         items: {
           type: 'object',
           additionalProperties: false,
-          required: ['id', 'video', 'seconds'],
-          properties: { id: { type: 'string' }, video: file('video'), seconds: { type: 'integer', minimum: 4, maximum: 15 } },
+          required: ['id', 'seconds'],
+          properties: { id: { type: 'string' }, video: file('video'), image: file('image'), seconds: { type: 'number', exclusiveMinimum: 0 } },
         },
       },
-      video: { description: 'The first clip\'s video, for one-clip styles (step.<id>.video). Modes take and takes: every take joined in order with hard cuts.', ...file('video') },
+      video: { description: 'The first clip\'s video, for one-clip styles (step.<id>.video); absent only in mode stills when the first clip fell back to its still. Modes take and takes: every take joined in order with hard cuts.', ...file('video') },
       takes: {
         description: 'Modes take and takes: one per take in order, id t1, t2, ...',
         type: 'array',
