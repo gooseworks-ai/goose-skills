@@ -201,7 +201,8 @@ from the product page or have the participant rehearse the presenter's selling p
 Before a street exchange, write a short situation brief: who the participant is in this
 moment, why the interviewer is here, what invitation or visible task they accepted,
 what each person wants, and how this brand helps with the resulting task or question.
-Separate filming/recruitment assumptions from what the viewer sees. Do not force greeting
+Separate filming/recruitment assumptions from what the viewer sees. An edited ad may open
+on a later reaction when its action makes it clear. Do not force greeting
 or consent dialogue into the cut. Write actions beside the words, including preparation,
 handover, looking and listening time. If the premise needs more
 time than the recipe permits, change the premise or flag a longer production route;
