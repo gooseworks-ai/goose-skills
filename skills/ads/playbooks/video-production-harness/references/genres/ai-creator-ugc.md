@@ -11,7 +11,10 @@ An AI creator talks to the phone about one product, with handheld product shots 
 6. 15-17.5 s end card: real logo, one CTA; the last words run over it.
 
 ## Routing rows
-Talking creator, exact script · Cast anchor portrait · Creator B-roll, no speech · Photoreal keyframe / product hero · End card · Captions.
+Talking creator, exact script · Cast anchor portrait · Set / world reference still · Creator B-roll, no speech · Product in hand / motion from a keyframe · Photoreal keyframe / product hero · End card · Captions.
+
+## Voice
+The Talking creator row makes the creator's speech inside the take; no separate voiceover. Record `audio_strategy: vo-narrator` with the voice set to the creator's take voice, so the script review shows it.
 
 ## Pacing
 - About 2.5 words/s: at most 8 words a beat and 28 per 15 s take.

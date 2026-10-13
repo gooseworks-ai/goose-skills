@@ -337,7 +337,7 @@ Use the host's actual pricing/credit schema and current supported model catalog;
 
 ## Model behavior reference
 
-Open `references/shot-routing.md` and the brief's genre card at State 2 (design brief), State 5 (clips) and State 6 (re-rolls). They hold each shot's part, model, prompt rules and known tells. Confirm the model's schema with the host before submitting.
+Open `references/shot-routing.md` and the brief's genre card at State 2 (design brief), State 5 (clips) and State 6 (re-rolls). Confirm the model's schema with the host before submitting.
 
 ## Decision-making policies
 
