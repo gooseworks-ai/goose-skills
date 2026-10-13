@@ -7,9 +7,9 @@ import assert from 'node:assert/strict';
 import { existsSync, mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { fileRef, framePixels, hasFfmpeg, levelDb, makeCtx, probe, run as runTool } from '../../_tools/kit-harness.mjs';
+import { countColor, fileRef, framePixels, hasFfmpeg, levelDb, makeCtx, probe, run as runTool } from '../../_tools/kit-harness.mjs';
 import { manifest } from '../src/manifest.mjs';
-import { RECUT_MAX_BYTES, recutCheckSize, recutPictureCuts, run } from '../src/part.mjs';
+import { RECUT_MAX_BYTES, recutCheckSize, recutCoverGraph, recutPictureCuts, run } from '../src/part.mjs';
 
 const dir = mkdtempSync(join(tmpdir(), 'speech-recut-test-'));
 const partDir = join(dir, 'part');
@@ -211,6 +211,53 @@ test('grade street-light lifts the blacks; the final encode carries the bitrate 
   const before = await dark(plain.video.path);
   const after = await dark(out.video.path);
   assert.ok(after - before >= 4, `1st-percentile level ${before} -> ${after}`);
+});
+
+test('a 0.2 s shot that holds speech is covered by the shot before it: no flash of it, every word heard', async (t) => {
+  if (skip) return t.skip('no ffmpeg');
+  // Red 0-0.8 s, blue 0.8-1.0 s (the take's own 0.2 s shot), green 1.0-2.0 s; a tone where the words are.
+  const path = join(dir, 'flash.mp4');
+  await runTool('ffmpeg', [
+    '-hide_banner', '-nostdin', '-loglevel', 'error', '-y',
+    '-f', 'lavfi', '-i', 'color=c=red:size=360x640:rate=24:duration=0.8',
+    '-f', 'lavfi', '-i', 'color=c=blue:size=360x640:rate=24:duration=0.2',
+    '-f', 'lavfi', '-i', 'color=c=lime:size=360x640:rate=24:duration=1.0',
+    '-f', 'lavfi', '-i', 'sine=frequency=440:sample_rate=48000:duration=2.0',
+    '-filter_complex', "[0:v][1:v][2:v]concat=n=3:v=1:a=0[v];[3:a]volume='if(between(t,0.2,1.6),1,0)':eval=frame[a]",
+    '-map', '[v]', '-map', '[a]', '-c:v', 'libx264', '-preset', 'ultrafast', '-pix_fmt', 'yuv420p', '-c:a', 'aac', path,
+  ]);
+  const video = await fileRef(path, 'video');
+  const scenes = [{ id: 's1', line: 'hello there friend' }];
+  const speech = [{ scene_id: 's1', text: 'hello there friend', spoken: 'hello there friend', start_s: 0.2, end_s: 1.6, words: [w('hello', 0.2, 0.5), w('there', 0.55, 0.95), w('friend', 1.0, 1.6)] }];
+  const timeline = { duration_s: 2, width: 360, height: 640, fps: 24, scenes: [{ id: 's1', start_s: 0, end_s: 2 }], speech: [] };
+  const { ctx, logs } = ctxFor();
+  const out = await run({ video, timeline, speech, scenes }, ctx);
+  const plan = logs.find(([lvl, msg]) => lvl === 'info' && msg === 'speech-recut plan');
+  assert.equal(plan[2].covers, 1, 'one shot covered');
+  assert.ok(!logs.some(([lvl, msg]) => lvl === 'warn' && /holds speech/.test(msg)), 'no warning');
+  assert.ok(out.seconds > 1.95, `nothing removed, got ${out.seconds}`);
+  const BLUE = [0, 0, 255];
+  for (const at of [0.83, 0.9, 0.97]) {
+    const px = await framePixels(out.video.path, at, 36, 64);
+    assert.equal(countColor(px, BLUE, 40), 0, `blue shows at ${at} s`);
+    assert.ok(countColor(px, [255, 0, 0], 40) > 36 * 64 * 0.9, `the red shot holds at ${at} s`);
+  }
+  assert.ok(countColor(await framePixels(out.video.path, 1.3, 36, 64), [0, 255, 0], 40) > 36 * 64 * 0.9, 'the green shot plays after');
+  const lvl = await levelDb(out.video.path, 0.82, 0.98, 440);
+  assert.ok(lvl > -30, `the words under the covered shot are heard: ${lvl} dB`);
+});
+
+test('cover graph: the covered frames become the frame before or after, the frame count kept', () => {
+  assert.deepEqual(recutCoverGraph('j', [{ a: 10, b: 15, from: 'prev' }], 40, 'cv'), [
+    '[j]split=2[cs0][cs1]',
+    '[cs0]trim=start_frame=0:end_frame=10,setpts=PTS-STARTPTS,tpad=stop=5:stop_mode=clone[cp0]',
+    '[cs1]trim=start_frame=15:end_frame=40,setpts=PTS-STARTPTS[cp1]',
+    '[cp0][cp1]concat=n=2:v=1:a=0[cv]',
+  ]);
+  assert.deepEqual(recutCoverGraph('j', [{ a: 0, b: 6, from: 'next' }], 40, 'cv'), ['[j]trim=start_frame=6:end_frame=40,setpts=PTS-STARTPTS,tpad=start=6:start_mode=clone[cv]']);
+  // Two covered shots in a row, both from the shot before: one longer hold.
+  const two = recutCoverGraph('j', [{ a: 10, b: 15, from: 'prev' }, { a: 15, b: 20, from: 'prev' }], 40, 'cv');
+  assert.ok(two[1].includes('tpad=stop=10:stop_mode=clone'), two.join(';'));
 });
 
 test('size rule: a finished video over 180 MB is refused as output_invalid', () => {

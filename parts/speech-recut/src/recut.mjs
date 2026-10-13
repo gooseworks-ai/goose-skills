@@ -14,7 +14,13 @@
 //     Other extra words ("invented" words) are speech and are never cut.
 //   - Minimum shot: after the cuts, a shot shorter than min_shot_s that holds
 //     no speech is dropped (the shorter fragment goes; never a cross-fade).
-//     A short shot that holds speech is kept and reported as a warning.
+//     A short shot that holds speech (1.0.1) first takes back the dead air
+//     cut next to it, up to its shortfall (a little more pause, never past a
+//     picture cut inside that dead air); when that cannot reach min_shot_s
+//     (the take's own shot is that short), its picture is covered by the shot
+//     before it (else after it), held on one frame, and its sound is kept, so
+//     no word is lost and no flash of picture is seen. Only an edit with no
+//     shot long enough to cover from keeps a short shot, with a warning.
 //   - Scenes with no line that the timeline places are silent beats (a
 //     reaction, a payoff): their spans are kept whole.
 //
@@ -152,6 +158,66 @@ function recutShortCount(removals, duration, pictureCuts, minShot) {
   return recutFragments(recutKeep(removals, duration), pictureCuts).filter((f) => f.end - f.start < minShot - RECUT_EPS).length;
 }
 
+/**
+ * One short shot `f` lengthened by `need` seconds, from the dead-air removals that end where it starts or start
+ * where it ends: each gives back up to the stretch after (or before) its last (or first) picture cut inside it,
+ * one side alone when it can, edges on the take's frames. Returns the new removals when the shot holding f's
+ * middle then reaches `minShot`, else null.
+ */
+function recutGrow(list, f, need, pictureCuts, minShot, duration, fps) {
+  const left = list.findIndex((r) => r.kind === 'dead_air' && Math.abs(r.end - f.start) <= RECUT_EPS);
+  const right = list.findIndex((r) => r.kind === 'dead_air' && Math.abs(r.start - f.end) <= RECUT_EPS);
+  const inside = (r) => pictureCuts.filter((c) => c > r.start + RECUT_EPS && c < r.end - RECUT_EPS);
+  const leftStop = left < 0 ? null : Math.max(list[left].start, ...inside(list[left]));
+  const rightStop = right < 0 ? null : Math.min(list[right].end, ...inside(list[right]));
+  const leftRoom = left < 0 ? 0 : list[left].end - leftStop;
+  const rightRoom = right < 0 ? 0 : rightStop - list[right].start;
+  if (leftRoom + rightRoom < RECUT_EPS) return null;
+  let takeLeft = 0;
+  if (leftRoom >= need - RECUT_EPS) takeLeft = need;
+  else if (rightRoom < need - RECUT_EPS) takeLeft = leftRoom;
+  const takeRight = Math.min(rightRoom, need - takeLeft);
+  const out = list.map((r) => ({ ...r }));
+  if (takeLeft > RECUT_EPS) out[left].end = Math.max(leftStop, Math.floor((out[left].end - takeLeft) * fps + 1e-6) / fps);
+  if (takeRight > RECUT_EPS) out[right].start = Math.min(rightStop, Math.ceil((out[right].start + takeRight) * fps - 1e-6) / fps);
+  const kept = out.filter((r) => r.end - r.start > RECUT_EPS);
+  const mid = (f.start + f.end) / 2;
+  const grown = recutFragments(recutKeep(kept, duration), pictureCuts).find((x) => x.start <= mid && x.end >= mid);
+  return grown && grown.end - grown.start >= minShot - RECUT_EPS ? kept : null;
+}
+
+/**
+ * Every short shot (under `minShot`) lengthened from the dead air cut next to it where that reaches the minimum
+ * (recutGrow). `removals` are frame-exact; the result is too. Shots it cannot lengthen are left as they are.
+ */
+export function recutLengthen(removals, duration, pictureCuts, minShot, fps) {
+  let list = removals.map((r) => ({ ...r }));
+  const tried = new Set();
+  for (let guard = 0; guard < 4 * (list.length + pictureCuts.length + 1); guard++) {
+    const f = recutFragments(recutKeep(list, duration), pictureCuts).find((x) => x.end - x.start < minShot - RECUT_EPS && !tried.has(`${x.start.toFixed(6)}:${x.end.toFixed(6)}`));
+    if (!f) break;
+    tried.add(`${f.start.toFixed(6)}:${f.end.toFixed(6)}`);
+    list = recutGrow(list, f, minShot - (f.end - f.start), pictureCuts, minShot, duration, fps) || list;
+  }
+  return list;
+}
+
+/**
+ * The shots still under `minShot` once lengthened: each one's picture is covered by the shot before it
+ * (`from: 'prev'`, its last frame held), or after it for the first shot (`'next'`, its first frame), and its
+ * sound is kept. When no shot reaches the minimum there is nothing to cover from: those are warnings.
+ */
+export function recutCovers(keep, pictureCuts, minShot) {
+  const frags = recutFragments(keep, pictureCuts);
+  const short = frags.map((f) => f.end - f.start < minShot - RECUT_EPS);
+  if (short.every(Boolean)) return { covers: [], uncovered: frags };
+  const covers = [];
+  frags.forEach((f, i) => {
+    if (short[i]) covers.push({ start: f.start, end: f.end, from: i > 0 ? 'prev' : 'next' });
+  });
+  return { covers, uncovered: [] };
+}
+
 function recutTouches(list, start, end, pad) {
   return list.some((o) => o.start - pad < end && o.end + pad > start);
 }
@@ -257,7 +323,8 @@ export function recutEntryRepeats(entry, words, drop) {
  *   min_shot_s, max_gap_s, drop ('repeats' | 'none')
  * Returns {removals [{start, end, kind}], keep [{start, end}], speech (re-timed), scenes (re-timed),
  * cuts [{at_s, removed_s, kind}], seconds, warnings, heard [{start, end}] (source stretches holding
- * speech with no timed words)}. Throws RecutRefusal for a take the cut cannot fix.
+ * speech with no timed words), covers [{start, end, from}] (short shots whose picture a neighbour
+ * covers, in take time)}. Throws RecutRefusal for a take the cut cannot fix.
  */
 /**
  * The refusals that need no measuring: speech with no timed words, or a scene line with no heard words.
@@ -386,11 +453,14 @@ export function recutPlan({ duration, fps, speech, scenes, timeline_scenes: time
 
   // Cut points land on the take's frames, so picture and sound cut together.
   const frame = (t) => Math.min(duration, Math.max(0, Math.round(t * fps) / fps));
-  const merged = recutMerge(removals.map((r) => ({ start: frame(r.start), end: r.end >= duration - RECUT_EPS ? duration : frame(r.end), kind: r.kind })));
+  const snapped = recutMerge(removals.map((r) => ({ start: frame(r.start), end: r.end >= duration - RECUT_EPS ? duration : frame(r.end), kind: r.kind })));
+  // A short shot that holds speech: more of the dead air beside it, else its picture covered by a neighbour.
+  const merged = recutMerge(recutLengthen(snapped, duration, pictureCuts, minShot, fps));
   keep = recutKeep(merged, duration);
   if (!keep.length) throw new RecutRefusal('the cut removed the whole take');
   const warnings = [];
-  for (const f of recutFragments(keep, pictureCuts)) {
+  const { covers, uncovered } = recutCovers(keep, pictureCuts, minShot);
+  for (const f of uncovered) {
     if (f.end - f.start < minShot - RECUT_EPS) {
       warnings.push(`a ${(f.end - f.start).toFixed(2)}s shot at ${f.start.toFixed(2)}s of the take holds speech and is kept under the ${minShot}s minimum`);
     }
@@ -429,7 +499,7 @@ export function recutPlan({ duration, fps, speech, scenes, timeline_scenes: time
   // Source stretches that hold heard speech with no timed words (untimed leading or trailing extras,
   // gaps inside a line the line lacks): never a room-tone window, or the bed would loop that speech.
   const heard = [...heldGaps, ...occupied.filter((o) => o.kind === 'held')].map((g) => ({ start: g.start, end: g.end }));
-  return { removals: merged, keep, speech: outSpeech, scenes: outScenes, cuts, seconds, warnings, heard };
+  return { removals: merged, keep, speech: outSpeech, scenes: outScenes, cuts, seconds, warnings, heard, covers };
 }
 
 // ---------------------------------------------------------------------------------------------

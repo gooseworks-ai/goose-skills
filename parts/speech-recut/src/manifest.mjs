@@ -4,7 +4,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'speech-recut',
-  version: '1.0.0',
+  version: '1.0.1',
   kind: 'compose',
   title: 'Re-cut on-camera speech',
   summary: 'Re-cuts one take of on-camera speech: dead air cut on its own picture cuts, repeats dropped inside a line, a minimum shot, 30 fps; optional room tone from its quietest window and a light street grade.',
@@ -15,7 +15,7 @@ export const manifest = {
   needs: {
     browser: false,
     ffmpeg: {
-      filters: ['scale', 'select', 'showinfo', 'trim', 'setpts', 'tpad', 'atrim', 'asetpts', 'aresample', 'aformat', 'apad', 'afade', 'pan', 'concat', 'fps', 'setsar', 'format', 'asplit', 'areverse', 'volume', 'amix', 'curves', 'unsharp'],
+      filters: ['scale', 'select', 'showinfo', 'trim', 'setpts', 'tpad', 'atrim', 'asetpts', 'aresample', 'aformat', 'apad', 'afade', 'pan', 'concat', 'split', 'fps', 'setsar', 'format', 'asplit', 'areverse', 'volume', 'amix', 'curves', 'unsharp'],
       encoders: ['libx264', 'aac', 'pcm_s16le'],
     },
     network: false,
@@ -51,7 +51,7 @@ export const manifest = {
           },
         },
       },
-      min_shot_s: { description: 'The shortest shot kept when it holds no speech. Default 0.4.', type: 'number', minimum: 0.1, maximum: 2 },
+      min_shot_s: { description: 'The shortest shot. A shorter one with no speech is dropped; one that holds speech takes back dead air beside it, else its picture is covered by the shot before or after it. Default 0.4.', type: 'number', minimum: 0.1, maximum: 2 },
       max_gap_s: { description: 'Silences longer than this are cut down to it, on a picture cut where one falls in the silence. Default 0.25.', type: 'number', minimum: 0.12, maximum: 2 },
       drop: { description: "repeats (default): drop repeated words and stutters inside a line, never a whole line. none: cut only dead air.", enum: ['repeats', 'none'] },
       room_tone: {

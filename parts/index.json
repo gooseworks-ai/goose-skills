@@ -3948,6 +3948,63 @@
       "models": []
     },
     {
+      "id": "speech-recut",
+      "version": "1.0.1",
+      "interface": 1,
+      "kind": "compose",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "scale",
+            "select",
+            "showinfo",
+            "trim",
+            "setpts",
+            "tpad",
+            "atrim",
+            "asetpts",
+            "aresample",
+            "aformat",
+            "apad",
+            "afade",
+            "pan",
+            "concat",
+            "split",
+            "fps",
+            "setsar",
+            "format",
+            "asplit",
+            "areverse",
+            "volume",
+            "amix",
+            "curves",
+            "unsharp"
+          ],
+          "encoders": [
+            "libx264",
+            "aac",
+            "pcm_s16le"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 500
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/speech-recut/1.0.1",
+      "files": {
+        "README.md": "912dd1004a662d0b3ac702b0254bad9e13169ba32163a28214473654b51f4289",
+        "part.json": "0c824b3fb83c1a70ae56da1dd0761182d7f3f854b05a2d4ea538e0fc44a8ef7d",
+        "part.mjs": "0d03f62ab5046922a792f138f656604c864e95fca50287d60d2d1b95cd4796b0"
+      },
+      "models": []
+    },
+    {
       "id": "transcribe-whisper",
       "version": "1.0.0",
       "interface": 1,

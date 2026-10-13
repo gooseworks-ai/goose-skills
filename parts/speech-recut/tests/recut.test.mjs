@@ -129,7 +129,7 @@ test('minimum shot: a silent sliver of a shot is dropped whole; no shot under mi
   assert.ok(loose.seconds >= plan.seconds - 1e-9);
 });
 
-test('a short shot that holds speech is kept and reported, never cut', () => {
+test('a short shot that holds speech between two of the take\'s own cuts is covered by the shot before it, never cut', () => {
   const take = {
     duration: 2.0,
     fps: FPS,
@@ -140,8 +140,47 @@ test('a short shot that holds speech is kept and reported, never cut', () => {
   };
   const plan = recutPlan(take);
   assert.equal(wordsOut(plan).length, 3);
-  assert.equal(plan.warnings.length, 1);
-  assert.match(plan.warnings[0], /holds speech/);
+  assert.deepEqual(plan.warnings, []);
+  assert.deepEqual(plan.covers, [{ start: 0.6, end: 0.8, from: 'prev' }]);
+  // The first shot of the edit has no shot before it: the one after covers it.
+  const first = recutPlan({ ...take, picture_cuts: [0.25] });
+  assert.equal(first.covers.length, 1);
+  assert.equal(first.covers[0].from, 'next');
+  assert.deepEqual(first.warnings, []);
+});
+
+test('a short shot that holds speech next to dead air takes back some of it, up to its shortfall', () => {
+  // The take's own cut at 0.75 s, inside the line, leaves 0.29 s of that shot before the dead-air join.
+  const take = {
+    duration: 3.0,
+    fps: FPS,
+    scenes: [
+      { id: 's1', line: 'one two' },
+      { id: 's2', line: 'three four' },
+    ],
+    speech: [
+      line('s1', 'one two', [w('one', 0.2, 0.5), w('two', 0.55, 0.9)], 'one two'),
+      line('s2', 'three four', [w('three', 2.0, 2.3), w('four', 2.35, 2.6)], 'three four'),
+    ],
+    timeline_scenes: [
+      { id: 's1', start_s: 0, end_s: 1.5 },
+      { id: 's2', start_s: 1.5, end_s: 3.0 },
+    ],
+    picture_cuts: [0.75],
+  };
+  const before = recutPlan({ ...take, min_shot_s: 0.1 });
+  const plan = recutPlan(take);
+  const shots = recutFragments(plan.keep, take.picture_cuts).map((f) => f.end - f.start);
+  assert.ok(shots.every((x) => x >= 0.4 - 1e-6), `shots ${shots.map((x) => x.toFixed(3))}`);
+  assert.deepEqual(plan.covers, []);
+  assert.deepEqual(plan.warnings, []);
+  const dead = plan.removals.find((r) => r.kind === 'dead_air');
+  const was = before.removals.find((r) => r.kind === 'dead_air');
+  near(dead.end, was.end, 'the removal keeps its far edge');
+  assert.ok(dead.start > was.start, 'the removal starts later: more pause after the line');
+  assert.ok(dead.start - was.start <= 0.4 - 0.29 + 1 / FPS + 1e-6, `gave back ${(dead.start - was.start).toFixed(3)} s, about the shortfall`);
+  assert.equal(wordsOut(plan).length, 4, 'no word lost');
+  assertOnFrames(plan, take.duration);
 });
 
 test('repeats and stutters inside a line are dropped; the written words and the line stay', () => {
