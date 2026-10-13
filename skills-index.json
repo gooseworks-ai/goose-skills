@@ -1,6 +1,6 @@
 {
   "version": "1.4.0",
-  "generated": "2026-10-12",
+  "generated": "2026-10-13",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -9439,9 +9439,9 @@
         },
         "requires_skills": [],
         "slug": "video-production-harness",
-        "source_commit": "153cbb809d7f1d159e041baca54229c82dde450c",
-        "source_hash": "9de13482b53f7120ff09d0dbecded5b0a06a9e693166ff129485b06769cdecd6",
-        "source_version": "3-9de13482b53f",
+        "source_commit": "320e34b775299680a964e3b70fff9a580ae43189",
+        "source_hash": "b5842731ca280cba4ea1ae9086b0f031daf91d510977e63d5807457f02b4b8bd",
+        "source_version": "3-b5842731ca28",
         "tags": [
           "ads",
           "content"

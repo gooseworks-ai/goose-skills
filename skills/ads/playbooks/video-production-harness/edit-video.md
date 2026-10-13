@@ -19,16 +19,15 @@ Read `capabilities.md` and the selected host binding first. Artifact names are l
 
 Take the per-scene clips and audio assets produced by `create-clips` (and refined by `edit-clip`) and produce the **labeled candidate master**: ordered, timed and mixed for review/polish; final captions and delivery follow State 10.
 
-Orchestrates these atoms:
-- `stitch-videos-ffmpeg`
-- `sync-voiceover-to-video`
-- `add-sound-effects`
-- `clean-audio`
-- `find-music`
-- `add-captions-burn`
-- `create-end-card-hyperframes` (if end card needs regen)
-- `export-video-final`
-- `create-video-variants`
+Uses these skills and FFmpeg recipes:
+- `stitch-videos-ffmpeg` — concat and transitions
+- Voice to picture: delay each line to its scene start with `adelay=<ms>|<ms>`, then `amix=inputs=N:normalize=0`
+- Sound effects: layer each cue the same way, with `adelay` and `volume`
+- Clean a noisy take: `afftdn=nf=-25,highpass=f=80`
+- Music: `create-music-elevenlabs` (superseded; agent-built path only) or an approved licensed track
+- Captions: `caption-burn` (superseded; agent-built path only), burned last in State 10
+- End card regen: `goose-graphics` for the card still, `stitch-videos-ffmpeg` to hold it
+- Export: MP4, H.264 + AAC, `-movflags +faststart`, 1080×1920 for 9:16
 
 ## Inputs
 
@@ -40,7 +39,7 @@ Orchestrates these atoms:
   - `<order>` — custom scene order if not 1..NN
   - `<speed_overrides>` — `{"03": 1.25, "07": 0.85}` to retime specific clips
   - `<transitions>` — `cut` (default), `crossfade-3f`, `whip-pan`, `flash`
-  - `<music_track>` — path or `find-music` query
+  - `<music_track>` — path, or a brief for `create-music-elevenlabs`
 
 ## audio_strategy branches
 
@@ -49,7 +48,7 @@ The mix protocol below assumes `audio_strategy: vo-narrator`. Branch on the desi
 | audio_strategy | Mix branch |
 |---|---|
 | `vo-narrator` | Voice is the lead. Use an approved bed only if planned; tune gain automation or sidechain from actual masking. |
-| `song-as-script` | **Skip sidechain duck entirely.** The song IS the audio — there's no VO to duck under. Honor the approved fade, sustained ending or loop; do not impose a fade that cuts a lyric. Captions sync to vocal onsets via `sync-captions-to-music`. See the selected binding's actual supported capability State 7. |
+| `song-as-script` | **Skip sidechain duck entirely.** The song IS the audio — there's no VO to duck under. Honor the approved fade, sustained ending or loop; do not impose a fade that cuts a lyric. Captions sync to vocal onsets: transcribe the song for word timings, then burn with `caption-burn`. See the selected binding's actual supported capability State 7. |
 | `hybrid` | Duck only during the VO segments. Music plays unducked under the lyric segments. Segment the actual VO/lyric windows and recombine the processed audio. Verify the selected FFmpeg filters support any timeline option before using it. |
 | `silent` | Mux silent audio track (or none). Captions burned from the design-brief itself, not from VO/lyric timestamps. |
 
@@ -98,8 +97,6 @@ Where `song_drop_t` is the time in the source song where the drop lands (find wi
 ffmpeg -ss <audio_offset_seconds> -t <video_duration> -i song.mp3 audio/music-master.mp3
 ```
 
-This is wrapped as a deterministic atom at `align-music-drop-to-climax` for repeat use. The math is trivial; the value is having a single place to put it so operators don't re-derive it per project.
-
 ## Workflow
 
 ### Phase 1 — Reorder + retime + interleave transitions
@@ -115,7 +112,7 @@ Resolve the source cut and its editable timeline from the original note/version.
 4. Apply transitions:
    - `cut` (default for boundaries with no pair entry): plain concat.
    - `ai_interpolation` (from `transition_pairs.json`): clip already inserted in step 1; plain concat between scene and transition clip.
-   - `in_edit_xfade` / `crossfade-3f`: `xfade=transition=fade:duration=0.1:offset=<t>` between clips. ⚠ Banned in `music-video-ad` and `create-cartoon-music-video` parent molecules.
+   - `in_edit_xfade` / `crossfade-3f`: `xfade=transition=fade:duration=0.1:offset=<t>` between clips. ⚠ Not for music-video formats cut to the beat.
    - `in_edit_whip_pan`: `xfade=transition=slideleft` (or right/up/down). Preserves panel structure — safe for split-screen → split-screen.
    - `in_edit_flash`: `xfade=transition=fadewhite` or insert 1–2 white frames between clips.
 

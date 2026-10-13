@@ -17,7 +17,7 @@ Read `capabilities.md` and the selected host binding first. Artifact names are l
 
 ## Purpose
 
-Every shipped video teaches us something. After v03 (Ironman) the LEARNINGS file is why States 0 / 2.5 / 3.5 / 7.5 even exist. After Nike video-02 the HOW_TO file is the recipe anyone (or any agent) can use to make another knee-down cinematic AJ1 ad. After a prior production review the LEARNINGS rewired half the orchestrator's policies (no crossfades, motion-strategy classifier, brand asset library first).
+Every shipped video teaches us something. After v03 (Ironman) the learnings file is why States 0 / 2.5 / 3.5 / 7.5 even exist. After Nike video-02 the HOW_TO file is the recipe anyone (or any agent) can use to make another knee-down cinematic AJ1 ad. After a prior production review the learnings rewired half the orchestrator's policies (no crossfades, motion-strategy classifier, brand asset library first).
 
 The problem is that capturing these is manual every run. By the time the operator is done shipping, energy for retrospective is at zero. This skill removes that friction — it scans the freshly-shipped project, drafts both docs, and proposes specific skill updates back to the orchestrator tree.
 
@@ -27,7 +27,7 @@ It does NOT auto-edit skills. Every proposed change goes into `improvement_propo
 
 - **State 11 of the orchestrator** — automatic after DELIVER (State 10) approval.
 - Manually after the fact: `wrap-session <video_folder>` on any project where `edits/master-final.mp4` exists.
-- After a *failed* run that taught us something — pass `<status>=abandoned` and the skill emits LEARNINGS + skill-update-proposals only (no HOW_TO, since the recipe didn't ship).
+- After a *failed* run that taught us something — pass `<status>=abandoned` and the skill emits learnings + skill-update-proposals only (no HOW_TO, since the recipe didn't ship).
 
 ## Inputs
 
@@ -63,7 +63,7 @@ Recipe-style document that lets a future agent recreate this *kind* of video for
 0. **Project setup.** `mkdir -p` line with the actual folder layout used. Required host capabilities/tools (from the real operations). Preflight command.
 1. **The storyboard is the project.** Reference to which storyboard layout was used; note "each reviewed candidate and decision remains in saved version history."
 2. **Planning artifacts.** Concept brief → idea brief → design brief → script lock. List each artifact this run actually produced. For each: what it locked, who decided.
-3. **Character / style lock.** Mode (anchor-ref / Soul ID / Mode B style-ref / N/A). Anchor portrait path. Number of locked angles. Chain strategy.
+3. **Character / style lock.** Mode (anchor-ref / optional Soul ID / Mode B style-ref / N/A). Anchor portrait path. Number of locked angles. Chain strategy.
 4. **Reference generation.** Models used per scene (Nano Banana, Flux, etc.). Resolution. Cost per scene.
 5. **Clip generation.** For each scene: provider, model, prompt structure, cost. Transition layer if used.
 6. **Audio.** VO source (ElevenLabs / source podcast / song-as-script). Music source (Suno / library). SFX library used. Mix protocol used.
@@ -78,13 +78,13 @@ Recipe-style document that lets a future agent recreate this *kind* of video for
 - 1–2 sentence intro
 - Code/command block (real commands, not pseudocode)
 - Cost per call (if applicable)
-- "Trap to avoid" callout if a LEARNINGS entry maps to this step (cross-reference by L# tag — see Sub-step B)
+- "Trap to avoid" callout if a learnings entry maps to this step (cross-reference by L# tag — see Sub-step B)
 
 **Tone:** practical recipe. Every decision explained. Copy-paste ready.
 
 **Generalization rule:** The HOW_TO must work for a *slightly different concept or brand*. Strip concept-specific specifics from process descriptions (don't say "Indigo selvedge jeans, 2cm cuff"; say "lock wardrobe per scene in a table"). Concept-specific examples go in *example* blocks, not in the main flow.
 
-**Write to:** `<video_folder>/reproduction_recipe`.
+**Write to:** `<video_folder>/reproduction_recipe`, then include it in the host's stored recipe; the binding names where.
 
 **HUMAN GATE.** Surface the rendered HOW_TO. Operator can edit, accept, or send back. Ask one specific question: "Does this HOW_TO work as a recipe for the NEXT video in this style, or is it too specific to this run?"
 
@@ -115,7 +115,7 @@ Failure-driven retrospective. Each entry = a specific iteration cycle, paired wi
 - **Fix.** Specific action taken — including atom + flag + prompt change.
 - **Transferable principle.** The general rule extracted from this specific failure. This is what other projects will reuse.
 
-**Tool / API quirks.** Memorize-these gotchas about specific tools (Higgsfield models, ElevenLabs, FFmpeg flags, Git LFS, Veo prompt vocabulary). Format: bolded tool name → one-paragraph quirk. Pull from `provider_events` and any available model behavior guidance updates this run triggered.
+**Tool / API quirks.** Memorize-these gotchas about specific tools (fal models, optional Higgsfield models, ElevenLabs, FFmpeg flags, Git LFS, Veo prompt vocabulary). Format: bolded tool name → one-paragraph quirk. Pull from `provider_events` and any available model behavior guidance updates this run triggered.
 
 **What worked / didn't work.** Bulleted retrospective. No prose paragraphs — keep it scannable.
 
@@ -129,34 +129,37 @@ Failure-driven retrospective. Each entry = a specific iteration cycle, paired wi
 
 **Write to:** `<video_folder>/learnings`.
 
-**HUMAN GATE.** Surface the LEARNINGS. Operator can edit, accept, or send back. Ask: "Are these the three TL;DR lessons that would have saved you the most time on the NEXT project?"
+**HUMAN GATE.** Surface the learnings. Operator can edit, accept, or send back. Ask: "Are these the three TL;DR lessons that would have saved you the most time on the NEXT project?"
 
 ---
 
 ### Sub-step C · Suggest skill updates
 
-Read the freshly written HOW_TO and LEARNINGS. For every entry, ask: does this map to a specific atom, molecule, or orchestrator skill that should change?
+Read the freshly written HOW_TO and learnings. For every entry, ask: does this map to a specific atom, molecule, or orchestrator skill that should change?
 
 **Process:**
-1. For each LEARNINGS entry, identify the responsible skill (or "no existing skill — propose new").
+1. For each learnings entry, identify the responsible skill (or "no existing skill — propose new").
 2. Read the target skill file.
 3. Propose a concrete diff: which section, what current text, what proposed text.
-4. Rationale links back to the LEARNINGS entry (by L# or by quoted title).
+4. Rationale links back to the learnings entry (by L# or by quoted title).
 5. Classify each proposal:
    - **`failure_mode_add`** — append to the Failure Modes section of an existing atom.
    - **`quality_check_add`** — append to Quality Checks.
    - **`prompt_template_edit`** — change a prompt template used inside an atom.
    - **`policy_add`** — add to the orchestrator's Decision-making policies section.
    - **`state_reorder`** — reorder or add an orchestrator state.
-   - **`new_skill`** — propose a brand-new atom/molecule; describe purpose + inputs + output.
-   - **`shared_doc_update`** — update available model behavior guidance or similar.
+   - **`new_skill`** — propose a brand-new molecule or orchestrator step; describe purpose + inputs + output. For the customer-facing side, never a `render-<format>` atom: a format the app should offer is a **`style_file`** proposal.
+   - **`new_part`** — propose a new versioned part in goose-skills (`parts/<id>/`), only when the capability is format-agnostic, holds real know-how (a model's prompts and quirks, a renderer), is needed by a second style, and can pass the goose-skills publish gate. One use is not enough: extract on the second use, and say which two styles need it.
+   - **`style_file`** — propose a style (`one-shot-videos/<id>/style.json`) or a change to one: which existing parts it pins, its plan note, selection card and traits. A new style uses existing parts. Its text never holds prices, approval steps, setup lines or tool names; its price is the measured USD cost of one clean staging render.
+   - **`part_knowhow`** — a model or renderer quirk: propose it for the part that drives that model in goose-skills (a new part version), so customers' videos get it too.
+   - **`shared_doc_update`** — update available model behavior guidance or similar for studio runs. A model quirk goes there **and** to its part (`part_knowhow`), never only there.
 
 **Output format** for each proposal:
 
 ```markdown
 ### Proposal N — `<classifier>` — `<target_skill_path>`
 
-**Rationale:** L<#> in this run's LEARNINGS — "<entry title>"
+**Rationale:** L<#> in this run's learnings — "<entry title>"
 
 **Section:** <heading or "new section">
 
@@ -173,13 +176,13 @@ Read the freshly written HOW_TO and LEARNINGS. For every entry, ask: does this m
 - No duplicate proposals (dedupe by target file + section).
 - No proposals that contradict already-saved memory (read the selected host's current approved policies first).
 - No proposals that auto-touch skill files — this file is a memo, not an edit.
-- Every proposal traces back to a specific LEARNINGS entry.
+- Every proposal traces back to a specific learnings entry.
 
 **Write to:** `<video_folder>/improvement_proposals`.
 
 The binding saves these proposals within this project for review. Never expose another customer's context or automatically publish them to a shared skill repository.
 
-**HUMAN GATE.** Surface the proposals. Operator picks which to apply; the actual edits happen outside this skill (manually, or via a follow-up `apply-skill-updates` invocation that doesn't exist yet — out of scope here).
+**HUMAN GATE.** Surface the proposals. Operator picks which to apply; the actual edits happen outside this skill (manually, by the operator — out of scope here).
 
 ---
 
@@ -205,8 +208,8 @@ The binding saves these proposals within this project for review. Never expose a
 
 - reproduction_recipe sections cover the full pipeline (setup → planning → generation → audio → assembly → polish → delivery → cost). No skipped phases unless the run genuinely skipped them.
 - learnings has TL;DR (exactly 3 entries) + at least 1 loop-by-loop entry per review iteration that occurred.
-- Every LEARNINGS entry has all four fields: failure mode, why, fix, transferable principle.
-- Skill-update-proposals trace to specific LEARNINGS entries (no orphans).
+- Every learnings entry has all four fields: failure mode, why, fix, transferable principle.
+- Skill-update-proposals trace to specific learnings entries (no orphans).
 - No proposal modifies a skill file in-place — this skill is strictly read-only against shared skills.
 - HUMAN GATE was hit on each of the three artifacts.
 - Existing manifest links resolve to the accepted cut and editable scene/timeline/audio/caption sources. Record a fresh-context resume readback and targeted candidate edit when requested, preserving unaffected checksums and previous versions.
@@ -215,14 +218,14 @@ The binding saves these proposals within this project for review. Never expose a
 ## Failure Modes
 
 - **Skill writes generic HOW_TO that could apply to any video.** Too generic = useless. The HOW_TO must reference real models, real APIs, real folder paths from THIS run. The fix is to anchor each section in evidence (cost line, real prompt example, real file path).
-- **LEARNINGS reads like a status report instead of a retro.** "We generated 14 clips and shipped" is not a learning. Every entry must contain a failure → root cause → fix pattern.
+- **The learnings read like a status report instead of a retro.** "We generated 14 clips and shipped" is not a learning. Every entry must contain a failure → root cause → fix pattern.
 - **Skill auto-edits an atom file.** Hard fail — this skill is read-only against the skills tree. If it ever writes outside `<video_folder>/` (other than reading inputs), kill the run.
-- **Proposals invent failures that didn't happen.** Every proposal must trace to a specific LEARNINGS entry that traces to a specific iteration in this run. No speculative "this might break someday" proposals.
+- **Proposals invent failures that didn't happen.** Every proposal must trace to a specific learnings entry that traces to a specific iteration in this run. No speculative "this might break someday" proposals.
 - **Operator skips the gates with `<auto>=true` and ships unreviewed docs.** These docs are the seed for future runs — bad docs propagate forever. Default `<auto>=false`; only override on explicit operator instruction.
 
 ## Relationship to other skills
 
 - Runs after `video-production-harness/promote` (the master is in its final slot) and `video-production-harness/orchestrator` State 10 (DELIVER) approval.
 - Reads from every skill that ran during the project — but NEVER writes back to them. Skill edits happen out-of-band.
-- The `improvement_proposals` it produces is the canonical input for a future `apply-skill-updates` workflow (not built yet).
-- LEARNINGS entries that propose orchestrator policy changes should reference the policy section in `orchestrator.md` by name (e.g. "add to Decision-making policies").
+- The `improvement_proposals` it produces is the input for the operator's manual skill edits.
+- Learnings entries that propose orchestrator policy changes should reference the policy section in `orchestrator.md` by name (e.g. "add to Decision-making policies").

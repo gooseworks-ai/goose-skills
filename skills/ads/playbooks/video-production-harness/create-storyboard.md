@@ -67,7 +67,7 @@ audio/captions/transitions. Review that join and then the complete revised cut.
 
 ### Step 7.5 — Transition layer (optional, opt-in)
 
-If the project opts into the cinematic transition layer (default ON for `music-video-ad` runs longer than 25s, default OFF otherwise):
+If the project opts into the cinematic transition layer (default ON for music-video runs longer than 25s, default OFF otherwise):
 
 1. Plan each transition from the approved scene boundaries and mood; use the available host transition capability when selected. This emits `<video_folder>/transition_pairs.json` and appends a "Transitions" section to `design_brief`.
 2. Render a **"Transitions"** section in `storyboard` immediately after the scene grid, with one row per pair showing:

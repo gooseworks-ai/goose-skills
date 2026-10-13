@@ -1,9 +1,11 @@
 ---
 name: video-production-harness/lock-character
-description: Lock the character identity before any scene keyframes generate. Produces ONE anchor portrait with verbatim hair/wardrobe strings, gates with operator approval, derives all angles from the anchor, runs a consistency check on keyframes BEFORE animation, and escalates to Soul ID training if drift > 15%. Step 3.5 of the pipeline.
+description: Lock the character identity before any scene keyframes generate. Produces ONE anchor portrait with verbatim hair/wardrobe strings, gates with operator approval, derives all angles from the anchor, runs a consistency check on keyframes BEFORE animation, and regenerates the anchor if drift > 15% (optional Soul ID training only if the host has Higgsfield). Step 3.5 of the pipeline.
 ---
 
 # lock-character
+
+Before writing any character prompt, read the avatar guide: `catalog_fetch` the skill `create-image-fal` and open its references/avatar-generation.md file. UGC and phone footage: no bokeh and no shallow depth of field. Shallow focus only when the approved style asks for it.
 
 ## Host contract
 
@@ -11,7 +13,7 @@ Read `capabilities.md` and the selected host binding first. Artifact names are l
 
 ## Purpose
 
-In the v03 Ironman run, the protagonist Marcus was re-rendered 3 full times (~70 Higgsfield credits) because hair, shirt color, and facial hair drifted across scenes. Each generation was prompt-driven without a hard reference lock — Nano Banana anchors to the *brightness* of the reference image more than the prompt hex code, so "DARK CHARCOAL #3A3A3D" rendered as light grey when the ref was lit brighter.
+In the v03 Ironman run, the protagonist Marcus was re-rendered 3 full times (~70 credits) because hair, shirt color, and facial hair drifted across scenes. Each generation was prompt-driven without a hard reference lock — Nano Banana anchors to the *brightness* of the reference image more than the prompt hex code, so "DARK CHARCOAL #3A3A3D" rendered as light grey when the ref was lit brighter.
 
 This skill front-loads the cost: one anchor portrait, operator approval, then every other angle is derived from the anchor with verbatim-baked descriptors. Drift is caught BEFORE animation, not after a 5-stage cascade.
 
@@ -54,7 +56,7 @@ This skill operates in one of two modes depending on whether `<source_anchor>` i
 
 ## Provider request contract
 
-The prompt/identity policies below apply to every supported provider. Resolve upload/result IDs, image-reference fields, style-reference ordering, model identifiers, supported dimensions and identity-training fields through the selected binding's current model schema before every call. Do not transfer a Higgsfield job ID, medias payload or start_image role into a managed FAL request. Persist actual request IDs and confirmed asset URLs/IDs, then use the receiving model's supported reference fields.
+The prompt/identity policies below apply to every supported provider. Resolve upload/result IDs, image-reference fields, style-reference ordering, model identifiers, supported dimensions and identity-training fields through the selected binding's current model schema before every call. Do not transfer an optional Higgsfield job ID (only if the host has it), medias payload or start_image role into a managed fal request. Persist actual request IDs and confirmed asset URLs/IDs, then use the receiving model's supported reference fields.
 
 ## Workflow
 
@@ -64,7 +66,7 @@ The prompt/identity policies below apply to every supported provider. Resolve up
 2. **Provider routing.** Generate one anchor candidate per approved variant through the real host image capability. Prefer GPT Image 2 for photorealism when supported; discover the actual model ID, reference schema, ratio and resolution. The preview quote covers the real 2–3 candidates, not a fictional single-image cost. On detected failure (see `create-clips.md` failure-detection rules), invoke the fallback router:
 Resolve this operation through the selected host binding and the real implementation in `capabilities.md`. Preserve its approved inputs, provenance and cost; stop if the capability is unavailable.
 
-   If `<provider_override>=fal`, skip Higgsfield. The anchor's `.meta.json` records the `gateway` — this is the source of truth for every subsequent character-scene call.
+   The default gateway is `create-image-fal` with `openai/gpt-image-2` (optional Higgsfield only if the host has it). The anchor's `.meta.json` records the `gateway` — this is the source of truth for every subsequent character-scene call.
 3. Save to `<video_folder>/generated/character-lock/<characterId>/candidate-<NN>.png` for each of the 2–3 candidate variants. Offer actual labeled candidates on the host surface; preserve the human choice.
 4. Register actual candidate images and provenance in asset_manifest and character_locks using the binding schema. Keep selection pending, then STOP; the human selects and approves the anchor on the host surface. On resume, load that current selected anchor before deriving angles.
 5. **HUMAN GATE.** Present the anchor candidates to the operator with the descriptor block side-by-side:
@@ -85,7 +87,7 @@ Resolve this operation through the selected host binding and the real implementa
      [ ] Age reads correctly
      [ ] Skin texture is realistic, not AI-stock
 
-   Approve, regenerate with adjusted prompt, or escalate to Soul ID training?
+   Approve, regenerate with adjusted prompt, or escalate (optional Soul ID only if the host has it)?
    ```
 
    Do NOT proceed without explicit approval. The anchor is the single human gate for the entire character pipeline.
@@ -94,14 +96,14 @@ Resolve this operation through the selected host binding and the real implementa
 
 Use this branch when restyling a finished ad. Inputs: `<source_anchor>`, `<style_refs>`, `<style_notes>`. `<character_descriptors>` is optional context, not the primary driver.
 
-1. Confirm ownership/access and upload `<source_anchor>` and every `<style_refs>` through the real host upload/confirmation operations when required. Direct Higgsfield may accept confirmed media IDs; managed FAL may require actual supported URL fields. Use the receiving schema, not the source provider's request ID.
+1. Confirm ownership/access and upload `<source_anchor>` and every `<style_refs>` through the real host upload/confirmation operations when required. Managed fal may require actual supported URL fields; an optional direct Higgsfield route (only if the host has it) may accept confirmed media IDs. Use the receiving schema, not the source provider's request ID.
 2. Compose ONE prompt that names the **new medium** explicitly (taken from `<style_notes>`) and asserts that wardrobe / set / framing / lighting / pose must remain **identical** to the source anchor:
 
    ```
    Re-create the <character> in reference image #N (the source anchor) as a
    <style_notes>. KEEP wardrobe (<wardrobe inherited from source>), set
-   (<DMV / kitchen / etc>), framing (bust shot, 9:16), lighting (warm interior,
-   shallow DOF) IDENTICAL. Only change the MEDIUM to <style_notes> using the
+   (<DMV / kitchen / etc>), framing (bust shot, 9:16), lighting (even, natural light;
+   deep depth of field; sharp background) IDENTICAL. Only change the MEDIUM to <style_notes> using the
    reference images #1..N as the visual contract for what that medium looks like.
    The new mouth must be softly parted and relaxed (not flat-lipped) so downstream
    lipsync animation has range to work with.
@@ -132,12 +134,11 @@ Once the anchor is approved:
    Reference photo: anchor-portrait.png — match exactly: hair shape, shirt color (#3A3A3D), facial features, age.
    ```
 2. **Inherit the anchor's gateway.** Read `anchor-portrait.png.meta.json` and use the same `gateway` for every angle:
-   - `gateway: "higgsfield"` → call `the host image-generation operation` with `gpt_image_2` + anchor in its actual supported image-reference field.
-   - `gateway: "fal"` → invoke the host managed FAL operation:
+   - `gateway: "fal"` (default) → `create-image-fal` with `openai/gpt-image-2/edit` + anchor in its actual supported image-reference field:
 Resolve this operation through the selected host binding and the real implementation in `capabilities.md`. Preserve its approved inputs, provenance and cost; stop if the capability is unavailable.
 
    Mixing providers across the anchor + angles introduces aesthetic drift in skin tone, lighting, and feature softness. Stay on one provider for the whole character.
-3. Run in parallel where the provider supports it (both Higgsfield and FAL support concurrent jobs; FAL has per-account RPS limits — keep at 2-3 in parallel). Save to `<video_folder>/generated/character-lock/angle-<name>.png`.
+3. Run in parallel where the provider supports it (fal supports concurrent jobs with per-account RPS limits — keep at 2-3 in parallel). Save to `<video_folder>/generated/character-lock/angle-<name>.png`.
 
 ### Phase 2 — Consistency check (BEFORE animation)
 
@@ -190,29 +191,22 @@ Read the consistency report and act on the worst drift score:
 
 - **Some angles 5–15% drift** → **RE-ROLL JUST THOSE ANGLES**. Re-run Phase 1 for the affected angles with a more explicit prompt addressing the specific drift ("hair is slightly longer in this angle — match the anchor's 2cm length exactly"). Max 2 re-rolls per angle.
 
-- **Any angle > 15% drift after re-rolls** → **ESCALATE**. Two options for the operator:
-  1. **Train a Higgsfield Soul ID** on the anchor (~$15, ~10 min, as a supported identity-training option; it still requires independent consistency QC). LEARNINGS calls this out: "cheaper than 3 re-render rounds at scale."
+- **Any angle > 15% drift after re-rolls** → **ESCALATE**. Options for the operator, in order:
+  1. **Regenerate the anchor** with `create-image-fal` (GPT Image 2 edit, anchor as reference), naming the failing axes, then re-derive the angles.
   2. **Approve a revised plan with accepted drift** (logged in the decision log and updated ingredient revision). This does not waive the final UGC identity/continuity gates; if those required gates cannot pass, revise the format or stop delivery.
+  3. **Optional: train a Soul ID** on the anchor, only if the host has Higgsfield (~$15, ~10 min; it still requires independent consistency QC).
 
   Surface the recommendation; let the operator choose.
 
-### Phase 4 — Soul ID training (escalation only)
+### Optional: Soul ID (only if the host has Higgsfield)
 
-If the operator chooses Soul ID:
+Skip this phase otherwise. If the operator chooses the optional Soul ID:
 
 1. Resolve a real supported identity-training capability through the binding and obtain its separate current price/approval. Direct Higgsfield Soul ID is optional; absence blocks this escalation route, not an invented training command.
 2. Pass the anchor + best 3–4 angles as training images.
 3. Wait for training to complete (~10 min).
-4. Update `character_locks`:
-   ```json
-   {
-     "method": "soul-id",
-     "soul_id": "<id from Higgsfield>",
-     "training_images": [...],
-     "locked_at": "<iso>"
-   }
-   ```
-5. Downstream keyframes use the actual receiving model's identity fields only when that model supports the returned training identity. A Higgsfield soul_id is not a FAL image URL or generic reference value; unsupported models require a human-approved compatible route.
+4. Update `character_locks` with the optional `method: soul-id`, the `soul_id` the optional Higgsfield host returned, `training_images` and `locked_at`.
+5. Downstream keyframes use the actual receiving model's identity fields only when that model supports the returned training identity. An optional Higgsfield soul_id is not a fal image URL or generic reference value; unsupported models require a human-approved compatible route.
 
 ## Output
 
@@ -227,17 +221,17 @@ If the operator chooses Soul ID:
 - Anchor was explicitly approved by the operator (timestamp in decision log).
 - Every angle was derived from the approved anchor (not regenerated from scratch).
 - Consistency check ran BEFORE any animation.
-- `character_locks` exists and either `method: anchor-ref` (drift < 5%) or `method: soul-id`.
+- `character_locks` exists and either `method: anchor-ref` (drift < 5%) or the optional `method: soul-id`.
 - Verbatim descriptor strings appear in EVERY prompt — no paraphrasing.
 
 ## Failure Modes
 
 - **Operator skips the anchor gate** — orchestrator must not let them. This is the cheapest gate in the pipeline.
 - **Re-rolls without addressing the specific drift** — each re-roll prompt must call out the failing axis from the previous report.
-- **Soul ID training fails or hits credit limit** — fall back to anchor-ref with explicit drift acceptance in decision log. NOTE: Soul ID has no FAL equivalent — this is Higgsfield-only.
+- **Optional Soul ID training fails or hits credit limit** — fall back to anchor-ref with explicit drift acceptance in decision log. Soul ID is optional and only if the host has Higgsfield; fal has no equivalent.
 - **Cartoon / non-human ads** — skip this state entirely. Don't burn anchor generation on a felt mascot.
 - **Multi-character ad** — currently single-character only. Multi-character is a future flag (`--characters c1,c2`); for now, run this skill twice with separate output dirs and stitch the character_locks files together in `create-clips`.
-- **Anchor approved on FAL but scenes generated on Higgsfield (or vice versa)** — produces aesthetic drift across the video. The anchor's `.meta.json` records `gateway`; downstream calls must inherit it. If the operator wants to switch providers mid-pipeline (e.g. Higgsfield credits ran out after anchor approval), warn them that all subsequent character scenes should be regenerated against a fresh FAL anchor — don't half-swap.
+- **Anchor approved on one provider but scenes generated on another** — produces aesthetic drift across the video. The anchor's `.meta.json` records `gateway`; downstream calls must inherit it. If the operator wants to switch providers mid-pipeline, warn them that all subsequent character scenes should be regenerated against a fresh anchor — don't half-swap.
 
 ## Relationship to other skills
 

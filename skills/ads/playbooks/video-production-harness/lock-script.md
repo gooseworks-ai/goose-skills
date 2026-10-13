@@ -71,7 +71,7 @@ Surface this as a proposal in the script-draft, not a silent rewrite. The operat
 
 Run both rubric tracks on the actual script text, with separate independent reviewers when available or as two distinct review passes. Neither track renders media. The labels below identify review responsibilities; apply the stated checks directly when an optional review skill is absent. Merge the evidence into one human gate.
 
-**Track A — Narrative arc** (`review-script-arc`)
+**Track A — Narrative arc**
 Scores the 8-axis arc skeleton and marks the climax line. The prompt template is the canonical one below:
 
 > Below is the full VO script for a short-form ad. Read it once as a first-time viewer scrolling through Reels. Score each beat 0–10 and list the weakest beat:
@@ -165,7 +165,7 @@ After this point, **any change to the VO script** requires re-running this skill
   - `<video_folder>/voiceovers/scene-NN-<speaker>.mp3` per scene, snapped to word boundaries
   - `<video_folder>/voiceovers/manifest.json` mapping scenes to source timestamps
   - `<video_folder>/voiceovers/words.json` (word-level transcript — reused by captions in stage 9)
-  - Append `caption_cues: voiceovers/words.json` to `implementation_brief` so the burn-in-captions stage can consume it without re-transcribing.
+  - Append `caption_cues: voiceovers/words.json` to `implementation_brief` so the caption stage can consume it without re-transcribing.
 
 ## Quality Checks
 
@@ -186,7 +186,7 @@ After this point, **any change to the VO script** requires re-running this skill
 - Runs after `create-design-brief` (which produces the first draft script).
 - Runs before `create-storyboard` (so the storyboard can show the locked VO in caption bubbles).
 - `edit-video` reads the climax marker from `implementation_brief`.
-- `create-voiceover-elevenlabs` reads locked_script as source of truth.
+- `create-vo-elevenlabs` (superseded; agent-built path only) reads locked_script as source of truth.
 
 ## Use stored original footage
 

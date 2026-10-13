@@ -35,7 +35,7 @@ Use real media probes, image decoding and the host capability checks below. No e
 
 | Check | What it does | Why |
 |---|---|---|
-| `lfs-pointer-check` | Inspect bytes for the Git LFS pointer signature and decode each raster image. SVG is expected to be text and must be parsed as SVG rather than rejected for ASCII output. | Higgsfield silently falls back to prompt-only generation when the ref is a pointer — invisible until downstream errors. |
+| `lfs-pointer-check` | Inspect bytes for the Git LFS pointer signature and decode each raster image. SVG is expected to be text and must be parsed as SVG rather than rejected for ASCII output. | An image model can silently fall back to prompt-only generation when the ref is a pointer — invisible until downstream errors. |
 | `avif-rejection-check` | Greps refs for `.avif`. Fails if found. | Anthropic image-processing returns 400 on `.avif`. |
 | `capabilities-ready` | Confirm host authentication and each required supported operation without inspecting or printing credentials. | Pipeline fails halfway through with a non-obvious "unauthorized" otherwise. |
 | `brand-vars-unresolved` | Render every brief once (design-brief, implementation-brief, brand-vars.yaml) and grep for `{[a-z_]+}` placeholders. Fails on any unresolved. | "DARK CHARCOAL #{shirt_hex}" written into a Nano Banana prompt = silent drift. |
@@ -44,7 +44,7 @@ Use real media probes, image decoding and the host capability checks below. No e
 
 | Check | What it does |
 |---|---|
-| `image-dimensions-sanity` | Every ref ≥ 512×512. Smaller refs degrade Higgsfield output. |
+| `image-dimensions-sanity` | Every ref ≥ 512×512. Smaller refs degrade generated output. |
 | `gitattributes-lfs-tracked` | Reports which extensions are LFS-tracked in `.gitattributes` so the operator knows when to manually pull. |
 | `vo-script-length-vs-target` | Estimate VO duration at 150 wpm vs design-brief target. Warn if > 1.5× over. |
 | `approved-voice-check` | If design-brief names a voice ID not in `the host-approved voice catalog`, warn. (Hard-fail belongs in create-design-brief.) |

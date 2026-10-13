@@ -124,7 +124,7 @@ concept_format: ugc-diary   # one of: ugc-diary | testimonial | founder-led | be
 voiceover_strategy: real_voice   # one of: real_voice | cloned_voice | synthetic_vo
                                  # UGC family default = real_voice.
                                  # synthetic_vo requires an explicit host-persisted synthetic-voice approval and will be
-                                 # flagged by review-video-vo-authenticity on every run.
+                                 # flagged by the voice-authenticity check on every run.
 
 world_lock:                  # REQUIRED for UGC family; OMIT for multi-location / non-UGC formats
   set: "small white-tiled bathroom with brass round mirror, single candle on wood shelf,
