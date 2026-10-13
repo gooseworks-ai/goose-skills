@@ -535,8 +535,10 @@ function recutGrow(list, f, need, pictureCuts, minShot, duration, fps) {
   const inside = (r) => pictureCuts.filter((c) => c > r.start + RECUT_EPS && c < r.end - RECUT_EPS);
   const leftStop = left < 0 ? null : Math.max(list[left].start, ...inside(list[left]));
   const rightStop = right < 0 ? null : Math.min(list[right].end, ...inside(list[right]));
-  const leftRoom = left < 0 ? 0 : list[left].end - leftStop;
-  const rightRoom = right < 0 ? 0 : rightStop - list[right].start;
+  // A removal whose edge on the shot is itself a picture cut gives its time to the shot beyond that cut.
+  const onCut = (t) => pictureCuts.some((c) => Math.abs(c - t) <= RECUT_EPS);
+  const leftRoom = left < 0 || onCut(list[left].end) ? 0 : list[left].end - leftStop;
+  const rightRoom = right < 0 || onCut(list[right].start) ? 0 : rightStop - list[right].start;
   if (leftRoom + rightRoom < RECUT_EPS) return null;
   let takeLeft = 0;
   if (leftRoom >= need - RECUT_EPS) takeLeft = need;

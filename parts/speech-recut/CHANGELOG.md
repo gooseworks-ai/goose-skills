@@ -2,7 +2,7 @@
 
 ## 1.0.1
 
-- A short shot (under `min_shot_s`) that holds speech no longer ships as a flash of picture. It first takes back the dead air cut beside it, up to its shortfall (a little more pause, never past a picture cut inside that dead air, edges on the take's frames). When that cannot reach the minimum (the take's own shot is that short), its picture is covered by the shot before it (its last frame held; the edit's first shot by the shot after it) and its sound plays on, so no word is lost. 1.0.0 kept it with a warning: a 0.17 s shot left next to a dead-air join read as a jump. Only an edit with no shot long enough to cover from still warns.
+- A short shot (under `min_shot_s`) that holds speech no longer ships as a flash of picture. It first takes back the dead air cut beside it, up to its shortfall (a little more pause, never past a picture cut inside that dead air, edges on the take's frames). A removal whose edge on the shot is itself a picture cut is not taken from: its time would go to the shot beyond that cut, so the dead air on the other side is used. When that cannot reach the minimum (the take's own shot is that short), its picture is covered by the shot before it (its last frame held; the edit's first shot by the shot after it) and its sound plays on, so no word is lost. 1.0.0 kept it with a warning: a 0.17 s shot left next to a dead-air join read as a jump. Only an edit with no shot long enough to cover from still warns.
 
 ## 1.0.0
 
