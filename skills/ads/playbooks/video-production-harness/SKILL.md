@@ -22,6 +22,8 @@ This is the full production sequence used by Studio and customer video hosts. Th
 
 Read `capabilities.md`, the selected host binding and `orchestrator.md` before starting. Then read each detailed step when the sequence enters it. A missing capability, approval or dependency blocks that operation; do not invent a tool or substitute a successful status.
 
+Before planning scenes, open [the shot-routing guide](references/shot-routing.md) and the genre card it names for the brief (AI creator UGC, motion graphics, hypermotion, chat UI or product demo). Open them again when making or re-rolling a clip.
+
 Read [the editorial review guide](references/editorial-review.md) before reviewing
 or revising a cut. It connects stage decisions, exact-version notes, change impact,
 per-output finishing and editable history to the existing project records.

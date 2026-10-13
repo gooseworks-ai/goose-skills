@@ -1,9 +1,9 @@
 {
   "files": {
     "SKILL.md": {
-      "bytes": 2177,
-      "catalog_sha256": "e8ef812b2265b0552bec8734f80ee80c494d07e89a001a3fa773dd99e47af4c5",
-      "sha256": "e12896636e6839b5eed0fe4b44ba8df96afb31681f87ebe06ab018bfa03c2676"
+      "bytes": 2425,
+      "catalog_sha256": "901096fe616a1945c1be73d63ff175ff578133502da4a33b2c5f19372b039504",
+      "sha256": "33d5e930a679baaf7ac819aca64e2c1dbbf8168e444d2895196adbe3e6cfad4f"
     },
     "auto-fix-from-review-notes.md": {
       "bytes": 8979,
@@ -16,9 +16,9 @@
       "sha256": "99e450481df9757046cc4d8ac02f35c50f34512d465a2b7c02f781eb52660cb3"
     },
     "brainstorm.md": {
-      "bytes": 4046,
-      "catalog_sha256": "7df09471022d9bf62578307bed0c2a4b0a1881b4507c94f880342ab3461b656b",
-      "sha256": "7df09471022d9bf62578307bed0c2a4b0a1881b4507c94f880342ab3461b656b"
+      "bytes": 4342,
+      "catalog_sha256": "f46afb903e74e118f24d492497f92198b94a78f52c233c0b6e7bc6a508dc62a7",
+      "sha256": "f46afb903e74e118f24d492497f92198b94a78f52c233c0b6e7bc6a508dc62a7"
     },
     "capabilities.md": {
       "bytes": 13574,
@@ -31,9 +31,9 @@
       "sha256": "ce411b2dedf44c31d47b77f496aaf3f3132241960c4ecb5dd8c894b487f2f208"
     },
     "create-design-brief.md": {
-      "bytes": 15413,
-      "catalog_sha256": "b6dbf1ed62d8aa069f4712791daf4986fad55d94800375a41467529d1788e123",
-      "sha256": "b6dbf1ed62d8aa069f4712791daf4986fad55d94800375a41467529d1788e123"
+      "bytes": 15800,
+      "catalog_sha256": "3f4821e28376d57f036414df30755c6006e3e8682358d4b71e44c4e3f1fdfd9c",
+      "sha256": "3f4821e28376d57f036414df30755c6006e3e8682358d4b71e44c4e3f1fdfd9c"
     },
     "create-storyboard.md": {
       "bytes": 10786,
@@ -61,9 +61,9 @@
       "sha256": "fe014c484148a3afd92ec928524d79403c91297cd25c843dea0abe056f0ed81a"
     },
     "orchestrator.md": {
-      "bytes": 49911,
-      "catalog_sha256": "1368a6d4cb16d863b0c92b6acf9cf0bf5b25caadc8db5c1efa47258cdba23424",
-      "sha256": "1368a6d4cb16d863b0c92b6acf9cf0bf5b25caadc8db5c1efa47258cdba23424"
+      "bytes": 50006,
+      "catalog_sha256": "4c4c9fc4d93522a1221ef2c112f13259adcc9b264871ae399c3c36d4ee64454a",
+      "sha256": "4c4c9fc4d93522a1221ef2c112f13259adcc9b264871ae399c3c36d4ee64454a"
     },
     "polish.md": {
       "bytes": 16336,
@@ -162,8 +162,8 @@
     },
     "skill.meta.json": {
       "bytes": 652,
-      "catalog_sha256": "a5539d11598f8ef633df4febcb590f0065ffb2151b74cf2b832b483c53a9c259",
-      "sha256": "a5539d11598f8ef633df4febcb590f0065ffb2151b74cf2b832b483c53a9c259"
+      "catalog_sha256": "fad3c62f0f41ba20413dce897804ca3bce1d9c2f0f757909d1fb0a4fa175d7b8",
+      "sha256": "fad3c62f0f41ba20413dce897804ca3bce1d9c2f0f757909d1fb0a4fa175d7b8"
     },
     "wrap-session.md": {
       "bytes": 17362,
@@ -192,10 +192,10 @@
   ],
   "schema_version": 1,
   "slug": "video-production-harness",
-  "source_commit": "ea9f2e78b91dc61415e5b1dbc65db43e4fcfd136",
+  "source_commit": "0606a31cd78504a8d78f7211213bc9dd9a1a630b",
   "source_files": {
     "SKILL.md": {
-      "sha256": "e12896636e6839b5eed0fe4b44ba8df96afb31681f87ebe06ab018bfa03c2676",
+      "sha256": "33d5e930a679baaf7ac819aca64e2c1dbbf8168e444d2895196adbe3e6cfad4f",
       "source": "public-entry.md"
     },
     "auto-fix-from-review-notes.md": {
@@ -207,7 +207,7 @@
       "source": "auto-refine.md"
     },
     "brainstorm.md": {
-      "sha256": "7df09471022d9bf62578307bed0c2a4b0a1881b4507c94f880342ab3461b656b",
+      "sha256": "f46afb903e74e118f24d492497f92198b94a78f52c233c0b6e7bc6a508dc62a7",
       "source": "brainstorm.md"
     },
     "capabilities.md": {
@@ -219,7 +219,7 @@
       "source": "create-clips.md"
     },
     "create-design-brief.md": {
-      "sha256": "b6dbf1ed62d8aa069f4712791daf4986fad55d94800375a41467529d1788e123",
+      "sha256": "3f4821e28376d57f036414df30755c6006e3e8682358d4b71e44c4e3f1fdfd9c",
       "source": "create-design-brief.md"
     },
     "create-storyboard.md": {
@@ -243,7 +243,7 @@
       "source": "lock-script.md"
     },
     "orchestrator.md": {
-      "sha256": "1368a6d4cb16d863b0c92b6acf9cf0bf5b25caadc8db5c1efa47258cdba23424",
+      "sha256": "4c4c9fc4d93522a1221ef2c112f13259adcc9b264871ae399c3c36d4ee64454a",
       "source": "orchestrator.md"
     },
     "polish.md": {
@@ -327,6 +327,6 @@
       "source": "wrap-session.md"
     }
   },
-  "source_hash": "376f07c5ebf05db0f0b765a19ef1299e5d19c8f91766e3cd9dfa619d901a8df8",
-  "source_version": "3-376f07c5ebf0"
+  "source_hash": "426cc8ca76dd49707c986ba5301e8f9ddd38b7b793035242aa7971b5b8df204a",
+  "source_version": "3-426cc8ca76dd"
 }
