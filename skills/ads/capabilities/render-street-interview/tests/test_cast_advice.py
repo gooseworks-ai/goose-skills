@@ -13,9 +13,9 @@ import brandkit  # noqa: E402
 import format_spec  # noqa: E402
 
 FULL = ("a stocky Black man in his late thirties with a short greying beard and a shaved head, "
-        "in a plain grey hoodie, with a plain rucksack on one shoulder")
+        "in a plain grey jumper, with a plain rucksack on one shoulder")
 FULL_2 = ("a tall, thin South Asian woman in her sixties with a long grey plait, in a plain navy "
-          "coat, with a plain shopping bag")
+          "coat, with an umbrella")
 THIN = "a man in his thirties, grey hoodie, with a plain rucksack"
 
 
@@ -62,6 +62,19 @@ class CastAdviceTests(unittest.TestCase):
         self.assertIn(THIN, own)
         # another Graza config may share it, but no other BRAND's list may supply it
         self.assertNotIn(THIN, others)
+
+    def test_a_garment_or_bag_that_draws_a_logo_is_named(self):
+        c = cfg()
+        c["shots"][0]["subject"] = FULL.replace("jumper", "hoodie")
+        c["shots"][2]["subject"] = FULL_2.replace("an umbrella", "a plain shopping bag")
+        notes = brandkit.cast_advice(c)
+        self.assertTrue(any("shot 1" in n and "hoodie" in n and "logo" in n for n in notes), notes)
+        self.assertTrue(any("shot 3" in n and "shopping bag" in n for n in notes), notes)
+
+    def test_a_cape_is_not_a_cap(self):
+        c = cfg()
+        c["shots"][0]["subject"], c["shots"][2]["subject"] = FULL + ", capable hands", FULL_2
+        self.assertEqual(brandkit.cast_advice(c), [])
 
     def test_conversation_mode_has_no_cast_advice(self):
         self.assertEqual(brandkit.cast_advice({"mode": "conversation", "shots": []}), [])

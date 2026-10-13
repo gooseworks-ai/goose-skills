@@ -37,8 +37,8 @@ One `subject` string per person, in this order, as plain description:
 3. Skin tone or background, stated plainly ("a Black man", "a South Asian woman", "pale and freckled").
 4. Hair: colour, length, how it is worn, and how it is untidy. Or bald, or covered.
 5. Build ("stocky", "tall and thin", "small and round-shouldered").
-6. One garment, plain and unbranded.
-7. One thing they carry.
+6. One garment that carries no print: a jumper, a cardigan, a wool coat, a shirt. Not a hoodie, a cap or sportswear.
+7. One thing they carry that has no printed surface: a rucksack, an umbrella, a bunch of flowers. Not a shopping bag.
 
 Thin:
 
@@ -46,24 +46,24 @@ Thin:
 
 Full:
 
-> a stocky Black man in his late thirties with a short greying beard and a shaved head, in a plain grey hoodie, with a plain rucksack on one shoulder
+> a stocky Black man in his late thirties with a short greying beard and a shaved head, in a plain grey jumper, with a plain rucksack on one shoulder
 
 ## Rules that still hold
 
 - Describe ordinary people. Do not list flaws to make someone look real: "eye bags", "blotchy" and similar words produced unwell-looking people and are banned vocabulary in `format_spec.py`.
 - No real or famous person, and no one who could read as under eighteen.
-- Clothes and bags stay plain and unbranded; generated lettering garbles.
+- No logos and no lettering on anyone or anything they carry: generated lettering distorts, and a real brand's mark on a person blocks shipping. Calling a hoodie or a shopping bag "plain" did not keep them plain (see below), so do not name them.
 - Vary the corner as a set: do not write four people of the same age, build and background.
 - Do not copy a person from another brand's config. Write the brand's own cast, drawn from who its customers are.
 - Never edit the `subject` of a config that already has a recorded take. That take was made with those words, and its prompt is pinned.
 
 ## The check
 
-`python scripts/brandkit.py --brand <slug>` and the `single_gen.py` dry run both print a `CAST ADVISORY` line for each person who is missing hair, build, or skin tone or background, and for each person copied from another brand's config. It is advice, not a refusal: it does not stop a take.
+`python scripts/brandkit.py --brand <slug>` and the `single_gen.py` dry run both print a `CAST ADVISORY` line for each person who is missing hair, build, or skin tone or background, for each person copied from another brand's config, and for each person given a hoodie, a cap, sportswear or a shopping bag. It is advice, not a refusal: it does not stop a take.
 
 ## Skin and voice settings
 
-All off by default, so every recorded prompt and its hash are unchanged. DRAFT: no person has judged them yet.
+All off by default, so every recorded prompt and its hash are unchanged. Judged once: on 2026-10-13 Apoorv watched seed 6222 (settings off) against seed 6225 (settings on) and found 6225 better. That is one pair of 8 second takes, and 6225 also had a different scene reference, so it is a good sign and not a proof.
 
 | key | where | what it does |
 |---|---|---|
@@ -102,11 +102,11 @@ It also showed what the old reference had been carrying for free. It had shown a
 
 Seed 6225 tested that: the handover frame of an older take, cropped below the chest, where the interviewer's hand holds the bottle upright and the microphone is in view. Both people's holding hands matched their faces, and the bottle came back to near upright. This is the reference to copy: the interviewer's hand on the product, the microphone, the ground, and nobody else's hands.
 
-It did not fix clothing. A sports brand's logo and wordmark appeared on the grey hoodie in three of the four takes, with the logo cropped out of the reference and banned in the prompt. "Grey hoodie" seems to bring sportswear with it. Untested: name a garment that is not sportswear, or say that nothing is printed on it. A real brand's mark on a person blocks shipping, so look for it on every take.
+It did not fix clothing. A sports brand's logo and wordmark appeared on the grey hoodie in three of the four takes, with the logo cropped out of the reference and banned in the prompt. "Grey hoodie" seems to bring sportswear with it, and "shopping bag" brings print. The rule since 2026-10-13: do not name them. Give the person a garment and an object that carry no print. This rule is not yet tested by a take. A real brand's mark on a person blocks shipping, so look for it on every take.
 
 Read across the four takes: the cast description sets the face; the scene reference sets whatever it shows, hands and clothes included; a prompt sentence loses to the image.
 
-Printed lettering appeared on the shopping bag in all four takes despite the plain-bag rule. Neither the skin clause nor the voice descriptions has been judged by a person yet, and the audio of none of the takes has been listened to.
+Printed lettering appeared on the shopping bag in all four takes despite the plain-bag rule. The skin clause and the voice descriptions have been judged once, by one person, as better (see "Skin and voice settings").
 
 ## What is not proven
 

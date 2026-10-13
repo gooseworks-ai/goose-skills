@@ -228,6 +228,13 @@ _TONE = ("skin", "black", "brown", "white", "pale", "olive", "tanned", "freckled
          "hispanic", "arab", "middle eastern", "mediterranean", "indian", "chinese", "korean",
          "nigerian", "irish", "mixed")
 
+# Things that came back with a logo or lettering although the prompt bans both: a sports
+# brand's mark on a "plain grey hoodie" in three of four takes (seeds 6223-6225), printed
+# lettering on a "plain shopping bag" in all four, and episode 1's branded cap and printed
+# carrier bag. The word "plain" did not stop it. See references/cast-writing.md.
+_DRAWS_LOGO = ("hoodie", "hooded top", "tracksuit", "jersey", "cap", "baseball cap",
+               "shopping bag", "carrier bag", "tote bag")
+
 
 def _says(text, words):
     """Whole words only: "thin" must not match "thing", nor "tan" a "tan coat"."""
@@ -249,6 +256,12 @@ def cast_advice(cfg, other_subjects=()):
         if missing:
             notes.append(f"shot {n} ({subj!r}) does not say {', '.join(missing)}: the model picks, "
                          f"and it picks the same face every time")
+        drawn = [w for w in _DRAWS_LOGO if _says(low, (w,))]
+        if drawn:
+            notes.append(f"shot {n} ({subj!r}) names {', '.join(drawn)}: these came back with a "
+                         f"logo or lettering even when called plain, and generated lettering "
+                         f"distorts. Name something that carries no print (a jumper, a cardigan, "
+                         f"a wool coat, a shirt) and give them nothing printed to carry")
         if low in others:
             notes.append(f"shot {n} ({subj!r}) is word for word a person from another brand's "
                          f"config, so it will be the same face")
