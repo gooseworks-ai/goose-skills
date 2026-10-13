@@ -50,7 +50,7 @@ If the user just wants one specific step (e.g. "regenerate scene 5"), call that 
 - `<input>` — either a concept paragraph (cold start) or a path to an existing `<video_folder>` (resume) or `<source_ad_folder>` (variant restyle)
 - `<video_folder>` — temporary processing directory chosen by the host; durable state stays in the project.
 - `<auto>` — permits ordinary execution inside already-approved scope only. It never bypasses a human gate or approved budget.
-- `<provider_override>` (default `auto`) — `auto` | `higgsfield` | `fal`. Controls which gen provider is used for image/video calls. See "Provider fallback policy" below.
+- `<provider_override>` (default `fal`) — `fal` | `higgsfield` (optional; only if the host has it). Controls which gen provider is used for image/video calls. See "Provider fallback policy" below.
 - `<variant_of>` (optional) — path to a source ad folder to restyle. When set, the orchestrator enters **variant mode** (see below) — most states are short-circuited because they're inherited from the source.
 - `<style_refs>` (required iff `<variant_of>` is set) — list of reference images defining the new medium (felt, claymation, anime, etc.).
 
@@ -143,7 +143,7 @@ For podcast-style skit ads, use an actual available specialist through the bindi
 ### State 2 — Design brief
 1. **Variant mode:** skip entirely. The source's `design_brief` is inherited; you can copy it into `<video_folder>/` for traceability but don't re-derive it.
 2. If both `design_brief` and `implementation_brief` exist, skip to State 2.5.
-3. Call `create-design-brief.md`. The brief must include `audio_strategy:` (one of `vo-narrator | song-as-script | hybrid | silent`), `climax_line:` (set in State 2.5) and `assets_manifest:` (consumed by State 0 re-audit).
+3. Call `create-design-brief.md`; its step 4 sets the scene skeleton and routes each scene through `references/shot-routing.md`. The brief must include `audio_strategy:` (one of `vo-narrator | song-as-script | hybrid | silent`), `climax_line:` (set in State 2.5) and `assets_manifest:` (consumed by State 0 re-audit).
 4. Once `audio_strategy` is set, downstream states branch off it: `lock-script` chooses VO vs lyrics output, `edit-video` chooses mix protocol, the storyboard player chooses VO vs song embed. Validate the field before advancing.
 5. No gate by default — design-brief is mechanical from idea-brief. If `<auto>` is false and significant creative decisions surfaced (e.g. style choice, voice options), pause for the user to weigh in on the open-decisions section.
 
@@ -172,11 +172,11 @@ For podcast-style skit ads, use an actual available specialist through the bindi
 ### State 3.4 — Motion strategy classifier
 1. **Reads** `design_brief` `visual_style:` field (and the storyboard's aesthetic notes if explicit).
 2. **Decides** `motion_strategy` and writes it into `project_state`:
-   - `generative_video` — photoreal, real performance, products-in-use, cinematic. Routes State 5 to Seedance/Veo3/Kling per `provider_override`.
-   - `ffmpeg_motion` — editorial illustration, 2D, halftone, paper-and-ink, New Yorker / Niemann / Steinberg / spot-illustration. Routes State 5 to FFmpeg zoompan over each approved still + hard-cut concat. **Seedance/Veo3/Kling MUST NOT be called for these aesthetics** — they hallucinate photoreal middle states. Specifically: Seedance produced a photoreal human hand mid-clip on a "pen draws on" prompt, and added cartoon-cloud middle states on a rats-decline crossfade. Cost in a prior review: ~$1.62 burned before retiring the path.
-   - `hybrid_remotion` — kinetic typography, motion graphics, data viz, infographics. Routes State 5 to Remotion comps (existing `motion-graphics` molecules).
+   - `generative_video` — photoreal, real performance, products-in-use, cinematic. Each shot uses its row in `references/shot-routing.md`.
+   - `ffmpeg_motion` — editorial illustration, 2D, halftone, paper-and-ink, spot illustration. FFmpeg zoompan over each approved still + hard-cut concat. **No generative video for these looks** — it invents photoreal middle states (a real hand mid-drawing).
+   - `hybrid_remotion` — kinetic typography, motion graphics, data viz: the browser-rendered rows of `references/shot-routing.md`.
 3. **No human gate required** if `visual_style` is unambiguous. If the brief is ambiguous (e.g. lists multiple styles), surface a choice via `the host human-decision surface`.
-4. **Downstream effect:** State 5 (create-clips) and State 5.8 (transition layer) both read `motion_strategy`. `ffmpeg_motion` skips the entire generative-video pipeline and uses FFmpeg zoompan over each approved still for per-still motion + hard-cut concat (NO crossfades — they expose AI-generated keyframe drift; LEARNINGS L2).
+4. **Downstream effect:** State 5 (create-clips) and State 5.8 (transition layer) both read `motion_strategy`. `ffmpeg_motion` skips the entire generative-video pipeline and uses FFmpeg zoompan over each approved still for per-still motion + hard-cut concat (NO crossfades — they expose AI-generated keyframe drift).
 5. **Hint:** editorial-illustration trigger terms above determine this route even if no optional model-notes document is installed. If any apply to the design-brief or prompts, record `ffmpeg_motion`.
 
 ### State 3.5 — Character lock
@@ -184,7 +184,7 @@ For podcast-style skit ads, use an actual available specialist through the bindi
 2. If `<video_folder>/generated/character-lock/character_locks` exists, continue to State 3.55 when applicable, then the preview gate and State 5.
 3. **Variant mode:** call `lock-character.md` in **Mode B** — pass `<style_refs>` AND the source anchor portrait paths (as the actual supported image-reference fields). The new anchor inherits the source's wardrobe/set/framing but renders in the new medium. See `lock-character.md` for the Mode B flow.
 4. Otherwise (cold-start, Mode A) call `lock-character.md` with `<character_descriptors>` from `design_brief`.
-5. **HUMAN GATE on anchor portrait.** The anchor is the single approval that locks every subsequent keyframe. Drift > 15% escalates to Soul ID training; surface the recommendation, let operator choose.
+5. **HUMAN GATE on anchor portrait.** The anchor is the single approval that locks every subsequent keyframe. Drift > 15% follows the escalation order in `lock-character.md` (optional Soul ID last, only if the host has Higgsfield); let the operator choose.
 6. After lock, `character_locks` is the contract `create-clips` reads for per-scene the actual model's reference inputs refs.
 7. **Chained-ref discipline.** `character_locks` MUST also include a `chain_strategy` field: `"anchor-only"` (every downstream call passes only the anchor as ref) or `"all-locked-frames-as-refs"` (every downstream call passes the anchor AND every previously-approved locked keyframe). The latter is mandatory for series where consistency across N frames matters (e.g. 4-panel decline arcs, ping-pong loops, before/after parallels). Resolve the actual reference-image fields from the supported model schema. Pass the approved anchor and all applicable previously approved locked frames, then record their IDs/input fingerprint. A prior review lost ~6 iteration cycles to cage geometry drift before this discipline was applied.
 
@@ -219,7 +219,7 @@ For podcast-style skit ads, use an actual available specialist through the bindi
 ### State 5 — Create clips
 1. Reuse clips only when all scene IDs, exact inputs, approvals, job results and passing clip evidence match the current plan.
 2. Re-run `preflight-audit` as a sub-step (new assets may have landed since State 0).
-3. Verify the selected specialist package/input handoff and free dependency preflight, then call `create-clips.md`. It reads `character_locks` if it exists and threads the locked anchor/soul_id into every keyframe.
+3. Verify the selected specialist package/input handoff and free dependency preflight, then call `create-clips.md`. It reads `character_locks` if it exists and threads the locked anchor (or the optional soul_id, only if the host has Higgsfield) into every keyframe.
 4. Phase 0 of create-clips remains for style-anchor on cartoon scenes; for human characters it's a no-op (the lock-character anchor already covers it).
 
 ### State 5.8 — Transition layer (opt-in)
@@ -260,8 +260,8 @@ Quote each actual transition operation from current host pricing before approvin
 
 ### State 8 — Review (full parallel suite)
 1. Call `review-video.md` against the explicitly selected candidate ID/checksum, with rough or fine stage recorded. First save actual received message, then compare with the sourced brief. The stage questions can share the existing review surface; no additional approval meeting is required. Run every applicable documented review responsibility; parallel execution is optional:
-   - **Phase 7a (deterministic, parallel):** the packaged technical-evidence tool + `review-video-hallucination-check` + `review-video-character-consistency` + `check-audio-visual-alignment` (validates payoff lines land on payoff visuals via Whisper word-timestamps + beat table — catches the "dead rats arrived 2s early" class of bug from LEARNINGS L3). **For `concept_format: ugc-diary | testimonial | founder-led | before-after`, also dispatch:** `review-video-identity-drift` (cross-cut identity check — catches "different person in scene 7" from a prior review v3 diagnostic) AND `review-video-world-consistency` (set + wardrobe + lighting drift across cuts — catches "bathroom → kitchen → living room" failure). Findings on both are persisted into `review_issues`.
-   - **Phase 7b (creative, parallel; user toggles which):** `review-video-concept-landing` + `review-video-pacing-rhythm` + `review-video-for-brand-fit` + `review-video-for-platform-fit` (hook-strength + synthetic-persona already ran in State 7.5). **For UGC concept formats, also dispatch:** `review-video-ugc-shotcraft` (actual cuts, time-based face exposure and temporal review against approved intent). The speech-performance responsibility applies to **all spoken formats**, including `real_voice`: listen to isolated takes and the actual mix, joins and ending for pronunciation, timing, delivery and defects. Use the fetched voice-performance reviewer when available or the documented listening rubric with real media tools; the responsibility name is not an assumed installed command.
+   - **Phase 7a (deterministic, parallel):** the packaged technical-evidence tool + the hallucination, transcript, identity and audio-visual alignment checks in `review-video.md` (alignment catches a payoff line landing 2s before its visual). **For `concept_format: ugc-diary | testimonial | founder-led | before-after`, also run** the cross-cut identity verdict and the world-consistency rubric (set, wardrobe and lighting drift across cuts). Findings on both are persisted into `review_issues`.
+   - **Phase 7b (creative, parallel; user toggles which):** the concept-landing, pacing, brand-fit and platform-fit checks in `review-video.md` (hook-strength + synthetic-persona already ran in State 7.5). **For UGC concept formats, also run** the UGC shotcraft check (actual cuts, time-based face exposure and temporal review against approved intent). The speech-performance responsibility applies to **all spoken formats**, including `real_voice`: listen to isolated takes and the actual mix, joins and ending for pronunciation, timing, delivery and defects. Use the fetched voice-performance reviewer when available or the documented listening rubric with real media tools; the responsibility name is not an assumed installed command.
    - **Phase 7c (aggregate):** merge all reports into a single `review-notes/<idx>-<timestamp>.md` with P0/P1/P2 sections in the contract that `auto-fix-from-review-notes` consumes.
    - **Phase 7d (claim verification):** for every visual claim in 7a/7b output, re-extract the frame at the claimed timecode and verify. Reports unverified claims as `claim:unverified`. Don't trust sub-agent visual assertions without frame-extraction proof.
    - **Phase 7e — Complete-cut watch and audio.** Mandatory before APPROVED. Run `python3 scripts/qc_evidence.py master.mp4 evidence-review-N`, read the full frame evidence, play the complete cut continuously at normal speed and listen to all actual audio. Obtain transcript/word evidence for speech; missing review capability leaves INCOMPLETE, never a pass. Single-frame spot-checks (Phase 7d) miss timing drift, redundant beats, caption-visual collisions, and visual-variety problems. Use this on every iteration to catch cross-frame inconsistency, narrative regression, end-card/caption overlap and wasted hook time.
@@ -275,7 +275,7 @@ Quote each actual transition operation from current host pricing before approvin
 1. Call `polish.md` in `polish-and-fix` mode.
 2. It will:
    - Read the implementation-brief / brand-vars / captions / word-timestamps
-   - Run the packaged technical-evidence tool, `score-readability`, and `whisper-test-mix` pre-flight
+   - Run the packaged technical-evidence tool, the end-card readability check and a whisper test of the mix (both in `polish.md`) as pre-flight
    - Watch the master and propose polish-notes across 9 axes (loudness, captions overflow/timing, music/VO balance, end-card, tail, hook, color, brand fit, **vo-intelligibility**)
    - Apply every P0/P1 via `auto-fix-from-review-notes`
    - Produce `edits/master-polished.mp4` + `polish-notes/<idx>-<ts>-applied.md`
@@ -285,7 +285,7 @@ Quote each actual transition operation from current host pricing before approvin
 
 ### State 10 — Deliver
 
-1. Burn approved captions on the polished picture/mix as the final visual post-production step. Choose the real host caption capability (caption-burn uses Pillow and FFmpeg overlay without libass), or the packaged local ASS path with verified libass/font support. Missing libass blocks only the ASS route; fetch the available caption specialist before declaring captions unavailable. The style comes from the current brand brief; no private house preset or stale price table is assumed.
+1. Burn approved captions on the polished picture/mix as the final visual step. Use `caption-burn` (superseded; agent-built path; the kit path uses captions-layer), which needs no libass, or the packaged local ASS path with verified libass/font support. Missing libass blocks only the ASS route; fetch the caption specialist before declaring captions unavailable. The style comes from the current brand brief; no private house preset or stale price table is assumed.
 2. Check caption spelling, word timing, safe areas, suppressed cues on text-heavy scenes, and end-card/offer/logo collisions. Reposition or omit the overlapping approved cue explicitly.
 3. Extract each cue start+0.3s and transition frame, then watch the whole actual captioned cut with audio/transcript comparison. Probe final duration, dimensions, streams and codec. All shared QC and current clip coverage must pass.
 4. Build each required ratio/cutdown/language from editable sources, adapt its own caption layout/timing and burn once. Run separate final review at destination size on each actual output/checksum, including full ending, proof/CTA and complete playback/listening. Parent-master QC does not clear a derivative. Register real owned uploads and immutable evidence through the binding.
@@ -296,8 +296,8 @@ Quote each actual transition operation from current host pricing before approvin
 1. Keep the existing production manifest/editable sources and decision history current at every checkpoint, not only delivery. Preserve selected/rejected choices, exact notes, scoped preferences and measured results separately. After DELIVER is approved, call `wrap-session.md`. Runs three sub-steps with a gate on each:
    - **A · reproduction_recipe** — process-focused recipe that a future agent can use to recreate this *kind* of video for a slightly different concept or brand. Reads `project_state`, `implementation_brief`, `design_brief`, `storyboard`, cost tracker, audio artifacts, and the folder layout.
    - **B · learnings** — failure-driven retrospective. One entry per iteration cycle that changed the master, plus tool/API quirks. TL;DR (exactly 3 lessons) up top.
-   - **C · `improvement_proposals`** — concrete diffs to atoms / molecules / orchestrator skills based on LEARNINGS. Read-only against `shared skills` — never auto-edits.
-2. Skip when `<status>=abandoned` would normally apply (failed runs still produce LEARNINGS + skill-update-proposals, but no HOW_TO).
+   - **C · `improvement_proposals`** — concrete diffs to atoms / molecules / orchestrator skills based on the learnings. Read-only against `shared skills` — never auto-edits.
+2. Skip when `<status>=abandoned` would normally apply (failed runs still produce learnings + skill-update-proposals, but no HOW_TO).
 3. The skill-update proposals are the seed for an out-of-band manual skill-tree edit. Operator picks which to apply.
 4. After approval, this state is complete — the orchestrator does not advance further.
 
@@ -317,10 +317,10 @@ Quote each actual transition operation from current host pricing before approvin
   "preflight_status": "PASS",
   "character_lock_method": "anchor-ref",
   "transition_layer_status": "complete",
-  "provider_override": "auto",
+  "provider_override": "fal",
   "provider_events": [
-    {"state": "CREATE_CLIPS", "scene": "07", "primary": "higgsfield", "primary_model": "veo3_1_lite", "fallback_used": true, "fal_model": "fal-ai/veo3/fast/image-to-video", "reason": "job_status=failed: dark plate rejected", "ts": "..."},
-    {"state": "TRANSITION_LAYER", "pair": "scene_03b->scene_03c", "primary": "higgsfield", "primary_model": "seedance_1_5", "fallback_used": true, "fallback_model": "kling2_6", "reason": "nsfw false-positive on red-glow city ref", "ts": "..."}
+    {"state": "CREATE_CLIPS", "scene": "07", "primary": "fal", "primary_model": "fal-ai/veo3.1/fast/image-to-video", "fallback_used": true, "fallback_model": "fal-ai/kling-video/v2.5-turbo/pro/image-to-video", "reason": "job_status=failed: dark plate rejected", "ts": "..."},
+    {"state": "TRANSITION_LAYER", "pair": "scene_03b->scene_03c", "primary": "fal", "primary_model": "bytedance/seedance-2.0/image-to-video", "fallback_used": true, "fallback_model": "fal-ai/kling-video/v2.5-turbo/pro/image-to-video", "reason": "nsfw false-positive on red-glow city ref", "ts": "..."}
   ]
 }
 ```
@@ -331,20 +331,20 @@ Quote each actual transition operation from current host pricing before approvin
 
 Every paid operation must be recorded and reserved by the host with project, state, provider/model, quantity, price bound, job ID, input fingerprint, actual charge and output provenance. The orchestrator then renders a one-line `cost_preview` BEFORE every human gate:
 
-> **cost_preview:** spent **$21.45** so far (`elevenlabs $0.20`, `higgsfield $21.25`). Approving this gate triggers an estimated **+$8.50** for CAPTION_SYNC + EDIT_VIDEO.
+> **cost_preview:** spent **$21.45** so far (`elevenlabs $0.20`, `fal $21.25`). Approving this gate triggers an estimated **+$8.50** for CAPTION_SYNC + EDIT_VIDEO.
 
 Use the host's actual pricing/credit schema and current supported model catalog; old reference rate tables cannot authorize spend. Operators want to know the running cost before approving; this is a near-free way to surface it.
 
 ## Model behavior reference
 
-When writing or reviewing prompts in any state, consult actual model capability/schema documentation supplied by the host. It documents cross-cutting gotchas about how Veo, Seedance, and Nano Banana actually behave (back-loaded interpolation, vocabulary-driven rendering modes, multi-clip color drift, constraint-redundancy compliance rates, etc.). These are descriptions, not creative rules — knowing them helps you prompt for whatever look you want.
+Open `references/shot-routing.md` and the brief's genre card at State 2 (design brief), State 5 (clips) and State 6 (re-rolls). Confirm the model's schema with the host before submitting.
 
 ## Decision-making policies
 
 - **Cost discipline.** Never re-generate something that already exists and is marked APPROVED in a review note. Always check for existing artifacts before calling a skill.
 - **Skill selection.** When edit-clip is needed, use the explicit `edit_type` from the review note rather than guessing. If the review just says "scene 5 looks weird," push back and ask for specifics before re-rolling.
 - **Voice picks.** Always pull from `the host-approved voice catalog`. If the design-brief calls for a voice not on the list, surface that as a blocker before State 5.
-- **Style locks.** Once `lock-character` produces `character_locks`, treat that as the lock for all subsequent regenerations in this video. Any re-roll must thread the anchor/soul_id.
+- **Style locks.** Once `lock-character` produces `character_locks`, treat that as the lock for all subsequent regenerations in this video. Any re-roll must thread the anchor (or the optional soul_id, only if the host has Higgsfield).
 - **Script locks.** Once `locked_script` exists, downstream skills read VO from it. Any change to VO text invalidates `locked_script` and forces re-running State 2.5 — no silent edits.
 - **Pre-flight is non-negotiable.** P0 audit failures block the pipeline. A revised supported plan may remove a blocked dependency only through current human approval; broken inputs and required capabilities cannot be bypassed by a local flag.
 - **Review loop bounds.** 3 iterations max before escalating. Don't quietly burn credits chasing tiny issues.
@@ -355,19 +355,18 @@ When writing or reviewing prompts in any state, consult actual model capability/
 - **Editorial illustration → ffmpeg motion only.** If `motion_strategy: ffmpeg_motion` is set by State 3.4, Seedance/Veo3/Kling MUST NOT be invoked. The orchestrator refuses paid generative-video calls on the `ffmpeg_motion` route. A `hybrid_remotion` plan may use only its explicitly approved generative segments; it never overrides the editorial-illustration ban. These models hallucinate photoreal middle states that break editorial-illustration aesthetics.
 - **No crossfades between AI-generated stills.** Use hard cuts. Crossfades expose geometric drift across independently-generated keyframes (different bar counts, dropper positions, cage shapes). Hard cuts read as "next panel"; crossfades read as "the cage is morphing weirdly."
 - **Provider fallback.** The selected binding declares available primary/fallback providers. A fallback is never assumed available or free. Logic:
-  - `<provider_override>=auto` (default): try the host's supported selected provider first; on detected failure (see `create-clips.md` failure-detection rules), resolve a supported fallback through the host after reconciling the failed job and approval/budget.
-  - `<provider_override>=higgsfield`: Higgsfield only; no fallback (fail loud).
-  - `<provider_override>=fal`: skip Higgsfield, go straight to FAL through the binding's managed submit/poll transport.
+  - `<provider_override>=fal` (default): fal is primary, through the binding's managed submit/poll transport. On detected failure (see `create-clips.md` failure-detection rules), resolve a supported fal fallback model through the host after reconciling the failed job and approval/budget.
+  - `<provider_override>=higgsfield` (optional; only if the host has it): Higgsfield only; no fallback (fail loud).
   - Grok video may lack a supported host fallback; a missing mapping surfaces `fallback_unavailable` and the operator decides whether to retry, reroute, or skip the scene.
-  - Soul ID training is Higgsfield-only — no fallback. If it fails, the operator either fixes Higgsfield credits or accepts anchor-ref drift.
+  - Soul ID training is optional and only if the host has Higgsfield; it has no fallback. If it fails, regenerate the anchor with `create-image-fal` or accept anchor-ref drift.
 - **UGC discipline (a prior production review v3 diagnostic).** When `concept_format` is `ugc-diary | testimonial | founder-led | before-after`:
   - `world_lock:` block is REQUIRED in design-brief; State 3.55 (world lock) runs.
   - `voiceover_strategy:` is REQUIRED and defaults to `real_voice`. `synthetic_vo` requires an explicit host-persisted synthetic-voice approval and is flagged at every gate.
   - Storyboard MUST compute and surface `cuts_per_10s` and `face_share_planned`; compare those measurements with the brief/reference-derived targets and explain any mismatch; actual picture cuts and all direct-face exposure count. No universal cut or face-share quota replaces the viewer-purpose judgment.
-  - Hard cuts only between AI-generated stills; crossfades reserved for non-AI compositions (LEARNINGS L2 extension).
+  - Hard cuts only between AI-generated stills; crossfades reserved for non-AI compositions.
   - Brand text is never AI-rendered; always composite the real wordmark/screenshot via PIL.
   - End-card style defaults to `narrative_resolution` (talent walks out / closes laptop / picks up phone), not flat brand panel.
-  - Phase 7a/7b review includes UGC identity/world/shotcraft and the all-speech performance responsibility: `review-video-identity-drift`, `review-video-world-consistency`, `review-video-ugc-shotcraft`, `review-video-vo-authenticity`. Apply the current evidence and completion requirements in `review-video.md`: shotcraft must satisfy approved intent and any explicit agreed recipe requirements using actual temporal evidence; no legacy composite score or universal cut/face quota decides approval. A voice review record validates declarations, not heard quality. Required unresolved defects or unavailable review remain blocking. Findings are persisted into `review_issues`.
+  - Phase 7a/7b review includes UGC identity/world/shotcraft and the all-speech performance responsibility: the identity, world-consistency, UGC shotcraft and voice-authenticity checks in `review-video.md`. Apply the current evidence and completion requirements in `review-video.md`: shotcraft must satisfy approved intent and any explicit agreed recipe requirements using actual temporal evidence; no legacy composite score or universal cut/face quota decides approval. A voice review record validates declarations, not heard quality. Required unresolved defects or unavailable review remain blocking. Findings are persisted into `review_issues`.
   - Within a single video, once an anchor (character or style) is approved on a specific provider, all subsequent regenerations for that anchor's downstream calls inherit the same `gateway` from `.meta.json` (no mid-pipeline provider swap on the same character).
 
 ## Quality Checks
@@ -378,7 +377,7 @@ When writing or reviewing prompts in any state, consult actual model capability/
 - No skill was called twice in the same state for the same input (idempotency check).
 - The decision log in `implementation_brief` has been updated with actual choices made.
 - `preflight_status` is `PASS` for all current inputs and required capabilities.
-- If `character_lock_method` is `soul-id`, every keyframe in `create-clips` threaded the soul_id.
+- If `character_lock_method` is `soul-id` (optional; only if the host has Higgsfield), every keyframe in `create-clips` threaded the soul_id.
 
 ## Failure Modes
 

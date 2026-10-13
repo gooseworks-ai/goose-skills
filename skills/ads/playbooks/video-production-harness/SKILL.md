@@ -20,7 +20,9 @@ the appropriate stage. Preserve earlier cuts and the decisions needed to resume.
 
 This is the full production sequence used by Studio and customer video hosts. The host supplies its connection instructions; the production decisions and detailed steps live here once.
 
-Read `capabilities.md`, the selected host binding and `orchestrator.md` before starting. Then read each detailed step when the sequence enters it. A missing capability, approval or dependency blocks that operation; do not invent a tool or substitute a successful status.
+Read `capabilities.md`, the host binding and `orchestrator.md` before starting. The host binding is the entry skill that loaded this package (for GooseWorks: make-custom-video). Then read each detailed step when the sequence enters it. A missing capability, approval or dependency blocks that operation; do not invent a tool or substitute a successful status.
+
+Before planning scenes, open [the shot-routing guide](references/shot-routing.md) and the genre card it names for the brief (AI creator UGC, motion graphics, hypermotion, chat UI or product demo). Open them again when making or re-rolling a clip.
 
 Read [the editorial review guide](references/editorial-review.md) before reviewing
 or revising a cut. It connects stage decisions, exact-version notes, change impact,

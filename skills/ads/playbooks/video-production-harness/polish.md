@@ -47,19 +47,19 @@ This contract is hard. /polish in `polish` mode MUST NOT touch any video file.
 
 Each axis maps to a repair or review responsibility. The labels below are not shipped executables; resolve them to the real implementations in `capabilities.md` and `edit-video.md`. The watch-pass is structured around these axes; every finding in polish-notes is tagged with one.
 
-| Axis | What we check | Atom(s) used |
+| Axis | What we check | Repair |
 |---|---|---|
-| audio-loudness | Integrated LUFS within ±0.5 of platform target (default -14 social). True-peak under -1 dBTP. | `normalize-loudness` |
+| audio-loudness | Integrated LUFS within ±0.5 of platform target (default -14 social). True-peak under -1 dBTP. | Two-pass `loudnorm=I=-14:TP=-1.5:LRA=11` |
 | **vo-intelligibility** | Full-speed listening confirms every line and ending remains clear against actual music/SFX; transcript comparison corroborates locked wording. | actual transcript comparison → measured per-line FFmpeg mix correction |
-| captions-overflow | Check actual cue readability at destination size. More than 38 chars/line, two lines or six words in under 0.6s are diagnostic prompts; approved layout and measured reading time decide. | `fix-caption-overflow` |
-| captions-timing | Cue starts within ±100 ms of the matching word in word-timestamps. | `retime-captions-to-words` |
+| captions-overflow | Check actual cue readability at destination size. More than 38 chars/line, two lines or six words in under 0.6s are diagnostic prompts; approved layout and measured reading time decide. | Split long cues at phrase breaks into at most 2 lines of 38 characters; keep words and timing |
+| captions-timing | Cue starts within ±100 ms of the matching word in word-timestamps. | Snap each cue start to its first word's start |
 | music-vo-balance | Measure stems in dialogue windows and listen to the final mix for masking/pumping; level gap is diagnostic, not a universal perceptual threshold. Preserve the approved audio strategy. | Measured cue gain/automation or tuned sidechain |
-| end-card | Judge readability/hold against actual copy and destination size; score 7 and 1.2s are diagnostic starting points, not universal pass thresholds. Logo/CTA contrast meets the agreed legibility target; text meets WCAG AA (4.5:1 ordinary text, 3:1 large text) when applicable. Brand-quality design (not generic gradient). | `score-readability`, then `extend-hold`; if regen needed, follow the approved brand design and deterministic logo/text composition. Use an installed supported browser renderer for motion chrome; use Pillow or FFmpeg for static compositions. New paid visual assets require the appropriate renewed gate. |
+| end-card | Judge readability/hold against actual copy and destination size; score 7 and 1.2s are diagnostic starting points, not universal pass thresholds. Logo/CTA contrast meets the agreed legibility target; text meets WCAG AA (4.5:1 ordinary text, 3:1 large text) when applicable. Brand-quality design (not generic gradient). | End-card text readable at phone size for ≥ 1.5 s; extend the hold with ffmpeg `tpad=stop_mode=clone:stop_duration=<s>`; if regen needed, follow the approved brand design and deterministic logo/text composition. Use an installed supported browser renderer for motion chrome; use Pillow or FFmpeg for static compositions. New paid visual assets require the appropriate renewed gate. |
 | final-tail | Full ending matches the approved fade, hold, silence or loop. No chopped final speech, unintended abruptness or accidental gap; black/silent tails only when planned. | Planned tail repair |
 | pacing-performance | Verify only the exact approved timing/performance choice. Preserve raw speech; listen to raw and edited versions and recheck word/caption sync. No automatic speed target. | Actual performance/timing comparison; repair only within approved scope |
 | hook-frames | First 3 s: frame-1 readable, subject clear, motion legible. (Diagnostic only — fix means re-rolling scene 1 via `edit-clip`.) | none (escalate) |
-| color-consistency | Inspect intended continuity against the approved look; luminance variance is diagnostic and must not erase intentional lighting changes. | `grade-consistency-pass` |
-| brand-fit | Palette match, approved logo usage, no banned phrases. (Defers to `review-video-for-brand-fit`.) | none (escalate) |
+| color-consistency | Inspect intended continuity against the approved look; luminance variance is diagnostic and must not erase intentional lighting changes. | none (escalate) |
+| brand-fit | Palette match, approved logo usage, no banned phrases. (Same as the brand-fit check in `review-video.md`.) | none (escalate) |
 
 **Speech integrity and actual listening are ship gates.** A transcript failure is a finding to investigate against the audio, including brand pronunciation and recognizer errors. A passing transcript cannot establish natural speech, intelligibility against music or clean timing. Record heard defects separately from transcription mismatches; missing listening capability leaves the verdict incomplete. For silent/text-led work, verify intended silence and reading time instead of demanding a speech transcript.
 
@@ -133,11 +133,10 @@ Priorities:
 2. Follow `auto-fix-from-review-notes.md` to resolve and execute supported repairs in dependency order. It is a procedure, not a packaged command. Preserve inputs, provenance and cost; stop on unsupported P0/P1 repairs.
 
 3. Apply the atom outputs back into the cut. The dispatcher operates on individual files — /polish stitches the results together:
-   - If `normalize-loudness` ran on the master → its output IS the new master.
-   - If `fix-caption-overflow` / `retime-captions-to-words` ran → save corrected caption cues; final burn remains State 10. If reviewing a previously captioned delivered version, create a fresh uncaptioned candidate before reapplying final captions.
-   - If `extend-hold` ran on the end-card clip → re-stitch with `edit-video` (Phases 1+2 only) to produce a fresh master.
-   - If `grade-consistency-pass` ran on clips/ → re-stitch via `edit-video` (Phases 1+2 only).
-   - If `append-tail-fade` ran → its output IS the new polished master.
+   - If loudness was normalized on the master → its output IS the new master.
+   - If caption cues were split or retimed → save corrected caption cues; final burn remains State 10. If reviewing a previously captioned delivered version, create a fresh uncaptioned candidate before reapplying final captions.
+   - If the end-card hold was extended → re-stitch with `edit-video` (Phases 1+2 only) to produce a fresh master.
+   - If a tail fade was added (`afade=t=out`, `fade=t=out`) → its output IS the new polished master.
 4. Final result is `edits/master-polished.mp4`.
 
 ### Step 7 — Re-verify
@@ -193,7 +192,7 @@ On rejection: leave `master-polished.mp4` in place for operator inspection; do n
 - **Watch pass returns generic feedback** — re-run with stricter prompt emphasizing "specific timecode required for every finding."
 - **Dispatcher fails on a P0 atom** — /polish surfaces the failure, leaves the original master intact, does not advance to Step 8.
 - **The polished master is actually worse on a metric** — e.g. loudnorm pumped a scene into clipping. Flag this in the applied.md, do NOT auto-swap; require human confirmation.
-- **Re-stitch via `edit-video` introduces drift** — captions or audio shift. Mitigation: prefer single-pass `add-captions-burn` re-mux over a full `edit-video` re-run when only captions changed.
+- **Re-stitch via `edit-video` introduces drift** — captions or audio shift. Mitigation: prefer a single caption re-burn with `caption-burn` (superseded; agent-built path; the kit path uses captions-layer) over a full `edit-video` re-run when only captions changed.
 - **Idempotence:** running /polish twice should produce a second polish-notes file with near-empty proposal. If the second pass produces an equally heavy proposal, the first pass either didn't actually fix things or the proposer is hallucinating.
 
 ## Relationship to other skills

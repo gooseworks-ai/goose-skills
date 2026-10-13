@@ -46,17 +46,7 @@ This is step 2 of the video-orchestrator pipeline. Runs after `brainstorm`.
    transition purpose using the existing scene rows. Select assets using the rubric
    below before describing them as usable. A beautiful image cannot stand in for a
    missing demonstration.
-4. Write the **tool & skill plan** table — per scene, name the primary generation tool plus any supporting tools. Resolve each operation to the binding's current supported model/tool schema and priced unit. The following are creative preferences when supported, not assumed transport IDs or unconditional provider routes:
-   - Cartoon scenes → supported Nano Banana 2 keyframes → supported Veo animation, except the editorial-illustration motion ban
-   - Photorealistic character scenes → supported GPT Image 2 keyframes → supported Veo or Kling animation
-   - UI/typography scenes → Hyperframes via an installed browser composition capability
-   - Hero stills → FFmpeg Ken Burns / an installed browser composition capability
-   - End cards → an installed animated end-card renderer or PIL composite
-   - Voice → the managed selected-voice operation
-   - Music → a supported music library/search capability
-   - SFX → approved local SFX and FFmpeg mixing
-   - Stitch → the packaged assembly helper or documented FFmpeg filters
-   - Captions → the local ASS final-caption path
+4. **Start from the nearest template's plan** — do this before filling the step 3 scene rows. Call `catalog_fetch` (type `template`) for the style closest to the brief (the genre card names it) and reuse its scene count, pacing, shot list and timeline as the skeleton; change only what the brief needs. Never run a template's renderer or the template kit and call the result custom. Then write the **tool & skill plan**: one routing line per scene, `scene N → <row> → <fal model id>`, plus `part@version` only on the kit path (both paths are defined in `capabilities.md`), from [the shot-routing guide](references/shot-routing.md) and the genre card it names. Resolve each to the binding's current schema and priced unit. A shot with no row is an open decision, not a free model choice.
 5. **Mark the intended emphasis.** For spoken work, identify the line that should land
    hardest and add `climax_line:` referencing its scene. This is performance direction,
    not an automatic volume increase. For silent work use `climax_line: null` and name
@@ -124,7 +114,7 @@ concept_format: ugc-diary   # one of: ugc-diary | testimonial | founder-led | be
 voiceover_strategy: real_voice   # one of: real_voice | cloned_voice | synthetic_vo
                                  # UGC family default = real_voice.
                                  # synthetic_vo requires an explicit host-persisted synthetic-voice approval and will be
-                                 # flagged by review-video-vo-authenticity on every run.
+                                 # flagged by the voice-authenticity check on every run.
 
 world_lock:                  # REQUIRED for UGC family; OMIT for multi-location / non-UGC formats
   set: "small white-tiled bathroom with brass round mirror, single candle on wood shelf,

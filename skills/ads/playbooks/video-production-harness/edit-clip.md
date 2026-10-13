@@ -26,8 +26,8 @@ Writes a labeled scene candidate and updates `clip_review` through the binding. 
 - `<video_folder>` (required)
 - `<scene_index>` (e.g. `5` or `09`)
 - `<edit_type>` — one of:
-  - `regenerate-keyframe` — new `nano_banana_2` image with revised prompt
-  - `re-roll-motion` — same keyframe, new `veo3_1_lite` animation prompt
+  - `regenerate-keyframe` — new image with revised prompt (the scene's row in `references/shot-routing.md`)
+  - `re-roll-motion` — same keyframe, new animation prompt on the scene's routing row
   - `swap-keyframe-and-animate` — new image AND new motion
   - `add-post-effect` — FFmpeg pass (vignette, color grade, slow-mo, speed-up, crop, sticker comp)
   - `comp-felt-mascot` — overlay the photographic mascot on top of a cartoon plate
@@ -40,7 +40,7 @@ Writes a labeled scene candidate and updates `clip_review` through the binding. 
 ### Common prep
 1. Read `design_brief`, saved production sources and the note on its exact reviewed version. Resolve the stable scene ID, retained takes and intended viewer effect before editing. Do not select a scene from the latest master by filename.
 2. Snapshot the current asset(s) to `<video_folder>/_archive/scene-NN_<timestamp>.mp4` (and/or `.mp3`) before overwriting. Never blow away the old version.
-3. **Read the scene's `<output>.meta.json`** (alongside the existing clip/keyframe) to determine the original `gateway` (`higgsfield` or `fal`). Re-rolls default to the SAME provider as the original to avoid cross-provider drift mid-scene. Only switch providers if the operator explicitly passes a different `<provider_override>` for this edit.
+3. **Read the scene's `<output>.meta.json`** (alongside the existing clip/keyframe) to determine the original `gateway` (`fal`, or optional `higgsfield` only if the host has it). Re-rolls default to the SAME provider as the original to avoid cross-provider drift mid-scene. Only switch providers if the operator explicitly passes a different `<provider_override>` for this edit.
 
 Before execution, record the impact row from [the editorial review guide](references/editorial-review.md): changed line/delivery/pause can affect picture holds, word timings, later captions, transitions, music/SFX, CTA, approvals and derivatives. Preserve unaffected media and valid decisions. A duration match is not evidence that all dependent timings remain correct.
 
@@ -49,16 +49,16 @@ Before execution, record the impact row from [the editorial review guide](refere
 **regenerate-keyframe**
 1. Compose a new prompt that addresses the issue (e.g. "less dark", "Tom's red shirt clearer", "wider framing"). Keep the cartoon style descriptor block.
 2. Route through the same provider as the original (read original `meta.json`):
-   - `gateway: "higgsfield"` → call `the host image-generation operation` with `nano_banana_2` (or `gpt_image_2` for photoreal). On detected failure, reconcile the job and use only an explicitly supported approved-budget fallback (same rules as `create-clips`).
-   - `gateway: "fal"` → resolve the supported managed image edit/generation operation through the binding.
+   - `gateway: "fal"` (default) → see `references/shot-routing.md`; reuse the scene's row. On detected failure, reconcile the job and use only an explicitly supported approved-budget fallback (same rules as `create-clips`).
+   - `gateway: "higgsfield"` (optional; only if the host has it) → the same model family through that host.
 3. Save → `generated/keyframes/scene-NN.png`. Then animate with the existing motion prompt (using the same provider — see re-roll-motion below).
 
 **re-roll-motion**
 1. Use the existing keyframe as the actual model's starting-image field.
 2. Compose a new motion prompt — emphasize the action that didn't land.
 3. Route through the same provider as the original:
-   - `gateway: "higgsfield"` → call `the host video-generation operation` with the original model (`veo3_1_lite` etc.). On detected failure, reconcile the job and use only an explicitly supported approved-budget fallback.
-   - `gateway: "fal"` → resolve the supported managed video operation through the binding.
+   - `gateway: "fal"` (default) → see `references/shot-routing.md`; reuse the scene's row and original model. On detected failure, reconcile the job and use only an explicitly supported approved-budget fallback.
+   - `gateway: "higgsfield"` (optional; only if the host has it) → the original model through that host.
 4. Download → `clips/scene-NN.mp4`.
 
 **swap-keyframe-and-animate**
@@ -72,7 +72,7 @@ Before execution, record the impact row from [the editorial review guide](refere
 - Sticker comp: see `comp-felt-mascot` below
 
 **comp-felt-mascot**
-1. Background-remove the mascot photo (via Higgsfield image edit, rembg, or a manual cutout). Save to `generated/<mascot>-cutout.png`.
+1. Background-remove the mascot photo (via a fal image edit, rembg, or a manual cutout). Save to `generated/<mascot>-cutout.png`.
 2. Use FFmpeg overlay: `ffmpeg -i scene-NN.mp4 -i mascot-cutout.png -filter_complex "[1:v]scale=W:H[m];[0:v][m]overlay=X:Y" out.mp4` — position `X:Y` on the cartoon plate's empty area.
 3. Optionally add a faint cartoon outline halo around the mascot if integration reads as "broken video" instead of "intentional joke".
 

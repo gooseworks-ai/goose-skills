@@ -5,12 +5,15 @@
 // approved words), carries what was heard for it as `spoken`, and its written
 // words timed by the heard ones. The check layer compares `spoken` with the
 // approved script; the captions layer uses the timings and never transcribes
-// again. The cut passes through unchanged. With `retime_scenes`, the
+// again. Heard words no line has (a repeated line, a filler) come out as their
+// own entries with no scene_id and empty text (1.1.2), so a cut can drop them
+// and the captions never show them; the check layer still hears them. The cut passes through unchanged. With `retime_scenes`, the
 // timeline's scene spans are set from each line's heard words as well (see
 // retime.mjs), so a later cut lands on what was said.
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitDuration, kitFfmpeg } from '../../_lib/part.mjs';
-import { kitHeardPlace, kitHeardWords } from '../../_lib/heard.mjs';
+import { kitHeardWords } from '../../_lib/heard.mjs';
+import { placeLines, placeTimes } from './place.mjs';
 import { RETIME_MIN_HEARD, retimeAlign, retimeCloseChunks, retimeSceneSpans } from './retime.mjs';
 
 const MODEL = 'fal-ai/whisper';
@@ -46,43 +49,49 @@ export async function run(inputs, ctx) {
   ctx.progress({ done: 1, total: 1 });
   const transcript = heard.map((w) => w.text).join(' ');
 
-  // Every heard word belongs to exactly one line, in order: a line's share runs from where the last
-  // placed line ended to where this one ends; words before the first or after the last go to the edges.
+  // Each line is placed by one alignment of the whole script on the whole transcript (place.mjs): heard
+  // words between lines that no line has (a repeated line, a filler) are skipped and come back as entries
+  // with no scene and no written text, so a cut can drop them and captions never show them.
   const speech = [];
   if (!lines.length) {
     if (heard.length) {
       speech.push({ text: transcript, spoken: transcript, start_s: heard[0].start, end_s: heard.at(-1).end, words: heard.map((w) => ({ text: w.text, start_s: w.start, end_s: w.end })) });
     }
   } else {
-    let from = 0;
-    lines.forEach((l, k) => {
-      const last = k === lines.length - 1;
-      const span0 = from < heard.length ? heard[from].start : duration;
-      const placed = kitHeardPlace(l.text, span0, last || from >= heard.length ? duration : heard.at(-1).end, heard, from);
-      const until = last ? heard.length : placed ? placed.next : from;
-      const share = heard.slice(from, until);
-      const entry = { scene_id: l.scene_id, text: l.text, spoken: share.map((w) => w.text).join(' ') };
-      if (placed) {
-        entry.words = placed.words.map((w) => ({ text: w.text, start_s: +Math.max(0, w.start_s).toFixed(3), end_s: +Math.max(0, w.end_s).toFixed(3) }));
-        entry.start_s = entry.words[0].start_s;
-        entry.end_s = Math.max(entry.words.at(-1).end_s, entry.start_s);
+    const r3 = (t) => +Math.min(Math.max(0, t), duration).toFixed(3);
+    const placed = placeLines(lines, heard);
+    const extras = placed.extras.map(([f, t]) => {
+      const run = heard.slice(f, t + 1);
+      const spoken = run.map((w) => w.text).join(' ');
+      ctx.log.info('heard speech that is in no line', { spoken, start_s: r3(run[0].start), end_s: r3(run.at(-1).end) });
+      return { at: f, entry: { text: '', spoken, start_s: r3(run[0].start), end_s: r3(Math.max(run.at(-1).end, run[0].start)), words: run.map((w) => ({ text: w.text, start_s: r3(w.start), end_s: r3(Math.max(w.end, w.start)) })) } };
+    });
+    let prevEnd = 0;
+    placed.lines.forEach((p, k) => {
+      const l = lines[k];
+      if (p.span) while (extras.length && extras[0].at < p.span[0]) speech.push(extras.shift().entry);
+      const share = p.span ? heard.slice(p.span[0], p.span[1] + 1) : [];
+      // Only a placed line was said: one that was not keeps an empty `spoken` (its words, if any, stay
+      // extra), so the cut refuses the take instead of passing a line that is not in it.
+      const entry = { scene_id: l.scene_id, text: l.text, spoken: p.placed ? share.map((w) => w.text).join(' ') : '' };
+      if (p.placed) {
+        entry.words = placeTimes(p, heard).map((w) => ({ text: w.text, start_s: r3(w.start_s), end_s: r3(Math.max(w.end_s, w.start_s)) }));
       } else {
         // A line the transcript does not match keeps word timings, spread evenly across what was heard for
         // it (or a short slot where nothing was), so the captions layer never has to buy a transcript again.
-        const start = share.length ? share[0].start : span0;
+        const start = share.length ? share[0].start : Math.min(prevEnd, duration);
         const end = share.length ? Math.max(share.at(-1).end, start) : Math.min(duration, start + 0.4 * l.text.split(/\s+/).length);
         const written = l.text.split(/\s+/).filter(Boolean);
         const step = (end - start) / written.length;
-        entry.words = written.map((text, i) => ({ text, start_s: +(start + step * i).toFixed(3), end_s: +(start + step * (i + 1)).toFixed(3) }));
-        entry.start_s = start;
-        entry.end_s = end;
+        entry.words = written.map((text, i) => ({ text, start_s: r3(start + step * i), end_s: r3(start + step * (i + 1)) }));
         ctx.log.warn('a line could not be placed on what was heard; its words are spread evenly', { scene_id: l.scene_id });
       }
-      entry.start_s = +Math.min(entry.start_s, duration).toFixed(3);
-      entry.end_s = +Math.min(Math.max(entry.end_s, entry.start_s), duration).toFixed(3);
+      entry.start_s = entry.words[0].start_s;
+      entry.end_s = Math.max(entry.words.at(-1).end_s, entry.start_s);
+      prevEnd = Math.max(prevEnd, entry.end_s);
       speech.push(entry);
-      from = until;
     });
+    for (const x of extras) speech.push(x.entry);
   }
   const base = inputs.timeline || { duration_s: duration, width: info.width, height: info.height, fps: info.fps || 30, scenes: [] };
   const timeline = { ...base, duration_s: +duration.toFixed(3), speech };

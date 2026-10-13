@@ -10,7 +10,7 @@ version: 2
 
 ## Purpose
 
-`review-script-arc` scores the narrative skeleton (Hook/Vulnerability/Action/Tension/Reveal/Win/Climax/CTA). It catches a missing arc but doesn't catch the script-level problems that kill short-form ads even when the arc is fine:
+Track A of the script lock (the narrative-arc check) scores the narrative skeleton (Hook/Vulnerability/Action/Tension/Reveal/Win/Climax/CTA). It catches a missing arc but doesn't catch the script-level problems that kill short-form ads even when the arc is fine:
 
 - A "fine" hook that doesn't actually stop the scroll in 2 seconds (and where it sits on the viewer-recognition ladder)
 - A paid-social problem-solution script that's missing the **OUTCOME** beat — the most common short-form failure mode; viewer doesn't know what they get from buying
@@ -24,11 +24,11 @@ version: 2
 - On-screen lines that won't fit a 9:16 caption bubble
 - Acronyms, prices, or URLs in VO (under the project-approved voice rule)
 
-This atom is the short-form-craft sibling to `review-script-arc`. Both run in State 2.5 of the orchestrator. Neither one alone is sufficient. Paired with an available script-planning capability upstream — that skill writes scripts to this rubric; this skill catches anything that slipped through.
+This is the short-form-craft sibling to the narrative-arc check. Both run in State 2.5 of the orchestrator. Neither one alone is sufficient. Paired with an available script-planning capability upstream — that skill writes scripts to this rubric; this skill catches anything that slipped through.
 
 ## When to use
 
-- **State 2.5** of the shared script-lock step, alongside `review-script-arc`.
+- **State 2.5** of the shared script-lock step, alongside the narrative-arc check.
 - Standalone audit when the operator says "the script feels off" but the arc seems fine.
 - After importing a podcast-derived or remix script (text from one context dropped into another often has logical gaps).
 
@@ -336,9 +336,9 @@ Output as YAML:
 
 ## Relationship to other skills
 
-- Pairs with `review-script-arc` in State 2.5. Arc handles narrative; this handles craft. Both run; the calling skill (the shared script-lock step) merges both into a single gate.
+- Pairs with the narrative-arc check in State 2.5. Arc handles narrative; this handles craft. Both run; the calling skill (the shared script-lock step) merges both into a single gate.
 - Consumed by the shared script-lock step (State 2.5).
-- Does NOT replace `review-video-hook-strength` — that's a video-level check on the rendered first 3 seconds. This is text-only.
+- Does NOT replace the hook-strength check in the video review — that's a video-level check on the rendered first 3 seconds. This is text-only.
 
 ## Example inputs (procedure parameters, not CLI commands)
 
