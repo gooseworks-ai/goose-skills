@@ -61,6 +61,18 @@ Full:
 
 `python scripts/brandkit.py --brand <slug>` and the `single_gen.py` dry run both print a `CAST ADVISORY` line for each person who is missing hair, build, or skin tone or background, and for each person copied from another brand's config. It is advice, not a refusal: it does not stop a take.
 
+## Skin and voice settings
+
+All off by default, so every recorded prompt and its hash are unchanged. DRAFT: no person has judged them yet.
+
+| key | where | what it does |
+|---|---|---|
+| `skin_grammar` | `generation` | adds one clause asking for ordinary unretouched skin (no makeup, no smoothing, uneven tone and shine), and for each person's hands, wrists and neck to match their own face. It names no defect and no camera style |
+| `interviewer_voice` | top level | a short phrase for the interviewer's voice |
+| `voice` | any shot that has a `noun` | a short phrase for that person's voice, such as `"a low, dry voice that sounds his age"` |
+
+A voice phrase is at most 90 characters, with no quote marks and no full stop at the end. Both options add words to an already long prompt (about 130 for a three-person cast), so judge a take for missed instructions as well as for the faces and voices.
+
 ## What one take showed
 
 Seed 6222 (2026-10-13, Graza, 8 seconds, fast endpoint) described both people in full and kept the settings, street and reference images of the older take it was compared with (seed 6214). It was shorter, 8 seconds against 15, with shorter lines, so compare faces and not timing. Both people came out as described: a stocky Black man with a shaved head and a greying beard, and a South Asian woman in her sixties with long grey hair. Neither is one of the recurring faces. All three lines were spoken as written.

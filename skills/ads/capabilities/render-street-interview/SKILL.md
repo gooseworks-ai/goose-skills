@@ -65,11 +65,7 @@ performance remain unverified. The existing product-guess render path is preserv
 All conversation subtypes refuse product/scene reference bindings and phone, screen or UI
 demonstrations. Dry-run success is not a performed sample, challenge or finished video.
 
-Write the cast in full before any take: read [cast writing](references/cast-writing.md). A person
-described as an age, a garment and a prop comes back as the model's default face, and the same
-five faces then appear in every brand's video.
-
-Read the bundled [model notes](references/model-behaviors.md) before generation.
+Read [model notes](references/model-behaviors.md), [cast](references/cast-writing.md) first.
 If a required guide cannot be fetched or opened, stop before spending and name it.
 `REFERENCE.md` holds the format's historical **Critical knowledge** entries and
 the rejected takes behind them. Read it before changing the prompt scaffold or a gate;
@@ -222,14 +218,6 @@ brand from `brands/olipop-ep3-a.json` (a can) or `brands/graza-ep1-a2.json` (a b
 | `level_camera` | removes the glance down from speaking shots, which is what tips the product |
 | `no_signage` | no shops, signs or lettering behind the cast (names park-corner landmarks) |
 | `can_sealed_grammar` | existing flag; holds with the keys above, so the can stays closed |
-| `skin_grammar` | DRAFT, unjudged. Adds one clause asking for ordinary unretouched skin (no makeup, no smoothing, uneven tone and shine). The wide-shot part of the realism formula; names no defect and no camera style |
-
-Two more opt-in keys describe voices, which the prompt otherwise leaves to the model: top-level
-`interviewer_voice`, and `voice` on any shot that has a `noun`. Each is a short phrase such as
-`"a low, dry voice that sounds his age"` (at most 90 characters, no quote marks). DRAFT, unjudged:
-no take has been listened to with them. Both options add words to an already long prompt
-(about 130 for a three-person cast), so judge a take for missed instructions as well as for the
-faces and voices.
 
 Episode files take `extra_head_s` (seconds of run-up kept at the head of each take, so the
 handover is not trimmed as silence) and `brand_layer.caption_centre_y`. Transcribe every take with
