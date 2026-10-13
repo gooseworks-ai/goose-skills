@@ -14,7 +14,7 @@ An AI creator talks to the phone about one product, with handheld product shots 
 Talking creator, exact script · Cast anchor portrait · Set / world reference still · Creator B-roll, no speech · Product in hand / motion from a keyframe · Photoreal keyframe / product hero · End card · Captions.
 
 ## Voice
-The Talking creator row makes the creator's speech inside the take; no separate voiceover. Record `audio_strategy: vo-narrator` with the voice set to the creator's take voice, so the script review shows it.
+The Talking creator row makes the creator's speech inside the take; no separate voiceover. The speech is generated, so record `voiceover_strategy: synthetic_vo` (not the UGC default `real_voice`) and `audio_strategy: vo-narrator` with the voice set to the creator's take voice. Show the synthetic voice at the script review so the owner approves it there.
 
 ## Pacing
 - About 2.5 words/s: at most 8 words a beat and 28 per 15 s take.

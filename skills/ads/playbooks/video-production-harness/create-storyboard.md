@@ -65,6 +65,35 @@ smallest affected part or remove an unnecessary beat before paid regeneration. A
 local timing change preserves unaffected approved sources and reconforms affected
 audio/captions/transitions. Review that join and then the complete revised cut.
 
+### Kit path: the `kit` block
+
+Only when the design brief chose the kit path (`capabilities.md`). Save it in the same `video_change` custom draft as the storyboard and `render_estimate`:
+
+```
+kit: {
+  seed:  { style_id, version },        // the nearest template's style
+  style: { duration, aspects, scenes, timeline, layers,
+           traits?, products?, cast?, answers?, footage?, assets? },
+  plan:  { aspect, scenes, voice?, music?, cast?, answers?, footage?, product_ids? },
+  timing: { duration_sec, scenes }     // what the plan was made for
+}
+```
+
+- `seed`: the style `catalog_fetch` returned for the nearest template.
+- `style`: the seed's execution fields. Change only the duration, the scenes and the timeline order, and only with published parts. `assets` may name only the seed's own fonts and frames. Catalogue fields always come from the seed.
+- `plan`: the approved scenes, cast, voice and music, written exactly as a template video's plan takes them. It must match the reviewed draft, or the kit refuses it (`kit_invalid`):
+  - one kit scene per storyboard scene, in the same order;
+  - each scene's `line` is that scene's `text` (the spoken words), and its `on_screen` is its `caption`;
+  - the same voice: `plan.voice` is the voice selected for `narrator`, and each speaking cast member's `voice_id` is the one selected for their cast key. Select no voice the kit won't use;
+  - reused pictures are approved ingredients, by `asset_id`, and each one's `url` is that media file's own link. A saved character's photo must also be one of the ingredients.
+  - `plan.aspect` is the draft's `aspect_ratio`, and one the seed's style makes.
+- `timing`: `duration_sec` is the draft's `duration_target_sec`, and `scenes` lists each draft scene's `time`, in order. If the length or a scene time changes later, save the kit block again with the new timing.
+- Add `asset_id` to each approved ingredient you reuse (cast still, scene still, footage), and point the plan's `*_asset_id` fields at those ids.
+- Never edit frames, fonts or prompt files. Never send server-only fields (`image`, `image_locked`, `stills`, `fix`, `takes`).
+- Price it like any render: send each scene's equivalent paid request (its routing row's fal model) with `estimate_only=1` and sum them into `render_estimate`; the kit charges the same rate. No redo allowance: the kit runs its own checks, so `render_estimate` carries no `reroll_allowance`.
+
+After the save, read `video_read`. While `custom_review.readiness_blockers.ingredients` shows `kit_preparing`, read again in about a minute. `kit_invalid` lists plain problems: fix each one and save again. When neither shows, the owner approves the ingredients as usual. That approval is the video's yes. Call `video_make` and follow its `next_step`: run the make command it gives. The kit makes, checks and finishes the video, so send no custom render state or paid calls of your own; a `custom_video_on_kit` refusal means run the make command instead. If the owner stops the kit, the custom review comes back, and their next approval starts a new run.
+
 ### Step 7.5 — Transition layer (optional, opt-in)
 
 If the project opts into the cinematic transition layer (default ON for music-video runs longer than 25s, default OFF otherwise):
