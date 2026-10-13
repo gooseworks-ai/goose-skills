@@ -31,14 +31,14 @@
       "sha256": "f7504cc3dd423604a84f71aa251566fdd317757bfe6502d20c39ba58674eacf8"
     },
     "create-design-brief.md": {
-      "bytes": 16704,
-      "catalog_sha256": "42210c687933b2c1eb13bfdfdca1b8858907c289d8a83397ab8d0acc6192151a",
-      "sha256": "42210c687933b2c1eb13bfdfdca1b8858907c289d8a83397ab8d0acc6192151a"
+      "bytes": 16868,
+      "catalog_sha256": "a0678732c5b8938bcb78029b655723c93688fe08dc04f4b8d2a8316250eb31b2",
+      "sha256": "a0678732c5b8938bcb78029b655723c93688fe08dc04f4b8d2a8316250eb31b2"
     },
     "create-storyboard.md": {
-      "bytes": 12716,
-      "catalog_sha256": "3480609dbffbf63ddb492d5b5929ab89d594a90138b830fa472c1ac266e33f49",
-      "sha256": "3480609dbffbf63ddb492d5b5929ab89d594a90138b830fa472c1ac266e33f49"
+      "bytes": 12905,
+      "catalog_sha256": "aa88f14fec9beb988fe7360ee34a7d99e9bd9d8dabce0d1cf64d9e3516be8760",
+      "sha256": "aa88f14fec9beb988fe7360ee34a7d99e9bd9d8dabce0d1cf64d9e3516be8760"
     },
     "edit-clip.md": {
       "bytes": 8856,
@@ -86,9 +86,9 @@
       "sha256": "8b5cb1ff0ee21602b6704e198aa7414c63d8b5ef8ceed63791785a3c7bcd182b"
     },
     "references/genres/ai-creator-ugc.md": {
-      "bytes": 1832,
-      "catalog_sha256": "0ae717c39bcfa3a5a5a977add8bbfdbf5823cf87a904eddb0f3bbf634fd8df87",
-      "sha256": "0ae717c39bcfa3a5a5a977add8bbfdbf5823cf87a904eddb0f3bbf634fd8df87"
+      "bytes": 1981,
+      "catalog_sha256": "00f3073400f223d9d7b8663cc41aa7984919f361cc35ca8af93d5f09acad36cf",
+      "sha256": "00f3073400f223d9d7b8663cc41aa7984919f361cc35ca8af93d5f09acad36cf"
     },
     "references/genres/chat-ui.md": {
       "bytes": 1492,
@@ -162,8 +162,8 @@
     },
     "skill.meta.json": {
       "bytes": 652,
-      "catalog_sha256": "1d19160e4dccdea45ea6d1350b1fba70c0373ff2367ac1324eb6e3c6e345fe35",
-      "sha256": "1d19160e4dccdea45ea6d1350b1fba70c0373ff2367ac1324eb6e3c6e345fe35"
+      "catalog_sha256": "4fe7884e527e1f01853f6110bc3cd817569fa00ca36bfcc558a015ff98c3f7c0",
+      "sha256": "4fe7884e527e1f01853f6110bc3cd817569fa00ca36bfcc558a015ff98c3f7c0"
     },
     "wrap-session.md": {
       "bytes": 17362,
@@ -192,7 +192,7 @@
   ],
   "schema_version": 1,
   "slug": "video-production-harness",
-  "source_commit": "e928884007657f958a0361e8af02a6fa83afe31e",
+  "source_commit": "155a2d7575ce147896b17221baec996680a34322",
   "source_files": {
     "SKILL.md": {
       "sha256": "38fc6a1d561e28ec8157b3b2506ec0a79b74dc1e3dba2b4fc9e3ad76a813c6c3",
@@ -219,11 +219,11 @@
       "source": "create-clips.md"
     },
     "create-design-brief.md": {
-      "sha256": "42210c687933b2c1eb13bfdfdca1b8858907c289d8a83397ab8d0acc6192151a",
+      "sha256": "a0678732c5b8938bcb78029b655723c93688fe08dc04f4b8d2a8316250eb31b2",
       "source": "create-design-brief.md"
     },
     "create-storyboard.md": {
-      "sha256": "3480609dbffbf63ddb492d5b5929ab89d594a90138b830fa472c1ac266e33f49",
+      "sha256": "aa88f14fec9beb988fe7360ee34a7d99e9bd9d8dabce0d1cf64d9e3516be8760",
       "source": "create-storyboard.md"
     },
     "edit-clip.md": {
@@ -263,7 +263,7 @@
       "source": "references/editorial-review.md"
     },
     "references/genres/ai-creator-ugc.md": {
-      "sha256": "0ae717c39bcfa3a5a5a977add8bbfdbf5823cf87a904eddb0f3bbf634fd8df87",
+      "sha256": "00f3073400f223d9d7b8663cc41aa7984919f361cc35ca8af93d5f09acad36cf",
       "source": "references/genres/ai-creator-ugc.md"
     },
     "references/genres/chat-ui.md": {
@@ -327,6 +327,6 @@
       "source": "wrap-session.md"
     }
   },
-  "source_hash": "74488ce39c0b1ee581086862c445e725bca531db34054d3f4745967345a999c8",
-  "source_version": "3-74488ce39c0b"
+  "source_hash": "286522b89e766e55746aa58e8cad9e8afb6517ffac334a55b7b7195c44a5b7b6",
+  "source_version": "3-286522b89e76"
 }
