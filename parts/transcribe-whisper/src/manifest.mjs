@@ -6,7 +6,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'transcribe-whisper',
-  version: '1.1.1',
+  version: '1.1.2',
   kind: 'caption',
   title: 'Transcribe speech (Whisper)',
   summary: "Transcribes a cut's speech with fal Whisper word timings and places each approved line on what was heard, for captions and the check layer; can also set each scene's span from its heard words.",
@@ -47,4 +47,6 @@ export const manifest = {
   timing: { typical_s: 20, timeout_s: 600 },
   retry: { transient: 1 },
   replaces: [],
+  // 1.1.2 changes only how lines are placed on the reply; the Whisper request is 1.1.1's, byte for byte.
+  reuses_pieces_of: ['1.1.1'],
 };
