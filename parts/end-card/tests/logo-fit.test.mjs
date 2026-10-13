@@ -1,6 +1,7 @@
 // end-card 1.1.1 (and brand-layer 1.0.2, which shares the renderer): the logo is fitted to the card.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { browserMissing, browserProviderOrNull, countColor, fileRef, framePixels, hasFfmpeg, loadNewest, makeCtx, makeLogo, run, sampleBrand } from '../../_tools/kit-harness.mjs';
 import { KIT_CARD_LOGO_BOXES, kitCardColorsOn, kitCardContrast, kitCardLogoBackground, kitCardLogoSize } from '../../_lib/end-card.mjs';
@@ -32,7 +33,7 @@ function boxOf(px, rgb, tol = 24) {
       y1 = Math.max(y1, y);
     }
   }
-  return x1 < 0 ? null : { w: x1 - x0 + 1, h: y1 - y0 + 1 };
+  return x1 < 0 ? null : { x: x0, y: y0, w: x1 - x0 + 1, h: y1 - y0 + 1 };
 }
 
 test('logo size: a wide mark fills min(640 px, 0.58 W), any other min(320 px, 0.17 H), scaled up or down', () => {
@@ -82,10 +83,10 @@ test('a white-backed JPEG logo loses its background: no box behind it on a colou
   const brand = await sampleBrand(ctx.workDir, { background: '#f5e6c8' });
   brand.logo = await fileRef(await whiteBackedJpeg(join(ctx.workDir, 'logo.jpg')), 'image');
   const out = await mod.run({ brand, width: 540, height: 960, seconds: 1 }, ctx);
-  const zone = out.timeline.safe_zones.find((z) => z.use === 'logo');
   // Only the logo's rows: the CTA pill below has white text of its own.
   const px = await framePixels(out.video.path, 0.5, 540, 960);
-  const rows = { width: px.width, height: zone.h, data: px.data.subarray(zone.y * px.width * 3, (zone.y + zone.h) * px.width * 3) };
+  const red = boxOf(px, [224, 16, 32], 30);
+  const rows = rowsOf(px, { y: red.y - 20, h: red.h + 40 });
   assert.ok(countColor(rows, [224, 16, 32], 30) > 2000, 'the red mark is drawn');
   assert.ok(countColor(rows, [255, 255, 255], 6) < 40, 'no white box around it');
   assert.ok(countColor(rows, [17, 17, 17], 6) < 40, 'no dark plate either');
@@ -148,4 +149,99 @@ test('the final check finds the fitted logo in the box the card declares, and no
   assert.equal(await verdict(brand), 'pass');
   const other = await fileRef(await makeLogo(join(w, 'other.png'), '#20a040', 300, 300), 'image');
   assert.equal(await verdict({ ...brand, logo: other }), 'fail');
+});
+
+/** A JPEG logo: `text` in `color` on an opaque `bg` canvas w x h, the bundled font, `size` px. */
+async function textJpeg(path, { text, color, bg = 'white', w = 600, h = 200, size = 110, box = null }) {
+  const font = join(dir, 'assets', 'fonts', 'Montserrat-Bold.ttf');
+  const plate = box ? `drawbox=x=${box.x}:y=${box.y}:w=${box.w}:h=${box.h}:color=${box.color}:t=fill,` : '';
+  await run('ffmpeg', ['-hide_banner', '-nostdin', '-loglevel', 'error', '-y', '-f', 'lavfi', '-i', `color=c=${bg}:s=${w}x${h}:d=1`, '-vf', `${plate}drawtext=fontfile=${font}:text='${text}':fontsize=${size}:fontcolor=${color}:x=(w-tw)/2:y=(h-th)/2`, '-frames:v', '1', '-q:v', '2', path]);
+  return path;
+}
+
+/** The frame rows `zone` covers. */
+function rowsOf(px, zone) {
+  return { width: px.width, height: zone.h, data: px.data.subarray(zone.y * px.width * 3, (zone.y + zone.h) * px.width * 3) };
+}
+
+test('every layout that draws the logo declares its box, so the final check always matches in it', { skip }, async () => {
+  for (const [layout, extra] of [['classic', {}], ['brandkit', { rows: ['One line.'] }], ['stack', {}], ['statement', { rows: ['One line.'] }]]) {
+    const { ctx } = makeCtx({ partDir: dir });
+    const brand = await sampleBrand(ctx.workDir);
+    const out = await mod.run({ brand, width: 540, height: 960, seconds: 1, layout, ...extra }, ctx);
+    const zone = (out.timeline.safe_zones || []).find((z) => z.use === 'logo');
+    assert.ok(zone && zone.x >= 0 && zone.y >= 0 && zone.x + zone.w <= 540 && zone.y + zone.h <= 960, `${layout}: ${JSON.stringify(zone)}`);
+  }
+});
+
+test('the letters of a white-backed wordmark keep no white inside them on a dark card', { skip }, async () => {
+  for (const layout of ['classic', 'statement']) {
+    const { ctx, logs } = makeCtx({ partDir: dir });
+    const brand = await sampleBrand(ctx.workDir);
+    brand.logo = await fileRef(await textJpeg(join(ctx.workDir, 'bodega.jpg'), { text: 'Bodega', color: '0xe01020' }), 'image');
+    const extra = layout === 'statement' ? { rows: ['One line.'] } : {};
+    const out = await mod.run({ brand, width: 540, height: 960, seconds: 1, layout, background: '#141414', ...extra }, ctx);
+    const zone = out.timeline.safe_zones.find((z) => z.use === 'logo');
+    const rows = rowsOf(await framePixels(out.video.path, 0.5, 540, 960), zone);
+    assert.ok(countColor(rows, [224, 16, 32], 40) > 1500, `${layout}: the red letters are drawn`);
+    assert.ok(countColor(rows, [255, 255, 255], 40) < 60, `${layout}: no white inside the letters (${countColor(rows, [255, 255, 255], 40)})`);
+    assert.ok(logs.some(([, m, f]) => /background made transparent/.test(m) && f && f.inside_letters === 'cleared'));
+  }
+});
+
+test('white letters on a solid red box keep their white on a dark card: the box is the mark', { skip }, async () => {
+  const { ctx } = makeCtx({ partDir: dir });
+  const brand = await sampleBrand(ctx.workDir);
+  const box = { x: 40, y: 30, w: 520, h: 140, color: '0xe01020' };
+  brand.logo = await fileRef(await textJpeg(join(ctx.workDir, 'boxed.jpg'), { text: 'Bodega', color: 'white', box, size: 96 }), 'image');
+  const out = await mod.run({ brand, width: 540, height: 960, seconds: 1, background: '#141414' }, ctx);
+  const zone = out.timeline.safe_zones.find((z) => z.use === 'logo');
+  const rows = rowsOf(await framePixels(out.video.path, 0.5, 540, 960), zone);
+  assert.ok(countColor(rows, [255, 255, 255], 40) > 400, 'the white letters stay white');
+});
+
+test('a logo file with wide margins declares no box it would not match in, and the final check does not fail it', { skip }, async () => {
+  const check = await loadNewest('check-layer');
+  const { layerInputsFor, makeVideo } = await import('../../_tools/kit-harness.mjs');
+  const { dir: layerDir, mod: layer } = await loadNewest('brand-layer');
+  // A 1000x1000 white JPEG with a wordmark about 500 px wide in the middle, and an og-style 1200x630 image with a small mark.
+  for (const file of [{ w: 1000, h: 1000, size: 140 }, { w: 1200, h: 630, size: 70 }]) {
+    const { ctx, logs } = makeCtx({ partDir: layerDir });
+    const w = ctx.workDir;
+    const brand = await sampleBrand(w);
+    brand.logo = await fileRef(await textJpeg(join(w, 'padded.jpg'), { text: 'Sample', color: '0xe01020', ...file }), 'image');
+    const video = await fileRef(await makeVideo(join(w, 'cut.mp4'), 2, { width: 540, height: 960 }), 'video');
+    const out = await layer.run(await layerInputsFor(video, { brand, expect: { end_card: true } }), ctx);
+    const about = `${file.w}x${file.h}`;
+    assert.ok(!(out.timeline.safe_zones || []).some((z) => z.use === 'logo'), `${about}: no logo box is declared`);
+    assert.ok(logs.some(([, m]) => /wide empty margins/.test(m)), about);
+    const red = boxOf(await framePixels(out.video.path, 3.5, 540, 960), [224, 16, 32], 40);
+    assert.ok(red && red.w >= 0.5 * 540, `${about}: the mark is still drawn large (${red && red.w} px)`);
+    const { ctx: cctx } = makeCtx({ partDir: check.dir });
+    const verdict = await check.mod.run(await layerInputsFor(out.video, { brand, expect: { end_card: true, qc_flags: [] }, timeline: out.timeline }), cctx);
+    const logo = verdict.verdict.checks.find((c) => c.code === 'logo');
+    assert.notEqual(logo.status, 'fail', `${about}: ${JSON.stringify(logo)}`);
+  }
+});
+
+test('an SVG logo with a small nominal size is drawn from its vector, so it is not called soft', { skip }, async () => {
+  const { ctx, logs } = makeCtx({ partDir: dir });
+  const brand = await sampleBrand(ctx.workDir);
+  const svg = join(ctx.workDir, 'mark.svg');
+  writeFileSync(svg, '<svg xmlns="http://www.w3.org/2000/svg" width="130" height="53" viewBox="0 0 130 53"><rect x="0" y="0" width="130" height="53" fill="#e01020"/><rect x="40.4" y="10" width="49.2" height="33" fill="#ffffff"/></svg>');
+  brand.logo = { ...(await fileRef(svg, 'image')), mime: 'image/svg+xml' };
+  const out = await mod.run({ brand, width: 1080, height: 1920, seconds: 1 }, ctx);
+  const px = await framePixels(out.video.path, 0.5, 1080, 1920);
+  const red = boxOf(px, [224, 16, 32]);
+  assert.ok(red && red.w >= 560, `the mark is ${red && red.w} px wide`);
+  assert.ok(!logs.some(([, m]) => /may look soft/.test(m)), 'no soft-logo warning for a vector');
+  // Sharp: the white window's left edge (off the old pixel grid) goes from red to white within a couple of pixels.
+  const row = Math.round(red.y + red.h / 2);
+  const edge = Math.round(red.x + (40.4 / 130) * red.w);
+  let ramp = 0;
+  for (let x = edge - 12; x < edge + 12; x++) {
+    const i = (row * px.width + x) * 3;
+    if (px.data[i + 1] > 40 && px.data[i + 1] < 215) ramp++;
+  }
+  assert.ok(ramp <= 2, `edge ramp ${ramp} px`);
 });

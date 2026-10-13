@@ -35,8 +35,8 @@ step drew one. Free; needs the kit's browser.
   When the mark still reads under 3:1 on the card, the whole card changes colour instead of the 1.1.0 plate:
   the logo file's own background, else the brand colour with the most contrast, else #111111 or #F5F3EE. The
   text, accent and CTA colours are then kept only where they read on the new card. A logo drawn at more than
-  1.5 times its file size is logged as a warning (it may look soft: the brand needs a bigger logo file). No
-  logo: the brand name in its font.
+  1.5 times its file size is logged as a warning (it may look soft: the brand needs a bigger logo file). An SVG logo is drawn from its vector, so it stays sharp at any size.
+  Background the file left inside the mark (the counters of o, e, a) is cleared too when the card ends up another colour, so no white shows inside the letters; a large enclosed patch, or any in a solid mark (a badge, white letters on a coloured box), is the mark's own and kept. No logo: the brand name in its font.
 - **Colours**: card background from `background`, else the brand's background, else white. In the 1.1.0
   layouts the text is `foreground`, else the brand's text colour **when it reads on the card (4.5:1)**, else
   black or white; the `accent` (rule, statement rows after the first) is `accent`, else the brand's primary or
@@ -47,6 +47,6 @@ step drew one. Free; needs the kit's browser.
   it joins and mixes like any clip.
 - **Outputs**: `video`, `seconds`, `timeline` with `end_card` set and, when a logo is drawn (1.1.1),
   `safe_zones` use `logo`: the box the logo file covers, its trimmed margins included, which `assemble` carries
-  onto the cut so the final check looks for the logo there. None at all with `layout: none`.
+  onto the cut so the final check looks for the logo there. The box is declared only when the whole file (its trimmed margins too) sits on the card and the card's other text barely touches it; a file with wider margins declares none (logged), and the final check searches the whole frame for it. None at all with `layout: none`.
 
 Source: `parts/end-card/src/part.mjs` and `src/layouts.mjs`, with `parts/_lib/end-card.mjs` for `classic`.

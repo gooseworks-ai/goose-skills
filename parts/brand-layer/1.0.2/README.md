@@ -13,6 +13,7 @@ The brand layer (slot 1 of 4): ends the video on the brand. Free; needs the kit'
   card changes colour (the logo file's own background, else the brand colour with the most contrast, else
   #111111 or #F5F3EE) and its text and CTA colours follow; there is no plate any more. A logo drawn at more
   than 1.5 times its file size is logged as a warning (it may look soft: the brand needs a bigger logo file).
+  An SVG logo is drawn from its vector, so it stays sharp at any size. Background the file left inside the mark (the counters of o, e, a) is cleared too when the card ends up another colour, so no white shows inside the letters; a large enclosed patch, or any in a solid mark (a badge, white letters on a coloured box), is the mark's own and kept.
 - **Sound under the card**: the cut's sound plays to its end and fades out over the crossfade; the card holds
   in silence. A style that wants its music to run under the card draws the card with `end-card` before
   `audio-mix` (then this layer passes the cut through).
@@ -22,6 +23,6 @@ The brand layer (slot 1 of 4): ends the video on the brand. Free; needs the kit'
   unchanged to the captions layer, which reads it.
 - **Outputs**: `video`, `timeline` (longer by the card, with an `end-card` scene and `end_card` set, and in
   1.0.2 `safe_zones` use `logo`: the box the logo file covers on the card, so the final check looks for it
-  there).
+  there. The box is declared only when the whole file (its trimmed margins too) sits on the card and the card's other text barely touches it; a file with wider margins declares none (logged), and the final check searches the whole frame for it.)
 
 Source: `parts/brand-layer/src/part.mjs` with `parts/_lib/end-card.mjs`.

@@ -317,7 +317,9 @@ async function kitDuration(ctx, file) {
 // any other min(320 px, 0.17 H) tall, at 1080x1920. When the mark still barely
 // contrasts with the card (under 3:1), the whole card changes colour (the
 // logo's own background, else the brand colour with the most contrast, else
-// near-black or warm white) instead of putting the logo on a plate.
+// near-black or warm white) instead of putting the logo on a plate. The file's
+// background left inside the letters is cleared when the card is another colour.
+// The logo's box goes on the timeline only when the whole file sits on the card.
 
 const kitCardIcons = {
   pencil: '<path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>',
@@ -349,6 +351,12 @@ function kitCardLum(hex) {
 /** Black or white, whichever reads better on `hex`. */
 function kitCardContrastText(hex) {
   return kitCardLum(hex) > 0.4 ? '#111111' : '#ffffff';
+}
+
+function kitCardSameColor(a, b, tol = 24) {
+  const x = parseInt(a.slice(1), 16);
+  const y = parseInt(b.slice(1), 16);
+  return [16, 8, 0].every((sh) => Math.abs(((x >> sh) & 255) - ((y >> sh) & 255)) <= tol);
 }
 
 function kitCardColor(value, fallback) {
@@ -476,7 +484,9 @@ async function kitCardPrepareLogo() {
   if (!img || !img.naturalWidth || !img.naturalHeight) return null;
   const nw = img.naturalWidth;
   const nh = img.naturalHeight;
-  const k = Math.min(1, 2048 / Math.max(nw, nh));
+  // A vector logo is drawn at full size here, so it stays sharp when the card enlarges it.
+  const vector = /^data:image\/svg\+xml/.test(img.currentSrc || img.src);
+  const k = vector ? 2048 / Math.max(nw, nh) : Math.min(1, 2048 / Math.max(nw, nh));
   const w = Math.max(1, Math.round(nw * k));
   const h = Math.max(1, Math.round(nh * k));
   const cv = document.createElement('canvas');
@@ -534,8 +544,8 @@ async function kitCardPrepareLogo() {
         }
       }
     }
-    // Only a background, never the mark: something has to be left.
-    if (w * h - queue.length >= w * h * 0.01) {
+    // Only a background, never the mark: something has to be left (a thin wordmark in a big og image is little).
+    if (w * h - queue.length >= Math.max(64, w * h * 0.001)) {
       hadBackground = true;
       logoBg = `#${bg.map((v) => v.toString(16).padStart(2, '0')).join('')}`;
       for (let p = 0; p < w * h; p++) {
@@ -578,13 +588,75 @@ async function kitCardPrepareLogo() {
   if (x1 < 0 || !weight) return null;
   const tw = x1 - x0 + 1;
   const th = y1 - y0 + 1;
-  if (hadBackground || tw < w || th < h) {
-    cx.putImageData(im, 0, 0);
+  // Background enclosed by the mark (the counters of o, e, a): small patches of the removed colour that the
+  // edge fill cannot reach. They are cleared only when the card ends up another colour (kitCardPlaceLogo
+  // holeless). A large patch, or any patch in a solid mark (a badge or a tile whose outline fills 70 % of its
+  // box, like white letters on a red box), is the mark's own artwork and kept.
+  const holes = [];
+  let solid = 0;
+  if (hadBackground) for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) if (d[(y * w + x) * 4 + 3] !== 0) solid++;
+  if (hadBackground && solid < tw * th * 0.7) {
+    const seen = new Uint8Array(w * h);
+    const maxHole = tw * th * 0.04;
+    for (let y = y0; y <= y1; y++) {
+      for (let x = x0; x <= x1; x++) {
+        const s = y * w + x;
+        if (seen[s] || d[s * 4 + 3] === 0 || dist(s) > TOL) continue;
+        seen[s] = 1;
+        const part = [s];
+        for (let i = 0; i < part.length; i++) {
+          const p = part[i];
+          const px = p % w;
+          const py = (p - px) / w;
+          for (const q of [px > 0 ? p - 1 : -1, px < w - 1 ? p + 1 : -1, py > 0 ? p - w : -1, py < h - 1 ? p + w : -1]) {
+            if (q >= 0 && !seen[q] && d[q * 4 + 3] !== 0 && dist(q) <= TOL) {
+              seen[q] = 1;
+              part.push(q);
+            }
+          }
+        }
+        if (part.length <= maxHole) holes.push(...part);
+      }
+    }
+    // The ink is the mark's, not its counters'.
+    for (const p of holes) {
+      if (d[p * 4 + 3] <= 128) continue;
+      sum -= lum(d[p * 4], d[p * 4 + 1], d[p * 4 + 2]);
+      weight--;
+    }
+  }
+  const crop = (data) => {
+    cx.putImageData(new ImageData(data, w, h), 0, 0);
     const out = document.createElement('canvas');
     out.width = tw;
     out.height = th;
     out.getContext('2d').drawImage(cv, x0, y0, tw, th, 0, 0, tw, th);
-    img.src = out.toDataURL('image/png');
+    return out.toDataURL('image/png');
+  };
+  window.kitCardHoleless = null;
+  if (holes.length) {
+    const d2 = new Uint8ClampedArray(d);
+    const hole = new Uint8Array(w * h);
+    for (const p of holes) {
+      hole[p] = 1;
+      d2[p * 4 + 3] = 0;
+    }
+    for (let y = Math.max(0, y0 - 1); y <= Math.min(h - 1, y1 + 1); y++) {
+      for (let x = Math.max(0, x0 - 1); x <= Math.min(w - 1, x1 + 1); x++) {
+        const p = y * w + x;
+        if (hole[p] || d[p * 4 + 3] === 0) continue;
+        const rim = (x > 0 && hole[p - 1]) || (x < w - 1 && hole[p + 1]) || (y > 0 && hole[p - w]) || (y < h - 1 && hole[p + w]);
+        const dp = dist(p);
+        if (!rim || dp >= 128) continue;
+        const a = Math.max(0.05, (dp - TOL) / (128 - TOL));
+        for (let c = 0; c < 3; c++) d2[p * 4 + c] = Math.max(0, Math.min(255, Math.round(bg[c] + (d[p * 4 + c] - bg[c]) / a)));
+        d2[p * 4 + 3] = Math.round(d[p * 4 + 3] * a);
+      }
+    }
+    window.kitCardHoleless = crop(d2);
+  }
+  if (hadBackground || tw < w || th < h || vector) {
+    img.src = crop(d);
     await img.decode();
   }
   return {
@@ -592,17 +664,23 @@ async function kitCardPrepareLogo() {
     h: th,
     natural_w: Math.round(tw / k),
     natural_h: Math.round(th / k),
-    ink: sum / weight,
+    vector,
+    ink: sum / Math.max(1, weight),
     had_background: hadBackground,
     logo_bg: logoBg,
+    holes: holes.length,
     trim: { left: x0 / w, top: y0 / h, right: (w - 1 - x1) / w, bottom: (h - 1 - y1) / h },
   };
 }
 
-/** In the page: draws the prepared logo at `w` x `h` and sets the card's colour variables; returns the logo's box. */
-async function kitCardPlaceLogo({ w, h, vars }) {
+/**
+ * In the page: draws the prepared logo at `w` x `h` (with its counters cleared when `holeless`) and sets the
+ * card's colour variables; returns the logo's box.
+ */
+async function kitCardPlaceLogo({ w, h, vars, holeless }) {
   for (const [name, value] of Object.entries(vars || {})) document.documentElement.style.setProperty(name, value);
   const img = document.getElementById('logo');
+  if (holeless && window.kitCardHoleless) img.src = window.kitCardHoleless;
   img.style.width = `${w}px`;
   img.style.height = `${h}px`;
   img.style.maxWidth = 'none';
@@ -610,6 +688,34 @@ async function kitCardPlaceLogo({ w, h, vars }) {
   await img.decode();
   const r = img.getBoundingClientRect();
   return { x: r.x, y: r.y, w: r.width, h: r.height };
+}
+
+/**
+ * In the page: the share of `box` that the card's other drawing (text, a filled box, a picture) covers. A few
+ * rows of text grazing a logo file's empty margin are fine; a call to action inside it is not.
+ */
+function kitCardCrowds(box) {
+  const logo = document.getElementById('logo');
+  let covered = 0;
+  const meets = (r) => {
+    const w = Math.min(r.x + r.width, box.x + box.w) - Math.max(r.x, box.x);
+    const h = Math.min(r.y + r.height, box.y + box.h) - Math.max(r.y, box.y);
+    if (w > 0 && h > 0) covered += w * h;
+  };
+  for (const el of document.body.querySelectorAll('*')) {
+    if (el === logo || el.contains(logo)) continue;
+    const cs = getComputedStyle(el);
+    if (cs.visibility === 'hidden' || cs.display === 'none') continue;
+    const filled = /^(img|svg|canvas|video)$/i.test(el.tagName) || (cs.backgroundColor && !/rgba\(.*,\s*0\)$|transparent/.test(cs.backgroundColor)) || cs.backgroundImage !== 'none';
+    if (filled) meets(el.getBoundingClientRect());
+    for (const node of el.childNodes) {
+      if (node.nodeType !== 3 || !node.textContent.trim()) continue;
+      const range = document.createRange();
+      range.selectNodeContents(node);
+      for (const r of range.getClientRects()) meets(r);
+    }
+  }
+  return covered / Math.max(1, box.w * box.h);
 }
 
 /**
@@ -623,17 +729,32 @@ async function kitCardFitLogo(ctx, page, { width, height, box, bg, colors, recol
   if (!mark) return { logo: null, background: null };
   const size = kitCardLogoSize(mark.w, mark.h, width, height, box);
   const background = kitCardLogoBackground(mark.ink, bg, colors, mark.logo_bg);
-  const drawn = await page.evaluate(kitCardPlaceLogo, { w: size.w, h: size.h, vars: background ? recolor(background) : {} });
-  if (mark.had_background) ctx.log.info('end card logo background made transparent', { background: mark.logo_bg });
+  const card = background || bg;
+  // On a card of another colour the file's background left inside the letters would show as holes.
+  const holeless = mark.holes > 0 && !!mark.logo_bg && kitCardHex.test(card) && !kitCardSameColor(card, mark.logo_bg);
+  const drawn = await page.evaluate(kitCardPlaceLogo, { w: size.w, h: size.h, vars: background ? recolor(background) : {}, holeless });
+  if (mark.had_background) ctx.log.info('end card logo background made transparent', { background: mark.logo_bg, inside_letters: holeless ? 'cleared' : 'kept' });
   if (background) ctx.log.info('end card colour changed so the logo reads', { from: bg, to: background });
-  if (size.w > mark.natural_w * 1.5) ctx.log.warn('the logo file is small, so the end card shows it enlarged and it may look soft', { natural: `${mark.natural_w}x${mark.natural_h}`, drawn: `${size.w}x${size.h}` });
+  if (!mark.vector && size.w > mark.natural_w * 1.5) ctx.log.warn('the logo file is small, so the end card shows it enlarged and it may look soft', { natural: `${mark.natural_w}x${mark.natural_h}`, drawn: `${size.w}x${size.h}` });
+  // The declared box is the whole file's footprint: the final check matches the whole file there, margins
+  // included. When wide margins put that footprint past the card's edge or over the card's other text, no box
+  // is declared (the check then searches the whole frame): a cut or crowded box would fail a logo that is
+  // plainly there.
   const t = mark.trim;
   const fw = drawn.w / Math.max(1e-6, 1 - t.left - t.right);
   const fh = drawn.h / Math.max(1e-6, 1 - t.top - t.bottom);
-  const x0 = Math.max(0, Math.floor(drawn.x - t.left * fw));
-  const y0 = Math.max(0, Math.floor(drawn.y - t.top * fh));
-  const x1 = Math.min(width, Math.ceil(drawn.x - t.left * fw + fw));
-  const y1 = Math.min(height, Math.ceil(drawn.y - t.top * fh + fh));
+  // A pixel or two over the edge is rounding, not a cut.
+  const fx = drawn.x - t.left * fw;
+  const fy = drawn.y - t.top * fh;
+  const footprint = { x: Math.round(fx), y: Math.round(fy), w: Math.round(fw), h: Math.round(fh) };
+  if (fx < -2 || fy < -2 || fx + fw > width + 2 || fy + fh > height + 2 || (await page.evaluate(kitCardCrowds, footprint)) > 0.04) {
+    ctx.log.warn('the logo file has wide empty margins, so its box is not declared for the final check', { mark: `${size.w}x${size.h}`, footprint: `${footprint.w}x${footprint.h}@${footprint.x},${footprint.y}` });
+    return { logo: null, background };
+  }
+  const x0 = Math.max(0, Math.floor(fx));
+  const y0 = Math.max(0, Math.floor(fy));
+  const x1 = Math.min(width, Math.ceil(fx + fw));
+  const y1 = Math.min(height, Math.ceil(fy + fh));
   const logo = x1 - x0 >= 4 && y1 - y0 >= 4 ? { use: 'logo', x: x0, y: y0, w: x1 - x0, h: y1 - y0 } : null;
   return { logo, background };
 }

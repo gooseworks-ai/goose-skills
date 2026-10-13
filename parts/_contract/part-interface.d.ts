@@ -539,7 +539,9 @@ export interface Timeline {
    * Areas captions must stay off while they show, in pixels: a product a step knows it drew there. Any
    * timeline step may add entries, but only brand-layer >= 1.0.2 (passes it on) and captions-layer >= 1.4.0
    * (reads it, keeps each scene's captions at one height clear of it, and drops it from its output) accept it;
-   * every other part's timeline refuses the field, so it must be the last timeline step's output.
+   * every other part's timeline refuses the field, so it must be the last timeline step's output. A producer
+   * adds it only when the style's captions layer is on: with captions off nothing drops it, and the sound and
+   * check layers refuse the timeline.
    */
   keep_clear?: Array<{ scene_id?: string; start_s: number; end_s: number; use: 'product'; box: { x: number; y: number; w: number; h: number } }>;
 }
