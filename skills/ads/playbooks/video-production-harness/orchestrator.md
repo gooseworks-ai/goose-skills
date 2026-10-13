@@ -143,7 +143,7 @@ For podcast-style skit ads, use an actual available specialist through the bindi
 ### State 2 — Design brief
 1. **Variant mode:** skip entirely. The source's `design_brief` is inherited; you can copy it into `<video_folder>/` for traceability but don't re-derive it.
 2. If both `design_brief` and `implementation_brief` exist, skip to State 2.5.
-3. Call `create-design-brief.md`. The brief must include `audio_strategy:` (one of `vo-narrator | song-as-script | hybrid | silent`), `climax_line:` (set in State 2.5) and `assets_manifest:` (consumed by State 0 re-audit).
+3. Call `create-design-brief.md`; its step 4 sets the scene skeleton and routes each scene through `references/shot-routing.md`. The brief must include `audio_strategy:` (one of `vo-narrator | song-as-script | hybrid | silent`), `climax_line:` (set in State 2.5) and `assets_manifest:` (consumed by State 0 re-audit).
 4. Once `audio_strategy` is set, downstream states branch off it: `lock-script` chooses VO vs lyrics output, `edit-video` chooses mix protocol, the storyboard player chooses VO vs song embed. Validate the field before advancing.
 5. No gate by default — design-brief is mechanical from idea-brief. If `<auto>` is false and significant creative decisions surfaced (e.g. style choice, voice options), pause for the user to weigh in on the open-decisions section.
 

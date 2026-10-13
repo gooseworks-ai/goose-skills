@@ -24,25 +24,27 @@ The output is a single markdown file. No assets are generated here.
 
 ## Workflow
 
-1. Read the user's rough concept and any brand context provided.
-2. Identify what's working in the concept: relatable protagonist, before/after frame, payoff moment, quotable lines.
-3. Push back on:
+1. **Watch the reference end to end and log its beats** (time, shot, line, purpose) before brainstorming. Watch at normal speed with sound; a thumbnail or description is not a watch. With no customer reference, the nearest template's demo video stands in.
+2. Read the user's rough concept and any brand context provided.
+3. Identify what's working in the concept: relatable protagonist, before/after frame, payoff moment, quotable lines.
+4. Push back on:
    - Generic openings ("sad person at desk", "scrolling phone at night")
    - Cute names that pattern-match to existing IP (rename or commit fully)
    - Beats that *tell* instead of *show* (replace with on-screen action)
    - Forgettable end-card CTAs (propose 2–3 alternatives)
    - Unnecessary characters or scenes (cut what doesn't add information)
-4. **Detect the concept type and propose scaffolding.** If the concept involves a transformation, comeback, journey, ramp-up, before/after, or skill acquisition, **default to day-tracker / number-progression scaffolding** (DAY 1 / DAY 5 / DAY 14 / NOW). An earlier run identified this as the strongest narrative scaffolding for short-form transformation arcs; surfaced too late, it cost 5 script revisions. Propose it explicitly in the brief and let the operator accept, modify, or opt out.
-5. Offer 2–3 bigger swings (tonal shifts, structural changes, scope expansions) and let the user choose.
-6. Ask one clarifying question if a key creative axis is unresolved (e.g. target audience, brand voice).
-7. Write `<output_folder>/idea_brief` with:
+5. **Detect the concept type and propose scaffolding.** If the concept involves a transformation, comeback, journey, ramp-up, before/after, or skill acquisition, **default to day-tracker / number-progression scaffolding** (DAY 1 / DAY 5 / DAY 14 / NOW). An earlier run identified this as the strongest narrative scaffolding for short-form transformation arcs; surfaced too late, it cost 5 script revisions. Propose it explicitly in the brief and let the operator accept, modify, or opt out.
+6. Offer 2–3 bigger swings (tonal shifts, structural changes, scope expansions) and let the user choose.
+7. Ask one clarifying question if a key creative axis is unresolved (e.g. target audience, brand voice).
+8. Write `<output_folder>/idea_brief` with:
    - **Concept type** (one of: transformation, demo, testimonial, manifesto, comparison) — drives default arc template in State 2.5
    - Scene-by-scene table (visual + on-screen text + voiceover)
    - Hero asset references
+   - The reference beat log from step 1
    - Tone and length targets
    - **Climax beat** identified explicitly (which line is THE line?) — locked downstream
    - Open questions for downstream resolution
-8. Create the output folder if missing.
+9. Create the output folder if missing.
 
 ## Output and write order
 
