@@ -4705,6 +4705,64 @@
       "models": []
     },
     {
+      "id": "speech-recut",
+      "version": "1.0.2",
+      "interface": 1,
+      "kind": "compose",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "scale",
+            "select",
+            "showinfo",
+            "trim",
+            "setpts",
+            "tpad",
+            "atrim",
+            "asetpts",
+            "aresample",
+            "aformat",
+            "apad",
+            "afade",
+            "pan",
+            "concat",
+            "split",
+            "fps",
+            "setsar",
+            "format",
+            "asplit",
+            "areverse",
+            "volume",
+            "aloop",
+            "amix",
+            "curves",
+            "unsharp"
+          ],
+          "encoders": [
+            "libx264",
+            "aac",
+            "pcm_s16le"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 500
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/speech-recut/1.0.2",
+      "files": {
+        "README.md": "e3dfdeabefc848f4bf762eeedbbc948f7ad3c4dd706c129b0d217dabf09f071b",
+        "part.json": "9642b3f0874dbc81167319b07e0a8f2ff2eec3f48f04c4d9cb87b8db9e2ac323",
+        "part.mjs": "2a1175d54f86e1ff58995e8790619b8de592532cdc6fd7ac925cabe948567e62"
+      },
+      "models": []
+    },
+    {
       "id": "transcribe-whisper",
       "version": "1.0.0",
       "interface": 1,
@@ -4868,6 +4926,52 @@
         "README.md": "23033707732d750b78266db217c59aa23885f93f773505c657770775a9170518",
         "part.json": "2ec01f609e78d3458b88fc42a837860be6137698c93ba0603907608830971a37",
         "part.mjs": "5aaf9937be5bd486a0ff5c40c27b200e0be3dce204f6b9462fe640e669a61233"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "fal-ai/whisper"
+        }
+      ]
+    },
+    {
+      "id": "transcribe-whisper",
+      "version": "1.1.2",
+      "interface": 1,
+      "kind": "caption",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "encoders": [
+            "pcm_s16le"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "fal-ai/whisper"
+          }
+        ],
+        "disk_mb": 50
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "call",
+        "rates_usd": {
+          "fal-ai/whisper": 0.02
+        }
+      },
+      "determinism": "provider",
+      "reuses_pieces_of": [
+        "1.1.1"
+      ],
+      "path": "parts/transcribe-whisper/1.1.2",
+      "files": {
+        "README.md": "3f8afc6b9a2f70f71f9c27972621cbdc29769319c1642e40e778554b3b50f42a",
+        "part.json": "b088186cf7995a4974343bd76f6aeb7a0bf29d54f498daa97ffcaf126322a272",
+        "part.mjs": "9ed0cb78d96f676a23857e51ae74c86faf40228b14c350639f03c4b270d70705"
       },
       "models": [
         {
