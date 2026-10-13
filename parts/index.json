@@ -1321,10 +1321,12 @@
             "blackdetect",
             "scale",
             "format",
-            "fps"
+            "fps",
+            "crop"
           ],
           "encoders": [
-            "pcm_s16le"
+            "pcm_s16le",
+            "rawvideo"
           ]
         },
         "network": false,
@@ -1338,7 +1340,7 @@
       "path": "parts/check-layer/1.4.3",
       "files": {
         "README.md": "aa22d1151f088457462553abfb1f227123044d8ade0df0f4c698759225e09d53",
-        "part.json": "69b2258b72ee67f8c7142b663cbcb7dce3a7d1e58c36592aee64a30906cab13b",
+        "part.json": "fd29e867476606eb36b6f277c22c732476a9034d9df779ccb6f65ab0b9365ff7",
         "part.mjs": "b0d63b82cadf190177cf1f1b0c571157c536edc9362791d4858925e34abcd941"
       },
       "models": []
@@ -1359,10 +1361,12 @@
             "blackdetect",
             "scale",
             "format",
-            "fps"
+            "fps",
+            "crop"
           ],
           "encoders": [
-            "pcm_s16le"
+            "pcm_s16le",
+            "rawvideo"
           ]
         },
         "network": false,
@@ -1376,7 +1380,7 @@
       "path": "parts/check-layer/1.5.0",
       "files": {
         "README.md": "a386e4a2fe82f632b06f3b1f5ea2bd5d578c2a2f4cdd38acd7e11ee4572b0683",
-        "part.json": "b67b4681cecd34a7e888d40141e0d05604603ce1587b3d4a4dc6d644f4100761",
+        "part.json": "5cafdb144d73b3be5952c347b46568aa375b1e0910cd2d7fefe25b34f3990d8b",
         "part.mjs": "a103171ae70748e933dd115b1a568356bea2a07c0cbaf3d5695fe440eb060b64"
       },
       "models": []
@@ -2642,7 +2646,8 @@
             "scale",
             "setsar",
             "format",
-            "hstack"
+            "hstack",
+            "crop"
           ],
           "encoders": [
             "png",
@@ -2679,7 +2684,7 @@
       "path": "parts/image-gpt-image-2/1.1.2",
       "files": {
         "README.md": "45ebfedfe8bd818856476d73d96e10195a9882fbbc227288a4cafbe305d755f4",
-        "part.json": "8c001dc38b37b30745476a3775661942f614034e54755ee65f36a00ed75e324d",
+        "part.json": "4ddf5cc1308c82e3cc94bec10555f7f6016ccebe2fedcf2e48f6628558b8b69f",
         "part.mjs": "4163ef87a27d53ff0ff433d95005824a5fefe67e73d26f464c29e79a523a39f5"
       },
       "models": [
@@ -3072,10 +3077,12 @@
             "scale",
             "setsar",
             "format",
-            "hstack"
+            "hstack",
+            "crop"
           ],
           "encoders": [
-            "png"
+            "png",
+            "rawvideo"
           ]
         },
         "network": true,
@@ -3108,7 +3115,7 @@
       "path": "parts/image-nano-banana/1.2.3",
       "files": {
         "README.md": "74a3604fe33e4f1f2159e98420979a137682695806a6dc75ebad14e92e38f317",
-        "part.json": "d10a33c789ddc6af1cb7f307cdebb22c251612465a273e212facf86283cb80ac",
+        "part.json": "bba088d7889473923ba5cfc0f45a5d75aec43b9475a0947c82cb9e1fcc9b21c5",
         "part.mjs": "b49dfdcfb2131c2ea4d0365cb7ae4dd4224ab943dca7d3179ce73dc8a34e7ad7"
       },
       "models": [

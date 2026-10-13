@@ -61,7 +61,7 @@ export const manifest = {
   kit: '>=1.0.0 <2.0.0',
   needs: {
     browser: false,
-    ffmpeg: { filters: ['scale', 'setsar', 'format', 'hstack'], encoders: ['png'] },
+    ffmpeg: { filters: ['scale', 'setsar', 'format', 'hstack', 'crop'], encoders: ['png', 'rawvideo'] },
     network: true,
     models: [
       { provider: 'fal', model: TEXT },

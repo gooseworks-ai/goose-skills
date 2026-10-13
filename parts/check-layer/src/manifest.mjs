@@ -19,7 +19,7 @@ export const manifest = {
   entry: 'part.mjs',
   files: ['README.md', 'part.mjs'],
   kit: '>=1.0.0 <2.0.0',
-  needs: { browser: false, ffmpeg: { filters: ['ebur128', 'freezedetect', 'blackdetect', 'scale', 'format', 'fps'], encoders: ['pcm_s16le'] }, network: false, models: [], disk_mb: 100 },
+  needs: { browser: false, ffmpeg: { filters: ['ebur128', 'freezedetect', 'blackdetect', 'scale', 'format', 'fps', 'crop'], encoders: ['pcm_s16le', 'rawvideo'] }, network: false, models: [], disk_mb: 100 },
   inputs: layerInputs,
   outputs: {
     type: 'object',

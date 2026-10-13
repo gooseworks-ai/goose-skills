@@ -23,10 +23,12 @@
         "blackdetect",
         "scale",
         "format",
-        "fps"
+        "fps",
+        "crop"
       ],
       "encoders": [
-        "pcm_s16le"
+        "pcm_s16le",
+        "rawvideo"
       ]
     },
     "network": false,

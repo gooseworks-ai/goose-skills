@@ -20,7 +20,8 @@
         "scale",
         "setsar",
         "format",
-        "hstack"
+        "hstack",
+        "crop"
       ],
       "encoders": [
         "png",

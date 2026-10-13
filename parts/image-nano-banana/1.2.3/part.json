@@ -20,10 +20,12 @@
         "scale",
         "setsar",
         "format",
-        "hstack"
+        "hstack",
+        "crop"
       ],
       "encoders": [
-        "png"
+        "png",
+        "rawvideo"
       ]
     },
     "network": true,
