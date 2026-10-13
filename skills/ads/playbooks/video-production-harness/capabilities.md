@@ -8,11 +8,20 @@ The same production steps run in every host. A host connects saved project state
 
 ## Binding and authority
 
-Load the selected host binding first. `load`, `save`, `approve`, `submit`, `poll`, `upload` and `promote` below describe responsibilities, not tool names. Resolve them to real host tools and their current schemas. Never call a fabricated capability name. If no binding implements a required responsibility, save a blocker and stop before that operation.
+The host binding is the entry skill that loaded this package (for GooseWorks: make-custom-video). Load it first. `load`, `save`, `approve`, `submit`, `poll`, `upload` and `promote` below describe responsibilities, not tool names. Resolve them to real host tools and their current schemas. Never call a fabricated capability name. If no binding implements a required responsibility, save a blocker and stop before that operation.
 
 The host owns authenticated human approvals, project ownership, revisions, operation fingerprints, available credit and reservations. A local artifact, quote, script status or agent-authored approval is never authority. Recheck host approval and spend before every paid call, including retries, auditions, transitions and repairs. Polling an already-known job does not authorize a new submission. An ambiguous timeout retains the job and outstanding authorization until reconciled.
 
 The host may combine review surfaces while preserving decisions. Concept, design and script decisions belong to the script gate; storyboard, selected character/world/voice/end-card assets belong to the ingredient gate. Preview images and voice auditions need the approved preview budget. Paid video clips, including preview and transition videos, need ingredient approval. If the host exposes additional gates, honor them. Script changes invalidate dependent approvals; ingredient changes invalidate their gate. New scope, provider or spend beyond the approved bound requires renewed human approval.
+
+## Two production paths
+
+Every scene is made on one of two paths. "Agent-built path" and "kit path" in any file mean exactly this:
+
+- **Agent-built path (today's default).** You make each scene by calling catalog skills through the host: `create-image-fal`, `create-video-fal`, `create-vo-elevenlabs`, `create-music-elevenlabs`, `create-kinetic-typography`, `goose-graphics`, `caption-burn` and `stitch-videos-ffmpeg`. Pick each scene's model as the detailed steps say.
+- **Kit path.** Only when the host's entry skill offers it. The host's video kit renders each scene from published kit parts (`name@version`). If the entry skill doesn't offer it, you are on the agent-built path. Never run a template's kit yourself and call the result custom.
+
+Backticked kebab-case skill names in these files, such as `create-image-fal`, are catalog skills: fetch each with `catalog_fetch` (type skill) when a step needs it. Option and mode values, kit part ids and file names are not skills.
 
 ## Artifact roles
 
@@ -49,7 +58,7 @@ Use stable scene/beat IDs and numeric seconds in the working plan. The binding t
 | prove the rebuild | `python3 scripts/check_recipe.py --bundle recipe/source.json --inputs DOWNLOADED_DIR --final FINAL.mp4 --work EMPTY_DIR`, using only files fetched from the host. It verifies every checksum, runs the build command, and prints `{result, compared, detail}`: `identical` by SHA-256, else `matches` when frame PSNR averages at least 40 dB (worst frame 30 dB), length is within 0.05 s and the audio difference is at most -60 dB. Anything else is `failed`. |
 | inspect a specific claimed defect | `ffmpeg -ss SECONDS -i VIDEO.mp4 -frames:v 1 FRAME.png`; read that actual frame. Verify motion over neighboring frames. A claim without timestamped evidence cannot become a blocking visual finding or an invented pass. |
 | image/text/logo composition | Real approved asset + FFmpeg overlay/drawtext, or Python Pillow when installed. Check fonts and Pillow before choosing that route. Keep readable brand/UI text deterministic. |
-| captions last | Fetch the host's caption-burn specialist (superseded; replaced on the kit path): it renders approved word cues with Pillow and FFmpeg overlay and needs no libass. Check its actual fonts, Pillow and overlay support. If choosing ASS instead, inspect libass via `ffmpeg -filters` before using captions_ass or the `ass` filter. Missing libass blocks only ASS, not local execution. Apply captions after picture/mix polish. Rebuild the actual final evidence and variants afterward. If a managed caption service is selected, resolve it through the host and obtain its estimate/approval. |
+| captions last | Fetch `caption-burn` (superseded; agent-built path; the kit path uses captions-layer): it renders approved word cues with Pillow and FFmpeg overlay and needs no libass. Check its actual fonts, Pillow and overlay support. If choosing ASS instead, inspect libass via `ffmpeg -filters` before using captions_ass or the `ass` filter. Missing libass blocks only ASS, not local execution. Apply captions after picture/mix polish. Rebuild the actual final evidence and variants afterward. If a managed caption service is selected, resolve it through the host and obtain its estimate/approval. |
 | motion without paid video generation | FFmpeg zoompan/setpts/scale/crop/concat and declared transition filters. Editorial illustration uses this path. A browser/Remotion composition requires the actual installed renderer and its dependencies; do not claim that assembly.py renders HTML or JavaScript. |
 
 Preflight runs the actual binaries/imports and a real media probe, not only executable-presence checks; a present FFmpeg can fail at startup from missing libraries. Use the helper only when it implements the approved plan. For custom sidechain, SFX buses, transition interleaving, audio branches or grading, use the detailed FFmpeg instructions in `edit-video.md`; create a filter script and probe/review the result. Missing required tooling blocks that route before spending.

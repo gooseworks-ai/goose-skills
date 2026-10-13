@@ -25,7 +25,7 @@ Uses these skills and FFmpeg recipes:
 - Sound effects: layer each cue the same way, with `adelay` and `volume`
 - Clean a noisy take: `afftdn=nf=-25,highpass=f=80`
 - Music: `create-music-elevenlabs` (superseded; agent-built path only) or an approved licensed track
-- Captions: `caption-burn` (superseded; agent-built path only), burned last in State 10
+- Captions: `caption-burn` (superseded; agent-built path; the kit path uses captions-layer), burned last in State 10
 - End card regen: `goose-graphics` for the card still, `stitch-videos-ffmpeg` to hold it
 - Export: MP4, H.264 + AAC, `-movflags +faststart`, 1080×1920 for 9:16
 

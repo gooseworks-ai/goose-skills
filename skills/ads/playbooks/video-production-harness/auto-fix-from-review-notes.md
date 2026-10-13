@@ -60,7 +60,7 @@ These are execution parameters for the agent following this procedure; this pack
    4. Caption overflow and retime to word timings (operate on the cue file, no media yet)
    5. End-card hold: `tpad=stop_mode=clone:stop_duration=<s>`
    6. Tail fade: `afade=t=out` and `fade=t=out` (after everything else)
-   7. Caption re-burn with `caption-burn` (superseded; agent-built path only) if the cues changed
+   7. Caption re-burn with `caption-burn` (superseded; agent-built path; the kit path uses captions-layer) if the cues changed
    8. Caption render check from `review-video.md` (proof the captions actually rendered)
    9. Frame-claim check from `review-video.md` (over any unverified visual claims in the notes)
 6. **Archive** the canonical target file before any atom that mutates it: copy `target → _archive/<name>-pre-fix-<ts>.<ext>`.
