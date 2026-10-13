@@ -77,6 +77,23 @@ class SelectorRouteTests(unittest.TestCase):
         self.assertIn("conversation/mic-only", routes(result))
         self.assertNotIn("product-guess", routes(result))
 
+    def test_custom_for_a_non_physical_offering_says_guessing_stays_out(self):
+        # GOOSE-4018: the selector offered "custom" for a software brand, and make-custom-video
+        # then refused the mascot hand-over the customer had picked it for.
+        result = select_context(brief(mode="product-guess", offering_type="digital",
+                                      interaction_type="product-guess"), [])
+        custom = next(a for a in result["alternatives"] if a["route"] == "custom")
+        self.assertIn("no guessing game", custom["differs"])
+        self.assertIn("mascot", custom["differs"])
+        self.assertIn("people in text", custom["differs"])
+
+    def test_custom_for_too_many_people_keeps_its_plain_wording(self):
+        # A physical product with five people is a head-count problem; guessing is still allowed.
+        result = select_context(brief(mode="product-guess", offering_type="physical",
+                                      interaction_type="product-guess", participants=5), [])
+        custom = next(a for a in result["alternatives"] if a["route"] == "custom")
+        self.assertNotIn("no guessing game", custom["differs"])
+
     def test_existing_mode_interaction_guard_is_unchanged(self):
         result = select_context(brief(mode="conversation", offering_type="service",
                                       interaction_type="product-guess"), [])
