@@ -11,7 +11,14 @@
 //     (critic #23: check-layer's speech_matches_script compares the whole
 //     script). A repeat is a heard word, or run of words, that the written
 //     line does not have and that repeats or starts a neighbouring word.
-//     Other extra words ("invented" words) are speech and are never cut.
+//     Other extra words inside a line ("invented" words) are speech and are
+//     never cut.
+//   - Speech in no line (1.0.2): heard words transcribe-whisper 1.1.2 gave to
+//     no line (an entry with no scene_id and no text: a repeated line, a
+//     filler between lines) are cut out with the silence around them, down to
+//     max_gap_s, so the lines either side join across one pause. 1.0.1 kept
+//     them, and with the transcript's old in-order placement a repeated
+//     question made every later line look unheard.
 //   - Minimum shot: after the cuts, a shot shorter than min_shot_s that holds
 //     no speech is dropped (the shorter fragment goes; never a cross-fade).
 //     A short shot that holds speech (1.0.1) first takes back the dead air
@@ -332,6 +339,11 @@ export function recutEntryRepeats(entry, words, drop) {
  * The refusals that need no measuring: speech with no timed words, or a scene line with no heard words.
  * Pure, so the part runs it before any probe or ffmpeg work. Throws RecutRefusal.
  */
+/** An entry of heard speech in no line: no scene_id and no written text (transcribe-whisper 1.1.2). */
+export function recutIsExtra(entry) {
+  return !!entry && entry.scene_id == null && !String(entry.text || '').trim();
+}
+
 export function recutCheckSpeech(speech, scenes) {
   const entries = (speech || []).map((e) => ({ entry: e, words: e.words || [] }));
   if (!entries.some((e) => e.words.length)) throw new RecutRefusal('the speech has no timed words: transcribe the take with word timings first');
@@ -357,10 +369,15 @@ export function recutPlan({ duration, fps, speech, scenes, timeline_scenes: time
     }),
   }));
 
+  // Heard speech in no line (transcribe-whisper 1.1.2's entries with no scene_id and no written text: a
+  // repeated line, a filler) is cut out with drop 'repeats'; with 'none' it is kept as speech.
+  const hasLines = (scenes || []).some((s) => String((s && s.line) || '').trim());
+  const extra = entries.map((e) => drop === 'repeats' && hasLines && recutIsExtra(e.entry) && e.words.length > 0);
+
   // What may never be cut: kept words, gaps holding speech the line lacks, and silent beats.
   const fixed = [];
   const occupied = [];
-  const per = entries.map((e) => (e.words.length ? recutEntryRepeats(e.entry, e.words, drop) : null));
+  const per = entries.map((e, n) => (e.words.length && !extra[n] ? recutEntryRepeats(e.entry, e.words, drop) : null));
   entries.forEach((e, n) => {
     const r = per[n];
     if (!r) return;
@@ -388,7 +405,6 @@ export function recutPlan({ duration, fps, speech, scenes, timeline_scenes: time
   const solid = recutMerge(occupied);
 
   // The silences between them, less the repeats already cut.
-  const removals = [...fixed];
   const cutsIn = (a, b) => pictureCuts.filter((c) => c >= a - RECUT_EPS && c <= b + RECUT_EPS);
   const gaps = [];
   let at = 0;
@@ -403,9 +419,68 @@ export function recutPlan({ duration, fps, speech, scenes, timeline_scenes: time
     const g = x.edge === 'before' ? gaps.filter((y) => y.end <= x.at + RECUT_EPS).at(-1) : gaps.find((y) => y.start >= x.at - RECUT_EPS);
     if (g) heldGaps.add(g);
   }
+  // Extra speech sits in a silence (no kept word inside it): that silence goes with it, down to max_gap_s,
+  // so the line before and the line after join across one pause. Extra speech inside a stretch kept whole
+  // (a silent beat) takes only its own words.
+  const extraIn = new Map();
+  const wordsAt = occupied.filter((o) => o.kind === 'word');
+  for (const x of recutMerge(entries.filter((_, n) => extra[n]).map((e) => ({ start: Math.min(...e.words.map((w) => w.start)), end: Math.max(...e.words.map((w) => w.end)), kind: 'extra' })))) {
+    const g = gaps.find((y) => y.start <= x.start + RECUT_EPS && x.end <= y.end + RECUT_EPS);
+    if (g) {
+      const has = extraIn.get(g);
+      extraIn.set(g, has ? { start: Math.min(has.start, x.start), end: Math.max(has.end, x.end) } : { start: x.start, end: x.end });
+      continue;
+    }
+    const lo = Math.max(0, ...wordsAt.filter((o) => o.end <= x.start + RECUT_EPS).map((o) => o.end));
+    const hi = Math.min(duration, ...wordsAt.filter((o) => o.start >= x.end - RECUT_EPS).map((o) => o.start));
+    fixed.push({ start: x.start - Math.min(RECUT_EDGE_S, (x.start - lo) / 2), end: x.end + Math.min(RECUT_EDGE_S, (hi - x.end) / 2), kind: 'extra' });
+  }
+  const removals = [...fixed];
+  // The window of length r starting in [sMin, sMax] that leaves the fewest short shots, then lands on a
+  // picture cut (the join reads as that cut), then sits nearest `mid`.
+  const pickWindow = (r, sMin, sMax, mid, kind) => {
+    const clampS = (t, a, b) => Math.min(Math.max(t, a), b);
+    const starts = [clampS(mid, sMin, sMax)];
+    for (const c of cutsIn(sMin, sMax + r)) {
+      const a = Math.max(sMin, c - r);
+      const b = Math.min(sMax, c);
+      if (a <= b + RECUT_EPS) starts.push(clampS(mid, a, b), a, b);
+    }
+    let best = null;
+    for (const s of starts) {
+      const o = { start: s, end: s + r };
+      const onCut = pictureCuts.some((c) => c >= o.start - RECUT_EPS && c <= o.end + RECUT_EPS);
+      const score = [recutShortCount([...removals, { ...o, kind }], duration, pictureCuts, minShot), onCut ? 0 : 1, Math.abs(o.start - mid)];
+      if (!best || score[0] < best.score[0] || (score[0] === best.score[0] && (score[1] < best.score[1] || (score[1] === best.score[1] && score[2] < best.score[2])))) {
+        best = { o, score };
+      }
+    }
+    return best.o;
+  };
   for (const g of gaps) {
     const head = g.start <= RECUT_EPS;
     const tail = g.end >= duration - RECUT_EPS;
+    const x = extraIn.get(g);
+    if (x) {
+      // What must go: the extra words and up to RECUT_EDGE_S either side (half the way to a kept word).
+      const need = { start: x.start - Math.min(RECUT_EDGE_S, (x.start - g.start) / 2), end: x.end + Math.min(RECUT_EDGE_S, (g.end - x.end) / 2) };
+      let cut;
+      if (heldGaps.has(g) || (head && tail)) cut = need;
+      else if (head) cut = { start: 0, end: Math.max(need.end, g.end - maxGap) };
+      else if (tail) cut = { start: Math.min(need.start, g.start + 2 * maxGap), end: duration };
+      else {
+        const length = g.end - g.start;
+        const r = Math.max(length - maxGap, need.end - need.start);
+        const sMin = Math.max(need.end - r, g.start);
+        const sMax = Math.min(need.start, g.end - r);
+        // Keep RECUT_EDGE_S from the kept words when the window allows it.
+        const a = Math.min(sMax, Math.max(sMin, g.start + RECUT_EDGE_S));
+        const b = Math.max(a, Math.min(sMax, g.end - RECUT_EDGE_S - r));
+        cut = pickWindow(r, a, b, g.start + (length - r) / 2, 'extra');
+      }
+      removals.push({ start: cut.start, end: cut.end, kind: 'extra' });
+      continue;
+    }
     if (heldGaps.has(g)) continue;
     for (const p of recutFree(g.start, g.end, fixed)) {
       const length = p.end - p.start;
@@ -421,28 +496,11 @@ export function recutPlan({ duration, fps, speech, scenes, timeline_scenes: time
       }
       if (length <= maxGap + RECUT_EPS) continue;
       const r = length - maxGap;
-      const lo = p.start + RECUT_EDGE_S;
-      const hi = p.end - RECUT_EDGE_S;
-      const mid = p.start + (length - r) / 2;
       // A removal that takes in one of the take's own picture cuts joins two different shots, so the
       // join reads as that cut. Try the middle, and for each cut in reach the window nearest the
       // middle that takes it in, plus its two extremes (they can keep a neighbouring shot long enough).
-      const starts = [mid];
-      for (const c of cutsIn(lo, hi)) {
-        const sMin = Math.max(lo, c - r);
-        const sMax = Math.min(hi - r, c);
-        if (sMin <= sMax + RECUT_EPS) starts.push(Math.min(Math.max(mid, sMin), sMax), sMin, sMax);
-      }
-      let best = null;
-      for (const s of starts) {
-        const o = { start: s, end: s + r };
-        const onCut = pictureCuts.some((c) => c >= o.start - RECUT_EPS && c <= o.end + RECUT_EPS);
-        const score = [recutShortCount([...removals, { ...o, kind: 'dead_air' }], duration, pictureCuts, minShot), onCut ? 0 : 1, Math.abs(o.start - mid)];
-        if (!best || score[0] < best.score[0] || (score[0] === best.score[0] && (score[1] < best.score[1] || (score[1] === best.score[1] && score[2] < best.score[2])))) {
-          best = { o, score };
-        }
-      }
-      removals.push({ start: best.o.start, end: best.o.end, kind: 'dead_air' });
+      const o = pickWindow(r, p.start + RECUT_EDGE_S, p.end - RECUT_EDGE_S - r, p.start + (length - r) / 2, 'dead_air');
+      removals.push({ start: o.start, end: o.end, kind: 'dead_air' });
     }
   }
 
@@ -471,7 +529,8 @@ export function recutPlan({ duration, fps, speech, scenes, timeline_scenes: time
   const map = recutMapper(keep);
   const t3 = (t) => +map(t).toFixed(3);
   const seconds = +keep.reduce((sum, k) => sum + (k.end - k.start), 0).toFixed(3);
-  const outSpeech = entries.map((e, n) => {
+  const outSpeech = entries.flatMap((e, n) => (extra[n] ? [] : [n])).map((n) => {
+    const e = entries[n];
     const r = per[n];
     const src = e.entry;
     const out = { ...src };

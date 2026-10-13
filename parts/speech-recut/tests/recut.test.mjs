@@ -243,8 +243,9 @@ test('repeats and stutters inside a line are dropped; the written words and the 
   assert.equal(none.speech[0].spoken, "I I think it's it's wa- water");
 });
 
-test('a repeat of a whole line is never dropped: extra words between lines stay', () => {
-  // The man says his line twice. transcribe-whisper gives the second copy to the next line as leading words.
+test('untimed extra words a line carries in spoken stay: a whole line is never dropped', () => {
+  // The man says his line twice. transcribe-whisper 1.1.1 gave the second copy to the next line as leading
+  // words with no timings, so nothing says where they are and the pause holding them is kept.
   const take = {
     duration: 4.0,
     fps: FPS,
@@ -266,6 +267,71 @@ test('a repeat of a whole line is never dropped: extra words between lines stay'
   // the pause before "Wait" holds the second "Beer obviously": nothing in it is cut
   for (const r of plan.removals) assert.ok(r.end <= 0.9 + 1e-9 || r.start >= 2.6 - 1e-9 || r.start < 0.3, `removal ${r.start}-${r.end} cuts heard speech`);
   assert.equal(plan.speech[1].spoken, 'Beer obviously Wait that is water');
+});
+
+/** A question, the same question again (heard speech in no line, transcribe-whisper 1.1.2), an answer. */
+function repeatedQuestion() {
+  const take = twoLines();
+  take.speech.splice(1, 0, { text: '', spoken: 'What is in the can?', start_s: 1.6, end_s: 2.1, words: [w('What', 1.6, 1.7), w('is', 1.72, 1.8), w('in', 1.82, 1.9), w('the', 1.92, 2.0), w('can?', 2.02, 2.1)] });
+  return { ...take, picture_cuts: [] };
+}
+
+test('heard speech in no line is cut out with its silence: the lines either side join across one pause', () => {
+  const take = repeatedQuestion();
+  const plan = recutPlan(take);
+  assert.deepEqual(plan.cuts.map((c) => c.kind), ['head', 'extra', 'tail']);
+  const extra = plan.removals.find((r) => r.kind === 'extra');
+  assert.ok(extra.start <= 1.6 - RECUT_EDGE_S + 0.5 / FPS && extra.end >= 2.1 + RECUT_EDGE_S - 0.5 / FPS, `the repeat goes whole: ${extra.start}-${extra.end}`);
+  assert.deepEqual(plan.speech.map((e) => e.scene_id), ['q', 'a'], 'the repeat leaves the speech');
+  const words = wordsOut(plan);
+  near(words.find((x) => x.text === 'Beer').start_s - words.find((x) => x.text === 'can?').end_s, 0.25, 'one max_gap_s pause between the lines', 1 / FPS + 1e-6);
+  for (const x of take.speech.filter((e) => e.scene_id).flatMap((e) => e.words)) {
+    for (const r of plan.removals) assert.ok(r.end <= x.start_s - RECUT_EDGE_S + 0.5 / FPS + 1e-9 || r.start >= x.end_s + RECUT_EDGE_S - 0.5 / FPS - 1e-9 || r.kind === 'head' || r.kind === 'tail', `removal ${r.start}-${r.end} clips ${x.text}`);
+  }
+  assertOnFrames(plan, take.duration);
+});
+
+test('heard speech in no line: the join lands on a picture cut in reach; drop none keeps it as speech', () => {
+  const onCut = recutPlan({ ...repeatedQuestion(), picture_cuts: [2.5] });
+  const extra = onCut.removals.find((r) => r.kind === 'extra');
+  assert.ok(extra.start <= 2.5 + 1e-9 && extra.end >= 2.5 - 1e-9, `the join takes in the picture cut: ${extra.start}-${extra.end}`);
+  const kept = recutPlan({ ...repeatedQuestion(), drop: 'none' });
+  assert.ok(!kept.cuts.some((c) => c.kind === 'extra'));
+  assert.equal(kept.speech.length, 3);
+  for (const r of kept.removals) assert.ok(r.end <= 1.6 || r.start >= 2.1, `drop none cuts the repeat: ${r.start}-${r.end}`);
+});
+
+test('heard speech in no line at the head and the tail goes with the head and tail trims', () => {
+  const take = twoLines();
+  take.speech.unshift({ text: '', spoken: 'Um', start_s: 0.05, end_s: 0.2, words: [w('Um', 0.05, 0.2)] });
+  take.speech.push({ text: '', spoken: 'okay', start_s: 3.9, end_s: 4.1, words: [w('okay', 3.9, 4.1)] });
+  const plan = recutPlan({ ...take, picture_cuts: [] });
+  assert.deepEqual(plan.cuts.map((c) => c.kind), ['extra', 'dead_air', 'extra']);
+  near(plan.removals[0].start, 0, 'head start');
+  assert.ok(plan.removals[0].end >= 0.2 + 1e-9 && plan.removals[0].end <= 0.5 - RECUT_EDGE_S + 0.5 / FPS, 'the head keeps up to max_gap_s before the first word');
+  near(plan.removals.at(-1).end, take.duration, 'tail end');
+  assert.ok(plan.removals.at(-1).start <= 3.9, 'the tail filler goes');
+  assert.deepEqual(plan.speech.map((e) => e.scene_id), ['q', 'a']);
+});
+
+test('heard speech in no line inside a silent beat takes only its own words', () => {
+  const take = twoLines();
+  take.scenes.splice(1, 0, { id: 'beat', line: null });
+  take.timeline_scenes = [
+    { id: 'q', start_s: 0, end_s: 1.2 },
+    { id: 'beat', start_s: 1.2, end_s: 2.8 },
+    { id: 'a', start_s: 2.8, end_s: 4.5 },
+  ];
+  take.speech.splice(1, 0, { text: '', spoken: 'hmm', start_s: 1.9, end_s: 2.1, words: [w('hmm', 1.9, 2.1)] });
+  const plan = recutPlan({ ...take, picture_cuts: [] });
+  const extra = plan.removals.find((r) => r.kind === 'extra');
+  assert.ok(extra && extra.start >= 1.9 - RECUT_EDGE_S - 0.5 / FPS - 1e-9 && extra.end <= 2.1 + RECUT_EDGE_S + 0.5 / FPS + 1e-9, `only the words go: ${extra && `${extra.start}-${extra.end}`}`);
+});
+
+test('recutCheckSpeech: speech in no line is not a line; a line truly not heard is still refused', () => {
+  const take = repeatedQuestion();
+  recutCheckSpeech(take.speech, take.scenes);
+  assert.throws(() => recutCheckSpeech(take.speech.filter((e) => e.scene_id !== 'a'), take.scenes), /scene a's line has no heard words/);
 });
 
 test('extra words that are not repeats are speech: their gap is never cut', () => {

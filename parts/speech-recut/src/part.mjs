@@ -20,7 +20,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitDuration, kitFfmpeg, kitNum } from '../../_lib/part.mjs';
-import { RECUT_LEVEL_RATE, RECUT_LEVEL_STEP_S, RECUT_ROOM_PAD_S, RecutRefusal, recutCheckSpeech, recutLevels, recutPlan, recutQuietWindow, recutSpeechBusy } from './recut.mjs';
+import { RECUT_LEVEL_RATE, RECUT_LEVEL_STEP_S, RECUT_ROOM_PAD_S, RecutRefusal, recutCheckSpeech, recutIsExtra, recutLevels, recutPlan, recutQuietWindow, recutSpeechBusy } from './recut.mjs';
 
 /** ffmpeg's scene score above which a frame starts a new shot (recut.py measured at 0.30). */
 export const RECUT_SCENE_THRESHOLD = 0.3;
@@ -201,6 +201,8 @@ export async function run(inputs, ctx) {
   }
   for (const w of plan.warnings) ctx.log.warn(w);
   ctx.log.info('speech-recut plan', { picture_cuts: pictureCuts.length, removals: plan.removals.length, covers: plan.covers.length, from_s: +duration.toFixed(3), to_s: plan.seconds });
+  const dropped = (inputs.speech || []).filter((e) => recutIsExtra(e) && (e.words || []).length && (inputs.drop ?? 'repeats') === 'repeats');
+  if (dropped.length) ctx.log.info('speech-recut dropped heard speech that is in no line', { spoken: dropped.map((e) => e.spoken ?? '').filter(Boolean) });
 
   // Room tone: measured on the ORIGINAL take, before the cut, so a window the cut drops still serves.
   let room = null;
@@ -265,8 +267,13 @@ export async function run(inputs, ctx) {
   if (covers.length) graph.push(...recutCoverGraph('joined', covers, joined, 'cv'));
   if (room) {
     // The bed under the whole edit, at gain_db against its window; the speech is untouched.
-    args.push('-stream_loop', '-1', '-i', room.path);
-    graph.push(`[${n}:a]volume=${kitNum(room.gain_db, 3)}dB,atrim=0:${kitNum(seconds)},asetpts=PTS-STARTPTS[bed]`);
+    // The loop is the aloop filter on one read of the file, not -stream_loop on the input: with
+    // -stream_loop (any count) the kit's ffmpeg 6.1 writes the whole edit and then never exits, so the
+    // step timed out on every take with a room-tone window. ffmpeg 7 and later finish either way. The
+    // bed file is the window forward then reversed at 48 kHz (recutRoomLoop), twice the window long.
+    const loopSamples = Math.ceil(2 * (room.end_s - room.start_s) * 48000);
+    args.push('-i', room.path);
+    graph.push(`[${n}:a]aloop=loop=-1:size=${loopSamples},volume=${kitNum(room.gain_db, 3)}dB,atrim=0:${kitNum(seconds)},asetpts=PTS-STARTPTS[bed]`);
     graph.push('[cut][bed]amix=inputs=2:duration=first:dropout_transition=0:normalize=0[speech]');
   }
   graph.push(`[speech]apad,atrim=0:${kitNum(seconds)},asetpts=PTS-STARTPTS[aout]`);
