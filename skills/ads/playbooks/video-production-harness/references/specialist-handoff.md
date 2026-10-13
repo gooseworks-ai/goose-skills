@@ -34,7 +34,7 @@ Before each specialist runs, resolve and record these values in the current capa
 - Selected package slug/version/content hash, executable path relative to that package, real supported tool/model/schema and dependency identities; existing approval revision, quote/budget and provider operation identity.
 - Expected output roles: media, editable sources, measured timings, provider/job provenance and the checks needed before assembly. Do not invent required wire fields; map to the binding's real schema.
 
-Verify outputs against those inputs, not merely against the specialist's success status. Probe actual bytes, verify scene coverage/ratio/duration, exact copy and visible proof, inspect continuous action and listen to every spoken output in isolation and in the eventual mix. Record mismatches and source/returned fingerprints. A stale source, wrong beat, missing word, wrong variant or unconfirmed provider URL blocks assembly.
+Verify outputs against those inputs, not merely against the specialist's success status. Probe actual bytes, verify scene coverage/ratio/duration, exact copy and visible proof, inspect continuous action and listen to every spoken output in isolation. GooseWorks checks the final mix's words when you report complete. Record mismatches and source/returned fingerprints. A stale source, wrong beat, missing word, wrong variant or unconfirmed provider URL blocks assembly.
 
 ## Resume and repair
 

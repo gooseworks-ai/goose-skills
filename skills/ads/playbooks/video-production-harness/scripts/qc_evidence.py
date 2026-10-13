@@ -103,7 +103,7 @@ def collect(video, destination):
         "audio": str(audio) if audio else None,
         "loudness_measurements": loudness, "last_100ms_volume_log": tail_diagnostics,
         "quality_status": "requires_visual_and_audio_review",
-        "remaining_review": ["Read frames across the complete cut and inspect motion/transitions", "Listen and obtain actual transcript/word timings when speech is present", "Compare exact locked copy, brand/product, identity/world, captions and delivery plan", "Extract and verify every timestamped visual claim"],
+        "remaining_review": ["Read frames across the complete cut and inspect motion/transitions", "When speech is present, GooseWorks checks the words against the script when you report complete", "Compare exact locked copy, brand/product, identity/world, captions and delivery plan", "Extract and verify every timestamped visual claim"],
     }
     (destination / "evidence.json").write_text(json.dumps(report, indent=2) + "\n")
     return report

@@ -25,9 +25,9 @@ These are internal purposes, not new approval meetings. Use the host's current r
 | Fine cut | Are performances, transitions, proof, pace, reading time and sound doing their intended jobs? | Preserve good material; repair the smallest affected shot, timing, mix or overlay. |
 | Final export | Does this exact file work at its delivery size, including captions, mix, ending and format? | Deliver only after all required checks and current approval; each derivative gets its own review. |
 
-For a cut review, first play it end to end at normal speed without reading its intended story. Save a short **received-message** observation: what is offered, whom it appears to help, the hook's promise, visible proof, payoff and action. Record uncertainty and surprise at specific times. Then read the brief and compare intended versus received message. If the reviewer already knows the brief, label this a context-aware first impression; do not manufacture an independent viewer. A new independent reviewer can supply a fresh-viewer observation when available.
+For a cut review, first read its frames end to end without reading its intended story. Save a short **received-message** observation: what is offered, whom it appears to help, the hook's promise, visible proof, payoff and action. Record uncertainty and surprise at specific times. Then read the brief and compare intended versus received message. If the reviewer already knows the brief, label this a context-aware first impression; do not manufacture an independent viewer. A new independent reviewer can supply a fresh-viewer observation when available.
 
-Listen to the full actual audio and review continuous motion plus the complete extracted frames. Record source identity, playback start/end, duration covered, audio route and gaps. Frames, transcript and metadata alone cannot establish full-speed playback or listening. If a required capability is unavailable, save useful partial evidence and leave that check incomplete. For silent work, confirm the intended silence and use visible copy/reading time; a nonexistent VO transcript is not required.
+Review the complete extracted frames in order. Record source identity, duration covered and gaps. If frames are unavailable, save useful partial evidence and leave that check incomplete. GooseWorks checks sound and spoken words when you report complete (the final file check in capabilities.md). For silent work, confirm the intended silence and use visible copy/reading time; a nonexistent VO transcript is not required.
 
 ## Diagnose before dispatch
 
@@ -68,15 +68,15 @@ Before execution, list affected source artifacts and dependents. Compare the not
 | Inserted pause or changed scene duration | Only affected picture/audio edits; subsequent cue offsets, transitions, music/SFX, captions, CTA, total duration and derivatives. | Unaffected source media; earlier unchanged cue windows. |
 | Shot or crop | Feature/variant truth, continuity, product visibility, overlay safe space; affected ingredient and final evidence. | Approved script/audio when timing is unchanged. |
 | Caption-only repair | Caption source and fresh burn from clean picture; adjacent cues, duplicates, hierarchy, product visibility, safe areas. | Source picture, speech and accepted wording unless authorized. |
-| Mix-only repair | Affected stems/cues, full-output levels, listening, word integrity, ending; each derivative that uses it. | Picture/timeline and matching captions when time is unchanged. |
+| Mix-only repair | Affected stems/cues, full-output levels, word integrity, ending; each derivative that uses it. | Picture/timeline and matching captions when time is unchanged. |
 
 Do not globally invalidate unrelated valid decisions. Do not keep stale approval/evidence for changed content. Rebuild from editable sources, preserve original bytes, and label resulting candidates. Compare both the local effect and the whole cut before final selection.
 
 ## Each delivered output is its own final gate
 
-Maintain a row in the existing quality report for each actual file: version/asset/checksum, ratio/duration/language, source revision, dimensions/viewing size, playback/listening coverage, captions/text, mix/ending, proof/CTA, verdict and blockers. A passing parent master does not clear a crop, cutdown, translated version or caption revision.
+Maintain a row in the existing quality report for each actual file: version/asset/checksum, ratio/duration/language, source revision, dimensions/viewing size, frame coverage, captions/text, mix/ending, proof/CTA, verdict and blockers. A passing parent master does not clear a crop, cutdown, translated version or caption revision.
 
-Check at the destination's normal viewing size: no caption/UI/logo collisions or duplicate overlays, correct product/feature still visible, readable contrast and hierarchy, sufficient time to recognize proof and read CTA. Captions use the approved wording synchronized to actual speech, including pronunciations and intentionally corrected spelling. Silent text uses its own reading windows. Review the full ending, including the final spoken consonant and intended silence/fade/loop. Measure actual output peaks/levels and listen for masking, pumping and discontinuity; transcription success is supporting evidence only.
+Check at the destination's normal viewing size: no caption/UI/logo collisions or duplicate overlays, correct product/feature still visible, readable contrast and hierarchy, sufficient time to recognize proof and read CTA. Captions use the approved wording synchronized to actual speech, including pronunciations and intentionally corrected spelling. Silent text uses its own reading windows. Review the full ending, including the final spoken consonant and intended silence/fade/loop. Measure actual output peaks/levels for masking, pumping and discontinuity; GooseWorks checks the spoken words when you report complete.
 
 ## Editable handoff and next-run retrieval
 

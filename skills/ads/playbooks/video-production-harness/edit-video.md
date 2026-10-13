@@ -59,7 +59,7 @@ Start from the approved audio strategy and measured stems. A narration-led ad ca
 1. Measure speech, bed and SFX in the actual dialogue windows. Set speech for intelligibility and preserve the approved performance dynamics; choose any loudness target from the actual delivery plan.
 2. Reduce/move the competing cue before excessive voice boosting. Where sidechain helps, split the actual VO bus into listen and detector branches and tune threshold, attack/release and ratio against the material. Record the chosen values; ratio 20 is an FFmpeg limit, not a target.
 3. Mix planned stems with explicit gain and normalization behavior. Do not duplicate native dialogue under a separate voice track. Check scene boundaries and intended room tone/silence.
-4. Measure the **finished mix** for loudness, true peaks and clipping. Listen at normal speed and low playback level to every line, final consonant, effect and tail. Transcription corroborates word integrity; it cannot prove natural delivery or absence of masking/pumping.
+4. Measure the **finished mix** for loudness, true peaks and clipping. Check the speech-to-music gap in every dialogue window and the tail. GooseWorks checks every spoken word when you report complete.
 
 For long filter graphs use a saved FFmpeg filter script, preserve it with the editable sources and probe its actual output. Do not multiply an already normalized VO by 3× and its bus by 2× as an inherited rule: downstream gain can undo normalization and clip the mix.
 
@@ -126,7 +126,7 @@ Resolve the source cut and its editable timeline from the original note/version.
 ### Phase 3 — Music bed
 1. Use the owned/licensed approved music track. Otherwise resolve a real available catalog/search or music-generation capability through the binding using the design-brief query and current price/approval. Missing music access blocks that planned route or requires an approved revised audio plan.
 2. Trim/loop the bed to its planned cue windows. Fade, sustain or stop according to the audio plan; pad only to prevent unintended truncation. A deliberate silent ending is valid.
-3. Measure the actual stems and choose bed gain against speech and the intended dynamics. Honor cue switches, silence drops and end-card swells; listen to the final mix instead of treating a fixed gain as proof.
+3. Measure the actual stems and choose bed gain against speech and the intended dynamics. Honor cue switches, silence drops and end-card swells; measure the final mix instead of treating a fixed gain as proof.
 
 ### Phase 4 — Layer VO
 1. Read VO text from `locked_script` (single source of truth from State 2.5). Confirm `audio/vo-scene-NN.mp3` files match.
@@ -136,7 +136,7 @@ Resolve the source cut and its editable timeline from the original note/version.
 5. Use actual word timings and FFmpeg adelay/atrim to align VO with cartoon mouth-flaps where the approved plan permits. For true lipsync, use a supported approved lipsync capability; audio shifting cannot synthesize missing mouth motion.
 
 ### Phase 5 — Sidechain + SFX layer
-1. Where music masks narration, choose a quieter cue, timed gain automation or tuned sidechain compression. Verify supported filter ranges (FFmpeg sidechain ratio maximum is 20) and listen for pumping. Sidechain is optional; intelligible intentional sound is required.
+1. Where music masks narration, choose a quieter cue, timed gain automation or tuned sidechain compression. Verify supported filter ranges (FFmpeg sidechain ratio maximum is 20) and check the levels for pumping. Sidechain is optional; intelligible intentional sound is required.
 2. Use actual owned/licensed SFX or an approved supported SFX generator, then place the implementation-brief shot list with FFmpeg adelay/volume/amix. Save the exact cue times and sources.
 3. Place SFX on individual hits: anvil thuds, magic poofs, scale slams, etc.
 4. **Hard rule:** honor the actual brief's SFX exclusions; a no-screens/foley-only constraint applies only when approved in this project.
@@ -167,7 +167,7 @@ Resolve the source cut and its editable timeline from the original note/version.
 ## Quality Checks
 
 - Actual cue durations match the approved sound plan, including intended silence/loops. No accidental speech truncation or unplanned empty tail.
-- Final mix levels/peaks are measured after all gain changes. Every line is intelligible at normal speed and low listening level; no pumping or discontinuity.
+- Final mix levels/peaks are measured after all gain changes. Speech sits clearly above music in every dialogue window; no pumping or discontinuity.
 - Delivery intent is preserved without a mandatory boost, bed or ducking preset.
 - Every approved SFX restriction is honored.
 - Caption text matches `locked_script` and design-brief burned-in text (not auto-transcribed from VO).
@@ -181,7 +181,7 @@ Resolve the source cut and its editable timeline from the original note/version.
 ## Failure Modes
 
 - atempo'd VO sounds cartoonish — re-render at native speed instead.
-- Music masks speech — diagnose actual competing windows, change the cue/gain or tune sidechain, then listen to the mixed result. Transcription alone cannot clear masking.
+- Music masks speech — diagnose actual competing windows, change the cue/gain or tune sidechain, then re-measure the mixed result.
 - Caption text is auto-generated and contradicts the burned on-screen text from the design-brief.
 - Final master drifts from the design-brief timing because retimes weren't logged.
 - Forgetting to bake captions and exporting the no-captions master to delivery.

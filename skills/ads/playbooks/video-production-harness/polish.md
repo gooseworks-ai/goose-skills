@@ -50,10 +50,10 @@ Each axis maps to a repair or review responsibility. The labels below are not sh
 | Axis | What we check | Repair |
 |---|---|---|
 | audio-loudness | Integrated LUFS within ±0.5 of platform target (default -14 social). True-peak under -1 dBTP. | Two-pass `loudnorm=I=-14:TP=-1.5:LRA=11` |
-| **vo-intelligibility** | Full-speed listening confirms every line and ending remains clear against actual music/SFX; transcript comparison corroborates locked wording. | actual transcript comparison → measured per-line FFmpeg mix correction |
+| **vo-intelligibility** | Speech sits clearly above music/SFX in every measured dialogue window; GooseWorks checks the words against the script when you report complete. | measured per-line FFmpeg mix correction |
 | captions-overflow | Check actual cue readability at destination size. More than 38 chars/line, two lines or six words in under 0.6s are diagnostic prompts; approved layout and measured reading time decide. | Split long cues at phrase breaks into at most 2 lines of 38 characters; keep words and timing |
 | captions-timing | Cue starts within ±100 ms of the matching word in word-timestamps. | Snap each cue start to its first word's start |
-| music-vo-balance | Measure stems in dialogue windows and listen to the final mix for masking/pumping; level gap is diagnostic, not a universal perceptual threshold. Preserve the approved audio strategy. | Measured cue gain/automation or tuned sidechain |
+| music-vo-balance | Measure stems in dialogue windows and the final mix for masking/pumping; level gap is diagnostic, not a universal perceptual threshold. Preserve the approved audio strategy. | Measured cue gain/automation or tuned sidechain |
 | end-card | Judge readability/hold against actual copy and destination size; score 7 and 1.2s are diagnostic starting points, not universal pass thresholds. Logo/CTA contrast meets the agreed legibility target; text meets WCAG AA (4.5:1 ordinary text, 3:1 large text) when applicable. Brand-quality design (not generic gradient). | End-card text readable at phone size for ≥ 1.5 s; extend the hold with ffmpeg `tpad=stop_mode=clone:stop_duration=<s>`; if regen needed, follow the approved brand design and deterministic logo/text composition. Use an installed supported browser renderer for motion chrome; use Pillow or FFmpeg for static compositions. New paid visual assets require the appropriate renewed gate. |
 | final-tail | Full ending matches the approved fade, hold, silence or loop. No chopped final speech, unintended abruptness or accidental gap; black/silent tails only when planned. | Planned tail repair |
 | pacing-performance | Verify only the exact approved timing/performance choice. Preserve raw speech; listen to raw and edited versions and recheck word/caption sync. No automatic speed target. | Actual performance/timing comparison; repair only within approved scope |
@@ -61,7 +61,7 @@ Each axis maps to a repair or review responsibility. The labels below are not sh
 | color-consistency | Inspect intended continuity against the approved look; luminance variance is diagnostic and must not erase intentional lighting changes. | none (escalate) |
 | brand-fit | Palette match, approved logo usage, no banned phrases. (Same as the brand-fit check in `review-video.md`.) | none (escalate) |
 
-**Speech integrity and actual listening are ship gates.** A transcript failure is a finding to investigate against the audio, including brand pronunciation and recognizer errors. A passing transcript cannot establish natural speech, intelligibility against music or clean timing. Record heard defects separately from transcription mismatches; missing listening capability leaves the verdict incomplete. For silent/text-led work, verify intended silence and reading time instead of demanding a speech transcript.
+**Speech integrity is a ship gate.** When you report complete, GooseWorks checks the final's spoken words against the script (0.90 or better); if complete is refused, fix the lines it names. Check brand pronunciation and recognizer errors against the script before re-recording. For silent/text-led work, verify intended silence and reading time instead.
 
 ## Workflow
 
@@ -85,13 +85,13 @@ Run `python3 scripts/qc_evidence.py VIDEO.mp4 EVIDENCE_DIR` and inspect the evid
 Inspect the actual end-card frames and score legibility, hold, safe margins, logo contrast and brand design with the table above. Save the rubric score and recommendations; distinguish visual judgments from measured contrast values.
 
 When speech is present, run the actual transcription capability against the full master and perform the intelligibility comparison:
-- Transcribes actual audio through an available host-managed transcription route or installed local engine. If neither is available, stop at this gate.
+- Transcribes actual audio through an available host-managed transcription route or installed local engine. If neither is available, skip this step; GooseWorks checks the words when you report complete.
 - Diffs the transcript against `locked_script`, line-by-line.
 - Verify each meaningful substitution/omission against actual audio before recording a P0 speech-integrity finding. Preserve known pronunciation/spelling intent; a recognizer mistake is not proof of missing speech.
 - Output: `<video_folder>/polish-notes/<idx>/qc/whisper-test.md` with per-line pass/fail and specific per-line mix correction, with actual target level and timing.
 
 ### Step 3 — Watch pass
-Play the entire cut continuously at normal speed, read all extracted frames and listen to the entire decoded audio using the actual tools in `capabilities.md`. Apply this prompt template:
+Read all extracted frames in order against the storyboard, and use the measured loudness and levels for the audio axes. Apply this prompt template:
 
 > You are reviewing a finished social-ad cut for a final polish pass. The creative is already approved — focus only on technical/objective polish. For each of these axes, list every issue you can identify with a timecode and one-sentence root-cause:
 >
@@ -140,7 +140,7 @@ Priorities:
 4. Final result is `edits/master-polished.mp4`.
 
 ### Step 7 — Re-verify
-Re-run the packaged evidence helper, actual end-card readability review, and actual transcript/mix comparison against the polished master. Rewatch/listen to the whole candidate and verify the original notes' intended effects. Required unresolved notes remain changed, not verified. Repeat final checks for every delivered derivative after its own caption/export changes. Write `polish-notes/<idx>-<ts>-applied.md` (extends the dispatcher's report) with before/after deltas:
+Re-run the packaged evidence helper, actual end-card readability review, and transcript comparison when available against the polished master. Reread the whole candidate's frames and verify the original notes' intended effects. Required unresolved notes remain changed, not verified. Repeat final checks for every delivered derivative after its own caption/export changes. Write `polish-notes/<idx>-<ts>-applied.md` (extends the dispatcher's report) with before/after deltas:
 - LUFS before → after
 - **Verified locked-line integrity before → after** (all actual spoken lines must pass; investigate recognizer errors rather than reporting them as heard defects)
 - Caption overflow count before → after
@@ -156,7 +156,7 @@ Print a summary to the operator:
 Polish complete:
   LUFS:               -24.3 → -13.9 (target -14)
   Speech integrity:   8/13 passing → 13/13 verified
-  Full playback/audio: complete on this candidate
+  All frames read:    complete on this candidate
   Notes verified:     original effects checked; no required items open
   Caption overflow:   4 → 0
   End-card score:     4.25/10 → 8.0/10

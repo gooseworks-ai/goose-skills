@@ -103,7 +103,7 @@ Create `<video_folder>/edits/_iterations/auto-refine-log.json` if missing:
 
 ### Step 2 — Iteration N
 
-1. **Watch.** Run the packaged evidence helper on the actual video, read every extracted frame, listen to the full audio, and obtain the actual transcript when speech is present.
+1. **Watch.** Run the packaged evidence helper on the actual video and read every extracted frame against the storyboard. GooseWorks checks sound and spoken words when you report complete (the final file check in `capabilities.md`).
 2. **Check.** Follow `review-video.md` and save its documented structured check list; no separate command or mode is assumed. Persist the result as `edits/_iterations/iter-N-checks.json`.
 3. **Partition** into `objective_misses`, `subjective_misses`, `incomplete`, `passed` arrays. Missing required evidence is incomplete, never pass. Bind each finding/operation to its original cut and use the source/impact/disposition procedure in [the editorial review guide](references/editorial-review.md). Subjective diagnoses use the existing return route and cheap authorized alternatives; they are not silently repaired by this loop.
 4. **Exit conditions:**

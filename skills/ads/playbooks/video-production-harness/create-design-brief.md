@@ -50,7 +50,7 @@ This is step 2 of the video-orchestrator pipeline. Runs after `brainstorm`.
 5. **Mark the intended emphasis.** For spoken work, identify the line that should land
    hardest and add `climax_line:` referencing its scene. This is performance direction,
    not an automatic volume increase. For silent work use `climax_line: null` and name
-   the visual payoff in its scene row. The final mix is judged by listening.
+   the visual payoff in its scene row. The final mix is judged by its measured levels and GooseWorks' word check.
 6. **For ads with a recurring human character**, write a structured `character:` block with verbatim descriptor strings (see `lock-character.md` for the schema). These strings get baked into every prompt — paraphrasing causes drift.
 7. **Write the `assets_manifest:` block** listing every PNG/SVG/JPG/MP4 reference the pipeline will consume, with expected paths. `preflight-audit` reads this to validate before generation. Missing manifest = audit must scan `raw-materials/` recursively, which is less reliable.
 8. Define voice (must be on `the host-approved voice catalog`), music cues, SFX rule, caption rule.

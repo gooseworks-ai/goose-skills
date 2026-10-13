@@ -56,7 +56,7 @@ These are execution parameters for the agent following this procedure; this pack
 5. **Order** groups by actual dependency. Picture/timing/source or VO changes run before downstream mix, word timings and captions; rebuild affected dependents. For a local finishing-only pass with stable timing, the order is:
    1. Preflight check from `preflight-audit.md` (validate first; everything else assumes inputs are real bytes)
    2. Mix and loudness (audio first; visual stays untouched): `amix` with voice ducking, then `loudnorm=I=-14:TP=-1.5:LRA=11`
-   3. Whisper test of the mix: transcribe it and confirm every line is heard; loop back to step 2 if any line fails
+   3. Word test of the mix when a transcription route exists: transcribe it and confirm every line; loop back to step 2 if any line fails. GooseWorks checks the words again when you report complete
    4. Caption overflow and retime to word timings (operate on the cue file, no media yet)
    5. End-card hold: `tpad=stop_mode=clone:stop_duration=<s>`
    6. Tail fade: `afade=t=out` and `fade=t=out` (after everything else)
