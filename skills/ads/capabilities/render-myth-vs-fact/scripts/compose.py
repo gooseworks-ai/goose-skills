@@ -42,8 +42,9 @@ def ffprobe_dur(path):
 
 def concat_silent(beats, frames_dir, work, fps):
     lst = work / "concat.txt"
-    lst.write_text("\n".join(f"file '{(frames_dir / f'beat-{b['n']}.mp4').resolve()}'"
-                             for b in beats) + "\n")
+    lst.write_text("\n".join(
+        "file '{}'".format((frames_dir / "beat-{}.mp4".format(b["n"])).resolve())
+        for b in beats) + "\n")
     out = work / "master-silent.mp4"
     run(["ffmpeg", "-y", "-loglevel", "error", "-f", "concat", "-safe", "0",
          "-i", str(lst), "-c", "copy", str(out)])
