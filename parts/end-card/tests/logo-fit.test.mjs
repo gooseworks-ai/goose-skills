@@ -126,3 +126,26 @@ test('brand layer 1.0.2: the appended card fits the logo and declares its box', 
   const red = boxOf(await framePixels(out.video.path, 3.5, 540, 960), [224, 16, 32]);
   assert.ok(red && red.w >= 280, `the mark is ${red && red.w} px wide on a 540 px card`);
 });
+
+test('the final check finds the fitted logo in the box the card declares, and not another logo', { skip }, async () => {
+  const check = await loadNewest('check-layer');
+  const { layerInputsFor } = await import('../../_tools/kit-harness.mjs');
+  const { ctx } = makeCtx({ partDir: check.dir });
+  const w = ctx.workDir;
+  const brand = await sampleBrand(w);
+  const font = join(dir, 'assets', 'fonts', 'Montserrat-Bold.ttf');
+  const logo = join(w, 'wordmark.png');
+  await run('ffmpeg', ['-hide_banner', '-nostdin', '-loglevel', 'error', '-y', '-f', 'lavfi', '-i', 'color=c=black@0.0:s=420x140:d=1,format=rgba', '-vf', `drawtext=fontfile=${font}:text='Sample':fontsize=96:fontcolor=0xe01020:x=(w-tw)/2:y=(h-th)/2,drawbox=x=10:y=118:w=400:h=10:color=0x1a1a1d:t=fill`, '-frames:v', '1', logo]);
+  brand.logo = await fileRef(logo, 'image');
+  const card = await mod.run({ brand, width: 720, height: 1280, seconds: 2 }, makeCtx({ partDir: dir }).ctx);
+  const body = join(w, 'body.mp4');
+  await run('ffmpeg', ['-hide_banner', '-nostdin', '-loglevel', 'error', '-y', '-f', 'lavfi', '-i', 'testsrc2=size=720x1280:rate=30:duration=3', '-f', 'lavfi', '-i', 'sine=frequency=440:duration=3', '-c:v', 'libx264', '-preset', 'ultrafast', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-shortest', body]);
+  const cut = join(w, 'cut.mp4');
+  await run('ffmpeg', ['-hide_banner', '-nostdin', '-loglevel', 'error', '-y', '-i', body, '-i', card.video.path, '-filter_complex', '[0:v][0:a][1:v][1:a]concat=n=2:v=1:a=1[v][a]', '-map', '[v]', '-map', '[a]', '-c:v', 'libx264', '-preset', 'ultrafast', '-pix_fmt', 'yuv420p', '-c:a', 'aac', cut]);
+  const video = await fileRef(cut, 'video');
+  const timeline = { end_card: { start_s: 3, end_s: 5 }, safe_zones: card.timeline.safe_zones };
+  const verdict = async (b) => (await check.mod.run(await layerInputsFor(video, { brand: b, expect: { end_card: true, qc_flags: [] }, timeline }), ctx)).verdict.checks.find((c) => c.code === 'logo').status;
+  assert.equal(await verdict(brand), 'pass');
+  const other = await fileRef(await makeLogo(join(w, 'other.png'), '#20a040', 300, 300), 'image');
+  assert.equal(await verdict({ ...brand, logo: other }), 'fail');
+});

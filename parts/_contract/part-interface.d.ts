@@ -535,6 +535,13 @@ export interface Timeline {
   end_card?: { start_s: number; end_s: number };
   /** Areas captions and logos must stay inside, in pixels. */
   safe_zones?: Array<{ use: 'captions' | 'logo'; x: number; y: number; w: number; h: number }>;
+  /**
+   * Areas captions must stay off while they show, in pixels: a product a step knows it drew there. Any
+   * timeline step may add entries, but only brand-layer >= 1.0.2 (passes it on) and captions-layer >= 1.4.0
+   * (reads it, keeps each scene's captions at one height clear of it, and drops it from its output) accept it;
+   * every other part's timeline refuses the field, so it must be the last timeline step's output.
+   */
+  keep_clear?: Array<{ scene_id?: string; start_s: number; end_s: number; use: 'product'; box: { x: number; y: number; w: number; h: number } }>;
 }
 
 /** What the finished video must be: from the style file (duration, traits) and the frozen plan (aspect). */
@@ -577,6 +584,11 @@ export interface CaptionLook {
   case?: 'as_written' | 'lower' | 'upper';
   /** No captions on the timeline's first scene. */
   skip_first_scene?: boolean;
+  /**
+   * captions-layer 1.4.0: where the style's shots hold the product, as shares of the frame (0-1), up to 8
+   * boxes, kept clear for the whole cut (end card aside). A bad value is dropped with a warning.
+   */
+  keep_clear?: Array<{ x: number; y: number; w: number; h: number }>;
 }
 
 /**

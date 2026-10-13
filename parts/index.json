@@ -502,9 +502,9 @@
       "determinism": "pure",
       "path": "parts/brand-layer/1.0.2",
       "files": {
-        "README.md": "f9541f94b66ffb10e2f535fcb926825616d1284788e584bcdd9ac9824a2c7af3",
+        "README.md": "87d8177151238d79421122729c047311a3aca50bbfb9e7ea8e461597c3342610",
         "assets/fonts/Montserrat-Bold.ttf": "bc6e854971cea46b463be6f9eef4d9cd52f51cfc1fc0dd90c9d3e6483dc0ec61",
-        "part.json": "435ef18729ab5239513790c48c20fa4231334802c1615fd1fe99d68d3837d84f",
+        "part.json": "f0cd5ebcb958b47fb227dace37df99c68cd73d1ce1bdaf2dbd367e6c9dd6b635",
         "part.mjs": "d0d62f2b88ac35342fc4b4b0f4bcbf799d32a5ad34051db37d8c603a0d8cc1e7"
       },
       "models": []
@@ -771,6 +771,62 @@
         "assets/fonts/TitanOne-Regular.ttf": "bcac194b2c80941682789e854d0515855a41dfa0d3f209fbf1725b15cd9fd063",
         "part.json": "da20f29a7dc4fb5d30cdfb83db3fd93a89d95d0efe8f027729de9c5e2940e3cf",
         "part.mjs": "8f86271a627214ff5117515b4f45e2db96b8b09d03d4d1bcaf743b874acb7a2d"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "fal-ai/whisper"
+        }
+      ]
+    },
+    {
+      "id": "captions-layer",
+      "version": "1.4.0",
+      "interface": 1,
+      "kind": "caption",
+      "layer": "captions",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": true,
+        "ffmpeg": {
+          "filters": [
+            "fps",
+            "format",
+            "overlay"
+          ],
+          "encoders": [
+            "libx264",
+            "aac"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "fal-ai/whisper"
+          }
+        ],
+        "disk_mb": 400
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "call",
+        "rates_usd": {
+          "fal-ai/whisper": 0.02
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/captions-layer/1.4.0",
+      "files": {
+        "README.md": "e24e36db2dc26c936d2c8b7da3d683d9ed88ec59a9fc79c4022a69313b9a342a",
+        "assets/fonts/Montserrat-Bold.ttf": "bc6e854971cea46b463be6f9eef4d9cd52f51cfc1fc0dd90c9d3e6483dc0ec61",
+        "assets/fonts/Montserrat-OFL.txt": "ea6b176076abe6950aa25de2fcd199c56fa8409946e883370e10bec68596573c",
+        "assets/fonts/PTSerif-Bold.ttf": "038ba7336bd7ea14f12ad155bed51a4345cac5153275d521dec3ba04021c526e",
+        "assets/fonts/PTSerif-OFL.txt": "ddf311c28ddf5a5ad9747649837346b67bed9d356789c3072bb27dbce49e514d",
+        "assets/fonts/TitanOne-OFL.txt": "2abc52c3268db4de42e3b625d604d062f2410c620b0a88d29e1b007116df253e",
+        "assets/fonts/TitanOne-Regular.ttf": "bcac194b2c80941682789e854d0515855a41dfa0d3f209fbf1725b15cd9fd063",
+        "part.json": "69acbd2c447fc39eb1131a569c00d6ec4df23d84c6fbf7160b1c646a2a887e0f",
+        "part.mjs": "04092f6abf9ddd203fce8c49b58ac9615326c4e2d0cefc234486bd65dece0e39"
       },
       "models": [
         {

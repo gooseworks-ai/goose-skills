@@ -18,6 +18,8 @@ The brand layer (slot 1 of 4): ends the video on the brand. Free; needs the kit'
   `audio-mix` (then this layer passes the cut through).
 - Otherwise the cut passes through untouched (the same file). The card clip is drawn in scratch; only the
   branded cut is left as output.
+- **keep_clear (1.0.2)**: a timeline's `keep_clear` (where a step drew the product) is taken and passed on
+  unchanged to the captions layer, which reads it.
 - **Outputs**: `video`, `timeline` (longer by the card, with an `end-card` scene and `end_card` set, and in
   1.0.2 `safe_zones` use `logo`: the box the logo file covers on the card, so the final check looks for it
   there).
