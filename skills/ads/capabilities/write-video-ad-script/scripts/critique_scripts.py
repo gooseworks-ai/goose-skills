@@ -43,8 +43,8 @@ from lint_scripts import dialogue_mode, lint  # noqa: E402
 
 FAL_LLM = "openrouter/router"
 DEFAULT_MODEL = "openai/gpt-6-sol"
-AXES = ("hook", "open_loop", "mid_turn", "channels_agree", "specific", "spoken", "proof", "payoff", "fresh",
-        "template_fit", "claim_support", "strategic_fit")
+AXES = ("hook", "open_loop", "mid_turn", "channels_agree", "specific", "spoken", "sounds_human", "proof", "payoff",
+        "fresh", "template_fit", "claim_support", "strategic_fit")
 
 DIALOGUE_RUBRIC = """\
 For this conversation, judge spoken and template_fit strictly against the observed
@@ -109,8 +109,10 @@ Score each concept 1-10 on:
 - hook: would a cold viewer stop in the first two seconds, with sound and muted? Does the
   first line land the situation, desire, question, product action or promise with no
   wind-up? Early product or branding is useful when it serves the story; pain is not
-  required. A generic question or statement, a greeting, the brand name as the first words
-  or a list of pains scores 5 or less.
+  required. The hook is something a person would really say, in one breath: a confession,
+  a surprise, a specific moment or an opinion. A generic question or statement, a mood
+  ("Tonight I want something cozy"), a greeting, the brand name as the first words or a
+  list of pains scores 5 or less.
 - open_loop: the first line opens a question or gap the viewer wants closed, and the last
   third closes it. A gap the ending never pays off scores low.
 - mid_turn: one turn near the middle (a reveal, a surprise or a "but") renews attention
@@ -122,6 +124,9 @@ Score each concept 1-10 on:
 - spoken: delivery sounds natural for the format and brand. Dialogue should sound like
   people, chat like messages, cards should read and lyrics should sing. Customer wording
   can help where relevant, but is optional and earns nothing merely for being quoted.
+- sounds_human: reads like this person in this brand's voice, not an ad or a machine.
+  Penalise fragment chains, steps read aloud, narrating the picture, ad-speak and mood
+  openers. Judge against the brand voice and customer words above, not your own taste.
 - proof: the claim is shown or earned, not just asserted.
 - payoff: one message, and the body pays off exactly what the hook promised.
 - fresh: useful product and audience specificity rather than interchangeable category
@@ -141,14 +146,16 @@ you would replace, give the replacement, say why in 12 words or fewer), and a ki
 for any critical defect listed above or a fatally generic concept. Use null for ordinary
 creative weaknesses that a line or visual edit can repair. Edits make a line sharper,
 more specific or more natural for its format, or cut an unbacked claim. An edit that
-only makes a line flatter or more factual is not an improvement.
+only makes a line flatter or more factual is not an improvement. Every edit and fix
+follows the voice rules: whole sentences a person would say, no fragments, no mood or
+status openers ("It's a work night and…"), no ad-speak.
 
 Finally rank all concepts best first and say in one sentence why the top one wins.
 Use the concept ids and hook ids exactly as written above (for example c1, c1h2).
 
 Answer with ONLY this JSON, no prose around it:
 {"concepts": [{"id": "...", "scores": {"hook": 0, "open_loop": 0, "mid_turn": 0, "channels_agree": 0,
-"specific": 0, "spoken": 0, "proof": 0, "payoff": 0, "fresh": 0, "template_fit": 0, "claim_support": 0,
+"specific": 0, "spoken": 0, "sounds_human": 0, "proof": 0, "payoff": 0, "fresh": 0, "template_fit": 0, "claim_support": 0,
 "strategic_fit": 0}, "best_hook_id": "...", "hook_notes": "...", "edits": [{"beat":
 "...", "from": "...", "to": "...", "why": "..."}], "kill": null}], "ranking": ["..."],
 "why_top": "..."}"""
@@ -217,6 +224,14 @@ def build_prompt(concepts, quotes_by_id, rules, shape, brief, context=None, refe
         head.append("Brand facts (the only facts an edit may use): " + " | ".join(facts))
     if never:
         head.append("The brand never says: " + " | ".join(never))
+    voice = (rules or {}).get("voice")
+    if voice:
+        head.append("Brand voice (it decides tone; judge sounds_human against it): "
+                    + (voice if isinstance(voice, str) else json.dumps(voice, ensure_ascii=False)))
+    quotes = list(quotes_by_id.values()) or (context or {}).get("quotes") or []
+    said = [q.get("text") for q in quotes if isinstance(q, dict) and q.get("text")]
+    if said:
+        head.append("Customer words (how buyers really talk): " + " | ".join(f'"{t}"' for t in said[:8]))
     head.append("Full recipe contract: " + json.dumps(shape, ensure_ascii=False))
     if context:
         head.append("Selected research and campaign context: " + json.dumps(context, ensure_ascii=False))

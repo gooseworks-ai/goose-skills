@@ -49,9 +49,11 @@ highest-ranked rejected candidate.
 
 **The required rule pass.** Rerun the rule check after every repair. Before any script
 goes to review, fix every error (E_ codes, including E_SAME_ANGLE and E_DEAD_OPENER).
-Also fix W_BRAND_FIRST, W_TIRED_OF_LIST and W_ON_SCREEN_LONG, or state in one line of the
-review why the format needs that choice. The heuristic warnings (W_FEATURE_STACK,
-W_PICTURE_HOOK_MISMATCH, W_BEAT1_NO_TEXT, W_SIMILAR_OPENING, W_TRICOLON) are advice:
+Also fix W_BRAND_FIRST, W_TIRED_OF_LIST, W_ON_SCREEN_LONG and the voice codes
+W_FRAGMENT_CHAIN, W_MOOD_OPENER and W_AD_SPEAK (see the voice reference), or state in one
+line of the review why the format or the brand's voice needs that choice. The heuristic
+warnings (W_STEPS_ALOUD, W_FEATURE_STACK, W_PICTURE_HOOK_MISMATCH, W_BEAT1_NO_TEXT,
+W_SIMILAR_OPENING, W_TRICOLON) are advice:
 weigh each one, and change the script only when it is right. The rule check is free and
 needs no network.
 
@@ -59,7 +61,8 @@ needs no network.
 model from a different family than the writer judges every concept twice, once in each
 order, because judges favour whatever they read first. It scores hook, open loop, mid
 turn, whether the opening's picture, line and on-screen words agree, specificity, how
-spoken it sounds, proof, payoff and freshness, and gives a best hook, line edits and a
+spoken it sounds, whether it sounds human in the brand's voice (sounds_human; give the
+critic the brand voice in brand-rules `voice` and the customer words), proof, payoff and freshness, and gives a best hook, line edits and a
 ranking. This is a paid operation: use the current managed quote and the host's approval,
 never a fixed credit claim. For a custom project where the host refuses a critic before
 the run is approved, perform the same rubric locally before review, save the scores and
@@ -67,7 +70,7 @@ edits, and label the reviewer honestly. Do not submit a paid critic or retry a 4
 approval. A different-model critic is required only where the host supports it in the
 current phase and approved budget; never claim it ran when it did not. When the critic is
 skipped, self-review every concept against the same rubric, including the three opening
-axes, save the scores and label the reviewer honestly. Template plans saved through the
+axes and sounds_human, save the scores and label the reviewer honestly. Template plans saved through the
 host's video tools are judged by the host's server automatically.
 
 **Optional Jev screen.** Jev may cheaply judge narrow text questions about relevance,

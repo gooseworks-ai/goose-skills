@@ -11,7 +11,10 @@ attention on taste:
                    in the bank, a set where some concepts share an angle type and
                    others do not (E_SAME_ANGLE, a set error)
   warnings         a line that looks like a banned brand claim (a human decides), AI
-                   tells ("it's not X, it's Y", "game-changer", dash habits), stiff
+                   tells ("it's not X, it's Y", dash habits), ad-speak ("game-changer",
+                   "look at that", W_AD_SPEAK), clipped fragments or steps read aloud
+                   across scenes (W_FRAGMENT_CHAIN, W_STEPS_ALOUD), a mood opener
+                   ("Tonight, I want…", W_MOOD_OPENER), stiff
                    spoken lines, long sentences, numbers no fact or quote backs, the
                    brand name in the first line, a concept that never uses its buyers'
                    words, softer openers, duplicate hooks / families, two concepts that
@@ -89,14 +92,34 @@ AI_TELLS = [
      "\"it's not X, it's Y\": just say Y"),
     (r"\bnot just\b[^.?!]{1,50}\bbut\b", "\"not just X but Y\": just say the thing"),
     (r"\bhere's the (thing|kicker|truth|secret|deal|catch)\b", "drumroll before the point: cut it"),
-    (r"\b(game[- ]?changer|revolutionary|next[- ]level|elevate[sd]?|unlock(s|ed)?|seamless(ly)?|"
-     r"effortless(ly)?|transformative|supercharge[sd]?|empower(s|ed|ing)?|must[- ]have|"
-     r"look no further|level up|in today's|whether you're|designed to|crafted|curated|"
-     r"boost your|to the next level|it's that simple|you deserve|holistic|cutting[- ]edge|"
-     r"one[- ]stop|all[- ]in[- ]one solution|take control of)\b",
-     "ad-speak or AI vocabulary: use the plain word the buyer would say"),
 ]
 AI_TELL_RES = [(re.compile(p, re.I), why) for p, why in AI_TELLS]
+
+# Sound like a person (references/voice.md). Ad-speak in any spoken, hook or on-screen text:
+# the voice rules' list, then the older AI-vocabulary list, so one code covers both.
+AD_SPEAK_RE = re.compile(
+    r"\b(game[- ]?changer|elevate[sd]?|say goodbye to|meet your new|it's not just|isn't just|"
+    r"that's the (evening|night|morning|day) i wanted|look at (that|those)|this is what i'm craving|"
+    r"indulgent|mouthwatering|irresistible|effortless(ly)?|level up|transform your|"
+    r"revolutionary|next[- ]level|unlock(s|ed)?|seamless(ly)?|transformative|"
+    r"supercharge[sd]?|empower(s|ed|ing)?|must[- ]have|look no further|in today's|whether you're|"
+    r"designed to|crafted|curated|boost your|to the next level|it's that simple|you deserve|"
+    r"holistic|cutting[- ]edge|one[- ]stop|all[- ]in[- ]one solution|take control of)\b", re.I)
+# Narrating the picture: a spoken sentence that starts by pointing at the screen.
+NARRATE_RE = re.compile(r"^\W*(look at|check out|here's the|see that|see how)\b", re.I)
+# A mood or craving instead of a hook (scene 1, or a hook alternative).
+MOOD_OPENER_RES = [re.compile(p, re.I) for p in (
+    r"^(tonight|today|this (morning|evening|week))?,? ?i(?: (?:want|need|crave|am craving)|'m craving)\b",
+    r"^craving\b", r"^(in the mood for|need something)\b", r"^(want|need) .*\?$",
+    # A status update ("It's a work night and I'm…", "Home late and…") is a mood too.
+    r"^(it'?s|it is) (a |another )?[\w-]+ (night|morning|evening|day|afternoon)\b",
+    r"^(home late|just got home|got home|back home)\b", r"^(so )?(here i am|me,? )")]
+# Formats that cannot put words over beat 1: none at all, or text only on the end card.
+NO_BEAT1_TEXT = ("none", "end_card")
+FRAGMENT_MAX_WORDS = 5     # a spoken sentence this short is a fragment
+CHAIN_MIN = 3              # this many fragments (or read-aloud steps) in a row
+STEP_VERBS = {"boil", "cook", "add", "stir", "heat", "pour", "mix", "remove", "turn", "open", "serve",
+              "put", "place", "fold", "spread", "shake", "blend", "chop", "cut", "microwave", "bake"}
 GENERIC_WORDS = {"really", "very", "amazing", "incredible", "literally", "simply", "actually",
                  "basically", "best-in-class", "world-class", "awesome", "perfect"}
 STIFF_RE = re.compile(
@@ -212,6 +235,101 @@ def opening_tokens(concept, ignore):
         return []
     line = text_of(beats[0]) or on_screen_of(beats[0])
     return [t for t in tokens(line) if t and t not in STOPWORDS and t not in ignore]
+
+
+def spoken_sentences(beats, kinds):
+    """[(first scene, last scene, sentence)] over the spoken beats, in order. A beat that
+    does not end on . ! ? or … carries its sentence into the next spoken beat."""
+    out, carry, start = [], "", None
+    for i, b in enumerate(beats):
+        text = CUE_RE.sub(" ", plain(text_of(b))).strip()
+        if kinds[i] != "spoken" or not text:
+            continue
+        parts = [p.strip() for p in re.split(r"(?<=[.!?…])\s+|\n+", text) if p.strip()]
+        for k, part in enumerate(parts):
+            if carry:
+                part, first = carry + " " + part, start
+                carry = ""
+            else:
+                first = i
+            if k == len(parts) - 1 and not re.search(r"[.!?…][\"'”)\]]*$", part):
+                carry, start = part, first
+            else:
+                out.append((first, i, part))
+    if carry:
+        out.append((start, len(beats) - 1, carry))
+    return out
+
+
+def runs(items, test):
+    """Maximal runs of CHAIN_MIN or more consecutive items that pass the test."""
+    found, cur = [], []
+    for item in items + [None]:
+        if item is not None and test(item):
+            cur.append(item)
+            continue
+        if len(cur) >= CHAIN_MIN:
+            found.append(cur)
+        cur = []
+    return found
+
+
+def scenes(a, b):
+    return (f"Scenes {a + 1}-{b + 1} read" if a != b else f"Scene {a + 1} reads")
+
+
+def is_mood(text):
+    first = re.sub(r"^\W+", "", first_sentence(text)).strip()
+    return any(r.search(first) for r in MOOD_OPENER_RES)
+
+
+def quoted(found):
+    """Each phrase once, as first written: 'look at those', 'irresistible'."""
+    first = {}
+    for h in found:
+        first.setdefault(h.lower(), h)
+    return "', '".join(first.values())
+
+
+def voice_checks(beats, kinds, hooks, silent):
+    """The sound-human checks (references/voice.md) as [(code, msg, beat id)]."""
+    out = []
+    ids = [b.get("id") or f"beat {i + 1}" for i, b in enumerate(beats)]
+    said = [] if silent else spoken_sentences(beats, kinds)
+    for run in runs(said, lambda s: 0 < len(words(s[2])) <= FRAGMENT_MAX_WORDS):
+        out.append(("W_FRAGMENT_CHAIN", f"{scenes(run[0][0], run[-1][1])} as clipped fragments; "
+                    "join them into sentences a person would say.", ids[run[0][0]]))
+    for run in runs(said, lambda s: (norm_words(s[2]) or [""])[0] in STEP_VERBS):
+        out.append(("W_STEPS_ALOUD", f"{scenes(run[0][0], run[-1][1])} steps aloud; show them on screen "
+                    "and say what they mean for the viewer.", ids[run[0][0]]))
+    if beats:
+        opening = (text_of(beats[0]) if not silent and kinds[0] == "spoken"
+                   else on_screen_of(beats[0]) or (text_of(beats[0]) if kinds[0] == "on_screen" else ""))
+        labels = [(opening, ids[0])] + [(text_of(h), "hook " + str(h.get("id", "?"))) for h in hooks]
+        for text, label in labels:
+            if text and is_mood(text):
+                out.append(("W_MOOD_OPENER", "Scene 1 states a mood; open on a confession, a surprise, "
+                            "a specific moment or an opinion instead.", label))
+    hits = {}
+    for i, b in enumerate(beats):
+        for text in (text_of(b), on_screen_of(b)):
+            hits.setdefault(i, []).extend(m.group(0) for m in AD_SPEAK_RE.finditer(plain(text)))
+    for first, _, sentence in said:
+        m = NARRATE_RE.search(sentence)
+        if m and not any(h.lower().startswith(m.group(1).lower()) for h in hits.get(first, [])):
+            hits.setdefault(first, []).append(m.group(1))
+    for i, found in sorted(hits.items()):
+        if found:
+            out.append(("W_AD_SPEAK", f"Scene {i + 1} uses ad-speak ('{quoted(found)}'); say it the way a customer would.", ids[i]))
+    for h in hooks:
+        found = [m.group(0) for m in AD_SPEAK_RE.finditer(plain(text_of(h)))]
+        m = None if silent else NARRATE_RE.search(first_sentence(text_of(h)))
+        if m and not any(f.lower().startswith(m.group(1).lower()) for f in found):
+            found.append(m.group(1))
+        if found:
+            out.append(("W_AD_SPEAK", f"Hook {h.get('id', '?')} uses ad-speak ('{quoted(found)}'); say it the way a customer would.",
+                        "hook " + str(h.get("id", "?"))))
+    return out
 
 
 def shared_run(a, b, n=3):
@@ -711,7 +829,8 @@ def lint(cands, shape=None, rules=None, bank=None, report_only=False, context=No
             opening = beats[0]
             oid = opening.get("id") or "first beat"
             if (hook_kind == "spoken" and text_of(opening).strip() and not on_screen_of(opening).strip()
-                    and shape.get("words_on_screen") != "none"):
+                    and shape.get("words_on_screen") not in NO_BEAT1_TEXT
+                    and c.get("words_on_screen") not in NO_BEAT1_TEXT):
                 warn("W_BEAT1_NO_TEXT", "the opening is spoken but has no on-screen words: most people watch muted; add 8 or fewer words that say the hook", oid)
             picture = opening["visual"].get("description") if isinstance(opening.get("visual"), dict) else ""
             picture = picture if isinstance(picture, str) else ""
@@ -764,7 +883,14 @@ def lint(cands, shape=None, rules=None, bank=None, report_only=False, context=No
         # AI tells and dash habits across everything this concept says
         for rx, why in AI_TELL_RES:
             for m in rx.finditer(everything):
-                warn("W_AI_TELL", f"\"{m.group(0)[:50]}\": {why}")
+                if not AD_SPEAK_RE.search(m.group(0)):   # W_AD_SPEAK already names it
+                    warn("W_AI_TELL", f"\"{m.group(0)[:50]}\": {why}")
+        # Sound like a person: fragments, steps read aloud, a mood opener, ad-speak.
+        kinds = [(slot.get(i) or by_id.get(b.get("id")) or b).get("kind", "spoken") for i, b in enumerate(beats)]
+        silent = shape.get("speech") == "none" or not any(
+            k == "spoken" and text_of(b).strip() for k, b in zip(kinds, beats))
+        for code, msg, at in voice_checks(beats, kinds, hooks, silent):
+            warn(code, msg, at)
         dashes = everything.count("—") + everything.count(" – ")
         if dashes >= 2:
             warn("W_AI_TELL", f"{dashes} long dashes: a dash habit reads machine-written; use full stops")
