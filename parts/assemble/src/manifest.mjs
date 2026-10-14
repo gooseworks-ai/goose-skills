@@ -1,4 +1,4 @@
-import { file, sceneSpan, speechEntry, timeline } from '../../_tools/schemas.mjs';
+import { file, sceneSpan, speechEntry, timeline, timelineWithKeepClear } from '../../_tools/schemas.mjs';
 
 const textOrNull = (max) => ({ type: ['string', 'null'], maxLength: max });
 
@@ -67,7 +67,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'assemble',
-  version: '1.2.0',
+  version: '1.2.1',
   kind: 'compose',
   title: 'Assemble scenes',
   summary: 'Joins clips and stills into one cut at one size and frame rate, frame exact: timed to a voice or song, built from shot recipes per scene tag, with cuts kept between words, marks for sounds, an end card, Ken Burns and grain looks.',
@@ -104,6 +104,17 @@ export const manifest = {
             image: file('image'),
             in_s: { description: 'Where the cut starts in its clip. Default 0.', type: 'number', minimum: 0 },
             seconds: { description: 'Length of the cut. Default: the rest of the clip. Required for a still.', type: 'number', exclusiveMinimum: 0, maximum: 300 },
+            keep_clear: {
+              description: "Where the product is in this still, as shares of the picture (0 to 1). Each box is moved onto the cut the way fit and the Ken Burns push move the picture, and added to timeline.keep_clear for the clip's span, so captions-layer >= 1.4.0 keeps the captions off it. Use only when the style's captions layer is on.",
+              type: 'array',
+              maxItems: 8,
+              items: {
+                type: 'object',
+                additionalProperties: false,
+                required: ['x', 'y', 'w', 'h'],
+                properties: { x: { type: 'number', minimum: 0, maximum: 1 }, y: { type: 'number', minimum: 0, maximum: 1 }, w: { type: 'number', exclusiveMinimum: 0, maximum: 1 }, h: { type: 'number', exclusiveMinimum: 0, maximum: 1 } },
+              },
+            },
           },
         },
       },
@@ -205,7 +216,7 @@ export const manifest = {
     properties: {
       video: file('video'),
       seconds: { type: 'number', exclusiveMinimum: 0 },
-      timeline,
+      timeline: timelineWithKeepClear,
       marks: {
         description: "Where a shot with a mark starts (audio-mix plays the mark's sound there). Empty when no shot has one.",
         type: 'array',

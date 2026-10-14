@@ -1,5 +1,10 @@
 # captions-layer
 
+## 1.4.1
+
+- A new shot never opens on the last shot's caption: when the next caption's first word is at most 0.25 s after a final cut, the caption held over that cut (its words all said before it) stops on the cut and the next caption starts on it. Assemble cuts on the frame at or before a line's first word, so the next caption used to come up one frame after the cut (Brightland 18.90 s, Cryo Cure 15.53 s). A caption whose words run across a cut, or a hold before a longer pause, is drawn as in 1.4.0.
+- When a scene's captions meet a keep-clear box at the look's height, at 0.80 and at 0.30, the middle heights 0.45 and then 0.62 are tried before the least overlap. A label low in the frame and a face high in it leave only the middle clear (Cryo Cure, where the captions moved off the knee sleeve's label onto the man's face).
+
 ## 1.4.0
 
 - Captions keep clear of the product: boxes from `timeline.keep_clear` (pixels, per time span; the input timeline now takes it) and the look's `keep_clear` (shares of the frame, for the whole cut). Each scene's captions take one height, the look's `y`, else 0.80, else 0.30, the first that clears every box shown with them by 0.02 of the height, else the least overlap with a warning. `words.json` records each cue's `y` and `overlap` and the boxes kept clear. `keep_clear` is dropped from the output timeline. Without boxes the output is 1.3.1's, byte for byte.
