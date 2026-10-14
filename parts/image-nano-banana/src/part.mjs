@@ -26,6 +26,13 @@
 // came back letterboxed, padded or framed is cropped, or fails the step, never
 // drawn again (_lib/scene-stills.mjs kitStillWithoutBorders). borders: 'keep'
 // turns both off.
+//
+// 1.3.0: model may be Nano Banana Pro (fal-ai/nano-banana-pro, /edit with
+// references), which renders at 1K or 2K (resolution). The base model's stills
+// are about 768 px wide, too small for real skin on a person; Pro at 2K showed
+// pores, acne scars and real texture where the base model stayed smooth
+// (recipe audit, 2026-10-14). A run uses one family: the prompt-only and /edit
+// paths of the model it names. Everything else is unchanged.
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitFfmpeg, kitPieceName, kitStopIfAborted } from '../../_lib/part.mjs';
@@ -35,6 +42,15 @@ import { kitStillAnchorMembers, kitStillAnchorPrompt, kitStillCastFiles, kitStil
 
 const EDIT = 'fal-ai/nano-banana/edit';
 const TEXT = 'fal-ai/nano-banana';
+const PRO_EDIT = 'fal-ai/nano-banana-pro/edit';
+const PRO_TEXT = 'fal-ai/nano-banana-pro';
+
+/** The run's model family from inputs.model: its prompt-only and /edit paths, and Pro's resolution. */
+function nbLine(inputs) {
+  const pro = inputs.model === PRO_TEXT || inputs.model === PRO_EDIT;
+  return { pro, text: pro ? PRO_TEXT : TEXT, edit: pro ? PRO_EDIT : EDIT, resolution: pro ? inputs.resolution || null : null };
+}
+const nbIsEdit = (model) => model === EDIT || model === PRO_EDIT;
 const NB_PROMPT_MAX = 12000;
 const NB_AT_ONCE = 4;
 const NB_LOCKED_MIME = ['image/png', 'image/jpeg', 'image/webp'];
@@ -118,22 +134,22 @@ function nbLogRefusal(ctx, err, { piece, about, model, refs, prompt }) {
  * words what the still is for (a cast member, a scene, a product); a refused still is logged with it, so
  * the log names the piece the plan has to change.
  */
-async function nbDraw(ctx, { piece, refs, prompt, aspect, seed, about }) {
+async function nbDraw(ctx, { line, piece, refs, prompt, aspect, seed, about }) {
   kitStopIfAborted(ctx);
-  const model = refs && refs.length ? EDIT : TEXT;
+  const withRefs = Boolean(refs && refs.length);
+  const model = withRefs ? line.edit : line.text;
   const body = { prompt, num_images: 1, output_format: 'png' };
-  if (model === EDIT) body.image_urls = refs;
+  if (withRefs) body.image_urls = refs;
   if (aspect) body.aspect_ratio = aspect;
+  if (line.resolution) body.resolution = line.resolution;
   if (Number.isInteger(seed)) body.seed = seed;
   let result;
   try {
-    result = await ctx.line.order({
-      piece,
-      provider: 'fal',
-      path: model === EDIT ? EDIT : TEXT,
-      body,
-      results: [{ pointer: '/json/images/0/url', name: `${piece}-raw.png`, media: 'image' }],
-    });
+    const results = [{ pointer: '/json/images/0/url', name: `${piece}-raw.png`, media: 'image' }];
+    // One order per model family, each naming its own two paths, so every paid path is a listed constant.
+    result = line.pro
+      ? await ctx.line.order({ piece, provider: 'fal', path: withRefs ? PRO_EDIT : PRO_TEXT, body, results })
+      : await ctx.line.order({ piece, provider: 'fal', path: withRefs ? EDIT : TEXT, body, results });
   } catch (err) {
     if (err && err.code === 'provider_rejected') nbLogRefusal(ctx, err, { piece, about, model, refs, prompt });
     throw err;
@@ -168,6 +184,7 @@ async function nbEach(items, work) {
 
 async function nbImages(inputs, ctx, manifest) {
   const model = inputs.model;
+  const line = nbLine(inputs);
   if (!inputs.images) throw ctx.error('bad_input', 'images mode needs images (or give scenes for scenes mode)');
   for (const key of NB_SCENE_ONLY) {
     if (inputs[key] !== undefined) throw ctx.error('bad_input', `${key} works only in scenes mode`);
@@ -176,14 +193,14 @@ async function nbImages(inputs, ctx, manifest) {
   if (inputs.borders !== undefined) throw ctx.error('bad_input', 'borders works only in scenes and products mode');
   for (const [i, img] of inputs.images.entries()) {
     const refs = img.references || [];
-    if (model === EDIT && !refs.length) throw ctx.error('bad_input', `images[${i}] has no reference image for ${EDIT}`);
-    if (model === TEXT && refs.length) throw ctx.error('bad_input', `images[${i}] has reference images; use ${EDIT}`);
+    if (nbIsEdit(model) && !refs.length) throw ctx.error('bad_input', `images[${i}] has no reference image for ${line.edit}`);
+    if (!nbIsEdit(model) && refs.length) throw ctx.error('bad_input', `images[${i}] has reference images; use ${line.edit}`);
   }
   const used = new Set();
   const images = [];
   for (const [i, img] of inputs.images.entries()) {
     const piece = kitPieceName('image', img.id, i, used);
-    const file = await nbDraw(ctx, { piece, refs: model === EDIT ? img.references : null, prompt: img.prompt, aspect: inputs.aspect_ratio, seed: inputs.seed, about: `image ${img.id ?? i + 1}` });
+    const file = await nbDraw(ctx, { line, piece, refs: nbIsEdit(model) ? img.references : null, prompt: img.prompt, aspect: inputs.aspect_ratio, seed: inputs.seed, about: `image ${img.id ?? i + 1}` });
     images.push({ id: String(img.id ?? i + 1), image: file });
     ctx.progress({ done: i + 1, total: inputs.images.length });
   }
@@ -192,12 +209,13 @@ async function nbImages(inputs, ctx, manifest) {
 
 async function nbScenes(inputs, ctx, manifest) {
   const model = inputs.model;
+  const line = nbLine(inputs);
   const anchor = inputs.anchor || 'none';
   if (inputs.images) throw ctx.error('bad_input', 'scenes mode makes its own images: give scenes or images, not both');
   if (inputs.kinds !== undefined) throw ctx.error('bad_input', 'kinds works only in products mode');
   if (!inputs.scenes) throw ctx.error('bad_input', 'scenes mode needs scenes');
-  if (model === TEXT && anchor !== 'none') throw ctx.error('bad_input', `anchor ${anchor} needs ${EDIT}, which takes reference images`);
-  if (model === TEXT && inputs.style_refs && inputs.style_refs.length) throw ctx.error('bad_input', `style_refs need ${EDIT}, which takes reference images`);
+  if (!nbIsEdit(model) && anchor !== 'none') throw ctx.error('bad_input', `anchor ${anchor} needs ${line.edit}, which takes reference images`);
+  if (!nbIsEdit(model) && inputs.style_refs && inputs.style_refs.length) throw ctx.error('bad_input', `style_refs need ${line.edit}, which takes reference images`);
   const cast = inputs.cast || [];
   const keys = new Set();
   for (const m of cast) {
@@ -231,7 +249,7 @@ async function nbScenes(inputs, ctx, manifest) {
       if (ids.has(j.id)) throw new Error(`two scenes have the id ${j.id}`);
       ids.add(j.id);
     }
-    if (model === EDIT && anchor === 'cast') {
+    if (nbIsEdit(model) && anchor === 'cast') {
       for (const m of kitStillAnchorMembers(jobs.filter((j) => !locked(j)))) if (!m.image) anchorJobs.push({ member: m, prompt: kitStillAnchorPrompt(tpl, m, base) });
     }
   } catch (err) {
@@ -253,19 +271,19 @@ async function nbScenes(inputs, ctx, manifest) {
   const total = anchorJobs.length + jobs.length;
   let done = 0;
   const tick = () => ctx.progress({ done: ++done, total });
-  if (model === TEXT && jobs.some((j) => j.cast.length || j.products.length || j.scene_image)) {
-    ctx.log.info(`${TEXT} draws from the prompt alone, so scene references are not sent`);
+  if (!nbIsEdit(model) && jobs.some((j) => j.cast.length || j.products.length || j.scene_image)) {
+    ctx.log.info(`${line.text} draws from the prompt alone, so scene references are not sent`);
   }
 
   // Product photos lose their flat margins before any still sends them (free).
-  if (fix && model === EDIT) kitStillTrimJobs(jobs, await kitStillTrimProducts(ctx, inputs.products || []));
+  if (fix && nbIsEdit(model)) kitStillTrimJobs(jobs, await kitStillTrimProducts(ctx, inputs.products || []));
 
   // 1. Cast anchors: members with an image pass through free.
   const anchors = new Map();
   for (const m of cast) if (m.image) anchors.set(m.key, m.image);
-  const styleRefs = model === EDIT ? inputs.style_refs || [] : [];
+  const styleRefs = nbIsEdit(model) ? inputs.style_refs || [] : [];
   await nbEach(anchorJobs, async (a) => {
-    const file = await nbDraw(ctx, { piece: a.piece, refs: styleRefs, prompt: a.prompt, aspect: inputs.cast_aspect_ratio || '1:1', seed: inputs.seed, about: `the character picture of ${a.member.name || a.member.key} (cast)` });
+    const file = await nbDraw(ctx, { line, piece: a.piece, refs: styleRefs, prompt: a.prompt, aspect: inputs.cast_aspect_ratio || '1:1', seed: inputs.seed, about: `the character picture of ${a.member.name || a.member.key} (cast)` });
     anchors.set(a.member.key, file);
     tick();
   });
@@ -293,13 +311,13 @@ async function nbScenes(inputs, ctx, manifest) {
       return;
     }
     let refs = { files: [], strip_at: null, names: null };
-    if (model === EDIT) {
+    if (nbIsEdit(model)) {
       const castFiles = kitStillCastFiles(job, anchors);
       const castRefs = kitStillWantsStrip(job, castFiles) ? [await stripFor(castFiles)] : castFiles.slice(0, 3);
       refs = kitStillRefs(job, { cast: castRefs, first, style_refs: styleRefs });
     }
     const about = `the still for scene ${job.id}`;
-    const drawn = await nbDraw(ctx, { piece: job.piece, refs: refs.files, prompt: kitStillPrompt(job, refs), aspect: inputs.aspect_ratio, seed: inputs.seed, about });
+    const drawn = await nbDraw(ctx, { line, piece: job.piece, refs: refs.files, prompt: kitStillPrompt(job, refs), aspect: inputs.aspect_ratio, seed: inputs.seed, about });
     const file = fix
       ? (await kitStillWithoutBorders(ctx, { file: drawn, name: job.piece, about, refusal: `The picture for scene ${job.index + 1} came back with a border; change the scene picture and try again.` })).file
       : drawn;
@@ -335,7 +353,8 @@ function nbKindTemplate(tpl, kind) {
 }
 
 async function nbProducts(inputs, ctx, manifest) {
-  if (inputs.model !== EDIT) throw ctx.error('bad_input', `products mode edits each product's photo, so it needs ${EDIT}`);
+  const line = nbLine(inputs);
+  if (!nbIsEdit(inputs.model)) throw ctx.error('bad_input', `products mode edits each product's photo, so it needs ${line.edit}`);
   for (const key of NB_NOT_PRODUCTS) {
     if (inputs[key] !== undefined) throw ctx.error('bad_input', `${key} does not work in products mode`);
   }
@@ -388,7 +407,7 @@ async function nbProducts(inputs, ctx, manifest) {
   const files = await nbEach(jobs, async (j) => {
     const photo = (trimmed.get(String(j.product.id)) || j.product).images[0];
     const about = `the ${j.kind} still of ${j.product.name}`;
-    const drawn = await nbDraw(ctx, { piece: j.piece, refs: [photo], prompt: j.prompt, aspect: inputs.aspect_ratio, seed: inputs.seed, about });
+    const drawn = await nbDraw(ctx, { line, piece: j.piece, refs: [photo], prompt: j.prompt, aspect: inputs.aspect_ratio, seed: inputs.seed, about });
     const file = fix
       ? (await kitStillWithoutBorders(ctx, { file: drawn, name: j.piece, about, refusal: `The picture of ${j.product.name} came back with a border; change its photo and try again.` })).file
       : drawn;
@@ -400,6 +419,9 @@ async function nbProducts(inputs, ctx, manifest) {
 
 export async function run(inputs, ctx) {
   const manifest = await kitCheckInputs(ctx, inputs);
+  if (inputs.resolution !== undefined && nbLine(inputs).resolution === null) {
+    throw ctx.error('bad_input', `resolution works only with ${PRO_TEXT} and ${PRO_EDIT}; ${inputs.model} has one size`);
+  }
   const mode = inputs.mode || (inputs.scenes ? 'scenes' : 'images');
   if (mode === 'products') return nbProducts(inputs, ctx, manifest);
   return mode === 'scenes' ? nbScenes(inputs, ctx, manifest) : nbImages(inputs, ctx, manifest);
