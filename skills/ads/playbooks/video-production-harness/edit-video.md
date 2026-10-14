@@ -13,6 +13,9 @@ Build a candidate from the accepted story and editable sources. Mix for the chos
 
 ## Host contract
 
+Follow [creative contract and review](references/creative-contract-and-review.md) for current content-derived duties, complete AV coverage, clip eligibility and exact-file evidence. Read its linked sound, scale and look procedures when applicable. Preserve the two existing owner gates; no extra automatic review meeting.
+
+
 Read `capabilities.md` and the selected host binding first. Artifact names are logical roles resolved by that binding. Named review tasks use the documented rubrics and actual frame/audio tools; they are not assumed installed commands. Required tooling, human approval and available budget must exist before the operation. Read [the editorial review guide](references/editorial-review.md) for source binding, stage decisions, note disposition, impact checks and saved edit history.
 
 ## Purpose
@@ -41,16 +44,26 @@ Uses these skills and FFmpeg recipes:
   - `<transitions>` — `cut` (default), `crossfade-3f`, `whip-pan`, `flash`
   - `<music_track>` — path, or a brief for `create-music-elevenlabs`
 
-## audio_strategy branches
+## Speech and soundtrack branches
 
-The mix protocol below assumes `audio_strategy: vo-narrator`. Branch on the design-brief field:
+Read [speech and route qualification](references/speech-and-route-qualification.md)
+before selecting streams. Use the supported assembly_timeline with exact source
+intervals and current creative_contract_revision, rather than unrelated stitching scripts.
 
-| audio_strategy | Mix branch |
+| Resolved speech | Picture/audio treatment |
 |---|---|
-| `vo-narrator` | Voice is the lead. Use an approved bed only if planned; tune gain automation or sidechain from actual masking. |
-| `song-as-script` | **Skip sidechain duck entirely.** The song IS the audio — there's no VO to duck under. Honor the approved fade, sustained ending or loop; do not impose a fade that cuts a lyric. Captions sync to vocal onsets: transcribe the song for word timings, then burn with `caption-burn`. See the selected binding's actual supported capability State 7. |
-| `hybrid` | Duck only during the VO segments. Music plays unducked under the lyric segments. Segment the actual VO/lyric windows and recombine the processed audio. Verify the selected FFmpeg filters support any timeline option before using it. |
-| `silent` | Mux silent audio track (or none). Captions burned from the design-brief itself, not from VO/lyric timestamps. |
+| native_dialogue | Keep checked native picture/audio clocks and rates; speech continues under cutaways |
+| audio_driven_lipsync | Preserve exact accepted driver and synchronized picture; changed driver needs renewed sync |
+| narration | Measure accepted speech, then fit relevant non-speaking coverage to words/actions |
+| singing | Preserve lyric/musical timing; only planned narration windows need speech ducking |
+| mixed | Resolve mode/driver and cues for every timed speaker interval |
+| none | No invented voice; retain independently planned ambience/music/SFX or intentional silence |
+
+An explicitly present empty soundtrack_modes means no additional soundtrack.
+intentional_silence requires none for that resolved interval and a saved reason.
+Legacy silent is not permission to mux empty audio or discard existing sound.
+Music/SFX retain actual source, cue interval, gain and explicit loop/pause intent.
+Only accepted clips enter passing assembly; custom effects retain the same contract.
 
 ## Narration mix and measured final gate
 
@@ -59,7 +72,7 @@ Start from the approved audio strategy and measured stems. A narration-led ad ca
 1. Measure speech, bed and SFX in the actual dialogue windows. Set speech for intelligibility and preserve the approved performance dynamics; choose any loudness target from the actual delivery plan.
 2. Reduce/move the competing cue before excessive voice boosting. Where sidechain helps, split the actual VO bus into listen and detector branches and tune threshold, attack/release and ratio against the material. Record the chosen values; ratio 20 is an FFmpeg limit, not a target.
 3. Mix planned stems with explicit gain and normalization behavior. Do not duplicate native dialogue under a separate voice track. Check scene boundaries and intended room tone/silence.
-4. Measure the **finished mix** for loudness, true peaks and clipping. Check the speech-to-music gap in every dialogue window and the tail. GooseWorks checks every spoken word when you report complete.
+4. Measure the finished mix and hear every speech/music/effect interval and ending. Metrics/word scores do not approve natural performance, phonemes, joins or music quality.
 
 For long filter graphs use a saved FFmpeg filter script, preserve it with the editable sources and probe its actual output. Do not multiply an already normalized VO by 3× and its bus by 2× as an inherited rule: downstream gain can undo normalization and clip the mix.
 
@@ -107,8 +120,8 @@ Resolve the source cut and its editable timeline from the original note/version.
    - For each `ai_interpolation` pair, find the matching `transition-<from>-<to>.mp4` in `clips/` (or `…-push-in.mp4` + `…-pull-out.mp4` for split-clip pairs). Insert between scene N and scene N+1.
    - For each `in_edit_*` pair, record the FFmpeg filter spec for use in transition step 4 below; no clip insertion needed.
    - For each `hard_cut` pair (or any boundary with no pair entry), default to plain concat (no transition).
-2. For any speed override, re-encode that clip: `ffmpeg -i in.mp4 -filter:v "setpts=PTS/<rate>" -an out.mp4`. Keep audio out — VO is layered later. (Speed overrides apply to BOTH scene clips and transition clips.)
-3. For any retiming that should affect VO, re-render the VO through the re-render-VO procedure in `edit-clip.md` first; do not stretch VO with atempo as the deadpan tone breaks.
+2. Resolve speech_mode and source-linked timeline before speed/stream changes. Non-speaking picture may be retimed as planned; visible speech transforms matched picture and driver together only for an intentional accepted edit. Preserve native dialogue and source clocks; never strip it merely because a VO stage follows.
+3. Measure accepted speech first and plan appropriate coverage. Do not stretch entire voice files into estimated scene lengths. Changed exact driver requires renewed synchronization; preserve raw performance and recheck listened words/mouth/captions after any intentional paired transformation.
 4. Apply transitions:
    - `cut` (default for boundaries with no pair entry): plain concat.
    - `ai_interpolation` (from `transition_pairs.json`): clip already inserted in step 1; plain concat between scene and transition clip.
@@ -117,7 +130,7 @@ Resolve the source cut and its editable timeline from the original note/version.
    - `in_edit_flash`: `xfade=transition=fadewhite` or insert 1–2 white frames between clips.
 
 ### Phase 2 — Concat video track
-1. **Pre-stitch VO boundary check (podcast-clip projects only).** If `voiceovers/manifest.json` exists, for each scene confirm that the actual VO file duration matches the manifest's `clip_end - clip_start` within ±20ms. Mismatch indicates the per-scene split truncated mid-word and the next stage will inherit the truncation. Pass: continue. Fail: resplit the actual source audio at the end timestamp of the complete word with FFmpeg atrim/asetpts, using measured word timings, then verify the corrected clip.
+1. **Pre-stitch source/speech check (all speaking routes).** Use the shared assembly_timeline and actual source hashes/bounds/rates. Native-speaking picture and its preserved audio share source positions; audio-driven picture retains its exact driver; cutaways may differ while the same speech continues. Compare actual word boundaries/joins. Missing provenance/timings remains incomplete; a podcast-specific manifest cannot be the only protection.
 2. Use `python3 scripts/assemble.py PLAN.json OUTPUT.mp4` for a conventional supported clip sequence; use a real FFmpeg filter script for transitions/custom timing beyond that helper. Concat the approved clips into `edits/master-video-only.mp4`. Standardize to the approved ratio/dimensions (normally 1080×1920), 30 fps, yuv420p, libx264 and the approved quality target (CRF 18 is a starting point).
 3. Verify total duration is within the design-brief target ± 1s.
 4. Probe music duration (from Phase 3 plan if known) and **resolve duration against the approved timeline** — trim or loop/pad the music, or extend a permitted final video hold with tpad/loop if the brief allows it. apad extends audio, not video. Do not silently change scene/story timing to fit an arbitrary music length. Save the target `TOTAL` for the mix chain.
@@ -140,7 +153,7 @@ Resolve the source cut and its editable timeline from the original note/version.
 2. Use actual owned/licensed SFX or an approved supported SFX generator, then place the implementation-brief shot list with FFmpeg adelay/volume/amix. Save the exact cue times and sources.
 3. Place SFX on individual hits: anvil thuds, magic poofs, scale slams, etc.
 4. **Hard rule:** honor the actual brief's SFX exclusions; a no-screens/foley-only constraint applies only when approved in this project.
-5. Set each SFX level for its intended role without masking speech; no universal offset above music applies. Sub-1s synthetic tones (monitor beep, button click) — synthesize via FFmpeg sine filter; ElevenLabs sound-gen produces mush at short durations.
+5. Set each SFX level for its planned role without masking speech. Use auditioned real/approved effects; a synthetic tone is valid only as an intentional effect, never emergency replacement for music. No universal gain offset applies.
 
 ### Phase 6 — End card
 1. If the end-card clip from `create-clips` is acceptable, leave it.
@@ -172,7 +185,7 @@ Resolve the source cut and its editable timeline from the original note/version.
 - Every approved SFX restriction is honored.
 - Caption text matches `locked_script` and design-brief burned-in text (not auto-transcribed from VO).
 - Caption planning is complete; actual rendering/frame verification is required after State 10 burn.
-- Whisper line is captioned and audible at low volume.
+- Any intended whisper/quiet line remains intelligible in its actual mix and follows the approved caption plan.
 - End card matches current brand visual rules.
 - Hook lands in the first 2 seconds (test by watching first 2s muted).
 - Each required ratio, cutdown or language is planned as an edit and checked on its own actual final bytes. Inspect crop, product visibility, text collisions/read time, proof, CTA and full ending at destination size.

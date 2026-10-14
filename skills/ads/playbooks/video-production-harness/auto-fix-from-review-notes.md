@@ -13,6 +13,9 @@ Turn feedback on a specific cut into scoped, reversible changes. Resolve conflic
 
 ## Host contract
 
+Follow [creative contract and review](references/creative-contract-and-review.md) for current content-derived duties, complete AV coverage, clip eligibility and exact-file evidence. Read its linked sound, scale and look procedures when applicable. Preserve the two existing owner gates; no extra automatic review meeting.
+
+
 Read `capabilities.md` and the selected host binding first. Artifact names are logical roles resolved by that binding. Named review tasks use the documented rubrics and actual frame/audio tools; they are not assumed installed commands. Required tooling, human approval and available budget must exist before the operation. Read [the editorial review guide](references/editorial-review.md) for source binding, stage decisions, note disposition, impact checks and saved edit history.
 
 ## Purpose
@@ -55,11 +58,11 @@ These are execution parameters for the agent following this procedure; this pack
 4. **Group** fixes by atom — minimize re-encode passes (multiple caption fixes → one re-burn, etc.).
 5. **Order** groups by actual dependency. Picture/timing/source or VO changes run before downstream mix, word timings and captions; rebuild affected dependents. For a local finishing-only pass with stable timing, the order is:
    1. Preflight check from `preflight-audit.md` (validate first; everything else assumes inputs are real bytes)
-   2. Mix and loudness (audio first; visual stays untouched): `amix` with voice ducking, then `loudnorm=I=-14:TP=-1.5:LRA=11`
-   3. Word test of the mix when a transcription route exists: transcribe it and confirm every line; loop back to step 2 if any line fails. GooseWorks checks the words again when you report complete
+   2. Repair actual mix/levels according to intended cues and destination requirements; no mandatory loudnorm/ducking preset applies.
+   3. Hear isolated speech and full mix, compare supporting exact-line/word-boundary evidence; missing listening/transcription stays incomplete. An ASR anomaly alone is not a heard defect.
    4. Caption overflow and retime to word timings (operate on the cue file, no media yet)
-   5. End-card hold: `tpad=stop_mode=clone:stop_duration=<s>`
-   6. Tail fade: `afade=t=out` and `fade=t=out` (after everything else)
+   5. Repair end-card hold only when the approved reading/ending intent needs it; source-link the deliberate hold.
+   6. Repair only an unintended tail/ending; do not impose fades or pad every format.
    7. Caption re-burn with `caption-burn` (superseded; agent-built path; the kit path uses captions-layer) if the cues changed
    8. Caption render check from `review-video.md` (proof the captions actually rendered)
    9. Frame-claim check from `review-video.md` (over any unverified visual claims in the notes)
@@ -71,7 +74,7 @@ These are execution parameters for the agent following this procedure; this pack
 ## Repair implementations
 
 - Preflight: actual bytes/probes and required host capability checks from preflight-audit.
-- Loudness/mix: FFmpeg loudnorm, sidechain and filter-script operations in edit-video, then actual transcription comparison.
+- Loudness/mix: actual supported filters and intended cues, followed by measurement, isolated/full-mix listening and exact-word comparison.
 - Captions: edit approved SRT/ASS cues, validate bounds, burn after polish, extract the actual cue frames.
 - Grade/holds/tails: FFmpeg eq/colorbalance, trim/loop and afade/fade from edit-video/edit-clip; inspect the resulting duration, frames and audio.
 - Frame claims: extract the actual claimed timestamp with FFmpeg and review that image plus neighboring frames.

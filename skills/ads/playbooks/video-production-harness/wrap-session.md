@@ -86,7 +86,7 @@ Recipe-style document that lets a future agent recreate this *kind* of video for
 
 **Write to:** `<video_folder>/reproduction_recipe`, then include it in the host's stored recipe; the binding names where.
 
-**HUMAN GATE.** Surface the rendered HOW_TO. Operator can edit, accept, or send back. Ask one specific question: "Does this HOW_TO work as a recipe for the NEXT video in this style, or is it too specific to this run?"
+Save/show the readable HOW_TO in the existing wrap artifact surface. Invite optional feedback; acknowledgment is not an additional mandatory video gate.
 
 ---
 
@@ -129,7 +129,7 @@ Failure-driven retrospective. Each entry = a specific iteration cycle, paired wi
 
 **Write to:** `<video_folder>/learnings`.
 
-**HUMAN GATE.** Surface the learnings. Operator can edit, accept, or send back. Ask: "Are these the three TL;DR lessons that would have saved you the most time on the NEXT project?"
+Save/show the concise learnings with sources and limits. Invite optional correction; do not block completed video delivery on another approval meeting.
 
 ---
 
@@ -182,7 +182,7 @@ Read the freshly written HOW_TO and learnings. For every entry, ask: does this m
 
 The binding saves these proposals within this project for review. Never expose another customer's context or automatically publish them to a shared skill repository.
 
-**HUMAN GATE.** Surface the proposals. Operator picks which to apply; the actual edits happen outside this skill (manually, by the operator — out of scope here).
+Save/show concrete skill-change proposals. Apply only when the user authorizes those shared changes, through the appropriate agent/repository workflow; proposing them does not add a video approval gate.
 
 ---
 
@@ -211,7 +211,7 @@ The binding saves these proposals within this project for review. Never expose a
 - Every learnings entry has all four fields: failure mode, why, fix, transferable principle.
 - Skill-update-proposals trace to specific learnings entries (no orphans).
 - No proposal modifies a skill file in-place — this skill is strictly read-only against shared skills.
-- HUMAN GATE was hit on each of the three artifacts.
+- Recipe, learnings and proposals are reviewable in the existing surface; no three extra acknowledgments are required. Shared changes retain actual user authorization.
 - Existing manifest links resolve to the accepted cut and editable scene/timeline/audio/caption sources. Record a fresh-context resume readback and targeted candidate edit when requested, preserving unaffected checksums and previous versions.
 - A new related brief retrieves applicable rejection/pronunciation/delivery decisions; project preferences never become standing brand rules without authority.
 

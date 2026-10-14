@@ -24,7 +24,7 @@ The output is a single markdown file. No assets are generated here.
 
 ## Workflow
 
-1. **Watch the reference end to end and log its beats** (time, shot, line, purpose) before brainstorming. Watch at normal speed with sound; a thumbnail or description is not a watch. With no customer reference, the nearest template's demo video stands in.
+1. Follow [creative contract and review](references/creative-contract-and-review.md): study complete moving picture and actual sound, log capability/coverage and timestamped beats, then map those beats to the adaptation's words/action/proof/sound. Frames/transcripts support the study but do not certify listening or motion. With no supplied reference, use suitable inspected brand/category examples or a sourced original concept; a template demo is an option, not an automatic substitute.
 2. Read the user's rough concept and any brand context provided.
 3. Identify what's working in the concept: relatable protagonist, before/after frame, payoff moment, quotable lines.
 4. Push back on:
@@ -33,8 +33,8 @@ The output is a single markdown file. No assets are generated here.
    - Beats that *tell* instead of *show* (replace with on-screen action)
    - Forgettable end-card CTAs (propose 2–3 alternatives)
    - Unnecessary characters or scenes (cut what doesn't add information)
-5. **Detect the concept type and propose scaffolding.** If the concept involves a transformation, comeback, journey, ramp-up, before/after, or skill acquisition, **default to day-tracker / number-progression scaffolding** (DAY 1 / DAY 5 / DAY 14 / NOW). An earlier run identified this as the strongest narrative scaffolding for short-form transformation arcs; surfaced too late, it cost 5 script revisions. Propose it explicitly in the brief and let the operator accept, modify, or opt out.
-6. Offer 2–3 bigger swings (tonal shifts, structural changes, scope expansions) and let the user choose.
+5. Identify the concept's actual mechanism and feasible proof. Progression/day tracking is an optional structure when supported, not a default that overrides the reference or invents elapsed results.
+6. When the concept is open, offer 2–3 useful alternatives with reference, opening, product explanation, proof, sound and asset gaps in the existing script review. Preserve an already selected concept; add no mandatory concept approval round.
 7. Ask one clarifying question if a key creative axis is unresolved (e.g. target audience, brand voice).
 8. Write `<output_folder>/idea_brief` with:
    - **Concept type** (one of: transformation, demo, testimonial, manifesto, comparison) — drives default arc template in State 2.5
@@ -50,12 +50,12 @@ The output is a single markdown file. No assets are generated here.
 
 1. Save the readable idea_brief and all concept candidates through the binding.
 2. For each candidate preserve stable ID, title, format, hook hypothesis, logline, supporting evidence, risks, status and full readable concept prose. Do not reduce the prose to a thin summary.
-3. Leave selection unset until the human chooses. Save any edited concept copy before entering design/script review.
+3. Preserve an existing human selection; otherwise carry unresolved options into the existing script review. Save edited concept copy before that review.
 4. Validate the binding's exact concept fields and expose the result on its review surface. A private side file that the host cannot display is unfinished work.
 
 ## Quality Checks
 
-- Every scene has a clear visual, on-screen text (or "—"), and a voiceover line.
+- Every scene has a clear visual, on-screen text (or "—"), resolved speech/sound intent and required action/proof; no-speech scenes have no invented VO.
 - The hook in scene 1 is specific, not generic.
 - The payoff line (end-card or whisper line) is quotable.
 - There is a brand-anchor moment somewhere (logo, mascot, signature beat).

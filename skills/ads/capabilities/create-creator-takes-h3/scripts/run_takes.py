@@ -45,6 +45,7 @@ import sys
 
 from media_proxy import (POLICY_EXIT, FalPolicyRejection, download, fal_generate_video,
                          fal_upload, input_digest, refuse_if_rejected, rejected_request)
+from content_review import require_take_review
 
 # Approximate USD per generated second, for the dry-run estimate only. The proxy bills the
 # real amount. Measured on the reference builds; check the balance after the first take.
@@ -75,11 +76,12 @@ def take_payload(spec, t, prompt, img, vid, aud, first_id):
     content stand-ins ({"sha256": ...}) to digest, so both always describe the same request."""
     payload = {"prompt": prompt, "duration": int(t["dur"]), "resolution": spec.get("resolution", "1080P"),
                "aspect_ratio": spec.get("aspect_ratio", "9:16"), "seed": int(t["seed"]),
-               "prompt_expansion_mode": "disabled", "reference_image_urls": [img]}
+               "prompt_expansion_mode": "disabled", "image_url": img, "reference_image_urls": [img]}
     if vid:
         payload["reference_video_urls"] = [vid]
     if aud and t["id"] != first_id:
         payload["reference_audio_urls"] = [aud]
+        payload["prompt"] += "\n<Audio 1> is a voice-timbre and delivery reference for <Subject 1> (S1). Reference its voice, not its old words or soundtrack. Speak only this take's dialogue. This is audio reference, not exact audio reuse.\n"
     return payload
 
 
@@ -101,6 +103,16 @@ def take_digests(spec, takes, first, voice_src):
             stable = take_payload(spec, t, pf.read_text(encoding="utf-8"), img, vid, aud, first["id"])
             out[t["id"]] = input_digest(spec["model"], stable)
     return out
+
+
+def qualification_digest(spec, first_source):
+    """Fingerprint this exact capability configuration, using source bytes rather than upload URLs."""
+    first = spec["takes"][0]
+    snapshot = {"capability_version": "2.2.0", "model": spec["model"],
+                "first_take_sha256": file_sha256(first_source), "capture": spec.get("capture"),
+                "required_features": spec.get("required_features", []),
+                "input_digests": take_digests(spec, spec["takes"], first, first_source)}
+    return hashlib.sha256(json.dumps(snapshot, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
 
 
 KEEP = ("reason", "kind", "error_type", "request_id", "http_status", "charged", "charge_note",
@@ -142,10 +154,16 @@ def main():
     ap.add_argument("--only", help="comma-separated take ids")
     ap.add_argument("--go", action="store_true", help="spend: generate the takes")
     ap.add_argument("--unchained", action="store_true", help="allow later takes without t1's voice")
+    ap.add_argument("--reviews", help="hash-bound actual AV content reviews, required before later takes")
+    ap.add_argument("--qualification", help="reviewed exact H3 configuration and first-source qualification, required before later takes")
     ap.add_argument("--reseed", help="comma-separated take ids to give a NEW seed (a re-roll)")
     a = ap.parse_args()
     sp = pathlib.Path(a.spec)
     spec = json.loads(sp.read_text(encoding="utf-8"))
+    if spec.get("model") != "minimax/h3-max/reference-to-video":
+        raise SystemExit("this creator capability implements only the qualified H3 reference-to-video schema; use a separately supported route for other models")
+    if a.unchained:
+        raise SystemExit("--unchained is no longer eligible: review the first take and retain its voice-conditioning source")
 
     if a.reseed:
         for t in spec["takes"]:
@@ -193,6 +211,14 @@ def main():
         return
     if problem:
         raise SystemExit(problem)
+    if chained:
+        try:
+            require_take_review(a.reviews, first, src)
+        except ValueError as error:
+            raise SystemExit("first-take gate: " + str(error))
+        qualification = json.loads(pathlib.Path(a.qualification).read_text()) if a.qualification else {}
+        if not (qualification.get("status") == "qualified" and qualification.get("provider") == "fal" and qualification.get("model") == spec["model"] and qualification.get("shot_type") == "talking_creator" and qualification.get("configuration_sha256") == qualification_digest(spec, src) and qualification.get("accepted_source_sha256") == file_sha256(src)):
+            raise SystemExit("supply --qualification for the exact current configuration and accepted first source; an unrelated example does not qualify a batch")
 
     if spec.get("planning_only"):
         raise SystemExit("This is a planning-only spec. Generate and review the actual still, then rerun plan_takes without --plan-only before --go.")
@@ -250,8 +276,11 @@ def main():
         download(url, out)
         print("  -> %s (%.1f MB)" % (out, out.stat().st_size / 1e6))
         manifest["takes"] = [m for m in manifest["takes"] if m["id"] != t["id"]] + [
-            {**t, "file": str(out), "url": url, "input_digest": digests.get(t["id"]),
+            {**t, "file": str(out), "url": url, "source_sha256": file_sha256(out), "content_review_status": "pending", "speech_mode": "native_dialogue", "input_digest": digests.get(t["id"]),
              "payload": {k: v for k, v in payload.items() if k != "prompt"}}]
+        if t["id"] == first["id"]:
+            manifest["configuration_sha256"] = qualification_digest(spec, out)
+            manifest["accepted_source_candidate_sha256"] = file_sha256(out)
         if manifest.get("rejected"):  # this take id now rendered from changed inputs
             manifest["rejected"] = [r for r in manifest["rejected"] if r.get("id") != t["id"]]
         man_p.write_text(json.dumps(manifest, indent=2), encoding="utf-8")

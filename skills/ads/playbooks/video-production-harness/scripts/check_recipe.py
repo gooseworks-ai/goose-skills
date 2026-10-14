@@ -10,6 +10,7 @@ import subprocess
 import sys
 
 from pack_recipe import FORMAT, is_safe_relative_path, sha256_bytes
+from assembly_timeline import FORMAT as ASSEMBLY_FORMAT, normalize_timeline
 
 MIN_PSNR_AVG = 40.0
 MIN_PSNR_FRAME = 30.0
@@ -111,6 +112,35 @@ def compare_media(built, final):
     return ok, "; ".join(notes)
 
 
+def assembly_evidence(bundle):
+    """Find stored timeline text, not a newly invented claim about a rebuilt file."""
+    candidates = []
+    for file in bundle.get('files', []):
+        if not file.get('path', '').endswith('.json'):
+            continue
+        try:
+            value = json.loads(file['text'])
+        except (ValueError, KeyError, TypeError):
+            continue
+        value = value.get('assembly_timeline', value) if isinstance(value, dict) else None
+        if isinstance(value, dict) and value.get('format') == ASSEMBLY_FORMAT:
+            candidates.append(value)
+    if len(candidates) != 1:
+        return {'status': 'incomplete', 'timeline': None, 'revision': None,
+                'issues': ['Store one unambiguous source-linked timeline JSON with the recipe']}
+    evidence = normalize_timeline(candidates[0])
+    inputs = {item['sha256'] for item in bundle.get('inputs', [])}
+    timeline = evidence.get('timeline')
+    if timeline:
+        sources = [s['video'] for s in timeline['segments']] + [c['source'] for c in timeline['audio_cues']]
+        sources += [s['speech_driver'] for s in timeline['segments'] if s.get('speech_driver')]
+        sources += [v['source'] for v in timeline.get('visual_overrides', []) if v.get('source')]
+        if any(source['sha256'] not in inputs for source in sources):
+            evidence['status'] = 'invalid'
+            evidence['issues'].append('A declared timeline source is absent from the immutable recipe inputs')
+    return evidence
+
+
 def check(bundle_path, inputs_dir, final, work, timeout=3600):
     """Return {result, compared, detail}; result is identical, matches or failed."""
     work = Path(work)
@@ -119,22 +149,28 @@ def check(bundle_path, inputs_dir, final, work, timeout=3600):
     work.mkdir(parents=True, exist_ok=True)
     bundle = json.loads(Path(bundle_path).read_bytes().decode("utf-8"))
     unpack(bundle, Path(inputs_dir), work)
+    evidence = assembly_evidence(bundle)
+    def receipt(result, compared, detail):
+        return {'result': result, 'compared': compared, 'detail': detail,
+                'purpose': 'reproducibility_only', 'content_review_status': 'incomplete',
+                'content_review_required': True, 'final_sha256': sha256_file(final),
+                'assembly_evidence': evidence}
     build = bundle["build"]
     if not is_safe_relative_path(build["output"]):
         raise CheckError("unsafe build.output")
     run = subprocess.run(build["command"], shell=True, cwd=work, capture_output=True, text=True, timeout=timeout)
     if run.returncode != 0:
-        return {"result": "failed", "compared": "sha256", "detail": f"build exited {run.returncode}: {run.stderr.strip()[-600:]}"}
+        return receipt('failed', 'sha256', f'build exited {run.returncode}: {run.stderr.strip()[-600:]}')
     built = work / build["output"]
     if not built.is_file():
-        return {"result": "failed", "compared": "sha256", "detail": f"build made no {build['output']}"}
+        return receipt('failed', 'sha256', f"build made no {build['output']}")
     built_sha, final_sha = sha256_file(built), sha256_file(final)
     if built_sha == final_sha:
-        return {"result": "identical", "compared": "sha256", "detail": f"sha256 {built_sha}"}
+        return receipt('identical', 'sha256', f'sha256 {built_sha}')
     if not shutil.which("ffmpeg") or not shutil.which("ffprobe"):
-        return {"result": "failed", "compared": "sha256", "detail": "bytes differ and ffmpeg is not installed to compare frames and audio"}
+        return receipt('failed', 'sha256', 'bytes differ and ffmpeg is not installed to compare decoded pictures and audio samples')
     ok, detail = compare_media(built, final)
-    return {"result": "matches" if ok else "failed", "compared": "frames_and_audio", "detail": detail}
+    return receipt('matches' if ok else 'failed', 'frames_and_audio', detail)
 
 
 def main(argv=None):
@@ -148,7 +184,8 @@ def main(argv=None):
     try:
         outcome = check(args.bundle, args.inputs, args.final, args.work, args.timeout)
     except (CheckError, OSError, KeyError, json.JSONDecodeError, subprocess.SubprocessError) as error:
-        outcome = {"result": "failed", "compared": "sha256", "detail": str(error)[:1000]}
+        outcome = {"result": "failed", "compared": "sha256", "detail": str(error)[:1000],
+                   'purpose': 'reproducibility_only', 'content_review_status': 'incomplete', 'content_review_required': True}
     print(json.dumps(outcome))
     return 0 if outcome["result"] in ("identical", "matches") else 1
 

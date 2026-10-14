@@ -16,7 +16,7 @@ The routes below are starting points to discover, not promises of installation. 
 
 | Family and fit | Actual package interface to inspect | Returned artifacts and review |
 | --- | --- | --- |
-| Exact-script UGC creator | [[composes::create-creator-takes-h3]] (superseded; agent-built path; the kit path uses creator-h3): plan_takes accepts `--beats`, `--character`, `--out`; beat entries have id/start/end/vo. Character input has image/identity/environment/delivery. `run_takes` defaults to dry run; native first take needs approved video budget. | Takes spec, per-take prompts/seeds, actual take clips and joined creator track. Review first take's full performance before later takes; preserve native dialogue and selected identity/world. Its local estimate is not a managed quote. |
+| Qualified native UGC creator | creator-h3@1.3.0 on kit; fetched create-creator-takes-h3 on agent-built. Inspect actual first_take, remaining_takes and assemble stage schemas. | First actual face/voice/performance remains pending until hash-bound acceptance; remaining takes require it; assembly needs all reviewed sources and real word timing. Retain native source pairing. |
 | Product demonstration from owned media | [[composes::footage-cutlist]]: survey/preview/cut consume sources and beats with id/start/end/state/vo plus source/in/out/fit/why for product windows. Inspect exact frames before choosing. | Survey evidence, cutlist, preview and rendered product layer. Check correct variant, visible action during the claim, crop, source excerpt/time mapping and actual duration. A diagram or claim card is not physical feature proof. |
 | Branded graphics and motion | [[composes::goose-graphics]] supplies HTML/static composition and its screenshot package; it does not alone supply a video renderer. Fetch a matching motion capability when needed, or use the shared supported FFmpeg motion path for approved stills. | Editable composition/still plus actually rendered motion clip and timeline. Probe the chosen browser/renderer if used; check exact text/logo, font, action, safe space and reading time. Do not call a PNG export a finished video. |
 
@@ -34,7 +34,7 @@ Before each specialist runs, resolve and record these values in the current capa
 - Selected package slug/version/content hash, executable path relative to that package, real supported tool/model/schema and dependency identities; existing approval revision, quote/budget and provider operation identity.
 - Expected output roles: media, editable sources, measured timings, provider/job provenance and the checks needed before assembly. Do not invent required wire fields; map to the binding's real schema.
 
-Verify outputs against those inputs, not merely against the specialist's success status. Probe actual bytes, verify scene coverage/ratio/duration, exact copy and visible proof, inspect continuous action and listen to every spoken output in isolation. GooseWorks checks the final mix's words when you report complete. Record mismatches and source/returned fingerprints. A stale source, wrong beat, missing word, wrong variant or unconfirmed provider URL blocks assembly.
+Review outputs against exact creative_contract_revision, package/source hashes and handoff inputs, not status. Probe bytes, inspect complete action/product/scale/identity and hear full speech/mix; check exact drivers/timings, ratio/duration and proof. Save per-duty pass/needs_revision/incomplete. A stale source, failed candidate, missing word, wrong product or unconfirmed URL blocks passing assembly.
 
 ## Resume and repair
 

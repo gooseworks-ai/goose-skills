@@ -13,6 +13,9 @@ Revise one scene from the exact reviewed version while preserving good work. Rec
 
 ## Host contract
 
+Follow [creative contract and review](references/creative-contract-and-review.md) for current content-derived duties, complete AV coverage, clip eligibility and exact-file evidence. Read its linked sound, scale and look procedures when applicable. Preserve the two existing owner gates; no extra automatic review meeting.
+
+
 Read `capabilities.md` and the selected host binding first. Artifact names are logical roles resolved by that binding. Named review tasks use the documented rubrics and actual frame/audio tools; they are not assumed installed commands. Required tooling, human approval and available budget must exist before the operation. Read [the editorial review guide](references/editorial-review.md) for source binding, stage decisions, note disposition, impact checks and saved edit history.
 
 ## Purpose
@@ -66,9 +69,9 @@ Before execution, record the impact row from [the editorial review guide](refere
 
 **add-post-effect**
 - Vignette: `ffmpeg -i in.mp4 -vf "vignette=PI/4" out.mp4`
-- Speed up by 1.25x: `ffmpeg -i in.mp4 -filter:v "setpts=PTS/1.25" -an out.mp4` (if VO is added later)
-- Slow down by 0.75x: `setpts=PTS/0.75`
-- Crop / reframe: `crop=W:H:X:Y` then `scale=1080:1920`
+- Speed changes branch on speech_mode first: non-speaking coverage may be retimed as planned; speaking picture and its exact driver remain linked and transform together only for an intentional accepted edit followed by AV review.
+- Do not slow/extend a speaking shot independently of its audio; choose appropriate coverage or re-perform the affected words.
+- Crop/reframe preserves aspect ratio, intended identity/product/action/proof and full affected interval; no widening faces or masking incorrect geometry/packaging.
 - Sticker comp: see `comp-felt-mascot` below
 
 **comp-felt-mascot**
@@ -80,7 +83,7 @@ Before execution, record the impact row from [the editorial review guide](refere
 1. Reuse the human-selected voice/settings. A new voice or changed spoken line requires renewed script/ingredient approval before rendering.
 2. Preserve the chosen settings unless the repair explicitly needs an approved change. For a supported ElevenLabs model, historical whisper settings (stability 0.40, style 0.55) and sustained settings (0.55, 0.20) are starting points, not substitutes for the selected audition. Validate fields/ranges against the real model schema.
 3. Submit the actual locked line through the host-selected managed voice capability. A verified direct ElevenLabs route may use `/v1/text-to-speech/{voice_id}`; a managed host must use its own approved/billed submit operation and cannot bypass it with direct credentials.
-4. Save the actual decoded audio, probe duration and compare transcript/line integrity. A size heuristic alone cannot establish a valid voice asset.
+4. Save exact decoded driver/source identity and measured timing; listen to pronunciation, delivery, joins and endings and compare supporting transcript evidence. Regenerate/synchronize affected speaking picture when its exact driver changes. A valid small file or clean transcript alone cannot clear performance.
 
 **replace-clip**
 1. Copy the user-provided MP4 to `clips/scene-NN.mp4`.

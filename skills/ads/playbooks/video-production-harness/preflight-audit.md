@@ -7,6 +7,9 @@ description: Verify every asset, credential, and brand-vars token resolves corre
 
 ## Host contract
 
+Follow [creative contract and review](references/creative-contract-and-review.md) for current content-derived duties, complete AV coverage, clip eligibility and exact-file evidence. Read its linked sound, scale and look procedures when applicable. Preserve the two existing owner gates; no extra automatic review meeting.
+
+
 Read `capabilities.md` and the selected host binding first. Artifact names are logical roles resolved by that binding. Named review tasks use the documented rubrics and actual frame/audio tools; they are not assumed installed commands. Required tooling, human approval and available budget must exist before the operation.
 
 ## Purpose
@@ -39,6 +42,9 @@ Use real media probes, image decoding and the host capability checks below. No e
 | `avif-rejection-check` | Greps refs for `.avif`. Fails if found. | Anthropic image-processing returns 400 on `.avif`. |
 | `capabilities-ready` | Confirm host authentication and each required supported operation without inspecting or printing credentials. | Pipeline fails halfway through with a non-obvious "unauthorized" otherwise. |
 | `brand-vars-unresolved` | Render every brief once (design-brief, implementation-brief, brand-vars.yaml) and grep for `{[a-z_]+}` placeholders. Fails on any unresolved. | "DARK CHARCOAL #{shirt_hex}" written into a Nano Banana prompt = silent drift. |
+| `review-perception-ready` | Resolve an actual reviewer for required moving picture and audible sound; an extraction/ASR tool is not listening. | Missing required perception leaves that operation/review incomplete before a batch can be accepted. |
+| `creative-contract-consistent` | Match reference_map, adapted copy, picture/direction, proof/action, sound and current host revision. | Contradictory fields or missing essential beats cannot clear script/ingredient review. |
+| `scale-and-reference-binding` | Resolve material dimensions/use/capacity and actual product/scale reference attachments after provider caps/filtering. | Numeric prose or a correct logo cannot clear missing scale evidence or wrong product geometry. |
 
 ### P1 — warn but don't block
 

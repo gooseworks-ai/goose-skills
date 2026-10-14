@@ -8,8 +8,29 @@ term for how it is SAID before the text is spoken. Captions keep the written ter
 import argparse
 import base64
 import json
+import hashlib
 import pathlib
 import re
+
+MODELS = ("eleven_v3", "eleven_multilingual_v2", "eleven_v4", "eleven_v4_turbo")
+
+
+def voice_payload_problem(text, model, settings=None, support=None):
+    if model not in MODELS:
+        return "choose an explicitly supported speech model"
+    if model != "eleven_multilingual_v2" and re.search(r"<\/?[a-z][^>]*>", text, re.I):
+        return "Eleven v3/v4 do not support SSML; use delivery tags and punctuation"
+    if model == "eleven_multilingual_v2" and re.search(r"\[[^\]]*\]", text):
+        return "audio tags require Eleven v3/v4; v2 may read them aloud"
+    if model in ("eleven_v4", "eleven_v4_turbo"):
+        unsupported = set(settings or {}) - {"stability", "similarity_boost"}
+        if unsupported:
+            return "V4 supports Stability and Similarity only; remove " + ", ".join(sorted(unsupported))
+        if not support or support.get("model") != model or support.get("provider") != "elevenlabs" or support.get("endpoint") != "/v1/text-to-speech/{voice_id}/with-timestamps" or support.get("status") != "verified" or not support.get("evidence") or not support.get("quote_id"):
+            return "V4 needs managed-host model/endpoint support and a current quote, not only vendor documentation"
+    if model == "eleven_v3" and "speed" in (settings or {}):
+        return "V3 has no supported Speed setting; direct and review the actual performance"
+    return None
 
 
 def apply_say_as(text, pairs):
@@ -37,8 +58,11 @@ def load_pairs(say_as, rules_path):
     return pairs
 
 
-def timestamped_tts(text, voice, out, model, settings=None, proxy=None):
+def timestamped_tts(text, voice, out, model, settings=None, proxy=None, model_support=None):
     """Keep character timings beside the audio, using the existing transport."""
+    problem = voice_payload_problem(text, model, settings, model_support)
+    if problem:
+        raise ValueError(problem)
     if proxy is None:
         import media_proxy as proxy
     body = {"text": text, "model_id": model}
@@ -72,6 +96,13 @@ def timestamped_tts(text, voice, out, model, settings=None, proxy=None):
     else:
         raise RuntimeError("ElevenLabs returned no audio")
     target.with_suffix(".timestamps.json").write_text(json.dumps(alignment, indent=1), encoding="utf-8")
+    target.with_suffix(".provenance.json").write_text(json.dumps({
+        "source_sha256": hashlib.sha256(target.read_bytes()).hexdigest(),
+        "model": model, "voice_id": voice, "speech_mode": "narration",
+        "content_review_status": "pending", "timing_method": "provider_character_alignment",
+        "timing_status": "requires_reviewed_alignment" if re.search(r"\[[^\]]*\]", text) else "provider_alignment",
+        "timing_is_content_review": False,
+    }, indent=2), encoding="utf-8")
     return str(target)
 
 
@@ -79,7 +110,9 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--text", required=True)
     ap.add_argument("--voice", "--voice-id", required=True)
-    ap.add_argument("--model", default="eleven_v3")
+    ap.add_argument("--model", default="eleven_v3", choices=MODELS)
+    ap.add_argument("--model-support", help="JSON evidence of managed timestamp endpoint support and current quote; required for paid V4")
+    ap.add_argument("--tag", action="append", help="Eleven v3/v4 delivery cue, e.g. content or curious; never portable to H3")
     ap.add_argument("--out", "--output", required=True)
     ap.add_argument("--with-timestamps", action="store_true")
     ap.add_argument("--settings", help="voice_settings as JSON; requires --with-timestamps")
@@ -95,13 +128,23 @@ def main():
     if settings is not None and not isinstance(settings, dict):
         ap.error("--settings must be a JSON object")
     spoken = apply_say_as(a.text, load_pairs(a.say_as, a.rules))
+    if a.tag:
+        if any(not tag.strip() or re.search(r"[\[\]<>\n]", tag) for tag in a.tag):
+            ap.error("--tag must be a plain delivery cue without markup")
+        spoken = " ".join("[%s]" % tag.strip() for tag in a.tag) + " " + spoken
     if spoken != a.text:
         print(f"spoken text: {spoken}")
     if a.dry_run:
         print(spoken)
         return 0
+    support = json.loads(pathlib.Path(a.model_support).read_text()) if a.model_support else None
+    problem = voice_payload_problem(spoken, a.model, settings, support)
+    if problem:
+        ap.error(problem)
+    if a.model in ("eleven_v4", "eleven_v4_turbo") and not a.with_timestamps:
+        ap.error("this V4 route is verified for --with-timestamps; do not silently use another endpoint")
     if a.with_timestamps:
-        timestamped_tts(spoken, a.voice, a.out, a.model, settings)
+        timestamped_tts(spoken, a.voice, a.out, a.model, settings, model_support=support)
     else:
         from media_proxy import eleven_tts
         eleven_tts(spoken, a.voice, a.out, a.model)

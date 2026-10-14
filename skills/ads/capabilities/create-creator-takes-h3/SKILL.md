@@ -2,17 +2,18 @@
 name: create-creator-takes-h3
 description: Generate an AI creator talking to camera, saying an approved script, as one continuous track — H3 Max reference-to-video through the GooseWorks fal-proxy (bills the Ads agent). Plans takes on line boundaries under H3's 15s cap, dry-runs a cost estimate, generates the first take alone so its voice can be locked and passed to every later take, joins takes with measured 0.10s dissolves, and moves each line's timing onto the words actually spoken. Use for any format with a generated creator speaking a script (split-screen, screen inserts, talking-head ads).
 status: superseded
-version: "2.1.0"
-updated: 2026-10-06
-superseded_by: creator-h3@1.0.2
+version: "2.2.0"
+updated: 2026-10-14
+superseded_by: creator-h3@1.3.0
 ---
 
-> **Superseded:** the video kit now does this with the creator-h3 part, version 1.0.2, in the parts folder of this repository. It plans the takes between lines, sends the same prompt and payload, chains the first take's voice to the rest and joins them; its quality check is the check layer's speech-against-script rule. This atom stays, unchanged in behaviour, for skills outside the kit until they move; its scripts still run.
+> **Current kit part:** `creator-h3@1.3.0`. The compatibility scripts below now enforce source review before later takes and before assembly. Existing frozen part versions are unchanged.
 
 # create-creator-takes-h3
 
-A generated creator who says an exact script, with one consistent face, room and voice
-across several takes.
+**Summary.** Generate one creator take, review the actual picture and sound, then continue with qualified sources. Keep native speech attached to its picture and assemble only complete reviewed takes. The provider can still invent words, drift in identity or fail an action; prompts and transcripts do not certify a pass.
+
+Use the existing shared builder for people, with an explicit phone or studio capture. No random distinctive marks or universal background-focus rule.
 
 | Script | What | Cost |
 |---|---|---|
@@ -37,13 +38,13 @@ request `gen_image.py` will send, and generates nothing.
 
 ```bash
 # the user's person, one command, one still. --dry-run prints the prompt and spends nothing.
-python make_character.py --age 34 --gender woman --ethnicity "South Asian"     --hair "shoulder-length black hair, slightly frizzy at the crown, one side tucked back"     --wardrobe "plain charcoal crew-neck t-shirt, slightly creased"     --scene "a lived-in home office, a full bookshelf behind her, in focus"     --out work/character        # writes character.png AND character.json
+python make_character.py --capture phone --recording counter --age 34 --gender woman --ethnicity "South Asian"     --hair "shoulder-length black hair, slightly frizzy at the crown, one side tucked back"     --wardrobe "plain charcoal crew-neck t-shirt, slightly creased"     --scene "a lived-in home office, a full bookshelf behind her, in focus"     --out work/character        # writes character.png AND character.json
 python plan_takes.py --beats cutlist.json --character character.json --out work/takes
 python run_takes.py --spec work/takes/takes.json                  # dry run: plan + estimate
 python run_takes.py --spec work/takes/takes.json --only t1 --go   # after the user approves
-python run_takes.py --spec work/takes/takes.json --go             # the rest, voice chained
+python run_takes.py --spec work/takes/takes.json --reviews work/takes/source-reviews.json --qualification work/takes/qualification.json --go # after t1 passes actual AV review
 # Transcribe and inspect EACH take into its planned tN.words.json BEFORE joining.
-python join_takes.py --require-words --spec work/takes/takes.json --end <reel length> --out work/creator.mp4
+python join_takes.py --require-words --reviews work/takes/source-reviews.json --spec work/takes/takes.json --end <reel length> --out work/creator.mp4
 # caption-burn: transcribe.py --media work/creator.mp4 --out work/creator.words.json
 python align_beats.py --beats cutlist.json --words work/creator.words.json \
     --out cutlist.aligned.json --max-end <creator.mp4 length>
@@ -91,13 +92,11 @@ These are the user's calls (the recipe's `choices`), never defaults of this atom
 
 1. **Lock order: script, then character still, then takes.** Show the still before any
    take. A take costs dollars; a still costs cents.
-2. **First take alone, then listen.** Every later take copies t1's voice (its audio is
-   passed as `reference_audio_urls`). A robotic or mismatched voice in t1 is in every
-   take. If the user rejects it, `--reseed t1` and generate t1 again.
+2. **First take alone, then listen.** Later takes receive the accepted t1 audio as voice conditioning, not exact audio reuse. A hash-bound full AV review in `--reviews` is required before later takes. Voice consistency still needs listening to every take; reseeding is a new paid attempt subject to the approved retry budget.
 3. **Voice matches the person.** Age, gender and accent follow the character. The
    prompt's delivery line sets the tone; change it through `delivery`, not by editing
    the prompt file.
-4. **No square brackets in lines.** H3 speaks them aloud; `plan_takes.py` refuses them.
+4. **No performance markup in spoken lines.** H3 delivery goes outside `<d>`; `plan_takes.py` refuses bracketed or angle-tag instructions in the line. Automatic `<inhale>` and `<pause>` cues are removed. A wanted “uh” is approved spoken copy and consumes time.
 5. **Dialogue stays verbatim.** Takes are sent with `prompt_expansion_mode: disabled`.
 6. **Takes split between lines, never inside one**, and run 0.6s past the last word.
    `--split-at 6.3,14.5` joins the takes exactly at those line boundaries: the
@@ -128,10 +127,7 @@ These are the user's calls (the recipe's `choices`), never defaults of this atom
    with a literal backspace byte where `\b` was meant, so every identity failed and the skill
    could not run at all. A guard is not tested by reading it: run it against one input it must
    ACCEPT and one it must REJECT. `grep -c $'\x08' <file>` catches this class.
-3. **Iterating the avatar.** This is a template a customer runs, so the still has to land on the
-   first generation. When it does not, fix the inputs (`--hair`, `--wardrobe`, `--scene`, or a
-   different `--seed`, which reshuffles which three skin imperfections are asked for) rather than re-rolling the same brief; an unchanged payload
-   with a pinned seed reproduces the same image and wastes the spend.
+3. **Iterating the avatar.** A still is a candidate until inspected. If it fails, identify the actual defect and repair its brief or use an acceptable owned source within the approved retry budget. Do not invent scars or facial marks as a realism shortcut. A seed is not a proof of identity or quality.
 
 ## Free planning before the still exists
 
@@ -169,3 +165,15 @@ A provider likeness/policy rejection stops the attempt. Preserve the provider's 
 Before generation, write a scene checklist from the brief: each wearable's exact count and body location; which hand holds each object; allowed gestures; object contacts and movement; cast identities and reference ownership. Keep unnecessary hands still, use one simple action per shot, and review the whole generated take against the checklist. A prompt is prevention, not proof: reject extra/missing products, impossible contacts or identity drift.
 
 For multiple characters, compare a shared scene with pinned references, fewer people per shot, and separately generated/composed plates. The first preserves interaction but risks identity drift; separate plates improve control but add composition work and may weaken interaction. Lock an approved reference per person and map who speaks each line. No six-character/two-attempt guarantee is supported. A future paid benchmark must state cast size, attempts, budget, model/settings and pass criteria (identity, speaker, counts, gestures and complete dialogue) and retain every failure.
+
+## Source review and timing contract
+
+`source-reviews.json` contains `takes: [{id,source_sha256,script_sha256,status,reviewer,coverage,checks}]`. Coverage names `video_watched`, `audio_listened`, `start_s` and `end_s` and covers the complete actual source. Script, voice, lip-sync, identity, framing and performance checks must pass; product/action is pass or not_applicable. Never invent reviewer coverage. Every new generated file is pending until that review exists. Failed or incomplete files remain candidates and cannot enter a passing assembly.
+
+New plans set `content_review_required: true`. Word sidecars must bind their source/script checksums and name `reviewed_transcription` or `forced_alignment`; silence measurements alone are not word boundaries. Native audio and picture keep matching trims and speed. The assembly output remains pending final review.
+
+### Natural performance
+
+Specify recording method, framing, background, motivated light and visible action from the approved brief. Choose `--capture phone|studio`, `--recording counter|selfie` and reference-led `--focus natural|deep|shallow`. Distinctive `--marks` require `--marks-approved`, recording an explicit user choice. Do not repair poor acting with sharpening, blur or grain. Local H3 angle-tag experiments are not portable schema support; use delivery directions outside the spoken line.
+
+For the compatibility scripts, the first render manifest exposes `configuration_sha256` and the first-source candidate SHA. Record a qualification only after actual acceptance; later takes require `--qualification` matching the exact current payload configuration and first source. The kit uses its own canonical configuration fingerprint; records from different executors are not interchangeable.

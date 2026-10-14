@@ -1,5 +1,12 @@
 # creator-h3
 
+## 1.3.0
+
+- Split first-take trial, remaining candidate generation and reviewed-source assembly. A file, ASR match or loudness check cannot auto-approve the first performance.
+- Require actual source word timing and hash-bound audiovisual content reviews for assembly. Preserve matching native source clocks and return separate assembly provenance, source FileRefs and pending final review.
+- Make phone/studio capture explicit, remove automatic inhale/pause tags, condition later voice only from the accepted first source, and keep H3 qualification specific to the actual endpoint and shot.
+- Package a new immutable version; old published bundles remain unchanged. No tests or validation runs were performed at the user's request.
+
 ## 1.2.3
 
 - Takes are never planned faster than H3 speaks: `words_per_second` above 3.2 plans at 3.2 (a style that asked for 3.9 got takes too full, so H3 rushed or cut the last words). Each measured take logs its heard pace (`take pace`: words over heard speech). part.json carries the measured band as `x-speech-rate` (2.3 to 3.2 words a second). With `words_per_second` at 3.2 or less every request is 1.2.1's; above it the takes are longer, so 1.2.3 declares no `reuses_pieces_of` (a video approved on 1.2.2 or older keeps its version).
