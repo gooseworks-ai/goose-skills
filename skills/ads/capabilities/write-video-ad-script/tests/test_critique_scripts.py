@@ -252,3 +252,8 @@ def test_rubric_scores_sounds_human_against_the_brand_voice():
     assert "a mood" in p and "in one breath" in p     # the hook test rules out mood openers
     run = cs.normalize_run({"concepts": [{"id": "c1", "scores": {"sounds_human": 4}}], "ranking": ["c1"]}, ["c1"], [])
     assert run["concepts"][0]["scores"] == {"sounds_human": 4.0}
+
+
+def test_critic_fixes_follow_the_voice_rules():
+    p = cs.build_prompt(GOOD["concepts"], {}, RULES, SHAPE, "")
+    assert "Every edit and fix" in p and "no fragments, no mood or" in p and "status openers" in p

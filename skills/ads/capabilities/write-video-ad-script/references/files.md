@@ -107,8 +107,8 @@ including JSON `null`, is an input error; it is not the legacy omitted-argument 
 - `max_words` overrides the seconds-based budget for a beat.
 - `optional` beats may be left out.
 - The first beat is the opening beat; every hook must fit its budget.
-- `words_on_screen: "none"` marks a format that shows no words over the picture; it turns
-  off the beat-1 on-screen check.
+- `words_on_screen` `"none"` (no words on the picture) or `"end_card"` (end card only),
+  on the shape or a concept, turns off the beat-1 on-screen check.
 - Ids may repeat when the format alternates (a chat thread: them, me, them, me). Each
   concept beat fills the next slot with that id, in order.
 
@@ -316,7 +316,7 @@ selected angle is an error, not permission to invent a replacement.
   W_FEATURE_STACK (three or more product facts or a list of three in the middle beats),
   W_ON_SCREEN_LONG and W_ANGLE_TYPE (missing or not on the list).
 - Voice warnings W_FRAGMENT_CHAIN, W_STEPS_ALOUD, W_MOOD_OPENER, W_AD_SPEAK: see the
-  voice reference (also shape `speech: "none"`). brand-rules `voice` (text) goes to the critic.
+  voice reference. brand-rules `voice` (text) goes to the critic.
 - Delivery cues in brackets or parentheses, like [pause] or (laughs), are not counted
   as words.
 

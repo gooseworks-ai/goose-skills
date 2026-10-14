@@ -553,3 +553,25 @@ def test_silent_styles_skip_the_spoken_checks_but_read_the_opening_card():
     found = [w["code"] for w in rep["concepts"][0]["warnings"]]
     assert "W_FRAGMENT_CHAIN" not in found and "W_STEPS_ALOUD" not in found
     assert "W_MOOD_OPENER" in found and "W_AD_SPEAK" in found
+
+
+def test_a_status_update_opener_is_a_mood():
+    for line in ("It's a work night and I'm having curry", "Home late from work and still had curry"):
+        lines = [line + "."] + CUMIN_GOOD[1:]
+        assert [w["beat"] for w in voice(cumin(lines, hooks=[line]), "W_MOOD_OPENER")] == ["hook", "hook c1h1"], line
+
+
+def test_a_claim_or_a_fact_opener_is_not_a_mood():
+    for line in ("Someone told me extra-virgin olive oil isn't for cooking",
+                 "One olive is behind this whole bottle"):
+        lines = [line + "."] + CUMIN_GOOD[1:]
+        assert voice(cumin(lines, hooks=[line]), "W_MOOD_OPENER") == [], line
+
+
+def test_text_only_on_the_end_card_skips_the_beat_one_text_check():
+    assert "W_BEAT1_NO_TEXT" in warns(run(opened(on_screen="")))
+    shape = dict(SHAPE, words_on_screen="end_card")
+    assert "W_BEAT1_NO_TEXT" not in warns(run(opened(on_screen=""), shape=shape))
+    c = opened(on_screen="")
+    c["concepts"][0]["words_on_screen"] = "end_card"     # this concept's style only
+    assert "W_BEAT1_NO_TEXT" not in warns(run(c))

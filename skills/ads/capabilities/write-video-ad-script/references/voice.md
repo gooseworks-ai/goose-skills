@@ -26,6 +26,19 @@ Made-up brand, to show the difference:
 Bad: "Mornings are hard. Coffee helps. Meet Hollow Oak. Smooth. Bold. Ready in seconds."
 Good: "I used to queue for an iced latte every morning before work. Now I pour this straight from the fridge and still get out the door on time."
 
+## Hooks: draft three, keep one
+
+For each script, draft 3 hooks from different moves and keep the one a stranger would
+stop for. The moves:
+
+- **A confession with stakes:** what the speaker risks or hides.
+- **A contrarian claim:** an opinion the viewer may push back on.
+- **A surprising fact from the brief:** only a fact the brief backs.
+- **A specific moment:** one time, place and action.
+
+Never a status update ("It's a work night and I'm…", "Home late and…", "Just got
+home…"); it is a mood with a clock on it.
+
 ## What the rule check flags
 
 `lint_scripts.py` reads spoken lines across beats in order, so a sentence can run across
@@ -35,7 +48,7 @@ two scenes. Scenes are numbered from 1. These are warnings, never a price block.
 |---|---|---|
 | W_FRAGMENT_CHAIN | 3 or more spoken sentences in a row of 5 words or fewer | "Scenes N-M read as clipped fragments; join them into sentences a person would say." |
 | W_STEPS_ALOUD | 3 or more spoken sentences in a row that start with a how-to verb (boil, cook, add, stir, heat, pour, mix, remove, turn, open, serve, put, place, fold, spread, shake, blend, chop, cut, microwave, bake) | "Scenes N-M read steps aloud; show them on screen and say what they mean for the viewer." |
-| W_MOOD_OPENER | Scene 1's spoken line (or its on-screen words when it has no spoken line) or a hook states a mood or a craving ("Tonight, I want…", "Craving…", "In the mood for…", "Want pasta?") | "Scene 1 states a mood; open on a confession, a surprise, a specific moment or an opinion instead." |
+| W_MOOD_OPENER | Scene 1's spoken line (or its on-screen words when it has no spoken line) or a hook states a mood, a craving or a status update ("Tonight, I want…", "Craving…", "In the mood for…", "Want pasta?", "It's a work night…", "Home late…", "Just got home…", "So here I am…") | "Scene 1 states a mood; open on a confession, a surprise, a specific moment or an opinion instead." |
 | W_AD_SPEAK | Any line, hook or on-screen text uses ad-speak (game-changer, elevate, say goodbye to, meet your new, it's not just, isn't just, that's the night (or evening, morning, day) I wanted, look at that or those, this is what I'm craving, indulgent, mouthwatering, irresistible, effortless, level up, transform your, and the older AI-vocabulary list), or a spoken sentence narrates the picture ("look at", "check out", "here's the", "see that", "see how") | "Scene N uses ad-speak ('…'); say it the way a customer would." |
 
 W_FRAGMENT_CHAIN and W_STEPS_ALOUD are skipped when a concept is silent (the shape's

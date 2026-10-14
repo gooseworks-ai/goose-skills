@@ -110,7 +110,12 @@ NARRATE_RE = re.compile(r"^\W*(look at|check out|here's the|see that|see how)\b"
 # A mood or craving instead of a hook (scene 1, or a hook alternative).
 MOOD_OPENER_RES = [re.compile(p, re.I) for p in (
     r"^(tonight|today|this (morning|evening|week))?,? ?i(?: (?:want|need|crave|am craving)|'m craving)\b",
-    r"^craving\b", r"^(in the mood for|need something)\b", r"^(want|need) .*\?$")]
+    r"^craving\b", r"^(in the mood for|need something)\b", r"^(want|need) .*\?$",
+    # A status update ("It's a work night and I'm…", "Home late and…") is a mood too.
+    r"^(it'?s|it is) (a |another )?[\w-]+ (night|morning|evening|day|afternoon)\b",
+    r"^(home late|just got home|got home|back home)\b", r"^(so )?(here i am|me,? )")]
+# Formats that cannot put words over beat 1: none at all, or text only on the end card.
+NO_BEAT1_TEXT = ("none", "end_card")
 FRAGMENT_MAX_WORDS = 5     # a spoken sentence this short is a fragment
 CHAIN_MIN = 3              # this many fragments (or read-aloud steps) in a row
 STEP_VERBS = {"boil", "cook", "add", "stir", "heat", "pour", "mix", "remove", "turn", "open", "serve",
@@ -824,7 +829,8 @@ def lint(cands, shape=None, rules=None, bank=None, report_only=False, context=No
             opening = beats[0]
             oid = opening.get("id") or "first beat"
             if (hook_kind == "spoken" and text_of(opening).strip() and not on_screen_of(opening).strip()
-                    and shape.get("words_on_screen") != "none"):
+                    and shape.get("words_on_screen") not in NO_BEAT1_TEXT
+                    and c.get("words_on_screen") not in NO_BEAT1_TEXT):
                 warn("W_BEAT1_NO_TEXT", "the opening is spoken but has no on-screen words: most people watch muted; add 8 or fewer words that say the hook", oid)
             picture = opening["visual"].get("description") if isinstance(opening.get("visual"), dict) else ""
             picture = picture if isinstance(picture, str) else ""

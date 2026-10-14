@@ -162,7 +162,7 @@ with paraphrases.
 ## Step 5. Write words and visuals together
 
 Read [hook families](references/hook-families.md) before writing hooks,
-[voice](references/voice.md) before writing any line, and
+[voice](references/voice.md) before any line (draft 3 hooks each), and
 [scene and hook](references/scene-and-hook.md) before writing dialogue. Plan the
 encounter, the literal first 0–3 seconds and the story's development/payoff first.
 Separate the participant's filming context from the context actually given to a new

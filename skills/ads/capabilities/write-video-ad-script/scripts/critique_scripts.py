@@ -146,7 +146,9 @@ you would replace, give the replacement, say why in 12 words or fewer), and a ki
 for any critical defect listed above or a fatally generic concept. Use null for ordinary
 creative weaknesses that a line or visual edit can repair. Edits make a line sharper,
 more specific or more natural for its format, or cut an unbacked claim. An edit that
-only makes a line flatter or more factual is not an improvement.
+only makes a line flatter or more factual is not an improvement. Every edit and fix
+follows the voice rules: whole sentences a person would say, no fragments, no mood or
+status openers ("It's a work night and…"), no ad-speak.
 
 Finally rank all concepts best first and say in one sentence why the top one wins.
 Use the concept ids and hook ids exactly as written above (for example c1, c1h2).
