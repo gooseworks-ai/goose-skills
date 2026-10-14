@@ -239,3 +239,16 @@ def test_rubric_scores_the_opening_loop_turn_and_channels():
     run = cs.normalize_run({"concepts": [{"id": "c1", "scores": {"open_loop": 7, "mid_turn": 6, "channels_agree": 9}}],
                             "ranking": ["c1"]}, ["c1"], [])
     assert run["concepts"][0]["scores"] == {"open_loop": 7.0, "mid_turn": 6.0, "channels_agree": 9.0}
+
+
+def test_rubric_scores_sounds_human_against_the_brand_voice():
+    rules = dict(RULES, voice="Warm, a little cheeky, never salesy")
+    bank = {"q1": {"id": "q1", "text": "I pass it off as homemade"}}
+    p = cs.build_prompt(GOOD["concepts"], bank, rules, SHAPE, "")
+    assert "- sounds_human:" in p and '"sounds_human": 0' in p
+    assert "Penalise fragment chains, steps read aloud, narrating the picture, ad-speak and mood" in p
+    assert "Brand voice (it decides tone; judge sounds_human against it): Warm, a little cheeky" in p
+    assert 'Customer words (how buyers really talk): "I pass it off as homemade"' in p
+    assert "a mood" in p and "in one breath" in p     # the hook test rules out mood openers
+    run = cs.normalize_run({"concepts": [{"id": "c1", "scores": {"sounds_human": 4}}], "ranking": ["c1"]}, ["c1"], [])
+    assert run["concepts"][0]["scores"] == {"sounds_human": 4.0}

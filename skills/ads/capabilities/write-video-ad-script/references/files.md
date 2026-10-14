@@ -315,6 +315,8 @@ selected angle is an error, not permission to invent a replacement.
 - Other hook and body warnings: W_TIRED_OF_LIST ("Tired of A, B and C" opener),
   W_FEATURE_STACK (three or more product facts or a list of three in the middle beats),
   W_ON_SCREEN_LONG and W_ANGLE_TYPE (missing or not on the list).
+- Voice warnings W_FRAGMENT_CHAIN, W_STEPS_ALOUD, W_MOOD_OPENER, W_AD_SPEAK: see the
+  voice reference (also shape `speech: "none"`). brand-rules `voice` (text) goes to the critic.
 - Delivery cues in brackets or parentheses, like [pause] or (laughs), are not counted
   as words.
 

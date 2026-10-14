@@ -446,3 +446,110 @@ def test_a_non_string_picture_does_not_crash():
     c["concepts"][0]["beats"][0]["visual"]["description"] = ["a", "b"]
     rep = run(c)
     assert "W_PICTURE_HOOK_MISMATCH" not in warns(rep)
+
+
+# Sound like a person (references/voice.md). The bad lines are a real 14 Oct customer run;
+# the good ones are the same ad rewritten the way a person would say it.
+CUMIN_SHAPE = {
+    "format": "ugc-product", "words_per_second": 3.0, "total_seconds": 22, "cta_beat": "cta",
+    "beats": [{"id": "hook", "seconds": 5}, {"id": "make", "seconds": 5}, {"id": "serve", "seconds": 5},
+              {"id": "payoff", "seconds": 4}, {"id": "cta", "seconds": 3}],
+}
+CUMIN_RULES = {"name": "The Cumin Club", "products": [{"name": "Paneer Tikka Masala", "facts": [
+    "the curry comes ready-made", "cook the paneer in boiling water", "about five minutes", "serve with rice"]}]}
+CUMIN_BAD = [
+    "Tonight, I want curry worth sitting down for.",
+    "Look at those paneer cubes. That rich, creamy sauce.",
+    "Boil water. Cook the paneer. Turn off the heat.",
+    "That's the night I wanted.",
+    "Build your box at The Cumin Club.",
+]
+CUMIN_GOOD = [
+    "I've been passing off this paneer tikka masala as homemade, and nobody's caught on yet.",
+    "The curry comes ready from The Cumin Club, so I just cook the paneer,",
+    "stir the curry through, and five minutes later it's on the table with rice",
+    "like I spent the whole evening at the stove.",
+    "Build your box before your friends work it out.",
+]
+VOICE_CODES = ("W_FRAGMENT_CHAIN", "W_STEPS_ALOUD", "W_MOOD_OPENER", "W_AD_SPEAK")
+
+
+def cumin(lines, hooks=(), shape=CUMIN_SHAPE):
+    beats = [{"id": sb["id"], "text": line} for sb, line in zip(shape["beats"], lines)]
+    concept = {"id": "c1", "angle": "passing it off as homemade", "beats": beats,
+               "hooks": [{"id": f"c1h{n}", "family": "confession", "text": t} for n, t in enumerate(hooks, 1)]}
+    rep = ls.lint({"concepts": [concept]}, shape, CUMIN_RULES)
+    return [w for w in rep["concepts"][0]["warnings"] if w["code"] in VOICE_CODES]
+
+
+def voice(found, code):
+    return [w for w in found if w["code"] == code]
+
+
+def test_the_good_rewrite_raises_no_voice_warning():
+    assert cumin(CUMIN_GOOD, hooks=[CUMIN_GOOD[0]]) == []
+
+
+def test_clipped_fragments_across_scenes_fire():
+    [w] = voice(cumin(CUMIN_BAD), "W_FRAGMENT_CHAIN")
+    assert w["msg"] == ("Scenes 2-4 read as clipped fragments; "
+                        "join them into sentences a person would say.")
+    assert w["beat"] == "make"
+    assert voice(cumin(CUMIN_GOOD), "W_FRAGMENT_CHAIN") == []
+
+
+def test_a_sentence_can_run_across_two_scenes():
+    # Three short beats that are one sentence, not three fragments.
+    lines = list(CUMIN_GOOD)
+    lines[1:4] = ["I cook the paneer,", "stir the curry in,", "and dinner is done in five minutes."]
+    assert voice(cumin(lines), "W_FRAGMENT_CHAIN") == []
+
+
+def test_steps_read_aloud_fire():
+    [w] = voice(cumin(CUMIN_BAD), "W_STEPS_ALOUD")
+    assert w["msg"] == ("Scene 3 reads steps aloud; show them on screen "
+                        "and say what they mean for the viewer.")
+    assert voice(cumin(CUMIN_GOOD), "W_STEPS_ALOUD") == []
+
+
+def test_a_mood_opener_fires_on_scene_one_and_hooks():
+    found = voice(cumin(CUMIN_BAD, hooks=["Craving curry tonight?", "Want curry tonight?",
+                                          "I'm craving curry after a long day."]), "W_MOOD_OPENER")
+    assert [w["beat"] for w in found] == ["hook", "hook c1h1", "hook c1h2", "hook c1h3"]
+    assert found[0]["msg"] == ("Scene 1 states a mood; open on a confession, a surprise, "
+                               "a specific moment or an opinion instead.")
+    assert voice(cumin(CUMIN_GOOD, hooks=[CUMIN_GOOD[0]]), "W_MOOD_OPENER") == []
+
+
+def test_ad_speak_fires_per_scene_with_the_phrase():
+    found = voice(cumin(CUMIN_BAD), "W_AD_SPEAK")
+    assert [w["msg"] for w in found] == [
+        "Scene 2 uses ad-speak ('Look at those'); say it the way a customer would.",
+        "Scene 4 uses ad-speak ('That's the night I wanted'); say it the way a customer would.",
+    ]
+    assert voice(cumin(CUMIN_GOOD), "W_AD_SPEAK") == []
+
+
+def test_ad_speak_covers_on_screen_words_narration_and_the_old_ai_vocabulary():
+    lines = list(CUMIN_GOOD)
+    lines[1] = "Check out the paneer, it cooks in the curry pack while I set the table."
+    lines[3] = "Honestly a game-changer for weeknights."
+    rep = ls.lint({"concepts": [{"id": "c1", "beats": [
+        dict({"id": sb["id"], "text": t}, **({"on_screen": "Irresistible curry"} if sb["id"] == "hook" else {}))
+        for sb, t in zip(CUMIN_SHAPE["beats"], lines)]}]}, CUMIN_SHAPE, CUMIN_RULES)
+    warns = rep["concepts"][0]["warnings"]
+    msgs = [w["msg"] for w in warns if w["code"] == "W_AD_SPEAK"]
+    assert msgs == ["Scene 1 uses ad-speak ('Irresistible'); say it the way a customer would.",
+                    "Scene 2 uses ad-speak ('Check out'); say it the way a customer would.",
+                    "Scene 4 uses ad-speak ('game-changer'); say it the way a customer would."]
+    assert not any(w["code"] == "W_AI_TELL" for w in warns)   # one code, not two
+
+
+def test_silent_styles_skip_the_spoken_checks_but_read_the_opening_card():
+    shape = dict(CUMIN_SHAPE, speech="none")
+    beats = [{"id": sb["id"], "text": t} for sb, t in zip(shape["beats"], CUMIN_BAD)]
+    beats[0]["on_screen"] = "Tonight I need something cozy"
+    rep = ls.lint({"concepts": [{"id": "c1", "beats": beats}]}, shape, CUMIN_RULES)
+    found = [w["code"] for w in rep["concepts"][0]["warnings"]]
+    assert "W_FRAGMENT_CHAIN" not in found and "W_STEPS_ALOUD" not in found
+    assert "W_MOOD_OPENER" in found and "W_AD_SPEAK" in found

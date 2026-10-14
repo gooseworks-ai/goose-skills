@@ -2,7 +2,7 @@
 name: write-video-ad-script
 description: Write a short-form video ad from an evidence-backed angle and the selected template's actual recipe. Reuses or fetches ad-angle-miner, preserves the chosen angle, plans words and visuals together, checks product claims and production fit, and delivers the strongest script with useful alternatives. Use before video production and for script rewrites. Customer language is one input alongside audience, promise, product proof, offer and format.
 status: active
-version: "1.1.0"
+version: "1.2.0"
 ---
 
 # Human version
@@ -155,13 +155,14 @@ promise and angle type, and write 4-5 executions that differ in hook family and 
 Batch assignments differ where the brief permits; use the bank once per brand and product.
 
 Rank relevance, product credibility, template fit, feasible proof and hook payoff before
-freshness. Prefer clear, well-supported familiar angles over obscure weak ones. If the
+freshness: a clear, supported familiar angle beats an obscure weak one. If the
 evidence supports fewer than four distinct concepts, write fewer and say why; never pad
 with paraphrases.
 
 ## Step 5. Write words and visuals together
 
-Read [hook families](references/hook-families.md) before writing hooks, and
+Read [hook families](references/hook-families.md) before writing hooks,
+[voice](references/voice.md) before writing any line, and
 [scene and hook](references/scene-and-hook.md) before writing dialogue. Plan the
 encounter, the literal first 0–3 seconds and the story's development/payoff first.
 Separate the participant's filming context from the context actually given to a new
@@ -179,8 +180,8 @@ completion, recognition and text-reading time in the existing scene plan. Inspec
 actual selected media before calling that plan feasible; metadata is a shortlist.
 Keep product truth/style references separate from usable production footage. If the
 needed proof is absent, narrow the claim or specify the missing capture; do not treat
-a simulated result as evidence. A useful silent format still communicates through
-exact on-screen words and visible actions, with no invented speech.
+a simulated result as evidence. A silent format communicates through exact
+on-screen words and visible actions, with no invented speech.
 
 - Make the first moment intelligible and worth watching, with or without sound.
 - Keep one main promise and pay it off visibly.
@@ -214,7 +215,7 @@ Create candidates.json (files reference) with every concept, hook, beat and visu
 ## Step 6. Validate, critique, repair
 
 Run the rule check in strict mode (shape, brand rules, customer words, angle context,
-references), fix errors and material warnings (the exact hook rules too,
+references), fix errors and material warnings (the hook and voice rules too,
 before review), then run the brief-blind opening review and the independent critic from
 a different model family. Podcast and street dialogue need at
 least 8/10 on spoken and template_fit in every pass (street also on strategic_fit), with
@@ -263,6 +264,6 @@ the same plan and preserves recipe limits. Review finished audio for the complet
 pronunciation, naturalness and sync before declaring delivery fixed.
 
 Carry the brief's pronunciation source, energy progression, emphasized words, pauses
-and phrases that should sound conversational into the voice-performance task. Keep
-literal user copy fixed. Word budgets stay provisional until the audio is measured;
-never use a global speed-up to certify fit.
+and phrases that should sound conversational into the voice-performance task. Word
+budgets stay provisional until the audio is measured; never use a global speed-up to
+certify fit.
