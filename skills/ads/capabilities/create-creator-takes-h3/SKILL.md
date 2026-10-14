@@ -2,12 +2,12 @@
 name: create-creator-takes-h3
 description: Generate an AI creator talking to camera, saying an approved script, as one continuous track — H3 Max reference-to-video through the GooseWorks fal-proxy (bills the Ads agent). Plans takes on line boundaries under H3's 15s cap, dry-runs a cost estimate, generates the first take alone so its voice can be locked and passed to every later take, joins takes with measured 0.10s dissolves, and moves each line's timing onto the words actually spoken. Use for any format with a generated creator speaking a script (split-screen, screen inserts, talking-head ads).
 status: superseded
-version: "2.2.0"
+version: "2.2.1"
 updated: 2026-10-14
-superseded_by: creator-h3@1.3.0
+superseded_by: creator-h3@1.3.1
 ---
 
-> **Current kit part:** `creator-h3@1.3.0`. The compatibility scripts below now enforce source review before later takes and before assembly. Existing frozen part versions are unchanged.
+> **Superseded by:** `creator-h3@1.3.1`. Compatibility scripts retain the source-review guards; frozen versions are unchanged.
 
 # create-creator-takes-h3
 
@@ -64,12 +64,9 @@ wardrobe and room, then pass them to `make_character.py`. Those six are required
 there is nothing to forget and nothing to invent. There is no default person: never
 copy a look from an example, a reference build or a demo reel.
 
-This is now enforced, not advisory. `plan_takes.py` rejects an `identity` that is still a
-placeholder, or that states no age, or that states no gender. It was advisory once and the
-docstring carried "a man in his late 20s ..." as an example: that got copied verbatim, the
-old non-empty check passed it, and every build produced the same unrequested man. An
-unspecified person is exactly the ambiguous composite face the realism formula warns about,
-and it is what a reviewer sees as "obviously AI".
+`plan_takes.py` rejects a placeholder identity or one without age or gender. These
+must come from the chosen creator brief: copying an example once produced the same
+unrequested man across builds. An unspecified identity creates a composite face.
 
 `delivery` now defaults to **calm and conversational**. The default used to be energetic,
 which this file already warned "can give a constant grin and busy hands that read as AI", so

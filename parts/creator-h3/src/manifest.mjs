@@ -58,7 +58,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'creator-h3',
-  version: '1.3.0',
+  version: '1.3.1',
   kind: 'generate_video',
   title: 'Talking creator (H3)',
   summary: 'Controlled H3 creator production: generate the first take, review its actual audio and picture, generate remaining takes, then assemble only reviewed sources with real word timings and linked native audio.',

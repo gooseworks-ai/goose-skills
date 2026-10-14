@@ -1,4 +1,4 @@
-// creator-h3 1.3.0: controlled native creator production. Generate a first
+// creator-h3 1.3.1: controlled native creator production. Generate a first
 // source, request actual AV review, generate remaining candidates, then assemble
 // only accepted sources with reviewed word timings and linked picture/audio.
 // Energy measurements are planning diagnostics, never word or content proof.
@@ -363,7 +363,7 @@ async function joinTakes(ctx, plan, out) {
 
 export async function run(inputs, ctx) {
   const manifest = await kitCheckInputs(ctx, inputs);
-  if ((inputs.mode || 'talk') !== 'talk') throw ctx.error('bad_input', 'creator-h3 1.3.0 controls native talking creators only; use a separately qualified non-speaking clip route with its own source content reviews');
+  if ((inputs.mode || 'talk') !== 'talk') throw ctx.error('bad_input', 'creator-h3 1.3.1 controls native talking creators only; use a separately qualified non-speaking clip route with its own source content reviews');
   for (const key of CLIPS_ONLY) if (inputs[key] !== undefined) throw ctx.error('bad_input', `${key} works only in clips mode`);
   const requestedStage = inputs.generation_stage || 'reviewed_pipeline';
   let stage = requestedStage;
@@ -565,8 +565,8 @@ export async function run(inputs, ctx) {
     })),
     visual_overrides: plan.takes.flatMap((take, index) => {
       const overrides = [];
-      if (take.head_pad > 0) overrides.push({ start_ms: Math.round(take.start * 1000), end_ms: Math.round((take.start + take.head_pad) * 1000), kind: 'freeze', reason: 'Declared silent head padding before the same source audio and picture start.', source: { asset_id: take.id, sha256: take.file.sha256, path: take.file.path, in_ms: 0, out_ms: Math.min(Math.round(1000 / 30), Math.round(take.duration * 1000)), speed: 1 } });
-      if (take.tail_pad > 0) overrides.push({ start_ms: Math.round((take.start + take.head_pad + take.duration) * 1000), end_ms: Math.round(Math.min(plan.duration, take.start + take.need) * 1000), kind: 'freeze', reason: 'Short declared hold after the complete reviewed source speech.', source: { asset_id: take.id, sha256: take.file.sha256, path: take.file.path, in_ms: Math.max(0, Math.round((take.duration - 1 / 30) * 1000)), out_ms: Math.round(take.duration * 1000), speed: 1 } });
+      if (take.head_pad > 0) overrides.push({ start_ms: Math.round(take.start * 1000), end_ms: Math.round((take.start + take.head_pad) * 1000), kind: 'freeze', scene_id: take.lines[0].scene_id, source_kind: 'video', reason: 'Declared silent head padding before the same source audio and picture start.', source: { asset_id: take.id, sha256: take.file.sha256, path: take.file.path, in_ms: 0, out_ms: Math.min(Math.round(1000 / 30), Math.round(take.duration * 1000)), speed: 1 } });
+      if (take.tail_pad > 0) overrides.push({ start_ms: Math.round((take.start + take.head_pad + take.duration) * 1000), end_ms: Math.round(Math.min(plan.duration, take.start + take.need) * 1000), kind: 'freeze', scene_id: take.lines.at(-1).scene_id, source_kind: 'video', reason: 'Short declared hold after the complete reviewed source speech.', source: { asset_id: take.id, sha256: take.file.sha256, path: take.file.path, in_ms: Math.max(0, Math.round((take.duration - 1 / 30) * 1000)), out_ms: Math.round(take.duration * 1000), speed: 1 } });
       if (index) overrides.push({ start_ms: Math.round(take.start * 1000), end_ms: Math.round((take.start + plan.xf) * 1000), kind: 'transition', reason: 'Matched 0.10-second picture and audio dissolve after reviewed outgoing speech.', segment_ids: [`${plan.takes[index - 1].id}-${plan.takes[index - 1].lines.at(-1).scene_id}`, `${take.id}-${take.lines[0].scene_id}`] });
       return overrides;
     }).filter((override) => override.end_ms > override.start_ms),

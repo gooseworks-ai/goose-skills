@@ -1,8 +1,8 @@
 ---
 name: write-video-ad-script
-description: Write a short-form ad from a sourced angle and the requested reference or format. Plan connected words, visible product proof and sound together, preserve locked choices and expose production gaps before the existing script review. Use before production and for rewrites.
+description: Write or revise a short-form ad from a sourced angle and reference. Plan connected words, product proof and sound; expose production gaps before script review.
 status: active
-version: "2.0.0"
+version: "2.0.1"
 ---
 
 # Human version
@@ -129,18 +129,13 @@ For dialogue, load [dialogue-writing](references/dialogue-writing.md). A format 
 product page or imagined beat map is not an observed conversation. Reuse the miner's
 sources first; retrieve missing references when access is available.
 
-For a **street ad**, inspect a complete commercial clip: its full visual interaction and
-spoken exchange. Record the edited opening, visible setup, why the participant engages,
-viewer hook, product connection, payoff, and any unseen approach as unknown. Match the
-offering and visible interaction (sampling, mic-only service conversation, or challenge),
-not just the format name. Keep ordered timestamped turns with words and actions; label
-paraphrases and retain the full transcript evidence separately. A hook snippet or an
-editorial radio interview cannot fill this gap. Load the selected renderer's
-[[references::render-street-interview]] street-script-writing guide and run its selector.
-If it returns needs-reference or unsupported-route, stop before writing dialogue for approval:
-report the gap and its listed alternatives. A provisional creative review, or a note that no
-complete reference was observed, is an open gate, not a pass.
-Seed summaries are source leads until a complete project observation replaces them.
+For a **street ad**, inspect a complete commercial clip, including picture and speech.
+Record opening, setup, engagement, hook, product connection and payoff; mark unseen
+approaches unknown. Match the actual offering and interaction. Keep timestamped words
+and actions, label paraphrases and retain the full transcript. Snippets, radio interviews
+and seed summaries cannot replace this observation. Run the selected renderer's
+[[references::render-street-interview]] street-script-writing selector. Needs-reference
+or unsupported-route stops approval; report the gap and supported alternatives.
 
 For a **podcast**, an appropriate publisher transcript can establish turn structure.
 Editorial conversation may be provisional evidence of that mechanic, with missing
@@ -211,16 +206,12 @@ Give each person an intention and a reason to respond to the previous turn. Then
 and add product inserts, captions and the CTA. Do not turn every slot into a sentence
 from the product page or have the participant rehearse the presenter's selling points.
 
-Before a street exchange, write a short situation brief: who the participant is in this
-moment, why the interviewer is here, what invitation or visible task they accepted,
-what each person wants, and how this brand helps with the resulting task or question.
-Separate filming/recruitment assumptions from what the viewer sees. An edited ad may open
-on a later reaction when its action makes it clear. Do not force greeting
-or consent dialogue into the cut. Write actions beside the words, including preparation,
-handover, looking and listening time. If the premise needs more
-time than the recipe permits, change the premise or flag a longer production route;
-do not accelerate the speakers to hide the missing setup. A generic problem followed
-by a pasted brand card does not establish a useful ad connection.
+Before a street exchange, record who participates, why the interviewer is there,
+the accepted task, each person's motive and the brand's role. Separate filming
+assumptions from visible context. A clear later reaction can open the ad; greetings
+and consent dialogue need not enter the cut. Include preparation, handover and
+listening time beside the words. If setup exceeds the recipe, revise the premise or
+flag a longer route. Faster speech and a pasted brand card cannot repair missing context.
 
 Create candidates.json (files reference) with every concept, hook, beat and visual plan.
 
