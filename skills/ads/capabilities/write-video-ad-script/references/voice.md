@@ -15,7 +15,7 @@ and a rule below disagree, keep the brand's voice and drop only the machine-made
 
 **Sound like a person, not an ad.** Use the brand's voice from the digest and real customer words from the buyer brief; these rules only strip what sounds machine-made.
 - Write what the speaker would say out loud to a friend: whole sentences that run on with "and", "so", "because", with contractions and one concrete detail.
-- Vary the rhythm. Never three short fragments in a row ("Rich. Creamy. Ready.").
+- Vary rhythm and connect the thought. Reject disconnected spoken headings/bullet stamps such as "Rich. Creamy. Ready." Short natural replies remain valid in an actual exchange. Caption chunks and scene boundaries do not define sentence length.
 - A spoken sentence may run across two scenes; not every scene ends on a full stop.
 - Don't narrate the picture ("Look at that sauce") or read steps aloud ("Boil water. Stir."). Show the steps; say what they mean for the viewer.
 - No ad-speak: "game-changer", "elevate", "say goodbye to", "meet your new", "it's not just X, it's Y", "that's the night I wanted", stacked adjectives.
@@ -55,3 +55,12 @@ W_FRAGMENT_CHAIN and W_STEPS_ALOUD are skipped when a concept is silent (the sha
 `speech: "none"`, or no spoken lines); W_MOOD_OPENER then reads beat 1's on-screen words.
 Before review, fix W_FRAGMENT_CHAIN, W_MOOD_OPENER and W_AD_SPEAK or say in one line why
 the brand's voice needs the line; W_STEPS_ALOUD is advice.
+
+## Performance handoff
+
+Preserve exact words separately from supported energy/emotion/emphasis/pause direction.
+Record difficult brand/product/ingredient pronunciations beside real caption spelling.
+Model-specific tags/settings are not portable; do not add literal hesitation/laughter
+unless wanted. Ordinary UGC starts brisk and conversational, with reference/accepted
+performance resolving the actual pace. Listen to the whole actual performance and
+joins/endings; transcript similarity cannot establish voice naturalness or fine sync.

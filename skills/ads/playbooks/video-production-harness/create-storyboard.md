@@ -15,6 +15,9 @@ missing and whether the viewer has time to see the proof and read the text.
 
 ## Host contract
 
+Follow [creative contract and review](references/creative-contract-and-review.md) for current content-derived duties, complete AV coverage, clip eligibility and exact-file evidence. Read its linked sound, scale and look procedures when applicable. Preserve the two existing owner gates; no extra automatic review meeting.
+
+
 Read `capabilities.md` and the selected host binding first. Artifact names are logical roles resolved by that binding. Named review tasks use the documented rubrics and actual frame/audio tools; they are not assumed installed commands. Required tooling, human approval and available budget must exist before the operation.
 
 ## Purpose
@@ -152,7 +155,7 @@ founder explanation, product demo and reflective testimonial can need different
 rhythms. Explain a deviation when it affects the story and preserve explicit user
 direction; do not add cuts to conceal artificial shots or rush a readable proof.
 
-The gate concerns supported proof, intelligibility, readable text, continuity and
+The existing ingredient gate concerns supported proof, intelligibility, readable text, continuity, sound and agreed reference/brief mechanics, with content-derived duties.
 the approved recipe. Numeric diagnostics help locate defects; they cannot certify
 natural performance or substitute for viewing the complete sequence.
 
@@ -164,7 +167,7 @@ Compute the ratio of B-roll seconds to talking-head seconds from the scene plan 
 Tammer face: 10.7s (37%)  |  B-roll: 17.1s (59%)  |  End card: 1.1s (4%)
 ```
 
-**Pacing target = 50–75% B-roll** (not a hard 70%). the example brand v5 settled at 59% because the "shitty grades" punchline needed a face. The operator overrides the target at the storyboard review gate; do not auto-reject any value in the 50–75% range.
+B-roll coverage follows the approved reference, proof windows and accepted performance. Record actual seconds, but no universal B-roll percentage or face quota decides acceptance.
 
 ## Output
 

@@ -10,6 +10,21 @@
 
 # Agent version
 
+## Source-linked edit and review boundary
+
+Store the shared assembly_timeline with editable sources: format
+`gooseworks-assembly-timeline/1`, current creative_contract_revision, scene/destination
+intervals, exact source asset IDs/checksums/in/out/speed, depicts_speech and native_audio,
+required speech_driver, audio_cues and planned pauses. Use the runtime-supported shape,
+not ad hoc unrelated stitching scripts. Bind it to the same current host production
+record and package it with the recipe's editable files.
+
+The rebuild checker establishes technical reproducibility only. It cannot clear
+reference fidelity, product scale/action, heard performance, perceptual sync or music
+quality. Save exact-export content_review separately, with output_sha256, current
+contract/timeline revisions, responsibilities and actual AV coverage. Do not turn
+identical or frames_and_audio rebuild comparison into completed listening.
+
 ## Steps
 
 1. Upload every file the build reads to the host project and confirm it. Note each stored file id.
@@ -95,3 +110,7 @@ The `recipe/source.json` it writes (shortened):
 | `limits` | Optional, at most 10: anything that could not be stored, with its fallback. |
 
 The host re-reads the stored recipe at completion. It refuses when the stored bytes don't match `bundle.sha256`, when an input's id, size or checksum doesn't match, or when `build_command` differs from the recipe's.
+
+## Bind portable assembly sources to owned inputs
+
+Each assembly video, audio cue, exact speech driver and freeze source must match an owned, hash-checked recipe input. Use its media ID as `asset_id`, or declare a stable `inputs.asset_id` alias alongside `media_id` in the source bundle. `production.clips.asset_id` uses the same alias while `production.clips.media_id` names the owned upload. Different bytes must not share an alias. Omit local transport paths from the saved production timeline, or replace them with the matching safe recipe-relative input path. Aliases preserve the timeline revision through upload; they never replace verification of the actual input bytes.

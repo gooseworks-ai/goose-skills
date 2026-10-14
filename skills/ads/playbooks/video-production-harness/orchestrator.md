@@ -13,6 +13,9 @@ Run one saved production sequence from sourced brief to checked output. Carry ap
 
 ## Host contract
 
+Follow [creative contract and review](references/creative-contract-and-review.md) for current content-derived duties, complete AV coverage, clip eligibility and exact-file evidence. Read its linked sound, scale and look procedures when applicable. Preserve the two existing owner gates; no extra automatic review meeting.
+
+
 Read `capabilities.md` and the selected host binding first. Artifact names are logical roles resolved by that binding. Named review tasks use the documented rubrics and actual frame/audio tools; they are not assumed installed commands. Required tooling, human approval and available budget must exist before the operation.
 
 ## Purpose
@@ -40,7 +43,7 @@ Consume saved timestamped feedback and review passes on the exact watched versio
 
 - **Report progress.** While making the video, report `running` with a short `progress_note` (for example "clip 3 of 6"; `progress_percent` 0-100 is optional) after every paid piece and at least every 15 minutes. GooseWorks calls a run quiet after 20 minutes with no report and stops it after 120. A report with no note doesn't count; a new paid booking does.
 - **Log paid requests.** Append each paid request to `working/paid-requests.jsonl`: its endpoint and exact body (plus any input-digest header).
-- **Resume.** On restart, re-send each logged request unchanged. The same request gets the same booking, which returns the saved result with no new charge. Don't edit the draft or re-approve mid-run: that changes the booking and pays again.
+- **Resume.** Read saved state and reconcile jobs, input fingerprints, approvals and selected sources first. Retrieve/poll known jobs; reuse valid outputs. Never resend every log entry. Retry only after confirming actual endpoint idempotency and unresolved operation state within current authorization. Changed inputs invalidate affected work only.
 
 ## When to use
 
@@ -106,18 +109,18 @@ When `<variant_of>` is set, the orchestrator runs in **variant mode**: the sourc
 | State | Cold-start | Variant run (`<variant_of>` set) |
 |---|---|---|
 | 0 · Preflight | Run | Run (validate `<source_ad_folder>` + `<style_refs>` exist) |
-| 1 · Brainstorm | Run, **HUMAN GATE** | **Skip** — inherited from source |
+| 1 · Brainstorm | Carry choices into script review | Skip when source direction remains valid |
 | 2 · Design brief | Run | **Skip** — inherited |
 | 2.5 · Script lock | Run, **HUMAN GATE** | **Reuse only when unchanged and host-verified** — inherit exact approved copy and selected owned voice audio |
 | 3 · Storyboard | Run, **HUMAN GATE** | **Reuse the unchanged timing plan** — new visual ingredients still require current approval |
-| 3.5 · Character lock | Run, **HUMAN GATE** | **Run in Mode B** (style-ref + source anchor) — see `lock-character.md` |
+| 3.5 · Character lock | Select within ingredient review | Preserve source identity in Mode B within current ingredient review |
 | 5 · Create clips | Run | Run (re-roll every distinct still from new anchor) |
 | 6 · Edit clip loop | If review notes | If keyframe-consistency notes come back |
 | 7 · Edit video | Run | Run (stitch + end card from source) |
 | 7.5 · Scroll test | Run, gate | Run on the new first stitch — a restyle can change hook readability and perceived motion |
 | 8 · Review | Run, gate | Run again on all newly rendered pixels/audio; never inherit visual QC. |
 | 9 · Polish | Run | Run (whisper-test mix is style-agnostic) |
-| 10 · Deliver | Run, **HUMAN GATE** | Run, **HUMAN GATE** |
+| 10 · Deliver | Exact-export review and existing selection | Exact-export review and existing selection |
 
 Inherited unchanged copy can retain its script approval only when the host verifies the exact content and ownership. New anchors/ingredients, generation scope and spend require current approval. Re-rendered media always gets full review, polish/caption checks and a delivery decision.
 
@@ -137,34 +140,34 @@ For podcast-style skit ads, use an actual available specialist through the bindi
 2. If context is missing, show one combined choice: research now using an actual available research capability; accept supplied facts/assets; explicitly continue with the stated limitations; or defer. Do not invent missing claims or silently treat an empty template as research.
 3. Research that costs credits also needs an estimate and host authorization. Preserve sources, actual media and dates. Store the human's decision so a resumed run does not ask again without a changed input.
 4. Reload current brand context at design, storyboard, world-lock and end-card stages. Select real assets by labeled provenance rather than filename guessing.
-5. When a reference was requested, wait for the host's actual prepared media. Inspect frames across it and listen/transcribe its audio before recording reference_analysis: hook, scene order, shot/pacing grammar, voice, music, captions and CTA. Preserve creative mechanisms while replacing brand/product/claims with current evidence. A failed/private reference needs a real human brief-only choice; never invent an analysis or reuse the reference as the produced final.
+5. When a reference was requested, wait for its actual prepared media and follow [creative contract and review](references/creative-contract-and-review.md). Review complete moving picture and actual sound, record capability/coverage and reference-to-adaptation beats. Frames/transcripts cannot certify listening or motion. Resolve private/failed references on the existing review surface; never invent analysis or use a reference as the produced final.
 
 ### State 1 — Brainstorm
 1. **Variant mode:** skip entirely. Write a short `<video_folder>/idea_brief` noting "Variant of `<source>` — see `<source>/idea_brief` for the originating concept" and the `<style_notes>`. Advance to State 2.
 2. If `<video_folder>/idea_brief` exists AND `concepts` exists with at least one concept conforming to the schema in `brainstorm.md`, skip to State 2.
 3. Otherwise call `brainstorm.md` with the user's concept. The skill writes BOTH `idea_brief` AND `concepts`. After it returns, verify the saved concepts exist, parse and satisfy every required field in the selected binding's actual schema. Save the full concept prose plus current title, format, hook, logline, evidence and risks on the human review surface. A working markdown mirror alone does not satisfy host review registration.
-4. **HUMAN GATE:** show the concept through the host review surface and save the pending gate. Wait for the host to record an authentic human decision on this exact concept and script scope. Capture any line-level edits; re-read each concept's `markdown` first, since the operator may have edited it in the tab.
+4. Preserve an existing authentic concept selection; carry unresolved options into the existing script review in State 2.5. Re-read edited prose. This creates no separate mandatory owner gate.
 5. **Concept-fit audit.** Before approving the gate, explicitly answer: *who is this selling, to whom?* If the answer isn't "[brand] to [their actual customer]," flag for re-framing here, not later. A prior review caught "Therapy is rat park" at this stage — that tagline would have sold therapy *to clients*, not the reference cut to therapists. Cheap to pivot now; expensive after rendering. If unclear, ask the user via the host human-decision surface.
 
 ### State 2 — Design brief
 1. **Variant mode:** skip entirely. The source's `design_brief` is inherited; you can copy it into `<video_folder>/` for traceability but don't re-derive it.
 2. If both `design_brief` and `implementation_brief` exist, skip to State 2.5.
-3. Call `create-design-brief.md`; its step 4 sets the scene skeleton and routes each scene through `references/shot-routing.md`. The brief must include `audio_strategy:` (one of `vo-narrator | song-as-script | hybrid | silent`), `climax_line:` (set in State 2.5) and `assets_manifest:` (consumed by State 0 re-audit).
-4. Once `audio_strategy` is set, downstream states branch off it: `lock-script` chooses VO vs lyrics output, `edit-video` chooses mix protocol, the storyboard player chooses VO vs song embed. Validate the field before advancing.
+3. Call create-design-brief; preserve agreed reference/brief structure and qualified routes. Save the host creative_contract: speech_mode, soundtrack_modes, required_features, reference_map, product_grounding and voice_plan. Retrieve the host-computed creative_contract_revision and bind subsequent work to it.
+4. Resolve legacy audio_strategy through [speech and route qualification](references/speech-and-route-qualification.md), not an empty transcript. Map actual speech/sound contracts before branching; native dialogue must not become unrelated narration or silence.
 5. No gate by default — design-brief is mechanical from idea-brief. If `<auto>` is false and significant creative decisions surfaced (e.g. style choice, voice options), pause for the user to weigh in on the open-decisions section.
 
 ### State 2.5 — Script lock
 1. **Variant mode:** reuse exact source script and selected audio only when the current host-approved revisions/fingerprints remain valid. Run [hook compatibility](references/hook-compatibility.md) for the proposed visual/action/audio change; a new promise returns to script/body/coverage planning instead of inheriting approval.
 2. Reuse the locked_script only if its content/revision still matches the host-approved script. Continue to voice audition before storyboard when applicable.
 3. Fetch write-video-ad-script with catalog_fetch and follow it to write the script; it is a required skill of this playbook. If the fetch fails, stop and tell the customer: never write the script inline. Before writing, carry the sourced creative brief into the actual write-video-ad-script preparation command with `--brief working/script/creative-brief.json`; use its documented fields and set `shape.requires_creative_brief: true` for new custom/template work. The writer/critic receive the same angle-context; missing brief fails strict review. Preserve source/rejection/locked-copy evidence. Then call `lock-script.md` with `<concept_type>` inferred from idea-brief (default `transformation` if idea-brief mentions before/after, comeback, journey, ramp-up).
-4. **HUMAN GATE.** The arc review runs on text only — cheap. The gate exists because every script change AFTER this state forces VO re-renders. Capture the climax-line mark and any line-level edits.
+4. **SCRIPT OWNER GATE.** Show complete words, essential action/proof, sound and feasible routes on the existing script surface. Record its authentic current revision; later material contract changes refresh affected authorization.
 5. After approval, `locked_script` is the single source of truth — all downstream skills read VO text from this file, NOT from `design_brief`.
 
 ### State 2.6 — Voice/performance selection
 
-1. Read approved audio strategy and delivery intent. Silent work needs no voice audition; song/native dialogue uses its selected route's actual performance review rather than an invented narrator ID. A restyle reuses the exact approved performance when copy/settings/timing are unchanged.
+1. Read resolved speech_mode, soundtrack_modes and delivery intent. No-speech work needs no voice audition; song/native dialogue uses its actual selected performance. A restyle reuses unchanged approved performance/source timing.
 2. If the voice or delivery is unresolved, select representative uncertain material: pronunciation, conversational transition, intentional pause/emphasis and longest constrained line. Prepare only the alternatives that answer that uncertainty; do not regenerate every beat for every candidate by default. Paid auditions require the existing preview budget.
-3. Register playable auditions, exact covered lines/beat IDs, voice/settings, script revision and provenance. Listen to the actual isolated audio; text, waveform, duration and transcript alone cannot establish performance quality. Surface the existing human selection gate with remaining uncertainty; never present an unplayed audition as chosen.
+3. Register playable auditions, exact lines/beat IDs, voice/settings, script revision and provenance. Hear actual isolated audio; text/waveform/transcript cannot establish quality. Integrate unresolved voice choices into the existing script/ingredient surfaces, not another mandatory gate. Never present an unplayed audition as chosen.
 4. Reuse approved audition/performance audio where it covers the production line. Render only missing/changed lines with selected settings after the appropriate gate. Native first-take video still needs ingredient approval; listen before chaining later takes. Do not force a faster read or louder climax.
 5. Recheck actual isolated performance for every speech scene and the full mixed output in States 5/8/10, including native or real recorded speech. On resume, restore selected IDs/files; missing selection blocks only the route that needs it.
 
@@ -189,36 +192,36 @@ For podcast-style skit ads, use an actual available specialist through the bindi
 1. If the ad has no recurring human character (cartoon-only, product-only) or `<video_folder>/generated/character-lock/character_locks` exists, continue to State 3.55 when applicable, then the preview gate and State 5.
 2. **Variant mode:** call `lock-character.md` in **Mode B** — pass `<style_refs>` AND the source anchor portrait paths (as the actual supported image-reference fields). The new anchor inherits the source's wardrobe/set/framing but renders in the new medium. See `lock-character.md` for the Mode B flow.
 3. Otherwise (cold-start, Mode A) call `lock-character.md` with `<character_descriptors>` from `design_brief`.
-4. **HUMAN GATE on anchor portrait.** The anchor is the single approval that locks every subsequent keyframe. Drift > 15% follows the escalation order in `lock-character.md` (optional Soul ID last, only if the host has Higgsfield); let the operator choose.
+4. Resolve anchor/world choices within the existing ingredient review. Reuse valid selections; record actual identity/performance evidence, not invented drift percentages or an additional mandatory owner gate.
 5. After lock, `character_locks` is the contract `create-clips` reads for per-scene reference inputs.
 6. **Chained-ref discipline.** `character_locks` MUST also include a `chain_strategy` field: `"anchor-only"` (every downstream call passes only the anchor as ref) or `"all-locked-frames-as-refs"` (every downstream call passes the anchor AND every previously-approved locked keyframe). The latter is mandatory for series where consistency across N frames matters (e.g. 4-panel decline arcs, ping-pong loops, before/after parallels). Resolve the reference-image fields from the model schema and record the passed refs' IDs/input fingerprint. A prior review lost ~6 iteration cycles to cage geometry drift before this discipline was applied.
 
-### State 3.55 — World lock (UGC family)
+### State 3.55 — World lock (content-derived)
 
-1. Run for ugc-diary, testimonial, founder-led and before-after unless the approved plan explicitly needs multiple locations. Preserve that exception in the decision log.
+1. Run when actual content has a continuing world, recurring person or scale-critical product, including concept_format other. Intentional locations get separate relevant locks; a montage still needs product/contact checks.
 2. Read the required world_lock set, wardrobe, lighting, color_grade, recurring_props and time_of_day. Missing constraints block this phase; character identity alone cannot hold the world consistent.
-3. Generate three actual empty-set references per world through the approved preview image capability: establishing wide, character-reference corner and prop area. Use the set description verbatim and exclude people from the set references.
-4. Register each candidate image, stable world ID/index and provenance. Save selection pending, then STOP for the human choice on the ingredient surface.
+3. Reuse suitable existing world/product references first. Generate only missing approved views needed for scale, character placement or action/detail coverage; no fixed three-image quota. Preserve the set description and measured product guide.
+4. Register candidates, stable world IDs and provenance. Show unresolved selections within the existing ingredient surface; add no standalone world approval gate.
 5. On resume, load the selected world and current ingredient decision from the host. Save all approved set references and exact wardrobe/lighting/grade/prop/time strings. Replaced worlds invalidate the ingredient approval.
 6. Every subsequent character keyframe threads both the selected identity anchor and matching world references. Bake the descriptors verbatim into the prompt and record those references in the scene plan. Preserve approved provider inheritance.
 
 ### State 4.5 — Preview gate (opt-in, recommended for multi-scene AI ads)
-1. **When to use.** If the project will generate ≥ 6 AI scene clips OR ≥ 4 AI transition clips, run a preview gate before committing to the full burn. Multi-scene AI pipelines have category-of-problem risks (transition style not landing, framing rule misinterpreted, color drift across generations) that the storyboard can't visualize. A 3-4 scene preview catches these for ~$2 instead of burning $8-12 on a misfire.
-2. **Skip when.** Short projects (≤ 3 scenes), variant restyles inheriting an approved style, or projects where every scene is hyperframe/ffmpeg (no AI gens).
+1. **When to use.** Use a representative preview when an unqualified creator/action or an unresolved production risk needs evidence. It is an agent acceptance check within existing preview scope; count alone does not add a human gate.
+2. Skip representative route qualification only when matching accepted evidence already covers the current endpoint/product/action/input conditions. Short duration alone does not qualify a speaking or difficult-action route. Deterministic work still needs its applicable source/output checks.
 3. **Subset selection.** Pick scenes that exercise the highest-risk dimensions:
    - At least one scene with the main character / framing rule
    - At least one transition pair (if transitions exists)
    - At least one scene that's stylistically different from the others (e.g. a climax beat that uses a different grade)
    - Typically scenes 01 + 02 + 03 + 04 for a 9-scene urban ad; pick differently if your scene table has more stylistic variance later
-4. **Generate at lite tier.** Choose a supported lower-cost model from the host catalog when it can test the approved risk. Paid preview clips/transitions still require ingredient approval and an explicit reservation. The preview is for style validation, not final quality.
-5. **Stitch + preview.** Use `edit-video` in preview mode to assemble the subset with placeholder music (first N seconds of the locked song). Output: `edits/preview-NN-scenes.mp4`.
-6. **HUMAN GATE.** Show the operator the preview. Approval criteria:
+4. Use the actual intended endpoint/configuration for performance/action qualification. A cheaper/different tier may explore a layout but cannot qualify another route's voice, sync or product handling. All submitted preview work stays within existing approved scope.
+5. Assemble representative accepted sources with intended sound where available. Label temporary sound/text and remaining duties explicitly; a placeholder mix cannot clear actual music/mix acceptance.
+6. Review the representative preview with a capable AV reviewer before batching. Show unresolved look/voice/direction within existing owner surfaces; no extra automatic preview approval. Acceptance conditions:
    - Transitions land as intended (camera motion / morph / hard cut as designed)
    - Framing rule is respected (no face if locked, knee-down if locked, etc.)
    - Wardrobe / character consistency holds across cuts
-   - Color grade is in the right direction (will harmonize in State 7's final pass)
+   - Actual appearance/light/world/product geometry is acceptable; later grade matching cannot repair identity, anatomy or action defects.
    - Music/visual sync feels right at the climax beat (if the subset spans it)
-7. **Iterate cheaply.** If the preview reveals a category-level issue (e.g. transitions don't read as camera motion, wardrobe morphs are too literal), re-prompt and re-roll within the preview's small scope. Only proceed to State 5 full burn once the preview is approved.
+7. **Iterate cheaply.** If the preview reveals a category-level issue (e.g. transitions don't read as camera motion, wardrobe morphs are too literal), re-prompt and re-roll within the preview's small scope. Proceed only after the applicable source/route acceptance is saved with exact evidence and no required missing duty; no additional automatic human gate.
 8. **Cost discipline.** A failed preview cost ~$2; a failed full burn costs $8-12. Aim for 1 preview iteration max before full burn.
 
 ### State 5 — Create clips
@@ -237,7 +240,7 @@ For podcast-style skit ads, use an actual available specialist through the bindi
    4. For pairs with `mode == "hard_cut"`: no-op everywhere; default behavior.
 4. **Content-policy rejection fallback** may use a supported alternative transition model, with its actual starting-image field. It must still obey the underlying provider policy; do not bypass a prohibited-content decision. Resolve the alternative through the actual host catalog and approved budget; log it. Provider/anchor changes require approval.
 5. **State file update:** set `transition_layer_status: complete` (or `skipped` if no transitions). Record per-pair `provider_events` for fallbacks.
-6. **No human gate.** The plan was approved at State 3; this is mechanical execution. If a clip looks wrong, the operator catches it at the State 7.5 scroll-test or State 8 review and loops back via `edit-clip`.
+6. **Agent content check.** Inspect actual clips and complete speech/action before assembly; do not rely on the operator catching defects later. No extra human gate is added to already approved execution.
 
 Quote each actual transition operation from current host pricing before approving it; do not reuse another run's cost as authorization.
 
@@ -250,7 +253,7 @@ Quote each actual transition operation from current host pricing before approvin
 ### State 7 — Edit video
 
 1. Read `edit-video.md` and assemble a labeled candidate from current passing clips. Use the packaged assembly helper only when it implements the plan; otherwise use the documented real FFmpeg filters.
-2. For narration/hybrid, reuse human-selected performance settings/assets and mix according to the approved sound plan with measured cue gains/ducking only where needed. Song-as-script and silent take their explicit audio branches. Missing selected voice blocks narration; it does not block a genuinely silent plan.
+2. Branch on resolved speech_mode and soundtrack_modes before any source selection, retiming or mix. Preserve native speech and exact audio-driven performance; no-speech work retains independently planned sound. Legacy labels alone do not select streams.
 3. Preserve intended emphasis/timing, intentional grade and SFX restrictions and revisions such as music-level/cue changes. Measure actual output instead of treating gain constants as proof.
 4. Read `promote.md` to register the candidate, asset and immutable version lineage through the binding. Preserve earlier versions. The candidate is visible for review; successful completion/pinning waits for all current gates and final QC.
 5. Validate the binding's actual render/asset/version relationships and save the true state. The binding supplies the review/pick transaction; never simulate it with a local master copy.
@@ -265,11 +268,11 @@ Quote each actual transition operation from current host pricing before approvin
 
 ### State 8 — Review (full parallel suite)
 1. Call `review-video.md` against the explicitly selected candidate ID/checksum, with rough or fine stage recorded. First save actual received message, then compare with the sourced brief. The stage questions can share the existing review surface; no additional approval meeting is required. Run every applicable documented review responsibility; parallel execution is optional:
-   - **Phase 7a (deterministic, parallel):** the packaged technical-evidence tool + the hallucination, transcript, identity and audio-visual alignment checks in `review-video.md` (alignment catches a payoff line landing 2s before its visual). **For `concept_format: ugc-diary | testimonial | founder-led | before-after`, also run** the cross-cut identity verdict and the world-consistency rubric (set, wardrobe and lighting drift across cuts). Findings on both are persisted into `review_issues`.
-   - **Phase 7b (creative, parallel; user toggles which):** the concept-landing, pacing, brand-fit and platform-fit checks in `review-video.md` (hook-strength + synthetic-persona already ran in State 7.5). **For UGC concept formats, also run** the UGC shotcraft check (actual cuts, time-based face exposure and temporal review against approved intent). The speech-performance responsibility applies to **all spoken formats**, including `real_voice`: listen to isolated takes and joins for pronunciation, timing, delivery and defects. Use the fetched voice-performance reviewer when available or the documented listening rubric with real media tools; the responsibility name is not an assumed installed command.
+   - **Phase 7a:** collect technical evidence and run applicable product/action/text/source-alignment checks. Actual people, continuing worlds and sound enable their duties even for concept_format other. Preserve source-linked findings in review_issues.
+   - **Phase 7b:** review intended-versus-received story, pacing, brand/platform fit and applicable creator shotcraft/performance. Required voice/product/action/sync duties cannot be toggled away by genre or aggregate score; optional taste questions remain separate.
    - **Phase 7c (aggregate):** merge all reports into a single `review-notes/<idx>-<timestamp>.md` with P0/P1/P2 sections in the contract that `auto-fix-from-review-notes` consumes.
    - **Phase 7d (claim verification):** for every visual claim in 7a/7b output, re-extract the frame at the claimed timecode and verify. Reports unverified claims as `claim:unverified`. Don't trust sub-agent visual assertions without frame-extraction proof.
-   - **Phase 7e — Complete-cut frames.** Mandatory before APPROVED. Run `python3 scripts/qc_evidence.py master.mp4 evidence-review-N` and check every frame against the storyboard; missing frames leave INCOMPLETE, never a pass. GooseWorks checks sound and spoken words when you report complete (the final file check in `capabilities.md`). Single-frame spot-checks (Phase 7d) miss timing drift, redundant beats, caption-visual collisions, and visual-variety problems. Use this on every iteration to catch cross-frame inconsistency, narrative regression, end-card/caption overlap and wasted hook time.
+   - **Phase 7e — Complete AV review.** Watch the exact complete candidate at normal speed with sound, isolated speech where available and full mix; inspect original-resolution suspicious motion/mouth ranges. Extracted frames/ASR/levels are support. Missing perception remains INCOMPLETE. Bind all duties and covered intervals to current output/source/timeline/creative-contract hashes.
 2. Branch on the review status:
    - **APPROVED** → a rough-cut decision advances to fine-cut questions on the same review surface; after fine-cut execution and evidence pass, continue to State 9. It never clears the later exact-export final gate.
    - **NEEDS REVISION** → follow the diagnosis: State 1/2.5 for concept/script, State 3/5 for missing coverage/performance, State 7 for sequence or State 6/local repair for defects. Use `auto-fix-from-review-notes.md` only for authorized deterministic local repairs. Rewatch the new candidate against original acceptance conditions.
@@ -284,21 +287,21 @@ Quote each actual transition operation from current host pricing before approvin
    - Read the master's frames and propose polish-notes across 9 axes (loudness, captions overflow/timing, music/VO balance, end-card, tail, hook, color, brand fit, **vo-intelligibility**)
    - Apply every P0/P1 via `auto-fix-from-review-notes`
    - Produce `edits/master-polished.mp4` + `polish-notes/<idx>-<ts>-applied.md`
-3. **Speech integrity is a ship gate.** GooseWorks checks the final's words against the script when you report complete; fix any line it names. Silent work uses visible reading-time checks.
-4. **HUMAN GATE:** show before/after deltas and original note outcomes. On approval, register the exact polished candidate through `promote.md`; retain source/selection history and continue to State 10 final export review.
+3. **Content gate.** Hear full performance and mix, check depicted mouth/source alignment, exact words/joins, product/action and intended sound. An ASR/stream/loudness result cannot replace missing perception; no-speech work still requires its separate sound plan.
+4. Show before/after and original note outcomes on the existing candidate/promotion surface. Honor current owner selection/authorization; this adds no third mandatory approval meeting. Preserve actual content status and refresh final evidence.
 5. If polish proposes only P2 items (cosmetic), the operator can skip-fix; the master proceeds to delivery unchanged.
 
 ### State 10 — Deliver
 
 1. Burn approved captions on the polished picture/mix as the final visual step. Use `caption-burn` (superseded; agent-built path; the kit path uses captions-layer), which needs no libass, or the packaged local ASS path with verified libass/font support. Missing libass blocks only the ASS route; fetch the caption specialist before declaring captions unavailable. The style comes from the current brand brief; no private house preset or stale price table is assumed.
 2. Check caption spelling, word timing, safe areas, suppressed cues on text-heavy scenes, and end-card/offer/logo collisions. Reposition or omit the overlapping approved cue explicitly.
-3. Extract each cue start+0.3s and transition frame, then read every frame of the captioned cut. Export MP4 (H.264 + AAC) and probe final duration, dimensions, streams and codec. All shared QC and current clip coverage must pass.
+3. Inspect actual cue boundaries/reading holds and complete captioned AV output, including full ending. Probe exact final bytes and bind current content_review/hash/revisions; all required duties must be complete for a content pass.
 4. Build each required ratio/cutdown/language from editable sources, adapt its own caption layout/timing and burn once. Run separate final review at destination size on each actual output/checksum, including full ending and proof/CTA. Parent-master QC does not clear a derivative. Register real owned uploads and immutable evidence through the binding.
 5. Show the playable captioned master and variants for the explicit host delivery decision. Read `promote.md` for successful final completion/selection. GooseWorks' check on complete adds to this suite; it does not replace it.
 6. Publishing to external channels needs explicit authorization through an available publishing capability. Saving a project final does not authorize ad-account posting.
 
 ### State 11 — Wrap session
-1. Keep the existing production manifest/editable sources and decision history current at every checkpoint, not only delivery. Preserve selected/rejected choices, exact notes, scoped preferences and measured results separately. After DELIVER is approved, call `wrap-session.md`. Runs three sub-steps with a gate on each:
+1. Keep production/editable sources and decision history current throughout. After delivery, save wrap-session recipe/learnings/proposals as reviewable artifacts. Do not add mandatory gates for each memo or block delivery on those acknowledgments; applying shared-skill changes still requires the user's actual authorization.
    - **A · reproduction_recipe** — process-focused recipe that a future agent can use to recreate this *kind* of video for a slightly different concept or brand. Reads `project_state`, `implementation_brief`, `design_brief`, `storyboard`, cost tracker, audio artifacts, and the folder layout.
    - **B · learnings** — failure-driven retrospective. One entry per iteration cycle that changed the master, plus tool/API quirks. TL;DR (exactly 3 lessons) up top.
    - **C · `improvement_proposals`** — concrete diffs to atoms / molecules / orchestrator skills based on the learnings. Read-only against `shared skills` — never auto-edits.
@@ -353,7 +356,7 @@ Open `references/shot-routing.md` and the brief's genre card at State 2 (design 
 - **Script locks.** Once `locked_script` exists, downstream skills read VO from it. Any change to VO text invalidates `locked_script` and forces re-running State 2.5 — no silent edits.
 - **Pre-flight is non-negotiable.** P0 audit failures block the pipeline. A revised supported plan may remove a blocked dependency only through current human approval; broken inputs and required capabilities cannot be bypassed by a local flag.
 - **Review loop bounds.** 3 iterations max before escalating. Don't quietly burn credits chasing tiny issues.
-- **Human gates are real.** Never auto-advance past BRAINSTORM, SCRIPT-LOCK, STORYBOARD, CHARACTER-ANCHOR, POLISH, or DELIVER gates without explicit user OK, even if `<auto>` is true.
+- **Owner gates are real.** Preserve authentic current script and ingredient approvals. Concept/voice/anchor/look choices belong within those surfaces; agent QC, polish and exact-export review do not add automatic meetings. Honor an explicitly requested existing host selection/publishing action without inventing approval.
 - **Trust but verify on visual claims.** Phase 7d frame-extraction verification is mandatory before APPROVED can be set. Sub-agents have a track record of false-positive visual reports.
 - **Brand text rendering.** Never let an AI image model render readable brand text (wordmark, tagline, URL, CTA copy). Compose text-bearing layers via PIL / ffmpeg `drawtext` / After Effects. Image gen for *visual* elements (background, mascot, illustration); deterministic compositing for *text* elements.
 - **Brand asset library first.** Before generating any brand-anchored visual (logo, wordmark, end card, mascot), look up the canonical asset through brand_assets. Never generate a fake brand asset when a real one exists.
@@ -364,9 +367,9 @@ Open `references/shot-routing.md` and the brief's genre card at State 2 (design 
   - `<provider_override>=higgsfield` (optional; only if the host has it): Higgsfield only; no fallback (fail loud).
   - Grok video may lack a supported host fallback; a missing mapping surfaces `fallback_unavailable` and the operator decides whether to retry, reroute, or skip the scene.
   - Soul ID training is optional and only if the host has Higgsfield; it has no fallback. If it fails, regenerate the anchor with `create-image-fal` or accept anchor-ref drift.
-- **UGC discipline (a prior production review v3 diagnostic).** When `concept_format` is `ugc-diary | testimonial | founder-led | before-after`:
-  - `world_lock:` block is REQUIRED in design-brief; State 3.55 (world lock) runs.
-  - `voiceover_strategy:` is REQUIRED and defaults to `real_voice`. `synthetic_vo` requires an explicit host-persisted synthetic-voice approval and is flagged at every gate.
+- **Content-derived discipline.** Actual planned/observed people, worlds, products, actions and speech enable their duties even for concept_format other; UGC intent adds applicable shotcraft:
+  - Continuing-world/person/product references are carried through State 3.55; intentional locations remain distinct.
+  - Record actual voice provenance and accepted performance, including synthetic native speech, within existing script/ingredient reviews. Voice authenticity is heard, not established by a declaration.
   - Storyboard MUST compute and surface `cuts_per_10s` and `face_share_planned`; compare those measurements with the brief/reference-derived targets and explain any mismatch; actual picture cuts and all direct-face exposure count. No universal cut or face-share quota replaces the viewer-purpose judgment.
   - Hard cuts only between AI-generated stills; crossfades reserved for non-AI compositions.
   - Brand text is never AI-rendered; always composite the real wordmark/screenshot via PIL.

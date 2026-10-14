@@ -1,41 +1,21 @@
-// voice-elevenlabs: each scene's line, spoken by an ElevenLabs voice with
-// character timings, joined into one voice track. Replaces the
-// create-vo-elevenlabs atom: the same request (POST
-// /v1/text-to-speech/<voice>/with-timestamps with text, model_id and the
-// optional voice_settings), the same one-pass pronunciation swap, and the same
-// refusal to go on without usable timings, ordered through ctx.line only.
-//
-// 1.1.0: a scene whose line is null or empty is skipped and leaves no span.
-// With a `cast`, each scene's `speaker` picks that member's voice; a speaker
-// the cast does not hold is refused, unless the style lists it in
-// `off_screen` (its scenes.speaker.off_screen keys), which reads with the
-// default voice_id. `model` picks eleven_v3 (default) or
-// eleven_multilingual_v2. `[tag]` audio tags are sent to eleven_v3 (`tags:
-// keep`) or taken out (`tags: strip`); captions never show them, and v2 never
-// receives them. `max_seconds` refuses a read that runs too long before any
-// later step is paid for. Every refusal of the inputs happens before the first
-// piece is ordered.
-//
-// `join` picks how lines are sent: `line` (default) one request per line, as
-// in 1.0.x; `sentence` one request per run of lines until a line ends in
-// . ! or ?; `one` a single request for the whole read. A joined request's
-// character timings are split back per scene, each scene running from its
-// first word to the next scene's first word, so cuts land between words and
-// there is no gap inside a sentence. `pace` plays the read faster or slower
-// with atempo (eleven_v3 ignores voice_settings.speed) and scales every
-// timing by the same factor; `words_per_second` and `tempo` report the result.
+// voice-elevenlabs 1.2.0: connected narration, explicit V4 support, model-
+// specific performance cues, and source/timing provenance. Tagged alignments
+// remain pending until independently reviewed; metadata never stands in for
+// listening. Explicit narration tempo is applied before any lip-sync job.
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitDuration, kitFfmpeg, kitNum, kitPieceName, kitStopIfAborted } from '../../_lib/part.mjs';
 import { kitApplySayAs, kitWordsFromAlignment } from '../../_lib/speech-map.mjs';
 
 const V3 = 'eleven_v3';
 const V2 = 'eleven_multilingual_v2';
-const TAG_RE = /\[[^\[\]\n]{1,40}\]/gu;
+const V4 = 'eleven_v4';
+const V4_TURBO = 'eleven_v4_turbo';
+const TAG_RE = /\[[^\[\]\n]{1,200}\]/gu;
 const TAG_TAIL_RE = /^\s*($|[.,!?;:…])/u;
 // join: sentence ends a request at a line whose written text ends in . ! or ? (closing quotes and brackets allowed).
 const SENTENCE_END_RE = /[.!?]["'”’)\]]*$/u;
 // The most characters one request sends: eleven_v3 takes 3,000 per request, eleven_multilingual_v2 10,000.
-const CALL_MAX_CHARS = { eleven_v3: 3000, eleven_multilingual_v2: 10000 };
+const CALL_MAX_CHARS = { eleven_v3: 3000, eleven_multilingual_v2: 10000, eleven_v4: 10000, eleven_v4_turbo: 10000 };
 const TEMPO_MIN = 0.8;
 const DEFAULT_MAX_TEMPO = 1.25;
 
@@ -115,8 +95,13 @@ function plannedLines(inputs, ctx, model, tags) {
   const limit = CALL_MAX_CHARS[model];
   const out = [];
   inputs.scenes.forEach((scene, index) => {
-    const line = typeof scene.line === 'string' ? scene.line.trim() : '';
+    let line = typeof scene.line === 'string' ? scene.line.trim() : '';
     if (!line) return;
+    const performanceTags = Array.isArray(scene.performance_tags) ? scene.performance_tags : [];
+    if (performanceTags.length && model === V2) throw ctx.error('bad_input', 'performance_tags require Eleven v3 or v4; they are not portable speech syntax');
+    if (performanceTags.some((tag) => !String(tag).trim() || /[\[\]<>\n]/u.test(tag))) throw ctx.error('bad_input', 'performance_tags are plain delivery cues without markup');
+    if (performanceTags.length) line = `${performanceTags.map((tag) => `[${tag}]`).join(' ')} ${line}`;
+    if (model !== V2 && /<\/?[a-z][^>]*>/iu.test(line)) throw ctx.error('bad_input', `${model} does not support SSML; use audio tags and punctuation, and keep wanted filler words in the approved copy`);
     const id = sceneId(scene, index);
     const tagged = voiceWithoutTags(line);
     if (tagged.tags && model === V2 && tags === 'keep') {
@@ -135,6 +120,11 @@ function plannedLines(inputs, ctx, model, tags) {
       if (member.voice_settings) settings = { ...(settings || {}), ...member.voice_settings };
     }
     if (!voiceId) throw ctx.error('bad_input', `scene ${id} has no speaker with a voice and there is no default voice_id`);
+    if ([V4, V4_TURBO].includes(model) && settings) {
+      const unsupported = Object.keys(settings).filter((key) => !['stability', 'similarity_boost'].includes(key));
+      if (unsupported.length) throw ctx.error('bad_input', `${model} does not support these voice settings: ${unsupported.join(', ')}; use Stability, Similarity and delivery tags`);
+    }
+    if (model === V3 && settings?.speed !== undefined) throw ctx.error('bad_input', 'Eleven v3 has no supported Speed control; direct the performance and review the actual pace');
     const sayAs = sayAsFor(sent, sent === line && tagged.tags ? tagged : null, inputs.pronunciations);
     const chars = [...sayAs.spoken].length;
     if (chars > limit) {
@@ -150,6 +140,7 @@ function plannedLines(inputs, ctx, model, tags) {
       settings,
       sayAs,
       chars,
+      hasPerformanceTags: sent === line && tagged.tags > 0,
     });
   });
   return out;
@@ -300,9 +291,13 @@ function checkPace(pace, ctx) {
 
 export async function run(inputs, ctx) {
   const manifest = await kitCheckInputs(ctx, inputs);
-  const gap = inputs.gap_s ?? 0.25;
+  const gap = inputs.gap_s ?? 0.08;
   const model = inputs.model ?? V3;
-  const joinMode = inputs.join ?? 'line';
+  const joinMode = inputs.join ?? 'sentence';
+  if ([V4, V4_TURBO].includes(model)) {
+    const support = inputs.model_support;
+    if (!support || support.model !== model || support.provider !== 'elevenlabs' || support.endpoint !== '/v1/text-to-speech/{voice_id}/with-timestamps' || support.status !== 'verified' || !support.evidence || !support.quote_id) throw ctx.error('bad_input', 'V4 is selectable only after the managed host verifies its model, timestamp endpoint and current quote; vendor availability alone is insufficient');
+  }
   // eleven_v3 performs [tag]s; eleven_multilingual_v2 would read them aloud, so v2 strips them by default.
   const tags = inputs.tags ?? (model === V2 ? 'strip' : 'keep');
   checkPace(inputs.pace, ctx);
@@ -316,7 +311,7 @@ export async function run(inputs, ctx) {
     kitStopIfAborted(ctx);
     const first = call.lines[0];
     const text = call.lines.map((l) => l.sayAs.spoken).join(' ');
-    const body = { text, model_id: model === V2 ? V2 : V3 };
+    const body = { text, model_id: model };
     if (first.settings) body.voice_settings = first.settings;
     // A joined request is named after its first scene, so a line-mode plan keeps its 1.0.x piece names.
     const piece = kitPieceName('line', first.scene.id, first.index, used);
@@ -329,7 +324,18 @@ export async function run(inputs, ctx) {
     });
     const file = result.files[`${piece}.mp3`];
     const joined = call.lines.length > 1;
-    const alignment = joined ? joinedAlignment(result.json, text) : usableAlignment(result.json);
+    const tagged = call.lines.some((line) => line.hasPerformanceTags);
+    const reviewed = (inputs.reviewed_alignments || []).find((entry) => entry.piece === piece && entry.source_sha256 === file?.sha256);
+    if (reviewed && (reviewed.status !== 'pass' || reviewed.audio_listened !== true || !reviewed.reviewer || !['forced_alignment', 'reviewed_transcription'].includes(reviewed.method))) throw ctx.error('bad_input', `reviewed alignment for ${piece} lacks actual listening and timing provenance`);
+    const timingCall = reviewed ? { ...call, lines: call.lines.map((line) => ({ ...line, sayAs: kitApplySayAs(line.written, inputs.pronunciations) })) } : call;
+    const timingText = timingCall.lines.map((line) => line.sayAs.spoken).join(' ');
+    const alignment = reviewed ? joinedAlignment({ alignment: reviewed.alignment }, timingText) : tagged ? null : joined ? joinedAlignment(result.json, text) : joinedAlignment(result.json, text);
+    if (tagged && !reviewed) {
+      if (!file) throw ctx.error('provider_failed', `no audio for ${piece}`);
+      spoken.push({ call: timingCall, joined, piece, alignment: null, file, seconds: await kitDuration(ctx, file), timing_method: 'requires_reviewed_alignment' });
+      ctx.progress({ done: n + 1, total: calls.length });
+      continue;
+    }
     if (!alignment) {
       throw ctx.error(
         'provider_failed',
@@ -339,8 +345,18 @@ export async function run(inputs, ctx) {
       );
     }
     if (!file) throw ctx.error('provider_failed', `no audio for ${piece}`);
-    spoken.push({ call, joined, piece, alignment, file, seconds: await kitDuration(ctx, file) });
+    const seconds = await kitDuration(ctx, file);
+    if (reviewed && !(reviewed.coverage?.start_s <= 0 && reviewed.coverage?.end_s >= seconds - 0.02)) throw ctx.error('bad_input', `reviewed alignment for ${piece} does not cover the complete audio`);
+    spoken.push({ call: timingCall, joined, piece, alignment, file, seconds, timing_method: reviewed ? reviewed.method : 'provider_character_alignment' });
     ctx.progress({ done: n + 1, total: calls.length });
+  }
+  if (spoken.some((source) => !source.alignment)) {
+    return kitCheckOutputs(ctx, manifest, {
+      audio: spoken[0].file, seconds: spoken[0].seconds, speech: [], scenes: [], lines: [], words_per_second: 0, tempo: 1,
+      content_review_status: 'pending', timing_status: 'requires_reviewed_alignment',
+      source_files: spoken.map((source) => source.file),
+      sources: spoken.map((source) => ({ piece: source.piece, audio: source.file, timing_method: source.timing_method, scene_ids: source.call.lines.map((line) => line.id), spoken_text: source.call.lines.map((line) => voiceWithoutTags(line.sayAs.spoken).text).join(' ') })),
+    });
   }
 
   // One voice track: each request trimmed to its measured length, then a gap. Times here are before pace.
@@ -382,7 +398,10 @@ export async function run(inputs, ctx) {
   // Pace: measured on the read as spoken, then every timing is scaled by the tempo.
   const words = countWords(speech);
   const rawWps = words / (speakingSeconds(speech) || 1);
-  const tempo = paceTempo(inputs.pace, rawWps);
+  // No automatic time stretch to make an unreviewed slow performance pass.
+  // An explicit narration tempo changes this new audio before any lip-sync job;
+  // a native speaker's soundtrack never enters this part.
+  const tempo = inputs.pace?.tempo ?? 1;
   const scale = (t) => +(t / tempo).toFixed(3);
   for (const e of speech) {
     e.start_s = scale(e.start_s);
@@ -441,5 +460,9 @@ export async function run(inputs, ctx) {
     lines: speech.map((e, i) => ({ scene_id: e.scene_id, audio: files[i] })),
     words_per_second: wps,
     tempo,
+    content_review_status: 'pending', timing_status: 'provider_or_reviewed_alignment',
+    source_files: spoken.map((source) => source.file),
+    sources: spoken.map((source) => ({ piece: source.piece, audio: source.file, timing_method: source.timing_method, scene_ids: source.call.lines.map((line) => line.id), spoken_text: source.call.lines.map((line) => voiceWithoutTags(line.sayAs.spoken).text).join(' ') })),
+    provenance: { speech_mode: 'narration', model, voice_ids: [...new Set(lines.map((line) => line.voiceId))], content_review: 'pending', timing_is_content_review: false, tempo, tempo_applied_before_lipsync: true },
   });
 }

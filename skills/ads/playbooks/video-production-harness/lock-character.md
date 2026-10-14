@@ -1,13 +1,16 @@
 ---
 name: video-production-harness/lock-character
-description: Lock the character identity before any scene keyframes generate. Produces ONE anchor portrait with verbatim hair/wardrobe strings, gates with operator approval, derives all angles from the anchor, runs a consistency check on keyframes BEFORE animation, and regenerates the anchor if drift > 15% (optional Soul ID training only if the host has Higgsfield). Step 3.5 of the pipeline.
+description: Preserve the selected character references, capture look and world across scenes. Reuse existing accepted anchors, show unresolved choices within ingredient review, and inspect real still/moving identity rather than inventing drift percentages.
 ---
 
 # lock-character
 
-Before writing any character prompt, read the avatar guide: `catalog_fetch` the skill `create-image-fal` and open its references/avatar-generation.md file. UGC and phone footage: no bokeh and no shallow depth of field. Shallow focus only when the approved style asks for it.
+Before character work, read the selected fetched creator avatar builder and its capture/look guidance. Reuse accepted identity and phone/studio branch. Focus, background detail and lighting follow the reference/brief; bokeh, pores or camera shake are not universal realism requirements.
 
 ## Host contract
+
+Follow [creative contract and review](references/creative-contract-and-review.md) for current content-derived duties, complete AV coverage, clip eligibility and exact-file evidence. Read its linked sound, scale and look procedures when applicable. Preserve the two existing owner gates; no extra automatic review meeting.
+
 
 Read `capabilities.md` and the selected host binding first. Artifact names are logical roles resolved by that binding. Named review tasks use the documented rubrics and actual frame/audio tools; they are not assumed installed commands. Required tooling, human approval and available budget must exist before the operation.
 
@@ -15,7 +18,7 @@ Read `capabilities.md` and the selected host binding first. Artifact names are l
 
 In the v03 Ironman run, the protagonist Marcus was re-rendered 3 full times (~70 credits) because hair, shirt color, and facial hair drifted across scenes. Each generation was prompt-driven without a hard reference lock — Nano Banana anchors to the *brightness* of the reference image more than the prompt hex code, so "DARK CHARCOAL #3A3A3D" rendered as light grey when the ref was lit brighter.
 
-This skill front-loads the cost: one anchor portrait, operator approval, then every other angle is derived from the anchor with verbatim-baked descriptors. Drift is caught BEFORE animation, not after a 5-stage cascade.
+Reuse a selected accepted anchor or prepare only the missing appearance choices within the existing ingredient review. Derive relevant angles from that identity and inspect actual still/motion consistency before dependent production.
 
 ## When to use
 
@@ -62,14 +65,11 @@ The prompt/identity policies below apply to every supported provider. Resolve up
 
 ### Phase 0 — Anchor portrait (Mode A · cold-start)
 
-1. Compose ONE prompt using `<character_descriptors>` with every field rendered as a verbatim string (NOT as a paraphrase). Add anti-AI cues: "natural skin texture with pores, slight asymmetry in features, no perfect teeth, photographic not stylized."
-2. **Provider routing.** Generate one anchor candidate per approved variant through the real host image capability. Use the cast anchor row in `references/shot-routing.md`; discover the actual model ID, reference schema, ratio and resolution. The preview quote covers the real 2–3 candidates, not a fictional single-image cost. On detected failure (see `create-clips.md` failure-detection rules), invoke the fallback router:
-Resolve this operation through the selected host binding and the real implementation in `capabilities.md`. Preserve its approved inputs, provenance and cost; stop if the capability is unavailable.
-
-   The default gateway is `create-image-fal` with `openai/gpt-image-2` (optional Higgsfield only if the host has it). The anchor's `.meta.json` records the `gateway` — this is the source of truth for every subsequent character-scene call.
-3. Save to `<video_folder>/generated/character-lock/<characterId>/candidate-<NN>.png` for each of the 2–3 candidate variants. Offer actual labeled candidates on the host surface; preserve the human choice.
-4. Register actual candidate images and provenance in asset_manifest and character_locks using the binding schema. Keep selection pending, then STOP; the human selects and approves the anchor on the host surface. On resume, load that current selected anchor before deriving angles.
-5. **HUMAN GATE.** Present the anchor candidates to the operator with the descriptor block side-by-side:
+1. Reuse the selected creator avatar builder/capture branch and accepted identity when available. Otherwise create a supported anchor from verbatim descriptors and reference-led skin/light/framing; random marks, forced pores, no-bokeh or grain are not portable realism fixes.
+2. Generate only missing authorized anchor candidates using the selected builder/image family and current actual host schema. Reconcile failure before rerouting; a silent model-family switch cannot inherit the previous ingredient selection.
+3. Save actual needed candidates and provenance in character_locks; reuse current accepted anchors. Show unresolved appearance/capture choices in the existing ingredient review, without a forced candidate count.
+4. Register actual candidate identity/package/hash and current ingredient selection. Derive angles from the selected anchor only after its existing authorization; no standalone owner gate.
+5. **Ingredient selection.** Present any unresolved anchor choices alongside descriptors within the existing ingredient review:
 
    ```
    Anchor portrait — <character_name>
@@ -90,7 +90,7 @@ Resolve this operation through the selected host binding and the real implementa
    Approve, regenerate with adjusted prompt, or escalate (optional Soul ID only if the host has it)?
    ```
 
-   Do NOT proceed without explicit approval. The anchor is the single human gate for the entire character pipeline.
+   Carry anchor selection in the existing ingredient owner review. Do not add a standalone anchor gate; reuse current accepted anchors and block only the operation missing its existing authorization.
 
 ### Phase 0B — Anchor portrait (Mode B · style variant)
 
@@ -113,7 +113,7 @@ Use this branch when restyling a finished ad. Inputs: `<source_anchor>`, `<style
    - Model: `nano_banana_2` (better at multi-reference compositing than `gpt_image_2` for stylized cases). the approved supported resolution and aspect ratio.
    - Reference inputs: the approved style references followed by the owned approved anchor, mapped to actual supported image-reference fields. Preserve those semantic roles. Array ordering or named-role fields are provider-specific; verify the receiving schema rather than assuming every provider uses the same order.
 4. Save to `<video_folder>/generated/character-lock/anchor-portrait.png`. Record `source_anchor: "<path>"`, `style_refs: ["<path>", ...]`, `style_notes: "..."` in the `.meta.json`.
-5. **HUMAN GATE.** Present the new anchor alongside the source anchor and the style refs in a side-by-side review surface (the host ingredient review surface). Check:
+5. **Existing ingredient review.** Present any unresolved new anchor alongside the source anchor and the style refs in a side-by-side review surface (the host ingredient review surface). Check:
    - Medium is unmistakably the new style (not a hybrid).
    - Wardrobe + set + framing are recognizably the same as the source.
    - Mouth is softly parted (lipsync-ready).
@@ -135,68 +135,32 @@ Once the anchor is approved:
    ```
 2. **Inherit the anchor's gateway.** Read `anchor-portrait.png.meta.json` and use the same `gateway` for every angle:
    - `gateway: "fal"` (default) → the cast anchor row in `references/shot-routing.md`, anchor in its actual supported image-reference field:
-Resolve this operation through the selected host binding and the real implementation in `capabilities.md`. Preserve its approved inputs, provenance and cost; stop if the capability is unavailable.
+Resolve only supported qualified operations through the selected binding; preserve selected inputs, source identity and current cost/authorization.
 
    Mixing providers across the anchor + angles introduces aesthetic drift in skin tone, lighting, and feature softness. Stay on one provider for the whole character.
 3. Run in parallel where the provider supports it (fal supports concurrent jobs with per-account RPS limits — keep at 2-3 in parallel). Save to `<video_folder>/generated/character-lock/angle-<name>.png`.
 
-### Phase 2 — Consistency check (BEFORE animation)
+### Phase 2 — Consistency before animation
 
-This is the critical step that v03 missed. Do NOT proceed to `create-clips` until this passes.
+Compare the actual selected anchor and every needed angle at useful resolution.
+A grid supports this inspection but does not certify animation. Record exact image
+identity and observed changes in facial structure, eyes/skin, wardrobe, accessories,
+held object and reference-led light/world. Use pass, needs_revision or incomplete;
+do not manufacture percentage drift or embedding similarity from a visual impression.
+An unclear identity is incomplete, not a numeric near-pass.
 
-1. Build a 3×N grid of `anchor-portrait.png` + every angle. Use ffmpeg `tile` filter or PIL.
-2. Save to `<video_folder>/generated/character-lock/anchor-grid.png`.
-3. Inspect the actual image grid with an image-capable reviewer using this consistency rubric (not a fabricated similarity measurement). Record scores and observed drift as rubric judgments, with the actual image for each observation. Prompt:
+### Phase 3 — Retain or repair
 
-   > The grid below shows one anchor portrait (top-left) and N derived angles of "<character_name>". For each angle, score 0–10 on:
-   > - Hair shape and color match to anchor
-   > - Shirt color brightness match (anchor uses charcoal #3A3A3D — flag any angle that looks lighter or darker)
-   > - Facial features (age, structure, ethnicity)
-   > - Accessories (must match anchor exactly)
-   >
-   > List drift > 15% on any axis as a P0. List drift 5–15% as a P1.
+Preserve accepted anchors/angles and their current ingredient selection. Repair only
+verified affected views within the existing retry/approval/budget scope, then inspect
+again before animation. Repeated failure suspends that configuration's use rather
+than forcing another batch. A new anchor, image family or identity-training route
+needs the affected existing ingredient decision, not a standalone mandatory meeting.
 
-4. Save report to `<video_folder>/generated/character-lock/consistency-report.md`.
-
-### Phase 3 — Decision branch
-
-Read the consistency report and act on the worst drift score:
-
-- **All angles within 5%** → **PASS**. Write `<video_folder>/generated/character-lock/character_locks`:
-  ```json
-  {
-    "anchor": "anchor-portrait.png",
-    "angles": { "front": "...", "3q-left": "...", ... },
-    "max_drift": 0.03,
-    "method": "anchor-ref",
-    "mode": "A",
-    "locked_at": "<iso>"
-  }
-  ```
-  Mode B variants add the source/style fields so downstream skills can trace identity inheritance:
-  ```json
-  {
-    "anchor": "anchor-portrait.png",
-    "angles": { ... },
-    "max_drift": 0.04,
-    "method": "anchor-ref",
-    "mode": "B",
-    "source_anchor": "<owned approved source anchor>",
-    "style_refs": ["reference-style/felt-style-ref-01.png", "reference-style/felt-style-ref-02.png"],
-    "style_notes": "crocheted amigurumi dolls in real photoreal DMV environment",
-    "locked_at": "<iso>"
-  }
-  ```
-  Orchestrator advances to `create-clips`.
-
-- **Some angles 5–15% drift** → **RE-ROLL JUST THOSE ANGLES**. Re-run Phase 1 for the affected angles with a more explicit prompt addressing the specific drift ("hair is slightly longer in this angle — match the anchor's 2cm length exactly"). Max 2 re-rolls per angle.
-
-- **Any angle > 15% drift after re-rolls** → **ESCALATE**. Options for the operator, in order:
-  1. **Regenerate the anchor** with `create-image-fal` (GPT Image 2 edit, anchor as reference), naming the failing axes, then re-derive the angles.
-  2. **Approve a revised plan with accepted drift** (logged in the decision log and updated ingredient revision). This does not waive the final UGC identity/continuity gates; if those required gates cannot pass, revise the format or stop delivery.
-  3. **Optional: train a Soul ID** on the anchor, only if the host has Higgsfield (~$15, ~10 min; it still requires independent consistency QC).
-
-  Surface the recommendation; let the operator choose.
+Save exact source references, method, relevant descriptors/world, actual evidence
+and per-view status in the existing character_locks record. Only a real quantitative
+tool can populate numeric similarity, with its method and input versions documented.
+Moving identity/gaze/expression/product handling still needs complete clip review.
 
 ### Optional: Soul ID (only if the host has Higgsfield)
 
@@ -218,7 +182,7 @@ Skip this phase otherwise. If the operator chooses the optional Soul ID:
 
 ## Quality Checks
 
-- Anchor was explicitly approved by the operator (timestamp in decision log).
+- Current selected anchor and applicable existing ingredient authorization are recorded; no additional owner gate.
 - Every angle was derived from the approved anchor (not regenerated from scratch).
 - Consistency check ran BEFORE any animation.
 - `character_locks` exists and either `method: anchor-ref` (drift < 5%) or the optional `method: soul-id`.
@@ -226,7 +190,7 @@ Skip this phase otherwise. If the operator chooses the optional Soul ID:
 
 ## Failure Modes
 
-- **Operator skips the anchor gate** — orchestrator must not let them. This is the cheapest gate in the pipeline.
+- Missing selected anchor/current ingredient authorization blocks dependent character work; an extra mandatory approval meeting is not required.
 - **Re-rolls without addressing the specific drift** — each re-roll prompt must call out the failing axis from the previous report.
 - **Optional Soul ID training fails or hits credit limit** — fall back to anchor-ref with explicit drift acceptance in decision log. Soul ID is optional and only if the host has Higgsfield; fal has no equivalent.
 - **Cartoon / non-human ads** — skip this state entirely. Don't burn anchor generation on a felt mascot.

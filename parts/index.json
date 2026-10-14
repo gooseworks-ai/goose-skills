@@ -1943,6 +1943,75 @@
       ]
     },
     {
+      "id": "creator-h3",
+      "version": "1.3.0",
+      "interface": 1,
+      "kind": "generate_video",
+      "kit": ">=1.0.1 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "silencedetect",
+            "tpad",
+            "trim",
+            "setpts",
+            "fps",
+            "settb",
+            "setsar",
+            "format",
+            "xfade",
+            "concat",
+            "aresample",
+            "pan",
+            "aformat",
+            "adelay",
+            "apad",
+            "atrim",
+            "asetpts",
+            "acrossfade"
+          ],
+          "encoders": [
+            "libx264",
+            "aac",
+            "pcm_s16le"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "minimax/h3-max/reference-to-video"
+          }
+        ],
+        "disk_mb": 1500
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "second",
+        "measure": {
+          "from": "/max_seconds",
+          "as": "value"
+        },
+        "rates_usd": {
+          "minimax/h3-max/reference-to-video": 0.4
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/creator-h3/1.3.0",
+      "files": {
+        "README.md": "774bf2b67a3872a90bc1d224db3a2d1e8a850cd0c74a1d140203738a713046cd",
+        "part.json": "80135021734c1b273727b05218af976b5131816243a71e8632ad4e805a358261",
+        "part.mjs": "36aa6cc01872111e462078e140ebe46c353b04379d962ee351d2b2a9548d6be0"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "minimax/h3-max/reference-to-video"
+        }
+      ]
+    },
+    {
       "id": "cut-footage",
       "version": "1.0.0",
       "interface": 1,
@@ -2705,6 +2774,65 @@
         "assets/sfx/whoosh.wav": "37e14f3b89261ee32ba46cc6b91ae73281efbf5f68e322ca24e51af2f1a44e9a",
         "part.json": "e3ec19822e941221ba7a6330db04ddf79d119eef4772c54826dcf0540b0a91d7",
         "part.mjs": "20705bbef9bffaa2511a433040960f0ecfd913a505963c9a439b6cef9184d3ab"
+      },
+      "models": []
+    },
+    {
+      "id": "html-frames",
+      "version": "1.3.0",
+      "interface": 1,
+      "kind": "render_html",
+      "kit": ">=1.0.1 <2.0.0",
+      "needs": {
+        "browser": true,
+        "ffmpeg": {
+          "filters": [
+            "scale",
+            "setsar",
+            "format",
+            "transpose",
+            "hflip",
+            "vflip",
+            "overlay",
+            "crop",
+            "fps",
+            "setpts",
+            "adelay",
+            "amix",
+            "volume",
+            "apad",
+            "atrim"
+          ],
+          "encoders": [
+            "libx264",
+            "png",
+            "mjpeg",
+            "aac",
+            "rawvideo",
+            "pcm_s16le"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 1024
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/html-frames/1.3.0",
+      "files": {
+        "README.md": "0fd68fab9506142f0e157948d019adbd3d5df2696587d835bcfe2c9b6b5ba19d",
+        "assets/sfx/chime.wav": "62bbaf69b7b23cbeb5a8fcbbb10800e041bc5e7470e9f1009f8b58565d7e8e3c",
+        "assets/sfx/click.wav": "793fd624d57e450e192cc95a3a50d06ee8334924e19bbf29719db3713a67da40",
+        "assets/sfx/notify.wav": "311f1211afcaeecdfd2639ed157617a36a604e4aafa95afacb6658f3ef71bd76",
+        "assets/sfx/pop.wav": "00ad5c821502345799d7d4ee1b2f1b9399bd533ed2c348e6f8eaa269438db34f",
+        "assets/sfx/swoosh.wav": "7151a319923224da770c89e111b41ea09b31cb91e8d3a357cddf3559e479a85c",
+        "assets/sfx/tap.wav": "c688916e1e6c344fb2e9b543fd9f013323e3b9c879ffd4a1a50927e90da2de59",
+        "assets/sfx/tick.wav": "7b6312f1eb75e9bb911dd184e33ba70d8b920f400700a248e40a2e007533c17d",
+        "assets/sfx/whoosh.wav": "37e14f3b89261ee32ba46cc6b91ae73281efbf5f68e322ca24e51af2f1a44e9a",
+        "part.json": "5c47a8751a2dcf397af1f2fe4d45b9d358dd90efa28f4768e3d22fa2492bc2d9",
+        "part.mjs": "e2c6597fe9b22794ae21974c06e73c7eb23607a97add4504f3f0f9c3961048b0"
       },
       "models": []
     },
@@ -5625,6 +5753,92 @@
         {
           "provider": "elevenlabs",
           "model": "eleven_multilingual_v2"
+        }
+      ]
+    },
+    {
+      "id": "voice-elevenlabs",
+      "version": "1.2.0",
+      "interface": 1,
+      "kind": "generate_voice",
+      "kit": ">=1.0.1 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "aresample",
+            "aformat",
+            "atrim",
+            "asetpts",
+            "apad",
+            "concat",
+            "atempo",
+            "asplit"
+          ],
+          "encoders": [
+            "aac",
+            "pcm_s16le"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "elevenlabs",
+            "model": "eleven_v3"
+          },
+          {
+            "provider": "elevenlabs",
+            "model": "eleven_multilingual_v2"
+          },
+          {
+            "provider": "elevenlabs",
+            "model": "eleven_v4"
+          },
+          {
+            "provider": "elevenlabs",
+            "model": "eleven_v4_turbo"
+          }
+        ],
+        "disk_mb": 50
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "1k_chars",
+        "measure": {
+          "from": "/scenes/*/line",
+          "as": "length"
+        },
+        "rates_usd": {
+          "eleven_v3": 0.1,
+          "eleven_multilingual_v2": 0.1,
+          "eleven_v4": 0.08,
+          "eleven_v4_turbo": 0.04
+        },
+        "model_from": "/model"
+      },
+      "determinism": "provider",
+      "path": "parts/voice-elevenlabs/1.2.0",
+      "files": {
+        "README.md": "5b9b1242a5114661503c08a015d6979ff9451f1a829de4bfac0ce9127a1cf7dd",
+        "part.json": "589ad01fd60556009a5a43aa8d15168ce0684fda0ad1a7dfa9cbfa0aafd3d4b4",
+        "part.mjs": "b2de89fb1cdc2b1fca7d4f696882be3d502cd120bc6c39e9bb920630553a1ba4"
+      },
+      "models": [
+        {
+          "provider": "elevenlabs",
+          "model": "eleven_v3"
+        },
+        {
+          "provider": "elevenlabs",
+          "model": "eleven_multilingual_v2"
+        },
+        {
+          "provider": "elevenlabs",
+          "model": "eleven_v4"
+        },
+        {
+          "provider": "elevenlabs",
+          "model": "eleven_v4_turbo"
         }
       ]
     }

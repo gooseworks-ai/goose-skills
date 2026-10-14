@@ -51,26 +51,11 @@ RATIOS = {"21:9": 21 / 9, "16:9": 16 / 9, "4:3": 4 / 3, "1:1": 1.0, "3:4": 3 / 4
 # purpose: it carries the craft (unscripted, natural rhythm), not a tone or a persona.
 DEFAULT_DELIVERY = ("natural and conversational, speaking directly to one viewer. Not presenting, "
                     "not announcing, not reading. Sentences run together with almost no gap. Pitch falls on "
-                    "the last word of each sentence. Consonants relaxed, volume varying word to word.")
+                    "the last word of each sentence. Clear complete word endings; do not rush or shout.")
 
-TEMPLATE = """A single continuous locked-off medium shot of <Subject 1>, with a natural front-camera recording look. The recording device and its support stay outside the frame.
+CAPTURE = {'phone_counter': 'An ordinary phone recording from a phone supported outside the frame at eye level. Static chest-up shot, complete face and both shoulders visible with headroom. Both hands are free; gestures are small and serve the words. No automatic zoom or reframing.', 'phone_selfie': 'An ordinary handheld phone selfie at eye level. One hand supports the phone outside the frame; only the other hand is free. Small movement follows the supporting arm, without artificial drift or automatic zoom. Keep the complete face visible.', 'studio': 'An approved studio recording at eye level, matching the reference composition and motivated lighting. Static medium framing with the complete face visible. Natural posture and restrained gestures; no automatic zoom or reframing.'}
 
-[Shot 1] The viewpoint is fixed at eye level, with the person facing the lens. No phone, camera, tripod or stand is visible. Chest-up framing, both shoulders in frame, head roughly centred with a little headroom, shot straight on. The hands are FREE and gesture while talking, one coming up and settling. Nobody holds the phone, there is no arm extended toward the camera. THE CAMERA DOES NOT MOVE: locked off, no handheld drift, no pan, no zoom, no reframing. One continuous unbroken shot.
-
-EYES STAY ON THE CAMERA LENS FOR THE WHOLE CLIP, from the very first frame to the very last, including the final word. Never glancing away, never looking down, never letting the gaze drift off the lens at the end of a sentence.
-
-THE SUBJECT AND THE SET, unchanged from the first frame to the last, exactly as <Picture 1>: {identity}
-{environment}
-SKIN matches <Picture 1> exactly: visible pores, no smoothing, no plastic gloss, no over-sharpened edges. The light is the light in <Picture 1> and it does not change.
-{mannerism}
-HOW THEY SPEAK: {delivery}
-DIEGETIC SOUND: the voice and quiet room tone only.
-AUDIO RESTRICTIONS: no music, no beat, no sound design, no second voice, and no robotic, synthetic, text-to-speech, monotone or announcer-like delivery. The spoken audio contains ONLY the words inside the dialogue block. No stage directions and no markup is ever spoken aloud.
-
-<Subject 1> (S1) says, <d>[English] <inhale> {dialogue}</d>
-
-Quiet room around the voice. No music, no sound design, no second voice.
-"""
+TEMPLATE = "A single continuous live-action shot of <Subject 1>, matching the approved creator reference.\n\n[Shot 1] {capture}\nThe person looks toward the lens while addressing one viewer, with natural blinks and a relaxed face. Do not force a fixed grin or busy repeated gestures. Keep the same identity, wardrobe, setting, lighting and props throughout the take.\n\nTHE SUBJECT AND SET FROM <Picture 1>: {identity}\n{environment}\nSkin detail matches the reference at this viewing distance: no waxy finish, beauty filter or sharpening halos. Background focus follows the approved reference; do not invent portrait-mode blur or demand universal deep focus.\n{mannerism}\nDELIVERY: {delivery}\nDelivery and action directions are outside the dialogue block. Only the approved words inside it are spoken, once and in order. No added hook, filler or invented sentence. A wanted hesitation such as 'uh' is part of the approved spoken words, not an automatic effect.\n\n<Subject 1> (S1) says, <d>[English] {dialogue}</d>\n\noverall_soundscape: The creator's voice and quiet natural room tone. No second voice or additional speech.\nnon_diegetic_music: N/A\n"
 
 MANNERISM = """
 <Video 1> is a filmed reference person recorded the same way. Take from it ONLY the rhythm of natural speech, where the pauses fall and where the pace speeds up, and the small involuntary movement while talking: the head settling, the blink rate, the eyebrow lifts, the hands coming up and dropping back. Do NOT take the face, hair, clothes, room, lighting, framing or eyeline. The person is <Subject 1> from <Picture 1> and nobody else.
@@ -167,6 +152,8 @@ def main():
     if not re.search(r"\b(man|woman|male|female|non[- ]binary|guy|girl|boy|lady)\b", low):
         raise SystemExit(
             "character.json `identity` states no GENDER (%r). Ask the user." % ident[:60])
+    if ch.get("capture") not in ("phone", "studio"):
+        raise SystemExit("character.json needs explicit phone or studio capture from the shared builder")
     if not (ch.get("delivery") or "").strip():
         print("[plan] note: character.json has no `delivery`; using a neutral conversational read. "
               "Set it from the tone the user chose.", file=sys.stderr)
@@ -178,12 +165,13 @@ def main():
     for n, group in enumerate(split(beats, at), 1):
         tid = "t%d" % n
         start, end = group[0]["start"], group[-1]["end"]
-        dialogue = " <pause> ".join(re.sub(r"\s+", " ", b["vo"]).strip() for b in group)
-        if re.search(r"\[[^\]]*\]", dialogue):
+        dialogue = " ".join(re.sub(r"\s+", " ", b["vo"]).strip() for b in group)
+        if re.search(r"[<>]|\[[^\]]*\]", dialogue):
             raise SystemExit("take %s has square brackets in its lines, which H3 speaks aloud" % tid)
         prompt = TEMPLATE.format(identity=ch["identity"].strip(),
                                  environment=(ch.get("environment") or "").strip(),
                                  mannerism=MANNERISM if a.mannerism else "",
+                                 capture=CAPTURE["studio" if ch.get("capture") == "studio" else "phone_selfie" if ch.get("recording") == "selfie" else "phone_counter"],
                                  delivery=(ch.get("delivery") or DEFAULT_DELIVERY).strip(),
                                  dialogue=dialogue)
         (out / ("%s-prompt.txt" % tid)).write_text(prompt, encoding="utf-8")
@@ -191,12 +179,15 @@ def main():
                      "dur": max(MIN_TAKE, min(MAX_TAKE, math.ceil(end - start + TAIL))),
                      "covers": [round(start, 2), round(end, 2)],
                      "words": str((out / (tid + ".words.json")).resolve()),
+                     "script_sha256": hashlib.sha256(json.dumps([{ "scene_id": str(b["id"]), "text": re.sub(r"\s+", " ", b["vo"]).strip(), "spoken": re.sub(r"\s+", " ", b["vo"]).strip()} for b in group], ensure_ascii=False, separators=(",", ":")).encode()).hexdigest(),
+                     "product_action_required": any(feature in spec.get("required_features", []) for feature in ("product_action", "physical_action", "precise_product_action", "stateful_demo", "application", "dispensing")),
                      "beats": [b["id"] for b in group]})
 
     takes = {"model": "minimax/h3-max/reference-to-video", "char": str(img.resolve()),
              "mann": str(pathlib.Path(a.mannerism).resolve()) if a.mannerism else None,
              "slug": a.slug, "out": str(out.resolve()), "resolution": a.resolution,
-             "planning_only": a.plan_only,
+             "planning_only": a.plan_only, "capture": ch.get("capture"),
+             "generation_stage": "first_take", "content_review_required": True, "required_features": spec.get("required_features", []),
              "aspect_ratio": a.aspect or pick_aspect(spec), "takes": plan}
     (out / "takes.json").write_text(json.dumps(takes, indent=2), encoding="utf-8")
     for t in plan:

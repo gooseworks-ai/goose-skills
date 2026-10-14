@@ -1,5 +1,12 @@
 # voice-elevenlabs
 
+## 1.2.0
+
+- Add selectable V4/V4 Turbo with managed timestamp-endpoint and quote evidence, model-specific settings and delivery tags.
+- Default to connected sentence reads and short request gaps; remove automatic tempo fitting to a rate target.
+- Hold tagged audio for independent reviewed alignment rather than publish guessed word boundaries. Preserve raw source FileRefs and label provider timing separately from content review.
+- Package a new immutable version. No tests or validation runs were performed at the user's request.
+
 ## 1.1.0
 
 - A scene whose line is null or empty is skipped: no piece, no span (critic #9). `line` is no longer required.

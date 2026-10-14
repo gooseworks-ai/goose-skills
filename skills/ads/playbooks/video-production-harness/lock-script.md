@@ -7,6 +7,9 @@ description: Lock the VO script before any keyframes burn AI credits. Runs a vie
 
 ## Host contract
 
+Follow [creative contract and review](references/creative-contract-and-review.md) for current content-derived duties, complete AV coverage, clip eligibility and exact-file evidence. Read its linked sound, scale and look procedures when applicable. Preserve the two existing owner gates; no extra automatic review meeting.
+
+
 Read `capabilities.md` and the selected host binding first. Artifact names are logical roles resolved by that binding. Named review tasks use the documented rubrics and actual frame/audio tools; they are not assumed installed commands. Required tooling, human approval and available budget must exist before the operation.
 
 ## Purpose
@@ -21,22 +24,28 @@ This skill locks the script BEFORE keyframes. It runs an opinionated viewer-pers
 - Any time the operator says "the script feels off" mid-pipeline. Re-locking the script here is much cheaper than re-rolling clips.
 - When importing an actual supported remix recipe — the new persona-tuned script needs a fresh arc review.
 
-## audio_strategy branches
+## Speech, sound and creative contract
 
-This skill reads `audio_strategy` from `design_brief` and branches:
+Read [speech and route qualification](references/speech-and-route-qualification.md)
+and [creative contract and review](references/creative-contract-and-review.md).
+Native dialogue, exact driver lip-sync and narration lock their exact spoken lines;
+singing locks lyrics; mixed work locks each timed lane; none locks on-screen copy,
+actions/proof and ending without invented speech. Soundtrack is separate.
 
-| audio_strategy | What lock-script locks | Output file |
-|---|---|---|
-| `vo-narrator` (default) | VO lines per scene | `locked_script` (the "script" is the VO) |
-| `song-as-script` | Sung lyrics + frontmatter (tempo, climax_line, accent_words) | `locked_lyrics` AND `plain_lyrics` (see the selected binding's actual supported capability) |
-| `hybrid` | VO lines + lyric block, separated under `## VO` and `## Lyric` headings | Both `locked_script` and `locked_lyrics` (each marked `partial: true` in frontmatter) |
-| `silent` | On-screen copy, beat progression and CTA; no spoken lines | Save the approved silent beat/copy plan and explicit audio mode. Silent production still requires a current script/creative decision, not a synthetic marker that bypasses the gate |
+Preserve the host creative_contract, reference_map, product_grounding and voice_plan.
+Compare every essential source/user beat with adapted words, visible action/proof,
+sound and qualified route. Derive picture/direction from one scene record and reject
+contradictions before script review. Show concrete feasible alternatives here when
+assets/tools cannot supply the requested demonstration. No diagram/card shortcut
+inherits approval of a live performance.
 
-The arc-review template still runs for vo-narrator and the VO portion of hybrid. For song-as-script, the review prompt should ask "does each lyric line carry on its own?" rather than "is the hook in line 1?", because the *musical* hook (instrumental drop, vocal phrasing) does part of the work.
+Lock the host-returned creative_contract_revision alongside words and asset choices.
+Legacy audio_strategy is reconciled metadata, never authority to strip native speech
+or infer total silence. This step uses the existing script owner gate.
 
 ## Inputs
 
-- `<video_folder>` (required) — must contain `design_brief` with a VO script.
+- The current saved project/brief, creative contract, source-linked beat map and exact words or no-speech action/copy plan.
 - `<concept_type>` — one of `transformation` (default if idea-brief mentions before/after, comeback, journey, ramp-up), `demo`, `testimonial`, `manifesto`, `comparison`. Drives the default arc template.
 - `<auto>` — execution preference only; it never bypasses current script approval.
 
@@ -56,9 +65,11 @@ SCENE 14 (28.0–30.0s): "I'm making it happen."
 
 Save to `<video_folder>/script/script-draft-<idx>.md`.
 
-### Step 2 — Pattern default
+### Step 2 — Structure fit
 
-If `<concept_type>` is `transformation` and the script does NOT already use day-tracker or number-progression scaffolding, propose one. Day-trackers are the strongest narrative scaffolding for short-form transformation arcs:
+Preserve the agreed reference/brief mechanism. Day tracking is an optional structure
+only when the actual supported story includes elapsed progression; it is not a default
+or evidence of a product result. An example to propose within current script review:
 
 - **DAY 1** — vulnerability beat (what it felt like at the start)
 - **DAY 5 / DAY 7** — first sign of stickiness
@@ -152,7 +163,7 @@ Once approved:
 2. Update `design_brief` and `implementation_brief` VO sections to match locked_script.
 3. Append to `implementation_brief` decision log: `script-locked-<ts>: <one-line summary of any structural changes>`.
 
-After this point, **any change to the VO script** requires re-running this skill — orchestrator should refuse silent script edits.
+After lock, material changes to words, essential actions/proof, product/variant, hook/payoff, sound intent or source performance refresh the affected existing review/authorization. Keep unaffected work valid and use the host-returned creative_contract_revision; never silently edit another field to contradict locked meaning.
 
 ## Output
 
@@ -171,7 +182,7 @@ After this point, **any change to the VO script** requires re-running this skill
 
 - Every VO line in locked_script is also in `design_brief` (no drift between docs).
 - Emphasis/payoff intent and selected delivery are recorded; a null climax is explicit when the format has none. No automatic gain/speed change follows from this marker.
-- Arc review has a score for every beat (no missing axes).
+- Every required beat has supported words/action/proof/sound or an explicit unresolved gap; optional rubric scores do not invent unseen/heard evidence.
 - Human gate was actually hit (status file shows operator-approval timestamp).
 - If `<concept_type>` is `transformation`, the script uses some form of day-tracker or number-progression — OR the operator explicitly opted out (logged in decision log).
 

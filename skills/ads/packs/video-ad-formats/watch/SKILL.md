@@ -1,65 +1,69 @@
 ---
 name: watch
-description: Watch a rendered video (whole file or specific ranges) at a chosen fidelity and emit a timestamp-keyed observation report. Observation only — no edits, no verdicts.
+description: Observe actual video and sound over the whole file or named ranges, with timestamped evidence and honest coverage. Use complementary playback, listening and targeted frames; return observations without edits or verdicts.
+version: "2.0.0"
 ---
 
-# watch
+# Human version
 
-## Purpose
+Report what the actual file shows and sounds like, with timestamps. Keep sampled
+frames, moving-picture review, listening and transcription separate. Missing a
+capability stays explicit; observations are not an approval verdict.
 
-Look at a rendered video and report what is actually on screen and in the audio. By default it watches the entire video and considers visuals, voiceover, music, and sound effects. Callers can narrow the scope (specific timestamp ranges, lower frame rate, disable audio tracks) when they want a cheaper or more focused pass.
+---
 
-This is the observation primitive that `watch-and-refine` calls before deciding what to fix. Other review and editing skills can call it directly.
+# Agent version
 
-Watch every assembled generated video at up to 2 fps. Real-time playback smooths over what frames show plainly: a half-second face flash, a wardrobe pop at a cut, a frozen scene, an invented background element.
+## Inputs and modes
 
-## Inputs
+Accept the video, optional timestamp ranges, sampling rate, frame budget, resolution,
+audio dimensions and focus. Defaults describe whole-file scope, not completed review.
+Read the parameter reference for how to partition work without omitting intervals.
 
-- `video` — path to a local video file. Required.
-- `ranges` — optional list of `[start, end]` timestamps to watch. Accepts `SS`, `MM:SS`, or `HH:MM:SS`. Defaults to the whole video.
-- `fps` — frame sampling rate. Defaults to auto by duration (≤30s → 1–2 fps, 30s–1min → ~1 fps, 1–3min → ~0.5 fps, 3–10min → ~0.25 fps). Hard cap 2 fps.
-- `max_frames` — hard cap on total frames sampled across all ranges. Default 100.
-- `resolution` — frame width in px. Default 512. Bump to 1024 only when on-screen text legibility matters.
-- `include_voice` — bool, default `true`. Transcribe spoken VO/dialogue.
-- `include_music` — bool, default `true`. Describe music presence, swells, drops, gain relative to VO.
-- `include_sfx` — bool, default `true`. Note sound effects, foley, transition stingers.
-- `focus` — optional free-text prompt describing what to pay attention to (e.g. "watch the end card", "judge cut timing on the beat drop").
-
-If all three audio flags are `false`, the skill runs frames-only and notes this in the manifest.
+Before reporting, resolve exact source/version, checksum, duration and actual reviewer
+capabilities. Returned audio bytes or transcription do not establish perception.
+Use complete normal-speed moving-picture and sound review for a full audiovisual
+observation. Add sampled frames for scene/text evidence and suitably dense,
+original-resolution motion/mouth inspection for suspicious intervals. Sparse frames
+cannot certify action continuity or fine lip-sync. There is no universal two-fps
+ceiling for targeted inspection; remain within source rate and available tools.
 
 ## Workflow
 
-1. Validate `video` exists and is readable. Probe duration with `ffprobe`.
-2. Resolve `ranges`: if empty, use `[0, duration]`. Reject ranges outside the file duration.
-3. Resolve `fps`: use caller value if provided, else auto-scale from total resolved range duration. Clamp at 2 fps.
-4. Allocate the `max_frames` budget across ranges proportionally to range duration.
-5. Extract frames with `ffmpeg` into `frames/` at the resolved `fps` and `resolution`.
-6. If any audio flag is true, extract the audio for the resolved ranges to a working WAV. Run a transcript pass when `include_voice=true`; degrade to frames-only and flag a warning if no Whisper backend is available.
-7. Compose `observation.md` — a timestamp-keyed report. Each entry references the frame paths visible during that window plus any transcript line and audio notes (music/SFX) for the same window. If `focus` is set, lead each entry with what was observed about that focus.
-8. Write `manifest.json` capturing the resolved inputs (ranges, fps, frame count, audio flags) and output paths.
+1. Read the exact file and its real duration. Resolve all requested ranges and keep
+   actual decoded source timestamps. Never substitute another master or thumbnails.
+2. Observe the complete requested moving-picture ranges at normal speed when capable.
+   Record uncovered ranges/capabilities. A frame budget cannot silently omit a scene;
+   divide work into explicitly covered passes when needed.
+3. Inspect sampled or targeted frames at sufficient resolution for the question.
+   Record sampling density, actual frame times and coverage separately from playback.
+4. Hear requested sound, including speech, music and effects. Listen to isolated
+   speech when available and the mix. Transcribe speech as supporting word evidence;
+   unavailable ASR leaves transcription incomplete but does not erase actual listening.
+   Unavailable listening cannot be cleared by ASR, waveform or inclusion flags.
+5. Report observed picture/action/text and heard speech/sound with exact intervals,
+   source evidence and observation method. Label transcript-only words as ASR output,
+   not heard speech. Corroborate suspicious ASR against audio; silence can yield false
+   words. Do not invent music taste, voice character or lip-sync observations.
+6. Save timestamped observations and the coverage manifest. Keep each duty complete,
+   partial or unavailable, with covered ranges and remaining gaps. No edits, quality
+   verdicts or recommendations are supplied by this primitive.
 
-## Output
+## Outputs
 
-- `observation.md` — timestamp-keyed observation report. No verdicts, no "good/bad" framing.
-- `frames/*.jpg` — sampled frames referenced from the report.
-- `transcript.json` — word-timestamped transcript, only when `include_voice=true` and a Whisper backend was available.
-- `manifest.json` — resolved inputs and output paths.
+Return readable observation report, sampled frames and their source times, optional
+transcript/word timing, available audio artifacts and manifest. The manifest records
+source identity/checksum/duration, requested and observed ranges, reviewer capability,
+separate frame/motion/listening/transcription coverage, sampling/resolution, file
+paths and remaining gaps. Do not rename frames plus transcript as frames-and-audio.
 
-## Quality Checks
+## Boundaries
 
-- Frame count never exceeds `max_frames`.
-- Every range produced at least one frame, unless the range is shorter than `1 / fps`.
-- When `include_voice=true`, the transcript covers the resolved ranges (no >500ms gap inside a VO segment unless the audio itself is silent there).
-- All paths in `manifest.json` resolve to real files.
-- The report contains no recommendations — it describes only what was observed.
-
-## Failure Modes
-
-- Missing or unreadable `video`.
-- A `ranges` entry falls outside the file duration.
-- `include_voice=true` but no Whisper backend is configured — degrade to frames-only and flag a warning in the manifest.
-- `max_frames` budget too tight to give every range at least one frame — surface which ranges were skipped.
+A full-file request with partial coverage remains partial. Audio disabled intentionally
+is frames/motion-only; audio enabled without perception is unverified. A missing
+backend does not justify an invented transcript. The downstream judge compares
+these observations with the creative contract and makes its own evidence-bound verdict.
 
 ## References
 
-- `references/parameters.md` — full parameter reference, defaults, and the auto-fps budget table.
+Read [parameters](references/parameters.md) for observation controls and coverage.

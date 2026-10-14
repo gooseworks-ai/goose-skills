@@ -125,8 +125,18 @@ def pack(root, spec):
         data = (root / rel).read_bytes()
         inputs.append({
             "path": rel, "media_id": str(item["media_id"]),
+            **({"asset_id": str(item["asset_id"])} if item.get("asset_id") else {}),
             "sha256": sha256_bytes(data), "bytes": len(data), "role": role,
         })
+    aliases = {}
+    for item in inputs:
+        alias = item.get("asset_id", item["media_id"])
+        if not alias.strip() or len(alias) > 200:
+            raise RecipeError("assembly asset aliases must be nonempty and at most 200 characters")
+        for key in (alias, item["media_id"]):
+            if key in aliases and aliases[key] != item["sha256"]:
+                raise RecipeError("an assembly asset alias identifies different source bytes")
+            aliases[key] = item["sha256"]
     input_paths = {item["path"] for item in inputs}
     if output in input_paths:
         raise RecipeError("build.output must be made by the build, not listed as an input")

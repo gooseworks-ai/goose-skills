@@ -13,6 +13,9 @@ Finish the accepted edit without changing its direction. Check the actual mix, c
 
 ## Host contract
 
+Follow [creative contract and review](references/creative-contract-and-review.md) for current content-derived duties, complete AV coverage, clip eligibility and exact-file evidence. Read its linked sound, scale and look procedures when applicable. Preserve the two existing owner gates; no extra automatic review meeting.
+
+
 Read `capabilities.md` and the selected host binding first. Artifact names are logical roles resolved by that binding. Named review tasks use the documented rubrics and actual frame/audio tools; they are not assumed installed commands. Required tooling, human approval and available budget must exist before the operation. Read [the editorial review guide](references/editorial-review.md) for source binding, stage decisions, note disposition, impact checks and saved edit history.
 
 ## Purpose
@@ -50,7 +53,7 @@ Each axis maps to a repair or review responsibility. The labels below are not sh
 | Axis | What we check | Repair |
 |---|---|---|
 | audio-loudness | Integrated LUFS within ±0.5 of platform target (default -14 social). True-peak under -1 dBTP. | Two-pass `loudnorm=I=-14:TP=-1.5:LRA=11` |
-| **vo-intelligibility** | Speech sits clearly above music/SFX in every measured dialogue window; GooseWorks checks the words against the script when you report complete. | measured per-line FFmpeg mix correction |
+| **vo-intelligibility** | Hear complete isolated/mixed speech and exact joins/endings; actual words/performance must remain intact. Missing listening is incomplete, and scalar levels/transcript scores do not clear it. | Supported measured mix correction or affected re-performance |
 | captions-overflow | Check actual cue readability at destination size. More than 38 chars/line, two lines or six words in under 0.6s are diagnostic prompts; approved layout and measured reading time decide. | Split long cues at phrase breaks into at most 2 lines of 38 characters; keep words and timing |
 | captions-timing | Cue starts within ±100 ms of the matching word in word-timestamps. | Snap each cue start to its first word's start |
 | music-vo-balance | Measure stems in dialogue windows and the final mix for masking/pumping; level gap is diagnostic, not a universal perceptual threshold. Preserve the approved audio strategy. | Measured cue gain/automation or tuned sidechain |
@@ -61,7 +64,7 @@ Each axis maps to a repair or review responsibility. The labels below are not sh
 | color-consistency | Inspect intended continuity against the approved look; luminance variance is diagnostic and must not erase intentional lighting changes. | none (escalate) |
 | brand-fit | Palette match, approved logo usage, no banned phrases. (Same as the brand-fit check in `review-video.md`.) | none (escalate) |
 
-**Speech integrity is a ship gate.** When you report complete, GooseWorks checks the final's spoken words against the script (0.90 or better); if complete is refused, fix the lines it names. Check brand pronunciation and recognizer errors against the script before re-recording. For silent/text-led work, verify intended silence and reading time instead.
+**Speech integrity is a content gate.** Hear the complete isolated speech where available and full mix, compare exact accepted words/joins and inspect visible mouth matching. Transcript thresholds/loudness cannot certify naturalness, phonemes or absence of babble. Missing listening/motion stays incomplete. No-speech work still requires its independently planned soundtrack and reading/proof review.
 
 ## Workflow
 
@@ -85,13 +88,13 @@ Run `python3 scripts/qc_evidence.py VIDEO.mp4 EVIDENCE_DIR` and inspect the evid
 Inspect the actual end-card frames and score legibility, hold, safe margins, logo contrast and brand design with the table above. Save the rubric score and recommendations; distinguish visual judgments from measured contrast values.
 
 When speech is present, run the actual transcription capability against the full master and perform the intelligibility comparison:
-- Transcribes actual audio through an available host-managed transcription route or installed local engine. If neither is available, skip this step; GooseWorks checks the words when you report complete.
+- Transcribe actual audio through the selected available route. Unavailable transcription remains incomplete; actual listening is separate and must not be skipped or assumed covered by a backend completion score.
 - Diffs the transcript against `locked_script`, line-by-line.
 - Verify each meaningful substitution/omission against actual audio before recording a P0 speech-integrity finding. Preserve known pronunciation/spelling intent; a recognizer mistake is not proof of missing speech.
 - Output: `<video_folder>/polish-notes/<idx>/qc/whisper-test.md` with per-line pass/fail and specific per-line mix correction, with actual target level and timing.
 
 ### Step 3 — Watch pass
-Read all extracted frames in order against the storyboard, and use the measured loudness and levels for the audio axes. Apply this prompt template:
+Watch complete normal-speed picture and hear complete sound, including isolated speech where available and the mix. Use actual frame/level diagnostics as support. Missing capability leaves the relevant duty incomplete; apply the following rubric only to observed evidence:
 
 > You are reviewing a finished social-ad cut for a final polish pass. The creative is already approved — focus only on technical/objective polish. For each of these axes, list every issue you can identify with a timecode and one-sentence root-cause:
 >
@@ -140,7 +143,7 @@ Priorities:
 4. Final result is `edits/master-polished.mp4`.
 
 ### Step 7 — Re-verify
-Re-run the packaged evidence helper, actual end-card readability review, and transcript comparison when available against the polished master. Reread the whole candidate's frames and verify the original notes' intended effects. Required unresolved notes remain changed, not verified. Repeat final checks for every delivered derivative after its own caption/export changes. Write `polish-notes/<idx>-<ts>-applied.md` (extends the dispatcher's report) with before/after deltas:
+Rebuild supporting evidence after edits and perform complete actual AV review on the exact polished output. Verify original notes' effects, required beats, words/mouth, product/action and full ending. Refresh affected checks for every derivative after its own final text/crop/sound. Preserve changed versus verified and save exact checksum/revisions/coverage.
 - LUFS before → after
 - **Verified locked-line integrity before → after** (all actual spoken lines must pass; investigate recognizer errors rather than reporting them as heard defects)
 - Caption overflow count before → after
@@ -150,26 +153,26 @@ Re-run the packaged evidence helper, actual end-card readability review, and tra
 
 **Hard gate:** if the actual transcript/mix comparison finds any failing line on the polished master, do NOT advance to Step 8. Re-apply the mix fix or escalate.
 
-### Step 8 — Human gate
+### Step 8 — Show the checked candidate
 Print a summary to the operator:
 ```
 Polish complete:
   LUFS:               -24.3 → -13.9 (target -14)
   Speech integrity:   8/13 passing → 13/13 verified
-  All frames read:    complete on this candidate
+  AV coverage:        exact candidate; record capability and actual covered ranges
   Notes verified:     original effects checked; no required items open
   Caption overflow:   4 → 0
   End-card score:     4.25/10 → 8.0/10
   Length:             30.0s → 30.6s (+0.6s end-card hold)
 Preview at: edits/master-polished.mp4
-Approve (swap master)? [y/N]
+Use the existing selection/promotion surface for this checked candidate; no additional mandatory approval meeting.
 ```
 
-On approval:
+When the current existing host authorization/selection permits promotion:
 - Read `promote.md` and record the approved polished candidate/version through the binding; never overwrite the selected master directly.
 - Proceed to the final caption burn and fresh actual final QC before delivery; build each variant from the matching editable sources and perform its own final caption burn and QC.
 
-On rejection: leave `master-polished.mp4` in place for operator inspection; do not swap.
+If the owner rejects or asks for a different candidate:
 
 ## Output
 

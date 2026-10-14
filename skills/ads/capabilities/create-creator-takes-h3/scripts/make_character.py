@@ -1,38 +1,15 @@
 #!/usr/bin/env python3
-"""Generate the creator still from the user's chosen person, in one shot.
+"""Shared creator still builder. Reuse this for generated people in custom video.
 
-    make_character.py --age 34 --gender woman --ethnicity "South Asian" \
-        --hair "shoulder-length black hair, slightly frizzy at the crown, tucked behind one ear" \
-        --wardrobe "plain charcoal crew-neck t-shirt" \
-        --scene "a lived-in home office, a full bookshelf behind her, in focus" \
-        --out character/
-
-Writes <out>/character.png and <out>/character.json, the latter ready for plan_takes.py.
-`--payload-out <file>` writes {"model", "body"}: the exact request gen_image.py will send. With
-`--dry-run` it generates nothing, so the body can be quoted for free before the paid call.
-
-WHY THIS EXISTS
-
-`character-prompt.json` held a carefully built realism formula and **no script read it**. The
-skill told whoever was running it to "fill its slots, generate 2-4 options, let the user pick
-one". That is three failures at once:
-
-1. Slots got left unfilled. The formula's own note says the model "drifts to an ambiguous
-   composite face" without explicit age, ethnicity and sex. An unspecified person IS the
-   composite face a reviewer calls "obviously AI".
-2. Every run filled the slots differently, so quality depended on who was driving.
-3. "generate 2-4 options and pick" is iteration. A template a customer runs has to land the
-   first time.
-
-This makes it one command: the identity slots come from the user and are REQUIRED; the craft
-slots (imperfections, framing, light) come from the formula and are not the user's problem.
-
-EVERY SLOT IS FILLED OR THE RUN STOPS. A blank slot is how the composite face gets in.
+The approved brief supplies identity, wardrobe, room and explicit phone/studio
+capture. Focus matches the reference. Ordinary skin detail is the default;
+distinctive marks require an explicit user choice, never random sampling.
+A generated still remains pending visual review before video production.
+--dry-run and --payload-out prepare the same payload without generation.
 """
 import argparse
 import json
 import pathlib
-import random
 import subprocess
 import sys
 
@@ -61,45 +38,27 @@ SKIN = {
     "mixed": "warm medium brown with neutral undertones",
 }
 
-# The realism lever. The formula says each imperfection is "rendered with physical accuracy and
-# its own micro-shadow", so these must be specific and physical, never "some texture". They are
-# sampled so that two avatars are not the same face with a different haircut, and seeded off the
-# identity so the same brief reproduces the same person.
-IMPERFECTIONS = [
-    "a small raised mole below the left jawline",
-    "faint acne scarring across both cheeks, shallow and old",
-    "sun freckles scattered across the nose bridge and upper cheeks",
-    "slightly chapped lips with fine vertical cracks",
-    "a broken capillary at one nostril crease",
-    "uneven eyebrow density, thinner at the outer third of one side",
-    "a faint under-eye shadow, darker on one side",
-    "a small skin tag at the side of the neck",
-    "flaking dry skin at the outer edge of one nostril",
-]
-
-# The formula's own capture grammar is a STUDIO PORTRAIT: medium format film, a raking
-# side-top key at 45 degrees, shallow depth of field, film grain. Its SKIN engine is right and
-# measures in range (detail 6.9-11.2 against 6.2-10.6 for real reference footage), but the
-# capture grammar is what makes a correct-skinned face still read as generated: real creator
-# footage is a phone, and it is flatter, deeper-focused and much less saturated.
-#
-# Measured 2026-09-30, real references vs our renders (mean per-pixel saturation):
-#     Salary Transparent 0.262 · Chris Klemens 0.182 · Arcads real actor 0.135
-#     ours: man46 0.364 · man31 0.217 · woman27 0.507
-# The woman-27 render, the one rejected first by eye, is ~3x the Arcads reference. So
-# "phone" replaces the capture sentences only, and never touches the skin block.
+# Capture describes the approved recording, not a universal realism trick.
+# A sharp face, pores or noise cannot repair an artificial performance.
 CAPTURE = {
-    "studio": "",   # the formula as written; keep for stills that really are portraits
+    "studio": (
+        "A real studio portrait with soft motivated light and ordinary colour. "
+        "Natural skin detail at this viewing distance, without exaggerated pores, "
+        "beauty retouching, edge halos or a waxy finish."),
     "phone": (
-        "Shot on a recent phone's front camera, handheld feel but held still, at the subject's "
-        "own eye level. Ordinary room light doing all the work, coming mostly from one window "
-        "or one ceiling fitting that is visible or clearly motivated in frame - no studio key, "
-        "no softbox, no rim light, no ring light. DEEP focus: the room behind the subject is "
-        "readable, not melted into bokeh. Muted, slightly desaturated colour, the way an "
-        "unedited phone clip looks before any grade - no teal-and-orange, no lifted vibrance, "
-        "no colour pop. Slightly uneven white balance. Faint sensor noise in the shadows rather "
-        "than film grain. Mild wide-lens distortion near the frame edge. Nothing in the image "
-        "looks lit or art-directed; it looks recorded."),
+        "An ordinary phone recording at eye level. Motivated room or window light, "
+        "natural white balance and ordinary colour. Skin has normal fine texture "
+        "at this shot size. No beauty filter, cinematic colour grade, artificial "
+        "grain overlay or exaggerated sharpening."),
+}
+FOCUS = {
+    "natural": "Natural focus falloff for this camera and subject distance; the room still reads as a real place.",
+    "deep": "The person and the required background details remain readable in deep focus, without sharpening halos.",
+    "shallow": "The face is in focus with gentle optical background falloff, matching the approved reference; no pasted portrait-mode edge.",
+}
+RECORDING = {
+    "counter": "The phone is supported outside the frame; both hands are free. Complete face and both shoulders remain visible.",
+    "selfie": "One hand supports a phone outside the frame; only the other hand is free. Believable selfie framing without cutting off the face.",
 }
 
 AGE_NOTES = [
@@ -133,9 +92,10 @@ def build(a):
             "Pass --skin-tone explicitly, in the formula's vocabulary, e.g. "
             "'warm medium brown with olive undertones'." % a.ethnicity)
 
-    rng = random.Random(a.seed if a.seed is not None else ident.lower())
-    imp = rng.sample(IMPERFECTIONS, 3)
-    imperfections = ", ".join(imp) + ", and " + age_note(a.age)
+    marks = [mark.strip() for mark in (getattr(a, "marks", None) or []) if mark.strip()]
+    if marks and not getattr(a, "marks_approved", False):
+        sys.exit("--marks needs --marks-approved: distinctive marks come from the user's choice, never random defaults")
+    imperfections = "; ".join(marks) if marks else "Ordinary fine skin texture and subtle facial asymmetry; no invented scars, moles or distinctive marks."
 
     # Check the RAW arguments, before any decoration. An earlier version appended the full stop
     # first, so `--hair "  "` became "." and passed the not-empty test: a blank slot got through
@@ -161,30 +121,15 @@ def build(a):
         "expression": a.expression.strip().rstrip(".") + ".",
         "imperfections": imperfections,
         "face_fill": a.face_fill,
+        "capture": CAPTURE[a.capture],
+        "focus": FOCUS[getattr(a, "focus", "natural")],
+        "recording": RECORDING[getattr(a, "recording", "counter")],
     }
     blank = [k for k, v in slots.items() if not str(v).strip()]
     if blank:
         sys.exit("these slots are empty: %s. A blank slot is how the composite face gets in."
                  % ", ".join(blank))
     prompt = spec["prompt"].format(**slots)
-    if a.capture == "phone":
-        # Replace the three studio-capture sentences; the skin block after them is untouched.
-        prompt = prompt.replace(
-            "Photorealistic, shot on medium format film. Raking side-top light at 45 degrees "
-            "reveals every pore as a 3D crater with its own micro-shadow. Shallow depth of "
-            "field - critical sharpness on the eyes and the skin of the face, gentle optical "
-            "falloff beginning behind the head.",
-            "Photorealistic. " + CAPTURE["phone"] + " The light still rakes across the skin "
-            "enough to give every pore its own micro-shadow, and the eyes and facial skin are "
-            "the sharpest thing in frame.")
-        prompt = prompt.replace(
-            "Fine organic film grain throughout. Zero digital sharpening - all sharpness is "
-            "optical.",
-            "Faint sensor noise throughout, heavier in the shadows. Zero digital sharpening.")
-        neg = spec["negative_prompt"] + (", saturated colour, vibrant, colour graded, teal and "
-              "orange, HDR, studio lighting, softbox, rim light, bokeh background, shallow "
-              "depth of field, cinematic grade, glamour lighting, film grain overlay")
-        return prompt, neg, ident, slots
     return prompt, spec["negative_prompt"], ident, slots
 
 
@@ -194,7 +139,7 @@ def main():
     ap.add_argument("--age", type=int, required=True)
     ap.add_argument("--gender", required=True, help="woman / man / non-binary person")
     ap.add_argument("--ethnicity", required=True)
-    ap.add_argument("--hair", required=True, help="colour, texture, how worn, and how UNTIDY")
+    ap.add_argument("--hair", required=True, help="hair detail from the approved brief")
     ap.add_argument("--wardrobe", required=True)
     ap.add_argument("--scene", required=True, help="where they are and what is behind them")
     # craft defaults: the formula's job, not the user's
@@ -205,15 +150,19 @@ def main():
     ap.add_argument("--framing", default="head and upper chest, with clear space above the head "
                                          "and on both sides so the room reads around them, "
                                          "squared to camera, looking into the lens")
-    ap.add_argument("--expression", default="mid-sentence, mouth slightly open on a word, eyes "
-                                            "steady on the lens, no held smile")
+    ap.add_argument("--expression", default="relaxed expression, lips at rest, natural gaze toward "
+                                            "the lens, no held smile")
     ap.add_argument("--face-fill", default="45 to 55 percent")
     # fal-ai/nano-banana-pro is NB2 Pro, the model this realism formula was written for.
     # Two wrong turns cost a generation each: "nano-banana-2" is an internal engine label fal
     # rejects outright, and plain "fal-ai/nano-banana" is the OLDER model, which produced a
     # face the reviewer called AI-generated on sight.
-    ap.add_argument("--capture", default="phone", choices=["phone", "studio"],
-                    help="phone (default) reads as recorded; studio is the formula as written")
+    ap.add_argument("--capture", required=True, choices=["phone", "studio"],
+                    help="explicit recording choice from the approved brief")
+    ap.add_argument("--recording", default="counter", choices=sorted(RECORDING))
+    ap.add_argument("--focus", default="natural", choices=sorted(FOCUS), help="match the approved reference; deep focus is not universal")
+    ap.add_argument("--marks", action="append", help="specific distinctive mark chosen by the user")
+    ap.add_argument("--marks-approved", action="store_true", help="the user explicitly chose the supplied marks")
     ap.add_argument("--model", default="fal-ai/nano-banana-pro")
     # 4K, not the 1K default. The formula demands pores "legible, not implied"; at 1K the face
     # is ~700px wide and a pore is sub-pixel, so the whole skin system renders as smooth skin.
@@ -241,6 +190,8 @@ def main():
         "image": "character.png",
         "identity": ident + ", " + slots["hair"].rstrip(".") + ", " + slots["wardrobe"].rstrip("."),
         "environment": slots["scene"].rstrip("."),
+        "capture": a.capture, "recording": a.recording, "focus": a.focus,
+        "distinctive_marks": a.marks or [], "approval": "pending",
     }, indent=1), encoding="utf-8")
 
     # Built once, before the dry-run return, so the quoted body and the paid body are one object.
@@ -271,6 +222,8 @@ def main():
         "image": "character.png",
         "identity": ident + ", " + slots["hair"].rstrip(".") + ", " + slots["wardrobe"].rstrip("."),
         "environment": slots["scene"].rstrip("."),
+        "capture": a.capture, "recording": a.recording, "focus": a.focus,
+        "distinctive_marks": a.marks or [], "approval": "pending",
     }, indent=1), encoding="utf-8")
     print("\nwrote %s and character.json" % png)
     print("LOOK AT IT before spending on takes. A still costs cents; a take costs dollars.")

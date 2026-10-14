@@ -3,7 +3,7 @@ name: video-production-harness
 description: Full video production sequence with script review, actual ingredient choices, controlled generation, editing, evidence-based quality review, polish, captions and delivery. A host binding supplies project storage, authentic approvals, provider access and billing.
 owner: team
 status: active
-version: "2.1.0"
+version: "3.0.0"
 level: orchestrator
 category: video
 ---
@@ -27,6 +27,19 @@ Before planning scenes, open [the shot-routing guide](references/shot-routing.md
 Read [the editorial review guide](references/editorial-review.md) before reviewing
 or revising a cut. It connects stage decisions, exact-version notes, change impact,
 per-output finishing and editable history to the existing project records.
+
+Read [creative contract and review](references/creative-contract-and-review.md)
+before reference study, handoff and final review. It defines complete audiovisual
+coverage, content-derived duties, clip eligibility and exact-file evidence.
+Read [speech and route qualification](references/speech-and-route-qualification.md)
+before choosing voice/model or editing speaking footage; read
+[product scale and world](references/product-scale-and-world.md) when product size,
+use or capacity matters. Use [libraries, look and rubric](references/libraries-look-and-rubric.md)
+for character, sound, camera, lighting and overlay choices.
+
+Keep the two mandatory owner gates: script and ingredients. Agent checks add no
+automatic human review round. Missing actual listening or motion remains incomplete;
+a technical pass cannot approve content. Exclude failed clips from passing assembly.
 
 The sequence accepts a brief with an optional reference. References supply creative direction. New production still requires current script and ingredient approval, controlled spend, inspection of every clip and review of the actual final export.
 

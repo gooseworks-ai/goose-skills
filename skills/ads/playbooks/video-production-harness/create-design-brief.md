@@ -46,15 +46,15 @@ This is step 2 of the video-orchestrator pipeline. Runs after `brainstorm`.
    transition purpose using the existing scene rows. Select assets using the rubric
    below before describing them as usable. A beautiful image cannot stand in for a
    missing demonstration.
-4. **Start from the nearest template's plan** — do this before filling the step 3 scene rows. Call `catalog_fetch` (type `template`) for the style closest to the brief (the genre card names it) and reuse its scene count, pacing, shot list and timeline as the skeleton; change only what the brief needs. Never run a template's renderer or its unchanged style and call the result custom. Then write the **tool & skill plan**: one routing line per scene, `scene N → <row> → <fal model id>`, plus `part@version` only on the kit path (both paths are defined in `capabilities.md`), from [the shot-routing guide](references/shot-routing.md) and the genre card it names. Resolve each to the binding's current schema and priced unit. A shot with no row is an open decision, not a free model choice.
+4. **Preserve the agreed reference/brief structure.** Read [creative contract and review](references/creative-contract-and-review.md); map essential beats to words, action/proof and sound. Inspect compatible templates for reusable tooling/components, without inheriting their scene count/pacing over a different customer reference. Never call an unchanged template render custom. Write the **tool & skill plan**: one routing line per scene, `scene N → <qualified row> → <supported endpoint>`, plus `part@version` only on the kit path, from [the shot-routing guide](references/shot-routing.md). Resolve current schema, task support and priced unit. A missing qualified route remains an open production decision.
    Then **choose the path** (`capabilities.md`). Kit path when every scene's row maps to a part in that template's timeline or another published part, and no new frames, fonts or prompt files are needed; otherwise the agent-built path. Save the choice and the reason in the brief. On the kit path, `create-storyboard.md` writes the `kit` block.
 5. **Mark the intended emphasis.** For spoken work, identify the line that should land
    hardest and add `climax_line:` referencing its scene. This is performance direction,
    not an automatic volume increase. For silent work use `climax_line: null` and name
-   the visual payoff in its scene row. The final mix is judged by its measured levels and GooseWorks' word check.
+   the visual payoff in its scene row. Review the actual performance and final mix; measured levels and a word check alone do not approve them.
 6. **For ads with a recurring human character**, write a structured `character:` block with verbatim descriptor strings (see `lock-character.md` for the schema). These strings get baked into every prompt — paraphrasing causes drift.
 7. **Write the `assets_manifest:` block** listing every PNG/SVG/JPG/MP4 reference the pipeline will consume, with expected paths. `preflight-audit` reads this to validate before generation. Missing manifest = audit must scan `raw-materials/` recursively, which is less reliable.
-8. Define voice (must be on `the host-approved voice catalog`), music cues, SFX rule, caption rule.
+8. Resolve `speech_mode`, `soundtrack_modes` and timed sound cues with [speech and route qualification](references/speech-and-route-qualification.md). Reuse accepted voice/character/music/SFX/look choices through [libraries, look and rubric](references/libraries-look-and-rubric.md). For scale-critical scenes follow [product scale and world](references/product-scale-and-world.md), verify actual reference attachments and capacity evidence. Populate `required_features` from scene content, not just genre.
 9. List **open creative decisions** with options — never silently lock.
 10. List **risks and fallbacks** (what to do if a generation looks wrong).
 11. Write `design_brief` with all of the above.
@@ -71,20 +71,28 @@ This is step 2 of the video-orchestrator pipeline. Runs after `brainstorm`.
     - Cost estimate: price every paid operation by sending its exact request with `estimate_only=1`. It is free and returns the credits that request will book; never guess a rate. Add a redo allowance as `render_estimate.reroll_allowance` `{per_scene: [{scene, credits}], total_credits}`: one redo per generated scene at that scene's clip price, with `total_credits` the sum and counted inside the render total. No allowance on the preview estimate or on kit videos. A kit video is priced the same way: each scene's equivalent request (its routing row's fal model) with `estimate_only=1`, summed, as the kit charges the same rate.
     - Definition of done
 
+## Current host contract and required brief fields
+
+On the GooseWorks binding save draft.creative_contract with speech_mode,
+soundtrack_modes (an explicit empty list is valid), required_features, reference_map,
+product_grounding and voice_plan. reference_map rows identify scene, reference_beat,
+action, proof and sound. product_grounding retains product_id, source_urls,
+dimensions when sourced, scale_reference_urls, permitted_use and geometry.
+voice_plan resolves route, rationale and pronunciations. Retrieve the returned
+custom_review.creative_contract_revision; do not invent or reuse another revision.
+Other hosts map the same semantics to their actual supported records.
+
 ## Required fields in design_brief
 
 ```yaml
 # Single source of truth for downstream skills
-audio_strategy: vo-narrator   # one of: vo-narrator | song-as-script | hybrid | silent
-# vo-narrator      → ElevenLabs VO over a music bed; lock-script runs on VO text;
-#                    edit-video applies the canonical sidechain-duck mix.
-# song-as-script   → original song carries the entire script (music-video format);
-#                    lock-script runs on lyrics; edit-video skips ducking; captions
-#                    sync to vocal onsets; use an available supported music-video capability through the binding.
-# hybrid           → VO intro + sung hook (rare); lock-script splits the locked
-#                    document into both lanes; edit-video ducks under VO only.
-# silent           → no spoken audio; still approve the copy/beat/CTA plan.
-#                    Captions come from the approved design/script plan.
+creative_contract_revision: current-approved-revision
+speech_mode: native_dialogue # native_dialogue | audio_driven_lipsync | narration | singing | mixed | none
+soundtrack_modes: [source_ambience, music] # source_ambience | music | sfx | intentional_silence
+required_features: [speaking_face, product, scale]
+# Resolve timed mixed intervals, sources/performance and sound cues in scene rows.
+# Map to actual supported host fields. audio_strategy is legacy compatibility only;
+# do not infer native speech or total silence from its label or an empty transcript.
 climax_line: scene-14  # intended emphasis; null for silent. No automatic gain rule.
 character:             # OMIT entirely for cartoon-only / product-only ads
   name: Marcus
@@ -104,20 +112,19 @@ assets_manifest:
     required: true
   # ... every ref the pipeline reads
 
-# UGC-MANDATORY fields (required when concept_format is in the UGC family)
+# Format labels and content-derived person/world requirements
 concept_format: ugc-diary   # one of: ugc-diary | testimonial | founder-led | before-after |
                             #         narrator-explainer | motion-graphic | music-video | other
                             # UGC family = ugc-diary, testimonial, founder-led, before-after.
-                            # Default to `other` for legacy projects; State 3.55 + UGC review atoms
-                            # only fire when value is in the UGC family. Mirror this field into
+                            # Default to `other` for legacy projects; actual content still
+                            # triggers person, world, product and audio review duties. Mirror this field into
                             # scene_contract through the selected host binding.
 
-voiceover_strategy: real_voice   # one of: real_voice | cloned_voice | synthetic_vo
-                                 # UGC family default = real_voice.
-                                 # synthetic_vo requires an explicit host-persisted synthetic-voice approval and will be
-                                 # flagged by the voice-authenticity check on every run.
+voiceover_strategy: synthetic_vo # actual provenance: real_voice | cloned_voice | synthetic_vo
+                                 # selected within existing script/ingredient reviews;
+                                 # this declaration never establishes heard quality.
 
-world_lock:                  # REQUIRED for UGC family; OMIT for multi-location / non-UGC formats
+world_lock:                  # continuing world/person/product; intentional locations get separate locks
   set: "small white-tiled bathroom with brass round mirror, single candle on wood shelf,
         white interior door, morning daylight from frame-left window"
   wardrobe: "black ribbed scoop-neck tank top, no jewelry, hair down, no makeup"
@@ -132,7 +139,7 @@ face_visibility_target: 0.30   # optional run target, time share; use null when 
 cut_density_target: 2.0        # optional cuts/10s for this run, never a universal UGC floor
 pacing_basis: "Observed reference ID + timestamp range, or provisional brief direction"
 brand_reveal_strategy: composited_screenshot   # never AI-render brand wordmark or UI text
-end_card_style: narrative_resolution           # not flat brand panel; defaults for UGC
+end_card_style: narrative_resolution           # choose from reference/brief; deliberate brand panels are valid
 ```
 
 ## Editorial asset selection
@@ -214,7 +221,8 @@ pre-production review surface; it does not grant generation permission.
 
 ## Quality Checks
 
-- `audio_strategy` is set to exactly one of `vo-narrator | song-as-script | hybrid | silent`. Downstream skills branch on this field; a missing or invalid value blocks the phase.
+- Speech and soundtrack are separately resolved; legacy audio fields are reconciled without inventing silence or discarding source speech. The current host receives supported mapped fields.
+- Essential beats, picture/direction, product facts, scale/capacity evidence and sound intent agree in one creative contract.
 - Every scene in idea_brief is reflected in the design-brief scene table.
 - Visual world rules are stated as hard rules (e.g. "ZERO UI / keyboard / phone SFX").
 - Voice is from `the host-approved voice catalog` (not invented).
@@ -225,7 +233,7 @@ pre-production review surface; it does not grant generation permission.
 - `assets_manifest:` lists every asset the pipeline will consume.
 - `character:` block uses verbatim strings (hair, shirt with hex, etc.) — paraphrasing causes drift.
 - VO text matches what State 2.5 will lock; the design-brief is overwritten by locked_script if they diverge.
-- `concept_format:` is set to exactly one of the enumerated values. Required for downstream UGC gating.
+- `concept_format:` names the intended format; `required_features` enables applicable checks even for `other`.
 - If `concept_format` is in the UGC family (`ugc-diary | testimonial | founder-led | before-after`): `voiceover_strategy:`, `world_lock:`, `brand_reveal_strategy:`, `end_card_style:` are present. Optional face/cut targets cite `pacing_basis`; null means no justified target, not a failed gate.
 - Every essential proof has inspected source evidence, an honest gap or an approved capture plan; references alone do not count as produced proof.
 - The scene plan carries purpose, source identity, proof/action/readability timing and necessary edit coverage.

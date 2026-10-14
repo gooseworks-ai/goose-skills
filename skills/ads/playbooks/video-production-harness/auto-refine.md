@@ -13,6 +13,9 @@ Repair verified objective defects within the existing scope and iteration limit.
 
 ## Host contract
 
+Follow [creative contract and review](references/creative-contract-and-review.md) for current content-derived duties, complete AV coverage, clip eligibility and exact-file evidence. Read its linked sound, scale and look procedures when applicable. Preserve the two existing owner gates; no extra automatic review meeting.
+
+
 Read `capabilities.md` and the selected host binding first. Artifact names are logical roles resolved by that binding. Named review tasks use the documented rubrics and actual frame/audio tools; they are not assumed installed commands. Required tooling, human approval and available budget must exist before the operation. Read [the editorial review guide](references/editorial-review.md) for source binding, stage decisions, note disposition, impact checks and saved edit history.
 
 ## Purpose
@@ -103,7 +106,7 @@ Create `<video_folder>/edits/_iterations/auto-refine-log.json` if missing:
 
 ### Step 2 — Iteration N
 
-1. **Watch.** Run the packaged evidence helper on the actual video and read every extracted frame against the storyboard. GooseWorks checks sound and spoken words when you report complete (the final file check in `capabilities.md`).
+1. **Watch.** Perform complete normal-speed moving-picture and actual sound review on this exact candidate; listen to isolated speech where available and the full mix. Use the evidence helper and targeted source-resolution frames as support. Missing perception remains incomplete; no word/completion score can replace listening.
 2. **Check.** Follow `review-video.md` and save its documented structured check list; no separate command or mode is assumed. Persist the result as `edits/_iterations/iter-N-checks.json`.
 3. **Partition** into `objective_misses`, `subjective_misses`, `incomplete`, `passed` arrays. Missing required evidence is incomplete, never pass. Bind each finding/operation to its original cut and use the source/impact/disposition procedure in [the editorial review guide](references/editorial-review.md). Subjective diagnoses use the existing return route and cheap authorized alternatives; they are not silently repaired by this loop.
 4. **Exit conditions:**
@@ -117,7 +120,7 @@ Create `<video_folder>/edits/_iterations/auto-refine-log.json` if missing:
    - All clips needing color-match → one `edit-video` Phase 1 LUT pass.
    - Per-scene clip re-rolls → individual `edit-clip` calls, sequential not parallel (each touches state).
 6. **Archive and execute.** Preserve the existing candidate before any mutation. Execute each resolved real repair, recheck host paid gates and budget for any submission, and log actual debits/reservations. Update `auto-refine-log.json` with the fix attempted.
-7. **Re-render.** If any clip-level fix ran, call `edit-video` to stitch a fresh master. If only audio-level fixes ran, call `edit-video` Phases 3–5 only, followed by fresh QC. Use a new output path and preserve note-to-candidate lineage. Full rewatch verifies the intended effect; successful commands alone leave notes changed.
+7. **Re-render.** Build a new candidate from the same source-linked contract after eligible repairs; refresh affected timings, captions, sound and exact-file evidence. Rewatch the complete new AV output to verify intended effects, not merely command success.
 8. **Archive.** Copy `<video_path>` → `edits/_iterations/master-iter-N.mp4` so the operator can A/B across iterations.
 
 ### Step 3 — Final report

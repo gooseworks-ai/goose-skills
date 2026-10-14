@@ -1,14 +1,14 @@
 ---
 name: write-video-ad-script
-description: Write a short-form video ad from an evidence-backed angle and the selected template's actual recipe. Reuses or fetches ad-angle-miner, preserves the chosen angle, plans words and visuals together, checks product claims and production fit, and delivers the strongest script with useful alternatives. Use before video production and for script rewrites. Customer language is one input alongside audience, promise, product proof, offer and format.
+description: Write a short-form ad from a sourced angle and the requested reference or format. Plan connected words, visible product proof and sound together, preserve locked choices and expose production gaps before the existing script review. Use before production and for rewrites.
 status: active
-version: "1.2.0"
+version: "2.0.0"
 ---
 
 # Human version
 
-**Summary.** Turn a researched advertising promise into a video this template can actually
-make. First load the angle research, then bind it to the recipe's story, visuals, timing and
+**Summary.** Turn a researched advertising promise into a feasible video in the requested
+format. First load angle research, then bind it to the agreed story, visuals, timing and
 assets. Write and check the complete concept before the user reviews it. The output is one
 recommended script, its visual plan and up to two viable alternatives. A model score is a
 quality screen; ad results establish performance.
@@ -32,15 +32,16 @@ Read this skill's files reference before creating working files. Required contex
 
 - The brand and exact product, current facts, voice and prohibited claims.
 - Audience, campaign objective, offer and CTA, using saved context and brief first.
-- The selected template and full recipe: instructions, config, choices, assets and inputs.
+- The selected format/route and any actual template recipe: capabilities, choices, assets and inputs.
 - A validated angle context from ad-angle-miner, including source records.
 - Reference footage or its observed beat map, plus available brand assets.
 - The current sourced creative brief and applicable project/brand decisions, including
   exact rejected wording, pronunciations and user-locked copy.
 
-The user's explicit direction and chosen angle are fixed. The recipe determines what is
-possible. If those conflict, explain the concrete conflict and offer a compatible execution
-or format before production. Do not silently replace the angle or rewrite the template.
+The user's explicit direction and chosen angle are fixed. Actual route capabilities
+determine what is possible. A supplied reference controls the agreed custom structure;
+templates supply compatible components. Expose concrete gaps and feasible alternatives
+within existing review, without silently replacing angle or required demonstration.
 A reference provides a storytelling structure; the product's facts provide claims.
 
 ## Step 0. Load the angle research, explicitly
@@ -54,15 +55,21 @@ video mode for this audience, product and template. Follow
 [angle research](references/angle-research.md) for the order, the checks and what to
 record; never claim the miner ran when it did not.
 
-## Step 1. Bind the template before writing
+## Step 1. Bind reference, format and production route before writing
 
-Read the actual recipe, not just its catalogue card. Write shape.json with:
+Read the actual selected route/recipe, not just its catalogue card. For custom work,
+carry the agreed reference structure and real capability limits into shape.json:
 
-- Template id, format, story mechanism, audience and objective.
+- Actual selected template/route identity, format, story mechanism, audience and objective.
 - Ordered slots, speakers, text kind, durations and explicit word/character/line limits.
 - Product entrance, proof device, payoff and CTA placement allowed by this recipe.
 - Available asset ids, permitted visual modes and any required demonstration.
 - What can change and what stays fixed, including silence, music or lyric constraints.
+
+For custom work, read [reference and performance](references/reference-and-performance.md).
+Map actual source intervals to adapted lines, actions/proof and sound. Preserve agreed
+reference structure rather than force nearest-template scene count or pace. Keep speech
+separate from music/ambience/effects and intentional total silence.
 
 For speech, read [pacing](references/pacing.md). Set the desired cadence from the brief's
 explicit delivery direction or observed reference audio, then the recipe's default.
@@ -107,7 +114,9 @@ it never substantiates a claim, and fiction never poses as a real review. Follow
 
 ## Step 3. Learn the reference's persuasion
 
-Read the recipe's demo lines and timing, or inspect its footage when they are missing.
+Read actual reference/demo lines and timing, inspecting complete picture and sound.
+Frames/transcripts alone cannot establish delivery, continuous action or soundtrack;
+record missing duties and keep source observations distinct from adaptation.
 Add at most three relevant references from existing research. For each record the opening
 visual and words, beat order, product entrance, proof, objection, payoff and CTA. Record
 what transfers and what belongs to the source brand.
@@ -191,7 +200,10 @@ on-screen words and visible actions, with no invented speech.
 - Brand visibility depends on objective and format; early is not wrong by itself.
 - Include only supported product claims. A source id is traceability, not a semantic check.
 
-For conversational formats, write the exchange before allocating it to timed slots.
+For conversational formats, write the connected exchange before allocating timed slots.
+Reject disconnected spoken headings or bullet stamps; short natural replies remain valid.
+Caption chunks and scene boundaries do not fracture the underlying thought. Ordinary UGC
+starts brisk and conversational; reference-supported calm proof/pauses remain valid.
 Use [human speech and behavior](references/human-behavior.md), with matched language
 evidence and the human's rejected examples. Establish ordinary immediate motives,
 bounded speaker knowledge and why each question or recommendation happens now.

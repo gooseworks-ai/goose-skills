@@ -1,17 +1,19 @@
 {
-  "_source": "REALISM FORMULA (nano-banana-2 skin system). Converted from a macro skin study into a full-avatar generator.",
-  "_conversion_note": "The formula's skin engine is kept VERBATIM. Only two clauses were replaced, because only those two force a body part: 'Extreme macro photograph of [BODY_PART]' -> a whole-person subject line, and 'Skin fills 85% of frame' -> a face-scale resolution clause. Four blocks were ADDED that a macro crop never needed: identity, wardrobe, scene/pose, anatomy.",
+  "_source": "Shared reference-led creator builder, revised after the October 2026 output audit. Prompt requests guide generation; they do not establish content acceptance.",
   "slots": {
-    "identity": "age + ethnicity + sex, stated explicitly. Models drift to an ambiguous composite face without this.",
-    "skin_tone": "e.g. deep brown-black / warm medium brown / olive-tan / light beige-pink / pale with pink undertones",
-    "hair": "colour, texture, how it is worn, and how it is UNTIDY",
-    "wardrobe": "state it or the model invents one, sometimes none at all",
-    "imperfections": "list. Each gets rendered with physical accuracy and its own micro-shadow.",
-    "framing": "what is in frame, as a physical description, not a crop ratio",
-    "scene": "where they are and what is behind them",
-    "expression": "what they are doing with their face, mid-action",
-    "face_fill": "how much of the frame the head occupies, e.g. '45 to 55 percent'"
+    "identity": "the person chosen in the approved brief",
+    "skin_tone": "the selected skin tone",
+    "hair": "the selected hairstyle",
+    "wardrobe": "the selected ordinary clothing",
+    "imperfections": "ordinary texture; distinctive marks only when explicitly chosen",
+    "framing": "camera height, visible body area, headroom and action space",
+    "scene": "the actual approved setting and background",
+    "expression": "the intended relaxed expression",
+    "face_fill": "head size within the frame",
+    "capture": "explicit phone or studio capture",
+    "recording": "counter support or selfie capture",
+    "focus": "reference-led natural, deep or shallow focus"
   },
-  "prompt": "Photograph of {identity}. {skin_tone} skin. {hair} {wardrobe} {framing} {scene} {expression}\n\nPhotorealistic, shot on medium format film. Raking side-top light at 45 degrees reveals every pore as a 3D crater with its own micro-shadow. Shallow depth of field - critical sharpness on the eyes and the skin of the face, gentle optical falloff beginning behind the head. Visible: individual pore openings with depth across the nose, cheeks, forehead and chin, vellus peach fuzz along the jawline and hairline catching sidelight, natural sebum sheen (uneven, concentrated on the convex surfaces of the nose bridge, cheekbones and forehead, matte in the hollows), subsurface colour variation (veins at the temple and neck, capillary flush across the cheeks and nose, melanin gradients), micro-wrinkles between major features - outer eye corners, between the brows, the nasolabial fold, the neck. {imperfections} rendered with full physical accuracy - casting micro-shadow, distinct texture from surrounding skin.\n\nThe head and face fill {face_fill} of the frame, and every skin property above is resolved at that scale - individual pores legible on the nose and cheeks, not implied. Skin texture is not uniform: it varies in coarseness between the oily T-zone, the drier cheeks, and the softer under-eye.\n\nFine organic film grain throughout. Zero digital sharpening - all sharpness is optical. Lifted blacks - shadow detail preserved inside every pore. Soft highlight rolloff - specular sheen never clips. No makeup, no retouching, no smoothing, no filters. The skin must look uncomfortably real - a dermatological study shot by a cinematographer, but of a whole person.\n\nAnatomy is correct and consistent: two eyes with matching gaze direction and one small catchlight in each, structurally asymmetric features on a symmetrically lit face, correct ear count, and hands with exactly five fingers if any hand is in frame. Paired items such as earrings sit slightly differently on left and right, as real ones do.",
-  "negative_prompt": "airbrushed, smooth skin, uniform tone, beauty lighting, ring light, porcelain, digital sharpening halos, symmetrical pore patterns, CGI, plastic, silicone, flat lighting, text, logos, watermarks, doll-like proportions, perfectly symmetrical face, mannequin, waxwork, extra fingers, malformed hands, mirrored earrings, dead glassy eyes, heavy background bokeh, portrait mode blur, magazine cover, fashion editorial, nude, bare shoulders, topless, body part crop, extreme close-up of a single feature"
+  "prompt": "Photograph of {identity}. {skin_tone} skin. {hair} {wardrobe} {framing} {scene} {expression}\n\n{capture} {recording} {focus}\n\n{imperfections} The head occupies {face_fill} of the frame. Keep the complete face visible with space around it. Natural skin detail at this viewing distance, believable eyes and teeth, relaxed facial muscles and ordinary posture. Preserve the stated wardrobe, setting and motivated lighting. Hands, when visible, have correct anatomy and hold only the stated objects. No artificial fixed grin or glamour pose.",
+  "negative_prompt": "waxy skin, beauty filter, airbrushing, plastic gloss, exaggerated pore craters, sharpening halos, artificial grain overlay, doll proportions, malformed hands, extra fingers, dead glassy eyes, cropped face, invented text, logos, watermarks, nude, bare shoulders, topless"
 }
