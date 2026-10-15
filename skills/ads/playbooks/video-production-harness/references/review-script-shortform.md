@@ -24,7 +24,7 @@ Both checks run in State 2.5; neither is enough alone. The script-writing skill 
 
 - `<script_path>` (required): VO lines in scene order, ideally with anchors (`SCENE 01 (0.0–2.0s): "..."`).
 - `<target_duration_sec>` (required): the locked runtime.
-- `<speaking_rate_wps>`: the **reference's measured speaking rate**, its transcript's words ÷ its speaking seconds. Size the script from it. With no reference speech to measure, use **2.8–3.2 words/sec (3.0)** for UGC and creator speech. A slower rate needs a stated reason (a calm proof, a read-aloud format) and is listed in `changes_from_reference` when the reference is faster.
+- `<speaking_rate_wps>`: the **reference's speaking rate from `../scripts/reference_rate.py`** (words ÷ seconds from the first word to the last), never estimated. Size the script from it. With no reference speech to measure, use **2.8–3.2 words/sec (3.0)** for UGC and creator speech. A slower rate needs a stated reason (a calm proof, a read-aloud format) and is listed in `changes_from_reference` when the reference is faster.
 - `<vo_speed>`: format label only, `vo-narrator` or `fast-cuts` (kinetic type, rapid podcast clips). It never sets the word count.
 - `<brand_voice_rules>`: optional host-provided brand voice file. Extends the banned phrases and signoff rules.
 - `<category>`: optional, one of `supplement` / `cosmetic` / `topical-hair` / `food` / `service`. Gates pre-check 7.
@@ -171,17 +171,3 @@ Output YAML:
 
 - Runs with the narrative-arc check in State 2.5; the script lock merges both into the one script approval.
 - Does not replace the video review's hook check, which judges the rendered first 3 seconds. This is text only.
-
-## Example (procedure parameters, not CLI commands)
-
-```
-review-script-shortform
-  script_path=<host-provided draft>
-  target_duration_sec=24
-  speaking_rate_wps=3.0   # measured from the reference, or the UGC default
-  vo_speed=vo-narrator
-  category=topical-hair
-  brand_voice_rules=<host-provided approved voice rules>
-```
-
-Returns `revise`: pre-check 6 flags `short_pct=0.64`, pre-check 7 flags "fills in" (P0), and `outcome_line=0`. Proposals: merge the keyword stack, insert a time-bound outcome line, add the CTA's outcome. The owner accepts; the re-review returns `ship`.

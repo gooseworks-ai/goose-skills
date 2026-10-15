@@ -50,7 +50,7 @@ A change listed in the approved `changes_from_reference` (or the beat table's pe
 ## Review phases
 
 **7a: measurements and verified observations**
-- Run `python3 scripts/qc_evidence.py VIDEO.mp4 EVIDENCE_DIR` (add `--timeline`, `--words`, `--script`, `--reference` when you have them). It gives the probe, 2 fps frames, decoded audio, loudness, tail and the final measurements, and exits 1 on any failed measurement.
+- Run `python3 scripts/qc_evidence.py VIDEO.mp4 EVIDENCE_DIR` (add `--timeline`, `--words`, `--script`, `--reference`, `--reference-words` when you have them). It gives the probe, 2 fps frames, decoded audio, loudness, tail and the final measurements, and exits 1 on any failed measurement.
 - Measure per-scene RMS with FFmpeg astats and compare cut times with word timings; the helper does not. `source_pts_s` (not the nominal `sample_center_s`) identifies sampled bytes.
 - Run the hallucination, transcript, identity, alignment and world checks. Content decides which duties apply, not the format label. Identity uses the locked anchor; world reads `world_lock:` and `world_locks` (State 3.55). Save findings to `review_issues`.
 - Transcript: compare the final audio's words and joins with the accepted script. ASR can hallucinate in silence; confirm by listening when you can. A high match never clears babble, poor delivery or bad sync.
@@ -84,16 +84,8 @@ Any one failing sets NEEDS REVISION. Save the verdict to `review_issues` and `pr
 3. Read `<video_folder>/design_brief`, `<video_folder>/implementation_brief`, `<video_folder>/locked_script` and brand evidence. Save every gap between received and intended message, even when technical checks pass.
 4. Run 7a, 7b, the reference comparison and 7d. Every visual finding carries a timecode and a frame path.
 5. Review the whole cut again, targeting suspicious ranges. Record each content dimension as pass, needs_revision or incomplete; optional scores never average away a blocker.
-6. List strengths, then issues by severity: **P0** ship-stopper (inaudible VO, broken hero shot, a reference mismatch above); **P1** clearly degrades the cut; **P2** polish.
-7. Give each issue a concrete fix in the auto-fix contract:
-
-```markdown
-### <axis> · <short title>
-- **timecode:** 00:00:12.500
-- **issue:** <one sentence>
-- **root cause:** <one sentence>
-- **fix:** `<repair responsibility>; input=<actual path>; output=<new path>; parameters=<specific values>`
-```
+6. List strengths, then issues by severity: **P0** ship-stopper (inaudible VO, broken hero shot, a failed hand count, a reference mismatch above); **P1** clearly degrades the cut; **P2** polish.
+7. Give each issue a concrete fix in the [auto-fix-from-review-notes.md](auto-fix-from-review-notes.md) contract: axis and title, timecode, issue, root cause and a `fix:` line (`<repair>; input=<path>; output=<path>; parameters=<values>`).
 
 Example fix lines:
 - `re-roll scene 5 motion; preserve its locked refs` (through [edit-clip.md](edit-clip.md), with paid authorization).
@@ -109,28 +101,7 @@ Example fix lines:
 
 ## Output document format
 
-```markdown
-# Review NN — <video name>
-
-- **Cut reviewed:** <path, render/version id, checksum>
-- **Stage:** concept | rough | fine | final
-- **Received message:** <recorded before the brief, or labeled context-aware>
-- **Perception:** audio listened | measured; motion watched | measured; covered ranges and gaps; qc_evidence exit code and final_measure result for this output_sha256
-- **Reference match:** <beat-table rows matched, mismatches and severity>
-- **Diagnosis / return route:** <cause, smallest revision, decision owner>
-- **Runtime / Reviewer / Date:** <s> / <who, context-aware or independent> / <ISO timestamp>
-- **Status:** APPROVED | NEEDS REVISION | INCOMPLETE
-
-## Scores (optional)
-## Strengths
-## P0
-<items in the fix form, plus **intended effect / acceptance:** what the next review must show>
-## P1
-## P2
-## Per-scene notes
-## Diff vs design brief and reference
-## Next pass requires
-```
+`# Review NN — <video name>`, then: cut reviewed (path, render/version id, checksum); stage; received message (recorded before the brief, or labeled context-aware); perception (audio listened or measured, motion watched or measured, covered ranges and gaps, qc_evidence exit code and final_measure result for this output_sha256); reference match (rows matched, mismatches and severity); diagnosis and return route (cause, smallest revision, decision owner); runtime, reviewer, date; status (APPROVED, NEEDS REVISION or INCOMPLETE). Then sections: Scores (optional), Strengths, P0 (each in the fix form, plus **intended effect / acceptance**), P1, P2, Per-scene notes, Diff vs design brief and reference, Next pass requires.
 
 ## Structured check list
 
@@ -139,6 +110,8 @@ Also save JSON `{checks: [{id, severity, pass, machine_check, evidence, timecode
 ## Check rubrics
 
 Run each with real frames, audio and FFmpeg. Save evidence with timecodes.
+
+**Hand count (P0).** Count the hands in every shot where hands act, at 2 fps through the action: no more hands than the people in frame have, no hand without a body, no phone held by an unseen hand. Any failure is P0; re-roll that clip with `phone_counter` or `phone_observer` capture, never the same selfie prompt.
 
 **Identity and character.** Per scene, crop the largest face at 25/50/75% and tile the crops after the locked anchor (about 512 px per cell). Judge bone structure, eyes, skin tone and proportions (styling and makeup are not drift). List wardrobe, accessory, hair-colour and held-object changes.
 
@@ -171,7 +144,7 @@ Run each with real frames, audio and FFmpeg. Save evidence with timecodes.
 
 **Synthetic persona.** Watch as the brand's documented buyer (never invent one): would they keep scrolling, act, have objections answered? A hypothesis only.
 
-**Voice authenticity** (every spoken format, real recordings included). Listen at 1.0× to every take and the mix when your tools can, and record `listened`; otherwise `measured`, where the final measurements must pass and an observed defect still blocks. Judge words and endings, pronunciation, pace, emphasis, joins and continuity (timbre, room tone, breaths); re-perform only the affected phrase.
+**Voice authenticity** (every spoken format, real recordings included). Listen at 1.0× to every take and the mix when your tools can, and record `listened`; otherwise `measured`, where the final measurements must pass and an observed defect still blocks. Judge words and endings, pronunciation, pace, emphasis, joins, continuity (timbre, room tone, breaths) and fit with the on-screen character (gender, age, accent, energy); re-perform only the affected phrase.
 
 ## Quality checks and failure modes
 

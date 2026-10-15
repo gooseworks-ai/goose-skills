@@ -59,10 +59,10 @@ Fix one scene after `create-clips` (wrong pose, weak motion, off-tone voice) wit
 - Overlays (logo, product photo, screenshot) use FFmpeg overlay of the real asset.
 
 **re-render-vo**
-1. Reuse the selected voice and settings. A new voice or a changed spoken line needs renewed script or ingredient approval first.
+1. Reuse the selected voice and settings. A new voice (still paired with its character) or a changed spoken line needs renewed script or ingredient approval first.
 2. Change settings only when the repair needs it. Validate fields and ranges against the real model schema.
 3. Submit the locked line through the host's managed voice capability. A verified direct ElevenLabs route may use `/v1/text-to-speech/{voice_id}`; a managed host never bypasses its billed operation with direct credentials.
-4. Save the decoded file's identity and measured timing. Listen to pronunciation, delivery, joins and endings; if you cannot listen, record `measured` with transcript evidence. When the driver changes, regenerate the lip-synced picture for that line.
+4. Save the decoded file's identity and measured timing. Listen to pronunciation, delivery, joins and endings; if you cannot listen, record `measured` with transcript evidence. Measure its pace as create-clips Phase 4 says. When the driver changes, regenerate the lip-synced picture for that line.
 
 **replace-clip**
 1. Copy the user's MP4 to `clips/scene-NN.mp4`.
@@ -87,8 +87,6 @@ Save the new asset, job, provenance and clip check through the binding. Show the
 
 ## Failure modes
 
-- Overwriting without archiving.
 - A new keyframe drifts from the established person; compare with earlier scenes.
 - Veo keeps failing on dark plates: fix the keyframe, then escalate to another routing row (Seedance 2.0 for product-only motion, H3 stills mode for creator B-roll) instead of retrying the same prompt.
-- A re-roll silently switched provider and drifted from its neighbours.
 - ElevenLabs concurrency errors: one voice re-render at a time.

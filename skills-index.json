@@ -9438,6 +9438,7 @@
         "skills/ads/playbooks/video-production-harness/scripts/final_measure.py",
         "skills/ads/playbooks/video-production-harness/scripts/pack_recipe.py",
         "skills/ads/playbooks/video-production-harness/scripts/qc_evidence.py",
+        "skills/ads/playbooks/video-production-harness/scripts/reference_rate.py",
         "skills/ads/playbooks/video-production-harness/skill.meta.json",
         "skills/ads/playbooks/video-production-harness/states/edit-to-delivery.md",
         "skills/ads/playbooks/video-production-harness/states/setup-and-script.md",
@@ -9465,9 +9466,9 @@
           "write-video-ad-script"
         ],
         "slug": "video-production-harness",
-        "source_commit": "7306dd51f9d3cd145f62749c05bb0c18f3ffe48f",
-        "source_hash": "befc2c572b5db460956e0b2fb40168ca6154169d177021dfd878af08702dd346",
-        "source_version": "4-befc2c572b5d",
+        "source_commit": "1365f2bb978cee8bc341555809c9b1bc3e5e75ed",
+        "source_hash": "298755c9dd57f696c9367266b69c460da622eb9d36dbf4bc50ccc38ae00180e7",
+        "source_version": "4-298755c9dd57",
         "tags": [
           "ads",
           "content"

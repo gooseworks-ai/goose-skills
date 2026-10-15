@@ -74,7 +74,7 @@ still enable their duties when no enum names them; unexpected content adds dutie
 
 | Content | Required checks |
 |---|---|
-| People | Identity, anatomy, believable appearance/performance, wardrobe and relevant world |
+| People | Identity, anatomy and hand count (P0), believable appearance/performance, wardrobe and relevant world |
 | Speaking mouth | Full speech listening, voice/words/pronunciation, source alignment and perceptual lip-sync |
 | Product | Exact variant, geometry, material, label, state and supported use; sourced scale where material |
 | Action/proof | Complete entrance/action/exit, contact, state/order, object permanence and visible payoff |

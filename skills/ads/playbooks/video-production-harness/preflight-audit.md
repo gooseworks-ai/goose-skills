@@ -45,7 +45,7 @@ Use real media probes, image decoding and host capability checks. No audit scrip
 |---|---|
 | `image-dimensions-sanity` | Every ref is at least 512×512; smaller refs degrade output. |
 | `gitattributes-lfs-tracked` | Report which extensions `.gitattributes` tracks in LFS, so the operator knows when to pull. |
-| `vo-script-length-vs-target` | Estimate speech duration from the word count at the reference's measured speaking rate (2.8–3.2 words/s when there is none). Warn when it is over or under the design-brief target by more than 25%. Also warn when that target is more than 25% off the reference's length and `changes_from_reference` has no `length` entry: list a `length` change if this is intended. |
+| `vo-script-length-vs-target` | Estimate speech duration from the word count at the reference's rate from `scripts/reference_rate.py` (2.8–3.2 words/s when it has no speech). Warn when it is over or under the design-brief target by more than 25%. Also warn when that target is more than 25% off the reference's length and `changes_from_reference` has no `length` entry: list a `length` change if this is intended. |
 | `approved-voice-check` | Warn if the design brief names a voice ID not in the host-approved voice catalog. (The hard fail is in create-design-brief.) |
 
 ## Executable readiness

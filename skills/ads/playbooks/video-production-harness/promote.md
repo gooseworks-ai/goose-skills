@@ -15,7 +15,7 @@ Follow the [orchestrator](orchestrator.md)'s host contract. Use [the editorial r
 
 ## Purpose
 
-Record a labeled candidate, or select a checked final, through the host's real version transaction. Keep prior bytes, checksum, provenance, review evidence and the reason for every version. The binding supplies paths and the selection transaction; there is no `promote` command. Per-scene assets use [edit-clip.md](edit-clip.md); this step owns project-level lineage.
+The binding supplies paths and the selection transaction; there is no `promote` command. Per-scene assets use [edit-clip.md](edit-clip.md); this step owns project-level lineage.
 
 Use it for each new candidate, final selection, rollback or labeled experiment.
 
@@ -44,5 +44,4 @@ Use it for each new candidate, final selection, rollback or labeled experiment.
 - Label collision: use a fresh id; never overwrite history.
 - Provider hotlink or unconfirmed upload: keep it as a candidate only.
 - Stale approval: save the blocker and return to the affected owner gate.
-- Re-selecting the current final: a no-op that keeps history.
 - A host's minimum check never replaces the full final check.

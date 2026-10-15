@@ -7,21 +7,17 @@ description: Lock each recurring person's look and world before any clip is made
 
 Before writing any character prompt, read the avatar guide: `catalog_fetch` the skill `create-image-fal` and open its references/avatar-generation.md file. Reuse accepted identity and its capture branch.
 
-**Realism default (every real person):** phone capture (`phone_selfie` or `phone_counter`), deep focus, no bokeh, a lived-in, slightly cluttered real room (never a plain wall or a white void), natural skin with pores and slight asymmetry, and "no retouching, no skin smoothing, no beauty filter, no cinematic grade". Studio light or shallow focus only when the approved style comes from a studio-shot reference; list that in `changes_from_reference` as `camera` if it differs. Wardrobe and setting fit the activity. Distinctive marks only when the user asks.
+**Realism default (every real person):** phone capture, deep focus, no bokeh, a lived-in, slightly cluttered real room (never a plain wall or a white void), natural skin with pores and slight asymmetry, and "no retouching, no skin smoothing, no beauty filter, no cinematic grade". Studio light or shallow focus only when the approved style comes from a studio-shot reference; list that in `changes_from_reference` as `camera` if it differs. Wardrobe and setting fit the activity. Distinctive marks only when the user asks.
+
+**Capture follows the hands.** Set capture per scene. When the action uses both hands (applying, smoothing, pressing, holding a product with both hands), capture is `phone_counter` (a propped phone or a mirror) or `phone_observer`, never `phone_selfie`: the model adds a third hand to hold the phone ([shot routing](references/shot-routing.md)).
 
 ## Host contract
 
 Follow [creative contract and review](references/creative-contract-and-review.md) and read `capabilities.md` plus the selected host binding first. Anchor choices go into the existing ingredient review.
 
-## Purpose
+## Purpose and use
 
-In the v03 Ironman run, the protagonist was re-rendered 3 full times (~70 credits) because hair, shirt colour and facial hair drifted between scenes. Every generation was prompt-driven, with no hard reference lock. Reuse a selected accepted anchor, or prepare only the missing appearance choices, then derive every angle from that one identity and inspect it before dependent production.
-
-## When to use
-
-- **State 3.5** of the orchestrator: after storyboard approval, before `create-clips` Phase 1.
-- Any ad with a recurring human character. Skip cartoon or object-only ads.
-- Re-run if the operator changes the protagonist after the script is approved.
+Prompt-only people drift (hair, shirt colour, facial hair) and cost full re-renders. Reuse a selected accepted anchor, or prepare only the missing appearance choices, then derive every angle from that one identity and inspect it before dependent production. State 3.5, for any recurring human character (skip cartoon or object-only ads); re-run if the protagonist changes.
 
 ## Inputs
 
@@ -51,24 +47,11 @@ Real people use **`image-gpt-image-2` edit** (`openai/gpt-image-2/edit`), per th
 1. Reuse the selected creator avatar builder, capture branch and accepted identity when available. Otherwise write ONE prompt from `<character_descriptors>`, every field verbatim, plus the realism default above.
 2. Generate only missing anchor candidates. The anchor's `.meta.json` records the `gateway`; every later character call inherits it.
 3. Save candidates to `<video_folder>/generated/character-lock/<characterId>/candidate-<NN>.png` with provenance in `character_locks`.
-4. **Ingredient selection.** Show unresolved anchor choices with their descriptors in the existing ingredient review:
-
-   ```
-   Anchor portrait — <character_name>
-   Descriptors used (verbatim): hair, shirt (#3A3A3D), facial_hair, build
-   Check: [ ] hair shape and colour  [ ] shirt brightness (the #1 drift source)
-          [ ] facial hair  [ ] age  [ ] real skin, phone capture, deep focus, lived-in room
-   Approve or regenerate with an adjusted prompt?
-   ```
+4. **Ingredient selection.** Show unresolved anchor choices with their descriptors, each beside a short audition of its paired voice (State 2.6), in the existing ingredient review. Check hair shape and colour, shirt brightness (the main drift source), facial hair, age and the realism default.
 
 ### Phase 1: Angle set
 
-1. For each angle, generate a keyframe with the **approved anchor in the model's image-reference field** (not a video start-image field):
-   ```
-   <character_descriptors VERBATIM block>
-   <angle-specific description>
-   Reference photo: anchor-portrait.png — match exactly: hair shape, shirt color (#3A3A3D), facial features, age.
-   ```
+1. For each angle, generate a keyframe with the **approved anchor in the model's image-reference field** (not a video start-image field). The prompt is the verbatim descriptor block, the angle, and "match the reference photo exactly: hair shape, shirt colour, facial features, age".
 2. Use the anchor's `gateway` for every angle. Mixing providers drifts skin tone, light and feature softness.
 3. Run 2-3 in parallel at most. Save to `<video_folder>/generated/character-lock/angle-<name>.png`.
 
@@ -93,15 +76,14 @@ Keep accepted anchors and angles. Repair only the affected views within the exis
 - The consistency check ran before any animation.
 - Verbatim descriptor strings appear in every prompt.
 - Every still shows phone capture, deep focus, no bokeh, a lived-in room and unretouched skin, unless the reference is studio-shot.
+- No two-hand scene uses `phone_selfie`; every still passes the hand count in [review-video](review-video.md).
 
 ## Failure modes
 
 - **Re-rolls that ignore the drift:** each re-roll prompt names the failing item from the last report.
-- **Cartoon or non-human ads:** skip this state.
 - **Several characters:** run this skill once per character with separate output folders and merge the `character_locks` records in `create-clips`.
-- **Anchor on one provider, scenes on another:** this drifts the look. Inherit the anchor's `gateway`; switching providers means regenerating every character scene against a fresh anchor.
+- **Anchor on one provider, scenes on another:** switching providers means regenerating every character scene against a fresh anchor.
 
 ## Relationship to other skills
 
-- Runs after `create-storyboard` and before `create-clips`, which reads `character_locks` for each scene's reference inputs.
-- Pairs with **State 3.55, world lock** (`orchestrator.md`) for UGC formats. Identity alone is not enough: an unlocked set, wardrobe and light give "the same woman in three different worlds". The world lock makes 3 wide reference shots of the empty set; `create-clips` sends them with the anchor on every scene keyframe.
+Runs after `create-storyboard` and before `create-clips`, which reads `character_locks`. Pairs with State 3.55, the world lock: without it the same person lands in different worlds; `create-clips` sends the world references with the anchor on every keyframe.

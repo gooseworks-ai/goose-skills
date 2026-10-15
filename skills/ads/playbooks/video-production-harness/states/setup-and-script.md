@@ -29,7 +29,7 @@ Part of [the orchestrator](../orchestrator.md). Its non-negotiables, approvals a
 1. If `idea_brief` and a schema-valid `concepts` entry exist, go to State 2.
 2. Otherwise follow [brainstorm.md](../brainstorm.md). It writes `idea_brief` and `concepts`. Check both parse and carry every field the binding's schema needs. Save the full concept, title, format, hook, logline, evidence and risks on the review surface.
 3. Keep an existing concept selection; carry open options into the script review in State 2.5.
-4. **Concept-fit check:** *who is this selling, to whom?* If the answer is not "[brand] to [their real customer]", reframe now. A prior run's "Therapy is rat park" tagline sold therapy to clients, not the product to therapists. Ask through the host decision surface when unclear.
+4. **Concept-fit check:** *who is this selling, to whom?* If the answer is not "[brand] to [their real customer]", reframe now. Ask through the host decision surface when unclear.
 
 ### State 2 — Design brief
 1. If `design_brief` and `implementation_brief` exist and match the current inputs, go to State 2.5.
@@ -39,7 +39,7 @@ Part of [the orchestrator](../orchestrator.md). Its non-negotiables, approvals a
 
 ### State 2.5 — Script lock
 1. Reuse `locked_script` only if its content and revision still match the host-approved script.
-2. **Fetch write-video-ad-script with catalog_fetch and follow it to write the script**; it is a required skill of this playbook. If the fetch fails, stop and tell the customer: never write the script inline. Pass the sourced creative brief to its preparation command with `--brief working/script/creative-brief.json`; use its documented fields and set `shape.requires_creative_brief: true` for new custom or template work. Size the words from the reference's measured speaking rate ([review-script-shortform](../references/review-script-shortform.md)).
+2. **Fetch write-video-ad-script with catalog_fetch and follow it to write the script**; it is a required skill of this playbook. If the fetch fails, stop and tell the customer: never write the script inline. Pass the sourced creative brief to its preparation command with `--brief working/script/creative-brief.json`; use its documented fields and set `shape.requires_creative_brief: true` for new custom or template work. Measure the reference with `scripts/reference_rate.py <reference words JSON> --target-s <seconds>`; never estimate the rate. Record `speaking_rate_wps` and its source file in the script plan's `voice_plan` and size the script to its `script_words` ([review-script-shortform](../references/review-script-shortform.md)).
 3. Then follow [lock-script.md](../lock-script.md) with `<concept_type>` from the idea brief.
 4. **SCRIPT OWNER GATE.** Show the complete words, the essential action and proof, the sound plan, the feasible routes and, in bold at the top, every `changes_from_reference` entry. Record the approved revision; a later material contract change refreshes the affected approval.
 5. After approval, `locked_script` is the only source of VO text for every later step.
@@ -47,7 +47,8 @@ Part of [the orchestrator](../orchestrator.md). Its non-negotiables, approvals a
 ### State 2.6 — Voice and performance selection
 1. Read the resolved speech_mode, soundtrack_modes and delivery intent. No-speech work needs no audition; a song or native dialogue uses its selected performance.
 2. **Voice first is the default** for a talking face across several clips: the final ElevenLabs line is made and accepted before any lip-sync, one line per clip ([shot routing](../references/shot-routing.md)). Native H3 voice is for a single take of 15 s or less.
-3. If the voice or delivery is open, audition only the uncertain material: a brand pronunciation, a conversational turn, a planned pause or emphasis, and the longest line. Paid auditions use the existing preview budget.
-4. Register playable auditions with exact lines, beat ids, voice settings, script revision and provenance. Hear the isolated audio when your tools can; text, waveform or transcript cannot establish quality. Show open voice choices inside the script or ingredient review. Never present an unplayed audition as chosen.
-5. Reuse approved audition audio where it covers a production line. Render only missing or changed lines with the selected settings after the gate. Do not force a faster read or a louder climax.
-6. Recheck every speech scene and the full mix in States 5, 8 and 10. On resume, restore the selected ids; a missing selection blocks only the route that needs it.
+3. **Voice and character are one choice.** Match the voice to the on-screen character's gender, age, accent and energy and to the reference narrator's persona and pace. When no library voice clearly fits, prefer an ElevenLabs Voice Design voice made from the same character descriptors, when the host offers it. Never default to a voice used for another brand or character. Record the pair in `voice_plan`.
+4. If the voice or delivery is open, audition only the uncertain material: a brand pronunciation, a conversational turn, a planned pause or emphasis, and the longest line. Paid auditions use the existing preview budget.
+5. Register playable auditions with exact lines, beat ids, voice settings, script revision and provenance. Hear the isolated audio when your tools can; text, waveform or transcript cannot establish quality. Show open voice choices inside the script or ingredient review. Never present an unplayed audition as chosen.
+6. Reuse approved audition audio where it covers a production line. Render only missing or changed lines with the selected settings after the gate, on `eleven_v4`. Do not force a louder climax. Measure the voice's pace as create-clips Phase 4 says.
+7. Recheck every speech scene and the full mix in States 5, 8 and 10. On resume, restore the selected ids; a missing selection blocks only the route that needs it.

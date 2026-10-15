@@ -17,7 +17,7 @@ Talking creator, exact script · Talking creator, single native take · Cast anc
 Follow [speech and route qualification](../speech-and-route-qualification.md). **Voice first is the default** when the creator talks across several clips: the final ElevenLabs line is made and accepted first, then one lip-sync per line, one line per clip (`exact_audio_lipsync`, recorded as `speech_mode: audio_driven_lipsync`). Native H3 speech (`native_dialogue`) is only for a single take of 15 s or less, at most 3.2 words/s, cut only between sentences and never retimed. Set `soundtrack_modes` on their own. The speech is generated, so record `voiceover_strategy: synthetic_vo` (not the UGC default `real_voice`) and show the synthetic voice at the script review so the owner approves it there.
 
 ## Pacing
-- Size the words from the reference's measured speaking rate; 2.8-3.2 words/s when the reference is ordinary UGC speech.
+- Size the words from the reference's rate from `../../scripts/reference_rate.py`; 2.8-3.2 words/s only when it has no speech.
 - 3-4 hard cuts per take, a new framing each; no expression held over 2 s.
 - Longer ads: voice first, one line per clip; the voice continues under B-roll.
 

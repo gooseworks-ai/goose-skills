@@ -16,8 +16,6 @@ production and later edits preserve them.
 
 Follow the [orchestrator](orchestrator.md)'s host contract and [creative contract and review](references/creative-contract-and-review.md).
 
-## Purpose
-
 After `brainstorm`, turn `idea_brief` into `design_brief` (how the video looks and sounds) and `implementation_brief` (the operator's checklist).
 
 ## Inputs
@@ -35,7 +33,7 @@ After `brainstorm`, turn `idea_brief` into `design_brief` (how the video looks a
 5. Write the **routing plan**: one line per scene, `scene N → <row> → <fal model id>` (plus `part@version` on the kit path), from [the shot-routing guide](references/shot-routing.md) and its genre card. A shot with no row is an open decision.
 6. **Choose the path** (`capabilities.md`): the kit path when every scene's row maps to a published part and no new frames, fonts or prompt files are needed; otherwise agent-built. Save the choice and reason. On the kit path, `create-storyboard.md` writes the `kit` block.
 7. **Mark the emphasis.** For speech, set `climax_line:` to the scene whose line should land hardest (direction, not a volume boost). For silent work, `climax_line: null` and name the visual payoff.
-8. **Recurring person:** a `character:` block of verbatim strings (schema in `lock-character.md`).
+8. **Recurring person:** a `character:` block of verbatim strings (schema in `lock-character.md`). Its voice is chosen with it as one pair (State 2.6).
 9. **Write `assets_manifest:`** (every reference and its path) for `preflight-audit`.
 10. Resolve `speech_mode`, `soundtrack_modes` and timed sound cues with [speech and route qualification](references/speech-and-route-qualification.md). Sound follows the reference; silence only when the reference is silent or the owner asks. Use [libraries, look and rubric](references/libraries-look-and-rubric.md) and, for scale, [product scale and world](references/product-scale-and-world.md). Derive `required_features` from scene content, not genre.
 11. List **open decisions** with options, and **risks and fallbacks**.
@@ -45,7 +43,7 @@ After `brainstorm`, turn `idea_brief` into `design_brief` (how the video looks a
 
 ## Host fields
 
-On the GooseWorks binding, save `draft.creative_contract` with `speech_mode`, `soundtrack_modes` (an empty list is valid), `required_features`, `reference_map`, `product_grounding`, `voice_plan` and `changes_from_reference`. `reference_map` rows: scene, reference beat, action, proof, sound. `product_grounding`: product id, source URLs, dimensions, scale reference URLs, permitted use, geometry. `voice_plan`: route, rationale, pronunciations; several-clip talking faces default to `exact_audio_lipsync`. Read back `custom_review.creative_contract_revision`; never invent one.
+On the GooseWorks binding, save `draft.creative_contract` with `speech_mode`, `soundtrack_modes` (an empty list is valid), `required_features`, `reference_map`, `product_grounding`, `voice_plan` and `changes_from_reference`. `reference_map` rows: scene, reference beat, action, proof, sound. `product_grounding`: product id, source URLs, dimensions, scale reference URLs, permitted use, geometry. `voice_plan`: route, rationale, pronunciations, `speaking_rate_wps` with its source, and the **voice–character pair** (voice id, model, the character it speaks for, the matched gender, age, accent and energy); several-clip talking faces default to `exact_audio_lipsync`. Read back `custom_review.creative_contract_revision`; never invent one.
 
 ## Required fields in design_brief
 

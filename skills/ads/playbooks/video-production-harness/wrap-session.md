@@ -15,12 +15,9 @@ Follow the [orchestrator](orchestrator.md)'s host contract and [creative contrac
 
 ## Purpose
 
-This step drafts three project-scoped memos while the evidence is fresh: a **reproduction_recipe**, the **learnings** and the **improvement_proposals**. The owner can review each one. **Nothing is applied automatically**: this step never edits a step file, a part or a style.
+Draft the three memos while the evidence is fresh. **Nothing is applied automatically**: this step never edits a step file, a part or a style.
 
-## When to use
-
-- State 11, after the final is delivered.
-- After an abandoned run that taught something: pass `<status>=abandoned` and write only learnings and proposals.
+Run it in State 11 after delivery, or after an abandoned run that taught something (`<status>=abandoned`: learnings and proposals only).
 
 ## Inputs
 

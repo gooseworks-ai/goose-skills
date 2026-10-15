@@ -21,10 +21,6 @@ Read `capabilities.md` and the selected host binding first. Artifact names are l
 
 **Approvals.** There are two owner gates, both in the agent's chat: the **script** (State 2.5) and the **ingredients** (State 3). Concept, voice, anchor, world and look choices are shown inside those two. Agent checks, polish and final review add no other approval step.
 
-## Purpose
-
-The single entry point for producing a video ad. It calls the step files in order, pauses at the two owner gates, runs the review loops and keeps the host's saved project state current. Every creative or technical action is delegated to a step file.
-
 ## Saved production contract
 
 `capabilities.md` defines the artifact roles; the binding maps them to real storage. Load saved state, choices, outstanding jobs, approvals, feedback and spend before working. A local file's existence is not proof of an approval or a finished generation.
@@ -99,7 +95,7 @@ Use the host's current pricing; old rate tables never authorize spend.
 
 - **Never regenerate an approved artifact.** Check for existing results before calling a step.
 - **Use the review note's `edit_type`** for edit-clip. "Scene 5 looks weird" needs specifics before a re-roll.
-- **Voices come from the host-approved catalog.** A voice not on it is a blocker before State 5.
+- **Voices come from the host-approved catalog,** or are a Voice Design voice made for this character and approved at the ingredient gate. Never reuse another brand's or character's voice by default. Any other voice blocks State 5.
 - **Locks hold.** `character_locks` is the lock for every regeneration; `locked_script` is the only VO source. Changing VO text re-runs State 2.5.
 - **Preflight P0 blocks.** A revised plan may drop a blocked dependency only with the owner's approval.
 - **Review loop: 3 iterations,** then escalate to the user.
@@ -113,16 +109,13 @@ Use the host's current pricing; old rate tables never authorize spend.
 ## Quality checks
 
 - Every state either ran or was skipped with a logged reason.
-- Every artifact exists for the states that ran; review iterations ≤ 3.
-- No step ran twice in one state for the same input.
+- Every artifact exists for the states that ran; no step ran twice for the same input.
 - The decision log in `implementation_brief` records the real choices.
 - `preflight_status` is `PASS` for all current inputs and required capabilities.
 
 ## Failure modes
 
-- Re-running `create-clips` silently and burning credits: check for existing artifacts first.
 - Skipping an owner gate because it "obviously" passes: the owner never sees the script or ingredients.
 - A stuck scene looping forever: enforce the 3-iteration cap.
 - State stuck at CREATE_CLIPS because edit-video failed silently: surface every step error before advancing.
 - Script edited in `design_brief` after lock: diff `locked_script` against the brief's VO at every transition; a mismatch re-runs State 2.5.
-- Character keyframes made without `character_locks`: drift returns.

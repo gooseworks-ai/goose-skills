@@ -17,9 +17,7 @@ Follow the [orchestrator](orchestrator.md)'s host contract and [creative contrac
 
 ## Purpose
 
-A storyboard on the host review surface lets the owner check pacing, captions, hierarchy and asset choices before video credits. It runs after `create-design-brief` and is shown at the ingredient approval.
-
-Draft cheap labeled mockups from real supplied assets. Generated previews need approved preview spend. Use the binding's storyboard surface; no HTML renderer is assumed.
+Runs after `create-design-brief`; shown at the ingredient approval. Draft cheap labeled mockups from real supplied assets. Generated previews need approved preview spend. Use the binding's storyboard surface; no HTML renderer is assumed.
 
 ## Inputs
 
@@ -111,6 +109,4 @@ Targets come from the brief and the inspected reference; record its id, timestam
 
 ## Failure modes
 
-- Unfinished assets presented as final.
-- Mockups too abstract to communicate the scene.
-- Drift from `design_brief`, the single source of truth.
+Unfinished assets shown as final; mockups too abstract to read; drift from `design_brief`.

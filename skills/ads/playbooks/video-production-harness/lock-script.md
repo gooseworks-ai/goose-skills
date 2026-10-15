@@ -13,8 +13,7 @@ A script change after clips exist forces new speech renders and re-syncs. This s
 
 ## When to use
 
-- **State 2.5**, after `create-design-brief` and before `create-storyboard`.
-- Whenever the owner says "the script feels off" mid-run, or a remix recipe brings a new persona-tuned script.
+State 2.5, and whenever the owner says "the script feels off" mid-run or a remix recipe brings a new script.
 
 ## Where the script comes from
 
@@ -39,16 +38,7 @@ Read [speech and route qualification](references/speech-and-route-qualification.
 
 ### Step 1 — Extract the script
 
-Pull every line of the draft into one block with scene anchors:
-
-```
-SCENE 01 (0.0–2.0s): "Six months ago, I couldn't run a mile."
-SCENE 02 (2.0–3.5s): "First morning. Brutal."
-...
-SCENE 14 (28.0–30.0s): "I'm making it happen."
-```
-
-Save it to `<video_folder>/script/script-draft-<idx>.md`.
+Pull every line of the draft into one block with scene anchors (`SCENE 01 (0.0–2.0s): "Six months ago, I couldn't run a mile."`). Save it to `<video_folder>/script/script-draft-<idx>.md`.
 
 ### Step 2 — Structure fit
 
@@ -79,7 +69,7 @@ Save to `<video_folder>/script/arc-review-<idx>.md`.
 
 - `<script_path>`: the draft file
 - `<target_duration_sec>`: from `design_brief` (or `idea_brief`)
-- `<speaking_rate_wps>`: the reference's measured speaking rate; 2.8–3.2 words/sec when there is none (UGC and creator speech)
+- `<speaking_rate_wps>`: the reference's rate from `scripts/reference_rate.py`; 2.8–3.2 words/sec only when it has no speech
 - `<vo_speed>`: a format label, `vo-narrator` or `fast-cuts`
 - `<brand_voice_rules>`: optional
 
@@ -98,7 +88,7 @@ Record the main payoff line, its intended delivery and the viewer effect. Use `c
   - Voice: reuse the approved audition settings.
 ```
 
-`vo_speed` describes the format. It never permits time-stretching or removing pauses; speech keeps its natural approved performance.
+`vo_speed` describes the format. It never permits removing pauses or stretching speech; the only tempo change is the measured-rate fix on new narration before lip-sync (create-clips Phase 4).
 
 ### Step 5 — Script owner gate
 
@@ -106,19 +96,8 @@ Show the owner, in this chat, every `changes_from_reference` entry in bold at th
 
 ```
 Script lock — <video name>
-
-Arc scores:
-  Hook          8/10
-  Vulnerability 6/10  ("brutal" is generic; propose: "six minutes in, I almost quit")
-  Action        9/10
-  Tension       7/10
-  Reveal        8/10
-  Win           8/10
-  Climax        9/10  (SCENE 14 marked)
-  CTA           7/10
-
+Arc scores: Hook 8, Vulnerability 6 ("brutal" is generic; propose "six minutes in, I almost quit"), Action 9, Tension 7, Reveal 8, Win 8, Climax 9 (SCENE 14), CTA 7
 Short-form craft: revise (2 line rewrites below)
-
 Approve as-is, accept the proposals, or send it back?
 ```
 

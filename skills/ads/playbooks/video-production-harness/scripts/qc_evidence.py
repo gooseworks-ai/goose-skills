@@ -25,6 +25,7 @@ if _SCRIPTS not in sys.path:
     sys.path.insert(0, _SCRIPTS)
 from assembly_timeline import normalize_timeline  # noqa: E402
 from final_measure import final_measure, reference_frozen_share, script_lines  # noqa: E402
+from reference_rate import measure as measure_rate  # noqa: E402
 
 
 def command(args, timeout=300):
@@ -106,7 +107,8 @@ def silence_intervals(log, duration):
     return intervals
 
 
-def collect(video, destination, timeline_path=None, words_path=None, script_path=None, reference_path=None):
+def collect(video, destination, timeline_path=None, words_path=None, script_path=None, reference_path=None,
+            reference_words_path=None):
     for tool in ("ffmpeg", "ffprobe"):
         if not shutil.which(tool):
             raise ValueError(f"Required local capability unavailable: {tool}")
@@ -176,7 +178,8 @@ def collect(video, destination, timeline_path=None, words_path=None, script_path
     measure = final_measure(video, final_sha, duration, has_audio, pcm, activity,
                             timeline if isinstance(timeline, dict) else None, assembly.get('timeline'),
                             words, script_lines(script_path),
-                            reference_frozen_share(reference_path) if reference_path else None)
+                            reference_frozen_share(reference_path) if reference_path else None,
+                            measure_rate([reference_words_path])["words_per_second"] if reference_words_path else None)
     expected_pauses = (assembly.get('timeline') or {}).get('pauses', [])
     unplanned_quiet = [gap for gap in near_silence if not any(p['start_ms']/1000 <= gap['start_s'] + 0.05 and p['end_ms']/1000 >= gap['end_s'] - 0.05 for p in expected_pauses)]
     report = {
@@ -210,8 +213,10 @@ def main():
     parser.add_argument('--words', help='JSON {output_sha256,words:[{text,start_s,end_s}]} measured from this final')
     parser.add_argument('--script', help='Locked script: text (one line per row) or JSON {"lines": [...]}')
     parser.add_argument('--reference', help="The reference ad (video) or its final_measure.json; the still-picture limit becomes max(40%%, reference share + 15 points)")
+    parser.add_argument('--reference-words', help="The reference's word-timed transcript (any reference_rate.py shape); fails the final's speech when over 15%% slower")
     args = parser.parse_args()
-    report = collect(args.video, args.destination, args.timeline, args.words, args.script, args.reference)
+    report = collect(args.video, args.destination, args.timeline, args.words, args.script, args.reference,
+                     args.reference_words)
     print(json.dumps(report))
     failed = [c for c in report["final_measure"]["checks"] if c["result"] == "fail"]
     for item in failed:

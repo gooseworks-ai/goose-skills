@@ -111,14 +111,15 @@ Only for missing or invalid generative animation the plan assigns.
 Only for narration, audio-driver, song or source-speech routes. No-speech scenes keep their planned soundtrack; native scenes keep their checked clip audio. Follow [speech and route qualification](references/speech-and-route-qualification.md). A talking face across several clips uses `exact_audio_lipsync`: final ElevenLabs line first, then one lip-sync per line, one line per clip.
 
 1. Read the exact `locked_script` or `locked_lyrics` and each speaker's selected audition. Never pick a new voice or silently regenerate a valid audition.
-2. Reuse the audition audio, voice id and settings; a full render uses those exact settings and text, inside budget.
-3. Split source audio at real word boundaries and check cuts for partial sounds. Native dialogue stays on its clip; never double it with narration.
-4. Listen to every isolated line at normal speed (pronunciation, rhythm, stress, pauses, endings), and again in the full mix. When you cannot listen, record the review as `measured`, not `listened`, and use transcript and word timings as the evidence. Check that audio decodes, its duration and that the words match the line. A tiny or error response fails. Back off on 429s instead of duplicating jobs.
-5. Music uses `music-elevenlabs@1.1.0` with `music_v2_5` requested explicitly, per the approved music plan. Resolve unsupported artist-name or composition fields before spending.
+2. Reuse the audition audio, voice id and settings; a full render uses those exact settings and text, inside budget. Request `eleven_v4` (the part defaults to v3).
+3. **Measure the pace before anything uses the voice.** Run `scripts/reference_rate.py <each line's provider timestamps JSON> --against <reference words JSON>`. Exit 1 means more than 10% slower than the reference: follow its `fix`. Regenerate on `eleven_v4` (tighter words if needed), or apply that tempo, at most 1.25× (`pace.tempo` on the kit path, FFmpeg `atempo` otherwise), and divide the timestamps by it. Do it before lip-sync and picture timing, never on the edit; then measure and listen again.
+4. Split source audio at real word boundaries and check cuts for partial sounds. Native dialogue stays on its clip; never double it with narration.
+5. Listen to every isolated line at normal speed (pronunciation, rhythm, stress, pauses, endings), and again in the full mix. When you cannot listen, record the review as `measured`, not `listened`, and use transcript and word timings as the evidence. Check that audio decodes, its duration and that the words match the line. A tiny or error response fails. Back off on 429s instead of duplicating jobs.
+6. Music uses `music-elevenlabs@1.1.0` with `music_v2_5` requested explicitly, per the approved music plan. Resolve unsupported artist-name or composition fields before spending.
 
 ### Phase 5 — Register reviewable clips
 
-Review each clip against its handoff: revision, line and assets, full action and proof, product geometry and scale, measured duration, face and voice sync, continuity with neighbours. A provider URL is not a pass. Register every source and job with its pass, needs_change or incomplete evidence. Failed candidates stay visible and out of the passing assembly.
+Review each clip against its handoff: revision, line and assets, full action and proof, product geometry and scale, measured duration, face and voice sync, continuity with neighbours. **Count the hands (P0):** no more hands than the people in frame have, no hand without a body, no phone held by an unseen hand; a failure is a failed clip ([review-video](review-video.md)). A provider URL is not a pass. Register every source and job with its pass, needs_change or incomplete evidence. Failed candidates stay visible and out of the passing assembly.
 
 ## Output
 
@@ -149,6 +150,4 @@ Review each clip against its handoff: revision, line and assets, full action and
 
 ## Use stored original footage
 
-Follow the stored-footage contract in `capabilities.md`. Search owned media through the host and inspect real frames plus the timed transcript; a description or thumbnail is not a visual review. A known user-selected trim stays usable without semantic analysis; record the limit.
-
-Freeze `{asset_id, analysis_revision, scene_id, start_ms, end_ms, audio_mode}` in each selected scene and ingredient (`analysis_revision` is the original's SHA-256; integer milliseconds; audio `original` or `muted`). The usual approvals apply. Research links and competitor ads never grant production rights. Trim the verified original at normal speed with its chosen audio; the assembler's `source_excerpt` validates SHA and range and refuses a voice track that would replace approved original audio. Only new or replaced ingredients use the generation budget.
+Follow the stored-footage contract in `capabilities.md`: inspect real frames plus the timed transcript, freeze each selection, and trim the verified original at normal speed with its chosen audio through `source_excerpt`. Only new or replaced ingredients use the generation budget.

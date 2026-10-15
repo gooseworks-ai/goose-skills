@@ -20,6 +20,7 @@ if _SCRIPTS not in sys.path:
     sys.path.insert(0, _SCRIPTS)
 from assembly_timeline import (CALLBACK_PREFIX, MAX_END_FREEZE_MS, MAX_FREEZE_MS, MAX_PAUSE_MS,  # noqa: E402
                                 MAX_PAUSE_SHARE, freeze_cap_ms, normalize_timeline)
+from reference_rate import speech_rate  # noqa: E402
 
 FINAL_MEASURE_FORMAT = "gooseworks-final-measure/1"
 THRESHOLDS = {
@@ -27,7 +28,7 @@ THRESHOLDS = {
     "tone_fft_size": 4096, "tone_window_s": 0.5, "tone_peak_halfwidth_bins": 2,
     "tone_max_peaks": 3, "tone_peak_energy_share": 0.8, "tone_steady_share": 0.5,
     "quiet_dbfs": -45, "quiet_window_ms": 100, "unplanned_silence_s": 1.0,
-    "speech_gap_in_sentence_s": 0.6,
+    "speech_gap_in_sentence_s": 0.6, "speech_rate_min_ratio": 0.85,
     "max_pause_ms": MAX_PAUSE_MS, "max_pause_share": MAX_PAUSE_SHARE,
     "tone_band_hz": [80, 8000],
     "freeze_noise": 0.003, "freeze_min_s": 1.0, "unplanned_freeze_s": 2.0,
@@ -222,10 +223,11 @@ def silent_by_choice(raw_timeline):
 
 
 def final_measure(video, final_sha, duration, has_audio, pcm, activity, raw_timeline, timeline, words, lines,
-                  reference_share=None):
+                  reference_share=None, reference_rate=None):
     """gooseworks-final-measure/1. Every fail blocks; not_applicable says why.
 
-    reference_share is the reference's frozen-picture share (0-1) when a reference is supplied.
+    reference_share is the reference's frozen-picture share (0-1) when a reference is supplied;
+    reference_rate is its measured speaking rate (words/s, from reference_rate.py).
     """
     checks = []
     thresholds = THRESHOLDS
@@ -310,6 +312,15 @@ def final_measure(video, final_sha, duration, has_audio, pcm, activity, raw_time
                             f"{len(gaps_found)} gap(s) over {thresholds['speech_gap_in_sentence_s']} s inside a sentence" if gaps_found else "No gap inside a sentence over the limit", gaps_found))
     else:
         checks.append(check("speech_gap_in_sentence", "not_applicable", no_words))
+    _, _, rate = speech_rate([(w["text"], w["start"], w["end"]) for w in word_list if re.search(r"\w", w["text"])])
+    if rate and reference_rate:
+        floor = thresholds["speech_rate_min_ratio"] * reference_rate
+        checks.append(check("speech_rate_vs_reference", "fail" if rate < floor else "pass",
+                            f"Speech {rate} words/s against the reference's {round(reference_rate, 3)} ({round(rate / reference_rate * 100)}%); under {round(floor, 3)} fails",
+                            [(word_list[0]["start"], word_list[-1]["end"])] if rate < floor else []))
+    else:
+        checks.append(check("speech_rate_vs_reference", "not_applicable",
+                            "Needs word timings for this final (--words) and the reference (--reference-words)"))
     script_words = [tokens(line) for line in lines]
     script_words = [w for w in script_words if w]
     if word_list and script_words:

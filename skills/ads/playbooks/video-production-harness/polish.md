@@ -59,15 +59,7 @@ Read `implementation_brief` (CTA, tone), `design_brief` (palette, character), `b
 Review the whole master at normal speed with sound when your tools can, and record `listened`/`watched`. Otherwise record `measured`: it counts only when `scripts/qc_evidence.py` exits 0 and the host's `final_measure` passes. Frames alone are never the review. Give each axis findings with a timecode and a one-line root cause, or say it is clean. Check captions at destination size, including product visibility and reading time. A caption change starts from the clean picture and burns once, never over old captions.
 
 ### 4. Propose
-Write `polish-notes/<idx>-<ts>.md` in the exact contract of auto-fix-from-review-notes:
-
-```markdown
-### <axis> · <short title>
-- **timecode:** 00:00:12.500
-- **issue:** ...
-- **root cause:** ...
-- **fix:** `<repair responsibility>; input=<actual path>; output=<new path>; parameters=<specific values>`
-```
+Write `polish-notes/<idx>-<ts>.md` in the exact contract of auto-fix-from-review-notes.
 
 - **P0**: must fix (loudness over 1 LUFS off, unreadable captions, a hard-cut tail).
 - **P1**: should fix (mild caption overflow, slight music/VO imbalance, short end-card hold).
@@ -90,19 +82,7 @@ Run `scripts/qc_evidence.py` on the polished master (it must exit 0), the end-ca
 **Hard stop:** if any spoken line fails on the polished master, re-apply the mix fix or escalate. Do not go on.
 
 ### 7. Report and continue
-Show before and after on the candidate surface:
-
-```
-Polish complete:
-  LUFS:             -24.3 → -13.9 (target -14)
-  Speech integrity: 8/13 → 13/13 verified
-  Perception:       listened/watched or measured, covered ranges
-  Notes verified:   effects checked; none open
-  Caption overflow: 4 → 0
-  End-card score:   4.25 → 8.0
-  Length:           30.0 s → 30.6 s (+0.6 s end-card freeze)
-Candidate: edits/master-polished.mp4
-```
+Show before → after on the candidate surface: LUFS, verified spoken lines, perception and covered ranges, notes verified, caption overflow, end-card score, length, and the candidate path.
 
 Then follow [promote.md](promote.md) to record the polished candidate and its lineage (never overwrite the selected master) and go to State 10 for the caption burn and final check. Each variant gets its own burn and check.
 

@@ -41,11 +41,13 @@ speaking picture and its driver stay on linked clocks. Matched source positions 
 edit drift but cannot certify the generator's phonemes.
 
 Never drop native dialogue, rearrange talking pictures, place voice files at scene
-starts or stretch them into slots. A changed driver needs new sync. A speed change
-moves speaking picture and audio together and is never a pacing repair.
+starts or stretch them into slots. A changed driver needs new sync. After lip-sync or
+picture timing, a speed change moves speaking picture and audio together and is never
+a pacing repair.
 
 Write connected thoughts, not spoken headings; scene boundaries never split a thought.
-The reference sets the pace; prefer tighter words over speed-up. Save pronunciations
+The reference sets the pace, measured by `../scripts/reference_rate.py`; for a slow voice
+prefer tighter words, then `eleven_v4`, then at most 1.25× tempo on the new narration. Save pronunciations
 for names, ingredients and numbers. Eleven tags are not H3 line syntax (the creator
 wrapper rejects square brackets), and Eleven v4 has its own controls. Listen to the
 whole audition, hard words, every join and the ending.
@@ -74,14 +76,14 @@ not qualify animated gaze or handling.
 ## Selected new part interfaces
 
 Use creator-h3@1.4.0 fields only with that version or a compatible newer contract.
-Carry creative_contract_revision; capture defaults to phone (phone_counter or phone_selfie) and focus to deep, with studio or shallow focus only when chosen.
+Carry creative_contract_revision; capture defaults to phone (phone_counter, or phone_selfie only when one hand stays free) and focus to deep, with studio or shallow focus only when chosen.
 Its generation_stage first_take is the default and returns pending source. Only
 remaining_takes may chain generation after accepted_sources includes the first take
 with actual AV review, real word timing and the qualified model/shot record. assemble
 uses all accepted sources without new generation. Never assert acceptance from ASR
 or a returned URL alone, or send new fields to an older frozen version.
 
-Use voice-elevenlabs@1.2.1. 1.2.0 is withdrawn: a tagged read returned only its first
+Use voice-elevenlabs@1.2.1 with `eleven_v4` requested (the part defaults to v3). 1.2.0 is withdrawn: a tagged read returned only its first
 request's audio. Since 1.2.1, V4 and V4 Turbo need no model_support evidence. Resolve the real
 with-timestamps endpoint through the managed binding. Only supported V4 controls apply. Tagged audio remains pending until independently reviewed word
 alignment; tag-stripped planned text is not evidence of spoken words.

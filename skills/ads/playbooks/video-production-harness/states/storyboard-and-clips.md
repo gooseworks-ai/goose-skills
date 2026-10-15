@@ -16,7 +16,7 @@ Part of [the orchestrator](../orchestrator.md). Its non-negotiables, approvals a
 ### State 3 — Storyboard
 1. Reuse a saved storyboard only when it matches the approved script and scene plan.
 2. Follow [create-storyboard.md](../create-storyboard.md). It reads VO from `locked_script`, so caption text matches the script.
-3. **INGREDIENT OWNER GATE.** Show the storyboard on the host review surface with the anchors, world, voice, product photos, routes and cost, and confirm pacing and visual direction before clip credits. A generated preview still needs the approved preview budget. This is the cheapest place to catch a wrong concept. On the kit path, run the kit's make command after this approval.
+3. **INGREDIENT OWNER GATE.** Show the storyboard on the host review surface with the anchors, world, voice, product photos, routes and cost. Show each speaking character's still together with a short audition of its paired voice saying a real script line, so the owner judges them together. Confirm pacing and visual direction before clip credits. A generated preview still needs the approved preview budget. This is the cheapest place to catch a wrong concept. On the kit path, run the kit's make command after this approval.
 4. **Coverage and pace.** Use reference-derived targets and the planned cuts and face time from the storyboard step. Every beat needs a viewer purpose and enough time for its action, reading or proof. A long hold is a prompt to check, not a failure; never add arbitrary cuts to meet a quota.
 
 ### State 3.4 — Motion strategy
@@ -32,7 +32,7 @@ Part of [the orchestrator](../orchestrator.md). Its non-negotiables, approvals a
 2. Otherwise follow [lock-character.md](../lock-character.md) with `<character_descriptors>` from the design brief.
 3. Show anchor choices inside the ingredient review. Record real identity evidence, not invented drift percentages.
 4. After lock, `character_locks` is the contract create-clips reads for every scene's references.
-5. **Chained references.** `character_locks` records `chain_strategy`: `"anchor-only"` (only the anchor goes to each call) or `"all-locked-frames-as-refs"` (the anchor plus every approved keyframe). Use the second for series where consistency across many frames matters (decline arcs, ping-pong loops, before/after pairs). A prior run lost about 6 iterations to geometry drift without it.
+5. **Chained references.** `character_locks` records `chain_strategy`: `"anchor-only"` (only the anchor goes to each call) or `"all-locked-frames-as-refs"` (the anchor plus every approved keyframe). Use the second for series where consistency across many frames matters (decline arcs, ping-pong loops, before/after pairs).
 
 ### State 3.55 — World lock
 1. Run when the content has a continuing world, a recurring person or a scale-critical product, whatever the format label.

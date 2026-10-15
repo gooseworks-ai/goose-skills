@@ -11,7 +11,7 @@ category: video
 ## Non-negotiables (every state, every host)
 
 1. **Copy the reference.** Study the whole reference, picture and sound. Keep its people, action, camera, hook, length (±25%) and shot count; list every change in `changes_from_reference`, shown first at the script approval.
-2. **Match its sound.** Speech, music and effects follow the reference. Silence only when the reference is silent or the owner asks for it. Never a sine tone, a drone or an empty track.
+2. **Match its sound and pace.** Speech, music and effects follow the reference. Silence only when the reference is silent or the owner asks for it. Never a sine tone, a drone or an empty track. `scripts/reference_rate.py` measures the reference's words per second (never estimate it); a voice more than 10% slower is regenerated or sped up (at most 1.25×) before lip-sync and picture timing.
 3. **People and demos never become cards.** A person, hands or a live demonstration in the reference stays one; a text card, dots or a still never replaces it.
 4. **The script comes from write-video-ad-script.** Fetch it with catalog_fetch; never write the script inline.
 5. **Use the real product.** Its real photos, its real size and its usage steps; packaging comes from the real photo through `overlay`, never redrawn.

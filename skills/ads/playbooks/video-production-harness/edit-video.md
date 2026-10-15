@@ -13,9 +13,7 @@ Build a candidate from the accepted story and editable sources. Mix for the chos
 
 Follow the [orchestrator](orchestrator.md)'s host contract and [creative contract and review](references/creative-contract-and-review.md). Read [the editorial review guide](references/editorial-review.md) for source binding, note disposition, impact checks and saved edit history. Use [Creator Grammar](references/creator-grammar.md) for cuts, sound dynamics and captions.
 
-## Purpose
-
-Take the accepted clips and audio from `create-clips` (and `edit-clip`) and produce the **labeled candidate master**: ordered, timed and mixed for review and polish. Final captions and delivery follow State 10.
+Output: the **labeled candidate master** for review and polish; final captions and delivery follow State 10.
 
 ## The one assembly route
 
@@ -63,7 +61,7 @@ Start from the approved sound plan and measured stems. A narration ad may use ga
 1. Measure speech, bed and SFX in the real dialogue windows. Set speech for clarity and keep the approved performance dynamics. Choose a loudness target from the delivery plan.
 2. Lower or move the competing cue before boosting the voice. Where sidechain helps, split the VO bus into listen and detector branches and tune threshold, attack, release and ratio to the material. FFmpeg's sidechain ratio maximum is 20: a limit, not a target.
 3. Never duplicate native dialogue under a separate voice track. Check scene boundaries and planned room tone.
-4. **On the finished mix:** measure loudness, true peak and clipping, then run `python3 scripts/qc_evidence.py <master.mp4> <evidence_dir> --timeline <receipt> --script <locked_script> --reference <reference.mp4>`. **It must exit 0.** It exits 1 on silence, tone-only sound, unplanned gaps, frozen picture, repeated shots and missing first or last words. Check the speech-to-music gap in every dialogue window and the tail. **Listen when your tools allow**; otherwise record the review as `measured`. Numbers never approve natural performance, joins or music quality.
+4. **On the finished mix:** measure loudness, true peak and clipping, then run `python3 scripts/qc_evidence.py <master.mp4> <evidence_dir> --timeline <receipt> --script <locked_script> --reference <reference.mp4> --words <final words> --reference-words <reference words>`. **It must exit 0.** It exits 1 on silence, tone-only sound, unplanned gaps, frozen picture, repeated shots, missing first or last words and speech more than 15% slower than the reference. Check the speech-to-music gap in every dialogue window and the tail. **Listen when your tools allow**; otherwise record the review as `measured`. Numbers never approve natural performance, joins or music quality.
 
 Save any long FFmpeg filter script with the editable sources. Never multiply a normalized VO by fixed factors; it can clip.
 
@@ -77,7 +75,7 @@ Separately generated clips can jump in grade at the cut, even with the same ligh
 eq=contrast=1.05:saturation=0.95, colorbalance=bs=0.05:bm=-0.02
 ```
 
-Warmer: lower `bs`, add `rs=0.05`. Cooler: `bs` toward 0.08, `bm=-0.03`. Punchier: `contrast=1.10`, `saturation=1.05`. Muted: `contrast=1.02`, `saturation=0.85`. Matching shots need no grade. Never add a cinematic grade to realistic phone footage.
+Matching shots need no grade. Never add a cinematic grade to realistic phone footage.
 
 ## Workflow
 
@@ -91,12 +89,11 @@ Warmer: lower `bs`, add `rs=0.05`. Cooler: `bs` toward 0.08, `bm=-0.03`. Punchie
 1. **Source and speech check.** Use real source hashes, bounds and rates. Native-speaking picture and its audio share source positions; cutaways may differ while the same speech continues. Compare real word boundaries at every join. Missing provenance or timings leaves the step incomplete.
 2. Run `scripts/assemble.py` on the plan. Output the approved ratio (normally 1080×1920), 30 fps, yuv420p, libx264, CRF 18 as a starting point.
 3. Check the duration is within the design-brief target ±1 s, and within ±25% of the reference unless `changes_from_reference` lists `length`.
-4. Fit the music to the approved timeline: trim the bed, loop it with a stated intent, or fade it. Never change scene timing to fit a music length.
 
 ### Phase 3 — Music bed
 
 1. Use the approved owned/licensed track, or a real music capability through the binding at the current price and approval. Missing music access blocks that route or needs an approved revised sound plan.
-2. Place the bed as cues in its planned windows; fade, sustain or stop as the sound plan says. Honour cue switches, silence drops and end-card swells.
+2. Place the bed as cues in its planned windows; trim, loop with a stated intent, fade, sustain or stop as the sound plan says, never retiming scenes to fit it. Honour cue switches, silence drops and end-card swells.
 
 ### Phase 4 — Speech
 
@@ -148,7 +145,7 @@ Warmer: lower `bs`, add `rs=0.05`. Cooler: `bs` toward 0.08, `bm=-0.03`. Punchie
 ## Failure modes
 
 - **Dead air between lines.** Lines were placed at scene starts, not measured word times. Rebuild the speech cues from real word timings.
-- **Time-stretched speech sounds cartoonish.** Re-render at native speed.
+- **Speech stretched in the edit sounds cartoonish.** Fix a slow voice before lip-sync (create-clips Phase 4) or re-render.
 - **The master drifts from the brief's timing** because changes were not logged in the timeline.
 - **The no-captions master is exported to delivery.**
 - **Captions "rendered" but frames show nothing:** the `fade=alpha=1` PNG bug. Use `overlay=enable='between(...)'`.
