@@ -20,7 +20,7 @@ export const manifest = {
   kind: 'check',
   layer: 'check',
   title: 'Check layer',
-  summary: "Checks the finished cut without changing it: the server's five checks, the final measurements, the end card, the logo, speech against the script (no words missing and none added), speaking rate and setup count against the reference, and style flags.",
+  summary: "Checks the finished cut without changing it: the server's five checks, the final measurements, the end card, the logo, speech against the script, speaking rate and setup count against the reference, and style flags.",
   runtime: 'node',
   entry: 'part.mjs',
   files: ['README.md', 'part.mjs'],
