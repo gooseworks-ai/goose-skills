@@ -5,9 +5,18 @@ import hashlib
 import json
 import math
 import subprocess
+import sys
 import tempfile
 from pathlib import Path
-from assembly_timeline import FORMAT, normalize_timeline
+
+# Load sibling helpers from this file's own folder. `python3 -I` (isolated
+# mode) leaves the script folder off sys.path, so add it explicitly.
+_SCRIPTS = str(Path(__file__).resolve().parent)
+if _SCRIPTS not in sys.path:
+    sys.path.insert(0, _SCRIPTS)
+from assembly_timeline import FORMAT, MAX_STRETCH, MAX_ZOOM, normalize_timeline, zoom_factor  # noqa: E402
+
+TEMPLATE_KIND = 'template'
 
 
 def run(args):
@@ -20,7 +29,10 @@ def probe(file):
 
 def file_sha256(source):
     with Path(source).open('rb') as handle:
-        return hashlib.file_digest(handle,'sha256').hexdigest()
+        digest = hashlib.sha256()  # file_digest needs Python 3.11; stay 3.9-safe
+        for chunk in iter(lambda: handle.read(1024 * 1024), b''):
+            digest.update(chunk)
+        return digest.hexdigest()
 
 
 def source_record(path, start, end, speed=1, asset_id=None):
@@ -109,12 +121,41 @@ def checked_sources(timeline):
         if str(path) not in checked: checked[str(path)]=probe(path)
         seconds=float(checked[str(path)]['format'].get('duration',0))
         if not math.isfinite(seconds) or source['in_ms']<0 or source['out_ms']<=source['in_ms'] or seconds*1000+1<source['out_ms']:
-            raise ValueError(f'Source bounds exceed actual media: {source["asset_id"]}')
+            raise ValueError(f'Source is shorter than its reviewed timeline: {source["asset_id"]}')
     for segment in timeline['segments']:
         if not any(s['codec_type']=='video' for s in checked[segment['video']['path']]['streams']): raise ValueError('A picture source has no video stream')
     for cue in timeline['audio_cues']:
         if not any(s['codec_type']=='audio' for s in checked[cue['source']['path']]['streams']): raise ValueError(f'{cue["id"]} has no audio stream')
-    return sources
+    return sources,checked
+
+
+def picture_filter(segment,info,width,height,fps):
+    """Explicit crop or fill-crop; refuse uneven stretch and zooming in past the shared cap.
+
+    Resolution scaling is allowed (H3's 432x768 fills 1080x1920 at zoom 1.0). The cap is on zoom:
+    the crop's fill scale divided by the full source frame's fill scale.
+    """
+    source=segment['video']; stream=next(s for s in info['streams'] if s['codec_type']=='video')
+    src_w,src_h=int(stream['width']),int(stream['height'])
+    timing=f'trim=start={source["in_ms"]/1000}:end={source["out_ms"]/1000},setpts=(PTS-STARTPTS)/{source["speed"]}'
+    crop=source.get('crop')
+    if crop:
+        if crop['x']+crop['w']>src_w or crop['y']+crop['h']>src_h:
+            raise ValueError(f'{segment["id"]}: crop falls outside the {src_w}x{src_h} source')
+        scale_x=crop.get('scale_x',source.get('scale_x')); scale_y=crop.get('scale_y',source.get('scale_y'))
+        if abs(crop['w']*scale_x-width)>2 or abs(crop['h']*scale_y-height)>2:
+            raise ValueError(f'{segment["id"]}: crop times scale must fill {width}x{height}')
+        frame=f'crop={crop["w"]}:{crop["h"]}:{crop["x"]}:{crop["y"]},scale={width}:{height}'
+        zoom=zoom_factor(crop,src_w,src_h,width,height)
+    else:
+        scale_x=scale_y=max(width/src_w,height/src_h)
+        frame=f'scale={width}:{height}:force_original_aspect_ratio=increase,crop={width}:{height}'
+        zoom=1.0
+    if abs(scale_x/scale_y-1)>MAX_STRETCH:
+        raise ValueError(f'{segment["id"]}: uneven stretch; keep people and products in proportion')
+    if zoom>MAX_ZOOM+1e-9:
+        raise ValueError(f'{segment["id"]}: crop zooms {zoom:.2f}x into the {src_w}x{src_h} source (limit {MAX_ZOOM}x); use a wider crop or new coverage')
+    return f'{timing},{frame},setsar=1,fps={fps}'
 
 
 def assemble(plan,output):
@@ -122,9 +163,14 @@ def assemble(plan,output):
     expected=sizes[plan.get('aspect_ratio','9:16')]; width=plan.get('width',expected[0]); height=plan.get('height',expected[1]); fps=plan.get('fps',30)
     if not isinstance(fps,int) or isinstance(fps,bool) or not 1<=fps<=60 or any(not isinstance(v,int) or isinstance(v,bool) or v<=0 or v%2 for v in (width,height)):
         raise ValueError('Use integer fps 1–60 and positive even dimensions')
-    if abs(width/height-expected[0]/expected[1])>0.01: raise ValueError('Dimensions must match the approved ratio')
+    if abs(width/height-expected[0]/expected[1])>0.01: raise ValueError('Dimensions must match the approved aspect ratio')
+    if plan.get('captions_ass') and ' ass ' not in subprocess.check_output(['ffmpeg','-hide_banner','-filters'],text=True,stderr=subprocess.DEVNULL):
+        raise ValueError('Captions need an FFmpeg build with libass; install/use that supported build before assembly')
     explicit=plan.get('assembly_timeline'); issues=[]
     if explicit is None:
+        if plan.get('production_kind')!=TEMPLATE_KIND:
+            raise ValueError('A custom video needs an assembly_timeline (gooseworks-assembly-timeline/1) that links every picture to its sound; '
+                             'see references/recipe-format.md. The plain clip list is only for template replays ("production_kind": "template").')
         timeline,issues=legacy_timeline(plan)
         evidence=normalize_timeline(None,{'audio_strategy':plan.get('audio_strategy'),'issues':issues})
     else:
@@ -140,13 +186,13 @@ def assemble(plan,output):
         if segment['start_ms']!=position: raise ValueError('This assembler needs contiguous picture segments; custom joins must supply the same timeline evidence')
         position=segment['end_ms']
     if position!=timeline['duration_ms']: raise ValueError('Picture must cover the complete cut')
-    sources=checked_sources(timeline)
+    sources,probes=checked_sources(timeline)
     output=Path(output).resolve(); output.parent.mkdir(parents=True,exist_ok=True)
     with tempfile.TemporaryDirectory(prefix='video-assembly-') as folder:
         scratch=Path(folder); normalized=[]
         for index,segment in enumerate(timeline['segments']):
             source=segment['video']; target=scratch/f'{index:03d}.mp4'
-            vf=f'trim=start={source["in_ms"]/1000}:end={source["out_ms"]/1000},setpts=(PTS-STARTPTS)/{source["speed"]},scale={width}:{height}:force_original_aspect_ratio=increase,crop={width}:{height},setsar=1,fps={fps}'
+            vf=picture_filter(segment,probes[source['path']],width,height,fps)
             # Speech is restored from its checked original cue on the SAME clock below.
             run(['ffmpeg','-nostdin','-v','error','-y','-i',source['path'],'-vf',vf,'-an','-c:v','libx264','-preset','fast','-crf','20','-pix_fmt','yuv420p',str(target)])
             normalized.append(target)
@@ -173,7 +219,10 @@ def assemble(plan,output):
         if file_sha256(source['path'])!=source['sha256']: raise ValueError('A source changed during assembly; candidate cannot be published')
     info=probe(output); actual=float(info['format']['duration']); visual=next(s for s in info['streams'] if s['codec_type']=='video')
     if abs(float(visual.get('duration',0))-duration)>max(0.15,2/fps) or abs(actual-duration)>max(0.15,2/fps): raise ValueError('Actual export duration differs from the checked timeline')
-    report={'output':str(output),'output_sha256':file_sha256(output),'duration_s':actual,'assembly_timeline':timeline,
+    excerpts=[c['source_excerpt'] for c in plan.get('clips',[]) if c.get('source_excerpt')] if explicit is None else \
+        [{'segment_id':s['id'],'scene_id':s['scene_id'],**{k:v for k,v in s['video'].items() if k!='path'}} for s in timeline['segments']]
+    report={'output':str(output),'output_sha256':file_sha256(output),'duration_s':actual,'width':width,'height':height,
+            'source_excerpts':excerpts,'assembly_timeline':timeline,
             'assembly_evidence':evidence,'source_bytes_verified':True,'quality_status':'incomplete','content_review_required':True,
             'remaining_review':['Full final playback with actual audio and motion','Words, joins, lip-sync, product actions and captions'],
             'technical_probe':info,'legacy_normalization_issues':issues}
@@ -182,7 +231,7 @@ def assemble(plan,output):
 
 
 def main():
-    parser=argparse.ArgumentParser(); parser.add_argument('plan',help='Format settings plus assembly_timeline; legacy clips remain explicitly incomplete'); parser.add_argument('output')
+    parser=argparse.ArgumentParser(); parser.add_argument('plan',help='Format settings plus assembly_timeline. A plain clip list is accepted only with "production_kind": "template"'); parser.add_argument('output')
     args=parser.parse_args(); print(json.dumps(assemble(json.loads(Path(args.plan).read_text()),args.output)))
 
 

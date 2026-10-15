@@ -1,69 +1,62 @@
 ---
 name: video-production-harness/preflight-audit
-description: Verify every asset, credential, and brand-vars token resolves correctly BEFORE any generation runs. Catches the LFS-pointer / .avif / unresolved-token failure modes that cascade through a 5-stage pipeline. Step 0 of the pipeline.
+description: Verify every asset, capability and brand-vars token resolves correctly BEFORE any generation runs. Catches the LFS-pointer / .avif / unresolved-token failures that cascade through the pipeline. Step 0 of the pipeline.
 ---
 
 # preflight-audit
 
-## Host contract
-
-Follow [creative contract and review](references/creative-contract-and-review.md) for current content-derived duties, complete AV coverage, clip eligibility and exact-file evidence. Read its linked sound, scale and look procedures when applicable. Preserve the two existing owner gates; no extra automatic review meeting.
-
-
-Read `capabilities.md` and the selected host binding first. Artifact names are logical roles resolved by that binding. Named review tasks use the documented rubrics and actual frame/audio tools; they are not assumed installed commands. Required tooling, human approval and available budget must exist before the operation.
+Follow the [orchestrator](orchestrator.md)'s host contract and [creative contract and review](references/creative-contract-and-review.md).
 
 ## Purpose
 
-The cheapest place to catch a broken asset is before any generation runs. In the v03 Ironman run, three separate cascade failures traced back to assets that looked fine in the file tree but were actually broken: PNGs that were 132-byte Git LFS pointers, `.avif` files the Anthropic API rejects, and `{brand_token}` placeholders that never got rendered.
-
-This skill performs every check that's deterministic and free before any State ≥ 2 work begins. Hard fails on any P0 finding; surfaces P1 warnings.
+Files that look fine can be 132-byte Git LFS pointers, `.avif` images an API rejects, or briefs with unrendered `{brand_token}` placeholders. This step runs every free, deterministic check before generation. Any P0 blocks; P1 warns.
 
 ## When to use
 
-- **State 0** of the orchestrator — runs once before brainstorm if `<video_folder>` already has assets, or after `create-design-brief` once `assets_manifest` is known.
-- Re-run as a sub-step inside `create-clips` Phase 0 (new assets land between states).
-- Any time the operator drops new brand assets into the host brand/reference asset catalog.
+- **State 0**: before brainstorm if `<video_folder>` already has assets, or after `create-design-brief` once `assets_manifest` exists.
+- Again in `create-clips` Phase 0, since new assets land between states.
+- Whenever new brand assets are added to the host catalog.
 
-Use real media probes, image decoding and the host capability checks below. No external audit script is assumed installed.
+Use real media probes, image decoding and host capability checks. No audit script is assumed installed.
 
 ## Inputs
 
-- `<video_folder>` (required)
-- `<assets_manifest>` — path to manifest section in `design_brief` listing every PNG/SVG/JPG/MP4 ref the pipeline will consume. If absent, the audit scans the host's registered assets.
-- Required capabilities from the approved plan: generation, voice, transcription, media inspection, storage and applicable local rendering tools.
+- `<video_folder>` (required).
+- `<assets_manifest>`: the `design_brief` section listing every image and video the pipeline uses. If absent, scan the host's registered assets.
+- The capabilities the approved plan needs: generation, voice, transcription, media inspection, storage and local rendering.
 
 ## Checks
 
-### P0 — block on any failure
+### P0: block on any failure
 
 | Check | What it does | Why |
 |---|---|---|
-| `lfs-pointer-check` | Inspect bytes for the Git LFS pointer signature and decode each raster image. SVG is expected to be text and must be parsed as SVG rather than rejected for ASCII output. | An image model can silently fall back to prompt-only generation when the ref is a pointer — invisible until downstream errors. |
-| `avif-rejection-check` | Greps refs for `.avif`. Fails if found. | Anthropic image-processing returns 400 on `.avif`. |
-| `capabilities-ready` | Confirm host authentication and each required supported operation without inspecting or printing credentials. | Pipeline fails halfway through with a non-obvious "unauthorized" otherwise. |
-| `brand-vars-unresolved` | Render every brief once (design-brief, implementation-brief, brand-vars.yaml) and grep for `{[a-z_]+}` placeholders. Fails on any unresolved. | "DARK CHARCOAL #{shirt_hex}" written into a Nano Banana prompt = silent drift. |
-| `review-perception-ready` | Resolve an actual reviewer for required moving picture and audible sound; an extraction/ASR tool is not listening. | Missing required perception leaves that operation/review incomplete before a batch can be accepted. |
-| `creative-contract-consistent` | Match reference_map, adapted copy, picture/direction, proof/action, sound and current host revision. | Contradictory fields or missing essential beats cannot clear script/ingredient review. |
-| `scale-and-reference-binding` | Resolve material dimensions/use/capacity and actual product/scale reference attachments after provider caps/filtering. | Numeric prose or a correct logo cannot clear missing scale evidence or wrong product geometry. |
+| `lfs-pointer-check` | Inspect bytes for the Git LFS pointer signature and decode each raster image. Parse SVG as SVG; text output is expected. | A pointer ref makes an image model fall back to prompt-only output, invisibly. |
+| `avif-rejection-check` | Fail on any `.avif` ref. | Image APIs return 400 on `.avif`. |
+| `capabilities-ready` | Confirm host authentication and each required operation without printing credentials. | Otherwise the run fails halfway with a vague "unauthorized". |
+| `brand-vars-unresolved` | Render each brief and brand-vars file once and search for `{[a-z_]+}` placeholders. | "DARK CHARCOAL #{shirt_hex}" in an image prompt causes silent drift. |
+| `review-perception-ready` | Resolve a reviewer that can watch and hear, or plan a `measured` review backed by `scripts/qc_evidence.py` and the host's final measurements. Extraction or speech-to-text is not listening. | A review marked `listened` without listening is false; a `measured` review counts only when every final measurement passes. |
+| `creative-contract-consistent` | Match reference_map, adapted copy, picture and direction, proof and action, sound and the current host revision. | Contradictions or missing essential beats cannot clear either owner approval. |
+| `scale-and-reference-binding` | Resolve real dimensions, use and capacity, and the real product and size reference attachments after provider caps and filtering. | Numbers in prose or a correct logo cannot replace missing size evidence or fix wrong product geometry. |
 
-### P1 — warn but don't block
+### P1: warn, don't block
 
 | Check | What it does |
 |---|---|
-| `image-dimensions-sanity` | Every ref ≥ 512×512. Smaller refs degrade generated output. |
-| `gitattributes-lfs-tracked` | Reports which extensions are LFS-tracked in `.gitattributes` so the operator knows when to manually pull. |
-| `vo-script-length-vs-target` | Estimate VO duration at 150 wpm vs design-brief target. Warn if > 1.5× over. |
-| `approved-voice-check` | If design-brief names a voice ID not in `the host-approved voice catalog`, warn. (Hard-fail belongs in create-design-brief.) |
+| `image-dimensions-sanity` | Every ref is at least 512×512; smaller refs degrade output. |
+| `gitattributes-lfs-tracked` | Report which extensions `.gitattributes` tracks in LFS, so the operator knows when to pull. |
+| `vo-script-length-vs-target` | Estimate speech duration from the word count at the reference's measured speaking rate (2.8–3.2 words/s when there is none). Warn when it is over or under the design-brief target by more than 25%. Also warn when that target is more than 25% off the reference's length and `changes_from_reference` has no `length` entry: list a `length` change if this is intended. |
+| `approved-voice-check` | Warn if the design brief names a voice ID not in the host-approved voice catalog. (The hard fail is in create-design-brief.) |
 
 ## Executable readiness
 
-Before paid work, run the selected FFmpeg/FFprobe binaries themselves and probe one real planned input. A path returned by an executable lookup does not prove runtime readiness: missing dynamic libraries can make a present binary fail immediately. Record the exact executable/version and result. For a selected specialist, run its documented free import/dry-run or browser launch/close in its own package environment. A failed probe blocks that route before spending; do not silently install or change global media tools.
+Before paid work, run the selected FFmpeg and FFprobe binaries on one real planned input; a binary that exists can still fail at startup. Record the executable, version and result. For a selected specialist, run its documented free dry run or browser launch and close in its own environment. A failed probe blocks that route before spending. Never silently install or change global media tools.
 
 ## Workflow
 
-1. Read `<video_folder>/design_brief` and pull `assets_manifest`. If absent, scan the host-provided registered source/brand assets for image references.
-2. Inspect actual file bytes and FFprobe/image metadata; check required host capabilities and unresolved brief variables. Use `scripts/qc_evidence.py` for video metadata/evidence when applicable.
-3. Save each check and observed result in the host audit artifact; collect P0/P1 findings.
+1. Read `assets_manifest` from `design_brief`; if absent, scan the host's registered source and brand assets.
+2. Inspect real bytes, FFprobe and image metadata, required capabilities and unresolved brief variables. Use `scripts/qc_evidence.py` for video evidence where it applies.
+3. Save each check and its observed result in the host audit artifact.
 4. Write `<video_folder>/preflight/audit-<ts>.md`:
 
 ```markdown
@@ -77,34 +70,33 @@ Before paid work, run the selected FFmpeg/FFprobe binaries themselves and probe 
 ## P0 — must fix before any generation
 
 - `clips/raw-materials/marcus-anchor.png` — Git LFS pointer (132 bytes). Run `git lfs pull` or replace with a real PNG.
-- `source/logo.avif` — `.avif` format rejected by Anthropic API. Convert to PNG/JPG.
+- `source/logo.avif` — `.avif` rejected by the image API. Convert to PNG/JPG.
 
 ## P1 — warnings
 
 - `source/headshot.jpg` is 320×320 (< 512×512 recommended).
-- `gitattributes` tracks `*.png` as LFS — newly written PNGs may be pointer-ized by routine git operations.
 
 ## Resolution
 
-Fix every P0 item and repeat this audit before generation. A revised supported plan may remove a blocked dependency only through the current human approval flow.
+Fix every P0 item and repeat this audit before generation.
 ```
 
-5. **Block** on every P0. Local override flags and agent-written decisions cannot bypass missing capabilities, broken media, authentication, ownership or paid gates.
+5. **Block on every P0.** Local override flags and agent-written decisions cannot bypass missing capabilities, broken media, authentication, ownership or paid approvals. A revised plan may drop a blocked dependency only with the owner's approval.
 
 ## Output
 
-- `<video_folder>/preflight/audit-<ts>.md` (always)
-- `<video_folder>/preflight/manifest.json` — machine-readable, consumed by orchestrator state machine
-- Explicit PASS or FAIL saved with the actual evidence; this document is a procedure, not an audit executable.
+- `<video_folder>/preflight/audit-<ts>.md` (always).
+- `<video_folder>/preflight/manifest.json`, machine-readable, read by the orchestrator.
+- An explicit PASS or FAIL saved with its evidence.
 
-## Quality Checks
+## Quality checks
 
 - Every asset in `assets_manifest` has a status row.
-- P0 list is empty before the orchestrator advances past State 0.
-- `manifest.json` is valid JSON (downstream skills depend on it).
+- The P0 list is empty before the run leaves State 0.
+- `manifest.json` is valid JSON.
 
-## Failure Modes
+## Failure modes
 
-- **No standalone audit tool** — run these real byte/probe/decode and host checks inline. Do not invent an audit executable or report success without evidence.
-- **Manifest absent and `raw-materials/` empty** — emit a warning and pass; the audit can only block on assets it knows about. The real catch happens at `create-clips` Phase 0 re-audit.
-- **Unsupported image format** — convert the actual source into a supported decoded PNG/JPEG before passing it to the chosen reviewer/provider. A format preference cannot override a receiving API constraint.
+- **Inventing an audit tool.** Run the byte, probe, decode and host checks inline; never report success without evidence.
+- **No manifest and an empty `raw-materials/`.** Warn and pass; the real catch is the `create-clips` Phase 0 re-audit.
+- **Unsupported image format.** Convert the real source to a decoded PNG or JPEG before sending it to a reviewer or provider.

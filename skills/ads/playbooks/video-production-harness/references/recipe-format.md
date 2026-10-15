@@ -1,116 +1,79 @@
 # Human version
 
-`recipe/source.json` is the one file that lets anyone rebuild a finished video from the project alone. It holds the build's code and settings as text and lists every media input by its stored file id and checksum. Its format name is `gooseworks-video-source/1`.
+`recipe/source.json` (format `gooseworks-video-source/1`) lets anyone rebuild a finished video from the project alone: the build's code and settings as text, and every media input by stored file id and checksum.
 
-- **Write it with** the packer, **prove it with** the checker: `python3 scripts/pack_recipe.py ...` and `python3 scripts/check_recipe.py ...`. Both scripts ship in this package's scripts folder.
-- **Do not write it by hand.** The packer computes every checksum and refuses paths, links and keys that would break a rebuild.
-- **The host's production record points at it** by stored file id and checksum. When the recipe changes, upload it again and update that pointer.
+- **Write it with** the packer and **prove it with** the checker: `python3 scripts/pack_recipe.py ...` and `python3 scripts/check_recipe.py ...` (both in this package).
+- **Never write it by hand.** The packer computes every checksum and refuses paths, links and keys that would break a rebuild.
+- **The host's production record points at it** by file id and checksum; re-upload and update the pointer when it changes.
 
 ---
 
 # Agent version
 
-## Source-linked edit and review boundary
+## Assembly timeline
 
-Store the shared assembly_timeline with editable sources: format
+Store the assembly_timeline with the editable sources: format
 `gooseworks-assembly-timeline/1`, current creative_contract_revision, scene/destination
 intervals, exact source asset IDs/checksums/in/out/speed, depicts_speech and native_audio,
-required speech_driver, audio_cues and planned pauses. Use the runtime-supported shape,
-not ad hoc unrelated stitching scripts. Bind it to the same current host production
-record and package it with the recipe's editable files.
+required speech_driver, audio_cues and planned pauses. Assemble it only with
+`../scripts/assemble.py`; no other stitching script. The checker in [assembly_timeline.py](../scripts/assembly_timeline.py) also refuses:
 
-The rebuild checker establishes technical reproducibility only. It cannot clear
-reference fidelity, product scale/action, heard performance, perceptual sync or music
-quality. Save exact-export content_review separately, with output_sha256, current
-contract/timeline revisions, responsibilities and actual AV coverage. Do not turn
-identical or frames_and_audio rebuild comparison into completed listening.
+- milliseconds or pixels that are not integers;
+- a pause over 1.5 s, pauses totalling over 10% of the duration, or a freeze over 1.5 s (a freeze that ends the video, the end card hold, may last 3.0 s);
+- a `crop` (`{x, y, w, h}` in source pixels, with `scale_x` and `scale_y`) that stretches unevenly (over 2%) or zooms in over 1.5×. Zoom is the crop's fit-scale divided by the full frame's fit-scale; scaling a whole small frame up (H3's 432×768 to 1080×1920) is allowed;
+- a speaking segment whose picture and audio change speed separately;
+- the same source picture shown twice, not side by side, unless the later segment's `intent` starts with `callback:`.
+
+Segments planned as `speech_mode: none` (B-roll under music, an end card) need no speech cue. A plan that is silent by choice (`speech_mode: none`, `soundtrack_modes: [intentional_silence]`, which needs the owner's request or a silent reference) makes the final silence checks `not_applicable`; the tone check still runs. Bind the timeline to the current production record and pack it with the editable files.
+
+The rebuild checker proves reproducibility only, never fidelity, performance, sync or music quality; an `identical` or `frames_and_audio` match is not listening. Save the exact-export content_review separately, with output_sha256 and real coverage.
 
 ## Steps
 
-1. Upload every file the build reads to the host project and confirm it. Note each stored file id.
+1. Upload and confirm every file the build reads.
 2. Write `SPEC.json` (below) in the build folder.
 3. `python3 scripts/pack_recipe.py --root BUILD_DIR --spec SPEC.json --out recipe/source.json`. It prints a `source` template with the recipe's checksum.
-4. Upload `recipe/source.json` to the project at path `recipe/source.json` (kind `document`) and confirm it. Note its file id.
-5. Download the inputs from the host into an empty folder at their recipe paths, then `python3 scripts/check_recipe.py --bundle recipe/source.json --inputs DOWNLOADED_DIR --final FINAL.mp4 --work EMPTY_DIR`. Keep the JSON it prints.
-6. Save the production record's `source` (below). If you change the recipe later, repeat steps 3 to 6. Use the host's source-only update when it has one, so the rest of the record stays as saved.
+4. Upload it at path `recipe/source.json` (kind `document`); confirm and note its file id.
+5. Download the inputs into an empty folder, then `python3 scripts/check_recipe.py --bundle recipe/source.json --inputs DOWNLOADED_DIR --final FINAL.mp4 --work EMPTY_DIR`. Keep the JSON it prints.
+6. Save the production record's `source` (below). After a recipe change repeat steps 3 to 6 (source-only update when the host has one).
 
 ## SPEC.json (input to the packer)
 
 | Field | Required | What it holds |
 | --- | --- | --- |
-| `files` | yes | Globs, relative to the build folder, of code and settings files (UTF-8 text only). Globs skip hidden files; name one exactly to include it. |
-| `inputs` | yes when the build reads media | `[{path, media_id, role}]`. `path` is relative to the build folder. `media_id` is the stored project file. `role` is one of `brand_asset`, `product_photo`, `logo`, `font`, `voice`, `music`, `sfx`, `generated_image`, `generated_clip`, `stock`, `derived`, `other`. |
-| `build` | yes | `{command, output, tools}`. `command` is the one shell command that makes the final (at most 500 characters). `output` is its relative output path, made by the build, never an input. `tools` is `[{name, version}]`, at most 20. |
-| `paid_calls` | no | `[{output_path, provider, endpoint, request}]`, at most 100. Each `output_path` must be a stored input: a rebuild reuses it and never pays again. |
-| `notes` | no | Plain text, at most 4,000 characters. |
+| `files` | yes | Globs of UTF-8 code and settings files, relative to the build folder; name hidden files exactly. |
+| `inputs` | yes when the build reads media | `[{path, media_id, role}]`: relative path, stored project file, and `role`, one of `brand_asset`, `product_photo`, `logo`, `font`, `voice`, `music`, `sfx`, `generated_image`, `generated_clip`, `stock`, `derived`, `other`. |
+| `build` | yes | `{command, output, tools}`: the one shell command (≤ 500 characters), its relative output path (made by the build, never an input), and `[{name, version}]` tools (≤ 20). |
+| `paid_calls` | no | `[{output_path, provider, endpoint, request}]`, ≤ 100; each `output_path` is a stored input, so a rebuild never pays again. |
+| `notes` | no | Plain text, ≤ 4,000 characters. |
 
 ## recipe/source.json (what the packer writes)
 
-| Field | What it holds |
-| --- | --- |
-| `format` | Always `"gooseworks-video-source/1"`. |
-| `build` | `{command, output, tools}` from the spec. |
-| `files` | `[{path, sha256, text}]`: every matched file's exact text and the SHA-256 of its UTF-8 bytes. At least one, at most 400. |
-| `inputs` | `[{path, media_id, sha256, bytes, role}]`, measured from the build folder. At most 200, 2 GB in total. |
-| `paid_calls`, `notes` | Copied from the spec when present. |
+`format` is always `"gooseworks-video-source/1"`; `build`, `paid_calls` and `notes` come from the spec. `files` is `[{path, sha256, text}]`, each matched file's exact text and SHA-256 (1 to 400). `inputs` is `[{path, media_id, sha256, bytes, role}]`, measured from the build folder (≤ 200, 2 GB total).
 
-Limits: the whole file is at most 10 MB, and each text file at most 2,000,000 characters. Paths are relative, with no `..`, `~`, drive letter or leading slash.
+Limits: 10 MB per recipe, 2,000,000 characters per text file. Paths are relative, with no `..`, `~`, drive letter or leading slash.
 
-The packer refuses, naming the file and line:
+The packer refuses, naming the file and line: binary or non-UTF-8 files (upload them as inputs), paths on someone's computer, expiring links (signed storage or provider result links), and anything that looks like a key, token or password.
 
-- binary or non-UTF-8 files (upload them as inputs instead);
-- paths on someone's computer (a home folder or a Windows user folder);
-- links that expire (signed storage links, provider result links);
-- anything that looks like a key, token or password.
-
-## Example
-
-`SPEC.json`:
+## Example `SPEC.json`
 
 ```json
-{
-  "files": ["build.sh", "timeline.json", "captions/*.ass"],
-  "inputs": [
-    {"path": "media/scene-01.mp4", "media_id": "MEDIA_ID_1", "role": "generated_clip"},
-    {"path": "media/voice.mp3", "media_id": "MEDIA_ID_2", "role": "voice"},
-    {"path": "fonts/Inter-Bold.ttf", "media_id": "MEDIA_ID_3", "role": "font"}
-  ],
-  "build": {
-    "command": "bash build.sh",
-    "output": "out/final.mp4",
-    "tools": [{"name": "ffmpeg", "version": "7.1"}]
-  },
-  "paid_calls": [
-    {"output_path": "media/scene-01.mp4", "provider": "fal", "endpoint": "VIDEO_MODEL_ENDPOINT", "request": {"prompt": "..."}}
-  ],
-  "notes": "Scene 1 is a generated clip; the rest is ffmpeg."
-}
-```
-
-The `recipe/source.json` it writes (shortened):
-
-```json
-{
- "format": "gooseworks-video-source/1",
- "build": {"command": "bash build.sh", "output": "out/final.mp4", "tools": [{"name": "ffmpeg", "version": "7.1"}]},
- "files": [{"path": "build.sh", "sha256": "<64 hex>", "text": "#!/bin/sh\nffmpeg ..."}],
- "inputs": [{"path": "media/scene-01.mp4", "media_id": "MEDIA_ID_1", "sha256": "<64 hex>", "bytes": 4810233, "role": "generated_clip"}],
- "paid_calls": [{"output_path": "media/scene-01.mp4", "provider": "fal", "endpoint": "VIDEO_MODEL_ENDPOINT", "request": {"prompt": "..."}}],
- "notes": "Scene 1 is a generated clip; the rest is ffmpeg."
-}
+{"files": ["build.sh", "timeline.json"],
+ "inputs": [{"path": "media/scene-01.mp4", "media_id": "MEDIA_ID_1", "role": "generated_clip"}],
+ "build": {"command": "bash build.sh", "output": "out/final.mp4", "tools": [{"name": "ffmpeg", "version": "7.1"}]}}
 ```
 
 ## The production record's `source`
 
 | Field | What it holds |
 | --- | --- |
-| `bundle` | `{media_id, sha256, path}`: the confirmed project file holding `recipe/source.json`, the SHA-256 of its stored bytes, and its path. |
+| `bundle` | `{media_id, sha256, path}` of the confirmed stored `recipe/source.json`. |
 | `build_command` | Exactly the recipe's `build.command`. |
 | `rebuild_check` | `{result, compared, detail}` as the checker printed it. `result` is `identical` (compared `sha256`) or `matches` (compared `frames_and_audio`). |
-| `limits` | Optional, at most 10: anything that could not be stored, with its fallback. |
+| `limits` | Optional, ≤ 10: anything not storable, with its fallback. |
 
-The host re-reads the stored recipe at completion. It refuses when the stored bytes don't match `bundle.sha256`, when an input's id, size or checksum doesn't match, or when `build_command` differs from the recipe's.
+At completion the host re-reads the stored recipe and refuses a mismatched `bundle.sha256`, input id, size or checksum, or `build_command`.
 
 ## Bind portable assembly sources to owned inputs
 
-Each assembly video, audio cue, exact speech driver and freeze source must match an owned, hash-checked recipe input. Use its media ID as `asset_id`, or declare a stable `inputs.asset_id` alias alongside `media_id` in the source bundle. `production.clips.asset_id` uses the same alias while `production.clips.media_id` names the owned upload. Different bytes must not share an alias. Omit local transport paths from the saved production timeline, or replace them with the matching safe recipe-relative input path. Aliases preserve the timeline revision through upload; they never replace verification of the actual input bytes.
+Each assembly video, audio cue, speech driver and freeze source matches an owned, hash-checked recipe input. Use its media ID as `asset_id`, or declare a stable `inputs.asset_id` alias next to `media_id`. `production.clips.asset_id` uses the same alias; `production.clips.media_id` names the upload. Different bytes never share an alias. Saved timelines use recipe-relative input paths, never local ones. Aliases never replace checking the input bytes.

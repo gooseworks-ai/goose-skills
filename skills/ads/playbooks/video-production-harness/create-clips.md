@@ -11,156 +11,114 @@ Make only the missing approved scene material, using the exact brief, assets, sc
 
 # Agent version
 
-## Host contract
-
-Follow [creative contract and review](references/creative-contract-and-review.md) for current content-derived duties, complete AV coverage, clip eligibility and exact-file evidence. Read its linked sound, scale and look procedures when applicable. Preserve the two existing owner gates; no extra automatic review meeting.
-
-
-Read `capabilities.md` and the selected host binding first. Artifact names are logical roles resolved by that binding. Named review tasks use the documented rubrics and actual frame/audio tools; they are not assumed installed commands. Required tooling, human approval and available budget must exist before the operation.
+Follow the [orchestrator](orchestrator.md)'s host contract and [creative contract and review](references/creative-contract-and-review.md).
 
 ## Purpose
 
-Execute the implementation brief end-to-end at the **clip level**: produce one MP4 per scene plus per-scene voiceover MP3s, and register the actual clips on the host review surface so the operator can review the actual generated assets in the same layout as the storyboard.
+Make one MP4 per scene, plus voice files where the audio plan needs them, and register the real clips on the host review surface. Stitching, music, SFX and captions belong to `edit-video`. A custom video is assembled only there, with `scripts/assemble.py` and an `assembly_timeline`. Never join clips with any other stitcher. A scene that needs several pieces gets several timeline segments.
 
-Does NOT do final stitching, music, SFX, or burned-in captions — that's `edit-video`.
+**Routing.** Make every scene on its row in [the shot-routing guide](references/shot-routing.md) and the genre card it names. Resolve the row's real model id, schema and priced unit through the binding. A shot with no row is an open decision, not a free model choice. Kling 2.5 Turbo is withdrawn and never routed. Nano Banana is for cartoon style anchors and cartoon keyframes only; real people and real products use the `image-gpt-image-2` edit route, and packaging comes from the real photo through `overlay`.
 
-Uses these production responsibilities when the actual route is available. The labels are descriptive; discover an installed supported skill or use the concrete local/host tools in `capabilities.md`. They are not undeclared required executables:
-- `create-kinetic-typography` for kinetic type B-roll and `goose-graphics` for designed stills and cards. Lock one style per project so all B-roll cards read as a family.
-- End card: `goose-graphics` makes the card still; `stitch-videos-ffmpeg` holds it for the planned seconds.
-- `create-vo-elevenlabs` (superseded; agent-built path only) — when a VO must be generated (synthetic narrator path)
-- Long-form source voice (podcast-clip path): cut at word boundaries from the transcript's word timings with `ffmpeg -ss <start> -to <end>` so no scene ends mid-word.
-- Lip-sync: resolve a qualified supported audio-driven route, lock the exact driver and review a representative take before batching. No automatic Veed close-up fallback or unsupported time-saving promise.
-- `stitch-videos-ffmpeg` (only if a scene needs intra-scene concat)
-- Continue the same accepted speech under B-roll through the source-linked timeline; resolve native/narrated speech and source ambience before choosing streams.
-- Actual host-managed image/video generation and job polling (`the host image-generation operation`, `the host video-generation operation`, `the host job-status operation`)
+**Tools by shot** (an installed supported skill, or the concrete tools in `capabilities.md`):
+- Kinetic type: `create-kinetic-typography`. Designed stills and cards: `goose-graphics`, one style per project.
+- End card: its routing row. The timeline holds it as a declared end-card freeze (at most 3.0 s, at the end).
+- Synthetic narrator (agent-built path): `create-vo-elevenlabs` (superseded; kept for this path).
+- Long-form source voice: cut at transcript word boundaries with `ffmpeg -ss <start> -to <end>`.
+- Lip-sync onto a still: `create-video-fal` with `veed/fabric-1.0`, one approved line per clip. Review one take, then run the rest in parallel.
 
-**B-roll copy rule** (learned on an earlier brand run): the text on every B-roll card must mirror the audio playing under it. Cute synonyms ("HOOPS" for "basketball", "GAME ON" for "when the game starts") create cognitive dissonance and reduce comprehension. Pull literal key phrases from locked_script where they serve the approved design; preserve explicit user-approved on-screen wording and pronunciation-versus-spelling distinctions. Do not add duplicate copy over an already readable product/UI layer.
+**B-roll copy rule.** Card text mirrors the audio under it, in literal phrases from `locked_script` ("HOOPS" for "basketball" hurts comprehension). Keep owner-approved wording. No copy over an already readable product or UI layer.
 
-## Specialist handoff and route checks
+## Specialist handoff and reuse
 
-Read [specialist handoffs](references/specialist-handoff.md). For UGC/native creator, product/demo footage and motion graphics, fetch the actual selected package and dependencies; record version/hash, input/source/script/beat revisions and expected outputs in the existing capability plan. Validate its free imports/probes/dry run before any paid call. A named specialist or a PNG-returning graphics package is not proof of video capability. No unrecorded machine path may be required.
+Read [specialist handoffs](references/specialist-handoff.md). Fetch the selected package and dependencies; record its version, input revisions and expected outputs in the capability plan; run its free probes or dry run before any paid call. A package that returns PNGs is not proof of video capability.
 
-Load the existing jobs and approved media first. Match exact input fingerprints and probe bytes before honoring a helper's existing-file skip. Reuse valid selected takes, voice auditions, footage windows and keyframes; regenerate only changed or missing work. Returned output must resolve to the planned scene and selected source/version, with actual duration, provenance and review evidence.
+Load existing jobs and approved media first. Match input fingerprints and probe bytes before trusting a "file exists" skip. Reuse valid takes, auditions, footage windows and keyframes; regenerate only changed or missing work. Every output maps to its scene and source version, with measured duration and provenance.
 
 ## Inputs
 
-- The sourced creative-brief revision/pointer used by the writer, approved product/variant and locked copy
-- `<video_folder>/design_brief` (visual spec)
-- `<video_folder>/implementation_brief` (operator checklist; required)
-- `<video_folder>/locked_script` (canonical VO; required — must exist from State 2.5)
-- `<video_folder>/generated/character-lock/character_locks` (required IF the ad has a human character; produced by State 3.5)
-- `the host-approved voice catalog` (approved ElevenLabs voices)
-- a host-supported, approved voice-generation capability
+- The writer's sourced creative brief revision, the approved product or variant and the locked copy
+- `<video_folder>/design_brief` and `<video_folder>/implementation_brief`
+- `<video_folder>/locked_script` (required; the only voice source, from State 2.5)
+- `<video_folder>/generated/character-lock/character_locks` (required when a person recurs; from State 3.5)
+- The host-approved voice catalog and an approved voice-generation capability
 
-## Prompt-constraint redundancy (META-pattern)
+## Prompt constraints
 
-State hard project constraints clearly in relevant prompt positions and bind actual identity/product/scale references. Repetition can guide generation, but no supported benchmark establishes a 50% versus 95% success rate. Verify every actual output; prompt wording cannot clear a defect.
+Bind the real identity, product and scale references. State each load-bearing constraint three times: positive framing at the top ("Camera stays at knee level"), a negation in the middle ("NO face visible"), a crop rule at the end ("Camera never tilts above the chest"). Soft preferences need one. Repetition guarantees nothing; inspect every output.
 
-The three positions are:
-1. **Positive framing rule** near the top of the prompt (sets the camera/scene up-front)
-2. **Negation** in the middle of the prompt (explicit "do not show X")
-3. **Crop / scope rule** at the end (boundary condition)
+## Hard rules
 
-Complementary prompt constraints are examples, without a portable compliance guarantee:
+- **No brand or UI text in any image prompt.** Image models garble words ("EXAMPLE" becomes "EXAMPEL"). Render neutral screens and unlabeled boxes; add all branded text in post with PIL or FFmpeg overlay.
+- **Resolve each model's real reference and start-image fields** through the binding. Upload local files through the host first and use the returned media id. `.avif` references are rejected.
+- **Dark or vignetted keyframes fail in Veo.** Use a neutral background; grade in post.
+- **fal is the default gateway.** A generation counts as failed, and triggers the fallback router, when any of these happen:
+  1. The submit operation raises (network, auth, server error).
+  2. The job-status operation returns `failed`.
+  3. The result says success but the output URL 404s.
+  4. The download is under 1 KB for an image or 10 KB for a video (error JSON).
+  5. The provider returns a credit-limit or insufficient-credits error.
+  6. The job passes a 10-minute timeout (15 minutes for Veo and Seedance).
 
-| Constraint | (1) Positive framing | (2) Negation | (3) Crop / scope |
-|---|---|---|---|
-| no face | "Camera stays at knee level" | "NO face or head visible" | "Camera never tilts up past the chest line" |
-| no logo | "Frame the product front-on, no packaging" | "NO brand names, NO product text" | "Crop excludes any printed labels" |
-| color lock | "Subject wears a single deep-red garment (#B81F26)" | "NO orange, NO pink, NO maroon" | "All other garments in frame are neutral gray" |
-| single subject | "One person in the frame, alone in the scene" | "NO other people, NO bystanders, NO crowd" | "Background is a deserted street" |
-| time of day | "Late afternoon golden-hour, sun low and warm" | "NOT daytime overhead light, NOT night" | "Long warm shadows across the frame" |
-
-If the constraint is *soft* (a preference, a hint, something the operator would accept being broken occasionally), one positioning is fine. Save triple-positioning for the load-bearing rules. See available model behavior guidance for the underlying model behavior this addresses.
-
-## Hard rules (learned on earlier runs — break these and the cascade returns)
-
-- **Never ask an image model to render specific brand or UI text.** Nano Banana garbles "EXAMPLE" → "EXAMPEL"; specific Slack-style UI strings come out as gibberish. All branded text is added in post via PIL or FFmpeg overlay.
-- **Kling 3.0 minimum duration is 3 seconds.** Pre-trim to your target in post (1–2s scenes).
-- **Image references and video start images use different schemas.** Resolve each receiving model's actual field names and accepted asset representation through the binding. Managed fal uses its own discovered schema; an optional direct Higgsfield route (only if the host has it) uses its own role fields.
-- **`.avif` references are rejected by the Anthropic API.** State 0 preflight should have caught this; double-check at Phase 0.
-- **Local file paths sometimes can't pass directly to the actual model's reference-value field.** Fallback: upload via the host's actual upload/confirmation operations first, then use the returned media ID.
-- **Dark / heavy-vignette keyframes silently fail in Veo Lite.** Generate on neutral background; apply vignette/color in post via FFmpeg.
-- **Provider limits vary.** Read the actual account/model concurrency contract, reconcile existing jobs and probe every audio response. File size alone cannot distinguish a valid short take from an error.
-- **fal is the default; use Higgsfield only if the host has it and the brief needs Soul ID.** A generation call counts as failed (and triggers the fallback router) when ANY of:
-  1. The real submit operation raises an exception (network, auth, server error).
-  2. `the host job-status operation` returns `status: "failed"` after polling.
-  3. The real status/result operation returns success but the output URL 404s on download.
-  4. Downloaded file is < 1 KB (error JSON) for images or < 10 KB for videos.
-  5. The provider returns an explicit credit-limit / insufficient_credits error.
-  6. Job exceeds 10-min timeout (configurable; veo3/seedance can take longer — extend to 15 min for those).
-
-  When any of these fire AND `<provider_override>` is `fal` (default): reconcile the known job and resolve a supported, approved-budget fallback model through the host. Rate-limit (429) is NOT failure — back off and retry the same provider.
+  On a failure, reconcile the known job and resolve a supported fallback row from shot routing inside the approved budget. If none exists, record `fallback_unavailable` and surface it. A 429 is not a failure: back off and retry the same provider.
 
 ## Workflow
 
-### Phase 0 — Pre-flight
-1. Read sourced creative brief, implementation_brief, `locked_script`, scene/timing IDs, source/asset selections and performance intent. Validate the selected specialist handoff, required runtime/dependencies and existing approved jobs/results before generation.
-2. Re-run `video-production-harness/preflight-audit` (new assets may have landed since State 0).
-3. Create folder layout per the brief: `clips/`, `audio/`, `generated/style-tests/`, `generated/keyframes/`, `raw-materials/`.
-4. Copy hero assets (e.g. `hero-photo.jpg`) into `raw-materials/`.
-5. **If `character_locks` exists** (ad has a human character): skip the cartoon style-anchor step. The anchor portrait already serves that role. Read `character_locks` and resolve `method` (`anchor-ref`, or `soul-id`: optional, only if the host has Higgsfield) — this drives the actual model's reference inputs payload for every scene with the character.
-6. For relevant continuing worlds/person/product scenes, read selected world/product/scale references and exact wardrobe/light/grade/prop/time intent. Send required identity and world/scale references through supported fields and save their actual attached manifest. Apply this even for concept_format other; intentional locations are separately planned. Missing critical reference binding leaves the scene unresolved before spend.
-7. **If `character_locks` is absent**, reuse approved product footage/stills or selected style references. Only when a planned generated cartoon/style route needs a missing style anchor, generate **one style-anchor image** through an actually supported approved image model (Nano Banana 2 is a preference when available). Save to `generated/style-tests/style-anchor.png`. **Style lock gate** — inspect; if the style is wrong, iterate before committing video credits.
+### Phase 0 — Preflight
+1. Read the creative brief, `implementation_brief`, `locked_script`, scene ids, asset selections and performance intent. Validate the handoff, dependencies and existing jobs.
+2. Re-run [preflight-audit.md](preflight-audit.md); new assets may have landed.
+3. Create `clips/`, `audio/`, `generated/style-tests/`, `generated/keyframes/` and `raw-materials/`; copy hero assets into `raw-materials/`.
+4. **If `character_locks` exists**, skip the style anchor: the locked anchor fills that role. Read its `method` (`anchor-ref`); it drives the reference inputs for every scene with the person.
+5. For continuing worlds, people and products, send the selected world, product and scale references (plus exact wardrobe, light, props and time of day) and save the attached manifest. A missing critical reference leaves the scene unresolved before spend.
+6. **If `character_locks` is absent**, reuse approved product footage, stills or style references. Only when a planned cartoon route needs a missing style anchor, make one with Nano Banana (cartoons only) and save `generated/style-tests/style-anchor.png`. Inspect it; fix the style before any video credits.
 
-### Route dispatch after preflight
+### Route dispatch
 
-Execute only the route assigned to each scene in the approved capability plan. Resolve missing tools/dependencies before any paid operation. If route/input/output mapping is ambiguous, save the blocker before creating assets.
+Run only the route the capability plan assigns each scene. If a route or its inputs are ambiguous, save the blocker before making assets.
 
-| Approved scene route | Execute | Skip |
+| Approved route | Run | Skip |
 | --- | --- | --- |
-| Reuse owned product/demo footage | Fetched footage-cutlist survey/inspection, approved source windows and cut render; then Phase 5 validation. | New style anchor, keyframe generation and generative animation. |
-| Native-speaking creator | Fetched creator package's actual plan/approved native-take procedure; review selected first-take performance before remaining takes, then Phase 5. | Generic still-to-video replacement and separate TTS over native dialogue. |
-| Deterministic graphic/still motion | Actual local composition/FFmpeg or installed browser/motion renderer, then Phase 5. | Generative image/video unless separately assigned and approved as a missing input. |
-| Generic approved image-to-video | Phase 1 only for missing/unapproved required keyframes, Phase 2 for missing/invalid animation, then Phase 5. | Regeneration of any valid selected keyframe or clip. |
+| Owned product or demo footage | Footage survey, approved source windows and the cut; then Phase 5 | Style anchor, keyframes, generative animation |
+| Native-speaking creator | The creator package's approved native-take procedure; review the first take before the rest; then Phase 5 | Still-to-video replacement; separate TTS over native dialogue |
+| Deterministic graphic or still motion | Local composition, FFmpeg or an installed browser renderer; then Phase 5 | Generative image or video unless separately approved |
+| Generic image-to-video | Phase 1 for missing keyframes, Phase 2 for missing animation, then Phase 5 | Regenerating any valid selected keyframe or clip |
 
-Phase 3 handles planned static/local elements; Phase 4 supplies separate audio only where the audio plan requires it. All routes share source/return validation and final performance/mix review. Presence of a human/product alone does not authorize creating a new anchor. Each successful return carries the existing handoff's scene/beat and source revision into Phase 5.
+A person or product in a scene does not by itself authorize a new anchor.
 
 ### Phase 1 — Keyframes
 
-Run only for scenes assigned generic image-to-video or an explicitly approved generated-still input. Reuse valid selected keyframes.
-1. For each scene:
-   - **Scenes with the locked character** — generate the keyframe with the locked anchor (or the optional soul_id, only if the host has Higgsfield) as a confirmed reference in that model's actual supported image-reference field. Prompt template threads the verbatim `<character_descriptors>` block from `design_brief` plus the scene-specific action.
-   - **Scenes without the character** — use the cartoon style anchor as a style ref (mapped to the actual supported image-reference field), or no ref for non-cartoon scenes.
-2. Use the approved aspect ratio (normally 9:16) and supported resolution. Use the scene's row in `references/shot-routing.md`; resolve real model IDs and request schemas before submitting.
-3. **Never put brand or UI text in the prompt.** "Phone screen shows Slack" → render a neutral screen; the Slack UI is composited in post. "Box labeled Example Brand" → render an unlabeled box; the wordmark goes on in post via PIL.
-4. **Provider routing.** Default path is `the host image-generation operation` for each keyframe (run in parallel; fal supports concurrent jobs). On detected failure per the 6 failure-detection rules in "Hard rules", invoke the fallback router:
-Resolve this operation through the selected host binding and the real implementation in `capabilities.md`. Preserve its approved inputs, provenance and cost; stop if the capability is unavailable.
-
-   fal is the default managed route. If `<provider_override>=higgsfield` (optional; only if the host has it), no fallback — fail loud.
-5. Poll the real returned request through the binding's status/result operations. Managed fal uses its documented submit/status/result contract (an optional direct Higgsfield route, only if the host has it, uses job_status). Save the confirmed image to `generated/keyframes/scene-NN.png`.
-6. Inspect every selected keyframe before animating: exact variant/geometry, sourced scale, support/contact, feature visibility, crop/text space and continuity. Follow [product scale and world](references/product-scale-and-world.md); verify actual attachments after caps/filtering. Compare people to accepted anchors/worlds without invented drift percentages. Repair within current approval/budget before animation.
-7. **Inherit gateway for downstream calls in the same scene.** Read the keyframe's `<output>.meta.json` to determine `gateway`. The animation in Phase 2 should use the same provider for that scene to avoid cross-provider drift, unless the operator explicitly overrides.
+Only for scenes routed to image-to-video or an approved generated still. Reuse valid keyframes.
+1. **Scenes with the locked person:** send the locked anchor as a confirmed reference in the model's real image-reference field. The prompt carries the verbatim `<character_descriptors>` from `design_brief` plus the scene action.
+2. **Scenes without the person:** cartoon scenes use the style anchor as a style reference; photoreal product scenes send the real product photo on the edit route and describe the action and set, not the product.
+3. Use the approved aspect ratio (normally 9:16) and the scene's routing row. Submit through the host's image-generation operation (keyframes may run in parallel), poll the returned request and save `generated/keyframes/scene-NN.png`. On a failure, use the fallback router above.
+4. Inspect every keyframe before animating: exact variant and geometry, sourced scale, contact, crop, text space and continuity ([product scale and world](references/product-scale-and-world.md)). Compare people to accepted anchors without invented drift percentages.
+5. **Keep the gateway.** Read the keyframe's `<output>.meta.json`; animate that scene on the same provider unless the operator overrides.
 
 ### Phase 2 — Animate clips
 
-Run only for missing/invalid generative animation explicitly assigned by the capability plan. Native specialist clips, retrieved footage and deterministic motion bypass this phase.
-1. **Provider routing.** Use the host's supported video-generation operation and current approved scene plan. Use the scene's row in `references/shot-routing.md` with its real catalog model ID, schema and priced unit. Resolve the approved ratio/duration and starting-image input from the actual confirmed keyframe/result, never an assumed job ID. Use a tight motion-only prompt. On detected failure per the 6 failure-detection rules, invoke the fallback router:
-Resolve this operation through the selected host binding and the real implementation in `capabilities.md`. Preserve its approved inputs, provenance and cost; stop if the capability is unavailable.
+Only for missing or invalid generative animation the plan assigns.
+1. Submit through the host's video-generation operation on the scene's routing row. Take ratio, duration and start image from the confirmed keyframe. Use a short, motion-only prompt.
+2. Poll the returned request and save `clips/scene-NN.mp4`.
+3. **Clip check, one redo.** After each generated clip, upload it, confirm it and send `video_change` custom `clip_check` `{scene, url}` with the returned `output_url`. About a minute later read `video_read` `clip_checks`; pending is not passed. If the check says to throw the clip away (`suggest_kill`), redo it once: send the same paid call with `reroll_scene=<scene>`, then check the new clip. If that also fails, exclude both candidates from the passing assembly, tell the customer in one plain line and continue. Never a second redo. If the redo is refused, read the fix it gives. Record every check in the manifest. A host without clip checks needs the manual content duties in [creative contract and review](references/creative-contract-and-review.md).
+4. **Failures.** Reconcile jobs first. If the fallback also fails on the same scene, the prompt or keyframe is the likely cause: surface both errors to the operator. Never loop retries.
+5. **Concurrency.** About 3 ElevenLabs requests at once; 2-3 concurrent fal jobs.
 
-   If the requested family has no supported equivalent in the binding, record `fallback_unavailable` and surface the limitation; do not invent an alternative catalog entry.
-2. Poll the actual returned request through the selected binding's documented status/result operations, then save the confirmed output to `clips/scene-NN.mp4`.
-3. **Clip check.** Register/confirm the actual clip and submit the current host clip_check with its scene/output identity. Read its completed result; pending is not passed. A rejected candidate may receive only the existing permitted redo within approved budget, then a fresh check. If it fails, exclude both candidates from passing assembly and save the gap; continue independent work, never a second redo. Without automated clip checks, perform the complete manual content duties in [creative contract and review](references/creative-contract-and-review.md). Missing perception stays incomplete.
-4. **Failure recovery:** classify provider, input, source/model, edit and capability defects. Reconcile existing jobs first. Use only qualified supported repairs within current authorization; no automatic model-family substitution or unsupported assumption that the prompt caused failure.
-5. **Concurrency note:** ElevenLabs limits to ~3 concurrent requests on team plans — gate audio gen accordingly. fal has per-account RPS limits — keep concurrent fal jobs at 2-3.
+### Phase 3 — Static scenes
+- **End card:** the end-card row, or a Pillow or FFmpeg composition (background, photo, headline, URL).
+- **Still motion:** FFmpeg zoompan over an approved still for the scene's planned length.
 
-### Phase 3 — Static / non-AI scenes
-- **Hero hold (felt mascot push-in):** FFmpeg zoompan over the hero photo for the scene's duration.
-- **End card:** approved deterministic Pillow/FFmpeg composition (background + photo + headline + URL) → FFmpeg loop to MP4. Motion chrome requires an actual installed browser renderer and its dependencies.
+### Phase 4 — Voice
 
-### Phase 4 — Voiceover
+Only for narration, audio-driver, song or source-speech routes. No-speech scenes keep their planned soundtrack; native scenes keep their checked clip audio. Follow [speech and route qualification](references/speech-and-route-qualification.md). A talking face across several clips uses `exact_audio_lipsync`: final ElevenLabs line first, then one lip-sync per line, one line per clip.
 
-Apply only to resolved narration/audio-driver/song/source-speech routes. No-speech scenes skip voice but retain planned soundtrack; native scenes reuse checked clip audio. Follow [speech and route qualification](references/speech-and-route-qualification.md), including supported delivery/pronunciation and first-take acceptance. Speech review applies wherever speech exists.
-
-1. Read exact locked_script/locked_lyrics and the host-selected audition for every speaker role. Never select a new voice or regenerate a valid selected per-beat audition silently.
-2. Reuse its actual audio files and preserve voice ID, settings, beat IDs and script revision. If full-production rendering is necessary, use those exact settings/text through the managed voice capability under the approved budget.
-3. Source audio is split at actual word boundaries using the transcript; inspect cuts for partial phonemes. Native generated dialogue stays on its clip; never double it with a separate narration track.
-4. Listen to each actual isolated take/line at normal speed for pronunciation, conversational rhythm, phrase stress, pause intent, endings and defects; later listen again inside the actual full mix. Compare transcript/word timings as supporting evidence. Record unavailable listening as incomplete; do not force faster delivery, global pause removal or louder climax. Check valid decoded audio, duration and exact line agreement. A small/error response is a failure. Concurrency follows the actual provider contract; known 429/concurrency failures back off rather than duplicate jobs.
-5. If music is generated, follow the actual provider schema and approved music/lyrics plan. Unsupported artist-name or composition parameters must be resolved before spending.
+1. Read the exact `locked_script` or `locked_lyrics` and each speaker's selected audition. Never pick a new voice or silently regenerate a valid audition.
+2. Reuse the audition audio, voice id and settings; a full render uses those exact settings and text, inside budget.
+3. Split source audio at real word boundaries and check cuts for partial sounds. Native dialogue stays on its clip; never double it with narration.
+4. Listen to every isolated line at normal speed (pronunciation, rhythm, stress, pauses, endings), and again in the full mix. When you cannot listen, record the review as `measured`, not `listened`, and use transcript and word timings as the evidence. Check that audio decodes, its duration and that the words match the line. A tiny or error response fails. Back off on 429s instead of duplicating jobs.
+5. Music uses `music-elevenlabs@1.1.0` with `music_v2_5` requested explicitly, per the approved music plan. Resolve unsupported artist-name or composition fields before spending.
 
 ### Phase 5 — Register reviewable clips
 
-Review actual returned media against the handoff and content-derived duties: exact scene/contract/source revision, line/assets, full action/proof, product geometry/scale/support, measured duration, face/voice/perceptual sync and adjacent continuity. A provider URL or process success is insufficient. Register all sources/jobs and exact pass/needs_change/incomplete evidence. Failed candidates remain visible and excluded from passing assembly.
+Review each clip against its handoff: revision, line and assets, full action and proof, product geometry and scale, measured duration, face and voice sync, continuity with neighbours. A provider URL is not a pass. Register every source and job with its pass, needs_change or incomplete evidence. Failed candidates stay visible and out of the passing assembly.
 
 ## Output
 
@@ -168,39 +126,29 @@ Review actual returned media against the handoff and content-derived duties: exa
 - `<video_folder>/audio/vo-scene-{01..NN}.mp3`
 - `<video_folder>/audio/voice-choice.md`
 - `<video_folder>/generated/keyframes/scene-{01..NN}.png`
-- `<video_folder>/generated/style-tests/style-anchor.png`
+- `<video_folder>/generated/style-tests/style-anchor.png` (cartoon ads only)
 - `<video_folder>/clip_review`
 
-## Quality Checks
+## Quality checks
 
-- Every planned scene has its actual checked clip and the audio mode specified by the brief. Separate narration files exist only for scenes that require them; native dialogue is not silently duplicated.
-- VO text in every scene MP3 matches locked_script (no drift from design-brief edits).
-- If `character_locks` exists, every character-scene keyframe used the locked anchor (or the optional soul_id, only if the host has Higgsfield).
-- Style anchor (cartoon ads) OR character anchor (human ads) was reviewed before animation.
-- No brand/UI text in any image prompt; branded text is all PIL/FFmpeg overlay.
-- Failures are classified, reconciled and repaired only when useful within approval/budget; ambiguous timeouts never force a duplicate paid retry.
-- All clips match the approved ratio/duration and decode successfully. All required audio decodes and matches the locked lines; a size heuristic alone cannot prove validity.
-- The host clip review surface plays actual clips and matching audio without inventing a review UI.
-- Preserve the approved storyboard and its revision.
-- Every generated artifact has a `<output>.meta.json` recording its `gateway` (`fal`, or optional `higgsfield` only if the host has it) and model. Any fallback fires are logged in `<video_folder>/.fallback-events.jsonl` with operation, primary model, FAL model, reason, and outcome.
+- Every planned scene has a checked clip in the brief's audio mode; native dialogue is never doubled.
+- Every voice file decodes and matches `locked_script` (hard fail if `design_brief` differs).
+- Person keyframes used the locked anchor; the style or person anchor was reviewed before animation.
+- No brand or UI text in any image prompt.
+- Every generated clip has a clip check; failed candidates are out of the passing assembly.
+- Clips match the approved ratio and duration and decode.
+- An ambiguous timeout never forces a duplicate paid retry.
+- Every generated artifact has a `<output>.meta.json` with `gateway` and model; fallbacks go in `<video_folder>/.fallback-events.jsonl` (operation, primary model, fallback model, reason, outcome).
 
-## Failure Modes
+## Failure modes
 
-- Skipping Phase 0 style-lock / character-lock and burning credits on bad style.
-- Ignoring `character_locks` — generates new "from scratch" character keyframes that drift, defeating State 3.5.
-- Asking Nano Banana to render specific brand text — produces EXAMPEL-class typos. Always overlay branded text in post.
-- Generating videos in parallel that all reference the same source plate, causing identical motion.
-- VO returns 593-byte error JSON because of concurrency limit, and operator misses it.
-- Dark/vignette keyframes silently fail in Veo Lite (regenerate on neutral background, vignette in post).
-- Voice picked outside `the host-approved voice catalog`.
-- VO rendered from `design_brief` instead of locked_script — silently re-introduces an unlocked script. Hard fail if they diverge.
-- **Both the primary and the fallback model failing on the same scene** — the prompt or keyframe is likely the issue, not the gateway. Don't loop the fallback. Surface to the operator with both error contexts; investigate the prompt before any further attempt.
-- **Mid-pipeline provider swap on a character** — if scene 3's keyframe came from one provider and scene 4's from another, character drift will show. Always inherit `gateway` from the anchor's `.meta.json` for character-scene calls; only swap providers if the operator explicitly chooses.
+- Spending before the style or person lock.
+- Several clips from one source plate with identical motion.
+- A 593-byte error JSON accepted as voice audio.
+- Switching provider mid-character: inherit `gateway` from the anchor's `.meta.json`.
 
 ## Use stored original footage
 
-When the customer asks to reuse footage, ask the host to search the current owned media and inspect actual frames plus timed transcript. An analysis description or thumbnail URL alone is not a visual review. Known user-selected trims remain usable when optional semantic analysis is unavailable; record that limitation instead of requesting a duplicate upload.
+Follow the stored-footage contract in `capabilities.md`. Search owned media through the host and inspect real frames plus the timed transcript; a description or thumbnail is not a visual review. A known user-selected trim stays usable without semantic analysis; record the limit.
 
-Freeze `{asset_id, analysis_revision, scene_id, start_ms, end_ms, audio_mode}` in each selected scene and ingredient. `analysis_revision` is the verified SHA-256 of original bytes, `scene_id` may be null for a known trim, bounds are integer milliseconds, and audio is `original` or `muted`. Attach the canonical original through the host, preserve the requested format and user locks, then obtain the usual script and ingredient approvals. Research links and competitor ads never grant production rights.
-
-Before consumption and publication, the host rechecks current ownership, product/project scope, permission and revision. Download the verified original, trim that exact window at normal speed, and preserve the chosen audio. The portable assembler accepts `source_excerpt` beside a clip's path/duration, validates its SHA and range and returns the lineage. It refuses a separate voice track that would replace approved original audio. Only newly generated or replaced ingredients may consume the approved generation budget.
+Freeze `{asset_id, analysis_revision, scene_id, start_ms, end_ms, audio_mode}` in each selected scene and ingredient (`analysis_revision` is the original's SHA-256; integer milliseconds; audio `original` or `muted`). The usual approvals apply. Research links and competitor ads never grant production rights. Trim the verified original at normal speed with its chosen audio; the assembler's `source_excerpt` validates SHA and range and refuses a voice track that would replace approved original audio. Only new or replaced ingredients use the generation budget.

@@ -1,51 +1,49 @@
 # Human version
 
-Choose a route that preserves the approved shot, product and speech. A table row is
-an implementation candidate, not proof of quality. Repair the layer that actually
-failed and inspect the replacement.
+Pick every shot's model, or its kit part on the kit path, from one table. Re-roll the cheapest layer that fixes the problem.
 
 ---
 
 # Agent version
 
-Read [speech and route qualification](speech-and-route-qualification.md) before
-choosing an endpoint, then the applicable genre card. Bind the actual current host
-schema/price and record model, endpoint/version, task, input conditions and accepted
-examples. Use the cheapest qualified route, not a cheaper unreviewed substitution.
-Do not reroll on the same row regardless of the cause.
+The two paths are defined in capabilities.md at the package root. Agent-built path (the default): use the fal model id column. Kit path only: the part column. Rows with no model, agent-built: `create-kinetic-typography` for type, `goose-graphics` for cards and stills, FFmpeg overlay for screenshots and logos.
 
-Agent-built uses the endpoint column through its real supported host operation;
-kit uses published part versions. If the endpoint cannot accept the required
-references, exact speech task or scene ownership, that route is unavailable.
+Use this table in three places: the design brief writes one routing line per scene (`scene N → <row> → <fal model id>`, plus `part@version` on the kit path), create-clips makes each scene on its row, and edit-clip re-rolls on the same row. Then open the genre card for the brief:
 
-| Shot type | Existing implementation to inspect | Selection and acceptance |
-|---|---|---|
-| Native speaking creator | creator-h3@1.3.0; minimax/h3-max/reference-to-video | Qualified configuration only. Accept first actual face/voice/performance before remaining takes; retain all checked native audio and real word timings. |
-| External narration over non-speaking scenes | video-h3max@1.1.0 stills mode or qualified non-speaking footage | No depicted talking mouth; narration is a separate accepted performance. Resolve source ambience separately. |
-| Multiple speakers | Supported native dialogue or per-speaker audio-driven route | Verify endpoint speaker controls and correct voice-to-mouth assignment; no automatic one-speaker-wrapper reuse. |
-| Exact driver lip-sync | lipsync-veed@1.0.0; veed/fabric-1.0, conditional | No automatic close-up default/fallback. Review representative take, driver source timing and the complete final mouth match. |
-| Simple non-speaking creator B-roll | video-kling@1.0.0; fal-ai/kling-video/v2.5-turbo/pro/image-to-video, conditional | Not an automatic route for exact application, dispensing or other stateful proof. Review complete action; never mask semantic defects. |
-| Cast/character anchor | Existing selected character catalog and fetched creator avatar builder; compatible image part | Choose phone/studio capture and reference-led focus/light. Preserve selected image family and identity; inspect still and motion separately. |
-| Set/world still | Compatible selected image route | Bind actual set/light/product scale refs; intentional multi-location scenes have distinct worlds. |
-| Photoreal product keyframe | image-gpt-image-2@1.1.2; openai/gpt-image-2/edit | Real exact-variant product and scale refs attached after provider caps. Inspect geometry, parts, use and target crop before animation. |
-| Product action from keyframe | video-veo-3@1.0.1 or video-seedance-2@1.2.0, conditional | Require representative action/product trial for intended use. A passing hero move cannot qualify pouring or application. |
-| Hypermotion product | Qualified video-seedance-2@1.2.0 reference route with designed text layers | Keep product faithful through all motion; no generated text or unsupported camera path. |
-| Designed/cartoon still | Explicitly selected compatible image route and style anchor | Preserve approved style/family and inspect output. No universal photoreal ban on another family; changed routes require qualification. |
-| Owned product/UI footage | footage-cutlist; cut-footage@1.2.1 | Inspect authorized original/excerpt and preserve exact revision/range/audio. Feature stays visible during its claim. |
-| Product/logo overlay | overlay@1.0.0 | Actual image/wordmark, correct proportions and readable placement. Cannot repair wrong packaging or substitute for physical proof. |
-| Chat/UI story | phone-chat@1.3.0 or compatible deterministic composition | Actual approved content; enough reading time and correct screen state. |
-| Kinetic type/cards | Compatible deterministic motion/composition | Exact approved copy, reference-led style and usable reading hold; no silent substitute for required creator/action. |
-| End card | end-card@1.1.1 or approved designed resolution | Real logo/CTA and enough measured reading time; format/brief chooses the ending. |
-| External speech | voice-elevenlabs@1.2.0 | Accepted voice/settings/pronunciation, whole-performance listening and measured placement. V4 is selectable only through eligible current schema/quote; not automatically promoted. |
-| Music | music-elevenlabs@1.0.2 or authorized existing track | Actual auditioned section, rights, planned energy/cues and complete mix review; no compulsory loop/flat continuous bed. |
-| Captions | captions-layer@1.4.0 or supported caption renderer | Accepted words and measured timing; actual phone-size final review. |
+- AI creator or UGC talking video: [ai-creator-ugc](genres/ai-creator-ugc.md)
+- Kinetic type or designed motion cards: [motion-graphics](genres/motion-graphics.md)
+- Fast product hero motion: [hypermotion](genres/hypermotion.md)
+- Chat or app screen story: [chat-ui](genres/chat-ui.md)
+- Product demo or proof points: [product-demo](genres/product-demo.md)
 
-Current endpoint candidates and restrictions are maintained in the qualification
-reference. Newer model names are not interchangeable with this table's managed
-routes. A missing row/qualification is an unresolved production decision; present
-feasible alternatives within the existing review, not a new mandatory gate.
+Before choosing a native-speech, lip-sync or narration row, read [speech and route qualification](speech-and-route-qualification.md); for product and person shots, read [product scale and world](product-scale-and-world.md). A row is a candidate, not proof of quality: inspect the output. A shot with no row is an open decision for the operator, not a free model choice. For any shot with a person, also follow the avatar guide that ships with `create-image-fal`.
 
-Genre cards are examples to adapt, not fixed scene counts or pace ceilings:
-[AI creator UGC](genres/ai-creator-ugc.md), [product demo](genres/product-demo.md),
-[motion graphics](genres/motion-graphics.md), [hypermotion](genres/hypermotion.md),
-[chat UI](genres/chat-ui.md).
+| Shot type | Kit part@version | fal model id | Prompt rules | Known tells | Cost | Check before keeping |
+|---|---|---|---|---|---|---|
+| Talking creator, exact script | `voice-elevenlabs@1.2.1` → `lipsync-veed@1.0.0` | `eleven_v3`, `veed/fabric-1.0` | **Default for a talking face across several clips** (`exact_audio_lipsync`): make and accept the final voice line first, then one lip-sync per line, one line per clip; neutral closed-mouth still from the cast; 720p | Mouth smear on hard consonants; a line split across two clips | $$ | Each clip within 0.5 s of its line; listen to every line before lip-sync |
+| Talking creator, single native take | `creator-h3@1.4.0` | `minimax/h3-max/reference-to-video` | Native H3 voice (`qualified_native`) only for one take of 15 s or less, at most 3.2 words/s; cut only between sentences; never retime the take; no square brackets in lines | Rushed or clipped last words; a join mid-sentence; face drifts from the still | $$$ | Listen to the take; transcript matches the script; more than one take means use the row above |
+| Narrated creator scene montage | `video-h3max@1.1.0` (stills mode) | `minimax/h3-max/reference-to-video` | One still per scene is the first frame; write motion only; clips 4-15 s timed to the voice; drop native sound when the voice comes from another step | Animated black bars; product redrawn | $$$ | Each clip covers its scene; product matches its photo |
+| Two-person dialogue / street interview | `video-h3max@1.1.0` (take mode) | `minimax/h3-max/reference-to-video` | Native dialogue with a speaker per beat; at most 4 takes of 8 beats; a spoken beat needs words ÷ pace + 0.5 s. Never send a photoreal person still to Seedance | A line from the wrong mouth; drift at take ends | $$$ | Each line comes from the right speaker; transcript matches |
+| Seated two-person talk | `cast-plate@1.1.0` → `lipsync-veed@1.0.0` → `dialogue-cut@1.0.1` | `openai/gpt-image-2/edit`, `veed/fabric-1.0` | One plate for the room (one still per person puts them in different rooms); faces neutral, mouths closed; 2-3 people with different looks | Twins; mouth smear | $$ | Singles differ; each clip within 0.5 s of its audio |
+| Creator B-roll, no speech | `video-h3max@1.1.0` (stills mode) | `minimax/h3-max/reference-to-video` | The still is the first frame; motion only; `generate_audio: false` (native sound muted); say "nobody speaks, lips closed"; one camera move; 4-15 s | Lips moving with no line; hands morphing; content the prompt never asked for | $$$ | Watch the whole clip against its still; measured motion, not a still; mouth closed |
+| Lipsync onto an existing take or still | `lipsync-veed@1.0.0` | `veed/fabric-1.0` | Neutral, closed-mouth, head-and-shoulders still; one approved audio line per clip; 720p | Mouth smear on hard consonants | $$ | Length within 0.5 s of the audio; watch the mouth |
+| Cast anchor portrait | `image-gpt-image-2@1.2.0` (one person); `cast-plate@1.1.0` (2-3 in one room) | `openai/gpt-image-2`, `openai/gpt-image-2/edit` | Real people use the edit route. Phone capture, deep focus, no bokeh, a lived-in real room (not a plain wall); natural skin with pores; no retouching, smoothing, beauty filter or cinematic grade; frontal gaze; state each person's ethnicity in group shots | Waxy skin; blurred background; face under 300 px | $ | Crop the face, enlarge 2× and inspect |
+| Set / world reference still | `image-gpt-image-2@1.2.0` | `openai/gpt-image-2` | Empty set, no people; even light, deep focus; the reference for every shot there | The room changes between scenes | $ | Compare each scene's background with it |
+| Presenter or UI still | `image-gpt-image-2@1.2.0` + `overlay@1.0.0` | `openai/gpt-image-2/edit` | Leave screens blank or turned away; put the real screenshot on with overlay; no words in the prompt | Garbled labels; a border or letterbox | $ | Read every string on the frame |
+| Photoreal keyframe / product hero | `image-gpt-image-2@1.2.0` + `overlay@1.0.0` | `openai/gpt-image-2/edit` | Real products use the edit route: send the real product photo; describe the action and set, not the product; one colourway. Packaging and labels always come from the real photo through `overlay`, never redrawn | Product redrawn (logo, shape, colour); extra hands | $ | Product matches its photo at 2× |
+| Product photo overlay | `overlay@1.0.0` | — | Real product photo or logo (PNG, JPEG, WebP) over the scenes that name it; up to 8 items | SVG logo skipped; covers a face | free | Watch every window |
+| Cartoon keyframe | `image-nano-banana@2.0.0` | `fal-ai/nano-banana`, `fal-ai/nano-banana/edit` | **Cartoons only**, never real people or real products; send `subject: cartoon` (the part refuses anything else and any real product photo); one style anchor as reference; the reference's brightness beats a hex code; no text | Colours lighter or darker than locked; garbled text | $ | Compare with the style anchor |
+| Product in hand / motion from a keyframe | `video-veo-3@1.0.2` | `fal-ai/veo3.1/fast/image-to-video` | **Warning (15 Oct 2026): fal retires this endpoint on 17 Nov 2026**; keep it until a bake-off picks a replacement; for product-only motion prefer `video-seedance-2@1.2.0`. Start frame from the product still; one governing camera idea; both hands already on the object, no tap or twist; say "stationary" for still scenes | Dark plates fail; floating object; background moves | $$ | Sample 8 fps; last second shows the right product |
+| Complex product motion | `video-seedance-2@1.2.0` | `bytedance/seedance-2.0/image-to-video` | Product photo as start frame; say whether the camera or the subject moves; 4-15 s | Camera and subject motion swapped; morph between impossible angles | $$$ | Watch for morphs; use an FFmpeg cut when no real camera path exists |
+| Hypermotion product | `video-seedance-2@1.2.0` (reference mode) + `html-frames@1.3.1` cards | `bytedance/seedance-2.0/reference-to-video` | Product photos as references; no person references; fast hero moves; all words on HTML cards | Product redrawn; text in the clip | $$$ | Product matches its photo; no AI text |
+| UI / screen insert | `cut-footage@1.2.1` or `overlay@1.0.0` | — | Real screen recording or screenshot; cut the window that shows the feature being said | Wrong screen for the line; a flash cut | free | The feature is visible while it is said |
+| Chat screen | `phone-chat@1.3.0` | — | One message per scene as "Name: text"; skins: iMessage, ChatGPT, notes, notification stack | Text past the screen; typing out of sync | free | Every message readable at phone size |
+| Kinetic type / motion card | `html-frames@1.3.1` (seed frames only) + `overlay@1.0.0` for real screenshots | — | Words mirror the voice; each card holds for its reading time | Words that differ from the voice | free | Read every card at phone size |
+| End card | `end-card@1.1.1` | — | Real logo, never redrawn; up to 3 rows of 60 characters; hold at least 1.5 s | Logo stretched; CTA missing | free | Readable at phone size for 1.5 s |
+| Voiceover | `voice-elevenlabs@1.2.1` | `eleven_v3` | Approved voice only; brand pronunciations; one line per scene | Mispronounced brand words | $ | Listen to every line |
+| Music | `music-elevenlabs@1.1.0` | `music_v2_5` | Request `music_v2_5` explicitly; mood from the plan; ask for a continuous bed with no quiet sections | A silent gap mid-bed | $ | Measure the level over the whole bed |
+| Captions | `captions-layer@1.5.0` | `fal-ai/whisper` | Word timings from the voice step; keep captions off the product | Captions across a cut or over the product | $ | Read each caption against the audio |
+
+**Cost ladder.** Use, and re-roll, the cheapest layer that does the job: HTML, text or FFmpeg (free) → a still ($) → a still with image-to-video ($$) → premium video only for physics, fluids, particles, talking or native audio ($$$). Words never go into a generated picture. Pick one governing camera idea per ad before the scene table; every camera move serves it.
+
+**Models seen in older runs with no part.** Move them to a row: `fal-ai/flux/dev` → `openai/gpt-image-2`; Seedance text-to-video with a separate lipsync → `creator-h3@1.4.0` (one creator) or `video-h3max@1.1.0` (two speakers); `fal-ai/nano-banana-pro` → `fal-ai/nano-banana` for cartoons, `openai/gpt-image-2/edit` for real people and products; Kling 2.5 Turbo is withdrawn → `video-h3max@1.1.0` stills mode for creator B-roll, `video-seedance-2@1.2.0` for product-only motion; Veo 3.1 Lite → `fal-ai/veo3.1/fast/image-to-video` (retiring 17 Nov 2026); `music_v1` → `music_v2_5`.
