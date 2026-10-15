@@ -1,8 +1,8 @@
-// Built from check-layer\src\part.mjs by parts/_tools/bundle.mjs. Do not edit: change the source and publish a new version.
+// Built from check-layer/src/part.mjs by parts/_tools/bundle.mjs. Do not edit: change the source and publish a new version.
 import { readFile, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 
-// ---- _lib\schema.mjs ----
+// ---- _lib/schema.mjs ----
 // A small JSON Schema (draft 2020-12) checker for part inputs, outputs and
 // manifests. It covers the keywords part manifests and part input schemas use
 // and refuses nothing it does not understand silently: unknown keywords are
@@ -193,7 +193,7 @@ function kitSchemaErrors(schema, value, at = '$') {
   return errors;
 }
 
-// ---- _lib\part.mjs ----
+// ---- _lib/part.mjs ----
 // What every part does at its edges: read its own manifest from its version
 // folder, refuse inputs outside its schema, check its outputs, and run the
 // kit's ffmpeg. Bundled into every part.mjs; every top-level name starts
@@ -302,7 +302,7 @@ async function kitDuration(ctx, file) {
   return info.duration_s;
 }
 
-// ---- _lib\speech.mjs ----
+// ---- _lib/speech.mjs ----
 // Speech-vs-script gate: a port of the pure part of
 // skills/ads/packs/ugc-video-formats/review-ugc-render/scripts/review_render.py
 // (canonical spoken form, word diff, issue classification and the verdict).
@@ -1517,7 +1517,7 @@ function speechPronunciationPairs(json) {
   return pairs;
 }
 
-// ---- _lib\frames.mjs ----
+// ---- _lib/frames.mjs ----
 // Pixel and sample measures on the finished cut for the check layer: the
 // brand logo found by grayscale normalised correlation over a size search
 // (review-finished-ad's logo check), on the whole frame or inside the box a
@@ -1869,7 +1869,7 @@ async function kitWindowLevels(ctx, video, windows) {
   });
 }
 
-// ---- check-layer\src\flags.mjs ----
+// ---- check-layer/src/flags.mjs ----
 // The check layer's 1.3.0 style flags, measured on the finished cut and its
 // timeline: text_led (blank frames, not dark ones, review-finished-ad's
 // silent-text profile), read_rate, cuts_between_words, cut_rate and the
@@ -2129,7 +2129,7 @@ function chkCutInsideWord(cuts, words) {
   return null;
 }
 
-// ---- check-layer\src\lines.mjs ----
+// ---- check-layer/src/lines.mjs ----
 // The speech check line by line (1.4.3). The whole script can clear its 0.90 bar with a clause lost
 // where two takes join (about one word in ten), because a dropped run of words only counts through the
 // ratio. So each spoken line is also compared with its own written words, and a phrase the whole script
@@ -2212,7 +2212,7 @@ function chkScriptLoss(verdict, scriptWords) {
   return lost ? { text: lost.text } : null;
 }
 
-// ---- check-layer\src\final-measure.mjs ----
+// ---- check-layer/src/final-measure.mjs ----
 // check-layer 1.6.0 (1.8.0: approved callbacks only): the final measurements (gooseworks-final-measure/1, fix-forward
 // contract section 1, with its 15 Oct amendments and calibration). The server runs
 // the same checks on the uploaded bytes and is the authority; here they give the kit
@@ -2642,7 +2642,7 @@ function fmMessage(c, block) {
   return `${what}: ${c.detail}.${block ? '' : ' (A warning for template videos in this release.)'}`;
 }
 
-// ---- check-layer\src\speech-rate.mjs ----
+// ---- check-layer/src/speech-rate.mjs ----
 // speech_rate_vs_reference (check-layer 1.7.0): the final cut's speaking rate against the
 // reference's, from two timed word lists. Words are counted as goose-studio's reference_rate.py
 // counts them: whisper's sub-word tokens joined (a token not starting with a space belongs to the
@@ -2703,7 +2703,7 @@ function chkSpeechRateVsReference(reference, final) {
   return { status: 'pass', expected, found };
 }
 
-// ---- check-layer\src\setups.mjs ----
+// ---- check-layer/src/setups.mjs ----
 // setup_count_vs_reference (check-layer 1.8.0): how many distinct setups the final cut has,
 // against the reference's. A setup is a new person, room, framing or action from a separately
 // made take; cuts inside one take, punch-ins and repeats are the same setup. A 15 Oct test video
@@ -2767,7 +2767,7 @@ async function chkSetupCount(ctx, path, d, { assembly, timeline, expect }, th = 
   return chkSetupVerdict(chkSetupClusters(bits, th.max_hamming), reference, bits.length, th);
 }
 
-// ---- check-layer\src\speech-gaps.mjs ----
+// ---- check-layer/src/speech-gaps.mjs ----
 // check-layer 1.9.0: speech the script does not have (GOOSE-4034). Two ways a generated take says more
 // than its lines, both passed by speech_matches_script, whose similarity bar a few extra words barely move:
 //   speech_extra_words     the transcript has words the script does not: a line or word said twice, or
@@ -2882,7 +2882,7 @@ function chkExtraWords(verdict, scriptWords, heardWords) {
   return null;
 }
 
-// ---- check-layer\src\shots.mjs ----
+// ---- check-layer/src/shots.mjs ----
 // The check layer's 1.4.0 style flags, measured per shot of the finished cut:
 // captions_cross_cuts, min_shot, ambience_floor, cut_contrast and
 // distinct_adjacent_shots. A shot is the stretch between two cuts, and a cut
@@ -3075,7 +3075,7 @@ async function chkAdjacentDiffs(ctx, video, openings, width, height) {
   return out;
 }
 
-// ---- check-layer\src\part.mjs ----
+// ---- check-layer/src/part.mjs ----
 // check-layer: checks the finished cut and never changes it. One quality
 // path for every video (review-finished-ad and review-ugc-render in
 // JavaScript). The five checks our server runs on upload, with the same
