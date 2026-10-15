@@ -47,7 +47,8 @@ Real people use **`image-gpt-image-2` edit** (`openai/gpt-image-2/edit`), per th
 1. Reuse the selected creator avatar builder, capture branch and accepted identity when available. Otherwise write ONE prompt from `<character_descriptors>`, every field verbatim, plus the realism default above.
 2. Generate only missing anchor candidates. The anchor's `.meta.json` records the `gateway`; every later character call inherits it.
 3. Save candidates to `<video_folder>/generated/character-lock/<characterId>/candidate-<NN>.png` with provenance in `character_locks`.
-4. **Ingredient selection.** Show unresolved anchor choices with their descriptors, each beside a short audition of its paired voice (State 2.6), in the existing ingredient review. Check hair shape and colour, shirt brightness (the main drift source), facial hair, age and the realism default.
+4. **Pair the voice with the person.** For a person who speaks or is narrated, run make_character.py with `--voices <list>` and the person's `--ethnicity` and `--voice-accent`; it writes `character.voice_pair` and refuses without a list. Get the list free through the GooseWorks MCP: `data_call_provider {provider: "elevenlabs", path: "/v1/voices", project_id}`, saving the whole reply as the file. A person who is never voiced separately takes `--no-voice-pair`. When `voice_pair.source` is `voice_design` and the host cannot run Voice Design, play its `nearest` voices beside the still and ask the owner; never fall back to a voice that does not fit. A rejected voice is replaced by `pair_voice.py --character ... --exclude <id>`, never by hand.
+5. **Ingredient selection.** Show unresolved anchor choices with their descriptors, each beside a short audition of its paired voice (State 2.6), in the existing ingredient review. Check hair shape and colour, shirt brightness (the main drift source), facial hair, age and the realism default.
 
 ### Phase 1: Angle set
 

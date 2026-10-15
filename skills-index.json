@@ -1852,7 +1852,7 @@
       "description": "Generate an AI creator talking to camera, saying an approved script, as one continuous track — H3 Max reference-to-video through the GooseWorks fal-proxy (bills the Ads agent). Plans takes on line boundaries under H3's 15s cap, dry-runs a cost estimate, generates the first take alone so its voice can be locked and passed to every later take, joins takes with measured 0.10s dissolves, and moves each line's timing onto the words actually spoken. Use for any format with a generated creator speaking a script (split-screen, screen inserts, talking-head ads).",
       "tags": "ads, content",
       "path": "skills/ads/capabilities/create-creator-takes-h3",
-      "version": "2.5.0",
+      "version": "2.6.0",
       "files": [
         "skills/ads/capabilities/create-creator-takes-h3/SKILL.md",
         "skills/ads/capabilities/create-creator-takes-h3/scripts/align_beats.py",
@@ -1875,7 +1875,7 @@
         "slug": "create-creator-takes-h3",
         "category": "capabilities",
         "domain": "ads",
-        "version": "2.5.0",
+        "version": "2.6.0",
         "tags": [
           "ads",
           "content"
@@ -9476,9 +9476,9 @@
           "write-video-ad-script"
         ],
         "slug": "video-production-harness",
-        "source_commit": "a4a1bb4f0c685680594d008b07a7ef27a71c475c",
-        "source_hash": "f380fc8cab10a73e6911f558234c5f0ad9ec725c94669bf3ded85920bca0d8c8",
-        "source_version": "4-f380fc8cab10",
+        "source_commit": "f719cdd66266ab31b84afe358d610c07c60d12c2",
+        "source_hash": "2256dcb55074e8068eb84f9cc57bab685294bca48cdfedffb5d2d865c8868022",
+        "source_version": "4-2256dcb55074",
         "tags": [
           "ads",
           "content"
@@ -9997,7 +9997,7 @@
       "description": "Write or revise a short-form ad from a sourced angle and reference. Plan connected words, product proof and sound; expose production gaps before script review.",
       "tags": "ads, content",
       "path": "skills/ads/capabilities/write-video-ad-script",
-      "version": "2.0.1",
+      "version": "2.0.2",
       "files": [
         "skills/ads/capabilities/write-video-ad-script/SKILL.md",
         "skills/ads/capabilities/write-video-ad-script/references/angle-research.md",
@@ -10030,7 +10030,7 @@
         "slug": "write-video-ad-script",
         "category": "capabilities",
         "domain": "ads",
-        "version": "2.0.1",
+        "version": "2.0.2",
         "tags": [
           "ads",
           "content"

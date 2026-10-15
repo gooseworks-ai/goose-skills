@@ -21,9 +21,9 @@
       "sha256": "2c81a5336d5160b2f6c90ba1ded310c05f7771d215fa128f5a3f127d92bdb3d8"
     },
     "capabilities.md": {
-      "bytes": 12686,
-      "catalog_sha256": "5a819afefe3276f1e49dc69800dfa0f22e5ecb7d4f25e2b2c1b9fe6b31bc5f0b",
-      "sha256": "5a819afefe3276f1e49dc69800dfa0f22e5ecb7d4f25e2b2c1b9fe6b31bc5f0b"
+      "bytes": 12796,
+      "catalog_sha256": "6efe0a57b411569af00ff59b501ec7248217424d0af83a2c42ce15ff8ca95341",
+      "sha256": "6efe0a57b411569af00ff59b501ec7248217424d0af83a2c42ce15ff8ca95341"
     },
     "create-clips.md": {
       "bytes": 15308,
@@ -31,9 +31,9 @@
       "sha256": "ffdf6618516e5f2c74694ccd9ad25e6a54965e3cf5f118a1f2d70c013c803801"
     },
     "create-design-brief.md": {
-      "bytes": 12166,
-      "catalog_sha256": "208a666ded170362267d88b573264e246cd3bf59d7a2619413f1aea9ea245b94",
-      "sha256": "208a666ded170362267d88b573264e246cd3bf59d7a2619413f1aea9ea245b94"
+      "bytes": 12367,
+      "catalog_sha256": "becf03efc8ab36e965ecfb3f7a7e4a32a5230f991289b14073802a347f21ba89",
+      "sha256": "becf03efc8ab36e965ecfb3f7a7e4a32a5230f991289b14073802a347f21ba89"
     },
     "create-storyboard.md": {
       "bytes": 8739,
@@ -51,9 +51,9 @@
       "sha256": "c58547d3a806e2f381e324ec06b7b92de73944386bccbabf853cb6580c3015a3"
     },
     "lock-character.md": {
-      "bytes": 7339,
-      "catalog_sha256": "6487f598d57773535b3a51ff4fed357156702abe802e2368b10e3c2464137142",
-      "sha256": "6487f598d57773535b3a51ff4fed357156702abe802e2368b10e3c2464137142"
+      "bytes": 8087,
+      "catalog_sha256": "69fe1dc38afda04aff2999b0501227538ad0408263d2db4a16afaf8e0a73edf1",
+      "sha256": "69fe1dc38afda04aff2999b0501227538ad0408263d2db4a16afaf8e0a73edf1"
     },
     "lock-script.md": {
       "bytes": 8924,
@@ -61,9 +61,9 @@
       "sha256": "ac621ca038eb850984602639ad687b427400fe57fb787b0b7dbac6b4b946317b"
     },
     "orchestrator.md": {
-      "bytes": 9476,
-      "catalog_sha256": "e323f95a78a46973a4b64f8eb8c99e3599c3b83bb80ba5e24f1c5ac32bdecc96",
-      "sha256": "e323f95a78a46973a4b64f8eb8c99e3599c3b83bb80ba5e24f1c5ac32bdecc96"
+      "bytes": 9657,
+      "catalog_sha256": "253632db3f1bd90870d224764a1141f5e6e485689d96b4c03c2b197004524732",
+      "sha256": "253632db3f1bd90870d224764a1141f5e6e485689d96b4c03c2b197004524732"
     },
     "polish.md": {
       "bytes": 8612,
@@ -237,8 +237,8 @@
     },
     "skill.meta.json": {
       "bytes": 683,
-      "catalog_sha256": "8f1c7bb6c343a9fe44a1cd836ab98a055b8485c27921f7efd235a5b6307b53ec",
-      "sha256": "8f1c7bb6c343a9fe44a1cd836ab98a055b8485c27921f7efd235a5b6307b53ec"
+      "catalog_sha256": "24b734f3860a96ee34daa6d02738e7ae1a2c6291baf4828b345e528b9c4ace8a",
+      "sha256": "24b734f3860a96ee34daa6d02738e7ae1a2c6291baf4828b345e528b9c4ace8a"
     },
     "states/edit-to-delivery.md": {
       "bytes": 7640,
@@ -246,14 +246,14 @@
       "sha256": "b807cd1e3b76dc262e62238f5766885a8b07372683f4ed57f3749f6eb06cbc14"
     },
     "states/setup-and-script.md": {
-      "bytes": 7513,
-      "catalog_sha256": "06353d6b86efac8599dee002c480e49a999e5875a560ecd4c264eaf78615a7a8",
-      "sha256": "06353d6b86efac8599dee002c480e49a999e5875a560ecd4c264eaf78615a7a8"
+      "bytes": 8037,
+      "catalog_sha256": "a596aacf77c955546b6a7b6d39128b47b875cdc8ef453d7096bff8628d713b6e",
+      "sha256": "a596aacf77c955546b6a7b6d39128b47b875cdc8ef453d7096bff8628d713b6e"
     },
     "states/storyboard-and-clips.md": {
-      "bytes": 6814,
-      "catalog_sha256": "48e1aad12321ca7c8f5c4394c031081fdb83fc080d8192fb914244e534b14fb9",
-      "sha256": "48e1aad12321ca7c8f5c4394c031081fdb83fc080d8192fb914244e534b14fb9"
+      "bytes": 7015,
+      "catalog_sha256": "69d74444d9b87c5d07acbad90a4e38eb7f2f4b52606518938b3934618a97dacf",
+      "sha256": "69d74444d9b87c5d07acbad90a4e38eb7f2f4b52606518938b3934618a97dacf"
     },
     "wrap-session.md": {
       "bytes": 5991,
@@ -282,7 +282,7 @@
   ],
   "schema_version": 1,
   "slug": "video-production-harness",
-  "source_commit": "a4a1bb4f0c685680594d008b07a7ef27a71c475c",
+  "source_commit": "f719cdd66266ab31b84afe358d610c07c60d12c2",
   "source_files": {
     "SKILL.md": {
       "sha256": "3e659d9dc20047c9deb42344749c2e9891b523151c5584c0123111d3f779f855",
@@ -301,7 +301,7 @@
       "source": "brainstorm.md"
     },
     "capabilities.md": {
-      "sha256": "5a819afefe3276f1e49dc69800dfa0f22e5ecb7d4f25e2b2c1b9fe6b31bc5f0b",
+      "sha256": "6efe0a57b411569af00ff59b501ec7248217424d0af83a2c42ce15ff8ca95341",
       "source": "capabilities.md"
     },
     "create-clips.md": {
@@ -309,7 +309,7 @@
       "source": "create-clips.md"
     },
     "create-design-brief.md": {
-      "sha256": "208a666ded170362267d88b573264e246cd3bf59d7a2619413f1aea9ea245b94",
+      "sha256": "becf03efc8ab36e965ecfb3f7a7e4a32a5230f991289b14073802a347f21ba89",
       "source": "create-design-brief.md"
     },
     "create-storyboard.md": {
@@ -325,7 +325,7 @@
       "source": "edit-video.md"
     },
     "lock-character.md": {
-      "sha256": "6487f598d57773535b3a51ff4fed357156702abe802e2368b10e3c2464137142",
+      "sha256": "69fe1dc38afda04aff2999b0501227538ad0408263d2db4a16afaf8e0a73edf1",
       "source": "lock-character.md"
     },
     "lock-script.md": {
@@ -333,7 +333,7 @@
       "source": "lock-script.md"
     },
     "orchestrator.md": {
-      "sha256": "e323f95a78a46973a4b64f8eb8c99e3599c3b83bb80ba5e24f1c5ac32bdecc96",
+      "sha256": "253632db3f1bd90870d224764a1141f5e6e485689d96b4c03c2b197004524732",
       "source": "orchestrator.md"
     },
     "polish.md": {
@@ -477,11 +477,11 @@
       "source": "states/edit-to-delivery.md"
     },
     "states/setup-and-script.md": {
-      "sha256": "06353d6b86efac8599dee002c480e49a999e5875a560ecd4c264eaf78615a7a8",
+      "sha256": "a596aacf77c955546b6a7b6d39128b47b875cdc8ef453d7096bff8628d713b6e",
       "source": "states/setup-and-script.md"
     },
     "states/storyboard-and-clips.md": {
-      "sha256": "48e1aad12321ca7c8f5c4394c031081fdb83fc080d8192fb914244e534b14fb9",
+      "sha256": "69d74444d9b87c5d07acbad90a4e38eb7f2f4b52606518938b3934618a97dacf",
       "source": "states/storyboard-and-clips.md"
     },
     "wrap-session.md": {
@@ -489,6 +489,6 @@
       "source": "wrap-session.md"
     }
   },
-  "source_hash": "f380fc8cab10a73e6911f558234c5f0ad9ec725c94669bf3ded85920bca0d8c8",
-  "source_version": "4-f380fc8cab10"
+  "source_hash": "2256dcb55074e8068eb84f9cc57bab685294bca48cdfedffb5d2d865c8868022",
+  "source_version": "4-2256dcb55074"
 }
