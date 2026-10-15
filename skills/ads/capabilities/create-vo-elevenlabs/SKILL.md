@@ -2,10 +2,10 @@
 name: create-vo-elevenlabs
 description: Generate a voiceover (VO) clip via ElevenLabs text-to-speech, ROUTED THROUGH THE elevenlabs-proxy so it bills the Ads agent. Voice id + script text come from the template recipe. Use for the spoken narration of VO-driven video-ad formats (cgi-app-sizzle, flat-vector-explainer, hypermotion). Never call ElevenLabs directly — the proxy attribution is required.
 status: superseded
-superseded_by: voice-elevenlabs@1.2.0
+superseded_by: voice-elevenlabs@1.3.0
 ---
 
-> **Superseded:** the video kit now does this with the voice-elevenlabs part, version 1.2.0, in the parts folder of this repository. It speaks every scene's line through the private line, keeps character timings as word timings and swaps in confirmed pronunciations the same way. The compatibility generator also supports explicit V4 controls and pending timing provenance. Existing frozen part versions are unchanged.
+> **Superseded:** the video kit now does this with the voice-elevenlabs part, version 1.3.0 (`voice-elevenlabs@1.3.0`), in the parts folder of this repository. It speaks every scene's line through the private line, keeps character timings as word timings and swaps in confirmed pronunciations the same way. The compatibility generator also supports Eleven v4 controls and pending timing provenance. Existing frozen part versions are unchanged.
 
 # create-vo-elevenlabs
 
@@ -35,7 +35,11 @@ The bundled `read_pronunciations.py` exports user-authored must rules from a fre
 
 ## Model-specific performance and timing
 
-Eleven v3 remains the default until a selected V4 voice and route are qualified. `eleven_v4` and `eleven_v4_turbo` are selectable only with managed endpoint and current-quote evidence through `--model-support`, using `--with-timestamps`. Vendor listing alone is not gateway support. Never silently swap a locked model.
+Eleven v4 is the default (since 1.3.0; it was v3). V4 and V4 Turbo always use the timestamped endpoint, so `--with-timestamps` is turned on for them. `eleven_v3` only when the plan locked it; never silently swap a locked model. `--model-support` is ignored.
+
+## Pace: measured, and --target-wps
+
+A timestamped read writes `measured_words_per_second` into `.provenance.json`: real words, counted as goose-studio's `reference_rate.py` counts them (punctuation alone is not a word), over the first word's start to the last word's last letter. Pass `--target-wps` with the reference's rate from `reference_rate.py`, which joins whisper's sub-word tokens. A read more than 10% below it is sped up to the target, at most 1.25x, with ffmpeg `atempo`; the raw read is kept as `<stem>.raw.mp3` and the timestamps are scaled to match. The provenance records `tempo`, `tempo_applied` and `tempo_applied_before_lipsync: true`. This retimes only the new narration, before any lip-sync step; never a lip-synced or native talking clip. A tagged read is not paced from provider timings. A read still slow at 1.25x needs a faster direction or fewer words.
 
 V4 supports Stability and Similarity settings; Style, Speed, speaker boost and SSML are refused. V3/V4 accept bracketed audio tags and plain `--tag` delivery cues. V2 does not accept those tags. A literal wanted “uh” is spoken copy that needs approval and time. Tags guide performance; do not accept their effect without listening to the actual selected voice.
 

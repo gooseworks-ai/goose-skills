@@ -1,3 +1,7 @@
+// image-nano-banana 2.0.0: cartoons and illustrated looks only (fix-forward contract
+// section 5). The caller declares subject: 'cartoon'; products mode and any real
+// product photo used as a reference are refused. Real people and real products use
+// image-gpt-image-2 edit, and packaging always comes from the real photo through overlay.
 // image-nano-banana: stills from Google's Nano Banana on fal, one paid piece
 // per image. Replaces create-image-fal for this model family: the same fal
 // model paths (fal-ai/nano-banana for a prompt alone, fal-ai/nano-banana/edit
@@ -253,6 +257,9 @@ async function nbScenes(inputs, ctx, manifest) {
   const total = anchorJobs.length + jobs.length;
   let done = 0;
   const tick = () => ctx.progress({ done: ++done, total });
+  if (jobs.some((j) => (j.products || []).some((p) => Array.isArray(p.images) && p.images.length))) {
+    throw ctx.error('bad_input', NB_REAL_PRODUCT);
+  }
   if (model === TEXT && jobs.some((j) => j.cast.length || j.products.length || j.scene_image)) {
     ctx.log.info(`${TEXT} draws from the prompt alone, so scene references are not sent`);
   }
@@ -398,9 +405,12 @@ async function nbProducts(inputs, ctx, manifest) {
   return kitCheckOutputs(ctx, manifest, { images: jobs.map((j, i) => ({ id: j.id, image: files[i] })) });
 }
 
+const NB_REAL_PRODUCT = 'Nano Banana is for cartoons only: a real product photo is never redrawn here. Use image-gpt-image-2 edit for real products, and overlay to place the real packaging';
+
 export async function run(inputs, ctx) {
   const manifest = await kitCheckInputs(ctx, inputs);
+  if (inputs.subject !== 'cartoon') throw ctx.error('bad_input', 'Nano Banana is for cartoons and illustrated looks only: set subject: cartoon. Real people and real products use image-gpt-image-2 edit');
   const mode = inputs.mode || (inputs.scenes ? 'scenes' : 'images');
-  if (mode === 'products') return nbProducts(inputs, ctx, manifest);
+  if (mode === 'products') throw ctx.error('bad_input', `products mode is withdrawn in 2.0.0. ${NB_REAL_PRODUCT}`);
   return mode === 'scenes' ? nbScenes(inputs, ctx, manifest) : nbImages(inputs, ctx, manifest);
 }

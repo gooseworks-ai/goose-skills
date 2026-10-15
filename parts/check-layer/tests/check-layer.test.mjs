@@ -22,9 +22,13 @@ test('a cut that fits the style passes every check, and the check never changes 
   inputs.words = await fileRef(words, 'json');
   const out = await mod.run(inputs, ctx);
   assert.equal(out.verdict.pass, true, JSON.stringify(out.verdict.reasons));
-  assert.deepEqual(status(out), { plays: 'pass', length: 'pass', size: 'pass', sound: 'pass', captions: 'pass', black_frames: 'pass', frozen_frames: 'pass', end_card: 'pass', captions_safe_zone: 'not_applicable', logo: 'not_applicable', speech_matches_script: 'pass' });
+  // 1.6.0's final measurements: the fixture's sound is a steady 440 Hz test tone, which tone_only flags; a
+  // template video (no linked assembly_timeline) gets it as a warning, so the cut still passes.
+  assert.deepEqual(status(out), { plays: 'pass', length: 'pass', size: 'pass', sound: 'pass', captions: 'pass', black_frames: 'pass', frozen_frames: 'pass', end_card: 'pass', captions_safe_zone: 'not_applicable', logo: 'not_applicable', speech_matches_script: 'pass', digital_silence: 'pass', tone_only: 'warn', unplanned_silence: 'pass', planned_pause_too_long: 'not_applicable', planned_freeze_too_long: 'not_applicable', frozen_picture: 'pass', repeated_shot: 'not_applicable', speech_rate_vs_reference: 'not_applicable', setup_count_vs_reference: 'not_applicable' });
   assert.deepEqual(out.verdict.reasons, []);
-  assert.deepEqual(Object.keys(out), ['verdict']);
+  assert.deepEqual(Object.keys(out), ['verdict', 'final_measure']);
+  assert.equal(out.final_measure.format, 'gooseworks-final-measure/1');
+  assert.equal(out.final_measure.output_sha256, video.sha256);
 });
 
 test("fails the server's hard checks with the server's reasons shape; a length off the range warns; loudness off a levelled cut fails", { skip }, async () => {

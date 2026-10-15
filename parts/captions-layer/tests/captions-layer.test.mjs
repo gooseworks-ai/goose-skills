@@ -75,3 +75,19 @@ test('a caption wider than the safe band shrinks inside it, never overflowing th
   }
   assert.equal(outside, 0, `${outside} white pixels outside the caption band`);
 });
+
+test('1.5.0 declares the linked assembly_timeline and passes it through unchanged', { skip }, async () => {
+  const { manifest } = await loadNewest('captions-layer');
+  assert.ok(manifest.inputs.properties.timeline.properties.assembly_timeline, 'declared on the timeline input');
+  assert.ok(manifest.outputs.properties.timeline.properties.assembly_timeline, 'and on the timeline output');
+  const { ctx } = makeCtx({ partDir: dir });
+  const video = await fileRef(await makeVideo(join(ctx.workDir, 'cut.mp4'), 3, { width: 540, height: 960, tone: 440, pattern: 'color=c=0x2060c0' }), 'video');
+  const words = [['Try', 0.2, 0.5], ['it', 0.6, 0.9]].map(([text, s, e]) => ({ text, start_s: s, end_s: e }));
+  const linked = { format: 'gooseworks-assembly-timeline/1', duration_ms: 3000, speech_mode: 'narration', soundtrack_modes: [], segments: [], audio_cues: [], pauses: [], required_cue_ids: [] };
+  const inputs = await layerInputsFor(video, {
+    expect: { speech: 'voiceover', captions: true },
+    timeline: { speech: [{ scene_id: 's1', text: 'Try it', start_s: 0.2, end_s: 0.9, words }], assembly_timeline: structuredClone(linked) },
+  });
+  const out = await mod.run(inputs, ctx);
+  assert.deepEqual(out.timeline.assembly_timeline, linked);
+});

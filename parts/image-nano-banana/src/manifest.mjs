@@ -51,10 +51,10 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'image-nano-banana',
-  version: '1.2.3',
+  version: '2.0.0',
   kind: 'generate_image',
   title: 'Stills (Nano Banana)',
-  summary: 'Makes or edits stills with Nano Banana on fal, one piece per image: a hand-built list, one still per plan scene from a prompt template, or snap and angled edits of each product\'s own photo.',
+  summary: 'Cartoon and illustrated stills with Nano Banana on fal, one piece per image. Never for real people or real products: those use image-gpt-image-2 edit. Needs subject: cartoon; products mode is withdrawn.',
   runtime: 'node',
   entry: 'part.mjs',
   files: ['README.md', 'part.mjs'],
@@ -72,8 +72,12 @@ export const manifest = {
   inputs: {
     type: 'object',
     additionalProperties: false,
-    required: ['model'],
+    required: ['model', 'subject'],
     properties: {
+      subject: {
+        description: 'What the stills show. Only cartoon: Nano Banana is for cartoons and illustrated looks. Real people and real products use image-gpt-image-2 edit; packaging always comes from the real photo through overlay.',
+        const: 'cartoon',
+      },
       model: {
         description: 'fal-ai/nano-banana for a prompt alone, fal-ai/nano-banana/edit with reference images. In scenes mode, /edit sends each scene\'s references and a scene with none is drawn by the prompt-only model.',
         enum: [TEXT, EDIT],

@@ -3,13 +3,17 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { loadNewest, hasFfmpeg, loadPart, makeCtx, probe, PARTS_ROOT } from '../../_tools/kit-harness.mjs';
-import { sample, still } from './fixture.mjs';
+import { reviewedInputs, sample, still } from './fixture.mjs';
 
 const { dir, mod } = await loadNewest('creator-h3');
+// 1.2.3 ordered every take in one run; 1.3.0 and newer order the first take alone and wait for its review
+// (tests/reviewed-pipeline.test.mjs).
+const v123 = await loadPart('creator-h3', '1.2.3');
 const ffmpeg = await hasFfmpeg();
 const skip = !ffmpeg && 'ffmpeg is not installed';
 
-test('orders the first take alone, hands its voice to the rest, and joins them into one track', { skip }, async () => {
+test('1.2.3: orders the first take alone, hands its voice to the rest, and joins them into one track', { skip }, async () => {
+  const { dir, mod } = v123;
   const { ctx, orders } = makeCtx({ partDir: dir, line: sample.line });
   const out = await mod.run(await sample.inputs(ctx.workDir), ctx);
   assert.ok(orders.length >= 2, `${orders.length} takes`);
@@ -31,19 +35,29 @@ test('orders the first take alone, hands its voice to the rest, and joins them i
   assert.ok(Math.abs(info.duration_s - out.seconds) < 0.1);
 });
 
+/** A plan_takes.py constant written on one line as JSON (a double-quoted string, or a dict of them). */
+function pyConstant(py, name) {
+  const m = new RegExp(`^${name} = (.+)$`, 'm').exec(py);
+  assert.ok(m, `plan_takes.py defines ${name} on one line`);
+  return JSON.parse(m[1]);
+}
+
 test('the prompt is the atom\'s template word for word', () => {
   const py = readFileSync(join(PARTS_ROOT, '..', 'skills/ads/capabilities/create-creator-takes-h3/scripts/plan_takes.py'), 'utf8');
-  const template = py.slice(py.indexOf('TEMPLATE = """') + 14, py.indexOf('"""', py.indexOf('TEMPLATE = """') + 14));
   const src = readFileSync(join(dir, 'part.mjs'), 'utf8');
-  assert.ok(src.includes(JSON.stringify(template)), 'the bundled template equals plan_takes.py TEMPLATE');
+  assert.ok(src.includes(JSON.stringify(pyConstant(py, 'TEMPLATE'))), 'the bundled template equals plan_takes.py TEMPLATE');
+  assert.ok(src.includes(JSON.stringify(pyConstant(py, 'DEFAULT_DELIVERY'))), 'the bundled default delivery equals plan_takes.py DEFAULT_DELIVERY');
+  for (const [key, text] of Object.entries(pyConstant(py, 'CAPTURE'))) assert.ok(src.includes(JSON.stringify(text)), `capture ${key} equals plan_takes.py CAPTURE`);
+  for (const [key, text] of Object.entries(pyConstant(py, 'FOCUS'))) assert.ok(src.includes(JSON.stringify(text)), `focus ${key} equals plan_takes.py FOCUS`);
 });
 
 test('refuses a creator nobody was asked about, square brackets, and more takes than the price allows', async () => {
   const { ctx, orders } = makeCtx({ partDir: dir, line: sample.line });
-  const base = await sample.inputs(ctx.workDir);
+  const base = await reviewedInputs(ctx.workDir);
   await assert.rejects(mod.run({ ...base, character: { ...base.character, identity: 'a friendly creator' } }, ctx), (e) => e.code === 'bad_input' && /no age/.test(e.message));
   await assert.rejects(mod.run({ ...base, character: { ...base.character, identity: 'someone in their 30s' } }, ctx), (e) => e.code === 'bad_input' && /no gender/.test(e.message));
-  await assert.rejects(mod.run({ ...base, scenes: [{ id: 'a', line: 'hello [laughs] there' }] }, ctx), (e) => e.code === 'bad_input' && /square brackets/.test(e.message));
+  await assert.rejects(mod.run({ ...base, scenes: [{ id: 'a', line: 'hello [laughs] there' }] }, ctx), (e) => e.code === 'bad_input' && /markup/.test(e.message));
+  await assert.rejects(mod.run({ ...base, scenes: [{ id: 'a', line: 'hello <break> there' }] }, ctx), (e) => e.code === 'bad_input' && /markup/.test(e.message));
   await assert.rejects(mod.run({ ...base, max_seconds: 10 }, ctx), (e) => e.code === 'bad_input' && /max_seconds/.test(e.message));
   assert.equal(orders.length, 0);
 });

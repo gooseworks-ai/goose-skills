@@ -1,94 +1,22 @@
 #!/usr/bin/env python3
 """Render a source-linked local edit. Never approves audiovisual content."""
 import argparse
-import hashlib
 import json
 import math
 import subprocess
+import sys
 import tempfile
 from pathlib import Path
-from assembly_timeline import FORMAT, normalize_timeline
 
+# Load sibling helpers from this file's own folder. `python3 -I` (isolated
+# mode) leaves the script folder off sys.path, so add it explicitly.
+_SCRIPTS = str(Path(__file__).resolve().parent)
+if _SCRIPTS not in sys.path:
+    sys.path.insert(0, _SCRIPTS)
+from assembly_timeline import FORMAT, MAX_STRETCH, MAX_UPSCALED_ZOOM, MAX_ZOOM, normalize_timeline, zoom_factor  # noqa: E402,F401
+from assemble_sources import file_sha256, legacy_timeline, probe, run, source_record  # noqa: E402,F401
 
-def run(args):
-    subprocess.run(args, check=True, capture_output=True, text=True, timeout=600)
-
-
-def probe(file):
-    return json.loads(subprocess.check_output(['ffprobe','-v','error','-show_streams','-show_format','-of','json',str(file)],text=True,timeout=60))
-
-
-def file_sha256(source):
-    with Path(source).open('rb') as handle:
-        return hashlib.file_digest(handle,'sha256').hexdigest()
-
-
-def source_record(path, start, end, speed=1, asset_id=None):
-    source=Path(path).resolve()
-    return {'asset_id':asset_id or source.name,'sha256':file_sha256(source),'path':str(source),'in_ms':start,'out_ms':end,'speed':speed}
-
-
-def legacy_timeline(plan):
-    """Preserve known legacy sound; unresolved intent never becomes a content pass."""
-    segments,cues,issues,position=[],[],[],0
-    voice=plan.get('voice_path'); mode=plan.get('speech_mode'); soundtrack=plan.get('soundtrack_modes')
-    if mode is None:
-        issues.append('Legacy speech mode is unresolved; audio_strategy does not prove its speech source')
-    if soundtrack is None:
-        issues.append('Legacy soundtrack is unresolved; empty transcription never authorizes muting')
-    for number,clip in enumerate(plan.get('clips',[]),1):
-        duration=float(clip['duration_s'])
-        if not math.isfinite(duration) or duration<=0:
-            raise ValueError('Every clip needs a finite positive duration')
-        length=round(duration*1000); excerpt=clip.get('source_excerpt') or {}
-        start=excerpt.get('start_ms',clip.get('source_in_ms',0)); speed=clip.get('speed',1)
-        if not isinstance(speed,(int,float)) or isinstance(speed,bool) or not math.isfinite(speed) or not 0.25<=speed<=4:
-            raise ValueError('Source speed must be finite and between 0.25 and 4')
-        end=excerpt.get('end_ms',round(start+length*speed))
-        source=source_record(clip['path'],start,end,speed,excerpt.get('asset_id',clip.get('asset_id')))
-        if excerpt and source['sha256']!=excerpt.get('analysis_revision'):
-            raise ValueError('Saved original bytes changed; review the selection again')
-        if excerpt and abs((end-start)/speed-length)>1:
-            raise ValueError('Saved source bounds differ from final duration')
-        info=probe(source['path']); has_audio=any(s['codec_type']=='audio' for s in info['streams'])
-        choice=clip.get('native_audio')
-        if choice is None and excerpt.get('audio_mode') in ('original','muted'):
-            choice='preserve' if excerpt['audio_mode']=='original' else 'muted'
-        if voice and has_audio and choice!='muted':
-            raise ValueError('External narration cannot implicitly replace native audio, including generated speech. Supply a reviewed source-linked plan.')
-        if choice is None:
-            choice='preserve' if has_audio else 'muted'
-            issues.append(f'Clip {number}: available source sound preserved; its role requires review')
-        if choice not in ('preserve','muted'):
-            raise ValueError('native_audio must be preserve or muted')
-        segment_mode=clip.get('speech_mode',mode); depicts=clip.get('depicts_speech')
-        if segment_mode=='native_dialogue' and choice!='preserve':
-            raise ValueError('A native-speaking source cannot be muted or replaced by separate narration')
-        if depicts is True and segment_mode in ('none','narration'):
-            raise ValueError('A speaking face needs linked native speech or an exact audio-driven lip-sync plan')
-        if depicts is None:
-            issues.append(f'Clip {number}: whether the picture depicts speech is unresolved')
-        segment={'id':str(clip.get('id',f'clip-{number}')),'scene_id':str(clip.get('scene_id',f'scene-{number}')),
-                 'start_ms':position,'end_ms':position+length,'video':source,'speech_mode':segment_mode,
-                 'depicts_speech':depicts,'native_audio':choice}
-        for key in ('speech_driver','intent'):
-            if clip.get(key): segment[key]=clip[key]
-        segments.append(segment)
-        if has_audio and choice=='preserve':
-            cues.append({'id':f'native-{number}','role':'native_dialogue' if segment_mode=='native_dialogue' else 'source_ambience',
-                         'source':source,'start_ms':position,'end_ms':position+length,'gain_db':0,'loop':False,
-                         **({'intent':clip['intent']} if clip.get('intent') else {})})
-        position+=length
-    for key,role in (('voice_path','narration'),('music_path','music')):
-        if not plan.get(key): continue
-        seconds=float(probe(plan[key])['format']['duration']); end=min(round(seconds*1000),position)
-        if not math.isfinite(seconds) or end<=0: raise ValueError(f'{key} has no usable duration')
-        cues.append({'id':f'legacy-{role}','role':role,'source':source_record(plan[key],0,end),
-                     'start_ms':0,'end_ms':end,'gain_db':plan.get(f'{role}_gain_db',0),'loop':False})
-        issues.append(f'Legacy {role}: natural length retained without automatic loop, ducking or padding; placement and mix need review')
-    return {'format':FORMAT,'creative_contract_revision':plan.get('creative_contract_revision'),'duration_ms':position,
-            'speech_mode':mode,'soundtrack_modes':soundtrack,'segments':segments,'audio_cues':cues,
-            'pauses':plan.get('pauses',[]),'required_cue_ids':plan.get('required_cue_ids',[])},issues
+TEMPLATE_KIND = 'template'
 
 
 def tempo_filters(rate):
@@ -109,12 +37,44 @@ def checked_sources(timeline):
         if str(path) not in checked: checked[str(path)]=probe(path)
         seconds=float(checked[str(path)]['format'].get('duration',0))
         if not math.isfinite(seconds) or source['in_ms']<0 or source['out_ms']<=source['in_ms'] or seconds*1000+1<source['out_ms']:
-            raise ValueError(f'Source bounds exceed actual media: {source["asset_id"]}')
+            raise ValueError(f'Source is shorter than its reviewed timeline: {source["asset_id"]}')
     for segment in timeline['segments']:
         if not any(s['codec_type']=='video' for s in checked[segment['video']['path']]['streams']): raise ValueError('A picture source has no video stream')
     for cue in timeline['audio_cues']:
         if not any(s['codec_type']=='audio' for s in checked[cue['source']['path']]['streams']): raise ValueError(f'{cue["id"]} has no audio stream')
-    return sources
+    return sources,checked
+
+
+def picture_filter(segment,info,width,height,fps):
+    """Explicit crop or fill-crop; refuse uneven stretch and zooming in past the shared cap.
+
+    Resolution scaling is allowed (H3's 432x768 fills 1080x1920 at zoom 1.0). The cap is on zoom:
+    the crop's fill scale divided by the full source frame's fill scale. On a source below the
+    output's resolution (lip-sync's 720p) the crop multiplies with that upscale, so it may zoom 1.1x.
+    """
+    source=segment['video']; stream=next(s for s in info['streams'] if s['codec_type']=='video')
+    src_w,src_h=int(stream['width']),int(stream['height'])
+    timing=f'trim=start={source["in_ms"]/1000}:end={source["out_ms"]/1000},setpts=(PTS-STARTPTS)/{source["speed"]}'
+    crop=source.get('crop')
+    if crop:
+        if crop['x']+crop['w']>src_w or crop['y']+crop['h']>src_h:
+            raise ValueError(f'{segment["id"]}: crop falls outside the {src_w}x{src_h} source')
+        scale_x=crop.get('scale_x',source.get('scale_x')); scale_y=crop.get('scale_y',source.get('scale_y'))
+        if abs(crop['w']*scale_x-width)>2 or abs(crop['h']*scale_y-height)>2:
+            raise ValueError(f'{segment["id"]}: crop times scale must fill {width}x{height}')
+        frame=f'crop={crop["w"]}:{crop["h"]}:{crop["x"]}:{crop["y"]},scale={width}:{height}'
+        zoom=zoom_factor(crop,src_w,src_h,width,height)
+    else:
+        scale_x=scale_y=max(width/src_w,height/src_h)
+        frame=f'scale={width}:{height}:force_original_aspect_ratio=increase,crop={width}:{height}'
+        zoom=1.0
+    if abs(scale_x/scale_y-1)>MAX_STRETCH:
+        raise ValueError(f'{segment["id"]}: uneven stretch; keep people and products in proportion')
+    fit=max(width/src_w,height/src_h); limit=MAX_UPSCALED_ZOOM if fit>1+1e-9 else MAX_ZOOM
+    if zoom>limit+1e-9:
+        raise ValueError(f'{segment["id"]}: crop zooms {zoom:.2f}x into the {src_w}x{src_h} source, {fit*zoom:.2f}x over its pixels (limit {limit}x'
+                         +(f' on a source upscaled {fit:.2f}x' if limit==MAX_UPSCALED_ZOOM else '')+'); use a wider crop or new coverage')
+    return f'{timing},{frame},setsar=1,fps={fps}'
 
 
 def assemble(plan,output):
@@ -122,9 +82,14 @@ def assemble(plan,output):
     expected=sizes[plan.get('aspect_ratio','9:16')]; width=plan.get('width',expected[0]); height=plan.get('height',expected[1]); fps=plan.get('fps',30)
     if not isinstance(fps,int) or isinstance(fps,bool) or not 1<=fps<=60 or any(not isinstance(v,int) or isinstance(v,bool) or v<=0 or v%2 for v in (width,height)):
         raise ValueError('Use integer fps 1–60 and positive even dimensions')
-    if abs(width/height-expected[0]/expected[1])>0.01: raise ValueError('Dimensions must match the approved ratio')
+    if abs(width/height-expected[0]/expected[1])>0.01: raise ValueError('Dimensions must match the approved aspect ratio')
+    if plan.get('captions_ass') and ' ass ' not in subprocess.check_output(['ffmpeg','-hide_banner','-filters'],text=True,stderr=subprocess.DEVNULL):
+        raise ValueError('Captions need an FFmpeg build with libass; install/use that supported build before assembly')
     explicit=plan.get('assembly_timeline'); issues=[]
     if explicit is None:
+        if plan.get('production_kind')!=TEMPLATE_KIND:
+            raise ValueError('A custom video needs an assembly_timeline (gooseworks-assembly-timeline/1) that links every picture to its sound; '
+                             'see references/recipe-format.md. The plain clip list is only for template replays ("production_kind": "template").')
         timeline,issues=legacy_timeline(plan)
         evidence=normalize_timeline(None,{'audio_strategy':plan.get('audio_strategy'),'issues':issues})
     else:
@@ -140,13 +105,13 @@ def assemble(plan,output):
         if segment['start_ms']!=position: raise ValueError('This assembler needs contiguous picture segments; custom joins must supply the same timeline evidence')
         position=segment['end_ms']
     if position!=timeline['duration_ms']: raise ValueError('Picture must cover the complete cut')
-    sources=checked_sources(timeline)
+    sources,probes=checked_sources(timeline)
     output=Path(output).resolve(); output.parent.mkdir(parents=True,exist_ok=True)
     with tempfile.TemporaryDirectory(prefix='video-assembly-') as folder:
         scratch=Path(folder); normalized=[]
         for index,segment in enumerate(timeline['segments']):
             source=segment['video']; target=scratch/f'{index:03d}.mp4'
-            vf=f'trim=start={source["in_ms"]/1000}:end={source["out_ms"]/1000},setpts=(PTS-STARTPTS)/{source["speed"]},scale={width}:{height}:force_original_aspect_ratio=increase,crop={width}:{height},setsar=1,fps={fps}'
+            vf=picture_filter(segment,probes[source['path']],width,height,fps)
             # Speech is restored from its checked original cue on the SAME clock below.
             run(['ffmpeg','-nostdin','-v','error','-y','-i',source['path'],'-vf',vf,'-an','-c:v','libx264','-preset','fast','-crf','20','-pix_fmt','yuv420p',str(target)])
             normalized.append(target)
@@ -173,7 +138,10 @@ def assemble(plan,output):
         if file_sha256(source['path'])!=source['sha256']: raise ValueError('A source changed during assembly; candidate cannot be published')
     info=probe(output); actual=float(info['format']['duration']); visual=next(s for s in info['streams'] if s['codec_type']=='video')
     if abs(float(visual.get('duration',0))-duration)>max(0.15,2/fps) or abs(actual-duration)>max(0.15,2/fps): raise ValueError('Actual export duration differs from the checked timeline')
-    report={'output':str(output),'output_sha256':file_sha256(output),'duration_s':actual,'assembly_timeline':timeline,
+    excerpts=[c['source_excerpt'] for c in plan.get('clips',[]) if c.get('source_excerpt')] if explicit is None else \
+        [{'segment_id':s['id'],'scene_id':s['scene_id'],**{k:v for k,v in s['video'].items() if k!='path'}} for s in timeline['segments']]
+    report={'output':str(output),'output_sha256':file_sha256(output),'duration_s':actual,'width':width,'height':height,
+            'source_excerpts':excerpts,'assembly_timeline':timeline,
             'assembly_evidence':evidence,'source_bytes_verified':True,'quality_status':'incomplete','content_review_required':True,
             'remaining_review':['Full final playback with actual audio and motion','Words, joins, lip-sync, product actions and captions'],
             'technical_probe':info,'legacy_normalization_issues':issues}
@@ -182,7 +150,7 @@ def assemble(plan,output):
 
 
 def main():
-    parser=argparse.ArgumentParser(); parser.add_argument('plan',help='Format settings plus assembly_timeline; legacy clips remain explicitly incomplete'); parser.add_argument('output')
+    parser=argparse.ArgumentParser(); parser.add_argument('plan',help='Format settings plus assembly_timeline. A plain clip list is accepted only with "production_kind": "template"'); parser.add_argument('output')
     args=parser.parse_args(); print(json.dumps(assemble(json.loads(Path(args.plan).read_text()),args.output)))
 
 

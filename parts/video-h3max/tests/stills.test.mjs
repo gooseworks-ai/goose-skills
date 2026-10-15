@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { fileRef, hasFfmpeg, loadNewest, makeCtx, run } from '../../_tools/kit-harness.mjs';
+import { fileRef, hasFfmpeg, loadNewest, loadPart, makeCtx, run } from '../../_tools/kit-harness.mjs';
 import { kitSchemaErrors } from '../../_lib/schema.mjs';
 import { h3SceneStillCanvas } from '../src/frames.mjs';
 import { nativeLine, template } from './fixture.mjs';
@@ -73,10 +73,10 @@ async function stillsInputs(workDir, extra = {}) {
   };
 }
 
-test('1.1.0 adds mode stills and its inputs, and a clip may be a fallen-back still', () => {
-  assert.equal(manifest.version, '1.1.0');
+test('mode stills (1.1.0) and broll (1.2.0) are inputs, and a clip may be a fallen-back still', () => {
+  assert.equal(manifest.version, '1.2.0');
   assert.deepEqual(manifest.inputs.properties.mode.enum, ['reference', 'image_to_video', 'take', 'takes', 'stills']);
-  for (const key of ['stills', 'spans', 'min_s', 'max_s', 'max_total_s', 'fallback', 'require_scene_tags', 'require_product_refs', 'product_reference_evidence']) {
+  for (const key of ['stills', 'spans', 'min_s', 'max_s', 'max_total_s', 'fallback', 'require_scene_tags', 'require_product_refs', 'product_reference_evidence', 'broll']) {
     assert.ok(manifest.inputs.properties[key], key);
   }
   assert.deepEqual(manifest.outputs.required, ['clips']);
@@ -302,5 +302,79 @@ test('mode stills binds product evidence from the real picture step, and refuses
     const refused = makeCtx({ partDir: dir, workDir: join(w, `clips-${Math.random()}`), line: () => assert.fail('nothing may be ordered') });
     await assert.rejects(mod.run(clipInputs(evidence), refused.ctx), (e) => e.code === 'bad_input' && /evidence/.test(e.message));
     assert.equal(refused.orders.length, 0);
+  }
+});
+
+// 1.2.0: the light lock, and silent creator B-roll with one named physical action per scene.
+const LOCK = "Keep the first frame's light and exposure, matte skin, no added shine or sharpening halos.";
+const v110 = await loadPart('video-h3max', '1.1.0');
+
+/** stillsInputs as B-roll: every picked scene names one physical action. */
+async function brollInputs(workDir, extra = {}) {
+  const base = await stillsInputs(workDir);
+  const actions = { s1: 'she lifts the jar and unscrews the lid', s2: 'a hand takes a jar off the shelf', s3: 'she sets the jar down on the shelf', s4: 'she presses the patch onto her chin' };
+  delete base.generate_audio;
+  return { ...base, broll: true, scenes: base.scenes.map((s) => (actions[s.id] ? { ...s, extra: { action: actions[s.id] } } : s)), ...extra };
+}
+
+test('mode stills: every clip keeps the first frame\'s light, once, before the Avoid list; 1.1.0 has no lock', { skip }, async () => {
+  const w = work();
+  const inputs = await stillsInputs(w);
+  const { ctx, orders } = makeCtx({ partDir: dir, workDir: join(w, 'step'), line: nativeLine(), seed: inputs.seed });
+  await mod.run(inputs, ctx);
+  for (const x of orders) {
+    assert.ok(x.body.prompt.includes(`${LOCK} Avoid: talking`), x.body.prompt);
+    assert.equal(x.body.prompt.split(LOCK).length, 2, 'the lock is added once');
+  }
+  const old = makeCtx({ partDir: v110.dir, workDir: join(w, 'old'), line: nativeLine(), seed: inputs.seed });
+  await v110.mod.run(await stillsInputs(w), old.ctx);
+  assert.ok(old.orders.every((x) => !x.body.prompt.includes(LOCK)));
+});
+
+test('image_to_video clips get the light lock; reference clips are unchanged', { skip }, async () => {
+  const w = work();
+  const start = await still(w, 'start.png', { size: '1080x1920' });
+  const i2v = makeCtx({ partDir: dir, workDir: join(w, 'a'), line: nativeLine() });
+  await mod.run({ mode: 'image_to_video', clips: [{ prompt: 'Image 1 moves.', start_image: start, seconds: 4 }] }, i2v.ctx);
+  assert.equal(i2v.orders[0].body.prompt, `Image 1 moves. ${LOCK}`);
+  const ref = makeCtx({ partDir: dir, workDir: join(w, 'b'), line: nativeLine() });
+  await mod.run({ clips: [{ prompt: 'Image 1 waves.', references: [start], seconds: 4 }] }, ref.ctx);
+  assert.equal(ref.orders[0].body.prompt, 'Image 1 waves.');
+});
+
+test('broll: each clip pairs "nobody speaks, lips closed" with its named action, silently', { skip }, async () => {
+  const w = work();
+  const inputs = await brollInputs(w);
+  const { ctx, orders } = makeCtx({ partDir: dir, workDir: join(w, 'step'), line: nativeLine(), seed: inputs.seed });
+  const out = await mod.run(inputs, ctx);
+  const o = byPiece(orders);
+  assert.match(o['clip-s4'].body.prompt, /Nobody speaks, lips closed, while she presses the patch onto her chin\. Keep the first frame's light/);
+  assert.match(o['clip-s2'].body.prompt, /Nobody speaks, lips closed, while a hand takes a jar off the shelf\./);
+  for (const x of orders) assert.doesNotMatch(x.body.prompt, /hands? still|minimal movement/i);
+  for (const c of out.clips) assert.equal((await ctx.tools.probe(c.video.path)).has_audio, false, 'B-roll is silent by default');
+});
+
+test('broll refusals: no action, a head-only action, still hands, sound on, or another mode', { skip }, async () => {
+  const w = work();
+  const one = await still(w, 'x.png');
+  const withAction = async (id, action) => {
+    const i = await brollInputs(w);
+    i.scenes = i.scenes.map((s) => (s.id === id ? { ...s, extra: action === undefined ? {} : { action } } : s));
+    return i;
+  };
+  const cases = [
+    ['a scene with no action', () => withAction('s3'), /scene s3 is B-roll and needs extra\.action/],
+    ['a head turn and a smile', () => withAction('s1', 'she turns her head and smiles'), /only moves the head or eyes/],
+    ['a look in the mirror', () => withAction('s4', 'she looks at the mirror'), /only moves the head or eyes/],
+    ['an action asking for still hands', () => withAction('s2', 'keep hands still'), /asks for still hands/],
+    ['a motion text asking for still hands', async () => ({ ...(await brollInputs(w)), template: await template(w, { version: 1, motion: '{picture}. Keep hands still, camera stationary' }, 'still.prompt.json') }), /its prompt says "Keep hands still"/],
+    ['no hand touches the face', async () => ({ ...(await brollInputs(w)), template: await template(w, { version: 1, motion: '{picture}. No hand touches the face' }, 'touch.prompt.json') }), /its prompt says "No hand touches"/],
+    ['sound on', async () => ({ ...(await brollInputs(w)), generate_audio: true }), /broll clips are silent/],
+    ['broll in another mode', async () => ({ mode: 'image_to_video', clips: [{ seconds: 4, prompt: 'x', start_image: one }], broll: true }), /broll works only in mode stills/],
+  ];
+  for (const [what, make, message] of cases) {
+    const { ctx, orders } = makeCtx({ partDir: dir, line: () => assert.fail(`${what}: nothing may be ordered`) });
+    await assert.rejects(mod.run(await make(), ctx), (e) => e.code === 'bad_input' && message.test(e.message), what);
+    assert.equal(orders.length, 0, what);
   }
 });

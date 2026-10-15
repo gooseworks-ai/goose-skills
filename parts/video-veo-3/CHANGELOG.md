@@ -1,5 +1,9 @@
 # video-veo-3
 
+## 1.0.2
+
+- Dated warning: fal retires this endpoint on 17 Nov 2026. Logged on every run, in the summary, the README and `x-provider-retirement`. Requests are byte-for-byte those of 1.0.1.
+
 ## 1.0.1
 
 - Optional strict scene tags and product-reference request evidence prevent missing-colon fallback from generating product scenes without their real photos. Existing opted-out inputs are unchanged.

@@ -2,15 +2,16 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { loadNewest, hasFfmpeg, makeCtx } from '../../_tools/kit-harness.mjs';
-import { sample } from './fixture.mjs';
+import { reviewedInputs, sample } from './fixture.mjs';
 
 const { dir, mod, manifest } = await loadNewest('creator-h3');
 const skip = !(await hasFfmpeg()) && 'ffmpeg is not installed';
 
 async function takesAt(wps) {
   const { ctx, orders } = makeCtx({ partDir: dir, line: sample.line });
-  await mod.run({ ...(await sample.inputs(ctx.workDir)), words_per_second: wps }, ctx);
-  return orders.map((o) => [o.body.duration, o.body.prompt]);
+  // 1.3.0+: the first take alone is ordered; its configuration holds every planned take's length.
+  const out = await mod.run(await reviewedInputs(ctx.workDir, { words_per_second: wps }), ctx);
+  return [orders.map((o) => [o.body.duration, o.body.prompt]), out.configuration_sha256];
 }
 
 test('a style asking for more than 3.2 words a second gets 3.2 words a second', { skip }, async () => {

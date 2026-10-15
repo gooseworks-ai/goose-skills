@@ -1,5 +1,25 @@
 # creator-h3
 
+## 1.6.0
+
+- Light lock: every take prompt says "Keep the first frame's light and exposure, matte skin, no added shine or sharpening halos." In two 15 Oct test videos H3 added gloss, HDR contrast and sharpening halos to clean stills. `plan_takes.py` `TEMPLATE` carries the same words.
+- `character` accepts make_character.py 2.5.0's `shot` (`talking` or `action`) and `skin_condition`; both are recorded only.
+- The prompt changed, so no `reuses_pieces_of`: a video approved on 1.5.0 keeps its version.
+
+## 1.5.0
+
+- A scene action that uses both hands (apply, smooth, press, peel, squeeze, hold with both hands, or `required_features` `application`) refuses `phone_selfie` and uses `phone_counter`, a propped phone; `capture_decision` says so. A test video's presenter had both hands on her nose under a selfie capture, and the model added a third hand holding the phone.
+- `phone_counter` says the phone is propped up and nobody holds it.
+- `reference_words_per_second` (from goose-studio's `reference_rate.py`) sizes the takes, capped at 3.2 words a second; new `pace` output. A line's words are counted the same way: a token with no letter or digit is not a word.
+- creator-h3 has no `phone_observer` (a talking take addresses the lens); `phone_counter` is its option for a both-hands action.
+- `character` accepts make_character.py's `actions`, `capture_decision` and `voice_pair`; `voice_pair` passes through to the output.
+
+## 1.4.0
+
+- Realism defaults (fix-forward contract section 6): `capture` defaults to phone (counter, or selfie from `character.recording`), with the real lived-in room kept; new `focus` input, default `deep` (no bokeh); studio and shallow focus only when chosen. Every take asks for no retouching, skin smoothing, beauty filter or cinematic grade. Removes 1.3.x's "do not demand universal deep focus".
+- Shared `required_features` vocabulary (section 3), at most 12: any of `application, dispensing, pour, physical_demo, hands` forces a passing `product_action` review. 1.3.x names are aliases.
+- README restores the H3 limits: 15 s per take, at most 3.2 words a second, voice-first lip-sync with one line per clip across several clips.
+
 ## 1.3.0
 
 - Split first-take trial, remaining candidate generation and reviewed-source assembly. A file, ASR match or loudness check cannot auto-approve the first performance.

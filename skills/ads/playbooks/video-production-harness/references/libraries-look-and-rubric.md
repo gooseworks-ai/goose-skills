@@ -1,8 +1,8 @@
 # Human version
 
-Select reviewed characters, voices, sound and visual styles from existing collections.
-Give camera, lighting and text a purpose, then judge the actual video against examples
-and the approved brief. Technical measurements support that judgment; they do not replace it.
+Select reviewed characters, voices, sound and styles from existing collections. Give
+camera, light and text a purpose, then judge the video against examples and the brief.
+Measurements support that judgment; they do not replace it.
 
 ---
 
@@ -10,10 +10,9 @@ and the approved brief. Technical measurements support that judgment; they do no
 
 ## Reuse existing libraries
 
-Inventory the host's current catalogs first. Extend missing metadata/examples rather
-than build competing catalogs. Every selection has a stable ID, version/hash, usable
-files, provenance/usage restrictions, applicable routes and actual accepted examples.
-Do not fill libraries with unreviewed generated material.
+Use the host's current catalogs; extend them rather than build competing ones. Every
+selection has a stable ID, version/hash, files, provenance and usage limits, routes and
+accepted examples. No unreviewed generated material.
 
 | Collection | What selection preserves |
 |---|---|
@@ -24,53 +23,60 @@ Do not fill libraries with unreviewed generated material.
 | Overlay/caption styles | Accepted frames/motion, font/colour/hierarchy, copy density, safe areas and working composition |
 | Camera/world setups | Accepted framing/light/set/props, measured product scale, useful coverage and use conditions |
 
-Library acceptance is specific to its use. A portrait alone does not clear animation;
-a voice audition does not clear pronunciation in another take; a track does not
-guarantee a good mix. Compare changed outputs with the accepted example.
+Acceptance is specific to its use: a portrait does not clear animation, and a track
+does not guarantee a good mix. Compare changed outputs with the accepted example.
 
 ## Camera, light and overlays
 
-Plan shot purpose, size, angle, focus target and movement. Wide coverage establishes
-scale/world, medium coverage shows use, close coverage proves a needed detail; choose
-what the brief needs rather than impose a universal quota. Inspect actual delivery
-crop and phone size. Reject blurred essential proof, unreadable labels, accidental
-face cuts, distortion and unstable focus. Sharpening cannot restore an absent feature.
+Plan shot purpose, size, angle, focus target and movement: wide for scale and world,
+medium for use, close for a needed detail, as the brief needs. Inspect the delivery crop
+at phone size. Reject blurred proof, unreadable labels, accidental face cuts and
+distortion.
 
-Choose a real look reference and capture register, such as phone explainer or luxury
-product film. Record main light source/direction, contrast, exposure, white balance
-and continuing set. Check skin/eyes/teeth/hands, contact/shadows/reflections and moving
-consistency. Smooth artificial skin or unmotivated light that breaks the chosen
-realism needs repair. Pores, grain, shake, deep focus or no bokeh are not universal
-authenticity requirements. A phone on a counter can be steady.
+**Realism default.** Capture is a phone (`phone_counter`, `phone_selfie` or
+`phone_observer`) with deep focus and no bokeh, in a lived-in, slightly cluttered real
+room, never a plain wall or a white void. Every person prompt says "no retouching, no
+skin smoothing, no beauty filter, no cinematic grade"; skin keeps pores and slight
+asymmetry. Wardrobe and setting fit the activity.
 
-Choose an existing accepted overlay style or explicit references before rendering.
-Specify typography, hierarchy, placement, density and motion. Review a representative
-frame/motion sample within existing production scope. Keep speech captions distinct
-from step/proof labels; preserve intended exceptions. Opaque cards must not hide
-food/action, and tiny competing product insets must earn their place. Deterministic
-copy/logo composition improves accuracy; it does not repair wrong product footage.
+**Light and realism block.** Every photoreal still prompt (people, products, B-roll)
+ends with these words, verbatim:
+
+> One window or lamp lights the scene from one side, with a darker shadow side and
+> gentle falloff; normal phone exposure, highlights not clipped, no HDR; matte skin with
+> no added shine; no over-sharpening or halos.
+
+Every H3 or other video motion prompt, B-roll included, ends with: "Keep the first
+frame's light and exposure, matte skin, no added shine or sharpening halos." (creator-h3
+1.6.0 and video-h3max 1.2.0 add it on the kit path.) Name the window or lamp in the
+scene. A shot with flat shadowless light, HDR contrast, gloss or halos is a repair. Studio light or shallow focus only when the approved style comes from a studio-shot
+reference, listed in `changes_from_reference` as `camera` when it differs. A phone on a
+counter can be steady. Record main light, contrast, exposure, white balance and the
+continuing set. Check skin, eyes, teeth, hands, contact, shadows and reflections, still
+and moving. Smooth skin, a blurred background or unmotivated light is a repair.
+
+Choose an accepted overlay style or explicit references before rendering, with
+typography, hierarchy, placement, density and motion. Keep speech captions apart from
+proof labels. Opaque cards never hide the action. Exact copy and logo composition does
+not repair wrong product footage.
 
 ## Sound and pacing
 
-Audition actual owned/licensed or approved generated music in context. Choose its
-section and energy around hook, reveal, proof and ending. Preserve intended quiet;
-do not force continuous loud sound. Sine chords/noise are not emergency music
-substitutes, though a planned electronic effect can be valid. Add believable action
-foley selectively; whooshes cannot conceal bad timing. Hear the full mix for masking,
-pumping, unwanted sounds, clipped endings, joins and intended device experience.
+Audition owned, licensed or approved generated music in context, choosing its section
+around hook, reveal, proof and ending. Keep intended quiet. Sine tones, drones and noise are never music; the
+`tone_only` final measurement fails them. Add believable foley
+selectively; whooshes cannot hide bad timing. Hear the full mix for masking, pumping,
+clipped endings and joins.
 
-Use applicable Creator Grammar principles: purposeful cuts, intelligible opening,
-payoff holds, useful coverage, readable captions and speech continuing under B-roll.
-Do not import universal cut intervals, mid-word endings, no-CTA rules, fixed ducking
-ratios or fake phone shake. Fast cuts cannot fix incoherent actions or bullet cadence.
+Use Creator Grammar: purposeful cuts, a clear opening, payoff holds, readable captions
+and speech continuing under B-roll. No universal cut intervals, fixed ducking ratios or
+fake phone shake. Fast cuts cannot fix incoherent actions or bullet cadence.
 
 ## Calibrated content review
 
-Use accepted and rejected examples with exact source/version, interval, rationale
-and reviewer disagreement. Preserve user-reported judgments as attributed feedback;
-do not pretend the agent heard or watched them. Record the actual reviewer capability
-and source evidence. Do not call clothes, indoor placement or food colour inherently
-impossible without a product/context check.
+Use accepted and rejected examples with exact source, interval and rationale. Keep
+user judgments as attributed feedback, never as the agent's own listening. Record the
+reviewer's real perception (`listened`/`watched` or `measured`).
 
 For each applicable dimension record pass, needs_revision or incomplete:
 
@@ -87,6 +93,5 @@ For each applicable dimension record pass, needs_revision or incomplete:
 - Pacing: each shot adds information, with enough proof time and no accidental dead air.
 - Delivery/evidence: exact reviewed bytes, current revisions and complete duties.
 
-An optional taste score cannot average away a blocking defect or missing duty.
-Loudness, motion or skin metrics alone do not establish believability or soundtrack
-quality. Recheck affected dimensions after repair and review the complete final.
+A taste score cannot average away a blocking defect or missing duty, and metrics alone
+do not prove believability. Recheck affected dimensions after repair.

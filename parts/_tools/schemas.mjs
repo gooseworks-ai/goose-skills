@@ -189,3 +189,28 @@ export const layerOutputs = (extra = {}, required = []) => ({
   required: ['video', 'timeline', ...required],
   properties: { video: file('video'), timeline, ...extra },
 });
+
+/**
+ * The source-linked edit (gooseworks-assembly-timeline/1) a layer may read and hand back on its timeline.
+ * The kit passes it only to parts whose timeline schema declares it (check-layer >= 1.6.0, sound-layer
+ * >= 1.1.0, captions-layer >= 1.5.0); the kit validates it, this schema only admits it.
+ */
+export const assemblyTimeline = { type: 'object', description: 'gooseworks-assembly-timeline/1: the source-linked edit. Validated by the kit; a layer reads it and returns it, updated when it adds cues.' };
+
+/** The timeline with the linked assembly_timeline, for the layers that declare it. */
+export const timelineWithAssembly = { ...timeline, properties: { ...timeline.properties, assembly_timeline: assemblyTimeline } };
+
+/** The timeline with keep_clear and the linked assembly_timeline (captions-layer >= 1.5.0). */
+export const timelineWithKeepClearAndAssembly = { ...timeline, properties: { ...timeline.properties, keep_clear: keepClear, assembly_timeline: assemblyTimeline } };
+
+/** layerInputs whose timeline may carry the linked assembly_timeline. */
+export const layerInputsWithAssembly = { ...layerInputs, properties: { ...layerInputs.properties, timeline: timelineWithAssembly } };
+
+/** layerInputs whose timeline may carry keep_clear and the linked assembly_timeline (captions-layer >= 1.5.0). */
+export const layerInputsWithKeepClearAndAssembly = { ...layerInputs, properties: { ...layerInputs.properties, timeline: timelineWithKeepClearAndAssembly } };
+
+/** layerOutputs whose timeline may carry the linked assembly_timeline back. */
+export const layerOutputsWithAssembly = (extra = {}, required = []) => ({
+  ...layerOutputs(extra, required),
+  properties: { video: file('video'), timeline: timelineWithAssembly, ...extra },
+});

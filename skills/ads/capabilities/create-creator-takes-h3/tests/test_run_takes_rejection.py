@@ -109,7 +109,7 @@ class RunTakesRejectionTests(unittest.TestCase):
         self.spec.write_text(json.dumps({
             "model": MODEL, "out": str(self.out), "char": str(self.char),
             "resolution": "768P", "aspect_ratio": "9:16",
-            "takes": [{"id": "t1", "seed": 123456, "dur": 6, "covers": [0, 6]},
+            "takes": [{"id": "t1", "seed": 123456, "dur": 6, "covers": [0, 6], "script_sha256": "a" * 64},
                       {"id": "t2", "seed": 234567, "dur": 5, "covers": [6, 11]},
                       {"id": "t3", "seed": 345678, "dur": 5, "covers": [11, 16]}]}))
         (self.out / "t2-prompt.txt").write_text("She holds up the jar. " + MARK)
@@ -125,6 +125,30 @@ class RunTakesRejectionTests(unittest.TestCase):
                    NO_PROXY="127.0.0.1", no_proxy="127.0.0.1")
         return subprocess.run([sys.executable, str(SCRIPT), "--spec", str(self.spec), *args],
                               capture_output=True, text=True, env=env, timeout=60)
+
+    def accepted_first_take(self):
+        """Later takes need a reviewed first take (--unchained was removed): a real t1 source with a
+        passing, hash-bound audio-and-picture review and the qualification for this exact configuration.
+        Returns the run_takes flags that name them."""
+        src = self.out / "t1-seed123456.mp4"
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc2=size=160x284:rate=24:duration=6",
+                        "-f", "lavfi", "-i", "sine=frequency=300:duration=6:sample_rate=24000", "-shortest",
+                        "-c:v", "libx264", "-pix_fmt", "yuv420p", "-c:a", "aac", str(src)], check=True)
+        sys.path.insert(0, str(SCRIPT.parent))
+        import run_takes
+        spec = json.loads(self.spec.read_text())
+        duration = float(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(src)],
+                                        capture_output=True, text=True, check=True).stdout)
+        reviews = self.home / "source-reviews.json"
+        reviews.write_text(json.dumps({"takes": [{
+            "id": "t1", "status": "pass", "source_sha256": run_takes.file_sha256(src), "script_sha256": "a" * 64,
+            "reviewer": "test reviewer", "coverage": {"video_watched": True, "audio_listened": True, "start_s": 0, "end_s": duration},
+            "checks": {k: "pass" for k in ("script", "voice", "lipsync", "identity", "framing", "performance")} | {"product_action": "not_applicable"}}]}))
+        qualification = self.home / "qualification.json"
+        qualification.write_text(json.dumps({
+            "status": "qualified", "provider": "fal", "model": MODEL, "shot_type": "talking_creator",
+            "configuration_sha256": run_takes.qualification_digest(spec, src), "accepted_source_sha256": run_takes.file_sha256(src)}))
+        return ["--reviews", str(reviews), "--qualification", str(qualification)]
 
     def manifest(self):
         return json.loads((self.out / "manifest.json").read_text())
@@ -172,11 +196,12 @@ class RunTakesRejectionTests(unittest.TestCase):
         self.assertEqual(man["takes"][0]["input_digest"], self.fal.submits[-1]["digest"])
 
     def test_a_recorded_take_refuses_only_itself(self):
+        accepted = self.accepted_first_take()
         self.fal.reject_body = PROMPT_POLICY  # about t2's own prompt, not the still
-        r = self.run_takes("--only", "t2", "--unchained", "--go")
+        r = self.run_takes("--only", "t2", *accepted, "--go")
         self.assertEqual(r.returncode, 3, r.stderr)
         self.assertEqual(len(self.fal.submits), 1)
-        r = self.run_takes("--only", "t2,t3", "--unchained", "--go")
+        r = self.run_takes("--only", "t2,t3", *accepted, "--go")
         self.assertEqual(r.returncode, 3, r.stderr)  # t2 refused locally, t3 still rendered
         self.assertEqual(len(self.fal.submits), 2)
         self.assertNotIn(MARK, self.fal.submits[1]["payload"]["prompt"])
@@ -191,40 +216,47 @@ class RunTakesRejectionTests(unittest.TestCase):
         self.assertEqual([t["id"] for t in self.manifest()["takes"]], ["t3"])
 
     def test_a_prompt_rejection_skips_only_that_take(self):
+        accepted = self.accepted_first_take()
         self.fal.reject_body = PROMPT_POLICY
-        r = self.run_takes("--only", "t2,t3", "--unchained", "--go")
+        r = self.run_takes("--only", "t2,t3", *accepted, "--go")
         self.assertEqual(r.returncode, 3, r.stderr)
         self.assertEqual(len(self.fal.submits), 2)
         self.assertTrue((self.out / "t3-seed345678.mp4").exists())
 
     def test_a_still_rejection_stops_the_takes_that_share_the_still(self):
+        accepted = self.accepted_first_take()
         for name, body in (("likeness", REJECT), ("partner_validation", PARTNER)):
             with self.subTest(name):
                 self.fal.reject_body, before = body, len(self.fal.submits)
                 self.char.write_bytes(b"creator-still-" + name.encode())  # a fresh request
-                r = self.run_takes("--only", "t2,t3", "--unchained", "--go")
+                accepted = self.accepted_first_take()  # a new still needs its own qualification
+                r = self.run_takes("--only", "t2,t3", *accepted, "--go")
                 self.assertEqual(r.returncode, 3, r.stderr)
                 self.assertEqual(len(self.fal.submits) - before, 1)
                 self.assertIn("not sent: t3 (they use the same unchanged character still", r.stderr)
                 self.assertFalse((self.out / "t3-seed345678.mp4").exists())
 
     def test_a_recorded_still_rejection_holds_back_every_take(self):
+        accepted = self.accepted_first_take()
         self.fal.reject_body = PARTNER  # the photoreal-face refusal, recorded for t2
-        self.assertEqual(self.run_takes("--only", "t2", "--unchained", "--go").returncode, 3)
-        self.assertEqual((len(self.fal.submits), len(self.fal.uploads)), (1, 1))
+        self.assertEqual(self.run_takes("--only", "t2", *accepted, "--go").returncode, 3)
+        # Uploads: the still and t1's voice reference (later takes carry the reviewed first take's voice).
+        self.assertEqual((len(self.fal.submits), len(self.fal.uploads)), (1, 2))
         for _ in range(2):  # re-runs send nothing: not t2, and not t3 one run at a time
-            r = self.run_takes("--only", "t2,t3", "--unchained", "--go")
+            r = self.run_takes("--only", "t2,t3", *accepted, "--go")
             self.assertEqual(r.returncode, 3, r.stderr)
-            self.assertEqual((len(self.fal.submits), len(self.fal.uploads)), (1, 1))
+            self.assertEqual((len(self.fal.submits), len(self.fal.uploads)), (1, 2))
             self.assertIn("not sent: t3. They use the same unchanged character still", r.stderr)
         self.char.write_bytes(b"creator-still-v2")  # a new still: a new request, so it is sent
-        r = self.run_takes("--only", "t2,t3", "--unchained", "--go")
+        accepted = self.accepted_first_take()
+        r = self.run_takes("--only", "t2,t3", *accepted, "--go")
         self.assertEqual(r.returncode, 3, r.stderr)
         self.assertEqual(len(self.fal.submits), 2)  # t2 sent; refused again, so t3 held back
         self.assertIn("rejected by the provider", r.stderr)
         self.fal.reject_body = PROMPT_POLICY  # the provider now objects to t2's prompt only
         self.char.write_bytes(b"creator-still-v3")
-        r = self.run_takes("--only", "t2,t3", "--unchained", "--go")
+        accepted = self.accepted_first_take()
+        r = self.run_takes("--only", "t2,t3", *accepted, "--go")
         self.assertEqual(r.returncode, 3, r.stderr)
         self.assertEqual(len(self.fal.submits), 4)  # t2 refused for its prompt, t3 rendered
         self.assertTrue((self.out / "t3-seed345678.mp4").exists())

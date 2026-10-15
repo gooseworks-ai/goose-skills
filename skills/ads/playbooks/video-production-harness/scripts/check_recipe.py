@@ -9,8 +9,13 @@ import shutil
 import subprocess
 import sys
 
-from pack_recipe import FORMAT, is_safe_relative_path, sha256_bytes
-from assembly_timeline import FORMAT as ASSEMBLY_FORMAT, normalize_timeline
+# Load sibling helpers from this file's own folder. `python3 -I` (isolated
+# mode) leaves the script folder off sys.path, so add it explicitly.
+_SCRIPTS = str(Path(__file__).resolve().parent)
+if _SCRIPTS not in sys.path:
+    sys.path.insert(0, _SCRIPTS)
+from pack_recipe import FORMAT, is_safe_relative_path, sha256_bytes  # noqa: E402
+from assembly_timeline import FORMAT as ASSEMBLY_FORMAT, normalize_timeline  # noqa: E402
 
 MIN_PSNR_AVG = 40.0
 MIN_PSNR_FRAME = 30.0
@@ -24,7 +29,10 @@ class CheckError(ValueError):
 
 def sha256_file(path):
     with open(path, "rb") as handle:
-        return hashlib.file_digest(handle, "sha256").hexdigest()
+        digest = hashlib.sha256()  # file_digest needs Python 3.11; stay 3.9-safe
+        for chunk in iter(lambda: handle.read(1024 * 1024), b''):
+            digest.update(chunk)
+        return digest.hexdigest()
 
 
 def unpack(bundle, inputs_dir, work):
@@ -187,6 +195,9 @@ def main(argv=None):
         outcome = {"result": "failed", "compared": "sha256", "detail": str(error)[:1000],
                    'purpose': 'reproducibility_only', 'content_review_status': 'incomplete', 'content_review_required': True}
     print(json.dumps(outcome))
+    if (outcome.get("assembly_evidence") or {}).get("status") == "invalid":
+        print("FAIL assembly timeline: " + "; ".join(outcome["assembly_evidence"].get("issues", [])), file=sys.stderr)
+        return 1
     return 0 if outcome["result"] in ("identical", "matches") else 1
 
 

@@ -1,5 +1,19 @@
 # check-layer
 
+## 1.8.0
+
+- `setup_count_vs_reference`: with `expect.reference_setups`, fails when the final cut has more than 30 % fewer distinct setups than the reference; otherwise `not_applicable`. Setups are shot keyframes (one per shot of at least 0.5 s, flat cards skipped) clustered by 64-bit dHash within 10 bits. A test video had 4 setups against about 10 in the reference.
+- `repeated_shot`: a `callback:` intent alone no longer clears a repeat. Its name must be in the new `expect.approved_callbacks` (from the approved creative contract). The same test video relabelled five repeats as callbacks after the check failed and then passed.
+- A minor version: it reaches new quotes through layers.json.
+
+## 1.7.0
+
+- `speech_rate_vs_reference`: with both `expect.reference_words` and `expect.final_words`, fails when the final cut speaks more than 15 % slower than the reference; otherwise `not_applicable`. Words are counted as goose-studio's `reference_rate.py` counts them (whisper sub-word tokens joined, markers and punctuation dropped), over the first word's start to the last word's end. A test video read at 2.62 words a second against the reference's 3.20. A minor version: it reaches new quotes through layers.json.
+
+## 1.6.0
+
+- The final measurements (`gooseworks-final-measure/1`): `digital_silence`, `tone_only`, `unplanned_silence`, `planned_pause_too_long`, `frozen_picture`, `planned_freeze_too_long` and `repeated_shot`, with the contract's thresholds and its 15 Oct amendments (1.5 s start / 3.0 s end allowance, 2.0 s mid-video freeze, 80 Hz-8 kHz tone band, still share relative to the reference, intentional silence, end-card freeze up to 3.0 s). They fail on a custom, source-linked edit and warn on a template video for one release. Declares `timeline.assembly_timeline` so the kit passes the linked edit, and returns `final_measure`. A minor version: it reaches new quotes through layers.json.
+
 ## 1.5.0
 
 - A measured miss that breaks an earlier part's promise fails instead of warning, and names the layer to re-run: loudness off -14 LUFS by more than 2 on a cut above -50 LUFS when the kit says the sound layer is on (`expect.layers.sound` true; a kit that sends no switches gets a warning; the layer levels such a cut to -14 within 1 or fails), and a caption across a scene cut or into the end card (the captions layer stops captions there when the style lists `captions_cross_cuts`). A quiet cut the sound layer passed through (at or below -50 LUFS), loudness with the sound layer off, and a caption across a retained-body join still warn, as does every taste range 1.4.2 made a warning, `min_shot` included. A minor version: only new quotes get it, through layers.json.

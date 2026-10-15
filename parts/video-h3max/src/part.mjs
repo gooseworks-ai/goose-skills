@@ -5,11 +5,14 @@
 // include multiple speakers; creator-h3 remains the single-creator talk part.
 // Mode stills (stills.mjs) moves a picture step's scene stills, timed to the
 // voice, the way video-veo-3 and video-kling do.
+// 1.2.0: modes stills and image_to_video add the light lock ("Keep the first frame's light
+// and exposure, matte skin, no added shine or sharpening halos."); mode stills' broll: true
+// is silent creator B-roll with one named physical action per scene.
 import { kitCheckInputs, kitCheckOutputs, kitPieceName, kitStopIfAborted } from '../../_lib/part.mjs';
 import { KitPromptGap, kitLoadTemplate, kitPromptJoin, kitScenePrompt } from '../../_lib/prompt.mjs';
 import { kitNamedProducts, kitPickScenes, kitTagKey } from '../../_lib/scene-match.mjs';
 import { h3SceneRunTakes, h3SceneTakeJobs } from './takes.mjs';
-import { H3SCENE_MODEL, h3SceneProviderBody, h3SceneProviderPrompt, h3SceneProviderVideo } from './provider.mjs';
+import { H3SCENE_MODEL, h3SceneProviderBody, h3SceneProviderPrompt, h3SceneProviderVideo, h3SceneWithLightLock } from './provider.mjs';
 import { h3ScenePrepareFrames, h3ScenePrepareReferences } from './frames.mjs';
 import { H3STILLS_ONLY, h3StillsRun } from './stills.mjs';
 
@@ -145,6 +148,8 @@ function h3SceneJobs(inputs, tpl, i2v) {
       j.refs = j.clip.references || (j.planRefs ? h3ScenePlanRefs(j.planRefs, j.refKinds) : []);
       if (!j.refs.length) throw new Error(`${j.who} has no reference image: give references, or products, cast or scene pictures the template's refs can use`);
     }
+    // 1.2.0: a clip that starts on a first frame keeps its light and exposure.
+    if (i2v) j.prompt = h3SceneWithLightLock(j.prompt);
     j.prompt = h3SceneProviderPrompt(j.prompt, i2v ? 1 : j.refs.length, j.who);
   }
   return jobs;

@@ -1,13 +1,26 @@
-// Native creator directions follow the approved capture and reference.
+// Native creator directions follow the approved capture and reference. Phone capture,
+// deep focus and real unretouched skin unless the brief explicitly chooses otherwise.
 // Delivery stays outside spoken copy; prompt requests require actual review.
+// 1.5.0: phone_counter is a propped phone nobody holds (a both-hands action uses it).
+// 1.6.0: the light lock. H3 added gloss, HDR contrast and sharpening halos to clean stills
+// (15 Oct test videos), so every take keeps the first frame's light and exposure.
 
 export const H3_CAPTURE = {
-  "phone_counter": "An ordinary phone recording from a phone supported outside the frame at eye level. Static chest-up shot, complete face and both shoulders visible with headroom. Both hands are free; gestures are small and serve the words. No automatic zoom or reframing.",
-  "phone_selfie": "An ordinary handheld phone selfie at eye level. One hand supports the phone outside the frame; only the other hand is free. Small movement follows the supporting arm, without artificial drift or automatic zoom. Keep the complete face visible.",
+  "phone_counter": "An ordinary phone recording from a phone propped up outside the frame at eye level. Nobody holds the phone and no hand holding a phone is in the frame. Static chest-up shot, complete face and both shoulders visible with headroom. Both hands are free; gestures are small and serve the words. No automatic zoom or reframing. The room is the real, lived-in room from <Picture 1>, never a plain backdrop or a white void.",
+  "phone_selfie": "An ordinary handheld phone selfie at eye level. One hand supports the phone outside the frame; only the other hand is free. Small movement follows the supporting arm, without artificial drift or automatic zoom. Keep the complete face visible. The room is the real, lived-in room from <Picture 1>, never a plain backdrop or a white void.",
   "studio": "An approved studio recording at eye level, matching the reference composition and motivated lighting. Static medium framing with the complete face visible. Natural posture and restrained gestures; no automatic zoom or reframing."
 };
 
-export const H3_TEMPLATE = "A single continuous live-action shot of <Subject 1>, matching the approved creator reference.\n\n[Shot 1] {capture}\nThe person looks toward the lens while addressing one viewer, with natural blinks and a relaxed face. Do not force a fixed grin or busy repeated gestures. Keep the same identity, wardrobe, setting, lighting and props throughout the take.\n\nTHE SUBJECT AND SET FROM <Picture 1>: {identity}\n{environment}\nSkin detail matches the reference at this viewing distance: no waxy finish, beauty filter or sharpening halos. Background focus follows the approved reference; do not invent portrait-mode blur or demand universal deep focus.\n{mannerism}\nDELIVERY: {delivery}\nDelivery and action directions are outside the dialogue block. Only the approved words inside it are spoken, once and in order. No added hook, filler or invented sentence. A wanted hesitation such as 'uh' is part of the approved spoken words, not an automatic effect.\n\n<Subject 1> (S1) says, <d>[English] {dialogue}</d>\n\noverall_soundscape: The creator's voice and quiet natural room tone. No second voice or additional speech.\nnon_diegetic_music: N/A\n";
+// 1.4.0: phone capture and deep focus are the defaults; studio capture and shallow focus
+// only when the approved brief explicitly chooses them (fix-forward contract section 6).
+export const H3_FOCUS = {
+  "deep": "Everything sharp, deep focus, as a phone records: the face and the room behind are both in focus. No bokeh, no portrait-mode blur, no shallow depth of field.",
+  "shallow": "Shallow focus, chosen because the approved reference is shot that way: the face sharp and the background softly out of focus as in the reference, no stronger than it."
+};
+
+export const H3_LIGHT_LOCK = "Keep the first frame's light and exposure, matte skin, no added shine or sharpening halos.";
+
+export const H3_TEMPLATE = "A single continuous live-action shot of <Subject 1>, matching the approved creator reference.\n\n[Shot 1] {capture}\nThe person looks toward the lens while addressing one viewer, with natural blinks and a relaxed face. Do not force a fixed grin or busy repeated gestures. Keep the same identity, wardrobe, setting, lighting and props throughout the take.\n\nTHE SUBJECT AND SET FROM <Picture 1>: {identity}\n{environment}\nReal skin as in the reference at this viewing distance: no retouching, no skin smoothing, no beauty filter, no cinematic grade, no waxy finish or sharpening halos.\nKeep the first frame's light and exposure, matte skin, no added shine or sharpening halos.\n{focus}\n{mannerism}\nDELIVERY: {delivery}\nDelivery and action directions are outside the dialogue block. Only the approved words inside it are spoken, once and in order. No added hook, filler or invented sentence. A wanted hesitation such as 'uh' is part of the approved spoken words, not an automatic effect.\n\n<Subject 1> (S1) says, <d>[English] {dialogue}</d>\n\noverall_soundscape: The creator's voice and quiet natural room tone. No second voice or additional speech.\nnon_diegetic_music: N/A\n";
 
 export const H3_MANNERISM = "\n<Video 1> is a filmed reference person recorded the same way. Take from it ONLY the rhythm of natural speech, where the pauses fall and where the pace speeds up, and the small involuntary movement while talking: the head settling, the blink rate, the eyebrow lifts, the hands coming up and dropping back. Do NOT take the face, hair, clothes, room, lighting, framing or eyeline. The person is <Subject 1> from <Picture 1> and nobody else.\n";
 

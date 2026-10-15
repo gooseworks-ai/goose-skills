@@ -1,27 +1,28 @@
 # Product demo
 
-Words explain; visible action establishes the intended proof. Derive order and
-coverage from the reference and approved brief: clear question/promise, complete
-use/test sequence, legible result and appropriate ending. Split-screen, proof cards
-and specific durations are options, not mandatory skeletons.
+A creator explains while real footage proves each claim, or proof points sit over one product shot. Routing rows are named as in the shot-routing guide. Choose speech through [speech and route qualification](../speech-and-route-qualification.md) and size the product through [product scale and world](../product-scale-and-world.md). A text card or dots never replace a live demonstration the reference has. A narrator over several people is [narrator-montage](narrator-montage.md), not this card.
 
-Use authorized owned footage when it supplies the required product/action. Generated
-illustration must retain exact variant/geometry and cannot be called an independently
-measured real test. Read [product scale and world](../product-scale-and-world.md)
-for dimensions, support, interior and capacity responsibilities. Text/dots cannot
-silently replace live entry, seating, application or other required demonstrations.
+## Shot list skeleton
+1. 0-3 s hook: creator full frame, one sharp claim, no footage.
+2. 3-15 s use flow, split screen: footage on top, creator below; each line names what shows.
+3. 15-20 s payoff hold: the product working or the result; the longest shot.
+4. 20-25 s close: the creator says the CTA and the brand.
+5. Proof-point variant (10 s): one product shot, a header from 0 s, points landing about every 1.2 s.
 
-Choose speech through [speech and route qualification](../speech-and-route-qualification.md):
-external narration for non-speaking coverage, qualified native creator when voice
-is flexible, or qualified lip-sync for an exact driver. Keep one performance under
-cutaways and source-link returning speaking picture. Measure actual speech before
-finalizing coverage; no universal speed/rate/shot-duration limits apply.
+## Routing rows
+Talking creator, exact script · UI / screen insert · Product photo overlay · Product in hand / motion from a keyframe · Kinetic type / motion card · End card.
 
-Each claim has a visible feature/action window and a complete outcome. Inspect the
-whole action for state/order/contact and the source against real product evidence.
-Qualify difficult generated actions before a batch. A rejected clip stays excluded
-from passing assembly; crops/overlays cannot hide an incorrect demonstration.
+## Pacing
+- Speech at the reference's measured rate (2.8-3.2 words/s for creator speech), never over 3.2 on a native H3 take; at most 16 words a line; 15-34 s total.
+- Each claim's proof on screen within 1.5 s; the payoff holds 2-4× the average shot.
+- Footage plays forward at 0.5-2×; no shot under 0.4 s.
 
-Choose readable overlays/captions with appropriate proof holds. Captions follow
-accepted words and measured timings; explicit exceptions stay in the plan. Repair
-joins on actual words and inspect the complete final, with sound and exact-file evidence.
+## Nearest template
+`split-screen-creator-demo` (physical goods: `overlay-proof-points`)
+
+## Top 5 failures and fixes
+- A line doesn't match its footage → write each line from its shot; retime on the heard words.
+- AI breaks hands, pours or labels → use real footage or photos; move the camera, not the product.
+- Words cut at take joins → join on measured speech; a 0.10 s dissolve or a hard cut.
+- Text collides or garbles → captions off while points show; all words in HTML, never in a generated picture.
+- An invented score or stat → brand-stated facts only; no proof shot means cut the claim.

@@ -1,8 +1,8 @@
 # Human version
 
-Preserve the real product's size, shape and use in every scene. Existing manufacturer
-facts and brand assets come first; another user photo is needed only for a material
-gap. A correct logo cannot approve a miniature spa or invented seating layout.
+Keep the real product's size, shape and use in every scene. Manufacturer facts and
+brand assets come first. When scale matters, a size reference photo is required, from
+the brand first. A correct logo cannot approve a miniature spa or invented seating.
 
 ---
 
@@ -10,64 +10,68 @@ gap. A correct logo cannot approve a miniature spa or invented seating layout.
 
 ## Source the product
 
-Read the existing brand record, manufacturer specification/manual, technical drawing
-and official product views. Save exact model/variant, dimension axes/units, source
-revision/date and uncertainties. Distinguish exterior dimensions, usable interior
-dimensions and capacity. Do not guess scale-critical size from name, category,
-price, weight or an attractive reference. Missing critical facts leave that decision
-incomplete; ask only for evidence that existing sources cannot supply.
+Read the brand record, manufacturer specification or manual, technical drawing and
+official views. Save the exact model/variant, dimension axes and units, source date
+and uncertainties. Keep exterior size, usable interior and capacity apart. Never guess
+scale-critical size from name, category, price or an attractive reference; a missing
+critical fact leaves that decision incomplete.
 
-Prefer real front/side/interior views and installed-product footage. A person beside
-the product on the same ground plane is useful, but is not a mandatory upload.
-Dimensioned drawings, known-size context objects and suitable existing footage can
-also ground size. Official marketing capacity is a sourced claim, not a filmed test.
+**Size reference photo.** When scale matters, a photo that shows the product's real
+size is required: a person beside it on the same ground plane, a known-size object, or
+installed-product footage. Take it from the brand's assets first; ask the user only
+when none exists. Official capacity is a sourced claim, not a filmed test.
 
-## Scale packet and actual request
+**Packaging.** A still packshot gets the real product photo through `overlay`. An
+overlay can't follow a pack that moves, so a pack held, opened, poured or used on screen
+is made with `openai/gpt-image-2/edit`, the real product photo as reference image 1 and
+its front label facing the camera. Never type label text; never ask for a blank,
+unprinted, unlabelled or back-facing pack. A blank, unprinted or label-less brand pack is
+P0. If the label garbles, reframe so hands cover it while shape and colours match, or cut
+to a real-photo insert.
 
-For each scale-critical scene retain selected identity/variant, sourced dimensions,
-appearance/detail views, distinct scale-only references, footprint/support plane,
-camera view and planned human position. If photos are insufficient, use an available
-free local renderer to make measured front/side/top silhouettes and a scene guide.
-Label a nominal human silhouette's chosen height. A guide is construction evidence,
-not a photograph, exact seat geometry or proof that people fit comfortably.
+**Use steps and product states.** Quote each on-screen use step from the brand's
+directions in the shot plan. Take every visible state (closed pack, open pack, sachet, dry
+contents, cooked dish, strip on the nose) from a real brand photo sent as a reference,
+never from prose. No photo of a state: don't show it (cut from the real pack to the
+result) or ask the owner. When the directions are cut off or give several methods, show
+the one the owner confirms. Waste goes in a real bin, never a bowl near food.
 
-Send appearance and scale guides in the endpoint's supported reference fields.
-Persist the final attached-image manifest after caps, resizing/filtering and transport.
-If a necessary reference is dropped, resolve it before spending; prompt prose saying
-use this image is insufficient. Scale-only references supply size without copying
-their people/hands/background; actual product views supply design and parts.
+## Scale packet and request
+
+For each scale-critical scene keep the variant, sourced dimensions, detail views,
+scale-only references, footprint and support plane, camera view and planned human
+position. If photos are not enough, a free local renderer can make measured
+front/side/top silhouettes; label a nominal human's height. A guide is construction
+evidence, not a photograph or proof that people fit.
+
+Send appearance and scale guides in the endpoint's supported reference fields and save
+the final attached-image manifest after caps and resizing. A dropped reference is fixed
+before spending; prompt prose is not a reference. Scale-only references give size
+without copying their people or background.
 
 ## Camera, contact and continuity
 
-Record shot size/angle, camera height/distance or other available view parameters,
-product pose and ground plane. Compare the output with a camera-matched guide or
-real view. Do not infer real dimensions from raw product/person pixel ratios at
-different depths. When calibration is unavailable, record qualitative evidence and
-remaining uncertainty; do not invent centimetre accuracy or a passing scale score.
+Record shot size, angle, camera height and distance, product pose and ground plane;
+compare the output with a camera-matched guide or real view. Never infer dimensions
+from pixel ratios at different depths or invent centimetre accuracy.
 
-Check width/depth/height relationships, silhouette, hardware, interior/seats, label,
-colour/material, support/contact, shadows/reflections and body/object interaction.
-Reject household-shelf staging for a full-size spa, unsupported/floating bases,
-changed width, disappearing fixtures, miniaturisation and warped proportions.
-Check start/action/end and across adjacent shots; a good midpoint cannot clear a morph.
+Check width/depth/height, silhouette, hardware, interior, label, colour, support,
+shadows and body contact. Reject shelf staging for a full-size spa, floating bases,
+changed width, vanishing fixtures and miniaturisation. Check start, action and end and
+adjacent shots; a good midpoint cannot clear a morph.
 
-Use sourced installation conditions rather than blanket assumptions. Indoor saunas,
-appropriate clothing, reinforced platforms and elevated installations may be valid
-for specific products. Preserve an approved outdoor setting as a project constraint,
-without calling all indoor placement physically impossible. Review actual clearance,
-door path, support and visible equipment where they matter to the chosen scene.
+Use sourced installation conditions, not blanket assumptions: indoor saunas, platforms
+and elevated installs may be valid for a product. Keep an approved outdoor setting as
+a project constraint. Review clearance, door path and support where the scene needs it.
 
 ## Capacity and proof
 
-Use manufacturer interior/seating evidence and authorized occupancy footage where
-available. Exterior size alone does not establish eight usable seats. An illustrative
-capacity scene retains actual product geometry and shows the required distinct people
-in plausible positions without body intersections, disappearing people or shrinking
-the product. Do not present that generated scene as an independently measured test.
-A diagram or eight dots cannot silently replace a requested live entry/seating demo.
+Use manufacturer seating evidence and authorized occupancy footage. Exterior size
+alone does not prove eight seats. An illustrative capacity scene keeps real geometry
+and shows the distinct people plausibly placed, with no intersections or vanishing
+people; never present it as a measured test. A diagram or eight dots cannot replace a
+requested live entry or seating demo.
 
-Inspect the still before animation, the complete clip and the exact final. Save
-per-scene findings for identity, dimensions/proportions, support, action/capacity and
-cross-shot continuity. Repeated geometry failure calls for suitable owned footage or
-an explicitly reviewed faithful composition; do not keep buying the same failed
-request or crop away the evidence.
+Inspect the still, the whole clip and the exact final, saving findings for identity,
+proportions, support, action and continuity. Repeated geometry failure calls for owned
+footage or a reviewed faithful composition, not more of the same failed request.

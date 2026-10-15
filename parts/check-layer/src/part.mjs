@@ -29,6 +29,20 @@
 // promise instead of warning: loudness off -14 LUFS on a cut the sound layer
 // levelled, and a caption across a scene cut or into the end card when the
 // captions layer stopped its captions there. A taste range still warns.
+// 1.6.0 adds the final measurements (src/final-measure.mjs, the contract's
+// gooseworks-final-measure/1): digital silence, steady tones, unplanned
+// silence, planned pause and freeze caps, frozen picture and repeated shots.
+// They fail on a custom, source-linked edit (the timeline links an
+// assembly_timeline, or expect.final_measure is block) and warn on template
+// videos for one release. The result is also returned as final_measure.
+// 1.7.0 adds speech_rate_vs_reference (src/speech-rate.mjs): when the kit supplies both
+// expect.reference_words and expect.final_words, the final cut's real words per second
+// (reference_rate.py's count) fails more than 15 % below the reference's; otherwise it is
+// not_applicable.
+// 1.8.0 adds setup_count_vs_reference (src/setups.mjs): with expect.reference_setups, the
+// final cut's distinct setups (shot keyframes clustered by dHash) fail more than 30 % below
+// the reference's. And repeated_shot no longer lets a callback: intent clear a repeat on its
+// own: the callback's name must be in expect.approved_callbacks.
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitFfmpeg } from '../../_lib/part.mjs';
@@ -36,6 +50,9 @@ import { speechBuildAliases, speechReview, speechTokenize } from '../../_lib/spe
 import { kitLogoScore, kitLogoScoreInBox, kitMotion, kitWindowLevels } from '../../_lib/frames.mjs';
 import { CHK_BLANK_MAX_SHARE, CHK_CUT_MAX_RATE, CHK_CUT_MIN_RATE, CHK_MSG_RISE_DB, CHK_READ_MAX_WPS, CHK_READ_MIN_WPS, chkBlankFrames, chkBlankSpans, chkClipSpans, chkCutInsideWord, chkCuts, chkJudgeBlank, chkMessageRise, chkMessageWindows, chkReadRate, chkSpeechBefore } from './flags.mjs';
 import { chkLineLoss, chkScriptLoss } from './lines.mjs';
+import { fmMeasure, fmMessage, fmRecord } from './final-measure.mjs';
+import { chkSpeechRateVsReference } from './speech-rate.mjs';
+import { chkSetupCount } from './setups.mjs';
 import { CHK_CONTRAST_MIN, CHK_CONTRAST_OFFSET_S, CHK_CONTRAST_WARN, CHK_CUE_GUARD_S, CHK_DISTINCT_MIN, CHK_FLOOR_MAX_DB, CHK_FLOOR_MIN_DB, CHK_FLOOR_SPEECH_GAP_DB, CHK_MIN_SHOT_S, chkAdjacentDiffs, chkCueAcrossCut, chkCutContrast, chkFloorWindows, chkJudgeAmbience, chkSceneOpenings, chkShortShot, chkShotSound, chkShots, chkSpeechSpans } from './shots.mjs';
 
 const TARGET_LUFS = -14;
@@ -610,6 +627,32 @@ export async function run(inputs, ctx) {
     }
   }
 
+  // The final cut's speaking rate against the reference's, when both word lists are supplied.
+  const rate = chkSpeechRateVsReference(expect.reference_words, expect.final_words);
+  add('speech_rate_vs_reference', rate.status, { message: rate.message, expected: rate.expected, found: rate.found });
+
+  // The final measurements: blocking on a custom, source-linked edit, warnings on a template video.
+  const assembly = timeline.assembly_timeline && typeof timeline.assembly_timeline === 'object' ? timeline.assembly_timeline : null;
+  const block = expect.final_measure ? expect.final_measure === 'block' : !!assembly;
+  let finalMeasure = null;
+  if (retained) {
+    for (const id of ['digital_silence', 'tone_only', 'unplanned_silence', 'planned_pause_too_long', 'frozen_picture', 'planned_freeze_too_long', 'repeated_shot']) add(id, 'not_applicable', { found: notChecked });
+  } else if (d !== null) {
+    const measured = await fmMeasure(ctx, { duration_s: d, has_audio: m.has_audio, path: video.path }, { timeline, expect, assembly });
+    for (const c of measured) {
+      if (c.result === 'fail') add(c.id, block ? 'fail' : 'warn', { message: fmMessage(c, block), found: c.detail });
+      else add(c.id, c.result, { found: c.detail });
+    }
+    finalMeasure = fmRecord(video, d, measured);
+  }
+
+  // Distinct setups against the reference's, when the kit supplies the reference's count.
+  if (retained || d === null) add('setup_count_vs_reference', 'not_applicable', { found: retained ? notChecked : 'no measured length' });
+  else {
+    const setups = await chkSetupCount(ctx, video.path, d, { assembly, timeline, expect });
+    add('setup_count_vs_reference', setups.status, { message: setups.message, expected: setups.expected, found: setups.found });
+  }
+
   const pass = checks.every((c) => c.status !== 'fail');
   ctx.log.info('check layer verdict', {
     pass,
@@ -617,5 +660,5 @@ export async function run(inputs, ctx) {
     warned: checks.filter((c) => c.status === 'warn').map((c) => c.code),
     server_failed: reasons.filter((r) => SERVER.has(r.check)).length,
   });
-  return kitCheckOutputs(ctx, manifest, { verdict: { pass, checks, reasons } });
+  return kitCheckOutputs(ctx, manifest, { verdict: { pass, checks, reasons }, ...(finalMeasure ? { final_measure: finalMeasure } : {}) });
 }

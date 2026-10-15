@@ -21,6 +21,9 @@
 //           repeats is the first place again in another light: one paid light
 //           picture, multiplied into the source frames (src/plate.mjs).
 //
+// 1.2.0: the default cast anchor is the server's phone-camera creator recipe (a lived-in
+// room, deep focus, no bokeh, real skin) instead of a plain light wall.
+//
 // 1.1.2: in scenes mode (borders: 'fix', the default) a still that came back
 // letterboxed, padded or framed is cropped, or fails the step, never drawn again
 // (_lib/scene-stills.mjs kitStillWithoutBorders), and product photos lose their
@@ -48,8 +51,13 @@ const GI_MAX_REFS = 10;
 const GI_NOT_IN_IMAGES = [...GI_SCENE_ONLY, 'template', 'look', 'answers', 'brand', 'cast', 'cast_size', 'style_refs'];
 /** The light picture's text when the template has no templates.light: the shot's empty plate, only the light changed. */
 const GI_DEFAULT_LIGHT = 'This is the same empty place, shot by the same locked camera, everything in exactly the same place. One thing has changed: {picture}. It is completely empty. A real photograph, fine film grain, true to life colour. No objects, no hands, no people, no text, no watermark';
-/** The anchor text when the style's template has none: a plain photo of a real person, nothing that bakes into every scene. */
-const GI_DEFAULT_ANCHOR = 'A real photo of one person: {look}. Chest up, looking into the lens, in front of a plain light wall, soft even daylight, hands empty, natural skin texture, shot on a phone, no text, no props';
+/**
+ * The anchor text when the style's template has none (1.2.0): the server's dialogue
+ * creator recipe (gooseworks-app video-lab/blocks/dialogue/character.ts, first frame,
+ * room plate and skin lines). A candid phone-camera frame in a lived-in room, deep focus,
+ * no bokeh, real skin; never a plain wall or a white void (fix-forward contract section 6).
+ */
+const GI_DEFAULT_ANCHOR = 'A single frame of a candid vertical iPhone front-camera selfie video, not a commercial, not a studio shoot, of one person: {look}. Chest-up, phone at arm\'s length, head in the upper third of the frame, looking into the lens with the mouth closed in a relaxed, neutral expression, hands empty. In a real lived-in room, slightly cluttered with everyday things, not staged, not a showroom, not a plain wall or backdrop. Everything sharp, deep focus, no bokeh, no shallow depth of field. Natural room light. Real skin with tiny natural imperfections, subtle peach fuzz, faint fine lines, barely-any makeup, not plastic, not airbrushed, not doll-like. iPhone front-camera grain, not a cinema sensor. No retouching, no skin smoothing, no beauty filter, no cinematic grade. No text, no captions, no logos, no watermarks, no props. One person only';
 
 async function giIsPng(path) {
   const head = (await readFile(path)).subarray(0, 8);

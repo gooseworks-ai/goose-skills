@@ -1,7 +1,13 @@
-// voice-elevenlabs 1.2.0: connected narration, explicit V4 support, model-
-// specific performance cues, and source/timing provenance. Tagged alignments
-// remain pending until independently reviewed; metadata never stands in for
-// listening. Explicit narration tempo is applied before any lip-sync job.
+// voice-elevenlabs 1.3.0: Eleven v4 is the default model. Every line reports its
+// measured words per second from the provider (or reviewed) timestamps, and an
+// optional pace.target_wps speeds a narration that reads more than 10 % below the
+// target, by at most 1.25x, before any lip-sync step. That tempo is applied only to
+// the new narration this part makes; a lip-synced or native talking clip never
+// enters this part. 1.2.1: connected narration, Eleven v4 and v4 Turbo as plain
+// generally available models, model-specific performance cues, and source/timing
+// provenance. Tagged alignments remain pending until independently reviewed;
+// metadata never stands in for listening. A pending tagged read still returns the
+// whole read as one track, never only its first request.
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitDuration, kitFfmpeg, kitNum, kitPieceName, kitStopIfAborted } from '../../_lib/part.mjs';
 import { kitApplySayAs, kitWordsFromAlignment } from '../../_lib/speech-map.mjs';
@@ -18,6 +24,18 @@ const SENTENCE_END_RE = /[.!?]["'”’)\]]*$/u;
 const CALL_MAX_CHARS = { eleven_v3: 3000, eleven_multilingual_v2: 10000, eleven_v4: 10000, eleven_v4_turbo: 10000 };
 const TEMPO_MIN = 0.8;
 const DEFAULT_MAX_TEMPO = 1.25;
+// pace.target_wps: a read more than this share below the target is sped up, never past TARGET_MAX_TEMPO.
+const TARGET_SLACK = 0.1;
+const TARGET_MAX_TEMPO = 1.25;
+const DEFAULT_MODEL = V4;
+
+/** The request's model_id, always one of the listed model constants (the input schema allows only these). */
+function modelBody(model) {
+  if (model === V2) return { model_id: V2 };
+  if (model === V4) return { model_id: V4 };
+  if (model === V4_TURBO) return { model_id: V4_TURBO };
+  return { model_id: V3 };
+}
 
 function usableAlignment(json) {
   const a = (json && (json.normalized_alignment || json.alignment)) || null;
@@ -284,20 +302,80 @@ function checkPace(pace, ctx) {
   if (pace.tempo !== undefined && pace.max_tempo !== undefined && pace.tempo > pace.max_tempo) {
     throw ctx.error('bad_input', `pace.tempo ${pace.tempo} is above pace.max_tempo ${pace.max_tempo}`);
   }
+  if (pace.tempo !== undefined && pace.target_wps !== undefined) {
+    throw ctx.error('bad_input', 'give pace.tempo or pace.target_wps, not both: target_wps measures the read and picks the tempo');
+  }
   if (pace.min_wps !== undefined && pace.max_wps !== undefined && pace.min_wps > pace.max_wps) {
     throw ctx.error('bad_input', `pace.min_wps ${pace.min_wps} is above pace.max_wps ${pace.max_wps}`);
   }
 }
 
+/**
+ * The tempo pace.target_wps asks for: 1 unless the measured read is more than 10 % below the target,
+ * else target / measured, rounded up to 3 decimals and capped at 1.25 (or a lower pace.max_tempo).
+ */
+export function targetTempo(pace, measuredWps) {
+  if (!pace || pace.target_wps === undefined || !(measuredWps > 0)) return 1;
+  if (measuredWps >= pace.target_wps * (1 - TARGET_SLACK) - 1e-9) return 1;
+  const cap = Math.min(TARGET_MAX_TEMPO, pace.max_tempo ?? TARGET_MAX_TEMPO);
+  return Math.min(cap, Math.ceil((pace.target_wps / measuredWps) * 1000) / 1000);
+}
+
+/** What the pace did, in plain fields: the target, the measured and delivered rates, and the tempo. */
+function paceReport(pace, measuredWps, deliveredWps, tempo) {
+  const target = pace?.target_wps ?? null;
+  const report = { target_wps: target, measured_wps: measuredWps, delivered_wps: deliveredWps, tempo, tempo_applied: tempo !== 1, tempo_applied_before_lipsync: true };
+  if (pace?.tempo !== undefined) report.note = `explicit pace.tempo ${tempo}`;
+  else if (target === null) report.note = 'no pace.target_wps: the read is left as performed';
+  else if (tempo === 1) report.note = `the read measures ${measuredWps} words a second, within 10 % of the target ${target}: left as performed`;
+  else if (deliveredWps < target * (1 - TARGET_SLACK) - 1e-9) report.note = `the read measured ${measuredWps} words a second, more than 10 % below the target ${target}; sped up ${tempo}x (the 1.25x cap), it now runs ${deliveredWps}. Still slow: direct a faster read or cut words`;
+  else report.note = `the read measured ${measuredWps} words a second, more than 10 % below the target ${target}; sped up ${tempo}x to ${deliveredWps}`;
+  return report;
+}
+
+const COUNTED_RE = /[\p{L}\p{N}_]/u;
+
+/**
+ * The words heard in one character alignment, measured the way goose-studio's reference_rate.py measures
+ * an ElevenLabs alignment, so a target taken from the reference compares like for like: a word is a run of
+ * characters between spaces that holds a letter or digit (a lone dash or full stop is not a word), and it
+ * ends at its last letter or digit, not its punctuation. Returns { words, span_s }: the count, and the
+ * first word's start to the last word's end.
+ */
+export function heardRate(alignment) {
+  const found = [];
+  let current = null;
+  const chars = (alignment && alignment.characters) || [];
+  chars.forEach((c, i) => {
+    const start = alignment.character_start_times_seconds[i];
+    const end = alignment.character_end_times_seconds[i];
+    if (/^\s+$/u.test(c)) current = null;
+    else if (!current) {
+      current = { text: c, start, end };
+      found.push(current);
+    } else {
+      current.text += c;
+      if (COUNTED_RE.test(c)) current.end = end;
+    }
+  });
+  const words = found.filter((w) => COUNTED_RE.test(w.text));
+  if (!words.length) return { words: 0, span_s: 0 };
+  return { words: words.length, span_s: Math.max(0, words.at(-1).end - words[0].start) };
+}
+
+/** Words per second for a heard rate at a tempo (2 decimals); 0 for fewer than two words or no span. */
+function rateOf(heard, tempo = 1) {
+  return heard.words >= 2 && heard.span_s > 0 ? +((heard.words * tempo) / heard.span_s).toFixed(2) : 0;
+}
+
 export async function run(inputs, ctx) {
   const manifest = await kitCheckInputs(ctx, inputs);
   const gap = inputs.gap_s ?? 0.08;
-  const model = inputs.model ?? V3;
+  const model = inputs.model ?? DEFAULT_MODEL;
   const joinMode = inputs.join ?? 'sentence';
-  if ([V4, V4_TURBO].includes(model)) {
-    const support = inputs.model_support;
-    if (!support || support.model !== model || support.provider !== 'elevenlabs' || support.endpoint !== '/v1/text-to-speech/{voice_id}/with-timestamps' || support.status !== 'verified' || !support.evidence || !support.quote_id) throw ctx.error('bad_input', 'V4 is selectable only after the managed host verifies its model, timestamp endpoint and current quote; vendor availability alone is insufficient');
-  }
+  // Eleven v4 and v4 Turbo are generally available: no model_support gate (an old
+  // model_support input is still accepted and ignored). Tagged reads still need a
+  // reviewed alignment below.
   // eleven_v3 performs [tag]s; eleven_multilingual_v2 would read them aloud, so v2 strips them by default.
   const tags = inputs.tags ?? (model === V2 ? 'strip' : 'keep');
   checkPace(inputs.pace, ctx);
@@ -311,7 +389,7 @@ export async function run(inputs, ctx) {
     kitStopIfAborted(ctx);
     const first = call.lines[0];
     const text = call.lines.map((l) => l.sayAs.spoken).join(' ');
-    const body = { text, model_id: model };
+    const body = { text, ...modelBody(model) };
     if (first.settings) body.voice_settings = first.settings;
     // A joined request is named after its first scene, so a line-mode plan keeps its 1.0.x piece names.
     const piece = kitPieceName('line', first.scene.id, first.index, used);
@@ -329,7 +407,7 @@ export async function run(inputs, ctx) {
     if (reviewed && (reviewed.status !== 'pass' || reviewed.audio_listened !== true || !reviewed.reviewer || !['forced_alignment', 'reviewed_transcription'].includes(reviewed.method))) throw ctx.error('bad_input', `reviewed alignment for ${piece} lacks actual listening and timing provenance`);
     const timingCall = reviewed ? { ...call, lines: call.lines.map((line) => ({ ...line, sayAs: kitApplySayAs(line.written, inputs.pronunciations) })) } : call;
     const timingText = timingCall.lines.map((line) => line.sayAs.spoken).join(' ');
-    const alignment = reviewed ? joinedAlignment({ alignment: reviewed.alignment }, timingText) : tagged ? null : joined ? joinedAlignment(result.json, text) : joinedAlignment(result.json, text);
+    const alignment = reviewed ? joinedAlignment({ alignment: reviewed.alignment }, timingText) : tagged ? null : joinedAlignment(result.json, text);
     if (tagged && !reviewed) {
       if (!file) throw ctx.error('provider_failed', `no audio for ${piece}`);
       spoken.push({ call: timingCall, joined, piece, alignment: null, file, seconds: await kitDuration(ctx, file), timing_method: 'requires_reviewed_alignment' });
@@ -351,11 +429,35 @@ export async function run(inputs, ctx) {
     ctx.progress({ done: n + 1, total: calls.length });
   }
   if (spoken.some((source) => !source.alignment)) {
+    // 1.2.0 returned spoken[0].file here: one sentence passed off as the whole voice.
+    // The pending preview is the whole read, every request in order with the same
+    // gap as a timed read, so nothing downstream can mistake a fragment for the track.
+    // It stays untimed and pending until reviewed alignments are supplied.
+    const args = [];
+    const chains = [];
+    let at = 0;
+    spoken.forEach((s, i) => {
+      args.push('-i', s.file.path);
+      const hold = i + 1 < spoken.length ? gap : 0;
+      chains.push(
+        `[${i}:a]aresample=48000,aformat=sample_fmts=fltp:channel_layouts=mono,atrim=0:${kitNum(s.seconds)},` +
+          `asetpts=PTS-STARTPTS,apad=whole_dur=${kitNum(s.seconds + hold)}[l${i}]`,
+      );
+      at += s.seconds + hold;
+    });
+    const graph = `${chains.join(';')};${spoken.map((_, i) => `[l${i}]`).join('')}concat=n=${spoken.length}:v=0:a=1[out]`;
+    await kitFfmpeg(ctx, [...args, '-filter_complex', graph, '-map', '[out]', ...ctx.tools.encodeArgs('aac'), join(ctx.workDir, 'voice-pending.m4a')]);
+    const preview = await ctx.file('voice-pending.m4a', 'audio');
+    if (inputs.max_seconds !== undefined && at > inputs.max_seconds) {
+      throw ctx.error('bad_input', `the read runs ${at.toFixed(2)} s, longer than max_seconds ${inputs.max_seconds}; shorten the lines`);
+    }
     return kitCheckOutputs(ctx, manifest, {
-      audio: spoken[0].file, seconds: spoken[0].seconds, speech: [], scenes: [], lines: [], words_per_second: 0, tempo: 1,
+      audio: preview, seconds: +at.toFixed(3), speech: [], scenes: [], lines: [], words_per_second: 0, measured_words_per_second: 0, tempo: 1,
+      pace_report: { target_wps: inputs.pace?.target_wps ?? null, measured_wps: null, tempo: 1, tempo_applied: false, tempo_applied_before_lipsync: true, note: 'not measured: a tagged read is timed only from a reviewed alignment; run again with reviewed_alignments to measure and pace it' },
       content_review_status: 'pending', timing_status: 'requires_reviewed_alignment',
       source_files: spoken.map((source) => source.file),
       sources: spoken.map((source) => ({ piece: source.piece, audio: source.file, timing_method: source.timing_method, scene_ids: source.call.lines.map((line) => line.id), spoken_text: source.call.lines.map((line) => voiceWithoutTags(line.sayAs.spoken).text).join(' ') })),
+      provenance: { speech_mode: 'narration', model, voice_ids: [...new Set(lines.map((line) => line.voiceId))], content_review: 'pending', timing_is_content_review: false, tempo: 1, tempo_applied_before_lipsync: true, pending_reason: 'tagged_read_needs_reviewed_alignment' },
     });
   }
 
@@ -363,6 +465,7 @@ export async function run(inputs, ctx) {
   const args = [];
   const chains = [];
   const speech = [];
+  const heard = [];
   const scenes = [];
   const files = [];
   let at = 0;
@@ -387,6 +490,7 @@ export async function run(inputs, ctx) {
       };
       if (l.sayAs.spoken !== l.written) entry.spoken = l.sayAs.spoken;
       speech.push(entry);
+      heard.push(heardRate(p.slice));
       const last = p === parts[parts.length - 1];
       scenes.push({ id: l.id, start_s: at + p.start, end_s: at + (last ? s.seconds + hold : p.next) });
       // A line read alone keeps the provider's own file; a line cut from a joined read gets its own file.
@@ -398,10 +502,15 @@ export async function run(inputs, ctx) {
   // Pace: measured on the read as spoken, then every timing is scaled by the tempo.
   const words = countWords(speech);
   const rawWps = words / (speakingSeconds(speech) || 1);
-  // No automatic time stretch to make an unreviewed slow performance pass.
-  // An explicit narration tempo changes this new audio before any lip-sync job;
-  // a native speaker's soundtrack never enters this part.
-  const tempo = inputs.pace?.tempo ?? 1;
+  // Measured from the timestamps, before any tempo: per line and for the whole read.
+  // Heard words (reference_rate.py's count) over each line's first-word start to last-word end, summed.
+  const heardTotal = heard.reduce((t, h) => ({ words: t.words + h.words, span_s: t.span_s + (h.words >= 2 ? h.span_s : 0) }), { words: 0, span_s: 0 });
+  const heardWps = heardTotal.span_s > 0 ? heardTotal.words / heardTotal.span_s : 0;
+  const measuredWps = +heardWps.toFixed(2);
+  // An explicit pace.tempo, or the tempo pace.target_wps picks (a read more than 10 % below the target,
+  // at most 1.25x). Either changes only this new narration, before any lip-sync job; a lip-synced or
+  // native talking clip never enters this part. Rate bounds alone (min_wps/max_wps) never stretch a read.
+  const tempo = inputs.pace?.tempo ?? targetTempo(inputs.pace, heardWps);
   const scale = (t) => +(t / tempo).toFixed(3);
   for (const e of speech) {
     e.start_s = scale(e.start_s);
@@ -457,12 +566,14 @@ export async function run(inputs, ctx) {
     seconds: +total.toFixed(3),
     speech,
     scenes,
-    lines: speech.map((e, i) => ({ scene_id: e.scene_id, audio: files[i] })),
+    lines: speech.map((e, i) => ({ scene_id: e.scene_id, audio: files[i], words_per_second: rateOf(heard[i], tempo), measured_words_per_second: rateOf(heard[i]) })),
     words_per_second: wps,
+    measured_words_per_second: measuredWps,
     tempo,
+    pace_report: paceReport(inputs.pace, measuredWps, +(heardWps * tempo).toFixed(2), tempo),
     content_review_status: 'pending', timing_status: 'provider_or_reviewed_alignment',
     source_files: spoken.map((source) => source.file),
     sources: spoken.map((source) => ({ piece: source.piece, audio: source.file, timing_method: source.timing_method, scene_ids: source.call.lines.map((line) => line.id), spoken_text: source.call.lines.map((line) => voiceWithoutTags(line.sayAs.spoken).text).join(' ') })),
-    provenance: { speech_mode: 'narration', model, voice_ids: [...new Set(lines.map((line) => line.voiceId))], content_review: 'pending', timing_is_content_review: false, tempo, tempo_applied_before_lipsync: true },
+    provenance: { speech_mode: 'narration', model, voice_ids: [...new Set(lines.map((line) => line.voiceId))], content_review: 'pending', timing_is_content_review: false, tempo, tempo_applied_before_lipsync: true, tempo_scope: 'new_narration_only', target_wps: inputs.pace?.target_wps ?? null },
   });
 }

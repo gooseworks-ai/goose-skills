@@ -10,9 +10,11 @@ export async function makeImage(path) {
 }
 
 export const sample = {
-  async inputs(workDir) {
-    const ref = await fileRef(await makeImage(join(workDir, 'product.png')), 'image');
+  // `version` (parts/_tools/parts.test.mjs passes it): 2.0.0 and newer are cartoons only and need subject.
+  async inputs(workDir, version) {
+    const ref = await fileRef(await makeImage(join(workDir, 'character.png')), 'image');
     return {
+      ...(version && Number(version.split('.')[0]) >= 2 ? { subject: 'cartoon' } : {}),
       model: 'fal-ai/nano-banana/edit',
       aspect_ratio: '9:16',
       images: [

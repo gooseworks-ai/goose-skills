@@ -1,3 +1,5 @@
+// video-veo-3 1.0.2: warns that fal retires this endpoint on 17 Nov 2026 (fix-forward
+// contract section 5); requests are unchanged. A bake-off picks the replacement.
 // video-veo-3: moves stills with Google Veo 3 / 3.1 image-to-video on fal, one
 // paid piece per clip, always without sound. Two modes, as video-kling 1.0.0:
 //   scenes  one clip per picked plan scene, its still found by scene id (from
@@ -28,6 +30,7 @@ const VEO_ALLOWED = [4, 6, 8];
 const VEO_DEFAULT_S = 4;
 const VEO_PROMPT_MAX = 20000;
 const VEO_NEGATIVE_MAX = 5000;
+export const VEO_RETIREMENT = 'fal retires this endpoint on 17 Nov 2026: plan a replacement before then (warning added 15 Oct 2026).';
 const VEO_SCENE_ONLY = ['pick', 'skip_first', 'skip_last', 'spans', 'require_scene_tags', 'require_product_refs', 'product_reference_evidence'];
 /** The motion text when the template has none: verb-led, with no still-shot words. */
 const VEO_DEFAULT_MOTION = '{picture?}. The camera drifts a little handheld as the moment plays out. No text, no new objects';
@@ -65,6 +68,7 @@ function veoBad(ctx, err) {
 export async function run(inputs, ctx) {
   const manifest = await kitCheckInputs(ctx, inputs);
   const model = inputs.model;
+  ctx.log.warn(VEO_RETIREMENT, { model, retires: '2026-11-17' });
   const mode = inputs.mode || (inputs.scenes ? 'scenes' : 'images');
   if (mode === 'scenes' && !inputs.scenes) throw ctx.error('bad_input', 'scenes mode needs scenes (or set mode images)');
   if (mode === 'images') {
