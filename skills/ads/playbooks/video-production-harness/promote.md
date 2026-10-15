@@ -24,7 +24,7 @@ Use it for each new candidate, final selection, rollback or labeled experiment.
 - `<video_folder>`.
 - `<candidate_path>`: for example `edits/master-final-v5.mp4`, or `_archive/master-final-v4.mp4` when reverting.
 - `<version_label>`: unique in the project (for example `v5-xfade`, `v4-restored`).
-- `<reason>`: one line ("first stitch after caption pass").
+- `<reason>`: one line.
 
 ## Workflow
 

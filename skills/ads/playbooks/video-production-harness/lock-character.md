@@ -9,7 +9,7 @@ Before writing any character prompt, read the avatar guide: `catalog_fetch` the 
 
 **Realism default (every real person):** phone capture, deep focus, no bokeh, a lived-in, slightly cluttered real room (never a plain wall or a white void), natural skin with pores and slight asymmetry, and "no retouching, no skin smoothing, no beauty filter, no cinematic grade". Studio light or shallow focus only when the approved style comes from a studio-shot reference; list that in `changes_from_reference` as `camera` if it differs. Wardrobe and setting fit the activity. Distinctive marks only when the user asks.
 
-**Capture follows the hands.** Set capture per scene. When the action uses both hands (applying, smoothing, pressing, holding a product with both hands), capture is `phone_counter` (a propped phone or a mirror) or `phone_observer`, never `phone_selfie`: the model adds a third hand to hold the phone ([shot routing](references/shot-routing.md)).
+**Capture follows the hands.** Set capture per scene. When the action uses both hands (applying, smoothing, pressing, holding a product with both hands), capture is `phone_counter` (a propped phone or a mirror) or `phone_observer`, never `phone_selfie`: the model adds a third hand to hold the phone. On the creator-h3 route it is `phone_counter` ([shot routing](references/shot-routing.md)).
 
 ## Host contract
 

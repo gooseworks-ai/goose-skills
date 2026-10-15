@@ -75,21 +75,22 @@ not qualify animated gaze or handling.
 
 ## Selected new part interfaces
 
-Use creator-h3@1.4.0 fields only with that version or a compatible newer contract.
-Carry creative_contract_revision; capture defaults to phone (phone_counter, or phone_selfie only when one hand stays free) and focus to deep, with studio or shallow focus only when chosen.
+Use creator-h3@1.5.0 fields only with that version or a compatible newer contract.
+Carry creative_contract_revision, `reference_words_per_second` (from `../scripts/reference_rate.py`) and
+`character.voice_pair` (from pair_voice.py, which make_character.py runs). Capture is
+phone_counter, also for two-hand actions (it has no phone_observer); focus is deep.
 Its generation_stage first_take is the default and returns pending source. Only
 remaining_takes may chain generation after accepted_sources includes the first take
 with actual AV review, real word timing and the qualified model/shot record. assemble
 uses all accepted sources without new generation. Never assert acceptance from ASR
 or a returned URL alone, or send new fields to an older frozen version.
 
-Use voice-elevenlabs@1.2.1 with `eleven_v4` requested (the part defaults to v3). 1.2.0 is withdrawn: a tagged read returned only its first
-request's audio. Since 1.2.1, V4 and V4 Turbo need no model_support evidence. Resolve the real
+Use voice-elevenlabs@1.3.0 (`eleven_v4` by default) with `pace.target_wps` set to the reference's
+rate. 1.2.0 is withdrawn: a tagged read returned only its first request's audio. Resolve the real
 with-timestamps endpoint through the managed binding. Only supported V4 controls apply. Tagged audio remains pending until independently reviewed word
 alignment; tag-stripped planned text is not evidence of spoken words.
 
-As of 15 October 2026, Eleven v4 (`eleven_v4`, `eleven_v4_turbo`) is generally available
-through voice-elevenlabs. Gemini Omni Flash (gemini-omni-1.1-flash) and Seedance 2.5 are
+`eleven_v4_turbo` is also available. Gemini Omni Flash (gemini-omni-1.1-flash) and Seedance 2.5 are
 unproven candidates, not defaults; Omni ignores uploaded audio, so never route exact
 lip-sync through it. Sources:
 [ElevenLabs models](https://elevenlabs.io/docs/overview/models),
