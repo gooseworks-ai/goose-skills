@@ -5077,6 +5077,49 @@
       "models": []
     },
     {
+      "id": "read-labels",
+      "version": "1.0.0",
+      "interface": 1,
+      "kind": "check",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "encoders": [
+            "mjpeg"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "openrouter/router/vision"
+          }
+        ],
+        "disk_mb": 50
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "call",
+        "rates_usd": {
+          "openrouter/router/vision": 0.08
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/read-labels/1.0.0",
+      "files": {
+        "README.md": "8f4e94aa37aa58f3c4cc8e475e35aea0281ff092713f2090cd76261ec9f39912",
+        "part.json": "91617f79b57943a20c4da1110cf30e4593e0ed4309fd6b84ade31ef85baa6cde",
+        "part.mjs": "49e23f13220c6ebeaddc18972065215bfc8affc185d0332fb5dcaf2ca4aacf43"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "openrouter/router/vision"
+        }
+      ]
+    },
+    {
       "id": "sfx-elevenlabs",
       "version": "1.0.0",
       "interface": 1,
