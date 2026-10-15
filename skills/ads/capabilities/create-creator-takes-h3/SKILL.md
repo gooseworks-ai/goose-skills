@@ -2,18 +2,18 @@
 name: create-creator-takes-h3
 description: Generate an AI creator talking to camera, saying an approved script, as one continuous track — H3 Max reference-to-video through the GooseWorks fal-proxy (bills the Ads agent). Plans takes on line boundaries under H3's 15s cap, dry-runs a cost estimate, generates the first take alone so its voice can be locked and passed to every later take, joins takes with measured 0.10s dissolves, and moves each line's timing onto the words actually spoken. Use for any format with a generated creator speaking a script (split-screen, screen inserts, talking-head ads).
 status: superseded
-version: "2.2.1"
-updated: 2026-10-14
-superseded_by: creator-h3@1.3.1
+version: "2.3.0"
+updated: 2026-10-15
+superseded_by: creator-h3@1.4.0
 ---
 
-> **Superseded by:** `creator-h3@1.3.1`. Compatibility scripts retain the source-review guards; frozen versions are unchanged.
+> **Superseded by:** `creator-h3@1.4.0`. Compatibility scripts retain the source-review guards; frozen versions are unchanged.
 
 # create-creator-takes-h3
 
 **Summary.** Generate one creator take, review the actual picture and sound, then continue with qualified sources. Keep native speech attached to its picture and assemble only complete reviewed takes. The provider can still invent words, drift in identity or fail an action; prompts and transcripts do not certify a pass.
 
-Use the existing shared builder for people, with an explicit phone or studio capture. No random distinctive marks or universal background-focus rule.
+Use the shared builder for people. Defaults: GPT Image 2, phone capture in a lived-in room, deep focus, no bokeh, no retouching. Studio or shallow focus only when the reference is shot that way. No forced flaws; marks only when the user chose them.
 
 | Script | What | Cost |
 |---|---|---|
@@ -133,7 +133,7 @@ These are the user's calls (the recipe's `choices`), never defaults of this atom
 
 Per-take word timing is required in recipes before joining. Confirm every line is complete in each source take; timing cannot recover a word the model never spoke. The join normalizes frame rate and time base, adds silent lead before an early incoming word, and moves a transition after a late outgoing word. It writes the actual mapping and duration in `creator.mp4.timeline.json`, and prints the same summary line as before, e.g. `[join] 2 takes, joins at 4.70, 9.50s -> creator.mp4  (measured 9.50s)` (one take: `[join] one take, trimmed to 6.00s -> creator.mp4`). Each `joins at` value is the reel time where the dissolve into that take begins, the same as `takes[k].start` in the timeline; the printed length is the actual reel length. A lone estimated take is trimmed to `--end` (never padded); a missing take file stops with `take missing: <path> (run run_takes.py)`. Re-align the cut list to the final audio and extend the layer to that measured duration; do not clamp it back to the planned end. Estimated joins remain available for legacy callers and print a warning: `--take` without `--words`, or `--spec` when none of the take set's planned word files exist (recipes written before measured joins). Some-but-not-all word files is an error, and `--require-words` turns any estimated join into an error.
 
-Use ordinary skin texture and subtle asymmetry for realism. An eyebrow scar is no longer a random default: scars or other distinctive marks require the user's explicit choice. Inspect the still before approving takes.
+Inspect the still before approving takes.
 
 ## Rejection, physical constraints and cast planning
 
@@ -171,6 +171,6 @@ New plans set `content_review_required: true`. Word sidecars must bind their sou
 
 ### Natural performance
 
-Specify recording method, framing, background, motivated light and visible action from the approved brief. Choose `--capture phone|studio`, `--recording counter|selfie` and reference-led `--focus natural|deep|shallow`. Distinctive `--marks` require `--marks-approved`, recording an explicit user choice. Do not repair poor acting with sharpening, blur or grain. Local H3 angle-tag experiments are not portable schema support; use delivery directions outside the spoken line.
+Specify recording method, framing, background, motivated light and visible action from the approved brief. `--capture` is `phone` (default), `phone_observer` (filmed by a friend, not looking at the lens: for eating or acting, never an H3 talking take) or `studio`; `--recording counter|selfie`; `--focus deep` (default) or `shallow`. Distinctive `--marks` require `--marks-approved`, recording an explicit user choice. Do not repair poor acting with sharpening, blur or grain. Local H3 angle-tag experiments are not portable schema support; use delivery directions outside the spoken line.
 
 For the compatibility scripts, the first render manifest exposes `configuration_sha256` and the first-source candidate SHA. Record a qualification only after actual acceptance; later takes require `--qualification` matching the exact current payload configuration and first source. The kit uses its own canonical configuration fingerprint; records from different executors are not interchangeable.

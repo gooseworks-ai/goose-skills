@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 """Shared creator still builder. Reuse this for generated people in custom video.
 
-The approved brief supplies identity, wardrobe, room and explicit phone/studio
-capture. Focus matches the reference. Ordinary skin detail is the default;
-distinctive marks require an explicit user choice, never random sampling.
-A generated still remains pending visual review before video production.
---dry-run and --payload-out prepare the same payload without generation.
+The approved brief supplies identity, wardrobe and room. Defaults: an ordinary phone
+capture in a real lived-in room, deep focus with no bokeh, real unretouched skin, made
+with openai/gpt-image-2. Studio capture or shallow focus only when the brief explicitly
+chooses them. phone_observer is a third-person phone shot (filmed by a friend, not
+looking at the lens) for scenes where people eat or act rather than talk to camera.
+Distinctive marks require an explicit user choice, never random sampling; no skin
+flaws are forced. A generated still remains pending visual review before video
+production. --dry-run and --payload-out prepare the same payload without generation.
 """
 import argparse
 import json
@@ -40,26 +43,49 @@ SKIN = {
 
 # Capture describes the approved recording, not a universal realism trick.
 # A sharp face, pores or noise cannot repair an artificial performance.
+NO_RETOUCH = "No retouching, no skin smoothing, no beauty filter, no cinematic grade."
 CAPTURE = {
-    "studio": (
-        "A real studio portrait with soft motivated light and ordinary colour. "
-        "Natural skin detail at this viewing distance, without exaggerated pores, "
-        "beauty retouching, edge halos or a waxy finish."),
     "phone": (
-        "An ordinary phone recording at eye level. Motivated room or window light, "
-        "natural white balance and ordinary colour. Skin has normal fine texture "
-        "at this shot size. No beauty filter, cinematic colour grade, artificial "
-        "grain overlay or exaggerated sharpening."),
+        "An ordinary phone recording at eye level, in a real lived-in room that is slightly "
+        "cluttered with everyday things, never a plain backdrop or a white void. Natural room "
+        "or window light, natural white balance and ordinary colour. Real skin with small "
+        "natural imperfections at this shot size. " + NO_RETOUCH + " No artificial grain overlay "
+        "or exaggerated sharpening."),
+    "phone_observer": (
+        "A candid phone video frame filmed by a friend from a few steps away at chest height. "
+        "The person is busy with what they are doing and does not look at the lens. A real "
+        "lived-in room, slightly cluttered with everyday things, natural light and ordinary "
+        "colour. Real skin with small natural imperfections at this distance. " + NO_RETOUCH),
+    "studio": (
+        "A real studio portrait with soft motivated light and ordinary colour, chosen because "
+        "the approved reference is studio-shot. Natural skin detail at this viewing distance, "
+        "without beauty retouching, edge halos or a waxy finish. " + NO_RETOUCH),
 }
+DEEP = ("Everything sharp, DEEP focus, as a phone records: the face and the room behind are "
+        "both in focus. No bokeh, no portrait-mode blur, no shallow depth of field.")
 FOCUS = {
-    "natural": "Natural focus falloff for this camera and subject distance; the room still reads as a real place.",
-    "deep": "The person and the required background details remain readable in deep focus, without sharpening halos.",
+    "deep": DEEP,
+    "natural": DEEP,  # read as deep; kept so older commands still run
     "shallow": "The face is in focus with gentle optical background falloff, matching the approved reference; no pasted portrait-mode edge.",
 }
 RECORDING = {
     "counter": "The phone is supported outside the frame; both hands are free. Complete face and both shoulders remain visible.",
     "selfie": "One hand supports a phone outside the frame; only the other hand is free. Believable selfie framing without cutting off the face.",
+    "observer": "Nobody holds a phone in frame. The person's hands are busy with the action; they look at what they are doing, not at the lens.",
 }
+# Framing and expression when the brief gives none, by capture (phone_observer never looks at the lens).
+DEFAULT_FRAMING = {
+    "talking": ("head and upper chest, with clear space above the head and on both sides so the "
+                "room reads around them, squared to camera, looking into the lens"),
+    "observer": "waist-up three-quarter view from a few steps away, the action and the room in frame",
+}
+DEFAULT_EXPRESSION = {
+    "talking": "relaxed expression, lips at rest, natural gaze toward the lens, no held smile",
+    "observer": "absorbed in what they are doing, relaxed face, not looking at the lens",
+}
+# openai/gpt-image-2 sizes by aspect (multiples of 16, as fal asks).
+GPT_SIZE = {"9:16": (1088, 1920), "16:9": (1920, 1088), "1:1": (1536, 1536),
+            "4:5": (1536, 1920), "3:4": (1440, 1920), "4:3": (1920, 1440)}
 
 AGE_NOTES = [
     (0, 25, "smooth forehead with expression lines only when the brow moves, full lip volume"),
@@ -95,11 +121,21 @@ def build(a):
     marks = [mark.strip() for mark in (getattr(a, "marks", None) or []) if mark.strip()]
     if marks and not getattr(a, "marks_approved", False):
         sys.exit("--marks needs --marks-approved: distinctive marks come from the user's choice, never random defaults")
-    imperfections = "; ".join(marks) if marks else "Ordinary fine skin texture and subtle facial asymmetry; no invented scars, moles or distinctive marks."
+    # No forced flaws: an invented scar, acne mark or oily shine reads as painted on.
+    imperfections = "; ".join(marks) if marks else "Ordinary skin texture and subtle facial asymmetry; no invented scars, acne marks, moles, greasy shine or distinctive marks."
 
     # Check the RAW arguments, before any decoration. An earlier version appended the full stop
     # first, so `--hair "  "` became "." and passed the not-empty test: a blank slot got through
     # the guard whose whole job was to stop blank slots.
+    kind = "observer" if a.capture == "phone_observer" else "talking"
+    if a.framing is None:
+        a.framing = DEFAULT_FRAMING[kind]
+    if a.expression is None:
+        a.expression = DEFAULT_EXPRESSION[kind]
+    if a.capture == "phone_observer":
+        a.recording = "observer"
+    elif a.recording == "observer":
+        sys.exit("--recording observer goes with --capture phone_observer")
     raw = {"hair": a.hair, "wardrobe": a.wardrobe, "scene": a.scene, "framing": a.framing,
            "expression": a.expression, "face_fill": a.face_fill, "gender": a.gender,
            "ethnicity": a.ethnicity}
@@ -122,7 +158,7 @@ def build(a):
         "imperfections": imperfections,
         "face_fill": a.face_fill,
         "capture": CAPTURE[a.capture],
-        "focus": FOCUS[getattr(a, "focus", "natural")],
+        "focus": FOCUS[getattr(a, "focus", "deep")],
         "recording": RECORDING[getattr(a, "recording", "counter")],
     }
     blank = [k for k, v in slots.items() if not str(v).strip()]
@@ -147,26 +183,22 @@ def main():
     # Head-and-SHOULDERS reads as a tight crop at 9:16 and the room disappears; the reviewer's
     # first reaction to it was to ask for a different aspect ratio, when the ratio was already
     # 9:16. Upper chest plus explicit space is the same ratio and reads as a room.
-    ap.add_argument("--framing", default="head and upper chest, with clear space above the head "
-                                         "and on both sides so the room reads around them, "
-                                         "squared to camera, looking into the lens")
-    ap.add_argument("--expression", default="relaxed expression, lips at rest, natural gaze toward "
-                                            "the lens, no held smile")
+    ap.add_argument("--framing", default=None, help="default by capture: upper chest to camera, "
+                                                   "or waist-up three-quarter for phone_observer")
+    ap.add_argument("--expression", default=None, help="default by capture (phone_observer never looks at the lens)")
     ap.add_argument("--face-fill", default="45 to 55 percent")
-    # fal-ai/nano-banana-pro is NB2 Pro, the model this realism formula was written for.
-    # Two wrong turns cost a generation each: "nano-banana-2" is an internal engine label fal
-    # rejects outright, and plain "fal-ai/nano-banana" is the OLDER model, which produced a
-    # face the reviewer called AI-generated on sight.
-    ap.add_argument("--capture", required=True, choices=["phone", "studio"],
-                    help="explicit recording choice from the approved brief")
+    ap.add_argument("--capture", default="phone", choices=["phone", "phone_observer", "studio"],
+                    help="phone (default); phone_observer for people eating or acting, filmed by a "
+                         "friend and not looking at the lens; studio only when the reference is studio-shot")
     ap.add_argument("--recording", default="counter", choices=sorted(RECORDING))
-    ap.add_argument("--focus", default="natural", choices=sorted(FOCUS), help="match the approved reference; deep focus is not universal")
+    ap.add_argument("--focus", default="deep", choices=sorted(FOCUS),
+                    help="deep (default, no bokeh); shallow only when the approved reference is shot that way")
     ap.add_argument("--marks", action="append", help="specific distinctive mark chosen by the user")
     ap.add_argument("--marks-approved", action="store_true", help="the user explicitly chose the supplied marks")
-    ap.add_argument("--model", default="fal-ai/nano-banana-pro")
-    # 4K, not the 1K default. The formula demands pores "legible, not implied"; at 1K the face
-    # is ~700px wide and a pore is sub-pixel, so the whole skin system renders as smooth skin.
-    ap.add_argument("--resolution", default="4K", choices=["1K", "2K", "4K"])
+    # openai/gpt-image-2 by default: real people and real products use GPT Image 2 (Nano Banana is
+    # for cartoons only). A Nano Banana model still takes --resolution and --seed.
+    ap.add_argument("--model", default="openai/gpt-image-2")
+    ap.add_argument("--resolution", default="4K", choices=["1K", "2K", "4K"], help="Nano Banana models only")
     ap.add_argument("--aspect", default="9:16")
     ap.add_argument("--seed", type=int, default=None)
     ap.add_argument("--out", required=True, type=pathlib.Path)
@@ -195,10 +227,19 @@ def main():
     }, indent=1), encoding="utf-8")
 
     # Built once, before the dry-run return, so the quoted body and the paid body are one object.
-    payload = {"prompt": prompt, "negative_prompt": negative, "aspect_ratio": a.aspect,
-               "resolution": a.resolution}
-    if a.seed is not None:
-        payload["seed"] = a.seed
+    if a.model.startswith("openai/gpt-image-2"):
+        if a.aspect not in GPT_SIZE:
+            sys.exit("--aspect %s has no GPT Image 2 size; use one of %s" % (a.aspect, ", ".join(GPT_SIZE)))
+        if a.seed is not None:
+            sys.exit("openai/gpt-image-2 takes no seed; leave --seed out")
+        w, h = GPT_SIZE[a.aspect]
+        payload = {"prompt": prompt + "\n\nAvoid: " + negative, "image_size": {"width": w, "height": h},
+                   "quality": "high"}
+    else:
+        payload = {"prompt": prompt, "negative_prompt": negative, "aspect_ratio": a.aspect,
+                   "resolution": a.resolution}
+        if a.seed is not None:
+            payload["seed"] = a.seed
     if a.payload_out:
         a.payload_out.parent.mkdir(parents=True, exist_ok=True)
         a.payload_out.write_text(json.dumps({"model": a.model, "body": payload}, indent=1),

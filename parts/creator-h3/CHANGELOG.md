@@ -1,5 +1,11 @@
 # creator-h3
 
+## 1.4.0
+
+- Realism defaults (fix-forward contract section 6): `capture` defaults to phone (counter, or selfie from `character.recording`), with the real lived-in room kept; new `focus` input, default `deep` (no bokeh); studio and shallow focus only when chosen. Every take asks for no retouching, skin smoothing, beauty filter or cinematic grade. Removes 1.3.x's "do not demand universal deep focus".
+- Shared `required_features` vocabulary (section 3), at most 12: any of `application, dispensing, pour, physical_demo, hands` forces a passing `product_action` review. 1.3.x names are aliases.
+- README restores the H3 limits: 15 s per take, at most 3.2 words a second, voice-first lip-sync with one line per clip across several clips.
+
 ## 1.3.0
 
 - Split first-take trial, remaining candidate generation and reviewed-source assembly. A file, ASR match or loudness check cannot auto-approve the first performance.

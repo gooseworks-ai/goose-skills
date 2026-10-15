@@ -48,6 +48,7 @@ test('the prompt is the atom\'s template word for word', () => {
   assert.ok(src.includes(JSON.stringify(pyConstant(py, 'TEMPLATE'))), 'the bundled template equals plan_takes.py TEMPLATE');
   assert.ok(src.includes(JSON.stringify(pyConstant(py, 'DEFAULT_DELIVERY'))), 'the bundled default delivery equals plan_takes.py DEFAULT_DELIVERY');
   for (const [key, text] of Object.entries(pyConstant(py, 'CAPTURE'))) assert.ok(src.includes(JSON.stringify(text)), `capture ${key} equals plan_takes.py CAPTURE`);
+  for (const [key, text] of Object.entries(pyConstant(py, 'FOCUS'))) assert.ok(src.includes(JSON.stringify(text)), `focus ${key} equals plan_takes.py FOCUS`);
 });
 
 test('refuses a creator nobody was asked about, square brackets, and more takes than the price allows', async () => {

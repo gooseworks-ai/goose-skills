@@ -1,12 +1,16 @@
-// creator-h3 1.3.1: controlled native creator production. Generate a first
+// creator-h3 1.4.0: controlled native creator production. Generate a first
 // source, request actual AV review, generate remaining candidates, then assemble
 // only accepted sources with reviewed word timings and linked picture/audio.
 // Energy measurements are planning diagnostics, never word or content proof.
+// 1.4.0: phone capture and deep focus by default (studio and shallow focus only
+// when explicitly chosen), and the shared required_features vocabulary: any
+// product action (application, dispensing, pour, physical_demo, hands) forces a
+// passing product_action review. Old feature names are read as aliases.
 import { join } from 'node:path';
 import { createHash } from 'node:crypto';
 import { kitCheckInputs, kitCheckOutputs, kitDuration, kitFfmpeg, kitNum, kitPieceName, kitStopIfAborted } from '../../_lib/part.mjs';
 import { kitApplySayAs } from '../../_lib/speech-map.mjs';
-import { H3_CAPTURE, H3_DEFAULT_DELIVERY, H3_MANNERISM, H3_TEMPLATE } from './prompt.mjs';
+import { H3_CAPTURE, H3_DEFAULT_DELIVERY, H3_FOCUS, H3_MANNERISM, H3_TEMPLATE } from './prompt.mjs';
 import { kitMediaConfigurationSha256, kitMediaReviewProblem, kitMediaRouteProblem } from '../../_lib/media-qualification.mjs';
 
 const MODEL = 'minimax/h3-max/reference-to-video';
@@ -33,6 +37,22 @@ const MAX_HOLD = 0.5;
 const LINE_GAP_MIN = 0.12;
 const LINE_GAP_REACH = 0.25;
 // Clips mode.
+// The shared required_features vocabulary (fix-forward contract section 3), with the
+// names creator-h3 1.3.x read, kept as aliases.
+export const H3_FEATURES = ['speaking_face', 'product', 'scale', 'hands', 'application', 'dispensing', 'pour', 'physical_demo', 'readable_text'];
+export const H3_FEATURE_ALIASES = { product_action: 'physical_demo', physical_action: 'physical_demo', precise_product_action: 'application', stateful_demo: 'physical_demo' };
+export const H3_PRODUCT_ACTIONS = ['application', 'dispensing', 'pour', 'physical_demo', 'hands'];
+
+/** The approved features in the shared vocabulary: aliases mapped, repeats dropped, order kept. */
+export function h3Features(list) {
+  const out = [];
+  for (const raw of list || []) {
+    const name = H3_FEATURE_ALIASES[raw] || raw;
+    if (!out.includes(name)) out.push(name);
+  }
+  return out;
+}
+
 const CLIPS_ONLY = ['images', 'template', 'use', 'look', 'answers', 'brand', 'products', 'pick', 'skip_first', 'skip_last', 'seconds'];
 
 /** The atom's identity guards: a person nobody was asked about reads as an AI composite. */
@@ -140,13 +160,14 @@ function planTakes(lines, wps) {
   });
 }
 
-function prompt(character, delivery, mannerism, dialogue, capture, voiceReference = false) {
+function prompt(character, delivery, mannerism, dialogue, capture, focus, voiceReference = false) {
   // Function replacers: a $ in a look or a line is never read as a replacement pattern.
   const text = H3_TEMPLATE.replace('{identity}', () => character.identity.trim())
     .replace('{environment}', () => String(character.environment || '').trim())
     .replace('{mannerism}', () => (mannerism ? H3_MANNERISM : ''))
     .replace('{delivery}', () => delivery)
     .replace('{capture}', () => H3_CAPTURE[capture])
+    .replace('{focus}', () => H3_FOCUS[focus])
     .replace('{dialogue}', () => dialogue);
   return voiceReference ? `${text}\n<Audio 1> is a voice-timbre and delivery reference for <Subject 1> (S1). Reference its voice, not its old words or soundtrack. Speak only this take's dialogue. This is audio reference, not exact audio reuse.\n` : text;
 }
@@ -363,7 +384,7 @@ async function joinTakes(ctx, plan, out) {
 
 export async function run(inputs, ctx) {
   const manifest = await kitCheckInputs(ctx, inputs);
-  if ((inputs.mode || 'talk') !== 'talk') throw ctx.error('bad_input', 'creator-h3 1.3.1 controls native talking creators only; use a separately qualified non-speaking clip route with its own source content reviews');
+  if ((inputs.mode || 'talk') !== 'talk') throw ctx.error('bad_input', 'creator-h3 1.4.0 controls native talking creators only; use a separately qualified non-speaking clip route with its own source content reviews');
   for (const key of CLIPS_ONLY) if (inputs[key] !== undefined) throw ctx.error('bad_input', `${key} works only in clips mode`);
   const requestedStage = inputs.generation_stage || 'reviewed_pipeline';
   let stage = requestedStage;
@@ -394,8 +415,12 @@ export async function run(inputs, ctx) {
   if (takes.problem) throw ctx.error('bad_input', takes.problem);
   const seconds = takes.reduce((a, t) => a + t.dur, 0);
   if (seconds > inputs.max_seconds) throw ctx.error('bad_input', `the lines need ${seconds}s of takes, more than max_seconds ${inputs.max_seconds}`);
-  const capture = inputs.capture;
+  // Phone capture and deep focus unless the approved brief explicitly chose studio or shallow focus.
+  const ch = creator.character || {};
+  const capture = inputs.capture ?? (ch.capture === 'studio' ? 'studio' : ch.recording === 'selfie' ? 'phone_selfie' : 'phone_counter');
   if (!H3_CAPTURE[capture]) throw ctx.error('bad_input', 'choose capture: phone_counter, phone_selfie or studio from the approved recording brief');
+  const focus = inputs.focus ?? (ch.focus === 'shallow' ? 'shallow' : 'deep');
+  const features = h3Features(inputs.required_features);
   const accepted = new Map((inputs.accepted_sources || []).map((source) => [source.id, source]));
   if (accepted.size !== (inputs.accepted_sources || []).length) throw ctx.error('bad_input', 'accepted_sources repeats a take ID');
   if ([...accepted.keys()].some((id) => !takes.some((take) => take.id === id))) throw ctx.error('bad_input', 'accepted_sources contains a take outside this script');
@@ -408,15 +433,15 @@ export async function run(inputs, ctx) {
     capture, identity: creator.character.identity, environment: creator.character.environment || '',
     anchor: creator.character.image, mannerism: inputs.mannerism || null, delivery,
     resolution: inputs.resolution ?? '1080P', aspect_ratio: inputs.aspect_ratio ?? '9:16',
-    words_per_second: Math.min(inputs.words_per_second ?? 2.6, H3_PLAN_WPS), required_features: inputs.required_features || [],
-    prompt_template: H3_TEMPLATE, capture_template: H3_CAPTURE[capture], mannerism_template: inputs.mannerism ? H3_MANNERISM : null,
+    words_per_second: Math.min(inputs.words_per_second ?? 2.6, H3_PLAN_WPS), required_features: features,
+    prompt_template: H3_TEMPLATE, capture_template: H3_CAPTURE[capture], focus, focus_template: H3_FOCUS[focus], mannerism_template: inputs.mannerism ? H3_MANNERISM : null,
     voice_reference_source_sha256: firstSourceSha256, voice_reference_extract: VOICE_CLIP,
     takes: takes.map((take) => ({ id: take.id, duration: take.dur, script_sha256: takeScriptSha256(take), seed: 300000 + (ctx.seed(`take-${take.id}`) % 600000) })),
   });
   const configurationSha256 = kitMediaConfigurationSha256(configuration(accepted.get(takes[0].id)?.video.sha256 || null));
-  const routeProblem = kitMediaRouteProblem({ provider: 'fal', model: MODEL, shot_type: 'talking_creator', configuration_sha256: configurationSha256, accepted_source_sha256: accepted.get(takes[0].id)?.video.sha256, speech_mode: 'native_dialogue', required_features: inputs.required_features || [], qualification: inputs.qualification, trial: stage === 'first_take' });
+  const routeProblem = kitMediaRouteProblem({ provider: 'fal', model: MODEL, shot_type: 'talking_creator', configuration_sha256: configurationSha256, accepted_source_sha256: accepted.get(takes[0].id)?.video.sha256, speech_mode: 'native_dialogue', required_features: features, qualification: inputs.qualification, trial: stage === 'first_take' });
   if (routeProblem) throw ctx.error('bad_input', routeProblem);
-  const actionRequired = (inputs.required_features || []).some((feature) => ['product_action', 'physical_action', 'precise_product_action', 'stateful_demo', 'application', 'dispensing'].includes(feature));
+  const actionRequired = features.some((feature) => H3_PRODUCT_ACTIONS.includes(feature));
 
   const resolution = inputs.resolution ?? '1080P';
   const aspect = inputs.aspect_ratio ?? '9:16';
@@ -428,7 +453,7 @@ export async function run(inputs, ctx) {
     const piece = `take-${t.id}`;
     const dialogue = t.lines.map((l) => l.spoken).join(' ');
     const body = {
-      prompt: prompt(creator.character, delivery, !!inputs.mannerism, dialogue, capture, !!voice),
+      prompt: prompt(creator.character, delivery, !!inputs.mannerism, dialogue, capture, focus, !!voice),
       duration: t.dur,
       resolution,
       aspect_ratio: aspect,

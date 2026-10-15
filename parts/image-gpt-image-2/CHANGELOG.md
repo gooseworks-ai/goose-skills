@@ -1,5 +1,9 @@
 # image-gpt-image-2
 
+## 1.2.0
+
+- The default cast anchor (a template with no `anchor` text) is the server's dialogue creator recipe: a candid vertical iPhone front-camera frame, chest-up, in a real lived-in, slightly cluttered room, everything sharp (deep focus, no bokeh), natural room light, real skin with small imperfections, no retouching, skin smoothing, beauty filter or cinematic grade. 1.1.x drew the person "in front of a plain light wall, soft even daylight". A minor version: an intended change in look, so styles move to it through their pins.
+
 ## 1.1.2
 
 - Borders in scenes mode (`borders: fix` by default), as image-nano-banana 1.2.3: product photos trimmed before sending (not with `require_product_refs`, whose evidence names the exact photo), a still with a band or frame cropped to its own shape, else the step fails in plain words (never a second paid still). The product evidence binds the still handed on and the piece that drew it. Images, cast and shots mode are unchanged.
