@@ -108,8 +108,10 @@ export function chkExtraWords(verdict, scriptWords, heardWords) {
     const extra = issue.heard_words;
     if (!extra.some((w) => !CHK_FILLERS.has(w))) continue;
     const said = extra.join(' ');
-    const atEnd = extra.length <= heardWords.length && extra.every((t, k) => heardWords[heardWords.length - extra.length + k] === t);
-    if (issue.kind === 'inserted' && atEnd && CHK_TAIL_HALLUCINATIONS.includes(said)) continue;
+    const endsWith = (words) => extra.length <= words.length && extra.every((t, k) => words[words.length - extra.length + k] === t);
+    // Whisper's sign-off is forgiven only when the script does not itself end with those words: a script
+    // ending "...love you." said as "...love you you." is a repeat, not a sign-off.
+    if (issue.kind === 'inserted' && endsWith(heardWords) && !endsWith(scriptWords) && CHK_TAIL_HALLUCINATIONS.includes(said)) continue;
     return { words: extra, text: issue.heard_text || said, repeat: issue.kind === 'inserted' && chkHasRunIn(scriptWords, extra) };
   }
   return null;

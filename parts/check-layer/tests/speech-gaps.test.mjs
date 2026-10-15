@@ -40,6 +40,16 @@ test('speech_extra_words controls: fillers, a Whisper sign-off at the end and a 
   assert.equal(extra(script, 'I love the tea. It tastes like fresh cut grass.'), null, 'a changed word is speech_matches_script, not an extra word');
 });
 
+test('speech_extra_words: a repeated final word fails, even when it is a word Whisper adds as a sign-off', () => {
+  assert.deepEqual(extra(["I'm not going back."], "I'm not going back back.").words, ['back']);
+  const you = extra(['Honestly, I love you.'], 'Honestly, I love you you.');
+  assert.deepEqual([you.words, you.repeat], [['you'], true], 'a script ending in "you" said twice is a repeat');
+  const thanks = extra(['This tea works, thank you.'], 'This tea works, thank you, thank you.');
+  assert.deepEqual([thanks.words, thanks.repeat], [['thank', 'you'], true]);
+  assert.deepEqual(extra(['I love it.', 'Try it now.'], 'I love it. Try it now. Try it now.').words, ['try', 'it', 'now']);
+  assert.equal(extra(['This tea works.'], 'This tea works. Thank you.'), null, 'a sign-off after a script that does not end with it is still forgiven');
+});
+
 // Levels in dB per 50 ms window: the voice at -20 inside the words, quiet at -60 in the gaps.
 function levels(seconds, spans, gapDb = -60) {
   const n = Math.round(seconds / CHK_GAP_WINDOW_S);
