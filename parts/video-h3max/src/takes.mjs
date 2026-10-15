@@ -10,6 +10,7 @@ import { join } from 'node:path';
 import { statSync } from 'node:fs';
 import { H3SCENE_MODEL, h3SceneProviderBody, h3SceneProviderPrompt, h3SceneProviderVideo } from './provider.mjs';
 import { h3ScenePrepareReferences } from './frames.mjs';
+import { h3FixProduct, h3FixTake } from './fixes.mjs';
 
 const H3SCENE_TAKE_PROMPT_MAX = 12000;
 const H3SCENE_TAKE_MAX_REFS = 9;
@@ -369,6 +370,8 @@ export async function h3SceneRunTakes(inputs, ctx, jobs) {
   for (const j of jobs) j.piece = kitPieceName('take', j.id, j.index, used);
   const made = [];
   let still = null;
+  // fixes: each take is checked (and flipped or cropped) before the chain still is cut from it.
+  const product = (inputs.fixes || []).includes('mirror') ? await h3FixProduct(ctx, inputs.products) : null;
   for (const [k, j] of jobs.entries()) {
     kitStopIfAborted(ctx);
     const piece = j.piece;
@@ -377,8 +380,8 @@ export async function h3SceneRunTakes(inputs, ctx, jobs) {
     const result = await ctx.line.order({ piece, provider: 'fal', path: H3SCENE_MODEL, body, results: [{ pointer: '/json/video/url', name: `${piece}.mp4`, media: 'video' }] });
     const file = result && result.files && result.files[`${piece}.mp4`];
     if (!file) throw ctx.error('provider_failed', `no video for ${piece}`);
-    const ready = await h3SceneProviderVideo(ctx, file, piece, audio);
-    made.push({ job: j, file: ready.file, info: ready.info, length: await kitDuration(ctx, ready.file) });
+    const ready = await h3FixTake(ctx, await h3SceneProviderVideo(ctx, file, piece, audio), piece, inputs.fixes, product);
+    made.push({ job: j, file: ready.file, info: ready.info, length: await kitDuration(ctx, ready.file), fixed: ready.fixed });
     if (k === 0 && inputs.chain && jobs.length > 1) still = await h3SceneTakeChainStill(ctx, ready.file, inputs.chain);
     ctx.progress({ done: k + 1, total: jobs.length });
   }
@@ -398,6 +401,6 @@ export async function h3SceneRunTakes(inputs, ctx, jobs) {
   }
   if (scenes.length) scenes[scenes.length - 1].end_s = +duration.toFixed(3);
   const timeline = { duration_s: +duration.toFixed(3), width: info.width, height: info.height, fps: info.fps || made[0].info.fps || 24, scenes, speech: [] };
-  const takes = made.map((t) => ({ id: t.job.id, video: t.file, seconds: t.job.seconds }));
+  const takes = made.map((t) => ({ id: t.job.id, video: t.file, seconds: t.job.seconds, ...(t.fixed.length ? { fixed: t.fixed } : {}) }));
   return { clips: takes, takes, video, seconds: timeline.duration_s, timeline };
 }

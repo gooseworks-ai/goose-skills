@@ -22,6 +22,7 @@ const H3SCENE_SCENE_ONLY = ['pick', 'skip_first', 'skip_last', 'seconds'];
 const H3SCENE_TAKE_ONLY = {
   takes: ['takes'],
   chain: ['takes'],
+  fixes: ['take', 'takes'],
   off_screen_lines: ['take'],
   off_screen_tags: ['take'],
   words_per_second: ['take', 'takes'],

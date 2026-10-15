@@ -3,6 +3,15 @@
 This part provides H3 Max scene clips and timed takes for recipes that need native dialogue or first/last
 frames. Published `video-seedance-2` and `creator-h3` versions are unchanged.
 
+## 1.2.0
+
+- New input `fixes` (modes take and takes): `mirror` flips a take whose product label reads backwards, found by
+  matching the first product photo against six frames as they are and flipped; `screen` crops away a phone
+  recording screen H3 drew over the picture (a dark band on every edge with rounded corners) and scales the
+  picture back. Both are free and run before the chain still is cut. H3 front-camera takes came back
+  mirrored in 4 of 10 and with a drawn screen in 3 of 8 (Brightland UGC, 2026-10-15); the prompt alone did
+  not stop either. `takes[].fixed` and `clips[].fixed` say what was done. Requests are unchanged.
+
 ## 1.1.0
 
 - New mode `stills`: one H3 Max clip per picked plan scene, starting on that scene's still from a picture

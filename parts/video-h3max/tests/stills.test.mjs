@@ -74,7 +74,7 @@ async function stillsInputs(workDir, extra = {}) {
 }
 
 test('1.1.0 adds mode stills and its inputs, and a clip may be a fallen-back still', () => {
-  assert.equal(manifest.version, '1.1.0');
+  assert.equal(manifest.version, '1.2.0');
   assert.deepEqual(manifest.inputs.properties.mode.enum, ['reference', 'image_to_video', 'take', 'takes', 'stills']);
   for (const key of ['stills', 'spans', 'min_s', 'max_s', 'max_total_s', 'fallback', 'require_scene_tags', 'require_product_refs', 'product_reference_evidence']) {
     assert.ok(manifest.inputs.properties[key], key);
