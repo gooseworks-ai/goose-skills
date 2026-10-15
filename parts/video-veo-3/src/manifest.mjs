@@ -52,10 +52,10 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'video-veo-3',
-  version: '1.0.1',
+  version: '1.0.2',
   kind: 'generate_video',
   title: 'Moving stills (Veo 3 image-to-video)',
-  summary: 'Turns stills into short silent clips with Google Veo 3 / 3.1 image-to-video on fal, one piece per clip: one clip per plan scene timed to the voice or song, or one per still.',
+  summary: 'Turns stills into short silent clips with Google Veo 3 / 3.1 image-to-video on fal, one piece per clip. Warning: fal retires this endpoint on 17 Nov 2026.',
   runtime: 'node',
   entry: 'part.mjs',
   files: ['README.md', 'part.mjs'],
@@ -189,4 +189,6 @@ export const manifest = {
   timing: { typical_s: 420, timeout_s: 3600 },
   retry: { transient: 1 },
   replaces: [],
+  // Dated provider notice (fix-forward contract section 5). Kept until a bake-off picks the replacement.
+  'x-provider-retirement': { date: '2026-11-17', notice: 'fal retires this endpoint on 17 Nov 2026.', added: '2026-10-15' },
 };

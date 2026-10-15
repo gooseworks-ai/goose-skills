@@ -5,10 +5,11 @@ import assert from 'node:assert/strict';
 import { mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { fileRef, framePixels, hasFfmpeg, loadNewest, makeCtx, probe, run } from '../../_tools/kit-harness.mjs';
+import { fileRef, framePixels, hasFfmpeg, loadNewest, loadPart, makeCtx, probe, run } from '../../_tools/kit-harness.mjs';
 import { falReply, productsInputs, sample, scenesInputs } from './fixture.mjs';
 
-const { dir, mod } = await loadNewest('image-nano-banana');
+// 2.0.0 is cartoons only (tests/cartoon-only.test.mjs); these describe 1.2.3, which still runs every mode.
+const { dir, mod } = await loadPart('image-nano-banana', '1.2.3');
 const skip = !(await hasFfmpeg()) && 'ffmpeg is not installed';
 
 /** Whether the picture's top row is mostly not black. */

@@ -3593,6 +3593,71 @@
       ]
     },
     {
+      "id": "image-nano-banana",
+      "version": "2.0.0",
+      "interface": 1,
+      "kind": "generate_image",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "scale",
+            "setsar",
+            "format",
+            "hstack",
+            "crop"
+          ],
+          "encoders": [
+            "png",
+            "rawvideo"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "fal-ai/nano-banana"
+          },
+          {
+            "provider": "fal",
+            "model": "fal-ai/nano-banana/edit"
+          }
+        ],
+        "disk_mb": 200
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "image",
+        "measure": {
+          "from": "/images/*",
+          "as": "count"
+        },
+        "rates_usd": {
+          "fal-ai/nano-banana": 0.039,
+          "fal-ai/nano-banana/edit": 0.039
+        },
+        "model_from": "/model"
+      },
+      "determinism": "provider",
+      "path": "parts/image-nano-banana/2.0.0",
+      "files": {
+        "README.md": "7452a5a0f7a5252ddc7f998fdb89138068d77aa6896f29630ac31f5c55859f99",
+        "part.json": "757a1c8d2e6c7546187386d24e8a646997fd2a415507081bdd898d12dd9b2595",
+        "part.mjs": "cd8917c626d5bb6d19730efb6db6a7a7d03de6907b7b5a084345c6a60a983f5f"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "fal-ai/nano-banana"
+        },
+        {
+          "provider": "fal",
+          "model": "fal-ai/nano-banana/edit"
+        }
+      ]
+    },
+    {
       "id": "lipsync-veed",
       "version": "1.0.0",
       "interface": 1,
@@ -3794,6 +3859,59 @@
         {
           "provider": "elevenlabs",
           "model": "music_v1"
+        }
+      ]
+    },
+    {
+      "id": "music-elevenlabs",
+      "version": "1.1.0",
+      "interface": 1,
+      "kind": "generate_music",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "loudnorm",
+            "aresample",
+            "aformat",
+            "afade"
+          ],
+          "encoders": [
+            "aac"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "elevenlabs",
+            "model": "music_v2_5"
+          }
+        ],
+        "disk_mb": 30
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "second",
+        "measure": {
+          "from": "/seconds",
+          "as": "value"
+        },
+        "rates_usd": {
+          "music_v2_5": 0.0025
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/music-elevenlabs/1.1.0",
+      "files": {
+        "README.md": "b808c490328c779b65f4f40dcec4aa6cfbd70e64ca36adba53afacc7052cce51",
+        "part.json": "4585dec096db82bf99dd67a9d96fdd10d7abc2c5a33d602ff3272ae926e4e7ce",
+        "part.mjs": "5648145162dbc328639d5c1549ea27fffac47cecc3ce873fc9106cc9c026da5b"
+      },
+      "models": [
+        {
+          "provider": "elevenlabs",
+          "model": "music_v2_5"
         }
       ]
     },
@@ -5322,6 +5440,55 @@
       ]
     },
     {
+      "id": "video-kling",
+      "version": "1.1.0",
+      "interface": 1,
+      "kind": "generate_video",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": true,
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "fal-ai/kling-video/v2.1/standard/image-to-video"
+          },
+          {
+            "provider": "fal",
+            "model": "fal-ai/kling-video/v3/standard/image-to-video"
+          }
+        ],
+        "disk_mb": 800
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "second",
+        "rates_usd": {
+          "fal-ai/kling-video/v2.1/standard/image-to-video": 0.056,
+          "fal-ai/kling-video/v3/standard/image-to-video": 0.14
+        },
+        "model_from": "/model"
+      },
+      "determinism": "provider",
+      "path": "parts/video-kling/1.1.0",
+      "files": {
+        "README.md": "31f618dc94700a0776f0bcf90b2a638a4d367ffe05c401fca6ae19fbfd63bbbc",
+        "part.json": "e3af6d0bfb231f29de144e76e6910189eef914c5dd630b2e63e5f57c301fc05d",
+        "part.mjs": "d6cee562081eea7f12d096c86ea5e94dbb5a0858d6bf0eeeb5ba02d94c96f69b"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "fal-ai/kling-video/v2.1/standard/image-to-video"
+        },
+        {
+          "provider": "fal",
+          "model": "fal-ai/kling-video/v3/standard/image-to-video"
+        }
+      ]
+    },
+    {
       "id": "video-seedance-2",
       "version": "1.0.0",
       "interface": 1,
@@ -5627,6 +5794,73 @@
         "README.md": "f33584e1ec21df08e5ef146eca09e01fcde53f921a8448ef521e37b657b406d8",
         "part.json": "2313dd509d8b46a294774e71753188bad6cacbc38bff3e04b71fea8586a066d3",
         "part.mjs": "e952da03dbfefe2b841376b6a370f8e32e84b83c1749f971fd4fb5518f02a782"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "fal-ai/veo3.1/image-to-video"
+        },
+        {
+          "provider": "fal",
+          "model": "fal-ai/veo3.1/fast/image-to-video"
+        },
+        {
+          "provider": "fal",
+          "model": "fal-ai/veo3/image-to-video"
+        },
+        {
+          "provider": "fal",
+          "model": "fal-ai/veo3/fast/image-to-video"
+        }
+      ]
+    },
+    {
+      "id": "video-veo-3",
+      "version": "1.0.2",
+      "interface": 1,
+      "kind": "generate_video",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": true,
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "fal-ai/veo3.1/image-to-video"
+          },
+          {
+            "provider": "fal",
+            "model": "fal-ai/veo3.1/fast/image-to-video"
+          },
+          {
+            "provider": "fal",
+            "model": "fal-ai/veo3/image-to-video"
+          },
+          {
+            "provider": "fal",
+            "model": "fal-ai/veo3/fast/image-to-video"
+          }
+        ],
+        "disk_mb": 1200
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "second",
+        "rates_usd": {
+          "fal-ai/veo3.1/image-to-video": 0.4,
+          "fal-ai/veo3.1/fast/image-to-video": 0.15,
+          "fal-ai/veo3/image-to-video": 0.4,
+          "fal-ai/veo3/fast/image-to-video": 0.15
+        },
+        "model_from": "/model"
+      },
+      "determinism": "provider",
+      "path": "parts/video-veo-3/1.0.2",
+      "files": {
+        "README.md": "a49f8abb6e30365ce3db5c4f829b512114e1df9b740bc192d2bb298b3b6100c4",
+        "part.json": "27d28a6c6e94c724068d2f3fdf6ebb6f180b24ead60c3a27f20160f937d9096e",
+        "part.mjs": "efeda766276ec7c982db3522b0232f755c20f8137664522c3f9957bdd5434903"
       },
       "models": [
         {

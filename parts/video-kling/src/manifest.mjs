@@ -1,7 +1,6 @@
 import { file, sceneSpan } from '../../_tools/schemas.mjs';
 
 const V21 = 'fal-ai/kling-video/v2.1/standard/image-to-video';
-const V25 = 'fal-ai/kling-video/v2.5-turbo/pro/image-to-video';
 const V3 = 'fal-ai/kling-video/v3/standard/image-to-video';
 const PICTURE = ['image/png', 'image/jpeg', 'image/webp'];
 const textOrNull = (max) => ({ type: ['string', 'null'], maxLength: max });
@@ -51,7 +50,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'video-kling',
-  version: '1.0.0',
+  version: '1.1.0',
   kind: 'generate_video',
   title: 'Moving stills (Kling image-to-video)',
   summary: 'Turns stills into short silent clips with Kling image-to-video on fal, one piece per clip: one clip per plan scene timed to the voice or song, or one per still.',
@@ -65,7 +64,6 @@ export const manifest = {
     network: true,
     models: [
       { provider: 'fal', model: V21 },
-      { provider: 'fal', model: V25 },
       { provider: 'fal', model: V3 },
     ],
     disk_mb: 800,
@@ -76,8 +74,8 @@ export const manifest = {
     required: ['model', 'stills'],
     properties: {
       model: {
-        description: 'The Kling image-to-video model. v2.1 standard and v2.5 turbo pro make 5 or 10 s clips; v3 standard makes 3 to 15 s and is always asked for no sound.',
-        enum: [V21, V25, V3],
+        description: 'The Kling image-to-video model. v2.1 standard makes 5 or 10 s clips; v3 standard makes 3 to 15 s and is always asked for no sound. Kling 2.5 Turbo was withdrawn in 1.1.0.',
+        enum: [V21, V3],
       },
       mode: { description: 'scenes: one clip per picked plan scene, its still found by scene id. images: one clip per still. Default: scenes when scenes is given, else images.', enum: ['scenes', 'images'] },
       stills: {
@@ -155,7 +153,7 @@ export const manifest = {
   cost: {
     basis: 'per_unit',
     unit: 'second',
-    rates_usd: { [V21]: 0.056, [V25]: 0.07, [V3]: 0.14 },
+    rates_usd: { [V21]: 0.056, [V3]: 0.14 },
     model_from: '/model',
   },
   determinism: 'provider',

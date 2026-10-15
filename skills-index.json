@@ -1,6 +1,6 @@
 {
   "version": "1.4.0",
-  "generated": "2026-10-14",
+  "generated": "2026-10-15",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -1994,7 +1994,7 @@
       "description": "Generate or edit an image via any FAL image model (nano-banana edit, gpt-image, flux, ...), ROUTED THROUGH THE fal-proxy so it bills the Ads agent. image_urls must be public URLs; --image puts a local file on the fal CDN first. The recipe names the model + prompt. Use for keyframes, flat-cover transforms, product hero edits. (For the OpenAI gpt-image family specifically, create-image-gpt-image-fal also exists.)",
       "tags": "ads",
       "path": "skills/ads/capabilities/create-image-fal",
-      "version": "1.2.1",
+      "version": "1.2.2",
       "files": [
         "skills/ads/capabilities/create-image-fal/SKILL.md",
         "skills/ads/capabilities/create-image-fal/references/avatar-generation.md",
@@ -2007,7 +2007,7 @@
         "slug": "create-image-fal",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.2.1",
+        "version": "1.2.2",
         "tags": [
           "ads"
         ],
@@ -2301,7 +2301,7 @@
       "description": "Generate a voiceover (VO) clip via ElevenLabs text-to-speech, ROUTED THROUGH THE elevenlabs-proxy so it bills the Ads agent. Voice id + script text come from the template recipe. Use for the spoken narration of VO-driven video-ad formats (cgi-app-sizzle, flat-vector-explainer, hypermotion). Never call ElevenLabs directly — the proxy attribution is required.",
       "tags": "ads",
       "path": "skills/ads/capabilities/create-vo-elevenlabs",
-      "version": "1.2.0",
+      "version": "1.2.1",
       "files": [
         "skills/ads/capabilities/create-vo-elevenlabs/SKILL.md",
         "skills/ads/capabilities/create-vo-elevenlabs/scripts/gen_vo.py",
@@ -2316,7 +2316,7 @@
         "slug": "create-vo-elevenlabs",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.2.0",
+        "version": "1.2.1",
         "tags": [
           "ads"
         ],
@@ -6474,7 +6474,7 @@
       "description": "Assemble the FREE steps of the flat-vector-explainer video format — a flat-illustration host character (who, where, tone, voice and music come from the recipe choices) walks a countable N-step product routine, one step per beat, and Remotion composites every chip/numeral/tagline/slate/CTA as an animated DOM overlay ON TOP of the Kling i2v character clips (text is NEVER baked into a keyframe — i2v warps type), the closing 'N products' grid is a PIL composite of the REAL product photos (not AI), full-sentence VO drives word-by-word burned captions over a VO-forward music bed, and the ~50s animated silent master is re-cut to a 30s deliverable FROM the animated master (never a static intermediate). Documentation-grade — ships config.example.json + PIPELINE.md + a README of the free assembly; the paid gen steps (keyframes, Kling i2v, VO, music) are separate capabilities the recipe orchestrates. Use for the flat-vector-explainer format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-flat-vector-explainer",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "files": [
         "skills/ads/capabilities/render-flat-vector-explainer/SKILL.md",
         "skills/ads/capabilities/render-flat-vector-explainer/scripts/PIPELINE.md",
@@ -6487,7 +6487,7 @@
         "slug": "render-flat-vector-explainer",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.0.0",
+        "version": "1.1.0",
         "tags": [
           "ads"
         ],
@@ -6588,7 +6588,7 @@
       "description": "Render a 'hand-swipe flavor listicle' video from a config — the brand's REAL product cutouts each float on a flat flavor-matched color field under a persistent title and slide RIGHT-TO-LEFT one to the next like a phone-feed scroll, while a green-screen hand clip (back of hand toward camera, index finger up) is trimmed to its clean finger-up window, looped once per flavor, keyed with a green-dominance alpha key, scaled down and anchored at the bottom, with an optional end card and an optional instrumental music bed — deterministic PIL plus FFmpeg assembly, FREE (the hand clip comes from create-video-fal and the bed from create-music-elevenlabs), so labels stay pixel-crisp. Use for the hand-swipe-flavor-listicle format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-hand-swipe-flavor-listicle",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "files": [
         "skills/ads/capabilities/render-hand-swipe-flavor-listicle/SKILL.md",
         "skills/ads/capabilities/render-hand-swipe-flavor-listicle/scripts/build_hand_swipe_listicle.py",
@@ -6601,7 +6601,7 @@
         "slug": "render-hand-swipe-flavor-listicle",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.0.0",
+        "version": "1.1.0",
         "tags": [
           "ads"
         ],

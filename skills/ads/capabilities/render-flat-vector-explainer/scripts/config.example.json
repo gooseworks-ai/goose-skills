@@ -39,11 +39,11 @@
     ]
   },
   "kling": {
-    "model": "fal-ai/kling-video/v2.5-turbo/pro/image-to-video",
+    "model": "fal-ai/kling-video/v3/standard/image-to-video",
     "duration_sec": 5,
     "cfg_scale": 0.5,
     "negative_prompt": "photorealistic, 3D render, realistic skin, style change, gradient shading, text warp, camera shake",
-    "_note": "Holds flat-vector style at LOW motion only. TEST one scene before batching."
+    "_note": "Holds flat-vector style at LOW motion only. TEST one scene before batching. v3 takes start_image_url (not image_url) and makes sound unless generate_audio is false."
   },
   "scenes": [
     {

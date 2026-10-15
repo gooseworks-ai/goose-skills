@@ -1,10 +1,12 @@
+// video-kling 1.1.0: Kling 2.5 Turbo is withdrawn (audit: unreliable motion and
+// identity on creator B-roll and product shots); v2.1 standard and v3 standard remain.
 // video-kling: moves stills with Kling image-to-video on fal, one paid piece
 // per clip, always without sound. Two modes:
 //   scenes  one clip per picked plan scene, its still found by scene id (from
 //           image-nano-banana's images), its length from the voice's or song's
 //           spans (_lib/scene-clips.mjs), its prompt from the style's template;
 //   images  one clip per still (a keyframe, a cast anchor), at a fixed length.
-// The three models name their inputs differently: v2.1 and v2.5 take
+// The two models name their inputs differently: v2.1 takes
 // image_url and "5" | "10" seconds; v3 takes start_image_url, "3" to "15"
 // seconds and makes sound unless generate_audio is false (W0-62 contracts).
 // A clip the provider refuses can fall back to its still (fallback 'still').
@@ -13,7 +15,6 @@ import { KitPromptGap, kitLoadTemplate } from '../../_lib/prompt.mjs';
 import { kitClipEach, kitClipJobs, kitClipMayFallBack, kitClipSeconds, kitClipSlots, kitClipTemplate, kitClipTrim, kitClipWindow } from '../../_lib/scene-clips.mjs';
 
 const V21 = 'fal-ai/kling-video/v2.1/standard/image-to-video';
-const V25 = 'fal-ai/kling-video/v2.5-turbo/pro/image-to-video';
 const V3 = 'fal-ai/kling-video/v3/standard/image-to-video';
 const KL_PROMPT_MAX = 2500;
 const KL_DEFAULT_S = 5;
@@ -39,7 +40,6 @@ function klBody(model, { still, prompt, negative, seconds, cfg_scale }) {
 /** Orders one clip: each model's path is a listed constant. */
 function klOrder(ctx, model, order) {
   if (model === V3) return ctx.line.order({ ...order, provider: 'fal', path: V3 });
-  if (model === V25) return ctx.line.order({ ...order, provider: 'fal', path: V25 });
   return ctx.line.order({ ...order, provider: 'fal', path: V21 });
 }
 

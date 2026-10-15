@@ -115,11 +115,12 @@ cat > hand-payload.json <<'JSON'
   "prompt": "Close-up of {hand}, the BACK of the hand facing the camera, index finger extended pointing up. The hand swipes smoothly from RIGHT to LEFT across the frame like scrolling to the next photo on a phone. One clean horizontal swipe, the index finger stays extended (do not curl it). Solid flat bright green screen background, even flat lighting, fixed camera, no zoom, no camera shake.",
   "negative_prompt": "curled finger, closed fist, vertical motion, static, frozen, morphing, deformed fingers, extra fingers, text, watermark, changing background",
   "duration": "5",
-  "aspect_ratio": "9:16"
+  "aspect_ratio": "9:16",
+  "generate_audio": false
 }
 JSON
 python3 /tmp/gooseworks-scripts/create-video-fal/scripts/gen_video.py \
-  --model fal-ai/kling-video/v2.5-turbo/pro/text-to-video \
+  --model fal-ai/kling-video/v3/standard/text-to-video \
   --payload @hand-payload.json --out hand-swipe-greenscreen.mp4
 ```
 

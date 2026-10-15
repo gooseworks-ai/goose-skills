@@ -42,7 +42,7 @@ The agent runs these deterministic, $0 steps by hand — see `scripts/README.md`
 The recipe orchestrates and gates these; they are not part of this capability:
 
 - Flat-vector character anchor + per-scene keyframes + clean plates -> `create-image-fal` (nano-banana; re-render a FRESH flat-vector anchor, never chain a photoreal ref).
-- Kling i2v on the character scenes -> `create-video-fal` (Kling 2.5-turbo/pro, cfg 0.5, style-preserving negative, low motion; TEST one scene before batching).
+- Kling i2v on the character scenes -> `create-video-fal` (Kling v3 standard image-to-video with `start_image_url` and `generate_audio: false`, cfg 0.5; Kling 2.5 Turbo is withdrawn, style-preserving negative, low motion; TEST one scene before batching).
 - Full-sentence VO -> `create-vo-elevenlabs` (eleven_v3, with-timestamps).
 - Music bed in the chosen style (demo: lo-fi pop; skip if the user chose no music) -> `create-music-elevenlabs`.
 
