@@ -1,4 +1,10 @@
-// creator-h3 1.4.0: controlled native creator production. Generate a first
+// creator-h3 1.5.0: a scene action that uses both hands (apply, smooth, press,
+// peel, squeeze, hold with both hands, or required_features application) refuses
+// phone_selfie and uses phone_counter, a propped phone, and says so in
+// capture_decision: a selfie with both hands busy grew a third hand holding the
+// phone. Takes can be sized from the reference's measured rate
+// (reference_words_per_second), capped at 3.2 words a second. character.json's
+// voice_pair passes through. creator-h3 1.4.0: controlled native creator production. Generate a first
 // source, request actual AV review, generate remaining candidates, then assemble
 // only accepted sources with reviewed word timings and linked picture/audio.
 // Energy measurements are planning diagnostics, never word or content proof.
@@ -50,6 +56,33 @@ export function h3Features(list) {
     const name = H3_FEATURE_ALIASES[raw] || raw;
     if (!out.includes(name)) out.push(name);
   }
+  return out;
+}
+
+// An action that needs both hands, so nobody can hold the phone (plan_takes.py BOTH_HANDS, word for word).
+export const H3_BOTH_HANDS = "\\b(appl(?:y|ies|ied|ying)|smooth(?:s|ed|ing)?|press(?:es|ed|ing)?|peel(?:s|ed|ing)?|squeez(?:e|es|ed|ing)|rub(?:s|bed|bing)?|massag(?:e|es|ed|ing)|spread(?:s|ing)?|both hands|two hands|hands together)\\b";
+export const H3_BOTH_HANDS_FEATURES = ['application'];
+const ACTION_FIELDS = ['action', 'picture', 'visual', 'shot', 'description'];
+
+/** Why the plan's action needs both hands (the first matching words or feature), or null. */
+export function h3BothHands(texts, features) {
+  for (const name of features || []) if (H3_BOTH_HANDS_FEATURES.includes(H3_FEATURE_ALIASES[name] || name)) return `required feature ${H3_FEATURE_ALIASES[name] || name}`;
+  const re = new RegExp(H3_BOTH_HANDS, 'i');
+  for (const text of texts || []) {
+    const m = typeof text === 'string' ? re.exec(text) : null;
+    if (m) return `the action says "${m[0]}"`;
+  }
+  return null;
+}
+
+/** Every action-like text in the plan: each scene's picture and extra fields, and the character's actions. */
+function actionTexts(inputs, character) {
+  const out = [];
+  for (const s of inputs.scenes || []) {
+    if (typeof s.picture === 'string') out.push(s.picture);
+    if (s.extra && typeof s.extra === 'object') for (const k of ACTION_FIELDS) if (typeof s.extra[k] === 'string') out.push(s.extra[k]);
+  }
+  for (const a of (character && character.actions) || []) if (typeof a === 'string') out.push(a);
   return out;
 }
 
@@ -125,7 +158,8 @@ function isCutaway(scene, id, footageScenes) {
 function planTakes(lines, wps) {
   let t = 0;
   const timed = lines.map((l) => {
-    const words = l.spoken.split(/\s+/).filter(Boolean).length;
+    // Real words, as reference_rate.py counts them: a token with no letter or digit (a lone dash) is not one.
+    const words = l.spoken.split(/\s+/).filter((w) => /[\p{L}\p{N}_]/u.test(w)).length;
     const span = { ...l, start: t, end: t + words / wps };
     t = span.end + 0.3;
     return span;
@@ -384,7 +418,7 @@ async function joinTakes(ctx, plan, out) {
 
 export async function run(inputs, ctx) {
   const manifest = await kitCheckInputs(ctx, inputs);
-  if ((inputs.mode || 'talk') !== 'talk') throw ctx.error('bad_input', 'creator-h3 1.4.0 controls native talking creators only; use a separately qualified non-speaking clip route with its own source content reviews');
+  if ((inputs.mode || 'talk') !== 'talk') throw ctx.error('bad_input', 'creator-h3 1.5.0 controls native talking creators only; use a separately qualified non-speaking clip route with its own source content reviews');
   for (const key of CLIPS_ONLY) if (inputs[key] !== undefined) throw ctx.error('bad_input', `${key} works only in clips mode`);
   const requestedStage = inputs.generation_stage || 'reviewed_pipeline';
   let stage = requestedStage;
@@ -411,16 +445,34 @@ export async function run(inputs, ctx) {
   // The character's own delivery is trimmed only, as 1.0.2 did; a cast member's was cleaned in pickCreator.
   // A whitespace-only legacy delivery stays empty, exactly as 1.0.2 built the prompt.
   const delivery = cleanText(inputs.delivery) || String(creator.character.delivery || H3_DEFAULT_DELIVERY).trim();
-  const takes = planTakes(lines, Math.min(inputs.words_per_second ?? 2.6, H3_PLAN_WPS));
+  // Pace: words_per_second as given, else the reference's measured rate, else 2.6; never past 3.2.
+  const askedWps = inputs.words_per_second ?? inputs.reference_words_per_second ?? 2.6;
+  const plannedWps = Math.min(askedWps, H3_PLAN_WPS);
+  const pace = {
+    reference_wps: inputs.reference_words_per_second ?? null, planned_wps: plannedWps, capped: askedWps > H3_PLAN_WPS,
+    sized_from: inputs.words_per_second !== undefined ? 'words_per_second' : inputs.reference_words_per_second !== undefined ? 'reference_wps' : 'default',
+  };
+  const takes = planTakes(lines, plannedWps);
   if (takes.problem) throw ctx.error('bad_input', takes.problem);
   const seconds = takes.reduce((a, t) => a + t.dur, 0);
   if (seconds > inputs.max_seconds) throw ctx.error('bad_input', `the lines need ${seconds}s of takes, more than max_seconds ${inputs.max_seconds}`);
   // Phone capture and deep focus unless the approved brief explicitly chose studio or shallow focus.
   const ch = creator.character || {};
-  const capture = inputs.capture ?? (ch.capture === 'studio' ? 'studio' : ch.recording === 'selfie' ? 'phone_selfie' : 'phone_counter');
-  if (!H3_CAPTURE[capture]) throw ctx.error('bad_input', 'choose capture: phone_counter, phone_selfie or studio from the approved recording brief');
+  const requestedCapture = inputs.capture ?? (ch.capture === 'studio' ? 'studio' : ch.recording === 'selfie' ? 'phone_selfie' : 'phone_counter');
+  if (!H3_CAPTURE[requestedCapture]) throw ctx.error('bad_input', 'choose capture: phone_counter, phone_selfie or studio from the approved recording brief');
   const focus = inputs.focus ?? (ch.focus === 'shallow' ? 'shallow' : 'deep');
   const features = h3Features(inputs.required_features);
+  // Both hands busy and a handheld selfie: the model adds a third hand holding the phone.
+  const hands = h3BothHands(actionTexts(inputs, inputs.character), features);
+  const captureDecision = { requested: requestedCapture, used: requestedCapture, reason: null };
+  if (hands && requestedCapture === 'phone_selfie') {
+    captureDecision.used = 'phone_counter';
+    captureDecision.reason = `${hands}: both hands are busy, so nobody can hold the phone (a handheld selfie adds a third hand). Using phone_counter, a propped phone. If the anchor still shows an arm reaching out to hold the phone, remake it with the phone propped (recording counter).`;
+    ctx.log.warn('refused phone_selfie', { reason: captureDecision.reason });
+  }
+  const capture = captureDecision.used;
+  const voicePair = inputs.character && inputs.character.voice_pair ? inputs.character.voice_pair : null;
+  const extras = { capture_decision: captureDecision, pace, ...(voicePair ? { voice_pair: voicePair } : {}) };
   const accepted = new Map((inputs.accepted_sources || []).map((source) => [source.id, source]));
   if (accepted.size !== (inputs.accepted_sources || []).length) throw ctx.error('bad_input', 'accepted_sources repeats a take ID');
   if ([...accepted.keys()].some((id) => !takes.some((take) => take.id === id))) throw ctx.error('bad_input', 'accepted_sources contains a take outside this script');
@@ -433,7 +485,7 @@ export async function run(inputs, ctx) {
     capture, identity: creator.character.identity, environment: creator.character.environment || '',
     anchor: creator.character.image, mannerism: inputs.mannerism || null, delivery,
     resolution: inputs.resolution ?? '1080P', aspect_ratio: inputs.aspect_ratio ?? '9:16',
-    words_per_second: Math.min(inputs.words_per_second ?? 2.6, H3_PLAN_WPS), required_features: features,
+    words_per_second: plannedWps, required_features: features,
     prompt_template: H3_TEMPLATE, capture_template: H3_CAPTURE[capture], focus, focus_template: H3_FOCUS[focus], mannerism_template: inputs.mannerism ? H3_MANNERISM : null,
     voice_reference_source_sha256: firstSourceSha256, voice_reference_extract: VOICE_CLIP,
     takes: takes.map((take) => ({ id: take.id, duration: take.dur, script_sha256: takeScriptSha256(take), seed: 300000 + (ctx.seed(`take-${take.id}`) % 600000) })),
@@ -494,7 +546,7 @@ export async function run(inputs, ctx) {
   if (stage !== 'assemble') {
     const pending = made.find((take) => !take.review) || made[0];
     return kitCheckOutputs(ctx, manifest, {
-      video: pending.file, seconds: pending.duration, content_review_status: 'pending',
+      video: pending.file, seconds: pending.duration, content_review_status: 'pending', ...extras,
       source_files: made.map((take) => take.file),
       configuration_sha256: kitMediaConfigurationSha256(configuration(made[0].file.sha256)),
       review_request: {
@@ -615,6 +667,7 @@ export async function run(inputs, ctx) {
     timeline,
     assembly_timeline: assemblyTimeline,
     content_review_status: 'pending',
+    ...extras,
     configuration_sha256: configurationSha256,
     source_files: plan.takes.map((take) => take.file),
     provenance: { speech_mode: 'native_dialogue', source_content_review: 'pass', final_content_review: 'pending', timing_method: 'reviewed_source_words', sources: plan.takes.map((take) => ({ id: take.id, sha256: take.file.sha256, script_sha256: takeScriptSha256(take), head_pad_s: take.head_pad, tail_pad_s: take.tail_pad, source_start_s: 0, source_end_s: Math.min(take.duration, take.need - take.head_pad), picture_speed: 1, audio_speed: 1, review: take.review })) },

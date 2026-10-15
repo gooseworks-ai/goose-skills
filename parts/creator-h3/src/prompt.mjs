@@ -1,9 +1,10 @@
 // Native creator directions follow the approved capture and reference. Phone capture,
 // deep focus and real unretouched skin unless the brief explicitly chooses otherwise.
 // Delivery stays outside spoken copy; prompt requests require actual review.
+// 1.5.0: phone_counter is a propped phone nobody holds (a both-hands action uses it).
 
 export const H3_CAPTURE = {
-  "phone_counter": "An ordinary phone recording from a phone supported outside the frame at eye level. Static chest-up shot, complete face and both shoulders visible with headroom. Both hands are free; gestures are small and serve the words. No automatic zoom or reframing. The room is the real, lived-in room from <Picture 1>, never a plain backdrop or a white void.",
+  "phone_counter": "An ordinary phone recording from a phone propped up outside the frame at eye level. Nobody holds the phone and no hand holding a phone is in the frame. Static chest-up shot, complete face and both shoulders visible with headroom. Both hands are free; gestures are small and serve the words. No automatic zoom or reframing. The room is the real, lived-in room from <Picture 1>, never a plain backdrop or a white void.",
   "phone_selfie": "An ordinary handheld phone selfie at eye level. One hand supports the phone outside the frame; only the other hand is free. Small movement follows the supporting arm, without artificial drift or automatic zoom. Keep the complete face visible. The room is the real, lived-in room from <Picture 1>, never a plain backdrop or a white void.",
   "studio": "An approved studio recording at eye level, matching the reference composition and motivated lighting. Static medium framing with the complete face visible. Natural posture and restrained gestures; no automatic zoom or reframing."
 };

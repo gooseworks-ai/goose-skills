@@ -9,6 +9,16 @@ looking at the lens) for scenes where people eat or act rather than talk to came
 Distinctive marks require an explicit user choice, never random sampling; no skin
 flaws are forced. A generated still remains pending visual review before video
 production. --dry-run and --payload-out prepare the same payload without generation.
+
+Hands: pass every scene action the person performs with --action. When one uses both
+hands (apply, smooth, press, peel, squeeze, hold with both hands), a handheld selfie is
+refused and the still is a propped phone (counter) instead, because a selfie with both
+hands busy grows a third hand holding the phone. The output says so.
+
+Voice: character.json records `voice_pair`, from the same age and gender plus
+--voice-accent and --voice-energy: a matched ElevenLabs voice from a saved voice list
+(--voices), or a Voice Design request body (pair_voice.py). Use it for any narration of
+this person, so the voice fits the face and is not another brand's narrator.
 """
 import argparse
 import json
@@ -17,6 +27,9 @@ import subprocess
 import sys
 
 HERE = pathlib.Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE))
+from pair_voice import load_voices, pair_voice  # noqa: E402
+from plan_takes import both_hands  # noqa: E402
 
 # Skin tone follows from ethnicity unless the user overrides it. These are the formula's own
 # vocabulary, not invented: it asks for e.g. "deep brown-black / warm medium brown / olive-tan".
@@ -69,7 +82,7 @@ FOCUS = {
     "shallow": "The face is in focus with gentle optical background falloff, matching the approved reference; no pasted portrait-mode edge.",
 }
 RECORDING = {
-    "counter": "The phone is supported outside the frame; both hands are free. Complete face and both shoulders remain visible.",
+    "counter": "The phone is propped up outside the frame and nobody holds it; both hands are free. Complete face and both shoulders remain visible.",
     "selfie": "One hand supports a phone outside the frame; only the other hand is free. Believable selfie framing without cutting off the face.",
     "observer": "Nobody holds a phone in frame. The person's hands are busy with the action; they look at what they are doing, not at the lens.",
 }
@@ -136,6 +149,15 @@ def build(a):
         a.recording = "observer"
     elif a.recording == "observer":
         sys.exit("--recording observer goes with --capture phone_observer")
+    # Both hands busy and a handheld selfie: the model adds a third hand holding the phone.
+    a.capture_decision = {"requested": a.recording, "used": a.recording, "reason": None}
+    hands = both_hands(getattr(a, "action", None) or [])
+    if hands and a.recording == "selfie":
+        a.capture_decision = {"requested": "selfie", "used": "counter",
+                              "reason": "%s: both hands are busy, so nobody can hold the phone (a handheld selfie "
+                                        "adds a third hand). Using a propped phone (counter); use --capture "
+                                        "phone_observer for a friend filming instead." % hands}
+        a.recording = "counter"
     raw = {"hair": a.hair, "wardrobe": a.wardrobe, "scene": a.scene, "framing": a.framing,
            "expression": a.expression, "face_fill": a.face_fill, "gender": a.gender,
            "ethnicity": a.ethnicity}
@@ -193,6 +215,13 @@ def main():
     ap.add_argument("--recording", default="counter", choices=sorted(RECORDING))
     ap.add_argument("--focus", default="deep", choices=sorted(FOCUS),
                     help="deep (default, no bokeh); shallow only when the approved reference is shot that way")
+    ap.add_argument("--action", action="append", help="a scene action this person performs (repeatable); a "
+                    "both-hands action refuses --recording selfie")
+    ap.add_argument("--voice-accent", help="how they sound, e.g. american or british (for voice_pair)")
+    ap.add_argument("--voice-energy", help="e.g. upbeat, calm, warm (for voice_pair)")
+    ap.add_argument("--voices", help="a saved GET /v1/shared-voices or GET /v2/voices reply to match voice_pair from")
+    ap.add_argument("--voice-exclude", action="append", default=[], help="a voice_id not to reuse, e.g. another brand's narrator")
+    ap.add_argument("--voice-sample-text", help="100-1000 characters for Voice Design previews")
     ap.add_argument("--marks", action="append", help="specific distinctive mark chosen by the user")
     ap.add_argument("--marks-approved", action="store_true", help="the user explicitly chose the supplied marks")
     # openai/gpt-image-2 by default: real people and real products use GPT Image 2 (Nano Banana is
@@ -217,14 +246,22 @@ def main():
     print("skin     : %s" % slots["skin_tone"])
     print("marks    : %s" % slots["imperfections"][:96] + "...")
     print("prompt   : %d chars -> %s" % (len(prompt), out / "character-prompt.txt"))
+    if a.capture_decision["reason"]:
+        print("recording: refused selfie, " + a.capture_decision["reason"])
+    voice = pair_voice(a.age, a.gender, a.voice_accent, a.voice_energy,
+                       load_voices(a.voices) if a.voices else None, tuple(a.voice_exclude), a.voice_sample_text)
+    print("voice    : %s" % ("library voice %s (%s)" % (voice["voice_id"], voice.get("name")) if voice["source"] == "library"
+                             else "Voice Design request (paid; quote it first)"))
     # Save the same identity metadata for free planning and actual generation.
-    (out / "character.json").write_text(json.dumps({
+    record = {
         "image": "character.png",
         "identity": ident + ", " + slots["hair"].rstrip(".") + ", " + slots["wardrobe"].rstrip("."),
         "environment": slots["scene"].rstrip("."),
         "capture": a.capture, "recording": a.recording, "focus": a.focus,
-        "distinctive_marks": a.marks or [], "approval": "pending",
-    }, indent=1), encoding="utf-8")
+        "capture_decision": a.capture_decision, "actions": a.action or [],
+        "distinctive_marks": a.marks or [], "voice_pair": voice, "approval": "pending",
+    }
+    (out / "character.json").write_text(json.dumps(record, indent=1), encoding="utf-8")
 
     # Built once, before the dry-run return, so the quoted body and the paid body are one object.
     if a.model.startswith("openai/gpt-image-2"):
@@ -259,13 +296,7 @@ def main():
 
     # character.json is what plan_takes.py consumes, so write it here and the operator never
     # retypes identity. A person described twice drifts between takes.
-    (out / "character.json").write_text(json.dumps({
-        "image": "character.png",
-        "identity": ident + ", " + slots["hair"].rstrip(".") + ", " + slots["wardrobe"].rstrip("."),
-        "environment": slots["scene"].rstrip("."),
-        "capture": a.capture, "recording": a.recording, "focus": a.focus,
-        "distinctive_marks": a.marks or [], "approval": "pending",
-    }, indent=1), encoding="utf-8")
+    (out / "character.json").write_text(json.dumps(record, indent=1), encoding="utf-8")
     print("\nwrote %s and character.json" % png)
     print("LOOK AT IT before spending on takes. A still costs cents; a take costs dollars.")
 

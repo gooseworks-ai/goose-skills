@@ -2,7 +2,7 @@
 """Plan the creator's talking takes and write their prompts. Free, no network.
 
     plan_takes.py --beats cutlist.json --character character.json --out work/takes \
-        [--mannerism mannerism.mp4] [--aspect 9:16] [--resolution 1080P]
+        [--mannerism mannerism.mp4] [--aspect 9:16] [--resolution 1080P] [--reference-wps 3.2]
 
 --beats is any file with `beats: [{id, start, end, vo}]` (the footage-cutlist cut list
 works as-is). --character is:
@@ -30,6 +30,16 @@ person and the room come from character.json word for word, so every take descri
 same person the same way; nothing about a person is written here. Square brackets in a
 line are refused: H3 speaks them aloud.
 
+PACE: --reference-wps (or the beats file's `reference_wps`) is the reference's words per
+second from goose-studio's reference_rate.py (real words: sub-word tokens joined, punctuation
+skipped). Lines are counted the same way: a token with no letter or digit is not a word. Takes are then sized from the words at that rate, capped at 3.2 words a second,
+the fastest H3 speaks natively. Without it, takes follow the beat times.
+
+HANDS: a beat whose action uses both hands (apply, smooth, press, peel, squeeze, hold with
+both hands; or required_features `application`) cannot be a handheld selfie: the model adds
+a third hand holding the phone. phone_selfie is refused for it and phone_counter (a propped
+phone) is used instead, and the plan says so.
+
 ASPECT: 9:16 when the creator ever fills the frame, otherwise the closest H3 ratio to the
 creator's zone. Cropping a 16:9 take to 9:16 is a 2.5x upscale.
 """
@@ -45,13 +55,16 @@ MAX_TAKE = 15
 MIN_TAKE = 5
 MAX_SPEECH = 14.2
 TAIL = 0.6
+# H3 says about 3.2 words a second at most; a faster plan packs takes it then rushes or cuts.
+H3_PLAN_WPS = 3.2
+LINE_PAUSE = 0.3
 RATIOS = {"21:9": 21 / 9, "16:9": 16 / 9, "4:3": 4 / 3, "1:1": 1.0, "3:4": 3 / 4, "9:16": 9 / 16}
 
 # Used only when character.json has no `delivery` (the tone is the user's choice). Neutral on
 # purpose: it carries the craft (unscripted, natural rhythm), not a tone or a persona.
 DEFAULT_DELIVERY = "natural and conversational, speaking directly to one viewer. Not presenting, not announcing, not reading. Connected sentences at a brisk comfortable pace, with short meaningful pauses. Clear complete word endings, modest pitch variation and restrained expression; do not rush or shout."
 
-CAPTURE = {"phone_counter":"An ordinary phone recording from a phone supported outside the frame at eye level. Static chest-up shot, complete face and both shoulders visible with headroom. Both hands are free; gestures are small and serve the words. No automatic zoom or reframing. The room is the real, lived-in room from <Picture 1>, never a plain backdrop or a white void.","phone_selfie":"An ordinary handheld phone selfie at eye level. One hand supports the phone outside the frame; only the other hand is free. Small movement follows the supporting arm, without artificial drift or automatic zoom. Keep the complete face visible. The room is the real, lived-in room from <Picture 1>, never a plain backdrop or a white void.","studio":"An approved studio recording at eye level, matching the reference composition and motivated lighting. Static medium framing with the complete face visible. Natural posture and restrained gestures; no automatic zoom or reframing."}
+CAPTURE = {"phone_counter":"An ordinary phone recording from a phone propped up outside the frame at eye level. Nobody holds the phone and no hand holding a phone is in the frame. Static chest-up shot, complete face and both shoulders visible with headroom. Both hands are free; gestures are small and serve the words. No automatic zoom or reframing. The room is the real, lived-in room from <Picture 1>, never a plain backdrop or a white void.","phone_selfie":"An ordinary handheld phone selfie at eye level. One hand supports the phone outside the frame; only the other hand is free. Small movement follows the supporting arm, without artificial drift or automatic zoom. Keep the complete face visible. The room is the real, lived-in room from <Picture 1>, never a plain backdrop or a white void.","studio":"An approved studio recording at eye level, matching the reference composition and motivated lighting. Static medium framing with the complete face visible. Natural posture and restrained gestures; no automatic zoom or reframing."}
 
 FOCUS = {"deep":"Everything sharp, deep focus, as a phone records: the face and the room behind are both in focus. No bokeh, no portrait-mode blur, no shallow depth of field.","shallow":"Shallow focus, chosen because the approved reference is shot that way: the face sharp and the background softly out of focus as in the reference, no stronger than it."}
 
@@ -62,6 +75,40 @@ FEATURES = ("speaking_face", "product", "scale", "hands", "application", "dispen
 FEATURE_ALIASES = {"product_action": "physical_demo", "physical_action": "physical_demo",
                    "precise_product_action": "application", "stateful_demo": "physical_demo"}
 PRODUCT_ACTIONS = ("application", "dispensing", "pour", "physical_demo", "hands")
+# An action that needs both hands, so the phone cannot be held (creator-h3 1.5.0 reads the same words).
+BOTH_HANDS = "\\b(appl(?:y|ies|ied|ying)|smooth(?:s|ed|ing)?|press(?:es|ed|ing)?|peel(?:s|ed|ing)?|squeez(?:e|es|ed|ing)|rub(?:s|bed|bing)?|massag(?:e|es|ed|ing)|spread(?:s|ing)?|both hands|two hands|hands together)\\b"
+BOTH_HANDS_FEATURES = ["application"]
+ACTION_FIELDS = ("action", "picture", "visual", "shot", "description")
+
+
+def both_hands(texts, feature_names=()):
+    """Why the action needs both hands (the first matching words or feature), or None."""
+    for name in feature_names or []:
+        if FEATURE_ALIASES.get(name, name) in BOTH_HANDS_FEATURES:
+            return "required feature %s" % FEATURE_ALIASES.get(name, name)
+    for text in texts or []:
+        m = re.search(BOTH_HANDS, text if isinstance(text, str) else "", re.I)
+        if m:
+            return "the action says %r" % m.group(0)
+    return None
+
+
+def beat_texts(spec):
+    """Every action-like text in a beats file: each beat's action fields and a top-level `actions` list."""
+    out = [t for t in spec.get("actions") or [] if isinstance(t, str)]
+    for b in spec.get("beats") or []:
+        out.extend(b[k] for k in ACTION_FIELDS if isinstance(b.get(k), str))
+    return out
+
+
+def estimated(beats, wps):
+    """The beats with start/end re-timed from their words at `wps`, a short pause between lines."""
+    t, out = 0.0, []
+    for b in beats:
+        words = len([w for w in b["vo"].split() if re.search(r"\w", w)])
+        out.append(dict(b, start=t, end=t + words / wps))
+        t = out[-1]["end"] + LINE_PAUSE
+    return out
 
 
 def features(names):
@@ -136,6 +183,8 @@ def main():
     ap.add_argument("--slug", default="creator")
     ap.add_argument("--split-at", help="comma-separated reel times to join takes at (e.g. where screen "
                                        "inserts end); default: greedy under 15s")
+    ap.add_argument("--reference-wps", type=float, help="the reference's measured words per second; takes are sized "
+                    "from it, capped at 3.2 (the fastest native H3 speech)")
     ap.add_argument("--plan-only", action="store_true", help="free planning with a not-yet-generated character image; never authorizes generation")
     a = ap.parse_args()
 
@@ -181,24 +230,58 @@ def main():
     out = pathlib.Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
 
+    # Pace: the reference's rate, capped at what H3 speaks natively.
+    reference = a.reference_wps if a.reference_wps is not None else spec.get("reference_wps")
+    if reference is not None and not 0.5 <= float(reference) <= 8:
+        raise SystemExit("--reference-wps %s is not a speaking rate (0.5 to 8 words a second)" % reference)
+    planned = min(float(reference), H3_PLAN_WPS) if reference is not None else None
+    pace = {"reference_wps": float(reference) if reference is not None else None, "planned_wps": planned,
+            "capped": bool(reference is not None and float(reference) > H3_PLAN_WPS),
+            "sized_from": "reference_wps" if planned else "beat_times"}
+    if pace["capped"]:
+        print("[plan] reference speaks %.2f words/s; H3 is planned at %.1f (its native cap), so takes run longer "
+              "than the reference's lines" % (float(reference), H3_PLAN_WPS), file=sys.stderr)
+    sized = estimated(beats, planned) if planned else beats
+
+    # Capture: a both-hands action never goes with a handheld selfie.
+    capture = "studio" if ch.get("capture") == "studio" else "phone_selfie" if ch.get("recording") == "selfie" else "phone_counter"
+    hands = both_hands(beat_texts(spec), spec.get("required_features", []))
+    capture_decision = {"requested": capture, "used": capture, "reason": None}
+    if hands and capture == "phone_selfie":
+        capture_decision = {"requested": "phone_selfie", "used": "phone_counter",
+                            "reason": "%s: both hands are busy, so nobody can hold the phone (a handheld selfie "
+                                      "adds a third hand). Using phone_counter, a propped phone. If the approved "
+                                      "still shows an arm reaching out to hold the phone, remake it with "
+                                      "make_character.py --recording counter." % hands}
+        capture = "phone_counter"
+        print("[plan] refused phone_selfie: " + capture_decision["reason"], file=sys.stderr)
+
     plan = []
     at = [float(v) for v in a.split_at.split(",")] if a.split_at else None
-    for n, group in enumerate(split(beats, at), 1):
+    split_on = sized if planned and not at else beats
+    where = {id(b): i for i, b in enumerate(split_on)}
+    for n, picked in enumerate(split(split_on, at), 1):
         tid = "t%d" % n
+        # Positions in the beat list: the reel times come from the beats, the speech from `sized`.
+        first, last = where[id(picked[0])], where[id(picked[-1])]
+        group = beats[first:last + 1]
         start, end = group[0]["start"], group[-1]["end"]
+        speech = sized[last]["end"] - sized[first]["start"]
+        if planned and speech > MAX_SPEECH:
+            raise SystemExit("take %s needs about %.1fs of speech at %.1f words/s, over one take; add a split" % (tid, speech, planned))
         dialogue = " ".join(re.sub(r"\s+", " ", b["vo"]).strip() for b in group)
         if re.search(r"[<>]|\[[^\]]*\]", dialogue):
             raise SystemExit("take %s has performance markup (square or angle brackets) in its lines, which H3 speaks aloud" % tid)
         prompt = TEMPLATE.format(identity=ch["identity"].strip(),
                                  environment=(ch.get("environment") or "").strip(),
                                  mannerism=MANNERISM if a.mannerism else "",
-                                 capture=CAPTURE["studio" if ch.get("capture") == "studio" else "phone_selfie" if ch.get("recording") == "selfie" else "phone_counter"],
+                                 capture=CAPTURE[capture],
                                  focus=FOCUS["shallow" if ch.get("focus") == "shallow" else "deep"],
                                  delivery=(ch.get("delivery") or DEFAULT_DELIVERY).strip(),
                                  dialogue=dialogue)
         (out / ("%s-prompt.txt" % tid)).write_text(prompt, encoding="utf-8")
         plan.append({"id": tid, "seed": seed(a.slug, tid),
-                     "dur": max(MIN_TAKE, min(MAX_TAKE, math.ceil(end - start + TAIL))),
+                     "dur": max(MIN_TAKE, min(MAX_TAKE, math.ceil(speech + TAIL))),
                      "covers": [round(start, 2), round(end, 2)],
                      "words": str((out / (tid + ".words.json")).resolve()),
                      "script_sha256": hashlib.sha256(json.dumps([{ "scene_id": str(b["id"]), "text": re.sub(r"\s+", " ", b["vo"]).strip(), "spoken": re.sub(r"\s+", " ", b["vo"]).strip()} for b in group], ensure_ascii=False, separators=(",", ":")).encode()).hexdigest(),
@@ -209,12 +292,13 @@ def main():
              "mann": str(pathlib.Path(a.mannerism).resolve()) if a.mannerism else None,
              "slug": a.slug, "out": str(out.resolve()), "resolution": a.resolution,
              "planning_only": a.plan_only, "capture": ch.get("capture", "phone"),
+             "take_capture": capture, "capture_decision": capture_decision, "pace": pace,
              "generation_stage": "first_take", "content_review_required": True, "required_features": features(spec.get("required_features", [])),
              "aspect_ratio": a.aspect or pick_aspect(spec), "takes": plan}
     (out / "takes.json").write_text(json.dumps(takes, indent=2), encoding="utf-8")
     for t in plan:
         print("  %s seed %d  %2ds  covers %.2f-%.2f  (%s)" % (t["id"], t["seed"], t["dur"], t["covers"][0],
-                                                          t["covers"][1], ",".join(t["beats"])))
+                                                          t["covers"][1], ",".join(str(b) for b in t["beats"])))
     print("[plan] %s  %s %s, %d takes, %ds generated" % (out / "takes.json", takes["aspect_ratio"],
                                                       a.resolution, len(plan), sum(t["dur"] for t in plan)))
 

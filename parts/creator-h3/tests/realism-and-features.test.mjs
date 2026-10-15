@@ -18,7 +18,7 @@ async function firstTake(extra = {}, drop = []) {
 
 test('with no capture or focus given, a take is a phone recording in a lived-in room, deep focus, no bokeh, no retouching', { skip }, async () => {
   const { prompt } = await firstTake({}, ['capture']);
-  assert.match(prompt, /An ordinary phone recording from a phone supported outside the frame/);
+  assert.match(prompt, /An ordinary phone recording from a phone propped up outside the frame at eye level. Nobody holds the phone/);
   assert.match(prompt, /real, lived-in room from <Picture 1>, never a plain backdrop or a white void/);
   assert.match(prompt, /Everything sharp, deep focus, as a phone records/);
   assert.match(prompt, /No bokeh, no portrait-mode blur, no shallow depth of field/);

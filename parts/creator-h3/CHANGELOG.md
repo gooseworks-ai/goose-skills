@@ -1,5 +1,13 @@
 # creator-h3
 
+## 1.5.0
+
+- A scene action that uses both hands (apply, smooth, press, peel, squeeze, hold with both hands, or `required_features` `application`) refuses `phone_selfie` and uses `phone_counter`, a propped phone; `capture_decision` says so. A test video's presenter had both hands on her nose under a selfie capture, and the model added a third hand holding the phone.
+- `phone_counter` says the phone is propped up and nobody holds it.
+- `reference_words_per_second` (from goose-studio's `reference_rate.py`) sizes the takes, capped at 3.2 words a second; new `pace` output. A line's words are counted the same way: a token with no letter or digit is not a word.
+- creator-h3 has no `phone_observer` (a talking take addresses the lens); `phone_counter` is its option for a both-hands action.
+- `character` accepts make_character.py's `actions`, `capture_decision` and `voice_pair`; `voice_pair` passes through to the output.
+
 ## 1.4.0
 
 - Realism defaults (fix-forward contract section 6): `capture` defaults to phone (counter, or selfie from `character.recording`), with the real lived-in room kept; new `focus` input, default `deep` (no bokeh); studio and shallow focus only when chosen. Every take asks for no retouching, skin smoothing, beauty filter or cinematic grade. Removes 1.3.x's "do not demand universal deep focus".

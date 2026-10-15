@@ -2,12 +2,12 @@
 name: create-creator-takes-h3
 description: Generate an AI creator talking to camera, saying an approved script, as one continuous track — H3 Max reference-to-video through the GooseWorks fal-proxy (bills the Ads agent). Plans takes on line boundaries under H3's 15s cap, dry-runs a cost estimate, generates the first take alone so its voice can be locked and passed to every later take, joins takes with measured 0.10s dissolves, and moves each line's timing onto the words actually spoken. Use for any format with a generated creator speaking a script (split-screen, screen inserts, talking-head ads).
 status: superseded
-version: "2.3.0"
+version: "2.4.0"
 updated: 2026-10-15
-superseded_by: creator-h3@1.4.0
+superseded_by: creator-h3@1.5.0
 ---
 
-> **Superseded by:** `creator-h3@1.4.0`. Compatibility scripts retain the source-review guards; frozen versions are unchanged.
+> **Superseded by:** `creator-h3@1.5.0`. Compatibility scripts retain the source-review guards; frozen versions are unchanged.
 
 # create-creator-takes-h3
 
@@ -18,6 +18,7 @@ Use the shared builder for people. Defaults: GPT Image 2, phone capture in a liv
 | Script | What | Cost |
 |---|---|---|
 | `make_character.py` | build the creator still from the user's choices, one shot | **paid** (one still, cents) |
+| `pair_voice.py` | the voice for this person: a matched ElevenLabs voice, or a Voice Design request | free (Voice Design itself is paid) |
 | `plan_takes.py` | split lines into takes (under 15s each) and write the prompts | free |
 | `run_takes.py` | generate the takes, dry run unless `--go` | **paid** (H3 Max, ~$0.16/s at 1080P) |
 | `join_takes.py` | join into one creator track | free |
@@ -39,7 +40,8 @@ request `gen_image.py` will send, and generates nothing.
 ```bash
 # the user's person, one command, one still. --dry-run prints the prompt and spends nothing.
 python make_character.py --capture phone --recording counter --age 34 --gender woman --ethnicity "South Asian"     --hair "shoulder-length black hair, slightly frizzy at the crown, one side tucked back"     --wardrobe "plain charcoal crew-neck t-shirt, slightly creased"     --scene "a lived-in home office, a full bookshelf behind her, in focus"     --out work/character        # writes character.png AND character.json
-python plan_takes.py --beats cutlist.json --character character.json --out work/takes
+#   add --action "<each scene action she performs>" and --voice-accent/--voice-energy (see below)
+python plan_takes.py --beats cutlist.json --character character.json --out work/takes --reference-wps <reference rate>
 python run_takes.py --spec work/takes/takes.json                  # dry run: plan + estimate
 python run_takes.py --spec work/takes/takes.json --only t1 --go   # after the user approves
 python run_takes.py --spec work/takes/takes.json --reviews work/takes/source-reviews.json --qualification work/takes/qualification.json --go # after t1 passes actual AV review
@@ -75,6 +77,14 @@ avoiding a known failure depended on remembering to opt out. Pass `delivery` to 
 `identity` and `environment` go into every take **word for word**. Write them once from the
 approved still, then never retype them: a person described two ways drifts between takes.
 
+## Both hands, voice and pace (2.4.0)
+
+A test video went wrong three ways. These rules stop each one.
+
+- **Both hands busy: no selfie.** The presenter pressed a strip on her nose with both hands under a selfie capture, and the model added a third hand holding the phone. Pass every scene action with `make_character.py --action "..."`. An action that uses both hands (apply, smooth, press, peel, squeeze, hold with both hands) refuses `--recording selfie` and makes a propped phone (`counter`) instead; use `--capture phone_observer` for a friend filming. `plan_takes.py` does the same for beats whose `action`, `picture`, `visual`, `shot` or `description` says so, or for `required_features` `application`: it refuses `phone_selfie` and uses `phone_counter` (creator-h3 and talking takes have no `phone_observer`; that capture is make_character.py's, for non-speaking clips). Both print why, and record `capture_decision` (in `character.json` and `takes.json`).
+- **The voice fits the face.** The narrator was picked apart from the presenter (a 28-year-old woman) and was a voice reused across brands. `make_character.py` now records `voice_pair` in `character.json`, from the same age and gender plus `--voice-accent` and `--voice-energy`. With `--voices` (a saved `GET /v1/shared-voices` or `GET /v2/voices` reply) it is the best voice whose gender, age and accent labels match; `--voice-exclude <id>` keeps another brand's narrator out. Otherwise it is a Voice Design request: `POST /v1/text-to-voice/design` with `voice_description`, `model_id` (`eleven_ttv_v3`) and `text` (100-1000 characters) or `auto_generate_text`, then `POST /v1/text-to-voice` with `voice_name`, `voice_description` and the chosen preview's `generated_voice_id`. Voice Design is paid: quote it, listen to the previews, then save one. Use `voice_pair` for every narration of this person.
+- **Pace from the reference.** The narration read at 2.62 words a second against the reference's 3.20 (270 words in 84.45 s). Measure the reference with goose-studio's `reference_rate.py`, which counts real words (whisper's sub-word tokens joined, punctuation skipped). `plan_takes.py --reference-wps` (or the beats file's `reference_wps`) sizes the takes from the words at that rate, capped at 3.2, the fastest H3 speaks natively; `takes.json` records `pace`. Faster than 3.2 cannot be native H3: use voice first (`voice-elevenlabs` `pace.target_wps`) and a per-line lip-sync.
+
 ## Choices
 
 These are the user's calls (the recipe's `choices`), never defaults of this atom:
@@ -83,7 +93,7 @@ These are the user's calls (the recipe's `choices`), never defaults of this atom
 - **Setting** (`environment`) — the room behind them, written from the approved still. Asked of the user.
 - **Tone** (`delivery`) — how they speak. Asked of the user; if missing, `plan_takes.py`
   falls back to a neutral conversational read and prints a note.
-- **Voice** — follows the creator (age, gender, accent) and is locked from t1.
+- **Voice** — follows the creator (age, gender, accent) and is locked from t1. For narration, use `voice_pair`.
 
 ## Rules
 
