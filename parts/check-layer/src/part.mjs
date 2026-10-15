@@ -35,6 +35,10 @@
 // They fail on a custom, source-linked edit (the timeline links an
 // assembly_timeline, or expect.final_measure is block) and warn on template
 // videos for one release. The result is also returned as final_measure.
+// 1.7.0 adds speech_rate_vs_reference (src/speech-rate.mjs): when the kit supplies both
+// expect.reference_words and expect.final_words, the final cut's real words per second
+// (reference_rate.py's count) fails more than 15 % below the reference's; otherwise it is
+// not_applicable.
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitFfmpeg } from '../../_lib/part.mjs';
@@ -43,6 +47,7 @@ import { kitLogoScore, kitLogoScoreInBox, kitMotion, kitWindowLevels } from '../
 import { CHK_BLANK_MAX_SHARE, CHK_CUT_MAX_RATE, CHK_CUT_MIN_RATE, CHK_MSG_RISE_DB, CHK_READ_MAX_WPS, CHK_READ_MIN_WPS, chkBlankFrames, chkBlankSpans, chkClipSpans, chkCutInsideWord, chkCuts, chkJudgeBlank, chkMessageRise, chkMessageWindows, chkReadRate, chkSpeechBefore } from './flags.mjs';
 import { chkLineLoss, chkScriptLoss } from './lines.mjs';
 import { fmMeasure, fmMessage, fmRecord } from './final-measure.mjs';
+import { chkSpeechRateVsReference } from './speech-rate.mjs';
 import { CHK_CONTRAST_MIN, CHK_CONTRAST_OFFSET_S, CHK_CONTRAST_WARN, CHK_CUE_GUARD_S, CHK_DISTINCT_MIN, CHK_FLOOR_MAX_DB, CHK_FLOOR_MIN_DB, CHK_FLOOR_SPEECH_GAP_DB, CHK_MIN_SHOT_S, chkAdjacentDiffs, chkCueAcrossCut, chkCutContrast, chkFloorWindows, chkJudgeAmbience, chkSceneOpenings, chkShortShot, chkShotSound, chkShots, chkSpeechSpans } from './shots.mjs';
 
 const TARGET_LUFS = -14;
@@ -616,6 +621,10 @@ export async function run(inputs, ctx) {
       });
     }
   }
+
+  // The final cut's speaking rate against the reference's, when both word lists are supplied.
+  const rate = chkSpeechRateVsReference(expect.reference_words, expect.final_words);
+  add('speech_rate_vs_reference', rate.status, { message: rate.message, expected: rate.expected, found: rate.found });
 
   // The final measurements: blocking on a custom, source-linked edit, warnings on a template video.
   const assembly = timeline.assembly_timeline && typeof timeline.assembly_timeline === 'object' ? timeline.assembly_timeline : null;

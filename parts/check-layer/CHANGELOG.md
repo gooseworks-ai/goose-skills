@@ -1,5 +1,9 @@
 # check-layer
 
+## 1.7.0
+
+- `speech_rate_vs_reference`: with both `expect.reference_words` and `expect.final_words`, fails when the final cut speaks more than 15 % slower than the reference; otherwise `not_applicable`. Words are counted as goose-studio's `reference_rate.py` counts them (whisper sub-word tokens joined, markers and punctuation dropped), over the first word's start to the last word's end. A test video read at 2.62 words a second against the reference's 3.20. A minor version: it reaches new quotes through layers.json.
+
 ## 1.6.0
 
 - The final measurements (`gooseworks-final-measure/1`): `digital_silence`, `tone_only`, `unplanned_silence`, `planned_pause_too_long`, `frozen_picture`, `planned_freeze_too_long` and `repeated_shot`, with the contract's thresholds and its 15 Oct amendments (1.5 s start / 3.0 s end allowance, 2.0 s mid-video freeze, 80 Hz-8 kHz tone band, still share relative to the reference, intentional silence, end-card freeze up to 3.0 s). They fail on a custom, source-linked edit and warn on a template video for one release. Declares `timeline.assembly_timeline` so the kit passes the linked edit, and returns `final_measure`. A minor version: it reaches new quotes through layers.json.
