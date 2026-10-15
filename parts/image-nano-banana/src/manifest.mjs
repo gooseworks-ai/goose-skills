@@ -2,6 +2,8 @@ import { file } from '../../_tools/schemas.mjs';
 
 const TEXT = 'fal-ai/nano-banana';
 const EDIT = 'fal-ai/nano-banana/edit';
+const PRO_TEXT = 'fal-ai/nano-banana-pro';
+const PRO_EDIT = 'fal-ai/nano-banana-pro/edit';
 const ASPECTS = ['21:9', '16:9', '3:2', '4:3', '5:4', '1:1', '4:5', '3:4', '2:3', '9:16'];
 const PICTURE = ['image/png', 'image/jpeg', 'image/webp'];
 const KINDS = ['snap', 'angled'];
@@ -51,7 +53,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'image-nano-banana',
-  version: '1.2.3',
+  version: '1.3.0',
   kind: 'generate_image',
   title: 'Stills (Nano Banana)',
   summary: 'Makes or edits stills with Nano Banana on fal, one piece per image: a hand-built list, one still per plan scene from a prompt template, or snap and angled edits of each product\'s own photo.',
@@ -66,6 +68,8 @@ export const manifest = {
     models: [
       { provider: 'fal', model: TEXT },
       { provider: 'fal', model: EDIT },
+      { provider: 'fal', model: PRO_TEXT },
+      { provider: 'fal', model: PRO_EDIT },
     ],
     disk_mb: 200,
   },
@@ -75,8 +79,12 @@ export const manifest = {
     required: ['model'],
     properties: {
       model: {
-        description: 'fal-ai/nano-banana for a prompt alone, fal-ai/nano-banana/edit with reference images. In scenes mode, /edit sends each scene\'s references and a scene with none is drawn by the prompt-only model.',
-        enum: [TEXT, EDIT],
+        description: 'fal-ai/nano-banana for a prompt alone, fal-ai/nano-banana/edit with reference images. In scenes mode, /edit sends each scene\'s references and a scene with none is drawn by the prompt-only model. fal-ai/nano-banana-pro and fal-ai/nano-banana-pro/edit (1.3.0) work the same with Nano Banana Pro, which takes a resolution: use them for any still with a person in it, whose skin the base model draws smooth at about 768 px.',
+        enum: [TEXT, EDIT, PRO_TEXT, PRO_EDIT],
+      },
+      resolution: {
+        description: 'Nano Banana Pro only (1.3.0): 1K or 2K, sent with every piece. Default: the provider default (1K). 2K showed real skin on a person at phone size; 4K looked the same and costs twice as much, so it is not offered.',
+        enum: ['1K', '2K'],
       },
       mode: { description: 'images: the hand-built images list (the 1.0.1 behaviour). scenes: one still per picked scene. products: one edit of each product\'s first photo per kind (needs /edit). Default: scenes when scenes is given, else images.', enum: ['images', 'scenes', 'products'] },
       kinds: {
@@ -156,7 +164,7 @@ export const manifest = {
     basis: 'per_unit',
     unit: 'image',
     measure: { from: '/images/*', as: 'count' },
-    rates_usd: { [TEXT]: 0.039, [EDIT]: 0.039 },
+    rates_usd: { [TEXT]: 0.039, [EDIT]: 0.039, [PRO_TEXT]: 0.15, [PRO_EDIT]: 0.15 },
     model_from: '/model',
   },
   determinism: 'provider',

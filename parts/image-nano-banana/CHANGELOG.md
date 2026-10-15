@@ -1,5 +1,13 @@
 # image-nano-banana
 
+## 1.3.0
+
+- `model` also takes `fal-ai/nano-banana-pro` and `fal-ai/nano-banana-pro/edit` (Nano Banana Pro). A run uses one family: with Pro, a piece with references goes to `fal-ai/nano-banana-pro/edit` and a piece without goes to `fal-ai/nano-banana-pro`, in every mode (images, scenes, products, cast anchors).
+- New `resolution` (`1K` or `2K`), Pro only, sent with every piece. On the base model it is refused before anything is ordered.
+- Why: the base model's stills are about 768 px wide. A face there is a few hundred pixels across, so people come out smooth whatever the prompt says. Pro at 2K showed acne scars, pores and natural matte skin on the same street-interview prompt (recipe audit, 2026-10-14). 4K looked the same at phone size and costs twice as much, so it is not offered.
+- Cost: Pro is 0.15 USD a picture at 1K or 2K, against 0.039.
+- Without Pro nothing changes: the same paths and the same body, with no `resolution`. Built on 1.2.3.
+
 ## 1.2.3
 
 - Borders (scenes and products mode, `borders: fix` by default): each product photo's flat or transparent margins are trimmed before it is sent, and a still that comes back letterboxed, padded or framed is cropped to the still's own shape (scaled back to its size) when that keeps 75 %, else the step fails in plain words; a lone white or black strip that cannot be cropped is kept with a warning. A still is never drawn a second time (no unquoted paid piece). `borders: keep` keeps the 1.2.2 behaviour. Images mode is unchanged and refuses `borders`. Built on 1.2.2.

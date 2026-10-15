@@ -71,6 +71,23 @@ export function assembleMapZone(zone, sw, sh, w, h, fit) {
   return x1 - x0 >= 4 && y1 - y0 >= 4 ? { use: zone.use, x: x0, y: y0, w: x1 - x0, h: y1 - y0 } : null;
 }
 
+/**
+ * 1.2.1: a box on a sw x sh still (shares of the picture) as it shows on the w x h cut: moved the way `fit`
+ * places the still, then grown to cover where a centred push from 1 to `zoomTo` carries it, clamped to the
+ * frame. Null when less than 4 px of it is on the cut.
+ */
+export function assembleMapKeepClear(box, sw, sh, w, h, fit, zoomTo) {
+  const z = assembleMapZone({ use: 'product', x: box.x * sw, y: box.y * sh, w: box.w * sw, h: box.h * sh }, sw, sh, w, h, fit);
+  if (!z) return null;
+  const k = Math.max(1, zoomTo || 1);
+  const at = (v, c) => c + (v - c) * k;
+  const x0 = Math.max(0, Math.min(z.x, at(z.x, w / 2)));
+  const y0 = Math.max(0, Math.min(z.y, at(z.y, h / 2)));
+  const x1 = Math.min(w, Math.max(z.x + z.w, at(z.x + z.w, w / 2)));
+  const y1 = Math.min(h, Math.max(z.y + z.h, at(z.y + z.h, h / 2)));
+  return { x: Math.floor(x0), y: Math.floor(y0), w: Math.ceil(x1) - Math.floor(x0), h: Math.ceil(y1) - Math.floor(y0) };
+}
+
 /** Speech entries and words that start before `total`, with ends held to it. */
 export function assembleClampSpeech(speech, total) {
   const end = (v) => Math.min(v, total);
