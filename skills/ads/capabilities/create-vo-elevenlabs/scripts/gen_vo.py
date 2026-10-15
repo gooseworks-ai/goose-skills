@@ -16,6 +16,7 @@ MODELS = ("eleven_v3", "eleven_multilingual_v2", "eleven_v4", "eleven_v4_turbo")
 
 
 def voice_payload_problem(text, model, settings=None, support=None):
+    # Eleven v4 and v4 Turbo are generally available: `support` is accepted and ignored.
     if model not in MODELS:
         return "choose an explicitly supported speech model"
     if model != "eleven_multilingual_v2" and re.search(r"<\/?[a-z][^>]*>", text, re.I):
@@ -26,8 +27,6 @@ def voice_payload_problem(text, model, settings=None, support=None):
         unsupported = set(settings or {}) - {"stability", "similarity_boost"}
         if unsupported:
             return "V4 supports Stability and Similarity only; remove " + ", ".join(sorted(unsupported))
-        if not support or support.get("model") != model or support.get("provider") != "elevenlabs" or support.get("endpoint") != "/v1/text-to-speech/{voice_id}/with-timestamps" or support.get("status") != "verified" or not support.get("evidence") or not support.get("quote_id"):
-            return "V4 needs managed-host model/endpoint support and a current quote, not only vendor documentation"
     if model == "eleven_v3" and "speed" in (settings or {}):
         return "V3 has no supported Speed setting; direct and review the actual performance"
     return None
@@ -111,7 +110,7 @@ def main():
     ap.add_argument("--text", required=True)
     ap.add_argument("--voice", "--voice-id", required=True)
     ap.add_argument("--model", default="eleven_v3", choices=MODELS)
-    ap.add_argument("--model-support", help="JSON evidence of managed timestamp endpoint support and current quote; required for paid V4")
+    ap.add_argument("--model-support", help="ignored: Eleven v4 and v4 Turbo are generally available (kept so older commands still parse)")
     ap.add_argument("--tag", action="append", help="Eleven v3/v4 delivery cue, e.g. content or curious; never portable to H3")
     ap.add_argument("--out", "--output", required=True)
     ap.add_argument("--with-timestamps", action="store_true")

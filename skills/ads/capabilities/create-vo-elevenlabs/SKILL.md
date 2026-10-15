@@ -2,10 +2,10 @@
 name: create-vo-elevenlabs
 description: Generate a voiceover (VO) clip via ElevenLabs text-to-speech, ROUTED THROUGH THE elevenlabs-proxy so it bills the Ads agent. Voice id + script text come from the template recipe. Use for the spoken narration of VO-driven video-ad formats (cgi-app-sizzle, flat-vector-explainer, hypermotion). Never call ElevenLabs directly — the proxy attribution is required.
 status: superseded
-superseded_by: voice-elevenlabs@1.2.0
+superseded_by: voice-elevenlabs@1.2.1
 ---
 
-> **Superseded:** the video kit now does this with the voice-elevenlabs part, version 1.2.0, in the parts folder of this repository. It speaks every scene's line through the private line, keeps character timings as word timings and swaps in confirmed pronunciations the same way. The compatibility generator also supports explicit V4 controls and pending timing provenance. Existing frozen part versions are unchanged.
+> **Superseded:** the video kit now does this with the voice-elevenlabs part, version 1.2.1 (`voice-elevenlabs@1.2.1`), in the parts folder of this repository. It speaks every scene's line through the private line, keeps character timings as word timings and swaps in confirmed pronunciations the same way. The compatibility generator also supports Eleven v4 controls and pending timing provenance. Existing frozen part versions are unchanged.
 
 # create-vo-elevenlabs
 
@@ -35,7 +35,7 @@ The bundled `read_pronunciations.py` exports user-authored must rules from a fre
 
 ## Model-specific performance and timing
 
-Eleven v3 remains the default until a selected V4 voice and route are qualified. `eleven_v4` and `eleven_v4_turbo` are selectable only with managed endpoint and current-quote evidence through `--model-support`, using `--with-timestamps`. Vendor listing alone is not gateway support. Never silently swap a locked model.
+Eleven v3 remains the default. `eleven_v4` and `eleven_v4_turbo` are generally available and selectable with `--with-timestamps`; no extra support evidence is needed (`--model-support` is ignored). Never silently swap a locked model.
 
 V4 supports Stability and Similarity settings; Style, Speed, speaker boost and SSML are refused. V3/V4 accept bracketed audio tags and plain `--tag` delivery cues. V2 does not accept those tags. A literal wanted “uh” is spoken copy that needs approval and time. Tags guide performance; do not accept their effect without listening to the actual selected voice.
 

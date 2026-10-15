@@ -53,7 +53,8 @@ for (const f of folders) {
     if (manifest.needs.browser && browserMissing()) return t.skip(browserMissing());
     const { sample } = await import(pathToFileURL(fixture).href);
     const { ctx, orders } = makeCtx({ partDir: f.dir, line: sample.line });
-    await mod_run(f, await sample.inputs(ctx.workDir), ctx);
+    // A fixture may shape its sample for the version under test (a newer version can require a new input).
+    await mod_run(f, await sample.inputs(ctx.workDir, f.version), ctx);
     assert.ok(orders.length > 0, 'the sample run orders at least one piece');
     const listed = new Set(models.map((m) => `${m.provider} ${m.model}`));
     for (const o of orders) {
@@ -134,6 +135,13 @@ test('the lint catches a part that calls fetch(), a child process, the environme
     assert.ok(lintParts(root).some((x) => x.rule === 'models'), 'a path built with a leading slash is caught');
     writeFileSync(paidEntry, paidSource.replace("const MODEL = 'minimax/h3-max/reference-to-video';", "const MODEL = 'minimax/h3-max-turbo/reference-to-video';"));
     assert.ok(lintParts(root).some((x) => x.rule === 'models' && /does not list verbatim/.test(x.message)), 'an unlisted model is caught');
+    // A withdrawn version skips only the model proof: it can never be ordered again.
+    writeFileSync(paidEntry, paidSource.replace("path: MODEL", "path: `/${MODEL}`"));
+    writeFileSync(join(root, 'withdrawn.json'), JSON.stringify({ interface: 1, withdrawn: [{ id: paid.id, version: paid.version, reason: 'test' }] }));
+    assert.deepEqual(lintParts(root).filter((x) => x.rule === 'models'), [], 'a withdrawn version is not held to the model proof');
+    writeFileSync(paidEntry, `const t = Date.now();\n${paidSource}`);
+    assert.ok(lintParts(root).some((x) => x.rule === 'clock'), 'a withdrawn version still gets every other rule');
+    rmSync(join(root, 'withdrawn.json'));
     writeFileSync(paidEntry, paidSource);
     writeFileSync(join(root, src.id, src.version, 'helper.py'), 'print(1)\n');
     assert.ok(lintParts(root).some((x) => x.rule === 'javascript-only'), 'a Python file is caught');

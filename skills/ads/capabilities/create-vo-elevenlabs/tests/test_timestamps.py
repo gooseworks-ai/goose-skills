@@ -38,10 +38,13 @@ class TimestampTests(unittest.TestCase):
     def test_relay_uses_returned_download_and_alignment(self):
         self.proxy.relay_mode.return_value = True
         self.proxy._relay.return_value = {"download_url": "https://example.test/audio", "alignment": self.alignment}
+        # The real download writes the file; the provenance sidecar hashes those bytes.
+        self.proxy.download.side_effect = lambda url, path: Path(path).write_bytes(b"relay-audio")
         timestamped_tts("hi", "voice-a", self.out, "eleven_multilingual_v2", proxy=self.proxy)
         self.proxy.download.assert_called_once_with("https://example.test/audio", str(self.out))
         self.proxy.requests.post.assert_not_called()
         self.assertTrue(self.out.with_suffix(".timestamps.json").exists())
+        self.assertEqual(json.loads(self.out.with_suffix(".provenance.json").read_text())["content_review_status"], "pending")
 
     def test_missing_or_malformed_alignment_writes_no_completed_audio(self):
         for alignment in ({}, {"characters": ["h"], "character_start_times_seconds": [], "character_end_times_seconds": []}):
