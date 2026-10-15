@@ -5,6 +5,42 @@ import { kitFfmpeg } from '../../_lib/part.mjs';
 import { join } from 'node:path';
 
 export const H3SCENE_MODEL = 'minimax/h3-max/reference-to-video';
+// 1.2.0: the light lock, on every clip that starts on a first frame (modes stills and
+// image_to_video). H3 added gloss, HDR contrast and sharpening halos to clean stills in two
+// 15 Oct test videos. The same words as creator-h3 1.6.0's H3_LIGHT_LOCK.
+export const H3SCENE_LIGHT_LOCK = "Keep the first frame's light and exposure, matte skin, no added shine or sharpening halos.";
+
+/** The prompt with the light lock added once, before any "Avoid:" list. */
+export function h3SceneWithLightLock(prompt) {
+  const text = String(prompt || '');
+  if (text.includes(H3SCENE_LIGHT_LOCK)) return text;
+  const at = text.lastIndexOf('Avoid:');
+  if (at < 0) return text ? `${text.replace(/\s+$/, '')}${/[.!?]$/.test(text.trim()) ? '' : '.'} ${H3SCENE_LIGHT_LOCK}` : H3SCENE_LIGHT_LOCK;
+  const head = text.slice(0, at).replace(/\s+$/, '');
+  return `${head}${head && !/[.!?]$/.test(head) ? '.' : ''}${head ? ' ' : ''}${H3SCENE_LIGHT_LOCK} ${text.slice(at)}`;
+}
+
+// 1.2.0: silent creator B-roll (mode stills, broll: true). Every picked scene names one
+// physical action that changes the picture; "nobody speaks, lips closed" goes with that action,
+// never with still hands. A 15 Oct test video's B-roll asked for "minimal body movement" and
+// "no hand touches the face", and got faces that only turned and blinked.
+export const H3BROLL_HEAD_ONLY = /\b(look(s|ed|ing)?|glanc\w*|blink\w*|smil\w*|nod(s|ded|ding)?|star(e|es|ed|ing)|breath\w*|gaz\w*|turn(s|ed|ing)? (her|his|their) (head|face)|tilt\w* (her|his|their) head|stand(s|ing)?|sit(s|ting)?|wait\w*|paus\w*|listen\w*|think\w*)\b/i;
+export const H3BROLL_PHYSICAL = /\b(appl\w*|peel\w*|press\w*|lift\w*|pick\w*|put\w*|plac\w*|set(s|ting)? down|hold(s|ing)? up|open\w*|clos\w*|pour\w*|stir\w*|cut(s|ting)?|squeez\w*|smooth\w*|rub\w*|wip\w*|spray\w*|tear\w*|unwrap\w*|scoop\w*|pull\w*|push\w*|tak(e|es|ing)|drop\w*|wash\w*|brush\w*|dab\w*|pat(s|ted|ting)?|stick\w*|stretch\w*|reach\w*|hand(s|ed|ing)? (it|the|over)|shak\w*|tap(s|ped|ping)?|twist\w*|fold\w*|grab\w*|eat\w*|drink\w*|sip\w*|walk\w*|turn(s|ed|ing)? to)\b/i;
+export const H3BROLL_STILL_HANDS = /\b(keep(s|ing)? (the |her |his |their |both )?hands? still|hands? (stay|stays|remain|remains|are kept|kept|held) still|hands? still|no hand touches|hands? (do|does) not move|minimal (body )?movement|stationary (person|subject|body))\b/i;
+
+/** Why a B-roll action is not a physical action, or null when it is one. */
+export function h3BrollActionProblem(action) {
+  const text = typeof action === 'string' ? action.replace(/\s+/g, ' ').trim() : '';
+  if (!text) return 'needs extra.action: one physical action that changes the picture (apply, peel, press, lift, pour, put down, turn to the mirror)';
+  if (H3BROLL_STILL_HANDS.test(text)) return `extra.action "${text}" asks for still hands; name the action the hands do`;
+  if (H3BROLL_HEAD_ONLY.test(text) && !H3BROLL_PHYSICAL.test(text)) return `extra.action "${text}" only moves the head or eyes; a clip where only the head turns or the eyes blink is a still, not B-roll`;
+  return null;
+}
+
+/** The B-roll sentence: nobody speaks while the named action happens. */
+export function h3BrollLine(action) {
+  return `Nobody speaks, lips closed, while ${action.replace(/\s+/g, ' ').trim().replace(/[.!?]+$/, '')}.`;
+}
 const H3SCENE_PROVIDER_PROMPT_MAX = 12000;
 
 /** Translate a Seedance-style image token without changing ordinary handles or dialogue. */
