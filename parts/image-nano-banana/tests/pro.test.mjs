@@ -79,3 +79,23 @@ test('1.2.3 is unchanged: it refuses the Pro model', { skip }, async () => {
   await assert.rejects(old.mod.run(await scenesInputs(work, { model: PRO_EDIT }), ctx), (e) => e.code === 'bad_input');
   assert.equal(orders.length, 0);
 });
+
+test('scene_stills false draws only the cast portraits: scenes come back without a picture', { skip }, async () => {
+  const work = mkdtempSync(join(tmpdir(), 'nb-pro-'));
+  const inputs = await scenesInputs(work, { model: PRO_EDIT, resolution: '2K', scene_stills: false });
+  const { ctx, orders } = makeCtx({ partDir: dir, workDir: join(work, 'step'), line: pngLine });
+  const out = await mod.run(inputs, ctx);
+  assert.ok(orders.length >= 1);
+  assert.ok(orders.every((o) => o.piece.startsWith('anchor-')), orders.map((o) => o.piece).join(' '));
+  assert.equal(out.images.length, 0);
+  assert.ok(out.scenes.every((s, i) => s.image === inputs.scenes[i].image));
+  assert.ok(out.cast.some((m) => m.image && m.image.path));
+});
+
+test('scene_stills false without anchor cast is refused before anything is ordered', { skip }, async () => {
+  const work = mkdtempSync(join(tmpdir(), 'nb-pro-'));
+  const inputs = await scenesInputs(work, { model: PRO_EDIT, scene_stills: false, anchor: 'none' });
+  const { ctx, orders } = makeCtx({ partDir: dir, workDir: join(work, 'step'), line: pngLine });
+  await assert.rejects(mod.run(inputs, ctx), (e) => e.code === 'bad_input' && /needs anchor cast/.test(e.message));
+  assert.equal(orders.length, 0);
+});

@@ -227,6 +227,10 @@ async function nbScenes(inputs, ctx, manifest) {
   }
   const locked = (job) => job.scene.image_locked === true;
   const fix = (inputs.borders || 'fix') === 'fix';
+  // scene_stills false draws the cast anchors only. A second picture drawn from a drawn portrait came back worse
+  // each time (sharper, the product dropped, coarse fabric), and a take that reads references needs none.
+  const sceneStills = inputs.scene_stills !== false;
+  if (!sceneStills && anchor !== 'cast') throw ctx.error('bad_input', 'scene_stills false needs anchor cast: it draws only the cast portraits');
 
   // Everything that can refuse happens before the first piece is ordered.
   let tpl;
@@ -268,7 +272,8 @@ async function nbScenes(inputs, ctx, manifest) {
   const used = new Set();
   for (const a of anchorJobs) a.piece = kitPieceName('anchor', a.member.key, cast.indexOf(a.member), used);
   for (const j of jobs) j.piece = kitPieceName('image', j.id, j.index, used);
-  const total = anchorJobs.length + jobs.length;
+  if (!sceneStills && !anchorJobs.length) throw ctx.error('bad_input', 'scene_stills is false but no picked scene names a cast member without a picture, so there is nothing to draw');
+  const total = anchorJobs.length + (sceneStills ? jobs.length : 0);
   let done = 0;
   const tick = () => ctx.progress({ done: ++done, total });
   if (!nbIsEdit(model) && jobs.some((j) => j.cast.length || j.products.length || j.scene_image)) {
@@ -276,7 +281,7 @@ async function nbScenes(inputs, ctx, manifest) {
   }
 
   // Product photos lose their flat margins before any still sends them (free).
-  if (fix && nbIsEdit(model)) kitStillTrimJobs(jobs, await kitStillTrimProducts(ctx, inputs.products || []));
+  if (sceneStills && fix && nbIsEdit(model)) kitStillTrimJobs(jobs, await kitStillTrimProducts(ctx, inputs.products || []));
 
   // 1. Cast anchors: members with an image pass through free.
   const anchors = new Map();
@@ -326,7 +331,8 @@ async function nbScenes(inputs, ctx, manifest) {
   };
   let rest = jobs;
   let first = null;
-  if (anchor === 'first_scene') {
+  if (!sceneStills) rest = [];
+  else if (anchor === 'first_scene') {
     await drawJob(jobs[0], null);
     first = stills.get(jobs[0].id);
     rest = jobs.slice(1);

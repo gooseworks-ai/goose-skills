@@ -137,6 +137,7 @@ export const manifest = {
         description: 'none (default): members with an image are still sent. cast: draw a portrait (an anchor) for every named member without an image, first, and send it with each scene that names them. first_scene: the first still is a reference for every later one. cast and first_scene need /edit.',
         enum: ['none', 'cast', 'first_scene'],
       },
+      scene_stills: { description: 'scenes mode (1.3.0): false draws only the cast anchors (anchor: cast) and no scene still, for a style whose next step reads the person and the product as references and needs no opening frame. Default true.', type: 'boolean' },
       cast_aspect_ratio: { description: 'The anchors\' aspect. Default 1:1.', enum: ASPECTS },
       style_refs: { description: 'The style\'s own reference pictures (a line-art sample), sent last with every scene and anchor. Needs /edit.', type: 'array', maxItems: 4, items: file('image', PICTURE) },
       multi_ref: {
