@@ -1,5 +1,11 @@
 # creator-h3
 
+## 1.6.0
+
+- Light lock: every take prompt says "Keep the first frame's light and exposure, matte skin, no added shine or sharpening halos." In two 15 Oct test videos H3 added gloss, HDR contrast and sharpening halos to clean stills. `plan_takes.py` `TEMPLATE` carries the same words.
+- `character` accepts make_character.py 2.5.0's `shot` (`talking` or `action`) and `skin_condition`; both are recorded only.
+- The prompt changed, so no `reuses_pieces_of`: a video approved on 1.5.0 keeps its version.
+
 ## 1.5.0
 
 - A scene action that uses both hands (apply, smooth, press, peel, squeeze, hold with both hands, or `required_features` `application`) refuses `phone_selfie` and uses `phone_counter`, a propped phone; `capture_decision` says so. A test video's presenter had both hands on her nose under a selfie capture, and the model added a third hand holding the phone.

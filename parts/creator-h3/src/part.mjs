@@ -1,3 +1,7 @@
+// creator-h3 1.6.0: every take keeps the first frame's light and exposure, matte
+// skin, no added shine or sharpening halos (H3_LIGHT_LOCK): H3 added gloss, HDR
+// contrast and halos to clean stills in two 15 Oct test videos. character.json's
+// shot and skin_condition (make_character.py 2.5.0) are accepted and recorded.
 // creator-h3 1.5.0: a scene action that uses both hands (apply, smooth, press,
 // peel, squeeze, hold with both hands, or required_features application) refuses
 // phone_selfie and uses phone_counter, a propped phone, and says so in
@@ -418,7 +422,7 @@ async function joinTakes(ctx, plan, out) {
 
 export async function run(inputs, ctx) {
   const manifest = await kitCheckInputs(ctx, inputs);
-  if ((inputs.mode || 'talk') !== 'talk') throw ctx.error('bad_input', 'creator-h3 1.5.0 controls native talking creators only; use a separately qualified non-speaking clip route with its own source content reviews');
+  if ((inputs.mode || 'talk') !== 'talk') throw ctx.error('bad_input', 'creator-h3 1.6.0 controls native talking creators only; use a separately qualified non-speaking clip route with its own source content reviews');
   for (const key of CLIPS_ONLY) if (inputs[key] !== undefined) throw ctx.error('bad_input', `${key} works only in clips mode`);
   const requestedStage = inputs.generation_stage || 'reviewed_pipeline';
   let stage = requestedStage;
