@@ -1,6 +1,6 @@
 # Product demo
 
-A creator explains while real footage proves each claim, or proof points sit over one product shot. Routing rows are named as in the shot-routing guide. Choose speech through [speech and route qualification](../speech-and-route-qualification.md) and size the product through [product scale and world](../product-scale-and-world.md). A text card or dots never replace a live demonstration the reference has.
+A creator explains while real footage proves each claim, or proof points sit over one product shot. Routing rows are named as in the shot-routing guide. Choose speech through [speech and route qualification](../speech-and-route-qualification.md) and size the product through [product scale and world](../product-scale-and-world.md). A text card or dots never replace a live demonstration the reference has. A narrator over several people is [narrator-montage](narrator-montage.md), not this card.
 
 ## Shot list skeleton
 1. 0-3 s hook: creator full frame, one sharp claim, no footage.

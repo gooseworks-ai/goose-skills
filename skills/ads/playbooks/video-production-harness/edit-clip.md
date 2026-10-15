@@ -55,7 +55,7 @@ Fix one scene after `create-clips` (wrong pose, weak motion, off-tone voice) wit
 **add-post-effect**
 - Vignette: `ffmpeg -i in.mp4 -vf "vignette=PI/4" out.mp4`.
 - **No retiming.** Never speed up, slow down or extend a clip to fit a slot (no `speed_overrides`, no tpad or loop holds; only the timeline's declared end-card freeze). Speaking picture and its driver stay on one clock. A clip of the wrong length is re-rolled or re-performed.
-- Crop or reframe keeps the aspect ratio and the identity, product, action and proof over the whole interval. Never zoom past 1.5×, widen a face or hide wrong geometry or packaging.
+- Crop or reframe keeps the aspect ratio and the identity, product, action and proof over the whole interval. Never zoom past 1.5× over the fit. On a source below the output's resolution (lip-sync's 720p) the crop multiplies with that upscale: crop in at most 1.1×. Never widen a face or hide wrong geometry or packaging.
 - Overlays (logo, product photo, screenshot) use FFmpeg overlay of the real asset.
 
 **re-render-vo**

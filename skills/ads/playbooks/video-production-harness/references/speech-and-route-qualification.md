@@ -75,7 +75,7 @@ not qualify animated gaze or handling.
 
 ## Selected new part interfaces
 
-Use creator-h3@1.5.0 fields only with that version or a compatible newer contract.
+Use creator-h3@1.6.0 fields only with that version or a compatible newer contract.
 Carry creative_contract_revision, `reference_words_per_second` (from `../scripts/reference_rate.py`) and
 `character.voice_pair` (from pair_voice.py, which make_character.py runs). Capture is
 phone_counter, also for two-hand actions (it has no phone_observer); focus is deep.

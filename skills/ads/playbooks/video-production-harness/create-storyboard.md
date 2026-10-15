@@ -90,6 +90,8 @@ face_share_planned = direct_face_visible_seconds / total_runtime_seconds
 
 Recompute older count-based values from the saved timeline before comparing.
 
+Also save `metrics.setups` (distinct people, rooms, framings or actions from separately made takes; punch-ins and repeats of one take don't count), `metrics.hands_action_share` and the longest still-face stretch, each next to the reference's from its shot table. These diagnostics always run, even when every approval was given in advance.
+
 Targets come from the brief and the inspected reference; record its id, timestamp range and limits in `pacing_basis`. Without one, label targets provisional or leave them null. There is no universal UGC floor or face quota. Never add cuts to hide artificial shots or rush a readable proof. Numbers locate defects; they never replace reviewing the whole sequence.
 
 ## Output

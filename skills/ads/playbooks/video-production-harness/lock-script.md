@@ -92,7 +92,7 @@ Record the main payoff line, its intended delivery and the viewer effect. Use `c
 
 ### Step 5 — Script owner gate
 
-Show the owner, in this chat, every `changes_from_reference` entry in bold at the top, then the complete words, the essential action and proof, the sound plan, the feasible routes and the review:
+Show the owner, in this chat, every `changes_from_reference` entry in bold at the top, with the plan's shot and setup counts next to the reference's (`scripts/reference_shots.py compare`), then the complete words, the essential action and proof, the sound plan, the feasible routes and the review:
 
 ```
 Script lock — <video name>

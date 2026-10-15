@@ -18,7 +18,9 @@ actually heard or watched the file; an extracted WAV, transcript or contact shee
 is not listening. Otherwise write `measured`. A measured review is valid when the
 final measurements (`gooseworks-final-measure/1`: [qc_evidence.py](../scripts/qc_evidence.py) locally,
 `quality_report.final_measure` on the host) pass or are not applicable for the same
-`output_sha256`, and the host's frame judge has no open finding. Any fail blocks.
+`output_sha256`, and the frame judge has no open finding: the host's, or locally
+`scripts/frame_judge.py --kind final` with a passing `frame_judge.json` for the same
+bytes. Without it a measured review is INCOMPLETE, never approved. Any fail blocks.
 Severity `p0`, `p1` and `blocker` block, in any letter case; an unknown severity
 blocks as P1. The old boolean shape (`true`) still parses for one release.
 
@@ -30,6 +32,11 @@ attachment does not prove listening; without a capable reviewer, record `measure
 and the gap. Record sampled-frame, continuous-motion, isolated-speech and
 mixed-audio coverage separately, with exact source identity, checksum, duration,
 covered ranges and remaining gaps. Never call frames plus transcription a full watch.
+A measured study is `scripts/reference_shots.py study` (the cut list and full-resolution
+frames at 4 fps or more) with every row of its shot table filled from those frames:
+people, action, hands on the product, camera and objects. Record how the reference
+shows the product, its label and any waste, and carry it into `product_grounding` and
+the shot plan.
 
 Record each important reference beat beside the adaptation, and list every
 deliberate difference in `changes_from_reference`, shown first at the script approval:
@@ -88,7 +95,9 @@ Use [product scale and world](product-scale-and-world.md),
 
 ## Production eligibility and repair
 
-Inspect every selected still before animation. On a new creator route, review the
+Judge every selected still at full resolution before animation with `frame_judge.py
+--kind still` (the real product photo first): its object list and verdict are saved,
+and a still without a pass is not animated. Judge each clip with `--kind clip`. On a new creator route, review the
 first real face/voice/performance before ordering the remaining takes.
 For difficult actions, prove a representative action with the same product and
 conditions; a talking-head pass cannot qualify application, pouring or cooking.
@@ -103,6 +112,7 @@ the gap; never exceed the retry/budget bound.
 Classify source/model, input, edit and perception-capability failures separately.
 Repair a detached native edit locally instead of buying another correctly matched take.
 
+Every inset or overlay the plan promises must exist in the render, at its shot's time.
 Cosmetic crops/overlays must preserve the required product, action, identity and proof. Do not hide changed packaging with a logo, wrong geometry
 with a crop, or impossible action with a mask. Do not widen people. Before flipping
 a mirrored take, verify writing, handedness, hardware and continuity.

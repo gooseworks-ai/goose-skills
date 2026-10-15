@@ -21,7 +21,20 @@ size is required: a person beside it on the same ground plane, a known-size obje
 installed-product footage. Take it from the brand's assets first; ask the user only
 when none exists. Official capacity is a sourced claim, not a filmed test.
 
-**Packaging** comes from the real product photo through `overlay`, never redrawn.
+**Packaging.** A still packshot gets the real product photo through `overlay`. An
+overlay can't follow a pack that moves, so a pack held, opened, poured or used on screen
+is made with `openai/gpt-image-2/edit`, the real product photo as reference image 1 and
+its front label facing the camera. Never type label text; never ask for a blank,
+unprinted, unlabelled or back-facing pack. A blank, unprinted or label-less brand pack is
+P0. If the label garbles, reframe so hands cover it while shape and colours match, or cut
+to a real-photo insert.
+
+**Use steps and product states.** Quote each on-screen use step from the brand's
+directions in the shot plan. Take every visible state (closed pack, open pack, sachet, dry
+contents, cooked dish, strip on the nose) from a real brand photo sent as a reference,
+never from prose. No photo of a state: don't show it (cut from the real pack to the
+result) or ask the owner. When the directions are cut off or give several methods, show
+the one the owner confirms. Waste goes in a real bin, never a bowl near food.
 
 ## Scale packet and request
 

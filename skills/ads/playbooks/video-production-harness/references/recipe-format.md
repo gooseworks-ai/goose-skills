@@ -20,9 +20,11 @@ required speech_driver, audio_cues and planned pauses. Assemble it only with
 
 - milliseconds or pixels that are not integers;
 - a pause over 1.5 s, pauses totalling over 10% of the duration, or a freeze over 1.5 s (a freeze that ends the video, the end card hold, may last 3.0 s);
-- a `crop` (`{x, y, w, h}` in source pixels, with `scale_x` and `scale_y`) that stretches unevenly (over 2%) or zooms in over 1.5×. Zoom is the crop's fit-scale divided by the full frame's fit-scale; scaling a whole small frame up (H3's 432×768 to 1080×1920) is allowed;
+- a `crop` (`{x, y, w, h}` in source pixels, with `scale_x` and `scale_y`) that stretches unevenly (over 2%) or zooms in over 1.5×. Zoom is the crop's fit-scale divided by the full frame's fit-scale; scaling a whole small frame up (H3's 432×768 to 1080×1920) is allowed, but a crop on such an upscaled source may zoom at most 1.1× (`../scripts/assemble.py` checks the source size);
 - a speaking segment whose picture and audio change speed separately;
-- the same source picture shown twice, not side by side, unless the later segment's `intent` starts with `callback:`.
+- the same source picture shown twice, not side by side, unless the later segment's `intent` is `callback: <earlier segment id> <reason>`; more than one callback per 15 s.
+
+A callback is planned, never a repair: its row in `shot-plan.json` names the earlier shot in `callback_of`, and the final's `repeated_shot` check passes it only with `--plan` bound to the same creative_contract_revision. Never add or edit a `callback:` intent after a `repeated_shot` failure; fix a repeat with new coverage.
 
 Segments planned as `speech_mode: none` (B-roll under music, an end card) need no speech cue. A plan that is silent by choice (`speech_mode: none`, `soundtrack_modes: [intentional_silence]`, which needs the owner's request or a silent reference) makes the final silence checks `not_applicable`; the tone check still runs. Bind the timeline to the current production record and pack it with the editable files.
 

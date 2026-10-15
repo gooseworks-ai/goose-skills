@@ -14,10 +14,11 @@ The middle of the run: plan every scene, approve the ingredients, lock the peopl
 Part of [the orchestrator](../orchestrator.md). Its non-negotiables, approvals and decision policies apply. Read one file per call; if the output says it was truncated, re-read it in parts before acting.
 
 ### State 3 — Storyboard
-1. Reuse a saved storyboard only when it matches the approved script and scene plan.
+1. **The storyboard is required, even when the owner pre-approved the script, credits or ingredients.** Pre-approval skips the wait for the owner, never the storyboard or its checks. Reuse a saved storyboard only when it matches the approved script and shot plan.
 2. Follow [create-storyboard.md](../create-storyboard.md). It reads VO from `locked_script`, so caption text matches the script.
 3. **INGREDIENT OWNER GATE.** Show the storyboard on the host review surface with the anchors, world, voice, product photos, routes and cost. Show each speaking character's still together with a short audition of its paired voice saying a real script line, so the owner judges them together. Confirm pacing and visual direction before clip credits. A generated preview still needs the approved preview budget. This is the cheapest place to catch a wrong concept. On the kit path, run the kit's make command after this approval.
 4. **Coverage and pace.** Use reference-derived targets and the planned cuts and face time from the storyboard step. Every beat needs a viewer purpose and enough time for its action, reading or proof. A long hold is a prompt to check, not a failure; never add arbitrary cuts to meet a quota.
+5. **Shot-mix check before any clip spend.** Run the storyboard's pacing and shot-mix diagnostics and `scripts/reference_shots.py compare` against the reference's shot table, and show the counts. Setups or shots more than 30% under the reference with no listed `shots` change block State 5, pre-approved or not.
 
 ### State 3.4 — Motion strategy
 1. Read the design brief's `visual_style:` (and explicit storyboard notes).

@@ -33,11 +33,23 @@ medium for use, close for a needed detail, as the brief needs. Inspect the deliv
 at phone size. Reject blurred proof, unreadable labels, accidental face cuts and
 distortion.
 
-**Realism default.** Capture is a phone (`phone_selfie` or `phone_counter`) with deep
-focus and no bokeh, in a lived-in, slightly cluttered real room, never a plain wall or a
-white void. Every person prompt says "no retouching, no skin smoothing, no beauty
-filter, no cinematic grade"; skin keeps pores and slight asymmetry. Wardrobe and setting
-fit the activity. Studio light or shallow focus only when the approved style comes from a studio-shot
+**Realism default.** Capture is a phone (`phone_counter`, `phone_selfie` or
+`phone_observer`) with deep focus and no bokeh, in a lived-in, slightly cluttered real
+room, never a plain wall or a white void. Every person prompt says "no retouching, no
+skin smoothing, no beauty filter, no cinematic grade"; skin keeps pores and slight
+asymmetry. Wardrobe and setting fit the activity.
+
+**Light and realism block.** Every photoreal still prompt (people, products, B-roll)
+ends with these words, verbatim:
+
+> One window or lamp lights the scene from one side, with a darker shadow side and
+> gentle falloff; normal phone exposure, highlights not clipped, no HDR; matte skin with
+> no added shine; no over-sharpening or halos.
+
+Every H3 or other video motion prompt, B-roll included, ends with: "Keep the first
+frame's light and exposure, matte skin, no added shine or sharpening halos." (creator-h3
+1.6.0 and video-h3max 1.2.0 add it on the kit path.) Name the window or lamp in the
+scene. A shot with flat shadowless light, HDR contrast, gloss or halos is a repair. Studio light or shallow focus only when the approved style comes from a studio-shot
 reference, listed in `changes_from_reference` as `camera` when it differs. A phone on a
 counter can be steady. Record main light, contrast, exposure, white balance and the
 continuing set. Check skin, eyes, teeth, hands, contact, shadows and reflections, still

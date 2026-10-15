@@ -20,14 +20,14 @@ Writes notes only, never edits the video, in the contract [auto-fix-from-review-
 ## Honest perception
 
 - Record `listened` / `watched` only when you, a person or an audio/video-capable model really heard and watched the cut at normal speed.
-- Otherwise record `measured`. A measured review counts only when `scripts/qc_evidence.py` exits 0 on the exact file and the host's `final_measure` passes (or is not applicable) for the same `output_sha256`.
+- Otherwise record `measured`. A measured review is APPROVED only when `scripts/qc_evidence.py` exits 0 on the exact file, the host's `final_measure` passes (or is not applicable), and `scripts/frame_judge.py --kind final` wrote a passing `frame_judge.json`, all for the same `output_sha256` (`qc_evidence.py --frame-judge` reports `measured_review_may_approve`). Otherwise it is INCOMPLETE.
 - Frames, a transcript, thumbnails or a storyboard are evidence, never a watch.
 - Neither real perception nor passing measurements: INCOMPLETE. An observed defect sets NEEDS REVISION whatever the measurements say.
 
 ## Inputs
 
 - `<video_folder>` (required).
-- `<video_path>`: the exact cut from the host's review selection or source note, with render/version id and checksum. On a first cut, the newly registered candidate. Never fall back to another master or to thumbnails.
+- `<video_path>`: the exact cut (host review selection or source note) with render/version id and checksum; on a first cut, the new candidate. Never another master or thumbnails.
 - `<stage>`: concept, rough, fine or final. Record which decision this review can clear.
 - `<review_idx>`: optional; otherwise auto-increment from `review-notes/`.
 
@@ -50,7 +50,7 @@ A change listed in the approved `changes_from_reference` (or the beat table's pe
 ## Review phases
 
 **7a: measurements and verified observations**
-- Run `python3 scripts/qc_evidence.py VIDEO.mp4 EVIDENCE_DIR` (add `--timeline`, `--words`, `--script`, `--reference`, `--reference-words` when you have them). It gives the probe, 2 fps frames, decoded audio, loudness, tail and the final measurements, and exits 1 on any failed measurement.
+- Run `python3 scripts/qc_evidence.py VIDEO.mp4 EVIDENCE_DIR` (add `--timeline`, `--words`, `--script`, `--reference`, `--reference-words`, `--reference-shots`, `--plan` when you have them). It gives the probe, 2 fps frames, decoded audio, loudness, tail and the final measurements, and exits 1 on any failed measurement.
 - Measure per-scene RMS with FFmpeg astats and compare cut times with word timings; the helper does not. `source_pts_s` (not the nominal `sample_center_s`) identifies sampled bytes.
 - Run the hallucination, transcript, identity, alignment and world checks. Content decides which duties apply, not the format label. Identity uses the locked anchor; world reads `world_lock:` and `world_locks` (State 3.55). Save findings to `review_issues`.
 - Transcript: compare the final audio's words and joins with the accepted script. ASR can hallucinate in silence; confirm by listening when you can. A high match never clears babble, poor delivery or bad sync.
@@ -84,13 +84,10 @@ Any one failing sets NEEDS REVISION. Save the verdict to `review_issues` and `pr
 3. Read `<video_folder>/design_brief`, `<video_folder>/implementation_brief`, `<video_folder>/locked_script` and brand evidence. Save every gap between received and intended message, even when technical checks pass.
 4. Run 7a, 7b, the reference comparison and 7d. Every visual finding carries a timecode and a frame path.
 5. Review the whole cut again, targeting suspicious ranges. Record each content dimension as pass, needs_revision or incomplete; optional scores never average away a blocker.
-6. List strengths, then issues by severity: **P0** ship-stopper (inaudible VO, broken hero shot, a failed hand count, a reference mismatch above); **P1** clearly degrades the cut; **P2** polish.
+6. List strengths, then issues by severity: **P0** ship-stopper (inaudible VO, broken hero shot, a failed hand count, a blank brand pack, a reference mismatch above); **P1** clearly degrades the cut; **P2** polish.
 7. Give each issue a concrete fix in the [auto-fix-from-review-notes.md](auto-fix-from-review-notes.md) contract: axis and title, timecode, issue, root cause and a `fix:` line (`<repair>; input=<path>; output=<path>; parameters=<values>`).
 
-Example fix lines:
-- `re-roll scene 5 motion; preserve its locked refs` (through [edit-clip.md](edit-clip.md), with paid authorization).
-- `normalize loudness; input=edits/master-final.mp4; output=edits/master-normalized.mp4; target=-14 LUFS, true_peak=-1 dBTP`.
-- `extend end-card hold; declare a 0.6 s end freeze in the assembly_timeline (total at most 3.0 s at the end); re-assemble`, with `scripts/assemble.py`.
+Example: `normalize loudness; input=edits/master-final.mp4; output=edits/master-normalized.mp4; target=-14 LUFS, true_peak=-1 dBTP`. Re-rolls go through [edit-clip.md](edit-clip.md) with paid authorization.
 
 8. Diagnose and route: concept or script back to its gate, missing proof to production, misordered material to edit, isolated defects to local repair. Give open taste calls alternatives and a decision owner.
 9. Set the status:
@@ -101,7 +98,7 @@ Example fix lines:
 
 ## Output document format
 
-`# Review NN — <video name>`, then: cut reviewed (path, render/version id, checksum); stage; received message (recorded before the brief, or labeled context-aware); perception (audio listened or measured, motion watched or measured, covered ranges and gaps, qc_evidence exit code and final_measure result for this output_sha256); reference match (rows matched, mismatches and severity); diagnosis and return route (cause, smallest revision, decision owner); runtime, reviewer, date; status (APPROVED, NEEDS REVISION or INCOMPLETE). Then sections: Scores (optional), Strengths, P0 (each in the fix form, plus **intended effect / acceptance**), P1, P2, Per-scene notes, Diff vs design brief and reference, Next pass requires.
+`# Review NN — <video name>`, then: cut reviewed (path, version id, checksum); stage; received message (before the brief, or labeled context-aware); perception (listened/watched or measured, covered ranges and gaps, qc_evidence exit code, final_measure and frame_judge results for this output_sha256); reference match and severity; diagnosis and return route (cause, smallest revision, decision owner); reviewer, date; status. Then sections: Scores (optional), Strengths, P0 (each in the fix form, plus **intended effect / acceptance**), P1, P2, Per-scene notes, Diff vs design brief and reference, Next pass requires.
 
 ## Structured check list
 
@@ -112,6 +109,10 @@ Also save JSON `{checks: [{id, severity, pass, machine_check, evidence, timecode
 Run each with real frames, audio and FFmpeg. Save evidence with timecodes.
 
 **Hand count (P0).** Count the hands in every shot where hands act, at 2 fps through the action: no more hands than the people in frame have, no hand without a body, no phone held by an unseen hand. Any failure is P0; re-roll that clip with `phone_counter` or `phone_observer` capture, never the same selfie prompt.
+
+**Product pack (P0).** Every brand pack in frame matches its real photo at 2×: printed front label, shape, colour and contents. A blank, unprinted, label-less, back-facing or sticker-flat pack, or a use step or product state unlike the brand's photos and directions, is P0 ([product scale and world](references/product-scale-and-world.md)).
+
+**Plan promises (P0).** List every inset or overlay the plan promises (shot-plan `overlays`, the contract's on-screen notes) with the timestamp where it shows in the render; `scripts/frame_judge.py` reports each as seen or missing. A promised inset that isn't in the render is P0.
 
 **Identity and character.** Per scene, crop the largest face at 25/50/75% and tile the crops after the locked anchor (about 512 px per cell). Judge bone structure, eyes, skin tone and proportions (styling and makeup are not drift). List wardrobe, accessory, hair-colour and held-object changes.
 
@@ -124,21 +125,19 @@ Run each with real frames, audio and FFmpeg. Save evidence with timecodes.
 
 **World consistency** (needs `world_lock:`; skip for travel, multi-location and montage). Grid each scene's 50% frame. Score set, wardrobe, lighting, colour, props and time of day 0-10 (score = mean). Any axis below 6 is P0; 6-7.9 is P1. Name the scene pair of each break.
 
-**Visual hallucination.** At 2 fps plus each scene's last frame, read every on-screen string against the approved copy. Fail garbled text, a misspelled brand or product word, or a script the brand doesn't use. Pass only when every string is approved or explained.
+**Visual hallucination: objects and text.** For each scene's first, middle and last frame at full resolution, list every object in frame (`scripts/frame_judge.py` saves them). Fail an unplanned object that changes the meaning (rubbish, peels or a bin near food or the product, a second product, a wrong container) and every garbled, misspelled or unapproved string.
 
 **Audio-visual alignment.** Each payoff keyword's visual is on screen inside that word's window; fail a missing keyword or two beats on one word.
 
-**Caption render.** For each cue, grab a frame mid-cue (at least 0.05 s before it ends) and compare words, spelling and placement with the approved cue. At least 60% of its 4+ letter words must appear; OCR alone never approves missing essential copy.
-
-**Frame claim** (7d). `ffmpeg -ss <t> -i <video> -frames:v 1 frame.jpg`; look at it and its neighbours yourself.
+**Caption render.** Grab a frame mid-cue (at least 0.05 s before its end) and compare words, spelling and placement with the approved cue; at least 60% of its 4+ letter words must appear. OCR alone never approves missing copy.
 
 **Concept landing.** From the received-message pass, score hook, message, payoff and CTA 0-10 against the brief. Any beat below 8 gets a root cause: scene and asset.
 
 **Pacing and rhythm.** Find cuts with `select='gt(scene,0.4)'` and the music beats. When cut to music, a cut over 100 ms off the beat is P1. A near-static scene over 4 s is drag unless it carries proof or reading time.
 
-**Brand and platform fit.** Approved claims only, no banned phrases, the real logo (never AI-rendered), brand colours and type. 1080×1920 for 9:16, text and faces in the safe area, a first frame that reads without sound.
+**Brand and platform fit.** Approved claims only, no banned phrases, the real logo, brand colours and type; 1080×1920 for 9:16, text and faces in the safe area, a first frame that reads without sound.
 
-**UGC shotcraft.** Count picture cuts per 10 s and direct-face time share (close-ups count); compare only with targets the brief or recipe agreed, never a universal quota. Each action finishes, the feature shows while discussed, text holds long enough to read. The look stays real: phone capture, deep focus, no bokeh, a lived-in room, no retouching.
+**UGC shotcraft.** Count picture cuts per 10 s and direct-face time share (close-ups count); compare only with targets the brief or recipe agreed, never a universal quota. Each action finishes, the feature shows while discussed, text holds long enough to read.
 
 **Hook strength.** Watch the first 3 s muted, then with sound; score readability, subject clarity and motion (1-10). Below 7: re-roll scene 1, replace the opening line, or move the strongest 3 s first.
 
@@ -151,4 +150,4 @@ Run each with real frames, audio and FFmpeg. Save evidence with timecodes.
 - The whole cut was covered (listened and watched, or measured with passing final measurements) and compared with the reference beat table.
 - Every blocking issue is verified at an exact time, or is attributed user feedback. Scores predict quality only.
 - Status is exactly APPROVED, NEEDS REVISION or INCOMPLETE; "approved with minor changes" does not exist.
-- Failures: summarizing the brief instead of reviewing the file; calling frames plus a transcript a watch; vague feedback with no fix or priority; going easy on a P0 because the project cost a lot.
+- Failures: summarizing the brief instead of the file; calling frames plus a transcript a watch; vague feedback; going easy on a P0 because the project cost a lot.

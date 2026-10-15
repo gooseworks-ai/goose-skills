@@ -17,7 +17,7 @@ Follow the [orchestrator](orchestrator.md)'s host contract and [creative contrac
 
 Make one MP4 per scene, plus voice files where the audio plan needs them, and register the real clips on the host review surface. Stitching, music, SFX and captions belong to `edit-video`. A custom video is assembled only there, with `scripts/assemble.py` and an `assembly_timeline`. Never join clips with any other stitcher. A scene that needs several pieces gets several timeline segments.
 
-**Routing.** Make every scene on its row in [the shot-routing guide](references/shot-routing.md) and the genre card it names. Resolve the row's real model id, schema and priced unit through the binding. A shot with no row is an open decision, not a free model choice. Kling 2.5 Turbo is withdrawn and never routed. Nano Banana is for cartoon style anchors and cartoon keyframes only; real people and real products use the `image-gpt-image-2` edit route, and packaging comes from the real photo through `overlay`.
+**Routing.** Make every scene on its row in [the shot-routing guide](references/shot-routing.md) and the genre card it names. Resolve the row's real model id, schema and priced unit through the binding. A shot with no row is an open decision, not a free model choice. Kling 2.5 Turbo is withdrawn and never routed. Nano Banana is for cartoon style anchors and cartoon keyframes only; real people and real products use the `image-gpt-image-2` edit route.
 
 **Tools by shot** (an installed supported skill, or the concrete tools in `capabilities.md`):
 - Kinetic type: `create-kinetic-typography`. Designed stills and cards: `goose-graphics`, one style per project.
@@ -44,11 +44,11 @@ Load existing jobs and approved media first. Match input fingerprints and probe 
 
 ## Prompt constraints
 
-Bind the real identity, product and scale references. State each load-bearing constraint three times: positive framing at the top ("Camera stays at knee level"), a negation in the middle ("NO face visible"), a crop rule at the end ("Camera never tilts above the chest"). Soft preferences need one. Repetition guarantees nothing; inspect every output.
+Bind the real identity, product and scale references. State each load-bearing constraint three times: positive framing at the top ("Camera stays at knee level"), a negation in the middle ("NO face visible"), a crop rule at the end ("Camera never tilts above the chest"). Soft preferences need one. Repetition guarantees nothing; inspect every output. Every photoreal still and every motion prompt ends with the **light and realism block** ([libraries, look and rubric](references/libraries-look-and-rubric.md)), B-roll included; a stub like "natural light" is not it.
 
 ## Hard rules
 
-- **No brand or UI text in any image prompt.** Image models garble words ("EXAMPLE" becomes "EXAMPEL"). Render neutral screens and unlabeled boxes; add all branded text in post with PIL or FFmpeg overlay.
+- **No brand or UI text typed into any image prompt.** Image models garble words ("EXAMPLE" becomes "EXAMPEL"). "Unlabeled" is for non-brand objects only (neutral screens, props); add their text in post. The advertised product keeps its real label: a pack held or used on screen is made on the edit route with the real product photo as reference image 1, front label facing the camera, and each use state from a real brand photo ([product scale and world](references/product-scale-and-world.md)). Never ask for a blank, unprinted, unlabelled or back-facing pack; one on screen is P0.
 - **Resolve each model's real reference and start-image fields** through the binding. Upload local files through the host first and use the returned media id. `.avif` references are rejected.
 - **Dark or vignetted keyframes fail in Veo.** Use a neutral background; grade in post.
 - **fal is the default gateway.** A generation counts as failed, and triggers the fallback router, when any of these happen:
@@ -88,7 +88,7 @@ A person or product in a scene does not by itself authorize a new anchor.
 
 Only for scenes routed to image-to-video or an approved generated still. Reuse valid keyframes.
 1. **Scenes with the locked person:** send the locked anchor as a confirmed reference in the model's real image-reference field. The prompt carries the verbatim `<character_descriptors>` from `design_brief` plus the scene action.
-2. **Scenes without the person:** cartoon scenes use the style anchor as a style reference; photoreal product scenes send the real product photo on the edit route and describe the action and set, not the product.
+2. **Scenes without the person:** cartoon scenes use the style anchor as a style reference; photoreal product scenes send the real product photo as reference image 1 on the edit route (a held pack: front label to camera) and describe the action and set, not the product.
 3. Use the approved aspect ratio (normally 9:16) and the scene's routing row. Submit through the host's image-generation operation (keyframes may run in parallel), poll the returned request and save `generated/keyframes/scene-NN.png`. On a failure, use the fallback router above.
 4. Inspect every keyframe before animating: exact variant and geometry, sourced scale, contact, crop, text space and continuity ([product scale and world](references/product-scale-and-world.md)). Compare people to accepted anchors without invented drift percentages.
 5. **Keep the gateway.** Read the keyframe's `<output>.meta.json`; animate that scene on the same provider unless the operator overrides.
@@ -119,7 +119,7 @@ Only for narration, audio-driver, song or source-speech routes. No-speech scenes
 
 ### Phase 5 — Register reviewable clips
 
-Review each clip against its handoff: revision, line and assets, full action and proof, product geometry and scale, measured duration, face and voice sync, continuity with neighbours. **Count the hands (P0):** no more hands than the people in frame have, no hand without a body, no phone held by an unseen hand; a failure is a failed clip ([review-video](review-video.md)). A provider URL is not a pass. Register every source and job with its pass, needs_change or incomplete evidence. Failed candidates stay visible and out of the passing assembly.
+Review each clip against its handoff: revision, line and assets, full action and proof, product geometry and scale, measured duration, face and voice sync, continuity with neighbours. **Count the hands (P0):** no more hands than the people in frame have, no hand without a body, no phone held by an unseen hand; a failure is a failed clip ([review-video](review-video.md)). Run `scripts/frame_judge.py CLIP OUT --kind clip --plan shot-plan.json --product-photo <real photo>` on each clip, and `--kind still` on each keyframe before Phase 2. A provider URL is not a pass. Register every source and job with its pass, needs_change or incomplete evidence. Failed candidates stay visible and out of the passing assembly.
 
 ## Output
 
