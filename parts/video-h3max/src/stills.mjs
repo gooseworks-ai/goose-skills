@@ -9,7 +9,10 @@
 // broll: true is silent creator B-roll: each scene names one physical action in
 // extra.action, and "Nobody speaks, lips closed, while <action>." is added; still hands
 // are refused.
+// 1.3.0: end_on_start_tags lists scene tags whose clips end on their own first frame (end_image_url),
+// so a held product cannot finish turned to its back (GOOSE-4034).
 import { kitCheckOutputs, kitDuration, kitPieceName, kitStopIfAborted } from '../../_lib/part.mjs';
+import { kitSceneTag, kitTagKey } from '../../_lib/scene-match.mjs';
 import { KitPromptGap, kitLoadTemplate, kitPromptJoin } from '../../_lib/prompt.mjs';
 import { kitProductScenePhotos, kitRequireProductFrame, kitRequireSceneTags } from '../../_lib/product-tag-contract.mjs';
 import { kitClipEach, kitClipJobs, kitClipMayFallBack, kitClipSeconds, kitClipSlots, kitClipTemplate } from '../../_lib/scene-clips.mjs';
@@ -22,7 +25,14 @@ const H3STILLS_DEFAULT_SECONDS = 5;
 const H3STILLS_MAX_CLIPS = 40;
 const H3STILLS_PROMPT_MAX = 12000;
 /** Inputs only mode stills reads. */
-export const H3STILLS_ONLY = ['stills', 'spans', 'min_s', 'max_s', 'max_total_s', 'fallback', 'require_scene_tags', 'require_product_refs', 'product_reference_evidence', 'broll'];
+export const H3STILLS_ONLY = ['stills', 'spans', 'min_s', 'max_s', 'max_total_s', 'fallback', 'require_scene_tags', 'require_product_refs', 'product_reference_evidence', 'broll', 'end_on_start_tags'];
+
+/** Whether a scene's clip must end on its first frame: its tag is one of end_on_start_tags. */
+export function h3StillsEndsOnStart(scene, tags) {
+  if (!Array.isArray(tags) || !tags.length) return false;
+  const tag = kitSceneTag(scene);
+  return tag != null && tags.some((t) => kitTagKey(t) === kitTagKey(tag));
+}
 // Anything left that looks like a placeholder after filling is a typo.
 const H3STILLS_PLACEHOLDER_LIKE = /\{[A-Za-z][A-Za-z0-9_.-]*\??\}/;
 
@@ -106,6 +116,8 @@ export async function h3StillsRun(inputs, ctx, manifest) {
   }
   for (const job of jobs) job.start = job.still;
   await h3SceneFitStills(inputs, ctx, jobs);
+  // A locked clip ends on the same fitted file it starts on.
+  for (const job of jobs) if (h3StillsEndsOnStart(job.scene, inputs.end_on_start_tags)) job.end = job.start;
 
   const used = new Set();
   for (const job of jobs) job.piece = kitPieceName('clip', job.id, job.index, used);

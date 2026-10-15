@@ -3,6 +3,14 @@
 This part provides H3 Max scene clips and timed takes for recipes that need native dialogue or first/last
 frames. Published `video-seedance-2` and `creator-h3` versions are unchanged.
 
+## 1.3.0
+
+- `end_on_start_tags` (mode stills): scene tags whose clips end on their own first frame (`end_image_url`
+  set to the fitted still, as `image_to_video` does with `end_image: start`). For held or shown products: in
+  a paid test (GOOSE-4034, four 4 s 1080P clips of The Cumin Club pouch, same stills and seeds) H3 turned the
+  pouch to its back in 3 of 4 unlocked clips and in none of 4 locked ones, and no locked clip froze. Other
+  scenes, other modes and seeds are unchanged; the input is refused outside mode stills.
+
 ## 1.2.0
 
 - Light lock: modes `stills` and `image_to_video` add "Keep the first frame's light and exposure, matte skin, no added shine or sharpening halos." once, before any `Avoid:` list (the same words as creator-h3 1.6.0). H3 added gloss, HDR contrast and sharpening halos to clean stills in two 15 Oct test videos. Modes `reference`, `take` and `takes` are unchanged.

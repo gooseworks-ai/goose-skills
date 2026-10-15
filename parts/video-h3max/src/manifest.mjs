@@ -49,7 +49,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'video-h3max',
-  version: '1.2.0',
+  version: '1.3.0',
   kind: 'generate_video',
   title: 'Scene clips with native audio (H3 Max)',
   summary: 'H3 Max clips: native dialogue, reference or first/last-frame clips, timed takes, and up to 40 scene stills moved with the voice, incl. silent B-roll with one named action. Clips keep their first frame\'s light.',
@@ -184,6 +184,7 @@ export const manifest = {
       },
       require_scene_tags: { description: 'Mode stills: opt in to strict by_tag routing. Reject missing, unknown, malformed or contradictory scene tags before any provider order.', type: 'boolean' },
       broll: { description: 'Mode stills: silent creator B-roll. Every picked scene names one physical action that changes the picture in extra.action (apply, peel, press, lift, pour, put down, turn to the mirror); a head turn, blink or smile alone is refused. Each prompt adds "Nobody speaks, lips closed, while <action>."; a prompt asking for still hands ("keep hands still", "no hand touches", "minimal movement") is refused. Sound is stripped (generate_audio defaults to false; true is refused).', type: 'boolean' },
+      end_on_start_tags: { description: 'Mode stills: scene tags (extra.shot or a leading "Tag:", compared without case or spacing) whose clips must end on their own first frame, sent as end_image_url. For held or shown products: H3 turned a pouch to its back in 3 of 4 unlocked test clips and in none of 4 locked ones (GOOSE-4034).', type: 'array', minItems: 1, maxItems: 40, uniqueItems: true, items: { type: 'string', minLength: 1, maxLength: 40 } },
       require_product_refs: { description: 'Mode stills: opt in to requiring the current real product photo in each product scene\'s still request, and binding its request evidence to the exact still this clip starts on.', type: 'boolean' },
       product_reference_evidence: {
         description: 'Mode stills: the picture step\'s product request evidence (step.<stills>.product_reference_evidence).',

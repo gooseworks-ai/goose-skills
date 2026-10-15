@@ -73,10 +73,10 @@ async function stillsInputs(workDir, extra = {}) {
   };
 }
 
-test('mode stills (1.1.0) and broll (1.2.0) are inputs, and a clip may be a fallen-back still', () => {
-  assert.equal(manifest.version, '1.2.0');
+test('mode stills (1.1.0), broll (1.2.0) and end_on_start_tags (1.3.0) are inputs, and a clip may be a fallen-back still', () => {
+  assert.equal(manifest.version, '1.3.0');
   assert.deepEqual(manifest.inputs.properties.mode.enum, ['reference', 'image_to_video', 'take', 'takes', 'stills']);
-  for (const key of ['stills', 'spans', 'min_s', 'max_s', 'max_total_s', 'fallback', 'require_scene_tags', 'require_product_refs', 'product_reference_evidence', 'broll']) {
+  for (const key of ['stills', 'spans', 'min_s', 'max_s', 'max_total_s', 'fallback', 'require_scene_tags', 'require_product_refs', 'product_reference_evidence', 'broll', 'end_on_start_tags']) {
     assert.ok(manifest.inputs.properties[key], key);
   }
   assert.deepEqual(manifest.outputs.required, ['clips']);
@@ -377,4 +377,30 @@ test('broll refusals: no action, a head-only action, still hands, sound on, or a
     await assert.rejects(mod.run(await make(), ctx), (e) => e.code === 'bad_input' && message.test(e.message), what);
     assert.equal(orders.length, 0, what);
   }
+});
+
+// 1.3.0: a held or shown product's clip ends on its own first frame (GOOSE-4034: H3 turned a pouch to its
+// back in 3 of 4 unlocked test clips and in none of 4 locked ones).
+test("end_on_start_tags: a tagged scene's clip ends on its own first frame; other scenes are unchanged", { skip }, async () => {
+  const w = work();
+  const inputs = await stillsInputs(w, { end_on_start_tags: ['product', 'Hold 1'] });
+  const { ctx, orders } = makeCtx({ partDir: dir, workDir: join(w, 'step'), line: nativeLine(), seed: inputs.seed });
+  await mod.run(inputs, ctx);
+  const o = byPiece(orders);
+  assert.ok(o['clip-s3'].body.end_image_url, 'the Product scene is locked (tags compare without case)');
+  assert.equal(o['clip-s3'].body.end_image_url.sha256, o['clip-s3'].body.image_url.sha256, 'it ends on the same fitted still it starts on');
+  for (const id of ['clip-s1', 'clip-s2', 'clip-s4']) assert.equal('end_image_url' in o[id].body, false, `${id} is not locked`);
+  for (const x of orders) assert.deepEqual(kitSchemaErrors(schema, transport(x.body), 'fal body'), [], 'the body fits the recorded H3 schema');
+  const plain = makeCtx({ partDir: dir, workDir: join(w, 'plain'), line: nativeLine(), seed: inputs.seed });
+  await mod.run(await stillsInputs(w), plain.ctx);
+  assert.ok(plain.orders.every((x) => !('end_image_url' in x.body)), 'without the input nothing is locked');
+  assert.deepEqual(plain.orders.map((x) => x.body.seed), orders.map((x) => x.body.seed), 'locking does not change the seeds');
+});
+
+test('end_on_start_tags works only in mode stills', { skip }, async () => {
+  const w = work();
+  const one = await still(w, 'x.png');
+  const { ctx, orders } = makeCtx({ partDir: dir, line: () => assert.fail('nothing may be ordered') });
+  await assert.rejects(mod.run({ mode: 'image_to_video', clips: [{ seconds: 4, prompt: 'x', start_image: one }], end_on_start_tags: ['Product'] }, ctx), (e) => e.code === 'bad_input' && /end_on_start_tags works only in mode stills/.test(e.message));
+  assert.equal(orders.length, 0);
 });
