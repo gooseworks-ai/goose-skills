@@ -1,5 +1,11 @@
 # check-layer
 
+## 1.8.0
+
+- `setup_count_vs_reference`: with `expect.reference_setups`, fails when the final cut has more than 30 % fewer distinct setups than the reference; otherwise `not_applicable`. Setups are shot keyframes (one per shot of at least 0.5 s, flat cards skipped) clustered by 64-bit dHash within 10 bits. A test video had 4 setups against about 10 in the reference.
+- `repeated_shot`: a `callback:` intent alone no longer clears a repeat. Its name must be in the new `expect.approved_callbacks` (from the approved creative contract). The same test video relabelled five repeats as callbacks after the check failed and then passed.
+- A minor version: it reaches new quotes through layers.json.
+
 ## 1.7.0
 
 - `speech_rate_vs_reference`: with both `expect.reference_words` and `expect.final_words`, fails when the final cut speaks more than 15 % slower than the reference; otherwise `not_applicable`. Words are counted as goose-studio's `reference_rate.py` counts them (whisper sub-word tokens joined, markers and punctuation dropped), over the first word's start to the last word's end. A test video read at 2.62 words a second against the reference's 3.20. A minor version: it reaches new quotes through layers.json.

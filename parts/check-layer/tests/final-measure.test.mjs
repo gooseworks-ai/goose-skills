@@ -6,7 +6,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { join } from 'node:path';
 import { fileRef, hasFfmpeg, layerInputsFor, loadNewest, makeCtx, run } from '../../_tools/kit-harness.mjs';
-import { fmAllowed, fmDhash, fmHamming, fmQuietRuns, fmTone, fmZeroRuns } from '../src/final-measure.mjs';
+import { fmAllowed, fmApprovedCallback, fmDhash, fmHamming, fmQuietRuns, fmTone, fmZeroRuns } from '../src/final-measure.mjs';
 
 const { dir, mod } = await loadNewest('check-layer');
 const skip = !(await hasFfmpeg()) && 'ffmpeg is not installed';
@@ -125,7 +125,7 @@ test('a mid-video freeze over 2.0 s fails unless planned; an end-card hold up to
   assert.equal(c.by.planned_freeze_too_long.status, 'pass');
 });
 
-test('a repeated shot fails unless the later one is marked callback:', { skip }, async () => {
+test('a repeated shot fails unless the later one names an approved callback (1.8.0: callback: alone never clears it)', { skip }, async () => {
   const w = makeCtx({ partDir: dir }).ctx.workDir;
   const video = await cut(w, 'repeat', [
     { seconds: 1.8, video: 'smptebars', audio: NOISE },
@@ -136,8 +136,24 @@ test('a repeated shot fails unless the later one is marked callback:', { skip },
   const segments = [seg('a', 0, 1800, 'bars'), seg('b', 1800, 3600, 'moving'), seg('c', 3600, 5400, 'bars-again')];
   const r = await measure(video, { linked: assembly(5400, { segments }) });
   assert.equal(r.by.repeated_shot.status, 'fail', r.by.repeated_shot.found);
-  const callback = await measure(video, { linked: assembly(5400, { segments: [segments[0], segments[1], seg('c', 3600, 5400, 'bars-again', 'callback: the opening card again')] }) });
-  assert.equal(callback.by.repeated_shot.status, 'pass');
+  const marked = { linked: assembly(5400, { segments: [segments[0], segments[1], seg('c', 3600, 5400, 'bars-again', 'callback: opening card, seen again')] }) };
+  // The 15 Oct run's escape hatch: relabel the repeat after the check fails. It still fails.
+  const alone = await measure(video, marked);
+  assert.equal(alone.by.repeated_shot.status, 'fail');
+  assert.match(alone.by.repeated_shot.found, /names no callback in the approved creative contract/);
+  const other = await measure(video, { ...marked, expect: { approved_callbacks: ['the hook'] } });
+  assert.equal(other.by.repeated_shot.status, 'fail', 'a name the contract does not list');
+  const approved = await measure(video, { ...marked, expect: { approved_callbacks: ['Opening card'] } });
+  assert.equal(approved.by.repeated_shot.status, 'pass', approved.by.repeated_shot.found);
+});
+
+test('fmApprovedCallback: the whole name or its first words, case-insensitive; nothing without a list', () => {
+  assert.equal(fmApprovedCallback('callback: opening card', ['Opening card']), true);
+  assert.equal(fmApprovedCallback('callback: opening card, seen again', ['opening card']), true);
+  assert.equal(fmApprovedCallback('callback: opening cardboard', ['opening card']), false);
+  assert.equal(fmApprovedCallback('callback: opening card', undefined), false);
+  assert.equal(fmApprovedCallback('callback:', ['']), false);
+  assert.equal(fmApprovedCallback('the opening card', ['the opening card']), false, 'not marked callback:');
 });
 
 test('planned pauses over 1.5 s, or over 10 % of the video, fail', { skip }, async () => {

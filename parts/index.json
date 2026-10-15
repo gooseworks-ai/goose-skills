@@ -1526,6 +1526,48 @@
       "models": []
     },
     {
+      "id": "check-layer",
+      "version": "1.8.0",
+      "interface": 1,
+      "kind": "check",
+      "layer": "check",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "ebur128",
+            "freezedetect",
+            "blackdetect",
+            "scale",
+            "format",
+            "fps",
+            "crop",
+            "aresample"
+          ],
+          "encoders": [
+            "pcm_s16le",
+            "pcm_f32le",
+            "rawvideo"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 100
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/check-layer/1.8.0",
+      "files": {
+        "README.md": "6eeedc6341a4657fb308243fb588ccfa630bfb441f49aea980eb75db5f6d612c",
+        "part.json": "d93bf9f5e44887f8d2e73c7824d130708785c8c8ce021901fe58cc65f7dedb79",
+        "part.mjs": "5ec45816bdbd668422704570e36c9a7ddfe793cc00bcfe13b79fb0efb5acbc67"
+      },
+      "models": []
+    },
+    {
       "id": "creator-h3",
       "version": "1.0.0",
       "interface": 1,

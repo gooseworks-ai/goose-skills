@@ -39,6 +39,10 @@
 // expect.reference_words and expect.final_words, the final cut's real words per second
 // (reference_rate.py's count) fails more than 15 % below the reference's; otherwise it is
 // not_applicable.
+// 1.8.0 adds setup_count_vs_reference (src/setups.mjs): with expect.reference_setups, the
+// final cut's distinct setups (shot keyframes clustered by dHash) fail more than 30 % below
+// the reference's. And repeated_shot no longer lets a callback: intent clear a repeat on its
+// own: the callback's name must be in expect.approved_callbacks.
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitFfmpeg } from '../../_lib/part.mjs';
@@ -48,6 +52,7 @@ import { CHK_BLANK_MAX_SHARE, CHK_CUT_MAX_RATE, CHK_CUT_MIN_RATE, CHK_MSG_RISE_D
 import { chkLineLoss, chkScriptLoss } from './lines.mjs';
 import { fmMeasure, fmMessage, fmRecord } from './final-measure.mjs';
 import { chkSpeechRateVsReference } from './speech-rate.mjs';
+import { chkSetupCount } from './setups.mjs';
 import { CHK_CONTRAST_MIN, CHK_CONTRAST_OFFSET_S, CHK_CONTRAST_WARN, CHK_CUE_GUARD_S, CHK_DISTINCT_MIN, CHK_FLOOR_MAX_DB, CHK_FLOOR_MIN_DB, CHK_FLOOR_SPEECH_GAP_DB, CHK_MIN_SHOT_S, chkAdjacentDiffs, chkCueAcrossCut, chkCutContrast, chkFloorWindows, chkJudgeAmbience, chkSceneOpenings, chkShortShot, chkShotSound, chkShots, chkSpeechSpans } from './shots.mjs';
 
 const TARGET_LUFS = -14;
@@ -639,6 +644,13 @@ export async function run(inputs, ctx) {
       else add(c.id, c.result, { found: c.detail });
     }
     finalMeasure = fmRecord(video, d, measured);
+  }
+
+  // Distinct setups against the reference's, when the kit supplies the reference's count.
+  if (retained || d === null) add('setup_count_vs_reference', 'not_applicable', { found: retained ? notChecked : 'no measured length' });
+  else {
+    const setups = await chkSetupCount(ctx, video.path, d, { assembly, timeline, expect });
+    add('setup_count_vs_reference', setups.status, { message: setups.message, expected: setups.expected, found: setups.found });
   }
 
   const pass = checks.every((c) => c.status !== 'fail');

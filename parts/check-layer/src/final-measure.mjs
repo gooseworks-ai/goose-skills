@@ -1,4 +1,4 @@
-// check-layer 1.6.0: the final measurements (gooseworks-final-measure/1, fix-forward
+// check-layer 1.6.0 (1.8.0: approved callbacks only): the final measurements (gooseworks-final-measure/1, fix-forward
 // contract section 1, with its 15 Oct amendments and calibration). The server runs
 // the same checks on the uploaded bytes and is the authority; here they give the kit
 // the same answer before upload. Measured from the file, never from a declaration:
@@ -9,7 +9,10 @@
 //   frozen_picture     a freezedetect run (noise 0.003) over 2.0 s mid-video that no planned
 //                      freeze covers, or frozen time over max(40 %, reference + 15 points)
 //   repeated_shot      two shots over 1 s, not next to each other, whose middle frames' 64-bit
-//                      dHash differ by 6 bits or fewer, unless the later one's intent is callback:
+//                      dHash differ by 6 bits or fewer, unless the later one's intent is
+//                      callback: <name> and <name> is in expect.approved_callbacks (1.8.0: a
+//                      callback: intent alone never clears a repeat; a 15 Oct run relabelled five
+//                      repeats as callbacks after the check failed, with no change to the cut)
 //   planned_pause_too_long / planned_freeze_too_long  the linked timeline's own pauses and freezes
 // Silence and frozen picture are allowed for 1.5 s at the start and 3.0 s at the end (the end
 // card). An approved intentional_silence contract makes the two silence checks not_applicable.
@@ -267,6 +270,22 @@ export function fmShots(assembly, timeline) {
   return (timeline.scenes || []).map((sc) => ({ id: sc.id, source: null, start_s: sc.start_s, end_s: sc.end_s, intent: '', speech: false }));
 }
 
+/**
+ * Is a shot's intent an approved callback? `callback: <name>` where <name> is one of `approved`
+ * (expect.approved_callbacks, from the approved creative contract), matched case-insensitively as the
+ * whole name or its first words. A callback: intent with no approved list, or a name not on it, is not.
+ */
+export function fmApprovedCallback(intent, approved) {
+  const text = typeof intent === 'string' ? intent.trim() : '';
+  if (!text.toLowerCase().startsWith('callback:') || !Array.isArray(approved)) return false;
+  const name = text.slice('callback:'.length).trim().toLowerCase().replace(/\s+/g, ' ');
+  if (!name) return false;
+  return approved.some((a) => {
+    const want = typeof a === 'string' ? a.trim().toLowerCase().replace(/\s+/g, ' ') : '';
+    return want !== '' && (name === want || (name.startsWith(want) && /^\W/.test(name.slice(want.length))));
+  });
+}
+
 /** [[start_s, end_s]] of the linked timeline's planned freezes and pauses, with their lengths judged. */
 export function fmPlanned(assembly) {
   const freezes = [];
@@ -375,13 +394,19 @@ export async function fmMeasure(ctx, media, { timeline, expect, assembly }) {
   for (let j = 0; j < hashed.length && !repeat; j++) {
     for (let i = 0; i < j && !repeat; i++) {
       if (Math.abs(order.indexOf(hashed[j].id) - order.indexOf(hashed[i].id)) <= 1) continue;
-      if (hashed[j].intent.startsWith('callback:')) continue;
+      if (fmApprovedCallback(hashed[j].intent, expect.approved_callbacks)) continue;
       const dist = fmHamming(hashed[i].bits, hashed[j].bits);
       if (dist <= th.repeated_shot.max_hamming) repeat = { a: hashed[i], b: hashed[j], dist };
     }
   }
   if (!shots.length) put('repeated_shot', 'not_applicable', 'no shot over 1 s to compare');
-  else if (repeat) put('repeated_shot', 'fail', `the shot at ${repeat.b.start_s.toFixed(1)} s repeats the one at ${repeat.a.start_s.toFixed(1)} s (dHash distance ${repeat.dist}); mark an intended repeat with intent callback:`, [[repeat.a.start_s, repeat.a.end_s], [repeat.b.start_s, repeat.b.end_s]]);
+  else if (repeat) {
+    const marked = repeat.b.intent.trim().toLowerCase().startsWith('callback:');
+    const why = marked
+      ? `its intent "${repeat.b.intent.trim().slice(0, 80)}" names no callback in the approved creative contract (expect.approved_callbacks); a repeat the check finds is fixed with new coverage, never by adding callback: after it fails`
+      : 'make new coverage, or name a callback the approved creative contract lists (intent callback: <name>)';
+    put('repeated_shot', 'fail', `the shot at ${repeat.b.start_s.toFixed(1)} s repeats the one at ${repeat.a.start_s.toFixed(1)} s (dHash distance ${repeat.dist}); ${why}`, [[repeat.a.start_s, repeat.a.end_s], [repeat.b.start_s, repeat.b.end_s]]);
+  }
   else put('repeated_shot', 'pass', `${hashed.length} shots compared`);
 
   return results;
