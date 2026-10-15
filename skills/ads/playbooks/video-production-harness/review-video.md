@@ -87,7 +87,7 @@ Any one failing sets NEEDS REVISION. Save the verdict to `review_issues` and `pr
 6. List strengths, then issues by severity: **P0** ship-stopper (inaudible VO, broken hero shot, a failed hand count, a blank brand pack, a reference mismatch above); **P1** clearly degrades the cut; **P2** polish.
 7. Give each issue a concrete fix in the [auto-fix-from-review-notes.md](auto-fix-from-review-notes.md) contract: axis and title, timecode, issue, root cause and a `fix:` line (`<repair>; input=<path>; output=<path>; parameters=<values>`).
 
-Example: `normalize loudness; input=edits/master-final.mp4; output=edits/master-normalized.mp4; target=-14 LUFS, true_peak=-1 dBTP`. Re-rolls go through [edit-clip.md](edit-clip.md) with paid authorization.
+Re-rolls go through [edit-clip.md](edit-clip.md) with paid authorization.
 
 8. Diagnose and route: concept or script back to its gate, missing proof to production, misordered material to edit, isolated defects to local repair. Give open taste calls alternatives and a decision owner.
 9. Set the status:
@@ -113,6 +113,8 @@ Run each with real frames, audio and FFmpeg. Save evidence with timecodes.
 **Product pack (P0).** Every brand pack in frame matches its real photo at 2×: printed front label, shape, colour and contents. A blank, unprinted, label-less, back-facing or sticker-flat pack, or a use step or product state unlike the brand's photos and directions, is P0 ([product scale and world](references/product-scale-and-world.md)).
 
 **Plan promises (P0).** List every inset or overlay the plan promises (shot-plan `overlays`, the contract's on-screen notes) with the timestamp where it shows in the render; `scripts/frame_judge.py` reports each as seen or missing. A promised inset that isn't in the render is P0.
+
+**Lip-sync scope.** A lip-synced clip on a shot not marked `speaking_on_camera` is P1; a speaking shot without lip-sync is P0.
 
 **Identity and character.** Per scene, crop the largest face at 25/50/75% and tile the crops after the locked anchor (about 512 px per cell). Judge bone structure, eyes, skin tone and proportions (styling and makeup are not drift). List wardrobe, accessory, hair-colour and held-object changes.
 
@@ -141,7 +143,7 @@ Run each with real frames, audio and FFmpeg. Save evidence with timecodes.
 
 **Hook strength.** Watch the first 3 s muted, then with sound; score readability, subject clarity and motion (1-10). Below 7: re-roll scene 1, replace the opening line, or move the strongest 3 s first.
 
-**Synthetic persona.** Watch as the brand's documented buyer (never invent one): would they keep scrolling, act, have objections answered? A hypothesis only.
+**Synthetic persona.** Watch as the brand's documented buyer (never invent one): would they scroll on, act, have objections answered? A hypothesis only.
 
 **Voice authenticity** (every spoken format, real recordings included). Listen at 1.0× to every take and the mix when your tools can, and record `listened`; otherwise `measured`, where the final measurements must pass and an observed defect still blocks. Judge words and endings, pronunciation, pace, emphasis, joins, continuity (timbre, room tone, breaths) and fit with the on-screen character (gender, age, accent, energy); re-perform only the affected phrase.
 

@@ -31,6 +31,24 @@ incomplete, and empty ASR output never proves silence.
 | No speech wanted | Non-speaking picture | Choose ambience/music/SFX or intentional silence independently |
 | Multiple speakers | Qualified dialogue/per-speaker route | Supported speaker control and correct voice-to-mouth assignment |
 
+## Lip-sync only for a speaking face
+
+1. Lip-sync (`veed/fabric-1.0` or any exact-audio lip-sync) is used **only** on a shot
+   where the person's face is on screen **and** they speak that line. A visible face that
+   isn't speaking is never lip-synced: it is a normal clip (video-h3max `broll: true`,
+   "nobody speaks, lips closed", with a named action). Voiceover over B-roll is never
+   lip-synced.
+2. Lip-sync runs only after the voice line is final (rate-checked and approved), once
+   per line. Never re-sync after a picture edit; re-time the picture instead.
+3. At the script approval, in the same message (no new gate), ask the owner: "Do you
+   want an on-camera person speaking (lip-synced), or voiceover over footage?" Suggest
+   what the reference does. Record the answer in `voice_plan.route`
+   (`exact_audio_lipsync` or `external_narration`); list it in `changes_from_reference`
+   when it differs from the reference.
+4. The shot plan marks each shot `speaking_on_camera: true|false`. In review, a
+   lip-synced clip on a shot not marked speaking is P1; a speaking shot without
+   lip-sync is P0.
+
 An unrelated narrator over speaking-looking footage is not a fallback. Native speech
 continues under a cutaway; the face returns at the matching source position.
 

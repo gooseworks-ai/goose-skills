@@ -24,7 +24,7 @@ Make one MP4 per scene, plus voice files where the audio plan needs them, and re
 - End card: its routing row. The timeline holds it as a declared end-card freeze (at most 3.0 s, at the end).
 - Synthetic narrator (agent-built path): `create-vo-elevenlabs` (superseded; kept for this path).
 - Long-form source voice: cut at transcript word boundaries with `ffmpeg -ss <start> -to <end>`.
-- Lip-sync onto a still: `create-video-fal` with `veed/fabric-1.0`, one approved line per clip. Review one take, then run the rest in parallel.
+- Lip-sync onto a still: `create-video-fal` with `veed/fabric-1.0`, only on shots marked `speaking_on_camera`, after the line is final, once per line. Review one take, then the rest in parallel.
 
 **B-roll copy rule.** Card text mirrors the audio under it, in literal phrases from `locked_script` ("HOOPS" for "basketball" hurts comprehension). Keep owner-approved wording. No copy over an already readable product or UI layer.
 
