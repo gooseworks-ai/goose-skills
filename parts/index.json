@@ -836,6 +836,62 @@
       ]
     },
     {
+      "id": "captions-layer",
+      "version": "1.5.0",
+      "interface": 1,
+      "kind": "caption",
+      "layer": "captions",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": true,
+        "ffmpeg": {
+          "filters": [
+            "fps",
+            "format",
+            "overlay"
+          ],
+          "encoders": [
+            "libx264",
+            "aac"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "fal-ai/whisper"
+          }
+        ],
+        "disk_mb": 400
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "call",
+        "rates_usd": {
+          "fal-ai/whisper": 0.02
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/captions-layer/1.5.0",
+      "files": {
+        "README.md": "0cc3e292ce5047d430863f5af064c930dc387d2efe68bda62f2422554b5513a8",
+        "assets/fonts/Montserrat-Bold.ttf": "bc6e854971cea46b463be6f9eef4d9cd52f51cfc1fc0dd90c9d3e6483dc0ec61",
+        "assets/fonts/Montserrat-OFL.txt": "ea6b176076abe6950aa25de2fcd199c56fa8409946e883370e10bec68596573c",
+        "assets/fonts/PTSerif-Bold.ttf": "038ba7336bd7ea14f12ad155bed51a4345cac5153275d521dec3ba04021c526e",
+        "assets/fonts/PTSerif-OFL.txt": "ddf311c28ddf5a5ad9747649837346b67bed9d356789c3072bb27dbce49e514d",
+        "assets/fonts/TitanOne-OFL.txt": "2abc52c3268db4de42e3b625d604d062f2410c620b0a88d29e1b007116df253e",
+        "assets/fonts/TitanOne-Regular.ttf": "bcac194b2c80941682789e854d0515855a41dfa0d3f209fbf1725b15cd9fd063",
+        "part.json": "533473de9525e9a4ea7af8b9b830a99ff15b6e9974841fde758faff9d7a31307",
+        "part.mjs": "95e29b9bf68902915d37d61a0305673a38f4b354a6e73f914eac858e5fdf9b18"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "fal-ai/whisper"
+        }
+      ]
+    },
+    {
       "id": "cast-plate",
       "version": "1.0.0",
       "interface": 1,
@@ -1382,6 +1438,48 @@
         "README.md": "d25da722a9782563ef75dabbe89311e8af52530b36792fe3fe01514dd1b7f930",
         "part.json": "5cafdb144d73b3be5952c347b46568aa375b1e0910cd2d7fefe25b34f3990d8b",
         "part.mjs": "841b00c7f31f493ea31d129ecf0b6756f091240c0310f552331bebaa47a3e700"
+      },
+      "models": []
+    },
+    {
+      "id": "check-layer",
+      "version": "1.6.0",
+      "interface": 1,
+      "kind": "check",
+      "layer": "check",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "ebur128",
+            "freezedetect",
+            "blackdetect",
+            "scale",
+            "format",
+            "fps",
+            "crop",
+            "aresample"
+          ],
+          "encoders": [
+            "pcm_s16le",
+            "pcm_f32le",
+            "rawvideo"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 100
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/check-layer/1.6.0",
+      "files": {
+        "README.md": "15004cf59db2e24ea02f0d5f221f7c61987e52de09b4ba59374219b06a756078",
+        "part.json": "38ed226750813b4a69bf639db0086b86c976aaa84daae46a51e171b50815a06b",
+        "part.mjs": "41de49f5b5e274f9c0a9b9c2d628c51564e62132bb3e71a5437935f1cff2eeec"
       },
       "models": []
     },
@@ -5037,6 +5135,45 @@
         "README.md": "110cfe00861a908f9e60cfd856a30760448633df164168563d6933ecd1e0377c",
         "part.json": "abadba4ce8028b579cf21447c1209c0c9f9ea99b27da13117464b28d64058d19",
         "part.mjs": "045d625c128fdee2d0ec78c69db3dad11be53b52b5ab0d16bbe33a59fb9fd710"
+      },
+      "models": []
+    },
+    {
+      "id": "sound-layer",
+      "version": "1.1.0",
+      "interface": 1,
+      "kind": "mix",
+      "layer": "sound",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "loudnorm",
+            "ebur128",
+            "volume",
+            "alimiter",
+            "aformat",
+            "aresample",
+            "afade"
+          ],
+          "encoders": [
+            "aac"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 300
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/sound-layer/1.1.0",
+      "files": {
+        "README.md": "f089ae6e666ec927b8b55ec255bffd21ac545a39efa048a339d74bd0b60102df",
+        "part.json": "5453b95974d10d2adfda43adce85d44e530f2e476732030098da0c9ff2fbaa1e",
+        "part.mjs": "49b5e76467ffd8b35c944e06767f3b4fbbc0b1c889bbf50677d9a468ce8c7a42"
       },
       "models": []
     },

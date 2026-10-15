@@ -73,3 +73,22 @@ for (const [name, bed, decay] of [['a faint bed under hard 10 kHz clicks', 0.002
     assert.ok(after.true_peak_db <= -1, `true peak ${after.true_peak_db} dBTP`);
   });
 }
+
+// 1.1.0: the linked source edit (gooseworks-assembly-timeline/1).
+const LINKED = {
+  format: 'gooseworks-assembly-timeline/1', duration_ms: 6000, creative_contract_revision: 'c'.repeat(64), speech_mode: 'narration', soundtrack_modes: ['music'],
+  segments: [{ id: 's1', scene_id: 's1', start_ms: 0, end_ms: 6000, video: { asset_id: 'clip', sha256: 'a'.repeat(64), in_ms: 0, out_ms: 6000, speed: 1 }, speech_mode: 'narration', depicts_speech: false, native_audio: 'muted' }],
+  audio_cues: [{ id: 'vo', role: 'narration', source: { asset_id: 'vo', sha256: 'b'.repeat(64), in_ms: 0, out_ms: 6000, speed: 1 }, start_ms: 0, end_ms: 6000, gain_db: 0, loop: false }],
+  pauses: [], required_cue_ids: ['vo'],
+};
+
+test('1.1.0 declares the linked assembly_timeline, so the kit passes it, and hands it back unchanged', { skip }, async () => {
+  const { manifest } = await loadNewest('sound-layer');
+  assert.ok(manifest.inputs.properties.timeline.properties.assembly_timeline, 'declared on the timeline input');
+  assert.ok(manifest.outputs.properties.timeline.properties.assembly_timeline, 'and on the timeline output');
+  const { ctx } = makeCtx({ partDir: dir });
+  const video = await fixture(ctx, 0.08);
+  const inputs = await layerInputsFor(video, { timeline: { assembly_timeline: structuredClone(LINKED) } });
+  const out = await mod.run(inputs, ctx);
+  assert.deepEqual(out.timeline.assembly_timeline, LINKED, 'the layer lays no music or sfx of its own, so it adds no cue');
+});

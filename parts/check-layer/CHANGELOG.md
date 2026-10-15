@@ -1,5 +1,9 @@
 # check-layer
 
+## 1.6.0
+
+- The final measurements (`gooseworks-final-measure/1`): `digital_silence`, `tone_only`, `unplanned_silence`, `planned_pause_too_long`, `frozen_picture`, `planned_freeze_too_long` and `repeated_shot`, with the contract's thresholds and its 15 Oct amendments (1.5 s start / 3.0 s end allowance, 2.0 s mid-video freeze, 80 Hz-8 kHz tone band, still share relative to the reference, intentional silence, end-card freeze up to 3.0 s). They fail on a custom, source-linked edit and warn on a template video for one release. Declares `timeline.assembly_timeline` so the kit passes the linked edit, and returns `final_measure`. A minor version: it reaches new quotes through layers.json.
+
 ## 1.5.0
 
 - A measured miss that breaks an earlier part's promise fails instead of warning, and names the layer to re-run: loudness off -14 LUFS by more than 2 on a cut above -50 LUFS when the kit says the sound layer is on (`expect.layers.sound` true; a kit that sends no switches gets a warning; the layer levels such a cut to -14 within 1 or fails), and a caption across a scene cut or into the end card (the captions layer stops captions there when the style lists `captions_cross_cuts`). A quiet cut the sound layer passed through (at or below -50 LUFS), loudness with the sound layer off, and a caption across a retained-body join still warn, as does every taste range 1.4.2 made a warning, `min_shot` included. A minor version: only new quotes get it, through layers.json.

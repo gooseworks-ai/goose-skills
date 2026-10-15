@@ -1,14 +1,14 @@
-import { file, layerInputsWithKeepClear, layerOutputs } from '../../_tools/schemas.mjs';
+import { file, layerInputsWithKeepClearAndAssembly, layerOutputsWithAssembly } from '../../_tools/schemas.mjs';
 
 export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'captions-layer',
-  version: '1.4.0',
+  version: '1.5.0',
   kind: 'caption',
   layer: 'captions',
   title: 'Captions layer',
-  summary: 'Burns word-timed captions onto the cut in the style\'s caption look (plate, stroke, karaoke, pill, serif-word or sentence), clear of the end card and of the product where a step or the look marks it, and returns a WebVTT of what it drew.',
+  summary: 'Burns word-timed captions in the style\'s caption look, clear of the end card and of the product where a step or the look marks it, and returns a WebVTT of what it drew. Passes a linked assembly_timeline through.',
   runtime: 'node',
   entry: 'part.mjs',
   files: [
@@ -29,8 +29,8 @@ export const manifest = {
     models: [{ provider: 'fal', model: 'fal-ai/whisper' }],
     disk_mb: 400,
   },
-  inputs: layerInputsWithKeepClear,
-  outputs: layerOutputs({ captions: file('subtitles'), words: file('json') }, ['captions', 'words']),
+  inputs: layerInputsWithKeepClearAndAssembly,
+  outputs: layerOutputsWithAssembly({ captions: file('subtitles'), words: file('json') }, ['captions', 'words']),
   cost: { basis: 'per_unit', unit: 'call', rates_usd: { 'fal-ai/whisper': 0.02 } },
   determinism: 'provider',
   timing: { typical_s: 30, timeout_s: 900 },

@@ -907,7 +907,8 @@ export async function run(inputs, ctx) {
   // What the final check needs to tell whether captions met the product: the boxes kept clear (margin included).
   if (clear.length) record.keep_clear = clear.map((k) => ({ start_s: k.start_s, end_s: k.end_s, from: k.from, box: { x: Math.round(k.box.x), y: Math.round(k.box.y), w: Math.round(k.box.w), h: Math.round(k.box.h) } }));
   await writeFile(join(ctx.workDir, 'words.json'), `${JSON.stringify(record, null, 1)}\n`);
-  // keep_clear stops here: the later layers' timelines do not take it.
+  // keep_clear stops here: the later layers' timelines do not take it. 1.5.0: a linked assembly_timeline
+  // passes through unchanged (captions add no picture or sound cue to the source-linked edit).
   const { keep_clear: _keepClear, ...timeline } = inputs.timeline;
   if (!(timeline.safe_zones || []).some((z) => z.use === 'captions')) {
     timeline.safe_zones = [...(timeline.safe_zones || []), { use: 'captions', x: Math.round(zone.left), y: Math.round(zone.top), w: Math.round(zone.right - zone.left), h: Math.round(zone.bottom - zone.top) }];

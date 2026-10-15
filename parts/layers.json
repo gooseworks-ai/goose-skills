@@ -13,15 +13,15 @@
     },
     "captions": {
       "id": "captions-layer",
-      "version": "1.4.0"
+      "version": "1.5.0"
     },
     "sound": {
       "id": "sound-layer",
-      "version": "1.0.4"
+      "version": "1.1.0"
     },
     "check": {
       "id": "check-layer",
-      "version": "1.5.0"
+      "version": "1.6.0"
     }
   }
 }

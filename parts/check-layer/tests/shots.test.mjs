@@ -53,8 +53,8 @@ async function withCues(ctx, inputs, cues) {
   return { ...inputs, words: await fileRef(path, 'json') };
 }
 
-test('1.5.0 is the newest check layer and stays free with no network', () => {
-  assert.equal(manifest.version, '1.5.0');
+test('1.6.0 is the newest check layer and stays free with no network', () => {
+  assert.equal(manifest.version, '1.6.0');
   assert.deepEqual([manifest.needs.network, manifest.needs.models, manifest.cost.basis], [false, [], 'free']);
 });
 

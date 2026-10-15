@@ -1,5 +1,9 @@
 # captions-layer
 
+## 1.5.0
+
+- Declares `timeline.assembly_timeline` (input and output) and passes it through unchanged. Captions, transcription requests and looks are as in 1.4.0. A minor version: it reaches new quotes through layers.json.
+
 ## 1.4.0
 
 - Captions keep clear of the product: boxes from `timeline.keep_clear` (pixels, per time span; the input timeline now takes it) and the look's `keep_clear` (shares of the frame, for the whole cut). Each scene's captions take one height, the look's `y`, else 0.80, else 0.30, the first that clears every box shown with them by 0.02 of the height, else the least overlap with a warning. `words.json` records each cue's `y` and `overlap` and the boxes kept clear. `keep_clear` is dropped from the output timeline. Without boxes the output is 1.3.1's, byte for byte.
