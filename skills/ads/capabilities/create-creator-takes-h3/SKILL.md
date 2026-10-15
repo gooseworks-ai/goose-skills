@@ -2,18 +2,18 @@
 name: create-creator-takes-h3
 description: Generate an AI creator talking to camera, saying an approved script, as one continuous track — H3 Max reference-to-video through the GooseWorks fal-proxy (bills the Ads agent). Plans takes on line boundaries under H3's 15s cap, dry-runs a cost estimate, generates the first take alone so its voice can be locked and passed to every later take, joins takes with measured 0.10s dissolves, and moves each line's timing onto the words actually spoken. Use for any format with a generated creator speaking a script (split-screen, screen inserts, talking-head ads).
 status: superseded
-version: "2.4.0"
+version: "2.5.0"
 updated: 2026-10-15
-superseded_by: creator-h3@1.5.0
+superseded_by: creator-h3@1.6.0
 ---
 
-> **Superseded by:** `creator-h3@1.5.0`. Compatibility scripts retain the source-review guards; frozen versions are unchanged.
+> **Superseded by:** `creator-h3@1.6.0`. Compatibility scripts retain the source-review guards; frozen versions are unchanged.
 
 # create-creator-takes-h3
 
 **Summary.** Generate one creator take, review the actual picture and sound, then continue with qualified sources. Keep native speech attached to its picture and assemble only complete reviewed takes. The provider can still invent words, drift in identity or fail an action; prompts and transcripts do not certify a pass.
 
-Use the shared builder for people. Defaults: GPT Image 2, phone capture in a lived-in room, deep focus, no bokeh, no retouching. Studio or shallow focus only when the reference is shot that way. No forced flaws; marks only when the user chose them.
+Use the shared builder for people. Defaults: GPT Image 2, phone capture in a lived-in room, deep focus, no bokeh, no retouching, and one light lock (window or lamp light from one side, normal exposure, no HDR, matte skin, no over-sharpening). Studio or shallow focus only when the reference is shot that way. No forced flaws; marks only when the user chose them, and a skin condition only when the product treats it. A person who acts is an action shot, not a talking head.
 
 | Script | What | Cost |
 |---|---|---|
@@ -76,6 +76,14 @@ avoiding a known failure depended on remembering to opt out. Pass `delivery` to 
 
 `identity` and `environment` go into every take **word for word**. Write them once from the
 approved still, then never retype them: a person described two ways drifts between takes.
+
+## Action shots, skin condition and light (2.5.0)
+
+Two test videos looked AI-made. Every B-roll person was built as a talking head (centred, looking at the lens, hands free, clear skin), and the light was flat, glossy and perfectly exposed.
+
+- **An action shot frames the action.** With `--action "..."` or `--capture phone_observer`, the still is an action shot: the hands, the object and the face working on it are in frame, off-centre, the eyes on the task, the hands in use, the head 25-40 % of the frame (20-35 % for `phone_observer`). The action text goes into the prompt. `--shot talking` keeps the talking-head defaults for someone who talks to the lens while acting. `character.json` records `shot`.
+- **Show the condition the product treats.** `--skin-condition "visible blackheads on the nose, oily T-zone"` (or "a few small acne spots") puts it on the person, real and unretouched. It needs no `--marks-approved`: it comes from the product, not a random mark. Without it, no marks are invented. An oily condition drops "greasy shine" from the negative. `character.json` records `skin_condition`.
+- **One light lock.** Every capture asks for window or lamp light from one side, normal exposure, no HDR, matte skin with no added shine and no over-sharpening. creator-h3 1.6.0 and video-h3max 1.2.0 repeat it in the motion prompt.
 
 ## Both hands, voice and pace (2.4.0)
 
@@ -169,7 +177,7 @@ Inspect the still before approving takes.
 
 A provider likeness/policy rejection stops the attempt. Preserve the provider's reason, request id and charged/uncharged/unknown state. Do not resubmit an identical rejected payload. Offer a permitted original character, user-cleared reference, or a supported non-likeness route only when allowed by that provider. A different model is not a policy bypass. Review changed inputs and extra spend through the normal approval flow.
 
-Before generation, write a scene checklist from the brief: each wearable's exact count and body location; which hand holds each object; allowed gestures; object contacts and movement; cast identities and reference ownership. Keep unnecessary hands still, use one simple action per shot, and review the whole generated take against the checklist. A prompt is prevention, not proof: reject extra/missing products, impossible contacts or identity drift.
+Before generation, write a scene checklist from the brief: each wearable's exact count and body location; which hand holds each object; allowed gestures; object contacts and movement; cast identities and reference ownership. Keep hands that have no job still; every B-roll shot has one simple physical action for the hands that do, and never write "no hand touches the face" when touching the face is the action. Review the whole generated take against the checklist. A prompt is prevention, not proof: reject extra/missing products, impossible contacts or identity drift.
 
 For multiple characters, compare a shared scene with pinned references, fewer people per shot, and separately generated/composed plates. The first preserves interaction but risks identity drift; separate plates improve control but add composition work and may weaken interaction. Lock an approved reference per person and map who speaks each line. No six-character/two-attempt guarantee is supported. A future paid benchmark must state cast size, attempts, budget, model/settings and pass criteria (identity, speaker, counts, gestures and complete dialogue) and retain every failure.
 
@@ -181,6 +189,6 @@ New plans set `content_review_required: true`. Word sidecars must bind their sou
 
 ### Natural performance
 
-Specify recording method, framing, background, motivated light and visible action from the approved brief. `--capture` is `phone` (default), `phone_observer` (filmed by a friend, not looking at the lens: for eating or acting, never an H3 talking take) or `studio`; `--recording counter|selfie`; `--focus deep` (default) or `shallow`. Distinctive `--marks` require `--marks-approved`, recording an explicit user choice. Do not repair poor acting with sharpening, blur or grain. Local H3 angle-tag experiments are not portable schema support; use delivery directions outside the spoken line.
+Specify recording method, framing, background, motivated light and visible action from the approved brief. `--capture` is `phone` (default), `phone_observer` (filmed by a friend, not looking at the lens: for eating or acting, never an H3 talking take) or `studio`; `--recording counter|selfie`; `--focus deep` (default) or `shallow`; `--shot auto|talking|action` (auto: action when `--action` is given or the capture is `phone_observer`); `--skin-condition` for a condition the product treats. Distinctive `--marks` require `--marks-approved`, recording an explicit user choice. Do not repair poor acting with sharpening, blur or grain. Local H3 angle-tag experiments are not portable schema support; use delivery directions outside the spoken line.
 
 For the compatibility scripts, the first render manifest exposes `configuration_sha256` and the first-source candidate SHA. Record a qualification only after actual acceptance; later takes require `--qualification` matching the exact current payload configuration and first source. The kit uses its own canonical configuration fingerprint; records from different executors are not interchangeable.
