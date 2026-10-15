@@ -37,6 +37,10 @@ can use qualified native speech; exact supplied performance needs a qualified
 audio-driven lip-sync route. Voice-reference timbre is not waveform reuse. Keep the
 same performance under B-roll and source-link a returning speaking face.
 
+The script names no voice. When an on-screen person speaks or is narrated, the voice is
+paired with that person after they are made (create-creator-takes-h3's `voice_pair`, from
+their age, gender and ethnicity), so leave every voice id out of the script and its draft.
+
 Keep exact words separate from supported energy/emotion/emphasis/pause direction.
 Save pronunciations for names, ingredients, numbers and abbreviations beside real
 caption spelling. Use only the selected model/wrapper's supported tags/settings;
