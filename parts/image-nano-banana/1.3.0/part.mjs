@@ -1,8 +1,8 @@
-// Built from image-nano-banana\src\part.mjs by parts/_tools/bundle.mjs. Do not edit: change the source and publish a new version.
+// Built from image-nano-banana/src/part.mjs by parts/_tools/bundle.mjs. Do not edit: change the source and publish a new version.
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
-// ---- _lib\schema.mjs ----
+// ---- _lib/schema.mjs ----
 // A small JSON Schema (draft 2020-12) checker for part inputs, outputs and
 // manifests. It covers the keywords part manifests and part input schemas use
 // and refuses nothing it does not understand silently: unknown keywords are
@@ -193,7 +193,7 @@ function kitSchemaErrors(schema, value, at = '$') {
   return errors;
 }
 
-// ---- _lib\part.mjs ----
+// ---- _lib/part.mjs ----
 // What every part does at its edges: read its own manifest from its version
 // folder, refuse inputs outside its schema, check its outputs, and run the
 // kit's ffmpeg. Bundled into every part.mjs; every top-level name starts
@@ -302,7 +302,7 @@ async function kitDuration(ctx, file) {
   return info.duration_s;
 }
 
-// ---- _lib\scene-match.mjs ----
+// ---- _lib/scene-match.mjs ----
 // Which scenes a generation part makes, and what each scene names: its tag
 // ("Product: ..." or extra.shot), the cast members it names and the products it
 // names. Pure functions over plan scenes, cast and products. Bundled into
@@ -458,7 +458,7 @@ function kitPickScenes(scenes, pick = 'all', options = {}) {
   throw new Error(`pick must be 'all', 'first', 'with_picture' or {tags: [...]}, not ${JSON.stringify(pick)}`);
 }
 
-// ---- _lib\prompt.mjs ----
+// ---- _lib/prompt.mjs ----
 // Prompt templates for generation parts. A style ships a template as a frame
 // file (frames/<name>.prompt.json); a part loads it with kitLoadTemplate and
 // fills one prompt per scene with kitScenePrompts, which refuses the whole step
@@ -830,7 +830,7 @@ function kitAnchorPrompt(tpl, member, ctx = {}) {
   return { prompt, negative };
 }
 
-// ---- _lib\scene-stills.mjs ----
+// ---- _lib/scene-stills.mjs ----
 // One still per plan scene, for image parts (image-nano-banana 1.1.0, then
 // image-gpt-image-2): which scenes get a still, each scene's prompt and
 // references, the cast portraits ("anchors") the scenes need, the anchor strip,
@@ -1327,7 +1327,7 @@ async function kitStillWithoutBorders(ctx, { file, name, about, refusal }) {
   throw ctx.error('output_invalid', refusal);
 }
 
-// ---- image-nano-banana\src\part.mjs ----
+// ---- image-nano-banana/src/part.mjs ----
 // image-nano-banana: stills from Google's Nano Banana on fal, one paid piece
 // per image. Replaces create-image-fal for this model family: the same fal
 // model paths (fal-ai/nano-banana for a prompt alone, fal-ai/nano-banana/edit
