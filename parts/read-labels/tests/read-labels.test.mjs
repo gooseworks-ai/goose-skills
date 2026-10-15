@@ -61,6 +61,8 @@ test('a clean label passes, with what was read', { skip }, async () => {
   assert.equal(orders.length, 1);
   assert.equal(orders[0].path, 'openrouter/router/vision');
   assert.equal(orders[0].body.model, 'anthropic/claude-sonnet-5.5');
+  assert.equal(orders[0].body.reasoning, true, 'the endpoint refuses this model with reasoning off');
+  assert.equal(orders[0].body.temperature, undefined);
   assert.equal(orders[0].body.image_urls.length, 5, 'the real photo, then the four frames');
   assert.equal(orders[0].body.image_urls[0].sha256, image.sha256);
 });

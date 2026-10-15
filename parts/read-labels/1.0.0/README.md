@@ -8,7 +8,7 @@ as "Acce-Prone Skin"). The check layer could only mark `text_legible` "needs eye
 - **Frames:** two per scene span of `timeline.scenes`, a third and two thirds in, never inside `timeline.end_card`,
   at most 16 (an even spread, first and last kept). Each is cut at its exact time as a JPEG.
 - **Paid piece** `read-labels`, through the private line only: fal `openrouter/router/vision` with model
-  `anthropic/claude-sonnet-5.5`, temperature 0. Image 1 is the first product photo in `products` (the real
+  `anthropic/claude-sonnet-5.5` with reasoning on (the endpoint refuses this model without it). Image 1 is the first product photo in `products` (the real
   label); images 2 on are the frames, named by time in the prompt. The model lists the large printed words on the
   real pack (brand name, product name, other large lines; no small print), then reads the same words in each
   frame. A word is read only when every letter is clear: hidden by a hand, cut by the frame edge, blurred, too

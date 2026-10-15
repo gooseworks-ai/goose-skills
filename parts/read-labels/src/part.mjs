@@ -99,7 +99,8 @@ export async function run(inputs, ctx) {
       system_prompt: 'You check the printed label of a product in frames from a generated video against a photo of the real product. You answer with JSON only.',
       prompt: labelPrompt(product.name || null, times),
       image_urls: [product.images[0], ...frames],
-      temperature: 0,
+      // The model must reason (the endpoint refuses it off), and with reasoning on the temperature stays default.
+      reasoning: true,
       max_tokens: 3000,
     },
     results: [],
