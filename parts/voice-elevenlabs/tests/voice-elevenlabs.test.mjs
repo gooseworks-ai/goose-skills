@@ -6,6 +6,8 @@ import { recordedReply, sample } from './fixture.mjs';
 const { dir, mod } = await loadNewest('voice-elevenlabs');
 // 1.1.0 fitted a tempo to pace.min_wps; 1.2.x never stretches a read to a rate target.
 const v110 = await loadPart('voice-elevenlabs', '1.1.0');
+// 1.2.1 defaulted to eleven_v3 and had no target pace.
+const v121 = await loadPart('voice-elevenlabs', '1.2.1');
 const ffmpeg = await hasFfmpeg();
 
 /**
@@ -43,8 +45,8 @@ test('orders one timestamped line per spoken scene, with the brand pronunciation
   assert.deepEqual(
     orders.map((o) => [o.provider, o.path, o.body]),
     [
-      ['elevenlabs', '/v1/text-to-speech/dMyQqiVXTU80dDl2eNK8/with-timestamps', { text: 'Meet drink A G one today.', model_id: 'eleven_v3' }],
-      ['elevenlabs', '/v1/text-to-speech/dMyQqiVXTU80dDl2eNK8/with-timestamps', { text: 'It tastes great.', model_id: 'eleven_v3' }],
+      ['elevenlabs', '/v1/text-to-speech/dMyQqiVXTU80dDl2eNK8/with-timestamps', { text: 'Meet drink A G one today.', model_id: 'eleven_v4' }],
+      ['elevenlabs', '/v1/text-to-speech/dMyQqiVXTU80dDl2eNK8/with-timestamps', { text: 'It tastes great.', model_id: 'eleven_v4' }],
     ],
   );
   assert.deepEqual(orders.map((o) => o.piece), ['line-s1', 'line-s3']);
@@ -126,8 +128,8 @@ test('with a cast, each speaker is spoken with their own voice and settings, and
   assert.deepEqual(
     orders.map((o) => [o.piece, o.path, o.body]),
     [
-      ['line-s1', `/v1/text-to-speech/${A}/with-timestamps`, { text: 'So I stopped cooking.', model_id: 'eleven_v3', voice_settings: { similarity_boost: 0.8, stability: 0.55 } }],
-      ['line-s2', `/v1/text-to-speech/${B}/with-timestamps`, { text: 'Wait, really?', model_id: 'eleven_v3', voice_settings: { similarity_boost: 0.8, stability: 0.3 } }],
+      ['line-s1', `/v1/text-to-speech/${A}/with-timestamps`, { text: 'So I stopped cooking.', model_id: 'eleven_v4', voice_settings: { similarity_boost: 0.8, stability: 0.55 } }],
+      ['line-s2', `/v1/text-to-speech/${B}/with-timestamps`, { text: 'Wait, really?', model_id: 'eleven_v4', voice_settings: { similarity_boost: 0.8, stability: 0.3 } }],
     ],
   );
   assert.deepEqual(out.scenes.map((s) => s.id), ['s1', 's2']);
@@ -176,7 +178,7 @@ test('eleven_multilingual_v2 is sent as the model and strips audio tags by defau
 
 test('eleven_v3 keeps audio tags in what is sent, and captions never show them', { skip: !ffmpeg && 'ffmpeg is not installed' }, async () => {
   // A tagged read is timed only from a reviewed alignment of its tag-free speech.
-  const { out, orders } = await reviewedRun({ scenes: [{ id: 's1', line: '[whispers] Meet Drinkag1 [laughs] today.' }], voice_id: A, pronunciations: [{ term: 'Drinkag1', say_as: 'drink A G one' }] });
+  const { out, orders } = await reviewedRun({ scenes: [{ id: 's1', line: '[whispers] Meet Drinkag1 [laughs] today.' }], voice_id: A, model: 'eleven_v3', pronunciations: [{ term: 'Drinkag1', say_as: 'drink A G one' }] });
   assert.equal(orders[0].body.text, '[whispers] Meet drink A G one [laughs] today.');
   assert.equal(out.speech[0].text, 'Meet Drinkag1 today.');
   assert.equal(out.speech[0].spoken, 'Meet drink A G one today.');
@@ -333,7 +335,7 @@ test('a joined reply whose timings do not line up with the text fails the piece'
 test('join and pace refusals happen before any piece is ordered', async () => {
   const cases = [
     ['join one with two voices', { scenes: [{ id: 's1', line: 'Hi.', speaker: 'a' }, { id: 's2', line: 'Yo.', speaker: 'b' }], cast, join: 'one' }],
-    ['join one past the eleven_v3 request limit', { scenes: Array.from({ length: 4 }, (_, i) => ({ id: `s${i}`, line: 'x'.repeat(1000) })), voice_id: A, join: 'one' }],
+    ['join one past the eleven_v3 request limit', { scenes: Array.from({ length: 4 }, (_, i) => ({ id: `s${i}`, line: 'x'.repeat(1000) })), voice_id: A, model: 'eleven_v3', join: 'one' }],
     ['an unknown join', { scenes: [{ id: 's1', line: 'Hi.' }], voice_id: A, join: 'paragraph' }],
     ['a tempo above max_tempo', { scenes: [{ id: 's1', line: 'Hi.' }], voice_id: A, pace: { tempo: 1.3, max_tempo: 1.2 } }],
     ['min_wps above max_wps', { scenes: [{ id: 's1', line: 'Hi.' }], voice_id: A, pace: { min_wps: 3, max_wps: 2 } }],
@@ -441,11 +443,11 @@ test('off-screen and over-long refusals happen before any piece is ordered', asy
     ['a speaker in neither the cast nor off_screen', { scenes: [{ id: 's1', line: 'Hi.', speaker: 'zed' }], cast, off_screen: ['interviewer'], voice_id: A }],
     [
       'one line that pronunciations push past the eleven_v3 limit',
-      { scenes: [{ id: 's1', line: 'GW '.repeat(300).trim() }], voice_id: A, pronunciations: [{ term: 'GW', say_as: 'goose works goose works' }] },
+      { scenes: [{ id: 's1', line: 'GW '.repeat(300).trim() }], voice_id: A, model: 'eleven_v3', pronunciations: [{ term: 'GW', say_as: 'goose works goose works' }] },
     ],
     [
       'one line past the limit in join: line mode, after the first request',
-      { scenes: [{ id: 's1', line: 'Hi.' }, { id: 's2', line: 'GW '.repeat(300).trim() }], voice_id: A, pronunciations: [{ term: 'GW', say_as: 'goose works goose works' }] },
+      { scenes: [{ id: 's1', line: 'Hi.' }, { id: 's2', line: 'GW '.repeat(300).trim() }], voice_id: A, model: 'eleven_v3', pronunciations: [{ term: 'GW', say_as: 'goose works goose works' }] },
     ],
   ];
   for (const [what, inputs] of cases) {
@@ -533,3 +535,91 @@ for (const model of ['eleven_v4', 'eleven_v4_turbo']) {
     await mod.run({ scenes: [{ id: 's1', line: 'Hello there.' }], voice_id: A, model, model_support: { provider: 'elevenlabs', model, endpoint: '/v1/text-to-speech/{voice_id}/with-timestamps', status: 'verified', evidence: 'x', quote_id: 'q' } }, old.ctx);
   });
 }
+
+// 1.3.0: Eleven v4 by default, measured words per second per line, and pace.target_wps.
+
+test('the default model is eleven_v4; 1.2.1 still defaults to eleven_v3', { skip: !ffmpeg && 'ffmpeg is not installed' }, async () => {
+  const { ctx, orders } = makeCtx({ partDir: dir, line: sample.line });
+  const out = await mod.run({ scenes: [{ id: 's1', line: 'Hello there.' }], voice_id: A }, ctx);
+  assert.equal(orders[0].body.model_id, 'eleven_v4');
+  assert.equal(out.provenance.model, 'eleven_v4');
+  const old = makeCtx({ partDir: v121.dir, line: sample.line });
+  await v121.mod.run({ scenes: [{ id: 's1', line: 'Hello there.' }], voice_id: A }, old.ctx);
+  assert.equal(old.orders[0].body.model_id, 'eleven_v3');
+});
+
+test('every line reports its measured words per second from the timestamps', { skip: !ffmpeg && 'ffmpeg is not installed' }, async () => {
+  const { ctx } = makeCtx({ partDir: dir, line: sample.line });
+  // The fake voice reads 0.05 s per character, with an even alignment.
+  const out = await mod.run({ scenes: [{ id: 's1', line: 'aaaa bbbb cccc.' }, { id: 's2', line: 'dd ee.' }], voice_id: A, join: 'line' }, ctx);
+  assert.equal(out.lines.length, 2);
+  // "aaaa bbbb cccc." is 15 characters over 0.75 s: 3 words from 0 to the last c's end at 0.70 s.
+  // "dd ee." is 6 characters over 0.5 s: 2 words from 0 to the last e's end at 0.417 s.
+  assert.deepEqual(out.lines.map((l) => l.measured_words_per_second), [+(3 / 0.7).toFixed(2), +(2 / (5 * (0.5 / 6))).toFixed(2)]);
+  for (const line of out.lines) assert.equal(line.words_per_second, line.measured_words_per_second, 'no tempo: delivered equals measured');
+  assert.ok(near(out.measured_words_per_second, 5 / (0.7 + 5 * (0.5 / 6)), 0.01), 'heard words over the summed line spans');
+  assert.deepEqual([out.pace_report.tempo, out.pace_report.tempo_applied, out.pace_report.target_wps], [1, false, null]);
+});
+
+test('heard words are counted as reference_rate.py counts them: punctuation alone is no word, a word ends at its last letter', () => {
+  const align = (text, step = 0.1) => ({ characters: [...text], character_start_times_seconds: [...text].map((_, i) => i * step), character_end_times_seconds: [...text].map((_, i) => (i + 1) * step) });
+  // reference_rate.py's own case: "Hi there, friend." is 3 words ending at the d (1.6 s), not the full stop.
+  const hi = mod.heardRate(align('Hi there, friend.'));
+  assert.equal(hi.words, 3);
+  assert.ok(near(hi.span_s, 1.6, 1e-9));
+  assert.equal(mod.heardRate(align('Wait — what?')).words, 2, 'a lone dash is not a word');
+  assert.deepEqual(mod.heardRate(align('...')), { words: 0, span_s: 0 });
+});
+
+test('pace.target_wps speeds a read more than 10 % below the target, before lip-sync, and reports it', { skip: !ffmpeg && 'ffmpeg is not installed' }, async () => {
+  // "aaaa bbbb cccc." is 3 heard words from 0 to 0.70 s: about 4.29 words a second as performed.
+  const scenes = [{ id: 's1', line: 'aaaa bbbb cccc.' }];
+  const plain = await mod.run({ scenes, voice_id: A }, makeCtx({ partDir: dir, line: sample.line }).ctx);
+  const { ctx } = makeCtx({ partDir: dir, line: sample.line });
+  const out = await mod.run({ scenes, voice_id: A, pace: { target_wps: 5 } }, ctx);
+  // About 5 / 4.29 = 1.167 (the heard rate follows the fake alignment).
+  const want = Math.ceil((5 / out.pace_report.measured_wps) * 1000) / 1000;
+  assert.ok(out.tempo > 1 && out.tempo <= 1.25 && near(out.tempo, want, 0.01), `tempo ${out.tempo}, want about ${want}`);
+  assert.ok(near(out.measured_words_per_second, plain.measured_words_per_second, 0.01), 'measured before the tempo');
+  assert.ok(near(out.pace_report.delivered_wps, 5, 0.02), `delivered ${out.pace_report.delivered_wps}`);
+  assert.ok(near(out.seconds, plain.seconds / out.tempo, 0.01));
+  assert.ok(near(out.audio.duration_s, out.seconds, 0.06), 'the track itself is sped up');
+  assert.ok(near(out.lines[0].measured_words_per_second * out.tempo, out.lines[0].words_per_second, 0.05));
+  assert.equal(out.pace_report.tempo_applied, true);
+  assert.equal(out.pace_report.tempo_applied_before_lipsync, true);
+  assert.equal(out.pace_report.target_wps, 5);
+  assert.match(out.pace_report.note, /more than 10 % below/);
+  assert.equal(out.provenance.tempo_scope, 'new_narration_only');
+});
+
+test('pace.target_wps leaves a read within 10 % alone, caps the speed-up at 1.25x and says when it is still slow', { skip: !ffmpeg && 'ffmpeg is not installed' }, async () => {
+  const scenes = [{ id: 's1', line: 'aaaa bbbb cccc.' }];
+  const close = await mod.run({ scenes, voice_id: A, pace: { target_wps: 4.1 } }, makeCtx({ partDir: dir, line: sample.line }).ctx);
+  assert.equal(close.tempo, 1, 'about 4 words a second is within 10 % of 4.1');
+  assert.equal(close.pace_report.tempo_applied, false);
+  // The test video: the reference spoke 3.20 words a second (270 words in 84.45 s), the narration 2.62.
+  const far = await mod.run({ scenes, voice_id: A, pace: { target_wps: 6.5 } }, makeCtx({ partDir: dir, line: sample.line }).ctx);
+  assert.equal(far.tempo, 1.25);
+  assert.match(far.pace_report.note, /Still slow/);
+  const capped = await mod.run({ scenes, voice_id: A, pace: { target_wps: 6.5, max_tempo: 1.1 } }, makeCtx({ partDir: dir, line: sample.line }).ctx);
+  assert.equal(capped.tempo, 1.1, 'a lower max_tempo wins');
+  assert.equal(mod.targetTempo({ target_wps: 3.2 }, 2.62), 1.222);
+  assert.equal(mod.targetTempo({ target_wps: 4.09 }, 2.54), 1.25, 'capped at 1.25x');
+  assert.equal(mod.targetTempo({ target_wps: 4 }, 3.7), 1, '3.7 is within 10 % of 4');
+  assert.equal(mod.targetTempo({ target_wps: 4 }, 3.5), 1.143);
+});
+
+test('pace.target_wps with pace.tempo is refused before anything is ordered', async () => {
+  const { ctx, orders } = makeCtx({ partDir: dir, line: sample.line });
+  await assert.rejects(mod.run({ scenes: [{ id: 's1', line: 'Hi.' }], voice_id: A, pace: { target_wps: 4, tempo: 1.1 } }, ctx), (e) => e.code === 'bad_input' && /target_wps/.test(e.message));
+  assert.equal(orders.length, 0);
+});
+
+test('a tagged read waiting for review is not paced: pace_report says it was not measured', { skip: !ffmpeg && 'ffmpeg is not installed' }, async () => {
+  const { ctx } = makeCtx({ partDir: dir, line: sample.line });
+  const out = await mod.run({ scenes: [{ id: 's1', line: '[warm] aaaa bbbb cccc.' }], voice_id: A, pace: { target_wps: 6 } }, ctx);
+  assert.equal(out.timing_status, 'requires_reviewed_alignment');
+  assert.equal(out.tempo, 1);
+  assert.equal(out.pace_report.tempo_applied, false);
+  assert.match(out.pace_report.note, /not measured/);
+});
