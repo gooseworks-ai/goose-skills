@@ -13,6 +13,33 @@ Generate or edit an image via any FAL image model (nano-banana edit, gpt-image, 
 ## Run
 gen_image.py --model fal-ai/nano-banana/edit --payload '{...}' --out keyframe.png — bills the agent; returns the *.fal.media URL.
 
+## The brand's own product
+
+**Never ask for a blank pack of the advertised product.** "No brand text in a prompt" bans *typing*
+label text; it never means removing the product's real label. A test video asked for a pouch with
+"its unprinted back facing the camera" and "no printed words", sent no product photo, and the pack
+in the hands read as a different product.
+
+- **Refused words.** When the object is the brand's product, a prompt with "unprinted", "blank"
+  (pack, pouch, box, label...), "unlabeled", "no printed words" (or "without a label") or "back facing
+  the camera" is refused. Pass `--brand-product static` or `--brand-product held` and
+  `gen_image.py` runs `scripts/brand_pack_lint.py` before any upload or paid call.
+- **Static or flat:** on a counter or shelf, the real photo usually goes on afterwards with an overlay.
+- **Held, opened, poured or used on screen:** `openai/gpt-image-2/edit` with the real product photo
+  as image 1 (`--product-image pack-front.jpg`, put first), its front facing the camera. The script
+  adds that line to the prompt. Never type the label's words into the prompt.
+- **Check the label at 2x against the photo.** If it garbles, reframe so the hands cover the label
+  area while the shape and colours still match, or cut to the real photo during the action. A blank,
+  unprinted, back-facing or unlabeled pack of the advertised product is a P0 defect.
+- **Each visible state** (closed pack, open pack, contents, cooked food) comes from a real brand
+  photo sent as the edit reference, never from prose. No photo of a state: don't show it.
+
+```bash
+gen_image.py --model openai/gpt-image-2/edit --brand-product held --product-image pack-front.jpg \
+    --image presenter.png --payload '{"prompt": "She tips the open pouch into the pot of boiling water"}' \
+    --out pour.png
+```
+
 ## Contract
 - Paid calls route through the GooseWorks proxies (bills the Ads agent) via the
   bundled `media_proxy.py` — never a provider SDK's default host.

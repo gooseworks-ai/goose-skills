@@ -12,12 +12,18 @@ ROUTED THROUGH THE PROXY (bills the Ads agent). image_urls entries must be PUBLI
       --payload '{"prompt":"Place the product on the counter; keep everything else unchanged"}' \
       --out edit.png
 
+  # the brand's own product held or used on screen: GPT Image 2 edit, the real product photo
+  # as image 1 with its front to the camera; a blank-pack prompt is refused before any call
+  gen_image.py --model openai/gpt-image-2/edit --brand-product held --product-image pack-front.jpg \
+      --image presenter.png --payload '{"prompt":"She tips the pouch into the pot..."}' --out pour.png
+
 The FAL result codec is NOT guaranteed to match the requested extension (Seedream, for
 one, returns a JPEG). We sniff the downloaded bytes and, if they disagree with the
 extension, transcode to match — so `--out foo.png` is always really a PNG and a strict
 downstream consumer (or a file-type check) never trips.
 """
 import argparse, json, os
+from brand_pack_lint import lint_brand_pack, with_front_line
 from media_proxy import fal_generate, fal_upload, download
 
 _MAGIC = [
@@ -80,10 +86,30 @@ ap.add_argument("--payload", required=True, help="JSON string, or @path to a JSO
 ap.add_argument("--image", action="append", default=[],
                 help="Input image for an edit: a public url or a local file (repeatable, in order)")
 ap.add_argument("--out", required=True)
+ap.add_argument("--brand-product", choices=["static", "held"], default=None,
+                help="the picture shows the brand's own product: static (on a surface) or held (held, opened, "
+                     "poured or used on screen). A blank-pack prompt is refused; held needs openai/gpt-image-2/edit "
+                     "and --product-image")
+ap.add_argument("--product-image", default=None,
+                help="the real product photo (url or local file), sent as image 1 with --brand-product held")
 a = ap.parse_args()
 payload = json.load(open(a.payload[1:])) if a.payload.startswith("@") else json.loads(a.payload)
-if a.image:
-    payload["image_urls"] = list(payload.get("image_urls") or []) + resolve_images(a.image, fal_upload)
+if a.product_image and a.brand_product != "held":
+    raise SystemExit("--product-image goes with --brand-product held")
+if a.brand_product:
+    # Checked before anything is uploaded or paid for.
+    problems = lint_brand_pack(payload.get("prompt", ""), a.brand_product, a.model, None, a.product_image)
+    if problems:
+        raise SystemExit("refused, nothing sent:\n- " + "\n- ".join(problems))
+    if a.brand_product == "held":
+        payload["prompt"] = with_front_line(payload.get("prompt", ""))
+images = ([a.product_image] if a.product_image else []) + a.image
+if images:
+    resolved = resolve_images(images, fal_upload)
+    if a.product_image:  # the real product photo is image 1
+        payload["image_urls"] = resolved[:1] + list(payload.get("image_urls") or []) + resolved[1:]
+    else:
+        payload["image_urls"] = list(payload.get("image_urls") or []) + resolved
 url = fal_generate(a.model, payload)
 download(url, a.out)
 note = _reconcile_extension(a.out)
