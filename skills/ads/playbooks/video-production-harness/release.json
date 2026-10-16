@@ -51,9 +51,9 @@
       "sha256": "c58547d3a806e2f381e324ec06b7b92de73944386bccbabf853cb6580c3015a3"
     },
     "lock-character.md": {
-      "bytes": 9305,
-      "catalog_sha256": "892dd32af157b53e15ad88e1ec3b0954d871653006d166a68b933818a150d405",
-      "sha256": "892dd32af157b53e15ad88e1ec3b0954d871653006d166a68b933818a150d405"
+      "bytes": 9433,
+      "catalog_sha256": "640f7502d04f66754a4165d3ac8eff0a761ad965420c03faed32bdb34bcfb839",
+      "sha256": "640f7502d04f66754a4165d3ac8eff0a761ad965420c03faed32bdb34bcfb839"
     },
     "lock-script.md": {
       "bytes": 8924,
@@ -237,8 +237,8 @@
     },
     "skill.meta.json": {
       "bytes": 683,
-      "catalog_sha256": "6fc340c86660a54565090bf733a88f0edd846ed6a49496638c9af9ada45fd6db",
-      "sha256": "6fc340c86660a54565090bf733a88f0edd846ed6a49496638c9af9ada45fd6db"
+      "catalog_sha256": "0ccc53c6d87c08f35ede380d71a0300d89f2e9049071364bf426b5d4bc7258c2",
+      "sha256": "0ccc53c6d87c08f35ede380d71a0300d89f2e9049071364bf426b5d4bc7258c2"
     },
     "states/edit-to-delivery.md": {
       "bytes": 7640,
@@ -282,7 +282,7 @@
   ],
   "schema_version": 1,
   "slug": "video-production-harness",
-  "source_commit": "9578f7a90cbbc81f7f36a4f819bfabf23a600c7f",
+  "source_commit": "92a42452eb7718e0495954792329906e900dd467",
   "source_files": {
     "SKILL.md": {
       "sha256": "3e659d9dc20047c9deb42344749c2e9891b523151c5584c0123111d3f779f855",
@@ -325,7 +325,7 @@
       "source": "edit-video.md"
     },
     "lock-character.md": {
-      "sha256": "892dd32af157b53e15ad88e1ec3b0954d871653006d166a68b933818a150d405",
+      "sha256": "640f7502d04f66754a4165d3ac8eff0a761ad965420c03faed32bdb34bcfb839",
       "source": "lock-character.md"
     },
     "lock-script.md": {
@@ -489,6 +489,6 @@
       "source": "wrap-session.md"
     }
   },
-  "source_hash": "d365f811e61fa0e44319a417da4a39129a5737555eaec7cc0a74bb649dcb3dde",
-  "source_version": "4-d365f811e61f"
+  "source_hash": "dbc8933b39d7091e6c01df05f77351c582f556c5cdf4a1bb47b360ef66f8dd82",
+  "source_version": "4-dbc8933b39d7"
 }
