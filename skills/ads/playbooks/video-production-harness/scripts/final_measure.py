@@ -1,7 +1,8 @@
 """gooseworks-final-measure/1: measured checks on a finished video file.
 
-The GooseWorks server runs the same checks on an uploaded final and blocks on
-any fail. This copy gives the agent the same answer before upload. Every
+The GooseWorks server runs the same checks on an uploaded final and reports
+each fail as a graded finding; only a broken file is refused. This copy gives the
+agent the same answer before upload (graded in final_grade.py). Every
 check returns pass, fail or not_applicable with the time ranges it found.
 These are measurements, not a creative verdict.
 """

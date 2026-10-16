@@ -32,7 +32,7 @@ Record before each specialist runs:
 - Package slug/version/hash, tool and model, approval revision, budget.
 - Expected outputs: media, editable sources, measured timings, job provenance.
 
-Review the output against the creative contract and these inputs, not the specialist's success status. Probe the bytes; check duration, copy, proof, action, product, scale and identity; listen to each spoken output when your tools can, otherwise record `measured`. Save pass, needs_revision or incomplete per duty. A stale source, wrong beat, missing word, wrong variant or unconfirmed provider URL blocks assembly.
+Review the output against the creative contract and these inputs, not the specialist's success status. Probe the bytes; check duration, copy, proof, action, product, scale and identity; listen to each spoken output when your tools can, otherwise record `measured`. Save pass, needs_revision or incomplete per duty, graded by [check severity](check-severity.md). A stale source or unconfirmed provider URL (broken data) blocks assembly; a missing word or wrong variant is `must_fix`; a wrong beat is `ask`.
 
 ## Resume and repair
 

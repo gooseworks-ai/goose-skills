@@ -7,7 +7,7 @@ updated: 2026-10-16
 superseded_by: creator-h3@1.8.0
 ---
 
-> **Superseded by:** `creator-h3@1.7.0`. Compatibility scripts retain the source-review guards; frozen versions are unchanged.
+> **Superseded by:** `creator-h3@1.8.0`. Compatibility scripts retain the source-review guards; frozen versions are unchanged.
 
 # create-creator-takes-h3
 

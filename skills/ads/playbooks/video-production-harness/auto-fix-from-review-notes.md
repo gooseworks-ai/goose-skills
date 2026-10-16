@@ -56,7 +56,7 @@ Resolve each `fix:` line to a real supported command or host capability before r
 5. **Archive** each target before mutating it: `_archive/<name>-pre-fix-<ts>.<ext>`.
 6. **Execute** each resolved repair. Save its inputs, output, command or capability, evidence and exit or job status.
 7. **On a P0 failure** with `--abort-on-p0-failure`, stop and write a partial report.
-8. **Re-review and report** in `<notes-stem>-applied.md`: operation status (`applied | skipped | failed | blocked`) and, separately, editorial disposition (open, accepted, alternative, rejected, deferred, changed, verified). Link each note to its source, candidate, intended effect, before and after evidence, and a full-output regression review. `applied` means changed, never verified. Reopen a note whose effect failed; required open items block delivery.
+8. **Re-review and report** in `<notes-stem>-applied.md`: operation status (`applied | skipped | failed | blocked`) and, separately, editorial disposition (open, accepted, alternative, rejected, deferred, changed, verified). Link each note to its source, candidate, intended effect, before and after evidence, and a full-output regression review. `applied` means changed, never verified. Reopen a note whose effect failed; an open P0 (`must_fix`) item blocks delivery, an open P1 or P2 item doesn't.
 
 ## Repair implementations
 

@@ -46,4 +46,4 @@ def graded_findings(measure):
 def quality_status(broken, findings):
     severities = {f["severity"] for f in findings}
     return ("broken" if broken else "must_fix" if "must_fix" in severities
-            else "ask" if "ask" in severities else "no_measured_findings")
+            else "ask" if "ask" in severities else "fine" if severities else "no_measured_findings")

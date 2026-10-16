@@ -52,8 +52,8 @@ disputed reference mapping before comparing against it.
 AI presenters may illustrate verified features, but must not impersonate actual
 employees, owners or customers or invent firsthand results/testimony. Lack of owned
 actor footage is not permission to strip every person/voice from the requested format.
-Block missing essential beats and contradictory picture/direction fields; derive
-both from the same scene contract. A diagram, logo or text card cannot replace a
+Missing essential beats and contradictory picture/direction fields are `ask`
+findings for the script approval; derive both from the same scene contract. A diagram, logo or text card cannot replace a
 requested live demonstration, routine or creator performance. When tools or assets
 cannot meet the original mechanism, put a concrete feasible alternative in the
 script or ingredient review.

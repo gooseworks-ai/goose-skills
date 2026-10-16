@@ -22,13 +22,13 @@ Rules decided by Akhil on 16 Oct 2026. Every check in this harness uses this gra
 | **ask** | Clearly AI-looking (waxy or plastic skin, studio blur, a showroom set); noticeable product drift; off the reference (people, action, sound type, camera, length); a promised inset or overlay missing on the final; wardrobe or setting that doesn't fit; an age gap in the voice; unknown product size; extra speech; a gap inside a sentence; unplanned silence; a frozen picture; a repeated shot; a planned freeze too long; crop zoom over the limit; a weak hook (below 7); a world break between scenes; a score of 2 or less with no named defect. | `review_mode: ask`: show it with one plain reason and the price of the fix, and let the customer choose. `review_mode: auto`: decide it yourself. When the fix is free (a re-mix, a re-assembly, a caption retime), just make it in either mode. |
 | **fine** | Slightly AI-looking; small flaws a viewer won't notice; a planned pause a little long; speech rate or setup count against the reference; staged-look words in a prompt; minor taste. | Keep it. Don't mention it unless asked. |
 
-When a finding fits two rows, the higher one wins. When you aren't sure whether a defect is must_fix, look again at full resolution. Grade what you can point to at a timecode, never a hunch.
+When a finding fits two rows, the higher one wins. One check can grade differently by stage: fewer shots or setups than the reference is `ask` at the storyboard (adding shots is cheap before any clip) and `fine` on the final. When you aren't sure whether a defect is must_fix, look again at full resolution. Grade what you can point to at a timecode, never a hunch.
 
 ## Review mode
 
 - `review_mode` is the customer's choice for the whole project: `ask` (the default) or `auto`. Set `auto` when they say "just make it", "don't ask me" or the like, and record their words. On GooseWorks the host stores it ([capabilities](../capabilities.md)).
 - **`ask`:** the two owner approvals (script, ingredients) and every `ask` finding that costs credits wait for the customer.
-- **`auto`:** go end to end. Get one yes up front to the full total (the script approval's total, which covers the clips). Then don't wait at the ingredient gate: when its total is still inside that yes, record the ingredient approval with the customer's "just make it" words and that total (on GooseWorks the host may record it itself), show the ingredients as information, and go on. Redo `must_fix` items. Decide each `ask` item yourself: redo it when the fix fits the approved total and will clearly help, otherwise keep it. Never stop for a quality approval. At delivery, list in one line each what you fixed and what you kept.
+- **`auto`:** go end to end. Get one yes up front to the full total (the script approval's total, which covers the clips). Then don't wait at the ingredient gate: when its total is still inside that yes, record the ingredient approval with the customer's "just make it" words and that total (on GooseWorks the host records it itself), show the ingredients as information, and go on. Redo `must_fix` items. Decide each `ask` item yourself: redo it when the fix fits the approved total and will clearly help, otherwise keep it. Never stop for a quality approval. At delivery, list in one line each what you fixed and what you kept.
 - **Money holds in both modes.** Nothing is charged without the customer's yes to a total, and nothing goes past the approved total. In `auto`, a new or higher total still stops for a new yes; that is the only stop.
 
 ## Redo rules
@@ -40,7 +40,7 @@ When a finding fits two rows, the higher one wins. When you aren't sure whether 
   - **It fits** when what is already charged plus this price stays inside the approved total. Make it, paid from that total, and tell them in one line.
   - **It doesn't fit:** ask for a new yes, showing the price and the new total. Don't make it before they say yes.
   - Never absorb a redo cost, and never go past the approved total without a yes. A host refusal on budget (`custom_video_budget_exceeded`, with the call's price in `this_call_credits`) means it didn't fit: ask.
-- **A voice that differs in heritage or accent** is not a reason to change anyone: keep the person, use the closest voice, and tell the customer in one line.
+- **A voice that differs in heritage or accent** is never a reason to change the person. Voice Design stays the first choice; the closest listed voice is used when Voice Design can't run or the customer picks it (it's free), and you tell them in one line.
 
 ## What stays hard
 
@@ -58,6 +58,13 @@ Everything else is a finding with a severity. A quality finding never blocks a s
 - **Your own inspection.** Extract frames with FFmpeg at full resolution and look. A defect you can point to at a timecode gets graded by the table above.
 - **`../scripts/qc_evidence.py`.** It reports every final measurement with its severity in `findings` and exits 1 only for a broken file.
 - **Never send finished videos or frames to a vision model yourself** (no direct fal calls with a local key). Mark the video complete and read the host's final check.
+
+## On GooseWorks
+
+- **Review mode:** `video_change` custom `review_mode {mode: "ask" | "auto", user_quote}` with `expected_revision` (the owner only; `video_create` has no field for it). In `auto` the host records the ingredient approval itself when its total is inside the script yes; above that it asks.
+- **Completion:** `video_make` custom `{render_id, status: "complete", output_url}` waits about 20 s for the final check. `custom_video_final_checking` means send the same call again after `retry_after_s`. Only integrity is refused (`custom_video_final_check_failed`, `custom_video_production_required`, `custom_video_output_required`). `video_read` `final_findings {render_id, quality_status, findings}` lists the `must_fix` and `ask` findings (`severity`, `line`, `fix`, `fix_credits`); `quality_status` is `passed` or `needs_fix`. The completion preflight (`video_read` include `blockers`) lists them as `custom_video_finding_<code>`, never as blockers.
+- **Keep anyway:** only on the customer's own words, `video_make` custom `{render_id, accept_findings: {user_quote}, pin: true}` with `expected_revision`. Until then pinning is refused `custom_video_needs_fix` and sharing `needs_fix`.
+- Clip `checks`, clip and final `content_review`, and `quality_report` are optional notes, never required.
 
 ## Review notes and P-levels
 
