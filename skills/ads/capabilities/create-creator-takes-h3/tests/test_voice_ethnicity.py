@@ -314,6 +314,13 @@ class SecondReviewTests(unittest.TestCase):
         self.assertEqual(pair_voice(40, "man", "american", None, [generic], ethnicity="White")["voice_id"], "generic")
         self.assertEqual(pair_voice(40, "man", "american", None, [generic], ethnicity="Native American")["source"], "voice_design")
 
+    def test_nearest_age_distance_matches_the_near_rule(self):
+        """Round 9: 42 is 12 years from "young" (ends at 30) and 13 from "old" (starts at 55)."""
+        zed = {**JULIUS, "voice_id": "zed", "name": "Zed", "labels": {**JULIUS["labels"], "age": "young"}}
+        aaron = {**JULIUS, "voice_id": "aaron", "name": "Aaron", "labels": {**JULIUS["labels"], "age": "old"}}
+        pair = pair_voice(42, "man", "american", None, [zed, aaron], ethnicity="Black American")
+        self.assertEqual([v["voice_id"] for v in pair["nearest"]], ["zed", "aaron"])
+
     def test_nearest_ranks_by_age_gap_before_other_differences(self):
         young_us = {**JULIUS, "voice_id": "young-us", "name": "Aaron"}
         old_uk = {**JULIUS, "voice_id": "old-uk", "name": "Zed", "labels": {**JULIUS["labels"], "age": "old", "accent": "british"}}

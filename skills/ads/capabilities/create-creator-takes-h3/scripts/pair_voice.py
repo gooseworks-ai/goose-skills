@@ -232,7 +232,7 @@ def years_from_band(age, label):
     """How many years the age is from the voice's age band (0 inside it); far when unlabelled."""
     for lo, hi, band in AGE_BANDS:
         if band == label:
-            return 0 if age is None or lo <= age < hi else (lo - age if age < lo else age - hi + 1)
+            return 0 if age is None or lo <= age < hi else (lo - age if age < lo else age - hi)
     return 999
 
 
