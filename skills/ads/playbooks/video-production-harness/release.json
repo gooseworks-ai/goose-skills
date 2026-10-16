@@ -51,9 +51,9 @@
       "sha256": "5b0da509ed161340a44903c1907690d75298af36744e52fb621aa2ebfbd708d0"
     },
     "lock-character.md": {
-      "bytes": 11640,
-      "catalog_sha256": "01abeedfaea8f98f8399731d15cf4ebbb6a089289b510fca565480342cd78f9e",
-      "sha256": "01abeedfaea8f98f8399731d15cf4ebbb6a089289b510fca565480342cd78f9e"
+      "bytes": 11571,
+      "catalog_sha256": "a3678e28e3ed2a827cb5eb7bc1fe1b65749b67d43261cc3efb8bd46721dac694",
+      "sha256": "a3678e28e3ed2a827cb5eb7bc1fe1b65749b67d43261cc3efb8bd46721dac694"
     },
     "lock-script.md": {
       "bytes": 8924,
@@ -242,8 +242,8 @@
     },
     "skill.meta.json": {
       "bytes": 683,
-      "catalog_sha256": "4d8ea6f66c50ab6f82aeafe6ae583778e7717e41bc42fa912c7c78160b107995",
-      "sha256": "4d8ea6f66c50ab6f82aeafe6ae583778e7717e41bc42fa912c7c78160b107995"
+      "catalog_sha256": "b9f745e6cf11c091935f2f84fcec76ecf3f27d975adffed54be119331e7647d6",
+      "sha256": "b9f745e6cf11c091935f2f84fcec76ecf3f27d975adffed54be119331e7647d6"
     },
     "states/edit-to-delivery.md": {
       "bytes": 7799,
@@ -287,7 +287,7 @@
   ],
   "schema_version": 1,
   "slug": "video-production-harness",
-  "source_commit": "b86909c517d90442d5b4fe3168b902b0c63555b4",
+  "source_commit": "5c572cb7a1b110dcc8dba82da0514a70aed096a4",
   "source_files": {
     "SKILL.md": {
       "sha256": "3e659d9dc20047c9deb42344749c2e9891b523151c5584c0123111d3f779f855",
@@ -330,7 +330,7 @@
       "source": "edit-video.md"
     },
     "lock-character.md": {
-      "sha256": "01abeedfaea8f98f8399731d15cf4ebbb6a089289b510fca565480342cd78f9e",
+      "sha256": "a3678e28e3ed2a827cb5eb7bc1fe1b65749b67d43261cc3efb8bd46721dac694",
       "source": "lock-character.md"
     },
     "lock-script.md": {
@@ -498,6 +498,6 @@
       "source": "wrap-session.md"
     }
   },
-  "source_hash": "f5992fe1562354f538c227c025b37e644772faa8da2dba46c611342fb765a28a",
-  "source_version": "4-f5992fe15623"
+  "source_hash": "771d764a2415e78cef7f78c14908da165b837e3e2c62f0cbf20222484469ec69",
+  "source_version": "4-771d764a2415"
 }
