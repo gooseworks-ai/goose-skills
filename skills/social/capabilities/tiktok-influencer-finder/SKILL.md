@@ -1,7 +1,7 @@
 ---
 name: tiktok-influencer-finder
 description: Find TikTok influencers using Apify's Influencer Discovery Agent. Use when the user wants to discover TikTok creators or influencers in any niche.
-argument-hint: [niche/description]
+argument-hint: "[niche/description]"
 ---
 
 # TikTok Influencer Finder

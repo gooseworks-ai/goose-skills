@@ -3,7 +3,7 @@ name: community-signals
 description: Extract leads from developer forums (Hacker News, Reddit) by detecting intent signals — alternative seeking, competitor pain, scaling challenges, DIY solutions, and migration intent. Scores users by intent strength and cross-platform presence.
 user-invocable: true
 allowed-tools: Bash, Read, Write, Edit, Grep, Glob, WebSearch
-argument-hint: [queries-json-path]
+argument-hint: "[queries-json-path]"
 ---
 
 # Community Signals
