@@ -62,7 +62,7 @@ kit: {
 - `plan`: the approved scenes, cast, voice and music, written exactly as a template video's plan takes them. It must match the reviewed draft, or the kit refuses it (`kit_invalid`):
   - one kit scene per storyboard scene, in the same order;
   - each scene's `line` is that scene's `text` (the spoken words), and its `on_screen` is its `caption`;
-  - the same voice: `plan.voice` is the voice selected for `narrator`, and each speaking cast member's `voice_id` is the one selected for their cast key. Select no voice the kit won't use;
+  - the same voice: `plan.voice` is the voice selected for `narrator`, and each cast member who speaks in a separate voice (voice first and lip-sync) has as `voice_id` the one selected for their cast key, their `character.voice_pair`. A native-speech cast member (`creator-h3`, one take speaking its own line) has no `voice_id`. Select no voice the kit won't use;
   - reused pictures are approved ingredients, by `asset_id`, and each one's `url` is that media file's own link. A saved character's photo must also be one of the ingredients.
   - `plan.aspect` is the draft's `aspect_ratio`, and one the seed's style makes.
 - `timing`: `duration_sec` is the draft's `duration_target_sec`, and `scenes` lists each draft scene's `time`, in order. If the length or a scene time changes later, save the kit block again with the new timing.

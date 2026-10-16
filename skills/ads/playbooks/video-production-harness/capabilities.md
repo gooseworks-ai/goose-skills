@@ -72,7 +72,7 @@ Preflight runs the real binaries and a media probe; missing tooling blocks that 
 | --- | --- |
 | reference preparation | Study the host's durable reference picture and sound in full; record `listened`/`watched` only when you did, else `measured`, with covered ranges. |
 | image/video generation | The host's model catalog and managed fal queue submit → status → result. Request fields come from real schemas; image refs and video start images have different roles. No private scripts or assumed MCP names. |
-| voice auditions | The host's approved voice catalog and managed ElevenLabs `/v1/text-to-speech/{voice_id}` or an equivalent. Audition the locked beat text and keep the selected voice ID and settings. ElevenLabs Voice Design makes a voice from the character's descriptors when the host offers it. Native generated speech is reviewed with its clip. |
+| voice auditions | The host's approved voice catalog and managed ElevenLabs `/v1/text-to-speech/{voice_id}` or an equivalent. Audition the locked beat text and keep the selected voice ID and settings. An on-screen person's voice ID is `character.voice_pair`, paired from the host's free ElevenLabs voice list (`GET /v1/voices`); without that list, the pairing blocks. ElevenLabs Voice Design makes a voice from the character's descriptors when the host offers it. Native generated speech is reviewed with its clip. |
 | transcription and word timing | A Whisper-compatible route returns timed words; diff them against the locked lines and pass them to `qc_evidence.py --words` (the reference's go to `--reference-words`). Without one, GooseWorks transcribes the final on complete. ASR alone cannot judge voice quality. |
 | OCR, identity, world and readability | An image-capable reviewer applies the rubrics in lock-character, review-video and polish. Never invent a numeric similarity. |
 | preview choices and delivery | The script and ingredient approvals hold media, selections and authorization. Store the owner's choice apart from exact-output content status; a final or preview label cannot waive missing quality evidence. |
@@ -91,4 +91,4 @@ Before use and publication the host rechecks ownership, scope, permission and re
 
 ## Controlled source and renderer releases
 
-The custom route uses creator-h3 1.5.0, voice-elevenlabs 1.3.0 and html-frames 1.3.1 on a kit with source review, assembly-timeline and exact-final review support (minimum kit 1.0.1). Keep the locked versions; they add review and source-clock guards, not provider quality. An older renderer is no evidence that the new stitching rules ran.
+The custom route uses creator-h3 1.6.0, voice-elevenlabs 1.3.0 and html-frames 1.3.1 on a kit with source review, assembly-timeline and exact-final review support (minimum kit 1.0.1). Keep the locked versions; they add review and source-clock guards, not provider quality. An older renderer is no evidence that the new stitching rules ran.
