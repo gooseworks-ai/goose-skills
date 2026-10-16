@@ -98,6 +98,59 @@ class EthnicityMatchTests(unittest.TestCase):
         self.assertEqual(pair_voice(39, "man", "american", None, [JON], ethnicity="mixed")["voice_id"], "jon")
 
 
+class ReviewFindingTests(unittest.TestCase):
+    """Codex review of #306: each case is an input that went wrong in the first version."""
+
+    def test_a_mixed_heritage_checks_no_heritage(self):
+        self.assertIsNone(heritage("biracial Black/Latino"))
+        self.assertIsNone(heritage("Black and Korean"))
+        latino = {**MILES, "voice_id": "luis", "name": "Luis", "description": "Friendly young Latino male"}
+        self.assertEqual(pair_voice(29, "man", None, None, [latino], ethnicity="biracial Black/Latino")["voice_id"], "luis")
+
+    def test_a_voice_naming_two_heritages_fits_neither(self):
+        both = {**JULIUS, "voice_id": "both", "description": "African American and Indian male voice"}
+        self.assertEqual(pair_voice(39, "man", "american", None, [both], ethnicity="Black American")["source"], "voice_design")
+
+    def test_broad_heritage_words_block_a_white_person(self):
+        asian = {**JON, "voice_id": "asian", "name": "Ken", "description": "Warm Asian American male voice"}
+        native = {**JON, "voice_id": "native", "name": "Sky", "description": "A calm Native American storyteller"}
+        self.assertEqual(pair_voice(39, "man", "american", None, [asian, native], ethnicity="White")["source"], "voice_design")
+        self.assertEqual(pair_voice(39, "man", "american", None, [asian], ethnicity="Korean")["voice_id"], "asian")
+        self.assertEqual(pair_voice(39, "man", "american", None, [asian], ethnicity="Asian American")["voice_id"], "asian")
+        self.assertEqual(heritage("Native American"), "indigenous")
+
+    def test_ten_years_from_the_band_edge_is_near_on_both_sides(self):
+        self.assertIn("age_near", pair_voice(40, "man", "american", None, [JULIUS], ethnicity="Black")["matched_on"])
+        self.assertEqual(pair_voice(41, "man", "american", None, [JULIUS], ethnicity="Black")["source"], "voice_design")
+        older = {**JON, "voice_id": "mid", "labels": {**JON["labels"], "age": "middle_aged"}}
+        self.assertIn("age_near", pair_voice(65, "man", "american", None, [older], ethnicity="White")["matched_on"])
+        self.assertIn("age_near", pair_voice(20, "man", "american", None, [older], ethnicity="White")["matched_on"])
+
+    def test_odd_rows_are_skipped_not_fatal(self):
+        odd = [None, "julius", {"voice_id": 7}, {**JULIUS, "voice_id": "n7", "name": 7},
+               {**MILES, "voice_id": "nolabels", "labels": "male"}, JULIUS]
+        pair = pair_voice(39, "man", "american", None, odd, ethnicity="Black American")
+        self.assertIn(pair["voice_id"], ("julius", "n7"))
+
+    def test_the_owner_can_choose_only_a_listed_nearest_voice(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            voices = Path(tmp) / "voices.json"
+            voices.write_text(json.dumps({"voices": VOICES}))
+            out = Path(tmp) / "c"
+            person = [a if a != "39" else "44" for a in PERSON]
+            self.assertEqual(run("make_character.py", *person, "--voices", str(voices), "--out", str(out), "--dry-run").returncode, 0)
+            character = out / "character.json"
+            self.assertEqual(json.loads(character.read_text())["voice_pair"]["source"], "voice_design")
+            r = run("pair_voice.py", "--character", str(character), "--choose", "jon")
+            self.assertNotEqual(r.returncode, 0, "Jon is not a nearest voice for this person")
+            r = run("pair_voice.py", "--character", str(character), "--choose", "julius")
+            self.assertEqual(r.returncode, 0, r.stderr)
+            pair = json.loads(character.read_text())["voice_pair"]
+            self.assertEqual((pair["source"], pair["voice_id"]), ("library_nearest", "julius"))
+            self.assertEqual(pair["person"]["age"], 44)
+            self.assertIn("age young", pair["differs_on"])
+
+
 class VoiceListShapeTests(unittest.TestCase):
     def test_every_saved_list_shape_loads(self):
         shapes = {

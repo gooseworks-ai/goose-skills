@@ -17,6 +17,7 @@ energy), return either:
     pair_voice.py --age 39 --gender man --ethnicity "Black American" --accent american \
         --voices voices.json [--exclude <voice_id> ...] [--sample-text "..."] [--out voice_pair.json]
     pair_voice.py --character work/character/character.json --voices voices.json --exclude <rejected id>
+    pair_voice.py --character work/character/character.json --choose <a voice_id from voice_pair.nearest>
 
 A narrator picked separately from the presenter, and reused across brands, gave a test
 video the wrong voice for its character; a 39-year-old Black American presenter then got a
@@ -57,6 +58,10 @@ HERITAGE_WORDS = {
     "southeast_asian": ("southeast asian", "filipino", "filipina", "vietnamese", "thai", "indonesian", "malaysian"),
     "latino": ("latino", "latina", "latinx", "hispanic", "mexican", "latin american", "puerto rican", "colombian"),
     "middle_eastern": ("middle eastern", "arab", "arabic", "persian", "iranian", "lebanese"),
+    # Broad words: "Asian" alone fits an East or Southeast Asian person; both block a White one.
+    "asian": ("asian american", "asian"),
+    "indigenous": ("native american", "indigenous", "first nations", "pacific islander", "polynesian",
+                   "native hawaiian", "aboriginal"),
     "white": (),  # no word marks it: a White character takes a voice described as no other heritage
 }
 # The character's ethnicity (make_character.py --ethnicity) to one of the heritages above, first
@@ -71,11 +76,18 @@ ETHNICITY_HERITAGE = [
     ("hispanic", "latino"), ("latin", "latino"), ("mexican", "latino"),
     ("middle eastern", "middle_eastern"), ("arab", "middle_eastern"), ("persian", "middle_eastern"),
     ("iranian", "middle_eastern"), ("lebanese", "middle_eastern"),
+    ("native american", "indigenous"), ("indigenous", "indigenous"), ("first nations", "indigenous"),
+    ("pacific islander", "indigenous"), ("polynesian", "indigenous"), ("native hawaiian", "indigenous"),
+    ("asian", "asian"),
     ("white", "white"), ("caucasian", "white"), ("european", "white"),
 ]
+# A mixed heritage checks nothing: "biracial Black/Latino" fits neither one heritage's voices only.
+MIXED = re.compile(r"\b(mixed|biracial|multiracial|multiethnic|multi racial|multi ethnic)\b")
+# A generic "Asian" voice fits these; an "Asian" person takes a voice named any of them.
+ASIAN = {"asian", "east_asian", "southeast_asian"}
 MCP_NO_DESIGN = ("The GooseWorks MCP cannot run Voice Design (its ElevenLabs calls are speech, music and "
-                 "GET /v1/voices): play the `nearest` voices next to the still, and never use a voice that "
-                 "does not fit.")
+                 "GET /v1/voices): play the `nearest` voices next to the still, record the owner's pick with "
+                 "--character --choose <voice_id>, and never use a voice that is not in voice_pair.")
 
 
 def age_label(age):
@@ -97,12 +109,17 @@ def norm(value):
 
 
 def heritage(ethnicity):
-    """The heritage a voice must be described as, for the character's ethnicity; None when unknown or mixed."""
-    text = " ".join(re.sub(r"[-_]", " ", (ethnicity or "").lower()).split())
+    """The heritage a voice must be described as, for the character's ethnicity; None when unknown or
+    mixed (a mixed word, or words for two heritages, as in "biracial Black/Latino")."""
+    text = " ".join(re.sub(r"[-_/,&+]", " ", (ethnicity or "").lower()).split())
+    if MIXED.search(text):
+        return None
+    groups = []
     for word, group in ETHNICITY_HERITAGE:
         if re.search(r"\b" + word, text):
-            return group
-    return None
+            groups.append(group)
+            text = re.sub(r"\b" + word + r"\w*", " ", text)
+    return groups[0] if len(set(groups)) == 1 else None
 
 
 def voice_labels(age, gender, accent=None, energy=None, ethnicity=None):
@@ -117,13 +134,24 @@ def voice_labels(age, gender, accent=None, energy=None, ethnicity=None):
 
 
 def voice_id(voice):
-    """ElevenLabs lists say voice_id; GooseWorks' video_formats voice rows say id."""
-    return voice.get("voice_id") or voice.get("id")
+    """ElevenLabs lists say voice_id; GooseWorks' video_formats voice rows say id. None for a row that isn't a voice."""
+    if not isinstance(voice, dict):
+        return None
+    vid = voice.get("voice_id") or voice.get("id")
+    return vid if isinstance(vid, str) and vid.strip() else None
+
+
+def text_of(value):
+    return value if isinstance(value, str) else ""
+
+
+def raw_labels(voice):
+    return voice.get("labels") if isinstance(voice.get("labels"), dict) else {}
 
 
 def voice_record(voice):
     """One voice from either list: the library puts labels at the top level, the account in `labels`."""
-    labels = {k: norm(v) for k, v in (voice.get("labels") or {}).items() if isinstance(v, str)}
+    labels = {k: norm(v) for k, v in raw_labels(voice).items() if isinstance(v, str)}
     for key in ("gender", "age", "accent", "descriptive", "use_case"):
         if isinstance(voice.get(key), str) and voice[key].strip():
             labels[key] = norm(voice[key])
@@ -134,8 +162,8 @@ def voice_heritages(voice, labels):
     """Every heritage the voice's accent, descriptive label, description or name names. Longest
     phrase first, and each found phrase is removed, so "african american" never also reads as "african"."""
     text = " ".join(re.sub(r"[-_/,.()|]", " ", " ".join(
-        [labels.get("accent", ""), labels.get("descriptive", ""), voice.get("description") or "",
-         (voice.get("labels") or {}).get("description") or "", voice.get("name") or ""]).lower()).split())
+        [labels.get("accent", ""), labels.get("descriptive", ""), text_of(voice.get("description")),
+         text_of(raw_labels(voice).get("description")), text_of(voice.get("name"))]).lower()).split())
     found = set()
     for word, group in sorted(((w, g) for g, ws in HERITAGE_WORDS.items() for w in ws), key=lambda x: -len(x[0])):
         pattern = r"\b%s\b" % re.escape(word)
@@ -151,7 +179,7 @@ def age_fit(age, label):
     if label == age_label(age):
         return "exact"
     for lo, hi, band in AGE_BANDS:
-        if band == label and (0 < lo - age <= NEAR_YEARS or 0 <= age - hi < NEAR_YEARS):
+        if band == label and (0 < lo - age <= NEAR_YEARS or 0 <= age - hi <= NEAR_YEARS):
             return "near"
     return None
 
@@ -162,13 +190,16 @@ def accent_fits(wanted, label):
 
 
 def heritage_fits(group, found):
-    """A voice described as another heritage never fits; a known heritage must be named on the voice.
-    A White character takes a voice that names no heritage. Unknown or mixed checks nothing."""
+    """A known heritage must be the only one named on the voice; a generic "Asian" voice fits an East
+    or Southeast Asian person. A White character takes a voice that names no heritage. Unknown or
+    mixed checks nothing."""
     if group is None:
         return True
     if not HERITAGE_WORDS.get(group):
         return not found
-    return group in found
+    if group == "asian":
+        return bool(found) and found <= ASIAN
+    return found == {group} or (group in ASIAN and found == {"asian"})
 
 
 def match_library(voices, wanted, exclude=(), age=None):
@@ -191,10 +222,10 @@ def match_library(voices, wanted, exclude=(), age=None):
             continue
         if wanted.get("accent") and not accent_fits(wanted["accent"], labels.get("accent")):
             continue
-        said = norm(labels.get("descriptive", "") + " " + (voice.get("description") or ""))
+        said = norm(labels.get("descriptive", "") + " " + text_of(voice.get("description")))
         energy_hits = sum(1 for w in energy_words if w in said)
         score = 2 * energy_hits + (1 if labels.get("use_case") in ("social_media", "conversational") else 0)
-        key = (0 if fit == "exact" else 1, -score, (voice.get("name") or ""), vid)
+        key = (0 if fit == "exact" else 1, -score, text_of(voice.get("name")), vid)
         if best is None or key < best[0]:
             matched = (["gender"] + (["ethnicity"] if group else []) + (["age"] if fit == "exact" else ["age_near"])
                        + (["accent"] if wanted.get("accent") else []) + (["energy"] if energy_hits else []))
@@ -224,7 +255,7 @@ def nearest(voices, wanted, exclude=(), age=None, limit=3):
         if wanted.get("accent") and not accent_fits(wanted["accent"], labels.get("accent")):
             differs.append("accent %s" % (labels.get("accent") or "unlabelled"))
         gap = abs(order.index(labels["age"]) - order.index(wanted["age"])) if labels.get("age") in order else 9
-        rows.append(((len(differs), gap, voice.get("name") or "", vid),
+        rows.append(((len(differs), gap, text_of(voice.get("name")), vid),
                      {"voice_id": vid, "name": voice.get("name"), "labels": labels,
                       "preview_url": voice.get("preview_url"), "differs_on": differs}))
     return [row for _, row in sorted(rows, key=lambda r: r[0])[:limit]]
@@ -306,6 +337,26 @@ def repair_character(path, voices, exclude=(), sample_text=None):
     return pair
 
 
+def choose_nearest(path, chosen):
+    """Record the owner's pick from the saved voice_pair's `nearest` voices, after they heard it beside
+    the still, when no voice fits fully and Voice Design can't run. Only a listed nearest voice."""
+    record = json.loads(path.read_text(encoding="utf-8"))
+    old = record.get("voice_pair") or {}
+    row = next((v for v in old.get("nearest") or [] if v.get("voice_id") == chosen), None)
+    if old.get("source") != "voice_design" or row is None:
+        listed = ", ".join(v.get("voice_id") or "?" for v in old.get("nearest") or []) or "none"
+        raise SystemExit("--choose takes a voice_id from this character's voice_pair.nearest (%s); pair again "
+                         "with --exclude instead" % listed)
+    pair = {"source": "library_nearest", "voice_id": row["voice_id"], "name": row.get("name"), "labels": row.get("labels"),
+            "preview_url": row.get("preview_url"), "differs_on": row.get("differs_on") or [],
+            "wanted": old.get("wanted"), "person": old.get("person"), "rejected": old.get("rejected") or [],
+            "note": "the owner chose this nearest voice after hearing it beside the still; it differs on %s"
+                    % (", ".join(row.get("differs_on") or []) or "nothing")}
+    record["voice_pair"] = pair
+    path.write_text(json.dumps(record, indent=1), encoding="utf-8")
+    return pair
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--character", type=pathlib.Path,
@@ -320,10 +371,15 @@ def main():
                                      "GooseWorks MCP's data_call_provider reply for GET /v1/voices")
     ap.add_argument("--exclude", action="append", default=[], help="a voice_id not to use: a rejected voice, or another brand's narrator")
     ap.add_argument("--sample-text", help="100-1000 characters for the design previews; else auto-generated")
+    ap.add_argument("--choose", help="with --character: the owner's pick from voice_pair.nearest, after hearing it beside the still")
     ap.add_argument("--out", type=pathlib.Path)
     a = ap.parse_args()
     voices = load_voices(a.voices) if a.voices else None
-    if a.character:
+    if a.choose:
+        if not a.character:
+            raise SystemExit("--choose needs --character")
+        pair = choose_nearest(a.character, a.choose)
+    elif a.character:
         if not voices:
             raise SystemExit("--character needs --voices: pairing again picks from a voice list, never by hand")
         pair = repair_character(a.character, voices, tuple(a.exclude), a.sample_text)
