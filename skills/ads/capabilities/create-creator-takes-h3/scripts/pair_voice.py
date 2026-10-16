@@ -73,18 +73,23 @@ HERITAGE_ALIASES = [
     ("latin american", "latino", None), ("mexican", "latino", "mexican"), ("puerto rican", "latino", "puerto_rican"),
     ("colombian", "latino", "colombian"), ("cuban", "latino", "cuban"), ("dominican", "latino", "dominican"),
     ("middle eastern", "middle_eastern", None), ("arab", "middle_eastern", "arab"), ("arabic", "middle_eastern", "arab"),
-    ("lebanese", "middle_eastern", "arab"), ("egyptian", "middle_eastern", "arab"), ("persian", "middle_eastern", "persian"),
+    ("lebanese", "middle_eastern", "arab:lebanese"), ("egyptian", "middle_eastern", "arab:egyptian"), ("persian", "middle_eastern", "persian"),
     ("iranian", "middle_eastern", "persian"), ("farsi", "middle_eastern", "persian"), ("turkish", "middle_eastern", "turkish"),
     ("indigenous", "indigenous", None), ("native american", "indigenous", "native_american"),
     ("american indian", "indigenous", "native_american"),
     ("west indian", "caribbean", None), ("caribbean", "caribbean", None), ("jamaican", "caribbean", "jamaican"),
     ("trinidadian", "caribbean", "trinidadian"), ("haitian", "caribbean", "haitian"),
     ("first nations", "indigenous", "native_american"), ("pacific islander", "indigenous", "pacific"),
-    ("polynesian", "indigenous", "pacific"), ("native hawaiian", "indigenous", "pacific"),
-    ("samoan", "indigenous", "pacific"), ("maori", "indigenous", "pacific"), ("aboriginal", "indigenous", "aboriginal"),
+    ("polynesian", "indigenous", "pacific"), ("native hawaiian", "indigenous", "pacific:hawaiian"),
+    ("samoan", "indigenous", "pacific:samoan"), ("maori", "indigenous", "pacific:maori"),
+    ("aboriginal", "indigenous", "aboriginal"),
     # Broad: "Asian" alone fits an East or Southeast Asian person; it blocks a White one.
     ("asian american", "asian", None), ("asian", "asian", None),
 ]
+# A specific with a parent ("arab:lebanese") fits its parent ("arab": an Arabic voice for a Lebanese
+# person) but never a sibling ("arab:egyptian"). Chinese, Mandarin and Cantonese are one people.
+# "native American" in "a native American English speaker" is about the language, not heritage.
+LANGUAGE_NATIVE = re.compile(r"\bnative (?=(american|british|english|australian|canadian)( english)? (speaker|accent|english|voice))")
 # A White person takes a voice that names no heritage; these words mark no voice.
 WHITE_WORDS = ("white", "caucasian", "european")
 # A mixed heritage checks nothing: "biracial Black/Latino" is not one heritage's voices only.
@@ -122,7 +127,7 @@ def norm(value):
 
 def words_in(text):
     """Every (heritage, specific) the text names, longest phrase first, each found phrase removed."""
-    text = " ".join(re.sub(r"[-_/,.()|&+]", " ", text.lower()).split())
+    text = LANGUAGE_NATIVE.sub("", " ".join(re.sub(r"[-_/,.()|&+]", " ", text.lower()).split()))
     found = set()
     for word, group, specific in sorted(HERITAGE_ALIASES, key=lambda row: -len(row[0])):
         pattern = r"\b%s\b" % re.escape(word)
@@ -148,6 +153,7 @@ def heritage(ethnicity):
     if len(groups) != 1:
         return None
     specifics = {sp for _, sp in found if sp}
+    specifics = {sp for sp in specifics if not any(other.startswith(sp + ":") for other in specifics)}  # "Lebanese Arab"
     if len(specifics) > 1:
         return None  # "Korean/Japanese" is mixed, not "East Asian"
     return (groups.pop(), specifics.pop() if specifics else None)
@@ -219,11 +225,16 @@ def accent_fits(wanted, label):
     return bool(label) and (label == wanted or label in ACCENT_ALIASES.get(wanted, ()))
 
 
+def specific_fits(a, b):
+    """Two specifics fit when either is general (None), they are the same, or one is the other's parent."""
+    return a is None or b is None or a == b or b.startswith(a + ":") or a.startswith(b + ":")
+
+
 def marker_fits(person, marker):
     group, specific = person
     m_group, m_specific = marker
     if m_group == group:
-        return m_specific is None or specific is None or m_specific == specific
+        return specific_fits(m_specific, specific)
     return (m_group == "asian" and group in ASIAN) or (group == "asian" and m_group in ASIAN)
 
 
@@ -290,7 +301,7 @@ def nearest(voices, wanted, exclude=(), age=None, limit=3):
         if wanted.get("accent") and not accent_fits(wanted["accent"], labels.get("accent")):
             differs.append("accent %s" % (labels.get("accent") or "unlabelled"))
         gap = years_from_band(age, labels.get("age"))
-        rows.append(((len(differs), gap, text_of(voice.get("name")), vid),
+        rows.append(((gap, len(differs), text_of(voice.get("name")), vid),
                      {"voice_id": vid, "name": text_of(voice.get("name")) or None, "labels": labels,
                       "preview_url": voice.get("preview_url"), "differs_on": differs}))
     return [row for _, row in sorted(rows, key=lambda r: r[0])[:limit]]
