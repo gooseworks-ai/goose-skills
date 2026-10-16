@@ -83,13 +83,14 @@ class EthnicityMatchTests(unittest.TestCase):
         description = pair["request"]["body"]["voice_description"]
         self.assertTrue(description.startswith("A 44-year-old Black American man with a natural American accent."))
         self.assertEqual(pair["save"]["body"]["voice_name"], "Man, 44, Black American, American")
-        self.assertEqual([v["voice_id"] for v in pair["nearest"]][:2], ["julius", "miles"])
+        # At 44, "old" (from 55) is 11 years off and "young" (to 29) 15: Walter first.
+        self.assertEqual([v["voice_id"] for v in pair["nearest"]][:2], ["walter", "julius"])
         self.assertNotIn("jon", [v["voice_id"] for v in pair["nearest"]])
         self.assertIn("GooseWorks MCP cannot run Voice Design", pair["note"])
         self.assertTrue(pair_voice(18, "woman", ethnicity="Korean")["request"]["body"]["voice_description"].startswith("An 18-year-old Korean woman"))
 
     def test_ethnicity_words_map_to_one_heritage(self):
-        self.assertEqual(heritage("Black African American"), ("black", None))
+        self.assertEqual(heritage("Black African American"), ("black", "black:american"))
         self.assertEqual(heritage("Southeast Asian"), ("southeast_asian", None))
         self.assertEqual(heritage("South Asian"), ("south_asian", None))
         self.assertEqual(heritage("Latina"), ("latino", None))
@@ -198,6 +199,111 @@ class SecondReviewTests(unittest.TestCase):
         self.assertEqual(pair_voice(39, "man", "african", None, [JULIUS], ethnicity="Black")["source"], "voice_design")
         english = {**JON, "voice_id": "en", "labels": {**JON["labels"], "accent": "american english"}}
         self.assertEqual(pair_voice(40, "man", "english", None, [english], ethnicity="White")["source"], "voice_design")
+
+    def test_compound_indian_words_are_not_south_asian(self):
+        """Round 3."""
+        american_indian = {**JON, "voice_id": "ai", "name": "Sky", "description": "Calm American Indian male voice"}
+        self.assertEqual(pair_voice(40, "man", "american", None, [american_indian], ethnicity="Native American")["voice_id"], "ai")
+        self.assertEqual(pair_voice(40, "man", "american", None, [american_indian], ethnicity="Indian")["source"], "voice_design")
+        west_indian = {**JON, "voice_id": "wi", "name": "Dev", "description": "Warm West Indian male voice"}
+        self.assertEqual(pair_voice(40, "man", "american", None, [west_indian], ethnicity="Indian")["source"], "voice_design")
+        self.assertEqual(heritage("Jamaican"), ("caribbean", "jamaican"))
+
+    def test_two_specifics_in_one_region_are_mixed(self):
+        for ethnicity in ("Korean/Japanese", "Indian-Pakistani", "Mexican and Colombian"):
+            self.assertIsNone(heritage(ethnicity), ethnicity)
+        latino = {**JON, "voice_id": "lat", "name": "Luis", "description": "Friendly Latino male"}
+        self.assertEqual(pair_voice(40, "man", "american", None, [latino], ethnicity="Korean/Japanese")["voice_id"], "lat")
+
+    def test_nearest_is_ordered_by_years_and_accept_takes_the_closest(self):
+        aaron = {**JULIUS, "voice_id": "aaron", "name": "Aaron", "labels": {**JULIUS["labels"], "age": "young", "accent": "british"}}
+        zed = {**JULIUS, "voice_id": "zed", "name": "Zed", "labels": {**JULIUS["labels"], "age": "old", "accent": "british"}}
+        pair = pair_voice(44, "man", "american", None, [aaron, zed], ethnicity="Black")
+        self.assertEqual([v["voice_id"] for v in pair["nearest"]], ["zed", "aaron"], "old is 11 years off, young 15")
+        self.assertIn("--voices <list> --exclude <voice_id>", pair["note"])
+        with tempfile.TemporaryDirectory() as tmp:
+            character = Path(tmp) / "character.json"
+            character.write_text(json.dumps({"image": "c.png", "identity": "x", "voice_pair": pair}))
+            r = run("pair_voice.py", "--character", str(character), "--accept-nearest")
+            self.assertEqual(r.returncode, 0, r.stderr)
+            accepted = json.loads(character.read_text())["voice_pair"]
+            self.assertEqual(accepted["voice_id"], "zed")
+            self.assertIn("--voices <list> --exclude zed", accepted["note"])
+
+    def test_siblings_under_one_parent_never_match(self):
+        """Round 4."""
+        voice = lambda vid, words: {**JON, "voice_id": vid, "name": vid, "description": words}
+        samoan, maori = voice("samoan", "Warm Samoan male voice"), voice("maori", "Warm Maori male voice")
+        self.assertEqual(pair_voice(40, "man", "american", None, [samoan, maori], ethnicity="Maori")["voice_id"], "maori")
+        self.assertEqual(pair_voice(40, "man", "american", None, [samoan], ethnicity="Maori")["source"], "voice_design")
+        self.assertEqual(pair_voice(40, "man", "american", None, [samoan], ethnicity="Pacific Islander")["voice_id"], "samoan")
+        egyptian, arabic = voice("egyptian", "Warm Egyptian male voice"), voice("arabic", "Warm Arabic male voice")
+        self.assertEqual(pair_voice(40, "man", "american", None, [egyptian], ethnicity="Lebanese")["source"], "voice_design")
+        self.assertEqual(pair_voice(40, "man", "american", None, [arabic], ethnicity="Lebanese")["voice_id"], "arabic")
+        self.assertEqual(pair_voice(40, "man", "american", None, [arabic], ethnicity="Persian")["source"], "voice_design")
+        self.assertEqual(heritage("Lebanese Arab"), ("middle_eastern", "arab:lebanese"))
+        mandarin = voice("mandarin", "Warm Mandarin male voice")
+        self.assertEqual(pair_voice(40, "man", "american", None, [mandarin], ethnicity="Cantonese")["source"], "voice_design")
+        self.assertEqual(pair_voice(40, "man", "american", None, [mandarin], ethnicity="Chinese")["voice_id"], "mandarin")
+        chinese = voice("chinese", "Warm Chinese male voice")
+        self.assertEqual(pair_voice(40, "man", "american", None, [chinese], ethnicity="Cantonese")["voice_id"], "chinese")
+
+    def test_native_speaker_of_a_language_is_not_a_heritage(self):
+        speaker = {**JON, "voice_id": "spk", "description": "A native American English speaker with a conversational tone"}
+        self.assertEqual(pair_voice(40, "man", "american", None, [speaker], ethnicity="White")["voice_id"], "spk")
+        self.assertEqual(pair_voice(40, "man", "american", None, [speaker], ethnicity="Native American")["source"], "voice_design")
+        story = {**JON, "voice_id": "story", "description": "A calm Native American storyteller"}
+        self.assertEqual(pair_voice(40, "man", "american", None, [story], ethnicity="Native American")["voice_id"], "story")
+
+    def test_black_with_an_african_or_caribbean_heritage_is_that_heritage(self):
+        """Round 5."""
+        self.assertEqual(heritage("Black Nigerian"), ("african", "nigerian"))
+        nigerian = {**NIGERIAN, "voice_id": "zz-ng", "name": "Zed", "labels": {**NIGERIAN["labels"], "accent": "standard"},
+                    "description": "A warm Black Nigerian narrator"}
+        wrong = {**INDIAN, "voice_id": "aa-in", "name": "Aaron"}
+        self.assertEqual(pair_voice(40, "man", None, None, [wrong, nigerian], ethnicity="Black Nigerian")["voice_id"], "zz-ng")
+        self.assertEqual(pair_voice(40, "man", None, None, [nigerian], ethnicity="Nigerian")["voice_id"], "zz-ng")
+        only_black = {**NIGERIAN, "voice_id": "blk", "labels": {**NIGERIAN["labels"], "accent": "standard"}, "description": "Deep Black male voice"}
+        self.assertEqual(pair_voice(40, "man", None, None, [only_black], ethnicity="Nigerian")["source"], "voice_design")
+        self.assertEqual(pair_voice(40, "man", None, None, [nigerian], ethnicity="Black American")["source"], "voice_design")
+        # Round 6: "African American" is its own heritage, not the broad "Black".
+        both = {**nigerian, "voice_id": "both", "description": "African American and Nigerian male voice"}
+        self.assertEqual(pair_voice(40, "man", None, None, [both], ethnicity="Nigerian")["source"], "voice_design")
+        self.assertEqual(heritage("African American"), ("black", "black:american"))
+        # Round 7.
+        black_american = {**nigerian, "voice_id": "ba", "description": "Black American and Nigerian male voice"}
+        self.assertEqual(pair_voice(40, "man", None, None, [black_american], ethnicity="Nigerian")["source"], "voice_design")
+        for ethnicity, words in [("South Asian", "Indian and Pakistani male voice"), ("East Asian", "Korean and Japanese male voice"),
+                                 ("African", "Nigerian and Kenyan male voice")]:
+            two = {**nigerian, "voice_id": "two", "description": words}
+            self.assertEqual(pair_voice(40, "man", None, None, [two], ethnicity=ethnicity)["source"], "voice_design", ethnicity)
+        parent_child = {**nigerian, "voice_id": "pc", "description": "Chinese male voice, Mandarin"}
+        self.assertEqual(pair_voice(40, "man", None, None, [parent_child], ethnicity="Chinese")["voice_id"], "pc")
+        self.assertEqual(pair_voice(39, "man", "american", None, [JULIUS, MILES], ethnicity="Black American")["source"], "library")
+
+    def test_hyphenated_mixed_words_check_no_heritage(self):
+        for ethnicity in ("multi-racial Black", "bi-racial Black", "multi-ethnic Korean"):
+            self.assertIsNone(heritage(ethnicity), ethnicity)
+        self.assertEqual(pair_voice(40, "man", "american", None, [JON], ethnicity="bi-racial Black")["voice_id"], "jon")
+
+    def test_a_native_american_voice_actor_is_native_american(self):
+        actor = {**JON, "voice_id": "actor", "description": "Warm Native American voice actor"}
+        self.assertEqual(pair_voice(40, "man", "american", None, [actor], ethnicity="Native American")["voice_id"], "actor")
+        self.assertEqual(pair_voice(40, "man", "american", None, [actor], ethnicity="White")["source"], "voice_design")
+        for words in ("Warm Native American voiceover artist", "Warm native American voice-over artist"):
+            vo = {**JON, "voice_id": "vo", "description": words}
+            self.assertEqual(pair_voice(40, "man", "american", None, [vo], ethnicity="Native American")["voice_id"], "vo", words)
+            self.assertEqual(pair_voice(40, "man", "american", None, [vo], ethnicity="White")["source"], "voice_design", words)
+        generic = {**JON, "voice_id": "generic", "description": "A warm native American voice"}
+        self.assertEqual(pair_voice(40, "man", "american", None, [generic], ethnicity="White")["voice_id"], "generic")
+        self.assertEqual(pair_voice(40, "man", "american", None, [generic], ethnicity="Native American")["source"], "voice_design")
+
+    def test_nearest_ranks_by_age_gap_before_other_differences(self):
+        young_us = {**JULIUS, "voice_id": "young-us", "name": "Aaron"}
+        old_uk = {**JULIUS, "voice_id": "old-uk", "name": "Zed", "labels": {**JULIUS["labels"], "age": "old", "accent": "british"}}
+        british = {**JULIUS, "voice_id": "young-uk", "name": "Bea", "labels": {**JULIUS["labels"], "accent": "british"}}
+        pair = pair_voice(44, "man", "american", None, [young_us, old_uk, british], ethnicity="Black")
+        self.assertEqual([v["voice_id"] for v in pair["nearest"]], ["old-uk", "young-us", "young-uk"])
 
     def test_make_character_survives_an_odd_name_on_the_no_fit_path(self):
         with tempfile.TemporaryDirectory() as tmp:

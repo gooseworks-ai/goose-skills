@@ -9434,6 +9434,7 @@
         "skills/ads/playbooks/video-production-harness/references/hook-compatibility.md",
         "skills/ads/playbooks/video-production-harness/references/libraries-look-and-rubric.md",
         "skills/ads/playbooks/video-production-harness/references/product-scale-and-world.md",
+        "skills/ads/playbooks/video-production-harness/references/quality-tier.md",
         "skills/ads/playbooks/video-production-harness/references/recipe-format.md",
         "skills/ads/playbooks/video-production-harness/references/review-script-shortform.md",
         "skills/ads/playbooks/video-production-harness/references/shot-routing.md",
@@ -9481,9 +9482,9 @@
           "write-video-ad-script"
         ],
         "slug": "video-production-harness",
-        "source_commit": "c886f2dfe9d540406a47569425d1c270a9af1a25",
-        "source_hash": "6c7424cc552b99d6defbd52b348072f02c23e478556f6e32c32822467187aa55",
-        "source_version": "4-6c7424cc552b",
+        "source_commit": "7b432b573a82f9517a4803ecf1bd62cb6c5c8338",
+        "source_hash": "541eb982179742be7bddcfcc768cb0148e8b40ad332a3c4917a955a4cb9f3f6d",
+        "source_version": "4-541eb9821797",
         "tags": [
           "ads",
           "content"

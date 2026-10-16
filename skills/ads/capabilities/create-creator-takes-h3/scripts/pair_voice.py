@@ -54,7 +54,8 @@ NEAR_YEARS = 10
 # sibling (a Korean person never takes a voice described as Japanese). Longest phrase first, and a
 # found phrase is removed, so "african american" never also reads as "african".
 HERITAGE_ALIASES = [
-    ("african american", "black", None), ("afro american", "black", None), ("black", "black", None),
+    ("african american", "black", "black:american"), ("afro american", "black", "black:american"),
+    ("black american", "black", "black:american"), ("black", "black", None),
     ("african", "african", None), ("nigerian", "african", "nigerian"), ("ghanaian", "african", "ghanaian"),
     ("kenyan", "african", "kenyan"), ("south african", "african", "south_african"),
     ("ethiopian", "african", "ethiopian"), ("somali", "african", "somali"),
@@ -62,8 +63,8 @@ HERITAGE_ALIASES = [
     ("hindi", "south_asian", "indian"), ("pakistani", "south_asian", "pakistani"), ("urdu", "south_asian", "pakistani"),
     ("bangladeshi", "south_asian", "bangladeshi"), ("bengali", "south_asian", "bangladeshi"),
     ("sri lankan", "south_asian", "sri_lankan"),
-    ("east asian", "east_asian", None), ("chinese", "east_asian", "chinese"), ("mandarin", "east_asian", "chinese"),
-    ("cantonese", "east_asian", "chinese"), ("taiwanese", "east_asian", "taiwanese"),
+    ("east asian", "east_asian", None), ("chinese", "east_asian", "chinese"),
+    ("mandarin", "east_asian", "chinese:mandarin"), ("cantonese", "east_asian", "chinese:cantonese"), ("taiwanese", "east_asian", "taiwanese"),
     ("japanese", "east_asian", "japanese"), ("korean", "east_asian", "korean"),
     ("southeast asian", "southeast_asian", None), ("filipino", "southeast_asian", "filipino"),
     ("filipina", "southeast_asian", "filipino"), ("tagalog", "southeast_asian", "filipino"),
@@ -73,20 +74,31 @@ HERITAGE_ALIASES = [
     ("latin american", "latino", None), ("mexican", "latino", "mexican"), ("puerto rican", "latino", "puerto_rican"),
     ("colombian", "latino", "colombian"), ("cuban", "latino", "cuban"), ("dominican", "latino", "dominican"),
     ("middle eastern", "middle_eastern", None), ("arab", "middle_eastern", "arab"), ("arabic", "middle_eastern", "arab"),
-    ("lebanese", "middle_eastern", "arab"), ("egyptian", "middle_eastern", "arab"), ("persian", "middle_eastern", "persian"),
+    ("lebanese", "middle_eastern", "arab:lebanese"), ("egyptian", "middle_eastern", "arab:egyptian"), ("persian", "middle_eastern", "persian"),
     ("iranian", "middle_eastern", "persian"), ("farsi", "middle_eastern", "persian"), ("turkish", "middle_eastern", "turkish"),
     ("indigenous", "indigenous", None), ("native american", "indigenous", "native_american"),
+    ("american indian", "indigenous", "native_american"),
+    ("west indian", "caribbean", None), ("caribbean", "caribbean", None), ("jamaican", "caribbean", "jamaican"),
+    ("trinidadian", "caribbean", "trinidadian"), ("haitian", "caribbean", "haitian"),
     ("first nations", "indigenous", "native_american"), ("pacific islander", "indigenous", "pacific"),
-    ("polynesian", "indigenous", "pacific"), ("native hawaiian", "indigenous", "pacific"),
-    ("samoan", "indigenous", "pacific"), ("maori", "indigenous", "pacific"), ("aboriginal", "indigenous", "aboriginal"),
+    ("polynesian", "indigenous", "pacific"), ("native hawaiian", "indigenous", "pacific:hawaiian"),
+    ("samoan", "indigenous", "pacific:samoan"), ("maori", "indigenous", "pacific:maori"),
+    ("aboriginal", "indigenous", "aboriginal"),
     # Broad: "Asian" alone fits an East or Southeast Asian person; it blocks a White one.
     ("asian american", "asian", None), ("asian", "asian", None),
 ]
+# A specific with a parent ("arab:lebanese") fits its parent ("arab": an Arabic voice for a Lebanese
+# person) but never a sibling ("arab:egyptian"); a Chinese voice fits a Cantonese person, a Mandarin one doesn't.
+# "native American" in "a native American English speaker" is about the language, not heritage.
+LANGUAGE_NATIVE = re.compile(r"\bnative (?=(american|british|english|australian|canadian)( english)? (speaker|accent|english|voice\b(?! (actor|actress|artist|talent|over))))")
 # A White person takes a voice that names no heritage; these words mark no voice.
 WHITE_WORDS = ("white", "caucasian", "european")
 # A mixed heritage checks nothing: "biracial Black/Latino" is not one heritage's voices only.
-MIXED = re.compile(r"\b(mixed|biracial|multiracial|multiethnic|multi racial|multi ethnic)\b")
+MIXED = re.compile(r"\b(mixed|bi[- ]?racial|multi[- ]?racial|multi[- ]?ethnic)\b")
 ASIAN = {"asian", "east_asian", "southeast_asian"}
+# "Black" also describes African and Caribbean people: "Black Nigerian" is Nigerian, and a voice
+# described as "Black Nigerian" fits them, but a voice described only as "Black" does not.
+BLACK_ALSO = {"african", "caribbean"}
 # Accent labels that count as the wanted accent, one way only: an "african american" accent is
 # american; an "american" accent is never "african".
 ACCENT_ALIASES = {
@@ -95,8 +107,8 @@ ACCENT_ALIASES = {
 }
 MCP_NO_DESIGN = ("The GooseWorks MCP cannot run Voice Design (its ElevenLabs calls are speech, music and "
                  "GET /v1/voices): play the first `nearest` voice next to the still and, if the owner accepts it, "
-                 "record it with --character --accept-nearest; if not, pair again with --exclude. Never use a "
-                 "voice that is not in voice_pair.")
+                 "record it with --character --accept-nearest; if not, pair again with --character --voices <list> "
+                 "--exclude <voice_id>. Never use a voice that is not in voice_pair.")
 
 
 def age_label(age):
@@ -119,7 +131,7 @@ def norm(value):
 
 def words_in(text):
     """Every (heritage, specific) the text names, longest phrase first, each found phrase removed."""
-    text = " ".join(re.sub(r"[-_/,.()|&+]", " ", text.lower()).split())
+    text = LANGUAGE_NATIVE.sub("", " ".join(re.sub(r"[-_/,.()|&+]", " ", text.lower()).split()))
     found = set()
     for word, group, specific in sorted(HERITAGE_ALIASES, key=lambda row: -len(row[0])):
         pattern = r"\b%s\b" % re.escape(word)
@@ -137,6 +149,10 @@ def heritage(ethnicity):
     found, rest = words_in(ethnicity or "")
     white = any(re.search(r"\b%s\b" % w, rest) for w in WHITE_WORDS)
     groups = {g for g, _ in found}
+    if ("black" in groups and len(groups - {"black"}) == 1 and (groups - {"black"}) <= BLACK_ALSO
+            and all(sp is None for g, sp in found if g == "black")):
+        found = {(g, sp) for g, sp in found if g != "black"}  # "Black Nigerian" is Nigerian
+        groups = {g for g, _ in found}
     if len(groups) > 1 and "asian" in groups and len(groups - {"asian"}) == 1 and (groups - {"asian"}) <= ASIAN:
         found = {(g, sp) for g, sp in found if g != "asian"}  # "Asian (Korean)" is Korean
         groups = {g for g, _ in found}
@@ -145,7 +161,10 @@ def heritage(ethnicity):
     if len(groups) != 1:
         return None
     specifics = {sp for _, sp in found if sp}
-    return (groups.pop(), specifics.pop() if len(specifics) == 1 else None)
+    specifics = {sp for sp in specifics if not any(other.startswith(sp + ":") for other in specifics)}  # "Lebanese Arab"
+    if len(specifics) > 1:
+        return None  # "Korean/Japanese" is mixed, not "East Asian"
+    return (groups.pop(), specifics.pop() if specifics else None)
 
 
 def voice_labels(age, gender, accent=None, energy=None, ethnicity=None):
@@ -201,16 +220,29 @@ def age_fit(age, label):
     return None
 
 
+def years_from_band(age, label):
+    """How many years the age is from the voice's age band (0 inside it); far when unlabelled."""
+    for lo, hi, band in AGE_BANDS:
+        if band == label:
+            return 0 if age is None or lo <= age < hi else (lo - age if age < lo else age - hi + 1)
+    return 999
+
+
 def accent_fits(wanted, label):
     """The voice's accent is the wanted one, or one ACCENT_ALIASES counts as it."""
     return bool(label) and (label == wanted or label in ACCENT_ALIASES.get(wanted, ()))
+
+
+def specific_fits(a, b):
+    """Two specifics fit when either is general (None), they are the same, or one is the other's parent."""
+    return a is None or b is None or a == b or b.startswith(a + ":") or a.startswith(b + ":")
 
 
 def marker_fits(person, marker):
     group, specific = person
     m_group, m_specific = marker
     if m_group == group:
-        return m_specific is None or specific is None or m_specific == specific
+        return specific_fits(m_specific, specific)
     return (m_group == "asian" and group in ASIAN) or (group == "asian" and m_group in ASIAN)
 
 
@@ -222,7 +254,12 @@ def heritage_fits(person, found):
         return True
     if person == "white":
         return not found
-    return bool(found) and all(marker_fits(person, marker) for marker in found)
+    specifics = [sp for _, sp in found if sp]
+    if any(not specific_fits(a, b) for i, a in enumerate(specifics) for b in specifics[i + 1:]):
+        return False  # "Indian and Pakistani" names two heritages; it fits neither, not even "South Asian"
+    own = [m for m in found if marker_fits(person, m)]
+    also = [m for m in found if m == ("black", None) and person[0] in BLACK_ALSO]
+    return bool(own) and len(own) + len(also) == len(found)
 
 
 def match_library(voices, wanted, exclude=(), age=None):
@@ -262,7 +299,6 @@ def nearest(voices, wanted, exclude=(), age=None, limit=3):
     """Up to `limit` voices of the right gender and heritage, closest age first, each with what differs:
     something real to play next to the still while a Voice Design voice is quoted."""
     group = heritage(wanted.get("ethnicity"))
-    order = [band for _, _, band in AGE_BANDS]
     rows = []
     for voice in voices or []:
         vid = voice_id(voice)
@@ -277,8 +313,8 @@ def nearest(voices, wanted, exclude=(), age=None, limit=3):
             differs.append("age %s" % (labels.get("age") or "unlabelled"))
         if wanted.get("accent") and not accent_fits(wanted["accent"], labels.get("accent")):
             differs.append("accent %s" % (labels.get("accent") or "unlabelled"))
-        gap = abs(order.index(labels["age"]) - order.index(wanted["age"])) if labels.get("age") in order else 9
-        rows.append(((len(differs), gap, text_of(voice.get("name")), vid),
+        gap = years_from_band(age, labels.get("age"))
+        rows.append(((gap, len(differs), text_of(voice.get("name")), vid),
                      {"voice_id": vid, "name": text_of(voice.get("name")) or None, "labels": labels,
                       "preview_url": voice.get("preview_url"), "differs_on": differs}))
     return [row for _, row in sorted(rows, key=lambda r: r[0])[:limit]]
@@ -375,8 +411,8 @@ def accept_nearest(path):
             "preview_url": row.get("preview_url"), "differs_on": row.get("differs_on") or [],
             "wanted": old.get("wanted"), "person": old.get("person"), "rejected": old.get("rejected") or [],
             "note": "the closest voice in the list (no voice fits fully and Voice Design can't run); it differs on %s. "
-                    "Play it beside the still; if the owner rejects it, pair again with --exclude"
-                    % (", ".join(row.get("differs_on") or []) or "nothing")}
+                    "Play it beside the still; if the owner rejects it, pair again with --character --voices <list> --exclude %s"
+                    % (", ".join(row.get("differs_on") or []) or "nothing", row["voice_id"])}
     record["voice_pair"] = pair
     path.write_text(json.dumps(record, indent=1), encoding="utf-8")
     return pair
