@@ -19,6 +19,7 @@ can't do it (small label text, a complex product shape, many parts that must sta
 The upgrade record uses the server's names, and `query` is what the paid call adds; call_query()
 adds the shot's `shot_scene`.
 """
+import argparse
 import sys
 
 TIERS = ("standard", "best")
@@ -34,11 +35,17 @@ RANK = {
 REASONS = ("failed_attempt", "customer_asked")
 
 
+def _scene(text):
+    if not text.isdigit() or int(text) < 1:
+        raise argparse.ArgumentTypeError("a script scene number (1 or more); leave it out for a shared still")
+    return int(text)
+
+
 def add_args(ap, scene=True):
     ap.add_argument("--tier", default="standard", choices=TIERS,
                     help="the customer's price: standard (default) or best; sets the default quality or resolution")
     if scene:
-        ap.add_argument("--shot-scene", type=int,
+        ap.add_argument("--shot-scene", type=_scene,
                         help="the script scene this call makes (the server's shot_scene); leave out for a shared still")
     ap.add_argument("--upgrade-reason", choices=REASONS,
                     help="why this shot goes above the tier's default (see tiers.py)")
@@ -77,9 +84,6 @@ def upgrade(a, setting, chosen):
     else:
         sys.exit("%s %s is above the %s default (%s): an upgrade needs --upgrade-reason %s"
                  % (setting, chosen, a.tier, base, " | ".join(REASONS)))
-    if hasattr(a, "shot_scene") and not (a.shot_scene and a.shot_scene > 0):
-        sys.exit("an upgrade names its shot: pass --shot-scene <the script scene this still is for>; the "
-                 "server refuses an upgrade with no scene")
     return {"setting": setting, "from": base, "to": chosen, **record, "query": query}
 
 

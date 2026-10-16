@@ -19,7 +19,7 @@ superseded_by: video-seedance-2@1.3.0
 
 Wraps the FAL endpoint `bytedance/seedance-2.0/reference-to-video`. Pass 1-N image references (product + optional empty setting, **never a photoreal face**) + a structured prompt → get back a 4-15s clip with ambient audio, at 720p by default.
 
-**Seedance refuses photoreal faces, whatever model made them** (a fresh Seedream v5 Pro face too, 2026-09-29), and a refused submit still bills. Talking heads and any shot with a realistic face go to `creator-h3` / `video-h3max` (H3). In a GooseWorks custom video Seedance always needs the customer's new yes to its price; send that call's `--query` (below).
+**Seedance refuses photoreal faces, whatever model made them** (a fresh Seedream v5 Pro face too, 2026-09-29), and a refused submit still bills. Talking heads and any shot with a realistic face go to `creator-h3` / `video-h3max` (H3). In a GooseWorks custom video Seedance always needs the customer's new yes to its price, saved in the approved review; send that call's `--query` (below).
 
 Seedance 2.0 renders **multiple internal cuts within a single 15s call** when the prompt specifies sub-scene structure (e.g. WIDE HOOK / PRODUCT HERO / SIDESTEP / REACTION). This is the architectural win over the older NB2 + i2v multi-keyframe approach — fewer calls, native lip-sync, no Soul ID required.
 
@@ -45,7 +45,7 @@ Required:
 
 Optional:
 - `--resolution` — `480p` | `720p` (default) | `1080p`. No video above 720p unless the customer asks (16 Oct 2026): pass `1080p` only then.
-- `--query` — the call's GooseWorks query as JSON. In a custom video, after the customer's yes to its price: `{"shot_scene": "<scene>", "upgrade_reason": "customer_asked", "upgrade_quote": "<their words>"}`.
+- `--query` — the call's GooseWorks query as JSON. In a custom video the shot first needs the customer's yes to its Seedance price, saved as a `shot_overrides` `{scene, seedance: true, user_quote}` in the approved review; then send `{"shot_scene": "<scene>"}` at 720p. Only 1080p also adds `"upgrade_reason": "customer_asked", "upgrade_quote": "<their words>"`.
 - `--duration` — `4`–`15` seconds (default `15`). Passed as an **int** (`seedance-2.0/reference-to-video` enum {auto,4..15}); a string 400s with `invalid_request` (validated 2026-07-18).
 - `--aspect-ratio` — `9:16` (default), `16:9`, `1:1`, etc.
 - `--generate-audio` — bool, default true. Set false for silent B-roll where VO is added post.

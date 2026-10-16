@@ -75,13 +75,15 @@ class StillQualityTests(unittest.TestCase):
             self.assertEqual(quoted["upgrade"]["query"], {"upgrade_reason": "customer_asked",
                                                           "upgrade_quote": "make her picture as sharp as you can"})
 
-    def test_an_upgrade_names_its_shot(self):
+    def test_a_shared_still_upgrades_without_a_scene(self):
+        """The server lets a shared still (cast, set) leave out shot_scene, even on a picture upgrade."""
         with tempfile.TemporaryDirectory() as tmp:
             r, quoted = self.quote(tmp, "--quality", "high", "--upgrade-reason", "failed_attempt",
                                    "--upgrade-attempt", "op-1", "--upgrade-why", "label garbled at medium")
+            self.assertEqual(r.returncode, 0, r.stderr)
+            self.assertNotIn("shot_scene", quoted["query"])
+            r, _ = self.quote(tmp, "--shot-scene", "0")
             self.assertNotEqual(r.returncode, 0)
-            self.assertIn("--shot-scene", r.stderr)
-            self.assertIsNone(quoted)
 
     def test_a_reason_without_an_upgrade_is_refused(self):
         with tempfile.TemporaryDirectory() as tmp:

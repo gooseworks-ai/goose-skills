@@ -102,9 +102,9 @@ def main() -> int:
                          "policy rejection it is a PERMANENT refusal key, so it must cover "
                          "every input.")
     ap.add_argument("--query", default=None,
-                    help='GooseWorks query for this call as JSON. A custom video sends it after the '
-                         'customer\'s yes: {"shot_scene": "3", "upgrade_reason": "customer_asked", '
-                         '"upgrade_quote": "<their words>"}')
+                    help='GooseWorks query for this call as JSON. A custom video sends {"shot_scene": "3"} '
+                         'once the approved review holds the shot\'s seedance override; 1080p also adds '
+                         '"upgrade_reason": "customer_asked", "upgrade_quote": "<their words>"')
     args = ap.parse_args()
     query = json.loads(args.query) if args.query else None
     if query is not None and not isinstance(query, dict):

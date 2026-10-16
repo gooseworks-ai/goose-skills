@@ -26,9 +26,9 @@
       "sha256": "bce1223062b67613873816b2a08e53e9316a7d2767ae8aec7154e3c52ba5519b"
     },
     "create-clips.md": {
-      "bytes": 15353,
-      "catalog_sha256": "7a9ad9ed91f1eb8b0ccd59fe9ead691afe96ddbab88e88f3c875a007f162abe9",
-      "sha256": "7a9ad9ed91f1eb8b0ccd59fe9ead691afe96ddbab88e88f3c875a007f162abe9"
+      "bytes": 15338,
+      "catalog_sha256": "29be68f36d7382629a9609c603b29ccc2ca0edc09c893bf890b14b0ef9bbadff",
+      "sha256": "29be68f36d7382629a9609c603b29ccc2ca0edc09c893bf890b14b0ef9bbadff"
     },
     "create-design-brief.md": {
       "bytes": 13188,
@@ -141,9 +141,9 @@
       "sha256": "fab9107769fe9fcee0c5e78b2377b53ac8645e05cbd84512066618483f2b30fa"
     },
     "references/quality-tier.md": {
-      "bytes": 5341,
-      "catalog_sha256": "b062eb85887502c5155b01d7772c07ddf55d6a24de79231d923eab0d1517653e",
-      "sha256": "b062eb85887502c5155b01d7772c07ddf55d6a24de79231d923eab0d1517653e"
+      "bytes": 6230,
+      "catalog_sha256": "075ff9fb82a2e4d17790dcca999dce0d95cf010e6e78b91037b6f9597cfc36a4",
+      "sha256": "075ff9fb82a2e4d17790dcca999dce0d95cf010e6e78b91037b6f9597cfc36a4"
     },
     "references/recipe-format.md": {
       "bytes": 6667,
@@ -242,8 +242,8 @@
     },
     "skill.meta.json": {
       "bytes": 683,
-      "catalog_sha256": "8556d96fb152eefa2b33f1d726bcaa1b602c0cb9534dc3c52e216319f5586f2a",
-      "sha256": "8556d96fb152eefa2b33f1d726bcaa1b602c0cb9534dc3c52e216319f5586f2a"
+      "catalog_sha256": "ffc35a075c01e5dcb2e77784a7567c7e03ac7ec734b01e797ee97c44bce96328",
+      "sha256": "ffc35a075c01e5dcb2e77784a7567c7e03ac7ec734b01e797ee97c44bce96328"
     },
     "states/edit-to-delivery.md": {
       "bytes": 7799,
@@ -251,9 +251,9 @@
       "sha256": "23db326a03fabe7f9e510b384dd4aff42d876110d2d09ae7cc3a0654bea542d6"
     },
     "states/setup-and-script.md": {
-      "bytes": 9413,
-      "catalog_sha256": "d4c8a577d59065e56927eedefa3307c41f48990dd2a8912a1944a20bee5b3189",
-      "sha256": "d4c8a577d59065e56927eedefa3307c41f48990dd2a8912a1944a20bee5b3189"
+      "bytes": 9431,
+      "catalog_sha256": "11c05b6064f0f410e79c6f1e4a4d77a87b78e335a00e48e813da8358c8461bfa",
+      "sha256": "11c05b6064f0f410e79c6f1e4a4d77a87b78e335a00e48e813da8358c8461bfa"
     },
     "states/storyboard-and-clips.md": {
       "bytes": 7359,
@@ -287,7 +287,7 @@
   ],
   "schema_version": 1,
   "slug": "video-production-harness",
-  "source_commit": "f57ea181d69139330a2385d230f22e7ae4159f8b",
+  "source_commit": "b914dc5c122c51766d2e020a68775a3e97f9432d",
   "source_files": {
     "SKILL.md": {
       "sha256": "3e659d9dc20047c9deb42344749c2e9891b523151c5584c0123111d3f779f855",
@@ -310,7 +310,7 @@
       "source": "capabilities.md"
     },
     "create-clips.md": {
-      "sha256": "7a9ad9ed91f1eb8b0ccd59fe9ead691afe96ddbab88e88f3c875a007f162abe9",
+      "sha256": "29be68f36d7382629a9609c603b29ccc2ca0edc09c893bf890b14b0ef9bbadff",
       "source": "create-clips.md"
     },
     "create-design-brief.md": {
@@ -402,7 +402,7 @@
       "source": "references/product-scale-and-world.md"
     },
     "references/quality-tier.md": {
-      "sha256": "b062eb85887502c5155b01d7772c07ddf55d6a24de79231d923eab0d1517653e",
+      "sha256": "075ff9fb82a2e4d17790dcca999dce0d95cf010e6e78b91037b6f9597cfc36a4",
       "source": "references/quality-tier.md"
     },
     "references/recipe-format.md": {
@@ -486,7 +486,7 @@
       "source": "states/edit-to-delivery.md"
     },
     "states/setup-and-script.md": {
-      "sha256": "d4c8a577d59065e56927eedefa3307c41f48990dd2a8912a1944a20bee5b3189",
+      "sha256": "11c05b6064f0f410e79c6f1e4a4d77a87b78e335a00e48e813da8358c8461bfa",
       "source": "states/setup-and-script.md"
     },
     "states/storyboard-and-clips.md": {
@@ -498,6 +498,6 @@
       "source": "wrap-session.md"
     }
   },
-  "source_hash": "a07d6133d8d689119f34e5c24c53d50e0a3492f5e8a11f93c571237f13359871",
-  "source_version": "4-a07d6133d8d6"
+  "source_hash": "09107357ba58b8929069397fa90a3fd70b1da8bea831f13b70182fe497c783be",
+  "source_version": "4-09107357ba58"
 }
