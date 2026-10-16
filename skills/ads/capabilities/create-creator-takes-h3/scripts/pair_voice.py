@@ -118,6 +118,12 @@ MCP_NO_DESIGN = ("Search the shared voice library first (library_search: free GE
                  "one with the `save` call. When the owner turns a voice down, pair again with --character --voices <list> "
                  "--exclude <voice_id>. " + NEVER_BEND + " Never use a voice that is not in voice_pair.")
 
+LIBRARY_DONE = ("The voice library was searched and nothing fits: quote and run the Voice Design request through "
+                "data_post_provider, play its previews beside the still, save the chosen one with the `save` call and "
+                "record it with --character --designed <voice_id>. If a library reply said has_more, its next page may "
+                "still fit. When the owner turns a voice down, pair again with --character --voices <list> "
+                "--exclude <voice_id>. " + NEVER_BEND)
+
 # Library search words per heritage: the shared library's search reads names and descriptions, which
 # say "African American", "Latina", "Indian" or "Asian-American", not the broad group's name.
 LIBRARY_SEARCH_WORDS = {
@@ -392,6 +398,11 @@ def design_request(age, gender, accent=None, energy=None, sample_text=None, ethn
     }
 
 
+def library_searched(voices):
+    """The lists include a shared-library reply (its voices carry public_owner_id): no further search will help."""
+    return any(isinstance(v, dict) and v.get("public_owner_id") for v in voices or [])
+
+
 def pair_voice(age, gender, accent=None, energy=None, voices=None, exclude=(), sample_text=None, ethnicity=None):
     """voice_pair for character.json: a library match when the list has one, else a Voice Design request
     with the nearest voices in the list. `person` keeps the inputs and `rejected` the excluded voices,
@@ -407,13 +418,16 @@ def pair_voice(age, gender, accent=None, energy=None, voices=None, exclude=(), s
                          "before any paid voice step" + (". Its age label is one band off: listen for it"
                                                         if "age_near" in match["matched_on"] else ""))
         return match
-    pair = {"source": "voice_design", "wanted": wanted, "person": person, "rejected": rejected,
-            "library_search": library_searches(gender, ethnicity)}
+    searched = library_searched(voices)
+    pair = {"source": "voice_design", "wanted": wanted, "person": person, "rejected": rejected}
+    if not searched:
+        pair["library_search"] = library_searches(gender, ethnicity)
     pair.update(design_request(age, gender, accent, energy, sample_text, ethnicity))
     if voices:
         pair["nearest"] = nearest(voices, wanted, exclude, int(age))
     pair["note"] = ("no saved voice fits %s; Voice Design is a paid call: quote it, listen to the previews, then save one. %s"
-                    % (", ".join("%s %s" % (k, v) for k, v in wanted.items() if k != "energy"), MCP_NO_DESIGN)) if voices else \
+                    % (", ".join("%s %s" % (k, v) for k, v in wanted.items() if k != "energy"),
+                       LIBRARY_DONE if searched else MCP_NO_DESIGN)) if voices else \
                    ("no voice list given; search the library (library_search) before Voice Design, a paid call: quote it, "
                     "listen to the previews, then save one. " + NEVER_BEND)
     return pair
@@ -463,6 +477,21 @@ def repair_character(path, voices, exclude=(), sample_text=None):
     return pair
 
 
+def record_designed(path, voice_id, name=None):
+    """After Voice Design: the saved voice (POST /v1/text-to-voice's voice_id) becomes the pair, so every later
+    step reads its id from voice_pair."""
+    record = json.loads(path.read_text(encoding="utf-8"))
+    old = record.get("voice_pair") or {}
+    if old.get("source") != "voice_design":
+        raise SystemExit("--designed records a saved Voice Design voice; this voice_pair is source %r" % old.get("source"))
+    pair = {"source": "voice_design_saved", "voice_id": voice_id, "name": name, "wanted": old.get("wanted"),
+            "person": old.get("person"), "rejected": old.get("rejected") or [], "request": old.get("request"),
+            "note": "designed for this person and saved; play it beside the still and approve the two together"}
+    record["voice_pair"] = pair
+    path.write_text(json.dumps(record, indent=1), encoding="utf-8")
+    return pair
+
+
 def accept_nearest(path):
     """When no voice fits fully and Voice Design can't run, take the first `nearest` voice (the closest
     of the right gender and heritage) as the pair. Nobody picks from the list: the owner hears it beside
@@ -502,6 +531,9 @@ def main():
                     help="print the free GET /v1/shared-voices calls for --gender and --ethnicity, and stop")
     ap.add_argument("--exclude", action="append", default=[], help="a voice_id not to use: a rejected voice, or another brand's narrator")
     ap.add_argument("--sample-text", help="100-1000 characters for the design previews; else auto-generated")
+    ap.add_argument("--designed", metavar="VOICE_ID",
+                    help="with --character: record the voice_id POST /v1/text-to-voice returned as the pair")
+    ap.add_argument("--designed-name", help="with --designed: the saved voice's name")
     ap.add_argument("--accept-nearest", action="store_true",
                     help="with --character: take the first voice_pair.nearest voice as the pair, when Voice Design can't run")
     ap.add_argument("--out", type=pathlib.Path)
@@ -512,7 +544,11 @@ def main():
         print(json.dumps(library_searches(a.gender, a.ethnicity), indent=1))
         return 0
     voices = load_voice_lists(a.voices) if a.voices else None
-    if a.accept_nearest:
+    if a.designed:
+        if not a.character:
+            raise SystemExit("--designed needs --character")
+        pair = record_designed(a.character, a.designed.strip(), a.designed_name)
+    elif a.accept_nearest:
         if not a.character:
             raise SystemExit("--accept-nearest needs --character")
         pair = accept_nearest(a.character)

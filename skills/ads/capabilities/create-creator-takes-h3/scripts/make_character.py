@@ -331,7 +331,7 @@ def main():
                     "25-40%% action, 20-35%% phone_observer")
     ap.add_argument("--shot", default="auto", choices=["auto", "talking", "action"],
                     help="auto (default): action when --action is given or --capture phone_observer, else "
-                         "talking. talking keeps the lens gaze and free hands for someone who talks while acting")
+                         "talking. talking keeps the lens gaze for someone who talks while acting (--action is what they do while talking)")
     ap.add_argument("--skin-condition", default=None,
                     help="a visible skin problem the product treats, shown on the person, e.g. 'visible "
                          "blackheads on the nose, oily T-zone' or 'a few small acne spots'")
