@@ -20,6 +20,7 @@ import { join } from 'node:path';
 import { createHash } from 'node:crypto';
 import { kitCheckInputs, kitCheckOutputs, kitDuration, kitFfmpeg, kitNum, kitPieceName, kitStopIfAborted } from '../../_lib/part.mjs';
 import { kitApplySayAs } from '../../_lib/speech-map.mjs';
+import { kitTierDefault } from '../../_lib/tier.mjs';
 import { H3_CAPTURE, H3_DEFAULT_DELIVERY, H3_FOCUS, H3_MANNERISM, H3_TEMPLATE } from './prompt.mjs';
 import { kitMediaConfigurationSha256, kitMediaReviewProblem, kitMediaRouteProblem } from '../../_lib/media-qualification.mjs';
 
@@ -488,7 +489,7 @@ export async function run(inputs, ctx) {
     provider: 'fal', model: MODEL, shot_type: 'talking_creator', creative_contract_revision: inputs.creative_contract_revision,
     capture, identity: creator.character.identity, environment: creator.character.environment || '',
     anchor: creator.character.image, mannerism: inputs.mannerism || null, delivery,
-    resolution: inputs.resolution ?? '1080P', aspect_ratio: inputs.aspect_ratio ?? '9:16',
+    resolution: inputs.resolution ?? kitTierDefault(inputs, 'h3_resolution'), aspect_ratio: inputs.aspect_ratio ?? '9:16',
     words_per_second: plannedWps, required_features: features,
     prompt_template: H3_TEMPLATE, capture_template: H3_CAPTURE[capture], focus, focus_template: H3_FOCUS[focus], mannerism_template: inputs.mannerism ? H3_MANNERISM : null,
     voice_reference_source_sha256: firstSourceSha256, voice_reference_extract: VOICE_CLIP,
@@ -499,7 +500,7 @@ export async function run(inputs, ctx) {
   if (routeProblem) throw ctx.error('bad_input', routeProblem);
   const actionRequired = features.some((feature) => H3_PRODUCT_ACTIONS.includes(feature));
 
-  const resolution = inputs.resolution ?? '1080P';
+  const resolution = inputs.resolution ?? kitTierDefault(inputs, 'h3_resolution');
   const aspect = inputs.aspect_ratio ?? '9:16';
   let voice = null;
   const made = [];

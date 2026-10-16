@@ -37,6 +37,13 @@ refuses (a silent fallback to a paid Voice Design request was ignored on 15 Oct)
 --voices, or --voice-design to quote Voice Design on purpose, or --no-voice-pair for a person
 who is never voiced separately. To change the voice later: pair_voice.py --character
 character.json --voices <list> --exclude <rejected voice_id>.
+
+Quality: --tier standard (default) makes the still at GPT Image 2 medium, --tier best at high.
+--quality high under Standard is an upgrade for this one person and needs a reason
+(--upgrade-reason failed_attempt --upgrade-attempt <operation id> --upgrade-why "<one line>", or
+customer_asked --upgrade-quote "<their words>"); see tiers.py. character.json and the
+--payload-out file record the tier, the quality and any upgrade; `query` is what the paid call
+sends (the upgrade's fields and --shot-scene, for a still made for one scene).
 """
 import argparse
 import json
@@ -49,6 +56,7 @@ HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from pair_voice import load_voices, pair_voice  # noqa: E402
 from plan_takes import both_hands  # noqa: E402
+import tiers  # noqa: E402
 
 # Skin tone follows from ethnicity unless the user overrides it. These are the formula's own
 # vocabulary, not invented: it asks for e.g. "deep brown-black / warm medium brown / olive-tan".
@@ -332,6 +340,8 @@ def main():
     # for cartoons only). A Nano Banana model still takes --resolution and --seed.
     ap.add_argument("--model", default="openai/gpt-image-2")
     ap.add_argument("--resolution", default="4K", choices=["1K", "2K", "4K"], help="Nano Banana models only")
+    ap.add_argument("--quality", choices=tiers.RANK["image_quality"],
+                    help="GPT Image 2 only; default: the tier's (medium Standard, high Best). Above it is an upgrade")
     ap.add_argument("--aspect", default="9:16")
     ap.add_argument("--seed", type=int, default=None)
     ap.add_argument("--out", required=True, type=pathlib.Path)
@@ -343,8 +353,14 @@ def main():
                     help="no voice list: record a paid ElevenLabs Voice Design request to quote (not available through the GooseWorks MCP)")
     ap.add_argument("--no-voice-pair", action="store_true",
                     help="this person is never voiced separately (B-roll with no lines, or H3 native speech); records no voice_pair")
+    tiers.add_args(ap)
     a = ap.parse_args()
     voice_refusal(a)
+    gpt = a.model.startswith("openai/gpt-image-2")
+    if a.quality and not gpt:
+        sys.exit("--quality is for openai/gpt-image-2; a Nano Banana model takes --resolution")
+    quality = (a.quality or tiers.default(a, "image_quality")) if gpt else None
+    upgrade = tiers.upgrade(a, "image_quality", quality) if gpt else None
 
     prompt, negative, ident, slots = build(a)
     out = a.out.resolve()
@@ -379,7 +395,12 @@ def main():
         "capture": a.capture, "recording": a.recording, "focus": a.focus, "shot": a.shot,
         "capture_decision": a.capture_decision, "actions": a.action or [],
         "distinctive_marks": a.marks or [], "approval": "pending",
+        "quality_tier": a.tier,
     }
+    if quality:
+        record["quality"] = quality
+    if upgrade:
+        record["upgrade"] = upgrade
     if voice is not None:
         record["voice_pair"] = voice
     if a.skin_condition:
@@ -394,7 +415,7 @@ def main():
             sys.exit("openai/gpt-image-2 takes no seed; leave --seed out")
         w, h = GPT_SIZE[a.aspect]
         payload = {"prompt": prompt + "\n\nAvoid: " + negative, "image_size": {"width": w, "height": h},
-                   "quality": "high"}
+                   "quality": quality}
     else:
         payload = {"prompt": prompt, "negative_prompt": negative, "aspect_ratio": a.aspect,
                    "resolution": a.resolution}
@@ -402,9 +423,15 @@ def main():
             payload["seed"] = a.seed
     if a.payload_out:
         a.payload_out.parent.mkdir(parents=True, exist_ok=True)
-        a.payload_out.write_text(json.dumps({"model": a.model, "body": payload}, indent=1),
+        quote = {"model": a.model, "body": payload, "quality_tier": a.tier}
+        if upgrade:
+            quote["upgrade"] = upgrade
+        if tiers.call_query(a, upgrade):
+            quote["query"] = tiers.call_query(a, upgrade)
+        a.payload_out.write_text(json.dumps(quote, indent=1),
                                  encoding="utf-8")
-        print("payload  : %s (price this body with data_price_provider before the paid call)" % a.payload_out)
+        print("payload  : %s (price it with data_price_provider before the paid call: the body, plus its query "
+              "fields as top-level request fields)" % a.payload_out)
     if a.dry_run:
         print("\n(dry run, nothing generated)")
         return
@@ -413,6 +440,7 @@ def main():
     r = subprocess.run([sys.executable, str(HERE.parent.parent / "create-image-fal" / "scripts"
                                             / "gen_image.py"),
                         "--model", a.model, "--payload", json.dumps(payload),
+                        "--query", json.dumps(tiers.call_query(a, upgrade)),
                         "--out", str(png)])
     if r.returncode or not png.exists():
         sys.exit("image generation failed; nothing written")

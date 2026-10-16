@@ -12,6 +12,7 @@
 // is not in scenes (stale voice output) or more lipsync than max_seconds.
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitDuration, kitFfmpeg, kitNum, kitPieceName, kitStopIfAborted } from '../../_lib/part.mjs';
+import { kitTierDefault } from '../../_lib/tier.mjs';
 
 const MODEL = 'veed/fabric-1.0';
 // Veed returns clips a few milliseconds short; a clip far from its audio is broken.
@@ -100,7 +101,7 @@ export async function run(inputs, ctx) {
     throw ctx.error('bad_input', `the lines and idle clips need ${total.toFixed(2)}s of lipsync, more than max_seconds ${inputs.max_seconds}`);
   }
 
-  const resolution = inputs.resolution ?? '720p';
+  const resolution = inputs.resolution ?? kitTierDefault(inputs, 'lipsync_resolution');
   const jobs = spoken.length + (idleSeconds ? inputs.faces.length : 0);
   const used = new Set();
   const clips = [];

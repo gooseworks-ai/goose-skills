@@ -1852,7 +1852,7 @@
       "description": "Generate an AI creator talking to camera, saying an approved script, as one continuous track — H3 Max reference-to-video through the GooseWorks fal-proxy (bills the Ads agent). Plans takes on line boundaries under H3's 15s cap, dry-runs a cost estimate, generates the first take alone so its voice can be locked and passed to every later take, joins takes with measured 0.10s dissolves, and moves each line's timing onto the words actually spoken. Use for any format with a generated creator speaking a script (split-screen, screen inserts, talking-head ads).",
       "tags": "ads, content",
       "path": "skills/ads/capabilities/create-creator-takes-h3",
-      "version": "2.6.1",
+      "version": "2.7.0",
       "files": [
         "skills/ads/capabilities/create-creator-takes-h3/SKILL.md",
         "skills/ads/capabilities/create-creator-takes-h3/scripts/align_beats.py",
@@ -1864,11 +1864,13 @@
         "skills/ads/capabilities/create-creator-takes-h3/scripts/pair_voice.py",
         "skills/ads/capabilities/create-creator-takes-h3/scripts/plan_takes.py",
         "skills/ads/capabilities/create-creator-takes-h3/scripts/run_takes.py",
+        "skills/ads/capabilities/create-creator-takes-h3/scripts/tiers.py",
         "skills/ads/capabilities/create-creator-takes-h3/skill.meta.json",
         "skills/ads/capabilities/create-creator-takes-h3/tests/smoke-test.md",
         "skills/ads/capabilities/create-creator-takes-h3/tests/test_action_skin_light.py",
         "skills/ads/capabilities/create-creator-takes-h3/tests/test_hands_voice_pace.py",
         "skills/ads/capabilities/create-creator-takes-h3/tests/test_make_character.py",
+        "skills/ads/capabilities/create-creator-takes-h3/tests/test_quality_tier.py",
         "skills/ads/capabilities/create-creator-takes-h3/tests/test_run_takes_rejection.py",
         "skills/ads/capabilities/create-creator-takes-h3/tests/test_voice_ethnicity.py"
       ],
@@ -1876,7 +1878,7 @@
         "slug": "create-creator-takes-h3",
         "category": "capabilities",
         "domain": "ads",
-        "version": "2.6.1",
+        "version": "2.7.0",
         "tags": [
           "ads",
           "content"
@@ -1998,22 +2000,24 @@
       "description": "Generate or edit an image via any FAL image model (nano-banana edit, gpt-image, flux, ...), ROUTED THROUGH THE fal-proxy so it bills the Ads agent. image_urls must be public URLs; --image puts a local file on the fal CDN first. The recipe names the model + prompt. Use for keyframes, flat-cover transforms, product hero edits. (For the OpenAI gpt-image family specifically, create-image-gpt-image-fal also exists.)",
       "tags": "ads",
       "path": "skills/ads/capabilities/create-image-fal",
-      "version": "1.3.0",
+      "version": "1.4.0",
       "files": [
         "skills/ads/capabilities/create-image-fal/SKILL.md",
         "skills/ads/capabilities/create-image-fal/references/avatar-generation.md",
         "skills/ads/capabilities/create-image-fal/scripts/brand_pack_lint.py",
         "skills/ads/capabilities/create-image-fal/scripts/gen_image.py",
+        "skills/ads/capabilities/create-image-fal/scripts/image_quality.py",
         "skills/ads/capabilities/create-image-fal/scripts/media_proxy.py",
         "skills/ads/capabilities/create-image-fal/skill.meta.json",
         "skills/ads/capabilities/create-image-fal/tests/smoke-test.md",
-        "skills/ads/capabilities/create-image-fal/tests/test_brand_pack_lint.py"
+        "skills/ads/capabilities/create-image-fal/tests/test_brand_pack_lint.py",
+        "skills/ads/capabilities/create-image-fal/tests/test_image_quality.py"
       ],
       "metadata": {
         "slug": "create-image-fal",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.3.0",
+        "version": "1.4.0",
         "tags": [
           "ads"
         ],
@@ -2263,10 +2267,10 @@
     {
       "slug": "create-video-seedance-2-fal",
       "name": "create-video-seedance-2-fal",
-      "version": "2.0.3",
+      "version": "2.0.4",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Generate a single 4-15s vertical video clip with ByteDance Seedance 2.0 reference-to-video via fal.ai. Multi-image reference (avatar + product + setting), native lip-synced VO + ambient audio (generate-audio on by default), internal multi-cut handling within one render. Routes through the GooseWorks FAL proxy (bills the Ads agent). The default clip atom for AI-creator UGC ads built on the NB2 + Seedance architecture. Validated on beauty-by-earth/video-01.",
+      "description": "Generate a single 4-15s vertical video clip with ByteDance Seedance 2.0 reference-to-video via fal.ai, for shots with no realistic face (a product hero, a product in motion, an empty set). Multi-image reference (product + setting), ambient audio, internal multi-cut handling within one render, 720p by default. Routes through the GooseWorks FAL proxy (bills the Ads agent). Seedance refuses photoreal faces, so talking heads and creators go to creator-h3 / video-h3max.",
       "tags": "ads",
       "path": "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal",
       "files": [
@@ -2285,7 +2289,7 @@
         "slug": "create-video-seedance-2-fal",
         "category": "capabilities",
         "pack": "ugc-video-formats",
-        "version": "2.0.3",
+        "version": "2.0.4",
         "tags": [
           "ads"
         ],
@@ -4854,20 +4858,21 @@
       "description": "Shared helper that routes ALL paid media generation (FAL image/video, ElevenLabs music) through the GooseWorks proxies so every call bills the Ads agent — never a provider SDK's default host. Host-swaps the FAL queue URLs, loads the agent token from the sandbox env (GW_MEDIA_PROXY_TOKEN) or ~/.gooseworks/credentials.json, and returns the result CDN URL. Every video-ad media capability imports this; templates never call a provider directly.",
       "tags": "ads",
       "path": "skills/ads/capabilities/media-proxy",
-      "version": "2.0.4",
+      "version": "2.0.5",
       "files": [
         "skills/ads/capabilities/media-proxy/SKILL.md",
         "skills/ads/capabilities/media-proxy/scripts/media_proxy.py",
         "skills/ads/capabilities/media-proxy/scripts/resume.py",
         "skills/ads/capabilities/media-proxy/skill.meta.json",
         "skills/ads/capabilities/media-proxy/tests/smoke-test.md",
+        "skills/ads/capabilities/media-proxy/tests/test_call_query.py",
         "skills/ads/capabilities/media-proxy/tests/test_media_proxy_policy.py"
       ],
       "metadata": {
         "slug": "media-proxy",
         "category": "capabilities",
         "domain": "ads",
-        "version": "2.0.4",
+        "version": "2.0.5",
         "tags": [
           "ads"
         ],
@@ -9430,6 +9435,7 @@
         "skills/ads/playbooks/video-production-harness/references/hook-compatibility.md",
         "skills/ads/playbooks/video-production-harness/references/libraries-look-and-rubric.md",
         "skills/ads/playbooks/video-production-harness/references/product-scale-and-world.md",
+        "skills/ads/playbooks/video-production-harness/references/quality-tier.md",
         "skills/ads/playbooks/video-production-harness/references/recipe-format.md",
         "skills/ads/playbooks/video-production-harness/references/review-script-shortform.md",
         "skills/ads/playbooks/video-production-harness/references/shot-routing.md",
@@ -9477,9 +9483,9 @@
           "write-video-ad-script"
         ],
         "slug": "video-production-harness",
-        "source_commit": "d1b01247cbef293623b2a330b411b668160f1674",
-        "source_hash": "0a4a75772735301132ebef36e21f00b6e7940f3402b7e0c8a96e4e96c4bbb9f5",
-        "source_version": "4-0a4a75772735",
+        "source_commit": "fc4c06230bd7530b518e0c27f540973e96ab2623",
+        "source_hash": "60733f82cc81ea7c549c8c9c7cdcf036766a8665a4c35cb64ed8c038e75ca7e2",
+        "source_version": "4-60733f82cc81",
         "tags": [
           "ads",
           "content"
@@ -10286,9 +10292,9 @@
         {
           "slug": "create-video-seedance-2-fal",
           "name": "create-video-seedance-2-fal",
-          "description": "Generate a single 4-15s vertical video clip with ByteDance Seedance 2.0 reference-to-video via fal.ai. Multi-image reference (avatar + product + setting), native lip-synced VO + ambient audio (generate-audio on by default), internal multi-cut handling within one render. Routes through the GooseWorks FAL proxy (bills the Ads agent). The default clip atom for AI-creator UGC ads built on the NB2 + Seedance architecture. Validated on beauty-by-earth/video-01.",
+          "description": "Generate a single 4-15s vertical video clip with ByteDance Seedance 2.0 reference-to-video via fal.ai, for shots with no realistic face (a product hero, a product in motion, an empty set). Multi-image reference (product + setting), ambient audio, internal multi-cut handling within one render, 720p by default. Routes through the GooseWorks FAL proxy (bills the Ads agent). Seedance refuses photoreal faces, so talking heads and creators go to creator-h3 / video-h3max.",
           "path": "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal",
-          "version": "2.0.3",
+          "version": "2.0.4",
           "files": [
             "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/SKILL.md",
             "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/scripts/generate.py",

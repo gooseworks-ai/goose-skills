@@ -2,12 +2,12 @@
 name: create-creator-takes-h3
 description: Generate an AI creator talking to camera, saying an approved script, as one continuous track — H3 Max reference-to-video through the GooseWorks fal-proxy (bills the Ads agent). Plans takes on line boundaries under H3's 15s cap, dry-runs a cost estimate, generates the first take alone so its voice can be locked and passed to every later take, joins takes with measured 0.10s dissolves, and moves each line's timing onto the words actually spoken. Use for any format with a generated creator speaking a script (split-screen, screen inserts, talking-head ads).
 status: superseded
-version: "2.6.1"
-updated: 2026-10-15
-superseded_by: creator-h3@1.6.0
+version: "2.7.0"
+updated: 2026-10-16
+superseded_by: creator-h3@1.7.0
 ---
 
-> **Superseded by:** `creator-h3@1.6.0`. Compatibility scripts retain the source-review guards; frozen versions are unchanged.
+> **Superseded by:** `creator-h3@1.7.0`. Compatibility scripts retain the source-review guards; frozen versions are unchanged.
 
 # create-creator-takes-h3
 
@@ -20,7 +20,7 @@ Use the shared builder for people. Defaults: GPT Image 2, phone capture in a liv
 | `make_character.py` | build the creator still from the user's choices, one shot | **paid** (one still, cents) |
 | `pair_voice.py` | the voice for this person: a matched ElevenLabs voice, or a Voice Design request | free (Voice Design itself is paid) |
 | `plan_takes.py` | split lines into takes (under 15s each) and write the prompts | free |
-| `run_takes.py` | generate the takes, dry run unless `--go` | **paid** (H3 Max, ~$0.16/s at 1080P) |
+| `run_takes.py` | generate the takes, dry run unless `--go` | **paid** (H3 Max, 768P by default) |
 | `join_takes.py` | join into one creator track | free |
 | `align_beats.py` | move line timings onto the spoken words | free |
 
@@ -31,9 +31,28 @@ and different runs filled it differently.
 
 `make_character.py` is the shared builder for any generated person still in a custom video, not
 only for H3 takes. Fetch create-image-fal with it; the script calls its `gen_image.py`. Before
-the paid call, price the exact `--payload-out` body with `data_price_provider` (free, read-only):
-`--dry-run --payload-out work/character/payload.json` writes `{"model", "body"}`, the exact
-request `gen_image.py` will send, and generates nothing.
+the paid call, price the exact `--payload-out` request with `data_price_provider` (free, read-only):
+`--dry-run --payload-out work/character/payload.json` writes `{"model", "body", "quality_tier"}` (plus
+`upgrade` and `query` when there are any), the exact request `gen_image.py` will send, and generates
+nothing. Send the body, and the `query` fields (`shot_scene`, `upgrade_*`) as top-level fields of the
+price request, so the check prices the call that will run.
+
+## Quality tier: Standard or Best
+
+The customer picks **Standard** (the default) or **Best** at script approval. Pass it as `--tier`.
+
+| Setting | Standard | Best |
+|---|---|---|
+| Still (`make_character.py --quality`) | GPT Image 2 `medium` | `high` |
+| Takes (`plan_takes.py --resolution`) | H3 `768P` | `768P` |
+
+- **No video above 768P unless the customer asks** (16 Oct 2026). The finished video is 1080×1920 either way: the last edit step scales the 768P picture up with `ffmpeg -vf scale=1080:1920:flags=lanczos`, at no cost. fal makes H3 1080P from a native 768P take plus a refinement pass.
+- **Choose the resolution before the first take.** Later takes copy t1's voice and are reviewed against it, so `run_takes.py` refuses to go on while any take was made at another resolution: re-plan and re-roll those takes.
+- **Above the tier's default is an upgrade for one shot**, never for the whole video, and it needs a reason (`scripts/tiers.py`, the GooseWorks server's names):
+  - a picture (`make_character.py --quality high` under Standard) after a failed check: `--upgrade-reason failed_attempt --upgrade-attempt <the failed call's operation id> --upgrade-why "<one line>"`;
+  - anything when the customer asks: `--upgrade-reason customer_asked --upgrade-quote "<their words>"`. A video upgrade (H3 `1080P`) is only ever this: never after a failed check alone.
+- **After one failed check, judge the shot.** Retry once at the same setting when a prompt fix should work (a wrong pose, a missing prop). Upgrade the picture straight away when medium probably can't do it (small label text, a complex product shape, many parts that must stay exact).
+- **The call says which shot it is.** `make_character.py --shot-scene <n>` (a still made for one scene; leave it out for a shared person, even on an upgrade) and each take that speaks one scene send `shot_scene`, with the upgrade's `upgrade_*` fields, as the GooseWorks query. `character.json`, `takes.json` and the `--payload-out` file record the tier, the setting and the upgrade.
 
 ## Run
 

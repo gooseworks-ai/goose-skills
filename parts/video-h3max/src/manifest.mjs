@@ -1,4 +1,4 @@
-import { file, pronunciations, sceneSpan, timeline } from '../../_tools/schemas.mjs';
+import { file, pronunciations, qualityTier, sceneSpan, timeline } from '../../_tools/schemas.mjs';
 
 const MODEL = 'minimax/h3-max/reference-to-video';
 const PICTURE = ['image/png', 'image/jpeg', 'image/webp'];
@@ -49,7 +49,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'video-h3max',
-  version: '1.2.0',
+  version: '1.3.0',
   kind: 'generate_video',
   title: 'Scene clips with native audio (H3 Max)',
   summary: 'H3 Max clips: native dialogue, reference or first/last-frame clips, timed takes, and up to 40 scene stills moved with the voice, incl. silent B-roll with one named action. Clips keep their first frame\'s light.',
@@ -114,7 +114,8 @@ export const manifest = {
         },
       },
       seconds: { description: 'scenes mode, and mode stills without spans: every clip\'s length in whole seconds, 4 to 15. Default 5. Modes take and takes: every take\'s length. Default 15.', type: 'integer', minimum: 4, maximum: 15 },
-      resolution: { description: 'H3 native resolution labels. Default 1080P; 768P is the middle option.', enum: ['480P', '768P', '1080P'] },
+      quality_tier: qualityTier('resolution (768P in both; the finished video is scaled to 1080x1920)'),
+      resolution: { description: 'H3 resolution label. Default 768P (both tiers). 1080P only when the customer asks, sent explicitly. fal makes it from a native 768P take plus a refinement pass.', enum: ['480P', '768P', '1080P'] },
       aspect_ratio: { description: 'Default 9:16. adaptive follows the reference canvas.', enum: ['adaptive', '9:16', '16:9', '1:1', '4:3', '3:4', '21:9'] },
       generate_audio: { description: 'Keep native lip-synced voice and room sound (default true). false strips sound locally; no unsupported generate_audio flag is sent to H3.', type: 'boolean' },
       seed: { description: 'Mixed into every clip\'s seed (a style binds plan.answers.take): a new seed is a new piece, so a fix that changes it re-rolls the clips.', type: 'integer', minimum: 0, maximum: 2147483647 },

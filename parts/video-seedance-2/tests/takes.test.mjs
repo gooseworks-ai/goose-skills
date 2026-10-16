@@ -16,8 +16,8 @@ const work = () => mkdtempSync(join(tmpdir(), 'sd-take-'));
 const ctxFor = (inputs, line = falLine) => makeCtx({ partDir: dir, line, seed: inputs.seed ?? null });
 const refused = (e) => e.code === 'bad_input';
 
-test('the newest version is 1.2.0 and declares the take outputs', () => {
-  assert.equal(manifest.version, '1.2.0');
+test('the newest version is 1.3.0 and declares the take outputs', () => {
+  assert.equal(manifest.version, '1.3.0');
   assert.deepEqual(manifest.inputs.properties.mode.enum, ['reference', 'image_to_video', 'take', 'takes']);
   for (const key of ['takes', 'timeline', 'seconds']) assert.ok(manifest.outputs.properties[key], key);
   assert.deepEqual(manifest.outputs.required, ['clips', 'video'], 'the 1.1.0 outputs stay required, nothing new is');
@@ -263,4 +263,9 @@ test('take and takes bodies carry duration as a string from fal\'s reference-to-
   }
   for (const seconds of [4, 10, 15]) assert.ok(REF_DURATIONS.includes(sdTakeDuration(seconds)));
   for (const bad of [3, 4.5, 16, '5', null]) assert.throws(() => sdTakeDuration(bad), /whole seconds from 4 to 15/, String(bad));
+});
+
+test('1.3.0 defaults to 720p; 1080p only when sent (16 Oct 2026: no video above 720p unless the customer asks)', () => {
+  assert.match(manifest.inputs.properties.resolution.description, /^Default 720p/);
+  assert.deepEqual(manifest.inputs.properties.resolution.enum, ['480p', '720p', '1080p'], '1080p stays selectable');
 });
