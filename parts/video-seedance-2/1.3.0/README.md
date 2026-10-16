@@ -2,6 +2,8 @@
 
 **1.3.0: the default resolution is 720p** (1.2.0: 1080p). Custom videos run no video above 720p/768p unless the customer asks (16 Oct 2026); send `resolution: 1080p` explicitly then. Seedance is only for shots with no face. Everything else is as in 1.2.0.
 
+> **No faces.** Seedance refuses photoreal faces, whatever model made them (a fresh Seedream v5 Pro face too, 2026-09-29), and a refused submit still bills. Use `reference` or `image_to_video` with product and empty-set references. The `take` and `takes` sections below (a creator talking to camera, street interviews, cast pictures) are kept for the versions that pinned them and are history: people go to `creator-h3` or `video-h3max` (H3).
+
 Short Seedance 2.0 clips on fal, one paid piece per clip (D6: for short scenes with native audio; the default
 talking creator for scripted lines is `creator-h3`). 1.1.0 adds **image-to-video**, **prompt templates** filled
 from the plan, a **`seed`** input, **one clip per plan scene**, and a top-level **`video`** output. 1.2.0 adds the
