@@ -2270,7 +2270,7 @@
       "version": "2.0.4",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Generate a single 4-15s vertical video clip with ByteDance Seedance 2.0 reference-to-video via fal.ai. Multi-image reference (avatar + product + setting), native lip-synced VO + ambient audio (generate-audio on by default), internal multi-cut handling within one render. Routes through the GooseWorks FAL proxy (bills the Ads agent). The default clip atom for AI-creator UGC ads built on the NB2 + Seedance architecture. Validated on beauty-by-earth/video-01.",
+      "description": "Generate a single 4-15s vertical video clip with ByteDance Seedance 2.0 reference-to-video via fal.ai, for shots with no realistic face (a product hero, a product in motion, an empty set). Multi-image reference (product + setting), ambient audio, internal multi-cut handling within one render, 720p by default. Routes through the GooseWorks FAL proxy (bills the Ads agent). Seedance refuses photoreal faces, so talking heads and creators go to creator-h3 / video-h3max.",
       "tags": "ads",
       "path": "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal",
       "files": [
@@ -9483,7 +9483,7 @@
           "write-video-ad-script"
         ],
         "slug": "video-production-harness",
-        "source_commit": "a11c7028c48d1b146d7da921816815792bd5c0d1",
+        "source_commit": "f57ea181d69139330a2385d230f22e7ae4159f8b",
         "source_hash": "a07d6133d8d689119f34e5c24c53d50e0a3492f5e8a11f93c571237f13359871",
         "source_version": "4-a07d6133d8d6",
         "tags": [
@@ -10292,7 +10292,7 @@
         {
           "slug": "create-video-seedance-2-fal",
           "name": "create-video-seedance-2-fal",
-          "description": "Generate a single 4-15s vertical video clip with ByteDance Seedance 2.0 reference-to-video via fal.ai. Multi-image reference (avatar + product + setting), native lip-synced VO + ambient audio (generate-audio on by default), internal multi-cut handling within one render. Routes through the GooseWorks FAL proxy (bills the Ads agent). The default clip atom for AI-creator UGC ads built on the NB2 + Seedance architecture. Validated on beauty-by-earth/video-01.",
+          "description": "Generate a single 4-15s vertical video clip with ByteDance Seedance 2.0 reference-to-video via fal.ai, for shots with no realistic face (a product hero, a product in motion, an empty set). Multi-image reference (product + setting), ambient audio, internal multi-cut handling within one render, 720p by default. Routes through the GooseWorks FAL proxy (bills the Ads agent). Seedance refuses photoreal faces, so talking heads and creators go to creator-h3 / video-h3max.",
           "path": "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal",
           "version": "2.0.4",
           "files": [

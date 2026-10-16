@@ -1,6 +1,6 @@
 ---
 name: create-video-seedance-2-fal
-description: Generate a single 4-15s vertical video clip with ByteDance Seedance 2.0 reference-to-video via fal.ai. Multi-image reference (avatar + product + setting), native lip-synced VO + ambient audio (generate-audio on by default), internal multi-cut handling within one render. Routes through the GooseWorks FAL proxy (bills the Ads agent). The default clip atom for AI-creator UGC ads built on the NB2 + Seedance architecture. Validated on beauty-by-earth/video-01.
+description: Generate a single 4-15s vertical video clip with ByteDance Seedance 2.0 reference-to-video via fal.ai, for shots with no realistic face (a product hero, a product in motion, an empty set). Multi-image reference (product + setting), ambient audio, internal multi-cut handling within one render, 720p by default. Routes through the GooseWorks FAL proxy (bills the Ads agent). Seedance refuses photoreal faces, so talking heads and creators go to creator-h3 / video-h3max.
 owner: team
 status: superseded
 version: "2.0.4"
@@ -57,6 +57,8 @@ Credentials:
 
 ## Decision Rules
 
+> **Read these with the face rule.** Rules 0, 0a, 0d and 3 (identity, wardrobe, seed continuity for a person) were learned on avatar runs before Seedance began refusing photoreal faces whatever model made them (2026-09-29). For a face-free shot keep the scene structure, setting and product rules; skip the identity and wardrobe parts. A shot with a person goes to `creator-h3` / `video-h3max`.
+
 **0. Prefer FEWER, LONGER calls with internal multi-scene prompting over many short calls.** Every new Seedance call drifts character, wardrobe, lighting, and background slightly — even with the same portrait reference. 5 short calls = 5 drift points the viewer registers as continuity breaks. Use the proven multi-scene template inside ONE 10-15s call to get internal hard-feeling cuts from a single render:
 
 ```
@@ -106,8 +108,8 @@ For confessional / single-sitting UGC, wardrobe should be IDENTICAL across all c
 python3 scripts/generate.py \
   --prompt "$(cat prompt-scene-1.txt)" \
   --output /path/to/scene-1.mp4 \
-  --image-url "https://<hosted>/portrait.png" \
   --image-url "https://<hosted>/product.png" \
+  --image-url "https://<hosted>/empty-set.png" \
   --resolution 720p \
   --duration 15 \
   --aspect-ratio 9:16 \
@@ -153,6 +155,8 @@ Exit codes: `0` done · `1` other error · `3` policy rejection, or the same req
 Fast tier is ~20% cheaper but caps at 720p.
 
 ## Prompt template
+
+> **History, not a recipe for faces.** This template was written for a creator face as `@Image1`, which Seedance now refuses (2026-09-29). For a face-free shot, `@Image1` is the product and `@Image2` the empty set: keep the scene beats, the camera and the product lock, and drop the IDENTITY, WARDROBE, skin and lip blocks.
 
 The prompt is the single biggest quality lever. Use the proven BBE template structure:
 
@@ -212,9 +216,9 @@ Full template reference: `prompt-example.md` at the repo root, plus all four scr
 
 - Output MP4 exists, plays end-to-end, duration within ±0.5s of `--duration`.
 - Aspect ratio and resolution match the request.
-- Avatar identity matches `--image-ref` portrait reference (visual check).
+- No realistic face was sent or rendered (Seedance refuses them; a person goes to creator-h3).
 - Product label readable in the hero sub-scene (zoom in on the t=mid frame).
-- Lip-sync within ~100ms of the audio.
+- The product matches its reference photo (shape, label, colour).
 - No NSFW visual leaked (no water/lather/body-application unless explicitly approved).
 - `meta.json` records `gateway: "fal"`, `model: "bytedance/seedance-2.0/reference-to-video"`, and the FAL seed.
 
