@@ -141,7 +141,7 @@ export const manifest = {
       join: { description: 'measured only: use reviewed source word boundaries; silence-detector estimates cannot qualify an assembly.', enum: ['measured'] },
       mannerism: { description: 'Optional muted motion reference (rights cleared, 2 to 15 s).', ...file('video') },
       quality_tier: qualityTier('resolution (768P in both; the finished video is scaled to 1080x1920)'),
-      resolution: { description: 'Default 768P (both tiers). 1080P is a one-shot upgrade for a skin close-up. Choose it before the first take: the resolution is part of the reviewed configuration, so changing it re-rolls the takes.', enum: ['480P', '768P', '1080P'] },
+      resolution: { description: 'Default 768P (both tiers). 1080P is sent explicitly: the Best default for a skin close-up marked detail, otherwise a reasoned upgrade. Choose it before the first take: the resolution is part of the reviewed configuration, so changing it re-rolls the takes.', enum: ['480P', '768P', '1080P'] },
       aspect_ratio: { description: 'Default 9:16.', enum: ['21:9', '16:9', '4:3', '1:1', '3:4', '9:16'] },
       words_per_second: { description: 'Speaking rate used to split lines into takes. Default 2.6; above 3.2 (the fastest H3 speaks) it plans at 3.2. A take holds at most 15 s (about 14.2 s of speech); takes split only between lines.', type: 'number', minimum: 1.5, maximum: 4 },
       reference_words_per_second: { description: "The reference's measured speaking rate. Takes are sized from it when words_per_second is not given, capped at 3.2 (the fastest H3 speaks natively); pace reports it.", type: 'number', minimum: 0.5, maximum: 8 },

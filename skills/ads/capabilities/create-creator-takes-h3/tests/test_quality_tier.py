@@ -49,31 +49,36 @@ class StillQualityTests(unittest.TestCase):
             self.assertNotEqual(r.returncode, 0)
             self.assertIn("--upgrade-reason", r.stderr)
             self.assertIsNone(quoted)
-            r, _ = self.quote(tmp, "--quality", "high", "--upgrade-reason", "failed_attempt", "--failed-attempt", "still-3")
+            r, _ = self.quote(tmp, "--quality", "high", "--upgrade-reason", "failed_attempt", "--upgrade-attempt", "op-still-3")
             self.assertNotEqual(r.returncode, 0)
             self.assertIn("--upgrade-why", r.stderr)
 
     def test_an_upgrade_cites_the_failed_attempt(self):
         with tempfile.TemporaryDirectory() as tmp:
             r, quoted = self.quote(tmp, "--quality", "high", "--upgrade-reason", "failed_attempt",
-                                   "--failed-attempt", "still-3", "--upgrade-why", "the label text came out garbled twice at medium")
+                                   "--upgrade-attempt", "op-still-3", "--upgrade-why", "the label text came out garbled twice at medium")
             self.assertEqual(r.returncode, 0, r.stderr)
             self.assertEqual(quoted["body"]["quality"], "high")
             self.assertEqual(quoted["upgrade"], {"setting": "image_quality", "from": "medium", "to": "high",
-                                                 "reason": "failed_attempt", "failed_attempt_id": "still-3",
-                                                 "why": "the label text came out garbled twice at medium"})
+                                                 "reason": "failed_attempt", "failed_attempt_id": "op-still-3",
+                                                 "why": "the label text came out garbled twice at medium",
+                                                 # what the paid call adds, in the server's query names
+                                                 "query": {"upgrade_reason": "failed_attempt", "upgrade_attempt": "op-still-3",
+                                                           "upgrade_why": "the label text came out garbled twice at medium"}})
             saved = json.loads((Path(tmp) / "c" / "character.json").read_text())
             self.assertEqual(saved["upgrade"], quoted["upgrade"])
         with tempfile.TemporaryDirectory() as tmp:
             r, quoted = self.quote(tmp, "--quality", "high", "--upgrade-reason", "customer_asked",
-                                   "--customer-quote", "make her picture as sharp as you can")
+                                   "--upgrade-quote", "make her picture as sharp as you can")
             self.assertEqual(r.returncode, 0, r.stderr)
-            self.assertEqual(quoted["upgrade"]["customer_quote"], "make her picture as sharp as you can")
+            self.assertEqual(quoted["upgrade"]["user_quote"], "make her picture as sharp as you can")
+            self.assertEqual(quoted["upgrade"]["query"], {"upgrade_reason": "customer_asked",
+                                                          "upgrade_quote": "make her picture as sharp as you can"})
 
     def test_a_reason_without_an_upgrade_is_refused(self):
         with tempfile.TemporaryDirectory() as tmp:
             r, _ = self.quote(tmp, "--tier", "best", "--quality", "high", "--upgrade-reason", "customer_asked",
-                              "--customer-quote", "sharp please")
+                              "--upgrade-quote", "sharp please")
             self.assertNotEqual(r.returncode, 0)
             self.assertIn("not above", r.stderr)
 
@@ -94,21 +99,33 @@ class TakeResolutionTests(unittest.TestCase):
                 self.assertEqual((spec["resolution"], spec["quality_tier"]), ("768P", tier))
                 self.assertNotIn("upgrade", spec)
 
-    def test_1080p_is_an_upgrade_with_a_reason(self):
+    def test_1080p_is_only_for_a_detail_shot(self):
         with tempfile.TemporaryDirectory() as tmp:
-            r, spec = self.plan(tmp, "--resolution", "1080P")
-            self.assertNotEqual(r.returncode, 0)
-            self.assertIsNone(spec)
-            # Best's skin close-up needs no failed attempt, but says why.
-            r, spec = self.plan(tmp, "--tier", "best", "--resolution", "1080P", "--upgrade-reason", "shot_needs",
-                                "--upgrade-why", "skin close-up: the product treats blackheads")
+            # Best: a detail shot (a skin close-up) starts at 1080P, no upgrade.
+            r, spec = self.plan(tmp, "--tier", "best", "--detail")
             self.assertEqual(r.returncode, 0, r.stderr)
             self.assertEqual(spec["resolution"], "1080P")
-            self.assertEqual(spec["upgrade"]["reason"], "shot_needs")
-            # Standard has no shot_needs: it needs a failed attempt or the customer's ask.
-            r, _ = self.plan(tmp, "--resolution", "1080P", "--upgrade-reason", "shot_needs", "--upgrade-why", "close-up")
+            self.assertNotIn("upgrade", spec)
+            # Standard: 1080P needs a reason, and only for a detail shot.
+            r, _ = self.plan(tmp, "--resolution", "1080P")
             self.assertNotEqual(r.returncode, 0)
-            self.assertIn("not part of standard", r.stderr)
+            self.assertIn("pass --detail", r.stderr)
+            r, _ = self.plan(tmp, "--detail", "--resolution", "1080P")
+            self.assertNotEqual(r.returncode, 0)
+            self.assertIn("--upgrade-reason", r.stderr)
+            r, _ = self.plan(tmp, "--resolution", "1080P", "--upgrade-reason", "failed_attempt",
+                             "--upgrade-attempt", "op-9", "--upgrade-why", "pores smeared at 768P twice")
+            self.assertNotEqual(r.returncode, 0)
+            self.assertIn("--detail", r.stderr)
+            r, spec = self.plan(tmp, "--detail", "--resolution", "1080P", "--upgrade-reason", "failed_attempt",
+                                "--upgrade-attempt", "op-9", "--upgrade-why", "pores smeared at 768P twice")
+            self.assertEqual(r.returncode, 0, r.stderr)
+            self.assertEqual((spec["resolution"], spec["upgrade"]["failed_attempt_id"]), ("1080P", "op-9"))
+            # The customer may ask for 1080P on any shot (the server's rule); a failed check may not.
+            r, spec = self.plan(tmp, "--tier", "best", "--resolution", "1080P", "--upgrade-reason", "customer_asked",
+                                "--upgrade-quote", "sharper please")
+            self.assertEqual(r.returncode, 0, r.stderr)
+            self.assertEqual(spec["upgrade"]["query"], {"upgrade_reason": "customer_asked", "upgrade_quote": "sharper please"})
 
     def test_the_rest_refuse_a_first_take_made_at_another_resolution(self):
         """Switching resolution re-rolls the take, so the resolution is chosen before the first take."""

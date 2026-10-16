@@ -20,9 +20,9 @@ Writes <out>/takes.json (run_takes.py's spec) and <out>/<id>-prompt.txt per take
 
 RESOLUTION: 768P in both tiers (--tier standard, the default, or best). fal makes H3 1080P from a
 native 768P take plus a refinement pass, and the finished video is scaled to 1080x1920 with
-ffmpeg (lanczos) for free. --resolution 1080P is an upgrade and needs a reason (tiers.py):
-Best's skin close-up (--upgrade-reason shot_needs --upgrade-why ...), a failed attempt or the
-customer's ask. Choose it HERE, before the first take: the takes are seeded and reviewed at
+ffmpeg (lanczos) for free. 1080P is for a shot marked detail (--detail: a skin close-up,
+legible labels or text): Best's default for it, and otherwise an upgrade with a reason
+(--upgrade-reason failed_attempt for a detail shot, or customer_asked for any shot; tiers.py). Choose it HERE, before the first take: the takes are seeded and reviewed at
 this resolution, so changing it later re-rolls every take.
 
 TAKES SPLIT ON LINE BOUNDARIES, never inside a line. H3 caps a take at 15s, so a 30s
@@ -197,9 +197,9 @@ def main():
     ap.add_argument("--reference-wps", type=float, help="the reference's measured words per second; takes are sized "
                     "from it, capped at 3.2 (the fastest native H3 speech)")
     ap.add_argument("--plan-only", action="store_true", help="free planning with a not-yet-generated character image; never authorizes generation")
-    tiers.add_args(ap)
+    tiers.add_args(ap, detail=True)
     a = ap.parse_args()
-    a.resolution = a.resolution or tiers.default(a.tier, "h3_resolution")
+    a.resolution = a.resolution or tiers.default(a, "h3_resolution")
     upgrade = tiers.upgrade(a, "h3_resolution", a.resolution)
 
     spec = json.loads(pathlib.Path(a.beats).read_text(encoding="utf-8"))

@@ -5,7 +5,7 @@ frames. Published `video-seedance-2` and `creator-h3` versions are unchanged.
 
 ## 1.3.0
 
-- `quality_tier` (`standard`, the default, or `best`) is accepted; H3 is 768P in both. The default resolution is now 768P (1.2.0: 1080P). 1080P is a one-shot upgrade for legible labels, logos or on-screen text, or a skin close-up, sent as an explicit `resolution`.
+- `quality_tier` (`standard`, the default, or `best`) is accepted; H3 is 768P in both. The default resolution is now 768P (1.2.0: 1080P). 1080P is sent as an explicit `resolution`: Best's default for a shot marked `detail` (legible labels, logos or on-screen text, or a skin close-up), otherwise a reasoned upgrade.
 - The provider body changed, so no `reuses_pieces_of`.
 
 ## 1.2.0

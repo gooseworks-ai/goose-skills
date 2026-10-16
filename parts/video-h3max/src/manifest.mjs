@@ -115,7 +115,7 @@ export const manifest = {
       },
       seconds: { description: 'scenes mode, and mode stills without spans: every clip\'s length in whole seconds, 4 to 15. Default 5. Modes take and takes: every take\'s length. Default 15.', type: 'integer', minimum: 4, maximum: 15 },
       quality_tier: qualityTier('resolution (768P in both; the finished video is scaled to 1080x1920)'),
-      resolution: { description: 'H3 resolution label. Default 768P (both tiers). 1080P is a one-shot upgrade for legible labels, logos or on-screen text, or a skin close-up: fal makes it from a native 768P take plus a refinement pass.', enum: ['480P', '768P', '1080P'] },
+      resolution: { description: 'H3 resolution label. Default 768P (both tiers). 1080P is sent explicitly: the Best default for a shot marked detail (legible labels, logos or on-screen text, or a skin close-up), otherwise a reasoned upgrade. fal makes it from a native 768P take plus a refinement pass.', enum: ['480P', '768P', '1080P'] },
       aspect_ratio: { description: 'Default 9:16. adaptive follows the reference canvas.', enum: ['adaptive', '9:16', '16:9', '1:1', '4:3', '3:4', '21:9'] },
       generate_audio: { description: 'Keep native lip-synced voice and room sound (default true). false strips sound locally; no unsupported generate_audio flag is sent to H3.', type: 'boolean' },
       seed: { description: 'Mixed into every clip\'s seed (a style binds plan.answers.take): a new seed is a new piece, so a fix that changes it re-rolls the clips.', type: 'integer', minimum: 0, maximum: 2147483647 },

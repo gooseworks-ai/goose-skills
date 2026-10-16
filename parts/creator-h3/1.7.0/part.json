@@ -724,7 +724,7 @@
         ]
       },
       "resolution": {
-        "description": "Default 768P (both tiers). 1080P is a one-shot upgrade for a skin close-up. Choose it before the first take: the resolution is part of the reviewed configuration, so changing it re-rolls the takes.",
+        "description": "Default 768P (both tiers). 1080P is sent explicitly: the Best default for a skin close-up marked detail, otherwise a reasoned upgrade. Choose it before the first take: the resolution is part of the reviewed configuration, so changing it re-rolls the takes.",
         "enum": [
           "480P",
           "768P",

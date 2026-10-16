@@ -41,8 +41,9 @@ Use the published `part.json` as the exact input contract. File inputs are FileR
   `references`, `start_image`, `end_image`, and `generate_audio`.
 - Without `clips`, supply `scenes`; `pick`, `skip_first`, and `skip_last` select which scenes are rendered.
   `seconds` defaults to five for scene clips and 15 for takes.
-- `resolution`: `480P`, `768P` (default, both tiers), or `1080P`. These are H3's actual labels. 1080P is a one-shot
-  upgrade for legible labels, logos or on-screen text, or a skin close-up. Seedance's lowercase
+- `resolution`: `480P`, `768P` (default, both tiers), or `1080P`. These are H3's actual labels. 1080P is sent explicitly:
+  Best's default for a shot marked `detail` (legible labels, logos or on-screen text, or a skin close-up), otherwise a
+  reasoned upgrade. Seedance's lowercase
   labels are rejected; the middle option is `768P`.
 - `aspect_ratio`: `adaptive`, `21:9`, `16:9`, `4:3`, `1:1`, `3:4`, or `9:16` (default).
 - `generate_audio` defaults to true and keeps the provider's native sound. False strips sound locally

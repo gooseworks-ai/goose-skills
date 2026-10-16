@@ -120,7 +120,7 @@ Matching shots need no grade. Never add a cinematic grade to realistic phone foo
 
 ### Phase 8 — Export and variants
 
-1. Encode MP4, H.264 + AAC, `-movflags +faststart` at the approved ratio. **Last step: the delivered file is 1080×1920** (9:16). Probe it; a master that came out smaller (a kit output, an old master) is scaled up as the final step, free: `ffmpeg -i in.mp4 -vf scale=1080:1920:flags=lanczos -c:v libx264 -crf 18 -pix_fmt yuv420p -c:a copy -movflags +faststart out.mp4`. Save its checksum and provenance.
+1. Encode MP4, H.264 + AAC, `-movflags +faststart` at the approved ratio. **Last step: the delivered file is full size** for its approved ratio: 1080×1920 for 9:16 (1080×1080 for 1:1, 1080×1350 for 4:5, 1920×1080 for 16:9). Probe it; a smaller master (a kit output, an old master) is scaled up as the final step, free, at its own ratio: for 9:16 `ffmpeg -i in.mp4 -vf scale=1080:1920:flags=lanczos -c:v libx264 -crf 18 -pix_fmt yuv420p -c:a copy -movflags +faststart out.mp4`, with that ratio's size otherwise. Save its checksum and provenance.
 2. Each delivery variant (9:16 Reels, TikTok, Shorts; 1:1 feed) is its own edit: reframe from the clean sources, adapt captions, burn once and run its own final checks. A crop of a captioned master never inherits the parent's approval.
 
 ## Output

@@ -25,11 +25,11 @@ incomplete, and empty ASR output never proves silence.
 | Usable authorized recorded speech exists | Preserve recording | same | Check source picture/audio timing and full performance |
 | Non-speaking picture needs explanation | External narration | same voice (ElevenLabs v4); picture per [shot routing](shot-routing.md) | Accept voice and measured speech before final scene timing |
 | Generated creator speaks across several clips (default) | Voice first: `exact_audio_lipsync`, final ElevenLabs line then one lip-sync per line, one line per clip | Fabric **480p** / **720p** | Accept every line before lip-sync; each clip within 0.5 s of its line |
-| Generated creator speaks in one take of 15 s or less | `qualified_native` H3 | H3 768P / 768P | At most 3.2 words/s; cut only between sentences; never retimed; review the take's face, voice and words |
+| Generated creator speaks in one take of 15 s or less | `qualified_native` H3 | not in a tier quote (it prices talking as Fabric): ask the owner first | At most 3.2 words/s; cut only between sentences; never retimed; review the take's face, voice and words |
 | Speaking creator must use exact supplied audio | Qualified audio-driven lip-sync | Fabric 480p / 720p | Lock the exact driver, verify documented task and matched result |
 | Speaking creator needs timbre/accent but no exact recording | Supported native voice-reference route, otherwise accepted external voice plus lip-sync | same as the route it lands on | Audition actual voice; timbre conditioning is not waveform reuse |
 | No speech wanted | Non-speaking picture | H3 768P / 768P; Best: 1080P for labels, logos, text or a skin close-up, Seedance 1080p only with no face | Choose ambience/music/SFX or intentional silence independently |
-| Multiple speakers | Qualified dialogue/per-speaker route | H3 768P / 768P | Supported speaker control and correct voice-to-mouth assignment |
+| Multiple speakers | Qualified dialogue/per-speaker route | not in a tier quote (it prices talking as Fabric): ask the owner first | Supported speaker control and correct voice-to-mouth assignment |
 
 **Quality tier.** The customer's Standard or Best (`quality_tier`) sets the column above; the
 lip-sync model is the same at both, only the resolution changes. A talking shot that fails its

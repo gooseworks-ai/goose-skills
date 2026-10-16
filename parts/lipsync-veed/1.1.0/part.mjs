@@ -309,7 +309,8 @@ async function kitDuration(ctx, file) {
 // customer's ask. Without a tier the part uses Standard, the default price.
 //
 //   standard: GPT Image 2 medium, Fabric lip-sync 480p, H3 768P.
-//   best:     GPT Image 2 high,   Fabric lip-sync 720p, H3 768P (1080P only when asked for one shot).
+//   best:     GPT Image 2 high,   Fabric lip-sync 720p, H3 768P (1080P for a shot the shot list marks
+//             detail, sent as an explicit resolution).
 //
 // H3 is 768P in both tiers: fal makes H3 "1080P" from a native 768P take plus a refinement pass,
 // and the finished video is scaled to 1080x1920 with ffmpeg (lanczos) at no cost.

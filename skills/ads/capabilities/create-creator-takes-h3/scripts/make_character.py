@@ -40,9 +40,10 @@ character.json --voices <list> --exclude <rejected voice_id>.
 
 Quality: --tier standard (default) makes the still at GPT Image 2 medium, --tier best at high.
 --quality high under Standard is an upgrade for this one person and needs a reason
-(--upgrade-reason failed_attempt --failed-attempt <id> --upgrade-why "<one line>", or
-customer_asked --customer-quote "<their words>"); see tiers.py. character.json and the
---payload-out file record the tier, the quality and any upgrade.
+(--upgrade-reason failed_attempt --upgrade-attempt <operation id> --upgrade-why "<one line>", or
+customer_asked --upgrade-quote "<their words>"); see tiers.py. character.json and the
+--payload-out file record the tier, the quality and any upgrade; the upgrade's `query` is what
+the paid call adds, with the shot's shot_scene.
 """
 import argparse
 import json
@@ -358,7 +359,7 @@ def main():
     gpt = a.model.startswith("openai/gpt-image-2")
     if a.quality and not gpt:
         sys.exit("--quality is for openai/gpt-image-2; a Nano Banana model takes --resolution")
-    quality = (a.quality or tiers.default(a.tier, "image_quality")) if gpt else None
+    quality = (a.quality or tiers.default(a, "image_quality")) if gpt else None
     upgrade = tiers.upgrade(a, "image_quality", quality) if gpt else None
 
     prompt, negative, ident, slots = build(a)
