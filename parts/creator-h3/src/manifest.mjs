@@ -58,7 +58,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'creator-h3',
-  version: '1.7.0',
+  version: '1.8.0',
   kind: 'generate_video',
   title: 'Talking creator (H3)',
   summary: 'Controlled H3 creator production: first take reviewed, then the rest, then assembly. Phone capture, deep focus, no selfie for a both-hands action. Takes up to 15 s, sized from the reference rate, at most 3.2 words a second.',
@@ -188,7 +188,8 @@ export const manifest = {
     },
   },
   cost: { basis: 'per_unit', unit: 'second', measure: { from: '/max_seconds', as: 'value' }, rates_usd: { [MODEL]: 0.4 } },
-  // No reuses_pieces_of: above 3.2 words a second the pace cap orders longer takes than 1.2.2 and older did.
+  // No reuses_pieces_of: the pieces fixture predates the reviewed pipeline, so it can't prove 1.8.0 orders
+  // what 1.7.0 did. A video approved on 1.7.0 keeps its version.
   determinism: 'provider',
   timing: { typical_s: 600, timeout_s: 3600 },
   retry: { transient: 1 },

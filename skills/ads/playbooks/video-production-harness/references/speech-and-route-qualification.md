@@ -53,8 +53,8 @@ lip-sync or take: switching re-rolls it.
    (`exact_audio_lipsync` or `external_narration`); list it in `changes_from_reference`
    when it differs from the reference.
 4. The shot plan marks each shot `speaking_on_camera: true|false`. In review, a
-   lip-synced clip on a shot not marked speaking is P1; a speaking shot without
-   lip-sync is P0.
+   lip-synced clip on a shot not marked speaking is `ask`; a speaking shot without
+   lip-sync is `must_fix` ([check severity](check-severity.md)).
 
 An unrelated narrator over speaking-looking footage is not a fallback. Native speech
 continues under a cutaway; the face returns at the matching source position.
@@ -100,7 +100,7 @@ not qualify animated gaze or handling.
 
 ## Selected new part interfaces
 
-Use creator-h3@1.7.0 fields only with that version or a compatible newer contract (1.7.0 adds `quality_tier`; takes default to 768P).
+Use creator-h3@1.8.0 fields only with that version or a compatible newer contract (1.7.0 added `quality_tier`, with takes at 768P by default; 1.8.0 accepts a measured take review).
 Carry creative_contract_revision and `reference_words_per_second` (from `../scripts/reference_rate.py`).
 Native speech has no voice pair: the person is made with `--no-voice-pair`, and the take's
 own voice is accepted or rejected with the first take. A separate voice (voice-elevenlabs)
@@ -108,7 +108,7 @@ uses `character.voice_pair` (from pair_voice.py, which make_character.py runs). 
 phone_counter, also for two-hand actions (it has no phone_observer); focus is deep.
 Its generation_stage first_take is the default and returns pending source. Only
 remaining_takes may chain generation after accepted_sources includes the first take
-with actual AV review, real word timing and the qualified model/shot record. assemble
+with a review of its whole length, real word timing and the qualified model/shot record. The review records `coverage.motion` (`watched` | `measured`) and `coverage.audio` (`listened` | `measured`); `measured` (full-resolution frames plus real word timing against the line) is enough, and nobody has to claim a watch or a listen. assemble
 uses all accepted sources without new generation. Never assert acceptance from ASR
 or a returned URL alone, or send new fields to an older frozen version.
 

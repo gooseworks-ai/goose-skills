@@ -32,7 +32,7 @@ Use it for each new candidate, final selection, rollback or labeled experiment.
 2. Create the labeled candidate through the binding, probe its real bytes and compute its checksum. Refuse empty, temporary or unsupported files.
 3. Keep the prior version, its provenance, review evidence and selection. Never overwrite prior bytes or lineage.
 4. Register the candidate asset, render and version with ids, duration, checksum, source and change summary. Validate every cross-reference.
-5. A candidate may be reviewed before delivery; it is not a delivered final. Selecting a final needs the current script and ingredient approvals, a complete final check on this exact export and checksum, owned confirmed media and completion evidence. A parent master's check never clears a changed ratio, duration, language or caption burn. **Open review notes, and changed but unverified notes, block selection.**
+5. A candidate may be reviewed before delivery; it is not a delivered final. Selecting a final needs the current script and ingredient approvals, a complete final check on this exact export and checksum, owned confirmed media and completion evidence. A parent master's check never clears a changed ratio, duration, language or caption burn. **An open `must_fix` note, or a changed but unverified one, blocks selection as the final** unless the customer chose to keep it (record their words); open `ask` and `fine` notes don't ([check severity](references/check-severity.md)).
 6. Select or demote through the host's real transaction. If it is unavailable, record the candidate and the blocker; never imitate it with a local copy.
 7. A rollback records the exact earlier version id, checksum, sources and reason, and never deletes the superseded version.
 

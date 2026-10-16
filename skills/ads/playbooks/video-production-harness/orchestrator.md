@@ -54,7 +54,7 @@ For one step only (for example "regenerate scene 5"), call that step file direct
 
 - `<input>`: a concept paragraph, or an existing `<video_folder>` to resume.
 - `<video_folder>`: a temporary processing folder chosen by the host; durable state stays in the project.
-- `<auto>`: allows ordinary execution inside approved scope only. It never bypasses an owner gate or the approved budget.
+- `<auto>`: allows ordinary execution inside approved scope only. It never bypasses the approved budget. The customer's `review_mode: auto` ("just make it") lets one yes to the full total cover the ingredient gate ([check severity](references/check-severity.md)); any new total still needs a new yes.
 
 ## State machine
 
@@ -97,8 +97,10 @@ Use the host's current pricing; old rate tables never authorize spend.
 - **Use the review note's `edit_type`** for edit-clip. "Scene 5 looks weird" needs specifics before a re-roll.
 - **Voices come from the host-approved catalog,** or are a Voice Design voice made for this character and approved at the ingredient gate. An on-screen person's separate voice is `character.voice_pair`, chosen with the person, never in the script draft (native H3 speech has none and is accepted with its first take); a change re-runs pair_voice.py (create-creator-takes-h3) with `--exclude`. Search the shared voice library before Voice Design, and never change the person to fit a voice. Never reuse another brand's or character's voice by default. Any other voice blocks State 5.
 - **Locks hold.** `character_locks` is the lock for every regeneration; `locked_script` is the only VO source. Changing VO text re-runs State 2.5.
-- **Preflight P0 blocks.** A revised plan may drop a blocked dependency only with the owner's approval.
-- **Review loop: 3 iterations,** then escalate to the user.
+- **Quality warns, never blocks.** Grade every finding by [check severity](references/check-severity.md): `must_fix` is redone and never delivered, `ask` goes to the customer with the price of the fix (in `review_mode: auto` you decide it), `fine` is kept. Only money, consent, safety and broken data stop the run.
+- **Preflight blocks only on hard findings** (broken media, missing authentication or capability, unresolved brief variables). A revised plan may drop a blocked dependency only with the owner's approval.
+- **Redo only must_fix, never drop a scene.** A redo is paid from the approved total when it fits; otherwise get a new yes to its price first.
+- **Review loop by severity:** loop only while a `must_fix` is open; each `ask` item is settled once; `fine` items end the loop. After 3 rounds with a `must_fix` still open, show the customer the best version with the finding and the price of another redo.
 - **Verify visual claims.** Phase 7d frame checks are required before APPROVED.
 - **Words never go into a generated picture.** Compose wordmarks, taglines, URLs and CTAs with PIL or FFmpeg; use the real brand asset from brand_assets.
 - **Editorial illustration uses FFmpeg motion only.** With `motion_strategy: ffmpeg_motion`, no paid generative video is called.
@@ -116,6 +118,6 @@ Use the host's current pricing; old rate tables never authorize spend.
 ## Failure modes
 
 - Skipping an owner gate because it "obviously" passes: the owner never sees the script or ingredients.
-- A stuck scene looping forever: enforce the 3-iteration cap.
+- A stuck scene looping forever: enforce the 3-round cap, then let the customer choose another paid redo or keep the flagged take.
 - State stuck at CREATE_CLIPS because edit-video failed silently: surface every step error before advancing.
 - Script edited in `design_brief` after lock: diff `locked_script` against the brief's VO at every transition; a mismatch re-runs State 2.5.

@@ -2,12 +2,12 @@
 name: create-creator-takes-h3
 description: Generate an AI creator talking to camera, saying an approved script, as one continuous track — H3 Max reference-to-video through the GooseWorks fal-proxy (bills the Ads agent). Plans takes on line boundaries under H3's 15s cap, dry-runs a cost estimate, generates the first take alone so its voice can be locked and passed to every later take, joins takes with measured 0.10s dissolves, and moves each line's timing onto the words actually spoken. Use for any format with a generated creator speaking a script (split-screen, screen inserts, talking-head ads).
 status: superseded
-version: "2.8.0"
+version: "2.9.0"
 updated: 2026-10-16
-superseded_by: creator-h3@1.7.0
+superseded_by: creator-h3@1.8.0
 ---
 
-> **Superseded by:** `creator-h3@1.7.0`. Compatibility scripts retain the source-review guards; frozen versions are unchanged.
+> **Superseded by:** `creator-h3@1.8.0`. Compatibility scripts retain the source-review guards; frozen versions are unchanged.
 
 # create-creator-takes-h3
 
@@ -112,6 +112,14 @@ A test video went wrong three ways. These rules stop each one.
 - **The voice fits the face.** The narrator was picked apart from the presenter (a 28-year-old woman) and was a voice reused across brands. `make_character.py` now records `voice_pair` in `character.json`, from the same age and gender plus `--voice-accent` and `--voice-energy`. With `--voices` (a saved voice list; see 2.6.0 below) it is the best voice that fits; `--voice-exclude <id>` keeps another brand's narrator out. With `--voice-design` (or when nothing in the list fits) it is a Voice Design request: `POST /v1/text-to-voice/design` with `voice_description`, `model_id` (`eleven_ttv_v3`) and `text` (100-1000 characters) or `auto_generate_text`, then `POST /v1/text-to-voice` with `voice_name`, `voice_description` and the chosen preview's `generated_voice_id`. Voice Design is paid: quote it, listen to the previews, then save one. Use `voice_pair` for every narration of this person.
 - **Pace from the reference.** The narration read at 2.62 words a second against the reference's 3.20 (270 words in 84.45 s). Measure the reference with goose-studio's `reference_rate.py`, which counts real words (whisper's sub-word tokens joined, punctuation skipped). `plan_takes.py --reference-wps` (or the beats file's `reference_wps`) sizes the takes from the words at that rate, capped at 3.2, the fastest H3 speaks natively; `takes.json` records `pace`. Faster than 3.2 cannot be native H3: use voice first (`voice-elevenlabs` `pace.target_wps`) and a per-line lip-sync.
 
+## Measured take reviews and a voice across heritage (2.9.0)
+
+Gate audit, 16 Oct: quality checks warn and never block, and an agent that can't play video was stuck at "watched/listened" claims.
+
+- **A measured review is enough.** `source-reviews.json` coverage says `motion: watched|measured` and `audio: listened|measured`. Measured means full-resolution frames of the whole take plus word timing against the line, listed in the review's `evidence`. Nobody has to claim a watch or a listen.
+- **A check fails only for a must_fix.** Mark script, voice, lip-sync, identity, framing or performance `fail` only for a must_fix problem (lost words, no lip-sync, warped anatomy, a different person). A take that looks clearly AI-made is `pass`, with the finding in `evidence`, and goes to the owner as an `ask`; slightly AI-looking is `fine` and kept.
+- **No voice of the person's heritage: the nearest one, said out loud.** When the lists hold no voice of the person's heritage, `voice_pair.nearest` holds the closest voices of the right gender from other heritages, each with `heritage` first in `differs_on`, and `nearest_note` says so. `--accept-nearest` then writes `tell_owner`: one plain line for the owner. **Never change the person to fit a voice.**
+
 ## Realism check and a voice for every person (2.8.0)
 
 On 16 Oct a custom video stopped at the ingredient approval: the server refused the presenter as "generated", even after a High remake, and the agent changed an East Asian presenter to Black American because the account's voice list had no East Asian woman.
@@ -130,7 +138,7 @@ A 39-year-old Black American presenter got a generic American voice ("Jon"), bec
 - **Ethnicity is matched.** `make_character.py` passes `--ethnicity` to `pair_voice.py`. A voice fits only when its accent label, description or name names the person's heritage ("african american", "Black", "Indian", "Latina"...), and never when it names another one; a White person takes a voice that names none; an unknown or mixed ethnicity checks nothing. An "african american" accent counts as american. The Voice Design description says it too: "A 39-year-old Black American man with a natural American accent."
 - **Age may be one band off, near its edge.** The voice list labels every African American male voice "young". A voice in the next age band fits when the person is within 10 years of it (39 takes "young"); an exact band always wins, and `matched_on` says `age_near`.
 - **No voice list, no still.** `make_character.py` refuses without `--voices`; a silent fallback to a paid Voice Design request was ignored. Get the list free through the GooseWorks MCP: `data_call_provider {provider: "elevenlabs", path: "/v1/voices", project_id}`, and save the whole reply; `pair_voice.py` reads that shape, ElevenLabs' own, and `video_formats` rows. `video_formats show:"voices"` is a short curated list that names no heritage, so prefer `/v1/voices`. `--voice-design` asks for a Voice Design request on purpose; `--no-voice-pair` is for a person never voiced separately. The account list is small: search the shared library too (2.8.0 above).
-- **No fit:** `voice_pair` is a Voice Design request plus `nearest`, up to three voices of the right gender and heritage with what differs, and `library_search`. Search the library first; design only when no list fits (2.8.0). `pair_voice.py --character character.json --accept-nearest` takes the first `nearest` voice only when the owner accepts it beside the still. Nobody picks from the list, and no voice outside `voice_pair` is used.
+- **No fit:** `voice_pair` is a Voice Design request plus `nearest`, up to three voices of the right gender and heritage (or across heritage when none shares it, 2.9.0) with what differs, and `library_search`. Search the library first; design only when no list fits (2.8.0). `pair_voice.py --character character.json --accept-nearest` takes the first `nearest` voice only when the owner accepts it beside the still. Nobody picks from the list, and no voice outside `voice_pair` is used.
 - **Specific, mixed and broad words.** A specific heritage fits itself or its general words, never a sibling: a Korean person never takes a voice described as Japanese, and an Indian one never a Pakistani one. "mixed", "biracial" or two heritages ("biracial Black/Latino") check no heritage. A voice naming two heritages fits neither. A generic "Asian" voice fits an East or Southeast Asian person and never a White one. Accent aliases go one way: an "african american" accent is american, never the reverse.
 - **Changing the voice:** `pair_voice.py --character character.json --voices voices.json --exclude <rejected voice_id>` pairs again for the same person and writes `voice_pair` back; `voice_pair.rejected` remembers every rejected voice. Never hand-pick from the list.
 - **Approve together.** Play the voice next to the still and approve the two together; a voice is never approved while its person is pending.
@@ -149,7 +157,7 @@ These are the user's calls (the recipe's `choices`), never defaults of this atom
 
 1. **Lock order: script, then character still, then takes.** Show the still before any
    take. A take costs dollars; a still costs cents.
-2. **First take alone, then listen.** Later takes receive the accepted t1 audio as voice conditioning, not exact audio reuse. A hash-bound full AV review in `--reviews` is required before later takes. Voice consistency still needs listening to every take; reseeding is a new paid attempt subject to the approved retry budget.
+2. **First take alone, then review it.** Later takes receive the accepted t1 audio as voice conditioning, not exact audio reuse. A hash-bound review of the whole take in `--reviews` is required before later takes (watched and listened, or measured). Voice consistency still needs checking every take; reseeding is a new paid attempt subject to the approved retry budget.
 3. **Voice matches the person.** Age, gender, ethnicity and accent follow the character. The
    prompt's delivery line sets the tone; change it through `delivery`, not by editing
    the prompt file.
@@ -163,7 +171,7 @@ These are the user's calls (the recipe's `choices`), never defaults of this atom
    ("two pairs of hands"). Measured: 11.04 peak change at 0.10s vs 13.30 for a hard cut.
 8. **One filter graph.** Joining files with the concat demuxer puts black frames at every
    boundary; `xfade` with a late offset silently concatenates instead of overlapping.
-9. **Watch every take end to end before joining**: eyes on the lens to the last word,
+9. **Review every take end to end before joining** (watched, or measured from full-resolution frames and word timing): eyes on the lens to the last word,
    hands, identity, voice. A wrong still ("anchor") makes every take wrong the same way;
    if all takes fail alike, fix the still, not the seed.
 10. **Mannerism clips are optional and need rights.** `--mannerism` passes a muted
@@ -225,7 +233,7 @@ For multiple characters, compare a shared scene with pinned references, fewer pe
 
 ## Source review and timing contract
 
-`source-reviews.json` contains `takes: [{id,source_sha256,script_sha256,status,reviewer,coverage,checks}]`. Coverage names `video_watched`, `audio_listened`, `start_s` and `end_s` and covers the complete actual source. Script, voice, lip-sync, identity, framing and performance checks must pass; product/action is pass or not_applicable. Never invent reviewer coverage. Every new generated file is pending until that review exists. Failed or incomplete files remain candidates and cannot enter a passing assembly.
+`source-reviews.json` contains `takes: [{id,source_sha256,script_sha256,status,reviewer,coverage,checks}]`. Coverage names `motion` (`watched` or `measured`), `audio` (`listened` or `measured`), `start_s` and `end_s` and covers the complete actual source; `measured` (full-resolution frames plus word timing against the line) is enough, and the older `video_watched`/`audio_listened` booleans still read as watched/listened. Script, voice, lip-sync, identity, framing and performance checks must pass; product/action is pass or not_applicable. Never invent reviewer coverage. Every new generated file is pending until that review exists. Failed or incomplete files remain candidates and cannot enter a passing assembly.
 
 New plans set `content_review_required: true`. Word sidecars must bind their source/script checksums and name `reviewed_transcription` or `forced_alignment`; silence measurements alone are not word boundaries. Native audio and picture keep matching trims and speed. The assembly output remains pending final review.
 

@@ -171,6 +171,46 @@ class ReviewFindingTests(unittest.TestCase):
             self.assertNotEqual(run("pair_voice.py", "--character", str(library / "character.json"), "--accept-nearest").returncode, 0)
 
 
+class AcrossHeritageTests(unittest.TestCase):
+    """Gate audit 16 Oct 2026: a person with no voice of their heritage got an empty `nearest`, and the agent
+    changed the person to fit the list. Now the closest voices of the right gender come back, marked."""
+
+    WOMEN = [{"voice_id": "ashley", "name": "Ashley", "labels": {"gender": "female", "accent": "american", "age": "middle_aged"},
+              "description": "A warm African American woman"},
+             {"voice_id": "lina", "name": "Lina", "labels": {"gender": "female", "accent": "latin american", "age": "young"},
+              "description": "A bright Latina voice"}]
+
+    def test_no_voice_of_her_heritage_gives_the_nearest_across_heritage_and_says_so(self):
+        pair = pair_voice(32, "woman", "american", None, self.WOMEN + [JON], ethnicity="East Asian")
+        self.assertEqual(pair["source"], "voice_design")
+        self.assertEqual([v["voice_id"] for v in pair["nearest"]], ["ashley", "lina"])  # women only; closest age first
+        self.assertTrue(all(v["differs_on"][0] == "heritage" for v in pair["nearest"]))
+        self.assertIn("No voice in the lists matches this person's heritage", pair["nearest_note"])
+        self.assertIn("Never change the person", pair["nearest_note"])
+        self.assertEqual(pair["person"]["ethnicity"], "East Asian")  # the person never bends
+
+    def test_a_voice_of_her_heritage_still_wins_over_the_fallback(self):
+        korean = {"voice_id": "jiwoo", "name": "Jiwoo", "labels": {"gender": "female", "accent": "korean", "age": "old"},
+                  "description": "A Korean grandmother's voice"}
+        pair = pair_voice(32, "woman", "american", None, self.WOMEN + [korean], ethnicity="Korean")
+        self.assertEqual([v["voice_id"] for v in pair["nearest"]], ["jiwoo"])
+        self.assertNotIn("heritage", pair["nearest"][0]["differs_on"])
+        self.assertNotIn("nearest_note", pair)
+
+    def test_accept_nearest_across_heritage_tells_the_owner(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            character = Path(tmp) / "character.json"
+            searched = {"searched": True, "missing": [], "more": []}  # the library was searched to its last page
+            pair = pair_voice(32, "woman", "american", None, self.WOMEN, ethnicity="East Asian", library=searched)
+            character.write_text(json.dumps({"voice_pair": pair}))
+            r = run("pair_voice.py", "--character", str(character), "--accept-nearest")
+            self.assertEqual(r.returncode, 0, r.stderr)
+            chosen = json.loads(character.read_text())["voice_pair"]
+            self.assertEqual((chosen["source"], chosen["voice_id"]), ("library_nearest", "ashley"))
+            self.assertIn("heritage", chosen["differs_on"])
+            self.assertIn("No voice in the library matches this person's heritage", chosen["tell_owner"])
+
+
 class SecondReviewTests(unittest.TestCase):
     """Codex review round 2 of #306."""
 

@@ -26,7 +26,7 @@ overlay can't follow a pack that moves, so a pack held, opened, poured or used o
 is made with `openai/gpt-image-2/edit`, the real product photo as reference image 1 and
 its front label facing the camera. Never type label text; never ask for a blank,
 unprinted, unlabelled or back-facing pack. A blank, unprinted or label-less brand pack is
-P0. If the label garbles, reframe so hands cover it while shape and colours match, or cut
+`must_fix` ([check severity](check-severity.md)). If the label garbles, reframe so hands cover it while shape and colours match, or cut
 to a real-photo insert.
 
 **Use steps and product states.** Quote each on-screen use step from the brand's

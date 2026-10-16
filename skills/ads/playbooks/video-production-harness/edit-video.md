@@ -52,7 +52,7 @@ Read [speech and route qualification](references/speech-and-route-qualification.
 
 - **Silence only by choice.** The silent branch (`intentional_silence`) needs the owner's request or a silent reference, with a saved reason. Otherwise match the reference's sound. Never a sine tone, a drone or an empty track in place of music.
 - An explicitly empty `soundtrack_modes` means no extra soundtrack; it never permits dropping existing sound. Legacy `silent` never permits muxing empty audio.
-- Only accepted clips enter a passing assembly.
+- Clips with no open `must_fix` enter the assembly; a flagged best take goes in only while the customer decides, and the cut stays `needs_fix` until they do ([check severity](references/check-severity.md)).
 
 ## Mix and the measured final gate
 

@@ -12,10 +12,14 @@ export const kitMediaSourceReviewSchema = {
     script_sha256: { type: 'string', pattern: '^[a-f0-9]{64}$' },
     status: { enum: ['pass', 'fail', 'incomplete'] },
     reviewer: { type: 'string', minLength: 1, maxLength: 200 },
+    // How the whole source was covered: watched/listened when a person or a capable model really
+    // did, or measured (full-resolution frames plus word timing against the line). Measured is
+    // enough; the older video_watched/audio_listened booleans still read as watched/listened.
     coverage: {
       type: 'object', additionalProperties: false,
-      required: ['video_watched', 'audio_listened', 'start_s', 'end_s'],
+      required: ['start_s', 'end_s'],
       properties: {
+        motion: { enum: ['watched', 'measured'] }, audio: { enum: ['listened', 'measured'] },
         video_watched: { type: 'boolean' }, audio_listened: { type: 'boolean' },
         start_s: { type: 'number', minimum: 0 }, end_s: { type: 'number', exclusiveMinimum: 0 },
       },
@@ -31,16 +35,26 @@ export const kitMediaSourceReviewSchema = {
 
 export const kitMediaQualificationSchema = {
   type: 'object', additionalProperties: false,
-  required: ['provider', 'model', 'shot_type', 'configuration_sha256', 'status', 'accepted_source_sha256', 'reviewer', 'audio_listened', 'video_watched'],
+  required: ['provider', 'model', 'shot_type', 'configuration_sha256', 'status', 'accepted_source_sha256', 'reviewer'],
   properties: {
     provider: { type: 'string', minLength: 1 }, model: { type: 'string', minLength: 1 },
     shot_type: { type: 'string', minLength: 1 }, status: { enum: ['qualified', 'experimental', 'suspended'] },
     accepted_source_sha256: { type: 'string', pattern: '^[a-f0-9]{64}$' },
     configuration_sha256: { type: 'string', pattern: '^[a-f0-9]{64}$' },
     reviewer: { type: 'string', minLength: 1 }, audio_listened: { type: 'boolean' }, video_watched: { type: 'boolean' },
+    motion: { enum: ['watched', 'measured'] }, audio: { enum: ['listened', 'measured'] },
     conditions: { type: 'string', minLength: 1 },
   },
 };
+
+// The review's coverage as { motion, audio }: watched/listened, measured, or null when it doesn't say.
+export function kitMediaCoverage(coverage) {
+  const c = coverage || {};
+  return {
+    motion: ['watched', 'measured'].includes(c.motion) ? c.motion : c.video_watched === true ? 'watched' : null,
+    audio: ['listened', 'measured'].includes(c.audio) ? c.audio : c.audio_listened === true ? 'listened' : null,
+  };
+}
 
 export function kitMediaReviewProblem(review, source, scriptSha256, seconds, { speech = true, productActionRequired = false } = {}) {
   if (!review || review.status !== 'pass') return 'the source has no passing content review';
@@ -48,7 +62,9 @@ export function kitMediaReviewProblem(review, source, scriptSha256, seconds, { s
   if (review.script_sha256 !== scriptSha256) return 'the content review names a different approved script';
   if (!String(review.reviewer || '').trim()) return 'the actual reviewer is missing';
   const coverage = review.coverage || {};
-  if (coverage.video_watched !== true || (speech && coverage.audio_listened !== true)) return 'full playback with actual listening is required; frames or transcription alone do not qualify a speaking source';
+  const covered = kitMediaCoverage(coverage);
+  if (!covered.motion || (speech && !covered.audio)) return 'the content review must say how the whole source was covered: coverage.motion watched or measured, and for speech coverage.audio listened or measured';
+  if ((covered.motion === 'measured' || (speech && covered.audio === 'measured')) && !(review.evidence || []).some((e) => String(e).trim())) return 'a measured review lists its evidence: the frames inspected and the word timing checked against the line';
   if (!(coverage.start_s <= 0 && coverage.end_s >= seconds - 0.02)) return 'the content review does not cover the complete source';
   for (const key of ['identity', 'framing', 'performance', ...(speech ? ['script', 'voice', 'lipsync'] : [])]) {
     if (review.checks?.[key] !== 'pass') return `the source content check ${key} has not passed`;
@@ -84,7 +100,8 @@ export function kitMediaRouteProblem({ provider, model, shot_type, configuration
   if (!q || q.status !== 'qualified' || q.provider !== provider || q.model !== model || q.shot_type !== shot_type) return 'the exact provider, endpoint and shot type need a qualified source example; API success alone is insufficient';
   if (!configuration_sha256 || q.configuration_sha256 !== configuration_sha256) return 'qualification names different capture, references, delivery or model settings';
   if (accepted_source_sha256 && q.accepted_source_sha256 !== accepted_source_sha256) return 'qualification names an unrelated first take';
-  if (!/^[a-f0-9]{64}$/.test(q.accepted_source_sha256 || '') || !String(q.reviewer || '').trim() || q.video_watched !== true || (speech_mode !== 'none' && q.audio_listened !== true)) return 'qualification needs the actual accepted source checksum and audiovisual reviewer coverage';
+  const covered = kitMediaCoverage(q);
+  if (!/^[a-f0-9]{64}$/.test(q.accepted_source_sha256 || '') || !String(q.reviewer || '').trim() || !covered.motion || (speech_mode !== 'none' && !covered.audio)) return 'qualification needs the actual accepted source checksum and how the reviewer covered it (motion watched or measured, audio listened or measured)';
   return null;
 }
 
