@@ -40,11 +40,11 @@ An unclear disposition is `escalate`.
 3. **Partition** into objective misses (`machine_check` true and failed), subjective misses, incomplete and passed. Missing required evidence is incomplete, never a pass. Bind each finding to its original cut.
 4. **Exit** when any holds:
    - incomplete is not empty: name the missing capability; no pass is inferred;
-   - no objective misses: exit objective-clean, run the stage diagnosis and keep open story findings (do not promote or call it APPROVED while they or required evidence remain open);
+   - no objective misses: exit objective-clean, run the stage diagnosis and keep open story findings (do not promote or call it APPROVED while a `must_fix` remains open);
    - the iteration cap is reached;
    - `credits_spent` plus the projected cost exceeds the budget;
    - the same check failed in this and the previous iteration with the same fix (convergence): escalate.
-5. **Plan.** Sort by severity (P0 before P1), then by cost. Group fixes on one asset: all level issues in one edit-video mix pass, all colour matches in one grade pass. Per-scene re-rolls run one at a time through edit-clip.
+5. **Plan.** Sort by [check severity](references/check-severity.md) (`must_fix` before `ask`; `fine` is never fixed), then by cost. An `ask` fix that costs credits runs only when the customer chose it, or in `review_mode: auto`. A paid fix comes out of the approved total when it fits, otherwise it waits for a new yes. Group fixes on one asset: all level issues in one edit-video mix pass, all colour matches in one grade pass. Per-scene re-rolls run one at a time through edit-clip.
 6. **Execute.** Recheck paid authorization and budget before any submission; log debits and each repair in the log.
 7. **Rebuild.** Re-assemble a new labeled candidate with `scripts/assemble.py` from the same `assembly_timeline`, refresh timings, captions, sound and evidence, then re-check the whole new output for the intended effects, not just command success.
 8. **Archive** the new candidate as `edits/_iterations/master-iter-N.mp4` and loop.

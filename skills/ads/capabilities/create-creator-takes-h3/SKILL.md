@@ -2,7 +2,7 @@
 name: create-creator-takes-h3
 description: Generate an AI creator talking to camera, saying an approved script, as one continuous track — H3 Max reference-to-video through the GooseWorks fal-proxy (bills the Ads agent). Plans takes on line boundaries under H3's 15s cap, dry-runs a cost estimate, generates the first take alone so its voice can be locked and passed to every later take, joins takes with measured 0.10s dissolves, and moves each line's timing onto the words actually spoken. Use for any format with a generated creator speaking a script (split-screen, screen inserts, talking-head ads).
 status: superseded
-version: "2.8.0"
+version: "2.9.0"
 updated: 2026-10-16
 superseded_by: creator-h3@1.7.0
 ---
@@ -112,6 +112,13 @@ A test video went wrong three ways. These rules stop each one.
 - **The voice fits the face.** The narrator was picked apart from the presenter (a 28-year-old woman) and was a voice reused across brands. `make_character.py` now records `voice_pair` in `character.json`, from the same age and gender plus `--voice-accent` and `--voice-energy`. With `--voices` (a saved voice list; see 2.6.0 below) it is the best voice that fits; `--voice-exclude <id>` keeps another brand's narrator out. With `--voice-design` (or when nothing in the list fits) it is a Voice Design request: `POST /v1/text-to-voice/design` with `voice_description`, `model_id` (`eleven_ttv_v3`) and `text` (100-1000 characters) or `auto_generate_text`, then `POST /v1/text-to-voice` with `voice_name`, `voice_description` and the chosen preview's `generated_voice_id`. Voice Design is paid: quote it, listen to the previews, then save one. Use `voice_pair` for every narration of this person.
 - **Pace from the reference.** The narration read at 2.62 words a second against the reference's 3.20 (270 words in 84.45 s). Measure the reference with goose-studio's `reference_rate.py`, which counts real words (whisper's sub-word tokens joined, punctuation skipped). `plan_takes.py --reference-wps` (or the beats file's `reference_wps`) sizes the takes from the words at that rate, capped at 3.2, the fastest H3 speaks natively; `takes.json` records `pace`. Faster than 3.2 cannot be native H3: use voice first (`voice-elevenlabs` `pace.target_wps`) and a per-line lip-sync.
 
+## Measured take reviews and a voice across heritage (2.9.0)
+
+Gate audit, 16 Oct: quality checks warn and never block, and an agent that can't play video was stuck at "watched/listened" claims.
+
+- **A measured review is enough.** `source-reviews.json` coverage says `motion: watched|measured` and `audio: listened|measured`. Measured means full-resolution frames of the whole take plus word timing against the line. Nobody has to claim a watch or a listen. The checks themselves (script, voice, lip-sync, identity, framing, performance) still have to pass.
+- **No voice of the person's heritage: the nearest one, said out loud.** When the lists hold no voice of the person's heritage, `voice_pair.nearest` holds the closest voices of the right gender from other heritages, each with `heritage` first in `differs_on`, and `nearest_note` says so. `--accept-nearest` then writes `tell_owner`: one plain line for the owner. **Never change the person to fit a voice.**
+
 ## Realism check and a voice for every person (2.8.0)
 
 On 16 Oct a custom video stopped at the ingredient approval: the server refused the presenter as "generated", even after a High remake, and the agent changed an East Asian presenter to Black American because the account's voice list had no East Asian woman.
@@ -149,7 +156,7 @@ These are the user's calls (the recipe's `choices`), never defaults of this atom
 
 1. **Lock order: script, then character still, then takes.** Show the still before any
    take. A take costs dollars; a still costs cents.
-2. **First take alone, then listen.** Later takes receive the accepted t1 audio as voice conditioning, not exact audio reuse. A hash-bound full AV review in `--reviews` is required before later takes. Voice consistency still needs listening to every take; reseeding is a new paid attempt subject to the approved retry budget.
+2. **First take alone, then listen.** Later takes receive the accepted t1 audio as voice conditioning, not exact audio reuse. A hash-bound review of the whole take in `--reviews` is required before later takes (watched and listened, or measured). Voice consistency still needs checking every take; reseeding is a new paid attempt subject to the approved retry budget.
 3. **Voice matches the person.** Age, gender, ethnicity and accent follow the character. The
    prompt's delivery line sets the tone; change it through `delivery`, not by editing
    the prompt file.
@@ -225,7 +232,7 @@ For multiple characters, compare a shared scene with pinned references, fewer pe
 
 ## Source review and timing contract
 
-`source-reviews.json` contains `takes: [{id,source_sha256,script_sha256,status,reviewer,coverage,checks}]`. Coverage names `video_watched`, `audio_listened`, `start_s` and `end_s` and covers the complete actual source. Script, voice, lip-sync, identity, framing and performance checks must pass; product/action is pass or not_applicable. Never invent reviewer coverage. Every new generated file is pending until that review exists. Failed or incomplete files remain candidates and cannot enter a passing assembly.
+`source-reviews.json` contains `takes: [{id,source_sha256,script_sha256,status,reviewer,coverage,checks}]`. Coverage names `motion` (`watched` or `measured`), `audio` (`listened` or `measured`), `start_s` and `end_s` and covers the complete actual source; `measured` (full-resolution frames plus word timing against the line) is enough, and the older `video_watched`/`audio_listened` booleans still read as watched/listened. Script, voice, lip-sync, identity, framing and performance checks must pass; product/action is pass or not_applicable. Never invent reviewer coverage. Every new generated file is pending until that review exists. Failed or incomplete files remain candidates and cannot enter a passing assembly.
 
 New plans set `content_review_required: true`. Word sidecars must bind their source/script checksums and name `reviewed_transcription` or `forced_alignment`; silence measurements alone are not word boundaries. Native audio and picture keep matching trims and speed. The assembly output remains pending final review.
 

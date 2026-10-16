@@ -327,17 +327,29 @@ def match_library(voices, wanted, exclude=(), age=None):
 
 def nearest(voices, wanted, exclude=(), age=None, limit=3):
     """Up to `limit` voices of the right gender and heritage, closest age first, each with what differs:
-    something real to play next to the still while a Voice Design voice is quoted."""
+    something real to play next to the still while a Voice Design voice is quoted. When the lists hold
+    no voice of the person's heritage, the closest voices of the right gender from any heritage come
+    back instead, each marked `heritage` in differs_on, so the owner is told rather than left with
+    nothing. The person never changes to fit a voice."""
     group = heritage(wanted.get("ethnicity"))
+    rows = _nearest_rows(voices, wanted, exclude, age, group, across=False)
+    if not rows:
+        rows = _nearest_rows(voices, wanted, exclude, age, group, across=True)
+    return [row for _, row in sorted(rows, key=lambda r: r[0])[:limit]]
+
+
+def _nearest_rows(voices, wanted, exclude, age, group, across):
     rows = []
     for voice in voices or []:
         vid = voice_id(voice)
         if not vid or vid in exclude:
             continue
         labels = voice_record(voice)
-        if labels.get("gender") != wanted["gender"] or not heritage_fits(group, voice_heritages(voice, labels)):
+        if labels.get("gender") != wanted["gender"]:
             continue
-        differs = []
+        if not across and not heritage_fits(group, voice_heritages(voice, labels)):
+            continue
+        differs = ["heritage"] if across else []
         fit = age_fit(age, labels.get("age")) if age is not None else None
         if fit != "exact":
             differs.append("age %s" % (labels.get("age") or "unlabelled"))
@@ -347,7 +359,7 @@ def nearest(voices, wanted, exclude=(), age=None, limit=3):
         rows.append(((gap, len(differs), text_of(voice.get("name")), vid),
                      {"voice_id": vid, "name": text_of(voice.get("name")) or None, "labels": labels,
                       "preview_url": voice.get("preview_url"), "differs_on": differs}))
-    return [row for _, row in sorted(rows, key=lambda r: r[0])[:limit]]
+    return rows
 
 
 def library_searches(gender, ethnicity=None, language="en"):
@@ -475,6 +487,9 @@ def pair_voice(age, gender, accent=None, energy=None, voices=None, exclude=(), s
     pair.update(design_request(age, gender, accent, energy, sample_text, ethnicity))
     if voices:
         pair["nearest"] = nearest(voices, wanted, exclude, int(age))
+        if pair["nearest"] and "heritage" in pair["nearest"][0]["differs_on"]:
+            pair["nearest_note"] = ("No voice in the lists matches this person's heritage; `nearest` holds the closest "
+                                    "voices of the right gender from other heritages. Tell the owner so in one line. " + NEVER_BEND)
     pair["note"] = ("no saved voice fits %s; Voice Design is a paid call: quote it, listen to the previews, then save one. %s"
                     % (", ".join("%s %s" % (k, v) for k, v in wanted.items() if k != "energy"),
                        LIBRARY_DONE if searched else LIBRARY_MORE if library.get("more") and not pair.get("library_search")
@@ -559,7 +574,7 @@ def record_designed(path, voice_id, name=None):
 
 def accept_nearest(path, library_unavailable=False):
     """When no voice fits fully and Voice Design can't run, take the first `nearest` voice (the closest
-    of the right gender and heritage) as the pair. Nobody picks from the list: the owner hears it beside
+    of the right gender and heritage, or across heritage when none shares it: `tell_owner` says so) as the pair. Nobody picks from the list: the owner hears it beside
     the still and accepts it, or it is rejected and pairing runs again with --exclude."""
     record = json.loads(path.read_text(encoding="utf-8"))
     old = record.get("voice_pair") or {}
@@ -570,12 +585,16 @@ def accept_nearest(path, library_unavailable=False):
         raise SystemExit("--accept-nearest needs a voice_design voice_pair with `nearest` voices; this one has %s"
                          % ("none" if old.get("source") == "voice_design" else "source %r" % old.get("source")))
     row = rows[0]
+    differs = row.get("differs_on") or []
     pair = {"source": "library_nearest", "voice_id": row["voice_id"], "name": row.get("name"), "labels": row.get("labels"),
-            "preview_url": row.get("preview_url"), "differs_on": row.get("differs_on") or [],
+            "preview_url": row.get("preview_url"), "differs_on": differs,
             "wanted": old.get("wanted"), "person": old.get("person"), "rejected": old.get("rejected") or [],
             "note": "the closest voice in the list (no voice fits fully and Voice Design can't run); it differs on %s. "
                     "Play it beside the still; if the owner rejects it, pair again with --character --voices <list> --exclude %s"
-                    % (", ".join(row.get("differs_on") or []) or "nothing", row["voice_id"])}
+                    % (", ".join(differs) or "nothing", row["voice_id"])}
+    if "heritage" in differs:
+        pair["tell_owner"] = ("No voice in the library matches this person's heritage, so this is the closest one. "
+                              "Play it beside the still. " + NEVER_BEND)
     record["voice_pair"] = pair
     path.write_text(json.dumps(record, indent=1), encoding="utf-8")
     return pair

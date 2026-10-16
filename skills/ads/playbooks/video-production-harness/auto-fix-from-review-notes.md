@@ -65,7 +65,7 @@ Resolve each `fix:` line to a real supported command or host capability before r
 - Grade, holds and tails: FFmpeg eq/colorbalance and afade/fade from [edit-video.md](edit-video.md) and [edit-clip.md](edit-clip.md); a hold is a declared timeline freeze, never a loop or pad. Inspect the result's duration, frames and audio.
 - Frame claims: extract the claimed frame with FFmpeg and inspect it and its neighbours.
 
-If a P0/P1 repair cannot run, record it failed or blocked and stop delivery.
+If a P0 (`must_fix`) repair cannot run, record it failed or blocked and stop delivery. A P1 (`ask`) or P2 (`fine`) repair that cannot run is recorded and reported; it doesn't stop delivery ([check severity](references/check-severity.md)).
 
 ## Output
 
@@ -77,8 +77,8 @@ If a P0/P1 repair cannot run, record it failed or blocked and stop delivery.
 
 - Every note id and its original wording appear in the report, blocked, rejected and deferred included. Source bindings never move when the final selection changes.
 - Every P0 is applied or surfaced as failed; every mutated file has an archive copy.
-- **Malformed item** (missing one of the four fields): `blocked:malformed` with the parse error. A malformed P0/P1 blocks delivery.
+- **Malformed item** (missing one of the four fields): `blocked:malformed` with the parse error. A malformed P0 blocks delivery.
 - **Unknown repair:** `blocked:unsupported_capability`, naming it.
 - **Missing input path:** `failed:missing_input`.
-- **Conflicting fixes** (opposing intentions, or incompatible parameters on one file): mark both `blocked:conflict`, keep originals, get the owner's resolution before either runs. P0/P1 conflicts block delivery.
+- **Conflicting fixes** (opposing intentions, or incompatible parameters on one file): mark both `blocked:conflict`, keep originals, get the owner's resolution before either runs. P0 conflicts block delivery.
 - **Repair exits non-zero:** `failed:atom_error` with stderr; abort if P0.

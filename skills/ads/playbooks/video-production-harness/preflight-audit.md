@@ -35,15 +35,16 @@ Use real media probes, image decoding and host capability checks. No audit scrip
 | `avif-rejection-check` | Fail on any `.avif` ref. | Image APIs return 400 on `.avif`. |
 | `capabilities-ready` | Confirm host authentication and each required operation without printing credentials. | Otherwise the run fails halfway with a vague "unauthorized". |
 | `brand-vars-unresolved` | Render each brief and brand-vars file once and search for `{[a-z_]+}` placeholders. | "DARK CHARCOAL #{shirt_hex}" in an image prompt causes silent drift. |
-| `review-perception-ready` | Resolve a reviewer that can watch and hear, or plan a `measured` review backed by `scripts/qc_evidence.py` and the host's final measurements. Extraction or speech-to-text is not listening. | A review marked `listened` without listening is false; a `measured` review counts only when every final measurement passes. |
-| `creative-contract-consistent` | Match reference_map, adapted copy, picture and direction, proof and action, sound and the current host revision. | Contradictions or missing essential beats cannot clear either owner approval. |
-| `scale-and-reference-binding` | Resolve real dimensions, use and capacity, and the real product and size reference attachments after provider caps and filtering. | Numbers in prose or a correct logo cannot replace missing size evidence or fix wrong product geometry. |
+| `review-perception-ready` | Resolve a reviewer that can watch and hear, or plan a `measured` review backed by `scripts/qc_evidence.py` and the host's final check. Extraction or speech-to-text is not listening. | A review marked `listened` without listening is false; a `measured` review is honest and needs no such claim. |
+| `product-photo-binding` | The real product photo (and each use-state photo) is attached after provider caps and filtering. | A correct logo in prose cannot replace the real product reference. |
 
 ### P1: warn, don't block
 
 | Check | What it does |
 |---|---|
 | `image-dimensions-sanity` | Every ref is at least 512×512; smaller refs degrade output. |
+| `creative-contract-consistent` | Match reference_map, adapted copy, picture and direction, proof and action, sound and the current host revision. A contradiction or a missing essential beat is an `ask` finding for the script approval. |
+| `product-scale-known` | Resolve real dimensions, use and capacity. Unknown size is an `ask` finding: ask the customer, or use a sourced size, before scenes that show scale. |
 | `gitattributes-lfs-tracked` | Report which extensions `.gitattributes` tracks in LFS, so the operator knows when to pull. |
 | `vo-script-length-vs-target` | Estimate speech duration from the word count at the reference's rate from `scripts/reference_rate.py` (2.8–3.2 words/s when it has no speech). Warn when it is over or under the design-brief target by more than 25%. Also warn when that target is more than 25% off the reference's length and `changes_from_reference` has no `length` entry: list a `length` change if this is intended. |
 | `approved-voice-check` | Warn if the design brief names a voice ID not in the host-approved voice catalog. (The hard fail is in create-design-brief.) |

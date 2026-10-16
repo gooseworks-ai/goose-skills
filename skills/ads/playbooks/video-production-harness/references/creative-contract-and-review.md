@@ -3,8 +3,8 @@
 Keep the requested video intact from reference to final. Plan its words, visible
 actions and sound together; review actual performances and the exact export.
 Record honestly how you reviewed: `listened`/`watched` only when that happened,
-otherwise `measured`, which counts only when every final measurement passes.
-The owner approves twice: the script and the ingredients.
+otherwise `measured`. Findings warn by severity ([check severity](check-severity.md));
+only a broken file blocks. The owner approves twice: the script and the ingredients.
 
 ---
 
@@ -15,14 +15,15 @@ The owner approves twice: the script and the ingredients.
 `content_review.capabilities` is `{audio: "listened" | "measured", motion: "watched" | "measured"}`.
 Write `listened` or `watched` only when a person or an audio/video-capable model
 actually heard or watched the file; an extracted WAV, transcript or contact sheet
-is not listening. Otherwise write `measured`. A measured review is valid when the
-final measurements (`gooseworks-final-measure/1`: [qc_evidence.py](../scripts/qc_evidence.py) locally,
-`quality_report.final_measure` on the host) pass or are not applicable for the same
-`output_sha256`, and the frame judge has no open finding: the host's, or locally
-`scripts/frame_judge.py --kind final` with a passing `frame_judge.json` for the same
-bytes. Without it a measured review is INCOMPLETE, never approved. Any fail blocks.
-Severity `p0`, `p1` and `blocker` block, in any letter case; an unknown severity
-blocks as P1. The old boolean shape (`true`) still parses for one release.
+is not listening. Otherwise write `measured`. A measured review is valid when
+[qc_evidence.py](../scripts/qc_evidence.py) exits 0 on the same `output_sha256` (the
+file is not broken) and you inspected its frames at full resolution. The final
+measurements (`gooseworks-final-measure/1`, locally and in the host's final check) and
+the host's frame check are findings, graded by [check severity](check-severity.md):
+a `must_fix` finding is fixed before delivery, an `ask` finding is settled by the
+customer (or by you in `review_mode: auto`), a `fine` one is kept. Nobody has to claim
+they watched or listened. Legacy severities map as `p0`/`blocker` → `must_fix`,
+`p1` → `ask`, `p2` → `fine`, in any letter case; an unknown severity is `ask`.
 
 ## Reference and creative contract
 
@@ -81,7 +82,7 @@ still enable their duties when no enum names them; unexpected content adds dutie
 
 | Content | Required checks |
 |---|---|
-| People | Identity, anatomy and hand count (P0), believable appearance/performance, wardrobe and relevant world |
+| People | Identity, anatomy and hand count (`must_fix`), believable appearance/performance, wardrobe and relevant world |
 | Speaking mouth | Full speech listening, voice/words/pronunciation, source alignment and perceptual lip-sync |
 | Product | Exact variant, geometry, material, label, state and supported use; sourced scale where material |
 | Action/proof | Complete entrance/action/exit, contact, state/order, object permanence and visible payoff |
@@ -95,10 +96,11 @@ Use [product scale and world](product-scale-and-world.md),
 
 ## Production eligibility and repair
 
-Judge every selected still at full resolution before animation with `frame_judge.py
---kind still` (the real product photo first): its object list and verdict are saved,
-and a still without a pass is not animated. Judge each clip with `--kind clip`. On a new creator route, review the
-first real face/voice/performance before ordering the remaining takes.
+Look at every selected still at full resolution before animation, next to the real
+product photo, and list its objects; grade what you see by [check severity](check-severity.md).
+A still with an open `must_fix` is not animated. On GooseWorks the host also grades person
+stills at each save and checks each clip (`clip_check`); act on their findings. On a new
+creator route, review the first real face/voice/performance before ordering the remaining takes.
 For difficult actions, prove a representative action with the same product and
 conditions; a talking-head pass cannot qualify application, pouring or cooking.
 A pending automated check is not passed. Run independent qualified work in
@@ -106,13 +108,15 @@ parallel, keeping project/scene/revision identities. Each batch output needs
 its own exact-source/final coverage and verdict; one passed example or an all-done
 status cannot approve the remaining videos.
 
-Inspect every complete generated clip. A failed clip or failed redo cannot enter a
-passing assembly. Continue independent work, keep the rejected candidate and list
-the gap; never exceed the retry/budget bound.
+Inspect every complete generated clip. A clip with an open `must_fix` is redone
+(paid from the approved total when it fits, otherwise after a new yes to its price);
+`ask` and `fine` clips stay in the assembly. Never drop a scene: if a redo still has a
+`must_fix`, keep the best take, flagged, and let the customer choose another paid redo
+or keep it. Continue independent work and keep every rejected candidate.
 Classify source/model, input, edit and perception-capability failures separately.
 Repair a detached native edit locally instead of buying another correctly matched take.
 
-Every inset or overlay the plan promises must exist in the render, at its shot's time.
+Every inset or overlay the plan promises should exist in the render, at its shot's time; a missing one is an `ask` finding (usually a free re-assembly).
 Cosmetic crops/overlays must preserve the required product, action, identity and proof. Do not hide changed packaging with a logo, wrong geometry
 with a crop, or impossible action with a mask. Do not widen people. Before flipping
 a mirrored take, verify writing, handedness, hardware and continuity.
@@ -141,7 +145,8 @@ preview/final label is kept apart from unresolved quality and never erases a def
 
 ## Current GooseWorks review records
 
-In quality_report.content_review, all dimension keys are present:
+When you send quality_report.content_review (a record of what you checked, not a
+gate: the host's own final check is the evidence), all dimension keys are present:
 reference_and_concept, brand_and_product, scale_and_geometry, action_and_continuity,
 lip_sync, voice_performance, pronunciation, sound_and_silence, pacing_and_joins,
 camera_and_lighting and overlays. Each has status pass, needs_revision, incomplete
@@ -150,8 +155,9 @@ applicability rationale. The overall verdict is approved, needs_revision or inco
 These records describe actual review, not invented scores.
 
 Register each production clip's media_id and sha256 with its content_review:
-reviewer, verdict, audio_perception/motion_perception, covered millisecond ranges
-and findings. The automated clip checks support this record; pending is not passed.
+reviewer, verdict, audio_perception/motion_perception (`measured` is enough), covered
+millisecond ranges and findings with their severity. The automated clip checks support
+this record; pending is not passed.
 
 Reference observations carry exact media_id/media_revision, audio_perception
 (`listened` | `measured`), motion_perception (`watched` | `measured`) and covered

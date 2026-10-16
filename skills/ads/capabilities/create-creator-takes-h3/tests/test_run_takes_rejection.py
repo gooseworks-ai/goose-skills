@@ -271,5 +271,32 @@ class RunTakesRejectionTests(unittest.TestCase):
         self.assertFalse((self.home / ".gooseworks" / "rejected-fal-requests").exists())
 
 
+class MeasuredTakeReviewTests(unittest.TestCase):
+    """Gate audit 16 Oct 2026: a take review covered by measurement is enough; no watch/listen claim."""
+
+    def review(self, coverage):
+        sys.path.insert(0, str(SCRIPT.parent))
+        import content_review
+        with tempfile.TemporaryDirectory() as tmp:
+            take_file = pathlib.Path(tmp) / "t1.mp4"
+            take_file.write_bytes(b"not decoded: the duration is passed in")
+            reviews = pathlib.Path(tmp) / "source-reviews.json"
+            reviews.write_text(json.dumps({"takes": [{
+                "id": "t1", "status": "pass", "source_sha256": content_review.source_sha256(take_file), "script_sha256": "a" * 64,
+                "reviewer": "agent (measured)", "coverage": {**coverage, "start_s": 0, "end_s": 6.0},
+                "checks": {k: "pass" for k in ("script", "voice", "lipsync", "identity", "framing", "performance")} | {"product_action": "not_applicable"}}]}))
+            return content_review.require_take_review(str(reviews), {"id": "t1", "script_sha256": "a" * 64}, take_file, 6.0)
+
+    def test_measured_coverage_passes(self):
+        self.assertEqual(self.review({"motion": "measured", "audio": "measured"})["status"], "pass")
+        self.assertEqual(self.review({"motion": "watched", "audio": "listened"})["status"], "pass")
+        self.assertEqual(self.review({"video_watched": True, "audio_listened": True})["status"], "pass")  # the older shape
+
+    def test_coverage_must_still_say_how(self):
+        for coverage in ({}, {"motion": "measured"}, {"motion": "skimmed", "audio": "measured"}, {"video_watched": False, "audio_listened": True}):
+            with self.assertRaisesRegex(ValueError, "how the whole take was covered"):
+                self.review(coverage)
+
+
 if __name__ == "__main__":
     unittest.main()

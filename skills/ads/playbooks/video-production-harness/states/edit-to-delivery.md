@@ -32,24 +32,24 @@ Part of [the orchestrator](../orchestrator.md). Its non-negotiables, approvals a
    - **7b:** intended versus received story, pacing, brand and platform fit, creator shotcraft and performance. Required voice, product, action and sync checks cannot be switched off by genre or an aggregate score.
    - **7c:** merge every report into `review-notes/<idx>-<timestamp>.md` with P0/P1/P2 sections, the shape auto-fix consumes.
    - **7d:** for every visual claim, re-extract the frame at its timecode and verify it; unverified claims are `claim:unverified`.
-   - **7e, complete-cut review.** Required before APPROVED. Run `python3 ../scripts/qc_evidence.py master.mp4 evidence-review-N --timeline <receipt> --words <words> --script <script> --reference <reference.mp4>`. It exits 1 on any failed final measurement, so fix those first. Compare the whole cut with the reference beat table and the storyboard. Record `listened`/`watched` only when you did; otherwise `measured`. Bind the review to the current output, source, timeline and contract hashes.
+   - **7e, complete-cut review.** Required before APPROVED. Run `python3 ../scripts/qc_evidence.py master.mp4 evidence-review-N --timeline <receipt> --words <words> --script <script> --reference <reference.mp4>`. It exits 1 only on a broken file (unplayable, wrong length, no sound when sound is planned), so fix that first; grade its other `findings` by [check severity](../references/check-severity.md). Compare the whole cut with the reference beat table and the storyboard. Record `listened`/`watched` only when you did; otherwise `measured`. Bind the review to the current output, source, timeline and contract hashes.
 2. Branch on the result:
    - **APPROVED:** a rough cut moves to fine-cut questions; after the fine cut passes, go to State 9.
    - **NEEDS REVISION:** follow the diagnosis: State 1/2.5 for concept or script, State 3/5 for missing coverage or performance, State 7 for sequence, State 6 for local defects. Use [auto-fix-from-review-notes.md](../auto-fix-from-review-notes.md) only for deterministic local repairs, then review the new candidate against the original conditions.
-   - **INCOMPLETE:** save the evidence and the missing capability; do not advance or call it approved.
-3. **Loop guard:** at most 3 review iterations, then escalate to the user.
+   - **INCOMPLETE:** the file is broken or the source is missing. Save the evidence, fix the file, and never call it approved.
+3. **Loop guard:** loop only while a `must_fix` is open, at most 3 rounds. Then show the customer the best version with its open finding and the price of another redo; they choose another paid redo or keep it.
 
 ### State 9 — Polish
-1. Follow [polish.md](../polish.md) in `polish-and-fix` mode: technical evidence and the end-card readability check first, then polish notes on loudness, captions, music and VO balance, end card, tail, hook, colour, brand fit and VO intelligibility; P0/P1 fixes go through auto-fix and produce `edits/master-polished.mp4`.
+1. Follow [polish.md](../polish.md) in `polish-and-fix` mode: technical evidence and the end-card readability check first, then polish notes on loudness, captions, music and VO balance, end card, tail, hook, colour, brand fit and VO intelligibility; must_fix (P0) and free ask (P1) fixes go through auto-fix and produce `edits/master-polished.mp4`.
 2. Check the full performance and mix, mouth and source alignment, exact words and joins, product and action, and the planned sound. An ASR or loudness result never replaces missing perception.
 3. Show before and after with each note's outcome on the existing candidate surface.
 
 ### State 10 — Deliver
 1. Burn approved captions on the polished picture as the last visual step: `caption-burn` (superseded; agent-built path; the kit path uses captions-layer), which needs no libass, or the packaged ASS path with verified libass and fonts. The style comes from the brand brief.
 2. Check caption spelling, word timing, safe areas, text-heavy scenes and collisions with the end card, offer or logo. Probe the final file: a 9:16 delivery is 1080×1920 at both tiers (Standard's 768P picture is scaled up with lanczos, [edit-video](../edit-video.md) Phase 8).
-3. Export MP4 (H.264 + AAC). `../scripts/qc_evidence.py` must exit 0 on the exact bytes. Bind the current content_review, hash and revisions; every required duty must be complete.
+3. Export MP4 (H.264 + AAC). `../scripts/qc_evidence.py` must exit 0 on the exact bytes (the file is not broken). Bind the hash and revisions.
 4. Build each ratio, cutdown or language from editable sources with its own caption layout, and review each output at destination size, ending included. A parent master's check does not clear a derivative.
-5. Show the captioned master and variants for the host's delivery decision; follow [promote.md](../promote.md) to complete and select. GooseWorks' check on complete adds to this; it does not replace it.
+5. Show the captioned master and variants for the host's delivery decision; follow [promote.md](../promote.md) to complete and select. Mark the video complete and read the host's final check (never send the final or its frames to a vision model yourself). Act on its findings by severity: fix a `must_fix` (a redo is paid from the approved total when it fits, otherwise after a new yes), settle `ask` items, keep `fine` ones. A `must_fix` the customer chose to keep is recorded with their words.
 6. Publishing to an outside channel needs explicit authorization through an available publishing capability.
 
 ### State 11 — Wrap session

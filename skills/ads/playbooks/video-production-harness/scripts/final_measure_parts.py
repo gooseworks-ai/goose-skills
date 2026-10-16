@@ -32,6 +32,25 @@ THRESHOLDS = {
 }
 
 
+# What a failed check means for delivery (references/check-severity.md). must_fix is redone and
+# never delivered, ask goes to the customer with the price of the fix, fine is kept. None of
+# them makes qc_evidence.py exit 1: only a broken file does (see BROKEN in qc_evidence.py).
+SEVERITY = {
+    "digital_silence": "must_fix",  # a dropout; a whole silent track is a broken file
+    "tone_only": "must_fix",
+    "first_last_words": "must_fix",
+    "speech_over_silent_face": "must_fix",
+    "unplanned_silence": "ask",
+    "speech_gap_in_sentence": "ask",
+    "frozen_picture": "ask",
+    "repeated_shot": "ask",
+    "planned_freeze_too_long": "ask",
+    "speech_rate_vs_reference": "fine",
+    "planned_pause_too_long": "fine",
+    "setup_count_vs_reference": "fine",
+}
+
+
 def check(check_id, result, detail, intervals=None):
     return {"id": check_id, "result": result, "detail": detail,
             "intervals_ms": [[round(a * 1000), round(b * 1000)] for a, b in (intervals or [])]}

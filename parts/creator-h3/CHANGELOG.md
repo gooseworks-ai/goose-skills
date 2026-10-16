@@ -1,5 +1,11 @@
 # creator-h3
 
+## 1.8.0
+
+- A take's content review may be measured: `coverage.motion` is `watched` or `measured`, `coverage.audio` is `listened` or `measured` (full-resolution frames plus word timing against the line). The old `video_watched` / `audio_listened` booleans still read as watched / listened. The same goes for `qualification`. Gate audit, 16 Oct 2026: an agent that can't play video was stuck on "watched/listened" claims; quality checks warn and never block.
+- `review_request.sources[].coverage_required` lists the accepted values instead of demanding `video_watched` and `audio_listened`.
+- The provider requests are unchanged, but there is no `reuses_pieces_of`: the pieces fixture predates the reviewed pipeline and can't prove it. A video approved on 1.7.0 keeps its version.
+
 ## 1.7.0
 
 - `quality_tier` (`standard`, the default, or `best`) is accepted; H3 is 768P in both. The default resolution is now 768P (1.6.0: 1080P). An explicit `resolution` still wins (`1080P` only when the customer asks).

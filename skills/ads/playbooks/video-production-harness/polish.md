@@ -11,7 +11,7 @@ Finish the approved edit without changing its direction: fix objective problems 
 
 # Agent version
 
-Follow the [orchestrator](orchestrator.md)'s host contract and [creative contract and review](references/creative-contract-and-review.md). Use [the editorial review guide](references/editorial-review.md) for source binding, note disposition and edit history.
+Follow the [orchestrator](orchestrator.md)'s host contract, [creative contract and review](references/creative-contract-and-review.md) and [check severity](references/check-severity.md). Use [the editorial review guide](references/editorial-review.md) for source binding, note disposition and edit history.
 
 ## Purpose
 
@@ -42,7 +42,7 @@ Each finding has one axis. Repairs resolve to real FFmpeg or host capabilities i
 | color-consistency | Continuity against the approved look; keep intended lighting changes. | Escalate |
 | brand-fit | Palette, approved logo, no banned phrases (as in review-video). | Escalate |
 
-**Speech integrity is a ship gate.** When you report complete, GooseWorks checks the final's spoken words against the script (0.90 or better) and measures silence, gaps and freezes; fix any ranges it names. Rule out recognizer errors before re-recording. Silent or text-led work checks the planned soundtrack and reading time instead.
+**Speech integrity is `must_fix`.** Lost or changed script words, and cut first or last words, are never delivered. When you report complete, GooseWorks checks the final's spoken words against the script (0.90 or better) and measures silence, gaps and freezes, and returns graded findings; fix the `must_fix` ranges it names. Rule out recognizer errors before re-recording. Silent or text-led work checks the planned soundtrack and reading time instead.
 
 ## Workflow
 
@@ -50,20 +50,20 @@ Each finding has one axis. Repairs resolve to real FFmpeg or host capabilities i
 Read `implementation_brief` (CTA, tone), `design_brief` (palette, character), `brand-vars.yaml` (tagline, end-card config), `captions/captions.srt` and `audio/word-timestamps.json`. Probe the target's duration, streams and fps.
 
 ### 2. Measure
-- Run `python3 scripts/qc_evidence.py <target> <video_folder>/polish-notes/<idx>/qc` and save its evidence.json. It exits 1 on any failed final measurement.
+- Run `python3 scripts/qc_evidence.py <target> <video_folder>/polish-notes/<idx>/qc` and save its evidence.json. It exits 1 only on a broken file; its other measurements come back as `findings` with a severity.
 - Measure per-scene RMS with FFmpeg astats and compare cut times with word boundaries (the helper does not).
 - Score the end-card frames for legibility, hold, margins, contrast and design.
-- With speech, transcribe the master (when a route exists) and diff it line by line against `locked_script`. Confirm each miss by listening when you can before calling it P0. Save `polish-notes/<idx>/qc/whisper-test.md` with per-line results and mix corrections.
+- With speech, transcribe the master (when a route exists) and diff it line by line against `locked_script`. Confirm each miss by listening when you can before calling it `must_fix`; rule out recognizer errors on brand names. Save `polish-notes/<idx>/qc/whisper-test.md` with per-line results and mix corrections.
 
 ### 3. Review the master with sound
-Review the whole master at normal speed with sound when your tools can, and record `listened`/`watched`. Otherwise record `measured`: it counts only when `scripts/qc_evidence.py` exits 0 and the host's `final_measure` passes. Frames alone are never the review. Give each axis findings with a timecode and a one-line root cause, or say it is clean. Check captions at destination size, including product visibility and reading time. A caption change starts from the clean picture and burns once, never over old captions.
+Review the whole master at normal speed with sound when your tools can, and record `listened`/`watched`. Otherwise record `measured`: it is valid when `scripts/qc_evidence.py` exits 0 (the file is not broken), and its findings are graded by severity. Frames alone are never the review. Give each axis findings with a timecode and a one-line root cause, or say it is clean. Check captions at destination size, including product visibility and reading time. A caption change starts from the clean picture and burns once, never over old captions.
 
 ### 4. Propose
 Write `polish-notes/<idx>-<ts>.md` in the exact contract of auto-fix-from-review-notes.
 
-- **P0**: must fix (loudness over 1 LUFS off, unreadable captions, a hard-cut tail).
-- **P1**: should fix (mild caption overflow, slight music/VO imbalance, short end-card hold).
-- **P2**: nice-to-have (subtle colour drift).
+- **P0 = must_fix**: never delivered (a misspelled caption or brand word, a cut-off first or last word, a wrong or missing logo).
+- **P1 = ask**: should fix (loudness over 1 LUFS off, unreadable or overflowing captions, a hard-cut tail, music over the voice, a short end-card hold). These repairs are free, so polish-and-fix applies them in either review mode.
+- **P2 = fine**: nice-to-have (subtle colour drift). Listed, never applied automatically.
 
 In `polish` mode, stop here and report the notes path with P0/P1/P2 counts.
 
@@ -79,7 +79,7 @@ In `polish` mode, stop here and report the notes path with P0/P1/P2 counts.
 ### 6. Re-check
 Run `scripts/qc_evidence.py` on the polished master (it must exit 0), the end-card check and the transcript diff. Review the whole new master with sound (or measured) and confirm each note's intended effect, words and mouths, product, action and ending. A changed note is not a verified note. Check every derivative on its own. Write `polish-notes/<idx>-<ts>-applied.md` with before → after: LUFS, verified locked lines, caption overflow count, end-card score, last-100 ms tail RMS, and length (near zero except an end-card freeze).
 
-**Hard stop:** if any spoken line fails on the polished master, re-apply the mix fix or escalate. Do not go on.
+**Hard stop:** if a spoken line is lost on the polished master (`must_fix`), re-apply the mix fix; if it still fails, keep the pre-polish master as the candidate and tell the customer in one line. Don't deliver the polished master.
 
 ### 7. Report and continue
 Show before → after on the candidate surface: LUFS, verified spoken lines, perception and covered ranges, notes verified, caption overflow, end-card score, length, and the candidate path.
