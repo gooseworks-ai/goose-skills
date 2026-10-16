@@ -811,12 +811,15 @@ def _poll_to_result(model_path, status_url, response_url, params, timeout_s, pol
 
 
 def _fal_run(model_path, payload, timeout_s=None, poll_s=3, new_take=False,
-             input_digest=None):
+             input_digest=None, query=None):
     """Submit a FAL job through the proxy, poll to completion (surviving backend blips),
     return the raw result dict. `model_path` e.g. 'fal-ai/kling-video/.../image-to-video'.
 
     timeout_s: seconds to POLL (default: default_poll_timeout(model_path)). On timeout
     raises FalPollTimeout(request_id=...) — it never resubmits; resume with resume_fal.
+    query: extra GooseWorks query parameters for this call, e.g. a custom video's quality-tier
+    fields {shot_scene, upgrade_reason, upgrade_attempt, upgrade_why, upgrade_quote}. They go to
+    the proxy (never upstream to fal); token, agent_id and project_id stay the proxy's own.
     new_take: True = deliberately start a NEW job even if an identical submit is already
     running (a re-roll of the same prompt). Default False: the proxy returns the running
     job for an identical submit within 30 min instead of paying for a second one.
@@ -838,18 +841,27 @@ def _fal_run(model_path, payload, timeout_s=None, poll_s=3, new_take=False,
     `python3 media_proxy.py forget <key>`."""
     refuse_if_rejected(model_path, payload, input_digest)
     try:
-        return _fal_run_once(model_path, payload, timeout_s, poll_s, new_take, input_digest)
+        return _fal_run_once(model_path, payload, timeout_s, poll_s, new_take, input_digest, query)
     except FalPolicyRejection as e:
         if not e.from_ledger and e.recordable:
             _record_rejection(model_path, payload, input_digest, e)
         raise
 
 
-def _fal_run_once(model_path, payload, timeout_s, poll_s, new_take, input_digest):
+def _call_query(query):
+    """A call's extra query parameters as strings, without the proxy's own auth and attribution keys."""
+    return {str(k): str(v) for k, v in (query or {}).items()
+            if v is not None and k not in ("token", "agent_id", "project_id")}
+
+
+def _fal_run_once(model_path, payload, timeout_s, poll_s, new_take, input_digest, query=None):
+    extra = _call_query(query)
     if relay_mode():
         args = {"provider": "fal", "path": model_path, "body": payload}
         if input_digest:
             args["idempotency_key"] = input_digest
+        if extra:
+            args["query"] = extra
         return _relay("fal", "data_post", args,
                       "poll job_get { job_id } from the reply until status is complete; the result is "
                       "job_get's result.output (fal's JSON with the media URLs). If "
@@ -861,7 +873,7 @@ def _fal_run_once(model_path, payload, timeout_s, poll_s, new_take, input_digest
         timeout_s = default_poll_timeout(model_path)
     api_base, tok, agent = _cfg()
     base = api_base + "/api/internal/fal-proxy"
-    params = _params(tok, agent)
+    params = {**extra, **_params(tok, agent)}
     headers = {}
     if new_take:
         headers["x-gw-no-dedupe"] = "1"

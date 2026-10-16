@@ -1,6 +1,7 @@
 // H3's first frame defines its canvas. Fit first/last frames without cropping
 // products instead of assuming aspect_ratio can override a raw photo's shape.
 import { kitFfmpeg, kitStopIfAborted } from '../../_lib/part.mjs';
+import { h3SceneResolution } from './provider.mjs';
 import { join } from 'node:path';
 
 const H3SCENE_FRAME_SHORT_SIDE = { '480P': 480, '768P': 768, '1080P': 1080 };
@@ -52,7 +53,7 @@ export function h3SceneFrameCanvas(inputs, source) {
   const aspect = inputs.aspect_ratio ?? '9:16';
   if (aspect === 'adaptive') return { width: source.width, height: source.height };
   const [w, h] = aspect.split(':').map(Number);
-  const short = H3SCENE_FRAME_SHORT_SIDE[inputs.resolution ?? '1080P'];
+  const short = H3SCENE_FRAME_SHORT_SIDE[h3SceneResolution(inputs)];
   const scale = short / Math.min(w, h);
   return { width: Math.round(w * scale / 2) * 2, height: Math.round(h * scale / 2) * 2 };
 }
@@ -67,7 +68,7 @@ export function h3SceneStillCanvas(inputs, source) {
   const aspect = inputs.aspect_ratio ?? '9:16';
   if (aspect === 'adaptive') return { width: source.width, height: source.height };
   const [w, h] = aspect.split(':').map(Number);
-  let k = Math.ceil(H3SCENE_FRAME_SHORT_SIDE[inputs.resolution ?? '1080P'] / Math.min(w, h));
+  let k = Math.ceil(H3SCENE_FRAME_SHORT_SIDE[h3SceneResolution(inputs)] / Math.min(w, h));
   if ((w * k) % 2 || (h * k) % 2) k += 1;
   return { width: w * k, height: h * k };
 }

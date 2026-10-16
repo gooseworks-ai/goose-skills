@@ -1,4 +1,4 @@
-import { file, pronunciations, timeline } from '../../_tools/schemas.mjs';
+import { file, pronunciations, qualityTier, timeline } from '../../_tools/schemas.mjs';
 import { kitMediaQualificationSchema, kitMediaSourceReviewSchema } from '../../_lib/media-qualification.mjs';
 
 const MODEL = 'minimax/h3-max/reference-to-video';
@@ -58,7 +58,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'creator-h3',
-  version: '1.6.0',
+  version: '1.7.0',
   kind: 'generate_video',
   title: 'Talking creator (H3)',
   summary: 'Controlled H3 creator production: first take reviewed, then the rest, then assembly. Phone capture, deep focus, no selfie for a both-hands action. Takes up to 15 s, sized from the reference rate, at most 3.2 words a second.',
@@ -126,6 +126,9 @@ export const manifest = {
           voice_pair: { type: 'object', description: "make_character.py's voice for this person: a matched ElevenLabs voice or a Voice Design request. Passed through as the output voice_pair." },
           shot: { enum: ['talking', 'action'], description: "make_character.py's shot: action when the still was made for an action (--action or phone_observer), talking otherwise. Recorded only; a talking take still addresses the lens." },
           skin_condition: { type: 'string', maxLength: 600, description: "make_character.py's --skin-condition: a visible condition the product treats, shown on the still. Recorded only." },
+          quality_tier: { enum: ['standard', 'best'], description: "make_character.py's --tier for the still. Recorded only." },
+          quality: { enum: ['low', 'medium', 'high'], description: "The GPT Image 2 quality the still was made at. Recorded only." },
+          upgrade: { type: 'object', description: "make_character.py's upgrade record when the still went above its tier's quality: setting, from, to, reason and the failed attempt or the customer's words. Recorded only." },
         },
       },
       delivery: { description: 'How they speak (plan.answers.delivery). Wins over the member\'s and the character\'s own delivery.', ...textOrNull(600) },
@@ -137,7 +140,8 @@ export const manifest = {
       footage: { description: 'plan.footage: an entry\'s scene_id makes that scene a cutaway.', type: 'array', maxItems: 20, items: footageEntry },
       join: { description: 'measured only: use reviewed source word boundaries; silence-detector estimates cannot qualify an assembly.', enum: ['measured'] },
       mannerism: { description: 'Optional muted motion reference (rights cleared, 2 to 15 s).', ...file('video') },
-      resolution: { description: 'Default 1080P.', enum: ['480P', '768P', '1080P'] },
+      quality_tier: qualityTier('resolution (768P in both; the finished video is scaled to 1080x1920)'),
+      resolution: { description: 'Default 768P (both tiers). 1080P only when the customer asks, sent explicitly. Choose it before the first take: the resolution is part of the reviewed configuration, so changing it re-rolls the takes.', enum: ['480P', '768P', '1080P'] },
       aspect_ratio: { description: 'Default 9:16.', enum: ['21:9', '16:9', '4:3', '1:1', '3:4', '9:16'] },
       words_per_second: { description: 'Speaking rate used to split lines into takes. Default 2.6; above 3.2 (the fastest H3 speaks) it plans at 3.2. A take holds at most 15 s (about 14.2 s of speech); takes split only between lines.', type: 'number', minimum: 1.5, maximum: 4 },
       reference_words_per_second: { description: "The reference's measured speaking rate. Takes are sized from it when words_per_second is not given, capped at 3.2 (the fastest H3 speaks natively); pace reports it.", type: 'number', minimum: 0.5, maximum: 8 },

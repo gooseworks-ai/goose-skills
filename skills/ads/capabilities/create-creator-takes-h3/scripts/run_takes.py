@@ -50,6 +50,35 @@ from content_review import require_take_review
 # Approximate USD per generated second, for the dry-run estimate only. The proxy bills the
 # real amount. Measured on the reference builds; check the balance after the first take.
 RATE = {"1080P": 0.16, "768P": 0.10, "480P": 0.05}
+# plan_takes.py writes the resolution (768P in both tiers) and the quality_tier. An older spec with
+# neither was planned at 1080P, so it keeps 1080P: the same takes, at the price it was quoted.
+TIERED_RESOLUTION = "768P"
+LEGACY_RESOLUTION = "1080P"
+
+
+def resolution(spec):
+    if spec.get("resolution"):
+        return spec["resolution"]
+    return TIERED_RESOLUTION if spec.get("quality_tier") else LEGACY_RESOLUTION
+
+
+def take_query(spec, t):
+    """The GooseWorks query a take's call sends: the spec's upgrade fields and, when the take speaks
+    exactly one script scene, that scene as shot_scene."""
+    query = dict(((spec.get("upgrade") or {}).get("query")) or {})
+    beats = [str(b) for b in t.get("beats") or []]
+    if len(beats) == 1 and beats[0].isdigit() and int(beats[0]) > 0:
+        query["shot_scene"] = int(beats[0])  # a number, as data_price_provider takes it
+    return query
+
+
+def made_at(spec):
+    """{take id: resolution} for the takes manifest.json says were made with this spec's seeds."""
+    man_p = pathlib.Path(spec["out"]) / "manifest.json"
+    seeds = {t["id"]: t["seed"] for t in spec["takes"]}
+    made = json.loads(man_p.read_text()).get("takes", []) if man_p.exists() else []
+    return {m["id"]: (m.get("payload") or {}).get("resolution") for m in made
+            if seeds.get(m.get("id")) == m.get("seed")}
 
 
 VOICE_CLIP = ["-vn", "-t", "12", "-ac", "1", "-ar", "24000"]  # t1's voice -> reference audio
@@ -74,7 +103,7 @@ def file_sha256(path):
 def take_payload(spec, t, prompt, img, vid, aud, first_id):
     """The exact H3 request for one take. Called with the uploaded URLs to submit, and with
     content stand-ins ({"sha256": ...}) to digest, so both always describe the same request."""
-    payload = {"prompt": prompt, "duration": int(t["dur"]), "resolution": spec.get("resolution", "1080P"),
+    payload = {"prompt": prompt, "duration": int(t["dur"]), "resolution": resolution(spec),
                "aspect_ratio": spec.get("aspect_ratio", "9:16"), "seed": int(t["seed"]),
                "prompt_expansion_mode": "disabled", "image_url": img, "reference_image_urls": [img]}
     if vid:
@@ -178,12 +207,29 @@ def main():
     have = [t for t in want if take_file(spec, t).exists()]
     for t in have:
         print("  %s exists: %s (skipped)" % (t["id"], take_file(spec, t).name))
+    # The resolution is chosen before the first take: later takes copy t1's voice and are reviewed
+    # against it, so a take made at another resolution is a new take, never part of this set.
+    made = made_at(spec)
+    mixed = [t["id"] for t in spec["takes"] if take_file(spec, t).exists()
+             and made.get(t["id"]) not in (None, resolution(spec))]
+    if mixed:
+        raise SystemExit("%s were made at another resolution than the spec's %s. The resolution is chosen before "
+                         "the first take; switching re-rolls the take. Re-plan at one resolution and re-roll them "
+                         "(--reseed %s), t1 first." % (", ".join(mixed), resolution(spec), ",".join(mixed)))
+    # An upgrade (1080P, on the customer's ask) is checked per scene by the server, so every take it
+    # applies to must speak exactly one script scene.
+    if spec.get("upgrade"):
+        unnamed = [t["id"] for t in todo if "shot_scene" not in take_query(spec, t)]
+        if unnamed:
+            raise SystemExit("%s speak more than one script scene, so an upgraded call can't name its shot. "
+                             "Re-plan with --split-at so each take speaks one scene, or make them at %s."
+                             % (", ".join(unnamed), TIERED_RESOLUTION))
     if not todo:
         print("[takes] nothing to generate")
         return
-    rate = RATE.get(spec.get("resolution", "1080P"), 0.16)
+    rate = RATE.get(resolution(spec), 0.16)
     est = sum(t["dur"] for t in todo) * rate
-    print("[takes] %s  %s %s" % (spec["model"], spec.get("aspect_ratio"), spec.get("resolution")))
+    print("[takes] %s  %s %s" % (spec["model"], spec.get("aspect_ratio"), resolution(spec)))
     chained = [t for t in todo if t["id"] != first["id"]]
     src = take_file(spec, first)
     voice_src = src if chained and src.exists() else None
@@ -264,7 +310,7 @@ def main():
             # input_digest = the content digest: the ledger recognises this take on a re-run
             # (new upload URLs), and the proxy re-attaches to a job it already paid for.
             url = fal_generate_video(spec["model"], payload, timeout_s=1800, poll_s=5,
-                                     input_digest=digests.get(t["id"]))
+                                     input_digest=digests.get(t["id"]), query=take_query(spec, t))
         except FalPolicyRejection as e:
             refused += 1
             if e.kind in STILL_KINDS:  # the still is the cause, and every take shares it

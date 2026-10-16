@@ -2,12 +2,12 @@
 name: create-creator-takes-h3
 description: Generate an AI creator talking to camera, saying an approved script, as one continuous track — H3 Max reference-to-video through the GooseWorks fal-proxy (bills the Ads agent). Plans takes on line boundaries under H3's 15s cap, dry-runs a cost estimate, generates the first take alone so its voice can be locked and passed to every later take, joins takes with measured 0.10s dissolves, and moves each line's timing onto the words actually spoken. Use for any format with a generated creator speaking a script (split-screen, screen inserts, talking-head ads).
 status: superseded
-version: "2.5.0"
-updated: 2026-10-15
-superseded_by: creator-h3@1.6.0
+version: "2.7.0"
+updated: 2026-10-16
+superseded_by: creator-h3@1.7.0
 ---
 
-> **Superseded by:** `creator-h3@1.6.0`. Compatibility scripts retain the source-review guards; frozen versions are unchanged.
+> **Superseded by:** `creator-h3@1.7.0`. Compatibility scripts retain the source-review guards; frozen versions are unchanged.
 
 # create-creator-takes-h3
 
@@ -20,7 +20,7 @@ Use the shared builder for people. Defaults: GPT Image 2, phone capture in a liv
 | `make_character.py` | build the creator still from the user's choices, one shot | **paid** (one still, cents) |
 | `pair_voice.py` | the voice for this person: a matched ElevenLabs voice, or a Voice Design request | free (Voice Design itself is paid) |
 | `plan_takes.py` | split lines into takes (under 15s each) and write the prompts | free |
-| `run_takes.py` | generate the takes, dry run unless `--go` | **paid** (H3 Max, ~$0.16/s at 1080P) |
+| `run_takes.py` | generate the takes, dry run unless `--go` | **paid** (H3 Max, 768P by default) |
 | `join_takes.py` | join into one creator track | free |
 | `align_beats.py` | move line timings onto the spoken words | free |
 
@@ -31,16 +31,35 @@ and different runs filled it differently.
 
 `make_character.py` is the shared builder for any generated person still in a custom video, not
 only for H3 takes. Fetch create-image-fal with it; the script calls its `gen_image.py`. Before
-the paid call, quote the exact `--payload-out` body through the host's free quote:
-`--dry-run --payload-out work/character/payload.json` writes `{"model", "body"}`, the exact
-request `gen_image.py` will send, and generates nothing.
+the paid call, price the exact `--payload-out` request with `data_price_provider` (free, read-only):
+`--dry-run --payload-out work/character/payload.json` writes `{"model", "body", "quality_tier"}` (plus
+`upgrade` and `query` when there are any), the exact request `gen_image.py` will send, and generates
+nothing. Send the body, and the `query` fields (`shot_scene`, `upgrade_*`) as top-level fields of the
+price request, so the check prices the call that will run.
+
+## Quality tier: Standard or Best
+
+The customer picks **Standard** (the default) or **Best** at script approval. Pass it as `--tier`.
+
+| Setting | Standard | Best |
+|---|---|---|
+| Still (`make_character.py --quality`) | GPT Image 2 `medium` | `high` |
+| Takes (`plan_takes.py --resolution`) | H3 `768P` | `768P` |
+
+- **No video above 768P unless the customer asks** (16 Oct 2026). The finished video is 1080×1920 either way: the last edit step scales the 768P picture up with `ffmpeg -vf scale=1080:1920:flags=lanczos`, at no cost. fal makes H3 1080P from a native 768P take plus a refinement pass.
+- **Choose the resolution before the first take.** Later takes copy t1's voice and are reviewed against it, so `run_takes.py` refuses to go on while any take was made at another resolution: re-plan and re-roll those takes.
+- **Above the tier's default is an upgrade for one shot**, never for the whole video, and it needs a reason (`scripts/tiers.py`, the GooseWorks server's names):
+  - a picture (`make_character.py --quality high` under Standard) after a failed check: `--upgrade-reason failed_attempt --upgrade-attempt <the failed call's operation id> --upgrade-why "<one line>"`;
+  - anything when the customer asks: `--upgrade-reason customer_asked --upgrade-quote "<their words>"`. A video upgrade (H3 `1080P`) is only ever this: never after a failed check alone.
+- **After one failed check, judge the shot.** Retry once at the same setting when a prompt fix should work (a wrong pose, a missing prop). Upgrade the picture straight away when medium probably can't do it (small label text, a complex product shape, many parts that must stay exact).
+- **The call says which shot it is.** `make_character.py --shot-scene <n>` (a still made for one scene; leave it out for a shared person, even on an upgrade) and each take that speaks one scene send `shot_scene`, with the upgrade's `upgrade_*` fields, as the GooseWorks query. `character.json`, `takes.json` and the `--payload-out` file record the tier, the setting and the upgrade.
 
 ## Run
 
 ```bash
 # the user's person, one command, one still. --dry-run prints the prompt and spends nothing.
-python make_character.py --capture phone --recording counter --age 34 --gender woman --ethnicity "South Asian"     --hair "shoulder-length black hair, slightly frizzy at the crown, one side tucked back"     --wardrobe "plain charcoal crew-neck t-shirt, slightly creased"     --scene "a lived-in home office, a full bookshelf behind her, in focus"     --out work/character        # writes character.png AND character.json
-#   add --action "<each scene action she performs>" and --voice-accent/--voice-energy (see below)
+python make_character.py --capture phone --recording counter --age 34 --gender woman --ethnicity "South Asian"     --hair "shoulder-length black hair, slightly frizzy at the crown, one side tucked back"     --wardrobe "plain charcoal crew-neck t-shirt, slightly creased"     --scene "a lived-in home office, a full bookshelf behind her, in focus"     --voices voices.json --voice-accent american     --out work/character        # writes character.png AND character.json
+#   add --action "<each scene action she performs>", --voices voices.json and --voice-accent/--voice-energy (see below)
 python plan_takes.py --beats cutlist.json --character character.json --out work/takes --reference-wps <reference rate>
 python run_takes.py --spec work/takes/takes.json                  # dry run: plan + estimate
 python run_takes.py --spec work/takes/takes.json --only t1 --go   # after the user approves
@@ -90,8 +109,20 @@ Two test videos looked AI-made. Every B-roll person was built as a talking head 
 A test video went wrong three ways. These rules stop each one.
 
 - **Both hands busy: no selfie.** The presenter pressed a strip on her nose with both hands under a selfie capture, and the model added a third hand holding the phone. Pass every scene action with `make_character.py --action "..."`. An action that uses both hands (apply, smooth, press, peel, squeeze, hold with both hands) refuses `--recording selfie` and makes a propped phone (`counter`) instead; use `--capture phone_observer` for a friend filming. `plan_takes.py` does the same for beats whose `action`, `picture`, `visual`, `shot` or `description` says so, or for `required_features` `application`: it refuses `phone_selfie` and uses `phone_counter` (creator-h3 and talking takes have no `phone_observer`; that capture is make_character.py's, for non-speaking clips). Both print why, and record `capture_decision` (in `character.json` and `takes.json`).
-- **The voice fits the face.** The narrator was picked apart from the presenter (a 28-year-old woman) and was a voice reused across brands. `make_character.py` now records `voice_pair` in `character.json`, from the same age and gender plus `--voice-accent` and `--voice-energy`. With `--voices` (a saved `GET /v1/shared-voices` or `GET /v2/voices` reply) it is the best voice whose gender, age and accent labels match; `--voice-exclude <id>` keeps another brand's narrator out. Otherwise it is a Voice Design request: `POST /v1/text-to-voice/design` with `voice_description`, `model_id` (`eleven_ttv_v3`) and `text` (100-1000 characters) or `auto_generate_text`, then `POST /v1/text-to-voice` with `voice_name`, `voice_description` and the chosen preview's `generated_voice_id`. Voice Design is paid: quote it, listen to the previews, then save one. Use `voice_pair` for every narration of this person.
+- **The voice fits the face.** The narrator was picked apart from the presenter (a 28-year-old woman) and was a voice reused across brands. `make_character.py` now records `voice_pair` in `character.json`, from the same age and gender plus `--voice-accent` and `--voice-energy`. With `--voices` (a saved voice list; see 2.6.0 below) it is the best voice that fits; `--voice-exclude <id>` keeps another brand's narrator out. With `--voice-design` (or when nothing in the list fits) it is a Voice Design request: `POST /v1/text-to-voice/design` with `voice_description`, `model_id` (`eleven_ttv_v3`) and `text` (100-1000 characters) or `auto_generate_text`, then `POST /v1/text-to-voice` with `voice_name`, `voice_description` and the chosen preview's `generated_voice_id`. Voice Design is paid: quote it, listen to the previews, then save one. Use `voice_pair` for every narration of this person.
 - **Pace from the reference.** The narration read at 2.62 words a second against the reference's 3.20 (270 words in 84.45 s). Measure the reference with goose-studio's `reference_rate.py`, which counts real words (whisper's sub-word tokens joined, punctuation skipped). `plan_takes.py --reference-wps` (or the beats file's `reference_wps`) sizes the takes from the words at that rate, capped at 3.2, the fastest H3 speaks natively; `takes.json` records `pace`. Faster than 3.2 cannot be native H3: use voice first (`voice-elevenlabs` `pace.target_wps`) and a per-line lip-sync.
+
+## Voice by ethnicity, chosen with the person (2.6.0)
+
+A 39-year-old Black American presenter got a generic American voice ("Jon"), because pairing matched gender, age and accent only. The voice was also proposed in the script draft before the person existed, and the fix was a hand pick from the list.
+
+- **Ethnicity is matched.** `make_character.py` passes `--ethnicity` to `pair_voice.py`. A voice fits only when its accent label, description or name names the person's heritage ("african american", "Black", "Indian", "Latina"...), and never when it names another one; a White person takes a voice that names none; an unknown or mixed ethnicity checks nothing. An "african american" accent counts as american. The Voice Design description says it too: "A 39-year-old Black American man with a natural American accent."
+- **Age may be one band off, near its edge.** The voice list labels every African American male voice "young". A voice in the next age band fits when the person is within 10 years of it (39 takes "young"); an exact band always wins, and `matched_on` says `age_near`.
+- **No voice list, no still.** `make_character.py` refuses without `--voices`; a silent fallback to a paid Voice Design request was ignored. Get the list free through the GooseWorks MCP: `data_call_provider {provider: "elevenlabs", path: "/v1/voices", project_id}`, and save the whole reply; `pair_voice.py` reads that shape, ElevenLabs' own, and `video_formats` rows. `video_formats show:"voices"` is a short curated list that names no heritage, so prefer `/v1/voices`. `--voice-design` asks for a Voice Design request on purpose (the GooseWorks MCP cannot run one); `--no-voice-pair` is for a person never voiced separately.
+- **No fit:** `voice_pair` is a Voice Design request plus `nearest`, up to three voices of the right gender and heritage with what differs. Where Voice Design can't run, `pair_voice.py --character character.json --accept-nearest` takes the first (closest) one as the pair; play it beside the still, and if the owner rejects it, pair again with `--exclude`. Nobody picks from the list, and no voice outside `voice_pair` is used.
+- **Specific, mixed and broad words.** A specific heritage fits itself or its general words, never a sibling: a Korean person never takes a voice described as Japanese, and an Indian one never a Pakistani one. "mixed", "biracial" or two heritages ("biracial Black/Latino") check no heritage. A voice naming two heritages fits neither. A generic "Asian" voice fits an East or Southeast Asian person and never a White one. Accent aliases go one way: an "african american" accent is american, never the reverse.
+- **Changing the voice:** `pair_voice.py --character character.json --voices voices.json --exclude <rejected voice_id>` pairs again for the same person and writes `voice_pair` back; `voice_pair.rejected` remembers every rejected voice. Never hand-pick from the list.
+- **Approve together.** Play the voice next to the still and approve the two together; a voice is never approved while its person is pending.
 
 ## Choices
 
@@ -101,14 +132,14 @@ These are the user's calls (the recipe's `choices`), never defaults of this atom
 - **Setting** (`environment`) — the room behind them, written from the approved still. Asked of the user.
 - **Tone** (`delivery`) — how they speak. Asked of the user; if missing, `plan_takes.py`
   falls back to a neutral conversational read and prints a note.
-- **Voice** — follows the creator (age, gender, accent) and is locked from t1. For narration, use `voice_pair`.
+- **Voice** — follows the creator (age, gender, ethnicity, accent) and is locked from t1. For narration, use `voice_pair`.
 
 ## Rules
 
 1. **Lock order: script, then character still, then takes.** Show the still before any
    take. A take costs dollars; a still costs cents.
 2. **First take alone, then listen.** Later takes receive the accepted t1 audio as voice conditioning, not exact audio reuse. A hash-bound full AV review in `--reviews` is required before later takes. Voice consistency still needs listening to every take; reseeding is a new paid attempt subject to the approved retry budget.
-3. **Voice matches the person.** Age, gender and accent follow the character. The
+3. **Voice matches the person.** Age, gender, ethnicity and accent follow the character. The
    prompt's delivery line sets the tone; change it through `delivery`, not by editing
    the prompt file.
 4. **No performance markup in spoken lines.** H3 delivery goes outside `<d>`; `plan_takes.py` refuses bracketed or angle-tag instructions in the line. Automatic `<inhale>` and `<pause>` cues are removed. A wanted “uh” is approved spoken copy and consumes time.

@@ -1,5 +1,11 @@
 # creator-h3
 
+## 1.7.0
+
+- `quality_tier` (`standard`, the default, or `best`) is accepted; H3 is 768P in both. The default resolution is now 768P (1.6.0: 1080P). An explicit `resolution` still wins (`1080P` only when the customer asks).
+- The resolution is part of the configuration the first take's review binds, so it is chosen before the first take; a change re-rolls the takes.
+- The provider body changed, so no `reuses_pieces_of`.
+
 ## 1.6.0
 
 - Light lock: every take prompt says "Keep the first frame's light and exposure, matte skin, no added shine or sharpening halos." In two 15 Oct test videos H3 added gloss, HDR contrast and sharpening halos to clean stills. `plan_takes.py` `TEMPLATE` carries the same words.

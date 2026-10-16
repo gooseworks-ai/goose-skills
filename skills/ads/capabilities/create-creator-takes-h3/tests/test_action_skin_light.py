@@ -11,7 +11,7 @@ SCRIPT = Path(__file__).resolve().parents[1] / "scripts" / "make_character.py"
 IDENTITY = ["--age", "24", "--gender", "woman", "--ethnicity", "White",
             "--hair", "long brown hair, loosely tied back",
             "--wardrobe", "plain grey hoodie",
-            "--scene", "a lived-in bathroom, a mirror and a cluttered shelf behind her, in focus"]
+            "--scene", "a lived-in bathroom, a mirror and a cluttered shelf behind her, in focus", "--no-voice-pair"]
 LIGHT = ("Window or lamp light from one side, so the far side of the face is a little darker; normal phone "
          "exposure, highlights not blown out, no HDR look. Matte skin with no added shine, no over-sharpening.")
 

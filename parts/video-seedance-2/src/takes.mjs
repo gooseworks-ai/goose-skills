@@ -389,7 +389,7 @@ export async function sdRunTakes(inputs, ctx, jobs) {
     const body = {
       prompt: j.prompt,
       image_urls: refs,
-      resolution: inputs.resolution ?? '1080p',
+      resolution: inputs.resolution ?? '720p',
       duration: j.duration,
       aspect_ratio: inputs.aspect_ratio ?? '9:16',
       generate_audio: audio,
