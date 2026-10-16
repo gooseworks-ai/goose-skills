@@ -16,8 +16,8 @@ async function quality(extra) {
   return orders.map((o) => o.body.quality);
 }
 
-test('1.3.0 takes quality_tier: standard or best', () => {
-  assert.equal(manifest.version, '1.3.0');
+test('1.3.0 takes quality_tier: standard or best (and the newest version still does)', () => {
+  assert.ok(['1.3.0', '1.4.0'].includes(manifest.version));
   assert.deepEqual(manifest.inputs.properties.quality_tier.enum, ['standard', 'best']);
 });
 
