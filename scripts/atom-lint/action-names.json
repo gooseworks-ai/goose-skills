@@ -26,6 +26,7 @@
     "competitor_save",
     "data_get",
     "data_post",
+    "data_price_provider",
     "file_delete",
     "file_list",
     "file_read",
