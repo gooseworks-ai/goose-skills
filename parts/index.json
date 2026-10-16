@@ -2596,7 +2596,7 @@
       "determinism": "provider",
       "path": "parts/creator-h3/1.8.0",
       "files": {
-        "README.md": "7f392df5e1330312cdbb6846e1075e3088e3d5e5d330295df0671598589665f1",
+        "README.md": "87be1c1653186401e206aae02558dbcc3e9c8d95dfb14716fb378c3508a88c2d",
         "part.json": "01d890f83b38f7b8ea9ed87d0d4a96e8e1111c23e50f024a96a35aefe1f65daa",
         "part.mjs": "950316e129b2df6e37a540678405da1d1722ddcce3de0e6198434a3126945e1f"
       },

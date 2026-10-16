@@ -573,9 +573,10 @@ def record_designed(path, voice_id, name=None):
 
 
 def accept_nearest(path, library_unavailable=False):
-    """When no voice fits fully and Voice Design can't run, take the first `nearest` voice (the closest
-    of the right gender and heritage, or across heritage when none shares it: `tell_owner` says so) as the pair. Nobody picks from the list: the owner hears it beside
-    the still and accepts it, or it is rejected and pairing runs again with --exclude."""
+    """When no voice fits fully, take the first `nearest` voice (the closest of the right gender and heritage,
+    or across heritage when none shares it: `tell_owner` says so) as the pair: where Voice Design can't run,
+    or when the owner picks this free voice instead of a designed one. Nobody picks from the list: the owner
+    hears it beside the still and accepts it, or it is rejected and pairing runs again with --exclude."""
     record = json.loads(path.read_text(encoding="utf-8"))
     old = record.get("voice_pair") or {}
     if not library_unavailable:
@@ -589,7 +590,7 @@ def accept_nearest(path, library_unavailable=False):
     pair = {"source": "library_nearest", "voice_id": row["voice_id"], "name": row.get("name"), "labels": row.get("labels"),
             "preview_url": row.get("preview_url"), "differs_on": differs,
             "wanted": old.get("wanted"), "person": old.get("person"), "rejected": old.get("rejected") or [],
-            "note": "the closest voice in the list (no voice fits fully and Voice Design can't run); it differs on %s. "
+            "note": "the closest voice in the list (no voice fits fully; taken instead of Voice Design); it differs on %s. "
                     "Play it beside the still; if the owner rejects it, pair again with --character --voices <list> --exclude %s"
                     % (", ".join(differs) or "nothing", row["voice_id"])}
     if "heritage" in differs:
@@ -624,7 +625,7 @@ def main():
                     help="with --accept-nearest: the host can't search the voice library (a GooseWorks server without "
                          "/v1/shared-voices answers unsupported_provider_endpoint); only with the owner's yes")
     ap.add_argument("--accept-nearest", action="store_true",
-                    help="with --character: take the first voice_pair.nearest voice as the pair, when Voice Design can't run")
+                    help="with --character: take the first voice_pair.nearest voice as the pair, when Voice Design can't run or the owner picks this free voice")
     ap.add_argument("--out", type=pathlib.Path)
     a = ap.parse_args()
     if a.library_searches:

@@ -200,7 +200,7 @@ def collect(video, destination, timeline_path=None, words_path=None, script_path
                             measure_rate([reference_words_path])["words_per_second"] if reference_words_path else None,
                             json.loads(Path(plan_path).read_text()) if plan_path else None,
                             reference_setup_count(reference_shots_path or reference_path) if (reference_shots_path or reference_path) else None)
-    broken = broken_reasons(duration, has_audio, pcm, timeline if isinstance(timeline, dict) else None)
+    broken = broken_reasons(duration, has_audio, pcm, timeline, supplied, final_sha)
     findings = graded_findings(measure)
     expected_pauses = (assembly.get('timeline') or {}).get('pauses', [])
     unplanned_quiet = [gap for gap in near_silence if not any(p['start_ms']/1000 <= gap['start_s'] + 0.05 and p['end_ms']/1000 >= gap['end_s'] - 0.05 for p in expected_pauses)]

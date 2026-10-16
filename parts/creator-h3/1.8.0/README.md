@@ -14,7 +14,7 @@ A sharper face, a transcript match or a working video file cannot establish natu
 
 ## Review and resume
 
-Default `generation_stage: reviewed_pipeline` reads accepted source evidence injected by the kit from `final/source-reviews.json`, keyed by step. With no accepted t1 it requests the first trial; with an accepted t1 it produces remaining candidates; with all accepted sources it assembles. `review_request` contains source checksums, exact next-stage qualification fingerprint, expected spoken words and required coverage/checks. The agent records actual review after playback and listening; this is the existing ingredient review, not a third owner approval.
+Default `generation_stage: reviewed_pipeline` reads accepted source evidence injected by the kit from `final/source-reviews.json`, keyed by step. With no accepted t1 it requests the first trial; with an accepted t1 it produces remaining candidates; with all accepted sources it assembles. `review_request` contains source checksums, exact next-stage qualification fingerprint, expected spoken words and required coverage/checks. The agent records its review of the whole take (watched and listened, or measured: full-resolution frames plus word timing, listed in `evidence`); this is the existing ingredient review, not a third owner approval.
 
 The frozen script, capture, model, references and maximum spend do not change. The review revision changes the step cache, while identical provider bodies retain their paid piece cache. A script, anchor, seed, model or delivery change is a new production input and follows the normal approved change/cost flow. Do not manually replace the frozen style to resume review.
 
@@ -26,13 +26,13 @@ The frozen script, capture, model, references and maximum spend do not change. T
 
 Qualification binds the exact configuration checksum returned with the first source and its actual accepted SHA. It cannot borrow a passing unrelated example. Capture, reference bytes, voice-conditioning source, templates, dialogue, seeds, durations and provider settings are part of that fingerprint.
 
-Each `accepted_sources` entry has `id`, `video`, `review`, `timing_method` and `words`. Words are `{scene_id,text,start_s,end_s}` in source seconds. `timing_method` is `reviewed_transcription` or `forced_alignment`; a silence envelope is an energy estimate, not word timing. Resolve extra, repeated or missing speech against actual listening before submitting an accepted entry.
+Each `accepted_sources` entry has `id`, `video`, `review`, `timing_method` and `words`. Words are `{scene_id,text,start_s,end_s}` in source seconds. `timing_method` is `reviewed_transcription` or `forced_alignment`; a silence envelope is an energy estimate, not word timing. Resolve extra, repeated or missing speech against the audio (listening, or word timing against the line) before submitting an accepted entry.
 
 ## Light lock (1.6.0)
 
 - Every take prompt carries `H3_LIGHT_LOCK` right after the real-skin line: "Keep the first frame's light and exposure, matte skin, no added shine or sharpening halos." The anchor still is the first frame (`image_url`), and `make_character.py` 2.5.0 makes it with window or lamp light from one side, normal exposure and matte skin.
 - The prompt template changed, so the configuration checksum differs from 1.5.0 and no pieces are reused across versions. The template still equals `plan_takes.py` `TEMPLATE` word for word (a test checks it).
-- Review a take's face at 2x on frames at 25, 50 and 75 % against the still: added gloss, sharpening halos, raised contrast or a new light direction fails the take, whatever the still passed.
+- Review a take's face at 2x on frames at 25, 50 and 75 % against the still: added gloss, sharpening halos, raised contrast or a new light direction is an `ask` finding (the take stays `pass`, with the finding in `evidence`, and the owner decides); a take fails only for a must_fix problem.
 - `character.shot` (`talking` or `action`) and `character.skin_condition` from `make_character.py` 2.5.0 are accepted and recorded only. A talking take still addresses the lens; make a talking creator's still with `--shot talking` when they act while speaking.
 - This part stays talking-only. Silent creator B-roll is `video-h3max` 1.2.0 mode `stills` with `broll: true`, which needs a named physical action per scene.
 

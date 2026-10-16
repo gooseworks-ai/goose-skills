@@ -19,9 +19,14 @@ from final_measure_parts import SEVERITY, THRESHOLDS  # noqa: E402
 LENGTH_TOLERANCE_S = 1.0
 
 
-def broken_reasons(duration, has_audio, pcm, raw_timeline):
-    """[{id, detail}] for a wrong length or no sound when sound is planned; [] when the file is whole."""
+def broken_reasons(duration, has_audio, pcm, raw_timeline, receipt=None, final_sha=None):
+    """[{id, detail}] for a wrong length or no sound when sound is planned; [] when the file is whole.
+    A receipt bound to other bytes is broken data, and its plan (length, silence) is not trusted."""
     broken = []
+    raw_timeline = raw_timeline if isinstance(raw_timeline, dict) else None
+    if isinstance(receipt, dict) and receipt.get("output_sha256") not in (None, final_sha):
+        broken.append({"id": "timeline_mismatch", "detail": "The timeline receipt names other final bytes; pass this final's receipt"})
+        raw_timeline = None
     planned_ms = (raw_timeline or {}).get("duration_ms")
     if isinstance(planned_ms, int) and not isinstance(planned_ms, bool) and planned_ms > 0 \
             and abs(duration - planned_ms / 1000) > LENGTH_TOLERANCE_S:

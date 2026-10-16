@@ -146,9 +146,9 @@
       "sha256": "f7fcdd6c86023167b6f626355eaab43111354601dba4c3b81bcbfeb21c5cb92f"
     },
     "references/quality-tier.md": {
-      "bytes": 8574,
-      "catalog_sha256": "a4d647dc5afd25a121aa2189369c9a5b6103102670952be321c8e8575029c7b7",
-      "sha256": "a4d647dc5afd25a121aa2189369c9a5b6103102670952be321c8e8575029c7b7"
+      "bytes": 8607,
+      "catalog_sha256": "399d0161627a5b87300e350f46730f8c1454fd603c461f6ec38c8184e663e679",
+      "sha256": "399d0161627a5b87300e350f46730f8c1454fd603c461f6ec38c8184e663e679"
     },
     "references/recipe-format.md": {
       "bytes": 6667,
@@ -161,9 +161,9 @@
       "sha256": "4ac7da771547c0c6c6f33fae652d35c25ddcd1ee35c3508523f130fbe43389cb"
     },
     "references/shot-routing.md": {
-      "bytes": 15321,
-      "catalog_sha256": "ca920c7c907fe6e098ed12a9de4e14e4d64cea6e6795b13616b7de44e09511b9",
-      "sha256": "ca920c7c907fe6e098ed12a9de4e14e4d64cea6e6795b13616b7de44e09511b9"
+      "bytes": 15354,
+      "catalog_sha256": "8ea944815acd067474d6f24c923c2fd92c9bbcc3675a42689d78c5e583edbd11",
+      "sha256": "8ea944815acd067474d6f24c923c2fd92c9bbcc3675a42689d78c5e583edbd11"
     },
     "references/specialist-handoff.md": {
       "bytes": 3967,
@@ -201,9 +201,9 @@
       "sha256": "92ab813fc45c8ac1127f3ec25a1d16a8353ed05024a895082457f1876a10836b"
     },
     "scripts/final_grade.py": {
-      "bytes": 2510,
-      "catalog_sha256": "4d48bb0cefd151a43889a1d07cd262bb6861647ab6627b9c446443a16be263ad",
-      "sha256": "4d48bb0cefd151a43889a1d07cd262bb6861647ab6627b9c446443a16be263ad"
+      "bytes": 2970,
+      "catalog_sha256": "4f866ea7fff3e983320e7ec2bd4ac75fe1f132ed6f62080a177707a6ce7d63bb",
+      "sha256": "4f866ea7fff3e983320e7ec2bd4ac75fe1f132ed6f62080a177707a6ce7d63bb"
     },
     "scripts/final_measure.py": {
       "bytes": 14455,
@@ -221,9 +221,9 @@
       "sha256": "adc7c2a4eac65f94f4ddd2f0d3a1c3be0eec92e93cfc142580b811c9da1981da"
     },
     "scripts/qc_evidence.py": {
-      "bytes": 15348,
-      "catalog_sha256": "cff8946f3f287622aa6b21aa35b171cfcc0414137e2bb7c466302985be65ba85",
-      "sha256": "cff8946f3f287622aa6b21aa35b171cfcc0414137e2bb7c466302985be65ba85"
+      "bytes": 15329,
+      "catalog_sha256": "695a679d32cd063328921359ec449e8bc734d565e97f1fdf8a90494e624cd0b2",
+      "sha256": "695a679d32cd063328921359ec449e8bc734d565e97f1fdf8a90494e624cd0b2"
     },
     "scripts/reference_rate.py": {
       "bytes": 4384,
@@ -242,8 +242,8 @@
     },
     "skill.meta.json": {
       "bytes": 683,
-      "catalog_sha256": "d12c6f03beef4af3a37f6f959363cef93ef413f654d13c0e9d0dc14b982dd94f",
-      "sha256": "d12c6f03beef4af3a37f6f959363cef93ef413f654d13c0e9d0dc14b982dd94f"
+      "catalog_sha256": "376b8964e4bd24b429c2dd22470400c0b24a1e36e4e9311a65871a7f26cf1ab9",
+      "sha256": "376b8964e4bd24b429c2dd22470400c0b24a1e36e4e9311a65871a7f26cf1ab9"
     },
     "states/edit-to-delivery.md": {
       "bytes": 8369,
@@ -287,7 +287,7 @@
   ],
   "schema_version": 1,
   "slug": "video-production-harness",
-  "source_commit": "026135a384934c46ae8e812ca4ebb7bf519b63ff",
+  "source_commit": "26456b2fc49305e10d2ed62363f711a751c7c513",
   "source_files": {
     "SKILL.md": {
       "sha256": "e4ba4bd5d20149cad5c312ea12cb1132f914d9a9822876befa399fadd436f790",
@@ -406,7 +406,7 @@
       "source": "references/product-scale-and-world.md"
     },
     "references/quality-tier.md": {
-      "sha256": "a4d647dc5afd25a121aa2189369c9a5b6103102670952be321c8e8575029c7b7",
+      "sha256": "399d0161627a5b87300e350f46730f8c1454fd603c461f6ec38c8184e663e679",
       "source": "references/quality-tier.md"
     },
     "references/recipe-format.md": {
@@ -418,7 +418,7 @@
       "source": "references/review-script-shortform.md"
     },
     "references/shot-routing.md": {
-      "sha256": "ca920c7c907fe6e098ed12a9de4e14e4d64cea6e6795b13616b7de44e09511b9",
+      "sha256": "8ea944815acd067474d6f24c923c2fd92c9bbcc3675a42689d78c5e583edbd11",
       "source": "references/shot-routing.md"
     },
     "references/specialist-handoff.md": {
@@ -450,7 +450,7 @@
       "source": "scripts/check_recipe.py"
     },
     "scripts/final_grade.py": {
-      "sha256": "4d48bb0cefd151a43889a1d07cd262bb6861647ab6627b9c446443a16be263ad",
+      "sha256": "4f866ea7fff3e983320e7ec2bd4ac75fe1f132ed6f62080a177707a6ce7d63bb",
       "source": "scripts/final_grade.py"
     },
     "scripts/final_measure.py": {
@@ -466,7 +466,7 @@
       "source": "scripts/pack_recipe.py"
     },
     "scripts/qc_evidence.py": {
-      "sha256": "cff8946f3f287622aa6b21aa35b171cfcc0414137e2bb7c466302985be65ba85",
+      "sha256": "695a679d32cd063328921359ec449e8bc734d565e97f1fdf8a90494e624cd0b2",
       "source": "scripts/qc_evidence.py"
     },
     "scripts/reference_rate.py": {
@@ -498,6 +498,6 @@
       "source": "wrap-session.md"
     }
   },
-  "source_hash": "98fe73d071baa0028167f3243b6ae64ac7b78a531d3aada580033f6d0f0cac49",
-  "source_version": "4-98fe73d071ba"
+  "source_hash": "9a0df7c741eabc100548eba4f65c825012f07960db6987cf90aa9f69b8a679b4",
+  "source_version": "4-9a0df7c741ea"
 }
