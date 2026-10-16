@@ -1,5 +1,28 @@
 # check-layer
 
+## 1.8.0
+
+- `setup_count_vs_reference`: with `expect.reference_setups`, fails when the final cut has more than 30 % fewer distinct setups than the reference; otherwise `not_applicable`. Setups are shot keyframes (one per shot of at least 0.5 s, flat cards skipped) clustered by 64-bit dHash within 10 bits. A test video had 4 setups against about 10 in the reference.
+- `repeated_shot`: a `callback:` intent alone no longer clears a repeat. Its name must be in the new `expect.approved_callbacks` (from the approved creative contract). The same test video relabelled five repeats as callbacks after the check failed and then passed.
+- A minor version: it reaches new quotes through layers.json.
+
+## 1.7.0
+
+- `speech_rate_vs_reference`: with both `expect.reference_words` and `expect.final_words`, fails when the final cut speaks more than 15 % slower than the reference; otherwise `not_applicable`. Words are counted as goose-studio's `reference_rate.py` counts them (whisper sub-word tokens joined, markers and punctuation dropped), over the first word's start to the last word's end. A test video read at 2.62 words a second against the reference's 3.20. A minor version: it reaches new quotes through layers.json.
+
+## 1.6.0
+
+- The final measurements (`gooseworks-final-measure/1`): `digital_silence`, `tone_only`, `unplanned_silence`, `planned_pause_too_long`, `frozen_picture`, `planned_freeze_too_long` and `repeated_shot`, with the contract's thresholds and its 15 Oct amendments (1.5 s start / 3.0 s end allowance, 2.0 s mid-video freeze, 80 Hz-8 kHz tone band, still share relative to the reference, intentional silence, end-card freeze up to 3.0 s). They fail on a custom, source-linked edit and warn on a template video for one release. Declares `timeline.assembly_timeline` so the kit passes the linked edit, and returns `final_measure`. A minor version: it reaches new quotes through layers.json.
+
+## 1.5.0
+
+- A measured miss that breaks an earlier part's promise fails instead of warning, and names the layer to re-run: loudness off -14 LUFS by more than 2 on a cut above -50 LUFS when the kit says the sound layer is on (`expect.layers.sound` true; a kit that sends no switches gets a warning; the layer levels such a cut to -14 within 1 or fails), and a caption across a scene cut or into the end card (the captions layer stops captions there when the style lists `captions_cross_cuts`). A quiet cut the sound layer passed through (at or below -50 LUFS), loudness with the sound layer off, and a caption across a retained-body join still warn, as does every taste range 1.4.2 made a warning, `min_shot` included. A minor version: only new quotes get it, through layers.json.
+
+## 1.4.3
+
+- Declares the `crop` filter and the `rawvideo` encoder it already used for logo boxes and frame reads, so the computer check catches a toolchain without them.
+- `speech_matches_script` checks each spoken line too (a speech entry with a `scene_id` and a heard `spoken`): a line that lost 2 words in a row, or its last 2 words, fails naming the script line ("Line 2 of the script is missing the words ..."), and the whole script losing 3 words in a row fails whatever its similarity. 1.4.2 judged only the whole script, so a clause lost where two takes join (about 11 words, a similarity of 0.901) passed. Words lost from a line's start that the nearest heard line before it ends with, or from its end that the nearest heard line after it starts with, count as said (whole words, in order); words lost from a line's middle always count. A line with no heard words placed with it (the transcriber could not match it, so its words went to a later line) is left to the whole-script checks. The script's end said as fewer, other words counts as lost too, and a repeated line is numbered as the copy that lost words. A patch, so videos approved on 1.4.x move onto it.
+
 ## 1.4.2
 
 - `sounds_match_messages` hears a message's sound by its loudest 50 ms (from 0.05 s before the scene starts to 0.3 s after) against the median 50 ms of the quiet in the 0.55 s before it, and needs 8 dB. Every scene start before the end card or kept body is judged, the opening's included (1.4.1 skipped the first 0.4 s and the 0.1 s before the card). A cue stops where the next message's starts (two messages under 0.1 s apart split the time) and at the end card. Quiet is time outside every message's own span, so earlier messages never raise the bed; with under 0.15 s of it the bed is the quiet after the cue, then all the quiet before the card. 1.4.1 compared the mean of the 0.25 s after a message with the mean of the 0.3 s before it and needed 4 dB: a 0.1 s send sound, levelled by the sound layer's limiter over a music bed with typing clicks before it, read 3.7 dB and failed a ChatGPT cut whose send sound was there (it reads 12.6 dB now). It is an energy check and needs a steady bed: a message with no sound of its own over a steady bed fails, but a beat in the music that lands on a message can pass it.

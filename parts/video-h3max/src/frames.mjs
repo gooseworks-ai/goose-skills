@@ -57,6 +57,50 @@ export function h3SceneFrameCanvas(inputs, source) {
   return { width: Math.round(w * scale / 2) * 2, height: Math.round(h * scale / 2) * 2 };
 }
 
+/**
+ * Mode stills' canvas: exactly the requested ratio (so the line can price both
+ * image fields from a published token aspect) with the short side at least the
+ * resolution's and both sides even. 9:16 is 1080x1920 at 1080P, 774x1376 at
+ * 768P and 486x864 at 480P. adaptive keeps the still's own size.
+ */
+export function h3SceneStillCanvas(inputs, source) {
+  const aspect = inputs.aspect_ratio ?? '9:16';
+  if (aspect === 'adaptive') return { width: source.width, height: source.height };
+  const [w, h] = aspect.split(':').map(Number);
+  let k = Math.ceil(H3SCENE_FRAME_SHORT_SIDE[inputs.resolution ?? '1080P'] / Math.min(w, h));
+  if ((w * k) % 2 || (h * k) % 2) k += 1;
+  return { width: w * k, height: h * k };
+}
+
+/**
+ * Mode stills: fit each scene still to the clip's canvas by cover (scale to fill,
+ * centre crop). A still is a generated scene picture made for this shape, so a
+ * few edge pixels are cut instead of adding black bars that H3 would animate.
+ * Every probe and fit runs before any provider order.
+ */
+export async function h3SceneFitStills(inputs, ctx, jobs) {
+  const fitted = new Map();
+  let index = 0;
+  for (const job of jobs) {
+    kitStopIfAborted(ctx);
+    const still = job.start;
+    if (!fitted.has(h3SceneFrameKey(still, 0, 0))) {
+      const info = await ctx.tools.probe(still.path);
+      if (!Number.isInteger(info.width) || !Number.isInteger(info.height) || info.width < 1 || info.height < 1) {
+        throw ctx.error('bad_input', `${job.who} has a still without readable image dimensions`);
+      }
+      const { width, height } = h3SceneStillCanvas(inputs, info);
+      if (info.width === width && info.height === height) fitted.set(h3SceneFrameKey(still, 0, 0), still);
+      else {
+        const name = `still-${++index}.png`;
+        await kitFfmpeg(ctx, ['-i', still.path, '-frames:v', '1', '-vf', `scale=${width}:${height}:force_original_aspect_ratio=increase,crop=${width}:${height},setsar=1`, join(ctx.workDir, name)]);
+        fitted.set(h3SceneFrameKey(still, 0, 0), await ctx.file(name, 'image'));
+      }
+    }
+    job.start = fitted.get(h3SceneFrameKey(still, 0, 0));
+  }
+}
+
 /** Free preprocessing for every frame, completed before any provider order. */
 export async function h3ScenePrepareFrames(inputs, ctx, jobs) {
   const probes = new Map();

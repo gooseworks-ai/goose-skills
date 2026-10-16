@@ -1,19 +1,28 @@
-// The H3 take prompt, copied word for word from create-creator-takes-h3's
-// plan_takes.py (TEMPLATE, MANNERISM and DEFAULT_DELIVERY): the prompt that held
-// identity and eyeline across the reference builds. {identity}, {environment},
-// {mannerism}, {delivery} and {dialogue} are filled per take.
+// Native creator directions follow the approved capture and reference. Phone capture,
+// deep focus and real unretouched skin unless the brief explicitly chooses otherwise.
+// Delivery stays outside spoken copy; prompt requests require actual review.
+// 1.5.0: phone_counter is a propped phone nobody holds (a both-hands action uses it).
+// 1.6.0: the light lock. H3 added gloss, HDR contrast and sharpening halos to clean stills
+// (15 Oct test videos), so every take keeps the first frame's light and exposure.
 
-export const H3_TEMPLATE = "A single continuous locked-off medium shot of <Subject 1>, with a natural front-camera recording look. The recording device and its support stay outside the frame.\n\n[Shot 1] The viewpoint is fixed at eye level, with the person facing the lens. No phone, camera, tripod or stand is visible. Chest-up framing, both shoulders in frame, head roughly centred with a little headroom, shot straight on. The hands are FREE and gesture while talking, one coming up and settling. Nobody holds the phone, there is no arm extended toward the camera. THE CAMERA DOES NOT MOVE: locked off, no handheld drift, no pan, no zoom, no reframing. One continuous unbroken shot.\n\nEYES STAY ON THE CAMERA LENS FOR THE WHOLE CLIP, from the very first frame to the very last, including the final word. Never glancing away, never looking down, never letting the gaze drift off the lens at the end of a sentence.\n\nTHE SUBJECT AND THE SET, unchanged from the first frame to the last, exactly as <Picture 1>: {identity}\n{environment}\nSKIN matches <Picture 1> exactly: visible pores, no smoothing, no plastic gloss, no over-sharpened edges. The light is the light in <Picture 1> and it does not change.\n{mannerism}\nHOW THEY SPEAK: {delivery}\nDIEGETIC SOUND: the voice and quiet room tone only.\nAUDIO RESTRICTIONS: no music, no beat, no sound design, no second voice, and no robotic, synthetic, text-to-speech, monotone or announcer-like delivery. The spoken audio contains ONLY the words inside the dialogue block. No stage directions and no markup is ever spoken aloud.\n\n<Subject 1> (S1) says, <d>[English] <inhale> {dialogue}</d>\n\nQuiet room around the voice. No music, no sound design, no second voice.\n";
+export const H3_CAPTURE = {
+  "phone_counter": "An ordinary phone recording from a phone propped up outside the frame at eye level. Nobody holds the phone and no hand holding a phone is in the frame. Static chest-up shot, complete face and both shoulders visible with headroom. Both hands are free; gestures are small and serve the words. No automatic zoom or reframing. The room is the real, lived-in room from <Picture 1>, never a plain backdrop or a white void.",
+  "phone_selfie": "An ordinary handheld phone selfie at eye level. One hand supports the phone outside the frame; only the other hand is free. Small movement follows the supporting arm, without artificial drift or automatic zoom. Keep the complete face visible. The room is the real, lived-in room from <Picture 1>, never a plain backdrop or a white void.",
+  "studio": "An approved studio recording at eye level, matching the reference composition and motivated lighting. Static medium framing with the complete face visible. Natural posture and restrained gestures; no automatic zoom or reframing."
+};
+
+// 1.4.0: phone capture and deep focus are the defaults; studio capture and shallow focus
+// only when the approved brief explicitly chooses them (fix-forward contract section 6).
+export const H3_FOCUS = {
+  "deep": "Everything sharp, deep focus, as a phone records: the face and the room behind are both in focus. No bokeh, no portrait-mode blur, no shallow depth of field.",
+  "shallow": "Shallow focus, chosen because the approved reference is shot that way: the face sharp and the background softly out of focus as in the reference, no stronger than it."
+};
+
+export const H3_LIGHT_LOCK = "Keep the first frame's light and exposure, matte skin, no added shine or sharpening halos.";
+
+export const H3_TEMPLATE = "A single continuous live-action shot of <Subject 1>, matching the approved creator reference.\n\n[Shot 1] {capture}\nThe person looks toward the lens while addressing one viewer, with natural blinks and a relaxed face. Do not force a fixed grin or busy repeated gestures. Keep the same identity, wardrobe, setting, lighting and props throughout the take.\n\nTHE SUBJECT AND SET FROM <Picture 1>: {identity}\n{environment}\nReal skin as in the reference at this viewing distance: no retouching, no skin smoothing, no beauty filter, no cinematic grade, no waxy finish or sharpening halos.\nKeep the first frame's light and exposure, matte skin, no added shine or sharpening halos.\n{focus}\n{mannerism}\nDELIVERY: {delivery}\nDelivery and action directions are outside the dialogue block. Only the approved words inside it are spoken, once and in order. No added hook, filler or invented sentence. A wanted hesitation such as 'uh' is part of the approved spoken words, not an automatic effect.\n\n<Subject 1> (S1) says, <d>[English] {dialogue}</d>\n\noverall_soundscape: The creator's voice and quiet natural room tone. No second voice or additional speech.\nnon_diegetic_music: N/A\n";
 
 export const H3_MANNERISM = "\n<Video 1> is a filmed reference person recorded the same way. Take from it ONLY the rhythm of natural speech, where the pauses fall and where the pace speeds up, and the small involuntary movement while talking: the head settling, the blink rate, the eyebrow lifts, the hands coming up and dropping back. Do NOT take the face, hair, clothes, room, lighting, framing or eyeline. The person is <Subject 1> from <Picture 1> and nobody else.\n";
 
-export const H3_DEFAULT_DELIVERY = "natural and conversational, speaking directly to one viewer. Not presenting, not announcing, not reading. Sentences run together with almost no gap. Pitch falls on the last word of each sentence. Consonants relaxed, volume varying word to word.";
+export const H3_DEFAULT_DELIVERY = "natural and conversational, speaking directly to one viewer. Not presenting, not announcing, not reading. Connected sentences at a brisk comfortable pace, with short meaningful pauses. Clear complete word endings, modest pitch variation and restrained expression; do not rush or shout.";
 
-// 1.2.0 clips mode: the motion text used when the style gives no template. The
-// keyframe is the first frame (image_url) and Image 1; nothing is said, and the
-// clip's sound is dropped anyway.
-export const H3_CLIP_TEMPLATE = {
-  version: 1,
-  motion: 'The video opens exactly on its first frame and stays true to Image 1: the same person, wardrobe, place, light and framing. {picture}. One continuous shot with small, natural, real movement; the camera holds steady with a light handheld feel. Nobody talks: the mouth stays relaxed, no voice, no music, no captions or text on screen.',
-  refs: [],
-};

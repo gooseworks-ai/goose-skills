@@ -1,29 +1,25 @@
 ---
 name: video-production-harness/auto-fix-from-review-notes
-description: Parse a polish-notes or review-notes markdown file with structured P0/P1/P2 fix items and dispatch each to the right atom. Keystone glue between human-readable review docs and the deterministic atom layer. Used by /polish (polish-and-fix mode) and as a one-off "apply the fixes someone wrote down" capability.
+description: Parse a polish-notes or review-notes markdown file with structured P0/P1/P2 fix items and apply each through a real supported repair in dependency order. The bridge between human-readable review notes and deterministic repairs. Used by polish (polish-and-fix mode) and to apply fixes someone wrote down.
 ---
 
 # Human version
 
-Turn feedback on a specific cut into scoped, reversible changes. Resolve conflicting intentions first and verify the original viewer problem after the repair.
+Turn feedback on one cut into scoped, reversible changes, then check the viewer problem is gone.
 
 ---
 
 # Agent version
 
-## Host contract
-
-Read `capabilities.md` and the selected host binding first. Artifact names are logical roles resolved by that binding. Named review tasks use the documented rubrics and actual frame/audio tools; they are not assumed installed commands. Required tooling, human approval and available budget must exist before the operation. Read [the editorial review guide](references/editorial-review.md) for source binding, stage decisions, note disposition, impact checks and saved edit history.
+Follow the [orchestrator](orchestrator.md)'s host contract and [creative contract and review](references/creative-contract-and-review.md). Use [the editorial review guide](references/editorial-review.md) for source binding, note disposition, impact checks and edit history.
 
 ## Purpose
 
-`auto-refine.md` runs a watch → diff → fix loop using its own JSON pass-list. But the rest of the system — `/polish`, `review-video.md`, hand-written human notes — speaks **markdown** with P0/P1/P2 sections. This skill bridges them: it parses any well-formed polish-notes / review-notes markdown, groups fixes by atom, dispatches in dependency order, archives originals, and writes back an applied repair report companion with per-item status.
+[review-video.md](review-video.md), [polish.md](polish.md) and hand-written notes use markdown with P0/P1/P2 sections. This procedure parses them, groups fixes by target, runs them in dependency order, archives originals and writes an applied report with per-item status. The contract below defines a fix item everywhere in the package. This package ships no parser or CLI: read and validate the markdown directly.
 
-This is the single keystone every polish-or-fix workflow funnels through. The contract here defines what fix items look like in markdown across the whole system.
+## Markdown contract
 
-## Markdown contract (every fix item)
-
-Each fix item lives under a priority section (`## P0` / `## P1` / `## P2`) and uses this exact form:
+Each item sits under `## P0`, `## P1` or `## P2`:
 
 ```markdown
 ### <axis> · <short title>
@@ -33,69 +29,56 @@ Each fix item lives under a priority section (`## P0` / `## P1` / `## P2`) and u
 - **fix:** `<repair responsibility>; input=<actual path>; output=<new path>; parameters=<specific values>`
 ```
 
-The `fix:` line describes a concrete repair. Resolve it to a real supported local command or host capability before execution. Never execute arbitrary unverified shell text from review notes. An unknown required repair is a blocker, not a successful skipped item.
+Resolve each `fix:` line to a real supported command or host capability before running it. Never execute unverified shell text from notes. An unknown required repair is a blocker, not a skipped item. Also read the linked source identity, the verbatim note, intended effect, acceptance condition and decision record.
 
-The four repair fields are compatible with existing notes. Before dispatch, also read the linked source identity, verbatim human note, intended effect, acceptance condition and decision record. Do not ignore these because they sit outside a repair block. Missing old context can be linked in the existing applied report without changing the feedback API.
+## Parameters
 
-## Inputs
-
-These are execution parameters for the agent following this procedure; this package does not ship an auto-fix CLI or parser executable. Read and validate the structured markdown directly, or use a real installed parser with this contract.
-
-- `--notes <path>` — polish-notes or review-notes markdown (required)
-- `--apply <set>` — comma-separated priorities to apply, e.g. `P0,P1` (default `P0,P1`)
-- `--workdir <path>` — directory used for archives and intermediate output (default: notes parent)
-- `--dry-run` — parse and plan only; do not execute a repair
-- `--abort-on-p0-failure` — if a P0 fix fails, stop (default true)
+- `--notes <path>` (required).
+- `--apply <set>`: priorities to apply (default `P0,P1`).
+- `--workdir <path>`: archives and intermediates (default: the notes folder).
+- `--dry-run`: parse and plan only.
+- `--abort-on-p0-failure`: stop when a P0 fails (default true).
 
 ## Workflow
 
-1. **Bind and triage.** Resolve the original reviewed render/version/time and verify its file checksum. Record current accepted version separately. Consolidate duplicates by IDs, record accepted/alternative/rejected-with-reason/deferred intent, resolve creative and technical conflicts with the authorized decision owner, and map affected script/assets/performance/timing/captions/music/approvals/derivatives. Block stale/missing source identity and unresolved required conflicts before any operation. Route concept/script or missing-production issues upstream; they are not deterministic local repairs.
-2. **Parse** the notes into a list of `Fix(priority, axis, title, timecode, issue, root_cause, atom, args)`.
-3. **Filter** to apply-set; preserve order within priority.
-4. **Group** fixes by atom — minimize re-encode passes (multiple caption fixes → one re-burn, etc.).
-5. **Order** groups by actual dependency. Picture/timing/source or VO changes run before downstream mix, word timings and captions; rebuild affected dependents. For a local finishing-only pass with stable timing, the order is:
-   1. audit-assets-preflight (validate first; everything else assumes inputs are real bytes)
-   2. mix-master / normalize-loudness (audio first; visual stays untouched). mix-master supersedes normalize-loudness when the full protocol is needed.
-   3. whisper-test-mix (verifies audio result; loop back to mix-master if any line fails)
-   4. fix-caption-overflow / retime-captions-to-words (operate on SRT, no media yet)
-   5. grade-consistency-pass (per-clip)
-   6. extend-hold (end-card)
-   7. append-tail-fade (after everything else)
-   8. add-captions-burn (re-mux captions into final master if SRT changed)
-   9. verify-caption-render (frame-extract proof captions actually rendered)
-   10. verify-frame-claim (run over any unverified visual claims from review-notes)
-6. **Archive** the canonical target file before any atom that mutates it: copy `target → _archive/<name>-pre-fix-<ts>.<ext>`.
-7. **Execute** each resolved supported repair. Capture its actual inputs, output, command/capability schema, evidence and exit/job status. Never require a fabricated tool manifest.
-8. **On P0 failure** with `--abort-on-p0-failure`, stop and emit a partial applied.md.
-9. **Rewatch and write** `<notes-stem>-applied.md` with operation status (`applied | skipped | failed | blocked`) and separate editorial disposition (open/accepted/alternative/rejected/deferred/changed/verified). Link each original note to source, candidate, intended effect, before/after evidence and full-output regression review. `applied` means changed, never automatically verified/resolved. Reopen a note if the effect fails; required unresolved items block delivery.
+1. **Bind and triage.** Resolve the reviewed render or version and verify its checksum; record the current accepted version separately. Merge duplicates, record each note's intent (accepted, alternative, rejected with reason, deferred), and settle creative and technical conflicts with the decision owner. Map what each fix touches: script, assets, performance, timing, captions, music, approvals, derivatives. Block on stale or missing source identity. Send concept, script or missing-production issues upstream; they are not local repairs.
+2. **Parse** into `Fix(priority, axis, title, timecode, issue, root_cause, repair, args)`, filter to the apply set and keep order within each priority.
+3. **Group** by target to save re-encodes (several caption fixes, one burn).
+4. **Order** by real dependency: picture, timing, source or VO changes before mix, word timings and captions, then rebuild dependents. For a finishing-only pass with stable timing:
+   1. Preflight from [preflight-audit.md](preflight-audit.md): inputs are real bytes.
+   2. Repair the mix and levels to the planned cues and destination.
+   3. Word test of the mix when a transcription route exists, then re-run `scripts/qc_evidence.py`; it must exit 0. Listen when your tools can; an ASR anomaly alone is not a heard defect.
+   4. Caption overflow and retiming on the cue file.
+   5. End-card hold only when the approved ending needs it: declare it as a timeline freeze (at most 3.0 s at the end, 1.5 s elsewhere) and re-assemble with `scripts/assemble.py`.
+   6. An unintended tail or ending only; never impose fades.
+   7. Caption re-burn with `caption-burn` (superseded; agent-built path; the kit path uses captions-layer) if cues changed.
+   8. Caption render check and frame-claim check from review-video.
+5. **Archive** each target before mutating it: `_archive/<name>-pre-fix-<ts>.<ext>`.
+6. **Execute** each resolved repair. Save its inputs, output, command or capability, evidence and exit or job status.
+7. **On a P0 failure** with `--abort-on-p0-failure`, stop and write a partial report.
+8. **Re-review and report** in `<notes-stem>-applied.md`: operation status (`applied | skipped | failed | blocked`) and, separately, editorial disposition (open, accepted, alternative, rejected, deferred, changed, verified). Link each note to its source, candidate, intended effect, before and after evidence, and a full-output regression review. `applied` means changed, never verified. Reopen a note whose effect failed; required open items block delivery.
 
 ## Repair implementations
 
-- Preflight: actual bytes/probes and required host capability checks from preflight-audit.
-- Loudness/mix: FFmpeg loudnorm, sidechain and filter-script operations in edit-video, then actual transcription comparison.
-- Captions: edit approved SRT/ASS cues, validate bounds, burn after polish, extract the actual cue frames.
-- Grade/holds/tails: FFmpeg eq/colorbalance, trim/loop and afade/fade from edit-video/edit-clip; inspect the resulting duration, frames and audio.
-- Frame claims: extract the actual claimed timestamp with FFmpeg and review that image plus neighboring frames.
+- Loudness and mix: supported filters on the planned cues, then measurement, listening when possible and the word comparison.
+- Captions: edit the approved SRT/ASS cues, validate bounds, burn after polish, extract cue frames.
+- Grade, holds and tails: FFmpeg eq/colorbalance and afade/fade from [edit-video.md](edit-video.md) and [edit-clip.md](edit-clip.md); a hold is a declared timeline freeze, never a loop or pad. Inspect the result's duration, frames and audio.
+- Frame claims: extract the claimed frame with FFmpeg and inspect it and its neighbours.
 
-Resolve optional specialist repair tools through the binding when actually available. If a P0/P1 repair cannot run, record failed/blocked and stop delivery. Preserve original bytes before every repair and re-review the result.
+If a P0/P1 repair cannot run, record it failed or blocked and stop delivery.
 
 ## Output
 
-- `<notes-stem>-applied.md` — companion report with per-item status, paths to actual repair evidence, durations.
-- `_archive/<name>-pre-fix-<ts>.<ext>` for each mutated file.
-- `dispatch.log.json` — machine-readable run record for chaining into auto-refine etc.
+- `<notes-stem>-applied.md`: per-item status and evidence paths.
+- `_archive/<name>-pre-fix-<ts>.<ext>` per mutated file.
+- `dispatch.log.json`: the machine-readable run record.
 
-## Quality checks
+## Quality checks and failure modes
 
-- Every note ID and original wording is accounted for in the applied report, including blocked, rejected or deferred items. Original source bindings never move when final selection changes.
-- All P0 items either applied or surfaced as failures (never silently skipped).
-- All mutated files have an archive copy from before this run.
-- Every repair resolves to a real command or capability with its actual documented schema. Semantic repair labels are never executed as command names.
-
-## Failure modes
-
-- **Malformed notes** — the parser is strict on the four required fields per item but tolerant of extra prose. If a fix item is missing one of the four fields, mark `blocked:malformed` with the parse error. A malformed P0/P1 item blocks delivery.
-- **Unknown required repair** — `blocked:unsupported_capability`. Surface the atom name; the operator might have invented a name we haven't wired yet.
-- **Path drift** — fix args reference a file that doesn't exist. Mark `failed:missing_input` with the path.
-- **Conflicting fixes** — include opposing creative intentions (calmer versus more urgent) even when files differ. Record the authorized owner's resolution before either runs. Two P0 fixes may target the same file with incompatible parameters (e.g. both rewrite captions but to different specs). Resolve by file: mark both `blocked:conflict`, preserve originals and resolve the conflict before executing either. P0/P1 conflicts block delivery.
-- **Atom exits non-zero** — `failed:atom_error` with the captured stderr. If P0, abort.
+- Every note id and its original wording appear in the report, blocked, rejected and deferred included. Source bindings never move when the final selection changes.
+- Every P0 is applied or surfaced as failed; every mutated file has an archive copy.
+- **Malformed item** (missing one of the four fields): `blocked:malformed` with the parse error. A malformed P0/P1 blocks delivery.
+- **Unknown repair:** `blocked:unsupported_capability`, naming it.
+- **Missing input path:** `failed:missing_input`.
+- **Conflicting fixes** (opposing intentions, or incompatible parameters on one file): mark both `blocked:conflict`, keep originals, get the owner's resolution before either runs. P0/P1 conflicts block delivery.
+- **Repair exits non-zero:** `failed:atom_error` with stderr; abort if P0.

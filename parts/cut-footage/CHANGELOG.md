@@ -1,5 +1,9 @@
 # cut-footage
 
+## 1.2.1
+
+- Inserts: no shot shorter than 0.4 s where a hold can avoid it. A full-frame creator stretch under 0.4 s between two inserts, or before the end of the video, is covered by holding the earlier insert's last frame; an insert under 0.4 s is held into the creator stretch after it, as far as that stretch keeps 0.4 s. A hold never changes an insert's speed or source window, and the talking track's sound is kept. Grid inserts are never held. A short shot no hold can fix (a creator stretch before the first insert, a grid neighbour) is logged as a warning. Everything else is 1.2.0.
+
 ## 1.2.0
 
 - `mode: "split"` (the default with a `layout`): the talking track with each scene's footage window, or its image pushed in by `layout.photo_zoom`, in one zone and the creator cover-cropped (`head`, `zoom`) into the other, via `_lib/panels.mjs`; a scene with neither shows the creator full frame. `layout {side, seam, bg: auto | blur | #hex, head, zoom, divider, divider_px, photo_zoom}`. Split beats tile to the next scene's start. The output timeline's `safe_zones[captions]` is the creator zone.

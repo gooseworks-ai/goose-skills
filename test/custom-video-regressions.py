@@ -21,7 +21,7 @@ class CustomVideoRegressions(unittest.TestCase):
     def test_free_character_and_take_planning_without_image(self):
         with tempfile.TemporaryDirectory() as tmp:
             out = Path(tmp)
-            args = [sys.executable, str(CREATOR/'make_character.py'), '--age', '34', '--gender', 'woman', '--ethnicity', 'South Asian', '--hair', 'black hair', '--wardrobe', 'plain shirt', '--scene', 'home office', '--out', str(out/'character'), '--dry-run']
+            args = [sys.executable, str(CREATOR/'make_character.py'), '--age', '34', '--gender', 'woman', '--ethnicity', 'South Asian', '--hair', 'black hair', '--wardrobe', 'plain shirt', '--scene', 'home office', '--no-voice-pair', '--out', str(out/'character'), '--dry-run']
             subprocess.run(args, check=True, capture_output=True, text=True)
             self.assertTrue((out/'character/character.json').exists())
             self.assertFalse((out/'character/character.png').exists())

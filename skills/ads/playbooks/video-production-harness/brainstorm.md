@@ -5,63 +5,53 @@ description: Refine a fuzzy ad concept into a structured idea brief. Acts as a s
 
 # brainstorm
 
-## Host contract
-
-Read `capabilities.md` and the selected host binding first. Artifact names are logical roles resolved by that binding. Named review tasks use the documented rubrics and actual frame/audio tools; they are not assumed installed commands. Required tooling, human approval and available budget must exist before the operation.
+Follow the [orchestrator](orchestrator.md)'s host contract and [creative contract and review](references/creative-contract-and-review.md).
 
 ## Purpose
 
-Turn a rough video ad pitch into a tight, refined idea_brief that downstream skills (design, storyboard, clips) can execute against. This is step 1 of the video-orchestrator pipeline.
-
-The output is a single markdown file. No assets are generated here.
+Turn a rough pitch into a tight idea_brief that later steps can execute. No assets are generated here.
 
 ## Inputs
 
-- A rough concept from the user (one paragraph to one page).
-- Brand assets and aesthetic if available (e.g. the current brand evidence).
-- Reference videos or competitor ads if mentioned.
-- Output folder for the new ad (e.g. the current brand evidence).
+- The user's rough concept (a paragraph to a page).
+- Brand assets and evidence, when available.
+- Any reference video or competitor ad mentioned.
 
 ## Workflow
 
-1. Read the user's rough concept and any brand context provided.
-2. Identify what's working in the concept: relatable protagonist, before/after frame, payoff moment, quotable lines.
+1. **Study the reference**, picture and sound, per the creative contract. Log timestamped beats and map them to the adaptation's words, action, proof and sound. Frames and transcripts do not prove listening or motion. With no reference, use inspected brand or category examples or a sourced original concept. A template demo is an option, not an automatic substitute.
+2. Note what works in the concept: a relatable protagonist, a before/after, a payoff, quotable lines.
 3. Push back on:
-   - Generic openings ("sad person at desk", "scrolling phone at night")
-   - Cute names that pattern-match to existing IP (rename or commit fully)
-   - Beats that *tell* instead of *show* (replace with on-screen action)
-   - Forgettable end-card CTAs (propose 2–3 alternatives)
-   - Unnecessary characters or scenes (cut what doesn't add information)
-4. **Detect the concept type and propose scaffolding.** If the concept involves a transformation, comeback, journey, ramp-up, before/after, or skill acquisition, **default to day-tracker / number-progression scaffolding** (DAY 1 / DAY 5 / DAY 14 / NOW). The v03 LEARNINGS identified this as the strongest narrative scaffolding for short-form transformation arcs; surfaced too late, it cost 5 script revisions. Propose it explicitly in the brief and let the operator accept, modify, or opt out.
-5. Offer 2–3 bigger swings (tonal shifts, structural changes, scope expansions) and let the user choose.
-6. Ask one clarifying question if a key creative axis is unresolved (e.g. target audience, brand voice).
-7. Write `<output_folder>/idea_brief` with:
-   - **Concept type** (one of: transformation, demo, testimonial, manifesto, comparison) — drives default arc template in State 2.5
-   - Scene-by-scene table (visual + on-screen text + voiceover)
-   - Hero asset references
-   - Tone and length targets
-   - **Climax beat** identified explicitly (which line is THE line?) — locked downstream
-   - Open questions for downstream resolution
-8. Create the output folder if missing.
+   - generic openings ("sad person at desk", "scrolling phone at night");
+   - names that pattern-match existing IP (rename or commit fully);
+   - beats that *tell* instead of *show*;
+   - forgettable end-card CTAs (propose 2–3 alternatives);
+   - characters or scenes that add no information.
+4. Name the concept's real mechanism and feasible proof. Elapsed-time structure is optional and only when the story supports it; it never overrides the reference or invents results.
+5. When the concept is open, offer 2–3 alternatives (reference, opening, product explanation, proof, sound, asset gaps) inside the script review. Keep a concept the owner already chose.
+6. Ask one clarifying question if a key axis (audience, brand voice) is unresolved.
+7. Write `<output_folder>/idea_brief`, creating the folder if needed:
+   - **Concept type**: transformation, demo, testimonial, manifesto or comparison (picks the arc template in State 2.5).
+   - A scene table: visual, on-screen text, speech.
+   - Hero asset references and the reference beat log.
+   - Tone and length targets.
+   - **Climax beat**: which line is THE line.
+   - Open questions.
 
 ## Output and write order
 
-1. Save the readable idea_brief and all concept candidates through the binding.
-2. For each candidate preserve stable ID, title, format, hook hypothesis, logline, supporting evidence, risks, status and full readable concept prose. Do not reduce the prose to a thin summary.
-3. Leave selection unset until the human chooses. Save any edited concept copy before entering design/script review.
-4. Validate the binding's exact concept fields and expose the result on its review surface. A private side file that the host cannot display is unfinished work.
+1. Save the idea_brief and every concept candidate through the binding.
+2. Each candidate keeps a stable ID, title, format, hook, logline, evidence, risks, status and full prose.
+3. Keep an existing owner selection; otherwise carry open options into the script review. Save edited concept copy before that review.
+4. Validate the binding's concept fields and show the result on its review surface. A side file the host cannot display is unfinished work.
 
-## Quality Checks
+## Quality checks
 
-- Every scene has a clear visual, on-screen text (or "—"), and a voiceover line.
-- The hook in scene 1 is specific, not generic.
-- The payoff line (end-card or whisper line) is quotable.
-- There is a brand-anchor moment somewhere (logo, mascot, signature beat).
-- Open creative decisions are explicitly listed, not silently locked.
+- Every scene has a clear visual, on-screen text (or "—"), speech and sound intent, and its action or proof. No-speech scenes have no invented VO.
+- Scene 1's hook is specific. The payoff line is quotable. A brand-anchor moment exists.
+- Open decisions are listed, not silently locked.
 
-## Failure Modes
+## Failure modes
 
-- Brief reads as a list of features instead of a story arc.
-- Scenes lack a single dominant action per beat.
-- Names or visual gags collide with existing IP.
-- "Ask the user" decisions are smuggled in as if resolved.
+- A feature list instead of a story arc; scenes with no single dominant action.
+- "Ask the user" decisions smuggled in as resolved.

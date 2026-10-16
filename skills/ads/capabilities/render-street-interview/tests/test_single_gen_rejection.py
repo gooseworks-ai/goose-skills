@@ -94,10 +94,21 @@ class SingleGenRejectionTests(unittest.TestCase):
         self.ref = self.root / REF_REL
         self.ref.parent.mkdir(parents=True)
         self.env = {**{k: v for k, v in os.environ.items() if not k.startswith("GW_")},
-                    "HOME": str(home), "GW_MEDIA_VIA": "proxy", "GW_CLI_LOG_DISABLED": "1",
+                    # HOME redirects the credentials on macOS and Linux; Windows reads USERPROFILE.
+                    # With only HOME set, this test ran the real single_gen.py --yes against the
+                    # developer's own GooseWorks account (GOOSE-4018).
+                    "HOME": str(home), "USERPROFILE": str(home),
+                    "GW_MEDIA_VIA": "proxy", "GW_CLI_LOG_DISABLED": "1",
                     "GW_FAL_REJECTIONS_DIR": str(self.tmp / "rejected"),
                     "STREET_INTERVIEW_ROOT": str(self.root), "NO_PROXY": "127.0.0.1",
                     "no_proxy": "127.0.0.1"}
+        # Refuse to run a paid script unless its credentials resolve to the mock.
+        seen = subprocess.run([sys.executable, "-c", "import os; print(os.path.expanduser('~'))"],
+                              env=self.env, capture_output=True, text=True).stdout.strip()
+        if pathlib.Path(seen).resolve() != home.resolve():
+            self.mock.close()
+            self.fail(f"home resolves to {seen}, not the test folder: single_gen.py --yes would "
+                      "use real credentials and could spend real credits")
 
     def tearDown(self):
         self.mock.close()

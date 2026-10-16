@@ -320,6 +320,25 @@ test('dialogueBeats gives a line under the cut floor its picture early, from the
   assert.deepEqual(first.map((b) => [b.id, +b.start_s.toFixed(6), +b.end_s.toFixed(6)]), [['hi', 0, 0.5], ['hey', 0.5, 2]]);
 });
 
+test('a short line between two lines that can each spare only part of its shortfall takes time from both', () => {
+  const scenes = [
+    { id: 'q', line: 'Did it work?', speaker: 'a' },
+    { id: 'yes', line: 'Yes.', speaker: 'b' },
+    { id: 'how', line: 'How long?', speaker: 'a' },
+  ];
+  // "Yes." has 0.25 s; the line before can spare 0.2 s and the one after 0.15 s (each keeps 0.5 s).
+  const spans = [{ id: 'q', start_s: 0, end_s: 0.7 }, { id: 'yes', start_s: 0.7, end_s: 0.95 }, { id: 'how', start_s: 0.95, end_s: 1.6 }];
+  const { beats } = dialogueBeats(scenes, spans, ['a', 'b'], { seconds: 1.6 });
+  assert.deepEqual(beats.map((b) => [b.id, +b.start_s.toFixed(6), +b.end_s.toFixed(6)]), [['q', 0, 0.5], ['yes', 0.5, 1], ['how', 1, 1.6]]);
+  for (const b of beats) assert.ok(b.dur_s >= 0.5 - 1e-9, `${b.id} ${b.dur_s}`);
+  const settings = dialogueSettings('plain');
+  const plan = dialoguePlan(beats, ['a', 'b'], settings, { products: 1, end_card_s: 3.5 });
+  assert.ok(!ids(dialoguePlanProblems(plan, beats, ['a', 'b'], settings, { products: 1 })).includes('cutplan_min_cut'));
+  // Together they still cannot spare it: the line is left as it is (and the plan's check refuses it).
+  const tight = dialogueBeats(scenes, [{ id: 'q', start_s: 0, end_s: 0.6 }, { id: 'yes', start_s: 0.6, end_s: 0.85 }, { id: 'how', start_s: 0.85, end_s: 1.45 }], ['a', 'b'], { seconds: 1.45 }).beats;
+  assert.deepEqual(tight.map((b) => [b.id, +b.start_s.toFixed(6), +b.end_s.toFixed(6)]), [['q', 0, 0.6], ['yes', 0.6, 0.85], ['how', 0.85, 1.45]]);
+});
+
 test('a split lower panel is only ever a source the style asked for; an idle listener needs no line of their own', () => {
   const beats = beatsForLengths([3, 2.5, 3.2, 2.6, 2.8, 3, 2.6, 3.1, 2.9, 3]);
   const productOnly = dialogueSettings('dynamic', { seed: 4201, bottom_sources: ['product'] });

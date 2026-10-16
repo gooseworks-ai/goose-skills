@@ -1,11 +1,14 @@
 // brand-layer: ends the video on the brand. When the style says the video
 // ends on an end card (expect.end_card) and no timeline step drew one
 // (timeline.end_card), it appends the brand end card: the same renderer as
-// the end-card part (logo as-is, brand colours and fonts, the call to
+// the end-card part (the logo, brand colours and fonts, the call to
 // action), crossfaded in over 0.3 s. The cut's own sound plays to its end and
 // fades out over that crossfade; the card holds in silence (a style that wants
 // the music under the card draws it with end-card before audio-mix).
-// Otherwise the cut passes through untouched.
+// Otherwise the cut passes through untouched. 1.0.2: the card's logo is
+// fitted (scaled into its box, a flat file background made transparent, the
+// card recoloured when the logo would not read) and its box is set as the
+// timeline's safe_zones logo.
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitDuration, kitFfmpeg, kitNum } from '../../_lib/part.mjs';
 import { kitRenderEndCard } from '../../_lib/end-card.mjs';
@@ -24,7 +27,8 @@ export async function run(inputs, ctx) {
   const fps = info.fps || timeline.fps || 30;
   const dur = await kitDuration(ctx, video);
   if (dur <= XFADE_S) throw ctx.error('bad_input', 'the cut is too short to end on a card');
-  const card = await kitRenderEndCard(ctx, { brand: inputs.brand, card: {}, width: info.width, height: info.height, fps, seconds: CARD_S, scratch: true });
+  const drawn = await kitRenderEndCard(ctx, { brand: inputs.brand, card: {}, width: info.width, height: info.height, fps, seconds: CARD_S, scratch: true });
+  const card = drawn.video;
   const offset = dur - XFADE_S;
   const total = dur + CARD_S - XFADE_S;
   const audio = info.has_audio
@@ -55,5 +59,7 @@ export async function run(inputs, ctx) {
     scenes: [...timeline.scenes, { id: 'end-card', start_s: +offset.toFixed(3), end_s: +total.toFixed(3) }],
     end_card: { start_s: +offset.toFixed(3), end_s: +total.toFixed(3) },
   };
+  // The card is drawn at the cut's size, so its logo box is already in the video's pixels.
+  if (drawn.logo) next.safe_zones = [...(timeline.safe_zones || []).filter((z) => z.use !== 'logo'), drawn.logo];
   return kitCheckOutputs(ctx, manifest, { video: out, timeline: next });
 }

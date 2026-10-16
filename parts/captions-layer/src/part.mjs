@@ -26,6 +26,15 @@
 // bundled one) and overlaid with ffmpeg, so no libass or system font is
 // needed. The final encode is capped at 16 Mbit/s, and a result over 180 MB
 // is refused before upload.
+//
+// 1.4.0 keeps captions off the product. Boxes come from timeline.keep_clear
+// (a step that knows where it drew the product, in pixels, for a time span)
+// and from the look's keep_clear (where the style's shots hold the product, as
+// shares of the frame, for the whole cut). Each scene's captions take one
+// height: the look's y, else 0.80, else 0.30 of the frame, the first whose
+// every caption box clears every box shown with it by 0.02 of the height;
+// when none does, the one with the least overlap, with a warning. With no
+// boxes the cut is drawn exactly as in 1.3.1.
 import { readFile, stat, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitDuration, kitFfmpeg, kitNum } from '../../_lib/part.mjs';
@@ -60,13 +69,17 @@ const PILL_UPCOMING = '#A39D92';
 const SENTENCE_INK = 'rgb(255,253,248)';
 const SENTENCE_STROKE = 'rgb(18,14,10)';
 const HEX = /^#[0-9a-fA-F]{6}$/;
+// Caption heights tried, in order, when a scene's captions would meet a keep-clear box: the look's y, then low, then high.
+const CLEAR_YS = [0.8, 0.3];
+// How far a caption must stay from a keep-clear box, as a share of the height.
+const CLEAR_MARGIN = 0.02;
 
 /**
  * The caption look to draw, read from expect.caption_look. Never throws: every
  * value this version cannot use is dropped with a warning.
  */
 function readLook(raw, brand, log) {
-  const look = { preset: 'plate', max_words: null, max_words_set: false, y: null, font: null, highlight: [], highlight_color: null, case: null, skip_first_scene: false };
+  const look = { preset: 'plate', max_words: null, max_words_set: false, y: null, font: null, highlight: [], highlight_color: null, case: null, skip_first_scene: false, keep_clear: [] };
   if (raw === undefined || raw === null) return finishLook(look, brand, log);
   if (typeof raw !== 'object' || Array.isArray(raw)) {
     log.warn('caption look is not an object; drawing plate captions', { caption_look: raw });
@@ -113,6 +126,12 @@ function readLook(raw, brand, log) {
   if (raw.skip_first_scene !== undefined) {
     if (typeof raw.skip_first_scene === 'boolean') look.skip_first_scene = raw.skip_first_scene;
     else drop('skip_first_scene', 'not true or false');
+  }
+  if (raw.keep_clear !== undefined) {
+    const share = (v) => typeof v === 'number' && Number.isFinite(v) && v >= 0 && v <= 1;
+    const ok = (b) => b && typeof b === 'object' && ['x', 'y', 'w', 'h'].every((k) => share(b[k])) && b.w > 0 && b.h > 0 && b.x + b.w <= 1.0001 && b.y + b.h <= 1.0001;
+    if (Array.isArray(raw.keep_clear) && raw.keep_clear.length <= 8 && raw.keep_clear.every(ok)) look.keep_clear = raw.keep_clear.map((b) => ({ x: b.x, y: b.y, w: b.w, h: b.h }));
+    else drop('keep_clear', 'not a list of up to 8 boxes {x, y, w, h} as shares of the frame');
   }
   return finishLook(look, brand, log);
 }
@@ -606,6 +625,151 @@ html,body{margin:0;width:${W}px;height:${H}px;background:transparent;overflow:hi
 </style></head><body><div id="cap" class="off"></div></body></html>`;
 }
 
+/** In the page: sets one caption's words in #cap, fits it to the band and centres it on `y`; returns its box. */
+async function capPlace({ words, fit, lines, lh, bottomAnchor, px, top, bottom, y, left, right }) {
+  const el = document.getElementById('cap');
+  await document.fonts.load(`700 ${px}px KitCaption`, words.map((w) => w.text).join(' '));
+  el.replaceChildren();
+  words.forEach((w, i) => {
+    if (i) el.appendChild(document.createTextNode(' '));
+    const s = document.createElement('span');
+    s.textContent = w.text;
+    if (w.hi) s.className = 'hi';
+    el.appendChild(s);
+  });
+  el.classList.remove('off');
+  const room = right - left;
+  el.style.fontSize = '';
+  el.style.padding = '';
+  el.style.borderRadius = '';
+  el.style.maxWidth = '';
+  el.style.webkitTextStrokeWidth = '';
+  const pad = parseFloat(getComputedStyle(el).paddingLeft) || 0;
+  const padY = parseFloat(getComputedStyle(el).paddingTop) || 0;
+  const stroke = parseFloat(getComputedStyle(el).webkitTextStrokeWidth) || 0;
+  const radius = parseFloat(getComputedStyle(el).borderTopLeftRadius) || 0;
+  let r = el.getBoundingClientRect();
+  if (fit === 'plate') {
+    // A plate caption is one line; one wider than the band is set smaller to fit rather than
+    // wrapping or leaving the frame. Its natural width is measured and it is resized, not
+    // transformed, so the drawn plate is exactly the measured box.
+    if (r.width > room) {
+      const k = Math.floor((room / r.width) * 1000) / 1000;
+      el.style.fontSize = `${px * k}px`;
+      el.style.padding = `${Math.round(padY * k)}px ${Math.round(pad * k)}px`;
+      el.style.borderRadius = `${Math.round(radius * k)}px`;
+      r = el.getBoundingClientRect();
+    }
+  } else if (fit === 'line') {
+    // Pill and serif-word captions are one line; a caption wider than the band is set smaller, its
+    // padding, corners and outline with it.
+    if (r.width > room) {
+      const k = Math.floor((room / r.width) * 1000) / 1000;
+      el.style.fontSize = `${px * k}px`;
+      el.style.padding = `${Math.round(padY * k)}px ${Math.round(pad * k)}px`;
+      el.style.borderRadius = `${Math.round(radius * k)}px`;
+      if (stroke) el.style.webkitTextStrokeWidth = `${Math.max(1, stroke * k)}px`;
+      r = el.getBoundingClientRect();
+    }
+  } else {
+    // Outlined captions wrap to at most `lines` lines inside the band, then shrink until they fit.
+    el.style.maxWidth = `${room}px`;
+    let size = px;
+    const fits = () => {
+      const lineH = size * lh;
+      const h = el.getBoundingClientRect().height;
+      // At most `lines` lines, and never taller than the band (a short band shrinks the words further).
+      return el.scrollWidth <= room + 0.5 && h <= lineH * lines + padY * 2 + 1 && h <= bottom - top + 0.5;
+    };
+    for (let i = 0; i < 40 && !fits(); i++) {
+      size *= 0.94;
+      const k = size / px;
+      el.style.fontSize = `${size}px`;
+      el.style.padding = `${Math.round(padY * k)}px ${Math.round(pad * k)}px`;
+      el.style.webkitTextStrokeWidth = `${Math.max(1, stroke * k)}px`;
+    }
+    r = el.getBoundingClientRect();
+  }
+  const w = r.width;
+  const h = r.height;
+  let t = Math.min(Math.max(y - h / 2, top), bottom - h);
+  if (bottomAnchor) {
+    // The last line's centre sits on y; a longer caption grows upward.
+    const cs = getComputedStyle(el);
+    const last = parseFloat(cs.fontSize) * lh;
+    t = Math.min(Math.max(y + last / 2 + (parseFloat(cs.paddingBottom) || 0) - h, top), bottom - h);
+  }
+  const l = left + (right - left - w) / 2;
+  el.style.left = `${l}px`;
+  el.style.top = `${t}px`;
+  return { x: l, y: t, w, h };
+}
+
+/** Whether two boxes ({x, y, w, h} in px) meet, and by how many square pixels. */
+function capOverlap(a, b) {
+  const w = Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x);
+  const h = Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y);
+  return w > 0 && h > 0 ? w * h : 0;
+}
+
+/**
+ * The boxes captions keep clear of, in px with their time spans: timeline.keep_clear as given, and the look's
+ * shares over the whole cut. Boxes are grown by CLEAR_MARGIN of the height on every side.
+ */
+function keepClearBoxes(timeline, look, W, H, duration) {
+  const m = CLEAR_MARGIN * H;
+  const grow = (b) => ({ x: b.x - m, y: b.y - m, w: b.w + 2 * m, h: b.h + 2 * m });
+  const out = [];
+  for (const k of timeline.keep_clear || []) {
+    if (k.end_s > k.start_s && k.box.w > 0 && k.box.h > 0) out.push({ start_s: k.start_s, end_s: k.end_s, box: grow(k.box), from: 'timeline', scene_id: k.scene_id ?? null });
+  }
+  for (const b of look.keep_clear || []) out.push({ start_s: 0, end_s: duration, box: grow({ x: b.x * W, y: b.y * H, w: b.w * W, h: b.h * H }), from: 'look', scene_id: null });
+  return out;
+}
+
+/** The timeline scene a cue starts in (its index), else -1: cues of one scene share one caption height. */
+function sceneOf(timeline, t) {
+  const scenes = timeline.scenes || [];
+  return scenes.findIndex((s) => t >= s.start_s - 1e-6 && t < s.end_s - 1e-6);
+}
+
+/**
+ * Sets c.y (a share of the height) for every cue: one height per timeline scene, the first of the look's y,
+ * 0.80 and 0.30 at which every caption of the scene clears every keep-clear box shown with it, else the one
+ * with the least overlap (logged). c.overlap is what is left, in square pixels.
+ */
+async function chooseHeights(ctx, page, cues, clear, timeline, look, layoutArgs) {
+  const candidates = [...new Set([look.y, ...CLEAR_YS])];
+  const groups = new Map();
+  for (const c of cues) {
+    const k = sceneOf(timeline, c.start_s);
+    if (!groups.has(k)) groups.set(k, []);
+    groups.get(k).push(c);
+  }
+  for (const [scene, group] of groups) {
+    const shown = group.map((c) => clear.filter((k) => k.start_s < c.end_s && k.end_s > c.start_s));
+    if (shown.every((list) => !list.length)) continue;
+    let best = null;
+    for (const y of candidates) {
+      const overlaps = [];
+      for (const [i, c] of group.entries()) {
+        const box = shown[i].length ? await page.evaluate(capPlace, layoutArgs(c, y)) : null;
+        overlaps.push(box ? shown[i].reduce((sum, k) => sum + capOverlap(box, k.box), 0) : 0);
+      }
+      const total = overlaps.reduce((a, b) => a + b, 0);
+      if (!best || total < best.total) best = { y, total, overlaps };
+      if (!total) break;
+    }
+    group.forEach((c, i) => {
+      c.y = best.y;
+      c.overlap = best.overlaps[i];
+    });
+    const id = scene >= 0 ? timeline.scenes[scene].id : null;
+    if (best.total) ctx.log.warn('captions could not be kept clear of the product', { scene_id: id, y: best.y, overlap_px: Math.round(best.total) });
+    else if (best.y !== look.y) ctx.log.info('captions moved clear of the product', { scene_id: id, y: best.y });
+  }
+}
+
 export async function run(inputs, ctx) {
   const manifest = await kitCheckInputs(ctx, inputs);
   if (!ctx.browser) throw ctx.error('needs_missing', 'captions are drawn in the kit browser');
@@ -632,7 +796,22 @@ export async function run(inputs, ctx) {
   const browser = await ctx.browser.launch();
   const drawn = new Map();
   const blank = join(ctx.tmpDir, 'blank.png');
-  const keyOf = (c, active) => JSON.stringify([cueTexts(c, look), c.words.map((w) => w.hi), active]);
+  const keyOf = (c, active) => JSON.stringify([cueTexts(c, look), c.words.map((w) => w.hi), active, c.y]);
+  const layoutArgs = (c, y) => ({
+    words: cueTexts(c, look).map((text, i) => ({ text, hi: c.words[i].hi })),
+    fit,
+    lines,
+    lh,
+    bottomAnchor: look.preset === 'sentence',
+    px,
+    top: zone.top,
+    bottom: zone.bottom,
+    y: y * H,
+    left: zone.left,
+    right: zone.right,
+  });
+  const clear = keepClearBoxes(inputs.timeline, look, W, H, duration);
+  for (const c of cues) c.y = look.y;
   try {
     const p = await browser.newPage({ viewport: { width: W, height: H }, deviceScaleFactor: 1 });
     await p.setContent(page);
@@ -644,101 +823,10 @@ export async function run(inputs, ctx) {
     }, px);
     if (!loaded) throw ctx.error('tool_failed', 'the caption font did not load');
     await p.screenshot({ path: blank, type: 'png', omitBackground: true });
+    if (clear.length) await chooseHeights(ctx, p, cues, clear, inputs.timeline, look, layoutArgs);
     for (const c of cues) {
       if (c.states.every((s) => drawn.has(keyOf(c, s.active)))) continue;
-      const placed = await p.evaluate(
-        async ({ words, fit, lines, lh, bottomAnchor, px, top, bottom, y, left, right }) => {
-          const el = document.getElementById('cap');
-          await document.fonts.load(`700 ${px}px KitCaption`, words.map((w) => w.text).join(' '));
-          el.replaceChildren();
-          words.forEach((w, i) => {
-            if (i) el.appendChild(document.createTextNode(' '));
-            const s = document.createElement('span');
-            s.textContent = w.text;
-            if (w.hi) s.className = 'hi';
-            el.appendChild(s);
-          });
-          el.classList.remove('off');
-          const room = right - left;
-          el.style.fontSize = '';
-          el.style.padding = '';
-          el.style.borderRadius = '';
-          el.style.maxWidth = '';
-          el.style.webkitTextStrokeWidth = '';
-          const pad = parseFloat(getComputedStyle(el).paddingLeft) || 0;
-          const padY = parseFloat(getComputedStyle(el).paddingTop) || 0;
-          const stroke = parseFloat(getComputedStyle(el).webkitTextStrokeWidth) || 0;
-          const radius = parseFloat(getComputedStyle(el).borderTopLeftRadius) || 0;
-          let r = el.getBoundingClientRect();
-          if (fit === 'plate') {
-            // A plate caption is one line; one wider than the band is set smaller to fit rather than
-            // wrapping or leaving the frame. Its natural width is measured and it is resized, not
-            // transformed, so the drawn plate is exactly the measured box.
-            if (r.width > room) {
-              const k = Math.floor((room / r.width) * 1000) / 1000;
-              el.style.fontSize = `${px * k}px`;
-              el.style.padding = `${Math.round(padY * k)}px ${Math.round(pad * k)}px`;
-              el.style.borderRadius = `${Math.round(radius * k)}px`;
-              r = el.getBoundingClientRect();
-            }
-          } else if (fit === 'line') {
-            // Pill and serif-word captions are one line; a caption wider than the band is set smaller, its
-            // padding, corners and outline with it.
-            if (r.width > room) {
-              const k = Math.floor((room / r.width) * 1000) / 1000;
-              el.style.fontSize = `${px * k}px`;
-              el.style.padding = `${Math.round(padY * k)}px ${Math.round(pad * k)}px`;
-              el.style.borderRadius = `${Math.round(radius * k)}px`;
-              if (stroke) el.style.webkitTextStrokeWidth = `${Math.max(1, stroke * k)}px`;
-              r = el.getBoundingClientRect();
-            }
-          } else {
-            // Outlined captions wrap to at most `lines` lines inside the band, then shrink until they fit.
-            el.style.maxWidth = `${room}px`;
-            let size = px;
-            const fits = () => {
-              const lineH = size * lh;
-              const h = el.getBoundingClientRect().height;
-              // At most `lines` lines, and never taller than the band (a short band shrinks the words further).
-              return el.scrollWidth <= room + 0.5 && h <= lineH * lines + padY * 2 + 1 && h <= bottom - top + 0.5;
-            };
-            for (let i = 0; i < 40 && !fits(); i++) {
-              size *= 0.94;
-              const k = size / px;
-              el.style.fontSize = `${size}px`;
-              el.style.padding = `${Math.round(padY * k)}px ${Math.round(pad * k)}px`;
-              el.style.webkitTextStrokeWidth = `${Math.max(1, stroke * k)}px`;
-            }
-            r = el.getBoundingClientRect();
-          }
-          const w = r.width;
-          const h = r.height;
-          let t = Math.min(Math.max(y - h / 2, top), bottom - h);
-          if (bottomAnchor) {
-            // The last line's centre sits on y; a longer caption grows upward.
-            const cs = getComputedStyle(el);
-            const last = parseFloat(cs.fontSize) * lh;
-            t = Math.min(Math.max(y + last / 2 + (parseFloat(cs.paddingBottom) || 0) - h, top), bottom - h);
-          }
-          const l = left + (right - left - w) / 2;
-          el.style.left = `${l}px`;
-          el.style.top = `${t}px`;
-          return { x: l, y: t, w, h };
-        },
-        {
-          words: cueTexts(c, look).map((text, i) => ({ text, hi: c.words[i].hi })),
-          fit,
-          lines,
-          lh,
-          bottomAnchor: look.preset === 'sentence',
-          px,
-          top: zone.top,
-          bottom: zone.bottom,
-          y: look.y * H,
-          left: zone.left,
-          right: zone.right,
-        },
-      );
+      const placed = await p.evaluate(capPlace, layoutArgs(c, c.y));
       c.box = placed;
       for (const s of c.states) {
         const key = keyOf(c, s.active);
@@ -814,10 +902,14 @@ export async function run(inputs, ctx) {
   const record = {
     look: { preset: look.preset, max_words: look.max_words, y: look.y, case: look.case, highlight_color: look.highlight_color },
     words: words.map((w) => ({ text: w.text, start_s: +w.start_s.toFixed(3), end_s: +w.end_s.toFixed(3) })),
-    cues: cues.map((c) => ({ text: shown(c), start_s: +c.start_s.toFixed(3), end_s: +c.end_s.toFixed(3), box: c.box })),
+    cues: cues.map((c) => ({ text: shown(c), start_s: +c.start_s.toFixed(3), end_s: +c.end_s.toFixed(3), box: c.box, ...(clear.length ? { y: c.y, overlap: Math.round(c.overlap || 0) } : {}) })),
   };
+  // What the final check needs to tell whether captions met the product: the boxes kept clear (margin included).
+  if (clear.length) record.keep_clear = clear.map((k) => ({ start_s: k.start_s, end_s: k.end_s, from: k.from, box: { x: Math.round(k.box.x), y: Math.round(k.box.y), w: Math.round(k.box.w), h: Math.round(k.box.h) } }));
   await writeFile(join(ctx.workDir, 'words.json'), `${JSON.stringify(record, null, 1)}\n`);
-  const timeline = { ...inputs.timeline };
+  // keep_clear stops here: the later layers' timelines do not take it. 1.5.0: a linked assembly_timeline
+  // passes through unchanged (captions add no picture or sound cue to the source-linked edit).
+  const { keep_clear: _keepClear, ...timeline } = inputs.timeline;
   if (!(timeline.safe_zones || []).some((z) => z.use === 'captions')) {
     timeline.safe_zones = [...(timeline.safe_zones || []), { use: 'captions', x: Math.round(zone.left), y: Math.round(zone.top), w: Math.round(zone.right - zone.left), h: Math.round(zone.bottom - zone.top) }];
   }

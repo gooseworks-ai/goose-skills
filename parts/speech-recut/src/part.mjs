@@ -7,7 +7,10 @@
 // What it cuts (src/recut.mjs has the rules): dead air down to max_gap_s,
 // with the join on a picture cut when one falls in the silence; repeats and
 // stutters inside a line (never a whole line); shots under min_shot_s that
-// hold no speech. Output at `fps` (30 by default; Seedance returns 24).
+// hold no speech. Output at `fps` (30 by default; Seedance returns 24). A
+// short shot that holds speech takes back some of the dead air beside it, or
+// (1.0.1) has its picture covered by the shot before or after it while its
+// sound plays on, so the cut never flashes a shot under min_shot_s.
 //
 // Finishing: `room_tone` loops the take's quietest speech-free window under
 // the whole edit, so the street does not step at every join; `grade:
@@ -17,7 +20,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitDuration, kitFfmpeg, kitNum } from '../../_lib/part.mjs';
-import { RECUT_LEVEL_RATE, RECUT_LEVEL_STEP_S, RECUT_ROOM_PAD_S, RecutRefusal, recutCheckSpeech, recutLevels, recutPlan, recutQuietWindow, recutSpeechBusy } from './recut.mjs';
+import { RECUT_LEVEL_RATE, RECUT_LEVEL_STEP_S, RECUT_ROOM_PAD_S, RecutRefusal, recutCheckSpeech, recutIsExtra, recutLevels, recutPlan, recutQuietWindow, recutSpeechBusy } from './recut.mjs';
 
 /** ffmpeg's scene score above which a frame starts a new shot (recut.py measured at 0.30). */
 export const RECUT_SCENE_THRESHOLD = 0.3;
@@ -107,6 +110,44 @@ export async function recutPictureCuts(ctx, video) {
   return [...new Set(cuts)].sort((a, b) => a - b);
 }
 
+/**
+ * The filters that cover short shots on the joined picture `input` (at the take's frame rate, `total` frames):
+ * each cover [a, b) of frame numbers shows the frame before it (`prev`) or after it (`next`) instead, by
+ * cutting the picture around the covers and padding the pieces either side with a held frame. Returns the
+ * filter strings, ending in `[out]`; the frame count is unchanged.
+ */
+export function recutCoverGraph(input, covers, total, out) {
+  const sorted = [...covers].sort((x, y) => x.a - y.a);
+  const pieces = [];
+  let at = 0;
+  for (const c of sorted) {
+    pieces.push({ s: at, e: c.a, start: 0, stop: 0 });
+    at = c.b;
+  }
+  pieces.push({ s: at, e: total, start: 0, stop: 0 });
+  const real = (j) => pieces[j].e > pieces[j].s;
+  sorted.forEach((c, i) => {
+    const len = c.b - c.a;
+    const before = () => [...pieces.keys()].filter((j) => j <= i && real(j)).at(-1);
+    const after = () => [...pieces.keys()].find((j) => j > i && real(j));
+    const j = c.from === 'prev' ? (before() ?? after()) : (after() ?? before());
+    if (j === undefined) throw new Error('every shot is covered; there is no picture to hold');
+    if (j <= i) pieces[j].stop += len;
+    else pieces[j].start += len;
+  });
+  const used = pieces.filter((p) => p.e > p.s);
+  const chain = (p) =>
+    `trim=start_frame=${p.s}:end_frame=${p.e},setpts=PTS-STARTPTS` +
+    (p.start ? `,tpad=start=${p.start}:start_mode=clone` : '') +
+    (p.stop ? `,tpad=stop=${p.stop}:stop_mode=clone` : '');
+  if (used.length === 1) return [`[${input}]${chain(used[0])}[${out}]`];
+  return [
+    `[${input}]split=${used.length}${used.map((_, k) => `[cs${k}]`).join('')}`,
+    ...used.map((p, k) => `[cs${k}]${chain(p)}[cp${k}]`),
+    `${used.map((_, k) => `[cp${k}]`).join('')}concat=n=${used.length}:v=1:a=0[${out}]`,
+  ];
+}
+
 /** Channels in the take's first sound stream. A mono take is copied to both sides, not mixed down 3 dB. */
 export async function recutChannels(ctx, video) {
   try {
@@ -159,7 +200,9 @@ export async function run(inputs, ctx) {
     throw err;
   }
   for (const w of plan.warnings) ctx.log.warn(w);
-  ctx.log.info('speech-recut plan', { picture_cuts: pictureCuts.length, removals: plan.removals.length, from_s: +duration.toFixed(3), to_s: plan.seconds });
+  ctx.log.info('speech-recut plan', { picture_cuts: pictureCuts.length, removals: plan.removals.length, covers: plan.covers.length, from_s: +duration.toFixed(3), to_s: plan.seconds });
+  const dropped = (inputs.speech || []).filter((e) => recutIsExtra(e) && (e.words || []).length && (inputs.drop ?? 'repeats') === 'repeats');
+  if (dropped.length) ctx.log.info('speech-recut dropped heard speech that is in no line', { spoken: dropped.map((e) => e.spoken ?? '').filter(Boolean) });
 
   // Room tone: measured on the ORIGINAL take, before the cut, so a window the cut drops still serves.
   let room = null;
@@ -180,11 +223,15 @@ export async function run(inputs, ctx) {
   const args = [];
   const graph = [];
   const half = 0.25 / srcFps;
+  const firstFrame = [];
+  let joined = 0;
   for (const [k, seg] of plan.keep.entries()) {
     const seek = Math.max(0, seg.start - 1);
     const off = seg.start - seek;
     const len = seg.end - seg.start;
     const frames = Math.max(1, Math.round(len * srcFps));
+    firstFrame.push(joined);
+    joined += frames;
     if (seek > 0) args.push('-ss', kitNum(seek));
     args.push('-t', kitNum(off + len + 0.5), '-i', inputs.video.path);
     graph.push(
@@ -206,11 +253,27 @@ export async function run(inputs, ctx) {
   const kept = plan.keep.reduce((sum, k) => sum + (k.end - k.start), 0);
   const outFrames = Math.max(1, Math.ceil(kept * fps - 1e-6));
   const seconds = outFrames / fps;
-  graph.push(`${plan.keep.map((_, k) => `[v${k}][a${k}]`).join('')}concat=n=${n}:v=1:a=1[cv][${room ? 'cut' : 'speech'}]`);
+  // A covered short shot: its frames on the joined picture, by the stretch it sits in.
+  const covers = plan.covers
+    .map((c) => {
+      const k = plan.keep.findIndex((seg) => c.start >= seg.start - 1e-6 && c.end <= seg.end + 1e-6);
+      if (k < 0) return null;
+      const a = firstFrame[k] + Math.round((c.start - plan.keep[k].start) * srcFps);
+      const b = Math.min(joined, firstFrame[k] + Math.round((c.end - plan.keep[k].start) * srcFps));
+      return b > a ? { a, b, from: c.from } : null;
+    })
+    .filter(Boolean);
+  graph.push(`${plan.keep.map((_, k) => `[v${k}][a${k}]`).join('')}concat=n=${n}:v=1:a=1[${covers.length ? 'joined' : 'cv'}][${room ? 'cut' : 'speech'}]`);
+  if (covers.length) graph.push(...recutCoverGraph('joined', covers, joined, 'cv'));
   if (room) {
     // The bed under the whole edit, at gain_db against its window; the speech is untouched.
-    args.push('-stream_loop', '-1', '-i', room.path);
-    graph.push(`[${n}:a]volume=${kitNum(room.gain_db, 3)}dB,atrim=0:${kitNum(seconds)},asetpts=PTS-STARTPTS[bed]`);
+    // The loop is the aloop filter on one read of the file, not -stream_loop on the input: with
+    // -stream_loop (any count) the kit's ffmpeg 6.1 writes the whole edit and then never exits, so the
+    // step timed out on every take with a room-tone window. ffmpeg 7 and later finish either way. The
+    // bed file is the window forward then reversed at 48 kHz (recutRoomLoop), twice the window long.
+    const loopSamples = Math.ceil(2 * (room.end_s - room.start_s) * 48000);
+    args.push('-i', room.path);
+    graph.push(`[${n}:a]aloop=loop=-1:size=${loopSamples},volume=${kitNum(room.gain_db, 3)}dB,atrim=0:${kitNum(seconds)},asetpts=PTS-STARTPTS[bed]`);
     graph.push('[cut][bed]amix=inputs=2:duration=first:dropout_transition=0:normalize=0[speech]');
   }
   graph.push(`[speech]apad,atrim=0:${kitNum(seconds)},asetpts=PTS-STARTPTS[aout]`);

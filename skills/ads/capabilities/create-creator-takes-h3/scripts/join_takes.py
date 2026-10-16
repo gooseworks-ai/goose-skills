@@ -22,6 +22,7 @@ import math
 import pathlib
 import re
 import subprocess
+from content_review import require_take_review, source_sha256
 
 XF = 0.10
 LEAD = 0.11
@@ -58,10 +59,12 @@ def to_stereo(path):
     return "aformat=channel_layouts=stereo"
 
 
-def read_words(path, duration):
-    words = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
-    if isinstance(words, dict):
-        words = words.get("words")
+def read_words(path, duration, source=None, script_sha256=None):
+    document = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
+    if source is not None:
+        if not isinstance(document, dict) or document.get("source_sha256") != source_sha256(source) or document.get("script_sha256") != script_sha256 or document.get("method") not in ("reviewed_transcription", "forced_alignment"):
+            raise ValueError("word sidecar needs actual timing method and matching source/script checksums; silence estimates are not word timings")
+    words = document.get("words") if isinstance(document, dict) else document
     if not isinstance(words, list) or not words:
         raise ValueError("word sidecar must contain a nonempty words array")
     previous = -1.0
@@ -95,7 +98,8 @@ def schedule(takes, end, fps):
         last = float(words[-1]["end"]) if words else None
         out.append({"path": t["path"], "start": start, "head_pad": pad,
                     "speech_end": start + pad + last if words else None,
-                    "source_duration": t["duration"], "words": words})
+                    "source_duration": t["duration"], "words": words,
+                    "source_sha256": t.get("source_sha256"), "picture_speed": 1, "audio_speed": 1})
     actual_end = max(end, out[-1]["speech_end"] + PAD) if all(measured) else end
     actual_end = math.ceil((actual_end - 1e-8) * fps) / fps
     if len(out) == 1 and not all(measured):
@@ -165,13 +169,20 @@ def main():
     ap.add_argument("--spec")
     ap.add_argument("--words", action="append")
     ap.add_argument("--require-words", action="store_true")
+    ap.add_argument("--reviews", help="actual complete source content reviews required for new creator plans")
     ap.add_argument("--end", type=float, required=True)
     ap.add_argument("--fps", type=int, default=30)
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
     entries = []
+    strict_content = False
+    planned_takes = {}
     if a.spec:
         sp = json.loads(pathlib.Path(a.spec).read_text(encoding="utf-8"))
+        strict_content = sp.get("content_review_required") is True
+        planned_takes = {str(pathlib.Path(sp["out"]) / f"{t['id']}-seed{t['seed']}.mp4"): t for t in sp["takes"]}
+        if strict_content:
+            a.require_words = True
         for t in sp["takes"]:
             entries.append((str(pathlib.Path(sp["out"]) / f"{t['id']}-seed{t['seed']}.mp4"),
                             float(t["covers"][0]), t.get("words")))
@@ -198,10 +209,16 @@ def main():
     takes = []
     for p, s, w in sorted(entries, key=lambda t: t[1]):
         d = length(p)
+        if strict_content:
+            try:
+                require_take_review(a.reviews, planned_takes[p], p, d)
+            except ValueError as error:
+                raise SystemExit("source content gate: " + str(error))
         if w and not pathlib.Path(w).is_file():
             raise SystemExit(f"missing measured words: {w}; transcribe and inspect this take first")
         takes.append({"path": p, "start": s, "duration": d,
-                      "words": read_words(w, d) if w else None, "onset": onset(p) if not w else None})
+                      "words": read_words(w, d, p if strict_content else None, planned_takes[p].get("script_sha256") if strict_content else None) if w else None, "onset": onset(p) if not w else None,
+                      "source_sha256": source_sha256(p), "picture_speed": 1, "audio_speed": 1})
     if a.require_words and not all(t["words"] for t in takes):
         raise SystemExit("measured words are required before joining")
     try:
@@ -217,6 +234,10 @@ def main():
             joined.append({**w, "start": w["start"] + t["start"] + t["head_pad"],
                            "end": w["end"] + t["start"] + t["head_pad"]})
     plan["words"] = joined
+    plan["source_content_review"] = "pass" if strict_content else "incomplete"
+    plan["final_content_review"] = "pending"
+    plan["speech_mode"] = "native_dialogue"
+    plan["final_sha256"] = source_sha256(a.out)
     pathlib.Path(a.out + ".timeline.json").write_text(json.dumps(plan, indent=2), encoding="utf-8")
     n = len(plan["takes"])
     if n == 1:

@@ -2,7 +2,7 @@
   "slug": "create-creator-takes-h3",
   "category": "capabilities",
   "domain": "ads",
-  "version": "2.1.0",
+  "version": "2.6.0",
   "tags": [
     "ads",
     "content"
@@ -16,6 +16,7 @@
     ]
   },
   "requires_skills": [
+    "create-image-fal",
     "media-proxy"
   ]
 }

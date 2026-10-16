@@ -1,5 +1,9 @@
 # sound-layer
 
+## 1.1.0
+
+- Declares `timeline.assembly_timeline` (input and output), so the kit passes a custom video's source-linked edit and gets it back. The layer adds no music or sfx cue because it lays none; levelling is unchanged. A minor version: it reaches new quotes through layers.json.
+
 ## 1.0.4
 
 - loudnorm is never let go dynamic: when the first pass shows linear mode is not possible (the gain to -14 LUFS would push the true peak past -1.5 dBTP), or the second pass reports anything but linear, the cut is levelled by a plain gain into the oversampled limiter instead. Dynamic loudnorm rode the gain down around each loud sound and flattened a chat's message sounds into the bed: on a ChatGPT cut over a synthetic bed the send rose 3.1 dB after 1.0.3 and 4.8 dB after 1.0.4 (the final check needs 4). The limiter still pulls down any peak over its ceiling, so a sound with a very sharp click needs to be dense at its source.

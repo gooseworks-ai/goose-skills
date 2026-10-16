@@ -32,6 +32,12 @@ ALTERNATIVES = [
     {"route": "custom", "differs": "keeps this format's hard constraints: people in text, one take, deep focus, "
                                    "720p first, local lettering; unvalidated"},
 ]
+# What going custom still forbids when the offering is not a physical product. make-custom-video
+# keeps "product-guess only with a physical product the brand sells", so a customer who picks
+# custom to hand over a mascot, a prop or a phone has picked a route that does not exist
+# (GOOSE-4018). Say so on the alternative, not after they choose it.
+CUSTOM_NO_GUESS = ("no guessing game: nothing stands in for a product, not a mascot, a prop, "
+                   "a phone or a screen; ")
 NUMBER_WORDS = {1: "one", 2: "two", 3: "three", 4: "four"}
 
 
@@ -108,6 +114,10 @@ def route_contract(brief, mode):
     elif wrong_offering:
         alternatives.append(dict(MIC_ONLY))
     alternatives += [dict(a) for a in ALTERNATIVES]
+    if wrong_offering:
+        for alt in alternatives:
+            if alt["route"] == "custom":
+                alt["differs"] = CUSTOM_NO_GUESS + alt["differs"]
     return route, gaps, alternatives
 
 

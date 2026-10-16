@@ -306,3 +306,13 @@ test('the template fixture is a valid version 1 template', async () => {
   const { kitTemplateProblems } = await import('../../_lib/prompt.mjs');
   assert.deepEqual(kitTemplateProblems(template), []);
 });
+
+test('1.0.2: every run warns that fal retires this endpoint on 17 Nov 2026, and the manifest carries the date', { skip }, async () => {
+  const w = work();
+  const { ctx, logs } = makeCtx({ partDir: dir, workDir: join(w, 'step'), line: clipLine });
+  await mod.run(await scenesInputs(w), ctx);
+  assert.ok(logs.some(([level, message]) => level === 'warn' && /retires this endpoint on 17 Nov 2026/.test(message)));
+  const { manifest } = await loadNewest('video-veo-3');
+  assert.equal(manifest['x-provider-retirement'].date, '2026-11-17');
+  assert.match(manifest.summary, /17 Nov 2026/);
+});

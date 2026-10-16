@@ -1,47 +1,61 @@
 #!/usr/bin/env python3
-"""Generate the creator still from the user's chosen person, in one shot.
+"""Shared creator still builder. Reuse this for generated people in custom video.
 
-    make_character.py --age 34 --gender woman --ethnicity "South Asian" \
-        --hair "shoulder-length black hair, slightly frizzy at the crown, tucked behind one ear" \
-        --wardrobe "plain charcoal crew-neck t-shirt" \
-        --scene "a lived-in home office, a full bookshelf behind her, in focus" \
-        --out character/
+The approved brief supplies identity, wardrobe and room. Defaults: an ordinary phone
+capture in a real lived-in room, deep focus with no bokeh, real unretouched skin, made
+with openai/gpt-image-2. Studio capture or shallow focus only when the brief explicitly
+chooses them. phone_observer is a third-person phone shot (filmed by a friend, not
+looking at the lens) for scenes where people eat or act rather than talk to camera.
+Distinctive marks require an explicit user choice, never random sampling; no skin
+flaws are forced. A generated still remains pending visual review before video
+production. --dry-run and --payload-out prepare the same payload without generation.
 
-Writes <out>/character.png and <out>/character.json, the latter ready for plan_takes.py.
-`--payload-out <file>` writes {"model", "body"}: the exact request gen_image.py will send. With
-`--dry-run` it generates nothing, so the body can be quoted for free before the paid call.
+Action shots: with --action (or --capture phone_observer) the still is an action shot, not a
+talking head. The framing is on the action (hands, object and face working on it, off-centre,
+not squared to the lens), the eyes stay on the task and the hands are in use; the head is
+smaller in frame. --shot talking keeps the talking-head defaults for a person who talks to
+the lens while doing something.
 
-WHY THIS EXISTS
+Skin condition: when the product treats a visible skin problem, pass it with
+--skin-condition (e.g. "visible blackheads on the nose, oily T-zone", "a few small acne
+spots"). The person then shows it. Random marks are still never added.
 
-`character-prompt.json` held a carefully built realism formula and **no script read it**. The
-skill told whoever was running it to "fill its slots, generate 2-4 options, let the user pick
-one". That is three failures at once:
+Light: every capture carries one light lock: window or lamp light from one side, normal
+exposure, no HDR, matte skin with no added shine, no over-sharpening.
 
-1. Slots got left unfilled. The formula's own note says the model "drifts to an ambiguous
-   composite face" without explicit age, ethnicity and sex. An unspecified person IS the
-   composite face a reviewer calls "obviously AI".
-2. Every run filled the slots differently, so quality depended on who was driving.
-3. "generate 2-4 options and pick" is iteration. A template a customer runs has to land the
-   first time.
+Hands: pass every scene action the person performs with --action. When one uses both
+hands (apply, smooth, press, peel, squeeze, hold with both hands), a handheld selfie is
+refused and the still is a propped phone (counter) instead, because a selfie with both
+hands busy grows a third hand holding the phone. The output says so.
 
-This makes it one command: the identity slots come from the user and are REQUIRED; the craft
-slots (imperfections, framing, light) come from the formula and are not the user's problem.
-
-EVERY SLOT IS FILLED OR THE RUN STOPS. A blank slot is how the composite face gets in.
+Voice: character.json records `voice_pair`, from the same age, gender and ethnicity plus
+--voice-accent and --voice-energy: a matched ElevenLabs voice from a saved voice list
+(--voices), or a Voice Design request body (pair_voice.py). Use it for any narration of
+this person, so the voice fits the face and is not another brand's narrator. The voice is
+chosen here, with the person, never earlier in the script. With no voice list the script
+refuses (a silent fallback to a paid Voice Design request was ignored on 15 Oct): pass
+--voices, or --voice-design to quote Voice Design on purpose, or --no-voice-pair for a person
+who is never voiced separately. To change the voice later: pair_voice.py --character
+character.json --voices <list> --exclude <rejected voice_id>.
 """
 import argparse
 import json
 import pathlib
-import random
+import re
 import subprocess
 import sys
 
 HERE = pathlib.Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE))
+from pair_voice import load_voices, pair_voice  # noqa: E402
+from plan_takes import both_hands  # noqa: E402
 
 # Skin tone follows from ethnicity unless the user overrides it. These are the formula's own
 # vocabulary, not invented: it asks for e.g. "deep brown-black / warm medium brown / olive-tan".
 SKIN = {
     "black": "deep brown with warm red undertones",
+    "black american": "deep brown with warm red undertones",
+    "african american": "deep brown with warm red undertones",
     "african": "deep brown-black with warm undertones",
     "south asian": "warm medium brown with olive undertones",
     "indian": "warm medium brown with olive undertones",
@@ -61,46 +75,70 @@ SKIN = {
     "mixed": "warm medium brown with neutral undertones",
 }
 
-# The realism lever. The formula says each imperfection is "rendered with physical accuracy and
-# its own micro-shadow", so these must be specific and physical, never "some texture". They are
-# sampled so that two avatars are not the same face with a different haircut, and seeded off the
-# identity so the same brief reproduces the same person.
-IMPERFECTIONS = [
-    "a small raised mole below the left jawline",
-    "faint acne scarring across both cheeks, shallow and old",
-    "sun freckles scattered across the nose bridge and upper cheeks",
-    "slightly chapped lips with fine vertical cracks",
-    "a broken capillary at one nostril crease",
-    "uneven eyebrow density, thinner at the outer third of one side",
-    "a faint under-eye shadow, darker on one side",
-    "a small skin tag at the side of the neck",
-    "flaking dry skin at the outer edge of one nostril",
-]
-
-# The formula's own capture grammar is a STUDIO PORTRAIT: medium format film, a raking
-# side-top key at 45 degrees, shallow depth of field, film grain. Its SKIN engine is right and
-# measures in range (detail 6.9-11.2 against 6.2-10.6 for real reference footage), but the
-# capture grammar is what makes a correct-skinned face still read as generated: real creator
-# footage is a phone, and it is flatter, deeper-focused and much less saturated.
-#
-# Measured 2026-09-30, real references vs our renders (mean per-pixel saturation):
-#     Salary Transparent 0.262 · Chris Klemens 0.182 · Arcads real actor 0.135
-#     ours: man46 0.364 · man31 0.217 · woman27 0.507
-# The woman-27 render, the one rejected first by eye, is ~3x the Arcads reference. So
-# "phone" replaces the capture sentences only, and never touches the skin block.
+# Capture describes the approved recording, not a universal realism trick.
+# A sharp face, pores or noise cannot repair an artificial performance.
+NO_RETOUCH = "No retouching, no skin smoothing, no beauty filter, no cinematic grade."
+# One light lock for every capture: AI stills come back evenly lit, perfectly exposed and
+# glossy, and the video model then adds shine and sharpening halos on top (15 Oct runs).
+LIGHT_LOCK = ("Window or lamp light from one side, so the far side of the face is a little darker; "
+              "normal phone exposure, highlights not blown out, no HDR look. Matte skin with no "
+              "added shine, no over-sharpening.")
+STUDIO_LIGHT_LOCK = ("Normal exposure, highlights not blown out, no HDR look. Matte skin with no "
+                     "added shine, no over-sharpening.")
 CAPTURE = {
-    "studio": "",   # the formula as written; keep for stills that really are portraits
     "phone": (
-        "Shot on a recent phone's front camera, handheld feel but held still, at the subject's "
-        "own eye level. Ordinary room light doing all the work, coming mostly from one window "
-        "or one ceiling fitting that is visible or clearly motivated in frame - no studio key, "
-        "no softbox, no rim light, no ring light. DEEP focus: the room behind the subject is "
-        "readable, not melted into bokeh. Muted, slightly desaturated colour, the way an "
-        "unedited phone clip looks before any grade - no teal-and-orange, no lifted vibrance, "
-        "no colour pop. Slightly uneven white balance. Faint sensor noise in the shadows rather "
-        "than film grain. Mild wide-lens distortion near the frame edge. Nothing in the image "
-        "looks lit or art-directed; it looks recorded."),
+        "An ordinary phone recording at eye level, in a real lived-in room that is slightly "
+        "cluttered with everyday things, never a plain backdrop or a white void. " + LIGHT_LOCK +
+        " Natural white balance and ordinary colour. Real skin with small "
+        "natural imperfections at this shot size. " + NO_RETOUCH + " No artificial grain overlay "
+        "or exaggerated sharpening."),
+    "phone_observer": (
+        "A candid phone video frame filmed by a friend from a few steps away at chest height. "
+        "The person is busy with what they are doing and does not look at the lens. A real "
+        "lived-in room, slightly cluttered with everyday things. " + LIGHT_LOCK + " Ordinary "
+        "colour. Real skin with small natural imperfections at this distance. " + NO_RETOUCH),
+    "studio": (
+        "A real studio portrait with soft motivated light and ordinary colour, chosen because "
+        "the approved reference is studio-shot. " + STUDIO_LIGHT_LOCK + " Natural skin detail at "
+        "this viewing distance, without beauty retouching, edge halos or a waxy finish. " + NO_RETOUCH),
 }
+DEEP = ("Everything sharp, DEEP focus, as a phone records: the face and the room behind are "
+        "both in focus. No bokeh, no portrait-mode blur, no shallow depth of field.")
+FOCUS = {
+    "deep": DEEP,
+    "natural": DEEP,  # read as deep; kept so older commands still run
+    "shallow": "The face is in focus with gentle optical background falloff, matching the approved reference; no pasted portrait-mode edge.",
+}
+RECORDING = {
+    "counter": "The phone is propped up outside the frame and nobody holds it; both hands are free. Complete face and both shoulders remain visible.",
+    # An action shot on a propped phone: the hands are working, not free (talking-head text above).
+    "counter_action": "The phone is propped up outside the frame and nobody holds it. The hands are in use on the action and in frame; the eyes follow what the hands are doing.",
+    "selfie": "One hand supports a phone outside the frame; only the other hand is free. Believable selfie framing without cutting off the face.",
+    "observer": "Nobody holds a phone in frame. The person's hands are busy with the action; they look at what they are doing, not at the lens.",
+}
+# Framing, expression and head size when the brief gives none, by shot. A talking head is
+# centred, looks into the lens and has its hands free; an action shot (--action, or
+# phone_observer) frames the action, keeps the gaze on the task and the hands in use. A 15 Oct
+# run made every B-roll person with the talking defaults and got faces staring at the lens.
+DEFAULT_FRAMING = {
+    "talking": ("head and upper chest, with clear space above the head and on both sides so the "
+                "room reads around them, squared to camera, looking into the lens"),
+    "action": ("framed on the action: the hands, the object they are using and the face working "
+               "on it all in frame, a three-quarter view from slightly to one side, the person "
+               "off-centre and not squared to the lens"),
+    "observer": "waist-up three-quarter view from a few steps away, the action and the room in frame",
+}
+DEFAULT_EXPRESSION = {
+    "talking": "relaxed expression, lips at rest, natural gaze toward the lens, no held smile",
+    "action": "eyes on the task, absorbed in what the hands are doing, relaxed face, not looking at the lens",
+    "observer": "absorbed in what they are doing, relaxed face, not looking at the lens",
+}
+DEFAULT_FACE_FILL = {"talking": "45 to 55 percent", "action": "25 to 40 percent", "observer": "20 to 35 percent"}
+# A condition that is oil or shine itself must not be fought by the negative prompt.
+OILY = re.compile(r"\b(oil\w*|greas\w*|shin\w*|sheen)\b", re.I)
+# openai/gpt-image-2 sizes by aspect (multiples of 16, as fal asks).
+GPT_SIZE = {"9:16": (1088, 1920), "16:9": (1920, 1088), "1:1": (1536, 1536),
+            "4:5": (1536, 1920), "3:4": (1440, 1920), "4:3": (1920, 1440)}
 
 AGE_NOTES = [
     (0, 25, "smooth forehead with expression lines only when the brow moves, full lip volume"),
@@ -133,13 +171,57 @@ def build(a):
             "Pass --skin-tone explicitly, in the formula's vocabulary, e.g. "
             "'warm medium brown with olive undertones'." % a.ethnicity)
 
-    rng = random.Random(a.seed if a.seed is not None else ident.lower())
-    imp = rng.sample(IMPERFECTIONS, 3)
-    imperfections = ", ".join(imp) + ", and " + age_note(a.age)
+    marks = [mark.strip() for mark in (getattr(a, "marks", None) or []) if mark.strip()]
+    if marks and not getattr(a, "marks_approved", False):
+        sys.exit("--marks needs --marks-approved: distinctive marks come from the user's choice, never random defaults")
+    # A skin condition the product treats is shown, never hidden: a patch on flawless skin reads
+    # as fake. It is the brief's request, not a random mark, so it needs no --marks-approved.
+    condition = (getattr(a, "skin_condition", None) or "").strip().rstrip(".")
+    if getattr(a, "skin_condition", None) is not None and not condition:
+        sys.exit("--skin-condition is empty: name the condition the product treats, e.g. "
+                 "'visible blackheads on the nose, oily T-zone'")
+    a.skin_condition = condition or None
+    # No forced flaws: an invented scar, acne mark or oily shine reads as painted on.
+    if condition:
+        imperfections = ("The skin shows %s, because the product treats it: real and unretouched, kept visible, "
+                         "not painted on and not exaggerated. Otherwise ordinary skin texture and subtle "
+                         "facial asymmetry; no other invented scars, moles or marks." % condition)
+        if marks:
+            imperfections += " " + "; ".join(marks) + "."
+    else:
+        imperfections = "; ".join(marks) if marks else "Ordinary skin texture and subtle facial asymmetry; no invented scars, acne marks, moles, greasy shine or distinctive marks."
 
     # Check the RAW arguments, before any decoration. An earlier version appended the full stop
     # first, so `--hair "  "` became "." and passed the not-empty test: a blank slot got through
     # the guard whose whole job was to stop blank slots.
+    # The shot: an action shot when the person acts (--action) or is filmed by a friend
+    # (phone_observer); --shot talking keeps the talking head for someone who talks while acting.
+    shot = getattr(a, "shot", "auto") or "auto"
+    if shot == "talking" and a.capture == "phone_observer":
+        sys.exit("--shot talking goes with --capture phone or studio; phone_observer never looks at the lens")
+    if shot == "auto":
+        shot = "action" if (a.capture == "phone_observer" or getattr(a, "action", None)) else "talking"
+    a.shot = shot
+    kind = "observer" if a.capture == "phone_observer" else shot
+    if a.framing is None:
+        a.framing = DEFAULT_FRAMING[kind]
+    if a.expression is None:
+        a.expression = DEFAULT_EXPRESSION[kind]
+    if getattr(a, "face_fill", None) is None:
+        a.face_fill = DEFAULT_FACE_FILL[kind]
+    if a.capture == "phone_observer":
+        a.recording = "observer"
+    elif a.recording == "observer":
+        sys.exit("--recording observer goes with --capture phone_observer")
+    # Both hands busy and a handheld selfie: the model adds a third hand holding the phone.
+    a.capture_decision = {"requested": a.recording, "used": a.recording, "reason": None}
+    hands = both_hands(getattr(a, "action", None) or [])
+    if hands and a.recording == "selfie":
+        a.capture_decision = {"requested": "selfie", "used": "counter",
+                              "reason": "%s: both hands are busy, so nobody can hold the phone (a handheld selfie "
+                                        "adds a third hand). Using a propped phone (counter); use --capture "
+                                        "phone_observer for a friend filming instead." % hands}
+        a.recording = "counter"
     raw = {"hair": a.hair, "wardrobe": a.wardrobe, "scene": a.scene, "framing": a.framing,
            "expression": a.expression, "face_fill": a.face_fill, "gender": a.gender,
            "ethnicity": a.ethnicity}
@@ -150,42 +232,59 @@ def build(a):
     if not 16 <= a.age <= 90:
         sys.exit("--age %d is outside 16-90; state a real age." % a.age)
 
+    # An action shot names what the hands are doing, so the still is caught mid-action.
+    acts = [t.strip().rstrip(".") for t in (getattr(a, "action", None) or []) if t and t.strip()]
+    action_text = (" The action: %s." % "; ".join(acts)) if (shot == "action" and acts) else ""
     spec = json.loads((HERE / "character-prompt.json").read_text(encoding="utf-8"))
     slots = {
         "identity": ident,
         "skin_tone": skin,
         "hair": a.hair.strip().rstrip(".") + ".",
         "wardrobe": a.wardrobe.strip().rstrip(".") + ".",
-        "framing": a.framing.strip().rstrip(".") + ".",
+        "framing": a.framing.strip().rstrip(".") + "." + action_text,
         "scene": a.scene.strip().rstrip(".") + ".",
         "expression": a.expression.strip().rstrip(".") + ".",
         "imperfections": imperfections,
         "face_fill": a.face_fill,
+        "capture": CAPTURE[a.capture],
+        "focus": FOCUS[getattr(a, "focus", "deep")],
+        "recording": RECORDING["counter_action" if (shot == "action" and a.recording == "counter")
+                               else getattr(a, "recording", "counter")],
     }
     blank = [k for k, v in slots.items() if not str(v).strip()]
     if blank:
         sys.exit("these slots are empty: %s. A blank slot is how the composite face gets in."
                  % ", ".join(blank))
+    if condition:
+        slots["capture"] = slots["capture"].replace("Matte skin with no added shine",
+                                                    "Matte skin with no added shine beyond the stated skin condition")
     prompt = spec["prompt"].format(**slots)
-    if a.capture == "phone":
-        # Replace the three studio-capture sentences; the skin block after them is untouched.
-        prompt = prompt.replace(
-            "Photorealistic, shot on medium format film. Raking side-top light at 45 degrees "
-            "reveals every pore as a 3D crater with its own micro-shadow. Shallow depth of "
-            "field - critical sharpness on the eyes and the skin of the face, gentle optical "
-            "falloff beginning behind the head.",
-            "Photorealistic. " + CAPTURE["phone"] + " The light still rakes across the skin "
-            "enough to give every pore its own micro-shadow, and the eyes and facial skin are "
-            "the sharpest thing in frame.")
-        prompt = prompt.replace(
-            "Fine organic film grain throughout. Zero digital sharpening - all sharpness is "
-            "optical.",
-            "Faint sensor noise throughout, heavier in the shadows. Zero digital sharpening.")
-        neg = spec["negative_prompt"] + (", saturated colour, vibrant, colour graded, teal and "
-              "orange, HDR, studio lighting, softbox, rim light, bokeh background, shallow "
-              "depth of field, cinematic grade, glamour lighting, film grain overlay")
-        return prompt, neg, ident, slots
-    return prompt, spec["negative_prompt"], ident, slots
+    negative = spec["negative_prompt"]
+    if condition and OILY.search(condition):
+        negative = negative.replace("greasy shine, ", "")
+    return prompt, negative, ident, slots
+
+
+NO_VOICE_LIST = """make_character.py needs a voice list, so the voice is paired with this person (age, gender
+and ethnicity) now, not picked later from a name. Pass one of:
+  --voices voices.json   a saved voice list. Through the GooseWorks MCP: data_call_provider
+                         {provider: "elevenlabs", path: "/v1/voices", project_id} and save the whole reply.
+                         With an ElevenLabs key: GET /v1/voices (or /v2/voices, /v1/shared-voices).
+                         video_formats show:"voices" is a short curated list that names no heritage; it
+                         fits few people.
+  --voice-design         no list: record a paid Voice Design request to quote (not available through
+                         the GooseWorks MCP)
+  --no-voice-pair        this person is never voiced separately (B-roll with no lines, or H3 native speech)"""
+
+
+def voice_refusal(a):
+    """Stop before anything is written when the voice would be paired from nothing."""
+    if a.no_voice_pair and (a.voices or a.voice_design):
+        sys.exit("--no-voice-pair records no voice; leave out --voices and --voice-design")
+    if a.voices and a.voice_design:
+        sys.exit("--voices and --voice-design: pick one (a matched voice from the list, or a Voice Design request)")
+    if not (a.voices or a.voice_design or a.no_voice_pair):
+        sys.exit(NO_VOICE_LIST)
 
 
 def main():
@@ -194,7 +293,7 @@ def main():
     ap.add_argument("--age", type=int, required=True)
     ap.add_argument("--gender", required=True, help="woman / man / non-binary person")
     ap.add_argument("--ethnicity", required=True)
-    ap.add_argument("--hair", required=True, help="colour, texture, how worn, and how UNTIDY")
+    ap.add_argument("--hair", required=True, help="hair detail from the approved brief")
     ap.add_argument("--wardrobe", required=True)
     ap.add_argument("--scene", required=True, help="where they are and what is behind them")
     # craft defaults: the formula's job, not the user's
@@ -202,22 +301,37 @@ def main():
     # Head-and-SHOULDERS reads as a tight crop at 9:16 and the room disappears; the reviewer's
     # first reaction to it was to ask for a different aspect ratio, when the ratio was already
     # 9:16. Upper chest plus explicit space is the same ratio and reads as a room.
-    ap.add_argument("--framing", default="head and upper chest, with clear space above the head "
-                                         "and on both sides so the room reads around them, "
-                                         "squared to camera, looking into the lens")
-    ap.add_argument("--expression", default="mid-sentence, mouth slightly open on a word, eyes "
-                                            "steady on the lens, no held smile")
-    ap.add_argument("--face-fill", default="45 to 55 percent")
-    # fal-ai/nano-banana-pro is NB2 Pro, the model this realism formula was written for.
-    # Two wrong turns cost a generation each: "nano-banana-2" is an internal engine label fal
-    # rejects outright, and plain "fal-ai/nano-banana" is the OLDER model, which produced a
-    # face the reviewer called AI-generated on sight.
-    ap.add_argument("--capture", default="phone", choices=["phone", "studio"],
-                    help="phone (default) reads as recorded; studio is the formula as written")
-    ap.add_argument("--model", default="fal-ai/nano-banana-pro")
-    # 4K, not the 1K default. The formula demands pores "legible, not implied"; at 1K the face
-    # is ~700px wide and a pore is sub-pixel, so the whole skin system renders as smooth skin.
-    ap.add_argument("--resolution", default="4K", choices=["1K", "2K", "4K"])
+    ap.add_argument("--framing", default=None, help="default by capture: upper chest to camera, "
+                                                   "or waist-up three-quarter for phone_observer")
+    ap.add_argument("--expression", default=None, help="default by capture (phone_observer never looks at the lens)")
+    ap.add_argument("--face-fill", default=None, help="head size in frame; default 45-55%% talking, "
+                    "25-40%% action, 20-35%% phone_observer")
+    ap.add_argument("--shot", default="auto", choices=["auto", "talking", "action"],
+                    help="auto (default): action when --action is given or --capture phone_observer, else "
+                         "talking. talking keeps the lens gaze and free hands for someone who talks while acting")
+    ap.add_argument("--skin-condition", default=None,
+                    help="a visible skin problem the product treats, shown on the person, e.g. 'visible "
+                         "blackheads on the nose, oily T-zone' or 'a few small acne spots'")
+    ap.add_argument("--capture", default="phone", choices=["phone", "phone_observer", "studio"],
+                    help="phone (default); phone_observer for people eating or acting, filmed by a "
+                         "friend and not looking at the lens; studio only when the reference is studio-shot")
+    ap.add_argument("--recording", default="counter", choices=["counter", "observer", "selfie"])
+    ap.add_argument("--focus", default="deep", choices=sorted(FOCUS),
+                    help="deep (default, no bokeh); shallow only when the approved reference is shot that way")
+    ap.add_argument("--action", action="append", help="a scene action this person performs (repeatable); a "
+                    "both-hands action refuses --recording selfie")
+    ap.add_argument("--voice-accent", help="how they sound, e.g. american or british (for voice_pair)")
+    ap.add_argument("--voice-energy", help="e.g. upbeat, calm, warm (for voice_pair)")
+    ap.add_argument("--voices", help="a saved voice list to match voice_pair from: the GooseWorks MCP's data_call_provider "
+                                     "reply for GET /v1/voices, or an ElevenLabs GET /v1/voices, /v2/voices or /v1/shared-voices reply")
+    ap.add_argument("--voice-exclude", action="append", default=[], help="a voice_id not to reuse, e.g. another brand's narrator")
+    ap.add_argument("--voice-sample-text", help="100-1000 characters for Voice Design previews")
+    ap.add_argument("--marks", action="append", help="specific distinctive mark chosen by the user")
+    ap.add_argument("--marks-approved", action="store_true", help="the user explicitly chose the supplied marks")
+    # openai/gpt-image-2 by default: real people and real products use GPT Image 2 (Nano Banana is
+    # for cartoons only). A Nano Banana model still takes --resolution and --seed.
+    ap.add_argument("--model", default="openai/gpt-image-2")
+    ap.add_argument("--resolution", default="4K", choices=["1K", "2K", "4K"], help="Nano Banana models only")
     ap.add_argument("--aspect", default="9:16")
     ap.add_argument("--seed", type=int, default=None)
     ap.add_argument("--out", required=True, type=pathlib.Path)
@@ -225,7 +339,12 @@ def main():
     ap.add_argument("--payload-out", type=pathlib.Path, default=None,
                     help='write {"model", "body"}, the exact request gen_image.py will send, so it '
                          "can be quoted before the paid call; works with --dry-run")
+    ap.add_argument("--voice-design", action="store_true",
+                    help="no voice list: record a paid ElevenLabs Voice Design request to quote (not available through the GooseWorks MCP)")
+    ap.add_argument("--no-voice-pair", action="store_true",
+                    help="this person is never voiced separately (B-roll with no lines, or H3 native speech); records no voice_pair")
     a = ap.parse_args()
+    voice_refusal(a)
 
     prompt, negative, ident, slots = build(a)
     out = a.out.resolve()
@@ -234,20 +353,53 @@ def main():
 
     print("identity : %s" % ident)
     print("skin     : %s" % slots["skin_tone"])
+    print("shot     : %s (%s)" % (a.shot, "framed on the action, gaze on the task, hands in use"
+                                    if a.shot == "action" else "talking head, looking into the lens"))
     print("marks    : %s" % slots["imperfections"][:96] + "...")
     print("prompt   : %d chars -> %s" % (len(prompt), out / "character-prompt.txt"))
+    if a.capture_decision["reason"]:
+        print("recording: refused selfie, " + a.capture_decision["reason"])
+    voice = None if a.no_voice_pair else pair_voice(
+        a.age, a.gender, a.voice_accent, a.voice_energy, load_voices(a.voices) if a.voices else None,
+        tuple(a.voice_exclude), a.voice_sample_text, a.ethnicity)
+    if voice is None:
+        print("voice    : none (--no-voice-pair: never voiced separately)")
+    elif voice["source"] == "library":
+        print("voice    : library voice %s (%s), matched on %s; play it next to the still"
+              % (voice["voice_id"], voice.get("name"), ", ".join(voice["matched_on"])))
+    else:
+        print("voice    : %s Voice Design request (paid; quote it first)%s"
+              % ("NO VOICE IN THE LIST FITS this person." if a.voices else "",
+                 "; nearest: " + ", ".join(str(v.get("name") or v["voice_id"]) for v in voice["nearest"]) if voice.get("nearest") else ""))
     # Save the same identity metadata for free planning and actual generation.
-    (out / "character.json").write_text(json.dumps({
+    record = {
         "image": "character.png",
         "identity": ident + ", " + slots["hair"].rstrip(".") + ", " + slots["wardrobe"].rstrip("."),
         "environment": slots["scene"].rstrip("."),
-    }, indent=1), encoding="utf-8")
+        "capture": a.capture, "recording": a.recording, "focus": a.focus, "shot": a.shot,
+        "capture_decision": a.capture_decision, "actions": a.action or [],
+        "distinctive_marks": a.marks or [], "approval": "pending",
+    }
+    if voice is not None:
+        record["voice_pair"] = voice
+    if a.skin_condition:
+        record["skin_condition"] = a.skin_condition
+    (out / "character.json").write_text(json.dumps(record, indent=1), encoding="utf-8")
 
     # Built once, before the dry-run return, so the quoted body and the paid body are one object.
-    payload = {"prompt": prompt, "negative_prompt": negative, "aspect_ratio": a.aspect,
-               "resolution": a.resolution}
-    if a.seed is not None:
-        payload["seed"] = a.seed
+    if a.model.startswith("openai/gpt-image-2"):
+        if a.aspect not in GPT_SIZE:
+            sys.exit("--aspect %s has no GPT Image 2 size; use one of %s" % (a.aspect, ", ".join(GPT_SIZE)))
+        if a.seed is not None:
+            sys.exit("openai/gpt-image-2 takes no seed; leave --seed out")
+        w, h = GPT_SIZE[a.aspect]
+        payload = {"prompt": prompt + "\n\nAvoid: " + negative, "image_size": {"width": w, "height": h},
+                   "quality": "high"}
+    else:
+        payload = {"prompt": prompt, "negative_prompt": negative, "aspect_ratio": a.aspect,
+                   "resolution": a.resolution}
+        if a.seed is not None:
+            payload["seed"] = a.seed
     if a.payload_out:
         a.payload_out.parent.mkdir(parents=True, exist_ok=True)
         a.payload_out.write_text(json.dumps({"model": a.model, "body": payload}, indent=1),
@@ -267,11 +419,7 @@ def main():
 
     # character.json is what plan_takes.py consumes, so write it here and the operator never
     # retypes identity. A person described twice drifts between takes.
-    (out / "character.json").write_text(json.dumps({
-        "image": "character.png",
-        "identity": ident + ", " + slots["hair"].rstrip(".") + ", " + slots["wardrobe"].rstrip("."),
-        "environment": slots["scene"].rstrip("."),
-    }, indent=1), encoding="utf-8")
+    (out / "character.json").write_text(json.dumps(record, indent=1), encoding="utf-8")
     print("\nwrote %s and character.json" % png)
     print("LOOK AT IT before spending on takes. A still costs cents; a take costs dollars.")
 

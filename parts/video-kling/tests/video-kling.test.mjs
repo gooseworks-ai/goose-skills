@@ -111,11 +111,11 @@ test('v2.1 images mode: image_url, "5" | "10" s, cfg and negative as given, no s
   assert.ok(Math.abs(out.clips[0].seconds - 10) < 0.2);
 });
 
-test('v2.5 images mode from a cast anchor: the hook text, then keep the last 2.3 s', { skip }, async () => {
+test('v2.1 images mode from a cast anchor: the hook text, then keep the last 2.3 s (1.0.0 ran this on v2.5)', { skip }, async () => {
   const w = work();
   const anchor = await makeStill(join(w, 'a.png'));
   const inputs = {
-    model: V25,
+    model: V21,
     stills: [{ id: 'a', image: anchor }],
     cast: [{ key: 'a', name: 'Jess', look: 'woman, 28' }],
     answers: { reaction: 'jaw drops, then a grin' },
@@ -126,7 +126,7 @@ test('v2.5 images mode from a cast anchor: the hook text, then keep the last 2.3
   };
   const { ctx, orders } = makeCtx({ partDir: dir, workDir: join(w, 'step'), line: clipLine });
   const out = await mod.run(inputs, ctx);
-  assert.equal(orders[0].path, V25);
+  assert.equal(orders[0].path, V21);
   assert.equal(orders[0].body.duration, '5');
   assert.match(orders[0].body.prompt, /Jess reacts: jaw drops, then a grin\. Phone selfie/);
   assert.equal(out.clips[0].seconds, 2.3);
@@ -232,4 +232,14 @@ test('a reply with sound but no picture fails the piece, or becomes its still on
 test('the template fixture is a valid version 1 template', async () => {
   const { kitTemplateProblems } = await import('../../_lib/prompt.mjs');
   assert.deepEqual(kitTemplateProblems(template), []);
+});
+
+test('1.1.0 withdraws Kling 2.5 Turbo: refused before anything is ordered, and not listed', async () => {
+  const w = work();
+  const { ctx, orders } = makeCtx({ partDir: dir, workDir: join(w, 'step'), line: clipLine });
+  await assert.rejects(mod.run({ model: V25, stills: [{ id: 'a', image: { kind: 'file', path: join(w, 'a.png'), media: 'image', sha256: '0'.repeat(64) } }] }, ctx), (e) => e.code === 'bad_input');
+  assert.equal(orders.length, 0);
+  const { manifest } = await loadNewest('video-kling');
+  assert.ok(!manifest.needs.models.some((m) => m.model === V25));
+  assert.ok(!manifest.inputs.properties.model.enum.includes(V25));
 });

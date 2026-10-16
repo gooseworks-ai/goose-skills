@@ -34,7 +34,7 @@ test('the speech goes to Whisper as a 16 kHz mono WAV file (a type the line host
       return sample.line();
     },
   });
-  assert.equal(dir.split(/[\\/]/).pop(), '1.1.1', 'the newest version is under test');
+  assert.equal(dir.split(/[\\/]/).pop(), '1.1.2', 'the newest version is under test');
   await mod.run(await sample.inputs(ctx.workDir), ctx);
   assert.equal(orders.length, 1);
   const ref = orders[0].body.audio_url;

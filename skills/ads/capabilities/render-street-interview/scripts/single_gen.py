@@ -303,6 +303,9 @@ def main():
         if A.yes or A.recover_request_id:
             sys.exit("conversation is preview-only until a rendered pilot is approved; no paid call sent")
     if not A.yes and not A.recover_request_id:
+        # The cast decides whether the same faces come back; say so before the spend, not after.
+        for note in brandkit.cast_advice(cfg, brandkit.other_subjects(cfg)):
+            print(f"CAST ADVISORY: {note}")
         print()
         print(prompt)
         print("\nPROVIDER REQUEST: " + json.dumps({"model": model, "body": {**settings, ref_field: [str(ref)] + ([str(A.scene_ref)] if A.scene_ref else [])}}, sort_keys=True))

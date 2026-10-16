@@ -224,3 +224,36 @@ def test_a_garbage_saved_result_exits_4(tmp_path):
     p.with_name(p.name.replace(".json", ".result.json")).write_text(json.dumps({"hello": "world"}))
     r = run_cli(tmp_path)
     assert r.returncode == 4 and "result.output" in r.stderr
+
+
+def test_rubric_scores_the_opening_loop_turn_and_channels():
+    c = copy.deepcopy(GOOD)
+    c["concepts"][0]["angle_type"] = "problem_fix"
+    c["concepts"][0]["beats"][0]["on_screen"] = "3am. Again."
+    p = cs.build_prompt(c["concepts"], {}, RULES, SHAPE, "")
+    for axis in ("open_loop", "mid_turn", "channels_agree"):
+        assert f"- {axis}:" in p                  # explained in the rubric
+        assert f'"{axis}": 0' in p                # and asked for in the answer
+    assert "muted" in p                           # the hook test includes sound-off
+    assert "Angle type: problem_fix" in p and "On screen: 3am. Again." in p
+    run = cs.normalize_run({"concepts": [{"id": "c1", "scores": {"open_loop": 7, "mid_turn": 6, "channels_agree": 9}}],
+                            "ranking": ["c1"]}, ["c1"], [])
+    assert run["concepts"][0]["scores"] == {"open_loop": 7.0, "mid_turn": 6.0, "channels_agree": 9.0}
+
+
+def test_rubric_scores_sounds_human_against_the_brand_voice():
+    rules = dict(RULES, voice="Warm, a little cheeky, never salesy")
+    bank = {"q1": {"id": "q1", "text": "I pass it off as homemade"}}
+    p = cs.build_prompt(GOOD["concepts"], bank, rules, SHAPE, "")
+    assert "- sounds_human:" in p and '"sounds_human": 0' in p
+    assert "Penalise fragment chains, steps read aloud, narrating the picture, ad-speak and mood" in p
+    assert "Brand voice (it decides tone; judge sounds_human against it): Warm, a little cheeky" in p
+    assert 'Customer words (how buyers really talk): "I pass it off as homemade"' in p
+    assert "a mood" in p and "in one breath" in p     # the hook test rules out mood openers
+    run = cs.normalize_run({"concepts": [{"id": "c1", "scores": {"sounds_human": 4}}], "ranking": ["c1"]}, ["c1"], [])
+    assert run["concepts"][0]["scores"] == {"sounds_human": 4.0}
+
+
+def test_critic_fixes_follow_the_voice_rules():
+    p = cs.build_prompt(GOOD["concepts"], {}, RULES, SHAPE, "")
+    assert "Every edit and fix" in p and "no fragments, no mood or" in p and "status openers" in p

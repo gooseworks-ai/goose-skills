@@ -2,10 +2,10 @@
 name: create-vo-elevenlabs
 description: Generate a voiceover (VO) clip via ElevenLabs text-to-speech, ROUTED THROUGH THE elevenlabs-proxy so it bills the Ads agent. Voice id + script text come from the template recipe. Use for the spoken narration of VO-driven video-ad formats (cgi-app-sizzle, flat-vector-explainer, hypermotion). Never call ElevenLabs directly — the proxy attribution is required.
 status: superseded
-superseded_by: voice-elevenlabs@1.0.1
+superseded_by: voice-elevenlabs@1.3.0
 ---
 
-> **Superseded:** the video kit now does this with the voice-elevenlabs part, version 1.0.1, in the parts folder of this repository. It speaks every scene's line through the private line, keeps character timings as word timings and swaps in confirmed pronunciations the same way. This atom stays, unchanged in behaviour, for skills outside the kit until they move; its scripts still run.
+> **Superseded:** the video kit now does this with the voice-elevenlabs part, version 1.3.0 (`voice-elevenlabs@1.3.0`), in the parts folder of this repository. It speaks every scene's line through the private line, keeps character timings as word timings and swaps in confirmed pronunciations the same way. The compatibility generator also supports Eleven v4 controls and pending timing provenance. Existing frozen part versions are unchanged.
 
 # create-vo-elevenlabs
 
@@ -33,23 +33,19 @@ At the start of every video, read the selected brand's persistent facts, includi
 
 The bundled `read_pronunciations.py` exports user-authored must rules from a fresh context snapshot (the brand read's payload, its `{"result": …}` wrapper, or the whole tool result). A rule's text is `Pronounce "<term>" as "<say_as>"`; the older `Pronunciation: <term> => <say_as>` is also read. It rejects a different brand, conflicting rules and required names that remain unknown. The resulting local rules file is a per-run voice input; the brand store remains the durable source. `gen_vo.py` supports a free dry run to review the resulting spoken text. Captions retain written names.
 
-## Model notes
+## Model-specific performance and timing
 
-How the ElevenLabs voices behave, measured on shipped projects. Each note lives here once.
+Eleven v4 is the default (since 1.3.0; it was v3). V4 and V4 Turbo always use the timestamped endpoint, so `--with-timestamps` is turned on for them. `eleven_v3` only when the plan locked it; never silently swap a locked model. `--model-support` is ignored.
 
-- **eleven_v3 timings break around audio tags** (`[curious]`, `[pause]`): tag characters get
-  invented times and nearby characters bunch together. For captions or sound sync, re-transcribe
-  the rendered audio with `fal-ai/whisper` at word level.
-- **eleven_v3 length varies 5 to 15% between renders** of the same text and settings. Fix the
-  picture length first and fit the voice to it; if that needs more than about 1.4x tempo, cut tags
-  and render again.
-- **eleven_v3 pace is bimodal across takes** and can run slow for a whole day. Make six takes and
-  pick by words per second; before a lip-sync locks a take, check one take's pace on a line whose
-  usual pace you know.
-- **eleven_multilingual_v2:** `style` is the expressiveness dial (0.05 unless there is a reason);
-  the text cannot buy pauses (an ellipsis or a break tag changes nothing), so pad silence after
-  generation; `speed` is the only rate control (0.85 lands in conversational range, and the
-  scale is close to linear from 0.80 to 1.00); `stability` changes delivery, not rate.
+## Pace: measured, and --target-wps
+
+A timestamped read writes `measured_words_per_second` into `.provenance.json`: real words, counted as goose-studio's `reference_rate.py` counts them (punctuation alone is not a word), over the first word's start to the last word's last letter. Pass `--target-wps` with the reference's rate from `reference_rate.py`, which joins whisper's sub-word tokens. A read more than 10% below it is sped up to the target, at most 1.25x, with ffmpeg `atempo`; the raw read is kept as `<stem>.raw.mp3` and the timestamps are scaled to match. The provenance records `tempo`, `tempo_applied` and `tempo_applied_before_lipsync: true`. This retimes only the new narration, before any lip-sync step; never a lip-synced or native talking clip. A tagged read is not paced from provider timings. A read still slow at 1.25x needs a faster direction or fewer words.
+
+V4 supports Stability and Similarity settings; Style, Speed, speaker boost and SSML are refused. V3/V4 accept bracketed audio tags and plain `--tag` delivery cues. V2 does not accept those tags. A literal wanted “uh” is spoken copy that needs approval and time. Tags guide performance; do not accept their effect without listening to the actual selected voice.
+
+Keep a connected read rather than isolated sentences padded to planned scene lengths. New kit narration defaults to `join: sentence` and a 0.08 s gap only between separate requests. Use `join: one` for an appropriate same-voice script. Do not generate six takes by default or fit a poor voice performance with automatic time stretching. Deliberate narration tempo changes happen before any lip-sync generation and need listening afterward; never retime a native speaking face's audio separately.
+
+The generator saves `.provenance.json` separately from raw provider timestamps. Tagged audio has `timing_status: requires_reviewed_alignment`; tag characters can receive invented times. Use actual reviewed transcription or forced alignment for final caption/edit timing. A timestamp response is not a content review or proof that every word was spoken. Listen to every file, including the first seconds, joins and endings, and preserve the exact voice/model/settings and checksum in the existing library record.
 
 ## Character timings for video
 

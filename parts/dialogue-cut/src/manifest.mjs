@@ -17,7 +17,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'dialogue-cut',
-  version: '1.0.0',
+  version: '1.0.1',
   kind: 'compose',
   title: 'Dialogue cut (two hosts)',
   summary: 'Re-cuts one lipsync clip per line over a fixed two-host voice track, free and seeded: plain, split (speaker over the idle listener) or dynamic (reactions, reframes, moving seams, a product panel), self-checked before and after the render.',

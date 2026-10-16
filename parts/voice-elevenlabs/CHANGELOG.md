@@ -1,5 +1,23 @@
 # voice-elevenlabs
 
+## 1.3.0
+
+- Default model `eleven_v4` (1.2.x defaulted to `eleven_v3`). A plan that locked v3 must name it.
+- Every line returns `words_per_second` and `measured_words_per_second` from the timestamps, counting real words as goose-studio's `reference_rate.py` does (punctuation alone is not a word); the whole read returns `measured_words_per_second` and a `pace_report`.
+- New `pace.target_wps`: a read more than 10 % below it is sped up to the target, at most 1.25x, on the new narration before any lip-sync step (`tempo_applied_before_lipsync: true`). A lip-synced or native talking clip never enters this part. Not with `pace.tempo`.
+- Found in a test video: the reference spoke 3.20 words a second (270 words in 84.45 s), the eleven_v3 narration 2.62, with no tempo change.
+
+## 1.2.1
+
+- Every request's `model_id` is a listed constant. A tagged read with no reviewed alignment returns the whole read as one pending track, not its first request. Eleven v4 and v4 Turbo need no `model_support` evidence. 1.2.0 is withdrawn.
+
+## 1.2.0
+
+- Add selectable V4/V4 Turbo with managed timestamp-endpoint and quote evidence, model-specific settings and delivery tags.
+- Default to connected sentence reads and short request gaps; remove automatic tempo fitting to a rate target.
+- Hold tagged audio for independent reviewed alignment rather than publish guessed word boundaries. Preserve raw source FileRefs and label provider timing separately from content review.
+- Package a new immutable version. No tests or validation runs were performed at the user's request.
+
 ## 1.1.0
 
 - A scene whose line is null or empty is skipped: no piece, no span (critic #9). `line` is no longer required.

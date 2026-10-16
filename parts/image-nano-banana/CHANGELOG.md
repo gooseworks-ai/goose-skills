@@ -1,5 +1,13 @@
 # image-nano-banana
 
+## 2.0.0
+
+- Cartoons only (fix-forward contract section 5). Requires `subject: cartoon`; products mode is withdrawn; a scene whose references would include a real product photo is refused before anything is ordered. Real people and real products use `image-gpt-image-2` edit, and packaging comes from the real photo through `overlay`.
+
+## 1.2.3
+
+- Borders (scenes and products mode, `borders: fix` by default): each product photo's flat or transparent margins are trimmed before it is sent, and a still that comes back letterboxed, padded or framed is cropped to the still's own shape (scaled back to its size) when that keeps 75 %, else the step fails in plain words; a lone white or black strip that cannot be cropped is kept with a warning. A still is never drawn a second time (no unquoted paid piece). `borders: keep` keeps the 1.2.2 behaviour. Images mode is unchanged and refuses `borders`. Built on 1.2.2.
+
 ## 1.2.2
 
 - Scenes mode: a scene with `image_locked: true` keeps its `image` as its final still, as is, with nothing ordered and no prompt filled (a preview approved before the yes); a picture other than PNG, JPEG or WebP becomes a PNG. A member named only by locked scenes gets no anchor drawn. `image_locked` without an `image` is refused. Without `image_locked` nothing changes. Built on 1.2.1, so a refused still is logged as in 1.2.1.

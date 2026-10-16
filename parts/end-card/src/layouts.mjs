@@ -4,13 +4,14 @@
 //   editorial  type only, left aligned: wordmark, rule, tagline, rows, URL; no mark, CTA optional
 //   stack      the logo (or wordmark) over the URL
 //   statement  the logo over 1 to 3 rows (first in the text colour, the rest in the accent); CTA optional
-// The logo rule is the same as 1.0.1: the file is drawn as-is, never
-// recoloured, and a logo that barely contrasts with the card sits on a plate.
+// The logo (1.1.1) is fitted as in the classic card (_lib/end-card.mjs
+// kitCardFitLogo): never recoloured, a flat file background made transparent,
+// scaled into the layout's box, and the card recoloured when it would not read.
 // Names here are the part's own (not kit-prefixed) and unique in the bundle.
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { kitFfmpeg, kitNum } from '../../_lib/part.mjs';
-import { kitCardFontCss } from '../../_lib/end-card.mjs';
+import { KIT_CARD_LOGO_BOXES, kitCardFitLogo, kitCardFontCss } from '../../_lib/end-card.mjs';
 
 export const CARD_LAYOUTS = ['classic', 'brandkit', 'editorial', 'stack', 'statement', 'none'];
 
@@ -89,6 +90,20 @@ export function cardLayoutColors(brand, card = {}) {
   return { bg, fg, accent, ctaBg, ctaFg: cardBestText(ctaBg) };
 }
 
+/**
+ * The layout colours on a background the logo forced: a step colour is kept only when it reads on it (text
+ * 4.5:1, accent 3:1, the CTA pill 1.5:1 against the card), so nothing vanishes into the new card.
+ */
+export function cardLayoutColorsOn(brand, card, bg) {
+  const keep = (hex, min) => (cardHex(hex) && cardContrast(hex, bg) >= min ? hex : undefined);
+  const col = cardLayoutColors(brand, { ...card, background: bg, foreground: keep(card.foreground, 4.5), accent: keep(card.accent, 3), cta_background: keep(card.cta_background, 1.5) });
+  if (cardContrast(col.ctaBg, bg) < 1.5) {
+    col.ctaBg = col.fg;
+    col.ctaFg = cardBestText(col.fg);
+  }
+  return col;
+}
+
 /** Rows from a list or a ' | '-joined answer: trimmed, empty ones dropped. */
 export function cardRows(rows) {
   if (rows === undefined || rows === null) return [];
@@ -160,7 +175,7 @@ export function cardLayoutHtml({ layout, brand, card = {}, width, height, fontCs
   if (layout === 'brandkit') {
     body = `<div class="col">${logo}${name}${rule}${headline}${rows}<div class="cta-pill">${cardEsc(copy.cta)}</div>${url}</div>`;
     css = `.col{display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 ${px(90)};}
-.mark{margin-bottom:${px(48)};}.mark img{max-width:${px(420)};max-height:${px(360)};}
+.mark{margin-bottom:${px(48)};}.mark img{max-width:${px(520)};max-height:${px(300)};}
 .name{font-family:KitHeading;font-size:${px(88)};font-weight:800;line-height:1.05;letter-spacing:-1px;}
 .rule{width:${px(140)};height:${px(8)};background:var(--accent);margin:${px(56)} 0;border-radius:${px(4)};}
 .hl{font-size:${px(56)};line-height:1.15;max-width:${px(900)};margin-bottom:${px(40)};}
@@ -206,7 +221,6 @@ export function cardLayoutHtml({ layout, brand, card = {}, width, height, fontCs
 html,body{width:${width}px;height:${height}px;background:var(--bg);color:var(--fg);font-family:KitBody;overflow:hidden;}
 body{display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;}
 .mark img{width:auto;height:auto;object-fit:contain;display:block;}
-#wordmark.plate{background:var(--plate);padding:${px(36)} ${px(48)};border-radius:${px(32)};}
 .footnote{position:absolute;left:${px(90)};right:${px(90)};bottom:${px(310)};font-size:${px(22)};line-height:1.35;text-align:center;opacity:.7;}
 ${css}
 </style></head><body>${body}${footnote}</body></html>`;
@@ -217,7 +231,10 @@ async function cardDataUri(file) {
   return `data:${cardSafeMime(file.mime)};base64,${bytes.toString('base64')}`;
 }
 
-/** Renders a 1.1.0 layout to `<name>.mp4` in workDir (H.264, silent stereo track), as 1.0.1 does for its card. */
+/**
+ * Renders a 1.1.0 layout to `<name>.mp4` in workDir (H.264, silent stereo track), as 1.0.1 does for its card.
+ * Returns {video, logo, background} as kitRenderEndCard does.
+ */
 export async function cardRenderLayout(ctx, { layout, brand, card, width, height, fps, seconds, name = 'end-card' }) {
   const copy = cardLayoutCopy(layout, brand, card);
   if (copy instanceof Error) throw ctx.error('bad_input', copy.message);
@@ -228,52 +245,27 @@ export async function cardRenderLayout(ctx, { layout, brand, card, width, height
   const html = cardLayoutHtml({ layout, brand, card, width, height, fontCss, logoUri });
   const browser = await ctx.browser.launch();
   const png = join(ctx.tmpDir, `${name}.png`);
+  let fitted = { logo: null, background: null };
   try {
     const page = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: 1 });
     await page.setContent(html);
-    const plate = await page.evaluate(async () => {
+    await page.evaluate(async () => {
       await document.fonts.ready;
       await Promise.all([...document.images].map((i) => i.decode()));
-      // A logo that barely contrasts with the card gets a plate behind it; the file itself is never changed.
-      const img = document.getElementById('logo');
-      if (!img) return null;
-      const lum = (r, g, b) =>
-        [r, g, b]
-          .map((v) => {
-            const x = v / 255;
-            return x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4;
-          })
-          .reduce((a, x, i) => a + x * [0.2126, 0.7152, 0.0722][i], 0);
-      const bgHex = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();
-      const n = parseInt(bgHex.slice(1), 16);
-      const bg = lum((n >> 16) & 255, (n >> 8) & 255, n & 255);
-      const cv = document.createElement('canvas');
-      cv.width = 200;
-      cv.height = Math.max(1, Math.round((200 * img.naturalHeight) / Math.max(1, img.naturalWidth)));
-      const cx = cv.getContext('2d');
-      cx.drawImage(img, 0, 0, cv.width, cv.height);
-      const d = cx.getImageData(0, 0, cv.width, cv.height).data;
-      let sum = 0;
-      let count = 0;
-      for (let i = 0; i < d.length; i += 4) {
-        if (d[i + 3] > 128) {
-          sum += lum(d[i], d[i + 1], d[i + 2]);
-          count++;
-        }
-      }
-      if (!count) return null;
-      const logo = sum / count;
-      const contrast = (a, b) => (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
-      const ratio = contrast(logo, bg);
-      if (ratio >= 3) return null;
-      const box = document.getElementById('wordmark');
-      // The plate colour with the higher actual contrast against the logo.
-      const dark = lum(17, 17, 17);
-      box.style.setProperty('--plate', contrast(logo, dark) >= contrast(logo, 1) ? '#111111' : '#ffffff');
-      box.classList.add('plate');
-      return +ratio.toFixed(2);
     });
-    if (plate !== null) ctx.log.info('end card logo on a plate for contrast', { contrast: plate });
+    if (logoUri) {
+      fitted = await kitCardFitLogo(ctx, page, {
+        width,
+        height,
+        box: KIT_CARD_LOGO_BOXES[layout],
+        bg: cardLayoutColors(brand, card).bg,
+        colors: brand.colors || {},
+        recolor: (bg) => {
+          const c = cardLayoutColorsOn(brand, card, bg);
+          return { '--bg': c.bg, '--fg': c.fg, '--accent': c.accent, '--cta-bg': c.ctaBg, '--cta-fg': c.ctaFg };
+        },
+      });
+    }
     await page.screenshot({ path: png, type: 'png' });
   } finally {
     await browser.close();
@@ -289,5 +281,5 @@ export async function cardRenderLayout(ctx, { layout, brand, card, width, height
     '-r', String(fps), '-t', kitNum(seconds),
     out,
   ]);
-  return ctx.file(`${name}.mp4`, 'video');
+  return { video: await ctx.file(`${name}.mp4`, 'video'), logo: fitted.logo, background: fitted.background };
 }

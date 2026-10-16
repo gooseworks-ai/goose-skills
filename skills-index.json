@@ -1,6 +1,6 @@
 {
   "version": "1.4.0",
-  "generated": "2026-10-12",
+  "generated": "2026-10-16",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -1852,26 +1852,31 @@
       "description": "Generate an AI creator talking to camera, saying an approved script, as one continuous track — H3 Max reference-to-video through the GooseWorks fal-proxy (bills the Ads agent). Plans takes on line boundaries under H3's 15s cap, dry-runs a cost estimate, generates the first take alone so its voice can be locked and passed to every later take, joins takes with measured 0.10s dissolves, and moves each line's timing onto the words actually spoken. Use for any format with a generated creator speaking a script (split-screen, screen inserts, talking-head ads).",
       "tags": "ads, content",
       "path": "skills/ads/capabilities/create-creator-takes-h3",
-      "version": "2.1.0",
+      "version": "2.6.0",
       "files": [
         "skills/ads/capabilities/create-creator-takes-h3/SKILL.md",
         "skills/ads/capabilities/create-creator-takes-h3/scripts/align_beats.py",
         "skills/ads/capabilities/create-creator-takes-h3/scripts/character-prompt.json",
+        "skills/ads/capabilities/create-creator-takes-h3/scripts/content_review.py",
         "skills/ads/capabilities/create-creator-takes-h3/scripts/join_takes.py",
         "skills/ads/capabilities/create-creator-takes-h3/scripts/make_character.py",
         "skills/ads/capabilities/create-creator-takes-h3/scripts/media_proxy.py",
+        "skills/ads/capabilities/create-creator-takes-h3/scripts/pair_voice.py",
         "skills/ads/capabilities/create-creator-takes-h3/scripts/plan_takes.py",
         "skills/ads/capabilities/create-creator-takes-h3/scripts/run_takes.py",
         "skills/ads/capabilities/create-creator-takes-h3/skill.meta.json",
         "skills/ads/capabilities/create-creator-takes-h3/tests/smoke-test.md",
+        "skills/ads/capabilities/create-creator-takes-h3/tests/test_action_skin_light.py",
+        "skills/ads/capabilities/create-creator-takes-h3/tests/test_hands_voice_pace.py",
         "skills/ads/capabilities/create-creator-takes-h3/tests/test_make_character.py",
-        "skills/ads/capabilities/create-creator-takes-h3/tests/test_run_takes_rejection.py"
+        "skills/ads/capabilities/create-creator-takes-h3/tests/test_run_takes_rejection.py",
+        "skills/ads/capabilities/create-creator-takes-h3/tests/test_voice_ethnicity.py"
       ],
       "metadata": {
         "slug": "create-creator-takes-h3",
         "category": "capabilities",
         "domain": "ads",
-        "version": "2.1.0",
+        "version": "2.6.0",
         "tags": [
           "ads",
           "content"
@@ -1885,6 +1890,7 @@
           ]
         },
         "requires_skills": [
+          "create-image-fal",
           "media-proxy"
         ]
       }
@@ -1992,20 +1998,22 @@
       "description": "Generate or edit an image via any FAL image model (nano-banana edit, gpt-image, flux, ...), ROUTED THROUGH THE fal-proxy so it bills the Ads agent. image_urls must be public URLs; --image puts a local file on the fal CDN first. The recipe names the model + prompt. Use for keyframes, flat-cover transforms, product hero edits. (For the OpenAI gpt-image family specifically, create-image-gpt-image-fal also exists.)",
       "tags": "ads",
       "path": "skills/ads/capabilities/create-image-fal",
-      "version": "1.2.1",
+      "version": "1.3.0",
       "files": [
         "skills/ads/capabilities/create-image-fal/SKILL.md",
         "skills/ads/capabilities/create-image-fal/references/avatar-generation.md",
+        "skills/ads/capabilities/create-image-fal/scripts/brand_pack_lint.py",
         "skills/ads/capabilities/create-image-fal/scripts/gen_image.py",
         "skills/ads/capabilities/create-image-fal/scripts/media_proxy.py",
         "skills/ads/capabilities/create-image-fal/skill.meta.json",
-        "skills/ads/capabilities/create-image-fal/tests/smoke-test.md"
+        "skills/ads/capabilities/create-image-fal/tests/smoke-test.md",
+        "skills/ads/capabilities/create-image-fal/tests/test_brand_pack_lint.py"
       ],
       "metadata": {
         "slug": "create-image-fal",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.2.1",
+        "version": "1.3.0",
         "tags": [
           "ads"
         ],
@@ -2299,7 +2307,7 @@
       "description": "Generate a voiceover (VO) clip via ElevenLabs text-to-speech, ROUTED THROUGH THE elevenlabs-proxy so it bills the Ads agent. Voice id + script text come from the template recipe. Use for the spoken narration of VO-driven video-ad formats (cgi-app-sizzle, flat-vector-explainer, hypermotion). Never call ElevenLabs directly — the proxy attribution is required.",
       "tags": "ads",
       "path": "skills/ads/capabilities/create-vo-elevenlabs",
-      "version": "1.1.3",
+      "version": "1.3.0",
       "files": [
         "skills/ads/capabilities/create-vo-elevenlabs/SKILL.md",
         "skills/ads/capabilities/create-vo-elevenlabs/scripts/gen_vo.py",
@@ -2308,13 +2316,14 @@
         "skills/ads/capabilities/create-vo-elevenlabs/skill.meta.json",
         "skills/ads/capabilities/create-vo-elevenlabs/tests/smoke-test.md",
         "skills/ads/capabilities/create-vo-elevenlabs/tests/test_gen_vo.py",
+        "skills/ads/capabilities/create-vo-elevenlabs/tests/test_pace.py",
         "skills/ads/capabilities/create-vo-elevenlabs/tests/test_timestamps.py"
       ],
       "metadata": {
         "slug": "create-vo-elevenlabs",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.1.3",
+        "version": "1.3.0",
         "tags": [
           "ads"
         ],
@@ -4845,7 +4854,7 @@
       "description": "Shared helper that routes ALL paid media generation (FAL image/video, ElevenLabs music) through the GooseWorks proxies so every call bills the Ads agent — never a provider SDK's default host. Host-swaps the FAL queue URLs, loads the agent token from the sandbox env (GW_MEDIA_PROXY_TOKEN) or ~/.gooseworks/credentials.json, and returns the result CDN URL. Every video-ad media capability imports this; templates never call a provider directly.",
       "tags": "ads",
       "path": "skills/ads/capabilities/media-proxy",
-      "version": "2.0.3",
+      "version": "2.0.4",
       "files": [
         "skills/ads/capabilities/media-proxy/SKILL.md",
         "skills/ads/capabilities/media-proxy/scripts/media_proxy.py",
@@ -4858,7 +4867,7 @@
         "slug": "media-proxy",
         "category": "capabilities",
         "domain": "ads",
-        "version": "2.0.3",
+        "version": "2.0.4",
         "tags": [
           "ads"
         ],
@@ -6472,7 +6481,7 @@
       "description": "Assemble the FREE steps of the flat-vector-explainer video format — a flat-illustration host character (who, where, tone, voice and music come from the recipe choices) walks a countable N-step product routine, one step per beat, and Remotion composites every chip/numeral/tagline/slate/CTA as an animated DOM overlay ON TOP of the Kling i2v character clips (text is NEVER baked into a keyframe — i2v warps type), the closing 'N products' grid is a PIL composite of the REAL product photos (not AI), full-sentence VO drives word-by-word burned captions over a VO-forward music bed, and the ~50s animated silent master is re-cut to a 30s deliverable FROM the animated master (never a static intermediate). Documentation-grade — ships config.example.json + PIPELINE.md + a README of the free assembly; the paid gen steps (keyframes, Kling i2v, VO, music) are separate capabilities the recipe orchestrates. Use for the flat-vector-explainer format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-flat-vector-explainer",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "files": [
         "skills/ads/capabilities/render-flat-vector-explainer/SKILL.md",
         "skills/ads/capabilities/render-flat-vector-explainer/scripts/PIPELINE.md",
@@ -6485,7 +6494,7 @@
         "slug": "render-flat-vector-explainer",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.0.0",
+        "version": "1.1.0",
         "tags": [
           "ads"
         ],
@@ -6586,7 +6595,7 @@
       "description": "Render a 'hand-swipe flavor listicle' video from a config — the brand's REAL product cutouts each float on a flat flavor-matched color field under a persistent title and slide RIGHT-TO-LEFT one to the next like a phone-feed scroll, while a green-screen hand clip (back of hand toward camera, index finger up) is trimmed to its clean finger-up window, looped once per flavor, keyed with a green-dominance alpha key, scaled down and anchored at the bottom, with an optional end card and an optional instrumental music bed — deterministic PIL plus FFmpeg assembly, FREE (the hand clip comes from create-video-fal and the bed from create-music-elevenlabs), so labels stay pixel-crisp. Use for the hand-swipe-flavor-listicle format.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-hand-swipe-flavor-listicle",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "files": [
         "skills/ads/capabilities/render-hand-swipe-flavor-listicle/SKILL.md",
         "skills/ads/capabilities/render-hand-swipe-flavor-listicle/scripts/build_hand_swipe_listicle.py",
@@ -6599,7 +6608,7 @@
         "slug": "render-hand-swipe-flavor-listicle",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.0.0",
+        "version": "1.1.0",
         "tags": [
           "ads"
         ],
@@ -7478,7 +7487,7 @@
       "description": "Write a street-interview ad from a complete inspected commercial interaction and current brand facts. Render product guessing, or prepare mic-only, prepared-sample or visible-task conversation script/prompt previews. Premise, actions and ad connection vary; capture rules stay fixed. Conversation media delivery is unverified.",
       "tags": "ads",
       "path": "skills/ads/capabilities/render-street-interview",
-      "version": "2.0.3",
+      "version": "2.0.6",
       "files": [
         "skills/ads/capabilities/render-street-interview/READINESS.md",
         "skills/ads/capabilities/render-street-interview/REFERENCE.md",
@@ -7521,6 +7530,7 @@
         "skills/ads/capabilities/render-street-interview/episodes/liquid-death-ep3c.json",
         "skills/ads/capabilities/render-street-interview/episodes/liquid-death-ep4.json",
         "skills/ads/capabilities/render-street-interview/episodes/olipop-ep3.json",
+        "skills/ads/capabilities/render-street-interview/references/cast-writing.md",
         "skills/ads/capabilities/render-street-interview/references/h3-generation.md",
         "skills/ads/capabilities/render-street-interview/references/model-behaviors.md",
         "skills/ads/capabilities/render-street-interview/references/street-reference-library.json",
@@ -7548,6 +7558,7 @@
         "skills/ads/capabilities/render-street-interview/skill.meta.json",
         "skills/ads/capabilities/render-street-interview/tests/fixtures/prompt-snapshots.json",
         "skills/ads/capabilities/render-street-interview/tests/smoke-test.md",
+        "skills/ads/capabilities/render-street-interview/tests/test_cast_advice.py",
         "skills/ads/capabilities/render-street-interview/tests/test_conversation.py",
         "skills/ads/capabilities/render-street-interview/tests/test_edit_timeline.py",
         "skills/ads/capabilities/render-street-interview/tests/test_finishing.py",
@@ -7556,13 +7567,14 @@
         "skills/ads/capabilities/render-street-interview/tests/test_prompt_budget.py",
         "skills/ads/capabilities/render-street-interview/tests/test_recut_media.py",
         "skills/ads/capabilities/render-street-interview/tests/test_selector_route.py",
-        "skills/ads/capabilities/render-street-interview/tests/test_single_gen_rejection.py"
+        "skills/ads/capabilities/render-street-interview/tests/test_single_gen_rejection.py",
+        "skills/ads/capabilities/render-street-interview/tests/test_skin_and_voice_options.py"
       ],
       "metadata": {
         "slug": "render-street-interview",
         "category": "capabilities",
         "domain": "ads",
-        "version": "2.0.3",
+        "version": "2.0.6",
         "tags": [
           "ads"
         ],
@@ -9406,15 +9418,42 @@
         "skills/ads/playbooks/video-production-harness/polish.md",
         "skills/ads/playbooks/video-production-harness/preflight-audit.md",
         "skills/ads/playbooks/video-production-harness/promote.md",
+        "skills/ads/playbooks/video-production-harness/references/creative-contract-and-review.md",
+        "skills/ads/playbooks/video-production-harness/references/creator-grammar.md",
         "skills/ads/playbooks/video-production-harness/references/editorial-review.md",
+        "skills/ads/playbooks/video-production-harness/references/genres/ai-creator-ugc.md",
+        "skills/ads/playbooks/video-production-harness/references/genres/chat-ui.md",
+        "skills/ads/playbooks/video-production-harness/references/genres/hypermotion.md",
+        "skills/ads/playbooks/video-production-harness/references/genres/motion-graphics.md",
+        "skills/ads/playbooks/video-production-harness/references/genres/narrator-montage.md",
+        "skills/ads/playbooks/video-production-harness/references/genres/product-demo.md",
         "skills/ads/playbooks/video-production-harness/references/hook-compatibility.md",
+        "skills/ads/playbooks/video-production-harness/references/libraries-look-and-rubric.md",
+        "skills/ads/playbooks/video-production-harness/references/product-scale-and-world.md",
+        "skills/ads/playbooks/video-production-harness/references/recipe-format.md",
         "skills/ads/playbooks/video-production-harness/references/review-script-shortform.md",
+        "skills/ads/playbooks/video-production-harness/references/shot-routing.md",
         "skills/ads/playbooks/video-production-harness/references/specialist-handoff.md",
+        "skills/ads/playbooks/video-production-harness/references/speech-and-route-qualification.md",
         "skills/ads/playbooks/video-production-harness/release.json",
         "skills/ads/playbooks/video-production-harness/review-video.md",
         "skills/ads/playbooks/video-production-harness/scripts/assemble.py",
+        "skills/ads/playbooks/video-production-harness/scripts/assemble_sources.py",
+        "skills/ads/playbooks/video-production-harness/scripts/assembly_timeline.py",
+        "skills/ads/playbooks/video-production-harness/scripts/check_recipe.py",
+        "skills/ads/playbooks/video-production-harness/scripts/final_measure.py",
+        "skills/ads/playbooks/video-production-harness/scripts/final_measure_parts.py",
+        "skills/ads/playbooks/video-production-harness/scripts/frame_judge.py",
+        "skills/ads/playbooks/video-production-harness/scripts/frame_rubric.py",
+        "skills/ads/playbooks/video-production-harness/scripts/pack_recipe.py",
         "skills/ads/playbooks/video-production-harness/scripts/qc_evidence.py",
+        "skills/ads/playbooks/video-production-harness/scripts/reference_rate.py",
+        "skills/ads/playbooks/video-production-harness/scripts/reference_shots.py",
+        "skills/ads/playbooks/video-production-harness/scripts/timeline_rules.py",
         "skills/ads/playbooks/video-production-harness/skill.meta.json",
+        "skills/ads/playbooks/video-production-harness/states/edit-to-delivery.md",
+        "skills/ads/playbooks/video-production-harness/states/setup-and-script.md",
+        "skills/ads/playbooks/video-production-harness/states/storyboard-and-clips.md",
         "skills/ads/playbooks/video-production-harness/wrap-session.md"
       ],
       "metadata": {
@@ -9434,11 +9473,13 @@
             "codex"
           ]
         },
-        "requires_skills": [],
+        "requires_skills": [
+          "write-video-ad-script"
+        ],
         "slug": "video-production-harness",
-        "source_commit": "153cbb809d7f1d159e041baca54229c82dde450c",
-        "source_hash": "9de13482b53f7120ff09d0dbecded5b0a06a9e693166ff129485b06769cdecd6",
-        "source_version": "3-9de13482b53f",
+        "source_commit": "92a42452eb7718e0495954792329906e900dd467",
+        "source_hash": "dbc8933b39d7091e6c01df05f77351c582f556c5cdf4a1bb47b360ef66f8dd82",
+        "source_version": "4-dbc8933b39d7",
         "tags": [
           "ads",
           "content"
@@ -9509,10 +9550,10 @@
     {
       "slug": "watch",
       "name": "watch",
-      "version": "1.1.0",
+      "version": "2.0.0",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Watch a rendered video (whole file or specific ranges) at a chosen fidelity and emit a timestamp-keyed observation report. Observation only — no edits, no verdicts.",
+      "description": "Observe actual video and sound over the whole file or named ranges, with timestamped evidence and honest coverage. Use complementary playback, listening and targeted frames; return observations without edits or verdicts.",
       "tags": "ads",
       "path": "skills/ads/packs/video-ad-formats/watch",
       "files": [
@@ -9529,7 +9570,7 @@
         "slug": "watch",
         "category": "capabilities",
         "pack": "video-ad-formats",
-        "version": "1.1.0",
+        "version": "2.0.0",
         "tags": [
           "ads"
         ],
@@ -9954,10 +9995,10 @@
       "name": "write-video-ad-script",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Write a short-form video ad from an evidence-backed angle and the selected template's actual recipe. Reuses or fetches ad-angle-miner, preserves the chosen angle, plans words and visuals together, checks product claims and production fit, and delivers the strongest script with useful alternatives. Use before video production and for script rewrites. Customer language is one input alongside audience, promise, product proof, offer and format.",
+      "description": "Write or revise a short-form ad from a sourced angle and reference. Plan connected words, product proof and sound; expose production gaps before script review.",
       "tags": "ads, content",
       "path": "skills/ads/capabilities/write-video-ad-script",
-      "version": "1.0.4",
+      "version": "2.0.2",
       "files": [
         "skills/ads/capabilities/write-video-ad-script/SKILL.md",
         "skills/ads/capabilities/write-video-ad-script/references/angle-research.md",
@@ -9969,8 +10010,10 @@
         "skills/ads/capabilities/write-video-ad-script/references/human-behavior.md",
         "skills/ads/capabilities/write-video-ad-script/references/judge-contract.md",
         "skills/ads/capabilities/write-video-ad-script/references/pacing.md",
+        "skills/ads/capabilities/write-video-ad-script/references/reference-and-performance.md",
         "skills/ads/capabilities/write-video-ad-script/references/scene-and-hook.md",
         "skills/ads/capabilities/write-video-ad-script/references/validate-and-repair.md",
+        "skills/ads/capabilities/write-video-ad-script/references/voice.md",
         "skills/ads/capabilities/write-video-ad-script/scripts/critique_scripts.py",
         "skills/ads/capabilities/write-video-ad-script/scripts/lint_scripts.py",
         "skills/ads/capabilities/write-video-ad-script/scripts/media_proxy.py",
@@ -9988,12 +10031,12 @@
         "slug": "write-video-ad-script",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.0.4",
+        "version": "2.0.2",
         "tags": [
           "ads",
           "content"
         ],
-        "example_prompt": "Write a video ad from our researched angle that fits the selected template and shows credible product proof",
+        "example_prompt": "Write a reference-led product ad with connected speech, truthful visible proof and an explicit sound plan",
         "installation": {
           "base_command": "npx goose-skills install write-video-ad-script",
           "supports": [
@@ -10463,9 +10506,9 @@
         {
           "slug": "watch",
           "name": "watch",
-          "description": "Watch a rendered video (whole file or specific ranges) at a chosen fidelity and emit a timestamp-keyed observation report. Observation only — no edits, no verdicts.",
+          "description": "Observe actual video and sound over the whole file or named ranges, with timestamped evidence and honest coverage. Use complementary playback, listening and targeted frames; return observations without edits or verdicts.",
           "path": "skills/ads/packs/video-ad-formats/watch",
-          "version": "1.1.0",
+          "version": "2.0.0",
           "files": [
             "skills/ads/packs/video-ad-formats/watch/SKILL.md",
             "skills/ads/packs/video-ad-formats/watch/references/parameters.md",

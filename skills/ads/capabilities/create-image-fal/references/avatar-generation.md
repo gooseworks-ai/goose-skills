@@ -14,7 +14,7 @@ Read this file before generating any image that contains a person, with or witho
 
 Use the image model and render engine specified by the current approved recipe. Confirm the exact model ID and payload against current provider documentation and the GooseWorks proxy's supported path. Quote current costs through the existing estimate flow. This guide does not authorize a different engine, another avatar, a test clip or a retry.
 
-When the recipe does not prescribe its own creator still, including custom videos, generate the person with create-creator-takes-h3's scripts/make_character.py. It fills the realism formula from six required choices and defaults to fal-ai/nano-banana-pro, 4K and a phone-camera capture with deep focus. A hand-filled prompt is not a substitute: hand-filled runs left slots blank and produced the composite face this guide warns about. Never use Flux dev or schnell for a person. When the selected video route forbids person references (for example render-street-interview), make no person still at all.
+When the recipe does not prescribe its own creator still, including custom videos, generate the person with create-creator-takes-h3's scripts/make_character.py. It fills the realism formula from six required choices and defaults to openai/gpt-image-2 and a phone-camera capture in a real lived-in room with deep focus and no bokeh (`phone_observer` for people eating or acting, filmed by a friend and not looking at the lens). Studio capture or shallow focus only when the approved reference is shot that way. It forces no skin flaws; distinctive marks only when the user chose them. A hand-filled prompt is not a substitute: hand-filled runs left slots blank and produced the composite face this guide warns about. Never use Flux dev or schnell for a person. When the selected video route forbids person references (for example render-street-interview), make no person still at all.
 
 The Studio guide recorded a Seedream v5/pro proxy failure in July 2026, while later recipes name that model. That dated failure is not a current availability rule. Neither a Seedream nor a GPT-image portrait is a guaranteed pass through a video's likeness policy.
 
@@ -35,7 +35,7 @@ Choose the photographic register from the approved style:
 
 | Register | Prompt details |
 |---|---|
-| Phone-native UGC | Front-camera framing, face large in frame, deep depth of field, sharp background, even light, slight sensor texture; avoid bokeh. |
+| Phone-native UGC (default) | Front-camera or counter-supported phone framing, face large in frame, deep depth of field, sharp lived-in background, natural room light, slight sensor texture; avoid bokeh. No retouching, no skin smoothing, no beauty filter, no cinematic grade. |
 | Cinematic brand portrait | A specific camera/lens, light direction, restrained film grain and documentary framing. Use shallow focus only when the approved style calls for it. |
 
 Reference only. This shows what a recipe-prescribed still must contain; do not hand-fill it for a paid call when make_character.py applies:
@@ -54,7 +54,7 @@ For a worn small item, follow the recipe's composition step and inspect the resu
 
 ## Review the still before video
 
-Check gaze, framing, wardrobe, hands, skin treatment, product fidelity and the correspondence between every reference slot and its prompt binding. Crop each face, enlarge it 2× and inspect it: reject waxy or glossy skin, missing pores, a blurred or bokeh background (unless the approved style explicitly calls for shallow focus), garbled lettering, or a face under about 300 px tall. A slightly off-lens gaze can carry into the take. Fix or seek approval for a defective reference before submitting video.
+Check gaze, framing, wardrobe, hands, skin treatment, product fidelity and the correspondence between every reference slot and its prompt binding. Crop each face, enlarge it 2× and inspect it: reject waxy or glossy skin, painted-on flaws (acne scars, greasy shine), sharpening halos, a blurred or bokeh background (unless the approved reference is shot with shallow focus), a plain wall or white void behind a phone-native creator, garbled lettering, cropped anatomy, or a face under about 300 px tall. A slightly off-lens gaze can carry into the take. Fix or seek approval for a defective reference before submitting video.
 
 Keep the canonical avatar as actual PNG bytes. For Seedream v5 Pro, request `output_format: "png"` (its documented default is JPEG); otherwise inspect the returned format and convert it locally to PNG. Renaming a `.jpg` file to `.png` does not convert it. Lossy conversion changes its pixels. Any optional watermark must be separately approved; this guide requires no new watermark operation.
 
@@ -77,3 +77,5 @@ Render tier affects product detail. Follow the recipe's approved resolution and 
 Fal documents [Seedream v4](https://fal.ai/models/fal-ai/bytedance/seedream/v4/text-to-image/api) as `fal-ai/bytedance/seedream/v4/text-to-image` and [Seedream v5 Pro](https://fal.ai/models/bytedance/seedream/v5/pro/text-to-image/api) as `bytedance/seedream/v5/pro/text-to-image`. Keep the exact provider ID selected by the recipe; do not add a `fal-ai/` prefix to the bare v5 ID. A documented endpoint is not proof of a fresh GooseWorks proxy call or likeness-policy acceptance.
 
 There is no automatic fallback engine: an older recovery note named a Kling model fal has since retired. Switching engines needs a current availability check and the recipe's own engine choice, including any loss of native audio.
+
+Use `--marks` only for distinctive marks explicitly selected by the user and record that with `--marks-approved`. Sharper skin does not establish a usable video performance: historical H3 Max eye-contact/set trials still failed despite improved face detail. Qualify the actual video configuration with complete playback and listening before a batch.

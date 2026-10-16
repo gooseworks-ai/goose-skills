@@ -114,7 +114,12 @@ test('cast mode: members with a picture pass through free, the rest are drawn as
     assertFitsContract(orders[0]);
     assert.deepEqual(orders[0].body.image_size, { width: 1088, height: 1920 }, 'default size: vertical 9:16');
     assert.equal(orders[0].body.quality, 'high', 'default quality: high');
-    assert.match(orders[0].body.prompt, /^A real photo of one person: woman, 28, freckles, messy bun, grey hoodie\. Chest up, looking into the lens/);
+    // 1.2.0: the server's phone-camera creator recipe, never a plain wall.
+    assert.match(orders[0].body.prompt, /^A single frame of a candid vertical iPhone front-camera selfie video, not a commercial, not a studio shoot, of one person: woman, 28, freckles, messy bun, grey hoodie\. Chest-up/);
+    assert.match(orders[0].body.prompt, /lived-in room/);
+    assert.match(orders[0].body.prompt, /deep focus, no bokeh/);
+    assert.match(orders[0].body.prompt, /no skin smoothing, no beauty filter, no cinematic grade/);
+    assert.doesNotMatch(orders[0].body.prompt, /in front of a plain light wall|soft even daylight/);
     assert.deepEqual(out.images, []);
     assert.deepEqual(out.anchors.map((a) => a.id), ['creator', 'friend']);
     assert.equal(out.cast[1].image.sha256, maya.sha256);

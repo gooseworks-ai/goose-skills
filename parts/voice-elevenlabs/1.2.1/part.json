@@ -1,0 +1,668 @@
+{
+  "$schema": "../../_contract/part-manifest.schema.json",
+  "interface": 1,
+  "id": "voice-elevenlabs",
+  "version": "1.2.1",
+  "kind": "generate_voice",
+  "title": "Voice (ElevenLabs)",
+  "summary": "Connected narration with Eleven v3/v4 controls (v4 and v4 Turbo generally available), pronunciation mapping and honest timing provenance. A tagged read awaiting review returns the whole read, untimed. Audio stays pending review.",
+  "runtime": "node",
+  "entry": "part.mjs",
+  "files": [
+    "README.md",
+    "part.mjs"
+  ],
+  "kit": ">=1.0.1 <2.0.0",
+  "needs": {
+    "browser": false,
+    "ffmpeg": {
+      "filters": [
+        "aresample",
+        "aformat",
+        "atrim",
+        "asetpts",
+        "apad",
+        "concat",
+        "atempo",
+        "asplit"
+      ],
+      "encoders": [
+        "aac",
+        "pcm_s16le"
+      ]
+    },
+    "network": true,
+    "models": [
+      {
+        "provider": "elevenlabs",
+        "model": "eleven_v3"
+      },
+      {
+        "provider": "elevenlabs",
+        "model": "eleven_multilingual_v2"
+      },
+      {
+        "provider": "elevenlabs",
+        "model": "eleven_v4"
+      },
+      {
+        "provider": "elevenlabs",
+        "model": "eleven_v4_turbo"
+      }
+    ],
+    "disk_mb": 50
+  },
+  "inputs": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "scenes"
+    ],
+    "properties": {
+      "scenes": {
+        "description": "The plan's scenes in order. Each scene with a non-empty line is spoken; a null or empty line is skipped and gets no span. With a cast, speaker picks the voice. Other scene fields are ignored.",
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 40,
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": [
+                "string",
+                "integer"
+              ]
+            },
+            "line": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "maxLength": 1000
+            },
+            "speaker": {
+              "description": "A cast key. Ignored when no cast is given.",
+              "type": [
+                "string",
+                "null"
+              ],
+              "maxLength": 24
+            },
+            "performance_tags": {
+              "description": "Plain delivery cues for V3/V4. Never captions or portable H3 syntax. Literal wanted filler words belong in approved line text.",
+              "type": "array",
+              "maxItems": 8,
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              }
+            }
+          }
+        }
+      },
+      "cast": {
+        "description": "The plan's cast. A scene whose speaker is a member's key is spoken with that member's voice_id (else the default voice_id) and voice_settings (laid over the default ones). A speaker the cast does not hold is refused, unless it is listed in off_screen. Other member fields are ignored.",
+        "type": "array",
+        "maxItems": 10,
+        "items": {
+          "type": "object",
+          "required": [
+            "key"
+          ],
+          "properties": {
+            "key": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_]{0,23}$"
+            },
+            "voice_id": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[A-Za-z0-9]{1,64}$"
+            },
+            "voice_settings": {
+              "type": [
+                "object",
+                "null"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "stability": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "similarity_boost": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "style": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "use_speaker_boost": {
+                  "type": "boolean"
+                },
+                "speed": {
+                  "type": "number",
+                  "minimum": 0.7,
+                  "maximum": 1.2
+                }
+              }
+            }
+          }
+        }
+      },
+      "off_screen": {
+        "description": "The style's scenes.speaker.off_screen keys: speakers with no cast entry (an unseen interviewer, say). A scene spoken by one reads with the default voice_id and voice_settings. A key may not also be a cast key.",
+        "type": "array",
+        "maxItems": 3,
+        "uniqueItems": true,
+        "items": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{0,23}$"
+        }
+      },
+      "voice_id": {
+        "description": "The default voice: every spoken scene with no cast voice uses it. Optional when the cast gives every spoken scene a voice.",
+        "type": [
+          "string",
+          "null"
+        ],
+        "pattern": "^[A-Za-z0-9]{1,64}$"
+      },
+      "model": {
+        "description": "V3 remains default. eleven_v4 and eleven_v4_turbo are generally available and need no extra support evidence; no silent model switch.",
+        "enum": [
+          "eleven_v3",
+          "eleven_multilingual_v2",
+          "eleven_v4",
+          "eleven_v4_turbo"
+        ]
+      },
+      "tags": {
+        "description": "V3/V4 can perform bracketed audio tags. V2 strips them by default and refuses keep with tagged text. Tags never appear in captions; tagged audio requires independent reviewed timing.",
+        "enum": [
+          "strip",
+          "keep"
+        ]
+      },
+      "join": {
+        "description": "sentence is default: connected lines in one request through sentence end. one reads the complete same-voice script. line is explicit; no automatic 0.25-second line padding.",
+        "enum": [
+          "line",
+          "sentence",
+          "one"
+        ]
+      },
+      "pace": {
+        "description": "An explicit tempo may adjust new narration before any lip-sync generation. Rate bounds without tempo check the original performance and never trigger automatic stretching.",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "tempo": {
+            "type": "number",
+            "minimum": 0.8,
+            "maximum": 1.3
+          },
+          "min_wps": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "maximum": 8
+          },
+          "max_wps": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "maximum": 8
+          },
+          "max_tempo": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 1.3
+          }
+        }
+      },
+      "pronunciations": {
+        "description": "The brand's confirmed pronunciations: each term is spoken as say_as; captions keep the written term.",
+        "type": "array",
+        "maxItems": 50,
+        "items": {
+          "type": "object",
+          "required": [
+            "term",
+            "say_as"
+          ],
+          "properties": {
+            "term": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            "say_as": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          }
+        }
+      },
+      "voice_settings": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "stability": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "similarity_boost": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "style": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "use_speaker_boost": {
+            "type": "boolean"
+          },
+          "speed": {
+            "type": "number",
+            "minimum": 0.7,
+            "maximum": 1.2
+          }
+        }
+      },
+      "gap_s": {
+        "description": "Gap between separate requests only, default 0.08 s. Preserve meaningful natural pauses within a connected read.",
+        "type": "number",
+        "minimum": 0,
+        "maximum": 2
+      },
+      "max_seconds": {
+        "description": "Refuse the read when the joined voice track, after pace, runs longer than this.",
+        "type": "number",
+        "exclusiveMinimum": 0,
+        "maximum": 600
+      },
+      "model_support": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "provider",
+          "model",
+          "endpoint",
+          "status",
+          "evidence",
+          "quote_id"
+        ],
+        "properties": {
+          "provider": {
+            "const": "elevenlabs"
+          },
+          "model": {
+            "enum": [
+              "eleven_v4",
+              "eleven_v4_turbo"
+            ]
+          },
+          "endpoint": {
+            "const": "/v1/text-to-speech/{voice_id}/with-timestamps"
+          },
+          "status": {
+            "const": "verified"
+          },
+          "evidence": {
+            "type": "string",
+            "minLength": 1
+          },
+          "quote_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "description": "Ignored since 1.2.1 (kept so older callers are not refused): Eleven v4 and v4 Turbo are generally available."
+      },
+      "reviewed_alignments": {
+        "type": "array",
+        "maxItems": 40,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "piece",
+            "source_sha256",
+            "status",
+            "audio_listened",
+            "reviewer",
+            "method",
+            "coverage",
+            "alignment"
+          ],
+          "properties": {
+            "piece": {
+              "type": "string",
+              "minLength": 1
+            },
+            "source_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "status": {
+              "const": "pass"
+            },
+            "audio_listened": {
+              "const": true
+            },
+            "reviewer": {
+              "type": "string",
+              "minLength": 1
+            },
+            "method": {
+              "enum": [
+                "forced_alignment",
+                "reviewed_transcription"
+              ]
+            },
+            "coverage": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "start_s",
+                "end_s"
+              ],
+              "properties": {
+                "start_s": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "end_s": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                }
+              }
+            },
+            "alignment": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "characters",
+                "character_start_times_seconds",
+                "character_end_times_seconds"
+              ],
+              "properties": {
+                "characters": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "character_start_times_seconds": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "number",
+                    "minimum": 0
+                  }
+                },
+                "character_end_times_seconds": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "number",
+                    "minimum": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "outputs": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "audio",
+      "seconds",
+      "speech",
+      "scenes",
+      "lines",
+      "words_per_second",
+      "tempo"
+    ],
+    "properties": {
+      "audio": {
+        "type": "object",
+        "x-kit-file": {
+          "media": "audio"
+        }
+      },
+      "seconds": {
+        "type": "number",
+        "exclusiveMinimum": 0
+      },
+      "speech": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "text",
+            "start_s",
+            "end_s"
+          ],
+          "properties": {
+            "scene_id": {
+              "type": "string"
+            },
+            "text": {
+              "type": "string"
+            },
+            "spoken": {
+              "type": "string"
+            },
+            "start_s": {
+              "type": "number",
+              "minimum": 0
+            },
+            "end_s": {
+              "type": "number",
+              "minimum": 0
+            },
+            "words": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "text",
+                  "start_s",
+                  "end_s"
+                ],
+                "properties": {
+                  "text": {
+                    "type": "string"
+                  },
+                  "start_s": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "end_s": {
+                    "type": "number",
+                    "minimum": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "scenes": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "start_s",
+            "end_s"
+          ],
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "start_s": {
+              "type": "number",
+              "minimum": 0
+            },
+            "end_s": {
+              "type": "number",
+              "minimum": 0
+            }
+          }
+        }
+      },
+      "lines": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "scene_id",
+            "audio"
+          ],
+          "properties": {
+            "scene_id": {
+              "type": "string"
+            },
+            "audio": {
+              "type": "object",
+              "x-kit-file": {
+                "media": "audio"
+              }
+            }
+          }
+        }
+      },
+      "words_per_second": {
+        "description": "Spoken words per second after pace: each scene's written words over its spoken span (check-layer's read_rate measure).",
+        "type": "number",
+        "minimum": 0
+      },
+      "tempo": {
+        "description": "The atempo factor the read was played at; 1 when there is no pace.",
+        "type": "number",
+        "minimum": 0.8,
+        "maximum": 1.3
+      },
+      "content_review_status": {
+        "enum": [
+          "pending",
+          "pass",
+          "fail"
+        ]
+      },
+      "timing_status": {
+        "enum": [
+          "requires_reviewed_alignment",
+          "provider_or_reviewed_alignment"
+        ]
+      },
+      "provenance": {
+        "type": "object",
+        "description": "Model, voice, rates and pending content review; provider timing is not proof of correct speech."
+      },
+      "sources": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "piece",
+            "audio",
+            "timing_method",
+            "scene_ids",
+            "spoken_text"
+          ],
+          "properties": {
+            "piece": {
+              "type": "string"
+            },
+            "audio": {
+              "type": "object",
+              "x-kit-file": {
+                "media": "audio"
+              }
+            },
+            "timing_method": {
+              "enum": [
+                "requires_reviewed_alignment",
+                "provider_character_alignment",
+                "forced_alignment",
+                "reviewed_transcription"
+              ]
+            },
+            "scene_ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "spoken_text": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "source_files": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "x-kit-file": {
+            "media": "audio"
+          }
+        }
+      }
+    }
+  },
+  "cost": {
+    "basis": "per_unit",
+    "unit": "1k_chars",
+    "measure": {
+      "from": "/scenes/*/line",
+      "as": "length"
+    },
+    "rates_usd": {
+      "eleven_v3": 0.1,
+      "eleven_multilingual_v2": 0.1,
+      "eleven_v4": 0.08,
+      "eleven_v4_turbo": 0.04
+    },
+    "model_from": "/model"
+  },
+  "determinism": "provider",
+  "timing": {
+    "typical_s": 30,
+    "timeout_s": 900
+  },
+  "retry": {
+    "transient": 1
+  },
+  "replaces": [
+    "create-vo-elevenlabs"
+  ],
+  "x-price-source": {
+    "url": "https://elevenlabs.io/pricing/api",
+    "checked_at": "2026-10-14",
+    "note": "Vendor list prices only; obtain current attributed host quote in credits before spending."
+  }
+}

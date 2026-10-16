@@ -1,89 +1,75 @@
 # Human version
 
-Review the exact cut the viewer saw, decide what prevents the message from landing, and make the smallest useful change. Keep the accepted cut, every candidate and the original notes separate. A change is complete only after its intended effect and the whole new output have been checked.
+Review the exact cut the viewer saw, decide what stops the message from landing, and make the smallest useful change. Keep the accepted cut, candidates and original notes separate. A change is done only when its effect and the whole new output are checked.
 
-This guide adds editorial decisions to existing project records. It does not add a feedback API, approval gate or memory service. [[composes::review-video]] and [[composes::auto-fix-from-review-notes]] use the same evidence and history.
+[[composes::review-video]] and [[composes::auto-fix-from-review-notes]] use the same evidence and history.
 
 ---
 
 # Agent version
 
-## Bind the review before interpreting it
+## Bind the review first
 
-Read the binding's existing feedback, render_outputs, versions, project_state and production manifest. Identify the note ID, verbatim text, original render/version ID, time or range, source file/checksum and referenced beat/scene. Keep the current accepted version and new candidate as separate references. A note stays on its original render when the selected final changes; never substitute newest-file order or a mutable master alias.
+Read the binding's feedback, render_outputs, versions, project_state and manifest. For each note record its ID, verbatim text, the render/version it was given on, the time, the source checksum and the scene. Keep the accepted version and the candidate as separate references. A note stays on its original render; never use newest-file order or a mutable master alias. If an old note has only a path, keep those bytes. If the source cannot be identified, record a blocker. Re-check the checksum before executing. Extra detail goes in dated notes, never invented fields.
 
-If an old note has only a path, resolve and preserve those bytes before editing. If the reviewed source cannot be identified, record that blocker; do not guess. Re-check the source checksum just before execution. Existing host fields remain authoritative. Additional editorial detail belongs in its supported project artifacts/dated review notes with links to those IDs, never invented wire fields.
+## Stage sets the question
 
-## Stage determines the decision
+- **Concept:** does the promise fit this buyer, product and truthful proof? A plan review is not a watched-video verdict.
+- **Rough cut:** what does a fresh viewer understand, does each beat follow, does the payoff answer the hook?
+- **Fine cut:** are performance, transitions, proof, pace, reading time and sound doing their jobs? Repair the smallest affected piece.
+- **Final export:** does this exact file work at delivery size, with captions, mix and ending? Each derivative gets its own review.
 
-These are internal purposes, not new approval meetings. Use the host's current review surface and authentic gates.
+First take the cut in end to end, before reading the intended story. Listen and watch the exact file when your tools can and record `listened`/`watched` only when that really happened; otherwise record `measured` from the final measurements. Save a short **received-message** note: what is offered, to whom, the hook's promise, visible proof, payoff and action, with uncertain moments by time. Then compare it with the brief. If you already know the brief, call it a context-aware first impression.
 
-| Stage | Question from actual material | Exit or return |
-| --- | --- | --- |
-| Concept | Does this promise fit this buyer/product and available truthful proof? | Keep the direction or return to concept/script before production. A plan review is not a watched-video verdict. |
-| Rough cut | What does a fresh viewer understand, why does each beat follow, and does the payoff answer the hook? | Advance the story or return to script, missing coverage or sequence edit. Temporary sound/text remains explicitly unfinished. |
-| Fine cut | Are performances, transitions, proof, pace, reading time and sound doing their intended jobs? | Preserve good material; repair the smallest affected shot, timing, mix or overlay. |
-| Final export | Does this exact file work at its delivery size, including captions, mix, ending and format? | Deliver only after all required checks and current approval; each derivative gets its own review. |
-
-For a cut review, first play it end to end at normal speed without reading its intended story. Save a short **received-message** observation: what is offered, whom it appears to help, the hook's promise, visible proof, payoff and action. Record uncertainty and surprise at specific times. Then read the brief and compare intended versus received message. If the reviewer already knows the brief, label this a context-aware first impression; do not manufacture an independent viewer. A new independent reviewer can supply a fresh-viewer observation when available.
-
-Listen to the full actual audio and review continuous motion plus the complete extracted frames. Record source identity, playback start/end, duration covered, audio route and gaps. Frames, transcript and metadata alone cannot establish full-speed playback or listening. If a required capability is unavailable, save useful partial evidence and leave that check incomplete. For silent work, confirm the intended silence and use visible copy/reading time; a nonexistent VO transcript is not required.
+Follow [creative contract and review](creative-contract-and-review.md) for the evidence record. `../scripts/qc_evidence.py` must exit 0 on the exact file; missing evidence leaves the check incomplete. GooseWorks re-checks sound and spoken words when you report complete (see [capabilities](../capabilities.md)). Silent work confirms the planned soundtrack and reading time. File checks are not content approval.
 
 ## Diagnose before dispatch
 
-Consolidate duplicates without losing their IDs or original wording. For each critical finding record observation, time/range, evidence, intended viewer effect, cause, smallest sufficient route and acceptance condition. Verify claimed images against exact timestamp/neighboring frames and claimed audio against the actual segment.
+Merge duplicates, keeping their IDs. For each critical finding record the observation, time, evidence, intended effect, cause, smallest route and acceptance condition.
 
-| Cause | First route | Example and acceptance |
+| Cause | Route | Example |
 | --- | --- | --- |
-| Unsupported promise or wrong buyer proposition | Concept/script | A hook promises automation but the body only shows export. Narrow the hook to the demonstrated ability or plan supported proof; do not decorate the mismatch. |
-| Missing proof/action or unusable performance | Production (`create-clips`/`edit-clip`) | Obtain the feature-revealing shot or approved delivery; the feature must be visible long enough to recognize. |
-| Correct material, wrong order or timing | Sequence edit (`edit-video`) | Move explanation before payoff and allow its reading window; no unrelated shot regeneration. |
-| Sound story, local defect | Local repair | Reposition one colliding caption, re-mix one masked line or extend one CTA; preserve approved copy and unrelated scenes. |
+| Unsupported promise | Concept/script | Hook promises automation, body shows export: narrow the hook. |
+| Missing proof or unusable performance | `create-clips` / `edit-clip` | Get the shot that shows the feature long enough to recognize. |
+| Right material, wrong order | `edit-video` | Move the explanation before the payoff; no regeneration. |
+| Local defect | Local repair | Move one caption, re-mix one line, extend one CTA. |
 
-Technical cleanliness cannot clear an incoherent story. A local caption defect must not trigger a new concept. Review scores and simulated audience reactions are hypotheses about quality, never measured ad performance.
+A clean file cannot clear an incoherent story, and a caption defect never triggers a new concept. Scores are hypotheses, not ad performance. For taste notes, offer up to two cheap alternatives inside the approved direction and explain the tradeoff. Conflicting notes go to the decision owner; never blend opposite directions. A changed direction or paid scope goes back through the existing approval.
 
-Before escalating subjective taste, prepare up to two cheap alternatives already inside the approved direction (text sketch, timeline or local preview) and explain their tradeoff. “More premium” might mean fewer overlays and more product recognition time, or restrained typography and quieter transitions; it is not a license for new assets/claims. “Calmer” and “more urgent” on the same moment conflict even if their commands touch different files. Link both notes, identify the authorized decision owner and record the chosen intent/reason before applying either. No mixing opposing directions to appear compliant. A changed creative direction or paid scope still uses the existing approval gate.
+## Note states
 
-## Note disposition and verification
-
-Keep these distinctions in the existing issue/feedback record or its linked applied report. They are editorial meanings, not a new mandatory enum or API schema.
-
-| State | Required record |
+| State | Record |
 | --- | --- |
-| Open | Original note and exact reviewed source are retained. |
-| Accepted / alternative fix | Intended effect, acceptance condition, scope and why this operation fits; preserve original wording even if the remedy differs. |
-| Rejected with reason / deferred | Decision owner, reason, and remaining consequence. A required blocker stays blocking unless its premise was disproved or an authorized scope decision removed it. |
-| Changed | Actual operation, input/output identities, affected elements and before/after evidence. Successful execution proves only that bytes changed. |
-| Verified | Rewatch evidence on the new candidate satisfies the original acceptance condition, with full-output regression checks complete. Otherwise reopen the note. |
+| Open | Note and exact reviewed source. |
+| Accepted | Intended effect, acceptance condition, scope; original wording kept. |
+| Rejected / deferred | Owner, reason, consequence. A required blocker stays blocking unless disproved or removed by an authorized scope decision. |
+| Changed | Operation, input/output identities, before/after evidence. Changed bytes are not verified. |
+| Verified | Review of the new candidate meets the acceptance condition, with full-output regression checks. Otherwise reopen. |
 
-Use a note-to-revision table in the existing applied report: note ID → source render/time → accepted effect → route → candidate → changed evidence → verified evidence/status. Record skipped/failed/blocked operations separately. Never translate `applied` automatically into “resolved.”
+Keep a note-to-revision table: note → source time → effect → route → candidate → verified status. `applied` never means resolved.
 
 ## Impact and invalidation
 
-Before execution, list affected source artifacts and dependents. Compare the note's reviewed source with the accepted cut; if branching from an older version omits later good changes, state exactly which, and keep it a candidate until reconciliation/selection.
+List affected sources and dependents before executing. A branch from an older version that drops later good changes stays a candidate until reconciled.
 
-| Change | Rebuild and recheck | Preserve |
-| --- | --- | --- |
-| Spoken line or delivery | Exact script approval when copy changes; affected voice take, measured word timings, scene hold, captions, mix and downstream time offsets; affected ingredient/final approvals. | Unchanged takes, identity locks and scenes. |
-| Inserted pause or changed scene duration | Only affected picture/audio edits; subsequent cue offsets, transitions, music/SFX, captions, CTA, total duration and derivatives. | Unaffected source media; earlier unchanged cue windows. |
-| Shot or crop | Feature/variant truth, continuity, product visibility, overlay safe space; affected ingredient and final evidence. | Approved script/audio when timing is unchanged. |
-| Caption-only repair | Caption source and fresh burn from clean picture; adjacent cues, duplicates, hierarchy, product visibility, safe areas. | Source picture, speech and accepted wording unless authorized. |
-| Mix-only repair | Affected stems/cues, full-output levels, listening, word integrity, ending; each derivative that uses it. | Picture/timeline and matching captions when time is unchanged. |
+| Change | Recheck |
+| --- | --- |
+| Spoken line | Script approval if copy changes; take, word timings, hold, captions, mix, later offsets. |
+| Scene duration | Later cue offsets, transitions, music, captions, CTA, total length. |
+| Shot or crop | Product truth and scale, full action, continuity, overlay space. |
+| Caption only | Fresh burn from clean picture; adjacent cues, safe areas. |
+| Mix only | Stems, full-output levels, word integrity, ending. |
 
-Do not globally invalidate unrelated valid decisions. Do not keep stale approval/evidence for changed content. Rebuild from editable sources, preserve original bytes, and label resulting candidates. Compare both the local effect and the whole cut before final selection.
+Keep unrelated decisions; drop stale approvals for changed content; keep original bytes.
 
-## Each delivered output is its own final gate
+## Each delivered file is its own final check
 
-Maintain a row in the existing quality report for each actual file: version/asset/checksum, ratio/duration/language, source revision, dimensions/viewing size, playback/listening coverage, captions/text, mix/ending, proof/CTA, verdict and blockers. A passing parent master does not clear a crop, cutdown, translated version or caption revision.
+Keep one quality-report row per file: version/checksum, ratio, duration, language, viewing size, perception (`listened`/`watched` or `measured`), captions, mix and ending, proof/CTA, verdict, blockers. A passing master does not clear a crop, cutdown, translation or caption revision. At destination size check: no collisions or duplicate overlays, product scale and support, visible proof, readable CTA time, captions synced to actual speech, the whole ending including the last consonant, and measured levels for masking and gaps.
 
-Check at the destination's normal viewing size: no caption/UI/logo collisions or duplicate overlays, correct product/feature still visible, readable contrast and hierarchy, sufficient time to recognize proof and read CTA. Captions use the approved wording synchronized to actual speech, including pronunciations and intentionally corrected spelling. Silent text uses its own reading windows. Review the full ending, including the final spoken consonant and intended silence/fade/loop. Measure actual output peaks/levels and listen for masking, pumping and discontinuity; transcription success is supporting evidence only.
+## Editable handoff
 
-## Editable handoff and next-run retrieval
+At checkpoints and wrap, update the manifest: brief, approved script, chosen and rejected takes with reasons, sources and excerpts, editable timeline, stems and settings, caption source, accepted version, notes, evidence, approvals and blockers. A flattened MP4 is not a handoff. Inputs are stored as host files, code and settings in the recipe file. Pack with `../scripts/pack_recipe.py` and prove it in an empty folder with `../scripts/check_recipe.py`. A rebuild reuses stored paid outputs.
 
-At checkpoints, final selection and wrap, update links in the existing manifest and decision history: brief, approved script revision, selected and rejected hooks/takes with reasons, source assets and excerpts, editable timeline/composition, voice/music/SFX stems and settings, caption source, exact accepted version, candidates, notes, review evidence, approvals and unresolved blockers. Include real reproduction commands/capability inputs and dependencies needed to change a scene. Saved paths must resolve; a flattened MP4 alone is not an editable handoff.
+Save the user's exact wording and scope; a one-project request stays project taste until the owner makes it a brand rule. Keep preferences, predictions and measured results separate; without real campaign data record "audience results unavailable".
 
-Save exact user wording with attribution and scope. A one-project request for a whisper is project taste until the authorized owner makes it a standing brand delivery rule. Retrieve applicable rejections, pronunciations and performance intent before the next brief; do not silently promote a preference into a fact about audiences.
-
-Keep human preferences, model/quality predictions and measured performance separate. Measured outcomes require the actual variant, audience, placement, objective and observation window. If absent, record “audience results unavailable.” Approval and quality scores are not campaign results.
-
-Resume check: using only saved project state, resolve the accepted version and its editable sources; identify one target scene, original note and required rechecks; make a local candidate while retaining unrelated source checksums. Record restoration/rollback selection explicitly. If source/permission is missing, name it and preserve the project; do not regenerate unrelated material or guess from chat.
+Resume from saved state alone: the accepted version, its sources, one target scene and its note. If a source or permission is missing, name it; never guess from chat.

@@ -49,12 +49,18 @@ the proof, change the template, inflate a tested limit or invent faster-engine e
 Give production the exact lines, delivery style, per-beat speech windows, pauses and
 unverified targets alongside the native script and visual plan. Separate voiceover can
 establish its actual cadence before visuals and lip-sync are aligned. Native-audio video
-uses short, natural spoken lines and delivery direction supported by its capability;
+uses connected natural thoughts, with take boundaries preserving the sentence and
+delivery direction supported by its capability;
 do not invent a speech-speed parameter. Optional finishing retimes native picture and
 audio together, then aligns captions to that finished timeline. It is not the default
 solution, and a small speed-up cannot establish a large increase in supported word count.
 
 ## Verify the finished read
+
+Record actual moving-picture and listening coverage separately from frames/transcripts.
+Unavailable perception stays incomplete; an audio file returned by a tool does not prove
+hearing. Preserve one accepted speech source under B-roll and matching source time/rate
+when the speaking face returns. No-speech coverage still has a separate soundtrack plan.
 
 Inspect the complete audio and video: every intended word is audible, proof and CTA are
 present, pronunciations and word endings are intact, delivery sounds natural, and timing,

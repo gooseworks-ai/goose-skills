@@ -9,6 +9,9 @@
 // lowering the limiter's ceiling by whatever the AAC encode added; still
 // outside after them, the step fails. A silent cut (at or below -50 LUFS)
 // passes through untouched.
+// 1.1.0 declares the linked assembly_timeline on its timeline, so the kit hands it
+// over, and returns it. This layer only levels the whole mix and lays no music or
+// sound effect of its own, so it adds no cue: the timeline comes back unchanged.
 import { rename } from 'node:fs/promises';
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitFfmpeg, kitLoudness, kitNum } from '../../_lib/part.mjs';

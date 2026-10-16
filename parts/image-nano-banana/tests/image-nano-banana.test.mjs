@@ -6,7 +6,8 @@ import { join } from 'node:path';
 import { fileRef, loadNewest, hasFfmpeg, loadPart, makeCtx, probe } from '../../_tools/kit-harness.mjs';
 import { EDIT_FIELDS, EDIT_POINTER, EDIT_REQUIRED, falReply, makeImage, pngLine, productsInputs, productsTemplate, sample, scenesInputs, template, writeTemplate } from './fixture.mjs';
 
-const { dir, mod } = await loadNewest('image-nano-banana');
+// 2.0.0 is cartoons only (tests/cartoon-only.test.mjs); these describe 1.2.3, which still runs every mode.
+const { dir, mod } = await loadPart('image-nano-banana', '1.2.3');
 const ffmpeg = await hasFfmpeg();
 const PNG = '89504e470d0a1a0a';
 

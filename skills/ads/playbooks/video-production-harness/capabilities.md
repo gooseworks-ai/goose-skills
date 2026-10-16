@@ -1,6 +1,6 @@
 # Human version
 
-The same production steps run in every host. A host connects saved project state, human review and paid media access to this playbook. Local scripts assemble actual clips and collect evidence; an agent still reviews that evidence and the complete video.
+The same production steps run in every host. A host connects saved project state, human review and paid media access to this playbook. Local scripts assemble real clips and collect evidence; an agent still reviews that evidence and the whole video.
 
 ---
 
@@ -8,71 +8,87 @@ The same production steps run in every host. A host connects saved project state
 
 ## Binding and authority
 
-Load the selected host binding first. `load`, `save`, `approve`, `submit`, `poll`, `upload` and `promote` below describe responsibilities, not tool names. Resolve them to real host tools and their current schemas. Never call a fabricated capability name. If no binding implements a required responsibility, save a blocker and stop before that operation.
+Follow [creative contract and review](references/creative-contract-and-review.md) for content duties, review coverage, clip eligibility and exact-file evidence.
 
-The host owns authenticated human approvals, project ownership, revisions, operation fingerprints, available credit and reservations. A local artifact, quote, script status or agent-authored approval is never authority. Recheck host approval and spend before every paid call, including retries, auditions, transitions and repairs. Polling an already-known job does not authorize a new submission. An ambiguous timeout retains the job and outstanding authorization until reconciled.
+The host binding is the entry skill that loaded this package (for GooseWorks: make-custom-video); load it first. `load`, `save`, `approve`, `submit`, `poll`, `upload` and `promote` are responsibilities, not tool names: resolve them to real host tools. If none implements a required one, save a blocker and stop.
 
-The host may combine review surfaces while preserving decisions. Concept, design and script decisions belong to the script gate; storyboard, selected character/world/voice/end-card assets belong to the ingredient gate. Preview images and voice auditions need the approved preview budget. Paid video clips, including preview and transition videos, need ingredient approval. If the host exposes additional gates, honor them. Script changes invalidate dependent approvals; ingredient changes invalidate their gate. New scope, provider or spend beyond the approved bound requires renewed human approval.
+The host owns approvals, ownership, revisions, fingerprints, credit and reservations; a local file, quote or agent-written approval is never authority. Recheck approval and spend before every paid call, including retries and repairs. Polling a known job never authorizes a new submission; an ambiguous timeout keeps the job until reconciled.
+
+Concept, design and script decisions go in the script approval; storyboard and the selected character, world, voice and end-card assets go in the ingredient approval. Previews and voice auditions need the approved preview budget; paid video clips need the ingredient approval. A change invalidates the approvals that depend on it; new scope, provider or spend needs renewed approval.
+
+## Two production paths
+
+Every scene is made on one of two paths. "Agent-built path" and "kit path" in any file mean exactly this:
+
+- **Agent-built path (every other video).** You make each scene by calling catalog skills through the host: `create-image-fal`, `create-video-fal`, `create-vo-elevenlabs`, `create-music-elevenlabs`, `create-kinetic-typography`, `goose-graphics` and `caption-burn`. The cut is assembled only with `scripts/assemble.py`. Pick each scene's model from the **fal model id** column of [the shot-routing guide](references/shot-routing.md).
+- **Kit path.** Take it when every scene's routing row maps to a part in the nearest template's timeline or another published part (the guide's **Kit part@version** column), and the video needs no new frames, fonts or prompt files. `create-design-brief.md` step 4 makes the choice; `create-storyboard.md` writes the `kit` block into the ingredients draft. Once the owner approves the ingredients, the host's video kit makes, checks and finishes every scene (check-layer 1.8.0 gets `expect.reference_words` and `expect.final_words` for the speech-rate check, `expect.reference_setups` (the reference's `measured_setups` from `scripts/reference_shots.py study`) and `expect.approved_callbacks` (for each shot-plan row with `callback_of`, the earlier segment id its intent names)): run the make command from `video_make`'s `next_step` and skip the clip, edit, polish and delivery states. Never edit a template's frames, fonts or prompt files, and never run a template's unchanged style and call it custom.
+
+Backticked kebab-case skill names in these files, such as `create-image-fal`, are catalog skills: fetch each with `catalog_fetch` (type skill) when a step needs it. Option and mode values, kit part ids and file names are not skills.
 
 ## Artifact roles
 
-Common steps use logical artifact roles. Resolve them through the binding; the names are not mandatory paths or storage schemas. Local `clips/`, `audio/`, `edits/`, `generated/` and caption files are temporary processing artifacts until the host records them.
+The binding maps these roles to storage. Local `clips/`, `audio/`, `edits/` and `generated/` files are temporary; the run is unfinished while any file the final build reads exists only on this computer.
 
 | Role | Meaning |
 | --- | --- |
-| brand_context, brand_assets | Current evidence, asset catalog and customer constraints. |
-| concepts, idea_brief | Candidate concepts, selected idea, audience and hook hypothesis. |
-| design_brief, implementation_brief | Scene/tool/audio plan, hard rules, unresolved decisions and decision log. |
-| script_drafts, locked_script, locked_lyrics | Timed exact copy, review evidence, climax and approved revision. |
-| storyboard, scene_contract | Ordered stable scene/beat IDs, numeric seconds, framing, text, planned references and pacing metrics. |
-| character_locks, world_locks, voice_auditions | Actual reviewable candidates, selected assets/settings and provenance. |
-| asset_manifest, generation_jobs, spend | Every successful asset and job, input fingerprint, provider/model/settings and actual charges. |
-| transitions, timeline, audio_plan, motion_overlays | Approved transition/motion/edit/mix plan. |
-| project_state, approvals, feedback, review_passes | Trusted resume state, active blockers/gates and preserved human feedback. |
-| review_issues, quality_reports | Timestamped verified findings, named checks, evidence and repair outcomes. |
-| render_outputs, versions | Real candidate/final media, immutable lineage and selected final. |
-| reproduction_recipe, learnings, improvement_proposals | Run-specific evidence and proposed improvements; never automatic edits to shared skills. |
+| brand_context, brand_assets | Evidence, asset catalog, constraints. |
+| concepts, idea_brief | Concepts, selected idea, audience, hook. |
+| design_brief, implementation_brief | Scene/tool/audio plan, rules, decision log. |
+| script_drafts, locked_script, locked_lyrics | Timed exact copy and approved revision. |
+| storyboard, scene_contract | Scene IDs, seconds, framing, text, references. |
+| character_locks, world_locks, voice_auditions | Candidates, selections, provenance. |
+| asset_manifest, generation_jobs, spend | Assets, jobs, fingerprints, models, charges. |
+| transitions, timeline, audio_plan, motion_overlays | Approved edit and mix plan. |
+| project_state, approvals, feedback, review_passes | Resume state, blockers, human feedback. |
+| review_issues, quality_reports | Findings, checks, evidence, repairs. |
+| render_outputs, versions | Candidate/final media and lineage. |
+| reproduction_recipe, learnings, improvement_proposals | Run evidence and proposals, never automatic skill edits. |
 
-Carry the same sourced creative brief through writer and production: the writer's documented preparation accepts `--brief`, and new custom/template shapes set `requires_creative_brief: true`. Brief/source revisions, locked copy, selected/rejected decisions and delivery intent remain linked in existing artifacts.
+The same sourced creative brief goes to the writer and to production: the writer's preparation accepts `--brief`, and new custom or template shapes set `requires_creative_brief: true`.
 
-Read [specialist handoffs](references/specialist-handoff.md) before route selection and execution. Save exact package/version/hash, dependency checks, approved scene/script/assets/performance inputs and returned output identities in the existing capability plan; do not invent host fields or treat package instructions as runtime tools. For hook work use [hook compatibility](references/hook-compatibility.md) and the existing fetched replacement package only when available.
+Read [specialist handoffs](references/specialist-handoff.md) before choosing and running a route; save package/version/hash, dependency checks, approved inputs and returned outputs in the capability plan. For hook work use [hook compatibility](references/hook-compatibility.md).
 
-Use stable scene/beat IDs and numeric seconds in the working plan. The binding translates to its wire schema. Preserve every field and cross-reference required by that schema. Load saved state at the start of every turn; register successful assets/jobs as they arrive. Local caches can be lost and are never the only copy needed to resume.
+Use stable scene IDs and numeric seconds. Load saved state every turn and register assets and jobs as they arrive.
 
 ## Implemented local capabilities
 
 | Capability | Real implementation and limits |
 | --- | --- |
-| probe media and assemble conventional clips | Python 3, FFmpeg and FFprobe; `scripts/assemble.py PLAN.json OUTPUT.mp4`. Plan: aspect_ratio, ordered clips[{path,duration_s}], optional width/height/fps/voice_path/music_path/captions_ass. The helper normalizes H.264/AAC output, validates stream duration and rejects short inputs. A complete separate voice track replaces native clip audio; never duplicate dialogue. It is a conventional concat/mix helper, not a browser renderer, transition planner or automatic approval. |
-| collect complete-video evidence | `python3 scripts/qc_evidence.py VIDEO.mp4 EVIDENCE_DIR`. It probes streams, extracts 2 fps frames and a PCM audio track, and records loudness and silence diagnostics. Read frames across the entire cut, play continuous full-speed motion and listen to the full audio, then obtain actual speech transcript/timings. Missing playback/listening leaves required review incomplete. Metrics and extracted files are evidence, not creative verdicts. |
-| inspect a specific claimed defect | `ffmpeg -ss SECONDS -i VIDEO.mp4 -frames:v 1 FRAME.png`; read that actual frame. Verify motion over neighboring frames. A claim without timestamped evidence cannot become a blocking visual finding or an invented pass. |
-| image/text/logo composition | Real approved asset + FFmpeg overlay/drawtext, or Python Pillow when installed. Check fonts and Pillow before choosing that route. Keep readable brand/UI text deterministic. |
-| captions last | Fetch the host's caption-burn specialist: it renders approved word cues with Pillow and FFmpeg overlay and needs no libass. Check its actual fonts, Pillow and overlay support. If choosing ASS instead, inspect libass via `ffmpeg -filters` before using captions_ass or the `ass` filter. Missing libass blocks only ASS, not local execution. Apply captions after picture/mix polish. Rebuild the actual final evidence and variants afterward. If a managed caption service is selected, resolve it through the host and obtain its estimate/approval. |
-| motion without paid video generation | FFmpeg zoompan/setpts/scale/crop/concat and declared transition filters. Editorial illustration uses this path. A browser/Remotion composition requires the actual installed renderer and its dependencies; do not claim that assembly.py renders HTML or JavaScript. |
+| probe and assemble source-linked media | Python 3, FFmpeg and FFprobe; `scripts/assemble.py PLAN.json OUTPUT.mp4`. A custom video's plan carries `assembly_timeline` (`gooseworks-assembly-timeline/1`); read [speech and route qualification](references/speech-and-route-qualification.md) and [recipe format](references/recipe-format.md). The checker keeps speaking picture and audio on one clock and refuses gaps, unplanned silence, uneven stretch, zoom over 1.5×, long pauses and freezes (3.0 s only for an end card hold). Without a timeline it refuses unless the plan says `"production_kind": "template"`. |
+| measure speaking rate | `python3 scripts/reference_rate.py WORDS.json [...] [--target-s S] [--against REFERENCE_WORDS.json]`: words per second from whisper.cpp, ElevenLabs alignment or `{words}` JSON; `script_words` for a target; exit 1 when the voice is more than 10% slower than the reference. |
+| collect complete-video evidence and final measurements | `python3 scripts/qc_evidence.py VIDEO.mp4 EVIDENCE_DIR [--timeline RECEIPT] [--words WORDS] [--script SCRIPT] [--reference REFERENCE.mp4] [--reference-words REFERENCE_WORDS.json] [--reference-shots SHOT_TABLE.json] [--plan SHOT_PLAN.json] [--frame-judge FRAME_JUDGE.json]`. It probes streams, extracts 2 fps frames and a PCM audio track, and writes `final_measure` (`gooseworks-final-measure/1`, implemented in `scripts/final_measure.py`, whose THRESHOLDS list every check and limit): silence, tone-only sound, speech gaps, planned pauses and freezes, frozen picture, repeated shots, distinct setups more than 30% under the reference (`setup_count_vs_reference`), first/last words, silence over a speaking face and speech more than 15% slower than the reference. Silence and still picture are allowed in the first 1.5 s and the last 3.0 s. **It exits 1 when any check fails;** fix every failed range, and it must exit 0 on the exact final. Then listen to and watch the whole cut against the storyboard when your tools can; otherwise record `measured`. Measurements are evidence, not creative verdicts. |
+| final file check | On complete, GooseWorks checks the final: a playable H.264/AAC MP4, the approved ratio and length (over 0.5 s off is a warning), the same final measurements, and spoken words matching the script at 0.90 or better. Fix any reasons it gives; if it is still checking, wait a minute and report again. It never approves voice, sync, product or soundtrack; the content_review must also be current. |
+| pack and prove the rebuild | `scripts/pack_recipe.py` writes `recipe/source.json` (never uploads); `scripts/check_recipe.py` rebuilds it from host-fetched files and prints `identical` (SHA-256), `matches` (PSNR ≥ 40 dB average, worst frame 30 dB, length within 0.05 s, audio difference ≤ -60 dB) or `failed`. Commands and fields: `references/recipe-format.md`. |
+| inspect a claimed defect | `ffmpeg -ss SECONDS -i VIDEO.mp4 -frames:v 1 FRAME.png`, plus neighbours. No timestamped evidence, no blocking finding. |
+| image/text/logo composition | The real asset with FFmpeg overlay/drawtext or Pillow; brand and UI text stay deterministic. |
+| captions last | Fetch `caption-burn` (superseded; agent-built path; the kit path uses captions-layer): it renders approved word cues with Pillow and FFmpeg overlay, no libass needed (check `ffmpeg -filters` before using ASS). Captions go after picture and mix polish; then rebuild the final evidence. |
+| motion without paid video | FFmpeg zoompan/setpts/scale/crop and declared transitions; editorial illustration uses this path. `scripts/assemble.py` does not render HTML or JavaScript. |
 
-Preflight runs the actual binaries/imports and a real media probe, not only executable-presence checks; a present FFmpeg can fail at startup from missing libraries. Use the helper only when it implements the approved plan. For custom sidechain, SFX buses, transition interleaving, audio branches or grading, use the detailed FFmpeg instructions in `edit-video.md`; create a filter script and probe/review the result. Missing required tooling blocks that route before spending.
+Preflight runs the real binaries and a media probe; missing tooling blocks that route before spending. For sidechain, SFX buses or grading, follow `edit-video.md`.
 
 ## Host media and review capabilities
 
 | Responsibility | Required concrete implementation |
 | --- | --- |
-| reference preparation | The host resolves an authorized public page/file, downloads and probes actual media, records readiness/failure and returns durable media. Watch frames and transcribe/listen before recording reference analysis. Failed/private references need an explicit human brief-only choice. |
-| image/video generation | Use the host's current model catalog and managed submit/status/result transport. Underlying services may expose fal queue submit → status → result or Higgsfield job submit → status → output. Provider-specific request fields must come from real schemas; image refs and video start images have different roles. No private scripts or assumed MCP names are dependencies. |
-| voice auditions | The host exposes approved voice catalog and managed ElevenLabs `/v1/text-to-speech/{voice_id}` or an equivalent supported service. Generate the actual locked beat text and preserve selected voice ID/settings. Native generated speech is reviewed with its clip; do not promise a separately auditioned native voice. |
-| transcription and word timing | A host-managed Whisper-compatible transcription route or an installed local transcription engine must return actual transcript and word timestamps. Diff against locked lines, inspect omissions/substitutions and word-boundary cuts. If unavailable, stop at the intelligibility gate; a text-only guess is not transcription evidence. |
-| OCR/identity/world/readability review | Read extracted frames and approved reference images using an actual image-capable reviewer; apply the exact rubrics in lock-character/review-video/polish. OCR or quantitative face/vision tools are optional evidence when installed. Do not invent a numeric similarity from a nonexistent embedding tool. Save qualitative evidence and rubric scores distinctly from measurements. Face exposure/cut targets come from the brief and reference; scores and simulated viewers never prove real audience performance. |
-| preview choices and final delivery | Host-owned review surfaces show actual images/audio/video. The binding persists selections, feedback, budgets and final versions. Completion/pinning requires an uploaded owned video and all shared QC, even if backend minimum checks are narrower. |
+| reference preparation | Study the host's durable reference picture and sound in full; record `listened`/`watched` only when you did, else `measured`, with covered ranges. |
+| image/video generation | The host's model catalog and managed fal queue submit → status → result. Request fields come from real schemas; image refs and video start images have different roles. No private scripts or assumed MCP names. |
+| voice auditions | The host's approved voice catalog and managed ElevenLabs `/v1/text-to-speech/{voice_id}` or an equivalent. Audition the locked beat text and keep the selected voice ID and settings. An on-screen person's voice ID is `character.voice_pair`, paired from the host's free ElevenLabs voice list (`GET /v1/voices`); without that list, the pairing blocks. ElevenLabs Voice Design makes a voice from the character's descriptors when the host offers it. Native generated speech is reviewed with its clip. |
+| transcription and word timing | A Whisper-compatible route returns timed words; diff them against the locked lines and pass them to `qc_evidence.py --words` (the reference's go to `--reference-words`). Without one, GooseWorks transcribes the final on complete. ASR alone cannot judge voice quality. |
+| OCR, identity, world and readability | An image-capable reviewer applies the rubrics in lock-character, review-video and polish. Never invent a numeric similarity. |
+| preview choices and delivery | The script and ingredient approvals hold media, selections and authorization. Store the owner's choice apart from exact-output content status; a final or preview label cannot waive missing quality evidence. |
 
-Use [the editorial review guide](references/editorial-review.md) to bind rough/fine/final decisions to exact versions and original notes, refresh affected evidence and verify every delivered output. Store editable scene/timeline/audio/caption sources and scoped history for fresh-context resume.
+Use [the editorial review guide](references/editorial-review.md) to bind decisions to exact versions and verify every delivered output. Named review checks are responsibilities done with these tools, not commands; every check runs.
 
-All named review checks in the detailed steps are review responsibilities performed with these concrete frame/audio tools and their published rubrics; they are not unshipped commands. Parallel reviewers are optional. One reviewer can run the same complete checks sequentially. Every required check still runs.
-
-Optional routes—Soul ID training, lipsync, generated music, AI transitions, browser compositions and specialist molecules—require an actual host capability, compatible approval and price bound. If unavailable, save the limitation and offer a supported revised plan for human approval. Never revive an unavailable fixed recipe renderer or silently omit a required production phase.
+Optional routes (lipsync, generated music, AI transitions, browser compositions, specialist molecules) need a real host capability, approval and price bound. If unavailable, save the limitation and offer a supported revised plan at the next approval. Never revive an unavailable renderer or skip a required phase.
 
 ## Use stored original footage
 
-When the customer asks to reuse footage, ask the host to search the current owned media and inspect actual frames plus timed transcript. An analysis description or thumbnail URL alone is not a visual review. Known user-selected trims remain usable when optional semantic analysis is unavailable; record that limitation instead of requesting a duplicate upload.
+To reuse footage, search the host's owned media and inspect real frames plus the timed transcript; a thumbnail is not a review. Known user-selected trims stay usable without semantic analysis.
 
-Freeze `{asset_id, analysis_revision, scene_id, start_ms, end_ms, audio_mode}` in each selected scene and ingredient. `analysis_revision` is the verified SHA-256 of original bytes, `scene_id` may be null for a known trim, bounds are integer milliseconds, and audio is `original` or `muted`. Attach the canonical original through the host, preserve the requested format and user locks, then obtain the usual script and ingredient approvals. Research links and competitor ads never grant production rights.
+Freeze `{asset_id, analysis_revision, scene_id, start_ms, end_ms, audio_mode}` in each selected scene and ingredient: `analysis_revision` is the SHA-256 of the original bytes, `scene_id` may be null for a known trim, bounds are integer milliseconds, audio is `original` or `muted`. Attach the original through the host, keep the requested format and user locks, then take the usual two approvals. Research links and competitor ads never grant production rights.
 
-Before consumption and publication, the host rechecks current ownership, product/project scope, permission and revision. Download the verified original, trim that exact window at normal speed, and preserve the chosen audio. The portable assembler accepts `source_excerpt` beside a clip's path/duration, validates its SHA and range and returns the lineage. It refuses a separate voice track that would replace approved original audio. Only newly generated or replaced ingredients may consume the approved generation budget.
+Before use and publication the host rechecks ownership, scope, permission and revision. Trim the verified original at normal speed and keep the chosen audio. The assembler accepts `source_excerpt` beside a clip, validates its SHA and range, records it in the receipt's `source_excerpts`, and refuses a separate voice track over approved original audio. Only new or replaced ingredients use the generation budget.
+
+## Controlled source and renderer releases
+
+The custom route uses creator-h3 1.6.0, voice-elevenlabs 1.3.0 and html-frames 1.3.1 on a kit with source review, assembly-timeline and exact-final review support (minimum kit 1.0.1). Keep the locked versions; they add review and source-clock guards, not provider quality. An older renderer is no evidence that the new stitching rules ran.

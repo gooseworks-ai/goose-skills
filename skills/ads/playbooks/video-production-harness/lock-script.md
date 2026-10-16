@@ -1,78 +1,54 @@
 ---
 name: video-production-harness/lock-script
-description: Lock the VO script before any keyframes burn AI credits. Runs a viewer-perspective sub-agent review on the script alone (no visuals), scores the narrative arc, defaults day-tracker scaffolding for transformation stories, and marks the climax line. Step 2.5 of the pipeline.
+description: Lock the script before any keyframe spends credits. Reviews the script text alone on two tracks (narrative arc and short-form craft), marks the climax line and records delivery intent, then holds the script owner gate. Step 2.5 of the pipeline.
 ---
 
 # lock-script
 
-## Host contract
-
-Read `capabilities.md` and the selected host binding first. Artifact names are logical roles resolved by that binding. Named review tasks use the documented rubrics and actual frame/audio tools; they are not assumed installed commands. Required tooling, human approval and available budget must exist before the operation.
+Follow the [orchestrator](orchestrator.md)'s host contract and [creative contract and review](references/creative-contract-and-review.md).
 
 ## Purpose
 
-The single highest-leverage thing to nail before rendering anything is the **script**. In the v03 Ironman run, the VO arc kept evolving through round 12 — every script revision forced VO re-renders and visual re-syncs. The "day-tracker" framing (DAY 1 / DAY 5 / DAY 21) surfaced too late.
-
-This skill locks the script BEFORE keyframes. It runs an opinionated viewer-perspective review on text only, applies pattern defaults (day-tracker for transformations), records intended emphasis and delivery so `edit-video` can preserve it, and gates with a human approval.
+A script change after clips exist forces new speech renders and re-syncs. This step reviews the text before keyframes, records emphasis and delivery for `edit-video`, and holds the script owner gate.
 
 ## When to use
 
-- **State 2.5** of the orchestrator — after `create-design-brief` (which writes the first draft of the VO script), before `create-storyboard`.
-- Any time the operator says "the script feels off" mid-pipeline. Re-locking the script here is much cheaper than re-rolling clips.
-- When importing an actual supported remix recipe — the new persona-tuned script needs a fresh arc review.
+State 2.5, and whenever the owner says "the script feels off" mid-run or a remix recipe brings a new script.
 
-## audio_strategy branches
+## Where the script comes from
 
-This skill reads `audio_strategy` from `design_brief` and branches:
+The draft comes from **write-video-ad-script**, fetched with catalog_fetch (State 2.5). Never write the script inline. If the fetch fails, stop and say so. This step reviews and locks that draft; it never replaces it.
 
-| audio_strategy | What lock-script locks | Output file |
-|---|---|---|
-| `vo-narrator` (default) | VO lines per scene | `locked_script` (the "script" is the VO) |
-| `song-as-script` | Sung lyrics + frontmatter (tempo, climax_line, accent_words) | `locked_lyrics` AND `plain_lyrics` (see the selected binding's actual supported capability) |
-| `hybrid` | VO lines + lyric block, separated under `## VO` and `## Lyric` headings | Both `locked_script` and `locked_lyrics` (each marked `partial: true` in frontmatter) |
-| `silent` | On-screen copy, beat progression and CTA; no spoken lines | Save the approved silent beat/copy plan and explicit audio mode. Silent production still requires a current script/creative decision, not a synthetic marker that bypasses the gate |
+## Speech, sound and creative contract
 
-The arc-review template still runs for vo-narrator and the VO portion of hybrid. For song-as-script, the review prompt should ask "does each lyric line carry on its own?" rather than "is the hook in line 1?", because the *musical* hook (instrumental drop, vocal phrasing) does part of the work.
+Read [speech and route qualification](references/speech-and-route-qualification.md).
+
+- Native dialogue, lip-synced speech and narration lock their exact spoken lines. Singing locks lyrics. Mixed work locks each timed lane. No-speech work locks on-screen copy, actions, proof and the ending, with no invented speech. Sound is planned separately.
+- Keep the host's creative_contract, reference_map, product_grounding and voice_plan. Compare every essential reference or owner beat with the adapted words, visible action, proof, sound and route. Reject contradictions before review.
+- When assets or tools cannot supply a requested demonstration, show concrete feasible alternatives at this gate. A person or a live demo is never replaced by a diagram or card.
+- Lock the host-returned creative_contract_revision with the words and asset choices. A legacy audio_strategy is reconciled metadata, never authority to strip native speech or assume silence.
 
 ## Inputs
 
-- `<video_folder>` (required) — must contain `design_brief` with a VO script.
-- `<concept_type>` — one of `transformation` (default if idea-brief mentions before/after, comeback, journey, ramp-up), `demo`, `testimonial`, `manifesto`, `comparison`. Drives the default arc template.
-- `<auto>` — execution preference only; it never bypasses current script approval.
+- The saved brief, creative contract, source-linked beat map and the draft words (or the no-speech action and copy plan).
+- `<concept_type>`: `transformation`, `demo`, `testimonial`, `manifesto` or `comparison`. Picks the arc template.
+- `<auto>`: execution preference only; it never skips the script gate.
 
 ## Workflow
 
 ### Step 1 — Extract the script
 
-Read `<video_folder>/design_brief`. Pull every VO line into a single block with scene anchors:
+Pull every line of the draft into one block with scene anchors (`SCENE 01 (0.0–2.0s): "Six months ago, I couldn't run a mile."`). Save it to `<video_folder>/script/script-draft-<idx>.md`.
 
-```
-SCENE 01 (0.0–2.0s): "Six months ago, I couldn't run a mile."
-SCENE 02 (2.0–3.5s): "Day one. Brutal."
-SCENE 03 (3.5–5.5s): "Day 5. Still showing up."
-...
-SCENE 14 (28.0–30.0s): "I'm making it happen."
-```
+### Step 2 — Structure fit
 
-Save to `<video_folder>/script/script-draft-<idx>.md`.
+Keep the reference's and the brief's mechanism. A transformation story needs a visible before, a turn and a supported after. Elapsed-time markers are optional and only when the real story includes that progression; they never stand in for a product result. Show any structural suggestion as a proposal in the draft, never a silent rewrite.
 
-### Step 2 — Pattern default
+### Step 3 — Two-track text review
 
-If `<concept_type>` is `transformation` and the script does NOT already use day-tracker or number-progression scaffolding, propose one. Day-trackers are the strongest narrative scaffolding for short-form transformation arcs:
+Run both tracks on the script text, as separate reviewers when available or as two distinct passes. Neither renders media. Merge the results into the one script gate.
 
-- **DAY 1** — vulnerability beat (what it felt like at the start)
-- **DAY 5 / DAY 7** — first sign of stickiness
-- **DAY 14 / DAY 21** — visible result + climax line
-- **NOW** — quotable payoff
-
-Surface this as a proposal in the script-draft, not a silent rewrite. The operator can accept, reject, or modify.
-
-### Step 3 — Two-track text review (text only)
-
-Run both rubric tracks on the actual script text, with separate independent reviewers when available or as two distinct review passes. Neither track renders media. The labels below identify review responsibilities; apply the stated checks directly when an optional review skill is absent. Merge the evidence into one human gate.
-
-**Track A — Narrative arc** (`review-script-arc`)
-Scores the 8-axis arc skeleton and marks the climax line. The prompt template is the canonical one below:
+**Track A — Narrative arc.** Use this prompt:
 
 > Below is the full VO script for a short-form ad. Read it once as a first-time viewer scrolling through Reels. Score each beat 0–10 and list the weakest beat:
 >
@@ -87,111 +63,79 @@ Scores the 8-axis arc skeleton and marks the climax line. The prompt template is
 >
 > If any score is < 6, propose a rewrite of just that line. Do NOT propose visuals.
 
-Capture the agent's output to `<video_folder>/script/arc-review-<idx>.md`.
+Save to `<video_folder>/script/arc-review-<idx>.md`.
 
-**Track B — Short-form craft** (`review-script-shortform`)
+**Track B — Short-form craft** (`review-script-shortform`). Read `references/review-script-shortform.md` and apply all of it, from pre-checks to verdict rules. It returns `ship`, `revise` or `kill` with line rewrites. Pass:
 
-Read `references/review-script-shortform.md` and apply its complete pre-checks, recognition ladder, paid-social arc/outcome, cadence math, claim vocabulary, CTA promise, scored axes, verdict rules and failure policies. This reference is the same maintained rubric used by the desktop atom; the paragraph below is an orientation, not a replacement.
-Pressure-tests the script on short-form-content best practices that arc-review doesn't cover: hook strength (first 2s), logical-flow / non-sequitur detection, word density vs target duration, banned VO content (URLs, prices, acronyms), landing/payoff, and generic-language sniff. Returns `ship` / `revise` / `kill` plus line-level rewrites.
+- `<script_path>`: the draft file
+- `<target_duration_sec>`: from `design_brief` (or `idea_brief`)
+- `<speaking_rate_wps>`: the reference's rate from `scripts/reference_rate.py`; 2.8–3.2 words/sec only when it has no speech
+- `<vo_speed>`: a format label, `vo-narrator` or `fast-cuts`
+- `<brand_voice_rules>`: optional
 
-Inputs the calling skill must pass:
-- `<script_path>` — same draft file
-- `<target_duration_sec>` — from `design_brief` (or `idea_brief`)
-- `<vo_speed>` — `vo-narrator` (default) or `fast-cuts`
-- `<brand_voice_rules>` — optional, if the brand has voice rules
+Save to `<video_folder>/script/shortform-review-<idx>.md` (plus `.yaml` and `precheck.json`).
 
-Capture the output to `<video_folder>/script/shortform-review-<idx>.md` (+ `.yaml` + `precheck.json`).
+**Merge.** One summary: the Track A arc table, the Track B verdict and scores, and the union of rewrites (deduped by line). A `kill` verdict does not advance: tell the owner and return to State 1.
 
-**Merge for the gate.** Build a single summary that combines both reviews:
-- Arc table from Track A
-- Verdict + scores from Track B
-- Union of rewrites (Track A's beat-level + Track B's craft-level; dedupe by line number)
-- If Track B verdict is `kill`, do NOT advance — surface to operator, loop back to State 1 brainstorm.
+### Step 4 — Record emphasis and delivery
 
-### Step 4 — Record emphasis and performance intent
-
-Record the main emphasis/payoff line when this script has one, with the intended delivery and viewer effect. Use `climax_line: null` for silent work or a format without a single spoken climax; do not invent a sentence to fill the field. This is a direction cue, not an automatic loudness change.
+Record the main payoff line, its intended delivery and the viewer effect. Use `climax_line: null` for silent work or a format with no single spoken climax; never invent a line to fill it. This is a direction cue, not a loudness change.
 
 ```markdown
 - **Climax line:** SCENE 14 — "I'm making it happen."
   - Delivery: conversational resolve; a short pause before the line.
-  - Mix: preserve the selected performance; adjust only if actual listening/measurements reveal a problem.
-  - Voice/settings: reuse the approved audition; no preset override.
+  - Mix: keep the selected performance; adjust only if listening or measurement shows a problem.
+  - Voice: reuse the approved audition settings.
 ```
 
-Keep raw/source speech and measure actual takes. A `vo_speed` review category describes the format, not permission to time-stretch or remove pauses. Any source-podcast timing change must have an explicit recorded rate/purpose, raw-versus-edited listening and refreshed word/caption sync. Original narration defaults to its approved natural performance.
+`vo_speed` describes the format. It never permits removing pauses or stretching speech; the only tempo change is the measured-rate fix on new narration before lip-sync (create-clips Phase 4).
 
-### Step 5 — HUMAN GATE
+### Step 5 — Script owner gate
 
-Present to the operator:
+Show the owner, in this chat, every `changes_from_reference` entry in bold at the top, with the plan's shot and setup counts next to the reference's (`scripts/reference_shots.py compare`) and the question "Do you want an on-camera person speaking (lip-synced), or voiceover over footage?" (suggest what the reference does; record the answer in `voice_plan.route`), then the complete words, the essential action and proof, the sound plan, the feasible routes and the review:
 
 ```
 Script lock — <video name>
-
-Arc scores:
-  Hook         8/10  ✅
-  Vulnerability 6/10  ⚠  ("brutal" is generic — propose: "six minutes in, I almost quit")
-  Action       9/10  ✅
-  Tension      7/10  ✅
-  Reveal       8/10  ✅
-  Win          8/10  ✅
-  Climax       9/10  ✅  (SCENE 14 marked)
-  CTA          7/10  ✅
-
-Day-tracker scaffolding: PROPOSED (script is currently scene-titled; would benefit from DAY 1 / 5 / 21 anchors).
-
-Approve as-is, accept proposals, or send back for revision?
+Arc scores: Hook 8, Vulnerability 6 ("brutal" is generic; propose "six minutes in, I almost quit"), Action 9, Tension 7, Reveal 8, Win 8, Climax 9 (SCENE 14), CTA 7
+Short-form craft: revise (2 line rewrites below)
+Approve as-is, accept the proposals, or send it back?
 ```
 
-Wait for explicit approval. Capture any line-level edits the operator makes. Re-run Step 3 if the operator made structural changes.
+Wait for explicit approval. Capture the owner's line edits. Re-run Step 3 after structural changes.
 
 ### Step 6 — Lock
 
-Once approved:
-1. Write `<video_folder>/locked_script` — the canonical VO text the rest of the pipeline reads.
-2. Update `design_brief` and `implementation_brief` VO sections to match locked_script.
-3. Append to `implementation_brief` decision log: `script-locked-<ts>: <one-line summary of any structural changes>`.
+1. Write `<video_folder>/locked_script`, the only VO text every later step reads.
+2. Update the `design_brief` and `implementation_brief` VO sections to match.
+3. Log `script-locked-<ts>: <one-line summary of structural changes>` in the `implementation_brief` decision log.
 
-After this point, **any change to the VO script** requires re-running this skill — orchestrator should refuse silent script edits.
+After lock, a material change to words, essential action or proof, product or variant, hook or payoff, sound intent or source performance refreshes the affected approval. Unaffected work stays valid. Never edit another field to contradict the locked meaning.
 
 ## Output
 
-- `<video_folder>/script/script-draft-<idx>.md` — pre-review draft
-- `<video_folder>/script/arc-review-<idx>.md` — Track A: arc scoring + climax mark + rewrite proposals
-- `<video_folder>/script/shortform-review-<idx>.md` — Track B: hook/flow/landing/craft scores + verdict + rewrites
-- `<video_folder>/locked_script` — the locked VO (single source of truth from here on)
-- Updated `design_brief`, `implementation_brief` with climax marker and audio settings
-- For **podcast-clip-derived ads** (audio_strategy=`source-podcast-clip`), additionally invoke the selected binding's actual supported capability to produce:
-  - `<video_folder>/voiceovers/scene-NN-<speaker>.mp3` per scene, snapped to word boundaries
-  - `<video_folder>/voiceovers/manifest.json` mapping scenes to source timestamps
-  - `<video_folder>/voiceovers/words.json` (word-level transcript — reused by captions in stage 9)
-  - Append `caption_cues: voiceovers/words.json` to `implementation_brief` so the burn-in-captions stage can consume it without re-transcribing.
+- `<video_folder>/script/script-draft-<idx>.md`
+- `<video_folder>/script/arc-review-<idx>.md` (Track A)
+- `<video_folder>/script/shortform-review-<idx>.md` (Track B)
+- `<video_folder>/locked_script`
+- Updated `design_brief` and `implementation_brief` with the climax marker and delivery intent.
+- For a `source-podcast-clip`, also produce through the binding: speech per scene snapped to word boundaries (`<video_folder>/voiceovers/scene-NN-<speaker>.mp3`), a scene-to-source manifest and a word-level `words.json`, and add `caption_cues: voiceovers/words.json` to the `implementation_brief` so captions reuse it.
 
-## Quality Checks
+## Quality checks
 
-- Every VO line in locked_script is also in `design_brief` (no drift between docs).
-- Emphasis/payoff intent and selected delivery are recorded; a null climax is explicit when the format has none. No automatic gain/speed change follows from this marker.
-- Arc review has a score for every beat (no missing axes).
-- Human gate was actually hit (status file shows operator-approval timestamp).
-- If `<concept_type>` is `transformation`, the script uses some form of day-tracker or number-progression — OR the operator explicitly opted out (logged in decision log).
+- Every line in locked_script is also in `design_brief`.
+- Emphasis and delivery are recorded; a null climax is explicit when the format has none.
+- Every required beat has supported words, action, proof and sound, or an explicit open gap. Rubric scores never claim unseen or unheard evidence.
+- The script gate was really reached: the record shows the owner's approval time.
+- Script word count fits the target duration at the measured speaking rate.
 
-## Failure Modes
+## Failure modes
 
-- **Skill silently rewrites the operator's script.** Never. Always surface proposals; the operator decides.
-- **Emphasis becomes an automatic boost.** Preserve performance intent and selected settings; actual listening/mix measurements determine a justified repair, not a fixed gain. A silent or distributed-payoff format need not invent one climax.
-- **Operator approves, then `create-clips` shows a different VO line in `audio/vo-scene-NN.mp3`.** Script drift bug. The orchestrator's quality check should diff locked_script against the rendered VO every time `create-clips` runs.
+- **Silently rewriting the owner's script.** Never. Propose; the owner decides.
+- **Emphasis becomes an automatic boost.** Keep the performance; only listening or measurement justifies a repair.
+- **The owner approves, then a speech render says a different line.** Diff locked_script against the rendered speech every time `create-clips` runs.
 
-## Relationship to other skills
+## Relationship to other steps
 
-- Runs after `create-design-brief` (which produces the first draft script).
-- Runs before `create-storyboard` (so the storyboard can show the locked VO in caption bubbles).
 - `edit-video` reads the climax marker from `implementation_brief`.
-- `create-voiceover-elevenlabs` reads locked_script as source of truth.
-
-## Use stored original footage
-
-When the customer asks to reuse footage, ask the host to search the current owned media and inspect actual frames plus timed transcript. An analysis description or thumbnail URL alone is not a visual review. Known user-selected trims remain usable when optional semantic analysis is unavailable; record that limitation instead of requesting a duplicate upload.
-
-Freeze `{asset_id, analysis_revision, scene_id, start_ms, end_ms, audio_mode}` in each selected scene and ingredient. `analysis_revision` is the verified SHA-256 of original bytes, `scene_id` may be null for a known trim, bounds are integer milliseconds, and audio is `original` or `muted`. Attach the canonical original through the host, preserve the requested format and user locks, then obtain the usual script and ingredient approvals. Research links and competitor ads never grant production rights.
-
-Before consumption and publication, the host rechecks current ownership, product/project scope, permission and revision. Download the verified original, trim that exact window at normal speed, and preserve the chosen audio. The portable assembler accepts `source_excerpt` beside a clip's path/duration, validates its SHA and range and returns the lineage. It refuses a separate voice track that would replace approved original audio. Only newly generated or replaced ingredients may consume the approved generation budget.
+- `create-vo-elevenlabs` (superseded; agent-built path only) reads locked_script.
+- To reuse owned footage, follow "Use stored original footage" in `capabilities.md`; the frozen excerpt and its audio are part of what this gate approves.

@@ -10,8 +10,12 @@ export async function still(dir) {
 }
 
 export const sample = {
-  async inputs(workDir) {
+  // `version` (parts/_tools/parts.test.mjs passes it): 1.3.0 and newer need the approved contract's revision.
+  async inputs(workDir, version) {
+    const [major, minor] = (version || '0.0.0').split('.').map(Number);
+    const reviewed = major > 1 || (major === 1 && minor >= 3);
     return {
+      ...(reviewed ? { creative_contract_revision: REVISION, capture: 'phone_counter' } : {}),
       scenes: [
         { id: 's1', line: 'I tried this for a month and here is what happened to my sleep.' },
         { id: 's2', line: 'The first week felt the same, honestly nothing changed at all for me.' },
@@ -78,5 +82,47 @@ export async function castInputs(workDir, extra = {}) {
     resolution: '768P',
     max_seconds: 40,
     ...extra,
+  };
+}
+
+/** 1.3.0+: the approved creative contract's checksum every reviewed run names. */
+export const REVISION = 'c'.repeat(64);
+
+/** sample.inputs for 1.3.0 and newer: the reviewed pipeline needs the contract revision (and, before 1.4.0, a capture). */
+export async function reviewedInputs(workDir, extra = {}) {
+  return { ...(await sample.inputs(workDir)), creative_contract_revision: REVISION, capture: 'phone_counter', ...extra };
+}
+
+/**
+ * A passing, hash-bound review of one returned take (what a listener who watched and heard the whole take
+ * records), with reviewed word timings: each line's words spread over the fixture's tone (0.2 s to the end less 0.4 s).
+ */
+export async function acceptedSource(source, { product_action = 'not_applicable', probe } = {}) {
+  const duration = (await probe(source.video.path)).duration_s;
+  const lines = source.expected_lines;
+  const all = lines.flatMap((line) => line.spoken.split(/\s+/).filter(Boolean).map((text) => ({ scene_id: line.scene_id, text })));
+  const from = 0.2;
+  const step = (duration - 0.6) / all.length;
+  const words = all.map((w, i) => ({ ...w, start_s: +(from + i * step).toFixed(3), end_s: +(from + (i + 0.8) * step).toFixed(3) }));
+  return {
+    id: source.id,
+    video: source.video,
+    review: {
+      source_sha256: source.source_sha256, script_sha256: source.script_sha256, status: 'pass', reviewer: 'test reviewer',
+      coverage: { video_watched: true, audio_listened: true, start_s: 0, end_s: duration },
+      checks: { script: 'pass', voice: 'pass', lipsync: 'pass', identity: 'pass', framing: 'pass', performance: 'pass', product_action },
+      evidence: ['watched and listened to the whole take'],
+    },
+    timing_method: 'forced_alignment',
+    words,
+  };
+}
+
+/** The qualification a reviewed first take earns for the exact configuration the part reported. */
+export function qualificationFor(firstTakeOut) {
+  return {
+    provider: 'fal', model: 'minimax/h3-max/reference-to-video', shot_type: 'talking_creator', status: 'qualified',
+    configuration_sha256: firstTakeOut.configuration_sha256, accepted_source_sha256: firstTakeOut.review_request.sources[0].source_sha256,
+    reviewer: 'test reviewer', audio_listened: true, video_watched: true,
   };
 }
