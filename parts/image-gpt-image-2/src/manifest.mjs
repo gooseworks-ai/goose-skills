@@ -1,4 +1,4 @@
-import { file } from '../../_tools/schemas.mjs';
+import { file, qualityTier } from '../../_tools/schemas.mjs';
 
 const TEXT = 'openai/gpt-image-2';
 const EDIT = 'openai/gpt-image-2/edit';
@@ -53,7 +53,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'image-gpt-image-2',
-  version: '1.2.0',
+  version: '1.3.0',
   kind: 'generate_image',
   title: 'Stills (GPT Image 2)',
   summary: 'Photoreal stills with OpenAI GPT Image 2 on fal, one piece per image: a hand-built list, one still per plan scene, the cast portraits, or locked-camera shots (each frame an edit on its plate, plate pixels put back, a closing shot re-lit).',
@@ -93,7 +93,8 @@ export const manifest = {
       },
       size: { description: 'Every still\'s size in pixels, width x height. Default 1088x1920 (vertical 9:16).', enum: SIZES },
       cast_size: { description: 'The anchors\' size. Default: size.', enum: SIZES },
-      quality: { description: 'GPT Image 2 quality. Default high.', enum: QUALITIES },
+      quality_tier: qualityTier('quality (medium Standard, high Best)'),
+      quality: { description: "GPT Image 2 quality. Default: the quality_tier's (medium Standard, high Best). high under Standard is an upgrade.", enum: QUALITIES },
       images: {
         description: 'images mode: one still per entry.',
         type: 'array',

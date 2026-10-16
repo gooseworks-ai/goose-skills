@@ -1,0 +1,256 @@
+{
+  "$schema": "../../_contract/part-manifest.schema.json",
+  "interface": 1,
+  "id": "lipsync-veed",
+  "version": "1.1.0",
+  "kind": "generate_video",
+  "title": "Lipsync to approved audio (Veed Fabric)",
+  "summary": "Each spoken line's own audio drives its speaker's face with Veed Fabric 1.0 on fal, one piece per line, plus an optional silent \"listening\" clip per face.",
+  "runtime": "node",
+  "entry": "part.mjs",
+  "files": [
+    "README.md",
+    "part.mjs"
+  ],
+  "kit": ">=1.0.0 <2.0.0",
+  "needs": {
+    "browser": false,
+    "ffmpeg": {
+      "filters": [
+        "anullsrc"
+      ],
+      "encoders": [
+        "pcm_s16le"
+      ]
+    },
+    "network": true,
+    "models": [
+      {
+        "provider": "fal",
+        "model": "veed/fabric-1.0"
+      }
+    ],
+    "disk_mb": 800
+  },
+  "inputs": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "scenes",
+      "lines",
+      "faces",
+      "max_seconds"
+    ],
+    "properties": {
+      "scenes": {
+        "description": "plan.scenes in order. A scene with a non-empty line is lipsynced on its speaker's face; a null or empty line is skipped. Other scene fields are ignored.",
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 40,
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": [
+                "string",
+                "integer",
+                "null"
+              ]
+            },
+            "line": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "maxLength": 1000
+            },
+            "on_screen": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "picture": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "speaker": {
+              "description": "A key in faces. May be left out only when there is exactly one face.",
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        }
+      },
+      "lines": {
+        "description": "Each spoken scene's own audio (step.<voice>.lines), matched to scenes by scene_id.",
+        "type": "array",
+        "maxItems": 40,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "scene_id",
+            "audio"
+          ],
+          "properties": {
+            "scene_id": {
+              "type": "string"
+            },
+            "audio": {
+              "type": "object",
+              "x-kit-file": {
+                "media": "audio"
+              }
+            }
+          }
+        }
+      },
+      "faces": {
+        "description": "One still per speaker (step.<plate>.singles): a neutral, closed-mouth, head-and-shoulders picture.",
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 10,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "key",
+            "image"
+          ],
+          "properties": {
+            "key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 24
+            },
+            "image": {
+              "type": "object",
+              "x-kit-file": {
+                "media": "image",
+                "mime": [
+                  "image/png",
+                  "image/jpeg",
+                  "image/webp"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "quality_tier": {
+        "description": "Standard (default) or Best, the price the customer picked. Sets the default resolution (480p Standard, 720p Best); an explicit value still wins for the whole step.",
+        "enum": [
+          "standard",
+          "best"
+        ]
+      },
+      "resolution": {
+        "description": "Default: the quality_tier's (480p Standard, 720p Best). 720p under Standard is an upgrade.",
+        "enum": [
+          "480p",
+          "720p"
+        ]
+      },
+      "idle_seconds": {
+        "description": "Seconds of a silent \"listening\" clip per face, driven by silence (0, the default, makes none).",
+        "type": "number",
+        "minimum": 0,
+        "maximum": 15
+      },
+      "max_seconds": {
+        "description": "The most seconds of lipsync this step may order (line audio plus idle clips; the price is read from it); more is refused.",
+        "type": "number",
+        "minimum": 1,
+        "maximum": 300
+      }
+    }
+  },
+  "outputs": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "clips",
+      "idle"
+    ],
+    "properties": {
+      "clips": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "video",
+            "seconds"
+          ],
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "video": {
+              "type": "object",
+              "x-kit-file": {
+                "media": "video"
+              }
+            },
+            "seconds": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
+          }
+        }
+      },
+      "idle": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "key",
+            "video",
+            "seconds"
+          ],
+          "properties": {
+            "key": {
+              "type": "string"
+            },
+            "video": {
+              "type": "object",
+              "x-kit-file": {
+                "media": "video"
+              }
+            },
+            "seconds": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
+          }
+        }
+      }
+    }
+  },
+  "cost": {
+    "basis": "per_unit",
+    "unit": "second",
+    "measure": {
+      "from": "/max_seconds",
+      "as": "value"
+    },
+    "rates_usd": {
+      "veed/fabric-1.0": 0.15
+    }
+  },
+  "determinism": "provider",
+  "timing": {
+    "typical_s": 600,
+    "timeout_s": 3600
+  },
+  "retry": {
+    "transient": 1
+  }
+}

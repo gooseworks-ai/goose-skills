@@ -935,6 +935,32 @@ function kitWordsFromAlignment(text, sayAs, alignment, offsetS = 0) {
   return words;
 }
 
+// ---- _lib/tier.mjs ----
+// Standard or Best, the price the customer picks at script approval (custom videos, 16 Oct 2026).
+// The tier sets a paid part's default picture quality or resolution. An explicit quality or
+// resolution input still wins, for the whole step. Without a tier the part uses Standard, the
+// default price. No video above 768P unless the customer asks.
+//
+//   standard: GPT Image 2 medium, Fabric lip-sync 480p, H3 768P.
+//   best:     GPT Image 2 high,   Fabric lip-sync 720p, H3 768P.
+//
+// H3 is 768P in both tiers: fal makes H3 "1080P" from a native 768P take plus a refinement pass,
+// and the finished video is scaled to 1080x1920 with ffmpeg (lanczos) at no cost.
+const KIT_TIERS = ['standard', 'best'];
+
+const KIT_TIER_DEFAULTS = {
+  standard: { image_quality: 'medium', lipsync_resolution: '480p', h3_resolution: '768P' },
+  best: { image_quality: 'high', lipsync_resolution: '720p', h3_resolution: '768P' },
+};
+
+/** The tier's default for one setting: image_quality, lipsync_resolution or h3_resolution. */
+function kitTierDefault(inputs, setting) {
+  const tier = KIT_TIER_DEFAULTS[inputs?.quality_tier ?? 'standard'];
+  if (!tier) throw new Error(`quality_tier must be one of ${KIT_TIERS.join(', ')}`);
+  if (!(setting in tier)) throw new Error(`no tier default for ${setting}`);
+  return tier[setting];
+}
+
 // ---- video-h3max/src/provider.mjs ----
 // H3 Max's fal contract, recorded from the official queue OpenAPI on 2026-10-12.
 // A scene part uses image references only. Native sound is kept by default;
@@ -1000,6 +1026,11 @@ function h3SceneProviderPrompt(prompt, refs, who) {
   return out;
 }
 
+/** The clip resolution: the input's, else the tier's (768P in both tiers; 1080P only when the customer asks). */
+function h3SceneResolution(inputs) {
+  return inputs.resolution ?? kitTierDefault(inputs, 'h3_resolution');
+}
+
 /** H3 has one endpoint for reference clips and first/last-frame clips. */
 function h3SceneProviderBody(inputs, job, refs, seed) {
   return {
@@ -1008,7 +1039,7 @@ function h3SceneProviderBody(inputs, job, refs, seed) {
     ...(job.start ? { image_url: job.start } : {}),
     ...(job.end ? { end_image_url: job.end } : {}),
     duration: job.seconds,
-    resolution: inputs.resolution ?? '1080P',
+    resolution: h3SceneResolution(inputs),
     aspect_ratio: inputs.aspect_ratio ?? '9:16',
     prompt_expansion_mode: 'disabled',
     seed,
@@ -1080,7 +1111,7 @@ function h3SceneFrameCanvas(inputs, source) {
   const aspect = inputs.aspect_ratio ?? '9:16';
   if (aspect === 'adaptive') return { width: source.width, height: source.height };
   const [w, h] = aspect.split(':').map(Number);
-  const short = H3SCENE_FRAME_SHORT_SIDE[inputs.resolution ?? '1080P'];
+  const short = H3SCENE_FRAME_SHORT_SIDE[h3SceneResolution(inputs)];
   const scale = short / Math.min(w, h);
   return { width: Math.round(w * scale / 2) * 2, height: Math.round(h * scale / 2) * 2 };
 }
@@ -1095,7 +1126,7 @@ function h3SceneStillCanvas(inputs, source) {
   const aspect = inputs.aspect_ratio ?? '9:16';
   if (aspect === 'adaptive') return { width: source.width, height: source.height };
   const [w, h] = aspect.split(':').map(Number);
-  let k = Math.ceil(H3SCENE_FRAME_SHORT_SIDE[inputs.resolution ?? '1080P'] / Math.min(w, h));
+  let k = Math.ceil(H3SCENE_FRAME_SHORT_SIDE[h3SceneResolution(inputs)] / Math.min(w, h));
   if ((w * k) % 2 || (h * k) % 2) k += 1;
   return { width: w * k, height: h * k };
 }
@@ -1902,8 +1933,6 @@ async function kitClipEach(items, work, at_once = KIT_CLIP_AT_ONCE) {
 // broll: true is silent creator B-roll: each scene names one physical action in
 // extra.action, and "Nobody speaks, lips closed, while <action>." is added; still hands
 // are refused.
-// 1.3.0: end_on_start_tags lists scene tags whose clips end on their own first frame (end_image_url),
-// so a held product cannot finish turned to its back (GOOSE-4034).
 
 /** H3's clip lengths: whole seconds, 4 to 15. */
 const H3STILLS_ALLOWED = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
@@ -1911,14 +1940,7 @@ const H3STILLS_DEFAULT_SECONDS = 5;
 const H3STILLS_MAX_CLIPS = 40;
 const H3STILLS_PROMPT_MAX = 12000;
 /** Inputs only mode stills reads. */
-const H3STILLS_ONLY = ['stills', 'spans', 'min_s', 'max_s', 'max_total_s', 'fallback', 'require_scene_tags', 'require_product_refs', 'product_reference_evidence', 'broll', 'end_on_start_tags'];
-
-/** Whether a scene's clip must end on its first frame: its tag is one of end_on_start_tags. */
-function h3StillsEndsOnStart(scene, tags) {
-  if (!Array.isArray(tags) || !tags.length) return false;
-  const tag = kitSceneTag(scene);
-  return tag != null && tags.some((t) => kitTagKey(t) === kitTagKey(tag));
-}
+const H3STILLS_ONLY = ['stills', 'spans', 'min_s', 'max_s', 'max_total_s', 'fallback', 'require_scene_tags', 'require_product_refs', 'product_reference_evidence', 'broll'];
 // Anything left that looks like a placeholder after filling is a typo.
 const H3STILLS_PLACEHOLDER_LIKE = /\{[A-Za-z][A-Za-z0-9_.-]*\??\}/;
 
@@ -2002,8 +2024,6 @@ async function h3StillsRun(inputs, ctx, manifest) {
   }
   for (const job of jobs) job.start = job.still;
   await h3SceneFitStills(inputs, ctx, jobs);
-  // A locked clip ends on the same fitted file it starts on.
-  for (const job of jobs) if (h3StillsEndsOnStart(job.scene, inputs.end_on_start_tags)) job.end = job.start;
 
   const used = new Set();
   for (const job of jobs) job.piece = kitPieceName('clip', job.id, job.index, used);

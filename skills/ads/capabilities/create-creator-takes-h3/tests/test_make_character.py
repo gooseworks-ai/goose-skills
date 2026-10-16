@@ -10,7 +10,7 @@ SCRIPT = Path(__file__).resolve().parents[1] / "scripts" / "make_character.py"
 IDENTITY = ["--age", "34", "--gender", "woman", "--ethnicity", "South Asian",
             "--hair", "shoulder-length black hair, slightly frizzy at the crown",
             "--wardrobe", "plain charcoal crew-neck t-shirt",
-            "--scene", "a lived-in home office, a full bookshelf behind her, in focus"]
+            "--scene", "a lived-in home office, a full bookshelf behind her, in focus", "--no-voice-pair"]
 
 
 def run(*args):
@@ -28,7 +28,7 @@ class MakeCharacterPayloadTests(unittest.TestCase):
             # Defaults: GPT Image 2, phone capture in a lived-in room, deep focus, no bokeh, no retouching.
             self.assertEqual(quoted["model"], "openai/gpt-image-2")
             self.assertEqual(quoted["body"]["image_size"], {"width": 1088, "height": 1920})
-            self.assertEqual(quoted["body"]["quality"], "high")
+            self.assertEqual(quoted["body"]["quality"], "medium")  # Standard, the default tier
             self.assertNotIn("seed", quoted["body"])
             prompt = quoted["body"]["prompt"]
             self.assertIn("bokeh background", prompt)
@@ -78,7 +78,7 @@ class MakeCharacterPayloadTests(unittest.TestCase):
     def test_missing_identity_argument_stops_before_any_payload(self):
         with tempfile.TemporaryDirectory() as tmp:
             payload_file = Path(tmp) / "payload.json"
-            without_scene = IDENTITY[:-2]
+            without_scene = IDENTITY[:-3] + ["--no-voice-pair"]
             r = run(*without_scene, "--out", str(Path(tmp) / "c"), "--dry-run",
                     "--payload-out", str(payload_file))
             self.assertNotEqual(r.returncode, 0)

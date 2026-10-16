@@ -16,7 +16,7 @@ Part of [the orchestrator](../orchestrator.md). Its non-negotiables, approvals a
 ### State 3 — Storyboard
 1. **The storyboard is required, even when the owner pre-approved the script, credits or ingredients.** Pre-approval skips the wait for the owner, never the storyboard or its checks. Reuse a saved storyboard only when it matches the approved script and shot plan.
 2. Follow [create-storyboard.md](../create-storyboard.md). It reads VO from `locked_script`, so caption text matches the script.
-3. **INGREDIENT OWNER GATE.** Show the storyboard on the host review surface with the anchors, world, voice, product photos, routes and cost. Show each speaking character's still together with a short audition of its paired voice saying a real script line, so the owner judges them together. Confirm pacing and visual direction before clip credits. A generated preview still needs the approved preview budget. This is the cheapest place to catch a wrong concept. On the kit path, run the kit's make command after this approval.
+3. **INGREDIENT OWNER GATE.** Show the storyboard on the host review surface with the anchors, world, voice, product photos, routes and cost. Show each speaking character's still together with a short audition of its paired voice saying a real script line, so the owner judges them together. A native-speech character (one H3 take speaking its own line) has no separate voice: show the still and the route now, and accept or reject the generated voice with the first take, before any later take. A separate voice is approved only with its person: while a still is pending or blocked, its voice stays pending too, and an audition whose voice differs from `character.voice_pair` is not shown for approval. Confirm pacing and visual direction before clip credits. A generated preview still needs the approved preview budget. This is the cheapest place to catch a wrong concept. On the kit path, run the kit's make command after this approval.
 4. **Coverage and pace.** Use reference-derived targets and the planned cuts and face time from the storyboard step. Every beat needs a viewer purpose and enough time for its action, reading or proof. A long hold is a prompt to check, not a failure; never add arbitrary cuts to meet a quota.
 5. **Shot-mix check before any clip spend.** Run the storyboard's pacing and shot-mix diagnostics and `scripts/reference_shots.py compare` against the reference's shot table, and show the counts. Setups or shots more than 30% under the reference with no listed `shots` change block State 5, pre-approved or not.
 
@@ -29,7 +29,7 @@ Part of [the orchestrator](../orchestrator.md). Its non-negotiables, approvals a
 3. No pause when `visual_style` is clear. If the brief lists several styles, ask at the ingredient gate.
 
 ### State 3.5 — Character lock
-1. Skip when there is no recurring person or a current `character_locks` exists.
+1. Skip when there is no recurring person or a current, complete `character_locks` (anchor, angles and the Phase 2 check) exists. An anchor made in State 2.6 and picked at the ingredient gate continues at Phase 1.
 2. Otherwise follow [lock-character.md](../lock-character.md) with `<character_descriptors>` from the design brief.
 3. Show anchor choices inside the ingredient review. Record real identity evidence, not invented drift percentages.
 4. After lock, `character_locks` is the contract create-clips reads for every scene's references.

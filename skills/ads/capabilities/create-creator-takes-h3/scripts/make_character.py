@@ -28,10 +28,22 @@ hands (apply, smooth, press, peel, squeeze, hold with both hands), a handheld se
 refused and the still is a propped phone (counter) instead, because a selfie with both
 hands busy grows a third hand holding the phone. The output says so.
 
-Voice: character.json records `voice_pair`, from the same age and gender plus
+Voice: character.json records `voice_pair`, from the same age, gender and ethnicity plus
 --voice-accent and --voice-energy: a matched ElevenLabs voice from a saved voice list
 (--voices), or a Voice Design request body (pair_voice.py). Use it for any narration of
-this person, so the voice fits the face and is not another brand's narrator.
+this person, so the voice fits the face and is not another brand's narrator. The voice is
+chosen here, with the person, never earlier in the script. With no voice list the script
+refuses (a silent fallback to a paid Voice Design request was ignored on 15 Oct): pass
+--voices, or --voice-design to quote Voice Design on purpose, or --no-voice-pair for a person
+who is never voiced separately. To change the voice later: pair_voice.py --character
+character.json --voices <list> --exclude <rejected voice_id>.
+
+Quality: --tier standard (default) makes the still at GPT Image 2 medium, --tier best at high.
+--quality high under Standard is an upgrade for this one person and needs a reason
+(--upgrade-reason failed_attempt --upgrade-attempt <operation id> --upgrade-why "<one line>", or
+customer_asked --upgrade-quote "<their words>"); see tiers.py. character.json and the
+--payload-out file record the tier, the quality and any upgrade; `query` is what the paid call
+sends (the upgrade's fields and --shot-scene, for a still made for one scene).
 """
 import argparse
 import json
@@ -44,11 +56,14 @@ HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from pair_voice import load_voices, pair_voice  # noqa: E402
 from plan_takes import both_hands  # noqa: E402
+import tiers  # noqa: E402
 
 # Skin tone follows from ethnicity unless the user overrides it. These are the formula's own
 # vocabulary, not invented: it asks for e.g. "deep brown-black / warm medium brown / olive-tan".
 SKIN = {
     "black": "deep brown with warm red undertones",
+    "black american": "deep brown with warm red undertones",
+    "african american": "deep brown with warm red undertones",
     "african": "deep brown-black with warm undertones",
     "south asian": "warm medium brown with olive undertones",
     "indian": "warm medium brown with olive undertones",
@@ -258,6 +273,28 @@ def build(a):
     return prompt, negative, ident, slots
 
 
+NO_VOICE_LIST = """make_character.py needs a voice list, so the voice is paired with this person (age, gender
+and ethnicity) now, not picked later from a name. Pass one of:
+  --voices voices.json   a saved voice list. Through the GooseWorks MCP: data_call_provider
+                         {provider: "elevenlabs", path: "/v1/voices", project_id} and save the whole reply.
+                         With an ElevenLabs key: GET /v1/voices (or /v2/voices, /v1/shared-voices).
+                         video_formats show:"voices" is a short curated list that names no heritage; it
+                         fits few people.
+  --voice-design         no list: record a paid Voice Design request to quote (not available through
+                         the GooseWorks MCP)
+  --no-voice-pair        this person is never voiced separately (B-roll with no lines, or H3 native speech)"""
+
+
+def voice_refusal(a):
+    """Stop before anything is written when the voice would be paired from nothing."""
+    if a.no_voice_pair and (a.voices or a.voice_design):
+        sys.exit("--no-voice-pair records no voice; leave out --voices and --voice-design")
+    if a.voices and a.voice_design:
+        sys.exit("--voices and --voice-design: pick one (a matched voice from the list, or a Voice Design request)")
+    if not (a.voices or a.voice_design or a.no_voice_pair):
+        sys.exit(NO_VOICE_LIST)
+
+
 def main():
     ap = argparse.ArgumentParser()
     # the user's choices; all required, because there is no default person
@@ -293,7 +330,8 @@ def main():
                     "both-hands action refuses --recording selfie")
     ap.add_argument("--voice-accent", help="how they sound, e.g. american or british (for voice_pair)")
     ap.add_argument("--voice-energy", help="e.g. upbeat, calm, warm (for voice_pair)")
-    ap.add_argument("--voices", help="a saved GET /v1/shared-voices or GET /v2/voices reply to match voice_pair from")
+    ap.add_argument("--voices", help="a saved voice list to match voice_pair from: the GooseWorks MCP's data_call_provider "
+                                     "reply for GET /v1/voices, or an ElevenLabs GET /v1/voices, /v2/voices or /v1/shared-voices reply")
     ap.add_argument("--voice-exclude", action="append", default=[], help="a voice_id not to reuse, e.g. another brand's narrator")
     ap.add_argument("--voice-sample-text", help="100-1000 characters for Voice Design previews")
     ap.add_argument("--marks", action="append", help="specific distinctive mark chosen by the user")
@@ -302,14 +340,27 @@ def main():
     # for cartoons only). A Nano Banana model still takes --resolution and --seed.
     ap.add_argument("--model", default="openai/gpt-image-2")
     ap.add_argument("--resolution", default="4K", choices=["1K", "2K", "4K"], help="Nano Banana models only")
+    ap.add_argument("--quality", choices=tiers.RANK["image_quality"],
+                    help="GPT Image 2 only; default: the tier's (medium Standard, high Best). Above it is an upgrade")
     ap.add_argument("--aspect", default="9:16")
     ap.add_argument("--seed", type=int, default=None)
     ap.add_argument("--out", required=True, type=pathlib.Path)
     ap.add_argument("--dry-run", action="store_true", help="print the prompt, generate nothing")
     ap.add_argument("--payload-out", type=pathlib.Path, default=None,
                     help='write {"model", "body"}, the exact request gen_image.py will send, so it '
-                         "can be quoted before the paid call; works with --dry-run")
+                         "can be priced with data_price_provider before the paid call; works with --dry-run")
+    ap.add_argument("--voice-design", action="store_true",
+                    help="no voice list: record a paid ElevenLabs Voice Design request to quote (not available through the GooseWorks MCP)")
+    ap.add_argument("--no-voice-pair", action="store_true",
+                    help="this person is never voiced separately (B-roll with no lines, or H3 native speech); records no voice_pair")
+    tiers.add_args(ap)
     a = ap.parse_args()
+    voice_refusal(a)
+    gpt = a.model.startswith("openai/gpt-image-2")
+    if a.quality and not gpt:
+        sys.exit("--quality is for openai/gpt-image-2; a Nano Banana model takes --resolution")
+    quality = (a.quality or tiers.default(a, "image_quality")) if gpt else None
+    upgrade = tiers.upgrade(a, "image_quality", quality) if gpt else None
 
     prompt, negative, ident, slots = build(a)
     out = a.out.resolve()
@@ -324,10 +375,18 @@ def main():
     print("prompt   : %d chars -> %s" % (len(prompt), out / "character-prompt.txt"))
     if a.capture_decision["reason"]:
         print("recording: refused selfie, " + a.capture_decision["reason"])
-    voice = pair_voice(a.age, a.gender, a.voice_accent, a.voice_energy,
-                       load_voices(a.voices) if a.voices else None, tuple(a.voice_exclude), a.voice_sample_text)
-    print("voice    : %s" % ("library voice %s (%s)" % (voice["voice_id"], voice.get("name")) if voice["source"] == "library"
-                             else "Voice Design request (paid; quote it first)"))
+    voice = None if a.no_voice_pair else pair_voice(
+        a.age, a.gender, a.voice_accent, a.voice_energy, load_voices(a.voices) if a.voices else None,
+        tuple(a.voice_exclude), a.voice_sample_text, a.ethnicity)
+    if voice is None:
+        print("voice    : none (--no-voice-pair: never voiced separately)")
+    elif voice["source"] == "library":
+        print("voice    : library voice %s (%s), matched on %s; play it next to the still"
+              % (voice["voice_id"], voice.get("name"), ", ".join(voice["matched_on"])))
+    else:
+        print("voice    : %s Voice Design request (paid; quote it first)%s"
+              % ("NO VOICE IN THE LIST FITS this person." if a.voices else "",
+                 "; nearest: " + ", ".join(str(v.get("name") or v["voice_id"]) for v in voice["nearest"]) if voice.get("nearest") else ""))
     # Save the same identity metadata for free planning and actual generation.
     record = {
         "image": "character.png",
@@ -335,8 +394,15 @@ def main():
         "environment": slots["scene"].rstrip("."),
         "capture": a.capture, "recording": a.recording, "focus": a.focus, "shot": a.shot,
         "capture_decision": a.capture_decision, "actions": a.action or [],
-        "distinctive_marks": a.marks or [], "voice_pair": voice, "approval": "pending",
+        "distinctive_marks": a.marks or [], "approval": "pending",
+        "quality_tier": a.tier,
     }
+    if quality:
+        record["quality"] = quality
+    if upgrade:
+        record["upgrade"] = upgrade
+    if voice is not None:
+        record["voice_pair"] = voice
     if a.skin_condition:
         record["skin_condition"] = a.skin_condition
     (out / "character.json").write_text(json.dumps(record, indent=1), encoding="utf-8")
@@ -349,7 +415,7 @@ def main():
             sys.exit("openai/gpt-image-2 takes no seed; leave --seed out")
         w, h = GPT_SIZE[a.aspect]
         payload = {"prompt": prompt + "\n\nAvoid: " + negative, "image_size": {"width": w, "height": h},
-                   "quality": "high"}
+                   "quality": quality}
     else:
         payload = {"prompt": prompt, "negative_prompt": negative, "aspect_ratio": a.aspect,
                    "resolution": a.resolution}
@@ -357,9 +423,15 @@ def main():
             payload["seed"] = a.seed
     if a.payload_out:
         a.payload_out.parent.mkdir(parents=True, exist_ok=True)
-        a.payload_out.write_text(json.dumps({"model": a.model, "body": payload}, indent=1),
+        quote = {"model": a.model, "body": payload, "quality_tier": a.tier}
+        if upgrade:
+            quote["upgrade"] = upgrade
+        if tiers.call_query(a, upgrade):
+            quote["query"] = tiers.call_query(a, upgrade)
+        a.payload_out.write_text(json.dumps(quote, indent=1),
                                  encoding="utf-8")
-        print("payload  : %s (quote this body before the paid call)" % a.payload_out)
+        print("payload  : %s (price it with data_price_provider before the paid call: the body, plus its query "
+              "fields as top-level request fields)" % a.payload_out)
     if a.dry_run:
         print("\n(dry run, nothing generated)")
         return
@@ -368,6 +440,7 @@ def main():
     r = subprocess.run([sys.executable, str(HERE.parent.parent / "create-image-fal" / "scripts"
                                             / "gen_image.py"),
                         "--model", a.model, "--payload", json.dumps(payload),
+                        "--query", json.dumps(tiers.call_query(a, upgrade)),
                         "--out", str(png)])
     if r.returncode or not png.exists():
         sys.exit("image generation failed; nothing written")

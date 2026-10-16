@@ -9,7 +9,7 @@
 // broll: true is silent creator B-roll: each scene names one physical action in
 // extra.action, and "Nobody speaks, lips closed, while <action>." is added; still hands
 // are refused.
-// 1.3.0: end_on_start_tags lists scene tags whose clips end on their own first frame (end_image_url),
+// 1.4.0: end_on_start_tags lists scene tags whose clips end on their own first frame (end_image_url),
 // so a held product cannot finish turned to its back (GOOSE-4034).
 import { kitCheckOutputs, kitDuration, kitPieceName, kitStopIfAborted } from '../../_lib/part.mjs';
 import { kitSceneTag, kitTagKey } from '../../_lib/scene-match.mjs';

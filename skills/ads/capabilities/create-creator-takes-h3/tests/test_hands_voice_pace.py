@@ -42,7 +42,7 @@ class BothHandsTests(unittest.TestCase):
     def test_make_character_refuses_a_selfie_for_a_both_hands_action_and_says_so(self):
         with tempfile.TemporaryDirectory() as tmp:
             out = Path(tmp) / "c"
-            r = run("make_character.py", *IDENTITY, "--recording", "selfie",
+            r = run("make_character.py", *IDENTITY, "--no-voice-pair", "--recording", "selfie",
                     "--action", "she presses the strip onto her nose with both hands", "--out", str(out), "--dry-run")
             self.assertEqual(r.returncode, 0, r.stderr)
             self.assertIn("refused selfie", r.stdout)
@@ -53,7 +53,7 @@ class BothHandsTests(unittest.TestCase):
             self.assertIn("propped up outside the frame and nobody holds it", prompt)
             self.assertNotIn("One hand supports a phone", prompt)
             # A selfie with no both-hands action stays a selfie.
-            r = run("make_character.py", *IDENTITY, "--recording", "selfie", "--action", "she talks to camera",
+            r = run("make_character.py", *IDENTITY, "--no-voice-pair", "--recording", "selfie", "--action", "she talks to camera",
                     "--out", str(Path(tmp) / "d"), "--dry-run")
             self.assertEqual(json.loads((Path(tmp) / "d" / "character.json").read_text())["recording"], "selfie")
 
@@ -100,7 +100,7 @@ class VoicePairTests(unittest.TestCase):
             pair = json.loads((out / "character.json").read_text())["voice_pair"]
             self.assertEqual((pair["source"], pair["voice_id"]), ("library", "acct-f"))
             out2 = Path(tmp) / "d"
-            run("make_character.py", *IDENTITY, "--out", str(out2), "--dry-run")
+            run("make_character.py", *IDENTITY, "--voice-design", "--out", str(out2), "--dry-run")
             self.assertEqual(json.loads((out2 / "character.json").read_text())["voice_pair"]["source"], "voice_design")
 
 

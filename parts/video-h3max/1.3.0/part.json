@@ -141,8 +141,15 @@
         "minimum": 4,
         "maximum": 15
       },
+      "quality_tier": {
+        "description": "Standard (default) or Best, the price the customer picked. Sets the default resolution (768P in both; the finished video is scaled to 1080x1920); an explicit value still wins for the whole step.",
+        "enum": [
+          "standard",
+          "best"
+        ]
+      },
       "resolution": {
-        "description": "H3 native resolution labels. Default 1080P; 768P is the middle option.",
+        "description": "H3 resolution label. Default 768P (both tiers). 1080P only when the customer asks, sent explicitly. fal makes it from a native 768P take plus a refinement pass.",
         "enum": [
           "480P",
           "768P",
@@ -585,18 +592,6 @@
       "broll": {
         "description": "Mode stills: silent creator B-roll. Every picked scene names one physical action that changes the picture in extra.action (apply, peel, press, lift, pour, put down, turn to the mirror); a head turn, blink or smile alone is refused. Each prompt adds \"Nobody speaks, lips closed, while <action>.\"; a prompt asking for still hands (\"keep hands still\", \"no hand touches\", \"minimal movement\") is refused. Sound is stripped (generate_audio defaults to false; true is refused).",
         "type": "boolean"
-      },
-      "end_on_start_tags": {
-        "description": "Mode stills: scene tags (extra.shot or a leading \"Tag:\", compared without case or spacing) whose clips must end on their own first frame, sent as end_image_url. For held or shown products: H3 turned a pouch to its back in 3 of 4 unlocked test clips and in none of 4 locked ones (GOOSE-4034).",
-        "type": "array",
-        "minItems": 1,
-        "maxItems": 40,
-        "uniqueItems": true,
-        "items": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 40
-        }
       },
       "require_product_refs": {
         "description": "Mode stills: opt in to requiring the current real product photo in each product scene's still request, and binding its request evidence to the exact still this clip starts on.",

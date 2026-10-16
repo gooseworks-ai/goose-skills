@@ -1,16 +1,10 @@
 # Human version
 
+**Quality tier (custom videos, 16 Oct 2026).** The customer picks Standard or Best at script approval, and the kit passes it as `quality_tier` (`standard`, the default, or `best`). It sets this part's default resolution: 768P in both tiers. fal makes H3 1080P from a native 768P take plus a refinement pass, and the finished video is scaled to 1080x1920 with ffmpeg (lanczos) for free. An explicit `resolution` still wins for the whole step. The kit has no per-shot upgrades: a custom video's one-shot upgrades go through the server's per-call check instead. 1.2.0 defaulted to 1080P.
+
 `video-h3max` makes short scene clips and timed takes with H3 Max. It keeps native dialogue, including more
 than one speaker, and can return silent copies for later narration. It supplies the scene and take outputs
 needed to move existing Seedance recipes to H3 Max without changing their editing steps.
-
-**New in 1.3.0: `end_on_start_tags`** (mode stills). A list of scene tags (`extra.shot` or a leading
-"Tag:", compared without case or spacing) whose clips must end on their own first frame: the same fitted
-still is sent as `image_url` and `end_image_url`, as `image_to_video` does with `end_image: start`. Use it
-for scenes that hold or show a product. In a paid test (GOOSE-4034, The Cumin Club pouch, four 4 s clips at
-1080P, same stills and seeds), H3 turned the pouch to its back in 3 of 4 unlocked clips, even with "never
-turns to show its back" in the prompt, and in none of the 4 locked ones; no locked clip froze. Locked clips
-move less, about a third of the frame-to-frame change. The lock does not change seeds.
 
 **New in 1.2.0: the light lock and silent B-roll.** Every clip that starts on a first frame (modes
 `stills` and `image_to_video`) now says "Keep the first frame's light and exposure, matte skin, no added
@@ -47,7 +41,8 @@ Use the published `part.json` as the exact input contract. File inputs are FileR
   `references`, `start_image`, `end_image`, and `generate_audio`.
 - Without `clips`, supply `scenes`; `pick`, `skip_first`, and `skip_last` select which scenes are rendered.
   `seconds` defaults to five for scene clips and 15 for takes.
-- `resolution`: `480P`, `768P`, or `1080P` (default). These are H3's actual labels. Seedance's lowercase
+- `resolution`: `480P`, `768P` (default, both tiers), or `1080P`. These are H3's actual labels. 1080P only when the customer
+  asks, sent explicitly. Seedance's lowercase
   labels are rejected; the middle option is `768P`.
 - `aspect_ratio`: `adaptive`, `21:9`, `16:9`, `4:3`, `1:1`, `3:4`, or `9:16` (default).
 - `generate_audio` defaults to true and keeps the provider's native sound. False strips sound locally
@@ -175,7 +170,7 @@ prefix, the take template, numbered timed beats, speaker names and dialogue, a s
 
 ## Cost and verification
 
-The part's documented base rate is USD 0.16 per requested second at 1080P. The official fal page lists
+The part's documented base rate is USD 0.16 per requested second at 1080P (the most a clip can cost; the default 768P is less). The official fal page lists
 0.05 at 480P and 0.08 at 768P. Reference images share a 4,096-token allowance per request; square images
 use 1,024 tokens, 4:3/3:4 use 1,376, 16:9/9:16 use 1,824, and 5:2/2:5 use 2,560. The excess costs
 USD 0.02 per 1,000 tokens, prorated. The line measures its own hosted files and counts supplied

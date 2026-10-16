@@ -211,7 +211,7 @@ export async function run(inputs, ctx) {
           prompt: j.prompt,
           image_url: j.start,
           ...(j.end ? { end_image_url: j.end } : {}),
-          resolution: inputs.resolution ?? '1080p',
+          resolution: inputs.resolution ?? '720p',
           duration: String(j.seconds),
           aspect_ratio: inputs.aspect_ratio ?? '9:16',
           generate_audio: audio,
@@ -220,7 +220,7 @@ export async function run(inputs, ctx) {
       : {
           prompt: j.prompt,
           image_urls: j.refs,
-          resolution: inputs.resolution ?? '1080p',
+          resolution: inputs.resolution ?? '720p',
           duration: j.seconds,
           aspect_ratio: inputs.aspect_ratio ?? '9:16',
           generate_audio: audio,
