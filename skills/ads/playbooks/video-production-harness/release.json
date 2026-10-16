@@ -51,9 +51,9 @@
       "sha256": "c58547d3a806e2f381e324ec06b7b92de73944386bccbabf853cb6580c3015a3"
     },
     "lock-character.md": {
-      "bytes": 8646,
-      "catalog_sha256": "91d71118aa84dc191c632e7aa64d490cf9246feb81b2b94e41f6819052bf64be",
-      "sha256": "91d71118aa84dc191c632e7aa64d490cf9246feb81b2b94e41f6819052bf64be"
+      "bytes": 9305,
+      "catalog_sha256": "892dd32af157b53e15ad88e1ec3b0954d871653006d166a68b933818a150d405",
+      "sha256": "892dd32af157b53e15ad88e1ec3b0954d871653006d166a68b933818a150d405"
     },
     "lock-script.md": {
       "bytes": 8924,
@@ -237,8 +237,8 @@
     },
     "skill.meta.json": {
       "bytes": 683,
-      "catalog_sha256": "fa6548a80ba7ee87c52d57db15c0931ec1ab5812f3be7ae3c7f3d9a071e5f86a",
-      "sha256": "fa6548a80ba7ee87c52d57db15c0931ec1ab5812f3be7ae3c7f3d9a071e5f86a"
+      "catalog_sha256": "6fc340c86660a54565090bf733a88f0edd846ed6a49496638c9af9ada45fd6db",
+      "sha256": "6fc340c86660a54565090bf733a88f0edd846ed6a49496638c9af9ada45fd6db"
     },
     "states/edit-to-delivery.md": {
       "bytes": 7640,
@@ -246,14 +246,14 @@
       "sha256": "b807cd1e3b76dc262e62238f5766885a8b07372683f4ed57f3749f6eb06cbc14"
     },
     "states/setup-and-script.md": {
-      "bytes": 8660,
-      "catalog_sha256": "41ae2fdcba810cda29c9496e49d79f5eb913ec71c48503a3a936486e724c2604",
-      "sha256": "41ae2fdcba810cda29c9496e49d79f5eb913ec71c48503a3a936486e724c2604"
+      "bytes": 8794,
+      "catalog_sha256": "3057597c7c3152e00eeeb493a0bebf16279a658b428e403294a1927aa388774e",
+      "sha256": "3057597c7c3152e00eeeb493a0bebf16279a658b428e403294a1927aa388774e"
     },
     "states/storyboard-and-clips.md": {
-      "bytes": 7226,
-      "catalog_sha256": "3d93c810f198699007744350faee1921b2fb8da18ce37974f3ec0d67693cca9b",
-      "sha256": "3d93c810f198699007744350faee1921b2fb8da18ce37974f3ec0d67693cca9b"
+      "bytes": 7359,
+      "catalog_sha256": "a889e512d3de3fdfcfbac0acb541567cb27432dd2126d23a8e606447ab15f51f",
+      "sha256": "a889e512d3de3fdfcfbac0acb541567cb27432dd2126d23a8e606447ab15f51f"
     },
     "wrap-session.md": {
       "bytes": 5991,
@@ -282,7 +282,7 @@
   ],
   "schema_version": 1,
   "slug": "video-production-harness",
-  "source_commit": "268cdca43b601be748bca82309541cd0523aee15",
+  "source_commit": "9578f7a90cbbc81f7f36a4f819bfabf23a600c7f",
   "source_files": {
     "SKILL.md": {
       "sha256": "3e659d9dc20047c9deb42344749c2e9891b523151c5584c0123111d3f779f855",
@@ -325,7 +325,7 @@
       "source": "edit-video.md"
     },
     "lock-character.md": {
-      "sha256": "91d71118aa84dc191c632e7aa64d490cf9246feb81b2b94e41f6819052bf64be",
+      "sha256": "892dd32af157b53e15ad88e1ec3b0954d871653006d166a68b933818a150d405",
       "source": "lock-character.md"
     },
     "lock-script.md": {
@@ -477,11 +477,11 @@
       "source": "states/edit-to-delivery.md"
     },
     "states/setup-and-script.md": {
-      "sha256": "41ae2fdcba810cda29c9496e49d79f5eb913ec71c48503a3a936486e724c2604",
+      "sha256": "3057597c7c3152e00eeeb493a0bebf16279a658b428e403294a1927aa388774e",
       "source": "states/setup-and-script.md"
     },
     "states/storyboard-and-clips.md": {
-      "sha256": "3d93c810f198699007744350faee1921b2fb8da18ce37974f3ec0d67693cca9b",
+      "sha256": "a889e512d3de3fdfcfbac0acb541567cb27432dd2126d23a8e606447ab15f51f",
       "source": "states/storyboard-and-clips.md"
     },
     "wrap-session.md": {
@@ -489,6 +489,6 @@
       "source": "wrap-session.md"
     }
   },
-  "source_hash": "7d0bd741e81f06f5eff43ea31a98b34731a69a660ab01dcd42c181c23425cd9a",
-  "source_version": "4-7d0bd741e81f"
+  "source_hash": "d365f811e61fa0e44319a417da4a39129a5737555eaec7cc0a74bb649dcb3dde",
+  "source_version": "4-d365f811e61f"
 }

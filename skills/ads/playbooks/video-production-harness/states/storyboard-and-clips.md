@@ -29,7 +29,7 @@ Part of [the orchestrator](../orchestrator.md). Its non-negotiables, approvals a
 3. No pause when `visual_style` is clear. If the brief lists several styles, ask at the ingredient gate.
 
 ### State 3.5 — Character lock
-1. Skip when there is no recurring person or a current `character_locks` exists.
+1. Skip when there is no recurring person or a current, complete `character_locks` (anchor, angles and the Phase 2 check) exists. An anchor made in State 2.6 and picked at the ingredient gate continues at Phase 1.
 2. Otherwise follow [lock-character.md](../lock-character.md) with `<character_descriptors>` from the design brief.
 3. Show anchor choices inside the ingredient review. Record real identity evidence, not invented drift percentages.
 4. After lock, `character_locks` is the contract create-clips reads for every scene's references.
