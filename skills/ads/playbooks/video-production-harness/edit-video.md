@@ -87,7 +87,7 @@ Matching shots need no grade. Never add a cinematic grade to realistic phone foo
 ### Phase 2 — Assemble the picture
 
 1. **Source and speech check.** Use real source hashes, bounds and rates. Native-speaking picture and its audio share source positions; cutaways may differ while the same speech continues. Compare real word boundaries at every join. Missing provenance or timings leaves the step incomplete.
-2. Run `scripts/assemble.py` on the plan. Output the approved ratio (normally 1080×1920), 30 fps, yuv420p, libx264, CRF 18 as a starting point.
+2. Run `scripts/assemble.py` on the plan. Output the approved ratio (normally 1080×1920), 30 fps, yuv420p, libx264, CRF 18 as a starting point. The assembler scales every source to the output size with lanczos, the free upscale that makes Standard's 768P and 480p clips a 1080×1920 file. Never pay for a 1080 render just to get a 1080×1920 file.
 3. Check the duration is within the design-brief target ±1 s, and within ±25% of the reference unless `changes_from_reference` lists `length`.
 
 ### Phase 3 — Music bed
@@ -120,7 +120,7 @@ Matching shots need no grade. Never add a cinematic grade to realistic phone foo
 
 ### Phase 8 — Export and variants
 
-1. Encode MP4, H.264 + AAC, `-movflags +faststart` at the approved ratio. Save its checksum and provenance.
+1. Encode MP4, H.264 + AAC, `-movflags +faststart` at the approved ratio. **Last step: the delivered file is 1080×1920** (9:16). Probe it; a master that came out smaller (a kit output, an old master) is scaled up as the final step, free: `ffmpeg -i in.mp4 -vf scale=1080:1920:flags=lanczos -c:v libx264 -crf 18 -pix_fmt yuv420p -c:a copy -movflags +faststart out.mp4`. Save its checksum and provenance.
 2. Each delivery variant (9:16 Reels, TikTok, Shorts; 1:1 feed) is its own edit: reframe from the clean sources, adapt captions, burn once and run its own final checks. A crop of a captioned master never inherits the parent's approval.
 
 ## Output

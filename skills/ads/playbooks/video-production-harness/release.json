@@ -22,18 +22,18 @@
     },
     "capabilities.md": {
       "bytes": 12853,
-      "catalog_sha256": "1bb476e3710d0d6a7e8d161ad43f10ba8436165dd1caa5c4586643d95fd81754",
-      "sha256": "1bb476e3710d0d6a7e8d161ad43f10ba8436165dd1caa5c4586643d95fd81754"
+      "catalog_sha256": "bce1223062b67613873816b2a08e53e9316a7d2767ae8aec7154e3c52ba5519b",
+      "sha256": "bce1223062b67613873816b2a08e53e9316a7d2767ae8aec7154e3c52ba5519b"
     },
     "create-clips.md": {
-      "bytes": 15308,
-      "catalog_sha256": "ffdf6618516e5f2c74694ccd9ad25e6a54965e3cf5f118a1f2d70c013c803801",
-      "sha256": "ffdf6618516e5f2c74694ccd9ad25e6a54965e3cf5f118a1f2d70c013c803801"
+      "bytes": 15353,
+      "catalog_sha256": "51f742d63e3aef002ff0f54132de1e6e16932829e18f95a221ee3bb3e85920b2",
+      "sha256": "51f742d63e3aef002ff0f54132de1e6e16932829e18f95a221ee3bb3e85920b2"
     },
     "create-design-brief.md": {
-      "bytes": 12367,
-      "catalog_sha256": "becf03efc8ab36e965ecfb3f7a7e4a32a5230f991289b14073802a347f21ba89",
-      "sha256": "becf03efc8ab36e965ecfb3f7a7e4a32a5230f991289b14073802a347f21ba89"
+      "bytes": 13200,
+      "catalog_sha256": "d790f4d4942037a18e0550416441efff28efc54c8937e5522a8558ece4d741c3",
+      "sha256": "d790f4d4942037a18e0550416441efff28efc54c8937e5522a8558ece4d741c3"
     },
     "create-storyboard.md": {
       "bytes": 8739,
@@ -46,9 +46,9 @@
       "sha256": "201b2b29880eee010543d65582a9a982643592555810ac5f93f0431b6cfbacd4"
     },
     "edit-video.md": {
-      "bytes": 12267,
-      "catalog_sha256": "c58547d3a806e2f381e324ec06b7b92de73944386bccbabf853cb6580c3015a3",
-      "sha256": "c58547d3a806e2f381e324ec06b7b92de73944386bccbabf853cb6580c3015a3"
+      "bytes": 12767,
+      "catalog_sha256": "c4a09e01bda556894de772b34510c72df39a8b200b8df7e26aaf337f3422008e",
+      "sha256": "c4a09e01bda556894de772b34510c72df39a8b200b8df7e26aaf337f3422008e"
     },
     "lock-character.md": {
       "bytes": 8646,
@@ -140,6 +140,11 @@
       "catalog_sha256": "fab9107769fe9fcee0c5e78b2377b53ac8645e05cbd84512066618483f2b30fa",
       "sha256": "fab9107769fe9fcee0c5e78b2377b53ac8645e05cbd84512066618483f2b30fa"
     },
+    "references/quality-tier.md": {
+      "bytes": 2828,
+      "catalog_sha256": "96a8ca61eb57b06f4f1141040f7a14a9698f9e4d23f0128bc3f531847e3f5804",
+      "sha256": "96a8ca61eb57b06f4f1141040f7a14a9698f9e4d23f0128bc3f531847e3f5804"
+    },
     "references/recipe-format.md": {
       "bytes": 6667,
       "catalog_sha256": "abb79c545ddae49c113ff5e3b7e4ba9641d8c24da109a7f655b5feb6a44252db",
@@ -151,19 +156,19 @@
       "sha256": "4ac7da771547c0c6c6f33fae652d35c25ddcd1ee35c3508523f130fbe43389cb"
     },
     "references/shot-routing.md": {
-      "bytes": 13328,
-      "catalog_sha256": "f09842a7392ed7be228c31197b1adbd831a94a1ff19e7140fad2689f67fa6ca6",
-      "sha256": "f09842a7392ed7be228c31197b1adbd831a94a1ff19e7140fad2689f67fa6ca6"
+      "bytes": 14516,
+      "catalog_sha256": "e58c8e3fe21a4c76327e047c272165f2c67394683f9d9bd6b072bf04e03271d0",
+      "sha256": "e58c8e3fe21a4c76327e047c272165f2c67394683f9d9bd6b072bf04e03271d0"
     },
     "references/specialist-handoff.md": {
       "bytes": 3646,
-      "catalog_sha256": "d6be421deda8cbe13b488d43db3f8482cd697dccf6c0c63ef4cf1eca86db4edf",
-      "sha256": "d6be421deda8cbe13b488d43db3f8482cd697dccf6c0c63ef4cf1eca86db4edf"
+      "catalog_sha256": "08f3b5f8a8ac35b8e1a8d20fea784655210a2b1625500170748c06df27b2450a",
+      "sha256": "08f3b5f8a8ac35b8e1a8d20fea784655210a2b1625500170748c06df27b2450a"
     },
     "references/speech-and-route-qualification.md": {
-      "bytes": 8062,
-      "catalog_sha256": "70133ac1d27160a34366232cc52020b6145f47f8e0315a8aa286c52196602b47",
-      "sha256": "70133ac1d27160a34366232cc52020b6145f47f8e0315a8aa286c52196602b47"
+      "bytes": 9135,
+      "catalog_sha256": "18e9a81020403981da8ef4f58337ba7980b04c4eff0fc8bdbb84a89db2c849c7",
+      "sha256": "18e9a81020403981da8ef4f58337ba7980b04c4eff0fc8bdbb84a89db2c849c7"
     },
     "review-video.md": {
       "bytes": 15347,
@@ -171,9 +176,9 @@
       "sha256": "f152f4b5271604f0f78177b34dbb2c2f9c5ee67edf49642df42a7e50e435985c"
     },
     "scripts/assemble.py": {
-      "bytes": 11189,
-      "catalog_sha256": "1f9014c219387f3613fc5f278aaabe151c547f4d9dc0be91191afc72d5ae0cc9",
-      "sha256": "1f9014c219387f3613fc5f278aaabe151c547f4d9dc0be91191afc72d5ae0cc9"
+      "bytes": 11323,
+      "catalog_sha256": "f5dd2003dbce9b458eb1afbb87e6360ce5fe18e7aa9126a33de703c947559065",
+      "sha256": "f5dd2003dbce9b458eb1afbb87e6360ce5fe18e7aa9126a33de703c947559065"
     },
     "scripts/assemble_sources.py": {
       "bytes": 5875,
@@ -237,18 +242,18 @@
     },
     "skill.meta.json": {
       "bytes": 683,
-      "catalog_sha256": "22b467173034f6f69a0bfda4fc69236495305baf90c3c73f7f80ed65b649c635",
-      "sha256": "22b467173034f6f69a0bfda4fc69236495305baf90c3c73f7f80ed65b649c635"
+      "catalog_sha256": "332a1d0144de5d7b563e04e2621a10313941ce0e2c4b5080065273878c3a9a6e",
+      "sha256": "332a1d0144de5d7b563e04e2621a10313941ce0e2c4b5080065273878c3a9a6e"
     },
     "states/edit-to-delivery.md": {
-      "bytes": 7640,
-      "catalog_sha256": "b807cd1e3b76dc262e62238f5766885a8b07372683f4ed57f3749f6eb06cbc14",
-      "sha256": "b807cd1e3b76dc262e62238f5766885a8b07372683f4ed57f3749f6eb06cbc14"
+      "bytes": 7799,
+      "catalog_sha256": "23db326a03fabe7f9e510b384dd4aff42d876110d2d09ae7cc3a0654bea542d6",
+      "sha256": "23db326a03fabe7f9e510b384dd4aff42d876110d2d09ae7cc3a0654bea542d6"
     },
     "states/setup-and-script.md": {
-      "bytes": 8660,
-      "catalog_sha256": "41ae2fdcba810cda29c9496e49d79f5eb913ec71c48503a3a936486e724c2604",
-      "sha256": "41ae2fdcba810cda29c9496e49d79f5eb913ec71c48503a3a936486e724c2604"
+      "bytes": 9036,
+      "catalog_sha256": "40c18473f647455cc93e3c922ce52849481c20e5493b86a807756f6167569681",
+      "sha256": "40c18473f647455cc93e3c922ce52849481c20e5493b86a807756f6167569681"
     },
     "states/storyboard-and-clips.md": {
       "bytes": 7226,
@@ -282,7 +287,7 @@
   ],
   "schema_version": 1,
   "slug": "video-production-harness",
-  "source_commit": "a56ef6fb2ee0b9404399e42e64a08db50fc7a0de",
+  "source_commit": "c886f2dfe9d540406a47569425d1c270a9af1a25",
   "source_files": {
     "SKILL.md": {
       "sha256": "3e659d9dc20047c9deb42344749c2e9891b523151c5584c0123111d3f779f855",
@@ -301,15 +306,15 @@
       "source": "brainstorm.md"
     },
     "capabilities.md": {
-      "sha256": "1bb476e3710d0d6a7e8d161ad43f10ba8436165dd1caa5c4586643d95fd81754",
+      "sha256": "bce1223062b67613873816b2a08e53e9316a7d2767ae8aec7154e3c52ba5519b",
       "source": "capabilities.md"
     },
     "create-clips.md": {
-      "sha256": "ffdf6618516e5f2c74694ccd9ad25e6a54965e3cf5f118a1f2d70c013c803801",
+      "sha256": "51f742d63e3aef002ff0f54132de1e6e16932829e18f95a221ee3bb3e85920b2",
       "source": "create-clips.md"
     },
     "create-design-brief.md": {
-      "sha256": "becf03efc8ab36e965ecfb3f7a7e4a32a5230f991289b14073802a347f21ba89",
+      "sha256": "d790f4d4942037a18e0550416441efff28efc54c8937e5522a8558ece4d741c3",
       "source": "create-design-brief.md"
     },
     "create-storyboard.md": {
@@ -321,7 +326,7 @@
       "source": "edit-clip.md"
     },
     "edit-video.md": {
-      "sha256": "c58547d3a806e2f381e324ec06b7b92de73944386bccbabf853cb6580c3015a3",
+      "sha256": "c4a09e01bda556894de772b34510c72df39a8b200b8df7e26aaf337f3422008e",
       "source": "edit-video.md"
     },
     "lock-character.md": {
@@ -396,6 +401,10 @@
       "sha256": "fab9107769fe9fcee0c5e78b2377b53ac8645e05cbd84512066618483f2b30fa",
       "source": "references/product-scale-and-world.md"
     },
+    "references/quality-tier.md": {
+      "sha256": "96a8ca61eb57b06f4f1141040f7a14a9698f9e4d23f0128bc3f531847e3f5804",
+      "source": "references/quality-tier.md"
+    },
     "references/recipe-format.md": {
       "sha256": "abb79c545ddae49c113ff5e3b7e4ba9641d8c24da109a7f655b5feb6a44252db",
       "source": "references/recipe-format.md"
@@ -405,15 +414,15 @@
       "source": "references/review-script-shortform.md"
     },
     "references/shot-routing.md": {
-      "sha256": "f09842a7392ed7be228c31197b1adbd831a94a1ff19e7140fad2689f67fa6ca6",
+      "sha256": "e58c8e3fe21a4c76327e047c272165f2c67394683f9d9bd6b072bf04e03271d0",
       "source": "references/shot-routing.md"
     },
     "references/specialist-handoff.md": {
-      "sha256": "d6be421deda8cbe13b488d43db3f8482cd697dccf6c0c63ef4cf1eca86db4edf",
+      "sha256": "08f3b5f8a8ac35b8e1a8d20fea784655210a2b1625500170748c06df27b2450a",
       "source": "references/specialist-handoff.md"
     },
     "references/speech-and-route-qualification.md": {
-      "sha256": "70133ac1d27160a34366232cc52020b6145f47f8e0315a8aa286c52196602b47",
+      "sha256": "18e9a81020403981da8ef4f58337ba7980b04c4eff0fc8bdbb84a89db2c849c7",
       "source": "references/speech-and-route-qualification.md"
     },
     "review-video.md": {
@@ -421,7 +430,7 @@
       "source": "review-video.md"
     },
     "scripts/assemble.py": {
-      "sha256": "1f9014c219387f3613fc5f278aaabe151c547f4d9dc0be91191afc72d5ae0cc9",
+      "sha256": "f5dd2003dbce9b458eb1afbb87e6360ce5fe18e7aa9126a33de703c947559065",
       "source": "scripts/assemble.py"
     },
     "scripts/assemble_sources.py": {
@@ -473,11 +482,11 @@
       "source": "scripts/timeline_rules.py"
     },
     "states/edit-to-delivery.md": {
-      "sha256": "b807cd1e3b76dc262e62238f5766885a8b07372683f4ed57f3749f6eb06cbc14",
+      "sha256": "23db326a03fabe7f9e510b384dd4aff42d876110d2d09ae7cc3a0654bea542d6",
       "source": "states/edit-to-delivery.md"
     },
     "states/setup-and-script.md": {
-      "sha256": "41ae2fdcba810cda29c9496e49d79f5eb913ec71c48503a3a936486e724c2604",
+      "sha256": "40c18473f647455cc93e3c922ce52849481c20e5493b86a807756f6167569681",
       "source": "states/setup-and-script.md"
     },
     "states/storyboard-and-clips.md": {
@@ -489,6 +498,6 @@
       "source": "wrap-session.md"
     }
   },
-  "source_hash": "f539fa2897fc3542e29c19a371c4a723e3b02f79f814ad1c5721b9a37bfdfd50",
-  "source_version": "4-f539fa2897fc"
+  "source_hash": "6c7424cc552b99d6defbd52b348072f02c23e478556f6e32c32822467187aa55",
+  "source_version": "4-6c7424cc552b"
 }

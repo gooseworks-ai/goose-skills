@@ -19,9 +19,9 @@
     "write-video-ad-script"
   ],
   "slug": "video-production-harness",
-  "source_commit": "a56ef6fb2ee0b9404399e42e64a08db50fc7a0de",
-  "source_hash": "f539fa2897fc3542e29c19a371c4a723e3b02f79f814ad1c5721b9a37bfdfd50",
-  "source_version": "4-f539fa2897fc",
+  "source_commit": "c886f2dfe9d540406a47569425d1c270a9af1a25",
+  "source_hash": "6c7424cc552b99d6defbd52b348072f02c23e478556f6e32c32822467187aa55",
+  "source_version": "4-6c7424cc552b",
   "tags": [
     "ads",
     "content"

@@ -20,16 +20,24 @@ Legacy audio_strategy is compatibility only (vo-narrator → narration after che
 for native speech, song-as-script → singing, hybrid → mixed); ambiguous records stay
 incomplete, and empty ASR output never proves silence.
 
-| Visible performance and voice requirement | Route | Acceptance condition |
-|---|---|---|
-| Usable authorized recorded speech exists | Preserve recording | Check source picture/audio timing and full performance |
-| Non-speaking picture needs explanation | External narration | Accept voice and measured speech before final scene timing |
-| Generated creator speaks across several clips (default) | Voice first: `exact_audio_lipsync`, final ElevenLabs line then one lip-sync per line, one line per clip | Accept every line before lip-sync; each clip within 0.5 s of its line |
-| Generated creator speaks in one take of 15 s or less | `qualified_native` H3 | At most 3.2 words/s; cut only between sentences; never retimed; review the take's face, voice and words |
-| Speaking creator must use exact supplied audio | Qualified audio-driven lip-sync | Lock the exact driver, verify documented task and matched result |
-| Speaking creator needs timbre/accent but no exact recording | Supported native voice-reference route, otherwise accepted external voice plus lip-sync | Audition actual voice; timbre conditioning is not waveform reuse |
-| No speech wanted | Non-speaking picture | Choose ambience/music/SFX or intentional silence independently |
-| Multiple speakers | Qualified dialogue/per-speaker route | Supported speaker control and correct voice-to-mouth assignment |
+| Visible performance and voice requirement | Route | Standard / Best | Acceptance condition |
+|---|---|---|---|
+| Usable authorized recorded speech exists | Preserve recording | same | Check source picture/audio timing and full performance |
+| Non-speaking picture needs explanation | External narration | same voice (ElevenLabs v4); picture per [shot routing](shot-routing.md) | Accept voice and measured speech before final scene timing |
+| Generated creator speaks across several clips (default) | Voice first: `exact_audio_lipsync`, final ElevenLabs line then one lip-sync per line, one line per clip | Fabric **480p** / **720p** | Accept every line before lip-sync; each clip within 0.5 s of its line |
+| Generated creator speaks in one take of 15 s or less | `qualified_native` H3 | H3 768P / 768P | At most 3.2 words/s; cut only between sentences; never retimed; review the take's face, voice and words |
+| Speaking creator must use exact supplied audio | Qualified audio-driven lip-sync | Fabric 480p / 720p | Lock the exact driver, verify documented task and matched result |
+| Speaking creator needs timbre/accent but no exact recording | Supported native voice-reference route, otherwise accepted external voice plus lip-sync | same as the route it lands on | Audition actual voice; timbre conditioning is not waveform reuse |
+| No speech wanted | Non-speaking picture | H3 768P / 768P; Best: 1080P for labels, logos, text or a skin close-up, Seedance 1080p only with no face | Choose ambience/music/SFX or intentional silence independently |
+| Multiple speakers | Qualified dialogue/per-speaker route | H3 768P / 768P | Supported speaker control and correct voice-to-mouth assignment |
+
+**Quality tier.** The customer's Standard or Best (`quality_tier`) sets the column above; the
+lip-sync model is the same at both, only the resolution changes. A talking shot that fails its
+check at 480p is upgraded to 720p for that shot only, by the rule in
+[shot routing](shot-routing.md): retry once at the same setting when a prompt or still fix should
+work, upgrade straight away when 480p probably can't do it (fast speech, a close-up mouth), and
+record the one-line reason with the failed attempt. Choose the resolution before the first
+lip-sync or take: switching re-rolls it.
 
 ## Lip-sync only for a speaking face
 
@@ -81,9 +89,9 @@ failures suspend that use until a corrected take is reviewed.
 | Kling 2.5 Turbo | **Withdrawn.** Creator B-roll uses `video-h3max` stills mode (native audio muted, "nobody speaks, lips closed"); product-only motion uses `video-seedance-2` |
 | Veo 3.1 Fast | fal retires the endpoint on 17 Nov 2026 (noted 15 Oct 2026); keep it until a bake-off picks a replacement |
 | Nano Banana | Cartoons only; real people and real products use `image-gpt-image-2` edit, and packaging comes from the real photo through `overlay` |
-| Veed Fabric 1.0 | Not a close-up fallback; review a first take and the final lip-sync |
+| Veed Fabric 1.0 | Not a close-up fallback; review a first take and the final lip-sync; 480p under Standard, 720p under Best or as a one-shot upgrade |
 | H3 Max creator | No unconditional exact-script default or unchecked batch; keep evaluated configurations with first-take acceptance, voice consistency and linked audio |
-| Veo/Seedance complex actions | Representative action and product-fidelity qualification first |
+| Veo/Seedance complex actions | Representative action and product-fidelity qualification first; Seedance only for shots with no face, at 1080p |
 | Grounded stills/cards/overlays | Valid for their own jobs; never a substitute for motion or physical proof |
 | Image-family substitution | Keep the selected family; a change needs qualification and ingredient approval |
 | ElevenLabs narration | Keep the accepted voice and settings |
@@ -93,7 +101,7 @@ not qualify animated gaze or handling.
 
 ## Selected new part interfaces
 
-Use creator-h3@1.6.0 fields only with that version or a compatible newer contract.
+Use creator-h3@1.7.0 fields only with that version or a compatible newer contract (1.7.0 adds `quality_tier`; takes default to 768P).
 Carry creative_contract_revision and `reference_words_per_second` (from `../scripts/reference_rate.py`).
 Native speech has no voice pair: the person is made with `--no-voice-pair`, and the take's
 own voice is accepted or rejected with the first take. A separate voice (voice-elevenlabs)

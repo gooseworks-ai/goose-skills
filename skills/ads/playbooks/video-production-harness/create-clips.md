@@ -24,7 +24,7 @@ Make one MP4 per scene, plus voice files where the audio plan needs them, and re
 - End card: its routing row. The timeline holds it as a declared end-card freeze (at most 3.0 s, at the end).
 - Synthetic narrator (agent-built path): `create-vo-elevenlabs` (superseded; kept for this path).
 - Long-form source voice: cut at transcript word boundaries with `ffmpeg -ss <start> -to <end>`.
-- Lip-sync onto a still: `create-video-fal` with `veed/fabric-1.0`, only on shots marked `speaking_on_camera`, after the line is final, once per line. Review one take, then the rest in parallel.
+- Lip-sync onto a still: `create-video-fal` with `veed/fabric-1.0`, only on shots marked `speaking_on_camera`, once per final line. Review one take, then the rest in parallel.
 
 **B-roll copy rule.** Card text mirrors the audio under it, in literal phrases from `locked_script` ("HOOPS" for "basketball" hurts comprehension). Keep owner-approved wording. No copy over an already readable product or UI layer.
 
@@ -51,13 +51,7 @@ Bind the real identity, product and scale references. State each load-bearing co
 - **No brand or UI text typed into any image prompt.** Image models garble words ("EXAMPLE" becomes "EXAMPEL"). "Unlabeled" is for non-brand objects only (neutral screens, props); add their text in post. The advertised product keeps its real label: a pack held or used on screen is made on the edit route with the real product photo as reference image 1, front label facing the camera, and each use state from a real brand photo ([product scale and world](references/product-scale-and-world.md)). Never ask for a blank, unprinted, unlabelled or back-facing pack; one on screen is P0.
 - **Resolve each model's real reference and start-image fields** through the binding. Upload local files through the host first and use the returned media id. `.avif` references are rejected.
 - **Dark or vignetted keyframes fail in Veo.** Use a neutral background; grade in post.
-- **fal is the default gateway.** A generation counts as failed, and triggers the fallback router, when any of these happen:
-  1. The submit operation raises (network, auth, server error).
-  2. The job-status operation returns `failed`.
-  3. The result says success but the output URL 404s.
-  4. The download is under 1 KB for an image or 10 KB for a video (error JSON).
-  5. The provider returns a credit-limit or insufficient-credits error.
-  6. The job passes a 10-minute timeout (15 minutes for Veo and Seedance).
+- **fal is the default gateway.** A generation counts as failed, and triggers the fallback router, when: the submit raises; the job status is `failed`; the output URL 404s; a download under 1 KB (image) or 10 KB (video); a credit-limit error; or the job passes 10 minutes (15 for Veo and Seedance).
 
   On a failure, reconcile the known job and resolve a supported fallback row from shot routing inside the approved budget. If none exists, record `fallback_unavailable` and surface it. A 429 is not a failure: back off and retry the same provider.
 
@@ -90,15 +84,15 @@ Only for scenes routed to image-to-video or an approved generated still. Reuse v
 1. **Scenes with the locked person:** send the locked anchor as a confirmed reference in the model's real image-reference field. The prompt carries the verbatim `<character_descriptors>` from `design_brief` plus the scene action.
 2. **Scenes without the person:** cartoon scenes use the style anchor as a style reference; photoreal product scenes send the real product photo as reference image 1 on the edit route (a held pack: front label to camera) and describe the action and set, not the product.
 3. Use the approved aspect ratio (normally 9:16) and the scene's routing row. Submit through the host's image-generation operation (keyframes may run in parallel), poll the returned request and save `generated/keyframes/scene-NN.png`. On a failure, use the fallback router above.
-4. Inspect every keyframe before animating: exact variant and geometry, sourced scale, contact, crop, text space and continuity ([product scale and world](references/product-scale-and-world.md)). Compare people to accepted anchors without invented drift percentages.
+4. Inspect every keyframe before animating: exact variant and geometry, sourced scale, contact, crop, text space and continuity ([product scale and world](references/product-scale-and-world.md)). Compare people to accepted anchors without invented drift percentages. A failed keyframe follows the [quality tier](references/quality-tier.md) upgrade rule.
 5. **Keep the gateway.** Read the keyframe's `<output>.meta.json`; animate that scene on the same provider unless the operator overrides.
 
 ### Phase 2 — Animate clips
 
 Only for missing or invalid generative animation the plan assigns.
-1. Submit through the host's video-generation operation on the scene's routing row. Take ratio, duration and start image from the confirmed keyframe. Use a short, motion-only prompt.
+1. Submit through the host's video-generation operation on the scene's routing row, at its routing line's resolution (switching re-rolls the take). Take ratio, duration and start image from the confirmed keyframe. Use a short, motion-only prompt.
 2. Poll the returned request and save `clips/scene-NN.mp4`.
-3. **Clip check, one redo.** After each generated clip, upload it, confirm it and send `video_change` custom `clip_check` `{scene, url}` with the returned `output_url`. About a minute later read `video_read` `clip_checks`; pending is not passed. If the check says to throw the clip away (`suggest_kill`), redo it once: send the same paid call with `reroll_scene=<scene>`, then check the new clip. If that also fails, exclude both candidates from the passing assembly, tell the customer in one plain line and continue. Never a second redo. If the redo is refused, read the fix it gives. Record every check in the manifest. A host without clip checks needs the manual content duties in [creative contract and review](references/creative-contract-and-review.md).
+3. **Clip check, one redo.** After each generated clip, upload it, confirm it and send `video_change` custom `clip_check` `{scene, url}` with the returned `output_url`. About a minute later read `video_read` `clip_checks`; pending is not passed. If the check says to throw the clip away (`suggest_kill`), redo it once by the [quality tier](references/quality-tier.md) rule: the same call with `reroll_scene=<scene>`, or the upgrade (`upgrade` cites the failed attempt and `why`) when the setting can't do it. Check the new clip. If that also fails, exclude both candidates from the passing assembly, tell the customer in one plain line and continue. Never a second redo. If the redo is refused, read the fix it gives. Record every check in the manifest. A host without clip checks needs the manual content duties in [creative contract and review](references/creative-contract-and-review.md).
 4. **Failures.** Reconcile jobs first. If the fallback also fails on the same scene, the prompt or keyframe is the likely cause: surface both errors to the operator. Never loop retries.
 5. **Concurrency.** About 3 ElevenLabs requests at once; 2-3 concurrent fal jobs.
 

@@ -51,6 +51,7 @@ def picture_filter(segment,info,width,height,fps):
     Resolution scaling is allowed (H3's 432x768 fills 1080x1920 at zoom 1.0). The cap is on zoom:
     the crop's fill scale divided by the full source frame's fill scale. On a source below the
     output's resolution (lip-sync's 720p) the crop multiplies with that upscale, so it may zoom 1.1x.
+    Every scale uses lanczos: this is the free upscale that makes a 768P or 480p source a 1080x1920 file.
     """
     source=segment['video']; stream=next(s for s in info['streams'] if s['codec_type']=='video')
     src_w,src_h=int(stream['width']),int(stream['height'])
@@ -62,11 +63,11 @@ def picture_filter(segment,info,width,height,fps):
         scale_x=crop.get('scale_x',source.get('scale_x')); scale_y=crop.get('scale_y',source.get('scale_y'))
         if abs(crop['w']*scale_x-width)>2 or abs(crop['h']*scale_y-height)>2:
             raise ValueError(f'{segment["id"]}: crop times scale must fill {width}x{height}')
-        frame=f'crop={crop["w"]}:{crop["h"]}:{crop["x"]}:{crop["y"]},scale={width}:{height}'
+        frame=f'crop={crop["w"]}:{crop["h"]}:{crop["x"]}:{crop["y"]},scale={width}:{height}:flags=lanczos'
         zoom=zoom_factor(crop,src_w,src_h,width,height)
     else:
         scale_x=scale_y=max(width/src_w,height/src_h)
-        frame=f'scale={width}:{height}:force_original_aspect_ratio=increase,crop={width}:{height}'
+        frame=f'scale={width}:{height}:force_original_aspect_ratio=increase:flags=lanczos,crop={width}:{height}'
         zoom=1.0
     if abs(scale_x/scale_y-1)>MAX_STRETCH:
         raise ValueError(f'{segment["id"]}: uneven stretch; keep people and products in proportion')

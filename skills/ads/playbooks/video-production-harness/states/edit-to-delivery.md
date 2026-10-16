@@ -46,7 +46,7 @@ Part of [the orchestrator](../orchestrator.md). Its non-negotiables, approvals a
 
 ### State 10 — Deliver
 1. Burn approved captions on the polished picture as the last visual step: `caption-burn` (superseded; agent-built path; the kit path uses captions-layer), which needs no libass, or the packaged ASS path with verified libass and fonts. The style comes from the brand brief.
-2. Check caption spelling, word timing, safe areas, text-heavy scenes and collisions with the end card, offer or logo.
+2. Check caption spelling, word timing, safe areas, text-heavy scenes and collisions with the end card, offer or logo. Probe the final file: a 9:16 delivery is 1080×1920 at both tiers (Standard's 768P picture is scaled up with lanczos, [edit-video](../edit-video.md) Phase 8).
 3. Export MP4 (H.264 + AAC). `../scripts/qc_evidence.py` must exit 0 on the exact bytes. Bind the current content_review, hash and revisions; every required duty must be complete.
 4. Build each ratio, cutdown or language from editable sources with its own caption layout, and review each output at destination size, ending included. A parent master's check does not clear a derivative.
 5. Show the captioned master and variants for the host's delivery decision; follow [promote.md](../promote.md) to complete and select. GooseWorks' check on complete adds to this; it does not replace it.
