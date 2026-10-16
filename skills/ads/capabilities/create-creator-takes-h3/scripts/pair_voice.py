@@ -91,10 +91,13 @@ HERITAGE_ALIASES = [
 # person) but never a sibling ("arab:egyptian"); a Chinese voice fits a Cantonese person, a Mandarin one doesn't.
 # "native American" in "a native American English speaker" is about the language, not heritage.
 LANGUAGE_NATIVE = re.compile(r"\bnative (?=(american|british|english|australian|canadian)( english)? (speaker|accent|english|voice\b(?! (actor|actress|artist|talent|over))))")
-# A White person takes a voice that names no heritage; these words mark no voice.
+# A White person takes a voice that names no other heritage; a voice described with these words
+# fits only a White person ("White South African" is not a Black South African's voice).
 WHITE_WORDS = ("white", "caucasian", "european")
+# Words that look like heritage but name something else.
+NOT_HERITAGE = re.compile(r"\bblack metal\b")
 # A mixed heritage checks nothing: "biracial Black/Latino" is not one heritage's voices only.
-MIXED = re.compile(r"\b(mixed|bi[- ]?racial|multi[- ]?racial|multi[- ]?ethnic)\b")
+MIXED = re.compile(r"\b(mixed|bi[- ]?racial|multi[- ]?racial|multi[- ]?ethnic|afro[- ]?latin\w*)\b")
 ASIAN = {"asian", "east_asian", "southeast_asian"}
 # "Black" also describes African and Caribbean people: "Black Nigerian" is Nigerian, and a voice
 # described as "Black Nigerian" fits them, but a voice described only as "Black" does not.
@@ -102,7 +105,7 @@ BLACK_ALSO = {"african", "caribbean"}
 # Accent labels that count as the wanted accent, one way only: an "african american" accent is
 # american; an "american" accent is never "african".
 ACCENT_ALIASES = {
-    "american": {"african_american", "us_southern", "us_midwest", "new_york", "general_american", "standard_american"},
+    "american": {"african_american", "black_american", "afro_american", "us_southern", "us_midwest", "new_york", "general_american", "standard_american"},
     "indian": {"en_indian"},
 }
 MCP_NO_DESIGN = ("The GooseWorks MCP cannot run Voice Design (its ElevenLabs calls are speech, music and "
@@ -132,6 +135,7 @@ def norm(value):
 def words_in(text):
     """Every (heritage, specific) the text names, longest phrase first, each found phrase removed."""
     text = LANGUAGE_NATIVE.sub("", " ".join(re.sub(r"[-_/,.()|&+]", " ", text.lower()).split()))
+    text = NOT_HERITAGE.sub(" ", text)
     found = set()
     for word, group, specific in sorted(HERITAGE_ALIASES, key=lambda row: -len(row[0])):
         pattern = r"\b%s\b" % re.escape(word)
@@ -204,9 +208,13 @@ def voice_record(voice):
 
 
 def voice_heritages(voice, labels):
-    """Every (heritage, specific) the voice's accent, descriptive label, description or name names."""
-    return words_in(" ".join([labels.get("accent", ""), labels.get("descriptive", ""), text_of(voice.get("description")),
-                              text_of(raw_labels(voice).get("description")), text_of(voice.get("name"))]))[0]
+    """Every (heritage, specific) the voice's accent, descriptive label, description or name names,
+    with ("white", None) when it says White."""
+    found, rest = words_in(" ".join([labels.get("accent", ""), labels.get("descriptive", ""), text_of(voice.get("description")),
+                                     text_of(raw_labels(voice).get("description")), text_of(voice.get("name"))]))
+    if any(re.search(r"\b%s\b" % w, rest) for w in WHITE_WORDS):
+        found.add(("white", None))
+    return found
 
 
 def age_fit(age, label):
@@ -224,7 +232,7 @@ def years_from_band(age, label):
     """How many years the age is from the voice's age band (0 inside it); far when unlabelled."""
     for lo, hi, band in AGE_BANDS:
         if band == label:
-            return 0 if age is None or lo <= age < hi else (lo - age if age < lo else age - hi + 1)
+            return 0 if age is None or lo <= age < hi else (lo - age if age < lo else age - hi)
     return 999
 
 
@@ -253,7 +261,7 @@ def heritage_fits(person, found):
     if person is None:
         return True
     if person == "white":
-        return not found
+        return found <= {("white", None)}
     specifics = [sp for _, sp in found if sp]
     if any(not specific_fits(a, b) for i, a in enumerate(specifics) for b in specifics[i + 1:]):
         return False  # "Indian and Pakistani" names two heritages; it fits neither, not even "South Asian"

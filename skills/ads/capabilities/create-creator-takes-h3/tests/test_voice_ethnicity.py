@@ -286,6 +286,22 @@ class SecondReviewTests(unittest.TestCase):
             self.assertIsNone(heritage(ethnicity), ethnicity)
         self.assertEqual(pair_voice(40, "man", "american", None, [JON], ethnicity="bi-racial Black")["voice_id"], "jon")
 
+    def test_round_8_white_words_afro_latino_accent_and_genre(self):
+        white_sa = {**NIGERIAN, "voice_id": "wsa", "labels": {**NIGERIAN["labels"], "accent": "standard"},
+                    "description": "Warm White South African male voice"}
+        self.assertEqual(pair_voice(40, "man", None, None, [white_sa], ethnicity="Black South African")["source"], "voice_design")
+        white = {**JON, "voice_id": "white", "description": "Warm White American male voice"}
+        self.assertEqual(pair_voice(40, "man", "american", None, [white], ethnicity="White")["voice_id"], "white")
+        self.assertEqual(pair_voice(40, "man", "american", None, [white], ethnicity="Black American")["source"], "voice_design")
+        for ethnicity in ("Afro-Latino", "Afro Latina", "afrolatinx"):
+            self.assertIsNone(heritage(ethnicity), ethnicity)
+        black_accent = {**JULIUS, "voice_id": "ba", "labels": {**JULIUS["labels"], "accent": "Black American"},
+                        "description": "Warm Black American male voice"}
+        self.assertEqual(pair_voice(39, "man", "american", None, [black_accent], ethnicity="Black American")["voice_id"], "ba")
+        metal = {**JON, "voice_id": "metal", "description": "Deep black metal vocalist, American male"}
+        self.assertEqual(pair_voice(40, "man", "american", None, [metal], ethnicity="White")["voice_id"], "metal")
+        self.assertEqual(pair_voice(40, "man", "american", None, [metal], ethnicity="Black American")["source"], "voice_design")
+
     def test_a_native_american_voice_actor_is_native_american(self):
         actor = {**JON, "voice_id": "actor", "description": "Warm Native American voice actor"}
         self.assertEqual(pair_voice(40, "man", "american", None, [actor], ethnicity="Native American")["voice_id"], "actor")
@@ -297,6 +313,13 @@ class SecondReviewTests(unittest.TestCase):
         generic = {**JON, "voice_id": "generic", "description": "A warm native American voice"}
         self.assertEqual(pair_voice(40, "man", "american", None, [generic], ethnicity="White")["voice_id"], "generic")
         self.assertEqual(pair_voice(40, "man", "american", None, [generic], ethnicity="Native American")["source"], "voice_design")
+
+    def test_nearest_age_distance_matches_the_near_rule(self):
+        """Round 9: 42 is 12 years from "young" (ends at 30) and 13 from "old" (starts at 55)."""
+        zed = {**JULIUS, "voice_id": "zed", "name": "Zed", "labels": {**JULIUS["labels"], "age": "young"}}
+        aaron = {**JULIUS, "voice_id": "aaron", "name": "Aaron", "labels": {**JULIUS["labels"], "age": "old"}}
+        pair = pair_voice(42, "man", "american", None, [zed, aaron], ethnicity="Black American")
+        self.assertEqual([v["voice_id"] for v in pair["nearest"]], ["zed", "aaron"])
 
     def test_nearest_ranks_by_age_gap_before_other_differences(self):
         young_us = {**JULIUS, "voice_id": "young-us", "name": "Aaron"}
