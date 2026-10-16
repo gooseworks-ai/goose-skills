@@ -243,7 +243,10 @@ class SecondReviewTests(unittest.TestCase):
         self.assertEqual(pair_voice(40, "man", "american", None, [arabic], ethnicity="Persian")["source"], "voice_design")
         self.assertEqual(heritage("Lebanese Arab"), ("middle_eastern", "arab:lebanese"))
         mandarin = voice("mandarin", "Warm Mandarin male voice")
-        self.assertEqual(pair_voice(40, "man", "american", None, [mandarin], ethnicity="Cantonese")["voice_id"], "mandarin")
+        self.assertEqual(pair_voice(40, "man", "american", None, [mandarin], ethnicity="Cantonese")["source"], "voice_design")
+        self.assertEqual(pair_voice(40, "man", "american", None, [mandarin], ethnicity="Chinese")["voice_id"], "mandarin")
+        chinese = voice("chinese", "Warm Chinese male voice")
+        self.assertEqual(pair_voice(40, "man", "american", None, [chinese], ethnicity="Cantonese")["voice_id"], "chinese")
 
     def test_native_speaker_of_a_language_is_not_a_heritage(self):
         speaker = {**JON, "voice_id": "spk", "description": "A native American English speaker with a conversational tone"}
@@ -251,6 +254,23 @@ class SecondReviewTests(unittest.TestCase):
         self.assertEqual(pair_voice(40, "man", "american", None, [speaker], ethnicity="Native American")["source"], "voice_design")
         story = {**JON, "voice_id": "story", "description": "A calm Native American storyteller"}
         self.assertEqual(pair_voice(40, "man", "american", None, [story], ethnicity="Native American")["voice_id"], "story")
+
+    def test_black_with_an_african_or_caribbean_heritage_is_that_heritage(self):
+        """Round 5."""
+        self.assertEqual(heritage("Black Nigerian"), ("african", "nigerian"))
+        nigerian = {**NIGERIAN, "voice_id": "zz-ng", "name": "Zed", "labels": {**NIGERIAN["labels"], "accent": "standard"},
+                    "description": "A warm Black Nigerian narrator"}
+        wrong = {**INDIAN, "voice_id": "aa-in", "name": "Aaron"}
+        self.assertEqual(pair_voice(40, "man", None, None, [wrong, nigerian], ethnicity="Black Nigerian")["voice_id"], "zz-ng")
+        self.assertEqual(pair_voice(40, "man", None, None, [nigerian], ethnicity="Nigerian")["voice_id"], "zz-ng")
+        only_black = {**NIGERIAN, "voice_id": "blk", "labels": {**NIGERIAN["labels"], "accent": "standard"}, "description": "Deep Black male voice"}
+        self.assertEqual(pair_voice(40, "man", None, None, [only_black], ethnicity="Nigerian")["source"], "voice_design")
+        self.assertEqual(pair_voice(40, "man", None, None, [nigerian], ethnicity="Black American")["source"], "voice_design")
+
+    def test_a_native_american_voice_actor_is_native_american(self):
+        actor = {**JON, "voice_id": "actor", "description": "Warm Native American voice actor"}
+        self.assertEqual(pair_voice(40, "man", "american", None, [actor], ethnicity="Native American")["voice_id"], "actor")
+        self.assertEqual(pair_voice(40, "man", "american", None, [actor], ethnicity="White")["source"], "voice_design")
 
     def test_nearest_ranks_by_age_gap_before_other_differences(self):
         young_us = {**JULIUS, "voice_id": "young-us", "name": "Aaron"}

@@ -62,8 +62,8 @@ HERITAGE_ALIASES = [
     ("hindi", "south_asian", "indian"), ("pakistani", "south_asian", "pakistani"), ("urdu", "south_asian", "pakistani"),
     ("bangladeshi", "south_asian", "bangladeshi"), ("bengali", "south_asian", "bangladeshi"),
     ("sri lankan", "south_asian", "sri_lankan"),
-    ("east asian", "east_asian", None), ("chinese", "east_asian", "chinese"), ("mandarin", "east_asian", "chinese"),
-    ("cantonese", "east_asian", "chinese"), ("taiwanese", "east_asian", "taiwanese"),
+    ("east asian", "east_asian", None), ("chinese", "east_asian", "chinese"),
+    ("mandarin", "east_asian", "chinese:mandarin"), ("cantonese", "east_asian", "chinese:cantonese"), ("taiwanese", "east_asian", "taiwanese"),
     ("japanese", "east_asian", "japanese"), ("korean", "east_asian", "korean"),
     ("southeast asian", "southeast_asian", None), ("filipino", "southeast_asian", "filipino"),
     ("filipina", "southeast_asian", "filipino"), ("tagalog", "southeast_asian", "filipino"),
@@ -87,14 +87,17 @@ HERITAGE_ALIASES = [
     ("asian american", "asian", None), ("asian", "asian", None),
 ]
 # A specific with a parent ("arab:lebanese") fits its parent ("arab": an Arabic voice for a Lebanese
-# person) but never a sibling ("arab:egyptian"). Chinese, Mandarin and Cantonese are one people.
+# person) but never a sibling ("arab:egyptian"); a Chinese voice fits a Cantonese person, a Mandarin one doesn't.
 # "native American" in "a native American English speaker" is about the language, not heritage.
-LANGUAGE_NATIVE = re.compile(r"\bnative (?=(american|british|english|australian|canadian)( english)? (speaker|accent|english|voice))")
+LANGUAGE_NATIVE = re.compile(r"\bnative (?=(american|british|english|australian|canadian)( english)? (speaker|accent|english))")
 # A White person takes a voice that names no heritage; these words mark no voice.
 WHITE_WORDS = ("white", "caucasian", "european")
 # A mixed heritage checks nothing: "biracial Black/Latino" is not one heritage's voices only.
 MIXED = re.compile(r"\b(mixed|biracial|multiracial|multiethnic|multi racial|multi ethnic)\b")
 ASIAN = {"asian", "east_asian", "southeast_asian"}
+# "Black" also describes African and Caribbean people: "Black Nigerian" is Nigerian, and a voice
+# described as "Black Nigerian" fits them, but a voice described only as "Black" does not.
+BLACK_ALSO = {"african", "caribbean"}
 # Accent labels that count as the wanted accent, one way only: an "african american" accent is
 # american; an "american" accent is never "african".
 ACCENT_ALIASES = {
@@ -145,6 +148,9 @@ def heritage(ethnicity):
     found, rest = words_in(ethnicity or "")
     white = any(re.search(r"\b%s\b" % w, rest) for w in WHITE_WORDS)
     groups = {g for g, _ in found}
+    if "black" in groups and len(groups - {"black"}) == 1 and (groups - {"black"}) <= BLACK_ALSO:
+        found = {(g, sp) for g, sp in found if g != "black"}  # "Black Nigerian" is Nigerian
+        groups = {g for g, _ in found}
     if len(groups) > 1 and "asian" in groups and len(groups - {"asian"}) == 1 and (groups - {"asian"}) <= ASIAN:
         found = {(g, sp) for g, sp in found if g != "asian"}  # "Asian (Korean)" is Korean
         groups = {g for g, _ in found}
@@ -246,7 +252,9 @@ def heritage_fits(person, found):
         return True
     if person == "white":
         return not found
-    return bool(found) and all(marker_fits(person, marker) for marker in found)
+    own = [m for m in found if marker_fits(person, m)]
+    also = [m for m in found if m[0] == "black" and person[0] in BLACK_ALSO]
+    return bool(own) and len(own) + len(also) == len(found)
 
 
 def match_library(voices, wanted, exclude=(), age=None):
