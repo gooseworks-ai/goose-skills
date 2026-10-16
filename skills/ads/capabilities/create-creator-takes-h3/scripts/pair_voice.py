@@ -464,7 +464,8 @@ def pair_voice(age, gender, accent=None, energy=None, voices=None, exclude=(), s
     if library is None or isinstance(library, (list, tuple)):
         library = library_status(library, gender, ethnicity)
     searched = library["searched"]
-    pair = {"source": "voice_design", "wanted": wanted, "person": person, "rejected": rejected}
+    pair = {"source": "voice_design", "wanted": wanted, "person": person, "rejected": rejected,
+            "library_searched": bool(searched)}
     if library.get("missing"):
         pair["library_search"] = library["missing"]
     elif not searched and not library.get("more"):
@@ -533,8 +534,9 @@ def repair_character(path, voices, exclude=(), sample_text=None, library_paths=N
 
 
 def library_pending(old):
-    """A pair still waiting on the library: no voice is designed or accepted before it is searched."""
-    if old.get("library_search") or old.get("library_next_page"):
+    """A pair still waiting on the library: no voice is designed or accepted before it is searched. Only an explicit
+    library_searched marker counts, so a pair made before 2.8.0 (no marker) is searched first too."""
+    if old.get("library_searched") is not True:
         raise SystemExit("search the voice library first (voice_pair.library_search or library_next_page), then pair "
                          "again with every list: --character ... --voices ... ")
 
@@ -555,13 +557,14 @@ def record_designed(path, voice_id, name=None):
     return pair
 
 
-def accept_nearest(path):
+def accept_nearest(path, library_unavailable=False):
     """When no voice fits fully and Voice Design can't run, take the first `nearest` voice (the closest
     of the right gender and heritage) as the pair. Nobody picks from the list: the owner hears it beside
     the still and accepts it, or it is rejected and pairing runs again with --exclude."""
     record = json.loads(path.read_text(encoding="utf-8"))
     old = record.get("voice_pair") or {}
-    library_pending(old)
+    if not library_unavailable:
+        library_pending(old)
     rows = old.get("nearest") or []
     if old.get("source") != "voice_design" or not rows:
         raise SystemExit("--accept-nearest needs a voice_design voice_pair with `nearest` voices; this one has %s"
@@ -598,6 +601,9 @@ def main():
     ap.add_argument("--designed", metavar="VOICE_ID",
                     help="with --character: record the voice_id POST /v1/text-to-voice returned as the pair")
     ap.add_argument("--designed-name", help="with --designed: the saved voice's name")
+    ap.add_argument("--library-unavailable", action="store_true",
+                    help="with --accept-nearest: the host can't search the voice library (a GooseWorks server without "
+                         "/v1/shared-voices answers unsupported_provider_endpoint); only with the owner's yes")
     ap.add_argument("--accept-nearest", action="store_true",
                     help="with --character: take the first voice_pair.nearest voice as the pair, when Voice Design can't run")
     ap.add_argument("--out", type=pathlib.Path)
@@ -615,7 +621,7 @@ def main():
     elif a.accept_nearest:
         if not a.character:
             raise SystemExit("--accept-nearest needs --character")
-        pair = accept_nearest(a.character)
+        pair = accept_nearest(a.character, a.library_unavailable)
     elif a.character:
         if not a.voices:
             raise SystemExit("--character needs --voices: pairing again picks from a voice list, never by hand")
