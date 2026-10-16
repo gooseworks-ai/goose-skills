@@ -286,6 +286,22 @@ class SecondReviewTests(unittest.TestCase):
             self.assertIsNone(heritage(ethnicity), ethnicity)
         self.assertEqual(pair_voice(40, "man", "american", None, [JON], ethnicity="bi-racial Black")["voice_id"], "jon")
 
+    def test_round_8_white_words_afro_latino_accent_and_genre(self):
+        white_sa = {**NIGERIAN, "voice_id": "wsa", "labels": {**NIGERIAN["labels"], "accent": "standard"},
+                    "description": "Warm White South African male voice"}
+        self.assertEqual(pair_voice(40, "man", None, None, [white_sa], ethnicity="Black South African")["source"], "voice_design")
+        white = {**JON, "voice_id": "white", "description": "Warm White American male voice"}
+        self.assertEqual(pair_voice(40, "man", "american", None, [white], ethnicity="White")["voice_id"], "white")
+        self.assertEqual(pair_voice(40, "man", "american", None, [white], ethnicity="Black American")["source"], "voice_design")
+        for ethnicity in ("Afro-Latino", "Afro Latina", "afrolatinx"):
+            self.assertIsNone(heritage(ethnicity), ethnicity)
+        black_accent = {**JULIUS, "voice_id": "ba", "labels": {**JULIUS["labels"], "accent": "Black American"},
+                        "description": "Warm Black American male voice"}
+        self.assertEqual(pair_voice(39, "man", "american", None, [black_accent], ethnicity="Black American")["voice_id"], "ba")
+        metal = {**JON, "voice_id": "metal", "description": "Deep black metal vocalist, American male"}
+        self.assertEqual(pair_voice(40, "man", "american", None, [metal], ethnicity="White")["voice_id"], "metal")
+        self.assertEqual(pair_voice(40, "man", "american", None, [metal], ethnicity="Black American")["source"], "voice_design")
+
     def test_a_native_american_voice_actor_is_native_american(self):
         actor = {**JON, "voice_id": "actor", "description": "Warm Native American voice actor"}
         self.assertEqual(pair_voice(40, "man", "american", None, [actor], ethnicity="Native American")["voice_id"], "actor")
