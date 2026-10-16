@@ -36,7 +36,7 @@ An unclear disposition is `escalate`.
 ## Loop
 
 1. **Start.** Archive the input as `edits/_iterations/master-iter-0.mp4` and create `edits/_iterations/auto-refine-log.json` (`started`, `max_iterations`, `budget_credits`, `credits_spent`, `iterations`).
-2. **Check.** Run `scripts/qc_evidence.py` on the candidate (fix any failed measurement first), review the whole cut with sound when your tools can (`listened`/`watched`, else `measured`), and save review-video's check list as `edits/_iterations/iter-N-checks.json`.
+2. **Check.** Run `scripts/qc_evidence.py` on the candidate (fix a broken file first; its other findings are graded below), review the whole cut with sound when your tools can (`listened`/`watched`, else `measured`), and save review-video's check list as `edits/_iterations/iter-N-checks.json`.
 3. **Partition** into objective misses (`machine_check` true and failed), subjective misses, incomplete and passed. Missing required evidence is incomplete, never a pass. Bind each finding to its original cut.
 4. **Exit** when any holds:
    - incomplete is not empty: name the missing capability; no pass is inferred;

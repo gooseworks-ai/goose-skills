@@ -54,7 +54,7 @@ For one step only (for example "regenerate scene 5"), call that step file direct
 
 - `<input>`: a concept paragraph, or an existing `<video_folder>` to resume.
 - `<video_folder>`: a temporary processing folder chosen by the host; durable state stays in the project.
-- `<auto>`: allows ordinary execution inside approved scope only. It never bypasses an owner gate or the approved budget.
+- `<auto>`: allows ordinary execution inside approved scope only. It never bypasses the approved budget. The customer's `review_mode: auto` ("just make it") lets one yes to the full total cover the ingredient gate ([check severity](references/check-severity.md)); any new total still needs a new yes.
 
 ## State machine
 

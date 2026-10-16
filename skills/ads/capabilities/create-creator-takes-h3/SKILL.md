@@ -4,7 +4,7 @@ description: Generate an AI creator talking to camera, saying an approved script
 status: superseded
 version: "2.9.0"
 updated: 2026-10-16
-superseded_by: creator-h3@1.7.0
+superseded_by: creator-h3@1.8.0
 ---
 
 > **Superseded by:** `creator-h3@1.7.0`. Compatibility scripts retain the source-review guards; frozen versions are unchanged.
@@ -116,7 +116,8 @@ A test video went wrong three ways. These rules stop each one.
 
 Gate audit, 16 Oct: quality checks warn and never block, and an agent that can't play video was stuck at "watched/listened" claims.
 
-- **A measured review is enough.** `source-reviews.json` coverage says `motion: watched|measured` and `audio: listened|measured`. Measured means full-resolution frames of the whole take plus word timing against the line. Nobody has to claim a watch or a listen. The checks themselves (script, voice, lip-sync, identity, framing, performance) still have to pass.
+- **A measured review is enough.** `source-reviews.json` coverage says `motion: watched|measured` and `audio: listened|measured`. Measured means full-resolution frames of the whole take plus word timing against the line, listed in the review's `evidence`. Nobody has to claim a watch or a listen.
+- **A check fails only for a must_fix.** Mark script, voice, lip-sync, identity, framing or performance `fail` only for a must_fix problem (lost words, no lip-sync, warped anatomy, a different person). A take that looks a bit AI-made is `pass`, with the finding in `evidence`, and goes to the owner as an `ask`.
 - **No voice of the person's heritage: the nearest one, said out loud.** When the lists hold no voice of the person's heritage, `voice_pair.nearest` holds the closest voices of the right gender from other heritages, each with `heritage` first in `differs_on`, and `nearest_note` says so. `--accept-nearest` then writes `tell_owner`: one plain line for the owner. **Never change the person to fit a voice.**
 
 ## Realism check and a voice for every person (2.8.0)

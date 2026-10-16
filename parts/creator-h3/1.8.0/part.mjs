@@ -526,6 +526,7 @@ function kitMediaReviewProblem(review, source, scriptSha256, seconds, { speech =
   const coverage = review.coverage || {};
   const covered = kitMediaCoverage(coverage);
   if (!covered.motion || (speech && !covered.audio)) return 'the content review must say how the whole source was covered: coverage.motion watched or measured, and for speech coverage.audio listened or measured';
+  if ((covered.motion === 'measured' || (speech && covered.audio === 'measured')) && !(review.evidence || []).some((e) => String(e).trim())) return 'a measured review lists its evidence: the frames inspected and the word timing checked against the line';
   if (!(coverage.start_s <= 0 && coverage.end_s >= seconds - 0.02)) return 'the content review does not cover the complete source';
   for (const key of ['identity', 'framing', 'performance', ...(speech ? ['script', 'voice', 'lipsync'] : [])]) {
     if (review.checks?.[key] !== 'pass') return `the source content check ${key} has not passed`;

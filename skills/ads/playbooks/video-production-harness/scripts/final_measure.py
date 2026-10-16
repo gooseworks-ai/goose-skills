@@ -84,7 +84,7 @@ def silent_by_choice(raw_timeline):
 
 def final_measure(video, final_sha, duration, has_audio, pcm, activity, raw_timeline, timeline, words, lines,
                   reference_share=None, reference_rate=None, plan=None, reference_setups=None):
-    """gooseworks-final-measure/1. Every fail blocks; not_applicable says why.
+    """gooseworks-final-measure/1. A fail is a finding graded in final_grade.py; not_applicable says why.
 
     reference_share is the reference's frozen-picture share (0-1) when a reference is supplied;
     reference_rate is its measured speaking rate (words/s, from reference_rate.py); plan is the

@@ -7,13 +7,15 @@ import { kitMediaCoverage, kitMediaReviewProblem, kitMediaRouteProblem } from '.
 const SHA = 'a'.repeat(64);
 const source = { sha256: 'b'.repeat(64) };
 const checks = { script: 'pass', voice: 'pass', lipsync: 'pass', identity: 'pass', framing: 'pass', performance: 'pass', product_action: 'not_applicable' };
-const review = (coverage) => ({ source_sha256: source.sha256, script_sha256: SHA, status: 'pass', reviewer: 'agent', coverage: { start_s: 0, end_s: 6, ...coverage }, checks });
+const review = (coverage, evidence = ['frames at 2 fps, full resolution', 'word timing against the line']) => ({ source_sha256: source.sha256, script_sha256: SHA, status: 'pass', reviewer: 'agent', coverage: { start_s: 0, end_s: 6, ...coverage }, checks, evidence });
 
 test('measured, watched/listened and the older booleans all say how the source was covered', () => {
   assert.equal(kitMediaReviewProblem(review({ motion: 'measured', audio: 'measured' }), source, SHA, 6), null);
   assert.equal(kitMediaReviewProblem(review({ motion: 'watched', audio: 'listened' }), source, SHA, 6), null);
   assert.equal(kitMediaReviewProblem(review({ video_watched: true, audio_listened: true }), source, SHA, 6), null);
   assert.deepEqual(kitMediaCoverage({ video_watched: true }), { motion: 'watched', audio: null });
+  assert.match(kitMediaReviewProblem(review({ motion: 'measured', audio: 'measured' }, []), source, SHA, 6), /lists its evidence/);
+  assert.equal(kitMediaReviewProblem(review({ motion: 'watched', audio: 'listened' }, []), source, SHA, 6), null);
 });
 
 test('a review that does not say how it covered the source is refused', () => {

@@ -39,6 +39,8 @@ def require_take_review(reviews_path, take, path, duration=None):
     if motion not in ("watched", "measured") or audio not in ("listened", "measured"):
         raise ValueError("review must say how the whole take was covered: coverage.motion watched or measured, "
                          "and coverage.audio listened or measured")
+    if "measured" in (motion, audio) and not [e for e in review.get("evidence") or [] if str(e).strip()]:
+        raise ValueError("a measured review lists its evidence: the frames inspected and the word timing checked against the line")
     if not (coverage.get("start_s", 1) <= 0 and coverage.get("end_s", 0) >= duration - .02):
         raise ValueError("review must cover the complete source")
     checks = review.get("checks", {})

@@ -120,7 +120,7 @@ Run each with real frames, audio and FFmpeg. Save evidence with timecodes.
 
 **World consistency** (needs `world_lock:`; skip for travel, multi-location and montage). Grid each scene's 50% frame. Score set, wardrobe, lighting, colour, props and time of day 0-10 (score = mean). Any axis below 6 is `ask`; 6-7.9 is `fine`. Name the scene pair of each break.
 
-**Visual hallucination: objects and text.** For each scene's first, middle and last frame at full resolution, list every object in frame. An unplanned object that changes the meaning (rubbish, peels or a bin near food or the product, a second product, a wrong container) is `must_fix` (a hallucination), and so is every garbled, misspelled or unapproved string.
+**Visual hallucination: objects and text.** For each scene's first, middle and last frame at full resolution, list every object in frame. Any object or person the plan, reference and a lived-in room don't explain (rubbish near food, a second product, an extra person) is a hallucination: `must_fix`, and so is every garbled, misspelled or unapproved string.
 
 **Audio-visual alignment.** Each payoff keyword's visual is on screen inside that word's window; fail a missing keyword or two beats on one word.
 

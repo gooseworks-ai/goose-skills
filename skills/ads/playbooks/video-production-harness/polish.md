@@ -50,7 +50,7 @@ Each finding has one axis. Repairs resolve to real FFmpeg or host capabilities i
 Read `implementation_brief` (CTA, tone), `design_brief` (palette, character), `brand-vars.yaml` (tagline, end-card config), `captions/captions.srt` and `audio/word-timestamps.json`. Probe the target's duration, streams and fps.
 
 ### 2. Measure
-- Run `python3 scripts/qc_evidence.py <target> <video_folder>/polish-notes/<idx>/qc` and save its evidence.json. It exits 1 only on a broken file; its other measurements come back as `findings` with a severity.
+- Run `python3 scripts/qc_evidence.py <target> <video_folder>/polish-notes/<idx>/qc --timeline <receipt>` and save its evidence.json (without `--timeline` it can't check the length, and it treats sound as planned). It exits 1 only on a broken file; its other measurements come back as `findings` with a severity.
 - Measure per-scene RMS with FFmpeg astats and compare cut times with word boundaries (the helper does not).
 - Score the end-card frames for legibility, hold, margins, contrast and design.
 - With speech, transcribe the master (when a route exists) and diff it line by line against `locked_script`. Confirm each miss by listening when you can before calling it `must_fix`; rule out recognizer errors on brand names. Save `polish-notes/<idx>/qc/whisper-test.md` with per-line results and mix corrections.
@@ -69,7 +69,7 @@ In `polish` mode, stop here and report the notes path with P0/P1/P2 counts.
 
 ### 5. Apply (polish-and-fix)
 1. Keep a labeled pre-polish candidate (`_archive/master-final-pre-polish-<ts>.mp4`) before changing any bytes.
-2. Follow auto-fix-from-review-notes in dependency order. Stop on an unsupported P0/P1 repair.
+2. Follow auto-fix-from-review-notes in dependency order. Stop on an unsupported P0 (`must_fix`) repair; an unsupported P1 or P2 repair is recorded and reported, and the run goes on.
 3. Bring the outputs back into the cut:
    - normalized loudness or an added tail fade (`afade=t=out`, `fade=t=out`) on the master is the new master;
    - split or retimed cues are saved; the final burn stays in State 10 (from an uncaptioned candidate);
