@@ -91,4 +91,4 @@ Before use and publication the host rechecks ownership, scope, permission and re
 
 ## Controlled source and renderer releases
 
-The custom route uses creator-h3 1.5.0, voice-elevenlabs 1.3.0 and html-frames 1.3.1 on a kit with source review, assembly-timeline and exact-final review support (minimum kit 1.0.1). Keep the locked versions; they add review and source-clock guards, not provider quality. An older renderer is no evidence that the new stitching rules ran.
+The custom route uses creator-h3 1.6.0, voice-elevenlabs 1.3.0 and html-frames 1.3.1 on a kit with source review, assembly-timeline and exact-final review support (minimum kit 1.0.1). Keep the locked versions; they add review and source-clock guards, not provider quality. An older renderer is no evidence that the new stitching rules ran.

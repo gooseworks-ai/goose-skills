@@ -22,8 +22,8 @@
     },
     "capabilities.md": {
       "bytes": 12853,
-      "catalog_sha256": "1bb476e3710d0d6a7e8d161ad43f10ba8436165dd1caa5c4586643d95fd81754",
-      "sha256": "1bb476e3710d0d6a7e8d161ad43f10ba8436165dd1caa5c4586643d95fd81754"
+      "catalog_sha256": "833bdc8ec3d9943d6d8fcb03126bc9c5b8406fb6d97e4228eae50c3f9fb6b211",
+      "sha256": "833bdc8ec3d9943d6d8fcb03126bc9c5b8406fb6d97e4228eae50c3f9fb6b211"
     },
     "create-clips.md": {
       "bytes": 15308,
@@ -36,9 +36,9 @@
       "sha256": "becf03efc8ab36e965ecfb3f7a7e4a32a5230f991289b14073802a347f21ba89"
     },
     "create-storyboard.md": {
-      "bytes": 8739,
-      "catalog_sha256": "a0776fffa73f54a68556c66172ded962ad784ffa0ba9e8837ff1b03c3fbd0f67",
-      "sha256": "a0776fffa73f54a68556c66172ded962ad784ffa0ba9e8837ff1b03c3fbd0f67"
+      "bytes": 8914,
+      "catalog_sha256": "439b7c545b675d0882a800fd67c3910a05fe3a7fc77989d8f321278afa187de8",
+      "sha256": "439b7c545b675d0882a800fd67c3910a05fe3a7fc77989d8f321278afa187de8"
     },
     "edit-clip.md": {
       "bytes": 6366,
@@ -156,9 +156,9 @@
       "sha256": "f09842a7392ed7be228c31197b1adbd831a94a1ff19e7140fad2689f67fa6ca6"
     },
     "references/specialist-handoff.md": {
-      "bytes": 3646,
-      "catalog_sha256": "d6be421deda8cbe13b488d43db3f8482cd697dccf6c0c63ef4cf1eca86db4edf",
-      "sha256": "d6be421deda8cbe13b488d43db3f8482cd697dccf6c0c63ef4cf1eca86db4edf"
+      "bytes": 3756,
+      "catalog_sha256": "4977b0995a11ed80bba1033a880bc152b9512b2ea35c69c110d08c86d20524ae",
+      "sha256": "4977b0995a11ed80bba1033a880bc152b9512b2ea35c69c110d08c86d20524ae"
     },
     "references/speech-and-route-qualification.md": {
       "bytes": 8062,
@@ -237,8 +237,8 @@
     },
     "skill.meta.json": {
       "bytes": 683,
-      "catalog_sha256": "22b467173034f6f69a0bfda4fc69236495305baf90c3c73f7f80ed65b649c635",
-      "sha256": "22b467173034f6f69a0bfda4fc69236495305baf90c3c73f7f80ed65b649c635"
+      "catalog_sha256": "fa6548a80ba7ee87c52d57db15c0931ec1ab5812f3be7ae3c7f3d9a071e5f86a",
+      "sha256": "fa6548a80ba7ee87c52d57db15c0931ec1ab5812f3be7ae3c7f3d9a071e5f86a"
     },
     "states/edit-to-delivery.md": {
       "bytes": 7640,
@@ -282,7 +282,7 @@
   ],
   "schema_version": 1,
   "slug": "video-production-harness",
-  "source_commit": "a56ef6fb2ee0b9404399e42e64a08db50fc7a0de",
+  "source_commit": "268cdca43b601be748bca82309541cd0523aee15",
   "source_files": {
     "SKILL.md": {
       "sha256": "3e659d9dc20047c9deb42344749c2e9891b523151c5584c0123111d3f779f855",
@@ -301,7 +301,7 @@
       "source": "brainstorm.md"
     },
     "capabilities.md": {
-      "sha256": "1bb476e3710d0d6a7e8d161ad43f10ba8436165dd1caa5c4586643d95fd81754",
+      "sha256": "833bdc8ec3d9943d6d8fcb03126bc9c5b8406fb6d97e4228eae50c3f9fb6b211",
       "source": "capabilities.md"
     },
     "create-clips.md": {
@@ -313,7 +313,7 @@
       "source": "create-design-brief.md"
     },
     "create-storyboard.md": {
-      "sha256": "a0776fffa73f54a68556c66172ded962ad784ffa0ba9e8837ff1b03c3fbd0f67",
+      "sha256": "439b7c545b675d0882a800fd67c3910a05fe3a7fc77989d8f321278afa187de8",
       "source": "create-storyboard.md"
     },
     "edit-clip.md": {
@@ -409,7 +409,7 @@
       "source": "references/shot-routing.md"
     },
     "references/specialist-handoff.md": {
-      "sha256": "d6be421deda8cbe13b488d43db3f8482cd697dccf6c0c63ef4cf1eca86db4edf",
+      "sha256": "4977b0995a11ed80bba1033a880bc152b9512b2ea35c69c110d08c86d20524ae",
       "source": "references/specialist-handoff.md"
     },
     "references/speech-and-route-qualification.md": {
@@ -489,6 +489,6 @@
       "source": "wrap-session.md"
     }
   },
-  "source_hash": "f539fa2897fc3542e29c19a371c4a723e3b02f79f814ad1c5721b9a37bfdfd50",
-  "source_version": "4-f539fa2897fc"
+  "source_hash": "7d0bd741e81f06f5eff43ea31a98b34731a69a660ab01dcd42c181c23425cd9a",
+  "source_version": "4-7d0bd741e81f"
 }
