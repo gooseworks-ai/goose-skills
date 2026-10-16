@@ -6101,6 +6101,53 @@
       ]
     },
     {
+      "id": "unmirror-take",
+      "version": "1.0.0",
+      "interface": 1,
+      "kind": "compose",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "encoders": [
+            "mjpeg",
+            "libx264"
+          ],
+          "filters": [
+            "hflip"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "openrouter/router/vision"
+          }
+        ],
+        "disk_mb": 400
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "call",
+        "rates_usd": {
+          "openrouter/router/vision": 0.05
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/unmirror-take/1.0.0",
+      "files": {
+        "README.md": "74ecdc80da85f2add653e2b31ea7e2531feb9833899614d101596cbd81452b33",
+        "part.json": "1d88296cfc0a523f4c0c71008b1fd499dc68dc8181453b3e4823ef970db3439c",
+        "part.mjs": "984029c7fb944c32f16f686b57f6d4a63017afc716db2a2ad790022ed8a4717c"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "openrouter/router/vision"
+        }
+      ]
+    },
+    {
       "id": "video-h3max",
       "version": "1.0.0",
       "interface": 1,
