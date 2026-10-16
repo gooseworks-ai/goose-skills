@@ -51,9 +51,9 @@
       "sha256": "5b0da509ed161340a44903c1907690d75298af36744e52fb621aa2ebfbd708d0"
     },
     "lock-character.md": {
-      "bytes": 11463,
-      "catalog_sha256": "4b1e8f1f5339fd80cfa8deb493d817c866ff33dbcd82fc4bd211adaa6fb7b9d5",
-      "sha256": "4b1e8f1f5339fd80cfa8deb493d817c866ff33dbcd82fc4bd211adaa6fb7b9d5"
+      "bytes": 11640,
+      "catalog_sha256": "01abeedfaea8f98f8399731d15cf4ebbb6a089289b510fca565480342cd78f9e",
+      "sha256": "01abeedfaea8f98f8399731d15cf4ebbb6a089289b510fca565480342cd78f9e"
     },
     "lock-script.md": {
       "bytes": 8924,
@@ -242,8 +242,8 @@
     },
     "skill.meta.json": {
       "bytes": 683,
-      "catalog_sha256": "9c4b80b9e4d940c1f318eda8300a45debe1ab5702e5bd30ffa334ae224c2fd2d",
-      "sha256": "9c4b80b9e4d940c1f318eda8300a45debe1ab5702e5bd30ffa334ae224c2fd2d"
+      "catalog_sha256": "4d8ea6f66c50ab6f82aeafe6ae583778e7717e41bc42fa912c7c78160b107995",
+      "sha256": "4d8ea6f66c50ab6f82aeafe6ae583778e7717e41bc42fa912c7c78160b107995"
     },
     "states/edit-to-delivery.md": {
       "bytes": 7799,
@@ -287,7 +287,7 @@
   ],
   "schema_version": 1,
   "slug": "video-production-harness",
-  "source_commit": "10237947a0069c4f275aa2cfd090f1e0c0906b98",
+  "source_commit": "b86909c517d90442d5b4fe3168b902b0c63555b4",
   "source_files": {
     "SKILL.md": {
       "sha256": "3e659d9dc20047c9deb42344749c2e9891b523151c5584c0123111d3f779f855",
@@ -330,7 +330,7 @@
       "source": "edit-video.md"
     },
     "lock-character.md": {
-      "sha256": "4b1e8f1f5339fd80cfa8deb493d817c866ff33dbcd82fc4bd211adaa6fb7b9d5",
+      "sha256": "01abeedfaea8f98f8399731d15cf4ebbb6a089289b510fca565480342cd78f9e",
       "source": "lock-character.md"
     },
     "lock-script.md": {
@@ -498,6 +498,6 @@
       "source": "wrap-session.md"
     }
   },
-  "source_hash": "a9dcd8ea15942f3efbc341f73e79db203e30502f9f1766b31fa8a69571f08f30",
-  "source_version": "4-a9dcd8ea1594"
+  "source_hash": "f5992fe1562354f538c227c025b37e644772faa8da2dba46c611342fb765a28a",
+  "source_version": "4-f5992fe15623"
 }

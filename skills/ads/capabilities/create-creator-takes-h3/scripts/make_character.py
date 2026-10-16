@@ -16,11 +16,12 @@ not squared to the lens), the eyes stay on the task and the hands are in use; th
 smaller in frame. --shot talking keeps the talking-head defaults for a person who talks to
 the lens while doing something; its --action is written in as what they do while talking.
 
-Realism check: GooseWorks judges every person still saved to a custom video (video_change, and again at
-video_approve) against a real phone video frame. It refuses a face that looks rendered (wax, plastic or
-an airbrushed finish, glassy eyes, merging teeth or hair) and a shot that looks art-directed (portrait-mode
-blur behind a sharp face, studio or ring light, a cinematic grade, a plain or showroom set). Keep the
-default phone capture and deep focus; when a still is flagged, make only that still again.
+Realism check: GooseWorks grades every person still saved to a custom video (video_change) against a
+real phone video frame: fine (real or slightly AI-looking: keep it), ask (clearly AI-made: a rendered or
+airbrushed face, portrait-mode blur, studio light, a plain or showroom set: show the owner with the
+re-make price and let them choose) or must_fix (an extra hand, warped anatomy, a distorted face, an
+impossible pose: make it again). Keep the default phone capture and deep focus, and make again only the
+stills that need it.
 
 Skin condition: when the product treats a visible skin problem, pass it with
 --skin-condition (e.g. "visible blackheads on the nose, oily T-zone", "a few small acne
@@ -62,7 +63,7 @@ import sys
 
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-from pair_voice import NEVER_BEND, load_voice_lists, pair_voice  # noqa: E402
+from pair_voice import NEVER_BEND, library_status, load_voice_lists, pair_voice  # noqa: E402
 from plan_takes import both_hands  # noqa: E402
 import tiers  # noqa: E402
 
@@ -395,7 +396,7 @@ def main():
         print("recording: refused selfie, " + a.capture_decision["reason"])
     voice = None if a.no_voice_pair else pair_voice(
         a.age, a.gender, a.voice_accent, a.voice_energy, load_voice_lists(a.voices) if a.voices else None,
-        tuple(a.voice_exclude), a.voice_sample_text, a.ethnicity)
+        tuple(a.voice_exclude), a.voice_sample_text, a.ethnicity, library_status(a.voices))
     if voice is None:
         print("voice    : none (--no-voice-pair: never voiced separately)")
     elif voice["source"] == "library":
