@@ -54,7 +54,8 @@ NEAR_YEARS = 10
 # sibling (a Korean person never takes a voice described as Japanese). Longest phrase first, and a
 # found phrase is removed, so "african american" never also reads as "african".
 HERITAGE_ALIASES = [
-    ("african american", "black", "black:american"), ("afro american", "black", "black:american"), ("black", "black", None),
+    ("african american", "black", "black:american"), ("afro american", "black", "black:american"),
+    ("black american", "black", "black:american"), ("black", "black", None),
     ("african", "african", None), ("nigerian", "african", "nigerian"), ("ghanaian", "african", "ghanaian"),
     ("kenyan", "african", "kenyan"), ("south african", "african", "south_african"),
     ("ethiopian", "african", "ethiopian"), ("somali", "african", "somali"),
@@ -89,7 +90,7 @@ HERITAGE_ALIASES = [
 # A specific with a parent ("arab:lebanese") fits its parent ("arab": an Arabic voice for a Lebanese
 # person) but never a sibling ("arab:egyptian"); a Chinese voice fits a Cantonese person, a Mandarin one doesn't.
 # "native American" in "a native American English speaker" is about the language, not heritage.
-LANGUAGE_NATIVE = re.compile(r"\bnative (?=(american|british|english|australian|canadian)( english)? (speaker|accent|english|voice(?! (actor|actress|artist|talent))))")
+LANGUAGE_NATIVE = re.compile(r"\bnative (?=(american|british|english|australian|canadian)( english)? (speaker|accent|english|voice\b(?! (actor|actress|artist|talent|over))))")
 # A White person takes a voice that names no heritage; these words mark no voice.
 WHITE_WORDS = ("white", "caucasian", "european")
 # A mixed heritage checks nothing: "biracial Black/Latino" is not one heritage's voices only.
@@ -253,6 +254,9 @@ def heritage_fits(person, found):
         return True
     if person == "white":
         return not found
+    specifics = [sp for _, sp in found if sp]
+    if any(not specific_fits(a, b) for i, a in enumerate(specifics) for b in specifics[i + 1:]):
+        return False  # "Indian and Pakistani" names two heritages; it fits neither, not even "South Asian"
     own = [m for m in found if marker_fits(person, m)]
     also = [m for m in found if m == ("black", None) and person[0] in BLACK_ALSO]
     return bool(own) and len(own) + len(also) == len(found)

@@ -270,6 +270,15 @@ class SecondReviewTests(unittest.TestCase):
         both = {**nigerian, "voice_id": "both", "description": "African American and Nigerian male voice"}
         self.assertEqual(pair_voice(40, "man", None, None, [both], ethnicity="Nigerian")["source"], "voice_design")
         self.assertEqual(heritage("African American"), ("black", "black:american"))
+        # Round 7.
+        black_american = {**nigerian, "voice_id": "ba", "description": "Black American and Nigerian male voice"}
+        self.assertEqual(pair_voice(40, "man", None, None, [black_american], ethnicity="Nigerian")["source"], "voice_design")
+        for ethnicity, words in [("South Asian", "Indian and Pakistani male voice"), ("East Asian", "Korean and Japanese male voice"),
+                                 ("African", "Nigerian and Kenyan male voice")]:
+            two = {**nigerian, "voice_id": "two", "description": words}
+            self.assertEqual(pair_voice(40, "man", None, None, [two], ethnicity=ethnicity)["source"], "voice_design", ethnicity)
+        parent_child = {**nigerian, "voice_id": "pc", "description": "Chinese male voice, Mandarin"}
+        self.assertEqual(pair_voice(40, "man", None, None, [parent_child], ethnicity="Chinese")["voice_id"], "pc")
         self.assertEqual(pair_voice(39, "man", "american", None, [JULIUS, MILES], ethnicity="Black American")["source"], "library")
 
     def test_hyphenated_mixed_words_check_no_heritage(self):
@@ -281,6 +290,10 @@ class SecondReviewTests(unittest.TestCase):
         actor = {**JON, "voice_id": "actor", "description": "Warm Native American voice actor"}
         self.assertEqual(pair_voice(40, "man", "american", None, [actor], ethnicity="Native American")["voice_id"], "actor")
         self.assertEqual(pair_voice(40, "man", "american", None, [actor], ethnicity="White")["source"], "voice_design")
+        for words in ("Warm Native American voiceover artist", "Warm native American voice-over artist"):
+            vo = {**JON, "voice_id": "vo", "description": words}
+            self.assertEqual(pair_voice(40, "man", "american", None, [vo], ethnicity="Native American")["voice_id"], "vo", words)
+            self.assertEqual(pair_voice(40, "man", "american", None, [vo], ethnicity="White")["source"], "voice_design", words)
         generic = {**JON, "voice_id": "generic", "description": "A warm native American voice"}
         self.assertEqual(pair_voice(40, "man", "american", None, [generic], ethnicity="White")["voice_id"], "generic")
         self.assertEqual(pair_voice(40, "man", "american", None, [generic], ethnicity="Native American")["source"], "voice_design")
