@@ -1,6 +1,6 @@
 ---
 name: video-production-harness/lock-character
-description: Lock each recurring person's look and world before any clip is made. Reuse accepted anchors, make only missing ones with the GPT Image 2 edit route, and inspect the real stills and moving identity rather than inventing drift percentages. Step 3.5 of the pipeline.
+description: Lock each recurring person's look and world before any clip is made. Reuse accepted anchors, make only missing ones with the GPT Image 2 edit route, and inspect the real stills and moving identity rather than inventing drift percentages. Phase 0 (the anchor and its voice pair) runs in State 2.6 for a person with a separate voice; the rest is State 3.5.
 ---
 
 # lock-character
@@ -17,7 +17,7 @@ Follow [creative contract and review](references/creative-contract-and-review.md
 
 ## Purpose and use
 
-Prompt-only people drift (hair, shirt colour, facial hair) and cost full re-renders. Reuse a selected accepted anchor, or prepare only the missing appearance choices, then derive every angle from that one identity and inspect it before dependent production. State 3.5, for any recurring human character (skip cartoon or object-only ads); re-run if the protagonist changes.
+Prompt-only people drift (hair, shirt colour, facial hair) and cost full re-renders. Reuse a selected accepted anchor, or prepare only the missing appearance choices, then derive every angle from that one identity and inspect it before dependent production. State 3.5, for any recurring human character (skip cartoon or object-only ads); re-run if the protagonist changes. Phase 0 runs earlier, in State 2.6 before the storyboard, when the person's line is a separate voice; Phases 1-3 then run here, from that anchor.
 
 ## Inputs
 
@@ -47,7 +47,7 @@ Real people use **`image-gpt-image-2` edit** (`openai/gpt-image-2/edit`), per th
 1. Reuse the selected creator avatar builder, capture branch and accepted identity when available. Otherwise write ONE prompt from `<character_descriptors>`, every field verbatim, plus the realism default above.
 2. Generate only missing anchor candidates. The anchor's `.meta.json` records the `gateway`; every later character call inherits it.
 3. Save candidates to `<video_folder>/generated/character-lock/<characterId>/candidate-<NN>.png` with provenance in `character_locks`.
-4. **Pair the voice with the person.** Phase 0 runs in State 2.6 for a person whose line is a separate voice, so the still and its voice both exist at the ingredient gate. Run make_character.py with `--voices <list>` and the person's `--ethnicity` and `--voice-accent`; it writes `character.voice_pair` and refuses without a list. The list is the host's free ElevenLabs voice list (`GET /v1/voices`), saved whole as the file; on GooseWorks that is `data_call_provider {provider: "elevenlabs", path: "/v1/voices", project_id}`. A person who is never voiced separately, or speaks only in a native H3 take, takes `--no-voice-pair`. When `voice_pair.source` is `voice_design` and the host cannot run Voice Design, play its `nearest` voices beside the still and record the owner's pick with `pair_voice.py --character ... --choose <voice_id>`; never use a voice that is not in `voice_pair`. A rejected voice is replaced by `pair_voice.py --character ... --exclude <id>`, never by hand.
+4. **Pair the voice with the person.** Phase 0 runs in State 2.6 for a person whose line is a separate voice, so the still and its voice both exist at the ingredient gate. Run make_character.py with `--voices <list>` and the person's `--ethnicity` and `--voice-accent`; it writes `character.voice_pair` and refuses without a list. The list is the host's free ElevenLabs voice list (`GET /v1/voices`), saved whole as the file; on GooseWorks that is `data_call_provider {provider: "elevenlabs", path: "/v1/voices", project_id}`. A person who is never voiced separately, or speaks only in a native H3 take, takes `--no-voice-pair`. When `voice_pair.source` is `voice_design` and the host cannot run Voice Design, run `pair_voice.py --character ... --accept-nearest`, which takes the closest `nearest` voice as the pair; never use a voice that is not in `voice_pair`. A rejected voice is replaced by `pair_voice.py --character ... --voices <list> --exclude <id>`, never by hand.
 5. **Ingredient selection.** Show unresolved anchor choices with their descriptors, each beside a short audition of its paired voice (State 2.6), in the existing ingredient review. Check hair shape and colour, shirt brightness (the main drift source), facial hair, age and the realism default.
 
 ### Phase 1: Angle set
@@ -87,4 +87,4 @@ Keep accepted anchors and angles. Repair only the affected views within the exis
 
 ## Relationship to other skills
 
-Runs after `create-storyboard` and before `create-clips`, which reads `character_locks`. Pairs with State 3.55, the world lock: without it the same person lands in different worlds; `create-clips` sends the world references with the anchor on every keyframe.
+Phases 1-3 run after `create-storyboard` and before `create-clips`, which reads `character_locks`; Phase 0 runs in State 2.6 for a person with a separate voice, before the storyboard. Pairs with State 3.55, the world lock: without it the same person lands in different worlds; `create-clips` sends the world references with the anchor on every keyframe.

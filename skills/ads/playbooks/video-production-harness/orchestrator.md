@@ -95,7 +95,7 @@ Use the host's current pricing; old rate tables never authorize spend.
 
 - **Never regenerate an approved artifact.** Check for existing results before calling a step.
 - **Use the review note's `edit_type`** for edit-clip. "Scene 5 looks weird" needs specifics before a re-roll.
-- **Voices come from the host-approved catalog,** or are a Voice Design voice made for this character and approved at the ingredient gate. An on-screen person's voice is `character.voice_pair`, chosen with the person, never in the script draft; a change re-runs pair_voice.py (create-creator-takes-h3) with `--exclude`. Never reuse another brand's or character's voice by default. Any other voice blocks State 5.
+- **Voices come from the host-approved catalog,** or are a Voice Design voice made for this character and approved at the ingredient gate. An on-screen person's separate voice is `character.voice_pair`, chosen with the person, never in the script draft (native H3 speech has none and is accepted with its first take); a change re-runs pair_voice.py (create-creator-takes-h3) with `--exclude`. Never reuse another brand's or character's voice by default. Any other voice blocks State 5.
 - **Locks hold.** `character_locks` is the lock for every regeneration; `locked_script` is the only VO source. Changing VO text re-runs State 2.5.
 - **Preflight P0 blocks.** A revised plan may drop a blocked dependency only with the owner's approval.
 - **Review loop: 3 iterations,** then escalate to the user.
