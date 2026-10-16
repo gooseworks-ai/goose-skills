@@ -242,8 +242,8 @@
     },
     "skill.meta.json": {
       "bytes": 683,
-      "catalog_sha256": "376b8964e4bd24b429c2dd22470400c0b24a1e36e4e9311a65871a7f26cf1ab9",
-      "sha256": "376b8964e4bd24b429c2dd22470400c0b24a1e36e4e9311a65871a7f26cf1ab9"
+      "catalog_sha256": "a6dfbd0d8db33ef4cad8167401965432631f846e5964df1d215d071f3082f74c",
+      "sha256": "a6dfbd0d8db33ef4cad8167401965432631f846e5964df1d215d071f3082f74c"
     },
     "states/edit-to-delivery.md": {
       "bytes": 8369,
@@ -287,7 +287,7 @@
   ],
   "schema_version": 1,
   "slug": "video-production-harness",
-  "source_commit": "26456b2fc49305e10d2ed62363f711a751c7c513",
+  "source_commit": "a93ddc8a75199d4b7e18fac3fafdcd197739b4e5",
   "source_files": {
     "SKILL.md": {
       "sha256": "e4ba4bd5d20149cad5c312ea12cb1132f914d9a9822876befa399fadd436f790",

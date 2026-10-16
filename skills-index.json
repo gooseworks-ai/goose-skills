@@ -9483,7 +9483,7 @@
           "write-video-ad-script"
         ],
         "slug": "video-production-harness",
-        "source_commit": "26456b2fc49305e10d2ed62363f711a751c7c513",
+        "source_commit": "a93ddc8a75199d4b7e18fac3fafdcd197739b4e5",
         "source_hash": "9a0df7c741eabc100548eba4f65c825012f07960db6987cf90aa9f69b8a679b4",
         "source_version": "4-9a0df7c741ea",
         "tags": [
