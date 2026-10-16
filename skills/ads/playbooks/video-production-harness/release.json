@@ -21,9 +21,9 @@
       "sha256": "2c81a5336d5160b2f6c90ba1ded310c05f7771d215fa128f5a3f127d92bdb3d8"
     },
     "capabilities.md": {
-      "bytes": 12796,
-      "catalog_sha256": "6efe0a57b411569af00ff59b501ec7248217424d0af83a2c42ce15ff8ca95341",
-      "sha256": "6efe0a57b411569af00ff59b501ec7248217424d0af83a2c42ce15ff8ca95341"
+      "bytes": 12853,
+      "catalog_sha256": "1bb476e3710d0d6a7e8d161ad43f10ba8436165dd1caa5c4586643d95fd81754",
+      "sha256": "1bb476e3710d0d6a7e8d161ad43f10ba8436165dd1caa5c4586643d95fd81754"
     },
     "create-clips.md": {
       "bytes": 15308,
@@ -51,9 +51,9 @@
       "sha256": "c58547d3a806e2f381e324ec06b7b92de73944386bccbabf853cb6580c3015a3"
     },
     "lock-character.md": {
-      "bytes": 8087,
-      "catalog_sha256": "69fe1dc38afda04aff2999b0501227538ad0408263d2db4a16afaf8e0a73edf1",
-      "sha256": "69fe1dc38afda04aff2999b0501227538ad0408263d2db4a16afaf8e0a73edf1"
+      "bytes": 8320,
+      "catalog_sha256": "760ee2ec3886348f9e751e58343e9fed8ac06fe5ef152061882274a54f4b9377",
+      "sha256": "760ee2ec3886348f9e751e58343e9fed8ac06fe5ef152061882274a54f4b9377"
     },
     "lock-script.md": {
       "bytes": 8924,
@@ -61,9 +61,9 @@
       "sha256": "ac621ca038eb850984602639ad687b427400fe57fb787b0b7dbac6b4b946317b"
     },
     "orchestrator.md": {
-      "bytes": 9657,
-      "catalog_sha256": "253632db3f1bd90870d224764a1141f5e6e485689d96b4c03c2b197004524732",
-      "sha256": "253632db3f1bd90870d224764a1141f5e6e485689d96b4c03c2b197004524732"
+      "bytes": 9787,
+      "catalog_sha256": "aa0ca51c3f70dec7e9ccba120399829e2ce35c01d07768898c7b2a70944a8371",
+      "sha256": "aa0ca51c3f70dec7e9ccba120399829e2ce35c01d07768898c7b2a70944a8371"
     },
     "polish.md": {
       "bytes": 8612,
@@ -96,9 +96,9 @@
       "sha256": "109b1c9ee2f1a60c5b07dfeec4371583b313b31c63fce873e29daa754c76a10b"
     },
     "references/genres/ai-creator-ugc.md": {
-      "bytes": 2618,
-      "catalog_sha256": "11312236e272f27e739dd81cc90dacf88b2f6abe757348360ab12da52ad63fd6",
-      "sha256": "11312236e272f27e739dd81cc90dacf88b2f6abe757348360ab12da52ad63fd6"
+      "bytes": 2696,
+      "catalog_sha256": "33fd9bbc3acf37a75d31937a35a23622e490fbf9e1703ccd6856935b174ccd9d",
+      "sha256": "33fd9bbc3acf37a75d31937a35a23622e490fbf9e1703ccd6856935b174ccd9d"
     },
     "references/genres/chat-ui.md": {
       "bytes": 1492,
@@ -237,8 +237,8 @@
     },
     "skill.meta.json": {
       "bytes": 683,
-      "catalog_sha256": "24b734f3860a96ee34daa6d02738e7ae1a2c6291baf4828b345e528b9c4ace8a",
-      "sha256": "24b734f3860a96ee34daa6d02738e7ae1a2c6291baf4828b345e528b9c4ace8a"
+      "catalog_sha256": "a3ec1bb7ce57a8474a18e2bd4b4431bfd4820191e8addbfaefffb38adbebd3bc",
+      "sha256": "a3ec1bb7ce57a8474a18e2bd4b4431bfd4820191e8addbfaefffb38adbebd3bc"
     },
     "states/edit-to-delivery.md": {
       "bytes": 7640,
@@ -246,9 +246,9 @@
       "sha256": "b807cd1e3b76dc262e62238f5766885a8b07372683f4ed57f3749f6eb06cbc14"
     },
     "states/setup-and-script.md": {
-      "bytes": 8037,
-      "catalog_sha256": "a596aacf77c955546b6a7b6d39128b47b875cdc8ef453d7096bff8628d713b6e",
-      "sha256": "a596aacf77c955546b6a7b6d39128b47b875cdc8ef453d7096bff8628d713b6e"
+      "bytes": 8612,
+      "catalog_sha256": "01f484d1e49189830954f1b62f6570f0bd0da329ce9934e7ac62b0fda6d4df3d",
+      "sha256": "01f484d1e49189830954f1b62f6570f0bd0da329ce9934e7ac62b0fda6d4df3d"
     },
     "states/storyboard-and-clips.md": {
       "bytes": 7015,
@@ -282,7 +282,7 @@
   ],
   "schema_version": 1,
   "slug": "video-production-harness",
-  "source_commit": "f719cdd66266ab31b84afe358d610c07c60d12c2",
+  "source_commit": "a608ecc3052208f9e22423d5591e70a7867638ef",
   "source_files": {
     "SKILL.md": {
       "sha256": "3e659d9dc20047c9deb42344749c2e9891b523151c5584c0123111d3f779f855",
@@ -301,7 +301,7 @@
       "source": "brainstorm.md"
     },
     "capabilities.md": {
-      "sha256": "6efe0a57b411569af00ff59b501ec7248217424d0af83a2c42ce15ff8ca95341",
+      "sha256": "1bb476e3710d0d6a7e8d161ad43f10ba8436165dd1caa5c4586643d95fd81754",
       "source": "capabilities.md"
     },
     "create-clips.md": {
@@ -325,7 +325,7 @@
       "source": "edit-video.md"
     },
     "lock-character.md": {
-      "sha256": "69fe1dc38afda04aff2999b0501227538ad0408263d2db4a16afaf8e0a73edf1",
+      "sha256": "760ee2ec3886348f9e751e58343e9fed8ac06fe5ef152061882274a54f4b9377",
       "source": "lock-character.md"
     },
     "lock-script.md": {
@@ -333,7 +333,7 @@
       "source": "lock-script.md"
     },
     "orchestrator.md": {
-      "sha256": "253632db3f1bd90870d224764a1141f5e6e485689d96b4c03c2b197004524732",
+      "sha256": "aa0ca51c3f70dec7e9ccba120399829e2ce35c01d07768898c7b2a70944a8371",
       "source": "orchestrator.md"
     },
     "polish.md": {
@@ -361,7 +361,7 @@
       "source": "references/editorial-review.md"
     },
     "references/genres/ai-creator-ugc.md": {
-      "sha256": "11312236e272f27e739dd81cc90dacf88b2f6abe757348360ab12da52ad63fd6",
+      "sha256": "33fd9bbc3acf37a75d31937a35a23622e490fbf9e1703ccd6856935b174ccd9d",
       "source": "references/genres/ai-creator-ugc.md"
     },
     "references/genres/chat-ui.md": {
@@ -477,7 +477,7 @@
       "source": "states/edit-to-delivery.md"
     },
     "states/setup-and-script.md": {
-      "sha256": "a596aacf77c955546b6a7b6d39128b47b875cdc8ef453d7096bff8628d713b6e",
+      "sha256": "01f484d1e49189830954f1b62f6570f0bd0da329ce9934e7ac62b0fda6d4df3d",
       "source": "states/setup-and-script.md"
     },
     "states/storyboard-and-clips.md": {
@@ -489,6 +489,6 @@
       "source": "wrap-session.md"
     }
   },
-  "source_hash": "2256dcb55074e8068eb84f9cc57bab685294bca48cdfedffb5d2d865c8868022",
-  "source_version": "4-2256dcb55074"
+  "source_hash": "bab6ba98ccbb312e29bc54a9b4aed1068dab0e02036aff0ff826b1e2ba89cc40",
+  "source_version": "4-bab6ba98ccbb"
 }

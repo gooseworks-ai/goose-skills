@@ -66,10 +66,10 @@ The run advances from State 0 to State 11. At each state, check the saved result
 | 1 | same; brainstorm.md | Concept and audience/hook decision. |
 | 2 | same; create-design-brief.md | Creative contract, scene routing and open decisions. |
 | 2.5 | same; lock-script.md | Script from write-video-ad-script; **script gate**. |
-| 2.6 | same; create-clips.md | Voice auditions and the selected voice. |
+| 2.6 | same; create-clips.md; lock-character.md Phase 0 | An on-screen voiced person's still and `character.voice_pair` first, then voice auditions and the selected voice. |
 | 3 | [states: storyboard and clips](states/storyboard-and-clips.md); create-storyboard.md | Timed scene plan; **ingredient gate** (kit path: then run the kit's make command). |
 | 3.4 | same | Generative video, FFmpeg motion or browser composition. |
-| 3.5, 3.55 | same; lock-character.md | Locked anchors and world references. |
+| 3.5, 3.55 | same; lock-character.md | Locked anchors (reusing State 2.6's anchor) and world references. |
 | 4.5 | same | Optional representative preview inside approved budget. |
 | 5, 6 | same; create-clips.md; edit-clip.md | Inspected clips; targeted repairs. |
 | 7 | [states: edit to delivery](states/edit-to-delivery.md); edit-video.md; promote.md | Labeled candidate, mix and version lineage. |
