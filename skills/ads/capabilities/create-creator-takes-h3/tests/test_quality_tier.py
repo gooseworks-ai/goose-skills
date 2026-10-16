@@ -85,6 +85,19 @@ class StillQualityTests(unittest.TestCase):
             r, _ = self.quote(tmp, "--shot-scene", "0")
             self.assertNotEqual(r.returncode, 0)
 
+    def test_best_retries_a_high_picture_from_the_allowance(self):
+        """#2085: a Best picture already at high that failed may retry at high as a still_retry."""
+        with tempfile.TemporaryDirectory() as tmp:
+            r, quoted = self.quote(tmp, "--tier", "best", "--upgrade-reason", "failed_attempt",
+                                   "--upgrade-attempt", "op-7", "--upgrade-why", "extra fingers at high")
+            self.assertEqual(r.returncode, 0, r.stderr)
+            self.assertEqual(quoted["body"]["quality"], "high")
+            self.assertEqual(quoted["upgrade"]["kind"], "still_retry")
+            self.assertEqual(quoted["query"], {"upgrade_reason": "failed_attempt", "upgrade_attempt": "op-7",
+                                               "upgrade_why": "extra fingers at high"})
+            r, _ = self.quote(tmp, "--tier", "best", "--upgrade-reason", "failed_attempt", "--upgrade-attempt", "op-7")
+            self.assertNotEqual(r.returncode, 0)
+
     def test_a_reason_without_an_upgrade_is_refused(self):
         with tempfile.TemporaryDirectory() as tmp:
             r, _ = self.quote(tmp, "--tier", "best", "--quality", "high", "--upgrade-reason", "customer_asked",

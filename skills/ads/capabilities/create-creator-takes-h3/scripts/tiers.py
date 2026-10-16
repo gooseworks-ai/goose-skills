@@ -10,7 +10,9 @@ A setting above the tier's default is an upgrade for one shot, and it needs a re
 
 Rules decided 16 Oct 2026: H3 is 768P in both tiers, and 1080P only when the customer asks
 (customer_asked). Only a picture (GPT Image 2 medium -> high) may be upgraded after a failed
-check on the agent's own judgment; any video upgrade needs the customer's new yes.
+check on the agent's own judgment; any video upgrade needs the customer's new yes. Under Best a
+picture already at high may retry at high with the failed_attempt params (a still_retry, paid from
+the picture allowance).
 
 After one failed check, judge the shot: retry once at the same setting when a prompt fix should
 work (a wrong pose, a missing prop), or upgrade straight away when the cheaper setting probably
@@ -62,6 +64,16 @@ def upgrade(a, setting, chosen):
     """None when `chosen` is at or below the tier's default; else the upgrade record. Exits when an
     upgrade has no valid reason, so nothing is quoted or sent without one."""
     rank, base = RANK[setting], default(a, setting)
+    if (setting == "image_quality" and chosen == base == "high" and a.upgrade_reason == "failed_attempt"):
+        # Best's picture already at high failed its check: a retry at high with the failed attempt is a
+        # still_retry the server pays from the picture allowance (#2085). Without the params it is an
+        # ordinary call paid from the approved budget.
+        attempt, why = ((v or "").strip() for v in (a.upgrade_attempt, a.upgrade_why))
+        if not attempt or not why:
+            sys.exit("a retry at high from the allowance needs --upgrade-attempt <operation id> and --upgrade-why \"<one line>\"")
+        query = {"upgrade_reason": "failed_attempt", "upgrade_attempt": attempt[:200], "upgrade_why": why[:300]}
+        return {"setting": setting, "from": base, "to": chosen, "reason": "failed_attempt", "kind": "still_retry",
+                "failed_attempt_id": attempt[:200], "why": why[:300], "query": query}
     if rank.index(chosen) <= rank.index(base):
         if a.upgrade_reason:
             sys.exit("%s %s is not above the %s default (%s): drop --upgrade-reason" % (setting, chosen, a.tier, base))

@@ -141,9 +141,9 @@
       "sha256": "fab9107769fe9fcee0c5e78b2377b53ac8645e05cbd84512066618483f2b30fa"
     },
     "references/quality-tier.md": {
-      "bytes": 6230,
-      "catalog_sha256": "075ff9fb82a2e4d17790dcca999dce0d95cf010e6e78b91037b6f9597cfc36a4",
-      "sha256": "075ff9fb82a2e4d17790dcca999dce0d95cf010e6e78b91037b6f9597cfc36a4"
+      "bytes": 6646,
+      "catalog_sha256": "e305af0ba8084ce93d191b40e6154c90ceb42fb2298aaf648bfb19a3c8588d58",
+      "sha256": "e305af0ba8084ce93d191b40e6154c90ceb42fb2298aaf648bfb19a3c8588d58"
     },
     "references/recipe-format.md": {
       "bytes": 6667,
@@ -156,9 +156,9 @@
       "sha256": "4ac7da771547c0c6c6f33fae652d35c25ddcd1ee35c3508523f130fbe43389cb"
     },
     "references/shot-routing.md": {
-      "bytes": 14939,
-      "catalog_sha256": "8a7be74defce17c28bea1428de164dced6ebc8f037eed9f86cb3f1f1e8360ef8",
-      "sha256": "8a7be74defce17c28bea1428de164dced6ebc8f037eed9f86cb3f1f1e8360ef8"
+      "bytes": 14951,
+      "catalog_sha256": "d5ac6c94b51f6d7cc38f76f98be477d29374d176e44a77ea1a5e8a466a000595",
+      "sha256": "d5ac6c94b51f6d7cc38f76f98be477d29374d176e44a77ea1a5e8a466a000595"
     },
     "references/specialist-handoff.md": {
       "bytes": 3756,
@@ -166,9 +166,9 @@
       "sha256": "483cbdc106834f75b3b27dfd30307bf3e897d9989edb714c7a2c8fe7ec334c87"
     },
     "references/speech-and-route-qualification.md": {
-      "bytes": 9183,
-      "catalog_sha256": "10127946d7f9e0fb01ad234430d98490f0203a2ee891d925a364559c415c6407",
-      "sha256": "10127946d7f9e0fb01ad234430d98490f0203a2ee891d925a364559c415c6407"
+      "bytes": 9247,
+      "catalog_sha256": "e8dda1c9008881cbc9be50a21ee05e06d69d35f40a7340e929194398172013a5",
+      "sha256": "e8dda1c9008881cbc9be50a21ee05e06d69d35f40a7340e929194398172013a5"
     },
     "review-video.md": {
       "bytes": 15347,
@@ -242,8 +242,8 @@
     },
     "skill.meta.json": {
       "bytes": 683,
-      "catalog_sha256": "ffc35a075c01e5dcb2e77784a7567c7e03ac7ec734b01e797ee97c44bce96328",
-      "sha256": "ffc35a075c01e5dcb2e77784a7567c7e03ac7ec734b01e797ee97c44bce96328"
+      "catalog_sha256": "1353e647efea7059b1ef669ac243983471d20a01c497479dc92b705e14206f8a",
+      "sha256": "1353e647efea7059b1ef669ac243983471d20a01c497479dc92b705e14206f8a"
     },
     "states/edit-to-delivery.md": {
       "bytes": 7799,
@@ -287,7 +287,7 @@
   ],
   "schema_version": 1,
   "slug": "video-production-harness",
-  "source_commit": "b914dc5c122c51766d2e020a68775a3e97f9432d",
+  "source_commit": "8a6dac56781fe979acc204f75f5fb1f3b6e1f926",
   "source_files": {
     "SKILL.md": {
       "sha256": "3e659d9dc20047c9deb42344749c2e9891b523151c5584c0123111d3f779f855",
@@ -402,7 +402,7 @@
       "source": "references/product-scale-and-world.md"
     },
     "references/quality-tier.md": {
-      "sha256": "075ff9fb82a2e4d17790dcca999dce0d95cf010e6e78b91037b6f9597cfc36a4",
+      "sha256": "e305af0ba8084ce93d191b40e6154c90ceb42fb2298aaf648bfb19a3c8588d58",
       "source": "references/quality-tier.md"
     },
     "references/recipe-format.md": {
@@ -414,7 +414,7 @@
       "source": "references/review-script-shortform.md"
     },
     "references/shot-routing.md": {
-      "sha256": "8a7be74defce17c28bea1428de164dced6ebc8f037eed9f86cb3f1f1e8360ef8",
+      "sha256": "d5ac6c94b51f6d7cc38f76f98be477d29374d176e44a77ea1a5e8a466a000595",
       "source": "references/shot-routing.md"
     },
     "references/specialist-handoff.md": {
@@ -422,7 +422,7 @@
       "source": "references/specialist-handoff.md"
     },
     "references/speech-and-route-qualification.md": {
-      "sha256": "10127946d7f9e0fb01ad234430d98490f0203a2ee891d925a364559c415c6407",
+      "sha256": "e8dda1c9008881cbc9be50a21ee05e06d69d35f40a7340e929194398172013a5",
       "source": "references/speech-and-route-qualification.md"
     },
     "review-video.md": {
@@ -498,6 +498,6 @@
       "source": "wrap-session.md"
     }
   },
-  "source_hash": "09107357ba58b8929069397fa90a3fd70b1da8bea831f13b70182fe497c783be",
-  "source_version": "4-09107357ba58"
+  "source_hash": "765d7f1fdd65c5a7a64534212f832036336b59da05f5ea9e83e1336febdcbdc6",
+  "source_version": "4-765d7f1fdd65"
 }

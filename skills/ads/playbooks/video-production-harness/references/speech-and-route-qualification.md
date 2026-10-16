@@ -86,7 +86,7 @@ failures suspend that use until a corrected take is reviewed.
 | Existing route | Current restriction |
 |---|---|
 | Kling 2.5 Turbo | **Withdrawn.** Creator B-roll uses `video-h3max` stills mode (native audio muted, "nobody speaks, lips closed"); product-only motion uses `video-seedance-2` |
-| Veo 3.1 Fast | fal retires the endpoint on 17 Nov 2026 (noted 15 Oct 2026); keep it until a bake-off picks a replacement |
+| Veo 3.1 Fast | fal retires the endpoint on 17 Nov 2026 (noted 15 Oct 2026); keep it until a bake-off picks a replacement; refused on a tiered custom video (`custom_video_tier_setting`) |
 | Nano Banana | Cartoons only; real people and real products use `image-gpt-image-2` edit, and packaging comes from the real photo through `overlay` |
 | Veed Fabric 1.0 | Not a close-up fallback; review a first take and the final lip-sync; 480p under Standard, 720p under Best or as a one-shot upgrade |
 | H3 Max creator | No unconditional exact-script default or unchecked batch; keep evaluated configurations with first-take acceptance, voice consistency and linked audio |
