@@ -50,6 +50,12 @@ from content_review import require_take_review
 # Approximate USD per generated second, for the dry-run estimate only. The proxy bills the
 # real amount. Measured on the reference builds; check the balance after the first take.
 RATE = {"1080P": 0.16, "768P": 0.10, "480P": 0.05}
+# plan_takes.py writes the resolution (768P in both tiers). An older spec without one is 768P too.
+DEFAULT_RESOLUTION = "768P"
+
+
+def resolution(spec):
+    return spec.get("resolution", DEFAULT_RESOLUTION)
 
 
 VOICE_CLIP = ["-vn", "-t", "12", "-ac", "1", "-ar", "24000"]  # t1's voice -> reference audio
@@ -74,7 +80,7 @@ def file_sha256(path):
 def take_payload(spec, t, prompt, img, vid, aud, first_id):
     """The exact H3 request for one take. Called with the uploaded URLs to submit, and with
     content stand-ins ({"sha256": ...}) to digest, so both always describe the same request."""
-    payload = {"prompt": prompt, "duration": int(t["dur"]), "resolution": spec.get("resolution", "1080P"),
+    payload = {"prompt": prompt, "duration": int(t["dur"]), "resolution": resolution(spec),
                "aspect_ratio": spec.get("aspect_ratio", "9:16"), "seed": int(t["seed"]),
                "prompt_expansion_mode": "disabled", "image_url": img, "reference_image_urls": [img]}
     if vid:
@@ -181,9 +187,9 @@ def main():
     if not todo:
         print("[takes] nothing to generate")
         return
-    rate = RATE.get(spec.get("resolution", "1080P"), 0.16)
+    rate = RATE.get(resolution(spec), 0.16)
     est = sum(t["dur"] for t in todo) * rate
-    print("[takes] %s  %s %s" % (spec["model"], spec.get("aspect_ratio"), spec.get("resolution")))
+    print("[takes] %s  %s %s" % (spec["model"], spec.get("aspect_ratio"), resolution(spec)))
     chained = [t for t in todo if t["id"] != first["id"]]
     src = take_file(spec, first)
     voice_src = src if chained and src.exists() else None
@@ -198,7 +204,17 @@ def main():
     print("  estimate ~$%.2f (%ds at ~$%.2f/s; the proxy bills the real amount)"
           % (est, sum(t["dur"] for t in todo), rate))
     problem = None
-    if chained and first in todo:
+    man_p = pathlib.Path(spec["out"]) / "manifest.json"
+    made_first = next((m for m in (json.loads(man_p.read_text()) if man_p.exists() else {}).get("takes", [])
+                       if m.get("id") == first["id"] and m.get("seed") == first["seed"]), None)
+    first_res = ((made_first or {}).get("payload") or {}).get("resolution")
+    if chained and first not in todo and first_res not in (None, resolution(spec)):
+        # The resolution is chosen before the first take: later takes copy its voice and are
+        # reviewed against it, so a switch is a new set of takes, not a patch.
+        problem = ("%s was made at %s but the spec asks for %s. The resolution is chosen before the first "
+                   "take; switching re-rolls the take. Re-plan at one resolution and re-roll %s (--reseed %s) "
+                   "before the rest." % (first["id"], first_res, resolution(spec), first["id"], first["id"]))
+    elif chained and first in todo:
         problem = ("generate the first take alone (--only %s --go), listen to it, then the rest: "
                    "they copy its voice" % first["id"])
     elif chained and not src.exists() and not a.unchained:
@@ -222,7 +238,6 @@ def main():
 
     if spec.get("planning_only"):
         raise SystemExit("This is a planning-only spec. Generate and review the actual still, then rerun plan_takes without --plan-only before --go.")
-    man_p = pathlib.Path(spec["out"]) / "manifest.json"
     manifest = json.loads(man_p.read_text()) if man_p.exists() else {"model": spec["model"], "takes": []}
     # Refuse an unchanged rejected take BEFORE uploading or sending anything. A take refused for
     # its own prompt is refused alone; the others are different requests and still run. A take

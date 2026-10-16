@@ -1,0 +1,652 @@
+{
+  "$schema": "../../_contract/part-manifest.schema.json",
+  "interface": 1,
+  "id": "image-gpt-image-2",
+  "version": "1.3.0",
+  "kind": "generate_image",
+  "title": "Stills (GPT Image 2)",
+  "summary": "Photoreal stills with OpenAI GPT Image 2 on fal, one piece per image: a hand-built list, one still per plan scene, the cast portraits, or locked-camera shots (each frame an edit on its plate, plate pixels put back, a closing shot re-lit).",
+  "runtime": "node",
+  "entry": "part.mjs",
+  "files": [
+    "README.md",
+    "part.mjs"
+  ],
+  "kit": ">=1.0.0 <2.0.0",
+  "needs": {
+    "browser": false,
+    "ffmpeg": {
+      "filters": [
+        "scale",
+        "setsar",
+        "format",
+        "hstack",
+        "crop"
+      ],
+      "encoders": [
+        "png",
+        "rawvideo"
+      ]
+    },
+    "network": true,
+    "models": [
+      {
+        "provider": "fal",
+        "model": "openai/gpt-image-2"
+      },
+      {
+        "provider": "fal",
+        "model": "openai/gpt-image-2/edit"
+      }
+    ],
+    "disk_mb": 300
+  },
+  "inputs": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [],
+    "properties": {
+      "require_scene_tags": {
+        "description": "Opt in to strict by_tag routing: reject missing, unknown, malformed or contradictory scene tags before any provider order. scenes mode only.",
+        "type": "boolean"
+      },
+      "require_product_refs": {
+        "description": "Opt in to requiring the current real product photo in each product scene’s still request and binding its request evidence to the exact motion start frame. scenes mode only.",
+        "type": "boolean"
+      },
+      "borders": {
+        "description": "scenes mode (1.1.2). fix (default): product photos' flat margins are trimmed before they are sent (not with require_product_refs, whose evidence names the exact photo), and a still that comes back letterboxed, padded or framed is cropped to the frame's shape when that keeps 75 % of it, else the step fails (a lone plain strip on one side is kept). Never a second paid picture. keep: stills are kept as drawn.",
+        "enum": [
+          "fix",
+          "keep"
+        ]
+      },
+      "model": {
+        "description": "The most the step may use. openai/gpt-image-2/edit (default): a piece with reference pictures goes to /edit, a piece with none is drawn from the prompt alone. openai/gpt-image-2: prompt alone only, so references are refused (images mode) or not sent (scenes mode).",
+        "enum": [
+          "openai/gpt-image-2",
+          "openai/gpt-image-2/edit"
+        ]
+      },
+      "mode": {
+        "description": "images: the hand-built images list. scenes: one still per picked scene. cast: only the cast portraits (anchors). shots: locked-camera shots grouped by extra.group (only when asked for). Default: scenes when scenes is given, else images when images is given, else cast.",
+        "enum": [
+          "images",
+          "scenes",
+          "cast",
+          "shots"
+        ]
+      },
+      "size": {
+        "description": "Every still's size in pixels, width x height. Default 1088x1920 (vertical 9:16).",
+        "enum": [
+          "1024x1024",
+          "1024x1792",
+          "1088x1920",
+          "2304x1296"
+        ]
+      },
+      "cast_size": {
+        "description": "The anchors' size. Default: size.",
+        "enum": [
+          "1024x1024",
+          "1024x1792",
+          "1088x1920",
+          "2304x1296"
+        ]
+      },
+      "quality_tier": {
+        "description": "Standard (default) or Best, the price the customer picked. Sets the default quality (medium Standard, high Best); an explicit value still wins (a one-shot upgrade).",
+        "enum": [
+          "standard",
+          "best"
+        ]
+      },
+      "quality": {
+        "description": "GPT Image 2 quality. Default: the quality_tier's (medium Standard, high Best). high under Standard is an upgrade.",
+        "enum": [
+          "low",
+          "medium",
+          "high"
+        ]
+      },
+      "images": {
+        "description": "images mode: one still per entry.",
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 24,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "prompt"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9_-]{0,39}$"
+            },
+            "prompt": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 5000
+            },
+            "references": {
+              "type": "array",
+              "maxItems": 10,
+              "items": {
+                "type": "object",
+                "x-kit-file": {
+                  "media": "image",
+                  "mime": [
+                    "image/png",
+                    "image/jpeg",
+                    "image/webp"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "scenes": {
+        "description": "scenes and shots modes: plan.scenes. Outputs are keyed by scene id.",
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 40,
+        "items": {
+          "type": "object",
+          "required": [
+            "id"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "line": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "maxLength": 2000
+            },
+            "on_screen": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "maxLength": 2000
+            },
+            "picture": {
+              "description": "What the still shows. A leading \"Tag:\" (or extra.shot) picks the template's by_tag rule.",
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "string",
+                  "maxLength": 2000
+                },
+                {
+                  "type": "object",
+                  "x-kit-file": {
+                    "media": "image"
+                  }
+                }
+              ]
+            },
+            "image": {
+              "description": "A picture the customer gave for this scene: sent as a reference when the template's refs ask for scene_image.",
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "object",
+                  "x-kit-file": {
+                    "media": "image"
+                  }
+                }
+              ]
+            },
+            "speaker": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "maxLength": 24
+            },
+            "extra": {
+              "description": "Style fields. shots mode reads extra.group (scenes sharing one locked camera) and extra.repeat_of (an earlier scene id whose finished frame this scene reuses; with relight, a shot made only of repeats is re-lit by its first picture's words).",
+              "type": [
+                "object",
+                "null"
+              ]
+            }
+          }
+        }
+      },
+      "template": {
+        "description": "The style's prompt template (frames/<name>.prompt.json, version 1; see parts/_lib/prompt.mjs). Without one a scene's prompt is its picture text and an anchor is a candid phone-camera frame of the person in a lived-in room (deep focus, no bokeh, real skin; never a plain wall). In shots mode templates.plate fills a shot's first scene and templates.state every later one (each falls back to scene), and templates.light a relit shot's light picture.",
+        "type": "object",
+        "x-kit-file": {
+          "media": "json"
+        }
+      },
+      "look": {
+        "description": "The art style: a key of the template's looks (a declared plan answer), filling {look}.",
+        "type": [
+          "string",
+          "null"
+        ],
+        "maxLength": 200
+      },
+      "answers": {
+        "description": "plan.answers, for {answers.KEY} placeholders.",
+        "type": [
+          "object",
+          "null"
+        ]
+      },
+      "brand": {
+        "description": "The brand, for {brand.FIELD} placeholders.",
+        "type": [
+          "object",
+          "null"
+        ]
+      },
+      "cast": {
+        "description": "plan.cast. A scene names a member by speaker or by name in its picture or line. In cast mode every member without an image gets a portrait.",
+        "type": "array",
+        "maxItems": 10,
+        "items": {
+          "type": "object",
+          "required": [
+            "key"
+          ],
+          "properties": {
+            "key": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_]{0,23}$"
+            },
+            "name": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "maxLength": 40
+            },
+            "look": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "maxLength": 600
+            },
+            "image": {
+              "description": "The member's picture: used as is, never drawn again.",
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "object",
+                  "x-kit-file": {
+                    "media": "image"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "products": {
+        "description": "plan.products. A scene names a product as phone-chat does; its first photo is a reference.",
+        "type": "array",
+        "maxItems": 12,
+        "items": {
+          "type": "object",
+          "required": [
+            "id"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "name": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "maxLength": 2000
+            },
+            "images": {
+              "type": "array",
+              "maxItems": 20,
+              "items": {
+                "type": "object",
+                "x-kit-file": {
+                  "media": "image"
+                }
+              }
+            }
+          }
+        }
+      },
+      "pick": {
+        "description": "Which scenes get a still: all (default), first, with_picture, or {tags: [...]}.",
+        "anyOf": [
+          {
+            "enum": [
+              "all",
+              "first",
+              "with_picture"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "tags"
+            ],
+            "properties": {
+              "tags": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 12,
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              }
+            }
+          }
+        ]
+      },
+      "skip_first": {
+        "description": "Scenes left out at the start of the plan.",
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 40
+      },
+      "skip_last": {
+        "description": "Scenes left out at the end of the plan (an end card scene).",
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 40
+      },
+      "anchor": {
+        "description": "scenes mode. none (default): members with an image are still sent. cast: draw a portrait (an anchor) for every named member without an image, first, and send it with each scene that names them. first_scene: the first still is a reference for every later one. cast and first_scene need /edit.",
+        "enum": [
+          "none",
+          "cast",
+          "first_scene"
+        ]
+      },
+      "style_refs": {
+        "description": "The style's own reference pictures, sent last with every scene and anchor. Needs /edit.",
+        "type": "array",
+        "maxItems": 4,
+        "items": {
+          "type": "object",
+          "x-kit-file": {
+            "media": "image",
+            "mime": [
+              "image/png",
+              "image/jpeg",
+              "image/webp"
+            ]
+          }
+        }
+      },
+      "restore": {
+        "description": "shots mode: put the plate's own pixels back wherever a frame did not change, so the surface is identical in every frame of a shot (free). Default true.",
+        "type": "boolean"
+      },
+      "relight": {
+        "description": "shots mode: a shot made only of repeat_of scenes (the first place again) is re-lit. Its first scene's picture words say the light (\"the same hob at night, one warm lamp\"); one paid light picture (an edit on the source shot's plate, templates.light else a default text) is used only for its light, and every scene of the shot is its source frame times that light. A repeat inside a drawn shot stays a plain repeat. Default false.",
+        "type": "boolean"
+      },
+      "multi_ref": {
+        "description": "How a scene that names several members sends their anchors: strip (default) tiles all of them into one picture; list sends up to 3 separate pictures.",
+        "enum": [
+          "list",
+          "strip"
+        ]
+      }
+    }
+  },
+  "outputs": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "images"
+    ],
+    "properties": {
+      "product_reference_evidence": {
+        "type": "array",
+        "maxItems": 40,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "version",
+            "scene_id",
+            "image_sha256",
+            "product_photos",
+            "request_image_sha256",
+            "model",
+            "piece",
+            "digest"
+          ],
+          "properties": {
+            "version": {
+              "const": 1
+            },
+            "scene_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "image_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "product_photos": {
+              "type": "array",
+              "maxItems": 12,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "id",
+                  "sha256"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                }
+              }
+            },
+            "request_image_sha256": {
+              "type": "array",
+              "maxItems": 10,
+              "items": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "model": {
+              "type": "string"
+            },
+            "piece": {
+              "type": "string",
+              "minLength": 1
+            },
+            "digest": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
+        }
+      },
+      "images": {
+        "description": "One still per entry (images mode) or per picked scene, id = the scene id (scenes and shots modes; in shots mode the restored frame, a repeat_of scene's is its source's, re-lit when its shot is). Empty in cast mode.",
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "image"
+          ],
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "image": {
+              "type": "object",
+              "x-kit-file": {
+                "media": "image"
+              }
+            }
+          }
+        }
+      },
+      "scenes": {
+        "description": "scenes and shots modes: every input scene, image = its still when it got one.",
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "id"
+          ],
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "image": {
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "object",
+                  "x-kit-file": {
+                    "media": "image"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "cast": {
+        "description": "scenes and cast modes: every cast member, image = its anchor or its own image (empty without a cast).",
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "key"
+          ],
+          "properties": {
+            "key": {
+              "type": "string"
+            },
+            "image": {
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "object",
+                  "x-kit-file": {
+                    "media": "image"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "anchors": {
+        "description": "scenes mode: the members some scene sent; cast mode: every member with a picture. id = the member key.",
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "image"
+          ],
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "image": {
+              "type": "object",
+              "x-kit-file": {
+                "media": "image"
+              }
+            }
+          }
+        }
+      },
+      "plates": {
+        "description": "shots mode: each shot's plate (its first scene's still), group = extra.group, or the scene id for a scene with no group.",
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "group",
+            "image"
+          ],
+          "properties": {
+            "group": {
+              "type": "string"
+            },
+            "image": {
+              "type": "object",
+              "x-kit-file": {
+                "media": "image"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "cost": {
+    "basis": "per_unit",
+    "unit": "image",
+    "measure": {
+      "from": "/images/*",
+      "as": "count"
+    },
+    "rates_usd": {
+      "openai/gpt-image-2": 0.19,
+      "openai/gpt-image-2/edit": 0.19
+    },
+    "model_from": "/model"
+  },
+  "determinism": "provider",
+  "timing": {
+    "typical_s": 90,
+    "timeout_s": 2400
+  },
+  "retry": {
+    "transient": 1
+  },
+  "replaces": []
+}

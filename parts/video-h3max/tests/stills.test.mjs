@@ -74,7 +74,7 @@ async function stillsInputs(workDir, extra = {}) {
 }
 
 test('mode stills (1.1.0) and broll (1.2.0) are inputs, and a clip may be a fallen-back still', () => {
-  assert.equal(manifest.version, '1.2.0');
+  assert.equal(manifest.version, '1.3.0');
   assert.deepEqual(manifest.inputs.properties.mode.enum, ['reference', 'image_to_video', 'take', 'takes', 'stills']);
   for (const key of ['stills', 'spans', 'min_s', 'max_s', 'max_total_s', 'fallback', 'require_scene_tags', 'require_product_refs', 'product_reference_evidence', 'broll']) {
     assert.ok(manifest.inputs.properties[key], key);
@@ -86,10 +86,13 @@ test('mode stills (1.1.0) and broll (1.2.0) are inputs, and a clip may be a fall
 
 test('still canvases are an exact published aspect with even sides at every resolution', () => {
   const source = { width: 1088, height: 1920 };
-  assert.deepEqual(h3SceneStillCanvas({}, source), { width: 1080, height: 1920 });
+  // 1.3.0: 768P by default in both tiers; 1080P only when asked for.
+  assert.deepEqual(h3SceneStillCanvas({}, source), { width: 774, height: 1376 });
+  assert.deepEqual(h3SceneStillCanvas({ quality_tier: 'best' }, source), { width: 774, height: 1376 });
+  assert.deepEqual(h3SceneStillCanvas({ resolution: '1080P' }, source), { width: 1080, height: 1920 });
   assert.deepEqual(h3SceneStillCanvas({ resolution: '768P' }, source), { width: 774, height: 1376 });
   assert.deepEqual(h3SceneStillCanvas({ resolution: '480P' }, source), { width: 486, height: 864 });
-  assert.deepEqual(h3SceneStillCanvas({ aspect_ratio: '16:9' }, source), { width: 1920, height: 1080 });
+  assert.deepEqual(h3SceneStillCanvas({ aspect_ratio: '16:9', resolution: '1080P' }, source), { width: 1920, height: 1080 });
   assert.deepEqual(h3SceneStillCanvas({ aspect_ratio: '1:1', resolution: '768P' }, source), { width: 768, height: 768 });
   assert.deepEqual(h3SceneStillCanvas({ aspect_ratio: 'adaptive' }, source), source);
   for (const resolution of ['480P', '768P', '1080P']) {

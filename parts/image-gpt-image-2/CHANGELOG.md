@@ -1,5 +1,11 @@
 # image-gpt-image-2
 
+## 1.3.0
+
+- `quality_tier` (`standard`, the default, or `best`) sets the default quality: medium for Standard, high for Best. An explicit `quality` still wins (a one-shot upgrade). 1.2.0 always defaulted to high.
+- The manifest's cost basis stays the high rate, the most a picture can cost.
+- The request body changed, so no `reuses_pieces_of`.
+
 ## 1.2.0
 
 - The default cast anchor (a template with no `anchor` text) is the server's dialogue creator recipe: a candid vertical iPhone front-camera frame, chest-up, in a real lived-in, slightly cluttered room, everything sharp (deep focus, no bokeh), natural room light, real skin with small imperfections, no retouching, skin smoothing, beauty filter or cinematic grade. 1.1.x drew the person "in front of a plain light wall, soft even daylight". A minor version: an intended change in look, so styles move to it through their pins.

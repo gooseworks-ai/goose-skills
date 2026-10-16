@@ -2470,6 +2470,75 @@
       ]
     },
     {
+      "id": "creator-h3",
+      "version": "1.7.0",
+      "interface": 1,
+      "kind": "generate_video",
+      "kit": ">=1.0.1 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "silencedetect",
+            "tpad",
+            "trim",
+            "setpts",
+            "fps",
+            "settb",
+            "setsar",
+            "format",
+            "xfade",
+            "concat",
+            "aresample",
+            "pan",
+            "aformat",
+            "adelay",
+            "apad",
+            "atrim",
+            "asetpts",
+            "acrossfade"
+          ],
+          "encoders": [
+            "libx264",
+            "aac",
+            "pcm_s16le"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "minimax/h3-max/reference-to-video"
+          }
+        ],
+        "disk_mb": 1500
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "second",
+        "measure": {
+          "from": "/max_seconds",
+          "as": "value"
+        },
+        "rates_usd": {
+          "minimax/h3-max/reference-to-video": 0.4
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/creator-h3/1.7.0",
+      "files": {
+        "README.md": "1c4e9cc8d105489b9ba5b163cf18453e58c3fdca29123bb75c79ce737a9677c5",
+        "part.json": "a92d437af03e0e5dcd3b0901f80df67abb7d8db48eb19a612d3ee482dd9dcf6b",
+        "part.mjs": "def7e0f9c7eac58e52d5a75ada385782cc126da313006e23925d6af2c494a7fa"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "minimax/h3-max/reference-to-video"
+        }
+      ]
+    },
+    {
       "id": "cut-footage",
       "version": "1.0.0",
       "interface": 1,
@@ -3675,6 +3744,71 @@
       ]
     },
     {
+      "id": "image-gpt-image-2",
+      "version": "1.3.0",
+      "interface": 1,
+      "kind": "generate_image",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "scale",
+            "setsar",
+            "format",
+            "hstack",
+            "crop"
+          ],
+          "encoders": [
+            "png",
+            "rawvideo"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "openai/gpt-image-2"
+          },
+          {
+            "provider": "fal",
+            "model": "openai/gpt-image-2/edit"
+          }
+        ],
+        "disk_mb": 300
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "image",
+        "measure": {
+          "from": "/images/*",
+          "as": "count"
+        },
+        "rates_usd": {
+          "openai/gpt-image-2": 0.19,
+          "openai/gpt-image-2/edit": 0.19
+        },
+        "model_from": "/model"
+      },
+      "determinism": "provider",
+      "path": "parts/image-gpt-image-2/1.3.0",
+      "files": {
+        "README.md": "1bbd5ceef4a5b5136a185288935a9e8ff7ac6c960d3af5c8d7065d6378ec4e1a",
+        "part.json": "310719e291c91a1d854865f83303ec184c0cea21516164a30c942bfba44cc4b6",
+        "part.mjs": "ddbef4354c67d5a30b709f6fd8f572b637e4fd24f2f4b0e1f3befbe5c179fc15"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "openai/gpt-image-2"
+        },
+        {
+          "provider": "fal",
+          "model": "openai/gpt-image-2/edit"
+        }
+      ]
+    },
+    {
       "id": "image-nano-banana",
       "version": "1.0.0",
       "interface": 1,
@@ -4212,6 +4346,56 @@
         "README.md": "06682d81eb6c18889a7a3787eddfd8aa3d47b0931d1a34a628b3245c248ff316",
         "part.json": "7dcdd1b44fb584e77da3aac44710bf74cc93e1ee480a9f500b67c71112d87e25",
         "part.mjs": "0bf8bc9f6a9c722dbabe8a39946920295f2cf8280fbe76eecbffc583ecd2a83c"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "veed/fabric-1.0"
+        }
+      ]
+    },
+    {
+      "id": "lipsync-veed",
+      "version": "1.1.0",
+      "interface": 1,
+      "kind": "generate_video",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "anullsrc"
+          ],
+          "encoders": [
+            "pcm_s16le"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "veed/fabric-1.0"
+          }
+        ],
+        "disk_mb": 800
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "second",
+        "measure": {
+          "from": "/max_seconds",
+          "as": "value"
+        },
+        "rates_usd": {
+          "veed/fabric-1.0": 0.15
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/lipsync-veed/1.1.0",
+      "files": {
+        "README.md": "66fac9d559489540793759c77b8773c339f356cb489c8e0a1f43ac4830d35778",
+        "part.json": "4c356f928fec7bb4439bba9ef1350187e91b44841420e7ff1be8043dffe961c6",
+        "part.mjs": "91811543b7ff69357908863abe71a279e8190fec392762da1423ccc725477e71"
       },
       "models": [
         {
@@ -5968,6 +6152,49 @@
         "README.md": "a4d8863db6f42cc1fcce0a1f5cf0594573c5c8f043b378992da24a44c777b144",
         "part.json": "e8d41f0c15139461232d7d8eeafe648528788aaa9bcb3079406ec2b8cb66fda1",
         "part.mjs": "1f4deb38c30b3ab364d69b78fe868eacf8dc12990218d7690eaf180a37364da5"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "minimax/h3-max/reference-to-video"
+        }
+      ]
+    },
+    {
+      "id": "video-h3max",
+      "version": "1.3.0",
+      "interface": 1,
+      "kind": "generate_video",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": true,
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "minimax/h3-max/reference-to-video"
+          }
+        ],
+        "disk_mb": 1500
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "second",
+        "measure": {
+          "from": "/clips/*/seconds",
+          "as": "sum"
+        },
+        "rates_usd": {
+          "minimax/h3-max/reference-to-video": 0.16
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/video-h3max/1.3.0",
+      "files": {
+        "README.md": "357d9093654bc80c4425042715c984744d89eb62b72b19a7629722ddbdf37e3a",
+        "part.json": "f54d9a642397865f4a3bbc1460ad34df3edf41216620adc421f9c5e5d953232e",
+        "part.mjs": "048899268051bf38c8a09187e208bcb655ca092f2d384b6adea53288cce1b00f"
       },
       "models": [
         {

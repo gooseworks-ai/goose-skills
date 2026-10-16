@@ -2,6 +2,7 @@
 // A scene part uses image references only. Native sound is kept by default;
 // generate_audio: false drops that sound locally because H3 has no such flag.
 import { kitFfmpeg } from '../../_lib/part.mjs';
+import { kitTierDefault } from '../../_lib/tier.mjs';
 import { join } from 'node:path';
 
 export const H3SCENE_MODEL = 'minimax/h3-max/reference-to-video';
@@ -64,6 +65,11 @@ export function h3SceneProviderPrompt(prompt, refs, who) {
   return out;
 }
 
+/** The clip resolution: the input's, else the tier's (768P in both tiers; 1080P is a one-shot upgrade). */
+export function h3SceneResolution(inputs) {
+  return inputs.resolution ?? kitTierDefault(inputs, 'h3_resolution');
+}
+
 /** H3 has one endpoint for reference clips and first/last-frame clips. */
 export function h3SceneProviderBody(inputs, job, refs, seed) {
   return {
@@ -72,7 +78,7 @@ export function h3SceneProviderBody(inputs, job, refs, seed) {
     ...(job.start ? { image_url: job.start } : {}),
     ...(job.end ? { end_image_url: job.end } : {}),
     duration: job.seconds,
-    resolution: inputs.resolution ?? '1080P',
+    resolution: h3SceneResolution(inputs),
     aspect_ratio: inputs.aspect_ratio ?? '9:16',
     prompt_expansion_mode: 'disabled',
     seed,

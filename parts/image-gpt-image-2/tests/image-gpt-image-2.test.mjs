@@ -113,7 +113,7 @@ test('cast mode: members with a picture pass through free, the rest are drawn as
     assert.deepEqual(orders.map((o) => [o.piece, o.path]), [['anchor-creator', 'openai/gpt-image-2']]);
     assertFitsContract(orders[0]);
     assert.deepEqual(orders[0].body.image_size, { width: 1088, height: 1920 }, 'default size: vertical 9:16');
-    assert.equal(orders[0].body.quality, 'high', 'default quality: high');
+    assert.equal(orders[0].body.quality, 'medium', 'default quality: the Standard tier\'s medium (1.3.0)');
     // 1.2.0: the server's phone-camera creator recipe, never a plain wall.
     assert.match(orders[0].body.prompt, /^A single frame of a candid vertical iPhone front-camera selfie video, not a commercial, not a studio shoot, of one person: woman, 28, freckles, messy bun, grey hoodie\. Chest-up/);
     assert.match(orders[0].body.prompt, /lived-in room/);

@@ -2,7 +2,7 @@
 """Plan the creator's talking takes and write their prompts. Free, no network.
 
     plan_takes.py --beats cutlist.json --character character.json --out work/takes \
-        [--mannerism mannerism.mp4] [--aspect 9:16] [--resolution 1080P] [--reference-wps 3.2]
+        [--mannerism mannerism.mp4] [--aspect 9:16] [--tier standard] [--reference-wps 3.2]
 
 --beats is any file with `beats: [{id, start, end, vo}]` (the footage-cutlist cut list
 works as-is). --character is:
@@ -17,6 +17,13 @@ script has no default person or room. Without `delivery` a neutral conversationa
 used and a note is printed.
 
 Writes <out>/takes.json (run_takes.py's spec) and <out>/<id>-prompt.txt per take.
+
+RESOLUTION: 768P in both tiers (--tier standard, the default, or best). fal makes H3 1080P from a
+native 768P take plus a refinement pass, and the finished video is scaled to 1080x1920 with
+ffmpeg (lanczos) for free. --resolution 1080P is an upgrade and needs a reason (tiers.py):
+Best's skin close-up (--upgrade-reason shot_needs --upgrade-why ...), a failed attempt or the
+customer's ask. Choose it HERE, before the first take: the takes are seeded and reviewed at
+this resolution, so changing it later re-rolls every take.
 
 TAKES SPLIT ON LINE BOUNDARIES, never inside a line. H3 caps a take at 15s, so a 30s
 script is two or three takes. A join between two lines can be hidden with a 0.10s
@@ -50,6 +57,9 @@ import math
 import pathlib
 import re
 import sys
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import tiers  # noqa: E402
 
 MAX_TAKE = 15
 MIN_TAKE = 5
@@ -179,14 +189,18 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--mannerism", help="optional muted motion-reference clip (2-15s, rights cleared)")
     ap.add_argument("--aspect", choices=sorted(RATIOS))
-    ap.add_argument("--resolution", default="1080P", choices=["480P", "768P", "1080P"])
+    ap.add_argument("--resolution", choices=tiers.RANK["h3_resolution"],
+                    help="default: the tier's (768P in both); above it is an upgrade with a reason")
     ap.add_argument("--slug", default="creator")
     ap.add_argument("--split-at", help="comma-separated reel times to join takes at (e.g. where screen "
                                        "inserts end); default: greedy under 15s")
     ap.add_argument("--reference-wps", type=float, help="the reference's measured words per second; takes are sized "
                     "from it, capped at 3.2 (the fastest native H3 speech)")
     ap.add_argument("--plan-only", action="store_true", help="free planning with a not-yet-generated character image; never authorizes generation")
+    tiers.add_args(ap)
     a = ap.parse_args()
+    a.resolution = a.resolution or tiers.default(a.tier, "h3_resolution")
+    upgrade = tiers.upgrade(a, "h3_resolution", a.resolution)
 
     spec = json.loads(pathlib.Path(a.beats).read_text(encoding="utf-8"))
     beats = [b for b in spec["beats"] if (b.get("vo") or "").strip()]
@@ -291,6 +305,7 @@ def main():
     takes = {"model": "minimax/h3-max/reference-to-video", "char": str(img.resolve()),
              "mann": str(pathlib.Path(a.mannerism).resolve()) if a.mannerism else None,
              "slug": a.slug, "out": str(out.resolve()), "resolution": a.resolution,
+             "quality_tier": a.tier, **({"upgrade": upgrade} if upgrade else {}),
              "planning_only": a.plan_only, "capture": ch.get("capture", "phone"),
              "take_capture": capture, "capture_decision": capture_decision, "pace": pace,
              "generation_stage": "first_take", "content_review_required": True, "required_features": features(spec.get("required_features", [])),
