@@ -2,7 +2,7 @@
 name: create-creator-takes-h3
 description: Generate an AI creator talking to camera, saying an approved script, as one continuous track — H3 Max reference-to-video through the GooseWorks fal-proxy (bills the Ads agent). Plans takes on line boundaries under H3's 15s cap, dry-runs a cost estimate, generates the first take alone so its voice can be locked and passed to every later take, joins takes with measured 0.10s dissolves, and moves each line's timing onto the words actually spoken. Use for any format with a generated creator speaking a script (split-screen, screen inserts, talking-head ads).
 status: superseded
-version: "2.6.0"
+version: "2.6.1"
 updated: 2026-10-15
 superseded_by: creator-h3@1.6.0
 ---
@@ -31,7 +31,7 @@ and different runs filled it differently.
 
 `make_character.py` is the shared builder for any generated person still in a custom video, not
 only for H3 takes. Fetch create-image-fal with it; the script calls its `gen_image.py`. Before
-the paid call, quote the exact `--payload-out` body through the host's free quote:
+the paid call, price the exact `--payload-out` body with `data_price_provider` (free, read-only):
 `--dry-run --payload-out work/character/payload.json` writes `{"model", "body"}`, the exact
 request `gen_image.py` will send, and generates nothing.
 

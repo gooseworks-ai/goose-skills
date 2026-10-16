@@ -42,7 +42,7 @@ After `brainstorm`, turn `idea_brief` into `design_brief` (how the video looks a
 11. List **open decisions** with options, and **risks and fallbacks**.
 12. Write `design_brief`, then `implementation_brief`:
     - Folder layout, Phase 0 checks, a scene table with a parallelization note, audio (voice script as one block, music, SFX), assembly, captions, review, delivery, decision log, definition of done
-    - **Cost estimate:** send each paid request's exact body with `estimate_only=1` (free; returns its credits); never guess a rate. Add `render_estimate.reroll_allowance` `{per_scene: [{scene, credits}], total_credits}`: one redo per generated scene at its clip price, inside the render total. None on the preview or kit videos; price a kit video from each scene's routing-row fal model.
+    - **Cost estimate:** price every paid request's exact body in one `data_price_provider` call (free and read-only; returns each one's credits); never guess a rate. For an entry it answers `price_unknown`, follow that entry's `next_step`. Add `render_estimate.reroll_allowance` `{per_scene: [{scene, credits}], total_credits}`: one redo per generated scene at its clip price, inside the render total. None on the preview or kit videos; price a kit video from each scene's routing-row fal model.
 
 ## Host fields
 

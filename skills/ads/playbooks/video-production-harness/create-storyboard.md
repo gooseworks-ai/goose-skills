@@ -68,7 +68,7 @@ kit: {
 - `timing`: `duration_sec` is the draft's `duration_target_sec`, and `scenes` lists each draft scene's `time`, in order. If the length or a scene time changes later, save the kit block again with the new timing.
 - Add `asset_id` to each approved ingredient you reuse (cast still, scene still, footage), and point the plan's `*_asset_id` fields at those ids.
 - Never edit frames, fonts or prompt files. Never send server-only fields (`image`, `image_locked`, `stills`, `fix`, `takes`).
-- Price it like any render: send each scene's equivalent paid request (its routing row's fal model) with `estimate_only=1` and sum them into `render_estimate`; the kit charges the same rate. No redo allowance: the kit runs its own checks, so `render_estimate` carries no `reroll_allowance`.
+- Price it like any render: send each scene's equivalent paid request (its routing row's fal model) in one `data_price_provider` call and sum the answers into `render_estimate`; the kit charges the same rate. No redo allowance: the kit runs its own checks, so `render_estimate` carries no `reroll_allowance`.
 
 After the save, read `video_read`. While `custom_review.readiness_blockers.ingredients` shows `kit_preparing`, read again in about a minute. `kit_invalid` lists plain problems: fix each one and save again. When neither shows, the owner approves the ingredients as usual. That approval is the video's yes. Call `video_make` and follow its `next_step`: run the make command it gives. The kit makes, checks and finishes the video, so send no custom render state or paid calls of your own; a `custom_video_on_kit` refusal means run the make command instead. If the owner stops the kit, the custom review comes back, and their next approval starts a new run.
 

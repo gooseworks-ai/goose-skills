@@ -338,7 +338,7 @@ def main():
     ap.add_argument("--dry-run", action="store_true", help="print the prompt, generate nothing")
     ap.add_argument("--payload-out", type=pathlib.Path, default=None,
                     help='write {"model", "body"}, the exact request gen_image.py will send, so it '
-                         "can be quoted before the paid call; works with --dry-run")
+                         "can be priced with data_price_provider before the paid call; works with --dry-run")
     ap.add_argument("--voice-design", action="store_true",
                     help="no voice list: record a paid ElevenLabs Voice Design request to quote (not available through the GooseWorks MCP)")
     ap.add_argument("--no-voice-pair", action="store_true",
@@ -404,7 +404,7 @@ def main():
         a.payload_out.parent.mkdir(parents=True, exist_ok=True)
         a.payload_out.write_text(json.dumps({"model": a.model, "body": payload}, indent=1),
                                  encoding="utf-8")
-        print("payload  : %s (quote this body before the paid call)" % a.payload_out)
+        print("payload  : %s (price this body with data_price_provider before the paid call)" % a.payload_out)
     if a.dry_run:
         print("\n(dry run, nothing generated)")
         return
