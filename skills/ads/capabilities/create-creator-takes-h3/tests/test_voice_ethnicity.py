@@ -11,7 +11,7 @@ import unittest
 
 SCRIPTS = Path(__file__).resolve().parents[1] / "scripts"
 sys.path.insert(0, str(SCRIPTS))
-from pair_voice import heritage, load_voices, pair_voice  # noqa: E402
+from pair_voice import heritage, library_searches, load_voices, pair_voice  # noqa: E402
 
 JON = {"voice_id": "jon", "name": "Jon - Conversational Voice", "category": "professional",
        "labels": {"gender": "male", "use_case": "conversational", "accent": "american", "age": "middle_aged", "descriptive": "casual"},
@@ -86,7 +86,9 @@ class EthnicityMatchTests(unittest.TestCase):
         # At 44, "old" (from 55) is 11 years off and "young" (to 29) 15: Walter first.
         self.assertEqual([v["voice_id"] for v in pair["nearest"]][:2], ["walter", "julius"])
         self.assertNotIn("jon", [v["voice_id"] for v in pair["nearest"]])
-        self.assertIn("GooseWorks MCP cannot run Voice Design", pair["note"])
+        self.assertIn("Search the shared voice library first", pair["note"])
+        self.assertIn("Never change the person", pair["note"])
+        self.assertEqual(pair["library_search"][0]["path"], "/v1/shared-voices")
         self.assertTrue(pair_voice(18, "woman", ethnicity="Korean")["request"]["body"]["voice_description"].startswith("An 18-year-old Korean woman"))
 
     def test_ethnicity_words_map_to_one_heritage(self):
@@ -139,9 +141,15 @@ class ReviewFindingTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             voices = Path(tmp) / "voices.json"
             voices.write_text(json.dumps({"voices": VOICES}))
+            # The library was searched (2.8.0): every search this person needs, an empty last page each.
+            library = []
+            for request in library_searches("man", "Black American"):
+                (Path(tmp) / request["save_as"]).write_text(json.dumps({"voices": [], "has_more": False}))
+                library += ["--voices", str(Path(tmp) / request["save_as"])]
             out = Path(tmp) / "c"
             person = [a if a != "39" else "44" for a in PERSON]
-            self.assertEqual(run("make_character.py", *person, "--voices", str(voices), "--out", str(out), "--dry-run").returncode, 0)
+            self.assertEqual(run("make_character.py", *person, "--voices", str(voices), *library,
+                                 "--out", str(out), "--dry-run").returncode, 0)
             character = out / "character.json"
             first = json.loads(character.read_text())["voice_pair"]
             self.assertEqual(first["source"], "voice_design")
@@ -218,7 +226,8 @@ class SecondReviewTests(unittest.TestCase):
     def test_nearest_is_ordered_by_years_and_accept_takes_the_closest(self):
         aaron = {**JULIUS, "voice_id": "aaron", "name": "Aaron", "labels": {**JULIUS["labels"], "age": "young", "accent": "british"}}
         zed = {**JULIUS, "voice_id": "zed", "name": "Zed", "labels": {**JULIUS["labels"], "age": "old", "accent": "british"}}
-        pair = pair_voice(44, "man", "american", None, [aaron, zed], ethnicity="Black")
+        pair = pair_voice(44, "man", "american", None, [aaron, zed], ethnicity="Black",
+                          library={"searched": True, "more": []})
         self.assertEqual([v["voice_id"] for v in pair["nearest"]], ["zed", "aaron"], "old is 11 years off, young 15")
         self.assertIn("--voices <list> --exclude <voice_id>", pair["note"])
         with tempfile.TemporaryDirectory() as tmp:
@@ -335,7 +344,7 @@ class SecondReviewTests(unittest.TestCase):
             voices.write_text(json.dumps({"voices": [odd]}))
             r = run("make_character.py", *PERSON, "--voices", str(voices), "--out", str(Path(tmp) / "c"), "--dry-run")
             self.assertEqual(r.returncode, 0, r.stderr)
-            self.assertIn("NO VOICE IN THE LIST FITS", r.stdout)
+            self.assertIn("NO VOICE IN THE LISTS FITS", r.stdout)
 
 
 class VoiceListShapeTests(unittest.TestCase):

@@ -108,10 +108,32 @@ ACCENT_ALIASES = {
     "american": {"african_american", "black_american", "afro_american", "us_southern", "us_midwest", "new_york", "general_american", "standard_american"},
     "indian": {"en_indian"},
 }
-MCP_NO_DESIGN = ("The GooseWorks MCP cannot run Voice Design (its ElevenLabs calls are speech, music and "
-                 "GET /v1/voices): play the first `nearest` voice next to the still and, if the owner accepts it, "
-                 "record it with --character --accept-nearest; if not, pair again with --character --voices <list> "
-                 "--exclude <voice_id>. Never use a voice that is not in voice_pair.")
+# The person is never changed to fit a voice: on 16 Oct an agent made the presenter Black American because the
+# account list had no East Asian woman. Search the library, then design one.
+NEVER_BEND = "Never change the person (heritage, age or gender) to fit a voice list."
+MCP_NO_DESIGN = ("Search the shared voice library first (library_search: free GET /v1/shared-voices calls through "
+                 "the GooseWorks MCP's data_call_provider, each reply saved) and pair again with every list "
+                 "(--voices account.json --voices library-1.json ...). Only when no list fits, quote and run the Voice "
+                 "Design request through data_post_provider, play its previews beside the still, and save the chosen "
+                 "one with the `save` call. When the owner turns a voice down, pair again with --character --voices <list> "
+                 "--exclude <voice_id>. " + NEVER_BEND + " Never use a voice that is not in voice_pair.")
+
+LIBRARY_DONE = ("The voice library was searched to its end and nothing fits: quote and run the Voice Design request "
+                "through data_post_provider, play its previews beside the still, save the chosen one with the `save` "
+                "call and record it with --character --designed <voice_id>. When the owner turns a voice down, pair "
+                "again with --character --voices <list> --exclude <voice_id>. " + NEVER_BEND)
+LIBRARY_MORE = ("Nothing fits yet, and the searches in library_next_page have more: run each request as given (its "
+                "query has the next `page`), save the reply as its `save_as`, and pair again with every list before "
+                "any Voice Design. " + NEVER_BEND)
+
+# Library search words per heritage: the shared library's search reads names and descriptions, which
+# say "African American", "Latina", "Indian" or "Asian-American", not the broad group's name.
+LIBRARY_SEARCH_WORDS = {
+    "black": ["african american", "black"], "african": ["african"], "caribbean": ["caribbean", "jamaican"],
+    "south_asian": ["indian", "south asian"], "east_asian": ["asian", "chinese"], "southeast_asian": ["asian", "filipino"],
+    "asian": ["asian"], "latino": ["latina", "hispanic"], "middle_eastern": ["arab", "middle eastern"],
+    "indigenous": ["native american"],
+}
 
 
 def age_label(age):
@@ -328,6 +350,50 @@ def nearest(voices, wanted, exclude=(), age=None, limit=3):
     return [row for _, row in sorted(rows, key=lambda r: r[0])[:limit]]
 
 
+def library_searches(gender, ethnicity=None, language="en"):
+    """The free GET /v1/shared-voices calls that find this person's voices in the shared library, most
+    specific first ("korean", then "asian"). Its voices speak through text-to-speech without being added."""
+    g = gender_label(gender)
+    person = heritage(ethnicity)
+    words = []
+    if isinstance(person, tuple):
+        group, specific = person
+        # "black:american" names the group's American branch; "american" alone would match almost every voice.
+        if specific and specific.split(":")[-1] != "american":
+            words.append(specific.split(":")[-1].replace("_", " "))
+        # With a specific heritage, only the group's general words: a Korean person never searches "chinese".
+        words += [w for w in LIBRARY_SEARCH_WORDS.get(group, [])
+                  if not specific or all(specific_fits(sp, specific) for _, sp in words_in(w)[0])]
+        if group == "latino" and g == "male":
+            words = ["latino" if w == "latina" else w for w in words]
+    seen, queries = set(), []
+    for word in words or [None]:
+        if word in seen:
+            continue
+        seen.add(word)
+        query = {"gender": g if g != "neutral" else None, "language": language, "page_size": 100, "page": 0}
+        if word:
+            query["search"] = word
+        query = {k: v for k, v in query.items() if v is not None}
+        queries.append({"provider": "elevenlabs", "path": "/v1/shared-voices", "query": query,
+                        "save_as": library_file(query)})
+    return queries[:3]
+
+
+LIBRARY_FILE = re.compile(r"library-(?P<key>[a-z0-9-]+)-p(?P<page>\d+)\.json$")
+
+
+def library_key(query):
+    """One search's identity without its page: gender, language and search word, so two searches never share a file."""
+    parts = [query.get("gender") or "any", query.get("language") or "any", query.get("search") or "all"]
+    return "-".join(re.sub(r"[^a-z0-9]+", "-", str(p).lower()).strip("-") or "x" for p in parts)
+
+
+def library_file(query):
+    """The file a library search's reply is saved as: its whole query and its page, so paging reads only the last page."""
+    return "library-%s-p%d.json" % (library_key(query), int(query.get("page") or 0))
+
+
 def design_request(age, gender, accent=None, energy=None, sample_text=None, ethnicity=None):
     """The Voice Design request for this character, and the call that saves the chosen preview."""
     g = gender_label(gender)
@@ -352,7 +418,35 @@ def design_request(age, gender, accent=None, energy=None, sample_text=None, ethn
     }
 
 
-def pair_voice(age, gender, accent=None, energy=None, voices=None, exclude=(), sample_text=None, ethnicity=None):
+def library_status(paths, gender, ethnicity=None):
+    """Whether every library search this person needs (library_searches) was run to its last page, read from the
+    saved replies' save_as names and has_more (so an empty search counts). Searches never run come back in
+    `missing`, and a search whose last saved page has more comes back in `more` as its next request, whole.
+    {"searched": bool, "missing": [request], "more": [request]}"""
+    last = {}
+    for path in paths or []:
+        named = LIBRARY_FILE.search(pathlib.Path(path).name)
+        if not named:
+            continue
+        data = _unwrap(json.loads(pathlib.Path(path).read_text(encoding="utf-8")))
+        if not (isinstance(data, dict) and "has_more" in data):
+            continue
+        page = int(named.group("page"))
+        if page >= last.get(named.group("key"), (-1, False))[0]:
+            last[named.group("key")] = (page, bool(data.get("has_more")))
+    missing, more = [], []
+    for request in library_searches(gender, ethnicity):
+        seen = last.get(library_key(request["query"]))
+        if seen is None:
+            missing.append(request)
+        elif seen[1]:
+            query = {**request["query"], "page": seen[0] + 1}
+            more.append({**request, "query": query, "save_as": library_file(query)})
+    return {"searched": not missing and not more, "missing": missing, "more": more}
+
+
+def pair_voice(age, gender, accent=None, energy=None, voices=None, exclude=(), sample_text=None, ethnicity=None,
+               library=None):
     """voice_pair for character.json: a library match when the list has one, else a Voice Design request
     with the nearest voices in the list. `person` keeps the inputs and `rejected` the excluded voices,
     so pair_voice.py --character can pair again after a voice is turned down."""
@@ -367,27 +461,62 @@ def pair_voice(age, gender, accent=None, energy=None, voices=None, exclude=(), s
                          "before any paid voice step" + (". Its age label is one band off: listen for it"
                                                         if "age_near" in match["matched_on"] else ""))
         return match
-    pair = {"source": "voice_design", "wanted": wanted, "person": person, "rejected": rejected}
+    if library is None or isinstance(library, (list, tuple)):
+        library = library_status(library, gender, ethnicity)
+    searched = library["searched"]
+    pair = {"source": "voice_design", "wanted": wanted, "person": person, "rejected": rejected,
+            "library_searched": bool(searched)}
+    if library.get("missing"):
+        pair["library_search"] = library["missing"]
+    elif not searched and not library.get("more"):
+        pair["library_search"] = library_searches(gender, ethnicity)
+    if library.get("more"):
+        pair["library_next_page"] = library["more"]
     pair.update(design_request(age, gender, accent, energy, sample_text, ethnicity))
     if voices:
         pair["nearest"] = nearest(voices, wanted, exclude, int(age))
     pair["note"] = ("no saved voice fits %s; Voice Design is a paid call: quote it, listen to the previews, then save one. %s"
-                    % (", ".join("%s %s" % (k, v) for k, v in wanted.items() if k != "energy"), MCP_NO_DESIGN)) if voices else \
-                   "no voice list given; Voice Design is a paid call: quote it, listen to the previews, then save one"
+                    % (", ".join("%s %s" % (k, v) for k, v in wanted.items() if k != "energy"),
+                       LIBRARY_DONE if searched else LIBRARY_MORE if library.get("more") and not pair.get("library_search")
+                       else MCP_NO_DESIGN)) \
+        if (voices or searched) else \
+                   ("no voice list given; search the library (library_search) before Voice Design, a paid call: quote it, "
+                    "listen to the previews, then save one. " + NEVER_BEND)
     return pair
+
+
+def load_voice_lists(paths):
+    """Every saved list (the account's and each library search), merged; a voice listed twice counts once."""
+    merged, seen = [], set()
+    for path in paths or []:
+        for voice in load_voices(path) or []:
+            vid = voice_id(voice)
+            if vid and vid not in seen:
+                seen.add(vid)
+                merged.append(voice)
+    return merged
+
+
+def _unwrap(data):
+    # The MCP reply as a host saves it can be {"result": {"data": {"voices": [...]}}}: unwrap until the list.
+    for _ in range(3):
+        if not isinstance(data, dict) or "voices" in data:
+            break
+        inner = next((data[k] for k in ("result", "data") if isinstance(data.get(k), dict)), None)
+        if inner is None:
+            break
+        data = inner
+    return data
 
 
 def load_voices(path):
     """A saved voice list: ElevenLabs' {"voices": [...]}, the GooseWorks MCP's data_call_provider reply
     ({"data": {"voices": [...]}}), a video_formats reply ({"result": {"voices": [...]}}) or a bare list."""
-    data = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
-    for key in ("data", "result"):
-        if isinstance(data, dict) and isinstance(data.get(key), dict) and "voices" in data[key]:
-            data = data[key]
+    data = _unwrap(json.loads(pathlib.Path(path).read_text(encoding="utf-8")))
     return data.get("voices", data) if isinstance(data, dict) else data
 
 
-def repair_character(path, voices, exclude=(), sample_text=None):
+def repair_character(path, voices, exclude=(), sample_text=None, library_paths=None):
     """Pair again for a saved character.json: its own person, every voice already rejected plus
     `exclude`, written back as voice_pair. How a voice is changed after it is turned down."""
     record = json.loads(path.read_text(encoding="utf-8"))
@@ -398,18 +527,44 @@ def repair_character(path, voices, exclude=(), sample_text=None):
                          "--dry-run again with the same person to record it" % path)
     rejected = tuple(sorted(set(old.get("rejected") or []) | set(exclude)))
     pair = pair_voice(person["age"], person["gender"], person.get("accent"), person.get("energy"), voices,
-                      rejected, sample_text, person.get("ethnicity"))
+                      rejected, sample_text, person.get("ethnicity"), list(library_paths or []))
     record["voice_pair"] = pair
     path.write_text(json.dumps(record, indent=1), encoding="utf-8")
     return pair
 
 
-def accept_nearest(path):
+def library_pending(old):
+    """A pair still waiting on the library: no voice is designed or accepted before it is searched. Only an explicit
+    library_searched marker counts, so a pair made before 2.8.0 (no marker) is searched first too."""
+    if old.get("library_searched") is not True:
+        raise SystemExit("search the voice library first (voice_pair.library_search or library_next_page), then pair "
+                         "again with every list: --character ... --voices ... ")
+
+
+def record_designed(path, voice_id, name=None):
+    """After Voice Design: the saved voice (POST /v1/text-to-voice's voice_id) becomes the pair, so every later
+    step reads its id from voice_pair."""
+    record = json.loads(path.read_text(encoding="utf-8"))
+    old = record.get("voice_pair") or {}
+    library_pending(old)
+    if old.get("source") != "voice_design":
+        raise SystemExit("--designed records a saved Voice Design voice; this voice_pair is source %r" % old.get("source"))
+    pair = {"source": "voice_design_saved", "voice_id": voice_id, "name": name, "wanted": old.get("wanted"),
+            "person": old.get("person"), "rejected": old.get("rejected") or [], "request": old.get("request"),
+            "note": "designed for this person and saved; play it beside the still and approve the two together"}
+    record["voice_pair"] = pair
+    path.write_text(json.dumps(record, indent=1), encoding="utf-8")
+    return pair
+
+
+def accept_nearest(path, library_unavailable=False):
     """When no voice fits fully and Voice Design can't run, take the first `nearest` voice (the closest
     of the right gender and heritage) as the pair. Nobody picks from the list: the owner hears it beside
     the still and accepts it, or it is rejected and pairing runs again with --exclude."""
     record = json.loads(path.read_text(encoding="utf-8"))
     old = record.get("voice_pair") or {}
+    if not library_unavailable:
+        library_pending(old)
     rows = old.get("nearest") or []
     if old.get("source") != "voice_design" or not rows:
         raise SystemExit("--accept-nearest needs a voice_design voice_pair with `nearest` voices; this one has %s"
@@ -436,27 +591,46 @@ def main():
                                         "voice's accent, description and name, and said in the Voice Design description")
     ap.add_argument("--accent", help="e.g. american, british; an 'african american' accent counts as american")
     ap.add_argument("--energy", help="how they sound, e.g. upbeat, calm, warm")
-    ap.add_argument("--voices", help="a saved GET /v1/voices, GET /v2/voices or GET /v1/shared-voices reply, or the "
-                                     "GooseWorks MCP's data_call_provider reply for GET /v1/voices")
+    ap.add_argument("--voices", action="append", default=[],
+                    help="a saved GET /v1/voices, GET /v2/voices or GET /v1/shared-voices reply, or the GooseWorks MCP's "
+                         "data_call_provider reply for one (repeatable: the account list and each library_search reply)")
+    ap.add_argument("--library-searches", action="store_true",
+                    help="print the free GET /v1/shared-voices calls for --gender and --ethnicity, and stop")
     ap.add_argument("--exclude", action="append", default=[], help="a voice_id not to use: a rejected voice, or another brand's narrator")
     ap.add_argument("--sample-text", help="100-1000 characters for the design previews; else auto-generated")
+    ap.add_argument("--designed", metavar="VOICE_ID",
+                    help="with --character: record the voice_id POST /v1/text-to-voice returned as the pair")
+    ap.add_argument("--designed-name", help="with --designed: the saved voice's name")
+    ap.add_argument("--library-unavailable", action="store_true",
+                    help="with --accept-nearest: the host can't search the voice library (a GooseWorks server without "
+                         "/v1/shared-voices answers unsupported_provider_endpoint); only with the owner's yes")
     ap.add_argument("--accept-nearest", action="store_true",
                     help="with --character: take the first voice_pair.nearest voice as the pair, when Voice Design can't run")
     ap.add_argument("--out", type=pathlib.Path)
     a = ap.parse_args()
-    voices = load_voices(a.voices) if a.voices else None
-    if a.accept_nearest:
+    if a.library_searches:
+        if not a.gender:
+            raise SystemExit("--library-searches needs --gender (and --ethnicity)")
+        print(json.dumps(library_searches(a.gender, a.ethnicity), indent=1))
+        return 0
+    voices = load_voice_lists(a.voices) if a.voices else None
+    if a.designed:
+        if not a.character:
+            raise SystemExit("--designed needs --character")
+        pair = record_designed(a.character, a.designed.strip(), a.designed_name)
+    elif a.accept_nearest:
         if not a.character:
             raise SystemExit("--accept-nearest needs --character")
-        pair = accept_nearest(a.character)
+        pair = accept_nearest(a.character, a.library_unavailable)
     elif a.character:
-        if not voices:
+        if not a.voices:
             raise SystemExit("--character needs --voices: pairing again picks from a voice list, never by hand")
-        pair = repair_character(a.character, voices, tuple(a.exclude), a.sample_text)
+        pair = repair_character(a.character, voices, tuple(a.exclude), a.sample_text, a.voices)
     else:
         if a.age is None or not a.gender:
             raise SystemExit("--age and --gender are required (or --character)")
-        pair = pair_voice(a.age, a.gender, a.accent, a.energy, voices, tuple(a.exclude), a.sample_text, a.ethnicity)
+        pair = pair_voice(a.age, a.gender, a.accent, a.energy, voices, tuple(a.exclude), a.sample_text, a.ethnicity,
+                          list(a.voices))
     text = json.dumps(pair, indent=1)
     if a.out:
         a.out.parent.mkdir(parents=True, exist_ok=True)
