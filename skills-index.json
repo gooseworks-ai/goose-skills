@@ -1,6 +1,6 @@
 {
   "version": "1.4.0",
-  "generated": "2026-10-15",
+  "generated": "2026-10-16",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -1869,7 +1869,8 @@
         "skills/ads/capabilities/create-creator-takes-h3/tests/test_action_skin_light.py",
         "skills/ads/capabilities/create-creator-takes-h3/tests/test_hands_voice_pace.py",
         "skills/ads/capabilities/create-creator-takes-h3/tests/test_make_character.py",
-        "skills/ads/capabilities/create-creator-takes-h3/tests/test_run_takes_rejection.py"
+        "skills/ads/capabilities/create-creator-takes-h3/tests/test_run_takes_rejection.py",
+        "skills/ads/capabilities/create-creator-takes-h3/tests/test_voice_ethnicity.py"
       ],
       "metadata": {
         "slug": "create-creator-takes-h3",
