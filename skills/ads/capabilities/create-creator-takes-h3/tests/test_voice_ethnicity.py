@@ -89,10 +89,12 @@ class EthnicityMatchTests(unittest.TestCase):
         self.assertTrue(pair_voice(18, "woman", ethnicity="Korean")["request"]["body"]["voice_description"].startswith("An 18-year-old Korean woman"))
 
     def test_ethnicity_words_map_to_one_heritage(self):
-        self.assertEqual(heritage("Black African American"), "black")
-        self.assertEqual(heritage("Southeast Asian"), "southeast_asian")
-        self.assertEqual(heritage("South Asian"), "south_asian")
-        self.assertEqual(heritage("Latina"), "latino")
+        self.assertEqual(heritage("Black African American"), ("black", None))
+        self.assertEqual(heritage("Southeast Asian"), ("southeast_asian", None))
+        self.assertEqual(heritage("South Asian"), ("south_asian", None))
+        self.assertEqual(heritage("Latina"), ("latino", None))
+        self.assertEqual(heritage("Korean American"), ("east_asian", "korean"))
+        self.assertEqual(heritage("White"), "white")
         self.assertIsNone(heritage("mixed"))
         # Unknown or mixed checks no heritage: any voice of the right gender and age fits.
         self.assertEqual(pair_voice(39, "man", "american", None, [JON], ethnicity="mixed")["voice_id"], "jon")
@@ -117,7 +119,7 @@ class ReviewFindingTests(unittest.TestCase):
         self.assertEqual(pair_voice(39, "man", "american", None, [asian, native], ethnicity="White")["source"], "voice_design")
         self.assertEqual(pair_voice(39, "man", "american", None, [asian], ethnicity="Korean")["voice_id"], "asian")
         self.assertEqual(pair_voice(39, "man", "american", None, [asian], ethnicity="Asian American")["voice_id"], "asian")
-        self.assertEqual(heritage("Native American"), "indigenous")
+        self.assertEqual(heritage("Native American"), ("indigenous", "native_american"))
 
     def test_ten_years_from_the_band_edge_is_near_on_both_sides(self):
         self.assertIn("age_near", pair_voice(40, "man", "american", None, [JULIUS], ethnicity="Black")["matched_on"])
@@ -132,7 +134,7 @@ class ReviewFindingTests(unittest.TestCase):
         pair = pair_voice(39, "man", "american", None, odd, ethnicity="Black American")
         self.assertIn(pair["voice_id"], ("julius", "n7"))
 
-    def test_the_owner_can_choose_only_a_listed_nearest_voice(self):
+    def test_no_fit_without_voice_design_takes_the_first_nearest_voice_never_a_pick(self):
         with tempfile.TemporaryDirectory() as tmp:
             voices = Path(tmp) / "voices.json"
             voices.write_text(json.dumps({"voices": VOICES}))
@@ -140,15 +142,71 @@ class ReviewFindingTests(unittest.TestCase):
             person = [a if a != "39" else "44" for a in PERSON]
             self.assertEqual(run("make_character.py", *person, "--voices", str(voices), "--out", str(out), "--dry-run").returncode, 0)
             character = out / "character.json"
-            self.assertEqual(json.loads(character.read_text())["voice_pair"]["source"], "voice_design")
-            r = run("pair_voice.py", "--character", str(character), "--choose", "jon")
-            self.assertNotEqual(r.returncode, 0, "Jon is not a nearest voice for this person")
-            r = run("pair_voice.py", "--character", str(character), "--choose", "julius")
+            first = json.loads(character.read_text())["voice_pair"]
+            self.assertEqual(first["source"], "voice_design")
+            self.assertNotEqual(run("pair_voice.py", "--character", str(character), "--choose", "jon").returncode, 0)
+            r = run("pair_voice.py", "--character", str(character), "--accept-nearest")
             self.assertEqual(r.returncode, 0, r.stderr)
             pair = json.loads(character.read_text())["voice_pair"]
-            self.assertEqual((pair["source"], pair["voice_id"]), ("library_nearest", "julius"))
+            self.assertEqual((pair["source"], pair["voice_id"]), ("library_nearest", first["nearest"][0]["voice_id"]))
             self.assertEqual(pair["person"]["age"], 44)
-            self.assertIn("age young", pair["differs_on"])
+            self.assertTrue(pair["differs_on"])
+            # Rejected: pair again with --exclude, and the next nearest comes first.
+            r = run("pair_voice.py", "--character", str(character), "--voices", str(voices), "--exclude", pair["voice_id"])
+            again = json.loads(character.read_text())["voice_pair"]
+            self.assertEqual(again["rejected"], [pair["voice_id"]])
+            self.assertNotIn(pair["voice_id"], [v["voice_id"] for v in again["nearest"]])
+            # Accepting a library match is refused: it is already the pair.
+            library = Path(tmp) / "l"
+            run("make_character.py", *PERSON, "--voices", str(voices), "--out", str(library), "--dry-run")
+            self.assertNotEqual(run("pair_voice.py", "--character", str(library / "character.json"), "--accept-nearest").returncode, 0)
+
+
+class SecondReviewTests(unittest.TestCase):
+    """Codex review round 2 of #306."""
+
+    def test_a_specific_heritage_never_takes_a_sibling(self):
+        japanese = {**JON, "voice_id": "jp", "name": "Haru", "description": "Calm Japanese male voice"}
+        korean = {**JON, "voice_id": "kr", "name": "Min", "description": "Calm Korean male voice"}
+        east = {**JON, "voice_id": "ea", "name": "Lee", "description": "Friendly East Asian male voice"}
+        self.assertEqual(pair_voice(40, "man", "american", None, [japanese, korean], ethnicity="Korean")["voice_id"], "kr")
+        self.assertEqual(pair_voice(40, "man", "american", None, [japanese, east], ethnicity="Korean")["voice_id"], "ea")
+        self.assertEqual(pair_voice(40, "man", "american", None, [japanese], ethnicity="Korean")["source"], "voice_design")
+        # A general person takes any of their heritage's specific voices.
+        self.assertEqual(pair_voice(40, "man", "american", None, [japanese], ethnicity="East Asian")["voice_id"], "jp")
+        indian = {**INDIAN, "voice_id": "in"}
+        pakistani = {**INDIAN, "voice_id": "pk", "name": "Ali", "description": "A warm Pakistani voice", "labels": {**INDIAN["labels"], "accent": "pakistani"}}
+        self.assertEqual(pair_voice(40, "man", None, None, [indian, pakistani], ethnicity="Pakistani")["voice_id"], "pk")
+        mexican = {**JON, "voice_id": "mx", "name": "Diego", "description": "Warm Mexican male voice"}
+        colombian = {**JON, "voice_id": "co", "name": "Andres", "description": "Warm Colombian male voice"}
+        self.assertEqual(pair_voice(40, "man", "american", None, [mexican, colombian], ethnicity="Colombian")["voice_id"], "co")
+
+    def test_every_voice_word_is_a_person_word_too(self):
+        # Each has a wrong-heritage voice that would win by name if the ethnicity went unrecognized.
+        for ethnicity, right_words in [("Nigerian", "A warm Nigerian narrator"), ("Ghanaian", "A warm Ghanaian narrator"),
+                                       ("Kenyan", "A warm Kenyan narrator"), ("Puerto Rican", "A warm Puerto Rican narrator"),
+                                       ("Colombian", "A warm Colombian narrator"), ("Aboriginal", "A warm Aboriginal narrator"),
+                                       ("Cantonese", "A warm Cantonese narrator")]:
+            self.assertIsNotNone(heritage(ethnicity), ethnicity)
+            right = {**NIGERIAN, "voice_id": "zz-right", "name": "Zed", "description": right_words,
+                     "labels": {**NIGERIAN["labels"], "accent": "standard"}}
+            wrong = {**INDIAN, "voice_id": "aa-wrong", "name": "Aaron"}
+            self.assertEqual(pair_voice(40, "man", None, None, [wrong, right], ethnicity=ethnicity)["voice_id"], "zz-right", ethnicity)
+
+    def test_accent_aliases_go_one_way(self):
+        self.assertEqual(pair_voice(39, "man", "american", None, [JULIUS], ethnicity="Black")["voice_id"], "julius")
+        self.assertEqual(pair_voice(39, "man", "african", None, [JULIUS], ethnicity="Black")["source"], "voice_design")
+        english = {**JON, "voice_id": "en", "labels": {**JON["labels"], "accent": "american english"}}
+        self.assertEqual(pair_voice(40, "man", "english", None, [english], ethnicity="White")["source"], "voice_design")
+
+    def test_make_character_survives_an_odd_name_on_the_no_fit_path(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            odd = {**JULIUS, "voice_id": "odd", "name": 7, "labels": {**JULIUS["labels"], "accent": "british"}}
+            voices = Path(tmp) / "voices.json"
+            voices.write_text(json.dumps({"voices": [odd]}))
+            r = run("make_character.py", *PERSON, "--voices", str(voices), "--out", str(Path(tmp) / "c"), "--dry-run")
+            self.assertEqual(r.returncode, 0, r.stderr)
+            self.assertIn("NO VOICE IN THE LIST FITS", r.stdout)
 
 
 class VoiceListShapeTests(unittest.TestCase):

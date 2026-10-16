@@ -370,7 +370,7 @@ def main():
     else:
         print("voice    : %s Voice Design request (paid; quote it first)%s"
               % ("NO VOICE IN THE LIST FITS this person." if a.voices else "",
-                 "; nearest: " + ", ".join(v.get("name") or v["voice_id"] for v in voice["nearest"]) if voice.get("nearest") else ""))
+                 "; nearest: " + ", ".join(str(v.get("name") or v["voice_id"]) for v in voice["nearest"]) if voice.get("nearest") else ""))
     # Save the same identity metadata for free planning and actual generation.
     record = {
         "image": "character.png",
