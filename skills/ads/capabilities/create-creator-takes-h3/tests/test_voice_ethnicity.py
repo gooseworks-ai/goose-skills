@@ -86,7 +86,9 @@ class EthnicityMatchTests(unittest.TestCase):
         # At 44, "old" (from 55) is 11 years off and "young" (to 29) 15: Walter first.
         self.assertEqual([v["voice_id"] for v in pair["nearest"]][:2], ["walter", "julius"])
         self.assertNotIn("jon", [v["voice_id"] for v in pair["nearest"]])
-        self.assertIn("GooseWorks MCP cannot run Voice Design", pair["note"])
+        self.assertIn("Search the shared voice library first", pair["note"])
+        self.assertIn("Never change the person", pair["note"])
+        self.assertEqual(pair["library_search"][0]["path"], "/v1/shared-voices")
         self.assertTrue(pair_voice(18, "woman", ethnicity="Korean")["request"]["body"]["voice_description"].startswith("An 18-year-old Korean woman"))
 
     def test_ethnicity_words_map_to_one_heritage(self):
@@ -335,7 +337,7 @@ class SecondReviewTests(unittest.TestCase):
             voices.write_text(json.dumps({"voices": [odd]}))
             r = run("make_character.py", *PERSON, "--voices", str(voices), "--out", str(Path(tmp) / "c"), "--dry-run")
             self.assertEqual(r.returncode, 0, r.stderr)
-            self.assertIn("NO VOICE IN THE LIST FITS", r.stdout)
+            self.assertIn("NO VOICE IN THE LISTS FITS", r.stdout)
 
 
 class VoiceListShapeTests(unittest.TestCase):

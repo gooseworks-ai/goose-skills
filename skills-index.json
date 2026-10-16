@@ -1852,7 +1852,7 @@
       "description": "Generate an AI creator talking to camera, saying an approved script, as one continuous track — H3 Max reference-to-video through the GooseWorks fal-proxy (bills the Ads agent). Plans takes on line boundaries under H3's 15s cap, dry-runs a cost estimate, generates the first take alone so its voice can be locked and passed to every later take, joins takes with measured 0.10s dissolves, and moves each line's timing onto the words actually spoken. Use for any format with a generated creator speaking a script (split-screen, screen inserts, talking-head ads).",
       "tags": "ads, content",
       "path": "skills/ads/capabilities/create-creator-takes-h3",
-      "version": "2.7.0",
+      "version": "2.8.0",
       "files": [
         "skills/ads/capabilities/create-creator-takes-h3/SKILL.md",
         "skills/ads/capabilities/create-creator-takes-h3/scripts/align_beats.py",
@@ -1878,7 +1878,7 @@
         "slug": "create-creator-takes-h3",
         "category": "capabilities",
         "domain": "ads",
-        "version": "2.7.0",
+        "version": "2.8.0",
         "tags": [
           "ads",
           "content"
@@ -9483,9 +9483,9 @@
           "write-video-ad-script"
         ],
         "slug": "video-production-harness",
-        "source_commit": "fc4c06230bd7530b518e0c27f540973e96ab2623",
-        "source_hash": "60733f82cc81ea7c549c8c9c7cdcf036766a8665a4c35cb64ed8c038e75ca7e2",
-        "source_version": "4-60733f82cc81",
+        "source_commit": "8fc1620e9eb7dd40aed8666089dd3420b1487f1c",
+        "source_hash": "30205aaf8351cb9a11f78c5c76282f9c897624108ea0908b68652e7185a2d338",
+        "source_version": "4-30205aaf8351",
         "tags": [
           "ads",
           "content"

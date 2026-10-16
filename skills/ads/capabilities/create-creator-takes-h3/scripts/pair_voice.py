@@ -108,10 +108,24 @@ ACCENT_ALIASES = {
     "american": {"african_american", "black_american", "afro_american", "us_southern", "us_midwest", "new_york", "general_american", "standard_american"},
     "indian": {"en_indian"},
 }
-MCP_NO_DESIGN = ("The GooseWorks MCP cannot run Voice Design (its ElevenLabs calls are speech, music and "
-                 "GET /v1/voices): play the first `nearest` voice next to the still and, if the owner accepts it, "
-                 "record it with --character --accept-nearest; if not, pair again with --character --voices <list> "
-                 "--exclude <voice_id>. Never use a voice that is not in voice_pair.")
+# The person is never changed to fit a voice: on 16 Oct an agent made the presenter Black American because the
+# account list had no East Asian woman. Search the library, then design one.
+NEVER_BEND = "Never change the person (heritage, age or gender) to fit a voice list."
+MCP_NO_DESIGN = ("Search the shared voice library first (library_search: free GET /v1/shared-voices calls through "
+                 "the GooseWorks MCP's data_call_provider, each reply saved) and pair again with every list "
+                 "(--voices account.json --voices library-1.json ...). Only when no list fits, quote and run the Voice "
+                 "Design request through data_post_provider, play its previews beside the still, and save the chosen "
+                 "one with the `save` call. When the owner turns a voice down, pair again with --character --voices <list> "
+                 "--exclude <voice_id>. " + NEVER_BEND + " Never use a voice that is not in voice_pair.")
+
+# Library search words per heritage: the shared library's search reads names and descriptions, which
+# say "African American", "Latina", "Indian" or "Asian-American", not the broad group's name.
+LIBRARY_SEARCH_WORDS = {
+    "black": ["african american", "black"], "african": ["african"], "caribbean": ["caribbean", "jamaican"],
+    "south_asian": ["indian", "south asian"], "east_asian": ["asian", "chinese"], "southeast_asian": ["asian", "filipino"],
+    "asian": ["asian"], "latino": ["latina", "hispanic"], "middle_eastern": ["arab", "middle eastern"],
+    "indigenous": ["native american"],
+}
 
 
 def age_label(age):
@@ -328,6 +342,32 @@ def nearest(voices, wanted, exclude=(), age=None, limit=3):
     return [row for _, row in sorted(rows, key=lambda r: r[0])[:limit]]
 
 
+def library_searches(gender, ethnicity=None, language="en"):
+    """The free GET /v1/shared-voices calls that find this person's voices in the shared library, most
+    specific first ("korean", then "asian"). Its voices speak through text-to-speech without being added."""
+    g = gender_label(gender)
+    person = heritage(ethnicity)
+    words = []
+    if isinstance(person, tuple):
+        group, specific = person
+        if specific:
+            words.append(specific.split(":")[-1].replace("_", " "))
+        words += LIBRARY_SEARCH_WORDS.get(group, [])
+        if group == "latino" and g == "male":
+            words = ["latino" if w == "latina" else w for w in words]
+    seen, queries = set(), []
+    for word in words or [None]:
+        if word in seen:
+            continue
+        seen.add(word)
+        query = {"gender": g if g != "neutral" else None, "language": language, "page_size": 100}
+        if word:
+            query["search"] = word
+        queries.append({"provider": "elevenlabs", "path": "/v1/shared-voices",
+                        "query": {k: v for k, v in query.items() if v is not None}})
+    return queries[:3]
+
+
 def design_request(age, gender, accent=None, energy=None, sample_text=None, ethnicity=None):
     """The Voice Design request for this character, and the call that saves the chosen preview."""
     g = gender_label(gender)
@@ -367,23 +407,42 @@ def pair_voice(age, gender, accent=None, energy=None, voices=None, exclude=(), s
                          "before any paid voice step" + (". Its age label is one band off: listen for it"
                                                         if "age_near" in match["matched_on"] else ""))
         return match
-    pair = {"source": "voice_design", "wanted": wanted, "person": person, "rejected": rejected}
+    pair = {"source": "voice_design", "wanted": wanted, "person": person, "rejected": rejected,
+            "library_search": library_searches(gender, ethnicity)}
     pair.update(design_request(age, gender, accent, energy, sample_text, ethnicity))
     if voices:
         pair["nearest"] = nearest(voices, wanted, exclude, int(age))
     pair["note"] = ("no saved voice fits %s; Voice Design is a paid call: quote it, listen to the previews, then save one. %s"
                     % (", ".join("%s %s" % (k, v) for k, v in wanted.items() if k != "energy"), MCP_NO_DESIGN)) if voices else \
-                   "no voice list given; Voice Design is a paid call: quote it, listen to the previews, then save one"
+                   ("no voice list given; search the library (library_search) before Voice Design, a paid call: quote it, "
+                    "listen to the previews, then save one. " + NEVER_BEND)
     return pair
+
+
+def load_voice_lists(paths):
+    """Every saved list (the account's and each library search), merged; a voice listed twice counts once."""
+    merged, seen = [], set()
+    for path in paths or []:
+        for voice in load_voices(path) or []:
+            vid = voice_id(voice)
+            if vid and vid not in seen:
+                seen.add(vid)
+                merged.append(voice)
+    return merged
 
 
 def load_voices(path):
     """A saved voice list: ElevenLabs' {"voices": [...]}, the GooseWorks MCP's data_call_provider reply
     ({"data": {"voices": [...]}}), a video_formats reply ({"result": {"voices": [...]}}) or a bare list."""
     data = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
-    for key in ("data", "result"):
-        if isinstance(data, dict) and isinstance(data.get(key), dict) and "voices" in data[key]:
-            data = data[key]
+    # The MCP reply as a host saves it can be {"result": {"data": {"voices": [...]}}}: unwrap until the list.
+    for _ in range(3):
+        if not isinstance(data, dict) or "voices" in data:
+            break
+        inner = next((data[k] for k in ("result", "data") if isinstance(data.get(k), dict)), None)
+        if inner is None:
+            break
+        data = inner
     return data.get("voices", data) if isinstance(data, dict) else data
 
 
@@ -436,15 +495,23 @@ def main():
                                         "voice's accent, description and name, and said in the Voice Design description")
     ap.add_argument("--accent", help="e.g. american, british; an 'african american' accent counts as american")
     ap.add_argument("--energy", help="how they sound, e.g. upbeat, calm, warm")
-    ap.add_argument("--voices", help="a saved GET /v1/voices, GET /v2/voices or GET /v1/shared-voices reply, or the "
-                                     "GooseWorks MCP's data_call_provider reply for GET /v1/voices")
+    ap.add_argument("--voices", action="append", default=[],
+                    help="a saved GET /v1/voices, GET /v2/voices or GET /v1/shared-voices reply, or the GooseWorks MCP's "
+                         "data_call_provider reply for one (repeatable: the account list and each library_search reply)")
+    ap.add_argument("--library-searches", action="store_true",
+                    help="print the free GET /v1/shared-voices calls for --gender and --ethnicity, and stop")
     ap.add_argument("--exclude", action="append", default=[], help="a voice_id not to use: a rejected voice, or another brand's narrator")
     ap.add_argument("--sample-text", help="100-1000 characters for the design previews; else auto-generated")
     ap.add_argument("--accept-nearest", action="store_true",
                     help="with --character: take the first voice_pair.nearest voice as the pair, when Voice Design can't run")
     ap.add_argument("--out", type=pathlib.Path)
     a = ap.parse_args()
-    voices = load_voices(a.voices) if a.voices else None
+    if a.library_searches:
+        if not a.gender:
+            raise SystemExit("--library-searches needs --gender (and --ethnicity)")
+        print(json.dumps(library_searches(a.gender, a.ethnicity), indent=1))
+        return 0
+    voices = load_voice_lists(a.voices) if a.voices else None
     if a.accept_nearest:
         if not a.character:
             raise SystemExit("--accept-nearest needs --character")

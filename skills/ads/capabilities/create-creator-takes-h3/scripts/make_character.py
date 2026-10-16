@@ -14,7 +14,13 @@ Action shots: with --action (or --capture phone_observer) the still is an action
 talking head. The framing is on the action (hands, object and face working on it, off-centre,
 not squared to the lens), the eyes stay on the task and the hands are in use; the head is
 smaller in frame. --shot talking keeps the talking-head defaults for a person who talks to
-the lens while doing something.
+the lens while doing something; its --action is written in as what they do while talking.
+
+Realism check: GooseWorks judges every person still saved to a custom video (video_change, and again at
+video_approve) against a real phone video frame. It refuses a face that looks rendered (wax, plastic or
+an airbrushed finish, glassy eyes, merging teeth or hair) and a shot that looks art-directed (portrait-mode
+blur behind a sharp face, studio or ring light, a cinematic grade, a plain or showroom set). Keep the
+default phone capture and deep focus; when a still is flagged, make only that still again.
 
 Skin condition: when the product treats a visible skin problem, pass it with
 --skin-condition (e.g. "visible blackheads on the nose, oily T-zone", "a few small acne
@@ -36,7 +42,9 @@ chosen here, with the person, never earlier in the script. With no voice list th
 refuses (a silent fallback to a paid Voice Design request was ignored on 15 Oct): pass
 --voices, or --voice-design to quote Voice Design on purpose, or --no-voice-pair for a person
 who is never voiced separately. To change the voice later: pair_voice.py --character
-character.json --voices <list> --exclude <rejected voice_id>.
+character.json --voices <list> --exclude <rejected voice_id>. The account's list is small: pass
+the shared-library searches too (pair_voice.py --library-searches). Never change the person
+(heritage, age or gender) to fit a voice list; when no list fits, design the voice.
 
 Quality: --tier standard (default) makes the still at GPT Image 2 medium, --tier best at high.
 --quality high under Standard is an upgrade for this one person and needs a reason
@@ -54,7 +62,7 @@ import sys
 
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-from pair_voice import load_voices, pair_voice  # noqa: E402
+from pair_voice import NEVER_BEND, load_voice_lists, pair_voice  # noqa: E402
 from plan_takes import both_hands  # noqa: E402
 import tiers  # noqa: E402
 
@@ -93,6 +101,7 @@ LIGHT_LOCK = ("Window or lamp light from one side, so the far side of the face i
               "added shine, no over-sharpening.")
 STUDIO_LIGHT_LOCK = ("Normal exposure, highlights not blown out, no HDR look. Matte skin with no "
                      "added shine, no over-sharpening.")
+# Asking for "the softness of a phone video frame" smoothed the skin and failed the realism check (16 Oct).
 CAPTURE = {
     "phone": (
         "An ordinary phone recording at eye level, in a real lived-in room that is slightly "
@@ -119,6 +128,8 @@ FOCUS = {
 }
 RECORDING = {
     "counter": "The phone is propped up outside the frame and nobody holds it; both hands are free. Complete face and both shoulders remain visible.",
+    # A talking head who holds or does something while talking: the hands are on it, not free.
+    "counter_talking_action": "The phone is propped up outside the frame and nobody holds it. Complete face and both shoulders remain visible.",
     # An action shot on a propped phone: the hands are working, not free (talking-head text above).
     "counter_action": "The phone is propped up outside the frame and nobody holds it. The hands are in use on the action and in frame; the eyes follow what the hands are doing.",
     "selfie": "One hand supports a phone outside the frame; only the other hand is free. Believable selfie framing without cutting off the face.",
@@ -242,7 +253,9 @@ def build(a):
 
     # An action shot names what the hands are doing, so the still is caught mid-action.
     acts = [t.strip().rstrip(".") for t in (getattr(a, "action", None) or []) if t and t.strip()]
-    action_text = (" The action: %s." % "; ".join(acts)) if (shot == "action" and acts) else ""
+    # A talking head keeps its lens gaze and does the action while talking (it used to drop --action).
+    action_text = ((" The action: %s." if shot == "action" else " While talking to the lens: %s.") % "; ".join(acts)
+                   if acts else "")
     spec = json.loads((HERE / "character-prompt.json").read_text(encoding="utf-8"))
     slots = {
         "identity": ident,
@@ -256,8 +269,8 @@ def build(a):
         "face_fill": a.face_fill,
         "capture": CAPTURE[a.capture],
         "focus": FOCUS[getattr(a, "focus", "deep")],
-        "recording": RECORDING["counter_action" if (shot == "action" and a.recording == "counter")
-                               else getattr(a, "recording", "counter")],
+        "recording": RECORDING[("counter_action" if shot == "action" else "counter_talking_action" if acts else "counter")
+                               if a.recording == "counter" else a.recording],
     }
     blank = [k for k, v in slots.items() if not str(v).strip()]
     if blank:
@@ -275,13 +288,15 @@ def build(a):
 
 NO_VOICE_LIST = """make_character.py needs a voice list, so the voice is paired with this person (age, gender
 and ethnicity) now, not picked later from a name. Pass one of:
-  --voices voices.json   a saved voice list. Through the GooseWorks MCP: data_call_provider
-                         {provider: "elevenlabs", path: "/v1/voices", project_id} and save the whole reply.
-                         With an ElevenLabs key: GET /v1/voices (or /v2/voices, /v1/shared-voices).
+  --voices voices.json   a saved voice list, repeatable. Through the GooseWorks MCP: data_call_provider
+                         {provider: "elevenlabs", path: "/v1/voices", project_id} (the account's few voices)
+                         AND each shared-library search pair_voice.py --library-searches --gender ...
+                         --ethnicity ... prints (path "/v1/shared-voices" with its query); save each whole
+                         reply and pass them all. Library voices speak without being added.
                          video_formats show:"voices" is a short curated list that names no heritage; it
                          fits few people.
-  --voice-design         no list: record a paid Voice Design request to quote (not available through
-                         the GooseWorks MCP)
+  --voice-design         no list: record a paid Voice Design request to quote (data_post_provider
+                         /v1/text-to-voice/design, then /v1/text-to-voice to save the chosen preview)
   --no-voice-pair        this person is never voiced separately (B-roll with no lines, or H3 native speech)"""
 
 
@@ -330,8 +345,10 @@ def main():
                     "both-hands action refuses --recording selfie")
     ap.add_argument("--voice-accent", help="how they sound, e.g. american or british (for voice_pair)")
     ap.add_argument("--voice-energy", help="e.g. upbeat, calm, warm (for voice_pair)")
-    ap.add_argument("--voices", help="a saved voice list to match voice_pair from: the GooseWorks MCP's data_call_provider "
-                                     "reply for GET /v1/voices, or an ElevenLabs GET /v1/voices, /v2/voices or /v1/shared-voices reply")
+    ap.add_argument("--voices", action="append", default=[],
+                    help="a saved voice list to match voice_pair from (repeatable): the GooseWorks MCP's data_call_provider "
+                         "reply for GET /v1/voices or GET /v1/shared-voices (pair_voice.py --library-searches gives this "
+                         "person's searches), or an ElevenLabs GET /v1/voices, /v2/voices or /v1/shared-voices reply")
     ap.add_argument("--voice-exclude", action="append", default=[], help="a voice_id not to reuse, e.g. another brand's narrator")
     ap.add_argument("--voice-sample-text", help="100-1000 characters for Voice Design previews")
     ap.add_argument("--marks", action="append", help="specific distinctive mark chosen by the user")
@@ -350,7 +367,8 @@ def main():
                     help='write {"model", "body"}, the exact request gen_image.py will send, so it '
                          "can be priced with data_price_provider before the paid call; works with --dry-run")
     ap.add_argument("--voice-design", action="store_true",
-                    help="no voice list: record a paid ElevenLabs Voice Design request to quote (not available through the GooseWorks MCP)")
+                    help="no voice list: record a paid ElevenLabs Voice Design request to quote (data_post_provider "
+                         "/v1/text-to-voice/design, then /v1/text-to-voice to save the chosen preview)")
     ap.add_argument("--no-voice-pair", action="store_true",
                     help="this person is never voiced separately (B-roll with no lines, or H3 native speech); records no voice_pair")
     tiers.add_args(ap)
@@ -376,7 +394,7 @@ def main():
     if a.capture_decision["reason"]:
         print("recording: refused selfie, " + a.capture_decision["reason"])
     voice = None if a.no_voice_pair else pair_voice(
-        a.age, a.gender, a.voice_accent, a.voice_energy, load_voices(a.voices) if a.voices else None,
+        a.age, a.gender, a.voice_accent, a.voice_energy, load_voice_lists(a.voices) if a.voices else None,
         tuple(a.voice_exclude), a.voice_sample_text, a.ethnicity)
     if voice is None:
         print("voice    : none (--no-voice-pair: never voiced separately)")
@@ -384,9 +402,11 @@ def main():
         print("voice    : library voice %s (%s), matched on %s; play it next to the still"
               % (voice["voice_id"], voice.get("name"), ", ".join(voice["matched_on"])))
     else:
-        print("voice    : %s Voice Design request (paid; quote it first)%s"
-              % ("NO VOICE IN THE LIST FITS this person." if a.voices else "",
-                 "; nearest: " + ", ".join(str(v.get("name") or v["voice_id"]) for v in voice["nearest"]) if voice.get("nearest") else ""))
+        print("voice    : %s Voice Design request (paid; quote it first)%s. Search the library first: "
+              "voice_pair.library_search. %s"
+              % ("NO VOICE IN THE LISTS FITS this person." if a.voices else "",
+                 "; nearest: " + ", ".join(str(v.get("name") or v["voice_id"]) for v in voice["nearest"]) if voice.get("nearest") else "",
+                 NEVER_BEND))
     # Save the same identity metadata for free planning and actual generation.
     record = {
         "image": "character.png",
