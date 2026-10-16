@@ -1,0 +1,75 @@
+{
+  "slug": "improve-search-visibility",
+  "tier": "playbook",
+  "version": "0.1.0",
+  "pillar": "4 — SEO and AEO/GEO",
+  "intents": [
+    "when people ask ChatGPT or Google for products like mine, am I in the answer",
+    "why does ChatGPT recommend my competitor and not me",
+    "check my AI visibility / AEO / GEO",
+    "what should our SEO roadmap be",
+    "are we cited in Google AI Overviews",
+    "my organic traffic is flat, what do I fix",
+    "SEO quick wins this week",
+    "ChatGPT says something wrong about us",
+    "fix my app store listing so people find us",
+    "my Google Business Profile and local search"
+  ],
+  "reads": [
+    "brand brain: summary, products, onboarding, competitors, learnings, sources — brand_read (learn-my-brand)",
+    "claims — the shared claims-gate atom over learn-my-brand's contract (signed-off marker → 'Claims you may use' facts) (learn-my-brand)",
+    "voice-of-customer bank and demand read — research/market/voc-bank.md, research/market/demand.md; knowledge_search document/evidence (research-market)",
+    "tracked competitors — competitor_read (research-competitors)",
+    "page drafts answering our briefs — content/drafts/* naming search/briefs/<slug>.md on line one (make-content)",
+    "question set, page map and last report — search/questions.md, search/page-map.md, search/visibility/<date>.md (this playbook)",
+    "Search Console export, app keyword field, location list, pasted AI answers — human-provided",
+    "price history for proxy lookups — research/credits-log/<YYYY-MM>.md via the shared spend-gate atom (all proxy users)",
+    "is there an app — Apple's public search lookup and the Google Play store page, via the host's fetch (public web)"
+  ],
+  "writes": [
+    "search/questions.md — the versioned question set (read by the next run)",
+    "search/page-map.md + brand document 'Search page map — <Brand> — <date> v<N>' (supersede) — the cluster→page roadmap (read by the next run and the human; feeds the five fixes and the briefs)",
+    "search/visibility/<YYYY-MM-DD>.md + brand document 'Search visibility — <Brand> — <date>' (keep-history) — visibility report (read by the human, analyze-performance's channel table, research-competitors)",
+    "search/fixes/<YYYY-MM-DD>.md — five fixes plus a 'For your email program — review requests' section (read by the human, email-lifecycle and the next run)",
+    "search/briefs/<page-slug>.md — page briefs in make-content's brief input shape (read by make-content)",
+    "optional monthly automation, created paused — automation_upsert (enabled by the human)",
+    "research/credits-log/<YYYY-MM>.md — charges for paid lookups via the shared spend-gate atom (read by every proxy user)",
+    "brand learnings [search YYYY-MM-DD] — only rules the human stated (e.g. competitor naming) via the shared save-learning atom, retiring the earlier [search …] facts each new rule replaces or contradicts (read by every playbook)",
+    "search/visibility/<YYYY-MM-DD>-runs.md — verbatim AI answers, never imported into brand knowledge (read by the next run)"
+  ],
+  "needs": {
+    "mcp": [
+      "gooseworks:get_started",
+      "gooseworks:tools_load",
+      "gooseworks:brand_read",
+      "gooseworks:competitor_read",
+      "gooseworks:knowledge_search",
+      "gooseworks:data_call_provider",
+      "gooseworks:file_read",
+      "gooseworks:file_list",
+      "gooseworks:file_write",
+      "gooseworks:brand_update",
+      "gooseworks:automation_upsert",
+      "gooseworks:knowledge_import",
+      "gooseworks:media_upload",
+      "gooseworks:job_get",
+      "gooseworks:media_list",
+      "gooseworks:media_update",
+      "gooseworks:automation_list"
+    ]
+  },
+  "atoms": [
+    "question-set",
+    "citation-check",
+    "page-and-foundation-check",
+    "entity-footprint",
+    "store-listing-audit",
+    "fix-writer"
+  ],
+  "shared_atoms": [
+    "claims-gate",
+    "save-learning",
+    "save-to-brain",
+    "spend-gate"
+  ]
+}

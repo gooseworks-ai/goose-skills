@@ -1,0 +1,78 @@
+{
+  "slug": "learn-my-brand",
+  "tier": "playbook",
+  "version": "0.1.0",
+  "pillar": "2 — Positioning, messaging and brand",
+  "intents": [
+    "learn my brand",
+    "set up my brand",
+    "here's our brand book",
+    "stop asking me the same questions",
+    "what are we allowed to claim",
+    "approve our claims",
+    "sign off our brand voice",
+    "remember how we talk",
+    "our price changed",
+    "we launched a new product",
+    "we rebranded",
+    "this claim is wrong",
+    "check our claims are still current",
+    "can we say this",
+    "the client approved the claims",
+    "pick up where we left off"
+  ],
+  "reads": [
+    "brand brain: server research result — summary, kit (logo, palette, fonts, voice read, audience, value props, tagline, proof points, approvedClaims, existing ads), products, onboarding, accounts, saved sources (written by the GooseWorks server's brand research)",
+    "brand brain: learnings (written by this playbook, analyze-performance, and the server's feedback distiller)",
+    "brand brain: customer evidence and documents via knowledge_search (written by the server's review import, research-market, and this playbook)",
+    "brand brain: tracked competitors and suggestions (written by the server's research and research-competitors)",
+    "workspace brand/situation.md: the founder's situation from where-to-start, 'Founder said' lines only, confirmed before use (written by where-to-start) — moved into the Brand record when confirmed",
+    "lines another playbook cut for lack of approval, brought here by the human (one-claim mode; playbooks never call each other)",
+    "voice cards in brand/voices/ (written through atoms/voice-card by this playbook, run-organic-social and make-content)"
+  ],
+  "writes": [
+    "brand kit: voice (the confirmed guide), audience, description, value props (only approved claims), brand type, colours; knowledge: positioning (owner's one-liner), tagline — user_correction with the owner's words (read by every playbook through brand_read kit)",
+    "brand products: offers with end dates, notes (hero, what it does not do), ad_eligibility + reason (read by make-static-ads, make-video-ads, make-product-photos, email-lifecycle, plan-campaign)",
+    "brand onboarding: role, platforms (read by where-to-start and the server's own setup)",
+    "brand learnings through atoms/save-learning, one idea each, in one call: one 'Claims you may use —' fact per approved claim (offers and policies stated in copy included), one 'Never say —' fact per never-say line, 'Not public —' facts, one 'Banned words —' fact, one 'Policy:' fact per operating rule, and the marker with status signed-off|pending-client|not-signed, approver owner|client, voice confirmed|provisional (read by every writing and making playbook through atoms/claims-gate, and by the server's ad and video engines)",
+    "Brand record brand/records/<date>-v<N>.md (brand coworker scope), imported as 'Brand record — <Brand> — <date> v<N>' through atoms/save-to-brain: claims with variants and proof, sign-off sheet, not-approved and retired claims, voice status and full banned list, never-say, business facts, contradiction decisions, palette and fonts, unknowns (read by atoms/claims-gate for variants and proof, and by this playbook's update, resume and sweep modes; the unknowns ledger is for the owner and the next run)",
+    "tracked competitors the owner names (read by research-competitors)",
+    "uploaded brand files: logo, brand book, decks, evidence (read by the makers and via knowledge_search)",
+    "voice cards brand/voices/<handle>.md for a founder's or account's own voice, through atoms/voice-card (read by run-organic-social, make-content)"
+  ],
+  "needs": {
+    "mcp": [
+      "gooseworks:file_list",
+      "gooseworks:get_started",
+      "gooseworks:brand_read",
+      "gooseworks:brand_setup",
+      "gooseworks:brand_update",
+      "gooseworks:knowledge_search",
+      "gooseworks:knowledge_import",
+      "gooseworks:job_get",
+      "gooseworks:media_upload",
+      "gooseworks:media_list",
+      "gooseworks:competitor_read",
+      "gooseworks:competitor_save",
+      "gooseworks:tools_load",
+      "gooseworks:automation_upsert",
+      "gooseworks:file_write",
+      "gooseworks:file_read",
+      "gooseworks:campaign_read",
+      "gooseworks:media_update",
+      "gooseworks:knowledge_sync",
+      "gooseworks:media_analyze"
+    ]
+  },
+  "atoms": [
+    "claims-audit",
+    "voice-calibrate",
+    "brain-write-back"
+  ],
+  "shared_atoms": [
+    "claims-gate",
+    "save-learning",
+    "save-to-brain",
+    "voice-card"
+  ]
+}

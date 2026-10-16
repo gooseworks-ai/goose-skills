@@ -1,0 +1,71 @@
+{
+  "slug": "research-market",
+  "tier": "playbook",
+  "version": "0.1.0",
+  "pillar": "1 — Strategy and planning",
+  "intents": [
+    "Who actually buys this, and what do they say in their own words?",
+    "Research my audience / who should we target?",
+    "Mine our reviews",
+    "Build me a voice-of-customer bank",
+    "Who is my customer / build me a persona",
+    "Why do people buy this, and what stops them?",
+    "What words do my customers use?",
+    "Is my category growing, and when is the season?",
+    "Our messaging feels stale — what are buyers saying now?",
+    "We're launching a new segment — who are they?"
+  ],
+  "reads": [
+    "brand brain: summary, kit, products, competitors, learnings, sources, organic, accounts (brand_read) — learn-my-brand / server research",
+    "brand brain: existing customer evidence and earlier research documents (knowledge_search evidence/document)",
+    "competitor roster and server suggestions (competitor_read) — research-competitors / server research",
+    "competitor ad start dates (ads_template_read mode competitor) — server competitor research, for the demand proxy",
+    "previous run: workspace research/market/* — research-market itself (refresh mode)",
+    "VoC-tagged quotes in weekly listening reports: workspace social/listening/<date>-report.md — listen-social",
+    "private exports the user supplies: support tickets, survey answers, return/cancel reasons, sales notes",
+    "shared price history for paid pulls: workspace research/credits-log/<YYYY-MM>.md — every playbook that spends on data"
+  ],
+  "writes": [
+    "the read, opening with the primary segment ('Do this first, because…'): workspace research/market/<date>-read.md + brand document (keep-history) — read by the founder, plan-campaign, the next refresh",
+    "ranked segments + anti-persona with message implications: workspace research/market/personas.md + document; summary proposed to brand knowledge.audience (agent proposal) — read by plan-campaign, work-with-creators, make-content, run-organic-social",
+    "voice-of-customer bank: workspace research/market/voc-bank.md + document, and voc-bank.jsonl (filterable, not imported) — read by make-static-ads, make-video-ads, make-content, run-organic-social, research-competitors, plan-campaign",
+    "demand read: workspace research/market/demand.md + document — read by plan-campaign",
+    "founder-picked direct competitors: server roster via competitor_save — read by research-competitors, listen-social",
+    "up to 3 [market …] learnings (rules, one idea each) through the save-learning atom, only on the human's yes — read by ad and content generation",
+    "credits log rows: workspace research/credits-log/<YYYY-MM>.md — read by the next pull of any playbook"
+  ],
+  "needs": {
+    "mcp": [
+      "gooseworks:get_started",
+      "gooseworks:account_whoami",
+      "gooseworks:brand_read",
+      "gooseworks:knowledge_search",
+      "gooseworks:competitor_read",
+      "gooseworks:competitor_save",
+      "gooseworks:competitor_research",
+      "gooseworks:ads_template_read",
+      "gooseworks:data_call_provider",
+      "gooseworks:data_post_provider",
+      "gooseworks:knowledge_sync",
+      "gooseworks:knowledge_import",
+      "gooseworks:media_upload",
+      "gooseworks:media_list",
+      "gooseworks:media_update",
+      "gooseworks:file_list",
+      "gooseworks:file_read",
+      "gooseworks:file_write",
+      "gooseworks:job_get",
+      "gooseworks:brand_update",
+      "gooseworks:automation_upsert",
+      "gooseworks:tools_load",
+      "gooseworks:ads_library_scrape",
+      "gooseworks:automation_list"
+    ]
+  },
+  "atoms": [],
+  "shared_atoms": [
+    "save-to-brain",
+    "spend-gate",
+    "save-learning"
+  ]
+}

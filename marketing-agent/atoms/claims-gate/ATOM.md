@@ -1,0 +1,71 @@
+---
+name: claims-gate
+description: >-
+  Shared atom (owner: learn-my-brand session). The one claims contract. Loads the brand's sign-off once, checks
+  every claim-like span a job will publish, keeps / rewrites / cuts with the proof that would restore each cut,
+  and — when no sign-off covers a line the job needs — runs a scoped sign-off for the 3–5 load-bearing lines and
+  records the answer exactly as learn-my-brand does. Loaded by every playbook that writes copy or states facts;
+  never listed.
+---
+
+# claims-gate
+
+One contract for every playbook that writes copy, scripts, briefs, emails, posts, pages or captions. Only learn-my-brand and this atom ever write a claim as approved. The calling playbook keeps its own extract step (on-image text, video scenes, page sections) and hands this atom the spans.
+
+Say it to the human in plain words ("two lines need your OK before I use them"), never as tool, fact or playbook names.
+
+## 1. Load the contract (once per job)
+
+1. `gooseworks:brand_read` `sections: ["learnings"]` (lean is enough: it returns every `must` and `dont`).
+2. Find the **marker**: a `must` fact starting `Claims sign-off (learn-my-brand,`. Read its status token and match it exactly:
+   - `signed-off` → the claims you may use are the `Claims you may use —` facts, one claim per fact: verbatim, within the scope written in it, before its review date, with its qualifier.
+   - `pending-client` or `not-signed`, or no marker → no claim is approved yet beyond plain product facts.
+   - `approver:` tells you who may approve new lines (§4.2).
+   - `voice: provisional` in the marker → label drafts "voice not yet confirmed".
+3. **Variants and proof** (only when you need a variant or must show proof): `gooseworks:file_read` the current Brand record — the highest `v<N>` in a `gooseworks:file_list` of `brand/records/` (brand coworker scope, `coworker_agent_id` from the `brand_read` list; no coworker → the default workspace under `brands/<brand-slug>/brand/records/`). Never use search snippets of it: they can come from its "Not approved" or "Retired" tables.
+4. **Never approved, whatever the label:** kit `approvedClaims`, `proofPoints`, `valueProps`, `description`; `knowledge_search` `["claim"]` rows; search snippets of any document; the live site; press quotes, reviews or testimonials not on the list; a yes in chat that did not go through §4 below.
+5. **Always apply** every `dont` (never-say, not public, banned words) and every `must` (policies, qualifiers, terminology).
+6. **Plain product facts** are always usable: product name, price, size, listed ingredients or features, how to use, current policies stated in a `must` fact. Never benefit or outcome wording.
+7. **Current offers and prices:** the product record's price and `offers` count as plain facts only when the human confirms in this job that they are live (offers carry their end date). Nothing else about an offer ("best price ever", "limited") is a plain fact.
+
+## 2. Check the spans
+
+For each claim-like span the caller extracted (copy, headline, on-image text, badge, script line, subject line, caption, page sentence, and what a picture implies):
+1. **Puffery or claim?** If a test could prove it false, it is a claim ("lasts 48 hours", "softer than cotton"). Feel and taste words that promise no outcome are puffery ("light, fresh feel").
+2. **Type and risk** from `claim-types.md` (next to this file). Regulated categories (health, beauty, supplements, food, finance, kids) are verbatim only.
+3. **Quoted claims are the brand's claims:** a press quote, review or testimonial reused in copy must pass for the claim inside it.
+4. **Implied claims count:** a lab coat, a before/after, a "clinically" badge, a product name stretched into a promise.
+
+## 3. Act and report
+
+- **Keep** — the span is a usable claim (verbatim or a listed variant, in scope, in date, qualifier attached and legible) or a plain product fact.
+- **Rewrite** — to a usable claim, a plain product fact or puffery. Never strengthen.
+- **Cut** — anything else. Each cut is listed as `line → where it was → why → the proof or OK that would restore it` (e.g. "'won't break you out' → ad 3 headline → efficacy claim, not approved → a non-comedogenic test report, or your OK below").
+- **Never-say** — cut and say plainly it is a legal or platform line, not a matter of taste.
+
+Give the result in one short line per asset in chat; the cut list goes in the caller's file.
+
+## 4. Scoped sign-off (when the job needs lines nobody has approved)
+
+Run it when the marker is not `signed-off`, or a line the job depends on is not on the list. It approves only what this job needs; the full audit stays with learn-my-brand.
+
+1. **Pick the 3–5 load-bearing lines** — the benefit line, the hook's promise, the offer — not everything the job could say. Prefer the brain's own wording (value props, product descriptions) over new wording.
+2. **Check who may approve.** Read the marker's `approver:` (and, if there is no marker, ask once who approves claims). If it names a client, or the person says someone else approves claims, don't ask the person in the chat for these lines: use the claims already approved plus plain product facts, add the new lines to the Brand record's "Decisions needed" sheet for the approver (saved as §5 step 1), and rewrite the marker naming the new version by the status rule in §5 — an approved list stays `signed-off`; with nothing approved yet it becomes `pending-client`, `approver: client <name>`. `user_statement` is the person's words (e.g. "Dana approves claims").
+3. **Put them to the human in one message**, each line with: the exact wording, what kind of claim it is, the proof on file or "no proof on file", and your recommendation (approve / approve with this qualifier / reword to … / leave out). Say once that this is not legal advice.
+   - High-risk lines (efficacy, clinical or expert, comparative, health, environmental, testimonials implying results) need proof on file. The owner's word is enough only for a verifiable fact about the business (who formulated it, where it is made, which awards). Without proof, recommend leaving it out or a safer wording.
+   - Ask for an approval that stands on its own: "Yes, approve 1, 2 and 4." A bare "ok" to a list is not a sign-off.
+4. **If they decline or don't answer,** ship plain product facts and say which lines were left out and why.
+5. **Record the answer** (§5) before any line is used.
+
+## 5. Recording an approval (the exact contract)
+
+Write in this order; field names and limits come from the live schema.
+1. **Brand record.** `gooseworks:file_read` the current record (the highest `v<N>` in `brand/records/`; if the marker names a lower one, use the highest — the marker is rewritten below); if none exists, start one from `record-skeleton.md` (next to this file) with the status line "scoped sign-off only; full brand pass not done". Add each approved line to "Claims you may use" with type, scope, qualifier, proof, review date (offers: their end date; ratings, review counts and prices: 90 days; certifications: their expiry; awards: award year + 2; everything else: 1 year) and the approver's words; add declined lines to "Not approved" with what would unlock them. Save it as the next version (`<YYYY-MM-DD>-v<N>`) through `atoms/save-to-brain` with `versioned: supersede`, title `Brand record — <Brand> — <YYYY-MM-DD> v<N>`, tags `[learn-my-brand, brand-record]` (the first tag names learn-my-brand as the record's creator whichever playbook runs this, so save-to-brain supersedes older versions).
+2. **Facts**, through `atoms/save-learning` (`knowledge_intent: "user_correction"`, `user_statement` = the approver's own words), in one call: retire (`{id, active: false}`) the old marker (this is the one case where a playbook other than learn-my-brand retires its facts), add one fact per approved line, `kind: "must"`, one claim per fact:
+     `Claims you may use — C<n> "<exact wording>" · <products · markets · channels> · <qualifier or —> · review <YYYY-MM-DD>`
+   and the new marker, `kind: "must"`:
+     `Claims sign-off (learn-my-brand, <YYYY-MM-DD>, <signed-off|pending-client|not-signed>, approver: <owner|client <name>>, voice: <confirmed|provisional>, record "Brand record — <Brand> — <YYYY-MM-DD> v<N>"). Only "Claims you may use" rules are approved.`
+   **Status rule** (the same everywhere): `signed-off` once the approver has approved at least one claim — it stays `signed-off` when new lines wait on the sign-off sheet; `pending-client` when nothing is approved yet and the approver is someone not in the chat; `not-signed` when nothing is approved yet otherwise (nobody asked, or the approver approved nothing). `approver:` is `owner` when the owner approves claims, or `client <name>` when someone outside the chat does. Keep `voice:` and `approver:` as the old marker had them unless this answer changes them (no marker before: `voice: provisional`). Never approve a line that matches a `Never say —` rule.
+3. **Read back** the learnings (as `atoms/save-learning` does): each new claim fact stored, exactly one active marker, the `Never say —` rules untouched and active. If the call failed, retry it before any line is used.
+
+Never write a claim as approved any other way. A line approved here can later be reviewed in a full brand pass.

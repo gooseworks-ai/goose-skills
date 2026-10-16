@@ -1,0 +1,67 @@
+{
+  "slug": "run-paid-campaigns",
+  "tier": "playbook",
+  "version": "0.1.0",
+  "pillar": "6 — Paid media / performance marketing",
+  "intents": [
+    "Take the winner, scale it, kill the loser — without me living in Ads Manager",
+    "It's Monday — what should we kill, scale or pause this week?",
+    "launch these ads",
+    "this ad is fatiguing — swap it",
+    "we sold out / the sale ended / an ad got rejected — fix the ads",
+    "give me the Google / TikTok / LinkedIn changes to make"
+  ],
+  "reads": [
+    "campaign brief (campaign_read): channel decisions, economics box, paid structure, test plan, targets — plan-campaign",
+    "picked statics: batch file ads/batches/<YYYY-MM-DD>-<slug>.md + lower-case tag picked (ads_creative_read) — make-static-ads",
+    "maker hand-off files: ads/batches/<YYYY-MM-DD>-<slug>.md (make-static-ads: copy, test structure, regulated flags) and ads/videos/<project_id>.md (make-video-ads: launch notes, AI label)",
+    "kept videos (video_read, video_share) — make-video-ads",
+    "weekly performance read and data-quality flags (reports/performance/ in the brand coworker workspace) — analyze-performance",
+    "Meta account state for Goose objects (meta_read pages, performance, push_status, change_status)",
+    "change log ads/campaigns/<slug>/state.md (harness frontmatter, open recommendations) and decisions.md (### dated blocks) — its own plus the server's Meta outcomes",
+    "human: allowable cost if not derivable, budget ceiling, off-limits campaigns, exports from other platforms and non-Goose Meta, stock, offer changes",
+    "this week's input summary (reports/performance/inputs/<date>.md) — analyze-performance, to reuse exports",
+    "demand read research/market/demand.md — research-market (search keyword proposals)"
+  ],
+  "writes": [
+    "weekly moves proposal (chat) — the human approves",
+    "Meta approval-gated proposals (prepare_meta_ad_push, propose_meta_budget_change, propose_meta_creative_replacement) and pauses (pause_meta_ad_push) — server records pushes and changes",
+    "ads/campaigns/<slug>/state.md and decisions.md in the server's campaign-harness grammar — read by the server, analyze-performance and plan-campaign's replan",
+    "written-instruction cards for non-lever platforms and non-Goose Meta objects",
+    "rotation requests ads/campaigns/<slug>/rotation-requests.md — read by make-static-ads and make-video-ads",
+    "optional weekly schedule (automation_upsert) that only stages proposals — on explicit yes",
+    "request lines (Rotation needed / Fix needed) in ads/campaigns/<slug>/rotation-requests.md — answered by make-static-ads and make-video-ads"
+  ],
+  "needs": {
+    "mcp": [
+      "gooseworks:get_started",
+      "gooseworks:brand_read",
+      "gooseworks:campaign_read",
+      "gooseworks:campaign_upsert",
+      "gooseworks:ads_creative_read",
+      "gooseworks:meta_read",
+      "gooseworks:refresh_meta_sync",
+      "gooseworks:prepare_meta_ad_push",
+      "gooseworks:propose_meta_budget_change",
+      "gooseworks:propose_meta_creative_replacement",
+      "gooseworks:pause_meta_ad_push",
+      "gooseworks:revert_meta_ad_push",
+      "gooseworks:file_list",
+      "gooseworks:file_read",
+      "gooseworks:file_write",
+      "gooseworks:automation_upsert",
+      "gooseworks:video_read",
+      "gooseworks:video_share",
+      "gooseworks:tools_load"
+    ]
+  },
+  "atoms": [
+    "health-gate",
+    "weekly-read",
+    "draft-moves",
+    "apply-and-log"
+  ],
+  "shared_atoms": [
+    "spend-gate"
+  ]
+}

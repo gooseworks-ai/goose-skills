@@ -1,0 +1,77 @@
+---
+name: run-paid-campaigns
+description: >-
+  Launch these ads; it's Monday — kill, scale or pause?; my ads are live — run them; act on this week's performance
+  read; swap this fatiguing ad; we sold out or the sale ended — pause or swap the ads now; an ad got rejected — check
+  the account and the other live ads; we're in a brand crisis — hold the ads; give me the Google, TikTok or LinkedIn
+  changes to make. Decides and acts on the paid leg of an approved plan: pins down the allowable cost, checks
+  tracking, pages and stock before money moves, audits the account on the first run, then stages one weekly proposal
+  — gradual scales, pauses past learning, holds with a date, rotations before fatigue — each with its reason and a
+  follow-up check. Meta changes go through approval pages; other platforms get minute-long instructions you apply.
+  Nothing changes without your yes. Not for how the ads did or which ad won — use analyze-performance; not for
+  rewriting a rejected ad — use make-static-ads or make-video-ads.
+---
+
+# run-paid-campaigns
+
+## What you get
+
+- **On the first run, an account baseline** — structure (ad sets under the learning floor, overlapping audiences), spend concentration by concept, creative age and mix, tracking state — which seeds the first moves (consolidation, rotation, fixes). `references/baseline-audit.md`.
+- **Weekly moves proposal** — header (what a customer may cost, data window, checks, pacing vs ceiling, what is and isn't visible), last week scored, then every move this week — scale / pause / hold / rotate / launch / graduate / fix / instructions — each with its evidence, confidence, what should happen, how it's applied and a check date. Near-threshold calls carry both readings and a trip-wire. Shape: `references/proposal-and-log.md`.
+- **What to approve, in three bundles** — approval links for Meta budget changes, swaps and launches (one approval each; GO LIVE typed for increases and live swaps), one sentence the marketer says for pauses, and written instructions for everything outside GooseWorks' reach.
+- **Change log** in the server's campaign-harness format — `ads/campaigns/<slug>/state.md` and `decisions.md` — so every approval, decline and pause is recorded and results trace back to decisions.
+
+The marketer sees plain words only: no ids, no tool or playbook names, budgets in their currency, credits (if any) exactly as GooseWorks quotes them.
+
+## Before you start
+
+1. **Connection and brand** — follow `../../foundation/guide` (connection preamble, `get_started` with the marketer's words for setup and brand only, one `tools_load` for a missing group — meta, files, campaigns, automation — before concluding anything). No GooseWorks tools → say only: "Connect GooseWorks first — I run your ads through it." Note the brand's `coworker_agent_id` (file scope `{type: "agent", agent_id: …}`); with none, use the default workspace with paths prefixed `brands/<brand-slug>/`, and say that the server can't log Meta outcomes until the brand has a workspace.
+2. **The plan.** `gooseworks:campaign_read`; open the campaign being run. Use its brief only when the Status line says **Approved**: Channel decisions, Economics, Budget split, Paid structure, Test plan, Replan triggers, its version and the change-log slug (in the Status comment). No approved brief → say so and recommend planning first. If ads are already live and the marketer wants moves now, continue only with the platforms they name and an allowable cost they confirm, labelled "no plan on file".
+3. **Channel scope — before touching any account.** Each chosen paid platform runs either on **GooseWorks levers** (Meta objects GooseWorks created or pushed into) or as **written instructions** (every other platform, every Meta object GooseWorks didn't create, app-install and local-radius campaigns). Never default to Meta; never drop a chosen platform for lack of levers. Only if Meta is chosen: `gooseworks:meta_read` (pages, performance); not connected → Meta runs as instructions too. Load `references/meta-levers.md` and tell the marketer in one line what will be links and what will be instructions.
+4. **The yardstick.** Allowable cost (per customer, qualified lead, trial or retained user — whatever the brief's goal chain uses), budget ceiling, off-limits campaigns, attribution setting — from the brief, else `state.md`, else derived from margin and the goal, else asked. A pre-revenue or no-history brand gets framed options ("a provisional $X per trial for a fixed $Y test"), labelled provisional — the run doesn't stall.
+5. **The volume regime** (`references/reading-results.md`): high-volume (weekly moves) · low-volume lead-gen / services (monthly decisions, weekly fixes and upstream signals) · app (matured 7–14-day windows, cost per trial or retained user).
+6. **The rest of the picture.** `state.md` (frontmatter, open recommendations, Meta objects) and the `### YYYY-MM-DD — …` blocks of `decisions.md`; for every open push or proposal id there, `meta_read` push or change status before proposing anything. The latest weekly read and its input summary (`reports/performance/<YYYY-MM-DD>.md`, `reports/performance/inputs/<YYYY-MM-DD>.md`) — reuse exports the marketer already gave this week. Research's demand read (`research/market/demand.md`) for search keywords. Then ask **once** for what the server can't see: an export or screenshot per chosen platform outside GooseWorks' view, stock on promoted products, offer changes. Nothing arrives → **no-export mode** (`references/written-instructions.md`).
+
+## Steps
+
+0. **First run on this account: baseline audit** — `references/baseline-audit.md`. Map the structure, spend concentration and creative age from the exports and `meta_read`; it seeds this week's consolidation, rotation and fix moves and the regime. Later runs skip it unless the structure changed.
+1. **Checks** — atom `atoms/health-gate/ATOM.md`. Per chosen platform: tracking (CRM lead-source capture for lead-gen; app postbacks for apps), destination (loads, product, price, offer, stock, UTMs), rejections, account/payment state. A fail blocks launches and scale moves for that destination and becomes a fix move; a broken tag also flags the window's numbers. Write the result into the `state.md` health line.
+2. **Score last week** — read `## Checks due` and the open recommendations in `state.md`; apply each due check's rule: worked / didn't / too early. Confirm pending instructions in words ("did you lower the Google budget we talked about last week?"). Close what is done (`references/proposal-and-log.md`).
+3. **Read the week** — atom `atoms/weekly-read/ATOM.md`, `references/reading-results.md`. Settled, like-for-like windows; coverage stated; Traffic tests read on click rate, cost per page view and store conversion; everything against the allowable on store- or CRM-joined numbers where the weekly read has them. The "why" is one line from the weekly read — this playbook acts, that one explains.
+4. **Draft the moves** — atom `atoms/draft-moves/ATOM.md`, `references/moves.md`. One significant edit per ad set per week; gradual scale steps; no scaling while real sales are below break-even; holds with a date and a trip-wire; near-threshold calls with both readings; expected effects from the account's own history or "unknown". Low-volume regime: a normal week is "no moves; next decision <date>" plus fixes.
+5. **Launch** (when the test plan or new picked creative calls for it) — `references/launch-and-graduate.md`. Picked statics come from make-static-ads' batch file `ads/batches/<YYYY-MM-DD>-<slug>.md` (picks, copy per ad, test structure, regulated-category flags) and the lower-case `picked` tag; videos from `ads/videos/<project_id>.md` (launch notes, AI label) and `gooseworks:video_read`. Copy, headline, CTA and destination come **verbatim** from those files (append UTMs only) — never written here; missing → ask the marketer to paste the approved copy.
+6. **Rotation** — a fatiguing ad gets a swap to a picked creative, or a request line in `ads/campaigns/<slug>/rotation-requests.md` (`Rotation needed: for make-static-ads | make-video-ads · <angle, hook, formats, proof, live-by date> · return to: ads/campaigns/<slug>/rotation-requests.md`).
+7. **Stage** — atom `atoms/apply-and-log/ATOM.md`. Write the open recommendations into `state.md`; create the Meta approval items now (budget change, creative swap, launch — each changes nothing until approved on its page), add every returned push id to `meta_push_ids`, never re-propose an item that already has an id. Present the proposal with the real links, the pause sentence and the instructions. **Stop.**
+8. **Apply what the marketer says** — same atom. Pauses fire only on the marketer's own words in this turn naming the ads (a bare "yes" is not a pause instruction — ask for the sentence). Links: report approved / declined / waiting from the server — never "done" early. Instructions: pending until the marketer says "done". Append what the server can't log to `decisions.md`.
+9. **Follow up** — on each check date (next run, or an optional mid-week check), apply the rule in `## Checks due`; when a trip-wire trips, give the marketer the exact pause sentence.
+
+**Reactive — sold out, sale ended, page down:** run the checks and stage the immediate fix (pause sentence, swap link or instructions); compare stock cover with the restock date and swap to in-stock creative where possible; stage offer-end pauses in advance from the lower-case `offer-ends:<yyyymmdd>` tags; flag the replan trigger in `state.md`.
+
+**Reactive — an ad was rejected** (pausing it does nothing — it isn't delivering): get the exact reason (push status per creative, or the marketer's screenshot); write it to the health line; if it looks wrong, a "request review" instruction; if right, a request line for the format's maker (`Fix needed: for make-static-ads | make-video-ads · <ad, reason> · return to: ads/campaigns/<slug>/rotation-requests.md`) — the maker rewrites it; scan the other live ads for the same claim or visual and flag them (repeat rejections risk the account — a replan trigger); stage the swap once a fixed creative is picked.
+
+**Reactive — brand crisis** (viral complaint, recall, safety or PR issue, or the marketer says "hold everything"): propose at once — pause sentence for every Goose ad touching the issue (or all, if the marketer says so), instructions for the rest, and a hold on every launch and scale; flag ads whose copy or offer now reads badly; name any approval links still open from this week (budget increases, launches) and say plainly "don't approve these for now" — mark them on hold in `state.md`; tell the marketer that scheduled emails and posts are paused separately, outside the ads; nothing switches back on until the marketer says so. Note it as a replan trigger and in the health line.
+
+## Approval gates
+
+- **Every money move** — launch, scale, pause, kill, swap, budget change — is a finished proposal with its reason; nothing touches an account without the marketer's yes, on GooseWorks' approval page or (for pauses) in their own words in the current turn. You cannot approve on their behalf.
+- Graduating a winner into the main conversion ad set is the marketer's call, with the re-learning risk stated.
+- Creative entering an account has passed the makers' claims and ad-policy checks and been picked by the marketer.
+- Near-threshold kill-or-scale calls show both readings; the marketer decides. "Brand fit" vetoes are theirs.
+
+## Output and write-back
+
+- `ads/campaigns/<slug>/state.md` and `decisions.md` in the harness grammar (`references/proposal-and-log.md`), re-read before every write; the server appends its own Meta outcomes there.
+- If the allowable cost was asked or changed, offer to update the brief's Economics section (only that section; version bumped; pending creative plans checked first with `gooseworks:ads_creative_read` approvals view — saving discards them).
+- Request lines for the makers in `rotation-requests.md`; their answers (`Rotation ready:` / `Fix ready:`) are read on the next run.
+- **Recurring:** offer once to stage this every Monday after the weekly read (and an optional mid-week trip-wire check); per `../../atoms/spend-gate/ATOM.md`'s automation rule the schedule is created paused, each run uses credits (the exact cost isn't shown in advance), and a scheduled run only stages — it never pauses or applies anything.
+
+## Done when
+
+"This week's kill / scale / pause moves staged for your one-tap yes, each with its reason" — read honestly: one proposal, every move with evidence, what should happen and a check; borderline calls with both readings; real approval links (one approval each), one pause sentence and instructions ready; nothing applied before the yes; after it, only approved moves applied, confirmed by the server or the marketer, and logged in the harness format. Check: you would approve the staged moves as written.
+
+## Out of scope
+
+- Making or rewriting ads — make-static-ads, make-video-ads (they answer this playbook's request lines).
+- Choosing the channel mix, budget split or test plan — plan-campaign (this playbook flags what the account can't express and records fired replan triggers).
+- Explaining why performance moved and what to make next — analyze-performance.
+- Ads inside AI assistants — watch-list only.

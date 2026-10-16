@@ -1,0 +1,77 @@
+{
+  "slug": "research-competitors",
+  "tier": "playbook",
+  "version": "0.1.0",
+  "pillar": "1 — Strategy and planning",
+  "intents": [
+    "What are my competitors running right now, and what works for them?",
+    "Do a competitor teardown",
+    "What ads are my competitors running?",
+    "How do my competitors price, and what are their offers?",
+    "Compare us to <competitor>",
+    "Find the gaps nobody in my category covers",
+    "Give me angles I can brief ads from",
+    "What changed with my competitors this week?",
+    "<Competitor> just launched / cut prices — what does it mean for us?",
+    "Watch my competitors every week"
+  ],
+  "reads": [
+    "brand brain: summary, kit, products (our price and offer), competitors, learnings, organic, sources (brand_read) — learn-my-brand / server research",
+    "claims through the claims-gate atom (learn-my-brand's contract) — learn-my-brand",
+    "competitor roster, dossiers and suggestions (competitor_read) — research-market seeds it; server research fills it",
+    "competitor Meta ads: server sample (ads_template_read mode competitor; media_list tag competitor_ad) and the full active library of the top 3 rivals (host browser or a paid read through the spend gate)",
+    "voice-of-customer bank and segments: workspace research/market/voc-bank.md, personas.md — research-market",
+    "angle results by A-NN: workspace reports/performance/<latest>.md and [learning … A-NN] learnings — analyze-performance; creatives tagged angle:a-nn (lower-case) — make-static-ads; video names with the A-NN — make-video-ads",
+    "latest search visibility report: workspace search/visibility/<date>.md — improve-search-visibility (optional)",
+    "previous competitor files, snapshots and angle bank: workspace research/competitors/* — research-competitors itself",
+    "shared price history: workspace research/credits-log/<YYYY-MM>.md — every playbook that spends on data"
+  ],
+  "writes": [
+    "confirmed competitor set: server roster via competitor_save — read by listen-social, research-market, the app",
+    "competitor file (full or 'partial — sample only'): workspace research/competitors/<slug>.md + brand document — read by plan-campaign, make-content (comparison pages), the human",
+    "landscape and white space: workspace research/competitors/landscape.md + document — read by plan-campaign, write-my-positioning (backlog)",
+    "angle bank keyed by A-NN (makers tag angle:a-nn, lower-case): workspace research/competitors/angle-bank.md + document — read by make-static-ads, make-video-ads, plan-campaign",
+    "up to 3 [angle A-NN …] learnings (rules, one idea each) through the save-learning atom, only on the human's yes — read by ad generation",
+    "weekly watch digest: workspace research/competitors/watch/<date>.md + document (keep-history) — read by the human and analyze-performance",
+    "watch method for the coworker: workspace research/competitors/method/watch.md — read by the standing automation",
+    "weekly watch schedule (opt-in, created paused, free sources only): automation_upsert agent job",
+    "credits log rows: workspace research/credits-log/<YYYY-MM>.md — read by the next pull of any playbook"
+  ],
+  "needs": {
+    "mcp": [
+      "gooseworks:get_started",
+      "gooseworks:account_whoami",
+      "gooseworks:brand_read",
+      "gooseworks:knowledge_search",
+      "gooseworks:competitor_read",
+      "gooseworks:competitor_save",
+      "gooseworks:competitor_research",
+      "gooseworks:ads_template_read",
+      "gooseworks:ads_library_scrape",
+      "gooseworks:ads_creative_read",
+      "gooseworks:media_list",
+      "gooseworks:media_analyze",
+      "gooseworks:media_upload",
+      "gooseworks:media_update",
+      "gooseworks:data_call_provider",
+      "gooseworks:data_post_provider",
+      "gooseworks:knowledge_import",
+      "gooseworks:file_list",
+      "gooseworks:file_read",
+      "gooseworks:file_write",
+      "gooseworks:job_get",
+      "gooseworks:brand_update",
+      "gooseworks:automation_upsert",
+      "gooseworks:automation_list",
+      "gooseworks:tools_load",
+      "gooseworks:knowledge_sync"
+    ]
+  },
+  "atoms": [],
+  "shared_atoms": [
+    "save-to-brain",
+    "spend-gate",
+    "claims-gate",
+    "save-learning"
+  ]
+}
