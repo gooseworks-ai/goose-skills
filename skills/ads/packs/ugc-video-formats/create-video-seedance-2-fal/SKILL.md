@@ -45,7 +45,7 @@ Required:
 
 Optional:
 - `--resolution` — `480p` | `720p` (default) | `1080p`. No video above 720p unless the customer asks (16 Oct 2026): pass `1080p` only then.
-- `--query` — the call's GooseWorks query as JSON. In a custom video the shot first needs the customer's yes to its Seedance price, saved as a `shot_overrides` `{scene, seedance: true, user_quote}` in the approved review; then send `{"shot_scene": "<scene>"}` at 720p. Only 1080p also adds `"upgrade_reason": "customer_asked", "upgrade_quote": "<their words>"`.
+- `--query` — the call's GooseWorks query as JSON. In a custom video the shot first needs the customer's yes to its Seedance price, saved as a `shot_overrides` `{scene, seedance: true, user_quote}` in the approved review; then send `{"shot_scene": <scene number>}` at 720p. Only 1080p also adds `"upgrade_reason": "customer_asked", "upgrade_quote": "<their words>"`.
 - `--duration` — `4`–`15` seconds (default `15`). Passed as an **int** (`seedance-2.0/reference-to-video` enum {auto,4..15}); a string 400s with `invalid_request` (validated 2026-07-18).
 - `--aspect-ratio` — `9:16` (default), `16:9`, `1:1`, etc.
 - `--generate-audio` — bool, default true. Set false for silent B-roll where VO is added post.

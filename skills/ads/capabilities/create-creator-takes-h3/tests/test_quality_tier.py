@@ -201,7 +201,7 @@ class CallQueryTests(unittest.TestCase):
         import run_takes
         spec = {"upgrade": {"query": {"upgrade_reason": "customer_asked", "upgrade_quote": "sharper"}}}
         self.assertEqual(run_takes.take_query(spec, {"beats": [3]}),
-                         {"upgrade_reason": "customer_asked", "upgrade_quote": "sharper", "shot_scene": "3"})
+                         {"upgrade_reason": "customer_asked", "upgrade_quote": "sharper", "shot_scene": 3})
         self.assertEqual(run_takes.take_query({}, {"beats": [3, 4]}), {}, "a take over two scenes names none")
         self.assertEqual(run_takes.take_query({}, {"beats": ["hook"]}), {})
         # An older spec with no resolution and no tier was planned at 1080P and keeps it.
@@ -218,7 +218,7 @@ class CallQueryTests(unittest.TestCase):
             self.assertEqual(r.returncode, 0, r.stderr)
             self.assertEqual(json.loads(payload.read_text())["query"],
                              {"upgrade_reason": "failed_attempt", "upgrade_attempt": "op-4",
-                              "upgrade_why": "the pack label came out garbled", "shot_scene": "2"})
+                              "upgrade_why": "the pack label came out garbled", "shot_scene": 2})
 
 
 if __name__ == "__main__":

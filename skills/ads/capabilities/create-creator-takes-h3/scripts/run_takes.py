@@ -68,7 +68,7 @@ def take_query(spec, t):
     query = dict(((spec.get("upgrade") or {}).get("query")) or {})
     beats = [str(b) for b in t.get("beats") or []]
     if len(beats) == 1 and beats[0].isdigit() and int(beats[0]) > 0:
-        query["shot_scene"] = beats[0]
+        query["shot_scene"] = int(beats[0])  # a number, as data_price_provider takes it
     return query
 
 

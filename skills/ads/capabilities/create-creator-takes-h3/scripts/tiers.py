@@ -103,5 +103,5 @@ def call_query(a, upgrade_record=None):
     """The GooseWorks query parameters a paid call sends: the shot's shot_scene and the upgrade's."""
     query = dict((upgrade_record or {}).get("query") or {})
     if getattr(a, "shot_scene", None) is not None:
-        query["shot_scene"] = str(a.shot_scene)
+        query["shot_scene"] = int(a.shot_scene)  # a number, as data_price_provider takes it; the proxy sends it as text
     return query

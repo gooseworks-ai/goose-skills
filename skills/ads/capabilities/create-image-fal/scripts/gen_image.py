@@ -103,7 +103,7 @@ ap.add_argument("--tier", default="standard", choices=sorted(TIER_QUALITY),
 ap.add_argument("--quality", choices=QUALITIES, default=None,
                 help="GPT Image 2 quality; default: the tier's. Above it is a one-shot upgrade")
 ap.add_argument("--query", default=None,
-                help='GooseWorks query parameters for this call as JSON, e.g. {"shot_scene": "3", "upgrade_reason": '
+                help='GooseWorks query parameters for this call as JSON, e.g. {"shot_scene": 3, "upgrade_reason": '
                      '"failed_attempt", "upgrade_attempt": "<op id>", "upgrade_why": "..."} (custom-video quality tiers)')
 a = ap.parse_args()
 query = json.loads(a.query) if a.query else None
