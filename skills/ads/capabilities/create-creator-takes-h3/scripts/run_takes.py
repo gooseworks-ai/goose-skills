@@ -216,6 +216,14 @@ def main():
         raise SystemExit("%s were made at another resolution than the spec's %s. The resolution is chosen before "
                          "the first take; switching re-rolls the take. Re-plan at one resolution and re-roll them "
                          "(--reseed %s), t1 first." % (", ".join(mixed), resolution(spec), ",".join(mixed)))
+    # An upgrade (1080P, on the customer's ask) is checked per scene by the server, so every take it
+    # applies to must speak exactly one script scene.
+    if spec.get("upgrade"):
+        unnamed = [t["id"] for t in todo if "shot_scene" not in take_query(spec, t)]
+        if unnamed:
+            raise SystemExit("%s speak more than one script scene, so an upgraded call can't name its shot. "
+                             "Re-plan with --split-at so each take speaks one scene, or make them at %s."
+                             % (", ".join(unnamed), TIERED_RESOLUTION))
     if not todo:
         print("[takes] nothing to generate")
         return

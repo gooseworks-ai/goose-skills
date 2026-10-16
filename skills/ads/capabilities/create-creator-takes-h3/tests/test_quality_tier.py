@@ -55,7 +55,7 @@ class StillQualityTests(unittest.TestCase):
 
     def test_an_upgrade_cites_the_failed_attempt(self):
         with tempfile.TemporaryDirectory() as tmp:
-            r, quoted = self.quote(tmp, "--quality", "high", "--upgrade-reason", "failed_attempt",
+            r, quoted = self.quote(tmp, "--quality", "high", "--upgrade-reason", "failed_attempt", "--shot-scene", "1",
                                    "--upgrade-attempt", "op-still-3", "--upgrade-why", "the label text came out garbled twice at medium")
             self.assertEqual(r.returncode, 0, r.stderr)
             self.assertEqual(quoted["body"]["quality"], "high")
@@ -68,12 +68,20 @@ class StillQualityTests(unittest.TestCase):
             saved = json.loads((Path(tmp) / "c" / "character.json").read_text())
             self.assertEqual(saved["upgrade"], quoted["upgrade"])
         with tempfile.TemporaryDirectory() as tmp:
-            r, quoted = self.quote(tmp, "--quality", "high", "--upgrade-reason", "customer_asked",
+            r, quoted = self.quote(tmp, "--quality", "high", "--upgrade-reason", "customer_asked", "--shot-scene", "1",
                                    "--upgrade-quote", "make her picture as sharp as you can")
             self.assertEqual(r.returncode, 0, r.stderr)
             self.assertEqual(quoted["upgrade"]["user_quote"], "make her picture as sharp as you can")
             self.assertEqual(quoted["upgrade"]["query"], {"upgrade_reason": "customer_asked",
                                                           "upgrade_quote": "make her picture as sharp as you can"})
+
+    def test_an_upgrade_names_its_shot(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            r, quoted = self.quote(tmp, "--quality", "high", "--upgrade-reason", "failed_attempt",
+                                   "--upgrade-attempt", "op-1", "--upgrade-why", "label garbled at medium")
+            self.assertNotEqual(r.returncode, 0)
+            self.assertIn("--shot-scene", r.stderr)
+            self.assertIsNone(quoted)
 
     def test_a_reason_without_an_upgrade_is_refused(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -131,6 +139,23 @@ class TakeResolutionTests(unittest.TestCase):
         spec_path = out / "takes.json"
         spec_path.write_text(json.dumps(spec))
         return spec, spec_path
+
+    def test_an_upgraded_take_speaks_one_scene(self):
+        """The server checks an upgrade per scene: a take over two scenes can't name its shot."""
+        with tempfile.TemporaryDirectory() as tmp:
+            spec, path = self.make_takes(tmp, {})
+            spec["upgrade"] = {"reason": "customer_asked", "user_quote": "sharper",
+                               "query": {"upgrade_reason": "customer_asked", "upgrade_quote": "sharper"}}
+            spec["resolution"] = "1080P"
+            spec["takes"][0]["beats"] = [1, 2]
+            path.write_text(json.dumps(spec))
+            r = run("run_takes.py", "--spec", str(path))
+            self.assertNotEqual(r.returncode, 0)
+            self.assertIn("t1 speak more than one script scene", r.stderr)
+            spec["takes"][0]["beats"] = [1]
+            path.write_text(json.dumps(spec))
+            r = run("run_takes.py", "--spec", str(path))
+            self.assertEqual(r.returncode, 0, r.stderr)
 
     def test_takes_made_at_another_resolution_are_refused_even_when_nothing_is_left_to_make(self):
         """Switching resolution re-rolls the take, so the resolution is chosen before the first take."""

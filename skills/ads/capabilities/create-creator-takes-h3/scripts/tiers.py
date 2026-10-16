@@ -77,6 +77,9 @@ def upgrade(a, setting, chosen):
     else:
         sys.exit("%s %s is above the %s default (%s): an upgrade needs --upgrade-reason %s"
                  % (setting, chosen, a.tier, base, " | ".join(REASONS)))
+    if hasattr(a, "shot_scene") and not (a.shot_scene and a.shot_scene > 0):
+        sys.exit("an upgrade names its shot: pass --shot-scene <the script scene this still is for>; the "
+                 "server refuses an upgrade with no scene")
     return {"setting": setting, "from": base, "to": chosen, **record, "query": query}
 
 

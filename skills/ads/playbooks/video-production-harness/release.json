@@ -26,9 +26,9 @@
       "sha256": "bce1223062b67613873816b2a08e53e9316a7d2767ae8aec7154e3c52ba5519b"
     },
     "create-clips.md": {
-      "bytes": 15358,
-      "catalog_sha256": "c83fe72a8645c1590cc5733fccf7bc3b7a9117875a6f70449748e6880a5e1eaa",
-      "sha256": "c83fe72a8645c1590cc5733fccf7bc3b7a9117875a6f70449748e6880a5e1eaa"
+      "bytes": 15353,
+      "catalog_sha256": "7a9ad9ed91f1eb8b0ccd59fe9ead691afe96ddbab88e88f3c875a007f162abe9",
+      "sha256": "7a9ad9ed91f1eb8b0ccd59fe9ead691afe96ddbab88e88f3c875a007f162abe9"
     },
     "create-design-brief.md": {
       "bytes": 13188,
@@ -141,9 +141,9 @@
       "sha256": "fab9107769fe9fcee0c5e78b2377b53ac8645e05cbd84512066618483f2b30fa"
     },
     "references/quality-tier.md": {
-      "bytes": 5226,
-      "catalog_sha256": "1907f8321d2a12536c3e24b4485745aeb72a7dfb0b5dea40f461b9f875841193",
-      "sha256": "1907f8321d2a12536c3e24b4485745aeb72a7dfb0b5dea40f461b9f875841193"
+      "bytes": 5341,
+      "catalog_sha256": "b062eb85887502c5155b01d7772c07ddf55d6a24de79231d923eab0d1517653e",
+      "sha256": "b062eb85887502c5155b01d7772c07ddf55d6a24de79231d923eab0d1517653e"
     },
     "references/recipe-format.md": {
       "bytes": 6667,
@@ -242,8 +242,8 @@
     },
     "skill.meta.json": {
       "bytes": 683,
-      "catalog_sha256": "b263e6047456e417b7c482f52212e8fa953adc181c225a3ab24dc19340fbf56e",
-      "sha256": "b263e6047456e417b7c482f52212e8fa953adc181c225a3ab24dc19340fbf56e"
+      "catalog_sha256": "a19aa0499b39cd133df5650040e5ab18d33b96ab329070805bb035f344d5fba7",
+      "sha256": "a19aa0499b39cd133df5650040e5ab18d33b96ab329070805bb035f344d5fba7"
     },
     "states/edit-to-delivery.md": {
       "bytes": 7799,
@@ -287,7 +287,7 @@
   ],
   "schema_version": 1,
   "slug": "video-production-harness",
-  "source_commit": "5a1666790b4f201a92b5c6eb34f019e548b46b3c",
+  "source_commit": "a11c7028c48d1b146d7da921816815792bd5c0d1",
   "source_files": {
     "SKILL.md": {
       "sha256": "3e659d9dc20047c9deb42344749c2e9891b523151c5584c0123111d3f779f855",
@@ -310,7 +310,7 @@
       "source": "capabilities.md"
     },
     "create-clips.md": {
-      "sha256": "c83fe72a8645c1590cc5733fccf7bc3b7a9117875a6f70449748e6880a5e1eaa",
+      "sha256": "7a9ad9ed91f1eb8b0ccd59fe9ead691afe96ddbab88e88f3c875a007f162abe9",
       "source": "create-clips.md"
     },
     "create-design-brief.md": {
@@ -402,7 +402,7 @@
       "source": "references/product-scale-and-world.md"
     },
     "references/quality-tier.md": {
-      "sha256": "1907f8321d2a12536c3e24b4485745aeb72a7dfb0b5dea40f461b9f875841193",
+      "sha256": "b062eb85887502c5155b01d7772c07ddf55d6a24de79231d923eab0d1517653e",
       "source": "references/quality-tier.md"
     },
     "references/recipe-format.md": {
@@ -498,6 +498,6 @@
       "source": "wrap-session.md"
     }
   },
-  "source_hash": "c90e63cf6d54c20a23fe544b962fd8b7f0ed70199c3f26cdf87bc92dd27a5781",
-  "source_version": "4-c90e63cf6d54"
+  "source_hash": "a07d6133d8d689119f34e5c24c53d50e0a3492f5e8a11f93c571237f13359871",
+  "source_version": "4-a07d6133d8d6"
 }

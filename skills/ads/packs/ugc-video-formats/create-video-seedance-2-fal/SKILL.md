@@ -17,18 +17,20 @@ superseded_by: video-seedance-2@1.3.0
 
 ## Purpose
 
-Wraps the FAL endpoint `bytedance/seedance-2.0/reference-to-video`. Pass 1-N image references (typically: portrait + product + optional setting) + a structured prompt → get back a 4-15s clip with native lip-synced VO and ambient audio.
+Wraps the FAL endpoint `bytedance/seedance-2.0/reference-to-video`. Pass 1-N image references (product + optional empty setting, **never a photoreal face**) + a structured prompt → get back a 4-15s clip with ambient audio, at 720p by default.
+
+**Seedance refuses photoreal faces, whatever model made them** (a fresh Seedream v5 Pro face too, 2026-09-29), and a refused submit still bills. Talking heads and any shot with a realistic face go to `creator-h3` / `video-h3max` (H3). In a GooseWorks custom video Seedance always needs the customer's new yes to its price; send that call's `--query` (below).
 
 Seedance 2.0 renders **multiple internal cuts within a single 15s call** when the prompt specifies sub-scene structure (e.g. WIDE HOOK / PRODUCT HERO / SIDESTEP / REACTION). This is the architectural win over the older NB2 + i2v multi-keyframe approach — fewer calls, native lip-sync, no Soul ID required.
 
 Use this atom when:
-- The clip needs a talking-head avatar reviewing or demonstrating a product
-- Native lip-synced dialogue is required (set `--generate-audio`)
-- Identity must hold via image reference, not video reference (see Decision Rule 1)
+- The shot has no realistic face: a product hero, a product in motion, an empty set
+- It needs hard camera motion or an exact product the cheaper H3 route can't hold
 - Length 4-15s, vertical 9:16 (or other aspect ratios)
-- Multi-image conditioning (face + product, or face + multiple products for a hook scene)
+- Multi-image conditioning (product + setting, or several products for a hook scene)
 
 **Do NOT use** for:
+- Any shot with a realistic face (a talking head, a creator, a stranger) → `creator-h3` or `video-h3max`
 - > 15s clips → split across multiple calls and stitch (`assembly/stitch-videos-ffmpeg`)
 - Pure cinematic camera moves without an on-screen person → `create-video-veo3` is often better
 - Product-only B-roll with no person → `create-product-videos-higgsfield-ms` or text-to-video Seedance
@@ -43,6 +45,7 @@ Required:
 
 Optional:
 - `--resolution` — `480p` | `720p` (default) | `1080p`. No video above 720p unless the customer asks (16 Oct 2026): pass `1080p` only then.
+- `--query` — the call's GooseWorks query as JSON. In a custom video, after the customer's yes to its price: `{"shot_scene": "<scene>", "upgrade_reason": "customer_asked", "upgrade_quote": "<their words>"}`.
 - `--duration` — `4`–`15` seconds (default `15`). Passed as an **int** (`seedance-2.0/reference-to-video` enum {auto,4..15}); a string 400s with `invalid_request` (validated 2026-07-18).
 - `--aspect-ratio` — `9:16` (default), `16:9`, `1:1`, etc.
 - `--generate-audio` — bool, default true. Set false for silent B-roll where VO is added post.
