@@ -1,0 +1,511 @@
+{
+  "$schema": "../../_contract/part-manifest.schema.json",
+  "interface": 1,
+  "id": "unmirror-take",
+  "version": "1.0.0",
+  "kind": "compose",
+  "title": "Flip a mirrored selfie take",
+  "summary": "Checks a selfie take against the real product photo with a vision model and flips it left to right when the product's text is mirrored in most frames, so a front-camera mirror never ships. Otherwise the take passes through.",
+  "runtime": "node",
+  "entry": "part.mjs",
+  "files": [
+    "README.md",
+    "part.mjs"
+  ],
+  "kit": ">=1.0.0 <2.0.0",
+  "needs": {
+    "browser": false,
+    "ffmpeg": {
+      "encoders": [
+        "mjpeg",
+        "libx264"
+      ],
+      "filters": [
+        "hflip"
+      ]
+    },
+    "network": true,
+    "models": [
+      {
+        "provider": "fal",
+        "model": "openrouter/router/vision"
+      }
+    ],
+    "disk_mb": 400
+  },
+  "inputs": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "video",
+      "timeline",
+      "products"
+    ],
+    "properties": {
+      "video": {
+        "description": "The take to check. Returned as it is, or flipped left to right when it is mirrored.",
+        "type": "object",
+        "x-kit-file": {
+          "media": "video"
+        }
+      },
+      "timeline": {
+        "description": "The take's timeline: passed through unchanged (a flip moves nothing in time). Its end card, if any, is left out of the frames read.",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "duration_s",
+          "width",
+          "height",
+          "fps",
+          "scenes",
+          "speech"
+        ],
+        "properties": {
+          "duration_s": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "fps": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "scenes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "start_s",
+                "end_s"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "start_s": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "end_s": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              }
+            }
+          },
+          "speech": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "text",
+                "start_s",
+                "end_s"
+              ],
+              "properties": {
+                "scene_id": {
+                  "type": "string"
+                },
+                "text": {
+                  "type": "string"
+                },
+                "spoken": {
+                  "type": "string"
+                },
+                "start_s": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "end_s": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "words": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "text",
+                      "start_s",
+                      "end_s"
+                    ],
+                    "properties": {
+                      "text": {
+                        "type": "string"
+                      },
+                      "start_s": {
+                        "type": "number",
+                        "minimum": 0
+                      },
+                      "end_s": {
+                        "type": "number",
+                        "minimum": 0
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "end_card": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "start_s",
+              "end_s"
+            ],
+            "properties": {
+              "start_s": {
+                "type": "number",
+                "minimum": 0
+              },
+              "end_s": {
+                "type": "number",
+                "minimum": 0
+              }
+            }
+          },
+          "safe_zones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "use",
+                "x",
+                "y",
+                "w",
+                "h"
+              ],
+              "properties": {
+                "use": {
+                  "enum": [
+                    "captions",
+                    "logo"
+                  ]
+                },
+                "x": {
+                  "type": "number"
+                },
+                "y": {
+                  "type": "number"
+                },
+                "w": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "h": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              }
+            }
+          }
+        }
+      },
+      "products": {
+        "description": "plan.products: the first with a photo is the real label to compare against.",
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 12,
+        "items": {
+          "type": "object",
+          "required": [
+            "id"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "name": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "maxLength": 2000
+            },
+            "images": {
+              "type": "array",
+              "maxItems": 20,
+              "items": {
+                "type": "object",
+                "x-kit-file": {
+                  "media": "image"
+                }
+              }
+            }
+          }
+        }
+      },
+      "frames": {
+        "description": "Frames read, spread evenly over the take. Default 4.",
+        "type": "integer",
+        "minimum": 2,
+        "maximum": 8
+      }
+    }
+  },
+  "outputs": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "video",
+      "timeline",
+      "mirror"
+    ],
+    "properties": {
+      "video": {
+        "type": "object",
+        "x-kit-file": {
+          "media": "video"
+        }
+      },
+      "timeline": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "duration_s",
+          "width",
+          "height",
+          "fps",
+          "scenes",
+          "speech"
+        ],
+        "properties": {
+          "duration_s": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "fps": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "scenes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "start_s",
+                "end_s"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "start_s": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "end_s": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              }
+            }
+          },
+          "speech": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "text",
+                "start_s",
+                "end_s"
+              ],
+              "properties": {
+                "scene_id": {
+                  "type": "string"
+                },
+                "text": {
+                  "type": "string"
+                },
+                "spoken": {
+                  "type": "string"
+                },
+                "start_s": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "end_s": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "words": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "text",
+                      "start_s",
+                      "end_s"
+                    ],
+                    "properties": {
+                      "text": {
+                        "type": "string"
+                      },
+                      "start_s": {
+                        "type": "number",
+                        "minimum": 0
+                      },
+                      "end_s": {
+                        "type": "number",
+                        "minimum": 0
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "end_card": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "start_s",
+              "end_s"
+            ],
+            "properties": {
+              "start_s": {
+                "type": "number",
+                "minimum": 0
+              },
+              "end_s": {
+                "type": "number",
+                "minimum": 0
+              }
+            }
+          },
+          "safe_zones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "use",
+                "x",
+                "y",
+                "w",
+                "h"
+              ],
+              "properties": {
+                "use": {
+                  "enum": [
+                    "captions",
+                    "logo"
+                  ]
+                },
+                "x": {
+                  "type": "number"
+                },
+                "y": {
+                  "type": "number"
+                },
+                "w": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "h": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              }
+            }
+          }
+        }
+      },
+      "mirror": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "model",
+          "flipped",
+          "seen",
+          "mirrored",
+          "frames"
+        ],
+        "properties": {
+          "model": {
+            "type": "string"
+          },
+          "flipped": {
+            "type": "boolean"
+          },
+          "seen": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "mirrored": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "frames": {
+            "type": "array",
+            "maxItems": 8,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "t_s",
+                "product_seen",
+                "mirrored"
+              ],
+              "properties": {
+                "t_s": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "product_seen": {
+                  "type": "boolean"
+                },
+                "mirrored": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "cost": {
+    "basis": "per_unit",
+    "unit": "call",
+    "rates_usd": {
+      "openrouter/router/vision": 0.05
+    }
+  },
+  "determinism": "provider",
+  "timing": {
+    "typical_s": 60,
+    "timeout_s": 600
+  },
+  "retry": {
+    "transient": 1
+  },
+  "replaces": []
+}
