@@ -403,11 +403,13 @@ def main():
         print("voice    : library voice %s (%s), matched on %s; play it next to the still"
               % (voice["voice_id"], voice.get("name"), ", ".join(voice["matched_on"])))
     else:
-        print("voice    : %s Voice Design request (paid; quote it first)%s. Search the library first: "
-              "voice_pair.library_search. %s"
+        step = ("Search the library first: voice_pair.library_search" if voice.get("library_search") else
+                "Fetch the next library pages first: voice_pair.library_next_page" if voice.get("library_next_page") else
+                "The library was searched: quote the Voice Design request")
+        print("voice    : %s Voice Design request (paid; quote it first)%s. %s. %s"
               % ("NO VOICE IN THE LISTS FITS this person." if a.voices else "",
                  "; nearest: " + ", ".join(str(v.get("name") or v["voice_id"]) for v in voice["nearest"]) if voice.get("nearest") else "",
-                 NEVER_BEND))
+                 step, NEVER_BEND))
     # Save the same identity metadata for free planning and actual generation.
     record = {
         "image": "character.png",

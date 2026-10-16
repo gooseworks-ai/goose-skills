@@ -122,8 +122,9 @@ LIBRARY_DONE = ("The voice library was searched to its end and nothing fits: quo
                 "through data_post_provider, play its previews beside the still, save the chosen one with the `save` "
                 "call and record it with --character --designed <voice_id>. When the owner turns a voice down, pair "
                 "again with --character --voices <list> --exclude <voice_id>. " + NEVER_BEND)
-LIBRARY_MORE = ("Nothing fits yet, and the library replies in library_next_page have more: run each search again with "
-                "query.page one higher, save it, and pair again with every list before any Voice Design. " + NEVER_BEND)
+LIBRARY_MORE = ("Nothing fits yet, and the searches in library_next_page have more: run each one again with its query "
+                "and that `page`, save the reply as its `save_as`, and pair again with every list before any Voice "
+                "Design. " + NEVER_BEND)
 
 # Library search words per heritage: the shared library's search reads names and descriptions, which
 # say "African American", "Latina", "Indian" or "Asian-American", not the broad group's name.
@@ -357,9 +358,12 @@ def library_searches(gender, ethnicity=None, language="en"):
     words = []
     if isinstance(person, tuple):
         group, specific = person
-        if specific:
+        # "black:american" names the group's American branch; "american" alone would match almost every voice.
+        if specific and specific.split(":")[-1] != "american":
             words.append(specific.split(":")[-1].replace("_", " "))
-        words += LIBRARY_SEARCH_WORDS.get(group, [])
+        # With a specific heritage, only the group's general words: a Korean person never searches "chinese".
+        words += [w for w in LIBRARY_SEARCH_WORDS.get(group, [])
+                  if not specific or all(specific_fits(sp, specific) for _, sp in words_in(w)[0])]
         if group == "latino" and g == "male":
             words = ["latino" if w == "latina" else w for w in words]
     seen, queries = set(), []
@@ -367,12 +371,21 @@ def library_searches(gender, ethnicity=None, language="en"):
         if word in seen:
             continue
         seen.add(word)
-        query = {"gender": g if g != "neutral" else None, "language": language, "page_size": 100}
+        query = {"gender": g if g != "neutral" else None, "language": language, "page_size": 100, "page": 0}
         if word:
             query["search"] = word
         queries.append({"provider": "elevenlabs", "path": "/v1/shared-voices",
-                        "query": {k: v for k, v in query.items() if v is not None}})
+                        "query": {k: v for k, v in query.items() if v is not None},
+                        "save_as": library_file(word, 0)})
     return queries[:3]
+
+
+LIBRARY_FILE = re.compile(r"library-(?P<search>[a-z0-9-]+)-p(?P<page>\d+)\.json$")
+
+
+def library_file(word, page):
+    """The file a library search's reply is saved as: its search and page, so paging reads only its last page."""
+    return "library-%s-p%d.json" % (re.sub(r"[^a-z0-9]+", "-", (word or "all").lower()).strip("-") or "all", page)
 
 
 def design_request(age, gender, accent=None, energy=None, sample_text=None, ethnicity=None):
@@ -400,15 +413,23 @@ def design_request(age, gender, accent=None, energy=None, sample_text=None, ethn
 
 
 def library_status(paths):
-    """Which saved lists are shared-library replies, read from the reply itself (its has_more), not from its
-    voices, so an empty search counts as searched: {"searched": bool, "more": [paths whose reply has more]}."""
-    searched, more = False, []
+    """Whether the saved lists include a shared-library reply (read from the reply's has_more, so an empty search
+    counts), and the next page still to fetch: only each search's LAST saved page (library-<search>-p<N>.json,
+    as library_search names them) decides. A library reply saved under another name counts as searched, unpaged.
+    {"searched": bool, "more": [{"search", "page", "save_as"}]}"""
+    searched, last = False, {}
     for path in paths or []:
         data = _unwrap(json.loads(pathlib.Path(path).read_text(encoding="utf-8")))
-        if isinstance(data, dict) and "has_more" in data:
-            searched = True
-            if data.get("has_more"):
-                more.append(str(path))
+        if not (isinstance(data, dict) and "has_more" in data):
+            continue
+        searched = True
+        named = LIBRARY_FILE.search(pathlib.Path(path).name)
+        if named:
+            page = int(named.group("page"))
+            if page >= last.get(named.group("search"), (-1, False))[0]:
+                last[named.group("search")] = (page, bool(data.get("has_more")))
+    more = [{"search": search, "page": page + 1, "save_as": "library-%s-p%d.json" % (search, page + 1)}
+            for search, (page, has_more) in sorted(last.items()) if has_more]
     return {"searched": searched, "more": more}
 
 
@@ -495,11 +516,19 @@ def repair_character(path, voices, exclude=(), sample_text=None, library=None):
     return pair
 
 
+def library_pending(old):
+    """A pair still waiting on the library: no voice is designed or accepted before it is searched."""
+    if old.get("library_search") or old.get("library_next_page"):
+        raise SystemExit("search the voice library first (voice_pair.library_search or library_next_page), then pair "
+                         "again with every list: --character ... --voices ... ")
+
+
 def record_designed(path, voice_id, name=None):
     """After Voice Design: the saved voice (POST /v1/text-to-voice's voice_id) becomes the pair, so every later
     step reads its id from voice_pair."""
     record = json.loads(path.read_text(encoding="utf-8"))
     old = record.get("voice_pair") or {}
+    library_pending(old)
     if old.get("source") != "voice_design":
         raise SystemExit("--designed records a saved Voice Design voice; this voice_pair is source %r" % old.get("source"))
     pair = {"source": "voice_design_saved", "voice_id": voice_id, "name": name, "wanted": old.get("wanted"),
@@ -516,6 +545,7 @@ def accept_nearest(path):
     the still and accepts it, or it is rejected and pairing runs again with --exclude."""
     record = json.loads(path.read_text(encoding="utf-8"))
     old = record.get("voice_pair") or {}
+    library_pending(old)
     rows = old.get("nearest") or []
     if old.get("source") != "voice_design" or not rows:
         raise SystemExit("--accept-nearest needs a voice_design voice_pair with `nearest` voices; this one has %s"
@@ -571,7 +601,7 @@ def main():
             raise SystemExit("--accept-nearest needs --character")
         pair = accept_nearest(a.character)
     elif a.character:
-        if not voices:
+        if not a.voices:
             raise SystemExit("--character needs --voices: pairing again picks from a voice list, never by hand")
         pair = repair_character(a.character, voices, tuple(a.exclude), a.sample_text, library_status(a.voices))
     else:

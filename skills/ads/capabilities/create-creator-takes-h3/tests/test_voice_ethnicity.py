@@ -141,9 +141,13 @@ class ReviewFindingTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             voices = Path(tmp) / "voices.json"
             voices.write_text(json.dumps({"voices": VOICES}))
+            # The library was searched (2.8.0): an empty shared-voices reply, its last page.
+            library = Path(tmp) / "library-african-american-p0.json"
+            library.write_text(json.dumps({"voices": [], "has_more": False}))
             out = Path(tmp) / "c"
             person = [a if a != "39" else "44" for a in PERSON]
-            self.assertEqual(run("make_character.py", *person, "--voices", str(voices), "--out", str(out), "--dry-run").returncode, 0)
+            self.assertEqual(run("make_character.py", *person, "--voices", str(voices), "--voices", str(library),
+                                 "--out", str(out), "--dry-run").returncode, 0)
             character = out / "character.json"
             first = json.loads(character.read_text())["voice_pair"]
             self.assertEqual(first["source"], "voice_design")
@@ -220,7 +224,8 @@ class SecondReviewTests(unittest.TestCase):
     def test_nearest_is_ordered_by_years_and_accept_takes_the_closest(self):
         aaron = {**JULIUS, "voice_id": "aaron", "name": "Aaron", "labels": {**JULIUS["labels"], "age": "young", "accent": "british"}}
         zed = {**JULIUS, "voice_id": "zed", "name": "Zed", "labels": {**JULIUS["labels"], "age": "old", "accent": "british"}}
-        pair = pair_voice(44, "man", "american", None, [aaron, zed], ethnicity="Black")
+        pair = pair_voice(44, "man", "american", None, [aaron, zed], ethnicity="Black",
+                          library={"searched": True, "more": []})
         self.assertEqual([v["voice_id"] for v in pair["nearest"]], ["zed", "aaron"], "old is 11 years off, young 15")
         self.assertIn("--voices <list> --exclude <voice_id>", pair["note"])
         with tempfile.TemporaryDirectory() as tmp:

@@ -51,9 +51,9 @@
       "sha256": "5b0da509ed161340a44903c1907690d75298af36744e52fb621aa2ebfbd708d0"
     },
     "lock-character.md": {
-      "bytes": 11571,
-      "catalog_sha256": "a3678e28e3ed2a827cb5eb7bc1fe1b65749b67d43261cc3efb8bd46721dac694",
-      "sha256": "a3678e28e3ed2a827cb5eb7bc1fe1b65749b67d43261cc3efb8bd46721dac694"
+      "bytes": 11609,
+      "catalog_sha256": "eaa04ce03be8514c4022a3adb16801c5cff45277329b29e0f9ee233cece08d2e",
+      "sha256": "eaa04ce03be8514c4022a3adb16801c5cff45277329b29e0f9ee233cece08d2e"
     },
     "lock-script.md": {
       "bytes": 8924,
@@ -242,8 +242,8 @@
     },
     "skill.meta.json": {
       "bytes": 683,
-      "catalog_sha256": "b9f745e6cf11c091935f2f84fcec76ecf3f27d975adffed54be119331e7647d6",
-      "sha256": "b9f745e6cf11c091935f2f84fcec76ecf3f27d975adffed54be119331e7647d6"
+      "catalog_sha256": "f651cf7e13ff1a819c195140aeeeec0974b6e709c718f6b10ea865f0cc41c27c",
+      "sha256": "f651cf7e13ff1a819c195140aeeeec0974b6e709c718f6b10ea865f0cc41c27c"
     },
     "states/edit-to-delivery.md": {
       "bytes": 7799,
@@ -287,7 +287,7 @@
   ],
   "schema_version": 1,
   "slug": "video-production-harness",
-  "source_commit": "5c572cb7a1b110dcc8dba82da0514a70aed096a4",
+  "source_commit": "dab4f93986b3dd7d69147f56255a6582a458359b",
   "source_files": {
     "SKILL.md": {
       "sha256": "3e659d9dc20047c9deb42344749c2e9891b523151c5584c0123111d3f779f855",
@@ -330,7 +330,7 @@
       "source": "edit-video.md"
     },
     "lock-character.md": {
-      "sha256": "a3678e28e3ed2a827cb5eb7bc1fe1b65749b67d43261cc3efb8bd46721dac694",
+      "sha256": "eaa04ce03be8514c4022a3adb16801c5cff45277329b29e0f9ee233cece08d2e",
       "source": "lock-character.md"
     },
     "lock-script.md": {
@@ -498,6 +498,6 @@
       "source": "wrap-session.md"
     }
   },
-  "source_hash": "771d764a2415e78cef7f78c14908da165b837e3e2c62f0cbf20222484469ec69",
-  "source_version": "4-771d764a2415"
+  "source_hash": "e982f40d92803feeeaf808e4b4ef70a8d1f0ddb02a175e43b540ad3e17811090",
+  "source_version": "4-e982f40d9280"
 }
