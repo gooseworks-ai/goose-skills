@@ -54,7 +54,7 @@ NEAR_YEARS = 10
 # sibling (a Korean person never takes a voice described as Japanese). Longest phrase first, and a
 # found phrase is removed, so "african american" never also reads as "african".
 HERITAGE_ALIASES = [
-    ("african american", "black", None), ("afro american", "black", None), ("black", "black", None),
+    ("african american", "black", "black:american"), ("afro american", "black", "black:american"), ("black", "black", None),
     ("african", "african", None), ("nigerian", "african", "nigerian"), ("ghanaian", "african", "ghanaian"),
     ("kenyan", "african", "kenyan"), ("south african", "african", "south_african"),
     ("ethiopian", "african", "ethiopian"), ("somali", "african", "somali"),
@@ -89,11 +89,11 @@ HERITAGE_ALIASES = [
 # A specific with a parent ("arab:lebanese") fits its parent ("arab": an Arabic voice for a Lebanese
 # person) but never a sibling ("arab:egyptian"); a Chinese voice fits a Cantonese person, a Mandarin one doesn't.
 # "native American" in "a native American English speaker" is about the language, not heritage.
-LANGUAGE_NATIVE = re.compile(r"\bnative (?=(american|british|english|australian|canadian)( english)? (speaker|accent|english))")
+LANGUAGE_NATIVE = re.compile(r"\bnative (?=(american|british|english|australian|canadian)( english)? (speaker|accent|english|voice(?! (actor|actress|artist|talent))))")
 # A White person takes a voice that names no heritage; these words mark no voice.
 WHITE_WORDS = ("white", "caucasian", "european")
 # A mixed heritage checks nothing: "biracial Black/Latino" is not one heritage's voices only.
-MIXED = re.compile(r"\b(mixed|biracial|multiracial|multiethnic|multi racial|multi ethnic)\b")
+MIXED = re.compile(r"\b(mixed|bi[- ]?racial|multi[- ]?racial|multi[- ]?ethnic)\b")
 ASIAN = {"asian", "east_asian", "southeast_asian"}
 # "Black" also describes African and Caribbean people: "Black Nigerian" is Nigerian, and a voice
 # described as "Black Nigerian" fits them, but a voice described only as "Black" does not.
@@ -148,7 +148,8 @@ def heritage(ethnicity):
     found, rest = words_in(ethnicity or "")
     white = any(re.search(r"\b%s\b" % w, rest) for w in WHITE_WORDS)
     groups = {g for g, _ in found}
-    if "black" in groups and len(groups - {"black"}) == 1 and (groups - {"black"}) <= BLACK_ALSO:
+    if ("black" in groups and len(groups - {"black"}) == 1 and (groups - {"black"}) <= BLACK_ALSO
+            and all(sp is None for g, sp in found if g == "black")):
         found = {(g, sp) for g, sp in found if g != "black"}  # "Black Nigerian" is Nigerian
         groups = {g for g, _ in found}
     if len(groups) > 1 and "asian" in groups and len(groups - {"asian"}) == 1 and (groups - {"asian"}) <= ASIAN:
@@ -253,7 +254,7 @@ def heritage_fits(person, found):
     if person == "white":
         return not found
     own = [m for m in found if marker_fits(person, m)]
-    also = [m for m in found if m[0] == "black" and person[0] in BLACK_ALSO]
+    also = [m for m in found if m == ("black", None) and person[0] in BLACK_ALSO]
     return bool(own) and len(own) + len(also) == len(found)
 
 
