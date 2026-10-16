@@ -31,9 +31,11 @@ and different runs filled it differently.
 
 `make_character.py` is the shared builder for any generated person still in a custom video, not
 only for H3 takes. Fetch create-image-fal with it; the script calls its `gen_image.py`. Before
-the paid call, quote the exact `--payload-out` body through the host's free quote:
-`--dry-run --payload-out work/character/payload.json` writes `{"model", "body"}`, the exact
-request `gen_image.py` will send, and generates nothing.
+the paid call, price the exact `--payload-out` request with `data_price_provider` (free, read-only):
+`--dry-run --payload-out work/character/payload.json` writes `{"model", "body", "quality_tier"}` (plus
+`upgrade` and `query` when there are any), the exact request `gen_image.py` will send, and generates
+nothing. Send the body, and the `query` fields (`shot_scene`, `upgrade_*`) as top-level fields of the
+price request, so the check prices the call that will run.
 
 ## Quality tier: Standard or Best
 
