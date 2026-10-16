@@ -63,7 +63,7 @@ import sys
 
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-from pair_voice import NEVER_BEND, library_status, load_voice_lists, pair_voice  # noqa: E402
+from pair_voice import NEVER_BEND, load_voice_lists, pair_voice  # noqa: E402
 from plan_takes import both_hands  # noqa: E402
 import tiers  # noqa: E402
 
@@ -396,7 +396,7 @@ def main():
         print("recording: refused selfie, " + a.capture_decision["reason"])
     voice = None if a.no_voice_pair else pair_voice(
         a.age, a.gender, a.voice_accent, a.voice_energy, load_voice_lists(a.voices) if a.voices else None,
-        tuple(a.voice_exclude), a.voice_sample_text, a.ethnicity, library_status(a.voices))
+        tuple(a.voice_exclude), a.voice_sample_text, a.ethnicity, list(a.voices))
     if voice is None:
         print("voice    : none (--no-voice-pair: never voiced separately)")
     elif voice["source"] == "library":

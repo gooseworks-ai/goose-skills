@@ -51,9 +51,9 @@
       "sha256": "5b0da509ed161340a44903c1907690d75298af36744e52fb621aa2ebfbd708d0"
     },
     "lock-character.md": {
-      "bytes": 11609,
-      "catalog_sha256": "eaa04ce03be8514c4022a3adb16801c5cff45277329b29e0f9ee233cece08d2e",
-      "sha256": "eaa04ce03be8514c4022a3adb16801c5cff45277329b29e0f9ee233cece08d2e"
+      "bytes": 11697,
+      "catalog_sha256": "d8b740b184bb9283d95b85fd9481f76bc2ae3a6cb5c0bda1cb62d08bd3d0f768",
+      "sha256": "d8b740b184bb9283d95b85fd9481f76bc2ae3a6cb5c0bda1cb62d08bd3d0f768"
     },
     "lock-script.md": {
       "bytes": 8924,
@@ -242,8 +242,8 @@
     },
     "skill.meta.json": {
       "bytes": 683,
-      "catalog_sha256": "f651cf7e13ff1a819c195140aeeeec0974b6e709c718f6b10ea865f0cc41c27c",
-      "sha256": "f651cf7e13ff1a819c195140aeeeec0974b6e709c718f6b10ea865f0cc41c27c"
+      "catalog_sha256": "f866e276618fb54a4295b4a5ea8d70908bedc07519ea97220c15df21e51fc247",
+      "sha256": "f866e276618fb54a4295b4a5ea8d70908bedc07519ea97220c15df21e51fc247"
     },
     "states/edit-to-delivery.md": {
       "bytes": 7799,
@@ -287,7 +287,7 @@
   ],
   "schema_version": 1,
   "slug": "video-production-harness",
-  "source_commit": "dab4f93986b3dd7d69147f56255a6582a458359b",
+  "source_commit": "c2c32f14a4d8c2fb7e202eabd99f0ca486198a10",
   "source_files": {
     "SKILL.md": {
       "sha256": "3e659d9dc20047c9deb42344749c2e9891b523151c5584c0123111d3f779f855",
@@ -330,7 +330,7 @@
       "source": "edit-video.md"
     },
     "lock-character.md": {
-      "sha256": "eaa04ce03be8514c4022a3adb16801c5cff45277329b29e0f9ee233cece08d2e",
+      "sha256": "d8b740b184bb9283d95b85fd9481f76bc2ae3a6cb5c0bda1cb62d08bd3d0f768",
       "source": "lock-character.md"
     },
     "lock-script.md": {
@@ -498,6 +498,6 @@
       "source": "wrap-session.md"
     }
   },
-  "source_hash": "e982f40d92803feeeaf808e4b4ef70a8d1f0ddb02a175e43b540ad3e17811090",
-  "source_version": "4-e982f40d9280"
+  "source_hash": "2df3d1032dcde5f1bf95e76eda31b96d0ca8bddbbd9c124e7f9a72a0f77c4786",
+  "source_version": "4-2df3d1032dcd"
 }

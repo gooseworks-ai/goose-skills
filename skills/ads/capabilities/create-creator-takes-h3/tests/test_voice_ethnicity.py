@@ -11,7 +11,7 @@ import unittest
 
 SCRIPTS = Path(__file__).resolve().parents[1] / "scripts"
 sys.path.insert(0, str(SCRIPTS))
-from pair_voice import heritage, load_voices, pair_voice  # noqa: E402
+from pair_voice import heritage, library_searches, load_voices, pair_voice  # noqa: E402
 
 JON = {"voice_id": "jon", "name": "Jon - Conversational Voice", "category": "professional",
        "labels": {"gender": "male", "use_case": "conversational", "accent": "american", "age": "middle_aged", "descriptive": "casual"},
@@ -141,12 +141,14 @@ class ReviewFindingTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             voices = Path(tmp) / "voices.json"
             voices.write_text(json.dumps({"voices": VOICES}))
-            # The library was searched (2.8.0): an empty shared-voices reply, its last page.
-            library = Path(tmp) / "library-african-american-p0.json"
-            library.write_text(json.dumps({"voices": [], "has_more": False}))
+            # The library was searched (2.8.0): every search this person needs, an empty last page each.
+            library = []
+            for request in library_searches("man", "Black American"):
+                (Path(tmp) / request["save_as"]).write_text(json.dumps({"voices": [], "has_more": False}))
+                library += ["--voices", str(Path(tmp) / request["save_as"])]
             out = Path(tmp) / "c"
             person = [a if a != "39" else "44" for a in PERSON]
-            self.assertEqual(run("make_character.py", *person, "--voices", str(voices), "--voices", str(library),
+            self.assertEqual(run("make_character.py", *person, "--voices", str(voices), *library,
                                  "--out", str(out), "--dry-run").returncode, 0)
             character = out / "character.json"
             first = json.loads(character.read_text())["voice_pair"]
