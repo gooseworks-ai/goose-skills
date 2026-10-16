@@ -5109,8 +5109,8 @@
       "path": "parts/read-labels/1.0.0",
       "files": {
         "README.md": "6bf585fd19c98566df98ab4fcd6e863300b2318b8c605983ec3de9080c314de3",
-        "part.json": "91617f79b57943a20c4da1110cf30e4593e0ed4309fd6b84ade31ef85baa6cde",
-        "part.mjs": "dbe28eadee78f3e4d31f9498e87b47e2098b0287dc955a50dd8b666b69182cc4"
+        "part.json": "689685cc833f630bcab077c335fef3770dafc371a4c2d726fb9d57a2692f2d1a",
+        "part.mjs": "c6c6d9a3e8addda7bc5da5429edaf9c80a769a2c13729be323db756c705c2597"
       },
       "models": [
         {

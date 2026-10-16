@@ -21,7 +21,7 @@ export const manifest = {
   version: '1.0.0',
   kind: 'check',
   title: 'Read the product label in a cut',
-  summary: "Reads the large words on the product in frames of a cut against the real product photo, with a vision model, and stops the run when one is clearly misspelled, so a garbled label is never called ready.",
+  summary: "Reads the large words on the product in frames of a cut against the real product photo, with a vision model, and stops the run when one is misspelled or the label is mirrored, so a garbled label is never called ready.",
   runtime: 'node',
   entry: 'part.mjs',
   files: ['README.md', 'part.mjs'],
@@ -82,22 +82,24 @@ export const manifest = {
       labels: {
         type: 'object',
         additionalProperties: false,
-        required: ['model', 'label_words', 'frames', 'misspelled'],
+        required: ['model', 'label_words', 'frames', 'misspelled', 'mirrored'],
         properties: {
           model: { type: 'string' },
           label_words: words,
           misspelled: { type: 'integer', minimum: 0 },
+          mirrored: { type: 'integer', minimum: 0 },
           frames: {
             type: 'array',
             maxItems: 16,
             items: {
               type: 'object',
               additionalProperties: false,
-              required: ['t_s', 'scene_id', 'product_seen', 'words_read', 'misspelled'],
+              required: ['t_s', 'scene_id', 'product_seen', 'mirrored', 'words_read', 'misspelled'],
               properties: {
                 t_s: { type: 'number', minimum: 0 },
                 scene_id: { type: ['string', 'null'] },
                 product_seen: { type: 'boolean' },
+                mirrored: { type: 'boolean' },
                 words_read: words,
                 misspelled: {
                   type: 'array',

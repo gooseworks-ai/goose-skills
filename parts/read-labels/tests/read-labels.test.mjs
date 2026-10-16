@@ -56,6 +56,7 @@ test('a clean label passes, with what was read', { skip }, async () => {
   const out = await mod.run({ video, timeline: tl, products: [{ id: 'p1', name: 'Dal Chawal', images: [image] }] }, ctx);
   assert.equal(out.video, undefined, 'a check part never returns the video');
   assert.deepEqual(out.verdict, { pass: true, checks: [{ code: 'flag:text_legible', status: 'pass', message: 'The product label reads right in all 1 frames that show it.', found: 'DAL CHAWAL' }], reasons: [] });
+  assert.equal(out.labels.mirrored, 0);
   assert.equal(out.labels.misspelled, 0);
   assert.deepEqual(out.labels.frames.map((f) => [f.t_s, f.scene_id, f.product_seen]), [[1, 's1', true], [2, 's1', false], [4, 's2', false], [5, 's2', false]]);
   assert.equal(orders.length, 1);
@@ -80,6 +81,17 @@ test('a misspelled word stops the run with its time and both spellings; report m
   assert.deepEqual(out.verdict.reasons.map((r) => [r.check, r.expected]), [['flag:text_legible', 'Acne-Prone Skin']]);
   assert.equal(out.labels.misspelled, 1);
   assert.deepEqual(out.labels.frames[1].misspelled, [{ read: 'Acce-Prone', should_be: 'Acne-Prone' }]);
+});
+
+test('a mirrored label fails even when every letter is right (a selfie camera flip)', { skip }, async () => {
+  const reply = JSON.stringify({ label_words: ['DAL CHAWAL'], frames: [{ image: 2, product_seen: true, mirrored: true, words_read: ['DAL CHAWAL'], misspelled: [] }, { image: 3, product_seen: false, mirrored: true, words_read: [], misspelled: [] }] });
+  const { mod, ctx, video } = await setup(reply);
+  const image = await fileRef(await stillPng(ctx.workDir), 'image');
+  const inputs = { video, timeline: timeline([{ id: 's1', start_s: 0, end_s: 6 }], { duration_s: 6 }), products: [{ id: 'p1', images: [image] }] };
+  await assert.rejects(mod.run(inputs, ctx), (e) => e.code === 'output_invalid' && /mirrored in 1 of 2 frames read, at 2 s \(scene s1\)/.test(e.message));
+  const out = await mod.run({ ...inputs, on_misspelled: 'report' }, ctx);
+  assert.equal(out.verdict.checks[0].status, 'fail');
+  assert.equal(out.labels.mirrored, 1, 'a frame without the product is never counted as mirrored');
 });
 
 test('no product in any frame is not_applicable, not a pass', { skip }, async () => {

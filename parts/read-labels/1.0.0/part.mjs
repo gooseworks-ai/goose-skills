@@ -343,7 +343,8 @@ export function labelPrompt(name, times) {
     'Step 1: list the large printed words on the real product in image 1: the brand name, the product name and any other line in large type. Leave out small print.',
     'Step 2: for each frame, say whether the product is in it, and read the same large words as printed on it in that frame. Read a word only when you can read every letter clearly. A word hidden by a hand, cut off by the frame edge, blurred, too small, or turned too far to read is not read.',
     'Step 3: a word read in a frame is misspelled when its letters differ from the same word on the real product: a missing, extra or changed letter. Different capitals, a word not read, or a word that is not on the real product at all are not misspellings.',
-    'Reply with JSON only, no other text, in this shape: {"label_words": ["..."], "frames": [{"image": 2, "product_seen": true, "words_read": ["..."], "misspelled": [{"read": "...", "should_be": "..."}]}]}',
+    'Step 4: for each frame with the product, say whether its printed text is mirrored: letters reversed and words reading right to left, as in a selfie camera that flips the picture. Compare with image 1, whose text reads normally.',
+    'Reply with JSON only, no other text, in this shape: {"label_words": ["..."], "frames": [{"image": 2, "product_seen": true, "mirrored": false, "words_read": ["..."], "misspelled": [{"read": "...", "should_be": "..."}]}]}',
   ].join('\n');
 }
 
@@ -368,6 +369,7 @@ export function parseLabelReply(text) {
       .map((f) => ({
         image: f.image,
         product_seen: f.product_seen === true,
+        mirrored: f.product_seen === true && f.mirrored === true,
         words_read: words(f.words_read),
         misspelled: (Array.isArray(f.misspelled) ? f.misspelled : [])
           .filter((m) => m && typeof m.read === 'string' && typeof m.should_be === 'string' && m.read.trim() && m.should_be.trim())
@@ -413,28 +415,31 @@ export async function run(inputs, ctx) {
   if (!reply) throw ctx.error('provider_failed', 'the label reader did not answer in the JSON asked for');
 
   const read = times.map((f, i) => {
-    const r = reply.frames.find((x) => x.image === i + 2) || { product_seen: false, words_read: [], misspelled: [] };
-    return { t_s: f.t_s, scene_id: f.scene_id, product_seen: r.product_seen, words_read: r.words_read, misspelled: r.misspelled };
+    const r = reply.frames.find((x) => x.image === i + 2) || { product_seen: false, mirrored: false, words_read: [], misspelled: [] };
+    return { t_s: f.t_s, scene_id: f.scene_id, product_seen: r.product_seen, mirrored: r.mirrored, words_read: r.words_read, misspelled: r.misspelled };
   });
   const wrong = read.filter((f) => f.misspelled.length);
-  const labels = { model: MODEL, label_words: reply.label_words, frames: read, misspelled: wrong.length };
+  const flipped = read.filter((f) => f.mirrored);
+  const labels = { model: MODEL, label_words: reply.label_words, frames: read, misspelled: wrong.length, mirrored: flipped.length };
   const seen = read.filter((f) => f.product_seen).length;
   const list = wrong
     .slice(0, 4)
     .map((f) => `${f.misspelled.map((m) => `"${m.read}" for "${m.should_be}"`).join(', ')} at ${f.t_s} s${f.scene_id ? ` (scene ${f.scene_id})` : ''}`)
     .join('; ');
-  const message = wrong.length
-    ? `The product label is misspelled in ${wrong.length} of ${read.length} frames read: ${list}.`
+  const flips = flipped.slice(0, 4).map((f) => `${f.t_s} s${f.scene_id ? ` (scene ${f.scene_id})` : ''}`).join(', ');
+  const bad = wrong.length || flipped.length;
+  const message = bad
+    ? [wrong.length ? `The product label is misspelled in ${wrong.length} of ${read.length} frames read: ${list}.` : '', flipped.length ? `The product label is mirrored in ${flipped.length} of ${read.length} frames read, at ${flips}.` : ''].filter(Boolean).join(' ')
     : seen
       ? `The product label reads right in all ${seen} frames that show it.`
       : 'The product was not seen in any frame read.';
-  const status = wrong.length ? 'fail' : seen ? 'pass' : 'not_applicable';
+  const status = bad ? 'fail' : seen ? 'pass' : 'not_applicable';
   const verdict = {
-    pass: !wrong.length,
-    checks: [{ code: 'flag:text_legible', status, message, found: wrong.length ? list : reply.label_words.join(', ') || null }],
-    reasons: wrong.length ? [{ check: 'flag:text_legible', message, expected: reply.label_words.join(', '), found: list }] : [],
+    pass: !bad,
+    checks: [{ code: 'flag:text_legible', status, message, found: bad ? [list, flips && `mirrored at ${flips}`].filter(Boolean).join('; ') : reply.label_words.join(', ') || null }],
+    reasons: bad ? [{ check: 'flag:text_legible', message, expected: reply.label_words.join(', '), found: [list, flips && `mirrored at ${flips}`].filter(Boolean).join('; ') }] : [],
   };
-  if (wrong.length && (inputs.on_misspelled ?? 'fail') === 'fail') throw ctx.error('output_invalid', `${message} Make that scene again.`);
-  if (wrong.length) ctx.log.warn(message, { frames: wrong });
+  if (bad && (inputs.on_misspelled ?? 'fail') === 'fail') throw ctx.error('output_invalid', `${message} Make that scene again.`);
+  if (bad) ctx.log.warn(message, { frames: [...wrong, ...flipped] });
   return kitCheckOutputs(ctx, manifest, { verdict, labels });
 }
