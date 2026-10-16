@@ -16,7 +16,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'check-layer',
-  version: '1.8.0',
+  version: '1.9.0',
   kind: 'check',
   layer: 'check',
   title: 'Check layer',
@@ -25,7 +25,7 @@ export const manifest = {
   entry: 'part.mjs',
   files: ['README.md', 'part.mjs'],
   kit: '>=1.0.0 <2.0.0',
-  needs: { browser: false, ffmpeg: { filters: ['ebur128', 'freezedetect', 'blackdetect', 'scale', 'format', 'fps', 'crop', 'aresample'], encoders: ['pcm_s16le', 'pcm_f32le', 'rawvideo'] }, network: false, models: [], disk_mb: 100 },
+  needs: { browser: false, ffmpeg: { filters: ['ebur128', 'freezedetect', 'blackdetect', 'scale', 'format', 'fps', 'crop', 'aresample', 'highpass', 'lowpass'], encoders: ['pcm_s16le', 'pcm_f32le', 'rawvideo'] }, network: false, models: [], disk_mb: 100 },
   inputs: {
     ...layerInputsWithAssembly,
     properties: {
@@ -74,7 +74,7 @@ export const manifest = {
               additionalProperties: false,
               required: ['code', 'status'],
               properties: {
-                code: { type: 'string', pattern: '^(plays|length|size|sound|captions|black_frames|frozen_frames|captions_safe_zone|speech_matches_script|end_card|logo|logo_resolution|digital_silence|tone_only|unplanned_silence|planned_pause_too_long|frozen_picture|planned_freeze_too_long|repeated_shot|speech_rate_vs_reference|setup_count_vs_reference|flag:[\\s\\S]*)$', description: 'flag:<name> for each style qc_flag, any name the input allows (a flag this version does not know is reported not_applicable).' },
+                code: { type: 'string', pattern: '^(plays|length|size|sound|captions|black_frames|frozen_frames|captions_safe_zone|speech_matches_script|end_card|logo|logo_resolution|digital_silence|tone_only|unplanned_silence|planned_pause_too_long|frozen_picture|planned_freeze_too_long|repeated_shot|speech_rate_vs_reference|setup_count_vs_reference|speech_extra_words|flag:[\\s\\S]*)$', description: 'flag:<name> for each style qc_flag, any name the input allows (a flag this version does not know is reported not_applicable).' },
                 status: {
                   description: 'warn: measured, but not counted against the video: a taste check outside its range (length, still or held pictures, motion, pacing, shots, cuts, room tone, a sparse text-led cut, loudness the sound layer did not level, a caption across the join into a retained body), a small logo file, or a logo looked for on the whole frame with no box declared for it and no brand layer to fix it. What could not be measured, is broken or missing, or breaks an earlier part\'s promise (loudness off on a levelled cut, a caption across a scene cut or into the end card) fails.',
                   enum: ['pass', 'fail', 'warn', 'not_applicable'],
