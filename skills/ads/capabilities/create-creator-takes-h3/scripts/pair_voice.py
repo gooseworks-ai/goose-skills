@@ -76,6 +76,9 @@ HERITAGE_ALIASES = [
     ("lebanese", "middle_eastern", "arab"), ("egyptian", "middle_eastern", "arab"), ("persian", "middle_eastern", "persian"),
     ("iranian", "middle_eastern", "persian"), ("farsi", "middle_eastern", "persian"), ("turkish", "middle_eastern", "turkish"),
     ("indigenous", "indigenous", None), ("native american", "indigenous", "native_american"),
+    ("american indian", "indigenous", "native_american"),
+    ("west indian", "caribbean", None), ("caribbean", "caribbean", None), ("jamaican", "caribbean", "jamaican"),
+    ("trinidadian", "caribbean", "trinidadian"), ("haitian", "caribbean", "haitian"),
     ("first nations", "indigenous", "native_american"), ("pacific islander", "indigenous", "pacific"),
     ("polynesian", "indigenous", "pacific"), ("native hawaiian", "indigenous", "pacific"),
     ("samoan", "indigenous", "pacific"), ("maori", "indigenous", "pacific"), ("aboriginal", "indigenous", "aboriginal"),
@@ -95,8 +98,8 @@ ACCENT_ALIASES = {
 }
 MCP_NO_DESIGN = ("The GooseWorks MCP cannot run Voice Design (its ElevenLabs calls are speech, music and "
                  "GET /v1/voices): play the first `nearest` voice next to the still and, if the owner accepts it, "
-                 "record it with --character --accept-nearest; if not, pair again with --exclude. Never use a "
-                 "voice that is not in voice_pair.")
+                 "record it with --character --accept-nearest; if not, pair again with --character --voices <list> "
+                 "--exclude <voice_id>. Never use a voice that is not in voice_pair.")
 
 
 def age_label(age):
@@ -145,7 +148,9 @@ def heritage(ethnicity):
     if len(groups) != 1:
         return None
     specifics = {sp for _, sp in found if sp}
-    return (groups.pop(), specifics.pop() if len(specifics) == 1 else None)
+    if len(specifics) > 1:
+        return None  # "Korean/Japanese" is mixed, not "East Asian"
+    return (groups.pop(), specifics.pop() if specifics else None)
 
 
 def voice_labels(age, gender, accent=None, energy=None, ethnicity=None):
@@ -199,6 +204,14 @@ def age_fit(age, label):
         if band == label and (0 < lo - age <= NEAR_YEARS or 0 <= age - hi <= NEAR_YEARS):
             return "near"
     return None
+
+
+def years_from_band(age, label):
+    """How many years the age is from the voice's age band (0 inside it); far when unlabelled."""
+    for lo, hi, band in AGE_BANDS:
+        if band == label:
+            return 0 if age is None or lo <= age < hi else (lo - age if age < lo else age - hi + 1)
+    return 999
 
 
 def accent_fits(wanted, label):
@@ -262,7 +275,6 @@ def nearest(voices, wanted, exclude=(), age=None, limit=3):
     """Up to `limit` voices of the right gender and heritage, closest age first, each with what differs:
     something real to play next to the still while a Voice Design voice is quoted."""
     group = heritage(wanted.get("ethnicity"))
-    order = [band for _, _, band in AGE_BANDS]
     rows = []
     for voice in voices or []:
         vid = voice_id(voice)
@@ -277,7 +289,7 @@ def nearest(voices, wanted, exclude=(), age=None, limit=3):
             differs.append("age %s" % (labels.get("age") or "unlabelled"))
         if wanted.get("accent") and not accent_fits(wanted["accent"], labels.get("accent")):
             differs.append("accent %s" % (labels.get("accent") or "unlabelled"))
-        gap = abs(order.index(labels["age"]) - order.index(wanted["age"])) if labels.get("age") in order else 9
+        gap = years_from_band(age, labels.get("age"))
         rows.append(((len(differs), gap, text_of(voice.get("name")), vid),
                      {"voice_id": vid, "name": text_of(voice.get("name")) or None, "labels": labels,
                       "preview_url": voice.get("preview_url"), "differs_on": differs}))
@@ -375,8 +387,8 @@ def accept_nearest(path):
             "preview_url": row.get("preview_url"), "differs_on": row.get("differs_on") or [],
             "wanted": old.get("wanted"), "person": old.get("person"), "rejected": old.get("rejected") or [],
             "note": "the closest voice in the list (no voice fits fully and Voice Design can't run); it differs on %s. "
-                    "Play it beside the still; if the owner rejects it, pair again with --exclude"
-                    % (", ".join(row.get("differs_on") or []) or "nothing")}
+                    "Play it beside the still; if the owner rejects it, pair again with --character --voices <list> --exclude %s"
+                    % (", ".join(row.get("differs_on") or []) or "nothing", row["voice_id"])}
     record["voice_pair"] = pair
     path.write_text(json.dumps(record, indent=1), encoding="utf-8")
     return pair

@@ -83,7 +83,8 @@ class EthnicityMatchTests(unittest.TestCase):
         description = pair["request"]["body"]["voice_description"]
         self.assertTrue(description.startswith("A 44-year-old Black American man with a natural American accent."))
         self.assertEqual(pair["save"]["body"]["voice_name"], "Man, 44, Black American, American")
-        self.assertEqual([v["voice_id"] for v in pair["nearest"]][:2], ["julius", "miles"])
+        # At 44, "old" (from 55) is 11 years off and "young" (to 29) 15: Walter first.
+        self.assertEqual([v["voice_id"] for v in pair["nearest"]][:2], ["walter", "julius"])
         self.assertNotIn("jon", [v["voice_id"] for v in pair["nearest"]])
         self.assertIn("GooseWorks MCP cannot run Voice Design", pair["note"])
         self.assertTrue(pair_voice(18, "woman", ethnicity="Korean")["request"]["body"]["voice_description"].startswith("An 18-year-old Korean woman"))
@@ -198,6 +199,36 @@ class SecondReviewTests(unittest.TestCase):
         self.assertEqual(pair_voice(39, "man", "african", None, [JULIUS], ethnicity="Black")["source"], "voice_design")
         english = {**JON, "voice_id": "en", "labels": {**JON["labels"], "accent": "american english"}}
         self.assertEqual(pair_voice(40, "man", "english", None, [english], ethnicity="White")["source"], "voice_design")
+
+    def test_compound_indian_words_are_not_south_asian(self):
+        """Round 3."""
+        american_indian = {**JON, "voice_id": "ai", "name": "Sky", "description": "Calm American Indian male voice"}
+        self.assertEqual(pair_voice(40, "man", "american", None, [american_indian], ethnicity="Native American")["voice_id"], "ai")
+        self.assertEqual(pair_voice(40, "man", "american", None, [american_indian], ethnicity="Indian")["source"], "voice_design")
+        west_indian = {**JON, "voice_id": "wi", "name": "Dev", "description": "Warm West Indian male voice"}
+        self.assertEqual(pair_voice(40, "man", "american", None, [west_indian], ethnicity="Indian")["source"], "voice_design")
+        self.assertEqual(heritage("Jamaican"), ("caribbean", "jamaican"))
+
+    def test_two_specifics_in_one_region_are_mixed(self):
+        for ethnicity in ("Korean/Japanese", "Indian-Pakistani", "Mexican and Colombian"):
+            self.assertIsNone(heritage(ethnicity), ethnicity)
+        latino = {**JON, "voice_id": "lat", "name": "Luis", "description": "Friendly Latino male"}
+        self.assertEqual(pair_voice(40, "man", "american", None, [latino], ethnicity="Korean/Japanese")["voice_id"], "lat")
+
+    def test_nearest_is_ordered_by_years_and_accept_takes_the_closest(self):
+        aaron = {**JULIUS, "voice_id": "aaron", "name": "Aaron", "labels": {**JULIUS["labels"], "age": "young", "accent": "british"}}
+        zed = {**JULIUS, "voice_id": "zed", "name": "Zed", "labels": {**JULIUS["labels"], "age": "old", "accent": "british"}}
+        pair = pair_voice(44, "man", "american", None, [aaron, zed], ethnicity="Black")
+        self.assertEqual([v["voice_id"] for v in pair["nearest"]], ["zed", "aaron"], "old is 11 years off, young 15")
+        self.assertIn("--voices <list> --exclude <voice_id>", pair["note"])
+        with tempfile.TemporaryDirectory() as tmp:
+            character = Path(tmp) / "character.json"
+            character.write_text(json.dumps({"image": "c.png", "identity": "x", "voice_pair": pair}))
+            r = run("pair_voice.py", "--character", str(character), "--accept-nearest")
+            self.assertEqual(r.returncode, 0, r.stderr)
+            accepted = json.loads(character.read_text())["voice_pair"]
+            self.assertEqual(accepted["voice_id"], "zed")
+            self.assertIn("--voices <list> --exclude zed", accepted["note"])
 
     def test_make_character_survives_an_odd_name_on_the_no_fit_path(self):
         with tempfile.TemporaryDirectory() as tmp:
