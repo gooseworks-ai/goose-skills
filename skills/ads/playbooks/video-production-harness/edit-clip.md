@@ -48,7 +48,7 @@ Fix one scene after `create-clips` (wrong pose, weak motion, off-tone voice) wit
 1. Use the existing keyframe as the start image.
 2. Write a motion prompt stressing the action that did not land.
 3. Submit on the same routing row and model; save `clips/scene-NN.mp4`.
-4. Run the clip check as in `create-clips` (one redo at most).
+4. Run the clip check as in `create-clips`: redo only a `must_fix` (or a fix that was chosen), paid as [check severity](references/check-severity.md) says; another redo after that is the customer's call.
 
 **swap-keyframe-and-animate**: regenerate-keyframe, then re-roll-motion on the new image.
 

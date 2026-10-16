@@ -14,7 +14,7 @@ The end of the run: assemble the cut on a source-linked timeline, check the open
 Part of [the orchestrator](../orchestrator.md). Its non-negotiables, approvals and decision policies apply. Read one file per call; if the output says it was truncated, re-read it in parts before acting.
 
 ### State 7 — Edit video
-1. Follow [edit-video.md](../edit-video.md) and assemble a labeled candidate from current passing clips with `../scripts/assemble.py` and an `assembly_timeline` ([recipe format](../references/recipe-format.md)). A custom video has no other stitcher.
+1. Follow [edit-video.md](../edit-video.md) and assemble a labeled candidate from the current clips (no open `must_fix`, or the best flagged take the customer is deciding on) with `../scripts/assemble.py` and an `assembly_timeline` ([recipe format](../references/recipe-format.md)). A custom video has no other stitcher.
 2. Branch on the resolved speech_mode and soundtrack_modes before any source selection, retiming or mix. Keep native speech and exact audio-driven performance; no-speech work keeps its separately planned sound.
 3. Keep intended emphasis, timing, grade, SFX limits and revisions such as music level or cue changes. Measure the output instead of trusting gain constants.
 4. Follow [promote.md](../promote.md) to register the candidate, asset and version lineage through the binding. Keep earlier versions. Completion and pinning wait for the final check.

@@ -117,7 +117,7 @@ A test video went wrong three ways. These rules stop each one.
 Gate audit, 16 Oct: quality checks warn and never block, and an agent that can't play video was stuck at "watched/listened" claims.
 
 - **A measured review is enough.** `source-reviews.json` coverage says `motion: watched|measured` and `audio: listened|measured`. Measured means full-resolution frames of the whole take plus word timing against the line, listed in the review's `evidence`. Nobody has to claim a watch or a listen.
-- **A check fails only for a must_fix.** Mark script, voice, lip-sync, identity, framing or performance `fail` only for a must_fix problem (lost words, no lip-sync, warped anatomy, a different person). A take that looks a bit AI-made is `pass`, with the finding in `evidence`, and goes to the owner as an `ask`.
+- **A check fails only for a must_fix.** Mark script, voice, lip-sync, identity, framing or performance `fail` only for a must_fix problem (lost words, no lip-sync, warped anatomy, a different person). A take that looks clearly AI-made is `pass`, with the finding in `evidence`, and goes to the owner as an `ask`; slightly AI-looking is `fine` and kept.
 - **No voice of the person's heritage: the nearest one, said out loud.** When the lists hold no voice of the person's heritage, `voice_pair.nearest` holds the closest voices of the right gender from other heritages, each with `heritage` first in `differs_on`, and `nearest_note` says so. `--accept-nearest` then writes `tell_owner`: one plain line for the owner. **Never change the person to fit a voice.**
 
 ## Realism check and a voice for every person (2.8.0)
@@ -157,7 +157,7 @@ These are the user's calls (the recipe's `choices`), never defaults of this atom
 
 1. **Lock order: script, then character still, then takes.** Show the still before any
    take. A take costs dollars; a still costs cents.
-2. **First take alone, then listen.** Later takes receive the accepted t1 audio as voice conditioning, not exact audio reuse. A hash-bound review of the whole take in `--reviews` is required before later takes (watched and listened, or measured). Voice consistency still needs checking every take; reseeding is a new paid attempt subject to the approved retry budget.
+2. **First take alone, then review it.** Later takes receive the accepted t1 audio as voice conditioning, not exact audio reuse. A hash-bound review of the whole take in `--reviews` is required before later takes (watched and listened, or measured). Voice consistency still needs checking every take; reseeding is a new paid attempt subject to the approved retry budget.
 3. **Voice matches the person.** Age, gender, ethnicity and accent follow the character. The
    prompt's delivery line sets the tone; change it through `delivery`, not by editing
    the prompt file.
@@ -171,7 +171,7 @@ These are the user's calls (the recipe's `choices`), never defaults of this atom
    ("two pairs of hands"). Measured: 11.04 peak change at 0.10s vs 13.30 for a hard cut.
 8. **One filter graph.** Joining files with the concat demuxer puts black frames at every
    boundary; `xfade` with a late offset silently concatenates instead of overlapping.
-9. **Watch every take end to end before joining**: eyes on the lens to the last word,
+9. **Review every take end to end before joining** (watched, or measured from full-resolution frames and word timing): eyes on the lens to the last word,
    hands, identity, voice. A wrong still ("anchor") makes every take wrong the same way;
    if all takes fail alike, fix the still, not the seed.
 10. **Mannerism clips are optional and need rights.** `--mannerism` passes a muted

@@ -51,7 +51,7 @@ Part of [the orchestrator](../orchestrator.md). Its non-negotiables, approvals a
 6. **Iterate cheaply.** Fix category-level problems inside the preview's small scope; aim for one preview iteration before the full batch. Show open look or voice questions in the existing owner reviews.
 
 ### State 5 — Create clips
-1. Reuse clips only when scene ids, exact inputs, approvals, job results and passing clip checks all match the plan.
+1. Reuse clips only when scene ids, exact inputs, approvals and job results match the plan and no clip has an open `must_fix` (`ask` and `fine` clips are kept).
 2. Re-run [preflight-audit.md](../preflight-audit.md) as a sub-step; new assets may have landed.
 3. Check the specialist package handoff and free dependencies, then follow [create-clips.md](../create-clips.md). It reads `character_locks` and sends the locked anchor into every keyframe.
 4. Phase 0 of create-clips keeps the style anchor for cartoon scenes; for people the lock-character anchor already covers it.
