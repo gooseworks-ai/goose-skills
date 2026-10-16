@@ -143,7 +143,7 @@
         }
       },
       "quality_tier": {
-        "description": "Standard (default) or Best, the price the customer picked. Sets the default resolution (480p Standard, 720p Best); an explicit value still wins (a one-shot upgrade).",
+        "description": "Standard (default) or Best, the price the customer picked. Sets the default resolution (480p Standard, 720p Best); an explicit value still wins for the whole step.",
         "enum": [
           "standard",
           "best"

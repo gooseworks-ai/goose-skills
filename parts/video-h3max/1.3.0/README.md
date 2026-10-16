@@ -1,6 +1,6 @@
 # Human version
 
-**Quality tier (custom videos, 16 Oct 2026).** The customer picks Standard or Best at script approval, and the kit passes it as `quality_tier` (`standard`, the default, or `best`). It sets this part's default resolution: 768P in both tiers. fal makes H3 1080P from a native 768P take plus a refinement pass, and the finished video is scaled to 1080x1920 with ffmpeg (lanczos) for free. An explicit `resolution` still wins: that is how one shot is upgraded after a failed check, or when the customer asks. 1.2.0 defaulted to 1080P.
+**Quality tier (custom videos, 16 Oct 2026).** The customer picks Standard or Best at script approval, and the kit passes it as `quality_tier` (`standard`, the default, or `best`). It sets this part's default resolution: 768P in both tiers. fal makes H3 1080P from a native 768P take plus a refinement pass, and the finished video is scaled to 1080x1920 with ffmpeg (lanczos) for free. An explicit `resolution` still wins for the whole step. The kit has no per-shot upgrades: a custom video's one-shot upgrades go through the server's per-call check instead. 1.2.0 defaulted to 1080P.
 
 `video-h3max` makes short scene clips and timed takes with H3 Max. It keeps native dialogue, including more
 than one speaker, and can return silent copies for later narration. It supplies the scene and take outputs
@@ -41,9 +41,8 @@ Use the published `part.json` as the exact input contract. File inputs are FileR
   `references`, `start_image`, `end_image`, and `generate_audio`.
 - Without `clips`, supply `scenes`; `pick`, `skip_first`, and `skip_last` select which scenes are rendered.
   `seconds` defaults to five for scene clips and 15 for takes.
-- `resolution`: `480P`, `768P` (default, both tiers), or `1080P`. These are H3's actual labels. 1080P is sent explicitly:
-  Best's default for a shot marked `detail` (legible labels, logos or on-screen text, or a skin close-up), otherwise a
-  reasoned upgrade. Seedance's lowercase
+- `resolution`: `480P`, `768P` (default, both tiers), or `1080P`. These are H3's actual labels. 1080P only when the customer
+  asks, sent explicitly. Seedance's lowercase
   labels are rejected; the middle option is `768P`.
 - `aspect_ratio`: `adaptive`, `21:9`, `16:9`, `4:3`, `1:1`, `3:4`, or `9:16` (default).
 - `generate_audio` defaults to true and keeps the provider's native sound. False strips sound locally

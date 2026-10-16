@@ -26,14 +26,14 @@
       "sha256": "bce1223062b67613873816b2a08e53e9316a7d2767ae8aec7154e3c52ba5519b"
     },
     "create-clips.md": {
-      "bytes": 15357,
-      "catalog_sha256": "a2d0fde00cd8b88dd5a472407a3b6fdd86a0b40f0e0ad78b5c5ec61979f44763",
-      "sha256": "a2d0fde00cd8b88dd5a472407a3b6fdd86a0b40f0e0ad78b5c5ec61979f44763"
+      "bytes": 15358,
+      "catalog_sha256": "c83fe72a8645c1590cc5733fccf7bc3b7a9117875a6f70449748e6880a5e1eaa",
+      "sha256": "c83fe72a8645c1590cc5733fccf7bc3b7a9117875a6f70449748e6880a5e1eaa"
     },
     "create-design-brief.md": {
-      "bytes": 13211,
-      "catalog_sha256": "35c757524e75f51457153c6d9473b74fe1bc8ba73eb8bfc855a0cf98748c38a7",
-      "sha256": "35c757524e75f51457153c6d9473b74fe1bc8ba73eb8bfc855a0cf98748c38a7"
+      "bytes": 13188,
+      "catalog_sha256": "d07e406f9d7e8dce8d2479f5b16d7644863781dfb13bfcaed1c5167b7af049f3",
+      "sha256": "d07e406f9d7e8dce8d2479f5b16d7644863781dfb13bfcaed1c5167b7af049f3"
     },
     "create-storyboard.md": {
       "bytes": 8914,
@@ -46,9 +46,9 @@
       "sha256": "201b2b29880eee010543d65582a9a982643592555810ac5f93f0431b6cfbacd4"
     },
     "edit-video.md": {
-      "bytes": 12912,
-      "catalog_sha256": "2e3ad86493ec40994b6ece5b9d24e23d8dab8456e0e2f315f575a36e84f37763",
-      "sha256": "2e3ad86493ec40994b6ece5b9d24e23d8dab8456e0e2f315f575a36e84f37763"
+      "bytes": 12921,
+      "catalog_sha256": "5b0da509ed161340a44903c1907690d75298af36744e52fb621aa2ebfbd708d0",
+      "sha256": "5b0da509ed161340a44903c1907690d75298af36744e52fb621aa2ebfbd708d0"
     },
     "lock-character.md": {
       "bytes": 9433,
@@ -141,9 +141,9 @@
       "sha256": "fab9107769fe9fcee0c5e78b2377b53ac8645e05cbd84512066618483f2b30fa"
     },
     "references/quality-tier.md": {
-      "bytes": 4633,
-      "catalog_sha256": "e0df028a29c8139cbd2a825e8cad69a09fcd08ed6e50cb9aa58c85d46d914b09",
-      "sha256": "e0df028a29c8139cbd2a825e8cad69a09fcd08ed6e50cb9aa58c85d46d914b09"
+      "bytes": 5226,
+      "catalog_sha256": "1907f8321d2a12536c3e24b4485745aeb72a7dfb0b5dea40f461b9f875841193",
+      "sha256": "1907f8321d2a12536c3e24b4485745aeb72a7dfb0b5dea40f461b9f875841193"
     },
     "references/recipe-format.md": {
       "bytes": 6667,
@@ -156,9 +156,9 @@
       "sha256": "4ac7da771547c0c6c6f33fae652d35c25ddcd1ee35c3508523f130fbe43389cb"
     },
     "references/shot-routing.md": {
-      "bytes": 14946,
-      "catalog_sha256": "27670604343a9c46c845decbb1f874a91ec73cc14299cdb3778395e3375cfcd4",
-      "sha256": "27670604343a9c46c845decbb1f874a91ec73cc14299cdb3778395e3375cfcd4"
+      "bytes": 14939,
+      "catalog_sha256": "8a7be74defce17c28bea1428de164dced6ebc8f037eed9f86cb3f1f1e8360ef8",
+      "sha256": "8a7be74defce17c28bea1428de164dced6ebc8f037eed9f86cb3f1f1e8360ef8"
     },
     "references/specialist-handoff.md": {
       "bytes": 3756,
@@ -166,9 +166,9 @@
       "sha256": "483cbdc106834f75b3b27dfd30307bf3e897d9989edb714c7a2c8fe7ec334c87"
     },
     "references/speech-and-route-qualification.md": {
-      "bytes": 9247,
-      "catalog_sha256": "4bcf4a7e01f70e6a24d7138e1229f1e1a169a036ee08bbd600c9386dfda9d4ae",
-      "sha256": "4bcf4a7e01f70e6a24d7138e1229f1e1a169a036ee08bbd600c9386dfda9d4ae"
+      "bytes": 9183,
+      "catalog_sha256": "10127946d7f9e0fb01ad234430d98490f0203a2ee891d925a364559c415c6407",
+      "sha256": "10127946d7f9e0fb01ad234430d98490f0203a2ee891d925a364559c415c6407"
     },
     "review-video.md": {
       "bytes": 15347,
@@ -242,8 +242,8 @@
     },
     "skill.meta.json": {
       "bytes": 683,
-      "catalog_sha256": "149137a5de3f0676cf83793d7f42f4d239e3da7f959b858f6fc8dd07aba228cf",
-      "sha256": "149137a5de3f0676cf83793d7f42f4d239e3da7f959b858f6fc8dd07aba228cf"
+      "catalog_sha256": "b263e6047456e417b7c482f52212e8fa953adc181c225a3ab24dc19340fbf56e",
+      "sha256": "b263e6047456e417b7c482f52212e8fa953adc181c225a3ab24dc19340fbf56e"
     },
     "states/edit-to-delivery.md": {
       "bytes": 7799,
@@ -287,7 +287,7 @@
   ],
   "schema_version": 1,
   "slug": "video-production-harness",
-  "source_commit": "ff21b987421c94b4850532779d173e560122ecf4",
+  "source_commit": "5a1666790b4f201a92b5c6eb34f019e548b46b3c",
   "source_files": {
     "SKILL.md": {
       "sha256": "3e659d9dc20047c9deb42344749c2e9891b523151c5584c0123111d3f779f855",
@@ -310,11 +310,11 @@
       "source": "capabilities.md"
     },
     "create-clips.md": {
-      "sha256": "a2d0fde00cd8b88dd5a472407a3b6fdd86a0b40f0e0ad78b5c5ec61979f44763",
+      "sha256": "c83fe72a8645c1590cc5733fccf7bc3b7a9117875a6f70449748e6880a5e1eaa",
       "source": "create-clips.md"
     },
     "create-design-brief.md": {
-      "sha256": "35c757524e75f51457153c6d9473b74fe1bc8ba73eb8bfc855a0cf98748c38a7",
+      "sha256": "d07e406f9d7e8dce8d2479f5b16d7644863781dfb13bfcaed1c5167b7af049f3",
       "source": "create-design-brief.md"
     },
     "create-storyboard.md": {
@@ -326,7 +326,7 @@
       "source": "edit-clip.md"
     },
     "edit-video.md": {
-      "sha256": "2e3ad86493ec40994b6ece5b9d24e23d8dab8456e0e2f315f575a36e84f37763",
+      "sha256": "5b0da509ed161340a44903c1907690d75298af36744e52fb621aa2ebfbd708d0",
       "source": "edit-video.md"
     },
     "lock-character.md": {
@@ -402,7 +402,7 @@
       "source": "references/product-scale-and-world.md"
     },
     "references/quality-tier.md": {
-      "sha256": "e0df028a29c8139cbd2a825e8cad69a09fcd08ed6e50cb9aa58c85d46d914b09",
+      "sha256": "1907f8321d2a12536c3e24b4485745aeb72a7dfb0b5dea40f461b9f875841193",
       "source": "references/quality-tier.md"
     },
     "references/recipe-format.md": {
@@ -414,7 +414,7 @@
       "source": "references/review-script-shortform.md"
     },
     "references/shot-routing.md": {
-      "sha256": "27670604343a9c46c845decbb1f874a91ec73cc14299cdb3778395e3375cfcd4",
+      "sha256": "8a7be74defce17c28bea1428de164dced6ebc8f037eed9f86cb3f1f1e8360ef8",
       "source": "references/shot-routing.md"
     },
     "references/specialist-handoff.md": {
@@ -422,7 +422,7 @@
       "source": "references/specialist-handoff.md"
     },
     "references/speech-and-route-qualification.md": {
-      "sha256": "4bcf4a7e01f70e6a24d7138e1229f1e1a169a036ee08bbd600c9386dfda9d4ae",
+      "sha256": "10127946d7f9e0fb01ad234430d98490f0203a2ee891d925a364559c415c6407",
       "source": "references/speech-and-route-qualification.md"
     },
     "review-video.md": {
@@ -498,6 +498,6 @@
       "source": "wrap-session.md"
     }
   },
-  "source_hash": "efbf68a5df8d12774adca321472e96cf8e08c9dc132a5661d86d0ec3af762594",
-  "source_version": "4-efbf68a5df8d"
+  "source_hash": "c90e63cf6d54c20a23fe544b962fd8b7f0ed70199c3f26cdf87bc92dd27a5781",
+  "source_version": "4-c90e63cf6d54"
 }

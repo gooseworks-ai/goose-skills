@@ -65,7 +65,7 @@ export function h3SceneProviderPrompt(prompt, refs, who) {
   return out;
 }
 
-/** The clip resolution: the input's, else the tier's (768P in both tiers; 1080P is a one-shot upgrade). */
+/** The clip resolution: the input's, else the tier's (768P in both tiers; 1080P only when the customer asks). */
 export function h3SceneResolution(inputs) {
   return inputs.resolution ?? kitTierDefault(inputs, 'h3_resolution');
 }

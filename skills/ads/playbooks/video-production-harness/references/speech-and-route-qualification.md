@@ -28,15 +28,14 @@ incomplete, and empty ASR output never proves silence.
 | Generated creator speaks in one take of 15 s or less | `qualified_native` H3 | not in a tier quote (it prices talking as Fabric): ask the owner first | At most 3.2 words/s; cut only between sentences; never retimed; review the take's face, voice and words |
 | Speaking creator must use exact supplied audio | Qualified audio-driven lip-sync | Fabric 480p / 720p | Lock the exact driver, verify documented task and matched result |
 | Speaking creator needs timbre/accent but no exact recording | Supported native voice-reference route, otherwise accepted external voice plus lip-sync | same as the route it lands on | Audition actual voice; timbre conditioning is not waveform reuse |
-| No speech wanted | Non-speaking picture | H3 768P / 768P; Best: 1080P for labels, logos, text or a skin close-up, Seedance 1080p only with no face | Choose ambience/music/SFX or intentional silence independently |
+| No speech wanted | Non-speaking picture | H3 768P / 768P; Seedance 720p (no face) or any 1080p only with the customer's new yes | Choose ambience/music/SFX or intentional silence independently |
 | Multiple speakers | Qualified dialogue/per-speaker route | not in a tier quote (it prices talking as Fabric): ask the owner first | Supported speaker control and correct voice-to-mouth assignment |
 
 **Quality tier.** The customer's Standard or Best (`quality_tier`) sets the column above; the
 lip-sync model is the same at both, only the resolution changes. A talking shot that fails its
-check at 480p is upgraded to 720p for that shot only, by the rule in
-[shot routing](shot-routing.md): retry once at the same setting when a prompt or still fix should
-work, upgrade straight away when 480p probably can't do it (fast speech, a close-up mouth), and
-record the one-line reason with the failed attempt. Choose the resolution before the first
+check at 480p is retried at 480p after a prompt or still fix; moving it to 720p is a video upgrade,
+so it needs the customer's new yes to its price ([quality tier](quality-tier.md)). Record the
+one-line reason with the failed attempt. Choose the resolution before the first
 lip-sync or take: switching re-rolls it.
 
 ## Lip-sync only for a speaking face
@@ -91,7 +90,7 @@ failures suspend that use until a corrected take is reviewed.
 | Nano Banana | Cartoons only; real people and real products use `image-gpt-image-2` edit, and packaging comes from the real photo through `overlay` |
 | Veed Fabric 1.0 | Not a close-up fallback; review a first take and the final lip-sync; 480p under Standard, 720p under Best or as a one-shot upgrade |
 | H3 Max creator | No unconditional exact-script default or unchecked batch; keep evaluated configurations with first-take acceptance, voice consistency and linked audio |
-| Veo/Seedance complex actions | Representative action and product-fidelity qualification first; Seedance only for shots with no face, at 1080p |
+| Veo/Seedance complex actions | Representative action and product-fidelity qualification first; Seedance only for shots with no face, at 720p (1080p only when the customer asks) |
 | Grounded stills/cards/overlays | Valid for their own jobs; never a substitute for motion or physical proof |
 | Image-family substitution | Keep the selected family; a change needs qualification and ingredient approval |
 | ElevenLabs narration | Keep the accepted voice and settings |

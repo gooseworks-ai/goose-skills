@@ -1,6 +1,6 @@
 # image-gpt-image-2 1.3.0
 
-**1.3.0 reads the quality tier.** The customer picks Standard or Best at script approval, and the kit passes it as `quality_tier` (`standard`, the default, or `best`). It sets this part's default GPT Image 2 quality: `medium` for Standard, `high` for Best. An explicit `quality` still wins: that is how one shot is upgraded after a failed check, or when the customer asks. 1.2.0 always defaulted to `high`. Everything else is as in 1.2.0:
+**1.3.0 reads the quality tier.** The customer picks Standard or Best at script approval, and the kit passes it as `quality_tier` (`standard`, the default, or `best`). It sets this part's default GPT Image 2 quality: `medium` for Standard, `high` for Best. An explicit `quality` still wins for the whole step. The kit has no per-shot upgrades: a custom video's one-shot upgrades go through the server's per-call check instead. 1.2.0 always defaulted to `high`. Everything else is as in 1.2.0:
 
 ## 1.2.0
 

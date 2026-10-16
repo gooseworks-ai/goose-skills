@@ -50,12 +50,35 @@ from content_review import require_take_review
 # Approximate USD per generated second, for the dry-run estimate only. The proxy bills the
 # real amount. Measured on the reference builds; check the balance after the first take.
 RATE = {"1080P": 0.16, "768P": 0.10, "480P": 0.05}
-# plan_takes.py writes the resolution (768P in both tiers). An older spec without one is 768P too.
-DEFAULT_RESOLUTION = "768P"
+# plan_takes.py writes the resolution (768P in both tiers) and the quality_tier. An older spec with
+# neither was planned at 1080P, so it keeps 1080P: the same takes, at the price it was quoted.
+TIERED_RESOLUTION = "768P"
+LEGACY_RESOLUTION = "1080P"
 
 
 def resolution(spec):
-    return spec.get("resolution", DEFAULT_RESOLUTION)
+    if spec.get("resolution"):
+        return spec["resolution"]
+    return TIERED_RESOLUTION if spec.get("quality_tier") else LEGACY_RESOLUTION
+
+
+def take_query(spec, t):
+    """The GooseWorks query a take's call sends: the spec's upgrade fields and, when the take speaks
+    exactly one script scene, that scene as shot_scene."""
+    query = dict(((spec.get("upgrade") or {}).get("query")) or {})
+    beats = [str(b) for b in t.get("beats") or []]
+    if len(beats) == 1 and beats[0].isdigit() and int(beats[0]) > 0:
+        query["shot_scene"] = beats[0]
+    return query
+
+
+def made_at(spec):
+    """{take id: resolution} for the takes manifest.json says were made with this spec's seeds."""
+    man_p = pathlib.Path(spec["out"]) / "manifest.json"
+    seeds = {t["id"]: t["seed"] for t in spec["takes"]}
+    made = json.loads(man_p.read_text()).get("takes", []) if man_p.exists() else []
+    return {m["id"]: (m.get("payload") or {}).get("resolution") for m in made
+            if seeds.get(m.get("id")) == m.get("seed")}
 
 
 VOICE_CLIP = ["-vn", "-t", "12", "-ac", "1", "-ar", "24000"]  # t1's voice -> reference audio
@@ -184,6 +207,15 @@ def main():
     have = [t for t in want if take_file(spec, t).exists()]
     for t in have:
         print("  %s exists: %s (skipped)" % (t["id"], take_file(spec, t).name))
+    # The resolution is chosen before the first take: later takes copy t1's voice and are reviewed
+    # against it, so a take made at another resolution is a new take, never part of this set.
+    made = made_at(spec)
+    mixed = [t["id"] for t in spec["takes"] if take_file(spec, t).exists()
+             and made.get(t["id"]) not in (None, resolution(spec))]
+    if mixed:
+        raise SystemExit("%s were made at another resolution than the spec's %s. The resolution is chosen before "
+                         "the first take; switching re-rolls the take. Re-plan at one resolution and re-roll them "
+                         "(--reseed %s), t1 first." % (", ".join(mixed), resolution(spec), ",".join(mixed)))
     if not todo:
         print("[takes] nothing to generate")
         return
@@ -204,17 +236,7 @@ def main():
     print("  estimate ~$%.2f (%ds at ~$%.2f/s; the proxy bills the real amount)"
           % (est, sum(t["dur"] for t in todo), rate))
     problem = None
-    man_p = pathlib.Path(spec["out"]) / "manifest.json"
-    made_first = next((m for m in (json.loads(man_p.read_text()) if man_p.exists() else {}).get("takes", [])
-                       if m.get("id") == first["id"] and m.get("seed") == first["seed"]), None)
-    first_res = ((made_first or {}).get("payload") or {}).get("resolution")
-    if chained and first not in todo and first_res not in (None, resolution(spec)):
-        # The resolution is chosen before the first take: later takes copy its voice and are
-        # reviewed against it, so a switch is a new set of takes, not a patch.
-        problem = ("%s was made at %s but the spec asks for %s. The resolution is chosen before the first "
-                   "take; switching re-rolls the take. Re-plan at one resolution and re-roll %s (--reseed %s) "
-                   "before the rest." % (first["id"], first_res, resolution(spec), first["id"], first["id"]))
-    elif chained and first in todo:
+    if chained and first in todo:
         problem = ("generate the first take alone (--only %s --go), listen to it, then the rest: "
                    "they copy its voice" % first["id"])
     elif chained and not src.exists() and not a.unchained:
@@ -238,6 +260,7 @@ def main():
 
     if spec.get("planning_only"):
         raise SystemExit("This is a planning-only spec. Generate and review the actual still, then rerun plan_takes without --plan-only before --go.")
+    man_p = pathlib.Path(spec["out"]) / "manifest.json"
     manifest = json.loads(man_p.read_text()) if man_p.exists() else {"model": spec["model"], "takes": []}
     # Refuse an unchanged rejected take BEFORE uploading or sending anything. A take refused for
     # its own prompt is refused alone; the others are different requests and still run. A take
@@ -279,7 +302,7 @@ def main():
             # input_digest = the content digest: the ledger recognises this take on a re-run
             # (new upload URLs), and the proxy re-attaches to a job it already paid for.
             url = fal_generate_video(spec["model"], payload, timeout_s=1800, poll_s=5,
-                                     input_digest=digests.get(t["id"]))
+                                     input_digest=digests.get(t["id"]), query=take_query(spec, t))
         except FalPolicyRejection as e:
             refused += 1
             if e.kind in STILL_KINDS:  # the still is the cause, and every take shares it

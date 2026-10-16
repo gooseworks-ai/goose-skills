@@ -26,7 +26,7 @@ Hard rules:
 
 Usage:
     generate.py --prompt "..." --output PATH --image-url URL [--image-url URL ...]
-                [--resolution 1080p] [--duration 15] [--aspect-ratio 9:16]
+                [--resolution 720p] [--duration 15] [--aspect-ratio 9:16]
                 [--generate-audio | --no-generate-audio] [--seed N] [--input-digest D]
 
 Exit codes: 0 done; 1 other error; 3 policy rejection (or an identical request that was
@@ -81,7 +81,8 @@ def main() -> int:
     ap.add_argument("--output", required=True, type=Path)
     ap.add_argument("--image-url", "--image-ref", action="append", dest="image_urls", default=[],
                     help="PUBLIC reference image URL (repeatable). Order matters — first = @Image1.")
-    ap.add_argument("--resolution", default="1080p", choices=["480p", "720p", "1080p"])
+    ap.add_argument("--resolution", default="720p", choices=["480p", "720p", "1080p"],
+                    help="720p by default; 1080p only when the customer asks (16 Oct 2026)")
     ap.add_argument("--duration", type=int, default=15, choices=list(range(4, 16)))
     ap.add_argument("--aspect-ratio", default="9:16",
                     choices=["9:16", "16:9", "1:1", "4:3", "3:4", "21:9"])

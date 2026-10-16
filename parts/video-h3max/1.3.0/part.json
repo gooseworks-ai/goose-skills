@@ -142,14 +142,14 @@
         "maximum": 15
       },
       "quality_tier": {
-        "description": "Standard (default) or Best, the price the customer picked. Sets the default resolution (768P in both; the finished video is scaled to 1080x1920); an explicit value still wins (a one-shot upgrade).",
+        "description": "Standard (default) or Best, the price the customer picked. Sets the default resolution (768P in both; the finished video is scaled to 1080x1920); an explicit value still wins for the whole step.",
         "enum": [
           "standard",
           "best"
         ]
       },
       "resolution": {
-        "description": "H3 resolution label. Default 768P (both tiers). 1080P is sent explicitly: the Best default for a shot marked detail (legible labels, logos or on-screen text, or a skin close-up), otherwise a reasoned upgrade. fal makes it from a native 768P take plus a refinement pass.",
+        "description": "H3 resolution label. Default 768P (both tiers). 1080P only when the customer asks, sent explicitly. fal makes it from a native 768P take plus a refinement pass.",
         "enum": [
           "480P",
           "768P",

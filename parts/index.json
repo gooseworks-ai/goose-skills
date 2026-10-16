@@ -2527,9 +2527,9 @@
       "determinism": "provider",
       "path": "parts/creator-h3/1.7.0",
       "files": {
-        "README.md": "1c4e9cc8d105489b9ba5b163cf18453e58c3fdca29123bb75c79ce737a9677c5",
-        "part.json": "48733ccde20d69626765027c7473cb617d5fc4de665f2b02c5fdea93b2883269",
-        "part.mjs": "137310ba42f8b899e8ae6176909fc8753558b8bd1d6b3e234b5c1e481f56f2cf"
+        "README.md": "c28bcb8270f077b8504b39805f0f3afb7f02c0fb8cc3a085e602e1946e4b2155",
+        "part.json": "eb10ae5127ce570f604951f57157741ef9b09ddf12b99ff57c5729edae992d2f",
+        "part.mjs": "246792dad29f802986503e52a24924d7f0a4dcc3d217bf37d630ecaf38243db6"
       },
       "models": [
         {
@@ -3793,9 +3793,9 @@
       "determinism": "provider",
       "path": "parts/image-gpt-image-2/1.3.0",
       "files": {
-        "README.md": "1bbd5ceef4a5b5136a185288935a9e8ff7ac6c960d3af5c8d7065d6378ec4e1a",
-        "part.json": "310719e291c91a1d854865f83303ec184c0cea21516164a30c942bfba44cc4b6",
-        "part.mjs": "f77cad0a8bffb9d1389c20fba04e25b3518ae3ba3daf76a2a00695a90528ec62"
+        "README.md": "89878cf4fc1e623c70477982a7d08d7f3011bc14b00841c733d7a9d8f83dc12f",
+        "part.json": "62608fcedcf411973af4fe66c2f37df5ceb88610d47f30c26497d0029c0b3213",
+        "part.mjs": "cb6854f177726627e3401d7270bd8203d673ea8c098d2c1cbbce21ecc8ff39c9"
       },
       "models": [
         {
@@ -4393,9 +4393,9 @@
       "determinism": "provider",
       "path": "parts/lipsync-veed/1.1.0",
       "files": {
-        "README.md": "66fac9d559489540793759c77b8773c339f356cb489c8e0a1f43ac4830d35778",
-        "part.json": "4c356f928fec7bb4439bba9ef1350187e91b44841420e7ff1be8043dffe961c6",
-        "part.mjs": "625ec31d79e8c565b56feaa20c1f0162e0fc8ec086002fc8416944e9f41dfeb1"
+        "README.md": "1edd6a9dc46d232bc29dc7f7828c59f76a6665b1e532ff50d288fe19d9eaee91",
+        "part.json": "9829b1bd62a3b856b4ac9a2b279d80947eec28601ac3c276a2ebc79b037d0bc1",
+        "part.mjs": "822febe425c9e23737e1acb65a2af3c0fa70a8ad1b404c235211f5080671b1bc"
       },
       "models": [
         {
@@ -6192,9 +6192,9 @@
       "determinism": "provider",
       "path": "parts/video-h3max/1.3.0",
       "files": {
-        "README.md": "5a05baa3476d1d69c279ddfd7b34c51c7f6bd94b224f5bccdf07f6843641b001",
-        "part.json": "864f651d218d8e0622b0d6607d7eae91423e73382990a86dfebd6bd8b94659d2",
-        "part.mjs": "188cfb043ae08ca134f5468ea97a7deefc72b7bbf15a909a698f63b0b7cb1a6b"
+        "README.md": "93008e07dbe82f9bd98b0030c8ab8ef69d2240eff4723ffbc8523304a997ac4f",
+        "part.json": "58154d46bf6c1de601f2543cba6461db1b20aad4421e6d5da74da29599eb5ea6",
+        "part.mjs": "925aec7a85065635885677c1cbbc93d36783f7cf2b15411f6b6acdf26e942b02"
       },
       "models": [
         {
@@ -6490,6 +6490,59 @@
         "README.md": "d161d1b10c0b97886ff79d3e5925b93d0be76e6bce9d4fd9646a18b05af8a274",
         "part.json": "2c4260d9924144a748721b3f57d144c399c28d2bac0915650b58984475390f04",
         "part.mjs": "9c3bf1efdc3c09dd7d72178af014b7897e17d58ed658a2304d089987394c24e6"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "bytedance/seedance-2.0/reference-to-video"
+        },
+        {
+          "provider": "fal",
+          "model": "bytedance/seedance-2.0/image-to-video"
+        }
+      ]
+    },
+    {
+      "id": "video-seedance-2",
+      "version": "1.3.0",
+      "interface": 1,
+      "kind": "generate_video",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": true,
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "bytedance/seedance-2.0/reference-to-video"
+          },
+          {
+            "provider": "fal",
+            "model": "bytedance/seedance-2.0/image-to-video"
+          }
+        ],
+        "disk_mb": 1500
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "second",
+        "measure": {
+          "from": "/clips/*/seconds",
+          "as": "sum"
+        },
+        "rates_usd": {
+          "bytedance/seedance-2.0/reference-to-video": 0.68,
+          "bytedance/seedance-2.0/image-to-video": 0.68
+        },
+        "model_from": "/mode"
+      },
+      "determinism": "provider",
+      "path": "parts/video-seedance-2/1.3.0",
+      "files": {
+        "README.md": "7e57e3ff1f7592262287c8e9190d81161c85906802206f7b14e65b3df0d57f0a",
+        "part.json": "e5c419669d26d72362423c537cb5e8f96b95e9e45dbdf59d75641280d9920bc3",
+        "part.mjs": "fd759d42a9532032004656b5e81811701c8358b1ea93768467218d4ee77c729a"
       },
       "models": [
         {

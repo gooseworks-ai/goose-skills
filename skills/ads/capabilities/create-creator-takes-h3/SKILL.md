@@ -42,15 +42,15 @@ The customer picks **Standard** (the default) or **Best** at script approval. Pa
 | Setting | Standard | Best |
 |---|---|---|
 | Still (`make_character.py --quality`) | GPT Image 2 `medium` | `high` |
-| Takes (`plan_takes.py --resolution`) | H3 `768P` | `768P`; `1080P` for a shot marked `detail` (`--detail`: a skin close-up, legible labels or text) |
+| Takes (`plan_takes.py --resolution`) | H3 `768P` | `768P` |
 
-- **The finished video is 1080×1920 either way.** The last edit step scales the 768P picture up with `ffmpeg -vf scale=1080:1920:flags=lanczos`, at no cost. fal makes H3 1080P from a native 768P take plus a refinement pass.
-- **Choose the resolution before the first take.** Later takes copy t1's voice and are reviewed against it, so `run_takes.py` refuses the rest when t1 was made at another resolution: re-plan and re-roll t1.
+- **No video above 768P unless the customer asks** (16 Oct 2026). The finished video is 1080×1920 either way: the last edit step scales the 768P picture up with `ffmpeg -vf scale=1080:1920:flags=lanczos`, at no cost. fal makes H3 1080P from a native 768P take plus a refinement pass.
+- **Choose the resolution before the first take.** Later takes copy t1's voice and are reviewed against it, so `run_takes.py` refuses to go on while any take was made at another resolution: re-plan and re-roll those takes.
 - **Above the tier's default is an upgrade for one shot**, never for the whole video, and it needs a reason (`scripts/tiers.py`, the GooseWorks server's names):
-  - `--upgrade-reason failed_attempt --upgrade-attempt <the failed call's operation id> --upgrade-why "<one line>"`: the shot failed its check at the cheaper setting;
-  - `--upgrade-reason customer_asked --upgrade-quote "<their words>"`.
-  - After a failed check, H3 `1080P` also needs `--detail`; the customer may ask for it on any shot.
-- **After one failed check, judge the shot.** Retry once at the same setting when a prompt fix should work (a wrong pose, a missing prop). Upgrade straight away when the cheaper setting probably can't do it (small label text, a complex product shape, many parts that must stay exact). `character.json`, `takes.json` and the `--payload-out` file record the tier, the setting and the upgrade; the upgrade's `query` (`upgrade_reason`, `upgrade_attempt`, `upgrade_why` or `upgrade_quote`) goes on the paid call, with the shot's `shot_scene`.
+  - a picture (`make_character.py --quality high` under Standard) after a failed check: `--upgrade-reason failed_attempt --upgrade-attempt <the failed call's operation id> --upgrade-why "<one line>"`;
+  - anything when the customer asks: `--upgrade-reason customer_asked --upgrade-quote "<their words>"`. A video upgrade (H3 `1080P`) is only ever this: never after a failed check alone.
+- **After one failed check, judge the shot.** Retry once at the same setting when a prompt fix should work (a wrong pose, a missing prop). Upgrade the picture straight away when medium probably can't do it (small label text, a complex product shape, many parts that must stay exact).
+- **The call says which shot it is.** `make_character.py --shot-scene <n>` (a still made for one scene; leave it out for a shared person) and each take that speaks one scene send `shot_scene`, with the upgrade's `upgrade_*` fields, as the GooseWorks query. `character.json`, `takes.json` and the `--payload-out` file record the tier, the setting and the upgrade.
 
 ## Run
 

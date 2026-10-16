@@ -2,7 +2,7 @@
 
 ## 1.1.0
 
-- `quality_tier` (`standard`, the default, or `best`) sets the default resolution: 480p for Standard, 720p for Best. An explicit `resolution` still wins (a one-shot upgrade). 1.0.0 always defaulted to 720p.
+- `quality_tier` (`standard`, the default, or `best`) sets the default resolution: 480p for Standard, 720p for Best. An explicit `resolution` still wins for the whole step. 1.0.0 always defaulted to 720p.
 - The manifest's cost basis stays the 720p rate, the most a second can cost.
 - The lip-sync body changed, so no `reuses_pieces_of`.
 

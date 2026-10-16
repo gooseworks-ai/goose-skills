@@ -96,7 +96,7 @@
         ]
       },
       "quality_tier": {
-        "description": "Standard (default) or Best, the price the customer picked. Sets the default quality (medium Standard, high Best); an explicit value still wins (a one-shot upgrade).",
+        "description": "Standard (default) or Best, the price the customer picked. Sets the default quality (medium Standard, high Best); an explicit value still wins for the whole step.",
         "enum": [
           "standard",
           "best"

@@ -2,7 +2,7 @@
 
 ## 1.3.0
 
-- `quality_tier` (`standard`, the default, or `best`) sets the default quality: medium for Standard, high for Best. An explicit `quality` still wins (a one-shot upgrade). 1.2.0 always defaulted to high.
+- `quality_tier` (`standard`, the default, or `best`) sets the default quality: medium for Standard, high for Best. An explicit `quality` still wins for the whole step. 1.2.0 always defaulted to high.
 - The manifest's cost basis stays the high rate, the most a picture can cost.
 - The request body changed, so no `reuses_pieces_of`.
 

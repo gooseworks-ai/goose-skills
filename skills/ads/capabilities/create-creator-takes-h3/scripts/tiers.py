@@ -8,16 +8,16 @@ A setting above the tier's default is an upgrade for one shot, and it needs a re
                     setting can't do it>"
     customer_asked  the customer asked for it: --upgrade-quote "<their words>"
 
-H3 1080P is Best's default for a shot marked `detail` in the shot list (legible labels, logos or
-on-screen text, or a skin close-up): pass --detail. After a failed check, 1080P is only for a
-detail shot; the customer may ask for it on any shot.
+Rules decided 16 Oct 2026: H3 is 768P in both tiers, and 1080P only when the customer asks
+(customer_asked). Only a picture (GPT Image 2 medium -> high) may be upgraded after a failed
+check on the agent's own judgment; any video upgrade needs the customer's new yes.
 
 After one failed check, judge the shot: retry once at the same setting when a prompt fix should
 work (a wrong pose, a missing prop), or upgrade straight away when the cheaper setting probably
 can't do it (small label text, a complex product shape, many parts that must stay exact).
 
-The upgrade record uses the server's names, and `query` is what the paid call adds (with the
-shot's `shot_scene`).
+The upgrade record uses the server's names, and `query` is what the paid call adds; call_query()
+adds the shot's `shot_scene`.
 """
 import sys
 
@@ -34,13 +34,12 @@ RANK = {
 REASONS = ("failed_attempt", "customer_asked")
 
 
-def add_args(ap, detail=False):
+def add_args(ap, scene=True):
     ap.add_argument("--tier", default="standard", choices=TIERS,
                     help="the customer's price: standard (default) or best; sets the default quality or resolution")
-    if detail:
-        ap.add_argument("--detail", action="store_true",
-                        help="the shot list marks this shot detail (labels, logos, text or a skin close-up): "
-                             "H3 1080P is Best's default for it, and the only shot a failed check may upgrade to 1080P")
+    if scene:
+        ap.add_argument("--shot-scene", type=int,
+                        help="the script scene this call makes (the server's shot_scene); leave out for a shared still")
     ap.add_argument("--upgrade-reason", choices=REASONS,
                     help="why this shot goes above the tier's default (see tiers.py)")
     ap.add_argument("--upgrade-attempt", help="failed_attempt: the failed call's operation id")
@@ -49,8 +48,6 @@ def add_args(ap, detail=False):
 
 
 def default(a, setting):
-    if setting == "h3_resolution" and a.tier == "best" and getattr(a, "detail", False):
-        return "1080P"
     return DEFAULTS[a.tier][setting]
 
 
@@ -62,10 +59,10 @@ def upgrade(a, setting, chosen):
         if a.upgrade_reason:
             sys.exit("%s %s is not above the %s default (%s): drop --upgrade-reason" % (setting, chosen, a.tier, base))
         return None
-    if (setting == "h3_resolution" and chosen == "1080P" and not getattr(a, "detail", False)
-            and a.upgrade_reason != "customer_asked"):
-        sys.exit("after a failed check, H3 1080P is only for a shot the shot list marks detail (labels, logos, "
-                 "on-screen text or a skin close-up): pass --detail, make it at %s, or record the customer's ask" % base)
+    if setting != "image_quality" and a.upgrade_reason != "customer_asked":
+        sys.exit("%s %s is a video upgrade: it needs the customer's new yes to its price (--upgrade-reason "
+                 "customer_asked --upgrade-quote \"<their words>\"), never a failed check alone; or make it at %s"
+                 % (setting, chosen, base))
     attempt, why, quote = ((v or "").strip() for v in (a.upgrade_attempt, a.upgrade_why, a.upgrade_quote))
     if a.upgrade_reason == "failed_attempt":
         if not attempt or not why:
@@ -81,3 +78,11 @@ def upgrade(a, setting, chosen):
         sys.exit("%s %s is above the %s default (%s): an upgrade needs --upgrade-reason %s"
                  % (setting, chosen, a.tier, base, " | ".join(REASONS)))
     return {"setting": setting, "from": base, "to": chosen, **record, "query": query}
+
+
+def call_query(a, upgrade_record=None):
+    """The GooseWorks query parameters a paid call sends: the shot's shot_scene and the upgrade's."""
+    query = dict((upgrade_record or {}).get("query") or {})
+    if getattr(a, "shot_scene", None) is not None:
+        query["shot_scene"] = str(a.shot_scene)
+    return query

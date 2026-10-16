@@ -99,53 +99,86 @@ class TakeResolutionTests(unittest.TestCase):
                 self.assertEqual((spec["resolution"], spec["quality_tier"]), ("768P", tier))
                 self.assertNotIn("upgrade", spec)
 
-    def test_1080p_is_only_for_a_detail_shot(self):
+    def test_1080p_only_when_the_customer_asks(self):
+        """16 Oct: no video above 768P unless the customer asks; never after a failed check alone."""
         with tempfile.TemporaryDirectory() as tmp:
-            # Best: a detail shot (a skin close-up) starts at 1080P, no upgrade.
-            r, spec = self.plan(tmp, "--tier", "best", "--detail")
-            self.assertEqual(r.returncode, 0, r.stderr)
-            self.assertEqual(spec["resolution"], "1080P")
-            self.assertNotIn("upgrade", spec)
-            # Standard: 1080P needs a reason, and only for a detail shot.
             r, _ = self.plan(tmp, "--resolution", "1080P")
             self.assertNotEqual(r.returncode, 0)
-            self.assertIn("pass --detail", r.stderr)
-            r, _ = self.plan(tmp, "--detail", "--resolution", "1080P")
-            self.assertNotEqual(r.returncode, 0)
-            self.assertIn("--upgrade-reason", r.stderr)
-            r, _ = self.plan(tmp, "--resolution", "1080P", "--upgrade-reason", "failed_attempt",
+            self.assertIn("customer's new yes", r.stderr)
+            r, _ = self.plan(tmp, "--tier", "best", "--resolution", "1080P", "--upgrade-reason", "failed_attempt",
                              "--upgrade-attempt", "op-9", "--upgrade-why", "pores smeared at 768P twice")
             self.assertNotEqual(r.returncode, 0)
-            self.assertIn("--detail", r.stderr)
-            r, spec = self.plan(tmp, "--detail", "--resolution", "1080P", "--upgrade-reason", "failed_attempt",
-                                "--upgrade-attempt", "op-9", "--upgrade-why", "pores smeared at 768P twice")
-            self.assertEqual(r.returncode, 0, r.stderr)
-            self.assertEqual((spec["resolution"], spec["upgrade"]["failed_attempt_id"]), ("1080P", "op-9"))
-            # The customer may ask for 1080P on any shot (the server's rule); a failed check may not.
-            r, spec = self.plan(tmp, "--tier", "best", "--resolution", "1080P", "--upgrade-reason", "customer_asked",
+            self.assertIn("never a failed check alone", r.stderr)
+            r, spec = self.plan(tmp, "--resolution", "1080P", "--upgrade-reason", "customer_asked",
                                 "--upgrade-quote", "sharper please")
             self.assertEqual(r.returncode, 0, r.stderr)
+            self.assertEqual(spec["resolution"], "1080P")
             self.assertEqual(spec["upgrade"]["query"], {"upgrade_reason": "customer_asked", "upgrade_quote": "sharper please"})
 
-    def test_the_rest_refuse_a_first_take_made_at_another_resolution(self):
+    def make_takes(self, tmp, made_at):
+        """A planned spec whose takes in made_at exist on disk, recorded at the given resolutions."""
+        r, spec = self.plan(tmp)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        out = Path(spec["out"])
+        (Path(tmp) / "character.png").write_bytes(b"\x89PNG\r\n\x1a\n" + b"0" * 64)
+        spec["char"] = str(Path(tmp) / "character.png")
+        made = []
+        for t in spec["takes"]:
+            if t["id"] in made_at:
+                (out / ("%s-seed%d.mp4" % (t["id"], t["seed"]))).write_bytes(b"0" * 64)
+                made.append({**t, "payload": {"resolution": made_at[t["id"]]}})
+        (out / "manifest.json").write_text(json.dumps({"model": spec["model"], "takes": made}))
+        spec_path = out / "takes.json"
+        spec_path.write_text(json.dumps(spec))
+        return spec, spec_path
+
+    def test_takes_made_at_another_resolution_are_refused_even_when_nothing_is_left_to_make(self):
         """Switching resolution re-rolls the take, so the resolution is chosen before the first take."""
         with tempfile.TemporaryDirectory() as tmp:
-            r, spec = self.plan(tmp)
+            spec, path = self.make_takes(tmp, {"t1": "1080P"})
+            r = run("run_takes.py", "--spec", str(path))
+            self.assertNotEqual(r.returncode, 0)
+            self.assertIn("t1 were made at another resolution than the spec's 768P", r.stderr)
+        with tempfile.TemporaryDirectory() as tmp:
+            # Every take exists, t2 at the old resolution: refused before "nothing to generate".
+            spec, path = self.make_takes(tmp, {"t1": "768P", "t2": "1080P"})
+            r = run("run_takes.py", "--spec", str(path))
+            self.assertNotEqual(r.returncode, 0)
+            self.assertIn("t2 were made at another resolution", r.stderr)
+            self.assertIn("--reseed t2", r.stderr)
+        with tempfile.TemporaryDirectory() as tmp:
+            spec, path = self.make_takes(tmp, {"t1": "768P", "t2": "768P"})
+            r = run("run_takes.py", "--spec", str(path))
             self.assertEqual(r.returncode, 0, r.stderr)
-            self.assertGreater(len(spec["takes"]), 1)
-            out = Path(spec["out"])
-            (Path(tmp) / "character.png").write_bytes(b"\x89PNG\r\n\x1a\n" + b"0" * 64)
-            spec["char"] = str(Path(tmp) / "character.png")
-            first = spec["takes"][0]
-            (out / ("%s-seed%d.mp4" % (first["id"], first["seed"]))).write_bytes(b"0" * 64)
-            (out / "manifest.json").write_text(json.dumps({"model": spec["model"], "takes": [
-                {**first, "payload": {"resolution": "1080P"}}]}))
-            spec_path = out / "takes.json"
-            spec_path.write_text(json.dumps(spec))
-            r = run("run_takes.py", "--spec", str(spec_path))
+            self.assertIn("nothing to generate", r.stdout)
+
+
+class CallQueryTests(unittest.TestCase):
+    """The server checks each call: the take or still names its scene and carries the upgrade fields."""
+
+    def test_take_query_and_legacy_resolution(self):
+        sys.path.insert(0, str(SCRIPTS))
+        import run_takes
+        spec = {"upgrade": {"query": {"upgrade_reason": "customer_asked", "upgrade_quote": "sharper"}}}
+        self.assertEqual(run_takes.take_query(spec, {"beats": [3]}),
+                         {"upgrade_reason": "customer_asked", "upgrade_quote": "sharper", "shot_scene": "3"})
+        self.assertEqual(run_takes.take_query({}, {"beats": [3, 4]}), {}, "a take over two scenes names none")
+        self.assertEqual(run_takes.take_query({}, {"beats": ["hook"]}), {})
+        # An older spec with no resolution and no tier was planned at 1080P and keeps it.
+        self.assertEqual(run_takes.resolution({}), "1080P")
+        self.assertEqual(run_takes.resolution({"quality_tier": "standard"}), "768P")
+        self.assertEqual(run_takes.resolution({"resolution": "480P"}), "480P")
+
+    def test_make_character_sends_its_scene_and_upgrade(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            payload = Path(tmp) / "payload.json"
+            r = run("make_character.py", *IDENTITY, "--out", str(Path(tmp) / "c"), "--dry-run", "--payload-out", str(payload),
+                    "--shot-scene", "2", "--quality", "high", "--upgrade-reason", "failed_attempt",
+                    "--upgrade-attempt", "op-4", "--upgrade-why", "the pack label came out garbled")
             self.assertEqual(r.returncode, 0, r.stderr)
-            self.assertIn("was made at 1080P but the spec asks for 768P", r.stdout)
-            self.assertIn("--reseed %s" % first["id"], r.stdout)
+            self.assertEqual(json.loads(payload.read_text())["query"],
+                             {"upgrade_reason": "failed_attempt", "upgrade_attempt": "op-4",
+                              "upgrade_why": "the pack label came out garbled", "shot_scene": "2"})
 
 
 if __name__ == "__main__":

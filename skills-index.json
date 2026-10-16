@@ -2267,7 +2267,7 @@
     {
       "slug": "create-video-seedance-2-fal",
       "name": "create-video-seedance-2-fal",
-      "version": "2.0.3",
+      "version": "2.0.4",
       "category": "capabilities",
       "domain": "ads",
       "description": "Generate a single 4-15s vertical video clip with ByteDance Seedance 2.0 reference-to-video via fal.ai. Multi-image reference (avatar + product + setting), native lip-synced VO + ambient audio (generate-audio on by default), internal multi-cut handling within one render. Routes through the GooseWorks FAL proxy (bills the Ads agent). The default clip atom for AI-creator UGC ads built on the NB2 + Seedance architecture. Validated on beauty-by-earth/video-01.",
@@ -2289,7 +2289,7 @@
         "slug": "create-video-seedance-2-fal",
         "category": "capabilities",
         "pack": "ugc-video-formats",
-        "version": "2.0.3",
+        "version": "2.0.4",
         "tags": [
           "ads"
         ],
@@ -4858,7 +4858,7 @@
       "description": "Shared helper that routes ALL paid media generation (FAL image/video, ElevenLabs music) through the GooseWorks proxies so every call bills the Ads agent — never a provider SDK's default host. Host-swaps the FAL queue URLs, loads the agent token from the sandbox env (GW_MEDIA_PROXY_TOKEN) or ~/.gooseworks/credentials.json, and returns the result CDN URL. Every video-ad media capability imports this; templates never call a provider directly.",
       "tags": "ads",
       "path": "skills/ads/capabilities/media-proxy",
-      "version": "2.0.4",
+      "version": "2.0.5",
       "files": [
         "skills/ads/capabilities/media-proxy/SKILL.md",
         "skills/ads/capabilities/media-proxy/scripts/media_proxy.py",
@@ -4871,7 +4871,7 @@
         "slug": "media-proxy",
         "category": "capabilities",
         "domain": "ads",
-        "version": "2.0.4",
+        "version": "2.0.5",
         "tags": [
           "ads"
         ],
@@ -9482,9 +9482,9 @@
           "write-video-ad-script"
         ],
         "slug": "video-production-harness",
-        "source_commit": "ff21b987421c94b4850532779d173e560122ecf4",
-        "source_hash": "efbf68a5df8d12774adca321472e96cf8e08c9dc132a5661d86d0ec3af762594",
-        "source_version": "4-efbf68a5df8d",
+        "source_commit": "5a1666790b4f201a92b5c6eb34f019e548b46b3c",
+        "source_hash": "c90e63cf6d54c20a23fe544b962fd8b7f0ed70199c3f26cdf87bc92dd27a5781",
+        "source_version": "4-c90e63cf6d54",
         "tags": [
           "ads",
           "content"
@@ -10293,7 +10293,7 @@
           "name": "create-video-seedance-2-fal",
           "description": "Generate a single 4-15s vertical video clip with ByteDance Seedance 2.0 reference-to-video via fal.ai. Multi-image reference (avatar + product + setting), native lip-synced VO + ambient audio (generate-audio on by default), internal multi-cut handling within one render. Routes through the GooseWorks FAL proxy (bills the Ads agent). The default clip atom for AI-creator UGC ads built on the NB2 + Seedance architecture. Validated on beauty-by-earth/video-01.",
           "path": "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal",
-          "version": "2.0.3",
+          "version": "2.0.4",
           "files": [
             "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/SKILL.md",
             "skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/scripts/generate.py",

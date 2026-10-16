@@ -8,7 +8,7 @@ export const file = (media, mime) => ({ type: 'object', 'x-kit-file': mime ? { m
 // Standard or Best (parts/_lib/tier.mjs): the customer's price at script approval. It sets the
 // part's default quality or resolution; an explicit quality or resolution still wins (an upgrade).
 export const qualityTier = (sets) => ({
-  description: `Standard (default) or Best, the price the customer picked. Sets the default ${sets}; an explicit value still wins (a one-shot upgrade).`,
+  description: `Standard (default) or Best, the price the customer picked. Sets the default ${sets}; an explicit value still wins for the whole step.`,
   enum: ['standard', 'best'],
 });
 

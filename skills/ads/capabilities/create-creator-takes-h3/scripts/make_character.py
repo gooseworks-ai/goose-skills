@@ -42,8 +42,8 @@ Quality: --tier standard (default) makes the still at GPT Image 2 medium, --tier
 --quality high under Standard is an upgrade for this one person and needs a reason
 (--upgrade-reason failed_attempt --upgrade-attempt <operation id> --upgrade-why "<one line>", or
 customer_asked --upgrade-quote "<their words>"); see tiers.py. character.json and the
---payload-out file record the tier, the quality and any upgrade; the upgrade's `query` is what
-the paid call adds, with the shot's shot_scene.
+--payload-out file record the tier, the quality and any upgrade; `query` is what the paid call
+sends (the upgrade's fields and --shot-scene, for a still made for one scene).
 """
 import argparse
 import json
@@ -426,6 +426,8 @@ def main():
         quote = {"model": a.model, "body": payload, "quality_tier": a.tier}
         if upgrade:
             quote["upgrade"] = upgrade
+        if tiers.call_query(a, upgrade):
+            quote["query"] = tiers.call_query(a, upgrade)
         a.payload_out.write_text(json.dumps(quote, indent=1),
                                  encoding="utf-8")
         print("payload  : %s (quote this body before the paid call)" % a.payload_out)
@@ -437,6 +439,7 @@ def main():
     r = subprocess.run([sys.executable, str(HERE.parent.parent / "create-image-fal" / "scripts"
                                             / "gen_image.py"),
                         "--model", a.model, "--payload", json.dumps(payload),
+                        "--query", json.dumps(tiers.call_query(a, upgrade)),
                         "--out", str(png)])
     if r.returncode or not png.exists():
         sys.exit("image generation failed; nothing written")

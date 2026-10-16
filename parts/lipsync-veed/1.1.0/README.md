@@ -1,6 +1,6 @@
 # lipsync-veed 1.0.0
 
-**Quality tier (custom videos, 16 Oct 2026).** The customer picks Standard or Best at script approval, and the kit passes it as `quality_tier` (`standard`, the default, or `best`). It sets this part's default resolution: 480p for Standard, 720p for Best. An explicit `resolution` still wins: that is how one shot is upgraded after a failed check, or when the customer asks. 1.0.0 always defaulted to 720p.
+**Quality tier (custom videos, 16 Oct 2026).** The customer picks Standard or Best at script approval, and the kit passes it as `quality_tier` (`standard`, the default, or `best`). It sets this part's default resolution: 480p for Standard, 720p for Best. An explicit `resolution` still wins for the whole step. The kit has no per-shot upgrades: a custom video's one-shot upgrades go through the server's per-call check instead. 1.0.0 always defaulted to 720p.
 
 Approved audio drives a face. Each spoken line's own audio is lipsynced onto its speaker's still with Veed
 Fabric 1.0 on fal. From create-lipsync-veed-fal and the podcast skit's `gen_paid.py` clips and idle steps.

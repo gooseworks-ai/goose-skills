@@ -6,7 +6,7 @@ status: active
 
 # create-image-fal
 
-**GPT Image 2 quality follows the customer's tier.** `gen_image.py` always sends an explicit quality: `--tier standard` (the default) is `medium`, `--tier best` is `high`; a payload's own `quality`, or `--quality`, wins. Above the tier is a one-shot upgrade, only after a failed check at the cheaper setting or when the customer asks (see create-creator-takes-h3's quality tier).
+**GPT Image 2 quality follows the customer's tier.** `gen_image.py` always sends an explicit quality: `--tier standard` (the default) is `medium`, `--tier best` is `high`; a payload's own `quality`, or `--quality`, wins. Above the tier is a one-shot upgrade, only after a failed check at the cheaper setting or when the customer asks (see create-creator-takes-h3's quality tier). `--query '{"shot_scene": "3", "upgrade_reason": ...}'` sends the call's GooseWorks query fields.
 
 **Never hand-write a person prompt.** Any image with a person in it is made by create-creator-takes-h3's `scripts/make_character.py` (GPT Image 2, phone capture, deep focus, no retouching), unless the recipe prescribes its own creator still; read [the avatar-generation guide](references/avatar-generation.md) first. Nano Banana is for cartoons only, never for real people or real products, and never use Flux for a face.
 
