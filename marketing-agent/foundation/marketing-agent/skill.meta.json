@@ -1,0 +1,17 @@
+{
+  "slug": "marketing-agent",
+  "tier": "foundation",
+  "version": "0.1.0",
+  "pillar": "all",
+  "intents": [
+    "help me with marketing",
+    "make me ads",
+    "plan my launch",
+    "how did my ads do"
+  ],
+  "reads": [],
+  "writes": [],
+  "needs": { "mcp": [] },
+  "atoms": [],
+  "shared_atoms": []
+}
