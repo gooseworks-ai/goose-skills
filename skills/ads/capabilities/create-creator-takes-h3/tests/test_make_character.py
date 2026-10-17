@@ -28,7 +28,7 @@ class MakeCharacterPayloadTests(unittest.TestCase):
             # Defaults: GPT Image 2, phone capture in a lived-in room, deep focus, no bokeh, no retouching.
             self.assertEqual(quoted["model"], "openai/gpt-image-2")
             self.assertEqual(quoted["body"]["image_size"], {"width": 1088, "height": 1920})
-            self.assertEqual(quoted["body"]["quality"], "high")
+            self.assertEqual(quoted["body"]["quality"], "medium")  # Standard, the default tier
             self.assertNotIn("seed", quoted["body"])
             prompt = quoted["body"]["prompt"]
             self.assertIn("bokeh background", prompt)

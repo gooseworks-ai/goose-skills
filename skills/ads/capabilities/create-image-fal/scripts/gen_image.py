@@ -17,6 +17,11 @@ ROUTED THROUGH THE PROXY (bills the Ads agent). image_urls entries must be PUBLI
   gen_image.py --model openai/gpt-image-2/edit --brand-product held --product-image pack-front.jpg \
       --image presenter.png --payload '{"prompt":"She tips the pouch into the pot..."}' --out pour.png
 
+GPT Image 2 always sends an explicit quality: --tier standard (default) is medium, --tier best
+is high; a payload's own quality, or --quality, wins. Above the tier is a one-shot upgrade: only
+after a failed check at the cheaper setting or the customer's ask (image_quality.py); send the
+call's shot_scene and upgrade fields with --query.
+
 The FAL result codec is NOT guaranteed to match the requested extension (Seedream, for
 one, returns a JPEG). We sniff the downloaded bytes and, if they disagree with the
 extension, transcode to match — so `--out foo.png` is always really a PNG and a strict
@@ -24,6 +29,7 @@ downstream consumer (or a file-type check) never trips.
 """
 import argparse, json, os
 from brand_pack_lint import lint_brand_pack, with_front_line
+from image_quality import QUALITIES, TIER_QUALITY, with_quality
 from media_proxy import fal_generate, fal_upload, download
 
 _MAGIC = [
@@ -92,8 +98,19 @@ ap.add_argument("--brand-product", choices=["static", "held"], default=None,
                      "and --product-image")
 ap.add_argument("--product-image", default=None,
                 help="the real product photo (url or local file), sent as image 1 with --brand-product held")
+ap.add_argument("--tier", default="standard", choices=sorted(TIER_QUALITY),
+                help="GPT Image 2: the customer's price; standard (default) is medium quality, best is high")
+ap.add_argument("--quality", choices=QUALITIES, default=None,
+                help="GPT Image 2 quality; default: the tier's. Above it is a one-shot upgrade")
+ap.add_argument("--query", default=None,
+                help='GooseWorks query parameters for this call as JSON, e.g. {"shot_scene": 3, "upgrade_reason": '
+                     '"failed_attempt", "upgrade_attempt": "<op id>", "upgrade_why": "..."} (custom-video quality tiers)')
 a = ap.parse_args()
+query = json.loads(a.query) if a.query else None
+if query is not None and not isinstance(query, dict):
+    raise SystemExit("--query must be a JSON object")
 payload = json.load(open(a.payload[1:])) if a.payload.startswith("@") else json.loads(a.payload)
+payload = with_quality(a.model, payload, a.tier, a.quality)
 if a.product_image and a.brand_product != "held":
     raise SystemExit("--product-image goes with --brand-product held")
 if a.brand_product:
@@ -110,7 +127,7 @@ if images:
         payload["image_urls"] = resolved[:1] + list(payload.get("image_urls") or []) + resolved[1:]
     else:
         payload["image_urls"] = list(payload.get("image_urls") or []) + resolved
-url = fal_generate(a.model, payload)
+url = fal_generate(a.model, payload, query=query)
 download(url, a.out)
 note = _reconcile_extension(a.out)
 result = {"image_url": url, "out": a.out}

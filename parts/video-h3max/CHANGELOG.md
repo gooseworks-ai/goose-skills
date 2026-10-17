@@ -3,6 +3,11 @@
 This part provides H3 Max scene clips and timed takes for recipes that need native dialogue or first/last
 frames. Published `video-seedance-2` and `creator-h3` versions are unchanged.
 
+## 1.3.0
+
+- `quality_tier` (`standard`, the default, or `best`) is accepted; H3 is 768P in both. The default resolution is now 768P (1.2.0: 1080P). 1080P only when the customer asks, sent as an explicit `resolution`.
+- The provider body changed, so no `reuses_pieces_of`.
+
 ## 1.2.0
 
 - Light lock: modes `stills` and `image_to_video` add "Keep the first frame's light and exposure, matte skin, no added shine or sharpening halos." once, before any `Avoid:` list (the same words as creator-h3 1.6.0). H3 added gloss, HDR contrast and sharpening halos to clean stills in two 15 Oct test videos. Modes `reference`, `take` and `takes` are unchanged.

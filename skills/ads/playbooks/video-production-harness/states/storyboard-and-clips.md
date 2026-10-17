@@ -16,9 +16,9 @@ Part of [the orchestrator](../orchestrator.md). Its non-negotiables, approvals a
 ### State 3 — Storyboard
 1. **The storyboard is required, even when the owner pre-approved the script, credits or ingredients.** Pre-approval skips the wait for the owner, never the storyboard or its checks. Reuse a saved storyboard only when it matches the approved script and shot plan.
 2. Follow [create-storyboard.md](../create-storyboard.md). It reads VO from `locked_script`, so caption text matches the script.
-3. **INGREDIENT OWNER GATE.** Show the storyboard on the host review surface with the anchors, world, voice, product photos, routes and cost. Show each speaking character's still together with a short audition of its paired voice saying a real script line, so the owner judges them together. A native-speech character (one H3 take speaking its own line) has no separate voice: show the still and the route now, and accept or reject the generated voice with the first take, before any later take. A separate voice is approved only with its person: while a still is pending or blocked, its voice stays pending too, and an audition whose voice differs from `character.voice_pair` is not shown for approval. Confirm pacing and visual direction before clip credits. A generated preview still needs the approved preview budget. This is the cheapest place to catch a wrong concept. On the kit path, run the kit's make command after this approval.
+3. **INGREDIENT OWNER GATE.** In `review_mode: auto`, when the total is still inside the customer's yes, record the approval with their "just make it" words and go on without waiting ([check severity](../references/check-severity.md)). Otherwise show the storyboard on the host review surface with the anchors, world, voice, product photos, routes and cost. Show each speaking character's still together with a short audition of its paired voice saying a real script line, so the owner judges them together. A native-speech character (one H3 take speaking its own line) has no separate voice: show the still and the route now, and accept or reject the generated voice with the first take, before any later take. A separate voice is approved only with its person: while a still is pending or blocked, its voice stays pending too, and an audition whose voice differs from `character.voice_pair` is not shown for approval. Confirm pacing and visual direction before clip credits. A generated preview still needs the approved preview budget. This is the cheapest place to catch a wrong concept. On the kit path, run the kit's make command after this approval.
 4. **Coverage and pace.** Use reference-derived targets and the planned cuts and face time from the storyboard step. Every beat needs a viewer purpose and enough time for its action, reading or proof. A long hold is a prompt to check, not a failure; never add arbitrary cuts to meet a quota.
-5. **Shot-mix check before any clip spend.** Run the storyboard's pacing and shot-mix diagnostics and `scripts/reference_shots.py compare` against the reference's shot table, and show the counts. Setups or shots more than 30% under the reference with no listed `shots` change block State 5, pre-approved or not.
+5. **Shot-mix check before any clip spend.** Run the storyboard's pacing and shot-mix diagnostics and `scripts/reference_shots.py compare` against the reference's shot table, and show the counts. Setups or shots more than 30% under the reference with no listed `shots` change are an `ask` finding ([check severity](../references/check-severity.md)): add shots, or list the change and tell the customer; in `review_mode: auto` decide yourself. It never blocks State 5.
 
 ### State 3.4 — Motion strategy
 1. Read the design brief's `visual_style:` (and explicit storyboard notes).
@@ -51,14 +51,14 @@ Part of [the orchestrator](../orchestrator.md). Its non-negotiables, approvals a
 6. **Iterate cheaply.** Fix category-level problems inside the preview's small scope; aim for one preview iteration before the full batch. Show open look or voice questions in the existing owner reviews.
 
 ### State 5 — Create clips
-1. Reuse clips only when scene ids, exact inputs, approvals, job results and passing clip checks all match the plan.
+1. Reuse clips only when scene ids, exact inputs, approvals and job results match the plan and no clip has an open `must_fix` (`ask` and `fine` clips are kept).
 2. Re-run [preflight-audit.md](../preflight-audit.md) as a sub-step; new assets may have landed.
 3. Check the specialist package handoff and free dependencies, then follow [create-clips.md](../create-clips.md). It reads `character_locks` and sends the locked anchor into every keyframe.
 4. Phase 0 of create-clips keeps the style anchor for cartoon scenes; for people the lock-character anchor already covers it.
-5. Inspect every clip, its speech and its action before assembly. A failed clip never goes into a passing assembly.
+5. Inspect every clip, its speech and its action before assembly. A clip with an open `must_fix` is redone (paid from the approved total when it fits, otherwise after a new yes), never dropped; `ask` and `fine` clips go in.
 
 ### State 6 — Edit clip (loop)
-1. Read the latest review notes for P0/P1 issues mapped to scenes.
+1. Read the latest review notes for `must_fix` (P0) items mapped to scenes, and the `ask` (P1) items the customer, or you in `review_mode: auto`, chose to fix.
 2. For each scene that needs a re-roll, follow [edit-clip.md](../edit-clip.md) with the note's `edit_type`.
 3. Run sequentially; each edit changes state and may invalidate the next.
 4. With no review notes yet, go to State 7; the first edit uses the raw clips.

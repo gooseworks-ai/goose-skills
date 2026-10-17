@@ -1,5 +1,10 @@
 # video-seedance-2
 
+## 1.3.0
+
+- The default resolution is now 720p (1.2.0: 1080p). Custom videos run no video above 720p/768p unless the customer asks (16 Oct 2026); send `resolution: 1080p` explicitly then. Seedance stays for shots with no face: it refuses photoreal faces.
+- The request body changed, so no `reuses_pieces_of`.
+
 ## 1.2.0
 
 - `mode: take`: one take of up to 4 plan scenes, written as time-windowed beats with their dialogue; refuses too many words, beats that do not fit, and a line on a beat that keeps the face off screen (`off_screen_lines: voiceover` writes it as voice-over).

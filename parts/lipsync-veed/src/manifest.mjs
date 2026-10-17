@@ -1,4 +1,4 @@
-import { file } from '../../_tools/schemas.mjs';
+import { file, qualityTier } from '../../_tools/schemas.mjs';
 
 const MODEL = 'veed/fabric-1.0';
 const textOrNull = { type: ['string', 'null'] };
@@ -7,7 +7,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'lipsync-veed',
-  version: '1.0.0',
+  version: '1.1.0',
   kind: 'generate_video',
   title: 'Lipsync to approved audio (Veed Fabric)',
   summary: 'Each spoken line\'s own audio drives its speaker\'s face with Veed Fabric 1.0 on fal, one piece per line, plus an optional silent "listening" clip per face.',
@@ -66,7 +66,8 @@ export const manifest = {
           properties: { key: { type: 'string', minLength: 1, maxLength: 24 }, image: file('image', ['image/png', 'image/jpeg', 'image/webp']) },
         },
       },
-      resolution: { description: 'Default 720p.', enum: ['480p', '720p'] },
+      quality_tier: qualityTier('resolution (480p Standard, 720p Best)'),
+      resolution: { description: "Default: the quality_tier's (480p Standard, 720p Best). 720p under Standard is an upgrade.", enum: ['480p', '720p'] },
       idle_seconds: { description: 'Seconds of a silent "listening" clip per face, driven by silence (0, the default, makes none).', type: 'number', minimum: 0, maximum: 15 },
       max_seconds: { description: 'The most seconds of lipsync this step may order (line audio plus idle clips; the price is read from it); more is refused.', type: 'number', minimum: 1, maximum: 300 },
     },

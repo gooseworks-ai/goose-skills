@@ -1,15 +1,15 @@
 ---
 name: create-video-seedance-2-fal
-description: Generate a single 4-15s vertical video clip with ByteDance Seedance 2.0 reference-to-video via fal.ai. Multi-image reference (avatar + product + setting), native lip-synced VO + ambient audio (generate-audio on by default), internal multi-cut handling within one render. Routes through the GooseWorks FAL proxy (bills the Ads agent). The default clip atom for AI-creator UGC ads built on the NB2 + Seedance architecture. Validated on beauty-by-earth/video-01.
+description: Generate a single 4-15s vertical video clip with ByteDance Seedance 2.0 reference-to-video via fal.ai, for shots with no realistic face (a product hero, a product in motion, an empty set). Multi-image reference (product + setting), ambient audio, internal multi-cut handling within one render, 720p by default. Routes through the GooseWorks FAL proxy (bills the Ads agent). Seedance refuses photoreal faces, so talking heads and creators go to creator-h3 / video-h3max.
 owner: team
 status: superseded
-version: "2.0.3"
+version: "2.0.4"
 created: 2026-05-26
-updated: 2026-10-06
-superseded_by: video-seedance-2@1.0.1
+updated: 2026-10-16
+superseded_by: video-seedance-2@1.3.0
 ---
 
-> **Superseded** in the video kit by the video-seedance-2 part (1.0.1; scripted lines use creator-h3). This atom still runs, unchanged, for skills outside the kit.
+> **Superseded** in the video kit by the video-seedance-2 part (1.3.0, 720p by default; scripted lines use creator-h3). This atom still runs, unchanged, for skills outside the kit.
 
 # create-video-seedance-2-fal
 
@@ -17,18 +17,20 @@ superseded_by: video-seedance-2@1.0.1
 
 ## Purpose
 
-Wraps the FAL endpoint `bytedance/seedance-2.0/reference-to-video`. Pass 1-N image references (typically: portrait + product + optional setting) + a structured prompt → get back a 4-15s clip with native lip-synced VO and ambient audio.
+Wraps the FAL endpoint `bytedance/seedance-2.0/reference-to-video`. Pass 1-N image references (product + optional empty setting, **never a photoreal face**) + a structured prompt → get back a 4-15s clip with ambient audio, at 720p by default.
+
+**Seedance refuses photoreal faces, whatever model made them** (a fresh Seedream v5 Pro face too, 2026-09-29), and a refused submit still bills. Talking heads and any shot with a realistic face go to `creator-h3` / `video-h3max` (H3). In a GooseWorks custom video Seedance always needs the customer's new yes to its price, saved in the approved review; send that call's `--query` (below).
 
 Seedance 2.0 renders **multiple internal cuts within a single 15s call** when the prompt specifies sub-scene structure (e.g. WIDE HOOK / PRODUCT HERO / SIDESTEP / REACTION). This is the architectural win over the older NB2 + i2v multi-keyframe approach — fewer calls, native lip-sync, no Soul ID required.
 
 Use this atom when:
-- The clip needs a talking-head avatar reviewing or demonstrating a product
-- Native lip-synced dialogue is required (set `--generate-audio`)
-- Identity must hold via image reference, not video reference (see Decision Rule 1)
+- The shot has no realistic face: a product hero, a product in motion, an empty set
+- It needs hard camera motion or an exact product the cheaper H3 route can't hold
 - Length 4-15s, vertical 9:16 (or other aspect ratios)
-- Multi-image conditioning (face + product, or face + multiple products for a hook scene)
+- Multi-image conditioning (product + setting, or several products for a hook scene)
 
 **Do NOT use** for:
+- Any shot with a realistic face (a talking head, a creator, a stranger) → `creator-h3` or `video-h3max`
 - > 15s clips → split across multiple calls and stitch (`assembly/stitch-videos-ffmpeg`)
 - Pure cinematic camera moves without an on-screen person → `create-video-veo3` is often better
 - Product-only B-roll with no person → `create-product-videos-higgsfield-ms` or text-to-video Seedance
@@ -42,7 +44,8 @@ Required:
 - `--image-url` (alias `--image-ref`) — at least one **PUBLIC** reference image URL (repeatable), passed as `image_urls`. Order matters — first = `@Image1` in prompt addressing. The proxy does NOT upload local files: host local refs via MCP `get_upload_url` → `get_download_url` and pass the URL (identical to `create-video-fal`).
 
 Optional:
-- `--resolution` — `480p` | `720p` | `1080p` (default). 1080p meaningfully better for product label fidelity.
+- `--resolution` — `480p` | `720p` (default) | `1080p`. No video above 720p unless the customer asks (16 Oct 2026): pass `1080p` only then.
+- `--query` — the call's GooseWorks query as JSON. In a custom video the shot first needs the customer's yes to its Seedance price, saved as a `shot_overrides` `{scene, seedance: true, user_quote}` in the approved review; then send `{"shot_scene": <scene number>}` at 720p. Only 1080p also adds `"upgrade_reason": "customer_asked", "upgrade_quote": "<their words>"`.
 - `--duration` — `4`–`15` seconds (default `15`). Passed as an **int** (`seedance-2.0/reference-to-video` enum {auto,4..15}); a string 400s with `invalid_request` (validated 2026-07-18).
 - `--aspect-ratio` — `9:16` (default), `16:9`, `1:1`, etc.
 - `--generate-audio` — bool, default true. Set false for silent B-roll where VO is added post.
@@ -53,6 +56,8 @@ Credentials:
 - **No FAL key.** Routes through the GooseWorks FAL proxy (`media_proxy.py`, bundled) and bills the Ads agent, using `~/.gooseworks/credentials.json` (written by the `gooseworks` CLI). Your `cal_`/agent token is not a FAL key — the old direct-key path 401'd; that's why this capability was rerouted through the proxy.
 
 ## Decision Rules
+
+> **Read these with the face rule.** Rules 0, 0a, 0d and 3 (identity, wardrobe, seed continuity for a person) were learned on avatar runs before Seedance began refusing photoreal faces whatever model made them (2026-09-29). For a face-free shot keep the scene structure, setting and product rules; skip the identity and wardrobe parts. A shot with a person goes to `creator-h3` / `video-h3max`.
 
 **0. Prefer FEWER, LONGER calls with internal multi-scene prompting over many short calls.** Every new Seedance call drifts character, wardrobe, lighting, and background slightly — even with the same portrait reference. 5 short calls = 5 drift points the viewer registers as continuity breaks. Use the proven multi-scene template inside ONE 10-15s call to get internal hard-feeling cuts from a single render:
 
@@ -95,7 +100,7 @@ For confessional / single-sitting UGC, wardrobe should be IDENTICAL across all c
 
 **4. Single product per call (except hook).** Multi-product hero scenes within a single Seedance call degrade label fidelity. The exception is the hook/intro scene where all products appear together but no single label is hero.
 
-**5. 1080p for hero quality.** Skin texture and product label crispness scale noticeably with resolution. Use 720p only for budget/probe calls.
+**5. 720p by default; 1080p only when the customer asks** (16 Oct 2026). On a phone, after the platform recompresses it, the difference barely shows, and 1080p costs about twice as much. Seedance is only for shots with no face: it refuses photoreal faces, whatever model made them.
 
 ## Workflow
 
@@ -103,9 +108,9 @@ For confessional / single-sitting UGC, wardrobe should be IDENTICAL across all c
 python3 scripts/generate.py \
   --prompt "$(cat prompt-scene-1.txt)" \
   --output /path/to/scene-1.mp4 \
-  --image-url "https://<hosted>/portrait.png" \
   --image-url "https://<hosted>/product.png" \
-  --resolution 1080p \
+  --image-url "https://<hosted>/empty-set.png" \
+  --resolution 720p \
   --duration 15 \
   --aspect-ratio 9:16 \
   --generate-audio
@@ -150,6 +155,8 @@ Exit codes: `0` done · `1` other error · `3` policy rejection, or the same req
 Fast tier is ~20% cheaper but caps at 720p.
 
 ## Prompt template
+
+> **History, not a recipe for faces.** This template was written for a creator face as `@Image1`, which Seedance now refuses (2026-09-29). For a face-free shot, `@Image1` is the product and `@Image2` the empty set: keep the scene beats, the camera and the product lock, and drop the IDENTITY, WARDROBE, skin and lip blocks.
 
 The prompt is the single biggest quality lever. Use the proven BBE template structure:
 
@@ -209,9 +216,9 @@ Full template reference: `prompt-example.md` at the repo root, plus all four scr
 
 - Output MP4 exists, plays end-to-end, duration within ±0.5s of `--duration`.
 - Aspect ratio and resolution match the request.
-- Avatar identity matches `--image-ref` portrait reference (visual check).
+- No realistic face was sent or rendered (Seedance refuses them; a person goes to creator-h3).
 - Product label readable in the hero sub-scene (zoom in on the t=mid frame).
-- Lip-sync within ~100ms of the audio.
+- The product matches its reference photo (shape, label, colour).
 - No NSFW visual leaked (no water/lather/body-application unless explicitly approved).
 - `meta.json` records `gateway: "fal"`, `model: "bytedance/seedance-2.0/reference-to-video"`, and the FAL seed.
 
@@ -224,7 +231,7 @@ Full template reference: `prompt-example.md` at the repo root, plus all four scr
 | FAL response `status: failed`, `nsfw` reason | Body-application + female + water/lather hit classifier | STOP. Surface to caller. Rewrite sidestep beat as smell-test or fingertips-show. NEVER auto-retry. |
 | FAL 404 on endpoint path | Wrong endpoint slug | Use `bytedance/seedance-2.0/reference-to-video` exactly — no `fal-ai/` prefix. |
 | `invalid_request` on submit | `duration` sent as a **string** | Send an **int**: `"duration": 15` (enum {auto,4..15}). |
-| Product label garbled / wrong | Multi-image refs drifted, or 720p | Move to 1080p, ensure product ref is sharp + correctly cropped, add "label MUST be sharp and clearly readable" to the hero sub-scene. |
+| Product label garbled / wrong | Multi-image refs drifted, or a small label at 720p | Ensure the product ref is sharp + correctly cropped, add "label MUST be sharp and clearly readable" to the hero sub-scene, or put the real label on with an overlay. 1080p only when the customer asks for it. |
 | Mouth moving when not speaking | Default Seedance behavior | Add to Global Rules: "Lips remain CLOSED between dialogue beats — no mouth movement when not speaking." |
 | Cinematic slow pacing despite "iPhone selfie" prompt | Seedance prior leans cinematic | Strengthen anti-pattern block: "Casual real-time pace, NOT slow-motion, NOT dolly moves, NOT cinematic." Optionally post-process with `ffmpeg setpts=0.66*PTS` for 1.5x speed. |
 | Heavy freckles / blotchy skin | Block B language too aggressive | Use v8 soft-skin language. Drop "freckles prominent", "real-person imperfections". Replace with "tiny natural imperfections, subtle peach fuzz, faint fine lines". |

@@ -26,8 +26,8 @@ Hard rules:
 
 Usage:
     generate.py --prompt "..." --output PATH --image-url URL [--image-url URL ...]
-                [--resolution 1080p] [--duration 15] [--aspect-ratio 9:16]
-                [--generate-audio | --no-generate-audio] [--seed N] [--input-digest D]
+                [--resolution 720p] [--duration 15] [--aspect-ratio 9:16]
+                [--generate-audio | --no-generate-audio] [--seed N] [--input-digest D] [--query JSON]
 
 Exit codes: 0 done; 1 other error; 3 policy rejection (or an identical request that was
 already rejected); 4 NSFW / safety-checker rejection. (The MCP relay also exits 3 when it
@@ -81,7 +81,8 @@ def main() -> int:
     ap.add_argument("--output", required=True, type=Path)
     ap.add_argument("--image-url", "--image-ref", action="append", dest="image_urls", default=[],
                     help="PUBLIC reference image URL (repeatable). Order matters — first = @Image1.")
-    ap.add_argument("--resolution", default="1080p", choices=["480p", "720p", "1080p"])
+    ap.add_argument("--resolution", default="720p", choices=["480p", "720p", "1080p"],
+                    help="720p by default; 1080p only when the customer asks (16 Oct 2026)")
     ap.add_argument("--duration", type=int, default=15, choices=list(range(4, 16)))
     ap.add_argument("--aspect-ratio", default="9:16",
                     choices=["9:16", "16:9", "1:1", "4:3", "3:4", "21:9"])
@@ -100,7 +101,14 @@ def main() -> int:
                          "proxy re-attach to a running job instead of paying twice. After a "
                          "policy rejection it is a PERMANENT refusal key, so it must cover "
                          "every input.")
+    ap.add_argument("--query", default=None,
+                    help='GooseWorks query for this call as JSON. A custom video sends {"shot_scene": 3} '
+                         'once the approved review holds the shot\'s seedance override; 1080p also adds '
+                         '"upgrade_reason": "customer_asked", "upgrade_quote": "<their words>"')
     args = ap.parse_args()
+    query = json.loads(args.query) if args.query else None
+    if query is not None and not isinstance(query, dict):
+        sys.exit("ERROR: --query must be a JSON object")
 
     if not args.image_urls:
         sys.exit("ERROR: at least one --image-url is required for reference-to-video.")
@@ -133,7 +141,7 @@ def main() -> int:
         # request_id — resume it (media-proxy resume.py), never resubmit (GOOSE-3729).
         # A request the provider already refused raises FalPolicyRejection before any
         # network call (media_proxy's rejected-request ledger).
-        result = _fal_run(MODEL, payload, input_digest=args.input_digest)
+        result = _fal_run(MODEL, payload, input_digest=args.input_digest, query=query)
     except FalPolicyRejection as e:
         return _report_rejection(e, args.output)
     except RuntimeError as e:

@@ -32,6 +32,7 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitFfmpeg, kitPieceName, kitStopIfAborted } from '../../_lib/part.mjs';
+import { kitTierDefault } from '../../_lib/tier.mjs';
 import { KitPromptGap, kitLoadTemplate, kitPromptJoin, kitScenePrompt } from '../../_lib/prompt.mjs';
 import { kitNamedProducts, kitPickScenes } from '../../_lib/scene-match.mjs';
 import { kitStillAnchorMembers, kitStillAnchorPrompt, kitStillCastFiles, kitStillJobs, kitStillOutputs, kitStillPrompt, kitStillRefs, kitStillStrip, kitStillTemplate, kitStillTrimJobs, kitStillTrimProducts, kitStillWantsStrip, kitStillWithoutBorders } from '../../_lib/scene-stills.mjs';
@@ -44,7 +45,6 @@ const GI_PROMPT_MIN = 2;
 const GI_PROMPT_MAX = 32000;
 const GI_AT_ONCE = 4;
 const GI_DEFAULT_SIZE = '1088x1920';
-const GI_DEFAULT_QUALITY = 'high';
 const GI_SCENE_ONLY = ['scenes', 'products', 'pick', 'skip_first', 'skip_last', 'anchor', 'multi_ref', 'restore', 'relight', 'require_scene_tags', 'require_product_refs', 'borders'];
 const GI_NOT_IN_SHOTS = ['images', 'cast', 'cast_size', 'anchor', 'multi_ref', 'require_scene_tags', 'require_product_refs', 'borders'];
 const GI_MAX_REFS = 10;
@@ -600,7 +600,7 @@ export async function run(inputs, ctx) {
   const manifest = await kitCheckInputs(ctx, inputs);
   const mode = inputs.mode || (inputs.scenes ? 'scenes' : inputs.images ? 'images' : inputs.cast ? 'cast' : 'images');
   const size = inputs.size || GI_DEFAULT_SIZE;
-  const opts = { model: inputs.model || EDIT, size, cast_size: inputs.cast_size || size, quality: inputs.quality || GI_DEFAULT_QUALITY };
+  const opts = { model: inputs.model || EDIT, size, cast_size: inputs.cast_size || size, quality: inputs.quality || kitTierDefault(inputs, 'image_quality') };
   if (mode === 'shots') return giShots(inputs, ctx, manifest, opts);
   if (mode === 'scenes') return giScenes(inputs, ctx, manifest, opts);
   if (mode === 'cast') return giCast(inputs, ctx, manifest, opts);

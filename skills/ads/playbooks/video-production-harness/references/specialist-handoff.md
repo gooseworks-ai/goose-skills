@@ -14,7 +14,7 @@ Fetch current slugs; these are starting points.
 
 | Family | Package to inspect | What comes back and what to check |
 | --- | --- | --- |
-| Exact-script UGC creator | `creator-h3@1.6.0` on the kit path; [[composes::create-creator-takes-h3]] 2.6.0 (superseded; agent-built path; its make_character.py pairs the voice, `--no-voice-pair` for native speech, pair_voice.py `--accept-nearest`). Inspect its first_take, remaining_takes and assemble schemas; `run_takes` defaults to dry run. | The first take stays pending until hash-bound acceptance; assembly needs reviewed sources and real word timing. |
+| Exact-script UGC creator | `creator-h3@1.8.0` on the kit path; [[composes::create-creator-takes-h3]] 2.9.0 (superseded; agent-built path; its make_character.py pairs the voice, `--no-voice-pair` for native speech, pair_voice.py `--library-searches`, `--designed` and `--accept-nearest`, with `nearest` across heritage when none shares it; take reviews may be measured). Inspect its first_take, remaining_takes and assemble schemas; `run_takes` defaults to dry run. | The first take stays pending until hash-bound acceptance; assembly needs reviewed sources and real word timing. |
 | Product demo from owned media | [[composes::footage-cutlist]]: survey, preview and cut take sources and beats with source/in/out/fit/why. | Right variant, visible action during the claim, crop, source time mapping, real duration. A diagram or claim card is not feature proof. |
 | Branded graphics and motion | [[composes::goose-graphics]] gives HTML/static composition, not a video renderer. Add a motion capability or the FFmpeg motion path for approved stills. | A rendered motion clip and timeline, exact text/logo, font, safe space, reading time. A PNG export is not a video. |
 
@@ -32,7 +32,7 @@ Record before each specialist runs:
 - Package slug/version/hash, tool and model, approval revision, budget.
 - Expected outputs: media, editable sources, measured timings, job provenance.
 
-Review the output against the creative contract and these inputs, not the specialist's success status. Probe the bytes; check duration, copy, proof, action, product, scale and identity; listen to each spoken output when your tools can, otherwise record `measured`. Save pass, needs_revision or incomplete per duty. A stale source, wrong beat, missing word, wrong variant or unconfirmed provider URL blocks assembly.
+Review the output against the creative contract and these inputs, not the specialist's success status. Probe the bytes; check duration, copy, proof, action, product, scale and identity; listen to each spoken output when your tools can, otherwise record `measured`. Save pass, needs_revision or incomplete per duty, graded by [check severity](check-severity.md). A stale source or unconfirmed provider URL (broken data) blocks assembly; a missing word or wrong variant is `must_fix`; a wrong beat is `ask`.
 
 ## Resume and repair
 
