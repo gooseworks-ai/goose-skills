@@ -33,7 +33,7 @@ function providerContract(body) {
 
 test('new part declares only H3 Max and preserves the scene recipe output contract', () => {
   assert.equal(manifest.id, 'video-h3max');
-  assert.equal(manifest.version, '1.4.0');
+  assert.equal(manifest.version, '1.5.0');
   assert.deepEqual(manifest.needs.models, [{ provider: 'fal', model: 'minimax/h3-max/reference-to-video' }]);
   assert.deepEqual(manifest.inputs.properties.mode.enum, ['reference', 'image_to_video', 'take', 'takes', 'stills']);
   assert.deepEqual(manifest.inputs.properties.resolution.enum, ['480P', '768P', '1080P']);
@@ -402,4 +402,23 @@ test('beat windows and take groups retain authored planning limits', () => {
   for (const seconds of [3, 4.5, 16, '5', null]) assert.throws(() => h3SceneTakeDuration(seconds), /whole seconds from 4 to 15/);
   const picked = ['a', 'b', 'c'].map((id, index) => ({ scene: { id }, index }));
   assert.deepEqual(h3SceneTakeGroups(picked, 2).map((g) => g.map((p) => p.scene.id)), [['a', 'b'], ['c']]);
+});
+
+test('1.5.0 mode take starts on first_frame and ends on last_frame, both fitted; refusals are free', { skip }, async () => {
+  const w = work();
+  const first = await photo(w, 'first.png');
+  const last = await photo(w, 'last.png');
+  const inputs = await ugcInputs(w, { first_frame: first, last_frame: last, resolution: '1080P' });
+  const { ctx, orders } = ctxFor(inputs);
+  await mod.run(inputs, ctx);
+  assert.equal(orders.length, 1);
+  const body = orders[0].body;
+  assert.ok(body.image_url && body.end_image_url, 'both frames are sent');
+  const size = await probe(body.image_url.path);
+  assert.deepEqual([size.width, size.height], [1080, 1920], 'fitted to the 1080P 9:16 canvas');
+  assert.deepEqual(body.reference_image_urls, [inputs.cast[0].image, inputs.products[0].images[0]], 'references are still sent');
+  const only = makeCtx({ partDir: dir, line: nativeLine() });
+  await assert.rejects(mod.run(await ugcInputs(w, { last_frame: last }), only.ctx), (e) => refused(e) && /last_frame needs first_frame/.test(e.message));
+  await assert.rejects(mod.run({ ...(await ugcInputs(w)), mode: 'takes', takes: { count: 1 }, first_frame: first }, only.ctx), (e) => refused(e) && /first_frame works only in mode take/.test(e.message));
+  assert.equal(only.orders.length, 0);
 });

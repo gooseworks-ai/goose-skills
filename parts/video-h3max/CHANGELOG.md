@@ -3,6 +3,12 @@
 This part provides H3 Max scene clips and timed takes for recipes that need native dialogue or first/last
 frames. Published `video-seedance-2` and `creator-h3` versions are unchanged.
 
+## 1.5.0
+
+- Mode take: `first_frame` (the take starts on it) and `last_frame` (it ends on it; needs `first_frame`), both fitted
+  by cover, the references still sent. A composed first frame fixes where creator and product sit; a last frame with
+  the use done keeps a covered part (a cap) from being redrawn (GOOSE-4034). Refused outside mode take.
+
 ## 1.4.0
 
 - `end_on_start_tags` (mode stills): scene tags whose clips end on their own first frame (`end_image_url`

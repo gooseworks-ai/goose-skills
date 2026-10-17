@@ -13,7 +13,7 @@ import { KitPromptGap, kitLoadTemplate, kitPromptJoin, kitScenePrompt } from '..
 import { kitNamedProducts, kitPickScenes, kitTagKey } from '../../_lib/scene-match.mjs';
 import { h3SceneRunTakes, h3SceneTakeJobs } from './takes.mjs';
 import { H3SCENE_MODEL, h3SceneProviderBody, h3SceneProviderPrompt, h3SceneProviderVideo, h3SceneWithLightLock } from './provider.mjs';
-import { h3ScenePrepareFrames, h3ScenePrepareReferences } from './frames.mjs';
+import { h3SceneFitStills, h3ScenePrepareFrames, h3ScenePrepareReferences } from './frames.mjs';
 import { H3STILLS_ONLY, h3StillsRun } from './stills.mjs';
 
 const H3SCENE_PROMPT_MAX = 12000;
@@ -30,6 +30,8 @@ const H3SCENE_TAKE_ONLY = {
   words_per_second: ['take', 'takes'],
   max_words: ['take', 'takes'],
   pronunciations: ['take', 'takes'],
+  first_frame: ['take'],
+  last_frame: ['take'],
 };
 // Context inputs make clip placeholders filled or refused. A plain clip list
 // with no plan or template context keeps literal braces as authored.
@@ -168,6 +170,17 @@ async function h3SceneRunTakeMode(inputs, ctx, manifest) {
     throw ctx.error('bad_input', String((err && err.message) || err));
   }
   await h3ScenePrepareReferences(ctx, jobs);
+  // 1.5.0: mode take may start on a composed first frame and end on a last one (both fitted by cover, as mode
+  // stills fits its stills). A first frame fixes where the creator and the product sit; a last frame showing the
+  // use done (a cap open) gives H3 both states of a small part a hand covers, so it does not redraw it.
+  if (inputs.last_frame && !inputs.first_frame) throw ctx.error('bad_input', 'last_frame needs first_frame');
+  if (inputs.first_frame) {
+    const fit = { start: inputs.first_frame, who: 'first_frame' };
+    const fitEnd = inputs.last_frame ? { start: inputs.last_frame, who: 'last_frame' } : null;
+    await h3SceneFitStills(inputs, ctx, fitEnd ? [fit, fitEnd] : [fit]);
+    jobs[0].start = fit.start;
+    if (fitEnd) jobs[0].end = fitEnd.start;
+  }
   return kitCheckOutputs(ctx, manifest, await h3SceneRunTakes(inputs, ctx, jobs));
 }
 
