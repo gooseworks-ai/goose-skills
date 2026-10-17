@@ -1,6 +1,6 @@
 # Classify and route
 
-Load at steps 5–6. Risk first: before classifying anything else, pull out every safety, health, legal, claims or misinformation item and triage it (`crisis-triage.md`).
+Load at steps 4–5. Risk first: before classifying anything else, pull out every safety, health, legal, claims or misinformation item and triage it (`crisis-triage.md`).
 
 ## Sentiment classes
 
@@ -12,6 +12,14 @@ Load at steps 5–6. Risk first: before classifying anything else, pull out ever
 | neutral-informational | mentions without a view (a haul, a list, news) | most brand mentions are this |
 | question | asks something ("is it OK for a dog with chicken allergies?") | questions are sales and content signals |
 | unclear-sarcasm | tone cannot be resolved from the text and thread | never guess; never infer from emoji alone |
+
+**Who is speaking** (tag every item, before counting):
+- **independent** — counts as a mention.
+- **owned** — the brand's accounts, its founder and execs: never a mention (their comment sections are mined).
+- **affiliated** — paid advisers and ambassadors, gifted or PR posts ("thanks for sending"), affiliate and shop links, retailers, fan accounts reposting the founder's promotion: shown in the report, never counted as independent mentions or outliers; gifted posts are flagged.
+- A famous founder's name counts only with a topic word ("<founder> skincare"); say the count is topic-filtered.
+
+**Undated items** (tag pages and discover pages often hide dates): listed as "date unknown", triaged for risk, never counted and never in week-over-week change.
 
 Report counts with n. No percentages below about n=30. Net sentiment is "positive n vs negative n", never a score. Every theme needs at least two verbatim quotes with links; a theme with fewer is a signal, marked low confidence.
 
@@ -40,7 +48,7 @@ Report counts with n. No percentages below about n=30. Net sentiment is "positiv
 
 ## Share of voice
 
-Only when brand and rival counts come from the same method, platforms and caps (for example both from proxy searches): brand mentions vs each competitor's, as counts with n and the line "on covered surfaces only". Otherwise write "not comparable this week (different sources)". Never as a market-share claim.
+Only when brand and rival counts come from the same method, platforms and caps (both from the free pass's same searches, or both from paid reads): brand mentions vs each competitor's, as counts with n and the line "on covered surfaces only". Otherwise write "not comparable this week (different sources)". Never as a market-share claim.
 
 ## Privacy
 

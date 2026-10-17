@@ -21,4 +21,6 @@ description: Hidden atom of work-with-creators. Writes one one-page brief and on
 
 **Writes:** `creators/<date>/briefs/<handle>.md` (brief + first-message drafts).
 
+**When:** in the free draft, for the top 2–5 picks (fewer when the free read was thin — a short brief for a well-read pick beats long briefs for guesses) (claim lines awaiting sign-off marked so); for the rest after the founder approves names.
+
 **Rules:** one brief per creator. Never invent an offer, a claim, a code or a price. Never send anything — the human sends every message.

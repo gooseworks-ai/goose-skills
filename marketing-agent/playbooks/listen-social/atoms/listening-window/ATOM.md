@@ -1,6 +1,6 @@
 ---
 name: listening-window
-description: Hidden step of listen-social. The week, file and de-duplication rules - which week is counted, which items are triaged, how files are named, how a re-run merges, how skipped weeks and open crises carry forward, and how far each search pages. Loaded at steps 3, 4 and 11 of listen-social and by its standing run; never listed.
+description: Hidden step of listen-social. The week, file and de-duplication rules - which week is counted, which items are triaged, how files are named, how a re-run merges, how skipped weeks and open crises carry forward, and how far each search pages. Loaded at steps 3 and 9 of listen-social and by its standing run; never listed.
 ---
 
 # listening-window
@@ -8,6 +8,7 @@ description: Hidden step of listen-social. The week, file and de-duplication rul
 ## The two windows
 
 - **Counting week** = the last completed Monday–Sunday week in the brand's timezone. Every count and week-over-week change uses it.
+- **"This week" asked mid-week:** the counts are the last completed week, and the days since Monday are shown in a "This week so far (<Mon>–<today>)" block — items and risks, not counted. The so-what says it in one line, so the founder doesn't read the report as a week old.
 - **Triage window** = from that Monday up to the moment of the run. Every item in it is triaged for risk; an item after Sunday is labelled "this week, not in counts" and is never dropped from triage.
 
 ## File names (all in `social/listening/`, coworker scope; `brands/<brand-slug>/` prefix when there is no coworker)
@@ -52,7 +53,11 @@ Every item with a severity has `status: open` until the human closes it. Each ru
 
 `id`, `link`, `platform`, `date`, `author`, `reach`, `engagement`, `excerpt`, `query`, `class`, `route`, `in_counts`, `severity` (if any), `status` (open | closed, for items with a severity). Read before write — `file_write` replaces the file.
 
-## How far each search pages
+## Free-pass counts
+
+Counts from the free pass (web search and public pages) are **samples**: label them "free-pass sample" in the header and tables. Week-over-week change is shown only when both weeks used the same method; otherwise "method changed — no change shown". Items found are still de-duplicated, routed and triaged exactly like paid ones.
+
+## How far each search pages (paid top-up)
 
 Use the narrowest recency option that still reaches `<D>` (a run more than 6 days after it needs the month option; keys in `../../../../atoms/spend-gate/proxy-endpoints.md`).
 - **Date-sorted** (TikTok keyword search sorted by date, Reddit sorted new): page until the oldest item is older than `<D>` or the row's cap is hit.

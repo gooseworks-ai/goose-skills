@@ -214,3 +214,37 @@ Carried after round 6 from research-audience R8-m3 (minor): the first-run price 
 
 2026-10-16 final contract check: skill.meta.json `atoms` now lists only this folder's atoms; shared atoms moved to `shared_atoms` as plain slugs.
 2026-10-16 orchestrator ruling: learnings use the new save-learning source `[creators YYYY-MM-DD]` (SKILL.md write-back; outcomes-ledger step 5); bare `atoms/<shared>` paths converted to file-relative form.
+
+## Research-pattern rewrite (2026-10-17, AGENTS §8 "Research playbooks: the shared pattern")
+
+**Why.** A Sonnet dry run (Personal Day: "Which creators are worth paying to promote our acne serum, at what price?") opened with ~10 questions (budget, unit cost, AOV, target CAC…), never used web search, and showed no names or prices until after two credit yeses.
+
+**What changed (rewrite, not patch).**
+- SKILL.md rebuilt on the pattern: free pass first, ask nothing (the one allowed first question: real person vs AI-made), report once. Discovery and first vetting run on free sources — the brand's and rivals' posts and collabs, rivals' partnership ads in the Meta Ad Library, web search, and TikTok / Instagram / YouTube public pages read as a person would — to a draft shortlist with public numbers, a rough price range and a deal call per pick.
+- Goal, budget and platforms are assumed from the brand and stated; budget becomes three wave sizes in the report; the message then asks only what changes the answer (budget, gift unit cost, names to strike, claims sign-off) and **one** credit yes to vet deeper.
+- **For you** per pick ("this creator's format fits your serum because…; what they'd make; the claim behind it or 'you'd need proof of X first'") and **You vs them** (rivals' creator programmes vs ours; don't follow the herd).
+- The deliverable is `report.md` with timely openings, assumptions, shortlist, You vs them, wave 1, near-misses and what we could not read; briefs and first messages for the top picks in the first delivery, the rest after names are approved.
+- vetting.md §15: what each platform shows on public pages; data-sources.md split into free pass and paid top-up; atoms rewritten free-first. Tests rewritten around the four failure modes.
+- Kept: claims-gate, save-to-brain, outcomes-ledger, wave-1 criteria, first messages, `[creators …]` learnings, D4 boundary.
+
+**Sonnet re-run 1 (WebSearch + WebFetch only):**
+| Failure mode | Result |
+|---|---|
+| Stopped early / asked first | **Pass** — research before any question; one closing message |
+| No web search | **Pass** — ~39 calls; but TikTok pages failed to fetch and Instagram gave followers only |
+| Procedure over craft | **Partial** — research reads as research; the roster and brief scale felt heavy for three thinly-read creators |
+| Chat summary instead of a document | **Fail as delivered** — the report was written in full, but the test harness blocks subagent `.md` writes, so no file landed (a harness limit, not the playbook; re-run 2 writes through Bash) |
+
+It shortlisted 3 real creators (views read for 1, hidden for 2), caught that the server's "approved" 4.9-star claim is 4.5 on the product page, and kept efficacy lines out of briefs.
+
+**Fixed from re-run 1:** a fetch-only fallback (public creator-stats pages, post snippets, YouTube, media kits — labelled; never a top post as the median) · conditional price ranges when typical views weren't read · verify every handle on its profile before listing (roundups gave two wrong handles) · rivals' collabs checked for category fit (a kids' interview series and a celebrity were tagged) · free-pass funnel sized for a fetch-only host (5–12 well-read finalists) · roster columns filled only where read · briefs for 2–5 picks when the read is thin.
+
+**Sonnet re-run 2 (fixes applied, files written through Bash):**
+| Failure mode | Result |
+|---|---|
+| Stopped early / asked first | **Pass** — 43 calls of research, then one message |
+| No web search | **Pass** — 16 searches, 27 fetches; TikTok still unreachable by fetch (named as a gap; the top-up fills it) |
+| Procedure over craft | **Pass** — the report opens with a reasoned "Do this first", reads rivals' creator spend against the brand's own celebrity voice, prices on conditional ranges with the math, and briefs keep the esthetician to technique, not promises |
+| Chat summary instead of a document | **Pass** — `report.md` (~19 KB) with sources and "what we could not read", plus roster.csv, near-misses.csv, three briefs with first messages |
+
+It caught that the brain's "approved" 4.9-star rating belongs to a different product (the serum is 4.5 / 95), and offered three claim lines for sign-off instead of using any. **Fixed from re-run 2:** the name-safety search is now always part of the free pass; a dated public page beats a contradicting brain item, flagged in the report. **Accepted:** a fetch-only host cannot read TikTok views — the report says so and the one credit yes fills it; this is the honest limit, not a playbook gap.

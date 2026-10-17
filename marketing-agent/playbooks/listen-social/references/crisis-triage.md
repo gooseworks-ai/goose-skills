@@ -1,6 +1,6 @@
 # Crisis triage
 
-Load at step 5 (risk first) and use at step 9. Any item that could hurt someone or the brand is triaged the moment it is seen — not after the rest of the pass.
+Load at step 4 (risk first). Any item that could hurt someone or the brand is triaged the moment it is seen — not after the rest of the pass.
 
 ## Severity
 

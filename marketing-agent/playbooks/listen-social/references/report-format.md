@@ -1,16 +1,16 @@
 # Report format
 
-Load at steps 11–12. The header lines are parsed by analyze-performance and the next run — keep their shape exactly. File names, the counting week, the baseline, re-runs and the items file are in `../atoms/listening-window/ATOM.md`; `<D>` is the counting week's Monday.
+Load at steps 8–10. The header lines are parsed by analyze-performance and the next run — keep their shape exactly. File names, the counting week, the baseline, re-runs and the items file are in `../atoms/listening-window/ATOM.md`; `<D>` is the counting week's Monday.
 
 ## social/listening/<D>-report.md — full form
 
 ```markdown
 Do this first, because… <one sentence: the single most important action this week and why — or "nothing needs action this week">
 Week of: <D> to <Sunday> (<timezone>) · Run: <run date and time>[; <re-run date and time>] · Triage covered up to: <run date and time> · Trends read: <run date> · valid to: <latest post-by> · Watchlist: v<n> · Compared against: <prior counting week's report date | <date> (not the prior week) | baseline week>
-Mentions: <n | ≥n (cap hit: Q<n>) | ≥n (stopped: Q<n>) | not searched (free-only run)> (Δ <+/-n> vs last week; none when the count is a floor, the baseline is not the prior week, or it is the baseline week) · Positive <n> · Negative <n> · Mixed <n> · Neutral <n> · Questions <n> · Unclear <n>
-Share of voice (covered surfaces, same method): <brand> <n> · <rival> <n> | not comparable this week (different sources) | not measured (free-only run)
+Mentions: <n (free-pass sample) | n | ≥n (cap hit: Q<n>) | ≥n (stopped: Q<n>)> (Δ <+/-n> vs last week; none when the count is a floor, the baseline is not the prior week, the method differs from last week's, or it is the baseline week) · Positive <n> · Negative <n> · Mixed <n> · Neutral <n> · Questions <n> · Unclear <n>
+Share of voice (covered surfaces, same method): <brand> <n> · <rival> <n> | not comparable this week (different sources) | sample only (free pass)
 Risk flags: S1 <n> · S2 <n> · S3 <n> · open from earlier weeks <n>
-Credits: <spent> of <approved ceiling> · Data freshness: own and rival posts synced <date>
+Credits: <none (free pass) | spent of approved ceiling> · Data freshness: own and rival posts synced <date>
 Links: <all opened | Act-now + 5 opened | as returned, unchecked>
 # Listening report — <Brand> — <D>
 
@@ -19,6 +19,20 @@ Links: <all opened | Act-now + 5 opened | as returned, unchecked>
    Hold list (S1 only): <paid ads, scheduled posts, promo emails touching the product — for the human to pause>
 
 ## So what (five lines max)
+Line 1 when the free pass couldn't read most of the default platforms: "I could read <platforms>; I couldn't read <platforms> — nothing bad in what I could read is not the same as nothing bad." The paid top-up for those platforms is then the first decision in the closing message.
+
+## This week so far (<Mon>–<today>, not counted — only on a mid-week run)
+
+## For you (the 3–5 things to do, ranked — each points to its row below; rows keep their own one-line "For you", never repeated here word for word)
+For you: fits — <why, from our facts> → do: <post Y on <platform> · reply to these 3 threads (R-01–R-03) · brief a creator on this format · fix the FAQ> · claim: "<approved line>" (or "<line>" — needs your sign-off; or "you'd need proof of <X> first") · who: <organic posts / the founder / support / creators / static ads / video ads>
+Plain words for "who", never a playbook or tool name. Facts-only asks skip this. With an empty brand brain: "I can't tell what fits you yet — I can learn your brand first."
+
+## You vs them
+| | What people say (theme, n) | Evidence (links) | For you |
+|---|---|---|---|
+| Ahead — say it louder | | | |
+| Behind | | | |
+| Everyone sounds the same | | | <what to say instead — people's words over rivals' habits> |
 
 ## Coverage
 | surface | status | why |
@@ -32,7 +46,7 @@ Notable items:
 |---|---|---|---|---|---|---|---|
 
 ## Comment themes
-| theme (their words) | n | last week | direction | quotes (links) | so what · who acts |
+| theme (their words) | n | last week | direction | quotes (links) | For you |
 |---|---|---|---|---|---|
 
 ## Competitor conversation
@@ -63,7 +77,9 @@ Same seven header lines and title, then only:
 
 ```markdown
 ## Act now (0–3 items, or "none")
-## So what (two or three lines)
+## So what (two or three lines; line 1 is the coverage line when most platforms couldn't be read)
+## For you (1–3 lines, or "nothing to act on this week")
+## You vs them (one line each: ahead · behind · same — or "not enough to compare this week")
 ## Coverage (one line per surface)
 ## This week's items
 | link | date | author (reach) | class | route | note |
@@ -81,7 +97,7 @@ One block per draft with the fields in `reply-drafting.md`, ordered: S1, S2, the
 ## Standing run (only on a yes)
 
 Follow `../../../atoms/spend-gate/ATOM.md` branch C. Before asking, explain the options and the cost honestly:
-- **Free sources only** — own and rival posts, managed-account metrics, the research runs' discovered posts, trends from those. No data spend; mentions by others are not searched (the header says so).
+- **Free sources only** — web search and public pages (if the scheduled worker has them), own and rival posts, managed-account metrics, the research runs' discovered posts. No data spend; counts are samples (the header says so), and without web tools mentions by others are not searched.
 - **Free sources plus paid reads** — up to a standing per-run ceiling the human names in the yes ("up to N credits a run"), only on kinds of read with a logged price; the run stops at it. GooseWorks does not enforce this ceiling on scheduled jobs today, so it lives in the prompt — say so.
 - Either way, the scheduled run's own cost is not priced in advance; after its first run, show the credits from `gooseworks:automation_list`.
 - The run writes a report; it is not an alert. Nobody sees an S1 until someone opens it.
@@ -94,7 +110,7 @@ On a yes (needs a coworker; without one, say so and keep running on ask):
 Agent prompt:
 
 ```text
-Weekly social listening for brand <brand_id>. Method version <version>, copied <date>. Follow social/listening/method/SKILL.md steps 1 to 11 in full, with its references and atoms in that folder (shared atoms are under method/shared/): at step 1 read watchlist.md and do not change it; at step 3 plan inside the spending rule below and ask for no yes (free-only: skip step 3); skip step 12 and the learnings offer. Do Before you start items 2–3 with this brand_id (no get_started, ask nothing — missing answers come from the watchlist or go under Gaps); at step 3 search untracked rivals as normal queries, never offer to track them.
+Weekly social listening for brand <brand_id>. Method version <version>, copied <date>. Follow social/listening/method/SKILL.md steps 1 to 9 in full, with its references and atoms in that folder (shared atoms are under method/shared/): at step 1 read watchlist.md and do not change it; at step 3 run the free pass, then paid reads only within the spending rule below, asking for no yes; skip step 10 (no questions, no learnings offer). Do Before you start item 2 with this brand_id (no get_started, ask nothing — missing answers go under Gaps); search untracked rivals as normal queries, never offer to track them.
 Spending rule: <"Free sources only: never call a tool that spends credits." | "You may spend up to <N> credits this run on paid reads, only on kinds of read with a logged price in research/credits-log/; log every charge there; stop at the ceiling. It covers every read and the crisis reserve; ask for no further yes.">
 Rules that never bend: never post, reply, comment, DM, hide, delete, report or contact anyone; claims only as the claims gate allows; holding statements per crisis-triage.md, never suggesting a cause.
 Files: social/listening/<D>-report.md, <D>-replies.md, <D>-items.jsonl, where <D> = this counting week's Monday; merge, never overwrite, if they already exist. Save only the report as a brand document (save-to-brain, keep-history).

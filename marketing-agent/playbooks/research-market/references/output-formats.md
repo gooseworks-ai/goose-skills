@@ -1,6 +1,8 @@
 # Output formats
 
-Load at steps 4–10. Every file starts with header lines downstream playbooks parse.
+Load at steps 3–9. Every file starts with header lines downstream playbooks parse.
+
+Brand-document titles and tags (save-to-brain): `Market read — <Brand> — <D>` (`research-market`, `market-read`, keep-history) · `Voice-of-customer bank — <Brand> — <D>` (`research-market`, `voc-bank`) · `Buyer segments — <Brand> — <D>` (`research-market`, `buyer-segments`) · `Demand read — <Brand> — <D>` (`research-market`, `demand-read`) — the last three supersede.
 
 **The examples are for a fictional fresh dog-food brand, on purpose — never copy their segments, themes or words.** Every segment name, trait and theme in real output must trace to this run's own `T-` and `V-` ids.
 
@@ -96,16 +98,34 @@ Unknowns and how to close them: <e.g. "export Search Console queries", "Google A
 | name | type (direct / indirect / DIY / do-nothing / professional) | mentions (quote ids) | switch direction (to us / from us / both) | price buyers quote | tracked? | recommend tracking? | source if a candidate |
 |---|---|---|---|---|---|---|---|
 
-## <YYYY-MM-DD>-read.md (the hand-over)
+## "For you" — the line that closes every finding
 
-1. **First line:** "Do this first, because…" — lead with segment <S1> and its job "<job>", saying <what to lead with>, because <the evidence in one clause>. Or, in a cold start: "Cold start: too little evidence from your own customers — do this first: run the interview kit, because …". Under it: `Next refresh: <date> or on <trigger>`.
-2. **Method note:** sources, n read, date range, star mix, reachability gaps, link re-check result, credits spent vs approved (plain words; the endpoint log stays in `research/credits-log/<YYYY-MM>.md`).
-3. **What's new or surprising** — at least one finding that contradicts or extends the founder's stated belief (quoted at the top of the run).
-4. **Segments at a glance** — the priority table (below), one line each, plus the anti-persona.
-5. **Top themes** — 5–8, with counts and one quote each.
-6. **Competitors and alternatives** — the table above.
-7. **Demand read** — the lines above.
-8. **For the founder** — product issues found.
-9. **Recognition test** — the four questions and the founder's verbatim answers.
-10. **What was saved where** — paths, document titles, proposals waiting for acceptance.
-11. **Next** — what to do with this first, in plain words ("look at what rivals are running against this segment", "plan the campaign around S1"), and the refresh trigger. Never name a playbook to the marketer.
+On each top theme, segment, alternative and "You vs them" row (skipped for facts-only asks):
+- `For you: fits — <why, from our facts> → make: <format> · hook: <direction, in buyer words> · product: <ours> · claim: "<approved line>" (or "<line>" — needs your sign-off; or "you'd need proof of <X> first") · who: <static ads / video ads / organic posts / creators / landing page / email / the founder / the campaign plan>`
+- `For you: doesn't fit — <why, from our facts>`
+Plain words for "who", never a playbook or tool name; the report recommends and never makes the asset. Buyers' words outweigh what rivals do: when every rival says the same thing, that is a reason to weigh something else. With an empty brand brain: "I can't tell what fits you yet — I can learn your brand first."
+
+## You vs them (section of the read)
+
+| | What buyers say (theme, n) | Evidence (quote ids, links) | For you |
+|---|---|---|---|
+| Ahead — say it louder | <praise for us that buyers don't give the alternatives> | | |
+| Behind | <complaints about us, or praise the alternatives get and we don't> | | |
+| Everyone sounds the same | <what every option promises and buyers shrug at> | | <what to say instead, in buyer words> |
+
+## <YYYY-MM-DD>-read.md (the report)
+
+1. **First line, always:** "Do this first, because…" — lead with segment <S1> and its job "<job>", saying <what to lead with>, because <the evidence in one clause>. In a cold start: "Do this first, because… only <n> of the <N> items I read speak first-hand about your own buyers: run the interview kit with 5–8 recent buyers, starting with <provisional S1>." Segments are then marked provisional. Under it: `Next refresh: <date> or on <trigger>`.
+2. **What I read:** news checked, sources and n read per source (own · rivals' · category), date range, star mix, link re-check result, the founder's stated belief (quoted, or "none on record"), and a **couldn't read** list (source — why — what it would add). Credits spent only if a top-up ran.
+3. **What's new or surprising** — at least one finding that contradicts or extends the stated belief.
+4. **Segments at a glance** — the priority table, one line each, the anti-persona, each segment's "For you".
+5. **Top themes** — 5–8, with counts, one quote each and a "For you" line.
+6. **You vs them** — the table above.
+7. **Competitors and alternatives** — the table above, with "For you" where a switch or a gap is actionable.
+8. **Demand read** — the lines above.
+9. **For the founder** — product issues found.
+10. **Recognition check** — the founder's answers, added verbatim after they reply.
+11. **What was saved where** — paths, document titles, the audience proposal waiting for acceptance.
+Never name a playbook, our own tools or our data vendors to the marketer; review sites and communities are sources and are named.
+
+When the brand's own facts contradict each other (two prices, two customer counts), list them under "For the founder" and use none of them in a "For you" claim.

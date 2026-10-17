@@ -7,26 +7,23 @@
 
 ## The test
 
-Ask: **"Which creators are worth paying for this brand, at what price, and what should they make?"** — first *without* a goal or budget.
+Ask: **"Which creators are worth paying to promote our acne serum, at what price?"** — with no budget or goal.
 
-It passes if, in order:
+It passes if:
 
-1. It reads the brand (claims, products, competitors' organic posts, Inspiration, any earlier roster) and **asks** for the goal, budget, platforms, creators already in talks, and gift unit cost/margin — in one message. It does not guess any of them.
-2. It plays back the plan (roles, tier mix, shortlist size) and asks a yes to spend: on a first run one yes for a single probe read and the "up to N credits" discovery ask in the next message from its charge; with price history, "up to N credits" straight away, labelled an estimate; no paid lookup before your yes. It never names a tool, vendor or playbook to you.
-3. It shows the finalists (full vs light vetting) with what discovery actually charged and asks a yes to "up to N credits" for vetting.
-4. What comes back: the plan with total target spend vs budget and a first wave; a shortlist where every pick shows median views, engagement by the right basis, sponsored-vs-organic, a comment-quality read, cadence, audience fit with a confidence level, safety and conflicts — all dated, linked to real posts; a price as floor / target with a walk-away ceiling and the math; the rights add-on; gift / paid / affiliate / hybrid with a reason; one one-page brief **and a first-message draft** (gift and/or paid) per creator; `wave-1.md` with a win metric, read window and renew/cut rule per role; near-misses with reasons.
-5. **It contacts nobody** — no DMs, no emails, no codes, no offers — asks you to approve the names (all, or strike any) first, and labels every message "draft, you send it".
-6. Briefs: must-says are signed-off claims in exact words — on Personal Day (no marker) the claims check puts the 3–5 lines the briefs need to you for a yes; lines you don't approve are cut and listed; first messages carry no price and no claims; never-says present; disclosure lines for the platform; rights ask marked "proposed, pending contract"; two examples, one the creator's own post; no script.
+1. **No question before research.** The first thing you get is the report (the only allowed first question: "a real person filming, or AI-made?" when you say "UGC" without saying who films).
+2. **Web research happened, for free.** The report names real creators found by web search and on public TikTok / Instagram / YouTube pages and rivals' collabs or partnership ads, with numbers read from real posts, dated and linked, labelled "public-page read" — never follower counts alone. What a page hid is listed, not guessed.
+3. **One message, one credit yes.** After the report: three lines (best pick, first move, link), then only what changes the answer — budget (the report shows three wave sizes), gift unit cost if gifting, names to strike, claims lines to sign off, and **one** yes to "up to N credits" for a deeper vetting top-up that says what it adds.
+4. **A document, not a chat summary.** `report.md` opens with "Do this first, because…", has timely openings, the assumptions to correct, the shortlist with price range and math and **For you** per pick ("this creator's format fits your serum because…"), **You vs them**, wave 1 and its criteria, near-misses, "what we could not read" — and briefs plus first messages for the top picks. Offered to open (host with files) or shown as an artifact/document.
+5. **Claims-safe.** No efficacy line for the serum unless signed off; lines needing proof say "you'd need proof of X first"; first messages carry no price and no claims.
+6. **It contacts nobody**, and asks you to approve the names (all, or strike any) before anything is sent by you.
 
-It passes if you would genuinely pay at least half of the shortlist inside the stated range after spot-checking two picks' engagement yourself, and one brief passes someone who has briefed creators before. **Telltale failure:** picks justified by follower counts, or a single price with no math.
+Then: give a budget and say "yes, up to 200 credits" → it re-prices, deepens vetting inside the ceiling (logs every charge), finishes the remaining briefs, re-delivers. You'd pay at least half the shortlist inside the stated range after spot-checking two picks.
 
 Edge tests:
-- Routing: "I need UGC for my ads" → it asks "a real person filming, or AI-made?" before starting; AI-made goes elsewhere. "Find podcasts I can go on as a guest" → not covered, said plainly.
-- Wave read-back: on a re-run, paste fake wave-1 results (two wins, one miss) → it scores them against `wave-1.md`, marks `wave_result`, and proposes a roster change for your yes.
-- Schedules: "refresh this monthly" → an opt-in, paused schedule whose yes names a per-run credit ceiling.
-- B2B SaaS asking for LinkedIn creators and newsletters: platforms switch to LinkedIn/newsletters/podcasts, "gift-first" is not recommended, commenter headlines are the fit evidence, media kits are asked for.
-- A consumer app asking for UGC creators: roles are UGC-for-ads, priced per asset + usage, audience size matters little.
-- Asking it to "DM them" or "send them product": it says plainly this is out of scope until a sending layer exists and gives the roster for the human to act on.
+- "I need UGC for my ads" → asks "a real person filming, or AI-made?" first; AI-made goes elsewhere.
+- B2B SaaS asking for LinkedIn creators and newsletters → LinkedIn and newsletter pages read in the browser, sponsor pages and media kits found, no gift-first, per-placement prices.
+- On a re-run, paste fake wave-1 results → scored against `wave-1.md`, `wave_result` set, a roster change proposed for your yes.
 
 ## Staging run log
 

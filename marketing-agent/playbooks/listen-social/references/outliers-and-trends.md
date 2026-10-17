@@ -1,6 +1,6 @@
 # Outliers and trends
 
-Load at steps 7–8.
+Load at step 6.
 
 ## Outliers — what overperformed, honestly
 
@@ -9,7 +9,7 @@ Raw views reward big accounts. Judge each post against its own author.
 - **Outlier multiple** = the post's views ÷ the median views of the author's last 10–20 posts. Flag at ≥3×. Require at least 5 posts of history; otherwise say "no baseline".
 - **Age:** only posts at least 48 hours old (early views mislead); compare views per day if ages differ a lot.
 - **Engagement rate** (likes + comments + shares ÷ views) is compared with the same account's median, not with cross-platform "norms".
-- **Candidates:** the category's top posts from keyword/hashtag pulls, rivals' posts from `brand_read` `organic`, and the research runs' discovered posts (`social_inspiration_search` `source: "research"`). Fetch author baselines only for the top ~10 candidates (each baseline is a paid call).
+- **Candidates:** the category's top posts from keyword/hashtag pulls, rivals' posts from `brand_read` `organic`, and the research runs' discovered posts (`social_inspiration_search` `source: "research"`). Read author baselines (their last 10–20 posts) on the author's public profile page in the host browser for the top ~10 candidates; where the page won't show view counts, say "baseline not read" and don't call it an outlier — a paid baseline read is part of the top-up.
 - **Exclude** the brand's own posts and its founder's or execs' posts (analyze-performance reads those), and negative or risk-routed posts about the brand.
 
 For each keeper record the **one-line why** in three parts:

@@ -1,119 +1,61 @@
 ---
 name: research-competitors
 description: >-
-  Use when a founder or marketer asks "what are my competitors running right now, and what works for them?", "competitor teardown", "what ads are my competitors running", "how do they price / what's their offer", "compare us to X", "find gaps nobody covers", "give me angles to brief", "what changed with my competitors this week", or "competitor X just launched / cut prices". Delivers one dated, linked file per rival (positioning, offer, funnel, live ads with library links and days running, content, social, releases, review signal), a white-space read, and an angle bank of briefable angles with their evidence and the proof the brand needs — saved to the brand for ad makers and planning. Opt-in weekly watch and a fast path when one rival moves. Never claims a rival's spend or results; never copies their ads. Not for what people say about rivals — use listen-social; not for who your buyers are — use research-market.
+  Use when a founder or marketer asks "what are my competitors running right now, and what works for them?", "competitor teardown", "what's new with my competitors", "what ads are they running", "how do they price", "what are their founders posting", "find gaps and angles", "what changed this week", or "X just launched / shut down / cut prices". Researches every main rival on every dimension — news first, then ads on every platform, founder and company posts, launches and demo videos, pricing, positioning, reviews, community talk, hiring, partnerships, events, AI answers — and delivers a readable report: "Do this first", time-boxed openings, the landscape, same-shape rival profiles, a swipe file of formats, angles and watch triggers. Saved so the next run reports what changed. Weekly watch and react modes. Never copies their words or disparages. Not for what customers say about you — use listen-social; not for who your buyers are — use research-market.
 ---
 
 # research-competitors
 
-What competitors themselves do — advertise, price, offer, publish, post, launch — read from public evidence and turned into angles the brand can brief. Three modes:
+Competitor research tells the founder what to do next; it is not a list of ads. The craft is in `references/research-spec.md` — read it first. This file is the order of work; the report's shape is `references/report-format.md`.
 
-- **Teardown** (default): the full read, per competitor.
-- **Watch** (opt-in, weekly or "what changed this week?"): a one-screen diff against the last snapshot.
-- **React** ("X just launched / cut prices / got press"): a fast path on one rival.
-
-## What you get
-
-1. **The hand-over** — opens with "Do this first, because…": the one angle to brief now and why, then the three things that matter most, the top 3–5 briefable angles, the gaps, and what was not read.
-2. **Competitor file** — one per rival (3–5 deep, the rest light): identity and tier, positioning in their words, offer and pricing architecture, funnel (ad → page type → capture), ads (active as of a stated date, concept clusters with days running and library links), content, social, releases, review level and velocity, a labelled "what they are betting on", and a "not read" list. Every fact carries a source and a date. A teardown built only on the server's ad sample is labelled **partial**.
-3. **Landscape** — the confirmed set, category conventions, a reasons-to-buy × rivals matrix with buyer-evidence weight, and the gaps: white space, unvalidated space, proven-but-contested space.
-4. **Angle bank** — stable `A-NN` angles: reason to buy, segment and awareness, driver, objection answered, product, offer, market evidence, buyer evidence, proof wording the brand may use, status (briefable / needs proof / do not use), formats, reference ads, hook directions, guardrails, test status.
-5. **Watch digest** (when opted in) — what materially changed, top three with the "so what" and who acts, what was not re-read; a quiet week in one line.
-
-Formats and a worked example: `references/output-formats.md`.
+**The rule that matters most: free pass first, ask nothing, report once** (AGENTS §8 research pattern). Research every dimension for every main rival before the first message to the founder. Never stop after one source to ask "go deeper?" or whether to continue — depth is part of the request. A broad ask gets everything; an ask that names an area ("what ads are they running?") gets that area covered completely for every rival — and news and launches always run first, because a rival's shutdown or launch outranks anything in the ads.
 
 ## Before you start
 
-1. **Connection.** No GooseWorks tools listed (after one `gooseworks:tools_load` for a missing group: brand, ads, files, media, data, automation) → say only: "Connect GooseWorks first — I read your competitors and save what I find through it." First GooseWorks call of the conversation: `gooseworks:get_started` with the marketer's words (`wants: "more"`), used only to settle setup and the brand. Send `client` on every call that takes it.
-2. **Brand and mode.** The brand named; with several and none named, list them and ask. Keep `brand_id`, `brand_slug`, `coworker_agent_id` (scope and no-coworker fallback: `../../atoms/save-to-brain/ATOM.md`). Pick the mode from the ask.
-3. **Read the brain first.**
-   - `gooseworks:brand_read` sections `summary`, `kit`, `products`, `competitors`, `learnings`, `organic`, `sources`; full records (`product_ids`) for the hero products — our own price and offer are the baseline.
-   - Claims: load `../../atoms/claims-gate/ATOM.md` once — it reads learn-my-brand's contract (a lean `brand_read` is enough). Angles may lean only on the claims it allows.
-   - `gooseworks:competitor_read` (roster with dossiers) and `view: "suggestions"`.
-   - `gooseworks:automation_list`: if a weekly watch exists, show its recent runs and credits at the top of this run.
-   - Workspace (`gooseworks:file_list`, `file_read`): `research/competitors/` (this run extends it); research-market's `research/market/voc-bank.md` and `personas.md` (rival complaints and segments — never re-mine reviews here); `research/credits-log/` (prices); analyze-performance's latest `reports/performance/<date>.md` (angle results).
-4. **No voice-of-customer bank yet:** tell the human in plain words — "I'd first find out what your buyers say about this category; without it I can't tell a real gap from an empty corner" — and offer to continue anyway: then every matrix row is "unvalidated", nothing is called a gap, and the angle bank says "no buyer evidence yet".
-5. **Ask only what is missing, in one message:** confirm or change the set (step 1), which markets (country) and channels matter most, and "anyone we must never name, compare against, or copy?" If this host cannot read web pages, ask in the same message for pasted text or links for the top rivals' pricing, "vs" and review pages, their ad-library pages, and each rival's Google Ads Transparency page if Google ads matter; otherwise those sections are named "not read" up front.
+1. **Connection and brand.** No GooseWorks tools listed (after one `gooseworks:tools_load`) → say only: "Connect GooseWorks first — I research your competitors and save what I find through it." First call of the conversation: `gooseworks:get_started` with the marketer's words (`wants: "more"`); send `client` on every call that takes it. Pick the brand (list and ask if several); keep `brand_id`, `brand_slug`, `coworker_agent_id`.
+2. **Read the brain.** `gooseworks:brand_read` (`summary`, `kit`, `products`, `competitors`, `organic`, `learnings`), `gooseworks:competitor_read` (+ `suggestions`), `gooseworks:automation_list`; workspace (`gooseworks:file_list`, `file_read`): `research/competitors/` (last report, rival records), `research/market/voc-bank.md` and `personas.md`, `reports/performance/`. Claims: only the read step of `../../atoms/claims-gate/ATOM.md` now — its scoped sign-off waits for step 7. Off-limits rules (a partner rival, "never name them") come from the brain's `dont` and `must` facts.
+3. **Do not message the founder yet.** Use the brain's rival list; with none, build it from the roster, suggestions and a news search. The founder corrects it in step 7. The only reason to stop first is that no rival can be found at all. If the last report is under 30 days old and the ask is broad, run the weekly watch instead and say so — unless news shows a big move.
 
-## Steps — teardown
+## Steps
 
-1. **Confirm the set.** Play back one table: tracked rivals, server suggestions and research-market's named competitors — each with tier, website, Meta page and the server's page check (CONFIRMED / UNSURE), last researched date. Candidates come only from those, the founder's answer, or one search through the spend gate (Google results, `../../atoms/spend-gate/proxy-endpoints.md`), each labelled `candidate — <source>` — never from your own memory. Ask before adding or dropping anyone.
-   - Add on a yes: `gooseworks:competitor_save` `add` (free background research starts); ask for exactly what its answer lists as unresolved.
-   - UNSURE page: ask for the rival's ad-library link (or open it in the host's browser) and add with it; read none of its ads until confirmed.
-   - Remove: `competitor_save` `remove` returns the server's confirm card for the human to press; where no card can show, tell them to remove it in the GooseWorks app. Never drop a rival another way.
-   - Go deep on 3–5 (the roster holds 10). The do-nothing / DIY alternative gets a row from the voice-of-customer bank.
-   *Writes:* the confirmed set (roster) and the landscape header.
+1. **Frame.** Name the company type and weight the dimensions by it (spec §5) and the jobs this run serves (§2) — or facts-only. List 3–6 main rivals, 2–4 adjacent options (spreadsheet, agency, DIY) and any new entrant, each with a reason and source (roster, suggestions, research-market, news search — never memory alone).
 
-2. **Freshen the evidence (free).** Refresh each deep rival whose ad scrape is older than 7 days, and every deep rival on hand-over day, with `gooseworks:competitor_research` (no `mentions`). The dating rules — scrape date, "active as of", what the server sample can and cannot show — are in `references/reading-ads-honestly.md`. *Writes:* each file's "ads active as of" header line.
+2. **News first — rivals and our own brand.** A headline sweep for every rival (last 90 days) and the full news read for our brand (queries in `atoms/rival-pass/ATOM.md` §1); the rival workers do each rival's full read. Anything from the last 30 days is a candidate **timely opening** and leads the report. Our own news stops us "discovering" the founder's own deal.
 
-3. **Read the full active library of the top 3 rivals (default)** — their main library for the company type: Meta for DTC and consumer apps, LinkedIn (and Google where search matters) for B2B. Load `references/reading-ads-honestly.md`. The server's Meta sample (`gooseworks:ads_template_read` mode `competitor`, paged to the end; video ads via `gooseworks:media_list` tags `ad_library` + `competitor_ad`) shows what they say; counts, concept iteration and what was switched off need the full library. For the 3 deepest rivals read it by default: the rival's library page in the host's browser (free; set the brand's main country), or — where the host cannot — one paid full read of active ads per rival through `../../atoms/spend-gate/ATOM.md` branch B. If both are declined or unavailable, the teardown is labelled **partial — sample only** and the sample rules apply. Other libraries (Google, LinkedIn, TikTok) only where the company type needs them and the spend gate's yes covers them. Build the inventory: active count, new in 30 days, concept clusters with variants, earliest start, days running, destination page, two library links each, format mix. *Writes:* the ads section.
+3. **Research every rival in parallel.** One worker per main rival — a subagent where the host supports it — briefed with `atoms/rival-pass/ATOM.md` plus our product summary and approved claims, the off-limits list and the category's communities: news, every ad library (LinkedIn and Google included, free in the browser), organic and founder posts, launches and demo videos, pricing with changes, positioning, funnel and email, customers, 30+ reviews read page by page like a person, community talk, events, partnerships, hiring, search, and what it couldn't read. One more worker runs `atoms/category-pass/ATOM.md` (money searches, AI answers, community, creator demos, category ad winners, adjacent options), and one runs rival-pass §1–10 on **our own brand** — our ads in the same libraries, recent posts, product and pricing — so every finding can be held against our side. Without subagents, go rival by rival and write each finished profile to `research/competitors/<slug>.md` as a draft before the next; work from the files in step 5. Never pause for paid reads — they are offered in step 7.
 
-4. **Mine the ads for angles.** Per cluster: reason to buy, hook type, awareness level, offer, proof type, format. Every "this works for them" is an inference with confidence and evidence. *Writes:* draft angle rows.
+4. **Go deep on what moved.** For the 1–2 biggest launches, watch the demo and the 3 best third-party posts (rival-pass §5 says how) and break each into hook, setup, reveal, proof, CTA. Then write a **format brief** per demo and, where we already do it better and can prove it, the **counter-position kit** (both in `references/angles-and-gaps.md` "Launches"). For each timely opening, draft the move (spec §4) with an end date.
 
-5. **Landing pages and the funnel.** Load `references/teardown-checklist.md`. Destination pages of the biggest clusters and the homepage (read-by-fetch or pasted): the promise (H1 quoted with URL and date), proof stack, offer, page type, capture, and where their message differs from ours. *Writes:* funnel section.
+5. **Synthesize.** Merge the profiles; build the landscape, **You vs them** (ahead — say it louder; behind; where everyone sounds the same), "what changed since last run" (diff each saved snapshot), 3–5 ranked moves, the swipe file and the angle list. Angles come out of the research — complaints, gaps, worn-out phrases, launches we beat (`references/angles-and-gaps.md`). If the category pass shows a new entrant hitting us harder than a main rival, run a short rival pass on it (§1, §2, §6, §7, §15) before the report and say so. Every finding closes with **For you** — fits us or not, from our facts; if yes, what to make, the approved claim behind it, and who makes it — by the rules in `references/report-format.md` (no proof, no claim; lines awaiting sign-off marked so; don't follow the herd; facts-only and empty-brain cases). Named comparisons are flagged.
 
-6. **Pricing and offers.** Offer architecture per company type (`references/teardown-checklist.md`): list vs promo, intro offers, bundles, subscription, shipping threshold, guarantee, trial and paywall, B2B tiers. Changes since the last snapshot flagged. *Writes:* offer section.
+6. **Deliver the document.** Write it to `research/competitors/<YYYY-MM-DD>-report.md`. In a host with files (Claude Code, Cursor), also write it locally and offer to open it; in a hosted chat, an artifact or document if the host can, else the full report in chat. Save through `../../atoms/save-to-brain/ATOM.md` with the titles and tags in report-format: the report (`keep-history`), each rival record with its snapshot, `landscape.md`, `angle-bank.md` (`supersede`); swipe items to the inspiration library (`gooseworks:social_inspiration_save`). Link the saved report (`gooseworks:file_url`).
 
-7. **What they publish.** Blog, guides, "vs / alternatives" pages (including any about us), lead magnets, newsletter — topics, cadence, what carries. *Writes:* content section.
+7. **One message: the draft and the decisions.** Three lines — the biggest finding, the top move, the link — then only what is left to decide: which openings to act on; the rivals covered ("add or drop any?" — new ones tracked with `gooseworks:competitor_save` on a yes); sign-off for the claims the top moves need (claims-gate scoped sign-off); a paid top-up if gaps remain — name the gaps it fills, give the estimate, one yes to "up to N credits" (`../../atoms/spend-gate/ATOM.md` branch B, the probe inside it); a research inbox for rivals' newsletters and trials; which area to go deeper on next, if any (ads and creative · social, content and founder posts · news, launches, funding and hiring · pricing, positioning, reviews and buyer talk); the weekly watch; keeping the top angles as rules (`../../atoms/save-learning/ATOM.md`, on the founder's words). Never ask a fact the free pass could find.
 
-8. **Their social.** `brand_read` `organic` (`competitor_top_posts`) and the dossier first; paid pulls only through the spend gate. Formats and topics that beat the rival's own median, cadence, creators. *Writes:* social section.
-
-9. **Their releases.** Changelog, launch pages, press, app-store "what's new", new SKUs or drops. *Writes:* releases section.
-
-10. **Light search footprint.** improve-search-visibility's latest `search/visibility/<date>.md` "named instead" lines if they exist; otherwise a few buyer questions through the spend gate or the host's own search. Never a full audit. *Writes:* footprint lines.
-
-11. **Review signal.** Rating level and count per main surface; velocity against the last snapshot ("n/a — first snapshot" on a first run). Complaint themes come from research-market's bank by id. *Writes:* review section.
-
-12. **Map the white space.** Load `references/angles-and-gaps.md`. The reasons-to-buy × rivals matrix with run length per cell and the buyer-evidence column; classify each row gap / unvalidated / contested / table stakes. *Writes:* landscape.
-
-13. **Write the angle bank.** One `A-NN` row per distinct reason to buy, with product, offer (an approved one, or "none — feature no offer"), reference ads (template ids) and the exact proof wording the claims gate allows. Where no sign-off exists, offer the claims gate's scoped sign-off for the 3–5 proof lines the top angles need; if the human declines, those angles stay "needs proof". Personal-attribute and regulated categories: no hook may say or imply the viewer has a condition, and treat/manage/improve wording is "do not use (regulated)" unless approved (`references/angles-and-gaps.md`). Existing angles keep their ids and test history. Test status: analyze-performance's latest report and its learnings that cite the `A-NN`, ads tagged `angle:a-nn` (query `gooseworks:ads_creative_read` with the lower-case tag; compare ids case-insensitively) and videos whose names carry the id. *Writes:* angle bank.
-
-14. **Save and hand over.** Through `../../atoms/save-to-brain/ATOM.md` (`versioned: supersede`): `research/competitors/<slug>.md` per rival (title `Competitor file: <Rival> — <Brand> — <date>`, tags `research-competitors`, `competitor-file`, `rival:<slug>`), `landscape.md`, `angle-bank.md` — each opening with its marker line (`references/output-formats.md` § Marker lines). Hand over one screen opening "Do this first, because…"; ids stay in the files, not the chat. Learnings through `../../atoms/save-learning/ATOM.md`: offer rules for the top briefable angles, each one idea, prefixed `[angle A-NN YYYY-MM-DD]`, written only on the human's yes in their words, retiring this playbook's earlier `[angle …]` facts for the same angles in the same call. Then offer the watch.
-
-## Steps — watch (opt-in)
-
-Load `references/watch-and-react.md`. Free refresh per rival, re-read ads and dossier, diff against each rival's snapshot by ad id, keep only threshold-crossing changes the evidence can show, list what was not re-read, write `research/competitors/watch/<YYYY-MM-DD>.md` (save-to-brain `keep-history`, tags `research-competitors`, `competitor-watch`), rewrite the snapshot blocks, update angle saturation in the workspace file.
-
-Standing watch (needs a coworker; without one, say so and keep running on ask): on a yes, save the method file and create the weekly automation as `references/watch-and-react.md` says, under `../../atoms/spend-gate/ATOM.md` branch C — created paused, free sources only, switched on only on the human's yes, its own run cost shown after the first run.
-
-## Steps — react
-
-Load `references/watch-and-react.md` § React. Check the rival is one (if untracked, ask whether it competes — adding is free); verify the move with a dated source (in a hosted chat, a dated link or screenshot from the human) and check list vs promo, intro vs everyone, storefront or country; refresh, diff against the snapshot, say what it means for our offer, angles and search, and give 2–3 options including "do nothing", each with who acts. Pricing is the human's call — never recommend matching by reflex. Save the dated note in the rival's file.
+8. **Watch and react** (`references/watch-and-react.md`, same dimensions). **Weekly watch** ("what changed this week?", or scheduled on a yes — created paused): diff each snapshot; a one-page note. **React now** ("X just launched / shut down"): verify, read the market's reaction, alert this turn with the window, move and draft brief.
 
 ## Approval gates
 
-- **Set changes:** asks before adding or dropping any rival; removal only on the human's own press of the server's card (or in the app).
-- **Spend:** free sources first; every paid read through the spend gate's yes. The standing watch never spends on data.
-- **Standing watch:** created paused; on only on a yes, its own run cost unpriced until the first run.
-- **Learnings:** only on the human's yes, in their words.
-- **Never:** publish, contact anyone, or claim a rival's spend, ROAS, CTR or conversion. Budget, channel and pricing decisions stay with plan-campaign and the human.
+- The free pass needs no yes and asks nothing; a paid top-up needs one yes to a ceiling.
+- Only with the founder's yes: newsletter or trial sign-ups (research inbox, company details), tracking a rival, a schedule, saved rules, new claims.
+- Research recommends; it never makes the asset — making is the ad, video and content playbooks' job.
+- Never: publish, contact anyone, copy a rival's words or footage, mock a rival or its customers, or claim their spend or results. Named comparisons need sign-off and dated proof.
 
 ## Output and write-back
 
-| Artifact | Where it lives | How readers find it | Who reads it next |
-|---|---|---|---|
-| Confirmed set | server roster | `gooseworks:competitor_read` | listen-social, research-market, the app |
-| Competitor file | `research/competitors/<slug>.md` + document | the path; else `knowledge_search` document "competitor file <rival>" | plan-campaign, make-content (comparison pages), the human |
-| Landscape | `research/competitors/landscape.md` + document | the path; else document "Competitive landscape" | plan-campaign, write-my-positioning (backlog) |
-| Angle bank | `research/competitors/angle-bank.md` + document; ≤ 3 `[angle A-NN …]` learnings on a yes | the path; else document "Angle bank"; makers tag ads `angle:a-nn` (lower-case) | make-static-ads, make-video-ads, plan-campaign |
-| Rival ad references | the server's competitor template pool and reference media | `ads_template_read` mode competitor; `media_list` tag `competitor_ad` | make-static-ads (structure only), make-video-ads |
-| Watch digest | `research/competitors/watch/<YYYY-MM-DD>.md` + document (keep-history) | newest file in `research/competitors/watch/`; line 2 is `Week of <date> · <n> material changes · …` | the human; analyze-performance ("competitor move") |
+| Artifact | Where (save mode) | Read by |
+|---|---|---|
+| Report | `research/competitors/<D>-report.md` (keep-history) | the founder, the next run |
+| Rival records + snapshots | `research/competitors/<slug>.md` (supersede) | the watch, plan-campaign, make-content |
+| Landscape | `research/competitors/landscape.md` (supersede) | plan-campaign |
+| Angle bank (`A-NN`, tag `angle:a-nn`) | `research/competitors/angle-bank.md` (supersede) | make-static-ads, make-video-ads, plan-campaign |
+| Swipe items | inspiration library | the ad and content makers |
+| Watch notes | `research/competitors/watch/<D>.md` (keep-history; line 2 `Week of …`) | the founder, analyze-performance |
 
 ## Done when
 
-- The hand-over opens with "Do this first, because…" and the set was confirmed before any change; no UNSURE page's ads were read.
-- The top 3 rivals' full active libraries were read — or the teardown is labelled "partial — sample only" and says why.
-- Every ad listed is real and active on its stated date, no more than 7 days before hand-over, with its library link and days running; the header says how many links were spot-checked.
-- Each deep rival's file has positioning, offer, funnel, ads, content, social, releases and review signal, or names what was not read.
-- One briefable angle, handed to make-static-ads as the brief, works without extra research; without approved claims, angles are honestly "needs proof" and the hand-over says what unlocks them.
-- Nothing claims a rival's spend or results; every "what works" line is labelled inference with its evidence.
-- Saved and findable; credits within the approved ceiling.
+Every box in `references/research-spec.md` §6 "What done looks like" is ticked (or the couldn't-read list says why); news covered every rival and our own brand; every rival has a same-shape profile; the report opens with "Do this first", leads with timely openings, has "You vs them", closes every finding with "For you" (unless facts-only), and arrives as a document — with no question asked before it.
 
 ## Out of scope
 
-- Making the ads — make-static-ads, make-video-ads.
-- Budgets, channels, pricing moves — plan-campaign and the human.
-- Mining review quotes — research-market (read here, never redone).
-- What people say about the brand and rivals — listen-social.
-- Our own search and AI-answer visibility — improve-search-visibility.
-- Marketplace listing depth — optimize-listings (backlog).
+Making the ads (make-static-ads, make-video-ads) · budgets and channel bets (plan-campaign) · what customers say about our brand (listen-social) · our own search visibility (improve-search-visibility) · writing positioning (write-my-positioning, backlog).

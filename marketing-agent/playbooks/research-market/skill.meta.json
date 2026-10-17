@@ -1,7 +1,7 @@
 {
   "slug": "research-market",
   "tier": "playbook",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "pillar": "1 — Strategy and planning",
   "intents": [
     "Who actually buys this, and what do they say in their own words?",
@@ -18,15 +18,18 @@
   "reads": [
     "brand brain: summary, kit, products, competitors, learnings, sources, organic, accounts (brand_read) — learn-my-brand / server research",
     "brand brain: existing customer evidence and earlier research documents (knowledge_search evidence/document)",
+    "public web: news, review sites (G2, Capterra, TrustRadius, Trustpilot, app stores, retailer reviews), Reddit, HN and other community threads and comments — host web search and browser, read page by page (free)",
+    "rival records and reviews already read: workspace research/competitors/* — research-competitors",
     "competitor roster and server suggestions (competitor_read) — research-competitors / server research",
     "competitor ad start dates (ads_template_read mode competitor) — server competitor research, for the demand proxy",
     "previous run: workspace research/market/* — research-market itself (refresh mode)",
     "VoC-tagged quotes in weekly listening reports: workspace social/listening/<date>-report.md — listen-social",
-    "private exports the user supplies: support tickets, survey answers, return/cancel reasons, sales notes",
-    "shared price history for paid pulls: workspace research/credits-log/<YYYY-MM>.md — every playbook that spends on data"
+    "shared price history for paid pulls: workspace research/credits-log/<YYYY-MM>.md — every playbook that spends on data",
+    "private material the founder chooses to share after the report (support tickets, survey or cancel reasons, call notes, win/loss)",
+    "claims through the claims-gate shared atom — learn-my-brand"
   ],
   "writes": [
-    "the read, opening with the primary segment ('Do this first, because…'): workspace research/market/<date>-read.md + brand document (keep-history) — read by the founder, plan-campaign, the next refresh",
+    "the read — a readable report opening with 'Do this first, because…', every finding ending in 'For you', with 'You vs them' and a couldn't-read list: workspace research/market/<date>-read.md + brand document 'Market read — <Brand> — <date>' (keep-history) — read by the founder, plan-campaign, the next refresh",
     "ranked segments + anti-persona with message implications: workspace research/market/personas.md + document; summary proposed to brand knowledge.audience (agent proposal) — read by plan-campaign, work-with-creators, make-content, run-organic-social",
     "voice-of-customer bank: workspace research/market/voc-bank.md + document, and voc-bank.jsonl (filterable, not imported) — read by make-static-ads, make-video-ads, make-content, run-organic-social, research-competitors, plan-campaign",
     "demand read: workspace research/market/demand.md + document — read by plan-campaign",
@@ -37,12 +40,10 @@
   "needs": {
     "mcp": [
       "gooseworks:get_started",
-      "gooseworks:account_whoami",
       "gooseworks:brand_read",
       "gooseworks:knowledge_search",
       "gooseworks:competitor_read",
       "gooseworks:competitor_save",
-      "gooseworks:competitor_research",
       "gooseworks:ads_template_read",
       "gooseworks:data_call_provider",
       "gooseworks:data_post_provider",
@@ -58,12 +59,12 @@
       "gooseworks:brand_update",
       "gooseworks:automation_upsert",
       "gooseworks:tools_load",
-      "gooseworks:ads_library_scrape",
       "gooseworks:automation_list"
     ]
   },
   "atoms": [],
   "shared_atoms": [
+    "claims-gate",
     "save-to-brain",
     "spend-gate",
     "save-learning"

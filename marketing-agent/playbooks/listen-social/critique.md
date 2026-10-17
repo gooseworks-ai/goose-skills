@@ -143,3 +143,65 @@ Verdict: 1 MAJOR (wording), fixed: the coverage table's "not covered" cell named
 2026-10-16 final contract check: references/report-format.md: the standing-run copy step names the shared atoms' real location (`../../../atoms/`).
 2026-10-16 final contract check: skill.meta.json `atoms` now lists only this folder's atoms; shared atoms moved to `shared_atoms`.
 2026-10-16 orchestrator ruling: reply drafting uses the shared ../../atoms/ad-policy-check/disclosure.md (§1) for disclosure instead of its own rule (references/reply-drafting.md, SKILL.md); the community rules check stays; bare `atoms/<shared>` path in server-needs.md converted.
+
+## Rebuild on the AGENTS §8 research pattern (2026-10-17)
+
+**Why.** The orchestrator's literal Sonnet dry run, on Personal Day asking "What are people saying about me and my category this week?", found three failures:
+- it opened with questions, a watchlist confirmation and a credit yes, all in one message;
+- it never used web search;
+- it ended with a chat summary.
+
+**What changed (rewrite, not patch):**
+- **Top rule:** "free pass first, ask nothing, report once". The only interruption allowed is an S1 risk, posted in chat the moment it is found.
+- **Step 1, the watchlist:** the agent drafts it itself. It searches the bare name first to find name collisions and writes the exclusions ("personal day" = a day off); queries-and-coverage now has a "Name collisions" section. The watchlist is `v1 (draft)`, run as is and confirmed in the closing message.
+- **Step 2, news first.**
+- **Step 3, the free pass:** web search with recency and `site:` queries, plus public pages in the host browser (Reddit sorted new, tag and search pages, YouTube upload-date filter), comments on the top posts, and free server reads. Counts are labelled "free-pass sample"; the window atom's new "Free-pass counts" section shows no week-over-week change when the method changed. The paid proxy pull is now the top-up offered in the closing message under one yes; the coverage table marks proxy rows "paid top-up".
+- **"For you" and "You vs them"** (AGENTS §8 point 7) in report-format, and in the short form too. The themes column became "For you".
+- **The report is delivered as a document** (a local file offered, or an artifact in hosted chat).
+- **One closing message (step 10)** holds: replies to send, the draft watchlist, an escalation contact if none, the paid top-up, the weekly run, and rules.
+- **Supporting files:**
+  - outlier baselines are read on public profile pages, or "baseline not read";
+  - the standing-run agent prompt is renumbered to the new steps;
+  - meta 0.2.0;
+  - server-needs renumbered, with #17 (GooseWorks web search for hosts without their own) added;
+  - the test fails any question before the report, no web search, or a chat summary.
+- **Paths and the fixed report header lines** are unchanged, apart from the new values "free-pass sample" and "none (free pass)", so analyze-performance's parser is unaffected.
+
+## Rebuild — Sonnet re-run (2026-10-17)
+
+Sonnet, web search and page fetch only (no browser, no GooseWorks calls), Personal Day, "What are people saying about me and my category this week?", on a Saturday.
+
+**Against the three failure modes of the old version:**
+- **Questions before the report:** none. The watchlist, escalation contact, credit ceiling, weekly run and rules all went into the closing message.
+- **Web search:** used — news first, then four parallel workers (Reddit and forums · TikTok/IG/YouTube · news/X/LinkedIn · rival conversation), about 66–70 searches in all.
+- **A chat summary:** none. It delivered a full report (header lines, Act now, so-what, For you, You vs them, coverage, mentions, themes, rival conversation, trends, the reply queue) and a closing message with only decisions.
+- **Also passed:** the bare name was checked first; PTO and day-off senses, a novel and an unrelated account became exclusions; the report says what the name was confused with.
+
+**Findings:**
+- 2 independent in-window Reddit mentions, both positive or neutral.
+- An old (May) Reddit post challenging the "acne-safe" claim (two palmitate esters). Its recommendation was stay silent and hold a standby reply.
+- Rival signal: commenters repeatedly name CLEARSTEM's free pore-clogger checker, and CLEARSTEM reached Target on 10 Sep.
+- No S1 or S2.
+
+**Limits of the test setup (not the playbook):**
+- Search ignored `site:` and recency.
+- Reddit, TikTok, YouTube and X were blocked to fetch.
+- So the free pass was thin and the honest headline was "nothing bad in what I could read". In a host with a real browser the free pass reads these pages.
+
+**Playbook defects it reported, fixed:**
+- **No "thin free pass" mode.** The so-what now opens with a coverage line when most platforms couldn't be read, and the top-up for them becomes the first decision.
+- **"This week" asked mid-week.** The window atom now adds a "This week so far" block, not counted, plus a one-line note.
+- **The short form dropped "You vs them".** It now has a one-line version.
+- **Affiliated voices undefined** (paid adviser, gifted posts, affiliates, fan reposts, retailers). Now an `affiliated` tag, shown but never counted. A famous founder's name counts only with a topic word.
+- **Undated items undefined.** Now "date unknown": triaged, never counted.
+- **The worker used a third-party Reddit archive and mirrors to get round blocks.** Now: only the platforms' own public pages or the sanctioned paid read; never unofficial mirrors, archives or unofficial APIs.
+- **The search tool ignores minus terms.** Exclusions are now applied when reading results.
+- **"For you" repeated** between the section and the rows. The section now ranks the actions and points to rows.
+- **The watchlist title date** is now the run date.
+- **An S1 with no escalation contact.** The alert asks who handles it — the one thing allowed before the report.
+
+**Not changed:**
+- claims-gate never treats the live site as approved. The test told the run to, so its "approved" lines were a simulation; in real runs, unapproved lines say "needs your sign-off".
+- Share of voice stays "not comparable" unless the method matches.
+
+**Still weak:** a fetch-only host can't read Reddit, TikTok, YouTube or X, so the listening free pass there is mostly coverage gaps plus the paid top-up. server-needs #17 (GooseWorks web search and page fetch) is the fix.

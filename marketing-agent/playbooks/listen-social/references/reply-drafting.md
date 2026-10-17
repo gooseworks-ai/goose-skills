@@ -1,6 +1,6 @@
 # Reply drafting
 
-Load at step 10. Every draft is finished — something the human could send as written — and carries a recommendation, not a question.
+Load at step 7. Every draft is finished — something the human could send as written — and carries a recommendation, not a question.
 
 ## Fields on every draft
 

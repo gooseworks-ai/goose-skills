@@ -1,7 +1,7 @@
 {
   "slug": "work-with-creators",
   "tier": "playbook",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "pillar": "12 — Partnerships, influencers, affiliates, community, events",
   "intents": [
     "Which creators are worth paying, at what price — and what should they make?",
@@ -26,7 +26,7 @@
   ],
   "writes": [
     "workspace creators/roster.csv (living roster in the outcomes-ledger schema: status, suppression, wave, wave result, quoted rate) — read by the human and every later run; analyze-performance reads it for roster seeding (creators are a future row there); plan-campaign when a creator leg is Run/Test",
-    "workspace creators/<date>/summary.md, wave-1.md, near-misses.csv, briefs/<handle>.md (brief + first-message drafts) — read by the human, who sends and negotiates; wave-1.md read back on the next run",
+    "workspace creators/<date>/report.md (→ 'Creator report — <Brand> — <date>', keep-history), wave-1.md, near-misses.csv, briefs/<handle>.md (brief + first-message drafts) — read by the founder, who sends and negotiates; wave-1.md read back on the next run",
     "workspace creators/roster-summary.md → brand document 'Creator roster — <Brand> — <date>' (supersede; no contact details) — read by later runs and plan-campaign",
     "workspace creators/lessons/<date>.md → brand document 'Creator lessons — <Brand> — <date>' (keep-history; numbers only) via outcomes-ledger — read by later runs",
     "research/credits-log/<YYYY-MM>.md rows — read by every playbook's spend estimates"

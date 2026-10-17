@@ -7,28 +7,24 @@
 
 ## The test
 
-Ask: **"Find me 50 right-fit people with verified emails."**
+Ask: **"Find me 50 right-fit people at recruiting agencies to pitch, with verified emails."** (or your own ICP).
 
-It passes if, in order:
+It passes if:
 
-1. **Before any search** it reads the brand and plays back a finished fit definition — motion, list unit, firmographics, situation/trigger, personas with title synonyms, account value (asked: what a big vs small account is worth), disqualifiers, negative ICP, exclusions, list size — and waits for your yes. It asks for missing pieces (exclusions file, weekly capacity, geography) in **one** message, and does not invent an ICP or customers.
-2. In the same message it asks a yes to spend: on a first run (nothing priced yet) one yes for a single probe read, and the "up to N credits" sample ask in the next message from its charge; with price history, "up to N credits" for the sample straight away, labelled an estimate. No paid lookup before your yes. It says up front that there is no email checker — and never names a tool, vendor or playbook to you.
-3. It shows **five finished sample rows** and asks "right kind?", reports what the sample actually charged, and asks a yes to "up to N credits" for the full build.
-4. It hands over the list and **stops**: nobody contacted, nothing sent, nothing written to a CRM.
-5. Every row: (person rows) a dated source for the current title; a contact route; an honest `email_status` (no row says verified unless a verification tool said so), a fit score with a reason that names the gates and points, any signal with a URL and date, a segment, a region flag, and (account-based lists) a value tier V1/V2/V3 with its evidence.
-6. The summary opens "Do this first, because…", gives every segment a three-line angle — pain, proof (a signed-off claim, or "proof needed: …"), ask — and states delivered vs asked and **why**, the funnel, what was dropped and why, credits spent, and exactly what you must do before sending (run the email column through your verifier).
-7. The operator would genuinely email at least 80% of the rows. **Telltale failure:** padding — stale, unconfirmed or guessed people kept to reach 50.
+1. **No question before research.** The first thing you get is the report — not a question, not a definition to approve, not a credit ask. (Only an out-of-scope ask — consumers, journalists, investors — gets a one-line redirect first.)
+2. **Web research happened, for free.** The report cites company sites, directories, job boards, news and public profile pages with dates and links, and has at least five finished rows found without spending credits (or says the universe is thinner than that, and why).
+3. **One message, one credit yes.** After the report: three lines (biggest finding, what to send first, the link), the honest limit ("no email checker here"), then only the decisions — corrections to the *assumed* lines of the definition, an exclusions export, 1–2 proof lines to sign off, and **one** yes to "up to N credits" for a top-up that says what it adds. No second credit question before results.
+4. **A document, not a chat summary.** `report.md` opens with "Do this first, because…", lists timely openings, marks the definition's lines *sourced* or *assumed*, gives every segment pain → proof → ask and **For you**, has **You vs them**, what was dropped, "before you send" per region flag, and "what we could not read". In a host with files you're offered to open it; in hosted chat it's an artifact/document or the full report.
+5. **Rows are honest.** Every person row has a dated title source; no row says verified unless a checker did; pattern-guesses cite the published address they're built from; a shortfall is stated, never padded.
+6. You would genuinely email at least 80% of the rows.
 
-Then paste fake verifier results for five rows (two invalid, one catch-all) and check it drops the invalid, moves the catch-all to `catch-all.csv`, marks the rest `verified-by-tool`, and re-issues the counts.
-
-Re-run test: ask "top up the list with the next 20". It must find the saved definition and ledger, ask for outcomes once (not require them), and never repeat a person.
+Then: say "yes, up to 300 credits" and correct one assumed line → it re-runs only what the correction touches, spends inside the ceiling, logs every charge, and re-delivers the report and list. Paste fake checker results for five rows (two invalid, one catch-all) → invalid dropped, catch-all to `catch-all.csv`, the rest `verified-by-tool`, counts re-issued.
 
 Edge tests:
-- Routing: "Research my audience" or "build me a persona" must **not** start this playbook (that's market research); "Find me influencers" must not either.
-- Schedules: "top this up every month" → an opt-in, paused schedule whose yes names a per-run credit ceiling; no data spend in a scheduled run without one.
-- A brand with no ICP in the brain: it must propose 2–3 labelled candidate definitions, not guess one.
-- "Find me 50 consumers to email" for a consumer app: it must say private individuals are out of scope and offer partner/B2B lists instead.
-- A DTC brand asking for retail buyers: chains get an account row (portal / buying office) **plus** dated category-buyer rows; boutiques are account rows with the shop's published inbox or IG — UK sole traders (no limited company on Companies House) with no email or cold-DM route — visit or letter, phone only after a recorded TPS check; the brand's own stockists are excluded after reading its store locator.
+- "Research my audience" / "build me a persona" must **not** start this playbook; nor "find me influencers".
+- "Find me 50 consumers to email" for an app → one-line redirect to partner or B2B lists.
+- A DTC brand asking for retail buyers → chains as account rows plus dated buyer rows, boutiques as account rows, UK sole traders with no email or cold-DM route; the brand's own stockists read from its store locator and excluded.
+- "Top this up every month" → offered as a paused schedule whose yes names a per-run ceiling.
 
 ## Staging run log
 

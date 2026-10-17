@@ -18,4 +18,4 @@ description: Hidden atom of work-with-creators. Prices each vetted creator as fl
 
 **Writes:** `price_floor, price_target, walk_away, rights_addon, deal_structure, deal_reason, price_math, real_rate_evidence`.
 
-**Rules:** no unit cost or margin (DTC/CPG gifts) → ask, never assume; apps are never asked for unit cost. Dollar figures are the human's deal money — never credits. Never present a single number as "the rate". Prices are recommendations; nothing is offered or agreed.
+**Rules:** in the free draft, price from public numbers and bands and mark the walk-away "rough — needs your budget and unit cost" instead of asking first; no unit cost or margin (DTC/CPG gifts) → never assume a number; apps are never asked for unit cost. Dollar figures are the human's deal money — never credits. Never present a single number as "the rate". Prices are recommendations; nothing is offered or agreed.

@@ -182,12 +182,26 @@ Title `<Artifact> — <Brand> — <YYYY-MM-DD>` (records add ` v<N>`); tags `[<p
 
 ### Money and publishing
 - Engine-priced work (ads, photos, video): dry run, the quote exactly as given, the human's yes, then submit.
-- Proxy data: one probe with a yes, then a yes to a ceiling "up to N credits", labelled an estimate; stop at it; log every charge in `research/credits-log/<YYYY-MM>.md` (`date | playbook | tool/endpoint | query kind | items | credits`).
+- Proxy data: one yes to a ceiling "up to N credits", estimated from the credits log (or, with no history, from one small probe run inside that same ceiling), labelled an estimate; stop at it; log every charge in `research/credits-log/<YYYY-MM>.md` (`date | playbook | tool/endpoint | query kind | items | credits`).
 - Automations are created paused. The yes names any standing per-run data ceiling; never spend data credits in a scheduled run without one.
 - Nothing is sent, posted, launched, paused or switched on without the human's yes in this conversation.
 
 ### Public web pages
-Reading a public web page with the host's own fetch or browser is allowed (no key involved). Bulk social, search and ad-library reads go through the proxy (`foundation/data-access`).
+Reading a public web page with the host's own fetch, browser or **web search** is allowed (no key involved): news, press, funding, launches, changelogs, job posts, ad-library pages. Research playbooks should use web search for news and recent events by default, not only when asked. Bulk social, search and ad-library reads go through the proxy (`foundation/data-access`).
+
+### Research playbooks: the shared pattern (decided 17 Oct, after the first hand tests)
+
+Applies to research-competitors, research-market, listen-social, research-audience and work-with-creators. The first hand tests failed the same way: questions before research, two credit yeses before any result, almost no web search, a chat summary instead of a report.
+
+1. **Free pass first, ask nothing.** Before the first message to the marketer, do everything free: the brand brain and saved files; web search, news first (launches, funding, shutdowns, hires, press) for the brand and every subject; the host browser on public pages (websites, pricing, changelogs, ad libraries, app stores, Reddit threads, review pages); the server's free reads. Cover every dimension of the job for every main subject; never stop after one source to ask "go deeper?".
+2. **Then one message:** what was found, the draft answer, and only the decisions left (scope, a paid top-up, what to act on). Never ask a fact the free pass could find.
+3. **One credit yes, not two.** Show the estimate for the paid top-up and get one yes to a ceiling "up to N credits"; stop at it. Paid reads deepen a free result; they are never the starting point. (Mechanics: `atoms/spend-gate`.)
+4. **A readable report is the deliverable.** It opens with "Do this first, because…" and the timely openings, then the findings with a date and link on every fact, labelled fact or inference, and a "what we could not read" list. In a host with files, write it as a file and offer to open it; in hosted chat, an artifact or document if the host can, else the full report in chat. Always also save it through `atoms/save-to-brain`.
+5. **Public review sites** (G2, Capterra, Trustpilot, app stores, Reddit): read pages with the host browser the way a person would. No bulk scraping, no paging through hundreds of reviews by script.
+6. **An optional area picker** is fine when the ask is broad: "Everything" is the default, recommended option; whatever is picked is covered completely.
+7. **Every finding ends in "For you".** Read the brand's own side in the free pass too (its ads in the same libraries, recent posts, product and pricing, approved claims, past learnings). Each finding closes with: does this fit us (yes/no and why, from our facts); if yes, what to make (format, hook, product, the approved claim that backs it) and which maker does it. The report has a "You vs them" section: ahead (say it louder), behind, and where everyone sounds the same. Research recommends; it never makes the asset.
+   - **Guardrails:** don't follow the herd: when every rival does X, that is a reason to consider something else, and recommendations weigh what buyers say over what rivals do. No proof, no claim: a recommendation that needs an unapproved claim says "you'd need proof of X first".
+   - **Facts-only mode:** when the ask is facts only (an investor update, a board slide, a market map), skip "For you". With an empty brand brain, say "I can't tell what fits you yet" and offer to learn the brand first, instead of guessing.
 
 ### Creative tags
 Lower-case only (`angle:a-07`, `picked`, `offer-ends:20261031`), queried lower-case. Picks also go in the batch file.

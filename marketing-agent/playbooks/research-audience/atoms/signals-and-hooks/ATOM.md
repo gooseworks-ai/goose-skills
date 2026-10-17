@@ -8,7 +8,7 @@ description: Hidden atom of research-audience. Finds dated, linked timing signal
 **Reads:** account table; people (for hooks); `references/signals-and-hooks.md`; champions list if the human supplied one.
 
 **Does:**
-1. Per account, check the signals that matter for this motion (the table in the reference), strongest first; stop once one strong fresh signal is found unless a second is cheap.
+1. News first, per account: a web search for the company over the last 90 days (funding, new leader, launch, expansion, acquisition, layoffs, awards that matter to the buyer). Then the signals that matter for this motion (the reference table): careers page and job boards, company news and posts. Stop once one strong fresh signal is found unless a second is cheap. Anything from the last 14 days is a **timely opening** for the report.
 2. Record each as fact · URL · publish date · retrieved date · why now. Re-check job posts are still live.
 3. Drop anything past its window and anything on the noise list. Funding alone never makes an account tier A.
 4. Score timing by judgment against the anchors (strength, recency, capped at 40), with the reason written in the row.

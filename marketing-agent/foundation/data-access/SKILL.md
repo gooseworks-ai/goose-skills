@@ -59,7 +59,7 @@ The proxy covers public social and search data, fal and ElevenLabs. It does **no
 
 When a step needs one of these, in this order:
 1. Use a connector the host agent already has for the customer's own account, read-only.
-2. Use the host's own web fetch or browser for public pages.
+2. Use the host's own web search, web fetch or browser for public pages and news (launches, funding, press, job posts, changelogs). This is free and should be the default for anything recent.
 3. Ask the human for the export or a screenshot, in plain words.
 4. Otherwise skip the step and say plainly what went unread. Never estimate the missing number.
 

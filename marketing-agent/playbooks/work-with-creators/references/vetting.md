@@ -117,3 +117,22 @@ Skip audience fit and audience countries for this role.
 - **Newsletters**: size is creator-claimed unless a public badge or media kit shows it — mark "size creator-claimed — request the media kit"; sponsor history from past issues; topic fit.
 - **Podcasts**: chart presence, review count, views of the YouTube version, past sponsors (spoken reads in transcripts).
 - Fit is buyers, not reach: a 6k-follower LinkedIn voice whose commenters are finance leaders beats a 60k voice whose commenters are other creators.
+
+## 15. What public pages show (the free pass)
+
+Read in the host browser as a person would — a profile, a dozen posts, a few comment threads per creator; no scripted paging. What's visible logged-out changes often; check, and list what was hidden.
+
+| Platform | Usually visible logged-out | Often hidden → paid top-up |
+|---|---|---|
+| TikTok | Followers, total likes, **views on every video in the profile grid**, likes / comments / shares / saves on a video page, many comments | Full comment threads, transcripts, audience countries |
+| YouTube | Subscribers (rounded), views and upload date on every video, likes, comments | Transcripts at volume, suspected sponsors at volume |
+| Instagram | Followers, post count, bio and link-in-bio, captions, sometimes reel plays and likes | Reel plays and likes on many accounts, most comments, tagged posts |
+| LinkedIn | Headline, some recent posts with reaction and comment counts | Commenter headlines at volume, full post history |
+| Newsletters, podcasts | Advertise / sponsor pages, Substack badges, chart positions, YouTube versions | Subscriber and download numbers (creator-claimed; ask for the media kit) |
+
+The free verdict uses what was visible, labelled "public-page read <date>"; a creator whose key number is hidden is still shortlisted with that gap named, and the top-up fills it.
+
+**No browser, only a fetch tool** (it often fails on TikTok and gets followers-only from Instagram): use, in this order, public creator-stats pages found by search (label "third-party stats, data date <date>" — they lag and round), the numbers in search-result snippets for a specific post (label them), YouTube pages (they fetch well), and the creator's own media kit. Never call a top-5 or a single post the median; say "typical views not read". Say in the report that the free read was fetch-only.
+
+**Check every handle before listing it**: open the profile and match the name, niche and location to the source that named it — roundups and search snippets often give a wrong or stale handle. A mismatch is dropped, not shortlisted.
+

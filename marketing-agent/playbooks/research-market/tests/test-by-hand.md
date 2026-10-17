@@ -1,27 +1,27 @@
 # Test by hand — research-market
 
-## The test (from the spec, sharpened after critique)
+## The test (rebuilt 2026-10-17 on the AGENTS §8 research pattern)
 
-Pick a brand the reviewer knows first-hand, with real customers and public reviews (and, for the second pass, one with almost none). Ask: **"Who actually buys this, and what do they say in their own words?"**
+Pick a brand the reviewer knows first-hand, with real customers and public reviews (and, for a second pass, one with almost none). Ask: **"Who actually buys this, and what do they say in their own words?"**
 
-You should see, in order:
-1. It reads the brand first and asks only what the brand record does not answer — always including the founder's own belief about the buyer and whether private evidence (tickets, surveys, returns, sales notes) can be shared.
-2. A source plan with reachability marks and, before anything paid, a credit total to say yes to (or, when no price is on record, one yes for a single probe call). Nothing paid runs before the yes.
-3. The read: one screen first, with method note (n read, sources, star mix, gaps), at least one finding that surprises the founder, 2–4 segments plus an anti-persona, typed competitors and alternatives, a labelled demand read.
-4. The four recognition questions (incl. which competitors to track), asked without leading.
-5. Saved artifacts named with their paths and document titles; the audience summary waiting as a proposal; competitors tracked only if the founder confirmed them by name.
+Pass, all without being asked:
+1. **No question before the report** (beyond picking the brand when there are several) — not the founder's belief, not "where do customers talk", not private material, not credits.
+2. **News first** for the brand and category.
+3. **The free pass read public evidence itself:** the brand's own reviews (G2/Capterra/TrustRadius for B2B; on-site, Trustpilot, app stores for consumer brands) page by page in the host browser, the closest rivals' reviews, and community threads found by web search — with n read per source and a couldn't-read list. It never asks the founder to copy public reviews.
+4. **A readable report** (`research/market/<date>-read.md`, a local file offered or an artifact in hosted chat) opening "Do this first, because…" with the primary segment, its job and what to lead with; 2–4 ranked segments and an anti-persona; 5–8 themes with counts and quotes; **"For you" on every finding** and a **"You vs them"** section; typed alternatives; a labelled demand read.
+5. **One closing message** with only decisions: the recognition check (is this your buyer, what didn't you know, which quote for an ad), specific private material that would change the answer, claims sign-off, a paid top-up with one yes, rivals to track, rules to keep, refresh cadence.
 
-Pass:
-- The reviewer says "yes", or "partly" with the fixes applied, and names something they did not know.
-- Open 10 random public quote links (where a browser exists): every one opens and contains the quote verbatim; in a host without one, the method note says "links not re-opened".
+Also pass:
+- Open 10 random quote links: each opens and contains the quote verbatim.
 - Pick 3 persona traits: each cites quote ids that support it.
 - Every demand line is labelled measured / proxy / prior / unknown.
 - `knowledge_search` for a kept quote returns the bank document.
-- Credits charged ≤ the approved total; the endpoint log is in `research/credits-log/<YYYY-MM>.md`, not in the read.
 
-Fail: an untraceable or paraphrased quote, an evidence-free persona trait, invented seasonality, a competitor tracked without the founder's yes, anything paid before the yes, a customer contacted.
+Fail: any question before the report; asking the founder to paste public reviews; ending at "cold start" without having read public reviews and communities; a chat summary instead of a document; an untraceable or paraphrased quote; a vendor's "alternatives" page used as buyer evidence; anything paid before the yes; a customer contacted.
 
-Cold-start pass (second brand, few reviews): the read's first line says the evidence floor was not met, nothing is padded, and the survey + switch-interview kit is handed over.
+Cold-start pass (a brand with few reviews): the report says the floor was not met **after** showing what the free pass read, nothing is padded, and the survey and interview kit is in it.
+
+**The Juicebox case (dry run, 17 Oct, before the rebuild):** the old version's first output was a question asking the founder to hand-copy 15–20 G2 reviews; it refused to open public G2 pages, ran 3 web searches and would have ended at "cold start" with a chat summary. The rebuilt version's Sonnet re-run is recorded in `critique.md`.
 
 ## Staging run — 2026-10-16 (GooseWorks staging, brand "Personal Day", acne-safe skincare)
 

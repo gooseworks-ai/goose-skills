@@ -67,6 +67,8 @@ In this order: (a) the brand's own past deals and quoted rates (brain learnings,
 
 Show every input and say which are the brand's numbers and which are placeholders.
 
+**When typical views weren't read** (fetch-only free pass, hidden counts): give a **conditional range** — "if her typical post gets 10–30k views: $100–750 + usage" — and say the top-up turns it into a real range. Never price on followers alone, and never on a top post.
+
 ## 7. No budget given
 
 When the human has no budget yet (common for new B2B brands), do not leave prices blank. Offer two or three **test waves priced from the bands**, each labelled with its assumptions — for example "Wave A: 2 newsletter placements + 2 LinkedIn posts ≈ $X–Y; Wave B: 4 LinkedIn posts ≈ $X–Y; Wave C: affiliate-only at 20–30% recurring, $0 upfront" — and let the human pick. The pick becomes the budget for step 6.

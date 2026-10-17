@@ -9,7 +9,9 @@ description: Hidden atom of research-audience. Scores rows (gates then points, e
 
 **Does:**
 1. Score: gates already passed; add points by block, each with its cited reason in `fit_reason`. Tier A/B; C to `dropped.csv`. Set the value tier (V1/V2/V3) with its evidence for account-based lists; rank by tier and value together.
-2. Segment by angle × signal (e.g. "new leader", "hiring for the pain", "fit, no signal"), 3–6 segments, each with a **three-line angle**: *pain* (the situation in the buyer's terms, from the signals), *proof* (one signed-off claim, verbatim, cleared through `../../../../atoms/claims-gate/ATOM.md` — or, when the human declined the scoped sign-off at Gate 2, "proof needed: <what would do>"), *ask* (one low-friction next step). Never an invented result or number.
+2. Segment by angle × signal (e.g. "new leader", "hiring for the pain", "fit, no signal"), 3–6 segments, each with a **three-line angle**: *pain* (the situation in the buyer's terms, from the signals), *proof* (one signed-off claim, verbatim, cleared through `../../../../atoms/claims-gate/ATOM.md` — or "you'd need proof of <X> first", which the message offers to sign off), *ask* (one low-friction next step). Never an invented result or number.
+   Then **For you** per segment: does it fit us (yes/no and why, from our product, pricing and customers); what to send first and to whom (V1 accounts first); there is no maker for sequences yet — the human writes from the angle. Don't follow the herd: if every rival pitches this segment the same way, say so and offer a different angle from what buyers say (research-market's VoC bank when it exists).
+   **You vs them**: accounts where a rival is in use (from job posts naming the tool, case studies, integration pages) — where we're ahead (say it louder), behind, and where everyone sounds the same.
 3. Rank: tier, then score, then warm path.
 4. QA checklist — every item, every run:
    - domain is the current company's live site, not a parent or old brand;
@@ -21,4 +23,4 @@ description: Hidden atom of research-audience. Scores rows (gates then points, e
    - five random rows re-checked by hand against their sources — fix or drop any that fail, and say how many failed.
 5. If fewer rows pass than asked, deliver what passed and state why (thin universe, no contact routes, heavy exclusions). Never pad.
 
-**Writes:** `list.csv`, `dropped.csv` (tier C included, with reason), `summary.md` in the output format; ledger rows for everything shown.
+**Writes:** `report.md`, `list.csv`, `dropped.csv` (tier C included, with reason) in the output format; ledger rows for everything shown.

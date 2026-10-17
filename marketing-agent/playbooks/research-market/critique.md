@@ -109,3 +109,71 @@ Verdict: **clean**. Minor: server-needs row 3 still pointed at the removed paid-
 
 2026-10-16 final contract check: skill.meta.json: removed "≤300 chars" from the learnings line (save-learning forbids shortening to fit today's server); shared atoms moved to `shared_atoms`.
 2026-10-16 orchestrator ruling: bare `atoms/<shared>` paths in server-needs.md converted to file-relative form; save-to-brain now defines the creator as a document's first tag (voice-card and claims-gate already tag that way).
+
+## Rebuild on the AGENTS §8 research pattern (2026-10-17)
+
+**Why.** The orchestrator's literal Sonnet dry run, on Juicebox asking "Who actually buys this, and what do they say in their own words?", found four failures:
+- its first output was a question message asking the founder to hand-copy 15–20 G2 reviews;
+- it refused to open public G2 pages;
+- it ran only 3 web searches;
+- it would have ended at "Cold start" with a chat summary.
+
+**What changed (rewrite, not patch):**
+- **Top rule:** "free pass first, ask nothing, report once". The "ask only what is missing" block and the recognition test as a separate stop are gone. The founder's belief comes from the brand's audience field (or "none on record").
+- **News first** (step 2) for the brand and the category.
+- **The free pass (step 3)** reads three corpora — own customers, the 3–5 closest rivals' customers, the category:
+  - review sites read page by page in the host browser like a person (no bulk scraping, no login);
+  - community threads found by web search;
+  - one worker per corpus where the host has subagents.
+  - `sources-by-company-type.md` was rewritten: G2, Capterra and TrustRadius moved from "paste" to "browser". Paste is now only for private material, asked in the closing message for a specific gap. The proxy is only the paid top-up.
+- **Cold start** is declared only after the full free pass, and the report shows what was read.
+- **"For you" and "You vs them"** (AGENTS §8 point 7): shapes added to `output-formats.md`. The read became the readable report, adding "what I read" with a couldn't-read list. Brand-document titles and tags are now defined.
+- **One closing message (step 9)** holds:
+  - the recognition check;
+  - private material named specifically;
+  - claims sign-off;
+  - the one-yes paid top-up;
+  - rivals to track;
+  - the area to go deeper on;
+  - rules and refresh.
+- **Supporting files:**
+  - Demand adds Google Trends where the browser opens it.
+  - mining-method treats quotes on vendors' "alternatives" pages as pitch, not buyer evidence.
+  - meta 0.2.0: claims-gate added to `shared_atoms`; unused tools dropped.
+  - server-needs steps renumbered.
+  - the test now fails any question before the report.
+- **Paths readers use** (`research/market/<D>-read.md`, `personas.md`, `voc-bank.md`/`.jsonl`, `demand.md`) are unchanged; the guide index needs no change.
+
+## Rebuild — Sonnet re-run (2026-10-17)
+
+Sonnet, web search and page fetch only (no browser, no GooseWorks calls), Juicebox, "Who actually buys this, and what do they say in their own words?". The first attempt was lost to a laptop shutdown; the second ran to completion.
+
+**Against the four failure modes of the old version:**
+1. **First output a question asking the founder to hand-copy G2 reviews:** gone. No question came before the report; the closing message held the decisions.
+2. **Refused to open public G2 pages:** gone. It tried G2, Capterra, TrustRadius and Reddit itself (all blocked page fetch in this test) and used the review sites' own search snippets.
+3. **Only 3 web searches:** now 60, reading about 330 items across own, rival and category sources, with workers per corpus.
+4. **Ended at "cold start" with a chat summary:** a full document report. Cold start was declared only after the full read (about 18 distinct first-hand authors on Juicebox itself), with a provisional primary segment — lean in-house talent teams at startups and scale-ups. It kept 59 quotes (re-opened 13; 12 matched verbatim, 1 retired), and included "For you" lines, "You vs them" and the interview kit.
+
+It also found the Fetcher opening unprompted, through news first: what Fetcher's users valued, and the 19 Nov window.
+
+**Playbook defects it reported, fixed:**
+- **Verbatim rule vs a summarising fetch tool.** Each row now records how its words were captured (`capture: page / snippet / fetch-excerpt`). `fetch-excerpt` rows count for themes but never become hooks or ad lines until seen on the page.
+- **Second-hand quotes.** A review quoted on a vendor's blog is never a row; the review site's own search snippet is first-hand.
+- **The floor was undefined.** A new "The evidence floor" section in recognition-and-interviews says what counts: first-hand only, not curated, editorial or second-hand; a rival's customers count only when actively moving to us.
+- **Two conflicting first lines.** The report now always opens "Do this first, because…"; in a cold start that line is the interview kit, starting with the provisional segment, and segments are marked provisional with no audience proposal.
+- **The closing message was too long.** It now has at most five numbered decisions, the rest one line each as optional.
+- **"N credits" needed a paid probe before the report.** With no history the founder names N, and nothing paid runs before the report.
+- **Smaller fixes:**
+  - Relative dates become `~YYYY-MM`.
+  - Themes resting on rows older than 24 months are "dated" and never carry the primary segment.
+  - Stratification is said to be impossible where a site can't sort.
+  - With workers, the main run writes their rows as each returns, and theme and segment are filled later.
+  - Review sites may be named as sources.
+  - Contradictory brand facts go to "For the founder" and are never used as claims.
+- **New rule (also in listen-social and research-competitors):** only a site's own public pages — never unofficial mirrors, scraped copies or unofficial APIs.
+
+**Not changed:** "Connect GooseWorks first" stays the stop when no GooseWorks tools are listed; the test overrode it, and the saves need GooseWorks.
+
+**Still weak:**
+- A fetch-only host can't open most review sites, so first-hand own-brand evidence there is thin and a cold start is likely for B2B brands. A host browser, or server-needs #4/#6, closes it.
+- SKILL.md is about 1,180 words of process, over the ~1,000 target.

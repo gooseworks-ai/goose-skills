@@ -230,3 +230,26 @@ Round-7 fixes confirmed consistent across all files; all three runs (DTC to bout
 
 2026-10-16 final contract check: skill.meta.json `atoms` now lists only this folder's atoms; shared atoms moved to `shared_atoms` as plain slugs.
 2026-10-16 orchestrator ruling: learnings use the new save-learning source `[outreach YYYY-MM-DD]` (SKILL.md write-back; outcomes-ledger step 5); bare `atoms/<shared>` paths converted to file-relative form.
+
+## Research-pattern rewrite (2026-10-17, AGENTS §8 "Research playbooks: the shared pattern")
+
+**Why.** research-competitors' first hand test failed, and a Sonnet dry run of this playbook (Juicebox: "50 right-fit people at recruiting agencies, with verified emails") showed the same failure: a question message first, two credit yeses before even a five-row sample, no web search until after Gate 1, a chat message plus a CSV link at the end.
+
+**What changed (rewrite, not patch).**
+- SKILL.md rebuilt on the pattern: free pass first, ask nothing, report once. The agent drafts the fit definition itself from the brand's own site and brain (every line marked *sourced* or *assumed*), builds real rows from free sources — web search, directories, company sites and LinkedIn public pages, job boards, news, team pages — and the first message is the report plus the decisions left.
+- One credit yes, after the draft (spend-gate branch B), only to deepen: titles hidden on public profiles, firmographics at scale, more accounts to reach the number. The two gates and the separate probe yes are gone.
+- The deliverable is `report.md` (Do this first; timely openings; the draft definition; segments with pain → proof → ask and **For you**; **You vs them**; what was dropped; before you send; what we could not read; how it was built). Written as a file, offered to open, saved through save-to-brain.
+- Atoms rewritten to match: fit-definition drafts and never waits; account-sourcing and people-and-contacts free-first; signals news-first with timely openings; score-segment-qa writes For you and You vs them. data-sources.md split into "free pass" and "paid top-up". Tests rewritten around the four failure modes.
+- Kept: claims-gate (read step first, scoped sign-off in the message), save-to-brain, outcomes-ledger, `[outreach …]` learnings, all compliance rules.
+
+**Sonnet re-run on the same ask (WebSearch + WebFetch only, no GooseWorks):**
+| Failure mode | Result |
+|---|---|
+| Stopped early / asked first | **Pass** — no question before the report; one closing message with the draft, decisions and one ceiling ask |
+| No web search | **Pass** — ~48 calls (15 searches, 33 fetches); rows came from agency team pages |
+| Procedure over craft | **Mostly pass** — the output reads as research (Do this first, segments with For you, honest You vs them). Thin results came from the fetch tool (protected emails, blocked sites), not the playbook |
+| Chat summary instead of a document | **Pass** — `report.md` written, opening "Do this first, because…" |
+
+Result: 9 real people at 5 agencies (5 published, 1 pattern-guess, 3 other route), stated honestly as a shortfall with the top-up to reach 50.
+
+**Fixed from the re-run:** "drop recruiters" contradicted a recruiting-firm ICP (now: third-party recruiters only; a recruiting firm's own recruiters are the buyers) · "email 80%" vs honest no-email rows (now "reach out to 80% by the route given") · undated team pages (a title on the company's current page counts as seen when read) · pattern from one example (labelled `pattern-guess (one example)`) · fetch tools miss protected emails (record "address on page, protected", never guess) · breadth before depth for names and titles. **Accepted, not changed:** a no-history top-up can't be priced — spend-gate's rule (the human names the ceiling, the first read shows the price) is the shared answer.

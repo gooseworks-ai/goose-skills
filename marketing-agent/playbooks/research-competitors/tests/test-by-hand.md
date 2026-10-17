@@ -1,45 +1,35 @@
 # Test by hand — research-competitors
 
-## The test (from the spec, sharpened after critique)
+## The test
 
-Use a brand with competitors the team can name. Ask: **"What are my competitors running right now, and what works for them?"**
+Use a brand whose market the reviewer follows. Ask, exactly: **"What are my competitors running right now, and what works for them?"** The run must not ask anything before the report — not the rival list, not "go deeper?", not "shall I continue?", not credits.
 
-You should see, in order:
-1. The set played back — tracked rivals, server suggestions (with whether each Meta page was confirmed), research-market's named competitors — and a question before anyone is added or dropped. A removal only happens on your own press of the server's card.
-2. Free reads first; before anything paid (Google/LinkedIn/TikTok ad libraries, proxy social, search), a credit total to say yes to.
-3. One file per deep rival (3–5), each section dated and sourced or marked "not read: <why>"; a landscape with the reasons-to-buy matrix; an angle bank with `A-NN` ids.
-4. Other questions only where they apply: the Meta page link for an UNSURE rival; whether to find out what buyers say first or continue without buyer evidence (in plain words — no playbook names); pasted page text in a host without web access; the credit total for any paid pull; saving top angles as learnings; and whether to turn on the weekly watch (free sources only; its own run cost shown after the first run).
+Pass — all of these, without being asked:
+1. **News first**, for every rival and for our own brand, last 90 days; any shutdown, acquisition, launch, price change or funding from the last 30 days leads the report as a timely opening, with its window and a drafted move.
+2. **Every main rival covered on every dimension** (`../references/research-spec.md` §6 checklist), weighted by company type — for B2B: LinkedIn ads and posts, founder and exec posts, G2/Capterra, pricing, launches with demos, hiring, integrations, comparison searches and AI answers. Empty libraries recorded as "none found".
+3. **Founder and exec voice** read for 1–3 people per rival, with links.
+4. **Launches** in the last 90 days, with the biggest demo and its best third-party posts broken into hook · setup · reveal · proof · CTA, and a format brief per demo (each beat → our feature and approved proof), and a counter-position kit where we already do it better (our demo, not their name by default). Each breakdown says whether it came from the video or the transcript.
+5. **A readable document** at `research/competitors/<date>-report.md` (published as a page or document where the host can; otherwise a local file offered) that opens with "Do this first", then openings, landscape, same-shape profiles, swipe file, angles, triggers and a "couldn't read" list. The chat reply is three lines.
+6. Every fact linked and dated; every "works" line labelled inferred with its reason; no copied words; no disparaging.
+7. **"For you" closes every finding** (fits us or not, from our facts; what to make, the approved claim, who makes it; "you'd need proof of X first" where a claim isn't approved), and a **"You vs them"** section (ahead, behind, everyone sounds the same). Our own ads, posts, product and pricing were read in the free pass. Nothing is made.
+8. Only decisions asked at the end, in one message: which openings to act on, the rivals covered (add or drop), claims sign-off, a paid top-up with one yes to a ceiling, the weekly watch, saving rules.
 
-Pass:
-- The hand-over opens with "Do this first, because…" and names one angle to brief now.
-- The top 3 rivals' full active ad libraries were read (host browser, or one paid read per rival after the spend gate's yes) — or the files say "partial — sample only" and why.
-- No rival came from the agent's own memory; every candidate shows its source.
-- Angle tags in hand-off examples are lower-case (`angle:a-07`).
-- Open every ad link in one rival's file: each is a real ad, and the "active as of" date (the ad source's scrape date) is no more than 7 days old. Dead ones are marked ended, not hidden.
-- No line states a rival's spend, ROAS, CTR or conversion; every "what works" line says it is an inference and why.
-- Hand one `briefable` angle to make-static-ads as the brief: it works without extra research (reason to buy, segment, proof mapped to approved claims, formats, guardrails all present).
-- Every gap in the landscape has buyer evidence (voice-of-customer ids) — no invented white space.
-- Saved and findable with `knowledge_search`; credits ≤ approved.
+Fail: any question before the report; stopping after one source; reading only Meta for a B2B brand; missing a recent rival shutdown or launch that a news search finds; a chat summary instead of a document; facts without links or dates.
 
-Watch pass (a week later, "what changed this week?"): one screen, only threshold-crossing changes with links, top three with owners, a "no material change" list; quiet week reported as quiet.
+## The Juicebox case (the run that failed on 16 Oct and set this bar)
 
-React pass ("<rival> just cut prices 40%"): verifies with a dated source first, refreshes that rival, gives 2–3 options including "do nothing", routes each to its owner, never recommends matching the price by reflex.
+Brand: Juicebox (AI recruiting search). Rivals: Loxo, hireEZ, Findem, Eightfold, Fetcher. A good run must reach, unprompted:
+- Fetcher's shutdown (platform closed 16 Oct 2026) and Juicebox's purchase of Fetcher's assets → a time-boxed switch campaign at the top, with its "For you";
+- the recent hireEZ and Eightfold launches, with demos and third-party posts;
+- what the rivals' founders and execs are posting;
+- LinkedIn and Google ads (Meta matters less for this B2B category), pricing, G2 reviews, hiring and AI-answer presence;
+- "For you" lines such as the Fetcher switch campaign, or Juicebox's free tier against Loxo's trial, and a "You vs them" section.
 
-Fail: dead or stale ads presented as live, a rival added or removed without asking, a spend/results claim, an angle that is reworded rival copy, a claim not on the approved list, anything paid before a yes.
+The old run read only Meta ad libraries, asked "go deeper?", found the Fetcher story only when pushed, and ended in a chat summary. The rebuilt playbook's Sonnet re-run is recorded in `critique.md`.
 
-## Staging run — 2026-10-16 (GooseWorks staging, brand "Personal Day")
+## Earlier staging facts still true (2026-10-16, brand "Personal Day")
 
-Ran every free step up to the first paid call. Nothing paid was called.
-
-| Step | Call | What came back |
-|---|---|---|
-| Set | `competitor_read` (roster) | 5 tracked rivals with dossiers (positioning, pricing tier, proof points, content themes, differentiators, audience segments with evidence, socials, `ad_count` 24, `last_researched_at` 2026-10-13). |
-| Set | `competitor_read` `view: "suggestions"` | Skinfix (166 ads), Naturium (115), Sofie Pavitt Face (107) with CONFIRMED pages; La Roche-Posay and Topicals UNSURE with two possible pages each → step 1 must show the verdict before saving. |
-| Dossier | `competitor_read` `slug: "clearstem-com"` | Full profile; no individual ads, no prices, no landing-page quotes → those come from steps 3, 5, 6. |
-| Ads | `ads_template_read` mode competitor | Rows with `source_ad_id`, primary text, CTA, destination URL, `ad_started_at`, `ad_ended_at` = 2026-10-13 (the scrape date) and platforms. Example: Paula's Choice "Pick 3 and save 20%… 30%" running since 2026-08-24 → build-a-routine page. Last scrape 3 days old → "active as of 2026-10-13" is allowed (≤7 days). |
-| Video ads | `media_list` tags `ad_library`, `competitor_ad`, kind reference | Rival video ads stored as reference-only media with the Ad Library link in `metadata.source_url` (e.g. Vue Skin). |
-| Social | `brand_read` section `organic` | `competitor_top_posts` with views/likes/comments (e.g. The Ordinary × Recess Therapy anniversary video, 1.22M views) — free input for step 8. |
-| Freshness | `brand_read` competitors → source `last_scraped_at` | Ad sources were last scraped 2026-10-13 (3 days) — matches the latest `ad_ended_at`; no refresh needed. The sample includes ended ads (e.g. a Prequel ad last seen 2026-10-07), which is why "active" means last-seen = scrape date. `competitor_research` refresh is free but was not called (it writes server research). |
-| Automations | `automation_list` | None exist; the watch would be the first. |
-
-**First paid step (not run):** a Google Ads Transparency import for the two closest rivals (`ads_library_scrape`, `library_provider: "google"`, confirmed advertiser, `max_ads` 10, `max_spend_usd` cap) — skipped; for a DTC brand Meta is the main library, so the run would offer it as optional with its cap and wait for a yes.
+- `competitor_read` returns server dossiers (positioning, pricing tier, socials, ad counts, `last_researched_at`) and `view: "suggestions"` with Meta page checks (CONFIRMED / UNSURE).
+- `ads_template_read` mode `competitor` returns a capped sample (~24 per rival) with ad id, start date, last-seen date, copy, CTA and destination; `media_list` tags `ad_library` + `competitor_ad` hold rival video ads.
+- `brand_read` section `organic` returns rival top posts with views.
+These are free extras; the free web pass (search, fetch, browser) is the main source.

@@ -19,7 +19,8 @@ Load at step 6 and in the QA pass. The rule that protects the human: **a bounced
 
 - Current employer and title from a dated public source (company team page, press, conference speaker page, a recent post signed with the title, the public profile). Public profiles often hide titles; a **search-result headline** (the title line a search shows for the profile) is acceptable when dated — label it `search-headline (<date>)` and score persona lower. No dated source at all → drop.
 - Profiles lag job changes by months. If two sources disagree, the newer dated one wins; if you cannot tell, drop.
-- Drop: recruiters, consultants, "fractional", "advisor", interns, "ex-" titles, agency staff whose title names the client brand, the seller's own staff, competitor staff, anyone at an excluded domain.
+- Drop: third-party recruiters and consultants who don't work for the account, "fractional", "advisor", interns, "ex-" titles, agency staff whose title names the client brand, the seller's own staff, competitor staff, anyone at an excluded domain. (Selling *to* recruiting firms: their recruiters and sourcers are the buyers — keep them.)
+- A title on the company's own current team page counts as seen on the date you read it (`company page, read <date>`); an undated third-party page does not.
 - Title-keyword traps: "Account Executive" is not finance; "Head of Growth" at a 3-person company is a founder.
 - Location is the **person's** location, not the company HQ (it drives the region flag).
 
@@ -31,7 +32,7 @@ Every row gets a contact route — in `email` (with `email_status`) or `other_co
 |---|---|---|
 | `verified-by-tool (<tool>, <date>)` | A verification tool said valid. Only set from the human's verifier results or a GooseWorks verification tool if one exists. | Main list |
 | `published (<url>)` | The exact address is printed on a public page (company site, press release, filing, speaker page, link-in-bio). Still verify before sending. | Main list, "verify before sending" |
-| `pattern-guess (unverified)` | Built from the domain's pattern, and **only** when at least one published address at the same domain shows that pattern (cite it). | Main list with this status in `email_status`; never counts as verified; never send unverified |
+| `pattern-guess (unverified)` | Built from the domain's pattern, and **only** when at least one published address at the same domain shows that pattern (cite it). One example → label `pattern-guess (one example)`, lower confidence; two or more matching examples → `pattern-guess`. | Main list with this status in `email_status`; never counts as verified; never send unverified |
 | `catch-all` | Verifier says the domain accepts everything — unconfirmable | `catch-all.csv`; send only in small batches after valid sends perform |
 | `none` | No email route found | Keep only if another route exists (LinkedIn, contact form, buying inbox, phone, IG/DM for small shops) |
 
@@ -47,7 +48,7 @@ Benchmarks (approximate, industry practice): hard bounces under 2% per send (aim
 
 This playbook gives flags and the reason, not legal advice.
 
-- **Provenance on every row**: source URLs and retrieved date. Add a one-paragraph "how this list was built" note to `summary.md` for the human's records (sources, date, purpose).
+- **Provenance on every row**: source URLs and retrieved date. Add a one-paragraph "how this list was built" note to the report for the human's records (sources, date, purpose).
 - **EU / EEA / UK / Switzerland** — flag `EU-UK` with the country. Two layers apply: GDPR governs holding the data (legitimate interest, Art. 6(1)(f): relevant to the person's role, minimal data, an easy opt-out, and telling the person where their data came from — Art. 14); each country's **ePrivacy rules govern the email itself**, and they differ — several countries require prior consent even for B2B email. Default for every EU row: "check the national rule before sending". **Germany and Austria**: consent-required — excluded by default unless the human says otherwise.
 - **UK sole traders and partnerships** (many independent shops) count as individuals under PECR: cold email needs consent. To tell: search the free Companies House register for the business; no limited company found → treat it as a sole trader or partnership. Flag `UK-soletrader: consent needed`: PECR treats social-media DMs as electronic mail too, and sole traders can register with the TPS (the UK do-not-call list). So the route is **a visit or a letter**; phone only after a TPS check recorded in `notes`; IG is for following and engaging, never a cold pitch DM. Leave `email` blank (any published address goes in `notes`), and keep these rows out of the "contactable by email" and sendable counts. Limited companies with corporate addresses: B2B email with an opt-out. Any UK phone route: a TPS (sole traders) or CTPS (companies) check, recorded in `notes`.
 - **Canada** — flag `CASL`. Cold email needs consent; the implied-consent exception covers only addresses conspicuously published without a "no solicitation" note, where the message matches the person's role. Record where the address was published. A Canadian `pattern-guess` is never sendable (not conspicuously published) — give that person a LinkedIn or other route, or drop them.

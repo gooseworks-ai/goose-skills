@@ -4,27 +4,26 @@
 
 Run it for a brand whose social week the operator has personally followed. Ask: **"What are people saying about me and my category this week?"**
 
-You should see, in order:
-1. The watchlist played back — brand name forms, handle, products, founder, hashtags, competitors, category terms, exclusions, platforms — asking only what the brand record does not answer (always: who to wake for a crisis, if not on record).
-2. A pull plan and a credit total to say yes to (first run: one yes for a single probe call, price unknown until it returns, its results kept; then the stage A total, and later a stage B total). Nothing paid before the yes.
-3. If anything is S1, it comes first in the reply, before the report.
-4. The report: coverage table, Act now, so-what, mentions with deltas (or "baseline week"), themes with n and quotes, outliers saved, trends with evidence and post-by dates, routed-out items, gaps and next week's plan.
-5. The reply queue: finished drafts, each with a recommendation (reply / take private / stay silent) and a reason; for anything crisis-shaped, an on-post reply and private draft, with a brand-wide holding statement only when 3 or more separate people, press, or a confirmed contamination, recall or legal action make it necessary.
-6. One question: run this weekly? (free-only, or paid pulls up to a standing weekly credit total; its own run cost shown after week one)
+Rebuilt 2026-10-17 on the AGENTS §8 research pattern. Pass, all without being asked:
+1. **No question before the report** — not platforms, not the watchlist, not an escalation contact, not credits. (An S1 found during the pass is posted in chat at once; that is an alert, not a question.)
+2. **A watchlist it drafted itself**, with name-collision exclusions found by searching the bare name ("Personal Day" → days off work excluded).
+3. **News first**, then web search and public pages for every default platform of the company type, and comments on the top posts; counts labelled "free-pass sample"; a coverage table naming what it couldn't read.
+4. **A readable report** (`social/listening/<D>-report.md`, a local file offered or an artifact in hosted chat): "Do this first", Act now, so-what, **For you** ("people complain about X — post Y", "reply to these 3 threads"), **You vs them**, themes with n and quotes, outliers, trends with post-by dates, and the reply queue.
+5. **One closing message** with only decisions: replies to send, the draft watchlist to confirm, an escalation contact if none, a paid top-up with one yes, the weekly run, rules to keep.
 
-Pass:
-- Every conversation the operator knew of on covered surfaces is in the report, plus at least one real one they did not.
-- Every Act-now link and a sample of five others open (or are marked unchecked where no browser exists).
-- Uncovered surfaces are named in the coverage table.
+Also pass:
+- Every conversation the operator knew of on surfaces the free pass can read is in the report, plus at least one they did not.
+- Every Act-now link and a sample of five others open (or are marked unchecked).
 - No sentiment percentage on fewer than ~30 items; every theme has two linked quotes.
-- Outliers in the inspiration library carry the multiple and the hook · format · topic line.
-- Nothing was posted, replied, DMed, hidden or reported. Credits ≤ approved.
+- Nothing was posted, replied, DMed, hidden or reported. Credits only inside an approved ceiling.
+
+**Failure modes from the 17 Oct dry run (old version):** it opened with questions, a watchlist confirmation and a credit yes in one message; it never used web search; it ended with a chat summary. Any of these fails the rebuilt version. The Sonnet re-run is recorded in `critique.md`.
 
 Pass also: a week with fewer than ~20 items gets the short form; an S1 comes with a cross-channel hold list; the report's first line is "Do this first, because…".
 
-Fail: a broken link, a missed known mention on a covered surface, a posted reply, a reply draft with a claim not on the approved list, a Reddit draft without disclosure, a padded quiet week.
+Fail: any question before the report; no web search; a chat summary instead of a document; a broken link, a missed known mention on a covered surface, a posted reply, a reply draft with a claim not on the approved list, a Reddit draft without disclosure, a padded quiet week.
 
-Crisis drill: seed (or find) a high-reach complaint about a reaction to the product, posted after the counting week ended. It must still be triaged ("this week, not in counts"), flagged S1 or S2 with reach, velocity, separate posters and what is unknown, and posted in chat before the rest of the pass. A single poster gets an on-post reply and a private draft — the brand-wide holding statement is held with its trigger. No draft denies, blames, suggests a cause, or promises beyond policy; the escalation contact is named or "none on record — decide now". Next week's run keeps it open in Act now.
+Crisis drill: seed (or find) a high-reach complaint about a reaction to the product, posted after the counting week ended. It must still be triaged ("this week, not in counts"), flagged S1 or S2 with reach, velocity, separate posters and what is unknown, and posted in chat at once, before the rest of the pass. A single poster gets an on-post reply and a private draft — the brand-wide holding statement is held with its trigger. No draft denies, blames, suggests a cause, or promises beyond policy; the escalation contact is named or "none on record — decide now". Next week's run keeps it open in Act now.
 
 Date-convention drill (run on Friday 2026-10-16, then let the weekly run fire): Friday writes `social/listening/2026-10-05-report.md`, `2026-10-05-items.jsonl`, `2026-10-05-replies.md` (counting week Oct 5–11) and marks the morning's crisis "this week, not in counts". Monday 10-19 writes the `2026-10-12` files against the Oct 5 baseline, counts that item and keeps it open. A chat run on Wednesday 10-21 finds `2026-10-12-items.jsonl` and merges (counts unchanged for items already there, `Run:` shows both runs). Skip a week: pause the 10-26 run; the 11-02 run counts Oct 26–Nov 1, finds no 2026-10-19 files, writes `Compared against: 2026-10-12 (not the prior week)`, shows no Δ and n/a theme counts, and still carries the open S1 forward.
 

@@ -1,7 +1,7 @@
 {
   "slug": "listen-social",
   "tier": "playbook",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "pillar": "5 — Organic social (also serves 11 — PR and comms: crisis replies)",
   "intents": [
     "What are people saying about me and my category this week?",
@@ -16,6 +16,7 @@
   ],
   "reads": [
     "brand brain: summary, kit, products, accounts, competitors, organic posts (with sync date), learnings (brand_read) — learn-my-brand / server research",
+    "public web: news, Reddit, YouTube, TikTok, Instagram, X and LinkedIn public posts and comments — host web search and browser (free pass, samples)",
     "claims and voice through the claims-gate atom (learn-my-brand's contract) — learn-my-brand",
     "operating rules: crisis escalation, refund policy, disclosure rules (knowledge_search) — learn-my-brand (asks when absent)",
     "competitor roster with socials (competitor_read) — research-competitors / research-market",
@@ -40,11 +41,9 @@
   "needs": {
     "mcp": [
       "gooseworks:get_started",
-      "gooseworks:account_whoami",
       "gooseworks:brand_read",
       "gooseworks:knowledge_search",
       "gooseworks:competitor_read",
-      "gooseworks:competitor_save",
       "gooseworks:competitor_research",
       "gooseworks:social_account_list",
       "gooseworks:social_analytics_get",
@@ -65,8 +64,6 @@
       "gooseworks:automation_upsert",
       "gooseworks:automation_list",
       "gooseworks:tools_load",
-      "gooseworks:knowledge_sync",
-      "gooseworks:ads_library_scrape",
       "gooseworks:meta_read"
     ]
   },

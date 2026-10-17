@@ -1,14 +1,14 @@
 # Mining method — how a senior researcher reads buyer evidence
 
-Load at steps 3, 4, 7 and 8.
+Load at steps 3–6.
 
 ## Sampling
 
 - **Batches of 20–25 per source, at most ~6 batches per source.** After each batch, list any theme not seen before. A theme counts as new only if it needs its own theme row and has a quote unlike every existing representative quote — a rewording of a known pain is not new. Stop the source when two batches in a row add none (saturation) or at the cap. Typical totals where volume exists: 100–300 read, 30–60 kept.
-- **Write as you go.** After each batch add the kept rows to `research/market/voc-bank.jsonl` in the workspace — `file_write` overwrites, so read it, add the rows, write the whole file back (on shell hosts a local scratch file is fine until the save step). Quotes are copied from the source text, never retyped from memory; later steps read the file, not your recollection.
+- **Write as you go.** After each batch add the kept rows to `research/market/voc-bank.jsonl` in the workspace — `file_write` overwrites, so read it, add the rows, write the whole file back (on shell hosts a local scratch file is fine until the save step). Quotes are copied from the source text, never retyped from memory; later steps read the file, not your recollection. With workers, each returns its rows in its final message and the main run writes them to the file as each worker returns. `theme` and `segment` are filled in steps 4–5, not at mining time.
 - **Synced evidence** (reviews the server imported, read back through `knowledge_search`) comes as ranked snippets, not full lists: run star- and theme-specific queries, keep only text that is verbatim in the snippet, and label those rows `via synced evidence (snippet)`.
 - **Stratify by rating.** 1★ gives failures and objections; 2–3★ give honest trade-offs (often the most useful); 4★ gives "good but"; 5★ gives outcome and identity language. Never read only page one — review widgets lead with 5★. Sort by lowest and by newest too.
-- **Recency.** Weight the last 12–18 months. Keep older rows only for themes still alive, and flag rows older than 24 months.
+- **Recency.** Weight the last 12–18 months. Keep older rows only for themes still alive, and flag rows older than 24 months; a theme resting mostly on rows older than 24 months is "dated" and never carries the primary segment.
 - **Verified and incentivised.** Mark verified purchase. Mark incentivised ("received free", Vine, "in exchange for an honest review", gifted creator posts) and down-weight them; never let them carry a theme alone.
 - **Duplicates.** Syndicated reviews (the same text on several retailers) count once. The same person across platforms counts once.
 - **Count what you read.** Report n read per source and the star mix, not only what you kept.
@@ -16,6 +16,9 @@ Load at steps 3, 4, 7 and 8.
 ## Quote integrity
 
 - Verbatim only. Keep typos and slang. Mark cuts with `[...]`. Never stitch two sentences from different places.
+- **How the words reached you** (`capture` on every row): `page` (read on the page itself), `snippet` (the review site's own text shown in search results — still first-hand), `fetch-excerpt` (a fetch tool that returns a summary with quoted fragments). `fetch-excerpt` rows count for themes and counts but never as hooks or ad lines (`vividness` ≤ 2) until the quote is seen on the page. Re-open a sample of kept quotes on the page where you can, and say how many matched.
+- **Second-hand is not a row:** a review quoted on a vendor's blog, comparison or "alternatives" page is that vendor's pitch. Find the review on the review site itself, or leave it out.
+- **Dates:** relative dates become `~YYYY-MM (from "4 months ago")`; no date at all is "undated".
 - Every row: link, platform, posted date (or "undated"), retrieved date, rating if any. Private rows cite `private:<workspace path or document title>#<date>`. Comments whose own link does not open on its own are cited as "comment on <post url>".
 - Strip reviewer names and handles from the quote record of private individuals; keep self-descriptors they wrote ("two dogs, one picky eater", "ops lead at a 40-person agency"). Strip medication, diagnosis and other sensitive personal details from self-descriptors, and emails, phone numbers, order numbers and addresses from private quotes.
 - **Population check.** Is the author a plausible buyer or user? Fans of a founder, candidates complaining about recruiters on a recruiting tool's thread, resellers and competitors' staff are not — drop them.
@@ -24,7 +27,7 @@ Load at steps 3, 4, 7 and 8.
 - `contains_claim: yes` on any outcome or efficacy statement ("cleared my skin in a week"). It is buyer language, never brand proof; downstream makers still need an approved claim.
 - `testimonial_ok: no` by default. Using a reviewer's words as a named testimonial in an ad is a separate permission the human obtains.
 - `about` (who the quote is about): `brand` (the brand's own customers), `prospect` (waitlist, trial users, lost deals), `competitor:<name>`, `category`. Competitor complaints are opportunity evidence, not traits of the brand's buyer.
-- `source_class` (where it came from): `public` or `private` (pasted or exported by the user). Pasted competitor G2 reviews are `about: competitor:<name>`, `source_class: private` — they never count toward the brand's evidence floor.
+- `source_class` (where it came from): `public` or `private` (pasted or exported by the user). Rivals' reviews read in the free pass are `about: competitor:<name>`, `source_class: public` — they never count toward the brand's evidence floor. Quotes that appear on a vendor's own comparison or "alternatives" page are that vendor's pitch, not buyer evidence — never rows.
 
 ## Tagging taxonomy (one primary type per row, secondary allowed)
 
@@ -68,9 +71,10 @@ Also tag:
 ## Demand
 
 GooseWorks has no search-interest or keyword-volume tool today. Use only these, each labelled:
-- **Proxy — ad rhythm:** start dates of competitors' active ads (`ads_template_read` mode `competitor`): bursts before a season, rising counts quarter on quarter. Active ads only (ads that stopped are not in the sample), so low confidence; skip it under ~20 ads or where rivals barely run Meta ads (most B2B).
+- **Proxy — search interest:** Google Trends for the category's main terms, where the host browser can open it (relative interest, not volume; say the region and period).
+- **Proxy — ad rhythm:** start dates of competitors' active ads (`ads_template_read` mode `competitor`, or research-competitors' records): bursts before a season, rising counts quarter on quarter. Low confidence; skip it under ~20 ads or where rivals barely run Meta ads (most B2B).
 - **Proxy — conversation and purchase timing:** month distribution of reviews and community posts you already pulled.
-- **Proxy — search phrasing:** search-suggestion endpoints and question titles on Reddit/YouTube; record the exact phrasings ("grain free dog food for itchy skin").
+- **Proxy — search phrasing:** search suggestions ("people also ask", autocomplete as the web search shows them) and question titles on Reddit/YouTube; record the exact phrasings ("grain free dog food for itchy skin").
 - **Category prior:** known seasonality for the category (back-to-school, winter dryness, Q4 gifting, January resolutions, tax season for finance) — always marked "known pattern, not measured".
 - **Measured:** only when the user supplies their own data (Search Console, Google Ads keyword planner export, store sales by month).
 - Direction (growing / flat / shrinking) without measured data is at best "proxy, low/medium confidence". Otherwise "unknown".

@@ -1,7 +1,7 @@
 {
   "slug": "research-audience",
   "tier": "playbook",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "pillar": "8 — Outbound, demand gen and ABM",
   "intents": [
     "Find me 50 right-fit people with verified emails",
@@ -21,7 +21,7 @@
     "human-supplied: customer / open-deal / do-not-contact exports, account-value rule, warm-path lists, email-checker results, outreach outcomes"
   ],
   "writes": [
-    "workspace research/audience/<date>-<list>/list.csv, catch-all.csv, dropped.csv, summary.md — read by the human (their outreach tool); a future outreach-writing playbook would read the segments' three-line angles",
+    "workspace research/audience/<date>-<list>/report.md (→ 'Prospect report — <Brand> — <date>', keep-history), list.csv, catch-all.csv, dropped.csv — read by the human (their outreach tool) and the next run; a future outreach-writing playbook would read the segments' angles",
     "workspace research/audience/ledger.csv — read by every later run (exclusions, suppression, outcomes) via outcomes-ledger",
     "workspace research/audience/fit-definition.md → brand document 'Prospect fit definition — <Brand> — <date>' (supersede) — read by later runs",
     "workspace research/audience/lessons/<date>.md → brand document 'Outreach lessons — <Brand> — <date>' (keep-history; per-segment numbers, no personal data) — read by later runs",
